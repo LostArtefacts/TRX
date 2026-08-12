@@ -13,6 +13,7 @@
 #include <trx/game/game.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/objects.h>
+#include <trx/game/output.h>
 #include <trx/game/output/common.h>
 #include <trx/game/output/const.h>
 #include <trx/game/output/overlay.h>
@@ -142,6 +143,9 @@ static M_PRIV m_Priv = {
         .default_chunk_size = 1024 * 4,
     },
 };
+
+static float m_Letterbox = 0.0f;
+static float m_Fade = 0.0f;
 
 static bool M_CreateTextureRGB8(
     TRX_GL_TEXTURE *const texture, const int32_t width, const int32_t height,
@@ -1047,6 +1051,43 @@ void Output_Overlay_DrawBlackRectangle(const float opacity, const bool post_ui)
             post_ui, M_DrawOp_BlackRectangle,
             ((M_DRAW_OP_BLACK_RECTANGLE) { .opacity = opacity }));
     }
+}
+
+void Output_Overlay_SetLetterbox(const float ratio)
+{
+    m_Letterbox = ratio;
+}
+
+float Output_Overlay_GetLetterbox(void)
+{
+    return m_Letterbox;
+}
+
+void Output_Overlay_SetFade(const float opacity)
+{
+    m_Fade = opacity;
+}
+
+float Output_Overlay_GetFade(void)
+{
+    return m_Fade;
+}
+
+void Output_Overlay_DrawLetterbox(void)
+{
+    if (m_Fade > 0.0f) {
+        Output_Overlay_DrawBlackRectangle(m_Fade, false);
+    }
+    if (m_Letterbox <= 0.0f) {
+        return;
+    }
+    const int32_t height = Viewport_GetHeight(VIEWPORT_UI);
+    const int32_t width = Viewport_GetWidth(VIEWPORT_UI);
+    const int32_t bar_height = (int32_t)(height * m_Letterbox);
+    const RGBA_8888 black = { 0, 0, 0, 255 };
+    Output_DrawScreenFlatQuad(0, 0, 0, width, bar_height, black);
+    Output_DrawScreenFlatQuad(
+        0, height - bar_height, 0, width, bar_height, black);
 }
 
 void OutputSource_Overlay_Init(void)

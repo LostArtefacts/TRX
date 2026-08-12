@@ -18,6 +18,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/option.h>
 #include <trx/game/output.h>
+#include <trx/game/output/overlay.h>
 #include <trx/game/overlay.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
@@ -55,6 +56,8 @@ void Level_Unload(void)
     Walkable_Reset();
 
     Output_SetTimeInGame(0.0f);
+    Output_Overlay_SetLetterbox(0.0f);
+    Output_Overlay_SetFade(0.0f);
     Output_DispatchLevelUnload();
 
     Sound_StopAll();
