@@ -12,6 +12,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/rules.h>
 #include <trx/game/savegame.h>
+#include <trx/game/waypoint.h>
 #include <trx/version.h>
 
 #include <string.h>
@@ -174,6 +175,9 @@ void SG_Resume_ResetAllEntries(void)
     // Which cutscenes have run lasts as long as the playthrough as well, so a
     // fresh one sees all of them again.
     CutSeq_SetPlayedMask(0);
+
+    // And so does how far Lara has got along a level's own progression.
+    Waypoint_Reset();
 }
 
 void SG_Resume_ResetEntry(const GF_LEVEL *const level)

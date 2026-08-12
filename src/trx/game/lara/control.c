@@ -20,6 +20,7 @@
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 #include <trx/game/stats.h>
+#include <trx/game/waypoint.h>
 #include <trx/version.h>
 
 // clang-format off
@@ -994,6 +995,10 @@ void Lara_Control(void)
 {
     ITEM *const item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
+
+    if (Lara_IsControllable()) {
+        Waypoint_ClearPad();
+    }
 
     const int32_t time4 = (int32_t)Output_GetTimeInGame() * 4;
     Lara_Poison_Tick();

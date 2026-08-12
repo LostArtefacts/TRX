@@ -1275,6 +1275,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── modules
 │   │   │   └── cutscenes.lua
 │   │   ├── scripts
+│   │   │   ├── _game.lua
 │   │   │   ├── alexhub2.lua
 │   │   │   ├── alexhub.lua
 │   │   │   ├── ang_race.lua
@@ -2635,6 +2636,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── modules
     │   │   │   │   └── cutscenes.lua
     │   │   │   ├── scripts
+    │   │   │   │   ├── _game.lua
     │   │   │   │   ├── alexhub2.lua
     │   │   │   │   ├── alexhub.lua
     │   │   │   │   ├── ang_race.lua
