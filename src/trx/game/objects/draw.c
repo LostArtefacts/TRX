@@ -153,11 +153,12 @@ void Object_DrawStaticObject(
 
 bool Object_DrawAnimatingItem(const ITEM *item)
 {
-    return Object_DrawAnimatingItemWithSwap(item, nullptr);
+    return Object_DrawAnimatingItemWithSwap(item, nullptr, item->mesh_bits);
 }
 
 bool Object_DrawAnimatingItemWithSwap(
-    const ITEM *const item, const OBJECT *const mesh_swap)
+    const ITEM *const item, const OBJECT *const mesh_swap,
+    const uint32_t mesh_mask)
 {
     ANIM_FRAME *frames[2];
     int32_t rate;
@@ -193,7 +194,7 @@ bool Object_DrawAnimatingItemWithSwap(
     const int16_t *extra_rotation = item->extra_rotations;
 
     bool result = Object_DrawInterpolatedObjectWithSwap(
-        obj, item->mesh_bits, extra_rotation, frames[0], frames[1], frac, rate,
+        obj, mesh_mask, extra_rotation, frames[0], frames[1], frac, rate,
         swap_obj);
     if (g_Config.debug.enable_debug_bounding_boxes) {
         Output_DrawCuboid(bounds);

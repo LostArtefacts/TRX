@@ -20,6 +20,11 @@ int32_t Camera_GetChaseSpeed(void);
 bool Camera_LOSCheck(GAME_VECTOR *start, GAME_VECTOR *target, int32_t shift);
 bool Camera_Collide(GAME_VECTOR *ideal, int32_t shift, bool y_first);
 
+// Drops the position the camera settled on last frame. The next one is worked
+// out afresh and taken in a single step, rather than eased from where the
+// camera was.
+void Camera_Invalidate(void);
+
 void Camera_RegisterStrategy(CAMERA_MODE mode, CAMERA_STRATEGY strategy);
 
 #define REGISTER_CAMERA(mode, strategy)                                        \

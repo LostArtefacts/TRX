@@ -308,6 +308,11 @@
         <property category="TRX" defaultValue="500" description="Damage dealt by swipe attacks." displayName="Attack Damage" internalName="attack_damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="250" description="Damage dealt by the death explosion." displayName="Part Damage" internalName="part_damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_VON_CROY-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="15" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="false" description="Whether he waits for Lara and lectures her at the markers he walks to, rather than running them on his own." displayName="Guides Lara" internalName="guides_lara" type="Bool" />
+    </moveable>
     <!--placeholder for O_WATERFALL_1..O_WATERFALL_3-->
     <moveable id="-1">
         <property category="TRX" defaultValue="None" description="The sound the waterfall loops while it runs." displayName="Loop Sound" entries="None, Sand, Water" internalName="loop_sound" type="Enum" />

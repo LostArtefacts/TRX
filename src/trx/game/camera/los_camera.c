@@ -944,6 +944,11 @@ bool Camera_Collide(
     return M_Collide(ideal, shift, y_first);
 }
 
+void Camera_Invalidate(void)
+{
+    m_LastState.cam_type = CAM_FIXED;
+}
+
 static const CAMERA_STRATEGY m_Strategy = {
     .get_chase_speed_func = M_GetChaseSpeed,
     .get_look_settings_func = M_GetLookSettingsFunc,

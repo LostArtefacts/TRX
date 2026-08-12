@@ -610,6 +610,7 @@ common_sources = [
   'trx/game/objects/creatures/tribe_axeman.c',
   'trx/game/objects/creatures/tribe_boss.c',
   'trx/game/objects/creatures/tribe_pipeman.c',
+  'trx/game/objects/creatures/von_croy.c',
   'trx/game/objects/creatures/wasp_mutant.c',
   'trx/game/objects/creatures/willard.c',
   'trx/game/objects/creatures/willard_plasma_ball.c',
