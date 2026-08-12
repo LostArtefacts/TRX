@@ -36,6 +36,7 @@ void Creature_Reset(void)
     Creature_SetAlliesHostile(false);
     Vector_Clear(m_AllyObjects);
     Vector_Clear(m_AllyTargetingObjects);
+    Creature_ResetAIObjectsSpent();
 }
 
 bool Creature_AreAlliesHostile(void)

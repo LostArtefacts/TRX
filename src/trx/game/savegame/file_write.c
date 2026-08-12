@@ -695,6 +695,15 @@ void SG_File_DumpMisc(JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "cutscenes_played", CutSeq_GetPlayedMask());
     JSONW_WRITE(io, "waypoint", Waypoint_Get());
     JSONW_WRITE(io, "waypoint_highest", Waypoint_GetHighest());
+
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        if (Creature_IsAIObjectSpent(Item_Get(i))) {
+            JSONW_PUSH_VALUE(io, i);
+            JSONW_POP_AND_APPEND(io);
+        }
+    }
+    JSONW_POP_AND_SET_NZ(io, "spent_ai_markers");
     JSONW_POP_AND_SET(io, "misc");
 
     JSONW_WRITE(io, "level_title", level->title != nullptr ? level->title : "");

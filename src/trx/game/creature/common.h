@@ -3,6 +3,8 @@
 #include <trx/game/collision.h>
 #include <trx/game/creature/types.h>
 
+#define AI_OBJECT_FLAGS_SPENT 255
+
 void Creature_Initialise(int16_t item_num);
 bool Creature_Activate(int16_t item_num);
 void Creature_AIInfo(ITEM *item, AI_INFO *info);
@@ -66,3 +68,30 @@ bool Creature_Shoot(
 
 int16_t Creature_AIGuard(CREATURE *creature);
 void Creature_GetAITarget(CREATURE *creature);
+
+// The AI object a TR4 level marks with this OCB, or nullptr where it places
+// none. Where a level places several with the same OCB, the last one answers.
+ITEM *Creature_FindAIObjectByOCB(int32_t ocb);
+
+// The AI object a creature walks to: one of the given object, carrying the
+// given OCB, still placed, and in a ground zone the creature can reach. Points
+// the creature's enemy at it and hands it back, or leaves the enemy alone and
+// answers nullptr where the level places none.
+//
+// TR1-3 match an AI object by the tag in its rotation; TR4 matches by the OCB.
+ITEM *Creature_FindAITargetObject(
+    CREATURE *creature, OBJECT_ID object_id, int32_t ocb);
+
+// The flags word the level gave an AI object, which TR4 uses as a mode rather
+// than as the bitfield an item's own flags are. Anything that is not an AI
+// object answers 0, because a creature's enemy is as often Lara or a live
+// item, and their flags mean something else entirely. A spent one answers 255,
+// the value the original writes over its flags with.
+int32_t Creature_GetAIObjectFlags(const ITEM *item);
+
+// Whether an AI object has been used up, so the search passes over it. The
+// original says so by writing over the object's own flags word, which is level
+// data rather than somewhere to keep a latch.
+bool Creature_IsAIObjectSpent(const ITEM *item);
+void Creature_SetAIObjectSpent(const ITEM *item);
+void Creature_ResetAIObjectsSpent(void);
