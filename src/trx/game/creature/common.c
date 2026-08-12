@@ -7,16 +7,20 @@
 #include <trx/game/creature.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/items/carrier.h>
+#include <trx/game/items/const.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/objects/creatures/skidoo_driver.h>
 #include <trx/game/objects/creatures/tribe_boss.h>
+#include <trx/game/objects/property.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
 #include <trx/version.h>
+
+#include <string.h>
 
 // clang-format off
 #define M_FLOAT_SPEED      32
@@ -48,6 +52,11 @@ static const LARA_TRX_STATE m_CrouchShiftStates[] = {
     LS_TRX_INVALID, // sentinel
     // clang-format on
 };
+
+// One bit per item, which is how an AI object says it has been used up. Kept
+// beside the search rather than on the item: nothing else in the engine has
+// any use for it.
+static uint64_t m_AIObjectSpent[(MAX_ITEMS + 63) / 64] = {};
 
 static bool M_TestSwitchOrKill(
     const int16_t item_num, const OBJECT_ID target_id)
@@ -241,6 +250,26 @@ static void M_Kill(ITEM *const item)
 {
     Item_TakeDamage(
         item, item->hit_points, IDF_NO_HIT_STATUS | IDF_NO_KILL_STATS, nullptr);
+}
+
+// Whether an object is one of the markers a level places to steer its
+// creatures, rather than something that lives in the world.
+static bool M_IsAIObject(const OBJECT_ID object_id)
+{
+    switch (object_id) {
+    case O_AI_AMBUSH:
+    case O_AI_GUARD:
+    case O_AI_FOLLOW:
+    case O_AI_PATROL_1:
+    case O_AI_PATROL_2:
+    case O_AI_MODIFY:
+    case O_AI_X1:
+    case O_AI_X2:
+    case O_AI_X3:
+        return true;
+    default:
+        return false;
+    }
 }
 
 static bool M_SameZone(const CREATURE *const creature, ITEM *const target_item)
@@ -1512,6 +1541,81 @@ int16_t Creature_AIGuard(CREATURE *const creature)
         return DEG_90;
     }
     return 0;
+}
+
+int32_t Creature_GetAIObjectFlags(const ITEM *const item)
+{
+    if (item == nullptr || !M_IsAIObject(item->object_id)) {
+        return 0;
+    }
+    if (Creature_IsAIObjectSpent(item)) {
+        return AI_OBJECT_FLAGS_SPENT;
+    }
+    return item->init_flags;
+}
+
+bool Creature_IsAIObjectSpent(const ITEM *const item)
+{
+    const int16_t item_num = Item_GetIndex(item);
+    if (item_num < 0 || item_num >= MAX_ITEMS) {
+        return false;
+    }
+    return (m_AIObjectSpent[item_num / 64] & (1ull << (item_num % 64))) != 0;
+}
+
+void Creature_SetAIObjectSpent(const ITEM *const item)
+{
+    const int16_t item_num = Item_GetIndex(item);
+    if (item_num < 0 || item_num >= MAX_ITEMS) {
+        return;
+    }
+    m_AIObjectSpent[item_num / 64] |= 1ull << (item_num % 64);
+}
+
+void Creature_ResetAIObjectsSpent(void)
+{
+    memset(m_AIObjectSpent, 0, sizeof(m_AIObjectSpent));
+}
+
+ITEM *Creature_FindAITargetObject(
+    CREATURE *const creature, const OBJECT_ID object_id, const int32_t ocb)
+{
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        ITEM *const target = Item_Get(i);
+        if (target->object_id != object_id || target->room_num == NO_ROOM
+            || Creature_IsAIObjectSpent(target)) {
+            continue;
+        }
+        TRX_VALUE value;
+        if (!ObjectProperty_GetItemValue(target, "ocb", &value)
+            || value.as_int != ocb) {
+            continue;
+        }
+        // A marker it cannot walk to is no use to it.
+        if (!M_SameZone(creature, target)) {
+            continue;
+        }
+        creature->enemy = target;
+        return target;
+    }
+    return nullptr;
+}
+
+ITEM *Creature_FindAIObjectByOCB(const int32_t ocb)
+{
+    ITEM *match = nullptr;
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        ITEM *const item = Item_Get(i);
+        if (item->room_num == NO_ROOM || !M_IsAIObject(item->object_id)) {
+            continue;
+        }
+        TRX_VALUE value;
+        if (ObjectProperty_GetItemValue(item, "ocb", &value)
+            && value.as_int == ocb && !Creature_IsAIObjectSpent(item)) {
+            match = item;
+        }
+    }
+    return match;
 }
 
 void Creature_GetAITarget(CREATURE *const creature)

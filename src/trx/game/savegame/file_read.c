@@ -1320,6 +1320,20 @@ RESULT SG_File_LoadMisc(JSON_READ_IO *const io)
     }
 
     {
+        // Introduced in TRX 1.11
+        if (JSON_ReadIO_HasKey(io, "spent_ai_markers")) {
+            MUST(JSON_PUSH(io, "spent_ai_markers"));
+            const size_t count = JSON_ARRAY_LEN(io);
+            for (size_t i = 0; i < count; i++) {
+                int32_t item_num = NO_ITEM;
+                MUST(JSON_READ_A(io, i, &item_num));
+                Creature_SetAIObjectSpent(Item_Get(item_num));
+            }
+            MUST(JSON_POP(io));
+        }
+    }
+
+    {
         const GF_LEVEL *const current_level = Game_GetCurrentLevel();
         RESUME_INFO *const resume = SG_Resume_GetEntry(current_level);
         resume->stats.death_count = -1;
