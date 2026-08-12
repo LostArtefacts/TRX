@@ -1,5 +1,11 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.10...develop) - ××××-××-××
 
+**Developer console**
+- Changed the `/flip` console command to take a flip group, so `/flip 3` moves that group alone while `/flip` on its own moves them all
+
+**TR4**
+- Changed a flip to move the group of rooms the trigger names, rather than every flip room in the level
+
 ## [1.10](https://github.com/LostArtefacts/TRX/compare/trx-1.9.3...trx-1.10) - 2026-08-12
 Showcase: https://youtu.be/DKpqz_Yum6o
 

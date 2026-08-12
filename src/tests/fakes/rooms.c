@@ -101,13 +101,18 @@ bool Room_PointInside(const ROOM *const room, const XYZ_32 point)
     return point.x >= 0;
 }
 
-void Room_FlipMap(void)
+void Room_FlipMap(const int32_t group)
 {
-    FAKE_RECORD("flip_map");
+    FAKE_RECORD("flip_map", FV(group));
     m_FlipStatus = !m_FlipStatus;
 }
 
 bool Room_GetFlipStatus(void)
+{
+    return m_FlipStatus;
+}
+
+bool Room_GetFlipGroupStatus(const int32_t group)
 {
     return m_FlipStatus;
 }
