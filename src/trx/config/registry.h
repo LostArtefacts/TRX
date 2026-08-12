@@ -4,8 +4,8 @@
 
 #include <trx/config/option.h>
 
-// Adds an option and gives it its starting value: its default, then whatever
-// the settings file held for it, then whatever the game flow enforces or hides,
+// Adds an option and gives it its starting value: its default, then the value
+// the settings file held for it, then the one the game flow enforces or hides,
 // then held to its own bounds.
 //
 // The settings file is kept after the read, so this is the only thing that has
@@ -20,7 +20,7 @@
 CONFIG_OPTION *Config_Register(const CONFIG_OPTION_DESC *desc);
 
 // Registers the options this game's map*.def names, each holding its default,
-// and drops whatever was registered before: a different game is a different set
+// and drops the options registered before: a different game is a different set
 // of settings.
 void Config_RegisterBuiltInOptions(void);
 
@@ -42,8 +42,8 @@ CONFIG_OPTION *Config_FindOptionByMirror(const void *mirror);
 // lifetime at once.
 int32_t Config_GetGeneration(void);
 
-// Drops every hold and the player's value underneath it, leaving whatever the
-// topmost hold last applied as the value in force. Nothing is put back: this is
+// Drops every hold and the player's value underneath it, leaving the value the
+// topmost hold last applied as the one in force. Nothing is put back: this is
 // for a config about to be read, where what the file says is what the option
 // ends up holding.
 //

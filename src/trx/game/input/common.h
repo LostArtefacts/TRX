@@ -30,9 +30,9 @@ extern INPUT_STATE g_OldInputDB;
 
 void Input_Update(void);
 
-// Ignores the given role until the player lets go of it. Whatever acted on the
-// press keeps it: it reads as unpressed everywhere else, and does not debounce
-// again while the key is down.
+// Ignores the given role until the player lets go of it. The caller that acted
+// on the press keeps it: it reads as unpressed everywhere else, and does not
+// debounce again while the key is down.
 void Input_HoldOffRole(INPUT_ROLE role);
 
 // Ignores every role a scene can be skipped with until the player lets go, so

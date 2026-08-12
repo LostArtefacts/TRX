@@ -35,6 +35,12 @@ repos:
     language: python
     files: \.h$
 
+  - id: lint-dismissive-words
+    name: No dismissive words
+    entry: tools/lint/checks/dismissive_words
+    language: python
+    files: \.(c|h)$
+
   - id: lint-no-stdbool
     name: No stdbool.h
     entry: tools/lint/checks/no_stdbool
@@ -178,6 +184,12 @@ repos:
 
 - repo: local
   hooks:
+  - id: commit-msg-dismissive-words
+    name: No dismissive words in commit messages
+    entry: tools/lint/checks/dismissive_words
+    language: python
+    stages: [commit-msg]
+
   - id: commit-msg-50-72
     name: Commit message 50/72 rule
     entry: python3 tools/check_commit_msg

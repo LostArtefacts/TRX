@@ -12,7 +12,7 @@ bool Lara_Skin_IsDefaultType(void);
 void Lara_Skin_SetType(LARA_SKIN_TYPE skin_type);
 void Lara_Skin_ApplyOutfit(void);
 
-// Put another mesh on one of Lara's own, in place of whatever her outfit gives
+// Put another mesh on one of Lara's own, in place of the one her outfit gives
 // her there. It outlives an outfit change, because applying an outfit reads it,
 // which is what lets a level dress her from its own geometry - TR4's Angkor Wat
 // carries the torso young Lara wears before she picks up her backpack. nullptr

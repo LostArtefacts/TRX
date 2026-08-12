@@ -272,7 +272,7 @@ static bool M_BuildFilterGraph(AUDIO_DECODER *const decoder)
     return true;
 }
 
-// Drops whatever the stretcher holds, which a seek makes stale.
+// Drops the samples the stretcher holds, which a seek makes stale.
 static void M_RebuildFilterGraph(AUDIO_DECODER *const decoder)
 {
     if (decoder->filter_graph == nullptr) {
@@ -323,7 +323,7 @@ static void M_Filter(
     }
 }
 
-// Pushes whatever the stretcher is still holding through to the sink.
+// Pushes the samples the stretcher still holds through to the sink.
 static void M_FlushFilter(AUDIO_DECODER *const decoder)
 {
     if (decoder->filter_graph == nullptr) {
@@ -601,7 +601,7 @@ int32_t AudioDecoder_Read(AUDIO_DECODER *const decoder, const float **const out)
         if (error_code != AVERROR_EOF) {
             LOG_ERROR("Error while reading audio: %s", av_err2str(error_code));
         }
-        // let the codec hand back whatever it was still holding
+        // let the codec hand back the frames it was still holding
         avcodec_send_packet(decoder->codec_ctx, nullptr);
         M_Drain(decoder);
         M_FlushFilter(decoder);

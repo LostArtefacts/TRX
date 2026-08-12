@@ -377,8 +377,8 @@ static void M_FloorDataEdits(
         const uint16_t z = VFile_ReadU16(injection->fp);
         const int32_t fd_edit_count = VFile_ReadS32(injection->fp);
 
-        // Verify that the given room and coordinates are accurate.
-        // Individual FD functions must check that sector is actually set.
+        // Verify that the given room and coordinates are accurate. Individual
+        // FD functions must check that sector is set.
         const ROOM *room = nullptr;
         SECTOR *sector = nullptr;
         if (room_num < 0 || room_num >= Room_GetCount()) {

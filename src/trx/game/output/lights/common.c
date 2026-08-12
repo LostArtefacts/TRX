@@ -461,8 +461,8 @@ void Output_TriggerFXFogBulb(
     const XYZ_32 pos, const int32_t fx_rad, const int32_t density,
     const RGB_888 color)
 {
-    // The OG triggers these for underwater flares and the like, which no
-    // other game has.
+    // The OG triggers these for underwater flares and shimmer, which no other
+    // game has.
     if (g_TRVersion != 4) {
         return;
     }

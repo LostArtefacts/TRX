@@ -331,8 +331,8 @@ TEST(healing_between_levels_spares_the_level_she_is_arriving_in)
     SG_Resume_ApplyRulesToEntry(&m_MainLevels[M_SECOND]);
     CHECK_EQ_INT(entry->lara_hitpoints, 320);
 
-    // The first level is where a new game begins, so it is filled up whatever
-    // the setting says.
+    // The first level is where a new game begins, so it is filled up no matter
+    // what the setting says.
     SG_Resume_ApplyRulesToEntry(&m_MainLevels[M_FIRST]);
     CHECK_EQ_INT(
         SG_Resume_GetEntry(&m_MainLevels[M_FIRST])->lara_hitpoints, 1000);

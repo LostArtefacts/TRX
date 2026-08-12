@@ -34,10 +34,10 @@ static void M_CopyValue(TRX_VALUE *const dst, const TRX_VALUE *const src)
     }
 }
 
-// Brings the carrier down to what the option's storage can actually hold, so
-// that a 0.8 read from the file and a 0.8f written in map.def are the same
-// value afterwards. Without it every float option would read as changed from
-// its default the moment the file was read.
+// Brings the carrier down to what the option's storage can hold, so that a 0.8
+// read from the file and a 0.8f written in map.def are the same value
+// afterwards. Without it every float option would read as changed from its
+// default the moment the file was read.
 //
 // False where the storage cannot represent the value at all. The buffer is
 // aligned as the carrier is, since the write goes through the storage type's
@@ -76,9 +76,9 @@ static void M_WriteMirror(const CONFIG_OPTION *const option)
     Value_WritePtr(option->value.type, option->mirror, &option->value);
 }
 
-// Puts a value into the option itself, whatever the reason. Every write lands
-// here, so this is the one place that keeps g_Config in step and the one that
-// says an option moved.
+// Puts a value into the option itself, no matter what asked for it. Every write
+// lands here, so this is the one place that keeps g_Config in step and the one
+// that says an option moved.
 static void M_Apply(
     CONFIG_OPTION *const option, const TRX_VALUE *const value,
     const CONFIG_WRITE_KIND kind)
@@ -164,9 +164,9 @@ void Config_Option_WriteAs(
         M_CopyValue(&copy, value);
         M_FreeValue(&hold->value);
         hold->value = copy;
-        // A hold lives for as long as whatever put it there and no longer, so
-        // what lands on one is never the file's to keep: base_value, which is
-        // what gets written, has not moved.
+        // A hold lives for as long as the game flow, script or demo that put it
+        // there, so what lands on one is never the file's to keep: base_value,
+        // which is what gets written, has not moved.
         M_Apply(
             option, value,
             kind == CONFIG_WRITE_PERSIST ? CONFIG_WRITE_TRANSIENT : kind);

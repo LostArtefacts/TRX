@@ -153,7 +153,7 @@ static int M_L_AssaultFinish(lua_State *const L)
 // trxc.assault.is_running([track]) -> bool
 //
 // No availability check: asking whether a timer runs is a fair question outside
-// a gym level, and the answer there is simply false.
+// a gym level, and the answer there is false.
 static int M_L_AssaultIsRunning(lua_State *const L)
 {
     lua_pushboolean(L, Gym_TrackManager_IsTimerActive(M_GetTrack(L)));

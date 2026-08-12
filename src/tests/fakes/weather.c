@@ -1,6 +1,6 @@
 // The weather as the two variables FX_Weather keeps: what falls, and how
 // heavily. The clamp on the severity is the engine's, so a test sees the range
-// a script really gets.
+// a script gets.
 
 #include <harness/fake_calls.h>
 

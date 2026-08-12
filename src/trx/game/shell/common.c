@@ -37,9 +37,9 @@ static void M_ShowFatalError(
 {
     LOG_ERROR("%s", log_message);
     if (M_IsInteractive()) {
-        // The dialog is placed over its parent window. Until the game window
-        // is shown, it is still hidden at whatever position the config named,
-        // so the dialog is better off centered on the screen instead.
+        // The dialog is placed over its parent window. Until the game window is
+        // shown, it is still hidden at the position the config named, so the
+        // dialog is better off centered on the screen instead.
         SDL_Window *window = Shell_GetWindow();
         if (window != nullptr
             && (SDL_GetWindowFlags(window) & SDL_WINDOW_SHOWN) == 0) {

@@ -82,9 +82,9 @@ CLIP Output_CheckBoundsClip(const BOUNDS_16 *const bounds)
     y_max += vp.h / 2;
 
     // The corners left out above are the ones that would have widened the
-    // rectangle, so what remains is smaller than the box really covers and
-    // cannot be rejected on. It can sit off to one side while the box still
-    // crosses the view.
+    // rectangle, so what remains is smaller than the box covers and cannot be
+    // rejected on. It can sit off to one side while the box still crosses the
+    // view.
     if (num_z < 8) {
         return CLIP_PARTIALLY_VISIBLE;
     }

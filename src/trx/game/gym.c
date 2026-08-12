@@ -318,7 +318,7 @@ static void M_LoadAssaultSection(const JSON_OBJECT *const obj)
 static void M_SaveAssaultSection(JSON_OBJECT *const obj)
 {
     // A game with no assault course has nothing to say here, and saying it
-    // would drop whatever the game that does have one left behind.
+    // would drop the records the game that does have one left behind.
     if (Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT)) {
         M_SaveStats(obj, &m_AssaultStats);
     }

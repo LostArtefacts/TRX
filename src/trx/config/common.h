@@ -46,8 +46,8 @@ bool Config_Change_HasMirror(const CONFIG_CHANGE *change, const void *mirror);
 const char *Config_ResolveOptionName(const char *option_name);
 
 // Writes the setting g_Config keeps at `mirror`, which is the only way to write
-// one: g_Config itself is const. The value is taken in whatever shape the
-// caller's own expression had, and the option says what it means.
+// one: g_Config itself is const. The value is taken in the shape the caller's
+// own expression had, and the option says what it means.
 bool Config_SetValue(const void *mirror, TRX_VALUE value);
 
 // Holds and releases the setting g_Config keeps at `mirror`. The value is taken

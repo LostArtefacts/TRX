@@ -1,5 +1,5 @@
 // The console overlay, reduced to the last line written to it, plus the verbose
-// flag - which is the only engine state trx.console.eval actually manipulates.
+// flag - which is the only engine state trx.console.eval manipulates.
 
 #include <fakes/console.h>
 

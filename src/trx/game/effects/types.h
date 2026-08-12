@@ -25,7 +25,7 @@ typedef struct {
             XYZ_16 rot;
         } result, prev;
         // Set until the effect has lived through a whole frame, so that it is
-        // not interpolated from whatever the recycled slot last held.
+        // not interpolated from the effect the recycled slot last held.
         bool is_new;
     } interp;
 } EFFECT;

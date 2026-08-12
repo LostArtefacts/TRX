@@ -174,7 +174,7 @@ void Level_Section_AppendObjectMeshes(
 
     // Savegames identify meshes by their file pointer values divided by 2.
     // (Historically, meshes were stored in int16_t[] arrays, so the so-called
-    // "pointers" are really just array indices into that layout.)
+    // "pointers" are array indices into that layout.)
     //
     // Original level meshes work fine under this scheme, but injected meshes
     // are different, as they come from separate VFiles and bring their own

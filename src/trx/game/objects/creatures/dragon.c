@@ -192,10 +192,10 @@ static void M_MarkDragonDead(ITEM *const dragon_back_item)
     }
 
     // Allow drops to occur at the beginning of the cinematic camera for a
-    // better window to avoid seeing the items spawn. Carrier_TestItemDrops
-    // only drops for a finished item, so force that phase and restore it.
-    // A raw write, not Item_SetFinished: the value never actually changes
-    // across the call, so nothing should observe the momentary flip.
+    // better window to avoid seeing the items spawn. Carrier_TestItemDrops only
+    // drops for a finished item, so force that phase and restore it. A raw
+    // write, not Item_SetFinished: the value never changes across the call, so
+    // nothing should observe the momentary flip.
     const bool was_finished = dragon_back_item->is_finished;
     dragon_back_item->is_finished = true;
     Carrier_TestItemDrops(Item_GetIndex(dragon_back_item));

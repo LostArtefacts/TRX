@@ -112,8 +112,8 @@ typedef struct {
 
 // The key naming which enum an option's values come from: for TVT_ENUM the
 // EnumMap name, and for TVT_DYNAMIC_ENUM the option's own address, which is the
-// token its values are registered under - so whatever seeds those values has to
-// key them on this too. Null for a type that is not an enum.
+// token its values are registered under - so the code that seeds those values
+// has to key them on this too. Null for a type that is not an enum.
 //
 // This is what the value parse, format and JSON calls take alongside the type.
 const void *Config_Option_GetEnumKey(const CONFIG_OPTION *option);
@@ -127,7 +127,7 @@ const void *Config_Option_GetEnumKey(const CONFIG_OPTION *option);
 // written at all is the caller's to decide - see Config_Option_IsHeld.
 //
 // The value is taken by copy - a string is duplicated and the option owns it -
-// so the caller keeps whatever it passed.
+// so the caller keeps the value it passed.
 void Config_Option_Write(CONFIG_OPTION *option, const TRX_VALUE *value);
 
 // Holds the option to the bounds it declared. A value outside them is brought

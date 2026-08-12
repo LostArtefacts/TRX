@@ -22,9 +22,9 @@ static void M_HandleQuit(void)
 
 static void M_HandleKeyDown(const SDL_Event *const event)
 {
-    // NOTE: Opening the console normally would get handled by Input_Update,
-    // but by the time Input_Update gets ran, we may already have lost some
-    // keypresses if the player types really fast, so we need to react sooner.
+    // NOTE: Opening the console normally would get handled by Input_Update, but
+    // by the time Input_Update gets ran, we may already have lost some
+    // keypresses if the player types fast, so we need to react sooner.
     if (g_Config.gameplay.enable_console && !Console_IsOpened()
         && !Input_IsInListenMode()
         && Input_IsPressedEx(

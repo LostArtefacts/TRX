@@ -532,7 +532,7 @@ static void M_Init(void)
     }
     // allow specific engines to re-assign default bindings
     M_HandleBuiltInDefaults();
-    // then load actually defined default bindings into slot 0
+    // then load the defined default bindings into slot 0
     for (int32_t i = 0; m_BuiltinLayout[i].role != (INPUT_ROLE)-1; i++) {
         const BUILTIN_KEYBOARD_LAYOUT *const builtin = &m_BuiltinLayout[i];
         m_Layout[INPUT_LAYOUT_DEFAULT][builtin->role].slots[0] = builtin->bind;

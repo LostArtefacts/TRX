@@ -555,8 +555,8 @@ static void M_Create(lua_State *const L)
 }
 
 // A ref names a slot in the registry of the state that is going, and the next
-// state numbers its own from scratch. Kept, it would name whatever landed
-// there.
+// state numbers its own from scratch. Kept, it would name the slot's next
+// occupant.
 static void M_Shutdown(void)
 {
     for (int32_t i = 0; m_Watchers != nullptr && i < m_Watchers->count; i++) {

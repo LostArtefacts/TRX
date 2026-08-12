@@ -29,7 +29,7 @@
     // into huge values, so the whole mesh explodes. NVIDIA, Intel and all
     // post-GCN AMD GPUs fixed the bug.
     //
-    // To deal with this, we simply pack our data to increments of 4.
+    // To deal with this, we pack our data to increments of 4.
     #define OUTPUT_USHORT uint32_t
     #define OUTPUT_USHORT_GL GL_UNSIGNED_INT
     #define OUTPUT_SHORT int32_t

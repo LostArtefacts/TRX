@@ -4,7 +4,7 @@
 // `fake.fire()` calls the same LUA_FireEvent* entrypoints the engine calls,
 // and flip effects go through the same ItemAction interceptor seam that
 // floor_data.c and the animation-command paths fire through. That is the point:
-// it pins the declared callback arguments against what C actually pushes.
+// it pins the declared callback arguments against what C pushes.
 
 #include <harness/fake_calls.h>
 #include <harness/lua_surface.h>
