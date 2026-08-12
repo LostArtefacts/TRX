@@ -21,6 +21,7 @@
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
+#include <trx/game/output/overlay.h>
 #include <trx/game/rooms.h>
 #include <trx/game/viewport.h>
 #include <trx/version.h>
@@ -281,6 +282,9 @@ static bool M_Begin(const int32_t num)
     if (info->audio_track != -1) {
         Music_Play_Direct((MUSIC_ID)info->audio_track, MPM_ONCE);
     }
+
+    Output_Overlay_SetLetterbox(0.0f);
+    Output_Overlay_SetFade(0.0f);
 
     Fader_InitTo(&m_State.fader, 1.0f, 0.0f, M_FADE_DURATION);
     m_State.phase = M_PHASE_PLAYING;

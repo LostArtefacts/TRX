@@ -16,6 +16,7 @@ void Game_Draw(const bool draw_overlay)
         Overlay_DrawGameInfo();
     }
     CutSeq_DrawOverlay();
+    Output_Overlay_DrawLetterbox();
     SceneCompositor_Flush();
     if (g_Config.visuals.enable_reflections) {
         Output_Textures_UpdateEnvironmentMap();
