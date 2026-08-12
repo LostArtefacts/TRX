@@ -787,6 +787,10 @@
             "LOOK_MODE_RESTRICTED": "\\{review}Restreint",
             "LOOK_MODE_UNRESTRICTED": "\\{review}Illimité",
         },
+        "M16_AIM_MODE": {
+            "M16_AIM_MODE_ENHANCED": "\\{review}Amélioré",
+            "M16_AIM_MODE_ORIGINAL": "\\{review}Original",
+        },
         "MUSIC_LOAD_CONDITION": {
             "MUSIC_LOAD_CONDITION_ALWAYS": "Tout",
             "MUSIC_LOAD_CONDITION_NEVER": "Aucune",
@@ -1362,6 +1366,10 @@
         "gameplay.look_mode": {
             "title": "\\{review}Mode regard",
             "description": "\\{review}Contrôle quand Lara peut utiliser la vue.\n\n- Restreint : le regard est autorisé uniquement à l’arrêt, jamais sous l’eau.\n- Amélioré : le regard est autorisé pendant la plupart des animations, sauf certaines comme pousser un bloc.\n- Illimité : le regard est autorisé à tout moment lorsque Lara est contrôlable.\n\nRestreint correspond au TR1 d'origine, Amélioré aux TR2+ d'origine.",
+        },
+        "gameplay.m16_aim_mode": {
+            "title": "\\{review}Variantes de visée du M16/MP5",
+            "description": "\\{review}Détermine quand Lara épaule le M16/MP5 au lieu de tirer à la hanche.\n\n- Original : Lara épaule l'arme dès qu'elle s'arrête.\n- Amélioré : Lara continue de tirer à la hanche tant que la touche Action est maintenue et n'épaule l'arme que si elle commence à tirer à l'arrêt. Avec la correction de précision activée, le tir à la hanche est moins précis et inflige moins de dégâts par balle.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "\\{review}Nombre d'emplacements de sauvegarde rapide",

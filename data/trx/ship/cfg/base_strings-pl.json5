@@ -787,6 +787,10 @@
             "LOOK_MODE_RESTRICTED": "Ograniczony",
             "LOOK_MODE_UNRESTRICTED": "Nieograniczony",
         },
+        "M16_AIM_MODE": {
+            "M16_AIM_MODE_ENHANCED": "\\{review}Rozszerzony",
+            "M16_AIM_MODE_ORIGINAL": "\\{review}Klasyczny",
+        },
         "MUSIC_LOAD_CONDITION": {
             "MUSIC_LOAD_CONDITION_ALWAYS": "Zawsze",
             "MUSIC_LOAD_CONDITION_NEVER": "Nigdy",
@@ -1362,6 +1366,10 @@
         "gameplay.look_mode": {
             "title": "Tryb rozglądania",
             "description": "\\{review}Określa, kiedy Lara może się rozglądać.\n\n- Ograniczony: rozglądanie tylko w bezruchu, nigdy pod wodą.\n- Rozszerzony: rozglądanie dozwolone podczas większości animacji, z wyjątkiem np. pchania bloku.\n- Nieograniczony: rozglądanie zawsze dozwolone przy normalnym sterowaniu Larą.\n\nOgraniczony odpowiada oryginalnemu TR1, a Rozszerzony oryginalnym TR2+.",
+        },
+        "gameplay.m16_aim_mode": {
+            "title": "\\{review}Warianty celowania M16/MP5",
+            "description": "\\{review}Określa, kiedy Lara celuje z M16/MP5 z ramienia zamiast z biodra.\n\n- Klasyczny: Lara unosi broń do ramienia za każdym razem, gdy się zatrzyma.\n- Rozszerzony: Lara strzela dalej z biodra, dopóki przycisk Akcji jest wciśnięty, i unosi broń do ramienia tylko wtedy, gdy zaczyna strzelać w bezruchu. Przy włączonej poprawce celności strzał z biodra jest mniej celny i zadaje mniejsze obrażenia.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "Liczba slotów szybkiego zapisu",

@@ -45,6 +45,7 @@ X_UI_ROW(gameplay.enable_wading)
 
 X_UI_ROW(gameplay.target_mode)
 X_UI_ROW(gameplay.target_change_mode)
+X_UI_ROW(gameplay.m16_aim_mode)
 
 X_UI_ROW(gameplay.enable_inverted_look)
 X_UI_ROW(gameplay.camera_speed)
