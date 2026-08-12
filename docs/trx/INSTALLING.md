@@ -1272,6 +1272,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── lara_animations.bin
 │   │   │   ├── lara_outfits.bin
 │   │   │   └── sparks_gfx.bin
+│   │   ├── modules
+│   │   │   └── cutscenes.lua
 │   │   ├── scripts
 │   │   │   ├── alexhub2.lua
 │   │   │   ├── alexhub.lua
@@ -2630,6 +2632,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── lara_animations.bin
     │   │   │   │   ├── lara_outfits.bin
     │   │   │   │   └── sparks_gfx.bin
+    │   │   │   ├── modules
+    │   │   │   │   └── cutscenes.lua
     │   │   │   ├── scripts
     │   │   │   │   ├── alexhub2.lua
     │   │   │   │   ├── alexhub.lua
