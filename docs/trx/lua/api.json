@@ -6259,6 +6259,11 @@
       "order": 31
     },
     {
+      "description": "Module for how far along a level's own progression Lara has got.\n\nTR4 marks the points of a level with flip effects, and its guides read\nthem: Von Croy waits at a waypoint until Lara has reached it, says the\nline that belongs to it, and only then moves on. A level uses the same\nmarks to tell a first visit from a return.\n\nNothing about a waypoint is positional. It counts progress, and it lasts\nas long as the playthrough rather than the level, so it is saved with the\ngame.",
+      "name": "waypoints",
+      "order": 35
+    },
+    {
       "description": "What a weapon is, rather than what Lara has of it.\n\nNone of this differs between the inventory she carries and the one a level\nkeeps for her, so it belongs to neither: what she holds and how many shots she\nhas are `trx.inventory`.\n\nA weapon is shared by every copy of it. Changes last for the rest of the\nsession, so levels should restore any values they change when they end.",
       "name": "weapons",
       "order": 5,
@@ -6435,6 +6440,11 @@
       "base": 1,
       "description": "The secret's number, as the player counts them.",
       "path": "stats.SecretNum"
+    },
+    {
+      "base": 0,
+      "description": "A waypoint's number, as the flip effect that marks it names it.",
+      "path": "waypoints.Num"
     },
     {
       "base": 1,
@@ -6740,6 +6750,24 @@
       "path": "rules.carrier.inherit_facing",
       "type": "boolean",
       "writable": true
+    },
+    {
+      "description": "Where Lara has reached, or `nil` before she has reached anywhere. Setting\nit carries the furthest reached along with it where that is further on.",
+      "path": "waypoints.current",
+      "type": "waypoints.Num",
+      "writable": true
+    },
+    {
+      "description": "The pad Lara crossed this frame, or `nil` on any frame she crossed none.\n\nIt says where she is standing now rather than how far she has got, and\nit is meant to last the one frame: whoever sets it clears it again at the\nstart of the next, which is `nil` here.\n\nSetting it carries `trx.waypoints.current` along with it, but leaves\n`trx.waypoints.highest` alone.",
+      "path": "waypoints.pad",
+      "type": "waypoints.Num",
+      "writable": true
+    },
+    {
+      "description": "The furthest Lara has ever reached, or `nil` before she has reached\nanywhere. It never falls, so a level that lets her walk back can still\ntell how far she got.",
+      "path": "waypoints.highest",
+      "type": "waypoints.Num",
+      "writable": false
     },
     {
       "description": "Every weapon the engine knows, in the order it holds them. `UNARMED` is not one of them.",

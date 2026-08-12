@@ -328,6 +328,7 @@ unit_tests += {
   'engine': [
     'game/savegame/resume.c',
     'game/savegame/vars.c',
+    'game/waypoint.c',
     'core/memory.c',
   ],
 }

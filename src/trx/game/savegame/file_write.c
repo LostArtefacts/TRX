@@ -23,6 +23,7 @@
 #include <trx/game/rules.h>
 #include <trx/game/savegame.h>
 #include <trx/game/savegame/file.h>
+#include <trx/game/waypoint.h>
 #include <trx/version.h>
 
 static void M_WriteXYZ32(
@@ -692,6 +693,8 @@ void SG_File_DumpMisc(JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "rng_draw_seed", Random_GetDrawSeed());
     JSONW_WRITE(io, "weather_type", FX_Weather_GetWeather());
     JSONW_WRITE(io, "cutscenes_played", CutSeq_GetPlayedMask());
+    JSONW_WRITE(io, "waypoint", Waypoint_Get());
+    JSONW_WRITE(io, "waypoint_highest", Waypoint_GetHighest());
     JSONW_POP_AND_SET(io, "misc");
 
     JSONW_WRITE(io, "level_title", level->title != nullptr ? level->title : "");

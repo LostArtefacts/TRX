@@ -28,6 +28,7 @@
 #include <trx/game/savegame.h>
 #include <trx/game/savegame/file.h>
 #include <trx/game/stats.h>
+#include <trx/game/waypoint.h>
 #include <trx/version.h>
 
 #include <string.h>
@@ -1301,6 +1302,20 @@ RESULT SG_File_LoadMisc(JSON_READ_IO *const io)
         if (JSON_ReadIO_HasKey(io, "cutscenes_played")) {
             MUST(JSON_READ(io, "cutscenes_played", &cutscenes_played));
             CutSeq_SetPlayedMask(cutscenes_played);
+        }
+    }
+
+    {
+        // Introduced in TRX 1.11
+        int32_t waypoint = WAYPOINT_NONE;
+        if (JSON_ReadIO_HasKey(io, "waypoint")) {
+            MUST(JSON_READ(io, "waypoint", &waypoint));
+            Waypoint_Set(waypoint);
+        }
+        int32_t waypoint_highest = WAYPOINT_NONE;
+        if (JSON_ReadIO_HasKey(io, "waypoint_highest")) {
+            MUST(JSON_READ(io, "waypoint_highest", &waypoint_highest));
+            Waypoint_SetHighest(waypoint_highest);
         }
     }
 
