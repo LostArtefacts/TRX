@@ -40,13 +40,12 @@ static double M_GetHighPrecisionCounter(void)
     return (SDL_GetPerformanceCounter() - m_InitCounter) / (double)m_Frequency;
 }
 
-// Holds until the next frame is due by the real clock.
-static void M_WaitForFrame(void)
+// Holds until the given number of frames is due by the real clock.
+static void M_WaitForFrame(const double frames)
 {
     const Uint64 now = SDL_GetPerformanceCounter();
     if (m_LastCounter != 0) {
-        const double frame_ticks =
-            m_Frequency / (Clock_GetCurrentFPS() * Clock_GetSpeedMultiplier());
+        const double frame_ticks = frames * m_Frequency / Clock_GetCurrentFPS();
         const double elapsed = (double)(now - m_LastCounter);
         if (elapsed < frame_ticks) {
             SDL_Delay(
@@ -140,11 +139,16 @@ void Clock_SyncTick(void)
 int32_t Clock_WaitTick(void)
 {
     if (m_IsFixedFPS) {
-        m_FixedOffset += m_FixedFrameTime;
+        // Above 1x the extra speed comes from more frames per drawn one,
+        // below it from waiting longer for the single frame. Waiting alone
+        // cannot outrun the cost of drawing.
+        const double speed = Clock_GetSpeedMultiplier();
+        const int32_t frames = speed > 1.0 ? (int32_t)speed : 1;
+        m_FixedOffset += frames * m_FixedFrameTime;
         if (!m_Disabled) {
-            M_WaitForFrame();
+            M_WaitForFrame(frames / speed);
         }
-        return 1;
+        return frames;
     }
     if (m_Disabled) {
         return 1;
