@@ -698,6 +698,50 @@ int16_t Creature_Turn(ITEM *const item, int16_t max_turn)
     return angle;
 }
 
+void Creature_TurnTo(
+    ITEM *const item, const int16_t angle, const int16_t max_turn)
+{
+    if (angle > max_turn) {
+        item->rot.y += max_turn;
+    } else if (angle < -max_turn) {
+        item->rot.y -= max_turn;
+    } else {
+        item->rot.y += angle;
+    }
+}
+
+bool Creature_MoveTo(
+    ITEM *const item, const ITEM *const target, const int32_t velocity,
+    const int16_t angle, const int16_t max_turn)
+{
+    const XYZ_32 delta = {
+        .x = target->pos.x - item->pos.x,
+        .y = target->pos.y - item->pos.y,
+        .z = target->pos.z - item->pos.z,
+    };
+    const int32_t dist =
+        Math_Sqrt(SQUARE(delta.x) + SQUARE(delta.y) + SQUARE(delta.z));
+
+    if (dist != 0 && velocity < dist) {
+        item->pos.x += velocity * delta.x / dist;
+        item->pos.y += velocity * delta.y / dist;
+        item->pos.z += velocity * delta.z / dist;
+    } else {
+        item->pos = target->pos;
+    }
+
+    if (angle > max_turn) {
+        item->rot.y += max_turn;
+    } else if (angle < -max_turn) {
+        item->rot.y -= max_turn;
+    } else {
+        item->rot.y = target->rot.y;
+    }
+
+    return item->pos.x == target->pos.x && item->pos.y == target->pos.y
+        && item->pos.z == target->pos.z && item->rot.y == target->rot.y;
+}
+
 void Creature_Tilt(ITEM *const item, int16_t angle)
 {
     angle = angle * 4 - item->rot.z;
