@@ -25,6 +25,9 @@ bool Shell_IsExiting(void);
 void Shell_SetIsFocused(bool is_focused);
 bool Shell_IsFocused(void);
 
+// Whether the game holds still because the window is not the one in front.
+bool Shell_ShouldPauseForFocusLoss(void);
+
 void Shell_RequestModSwitch(const char *mod_name);
 const char *Shell_GetPendingMod(void);
 void Shell_ClearPendingMod(void);

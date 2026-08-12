@@ -176,6 +176,7 @@
 
 **Recordings**
 - Added `skip start` and `skip end` events to recordings, which stop the drawing while the frames keep running, so a stretch passes as fast as the machine manages
+- Fixed a recording pausing along with the game when the window loses focus, which fires the rest of it into a game that is not running
 
 **Installer and mods**
 - Changed the installer to explain when it cannot download the files it needs, and to offer to try again (#6052)

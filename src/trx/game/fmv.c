@@ -271,8 +271,7 @@ static bool M_Play(const char *const file_name)
     while (video->is_playing) {
         Shell_ProcessEvents();
 
-        const bool focus_paused =
-            g_Config.gameplay.pause_on_focus_lost && !Shell_IsFocused();
+        const bool focus_paused = Shell_ShouldPauseForFocusLoss();
         Input_Update();
         Shell_ProcessInput();
 
