@@ -995,7 +995,7 @@ static int32_t M_SkidooDynamics(ITEM *const item)
     return anim;
 }
 
-static void M_AnimateQuadBike(
+static bool M_AnimateQuadBike(
     ITEM *const item, const int32_t hit_wall, const bool killed)
 {
     int16_t state;
@@ -1145,7 +1145,10 @@ static void M_AnimateQuadBike(
         lara_item->goal_anim_state = M_STATE_FALL_OFF;
         Lara_Kill();
         M_Explode(item);
+        return false;
     }
+
+    return true;
 }
 
 static bool M_UserControl(ITEM *item, int32_t height, int32_t *pitch)
@@ -1485,7 +1488,9 @@ bool QuadBike_Control(void)
 
         lara_item->pos = item->pos;
         lara_item->rot = item->rot;
-        M_AnimateQuadBike(item, hit_wall, killed);
+        if (!M_AnimateQuadBike(item, hit_wall, killed)) {
+            return false;
+        }
         Item_Animate(lara_item);
         Lara_Vehicle_SyncItemAnim();
         g_Camera.target_elevation = -5460;

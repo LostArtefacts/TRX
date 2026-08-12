@@ -86,6 +86,7 @@
 - Fixed Lara attempting to climb ladders from inside lifts (#5890)
 - Fixed Lara not getting killed by lifts if standing on top of one and the ceiling space becomes too low
 - Fixed the detonator box returning to its original position after loading a save (OG bug)
+- Fixed the game sometimes crashing when Lara rides a quad bike into deep water or a swamp
 
 **Weather and effects**
 - Added the ability to change how heavily the rain or snow falls, from Lua and with the `/weather` console command (#6080)
