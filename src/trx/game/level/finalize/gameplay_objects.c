@@ -1,5 +1,7 @@
+#include <trx/core/log.h>
 #include <trx/core/utils.h>
 #include <trx/game/anims.h>
+#include <trx/game/game_buf.h>
 #include <trx/game/inject.h>
 #include <trx/game/items.h>
 #include <trx/game/items/walkable.h>
@@ -14,6 +16,20 @@
 #include <trx/game/rooms.h>
 #include <trx/game/rope.h>
 #include <trx/version.h>
+
+// TR4's AI objects outlive the load: a guide reads them all level long, by the
+// OCB rather than by the ai_bits they also carry. A level parks one it has
+// finished with in room 255, which is the removed marker rather than a room.
+#define M_AI_OBJECT_NO_ROOM 255
+
+// A guide stands a quarter of a sector in front of the marker it walks to,
+// unless the marker asks otherwise. The original offsets the copy it makes of
+// the marker; the offset depends only on the marker's own facing and flags,
+// which never change, so it is applied to the marker itself.
+//
+// After the bits are assigned: those match a marker to a creature by position.
+#define M_AI_OBJECT_NO_NUDGE 0x20
+#define M_AI_OBJECT_NUDGE 256
 
 static uint8_t M_GetAIBit(const OBJECT_ID object_id)
 {
@@ -30,7 +46,70 @@ static uint8_t M_GetAIBit(const OBJECT_ID object_id)
     }
 }
 
-static void M_AssignTR123AIBits(const LEVEL_CONTEXT *const ctx)
+// TR4 stores its AI objects in a list of their own rather than among the
+// items. Turning them into items is what makes them the same thing they are in
+// TR1-3: a creature standing on one takes its ai_bits from it, and one placed
+// away from any creature stays behind as somewhere to walk to.
+static void M_MaterialiseTR4AIObjects(LEVEL_CONTEXT *const ctx)
+{
+    if (ctx->loader->layout != LEVEL_FORMAT_LAYOUT_TR4) {
+        return;
+    }
+
+    const LEVEL_CONTEXT_INFO *const info = &ctx->info;
+    for (int32_t i = 0; i < info->tr4.ai_item_count; i++) {
+        const LEVEL_TR4_AI_ITEM_INFO *const ai_item = &info->tr4.ai_items[i];
+        if (ai_item->room_num == M_AI_OBJECT_NO_ROOM) {
+            continue;
+        }
+
+        // A slot TRX has no catalog entry for is one nothing can be made of,
+        // and an item pointing at it is an item nothing can initialise.
+        const OBJECT_ID object_id = Object_FromGameID(ai_item->object_id);
+        if (object_id == NO_OBJECT) {
+            LOG_WARNING(
+                "Skipping AI object with unknown slot: %d", ai_item->object_id);
+            continue;
+        }
+
+        const int16_t item_num = Item_CreateLevelItem();
+        if (item_num == NO_ITEM) {
+            LOG_WARNING("No room left for the level's AI objects");
+            return;
+        }
+
+        ITEM *const item = Item_Get(item_num);
+        item->object_id = object_id;
+        item->room_num = ai_item->room_num;
+        item->pos = ai_item->pos;
+        item->rot.y = ai_item->y_rot;
+        item->box_num = ai_item->box_num;
+        item->init_flags = ai_item->flags;
+        ObjectProperty_SetItemValueRaw(
+            item, "ocb",
+            (TRX_VALUE) {
+                .type = TVT_S32,
+                .as_int = ai_item->ocb,
+            });
+    }
+}
+
+static void M_NudgeTR4AIObjects(const LEVEL_CONTEXT *const ctx)
+{
+    if (ctx->loader->layout != LEVEL_FORMAT_LAYOUT_TR4) {
+        return;
+    }
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        ITEM *const item = Item_Get(i);
+        if (item->room_num == NO_ROOM || M_GetAIBit(item->object_id) == 0
+            || (item->init_flags & M_AI_OBJECT_NO_NUDGE) != 0) {
+            continue;
+        }
+        item->pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, M_AI_OBJECT_NUDGE);
+    }
+}
+
+static void M_AssignAIBits(const LEVEL_CONTEXT *const ctx)
 {
     const int32_t item_count = Item_GetLevelCount();
     for (int32_t i = 0; i < item_count; i++) {
@@ -51,50 +130,15 @@ static void M_AssignTR123AIBits(const LEVEL_CONTEXT *const ctx)
                 && ai_item->pos.z == item->pos.z) {
                 item->ai_bits |= ai_bit;
                 item->ai_tag = ai_item->rot.y;
+                TRX_VALUE ocb;
+                if (ObjectProperty_GetItemValue(ai_item, "ocb", &ocb)) {
+                    item->ai_ocb = ocb.as_int;
+                }
                 Item_Destroy(ai_item_num);
                 ai_item->room_num = NO_ROOM;
             }
             ai_item_num = next_num;
         }
-    }
-}
-
-static void M_AssignTR4AIBits(const LEVEL_CONTEXT *const ctx)
-{
-    const LEVEL_CONTEXT_INFO *const info = &ctx->info;
-    const int32_t item_count = Item_GetLevelCount();
-    for (int32_t i = 0; i < item_count; i++) {
-        ITEM *const item = Item_Get(i);
-        const OBJECT *const obj = Object_Get(item->object_id);
-        if (!obj->intelligent || item->room_num == NO_ROOM) {
-            continue;
-        }
-
-        for (int32_t j = 0; j < info->tr4.ai_item_count; j++) {
-            const LEVEL_TR4_AI_ITEM_INFO *const ai_item =
-                &info->tr4.ai_items[j];
-            const OBJECT_ID ai_object_id =
-                Object_FromGameID(ai_item->object_id);
-            const uint8_t ai_bit = M_GetAIBit(ai_object_id);
-            if (ai_bit == 0 || (item->ai_bits & ai_bit) != 0
-                || ai_item->room_num != item->room_num
-                || ai_item->pos.x != item->pos.x
-                || ai_item->pos.z != item->pos.z) {
-                continue;
-            }
-
-            item->ai_bits |= ai_bit;
-            item->ai_tag = ai_item->y_rot;
-        }
-    }
-}
-
-static void M_AssignAIBits(const LEVEL_CONTEXT *const ctx)
-{
-    if (ctx->loader->game_version == 4) {
-        M_AssignTR4AIBits(ctx);
-    } else {
-        M_AssignTR123AIBits(ctx);
     }
 }
 
@@ -197,6 +241,8 @@ void Level_Finalize_LoadObjectsAndItems(LEVEL_CONTEXT *const ctx)
 
     Inject_ApplyProperties();
 
+    M_MaterialiseTR4AIObjects(ctx);
+
     const int32_t item_count = Item_GetLevelCount();
     for (int32_t i = 0; i < item_count; i++) {
         if (Item_Get(i)->room_num == NO_ROOM) {
@@ -209,6 +255,7 @@ void Level_Finalize_LoadObjectsAndItems(LEVEL_CONTEXT *const ctx)
     Level_Finalize_LoadWalkables(ctx);
 
     M_AssignAIBits(ctx);
+    M_NudgeTR4AIObjects(ctx);
     Lara_State_Initialise();
 }
 
