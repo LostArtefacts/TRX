@@ -1,6 +1,7 @@
 X_UI_ROW(audio.enable_music_in_menu)
 X_UI_ROW(audio.fix_secrets_killing_music)
 X_UI_ROW(audio.fix_speeches_killing_music)
+X_UI_ROW(audio.load_music_triggers)
 
 X_UI_ROW(audio.enable_music_in_inventory)
 X_UI_ROW(audio.enable_music_on_death)
