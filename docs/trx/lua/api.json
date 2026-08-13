@@ -3421,6 +3421,12 @@
         {
           "name": "num",
           "type": "cutscenes.Num"
+        },
+        {
+          "description": "Whether to fade the scene out before the first frame. Defaults to true. A cutscene that opens a level passes false: the original game holds the screen black rather than showing the level for a moment first, and the scene's own fade in follows either way.",
+          "name": "fade",
+          "optional": true,
+          "type": "boolean"
         }
       ],
       "path": "cutscenes.play"

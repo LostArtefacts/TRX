@@ -35,8 +35,10 @@ int32_t CutSeq_GetCurrent(void);
 // by, as the original engine does.
 int32_t CutSeq_GetFrame(void);
 
-// Fades out, then plays the cutscene.
-void CutSeq_Request(int32_t num);
+// Fades out, then plays the cutscene. A scene that opens a level asks not to
+// fade: the original game leaves the screen black rather than showing the
+// level for a moment first, and the scene's own fade in is what follows.
+void CutSeq_Request(int32_t num, bool fade_out);
 
 // Whether a cutscene trigger naming this number has already been answered.
 // The number need not be one the pak can play; see CUTSEQ_MAX_TRIGGERS.

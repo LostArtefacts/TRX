@@ -26,6 +26,9 @@
 - Added `trx.cutscenes.actor_count`, `trx.cutscenes.set_actor_visible()`, `trx.cutscenes.set_node_mesh()` and `trx.cutscenes.clear_node_mesh()`, for hiding an actor in the scene on screen or putting another object's mesh on one
 - Fixed creatures taking wrong routes where crossing to the next square needs a jump or a monkey swing
 
+**Lua**
+- Changed `trx.cutscenes.play()` to take whether to fade out first, so a scene that opens a level begins on the black screen the level loaded behind
+
 ## [1.10](https://github.com/LostArtefacts/TRX/compare/trx-1.9.3...trx-1.10) - 2026-08-12
 Showcase: https://youtu.be/DKpqz_Yum6o
 

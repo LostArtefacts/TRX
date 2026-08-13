@@ -27,6 +27,15 @@ api.define("cutscenes.play", {
     .. "playing or the game has no cutscene data.",
   params = {
     { name = "num", type = "cutscenes.Num" },
+    {
+      name = "fade",
+      type = "boolean",
+      optional = true,
+      description = "Whether to fade the scene out before the first frame. Defaults to true. "
+        .. "A cutscene that opens a level passes false: the original game holds the screen "
+        .. "black rather than showing the level for a moment first, and the scene's own fade "
+        .. "in follows either way.",
+    },
   },
   examples = { [[trx.cutscenes.play(28)]] },
   impl = raw.play,

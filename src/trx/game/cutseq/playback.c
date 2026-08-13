@@ -411,7 +411,7 @@ int32_t CutSeq_GetFrame(void)
     return CutSeq_IsPlaying() ? m_State.frame : M_NO_FRAME;
 }
 
-void CutSeq_Request(const int32_t num)
+void CutSeq_Request(const int32_t num, const bool fade_out)
 {
     // Lara is a cutscene's first actor, so a level that never placed her - a
     // title that only shows scenery - has nothing to play.
@@ -428,7 +428,13 @@ void CutSeq_Request(const int32_t num)
     }
     m_State.pending_num = num;
     m_State.phase = M_PHASE_FADE_OUT;
-    Fader_InitFromCurrent(&m_State.fader, 1.0f, M_FADE_DURATION);
+    if (fade_out) {
+        Fader_InitFromCurrent(&m_State.fader, 1.0f, M_FADE_DURATION);
+    } else {
+        // Black at once rather than over time, so the next tick begins the
+        // scene and M_Begin's own fade brings it in from there.
+        Fader_InitTo(&m_State.fader, 1.0f, 1.0f, 0.0f);
+    }
 }
 
 void CutSeq_Skip(void)
@@ -459,7 +465,7 @@ void CutSeq_HandleTrigger(const int32_t num)
     if (LUA_FireEventInt32(LUA_EVENT_CUTSCENE_TRIGGER, num)) {
         return;
     }
-    CutSeq_Request(num);
+    CutSeq_Request(num, true);
 }
 
 uint64_t CutSeq_GetPlayedMask(void)
