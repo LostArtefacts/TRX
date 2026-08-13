@@ -12,17 +12,18 @@ static void M_HandleFlipMap(
         return;
     }
 
+    const int32_t group = Room_GetFlipGroup(flip_slot);
     const FLIP_TRIGGER flip_trigger = {
         .from_switch = trigger->type == TT_SWITCH,
         .mask = trigger->mask,
         .one_shot = trigger->one_shot,
     };
     if (Room_TriggerFlipSlot(flip_slot, &flip_trigger)) {
-        if (!Room_GetFlipGroupStatus(flip_slot)) {
-            status->flip_group = flip_slot;
+        if (!Room_GetFlipGroupStatus(group)) {
+            status->flip_group = group;
         }
-    } else if (Room_GetFlipGroupStatus(flip_slot)) {
-        status->flip_group = flip_slot;
+    } else if (Room_GetFlipGroupStatus(group)) {
+        status->flip_group = group;
     }
 }
 
@@ -32,10 +33,11 @@ static void M_HandleFlipOn(
 {
     const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
     const FLIP_SLOT *const slot = Room_GetFlipSlot(flip_slot);
+    const int32_t group = Room_GetFlipGroup(flip_slot);
     status->flip_available = true;
 
-    if (slot->mask == TRIGGER_MASK_ALL && !Room_GetFlipGroupStatus(flip_slot)) {
-        status->flip_group = flip_slot;
+    if (slot->mask == TRIGGER_MASK_ALL && !Room_GetFlipGroupStatus(group)) {
+        status->flip_group = group;
     }
 }
 
@@ -45,10 +47,11 @@ static void M_HandleFlipOff(
 {
     const int16_t flip_slot = (int16_t)(intptr_t)cmd->parameter;
     const FLIP_SLOT *const slot = Room_GetFlipSlot(flip_slot);
+    const int32_t group = Room_GetFlipGroup(flip_slot);
     status->flip_available = true;
 
-    if (slot->mask == TRIGGER_MASK_ALL && Room_GetFlipGroupStatus(flip_slot)) {
-        status->flip_group = flip_slot;
+    if (slot->mask == TRIGGER_MASK_ALL && Room_GetFlipGroupStatus(group)) {
+        status->flip_group = group;
     }
 }
 
