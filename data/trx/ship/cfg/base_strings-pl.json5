@@ -932,7 +932,7 @@
             "description": "Ładuje wcześniej wyzwolone utwory muzyczne, tak aby jednorazowe ścieżki nie były odtwarzane ponownie.",
         },
         "audio.master_volume": {
-            "title": "\\{icon music} Głośność",
+            "title": "Głośność",
             "description": "Reguluje głośność wszystkich dźwięków w grze. Pozostałe ustawienia są względem tej głośności.",
         },
         "audio.music_load_condition": {
@@ -940,7 +940,7 @@
             "description": "Ładuje ścieżkę dźwiękową graną podczas zapisu gry.\n\n- Nigdy: restartuje dźwięki otoczenia od 0.\n- Tylko muzyka: przywraca utwory muzyczne.\n- Zawsze: przywraca także dźwięki otoczenia od momentu, w którym gracz dokonał zapisu.",
         },
         "audio.music_volume": {
-            "title": "Głośność muzyki",
+            "title": "\\{icon music} Głośność muzyki",
             "description": "Reguluje głośność muzyki.",
         },
         "audio.mute_out_of_focus": {

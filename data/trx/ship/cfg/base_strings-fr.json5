@@ -932,7 +932,7 @@
             "description": "Mémorise les musiques qui ont déjà été jouées, pour ne pas les répéter après un rechargement de partie.",
         },
         "audio.master_volume": {
-            "title": "\\{review}\\{icon music} Volume maître",
+            "title": "\\{review}Volume maître",
             "description": "\\{review}Ajuste le volume de tous les sons du jeu. Les autres réglages sont relatifs à ce volume.",
         },
         "audio.music_load_condition": {
@@ -940,7 +940,7 @@
             "description": "Restaure la lecture des pistes audio qui étaient en cours de lecture lors de la sauvegarde.\n- Aucune : ne restaure jamais la lecture au chargement.\n- Pistes musicales : reprend uniquement les pistes musicales (hors ambiance) au chargement.\n- Tout : restaure tout type de piste audio au chargement.",
         },
         "audio.music_volume": {
-            "title": "\\{review}Volume de la musique",
+            "title": "\\{review}\\{icon music} Volume de la musique",
             "description": "\\{review}Ajuste le volume de la musique.",
         },
         "audio.mute_out_of_focus": {

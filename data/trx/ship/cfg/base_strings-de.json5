@@ -932,7 +932,7 @@
             "description": "Lädt vorher getriggerte Musik, so dass Musik, die nur einmal spielen soll, nicht ein weiteres Mal abgespielt wird.",
         },
         "audio.master_volume": {
-            "title": "\\{review}\\{icon music} Hauptlautstärke",
+            "title": "\\{review}Hauptlautstärke",
             "description": "\\{review}Passt die gesamte Spiel-Lautstärke an. Die restlichen Einstellungen sind relativ zu dieser Lautstärke.",
         },
         "audio.music_load_condition": {
@@ -940,7 +940,7 @@
             "description": "Lädt den Musiktitel der vor dem Speichern des Spiels abgespielt wurde.\n\n- Nie: keine Musik-Titel beim laden wiederherstellen.\n- Nicht-Umgebung: stellt nur Nicht-Umgebungs-Musiktitel beim laden wieder her.\n- Immer: stellt jede Art von Musiktitel beim Laden wieder her.",
         },
         "audio.music_volume": {
-            "title": "\\{review}Musiklautstärke",
+            "title": "\\{review}\\{icon music} Musiklautstärke",
             "description": "\\{review}Passt die Musiklautstärke an.",
         },
         "audio.mute_out_of_focus": {

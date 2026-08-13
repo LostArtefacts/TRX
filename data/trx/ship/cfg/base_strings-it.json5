@@ -932,7 +932,7 @@
             "description": "Contrassegna le tracce musicali riprodotte nel file di salvataggio, in modo che le tracce legate ad eventi non vengano rieseguite dopo il caricamento della partita.",
         },
         "audio.master_volume": {
-            "title": "\\{icon music} Volume principale",
+            "title": "Volume principale",
             "description": "Regola il volume di gioco. Le altre impostazioni sono relative a questo volume.",
         },
         "audio.music_load_condition": {
@@ -940,7 +940,7 @@
             "description": "Carica la traccia musicale che era in riproduzione al momento del salvataggio della partita.\n\n- Mai: non ripristina le tracce musicali al caricamento.\n- Non ambientale: ripristina le tracce musicali ma non i suoni ambientali al caricamento.\n- Sempre: ripristina qualsiasi tipo di traccia al caricamento.",
         },
         "audio.music_volume": {
-            "title": "Volume musica",
+            "title": "\\{icon music} Volume musica",
             "description": "Regola il volume della musica.",
         },
         "audio.mute_out_of_focus": {
