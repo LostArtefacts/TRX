@@ -24,7 +24,7 @@ guide to the data and JSON configuration, and some scenario/workflow examples.
 
 The skin system uses the following objects. These are provided in the
 `lara_outfits.bin` injection, and are available to download as a separate WAD
-(see [injections](INJECTIONS.md)).
+(see [injections](INJECTIONS.md#common-steps-for-importing-trx-assets-into-your-wad-wadtool)).
 
 #### `O_LARA_SKIN_SWAP_1`...`O_LARA_SKIN_SWAP_32`
 Each of these should contain a distinct Lara model, with the mesh count and bone
