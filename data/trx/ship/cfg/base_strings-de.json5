@@ -406,6 +406,14 @@
                 "stopped": "\\{review}Musik gestoppt",
                 "track": "Spiele Musiktitel %d",
             },
+            "outfit": {
+                "current": "\\{review}Lara trägt %s",
+                "default": "\\{review}Lara trägt, was das Level ihr anzieht",
+                "help": "\\{review}Zeigt oder ändert Laras Outfit.",
+                "outfit_help": "\\{review}welches Outfit, oder - für das des Levels",
+                "unknown": "\\{review}Unbekanntes Outfit: %s",
+                "worn": "\\{review}Lara hat %s angezogen",
+            },
             "play_cutscene": {
                 "help": "Spielt Zwischensequenz mit dazugehöriger Nummer ab.",
                 "invalid": "Unzulässige Zwischensequenz",

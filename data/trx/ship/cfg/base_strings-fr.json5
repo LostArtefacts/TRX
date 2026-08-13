@@ -406,6 +406,14 @@
                 "stopped": "\\{review}Musique arrêtée",
                 "track": "Lecture de la piste musicale %d",
             },
+            "outfit": {
+                "current": "\\{review}Lara porte %s",
+                "default": "\\{review}Lara porte ce que le niveau lui met",
+                "help": "\\{review}Affiche ou change la tenue de Lara.",
+                "outfit_help": "\\{review}quelle tenue, ou - pour celle du niveau",
+                "unknown": "\\{review}Tenue inconnue : %s",
+                "worn": "\\{review}Lara a enfilé %s",
+            },
             "play_cutscene": {
                 "help": "Lance la cinématique correspondant au numéro donné.",
                 "invalid": "Cinématique invalide",

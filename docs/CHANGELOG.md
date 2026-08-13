@@ -11,6 +11,7 @@
 - Fixed ability to open the inventory ring while a flyby sequence has Lara's control
 
 **Developer console**
+- Added the `/outfit` console command, which shows or changes what Lara is wearing
 - Added the `/golden` console command, which casts Lara in gold
 - Changed the `/flip` console command to take a flip group, so `/flip 3` moves that group alone while `/flip` on its own moves them all
 
