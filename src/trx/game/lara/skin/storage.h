@@ -3,6 +3,12 @@
 #include <trx/game/lara/skin/types.h>
 
 int32_t Lara_Skin_GetOutfitCount(void);
+// Whether the outfit is one the game declares, which is what a name read from
+// a game flow is checked against. Say nothing about the level, which is not
+// loaded when a game flow is read.
+bool Lara_Skin_IsOutfitDefined(LARA_SKIN_TYPE skin_type);
+
+// Whether the level carries the meshes to wear it.
 bool Lara_Skin_IsOutfitAvailable(LARA_SKIN_TYPE skin_type);
 const LARA_SKIN_OUTFIT *Lara_Skin_GetOutfit(LARA_SKIN_TYPE skin_type);
 const char *Lara_Skin_GetOutfitName(LARA_SKIN_TYPE skin_type);

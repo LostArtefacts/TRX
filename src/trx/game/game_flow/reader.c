@@ -874,7 +874,7 @@ static bool M_LoadLevel(
         }
         if (tmp != nullptr) {
             if (!ctx->validation_mode
-                && !Lara_Skin_IsOutfitAvailable(
+                && !Lara_Skin_IsOutfitDefined(
                     Lara_Skin_FindOutfitByName(tmp))) {
                 JSON_ReadIO_SetError(
                     io, "invalid 'lara_outfit' value (%s)", tmp);
