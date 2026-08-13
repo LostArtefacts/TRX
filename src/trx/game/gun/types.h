@@ -26,37 +26,65 @@ typedef struct {
     bool infinite;
 } WEAPON_AMMO_INFO;
 
+// How far off straight ahead an aim may go. Yaw counts to either side, pitch up
+// and down.
+typedef struct {
+    int16_t min_yaw;
+    int16_t max_yaw;
+    int16_t min_pitch;
+    int16_t max_pitch;
+} WEAPON_AIM_LIMITS;
+
+// An offset in the frame of the hand that holds the weapon. A weapon held in
+// one hand only uses the right.
+typedef struct {
+    XYZ_32 right;
+    XYZ_32 left;
+} WEAPON_HAND_POS;
+
+typedef struct {
+    int16_t time;
+    int16_t shade;
+    RGB_F color;
+    WEAPON_HAND_POS pos;
+} WEAPON_FLASH_INFO;
+
+typedef struct {
+    RGB_F color;
+    XYZ_32 pos;
+    // Multiplies the glow sprite's own size; 0 disables the glow.
+    float scale;
+    // Randomizes the glow's brightness every frame, like a burning flare.
+    bool flicker;
+} WEAPON_GLOW_INFO;
+
+// Frames of the animation Lara plays while holding the weapon, at which the
+// weapon changes hands or kicks.
+typedef struct {
+    int16_t equip_anim_idx;
+    int16_t draw_frame;
+    int16_t undraw_frame;
+    int16_t recoil_frame;
+} WEAPON_ANIM_INFO;
+
 typedef struct {
     WEAPON_TYPE type;
-    int16_t lock_angles[4];
-    int16_t left_angles[4];
-    int16_t right_angles[4];
+    // Where auto-aim may lock on, and how far each arm may follow it.
+    WEAPON_AIM_LIMITS lock;
+    WEAPON_AIM_LIMITS left_arm;
+    WEAPON_AIM_LIMITS right_arm;
     int16_t aim_speed;
     int16_t shot_accuracy;
     int32_t gun_height;
     int32_t damage;
     WEAPON_AMMO_INFO ammo;
     int32_t target_dist;
-    int16_t equip_anim_idx;
-    int16_t draw_frame;
-    int16_t undraw_frame;
-    int16_t recoil_frame;
-    int16_t flash_time;
-    int16_t flash_shade;
-    RGB_F flash_color;
-    XYZ_32 flash_pos;
-    XYZ_32 flash_pos_alt;
+    WEAPON_ANIM_INFO anim;
+    WEAPON_FLASH_INFO flash;
     SAMPLE_TRX_ID sample_num;
-    RGB_F glow_color;
-    XYZ_32 glow_pos;
-    // Multiplies the glow sprite's own size; 0 disables the glow.
-    float glow_scale;
-    // Randomizes the glow's brightness every frame, like a burning flare.
-    bool glow_flicker;
-    XYZ_32 muzzle_pos;
-    XYZ_32 muzzle_pos_alt;
-    XYZ_32 shell_pos;
-    XYZ_32 shell_pos_alt;
+    WEAPON_GLOW_INFO glow;
+    WEAPON_HAND_POS muzzle_pos;
+    WEAPON_HAND_POS shell_pos;
     int32_t smoke_count;
     bool is_available;
 } WEAPON_INFO;

@@ -790,7 +790,7 @@ void Skidoo_Guns(void)
         return;
     }
 
-    lara->right_arm.flash_gun = weapon->flash_time;
+    lara->right_arm.flash_gun = weapon->flash.time;
     Sound_Effect(weapon->sample_num, &lara_item->pos, SPM_NORMAL);
     Gun_AddDynamicLight();
 

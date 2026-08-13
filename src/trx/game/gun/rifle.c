@@ -137,7 +137,7 @@ static void M_FireGeneric(const LARA_GUN_TYPE weapon_type)
     }
 
     if (fired) {
-        lara->right_arm.flash_gun = g_Weapons[weapon_type].flash_time;
+        lara->right_arm.flash_gun = g_Weapons[weapon_type].flash.time;
         Gun_Smoke_OnFire(weapon_type, true);
         Sound_Effect(
             g_Weapons[weapon_type].sample_num, &lara_item->pos, SPM_NORMAL);
@@ -166,7 +166,7 @@ static void M_FireM16(const bool running, const LARA_GUN_TYPE weapon_type)
     }
 
     if (Gun_FireWeapon(weapon_type, lara->target, lara_item, angles)) {
-        lara->right_arm.flash_gun = g_Weapons[weapon_type].flash_time;
+        lara->right_arm.flash_gun = g_Weapons[weapon_type].flash.time;
         Spawn_GunShell(weapon_type, true);
         Gun_Smoke_OnFire(weapon_type, true);
     }
@@ -655,7 +655,7 @@ void Gun_Rifle_Draw(const LARA_GUN_TYPE weapon_type)
         lara->gun_item_num = Item_Create();
         item = Item_Get(lara->gun_item_num);
         item->object_id = Gun_GetWeaponAnim(weapon_type);
-        Item_SwitchToAnim(item, weapon->equip_anim_idx, 0);
+        Item_SwitchToAnim(item, weapon->anim.equip_anim_idx, 0);
         item->goal_anim_state = LA_G_DRAW;
         item->current_anim_state = LA_G_DRAW;
         Item_SetVisible(item, true);
@@ -670,7 +670,7 @@ void Gun_Rifle_Draw(const LARA_GUN_TYPE weapon_type)
     if (item->current_anim_state == LA_G_AIM
         || item->current_anim_state == LA_G_UAIM) {
         M_Ready(weapon_type);
-    } else if (Item_TestFrameEqual(item, weapon->draw_frame)) {
+    } else if (Item_TestFrameEqual(item, weapon->anim.draw_frame)) {
         Gun_Rifle_DrawMeshes(weapon_type);
     } else if (lara->water_status == LWS_UNDERWATER) {
         item->goal_anim_state = LA_G_UAIM;
@@ -710,7 +710,7 @@ void Gun_Rifle_Undraw(const LARA_GUN_TYPE weapon_type)
         lara->right_arm.lock = 0;
     } else if (
         item->current_anim_state == LA_G_UNDRAW
-        && Item_TestFrameEqual(item, weapon->undraw_frame)) {
+        && Item_TestFrameEqual(item, weapon->anim.undraw_frame)) {
         Gun_Rifle_UndrawMeshes(weapon_type);
     }
 

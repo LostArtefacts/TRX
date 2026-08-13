@@ -341,8 +341,8 @@ void Spawn_GunShell(const LARA_GUN_TYPE weapon_type, const bool right)
     const ITEM *const lara_item = Lara_GetItem();
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    XYZ_32 offset = right ? g_Weapons[weapon_type].shell_pos
-                          : g_Weapons[weapon_type].shell_pos_alt;
+    XYZ_32 offset = right ? g_Weapons[weapon_type].shell_pos.right
+                          : g_Weapons[weapon_type].shell_pos.left;
     if (offset.x == 0 && offset.y == 0 && offset.z == 0) {
         return;
     }
