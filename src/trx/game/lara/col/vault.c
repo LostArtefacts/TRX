@@ -1,6 +1,8 @@
+#include <trx/config.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/rooms.h>
+#include <trx/game/rooms/geometry.h>
 
 // clang-format off
 #define M_ANGLE           (30 * DEG_1)                // = 5460
@@ -45,7 +47,9 @@ static void M_Sample(
     const int32_t height = Room_GetHeight(sector, pos);
     side->type = Room_GetHeightType();
 
-    if (side->type == HT_BIG_SLOPE) {
+    if (side->type == HT_BIG_SLOPE
+        || Room_IsPathBlocked(
+            item->pos, pos, item->room_num, LARA_HEIGHT, LARA_RADIUS)) {
         side->floor = NO_HEIGHT;
         side->ceiling = NO_HEIGHT;
         return;

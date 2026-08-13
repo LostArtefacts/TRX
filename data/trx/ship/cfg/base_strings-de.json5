@@ -578,6 +578,7 @@
             "lara_outfit": {
                 "default": "\\{review}Standard",
                 "golden_sophia": "\\{review}Goldene Sophia",
+                "natla": "\\{review}Natla",
                 "sophia": "\\{review}Sophia",
                 "tr1_bacon_lara": "\\{review}Bacon-Lara",
                 "tr1_classic": "\\{review}TR1 Klassisch",
@@ -786,6 +787,10 @@
             "LOOK_MODE_RESTRICTED": "Beschränkt",
             "LOOK_MODE_UNRESTRICTED": "Unbeschränkt",
         },
+        "M16_AIM_MODE": {
+            "M16_AIM_MODE_ENHANCED": "\\{review}Erweitert",
+            "M16_AIM_MODE_ORIGINAL": "\\{review}Original",
+        },
         "MUSIC_LOAD_CONDITION": {
             "MUSIC_LOAD_CONDITION_ALWAYS": "Immer",
             "MUSIC_LOAD_CONDITION_NEVER": "Nie",
@@ -927,7 +932,7 @@
             "description": "Lädt vorher getriggerte Musik, so dass Musik, die nur einmal spielen soll, nicht ein weiteres Mal abgespielt wird.",
         },
         "audio.master_volume": {
-            "title": "\\{review}\\{icon music} Hauptlautstärke",
+            "title": "\\{review}Hauptlautstärke",
             "description": "\\{review}Passt die gesamte Spiel-Lautstärke an. Die restlichen Einstellungen sind relativ zu dieser Lautstärke.",
         },
         "audio.music_load_condition": {
@@ -935,7 +940,7 @@
             "description": "Lädt den Musiktitel der vor dem Speichern des Spiels abgespielt wurde.\n\n- Nie: keine Musik-Titel beim laden wiederherstellen.\n- Nicht-Umgebung: stellt nur Nicht-Umgebungs-Musiktitel beim laden wieder her.\n- Immer: stellt jede Art von Musiktitel beim Laden wieder her.",
         },
         "audio.music_volume": {
-            "title": "\\{review}Musiklautstärke",
+            "title": "\\{review}\\{icon music} Musiklautstärke",
             "description": "\\{review}Passt die Musiklautstärke an.",
         },
         "audio.mute_out_of_focus": {
@@ -1262,6 +1267,10 @@
             "title": "Fix: Bären-AI",
             "description": "Fixt, dass die aufrecht stehend ausgeführten Prankenhiebe von Bären Lara nicht mehr verfehlen.",
         },
+        "gameplay.fix_breakable_wall_clip": {
+            "title": "\\{review}Fix: Zerbrechliche Wände durchqueren",
+            "description": "\\{review}Fixt, dass Lara sich durch zerbrechliche Wände am Rand eines Sektors hochziehen oder hindurchkriechen kann. Wenn aktiviert, hält sie vor der Wand an, bis diese zerstört ist.",
+        },
         "gameplay.fix_bridge_collision": {
             "title": "Fix: Brückenkollision",
             "description": "Fixt, dass Lara nicht in der Lage ist, sich an einigen Teilen von Brücken festzuhalten und unsichtbare Wände an den Kanten. Fixt auch Kollisions-Fehler mit Zugbrücken, Falltüren, und Brücken, wenn sie übereinander gestapelt sind, über Schrägen, und nahe dem Boden.",
@@ -1361,6 +1370,10 @@
         "gameplay.look_mode": {
             "title": "Umsehen Modus",
             "description": "\\{review}Erlaubt einzustellen wann Lara in der Lage ist sich umzusehen.\n\n- Beschränkt: Umsehen ist nur möglich wenn Lara still steht, und nie wenn man unter Wasser ist.\n- Erweitert: Umsehen ist während der meisten Animationen möglich, ausser ein paar Ausnahmen wie das Schieben eines Blockes.\n- Unbeschränkt: Umsehen ist jederzeit während der normalen Steuerung von Lara möglich.\n\nBeschränkt entspricht dem originalen TR1, Erweitert dem originalen TR2+.",
+        },
+        "gameplay.m16_aim_mode": {
+            "title": "\\{review}M16/MP5-Zielvarianten",
+            "description": "\\{review}Steuert, wann Lara die M16/MP5 von der Schulter statt aus der Hüfte anlegt.\n\n- Original: Lara nimmt die Waffe an die Schulter, sobald sie stehen bleibt.\n- Erweitert: Lara schießt weiter aus der Hüfte, solange die Aktionstaste gehalten wird, und nimmt die Waffe nur an die Schulter, wenn sie im Stehen zu schießen beginnt. Mit aktivierter Genauigkeitskorrektur ist der Hüftschuss ungenauer und richtet pro Schuss weniger Schaden an.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "\\{review}Anzahl der Schnellspeicherplätze",

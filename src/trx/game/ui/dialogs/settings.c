@@ -151,7 +151,10 @@ static void M_WindowHeader(void *const user_data)
     UI_SETTINGS_DIALOG_STATE *const s = user_data;
     if (s->tab_switch != nullptr && s->tab_count > 0) {
         UI_TabSwitch(
-            s->tab_switch, s->phase == UI_SETTINGS_PHASE_NAVIGATE_TABS);
+            s->tab_switch,
+            s->phase == UI_SETTINGS_PHASE_NAVIGATE_TABS
+                ? UI_TAB_SWITCH_DRAW_FOCUSED
+                : UI_TAB_SWITCH_DRAW_ARROWS);
         UI_Spacer(0.0f, 8.0f);
     }
 }

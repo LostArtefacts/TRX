@@ -26,6 +26,15 @@ typedef enum {
     UI_TAB_SWITCH_NO_ARROWS,
 } UI_TAB_SWITCH_FLAGS;
 
+// How much of the tab switch to draw. IDLE shows the tabs alone, ARROWS adds
+// the arrows to say the tabs can still be switched from wherever the dialog's
+// focus has moved to, and FOCUSED also highlights the active tab.
+typedef enum {
+    UI_TAB_SWITCH_DRAW_IDLE,
+    UI_TAB_SWITCH_DRAW_ARROWS,
+    UI_TAB_SWITCH_DRAW_FOCUSED,
+} UI_TAB_SWITCH_DRAW_MODE;
+
 // state functions
 UI_TAB_SWITCH_STATE *UI_TabSwitch_Init(
     int32_t tab_count, const UI_TAB_SWITCH_TAB *tabs);
@@ -41,5 +50,7 @@ bool UI_TabSwitch_Control(
 bool UI_TabSwitch_Cycle(UI_TAB_SWITCH_STATE *state, int32_t dir);
 
 // draw functions
-void UI_TabSwitch(const UI_TAB_SWITCH_STATE *state, bool is_focused);
-void UI_TabSwitchSingle(const UI_TAB_SWITCH_STATE *state, bool is_focused);
+void UI_TabSwitch(
+    const UI_TAB_SWITCH_STATE *state, UI_TAB_SWITCH_DRAW_MODE mode);
+void UI_TabSwitchSingle(
+    const UI_TAB_SWITCH_STATE *state, UI_TAB_SWITCH_DRAW_MODE mode);

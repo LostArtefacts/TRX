@@ -188,7 +188,8 @@ GF_COMMAND Game_Control(const bool demo_mode)
 
     if ((g_InputDB.option || g_InputDB.load || g_InputDB.save
          || g_OverlayFlag <= 0)
-        && lara->death_timer == 0 && !lara->extra_anim && !CutSeq_IsActive()) {
+        && lara->death_timer == 0 && !lara->extra_anim && !CutSeq_IsActive()
+        && Lara_IsControllable()) {
         if (g_TRVersion == 1 && g_Camera.type == CAM_CINEMATIC) {
             g_OverlayFlag = 0;
         } else if (g_OverlayFlag > 0) {

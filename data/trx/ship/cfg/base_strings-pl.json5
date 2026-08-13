@@ -578,6 +578,7 @@
             "lara_outfit": {
                 "default": "Domyślny",
                 "golden_sophia": "Złota Sophia",
+                "natla": "\\{review}Natla",
                 "sophia": "Sophia",
                 "tr1_bacon_lara": "TR1 klon Lary",
                 "tr1_classic": "TR1 klasyczny",
@@ -786,6 +787,10 @@
             "LOOK_MODE_RESTRICTED": "Ograniczony",
             "LOOK_MODE_UNRESTRICTED": "Nieograniczony",
         },
+        "M16_AIM_MODE": {
+            "M16_AIM_MODE_ENHANCED": "\\{review}Rozszerzony",
+            "M16_AIM_MODE_ORIGINAL": "\\{review}Klasyczny",
+        },
         "MUSIC_LOAD_CONDITION": {
             "MUSIC_LOAD_CONDITION_ALWAYS": "Zawsze",
             "MUSIC_LOAD_CONDITION_NEVER": "Nigdy",
@@ -927,7 +932,7 @@
             "description": "Ładuje wcześniej wyzwolone utwory muzyczne, tak aby jednorazowe ścieżki nie były odtwarzane ponownie.",
         },
         "audio.master_volume": {
-            "title": "\\{icon music} Głośność",
+            "title": "Głośność",
             "description": "Reguluje głośność wszystkich dźwięków w grze. Pozostałe ustawienia są względem tej głośności.",
         },
         "audio.music_load_condition": {
@@ -935,7 +940,7 @@
             "description": "Ładuje ścieżkę dźwiękową graną podczas zapisu gry.\n\n- Nigdy: restartuje dźwięki otoczenia od 0.\n- Tylko muzyka: przywraca utwory muzyczne.\n- Zawsze: przywraca także dźwięki otoczenia od momentu, w którym gracz dokonał zapisu.",
         },
         "audio.music_volume": {
-            "title": "Głośność muzyki",
+            "title": "\\{icon music} Głośność muzyki",
             "description": "Reguluje głośność muzyki.",
         },
         "audio.mute_out_of_focus": {
@@ -1262,6 +1267,10 @@
             "title": "Napraw AI niedźwiedzi",
             "description": "Naprawia atak niedźwiedzia, aby nie chybiał Lary.",
         },
+        "gameplay.fix_breakable_wall_clip": {
+            "title": "\\{review}Napraw przenikanie kruchych ścian",
+            "description": "\\{review}Naprawia problem, w którym Lara może podciągnąć się lub przeczołgać przez kruche ściany stojące na krawędzi sektora. Po włączeniu Lara zatrzymuje się przed ścianą, dopóki nie zostanie ona zniszczona.",
+        },
         "gameplay.fix_bridge_collision": {
             "title": "Napraw kolizję mostów",
             "description": "Naprawia problem, w którym Lara nie może chwycić części niektórych mostów oraz krawędzi. Naprawia również problemy z kolizją mostów zwodzonych, pułapek i zwykłych mostów, gdy są nałożone na siebie, są przy zboczach lub blisko ziemi.",
@@ -1361,6 +1370,10 @@
         "gameplay.look_mode": {
             "title": "Tryb rozglądania",
             "description": "\\{review}Określa, kiedy Lara może się rozglądać.\n\n- Ograniczony: rozglądanie tylko w bezruchu, nigdy pod wodą.\n- Rozszerzony: rozglądanie dozwolone podczas większości animacji, z wyjątkiem np. pchania bloku.\n- Nieograniczony: rozglądanie zawsze dozwolone przy normalnym sterowaniu Larą.\n\nOgraniczony odpowiada oryginalnemu TR1, a Rozszerzony oryginalnym TR2+.",
+        },
+        "gameplay.m16_aim_mode": {
+            "title": "\\{review}Warianty celowania M16/MP5",
+            "description": "\\{review}Określa, kiedy Lara celuje z M16/MP5 z ramienia zamiast z biodra.\n\n- Klasyczny: Lara unosi broń do ramienia za każdym razem, gdy się zatrzyma.\n- Rozszerzony: Lara strzela dalej z biodra, dopóki przycisk Akcji jest wciśnięty, i unosi broń do ramienia tylko wtedy, gdy zaczyna strzelać w bezruchu. Przy włączonej poprawce celności strzał z biodra jest mniej celny i zadaje mniejsze obrażenia.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "Liczba slotów szybkiego zapisu",
