@@ -24,6 +24,7 @@
 #include <string.h>
 
 #define M_TRANSPARENCY_CACHE_VERSION 1
+#define M_WATERFALL_FACE_IDX 4
 
 typedef struct {
     OUTPUT_UVW corners[4];
@@ -267,6 +268,31 @@ static void M_MarkUVRotateScroll(void)
     }
 }
 
+// The OG scrolls the texture behind the fifth quad of the waterfall's first
+// mesh, and the one that follows it in the texture list.
+static void M_MarkWaterfallScroll(void)
+{
+    const OUTPUT_UV_SCROLL scroll = { .speed = -7, .period = 64 };
+    for (OBJECT_ID obj_id = O_WATERFALL_1; obj_id <= O_WATERFALL_3; obj_id++) {
+        const OBJECT *const obj = Object_Get(obj_id);
+        if (!obj->loaded || obj->mesh_count < 1) {
+            continue;
+        }
+        const OBJECT_MESH *const mesh = Object_GetMesh(obj->mesh_idx);
+        if (mesh->tex_face4s.count <= M_WATERFALL_FACE_IDX) {
+            continue;
+        }
+
+        const int32_t texture_idx =
+            mesh->tex_face4s.data[M_WATERFALL_FACE_IDX].texture_idx;
+        for (int32_t i = 0; i < 2; i++) {
+            if (texture_idx + i < m_Priv.uvws.count_objects) {
+                m_Priv.uvws.uv_scroll[texture_idx + i] = scroll;
+            }
+        }
+    }
+}
+
 // Every scrolling texture returns to its starting offset after
 // period/gcd(speed, period) ticks. The tick wraps where all of them do so
 // together, and so stays an exact integer however long a level runs.
@@ -291,6 +317,7 @@ static void M_PrepareUVScroll(void)
         m_Priv.uvws.uv_scroll[i] = (OUTPUT_UV_SCROLL) {};
     }
     M_MarkUVRotateScroll();
+    M_MarkWaterfallScroll();
     M_PrepareUVScrollTickPeriod();
 }
 
