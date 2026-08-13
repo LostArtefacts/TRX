@@ -123,9 +123,11 @@ Following are each of the properties available within a level.
   </tr>
   <tr valign="top">
     <td><code>lara_outfit</code></td>
-    <td>string<strong>*</strong></td>
+    <td>string</td>
     <td colspan="2">
       Defines the outfit to use for Lara, unless overridden by player choice.
+      Optional; a level that names none, or names one the game does not offer,
+      dresses Lara in the default outfit.
       See <a href="../../OUTFITS.md">Outfits</a> for full details.
     </td>
   </tr>
