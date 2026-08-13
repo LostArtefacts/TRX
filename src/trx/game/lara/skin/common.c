@@ -419,6 +419,15 @@ void Lara_Skin_Initialise(void)
         }
         return;
     }
+
+    const int32_t outfit_count = Lara_Skin_GetOutfitCount();
+    for (int32_t i = 0; i < outfit_count; i++) {
+        if (!Lara_Skin_IsOutfitAvailable(i) && Lara_Skin_IsOutfitDefined(i)) {
+            LOG_WARNING(
+                "Outfit '%s' has no meshes in this level",
+                Lara_Skin_GetOutfitName(i));
+        }
+    }
     Lara_Skin_ApplyOutfitFromConfig();
 
     // She wears nothing yet, and the outfit above only dresses her where it
