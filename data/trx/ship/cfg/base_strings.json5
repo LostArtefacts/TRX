@@ -578,6 +578,7 @@
             "lara_outfit": {
                 "default": "Default",
                 "golden_sophia": "Golden Sophia",
+                "natla": "Natla",
                 "sophia": "Sophia",
                 "tr1_bacon_lara": "Bacon Lara",
                 "tr1_classic": "TR1 Classic",
@@ -785,6 +786,10 @@
             "LOOK_MODE_ENHANCED": "Enhanced",
             "LOOK_MODE_RESTRICTED": "Restricted",
             "LOOK_MODE_UNRESTRICTED": "Unrestricted",
+        },
+        "M16_AIM_MODE": {
+            "M16_AIM_MODE_ENHANCED": "Enhanced",
+            "M16_AIM_MODE_ORIGINAL": "Original",
         },
         "MUSIC_LOAD_CONDITION": {
             "MUSIC_LOAD_CONDITION_ALWAYS": "Always",
@@ -1262,6 +1267,10 @@
             "title": "Fix bear AI",
             "description": "Fixes the bear pat attack so it does not miss Lara.",
         },
+        "gameplay.fix_breakable_wall_clip": {
+            "title": "Fix breakable wall clipping",
+            "description": "Fixes Lara being able to vault or crawl through breakable walls that stand on the edge of a sector. If enabled, she stops at the wall until it is broken.",
+        },
         "gameplay.fix_bridge_collision": {
             "title": "Fix bridge collision",
             "description": "Fixes Lara not being able to grab parts of some bridges and invisible walls at the edge. Also fixes collision issues with drawbridges, trapdoors, and bridges when stacked over each other, over slopes, and near the ground.",
@@ -1361,6 +1370,10 @@
         "gameplay.look_mode": {
             "title": "Look mode",
             "description": "Allows controlling when Lara is able to use look.\n\n- Restricted: look is only permitted when Lara is stationary, and never when underwater, as in the original TR1.\n- Enhanced: look is permitted during most animations, aside from ones such as pushing a block, as in the original TR2+.\n- Unrestricted: look is permitted at any time during normal Lara control.",
+        },
+        "gameplay.m16_aim_mode": {
+            "title": "M16/MP5 aiming variants",
+            "description": "Controls when Lara aims the M16/MP5 from her shoulder rather than from her hip.\n\n- Original: Lara raises the gun to her shoulder whenever she stops moving.\n- Enhanced: Lara keeps firing from her hip while the Action button is held, and only shoulders the gun when she starts firing while standing still. With the accuracy fix enabled, hip fire is less accurate and does less damage per shot.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "Number of quick save slots",

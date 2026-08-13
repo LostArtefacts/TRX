@@ -11,6 +11,7 @@
 #include <trx/game/fader.h>
 #include <trx/game/flyby_mode.h>
 #include <trx/game/game_flow.h>
+#include <trx/game/input.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
@@ -419,6 +420,15 @@ void CutSeq_Request(const int32_t num)
     Fader_InitFromCurrent(&m_State.fader, 1.0f, M_FADE_DURATION);
 }
 
+void CutSeq_Skip(void)
+{
+    if (m_State.phase != M_PHASE_PLAYING) {
+        return;
+    }
+    m_State.phase = M_PHASE_FADE_END;
+    Fader_InitFromCurrent(&m_State.fader, 1.0f, M_END_FADE_DURATION);
+}
+
 void CutSeq_HandleTrigger(const int32_t num)
 {
     // A pad answers every frame Lara stands on it, so the once-only rule comes
@@ -532,6 +542,13 @@ void CutSeq_Reset(void)
 
 void CutSeq_Control(void)
 {
+    // As a cutscene level answers them, and for the same reason: a scene the
+    // player has seen before is a scene to get past.
+    if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
+        CutSeq_Skip();
+        Input_HoldOffSkip();
+    }
+
     switch (m_State.phase) {
     case M_PHASE_FADE_OUT:
         if (!Fader_IsActive(&m_State.fader)) {
@@ -589,10 +606,10 @@ void CutSeq_UpdateCamera(void)
         .y = info->origin.y + 2 * m_State.camera_nodes[1].y_run,
         .z = info->origin.z + 2 * m_State.camera_nodes[1].z_run,
     };
-    const int16_t room_num = Room_GetIndexFromPos(g_Camera.pos.pos);
-    if (room_num != NO_ROOM) {
-        g_Camera.pos.room_num = room_num;
-    }
+
+    int16_t room_num = g_Camera.pos.room_num;
+    Room_GetSector(g_Camera.pos.pos, &room_num);
+    g_Camera.pos.room_num = room_num;
     g_Camera.roll = 0;
     g_Camera.shift = 0;
     Viewport_AlterFOV(m_State.fov, FOV_MODE_CUTSCENE);

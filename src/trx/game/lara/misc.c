@@ -8,6 +8,7 @@
 #include <trx/game/objects/effects/flame.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
+#include <trx/game/rooms/geometry.h>
 #include <trx/game/sound.h>
 #include <trx/version.h>
 
@@ -282,6 +283,11 @@ int32_t Lara_FloorFront(
     XYZ_32 pos = item->pos;
     pos.y -= LARA_HEIGHT;
     pos = XYZ_32_OffsetYaw(pos, ang, dist);
+    if (Room_IsPathBlocked(
+            item->pos, pos, item->room_num, LARA_HEIGHT, LARA_RADIUS)) {
+        return NO_HEIGHT;
+    }
+
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
     int32_t height = Room_GetHeight(sector, pos);
@@ -303,6 +309,13 @@ int32_t Lara_CeilingFront(
     const int32_t y = item->pos.y - item_height;
     const int32_t z = item->pos.z + ((dist * Math_Cos(ang)) >> W2V_SHIFT);
     const XYZ_32 pos = { x, y, z };
+    // Something reaching down to where Lara's head would be leaves her no more
+    // room than a ceiling at her feet does.
+    if (Room_IsPathBlocked(
+            item->pos, pos, item->room_num, STEP_L, LARA_RADIUS)) {
+        return item_height;
+    }
+
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
     int32_t height = Room_GetCeiling(sector, pos);
