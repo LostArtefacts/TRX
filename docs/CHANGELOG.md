@@ -1,5 +1,8 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.10...develop) - ××××-××-××
 
+**UI**
+- Fixed the controls key list jumping after switching to a tab with fewer keys (regression from 1.3)
+
 **Developer console**
 - Changed the `/flip` console command to take a flip group, so `/flip 3` moves that group alone while `/flip` on its own moves them all
 
