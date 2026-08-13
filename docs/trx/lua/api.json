@@ -2402,7 +2402,7 @@
     },
     {
       "bulk": false,
-      "count": 22,
+      "count": 20,
       "description": "A mesh Lara can carry on top of one of her own - the dagger in Home Sweet Home, the oar in a boat.",
       "path": "lara.ExtraMesh",
       "values": [
@@ -2427,94 +2427,84 @@
           "value": 3
         },
         {
-          "description": "Braided head, gold.",
-          "name": "TR1_BRAID_GOLD_HEAD",
-          "value": 4
-        },
-        {
-          "description": "Braided torso, gold.",
-          "name": "TR1_BRAID_GOLD_TORSO",
-          "value": 5
-        },
-        {
           "description": "Dagger, in hand.",
           "name": "DAGGER_HAND",
-          "value": 6
+          "value": 4
         },
         {
           "description": "Dagger, sheathed at the hips.",
           "name": "DAGGER_HIPS",
-          "value": 7
+          "value": 5
         },
         {
           "description": "Oar.",
           "name": "OAR",
-          "value": 8
+          "value": 6
         },
         {
           "description": "Spanner.",
           "name": "SPANNER",
-          "value": 9
+          "value": 7
         },
         {
           "description": "Drink can.",
           "name": "DRINK_CAN",
-          "value": 10
+          "value": 8
         },
         {
           "description": "Sunglasses.",
           "name": "GLASSES_OPAQUE",
-          "value": 11
+          "value": 9
         },
         {
           "description": "Sunglasses, transparent lenses.",
           "name": "GLASSES_TRANSPARENT",
-          "value": 12
+          "value": 10
         },
         {
           "description": "Crowbar.",
           "name": "CROWBAR",
-          "value": 13
+          "value": 11
         },
         {
           "description": "Wooden torch.",
           "name": "WOODEN_TORCH",
-          "value": 14
+          "value": 12
         },
         {
           "description": "Binoculars.",
           "name": "BINOCULARS",
-          "value": 15
+          "value": 13
         },
         {
           "description": "Hook and pole.",
           "name": "HOOK_AND_POLE",
-          "value": 16
+          "value": 14
         },
         {
           "description": "Detonator.",
           "name": "DETONATOR",
-          "value": 17
+          "value": 15
         },
         {
           "description": "Shovel.",
           "name": "SHOVEL",
-          "value": 18
+          "value": 16
         },
         {
           "description": "Jerrycan.",
           "name": "JERRYCAN",
-          "value": 19
+          "value": 17
         },
         {
           "description": "Sandbag.",
           "name": "SANDBAG",
-          "value": 20
+          "value": 18
         },
         {
           "description": "Waterskin.",
           "name": "WATERSKIN",
-          "value": 21
+          "value": 19
         }
       ]
     },

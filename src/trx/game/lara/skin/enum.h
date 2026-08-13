@@ -12,7 +12,6 @@ typedef enum {
     BRAID_MODE_TR1_HEAD_ONLY, // Head replacement only (no backpack present)
     BRAID_MODE_TR1_FULL,      // Head and torso replacement
     BRAID_MODE_TR1_MAULED,    // Head and mauled torso replacement
-    BRAID_MODE_TR1_GOLD,      // Gold head and torso replacement
     NUM_BRAID_MODES,
     // clang-format on
 } LARA_SKIN_BRAID_MODE;
@@ -22,8 +21,6 @@ typedef enum {
     EXTRA_MESH_TR1_BRAID_COMBAT_HEAD,
     EXTRA_MESH_TR1_BRAID_DEFAULT_TORSO,
     EXTRA_MESH_TR1_BRAID_MAULED_TORSO,
-    EXTRA_MESH_TR1_BRAID_GOLD_HEAD,
-    EXTRA_MESH_TR1_BRAID_GOLD_TORSO,
     EXTRA_MESH_DAGGER_HAND,
     EXTRA_MESH_DAGGER_HIPS,
     EXTRA_MESH_OAR,

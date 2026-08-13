@@ -47,6 +47,8 @@ void Level_Unload(void)
     Creature_Reset();
     Anim_Reset();
     Item_Reset();
+    // Before the objects go: what it holds are objects this level minted.
+    Lara_Skin_Reset();
     Object_Reset();
     Camera_Reset();
     Walkable_Reset();

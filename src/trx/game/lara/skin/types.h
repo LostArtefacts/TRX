@@ -35,7 +35,6 @@ typedef struct {
     bool enabled;
     struct {
         int32_t mesh_offset;
-        int32_t gold_offset;
         XYZ_32 position;
         LARA_SKIN_BRAID_HEAD_SEAM head_seam;
     } setup[2];
@@ -46,10 +45,15 @@ typedef struct {
     bool is_defined;
     OBJECT_ID mesh_obj_id;
     OBJECT_ID joints_obj_id;
+    OBJECT_ID extra_obj_id;
+    OBJECT_ID guns_obj_id;
+    OBJECT_ID legs_obj_id;
     LARA_SKIN_GUN_MAP *gun_map;
     LARA_SKIN_BRAID braid;
     bool is_selectable;
-    bool is_reflective;
+    // Set on the gilded form of an outfit, never read from the config.
+    bool is_gold;
+    RGB_888 gold_color;
     bool supports_sunglasses;
     bool is_barefoot;
     int32_t combat_face_offset;

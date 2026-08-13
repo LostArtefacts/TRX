@@ -17,6 +17,22 @@ order: 3
    - the string key `objects/waterfall/name` is now
      `objects/waterfall_mist/name`
 
+2. **Drop the golden outfits**
+   Lara turns to gold in whichever outfit she has on, so the golden outfits are
+   gone from `outfits.json5`, and with them:
+   - the gold gun map,
+   - the braid `gold_offset`,
+   - the `BRAID_MODE_TR1_GOLD` mode,
+   - the two gold braid extra meshes and their equivalent Lua
+     `trx.lara.ExtraMesh` enum members,
+   - the `is_reflective` property.
+
+   Remove them from your own file, and from any game flow or `lara_outfit`
+   setting that names one; `extra_outfits` no longer takes
+   `LS_EXTRA_MIDAS_KILL` either. An outfit says what gold it turns with
+   `gold_color`, and the mesh objects the golden ones used are free for outfits
+   of your own.
+
 ### Version 1.9 to 1.10
 
 The Lua API was rewritten, and most of what it breaks is a rename. Run your

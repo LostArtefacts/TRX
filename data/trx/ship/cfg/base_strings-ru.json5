@@ -577,18 +577,14 @@
             },
             "lara_outfit": {
                 "default": "\\{review}По умолчанию",
-                "golden_sophia": "\\{review}Золотая София",
                 "natla": "\\{review}Натла",
                 "sophia": "\\{review}София",
                 "tr1_bacon_lara": "\\{review}Лара Бекон",
                 "tr1_classic": "\\{review}TR1 Классический",
                 "tr1_combo": "\\{review}TR1 Комбинированный",
-                "tr1_golden_bacon_lara": "\\{review}Золотая Лара Бекон",
-                "tr1_golden_lara": "\\{review}TR1 Золотая Лара",
                 "tr1_gym": "\\{review}TR1 Тренировочный",
                 "tr1_mauled": "\\{review}TR1 Искалеченная",
                 "tr1_ngage": "\\{review}ТР1 Эн-Гейдж",
-                "tr23_golden_lara": "\\{review}TR2/3 Золотая Лара",
                 "tr2_bomber_jacket": "\\{review}Куртка-бомбер 1",
                 "tr2_bomber_jacket_alpha": "\\{review}Куртка-бомбер 2",
                 "tr2_classic": "\\{review}TR2 Классический",
@@ -605,9 +601,7 @@
                 "tr3_nevada": "\\{review}Невада",
                 "tr3_south_pacific": "\\{review}Южный Тихий океан",
                 "tr4_classic": "\\{review}TR4 Классический",
-                "tr4_golden_lara": "\\{review}TR4 Золотая Лара",
                 "tr4_young": "\\{review}TR4 Юная",
-                "tr4_young_golden_lara": "\\{review}TR4 Юная Золотая Лара",
             }
         },
         "mods": {
@@ -1878,6 +1872,10 @@
         "visuals.gamma": {
             "title": "\\{review}Гамма",
             "description": "\\{review}Регулирует гамма-кривую. Более высокие значения означают более яркое освещение. Значение 2.5 соответствует цветам по умолчанию.",
+        },
+        "visuals.golden_lara": {
+            "title": "\\{review}Золотая Лара",
+            "description": "\\{review}Превращает Лару в золото, в каком бы наряде она ни была, как это делает рука Мидаса.",
         },
         "visuals.lara_outfit": {
             "title": "\\{review}Костюм Лары",

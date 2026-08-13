@@ -577,18 +577,14 @@
             },
             "lara_outfit": {
                 "default": "Predefinito",
-                "golden_sophia": "Sophia Dorata",
                 "natla": "\\{review}Natla",
                 "sophia": "Sophia",
                 "tr1_bacon_lara": "Sosia di Lara",
                 "tr1_classic": "Classico TR1",
                 "tr1_combo": "Combinato TR1",
-                "tr1_golden_bacon_lara": "Sosia di Lara Dorata",
-                "tr1_golden_lara": "Lara Dorata TR1",
                 "tr1_gym": "Addestramento TR1 ",
                 "tr1_mauled": "Lara Ferita TR1",
                 "tr1_ngage": "TR1 N-Gage",
-                "tr23_golden_lara": "Lara Dorata TR2/3",
                 "tr2_bomber_jacket": "Giubbotto da Aviatore 1",
                 "tr2_bomber_jacket_alpha": "Giubbotto da Aviatore 2",
                 "tr2_classic": "Classico TR2",
@@ -605,9 +601,7 @@
                 "tr3_nevada": "Nevada",
                 "tr3_south_pacific": "Sud Pacifico",
                 "tr4_classic": "Classico TR4",
-                "tr4_golden_lara": "Lara Dorata TR4",
                 "tr4_young": "Lara Giovane TR4",
-                "tr4_young_golden_lara": "Lara Giovane Dorata TR4",
             }
         },
         "mods": {
@@ -1878,6 +1872,10 @@
         "visuals.gamma": {
             "title": "Gamma",
             "description": "Regola la curva gamma. Valori più alti restituiscono una luminosità maggiore. Il valore 2,5 equivale al livello dei colori predefinito.",
+        },
+        "visuals.golden_lara": {
+            "title": "\\{review}Lara d'oro",
+            "description": "\\{review}Trasforma Lara in oro, qualunque sia il completo che indossa, come fa la mano di Mida.",
         },
         "visuals.lara_outfit": {
             "title": "Costume di Lara",

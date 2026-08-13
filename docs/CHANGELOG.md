@@ -19,6 +19,7 @@
 **Level and game data**
 - Added Natla as an outfit for Lara, selectable in every game (Graphic Options → Visuals → Lara's outfit)
 - Added injection support for putting a room in a flip group, which only TR4 levels carry themselves (#5336)
+- Removed the golden outfits, which the engine now produces from any outfit, freeing their model slots for outfits of your own
 
 **TR4**
 - Added the ability to skip in-game cutscenes
@@ -29,12 +30,16 @@
 - Fixed rooms and their contents sometimes disappearing while an in-game cutscene plays
 - Fixed a crash while an in-game cutscene poses Lara
 
+**Miscellaneous**
+- Added an option to cast Lara in gold whatever she is wearing (Graphic Options → Visuals → Golden Lara)
+- Changed Lara turning to gold on the Midas hand to gild the outfit she has on, rather than swap her for a golden model
+
 **Lua**
 - Added `trx.cutscenes.actor_count`, `trx.cutscenes.set_actor_visible()`, `trx.cutscenes.set_node_mesh()` and `trx.cutscenes.clear_node_mesh()`, for hiding an actor in the scene on screen or putting another object's mesh on one
 - Fixed creatures taking wrong routes where crossing to the next square needs a jump or a monkey swing
-
-**Lua**
 - Changed `trx.cutscenes.play()` to take whether to fade out first, so a scene that opens a level begins on the black screen the level loaded behind
+
+
 
 ## [1.10](https://github.com/LostArtefacts/TRX/compare/trx-1.9.3...trx-1.10) - 2026-08-12
 Showcase: https://youtu.be/DKpqz_Yum6o

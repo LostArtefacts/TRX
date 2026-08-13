@@ -219,6 +219,9 @@ void Output_DispatchLevelUnload(void)
 
 void Output_RefreshObjectMeshes(void)
 {
+    if (!OutputSource_Objects_HasMeshes()) {
+        return;
+    }
     OutputSource_Objects_ObserveLevelLoad();
     MeshBatcher_Seal(m_Batcher);
 }

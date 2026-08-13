@@ -188,7 +188,7 @@ void Shell_HandleConfigChange(const CONFIG_CHANGE *const change)
     if (L_CHANGED(visuals.enable_braid) || L_CHANGED(visuals.sunglasses_mode)) {
         Lara_Skin_ApplyOutfit();
     }
-    if (L_CHANGED(visuals.lara_outfit)) {
+    if (L_CHANGED(visuals.lara_outfit) || L_CHANGED(visuals.golden_lara)) {
         Lara_Skin_ApplyOutfitFromConfig();
     }
 

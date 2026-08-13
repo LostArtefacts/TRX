@@ -577,18 +577,14 @@
             },
             "lara_outfit": {
                 "default": "Default",
-                "golden_sophia": "Golden Sophia",
                 "natla": "Natla",
                 "sophia": "Sophia",
                 "tr1_bacon_lara": "Bacon Lara",
                 "tr1_classic": "TR1 Classic",
                 "tr1_combo": "TR1 Combo",
-                "tr1_golden_bacon_lara": "Golden Bacon Lara",
-                "tr1_golden_lara": "TR1 Golden Lara",
                 "tr1_gym": "TR1 Gym",
                 "tr1_mauled": "TR1 Mauled",
                 "tr1_ngage": "TR1 N-Gage",
-                "tr23_golden_lara": "TR2/3 Golden Lara",
                 "tr2_bomber_jacket": "Bomber Jacket 1",
                 "tr2_bomber_jacket_alpha": "Bomber Jacket 2",
                 "tr2_classic": "TR2 Classic",
@@ -605,9 +601,7 @@
                 "tr3_nevada": "Nevada",
                 "tr3_south_pacific": "South Pacific",
                 "tr4_classic": "TR4 Classic",
-                "tr4_golden_lara": "TR4 Golden Lara",
                 "tr4_young": "TR4 Young",
-                "tr4_young_golden_lara": "TR4 Young Golden Lara",
             }
         },
         "mods": {
@@ -1878,6 +1872,10 @@
         "visuals.gamma": {
             "title": "Gamma",
             "description": "Adjusts the gamma curve. Higher values mean brighter lighting. The value of 2.5 means default colors.",
+        },
+        "visuals.golden_lara": {
+            "title": "Golden Lara",
+            "description": "Casts Lara in gold, whichever outfit she is wearing, as the Midas hand does.",
         },
         "visuals.lara_outfit": {
             "title": "Lara's outfit",

@@ -48,8 +48,6 @@ api.enum("lara.ExtraMesh", {
     TR1_BRAID_COMBAT_HEAD = "Braided head, in combat.",
     TR1_BRAID_DEFAULT_TORSO = "Braided torso.",
     TR1_BRAID_MAULED_TORSO = "Braided torso, mauled.",
-    TR1_BRAID_GOLD_HEAD = "Braided head, gold.",
-    TR1_BRAID_GOLD_TORSO = "Braided torso, gold.",
     DAGGER_HAND = "Dagger, in hand.",
     DAGGER_HIPS = "Dagger, sheathed at the hips.",
     OAR = "Oar.",

@@ -34,6 +34,10 @@ void OutputSource_Objects_AddMeshPolicy(
 void OutputSource_Objects_RemoveMeshPolicy(
     const OUTPUT_OBJECT_MESH_POLICY *policy);
 void OutputSource_Objects_Shutdown(void);
+// Whether the object meshes have been batched for drawing. They are batched
+// once the level is observed, so a mesh added before that needs no refresh.
+bool OutputSource_Objects_HasMeshes(void);
+
 void OutputSource_Objects_ObserveLevelLoad(void);
 void OutputSource_Objects_ObserveLevelUnload(void);
 void OutputSource_Objects_ObserveObjectMeshSwap(

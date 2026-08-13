@@ -434,11 +434,7 @@ void Object_SetMeshReflective(
         return;
     }
 
-    Object_SetMeshReflectiveEx(obj->mesh_idx + mesh_idx, enabled);
-}
-
-void Object_SetMeshReflectiveEx(const int32_t abs_mesh_idx, const bool enabled)
-{
+    const int32_t abs_mesh_idx = obj->mesh_idx + mesh_idx;
     OBJECT_MESH *const mesh = Object_GetMesh(abs_mesh_idx);
     mesh->enable_reflections = enabled;
     for (int32_t i = 0; i < mesh->all_faces.count; i++) {
