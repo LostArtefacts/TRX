@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/config/registry.h>
+#include <trx/core/dynamic_enum.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
@@ -375,6 +376,25 @@ static void M_ReapplyEquipment(const LARA_SKIN_OUTFIT *const outfit)
     }
 }
 
+// Offer the player the outfits the level just loaded can dress her in. What it
+// cannot is left in the setting, so an outfit chosen on one level is not lost
+// on the next, but it is passed over as the setting is cycled.
+static void M_RefreshOutfitChoices(void)
+{
+    const CONFIG_OPTION *const option =
+        Config_FindOptionByMirror(&g_Config.visuals.lara_outfit);
+    if (option == nullptr) {
+        return;
+    }
+
+    const void *const token = Config_Option_GetEnumKey(option);
+    const int32_t outfit_count = Lara_Skin_GetOutfitCount();
+    for (int32_t i = 0; i < outfit_count; i++) {
+        DynamicEnum_SetValueEnabled(
+            token, Lara_Skin_GetOutfitName(i), Lara_Skin_IsOutfitAvailable(i));
+    }
+}
+
 // Whether an outfit has this level's meshes to bind to. A title level running
 // behind the menu is dressed like any other, so this asks what is loaded
 // rather than whether a game is under way.
@@ -408,6 +428,8 @@ void Lara_Skin_Initialise(void)
         m_MeshOverrides[i] = nullptr;
         Lara_Skin_ClearEquipment(i);
     }
+
+    M_RefreshOutfitChoices();
 
     // A level need not carry the swap objects: a title that never shows her
     // has no use for them. No outfit is applied then, and she keeps the meshes
