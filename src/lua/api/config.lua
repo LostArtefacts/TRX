@@ -3,6 +3,7 @@ local raw_settings = trxc.settings
 local api = trx.api
 
 require("trx.locale")
+require("trx.math")
 
 api.module("config", {
   order = 24,
@@ -159,7 +160,7 @@ absent. They are read as the setting is declared and are not reported back by
 
 api.define("config.get", {
   description = "Reads a setting. The value comes back as the type the option is declared with, so "
-    .. "a boolean option reads as a boolean. Colors and enums read as strings.",
+    .. "a boolean option reads as a boolean and a color as a `trx.math.Color`. Enums read as strings.",
   params = {
     {
       name = "key",
@@ -285,8 +286,8 @@ api.define("config.set", {
       name = "value",
       type = "any",
       description = "A boolean, a number, or a string, matching the option's type. A color is a "
-        .. "6-digit hex string. An enum value is taken in either spelling: underscores or the "
-        .. "dashes the console shows.",
+        .. "`trx.math.Color` or the hex text one is written as. An enum value is taken in either "
+        .. "spelling: underscores or the dashes the console shows.",
     },
     {
       name = "force",

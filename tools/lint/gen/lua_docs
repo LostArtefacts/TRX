@@ -39,6 +39,8 @@ OPERATORS = {
     "band": "{0} & {0}",
     "bor": "{0} | {0}",
     "bnot": "~{0}",
+    "eq": "{0} == {0}",
+    "tostring": "tostring({0})",
 }
 
 

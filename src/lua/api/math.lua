@@ -62,6 +62,161 @@ api.type("math.Box", {
   },
 })
 
+-- A color stores its channels directly. Colors read from a field remember their
+-- source, so changing a channel can update that field in the engine.
+local function owner_of(color)
+  return rawget(color, "_owner"), rawget(color, "_key")
+end
+
+local function flush(color)
+  local owner, key = owner_of(color)
+  if owner ~= nil then
+    owner[key] = color
+  end
+end
+
+local function to_byte(channel)
+  local rounded = channel + 0.5 - (channel + 0.5) % 1
+  if rounded < 0 then
+    return 0
+  end
+  if rounded > 255 then
+    return 255
+  end
+  return rounded
+end
+
+local function channel_field(name, slot, description)
+  return {
+    type = "number",
+    description = description,
+    get = function(color)
+      return rawget(color, slot)
+    end,
+    set = function(color, value)
+      if type(value) ~= "number" then
+        error(("math.Color.%s takes a number"):format(name), 2)
+      end
+      rawset(color, slot, value)
+      flush(color)
+    end,
+  }
+end
+
+local Color = api.type("math.Color", {
+  description = [[
+A color, as three channels counted 0 to 255.
+
+Assigning one takes either a color or the hex text a color is written as, so
+`"33e5ff"` and `{ r = 51, g = 229, b = 255 }` say the same thing. A channel may
+also be written on its own, and a color read off something the engine owns
+writes that change straight back to it.
+
+Some colors the engine keeps are stored as fractions rather than bytes, and
+those carry more precision than the hex text shows: a channel of one may read
+back as `191.25`.]],
+  examples = {
+    [[local water = trx.config.get("visuals.water_color")
+trx.log.info(("water is %s, and %d parts red"):format(water.hex, water.r))
+trx.config.set("visuals.water_color", "33e5ff")]],
+  },
+  fields = {
+    r = channel_field("r", "_r", "The red channel."),
+    g = channel_field("g", "_g", "The green channel."),
+    b = channel_field("b", "_b", "The blue channel."),
+    hex = {
+      type = "string",
+      description = "The color as six hex digits, which is how a setting and a data file spell "
+        .. "one. Writing it takes a leading `#` as well.",
+      get = function(color)
+        return ("%02x%02x%02x"):format(
+          to_byte(rawget(color, "_r")),
+          to_byte(rawget(color, "_g")),
+          to_byte(rawget(color, "_b"))
+        )
+      end,
+      set = function(color, text)
+        local r, g, b = tostring(text):match("^#?(%x%x)(%x%x)(%x%x)$")
+        if r == nil then
+          error("math.Color.hex takes six hex digits", 2)
+        end
+        rawset(color, "_r", tonumber(r, 16))
+        rawset(color, "_g", tonumber(g, 16))
+        rawset(color, "_b", tonumber(b, 16))
+        flush(color)
+      end,
+    },
+  },
+  operators = {
+    tostring = {
+      description = "The color as its hex text.",
+      impl = function(color)
+        return color.hex
+      end,
+    },
+    eq = {
+      description = "Two colors are equal when their channels are.",
+      impl = function(a, b)
+        return a.r == b.r and a.g == b.g and a.b == b.b
+      end,
+    },
+  },
+})
+
+local function make_color(r, g, b, owner, key)
+  local color = setmetatable({}, Color)
+  rawset(color, "_r", r)
+  rawset(color, "_g", g)
+  rawset(color, "_b", b)
+  rawset(color, "_owner", owner)
+  rawset(color, "_key", key)
+  return color
+end
+
+-- Every color the engine hands a script is built here, so the type is the one
+-- the docs describe rather than a bare table of channels.
+trxc.api.set_color_ctor(make_color)
+
+api.define("math.color", {
+  description = "Builds a color, out of three channels or out of hex text. The color it hands "
+    .. "back belongs to the caller: assign it somewhere for the engine to take it.",
+  params = {
+    {
+      name = "value",
+      type = { "string", "number" },
+      description = "The hex text, or the red channel.",
+    },
+    {
+      name = "g",
+      type = "number",
+      optional = true,
+      description = "The green channel, where the first argument was the red one.",
+    },
+    {
+      name = "b",
+      type = "number",
+      optional = true,
+      description = "The blue channel.",
+    },
+  },
+  returns = { type = "math.Color" },
+  examples = {
+    [[local gold = trx.math.color("ffbf20")
+local teal = trx.math.color(51, 229, 255)]],
+  },
+  impl = function(value, g, b)
+    if type(value) == "string" then
+      local color = make_color(0, 0, 0)
+      color.hex = value
+      return color
+    end
+    if type(g) ~= "number" or type(b) ~= "number" then
+      error("trx.math.color takes hex text, or all three channels", 2)
+    end
+    return make_color(value, g, b)
+  end,
+})
+
 api.define("math.sin", {
   description = "Sine of an angle.",
   params = {

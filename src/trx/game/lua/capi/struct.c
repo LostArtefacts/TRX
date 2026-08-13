@@ -36,7 +36,7 @@ static int M_Index(lua_State *const L)
             lua_pushnil(L);
             return 1;
         }
-        LUA_PushValue(L, &value);
+        LUA_PushMemberValue(L, &value, 1, 2);
         return 1;
     }
 

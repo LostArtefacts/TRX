@@ -81,7 +81,7 @@ game's `scripts/_game.lua` declares belongs to that game and goes when it does.
 ### Functions
 
 - <a id="config.get" name="config.get"></a>[lua]`trx.config.get(key)`  
-  Reads a setting. The value comes back as the type the option is declared with, so a boolean option reads as a boolean. Colors and enums read as strings.
+  Reads a setting. The value comes back as the type the option is declared with, so a boolean option reads as a boolean and a color as a [`trx.math.Color`](MATH.md#math.Color). Enums read as strings.
 
   Parameters:
   - <a id="config.get.key" name="config.get.key"></a>**`key`** (string). Dotted path, e.g. `visuals.water_color`.
@@ -138,7 +138,7 @@ game's `scripts/_game.lua` declares belongs to that game and goes when it does.
 
   Parameters:
   - <a id="config.set.key" name="config.set.key"></a>**`key`** (string). Dotted path.
-  - <a id="config.set.value" name="config.set.value"></a>**`value`** (any). A boolean, a number, or a string, matching the option's type. A color is a 6-digit hex string. An enum value is taken in either spelling: underscores or the dashes the console shows.
+  - <a id="config.set.value" name="config.set.value"></a>**`value`** (any). A boolean, a number, or a string, matching the option's type. A color is a [`trx.math.Color`](MATH.md#math.Color) or the hex text one is written as. An enum value is taken in either spelling: underscores or the dashes the console shows.
   - <a id="config.set.force" name="config.set.force"></a>**`force`** (boolean, optional). Write through a setting the game flow enforces.
 
 - <a id="config.reset" name="config.reset"></a>[lua]`trx.config.reset(key, [force])`  

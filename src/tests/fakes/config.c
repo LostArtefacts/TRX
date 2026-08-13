@@ -21,7 +21,7 @@ static bool m_EnableMusic;
 static int32_t m_Fov;
 static double m_Brightness;
 static double m_MasterVolume;
-static char *m_WaterColor;
+static RGB_888 m_WaterColor;
 static int32_t m_ShadowType;
 
 static const CONFIG_OPTION_DESC m_Descs[] = {
@@ -39,7 +39,7 @@ static const CONFIG_OPTION_DESC m_Descs[] = {
       .mirror = &m_MasterVolume,
       .percent = true },
     { .name = "visuals.water_color",
-      .default_value = { .type = TVT_STRING, .as_str = "ff0000" },
+      .default_value = { .type = TVT_RGB_888, .as_rgb = { 0xFF, 0x00, 0x00 } },
       .mirror = &m_WaterColor },
     { .name = "visuals.shadow_type",
       .default_value = { .type = TVT_ENUM, .as_int = 0 },
@@ -125,11 +125,10 @@ static bool M_Parse(
         break;
     }
 
-    case TVT_STRING:
-        if (strlen(new_value) != 6) {
+    case TVT_RGB_888:
+        if (!Value_Parse(TVT_RGB_888, nullptr, new_value, &value)) {
             return false;
         }
-        value.as_str = new_value;
         break;
 
     case TVT_ENUM: {
@@ -162,8 +161,8 @@ const char *Config_Option_GetValueAsString(
     case TVT_DOUBLE:
         snprintf(buf, sizeof(buf), "%g", option->value.as_num);
         return buf;
-    case TVT_STRING:
-        return option->value.as_str != nullptr ? option->value.as_str : "";
+    case TVT_RGB_888:
+        return Value_Format(TVT_RGB_888, nullptr, &option->value, false);
     case TVT_ENUM:
         return EnumMap_ToString(option->enum_map, option->value.as_int);
     default:
