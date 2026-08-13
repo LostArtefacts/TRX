@@ -163,6 +163,13 @@ OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
     return FakeLara_AmmoObject(gun_type);
 }
 
+// The object a rifle's own animations come from. No level is loaded here, so
+// there are no animations to count and the pickup stands in for it.
+OBJECT_ID Gun_GetWeaponAnim(const LARA_GUN_TYPE gun_type)
+{
+    return FakeLara_GunObject(gun_type);
+}
+
 // The shotgun spends six rounds a shot, as the engine's table says, so a test
 // can tell the two units apart.
 int32_t Gun_GetRoundsPerShot(const LARA_GUN_TYPE gun_type)
