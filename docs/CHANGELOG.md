@@ -40,11 +40,13 @@
 - Changed Lara turning to gold on the Midas hand to gild the outfit she has on, rather than swap her for a golden model
 
 **Lua**
+- Added the full weapon definition to `trx.weapons`, so a script can read and change what a weapon does: its damage, reach and accuracy, its aim limits, its ammunition, the animations it is drawn by, and the flash, glow, smoke and shells it throws
 - Added `trx.math.Color` and `trx.math.color()`, so a color is a value with its channels and its hex text on it rather than a string
 - Added `trx.cutscenes.actor_count`, `trx.cutscenes.set_actor_visible()`, `trx.cutscenes.set_node_mesh()` and `trx.cutscenes.clear_node_mesh()`, for hiding an actor in the scene on screen or putting another object's mesh on one
 - Fixed creatures taking wrong routes where crossing to the next square needs a jump or a monkey swing
 - Changed `trx.cutscenes.play()` to take whether to fade out first, so a scene that opens a level begins on the black screen the level loaded behind
 - Changed a color setting to read as a `trx.math.Color` rather than as hex text, and to be written with either
+- Changed the `trx.weapons` functions that take a weapon id to be deprecated, the weapon itself now answering what it is available as, what it is carried as, and what it is fed
 
 
 

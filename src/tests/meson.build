@@ -636,6 +636,19 @@ unit_tests += {
   ],
 }
 
+# The weapon table is the engine's own; the fake stands in for the gun code the
+# bridges ask which pickup a weapon is and what it is drawn from.
+unit_tests += {
+  'name': 'lua/api/weapons',
+  'bundles': [b_lua_surface, b_lua_math],
+  'src': ['fakes/lara.c', 'fakes/items.c', 'fakes/catalog.c'],
+  'engine': [
+    'game/lua/capi/catalog.c',
+    'game/lua/capi/items.c',
+    'game/lua/capi/weapons.c',
+  ],
+}
+
 unit_tests += {
   'name': 'lua/api/lara',
   'bundles': [b_lua_surface, b_lua_math],
@@ -735,7 +748,7 @@ unit_tests += {
 
 unit_tests += {
   'name': 'lua/commands/give',
-  'bundles': [b_lua_surface, b_console, b_lua_strings],
+  'bundles': [b_lua_surface, b_console, b_lua_math, b_lua_strings],
   'src': [
     'fakes/game.c',
     'fakes/items.c',

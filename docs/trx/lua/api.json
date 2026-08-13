@@ -159,6 +159,25 @@
       }
     },
     {
+      "countable": false,
+      "description": "Indexing the module reaches a weapon definition, so `trx.weapons.uzis` is the uzis. Keyed by weapon id or catalog name, not by position.",
+      "examples": [
+        "trx.weapons.uzis.damage = 5\ntrx.weapons.shotgun.ammo.box_shots = 12\ntrx.weapons.flare.glow.color = \"33e5ff\""
+      ],
+      "key": {
+        "description": "Weapon id, or its catalog name.",
+        "type": [
+          "catalog.weapons",
+          "string"
+        ]
+      },
+      "module": "weapons",
+      "value": {
+        "nullable": true,
+        "type": "weapons.Weapon"
+      }
+    },
+    {
       "countable": true,
       "description": "Indexing the module reaches a zone, by the order the zones were made or by the name one was made with. `#trx.zones` is how many there are, and `pairs()` walks them in that order.",
       "examples": [
@@ -2711,6 +2730,34 @@
           "description": "The quick-save slots, counted and addressed by their on-screen order.",
           "name": "QUICK",
           "value": 1
+        }
+      ]
+    },
+    {
+      "bulk": false,
+      "count": 4,
+      "description": "How the engine holds and fires a weapon, which decides which arm animations and firing routine it uses.",
+      "path": "weapons.Kind",
+      "values": [
+        {
+          "description": "One in each hand, each arm aiming and firing on its own.",
+          "name": "DUAL_PISTOLS",
+          "value": 0
+        },
+        {
+          "description": "One in the right hand.",
+          "name": "SINGLE_PISTOL",
+          "value": 1
+        },
+        {
+          "description": "Held in both hands, drawn from Lara's back.",
+          "name": "RIFLE",
+          "value": 2
+        },
+        {
+          "description": "Fixed to a vehicle rather than held.",
+          "name": "MOUNTED",
+          "value": 3
         }
       ]
     },
@@ -5770,10 +5817,33 @@
       }
     },
     {
+      "description": "Retrieves a weapon definition by id or by name.",
+      "examples": [
+        "local uzis = trx.weapons.get(trx.catalog.weapons.UZIS)\nuzis.damage = 5"
+      ],
+      "params": [
+        {
+          "description": "Weapon id, or its catalog name: `trx.weapons[\"uzis\"]`.",
+          "name": "key",
+          "type": [
+            "catalog.weapons",
+            "string"
+          ]
+        }
+      ],
+      "path": "weapons.get",
+      "returns": {
+        "description": "`nil` if this game has no such weapon.",
+        "nullable": true,
+        "type": "weapons.Weapon"
+      }
+    },
+    {
+      "deprecated": "Read `trx.weapons.Weapon.is_available` instead.",
       "description": "Whether the game allows this weapon at all. The game flow can keep one out, and\na cheat that hands it over anyway leaves Lara with a gun the level was built\nwithout.",
       "params": [
         {
-          "description": "Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.",
+          "description": "Which weapon. `UNKNOWN`, `UNARMED`, and out-of-range values raise.",
           "name": "weapon",
           "type": "catalog.weapons"
         }
@@ -5785,13 +5855,14 @@
       }
     },
     {
+      "deprecated": "Read `trx.weapons.Weapon.object` instead.",
       "description": "The pickup the weapon is, for handing it to `trx.inventory:give`.",
       "examples": [
         "trx.inventory:give(trx.weapons.object(trx.catalog.weapons.SHOTGUN))"
       ],
       "params": [
         {
-          "description": "Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.",
+          "description": "Which weapon. `UNKNOWN`, `UNARMED`, and out-of-range values raise.",
           "name": "weapon",
           "type": "catalog.weapons"
         }
@@ -5799,14 +5870,49 @@
       "path": "weapons.object",
       "returns": {
         "description": "The object id, or `nil` if this game has no such weapon.",
+        "nullable": true,
         "type": "catalog.objects"
       }
     },
     {
+      "deprecated": "Read `trx.weapons.Weapon.ammo_object` instead.",
+      "description": "The box of ammunition the weapon takes.",
+      "params": [
+        {
+          "description": "Which weapon. `UNKNOWN`, `UNARMED`, and out-of-range values raise.",
+          "name": "weapon",
+          "type": "catalog.weapons"
+        }
+      ],
+      "path": "weapons.ammo_object",
+      "returns": {
+        "description": "The object id, or `nil` where the weapon takes no ammunition.",
+        "nullable": true,
+        "type": "catalog.objects"
+      }
+    },
+    {
+      "deprecated": "Read `trx.weapons.Weapon.rounds_per_shot` instead.",
+      "description": "How many rounds one pull of the trigger spends. Six for the shotgun, one for everything else.",
+      "params": [
+        {
+          "description": "Which weapon. `UNKNOWN`, `UNARMED`, and out-of-range values raise.",
+          "name": "weapon",
+          "type": "catalog.weapons"
+        }
+      ],
+      "path": "weapons.rounds_per_shot",
+      "returns": {
+        "description": "Rounds, not shots.",
+        "type": "integer"
+      }
+    },
+    {
+      "deprecated": "Read `trx.weapons.Ammo.box_shots` instead, which is the same number.",
       "description": "How many shots one box of ammunition for it is worth.",
       "params": [
         {
-          "description": "Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.",
+          "description": "Which weapon. `UNKNOWN`, `UNARMED`, and out-of-range values raise.",
           "name": "weapon",
           "type": "catalog.weapons"
         }
@@ -6152,9 +6258,10 @@
       "order": 31
     },
     {
-      "description": "What a weapon is, rather than what Lara has of it.\n\nNone of this differs between the inventory she carries and the one a level\nkeeps for her, so it belongs to neither: what she holds and how many shots she\nhas are `trx.inventory`.",
+      "description": "What a weapon is, rather than what Lara has of it.\n\nNone of this differs between the inventory she carries and the one a level\nkeeps for her, so it belongs to neither: what she holds and how many shots she\nhas are `trx.inventory`.\n\nA weapon is shared by every copy of it. Changes last for the rest of the\nsession, so levels should restore any values they change when they end.",
       "name": "weapons",
-      "order": 5
+      "order": 5,
+      "title": "Weapon"
     },
     {
       "description": "The runtime weather effect the current level shows.",
@@ -6626,6 +6733,13 @@
       "path": "rules.carrier.inherit_facing",
       "type": "boolean",
       "writable": true
+    },
+    {
+      "description": "Every weapon the engine knows, in the order it holds them. `UNARMED` is not one of them.",
+      "list": true,
+      "path": "weapons.all",
+      "type": "weapons.Weapon",
+      "writable": false
     },
     {
       "description": "The active weather.",
@@ -9922,6 +10036,329 @@
       "methods": [],
       "operators": [],
       "path": "strings.Match"
+    },
+    {
+      "description": "How far off straight ahead an aim may go, as a pair of limits about each axis.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "As far down as it reaches.",
+          "name": "max_pitch",
+          "type": "math.Angle",
+          "writable": true
+        },
+        {
+          "description": "As far to the right as it reaches.",
+          "name": "max_yaw",
+          "type": "math.Angle",
+          "writable": true
+        },
+        {
+          "description": "As far up as it reaches, which is a negative angle.",
+          "name": "min_pitch",
+          "type": "math.Angle",
+          "writable": true
+        },
+        {
+          "description": "As far to the left as the aim reaches, which is a negative angle.",
+          "name": "min_yaw",
+          "type": "math.Angle",
+          "writable": true
+        }
+      ],
+      "handle": true,
+      "methods": [],
+      "operators": [],
+      "path": "weapons.AimLimits"
+    },
+    {
+      "description": "An offset in the frame of the hand that holds the weapon. A weapon held in one hand only uses the right.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "Offset in the left hand.",
+          "name": "left",
+          "type": "math.Vec3",
+          "writable": true
+        },
+        {
+          "description": "Offset in the right hand.",
+          "name": "right",
+          "type": "math.Vec3",
+          "writable": true
+        }
+      ],
+      "handle": true,
+      "methods": [],
+      "operators": [],
+      "path": "weapons.HandPos"
+    },
+    {
+      "description": "What the weapon is fed. A shot is one pull of the trigger, which for the shotgun\nspends six rounds; the flare counts a flare where a weapon counts a shot.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "What a box shows on its inventory icon, which follows nothing else.",
+          "name": "box_label_qty",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "What one box of ammunition is worth.",
+          "name": "box_shots",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "Whether firing spends nothing, so the weapon never runs out and carries no counter.",
+          "name": "infinite",
+          "type": "boolean",
+          "writable": true
+        },
+        {
+          "description": "What the weapon arrives with the first time Lara picks it up.",
+          "name": "initial_shots",
+          "type": "integer",
+          "writable": true
+        }
+      ],
+      "handle": true,
+      "methods": [],
+      "operators": [],
+      "path": "weapons.Ammo"
+    },
+    {
+      "description": "The muzzle flash a shot draws.",
+      "extensions": [
+        {
+          "description": "Where the flash is drawn, in each hand.",
+          "name": "pos",
+          "type": "weapons.HandPos"
+        }
+      ],
+      "fields": [
+        {
+          "description": "What color it lights with, in TR3 and later.",
+          "name": "color",
+          "type": "math.Color",
+          "writable": true
+        },
+        {
+          "description": "How brightly it lights the model around it, in TR1 and TR2. Later games light it by `trx.weapons.Flash.color` instead.",
+          "name": "shade",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "How many frames the flash stays on screen for.",
+          "name": "time",
+          "type": "integer",
+          "writable": true
+        }
+      ],
+      "handle": true,
+      "methods": [],
+      "operators": [],
+      "path": "weapons.Flash"
+    },
+    {
+      "description": "The glow sprite drawn where the weapon burns: a gun's muzzle, or a lit flare.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "What color the glow is drawn in.",
+          "name": "color",
+          "type": "math.Color",
+          "writable": true
+        },
+        {
+          "description": "Whether the brightness is randomized every frame, the way a flare burns.",
+          "name": "flicker",
+          "type": "boolean",
+          "writable": true
+        },
+        {
+          "description": "Where it sits, in the frame of the mesh it follows.",
+          "name": "pos",
+          "type": "math.Vec3",
+          "writable": true
+        },
+        {
+          "description": "Multiplies the sprite's own size. `0` turns the glow off.",
+          "name": "scale",
+          "type": "number",
+          "writable": true
+        }
+      ],
+      "handle": true,
+      "methods": [],
+      "operators": [],
+      "path": "weapons.Glow"
+    },
+    {
+      "description": "The animation numbers a rifle is drawn, put away and fired by. They count the animations and frames of the weapon's own object, not Lara's.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "The frame the weapon appears in her hands on.",
+          "name": "draw_frame",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "The animation the weapon starts on as Lara reaches for it. One the object does not have raises.",
+          "name": "equip_anim",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "The frame a pistol kicks on.",
+          "name": "recoil_frame",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "The frame it leaves her hands on.",
+          "name": "undraw_frame",
+          "type": "integer",
+          "writable": true
+        }
+      ],
+      "handle": true,
+      "methods": [],
+      "operators": [],
+      "path": "weapons.Anim"
+    },
+    {
+      "description": "A weapon definition, reached as `trx.weapons.uzis` or by id.",
+      "extensions": [
+        {
+          "description": "What the weapon is fed.",
+          "name": "ammo",
+          "type": "weapons.Ammo"
+        },
+        {
+          "description": "The box of ammunition it takes, or `nil` where it takes none.",
+          "name": "ammo_object",
+          "type": "catalog.objects"
+        },
+        {
+          "description": "The animation numbers it is drawn and fired by.",
+          "name": "anim",
+          "type": "weapons.Anim"
+        },
+        {
+          "description": "The muzzle flash a shot draws.",
+          "name": "flash",
+          "type": "weapons.Flash"
+        },
+        {
+          "description": "The glow drawn where it burns.",
+          "name": "glow",
+          "type": "weapons.Glow"
+        },
+        {
+          "description": "How far the left arm may follow a target it has locked onto. A dual-wielded weapon drops the lock on the arm that cannot reach.",
+          "name": "left_arm",
+          "type": "weapons.AimLimits"
+        },
+        {
+          "description": "Where auto-aim may lock on, measured from where Lara faces.",
+          "name": "lock",
+          "type": "weapons.AimLimits"
+        },
+        {
+          "description": "Where the barrel ends, which is where smoke and sparks come from.",
+          "name": "muzzle_pos",
+          "type": "weapons.HandPos"
+        },
+        {
+          "description": "The pickup the weapon is, for handing it to `trx.inventory:give`. `nil` where this game has no such weapon.",
+          "name": "object",
+          "type": "catalog.objects"
+        },
+        {
+          "description": "How far the right arm may follow a target.",
+          "name": "right_arm",
+          "type": "weapons.AimLimits"
+        },
+        {
+          "description": "How many rounds one pull of the trigger spends: six for the shotgun, one for everything else. What a box is worth in shots is `trx.weapons.Ammo.box_shots`.",
+          "name": "rounds_per_shot",
+          "type": "integer"
+        },
+        {
+          "description": "Where a spent shell is thrown from. A weapon that leaves no shells has this at the origin.",
+          "name": "shell_pos",
+          "type": "weapons.HandPos"
+        }
+      ],
+      "fields": [
+        {
+          "description": "How far the arms swing towards the target each frame.",
+          "name": "aim_speed",
+          "type": "math.Angle",
+          "writable": true
+        },
+        {
+          "description": "Hit points one shot takes off what it hits.",
+          "name": "damage",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "The sample a shot plays. One this game has no sound for is silent.",
+          "name": "fire_sample",
+          "type": "catalog.samples",
+          "writable": true
+        },
+        {
+          "description": "How far above Lara's feet the shot leaves the barrel. It also decides how deep she can wade and still fire.",
+          "name": "gun_height",
+          "type": "math.Distance",
+          "writable": true
+        },
+        {
+          "description": "Which weapon this is, for the calls that take one: `trx.inventory:set_shots(weapon.id, 100)`.",
+          "name": "id",
+          "type": "catalog.weapons",
+          "writable": false
+        },
+        {
+          "description": "Whether the game allows the weapon at all. Turning one off keeps it out of the cheats and off the controls list, and a save that carries it arrives without it.",
+          "name": "is_available",
+          "type": "boolean",
+          "writable": true
+        },
+        {
+          "description": "How the engine holds and fires it.",
+          "name": "kind",
+          "type": "weapons.Kind",
+          "writable": true
+        },
+        {
+          "description": "How wide a cone a shot may stray into. `0` never misses.",
+          "name": "shot_accuracy",
+          "type": "math.Angle",
+          "writable": true
+        },
+        {
+          "description": "How many puffs of smoke a shot leaves at the muzzle, in TR3. `0` for none.",
+          "name": "smoke_count",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "How far the weapon reaches, both for auto-aim and for the shot itself.",
+          "name": "target_dist",
+          "type": "math.Distance",
+          "writable": true
+        }
+      ],
+      "handle": true,
+      "methods": [],
+      "operators": [],
+      "path": "weapons.Weapon"
     },
     {
       "description": "A script-defined trigger region. Reading a field of one that has been removed, or that a level change took away, raises rather than answering for a zone that is no longer there.",

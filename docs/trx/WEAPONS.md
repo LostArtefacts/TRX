@@ -18,7 +18,9 @@ Lara has a fixed number of weapons as follows.
 - Black Skidoo
 
 The file `cfg/weapons.json5` contains properties for these weapon types, each
-described in the table below.
+described in the table below. The same properties are readable and writable from
+a script, which is how a level changes one while it runs; see the
+[Weapon module](lua/reference/WEAPONS.md).
 
 <table>
   <tr valign="top" align="left">
