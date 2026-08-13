@@ -98,6 +98,7 @@ static const char *M_KindName(const TRX_VALUE_TYPE type)
     case TVT_XYZ_32:
         return "xyz";
     case TVT_RGB_888:
+    case TVT_RGB_F:
         return "color";
     case TVT_ENUM:
         return "enum";

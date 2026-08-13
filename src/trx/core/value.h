@@ -22,6 +22,7 @@ typedef enum {
     TVT_XYZ_16,
     TVT_XYZ_32,
     TVT_RGB_888,
+    TVT_RGB_F,
     TVT_STRING,
     // int32 storage, resolved to and from a string through an EnumMap named by
     // the `param` argument.
@@ -42,6 +43,7 @@ typedef struct {
         double as_num;
         XYZ_32 as_xyz;
         RGB_888 as_rgb;
+        RGB_F as_rgb_f;
         const char *as_str;
     };
 } TRX_VALUE;
@@ -62,7 +64,8 @@ typedef struct {
     _(float, TVT_FLOAT, as_num)                                                \
     _(double, TVT_DOUBLE, as_num)                                              \
     _(XYZ_32, TVT_XYZ_32, as_xyz)                                              \
-    _(RGB_888, TVT_RGB_888, as_rgb)
+    _(RGB_888, TVT_RGB_888, as_rgb)                                            \
+    _(RGB_F, TVT_RGB_F, as_rgb_f)
 
 // The TRX_VALUE_TYPE that addresses a member of a plain C type, resolved from
 // the member itself so a plain member cannot be mistagged. Listing the types

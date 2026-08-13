@@ -47,6 +47,13 @@ void JSONValue_Write(
         break;
     }
 
+    case TVT_RGB_F: {
+        char text[8];
+        sprintf(text, "#%s", Value_Format(TVT_RGB_F, nullptr, value, false));
+        JSON_ObjectAppendString(obj, key, text);
+        break;
+    }
+
     case TVT_ENUM:
         JSON_ObjectAppendString(
             obj, key, EnumMap_ToString(param, value->as_int));
@@ -130,6 +137,12 @@ bool JSONValue_ReadFrom(
         const char *const rgb_text = JSON_ValueGetString(value, nullptr);
         return rgb_text != nullptr
             && String_ParseRGB888(rgb_text, &out->as_rgb);
+
+    case TVT_RGB_F: {
+        const char *const rgb_f_text = JSON_ValueGetString(value, nullptr);
+        return rgb_f_text != nullptr
+            && Value_Parse(TVT_RGB_F, nullptr, rgb_f_text, out);
+    }
 
     case TVT_ENUM: {
         // A name the map does not know leaves the caller to apply its own
