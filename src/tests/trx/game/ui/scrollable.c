@@ -94,3 +94,23 @@ TEST(selecting_the_last_item_scrolls_it_into_view)
     CHECK(!UI_Scrollable_IsItemVisible(&s, 5));
     CHECK(UI_Scrollable_IsItemSelected(&s, 9));
 }
+
+TEST(an_item_count_leaves_an_empty_selection_empty)
+{
+    // The settings dialog clears the selection while its focus is on the tab
+    // row, and recounts the rows every frame. Taking the count used to turn
+    // the empty selection into the first row, which scrolled the list to the
+    // top a frame after the tabs were reached.
+    UI_SCROLLABLE s = M_Make(30, 15, 15, -1);
+    UI_Scrollable_SetMaxItems(&s, 30);
+    UI_Scrollable_SetVisibleItems(&s, 15);
+    CHECK_EQ_INT(s.sel_item, -1);
+    CHECK_EQ_INT(s.first_item, 15);
+}
+
+TEST(an_item_count_pulls_the_selection_inside_the_list)
+{
+    UI_SCROLLABLE s = M_Make(30, 15, 15, 29);
+    UI_Scrollable_SetMaxItems(&s, 20);
+    CHECK_EQ_INT(s.sel_item, 19);
+}
