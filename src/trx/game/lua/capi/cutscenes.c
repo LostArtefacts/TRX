@@ -2,6 +2,7 @@
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils.h>
+#include <trx/game/objects.h>
 
 #include <lauxlib.h>
 
@@ -29,6 +30,27 @@ static int32_t M_CheckTriggerNum(lua_State *const L, const int32_t arg)
     luaL_argcheck(
         L, num >= 0 && num < CUTSEQ_MAX_TRIGGERS, arg, "unknown cutscene");
     return (int32_t)num;
+}
+
+// An actor belongs to the scene on screen, so naming one is only meaningful
+// while that scene is running.
+static int32_t M_CheckActor(lua_State *const L, const int32_t arg)
+{
+    const lua_Integer actor = luaL_checkinteger(L, arg);
+    if (!CutSeq_IsPlaying()) {
+        luaL_error(L, "no cutscene is playing");
+    }
+    luaL_argcheck(
+        L, actor >= 0 && actor < CutSeq_GetActorCount(), arg, "unknown actor");
+    return (int32_t)actor;
+}
+
+static int32_t M_CheckNode(lua_State *const L, const int32_t arg)
+{
+    const lua_Integer node = luaL_checkinteger(L, arg);
+    luaL_argcheck(
+        L, node >= 0 && node < CUTSEQ_MAX_MESHES, arg, "unknown node");
+    return (int32_t)node;
 }
 
 // trxc.cutscenes.play(num)
@@ -81,6 +103,47 @@ static int M_L_CutscenesForgetPlayed(lua_State *const L)
     return 0;
 }
 
+// trxc.cutscenes.get_actor_count() → int
+static int M_L_CutscenesGetActorCount(lua_State *const L)
+{
+    lua_pushinteger(L, CutSeq_GetActorCount());
+    return 1;
+}
+
+// trxc.cutscenes.set_actor_visible(actor, visible)
+static int M_L_CutscenesSetActorVisible(lua_State *const L)
+{
+    const int32_t actor = M_CheckActor(L, 1);
+    CutSeq_SetActorVisible(actor, lua_toboolean(L, 2));
+    return 0;
+}
+
+// trxc.cutscenes.set_node_mesh(actor, node, object_id, mesh_num)
+static int M_L_CutscenesSetNodeMesh(lua_State *const L)
+{
+    const int32_t actor = M_CheckActor(L, 1);
+    const int32_t node = M_CheckNode(L, 2);
+    const OBJECT_ID object_id = LUA_CheckObjectID(L, 3);
+    const OBJECT *const obj = Object_Get(object_id);
+    if (!obj->loaded) {
+        return luaL_error(L, "this level does not carry that object");
+    }
+    const int32_t mesh_num = lua_isnoneornil(L, 4)
+        ? 0
+        : LUA_CheckRange(L, 4, obj->mesh_count, "no such mesh on this object");
+    CutSeq_SetActorNodeMesh(actor, node, object_id, mesh_num);
+    return 0;
+}
+
+// trxc.cutscenes.clear_node_mesh(actor, node)
+static int M_L_CutscenesClearNodeMesh(lua_State *const L)
+{
+    const int32_t actor = M_CheckActor(L, 1);
+    const int32_t node = M_CheckNode(L, 2);
+    CutSeq_SetActorNodeMesh(actor, node, NO_OBJECT, 0);
+    return 0;
+}
+
 // trxc.cutscenes.set_lara_return({x,y,z}, rot)
 static int M_L_CutscenesSetLaraReturn(lua_State *const L)
 {
@@ -126,6 +189,10 @@ static const luaL_Reg m_Module[] = {
     { "get_current", M_L_CutscenesGetCurrent },
     { "get_frame_num", M_L_CutscenesGetFrameNum },
     { "is_playing", M_L_CutscenesIsPlaying },
+    { "get_actor_count", M_L_CutscenesGetActorCount },
+    { "set_actor_visible", M_L_CutscenesSetActorVisible },
+    { "set_node_mesh", M_L_CutscenesSetNodeMesh },
+    { "clear_node_mesh", M_L_CutscenesClearNodeMesh },
     { "is_played", M_L_CutscenesIsPlayed },
     { "set_played", M_L_CutscenesSetPlayed },
     { "forget_played", M_L_CutscenesForgetPlayed },
