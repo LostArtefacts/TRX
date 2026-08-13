@@ -332,6 +332,11 @@
                 "nothing": "This level carries nothing Lara can be given",
                 "what_help": "what to give: all, keys, guns, moreguns, or an item by name",
             },
+            "golden": {
+                "help": "Casts Lara in gold, whichever outfit she is wearing.",
+                "off": "Lara is flesh and blood again",
+                "on": "Lara is cast in gold",
+            },
             "heal": {
                 "already_full_hp": "Lara's already at full health",
                 "help": "Heals Lara back to full health.",

@@ -332,6 +332,11 @@
                 "nothing": "Questo livello non contiene nulla che Lara possa ricevere",
                 "what_help": "valori validi: all, keys, guns, moreguns, o il nome di un oggetto",
             },
+            "golden": {
+                "help": "\\{review}Trasforma Lara in oro, qualunque sia il completo che indossa.",
+                "off": "\\{review}Lara è di nuovo in carne e ossa",
+                "on": "\\{review}Lara è fusa nell'oro",
+            },
             "heal": {
                 "already_full_hp": "Lara è già in piena salute",
                 "help": "Riporta Lara in piena salute.",

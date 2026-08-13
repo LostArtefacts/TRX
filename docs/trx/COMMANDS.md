@@ -143,6 +143,12 @@ whichever key you have bound, and not include it as part of the command itself.
   `/braid off`  
   Toggle Lara's braid like it's a fashion accessory. Hair today, gone tomorrow.
 
+- `/golden`  
+  `/golden on`  
+  `/golden off`  
+  Casts Lara in gold, whatever she has on. All the glory of the Midas hand, none
+  of the dying.
+
 - `/wireframe on`  
   `/wireframe off`  
   Enables or disables the wireframe mode. Enter the debugging realm!
