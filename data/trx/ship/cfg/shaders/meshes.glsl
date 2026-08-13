@@ -17,6 +17,7 @@ layout(location = 5) in uint inFlags;
 layout(location = 6) in vec4 inColor;
 layout(location = 7) in float inShade;
 layout(location = 8) in float inReflectivity;
+layout(location = 9) in vec2 inUVScroll; // x = V per game frame, y = wrap
 
 out vec4 gEyePos;
 out vec3 gNormal;
@@ -108,8 +109,8 @@ void main(void) {
     gTexLayer = (uTexturesEnabled != 0) && (gFlags & VERT_FLAT_SHADED) == 0u ? int(inUVW.z) : -1;
     gTrapezoidRatios = inTrapezoidRatios;
     gTexUV = inUVW.xy;
-    if ((inFlags & VERT_UV_ROTATE) != 0u) {
-        gTexUV.y += uUVRotateOffset;
+    if (inUVScroll.y > 0.0) {
+        gTexUV.y += mod(uUVScrollTick * inUVScroll.x, inUVScroll.y);
     }
     gReflectivity = inReflectivity;
     if (uTrapezoidFilterEnabled != 0) {

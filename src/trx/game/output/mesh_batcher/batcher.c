@@ -31,6 +31,7 @@ typedef struct {
     OUTPUT_TEXTURE_SIZE texture_size;
     float trapezoid_ratio[2];
     float reflectivity;
+    float uv_scroll[2];
 } M_MESH_TEXTURE;
 
 typedef struct M_MESH_BUF_BINDING {
@@ -167,10 +168,6 @@ static void M_FillGeometry(
     geom->normal.w = vertex->light_table_idx;
     geom->color = vertex->color;
     geom->flags = vertex->flags;
-    if ((vertex->flags & VERT_FLAT_SHADED) == 0 && vertex->uvw_idx >= 0
-        && Output_Textures_IsUVWUVRotated(vertex->uvw_idx / 4)) {
-        geom->flags |= VERT_UV_ROTATE;
-    }
 }
 
 static void M_FillTexture(
@@ -184,6 +181,11 @@ static void M_FillTexture(
     tex->texture_size = Output_Textures_GetAtlasSize(vertex->uvw_idx / 4);
     tex->trapezoid_ratio[0] = vertex->trapezoid_ratio[0];
     tex->trapezoid_ratio[1] = vertex->trapezoid_ratio[1];
+
+    const OUTPUT_UV_SCROLL scroll =
+        Output_Textures_GetUVScroll(vertex->uvw_idx / 4);
+    tex->uv_scroll[0] = scroll.speed / 256.0f;
+    tex->uv_scroll[1] = scroll.period / 256.0f;
 }
 
 static void M_FillShade(
@@ -886,6 +888,7 @@ static void M_SetupVertexArray(
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_TEXTURE_SIZE);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_TRAPEZOID_RATIO);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_REFLECTIVITY);
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_UV_SCROLL);
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_UVW, 3, GL_FLOAT, GL_FALSE, sizeof(M_MESH_TEXTURE),
         (void *)(intptr_t)offsetof(M_MESH_TEXTURE, uvw));
@@ -901,6 +904,10 @@ static void M_SetupVertexArray(
         OUTPUT_MESH_ATTR_REFLECTIVITY, 1, GL_FLOAT, GL_FALSE,
         sizeof(M_MESH_TEXTURE),
         (void *)(intptr_t)offsetof(M_MESH_TEXTURE, reflectivity));
+    glVertexAttribPointer(
+        OUTPUT_MESH_ATTR_UV_SCROLL, 2, GL_FLOAT, GL_FALSE,
+        sizeof(M_MESH_TEXTURE),
+        (void *)(intptr_t)offsetof(M_MESH_TEXTURE, uv_scroll));
 
     glBindBuffer(GL_ARRAY_BUFFER, shade);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_SHADE);

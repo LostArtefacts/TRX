@@ -18,6 +18,15 @@ typedef struct {
 } OUTPUT_UVW;
 #pragma pack(pop)
 
+// A texture whose sampling window slides down a tileable strip rather than
+// frame-swapping. The window is as tall as the period, and the strip below
+// it twice that, so the window returns to where it started once it has
+// crossed one period.
+typedef struct {
+    int32_t speed; // V texels the window travels per game frame
+    int32_t period; // V texels the travel wraps at; 0 leaves the texture still
+} OUTPUT_UV_SCROLL;
+
 // An axis-aligned patch of the atlas, as UV corners plus the atlas layer.
 typedef struct {
     float uv0[2];
@@ -45,7 +54,7 @@ int32_t Output_Textures_GetSpriteUVWIndex(
 OUTPUT_UVW Output_Textures_GetUVW(int32_t uvw_idx);
 OUTPUT_TEXTURE_SIZE Output_Textures_GetAtlasSize(int32_t uvw_idx);
 bool Output_Textures_IsObjectTextureAnimated(int32_t texture_idx);
-bool Output_Textures_IsUVWUVRotated(int32_t uvw_pack_idx);
+OUTPUT_UV_SCROLL Output_Textures_GetUVScroll(int32_t uvw_pack_idx);
 SCENE_PASS Output_Textures_GetObjectTextureScenePass(int32_t texture_idx);
 bool Output_Textures_IsSpriteTextureAnimated(int32_t sprite_idx);
 uint16_t Output_Textures_GetSpriteTextureFlags(int32_t sprite_idx);

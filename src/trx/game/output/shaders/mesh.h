@@ -18,7 +18,6 @@
 #define VERT_MOVE              0b0100'0000'0000 // = 0x0400
 #define VERT_GLOW              0b1000'0000'0000 // = 0x0800
 #define VERT_OVERBRIGHT      0b1'0000'0000'0000 // = 0x1000
-#define VERT_UV_ROTATE      0b10'0000'0000'0000 // = 0x2000
 #define VERT_ADDITIVE      0b100'0000'0000'0000 // = 0x4000
 // clang-format on
 
@@ -34,6 +33,7 @@ typedef enum {
     OUTPUT_MESH_ATTR_COLOR           = 6,
     OUTPUT_MESH_ATTR_SHADE           = 7,
     OUTPUT_MESH_ATTR_REFLECTIVITY    = 8,
+    OUTPUT_MESH_ATTR_UV_SCROLL       = 9,
     // clang-format on
 } OUTPUT_MESH_ATTRIBUTE;
 
