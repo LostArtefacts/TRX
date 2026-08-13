@@ -67,7 +67,8 @@ static inline bool M_ItemBoundsIntersectsPortal(
 
 // Take the item out of a room's draw queues: the room itself and every portal
 // neighbour it may have been queued into. Paired with the chain unlink below;
-// both must run when an item leaves a room.
+// both must run when an item leaves a room. Repeated for flipped rooms as
+// portals may differ if the map has been flipped.
 static void M_RemoveFromDrawQueues(
     const int16_t item_num, const int16_t room_num)
 {
@@ -80,6 +81,7 @@ static void M_RemoveFromDrawQueues(
         for (int32_t i = 0; i < room->portals->count; i++) {
             Room_RemoveDrawnItem(room->portals->portal[i].room_num, item_num);
         }
+        M_RemoveFromDrawQueues(item_num, room->flipped_room);
     }
 }
 

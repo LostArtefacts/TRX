@@ -6,6 +6,9 @@
 - Fixed the settings and controls dialog tabs ignoring rebound step left and step right keys
 - Fixed the settings dialogs scrolling their list back to the top when the selection moved up to the tabs
 
+**Miscellaneous**
+- Fixed the Cabin in Natla's Mines remaining visible after dropping to the floor (regression from 1.10)
+
 
 
 ## [1.10](https://github.com/LostArtefacts/TRX/compare/trx-1.9.3...trx-1.10) - 2026-08-12
