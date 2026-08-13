@@ -3,6 +3,7 @@
 **UI**
 - Changed the Fix one-shot music triggers option to sit with the other music settings (Sound → Misc)
 - Changed the tab arrows to no longer vanish once the selection moved into the list below them
+- Changed Lara's outfit setting to offer only the outfits the current level can dress her in
 - Fixed the settings and controls dialog tabs ignoring rebound step left and step right keys
 - Fixed the settings dialogs scrolling their list back to the top when the selection moved up to the tabs
 - Fixed the icons beside the volume settings, which now show a note for the music and a speaker for the sound effects

@@ -74,3 +74,42 @@ TEST(cycling_walks_the_values)
     // An unknown current value cycles to the first entry.
     CHECK_EQ_STR(DynamicEnum_GetNext(&m_TokenA, "missing", 1), "first");
 }
+
+TEST(cycling_passes_over_disabled_values)
+{
+    DynamicEnum_ResetValues(&m_TokenA);
+    DynamicEnum_AddValue(&m_TokenA, "first", nullptr);
+    DynamicEnum_AddValue(&m_TokenA, "second", nullptr);
+    DynamicEnum_AddValue(&m_TokenA, "third", nullptr);
+    DynamicEnum_SetValueEnabled(&m_TokenA, "second", false);
+
+    CHECK(DynamicEnum_IsValueEnabled(&m_TokenA, "first"));
+    CHECK(!DynamicEnum_IsValueEnabled(&m_TokenA, "second"));
+
+    CHECK_EQ_STR(DynamicEnum_GetNext(&m_TokenA, "first", 1), "third");
+    CHECK_EQ_STR(DynamicEnum_GetNext(&m_TokenA, "third", -1), "first");
+
+    // An unknown current value skips to the first one on offer.
+    DynamicEnum_SetValueEnabled(&m_TokenA, "first", false);
+    CHECK_EQ_STR(DynamicEnum_GetNext(&m_TokenA, "missing", 1), "third");
+
+    // Nothing left to cycle to once the run of values holds none.
+    DynamicEnum_SetValueEnabled(&m_TokenA, "third", false);
+    CHECK(!DynamicEnum_CanCycle(&m_TokenA, "first", 1));
+    CHECK(!DynamicEnum_CanCycle(&m_TokenA, "missing", 1));
+    CHECK_NULL(DynamicEnum_GetNext(&m_TokenA, "first", 1));
+}
+
+// A disabled value is still one the caller may hold: it stays valid and keeps
+// its label, so a setting is not taken away from whoever chose it.
+TEST(disabled_values_stay_valid)
+{
+    DynamicEnum_ResetValues(&m_TokenA);
+    DynamicEnum_AddValue(&m_TokenA, "coded", "labels/coded");
+    DynamicEnum_SetValueEnabled(&m_TokenA, "coded", false);
+
+    CHECK(DynamicEnum_IsValidValue(&m_TokenA, "coded"));
+    CHECK_EQ_INT(DynamicEnum_GetValueCount(&m_TokenA), 1);
+    CHECK_EQ_STR(
+        DynamicEnum_GetLabelForValue(&m_TokenA, "coded"), "labels/coded");
+}

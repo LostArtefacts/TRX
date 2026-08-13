@@ -11,6 +11,7 @@
 typedef struct {
     char *value;
     char *label;
+    bool enabled;
 } M_DYNAMIC_ENUM_VALUE;
 
 typedef struct M_DYNAMIC_ENUM_REGISTRY_ENTRY {
@@ -94,7 +95,7 @@ static int32_t M_FindValueIndex(
     return -1;
 }
 
-static const M_DYNAMIC_ENUM_VALUE *M_GetValueEntry(
+static M_DYNAMIC_ENUM_VALUE *M_GetValueEntry(
     const void *const token, const int32_t index)
 {
     const M_DYNAMIC_ENUM_REGISTRY_ENTRY *const entry =
@@ -106,6 +107,22 @@ static const M_DYNAMIC_ENUM_VALUE *M_GetValueEntry(
         return nullptr;
     }
     return Vector_Get(entry->values, index);
+}
+
+// The next value in the given direction the caller may be offered, or -1 where
+// the run of values ends without one.
+static int32_t M_FindNextEnabledIndex(
+    const void *const token, const int32_t from_idx, const int32_t dir)
+{
+    const int32_t value_count = DynamicEnum_GetValueCount(token);
+    const int32_t step = dir < 0 ? -1 : 1;
+    for (int32_t idx = from_idx + step; idx >= 0 && idx < value_count;
+         idx += step) {
+        if (M_GetValueEntry(token, idx)->enabled) {
+            return idx;
+        }
+    }
+    return -1;
 }
 
 // Null or whitespace-only. A value with no label at all falls back to its own
@@ -188,6 +205,7 @@ bool DynamicEnum_AddValue(
     M_DYNAMIC_ENUM_VALUE dyn_value = {
         .value = value != nullptr ? Memory_DupStr(value) : nullptr,
         .label = label != nullptr ? Memory_DupStr(label) : nullptr,
+        .enabled = true,
     };
     Vector_Add(entry->values, &dyn_value);
     return true;
@@ -196,6 +214,24 @@ bool DynamicEnum_AddValue(
 bool DynamicEnum_IsValidValue(const void *const token, const char *const value)
 {
     return M_FindValueIndex(token, value) >= 0;
+}
+
+void DynamicEnum_SetValueEnabled(
+    const void *const token, const char *const value, const bool enabled)
+{
+    M_DYNAMIC_ENUM_VALUE *const dyn_value =
+        M_GetValueEntry(token, M_FindValueIndex(token, value));
+    if (dyn_value != nullptr) {
+        dyn_value->enabled = enabled;
+    }
+}
+
+bool DynamicEnum_IsValueEnabled(
+    const void *const token, const char *const value)
+{
+    const M_DYNAMIC_ENUM_VALUE *const dyn_value =
+        M_GetValueEntry(token, M_FindValueIndex(token, value));
+    return dyn_value != nullptr && dyn_value->enabled;
 }
 
 int32_t DynamicEnum_GetValueCount(const void *const token)
@@ -247,12 +283,10 @@ bool DynamicEnum_CanCycle(
 
     const int32_t cur_idx = M_FindValueIndex(token, current);
     if (cur_idx < 0) {
-        return true;
+        return M_FindNextEnabledIndex(token, -1, 1) >= 0;
     }
 
-    const int32_t step = dir < 0 ? -1 : 1;
-    const int32_t next_idx = cur_idx + step;
-    return next_idx >= 0 && next_idx < value_count;
+    return M_FindNextEnabledIndex(token, cur_idx, dir) >= 0;
 }
 
 const char *DynamicEnum_GetNext(
@@ -268,13 +302,10 @@ const char *DynamicEnum_GetNext(
     }
 
     const int32_t cur_idx = M_FindValueIndex(token, current);
-    if (cur_idx < 0) {
-        return DynamicEnum_GetValueAt(token, 0);
-    }
-
-    const int32_t step = dir < 0 ? -1 : 1;
-    const int32_t next_idx = cur_idx + step;
-    if (next_idx < 0 || next_idx >= value_count) {
+    const int32_t next_idx = cur_idx < 0
+        ? M_FindNextEnabledIndex(token, -1, 1)
+        : M_FindNextEnabledIndex(token, cur_idx, dir);
+    if (next_idx < 0) {
         return nullptr;
     }
 
