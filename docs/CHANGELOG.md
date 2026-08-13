@@ -17,6 +17,7 @@
 **TR4**
 - Added the ability to skip in-game cutscenes
 - Changed a flip to move the group of rooms the trigger names, rather than every flip room in the level
+- Fixed creatures walking through squares a pushable block stands on
 - Fixed rooms and their contents sometimes disappearing while an in-game cutscene plays
 - Fixed a crash while an in-game cutscene poses Lara
 
