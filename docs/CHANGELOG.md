@@ -6,6 +6,7 @@
 - Fixed the settings and controls dialog tabs ignoring rebound step left and step right keys
 - Fixed the icons beside the volume settings, which now show a note for the music and a speaker for the sound effects
 - Fixed the controls key list jumping after switching to a tab with fewer keys (regression from 1.3)
+- Fixed the game flashing over the black bars beside the picture when a frame is advanced in photo mode (regression from 1.10)
 - Fixed ability to open the inventory ring while a flyby sequence has Lara's control
 
 **Developer console**
