@@ -21,11 +21,10 @@ static STATIC_OBJECT_3D *m_StaticObjects3D = nullptr;
 static STATIC_OBJECT_2D *m_StaticObjects2D = nullptr;
 static int32_t m_StaticObjects3DCount = 0;
 static int32_t m_StaticObjects2DCount = 0;
-static OBJECT_MESH **m_MeshPointers = nullptr;
-static int32_t m_MeshCount = 0;
-static int32_t m_MeshCapacity = 0;
+static VECTOR *m_MeshPointers = nullptr;
 
 static VECTOR *m_UncatalogedSlots = nullptr;
+static VECTOR *m_MintedObjects = nullptr;
 
 void Object_Reset(void)
 {
@@ -38,13 +37,23 @@ void Object_Reset(void)
     m_StaticObjects2D = nullptr;
     m_StaticObjects3DCount = 0;
     m_StaticObjects2DCount = 0;
-    m_MeshPointers = nullptr;
-    m_MeshCount = 0;
-    m_MeshCapacity = 0;
+    if (m_MeshPointers != nullptr) {
+        Vector_Free(m_MeshPointers);
+        m_MeshPointers = nullptr;
+    }
 
     if (m_UncatalogedSlots != nullptr) {
         Vector_Free(m_UncatalogedSlots);
         m_UncatalogedSlots = nullptr;
+    }
+
+    if (m_MintedObjects != nullptr) {
+        for (int32_t i = 0; i < m_MintedObjects->count; i++) {
+            OBJECT **const obj = Vector_Get(m_MintedObjects, i);
+            Memory_FreePointer(obj);
+        }
+        Vector_Free(m_MintedObjects);
+        m_MintedObjects = nullptr;
     }
 }
 
@@ -76,7 +85,15 @@ int32_t Object_GetStaticObjects2DCount(void)
 
 OBJECT *Object_TryGet(const OBJECT_ID object_id)
 {
-    if (object_id < O_FIRST || object_id >= O_NUMBER_OF) {
+    if (object_id >= O_NUMBER_OF) {
+        const int32_t minted_idx = object_id - O_NUMBER_OF;
+        if (m_MintedObjects == nullptr
+            || minted_idx >= m_MintedObjects->count) {
+            return nullptr;
+        }
+        return *(OBJECT **)Vector_Get(m_MintedObjects, minted_idx);
+    }
+    if (object_id < O_FIRST) {
         return nullptr;
     }
     return &m_Objects[object_id];
@@ -84,8 +101,21 @@ OBJECT *Object_TryGet(const OBJECT_ID object_id)
 
 OBJECT *Object_Get(const OBJECT_ID object_id)
 {
-    ASSERT(object_id >= O_FIRST && object_id < O_NUMBER_OF);
-    return &m_Objects[object_id];
+    OBJECT *const obj = Object_TryGet(object_id);
+    ASSERT(obj != nullptr);
+    return obj;
+}
+
+OBJECT_ID Object_Mint(void)
+{
+    if (m_MintedObjects == nullptr) {
+        m_MintedObjects = Vector_Create(sizeof(OBJECT *));
+    }
+    // Each record is allocated on its own, so a pointer handed out earlier
+    // survives the next mint.
+    OBJECT *const obj = Memory_Alloc(sizeof(OBJECT));
+    Vector_Add(m_MintedObjects, (void *)&obj);
+    return O_NUMBER_OF + m_MintedObjects->count - 1;
 }
 
 OBJECT *Object_GetByGameID(const int32_t game_id)
@@ -199,21 +229,20 @@ OBJECT_ID Object_GetCognateInverse(
 
 void Object_InitialiseMeshes(const int32_t mesh_count)
 {
-    m_MeshCapacity = mesh_count;
-    m_MeshPointers = GameBuf_Alloc(
-        sizeof(OBJECT_MESH *) * m_MeshCapacity, GBUF_MESH_POINTERS);
-    m_MeshCount = 0;
+    if (m_MeshPointers != nullptr) {
+        Vector_Free(m_MeshPointers);
+    }
+    m_MeshPointers = Vector_CreateAtCapacity(sizeof(OBJECT_MESH *), mesh_count);
 }
 
 void Object_StoreMesh(OBJECT_MESH *const mesh)
 {
-    m_MeshPointers[m_MeshCount] = mesh;
-    m_MeshCount++;
+    Vector_Add(m_MeshPointers, (void *)&mesh);
 }
 
 OBJECT_MESH *Object_GetMesh(const int32_t index)
 {
-    return m_MeshPointers[index];
+    return *(OBJECT_MESH **)Vector_Get(m_MeshPointers, index);
 }
 
 int32_t Object_GetItemMeshIndex(const ITEM *const item, const int32_t mesh_idx)
@@ -235,8 +264,8 @@ int32_t Object_GetItemMeshIndex(const ITEM *const item, const int32_t mesh_idx)
 
 int32_t Object_GetMeshIndex(const OBJECT_MESH *const mesh)
 {
-    for (int32_t i = 0; i < m_MeshCount; i++) {
-        if (mesh == m_MeshPointers[i]) {
+    for (int32_t i = 0; i < Object_GetMeshCount(); i++) {
+        if (mesh == Object_GetMesh(i)) {
             return i;
         }
     }
@@ -245,13 +274,13 @@ int32_t Object_GetMeshIndex(const OBJECT_MESH *const mesh)
 
 int32_t Object_GetMeshCount(void)
 {
-    return m_MeshCount;
+    return m_MeshPointers == nullptr ? 0 : m_MeshPointers->count;
 }
 
 OBJECT_MESH *Object_FindMesh(const int32_t data_offset)
 {
-    for (int32_t i = 0; i < m_MeshCount; i++) {
-        OBJECT_MESH *const mesh = m_MeshPointers[i];
+    for (int32_t i = 0; i < Object_GetMeshCount(); i++) {
+        OBJECT_MESH *const mesh = Object_GetMesh(i);
         if (Object_GetMeshOffset(mesh) == data_offset) {
             return mesh;
         }
@@ -304,7 +333,9 @@ void Object_SwapMeshEx(
 
     const int32_t mesh_idx1 = obj1->mesh_idx + mesh_num1;
     const int32_t mesh_idx2 = obj2->mesh_idx + mesh_num2;
-    SWAP(m_MeshPointers[mesh_idx1], m_MeshPointers[mesh_idx2]);
+    OBJECT_MESH **const slot_1 = Vector_Get(m_MeshPointers, mesh_idx1);
+    OBJECT_MESH **const slot_2 = Vector_Get(m_MeshPointers, mesh_idx2);
+    SWAP(*slot_1, *slot_2);
 
     Output_DispatchObjectMeshSwap(mesh_idx1, mesh_idx2);
 }
