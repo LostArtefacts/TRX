@@ -38,6 +38,9 @@ typedef struct {
     float depth_adjustment;
     bool enable_reflections;
     bool enable_caustics;
+    // Draws every face in solid_color, texture and all.
+    bool enable_solid_color;
+    RGB_888 solid_color;
 } OBJECT_MESH;
 
 typedef struct {
