@@ -21,6 +21,11 @@ typedef struct {
 } SHELL_MOD;
 
 void Shell_ScanAvailableMods(void);
+
+// Why the scan passed over the game directories it could not use, one per
+// line, or nullptr where it passed over none. Points at the file and, for a
+// gameflow that would not parse, the line and column it stopped at.
+const char *Shell_GetModRejections(void);
 void Shell_ValidateMods(void);
 int32_t Shell_GetModCount(void);
 const SHELL_MOD *Shell_GetMod(int32_t index);

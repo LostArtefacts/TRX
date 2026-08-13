@@ -13,6 +13,13 @@ JSON_VALUE *JSONFile_Read(const char *path);
 // Like JSONFile_Read(), except optionally exits on parse error.
 JSON_VALUE *JSONFile_ReadEx(const char *path, bool exit_on_error);
 
+// Like JSONFile_ReadEx(), and hands back why the read failed, for a caller
+// that has to tell the player rather than only write it to the log. The
+// message names the line and column where the file stopped making sense.
+// Caller must free it with Memory_FreePointer().
+JSON_VALUE *JSONFile_ReadWithError(
+    const char *path, bool exit_on_error, char **error_out);
+
 // Format and hard-exit with the JSON read error details.
 void JSONFile_ExitWithReadIOError(
     const JSON_READ_IO *io, const char *fallback_message);

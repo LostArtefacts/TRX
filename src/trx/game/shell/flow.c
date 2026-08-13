@@ -215,6 +215,13 @@ static void M_PrepareSystem(void)
         s->args->startup.mod != nullptr ? s->args->startup.mod->name : nullptr);
     if (s->args->startup.engine_version <= 0
         || s->args->startup.mod == nullptr) {
+        const char *const rejections = Shell_GetModRejections();
+        if (rejections != nullptr) {
+            Shell_ExitSystemFmt(
+                "No playable mods available.\n\nThe following were passed "
+                "over:\n%s",
+                rejections);
+        }
         Shell_ExitSystem("No playable mods available.");
     }
     if (s->args->startup.mod->mod_type != MOD_DIRECT_LEVEL

@@ -16,4 +16,8 @@ bool GF_ValidateMod(const char *mod_name, const char *path);
 // Quick-parse a gameflow file to extract only the mod metadata fields
 // ("name", "engine", and "extends"). Returns true on success. Caller must
 // free meta->name and meta->extends with Memory_FreePointer().
-bool GF_ReadModMeta(const char *path, GF_MOD_META *meta);
+//
+// Where error_out is given, a failed read leaves the reason in it, for a
+// caller that has to say why the mod was passed over. Caller must free it
+// with Memory_FreePointer().
+bool GF_ReadModMeta(const char *path, GF_MOD_META *meta, char **error_out);
