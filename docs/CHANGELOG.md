@@ -17,6 +17,7 @@
 **TR4**
 - Added the ability to skip in-game cutscenes
 - Changed a flip to move the group of rooms the trigger names, rather than every flip room in the level
+- Fixed animations that move an item sideways playing with the item standing still, such as TR4's guide shimmy.
 - Fixed creatures walking through squares a pushable block stands on
 - Fixed rooms and their contents sometimes disappearing while an in-game cutscene plays
 - Fixed a crash while an in-game cutscene poses Lara
