@@ -864,21 +864,16 @@ static bool M_LoadLevel(
     }
 
     {
-        const bool outfit_optional = level->type == GFL_TITLE
-            || level->type == GFL_DUMMY || level->type == GFL_CURRENT;
         const char *tmp = nullptr;
-        if (outfit_optional) {
-            JSON_OPTIONAL(JSON_READ(io, "lara_outfit", &tmp));
-        } else {
-            JSON_MUST(JSON_READ(io, "lara_outfit", &tmp));
-        }
+        JSON_OPTIONAL(JSON_READ(io, "lara_outfit", &tmp));
         if (tmp != nullptr) {
             if (!ctx->validation_mode
                 && !Lara_Skin_IsOutfitDefined(
                     Lara_Skin_FindOutfitByName(tmp))) {
-                JSON_ReadIO_SetError(
-                    io, "invalid 'lara_outfit' value (%s)", tmp);
-                JSON_FAIL();
+                LOG_WARNING(
+                    "%s: level '%s' asks for outfit '%s', which this game does "
+                    "not offer; Lara wears the default one",
+                    ctx->script_path, level->path, tmp);
             }
             level->lara_outfit = Memory_DupStr(tmp);
         }

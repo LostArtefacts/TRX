@@ -337,8 +337,7 @@
       "else": {
         "required": [
           "path",
-          "sequence",
-          "lara_outfit"
+          "sequence"
         ]
       },
       "additionalProperties": false

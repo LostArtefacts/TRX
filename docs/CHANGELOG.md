@@ -21,6 +21,7 @@
 **Level and game data**
 - Added Natla as an outfit for Lara, selectable in every game (Graphic Options → Visuals → Lara's outfit)
 - Added injection support for putting a room in a flip group, which only TR4 levels carry themselves (#5336)
+- Changed a missing or unknown `lara_outfit` in a level to fall back to the default outfit, rather than stopping the game from starting
 - Removed the golden outfits, which the engine now produces from any outfit, freeing their model slots for outfits of your own
 
 **TR1**
