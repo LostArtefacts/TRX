@@ -1,7 +1,9 @@
 #include <trx/game/objects/general/smashable.h>
 
+#include <trx/config.h>
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
+#include <trx/game/collision/common.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/pathing.h>
@@ -91,6 +93,59 @@ static void M_Control2(const int16_t item_num)
     Item_RemoveSimulated(item_num);
 }
 
+// The wall is a pane standing on the edge of a sector, so the floor data
+// describes the ground it covers as open. Whoever is about to move through
+// that ground asks here instead.
+static bool M_Block(
+    const ITEM *const item, const XYZ_32 from, const XYZ_32 to,
+    const int32_t height, const int32_t reach)
+{
+    if (!g_Config.gameplay.fix_breakable_wall_clip || item->trigger.spent
+        || !item->is_collidable) {
+        return false;
+    }
+
+    const ANIM_FRAME *const frame = Item_GetBestFrame(item);
+    if (frame == nullptr) {
+        return false;
+    }
+
+    const BOUNDS_16 *const bounds = &frame->bounds;
+    const int32_t min_y = MIN(from.y, to.y) - height;
+    const int32_t max_y = MAX(from.y, to.y);
+    if (max_y <= item->pos.y + bounds->min.y
+        || min_y >= item->pos.y + bounds->max.y) {
+        return false;
+    }
+
+    const int32_t c = Math_Cos(item->rot.y);
+    const int32_t s = Math_Sin(item->rot.y);
+    const int32_t from_dx = from.x - item->pos.x;
+    const int32_t from_dz = from.z - item->pos.z;
+    const int32_t to_dx = to.x - item->pos.x;
+    const int32_t to_dz = to.z - item->pos.z;
+    const int32_t from_rx = (c * from_dx - s * from_dz) >> W2V_SHIFT;
+    const int32_t from_rz = (c * from_dz + s * from_dx) >> W2V_SHIFT;
+    const int32_t to_rx = (c * to_dx - s * to_dz) >> W2V_SHIFT;
+    const int32_t to_rz = (c * to_dz + s * to_dx) >> W2V_SHIFT;
+
+    const bool is_thin_in_z =
+        bounds->max.z - bounds->min.z <= bounds->max.x - bounds->min.x;
+    const int32_t along = is_thin_in_z ? to_rx : to_rz;
+    const int32_t along_min = is_thin_in_z ? bounds->min.x : bounds->min.z;
+    const int32_t along_max = is_thin_in_z ? bounds->max.x : bounds->max.z;
+    if (along < along_min || along > along_max) {
+        return false;
+    }
+
+    const int32_t from_across = is_thin_in_z ? from_rz : from_rx;
+    const int32_t to_across = is_thin_in_z ? to_rz : to_rx;
+    const int32_t middle = is_thin_in_z ? (bounds->min.z + bounds->max.z) / 2
+                                        : (bounds->min.x + bounds->max.x) / 2;
+    return (from_across < middle) != (to_across < middle)
+        || ABS(to_across - middle) <= reach;
+}
+
 static void M_SetupBase(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
@@ -104,6 +159,7 @@ static void M_Setup1(OBJECT *const obj)
 {
     M_SetupBase(obj);
     obj->control_func = M_Control1;
+    obj->block_func = M_Block;
 }
 
 static void M_Setup2(OBJECT *const obj)

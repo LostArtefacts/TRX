@@ -1,13 +1,30 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.10...develop) - ××××-××-××
 
+**UI**
+- Fixed ability to open the inventory ring while a flyby sequence has Lara's control
+- Fixed the controls key list jumping after switching to a tab with fewer keys (regression from 1.3)
+
 **Developer console**
 - Changed the `/flip` console command to take a flip group, so `/flip 3` moves that group alone while `/flip` on its own moves them all
 
+**Weapons and ammunition**
+- Added an option to keep Lara firing the M16/MP5 from her hip while the action key is held, rather than shouldering the gun the moment she stops moving (Gameplay → Controls → M16/MP5 aiming variants) (#3861)
+
 **Level and game data**
+- Added Natla as an outfit for Lara, selectable in every game (Graphic Options → Visuals → Lara's outfit)
 - Added injection support for putting a room in a flip group, which only TR4 levels carry themselves (#5336)
 
 **TR4**
+- Added the ability to skip in-game cutscenes
 - Changed a flip to move the group of rooms the trigger names, rather than every flip room in the level
+- Fixed animations that move an item sideways playing with the item standing still, such as TR4's guide shimmy.
+- Fixed creatures walking through squares a pushable block stands on
+- Fixed rooms and their contents sometimes disappearing while an in-game cutscene plays
+- Fixed a crash while an in-game cutscene poses Lara
+
+**Lua**
+- Added `trx.cutscenes.actor_count`, `trx.cutscenes.set_actor_visible()`, `trx.cutscenes.set_node_mesh()` and `trx.cutscenes.clear_node_mesh()`, for hiding an actor in the scene on screen or putting another object's mesh on one
+- Fixed creatures taking wrong routes where crossing to the next square needs a jump or a monkey swing
 
 **Lua**
 - Changed `trx.cutscenes.play()` to take whether to fade out first, so a scene that opens a level begins on the black screen the level loaded behind
@@ -22,6 +39,7 @@ Showcase: https://youtu.be/DKpqz_Yum6o
 - Added the ability for Lara to pull up from ledges more quickly (Gameplay → Controls → Fast pull up) (#4857)
 - Improved state change handling when shimmying is requested while in the slow swing-in state on thin ledges (#5161)
 - Improved the pickup embed fix to prevent Lara becoming clamped when picking up items placed on sloped floors with low ceilings (Gameplay → Fixes → Fix pickup embed glitch) (OG bug)
+- Fixed Lara being able to vault or crawl through breakable walls that stand on the edge of a tile (Gameplay → Fixes → Fix breakable wall clipping) (OG bug)
 - Fixed Lara attempting to pull up into gaps that would not allow her to stand, resulting in her being pushed out (#5891)
 - Fixed Lara being teleported into the ceiling if a door shuts on the ledge she is climbing onto (Gameplay → Fixes → Wall glitch mode) (#6047)
 - Fixed differing ladder/hanging behavior when Lara comes to a stop from shimmying when corner shimmying is enabled (regression from 1.9)

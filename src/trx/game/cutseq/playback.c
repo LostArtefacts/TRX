@@ -11,6 +11,7 @@
 #include <trx/game/fader.h>
 #include <trx/game/flyby_mode.h>
 #include <trx/game/game_flow.h>
+#include <trx/game/input.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
@@ -46,11 +47,18 @@ typedef enum {
 } M_PHASE;
 
 typedef struct {
+    OBJECT_ID obj_id;
+    int16_t src_node;
+} M_MESH_OVERRIDE;
+
+typedef struct {
     CUTSEQ_PACK_NODE *nodes;
     int32_t node_count;
     CUTSEQ_POSE pose_prev;
     CUTSEQ_POSE pose_curr;
     CUTSEQ_POSE pose_draw;
+    bool is_hidden;
+    M_MESH_OVERRIDE overrides[CUTSEQ_MAX_MESHES];
     ITEM dummy_item;
 } M_ACTOR;
 
@@ -213,6 +221,10 @@ static bool M_Begin(const int32_t num)
         actor->pose_prev = actor->pose_curr;
         actor->pose_draw = actor->pose_curr;
 
+        actor->is_hidden = false;
+        for (int32_t j = 0; j < CUTSEQ_MAX_MESHES; j++) {
+            actor->overrides[j].obj_id = NO_OBJECT;
+        }
         actor->dummy_item = (ITEM) {
             .object_id = actor_info->obj_id,
             .room_num = Lara_GetItem()->room_num,
@@ -425,6 +437,15 @@ void CutSeq_Request(const int32_t num, const bool fade_out)
     }
 }
 
+void CutSeq_Skip(void)
+{
+    if (m_State.phase != M_PHASE_PLAYING) {
+        return;
+    }
+    m_State.phase = M_PHASE_FADE_END;
+    Fader_InitFromCurrent(&m_State.fader, 1.0f, M_END_FADE_DURATION);
+}
+
 void CutSeq_HandleTrigger(const int32_t num)
 {
     // A pad answers every frame Lara stands on it, so the once-only rule comes
@@ -473,6 +494,33 @@ void CutSeq_SetPlayed(const int32_t num, const bool played)
     } else {
         m_State.played_mask &= ~(1ull << num);
     }
+}
+
+int32_t CutSeq_GetActorCount(void)
+{
+    return CutSeq_IsPlaying() ? m_State.info.num_actors : 0;
+}
+
+void CutSeq_SetActorVisible(const int32_t actor, const bool visible)
+{
+    if (actor < 0 || actor >= CUTSEQ_MAX_ACTORS) {
+        return;
+    }
+    m_State.actors[actor].is_hidden = !visible;
+}
+
+void CutSeq_SetActorNodeMesh(
+    const int32_t actor, const int32_t node, const OBJECT_ID obj_id,
+    const int32_t src_node)
+{
+    if (actor < 0 || actor >= CUTSEQ_MAX_ACTORS || node < 0
+        || node >= CUTSEQ_MAX_MESHES) {
+        return;
+    }
+    m_State.actors[actor].overrides[node] = (M_MESH_OVERRIDE) {
+        .obj_id = obj_id,
+        .src_node = src_node,
+    };
 }
 
 void CutSeq_SetLaraReturn(const XYZ_32 pos, const int16_t rot)
@@ -538,6 +586,13 @@ void CutSeq_Reset(void)
 
 void CutSeq_Control(void)
 {
+    // As a cutscene level answers them, and for the same reason: a scene the
+    // player has seen before is a scene to get past.
+    if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
+        CutSeq_Skip();
+        Input_HoldOffSkip();
+    }
+
     switch (m_State.phase) {
     case M_PHASE_FADE_OUT:
         if (!Fader_IsActive(&m_State.fader)) {
@@ -595,10 +650,10 @@ void CutSeq_UpdateCamera(void)
         .y = info->origin.y + 2 * m_State.camera_nodes[1].y_run,
         .z = info->origin.z + 2 * m_State.camera_nodes[1].z_run,
     };
-    const int16_t room_num = Room_GetIndexFromPos(g_Camera.pos.pos);
-    if (room_num != NO_ROOM) {
-        g_Camera.pos.room_num = room_num;
-    }
+
+    int16_t room_num = g_Camera.pos.room_num;
+    Room_GetSector(g_Camera.pos.pos, &room_num);
+    g_Camera.pos.room_num = room_num;
     g_Camera.roll = 0;
     g_Camera.shift = 0;
     Viewport_AlterFOV(m_State.fov, FOV_MODE_CUTSCENE);
@@ -635,7 +690,7 @@ void CutSeq_DrawActors(void)
     for (int32_t i = 1; i < info->num_actors; i++) {
         M_ACTOR *const actor = &m_State.actors[i];
         const OBJECT *const obj = M_GetActorObject(&info->actors[i]);
-        if (obj == nullptr) {
+        if (obj == nullptr || actor->is_hidden) {
             continue;
         }
         const CUTSEQ_POSE *const pose = &actor->pose_draw;
@@ -674,8 +729,19 @@ void CutSeq_DrawActors(void)
                 Matrix_TranslateRel32(bone->pos);
             }
             Matrix_Rot16(pose->rots[mesh_idx]);
-            Object_DrawMesh(
-                obj->mesh_idx + mesh_idx, CLIP_FULLY_VISIBLE, false);
+
+            const M_MESH_OVERRIDE *const override = &actor->overrides[mesh_idx];
+            const OBJECT *const src_obj = override->obj_id == NO_OBJECT
+                ? nullptr
+                : Object_TryGet(override->obj_id);
+            if (src_obj != nullptr && src_obj->loaded) {
+                Object_DrawMesh(
+                    src_obj->mesh_idx + override->src_node, CLIP_FULLY_VISIBLE,
+                    false);
+            } else {
+                Object_DrawMesh(
+                    obj->mesh_idx + mesh_idx, CLIP_FULLY_VISIBLE, false);
+            }
         }
         Matrix_Pop();
     }

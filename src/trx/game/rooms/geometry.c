@@ -4,8 +4,12 @@
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
+#include <trx/game/items.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
+
+// How many rooms around the mover are searched for something barring the way.
+#define M_MAX_BLOCK_ROOMS 20
 
 #define M_WALL_MASK (WALL_L - 1)
 #define M_NEG_TILT(T, H) ((T * (H & M_WALL_MASK)) >> 2)
@@ -559,6 +563,28 @@ int32_t Room_FindGridShift(int32_t src, const int32_t dst)
     } else {
         return -(src + 1);
     }
+}
+
+bool Room_IsPathBlocked(
+    const XYZ_32 from, const XYZ_32 to, const int16_t room_num,
+    const int32_t height, const int32_t reach)
+{
+    int16_t rooms[M_MAX_BLOCK_ROOMS];
+    const int32_t room_count =
+        Room_GetAdjoiningRooms(room_num, rooms, M_MAX_BLOCK_ROOMS);
+    for (int32_t i = 0; i < room_count; i++) {
+        const ROOM *const room = Room_Get(rooms[i]);
+        for (int16_t item_num = room->item_num; item_num != NO_ITEM;
+             item_num = Item_Get(item_num)->next_item) {
+            const ITEM *const item = Item_Get(item_num);
+            const OBJECT *const obj = Object_Get(item->object_id);
+            if (obj->block_func != nullptr
+                && obj->block_func(item, from, to, height, reach)) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 bool Room_IsOnWalkable(

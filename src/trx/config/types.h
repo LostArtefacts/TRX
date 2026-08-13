@@ -260,6 +260,7 @@ typedef struct {
         bool enable_manual_camera;
         bool enable_item_examining;
         TARGET_CHANGE_MODE target_change_mode;
+        M16_AIM_MODE m16_aim_mode;
         bool enable_walk_to_items;
         bool enable_snap_interactions;
         bool enable_fast_pickups;
@@ -309,6 +310,7 @@ typedef struct {
         bool fix_wade_wall_hit;
         bool fix_underwater_crawl;
         bool fix_lift_collision;
+        bool fix_breakable_wall_clip;
 
         bool fix_floor_data_issues;
         bool fix_bridge_collision;

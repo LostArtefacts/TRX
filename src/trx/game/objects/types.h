@@ -81,6 +81,16 @@ typedef struct OBJECT {
     int32_t (*floor_height_func)(const ITEM *item, XYZ_32 pos, int32_t height);
     int32_t (*ceiling_height_func)(
         const ITEM *item, XYZ_32 pos, int32_t height);
+    // Whether the item bars the way from one place to another, for an item
+    // that stands between sectors rather than filling one - a pane of glass, a
+    // grate. The floor data has no way to say so, since it speaks of whole
+    // sectors, so a caller that needs to know asks through
+    // Room_IsPathBlocked.
+    // height is how tall the mover is, for judging what it passes under, and
+    // reach how near the item the way may end before it counts as barred.
+    bool (*block_func)(
+        const ITEM *item, XYZ_32 from, XYZ_32 to, int32_t height,
+        int32_t reach);
     void (*activate_func)(ITEM *item);
     void (*event_func)(ITEM *item, OBJECT_EVENT event, const void *data);
     bool (*trigger_func)(ITEM *item, const ITEM_TRIGGER *trigger);

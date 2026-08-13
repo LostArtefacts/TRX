@@ -54,6 +54,16 @@ LOT_SETUP LOT_Setup(const LOT_SETUP_TYPE type)
             .block_mask = BOX_BLOCKED,
         };
 
+    case LOT_SETUP_ACROBAT:
+        return (LOT_SETUP) {
+            .step = WALL_L,
+            .drop = -WALL_L,
+            .fly = 0,
+            .block_mask = BOX_BLOCKED,
+            .can_jump = true,
+            .can_monkey = true,
+        };
+
     case LOT_SETUP_FLYER:
         return (LOT_SETUP) {
             .step = WALL_L * 20,

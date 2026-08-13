@@ -71,6 +71,91 @@ api.property("cutscenes.is_playing", {
   get = raw.is_playing,
 })
 
+api.number("cutscenes.ActorNum", {
+  base = 0,
+  description = [[
+    Which of a cutscene's actors. Actor `0` is Lara, who is posed rather than
+    drawn as an actor; the cast a scene brings with it starts at `1`.
+  ]],
+})
+
+api.number("cutscenes.NodeNum", {
+  base = 0,
+  description = "Which of an actor's meshes, the root being the first.",
+})
+
+api.property("cutscenes.actor_count", {
+  type = "integer",
+  description = "How many actors the running cutscene has, or `0` if none is running.",
+  get = raw.get_actor_count,
+})
+
+api.define("cutscenes.set_actor_visible", {
+  description = [[
+    Whether an actor is drawn. A scene brings its whole cast on from its first
+    frame, so an actor who is only due later is hidden until then, as the
+    original game hides one.
+
+    It lasts as long as the cutscene, and every actor starts out visible.
+  ]],
+  params = {
+    { name = "actor", type = "cutscenes.ActorNum" },
+    {
+      name = "visible",
+      type = "boolean",
+      description = "Whether the actor is drawn.",
+    },
+  },
+  examples = {
+    [[trx.events.on_cutscene_start(function(num)
+  if num == 9 then
+    trx.cutscenes.set_actor_visible(3, false)
+  end
+end)]],
+  },
+  impl = raw.set_actor_visible,
+})
+
+api.define("cutscenes.set_node_mesh", {
+  description = [[
+    Draws another object's mesh in place of the one an actor's node carries.
+    This is how a talking head goes on a body: the speech-head objects hold a
+    mouth in each shape, and swapping between them while a line plays is what
+    the original game animates speech with.
+
+    Raises if this level does not carry the object.
+  ]],
+  params = {
+    { name = "actor", type = "cutscenes.ActorNum" },
+    { name = "node", type = "cutscenes.NodeNum" },
+    {
+      name = "object",
+      type = "catalog.objects",
+      description = "The object to take a mesh from.",
+    },
+    {
+      name = "mesh_num",
+      type = "integer",
+      optional = true,
+      description = "Which of that object's meshes. Defaults to `0`.",
+    },
+  },
+  examples = {
+    [[trx.cutscenes.set_node_mesh(1, 21, trx.catalog.objects.actor_1_speech_head_1)]],
+  },
+  impl = raw.set_node_mesh,
+})
+
+api.define("cutscenes.clear_node_mesh", {
+  description = "Takes the override back off, leaving the mesh the actor's own object gives "
+    .. "that node.",
+  params = {
+    { name = "actor", type = "cutscenes.ActorNum" },
+    { name = "node", type = "cutscenes.NodeNum" },
+  },
+  impl = raw.clear_node_mesh,
+})
+
 api.define("cutscenes.is_played", {
   description = "Whether a cutscene trigger naming this number has already been answered.",
   params = {
