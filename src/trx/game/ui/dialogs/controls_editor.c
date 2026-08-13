@@ -360,7 +360,9 @@ static UI_CONTROLS_CHOICE M_NavigateInputs(UI_CONTROLS_EDITOR_STATE *const s)
     } else if (g_InputDB.menu_back) {
         return UI_CONTROLS_CHOICE_GO_BACK;
     } else if (
-        UI_TabSwitch_Control(s->controls_tab_switch, UI_TAB_SWITCH_NO_ARROWS)) {
+        !g_Input.menu_left && !g_Input.menu_right
+        && UI_TabSwitch_Control(
+            s->controls_tab_switch, UI_TAB_SWITCH_NO_ARROWS)) {
         s->active_group = &m_Groups[s->controls_tab_switch->active_tab_idx];
         UI_Scrollable_SetMaxItems(
             &s->scroll, M_GetInputRoleCount(s->active_group));
@@ -435,12 +437,22 @@ static UI_CONTROLS_CHOICE M_ListenDebounce(UI_CONTROLS_EDITOR_STATE *const s)
 static void M_CurrentLayout(const UI_CONTROLS_EDITOR_STATE *const s)
 {
     UI_TabSwitchSingle(
-        s->layout_tab_switch, s->phase == M_PHASE_NAVIGATE_LAYOUT);
+        s->layout_tab_switch,
+        s->phase == M_PHASE_NAVIGATE_LAYOUT ? UI_TAB_SWITCH_DRAW_FOCUSED
+                                            : UI_TAB_SWITCH_DRAW_IDLE);
 }
 
 static void M_GroupsHeader(const UI_CONTROLS_EDITOR_STATE *const s)
 {
-    UI_TabSwitch(s->controls_tab_switch, s->phase == M_PHASE_NAVIGATE_GROUP);
+    UI_TAB_SWITCH_DRAW_MODE mode = UI_TAB_SWITCH_DRAW_IDLE;
+    if (s->phase == M_PHASE_NAVIGATE_GROUP) {
+        mode = UI_TAB_SWITCH_DRAW_FOCUSED;
+    } else if (
+        s->phase == M_PHASE_NAVIGATE_INPUTS
+        || s->phase == M_PHASE_LISTEN_DEBOUNCE) {
+        mode = UI_TAB_SWITCH_DRAW_ARROWS;
+    }
+    UI_TabSwitch(s->controls_tab_switch, mode);
 }
 
 static void M_InputLabel(

@@ -1,5 +1,9 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.10...develop) - ××××-××-××
 
+**UI**
+- Changed the tab arrows to no longer vanish once the selection moved into the list below them
+- Fixed the settings and controls dialog tabs ignoring rebound step left and step right keys
+
 **Developer console**
 - Changed the `/flip` console command to take a flip group, so `/flip 3` moves that group alone while `/flip` on its own moves them all
 
