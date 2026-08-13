@@ -196,12 +196,17 @@ static void M_Render(TRX_GL_RENDERER *renderer)
 // snapshot. Output_BeginScene is what prepares them for the next frame.
 static void M_SwapBuffers(TRX_GL_RENDERER *const renderer)
 {
+    M_CONTEXT *const p = renderer->priv;
+
     M_Render(renderer);
     SDL_GL_SwapWindow(TRX_GL_Context_GetWindowHandle());
     M_UpdateFBOSizes(renderer);
 
     TRX_GL_Context_SwitchToViewport(VIEWPORT_WINDOW);
     TRX_GL_Context_Clear();
+
+    TRX_GL_FBO_Bind(&p->geometry_fbo);
+    TRX_GL_Context_SwitchToViewport(VIEWPORT_GAME);
 }
 
 static void M_Init(
