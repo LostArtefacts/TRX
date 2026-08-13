@@ -7,7 +7,11 @@
 #include <trx/game/sparks.h>
 #include <trx/version.h>
 
-#define M_RANGE (WALL_L * 10) // = 10240
+#define M_RANGE_TR2 (WALL_L * 10) // = 10240
+#define M_RANGE_TR3 (WALL_L * 10) // = 10240
+#define M_RANGE_TR4 (WALL_L * 16) // = 16384
+#define M_MIST_OFFSET_TR3 544
+#define M_MIST_OFFSET_TR4 136
 
 static void M_Control(const int16_t item_num)
 {
@@ -18,16 +22,22 @@ static void M_Control(const int16_t item_num)
 
     const ITEM *const lara_item = Lara_GetItem();
 
-    if (g_TRVersion == 3) {
-        if (!Item_IsNearby(item, lara_item, M_RANGE)) {
+    if (g_TRVersion >= 3) {
+        if (!Item_IsNearby(
+                item, lara_item,
+                g_TRVersion == 3 ? M_RANGE_TR3 : M_RANGE_TR4)) {
             return;
         }
 
+        const int32_t offset =
+            g_TRVersion == 3 ? M_MIST_OFFSET_TR3 : M_MIST_OFFSET_TR4;
         if ((int32_t)Output_GetTimeInGame() % 4 == 0) {
             const XYZ_32 pos = {
-                .x = item->pos.x + ((544 * Math_Sin(item->rot.y)) >> W2V_SHIFT),
+                .x = item->pos.x
+                    + ((offset * Math_Sin(item->rot.y)) >> W2V_SHIFT),
                 .y = item->pos.y,
-                .z = item->pos.z + ((544 * Math_Cos(item->rot.y)) >> W2V_SHIFT),
+                .z = item->pos.z
+                    + ((offset * Math_Cos(item->rot.y)) >> W2V_SHIFT),
             };
             Sparks_TriggerWaterfallMist(pos.x, pos.y, pos.z, item->rot.y);
         }
@@ -36,7 +46,7 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    if (g_TRVersion >= 2 && Item_IsNearby(item, lara_item, M_RANGE)) {
+    if (g_TRVersion >= 2 && Item_IsNearby(item, lara_item, M_RANGE_TR2)) {
         Sound_Effect(SFX_WATERFALL_LOOP, &item->pos, SPM_NORMAL);
     }
 
