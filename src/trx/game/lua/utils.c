@@ -137,7 +137,8 @@ void LUA_PushValue(lua_State *const L, const TRX_VALUE *const value)
         break;
 
     case TVT_RGB_888:
-        lua_pushstring(L, Value_Format(TVT_RGB_888, nullptr, value, false));
+    case TVT_RGB_F:
+        lua_pushstring(L, Value_Format(value->type, nullptr, value, false));
         break;
 
     case TVT_STRING:
@@ -182,8 +183,8 @@ TRX_VALUE LUA_CheckValue(
         break;
 
     case TVT_RGB_888:
-        if (!Value_Parse(
-                TVT_RGB_888, nullptr, luaL_checkstring(L, idx), &value)) {
+    case TVT_RGB_F:
+        if (!Value_Parse(type, nullptr, luaL_checkstring(L, idx), &value)) {
             luaL_error(L, "argument %d is not a colour", idx);
         }
         break;

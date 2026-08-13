@@ -354,6 +354,7 @@ static float M_MeasureMaxValueWidth(const UI_SETTINGS_ROW *const row)
     }
 
     case TVT_RGB_888:
+    case TVT_RGB_F:
         return UI_Label_MeasureW("#FFFFFF") + 8.0f * UI_Scaler_GetTextScale()
             + 32.0f * UI_Scaler_GetTextScale();
 
@@ -485,6 +486,7 @@ static bool M_CanChangeValue(
     }
 
     case TVT_RGB_888:
+    case TVT_RGB_F:
     case TVT_STRING:
     case TVT_XYZ_16:
     case TVT_XYZ_32:
@@ -695,6 +697,7 @@ void UI_SettingsEditor_RequestChange(
     }
 
     case TVT_RGB_888:
+    case TVT_RGB_F:
     case TVT_STRING:
     case TVT_XYZ_16:
     case TVT_XYZ_32:

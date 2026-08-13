@@ -24,6 +24,7 @@
     _(TVT_XYZ_16, "XYZ_16", XYZ_16)                                            \
     _(TVT_XYZ_32, "XYZ_32", XYZ_32)                                            \
     _(TVT_RGB_888, "RGB_888", RGB_888)                                         \
+    _(TVT_RGB_F, "RGB_F", RGB_F)                                               \
     _(TVT_STRING, "STRING", char *)                                            \
     _(TVT_ENUM, "ENUM", int32_t)                                               \
     _(TVT_DYNAMIC_ENUM, "DYNAMIC_ENUM", char *)
@@ -43,6 +44,7 @@
     _(TVT_FLOAT, float, as_num)                                                \
     _(TVT_DOUBLE, double, as_num)                                              \
     _(TVT_RGB_888, RGB_888, as_rgb)                                            \
+    _(TVT_RGB_F, RGB_F, as_rgb_f)                                              \
     _(TVT_XYZ_32, XYZ_32, as_xyz)
 
 // TAG, min, max. The integer widths a store range-checks. ENUM rides in an
@@ -96,6 +98,18 @@ static bool M_ParseBool(const char *const str, bool *const out)
         }
     }
     return false;
+}
+
+static uint8_t M_ChannelToByte(const float channel)
+{
+    const float scaled = channel * 255.0f;
+    if (scaled <= 0.0f) {
+        return 0;
+    }
+    if (scaled >= 255.0f) {
+        return 255;
+    }
+    return (uint8_t)(scaled + 0.5f);
 }
 
 static bool M_ParseRGB(const char *str, RGB_888 *const out)
@@ -311,6 +325,19 @@ bool Value_Parse(
     case TVT_RGB_888:
         return M_ParseRGB(str, &out->as_rgb);
 
+    case TVT_RGB_F: {
+        RGB_888 bytes;
+        if (!M_ParseRGB(str, &bytes)) {
+            return false;
+        }
+        out->as_rgb_f = (RGB_F) {
+            .r = bytes.r / 255.0f,
+            .g = bytes.g / 255.0f,
+            .b = bytes.b / 255.0f,
+        };
+        return true;
+    }
+
     case TVT_ENUM: {
         int32_t mapped;
         if (!M_LookUpEnum((const char *)param, str, &mapped)) {
@@ -358,6 +385,11 @@ const char *Value_Format(
     case TVT_RGB_888:
         return String_FormatStatic(
             "%02x%02x%02x", value->as_rgb.r, value->as_rgb.g, value->as_rgb.b);
+    case TVT_RGB_F:
+        return String_FormatStatic(
+            "%02x%02x%02x", M_ChannelToByte(value->as_rgb_f.r),
+            M_ChannelToByte(value->as_rgb_f.g),
+            M_ChannelToByte(value->as_rgb_f.b));
     case TVT_ENUM: {
         if (human) {
             const char *const label =
@@ -467,6 +499,9 @@ bool Value_Equal(const TRX_VALUE *const a, const TRX_VALUE *const b)
     case TVT_RGB_888:
         return a->as_rgb.r == b->as_rgb.r && a->as_rgb.g == b->as_rgb.g
             && a->as_rgb.b == b->as_rgb.b;
+    case TVT_RGB_F:
+        return a->as_rgb_f.r == b->as_rgb_f.r && a->as_rgb_f.g == b->as_rgb_f.g
+            && a->as_rgb_f.b == b->as_rgb_f.b;
     case TVT_STRING:
     case TVT_DYNAMIC_ENUM:
         if (a->as_str == nullptr || b->as_str == nullptr) {
