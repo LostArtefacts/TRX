@@ -20,6 +20,9 @@
 - Added Natla as an outfit for Lara, selectable in every game (Graphic Options → Visuals → Lara's outfit)
 - Added injection support for putting a room in a flip group, which only TR4 levels carry themselves (#5336)
 
+**TR1**
+- Fixed the Cabin in Natla's Mines remaining visible after dropping to the floor (regression from 1.10)
+
 **TR4**
 - Added the ability to skip in-game cutscenes
 - Added waterfalls, which run and play their loop, and the mist that rises where they land
