@@ -1073,11 +1073,12 @@ bool GF_ValidateMod(const char *const mod_name, const char *const path)
     return true;
 }
 
-bool GF_ReadModMeta(const char *const path, GF_MOD_META *const meta)
+bool GF_ReadModMeta(
+    const char *const path, GF_MOD_META *const meta, char **const error_out)
 {
     ASSERT(meta != nullptr);
 
-    JSON_VALUE *const doc = JSONFile_Read(path);
+    JSON_VALUE *const doc = JSONFile_ReadWithError(path, false, error_out);
     if (doc == nullptr) {
         return false;
     }

@@ -34,8 +34,21 @@ JSON_VALUE *JSONFile_Read(const char *path)
 
 JSON_VALUE *JSONFile_ReadEx(const char *path, const bool exit_on_error)
 {
+    return JSONFile_ReadWithError(path, exit_on_error, nullptr);
+}
+
+JSON_VALUE *JSONFile_ReadWithError(
+    const char *const path, const bool exit_on_error, char **const error_out)
+{
+    if (error_out != nullptr) {
+        *error_out = nullptr;
+    }
+
     char *file_data = nullptr;
     if (!File_Load(path, &file_data, nullptr)) {
+        if (error_out != nullptr) {
+            *error_out = Memory_DupStr("the file could not be read");
+        }
         return nullptr;
     }
 
@@ -47,13 +60,15 @@ JSON_VALUE *JSONFile_ReadEx(const char *path, const bool exit_on_error)
         JSON_ReadIO_SetErrorAt(
             io, pr.error_line_no, pr.error_row_no, "%s",
             JSON_GetErrorDescription(pr.error));
+        char log_message[1024];
+        JSON_ReadIO_FormatError(io, false, log_message, sizeof(log_message));
         if (exit_on_error) {
             JSONFile_ExitWithReadIOError(io, "JSON parse error");
         } else {
-            char log_message[1024];
-            JSON_ReadIO_FormatError(
-                io, false, log_message, sizeof(log_message));
             LOG_ERROR("%s", log_message);
+        }
+        if (error_out != nullptr) {
+            *error_out = Memory_DupStr(log_message);
         }
         JSON_ReadIO_Destroy(io);
     }
