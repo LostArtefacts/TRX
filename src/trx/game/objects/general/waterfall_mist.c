@@ -62,4 +62,4 @@ static void M_Setup(OBJECT *const obj)
     obj->save_flags = true;
 }
 
-REGISTER_OBJECT(O_WATERFALL, M_Setup)
+REGISTER_OBJECT(O_WATERFALL_MIST, M_Setup)

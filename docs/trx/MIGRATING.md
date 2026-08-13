@@ -7,6 +7,16 @@ order: 3
 
 ## TRX
 
+### Version 1.10 to 1.11
+
+1. **The waterfall mist object was renamed**
+   The object that emits waterfall mist is `waterfall_mist` in every game,
+   leaving the `waterfall` name to TR4's animated waterfall meshes. A script
+   naming the old one, and a strings file overriding its name, need updating:
+   - `trx.catalog.objects.WATERFALL` is now `trx.catalog.objects.WATERFALL_MIST`
+   - the string key `objects/waterfall/name` is now
+     `objects/waterfall_mist/name`
+
 ### Version 1.9 to 1.10
 
 The Lua API was rewritten, and most of what it breaks is a rename. Run your

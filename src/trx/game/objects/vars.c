@@ -471,7 +471,7 @@ const OBJECT_ID g_GenericInvOptions[] = {
 
 const OBJECT_ID g_WaterSpriteObjects[] = {
     // clang-format off
-    O_WATERFALL,
+    O_WATERFALL_MIST,
     O_SPLASH_1,
     O_SPLASH_2,
     O_BUBBLE_1,
