@@ -4,6 +4,8 @@
 
 typedef struct {
     int32_t first_item;
+    // -1 where nothing is selected, which a dialog uses while its focus sits
+    // outside the list. The scroll position is left alone while it holds.
     int32_t sel_item;
     int32_t max_items;
     int32_t vis_items;
