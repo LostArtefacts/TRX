@@ -121,8 +121,14 @@ static void M_AddObjectFace(
 
     ASSERT(face->vertex_count <= 4);
 
+    if (obj_mesh->enable_solid_color) {
+        flags |= VERT_FLAT_SHADED;
+    }
+
     if (flags & VERT_FLAT_SHADED) {
-        if (g_TRVersion == 1) {
+        if (obj_mesh->enable_solid_color) {
+            color = Output_RGB2RGBA(obj_mesh->solid_color);
+        } else if (g_TRVersion == 1) {
             color = Output_RGB2RGBA(Output_GetPaletteColor8(face->palette_idx));
         } else {
             color = Output_RGB2RGBA(
