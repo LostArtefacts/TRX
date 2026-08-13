@@ -332,6 +332,11 @@
                 "nothing": "\\{review}Ten poziom nie zawiera niczego, co Lara mogłaby otrzymać",
                 "what_help": "\\{review}co dać: all, keys, guns, moreguns lub przedmiot wg nazwy",
             },
+            "golden": {
+                "help": "\\{review}Zamienia Larę w złoto, niezależnie od noszonego stroju.",
+                "off": "\\{review}Lara znów jest z krwi i kości",
+                "on": "\\{review}Lara jest odlana ze złota",
+            },
             "heal": {
                 "already_full_hp": "Lara jest już w pełni zdrowa",
                 "help": "Leczy Larę do pełni zdrowia.",

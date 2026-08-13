@@ -90,6 +90,7 @@ trx_lua_script_sources = files(
   'lua/commands/flood.lua',
   'lua/commands/fly.lua',
   'lua/commands/give.lua',
+  'lua/commands/golden.lua',
   'lua/commands/heal.lua',
   'lua/commands/help.lua',
   'lua/commands/immune.lua',

@@ -332,6 +332,11 @@
                 "nothing": "Chan eil dad anns an ìre seo airson toirt do Lara",
                 "what_help": "dè bheirear seachad: all, keys, guns, moreguns, no nì sam bith a-rèir a h-ainm",
             },
+            "golden": {
+                "help": "\\{review}Tionndaidhidh e Lara gu òr, ge b' e dè an t-aodach a th' oirre.",
+                "off": "\\{review}Tha Lara na feòil is fuil a-rithist",
+                "on": "\\{review}Tha Lara air a tilgeadh ann an òr",
+            },
             "heal": {
                 "already_full_hp": "Tha slàinte làn aig Lara mu thràth",
                 "help": "Leighis Lara gu slàinte làn a-rithist.",

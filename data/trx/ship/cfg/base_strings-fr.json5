@@ -332,6 +332,11 @@
                 "nothing": "\\{review}Ce niveau ne contient rien que Lara puisse recevoir",
                 "what_help": "\\{review}quoi donner : all, keys, guns, moreguns, ou un objet par son nom",
             },
+            "golden": {
+                "help": "\\{review}Change Lara en or, quelle que soit la tenue qu'elle porte.",
+                "off": "\\{review}Lara est de nouveau de chair et de sang",
+                "on": "\\{review}Lara est coulée dans l'or",
+            },
             "heal": {
                 "already_full_hp": "Lara est déjà en pleine forme",
                 "help": "Redonne toute sa santé à Lara.",

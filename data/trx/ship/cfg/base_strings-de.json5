@@ -332,6 +332,11 @@
                 "nothing": "\\{review}In diesem Level gibt es nichts, was Lara bekommen könnte",
                 "what_help": "\\{review}was gegeben wird: all, keys, guns, moreguns oder ein Gegenstand nach Namen",
             },
+            "golden": {
+                "help": "\\{review}Verwandelt Lara in Gold, unabhängig vom getragenen Outfit.",
+                "off": "\\{review}Lara ist wieder aus Fleisch und Blut",
+                "on": "\\{review}Lara ist in Gold gegossen",
+            },
             "heal": {
                 "already_full_hp": "Laras Gesundheit ist schon vollständig gefüllt.",
                 "help": "Heilt Lara zurück auf volle Lebensenergie.",
