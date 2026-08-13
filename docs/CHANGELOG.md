@@ -18,6 +18,7 @@
 - Added the ability to skip in-game cutscenes
 - Changed a flip to move the group of rooms the trigger names, rather than every flip room in the level
 - Fixed rooms and their contents sometimes disappearing while an in-game cutscene plays
+- Fixed a crash while an in-game cutscene poses Lara
 
 **Lua**
 - Added `trx.cutscenes.actor_count`, `trx.cutscenes.set_actor_visible()`, `trx.cutscenes.set_node_mesh()` and `trx.cutscenes.clear_node_mesh()`, for hiding an actor in the scene on screen or putting another object's mesh on one
