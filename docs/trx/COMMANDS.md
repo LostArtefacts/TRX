@@ -143,6 +143,12 @@ whichever key you have bound, and not include it as part of the command itself.
   `/braid off`  
   Toggle Lara's braid like it's a fashion accessory. Hair today, gone tomorrow.
 
+- `/outfit`  
+  `/outfit {name}`  
+  `/outfit -`  
+  Shows what Lara is wearing, or sends her off to change. A dash hands the
+  wardrobe back to the level.
+
 - `/golden`  
   `/golden on`  
   `/golden off`  

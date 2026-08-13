@@ -406,6 +406,14 @@
                 "stopped": "Sguir an ceòl",
                 "track": "A' cluich ciùil %d",
             },
+            "outfit": {
+                "current": "\\{review}Tha Lara a' caitheamh %s",
+                "default": "\\{review}Bidh Lara a' caitheamh na chuireas an ìre oirre",
+                "help": "\\{review}Seallaidh no atharraichidh e aodach Lara.",
+                "outfit_help": "\\{review}dè an t-aodach, no - airson fear na h-ìre",
+                "unknown": "\\{review}Aodach neo-aithnichte: %s",
+                "worn": "\\{review}Chuir Lara %s oirre",
+            },
             "play_cutscene": {
                 "help": "Cluich sealladh-film leis an àireamh ainmichte.",
                 "invalid": "Sealladh-film mì-dhligheach",

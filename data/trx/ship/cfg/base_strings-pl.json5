@@ -406,6 +406,14 @@
                 "stopped": "Muzyka zatrzymana",
                 "track": "Odtwarzanie utworu muzycznego %d",
             },
+            "outfit": {
+                "current": "\\{review}Lara nosi %s",
+                "default": "\\{review}Lara nosi to, w co ubiera ją poziom",
+                "help": "\\{review}Wyświetla lub zmienia strój Lary.",
+                "outfit_help": "\\{review}który strój, lub - dla stroju poziomu",
+                "unknown": "\\{review}Nieznany strój: %s",
+                "worn": "\\{review}Lara przebrała się w %s",
+            },
             "play_cutscene": {
                 "help": "Wczytuje przerywnik o podanym numerze.",
                 "invalid": "Nieprawidłowy przerywnik",

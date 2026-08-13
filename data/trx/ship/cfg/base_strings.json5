@@ -406,6 +406,14 @@
                 "stopped": "Music stopped",
                 "track": "Playing music track %d",
             },
+            "outfit": {
+                "current": "Lara is wearing %s",
+                "default": "Lara wears what the level dresses her in",
+                "help": "Displays or changes Lara's outfit.",
+                "outfit_help": "which outfit, or - for the level's own",
+                "unknown": "Unknown outfit: %s",
+                "worn": "Lara changed into %s",
+            },
             "play_cutscene": {
                 "help": "Plays a cutscene with the given number.",
                 "invalid": "Invalid cutscene",

@@ -406,6 +406,14 @@
                 "stopped": "Musica interrotta",
                 "track": "Riproduzione traccia musicale %d",
             },
+            "outfit": {
+                "current": "\\{review}Lara indossa %s",
+                "default": "\\{review}Lara indossa ciò che il livello le mette addosso",
+                "help": "\\{review}Mostra o cambia il completo di Lara.",
+                "outfit_help": "\\{review}quale completo, o - per quello del livello",
+                "unknown": "\\{review}Completo sconosciuto: %s",
+                "worn": "\\{review}Lara ha indossato %s",
+            },
             "play_cutscene": {
                 "help": "Riproduce la scena di intermezzo con il numero specificato.",
                 "invalid": "Scena di intermezzo non valida",
