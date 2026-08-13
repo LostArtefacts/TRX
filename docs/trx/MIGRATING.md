@@ -17,7 +17,16 @@ order: 3
    - the string key `objects/waterfall/name` is now
      `objects/waterfall_mist/name`
 
-2. **Drop the golden outfits**
+2. **A color is a value, not a string**
+   Anything that reads a color hands back a `trx.math.Color`, which carries its
+   `r`, `g` and `b` channels and the hex text as `hex`. A script comparing one
+   with a string needs the text:
+   - `trx.config.get("visuals.water_color") == "0080ff"` becomes
+     `trx.config.get("visuals.water_color").hex == "0080ff"`
+
+   Writing is unchanged: hex text is still taken, as is a color.
+
+3. **Drop the golden outfits**
    Lara turns to gold in whichever outfit she has on, so the golden outfits are
    gone from `outfits.json5`, and with them:
    - the gold gun map,

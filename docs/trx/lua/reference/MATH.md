@@ -72,7 +72,46 @@ Fixed-point trigonometry, matching the engine's own tables. Using these rather t
     - <a id="math.Box.min_y" name="math.Box.min_y"></a>**`min_y`**: [trx.math.Distance](#math.Distance). Top edge.
     - <a id="math.Box.min_z" name="math.Box.min_z"></a>**`min_z`**: [trx.math.Distance](#math.Distance). South edge.
 
+- <a id="math.Color" name="math.Color"></a>[lua]`trx.math.Color`
+
+    A color, as three channels counted 0 to 255.
+
+    Assigning one takes either a color or the hex text a color is written as, so
+    `"33e5ff"` and `{ r = 51, g = 229, b = 255 }` say the same thing. A channel may
+    also be written on its own, and a color read off something the engine owns
+    writes that change straight back to it.
+
+    Some colors the engine keeps are stored as fractions rather than bytes, and
+    those carry more precision than the hex text shows: a channel of one may read
+    back as `191.25`.
+
+    Properties:
+    - <a id="math.Color.b" name="math.Color.b"></a>**`b`**: number. The blue channel.
+    - <a id="math.Color.g" name="math.Color.g"></a>**`g`**: number. The green channel.
+    - <a id="math.Color.hex" name="math.Color.hex"></a>**`hex`**: string. The color as six hex digits, which is how a setting and a data file spell one. Writing it takes a leading `#` as well.
+    - <a id="math.Color.r" name="math.Color.r"></a>**`r`**: number. The red channel.
+
+    Operators:
+    - **`color == color`**. Two colors are equal when their channels are.
+    - **`tostring(color)`**. The color as its hex text.
+
 ### Functions
+
+- <a id="math.color" name="math.color"></a>[lua]`trx.math.color(value, [g], [b])`  
+  Builds a color, out of three channels or out of hex text. The color it hands back belongs to the caller: assign it somewhere for the engine to take it.
+
+  Parameters:
+  - <a id="math.color.value" name="math.color.value"></a>**`value`** (string or number). The hex text, or the red channel.
+  - <a id="math.color.g" name="math.color.g"></a>**`g`** (number, optional). The green channel, where the first argument was the red one.
+  - <a id="math.color.b" name="math.color.b"></a>**`b`** (number, optional). The blue channel.
+
+  Returns: [trx.math.Color](#math.Color).
+
+  Example:
+  ```lua
+  local gold = trx.math.color("ffbf20")
+  local teal = trx.math.color(51, 229, 255)
+  ```
 
 - <a id="math.sin" name="math.sin"></a>[lua]`trx.math.sin(angle)`  
   Sine of an angle.

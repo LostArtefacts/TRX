@@ -3023,7 +3023,7 @@
       }
     },
     {
-      "description": "Reads a setting. The value comes back as the type the option is declared with, so a boolean option reads as a boolean. Colors and enums read as strings.",
+      "description": "Reads a setting. The value comes back as the type the option is declared with, so a boolean option reads as a boolean and a color as a `trx.math.Color`. Enums read as strings.",
       "examples": [
         "if trx.config.get(\"audio.enable_music\") then\n  trx.music.play(trx.catalog.music.SECRET)\nend"
       ],
@@ -3101,7 +3101,7 @@
           "type": "string"
         },
         {
-          "description": "A boolean, a number, or a string, matching the option's type. A color is a 6-digit hex string. An enum value is taken in either spelling: underscores or the dashes the console shows.",
+          "description": "A boolean, a number, or a string, matching the option's type. A color is a `trx.math.Color` or the hex text one is written as. An enum value is taken in either spelling: underscores or the dashes the console shows.",
           "name": "value",
           "type": "any"
         },
@@ -4883,6 +4883,38 @@
       "returns": {
         "nullable": true,
         "type": "lua.Error"
+      }
+    },
+    {
+      "description": "Builds a color, out of three channels or out of hex text. The color it hands back belongs to the caller: assign it somewhere for the engine to take it.",
+      "examples": [
+        "local gold = trx.math.color(\"ffbf20\")\nlocal teal = trx.math.color(51, 229, 255)"
+      ],
+      "params": [
+        {
+          "description": "The hex text, or the red channel.",
+          "name": "value",
+          "type": [
+            "string",
+            "number"
+          ]
+        },
+        {
+          "description": "The green channel, where the first argument was the red one.",
+          "name": "g",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "description": "The blue channel.",
+          "name": "b",
+          "optional": true,
+          "type": "number"
+        }
+      ],
+      "path": "math.color",
+      "returns": {
+        "type": "math.Color"
       }
     },
     {
@@ -8629,6 +8661,49 @@
       "methods": [],
       "operators": [],
       "path": "math.Box"
+    },
+    {
+      "description": "A color, as three channels counted 0 to 255.\n\nAssigning one takes either a color or the hex text a color is written as, so\n`\"33e5ff\"` and `{ r = 51, g = 229, b = 255 }` say the same thing. A channel may\nalso be written on its own, and a color read off something the engine owns\nwrites that change straight back to it.\n\nSome colors the engine keeps are stored as fractions rather than bytes, and\nthose carry more precision than the hex text shows: a channel of one may read\nback as `191.25`.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "The blue channel.",
+          "name": "b",
+          "type": "number",
+          "writable": true
+        },
+        {
+          "description": "The green channel.",
+          "name": "g",
+          "type": "number",
+          "writable": true
+        },
+        {
+          "description": "The color as six hex digits, which is how a setting and a data file spell one. Writing it takes a leading `#` as well.",
+          "name": "hex",
+          "type": "string",
+          "writable": true
+        },
+        {
+          "description": "The red channel.",
+          "name": "r",
+          "type": "number",
+          "writable": true
+        }
+      ],
+      "handle": false,
+      "methods": [],
+      "operators": [
+        {
+          "description": "Two colors are equal when their channels are.",
+          "name": "eq"
+        },
+        {
+          "description": "The color as its hex text.",
+          "name": "tostring"
+        }
+      ],
+      "path": "math.Color"
     },
     {
       "description": "A mod the game can run. Everything on it is read-only.",

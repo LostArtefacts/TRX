@@ -22,9 +22,10 @@ test("a value reads back as the type the option is declared with", function()
     "a double option must read as a number"
   )
   assert(
-    trx.config.get("visuals.water_color") == "ff0000",
-    "a color stays a string"
+    trx.config.get("visuals.water_color") == trx.math.color("ff0000"),
+    "a color reads as a color"
   )
+  assert(trx.config.get("visuals.water_color").hex == "ff0000")
 end)
 
 test("a value is written as the type it is, not as a string", function()
@@ -38,9 +39,12 @@ test("a value is written as the type it is, not as a string", function()
   assert(trx.config.get("visuals.fov") == 90, "a number did not go through")
 end)
 
-test("a string still works, which is what a color is", function()
+test("a color is written as hex text or as a color", function()
   trx.config.set("visuals.water_color", "0080ff")
-  assert(trx.config.get("visuals.water_color") == "0080ff")
+  assert(trx.config.get("visuals.water_color").hex == "0080ff")
+
+  trx.config.set("visuals.water_color", trx.math.color(0, 255, 192))
+  assert(trx.config.get("visuals.water_color").hex == "00ffc0")
 end)
 
 test("an unknown option raises rather than reading nil", function()
@@ -133,13 +137,13 @@ test("overrides stack, and each restore lifts one", function()
   )
 end)
 
-test("a string option is given back by value", function()
+test("a color option is given back by value", function()
   trx.config.override("visuals.water_color", "0080ff")
-  assert(trx.config.get("visuals.water_color") == "0080ff")
+  assert(trx.config.get("visuals.water_color").hex == "0080ff")
 
   trx.config.restore("visuals.water_color")
   assert(
-    trx.config.get("visuals.water_color") == "ff0000",
+    trx.config.get("visuals.water_color").hex == "ff0000",
     "the player's color did not come back"
   )
 end)
@@ -177,7 +181,7 @@ end)
 test("describe tells the shape of a setting", function()
   assert(trx.config.describe("audio.enable_music").kind == "boolean")
   assert(trx.config.describe("visuals.fov").kind == "integer")
-  assert(trx.config.describe("visuals.water_color").kind == "string")
+  assert(trx.config.describe("visuals.water_color").kind == "color")
 
   local brightness = trx.config.describe("visuals.brightness")
   assert(brightness.kind == "number")
@@ -228,7 +232,7 @@ test("list gives every setting, typed", function()
   local all = trx.config.list()
   assert(all["audio.enable_music"] == true, "a bool must be listed as a bool")
   assert(all["visuals.fov"] == 65)
-  assert(all["visuals.water_color"] == "ff0000")
+  assert(all["visuals.water_color"].hex == "ff0000")
 end)
 
 test("describe hands back the shape a declaration takes", function()
@@ -238,7 +242,7 @@ test("describe hands back the shape a declaration takes", function()
   assert(shape.default == 65, "the default must come back with the shape")
 
   local color = trx.config.describe("visuals.water_color")
-  assert(color.default == "ff0000")
+  assert(color.default.hex == "ff0000")
 end)
 
 test("a game declares a setting of its own", function()

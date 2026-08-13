@@ -75,6 +75,42 @@ test("round_to_sector takes a coordinate as readily as a position", function()
   assert(math.type(trx.math.round_to_sector(2500.5)) == "integer")
 end)
 
+test("a color is built from channels or from hex text", function()
+  local gold = trx.math.color("ffbf20")
+  assert(gold.r == 255 and gold.g == 191 and gold.b == 32)
+  assert(gold.hex == "ffbf20")
+  assert(tostring(gold) == "ffbf20")
+  assert(gold == trx.math.color(255, 191, 32), "channels decide equality")
+  assert(trx.math.color("#ffbf20") == gold, "a leading hash is taken")
+end)
+
+test("a channel and the hex text write the same color", function()
+  local color = trx.math.color(0, 0, 0)
+  color.r = 51
+  color.hex = "33e5ff"
+  assert(color.r == 51 and color.g == 229 and color.b == 255)
+
+  -- A fractional channel keeps its fraction, and the hex text rounds it.
+  color.g = 191.25
+  assert(color.g == 191.25)
+  assert(color.hex == "33bfff")
+end)
+
+test("a color refuses what is not one", function()
+  h.raises(function()
+    trx.math.color(1, 2)
+  end)
+  h.raises(function()
+    trx.math.color("ff")
+  end)
+  h.raises(function()
+    trx.math.color(0, 0, 0).r = "red"
+  end)
+  h.raises(function()
+    trx.math.color(0, 0, 0).a = 1
+  end)
+end)
+
 test("strict mode holds the angle to an integer", function()
   trx.api.strict(true)
   h.raises(function()

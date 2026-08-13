@@ -68,6 +68,13 @@ static const char *M_ValueAsString(lua_State *const L, const int32_t arg)
     if (lua_isnumber(L, arg)) {
         return lua_tostring(L, arg);
     }
+    // A color arrives as the value trx.math declares, which spells itself as
+    // the hex text the parser reads.
+    if (lua_istable(L, arg)
+        && luaL_getmetafield(L, arg, "__tostring") != LUA_TNIL) {
+        lua_pop(L, 1);
+        return luaL_tolstring(L, arg, nullptr);
+    }
     return luaL_checkstring(L, arg);
 }
 
@@ -115,8 +122,8 @@ static const char *M_KindName(const TRX_VALUE_TYPE type)
 static void M_PushDefault(lua_State *const L, const CONFIG_OPTION *const option)
 {
     const TRX_VALUE *const value = &option->default_value;
-    if (value->type == TVT_RGB_888 || value->type == TVT_ENUM
-        || value->type == TVT_STRING || value->type == TVT_DYNAMIC_ENUM) {
+    if (value->type == TVT_ENUM || value->type == TVT_STRING
+        || value->type == TVT_DYNAMIC_ENUM) {
         lua_pushstring(
             L,
             Value_Format(
@@ -576,17 +583,15 @@ static void M_Shutdown(void)
     m_L = nullptr;
 }
 
-// The option's declared type is what a script gets back: a bool reads as a bool
-// and a number as a number. Colors and enums stay strings, which is what they
-// are on the way in as well.
+// The option's declared type is what a script gets back: a bool reads as a
+// bool, a number as a number, and a color as a trx.math.Color.
 void LUA_Config_PushOptionValue(
     lua_State *const L, const CONFIG_OPTION *const option)
 {
-    // Colours, enums, strings and dynamic enums read back as their name or
-    // display string, which is also how a script gives them on the way in.
+    // Enums, strings and dynamic enums read back as their name or display
+    // string, which is also how a script gives them on the way in.
     const TRX_VALUE_TYPE type = option->value.type;
-    if (type == TVT_RGB_888 || type == TVT_ENUM || type == TVT_STRING
-        || type == TVT_DYNAMIC_ENUM) {
+    if (type == TVT_ENUM || type == TVT_STRING || type == TVT_DYNAMIC_ENUM) {
         lua_pushstring(L, Config_Option_GetValueAsString(option, false));
         return;
     }
