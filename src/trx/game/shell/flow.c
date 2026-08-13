@@ -309,8 +309,7 @@ bool Shell_GetPrevQuiet(void)
 
 const SHELL_ARGS *Shell_GetArgs(void)
 {
-    ASSERT(m_Session != nullptr);
-    return m_Session->args;
+    return m_Session != nullptr ? m_Session->args : nullptr;
 }
 
 void Shell_SetHeadless(const bool headless)
