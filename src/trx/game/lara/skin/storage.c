@@ -14,6 +14,7 @@
 #include <trx/game/catalog/manager.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/common.h>
 #include <trx/game/shell.h>
 
 #include <string.h>
@@ -531,6 +532,11 @@ LARA_SKIN_TYPE Lara_Skin_FindOutfitByName(const char *const name)
 
 LARA_SKIN_TYPE Lara_Skin_GetDefaultType(void)
 {
+    for (int32_t i = 0; i < m_OutfitCount; i++) {
+        if (Lara_Skin_IsOutfitAvailable(i)) {
+            return i;
+        }
+    }
     return m_OutfitCount > 0 ? 0 : LARA_SKIN_TYPE_DEFAULT;
 }
 
@@ -539,10 +545,24 @@ int32_t Lara_Skin_GetOutfitCount(void)
     return m_OutfitCount;
 }
 
-bool Lara_Skin_IsOutfitAvailable(const LARA_SKIN_TYPE skin_type)
+bool Lara_Skin_IsOutfitDefined(const LARA_SKIN_TYPE skin_type)
 {
     return skin_type >= 0 && skin_type < m_OutfitCount
         && m_Outfits[skin_type].outfit.is_defined;
+}
+
+// An outfit the level has no meshes for is not one she can wear. Levels built
+// before an outfit was added carry every slot but that one, and an install can
+// be missing the injection that holds them all.
+bool Lara_Skin_IsOutfitAvailable(const LARA_SKIN_TYPE skin_type)
+{
+    if (!Lara_Skin_IsOutfitDefined(skin_type)) {
+        return false;
+    }
+
+    const OBJECT *const skin_obj =
+        Object_Get(m_Outfits[skin_type].outfit.mesh_obj_id);
+    return skin_obj->loaded && skin_obj->mesh_count == LM_NUMBER_OF;
 }
 
 const LARA_SKIN_OUTFIT *Lara_Skin_GetOutfit(const LARA_SKIN_TYPE skin_type)

@@ -383,7 +383,8 @@ static bool M_CanDress(void)
     return GF_GetCurrentLevel() != nullptr && !FMV_IsPlaying()
         && Object_Get(O_LARA)->loaded
         && Object_Get(O_LARA_SKIN_SWAP_EXTRA)->loaded
-        && Object_Get(O_LARA_SKIN_SWAP_GUNS)->loaded;
+        && Object_Get(O_LARA_SKIN_SWAP_GUNS)->loaded
+        && Lara_Skin_IsOutfitAvailable(Lara_Skin_GetDefaultType());
 }
 
 void Lara_Skin_Reset(void)
@@ -418,18 +419,6 @@ void Lara_Skin_Initialise(void)
         }
         return;
     }
-    // What every outfit says it is made of, against what the level loaded.
-    const int32_t outfit_count = Lara_Skin_GetOutfitCount();
-    for (int32_t i = 0; i < outfit_count; i++) {
-        const LARA_SKIN_OUTFIT *const outfit = Lara_Skin_GetOutfit(i);
-        if (!outfit->is_defined) {
-            continue;
-        }
-        const OBJECT *const skin_obj = Object_Get(outfit->mesh_obj_id);
-        ASSERT(skin_obj->loaded);
-        ASSERT(skin_obj->mesh_count == LM_NUMBER_OF);
-    }
-
     Lara_Skin_ApplyOutfitFromConfig();
 
     // She wears nothing yet, and the outfit above only dresses her where it
@@ -483,6 +472,12 @@ void Lara_Skin_CycleOutfit(const int32_t dir)
         return;
     }
 
+    // A level whose meshes dress none of the outfits leaves her undressed,
+    // with nothing to cycle from.
+    if (!Lara_Skin_IsOutfitAvailable(m_SkinType)) {
+        return;
+    }
+
     // Update the config twice to guarantee the change is submitted in cases
     // where Lara_Skin_SetType has been called manually for non-permanent swaps
     // e.g. by Lua in cutscenes.
@@ -497,12 +492,13 @@ void Lara_Skin_CycleOutfit(const int32_t dir)
 
     const int32_t outfit_count = Lara_Skin_GetOutfitCount();
     int32_t type = m_SkinType;
-    do {
-        type += dir;
-        type += outfit_count;
-        type %= outfit_count;
-    } while (!Lara_Skin_IsOutfitAvailable(type)
-             || !Lara_Skin_GetOutfit(type)->is_selectable);
+    for (int32_t i = 0; i < outfit_count; i++) {
+        type = (type + dir + outfit_count) % outfit_count;
+        if (Lara_Skin_IsOutfitAvailable(type)
+            && Lara_Skin_GetOutfit(type)->is_selectable) {
+            break;
+        }
+    }
 
     M_SetConfigOutfit(Lara_Skin_GetOutfitName(type));
     Config_Update();
