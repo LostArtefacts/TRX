@@ -1,5 +1,10 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.10...develop) - ××××-××-××
 
+**UI**
+- Fixed the controls key list jumping after switching to a tab with fewer keys (regression from 1.3)
+
+
+
 ## [1.10](https://github.com/LostArtefacts/TRX/compare/trx-1.9.3...trx-1.10) - 2026-08-12
 Showcase: https://youtu.be/DKpqz_Yum6o
 
