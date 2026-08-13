@@ -508,6 +508,16 @@ void Room_SetFlipStatus(const bool status)
     m_FlipStatus = status;
 }
 
+int32_t Room_GetFlipGroup(const int32_t flip_slot)
+{
+    for (int32_t i = 0; i < m_RoomCount; i++) {
+        if (m_Rooms[i].alternate_group != 0) {
+            return flip_slot;
+        }
+    }
+    return 0;
+}
+
 int32_t Room_GetFlipEffect(void)
 {
     return m_FlipEffect;

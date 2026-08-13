@@ -36,6 +36,12 @@ bool Room_GetFlipStatus(void);
 // Whether the given group is showing its pairs.
 bool Room_GetFlipGroupStatus(int32_t group);
 
+// The group a flip slot moves. A TR4 trigger names the group in the same
+// number it uses for the slot, where a TR1-3 trigger means the slot alone and
+// moves every pair in the level. A level that puts no room in a group is read
+// the TR1-3 way.
+int32_t Room_GetFlipGroup(int32_t flip_slot);
+
 // Puts back what a savegame recorded, once its groups have been replayed. The
 // groups alone do not say which of them moved last, and that is what the zones
 // and the sound sources read.
