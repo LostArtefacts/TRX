@@ -402,6 +402,30 @@ ignored. Any missing fields imply that no mesh is drawn for that slot.
 
 ## Custom level use cases
 
+`lara_outfit` appears twice in a game flow, and the two are unrelated settings
+that happen to share a name.
+
+<table>
+  <tr valign="top" align="left">
+    <th>Where</th>
+    <th>What it does</th>
+  </tr>
+  <tr valign="top">
+    <td>On a level</td>
+    <td>Names the outfit Lara wears in that level.</td>
+  </tr>
+  <tr valign="top">
+    <td>Under <code>enforced_config</code></td>
+    <td>
+      Takes the choice of outfit away from the player. A value of
+      <code>null</code> enforces no outfit of its own, which leaves each level
+      free to name its own.
+    </td>
+  </tr>
+</table>
+
+Deleting one is not the same as deleting the other.
+
 > I don't need to customize Lara's outfit, and I don't mind players freely
 switching outfits.
 
@@ -423,8 +447,10 @@ standard files as above. Provided your game-flow level has an accurate
 },
 ```
 
-Using null here means that if your second level uses a different outfit, that
-will still be honoured.
+Using null here means that the enforcement names no outfit of its own, so each
+level's own `lara_outfit` is what Lara wears; a second level that names a
+different one is still honoured. Naming an outfit instead of `null` dresses her
+in that one everywhere, whatever the levels say.
 
 ***
 
