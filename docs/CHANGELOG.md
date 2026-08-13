@@ -38,6 +38,7 @@
 **Miscellaneous**
 - Added an option to cast Lara in gold whatever she is wearing (Graphic Options → Visuals → Golden Lara)
 - Changed the message shown when there is nothing to play to name each game it passed over and say what is wrong with it, rather than leaving the reason in the log
+- Changed a game named with `--mod` to say why it cannot be played, rather than quietly starting a different one
 - Changed Lara turning to gold on the Midas hand to gild the outfit she has on, rather than swap her for a golden model
 
 **Lua**

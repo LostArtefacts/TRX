@@ -151,12 +151,16 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
 
         if (!strcmp(arg, "--demo-pc") || !strcmp(arg, "-demo_pc")) {
             result->startup.mod = Shell_GetModByName("tr1-demo-pc");
+            result->startup.mod_request = "tr1-demo-pc";
+            result->startup.mod_explicit = true;
         }
         if (!strcmp(arg, "--mod") && next_arg != nullptr) {
             const SHELL_MOD *const mod = Shell_GetModByName(next_arg);
             if (mod != nullptr) {
                 result->startup.mod = mod;
             }
+            result->startup.mod_request = next_arg;
+            result->startup.mod_explicit = true;
             i++;
         }
 
@@ -169,6 +173,8 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
                     && result->startup.engine_version > 0) {
                     result->startup.mod = Shell_GetModByType(
                         MOD_BASE_GAME, result->startup.engine_version);
+                    result->startup.mod_request = "the base game";
+                    result->startup.mod_explicit = true;
                 }
             } else {
                 char **const level_arg = Vector_Get(args, i + 1);
@@ -244,7 +250,7 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
         }
     }
 
-    if (result->startup.mod == nullptr) {
+    if (result->startup.mod == nullptr && !result->startup.mod_explicit) {
         result->startup.mod =
             Shell_SelectStartupMod(result->startup.engine_version);
     }
@@ -259,6 +265,8 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
                    : 0);
         const SHELL_MOD *const gold_mod =
             Shell_GetModByType(MOD_EXPANSION_PACK, engine_version);
+        result->startup.mod_request = "the gold expansion";
+        result->startup.mod_explicit = true;
         if (gold_mod != nullptr) {
             result->startup.mod = gold_mod;
             result->startup.engine_version = gold_mod->engine_version;
