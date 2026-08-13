@@ -577,18 +577,14 @@
             },
             "lara_outfit": {
                 "default": "\\{review}Par défaut",
-                "golden_sophia": "\\{review}Sophia Dorée",
                 "natla": "\\{review}Natla",
                 "sophia": "\\{review}Sophia",
                 "tr1_bacon_lara": "\\{review}Lara Bacon",
                 "tr1_classic": "\\{review}TR1 Classique",
                 "tr1_combo": "\\{review}TR1 Combinée",
-                "tr1_golden_bacon_lara": "\\{review}Lara Bacon Dorée",
-                "tr1_golden_lara": "\\{review}TR1 Lara Dorée",
                 "tr1_gym": "\\{review}TR1 Entraînement",
                 "tr1_mauled": "\\{review}TR1 Mutilée",
                 "tr1_ngage": "\\{review}TR1 N-Gage",
-                "tr23_golden_lara": "\\{review}TR2/3 Lara Dorée",
                 "tr2_bomber_jacket": "\\{review}Blouson aviateur 1",
                 "tr2_bomber_jacket_alpha": "\\{review}Blouson aviateur 2",
                 "tr2_classic": "\\{review}TR2 Classique",
@@ -605,9 +601,7 @@
                 "tr3_nevada": "\\{review}Nevada",
                 "tr3_south_pacific": "\\{review}Pacifique Sud",
                 "tr4_classic": "\\{review}TR4 Classique",
-                "tr4_golden_lara": "\\{review}TR4 Lara Dorée",
                 "tr4_young": "\\{review}TR4 Jeune",
-                "tr4_young_golden_lara": "\\{review}TR4 Jeune Dorée",
             }
         },
         "mods": {
@@ -1878,6 +1872,10 @@
         "visuals.gamma": {
             "title": "\\{review}Gamma",
             "description": "\\{review}Ajuste la courbe gamma. Des valeurs plus élevées signifient un éclairage plus lumineux. La valeur de 2,5 correspond aux couleurs par défaut.",
+        },
+        "visuals.golden_lara": {
+            "title": "\\{review}Lara dorée",
+            "description": "\\{review}Change Lara en or, quelle que soit la tenue qu'elle porte, comme le fait la main de Midas.",
         },
         "visuals.lara_outfit": {
             "title": "\\{review}Tenue de Lara",

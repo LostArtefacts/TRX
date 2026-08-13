@@ -98,7 +98,6 @@ behave. The structure of this file is described below.
 "tr1_classic": {
   "name_gs": "dynamic/enums/lara_outfit/tr1_classic",
   "mesh_object": "O_LARA_SKIN_SWAP_2",
-  "is_reflective": false,
   "is_barefoot": false,
   "gun_map": 0,
   "combat_face_offset": 1,
@@ -107,7 +106,6 @@ behave. The structure of this file is described below.
     {
       "mode": "BRAID_MODE_TR1_FULL",
       "mesh_offset": 10,
-      "gold_offset": 16,
       "position": {
         "x": 0,
         "y": 20,
@@ -121,7 +119,6 @@ behave. The structure of this file is described below.
   },
   "extra_outfits": {
     "LS_EXTRA_TREX_KILL": "tr1_mauled",
-    "LS_EXTRA_MIDAS_KILL": "tr1_golden_lara",
   },
 },
 ```
@@ -156,9 +153,27 @@ behave. The structure of this file is described below.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>is_reflective</code></td>
-    <td>Boolean</td>
-    <td colspan="2">Indicates whether or not the outfit is reflective.</td>
+    <td>
+      <code>extra_object</code><br/>
+      <code>guns_object</code><br/>
+      <code>legs_object</code>
+    </td>
+    <td>String</td>
+    <td colspan="2">
+     Optional; indicate which objects hold this outfit's extra, gun and leg
+     meshes. They default to <code>O_LARA_SKIN_SWAP_EXTRA</code>,
+     <code>O_LARA_SKIN_SWAP_GUNS</code> and <code>O_LARA_SKIN_SWAP_LEGS</code>,
+     which is what an outfit sharing the shipped data wants.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>gold_color</code></td>
+    <td>Color</td>
+    <td colspan="2">
+      The color Lara is cast in when she turns to gold, whether by the Midas
+      hand or by the golden Lara setting. It defaults to the gold the shipped
+      models are textured in.
+    </td>
   </tr>
   <tr valign="top">
     <td rowspan="5"><code>is_barefoot</code></td>
@@ -226,21 +241,16 @@ behave. The structure of this file is described below.
     </td>
   </tr>
   <tr valign="top">
-    <td rowspan="3"><code>extra_outfits</code></td>
-    <td rowspan="3">String map</td>
+    <td rowspan="2"><code>extra_outfits</code></td>
+    <td rowspan="2">String map</td>
     <td colspan="2">
-      Pointers to alternative outfits to use for specific game events. The two
-      supported events are as follows. If these are omitted, no swaps will occur
-      for the events.
+      Pointers to alternative outfits to use for specific game events. One
+      event is supported. If it is omitted, no swap will occur for it.
     </td>
   </tr>
   <tr valign="top">
     <td><code>LS_EXTRA_TREX_KILL</code></td>
     <td>When Lara is killed by the T-rex - instant full outfit swap.</td>
-  </tr>
-  <tr valign="top">
-    <td><code>LS_EXTRA_MIDAS_KILL</code></td>
-    <td>When Lara steps on the Midas hand - progressive outfit swap.</td>
   </tr>
   <tr valign="top">
     <td><code>extra_mesh_positions</code></td>
@@ -262,8 +272,8 @@ behave. The structure of this file is described below.
     <th colspan="2">Description</th>
   </tr>
   <tr valign="top" >
-    <td rowspan="6"><code>mode</code></td>
-    <td rowspan="6">String</td>
+    <td rowspan="5"><code>mode</code></td>
+    <td rowspan="5">String</td>
     <td colspan="2">Indicates special handling when the braid is active.</td>
   </tr>
   <tr valign="top">
@@ -295,26 +305,10 @@ behave. The structure of this file is described below.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>BRAID_MODE_TR1_GOLD</code></td>
-    <td>
-      As per <code>BRAID_MODE_TR1_FULL</code>, but the swap meshes used here
-      are <code>EXTRA_MESH_TR1_BRAID_GOLD_HEAD</code> and
-      <code>EXTRA_MESH_TR1_BRAID_GOLD_TORSO</code>.
-    </td>
-  </tr>
-  <tr valign="top">
     <td><code>mesh_offset</code></td>
     <td>Integer</td>
     <td colspan="2">
       The starting offset in <code>O_LARA_SKIN_SWAP_EXTRA</code> for the regular
-      braid meshes and bones.
-    </td>
-  </tr>
-  <tr valign="top">
-    <td><code>gold_offset</code></td>
-    <td>Integer</td>
-    <td colspan="2">
-      The starting offset in <code>O_LARA_SKIN_SWAP_EXTRA</code> for the golden
       braid meshes and bones.
     </td>
   </tr>

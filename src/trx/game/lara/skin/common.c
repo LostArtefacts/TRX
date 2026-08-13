@@ -12,6 +12,7 @@
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/skin/gold.h>
 #include <trx/version.h>
 
 #define M_NO_OUTFIT (-1)
@@ -24,13 +25,27 @@ static LARA_GUN_TYPE m_HolsterType_L = LGT_UNARMED;
 static LARA_GUN_TYPE m_HolsterType_R = LGT_UNARMED;
 static LARA_SKIN_EQUIPMENT m_Equipment[LM_NUMBER_OF] = {};
 static OBJECT_MESH *m_MeshOverrides[LM_NUMBER_OF] = {};
+static bool m_IsGolden = false;
+
+// Answers with the default where she wears nothing yet, and leaves the type
+// alone: a level being set up has none on purpose, and healing it here once
+// left the outfit applied to nothing.
+static inline const LARA_SKIN_OUTFIT *M_GetWornOutfit(void)
+{
+    const LARA_SKIN_TYPE type = Lara_Skin_IsOutfitAvailable(m_SkinType)
+        ? m_SkinType
+        : Lara_Skin_GetDefaultType();
+    return Lara_Skin_GetOutfit(type);
+}
 
 static inline const LARA_SKIN_OUTFIT *M_GetCurrentOutfit(void)
 {
-    if (!Lara_Skin_IsOutfitAvailable(m_SkinType)) {
-        m_SkinType = Lara_Skin_GetDefaultType();
+    const LARA_SKIN_OUTFIT *const outfit = M_GetWornOutfit();
+    if (!m_IsGolden) {
+        return outfit;
     }
-    return Lara_Skin_GetOutfit(m_SkinType);
+    const LARA_SKIN_OUTFIT *const gold = Lara_Skin_GetGoldOutfit(outfit);
+    return gold != nullptr ? gold : outfit;
 }
 
 static LARA_SKIN_TYPE M_ResolveOutfitTypeFromName(
@@ -103,15 +118,11 @@ static int32_t M_GetBraidDependentMeshIdx(
         extra_id = mesh_idx == LM_TORSO ? EXTRA_MESH_TR1_BRAID_MAULED_TORSO
                                         : EXTRA_MESH_TR1_BRAID_DEFAULT_HEAD;
         break;
-    case BRAID_MODE_TR1_GOLD:
-        extra_id = mesh_idx == LM_TORSO ? EXTRA_MESH_TR1_BRAID_GOLD_TORSO
-                                        : EXTRA_MESH_TR1_BRAID_GOLD_HEAD;
-        break;
     default:
         return M_NO_MESH;
     }
 
-    const OBJECT *const extra_obj = Object_Get(O_LARA_SKIN_SWAP_EXTRA);
+    const OBJECT *const extra_obj = Object_Get(outfit->extra_obj_id);
     const int32_t offset = Lara_Skin_GetExtraMeshOffset(extra_id);
     return extra_obj->mesh_idx + offset;
 }
@@ -127,7 +138,7 @@ static int32_t M_GetNoHolsterMeshIdx(
         return M_NO_MESH;
     }
 
-    const OBJECT *const obj = Object_Get(O_LARA_SKIN_SWAP_LEGS);
+    const OBJECT *const obj = Object_Get(outfit->legs_obj_id);
     if (!obj->loaded) {
         return M_NO_MESH;
     }
@@ -142,6 +153,17 @@ static int32_t M_GetNoHolsterMeshIdx(
     return obj->mesh_idx + offset;
 }
 
+static inline const LARA_SKIN_OUTFIT *M_GetBraidOutfit(void)
+{
+    const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if ((lara->mesh_effects & (1 << LM_HEAD)) == 0) {
+        return outfit;
+    }
+    const LARA_SKIN_OUTFIT *const gold = Lara_Skin_GetGoldOutfit(outfit);
+    return gold != nullptr ? gold : outfit;
+}
+
 static inline int32_t M_GetRelativeBraidOffset(const int32_t braid_idx)
 {
     const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
@@ -153,13 +175,7 @@ static inline int32_t M_GetRelativeBraidOffset(const int32_t braid_idx)
         return M_NO_MESH;
     }
 
-    const LARA_INFO *const lara = Lara_GetLaraInfo();
-    int32_t offset = outfit->braid.setup[braid_idx].mesh_offset;
-    if (outfit->is_reflective || (lara->mesh_effects & (1 << LM_HEAD)) != 0) {
-        offset = outfit->braid.setup[braid_idx].gold_offset;
-    }
-
-    return offset;
+    return outfit->braid.setup[braid_idx].mesh_offset;
 }
 
 static inline int32_t M_GetMeshIdx(
@@ -184,7 +200,12 @@ static inline void M_ApplyMeshIfValid(
     const LARA_MESH mesh, const LARA_SKIN_OUTFIT *const outfit)
 {
     if (m_MeshOverrides[mesh] != nullptr) {
-        Lara_Mesh_Set(mesh, m_MeshOverrides[mesh]);
+        // A level's own mesh belongs to no outfit object, so it takes a twin
+        // of its own to follow her into gold.
+        OBJECT_MESH *const mesh_ptr = outfit->is_gold
+            ? Lara_Skin_GetGoldMesh(m_MeshOverrides[mesh], outfit->gold_color)
+            : m_MeshOverrides[mesh];
+        Lara_Mesh_Set(mesh, mesh_ptr);
         return;
     }
 
@@ -214,13 +235,17 @@ static int32_t M_GetCombatFaceMeshIdx(const LARA_SKIN_OUTFIT *const outfit)
         }
     }
 
-    const OBJECT *const extra_obj = Object_Get(O_LARA_SKIN_SWAP_EXTRA);
+    const OBJECT *const extra_obj = Object_Get(outfit->extra_obj_id);
     return extra_obj->mesh_idx + offset;
 }
 
 static const LARA_SKIN_OUTFIT *M_GetExtraOutfit(const LARA_EXTRA_STATE state)
 {
     const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
+    if (state == LS_EXTRA_MIDAS_KILL) {
+        return Lara_Skin_GetGoldOutfit(outfit);
+    }
+
     const LARA_SKIN_TYPE extra_type = outfit->extra_outfits[state];
     if (extra_type == LARA_SKIN_TYPE_DEFAULT) {
         return nullptr;
@@ -235,21 +260,21 @@ static const LARA_SKIN_OUTFIT *M_GetExtraOutfit(const LARA_EXTRA_STATE state)
 
 static void M_SetEquipment(
     const LARA_MESH mesh, const LARA_SKIN_EQUIPMENT_TYPE type,
-    const int32_t data, const int32_t offset)
+    const int32_t data, const int32_t offset,
+    const LARA_SKIN_OUTFIT *const outfit)
 {
     LARA_SKIN_EQUIPMENT *const equipment = &m_Equipment[mesh];
     equipment->type = type;
     equipment->data = data;
     switch (type) {
     case EQUIPMENT_TYPE_WEAPON:
-        const OBJECT *const gun_swap_obj = Object_Get(O_LARA_SKIN_SWAP_GUNS);
+        const OBJECT *const gun_swap_obj = Object_Get(outfit->guns_obj_id);
         equipment->mesh = Object_GetMesh(gun_swap_obj->mesh_idx + offset);
         equipment->offset = (XYZ_16) {};
         break;
     case EQUIPMENT_TYPE_EXTRA:
-        const OBJECT *const extra_obj = Object_Get(O_LARA_SKIN_SWAP_EXTRA);
+        const OBJECT *const extra_obj = Object_Get(outfit->extra_obj_id);
         equipment->mesh = Object_GetMesh(extra_obj->mesh_idx + offset);
-        const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
         equipment->offset = outfit->extra_mesh_positions[data];
         break;
     default:
@@ -289,7 +314,7 @@ static void M_SetGunEquipment(
     if (offset == M_NO_MESH) {
         Lara_Skin_ClearEquipment(mesh);
     } else {
-        M_SetEquipment(mesh, EQUIPMENT_TYPE_WEAPON, gun_type, offset);
+        M_SetEquipment(mesh, EQUIPMENT_TYPE_WEAPON, gun_type, offset, outfit);
     }
 }
 
@@ -324,6 +349,32 @@ static void M_UpdateSunglasses(void)
     Lara_Skin_SetExtraEquipment(LM_HEAD, mesh);
 }
 
+// What Lara carries comes from the outfit's objects too - the gun in her hands
+// and the one on her back among it - so a change of outfit has to read it again
+// from what each slot already holds. A slot holding nothing keeps holding
+// nothing, which is what leaves the Midas death's cleared hands cleared.
+static void M_ReapplyEquipment(const LARA_SKIN_OUTFIT *const outfit)
+{
+    for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
+        if (i == LM_THIGH_L || i == LM_THIGH_R) {
+            continue;
+        }
+        const LARA_SKIN_EQUIPMENT *const equipment = &m_Equipment[i];
+        switch (equipment->type) {
+        case EQUIPMENT_TYPE_WEAPON:
+            M_SetGunEquipment(i, equipment->data, outfit);
+            break;
+        case EQUIPMENT_TYPE_EXTRA:
+            M_SetEquipment(
+                i, EQUIPMENT_TYPE_EXTRA, equipment->data,
+                Lara_Skin_GetExtraMeshOffset(equipment->data), outfit);
+            break;
+        default:
+            break;
+        }
+    }
+}
+
 // Whether an outfit has this level's meshes to bind to. A title level running
 // behind the menu is dressed like any other, so this asks what is loaded
 // rather than whether a game is under way.
@@ -333,6 +384,11 @@ static bool M_CanDress(void)
         && Object_Get(O_LARA)->loaded
         && Object_Get(O_LARA_SKIN_SWAP_EXTRA)->loaded
         && Object_Get(O_LARA_SKIN_SWAP_GUNS)->loaded;
+}
+
+void Lara_Skin_Reset(void)
+{
+    Lara_Skin_ResetGold();
 }
 
 void Lara_Skin_Initialise(void)
@@ -362,68 +418,25 @@ void Lara_Skin_Initialise(void)
         }
         return;
     }
-    const OBJECT *const extra_obj = Object_Get(O_LARA_SKIN_SWAP_EXTRA);
-    const OBJECT *const gun_swap_obj = Object_Get(O_LARA_SKIN_SWAP_GUNS);
-
-    const int32_t hair_segment_count = Lara_Hair_GetSegmentCount();
+    // What every outfit says it is made of, against what the level loaded.
     const int32_t outfit_count = Lara_Skin_GetOutfitCount();
     for (int32_t i = 0; i < outfit_count; i++) {
         const LARA_SKIN_OUTFIT *const outfit = Lara_Skin_GetOutfit(i);
         if (!outfit->is_defined) {
             continue;
         }
-
         const OBJECT *const skin_obj = Object_Get(outfit->mesh_obj_id);
         ASSERT(skin_obj->loaded);
         ASSERT(skin_obj->mesh_count == LM_NUMBER_OF);
-        if (!outfit->is_reflective) {
-            continue;
-        }
-
-        for (int32_t j = 0; j < LM_NUMBER_OF; j++) {
-            Object_SetMeshReflectiveEx(skin_obj->mesh_idx + j, true);
-            const int32_t extra_idx = M_GetBraidDependentMeshIdx(j, outfit);
-            if (extra_idx != M_NO_MESH) {
-                Object_SetMeshReflectiveEx(extra_idx, true);
-            }
-        }
-
-        for (int32_t j = 0; j < NUM_WEAPONS; j++) {
-            const LARA_SKIN_MESH_MAP map = outfit->gun_map->mesh_offsets[j];
-            if (map.thigh.left != M_NO_MESH) {
-                Object_SetMeshReflectiveEx(
-                    gun_swap_obj->mesh_idx + map.thigh.left, true);
-            }
-            if (map.thigh.right != M_NO_MESH) {
-                Object_SetMeshReflectiveEx(
-                    gun_swap_obj->mesh_idx + map.thigh.right, true);
-            }
-        }
-
-        if (outfit->joints_obj_id != NO_OBJECT) {
-            const OBJECT *const joints_obj = Object_Get(outfit->joints_obj_id);
-            if (joints_obj->loaded) {
-                Object_SetReflective(outfit->joints_obj_id, true);
-            }
-        }
-
-        if (!outfit->braid.enabled) {
-            continue;
-        }
-
-        for (int32_t j = 0; j < outfit->braid.count; j++) {
-            const int32_t gold_offset = outfit->braid.setup[j].gold_offset;
-            if (gold_offset == M_NO_MESH) {
-                continue;
-            }
-            for (int32_t k = 0; k < hair_segment_count; k++) {
-                Object_SetMeshReflectiveEx(
-                    extra_obj->mesh_idx + gold_offset + k, true);
-            }
-        }
     }
 
     Lara_Skin_ApplyOutfitFromConfig();
+
+    // She wears nothing yet, and the outfit above only dresses her where it
+    // differs from the type she already carries, which after a level change is
+    // the one the outgoing level left there. Dress her regardless: a mesh left
+    // unset here is read as a mesh when she is drawn.
+    Lara_Skin_ApplyOutfit();
 }
 
 void Lara_Skin_ApplyOutfitFromConfig(void)
@@ -432,6 +445,8 @@ void Lara_Skin_ApplyOutfitFromConfig(void)
         return;
     }
 
+    const bool was_golden = m_IsGolden;
+    m_IsGolden = g_Config.visuals.golden_lara;
     LARA_SKIN_TYPE skin_type = M_GetCurrentLevelOutfitType();
     if (g_Config.visuals.lara_outfit != nullptr) {
         const LARA_SKIN_TYPE config_type =
@@ -448,6 +463,12 @@ void Lara_Skin_ApplyOutfitFromConfig(void)
     }
 
     Lara_Skin_SetType(skin_type);
+
+    // Gold is not an outfit of its own, so a change of it leaves the type
+    // where it was, and the meshes she is wearing have to be read again.
+    if (was_golden != m_IsGolden) {
+        Lara_Skin_ApplyOutfit();
+    }
 }
 
 void Lara_Skin_CycleOutfit(const int32_t dir)
@@ -526,8 +547,11 @@ void Lara_Skin_ApplyOutfit(void)
         M_ApplyMeshIfValid(i, outfit);
     }
 
+    // The thighs answer to the holster type rather than to what they hold, so
+    // that hidden holsters come back with the outfit that has them.
     M_SetGunEquipment(LM_THIGH_L, m_HolsterType_L, outfit);
     M_SetGunEquipment(LM_THIGH_R, m_HolsterType_R, outfit);
+    M_ReapplyEquipment(outfit);
     M_SetCombatFace(m_UseCombatFace);
     M_UpdateSunglasses();
     Lara_Joints_Initialise(outfit);
@@ -565,7 +589,7 @@ void Lara_Skin_SetSpeechFace(const int32_t index)
         return;
     }
 
-    const OBJECT *const extra_obj = Object_Get(O_LARA_SKIN_SWAP_EXTRA);
+    const OBJECT *const extra_obj = Object_Get(outfit->extra_obj_id);
     const int32_t offset = outfit->speech_face_offset + index;
     if (offset >= 0 && offset < extra_obj->mesh_count) {
         Lara_Mesh_Set(LM_HEAD, Object_GetMesh(extra_obj->mesh_idx + offset));
@@ -630,7 +654,7 @@ int32_t Lara_Skin_GetBraidMeshIdx(const int32_t braid_idx)
         return offset;
     }
 
-    const OBJECT *const obj = Object_Get(O_LARA_SKIN_SWAP_EXTRA);
+    const OBJECT *const obj = Object_Get(M_GetBraidOutfit()->extra_obj_id);
     return obj->mesh_idx + offset;
 }
 
@@ -641,7 +665,10 @@ const ANIM_BONE *Lara_Skin_GetBraidBoneBase(const int32_t braid_idx)
         return nullptr;
     }
 
-    const OBJECT *const obj = Object_Get(O_LARA_SKIN_SWAP_EXTRA);
+    // The worn outfit, not the gilded one: a twin carries the bones of the
+    // object it was minted from, and this is asked while a level is still
+    // loading, before there is anything to mint from.
+    const OBJECT *const obj = Object_Get(M_GetWornOutfit()->extra_obj_id);
     return Object_TryGetBone(obj, offset);
 }
 
@@ -663,14 +690,16 @@ void Lara_Skin_SetHolstersVisible(const bool visible)
 
 void Lara_Skin_ClearEquipment(const LARA_MESH mesh)
 {
-    M_SetEquipment(mesh, EQUIPMENT_TYPE_NONE, M_NO_MESH, M_NO_MESH);
+    M_SetEquipment(
+        mesh, EQUIPMENT_TYPE_NONE, M_NO_MESH, M_NO_MESH, M_GetWornOutfit());
 }
 
 void Lara_Skin_SetExtraEquipment(
     const LARA_MESH mesh, const LARA_SKIN_EXTRA_MESH extra_mesh)
 {
     const int32_t offset = Lara_Skin_GetExtraMeshOffset(extra_mesh);
-    M_SetEquipment(mesh, EQUIPMENT_TYPE_EXTRA, extra_mesh, offset);
+    M_SetEquipment(
+        mesh, EQUIPMENT_TYPE_EXTRA, extra_mesh, offset, M_GetCurrentOutfit());
 }
 
 void Lara_Skin_SetGunEquipment(
@@ -678,7 +707,7 @@ void Lara_Skin_SetGunEquipment(
 {
     // The armed meshes live in the swap object, and a level need not carry it.
     if (gun_type < 0 || gun_type >= NUM_WEAPONS
-        || !Object_Get(O_LARA_SKIN_SWAP_GUNS)->loaded) {
+        || !Object_Get(M_GetCurrentOutfit()->guns_obj_id)->loaded) {
         return;
     }
     M_SetGunEquipment(mesh, gun_type, M_GetCurrentOutfit());

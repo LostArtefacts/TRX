@@ -75,41 +75,37 @@ Her position, room and hit points are not here: she is an item like any other an
         Braided torso.
     - `trx.lara.ExtraMesh.TR1_BRAID_MAULED_TORSO` = `3`  
         Braided torso, mauled.
-    - `trx.lara.ExtraMesh.TR1_BRAID_GOLD_HEAD` = `4`  
-        Braided head, gold.
-    - `trx.lara.ExtraMesh.TR1_BRAID_GOLD_TORSO` = `5`  
-        Braided torso, gold.
-    - `trx.lara.ExtraMesh.DAGGER_HAND` = `6`  
+    - `trx.lara.ExtraMesh.DAGGER_HAND` = `4`  
         Dagger, in hand.
-    - `trx.lara.ExtraMesh.DAGGER_HIPS` = `7`  
+    - `trx.lara.ExtraMesh.DAGGER_HIPS` = `5`  
         Dagger, sheathed at the hips.
-    - `trx.lara.ExtraMesh.OAR` = `8`  
+    - `trx.lara.ExtraMesh.OAR` = `6`  
         Oar.
-    - `trx.lara.ExtraMesh.SPANNER` = `9`  
+    - `trx.lara.ExtraMesh.SPANNER` = `7`  
         Spanner.
-    - `trx.lara.ExtraMesh.DRINK_CAN` = `10`  
+    - `trx.lara.ExtraMesh.DRINK_CAN` = `8`  
         Drink can.
-    - `trx.lara.ExtraMesh.GLASSES_OPAQUE` = `11`  
+    - `trx.lara.ExtraMesh.GLASSES_OPAQUE` = `9`  
         Sunglasses.
-    - `trx.lara.ExtraMesh.GLASSES_TRANSPARENT` = `12`  
+    - `trx.lara.ExtraMesh.GLASSES_TRANSPARENT` = `10`  
         Sunglasses, transparent lenses.
-    - `trx.lara.ExtraMesh.CROWBAR` = `13`  
+    - `trx.lara.ExtraMesh.CROWBAR` = `11`  
         Crowbar.
-    - `trx.lara.ExtraMesh.WOODEN_TORCH` = `14`  
+    - `trx.lara.ExtraMesh.WOODEN_TORCH` = `12`  
         Wooden torch.
-    - `trx.lara.ExtraMesh.BINOCULARS` = `15`  
+    - `trx.lara.ExtraMesh.BINOCULARS` = `13`  
         Binoculars.
-    - `trx.lara.ExtraMesh.HOOK_AND_POLE` = `16`  
+    - `trx.lara.ExtraMesh.HOOK_AND_POLE` = `14`  
         Hook and pole.
-    - `trx.lara.ExtraMesh.DETONATOR` = `17`  
+    - `trx.lara.ExtraMesh.DETONATOR` = `15`  
         Detonator.
-    - `trx.lara.ExtraMesh.SHOVEL` = `18`  
+    - `trx.lara.ExtraMesh.SHOVEL` = `16`  
         Shovel.
-    - `trx.lara.ExtraMesh.JERRYCAN` = `19`  
+    - `trx.lara.ExtraMesh.JERRYCAN` = `17`  
         Jerrycan.
-    - `trx.lara.ExtraMesh.SANDBAG` = `20`  
+    - `trx.lara.ExtraMesh.SANDBAG` = `18`  
         Sandbag.
-    - `trx.lara.ExtraMesh.WATERSKIN` = `21`  
+    - `trx.lara.ExtraMesh.WATERSKIN` = `19`  
         Waterskin.
 
 - <a id="lara.WaterState" name="lara.WaterState"></a>[lua]`trx.lara.WaterState`

@@ -19,6 +19,9 @@
 #include <string.h>
 #include <uthash.h>
 
+// The color the shipped golden models are textured in, to the texel.
+#define M_DEFAULT_GOLD_COLOR ((RGB_888) { 0xFF, 0xEE, 0x8B })
+
 typedef struct {
     char *name;
     char *name_gs;
@@ -213,7 +216,6 @@ static bool M_LoadBraid(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
         }
 
         JSON_READ_D(io, "mesh_offset", &outfit->braid.setup[i].mesh_offset, 0);
-        JSON_READ_D(io, "gold_offset", &outfit->braid.setup[i].gold_offset, 0);
         JSON_READ_D(
             io, "position", &outfit->braid.setup[i].position, (XYZ_32) {});
         M_LoadBraidHeadSeam(io, &outfit->braid.setup[i].head_seam);
@@ -339,14 +341,31 @@ static bool M_LoadObjectID(
     JSON_FINISH();
 }
 
+static bool M_LoadObjectIDOr(
+    JSON_READ_IO *const io, const char *const key, OBJECT_ID *const out_obj_id,
+    const OBJECT_ID fallback)
+{
+    if (!JSON_ReadIO_HasKey(io, key)) {
+        *out_obj_id = fallback;
+        JSON_FINISH();
+    }
+    return M_LoadObjectID(io, key, out_obj_id);
+}
+
 static bool M_LoadOutfit(JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
 {
     if (!M_LoadObjectID(io, "mesh_object", &outfit->mesh_obj_id)) {
         JSON_FAIL();
     }
     M_LoadObjectID(io, "joints_object", &outfit->joints_obj_id);
+    JSON_MUST(M_LoadObjectIDOr(
+        io, "extra_object", &outfit->extra_obj_id, O_LARA_SKIN_SWAP_EXTRA));
+    JSON_MUST(M_LoadObjectIDOr(
+        io, "guns_object", &outfit->guns_obj_id, O_LARA_SKIN_SWAP_GUNS));
+    JSON_MUST(M_LoadObjectIDOr(
+        io, "legs_object", &outfit->legs_obj_id, O_LARA_SKIN_SWAP_LEGS));
 
-    JSON_READ_D(io, "is_reflective", &outfit->is_reflective, false);
+    JSON_READ_D(io, "gold_color", &outfit->gold_color, M_DEFAULT_GOLD_COLOR);
     JSON_READ_D(io, "is_selectable", &outfit->is_selectable, true);
     JSON_READ_D(io, "combat_face_offset", &outfit->combat_face_offset, -1);
     JSON_READ_D(io, "speech_face_offset", &outfit->speech_face_offset, -1);

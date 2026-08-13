@@ -4,6 +4,9 @@
 #include <trx/game/lara/skin/types.h>
 #include <trx/game/sound/ids.h>
 
+// Drops what the outgoing level left behind, before the objects it named go.
+void Lara_Skin_Reset(void);
+
 void Lara_Skin_Initialise(void);
 void Lara_Skin_ApplyOutfitFromConfig(void);
 void Lara_Skin_CycleOutfit(int32_t dir);

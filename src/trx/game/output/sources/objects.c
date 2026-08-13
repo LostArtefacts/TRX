@@ -420,6 +420,11 @@ void OutputSource_Objects_Shutdown(void)
     }
 }
 
+bool OutputSource_Objects_HasMeshes(void)
+{
+    return m_Priv.meshes != nullptr;
+}
+
 void OutputSource_Objects_ObserveLevelLoad(void)
 {
     M_PRIV *const p = &m_Priv;

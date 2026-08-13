@@ -577,18 +577,14 @@
             },
             "lara_outfit": {
                 "default": "\\{review}Standard",
-                "golden_sophia": "\\{review}Goldene Sophia",
                 "natla": "\\{review}Natla",
                 "sophia": "\\{review}Sophia",
                 "tr1_bacon_lara": "\\{review}Bacon-Lara",
                 "tr1_classic": "\\{review}TR1 Klassisch",
                 "tr1_combo": "\\{review}TR1 Kombiniert",
-                "tr1_golden_bacon_lara": "\\{review}Goldene Bacon-Lara",
-                "tr1_golden_lara": "\\{review}TR1 Goldene Lara",
                 "tr1_gym": "\\{review}TR1 Trainingsanzug",
                 "tr1_mauled": "\\{review}TR1 Verletzt",
                 "tr1_ngage": "\\{review}TR1 N-Gage",
-                "tr23_golden_lara": "\\{review}TR2/3 Goldene Lara",
                 "tr2_bomber_jacket": "\\{review}Bomberjacke 1",
                 "tr2_bomber_jacket_alpha": "\\{review}Bomberjacke 2",
                 "tr2_classic": "\\{review}TR2 Klassisch",
@@ -605,9 +601,7 @@
                 "tr3_nevada": "\\{review}Nevada",
                 "tr3_south_pacific": "\\{review}Südpazifik",
                 "tr4_classic": "\\{review}TR4 Klassisch",
-                "tr4_golden_lara": "\\{review}TR4 Goldene Lara",
                 "tr4_young": "\\{review}TR4 Jung",
-                "tr4_young_golden_lara": "\\{review}TR4 Jung Goldene Lara",
             }
         },
         "mods": {
@@ -1878,6 +1872,10 @@
         "visuals.gamma": {
             "title": "\\{review}Gamma",
             "description": "\\{review}Passt die Gammakurve an. Höhere Werte bedeuten hellere Beleuchtung. Der Wert 2,5 entspricht den Standardfarben.",
+        },
+        "visuals.golden_lara": {
+            "title": "\\{review}Goldene Lara",
+            "description": "\\{review}Verwandelt Lara in Gold, unabhängig vom getragenen Outfit, so wie es die Hand des Midas tut.",
         },
         "visuals.lara_outfit": {
             "title": "\\{review}Laras Outfit",

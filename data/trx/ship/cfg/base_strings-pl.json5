@@ -577,18 +577,14 @@
             },
             "lara_outfit": {
                 "default": "Domyślny",
-                "golden_sophia": "Złota Sophia",
                 "natla": "\\{review}Natla",
                 "sophia": "Sophia",
                 "tr1_bacon_lara": "TR1 klon Lary",
                 "tr1_classic": "TR1 klasyczny",
                 "tr1_combo": "TR1 alternatywny",
-                "tr1_golden_bacon_lara": "TR1 złoty klon Lary",
-                "tr1_golden_lara": "TR1 złota Lara",
                 "tr1_gym": "TR1 dres",
                 "tr1_mauled": "TR1 sponiewierany",
                 "tr1_ngage": "TR1 N-Gage",
-                "tr23_golden_lara": "TR2/3 złota Lara",
                 "tr2_bomber_jacket": "\\{review}TR2 kurtka pilotka 1",
                 "tr2_bomber_jacket_alpha": "\\{review}TR2 kurtka pilotka 2",
                 "tr2_classic": "TR2 klasyczny",
@@ -605,9 +601,7 @@
                 "tr3_nevada": "TR3 Nevada",
                 "tr3_south_pacific": "TR3 Południowy Pacyfik",
                 "tr4_classic": "\\{review}TR4 klasyczny",
-                "tr4_golden_lara": "\\{review}TR4 złota Lara",
                 "tr4_young": "\\{review}TR4 Młoda",
-                "tr4_young_golden_lara": "\\{review}TR4 złota Młoda",
             }
         },
         "mods": {
@@ -1878,6 +1872,10 @@
         "visuals.gamma": {
             "title": "Gamma",
             "description": "Reguluje krzywą gamma. Wyższe wartości oznaczają jaśniejsze oświetlenie. Wartość 2,5 wyłącza modulację.",
+        },
+        "visuals.golden_lara": {
+            "title": "\\{review}Złota Lara",
+            "description": "\\{review}Zamienia Larę w złoto, niezależnie od noszonego stroju, tak jak ręka Midasa.",
         },
         "visuals.lara_outfit": {
             "title": "Strój Lary",
