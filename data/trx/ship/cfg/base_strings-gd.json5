@@ -3654,6 +3654,15 @@
         "water_sprite": {
             "name": "Rotal Bàta",
         },
+        "waterfall_1": {
+            "name": "\\{review}Eas 1",
+        },
+        "waterfall_2": {
+            "name": "\\{review}Eas 2",
+        },
+        "waterfall_3": {
+            "name": "\\{review}Eas 3",
+        },
         "waterfall_mist": {
             "name": "Ceò Eas",
         },

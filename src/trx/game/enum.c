@@ -18,6 +18,7 @@
 #include <trx/game/music/ids.h>
 #include <trx/game/objects/general/generic_switch.h>
 #include <trx/game/objects/general/pickup.h>
+#include <trx/game/objects/general/waterfall.h>
 #include <trx/game/objects/ids.h>
 #include <trx/game/rooms/enum.h>
 #include <trx/game/savegame/types.h>
@@ -179,6 +180,10 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(SWITCH_MODE, SWITCH_MODE_HIDDEN_REACH, "hidden_reach");
     ENUM_MAP(SWITCH_MODE, SWITCH_MODE_HIDDEN_PICKUP, "hidden_pickup");
     ENUM_MAP(SWITCH_MODE, SWITCH_MODE_SHOVE, "shove");
+
+    ENUM_MAP(WATERFALL_SOUND, WATERFALL_SOUND_NONE, "none");
+    ENUM_MAP(WATERFALL_SOUND, WATERFALL_SOUND_SAND, "sand");
+    ENUM_MAP(WATERFALL_SOUND, WATERFALL_SOUND_WATER, "water");
 
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_LOOP_GAME, "loop_game");
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_PLAY_FMV, "play_fmv");

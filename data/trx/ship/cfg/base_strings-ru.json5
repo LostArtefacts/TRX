@@ -3650,6 +3650,15 @@
         "water_sprite": {
             "name": "\\{review}След лодки",
         },
+        "waterfall_1": {
+            "name": "\\{review}Водопад 1",
+        },
+        "waterfall_2": {
+            "name": "\\{review}Водопад 2",
+        },
+        "waterfall_3": {
+            "name": "\\{review}Водопад 3",
+        },
         "waterfall_mist": {
             "name": "Водопадный туман",
         },

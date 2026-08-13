@@ -23,4 +23,7 @@ trx.events.on_game_start(function()
   trx.items[188].properties.pickup_mode = trx.items.PickupMode.HIDDEN
   trx.items[192].properties.pickup_mode = trx.items.PickupMode.HIDDEN
   trx.items[212].properties.pickup_mode = trx.items.PickupMode.HIDDEN
+
+  trx.objects.waterfall_1.properties.hide_when_inactive = true
+  trx.objects.waterfall_2.properties.hide_when_inactive = true
 end)

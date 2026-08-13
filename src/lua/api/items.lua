@@ -75,6 +75,17 @@ api.enum("items.TriggerType", {
   },
 })
 
+api.enum("items.WaterfallSound", {
+  backing = "WATERFALL_SOUND",
+  description = [[<!--noref: loop_sound--> The values the `loop_sound` item property can take. It selects the
+    sound a waterfall loops while it runs.]],
+  values = {
+    NONE = "The waterfall runs silently.",
+    SAND = "A pouring sand loop.",
+    WATER = "A running water loop.",
+  },
+})
+
 -- Item handles are bare userdata. Their metatable is populated by the api.type
 -- declaration below, and by nothing else: a member of the C ITEM struct that is
 -- not named here is not reachable from a script at all.

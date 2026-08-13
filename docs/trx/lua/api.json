@@ -237,7 +237,7 @@
     },
     {
       "bulk": true,
-      "count": 817,
+      "count": 820,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -1029,6 +1029,9 @@
         "VULTURE",
         "WASP_MUTANT",
         "WASP_MUTANT_EMITTER",
+        "WATERFALL_1",
+        "WATERFALL_2",
+        "WATERFALL_3",
         "WATERFALL_MIST",
         "WATERSKIN_1_1",
         "WATERSKIN_1_2",
@@ -1066,7 +1069,7 @@
     },
     {
       "bulk": true,
-      "count": 203,
+      "count": 204,
       "description": "Every sound sample TRX has a name for.",
       "examples": [
         "trx.sound.play(trx.catalog.samples.LARA_NO)"
@@ -1227,6 +1230,7 @@
         "ROLLING_BLADE",
         "SANDBAG_HIT",
         "SAND_FX",
+        "SAND_LOOP",
         "SAVE_CRYSTAL",
         "SAW_REVVING",
         "SAW_STOP",
@@ -2287,6 +2291,29 @@
           "description": "Takes the trigger back, clearing the code bits. The item is left running so it can stand itself down, which is how a door animates shut.",
           "name": "ANTITRIGGER",
           "value": 4
+        }
+      ]
+    },
+    {
+      "bulk": false,
+      "count": 3,
+      "description": "<!--noref: loop_sound--> The values the `loop_sound` item property can take. It selects the\nsound a waterfall loops while it runs.",
+      "path": "items.WaterfallSound",
+      "values": [
+        {
+          "description": "The waterfall runs silently.",
+          "name": "NONE",
+          "value": 0
+        },
+        {
+          "description": "A pouring sand loop.",
+          "name": "SAND",
+          "value": 1
+        },
+        {
+          "description": "A running water loop.",
+          "name": "WATER",
+          "value": 2
         }
       ]
     },

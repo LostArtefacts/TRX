@@ -4,4 +4,7 @@ trx.events.on_game_start(function()
 
   trx.objects.animating_13.properties.collidable = false
   trx.objects.animating_14.properties.collidable = false
+
+  trx.objects.waterfall_1.properties.loop_sound = trx.items.WaterfallSound.SAND
+  trx.objects.waterfall_1.properties.hide_when_inactive = true
 end)

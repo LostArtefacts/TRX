@@ -3416,6 +3416,33 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### O_WATERFALL_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>loop_sound</code></td><td colspan="3" align="center">0</td><td>The sound the waterfall loops while it runs - 0: none; 1: sand; 2: water</td></tr>
+<tr><td><code>hide_when_inactive</code></td><td colspan="3" align="center">false</td><td>Hide the waterfall while its trigger is inactive.</td></tr>
+</tbody>
+</table>
+
+#### O_WATERFALL_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>loop_sound</code></td><td colspan="3" align="center">0</td><td>The sound the waterfall loops while it runs - 0: none; 1: sand; 2: water</td></tr>
+<tr><td><code>hide_when_inactive</code></td><td colspan="3" align="center">false</td><td>Hide the waterfall while its trigger is inactive.</td></tr>
+</tbody>
+</table>
+
+#### O_WATERFALL_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>loop_sound</code></td><td colspan="3" align="center">0</td><td>The sound the waterfall loops while it runs - 0: none; 1: sand; 2: water</td></tr>
+<tr><td><code>hide_when_inactive</code></td><td colspan="3" align="center">false</td><td>Hide the waterfall while its trigger is inactive.</td></tr>
+</tbody>
+</table>
+
 #### O_WATERSKIN_1_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
