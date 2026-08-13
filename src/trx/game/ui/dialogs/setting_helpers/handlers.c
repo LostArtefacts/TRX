@@ -461,6 +461,9 @@ REGISTER_UI_SETTING_HANDLER(
         .key = "gameplay.fix_m16_accuracy", .is_available = M_M16_IsAvailable)
 
 REGISTER_UI_SETTING_HANDLER(
+        .key = "gameplay.m16_aim_mode", .is_available = M_M16_IsAvailable)
+
+REGISTER_UI_SETTING_HANDLER(
         .key = "gameplay.fix_wade_wall_hit",
         .is_available = M_FixWadeWallHit_IsAvailable)
 
