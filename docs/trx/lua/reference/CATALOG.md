@@ -37,7 +37,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     - `trx.catalog.Context.ITEM_ACTIONS` = `5`  
         Item actions, which the flip effects trigger.
 
-- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 817 names
+- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 820 names
 
     Every object TRX has a name for.
 
@@ -248,18 +248,19 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     `TRIGGER_GATE`, `TROPICAL_FISH`, `TROPICAL_FISH_GFX`, `TWINKLE`,
     `UNDERWATER_DOOR`, `UPV`, `UZI_AMMO_ITEM`, `UZI_AMMO_OPTION`, `UZI_ITEM`,
     `UZI_OPTION`, `VOLE`, `VON_CROY`, `VULTURE`, `WASP_MUTANT`,
-    `WASP_MUTANT_EMITTER`, `WATERFALL_MIST`, `WATERSKIN_1_1`, `WATERSKIN_1_2`,
-    `WATERSKIN_1_3`, `WATERSKIN_1_EMPTY`, `WATERSKIN_1_OPTION`, `WATERSKIN_2_1`,
-    `WATERSKIN_2_2`, `WATERSKIN_2_3`, `WATERSKIN_2_4`, `WATERSKIN_2_5`,
-    `WATERSKIN_2_EMPTY`, `WATERSKIN_2_OPTION`, `WATER_SPRITE`, `WHITE_LIGHT`,
-    `WILLARD`, `WILLARD_PLASMA_BALL`, `WINSTON`, `WINSTON_ARMY`, `WOLF`,
-    `WORKER_1`, `WORKER_2`, `WORKER_3`, `WORKER_4`, `WORKER_5`, `XIAN_KNIGHT`,
+    `WASP_MUTANT_EMITTER`, `WATERFALL_1`, `WATERFALL_2`, `WATERFALL_3`,
+    `WATERFALL_MIST`, `WATERSKIN_1_1`, `WATERSKIN_1_2`, `WATERSKIN_1_3`,
+    `WATERSKIN_1_EMPTY`, `WATERSKIN_1_OPTION`, `WATERSKIN_2_1`, `WATERSKIN_2_2`,
+    `WATERSKIN_2_3`, `WATERSKIN_2_4`, `WATERSKIN_2_5`, `WATERSKIN_2_EMPTY`,
+    `WATERSKIN_2_OPTION`, `WATER_SPRITE`, `WHITE_LIGHT`, `WILLARD`,
+    `WILLARD_PLASMA_BALL`, `WINSTON`, `WINSTON_ARMY`, `WOLF`, `WORKER_1`,
+    `WORKER_2`, `WORKER_3`, `WORKER_4`, `WORKER_5`, `XIAN_KNIGHT`,
     `XIAN_KNIGHT_STATUE`, `XIAN_SPEARMAN`, `XIAN_SPEARMAN_STATUE`, `YETI`,
     `ZIPLINE_HANDLE`
 
     </details>
 
-- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 203 names
+- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 204 names
 
     Every sound sample TRX has a name for.
 
@@ -308,8 +309,8 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     `ROCKET_FIRE`, `ROLLING_BALL_1_ROLL`, `ROLLING_BALL_1_STOP`,
     `ROLLING_BALL_2_ROLL`, `ROLLING_BALL_2_STOP`, `ROLLING_BALL_3_ROLL`,
     `ROLLING_BALL_3_STOP`, `ROLLING_BALL_4_ROLL`, `ROLLING_BALL_4_STOP`,
-    `ROLLING_BLADE`, `SANDBAG_HIT`, `SAND_FX`, `SAVE_CRYSTAL`, `SAW_REVVING`,
-    `SAW_STOP`, `SECRET`, `SECURITY_GUARD_FIRE`, `SHIVA_SWORD_1`,
+    `ROLLING_BLADE`, `SANDBAG_HIT`, `SAND_FX`, `SAND_LOOP`, `SAVE_CRYSTAL`,
+    `SAW_REVVING`, `SAW_STOP`, `SECRET`, `SECURITY_GUARD_FIRE`, `SHIVA_SWORD_1`,
     `SHIVA_SWORD_2`, `SHUTTERS_BREAK`, `SKATEBOARD_HIT`, `SKATEKID_SPEECH`,
     `SKIDOO_IDLE`, `SKIDOO_MOVING`, `SMALL_FAN_ON`, `SOPHIA_SUMMON`,
     `SOPHIA_SUMMON_NOT`, `SOPHIA_TAKE_HIT`, `SPANNER_CLUNK`, `SPIDER_EXPLODE`,

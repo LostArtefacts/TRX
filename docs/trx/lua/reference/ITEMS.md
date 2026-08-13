@@ -81,6 +81,18 @@ end
     - `trx.items.TriggerType.ANTITRIGGER` = `4`  
         Takes the trigger back, clearing the code bits. The item is left running so it can stand itself down, which is how a door animates shut.
 
+- <a id="items.WaterfallSound" name="items.WaterfallSound"></a>[lua]`trx.items.WaterfallSound`
+
+    The values the `loop_sound` item property can take. It selects the
+    sound a waterfall loops while it runs.
+
+    - `trx.items.WaterfallSound.NONE` = `0`  
+        The waterfall runs silently.
+    - `trx.items.WaterfallSound.SAND` = `1`  
+        A pouring sand loop.
+    - `trx.items.WaterfallSound.WATER` = `2`  
+        A running water loop.
+
 ### Structures
 
 - <a id="items.AnimNum" name="items.AnimNum"></a>[lua]`trx.items.AnimNum`

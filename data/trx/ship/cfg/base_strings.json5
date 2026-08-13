@@ -3788,6 +3788,15 @@
         "water_sprite": {
             "name": "Boat Wake",
         },
+        "waterfall_1": {
+            "name": "Waterfall 1",
+        },
+        "waterfall_2": {
+            "name": "Waterfall 2",
+        },
+        "waterfall_3": {
+            "name": "Waterfall 3",
+        },
         "waterfall_mist": {
             "name": "Waterfall Mist",
         },

@@ -3630,6 +3630,15 @@
         "water_sprite": {
             "name": "\\{review}Sillage de Bateau",
         },
+        "waterfall_1": {
+            "name": "\\{review}Cascade 1",
+        },
+        "waterfall_2": {
+            "name": "\\{review}Cascade 2",
+        },
+        "waterfall_3": {
+            "name": "\\{review}Cascade 3",
+        },
         "waterfall_mist": {
             "name": "\\{review}Brume de cascade",
         },

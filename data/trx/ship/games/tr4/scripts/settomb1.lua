@@ -5,4 +5,9 @@ trx.events.on_game_start(function()
   trx.items[61].properties.switch_mode = trx.items.SwitchMode.HIDDEN_REACH
   trx.items[100].properties.switch_mode = trx.items.SwitchMode.HIDDEN_PICKUP
   trx.items[101].properties.pickup_mode = trx.items.PickupMode.HIDDEN
+
+  trx.objects.waterfall_1.properties.loop_sound = trx.items.WaterfallSound.SAND
+  trx.objects.waterfall_1.properties.hide_when_inactive = true
+  trx.objects.waterfall_2.properties.loop_sound = trx.items.WaterfallSound.SAND
+  trx.objects.waterfall_2.properties.hide_when_inactive = true
 end)

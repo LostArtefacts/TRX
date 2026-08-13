@@ -3718,6 +3718,15 @@
         "water_sprite": {
             "name": "Scia Barca",
         },
+        "waterfall_1": {
+            "name": "\\{review}Cascata 1",
+        },
+        "waterfall_2": {
+            "name": "\\{review}Cascata 2",
+        },
+        "waterfall_3": {
+            "name": "\\{review}Cascata 3",
+        },
         "waterfall_mist": {
             "name": "Foschia Cascata",
         },

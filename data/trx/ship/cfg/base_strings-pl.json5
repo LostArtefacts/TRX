@@ -3627,6 +3627,15 @@
         "water_sprite": {
             "name": "Ślad łodzi",
         },
+        "waterfall_1": {
+            "name": "\\{review}Wodospad 1",
+        },
+        "waterfall_2": {
+            "name": "\\{review}Wodospad 2",
+        },
+        "waterfall_3": {
+            "name": "\\{review}Wodospad 3",
+        },
         "waterfall_mist": {
             "name": "Mgiełka wodospadu",
         },

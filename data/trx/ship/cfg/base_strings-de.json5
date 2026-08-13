@@ -3643,6 +3643,15 @@
         "water_sprite": {
             "name": "Boat Wake",
         },
+        "waterfall_1": {
+            "name": "\\{review}Wasserfall 1",
+        },
+        "waterfall_2": {
+            "name": "\\{review}Wasserfall 2",
+        },
+        "waterfall_3": {
+            "name": "\\{review}Wasserfall 3",
+        },
         "waterfall_mist": {
             "name": "Wasserfall Nebel",
         },
