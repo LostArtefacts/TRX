@@ -37,7 +37,7 @@
     X_DECLARE_MEMBER(int, textures_enabled)                                    \
     X_DECLARE_MEMBER(int, vertex_snap_enabled)                                 \
     X_DECLARE_MEMBER(int, tr_version)                                          \
-    X_DECLARE_MEMBER(float, uv_rotate_offset)
+    X_DECLARE_MEMBER(float, uv_scroll_tick)
 
 #pragma pack(push, 4)
 typedef struct {
@@ -142,7 +142,7 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
         .gamma = g_Config.visuals.gamma,
         .sunset_duration = Output_GetSunsetDuration(),
         .tr_version = g_TRVersion,
-        .uv_rotate_offset = Output_GetUVRotateOffset(),
+        .uv_scroll_tick = Output_GetUVScrollTick(),
         .viewport_size = {
             (float)Viewport_GetWidth(VIEWPORT_GAME),
             (float)Viewport_GetHeight(VIEWPORT_GAME),

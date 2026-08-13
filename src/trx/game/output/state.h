@@ -72,4 +72,8 @@ void Output_AnimateTextures(int32_t num_frames);
 // Must be set before the level data loads to take effect.
 void Output_SetUVRotateSpeed(int32_t speed);
 int32_t Output_GetUVRotateSpeed(void);
-float Output_GetUVRotateOffset(void);
+// The scroll is measured in game frames and wraps at a period the level's
+// scrolling textures share, so that the tick stays exact however long the
+// level runs.
+void Output_SetUVScrollTickPeriod(int32_t period);
+float Output_GetUVScrollTick(void);

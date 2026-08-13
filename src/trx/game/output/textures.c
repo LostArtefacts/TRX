@@ -1,6 +1,7 @@
 #include <trx/game/output/textures.h>
 
 #include <trx/core/hash.h>
+#include <trx/core/math/func.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/utils.h>
@@ -48,7 +49,7 @@ static struct {
         bool *animated;
         bool *animated_objects;
         bool *animated_sprites;
-        bool *uv_rotated;
+        OUTPUT_UV_SCROLL *uv_scroll;
         bool *has_transparency_objects;
 
         uint16_t *flags;
@@ -243,24 +244,54 @@ static void M_PrepareSpriteAnimationRanges(void)
     Output_GlueVertexRanges(m_AnimationRanges.sprites);
 }
 
-static void M_PrepareUVRotateFlags(void)
+static void M_MarkUVRotateScroll(void)
 {
-    for (int32_t i = 0; i < m_Priv.uvws.count; i++) {
-        m_Priv.uvws.uv_rotated[i] = false;
-    }
     if (!M_IsUVRotateEnabled()) {
         return;
     }
 
+    const OUTPUT_UV_SCROLL scroll = {
+        // The OG counts the window down its strip, so the gameflow's speed
+        // reads as the opposite direction here.
+        .speed = -Output_GetUVRotateSpeed(),
+        .period = 32,
+    };
     int32_t range_idx = 0;
     for (const ANIMATED_TEXTURE_RANGE *range =
              Output_GetAnimatedTextureRange(0);
          range != nullptr && range_idx < m_UVRotateRangeCount;
          range = range->next_range, range_idx++) {
         for (int32_t i = 0; i < range->num_textures; i++) {
-            m_Priv.uvws.uv_rotated[range->textures[i]] = true;
+            m_Priv.uvws.uv_scroll[range->textures[i]] = scroll;
         }
     }
+}
+
+// Every scrolling texture returns to its starting offset after
+// period/gcd(speed, period) ticks. The tick wraps where all of them do so
+// together, and so stays an exact integer however long a level runs.
+static void M_PrepareUVScrollTickPeriod(void)
+{
+    int32_t tick_period = 1;
+    for (int32_t i = 0; i < m_Priv.uvws.count; i++) {
+        const OUTPUT_UV_SCROLL scroll = m_Priv.uvws.uv_scroll[i];
+        if (scroll.period <= 0 || scroll.speed == 0) {
+            continue;
+        }
+        const int32_t cycle =
+            scroll.period / Math_GCD(ABS(scroll.speed), scroll.period);
+        tick_period = tick_period / Math_GCD(tick_period, cycle) * cycle;
+    }
+    Output_SetUVScrollTickPeriod(tick_period);
+}
+
+static void M_PrepareUVScroll(void)
+{
+    for (int32_t i = 0; i < m_Priv.uvws.count; i++) {
+        m_Priv.uvws.uv_scroll[i] = (OUTPUT_UV_SCROLL) {};
+    }
+    M_MarkUVRotateScroll();
+    M_PrepareUVScrollTickPeriod();
 }
 
 static void M_PrepareAnimationRanges(void)
@@ -315,9 +346,10 @@ static void M_FillAtlasObjectSize(const int32_t i)
     size->y0 = M_NormalizeObjectUV(size->y0);
     size->x1 = M_NormalizeObjectUV(size->x1);
     size->y1 = M_NormalizeObjectUV(size->y1);
-    if (m_Priv.uvws.uv_rotated != nullptr && m_Priv.uvws.uv_rotated[i]) {
-        // Let the scrolled window sample the full 64/256-tall strip.
-        size->y1 = size->y0 + 64.0f / 256.0f;
+    const OUTPUT_UV_SCROLL scroll = Output_Textures_GetUVScroll(i);
+    if (scroll.period > 0) {
+        // Let the scrolled window sample the whole strip it travels down.
+        size->y1 = size->y0 + scroll.period * 2 / 256.0f;
     }
 }
 
@@ -346,11 +378,11 @@ static void M_FillObjectUVW(const int32_t i)
         corners[j].w = texture->tex_page;
     }
 
-    if (m_Priv.uvws.uv_rotated != nullptr && m_Priv.uvws.uv_rotated[i]) {
-        // UV rotate textures are a 32/256-tall window over a 64/256-tall
-        // tileable strip; pin the window height like tomb4 does
-        // (v_top = v1, v_bottom = v1 + 0.125) so the scroll offset slides
-        // the window over the strip's bottom half.
+    const OUTPUT_UV_SCROLL scroll = Output_Textures_GetUVScroll(i);
+    if (scroll.period > 0) {
+        // Pin the window to the top of the strip and to one period tall, like
+        // the OG does, so that the offset slides it over the strip's lower
+        // half no matter what height the level's own UVs give the face.
         float v_min = corners[0].v;
         float v_max = corners[0].v;
         for (int32_t j = 1; j < 4; j++) {
@@ -360,7 +392,7 @@ static void M_FillObjectUVW(const int32_t i)
         const float v_mid = (v_min + v_max) * 0.5f;
         for (int32_t j = 0; j < 4; j++) {
             corners[j].v =
-                corners[j].v > v_mid ? v_min + 32.0f / 256.0f : v_min;
+                corners[j].v > v_mid ? v_min + scroll.period / 256.0f : v_min;
         }
     }
 }
@@ -431,15 +463,14 @@ static void M_PrepareUVWs(void)
     m_Priv.uvws.animated_objects = m_Priv.uvws.animated;
     m_Priv.uvws.animated_sprites =
         m_Priv.uvws.animated + m_Priv.uvws.count_objects;
-    m_Priv.uvws.uv_rotated = Memory_Alloc(m_Priv.uvws.count * sizeof(bool));
+    m_Priv.uvws.uv_scroll =
+        Memory_Alloc(m_Priv.uvws.count * sizeof(OUTPUT_UV_SCROLL));
     m_Priv.uvws.flags = Memory_Alloc(m_Priv.uvws.count * sizeof(uint16_t));
     m_Priv.uvws.flags_objects = m_Priv.uvws.flags;
     m_Priv.uvws.flags_sprites = m_Priv.uvws.flags + m_Priv.uvws.count_objects;
     m_Priv.uvws.has_transparency_objects =
         Memory_Alloc(m_Priv.uvws.count_objects * sizeof(bool));
-    // The UV rotate flags halve the affected textures' V span, so they must
-    // be known before the UVWs are filled.
-    M_PrepareUVRotateFlags();
+    M_PrepareUVScroll();
     M_FillObjectUVWs();
     M_FillSpriteUVWs();
 }
@@ -613,7 +644,7 @@ static void M_FreeLevelData(void)
     }
     Memory_FreePointer(&m_Priv.uvws.data);
     Memory_FreePointer(&m_Priv.uvws.animated);
-    Memory_FreePointer(&m_Priv.uvws.uv_rotated);
+    Memory_FreePointer(&m_Priv.uvws.uv_scroll);
     Memory_FreePointer(&m_Priv.uvws.flags);
     Memory_FreePointer(&m_Priv.uvws.has_transparency_objects);
     Memory_FreePointer(&m_Priv.atlas_sizes.data);
@@ -774,10 +805,13 @@ bool Output_Textures_IsObjectTextureAnimated(const int32_t texture_idx)
     return m_Priv.uvws.animated_objects[texture_idx];
 }
 
-bool Output_Textures_IsUVWUVRotated(const int32_t uvw_pack_idx)
+OUTPUT_UV_SCROLL Output_Textures_GetUVScroll(const int32_t uvw_pack_idx)
 {
     ASSERT(uvw_pack_idx >= 0 && uvw_pack_idx < m_Priv.uvws.count);
-    return m_Priv.uvws.uv_rotated[uvw_pack_idx];
+    if (m_Priv.uvws.uv_scroll == nullptr) {
+        return (OUTPUT_UV_SCROLL) {};
+    }
+    return m_Priv.uvws.uv_scroll[uvw_pack_idx];
 }
 
 bool Output_Textures_IsSpriteTextureAnimated(const int32_t texture_idx)

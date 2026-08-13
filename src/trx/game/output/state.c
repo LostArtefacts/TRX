@@ -24,11 +24,11 @@ static float m_TimeInGame = 0.0f;
 static bool m_ControlFrame = false;
 static int32_t m_AnimatedTexturesOffset = 0;
 
-// TR4 UV rotate scroll position, in 1/256ths of a texture page, wrapping
-// every 32 (the tileable strip height). Advanced on the logic tick;
-// prev/cur are kept so rendering can interpolate between ticks.
-static int32_t m_UVRotatePos = 0;
-static int32_t m_UVRotatePosPrev = 0;
+// How far the scrolling textures have travelled, in game frames; prev and
+// cur let rendering interpolate between logic ticks.
+static int32_t m_UVScrollTick = 0;
+static int32_t m_UVScrollTickPrev = 0;
+static int32_t m_UVScrollTickPeriod = 1;
 static int32_t m_UVRotateSpeed = 0;
 
 static int32_t m_FogStart = 0;
@@ -400,10 +400,8 @@ void Output_AnimateTextures(int32_t num_frames)
         SceneCompositor_AnimateTextures();
     }
 
-    m_UVRotatePosPrev = m_UVRotatePos;
-    if (m_UVRotateSpeed != 0) {
-        m_UVRotatePos = (m_UVRotatePos - m_UVRotateSpeed * num_frames) & 0x1F;
-    }
+    m_UVScrollTickPrev = m_UVScrollTick;
+    m_UVScrollTick = (m_UVScrollTick + num_frames) % m_UVScrollTickPeriod;
 
     Output_AnimateLights(num_frames);
 }
@@ -418,7 +416,15 @@ int32_t Output_GetUVRotateSpeed(void)
     return m_UVRotateSpeed;
 }
 
-float Output_GetUVRotateOffset(void)
+void Output_SetUVScrollTickPeriod(const int32_t period)
+{
+    ASSERT(period > 0);
+    m_UVScrollTickPeriod = period;
+    m_UVScrollTick = 0;
+    m_UVScrollTickPrev = 0;
+}
+
+float Output_GetUVScrollTick(void)
 {
     // The general uniforms are uploaded at scene begin, before
     // Interpolation_Interpolate() refreshes the world rate for the frame, so
@@ -428,19 +434,15 @@ float Output_GetUVRotateOffset(void)
     const double rate = Interpolation_IsActive() && Game_IsPlaying()
         ? Interpolation_GetRate()
         : 1.0;
-    int32_t delta = m_UVRotatePos - m_UVRotatePosPrev;
-    if (delta > 16) {
-        delta -= 32;
-    } else if (delta < -16) {
-        delta += 32;
+    int32_t delta = m_UVScrollTick - m_UVScrollTickPrev;
+    if (delta < 0) {
+        delta += m_UVScrollTickPeriod;
     }
-    float pos = m_UVRotatePosPrev + delta * rate;
-    if (pos < 0.0f) {
-        pos += 32.0f;
-    } else if (pos >= 32.0f) {
-        pos -= 32.0f;
+    float tick = m_UVScrollTickPrev + delta * rate;
+    if (tick >= m_UVScrollTickPeriod) {
+        tick -= m_UVScrollTickPeriod;
     }
-    return pos / 256.0f;
+    return tick;
 }
 
 void Output_EnableScissor(
