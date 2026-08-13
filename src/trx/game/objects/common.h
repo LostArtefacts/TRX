@@ -19,6 +19,13 @@ OBJECT *Object_Get(OBJECT_ID object_id);
 // object returns nullptr.
 OBJECT *Object_TryGet(OBJECT_ID object_id);
 
+// Takes an object slot the catalog does not name, for something the engine
+// builds rather than a level supplies. The id it answers with lies past the
+// catalog, so a level cannot inject into it, scripts cannot name it, and it
+// carries no name of its own - keep it away from items, whose object id a
+// savegame has to be able to read back. It lasts until the level is unloaded.
+OBJECT_ID Object_Mint(void);
+
 // Retrieve an object by its game ID. Returns nullptr if not found.
 OBJECT *Object_GetByGameID(int32_t game_id);
 
