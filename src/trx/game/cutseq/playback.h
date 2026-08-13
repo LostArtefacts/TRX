@@ -35,8 +35,10 @@ int32_t CutSeq_GetCurrent(void);
 // by, as the original engine does.
 int32_t CutSeq_GetFrame(void);
 
-// Fades out, then plays the cutscene.
-void CutSeq_Request(int32_t num);
+// Fades out, then plays the cutscene. A scene that opens a level asks not to
+// fade: the original game leaves the screen black rather than showing the
+// level for a moment first, and the scene's own fade in is what follows.
+void CutSeq_Request(int32_t num, bool fade_out);
 
 // Whether a cutscene trigger naming this number has already been answered.
 // The number need not be one the pak can play; see CUTSEQ_MAX_TRIGGERS.
@@ -47,10 +49,31 @@ void CutSeq_SetPlayed(int32_t num, bool played);
 uint64_t CutSeq_GetPlayedMask(void);
 void CutSeq_SetPlayedMask(uint64_t mask);
 
+// How many actors the running scene has, or 0 when none is running. Actor 0
+// is Lara, who is posed rather than drawn as an actor; the rest are the cast.
+int32_t CutSeq_GetActorCount(void);
+
+// Whether an actor is drawn. A scene brings its whole cast on at once, so a
+// script that wants one of them held back until later says so here; the OG
+// carries the same rule per scene in its own code.
+void CutSeq_SetActorVisible(int32_t actor, bool visible);
+
+// Draws another object's mesh in place of the one the actor's node carries,
+// which is how a talking head is put on a body. Pass NO_OBJECT to take the
+// override back off.
+void CutSeq_SetActorNodeMesh(
+    int32_t actor, int32_t node, OBJECT_ID obj_id, int32_t src_node);
+
 // Where Lara stands once the running cutscene ends. It starts as where she
 // was when the cutscene was requested; a script may place her elsewhere, as
 // the original engine does for the scenes that move her.
 void CutSeq_SetLaraReturn(XYZ_32 pos, int16_t rot);
+
+// Ends the running cutscene early, fading out as it would at its own last
+// frames, so the scene finishes rather than being torn away: Lara is put back
+// where she belongs and the end event still fires. Does nothing when no
+// cutscene is playing or one is already ending.
+void CutSeq_Skip(void);
 
 // Handles a TO_CUTSCENE floor trigger: plays the cutscene once, unless a
 // script answers the trigger itself.

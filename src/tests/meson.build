@@ -820,6 +820,11 @@ unit_tests += {
   'engine': ['game/lua/capi/items.c'],
 }
 
+unit_tests += {
+  'name': 'trx/game/ui/scrollable',
+  'engine': ['game/ui/scrollable.c'],
+}
+
 # Word wrapping, over the shipped font.bin of a single game: what the wrapper
 # decides rests on glyph widths, so a stub font would agree with anything.
 unit_tests += {

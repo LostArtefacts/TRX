@@ -23,6 +23,31 @@ static bool M_IsOnWalkable(
 // each side. The collision info depends on Lara's state. Her state determines
 // how big slope and lava pit sectors are treated. For example, in the walk
 // state, Lara won't walk up big slopes or walk down into lava pits.
+// The floor data speaks of whole sectors, so an item standing between two of
+// them leaves the ground it covers reading as open. A side that cannot be
+// reached reads as a wall, and every move that asks the collision info what is
+// in front of Lara answers as it would for a real one.
+static void M_BlockSideIfUnreachable(
+    COLL_SIDE *const side, const XYZ_32 pos, const XZ_32 probe,
+    const int32_t obj_height, const int16_t room_num)
+{
+    if (side->floor == NO_HEIGHT) {
+        return;
+    }
+
+    const XYZ_32 sample_pos = {
+        .x = pos.x + probe.x,
+        .y = pos.y,
+        .z = pos.z + probe.z,
+    };
+    // The step of headroom counts something standing on the ledge in front of
+    // her, which is as impassable as something at her own height.
+    if (Room_IsPathBlocked(pos, sample_pos, room_num, obj_height + STEP_L, 0)) {
+        side->floor = NO_HEIGHT;
+        side->ceiling = NO_HEIGHT;
+    }
+}
+
 static void M_FillSide(
     const COLL_INFO *const coll, COLL_SIDE *const side, const XYZ_32 pos,
     const XZ_32 probe, const int32_t obj_height, int16_t *const room_num)
@@ -400,6 +425,18 @@ void Collide_GetCollisionInfo(
     M_FillSide(coll, &coll->side_left2, pos, probe_left, obj_height, &room_num);
     M_FillSide(
         coll, &coll->side_right2, pos, probe_right, obj_height, &room_num);
+
+    COLL_SIDE *const sides[] = {
+        &coll->side_front, &coll->side_left,   &coll->side_right,
+        &coll->side_left2, &coll->side_right2,
+    };
+    const XZ_32 probes[] = {
+        probe_front, probe_left, probe_right, probe_left, probe_right,
+    };
+    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(sides); i++) {
+        M_BlockSideIfUnreachable(
+            sides[i], pos, probes[i], obj_height, prev_room_num);
+    }
 
     const int16_t static_room_num = g_TRVersion >= 3 ? prev_room_num : room_num;
     if (Collide_CollideStaticObjects(coll, pos, static_room_num, obj_height)) {

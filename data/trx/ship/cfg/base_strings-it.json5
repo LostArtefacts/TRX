@@ -578,6 +578,7 @@
             "lara_outfit": {
                 "default": "Predefinito",
                 "golden_sophia": "Sophia Dorata",
+                "natla": "\\{review}Natla",
                 "sophia": "Sophia",
                 "tr1_bacon_lara": "Sosia di Lara",
                 "tr1_classic": "Classico TR1",
@@ -785,6 +786,10 @@
             "LOOK_MODE_ENHANCED": "Avanzato",
             "LOOK_MODE_RESTRICTED": "Limitato",
             "LOOK_MODE_UNRESTRICTED": "Illimitato",
+        },
+        "M16_AIM_MODE": {
+            "M16_AIM_MODE_ENHANCED": "\\{review}Avanzato",
+            "M16_AIM_MODE_ORIGINAL": "\\{review}Originale",
         },
         "MUSIC_LOAD_CONDITION": {
             "MUSIC_LOAD_CONDITION_ALWAYS": "Sempre",
@@ -1262,6 +1267,10 @@
             "title": "Correggi IA degli orsi",
             "description": "Risolve il problema per cui gli attacchi con la zampa degli orsi non colpiscono Lara.",
         },
+        "gameplay.fix_breakable_wall_clip": {
+            "title": "\\{review}Correggi attraversamento dei muri fragili",
+            "description": "\\{review}Risolve il problema per cui Lara riesce ad arrampicarsi o a strisciare attraverso i muri fragili posti sul bordo di un settore. Se attivo, Lara si ferma davanti al muro finché non viene distrutto.",
+        },
         "gameplay.fix_bridge_collision": {
             "title": "Correggi collisione ponti",
             "description": "Risolve il problema per cui Lara non è in grado di afferrare parti di alcuni ponti e muri invisibili ai bordi. Corregge anche i problemi di collisione con ponti levatoi, botole e ponti quando sono impilati l'uno sull'altro, su pendii o vicino al suolo.",
@@ -1361,6 +1370,10 @@
         "gameplay.look_mode": {
             "title": "Modalità osservazione",
             "description": "Permette di gestire in quali situazioni Lara può guardarsi attorno (tasto 'Guarda').\n\n- Limitato: è consentito esaminare l'ambiente solo quando Lara è ferma e mai quando è sott'acqua, come nella versione originale di TR1.\n- Avanzato: è consentito esaminare l'ambiente durante la maggior parte delle situazioni, tranne in alcune come quando si spingono i blocchi, come nella veriosne originale di TR2+.\n- Illimitato: è sempre consentito esaminare l'ambiente durante il normale controllo di Lara.",
+        },
+        "gameplay.m16_aim_mode": {
+            "title": "\\{review}Varianti di mira dell'M16/MP5",
+            "description": "\\{review}Controlla quando Lara punta l'M16/MP5 dalla spalla anziché dal fianco.\n\n- Originale: Lara solleva l'arma alla spalla ogni volta che smette di muoversi.\n- Avanzato: Lara continua a sparare dal fianco finché il tasto Azione è premuto e solleva l'arma alla spalla solo se inizia a sparare da ferma. Con la correzione della precisione attiva, sparare dal fianco è meno preciso e infligge meno danni per colpo.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "Slot di salvataggio rapido",
