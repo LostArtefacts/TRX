@@ -11,14 +11,15 @@
 #include <trx/game/ui/elements/stack.h>
 
 static void M_Draw(
-    const UI_TAB_SWITCH_STATE *const s, const bool is_focused,
+    const UI_TAB_SWITCH_STATE *const s, const UI_TAB_SWITCH_DRAW_MODE mode,
     const bool single)
 {
+    const bool show_arrows = mode != UI_TAB_SWITCH_DRAW_IDLE;
     UI_BeginAnchor(0.5f, 0.5f);
     UI_BeginRowArrows(
-        is_focused && s->tab_count > 0
+        show_arrows && s->tab_count > 0
             && (g_Config.ui.enable_wraparound || s->active_tab_idx > 0),
-        is_focused && s->tab_count > 0
+        show_arrows && s->tab_count > 0
             && (g_Config.ui.enable_wraparound
                 || s->active_tab_idx + 1 < s->tab_count),
         UI_ROW_ARROWS_MEDIUM);
@@ -35,7 +36,8 @@ static void M_Draw(
         UI_BeginAnchor(0.5f, 0.5f);
         if (i == s->active_tab_idx) {
             UI_BeginFrame(
-                is_focused ? UI_FRAME_SELECTED_OPTION : UI_FRAME_OUTLINE_ONLY);
+                mode == UI_TAB_SWITCH_DRAW_FOCUSED ? UI_FRAME_SELECTED_OPTION
+                                                   : UI_FRAME_OUTLINE_ONLY);
         }
         UI_BeginPad(2.0f, 1.0f);
         UI_Label(
@@ -93,23 +95,24 @@ bool UI_TabSwitch_Control(
     UI_TAB_SWITCH_STATE *const s, const UI_TAB_SWITCH_FLAGS flags)
 {
     if ((!(flags & UI_TAB_SWITCH_NO_ARROWS) && g_InputDB.menu_left)
-        || g_InputDB.menu_tab_left) {
+        || g_InputDB.menu_tab_left || g_InputDB.step_left) {
         return UI_TabSwitch_Cycle(s, -1);
     } else if (
         (!(flags & UI_TAB_SWITCH_NO_ARROWS) && g_InputDB.menu_right)
-        || g_InputDB.menu_tab_right) {
+        || g_InputDB.menu_tab_right || g_InputDB.step_right) {
         return UI_TabSwitch_Cycle(s, 1);
     }
     return false;
 }
 
-void UI_TabSwitch(const UI_TAB_SWITCH_STATE *const s, const bool is_focused)
+void UI_TabSwitch(
+    const UI_TAB_SWITCH_STATE *const s, const UI_TAB_SWITCH_DRAW_MODE mode)
 {
-    M_Draw(s, is_focused, false);
+    M_Draw(s, mode, false);
 }
 
 void UI_TabSwitchSingle(
-    const UI_TAB_SWITCH_STATE *const s, const bool is_focused)
+    const UI_TAB_SWITCH_STATE *const s, const UI_TAB_SWITCH_DRAW_MODE mode)
 {
-    M_Draw(s, is_focused, true);
+    M_Draw(s, mode, true);
 }

@@ -1,6 +1,8 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.10...develop) - ××××-××-××
 
 **UI**
+- Changed the tab arrows to no longer vanish once the selection moved into the list below them
+- Fixed the settings and controls dialog tabs ignoring rebound step left and step right keys
 - Fixed ability to open the inventory ring while a flyby sequence has Lara's control
 - Fixed the controls key list jumping after switching to a tab with fewer keys (regression from 1.3)
 
