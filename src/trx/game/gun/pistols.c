@@ -150,7 +150,7 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
                 if (!Gun_IsSinglePistolType(weapon_type)
                     && Gun_FireWeapon(
                         weapon_type, lara->target, lara_item, angles)) {
-                    lara->right_arm.flash_gun = weapon->flash_time;
+                    lara->right_arm.flash_gun = weapon->flash.time;
                     Spawn_GunShell(weapon_type, true);
                     Gun_Smoke_OnFire(weapon_type, true);
                     if (!sound_already) {
@@ -170,7 +170,7 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
             Anim_TestAbsFrameRange(
                 frame_r, setup->recoil.start, setup->recoil.end)) {
             frame_r++;
-            if (frame_r == setup->recoil.start + weapon->recoil_frame) {
+            if (frame_r == setup->recoil.start + weapon->anim.recoil_frame) {
                 frame_r = setup->aim.end;
             }
             if (M_EnableFastSound(weapon_type)) {
@@ -203,11 +203,11 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
             angles[1] = lara->left_arm.rot.x;
             if (Gun_FireWeapon(weapon_type, lara->target, lara_item, angles)) {
                 if (Gun_IsSinglePistolType(weapon_type)) {
-                    lara->right_arm.flash_gun = weapon->flash_time;
+                    lara->right_arm.flash_gun = weapon->flash.time;
                     Spawn_GunShell(weapon_type, true);
                     Gun_Smoke_OnFire(weapon_type, true);
                 } else {
-                    lara->left_arm.flash_gun = weapon->flash_time;
+                    lara->left_arm.flash_gun = weapon->flash.time;
                     Spawn_GunShell(weapon_type, false);
                     Gun_Smoke_OnFire(weapon_type, false);
                 }
@@ -228,7 +228,7 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
         Anim_TestAbsFrameRange(
             frame_l, setup->recoil.start, setup->recoil.end)) {
         frame_l++;
-        if (frame_l == setup->recoil.start + weapon->recoil_frame) {
+        if (frame_l == setup->recoil.start + weapon->anim.recoil_frame) {
             frame_l = setup->aim.end;
         }
         if (M_EnableFastSound(weapon_type)) {

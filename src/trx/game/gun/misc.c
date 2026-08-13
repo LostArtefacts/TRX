@@ -85,10 +85,10 @@ static void M_ConsiderTarget(M_TARGET_CONTEXT *const ctx, ITEM *const item)
     angles[0] -= ctx->lara->torso_rot.y + ctx->lara_item->rot.y;
     angles[1] -= ctx->lara->torso_rot.x + ctx->lara_item->rot.x;
 
-    if (angles[0] < ctx->weapon->lock_angles[0]
-        || angles[0] > ctx->weapon->lock_angles[1]
-        || angles[1] < ctx->weapon->lock_angles[2]
-        || angles[1] > ctx->weapon->lock_angles[3]) {
+    if (angles[0] < ctx->weapon->lock.min_yaw
+        || angles[0] > ctx->weapon->lock.max_yaw
+        || angles[1] < ctx->weapon->lock.min_pitch
+        || angles[1] > ctx->weapon->lock.max_pitch) {
         return;
     }
 
@@ -125,7 +125,7 @@ static void M_DrawGunGlow(
     if (g_TRVersion < 3 && !g_Config.visuals.enable_gun_glow) {
         return;
     }
-    if (weapon->glow_scale <= 0.0f) {
+    if (weapon->glow.scale <= 0.0f) {
         return;
     }
     const OBJECT *const glow_obj = Object_Get(O_GLOW);
@@ -137,11 +137,11 @@ static void M_DrawGunGlow(
     // the sprite position has to be interpolated the same way.
     if (interpolated) {
         Matrix_Push_I();
-        Matrix_TranslateRel32_I(weapon->glow_pos);
+        Matrix_TranslateRel32_I(weapon->glow.pos);
         Matrix_Interpolate();
     } else {
         Matrix_Push();
-        Matrix_TranslateRel32(weapon->glow_pos);
+        Matrix_TranslateRel32(weapon->glow.pos);
     }
     const XYZ_32 pos = {
         .x = (int32_t)(g_WMatrixPtr->_03 >> W2V_SHIFT),
@@ -156,11 +156,11 @@ static void M_DrawGunGlow(
 
     // The flare's glow pulses as its pyro burns; gunfire glows are steady.
     const int16_t shade =
-        weapon->glow_flicker ? (Random_GetDraw() & 0xFFF) + SHADE_NEUTRAL : 0;
+        weapon->glow.flicker ? (Random_GetDraw() & 0xFFF) + SHADE_NEUTRAL : 0;
     Output_DrawSprite(
         pos.x, pos.y, pos.z, glow_obj->mesh_idx, shade,
-        Color_RGBToRGBA(weapon->glow_color), DRAW_BLEND_ADD,
-        weapon->glow_scale);
+        Color_RGBToRGBA(weapon->glow.color), DRAW_BLEND_ADD,
+        weapon->glow.scale);
 }
 
 void Gun_ApplyFlashSemiTransparency(void)
@@ -267,25 +267,24 @@ void Gun_TargetInfo(const WEAPON_INFO *const weapon)
         lara->left_arm.lock = 0;
         lara->right_arm.lock = 0;
     } else if (
-        angles[0] >= weapon->lock_angles[0]
-        && angles[0] <= weapon->lock_angles[1]
-        && angles[1] >= weapon->lock_angles[2]
-        && angles[1] <= weapon->lock_angles[3]) {
+        angles[0] >= weapon->lock.min_yaw && angles[0] <= weapon->lock.max_yaw
+        && angles[1] >= weapon->lock.min_pitch
+        && angles[1] <= weapon->lock.max_pitch) {
         lara->left_arm.lock = 1;
         lara->right_arm.lock = 1;
     } else {
         if (lara->left_arm.lock
-            && (angles[0] < weapon->left_angles[0]
-                || angles[0] > weapon->left_angles[1]
-                || angles[1] < weapon->left_angles[2]
-                || angles[1] > weapon->left_angles[3])) {
+            && (angles[0] < weapon->left_arm.min_yaw
+                || angles[0] > weapon->left_arm.max_yaw
+                || angles[1] < weapon->left_arm.min_pitch
+                || angles[1] > weapon->left_arm.max_pitch)) {
             lara->left_arm.lock = 0;
         }
         if (lara->right_arm.lock
-            && (angles[0] < weapon->right_angles[0]
-                || angles[0] > weapon->right_angles[1]
-                || angles[1] < weapon->right_angles[2]
-                || angles[1] > weapon->right_angles[3])) {
+            && (angles[0] < weapon->right_arm.min_yaw
+                || angles[0] > weapon->right_arm.max_yaw
+                || angles[1] < weapon->right_arm.min_pitch
+                || angles[1] > weapon->right_arm.max_pitch)) {
             lara->right_arm.lock = 0;
         }
     }
@@ -386,12 +385,12 @@ void Gun_DrawFlash(
 
     const WEAPON_INFO weapon = g_Weapons[weapon_type];
     if (interpolated) {
-        Matrix_TranslateRel32_I(weapon.flash_pos);
+        Matrix_TranslateRel32_I(weapon.flash.pos.right);
         Matrix_RotX_I(rot.x);
         Matrix_RotY_I(rot.y);
         Matrix_RotZ_I(rot.z);
     } else {
-        Matrix_TranslateRel32(weapon.flash_pos);
+        Matrix_TranslateRel32(weapon.flash.pos.right);
         Matrix_RotX(rot.x);
         Matrix_RotY(rot.y);
         Matrix_RotZ(rot.z);
@@ -404,9 +403,9 @@ void Gun_DrawFlash(
     Output_PushTintOverride(Lara_GetMeshTint(pos));
 
     if (g_TRVersion < 3) {
-        Output_CalculateStaticLight(weapon.flash_shade);
+        Output_CalculateStaticLight(weapon.flash.shade);
     } else {
-        Output_CalculateStaticLightRGB_F(weapon.flash_color);
+        Output_CalculateStaticLightRGB_F(weapon.flash.color);
     }
     const OBJECT *const flash_obj = Object_Get(flash_object_id);
     if (flash_obj->loaded) {

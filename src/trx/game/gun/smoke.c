@@ -17,8 +17,8 @@ static XYZ_32 M_GetHandAbsPosition(const LARA_MESH hand, XYZ_32 offset)
 static XYZ_32 M_GetMuzzleOffset(
     const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
 {
-    return is_right_hand ? g_Weapons[weapon_type].muzzle_pos
-                         : g_Weapons[weapon_type].muzzle_pos_alt;
+    return is_right_hand ? g_Weapons[weapon_type].muzzle_pos.right
+                         : g_Weapons[weapon_type].muzzle_pos.left;
 }
 
 void Gun_Smoke_OnFire(const LARA_GUN_TYPE weapon_type, const bool is_right_hand)

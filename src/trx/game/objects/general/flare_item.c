@@ -153,9 +153,9 @@ static void M_Control(const int16_t item_num)
 static void M_DrawFlash(const CLIP clip)
 {
     WEAPON_INFO *const flare_info = &g_Weapons[LGT_FLARE];
-    SWAP(flare_info->flash_pos, flare_info->flash_pos_alt);
+    SWAP(flare_info->flash.pos.right, flare_info->flash.pos.left);
     Gun_DrawFlash(LGT_FLARE, clip, false);
-    SWAP(flare_info->flash_pos, flare_info->flash_pos_alt);
+    SWAP(flare_info->flash.pos.right, flare_info->flash.pos.left);
 }
 
 static bool M_Draw(const ITEM *const item)
