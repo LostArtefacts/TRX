@@ -672,6 +672,9 @@ void Creature_ApplyMood(
         Box_TargetBox(lot, item->box_num);
     }
     Box_CalculateTarget(&creature->target, item, lot);
+
+    creature->monkey_ahead =
+        g_TRVersion >= 4 && Box_IsMonkeyAhead(lot, item->box_num);
 }
 
 int16_t Creature_Turn(ITEM *const item, int16_t max_turn)
@@ -962,9 +965,10 @@ bool Creature_Animate(
     const int32_t box_height =
         item->box_num == NO_BOX ? height : Box_GetBox(item->box_num)->height;
     if (sector->box == NO_BOX
-        || (fly_check && zone[item->box_num] != zone[sector->box])
-        || box_height - height > lot->setup.step
-        || box_height - height < lot->setup.drop) {
+        || (!lot->is_jumping
+            && ((fly_check && zone[item->box_num] != zone[sector->box])
+                || box_height - height > lot->setup.step
+                || box_height - height < lot->setup.drop))) {
         const int32_t pos_x = item->pos.x >> WALL_SHIFT;
         const int32_t pos_z = g_TRVersion < 3
             ? pos_x
@@ -1194,6 +1198,23 @@ bool Creature_Animate(
             item->rot.x += DEG_1;
         } else {
             item->rot.x = item_angle;
+        }
+    } else if (lot->is_jumping) {
+        // A jumper is off the boxes until it lands, so its height comes from
+        // the room rather than from the box it is over. Monkey swinging hangs
+        // it off the ceiling the same way.
+        sector = Room_GetSector(item->pos, &room_num);
+        item->floor = Room_GetHeight(sector, item->pos);
+        if (lot->is_monkeying) {
+            item->pos.y = Room_GetCeiling(
+                              sector, (XYZ_32) { item->pos.x, y, item->pos.z })
+                - bounds->min.y;
+        } else if (item->pos.y > item->floor) {
+            if (item->pos.y > item->floor + STEP_L) {
+                item->pos = old;
+            } else {
+                item->pos.y = item->floor;
+            }
         }
     } else {
         sector = Room_GetSector(item->pos, &room_num);

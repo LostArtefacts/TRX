@@ -39,6 +39,16 @@ int32_t Room_GetWaterHeightEx(
 
 int32_t Room_FindGridShift(int32_t src, int32_t dst);
 
+// Whether anything bars the way from one place to another. The floor data
+// describes whole sectors, so an item standing between two of them - a
+// breakable wall over a duct, a grate - leaves it reading as open ground;
+// what asks here gets the answer the floor data cannot give.
+// reach is how near the item the way may end before it counts as barred, for
+// a caller whose destination is the ground the item stands on rather than the
+// far side of it. A caller asking where it may walk passes 0.
+bool Room_IsPathBlocked(
+    XYZ_32 from, XYZ_32 to, int16_t room_num, int32_t height, int32_t reach);
+
 bool Room_IsOnWalkable(
     const SECTOR *sector, XYZ_32 pos, int32_t room_height,
     int16_t ignore_item_num);

@@ -600,3 +600,14 @@ X_OBJ_NAME_DEFINE(O_WATERFALL,               "waterfall",               X_OBJ_NA
 X_OBJ_NAME_DEFINE(O_WATER_SPRITE,            "water_sprite",            X_OBJ_NAMES("Boat Wake"))
 X_OBJ_NAME_DEFINE(O_WINSTON,                 "winston",                 X_OBJ_NAMES("Winston"))
 X_OBJ_NAME_DEFINE(O_WINSTON_ARMY,            "winston_army",            X_OBJ_NAMES("Winston (army)", "Army Winston"))
+
+// Cutscene actors
+X_OBJ_NAME_DEFINE(O_VON_CROY,              "von_croy",              X_OBJ_NAMES("Von Croy"))
+X_OBJ_NAME_DEFINE(O_LARA_SPEECH_HEAD_1,    "lara_speech_head_1",    X_OBJ_NAMES("Lara Speech Head 1"))
+X_OBJ_NAME_DEFINE(O_LARA_SPEECH_HEAD_2,    "lara_speech_head_2",    X_OBJ_NAMES("Lara Speech Head 2"))
+X_OBJ_NAME_DEFINE(O_LARA_SPEECH_HEAD_3,    "lara_speech_head_3",    X_OBJ_NAMES("Lara Speech Head 3"))
+X_OBJ_NAME_DEFINE(O_LARA_SPEECH_HEAD_4,    "lara_speech_head_4",    X_OBJ_NAMES("Lara Speech Head 4"))
+X_OBJ_NAME_DEFINE(O_ACTOR_1_SPEECH_HEAD_1, "actor_1_speech_head_1", X_OBJ_NAMES("Actor 1 Speech Head 1"))
+X_OBJ_NAME_DEFINE(O_ACTOR_1_SPEECH_HEAD_2, "actor_1_speech_head_2", X_OBJ_NAMES("Actor 1 Speech Head 2"))
+X_OBJ_NAME_DEFINE(O_ACTOR_2_SPEECH_HEAD_1, "actor_2_speech_head_1", X_OBJ_NAMES("Actor 2 Speech Head 1"))
+X_OBJ_NAME_DEFINE(O_ACTOR_2_SPEECH_HEAD_2, "actor_2_speech_head_2", X_OBJ_NAMES("Actor 2 Speech Head 2"))

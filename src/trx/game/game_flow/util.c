@@ -14,6 +14,7 @@ static void M_DisableObject(const OBJECT_ID object_id)
     obj->draw_func = nullptr;
     obj->floor_height_func = nullptr;
     obj->ceiling_height_func = nullptr;
+    obj->block_func = nullptr;
 }
 
 static void M_ReplaceObject(

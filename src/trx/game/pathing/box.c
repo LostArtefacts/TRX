@@ -13,6 +13,12 @@
 #define BOX_END_BIT 0x8000
 #define BOX_NUMBER_BITS 0x7FFF // = ~BOX_END_BIT
 
+// TR4 spends the room above the box number on what it takes to cross the
+// overlap, which leaves it eleven bits to number a box with.
+#define BOX_NUMBER_BITS_TR4 0x07FF
+#define BOX_OVERLAP_JUMP 0x0800
+#define BOX_OVERLAP_MONKEY 0x2000
+
 #define BOX_MAX_EXPANSION 5
 #define BOX_BIFF (WALL_L / 2) // = 0x200 = 512
 #define BOX_CLIP_LEFT 1
@@ -29,6 +35,11 @@ static int32_t m_OverlapCount = 0;
 static int16_t *m_Overlaps = nullptr;
 static int16_t *m_FlyZone[2] = {};
 static int16_t *m_GroundZone[MAX_ZONES][2] = {};
+
+static int16_t M_GetOverlapBoxNum(const int16_t overlap)
+{
+    return overlap & (g_TRVersion >= 4 ? BOX_NUMBER_BITS_TR4 : BOX_NUMBER_BITS);
+}
 
 static int16_t M_GetOverlap(const int32_t overlap_idx)
 {
@@ -126,8 +137,9 @@ bool Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
 
             if ((box_num & BOX_END_BIT) != 0) {
                 done = true;
-                box_num &= BOX_NUMBER_BITS;
             }
+            const int16_t overlap_flags = box_num;
+            box_num = M_GetOverlapBoxNum(box_num);
 
             const BOX_INFO *const box = Box_GetBox(box_num);
             if (box == nullptr) {
@@ -139,7 +151,15 @@ bool Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
             }
 
             const int32_t change = box->height - head_box->height;
-            if (change > lot->setup.step || change < lot->setup.drop) {
+            if ((change > lot->setup.step || change < lot->setup.drop)
+                && !(
+                    lot->setup.can_monkey
+                    && (overlap_flags & BOX_OVERLAP_MONKEY) != 0)) {
+                continue;
+            }
+
+            if ((overlap_flags & BOX_OVERLAP_JUMP) != 0
+                && !lot->setup.can_jump) {
                 continue;
             }
 
@@ -186,6 +206,31 @@ bool Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
     }
 
     return true;
+}
+
+// How the path leaves the box the creature stands in. TR4 marks the overlaps
+// that take a jump or a swing along the monkey bars to cross.
+bool Box_IsMonkeyAhead(const LOT_INFO *const lot, const int16_t box_num)
+{
+    const BOX_INFO *const box = Box_GetBox(box_num);
+    if (box == nullptr || lot->node[box_num].exit_box == NO_BOX) {
+        return false;
+    }
+
+    const int16_t exit_box = lot->node[box_num].exit_box;
+    int32_t index = box->overlap_index & BOX_OVERLAP_BITS;
+    while (true) {
+        const int16_t overlap = M_GetOverlap(index++);
+        if (overlap == NO_BOX) {
+            return false;
+        }
+        if (M_GetOverlapBoxNum(overlap) == exit_box) {
+            return (overlap & BOX_OVERLAP_MONKEY) != 0;
+        }
+        if ((overlap & BOX_END_BIT) != 0) {
+            return false;
+        }
+    }
 }
 
 bool Box_UpdateLOT(LOT_INFO *const lot, const int32_t expansion)
@@ -484,6 +529,12 @@ bool Box_BadFloor(
         Room_GetSector((XYZ_32) { x, y, z }, &room_num);
     if (sector->box == NO_BOX) {
         return true;
+    }
+
+    // A jumper is crossing a gap the boxes call bad floor, which is what it
+    // was sent over the gap to do.
+    if (lot->is_jumping) {
+        return false;
     }
 
     const BOX_INFO *const box = Box_GetBox(sector->box);

@@ -578,6 +578,7 @@
             "lara_outfit": {
                 "default": "\\{review}Par défaut",
                 "golden_sophia": "\\{review}Sophia Dorée",
+                "natla": "\\{review}Natla",
                 "sophia": "\\{review}Sophia",
                 "tr1_bacon_lara": "\\{review}Lara Bacon",
                 "tr1_classic": "\\{review}TR1 Classique",
@@ -785,6 +786,10 @@
             "LOOK_MODE_ENHANCED": "\\{review}Amélioré",
             "LOOK_MODE_RESTRICTED": "\\{review}Restreint",
             "LOOK_MODE_UNRESTRICTED": "\\{review}Illimité",
+        },
+        "M16_AIM_MODE": {
+            "M16_AIM_MODE_ENHANCED": "\\{review}Amélioré",
+            "M16_AIM_MODE_ORIGINAL": "\\{review}Original",
         },
         "MUSIC_LOAD_CONDITION": {
             "MUSIC_LOAD_CONDITION_ALWAYS": "Tout",
@@ -1262,6 +1267,10 @@
             "title": "Corriger l'IA des ours",
             "description": "Corrige l'attaque par coup de patte des ours pour qu'ils ne ratent pas Lara.",
         },
+        "gameplay.fix_breakable_wall_clip": {
+            "title": "\\{review}Corriger la traversée des murs fragiles",
+            "description": "\\{review}Corrige le fait que Lara puisse se hisser ou ramper à travers les murs fragiles situés à la bordure d'un secteur. Si activé, elle s'arrête devant le mur jusqu'à ce qu'il soit brisé.",
+        },
         "gameplay.fix_bridge_collision": {
             "title": "Corriger la colision des ponts",
             "description": "Corrige l'impossibilité pour Lara de s'accrocher à des certaines parties de ponts et les murs invisibles à leurs bordures. Corrige également les problèmes de colision pour les ponts-levis, les trappes et les ponts lorsqu'ils sont les uns au-dessus des autres, au-dessus de pentes, ou près du sol.",
@@ -1361,6 +1370,10 @@
         "gameplay.look_mode": {
             "title": "\\{review}Mode regard",
             "description": "\\{review}Contrôle quand Lara peut utiliser la vue.\n\n- Restreint : le regard est autorisé uniquement à l’arrêt, jamais sous l’eau.\n- Amélioré : le regard est autorisé pendant la plupart des animations, sauf certaines comme pousser un bloc.\n- Illimité : le regard est autorisé à tout moment lorsque Lara est contrôlable.\n\nRestreint correspond au TR1 d'origine, Amélioré aux TR2+ d'origine.",
+        },
+        "gameplay.m16_aim_mode": {
+            "title": "\\{review}Variantes de visée du M16/MP5",
+            "description": "\\{review}Détermine quand Lara épaule le M16/MP5 au lieu de tirer à la hanche.\n\n- Original : Lara épaule l'arme dès qu'elle s'arrête.\n- Amélioré : Lara continue de tirer à la hanche tant que la touche Action est maintenue et n'épaule l'arme que si elle commence à tirer à l'arrêt. Avec la correction de précision activée, le tir à la hanche est moins précis et inflige moins de dégâts par balle.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "\\{review}Nombre d'emplacements de sauvegarde rapide",
