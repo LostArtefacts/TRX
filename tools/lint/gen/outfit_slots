@@ -1,0 +1,166 @@
+#!/usr/bin/env python3
+import argparse
+import csv
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from shared.json_utils import load_json5
+from shared.paths import CommonPaths, DATA_DIR, DOCS_DIR
+from shared.vfs import VirtualFilesystem
+
+MD_PATH = DOCS_DIR / "trx" / "OUTFITS.md"
+CONFIG_PATH = CommonPaths.shipped_data_dir / "cfg" / "outfits.json5"
+GAMES = ["tr1", "tr2", "tr3", "tr4"]
+MARKER_START = "<!-- gen:outfit-slots -->"
+MARKER_END = "<!-- /gen:outfit-slots -->"
+
+# The objects every outfit draws on, whether or not it names one of its own.
+SHARED_OBJECTS = [
+    ("O_LARA_SKIN_SWAP_EXTRA", "Braids, combat faces and extra animation meshes"),
+    ("O_LARA_SKIN_SWAP_GUNS", "Holsters and the guns themselves"),
+    ("O_LARA_SKIN_SWAP_LEGS", "Legs without holster straps; optional"),
+]
+
+
+def read_slots(game: str) -> dict[str, int]:
+    path = DATA_DIR / "trx" / "ship" / "games" / game / "catalog_objects.csv"
+    slots: dict[str, int] = {}
+    if not path.exists():
+        return slots
+    for row in csv.reader(path.read_text().splitlines()):
+        if len(row) < 2:
+            continue
+        slot, name = row[0].strip(), row[1].strip()
+        if slot.isdigit():
+            slots[name] = int(slot)
+    return slots
+
+
+def read_outfits() -> list[tuple[str, str, str | None]]:
+    config = load_json5(CONFIG_PATH)
+    outfits = []
+    for name, outfit in config["outfits"].items():
+        outfits.append(
+            (name, outfit["mesh_object"], outfit.get("joints_object"))
+        )
+    return outfits
+
+
+def slot_cell(game: str, slots: dict[str, int], object_name: str) -> str:
+    slot = slots.get(object_name)
+    if slot is None:
+        raise SystemExit(f"outfit_slots: {game} has no slot for {object_name}")
+    return str(slot)
+
+
+def build_table(
+    first_header: str,
+    rows: list[tuple[str, str]],
+    slots_per_game: dict[str, dict[str, int]],
+) -> list[str]:
+    lines = [
+        "<table>",
+        "  <tr valign='top' align='left'>",
+        f"    <th>{first_header}</th>",
+        "    <th>Object</th>",
+    ]
+    lines += [f"    <th>{game.upper()}</th>" for game in GAMES]
+    lines.append("  </tr>")
+
+    for label, object_name in rows:
+        lines.append("  <tr valign='top'>")
+        lines.append(f"    <td>{label}</td>")
+        lines.append(f"    <td><code>{object_name}</code></td>")
+        lines += [
+            f"    <td>{slot_cell(game, slots_per_game[game], object_name)}</td>"
+            for game in GAMES
+        ]
+        lines.append("  </tr>")
+
+    lines.append("</table>")
+    return lines
+
+
+def build_section() -> list[str]:
+    slots_per_game = {game: read_slots(game) for game in GAMES}
+    outfits = read_outfits()
+
+    lines = [
+        "Each game gives these objects a different slot number. Import into",
+        "the slot listed for the game you are building for.",
+        "",
+    ]
+
+    outfit_rows = [
+        (f"<code>{name}</code>", mesh_object)
+        for name, mesh_object, _ in outfits
+    ]
+    lines += build_table("Outfit", outfit_rows, slots_per_game)
+
+    joint_rows = [
+        (f"<code>{name}</code> joints", joints_object)
+        for name, _, joints_object in outfits
+        if joints_object is not None
+    ]
+    if joint_rows:
+        lines += [
+            "",
+            "Only the outfits below have a joints model. The rest need none.",
+            "",
+        ]
+        lines += build_table("Outfit", joint_rows, slots_per_game)
+
+    lines += [
+        "",
+        "The objects below are used by all outfits.",
+        "",
+    ]
+    lines += build_table(
+        "Purpose",
+        [(usage, object_name) for object_name, usage in SHARED_OBJECTS],
+        slots_per_game,
+    )
+    return lines
+
+
+def process_doc(content: str) -> str:
+    lines = content.splitlines()
+    try:
+        start = lines.index(MARKER_START)
+        end = lines.index(MARKER_END)
+    except ValueError:
+        raise SystemExit(
+            f"outfit_slots: {MD_PATH} is missing the "
+            f"{MARKER_START} / {MARKER_END} markers"
+        )
+    section = build_section()
+    return "\n".join(lines[: start + 1] + section + lines[end:]) + "\n"
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Update the outfit slot tables in OUTFITS.md."
+    )
+    parser.add_argument(
+        "-d",
+        "--dry-run",
+        action="store_true",
+        help="Perform a dry run: show unified diffs instead of writing files.",
+    )
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    vfs = VirtualFilesystem()
+    vfs.put(MD_PATH, process_doc(vfs.get(MD_PATH)))
+    if args.dry_run:
+        vfs.show_diff()
+    else:
+        vfs.commit()
+
+
+if __name__ == "__main__":
+    main()

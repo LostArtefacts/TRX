@@ -51,6 +51,290 @@ This object contains copies of Lara's legs for each outfit, with holster strap
 textures removed. This allows levels such as Home Sweet Home to swap out Lara's
 legs when she has no holsters. It is not an essential object to include.
 
+### Which slot holds which outfit
+
+<!-- gen:outfit-slots -->
+Each game gives these objects a different slot number. Import into
+the slot listed for the game you are building for.
+
+<table>
+  <tr valign='top' align='left'>
+    <th>Outfit</th>
+    <th>Object</th>
+    <th>TR1</th>
+    <th>TR2</th>
+    <th>TR3</th>
+    <th>TR4</th>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr1_gym</code></td>
+    <td><code>O_LARA_SKIN_SWAP_1</code></td>
+    <td>258</td>
+    <td>302</td>
+    <td>393</td>
+    <td>465</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr1_classic</code></td>
+    <td><code>O_LARA_SKIN_SWAP_2</code></td>
+    <td>259</td>
+    <td>303</td>
+    <td>394</td>
+    <td>466</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr1_mauled</code></td>
+    <td><code>O_LARA_SKIN_SWAP_3</code></td>
+    <td>260</td>
+    <td>304</td>
+    <td>395</td>
+    <td>467</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr1_combo</code></td>
+    <td><code>O_LARA_SKIN_SWAP_4</code></td>
+    <td>261</td>
+    <td>305</td>
+    <td>396</td>
+    <td>468</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr1_ngage</code></td>
+    <td><code>O_LARA_SKIN_SWAP_24</code></td>
+    <td>281</td>
+    <td>325</td>
+    <td>416</td>
+    <td>488</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr1_bacon_lara</code></td>
+    <td><code>O_LARA_SKIN_SWAP_6</code></td>
+    <td>263</td>
+    <td>307</td>
+    <td>398</td>
+    <td>470</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr2_gym</code></td>
+    <td><code>O_LARA_SKIN_SWAP_8</code></td>
+    <td>265</td>
+    <td>309</td>
+    <td>400</td>
+    <td>472</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr2_classic</code></td>
+    <td><code>O_LARA_SKIN_SWAP_9</code></td>
+    <td>266</td>
+    <td>310</td>
+    <td>401</td>
+    <td>473</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr2_diving_suit</code></td>
+    <td><code>O_LARA_SKIN_SWAP_10</code></td>
+    <td>267</td>
+    <td>311</td>
+    <td>402</td>
+    <td>474</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr2_diving_suit_alpha</code></td>
+    <td><code>O_LARA_SKIN_SWAP_23</code></td>
+    <td>280</td>
+    <td>324</td>
+    <td>415</td>
+    <td>487</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr2_bomber_jacket</code></td>
+    <td><code>O_LARA_SKIN_SWAP_11</code></td>
+    <td>268</td>
+    <td>312</td>
+    <td>403</td>
+    <td>475</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr2_bomber_jacket_alpha</code></td>
+    <td><code>O_LARA_SKIN_SWAP_26</code></td>
+    <td>283</td>
+    <td>327</td>
+    <td>418</td>
+    <td>490</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr2_robe</code></td>
+    <td><code>O_LARA_SKIN_SWAP_12</code></td>
+    <td>269</td>
+    <td>313</td>
+    <td>404</td>
+    <td>476</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr2_vegas</code></td>
+    <td><code>O_LARA_SKIN_SWAP_13</code></td>
+    <td>270</td>
+    <td>314</td>
+    <td>405</td>
+    <td>477</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr3_gym</code></td>
+    <td><code>O_LARA_SKIN_SWAP_15</code></td>
+    <td>272</td>
+    <td>316</td>
+    <td>407</td>
+    <td>479</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr3_classic</code></td>
+    <td><code>O_LARA_SKIN_SWAP_16</code></td>
+    <td>273</td>
+    <td>317</td>
+    <td>408</td>
+    <td>480</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr3_south_pacific</code></td>
+    <td><code>O_LARA_SKIN_SWAP_17</code></td>
+    <td>274</td>
+    <td>318</td>
+    <td>409</td>
+    <td>481</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr3_catsuit</code></td>
+    <td><code>O_LARA_SKIN_SWAP_18</code></td>
+    <td>275</td>
+    <td>319</td>
+    <td>410</td>
+    <td>482</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr3_nevada</code></td>
+    <td><code>O_LARA_SKIN_SWAP_19</code></td>
+    <td>276</td>
+    <td>320</td>
+    <td>411</td>
+    <td>483</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr3_antarctica</code></td>
+    <td><code>O_LARA_SKIN_SWAP_20</code></td>
+    <td>277</td>
+    <td>321</td>
+    <td>412</td>
+    <td>484</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr3_antarctica_beta</code></td>
+    <td><code>O_LARA_SKIN_SWAP_25</code></td>
+    <td>282</td>
+    <td>326</td>
+    <td>417</td>
+    <td>489</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>sophia</code></td>
+    <td><code>O_LARA_SKIN_SWAP_21</code></td>
+    <td>278</td>
+    <td>322</td>
+    <td>413</td>
+    <td>485</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr4_young</code></td>
+    <td><code>O_LARA_SKIN_SWAP_27</code></td>
+    <td>284</td>
+    <td>328</td>
+    <td>419</td>
+    <td>491</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr4_classic</code></td>
+    <td><code>O_LARA_SKIN_SWAP_29</code></td>
+    <td>286</td>
+    <td>330</td>
+    <td>421</td>
+    <td>493</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>natla</code></td>
+    <td><code>O_LARA_SKIN_SWAP_31</code></td>
+    <td>288</td>
+    <td>332</td>
+    <td>423</td>
+    <td>495</td>
+  </tr>
+</table>
+
+Only the outfits below have a joints model. The rest need none.
+
+<table>
+  <tr valign='top' align='left'>
+    <th>Outfit</th>
+    <th>Object</th>
+    <th>TR1</th>
+    <th>TR2</th>
+    <th>TR3</th>
+    <th>TR4</th>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr4_young</code> joints</td>
+    <td><code>O_LARA_SKIN_JOINTS_1</code></td>
+    <td>296</td>
+    <td>340</td>
+    <td>433</td>
+    <td>502</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr4_classic</code> joints</td>
+    <td><code>O_LARA_SKIN_JOINTS_3</code></td>
+    <td>298</td>
+    <td>342</td>
+    <td>435</td>
+    <td>504</td>
+  </tr>
+</table>
+
+The objects below are used by all outfits.
+
+<table>
+  <tr valign='top' align='left'>
+    <th>Purpose</th>
+    <th>Object</th>
+    <th>TR1</th>
+    <th>TR2</th>
+    <th>TR3</th>
+    <th>TR4</th>
+  </tr>
+  <tr valign='top'>
+    <td>Braids, combat faces and extra animation meshes</td>
+    <td><code>O_LARA_SKIN_SWAP_EXTRA</code></td>
+    <td>290</td>
+    <td>334</td>
+    <td>425</td>
+    <td>497</td>
+  </tr>
+  <tr valign='top'>
+    <td>Holsters and the guns themselves</td>
+    <td><code>O_LARA_SKIN_SWAP_GUNS</code></td>
+    <td>291</td>
+    <td>335</td>
+    <td>426</td>
+    <td>498</td>
+  </tr>
+  <tr valign='top'>
+    <td>Legs without holster straps; optional</td>
+    <td><code>O_LARA_SKIN_SWAP_LEGS</code></td>
+    <td>292</td>
+    <td>336</td>
+    <td>427</td>
+    <td>499</td>
+  </tr>
+</table>
+<!-- /gen:outfit-slots -->
+
 ## JSON setup
 The file `cfg/outfits.json5` sets up the available outfits, and how they should
 behave. The structure of this file is described below.
