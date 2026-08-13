@@ -79,7 +79,9 @@ void UI_Scrollable_SetVisibleItems(
 void UI_Scrollable_SetMaxItems(UI_SCROLLABLE *const s, const int32_t max_items)
 {
     s->max_items = max_items;
-    CLAMP(s->sel_item, 0, s->max_items - 1);
+    if (s->sel_item != -1) {
+        CLAMP(s->sel_item, 0, s->max_items - 1);
+    }
     M_Clamp(s, true);
 }
 
