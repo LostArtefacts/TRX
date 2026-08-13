@@ -16,6 +16,7 @@
 
 **TR4**
 - Added the ability to skip in-game cutscenes
+- Added waterfalls, which run and play their loop, and the mist that rises where they land
 - Changed a flip to move the group of rooms the trigger names, rather than every flip room in the level
 - Fixed animations that move an item sideways playing with the item standing still, such as TR4's guide shimmy.
 - Fixed creatures walking through squares a pushable block stands on
