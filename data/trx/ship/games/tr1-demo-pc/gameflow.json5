@@ -13,7 +13,6 @@
     "savegame_file_fmt": "save_demo_pc_%02d.dat",
 
     "injections": [
-        "braid.bin",
         "bubbles.bin",
         "gun_glow.bin",
         "lara_animations.bin",
