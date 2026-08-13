@@ -1003,7 +1003,7 @@ static bool M_LoadGlobalInjections(const M_CONTEXT *const ctx)
 
 static bool M_LoadGameFlowDoc(
     JSON_VALUE *const doc, const char *const path, const bool exit_on_error,
-    const bool validation_mode)
+    const bool validation_mode, char **const error_out)
 {
     GF_Shutdown();
 
@@ -1031,7 +1031,11 @@ fail:
     if (exit_on_error) {
         M_ExitWithJSONError(&ctx);
     } else {
-        LOG_WARNING("%s", JSON_ReadIO_GetError(ctx.io));
+        const char *const error = JSON_ReadIO_GetError(ctx.io);
+        LOG_WARNING("%s", error);
+        if (error_out != nullptr && error != nullptr) {
+            *error_out = Memory_DupStr(error);
+        }
         JSON_ReadIO_Destroy(ctx.io);
         JSON_ValueFree(doc);
         GF_Shutdown();
@@ -1041,31 +1045,34 @@ fail:
 
 static bool M_LoadGameFlowEx(
     const char *const path, const bool exit_on_error,
-    const bool validation_mode)
+    const bool validation_mode, char **const error_out)
 {
-    JSON_VALUE *const doc = JSONFile_ReadEx(path, exit_on_error);
+    JSON_VALUE *const doc =
+        JSONFile_ReadWithError(path, exit_on_error, error_out);
     if (doc == nullptr) {
         if (exit_on_error) {
             Shell_ExitSystemFmt("Failed to open script file %s", path);
         }
         return false;
     }
-    return M_LoadGameFlowDoc(doc, path, exit_on_error, validation_mode);
+    return M_LoadGameFlowDoc(
+        doc, path, exit_on_error, validation_mode, error_out);
 }
 
 void GF_LoadFromFile(const char *const path)
 {
-    M_LoadGameFlowEx(path, true, false);
+    M_LoadGameFlowEx(path, true, false, nullptr);
 }
 
 bool GF_TryLoadFromFile(const char *const path)
 {
-    return M_LoadGameFlowEx(path, false, false);
+    return M_LoadGameFlowEx(path, false, false, nullptr);
 }
 
-bool GF_ValidateMod(const char *const mod_name, const char *const path)
+bool GF_ValidateMod(
+    const char *const mod_name, const char *const path, char **const error_out)
 {
-    if (!M_LoadGameFlowEx(path, false, true)) {
+    if (!M_LoadGameFlowEx(path, false, true, error_out)) {
         LOG_WARNING("Mod '%s' has invalid gameflow data", mod_name);
         return false;
     }

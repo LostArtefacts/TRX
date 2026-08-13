@@ -20,6 +20,11 @@ typedef struct {
     SHELL_MOD_TYPE mod_type;
 } M_KNOWN_MOD;
 
+typedef struct {
+    char *mod_name;
+    char *text;
+} M_REJECTION;
+
 static const M_KNOWN_MOD m_KnownModSeeds[] = {
     { .meta = { .name = "tr1", .engine = 1 }, .mod_type = MOD_BASE_GAME },
     { .meta = { .name = "tr1-ub", .engine = 1, .extends = "tr1" },
@@ -45,18 +50,22 @@ static const M_KNOWN_MOD m_KnownModSeeds[] = {
 
 static VECTOR *m_Mods = nullptr;
 
-// Why a game directory was passed over, kept so that a startup with nothing
-// left to play can say what went wrong with each one.
+// Why a game was passed over, kept so that a startup can say what went wrong
+// with the game the player asked for, or with every one of them where there is
+// nothing left to play.
 static VECTOR *m_Rejections = nullptr;
 static char *m_RejectionSummary = nullptr;
 
-static void M_Reject(const char *const path, const char *const reason)
+static void M_Reject(const char *const mod_name, const char *const reason)
 {
     if (m_Rejections == nullptr) {
-        m_Rejections = Vector_Create(sizeof(char *));
+        m_Rejections = Vector_Create(sizeof(M_REJECTION));
     }
-    char *const text = String_Format("%s: %s", path, reason);
-    Vector_Add(m_Rejections, &text);
+    const M_REJECTION rejection = {
+        .mod_name = Memory_DupStr(mod_name),
+        .text = Memory_DupStr(reason),
+    };
+    Vector_Add(m_Rejections, &rejection);
 }
 
 static SHELL_MOD *M_FindMod(const char *const name)
@@ -130,8 +139,10 @@ static void M_ScanForCustomMods(void)
         if (!GF_ReadModMeta(gameflow_path, &meta, &error)) {
             LOG_WARNING("Failed to read mod metadata from '%s'", gameflow_path);
             M_Reject(
-                gameflow_path,
-                error != nullptr ? error : "the gameflow could not be read");
+                entry,
+                error != nullptr ? error
+                                 : String_FormatStatic(
+                                       "%s could not be read", gameflow_path));
             Memory_FreePointer(&error);
             continue;
         }
@@ -141,7 +152,9 @@ static void M_ScanForCustomMods(void)
             LOG_WARNING(
                 "Custom mod '%s' has no 'engine' field in gameflow; skipping",
                 entry);
-            M_Reject(gameflow_path, "the gameflow has no 'engine' field");
+            M_Reject(
+                entry,
+                String_FormatStatic("%s has no 'engine' field", gameflow_path));
             Memory_FreePointer(&meta.name);
             Memory_FreePointer(&meta.extends);
             continue;
@@ -173,8 +186,10 @@ static void M_ReadModMetaForKnownMods(void)
         char *error = nullptr;
         if (!GF_ReadModMeta(gameflow_path, &meta, &error)) {
             M_Reject(
-                gameflow_path,
-                error != nullptr ? error : "the gameflow could not be read");
+                mod->name,
+                error != nullptr ? error
+                                 : String_FormatStatic(
+                                       "%s could not be read", gameflow_path));
             Memory_FreePointer(&error);
             continue;
         }
@@ -263,8 +278,9 @@ static void M_ClearRejections(void)
         return;
     }
     for (int32_t i = 0; i < m_Rejections->count; i++) {
-        char **const text = Vector_Get(m_Rejections, i);
-        Memory_FreePointer(text);
+        M_REJECTION *const rejection = Vector_Get(m_Rejections, i);
+        Memory_FreePointer(&rejection->mod_name);
+        Memory_FreePointer(&rejection->text);
     }
     Vector_Free(m_Rejections);
     m_Rejections = nullptr;
@@ -305,6 +321,20 @@ static const SHELL_MOD *M_GetFirstAvailableMod(const int32_t engine_version)
     return nullptr;
 }
 
+const char *Shell_GetModRejection(const char *const mod_name)
+{
+    if (m_Rejections == nullptr || mod_name == nullptr) {
+        return nullptr;
+    }
+    for (int32_t i = 0; i < m_Rejections->count; i++) {
+        const M_REJECTION *const rejection = Vector_Get(m_Rejections, i);
+        if (strcmp(rejection->mod_name, mod_name) == 0) {
+            return rejection->text;
+        }
+    }
+    return nullptr;
+}
+
 const char *Shell_GetModRejections(void)
 {
     if (m_Rejections == nullptr || m_Rejections->count == 0) {
@@ -314,9 +344,10 @@ const char *Shell_GetModRejections(void)
     Memory_FreePointer(&m_RejectionSummary);
     m_RejectionSummary = Memory_DupStr("");
     for (int32_t i = 0; i < m_Rejections->count; i++) {
-        char **const text = Vector_Get(m_Rejections, i);
+        const M_REJECTION *const rejection = Vector_Get(m_Rejections, i);
         char *const merged = String_Format(
-            "%s%s%s", m_RejectionSummary, i > 0 ? "\n" : "", *text);
+            "%s%s%s: %s", m_RejectionSummary, i > 0 ? "\n" : "",
+            rejection->mod_name, rejection->text);
         Memory_FreePointer(&m_RejectionSummary);
         m_RejectionSummary = merged;
     }
@@ -380,7 +411,17 @@ void Shell_ValidateMods(void)
         g_TRVersion = mod->engine_version;
         TRXPath_Init(&args);
 
-        mod->is_valid = GF_ValidateMod(mod->name, Shell_GetGameFlowPath(mod));
+        const char *const gameflow_path = Shell_GetGameFlowPath(mod);
+        char *error = nullptr;
+        mod->is_valid = GF_ValidateMod(mod->name, gameflow_path, &error);
+        if (!mod->is_valid && Shell_GetModRejection(mod->name) == nullptr) {
+            M_Reject(
+                mod->name,
+                error != nullptr ? error
+                                 : String_FormatStatic(
+                                       "%s could not be read", gameflow_path));
+        }
+        Memory_FreePointer(&error);
     }
 
     g_TRVersion = original_tr_version;

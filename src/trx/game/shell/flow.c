@@ -213,6 +213,22 @@ static void M_PrepareSystem(void)
     LOG_INFO(
         "Mod: %s",
         s->args->startup.mod != nullptr ? s->args->startup.mod->name : nullptr);
+    const SHELL_MOD *const requested_mod = s->args->startup.mod;
+    if (s->args->startup.mod_explicit
+        && (requested_mod == nullptr || !requested_mod->is_valid)) {
+        const char *const name = requested_mod != nullptr
+            ? requested_mod->name
+            : s->args->startup.mod_request;
+        const char *const reason = Shell_GetModRejection(name);
+        if (reason != nullptr) {
+            Shell_ExitSystemFmt("Cannot play %s.\n\n%s", name, reason);
+        }
+        if (requested_mod == nullptr) {
+            Shell_ExitSystemFmt("There is no game called %s.", name);
+        }
+        Shell_ExitSystemFmt("Cannot play %s.", name);
+    }
+
     if (s->args->startup.engine_version <= 0
         || s->args->startup.mod == nullptr) {
         const char *const rejections = Shell_GetModRejections();

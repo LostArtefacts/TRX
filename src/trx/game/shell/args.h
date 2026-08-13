@@ -8,6 +8,11 @@ typedef struct {
 
     bool dump_lua_api;
     const SHELL_MOD *mod;
+    // The game the player named on the command line, and whether they named
+    // one at all. A named game that cannot be played is an error rather than
+    // something to quietly pick around.
+    const char *mod_request;
+    bool mod_explicit;
     struct {
         int32_t num;
         const char *query;

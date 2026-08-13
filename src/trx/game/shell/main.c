@@ -33,7 +33,10 @@ int main(int argc, char *argv[])
 
     LOG_INFO("Starting %s", g_TRXVersion);
     Shell_ValidateMods();
-    if (args->startup.mod == nullptr || !args->startup.mod->is_valid) {
+    // A game the player named is theirs to hear about, so it stays where it is
+    // for the shell to report. Anything else falls back to what can be played.
+    if (!args->startup.mod_explicit
+        && (args->startup.mod == nullptr || !args->startup.mod->is_valid)) {
         args->startup.mod =
             Shell_SelectStartupMod(args->startup.engine_version);
         if (args->startup.mod != nullptr && args->startup.engine_version == 0) {
