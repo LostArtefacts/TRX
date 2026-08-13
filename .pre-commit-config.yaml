@@ -161,6 +161,15 @@ repos:
     pass_filenames: false
     files: ^data/trx/ship/
 
+  - id: gen-outfit-slots
+    name: Regenerate the outfit slot tables in OUTFITS.md
+    entry: tools/lint/gen/outfit_slots
+    language: python
+    pass_filenames: false
+    files: ^(data/trx/ship/(cfg/outfits\.json5|games/.*/catalog_objects\.csv)|docs/trx/OUTFITS\.md)$
+    additional_dependencies:
+      - pyjson5
+
   - id: gen-water-colors
     name: Regenerate WATER_COLORS.md from water_colors.yml
     entry: tools/lint/gen/water_colors
