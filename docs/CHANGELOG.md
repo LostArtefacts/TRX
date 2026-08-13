@@ -1,5 +1,8 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.10...develop) - ××××-××-××
 
+**UI**
+- Fixed the icons beside the volume settings, which now show a note for the music and a speaker for the sound effects
+
 **Developer console**
 - Changed the `/flip` console command to take a flip group, so `/flip 3` moves that group alone while `/flip` on its own moves them all
 

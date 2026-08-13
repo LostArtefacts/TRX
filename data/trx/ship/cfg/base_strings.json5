@@ -927,7 +927,7 @@
             "description": "Loads previously triggered, one shot music so one shot music tracks do not replay.",
         },
         "audio.master_volume": {
-            "title": "\\{icon music} Master volume",
+            "title": "Master volume",
             "description": "Adjusts all ingame volume. The rest of the settings are relative to this volume.",
         },
         "audio.music_load_condition": {
@@ -935,7 +935,7 @@
             "description": "Loads the music track that was playing when the game was saved.\n\n- Never: do not restore music tracks on load.\n- Non-ambient: restore only non-ambient music tracks on load.\n- Always: restore any kind of music track on load.",
         },
         "audio.music_volume": {
-            "title": "Music volume",
+            "title": "\\{icon music} Music volume",
             "description": "Adjusts music volume.",
         },
         "audio.mute_out_of_focus": {

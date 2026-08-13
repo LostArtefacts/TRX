@@ -927,7 +927,7 @@
             "description": "Cuiridh seo an luchdachadh air ais de chriomagan ciùil aon-ùine gus nach cluich iad a-rithist gu mearachdach.",
         },
         "audio.master_volume": {
-            "title": "\\{icon music} Tomhas prìomh",
+            "title": "Tomhas prìomh",
             "description": "Atharraichidh tomhas fuaim a' gheama gu lèir. Tha na tomhasan eile co-cheangailte ris an fhearr seo",
         },
         "audio.music_load_condition": {
@@ -935,7 +935,7 @@
             "description": "Cuiridh seo an slighe-ciùil a bha a' cluich nuair a chaidh an geama a shàbhaladh air ais an sàs aig àm luchdaidh.\n\n- A-riamh: na bi ag ath-chluich ciùil idir.\n- Neo-àrainneachd: ath-chluich ceòl neo-àrainneachdail a-mhàin.\n- An-còmhnaidh: ath-chluich ceòl sam bith.",
         },
         "audio.music_volume": {
-            "title": "Tomhas ciùil",
+            "title": "\\{icon music} Tomhas ciùil",
             "description": "Atharraichidh tomhas ciùil.",
         },
         "audio.mute_out_of_focus": {
