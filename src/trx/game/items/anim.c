@@ -295,19 +295,24 @@ void Item_Animate(ITEM *const item)
         }
     }
 
+    // TR4 animations may also carry a speed across the way the item faces,
+    // which is how its guides shimmy and sidestep. Earlier games leave it at
+    // zero.
+    int32_t lateral_speed = 0;
     if (item->gravity) {
         item->fall_speed += item->fall_speed < FAST_FALL_SPEED ? GRAVITY : 1;
         item->pos.y += item->fall_speed;
     } else {
-        int32_t speed = anim->velocity;
-        if (anim->acceleration != 0) {
-            speed += anim->acceleration * (item->frame_num - anim->frame_base);
-        }
-        item->speed = speed >> 16;
+        const int32_t frame_ofs = item->frame_num - anim->frame_base;
+        item->speed = (anim->velocity + anim->acceleration * frame_ofs) >> 16;
+        lateral_speed =
+            (anim->lateral_velocity + anim->lateral_acceleration * frame_ofs)
+            >> 16;
     }
 
-    item->pos.x += (item->speed * Math_Sin(item->rot.y)) >> W2V_SHIFT;
-    item->pos.z += (item->speed * Math_Cos(item->rot.y)) >> W2V_SHIFT;
+    item->pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, item->speed);
+    item->pos =
+        XYZ_32_OffsetYaw(item->pos, item->rot.y + DEG_90, lateral_speed);
 }
 
 bool Item_GetAnimChange(ITEM *const item, const ANIM *const anim)

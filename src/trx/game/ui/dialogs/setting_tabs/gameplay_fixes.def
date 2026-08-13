@@ -2,7 +2,6 @@ X_UI_ROW(gameplay.fix_floor_data_issues)
 X_UI_ROW(visuals.fix_texture_issues)
 X_UI_ROW(visuals.fix_item_rots)
 
-X_UI_ROW(audio.load_music_triggers)
 X_UI_ROW(visuals.fix_animated_sprites)
 X_UI_ROW(gameplay.fix_bridge_collision)
 
@@ -23,6 +22,7 @@ X_UI_ROW(gameplay.fix_qwop_glitch)
 X_UI_ROW(gameplay.fix_step_glitch)
 X_UI_ROW(gameplay.fix_item_duplication_glitch)
 X_UI_ROW(gameplay.fix_lara_pickup_embed)
+X_UI_ROW(gameplay.fix_breakable_wall_clip)
 X_UI_ROW(gameplay.fix_free_flare_glitch)
 
 X_UI_ROW(gameplay.fix_alligator_ai)

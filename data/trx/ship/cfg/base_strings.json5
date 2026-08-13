@@ -578,6 +578,7 @@
             "lara_outfit": {
                 "default": "Default",
                 "golden_sophia": "Golden Sophia",
+                "natla": "Natla",
                 "sophia": "Sophia",
                 "tr1_bacon_lara": "Bacon Lara",
                 "tr1_classic": "TR1 Classic",
@@ -786,6 +787,10 @@
             "LOOK_MODE_RESTRICTED": "Restricted",
             "LOOK_MODE_UNRESTRICTED": "Unrestricted",
         },
+        "M16_AIM_MODE": {
+            "M16_AIM_MODE_ENHANCED": "Enhanced",
+            "M16_AIM_MODE_ORIGINAL": "Original",
+        },
         "MUSIC_LOAD_CONDITION": {
             "MUSIC_LOAD_CONDITION_ALWAYS": "Always",
             "MUSIC_LOAD_CONDITION_NEVER": "Never",
@@ -927,7 +932,7 @@
             "description": "Loads previously triggered, one shot music so one shot music tracks do not replay.",
         },
         "audio.master_volume": {
-            "title": "\\{icon music} Master volume",
+            "title": "Master volume",
             "description": "Adjusts all ingame volume. The rest of the settings are relative to this volume.",
         },
         "audio.music_load_condition": {
@@ -935,7 +940,7 @@
             "description": "Loads the music track that was playing when the game was saved.\n\n- Never: do not restore music tracks on load.\n- Non-ambient: restore only non-ambient music tracks on load.\n- Always: restore any kind of music track on load.",
         },
         "audio.music_volume": {
-            "title": "Music volume",
+            "title": "\\{icon music} Music volume",
             "description": "Adjusts music volume.",
         },
         "audio.mute_out_of_focus": {
@@ -1262,6 +1267,10 @@
             "title": "Fix bear AI",
             "description": "Fixes the bear pat attack so it does not miss Lara.",
         },
+        "gameplay.fix_breakable_wall_clip": {
+            "title": "Fix breakable wall clipping",
+            "description": "Fixes Lara being able to vault or crawl through breakable walls that stand on the edge of a sector. If enabled, she stops at the wall until it is broken.",
+        },
         "gameplay.fix_bridge_collision": {
             "title": "Fix bridge collision",
             "description": "Fixes Lara not being able to grab parts of some bridges and invisible walls at the edge. Also fixes collision issues with drawbridges, trapdoors, and bridges when stacked over each other, over slopes, and near the ground.",
@@ -1361,6 +1370,10 @@
         "gameplay.look_mode": {
             "title": "Look mode",
             "description": "Allows controlling when Lara is able to use look.\n\n- Restricted: look is only permitted when Lara is stationary, and never when underwater, as in the original TR1.\n- Enhanced: look is permitted during most animations, aside from ones such as pushing a block, as in the original TR2+.\n- Unrestricted: look is permitted at any time during normal Lara control.",
+        },
+        "gameplay.m16_aim_mode": {
+            "title": "M16/MP5 aiming variants",
+            "description": "Controls when Lara aims the M16/MP5 from her shoulder rather than from her hip.\n\n- Original: Lara raises the gun to her shoulder whenever she stops moving.\n- Enhanced: Lara keeps firing from her hip while the Action button is held, and only shoulders the gun when she starts firing while standing still. With the accuracy fix enabled, hip fire is less accurate and does less damage per shot.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "Number of quick save slots",
@@ -1901,6 +1914,18 @@
         }
     },
     "objects": {
+        "actor_1_speech_head_1": {
+            "name": "Actor 1 Speech Head 1",
+        },
+        "actor_1_speech_head_2": {
+            "name": "Actor 1 Speech Head 2",
+        },
+        "actor_2_speech_head_1": {
+            "name": "Actor 2 Speech Head 1",
+        },
+        "actor_2_speech_head_2": {
+            "name": "Actor 2 Speech Head 2",
+        },
         "alarm_sound": {
             "name": "Alarm",
         },
@@ -2771,6 +2796,18 @@
         },
         "lara_skidoo": {
             "name": "Snowmobile Animation",
+        },
+        "lara_speech_head_1": {
+            "name": "Lara Speech Head 1",
+        },
+        "lara_speech_head_2": {
+            "name": "Lara Speech Head 2",
+        },
+        "lara_speech_head_3": {
+            "name": "Lara Speech Head 3",
+        },
+        "lara_speech_head_4": {
+            "name": "Lara Speech Head 4",
         },
         "lara_upv": {
             "name": "UPV Animation",
@@ -3735,6 +3772,9 @@
                 "Vole",
                 "Water Rat",
             ]
+        },
+        "von_croy": {
+            "name": "Von Croy",
         },
         "vulture": {
             "name": "Vulture",

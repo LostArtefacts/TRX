@@ -497,8 +497,11 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    const bool running = (weapon_type == LGT_M16 || weapon_type == LGT_MP5)
-        && lara_item->speed != 0;
+    const bool is_machine_gun =
+        weapon_type == LGT_M16 || weapon_type == LGT_MP5;
+    const bool running = is_machine_gun && lara_item->speed != 0;
+    const bool hold_hip_fire = is_machine_gun && !running && g_Input.action
+        && g_Config.gameplay.m16_aim_mode == M16_AIM_MODE_ENHANCED;
     ITEM *const item = Item_Get(lara->gun_item_num);
 
     switch (item->current_anim_state) {
@@ -523,7 +526,9 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
         if (m_ReloadHarpoon) {
             item->goal_anim_state = LA_G_RELOAD;
             m_ReloadHarpoon = false;
-        } else if (lara->water_status != LWS_UNDERWATER && !running) {
+        } else if (
+            lara->water_status != LWS_UNDERWATER && !running
+            && !hold_hip_fire) {
             item->goal_anim_state = LA_G_AIM;
         } else if (
             (g_Input.action && lara->target == nullptr)
@@ -573,7 +578,8 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
     case LA_G_URECOIL:
         if (Item_TestFrameEqual(item, 0)) {
             item->goal_anim_state = LA_G_UUNAIM;
-            if ((lara->water_status == LWS_UNDERWATER || running)
+            if ((lara->water_status == LWS_UNDERWATER || running
+                 || hold_hip_fire)
                 && !m_ReloadHarpoon) {
                 if (g_Input.action) {
                     if (lara->target == nullptr || lara->left_arm.lock) {

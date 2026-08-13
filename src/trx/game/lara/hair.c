@@ -272,6 +272,13 @@ static void M_Control(
         frame_2 = frmptr[1];
     }
 
+    // A cutscene poses her without an animation behind it, and the frames go
+    // with the pose when the scene ends. There is nothing to hang the braid
+    // off until she is animating again.
+    if (frame_1 == nullptr) {
+        return;
+    }
+
     Matrix_PushUnit();
     Matrix_TranslateSet32(lara_item->pos);
     Matrix_Rot16(lara_item->rot);

@@ -71,6 +71,10 @@ typedef struct ITEM {
     uint16_t init_flags;
     uint8_t ai_bits;
     int16_t ai_tag;
+    // The number carried by the AI marker the creature was placed on, which
+    // is how TR4 tells one marker of a kind from another. Level data rather
+    // than runtime state, so it is not saved.
+    int16_t ai_ocb;
     ITEM_PROPERTY_SET properties;
     ITEM_TRIGGER_STATE trigger;
 

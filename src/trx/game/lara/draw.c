@@ -453,6 +453,12 @@ bool Lara_Draw(const ITEM *const item)
     const ANIM_FRAME *const frame =
         hit_frame == nullptr ? frames[0] : hit_frame;
 
+    // A cutscene poses her with no animation behind it, so there is no frame
+    // to take her bounds from until she is animating again.
+    if (frame == nullptr) {
+        goto finish;
+    }
+
     const OBJECT *const obj = Object_Get(item->object_id);
     const BOUNDS_16 *const shadow_bounds = Item_GetBoundsAccurate(item);
     if (!Lara_Vehicle_IsMounted()) {
