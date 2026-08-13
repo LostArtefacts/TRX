@@ -542,19 +542,27 @@ static float M_GetMaxValueWidth(const UI_SETTINGS_EDITOR_STATE *const s)
     return result;
 }
 
+static bool M_IsValueOnOffer(const UI_SETTINGS_ROW *const row)
+{
+    if (row == nullptr || row->option->value.type != TVT_DYNAMIC_ENUM) {
+        return true;
+    }
+    return DynamicEnum_IsValueEnabled(
+        Config_Option_GetEnumKey(row->option), row->option->value.as_str);
+}
+
 static void M_OptionLabel(
     const UI_SETTINGS_ROW *const row, const char *const text,
-    const bool star_if_enforced)
+    const bool is_title)
 {
     const UI_SETTING_HANDLER *const handler =
         row != nullptr ? row->handler : nullptr;
     const bool is_held = M_IsOptionHeld(row);
-    // A held row is not the player's to move, so it reads as one they cannot
-    // move rather than only carrying the star that says who took it.
     const bool is_available = !is_held
         && (handler == nullptr || handler->is_available == nullptr
-            || handler->is_available(row->option, handler->user_data));
-    const bool is_enforced = star_if_enforced && is_held;
+            || handler->is_available(row->option, handler->user_data))
+        && (is_title || M_IsValueOnOffer(row));
+    const bool is_enforced = is_title && is_held;
     const char *const suffix = is_enforced ? "*" : "";
 
     if (!is_available) {
