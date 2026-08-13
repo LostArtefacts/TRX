@@ -9,7 +9,6 @@
     "savegame_file_fmt": "save_tr1_%02d.dat",
 
     "injections": [
-        "braid.bin",
         "bubbles.bin",
         "gun_glow.bin",
         "lara_animations.bin",
@@ -70,7 +69,6 @@
             ],
             "injections": [
                 "lara_gym_guns.bin",
-                "braid.bin",
                 "bubbles.bin",
                 "gun_glow.bin",
                 "gym_textures.bin",
@@ -493,7 +491,6 @@
             "injections": [
                 "cut1_setup.bin",
                 "cut1_textures.bin",
-                "braid.bin",
                 "photo.bin",
                 "pda_model.bin",
                 "font.bin",
@@ -514,7 +511,6 @@
             "inherit_injections": false,
             "injections": [
                 "cut2_setup.bin",
-                "braid.bin",
                 "photo.bin",
                 "pda_model.bin",
                 "font.bin",
@@ -558,7 +554,6 @@
             "inherit_injections": false,
             "injections": [
                 "cut4_setup.bin",
-                "braid.bin",
                 "cut4_textures.bin",
                 "photo.bin",
                 "pda_model.bin",

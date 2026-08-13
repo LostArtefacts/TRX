@@ -10,7 +10,6 @@
     "savegame_file_fmt": "save_trub_%02d.dat",
 
     "injections": [
-        "braid.bin",
         "bubbles.bin",
         "gun_glow.bin",
         "lara_animations.bin",

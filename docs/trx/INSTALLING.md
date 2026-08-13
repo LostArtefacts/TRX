@@ -147,7 +147,6 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── atlantis_itemrots.bin
 │   │   │   ├── atlantis_textures.bin
 │   │   │   ├── binoculars.bin
-│   │   │   ├── braid.bin
 │   │   │   ├── bubbles.bin
 │   │   │   ├── cat_cameras.bin
 │   │   │   ├── cat_crystals.bin
@@ -207,9 +206,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── lara_animations.bin
 │   │   │   ├── lara_extra.bin
 │   │   │   ├── lara_feet_sfx.bin
-│   │   │   ├── lara_flares.bin
 │   │   │   ├── lara_guns.bin
-│   │   │   ├── lara_gym_flares.bin
 │   │   │   ├── lara_gym_guns.bin
 │   │   │   ├── lara_outfits.bin
 │   │   │   ├── midas_itemrots.bin
@@ -1498,7 +1495,6 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── atlantis_itemrots.bin
     │   │   │   │   ├── atlantis_textures.bin
     │   │   │   │   ├── binoculars.bin
-    │   │   │   │   ├── braid.bin
     │   │   │   │   ├── bubbles.bin
     │   │   │   │   ├── cat_cameras.bin
     │   │   │   │   ├── cat_crystals.bin
@@ -1558,9 +1554,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── lara_animations.bin
     │   │   │   │   ├── lara_extra.bin
     │   │   │   │   ├── lara_feet_sfx.bin
-    │   │   │   │   ├── lara_flares.bin
     │   │   │   │   ├── lara_guns.bin
-    │   │   │   │   ├── lara_gym_flares.bin
     │   │   │   │   ├── lara_gym_guns.bin
     │   │   │   │   ├── lara_outfits.bin
     │   │   │   │   ├── midas_itemrots.bin
