@@ -124,57 +124,59 @@ GF_COMMAND GF_RunGlobeSelect(const char *const background_path)
     return gf_cmd;
 }
 
-GF_COMMAND GF_DoFrontendSequence(void)
+RESULT GF_DoFrontendSequence(GF_COMMAND *const out_cmd)
 {
     const SHELL_ARGS *const args = Shell_GetArgs();
     if (args != nullptr) {
         if (args->startup.save_to_load >= 0) {
-            return (GF_COMMAND) {
+            *out_cmd = (GF_COMMAND) {
                 .action = GF_START_SAVED_GAME,
                 .param = SG_Manager_SlotToParam(
                     SG_Manager_NormalSlot(args->startup.save_to_load)),
             };
+            return OK;
         }
 
         if (args->startup.level_request.num >= 0) {
             const GF_LEVEL *const level = GF_GetLevelByOrdinalNumber(
                 GFLT_MAIN, args->startup.level_request.num);
-            if (level == nullptr) {
-                Shell_ExitSystemFmt(
-                    "Invalid level number: %d",
-                    args->startup.level_request.num);
-            }
-            return (GF_COMMAND) {
+            FAIL_IF(
+                level == nullptr, "there is no level number %d",
+                args->startup.level_request.num);
+            *out_cmd = (GF_COMMAND) {
                 .action = GF_SELECT_GAME,
                 .param = level->num,
             };
+            return OK;
         }
 
         if (args->startup.level_request.query != nullptr) {
             const GF_LEVEL *const level =
                 GF_FindPlayableLevelByQuery(args->startup.level_request.query);
-            if (level == nullptr) {
-                Shell_ExitSystemFmt(
-                    "Cannot find level file '%s', and no game-flow level "
-                    "title matched it.",
-                    args->startup.level_request.query);
-            }
-            return (GF_COMMAND) {
+            FAIL_IF(
+                level == nullptr,
+                "there is no level file '%s', and no game flow level title "
+                "matches it",
+                args->startup.level_request.query);
+            *out_cmd = (GF_COMMAND) {
                 .action = GF_SELECT_GAME,
                 .param = level->num,
             };
+            return OK;
         }
 
         if (args->startup.level_request.path != nullptr) {
-            return (GF_COMMAND) {
+            *out_cmd = (GF_COMMAND) {
                 .action = GF_START_GAME,
                 .param = 0,
             };
+            return OK;
         }
     }
 
     if (g_GameFlow.title_level == nullptr) {
-        return (GF_COMMAND) { .action = GF_NOOP };
+        *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
+        return OK;
     }
 
     const GF_COMMAND gf_cmd =
@@ -182,7 +184,8 @@ GF_COMMAND GF_DoFrontendSequence(void)
     if (gf_cmd.action == GF_NOOP || gf_cmd.action == GF_EXIT_TO_TITLE) {
         M_PlayIntroFMVs();
     }
-    return gf_cmd;
+    *out_cmd = gf_cmd;
+    return OK;
 }
 
 GF_COMMAND GF_DoLevelSequence(
@@ -242,7 +245,8 @@ GF_COMMAND GF_PlayAvailableStory(const SAVEGAME_SLOT_REF slot)
     CONFIG_SET(g_Config.gameplay.enable_legal, false);
 
     // Play intro FMVs and cutscenes
-    GF_DoFrontendSequence();
+    GF_COMMAND intro_cmd;
+    IGNORE(GF_DoFrontendSequence(&intro_cmd));
 
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i <= MIN(savegame_level, level_table->count); i++) {
@@ -324,7 +328,7 @@ bool GF_HasAvailableStory(const SAVEGAME_SLOT_REF slot)
     return false;
 }
 
-void GF_RunUntilExit(GF_COMMAND gf_cmd)
+RESULT GF_RunUntilExit(GF_COMMAND gf_cmd)
 {
     bool loop_continue = !Shell_IsExiting();
     while (loop_continue) {
@@ -392,7 +396,7 @@ void GF_RunUntilExit(GF_COMMAND gf_cmd)
             if (Shell_GetArgs()->startup.level_request.path != nullptr) {
                 gf_cmd = (GF_COMMAND) { .action = GF_EXIT_GAME };
             } else if (g_GameFlow.title_level == nullptr) {
-                Shell_ExitSystem("Missing title level");
+                return FAIL("the game flow names no title level");
             } else {
                 gf_cmd = GF_RunTitle();
             }
@@ -415,4 +419,5 @@ void GF_RunUntilExit(GF_COMMAND gf_cmd)
     }
     Game_SetCurrentLevel(nullptr);
     GF_SetCurrentLevel(nullptr);
+    return OK;
 }

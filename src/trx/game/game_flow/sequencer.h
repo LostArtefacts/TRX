@@ -16,9 +16,14 @@ GF_COMMAND GF_RunGlobeSelect(const char *background_path);
 
 // Act on what the flow asks for, starting from the given command, until it
 // asks to leave the game or switch mod. Leaves no level loaded.
-void GF_RunUntilExit(GF_COMMAND gf_cmd);
+// Runs the game flow until it says to stop. Reports a game flow with no
+// title level to fall back to.
+RESULT GF_RunUntilExit(GF_COMMAND gf_cmd);
 
-GF_COMMAND GF_DoFrontendSequence(void);
+// Works out what the game does first, from the arguments the player started
+// it with or the title level. Reports an argument naming a level that is not
+// there.
+RESULT GF_DoFrontendSequence(GF_COMMAND *out_cmd);
 GF_COMMAND GF_DoDemoSequence(int32_t demo_num);
 GF_COMMAND GF_DoCutsceneSequence(int32_t cutscene_num, bool cross_fade_in);
 

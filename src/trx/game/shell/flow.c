@@ -394,7 +394,10 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
     }
 
     Stats_CalculateMaxStats();
-    GF_RunUntilExit(GF_DoFrontendSequence());
+    GF_COMMAND gf_cmd;
+    EXIT_ON_FAIL(
+        GF_DoFrontendSequence(&gf_cmd), "Cannot work out where to start");
+    EXIT_ON_FAIL(GF_RunUntilExit(gf_cmd), "The game flow could not carry on");
 
     if (m_PendingMod != nullptr) {
         if (TestReplay_IsOpened()) {
