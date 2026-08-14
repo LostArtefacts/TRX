@@ -53,12 +53,12 @@ static void M_ShowFatalError(
 
 const char *Shell_GetConfigDir(void)
 {
-    return TRXPath_Get(TRX_PATH_CONFIG_DIR);
+    return GamePath_Get(GAME_PATH_CONFIG_DIR);
 }
 
 const char *Shell_GetCacheDir(void)
 {
-    return TRXPath_Get(TRX_PATH_CACHE_DIR);
+    return GamePath_Get(GAME_PATH_CACHE_DIR);
 }
 
 void Shell_Terminate(int32_t exit_code)

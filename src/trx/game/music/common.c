@@ -16,9 +16,9 @@
 #include <trx/game/music/backend_cdaudio.h>
 #include <trx/game/music/backend_cdaudio_wad.h>
 #include <trx/game/music/backend_files.h>
+#include <trx/game/paths.h>
 #include <trx/game/rules.h>
 #include <trx/game/shell/common.h>
-#include <trx/game/shell/paths.h>
 #include <trx/version.h>
 
 #include <string.h>
@@ -57,9 +57,9 @@ static MUSIC_BACKEND *M_FindBackend(void)
 {
     VECTOR *all_backends = Vector_Create(sizeof(MUSIC_BACKEND *));
     const char *const music_dir =
-        TRXPath_PeekResolve(TRX_DYNAMIC_PATH_MUSIC_DIR, nullptr);
-    const char *const music_catalog_path = TRXPath_PeekResolve(
-        TRX_DYNAMIC_PATH_CATALOG, "catalog_music_files.csv");
+        GamePath_PeekResolve(GAME_DYNAMIC_PATH_MUSIC_DIR, nullptr);
+    const char *const music_catalog_path = GamePath_PeekResolve(
+        GAME_DYNAMIC_PATH_CATALOG, "catalog_music_files.csv");
     if (music_dir != nullptr || music_catalog_path != nullptr) {
         Vector_Add(
             all_backends,
@@ -69,11 +69,11 @@ static MUSIC_BACKEND *M_FindBackend(void)
 
     if (g_TRVersion >= 2) {
         const char *const cdaudio_dat_path =
-            TRXPath_PeekResolve(TRX_DYNAMIC_PATH_CDAUDIO_FILE, "cdaudio.dat");
+            GamePath_PeekResolve(GAME_DYNAMIC_PATH_CDAUDIO_FILE, "cdaudio.dat");
         const char *const cdaudio_wav_path =
-            TRXPath_PeekResolve(TRX_DYNAMIC_PATH_CDAUDIO_FILE, "cdaudio.wav");
+            GamePath_PeekResolve(GAME_DYNAMIC_PATH_CDAUDIO_FILE, "cdaudio.wav");
         const char *const cdaudio_mp3_path =
-            TRXPath_PeekResolve(TRX_DYNAMIC_PATH_CDAUDIO_FILE, "cdaudio.mp3");
+            GamePath_PeekResolve(GAME_DYNAMIC_PATH_CDAUDIO_FILE, "cdaudio.mp3");
 
         if (cdaudio_dat_path != nullptr && cdaudio_wav_path != nullptr) {
             Vector_Add(
@@ -90,7 +90,7 @@ static MUSIC_BACKEND *M_FindBackend(void)
     }
     if (g_TRVersion >= 3) {
         const char *const cdaudio_wad_path =
-            TRXPath_PeekResolve(TRX_DYNAMIC_PATH_CDAUDIO_FILE, "cdaudio.wad");
+            GamePath_PeekResolve(GAME_DYNAMIC_PATH_CDAUDIO_FILE, "cdaudio.wad");
         if (cdaudio_wad_path != nullptr) {
             Vector_Add(
                 all_backends,

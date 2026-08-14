@@ -29,7 +29,7 @@
 #include <trx/game/music/common.h>
 #include <trx/game/rooms/common.h>
 #include <trx/game/sound/common.h>
-#include <trx/game/shell/paths.h>
+#include <trx/game/paths.h>
 #include <trx/game/stats/init.h>
 
 #include <dirent.h>
@@ -50,7 +50,7 @@ static M_RESOLVED_PATH *m_ResolvedPaths = nullptr;
 
 // Every path variable resolves to the shipped config directory, which is where
 // the presets live.
-char *TRXPath_ExpandVars(const char *const path)
+char *GamePath_ExpandVars(const char *const path)
 {
     const char *const opening = strchr(path, '%');
     const char *const closing =
@@ -63,7 +63,8 @@ char *TRXPath_ExpandVars(const char *const path)
 
 // Cached and valid for the run, as the engine's is: a caller may hold what it
 // was given.
-const char *TRXPath_Resolve(const TRX_DYNAMIC_PATH path, const char *const rel)
+const char *GamePath_Resolve(
+    const GAME_DYNAMIC_PATH path, const char *const rel)
 {
     char *const resolved = String_Format("%s/%s", TEST_SHIP_CFG_DIR, rel);
     for (const M_RESOLVED_PATH *entry = m_ResolvedPaths; entry != nullptr;

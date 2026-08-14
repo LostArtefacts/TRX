@@ -8,7 +8,7 @@
 #include <trx/core/strings.h>
 #include <trx/debug.h>
 #include <trx/game/music/const.h>
-#include <trx/game/shell/paths.h>
+#include <trx/game/paths.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -41,12 +41,12 @@ static char *M_GetTrackFileName(
     }
 
     char *tmp_path = String_Format("%s/track%02d.flac", data->dir, track);
-    char *result = TRXPath_GuessExtension(tmp_path, m_ExtensionsToTry);
+    char *result = GamePath_GuessExtension(tmp_path, m_ExtensionsToTry);
     Memory_FreePointer(&tmp_path);
 
     if (result == nullptr) {
         tmp_path = String_Format("%s/%d.flac", data->dir, track);
-        result = TRXPath_GuessExtension(tmp_path, m_ExtensionsToTry);
+        result = GamePath_GuessExtension(tmp_path, m_ExtensionsToTry);
         Memory_FreePointer(&tmp_path);
     }
     return result;
@@ -76,24 +76,24 @@ static char *M_GetCatalogFilePath(
     ASSERT(file_path != nullptr);
 
     if (File_IsAbsolute(file_path)) {
-        return TRXPath_GuessExtension(file_path, m_ExtensionsToTry);
+        return GamePath_GuessExtension(file_path, m_ExtensionsToTry);
     }
 
     const char *resolved_path =
-        TRXPath_PeekResolve(TRX_DYNAMIC_PATH_CATALOG, file_path);
+        GamePath_PeekResolve(GAME_DYNAMIC_PATH_CATALOG, file_path);
     if (resolved_path != nullptr) {
         return Memory_DupStr(resolved_path);
     }
 
     resolved_path =
-        TRXPath_PeekResolve(TRX_DYNAMIC_PATH_CDAUDIO_FILE, file_path);
+        GamePath_PeekResolve(GAME_DYNAMIC_PATH_CDAUDIO_FILE, file_path);
     if (resolved_path != nullptr) {
         return Memory_DupStr(resolved_path);
     }
 
     char *local_path = String_Format("%s/%s", catalog_dir, file_path);
     char *canonical_path =
-        TRXPath_GuessExtension(local_path, m_ExtensionsToTry);
+        GamePath_GuessExtension(local_path, m_ExtensionsToTry);
     Memory_FreePointer(&local_path);
     return canonical_path;
 }

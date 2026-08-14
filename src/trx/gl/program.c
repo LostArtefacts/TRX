@@ -214,7 +214,7 @@ void TRX_GL_Program_AttachShader(
     ASSERT(path != nullptr);
 
     const char *const resolved_path =
-        TRXPath_Resolve(TRX_DYNAMIC_PATH_SHADER_FILE, path);
+        GamePath_Resolve(GAME_DYNAMIC_PATH_SHADER_FILE, path);
     Memory_FreePointer(&program->path);
     program->path = Memory_DupStr(resolved_path);
 

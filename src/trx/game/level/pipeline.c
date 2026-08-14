@@ -11,8 +11,8 @@
 #include <trx/game/level/format/format.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/creatures/atlantean.h>
+#include <trx/game/paths.h>
 #include <trx/game/rooms.h>
-#include <trx/game/shell/paths.h>
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
 #include <trx/version.h>

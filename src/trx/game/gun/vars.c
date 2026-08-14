@@ -6,8 +6,8 @@
 #include <trx/core/subsystem.h>
 #include <trx/game/catalog/manager.h>
 #include <trx/game/const.h>
+#include <trx/game/paths.h>
 #include <trx/game/shell/common.h>
-#include <trx/game/shell/paths.h>
 
 #include <string.h>
 
@@ -93,7 +93,7 @@ static void M_ReadAmmoInfo(JSON_OBJECT *const obj, const int32_t type)
 static void M_Load(void)
 {
     const char *const path =
-        TRXPath_Resolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "weapons.json5");
+        GamePath_Resolve(GAME_DYNAMIC_PATH_COMMON_CONFIG, "weapons.json5");
 #define L_READ_ANGLE(name, target)                                             \
     target = JSON_ObjectGetInt(obj, name, target) * DEG_1;
 #define L_READ_DIST(name, target)                                              \

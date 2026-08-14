@@ -8,8 +8,8 @@
 #include <trx/core/virtual_file.h>
 #include <trx/debug.h>
 #include <trx/game/level/format/format.h>
+#include <trx/game/paths.h>
 #include <trx/game/shell/common.h>
-#include <trx/game/shell/paths.h>
 #include <trx/version.h>
 
 #include <stdio.h>
@@ -181,8 +181,8 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
                 ASSERT(level_arg != nullptr);
 
                 const char *const resolved_level_path =
-                    TRXPath_PeekResolveUserPath(
-                        TRX_DYNAMIC_PATH_LEVEL_FILE, next_arg);
+                    GamePath_PeekResolveUserPath(
+                        GAME_DYNAMIC_PATH_LEVEL_FILE, next_arg);
                 result->startup.level_request.path =
                     resolved_level_path != nullptr
                     ? Memory_DupStr(resolved_level_path)

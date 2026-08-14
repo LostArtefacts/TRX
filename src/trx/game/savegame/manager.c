@@ -23,7 +23,7 @@ static SAVEGAME_SLOT_REF m_BoundSlot = { .index = -1 };
 
 static const char *M_GetSaveWriteDir(void)
 {
-    const char *const saves_dir = TRXPath_Get(TRX_PATH_SAVES_DIR);
+    const char *const saves_dir = GamePath_Get(GAME_PATH_SAVES_DIR);
     const SHELL_ARGS *const args = Shell_GetArgs();
     if (args != nullptr && args->startup.mod != nullptr
         && args->startup.mod->name != nullptr) {
@@ -433,8 +433,8 @@ void SG_Manager_ScanSavedGames(void)
 
     // Scan low-priority locations first; the write directory is authoritative.
     M_ScanSavedGamesDir(".");
-    M_ScanSavedGamesDir(TRXPath_Get(TRX_PATH_LEGACY_SAVES_DIR));
-    M_ScanSavedGamesDir(TRXPath_Get(TRX_PATH_SAVES_DIR));
+    M_ScanSavedGamesDir(GamePath_Get(GAME_PATH_LEGACY_SAVES_DIR));
+    M_ScanSavedGamesDir(GamePath_Get(GAME_PATH_SAVES_DIR));
 
     {
         // M_GetSaveWriteDir may use static formatting storage, so copy it

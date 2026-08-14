@@ -138,16 +138,16 @@ static char *M_MakeLevelKey(const char *const path)
 // candidate strings tried in order.
 // Pass optional=true to allow the key to be absent (out_path is set to nullptr
 // in that case).
-// Pass path_type=(TRX_DYNAMIC_PATH)-1 to skip resolution and return the first
+// Pass path_type=(GAME_DYNAMIC_PATH)-1 to skip resolution and return the first
 // candidate as-is.
 static bool M_ReadPath(
     JSON_READ_IO *const io, const char *const key, const bool optional,
-    const TRX_DYNAMIC_PATH path_type, char **const out_path,
+    const GAME_DYNAMIC_PATH path_type, char **const out_path,
     const bool suppress_errors)
 {
     ASSERT(key != nullptr);
     *out_path = nullptr;
-    const bool resolve = path_type != (TRX_DYNAMIC_PATH)-1;
+    const bool resolve = path_type != (GAME_DYNAMIC_PATH)-1;
 
     if (!JSON_PUSH(io, key)) {
         if (suppress_errors) {
@@ -184,7 +184,7 @@ static bool M_ReadPath(
                 ok = true;
                 break;
             }
-            const char *const resolved = TRXPath_PeekResolve(path_type, path);
+            const char *const resolved = GamePath_PeekResolve(path_type, path);
             if (resolved != nullptr) {
                 *out_path = Memory_DupStr(resolved);
                 ok = true;
@@ -269,7 +269,7 @@ static bool M_LoadSettings(
     if (JSON_OPTIONAL(JSON_PUSH(io, "sfx_path"))) {
         JSON_MUST(JSON_POP(io));
         JSON_SHOULD(M_ReadPath(
-            io, "sfx_path", false, TRX_DYNAMIC_PATH_SFX_FILE,
+            io, "sfx_path", false, GAME_DYNAMIC_PATH_SFX_FILE,
             &settings->sfx_path, false));
     }
     JSON_FINISH();
@@ -368,7 +368,7 @@ static bool M_LoadRoot(const M_CONTEXT *const ctx)
     if (JSON_OPTIONAL(JSON_READ(io, "main_menu_picture", &tmp_s))
         && tmp_s != nullptr) {
         ctx->gf->main_menu_background_path = Memory_DupStr(
-            TRXPath_TryResolve(TRX_DYNAMIC_PATH_IMAGE_FILE, tmp_s));
+            GamePath_TryResolve(GAME_DYNAMIC_PATH_IMAGE_FILE, tmp_s));
     }
     ctx->gf->main_menu_use_live_scene = tmp_s == nullptr;
 
@@ -459,7 +459,7 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandlePictureEvent)
     JSON_READ_IO *const io = ctx->io;
     char *expanded_path = nullptr;
     JSON_SHOULD(M_ReadPath(
-        io, "path", false, TRX_DYNAMIC_PATH_IMAGE_FILE, &expanded_path,
+        io, "path", false, GAME_DYNAMIC_PATH_IMAGE_FILE, &expanded_path,
         event == nullptr));
 
     if (event != nullptr) {
@@ -495,7 +495,7 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleTotalStatsEvent)
     JSON_READ_IO *const io = ctx->io;
     char *expanded_path = nullptr;
     JSON_SHOULD(M_ReadPath(
-        io, "background_path", false, TRX_DYNAMIC_PATH_IMAGE_FILE,
+        io, "background_path", false, GAME_DYNAMIC_PATH_IMAGE_FILE,
         &expanded_path, event == nullptr));
     if (expanded_path == nullptr) {
         if (event != nullptr) {
@@ -583,7 +583,7 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleGlobeSelectEvent)
     const char *image;
     JSON_READ_D(io, "image", &image, nullptr);
     char *expanded_image =
-        Memory_DupStr(TRXPath_TryResolve(TRX_DYNAMIC_PATH_IMAGE_FILE, image));
+        Memory_DupStr(GamePath_TryResolve(GAME_DYNAMIC_PATH_IMAGE_FILE, image));
     if (expanded_image == nullptr) {
         if (event != nullptr) {
             event->data = nullptr;
@@ -773,7 +773,7 @@ static bool M_LoadLevelInjections(
         const char *str = nullptr;
         JSON_MUST(JSON_READ_A(io, i, &str));
         level->injections.data_paths[base_index + i] = Memory_DupStr(
-            TRXPath_TryResolve(TRX_DYNAMIC_PATH_INJECTION_FILE, str));
+            GamePath_TryResolve(GAME_DYNAMIC_PATH_INJECTION_FILE, str));
     }
     JSON_MUST(JSON_POP(io));
     JSON_FINISH();
@@ -833,12 +833,12 @@ static bool M_LoadLevel(
     }
 
     {
-        const TRX_DYNAMIC_PATH path_type =
+        const GAME_DYNAMIC_PATH path_type =
             (level->type == GFL_DUMMY || level->type == GFL_CURRENT)
-            ? (TRX_DYNAMIC_PATH)-1
+            ? (GAME_DYNAMIC_PATH)-1
             : (level->type == GFL_TITLE || level->type == GFL_GYM)
-            ? TRX_DYNAMIC_PATH_SHARED_LEVEL_FILE
-            : TRX_DYNAMIC_PATH_LEVEL_FILE;
+            ? GAME_DYNAMIC_PATH_SHARED_LEVEL_FILE
+            : GAME_DYNAMIC_PATH_LEVEL_FILE;
         JSON_MUST(
             M_ReadPath(io, "path", false, path_type, &level->path, false));
         level->key = M_MakeLevelKey(level->path);
@@ -851,7 +851,7 @@ static bool M_LoadLevel(
         // String_FormatStatic hands out, so what it is asked for is owned here.
         char *rel = String_Format("%s.lua", level->key);
         level->script_path = Memory_DupStr(
-            TRXPath_PeekResolve(TRX_DYNAMIC_PATH_LEVEL_SCRIPT_FILE, rel));
+            GamePath_PeekResolve(GAME_DYNAMIC_PATH_LEVEL_SCRIPT_FILE, rel));
         Memory_FreePointer(&rel);
     }
 
@@ -956,8 +956,8 @@ static bool M_LoadFMV(
     ASSERT(user_arg == nullptr);
     JSON_READ_IO *const io = ctx->io;
     char *path = nullptr;
-    JSON_SHOULD(
-        M_ReadPath(io, "path", false, TRX_DYNAMIC_PATH_FMV_FILE, &path, false));
+    JSON_SHOULD(M_ReadPath(
+        io, "path", false, GAME_DYNAMIC_PATH_FMV_FILE, &path, false));
     fmv->path = path;
     JSON_READ_D(io, "legal", &fmv->is_legal, false);
     JSON_READ_D(io, "credit", &fmv->is_credit, false);
@@ -990,7 +990,7 @@ static bool M_LoadGlobalInjections(const M_CONTEXT *const ctx)
         const char *str = nullptr;
         JSON_MUST(JSON_READ_A(io, i, &str));
         ctx->gf->injections.data_paths[i] = Memory_DupStr(
-            TRXPath_TryResolve(TRX_DYNAMIC_PATH_INJECTION_FILE, str));
+            GamePath_TryResolve(GAME_DYNAMIC_PATH_INJECTION_FILE, str));
     }
     JSON_MUST(JSON_POP(io));
     JSON_FINISH();

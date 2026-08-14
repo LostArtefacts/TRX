@@ -33,7 +33,7 @@ static void M_Shutdown(void)
 static void M_Load(void)
 {
     const char *const path =
-        TRXPath_Resolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "inv_ring.json5");
+        GamePath_Resolve(GAME_DYNAMIC_PATH_COMMON_CONFIG, "inv_ring.json5");
 #define L_READ_INT(key, target) target = JSON_ObjectGetInt(obj, key, target);
 
     for (int32_t i = 0; i < g_InvRing_Items->count; i++) {

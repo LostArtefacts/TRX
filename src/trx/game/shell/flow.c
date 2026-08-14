@@ -135,7 +135,7 @@ static void M_LoadCatalog(
     const bool allow_duplicates)
 {
     const char *const path =
-        TRXPath_Resolve(TRX_DYNAMIC_PATH_CATALOG, filename);
+        GamePath_Resolve(GAME_DYNAMIC_PATH_CATALOG, filename);
     if (!Catalog_Load(context, path, allow_duplicates)) {
         Shell_ExitSystemFmt("Failed to load catalogs from %s", path);
     }
@@ -247,7 +247,7 @@ static void M_PrepareSystem(void)
 
     Config_RegisterBuiltInOptions();
 
-    TRXPath_Init(s->args);
+    GamePath_Init(s->args);
 
     // The catalogs name the objects, samples and music the subsystem loads
     // look themselves up in.
@@ -263,7 +263,7 @@ static void M_PrepareSystem(void)
         TestReplay_Start();
     } else {
         char *engine_config_path =
-            TRXPath_ExpandVars("%config_dir%/TR%tr_version%X.json5");
+            GamePath_ExpandVars("%config_dir%/TR%tr_version%X.json5");
         if (engine_config_path == nullptr) {
             Shell_ExitSystem("Failed to resolve engine config path");
         }
@@ -343,7 +343,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
     SHELL_SESSION *const s = m_Session;
     ShellSession_UseArgs(s, args);
 
-    LOG_INFO("Game directory: %s", TRXPath_Get(TRX_PATH_TRX_DIR));
+    LOG_INFO("Game directory: %s", GamePath_Get(GAME_PATH_TRX_DIR));
 
     M_InitModules();
     M_PrepareSystem();
@@ -351,7 +351,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
         Shell_ExitSystem("No --mod specified.");
         return 1;
     }
-    TRXPath_Init(s->args);
+    GamePath_Init(s->args);
     M_CreateGameWindow();
     M_CreateGLContext();
     Output_Init();

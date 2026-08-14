@@ -82,15 +82,15 @@ static void M_ClearScripts(void)
             remove(written->path);
         }
     }
-    FakeGameScript_SetScriptDir(TRX_DYNAMIC_PATH_GAME_MODULE_FILE, nullptr);
-    FakeGameScript_SetScriptDir(TRX_DYNAMIC_PATH_COMMON_MODULE_FILE, nullptr);
-    FakeGameScript_SetScriptDir(TRX_DYNAMIC_PATH_GAME_SCRIPT_FILE, nullptr);
+    FakeGameScript_SetScriptDir(GAME_DYNAMIC_PATH_GAME_MODULE_FILE, nullptr);
+    FakeGameScript_SetScriptDir(GAME_DYNAMIC_PATH_COMMON_MODULE_FILE, nullptr);
+    FakeGameScript_SetScriptDir(GAME_DYNAMIC_PATH_GAME_SCRIPT_FILE, nullptr);
 }
 
 // A name carries directories of its own, so each of them is made in turn
 // before the file lands.
 static char *M_WriteScriptIn(
-    const TRX_DYNAMIC_PATH source, const char *const dir,
+    const GAME_DYNAMIC_PATH source, const char *const dir,
     const char *const name, const char *const body)
 {
     M_MakeDir(dir);
@@ -118,13 +118,13 @@ static void M_WriteGameScript(const char *const name, const char *const body)
 {
     char rel[192];
     snprintf(rel, sizeof(rel), "tr1/modules/%s", name);
-    M_WriteScriptIn(TRX_DYNAMIC_PATH_GAME_MODULE_FILE, M_GAMES_DIR, rel, body);
+    M_WriteScriptIn(GAME_DYNAMIC_PATH_GAME_MODULE_FILE, M_GAMES_DIR, rel, body);
 }
 
 static void M_WriteCommonScript(const char *const name, const char *const body)
 {
     M_WriteScriptIn(
-        TRX_DYNAMIC_PATH_COMMON_MODULE_FILE, M_COMMON_DIR, name, body);
+        GAME_DYNAMIC_PATH_COMMON_MODULE_FILE, M_COMMON_DIR, name, body);
 }
 
 // What the engine runs rather than a script requires: _game.lua, and the level
@@ -132,7 +132,7 @@ static void M_WriteCommonScript(const char *const name, const char *const body)
 static char *M_WriteEngineScript(const char *const name, const char *const body)
 {
     return M_WriteScriptIn(
-        TRX_DYNAMIC_PATH_GAME_SCRIPT_FILE, M_SCRIPTS_DIR, name, body);
+        GAME_DYNAMIC_PATH_GAME_SCRIPT_FILE, M_SCRIPTS_DIR, name, body);
 }
 
 static void M_Booted(void)
@@ -450,7 +450,7 @@ TEST(a_script_the_engine_runs_is_out_of_reach_of_a_name)
 {
     M_Booted();
     M_WriteScriptIn(
-        TRX_DYNAMIC_PATH_GAME_MODULE_FILE, M_GAMES_DIR, "tr1/scripts/gym",
+        GAME_DYNAMIC_PATH_GAME_MODULE_FILE, M_GAMES_DIR, "tr1/scripts/gym",
         "return 'a level script'\n");
 
     M_CheckEvalFails("require('tr1.gym')", "no such script");

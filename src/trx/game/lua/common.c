@@ -14,7 +14,7 @@
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/sandbox.h>
 #include <trx/game/lua/utils.h>
-#include <trx/game/shell/paths.h>
+#include <trx/game/paths.h>
 
 #include <lauxlib.h>
 #include <lua.h>
@@ -284,18 +284,18 @@ static const char *M_ResolveScript(
     const char *const path_stem = luaL_gsub(L, stem, ".", "/");
 
     const char *rel;
-    TRX_DYNAMIC_PATH source;
+    GAME_DYNAMIC_PATH source;
     if (M_HasRoot(name, root_len, M_COMMON_ROOT)) {
-        source = TRX_DYNAMIC_PATH_COMMON_MODULE_FILE;
+        source = GAME_DYNAMIC_PATH_COMMON_MODULE_FILE;
         rel = lua_pushfstring(L, "%s.lua", path_stem);
     } else {
-        source = TRX_DYNAMIC_PATH_GAME_MODULE_FILE;
+        source = GAME_DYNAMIC_PATH_GAME_MODULE_FILE;
         lua_pushlstring(L, name, root_len);
         const char *const mod = lua_tostring(L, -1);
         rel = lua_pushfstring(L, "%s/modules/%s.lua", mod, path_stem);
     }
 
-    const char *const path = TRXPath_PeekResolve(source, rel);
+    const char *const path = GamePath_PeekResolve(source, rel);
     lua_settop(L, base);
     return path;
 }
@@ -472,7 +472,7 @@ void LUA_RunGameScript(void)
     // game it extends, so it ships a file only to replace one. What it wants
     // to keep from the game it extends it requires by name.
     const char *const path =
-        TRXPath_PeekResolve(TRX_DYNAMIC_PATH_GAME_SCRIPT_FILE, "_game.lua");
+        GamePath_PeekResolve(GAME_DYNAMIC_PATH_GAME_SCRIPT_FILE, "_game.lua");
     if (path == nullptr) {
         return;
     }
