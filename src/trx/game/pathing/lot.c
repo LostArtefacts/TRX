@@ -234,6 +234,13 @@ void LOT_InitialiseLOT(LOT_INFO *const lot)
     LOT_ClearLOT(lot);
 }
 
+void LOT_ClearRoutes(void)
+{
+    for (int32_t slot = 0; slot < LOT_SLOT_COUNT; slot++) {
+        m_BaddieSlots[slot].lot.target_box = NO_BOX;
+    }
+}
+
 void LOT_ClearLOT(LOT_INFO *const lot)
 {
     lot->search_num = 0;

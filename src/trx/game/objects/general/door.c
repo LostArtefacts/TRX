@@ -9,7 +9,9 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/pathing.h>
+#include <trx/game/pathing/lot.h>
 #include <trx/game/rooms.h>
+#include <trx/version.h>
 
 typedef struct {
     SECTOR *sector;
@@ -122,6 +124,21 @@ static void M_CopySectorProperties(
     target_sector->portal_room.wall = source_sector->portal_room.wall;
 }
 
+static void M_SetBoxBlocked(const int16_t box_num, const bool blocked)
+{
+    if (box_num == NO_BOX) {
+        return;
+    }
+
+    BOX_INFO *const box = Box_GetBox(box_num);
+    const bool was_blocked = (box->overlap_index & BOX_BLOCKED) != 0;
+    TOGGLE_BIT(box->overlap_index, BOX_BLOCKED, blocked);
+
+    if (g_TRVersion >= 4 && blocked != was_blocked) {
+        LOT_ClearRoutes();
+    }
+}
+
 static void M_Open(M_DOOR_POS *const d)
 {
     if (d->sector == nullptr) {
@@ -130,10 +147,7 @@ static void M_Open(M_DOOR_POS *const d)
 
     M_CopySectorProperties(&d->old_sector, d->sector);
 
-    const int16_t box_num = d->box_num;
-    if (box_num != NO_BOX) {
-        Box_GetBox(box_num)->overlap_index &= ~BOX_BLOCKED;
-    }
+    M_SetBoxBlocked(d->box_num, false);
 }
 
 static void M_Check(ITEM *const item)
@@ -156,10 +170,7 @@ static void M_Shut(M_DOOR_POS *const d)
 
     M_CopySectorProperties(&m_BlockedSector, d->sector);
 
-    const int16_t box_num = d->box_num;
-    if (box_num != NO_BOX) {
-        Box_GetBox(box_num)->overlap_index |= BOX_BLOCKED;
-    }
+    M_SetBoxBlocked(d->box_num, true);
 }
 
 static void M_InitialisePortal(
