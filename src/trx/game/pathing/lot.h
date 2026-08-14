@@ -11,3 +11,8 @@ bool LOT_EnableBaddieAI(int16_t item_num, bool always);
 void LOT_DisableBaddieAI(int16_t item_num);
 CREATURE *LOT_GetBaddieSlot(int32_t i);
 void LOT_ClearLOT(LOT_INFO *LOT);
+
+// Drops the box every creature is heading for, so that each finds its way
+// again against the world as it now stands. TR4 does this whenever a door
+// blocks or unblocks a box.
+void LOT_ClearRoutes(void);
