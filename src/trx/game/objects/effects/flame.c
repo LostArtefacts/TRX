@@ -528,6 +528,7 @@ static void M_Setup(OBJECT *const obj)
     } else {
         obj->effect_control_func =
             g_TRVersion == 3 ? M_TR3_Control : M_TR12_Control;
+        obj->effect_draw_func = nullptr;
     }
     obj->semi_transparent = true;
 }
