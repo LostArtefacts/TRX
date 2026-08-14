@@ -8,7 +8,7 @@
 
 #define M_SAMPLE_COUNT 256
 
-static bool M_Probe(
+static RESULT M_Probe(
     const LEVEL_FORMAT_LOADER *const loader, TRX_FILE *const file,
     const LEVEL_FORMAT_PROBE_MODE mode)
 {
@@ -20,7 +20,7 @@ static bool M_Probe(
     int32_t version;
     LEVEL_FORMAT_TRY_OR_FAIL(File_TryReadS32(file, &version));
     if (version != 32) {
-        return false;
+        return ERR;
     }
 
     LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(TEXTURE_PAGE_SIZE); // textures
@@ -48,7 +48,7 @@ static bool M_Probe(
 
         LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(2); // floor data
     } else {
-        Level_Section_ReadRooms(&probe_ctx, file);
+        MUST(Level_Section_ReadRooms(&probe_ctx, file));
     }
 
     LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(2); // object meshes
@@ -63,7 +63,7 @@ static bool M_Probe(
     if (mode == LEVEL_FORMAT_PROBE_MINIMAL) {
         LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(18); // objects
     } else {
-        Level_Section_ReadObjects(&probe_ctx, file);
+        MUST(Level_Section_ReadObjects(&probe_ctx, file));
     }
 
     LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(32); // static objects
@@ -89,7 +89,7 @@ static bool M_Probe(
     if (mode == LEVEL_FORMAT_PROBE_MINIMAL) {
         LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(22); // items
     } else {
-        Level_Section_ReadItems(&probe_ctx, file);
+        MUST(Level_Section_ReadItems(&probe_ctx, file));
     }
 
     LEVEL_FORMAT_SKIP_OR_FAIL(32 * 256); // light table
@@ -112,7 +112,7 @@ static bool M_Probe(
         LEVEL_FORMAT_TRY_OR_FAIL(inj_magic == INJECTION_MAGIC);
     }
 
-    return true;
+    return OK;
 }
 
 static RESULT M_Load(
@@ -128,7 +128,7 @@ static RESULT M_Load(
     const int32_t file_level_num = File_ReadS32(file);
     LOG_INFO("file level num: %d", file_level_num);
 
-    Level_Section_ReadRooms(ctx, file);
+    MUST(Level_Section_ReadRooms(ctx, file));
     Level_Section_ReadObjectMeshes(ctx, file);
     Level_Section_ReadAnims(ctx, file);
     Level_Section_ReadAnimChanges(ctx, file);
@@ -136,11 +136,11 @@ static RESULT M_Load(
     Level_Section_ReadAnimCommands(ctx, file);
     Level_Section_ReadAnimBones(ctx, file);
     Level_Section_ReadAnimFrames(ctx, file);
-    Level_Section_ReadObjects(ctx, file);
-    Level_Section_ReadStaticObjects(ctx, file);
+    MUST(Level_Section_ReadObjects(ctx, file));
+    MUST(Level_Section_ReadStaticObjects(ctx, file));
     Level_Section_ReadObjectTextures(ctx, file);
     Level_Section_ReadSpriteTextures(ctx, file);
-    Level_Section_ReadSpriteSequences(ctx, file);
+    MUST(Level_Section_ReadSpriteSequences(ctx, file));
 
     if (loader->layout == LEVEL_FORMAT_LAYOUT_TR1_DEMO_PC) {
         Level_Section_ReadPalettes(ctx, file);
@@ -150,7 +150,7 @@ static RESULT M_Load(
     Level_Section_ReadSoundSources(ctx, file);
     Level_Section_ReadPathingData(ctx, file);
     Level_Section_ReadAnimatedTextureRanges(ctx, file);
-    Level_Section_ReadItems(ctx, file);
+    MUST(Level_Section_ReadItems(ctx, file));
     Level_Section_ReadLightMap(ctx, file);
 
     if (loader->layout != LEVEL_FORMAT_LAYOUT_TR1_DEMO_PC) {

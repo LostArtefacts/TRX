@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/core/file.h>
+#include <trx/core/result.h>
 #include <trx/core/utils.h>
 #include <trx/game/level/format/format.h>
 
@@ -16,10 +17,12 @@ void Level_Format_RegisterLoader(
 
 // Helper control-flow macros
 // =============================================================================
+// If the read fails, leave the enclosing function with ERR. The file reads
+// hand back a plain bool, so this cannot be MUST.
 #define LEVEL_FORMAT_TRY_OR_FAIL(call_)                                        \
     do {                                                                       \
         if (!(call_)) {                                                        \
-            return false;                                                      \
+            return ERR;                                                        \
         }                                                                      \
     } while (0)
 

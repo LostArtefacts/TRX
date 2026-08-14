@@ -39,8 +39,9 @@ static void M_ReadBounds16(BOUNDS_16 *const bounds, TRX_FILE *const file)
     bounds->max.z = File_ReadS16(file);
 }
 
-void Level_Section_ReadObjects(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
+RESULT Level_Section_ReadObjects(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
+    RESULT result = OK;
     BENCHMARK benchmark = Benchmark_Start();
     const LEVEL_FORMAT_LOADER *const loader = ctx->loader;
     const int32_t num_objects = File_ReadCountS32(file);
@@ -56,7 +57,8 @@ void Level_Section_ReadObjects(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
                 // stable TRX catalog entry yet.
                 obj = &spare_obj;
             } else {
-                Shell_ExitSystemFmt("Invalid object ID: %d", game_obj_id);
+                result = FAIL("invalid object id %d", game_obj_id);
+                goto finish;
             }
         }
         obj->mesh_count = File_ReadS16(file);
@@ -71,12 +73,15 @@ void Level_Section_ReadObjects(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
         }
     }
 
+finish:
     Benchmark_End(&benchmark, nullptr);
+    return result;
 }
 
-void Level_Section_ReadStaticObjects(
+RESULT Level_Section_ReadStaticObjects(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
+    RESULT result = OK;
     BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_objects = File_ReadCountS32(file);
     LOG_INFO("static objects: %d", num_objects);
@@ -96,8 +101,8 @@ void Level_Section_ReadStaticObjects(
     for (int32_t i = 0; i < num_objects; i++) {
         tmp_statics[i].static_id = File_ReadS32(file);
         if (tmp_statics[i].static_id < 0) {
-            Shell_ExitSystemFmt(
-                "Invalid static ID: %d", tmp_statics[i].static_id);
+            result = FAIL("invalid static id %d", tmp_statics[i].static_id);
+            goto finish;
         }
         max_static_id = MAX(max_static_id, tmp_statics[i].static_id);
 
@@ -129,13 +134,16 @@ void Level_Section_ReadStaticObjects(
         Object_GetMesh(obj->mesh_idx)->enable_caustics = obj->visible;
     }
 
+finish:
     Memory_FreePointer(&tmp_statics);
     Benchmark_End(&benchmark, nullptr);
+    return result;
 }
 
-void Level_Section_ReadSpriteSequences(
+RESULT Level_Section_ReadSpriteSequences(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
+    RESULT result = OK;
     BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_sequences = File_ReadCountS32(file);
     LOG_DEBUG("sprite sequences: %d", num_sequences);
@@ -167,8 +175,8 @@ void Level_Section_ReadSpriteSequences(
         } else {
             STATIC_OBJECT_2D *const obj = Object_Get2DStatic(static_id);
             if (obj == nullptr) {
-                Shell_ExitSystemFmt("Invalid sprite slot (%d)", id);
-                break;
+                result = FAIL("invalid sprite slot %d", id);
+                goto finish;
             }
             obj->frame_count = ABS(num_meshes);
             obj->texture_idx = mesh_idx;
@@ -177,17 +185,21 @@ void Level_Section_ReadSpriteSequences(
         }
     }
 
+finish:
     Benchmark_End(&benchmark, nullptr);
+    return result;
 }
 
-void Level_Section_ReadItems(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
+RESULT Level_Section_ReadItems(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
+    RESULT result = OK;
     BENCHMARK benchmark = Benchmark_Start();
     const LEVEL_FORMAT_LOADER *const loader = ctx->loader;
     const int32_t num_items = File_ReadCountS32(file);
     LOG_INFO("items: %d", num_items);
     if (num_items > MAX_ITEMS) {
-        Shell_ExitSystem("Too many items");
+        result =
+            FAIL("too many items: %d, at most %d fit", num_items, MAX_ITEMS);
         goto finish;
     }
 
@@ -197,7 +209,7 @@ void Level_Section_ReadItems(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
         const int16_t obj_id = File_ReadS16(file);
         item->object_id = Object_FromGameID(obj_id);
         if (item->object_id == NO_OBJECT) {
-            Shell_ExitSystemFmt("Bad object number (%d) on item %d", obj_id, i);
+            result = FAIL("item %d names no object: %d", i, obj_id);
             goto finish;
         }
 
@@ -210,4 +222,5 @@ void Level_Section_ReadItems(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 
 finish:
     Benchmark_End(&benchmark, nullptr);
+    return result;
 }

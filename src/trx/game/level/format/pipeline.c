@@ -67,7 +67,7 @@ const LEVEL_FORMAT_LOADER *Level_Format_GuessLoader(TRX_FILE *const file)
     const int32_t loader_count = M_GetRegisteredLoaderCount();
     for (int32_t i = 0; i < loader_count; i++) {
         const LEVEL_FORMAT_LOADER *const loader = M_GetRegisteredLoader(i);
-        if (loader->probe(loader, file, LEVEL_FORMAT_PROBE_MINIMAL)) {
+        if (IS_OK(loader->probe(loader, file, LEVEL_FORMAT_PROBE_MINIMAL))) {
             result = loader;
             break;
         }

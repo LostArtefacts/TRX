@@ -51,14 +51,14 @@ static TRX_FILE *M_ReadChunk(TRX_FILE *const file, const char *const name)
     return result;
 }
 
-static bool M_Probe(
+static RESULT M_Probe(
     const LEVEL_FORMAT_LOADER *const, TRX_FILE *const file,
     const LEVEL_FORMAT_PROBE_MODE)
 {
     File_Seek(file, 0, FILE_SEEK_SET);
     uint32_t version;
     LEVEL_FORMAT_TRY_OR_FAIL(File_TryReadU32(file, &version));
-    return version == M_VERSION_TR45;
+    return version == M_VERSION_TR45 ? OK : ERR;
 }
 
 static void M_InitialiseDummyPalette(LEVEL_CONTEXT *const ctx)
@@ -71,7 +71,7 @@ static void M_InitialiseDummyPalette(LEVEL_CONTEXT *const ctx)
     memset(info->palette.data_32, 0, sizeof(RGB_888) * info->palette.size);
 }
 
-static bool M_ReadImages(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
+static RESULT M_ReadImages(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     M_IMAGE_META image_meta = {
         .room_pages = File_ReadU16(file),
@@ -83,8 +83,7 @@ static bool M_ReadImages(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 
     TRX_FILE *const images32 = M_ReadChunk(file, "images32");
     if (images32 == nullptr) {
-        Shell_ExitSystem("Failed to read TR4 32-bit images");
-        return false;
+        return FAIL("the 32-bit images could not be read");
     }
 
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
@@ -112,15 +111,13 @@ static bool M_ReadImages(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 
     TRX_FILE *const images16 = M_ReadChunk(file, "images16");
     if (images16 == nullptr) {
-        Shell_ExitSystem("Failed to read TR4 16-bit images");
-        return false;
+        return FAIL("the 16-bit images could not be read");
     }
     File_Close(images16);
 
     TRX_FILE *const sky_font = M_ReadChunk(file, "sky/font");
     if (sky_font == nullptr) {
-        Shell_ExitSystem("Failed to read TR4 sky/font images");
-        return false;
+        return FAIL("the sky and font images could not be read");
     }
     // The chunk holds two raw 256x256 BGRA images: the font, then the sky.
     // The sky becomes an extra texture page for the flat sky layers.
@@ -138,7 +135,7 @@ static bool M_ReadImages(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
     File_Close(sky_font);
 
     M_InitialiseDummyPalette(ctx);
-    return true;
+    return OK;
 }
 
 static void M_ReadAnimatedTextureRangesTR4(
@@ -226,16 +223,17 @@ static void M_ReadSpriteTexturesTR4(
     }
 }
 
-static void M_ReadItemsTR4(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
+static RESULT M_ReadItemsTR4(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
+    RESULT result = OK;
     BENCHMARK benchmark = Benchmark_Start();
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
     const int32_t num_items = File_ReadCountS32(file);
     LOG_INFO("items: %d", num_items);
     if (num_items > MAX_ITEMS) {
-        Shell_ExitSystem("Too many items");
-        Benchmark_End(&benchmark, nullptr);
-        return;
+        result =
+            FAIL("too many items: %d, at most %d fit", num_items, MAX_ITEMS);
+        goto finish;
     }
 
     info->tr4.item_count = num_items;
@@ -268,7 +266,10 @@ static void M_ReadItemsTR4(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
             LOG_WARNING("Unsupported TR4 item object %d on item %d", obj_id, i);
         }
     }
+
+finish:
     Benchmark_End(&benchmark, nullptr);
+    return result;
 }
 
 static void M_ReadAIItemsTR4(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
@@ -329,17 +330,14 @@ static RESULT M_Load(
     LEVEL_CONTEXT *const ctx = Level_Context_Get();
     File_Seek(file, sizeof(uint32_t), FILE_SEEK_SET);
 
-    if (!M_ReadImages(ctx, file)) {
-        return ERR;
-    }
+    MUST(M_ReadImages(ctx, file));
     TRX_FILE *const level_data = M_ReadChunk(file, "level data");
     if (level_data == nullptr) {
-        Shell_ExitSystem("Failed to read TR4 level data");
-        return ERR;
+        return FAIL("the level data could not be read");
     }
 
     File_ReadU32(level_data); // level number
-    Level_Section_ReadRooms(ctx, level_data);
+    MUST(Level_Section_ReadRooms(ctx, level_data));
     Level_Section_ReadObjectMeshes(ctx, level_data);
     Level_Section_ReadAnims(ctx, level_data);
     Level_Section_ReadAnimChanges(ctx, level_data);
@@ -347,17 +345,17 @@ static RESULT M_Load(
     Level_Section_ReadAnimCommands(ctx, level_data);
     Level_Section_ReadAnimBones(ctx, level_data);
     Level_Section_ReadAnimFrames(ctx, level_data);
-    Level_Section_ReadObjects(ctx, level_data);
-    Level_Section_ReadStaticObjects(ctx, level_data);
+    MUST(Level_Section_ReadObjects(ctx, level_data));
+    MUST(Level_Section_ReadStaticObjects(ctx, level_data));
     M_ReadSpriteTexturesTR4(ctx, level_data);
-    Level_Section_ReadSpriteSequences(ctx, level_data);
+    MUST(Level_Section_ReadSpriteSequences(ctx, level_data));
     Level_Section_ReadCamerasAndSinks(ctx, level_data);
     Level_Section_ReadFlybyCameras(ctx, level_data);
     Level_Section_ReadSoundSources(ctx, level_data);
     Level_Section_ReadPathingData(ctx, level_data);
     M_ReadAnimatedTextureRangesTR4(ctx, level_data);
     M_ReadObjectTexturesTR4(ctx, level_data);
-    M_ReadItemsTR4(ctx, level_data);
+    MUST(M_ReadItemsTR4(ctx, level_data));
     M_ReadAIItemsTR4(ctx, level_data);
     Level_Section_ReadDemoData(ctx, level_data);
     Level_Section_ReadSamples(ctx, level_data);
