@@ -181,15 +181,19 @@ static void M_CompleteSetup(
     Benchmark_End(&benchmark, nullptr);
 }
 
-void Level_Pipeline_Load(const GF_LEVEL *const level)
+RESULT Level_Pipeline_Load(const GF_LEVEL *const level)
 {
     LOG_INFO("%d (%s)", level->num, level->path);
     BENCHMARK benchmark = Benchmark_Start();
 
     Inject_InitLevel(level, INJECTION_MODE_FULL);
-    const LEVEL_FORMAT_LOADER *const loader = Level_Format_LoadFromFile(level);
-    M_CompleteSetup(loader, level);
+    const LEVEL_FORMAT_LOADER *loader = nullptr;
+    const RESULT result = Level_Format_LoadFromFile(level, &loader);
+    if (IS_OK(result)) {
+        M_CompleteSetup(loader, level);
+    }
     Inject_Cleanup();
 
     Benchmark_End(&benchmark, nullptr);
+    return result;
 }

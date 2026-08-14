@@ -61,7 +61,7 @@ void Level_Unload(void)
     Viewport_AlterFOV(-1, FOV_MODE_GAME);
 }
 
-bool Level_Initialise(
+RESULT Level_Initialise(
     const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 {
     BENCHMARK benchmark = Benchmark_Start();
@@ -89,7 +89,7 @@ bool Level_Initialise(
     }
 
     if (level == nullptr) {
-        return false;
+        return FAIL("there is no level to load");
     }
 
     // Read here rather than at the first cutscene trigger, so a scene starts
@@ -101,7 +101,7 @@ bool Level_Initialise(
     // by any other path - the title screen among them - still runs its own.
     LUA_RunLevelScript(level);
 
-    Level_Pipeline_Load(level);
+    MUST(Level_Pipeline_Load(level));
 
     UI_LoadText();
     Output_SetSkyboxEnabled(Object_Get(O_SKYBOX)->loaded);
@@ -135,5 +135,5 @@ bool Level_Initialise(
     }
 
     Benchmark_End(&benchmark, nullptr);
-    return true;
+    return OK;
 }
