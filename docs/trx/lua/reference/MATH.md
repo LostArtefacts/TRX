@@ -92,6 +92,7 @@ Fixed-point trigonometry, matching the engine's own tables. Using these rather t
     - <a id="math.Color.r" name="math.Color.r"></a>**`r`**: number. The red channel.
 
     Operators:
+    - **`color .. color`**. A color joins text as its hex, whichever side of the `..` it is on.
     - **`color == color`**. Two colors are equal when their channels are.
     - **`tostring(color)`**. The color as its hex text.
 
