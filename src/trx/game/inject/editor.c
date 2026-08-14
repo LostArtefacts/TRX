@@ -1,3 +1,4 @@
+#include <trx/core/file.h>
 #include <trx/core/log.h>
 #include <trx/game/inject.h>
 

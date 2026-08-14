@@ -39,7 +39,7 @@ static void M_InitialiseSamplesFromFile(
     M_SAMPLE_ENTRY *entries = nullptr;
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
 
-    MYFILE *fp = nullptr;
+    TRX_FILE *fp = nullptr;
     if (file_name == nullptr) {
         goto finish;
     }

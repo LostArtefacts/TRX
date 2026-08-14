@@ -75,7 +75,7 @@ static char *M_GetCatalogFilePath(
     ASSERT(catalog_dir != nullptr);
     ASSERT(file_path != nullptr);
 
-    if (File_IsAbsolute(file_path)) {
+    if (FS_IsAbsolute(file_path)) {
         return GamePath_GuessExtension(file_path, m_ExtensionsToTry);
     }
 
@@ -236,11 +236,11 @@ static void M_LoadCatalog(M_BACKEND_DATA *const data)
 
     char *file_data = nullptr;
     size_t file_size = 0;
-    if (!File_Load(data->catalog_path, &file_data, &file_size)) {
+    if (!FS_Load(data->catalog_path, &file_data, &file_size)) {
         return;
     }
 
-    char *catalog_dir = File_GetParentDirectory(data->catalog_path);
+    char *catalog_dir = FS_GetParentDirectory(data->catalog_path);
     if (catalog_dir == nullptr) {
         LOG_WARNING(
             "Cannot determine parent directory for music file catalog: %s",
@@ -281,13 +281,13 @@ static void M_LoadCatalog(M_BACKEND_DATA *const data)
 static void M_IndexAvailableTracks(M_BACKEND_DATA *const data)
 {
     ASSERT(data != nullptr);
-    void *const dir = File_OpenDirectory(data->dir);
+    void *const dir = FS_OpenDirectory(data->dir);
     if (dir == nullptr) {
         return;
     }
 
     const char *entry_name = nullptr;
-    while ((entry_name = File_ReadDirectory(dir)) != nullptr) {
+    while ((entry_name = FS_ReadDirectory(dir)) != nullptr) {
         int32_t track_id = -1;
         if (!M_TryParseTrackID(entry_name, &track_id)) {
             continue;
@@ -295,7 +295,7 @@ static void M_IndexAvailableTracks(M_BACKEND_DATA *const data)
         M_MarkTrackAvailable(data, track_id);
     }
 
-    File_CloseDirectory(dir);
+    FS_CloseDirectory(dir);
 }
 
 static bool M_IsTrackAvailableValue(const int32_t value, void *const user_data)
@@ -328,7 +328,7 @@ static bool M_Init(MUSIC_BACKEND *const backend)
     data->track_limit = 0;
     M_LoadCatalog(data);
 
-    const bool dir_exists = data->dir != nullptr && File_DirExists(data->dir);
+    const bool dir_exists = data->dir != nullptr && FS_DirExists(data->dir);
     if (dir_exists) {
         M_IndexAvailableTracks(data);
     } else if (data->track_limit == 0) {

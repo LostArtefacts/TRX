@@ -124,10 +124,10 @@ static M_SEQUENCE_EVENT_HANDLER *M_GetSequenceEventHandlers(void)
 }
 
 // What a script keys its own data by. The case is lowered here rather than in
-// File_GetStem, which is a path split and holds no case policy.
+// FS_GetStem, which is a path split and holds no case policy.
 static char *M_MakeLevelKey(const char *const path)
 {
-    char *const key = File_GetStem(path);
+    char *const key = FS_GetStem(path);
     for (char *c = key; c != nullptr && *c != '\0'; c++) {
         *c = (*c >= 'A' && *c <= 'Z') ? *c + ('a' - 'A') : *c;
     }

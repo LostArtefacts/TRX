@@ -1,3 +1,4 @@
+#include <trx/core/file.h>
 #include <trx/debug.h>
 #include <trx/game/camera/cinematic.h>
 #include <trx/game/inject.h>

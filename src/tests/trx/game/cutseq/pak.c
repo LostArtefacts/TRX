@@ -22,7 +22,7 @@
 #define M_CAMERA_OFFSET 180
 #define M_IMAGE_SIZE 4096
 
-// What the fake File_Load hands back. The loader owns neither, and reads the
+// What the fake FS_Load hands back. The loader owns neither, and reads the
 // image only until it has inflated it.
 static uint8_t m_Image[M_IMAGE_SIZE];
 static uint32_t m_ImageSize = 0;
@@ -307,7 +307,7 @@ const char *GamePath_TryResolve(
     return m_FileExists ? rel : nullptr;
 }
 
-bool File_Load(
+bool FS_Load(
     const char *const path, char **const output_data, size_t *const output_size)
 {
     if (!m_FileExists) {

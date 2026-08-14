@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/file.h>
 #include <trx/core/subsystem.h>
 #include <trx/debug.h>
 #include <trx/game/game.h>
@@ -126,7 +127,8 @@ bool Savegame_Load(const SAVEGAME_SLOT_REF slot)
     M_LoadPreprocess();
 
     bool result = false;
-    MYFILE *const fp = File_OpenPath(savegame_info->full_path, FILE_OPEN_READ);
+    TRX_FILE *const fp =
+        File_OpenPath(savegame_info->full_path, FILE_OPEN_READ);
     if (fp != nullptr) {
         result = SG_File_LoadFromFile(fp);
         File_Close(fp);
@@ -147,7 +149,7 @@ bool Savegame_UpdateDeathCounters(
     ASSERT(savegame_info->full_path != nullptr);
 
     bool ret = false;
-    MYFILE *const fp =
+    TRX_FILE *const fp =
         File_OpenPath(savegame_info->full_path, FILE_OPEN_READ_WRITE);
     if (fp != nullptr) {
         ret = SG_File_UpdateDeathCounters(
@@ -166,7 +168,8 @@ bool Savegame_LoadOnlyResumeInfo(const SAVEGAME_SLOT_REF slot)
     ASSERT(savegame_info->full_path != nullptr);
 
     bool ret = false;
-    MYFILE *const fp = File_OpenPath(savegame_info->full_path, FILE_OPEN_READ);
+    TRX_FILE *const fp =
+        File_OpenPath(savegame_info->full_path, FILE_OPEN_READ);
     if (fp != nullptr) {
         ret = SG_File_LoadOnlyResumeInfo(fp);
         File_Close(fp);

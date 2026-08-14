@@ -116,13 +116,13 @@ static void M_ScanForCustomMods(void)
         return;
     }
 
-    void *const dir = File_OpenDirectory(games_dir);
+    void *const dir = FS_OpenDirectory(games_dir);
     if (dir == nullptr) {
         return;
     }
 
     const char *entry;
-    while ((entry = File_ReadDirectory(dir)) != nullptr) {
+    while ((entry = FS_ReadDirectory(dir)) != nullptr) {
         if (strcmp(entry, ".") == 0 || strcmp(entry, "..") == 0) {
             continue;
         }
@@ -165,7 +165,7 @@ static void M_ScanForCustomMods(void)
         Memory_FreePointer(&meta.extends);
     }
 
-    File_CloseDirectory(dir);
+    FS_CloseDirectory(dir);
 }
 
 static void M_ReadModMetaForKnownMods(void)
@@ -245,7 +245,7 @@ static void M_ValidateNoMixedModLayouts(void)
         }
         const char *const legacy_gameflow =
             String_FormatStatic("%s/%s/gameflow.json5", config_dir, mod->name);
-        if (File_Exists(legacy_gameflow)) {
+        if (FS_Exists(legacy_gameflow)) {
             // The paths are long enough that the message box cannot fit them
             // on one line, and it does not wrap.
             Shell_ExitSystemFmt(

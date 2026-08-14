@@ -161,27 +161,27 @@ void Config_Presets_ScanFiles(void)
     m_Presets = Vector_Create(sizeof(CONFIG_PRESET));
 
     char *presets_dir = GamePath_ExpandVars("%mod_dir%/presets");
-    if (presets_dir == nullptr || !File_DirExists(presets_dir)) {
+    if (presets_dir == nullptr || !FS_DirExists(presets_dir)) {
         Memory_FreePointer(&presets_dir);
         presets_dir = GamePath_ExpandVars("%base_mod_dir%/presets");
     }
-    if (presets_dir == nullptr || !File_DirExists(presets_dir)) {
+    if (presets_dir == nullptr || !FS_DirExists(presets_dir)) {
         Memory_FreePointer(&presets_dir);
         presets_dir = GamePath_ExpandVars("%config_dir%/presets");
     }
-    if (presets_dir == nullptr || !File_DirExists(presets_dir)) {
+    if (presets_dir == nullptr || !FS_DirExists(presets_dir)) {
         Memory_FreePointer(&presets_dir);
         return;
     }
 
-    void *const dir = File_OpenDirectory(presets_dir);
+    void *const dir = FS_OpenDirectory(presets_dir);
     if (dir == nullptr) {
         Memory_FreePointer(&presets_dir);
         return;
     }
 
     const char *entry_name;
-    while ((entry_name = File_ReadDirectory(dir)) != nullptr) {
+    while ((entry_name = FS_ReadDirectory(dir)) != nullptr) {
         if (!String_EndsWith(entry_name, ".json5")) {
             continue;
         }
@@ -189,7 +189,7 @@ void Config_Presets_ScanFiles(void)
             String_FormatStatic("%s/%s", presets_dir, entry_name);
         M_LoadPreset(full_path);
     }
-    File_CloseDirectory(dir);
+    FS_CloseDirectory(dir);
     Memory_FreePointer(&presets_dir);
     Config_Presets_Sort();
 

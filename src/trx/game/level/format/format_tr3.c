@@ -1,3 +1,4 @@
+#include <trx/core/file.h>
 #include <trx/game/inject.h>
 #include <trx/game/level/context.h>
 #include <trx/game/level/format/priv.h>

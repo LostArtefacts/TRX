@@ -1,6 +1,7 @@
 #include <trx/game/demo.h>
 
 #include <trx/config.h>
+#include <trx/core/file.h>
 #include <trx/core/subsystem.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>

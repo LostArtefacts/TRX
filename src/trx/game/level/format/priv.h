@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/file.h>
 #include <trx/core/utils.h>
 #include <trx/game/level/format/format.h>
 

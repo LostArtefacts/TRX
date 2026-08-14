@@ -1,5 +1,6 @@
 #include <trx/game/output/textures.h>
 
+#include <trx/core/file.h>
 #include <trx/core/hash.h>
 #include <trx/core/math/func.h>
 #include <trx/core/memory.h>
@@ -127,7 +128,7 @@ static bool M_TryLoadTransparencyCache(void)
         return false;
     }
 
-    MYFILE *const file =
+    TRX_FILE *const file =
         LevelCache_OpenBinaryRead(cache_filename, expected_checksum);
     if (file == nullptr) {
         return false;
@@ -157,7 +158,7 @@ static void M_WriteTransparencyCache(void)
         return;
     }
 
-    MYFILE *const file = LevelCache_OpenBinaryWrite(cache_filename, checksum);
+    TRX_FILE *const file = LevelCache_OpenBinaryWrite(cache_filename, checksum);
     if (file == nullptr) {
         return;
     }

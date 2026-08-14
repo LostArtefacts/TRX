@@ -34,7 +34,7 @@ static const char *M_LoadFileCached(const char *const path)
     }
 
     char *content = nullptr;
-    if (!File_Load(path, &content, nullptr)) {
+    if (!FS_Load(path, &content, nullptr)) {
         return nullptr;
     }
     M_SHADER_FILE_CACHE_ENTRY entry = {
@@ -120,7 +120,7 @@ static char *M_PreprocessIncludes(const char *src, const char *dir)
         }
 
         // Handle nested includes
-        char *include_dir = File_GetParentDirectory(full_path);
+        char *include_dir = FS_GetParentDirectory(full_path);
         char *processed_include =
             M_PreprocessIncludes(include_src, include_dir ? include_dir : dir);
         Memory_FreePointer(&include_dir);
@@ -230,7 +230,7 @@ void TRX_GL_Program_AttachShader(
         Shell_ExitSystemFmt("Unable to find shader file: %s", program->path);
     }
 
-    char *shader_dir = File_GetParentDirectory(program->path);
+    char *shader_dir = FS_GetParentDirectory(program->path);
     processed_content = M_PreprocessIncludes(content, shader_dir);
     ASSERT(processed_content != nullptr);
     Memory_FreePointer(&shader_dir);

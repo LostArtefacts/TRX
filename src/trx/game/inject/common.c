@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/core/benchmark.h>
+#include <trx/core/file.h>
 #include <trx/core/memory.h>
 #include <trx/core/thread_pool.h>
 #include <trx/core/vector.h>

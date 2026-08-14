@@ -1,4 +1,5 @@
 #include <trx/core/benchmark.h>
+#include <trx/core/file.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/game_buf.h>

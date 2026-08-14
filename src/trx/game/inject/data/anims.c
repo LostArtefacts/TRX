@@ -1,3 +1,4 @@
+#include <trx/core/file.h>
 #include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/anims.h>

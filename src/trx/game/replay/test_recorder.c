@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/config/registry.h>
 #include <trx/core/enum_map.h>
+#include <trx/core/file.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
@@ -30,7 +31,7 @@ typedef enum {
 } M_CUSTOM_EVENT;
 
 typedef struct {
-    MYFILE *file;
+    TRX_FILE *file;
     int32_t prev_frame_idx;
     int32_t frame_idx;
     SDL_Event queue[M_MAX_EVENTS];
@@ -151,13 +152,13 @@ static void M_DumpQueue(M_PRIV *const p)
     p->prev_frame_idx = p->frame_idx;
 }
 
-static void M_DumpHeader(MYFILE *const fp)
+static void M_DumpHeader(TRX_FILE *const fp)
 {
     File_WriteString(fp, "seed_control %d\n", Random_GetControlSeed());
     File_WriteString(fp, "seed_draw %d\n", Random_GetDrawSeed());
 }
 
-static void M_DumpStartup(MYFILE *const fp)
+static void M_DumpStartup(TRX_FILE *const fp)
 {
     const SHELL_ARGS *const args = Shell_GetArgs();
     if (args == nullptr) {
@@ -190,7 +191,7 @@ static void M_DumpStartup(MYFILE *const fp)
     }
 }
 
-static void M_DumpArguments(MYFILE *const fp, VECTOR *const original_args)
+static void M_DumpArguments(TRX_FILE *const fp, VECTOR *const original_args)
 {
     // Record original arguments passed to the game
     if (original_args->count <= 0) {
@@ -226,7 +227,7 @@ static void M_DumpArguments(MYFILE *const fp, VECTOR *const original_args)
     Vector_Free(filtered_args);
 }
 
-static void M_DumpConfig(MYFILE *const fp)
+static void M_DumpConfig(TRX_FILE *const fp)
 {
     // Record any non-default config options for later replay
     VECTOR *opts = Vector_Create(sizeof(CONFIG_OPTION *));
@@ -257,7 +258,7 @@ static void M_DumpConfig(MYFILE *const fp)
     Vector_Free(opts);
 }
 
-static void M_DumpBindings(MYFILE *const fp)
+static void M_DumpBindings(TRX_FILE *const fp)
 {
     // Record any non-default key/controller bindings for later replay.
     // Keyboard binds

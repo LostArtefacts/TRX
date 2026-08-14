@@ -280,13 +280,13 @@ static void M_ImageCandidates_Scan(
     LOG_INFO("Searching for overlay images");
     VECTOR *candidates = nullptr;
 
-    char *dir_path = File_GetParentDirectory(base_image_path);
+    char *dir_path = FS_GetParentDirectory(base_image_path);
     if (dir_path == nullptr) {
         dir_path = Memory_DupStr(".");
     }
-    const char *const file_name = File_GetBaseName(base_image_path);
+    const char *const file_name = FS_GetBaseName(base_image_path);
 
-    void *const dir_handle = File_OpenDirectory(dir_path);
+    FS_DIR *const dir_handle = FS_OpenDirectory(dir_path);
     if (dir_handle == nullptr) {
         e->scan_path = dir_path;
         return;
@@ -294,7 +294,7 @@ static void M_ImageCandidates_Scan(
 
     candidates = Vector_Create(sizeof(M_IMAGE_CANDIDATE));
     const char *entry;
-    while ((entry = File_ReadDirectory(dir_handle)) != nullptr) {
+    while ((entry = FS_ReadDirectory(dir_handle)) != nullptr) {
         // Match the file itself, and assume it's of 16:9 aspect ratio.
         if (String_Equivalent(entry, file_name)) {
             Vector_Add(
@@ -312,7 +312,7 @@ static void M_ImageCandidates_Scan(
         if (sscanf(entry, "%dx%d", &w, &h) == 2) {
             const char *const candidate_path =
                 String_FormatStatic("%s/%s/%s", dir_path, entry, file_name);
-            if (File_Exists(candidate_path)) {
+            if (FS_Exists(candidate_path)) {
                 Vector_Add(
                     candidates,
                     &(M_IMAGE_CANDIDATE) {
@@ -323,7 +323,7 @@ static void M_ImageCandidates_Scan(
             }
         }
     }
-    File_CloseDirectory(dir_handle);
+    FS_CloseDirectory(dir_handle);
 
     for (int32_t i = 0; i < candidates->count; i++) {
         const M_IMAGE_CANDIDATE *const candidate = Vector_Get(candidates, i);
