@@ -205,3 +205,26 @@ TEST(a_write_at_a_seeked_spot_leaves_the_rest_alone)
     File_Close(read);
     M_DropDisk();
 }
+
+TEST(a_file_cut_short_loses_its_tail)
+{
+    TRX_FILE *const file = File_OpenPath(M_TEMP_PATH, FILE_OPEN_WRITE);
+    File_WriteData(file, m_Bytes, sizeof(m_Bytes));
+    CHECK(File_SetSize(file, 3));
+    CHECK_EQ_INT((int32_t)File_Size(file), 3);
+    File_Close(file);
+
+    TRX_FILE *const read = File_OpenPath(M_TEMP_PATH, FILE_OPEN_READ);
+    CHECK_EQ_INT((int32_t)File_Size(read), 3);
+    CHECK_EQ_INT(File_ReadU8(read), 0x01);
+    File_Close(read);
+    M_DropDisk();
+}
+
+TEST(a_buffer_cannot_be_resized)
+{
+    TRX_FILE *const file = M_Buffer();
+    CHECK(!File_SetSize(file, 3));
+    CHECK_EQ_INT((int32_t)File_Size(file), (int32_t)sizeof(m_Bytes));
+    File_Close(file);
+}

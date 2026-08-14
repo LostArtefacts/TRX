@@ -10,6 +10,13 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <sys/types.h>
+
+#if defined(_WIN32)
+    #include <io.h>
+#else
+    #include <unistd.h>
+#endif
 
 #define M_DISK_WINDOW 65536
 
@@ -36,6 +43,7 @@
 typedef struct {
     size_t (*fill)(void *state, size_t offset, const char **out_data);
     bool (*write)(void *state, size_t offset, const void *src, size_t size);
+    bool (*set_size)(void *state, size_t size);
     void (*close)(void *state);
 } M_STRATEGY;
 
@@ -72,6 +80,7 @@ static void M_BufferClose(void *state);
 static size_t M_DiskFill(void *state, size_t offset, const char **out_data);
 static bool M_DiskWrite(
     void *state, size_t offset, const void *src, size_t size);
+static bool M_DiskSetSize(void *state, size_t size);
 static void M_DiskClose(void *state);
 static void M_Fail(TRX_FILE *file, const char *message);
 static void M_FailPastEnd(TRX_FILE *file, const char *what);
@@ -86,6 +95,7 @@ static const M_STRATEGY m_BufferStrategy = {
 static const M_STRATEGY m_DiskStrategy = {
     .fill = M_DiskFill,
     .write = M_DiskWrite,
+    .set_size = M_DiskSetSize,
     .close = M_DiskClose,
 };
 
@@ -143,6 +153,20 @@ static bool M_DiskWrite(
     }
     disk->os_pos += size;
     return true;
+}
+
+static bool M_DiskSetSize(void *const state, const size_t size)
+{
+    M_DISK_STATE *const disk = state;
+    fflush(disk->fp);
+#if defined(_WIN32)
+    const bool ok = _chsize_s(_fileno(disk->fp), (int64_t)size) == 0;
+#else
+    const bool ok = ftruncate(fileno(disk->fp), (off_t)size) == 0;
+#endif
+    disk->os_pos = 0;
+    fseek(disk->fp, 0, SEEK_SET);
+    return ok;
 }
 
 static void M_DiskClose(void *const state)
@@ -433,6 +457,20 @@ const char *File_PeekBytes(const TRX_FILE *const file, size_t *const size)
     return buffer->data + file->base + file->pos;
 }
 
+
+bool File_SetSize(TRX_FILE *const file, const size_t size)
+{
+    if (file->strategy->set_size == nullptr) {
+        return false;
+    }
+    if (!file->strategy->set_size(file->state, file->base + size)) {
+        return false;
+    }
+    file->size = size;
+    file->pos = MIN(file->pos, size);
+    file->window_size = 0;
+    return true;
+}
 
 void File_WriteData(
     TRX_FILE *const file, const void *const data, const size_t size)

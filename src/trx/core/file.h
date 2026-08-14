@@ -89,6 +89,12 @@ bool File_TryReadU32(TRX_FILE *file, uint32_t *dst);
 // file returns nullptr.
 const char *File_PeekBytes(const TRX_FILE *file, size_t *size);
 
+// Set the length of the file, cutting it short or extending it with zeros.
+// Returns false for a handle that cannot be written, such as a buffer or a
+// view. Rewriting a file with less data than it held before needs this,
+// otherwise the tail of the old data stays behind.
+bool File_SetSize(TRX_FILE *file, size_t size);
+
 void File_WriteData(TRX_FILE *file, const void *data, size_t size);
 void File_WriteItems(
     TRX_FILE *file, const void *data, size_t count, size_t item_size);
