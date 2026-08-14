@@ -10,15 +10,15 @@ static void M_TextureEdits(
 {
     const LEVEL_CONTEXT_INFO *const level_info = Level_Context_GetInfo();
     for (int32_t i = 0; i < data_count; i++) {
-        const uint16_t target_page = VFile_ReadU16(injection->fp);
-        const uint8_t target_x = VFile_ReadU8(injection->fp);
-        const uint8_t target_y = VFile_ReadU8(injection->fp);
-        const uint16_t source_width = VFile_ReadU16(injection->fp);
-        const uint16_t source_height = VFile_ReadU16(injection->fp);
+        const uint16_t target_page = File_ReadU16(injection->fp);
+        const uint8_t target_x = File_ReadU8(injection->fp);
+        const uint8_t target_y = File_ReadU8(injection->fp);
+        const uint16_t source_width = File_ReadU16(injection->fp);
+        const uint16_t source_height = File_ReadU16(injection->fp);
 
         const int32_t size = source_width * source_height * sizeof(RGBA_8888);
         RGBA_8888 *source_img = Memory_Alloc(size);
-        VFile_Read(injection->fp, source_img, size);
+        File_ReadData(injection->fp, source_img, size);
 
         if (target_page >= level_info->textures.page_count) {
             LOG_WARNING("Texture page %d is beyond level range", target_page);
@@ -46,10 +46,10 @@ static void M_SpriteEdits(
 {
     for (int32_t i = 0; i < data_count; i++) {
         const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);
-        int16_t x0 = VFile_ReadS16(injection->fp);
-        int16_t y0 = VFile_ReadS16(injection->fp);
-        int16_t x1 = VFile_ReadS16(injection->fp);
-        int16_t y1 = VFile_ReadS16(injection->fp);
+        int16_t x0 = File_ReadS16(injection->fp);
+        int16_t y0 = File_ReadS16(injection->fp);
+        int16_t x1 = File_ReadS16(injection->fp);
+        int16_t y1 = File_ReadS16(injection->fp);
 
         const OBJECT *const obj = Object_TryGet(obj_info.id);
         if (obj == nullptr || !obj->loaded) {
@@ -76,8 +76,8 @@ static void M_AnimTextureEdits(
     const int32_t data_count)
 {
     for (int32_t i = 0; i < data_count; i++) {
-        const int32_t range_idx = VFile_ReadS32(injection->fp);
-        const int32_t num_textures = VFile_ReadS32(injection->fp);
+        const int32_t range_idx = File_ReadS32(injection->fp);
+        const int32_t num_textures = File_ReadS32(injection->fp);
         if (num_textures <= 0) {
             continue;
         }
@@ -86,12 +86,12 @@ static void M_AnimTextureEdits(
             Output_GetAnimatedTextureRange(range_idx);
         const size_t range_size = num_textures * sizeof(int16_t);
         if (range->num_textures == num_textures) {
-            VFile_Read(injection->fp, range->textures, range_size);
+            File_ReadData(injection->fp, range->textures, range_size);
         } else {
             LOG_WARNING(
                 "Expected %d textures for animation range %d; got %d",
                 range->num_textures, range_idx, num_textures);
-            VFile_Skip(injection->fp, range_size);
+            File_Skip(injection->fp, range_size);
         }
     }
 }

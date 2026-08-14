@@ -39,15 +39,15 @@ typedef struct {
     M_FACE_EFFECTS_EDIT *effects_edits;
 } M_MESH_EDIT;
 
-static BOUNDS_16 M_ReadBounds16(VFILE *const file)
+static BOUNDS_16 M_ReadBounds16(TRX_FILE *const file)
 {
     BOUNDS_16 bounds = {};
-    bounds.min.x = VFile_ReadS16(file);
-    bounds.max.x = VFile_ReadS16(file);
-    bounds.min.y = VFile_ReadS16(file);
-    bounds.max.y = VFile_ReadS16(file);
-    bounds.min.z = VFile_ReadS16(file);
-    bounds.max.z = VFile_ReadS16(file);
+    bounds.min.x = File_ReadS16(file);
+    bounds.max.x = File_ReadS16(file);
+    bounds.min.y = File_ReadS16(file);
+    bounds.max.y = File_ReadS16(file);
+    bounds.min.z = File_ReadS16(file);
+    bounds.max.z = File_ReadS16(file);
     return bounds;
 }
 
@@ -223,7 +223,7 @@ static void M_ApplyMeshEdit(const M_MESH_EDIT *const edit)
 static void M_ReadTextureEdits(
     M_MESH_EDIT *const edit, const INJECTION *const injection)
 {
-    edit->face_edit_count = VFile_ReadS32(injection->fp);
+    edit->face_edit_count = File_ReadS32(injection->fp);
     if (edit->face_edit_count <= 0) {
         return;
     }
@@ -233,14 +233,14 @@ static void M_ReadTextureEdits(
     for (int32_t j = 0; j < edit->face_edit_count; j++) {
         M_FACE_TEXTURE_EDIT *const face_edit = &edit->texture_edits[j];
         face_edit->obj_info = Inject_ReadObjectPtr(injection);
-        face_edit->source_identifier = VFile_ReadS16(injection->fp);
-        face_edit->face_type = VFile_ReadS32(injection->fp);
-        face_edit->face_index = VFile_ReadS16(injection->fp);
+        face_edit->source_identifier = File_ReadS16(injection->fp);
+        face_edit->face_type = File_ReadS32(injection->fp);
+        face_edit->face_index = File_ReadS16(injection->fp);
 
-        face_edit->target_count = VFile_ReadS32(injection->fp);
+        face_edit->target_count = File_ReadS32(injection->fp);
         face_edit->targets =
             Memory_Alloc(sizeof(int16_t) * face_edit->target_count);
-        VFile_Read(
+        File_ReadData(
             injection->fp, face_edit->targets,
             sizeof(int16_t) * face_edit->target_count);
     }
@@ -249,7 +249,7 @@ static void M_ReadTextureEdits(
 static void M_ReadVertexEdits(
     M_MESH_EDIT *const edit, const INJECTION *const injection)
 {
-    edit->vertex_edit_count = VFile_ReadS32(injection->fp);
+    edit->vertex_edit_count = File_ReadS32(injection->fp);
     if (edit->vertex_edit_count <= 0) {
         return;
     }
@@ -258,10 +258,10 @@ static void M_ReadVertexEdits(
         Memory_Alloc(sizeof(M_VERTEX_EDIT) * edit->vertex_edit_count);
     for (int32_t j = 0; j < edit->vertex_edit_count; j++) {
         M_VERTEX_EDIT *const vertex_edit = &edit->vertex_edits[j];
-        vertex_edit->index = VFile_ReadS16(injection->fp);
-        vertex_edit->shift.x = VFile_ReadS16(injection->fp);
-        vertex_edit->shift.y = VFile_ReadS16(injection->fp);
-        vertex_edit->shift.z = VFile_ReadS16(injection->fp);
+        vertex_edit->index = File_ReadS16(injection->fp);
+        vertex_edit->shift.x = File_ReadS16(injection->fp);
+        vertex_edit->shift.y = File_ReadS16(injection->fp);
+        vertex_edit->shift.z = File_ReadS16(injection->fp);
     }
 }
 
@@ -272,7 +272,7 @@ static void M_ReadEffectsEdits(
         return;
     }
 
-    edit->effects_edit_count = VFile_ReadS32(injection->fp);
+    edit->effects_edit_count = File_ReadS32(injection->fp);
     if (edit->effects_edit_count <= 0) {
         return;
     }
@@ -281,10 +281,10 @@ static void M_ReadEffectsEdits(
         Memory_Alloc(sizeof(M_FACE_EFFECTS_EDIT) * edit->effects_edit_count);
     for (int32_t j = 0; j < edit->effects_edit_count; j++) {
         M_FACE_EFFECTS_EDIT *const effects_edit = &edit->effects_edits[j];
-        effects_edit->face_type = VFile_ReadS32(injection->fp);
-        effects_edit->face_index = VFile_ReadS16(injection->fp);
-        effects_edit->effects = VFile_ReadU16(injection->fp);
-        effects_edit->reflective = VFile_ReadU8(injection->fp);
+        effects_edit->face_type = File_ReadS32(injection->fp);
+        effects_edit->face_index = File_ReadS16(injection->fp);
+        effects_edit->effects = File_ReadU16(injection->fp);
+        effects_edit->reflective = File_ReadU8(injection->fp);
     }
 }
 
@@ -295,11 +295,11 @@ static void M_MeshEdits(
     for (int32_t i = 0; i < data_count; i++) {
         M_MESH_EDIT edit = {};
         edit.obj_info = Inject_ReadObjectPtr(injection);
-        edit.mesh_idx = VFile_ReadS16(injection->fp);
-        edit.centre_shift.x = VFile_ReadS16(injection->fp);
-        edit.centre_shift.y = VFile_ReadS16(injection->fp);
-        edit.centre_shift.z = VFile_ReadS16(injection->fp);
-        edit.radius_shift = VFile_ReadS32(injection->fp);
+        edit.mesh_idx = File_ReadS16(injection->fp);
+        edit.centre_shift.x = File_ReadS16(injection->fp);
+        edit.centre_shift.y = File_ReadS16(injection->fp);
+        edit.centre_shift.z = File_ReadS16(injection->fp);
+        edit.radius_shift = File_ReadS32(injection->fp);
 
         M_ReadTextureEdits(&edit, injection);
         M_ReadVertexEdits(&edit, injection);
@@ -325,9 +325,9 @@ static void M_Object3DEdits(
     const int32_t data_count)
 {
     for (int32_t i = 0; i < data_count; i++) {
-        const int32_t obj_id = VFile_ReadS32(injection->fp);
-        const bool collidable = VFile_ReadU8(injection->fp) == 1;
-        const bool visible = VFile_ReadU8(injection->fp) == 1;
+        const int32_t obj_id = File_ReadS32(injection->fp);
+        const bool collidable = File_ReadU8(injection->fp) == 1;
+        const bool visible = File_ReadU8(injection->fp) == 1;
         const BOUNDS_16 collision_bounds = M_ReadBounds16(injection->fp);
         const BOUNDS_16 draw_bounds = M_ReadBounds16(injection->fp);
 

@@ -9,16 +9,15 @@ static void M_HandleDataEdits(
     const INJECTION_CONTEXT *const ctx, const INJECTION_CHUNK chunk)
 {
     for (int32_t i = 0; i < chunk.num_blocks; i++) {
-        const INJECTION_DATA_TYPE data_type =
-            VFile_ReadS32(chunk.injection->fp);
-        const int32_t data_count = VFile_ReadS32(chunk.injection->fp);
-        const int32_t data_size = VFile_ReadS32(chunk.injection->fp);
+        const INJECTION_DATA_TYPE data_type = File_ReadS32(chunk.injection->fp);
+        const int32_t data_count = File_ReadS32(chunk.injection->fp);
+        const int32_t data_size = File_ReadS32(chunk.injection->fp);
 
         if (m_Handlers[data_type] == nullptr) {
             if (data_type != IDT_ROOM_EDIT_META) {
                 LOG_WARNING("Unknown data type: %d", data_type);
             }
-            VFile_Skip(chunk.injection->fp, data_size);
+            File_Skip(chunk.injection->fp, data_size);
         } else {
             m_Handlers[data_type](ctx, chunk.injection, data_count);
         }

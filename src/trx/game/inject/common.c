@@ -99,18 +99,18 @@ static INJECTION_CHUNK M_ReadChunk(const INJECTION *const injection)
 {
     return (INJECTION_CHUNK) {
         .injection = injection,
-        .type = VFile_ReadS32(injection->fp),
-        .num_blocks = VFile_ReadS32(injection->fp),
-        .total_size = VFile_ReadS32(injection->fp),
+        .type = File_ReadS32(injection->fp),
+        .num_blocks = File_ReadS32(injection->fp),
+        .total_size = File_ReadS32(injection->fp),
     };
 }
 
 static void M_InitialiseBlock(
-    VFILE *const file, const INJECTION_VERSION version)
+    TRX_FILE *const file, const INJECTION_VERSION version)
 {
-    const INJECTION_DATA_TYPE data_type = VFile_ReadS32(file);
-    const int32_t data_count = VFile_ReadS32(file);
-    const int32_t data_size = VFile_ReadS32(file);
+    const INJECTION_DATA_TYPE data_type = File_ReadS32(file);
+    const int32_t data_count = File_ReadS32(file);
+    const int32_t data_size = File_ReadS32(file);
     if (data_type >= 0 && data_type < IDT_NUMBER_OF) {
         m_DataCounts[data_type] += data_count;
     }
@@ -118,27 +118,27 @@ static void M_InitialiseBlock(
     switch (data_type) {
     case IDT_STATIC_OBJECTS: {
         for (int32_t i = 0; i < data_count; i++) {
-            const int32_t static_id = VFile_ReadS32(file);
+            const int32_t static_id = File_ReadS32(file);
             if (static_id > m_MaxStaticObject3DId) {
                 m_MaxStaticObject3DId = static_id;
             }
-            VFile_Skip(file, 28);
+            File_Skip(file, 28);
         }
         return;
     }
 
     case IDT_SPRITE_SEQUENCES: {
         for (int32_t i = 0; i < data_count; i++) {
-            const INJECT_OBJECT_TYPE obj_type = VFile_ReadS32(file);
-            const int32_t obj_id = VFile_ReadS32(file);
+            const INJECT_OBJECT_TYPE obj_type = File_ReadS32(file);
+            const int32_t obj_id = File_ReadS32(file);
             if (obj_type == OBJ_TYPE_STATIC2D
                 && obj_id > m_MaxStaticObject2DId) {
                 m_MaxStaticObject2DId = obj_id;
             }
             if (obj_type == OBJ_TYPE_OBJECT && version < INJ_VERSION_5) {
-                VFile_Skip(file, 16);
+                File_Skip(file, 16);
             }
-            VFile_Skip(file, sizeof(int16_t) * 2);
+            File_Skip(file, sizeof(int16_t) * 2);
         }
         return;
     }
@@ -149,14 +149,14 @@ static void M_InitialiseBlock(
         }
         for (int32_t i = 0; i < data_count; i++) {
             INJECTION_MESH_META meta = {
-                .room_index = VFile_ReadS16(file),
-                .num_vertices = VFile_ReadS16(file),
-                .num_quads = VFile_ReadS16(file),
-                .num_triangles = VFile_ReadS16(file),
-                .num_static_2ds = VFile_ReadS16(file),
+                .room_index = File_ReadS16(file),
+                .num_vertices = File_ReadS16(file),
+                .num_quads = File_ReadS16(file),
+                .num_triangles = File_ReadS16(file),
+                .num_static_2ds = File_ReadS16(file),
             };
             if (version >= INJ_VERSION_3) {
-                meta.num_static_3ds = VFile_ReadS16(file);
+                meta.num_static_3ds = File_ReadS16(file);
             }
             Vector_Add(m_RoomMeta, &meta);
         }
@@ -167,22 +167,22 @@ static void M_InitialiseBlock(
     case IDT_SAMPLE_INFOS: {
         for (int32_t i = 0; i < data_count; i++) {
             // Skip ID, volume and chance
-            VFile_Skip(file, 3 * sizeof(int16_t));
-            const int16_t flags = VFile_ReadS16(file);
+            File_Skip(file, 3 * sizeof(int16_t));
+            const int16_t flags = File_ReadS16(file);
             if (version >= INJ_VERSION_6) {
                 // Skip range and pitch
-                VFile_Skip(file, sizeof(int32_t) + sizeof(int8_t));
+                File_Skip(file, sizeof(int32_t) + sizeof(int8_t));
             }
             const int16_t num_samples = (flags >> 2) & 0xF;
             m_DataCounts[IDT_SAMPLE_INDICES] += num_samples;
             if (g_TRVersion == 1 || version >= INJ_VERSION_4) {
                 for (int32_t j = 0; j < num_samples; j++) {
-                    const int32_t sample_length = VFile_ReadS32(file);
+                    const int32_t sample_length = File_ReadS32(file);
                     m_DataCounts[IDT_SAMPLE_DATA] += sample_length;
-                    VFile_Skip(file, sizeof(char) * sample_length);
+                    File_Skip(file, sizeof(char) * sample_length);
                 }
             } else if (g_TRVersion >= 2) {
-                VFile_Skip(file, sizeof(uint32_t));
+                File_Skip(file, sizeof(uint32_t));
             }
         }
 
@@ -193,24 +193,25 @@ static void M_InitialiseBlock(
         break;
     }
 
-    VFile_Skip(file, data_size);
+    File_Skip(file, data_size);
 }
 
-static void M_ReadVFile(
-    INJECTION *const injection, VFILE *const file, const char *const file_name)
+static void M_ReadFile(
+    INJECTION *const injection, TRX_FILE *const file,
+    const char *const file_name)
 {
     const char *const inj_name =
         file_name == nullptr ? M_VIRTUAL_NAME : file_name;
     char *payload = nullptr;
     injection->path = Memory_DupStr(inj_name);
 
-    const uint32_t magic = VFile_ReadU32(file);
+    const uint32_t magic = File_ReadU32(file);
     if (magic != INJECTION_MAGIC) {
         LOG_WARNING("Invalid injection magic in %s", inj_name);
         goto cleanup;
     }
 
-    injection->version = VFile_ReadS32(file);
+    injection->version = File_ReadS32(file);
     if (injection->version < INJ_VERSION_2
         || injection->version > INJ_CURRENT_VERSION) {
         LOG_WARNING(
@@ -218,7 +219,7 @@ static void M_ReadVFile(
         goto cleanup;
     }
 
-    injection->type = VFile_ReadS32(file);
+    injection->type = File_ReadS32(file);
     if (injection->type < 0 || injection->type >= IFT_NUMBER_OF) {
         LOG_WARNING("%s is of unknown type %d", inj_name, injection->type);
         goto cleanup;
@@ -229,8 +230,8 @@ static void M_ReadVFile(
         goto cleanup;
     }
 
-    const int32_t uncompressed_size = VFile_ReadS32(file);
-    const int32_t compressed_size = VFile_ReadS32(file);
+    const int32_t uncompressed_size = File_ReadS32(file);
+    const int32_t compressed_size = File_ReadS32(file);
 
     size_t compressed_left;
     const char *const compressed = File_PeekBytes(file, &compressed_left);
@@ -246,14 +247,14 @@ static void M_ReadVFile(
         goto cleanup;
     }
 
-    injection->fp = VFile_CreateFromBuffer(payload, uncompressed_size);
+    injection->fp = File_OpenBuffer(payload, uncompressed_size);
     if (m_Context.mode != INJECTION_MODE_STATS) {
         LOG_INFO("%s queued for injection", inj_name);
     }
 
 cleanup:
     Memory_FreePointer(&payload);
-    VFile_Close(file);
+    File_Close(file);
 }
 
 static void M_InitialiseInjection(INJECTION *const injection)
@@ -262,16 +263,16 @@ static void M_InitialiseInjection(INJECTION *const injection)
         return;
     }
 
-    VFile_SetPos(injection->fp, 0);
+    File_Seek(injection->fp, 0, FILE_SEEK_SET);
 
     {
         // Tests are executed after the main level data is loaded.
-        VFile_Skip(injection->fp, sizeof(int32_t));
-        const int32_t test_size = VFile_ReadS32(injection->fp);
-        VFile_Skip(injection->fp, test_size);
+        File_Skip(injection->fp, sizeof(int32_t));
+        const int32_t test_size = File_ReadS32(injection->fp);
+        File_Skip(injection->fp, test_size);
     }
 
-    const int32_t num_chunks = VFile_ReadS32(injection->fp);
+    const int32_t num_chunks = File_ReadS32(injection->fp);
     for (int32_t i = 0; i < num_chunks; i++) {
         const INJECTION_CHUNK chunk = M_ReadChunk(injection);
         for (int32_t j = 0; j < chunk.num_blocks; j++) {
@@ -279,19 +280,19 @@ static void M_InitialiseInjection(INJECTION *const injection)
         }
     }
 
-    VFile_SetPos(injection->fp, 0);
+    File_Seek(injection->fp, 0, FILE_SEEK_SET);
 }
 
 static void M_LoadFromFile(
     INJECTION *const injection, const char *const file_name)
 {
-    VFILE *const file = VFile_CreateFromPath(file_name);
+    TRX_FILE *const file = File_OpenPathInMemory(file_name);
     if (file == nullptr) {
         LOG_WARNING("Could not open %s", file_name);
         return;
     }
 
-    M_ReadVFile(injection, file, file_name);
+    M_ReadFile(injection, file, file_name);
 }
 
 static void M_LoadInjectionJob(void *const user_data)
@@ -302,12 +303,12 @@ static void M_LoadInjectionJob(void *const user_data)
 
 static bool M_IsApplicable(const INJECTION *const injection)
 {
-    const int32_t test_count = VFile_ReadS32(injection->fp);
-    VFile_Skip(injection->fp, sizeof(int32_t));
+    const int32_t test_count = File_ReadS32(injection->fp);
+    File_Skip(injection->fp, sizeof(int32_t));
 
     bool applicable = true;
     for (int32_t i = 0; i < test_count; i++) {
-        const INJECTION_TEST_TYPE type = VFile_ReadS32(injection->fp);
+        const INJECTION_TEST_TYPE type = File_ReadS32(injection->fp);
         if (m_Testers[type] == nullptr) {
             LOG_WARNING("Unknown injection test type %d", type);
             applicable = false;
@@ -390,12 +391,12 @@ void Inject_InitLevel(const GF_LEVEL *const level, const INJECTION_MODE mode)
     }
 }
 
-void Inject_AppendInjection(VFILE *const file)
+void Inject_AppendInjection(TRX_FILE *const file)
 {
     m_Injections =
         Memory_Realloc(m_Injections, sizeof(INJECTION) * (m_NumInjections + 1));
     INJECTION *const injection = &m_Injections[m_NumInjections++];
-    M_ReadVFile(injection, file, nullptr);
+    M_ReadFile(injection, file, nullptr);
     M_InitialiseInjection(injection);
 }
 
@@ -430,13 +431,13 @@ void Inject_AllInjections(void)
         // counts but still have access to current indices as required.
         m_CachedInfo = *Level_Context_GetInfo();
 
-        const int32_t num_chunks = VFile_ReadS32(injection->fp);
+        const int32_t num_chunks = File_ReadS32(injection->fp);
         for (int32_t j = 0; j < num_chunks; j++) {
             const INJECTION_CHUNK chunk = M_ReadChunk(injection);
             if (chunk.type < 0 || chunk.type >= ICT_NUMBER_OF
                 || m_Handlers[chunk.type] == nullptr) {
                 LOG_WARNING("Unrecognised chunk type %d", chunk.type);
-                VFile_Skip(injection->fp, chunk.total_size);
+                File_Skip(injection->fp, chunk.total_size);
                 continue;
             }
 
@@ -462,7 +463,7 @@ void Inject_Cleanup(void)
     for (int32_t i = 0; i < m_NumInjections; i++) {
         INJECTION *const injection = &m_Injections[i];
         if (injection->fp != nullptr) {
-            VFile_Close(injection->fp);
+            File_Close(injection->fp);
         }
         Memory_FreePointer(&injection->path);
     }

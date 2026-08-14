@@ -8,16 +8,16 @@
 #define M_SAMPLE_COUNT 256
 
 static bool M_Probe(
-    const LEVEL_FORMAT_LOADER *const loader, VFILE *const file,
+    const LEVEL_FORMAT_LOADER *const loader, TRX_FILE *const file,
     const LEVEL_FORMAT_PROBE_MODE mode)
 {
-    VFile_SetPos(file, 0);
+    File_Seek(file, 0, FILE_SEEK_SET);
     LEVEL_CONTEXT probe_ctx = {
         .loader = loader,
     };
 
     int32_t version;
-    LEVEL_FORMAT_TRY_OR_FAIL(VFile_TryReadS32(file, &version));
+    LEVEL_FORMAT_TRY_OR_FAIL(File_TryReadS32(file, &version));
     if (version != 32) {
         return false;
     }
@@ -27,7 +27,7 @@ static bool M_Probe(
 
     if (mode == LEVEL_FORMAT_PROBE_MINIMAL) {
         uint16_t room_count;
-        LEVEL_FORMAT_TRY_OR_FAIL(VFile_TryReadU16(file, &room_count));
+        LEVEL_FORMAT_TRY_OR_FAIL(File_TryReadU16(file, &room_count));
         for (int32_t i = 0; i < room_count; i++) {
             LEVEL_FORMAT_SKIP_OR_FAIL(16);
             LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(2); // meshes
@@ -35,8 +35,8 @@ static bool M_Probe(
 
             int16_t size_z;
             int16_t size_x;
-            LEVEL_FORMAT_TRY_OR_FAIL(VFile_TryReadS16(file, &size_z));
-            LEVEL_FORMAT_TRY_OR_FAIL(VFile_TryReadS16(file, &size_x));
+            LEVEL_FORMAT_TRY_OR_FAIL(File_TryReadS16(file, &size_z));
+            LEVEL_FORMAT_TRY_OR_FAIL(File_TryReadS16(file, &size_x));
             LEVEL_FORMAT_SKIP_OR_FAIL(size_z * size_x * 8);
             LEVEL_FORMAT_SKIP_OR_FAIL(2);
 
@@ -78,7 +78,7 @@ static bool M_Probe(
     LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(16); // sound effects
 
     int32_t box_count;
-    LEVEL_FORMAT_TRY_OR_FAIL(VFile_TryReadS32(file, &box_count));
+    LEVEL_FORMAT_TRY_OR_FAIL(File_TryReadS32(file, &box_count));
     LEVEL_FORMAT_SKIP_OR_FAIL(box_count * 20);
     LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(2); // overlaps
     LEVEL_FORMAT_SKIP_OR_FAIL(box_count * 12); // zones
@@ -107,23 +107,24 @@ static bool M_Probe(
 
     if (loader->layout == LEVEL_FORMAT_LAYOUT_TR1X) {
         uint32_t inj_magic;
-        LEVEL_FORMAT_TRY_OR_FAIL(VFile_TryReadU32(file, &inj_magic));
+        LEVEL_FORMAT_TRY_OR_FAIL(File_TryReadU32(file, &inj_magic));
         LEVEL_FORMAT_TRY_OR_FAIL(inj_magic == INJECTION_MAGIC);
     }
 
     return true;
 }
 
-static bool M_Load(const LEVEL_FORMAT_LOADER *const loader, VFILE *const file)
+static bool M_Load(
+    const LEVEL_FORMAT_LOADER *const loader, TRX_FILE *const file)
 {
     LEVEL_CONTEXT *const ctx = Level_Context_Get();
-    VFile_SetPos(file, 4);
+    File_Seek(file, 4, FILE_SEEK_SET);
 
     // Read texture pages once the palette is available.
-    const int32_t num_pages = VFile_ReadS32(file);
-    VFile_Skip(file, num_pages * TEXTURE_PAGE_SIZE * sizeof(uint8_t));
+    const int32_t num_pages = File_ReadS32(file);
+    File_Skip(file, num_pages * TEXTURE_PAGE_SIZE * sizeof(uint8_t));
 
-    const int32_t file_level_num = VFile_ReadS32(file);
+    const int32_t file_level_num = File_ReadS32(file);
     LOG_INFO("file level num: %d", file_level_num);
 
     Level_Section_ReadRooms(ctx, file);
@@ -160,12 +161,12 @@ static bool M_Load(const LEVEL_FORMAT_LOADER *const loader, VFILE *const file)
     Level_Section_ReadSamples(ctx, file);
 
     if (loader->layout == LEVEL_FORMAT_LAYOUT_TR1X) {
-        VFILE *const embedded_injection =
-            File_OpenView(file, VFile_GetPos(file), File_BytesLeft(file));
+        TRX_FILE *const embedded_injection =
+            File_OpenView(file, File_Pos(file), File_BytesLeft(file));
         Inject_AppendInjection(embedded_injection);
     }
 
-    VFile_SetPos(file, 4);
+    File_Seek(file, 4, FILE_SEEK_SET);
     Level_Section_ReadTexturePages(ctx, file);
     Level_Section_PrepareTR123FlybyCameras();
 

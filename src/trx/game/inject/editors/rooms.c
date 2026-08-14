@@ -27,12 +27,12 @@ static uint16_t *M_GetRoomTexture(
 
 static void M_TextureRoomFace(const INJECTION *const injection)
 {
-    const int16_t target_room = VFile_ReadS16(injection->fp);
-    const FACE_TYPE target_face_type = VFile_ReadS32(injection->fp);
-    const int16_t target_face = VFile_ReadS16(injection->fp);
-    const int16_t source_room = VFile_ReadS16(injection->fp);
-    const FACE_TYPE source_face_type = VFile_ReadS32(injection->fp);
-    const int16_t source_face = VFile_ReadS16(injection->fp);
+    const int16_t target_room = File_ReadS16(injection->fp);
+    const FACE_TYPE target_face_type = File_ReadS32(injection->fp);
+    const int16_t target_face = File_ReadS16(injection->fp);
+    const int16_t source_room = File_ReadS16(injection->fp);
+    const FACE_TYPE source_face_type = File_ReadS32(injection->fp);
+    const int16_t source_face = File_ReadS16(injection->fp);
 
     const uint16_t *const source_texture =
         M_GetRoomTexture(source_room, source_face_type, source_face);
@@ -79,14 +79,14 @@ static uint16_t *M_GetRoomFaceVertices(
 
 static void M_MoveRoomFace(const INJECTION *const injection)
 {
-    const int16_t target_room = VFile_ReadS16(injection->fp);
-    const FACE_TYPE face_type = VFile_ReadS32(injection->fp);
-    const int16_t target_face = VFile_ReadS16(injection->fp);
-    const int32_t vertex_count = VFile_ReadS32(injection->fp);
+    const int16_t target_room = File_ReadS16(injection->fp);
+    const FACE_TYPE face_type = File_ReadS32(injection->fp);
+    const int16_t target_face = File_ReadS16(injection->fp);
+    const int32_t vertex_count = File_ReadS32(injection->fp);
 
     for (int32_t j = 0; j < vertex_count; j++) {
-        const int16_t vertex_index = VFile_ReadS16(injection->fp);
-        const int16_t new_vertex = VFile_ReadS16(injection->fp);
+        const int16_t vertex_index = File_ReadS16(injection->fp);
+        const int16_t new_vertex = File_ReadS16(injection->fp);
 
         uint16_t *const vertices =
             M_GetRoomFaceVertices(target_room, face_type, target_face);
@@ -98,13 +98,13 @@ static void M_MoveRoomFace(const INJECTION *const injection)
 
 static void M_AlterRoomVertex(const INJECTION *const injection)
 {
-    const int16_t target_room = VFile_ReadS16(injection->fp);
-    VFile_Skip(injection->fp, sizeof(int32_t));
-    const int16_t target_vertex = VFile_ReadS16(injection->fp);
-    const int16_t x_change = VFile_ReadS16(injection->fp);
-    const int16_t y_change = VFile_ReadS16(injection->fp);
-    const int16_t z_change = VFile_ReadS16(injection->fp);
-    const int16_t shade_change = VFile_ReadS16(injection->fp);
+    const int16_t target_room = File_ReadS16(injection->fp);
+    File_Skip(injection->fp, sizeof(int32_t));
+    const int16_t target_vertex = File_ReadS16(injection->fp);
+    const int16_t x_change = File_ReadS16(injection->fp);
+    const int16_t y_change = File_ReadS16(injection->fp);
+    const int16_t z_change = File_ReadS16(injection->fp);
+    const int16_t shade_change = File_ReadS16(injection->fp);
 
     if (target_room < 0 || target_room >= Room_GetCount()) {
         LOG_WARNING("Room index %d is invalid", target_room);
@@ -127,10 +127,10 @@ static void M_AlterRoomVertex(const INJECTION *const injection)
 
 static void M_SetVertexFlags(const INJECTION *const injection)
 {
-    const int16_t target_room = VFile_ReadS16(injection->fp);
-    VFile_Skip(injection->fp, sizeof(int32_t));
-    const int16_t target_vertex = VFile_ReadS16(injection->fp);
-    const uint16_t flags = VFile_ReadU16(injection->fp);
+    const int16_t target_room = File_ReadS16(injection->fp);
+    File_Skip(injection->fp, sizeof(int32_t));
+    const int16_t target_vertex = File_ReadS16(injection->fp);
+    const uint16_t flags = File_ReadU16(injection->fp);
 
     if (target_room < 0 || target_room >= Room_GetCount()) {
         LOG_WARNING("Room index %d is invalid", target_room);
@@ -159,10 +159,10 @@ static void M_SetVertexFlags(const INJECTION *const injection)
 
 static void M_RotateRoomFace(const INJECTION *const injection)
 {
-    const int16_t target_room = VFile_ReadS16(injection->fp);
-    const FACE_TYPE face_type = VFile_ReadS32(injection->fp);
-    const int16_t target_face = VFile_ReadS16(injection->fp);
-    const uint8_t num_rotations = VFile_ReadU8(injection->fp);
+    const int16_t target_room = File_ReadS16(injection->fp);
+    const FACE_TYPE face_type = File_ReadS32(injection->fp);
+    const int16_t target_face = File_ReadS16(injection->fp);
+    const uint8_t num_rotations = File_ReadU8(injection->fp);
 
     uint16_t *const face_vertices =
         M_GetRoomFaceVertices(target_room, face_type, target_face);
@@ -187,15 +187,15 @@ static void M_RotateRoomFace(const INJECTION *const injection)
 
 static void M_AddRoomFace(const INJECTION *const injection)
 {
-    const int16_t target_room = VFile_ReadS16(injection->fp);
-    const FACE_TYPE face_type = VFile_ReadS32(injection->fp);
-    const int16_t source_room = VFile_ReadS16(injection->fp);
-    const int16_t source_face = VFile_ReadS16(injection->fp);
+    const int16_t target_room = File_ReadS16(injection->fp);
+    const FACE_TYPE face_type = File_ReadS32(injection->fp);
+    const int16_t source_room = File_ReadS16(injection->fp);
+    const int16_t source_face = File_ReadS16(injection->fp);
 
     const int32_t num_vertices = face_type == FT_TEXTURED_QUAD ? 4 : 3;
     uint16_t vertices[num_vertices];
     for (int32_t i = 0; i < num_vertices; i++) {
-        vertices[i] = VFile_ReadU16(injection->fp);
+        vertices[i] = File_ReadU16(injection->fp);
     }
 
     if (target_room < 0 || target_room >= Room_GetCount()) {
@@ -239,19 +239,19 @@ static void M_AddRoomFace(const INJECTION *const injection)
 
 static void M_AddRoomVertex(const INJECTION *const injection)
 {
-    const int16_t target_room = VFile_ReadS16(injection->fp);
-    VFile_Skip(injection->fp, sizeof(int32_t));
+    const int16_t target_room = File_ReadS16(injection->fp);
+    File_Skip(injection->fp, sizeof(int32_t));
     const XYZ_16 pos = {
-        .x = VFile_ReadS16(injection->fp),
-        .y = VFile_ReadS16(injection->fp),
-        .z = VFile_ReadS16(injection->fp),
+        .x = File_ReadS16(injection->fp),
+        .y = File_ReadS16(injection->fp),
+        .z = File_ReadS16(injection->fp),
     };
     int16_t shade = 0;
     RGBA_8888 color = COLOR_RGBA_8888_WHITE;
     if (g_TRVersion < 3) {
-        shade = VFile_ReadS16(injection->fp);
+        shade = File_ReadS16(injection->fp);
     } else {
-        color = Color_ARGB1555ToRGBA8888(VFile_ReadU16(injection->fp));
+        color = Color_ARGB1555ToRGBA8888(File_ReadU16(injection->fp));
         color.a = 255;
     }
 
@@ -269,11 +269,11 @@ static void M_AddRoomVertex(const INJECTION *const injection)
 
 static void M_AddRoomStatic2D(const INJECTION *const injection)
 {
-    const int16_t target_room = VFile_ReadS16(injection->fp);
-    VFile_Skip(injection->fp, sizeof(int32_t));
-    const int32_t id = VFile_ReadS32(injection->fp);
-    const uint16_t vertex = VFile_ReadU16(injection->fp);
-    const uint16_t frame_idx = VFile_ReadU16(injection->fp);
+    const int16_t target_room = File_ReadS16(injection->fp);
+    File_Skip(injection->fp, sizeof(int32_t));
+    const int32_t id = File_ReadS32(injection->fp);
+    const uint16_t vertex = File_ReadU16(injection->fp);
+    const uint16_t frame_idx = File_ReadU16(injection->fp);
 
     const STATIC_OBJECT_2D *const obj = Object_Get2DStatic(id);
     if (obj == nullptr) {
@@ -300,20 +300,20 @@ static void M_AddRoomStatic2D(const INJECTION *const injection)
 
 static void M_AddRoomStatic3D(const INJECTION *const injection)
 {
-    const int16_t target_room = VFile_ReadS16(injection->fp);
-    VFile_Skip(injection->fp, sizeof(int32_t));
+    const int16_t target_room = File_ReadS16(injection->fp);
+    File_Skip(injection->fp, sizeof(int32_t));
     ROOM *const room = Room_Get(target_room);
 
     STATIC_MESH *const mesh = &room->static_meshes[room->num_static_meshes];
-    mesh->pos.x = VFile_ReadS32(injection->fp);
-    mesh->pos.y = VFile_ReadS32(injection->fp);
-    mesh->pos.z = VFile_ReadS32(injection->fp);
-    mesh->rot.y = VFile_ReadS16(injection->fp);
-    mesh->shade.value_1 = VFile_ReadS16(injection->fp);
+    mesh->pos.x = File_ReadS32(injection->fp);
+    mesh->pos.y = File_ReadS32(injection->fp);
+    mesh->pos.z = File_ReadS32(injection->fp);
+    mesh->rot.y = File_ReadS16(injection->fp);
+    mesh->shade.value_1 = File_ReadS16(injection->fp);
     if (g_TRVersion >= 2) {
         mesh->shade.value_2 = mesh->shade.value_1;
     }
-    mesh->static_num = VFile_ReadS16(injection->fp);
+    mesh->static_num = File_ReadS16(injection->fp);
     mesh->draw_num = -1;
 
     room->num_static_meshes++;
@@ -321,24 +321,24 @@ static void M_AddRoomStatic3D(const INJECTION *const injection)
 
 static void M_EditRoomStatic3D(const INJECTION *const injection)
 {
-    const int16_t target_room = VFile_ReadS16(injection->fp);
-    VFile_Skip(injection->fp, sizeof(int32_t));
+    const int16_t target_room = File_ReadS16(injection->fp);
+    File_Skip(injection->fp, sizeof(int32_t));
     const ROOM *const room = Room_Get(target_room);
-    const int32_t mesh_idx = VFile_ReadS32(injection->fp);
+    const int32_t mesh_idx = File_ReadS32(injection->fp);
     if (mesh_idx < 0 || mesh_idx >= room->num_static_meshes) {
         LOG_WARNING(
             "Invalid static mesh index (%d) for room %d", mesh_idx,
             target_room);
-        VFile_Skip(injection->fp, 4 * sizeof(int32_t));
+        File_Skip(injection->fp, 4 * sizeof(int32_t));
         return;
     }
 
     STATIC_MESH *const mesh = &room->static_meshes[mesh_idx];
-    mesh->pos.x = VFile_ReadS32(injection->fp);
-    mesh->pos.y = VFile_ReadS32(injection->fp);
-    mesh->pos.z = VFile_ReadS32(injection->fp);
-    mesh->rot.y = VFile_ReadS16(injection->fp);
-    mesh->shade.value_1 = VFile_ReadS16(injection->fp);
+    mesh->pos.x = File_ReadS32(injection->fp);
+    mesh->pos.y = File_ReadS32(injection->fp);
+    mesh->pos.z = File_ReadS32(injection->fp);
+    mesh->rot.y = File_ReadS16(injection->fp);
+    mesh->shade.value_1 = File_ReadS16(injection->fp);
     if (g_TRVersion >= 2) {
         mesh->shade.value_2 = mesh->shade.value_1;
     }
@@ -349,7 +349,7 @@ static void M_RoomMeshEdits(
     const int32_t data_count)
 {
     for (int32_t i = 0; i < data_count; i++) {
-        const ROOM_MESH_EDIT_TYPE type = VFile_ReadS32(injection->fp);
+        const ROOM_MESH_EDIT_TYPE type = File_ReadS32(injection->fp);
         switch (type) {
         case RMET_TEXTURE_FACE:
             M_TextureRoomFace(injection);
@@ -393,12 +393,12 @@ static void M_RoomPortalEdits(
     const int32_t data_count)
 {
     for (int32_t i = 0; i < data_count; i++) {
-        const int16_t base_room = VFile_ReadS16(injection->fp);
-        const int16_t link_room = VFile_ReadS16(injection->fp);
-        const int16_t portal_index = VFile_ReadS16(injection->fp);
+        const int16_t base_room = File_ReadS16(injection->fp);
+        const int16_t link_room = File_ReadS16(injection->fp);
+        const int16_t portal_index = File_ReadS16(injection->fp);
 
         if (base_room < 0 || base_room >= Room_GetCount()) {
-            VFile_Skip(injection->fp, sizeof(int16_t) * 12);
+            File_Skip(injection->fp, sizeof(int16_t) * 12);
             LOG_WARNING("Room index %d is invalid", base_room);
             continue;
         }
@@ -414,7 +414,7 @@ static void M_RoomPortalEdits(
         }
 
         if (portal == nullptr) {
-            VFile_Skip(injection->fp, sizeof(int16_t) * 12);
+            File_Skip(injection->fp, sizeof(int16_t) * 12);
             LOG_WARNING(
                 "Room index %d has no matching portal to %d", base_room,
                 link_room);
@@ -423,9 +423,9 @@ static void M_RoomPortalEdits(
 
         bool empty_portal = true;
         for (int32_t j = 0; j < 4; j++) {
-            portal->vertex[j].x += VFile_ReadS16(injection->fp);
-            portal->vertex[j].y += VFile_ReadS16(injection->fp);
-            portal->vertex[j].z += VFile_ReadS16(injection->fp);
+            portal->vertex[j].x += File_ReadS16(injection->fp);
+            portal->vertex[j].y += File_ReadS16(injection->fp);
+            portal->vertex[j].z += File_ReadS16(injection->fp);
             empty_portal &= portal->vertex[j].x == 0 && portal->vertex[j].y == 0
                 && portal->vertex[j].z == 0;
         }

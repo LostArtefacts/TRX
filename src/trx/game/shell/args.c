@@ -1,11 +1,11 @@
 #include <trx/game/shell/args.h>
 
+#include <trx/core/file.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
-#include <trx/core/virtual_file.h>
 #include <trx/debug.h>
 #include <trx/game/level/format/format.h>
 #include <trx/game/paths.h>
@@ -83,14 +83,14 @@ static int32_t M_GuessEngineVersionFromLevelPath(const char *const path)
         return 0;
     }
 
-    VFILE *const file = VFile_CreateFromPath(path);
+    TRX_FILE *const file = File_OpenPathInMemory(path);
     if (file == nullptr) {
         return 0;
     }
 
     const LEVEL_FORMAT_LOADER *const loader = Level_Format_GuessLoader(file);
     const int32_t game_version = loader != nullptr ? loader->game_version : 0;
-    VFile_Close(file);
+    File_Close(file);
     return game_version;
 }
 

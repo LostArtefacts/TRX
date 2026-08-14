@@ -5,13 +5,13 @@
 static bool M_TestTextureSample(
     const INJECTION_CONTEXT *const ctx, const INJECTION *const injection)
 {
-    const int32_t texture_idx = VFile_ReadS32(injection->fp);
+    const int32_t texture_idx = File_ReadS32(injection->fp);
     OBJECT_TEXTURE test_texture = {};
-    test_texture.draw_type = VFile_ReadU16(injection->fp);
-    test_texture.tex_page = VFile_ReadU16(injection->fp);
+    test_texture.draw_type = File_ReadU16(injection->fp);
+    test_texture.tex_page = File_ReadU16(injection->fp);
     for (int32_t i = 0; i < 4; i++) {
-        test_texture.uv[i].u = VFile_ReadU16(injection->fp);
-        test_texture.uv[i].v = VFile_ReadU16(injection->fp);
+        test_texture.uv[i].u = File_ReadU16(injection->fp);
+        test_texture.uv[i].v = File_ReadU16(injection->fp);
     }
 
     if (texture_idx < 0 || texture_idx >= Output_GetObjectTextureCount()) {

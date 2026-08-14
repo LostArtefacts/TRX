@@ -70,7 +70,7 @@ static void M_Decode16BitTexturePage(void *const userdata)
     }
 }
 
-void Level_Section_ReadPalettes(LEVEL_CONTEXT *const ctx, VFILE *const file)
+void Level_Section_ReadPalettes(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
 
@@ -80,7 +80,7 @@ void Level_Section_ReadPalettes(LEVEL_CONTEXT *const ctx, VFILE *const file)
     info->palette.size = palette_size;
 
     info->palette.data_24 = Memory_Alloc(sizeof(RGB_888) * palette_size);
-    VFile_Read(file, info->palette.data_24, sizeof(RGB_888) * palette_size);
+    File_ReadData(file, info->palette.data_24, sizeof(RGB_888) * palette_size);
     info->palette.data_24[0].r = 0;
     info->palette.data_24[0].g = 0;
     info->palette.data_24[0].b = 0;
@@ -96,7 +96,7 @@ void Level_Section_ReadPalettes(LEVEL_CONTEXT *const ctx, VFILE *const file)
     } else {
         RGBA_8888 palette_16[palette_size];
         info->palette.data_32 = Memory_Alloc(sizeof(RGB_888) * palette_size);
-        VFile_Read(file, palette_16, sizeof(RGBA_8888) * palette_size);
+        File_ReadData(file, palette_16, sizeof(RGBA_8888) * palette_size);
         for (int32_t i = 0; i < palette_size; i++) {
             info->palette.data_32[i].r = palette_16[i].r;
             info->palette.data_32[i].g = palette_16[i].g;
@@ -107,11 +107,12 @@ void Level_Section_ReadPalettes(LEVEL_CONTEXT *const ctx, VFILE *const file)
     Benchmark_End(&benchmark, nullptr);
 }
 
-void Level_Section_ReadTexturePages(LEVEL_CONTEXT *const ctx, VFILE *const file)
+void Level_Section_ReadTexturePages(
+    LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
 
-    const int32_t num_pages = VFile_ReadS32(file);
+    const int32_t num_pages = File_ReadS32(file);
     const LEVEL_FORMAT_LOADER *const loader = ctx->loader;
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
     info->textures.page_count = num_pages;
@@ -124,7 +125,7 @@ void Level_Section_ReadTexturePages(LEVEL_CONTEXT *const ctx, VFILE *const file)
         (num_pages + extra_pages) * TEXTURE_PAGE_SIZE * sizeof(RGBA_8888);
 
     info->textures.pages_8 = Memory_Alloc(texture_size_8_bit);
-    VFile_Read(file, info->textures.pages_8, num_pages * TEXTURE_PAGE_SIZE);
+    File_ReadData(file, info->textures.pages_8, num_pages * TEXTURE_PAGE_SIZE);
 
     info->textures.pages_32 = Memory_Alloc(texture_size_32_bit);
 
@@ -148,7 +149,7 @@ void Level_Section_ReadTexturePages(LEVEL_CONTEXT *const ctx, VFILE *const file)
         const int32_t texture_size_16_bit =
             num_pages * TEXTURE_PAGE_SIZE * sizeof(uint16_t);
         input_16 = Memory_Alloc(texture_size_16_bit);
-        VFile_Read(file, input_16, texture_size_16_bit);
+        File_ReadData(file, input_16, texture_size_16_bit);
         for (int32_t i = 0; i < num_pages; i++) {
             jobs[i].input_16_page = &input_16[i * TEXTURE_PAGE_SIZE];
             ThreadPool_AddJob(pool, M_Decode16BitTexturePage, &jobs[i]);
@@ -164,10 +165,10 @@ void Level_Section_ReadTexturePages(LEVEL_CONTEXT *const ctx, VFILE *const file)
 }
 
 void Level_Section_ReadObjectTextures(
-    LEVEL_CONTEXT *const ctx, VFILE *const file)
+    LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
-    const int32_t num_textures = VFile_ReadS32(file);
+    const int32_t num_textures = File_ReadS32(file);
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
     info->textures.object_count = num_textures;
     LOG_INFO("object textures: %d", num_textures);
@@ -179,15 +180,15 @@ void Level_Section_ReadObjectTextures(
 
 void Level_Section_AppendObjectTextures(
     const int32_t base_idx, const int16_t base_page_idx,
-    const int32_t num_textures, VFILE *const file)
+    const int32_t num_textures, TRX_FILE *const file)
 {
     const LEVEL_FORMAT_LOADER *const loader = Level_Context_Get()->loader;
     for (int32_t i = 0; i < num_textures; i++) {
         OBJECT_TEXTURE *const texture = Output_GetObjectTexture(base_idx + i);
-        texture->draw_type = VFile_ReadU16(file);
-        const uint16_t tex_page = VFile_ReadU16(file);
+        texture->draw_type = File_ReadU16(file);
+        const uint16_t tex_page = File_ReadU16(file);
         if (loader->game_version == 4) {
-            const uint16_t tex_flags = VFile_ReadU16(file);
+            const uint16_t tex_flags = File_ReadU16(file);
             texture->uv_count = ((tex_page | tex_flags) & 0x8000) != 0 ? 3 : 4;
             texture->tex_page = (tex_page & 0x7FFF) + base_page_idx;
         } else {
@@ -195,11 +196,11 @@ void Level_Section_AppendObjectTextures(
             texture->tex_page = tex_page + base_page_idx;
         }
         for (int32_t j = 0; j < 4; j++) {
-            texture->uv[j].u = VFile_ReadU16(file);
-            texture->uv[j].v = VFile_ReadU16(file);
+            texture->uv[j].u = File_ReadU16(file);
+            texture->uv[j].v = File_ReadU16(file);
         }
         if (loader->game_version == 4) {
-            VFile_Skip(file, sizeof(uint32_t) * 4); // x/y offset and dimensions
+            File_Skip(file, sizeof(uint32_t) * 4); // x/y offset and dimensions
         }
         if (loader->game_version == 3) {
             M_DecodeTR3ObjectTextureUVs(texture);
@@ -208,10 +209,10 @@ void Level_Section_AppendObjectTextures(
 }
 
 void Level_Section_ReadSpriteTextures(
-    LEVEL_CONTEXT *const ctx, VFILE *const file)
+    LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
-    const int32_t num_textures = VFile_ReadS32(file);
+    const int32_t num_textures = File_ReadS32(file);
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
     info->textures.sprite_count = num_textures;
     LOG_INFO("sprite textures: %d", num_textures);
@@ -224,33 +225,32 @@ void Level_Section_ReadSpriteTextures(
 
 void Level_Section_AppendSpriteTextures(
     const int32_t base_idx, const int16_t base_page_idx,
-    const int32_t num_textures, VFILE *const file)
+    const int32_t num_textures, TRX_FILE *const file)
 {
     ASSERT(base_idx >= 0);
     ASSERT(num_textures >= 0);
     ASSERT(base_idx + num_textures <= Output_GetSpriteTextureCount());
     for (int32_t i = 0; i < num_textures; i++) {
         SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(base_idx + i);
-        sprite->tex_page = VFile_ReadU16(file) + base_page_idx;
-        sprite->offset = VFile_ReadU16(file);
-        sprite->width = VFile_ReadU16(file);
-        sprite->height = VFile_ReadU16(file);
-        sprite->x0 = VFile_ReadS16(file);
-        sprite->y0 = VFile_ReadS16(file);
-        sprite->x1 = VFile_ReadS16(file);
-        sprite->y1 = VFile_ReadS16(file);
+        sprite->tex_page = File_ReadU16(file) + base_page_idx;
+        sprite->offset = File_ReadU16(file);
+        sprite->width = File_ReadU16(file);
+        sprite->height = File_ReadU16(file);
+        sprite->x0 = File_ReadS16(file);
+        sprite->y0 = File_ReadS16(file);
+        sprite->x1 = File_ReadS16(file);
+        sprite->y1 = File_ReadS16(file);
     }
 }
 
 void Level_Section_ReadAnimatedTextureRanges(
-    LEVEL_CONTEXT *const ctx, VFILE *const file)
+    LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
-    const int32_t data_size = VFile_ReadS32(file);
-    const size_t end_position =
-        VFile_GetPos(file) + data_size * sizeof(int16_t);
+    const int32_t data_size = File_ReadS32(file);
+    const size_t end_position = File_Pos(file) + data_size * sizeof(int16_t);
 
-    const int16_t num_ranges = VFile_ReadS16(file);
+    const int16_t num_ranges = File_ReadS16(file);
     LOG_INFO("animated texture ranges: %d", num_ranges);
     Output_InitialiseAnimatedTextures(num_ranges);
 
@@ -262,24 +262,24 @@ void Level_Section_ReadAnimatedTextureRanges(
 
         // Level data is tied to the original logic in Output_AnimateTextures
         // and hence stores one less than the actual count here.
-        range->num_textures = VFile_ReadS16(file) + 1;
+        range->num_textures = File_ReadS16(file) + 1;
         range->textures = GameBuf_Alloc(
             sizeof(int16_t) * range->num_textures,
             GBUF_ANIMATED_TEXTURE_RANGES);
-        VFile_Read(
+        File_ReadData(
             file, range->textures, sizeof(int16_t) * range->num_textures);
     }
 
-    VFile_SetPos(file, end_position);
+    File_Seek(file, end_position, FILE_SEEK_SET);
     Benchmark_End(&benchmark, nullptr);
 }
 
-void Level_Section_ReadLightMap(LEVEL_CONTEXT *const ctx, VFILE *const file)
+void Level_Section_ReadLightMap(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
     for (int32_t i = 0; i < 32; i++) {
         LIGHT_MAP *const light_map = Output_GetLightMap(i);
-        VFile_Read(file, light_map->index, sizeof(uint8_t) * 256);
+        File_ReadData(file, light_map->index, sizeof(uint8_t) * 256);
         light_map->index[0] = 0;
     }
 
