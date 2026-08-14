@@ -370,6 +370,8 @@ static void M_Step(void)
 
 void CutSeq_Load(void)
 {
+    m_State.letterbox = M_GetDefaultLetterbox();
+
     if (g_TRVersion != 4 || !CutSeq_Pak_Load()) {
         return;
     }
@@ -578,7 +580,6 @@ void CutSeq_Reset(void)
     // How a scene is framed is a script's setting, and a script lasts as long
     // as its level. Which cutscenes have run is the playthrough's, and stays.
     m_State.fov = M_DEFAULT_FOV;
-    m_State.letterbox = M_GetDefaultLetterbox();
 
     // A cutscene dropped part-way through still ends, so a script that pairs
     // the two events - the title hides Lara between them - is not left holding

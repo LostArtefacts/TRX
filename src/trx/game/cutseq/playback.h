@@ -18,8 +18,9 @@
 // rather than asked again on the next frame.
 #define CUTSEQ_MAX_TRIGGERS 64
 
-// Reads cutseq.pak, if this game has one. Called once per level load, so the
-// first cutscene of a level does not pay for the read.
+// Reads cutseq.pak, if this game has one, and takes this level's default
+// framing. Called once per level load, so the first cutscene of a level does
+// not pay for the read.
 void CutSeq_Load(void);
 
 bool CutSeq_IsAvailable(void);
