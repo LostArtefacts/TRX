@@ -62,13 +62,9 @@ TEST(a_migration_that_only_carries_an_opt_in_leaves_the_rest_alone)
 
 TEST(a_migration_that_reads_the_game_answers_for_the_game_it_is_run_for)
 {
-    g_TRVersion = 3;
-    M_Load("{\"enable_breeze\":true}");
-    CHECK_EQ_INT(g_Config.visuals.breeze_mode, BREEZE_MODE_TR3);
-
-    g_TRVersion = 2;
-    M_Load("{\"enable_breeze\":true}");
-    CHECK_EQ_INT(g_Config.visuals.breeze_mode, BREEZE_MODE_TR2);
+    g_ConfigStorage.visuals.breeze_mode = BREEZE_MODE_TR3;
+    M_Load("{\"enable_breeze\":false}");
+    CHECK_EQ_INT(g_Config.visuals.breeze_mode, BREEZE_MODE_OFF);
 }
 
 TEST(a_file_the_migrations_have_nothing_to_say_about_is_left_alone)

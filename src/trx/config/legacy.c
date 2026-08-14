@@ -2,7 +2,6 @@
 
 #include <trx/config/common.h>
 #include <trx/config/vars.h>
-#include <trx/version.h>
 
 #include <string.h>
 
@@ -42,11 +41,7 @@ static void M_ApplyTargetChange(const JSON_VALUE *const value)
 
 static void M_ApplyBreeze(const JSON_VALUE *const value)
 {
-    if (JSON_ValueIsTrue(value)) {
-        CONFIG_SET(
-            g_Config.visuals.breeze_mode,
-            g_TRVersion <= 2 ? BREEZE_MODE_TR2 : BREEZE_MODE_TR3);
-    } else {
+    if (JSON_ValueIsFalse(value)) {
         CONFIG_SET(g_Config.visuals.breeze_mode, BREEZE_MODE_OFF);
     }
 }
