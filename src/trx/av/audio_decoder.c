@@ -330,7 +330,9 @@ static void M_FlushFilter(AUDIO_DECODER *const decoder)
         return;
     }
 
-    av_buffersrc_add_frame(decoder->filter_src, nullptr);
+    if (av_buffersrc_add_frame(decoder->filter_src, nullptr) < 0) {
+        LOG_WARNING("Failed to flush the audio filter");
+    }
     AVFrame *const out = decoder->filter_out;
     while (av_buffersink_get_frame(decoder->filter_sink, out) >= 0) {
         M_Append(decoder, (const float *)out->data[0], out->nb_samples);
