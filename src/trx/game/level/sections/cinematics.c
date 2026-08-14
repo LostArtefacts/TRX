@@ -33,7 +33,7 @@ void Level_Section_ReadCinematicFrames(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
-    const int16_t num_frames = File_ReadS16(file);
+    const int16_t num_frames = File_ReadCountS16(file);
     const int32_t inj_frames = Inject_GetDataCount(IDT_CINEMATIC_FRAMES);
     LOG_INFO("cinematic frames: %d", num_frames);
     Camera_InitialiseCineFrames(MAX(num_frames, inj_frames));
@@ -52,7 +52,7 @@ void Level_Section_ReadCamerasAndSinks(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
-    const int32_t num_objects = File_ReadS32(file);
+    const int32_t num_objects = File_ReadCountS32(file);
     LOG_DEBUG("fixed cameras/sinks: %d", num_objects);
     Camera_InitialiseFixedObjects(num_objects);
     for (int32_t i = 0; i < num_objects; i++) {
@@ -72,7 +72,7 @@ void Level_Section_ReadFlybyCameras(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
-    const int16_t num_cameras = File_ReadS16(file);
+    const int16_t num_cameras = File_ReadCountS16(file);
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
     info->cameras.flyby_count = num_cameras;
     File_Skip(file, sizeof(int16_t)); // reserved padding
@@ -135,7 +135,7 @@ void Level_Section_ReadSoundSources(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
-    const int32_t num_sources = File_ReadS32(file);
+    const int32_t num_sources = File_ReadCountS32(file);
     LOG_INFO("sound sources: %d", num_sources);
     Sound_InitialiseSources(num_sources);
     for (int32_t i = 0; i < num_sources; i++) {

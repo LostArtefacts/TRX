@@ -85,6 +85,7 @@ static void M_DiskClose(void *state);
 static void M_Fail(TRX_FILE *file, const char *message);
 static void M_FailPastEnd(TRX_FILE *file, const char *what);
 static bool M_EnsureWindow(TRX_FILE *file);
+static int32_t M_CheckCount(TRX_FILE *file, int32_t count);
 
 static const M_STRATEGY m_BufferStrategy = {
     .fill = M_BufferFill,
@@ -210,6 +211,20 @@ static bool M_EnsureWindow(TRX_FILE *const file)
     file->window_start = file->pos;
     file->window_size = MIN(filled, file->size - file->pos);
     return file->window_size > 0;
+}
+
+static int32_t M_CheckCount(TRX_FILE *const file, const int32_t count)
+{
+    if (count < 0 || (size_t)count > File_BytesLeft(file)) {
+        M_Fail(
+            file,
+            String_FormatStatic(
+                "%d records do not fit in the %zu bytes left of %s", count,
+                File_BytesLeft(file),
+                file->path != nullptr ? file->path : "the file"));
+        return 0;
+    }
+    return count;
 }
 
 TRX_FILE *File_OpenPath(const char *const path, const FILE_OPEN_MODE mode)
@@ -457,6 +472,15 @@ const char *File_PeekBytes(const TRX_FILE *const file, size_t *const size)
     return buffer->data + file->base + file->pos;
 }
 
+int32_t File_ReadCountS16(TRX_FILE *const file)
+{
+    return M_CheckCount(file, File_ReadS16(file));
+}
+
+int32_t File_ReadCountS32(TRX_FILE *const file)
+{
+    return M_CheckCount(file, File_ReadS32(file));
+}
 
 bool File_SetSize(TRX_FILE *const file, const size_t size)
 {

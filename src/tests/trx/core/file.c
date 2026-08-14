@@ -112,6 +112,27 @@ TEST(a_soft_reader_that_has_failed_stays_where_it_was)
     File_Close(file);
 }
 
+TEST(a_count_that_cannot_fit_is_refused)
+{
+    const char bytes[] = { 0x00, 0x10, 0x00, 0x00, 0x01, 0x02 };
+    TRX_FILE *const file = File_OpenBuffer(bytes, sizeof(bytes));
+    File_SetSoftFailure(file, true);
+
+    CHECK_EQ_INT(File_ReadCountS32(file), 0);
+    CHECK(File_HasFailed(file));
+    File_Close(file);
+}
+
+TEST(a_count_that_fits_is_given_back)
+{
+    const char bytes[] = { 0x02, 0x00, 0x00, 0x00, 0x01, 0x02 };
+    TRX_FILE *const file = File_OpenBuffer(bytes, sizeof(bytes));
+    File_SetSoftFailure(file, true);
+
+    CHECK_EQ_INT(File_ReadCountS32(file), 2);
+    CHECK(!File_HasFailed(file));
+    File_Close(file);
+}
 
 TEST(a_view_reads_only_the_part_it_was_given)
 {

@@ -113,7 +113,7 @@ void Level_Section_ReadTexturePages(
 {
     BENCHMARK benchmark = Benchmark_Start();
 
-    const int32_t num_pages = File_ReadS32(file);
+    const int32_t num_pages = File_ReadCountS32(file);
     const LEVEL_FORMAT_LOADER *const loader = ctx->loader;
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
     info->textures.page_count = num_pages;
@@ -169,7 +169,7 @@ void Level_Section_ReadObjectTextures(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
-    const int32_t num_textures = File_ReadS32(file);
+    const int32_t num_textures = File_ReadCountS32(file);
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
     info->textures.object_count = num_textures;
     LOG_INFO("object textures: %d", num_textures);
@@ -213,7 +213,7 @@ void Level_Section_ReadSpriteTextures(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
-    const int32_t num_textures = File_ReadS32(file);
+    const int32_t num_textures = File_ReadCountS32(file);
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
     info->textures.sprite_count = num_textures;
     LOG_INFO("sprite textures: %d", num_textures);
@@ -251,7 +251,7 @@ void Level_Section_ReadAnimatedTextureRanges(
     const int32_t data_size = File_ReadS32(file);
     const size_t end_position = File_Pos(file) + data_size * sizeof(int16_t);
 
-    const int16_t num_ranges = File_ReadS16(file);
+    const int16_t num_ranges = File_ReadCountS16(file);
     LOG_INFO("animated texture ranges: %d", num_ranges);
     Output_InitialiseAnimatedTextures(num_ranges);
 
@@ -263,7 +263,7 @@ void Level_Section_ReadAnimatedTextureRanges(
 
         // Level data is tied to the original logic in Output_AnimateTextures
         // and hence stores one less than the actual count here.
-        range->num_textures = File_ReadS16(file) + 1;
+        range->num_textures = File_ReadCountS16(file) + 1;
         range->textures = GameBuf_Alloc(
             sizeof(int16_t) * range->num_textures,
             GBUF_ANIMATED_TEXTURE_RANGES);

@@ -20,7 +20,7 @@ static void M_ReadPosition(XYZ_32 *const pos, TRX_FILE *const file)
 void Level_Section_ReadAnims(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
-    const int32_t num_anims = File_ReadS32(file);
+    const int32_t num_anims = File_ReadCountS32(file);
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
     info->anims.anim_count = num_anims;
     LOG_INFO("anims: %d", num_anims);
@@ -53,9 +53,9 @@ void Level_Section_AppendAnims(
         anim->frame_end = File_ReadS16(file);
         anim->jump_anim_num = File_ReadS16(file);
         anim->jump_frame_num = File_ReadS16(file);
-        anim->num_changes = File_ReadS16(file);
+        anim->num_changes = File_ReadCountS16(file);
         anim->change_idx = File_ReadS16(file);
-        anim->num_commands = File_ReadS16(file);
+        anim->num_commands = File_ReadCountS16(file);
         anim->command_idx = File_ReadS16(file);
     }
 }
@@ -64,7 +64,7 @@ void Level_Section_ReadAnimChanges(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
-    const int32_t num_anim_changes = File_ReadS32(file);
+    const int32_t num_anim_changes = File_ReadCountS32(file);
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
     info->anims.change_count = num_anim_changes;
     LOG_INFO("anim changes: %d", num_anim_changes);
@@ -80,7 +80,7 @@ void Level_Section_AppendAnimChanges(
     for (int32_t i = 0; i < num_changes; i++) {
         ANIM_CHANGE *const anim_change = Anim_GetChange(base_idx + i);
         anim_change->goal_anim_state = File_ReadS16(file);
-        anim_change->num_ranges = File_ReadS16(file);
+        anim_change->num_ranges = File_ReadCountS16(file);
         anim_change->range_idx = File_ReadS16(file);
     }
 }
@@ -89,7 +89,7 @@ void Level_Section_ReadAnimRanges(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
-    const int32_t num_anim_ranges = File_ReadS32(file);
+    const int32_t num_anim_ranges = File_ReadCountS32(file);
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
     info->anims.range_count = num_anim_ranges;
     LOG_INFO("anim ranges: %d", num_anim_ranges);
@@ -115,7 +115,7 @@ void Level_Section_ReadAnimCommands(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
-    const int32_t num_commands = File_ReadS32(file);
+    const int32_t num_commands = File_ReadCountS32(file);
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
     info->anims.command_count = num_commands;
     LOG_INFO("anim commands: %d", num_commands);
@@ -137,7 +137,7 @@ void Level_Section_AppendAnimCommands(
 void Level_Section_ReadAnimBones(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
-    const int32_t num_anim_bones = File_ReadS32(file) / ANIM_BONE_SIZE;
+    const int32_t num_anim_bones = File_ReadCountS32(file) / ANIM_BONE_SIZE;
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
     info->anims.bone_count = num_anim_bones;
     LOG_INFO("anim bones: %d", num_anim_bones);
@@ -165,7 +165,7 @@ void Level_Section_ReadAnimFrames(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
-    const int32_t raw_data_count = File_ReadS32(file);
+    const int32_t raw_data_count = File_ReadCountS32(file);
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
     info->anims.frame_count = raw_data_count;
     LOG_INFO("raw anim frames: %d", raw_data_count);

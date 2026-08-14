@@ -41,7 +41,7 @@ void Level_Section_ReadSamples(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
         }
     }
 
-    const int32_t num_sample_infos = File_ReadS32(file);
+    const int32_t num_sample_infos = File_ReadCountS32(file);
     LOG_INFO("sample infos: %d", num_sample_infos);
     for (int32_t i = 0; i < num_sample_infos; i++) {
         SAMPLE_INFO *const sample_info =
@@ -115,7 +115,7 @@ void Level_Section_ReadSamples(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
         File_ReadData(file, info->samples.data, sizeof(char) * data_size);
     }
 
-    const int32_t num_offsets = File_ReadS32(file);
+    const int32_t num_offsets = File_ReadCountS32(file);
     LOG_INFO("samples: %d", num_offsets);
     info->samples.offset_count = num_offsets;
 
