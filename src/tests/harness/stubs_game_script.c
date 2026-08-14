@@ -4,20 +4,20 @@
 
 #include <harness/stubs_game_script.h>
 
-#include <trx/game/shell/paths.h>
+#include <trx/game/paths.h>
 
 #include <stdio.h>
 
-static const char *m_ScriptDirs[TRX_DYNAMIC_PATH_NUMBER_OF] = {};
+static const char *m_ScriptDirs[GAME_DYNAMIC_PATH_NUMBER_OF] = {};
 
 void FakeGameScript_SetScriptDir(
-    const TRX_DYNAMIC_PATH path, const char *const dir)
+    const GAME_DYNAMIC_PATH path, const char *const dir)
 {
     m_ScriptDirs[path] = dir;
 }
 
-const char *TRXPath_PeekResolve(
-    const TRX_DYNAMIC_PATH path, const char *const rel)
+const char *GamePath_PeekResolve(
+    const GAME_DYNAMIC_PATH path, const char *const rel)
 {
     const char *const dir = m_ScriptDirs[path];
     if (dir == nullptr) {

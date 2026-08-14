@@ -9,7 +9,7 @@
 #include <trx/core/strings.h>
 #include <trx/core/subsystem.h>
 #include <trx/game/game_strings/entries.h>
-#include <trx/game/shell/paths.h>
+#include <trx/game/paths.h>
 #include <trx/version.h>
 
 #include <uthash.h>
@@ -661,7 +661,7 @@ static const UI_BAR_THEME *M_FindThemeByName(
 static void M_Load(void)
 {
     const char *const path =
-        TRXPath_Resolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "ui.json5");
+        GamePath_Resolve(GAME_DYNAMIC_PATH_COMMON_CONFIG, "ui.json5");
     JSON_VALUE *const root = JSONFile_ReadEx(path, true);
     JSON_READ_IO *const io = JSON_ReadIO_Create(root, 0, path);
 

@@ -1,4 +1,4 @@
-#include <trx/game/shell/paths.h>
+#include <trx/game/paths.h>
 
 #include <trx/core/filesystem.h>
 #include <trx/core/log.h>
@@ -39,7 +39,7 @@ typedef struct {
 } M_PATH_TOKEN;
 
 typedef struct {
-    TRX_DYNAMIC_PATH id;
+    GAME_DYNAMIC_PATH id;
     const char *patterns[8];
     const char **extensions;
     bool check_exists;
@@ -58,7 +58,7 @@ typedef struct {
 
 typedef struct {
     uint32_t generation;
-    TRX_DYNAMIC_PATH path;
+    GAME_DYNAMIC_PATH path;
     char *rel;
     char *resolved;
     bool found;
@@ -81,8 +81,8 @@ static const char *m_ImageExtensions[] = {
     ".webp", ".png", ".jpg", ".jpeg", ".pcx", ".bmp", nullptr,
 };
 
-static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = {
-    [TRX_DYNAMIC_PATH_COMMON_CONFIG] = {
+static const M_DYNAMIC_PATH_POLICY m_PathPolicies[GAME_DYNAMIC_PATH_NUMBER_OF] = {
+    [GAME_DYNAMIC_PATH_COMMON_CONFIG] = {
         .patterns = {
             "%mod_dir%/%rel%",
             "%base_mod_dir%/%rel%",
@@ -91,7 +91,7 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = 
         },
         .check_exists = true,
     },
-    [TRX_DYNAMIC_PATH_CATALOG] = {
+    [GAME_DYNAMIC_PATH_CATALOG] = {
         .patterns = {
             "%mod_dir%/%rel%",
             "%base_mod_dir%/%rel%",
@@ -100,14 +100,14 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = 
         },
         .check_exists = true,
     },
-    [TRX_DYNAMIC_PATH_GAMEFLOW_FILE] = {
+    [GAME_DYNAMIC_PATH_GAMEFLOW_FILE] = {
         .patterns = {
             "%games_dir%/%rel%/gameflow.json5",
             nullptr,
         },
         .check_exists = true,
     },
-    [TRX_DYNAMIC_PATH_LEVEL_FILE] = {
+    [GAME_DYNAMIC_PATH_LEVEL_FILE] = {
         .patterns = {
             "%mod_dir%/levels/%rel%",
             "%trx_dir%/data/%rel%",
@@ -119,7 +119,7 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = 
         },
         .check_exists = true,
     },
-    [TRX_DYNAMIC_PATH_SHARED_LEVEL_FILE] = {
+    [GAME_DYNAMIC_PATH_SHARED_LEVEL_FILE] = {
         .patterns = {
             "%mod_dir%/levels/%rel%",
             "%base_mod_dir%/levels/%rel%",
@@ -129,7 +129,7 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = 
         },
         .check_exists = true,
     },
-    [TRX_DYNAMIC_PATH_IMAGE_FILE] = {
+    [GAME_DYNAMIC_PATH_IMAGE_FILE] = {
         .patterns = {
             "%mod_dir%/images/%rel%",
             "%base_mod_dir%/images/%rel%",
@@ -140,7 +140,7 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = 
         .extensions = m_ImageExtensions,
         .check_exists = true,
     },
-    [TRX_DYNAMIC_PATH_INJECTION_FILE] = {
+    [GAME_DYNAMIC_PATH_INJECTION_FILE] = {
         .patterns = {
             "%mod_dir%/injections/%rel%",
             "%base_mod_dir%/injections/%rel%",
@@ -150,7 +150,7 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = 
         },
         .check_exists = true,
     },
-    [TRX_DYNAMIC_PATH_LEVEL_SCRIPT_FILE] = {
+    [GAME_DYNAMIC_PATH_LEVEL_SCRIPT_FILE] = {
         .patterns = {
             "%mod_dir%/scripts/%rel%",
             "%trx_dir%/data/scripts/%rel%", // TODO: remove in 1.13
@@ -158,7 +158,7 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = 
         },
         .check_exists = true,
     },
-    [TRX_DYNAMIC_PATH_GAME_SCRIPT_FILE] = {
+    [GAME_DYNAMIC_PATH_GAME_SCRIPT_FILE] = {
         .patterns = {
             "%mod_dir%/scripts/%rel%",
             "%base_mod_dir%/scripts/%rel%",
@@ -167,21 +167,21 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = 
         },
         .check_exists = true,
     },
-    [TRX_DYNAMIC_PATH_GAME_MODULE_FILE] = {
+    [GAME_DYNAMIC_PATH_GAME_MODULE_FILE] = {
         .patterns = {
             "%games_dir%/%rel%",
             nullptr,
         },
         .check_exists = true,
     },
-    [TRX_DYNAMIC_PATH_COMMON_MODULE_FILE] = {
+    [GAME_DYNAMIC_PATH_COMMON_MODULE_FILE] = {
         .patterns = {
             "%trx_dir%/modules/%rel%",
             nullptr,
         },
         .check_exists = true,
     },
-    [TRX_DYNAMIC_PATH_FMV_FILE] = {
+    [GAME_DYNAMIC_PATH_FMV_FILE] = {
         .patterns = {
             "%mod_dir%/fmv/%rel%",
             "%base_mod_dir%/fmv/%rel%",
@@ -192,7 +192,7 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = 
         .extensions = m_FMVExtensions,
         .check_exists = true,
     },
-    [TRX_DYNAMIC_PATH_SFX_FILE] = {
+    [GAME_DYNAMIC_PATH_SFX_FILE] = {
         .patterns = {
             "%mod_dir%/%rel%",
             "%base_mod_dir%/%rel%",
@@ -202,7 +202,7 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = 
         },
         .check_exists = true,
     },
-    [TRX_DYNAMIC_PATH_CDAUDIO_FILE] = {
+    [GAME_DYNAMIC_PATH_CDAUDIO_FILE] = {
         .patterns = {
             "%mod_dir%/music/%rel%",
             "%mod_dir%/audio/%rel%",
@@ -214,7 +214,7 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = 
         },
         .check_exists = true,
     },
-    [TRX_DYNAMIC_PATH_MUSIC_DIR] = {
+    [GAME_DYNAMIC_PATH_MUSIC_DIR] = {
         .patterns = {
             "%mod_dir%/music",
             "%base_mod_dir%/music",
@@ -225,7 +225,7 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = 
         .check_exists = true,
         .is_dir = true,
     },
-    [TRX_DYNAMIC_PATH_SHADER_FILE] = {
+    [GAME_DYNAMIC_PATH_SHADER_FILE] = {
         .patterns = {
             "%mod_dir%/shaders/%rel%",
             "%base_mod_dir%/shaders/%rel%",
@@ -235,7 +235,7 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[TRX_DYNAMIC_PATH_NUMBER_OF] = 
         },
         .check_exists = true,
     },
-    [TRX_DYNAMIC_PATH_SCREENSHOT_WRITE_FILE] = {
+    [GAME_DYNAMIC_PATH_SCREENSHOT_WRITE_FILE] = {
         .patterns = {
             "%screenshots_dir%/%mod%/%rel%",
             "%screenshots_dir%/%rel%",
@@ -461,7 +461,7 @@ static char *M_GuessExtensionCached(
 }
 
 static M_RESOLVE_CACHE_ENTRY *M_FindResolveCache(
-    const TRX_DYNAMIC_PATH path, const char *const rel)
+    const GAME_DYNAMIC_PATH path, const char *const rel)
 {
     if (m_ResolveCache == nullptr || rel == nullptr) {
         return nullptr;
@@ -477,7 +477,7 @@ static M_RESOLVE_CACHE_ENTRY *M_FindResolveCache(
 }
 
 static void M_SetResolveCache(
-    const TRX_DYNAMIC_PATH path, const char *const rel,
+    const GAME_DYNAMIC_PATH path, const char *const rel,
     const char *const resolved)
 {
     if (rel == nullptr) {
@@ -558,45 +558,45 @@ static char *M_GetLegacyDataDir(void)
     return M_JoinPath(m_Context.trx_dir, "data");
 }
 
-static char *M_GetBaseDirForDynamicPath(const TRX_DYNAMIC_PATH path)
+static char *M_GetBaseDirForDynamicPath(const GAME_DYNAMIC_PATH path)
 {
     switch (path) {
-    case TRX_DYNAMIC_PATH_COMMON_CONFIG:
-    case TRX_DYNAMIC_PATH_CATALOG:
+    case GAME_DYNAMIC_PATH_COMMON_CONFIG:
+    case GAME_DYNAMIC_PATH_CATALOG:
         return Memory_DupStr(m_Context.config_dir);
-    case TRX_DYNAMIC_PATH_LEVEL_FILE:
-    case TRX_DYNAMIC_PATH_SHARED_LEVEL_FILE:
-    case TRX_DYNAMIC_PATH_SFX_FILE:
+    case GAME_DYNAMIC_PATH_LEVEL_FILE:
+    case GAME_DYNAMIC_PATH_SHARED_LEVEL_FILE:
+    case GAME_DYNAMIC_PATH_SFX_FILE:
         return M_GetLegacyDataDir();
-    case TRX_DYNAMIC_PATH_IMAGE_FILE: {
+    case GAME_DYNAMIC_PATH_IMAGE_FILE: {
         char *legacy_data_dir = M_GetLegacyDataDir();
         char *result = M_JoinPath(legacy_data_dir, "images");
         Memory_FreePointer(&legacy_data_dir);
         return result;
     }
-    case TRX_DYNAMIC_PATH_INJECTION_FILE: {
+    case GAME_DYNAMIC_PATH_INJECTION_FILE: {
         char *legacy_data_dir = M_GetLegacyDataDir();
         char *result = M_JoinPath(legacy_data_dir, "injections");
         Memory_FreePointer(&legacy_data_dir);
         return result;
     }
-    case TRX_DYNAMIC_PATH_LEVEL_SCRIPT_FILE: {
+    case GAME_DYNAMIC_PATH_LEVEL_SCRIPT_FILE: {
         char *legacy_data_dir = M_GetLegacyDataDir();
         char *result = M_JoinPath(legacy_data_dir, "scripts");
         Memory_FreePointer(&legacy_data_dir);
         return result;
     }
-    case TRX_DYNAMIC_PATH_SHADER_FILE:
+    case GAME_DYNAMIC_PATH_SHADER_FILE:
         return M_JoinPath(m_Context.trx_dir, "shaders");
-    case TRX_DYNAMIC_PATH_FMV_FILE:
+    case GAME_DYNAMIC_PATH_FMV_FILE:
         return M_JoinPath(m_Context.trx_dir, "fmv");
-    case TRX_DYNAMIC_PATH_CDAUDIO_FILE: {
+    case GAME_DYNAMIC_PATH_CDAUDIO_FILE: {
         char *legacy_data_dir = M_GetLegacyDataDir();
         char *result = M_JoinPath(legacy_data_dir, "audio");
         Memory_FreePointer(&legacy_data_dir);
         return result;
     }
-    case TRX_DYNAMIC_PATH_MUSIC_DIR: {
+    case GAME_DYNAMIC_PATH_MUSIC_DIR: {
         char *legacy_data_dir = M_GetLegacyDataDir();
         char *result = M_JoinPath(legacy_data_dir, "music");
         Memory_FreePointer(&legacy_data_dir);
@@ -822,7 +822,7 @@ __attribute__((destructor)) static void M_Shutdown(void)
 }
 
 static char *M_ExpandDynamicPattern(
-    const TRX_DYNAMIC_PATH path, const char *const pattern,
+    const GAME_DYNAMIC_PATH path, const char *const pattern,
     const char *const rel, const char *const mod_dir_override)
 {
     ASSERT(pattern != nullptr);
@@ -840,7 +840,7 @@ static char *M_ExpandDynamicPattern(
     const M_PATH_TOKEN tokens[] = {
 #define M_DYNAMIC_PATH_TOKEN_ITEM(name, field, token)                          \
     { token, m_Context.field },
-        TRX_PATH_DIR_LIST(M_DYNAMIC_PATH_TOKEN_ITEM)
+        GAME_PATH_DIR_LIST(M_DYNAMIC_PATH_TOKEN_ITEM)
 #undef M_DYNAMIC_PATH_TOKEN_ITEM
             { "%rel%", rel_value },
         { "%mod_dir%", mod_dir },
@@ -864,14 +864,14 @@ static char *M_ExpandDynamicPattern(
 }
 
 static bool M_ForEachResolveAttempt(
-    const TRX_DYNAMIC_PATH path, const char *const rel,
+    const GAME_DYNAMIC_PATH path, const char *const rel,
     const M_RESOLVE_ATTEMPT_CALLBACK callback, void *const user_data,
     const bool stop_after_first_pattern)
 {
-    ASSERT(path >= 0 && path < TRX_DYNAMIC_PATH_NUMBER_OF);
+    ASSERT(path >= 0 && path < GAME_DYNAMIC_PATH_NUMBER_OF);
     ASSERT(callback != nullptr);
 
-    char *expanded_rel = TRXPath_ExpandVars(rel);
+    char *expanded_rel = GamePath_ExpandVars(rel);
     const char *const effective_rel =
         expanded_rel != nullptr ? expanded_rel : rel;
 
@@ -1008,7 +1008,7 @@ static bool M_CollectResolveAttemptVisitor(
 }
 
 static char *M_GetResolveAttempts(
-    const TRX_DYNAMIC_PATH path, const char *const rel)
+    const GAME_DYNAMIC_PATH path, const char *const rel)
 {
     char *attempts = nullptr;
     M_ForEachResolveAttempt(
@@ -1017,7 +1017,7 @@ static char *M_GetResolveAttempts(
 }
 
 static const char *M_GetResolveError(
-    const TRX_DYNAMIC_PATH path, const char *const rel)
+    const GAME_DYNAMIC_PATH path, const char *const rel)
 {
     char *attempts = M_GetResolveAttempts(path, rel);
     const char *const out = String_FormatStatic(
@@ -1066,31 +1066,31 @@ static const char *M_PeekResolvedUserPathCandidate(
     return resolved;
 }
 
-char *TRXPath_ExpandVars(const char *const in)
+char *GamePath_ExpandVars(const char *const in)
 {
     if (in == nullptr) {
         return nullptr;
     }
     if (!m_Context.inited) {
-        TRXPath_Init(m_Context.args);
+        GamePath_Init(m_Context.args);
     }
 
     char *result = Memory_DupStr(in);
     const char *const mod_id = M_GetCurrentModID();
     const char *const base_mod_id = M_GetBaseModID();
     char *mod_dir = M_GetCurrentModDir();
-    char *levels_dir = M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_LEVEL_FILE);
-    char *images_dir = M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_IMAGE_FILE);
+    char *levels_dir = M_GetBaseDirForDynamicPath(GAME_DYNAMIC_PATH_LEVEL_FILE);
+    char *images_dir = M_GetBaseDirForDynamicPath(GAME_DYNAMIC_PATH_IMAGE_FILE);
     char *injections_dir =
-        M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_INJECTION_FILE);
+        M_GetBaseDirForDynamicPath(GAME_DYNAMIC_PATH_INJECTION_FILE);
     char *scripts_dir =
-        M_GetBaseDirForDynamicPath(TRX_DYNAMIC_PATH_LEVEL_SCRIPT_FILE);
+        M_GetBaseDirForDynamicPath(GAME_DYNAMIC_PATH_LEVEL_SCRIPT_FILE);
     char *base_mod_dir = M_GetBaseModDir();
     char *tr_version = String_Format("%d", g_TRVersion);
 
     const M_PATH_TOKEN tokens[] = {
 #define M_PATH_TOKEN_ITEM(name, field, token) { token, m_Context.field },
-        TRX_PATH_DIR_LIST(M_PATH_TOKEN_ITEM)
+        GAME_PATH_DIR_LIST(M_PATH_TOKEN_ITEM)
 #undef M_PATH_TOKEN_ITEM
             { "%mod_dir%", mod_dir },
         { "%mod%", mod_id != nullptr ? mod_id : "" },
@@ -1116,7 +1116,7 @@ char *TRXPath_ExpandVars(const char *const in)
     return result;
 }
 
-void TRXPath_Init(const SHELL_ARGS *const args)
+void GamePath_Init(const SHELL_ARGS *const args)
 {
     M_Shutdown();
 
@@ -1159,40 +1159,40 @@ void TRXPath_Init(const SHELL_ARGS *const args)
     m_Context.inited = true;
 }
 
-const char *TRXPath_Get(const TRX_PATH path)
+const char *GamePath_Get(const GAME_PATH path)
 {
     if (!m_Context.inited) {
-        TRXPath_Init(m_Context.args);
+        GamePath_Init(m_Context.args);
     }
 
     switch (path) {
 #define M_GET_CASE(name, field, token)                                         \
-    case TRX_PATH_##name:                                                      \
+    case GAME_PATH_##name:                                                     \
         return m_Context.field;
-        TRX_PATH_DIR_LIST(M_GET_CASE)
+        GAME_PATH_DIR_LIST(M_GET_CASE)
 #undef M_GET_CASE
     default:
-        ASSERT_FAIL_FMT("Unknown TRX_PATH %d", path);
+        ASSERT_FAIL_FMT("Unknown GAME_PATH %d", path);
         return nullptr;
     }
 }
 
-char *TRXPath_Join(const TRX_PATH path, const char *const rel)
+char *GamePath_Join(const GAME_PATH path, const char *const rel)
 {
-    const char *const root = TRXPath_Get(path);
+    const char *const root = GamePath_Get(path);
     if (root == nullptr || rel == nullptr || String_IsEmpty(rel)) {
         return root != nullptr ? Memory_DupStr(root) : nullptr;
     }
     return M_JoinPath(root, rel);
 }
 
-const char *TRXPath_PeekResolve(
-    const TRX_DYNAMIC_PATH path, const char *const rel)
+const char *GamePath_PeekResolve(
+    const GAME_DYNAMIC_PATH path, const char *const rel)
 {
     if (!m_Context.inited) {
-        TRXPath_Init(m_Context.args);
+        GamePath_Init(m_Context.args);
     }
-    ASSERT(path >= 0 && path < TRX_DYNAMIC_PATH_NUMBER_OF);
+    ASSERT(path >= 0 && path < GAME_DYNAMIC_PATH_NUMBER_OF);
     const M_DYNAMIC_PATH_POLICY *const policy = &m_PathPolicies[path];
     ASSERT(policy != nullptr);
 
@@ -1229,41 +1229,42 @@ const char *TRXPath_PeekResolve(
     return nullptr;
 }
 
-const char *TRXPath_TryResolve(
-    const TRX_DYNAMIC_PATH path, const char *const rel)
+const char *GamePath_TryResolve(
+    const GAME_DYNAMIC_PATH path, const char *const rel)
 {
-    const char *const resolved = TRXPath_PeekResolve(path, rel);
+    const char *const resolved = GamePath_PeekResolve(path, rel);
     if (resolved == nullptr) {
         LOG_ERROR("%s", M_GetResolveError(path, rel));
     }
     return resolved;
 }
 
-const char *TRXPath_Resolve(const TRX_DYNAMIC_PATH path, const char *const rel)
+const char *GamePath_Resolve(
+    const GAME_DYNAMIC_PATH path, const char *const rel)
 {
-    const char *const resolved = TRXPath_PeekResolve(path, rel);
+    const char *const resolved = GamePath_PeekResolve(path, rel);
     if (resolved == nullptr) {
         Shell_ExitSystem(M_GetResolveError(path, rel));
     }
     return resolved;
 }
 
-MYFILE *TRXPath_OpenFile(
-    const TRX_DYNAMIC_PATH path, const char *const rel,
+MYFILE *GamePath_OpenFile(
+    const GAME_DYNAMIC_PATH path, const char *const rel,
     const FILE_OPEN_MODE mode)
 {
-    const char *const resolved = TRXPath_TryResolve(path, rel);
+    const char *const resolved = GamePath_TryResolve(path, rel);
     if (resolved == nullptr) {
         return nullptr;
     }
     return File_Open(resolved, mode);
 }
 
-bool TRXPath_LoadFile(
-    const TRX_DYNAMIC_PATH path, const char *const rel, char **const out_data,
+bool GamePath_LoadFile(
+    const GAME_DYNAMIC_PATH path, const char *const rel, char **const out_data,
     size_t *const out_size)
 {
-    const char *const resolved = TRXPath_TryResolve(path, rel);
+    const char *const resolved = GamePath_TryResolve(path, rel);
     if (resolved == nullptr) {
         if (out_data != nullptr) {
             *out_data = nullptr;
@@ -1276,30 +1277,30 @@ bool TRXPath_LoadFile(
     return File_Load(resolved, out_data, out_size);
 }
 
-bool TRXPath_Exists(const TRX_DYNAMIC_PATH path, const char *const rel)
+bool GamePath_Exists(const GAME_DYNAMIC_PATH path, const char *const rel)
 {
-    const char *const resolved = TRXPath_PeekResolve(path, rel);
+    const char *const resolved = GamePath_PeekResolve(path, rel);
     if (resolved == nullptr) {
         return false;
     }
     return File_Exists(resolved);
 }
 
-char *TRXPath_GuessExtension(const char *const path, const char **extensions)
+char *GamePath_GuessExtension(const char *const path, const char **extensions)
 {
     if (!m_Context.inited) {
-        TRXPath_Init(m_Context.args);
+        GamePath_Init(m_Context.args);
     }
     return M_GuessExtensionCached(path, extensions);
 }
 
-const char *TRXPath_PeekResolveUserPath(
-    const TRX_DYNAMIC_PATH path, const char *const input_path)
+const char *GamePath_PeekResolveUserPath(
+    const GAME_DYNAMIC_PATH path, const char *const input_path)
 {
     if (!m_Context.inited) {
-        TRXPath_Init(m_Context.args);
+        GamePath_Init(m_Context.args);
     }
-    ASSERT(path >= 0 && path < TRX_DYNAMIC_PATH_NUMBER_OF);
+    ASSERT(path >= 0 && path < GAME_DYNAMIC_PATH_NUMBER_OF);
     const M_DYNAMIC_PATH_POLICY *const policy = &m_PathPolicies[path];
     ASSERT(policy != nullptr);
 
@@ -1323,5 +1324,5 @@ const char *TRXPath_PeekResolveUserPath(
         }
     }
 
-    return TRXPath_PeekResolve(path, input_path);
+    return GamePath_PeekResolve(path, input_path);
 }

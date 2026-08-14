@@ -84,7 +84,7 @@ static void M_LoadPoses(void)
     ASSERT(m_Poses != nullptr);
 
     const char *const poses_path =
-        TRXPath_TryResolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "poses.json5");
+        GamePath_TryResolve(GAME_DYNAMIC_PATH_COMMON_CONFIG, "poses.json5");
     if (poses_path == nullptr) {
         return;
     }

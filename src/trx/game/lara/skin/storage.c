@@ -477,7 +477,7 @@ static void M_Shutdown(void)
 static void M_Load(void)
 {
     char *source_path = Memory_DupStr(
-        TRXPath_Resolve(TRX_DYNAMIC_PATH_COMMON_CONFIG, "outfits.json5"));
+        GamePath_Resolve(GAME_DYNAMIC_PATH_COMMON_CONFIG, "outfits.json5"));
     JSON_READ_IO *io = nullptr;
 
     if (m_GunMaps != nullptr) {

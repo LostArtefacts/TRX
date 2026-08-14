@@ -5,7 +5,7 @@
 #include <trx/core/subsystem.h>
 #include <trx/debug.h>
 #include <trx/game/objects.h>
-#include <trx/game/shell/paths.h>
+#include <trx/game/paths.h>
 
 #include <string.h>
 #include <zlib.h>
@@ -108,7 +108,7 @@ static bool M_IsPathAlreadyRead(const char *const path)
 bool CutSeq_Pak_Load(void)
 {
     const char *const path =
-        TRXPath_TryResolve(TRX_DYNAMIC_PATH_LEVEL_FILE, M_PAK_FILE_NAME);
+        GamePath_TryResolve(GAME_DYNAMIC_PATH_LEVEL_FILE, M_PAK_FILE_NAME);
     if (m_Attempted && M_IsPathAlreadyRead(path)) {
         return m_Data != nullptr;
     }

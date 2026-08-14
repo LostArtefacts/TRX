@@ -18,16 +18,17 @@ int main(int argc, char *argv[])
         Vector_Add(raw_args, &copied_arg);
     }
 
-    TRXPath_Init(nullptr);
+    GamePath_Init(nullptr);
     Shell_ScanAvailableMods();
     SHELL_ARGS *args = Shell_ParseArgs(raw_args);
     if (args == nullptr) {
         return 0;
     }
 
-    TRXPath_Init(args);
+    GamePath_Init(args);
 
-    char *log_path = String_Format("%s/TRX.log", TRXPath_Get(TRX_PATH_TRX_DIR));
+    char *log_path =
+        String_Format("%s/TRX.log", GamePath_Get(GAME_PATH_TRX_DIR));
     Log_Init(log_path, args->quiet ? LOG_LEVEL_WARNING : LOG_LEVEL_MAX);
     Memory_FreePointer(&log_path);
 
@@ -47,7 +48,7 @@ int main(int argc, char *argv[])
     int32_t exit_code;
     bool restart;
     do {
-        TRXPath_Init(args);
+        GamePath_Init(args);
         restart = false;
         exit_code = Shell_Main(args);
         // Note: on a mod switch, Shell_Main has already freed args (via the
@@ -72,7 +73,7 @@ int main(int argc, char *argv[])
                     .quiet = Shell_GetPrevQuiet(),
                 };
                 args = next_args;
-                TRXPath_Init(args);
+                GamePath_Init(args);
                 restart = true;
             }
         }

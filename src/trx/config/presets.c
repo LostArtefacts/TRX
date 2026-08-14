@@ -12,7 +12,7 @@
 #include <trx/core/vector.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/game_strings/manager.h>
-#include <trx/game/shell/paths.h>
+#include <trx/game/paths.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -160,14 +160,14 @@ void Config_Presets_ScanFiles(void)
 
     m_Presets = Vector_Create(sizeof(CONFIG_PRESET));
 
-    char *presets_dir = TRXPath_ExpandVars("%mod_dir%/presets");
+    char *presets_dir = GamePath_ExpandVars("%mod_dir%/presets");
     if (presets_dir == nullptr || !File_DirExists(presets_dir)) {
         Memory_FreePointer(&presets_dir);
-        presets_dir = TRXPath_ExpandVars("%base_mod_dir%/presets");
+        presets_dir = GamePath_ExpandVars("%base_mod_dir%/presets");
     }
     if (presets_dir == nullptr || !File_DirExists(presets_dir)) {
         Memory_FreePointer(&presets_dir);
-        presets_dir = TRXPath_ExpandVars("%config_dir%/presets");
+        presets_dir = GamePath_ExpandVars("%config_dir%/presets");
     }
     if (presets_dir == nullptr || !File_DirExists(presets_dir)) {
         Memory_FreePointer(&presets_dir);

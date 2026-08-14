@@ -14,9 +14,9 @@
 #include <trx/game/music.h>
 #include <trx/game/option/passport.h>
 #include <trx/game/output.h>
+#include <trx/game/paths.h>
 #include <trx/game/phase.h>
 #include <trx/game/savegame.h>
-#include <trx/game/shell/paths.h>
 #include <trx/game/stats.h>
 #include <trx/version.h>
 

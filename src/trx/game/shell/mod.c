@@ -8,8 +8,8 @@
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/game_flow/reader.h>
+#include <trx/game/paths.h>
 #include <trx/game/shell/common.h>
-#include <trx/game/shell/paths.h>
 #include <trx/game/shell/state.h>
 #include <trx/version.h>
 
@@ -111,7 +111,7 @@ static void M_SeedKnownMods(void)
 
 static void M_ScanForCustomMods(void)
 {
-    const char *const games_dir = TRXPath_Get(TRX_PATH_GAMES_DIR);
+    const char *const games_dir = GamePath_Get(GAME_PATH_GAMES_DIR);
     if (games_dir == nullptr) {
         return;
     }
@@ -177,7 +177,7 @@ static void M_ReadModMetaForKnownMods(void)
         }
 
         const char *const gameflow_path =
-            TRXPath_Resolve(TRX_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
+            GamePath_Resolve(GAME_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
         if (gameflow_path == nullptr) {
             continue;
         }
@@ -231,8 +231,8 @@ static void M_ValidateEngineVersions(void)
 
 static void M_ValidateNoMixedModLayouts(void)
 {
-    const char *const games_dir = TRXPath_Get(TRX_PATH_GAMES_DIR);
-    const char *const config_dir = TRXPath_Get(TRX_PATH_CONFIG_DIR);
+    const char *const games_dir = GamePath_Get(GAME_PATH_GAMES_DIR);
+    const char *const config_dir = GamePath_Get(GAME_PATH_CONFIG_DIR);
     if (games_dir == nullptr || config_dir == nullptr
         || strcmp(games_dir, config_dir) == 0) {
         return;
@@ -267,8 +267,8 @@ static void M_ValidateNoMixedModLayouts(void)
 static char *M_GetModStringsPath(const char *const mod_id)
 {
     ASSERT(mod_id != nullptr);
-    return TRXPath_Join(
-        TRX_PATH_GAMES_DIR, String_FormatStatic("%s/strings.json5", mod_id));
+    return GamePath_Join(
+        GAME_PATH_GAMES_DIR, String_FormatStatic("%s/strings.json5", mod_id));
 }
 
 static void M_ClearRejections(void)
@@ -368,7 +368,7 @@ void Shell_ScanAvailableMods(void)
     for (int32_t i = 0; i < m_Mods->count; i++) {
         SHELL_MOD *const mod = Vector_Get(m_Mods, i);
         mod->is_available =
-            TRXPath_Exists(TRX_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
+            GamePath_Exists(GAME_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
         mod->is_valid = mod->is_available;
     }
 
@@ -380,7 +380,7 @@ void Shell_ScanAvailableMods(void)
         SHELL_MOD *const mod = Vector_Get(m_Mods, i);
         if (mod->mod_type == MOD_CUSTOM) {
             mod->is_available =
-                TRXPath_Exists(TRX_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
+                GamePath_Exists(GAME_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
             mod->is_valid = mod->is_available;
         }
     }
@@ -409,7 +409,7 @@ void Shell_ValidateMods(void)
                 },
         };
         g_TRVersion = mod->engine_version;
-        TRXPath_Init(&args);
+        GamePath_Init(&args);
 
         const char *const gameflow_path = Shell_GetGameFlowPath(mod);
         char *error = nullptr;
@@ -519,8 +519,8 @@ bool Shell_IsCurrentMod(const char *const name)
 
 const char *Shell_GetCommonStringsPath(void)
 {
-    return TRXPath_TryResolve(
-        TRX_DYNAMIC_PATH_COMMON_CONFIG, "base_strings.json5");
+    return GamePath_TryResolve(
+        GAME_DYNAMIC_PATH_COMMON_CONFIG, "base_strings.json5");
 }
 
 char *Shell_GetBaseGameStringsPath(const SHELL_MOD *const mod)
@@ -537,5 +537,5 @@ char *Shell_GetGameStringsPath(const SHELL_MOD *const mod)
 
 const char *Shell_GetGameFlowPath(const SHELL_MOD *const mod)
 {
-    return TRXPath_Resolve(TRX_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
+    return GamePath_Resolve(GAME_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
 }
