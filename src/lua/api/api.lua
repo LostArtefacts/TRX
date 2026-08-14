@@ -169,6 +169,14 @@ local function declarator(name, key, spec)
     need(type(path) == "string", "path must be a string")
     declaration = declaration or {}
     need(type(declaration) == "table", "spec must be a table")
+    -- Any declaration may be deprecated: `true` says only that it is, and a
+    -- string says what to reach for instead. It is the docs' to report; nothing
+    -- stops working, which is the point of deprecating rather than removing.
+    local deprecated = declaration.deprecated
+    need(
+      deprecated == nil or deprecated == true or type(deprecated) == "string",
+      "deprecated must be true, or what to use instead"
+    )
     -- A container is declared as the module it indexes and sits under the name
     -- the reference gives it, so a kind may name its own path.
     local entry = open(spec.path and spec.path(path) or path)
@@ -244,6 +252,7 @@ local function members(declared, read)
   for name, member in pairs(declared or {}) do
     local one = read(member)
     one.name = name
+    one.deprecated = member.deprecated
     list[#list + 1] = one
   end
   table.sort(list, function(a, b)
@@ -1708,7 +1717,11 @@ function api.describe()
   for _, kind in ipairs(KINDS) do
     local list = {}
     for i, entry in ipairs(entries_of(kind)) do
-      list[i] = kind.describe(entry)
+      local described = kind.describe(entry)
+      -- Read off the spec rather than from each kind's describe: the flag means
+      -- the same thing wherever it is written, so no kind has to remember it.
+      described.deprecated = entry.spec.deprecated
+      list[i] = described
     end
     kind.sort(list)
     out[kind.key] = list

@@ -409,6 +409,81 @@ test(
   end
 )
 
+test(
+  "anything declared can be deprecated, and says so in describe()",
+  function()
+    local api = fresh_env()
+    api.module("things", {})
+    api.define("things.old", {
+      deprecated = "Use `trx.things.new` instead.",
+      description = "Old.",
+      impl = function() end,
+    })
+    api.property("things.air", {
+      deprecated = true,
+      type = "integer",
+      description = "Air.",
+      get = function() end,
+    })
+    api.type("things.Widget", {
+      backing = "WIDGET",
+      description = "A widget.",
+      fields = {
+        shown = {
+          from = "shown",
+          type = "integer",
+          deprecated = "Read `trx.things.air` instead.",
+          description = "Shown.",
+        },
+      },
+    })
+
+    -- The surface carries the registry's own declarations as well, so each entry
+    -- is looked up by the path it was declared at.
+    local function at(list, path)
+      for _, entry in ipairs(list) do
+        if (entry.path or entry.name) == path then
+          return entry
+        end
+      end
+    end
+
+    local out = api.describe()
+    assert(
+      at(out.functions, "things.old").deprecated
+        == "Use `trx.things.new` instead."
+    )
+    assert(at(out.properties, "things.air").deprecated == true)
+    assert(
+      at(out.types, "things.Widget").fields[1].deprecated
+        == "Read `trx.things.air` instead.",
+      "a member of a type carries it too"
+    )
+    assert(
+      at(out.modules, "things").deprecated == nil,
+      "nothing else is marked"
+    )
+
+    -- A deprecated declaration goes on working: it is the docs that change, not
+    -- what a script can call.
+    assert(type(trx.things.old) == "function")
+  end
+)
+
+test("deprecated has to say what it is", function()
+  local api = fresh_env()
+  api.module("things", {})
+  local ok = pcall(api.define, "things.old", {
+    deprecated = 1,
+    description = "Old.",
+    impl = function() end,
+  })
+  assert(
+    not ok,
+    "a deprecation that is neither true nor words must be refused"
+  )
+end)
+
 test("properties reach describe()", function()
   local api = fresh_env()
   api.module("things", {})
