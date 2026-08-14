@@ -30,6 +30,9 @@ static void M_KillLara(const ITEM *const item)
 {
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->gun_type == LGT_FLARE) {
+        lara->flare.control = false;
+    }
 
     Lara_SwitchToExtraState(LS_EXTRA_MIDAS_KILL);
     Lara_Kill();

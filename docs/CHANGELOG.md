@@ -27,6 +27,7 @@
 
 **TR1**
 - Changed Lara to retain her equipment when turning to gold on the Midas Hand, with the equipment also turning to gold
+- Fixed Lara's arm remaining in the flare pose if holding one on the Midas Hand
 - Fixed the Cabin in Natla's Mines remaining visible after dropping to the floor (regression from 1.10)
 
 **TR4**
