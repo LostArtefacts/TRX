@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/core/file.h>
+#include <trx/core/result.h>
 #include <trx/game/game_flow/types.h>
 
 typedef enum {
@@ -27,9 +28,12 @@ typedef struct LEVEL_FORMAT_LOADER {
     bool (*probe)(
         const struct LEVEL_FORMAT_LOADER *, TRX_FILE *file,
         LEVEL_FORMAT_PROBE_MODE mode);
-    bool (*load)(const struct LEVEL_FORMAT_LOADER *, TRX_FILE *file);
+    RESULT (*load)(const struct LEVEL_FORMAT_LOADER *, TRX_FILE *file);
 } LEVEL_FORMAT_LOADER;
 
 LEVEL_FORMAT_LAYOUT Level_Format_GuessLayout(TRX_FILE *file);
 const LEVEL_FORMAT_LOADER *Level_Format_GuessLoader(TRX_FILE *file);
-const LEVEL_FORMAT_LOADER *Level_Format_LoadFromFile(const GF_LEVEL *level);
+// Reads a level from the path the game flow gives it, reporting a level that
+// cannot be opened or is in no format TRX knows.
+RESULT Level_Format_LoadFromFile(
+    const GF_LEVEL *level, const LEVEL_FORMAT_LOADER **out_loader);

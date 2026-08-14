@@ -269,7 +269,7 @@ GF_COMMAND GF_InterpretSequence(
         }
     }
     if (seq_ctx != GFSC_STORY || level->type == GFL_CUTSCENE) {
-        if (!Level_Initialise(level, seq_ctx)) {
+        if (!Result_Absorb(Level_Initialise(level, seq_ctx))) {
             Game_SetCurrentLevel(nullptr);
             GF_SetCurrentLevel(nullptr);
             if (level->type == GFL_TITLE) {

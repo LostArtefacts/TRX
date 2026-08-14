@@ -103,7 +103,7 @@ static bool M_Probe(
     return true;
 }
 
-static bool M_Load(
+static RESULT M_Load(
     const LEVEL_FORMAT_LOADER *const loader, TRX_FILE *const file)
 {
     LEVEL_CONTEXT *const ctx = Level_Context_Get();
@@ -147,7 +147,7 @@ static bool M_Load(
     }
 
     Level_Section_PrepareTR123FlybyCameras();
-    return true;
+    return OK;
 }
 
 static const LEVEL_FORMAT_LOADER m_LevelLoaderTR2 = {

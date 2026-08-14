@@ -323,19 +323,19 @@ static void M_ReadSampleData(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
     }
 }
 
-static bool M_Load(
+static RESULT M_Load(
     const LEVEL_FORMAT_LOADER *const loader, TRX_FILE *const file)
 {
     LEVEL_CONTEXT *const ctx = Level_Context_Get();
     File_Seek(file, sizeof(uint32_t), FILE_SEEK_SET);
 
     if (!M_ReadImages(ctx, file)) {
-        return false;
+        return ERR;
     }
     TRX_FILE *const level_data = M_ReadChunk(file, "level data");
     if (level_data == nullptr) {
         Shell_ExitSystem("Failed to read TR4 level data");
-        return false;
+        return ERR;
     }
 
     File_ReadU32(level_data); // level number
@@ -366,7 +366,7 @@ static bool M_Load(
     File_Close(level_data);
 
     M_ReadSampleData(ctx, file);
-    return true;
+    return OK;
 }
 
 static const LEVEL_FORMAT_LOADER m_LevelLoaderTR4 = {

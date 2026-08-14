@@ -85,26 +85,29 @@ LEVEL_FORMAT_LAYOUT Level_Format_GuessLayout(TRX_FILE *const file)
     return LEVEL_FORMAT_LAYOUT_UNKNOWN;
 }
 
-const LEVEL_FORMAT_LOADER *Level_Format_LoadFromFile(
-    const GF_LEVEL *const level)
+RESULT Level_Format_LoadFromFile(
+    const GF_LEVEL *const level, const LEVEL_FORMAT_LOADER **const out_loader)
 {
+    *out_loader = nullptr;
     GameBuf_Reset();
 
     BENCHMARK benchmark = Benchmark_Start();
     TRX_FILE *file = nullptr;
-    EXIT_ON_FAIL(
-        File_OpenPathInMemory(level->path, &file), "The level cannot be read");
+    MUST(File_OpenPathInMemory(level->path, &file));
 
     const LEVEL_FORMAT_LOADER *const loader = Level_Format_GuessLoader(file);
     if (loader == nullptr) {
-        Shell_ExitSystemFmt("Failed to load %s", level->path);
+        File_Close(file);
+        return FAIL("%s: the level is in no format TRX knows", level->path);
     }
     g_TRVersion = loader->game_version;
     Level_Context_Reset(loader);
     ASSERT(loader->load != nullptr);
-    loader->load(loader, file);
+    const RESULT result = loader->load(loader, file);
 
     File_Close(file);
     Benchmark_End(&benchmark, nullptr);
-    return loader;
+    MUST(result, "%s", level->path);
+    *out_loader = loader;
+    return OK;
 }

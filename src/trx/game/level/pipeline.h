@@ -6,4 +6,4 @@
 #include <trx/game/level/sections/append.h>
 #include <trx/game/level/sections/read.h>
 
-void Level_Pipeline_Load(const GF_LEVEL *level);
+RESULT Level_Pipeline_Load(const GF_LEVEL *level);
