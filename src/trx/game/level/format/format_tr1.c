@@ -122,7 +122,7 @@ static bool M_Load(
     File_Seek(file, 4, FILE_SEEK_SET);
 
     // Read texture pages once the palette is available.
-    const int32_t num_pages = File_ReadS32(file);
+    const int32_t num_pages = File_ReadCountS32(file);
     File_Skip(file, num_pages * TEXTURE_PAGE_SIZE * sizeof(uint8_t));
 
     const int32_t file_level_num = File_ReadS32(file);

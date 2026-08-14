@@ -115,7 +115,7 @@ static void M_ReadRoomMesh(
     const size_t start_pos = File_Pos(file);
 
     {
-        room->mesh.num_vertices = File_ReadS16(file);
+        room->mesh.num_vertices = File_ReadCountS16(file);
         const int32_t alloc_count =
             room->mesh.num_vertices + inj_data.num_vertices;
         room->mesh.vertices =
@@ -155,10 +155,10 @@ static void M_ReadRoomMesh(
     }
 
     {
-        room->mesh.face4s.count = File_ReadS16(file);
+        room->mesh.face4s.count = File_ReadCountS16(file);
         const size_t pos = File_Pos(file);
         File_Skip(file, 10 * room->mesh.face4s.count);
-        room->mesh.face3s.count = File_ReadS16(file);
+        room->mesh.face3s.count = File_ReadCountS16(file);
         File_Seek(file, pos, FILE_SEEK_SET);
 
         room->mesh.all_faces.count = room->mesh.face4s.count
@@ -190,7 +190,7 @@ static void M_ReadRoomMesh(
     }
 
     if (loader->layout != LEVEL_FORMAT_LAYOUT_TR4) {
-        room->mesh.sprites.count = File_ReadS16(file);
+        room->mesh.sprites.count = File_ReadCountS16(file);
         const int32_t alloc_count =
             room->mesh.sprites.count + inj_data.num_static_2ds;
         room->mesh.sprites.data =
@@ -201,7 +201,7 @@ static void M_ReadRoomMesh(
             sprite->texture = File_ReadU16(file);
         }
     } else {
-        room->mesh.sprites.count = File_ReadS16(file);
+        room->mesh.sprites.count = File_ReadCountS16(file);
         room->mesh.sprites.data = nullptr;
     }
 
@@ -275,7 +275,7 @@ void Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
     BENCHMARK benchmark = Benchmark_Start();
     const LEVEL_FORMAT_LOADER *const loader = ctx->loader;
 
-    const int32_t num_rooms = File_ReadS16(file);
+    const int32_t num_rooms = File_ReadCountS16(file);
     LOG_INFO("rooms: %d", num_rooms);
     if (num_rooms > MAX_ROOMS) {
         Shell_ExitSystem("Too many rooms");
@@ -296,7 +296,7 @@ void Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
         const INJECTION_MESH_META inj_data = Inject_GetRoomMeshMeta(i);
         M_ReadRoomMesh(loader, i, file, inj_data);
 
-        const int16_t num_portals = File_ReadS16(file);
+        const int16_t num_portals = File_ReadCountS16(file);
         if (num_portals <= 0) {
             room->portals = nullptr;
         } else {
@@ -387,7 +387,7 @@ void Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
             }
         }
 
-        room->num_lights = File_ReadS16(file);
+        room->num_lights = File_ReadCountS16(file);
         room->lights = room->num_lights == 0
             ? nullptr
             : GameBuf_Alloc(sizeof(LIGHT) * room->num_lights, GBUF_ROOM_LIGHTS);
@@ -439,7 +439,7 @@ void Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
             }
         }
 
-        room->num_static_meshes = File_ReadS16(file);
+        room->num_static_meshes = File_ReadCountS16(file);
         const int32_t static_count =
             room->num_static_meshes + inj_data.num_static_3ds;
         room->static_meshes = static_count == 0

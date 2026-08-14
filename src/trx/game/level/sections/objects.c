@@ -43,7 +43,7 @@ void Level_Section_ReadObjects(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
     const LEVEL_FORMAT_LOADER *const loader = ctx->loader;
-    const int32_t num_objects = File_ReadS32(file);
+    const int32_t num_objects = File_ReadCountS32(file);
     LOG_INFO("objects: %d", num_objects);
     for (int32_t i = 0; i < num_objects; i++) {
         OBJECT spare_obj = {};
@@ -59,7 +59,7 @@ void Level_Section_ReadObjects(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
                 Shell_ExitSystemFmt("Invalid object ID: %d", game_obj_id);
             }
         }
-        obj->mesh_count = File_ReadS16(file);
+        obj->mesh_count = File_ReadCountS16(file);
         obj->mesh_idx = File_ReadS16(file);
         obj->bone_idx = File_ReadS32(file) / ANIM_BONE_SIZE;
         obj->frame_ofs = File_ReadU32(file);
@@ -78,7 +78,7 @@ void Level_Section_ReadStaticObjects(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
-    const int32_t num_objects = File_ReadS32(file);
+    const int32_t num_objects = File_ReadCountS32(file);
     LOG_INFO("static objects: %d", num_objects);
 
     typedef struct {
@@ -137,7 +137,7 @@ void Level_Section_ReadSpriteSequences(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
-    const int32_t num_sequences = File_ReadS32(file);
+    const int32_t num_sequences = File_ReadCountS32(file);
     LOG_DEBUG("sprite sequences: %d", num_sequences);
 
     int32_t injection_max_id = Inject_GetMaxStaticObject2DId();
@@ -184,7 +184,7 @@ void Level_Section_ReadItems(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
     const LEVEL_FORMAT_LOADER *const loader = ctx->loader;
-    const int32_t num_items = File_ReadS32(file);
+    const int32_t num_items = File_ReadCountS32(file);
     LOG_INFO("items: %d", num_items);
     if (num_items > MAX_ITEMS) {
         Shell_ExitSystem("Too many items");

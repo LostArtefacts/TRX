@@ -56,7 +56,7 @@ static void M_ReadObjectMesh(OBJECT_MESH *const mesh, TRX_FILE *const file)
     mesh->depth_adjustment = 0.005;
 
     {
-        mesh->num_vertices = File_ReadS16(file);
+        mesh->num_vertices = File_ReadCountS16(file);
         mesh->vertices =
             GameBuf_Alloc(sizeof(XYZ_16) * mesh->num_vertices, GBUF_MESHES);
         for (int32_t i = 0; i < mesh->num_vertices; i++) {
@@ -84,18 +84,18 @@ static void M_ReadObjectMesh(OBJECT_MESH *const mesh, TRX_FILE *const file)
     {
         const int32_t quad_face_size = loader->game_version == 4 ? 12 : 10;
         const int32_t tri_face_size = loader->game_version == 4 ? 10 : 8;
-        mesh->tex_face4s.count = File_ReadS16(file);
+        mesh->tex_face4s.count = File_ReadCountS16(file);
         size_t pos = File_Pos(file);
         File_Skip(file, quad_face_size * mesh->tex_face4s.count);
-        mesh->tex_face3s.count = File_ReadS16(file);
+        mesh->tex_face3s.count = File_ReadCountS16(file);
         File_Skip(file, tri_face_size * mesh->tex_face3s.count);
         if (loader->game_version == 4) {
             mesh->flat_face4s.count = 0;
             mesh->flat_face3s.count = 0;
         } else {
-            mesh->flat_face4s.count = File_ReadS16(file);
+            mesh->flat_face4s.count = File_ReadCountS16(file);
             File_Skip(file, quad_face_size * mesh->flat_face4s.count);
-            mesh->flat_face3s.count = File_ReadS16(file);
+            mesh->flat_face3s.count = File_ReadCountS16(file);
         }
         File_Seek(file, pos, FILE_SEEK_SET);
 
@@ -143,14 +143,14 @@ void Level_Section_ReadObjectMeshes(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
-    const int32_t num_meshes = File_ReadS32(file);
+    const int32_t num_meshes = File_ReadCountS32(file);
     LOG_INFO("object mesh data: %d", num_meshes);
 
     const size_t data_start_pos = File_Pos(file);
     File_Skip(file, num_meshes * sizeof(int16_t));
 
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
-    info->mesh_ptr_count = File_ReadS32(file);
+    info->mesh_ptr_count = File_ReadCountS32(file);
     LOG_INFO("object mesh offsets: %d", info->mesh_ptr_count);
     const int32_t alloc_size = info->mesh_ptr_count * sizeof(int32_t);
     int32_t *mesh_offsets = Memory_Alloc(alloc_size);

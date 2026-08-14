@@ -83,6 +83,12 @@ bool File_TryReadU8(TRX_FILE *file, uint8_t *dst);
 bool File_TryReadU16(TRX_FILE *file, uint16_t *dst);
 bool File_TryReadU32(TRX_FILE *file, uint32_t *dst);
 
+// Read the number of records that follow and reject a count larger than the
+// bytes remaining in the file. Since every record is at least one byte, such
+// a count cannot be valid. This guards the allocation below from using a
+// corrupt count and failing inside the allocator.
+int32_t File_ReadCountS16(TRX_FILE *file);
+int32_t File_ReadCountS32(TRX_FILE *file);
 
 // Return the bytes at the cursor for a caller that will read them directly.
 // Only a handle with the whole file in memory can provide them; a streamed

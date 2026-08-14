@@ -146,7 +146,7 @@ static void M_ReadAnimatedTextureRangesTR4(
 {
     const int32_t data_size = File_ReadS32(file);
     const size_t end_position = File_Pos(file) + data_size * sizeof(int16_t);
-    const int16_t num_ranges = File_ReadS16(file);
+    const int16_t num_ranges = File_ReadCountS16(file);
     LOG_INFO("animated texture ranges: %d", num_ranges);
     Output_InitialiseAnimatedTextures(num_ranges);
     for (int32_t i = 0; i < num_ranges; i++) {
@@ -154,7 +154,7 @@ static void M_ReadAnimatedTextureRangesTR4(
         range->next_range = i == num_ranges - 1
             ? nullptr
             : Output_GetAnimatedTextureRange(i + 1);
-        range->num_textures = File_ReadS16(file) + 1;
+        range->num_textures = File_ReadCountS16(file) + 1;
         range->textures = GameBuf_Alloc(
             sizeof(int16_t) * range->num_textures,
             GBUF_ANIMATED_TEXTURE_RANGES);
@@ -178,7 +178,7 @@ static void M_ReadObjectTexturesTR4(
         LOG_WARNING("Unexpected TR4 object texture signature");
     }
 
-    const int32_t num_textures = File_ReadS32(file);
+    const int32_t num_textures = File_ReadCountS32(file);
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
     info->textures.object_count = num_textures;
     LOG_INFO("object textures: %d", num_textures);
@@ -196,7 +196,7 @@ static void M_ReadSpriteTexturesTR4(
         LOG_WARNING("Unexpected TR4 sprite texture signature");
     }
 
-    const int32_t num_textures = File_ReadS32(file);
+    const int32_t num_textures = File_ReadCountS32(file);
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
     info->textures.sprite_count = num_textures;
     LOG_INFO("sprite textures: %d", num_textures);
@@ -230,7 +230,7 @@ static void M_ReadItemsTR4(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
-    const int32_t num_items = File_ReadS32(file);
+    const int32_t num_items = File_ReadCountS32(file);
     LOG_INFO("items: %d", num_items);
     if (num_items > MAX_ITEMS) {
         Shell_ExitSystem("Too many items");
@@ -274,7 +274,7 @@ static void M_ReadItemsTR4(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 static void M_ReadAIItemsTR4(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
-    const int32_t num_ai_items = File_ReadS32(file);
+    const int32_t num_ai_items = File_ReadCountS32(file);
     info->tr4.ai_item_count = num_ai_items;
     info->tr4.ai_items = GameBuf_Alloc(
         sizeof(LEVEL_TR4_AI_ITEM_INFO) * num_ai_items, GBUF_ITEMS);
@@ -295,7 +295,7 @@ static void M_ReadAIItemsTR4(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 static void M_ReadSampleData(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     LEVEL_CONTEXT_INFO *const info = &ctx->info;
-    const int32_t num_samples = File_ReadS32(file);
+    const int32_t num_samples = File_ReadCountS32(file);
     ASSERT(info->samples.offset_count == num_samples);
 
     const size_t start_pos = File_Pos(file);

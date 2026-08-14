@@ -12,7 +12,7 @@ void Level_Section_ReadPathingData(
 {
     BENCHMARK benchmark = Benchmark_Start();
     const LEVEL_FORMAT_LOADER *const loader = ctx->loader;
-    const int32_t num_boxes = File_ReadS32(file);
+    const int32_t num_boxes = File_ReadCountS32(file);
     Box_InitialiseBoxes(num_boxes);
     for (int32_t i = 0; i < num_boxes; i++) {
         BOX_INFO *const box = Box_GetBox(i);
@@ -35,7 +35,7 @@ void Level_Section_ReadPathingData(
         }
     }
 
-    const int32_t num_overlaps = File_ReadS32(file);
+    const int32_t num_overlaps = File_ReadCountS32(file);
     int16_t *const overlaps = Box_InitialiseOverlaps(num_overlaps);
     File_ReadData(file, overlaps, sizeof(int16_t) * num_overlaps);
 
