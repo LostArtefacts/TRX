@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/core/virtual_file.h>
+#include <trx/core/file.h>
 #include <trx/game/game_flow/types.h>
 
 typedef enum {
@@ -25,11 +25,11 @@ typedef struct LEVEL_FORMAT_LOADER {
     int32_t game_version;
     LEVEL_FORMAT_LAYOUT layout;
     bool (*probe)(
-        const struct LEVEL_FORMAT_LOADER *, VFILE *file,
+        const struct LEVEL_FORMAT_LOADER *, TRX_FILE *file,
         LEVEL_FORMAT_PROBE_MODE mode);
-    bool (*load)(const struct LEVEL_FORMAT_LOADER *, VFILE *file);
+    bool (*load)(const struct LEVEL_FORMAT_LOADER *, TRX_FILE *file);
 } LEVEL_FORMAT_LOADER;
 
-LEVEL_FORMAT_LAYOUT Level_Format_GuessLayout(VFILE *file);
-const LEVEL_FORMAT_LOADER *Level_Format_GuessLoader(VFILE *file);
+LEVEL_FORMAT_LAYOUT Level_Format_GuessLayout(TRX_FILE *file);
+const LEVEL_FORMAT_LOADER *Level_Format_GuessLoader(TRX_FILE *file);
 const LEVEL_FORMAT_LOADER *Level_Format_LoadFromFile(const GF_LEVEL *level);

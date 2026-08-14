@@ -1,5 +1,6 @@
 #include <trx/core/file.h>
 
+#include <trx/core/filesystem.h>
 #include <trx/core/filesystem/priv.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
@@ -224,6 +225,19 @@ TRX_FILE *File_OpenPath(const char *const path, const FILE_OPEN_MODE mode)
     file->state = disk;
     file->path = Memory_DupStr(path);
     file->size = end < 0 ? 0 : (size_t)end;
+    return file;
+}
+
+TRX_FILE *File_OpenPathInMemory(const char *const path)
+{
+    char *data = nullptr;
+    size_t size = 0;
+    if (!File_Load(path, &data, &size)) {
+        return nullptr;
+    }
+    TRX_FILE *const file = File_OpenBuffer(data, size);
+    file->path = Memory_DupStr(path);
+    Memory_FreePointer(&data);
     return file;
 }
 

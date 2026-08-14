@@ -5,15 +5,15 @@
 static bool M_TestItemMeta(
     const INJECTION_CONTEXT *const ctx, const INJECTION *const injection)
 {
-    const int32_t item_num = VFile_ReadS32(injection->fp);
+    const int32_t item_num = File_ReadS32(injection->fp);
     const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);
     const XYZ_32 pos = {
-        .x = VFile_ReadS32(injection->fp),
-        .y = VFile_ReadS32(injection->fp),
-        .z = VFile_ReadS32(injection->fp),
+        .x = File_ReadS32(injection->fp),
+        .y = File_ReadS32(injection->fp),
+        .z = File_ReadS32(injection->fp),
     };
-    const int16_t room_num = VFile_ReadS16(injection->fp);
-    const int16_t y_rot = VFile_ReadS16(injection->fp);
+    const int16_t room_num = File_ReadS16(injection->fp);
+    const int16_t y_rot = File_ReadS16(injection->fp);
 
     if (item_num < 0 || item_num >= Item_GetTotalCount()) {
         return false;

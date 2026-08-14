@@ -9,13 +9,13 @@ static void M_ItemPosEdits(
     const int32_t data_count)
 {
     for (int32_t i = 0; i < data_count; i++) {
-        const int16_t item_num = VFile_ReadS16(injection->fp);
-        const int16_t y_rot = VFile_ReadS16(injection->fp);
+        const int16_t item_num = File_ReadS16(injection->fp);
+        const int16_t y_rot = File_ReadS16(injection->fp);
         const GAME_VECTOR pos = {
-            .x = VFile_ReadS32(injection->fp),
-            .y = VFile_ReadS32(injection->fp),
-            .z = VFile_ReadS32(injection->fp),
-            .room_num = VFile_ReadS16(injection->fp),
+            .x = File_ReadS32(injection->fp),
+            .y = File_ReadS32(injection->fp),
+            .z = File_ReadS32(injection->fp),
+            .room_num = File_ReadS16(injection->fp),
         };
 
         if (item_num < 0 || item_num >= Item_GetTotalCount()) {
@@ -35,9 +35,9 @@ static void M_ItemFlagEdits(
     const int32_t data_count)
 {
     for (int32_t i = 0; i < data_count; i++) {
-        const int16_t item_num = VFile_ReadS16(injection->fp);
+        const int16_t item_num = File_ReadS16(injection->fp);
         const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);
-        const uint16_t flags = VFile_ReadU16(injection->fp);
+        const uint16_t flags = File_ReadU16(injection->fp);
 
         if (item_num < 0 || item_num >= Item_GetTotalCount()) {
             LOG_WARNING("Item number %d is out of level item range", item_num);
@@ -55,15 +55,15 @@ static void M_ItemNameEdits(
     const int32_t data_count)
 {
     for (int32_t i = 0; i < data_count; i++) {
-        const int16_t item_num = VFile_ReadS16(injection->fp);
-        const int32_t name_length = VFile_ReadS32(injection->fp);
+        const int16_t item_num = File_ReadS16(injection->fp);
+        const int32_t name_length = File_ReadS32(injection->fp);
         if (name_length <= 0) {
             continue;
         }
 
         if (name_length > 4096) {
             LOG_WARNING("Item name too long %d", name_length);
-            VFile_Skip(injection->fp, name_length);
+            File_Skip(injection->fp, name_length);
             continue;
         }
 
@@ -73,7 +73,7 @@ static void M_ItemNameEdits(
         }
 
         char *name = Memory_Alloc((size_t)(name_length + 1));
-        VFile_Read(injection->fp, name, name_length);
+        File_ReadData(injection->fp, name, name_length);
         name[name_length] = '\0';
 
         if (!Item_SetName(item_num, name)) {
@@ -91,14 +91,14 @@ static void M_CameraEdits(
     const int32_t data_count)
 {
     for (int32_t i = 0; i < data_count; i++) {
-        const int16_t camera_num = VFile_ReadS16(injection->fp);
+        const int16_t camera_num = File_ReadS16(injection->fp);
         const XYZ_32 pos = {
-            .x = VFile_ReadS32(injection->fp),
-            .y = VFile_ReadS32(injection->fp),
-            .z = VFile_ReadS32(injection->fp),
+            .x = File_ReadS32(injection->fp),
+            .y = File_ReadS32(injection->fp),
+            .z = File_ReadS32(injection->fp),
         };
-        const int16_t room_num = VFile_ReadS16(injection->fp);
-        const int16_t flags = VFile_ReadS16(injection->fp);
+        const int16_t room_num = File_ReadS16(injection->fp);
+        const int16_t flags = File_ReadS16(injection->fp);
         if (ctx->mode == INJECTION_MODE_STATS) {
             continue;
         }

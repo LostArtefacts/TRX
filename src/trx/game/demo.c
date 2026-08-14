@@ -78,7 +78,7 @@ static void M_RestoreConfig(M_PRIV *const p)
     Config_Update();
 }
 
-void Demo_LoadData(VFILE *const file, const size_t size)
+void Demo_LoadData(TRX_FILE *const file, const size_t size)
 {
     M_PRIV *const p = &m_Priv;
     if (size == 0) {
@@ -87,7 +87,7 @@ void Demo_LoadData(VFILE *const file, const size_t size)
         p->data =
             GameBuf_Alloc((size + 1) * sizeof(uint32_t), GBUF_DEMO_BUFFER);
         p->data[size] = -1;
-        VFile_Read(file, p->data, size);
+        File_ReadData(file, p->data, size);
     }
 }
 

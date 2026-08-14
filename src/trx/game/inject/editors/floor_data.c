@@ -18,7 +18,7 @@
 static void M_TriggerTypeChange(
     const INJECTION *const injection, const SECTOR *const sector)
 {
-    const uint8_t new_type = VFile_ReadU8(injection->fp);
+    const uint8_t new_type = File_ReadU8(injection->fp);
     if (sector != nullptr && sector->trigger != nullptr) {
         sector->trigger->type = new_type;
     }
@@ -27,9 +27,9 @@ static void M_TriggerTypeChange(
 static void M_TriggerParameterChange(
     const INJECTION *const injection, const SECTOR *const sector)
 {
-    const uint8_t cmd_type = VFile_ReadU8(injection->fp);
-    const int16_t old_param = VFile_ReadS16(injection->fp);
-    const int16_t new_param = VFile_ReadS16(injection->fp);
+    const uint8_t cmd_type = File_ReadU8(injection->fp);
+    const int16_t old_param = File_ReadS16(injection->fp);
+    const int16_t new_param = File_ReadS16(injection->fp);
     if (sector == nullptr || sector->trigger == nullptr) {
         return;
     }
@@ -79,15 +79,15 @@ static void M_FixGlideCamera(
     const SECTOR *const sector)
 {
     if (ctx->mode == INJECTION_MODE_STATS) {
-        VFile_Skip(injection->fp, 8);
+        File_Skip(injection->fp, 8);
         return;
     }
-    const uint8_t camera_timer = VFile_ReadU8(injection->fp);
-    const uint8_t glide_timer = VFile_ReadU8(injection->fp);
+    const uint8_t camera_timer = File_ReadU8(injection->fp);
+    const uint8_t glide_timer = File_ReadU8(injection->fp);
     const XYZ_16 camera_shift = {
-        .x = VFile_ReadS16(injection->fp),
-        .y = VFile_ReadS16(injection->fp),
-        .z = VFile_ReadS16(injection->fp),
+        .x = File_ReadS16(injection->fp),
+        .y = File_ReadS16(injection->fp),
+        .z = File_ReadS16(injection->fp),
     };
 
     if (sector == nullptr || sector->trigger == nullptr) {
@@ -120,7 +120,7 @@ static void M_FixGlideCamera(
 static void M_InsertFloorData(
     const INJECTION *const injection, SECTOR *const sector)
 {
-    const int32_t data_length = VFile_ReadS32(injection->fp);
+    const int32_t data_length = File_ReadS32(injection->fp);
     if (data_length < 0) {
         LOG_WARNING(
             "Skipping floor data insert with invalid length: %d", data_length);
@@ -134,7 +134,7 @@ static void M_InsertFloorData(
     }
 
     int16_t *data = Memory_Alloc(sizeof(int16_t) * data_length);
-    VFile_Read(injection->fp, data, sizeof(int16_t) * data_length);
+    File_ReadData(injection->fp, data, sizeof(int16_t) * data_length);
 
     if (sector == nullptr) {
         Memory_FreePointer(&data);
@@ -151,9 +151,9 @@ static void M_InsertFloorData(
 static void M_RoomShift(
     const INJECTION *const injection, const int16_t room_num)
 {
-    const uint32_t x_shift = ROUND_TO_SECTOR(VFile_ReadU32(injection->fp));
-    const uint32_t z_shift = ROUND_TO_SECTOR(VFile_ReadU32(injection->fp));
-    const int32_t y_shift = ROUND_TO_CLICK(VFile_ReadS32(injection->fp));
+    const uint32_t x_shift = ROUND_TO_SECTOR(File_ReadU32(injection->fp));
+    const uint32_t z_shift = ROUND_TO_SECTOR(File_ReadU32(injection->fp));
+    const int32_t y_shift = ROUND_TO_CLICK(File_ReadS32(injection->fp));
 
     ROOM *const room = Room_Get(room_num);
     room->pos.x += x_shift;
@@ -198,7 +198,7 @@ static void M_RoomShift(
 static void M_TriggeredItem(const INJECTION *const injection)
 {
     if (Item_GetLevelCount() == MAX_ITEMS) {
-        VFile_Skip(
+        File_Skip(
             injection->fp,
             sizeof(int16_t) * 4 + sizeof(int32_t) * 3 + sizeof(uint16_t));
         LOG_WARNING("Cannot add more than %d items", MAX_ITEMS);
@@ -210,34 +210,34 @@ static void M_TriggeredItem(const INJECTION *const injection)
 
     const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);
     item->object_id = obj_info.id;
-    item->room_num = VFile_ReadS16(injection->fp);
-    item->pos.x = VFile_ReadS32(injection->fp);
-    item->pos.y = VFile_ReadS32(injection->fp);
-    item->pos.z = VFile_ReadS32(injection->fp);
-    item->rot.y = VFile_ReadS16(injection->fp);
-    item->shade.value_1 = VFile_ReadS16(injection->fp);
+    item->room_num = File_ReadS16(injection->fp);
+    item->pos.x = File_ReadS32(injection->fp);
+    item->pos.y = File_ReadS32(injection->fp);
+    item->pos.z = File_ReadS32(injection->fp);
+    item->rot.y = File_ReadS16(injection->fp);
+    item->shade.value_1 = File_ReadS16(injection->fp);
     if (g_TRVersion >= 2) {
         item->shade.value_2 = item->shade.value_1;
     }
-    item->init_flags = VFile_ReadU16(injection->fp);
+    item->init_flags = File_ReadU16(injection->fp);
 
     if (injection->version < INJ_VERSION_7) {
         return;
     }
 
-    const int32_t name_length = VFile_ReadS32(injection->fp);
+    const int32_t name_length = File_ReadS32(injection->fp);
     if (name_length <= 0) {
         return;
     }
 
     if (name_length > 4096) {
         LOG_WARNING("Item name too long %d", name_length);
-        VFile_Skip(injection->fp, name_length);
+        File_Skip(injection->fp, name_length);
         return;
     }
 
     char *name = Memory_Alloc((size_t)(name_length + 1));
-    VFile_Read(injection->fp, name, name_length);
+    File_ReadData(injection->fp, name, name_length);
     name[name_length] = '\0';
     Item_SetName(item_num, name);
     Memory_FreePointer(&name);
@@ -246,7 +246,7 @@ static void M_TriggeredItem(const INJECTION *const injection)
 static void M_RoomProperties(
     const INJECTION *const injection, const int16_t room_num)
 {
-    const uint16_t flags = VFile_ReadU16(injection->fp);
+    const uint16_t flags = File_ReadU16(injection->fp);
     ROOM *const room = Room_Get(room_num);
     // clang-format off
     room->flags.underwater  = (flags & 0x01) != 0;
@@ -259,10 +259,10 @@ static void M_RoomProperties(
     room->flags.swamp       = (flags & 0x80) != 0;
     // clang-format on
     if (injection->version >= INJ_VERSION_8) {
-        room->reverb_info = VFile_ReadU8(injection->fp);
+        room->reverb_info = File_ReadU8(injection->fp);
     }
     if (injection->version >= INJ_VERSION_10) {
-        const uint8_t group = VFile_ReadU8(injection->fp);
+        const uint8_t group = File_ReadU8(injection->fp);
         if (group >= MAX_FLIP_MAPS && group != M_FLIP_GROUP_UNCHANGED) {
             LOG_WARNING(
                 "room %d: flip group %d is out of range", room_num, group);
@@ -280,12 +280,12 @@ static void M_RoomProperties(
 static void M_SectorOverwrite(
     const INJECTION *const injection, SECTOR *const sector)
 {
-    const uint16_t fd_idx = VFile_ReadU16(injection->fp);
-    const int16_t box_idx = VFile_ReadS16(injection->fp);
-    const int16_t pit_room = VFile_ReadS16(injection->fp);
-    const int16_t floor = VFile_ReadS16(injection->fp);
-    const int16_t sky_room = VFile_ReadS16(injection->fp);
-    const int16_t ceiling = VFile_ReadS16(injection->fp);
+    const uint16_t fd_idx = File_ReadU16(injection->fp);
+    const int16_t box_idx = File_ReadS16(injection->fp);
+    const int16_t pit_room = File_ReadS16(injection->fp);
+    const int16_t floor = File_ReadS16(injection->fp);
+    const int16_t sky_room = File_ReadS16(injection->fp);
+    const int16_t ceiling = File_ReadS16(injection->fp);
 
     if (sector == nullptr) {
         return;
@@ -305,7 +305,7 @@ static void M_FixZones(
 {
     if (ctx->mode == INJECTION_MODE_STATS || sector == nullptr
         || sector->box == NO_BOX) {
-        VFile_Skip(
+        File_Skip(
             injection->fp, 2 * sizeof(int16_t) * (Box_GetZoneCount() + 1));
         return;
     }
@@ -315,11 +315,11 @@ static void M_FixZones(
         for (int32_t zone_idx = 0; zone_idx < Box_GetZoneCount(); zone_idx++) {
             int16_t *const ground_zone =
                 Box_GetGroundZone(flip_status, zone_idx);
-            ground_zone[box_idx] = VFile_ReadS16(injection->fp);
+            ground_zone[box_idx] = File_ReadS16(injection->fp);
         }
 
         int16_t *const fly_zone = Box_GetFlyZone(flip_status);
-        fly_zone[box_idx] = VFile_ReadS16(injection->fp);
+        fly_zone[box_idx] = File_ReadS16(injection->fp);
     }
 }
 
@@ -327,19 +327,19 @@ static void M_SetSectorPortals(
     const INJECTION *const injection, SECTOR *const sector)
 {
     if (sector == nullptr) {
-        VFile_Skip(injection->fp, 3 * sizeof(int16_t));
+        File_Skip(injection->fp, 3 * sizeof(int16_t));
         return;
     }
 
-    sector->portal_room.wall = VFile_ReadS16(injection->fp);
-    sector->portal_room.sky = VFile_ReadS16(injection->fp);
-    sector->portal_room.pit = VFile_ReadS16(injection->fp);
+    sector->portal_room.wall = File_ReadS16(injection->fp);
+    sector->portal_room.sky = File_ReadS16(injection->fp);
+    sector->portal_room.pit = File_ReadS16(injection->fp);
 }
 
 static void M_SetSectorClimbability(
     const INJECTION *const injection, SECTOR *const sector)
 {
-    const int32_t direction = VFile_ReadS32(injection->fp);
+    const int32_t direction = File_ReadS32(injection->fp);
     if (sector != nullptr) {
         sector->ladder = (LADDER_DIRECTION)direction;
     }
@@ -348,13 +348,13 @@ static void M_SetSectorClimbability(
 static void M_SetSectorTriangulation(
     const INJECTION *const injection, SECTOR *const sector)
 {
-    const int32_t type = VFile_ReadS32(injection->fp);
+    const int32_t type = File_ReadS32(injection->fp);
 
 #define L_TRIANGULATE(test_type, surface)                                      \
     do {                                                                       \
         if ((type & (1 << test_type)) != 0) {                                  \
-            const int16_t func_data = VFile_ReadS16(injection->fp);            \
-            const int16_t tilt_data = VFile_ReadS16(injection->fp);            \
+            const int16_t func_data = File_ReadS16(injection->fp);             \
+            const int16_t tilt_data = File_ReadS16(injection->fp);             \
             if (sector != nullptr) {                                           \
                 sector->surface.tilt = (XZ_16) {};                             \
                 Room_ReadTriangulation(                                        \
@@ -372,7 +372,7 @@ static void M_SetSectorTriangulation(
 static void M_SetMineCart(
     const INJECTION *const injection, SECTOR *const sector)
 {
-    const MINE_CART_TYPE type = VFile_ReadS32(injection->fp);
+    const MINE_CART_TYPE type = File_ReadS32(injection->fp);
     if (type < 0 || type >= NUM_MINE_CART_TYPES) {
         LOG_WARNING("Invalid mine cart type: %d", type);
         return;
@@ -383,7 +383,7 @@ static void M_SetMineCart(
 static void M_SetMaterial(
     const INJECTION *const injection, SECTOR *const sector)
 {
-    sector->fx = VFile_ReadU8(injection->fp);
+    sector->fx = File_ReadU8(injection->fp);
 }
 
 static void M_FloorDataEdits(
@@ -391,10 +391,10 @@ static void M_FloorDataEdits(
     const int32_t data_count)
 {
     for (int32_t i = 0; i < data_count; i++) {
-        const int16_t room_num = VFile_ReadS16(injection->fp);
-        const uint16_t x = VFile_ReadU16(injection->fp);
-        const uint16_t z = VFile_ReadU16(injection->fp);
-        const int32_t fd_edit_count = VFile_ReadS32(injection->fp);
+        const int16_t room_num = File_ReadS16(injection->fp);
+        const uint16_t x = File_ReadU16(injection->fp);
+        const uint16_t z = File_ReadU16(injection->fp);
+        const int32_t fd_edit_count = File_ReadS32(injection->fp);
 
         // Verify that the given room and coordinates are accurate. Individual
         // FD functions must check that sector is set.
@@ -413,7 +413,7 @@ static void M_FloorDataEdits(
         }
 
         for (int32_t j = 0; j < fd_edit_count; j++) {
-            const FLOOR_EDIT_TYPE edit_type = VFile_ReadS32(injection->fp);
+            const FLOOR_EDIT_TYPE edit_type = File_ReadS32(injection->fp);
             switch (edit_type) {
             case FET_TRIGGER_TYPE:
                 M_TriggerTypeChange(injection, sector);

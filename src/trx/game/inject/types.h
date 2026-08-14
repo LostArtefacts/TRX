@@ -1,7 +1,7 @@
 #pragma once
 
+#include <trx/core/file.h>
 #include <trx/core/math.h>
-#include <trx/core/virtual_file.h>
 #include <trx/game/inject/enum.h>
 #include <trx/game/objects/ids.h>
 
@@ -11,7 +11,7 @@ typedef struct {
 
 typedef struct {
     char *path;
-    VFILE *fp;
+    TRX_FILE *fp;
     INJECTION_VERSION version;
     INJECTION_FILE_TYPE type;
     bool relevant;

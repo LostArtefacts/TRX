@@ -16,24 +16,29 @@ typedef enum {
     FILE_OPEN_WRITE,
 } FILE_OPEN_MODE;
 
-// One handle over anything that holds bytes, so that reading a level from the
-// disk and reading it from a buffer are the same code.
+// A handle to an open file, backed either by a file on disk or by a buffer in
+// memory. Reads and seeks work the same way on both.
 typedef struct TRX_FILE TRX_FILE;
 
-// Open a file on disk. Returns nullptr where it cannot be opened.
+// Open a file on disk. Returns nullptr if the file cannot be opened.
 TRX_FILE *File_OpenPath(const char *path, FILE_OPEN_MODE mode);
 
-// Open bytes already in memory. The handle keeps its own copy.
+// Open a file on disk and read all of it into memory. Only such a handle
+// supports views and peeking. Returns nullptr if the file cannot be read.
+TRX_FILE *File_OpenPathInMemory(const char *path);
+
+// Open a buffer that is already in memory. The handle keeps its own copy of
+// the data.
 TRX_FILE *File_OpenBuffer(const char *data, size_t size);
 
-// Open part of another handle, without copying what it holds. The parent has
-// to outlive the view.
+// Open a view onto part of another handle. The bytes are not copied, so the
+// parent handle must outlive the view.
 TRX_FILE *File_OpenView(TRX_FILE *file, size_t offset, size_t size);
 
 void File_Close(TRX_FILE *file);
 
-// The path a handle was opened from, or nullptr where it was not opened from
-// one.
+// Return the path the handle was opened from, or nullptr for a handle opened
+// from a buffer.
 const char *File_GetPath(const TRX_FILE *file);
 
 size_t File_Pos(const TRX_FILE *file);

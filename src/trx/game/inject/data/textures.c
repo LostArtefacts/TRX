@@ -35,9 +35,9 @@ static void M_HandlePalette(
     uint16_t palette_map[data_count];
     for (int32_t i = 0; i < data_count; i++) {
         const RGB_888 rgb = {
-            .r = VFile_ReadU8(injection->fp) * 4,
-            .g = VFile_ReadU8(injection->fp) * 4,
-            .b = VFile_ReadU8(injection->fp) * 4,
+            .r = File_ReadU8(injection->fp) * 4,
+            .g = File_ReadU8(injection->fp) * 4,
+            .b = File_ReadU8(injection->fp) * 4,
         };
         palette_map[i] = i == 0 ? 0 : M_RemapRGB8(rgb);
     }
@@ -50,22 +50,22 @@ static void M_HandleTexturePages(
 {
     LEVEL_CONTEXT_INFO *const info = Level_Context_GetInfo();
     if (info->textures.pages_32 == nullptr) {
-        VFile_Skip(
+        File_Skip(
             injection->fp, data_count * TEXTURE_PAGE_SIZE * sizeof(RGBA_8888));
-        VFile_Skip(injection->fp, data_count * TEXTURE_PAGE_SIZE);
+        File_Skip(injection->fp, data_count * TEXTURE_PAGE_SIZE);
         return;
     }
 
     RGBA_8888 *const output_32 =
         &info->textures.pages_32[info->textures.page_count * TEXTURE_PAGE_SIZE];
-    VFile_Read(
+    File_ReadData(
         injection->fp, output_32,
         data_count * TEXTURE_PAGE_SIZE * sizeof(RGBA_8888));
 
     uint8_t *output_8 =
         &info->textures.pages_8[info->textures.page_count * TEXTURE_PAGE_SIZE];
     uint8_t *input_8 = Memory_Alloc(data_count * TEXTURE_PAGE_SIZE);
-    VFile_Read(injection->fp, input_8, data_count * TEXTURE_PAGE_SIZE);
+    File_ReadData(injection->fp, input_8, data_count * TEXTURE_PAGE_SIZE);
 
     uint8_t *input_ptr = input_8;
     for (int32_t i = 0; i < data_count * TEXTURE_PAGE_SIZE; i++) {
@@ -82,8 +82,8 @@ static void M_HandleSpriteSequences(
     LEVEL_CONTEXT_INFO *const level_info = Level_Context_GetInfo();
     for (int32_t i = 0; i < data_count; i++) {
         const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);
-        const int16_t num_meshes = VFile_ReadS16(injection->fp);
-        const int16_t mesh_idx = VFile_ReadS16(injection->fp);
+        const int16_t num_meshes = File_ReadS16(injection->fp);
+        const int16_t mesh_idx = File_ReadS16(injection->fp);
 
         if (obj_info.type == OBJ_TYPE_OBJECT) {
             OBJECT *const obj = Object_TryGet(obj_info.id);
@@ -114,13 +114,12 @@ static void M_HandleTextureData(
     const INJECTION_CONTEXT *const ctx, const INJECTION_CHUNK chunk)
 {
     for (int32_t i = 0; i < chunk.num_blocks; i++) {
-        const INJECTION_DATA_TYPE data_type =
-            VFile_ReadS32(chunk.injection->fp);
-        const int32_t data_count = VFile_ReadS32(chunk.injection->fp);
-        const int32_t data_size = VFile_ReadS32(chunk.injection->fp);
+        const INJECTION_DATA_TYPE data_type = File_ReadS32(chunk.injection->fp);
+        const int32_t data_count = File_ReadS32(chunk.injection->fp);
+        const int32_t data_size = File_ReadS32(chunk.injection->fp);
 
         if (ctx->mode == INJECTION_MODE_STATS) {
-            VFile_Skip(chunk.injection->fp, data_size);
+            File_Skip(chunk.injection->fp, data_size);
             continue;
         }
 
@@ -133,7 +132,7 @@ static void M_HandleTextureData(
             break;
         default:
             LOG_WARNING("Unknown data type: %d", data_type);
-            VFile_Skip(chunk.injection->fp, data_size);
+            File_Skip(chunk.injection->fp, data_size);
             break;
         }
     }
@@ -147,13 +146,12 @@ static void M_HandleTextureInfo(
     const int32_t page_base = cached_info.textures.page_count;
 
     for (int32_t i = 0; i < chunk.num_blocks; i++) {
-        const INJECTION_DATA_TYPE data_type =
-            VFile_ReadS32(chunk.injection->fp);
-        const int32_t data_count = VFile_ReadS32(chunk.injection->fp);
-        const int32_t data_size = VFile_ReadS32(chunk.injection->fp);
+        const INJECTION_DATA_TYPE data_type = File_ReadS32(chunk.injection->fp);
+        const int32_t data_count = File_ReadS32(chunk.injection->fp);
+        const int32_t data_size = File_ReadS32(chunk.injection->fp);
 
         if (ctx->mode == INJECTION_MODE_STATS) {
-            VFile_Skip(chunk.injection->fp, data_size);
+            File_Skip(chunk.injection->fp, data_size);
             continue;
         }
 
@@ -174,7 +172,7 @@ static void M_HandleTextureInfo(
             break;
         default:
             LOG_WARNING("Unknown data type: %d", data_type);
-            VFile_Skip(chunk.injection->fp, data_size);
+            File_Skip(chunk.injection->fp, data_size);
             break;
         }
     }

@@ -14,13 +14,12 @@ static void M_HandleAnimData(
     const LEVEL_CONTEXT_INFO cached_info = Inject_GetCachedInfo();
 
     for (int32_t i = 0; i < chunk.num_blocks; i++) {
-        const INJECTION_DATA_TYPE data_type =
-            VFile_ReadS32(chunk.injection->fp);
-        const int32_t data_count = VFile_ReadS32(chunk.injection->fp);
-        const int32_t data_size = VFile_ReadS32(chunk.injection->fp);
+        const INJECTION_DATA_TYPE data_type = File_ReadS32(chunk.injection->fp);
+        const int32_t data_count = File_ReadS32(chunk.injection->fp);
+        const int32_t data_size = File_ReadS32(chunk.injection->fp);
 
         if (ctx->mode == INJECTION_MODE_STATS) {
-            VFile_Skip(chunk.injection->fp, data_size);
+            File_Skip(chunk.injection->fp, data_size);
             continue;
         }
 
@@ -92,7 +91,7 @@ static void M_HandleAnimData(
 
         default:
             LOG_WARNING("Unknown data type: %d", data_type);
-            VFile_Skip(chunk.injection->fp, data_size);
+            File_Skip(chunk.injection->fp, data_size);
             break;
         }
     }
@@ -106,9 +105,9 @@ static void M_CommandEdits(
     int16_t cmd_idx = cached_info.anims.command_count;
     for (int32_t i = 0; i < data_count; i++) {
         const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);
-        const int32_t anim_idx = VFile_ReadS32(injection->fp);
-        const int32_t num_raw_cmds = VFile_ReadS32(injection->fp);
-        const int32_t num_anim_cmds = VFile_ReadS32(injection->fp);
+        const int32_t anim_idx = File_ReadS32(injection->fp);
+        const int32_t num_raw_cmds = File_ReadS32(injection->fp);
+        const int32_t num_anim_cmds = File_ReadS32(injection->fp);
 
         const OBJECT *const obj = Object_Get(obj_info.id);
         if (ctx->mode == INJECTION_MODE_STATS || !obj->loaded) {

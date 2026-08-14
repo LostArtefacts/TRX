@@ -1,9 +1,9 @@
 #pragma once
 
-#include <trx/core/virtual_file.h>
+#include <trx/core/file.h>
 #include <trx/game/game_flow/types.h>
 
-void Demo_LoadData(VFILE *file, size_t size);
+void Demo_LoadData(TRX_FILE *file, size_t size);
 uint32_t *Demo_GetData(void);
 
 bool Demo_Start(int32_t level_num);

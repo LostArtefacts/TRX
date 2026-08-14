@@ -59,7 +59,7 @@ void Level_Format_RegisterLoader(
     Vector_Insert(m_Loaders, insert_idx, &registered);
 }
 
-const LEVEL_FORMAT_LOADER *Level_Format_GuessLoader(VFILE *const file)
+const LEVEL_FORMAT_LOADER *Level_Format_GuessLoader(TRX_FILE *const file)
 {
     const LEVEL_FORMAT_LOADER *result = nullptr;
     BENCHMARK benchmark = Benchmark_Start();
@@ -75,7 +75,7 @@ const LEVEL_FORMAT_LOADER *Level_Format_GuessLoader(VFILE *const file)
     return result;
 }
 
-LEVEL_FORMAT_LAYOUT Level_Format_GuessLayout(VFILE *const file)
+LEVEL_FORMAT_LAYOUT Level_Format_GuessLayout(TRX_FILE *const file)
 {
     const LEVEL_FORMAT_LOADER *const loader = Level_Format_GuessLoader(file);
     if (loader != nullptr) {
@@ -90,7 +90,7 @@ const LEVEL_FORMAT_LOADER *Level_Format_LoadFromFile(
     GameBuf_Reset();
 
     BENCHMARK benchmark = Benchmark_Start();
-    VFILE *const file = VFile_CreateFromPath(level->path);
+    TRX_FILE *const file = File_OpenPathInMemory(level->path);
     if (file == nullptr) {
         Shell_ExitSystemFmt("Could not open %s", level->path);
     }
@@ -104,7 +104,7 @@ const LEVEL_FORMAT_LOADER *Level_Format_LoadFromFile(
     ASSERT(loader->load != nullptr);
     loader->load(loader, file);
 
-    VFile_Close(file);
+    File_Close(file);
     Benchmark_End(&benchmark, nullptr);
     return loader;
 }

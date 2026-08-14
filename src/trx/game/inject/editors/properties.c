@@ -36,13 +36,13 @@ static VECTOR *m_Batches = nullptr;
 
 static const char *M_ReadName(const INJECTION *const injection)
 {
-    const int32_t length = VFile_ReadS32(injection->fp);
+    const int32_t length = File_ReadS32(injection->fp);
     if (length <= 0) {
         return nullptr;
     }
 
     char *const name = Memory_Alloc((size_t)(length + 1));
-    VFile_Read(injection->fp, name, length);
+    File_ReadData(injection->fp, name, length);
     name[length] = '\0';
 
     return name;
@@ -51,39 +51,39 @@ static const char *M_ReadName(const INJECTION *const injection)
 static TRX_VALUE M_ReadValue(const INJECTION *const injection)
 {
     TRX_VALUE value = {};
-    const int32_t disk_type = VFile_ReadS32(injection->fp);
+    const int32_t disk_type = File_ReadS32(injection->fp);
 
     switch (disk_type) {
     case M_DISK_INT:
         value.type = TVT_S32;
-        value.as_int = VFile_ReadS32(injection->fp);
+        value.as_int = File_ReadS32(injection->fp);
         break;
     case M_DISK_FLOAT:
         value.type = TVT_FLOAT;
-        value.as_num = VFile_ReadFloat(injection->fp);
+        value.as_num = File_ReadFloat(injection->fp);
         break;
     case M_DISK_DOUBLE:
         value.type = TVT_DOUBLE;
-        value.as_num = VFile_ReadDouble(injection->fp);
+        value.as_num = File_ReadDouble(injection->fp);
         break;
     case M_DISK_BOOL:
         value.type = TVT_BOOL;
-        value.as_bool = VFile_ReadS32(injection->fp) != 0;
+        value.as_bool = File_ReadS32(injection->fp) != 0;
         break;
     case M_DISK_XYZ:
         value.type = TVT_XYZ_32;
         value.as_xyz = (XYZ_32) {
-            .x = VFile_ReadS32(injection->fp),
-            .y = VFile_ReadS32(injection->fp),
-            .z = VFile_ReadS32(injection->fp),
+            .x = File_ReadS32(injection->fp),
+            .y = File_ReadS32(injection->fp),
+            .z = File_ReadS32(injection->fp),
         };
         break;
     case M_DISK_RGB:
         value.type = TVT_RGB_888;
         value.as_rgb = (RGB_888) {
-            .r = VFile_ReadU8(injection->fp),
-            .g = VFile_ReadU8(injection->fp),
-            .b = VFile_ReadU8(injection->fp),
+            .r = File_ReadU8(injection->fp),
+            .g = File_ReadU8(injection->fp),
+            .b = File_ReadU8(injection->fp),
         };
         break;
     default:
@@ -169,7 +169,7 @@ static void M_PropertyEdits(
 
     for (int32_t i = 0; i < data_count; i++) {
         M_PROPERTY_BATCH batch = {};
-        batch.target_type = VFile_ReadS32(injection->fp);
+        batch.target_type = File_ReadS32(injection->fp);
 
         switch (batch.target_type) {
         case M_TARGET_OBJECT:
@@ -179,7 +179,7 @@ static void M_PropertyEdits(
             break;
 
         case M_TARGET_ITEM:
-            batch.target_id = VFile_ReadS32(injection->fp);
+            batch.target_id = File_ReadS32(injection->fp);
             break;
 
         default:
@@ -187,7 +187,7 @@ static void M_PropertyEdits(
             break;
         }
 
-        const int32_t property_count = VFile_ReadS32(injection->fp);
+        const int32_t property_count = File_ReadS32(injection->fp);
         if (property_count > 0) {
             batch.properties =
                 Vector_CreateAtCapacity(sizeof(M_PROPERTY), property_count);

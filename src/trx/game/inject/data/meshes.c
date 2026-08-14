@@ -9,16 +9,15 @@ static void M_HandleMeshData(
 {
     int32_t mesh_ptr_count = 0;
     int32_t *mesh_indices = nullptr;
-    const size_t chunk_start_pos = VFile_GetPos(chunk.injection->fp);
+    const size_t chunk_start_pos = File_Pos(chunk.injection->fp);
 
     for (int32_t i = 0; i < chunk.num_blocks; i++) {
-        const INJECTION_DATA_TYPE data_type =
-            VFile_ReadS32(chunk.injection->fp);
-        const int32_t data_count = VFile_ReadS32(chunk.injection->fp);
-        const int32_t data_size = VFile_ReadS32(chunk.injection->fp);
+        const INJECTION_DATA_TYPE data_type = File_ReadS32(chunk.injection->fp);
+        const int32_t data_count = File_ReadS32(chunk.injection->fp);
+        const int32_t data_size = File_ReadS32(chunk.injection->fp);
 
         if (ctx->mode == INJECTION_MODE_STATS) {
-            VFile_Skip(chunk.injection->fp, data_size);
+            File_Skip(chunk.injection->fp, data_size);
             continue;
         }
 
@@ -26,7 +25,7 @@ static void M_HandleMeshData(
         case IDT_MESH_POINTERS: {
             const int32_t alloc_size = data_count * sizeof(int32_t);
             mesh_indices = Memory_Alloc(alloc_size);
-            VFile_Read(chunk.injection->fp, mesh_indices, alloc_size);
+            File_ReadData(chunk.injection->fp, mesh_indices, alloc_size);
             mesh_ptr_count = data_count;
             break;
         }
@@ -42,7 +41,7 @@ static void M_HandleMeshData(
 
         default:
             LOG_WARNING("Unknown data type: %d", data_type);
-            VFile_Skip(chunk.injection->fp, data_size);
+            File_Skip(chunk.injection->fp, data_size);
             break;
         }
     }
@@ -50,7 +49,8 @@ static void M_HandleMeshData(
     Memory_FreePointer(&mesh_indices);
 
     // Not all mesh data is necessarily read, so ensure to move to the end.
-    VFile_SetPos(chunk.injection->fp, chunk_start_pos + chunk.total_size);
+    File_Seek(
+        chunk.injection->fp, chunk_start_pos + chunk.total_size, FILE_SEEK_SET);
 }
 
 REGISTER_INJECTOR(ICT_MESH_DATA, M_HandleMeshData)

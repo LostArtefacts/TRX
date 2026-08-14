@@ -2,12 +2,12 @@
 
 #include <trx/config.h>
 #include <trx/core/benchmark.h>
+#include <trx/core/file.h>
 #include <trx/core/hash.h>
 #include <trx/core/json.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/subsystem.h>
-#include <trx/core/virtual_file.h>
 #include <trx/debug.h>
 #include <trx/game/creature.h>
 #include <trx/game/game_buf.h>
@@ -334,7 +334,7 @@ void Stats_CalculateMaxStats(void)
             continue;
         }
 
-        VFILE *const file = VFile_CreateFromPath(level->path);
+        TRX_FILE *const file = File_OpenPathInMemory(level->path);
         if (file == nullptr) {
             continue;
         }
@@ -379,7 +379,7 @@ void Stats_CalculateMaxStats(void)
         }
 
         GameBuf_Reset();
-        VFile_Close(file);
+        File_Close(file);
 
 #if 0
         const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);

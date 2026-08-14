@@ -1,9 +1,9 @@
 #include <trx/config.h>
 #include <trx/core/benchmark.h>
+#include <trx/core/file.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
-#include <trx/core/virtual_file.h>
 #include <trx/game/camera.h>
 #include <trx/game/inject.h>
 #include <trx/game/items/carrier.h>

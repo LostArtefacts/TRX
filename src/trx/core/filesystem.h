@@ -40,7 +40,7 @@ const char *File_GetBaseName(const char *path);
 // without its extension (owning string), or nullptr when path is nullptr.
 char *File_GetStem(const char *path);
 
-// Read size and modification time for path without opening it.
+// Read the size and modification time of a path without opening it.
 bool File_GetMeta(const char *path, uint64_t *out_size, uint64_t *out_mtime);
 
 // Read the whole file at path into a newly allocated, zero-terminated buffer.
