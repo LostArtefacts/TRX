@@ -99,15 +99,15 @@ the slot listed for the game you are building for.
     <td>468</td>
   </tr>
   <tr valign='top'>
-    <td><code>tr1_ngage</code></td>
-    <td><code>O_LARA_SKIN_SWAP_24</code></td>
-    <td>281</td>
-    <td>325</td>
-    <td>416</td>
-    <td>488</td>
+    <td><code>tr1_bacon_lara</code></td>
+    <td><code>O_LARA_SKIN_SWAP_5</code></td>
+    <td>262</td>
+    <td>306</td>
+    <td>397</td>
+    <td>469</td>
   </tr>
   <tr valign='top'>
-    <td><code>tr1_bacon_lara</code></td>
+    <td><code>tr2_gym</code></td>
     <td><code>O_LARA_SKIN_SWAP_6</code></td>
     <td>263</td>
     <td>307</td>
@@ -115,7 +115,15 @@ the slot listed for the game you are building for.
     <td>470</td>
   </tr>
   <tr valign='top'>
-    <td><code>tr2_gym</code></td>
+    <td><code>tr2_classic</code></td>
+    <td><code>O_LARA_SKIN_SWAP_7</code></td>
+    <td>264</td>
+    <td>308</td>
+    <td>399</td>
+    <td>471</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr2_diving_suit</code></td>
     <td><code>O_LARA_SKIN_SWAP_8</code></td>
     <td>265</td>
     <td>309</td>
@@ -123,7 +131,7 @@ the slot listed for the game you are building for.
     <td>472</td>
   </tr>
   <tr valign='top'>
-    <td><code>tr2_classic</code></td>
+    <td><code>tr2_bomber_jacket</code></td>
     <td><code>O_LARA_SKIN_SWAP_9</code></td>
     <td>266</td>
     <td>310</td>
@@ -131,7 +139,7 @@ the slot listed for the game you are building for.
     <td>473</td>
   </tr>
   <tr valign='top'>
-    <td><code>tr2_diving_suit</code></td>
+    <td><code>tr2_robe</code></td>
     <td><code>O_LARA_SKIN_SWAP_10</code></td>
     <td>267</td>
     <td>311</td>
@@ -139,15 +147,7 @@ the slot listed for the game you are building for.
     <td>474</td>
   </tr>
   <tr valign='top'>
-    <td><code>tr2_diving_suit_alpha</code></td>
-    <td><code>O_LARA_SKIN_SWAP_23</code></td>
-    <td>280</td>
-    <td>324</td>
-    <td>415</td>
-    <td>487</td>
-  </tr>
-  <tr valign='top'>
-    <td><code>tr2_bomber_jacket</code></td>
+    <td><code>tr2_vegas</code></td>
     <td><code>O_LARA_SKIN_SWAP_11</code></td>
     <td>268</td>
     <td>312</td>
@@ -155,15 +155,7 @@ the slot listed for the game you are building for.
     <td>475</td>
   </tr>
   <tr valign='top'>
-    <td><code>tr2_bomber_jacket_alpha</code></td>
-    <td><code>O_LARA_SKIN_SWAP_26</code></td>
-    <td>283</td>
-    <td>327</td>
-    <td>418</td>
-    <td>490</td>
-  </tr>
-  <tr valign='top'>
-    <td><code>tr2_robe</code></td>
+    <td><code>tr3_gym</code></td>
     <td><code>O_LARA_SKIN_SWAP_12</code></td>
     <td>269</td>
     <td>313</td>
@@ -171,7 +163,7 @@ the slot listed for the game you are building for.
     <td>476</td>
   </tr>
   <tr valign='top'>
-    <td><code>tr2_vegas</code></td>
+    <td><code>tr3_classic</code></td>
     <td><code>O_LARA_SKIN_SWAP_13</code></td>
     <td>270</td>
     <td>314</td>
@@ -179,7 +171,15 @@ the slot listed for the game you are building for.
     <td>477</td>
   </tr>
   <tr valign='top'>
-    <td><code>tr3_gym</code></td>
+    <td><code>tr3_south_pacific</code></td>
+    <td><code>O_LARA_SKIN_SWAP_14</code></td>
+    <td>271</td>
+    <td>315</td>
+    <td>406</td>
+    <td>478</td>
+  </tr>
+  <tr valign='top'>
+    <td><code>tr3_catsuit</code></td>
     <td><code>O_LARA_SKIN_SWAP_15</code></td>
     <td>272</td>
     <td>316</td>
@@ -187,7 +187,7 @@ the slot listed for the game you are building for.
     <td>479</td>
   </tr>
   <tr valign='top'>
-    <td><code>tr3_classic</code></td>
+    <td><code>tr3_nevada</code></td>
     <td><code>O_LARA_SKIN_SWAP_16</code></td>
     <td>273</td>
     <td>317</td>
@@ -195,7 +195,7 @@ the slot listed for the game you are building for.
     <td>480</td>
   </tr>
   <tr valign='top'>
-    <td><code>tr3_south_pacific</code></td>
+    <td><code>tr3_antarctica</code></td>
     <td><code>O_LARA_SKIN_SWAP_17</code></td>
     <td>274</td>
     <td>318</td>
@@ -203,7 +203,7 @@ the slot listed for the game you are building for.
     <td>481</td>
   </tr>
   <tr valign='top'>
-    <td><code>tr3_catsuit</code></td>
+    <td><code>sophia</code></td>
     <td><code>O_LARA_SKIN_SWAP_18</code></td>
     <td>275</td>
     <td>319</td>
@@ -211,7 +211,7 @@ the slot listed for the game you are building for.
     <td>482</td>
   </tr>
   <tr valign='top'>
-    <td><code>tr3_nevada</code></td>
+    <td><code>tr2_diving_suit_alpha</code></td>
     <td><code>O_LARA_SKIN_SWAP_19</code></td>
     <td>276</td>
     <td>320</td>
@@ -219,7 +219,7 @@ the slot listed for the game you are building for.
     <td>483</td>
   </tr>
   <tr valign='top'>
-    <td><code>tr3_antarctica</code></td>
+    <td><code>tr1_ngage</code></td>
     <td><code>O_LARA_SKIN_SWAP_20</code></td>
     <td>277</td>
     <td>321</td>
@@ -228,14 +228,6 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr3_antarctica_beta</code></td>
-    <td><code>O_LARA_SKIN_SWAP_25</code></td>
-    <td>282</td>
-    <td>326</td>
-    <td>417</td>
-    <td>489</td>
-  </tr>
-  <tr valign='top'>
-    <td><code>sophia</code></td>
     <td><code>O_LARA_SKIN_SWAP_21</code></td>
     <td>278</td>
     <td>322</td>
@@ -243,28 +235,36 @@ the slot listed for the game you are building for.
     <td>485</td>
   </tr>
   <tr valign='top'>
+    <td><code>tr2_bomber_jacket_alpha</code></td>
+    <td><code>O_LARA_SKIN_SWAP_22</code></td>
+    <td>279</td>
+    <td>323</td>
+    <td>414</td>
+    <td>486</td>
+  </tr>
+  <tr valign='top'>
     <td><code>tr4_young</code></td>
-    <td><code>O_LARA_SKIN_SWAP_27</code></td>
-    <td>284</td>
-    <td>328</td>
-    <td>419</td>
-    <td>491</td>
+    <td><code>O_LARA_SKIN_SWAP_23</code></td>
+    <td>280</td>
+    <td>324</td>
+    <td>415</td>
+    <td>487</td>
   </tr>
   <tr valign='top'>
     <td><code>tr4_classic</code></td>
-    <td><code>O_LARA_SKIN_SWAP_29</code></td>
-    <td>286</td>
-    <td>330</td>
-    <td>421</td>
-    <td>493</td>
+    <td><code>O_LARA_SKIN_SWAP_24</code></td>
+    <td>281</td>
+    <td>325</td>
+    <td>416</td>
+    <td>488</td>
   </tr>
   <tr valign='top'>
     <td><code>natla</code></td>
-    <td><code>O_LARA_SKIN_SWAP_31</code></td>
-    <td>288</td>
-    <td>332</td>
-    <td>423</td>
-    <td>495</td>
+    <td><code>O_LARA_SKIN_SWAP_25</code></td>
+    <td>282</td>
+    <td>326</td>
+    <td>417</td>
+    <td>489</td>
   </tr>
 </table>
 
@@ -289,11 +289,11 @@ Only the outfits below have a joints model. The rest need none.
   </tr>
   <tr valign='top'>
     <td><code>tr4_classic</code> joints</td>
-    <td><code>O_LARA_SKIN_JOINTS_3</code></td>
-    <td>298</td>
-    <td>342</td>
-    <td>435</td>
-    <td>504</td>
+    <td><code>O_LARA_SKIN_JOINTS_2</code></td>
+    <td>297</td>
+    <td>341</td>
+    <td>434</td>
+    <td>503</td>
   </tr>
 </table>
 
