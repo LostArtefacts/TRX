@@ -350,6 +350,24 @@ static void M_UpdateSunglasses(void)
     Lara_Skin_SetExtraEquipment(LM_HEAD, mesh);
 }
 
+static void M_ReapplyEquipmentEx(
+    const LARA_SKIN_OUTFIT *const outfit, const LARA_MESH mesh)
+{
+    const LARA_SKIN_EQUIPMENT *const equipment = &m_Equipment[mesh];
+    switch (equipment->type) {
+    case EQUIPMENT_TYPE_WEAPON:
+        M_SetGunEquipment(mesh, equipment->data, outfit);
+        break;
+    case EQUIPMENT_TYPE_EXTRA:
+        M_SetEquipment(
+            mesh, EQUIPMENT_TYPE_EXTRA, equipment->data,
+            Lara_Skin_GetExtraMeshOffset(equipment->data), outfit);
+        break;
+    default:
+        break;
+    }
+}
+
 // What Lara carries comes from the outfit's objects too - the gun in her hands
 // and the one on her back among it - so a change of outfit has to read it again
 // from what each slot already holds. A slot holding nothing keeps holding
@@ -360,19 +378,7 @@ static void M_ReapplyEquipment(const LARA_SKIN_OUTFIT *const outfit)
         if (i == LM_THIGH_L || i == LM_THIGH_R) {
             continue;
         }
-        const LARA_SKIN_EQUIPMENT *const equipment = &m_Equipment[i];
-        switch (equipment->type) {
-        case EQUIPMENT_TYPE_WEAPON:
-            M_SetGunEquipment(i, equipment->data, outfit);
-            break;
-        case EQUIPMENT_TYPE_EXTRA:
-            M_SetEquipment(
-                i, EQUIPMENT_TYPE_EXTRA, equipment->data,
-                Lara_Skin_GetExtraMeshOffset(equipment->data), outfit);
-            break;
-        default:
-            break;
-        }
+        M_ReapplyEquipmentEx(outfit, i);
     }
 }
 
@@ -648,12 +654,7 @@ void Lara_Skin_SwapSingleExtra(
 
     M_ApplyMeshIfValid(mesh, outfit);
     Lara_Joints_SwapSingle(mesh, outfit);
-
-    if (mesh == LM_THIGH_L) {
-        M_SetGunEquipment(LM_THIGH_L, m_HolsterType_L, outfit);
-    } else if (mesh == LM_THIGH_R) {
-        M_SetGunEquipment(LM_THIGH_R, m_HolsterType_R, outfit);
-    }
+    M_ReapplyEquipmentEx(outfit, mesh);
 }
 
 const ANIM_BONE *Lara_Skin_GetBoneBase(void)
