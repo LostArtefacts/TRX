@@ -43,6 +43,7 @@
 - Changed a game named with `--mod` to say why it cannot be played, rather than quietly starting a different one
 - Changed Lara turning to gold on the Midas hand to gild the outfit she has on, rather than swap her for a golden model
 - Fixed flames not being drawn if TR4 is launched and the game is then switched to a different mod (regression from 1.10)
+- Fixed doors disappearing when seen from the far side of their doorway after loading a save (regression from 1.9)
 
 **Lua**
 - Added the full weapon definition to `trx.weapons`, so a script can read and change what a weapon does: its damage, reach and accuracy, its aim limits, its ammunition, the animations it is drawn by, and the flash, glow, smoke and shells it throws

@@ -31,44 +31,10 @@ static int16_t m_NextItemFree = NO_ITEM;
 static uint32_t m_ItemGens[MAX_ITEMS];
 static HANDLE_REGISTRY m_ItemHandles;
 
-static inline bool M_ItemBoundsIntersectsPortal(
-    const ITEM *item, const ROOM *room, const PORTAL *const portal)
-{
-    // Axis-aligned bound intersection; ignores item rotation. The object's
-    // whole-animation box stands in for the frame being drawn, so an item
-    // that only reaches the neighbour partway through its animation is
-    // queued there from the start and the queue never has to be redone.
-    const BOUNDS_16 *const frame_bounds =
-        &Object_Get(item->object_id)->anim_bounds;
-    const BOUNDS_32 bounds = {
-        .min = {
-            item->pos.x + frame_bounds->min.x,
-            item->pos.y + frame_bounds->min.y,
-            item->pos.z + frame_bounds->min.z,
-        },
-        .max = {
-            item->pos.x + frame_bounds->max.x,
-            item->pos.y + frame_bounds->max.y,
-            item->pos.z + frame_bounds->max.z,
-        },
-    };
-
-    if (Bounds32_Intersect(&bounds, &portal->bounds)) {
-        return true;
-    }
-
-    const ROOM *const own_room = Room_Get(item->room_num);
-    if (own_room == nullptr) {
-        return false;
-    }
-    const BOUNDS_32 room_bounds = Room_GetRoomBounds(own_room);
-    return !Bounds32_Intersect(&bounds, &room_bounds);
-}
-
 // Take the item out of a room's draw queues: the room itself and every portal
-// neighbour it may have been queued into. Paired with the chain unlink below;
-// both must run when an item leaves a room. Repeated for flipped rooms as
-// portals may differ if the map has been flipped.
+// neighbour. The exact mirror of M_AddToDrawQueues below, plus the flipped
+// room, whose portals may differ if the map has been flipped. Paired with the
+// chain unlink below; both must run when an item leaves a room.
 static void M_RemoveFromDrawQueues(
     const int16_t item_num, const int16_t room_num)
 {
@@ -86,8 +52,11 @@ static void M_RemoveFromDrawQueues(
 }
 
 // Put the item into a room's draw queues: the room itself and every portal
-// neighbour its box reaches into. Additive, so a queue an object's initialiser
-// arranged for itself - the far side of a door - is left alone.
+// neighbour, unconditionally, so the removal above undoes exactly this and an
+// item drawn from a neighbouring room - a door, seen from the far side of its
+// doorway - is queued there again after every room change. The draw pass
+// dedups per frame and clips per room, so a queue entry the camera cannot
+// reach costs one rejected clip test.
 static void M_AddToDrawQueues(const int16_t item_num, const int16_t room_num)
 {
     if (room_num == NO_ROOM) {
@@ -98,12 +67,8 @@ static void M_AddToDrawQueues(const int16_t item_num, const int16_t room_num)
     if (room == nullptr || room->portals == nullptr) {
         return;
     }
-    const ITEM *const item = &m_Items[item_num];
     for (int32_t i = 0; i < room->portals->count; i++) {
-        const PORTAL *const portal = &room->portals->portal[i];
-        if (M_ItemBoundsIntersectsPortal(item, room, portal)) {
-            Room_AddDrawnItem(portal->room_num, item_num);
-        }
+        Room_AddDrawnItem(room->portals->portal[i].room_num, item_num);
     }
 }
 
