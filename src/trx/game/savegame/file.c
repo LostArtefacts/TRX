@@ -188,7 +188,7 @@ bool SG_File_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
 
     SAVEGAME_BSON_HEADER header = {};
     File_Seek(fp, 0, FILE_SEEK_SET);
-    if (!File_ReadData(fp, &header, sizeof(SAVEGAME_BSON_HEADER))) {
+    if (!File_TryReadData(fp, &header, sizeof(SAVEGAME_BSON_HEADER))) {
         return false;
     }
     if (header.magic != M_MAGIC_TR1X && header.magic != M_MAGIC_TR2X
@@ -209,7 +209,7 @@ bool SG_File_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
     // recover the slot information from the end of the file
     File_Skip(fp, header.compressed_size);
     SAVEGAME_BSON_EXTENDED_HEADER extra_header;
-    if (File_ReadData(fp, &extra_header, sizeof(extra_header))) {
+    if (File_TryReadData(fp, &extra_header, sizeof(extra_header))) {
         info->counter = extra_header.counter;
         info->level_num = extra_header.level_num;
         info->is_quick = (extra_header.flags & SAVEGAME_EXT_FLAG_QUICK) != 0;

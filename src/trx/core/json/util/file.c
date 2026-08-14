@@ -86,7 +86,7 @@ bool JSONFile_Write(const char *path, JSON_VALUE *const value)
 
     bool updated = false;
     if (old_data == nullptr || strcmp(old_data, out_data) != 0) {
-        MYFILE *const fp = File_Open(path, FILE_OPEN_WRITE);
+        MYFILE *const fp = File_OpenPath(path, FILE_OPEN_WRITE);
         if (fp == nullptr) {
             LOG_ERROR("unable to open '%s' for writing", path);
         } else {

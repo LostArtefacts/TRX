@@ -79,7 +79,7 @@ void ShellState_RememberLastPlayedMod(const char *const mod_name)
     } else {
         size_t out_len = 0;
         char *out_data = JSON_WritePretty(root, "  ", "\n", &out_len);
-        MYFILE *const fp = File_Open(state_path, FILE_OPEN_WRITE);
+        MYFILE *const fp = File_OpenPath(state_path, FILE_OPEN_WRITE);
         if (fp != nullptr) {
             File_WriteData(fp, out_data, out_len - 1); // w/o \0
             File_Close(fp);

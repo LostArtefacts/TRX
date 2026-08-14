@@ -137,7 +137,7 @@ static bool M_TryLoadTransparencyCache(void)
     const int32_t cached_texture_count = File_ReadS32(file);
     if (version != M_TRANSPARENCY_CACHE_VERSION
         || cached_texture_count != texture_count
-        || !File_ReadData(
+        || !File_TryReadData(
             file, m_Priv.uvws.has_transparency_objects,
             sizeof(bool) * (size_t)texture_count)) {
         File_Close(file);

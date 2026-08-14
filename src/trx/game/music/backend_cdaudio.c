@@ -113,7 +113,7 @@ static bool M_Init(MUSIC_BACKEND *const backend)
     M_BACKEND_DATA *const data = backend->data;
     ASSERT(data != nullptr);
 
-    MYFILE *const fp = File_Open(data->path, FILE_OPEN_READ);
+    MYFILE *const fp = File_OpenPath(data->path, FILE_OPEN_READ);
     if (fp == nullptr) {
         return false;
     }

@@ -119,7 +119,7 @@ static bool M_FillSlot(const SAVEGAME_SLOT_REF slot, const char *const path)
         return false;
     }
     bool result = false;
-    MYFILE *const fp = File_Open(path, FILE_OPEN_READ);
+    MYFILE *const fp = File_OpenPath(path, FILE_OPEN_READ);
     if (fp != nullptr) {
         SAVEGAME_INFO tmp_savegame_info;
         if (SG_File_FillInfo(fp, &tmp_savegame_info)) {
@@ -488,7 +488,7 @@ bool SG_Manager_WriteSlot(const SAVEGAME_SLOT_REF slot)
     char *file_name = String_Format(save_pattern, slot.index);
     char *full_path = M_GetSaveWritePath(file_name);
     File_EnsureParentDirectories(full_path);
-    MYFILE *const fp = File_Open(full_path, FILE_OPEN_WRITE);
+    MYFILE *const fp = File_OpenPath(full_path, FILE_OPEN_WRITE);
     if (fp != nullptr) {
         savegame_info->is_quick = slot.pool == SAVEGAME_SLOT_POOL_QUICK;
         SG_File_SaveToFile(fp, savegame_info);

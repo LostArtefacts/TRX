@@ -232,7 +232,8 @@ static void M_ReadVFile(
     const int32_t uncompressed_size = VFile_ReadS32(file);
     const int32_t compressed_size = VFile_ReadS32(file);
 
-    const char *compressed = file->cur_ptr;
+    size_t compressed_left;
+    const char *const compressed = File_PeekBytes(file, &compressed_left);
     payload = Memory_Alloc(uncompressed_size);
 
     uLongf uncompressed_sizef = uncompressed_size;
@@ -442,7 +443,7 @@ void Inject_AllInjections(void)
             m_Handlers[chunk.type](&m_Context, chunk);
         }
 
-        ASSERT(VFile_GetPos(injection->fp) == injection->fp->size);
+        ASSERT(File_BytesLeft(injection->fp) == 0);
     }
 
     if (m_Context.mode != INJECTION_MODE_STATS) {

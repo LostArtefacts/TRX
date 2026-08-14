@@ -366,7 +366,7 @@ bool Image_SaveToFile(const IMAGE *const image, const char *const path)
     }
 
     File_EnsureParentDirectories(path);
-    fp = File_Open(path, FILE_OPEN_WRITE);
+    fp = File_OpenPath(path, FILE_OPEN_WRITE);
     if (fp == nullptr) {
         LOG_ERROR("Cannot create image file: %s", path);
         goto cleanup;

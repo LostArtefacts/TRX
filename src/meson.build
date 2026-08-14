@@ -265,6 +265,7 @@ common_sources = [
   'trx/core/dynamic_enum.c',
   'trx/core/enum_map.c',
   'trx/core/event_manager.c',
+  'trx/core/file.c',
   'trx/core/filesystem.c',
   'trx/core/handle.c',
   'trx/core/hash.c',

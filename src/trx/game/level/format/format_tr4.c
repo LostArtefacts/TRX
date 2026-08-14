@@ -31,10 +31,13 @@ static VFILE *M_ReadChunk(VFILE *const file, const char *const name)
     const uint32_t uncompressed_size = VFile_ReadU32(file);
     const uint32_t compressed_size = VFile_ReadU32(file);
 
+    size_t compressed_left;
+    const char *const compressed = File_PeekBytes(file, &compressed_left);
+
     char *const payload = Memory_Alloc(uncompressed_size);
     uLongf out_size = uncompressed_size;
     const int32_t error = uncompress(
-        (Bytef *)payload, &out_size, (const Bytef *)file->cur_ptr,
+        (Bytef *)payload, &out_size, (const Bytef *)compressed,
         compressed_size);
     if (error != Z_OK || out_size != uncompressed_size) {
         LOG_ERROR("Failed to inflate TR4 chunk %s", name);

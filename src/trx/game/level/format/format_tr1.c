@@ -160,8 +160,8 @@ static bool M_Load(const LEVEL_FORMAT_LOADER *const loader, VFILE *const file)
     Level_Section_ReadSamples(ctx, file);
 
     if (loader->layout == LEVEL_FORMAT_LAYOUT_TR1X) {
-        VFILE *const embedded_injection = VFile_CreateFromBuffer(
-            file->cur_ptr, file->size - VFile_GetPos(file));
+        VFILE *const embedded_injection =
+            File_OpenView(file, VFile_GetPos(file), File_BytesLeft(file));
         Inject_AppendInjection(embedded_injection);
     }
 

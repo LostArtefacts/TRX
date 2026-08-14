@@ -187,13 +187,13 @@ MYFILE *LevelCache_OpenBinaryRead(
         return nullptr;
     }
 
-    MYFILE *const file = File_Open(path, FILE_OPEN_READ);
+    MYFILE *const file = File_OpenPath(path, FILE_OPEN_READ);
     if (file == nullptr) {
         return nullptr;
     }
 
     M_CACHE_HEADER header;
-    if (!File_ReadData(file, &header, sizeof(header))
+    if (!File_TryReadData(file, &header, sizeof(header))
         || header.magic != M_CACHE_MAGIC || header.checksum != checksum) {
         File_Close(file);
         return nullptr;
@@ -212,7 +212,7 @@ MYFILE *LevelCache_OpenBinaryWrite(
 
     File_EnsureParentDirectories(path);
 
-    MYFILE *const file = File_Open(path, FILE_OPEN_WRITE);
+    MYFILE *const file = File_OpenPath(path, FILE_OPEN_WRITE);
     if (file == nullptr) {
         return nullptr;
     }
