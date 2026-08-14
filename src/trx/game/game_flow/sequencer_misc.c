@@ -246,7 +246,9 @@ GF_COMMAND GF_PlayAvailableStory(const SAVEGAME_SLOT_REF slot)
 
     // Play intro FMVs and cutscenes
     GF_COMMAND intro_cmd;
-    IGNORE(GF_DoFrontendSequence(&intro_cmd));
+    SHOULD(
+        GF_DoFrontendSequence(&intro_cmd),
+        "The story plays from the save rather than from the start");
 
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i <= MIN(savegame_level, level_table->count); i++) {
