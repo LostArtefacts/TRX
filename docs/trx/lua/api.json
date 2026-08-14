@@ -8809,6 +8809,10 @@
       "methods": [],
       "operators": [
         {
+          "description": "A color joins text as its hex, whichever side of the `..` it is on.",
+          "name": "concat"
+        },
+        {
           "description": "Two colors are equal when their channels are.",
           "name": "eq"
         },

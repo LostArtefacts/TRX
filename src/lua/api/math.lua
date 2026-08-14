@@ -160,6 +160,12 @@ trx.config.set("visuals.water_color", "33e5ff")]],
         return a.r == b.r and a.g == b.g and a.b == b.b
       end,
     },
+    concat = {
+      description = "A color joins text as its hex, whichever side of the `..` it is on.",
+      impl = function(a, b)
+        return tostring(a) .. tostring(b)
+      end,
+    },
   },
 })
 
