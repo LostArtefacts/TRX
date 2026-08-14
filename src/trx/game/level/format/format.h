@@ -25,7 +25,7 @@ typedef enum {
 typedef struct LEVEL_FORMAT_LOADER {
     int32_t game_version;
     LEVEL_FORMAT_LAYOUT layout;
-    bool (*probe)(
+    RESULT (*probe)(
         const struct LEVEL_FORMAT_LOADER *, TRX_FILE *file,
         LEVEL_FORMAT_PROBE_MODE mode);
     RESULT (*load)(const struct LEVEL_FORMAT_LOADER *, TRX_FILE *file);

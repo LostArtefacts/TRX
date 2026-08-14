@@ -353,7 +353,7 @@ void Stats_CalculateMaxStats(void)
             LUA_RunLevelScript(level);
 
             Inject_InitLevel(level, INJECTION_MODE_STATS);
-            if (loader->probe(loader, file, LEVEL_FORMAT_PROBE_STATS)) {
+            if (IS_OK(loader->probe(loader, file, LEVEL_FORMAT_PROBE_STATS))) {
                 Inject_AllInjections();
                 M_SetupStatsFullInitObjects();
 

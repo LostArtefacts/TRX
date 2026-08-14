@@ -270,15 +270,17 @@ static XYZ_16 M_ComputePortalNormal(PORTAL *const p)
     return (XYZ_16) { n.x, n.y, n.z };
 }
 
-void Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
+RESULT Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
+    RESULT result = OK;
     BENCHMARK benchmark = Benchmark_Start();
     const LEVEL_FORMAT_LOADER *const loader = ctx->loader;
 
     const int32_t num_rooms = File_ReadCountS16(file);
     LOG_INFO("rooms: %d", num_rooms);
     if (num_rooms > MAX_ROOMS) {
-        Shell_ExitSystem("Too many rooms");
+        result =
+            FAIL("too many rooms: %d, at most %d fit", num_rooms, MAX_ROOMS);
         goto finish;
     }
 
@@ -527,4 +529,5 @@ void Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 
 finish:
     Benchmark_End(&benchmark, nullptr);
+    return result;
 }
