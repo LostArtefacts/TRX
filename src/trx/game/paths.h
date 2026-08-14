@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/file.h>
 #include <trx/core/filesystem.h>
 #include <trx/game/shell/args.h>
 
@@ -87,7 +88,7 @@ const char *GamePath_Resolve(GAME_DYNAMIC_PATH path, const char *rel);
 
 // Resolve and open a file in one call.
 // Returns nullptr if resolution/open fails.
-MYFILE *GamePath_OpenFile(
+TRX_FILE *GamePath_OpenFile(
     GAME_DYNAMIC_PATH path, const char *rel, FILE_OPEN_MODE mode);
 
 // Resolve and load file contents into memory.

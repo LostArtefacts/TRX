@@ -1,5 +1,6 @@
 #include <trx/game/inject/utils.h>
 
+#include <trx/core/file.h>
 #include <trx/game/objects/common.h>
 
 INJECTION_OBJECT_INFO Inject_ReadObjectPtr(const INJECTION *const injection)

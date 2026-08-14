@@ -1012,7 +1012,7 @@ SHELL_ARGS *TestReplay_Open(const char *path)
 
     char *data = nullptr;
     size_t size = 0;
-    if (!File_Load(path, &data, &size)) {
+    if (!FS_Load(path, &data, &size)) {
         Shell_ExitSystemFmt("Cannot open replay file '%s'", path);
         return nullptr;
     }

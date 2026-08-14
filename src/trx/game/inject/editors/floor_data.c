@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/file.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/game/camera.h>

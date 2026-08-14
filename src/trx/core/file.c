@@ -206,7 +206,7 @@ TRX_FILE *File_OpenPath(const char *const path, const FILE_OPEN_MODE mode)
         return nullptr;
     }
 
-    FILE *const fp = File_PlatformFopen(path, fopen_mode);
+    FILE *const fp = FS_PlatformFopen(path, fopen_mode);
     if (fp == nullptr) {
         return nullptr;
     }
@@ -232,7 +232,7 @@ TRX_FILE *File_OpenPathInMemory(const char *const path)
 {
     char *data = nullptr;
     size_t size = 0;
-    if (!File_Load(path, &data, &size)) {
+    if (!FS_Load(path, &data, &size)) {
         return nullptr;
     }
     TRX_FILE *const file = File_OpenBuffer(data, size);

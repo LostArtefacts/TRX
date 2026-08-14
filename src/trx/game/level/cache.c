@@ -1,5 +1,6 @@
 #include <trx/game/level/cache.h>
 
+#include <trx/core/file.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/hash.h>
 #include <trx/core/json/util/file.h>
@@ -52,7 +53,7 @@ static void M_GetFileMeta(
 {
     uint64_t size = 0;
     uint64_t mtime = 0;
-    File_GetMeta(path, &size, &mtime);
+    FS_GetMeta(path, &size, &mtime);
 
     if (out_size != nullptr) {
         *out_size = size;
@@ -179,7 +180,7 @@ const char *LevelCache_GetLevelKey(const GF_LEVEL *const level)
     return String_FormatStatic("%c%d_%s", type_key, level->num, name);
 }
 
-MYFILE *LevelCache_OpenBinaryRead(
+TRX_FILE *LevelCache_OpenBinaryRead(
     const char *const filename, const uint64_t checksum)
 {
     const char *const path = M_GetPath(filename);
@@ -187,7 +188,7 @@ MYFILE *LevelCache_OpenBinaryRead(
         return nullptr;
     }
 
-    MYFILE *const file = File_OpenPath(path, FILE_OPEN_READ);
+    TRX_FILE *const file = File_OpenPath(path, FILE_OPEN_READ);
     if (file == nullptr) {
         return nullptr;
     }
@@ -202,7 +203,7 @@ MYFILE *LevelCache_OpenBinaryRead(
     return file;
 }
 
-MYFILE *LevelCache_OpenBinaryWrite(
+TRX_FILE *LevelCache_OpenBinaryWrite(
     const char *const filename, const uint64_t checksum)
 {
     const char *const path = M_GetPath(filename);
@@ -210,9 +211,9 @@ MYFILE *LevelCache_OpenBinaryWrite(
         return nullptr;
     }
 
-    File_EnsureParentDirectories(path);
+    FS_EnsureParentDirectories(path);
 
-    MYFILE *const file = File_OpenPath(path, FILE_OPEN_WRITE);
+    TRX_FILE *const file = File_OpenPath(path, FILE_OPEN_WRITE);
     if (file == nullptr) {
         return nullptr;
     }
@@ -262,7 +263,7 @@ bool LevelCache_WriteJSON(
         return false;
     }
 
-    File_EnsureParentDirectories(path);
+    FS_EnsureParentDirectories(path);
 
     JSON_ObjectAppendString(
         root_obj, "checksum", String_FormatStatic("%016" PRIx64, checksum));

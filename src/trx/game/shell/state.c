@@ -1,5 +1,6 @@
 #include <trx/game/shell/state.h>
 
+#include <trx/core/file.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/json.h>
 #include <trx/core/json/util/file.h>
@@ -29,7 +30,7 @@ static void M_LoadState(void)
         return;
     }
 
-    if (!File_Exists(M_GetStatePath())) {
+    if (!FS_Exists(M_GetStatePath())) {
         return;
     }
 
@@ -73,13 +74,13 @@ void ShellState_RememberLastPlayedMod(const char *const mod_name)
 
     JSON_VALUE *const root = JSON_ValueFromObject(root_obj);
     const char *const state_path = M_GetStatePath();
-    File_EnsureParentDirectories(state_path);
-    if (File_Exists(state_path)) {
+    FS_EnsureParentDirectories(state_path);
+    if (FS_Exists(state_path)) {
         JSONFile_Write(state_path, root);
     } else {
         size_t out_len = 0;
         char *out_data = JSON_WritePretty(root, "  ", "\n", &out_len);
-        MYFILE *const fp = File_OpenPath(state_path, FILE_OPEN_WRITE);
+        TRX_FILE *const fp = File_OpenPath(state_path, FILE_OPEN_WRITE);
         if (fp != nullptr) {
             File_WriteData(fp, out_data, out_len - 1); // w/o \0
             File_Close(fp);

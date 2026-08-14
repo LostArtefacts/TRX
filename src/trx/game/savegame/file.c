@@ -1,6 +1,7 @@
 #include <trx/game/savegame/file.h>
 
 #include <trx/core/bson.h>
+#include <trx/core/file.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
@@ -24,7 +25,7 @@
         goto fail;                                                             \
     }
 
-static JSON_VALUE *M_ReadRaw(MYFILE *fp, int32_t *version_out);
+static JSON_VALUE *M_ReadRaw(TRX_FILE *fp, int32_t *version_out);
 
 static JSON_VALUE *M_ParseFromBuffer(
     const char *const buffer, int32_t *const version_out)
@@ -58,7 +59,7 @@ static JSON_VALUE *M_ParseFromBuffer(
     return root;
 }
 
-static JSON_VALUE *M_ReadRaw(MYFILE *const fp, int32_t *const version_out)
+static JSON_VALUE *M_ReadRaw(TRX_FILE *const fp, int32_t *const version_out)
 {
     const size_t buffer_size = File_Size(fp);
     char *buffer = Memory_Alloc(buffer_size);
@@ -71,7 +72,7 @@ static JSON_VALUE *M_ReadRaw(MYFILE *const fp, int32_t *const version_out)
 }
 
 static void M_SaveRaw(
-    MYFILE *const fp, const JSON_VALUE *const root, const int32_t level_num,
+    TRX_FILE *const fp, const JSON_VALUE *const root, const int32_t level_num,
     const bool is_quick)
 {
     size_t uncompressed_size;
@@ -129,7 +130,7 @@ const char *SG_File_GetQuickSaveFilePattern(void)
     return String_FormatStatic("%.*sq%s", prefix_size, pattern, placeholder);
 }
 
-bool SG_File_LoadFromFile(MYFILE *const fp)
+bool SG_File_LoadFromFile(TRX_FILE *const fp)
 {
     bool result = false;
 
@@ -158,7 +159,7 @@ fail:
     return result;
 }
 
-void SG_File_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
+void SG_File_SaveToFile(TRX_FILE *const fp, SAVEGAME_INFO *const info)
 {
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
     JSON_WRITE_IO *const io = JSON_WriteIO_Create();
@@ -182,7 +183,7 @@ void SG_File_SaveToFile(MYFILE *const fp, SAVEGAME_INFO *const info)
     JSON_WriteIO_Destroy(io);
 }
 
-bool SG_File_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
+bool SG_File_FillInfo(TRX_FILE *const fp, SAVEGAME_INFO *const info)
 {
     *info = (SAVEGAME_INFO) {};
 
@@ -238,7 +239,7 @@ bool SG_File_FillInfo(MYFILE *const fp, SAVEGAME_INFO *const info)
     return result;
 }
 
-bool SG_File_LoadOnlyResumeInfo(MYFILE *const fp)
+bool SG_File_LoadOnlyResumeInfo(TRX_FILE *const fp)
 {
     int32_t sg_version = -1;
     JSON_VALUE *const root = M_ReadRaw(fp, &sg_version);
@@ -250,7 +251,7 @@ bool SG_File_LoadOnlyResumeInfo(MYFILE *const fp)
 }
 
 bool SG_File_UpdateDeathCounters(
-    MYFILE *const fp, int32_t level_num, const int32_t death_count,
+    TRX_FILE *const fp, int32_t level_num, const int32_t death_count,
     const bool is_quick)
 {
     bool result = false;

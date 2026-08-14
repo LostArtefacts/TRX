@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/file.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/json.h>
 #include <trx/core/json/util/read_io.h>
@@ -10,12 +11,12 @@
 
 const char *SG_File_GetSaveFilePattern(void);
 const char *SG_File_GetQuickSaveFilePattern(void);
-bool SG_File_FillInfo(MYFILE *fp, SAVEGAME_INFO *info);
-bool SG_File_LoadFromFile(MYFILE *fp);
-bool SG_File_LoadOnlyResumeInfo(MYFILE *fp);
-void SG_File_SaveToFile(MYFILE *fp, SAVEGAME_INFO *info);
+bool SG_File_FillInfo(TRX_FILE *fp, SAVEGAME_INFO *info);
+bool SG_File_LoadFromFile(TRX_FILE *fp);
+bool SG_File_LoadOnlyResumeInfo(TRX_FILE *fp);
+void SG_File_SaveToFile(TRX_FILE *fp, SAVEGAME_INFO *info);
 bool SG_File_UpdateDeathCounters(
-    MYFILE *fp, int32_t level_num, int32_t death_count, bool is_quick);
+    TRX_FILE *fp, int32_t level_num, int32_t death_count, bool is_quick);
 
 // Start of reader functions ===================================================
 bool SG_File_LoadLara(JSON_READ_IO *io);

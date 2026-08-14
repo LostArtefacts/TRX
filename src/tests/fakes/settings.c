@@ -10,6 +10,7 @@
 
 #include <trx/config/file.h>
 #include <trx/config/priv.h>
+#include <trx/core/file.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/filesystem.h>
@@ -82,7 +83,7 @@ const char *GamePath_Resolve(
     return entry->value;
 }
 
-bool File_Load(
+bool FS_Load(
     const char *const path, char **const output_data, size_t *const output_size)
 {
     FILE *const fp = fopen(path, "rb");
@@ -103,26 +104,26 @@ bool File_Load(
     return true;
 }
 
-bool File_DirExists(const char *const path)
+bool FS_DirExists(const char *const path)
 {
     struct stat info;
     return stat(path, &info) == 0 && S_ISDIR(info.st_mode);
 }
 
-void *File_OpenDirectory(const char *const path)
+FS_DIR *FS_OpenDirectory(const char *const path)
 {
-    return opendir(path);
+    return (FS_DIR *)opendir(path);
 }
 
-const char *File_ReadDirectory(void *const dir)
+const char *FS_ReadDirectory(FS_DIR *const dir)
 {
-    const struct dirent *const entry = readdir(dir);
+    const struct dirent *const entry = readdir((DIR *)dir);
     return entry != nullptr ? entry->d_name : nullptr;
 }
 
-void File_CloseDirectory(void *const dir)
+void FS_CloseDirectory(FS_DIR *const dir)
 {
-    closedir(dir);
+    closedir((DIR *)dir);
 }
 
 bool ConfigFile_Read(
@@ -303,17 +304,17 @@ void Shell_ExitSystemFmt(const char *const fmt, ...)
     Shell_ExitSystem(fmt);
 }
 
-MYFILE *File_OpenPath(const char *const path, const FILE_OPEN_MODE mode)
+TRX_FILE *File_OpenPath(const char *const path, const FILE_OPEN_MODE mode)
 {
     return nullptr;
 }
 
 void File_WriteData(
-    MYFILE *const file, const void *const data, const size_t size)
+    TRX_FILE *const file, const void *const data, const size_t size)
 {
 }
 
-void File_Close(MYFILE *const file)
+void File_Close(TRX_FILE *const file)
 {
 }
 

@@ -113,7 +113,7 @@ static void M_LoadLanguageNames(void)
         const M_FILE_ENTRY *const file_entry = Vector_Get(lang_entry->files, 0);
         char *data = nullptr;
         size_t size = 0;
-        if (!File_Load(file_entry->path, &data, &size) || data == nullptr) {
+        if (!FS_Load(file_entry->path, &data, &size) || data == nullptr) {
             continue;
         }
         JSON_PARSE_RESULT pr = { 0 };
@@ -260,8 +260,8 @@ static void M_DiscoverLanguages(void)
 
     for (int32_t i = 0; i < m_SourceFiles->count; ++i) {
         const M_FILE_ENTRY *src = Vector_Get(m_SourceFiles, i);
-        char *dir = File_GetParentDirectory(src->path);
-        const char *const base = File_GetBaseName(src->path);
+        char *dir = FS_GetParentDirectory(src->path);
+        const char *const base = FS_GetBaseName(src->path);
         const char *ext = strrchr(base, '.');
         if (dir == nullptr || ext == nullptr) {
             Memory_Free(dir);
@@ -270,10 +270,10 @@ static void M_DiscoverLanguages(void)
         size_t stem_len = (size_t)(ext - base);
         size_t ext_len = strlen(ext);
 
-        void *dh = File_OpenDirectory(dir);
+        FS_DIR *dh = FS_OpenDirectory(dir);
         if (dh != nullptr) {
             const char *ent;
-            while ((ent = File_ReadDirectory(dh))) {
+            while ((ent = FS_ReadDirectory(dh))) {
                 if (ent[0] == '.') {
                     continue;
                 }
@@ -299,7 +299,7 @@ static void M_DiscoverLanguages(void)
                 M_AddPathForLang(code, path, src->load_levels);
                 Memory_Free(code);
             }
-            File_CloseDirectory(dh);
+            FS_CloseDirectory(dh);
         }
         Memory_Free(dir);
     }

@@ -79,7 +79,7 @@ static void M_ShowHelp(void)
 
 static int32_t M_GuessEngineVersionFromLevelPath(const char *const path)
 {
-    if (path == nullptr || !File_Exists(path)) {
+    if (path == nullptr || !FS_Exists(path)) {
         return 0;
     }
 

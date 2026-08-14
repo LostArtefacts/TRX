@@ -1,5 +1,6 @@
 #include <trx/core/filesystem.h>
 
+#include <trx/core/file.h>
 #include <trx/core/filesystem/priv.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
@@ -92,7 +93,7 @@ static bool M_ExistsRaw(const char *path)
     if (path == nullptr) {
         return false;
     }
-    FILE *fp = File_PlatformFopen(path, "rb");
+    FILE *fp = FS_PlatformFopen(path, "rb");
     if (fp) {
         fclose(fp);
         return true;
@@ -100,22 +101,22 @@ static bool M_ExistsRaw(const char *path)
     return false;
 }
 
-FILE *File_PlatformFopen(const char *const path, const char *const mode)
+FILE *FS_PlatformFopen(const char *const path, const char *const mode)
 {
     return M_UTF8Fopen(path, mode);
 }
 
-bool File_IsAbsolute(const char *path)
+bool FS_IsAbsolute(const char *path)
 {
     return path && (path[0] == '/' || strstr(path, ":\\"));
 }
 
-bool File_IsRelative(const char *path)
+bool FS_IsRelative(const char *path)
 {
-    return path && !File_IsAbsolute(path);
+    return path && !FS_IsAbsolute(path);
 }
 
-bool File_DirExists(const char *path)
+bool FS_DirExists(const char *path)
 {
     if (path == nullptr) {
         return false;
@@ -136,7 +137,7 @@ bool File_DirExists(const char *path)
 #endif
 }
 
-bool File_Exists(const char *path)
+bool FS_Exists(const char *path)
 {
     if (path == nullptr) {
         return false;
@@ -144,7 +145,7 @@ bool File_Exists(const char *path)
     return M_ExistsRaw(path);
 }
 
-char *File_GetCurrentDirectory(void)
+char *FS_GetCurrentDirectory(void)
 {
 #if defined(_WIN32)
     wchar_t *const wide_cwd = _wgetcwd(nullptr, 0);
@@ -165,7 +166,7 @@ char *File_GetCurrentDirectory(void)
 #endif
 }
 
-char *File_GetParentDirectory(const char *path)
+char *FS_GetParentDirectory(const char *path)
 {
     if (path == nullptr) {
         return nullptr;
@@ -179,7 +180,7 @@ char *File_GetParentDirectory(const char *path)
     return nullptr;
 }
 
-const char *File_GetBaseName(const char *const path)
+const char *FS_GetBaseName(const char *const path)
 {
     if (path == nullptr) {
         return nullptr;
@@ -189,19 +190,19 @@ const char *File_GetBaseName(const char *const path)
     return last_delim != nullptr ? last_delim + 1 : path;
 }
 
-char *File_GetStem(const char *const path)
+char *FS_GetStem(const char *const path)
 {
     if (path == nullptr) {
         return nullptr;
     }
 
-    const char *const name = File_GetBaseName(path);
+    const char *const name = FS_GetBaseName(path);
     const char *const dot = strrchr(name, '.');
     const size_t len = dot != nullptr ? (size_t)(dot - name) : strlen(name);
     return String_Format("%.*s", (int)len, name);
 }
 
-bool File_GetMeta(
+bool FS_GetMeta(
     const char *const path, uint64_t *const out_size, uint64_t *const out_mtime)
 {
 #if defined(_WIN32)
@@ -229,11 +230,11 @@ bool File_GetMeta(
     return true;
 }
 
-bool File_Load(const char *path, char **output_data, size_t *output_size)
+bool FS_Load(const char *path, char **output_data, size_t *output_size)
 {
     ASSERT(output_data != nullptr);
 
-    MYFILE *fp = File_OpenPath(path, FILE_OPEN_READ);
+    TRX_FILE *fp = File_OpenPath(path, FILE_OPEN_READ);
     if (!fp) {
         LOG_ERROR("Can't open file %s", path);
         *output_data = nullptr;
@@ -260,7 +261,7 @@ bool File_Load(const char *path, char **output_data, size_t *output_size)
     return true;
 }
 
-void File_CreateDirectory(const char *path)
+void FS_CreateDirectory(const char *path)
 {
     if (path == nullptr) {
         return;
@@ -274,7 +275,7 @@ void File_CreateDirectory(const char *path)
 #endif
 }
 
-bool File_Delete(const char *const path)
+bool FS_Delete(const char *const path)
 {
     if (path == nullptr) {
         return false;
@@ -289,23 +290,23 @@ bool File_Delete(const char *const path)
 #endif
 }
 
-void File_EnsureParentDirectories(const char *path)
+void FS_EnsureParentDirectories(const char *path)
 {
     ASSERT(path != nullptr);
-    char *parent = File_GetParentDirectory(path);
+    char *parent = FS_GetParentDirectory(path);
     if (parent != nullptr) {
         /* Only recurse/create if there is a distinct, non-empty parent */
         if (parent[0] != '\0' && strcmp(parent, path) != 0) {
-            if (!File_DirExists(parent)) {
-                File_EnsureParentDirectories(parent);
-                File_CreateDirectory(parent);
+            if (!FS_DirExists(parent)) {
+                FS_EnsureParentDirectories(parent);
+                FS_CreateDirectory(parent);
             }
         }
         Memory_FreePointer(&parent);
     }
 }
 
-void *File_OpenDirectory(const char *const path)
+FS_DIR *FS_OpenDirectory(const char *const path)
 {
     ASSERT(path != nullptr);
 #if defined(_WIN32)
@@ -317,16 +318,16 @@ void *File_OpenDirectory(const char *const path)
     }
     M_DIR *const dir = Memory_Alloc(sizeof(M_DIR));
     dir->handle = handle;
-    return dir;
+    return (FS_DIR *)dir;
 #else
-    return opendir(path);
+    return (FS_DIR *)opendir(path);
 #endif
 }
 
-const char *File_ReadDirectory(void *const dir)
+const char *FS_ReadDirectory(FS_DIR *const dir)
 {
 #if defined(_WIN32)
-    M_DIR *const win_dir = dir;
+    M_DIR *const win_dir = (M_DIR *)dir;
     Memory_FreePointer(&win_dir->name);
     const struct _wdirent *const cur_file = _wreaddir(win_dir->handle);
     if (cur_file == nullptr) {
@@ -335,7 +336,7 @@ const char *File_ReadDirectory(void *const dir)
     win_dir->name = M_WideToUTF8(cur_file->d_name);
     return win_dir->name;
 #else
-    const struct dirent *const cur_file = readdir(dir);
+    const struct dirent *const cur_file = readdir((DIR *)dir);
     if (cur_file == nullptr) {
         return nullptr;
     }
@@ -343,15 +344,15 @@ const char *File_ReadDirectory(void *const dir)
 #endif
 }
 
-void File_CloseDirectory(void *const dir)
+void FS_CloseDirectory(FS_DIR *const dir)
 {
     ASSERT(dir != nullptr);
 #if defined(_WIN32)
-    M_DIR *const win_dir = dir;
+    M_DIR *const win_dir = (M_DIR *)dir;
     _wclosedir(win_dir->handle);
     Memory_FreePointer(&win_dir->name);
     Memory_Free(win_dir);
 #else
-    closedir(dir);
+    closedir((DIR *)dir);
 #endif
 }

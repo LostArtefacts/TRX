@@ -1,5 +1,6 @@
 #include <trx/game/paths.h>
 
+#include <trx/core/file.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
@@ -313,15 +314,15 @@ static M_DIR_CACHE_ENTRY *M_LoadDirCache(const char *const dir)
         .exists = false,
         .entries = Vector_Create(sizeof(M_DIR_ENTRY)),
     };
-    void *const d = File_OpenDirectory(dir);
+    FS_DIR *const d = FS_OpenDirectory(dir);
     if (d != nullptr) {
         entry.exists = true;
         const char *name = nullptr;
-        while ((name = File_ReadDirectory(d)) != nullptr) {
+        while ((name = FS_ReadDirectory(d)) != nullptr) {
             M_DIR_ENTRY de = { .name = Memory_DupStr(name) };
             Vector_Add(entry.entries, &de);
         }
-        File_CloseDirectory(d);
+        FS_CloseDirectory(d);
     }
     Vector_Add(m_DirCache, &entry);
     return Vector_Get(m_DirCache, m_DirCache->count - 1);
@@ -422,7 +423,7 @@ static char *M_GuessExtensionCached(
         return nullptr;
     }
 
-    char *parent_dir = File_GetParentDirectory(path);
+    char *parent_dir = FS_GetParentDirectory(path);
     if (parent_dir == nullptr) {
         return nullptr;
     }
@@ -648,7 +649,7 @@ static bool M_SetDirFromEnv(
         *target = String_Format("%s/%s", m_Context.trx_dir, default_suffix);
     }
     M_TrimTrailingSeparators(*target);
-    if (check_existence && !File_DirExists(*target)) {
+    if (check_existence && !FS_DirExists(*target)) {
         Memory_FreePointer(target);
         return false;
     }
@@ -875,7 +876,7 @@ static bool M_ForEachResolveAttempt(
     const char *const effective_rel =
         expanded_rel != nullptr ? expanded_rel : rel;
 
-    if (effective_rel != nullptr && File_IsAbsolute(effective_rel)) {
+    if (effective_rel != nullptr && FS_IsAbsolute(effective_rel)) {
         const bool result = callback(effective_rel, user_data);
         Memory_FreePointer(&expanded_rel);
         return result;
@@ -1196,7 +1197,7 @@ const char *GamePath_PeekResolve(
     const M_DYNAMIC_PATH_POLICY *const policy = &m_PathPolicies[path];
     ASSERT(policy != nullptr);
 
-    if (rel != nullptr && File_IsAbsolute(rel)) {
+    if (rel != nullptr && FS_IsAbsolute(rel)) {
         return rel;
     }
     if (rel != nullptr) {
@@ -1249,7 +1250,7 @@ const char *GamePath_Resolve(
     return resolved;
 }
 
-MYFILE *GamePath_OpenFile(
+TRX_FILE *GamePath_OpenFile(
     const GAME_DYNAMIC_PATH path, const char *const rel,
     const FILE_OPEN_MODE mode)
 {
@@ -1274,7 +1275,7 @@ bool GamePath_LoadFile(
         }
         return false;
     }
-    return File_Load(resolved, out_data, out_size);
+    return FS_Load(resolved, out_data, out_size);
 }
 
 bool GamePath_Exists(const GAME_DYNAMIC_PATH path, const char *const rel)
@@ -1283,7 +1284,7 @@ bool GamePath_Exists(const GAME_DYNAMIC_PATH path, const char *const rel)
     if (resolved == nullptr) {
         return false;
     }
-    return File_Exists(resolved);
+    return FS_Exists(resolved);
 }
 
 char *GamePath_GuessExtension(const char *const path, const char **extensions)
@@ -1308,11 +1309,11 @@ const char *GamePath_PeekResolveUserPath(
         return nullptr;
     }
 
-    if (File_IsAbsolute(input_path)) {
+    if (FS_IsAbsolute(input_path)) {
         return M_PeekResolvedUserPathCandidate(policy, input_path);
     }
 
-    char *cwd = File_GetCurrentDirectory();
+    char *cwd = FS_GetCurrentDirectory();
     if (cwd != nullptr) {
         char *cwd_path = String_Format("%s/%s", cwd, input_path);
         Memory_FreePointer(&cwd);

@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/core/benchmark.h>
+#include <trx/core/file.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
@@ -119,7 +120,7 @@ static bool M_FillSlot(const SAVEGAME_SLOT_REF slot, const char *const path)
         return false;
     }
     bool result = false;
-    MYFILE *const fp = File_OpenPath(path, FILE_OPEN_READ);
+    TRX_FILE *const fp = File_OpenPath(path, FILE_OPEN_READ);
     if (fp != nullptr) {
         SAVEGAME_INFO tmp_savegame_info;
         if (SG_File_FillInfo(fp, &tmp_savegame_info)) {
@@ -136,13 +137,13 @@ static bool M_FillSlot(const SAVEGAME_SLOT_REF slot, const char *const path)
 
 static void M_ScanSavedGamesDir(const char *const dir_path)
 {
-    void *const dir_handle = File_OpenDirectory(dir_path);
+    void *const dir_handle = FS_OpenDirectory(dir_path);
     if (dir_handle == nullptr) {
         return;
     }
 
     while (true) {
-        const char *const file_name = File_ReadDirectory(dir_handle);
+        const char *const file_name = FS_ReadDirectory(dir_handle);
         if (file_name == nullptr) {
             break;
         }
@@ -174,7 +175,7 @@ static void M_ScanSavedGamesDir(const char *const dir_path)
         Memory_FreePointer(&file_name_ci);
     }
 
-    File_CloseDirectory(dir_handle);
+    FS_CloseDirectory(dir_handle);
 }
 
 static bool M_IsQuickSlotSortedBefore(
@@ -487,8 +488,8 @@ bool SG_Manager_WriteSlot(const SAVEGAME_SLOT_REF slot)
     const char *const save_pattern = M_GetSaveFilePatternForPool(slot.pool);
     char *file_name = String_Format(save_pattern, slot.index);
     char *full_path = M_GetSaveWritePath(file_name);
-    File_EnsureParentDirectories(full_path);
-    MYFILE *const fp = File_OpenPath(full_path, FILE_OPEN_WRITE);
+    FS_EnsureParentDirectories(full_path);
+    TRX_FILE *const fp = File_OpenPath(full_path, FILE_OPEN_WRITE);
     if (fp != nullptr) {
         savegame_info->is_quick = slot.pool == SAVEGAME_SLOT_POOL_QUICK;
         SG_File_SaveToFile(fp, savegame_info);
@@ -529,7 +530,7 @@ bool SG_Manager_Delete(const SAVEGAME_SLOT_REF slot)
         return false;
     }
 
-    const bool result = File_Delete(savegame_info->full_path);
+    const bool result = FS_Delete(savegame_info->full_path);
     if (!result) {
         return false;
     }

@@ -83,7 +83,7 @@ static int32_t M_OpenAudioStream(const char *const file_name)
     for (const char *const *ext = m_FallbackExts; *ext != nullptr; ext++) {
         char *const candidate =
             String_Format("%.*s%s", (int)base_len, file_name, *ext);
-        if (File_Exists(candidate)) {
+        if (FS_Exists(candidate)) {
             audio_id = Audio_Stream_CreateFromFile(candidate);
             Memory_Free(candidate);
             if (audio_id != AUDIO_NO_SOUND) {

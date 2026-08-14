@@ -1,6 +1,7 @@
 #include <trx/game/music/backend_cdaudio_wad.h>
 
 #include <trx/av/audio.h>
+#include <trx/core/file.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
@@ -66,7 +67,7 @@ static bool M_LoadTrackAsWaveFile(
         return false;
     }
 
-    MYFILE *const fp = File_OpenPath(data->path, FILE_OPEN_READ);
+    TRX_FILE *const fp = File_OpenPath(data->path, FILE_OPEN_READ);
     if (fp == nullptr) {
         return false;
     }
@@ -102,7 +103,7 @@ static bool M_LoadTrackAsWaveFile(
     return true;
 }
 
-static bool M_ReadAllTrackInfos(MYFILE *const fp, M_BACKEND_DATA *const data)
+static bool M_ReadAllTrackInfos(TRX_FILE *const fp, M_BACKEND_DATA *const data)
 {
     ASSERT(fp != nullptr);
     ASSERT(data != nullptr);
@@ -149,7 +150,7 @@ static bool M_Init(MUSIC_BACKEND *const backend)
     M_BACKEND_DATA *const data = backend->data;
     ASSERT(data != nullptr);
 
-    MYFILE *const fp = File_OpenPath(data->path, FILE_OPEN_READ);
+    TRX_FILE *const fp = File_OpenPath(data->path, FILE_OPEN_READ);
     if (fp == nullptr) {
         return false;
     }

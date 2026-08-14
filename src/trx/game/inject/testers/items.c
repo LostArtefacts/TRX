@@ -1,3 +1,4 @@
+#include <trx/core/file.h>
 #include <trx/game/inject.h>
 #include <trx/game/items.h>
 #include <trx/game/objects/common.h>

@@ -1,5 +1,6 @@
 #include <trx/av/image.h>
 
+#include <trx/core/file.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
@@ -348,7 +349,7 @@ bool Image_SaveToFile(const IMAGE *const image, const char *const path)
     AVFrame *frame = nullptr;
     AVPacket *packet = nullptr;
     struct SwsContext *sws_ctx = nullptr;
-    MYFILE *fp = nullptr;
+    TRX_FILE *fp = nullptr;
 
     enum AVPixelFormat src_pix_fmt = AV_PIX_FMT_RGB24;
     enum AVPixelFormat dst_pix_fmt;
@@ -365,7 +366,7 @@ bool Image_SaveToFile(const IMAGE *const image, const char *const path)
         goto cleanup;
     }
 
-    File_EnsureParentDirectories(path);
+    FS_EnsureParentDirectories(path);
     fp = File_OpenPath(path, FILE_OPEN_WRITE);
     if (fp == nullptr) {
         LOG_ERROR("Cannot create image file: %s", path);

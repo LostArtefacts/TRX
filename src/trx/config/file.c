@@ -113,7 +113,7 @@ bool ConfigFile_Read(
 {
     ASSERT(default_path != nullptr);
     M_FreeRetained();
-    m_CfgFound = File_Exists(default_path);
+    m_CfgFound = FS_Exists(default_path);
 
     bool result = false;
     m_CfgRoot = JSONFile_Read(default_path);

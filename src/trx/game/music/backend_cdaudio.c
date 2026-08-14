@@ -1,6 +1,7 @@
 #include <trx/game/music/backend_cdaudio.h>
 
 #include <trx/av/audio.h>
+#include <trx/core/file.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
@@ -33,7 +34,7 @@ static bool M_Parse(M_BACKEND_DATA *const data)
 
     char *track_content = nullptr;
     size_t track_content_size;
-    if (!File_Load(data->control_path, &track_content, &track_content_size)) {
+    if (!FS_Load(data->control_path, &track_content, &track_content_size)) {
         LOG_WARNING("Cannot find CDAudio control file: %s", data->control_path);
         return false;
     }
@@ -113,7 +114,7 @@ static bool M_Init(MUSIC_BACKEND *const backend)
     M_BACKEND_DATA *const data = backend->data;
     ASSERT(data != nullptr);
 
-    MYFILE *const fp = File_OpenPath(data->path, FILE_OPEN_READ);
+    TRX_FILE *const fp = File_OpenPath(data->path, FILE_OPEN_READ);
     if (fp == nullptr) {
         return false;
     }

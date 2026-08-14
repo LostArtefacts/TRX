@@ -1,5 +1,6 @@
 #include <trx/core/json/util/file.h>
 
+#include <trx/core/file.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/json.h>
 #include <trx/core/json/util/read_io.h>
@@ -45,7 +46,7 @@ JSON_VALUE *JSONFile_ReadWithError(
     }
 
     char *file_data = nullptr;
-    if (!File_Load(path, &file_data, nullptr)) {
+    if (!FS_Load(path, &file_data, nullptr)) {
         if (error_out != nullptr) {
             *error_out = Memory_DupStr("the file could not be read");
         }
@@ -79,14 +80,14 @@ JSON_VALUE *JSONFile_ReadWithError(
 bool JSONFile_Write(const char *path, JSON_VALUE *const value)
 {
     char *old_data = nullptr;
-    File_Load(path, &old_data, nullptr);
+    FS_Load(path, &old_data, nullptr);
 
     size_t out_len;
     char *out_data = JSON_WritePretty(value, "  ", "\n", &out_len);
 
     bool updated = false;
     if (old_data == nullptr || strcmp(old_data, out_data) != 0) {
-        MYFILE *const fp = File_OpenPath(path, FILE_OPEN_WRITE);
+        TRX_FILE *const fp = File_OpenPath(path, FILE_OPEN_WRITE);
         if (fp == nullptr) {
             LOG_ERROR("unable to open '%s' for writing", path);
         } else {

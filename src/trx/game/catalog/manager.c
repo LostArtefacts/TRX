@@ -144,7 +144,7 @@ bool Catalog_Load(
     }
     char *file_data;
     size_t file_size;
-    if (!File_Load(csv_path, &file_data, &file_size)) {
+    if (!FS_Load(csv_path, &file_data, &file_size)) {
         return false;
     }
 
