@@ -1281,6 +1281,30 @@ def dump_api(binary: Path) -> str:
     return json.dumps(json.loads(payload), indent=2, sort_keys=True) + "\n"
 
 
+def mark_deprecations(node: object) -> None:
+    """Fold a `deprecated` flag into the prose it belongs to.
+
+    Anything the API declares may carry one, and each kind of entry renders its
+    prose its own way. Writing the notice into the description is what makes it
+    reach all of them - including the reference check, which then holds the
+    replacement it names to being a real one.
+    """
+    if isinstance(node, list):
+        for item in node:
+            mark_deprecations(item)
+        return
+    if not isinstance(node, dict):
+        return
+
+    note = node.get("deprecated")
+    if note:
+        mark = "**Deprecated.**" if note is True else f"**Deprecated.** {note}"
+        desc = node.get("description") or ""
+        node["description"] = f"{mark}\n\n{desc}".rstrip()
+    for value in node.values():
+        mark_deprecations(value)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -1316,6 +1340,7 @@ def main() -> int:
         )
     api = json.loads(API_JSON.read_text())
 
+    mark_deprecations(api)
     read(api)
 
     blank = undocumented(api)

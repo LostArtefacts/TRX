@@ -41,6 +41,7 @@ def rendered(surface, module=None):
         docs.ALIASES,
     ):
         table.clear()
+    docs.mark_deprecations(surface)
     docs.read(surface)
     return docs.render_page(module or surface["modules"][0], surface)
 
@@ -453,6 +454,25 @@ class TestLuaDocs(unittest.TestCase):
             "Returns: [trx.catalog.music](CATALOG.md#catalog.music).",
             returns,
         )
+
+    def test_a_deprecated_declaration_leads_with_the_notice(self):
+        surface = copy.deepcopy(SURFACE)
+        surface["functions"][0]["deprecated"] = "Use `trx.things.Widget` instead."
+        page = rendered(surface)
+        notice = next(
+            line for line in page.splitlines() if "Deprecated" in line
+        )
+        self.assertIn("**Deprecated.**", notice)
+        self.assertIn("things.Widget", notice, "the replacement is linked")
+        self.assertIn("Spawns a thing.", page, "its own words are kept")
+
+    def test_a_deprecated_member_is_marked_where_it_is_listed(self):
+        surface = copy.deepcopy(SURFACE)
+        surface["types"][0]["fields"][0]["deprecated"] = True
+        page = rendered(surface)
+        shown = next(line for line in page.splitlines() if "`shown`" in line)
+        self.assertIn("**Deprecated.**", shown)
+        self.assertIn("Visible value.", page)
 
     def test_read_only_members_are_marked(self):
         page = rendered(SURFACE)
