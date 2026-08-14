@@ -1,7 +1,5 @@
 #pragma once
 
-#include <trx/core/file.h>
-
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
