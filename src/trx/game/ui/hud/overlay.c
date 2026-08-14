@@ -5,6 +5,7 @@
 #include <trx/core/strings.h>
 #include <trx/game/camera.h>
 #include <trx/game/const.h>
+#include <trx/game/cutseq.h>
 #include <trx/game/game.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/lara.h>
@@ -43,13 +44,18 @@ static struct {
     [UI_OVERLAY_ARROW_BCR] = { false, "\\{button right}" },
 };
 
+static bool M_AreLaraBarsAllowed(void)
+{
+    return Lara_IsControllable() && !CutSeq_IsActive();
+}
+
 static bool M_LaraHealthBar(
     const UI_OVERLAY_STATE *const s, const UI_ELEMENT_LOCATION location)
 {
     if (location != g_Config.ui.lara_health_bar.location) {
         return false;
     }
-    if (!Lara_IsControllable()
+    if (!M_AreLaraBarsAllowed()
         || (!Game_IsPlaying() && !s->force_show_healthbar)) {
         return false;
     }
@@ -65,7 +71,7 @@ static bool M_LaraAirBar(
     if (location != g_Config.ui.lara_air_bar.location) {
         return false;
     }
-    if (!Lara_IsControllable() || !Game_IsPlaying()) {
+    if (!M_AreLaraBarsAllowed() || !Game_IsPlaying()) {
         return false;
     }
     if (!g_Config.ui.enable_game_ui) {
@@ -80,7 +86,7 @@ static bool M_LaraSprintBar(
     if (location != g_Config.ui.lara_sprint_bar.location) {
         return false;
     }
-    if (!Lara_IsControllable() || !Game_IsPlaying()) {
+    if (!M_AreLaraBarsAllowed() || !Game_IsPlaying()) {
         return false;
     }
     if (!g_Config.ui.enable_game_ui) {
@@ -95,7 +101,7 @@ static bool M_LaraExposureBar(
     if (location != g_Config.ui.lara_exposure_bar.location) {
         return false;
     }
-    if (!Lara_IsControllable() || !Game_IsPlaying()) {
+    if (!M_AreLaraBarsAllowed() || !Game_IsPlaying()) {
         return false;
     }
     if (!g_Config.ui.enable_game_ui) {
