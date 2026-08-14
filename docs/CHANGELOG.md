@@ -26,6 +26,7 @@
 - Removed the golden outfits, which the engine now produces from any outfit, freeing their model slots for outfits of your own
 
 **TR1**
+- Changed Lara to retain her equipment when turning to gold on the Midas Hand, with the equipment also turning to gold
 - Fixed the Cabin in Natla's Mines remaining visible after dropping to the floor (regression from 1.10)
 
 **TR4**

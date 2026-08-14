@@ -121,15 +121,6 @@ static void M_MidasKill(ITEM *const item, COLL_INFO *const coll)
 
         lara->mesh_effects |= (1 << step->mesh);
         Lara_Skin_SwapSingleExtra(step->mesh, LS_EXTRA_MIDAS_KILL);
-        switch (step->mesh) {
-        case LM_TORSO:
-        case LM_HAND_L:
-        case LM_HAND_R:
-            Lara_Skin_ClearEquipment(step->mesh);
-            break;
-        default:
-            break;
-        }
     }
 
     Twinkle_SparkleItem(item, lara->mesh_effects);
