@@ -8,6 +8,7 @@
 
 **Miscellaneous**
 - Fixed the Cabin in Natla's Mines remaining visible after dropping to the floor (regression from 1.10)
+- Fixed flames not being drawn if TR4 is launched and the game is then switched to a different mod (regression from 1.10)
 
 
 
