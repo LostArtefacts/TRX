@@ -1,13 +1,11 @@
 #pragma once
 
+#include <trx/core/file.h>
+
 #include <stddef.h>
 #include <stdint.h>
 
-typedef struct {
-    char *content;
-    size_t size;
-    char *cur_ptr;
-} VFILE;
+typedef TRX_FILE VFILE;
 
 VFILE *VFile_CreateFromPath(const char *path);
 VFILE *VFile_CreateFromBuffer(const char *data, size_t size);

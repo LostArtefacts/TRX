@@ -252,8 +252,22 @@ unit_tests += {
 # core/filesystem formats paths with core/strings, so PCRE2 comes along, and it
 # stats open files through POSIX, which -std=c2x alone hides.
 unit_tests += {
+  'name': 'trx/core/file',
+  'engine': [
+    'core/file.c',
+    'core/filesystem.c',
+    'core/memory.c',
+    'core/strings/common.c',
+    'core/vector.c',
+  ],
+  'deps': [dep_pcre2],
+  'args': ['-DPCRE2_CODE_UNIT_WIDTH=8', '-D_DEFAULT_SOURCE'],
+}
+
+unit_tests += {
   'name': 'trx/core/filesystem',
   'engine': [
+    'core/file.c',
     'core/filesystem.c',
     'core/memory.c',
     'core/strings/common.c',

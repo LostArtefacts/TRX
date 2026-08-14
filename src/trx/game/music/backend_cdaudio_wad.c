@@ -66,7 +66,7 @@ static bool M_LoadTrackAsWaveFile(
         return false;
     }
 
-    MYFILE *const fp = File_Open(data->path, FILE_OPEN_READ);
+    MYFILE *const fp = File_OpenPath(data->path, FILE_OPEN_READ);
     if (fp == nullptr) {
         return false;
     }
@@ -90,7 +90,7 @@ static bool M_LoadTrackAsWaveFile(
     uint8_t *const buf = Memory_Alloc(total_size);
 
     File_Seek(fp, (size_t)track->offset, FILE_SEEK_SET);
-    const bool ok = File_ReadData(fp, buf, total_size);
+    const bool ok = File_TryReadData(fp, buf, total_size);
     File_Close(fp);
     if (!ok) {
         Memory_Free(buf);
@@ -109,7 +109,7 @@ static bool M_ReadAllTrackInfos(MYFILE *const fp, M_BACKEND_DATA *const data)
 
     M_CDAUDIO_WAD_TRACK_DESC track_infos[M_CDAUDIO_WAD_TRACK_COUNT] = {};
     File_Skip(fp, sizeof(M_CDAUDIO_WAD_TRACK_DESC));
-    if (!File_ReadItems(
+    if (!File_TryReadItems(
             fp, track_infos, M_CDAUDIO_WAD_TRACK_COUNT,
             sizeof(M_CDAUDIO_WAD_TRACK_DESC))) {
         return false;
@@ -136,7 +136,7 @@ static bool M_ReadAllTrackInfos(MYFILE *const fp, M_BACKEND_DATA *const data)
     const size_t wfx_pos = (size_t)data->tracks[first_active_idx].offset
         + M_CDAUDIO_WAD_WFX_OFFSET;
     File_Seek(fp, wfx_pos, FILE_SEEK_SET);
-    if (!File_ReadData(fp, data->wfx, M_CDAUDIO_WAD_WFX_SIZE)) {
+    if (!File_TryReadData(fp, data->wfx, M_CDAUDIO_WAD_WFX_SIZE)) {
         return false;
     }
     data->has_wfx = true;
@@ -149,7 +149,7 @@ static bool M_Init(MUSIC_BACKEND *const backend)
     M_BACKEND_DATA *const data = backend->data;
     ASSERT(data != nullptr);
 
-    MYFILE *const fp = File_Open(data->path, FILE_OPEN_READ);
+    MYFILE *const fp = File_OpenPath(data->path, FILE_OPEN_READ);
     if (fp == nullptr) {
         return false;
     }

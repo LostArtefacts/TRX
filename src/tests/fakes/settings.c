@@ -303,7 +303,7 @@ void Shell_ExitSystemFmt(const char *const fmt, ...)
     Shell_ExitSystem(fmt);
 }
 
-MYFILE *File_Open(const char *const path, const FILE_OPEN_MODE mode)
+MYFILE *File_OpenPath(const char *const path, const FILE_OPEN_MODE mode)
 {
     return nullptr;
 }

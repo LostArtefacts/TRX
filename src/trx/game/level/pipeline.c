@@ -44,7 +44,7 @@ static void M_InitialiseSamplesFromFile(
         goto finish;
     }
 
-    fp = File_Open(file_name, FILE_OPEN_READ);
+    fp = File_OpenPath(file_name, FILE_OPEN_READ);
     if (fp == nullptr) {
         LOG_ERROR("Could not open %s samples file", file_name);
         goto finish;

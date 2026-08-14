@@ -1257,7 +1257,7 @@ MYFILE *GamePath_OpenFile(
     if (resolved == nullptr) {
         return nullptr;
     }
-    return File_Open(resolved, mode);
+    return File_OpenPath(resolved, mode);
 }
 
 bool GamePath_LoadFile(
