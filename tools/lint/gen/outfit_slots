@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import csv
+import re
 import sys
 from pathlib import Path
 
@@ -55,6 +56,13 @@ def slot_cell(game: str, slots: dict[str, int], object_name: str) -> str:
     return str(slot)
 
 
+def object_sort_key(object_name: str) -> tuple[str, int]:
+    match = re.match(r"^(.*?)(\d+)$", object_name)
+    if match:
+        return match.group(1), int(match.group(2))
+    return object_name, 0
+
+
 def build_table(
     first_header: str,
     rows: list[tuple[str, str]],
@@ -69,7 +77,7 @@ def build_table(
     lines += [f"    <th>{game.upper()}</th>" for game in GAMES]
     lines.append("  </tr>")
 
-    for label, object_name in rows:
+    for label, object_name in sorted(rows, key=lambda row: object_sort_key(row[1])):
         lines.append("  <tr valign='top'>")
         lines.append(f"    <td>{label}</td>")
         lines.append(f"    <td><code>{object_name}</code></td>")
