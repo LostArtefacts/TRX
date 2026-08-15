@@ -9,6 +9,8 @@
 
 #define MAX_MATRICES 40
 #define MAX_NESTED_MATRICES 32
+// How small cos(X) may be before Y and Z are read as one turn. Above the
+// rounding a matrix carries from being held in fixed point.
 #define M_ROT_LOCK_EPSILON 1e-3
 
 static MATRIX m_MatrixStack[MAX_MATRICES] = {};
@@ -371,6 +373,9 @@ static XYZ_16 M_ToRot16(const MATRIX *const m)
 
     double sin_x = -e[1][2];
     CLAMP(sin_x, -1.0, 1.0);
+    // Taken from the pair itself rather than from sin(X), which a matrix
+    // rounded to fixed point leaves just short of one; the square root of that
+    // shortfall then reads as a cos(X) far larger than the pair holds.
     const double cos_x = sqrt(e[0][2] * e[0][2] + e[2][2] * e[2][2]);
     double x = asin(sin_x);
     double y;
