@@ -13,6 +13,8 @@
         },
         "config_presets": {
             "applied": "Ustawienia zastosowane.",
+            "confirm_apply": "\\{review}Zastosuj",
+            "confirm_back": "\\{review}Wróć",
             "confirm_description": "Następujące ustawienia zostaną zmienione:",
             "confirm_restart_note": "Uwaga: niektóre ustawienia mogą wymagać ponownego uruchomienia gry, aby zaczęły obowiązywać.",
             "empty": "Nie znaleziono żadnych ustawień.",

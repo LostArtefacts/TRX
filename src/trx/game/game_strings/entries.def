@@ -877,6 +877,8 @@ GS_DEFINE(general/settings/gameplay/tabs/presets,  "Presets")
 
 GS_DEFINE(general/config_presets/confirm_description,  "The following settings will be changed:")
 GS_DEFINE(general/config_presets/confirm_restart_note, "Note: some settings may require a game restart to take effect.")
+GS_DEFINE(general/config_presets/confirm_apply,        "Apply")
+GS_DEFINE(general/config_presets/confirm_back,         "Go back")
 GS_DEFINE(general/config_presets/applied,              "Preset applied.")
 GS_DEFINE(general/config_presets/no_changes,           "No changes to apply.")
 GS_DEFINE(general/config_presets/title_fmt,            "Apply preset %s?")

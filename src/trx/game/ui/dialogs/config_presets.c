@@ -28,6 +28,8 @@
 #include <string.h>
 
 #define M_CONFIRM_VISIBLE_ROWS 10
+#define M_CHOICE_SPACING 12.0f
+#define M_CHOICE_PAD 8.0f
 // A narrow list of changes should stay narrow; this is the floor, not the
 // width.
 #define M_CONFIRM_MIN_W 72.0f
@@ -45,12 +47,31 @@ typedef enum {
     M_PHASE_APPLIED,
 } M_PHASE;
 
+typedef enum {
+    M_CHOICE_APPLY,
+    M_CHOICE_BACK,
+    M_CHOICE_COUNT,
+} M_CHOICE;
+
 struct UI_CONFIG_PRESETS_STATE {
     M_PHASE phase;
     UI_REQUESTER_STATE req;
     UI_SCROLLABLE confirm_scroll;
     int32_t selected_idx;
+    M_CHOICE confirm_choice;
 };
+
+static const char *M_GetChoiceLabel(const M_CHOICE choice)
+{
+    switch (choice) {
+    case M_CHOICE_APPLY:
+        return GS("general/config_presets/confirm_apply");
+    case M_CHOICE_BACK:
+        return GS("general/config_presets/confirm_back");
+    default:
+        return "";
+    }
+}
 
 static const char *M_GetPresetKeyLabel(const char *const key)
 {
@@ -185,6 +206,15 @@ static float M_GetConfirmContentWidth(UI_CONFIG_PRESETS_STATE *const s)
         natural = MAX(natural, UI_Label_MeasureW(message));
     }
 
+    if (s->phase == M_PHASE_CONFIRM) {
+        float choices = M_CHOICE_SPACING * scale;
+        for (M_CHOICE i = 0; i < M_CHOICE_COUNT; i++) {
+            choices += UI_Label_MeasureW(M_GetChoiceLabel(i))
+                + 2.0f * M_CHOICE_PAD * scale;
+        }
+        natural = MAX(natural, choices);
+    }
+
     const CONFIG_PRESET *const preset = Config_Presets_Get(s->selected_idx);
     if (s->phase == M_PHASE_CONFIRM && preset != nullptr) {
         for (int32_t i = 0; i < preset->setting_count; i++) {
@@ -237,6 +267,30 @@ static void M_Header(void *const user_data)
     }
 }
 
+static void M_DrawConfirmChoices(const UI_CONFIG_PRESETS_STATE *const s)
+{
+    UI_BeginAnchor(0.5f, 0.5f);
+    UI_BeginStackEx((UI_STACK_SETTINGS) {
+        .orientation = UI_STACK_HORIZONTAL,
+        .align = { .v = UI_STACK_V_ALIGN_CENTER },
+        .spacing = { .h = M_CHOICE_SPACING },
+    });
+    for (M_CHOICE i = 0; i < M_CHOICE_COUNT; i++) {
+        const bool is_selected = s->confirm_choice == i;
+        if (is_selected) {
+            UI_BeginFrame(UI_FRAME_SELECTED_OPTION);
+        }
+        UI_BeginPad(M_CHOICE_PAD, 0.0f);
+        UI_Label(M_GetChoiceLabel(i));
+        UI_EndPad();
+        if (is_selected) {
+            UI_EndFrame();
+        }
+    }
+    UI_EndStack();
+    UI_EndAnchor();
+}
+
 static void M_Footer(void *const user_data)
 {
     UI_CONFIG_PRESETS_STATE *const s = user_data;
@@ -245,6 +299,8 @@ static void M_Footer(void *const user_data)
         M_WrappedLabel(
             GS("general/config_presets/confirm_restart_note"),
             M_GetConfirmContentWidth(s));
+        UI_Spacer(0.0f, UI_TEXT_HEIGHT);
+        M_DrawConfirmChoices(s);
     }
 }
 
@@ -328,12 +384,17 @@ bool UI_ConfigPresets_Control(UI_CONFIG_PRESETS_STATE *const s)
 
     if (s->phase == M_PHASE_CONFIRM) {
         UI_ScrollableStack_Control(&s->confirm_scroll, UI_STACK_VERTICAL);
-        if (g_InputDB.menu_confirm) {
+        if (g_InputDB.menu_left) {
+            s->confirm_choice = M_CHOICE_APPLY;
+        } else if (g_InputDB.menu_right) {
+            s->confirm_choice = M_CHOICE_BACK;
+        }
+        if (g_InputDB.menu_confirm && s->confirm_choice == M_CHOICE_APPLY) {
             Config_Presets_Apply(s->selected_idx);
             s->phase = M_PHASE_APPLIED;
             g_Input = (INPUT_STATE) {};
             g_InputDB = (INPUT_STATE) {};
-        } else if (g_InputDB.menu_back) {
+        } else if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
             s->phase = M_PHASE_BROWSE;
             g_Input = (INPUT_STATE) {};
             g_InputDB = (INPUT_STATE) {};
@@ -368,6 +429,7 @@ bool UI_ConfigPresets_Control(UI_CONFIG_PRESETS_STATE *const s)
             // The stack counts its own lines once it has them; wrapping decides
             // how many a row takes.
             s->confirm_scroll.max_items = 0;
+            s->confirm_choice = M_CHOICE_APPLY;
             s->phase = M_PHASE_CONFIRM;
         } else {
             s->phase = M_PHASE_NO_CHANGES;

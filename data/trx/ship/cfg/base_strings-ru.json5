@@ -13,6 +13,8 @@
         },
         "config_presets": {
             "applied": "\\{review}Предустановка применена.",
+            "confirm_apply": "\\{review}Применить",
+            "confirm_back": "\\{review}Назад",
             "confirm_description": "\\{review}Следующие настройки будут изменены:",
             "confirm_restart_note": "\\{review}Примечание: для вступления изменений в силу может потребоваться перезапуск игры.",
             "empty": "\\{review}Пресеты не найдены.",

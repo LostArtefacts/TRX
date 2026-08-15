@@ -13,6 +13,8 @@
         },
         "config_presets": {
             "applied": "\\{review}Préréglage appliqué.",
+            "confirm_apply": "\\{review}Appliquer",
+            "confirm_back": "\\{review}Retour",
             "confirm_description": "\\{review}Les paramètres suivants seront modifiés :",
             "confirm_restart_note": "\\{review}Remarque : certains paramètres peuvent nécessiter un redémarrage du jeu pour prendre effet.",
             "empty": "\\{review}Aucun préréglage trouvé.",
