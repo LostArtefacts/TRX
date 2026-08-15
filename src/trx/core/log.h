@@ -52,3 +52,8 @@ void Log_Message(
 bool Log_ShouldUseAnsiColors(void);
 void Log_Init_Extra(const char *path);
 void Log_Shutdown_Extra(void);
+
+// Logs the stack the game stands on, a frame to a line, starting at the
+// caller. Logs nothing where the platform cannot walk the stack or the build
+// carries no debug symbols.
+void Log_StackTrace(void);

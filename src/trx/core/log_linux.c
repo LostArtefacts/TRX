@@ -26,15 +26,25 @@ static int M_StackTrace(
     return 0;
 }
 
+static void M_WalkStack(void)
+{
+    struct backtrace_state *const state = backtrace_create_state(
+        nullptr, BACKTRACE_SUPPORTS_THREADS, M_ErrorCallback, nullptr);
+    backtrace_full(state, 1, M_StackTrace, M_ErrorCallback, nullptr);
+}
+
 static void M_SignalHandler(int sig)
 {
     LOG_ERROR("== CRASH REPORT ==");
     LOG_ERROR("SIGNAL: %d", sig);
     LOG_ERROR("STACK TRACE:");
-    struct backtrace_state *state = backtrace_create_state(
-        nullptr, BACKTRACE_SUPPORTS_THREADS, M_ErrorCallback, nullptr);
-    backtrace_full(state, 0, M_StackTrace, M_ErrorCallback, nullptr);
+    M_WalkStack();
     exit(EXIT_FAILURE);
+}
+
+void Log_StackTrace(void)
+{
+    M_WalkStack();
 }
 
 void Log_Init_Extra(const char *path)
