@@ -72,7 +72,7 @@ function water_color.declare(spec)
     local color = spec.modes[mode]
     if type(color) == "table" then
       local level = trx.game.current_level
-      color = level ~= nil and color[level.key] or nil
+      color = level ~= nil and color[level.key] or trx.config.get(COLOR_OPTION)
     end
     hold(color)
   end

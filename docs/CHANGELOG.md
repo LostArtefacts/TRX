@@ -5,6 +5,7 @@
 - Fixed the controls key list jumping after switching to a tab with fewer keys (regression from 1.3)
 - Fixed the settings and controls dialog tabs ignoring rebound step left and step right keys
 - Fixed the settings dialogs scrolling their list back to the top when the selection moved up to the tabs
+- Fixed the water color setting staying editable while a PS1 water color preset was picked (#6265)
 
 **Options and menus**
 - Changed the TR1 PC bars appearance to be named TR1, the bars being the ones both TR1 releases draw (Graphic Options → Bars → Bars appearance) (#6260)
