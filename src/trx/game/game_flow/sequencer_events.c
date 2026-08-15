@@ -21,10 +21,10 @@
 #include <trx/version.h>
 
 #define M_GF_HANDLER(name)                                                     \
-    static GF_COMMAND name(                                                    \
+    static RESULT name(                                                        \
         const GF_LEVEL *const level, const GF_SEQUENCE *const sequence,        \
         const int32_t event_idx, const GF_SEQUENCE_CONTEXT seq_ctx,            \
-        void *const seq_ctx_arg)
+        void *const seq_ctx_arg, GF_COMMAND *const out_cmd)
 
 // clang-format off
 #define X_EVENT_HANDLER_LIST \
@@ -92,20 +92,23 @@ static const GF_LEVEL *M_GetCanonicalNextLevel(const GF_LEVEL *const level)
 
 M_GF_HANDLER(M_HandleExitToTitle)
 {
-    return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+    *out_cmd = (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+    return OK;
 }
 
 M_GF_HANDLER(M_HandleLevelComplete)
 {
     if (seq_ctx != GFSC_NORMAL) {
-        return (GF_COMMAND) { .action = GF_NOOP };
+        *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
+        return OK;
     }
     M_FinishLevelBasic();
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
     const GF_LEVEL *const next_level = M_GetCanonicalNextLevel(current_level);
 
     if (next_level == nullptr) {
-        return (GF_COMMAND) { .action = GF_NOOP };
+        *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
+        return OK;
     }
     SG_Resume_StoreGameToEntry(next_level);
     RESUME_INFO *const next_resume = SG_Resume_GetEntry(next_level);
@@ -113,12 +116,14 @@ M_GF_HANDLER(M_HandleLevelComplete)
         next_resume->prev_level = current_level->num;
     }
     if (next_level->type == GFL_BONUS && !Stats_CheckAllSecretsCollected()) {
-        return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+        *out_cmd = (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+        return OK;
     }
-    return (GF_COMMAND) {
+    *out_cmd = (GF_COMMAND) {
         .action = GF_START_GAME,
         .param = next_level->num,
     };
+    return OK;
 }
 
 M_GF_HANDLER(M_HandlePlayLevel)
@@ -128,9 +133,11 @@ M_GF_HANDLER(M_HandlePlayLevel)
     if (seq_ctx == GFSC_STORY) {
         const int32_t savegame_level_num = (int32_t)(intptr_t)seq_ctx_arg;
         if (savegame_level_num == level->num) {
-            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+            *out_cmd = (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+            return OK;
         } else {
-            return (GF_COMMAND) { .action = GF_NOOP };
+            *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
+            return OK;
         }
     }
 
@@ -150,7 +157,8 @@ M_GF_HANDLER(M_HandlePlayLevel)
             LOG_ERROR("Failed to load save file!");
             Game_SetCurrentLevel(nullptr);
             GF_SetCurrentLevel(nullptr);
-            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+            *out_cmd = (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+            return OK;
         }
         break;
     }
@@ -190,7 +198,8 @@ M_GF_HANDLER(M_HandlePlayLevel)
     if (gf_cmd.action == GF_LEVEL_COMPLETE) {
         gf_cmd.action = GF_NOOP;
     }
-    return gf_cmd;
+    *out_cmd = gf_cmd;
+    return OK;
 }
 
 M_GF_HANDLER(M_HandlePlayCutscene)
@@ -203,12 +212,13 @@ M_GF_HANDLER(M_HandlePlayCutscene)
     const bool cross_fade_in =
         prev_event != nullptr && prev_event->type == GFS_LOOP_GAME;
     if (seq_ctx != GFSC_SAVED && g_Config.gameplay.enable_cutscenes) {
-        gf_cmd = GF_DoCutsceneSequence(cutscene_num, cross_fade_in);
+        MUST(GF_DoCutsceneSequence(cutscene_num, cross_fade_in, &gf_cmd));
         if (gf_cmd.action == GF_LEVEL_COMPLETE) {
             gf_cmd.action = GF_NOOP;
         }
     }
-    return gf_cmd;
+    *out_cmd = gf_cmd;
+    return OK;
 }
 
 M_GF_HANDLER(M_HandlePlayFMV)
@@ -217,24 +227,30 @@ M_GF_HANDLER(M_HandlePlayFMV)
     const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
     const int16_t fmv_id = (int16_t)(intptr_t)event->data;
     if (seq_ctx == GFSC_SAVED) {
-        return gf_cmd;
+        *out_cmd = gf_cmd;
+        return OK;
     }
     if (fmv_id < 0 || fmv_id >= g_GameFlow.fmv_count) {
         LOG_ERROR("Invalid FMV number: %d", fmv_id);
-        return gf_cmd;
+        *out_cmd = gf_cmd;
+        return OK;
     }
     const GF_FMV *const fmv = &g_GameFlow.fmvs[fmv_id];
     if (fmv->is_intro && g_Config.gameplay.intro_fmv_mode == INTRO_FMV_LAUNCH) {
-        return gf_cmd;
+        *out_cmd = gf_cmd;
+        return OK;
     }
     if (fmv->is_legal && !g_Config.gameplay.enable_legal) {
-        return gf_cmd;
+        *out_cmd = gf_cmd;
+        return OK;
     }
     if (fmv->is_credit && !g_Config.gameplay.enable_credits) {
-        return gf_cmd;
+        *out_cmd = gf_cmd;
+        return OK;
     }
     FMV_Play(fmv->path);
-    return gf_cmd;
+    *out_cmd = gf_cmd;
+    return OK;
 }
 
 M_GF_HANDLER(M_HandlePlayMusic)
@@ -244,7 +260,8 @@ M_GF_HANDLER(M_HandlePlayMusic)
         Music_SetVolume(g_Config.audio.music_volume);
         Music_Play_Direct((int32_t)(intptr_t)event->data, MPM_ONCE);
     }
-    return (GF_COMMAND) { .action = GF_NOOP };
+    *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
+    return OK;
 }
 
 M_GF_HANDLER(M_HandlePicture)
@@ -257,28 +274,35 @@ M_GF_HANDLER(M_HandlePicture)
         prev_event != nullptr && prev_event->type == GFS_PLAY_FMV;
     if (event->type == GFS_LOADING_SCREEN) {
         if (g_Config.gameplay.loading_screens == LOADING_SCREENS_DISABLED) {
-            return gf_cmd;
+            *out_cmd = gf_cmd;
+            return OK;
         } else if (seq_ctx == GFSC_STORY) {
-            return gf_cmd;
+            *out_cmd = gf_cmd;
+            return OK;
         } else if (
             g_Config.gameplay.loading_screens == LOADING_SCREENS_NEW_GAMES
             && seq_ctx != GFSC_NORMAL && seq_ctx != GFSC_SELECT) {
-            return gf_cmd;
+            *out_cmd = gf_cmd;
+            return OK;
         }
         Music_Stop();
     } else if (seq_ctx == GFSC_SAVED) {
-        return gf_cmd;
+        *out_cmd = gf_cmd;
+        return OK;
     }
 
     GF_DISPLAY_PICTURE_DATA *data = event->data;
     if (data->path == nullptr) {
-        return gf_cmd;
+        *out_cmd = gf_cmd;
+        return OK;
     }
     if (data->is_legal && !g_Config.gameplay.enable_legal) {
-        return gf_cmd;
+        *out_cmd = gf_cmd;
+        return OK;
     }
     if (data->is_credit && !g_Config.gameplay.enable_credits) {
-        return gf_cmd;
+        *out_cmd = gf_cmd;
+        return OK;
     }
 
     PHASE *const phase = Phase_Picture_Create((PHASE_PICTURE_ARGS) {
@@ -292,20 +316,23 @@ M_GF_HANDLER(M_HandlePicture)
     });
     gf_cmd = PhaseExecutor_Run(phase);
     Phase_Picture_Destroy(phase);
-    return gf_cmd;
+    *out_cmd = gf_cmd;
+    return OK;
 }
 
 M_GF_HANDLER(M_HandleInventoryModifier)
 {
     // handled in GF_InventoryModifier_Apply
-    return (GF_COMMAND) { .action = GF_NOOP };
+    *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
+    return OK;
 }
 
 M_GF_HANDLER(M_HandleLevelStats)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     if (seq_ctx != GFSC_NORMAL) {
-        return gf_cmd;
+        *out_cmd = gf_cmd;
+        return OK;
     }
 
     PHASE *const phase = Phase_Stats_Create((PHASE_STATS_ARGS) {
@@ -317,17 +344,20 @@ M_GF_HANDLER(M_HandleLevelStats)
     });
     gf_cmd = PhaseExecutor_Run(phase);
     Phase_Stats_Destroy(phase);
-    return gf_cmd;
+    *out_cmd = gf_cmd;
+    return OK;
 }
 
 M_GF_HANDLER(M_HandleTotalStats)
 {
     GF_COMMAND gf_cmd = { .action = GF_EXIT_TO_TITLE };
     if (seq_ctx != GFSC_NORMAL) {
-        return gf_cmd;
+        *out_cmd = gf_cmd;
+        return OK;
     }
     if (!g_Config.gameplay.enable_total_stats) {
-        return gf_cmd;
+        *out_cmd = gf_cmd;
+        return OK;
     }
     const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
     PHASE *const phase = Phase_Stats_Create((PHASE_STATS_ARGS) {
@@ -339,13 +369,15 @@ M_GF_HANDLER(M_HandleTotalStats)
     });
     gf_cmd = PhaseExecutor_Run(phase);
     Phase_Stats_Destroy(phase);
-    return gf_cmd;
+    *out_cmd = gf_cmd;
+    return OK;
 }
 
 M_GF_HANDLER(M_HandleGlobeSelect)
 {
     if (seq_ctx != GFSC_NORMAL) {
-        return (GF_COMMAND) { .action = GF_NOOP };
+        *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
+        return OK;
     }
     M_FinishLevelBasic();
     const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
@@ -364,7 +396,8 @@ M_GF_HANDLER(M_HandleGlobeSelect)
             }
         }
     }
-    return gf_cmd;
+    *out_cmd = gf_cmd;
+    return OK;
 }
 
 M_GF_HANDLER(M_HandleSetStartAnim)
@@ -374,7 +407,8 @@ M_GF_HANDLER(M_HandleSetStartAnim)
     if (seq_ctx != GFSC_STORY) {
         Lara_SetStartAnimState((LARA_EXTRA_STATE)(intptr_t)event->data);
     }
-    return gf_cmd;
+    *out_cmd = gf_cmd;
+    return OK;
 }
 
 M_GF_HANDLER(M_HandleEnableSunset)
@@ -383,7 +417,8 @@ M_GF_HANDLER(M_HandleEnableSunset)
     if (seq_ctx != GFSC_STORY) {
         Output_SetSunsetEnabled(true);
     }
-    return gf_cmd;
+    *out_cmd = gf_cmd;
+    return OK;
 }
 
 M_GF_HANDLER(M_HandleSetupHorizon)
@@ -395,7 +430,8 @@ M_GF_HANDLER(M_HandleSetupHorizon)
         Output_Sky_SetColorAdd(data->color_add);
         Output_Sky_SetFogGradient(data->fog_gradient);
     }
-    return (GF_COMMAND) { .action = GF_NOOP };
+    *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
+    return OK;
 }
 
 M_GF_HANDLER(M_HandleSetupUVRotate)
@@ -404,7 +440,8 @@ M_GF_HANDLER(M_HandleSetupUVRotate)
         const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
         Output_SetUVRotateSpeed((int32_t)(intptr_t)event->data);
     }
-    return (GF_COMMAND) { .action = GF_NOOP };
+    *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
+    return OK;
 }
 
 M_GF_HANDLER(M_HandleEnableLightning)
@@ -412,7 +449,8 @@ M_GF_HANDLER(M_HandleEnableLightning)
     if (seq_ctx != GFSC_STORY) {
         Output_Sky_SetLightningEnabled(true);
     }
-    return (GF_COMMAND) { .action = GF_NOOP };
+    *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
+    return OK;
 }
 
 M_GF_HANDLER(M_HandleSetupLensFlare)
@@ -429,7 +467,8 @@ M_GF_HANDLER(M_HandleSetupLensFlare)
         };
         Output_LensFlares_SetSun(pos, data->color);
     }
-    return (GF_COMMAND) { .action = GF_NOOP };
+    *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
+    return OK;
 }
 
 M_GF_HANDLER(M_HandleDisableFloor)
@@ -439,7 +478,8 @@ M_GF_HANDLER(M_HandleDisableFloor)
         const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
         Room_SetAbyssHeight((int32_t)(intptr_t)event->data);
     }
-    return gf_cmd;
+    *out_cmd = gf_cmd;
+    return OK;
 }
 
 GF_SEQUENCE_EVENT_HANDLER GF_GetSequenceEventHandler(

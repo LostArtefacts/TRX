@@ -179,8 +179,9 @@ RESULT GF_DoFrontendSequence(GF_COMMAND *const out_cmd)
         return OK;
     }
 
-    const GF_COMMAND gf_cmd =
-        GF_InterpretSequence(g_GameFlow.title_level, GFSC_NORMAL, nullptr);
+    GF_COMMAND gf_cmd;
+    MUST(GF_InterpretSequence(
+        g_GameFlow.title_level, GFSC_NORMAL, nullptr, &gf_cmd));
     if (gf_cmd.action == GF_NOOP || gf_cmd.action == GF_EXIT_TO_TITLE) {
         M_PlayIntroFMVs();
     }
@@ -188,57 +189,55 @@ RESULT GF_DoFrontendSequence(GF_COMMAND *const out_cmd)
     return OK;
 }
 
-GF_COMMAND GF_DoLevelSequence(
-    const GF_LEVEL *const start_level, const GF_SEQUENCE_CONTEXT seq_ctx)
+RESULT GF_DoLevelSequence(
+    const GF_LEVEL *const start_level, const GF_SEQUENCE_CONTEXT seq_ctx,
+    GF_COMMAND *const out_cmd)
 {
     const GF_LEVEL *current_level = start_level;
     const GF_LEVEL_TABLE_TYPE level_table_type =
         GF_GetLevelTableType(current_level->type);
     const int32_t level_count = GF_GetLevelTable(level_table_type)->count;
     while (true) {
-        const GF_COMMAND gf_cmd =
-            GF_InterpretSequence(current_level, seq_ctx, nullptr);
+        GF_COMMAND gf_cmd;
+        MUST(GF_InterpretSequence(current_level, seq_ctx, nullptr, &gf_cmd));
 
         if (gf_cmd.action != GF_NOOP && gf_cmd.action != GF_LEVEL_COMPLETE) {
-            return gf_cmd;
+            *out_cmd = gf_cmd;
+            return OK;
         }
-        if (Game_IsInGym()) {
-            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
-        }
-        if (current_level->num + 1 >= level_count) {
-            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+        if (Game_IsInGym() || current_level->num + 1 >= level_count) {
+            *out_cmd = (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+            return OK;
         }
         current_level++;
     }
 }
 
-GF_COMMAND GF_DoDemoSequence(int32_t demo_num)
+RESULT GF_DoDemoSequence(int32_t demo_num, GF_COMMAND *const out_cmd)
 {
     demo_num = Demo_ChooseLevel(demo_num);
     if (demo_num < 0) {
-        return (GF_COMMAND) { .action = GF_NOOP };
+        // There is nothing to demonstrate, which is not a fault.
+        *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
+        return OK;
     }
     const GF_LEVEL *const level = GF_GetLevel(GFLT_DEMOS, demo_num);
-    if (level == nullptr) {
-        LOG_ERROR("Missing demo: %d", demo_num);
-        return (GF_COMMAND) { .action = GF_NOOP };
-    }
-    return GF_InterpretSequence(level, GFSC_NORMAL, nullptr);
+    FAIL_IF(level == nullptr, "the game flow has no demo %d", demo_num);
+    return GF_InterpretSequence(level, GFSC_NORMAL, nullptr, out_cmd);
 }
 
-GF_COMMAND GF_DoCutsceneSequence(
-    const int32_t cutscene_num, const bool cross_fade_in)
+RESULT GF_DoCutsceneSequence(
+    const int32_t cutscene_num, const bool cross_fade_in,
+    GF_COMMAND *const out_cmd)
 {
     const GF_LEVEL *const level = GF_GetLevel(GFLT_CUTSCENES, cutscene_num);
-    if (level == nullptr) {
-        LOG_ERROR("Missing cutscene: %d", cutscene_num);
-        return (GF_COMMAND) { .action = GF_NOOP };
-    }
+    FAIL_IF(level == nullptr, "the game flow has no cutscene %d", cutscene_num);
     return GF_InterpretSequence(
-        level, GFSC_NORMAL, (void *)(intptr_t)cross_fade_in);
+        level, GFSC_NORMAL, (void *)(intptr_t)cross_fade_in, out_cmd);
 }
 
-GF_COMMAND GF_PlayAvailableStory(const SAVEGAME_SLOT_REF slot)
+RESULT GF_PlayAvailableStory(
+    const SAVEGAME_SLOT_REF slot, GF_COMMAND *const out_cmd)
 {
     const int32_t savegame_level = SG_Manager_GetLevelNumber(slot);
     const bool prev_enable_legal = g_Config.gameplay.enable_legal;
@@ -256,8 +255,9 @@ GF_COMMAND GF_PlayAvailableStory(const SAVEGAME_SLOT_REF slot)
         if (level->type == GFL_GYM) {
             continue;
         }
-        const GF_COMMAND gf_cmd = GF_InterpretSequence(
-            level, GFSC_STORY, (void *)(intptr_t)savegame_level);
+        GF_COMMAND gf_cmd;
+        MUST(GF_InterpretSequence(
+            level, GFSC_STORY, (void *)(intptr_t)savegame_level, &gf_cmd));
         if (gf_cmd.action == GF_EXIT_TO_TITLE
             || gf_cmd.action == GF_EXIT_GAME) {
             break;
@@ -265,7 +265,8 @@ GF_COMMAND GF_PlayAvailableStory(const SAVEGAME_SLOT_REF slot)
     }
 
     CONFIG_SET(g_Config.gameplay.enable_legal, prev_enable_legal);
-    return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+    *out_cmd = (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+    return OK;
 }
 
 bool GF_HasAvailableStory(const SAVEGAME_SLOT_REF slot)
@@ -346,7 +347,7 @@ RESULT GF_RunUntilExit(GF_COMMAND gf_cmd)
             const GF_SEQUENCE_CONTEXT seq_ctx =
                 gf_cmd.action == GF_SELECT_GAME ? GFSC_SELECT : GFSC_NORMAL;
             if (level != nullptr) {
-                gf_cmd = GF_DoLevelSequence(level, seq_ctx);
+                MUST(GF_DoLevelSequence(level, seq_ctx, &gf_cmd));
             }
             break;
         }
@@ -365,28 +366,28 @@ RESULT GF_RunUntilExit(GF_COMMAND gf_cmd)
             } else {
                 SG_Manager_BindSlot(slot);
                 const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, level_num);
-                gf_cmd = GF_DoLevelSequence(level, GFSC_SAVED);
+                MUST(GF_DoLevelSequence(level, GFSC_SAVED, &gf_cmd));
             }
             break;
         }
 
         case GF_RESTART_GAME: {
             const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, gf_cmd.param);
-            gf_cmd = GF_InterpretSequence(level, GFSC_RESTART, nullptr);
+            MUST(GF_InterpretSequence(level, GFSC_RESTART, nullptr, &gf_cmd));
             break;
         }
 
         case GF_STORY_SO_FAR:
-            gf_cmd =
-                GF_PlayAvailableStory(SG_Manager_SlotFromParam(gf_cmd.param));
+            MUST(GF_PlayAvailableStory(
+                SG_Manager_SlotFromParam(gf_cmd.param), &gf_cmd));
             break;
 
         case GF_START_CINE:
-            gf_cmd = GF_DoCutsceneSequence(gf_cmd.param, false);
+            MUST(GF_DoCutsceneSequence(gf_cmd.param, false, &gf_cmd));
             break;
 
         case GF_START_DEMO:
-            gf_cmd = GF_DoDemoSequence(gf_cmd.param);
+            MUST(GF_DoDemoSequence(gf_cmd.param, &gf_cmd));
             break;
 
         case GF_NOOP:
