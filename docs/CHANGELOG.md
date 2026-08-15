@@ -14,6 +14,7 @@
 - Fixed the icons beside the volume settings, which now show a note for the music and a speaker for the sound effects
 - Fixed the controls key list jumping after switching to a tab with fewer keys (regression from 1.3)
 - Fixed the game flashing over the black bars beside the picture when a frame is advanced in photo mode (regression from 1.10)
+- Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187)
 - Fixed ability to open the inventory ring while a flyby sequence has Lara's control
 - Fixed the water color setting staying editable while a PS1 water color preset was picked (#6265)
 

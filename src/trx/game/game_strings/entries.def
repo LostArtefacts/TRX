@@ -455,6 +455,7 @@ GS_DEFINE(settings/visuals.shadow_type/title,                     "Shadows shape
 GS_DEFINE(settings/visuals.sunglasses_mode/title,                 "Lara's sunglasses")
 GS_DEFINE(settings/visuals.ui_brightness/title,                   "UI brightness")
 GS_DEFINE(settings/visuals.water_color/title,                     "Water color")
+GS_DEFINE(settings/window.is_fullscreen/title,                    "Fullscreen")
 
 // Setting descriptions
 GS_DEFINE(settings/audio.ambient_volume/description,                    "Adjusts ambient volume.")
@@ -716,6 +717,7 @@ GS_DEFINE(settings/visuals.shadow_type/description,                     "Selects
 GS_DEFINE(settings/visuals.sunglasses_mode/description,                 "Changes the style of Lara's sunglasses. Note that lenses will be reflective if the relevant option is enabled.\n\n- Off: Lara will not wear sunglasses.\n- Opaque: Lara's sunglasses will have opaque lenses.\n- Transparent: Lara's sunglasses will have semi-transparent lenses.")
 GS_DEFINE(settings/visuals.ui_brightness/description,                   "Changes UI brightness.")
 GS_DEFINE(settings/visuals.water_color/description,                     "Color of the water.")
+GS_DEFINE(settings/window.is_fullscreen/description,                    "Fills the screen, or runs in a window.")
 
 GS_DEFINE(general/stats/basic_fmt,               "%d")
 GS_DEFINE(general/stats/detail_fmt,              "%d of %d")

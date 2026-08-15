@@ -1922,6 +1922,10 @@
                 "ps1": "PS1",
                 "tombati": "TombATI",
             }
+        },
+        "window.is_fullscreen": {
+            "title": "\\{review}Làn-sgrìn",
+            "description": "\\{review}Lìonaidh e an sgrìn, no ruithidh e ann an uinneag.",
         }
     },
     "objects": {

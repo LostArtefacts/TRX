@@ -1,3 +1,5 @@
+X_UI_ROW(window.is_fullscreen)
+
 X_UI_ROW(rendering.fps)
 X_UI_ROW(rendering.enable_trapezoid_filter)
 X_UI_ROW(rendering.texture_filter)
