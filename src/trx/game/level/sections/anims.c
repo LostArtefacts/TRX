@@ -17,7 +17,7 @@ static void M_ReadPosition(XYZ_32 *const pos, TRX_FILE *const file)
     pos->z = File_ReadS32(file);
 }
 
-void Level_Section_ReadAnims(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
+RESULT Level_Section_ReadAnims(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_anims = File_ReadCountS32(file);
@@ -27,6 +27,7 @@ void Level_Section_ReadAnims(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
     Anim_InitialiseAnims(num_anims + Inject_GetDataCount(IDT_ANIMS));
     Level_Section_AppendAnims(0, num_anims, file);
     Benchmark_End(&benchmark, nullptr);
+    return OK;
 }
 
 void Level_Section_AppendAnims(
@@ -60,7 +61,7 @@ void Level_Section_AppendAnims(
     }
 }
 
-void Level_Section_ReadAnimChanges(
+RESULT Level_Section_ReadAnimChanges(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
@@ -72,6 +73,7 @@ void Level_Section_ReadAnimChanges(
         num_anim_changes + Inject_GetDataCount(IDT_ANIM_CHANGES));
     Level_Section_AppendAnimChanges(0, num_anim_changes, file);
     Benchmark_End(&benchmark, nullptr);
+    return OK;
 }
 
 void Level_Section_AppendAnimChanges(
@@ -85,7 +87,7 @@ void Level_Section_AppendAnimChanges(
     }
 }
 
-void Level_Section_ReadAnimRanges(
+RESULT Level_Section_ReadAnimRanges(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
@@ -97,6 +99,7 @@ void Level_Section_ReadAnimRanges(
         num_anim_ranges + Inject_GetDataCount(IDT_ANIM_RANGES));
     Level_Section_AppendAnimRanges(0, num_anim_ranges, file);
     Benchmark_End(&benchmark, nullptr);
+    return OK;
 }
 
 void Level_Section_AppendAnimRanges(
@@ -111,7 +114,7 @@ void Level_Section_AppendAnimRanges(
     }
 }
 
-void Level_Section_ReadAnimCommands(
+RESULT Level_Section_ReadAnimCommands(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
@@ -124,6 +127,7 @@ void Level_Section_ReadAnimCommands(
         * (num_commands + Inject_GetDataCount(IDT_ANIM_COMMANDS)));
     Level_Section_AppendAnimCommands(0, num_commands, file);
     Benchmark_End(&benchmark, nullptr);
+    return OK;
 }
 
 void Level_Section_AppendAnimCommands(
@@ -134,7 +138,8 @@ void Level_Section_AppendAnimCommands(
         file, &info->anims.commands[base_idx], sizeof(int16_t) * num_commands);
 }
 
-void Level_Section_ReadAnimBones(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
+RESULT Level_Section_ReadAnimBones(
+    LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
     const int32_t num_anim_bones = File_ReadCountS32(file) / ANIM_BONE_SIZE;
@@ -144,6 +149,7 @@ void Level_Section_ReadAnimBones(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
     Anim_InitialiseBones(num_anim_bones + Inject_GetDataCount(IDT_ANIM_BONES));
     Level_Section_AppendAnimBones(0, num_anim_bones, file);
     Benchmark_End(&benchmark, nullptr);
+    return OK;
 }
 
 void Level_Section_AppendAnimBones(
@@ -161,7 +167,7 @@ void Level_Section_AppendAnimBones(
     }
 }
 
-void Level_Section_ReadAnimFrames(
+RESULT Level_Section_ReadAnimFrames(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
@@ -174,6 +180,7 @@ void Level_Section_ReadAnimFrames(
         * (raw_data_count + Inject_GetDataCount(IDT_ANIM_FRAMES)));
     Level_Section_AppendAnimFrames(0, raw_data_count, file);
     Benchmark_End(&benchmark, nullptr);
+    return OK;
 }
 
 void Level_Section_AppendAnimFrames(

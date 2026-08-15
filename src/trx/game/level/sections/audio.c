@@ -25,7 +25,7 @@ static size_t M_GetSampleCount(const LEVEL_FORMAT_LOADER *const loader)
     return 0;
 }
 
-void Level_Section_ReadSamples(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
+RESULT Level_Section_ReadSamples(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
     const LEVEL_FORMAT_LOADER *const loader = ctx->loader;
@@ -127,4 +127,5 @@ void Level_Section_ReadSamples(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
     Memory_Free(sample_lut);
     Memory_Free(sample_lut_inv);
     Benchmark_End(&benchmark, nullptr);
+    return OK;
 }

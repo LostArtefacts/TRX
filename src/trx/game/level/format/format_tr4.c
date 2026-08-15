@@ -338,27 +338,27 @@ static RESULT M_Load(
 
     File_ReadU32(level_data); // level number
     MUST(Level_Section_ReadRooms(ctx, level_data));
-    Level_Section_ReadObjectMeshes(ctx, level_data);
-    Level_Section_ReadAnims(ctx, level_data);
-    Level_Section_ReadAnimChanges(ctx, level_data);
-    Level_Section_ReadAnimRanges(ctx, level_data);
-    Level_Section_ReadAnimCommands(ctx, level_data);
-    Level_Section_ReadAnimBones(ctx, level_data);
-    Level_Section_ReadAnimFrames(ctx, level_data);
+    MUST(Level_Section_ReadObjectMeshes(ctx, level_data));
+    MUST(Level_Section_ReadAnims(ctx, level_data));
+    MUST(Level_Section_ReadAnimChanges(ctx, level_data));
+    MUST(Level_Section_ReadAnimRanges(ctx, level_data));
+    MUST(Level_Section_ReadAnimCommands(ctx, level_data));
+    MUST(Level_Section_ReadAnimBones(ctx, level_data));
+    MUST(Level_Section_ReadAnimFrames(ctx, level_data));
     MUST(Level_Section_ReadObjects(ctx, level_data));
     MUST(Level_Section_ReadStaticObjects(ctx, level_data));
     M_ReadSpriteTexturesTR4(ctx, level_data);
     MUST(Level_Section_ReadSpriteSequences(ctx, level_data));
-    Level_Section_ReadCamerasAndSinks(ctx, level_data);
-    Level_Section_ReadFlybyCameras(ctx, level_data);
-    Level_Section_ReadSoundSources(ctx, level_data);
-    Level_Section_ReadPathingData(ctx, level_data);
+    MUST(Level_Section_ReadCamerasAndSinks(ctx, level_data));
+    MUST(Level_Section_ReadFlybyCameras(ctx, level_data));
+    MUST(Level_Section_ReadSoundSources(ctx, level_data));
+    MUST(Level_Section_ReadPathingData(ctx, level_data));
     M_ReadAnimatedTextureRangesTR4(ctx, level_data);
     M_ReadObjectTexturesTR4(ctx, level_data);
     MUST(M_ReadItemsTR4(ctx, level_data));
     M_ReadAIItemsTR4(ctx, level_data);
-    Level_Section_ReadDemoData(ctx, level_data);
-    Level_Section_ReadSamples(ctx, level_data);
+    MUST(Level_Section_ReadDemoData(ctx, level_data));
+    MUST(Level_Section_ReadSamples(ctx, level_data));
     File_Skip(level_data, 6); // trailing zero padding
 
     File_Close(level_data);
