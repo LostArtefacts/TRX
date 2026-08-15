@@ -1001,6 +1001,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── cavern_textures.bin
 │   │   │   ├── city_textures.bin
 │   │   │   ├── cliff_animating_bounds.bin
+│   │   │   ├── cliff_crystals.bin
 │   │   │   ├── cliff_door132_frames.bin
 │   │   │   ├── cliff_textures.bin
 │   │   │   ├── coastal_airlock.bin
@@ -1070,7 +1071,9 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── puna_pickup_meshes.bin
 │   │   │   ├── puna_textures.bin
 │   │   │   ├── rapids_sky.bin
+│   │   │   ├── reunion_crystals.bin
 │   │   │   ├── reunion_flames.bin
+│   │   │   ├── scotland_crystals.bin
 │   │   │   ├── scotland_sky.bin
 │   │   │   ├── scotland_textures.bin
 │   │   │   ├── sparks_gfx.bin
@@ -1085,6 +1088,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── tinnos_textures.bin
 │   │   │   ├── undersea_animating_bounds.bin
 │   │   │   ├── undersea_animating_ext.bin
+│   │   │   ├── undersea_crystals.bin
 │   │   │   ├── undersea_fd.bin
 │   │   │   ├── undersea_objects.bin
 │   │   │   ├── undersea_pickup_meshes.bin
@@ -1092,9 +1096,11 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── undersea_train.bin
 │   │   │   ├── undersea_wheel_frames.bin
 │   │   │   ├── water_sfx.bin
+│   │   │   ├── willsden_crystals.bin
 │   │   │   ├── willsden_heli.bin
 │   │   │   ├── willsden_textures.bin
 │   │   │   ├── winston_model.bin
+│   │   │   ├── zoo_crystals.bin
 │   │   │   ├── zoo_textures.bin
 │   │   │   └── zoo_train.bin
 │   │   ├── levels
@@ -2350,6 +2356,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── cavern_textures.bin
     │   │   │   │   ├── city_textures.bin
     │   │   │   │   ├── cliff_animating_bounds.bin
+    │   │   │   │   ├── cliff_crystals.bin
     │   │   │   │   ├── cliff_door132_frames.bin
     │   │   │   │   ├── cliff_textures.bin
     │   │   │   │   ├── coastal_airlock.bin
@@ -2419,7 +2426,9 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── puna_pickup_meshes.bin
     │   │   │   │   ├── puna_textures.bin
     │   │   │   │   ├── rapids_sky.bin
+    │   │   │   │   ├── reunion_crystals.bin
     │   │   │   │   ├── reunion_flames.bin
+    │   │   │   │   ├── scotland_crystals.bin
     │   │   │   │   ├── scotland_sky.bin
     │   │   │   │   ├── scotland_textures.bin
     │   │   │   │   ├── sparks_gfx.bin
@@ -2434,6 +2443,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── tinnos_textures.bin
     │   │   │   │   ├── undersea_animating_bounds.bin
     │   │   │   │   ├── undersea_animating_ext.bin
+    │   │   │   │   ├── undersea_crystals.bin
     │   │   │   │   ├── undersea_fd.bin
     │   │   │   │   ├── undersea_objects.bin
     │   │   │   │   ├── undersea_pickup_meshes.bin
@@ -2441,9 +2451,11 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── undersea_train.bin
     │   │   │   │   ├── undersea_wheel_frames.bin
     │   │   │   │   ├── water_sfx.bin
+    │   │   │   │   ├── willsden_crystals.bin
     │   │   │   │   ├── willsden_heli.bin
     │   │   │   │   ├── willsden_textures.bin
     │   │   │   │   ├── winston_model.bin
+    │   │   │   │   ├── zoo_crystals.bin
     │   │   │   │   ├── zoo_textures.bin
     │   │   │   │   └── zoo_train.bin
     │   │   │   ├── levels

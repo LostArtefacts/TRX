@@ -44,6 +44,7 @@
         "sparks_gfx.bin",
         "inv_background.bin",
         "binoculars.bin",
+        "crystal.bin",
     ],
 
     "levels": [
@@ -74,6 +75,7 @@
                 "scotland_textures.bin",
                 "bat_sprites.bin",
                 "flamethrower_sfx.bin",
+                "scotland_crystals.bin",
             ],
         },
 
@@ -95,6 +97,7 @@
                 "willsden_heli.bin",
                 "common_pickup_meshes.bin",
                 "willsden_textures.bin",
+                "willsden_crystals.bin",
             ],
             "unobtainable_kills": 1,
         },
@@ -118,6 +121,7 @@
                 "common_pickup_meshes.bin",
                 "alarm_sfx.bin",
                 "cliff_textures.bin",
+                "cliff_crystals.bin",
             ],
         },
 
@@ -146,6 +150,7 @@
                 "luds_diver_animation.bin",
                 "water_sfx.bin",
                 "undersea_animating_ext.bin",
+                "undersea_crystals.bin",
             ],
         },
 
@@ -168,6 +173,7 @@
                 "common_pickup_meshes.bin",
                 "zoo_textures.bin",
                 "fish_sprites.bin",
+                "zoo_crystals.bin",
             ],
         },
 
@@ -199,6 +205,7 @@
                 "lara_guns.bin",
                 "reunion_flames.bin",
                 "common_pickup_meshes.bin",
+                "reunion_crystals.bin",
             ],
             "unobtainable_pickups": 1,
             "unobtainable_secrets": 1,
@@ -215,8 +222,6 @@
         "enable_item_examining",
         "disable_trex_collision",
         "fix_bear_ai",
-        // The Lost Artefact ships no crystals in any level.
-        "save_crystal_mode",
         "enable_ps1_crystals",
         "fix_chainblock_secret_sound",
         "enable_compass_stats",
