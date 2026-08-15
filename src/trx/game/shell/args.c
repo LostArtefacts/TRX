@@ -94,8 +94,9 @@ static int32_t M_GuessEngineVersionFromLevelPath(const char *const path)
     return game_version;
 }
 
-SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
+RESULT Shell_ParseArgs(VECTOR *const args, SHELL_ARGS **const out_args)
 {
+    *out_args = nullptr;
     SHELL_ARGS *const result = Memory_Alloc(sizeof(SHELL_ARGS));
     bool wants_gold = false;
     bool explicit_engine_version = false;
@@ -135,7 +136,7 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
         if (!strcmp(arg, "-h") || !strcmp(arg, "--help")) {
             M_ShowHelp();
             Shell_FreeArgs(result);
-            return nullptr;
+            return OK; // nothing to play; the caller sees no args
         }
         if (!strcmp(arg, "--dump-lua-api")) {
             // Handled after LUA_Init: the dump combines the C field tables with
@@ -197,18 +198,21 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
                                 result->startup.level_request.path);
                     }
                     if (result->startup.engine_version == 0) {
-                        Shell_ExitSystem(
-                            "Cannot determine engine version for --level. "
-                            "Please provide --engine.");
+                        Shell_FreeArgs(result);
+                        return FAIL(
+                            "--level does not say which engine to play it "
+                            "with. Please give --engine as well.");
                     }
                     result->startup.mod = Shell_GetModByType(
                         MOD_DIRECT_LEVEL, result->startup.engine_version);
                     if (result->startup.mod == nullptr) {
-                        Shell_ExitSystemFmt(
-                            "Engine %d does not support --level with a file "
-                            "path because no direct-level mod is available "
-                            "for that engine.",
-                            result->startup.engine_version);
+                        const int32_t engine_version =
+                            result->startup.engine_version;
+                        Shell_FreeArgs(result);
+                        return FAIL(
+                            "engine %d takes no --level with a file path, "
+                            "because it ships no direct-level game.",
+                            engine_version);
                     }
                 } else {
                     result->startup.level_request.query = next_arg;
@@ -273,7 +277,8 @@ SHELL_ARGS *Shell_ParseArgs(VECTOR *const args)
         }
     }
 
-    return result;
+    *out_args = result;
+    return OK;
 }
 
 void Shell_FreeArgs(SHELL_ARGS *const args)

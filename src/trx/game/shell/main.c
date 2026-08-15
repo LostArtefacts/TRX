@@ -19,8 +19,11 @@ int main(int argc, char *argv[])
     }
 
     GamePath_Init(nullptr);
-    Shell_ScanAvailableMods();
-    SHELL_ARGS *args = Shell_ParseArgs(raw_args);
+    EXIT_ON_FAIL(Shell_ScanAvailableMods(), "TRX cannot find the games");
+    SHELL_ARGS *args = nullptr;
+    EXIT_ON_FAIL(
+        Shell_ParseArgs(raw_args, &args),
+        "TRX cannot make sense of how it was started");
     if (args == nullptr) {
         return 0;
     }

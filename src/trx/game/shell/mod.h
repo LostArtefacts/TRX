@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trx/core/result.h>
+
 #include <stdint.h>
 
 typedef enum {
@@ -20,7 +22,7 @@ typedef struct {
     bool is_valid;
 } SHELL_MOD;
 
-void Shell_ScanAvailableMods(void);
+RESULT Shell_ScanAvailableMods(void);
 
 // Why the scan passed over the game directories it could not use, one per
 // line, or nullptr where it passed over none. Points at the file and, for a

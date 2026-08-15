@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/log.h>
 #include <trx/core/math/geom.h>
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
@@ -10,7 +11,6 @@
 #include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
-#include <trx/game/shell.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
@@ -565,7 +565,13 @@ static void M_Setup(OBJECT *const obj)
 
     obj->priv_size = sizeof(M_PRIV);
     if (!Object_Get(O_MESH_SWAP_2)->loaded) {
-        Shell_ExitSystem("Monkey requires O_MESH_SWAP_2 (pickups)");
+        // The level names the creature but ships no pickups to swap in, so it
+        // is left out rather than drawn wrong.
+        LOG_ERROR(
+            "Monkey needs O_MESH_SWAP_2 (pickups), which the level does not "
+            "have");
+        obj->loaded = false;
+        return;
     }
 
     obj->initialise_func = M_Initialise;

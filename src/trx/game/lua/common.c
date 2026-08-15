@@ -138,34 +138,33 @@ static void M_RegisterTRXPreloadEmbedded(
     lua_pop(L, 2);
 }
 
-// Fatal for the reason a failure to seal is, in M_SealPublicAPI.
-static void M_RequireTRXModule(lua_State *const L, const char *name)
+static RESULT M_RequireTRXModule(lua_State *const L, const char *name)
 {
     lua_getglobal(L, "require");
     lua_pushstring(L, name);
-    if (lua_pcall(L, 1, LUA_MULTRET, 0) != LUA_OK) {
-        Shell_ExitSystemFmt("failed to load %s: %s", name, lua_tostring(L, -1));
-    }
+    FAIL_IF(
+        lua_pcall(L, 1, LUA_MULTRET, 0) != LUA_OK, "%s: %s", name,
+        lua_tostring(L, -1));
     lua_settop(L, 0);
+    return OK;
 }
 
-static void M_SealPublicAPI(lua_State *const L)
+// Sealing audits the API too, and only engine scripts declare, so a failure
+// here says TRX's own data is wrong.
+static RESULT M_SealPublicAPI(lua_State *const L)
 {
-    // Sealing audits the API too, and only engine scripts declare - so a
-    // failure here means our own data is wrong. Fatal, like any other bad
-    // engine data.
-    if (!LUA_API_PushEntrypoint(L, "seal")) {
-        Shell_ExitSystem("the Lua API registry handed over no sealer");
-    }
-    if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
-        Shell_ExitSystemFmt(
-            "failed to seal the Lua API: %s", lua_tostring(L, -1));
-    }
+    FAIL_IF(
+        !LUA_API_PushEntrypoint(L, "seal"),
+        "the Lua API registry handed over no sealer");
+    FAIL_IF(
+        lua_pcall(L, 0, 0, 0) != LUA_OK, "the Lua API would not seal: %s",
+        lua_tostring(L, -1));
     lua_pushnil(L);
     lua_setglobal(L, "trxc");
+    return OK;
 }
 
-static void M_LoadTRXModules(lua_State *const L)
+static RESULT M_LoadTRXModules(lua_State *const L)
 {
     // Register every module's preload entry before requiring any of them.
     // Doing both in one pass would mean a module could only ever require one
@@ -185,30 +184,32 @@ static void M_LoadTRXModules(lua_State *const L)
          script->path != nullptr; script++) {
         LOG_DEBUG("Loading TRX module %s", script->path);
         char *name = M_DeriveTRXModuleName(script->path);
-        M_RequireTRXModule(L, name);
+        const RESULT result = M_RequireTRXModule(L, name);
         Memory_FreePointer(&name);
+        MUST(result);
     }
+    return OK;
 }
 
 // Run after M_SealPublicAPI, so a script reaches all of trx.* without naming
 // the parts it wants, and api.define raises by then: it cannot extend the API
 // it consumes.
-static void M_RunTRXRuntimeScripts(lua_State *const L)
+static RESULT M_RunTRXRuntimeScripts(lua_State *const L)
 {
     for (const LUA_EMBEDDED_SCRIPT *script = g_LUA_EmbeddedRuntimeScripts;
          script->path != nullptr; script++) {
         LOG_DEBUG("Running TRX script %s", script->path);
         const char *const chunk_name =
             String_FormatStatic("@trx/%s", script->path);
-        if (luaL_loadbuffer(
+        FAIL_IF(
+            luaL_loadbuffer(
                 L, (const char *)script->data, script->size, chunk_name)
-                != LUA_OK
-            || lua_pcall(L, 0, 0, 0) != LUA_OK) {
-            Shell_ExitSystemFmt(
-                "failed to run %s: %s", script->path, lua_tostring(L, -1));
-        }
+                    != LUA_OK
+                || lua_pcall(L, 0, 0, 0) != LUA_OK,
+            "%s: %s", script->path, lua_tostring(L, -1));
         lua_settop(L, 0);
     }
+    return OK;
 }
 
 // One or more segments joined by '.', as Lua names any other module:
@@ -389,7 +390,7 @@ static int M_L_Require(lua_State *const L)
     return 1;
 }
 
-void LUA_Init(void)
+RESULT LUA_Init(void)
 {
     lua_State *const L = luaL_newstate();
     ASSERT(L != nullptr);
@@ -406,11 +407,12 @@ void LUA_Init(void)
     M_PRIV *const p = &m_Priv;
     p->state = L;
 
-    M_LoadTRXModules(L);
-    M_SealPublicAPI(L);
-    M_RunTRXRuntimeScripts(L);
+    MUST(M_LoadTRXModules(L));
+    MUST(M_SealPublicAPI(L));
+    MUST(M_RunTRXRuntimeScripts(L));
     LUA_HardenGlobals(L);
     LUA_InstallModRequire(L);
+    return OK;
 }
 
 void LUA_Shutdown(void)

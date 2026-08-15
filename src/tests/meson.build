@@ -428,6 +428,7 @@ unit_tests += {
     'core/dynamic_enum.c',
     'core/enum_map.c',
     'core/memory.c',
+    'core/result.c',
     'core/value.c',
     'core/vector.c',
     'game/lua/capi/events.c',
@@ -435,7 +436,11 @@ unit_tests += {
     'game/lua/registry.c',
     'game/lua/utils.c',
   ],
-  'src': ['harness/stubs_enum_map.c', 'harness/stubs_game_script.c'],
+  'src': [
+    'harness/stubs_enum_map.c',
+    'harness/stubs_game_script.c',
+    'harness/stubs_result.c',
+  ],
   'deps': [dep_lua],
 }
 
