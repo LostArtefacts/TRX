@@ -59,7 +59,7 @@ void Level_Section_ReadObjects(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
                 Shell_ExitSystemFmt("Invalid object ID: %d", game_obj_id);
             }
         }
-        obj->mesh_count = File_ReadCountS16(file);
+        obj->mesh_count = File_ReadS16(file);
         obj->mesh_idx = File_ReadS16(file);
         obj->bone_idx = File_ReadS32(file) / ANIM_BONE_SIZE;
         obj->frame_ofs = File_ReadU32(file);

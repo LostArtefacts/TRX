@@ -53,9 +53,9 @@ void Level_Section_AppendAnims(
         anim->frame_end = File_ReadS16(file);
         anim->jump_anim_num = File_ReadS16(file);
         anim->jump_frame_num = File_ReadS16(file);
-        anim->num_changes = File_ReadCountS16(file);
+        anim->num_changes = File_ReadS16(file);
         anim->change_idx = File_ReadS16(file);
-        anim->num_commands = File_ReadCountS16(file);
+        anim->num_commands = File_ReadS16(file);
         anim->command_idx = File_ReadS16(file);
     }
 }
@@ -80,7 +80,7 @@ void Level_Section_AppendAnimChanges(
     for (int32_t i = 0; i < num_changes; i++) {
         ANIM_CHANGE *const anim_change = Anim_GetChange(base_idx + i);
         anim_change->goal_anim_state = File_ReadS16(file);
-        anim_change->num_ranges = File_ReadCountS16(file);
+        anim_change->num_ranges = File_ReadS16(file);
         anim_change->range_idx = File_ReadS16(file);
     }
 }
