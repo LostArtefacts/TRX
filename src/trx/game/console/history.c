@@ -74,7 +74,7 @@ void Console_History_Shutdown(void)
 
     JSON_VALUE *const doc = M_DumpToJSON();
     if (doc != nullptr) {
-        JSONFile_Write(M_GetPath(), doc);
+        SHOULD(JSONFile_Write(M_GetPath(), doc));
         JSON_ValueFree(doc);
     }
 

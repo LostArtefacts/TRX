@@ -211,10 +211,11 @@ static RESULT M_LoadBraid(
             outfit->braid.mode = mode;
         }
 
-        JSON_READ_D(io, "mesh_offset", &outfit->braid.setup[i].mesh_offset, 0);
-        JSON_READ_D(
-            io, "position", &outfit->braid.setup[i].position, (XYZ_32) {});
-        M_LoadBraidHeadSeam(io, &outfit->braid.setup[i].head_seam);
+        MUST(JSON_READ_D(
+            io, "mesh_offset", &outfit->braid.setup[i].mesh_offset, 0));
+        MUST(JSON_READ_D(
+            io, "position", &outfit->braid.setup[i].position, (XYZ_32) {}));
+        MUST(M_LoadBraidHeadSeam(io, &outfit->braid.setup[i].head_seam));
 
         MUST(JSON_POP(io));
     }
@@ -229,7 +230,7 @@ static RESULT M_LoadGunMap(
     JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
 {
     int32_t map_idx = -1;
-    JSON_READ_D(io, "gun_map", &map_idx, -1);
+    MUST(JSON_READ_D(io, "gun_map", &map_idx, -1));
     if (map_idx < 0 || map_idx >= m_GunMaps->count) {
         MUST(JSON_POP(io));
         return JSON_ReadIO_Fail(io, "invalid gun map '%d'", map_idx);
@@ -243,8 +244,8 @@ static RESULT M_LoadNoHolsters(
 {
     if (JSON_ReadIO_HasKey(io, "no_holster_offsets")) {
         MUST(JSON_PUSH(io, "no_holster_offsets"));
-        JSON_READ_D(io, "thigh_l", &outfit->no_holster_offsets.left, -1);
-        JSON_READ_D(io, "thigh_r", &outfit->no_holster_offsets.right, -1);
+        MUST(JSON_READ_D(io, "thigh_l", &outfit->no_holster_offsets.left, -1));
+        MUST(JSON_READ_D(io, "thigh_r", &outfit->no_holster_offsets.right, -1));
         MUST(JSON_POP(io));
     } else {
         outfit->no_holster_offsets.left = -1;
@@ -359,12 +360,16 @@ static RESULT M_LoadOutfit(
     MUST(M_LoadObjectIDOr(
         io, "legs_object", &outfit->legs_obj_id, O_LARA_SKIN_SWAP_LEGS));
 
-    JSON_READ_D(io, "gold_color", &outfit->gold_color, M_DEFAULT_GOLD_COLOR);
-    JSON_READ_D(io, "is_selectable", &outfit->is_selectable, true);
-    JSON_READ_D(io, "combat_face_offset", &outfit->combat_face_offset, -1);
-    JSON_READ_D(io, "speech_face_offset", &outfit->speech_face_offset, -1);
-    JSON_READ_D(io, "supports_sunglasses", &outfit->supports_sunglasses, true);
-    JSON_READ_D(io, "is_barefoot", &outfit->is_barefoot, false);
+    MUST(JSON_READ_D(
+        io, "gold_color", &outfit->gold_color, M_DEFAULT_GOLD_COLOR));
+    MUST(JSON_READ_D(io, "is_selectable", &outfit->is_selectable, true));
+    MUST(
+        JSON_READ_D(io, "combat_face_offset", &outfit->combat_face_offset, -1));
+    MUST(
+        JSON_READ_D(io, "speech_face_offset", &outfit->speech_face_offset, -1));
+    MUST(JSON_READ_D(
+        io, "supports_sunglasses", &outfit->supports_sunglasses, true));
+    MUST(JSON_READ_D(io, "is_barefoot", &outfit->is_barefoot, false));
 
     MUST(M_LoadBraid(io, outfit));
     MUST(M_LoadGunMap(io, outfit));

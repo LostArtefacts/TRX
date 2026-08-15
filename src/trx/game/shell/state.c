@@ -79,7 +79,7 @@ void ShellState_RememberLastPlayedMod(const char *const mod_name)
     const char *const state_path = M_GetStatePath();
     FS_EnsureParentDirectories(state_path);
     if (FS_Exists(state_path)) {
-        JSONFile_Write(state_path, root);
+        SHOULD(JSONFile_Write(state_path, root));
     } else {
         size_t out_len = 0;
         char *out_data = JSON_WritePretty(root, "  ", "\n", &out_len);

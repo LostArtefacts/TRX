@@ -233,7 +233,7 @@ void Config_Presets_Apply(const int32_t idx)
         Config_Option_SetFromString(opt, preset->values[i], false);
     }
     Config_Update();
-    Config_Write();
+    SHOULD(Config_Write());
 }
 
 REGISTER_SUBSYSTEM(

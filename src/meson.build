@@ -149,6 +149,11 @@ common_build_opts = [
   '-Wshadow',
   '-Wno-unused',
   '-Wno-unused-parameter',
+  # -Wno-unused takes both of these with it, and a discarded RESULT is exactly
+  # what nodiscard is there to catch. gcc reports one as unused-result and
+  # clang as unused-value, so both are named here.
+  '-Wunused-result',
+  '-Wunused-value',
   '-DMESON_BUILD',
   '-DGLEW_NO_GLU',
   '-DSDL_MAIN_HANDLED',
