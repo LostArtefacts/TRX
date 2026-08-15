@@ -3,7 +3,7 @@
     "config": {
         "ui.menu_style": "ps1",
         "ui.enable_smooth_bars": false,
-        "ui.bar_look": "tr2_ps1",
+        "ui.bar_look": "tr1_pc",
         "ui.ammo_counter_location": "top-right",
         "audio.enable_ps1_sfx": true,
         "gameplay.restore_ps1_enemies": true,

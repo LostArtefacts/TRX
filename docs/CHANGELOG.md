@@ -6,6 +6,10 @@
 - Fixed the settings and controls dialog tabs ignoring rebound step left and step right keys
 - Fixed the settings dialogs scrolling their list back to the top when the selection moved up to the tabs
 
+**Options and menus**
+- Changed the TR1 PC bars appearance to be named TR1, the bars being the ones both TR1 releases draw (Graphic Options → Bars → Bars appearance)
+- Fixed the TR1 PS1 preset picking the TR2 PS1 bars, where TR1 draws the same bars on both platforms (#6260)
+
 **Miscellaneous**
 - Fixed the Cabin in Natla's Mines remaining visible after dropping to the floor (regression from 1.10)
 - Fixed flames not being drawn if TR4 is launched and the game is then switched to a different mod (regression from 1.10)

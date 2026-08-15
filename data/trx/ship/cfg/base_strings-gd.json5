@@ -563,7 +563,7 @@
         },
         "enums": {
             "bar_look": {
-                "tr1_pc": "TR1 PC",
+                "tr1_pc": "TR1",
                 "tr2_pc": "TR2 PC",
                 "tr2_ps1": "TR2 PS1",
                 "tr3_pc": "TR3 PC",
