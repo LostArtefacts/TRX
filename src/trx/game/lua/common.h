@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/config/option.h>
+#include <trx/core/result.h>
 #include <trx/game/game_flow/types.h>
 
 #include <lualib.h>
@@ -18,7 +19,7 @@ typedef enum {
     LUA_CONTEXT_NUMBER_OF,
 } LUA_CONTEXT;
 
-void LUA_Init(void);
+RESULT LUA_Init(void);
 void LUA_Shutdown(void);
 
 // Prints the full public API surface as JSON: the C-side FIELD_DESC tables plus

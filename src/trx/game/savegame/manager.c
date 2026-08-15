@@ -492,9 +492,9 @@ bool SG_Manager_WriteSlot(const SAVEGAME_SLOT_REF slot)
     TRX_FILE *fp = nullptr;
     if (SHOULD(File_OpenPath(full_path, FILE_OPEN_WRITE, &fp))) {
         savegame_info->is_quick = slot.pool == SAVEGAME_SLOT_POOL_QUICK;
-        SG_File_SaveToFile(fp, savegame_info);
+        const RESULT written = SG_File_SaveToFile(fp, savegame_info);
         File_Close(fp);
-        result = true;
+        result = Result_Absorb(written);
     }
     if (result) {
         M_FillSlot(slot, full_path);

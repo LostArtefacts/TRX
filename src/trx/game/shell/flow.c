@@ -156,7 +156,7 @@ static RESULT M_InitModules(void)
     // up, so the platform stands first.
     Subsystem_InitAll();
 
-    LUA_Init();
+    MUST(LUA_Init(), "the Lua runtime could not be brought up");
 
     const SHELL_ARGS *const args = Shell_GetArgs();
     if (args != nullptr && args->startup.dump_lua_api) {

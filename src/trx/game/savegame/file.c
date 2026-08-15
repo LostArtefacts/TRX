@@ -66,7 +66,7 @@ static JSON_VALUE *M_ReadRaw(TRX_FILE *const fp, int32_t *const version_out)
     return result;
 }
 
-static void M_SaveRaw(
+static RESULT M_SaveRaw(
     TRX_FILE *const fp, const JSON_VALUE *const root, const int32_t level_num,
     const bool is_quick)
 {
@@ -79,7 +79,9 @@ static void M_SaveRaw(
         (Bytef *)compressed, &compressed_size, (const Bytef *)uncompressed,
         (uLongf)uncompressed_size);
     if (result != Z_OK) {
-        Shell_ExitSystem("Failed to compress savegame data");
+        Memory_FreePointer(&uncompressed);
+        Memory_FreePointer(&compressed);
+        return FAIL("the savegame data would not compress");
     }
 
     const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, level_num);
@@ -107,6 +109,7 @@ static void M_SaveRaw(
 
     Memory_FreePointer(&uncompressed);
     Memory_FreePointer(&compressed);
+    return OK;
 }
 
 static RESULT M_Load(JSON_READ_IO *const io)
@@ -153,7 +156,7 @@ bool SG_File_LoadFromFile(TRX_FILE *const fp)
     return result;
 }
 
-void SG_File_SaveToFile(TRX_FILE *const fp, SAVEGAME_INFO *const info)
+RESULT SG_File_SaveToFile(TRX_FILE *const fp, SAVEGAME_INFO *const info)
 {
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
     JSON_WRITE_IO *const io = JSON_WriteIO_Create();
@@ -171,10 +174,11 @@ void SG_File_SaveToFile(TRX_FILE *const fp, SAVEGAME_INFO *const info)
     SG_File_DumpRules(io);
     SG_File_DumpMisc(io);
 
-    M_SaveRaw(
+    const RESULT result = M_SaveRaw(
         fp, JSON_WriteIO_GetRoot(io), current_level->num,
         info != nullptr && info->is_quick);
     JSON_WriteIO_Destroy(io);
+    return result;
 }
 
 bool SG_File_FillInfo(TRX_FILE *const fp, SAVEGAME_INFO *const info)
@@ -284,7 +288,9 @@ bool SG_File_UpdateDeathCounters(
     }
 
     File_Seek(fp, 0, FILE_SEEK_SET);
-    M_SaveRaw(fp, root, level_num, is_quick);
+    if (!IS_OK(M_SaveRaw(fp, root, level_num, is_quick))) {
+        goto cleanup;
+    }
     result = true;
 
 cleanup:
