@@ -208,8 +208,10 @@ Showcase: https://youtu.be/DKpqz_Yum6o
 - Changed the Neutral twists option to Alternative turns, which now turns Lara on the spot and on monkeybars as well as twisting her in the air (Gameplay → Controls → Alternative turns)
 - Changed the presets to be listed by name rather than in the order they were found (Gameplay → Presets)
 - Changed a setting a script is holding to be greyed out, where the row carried only the star saying who took it
+- Changed the TR1 PC bars appearance to be named TR1, the bars being the ones both TR1 releases draw (Graphic Options → Bars → Bars appearance)
 - Fixed settings text running off both sides of the screen in the longer languages, most visibly at 4:3 (#6000)
 - Fixed the list of settings a preset would change spilling outside its dialog, and its text now wraps (#6000)
+- Fixed the TR1 PS1 preset picking the TR2 PS1 bars, where TR1 draws the same bars on both platforms (#6260)
 - Fixed the load and save game dialogs covering the rest of the screen at larger text scales, where the list now shows as many slots as there is room for (#6175)
 
 **Saves and settings**
