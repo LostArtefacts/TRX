@@ -139,7 +139,7 @@ static void M_ReadObjectMesh(OBJECT_MESH *const mesh, TRX_FILE *const file)
     }
 }
 
-void Level_Section_ReadObjectMeshes(
+RESULT Level_Section_ReadObjectMeshes(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
@@ -167,6 +167,7 @@ void Level_Section_ReadObjectMeshes(
     Memory_FreePointer(&mesh_offsets);
 
     Benchmark_End(&benchmark, nullptr);
+    return OK;
 }
 
 void Level_Section_AppendObjectMeshes(

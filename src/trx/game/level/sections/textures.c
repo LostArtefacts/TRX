@@ -71,7 +71,8 @@ static void M_Decode16BitTexturePage(void *const userdata)
     }
 }
 
-void Level_Section_ReadPalettes(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
+RESULT Level_Section_ReadPalettes(
+    LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
 
@@ -106,9 +107,10 @@ void Level_Section_ReadPalettes(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
     }
 
     Benchmark_End(&benchmark, nullptr);
+    return OK;
 }
 
-void Level_Section_ReadTexturePages(
+RESULT Level_Section_ReadTexturePages(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
@@ -163,9 +165,10 @@ void Level_Section_ReadTexturePages(
     ThreadPool_Destroy(pool);
 
     Benchmark_End(&benchmark, nullptr);
+    return OK;
 }
 
-void Level_Section_ReadObjectTextures(
+RESULT Level_Section_ReadObjectTextures(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
@@ -177,6 +180,7 @@ void Level_Section_ReadObjectTextures(
         num_textures + Inject_GetDataCount(IDT_OBJECT_TEXTURES));
     Level_Section_AppendObjectTextures(0, 0, num_textures, file);
     Benchmark_End(&benchmark, nullptr);
+    return OK;
 }
 
 void Level_Section_AppendObjectTextures(
@@ -209,7 +213,7 @@ void Level_Section_AppendObjectTextures(
     }
 }
 
-void Level_Section_ReadSpriteTextures(
+RESULT Level_Section_ReadSpriteTextures(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
@@ -222,6 +226,7 @@ void Level_Section_ReadSpriteTextures(
     Level_Section_AppendSpriteTextures(0, 0, num_textures, file);
 
     Benchmark_End(&benchmark, nullptr);
+    return OK;
 }
 
 void Level_Section_AppendSpriteTextures(
@@ -244,7 +249,7 @@ void Level_Section_AppendSpriteTextures(
     }
 }
 
-void Level_Section_ReadAnimatedTextureRanges(
+RESULT Level_Section_ReadAnimatedTextureRanges(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
@@ -273,9 +278,11 @@ void Level_Section_ReadAnimatedTextureRanges(
 
     File_Seek(file, end_position, FILE_SEEK_SET);
     Benchmark_End(&benchmark, nullptr);
+    return OK;
 }
 
-void Level_Section_ReadLightMap(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
+RESULT Level_Section_ReadLightMap(
+    LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
     for (int32_t i = 0; i < 32; i++) {
@@ -293,4 +300,5 @@ void Level_Section_ReadLightMap(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
     }
 
     Benchmark_End(&benchmark, nullptr);
+    return OK;
 }

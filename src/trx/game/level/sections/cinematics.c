@@ -29,7 +29,7 @@ static void M_ReadObjectVector(OBJECT_VECTOR *const obj, TRX_FILE *const file)
     obj->flags = File_ReadS16(file);
 }
 
-void Level_Section_ReadCinematicFrames(
+RESULT Level_Section_ReadCinematicFrames(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
@@ -46,9 +46,10 @@ void Level_Section_ReadCinematicFrames(
     }
 
     Benchmark_End(&benchmark, nullptr);
+    return OK;
 }
 
-void Level_Section_ReadCamerasAndSinks(
+RESULT Level_Section_ReadCamerasAndSinks(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
@@ -60,6 +61,7 @@ void Level_Section_ReadCamerasAndSinks(
     }
 
     Benchmark_End(&benchmark, nullptr);
+    return OK;
 }
 
 void Level_Section_PrepareTR123FlybyCameras(void)
@@ -68,7 +70,7 @@ void Level_Section_PrepareTR123FlybyCameras(void)
     Camera_InitialiseFlybys(inject_count);
 }
 
-void Level_Section_ReadFlybyCameras(
+RESULT Level_Section_ReadFlybyCameras(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
@@ -82,6 +84,7 @@ void Level_Section_ReadFlybyCameras(
     Level_Section_AppendFlybyCameras(0, num_cameras, file);
 
     Benchmark_End(&benchmark, nullptr);
+    return OK;
 }
 
 void Level_Section_AppendFlybyCameras(
@@ -122,16 +125,18 @@ void Level_Section_AppendFlybyCameras(
     }
 }
 
-void Level_Section_ReadDemoData(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
+RESULT Level_Section_ReadDemoData(
+    LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
     const uint16_t size = File_ReadU16(file);
     LOG_INFO("demo buffer size: %d", size);
     Demo_LoadData(file, size);
     Benchmark_End(&benchmark, nullptr);
+    return OK;
 }
 
-void Level_Section_ReadSoundSources(
+RESULT Level_Section_ReadSoundSources(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
@@ -143,4 +148,5 @@ void Level_Section_ReadSoundSources(
     }
 
     Benchmark_End(&benchmark, nullptr);
+    return OK;
 }

@@ -129,37 +129,37 @@ static RESULT M_Load(
     LOG_INFO("file level num: %d", file_level_num);
 
     MUST(Level_Section_ReadRooms(ctx, file));
-    Level_Section_ReadObjectMeshes(ctx, file);
-    Level_Section_ReadAnims(ctx, file);
-    Level_Section_ReadAnimChanges(ctx, file);
-    Level_Section_ReadAnimRanges(ctx, file);
-    Level_Section_ReadAnimCommands(ctx, file);
-    Level_Section_ReadAnimBones(ctx, file);
-    Level_Section_ReadAnimFrames(ctx, file);
+    MUST(Level_Section_ReadObjectMeshes(ctx, file));
+    MUST(Level_Section_ReadAnims(ctx, file));
+    MUST(Level_Section_ReadAnimChanges(ctx, file));
+    MUST(Level_Section_ReadAnimRanges(ctx, file));
+    MUST(Level_Section_ReadAnimCommands(ctx, file));
+    MUST(Level_Section_ReadAnimBones(ctx, file));
+    MUST(Level_Section_ReadAnimFrames(ctx, file));
     MUST(Level_Section_ReadObjects(ctx, file));
     MUST(Level_Section_ReadStaticObjects(ctx, file));
-    Level_Section_ReadObjectTextures(ctx, file);
-    Level_Section_ReadSpriteTextures(ctx, file);
+    MUST(Level_Section_ReadObjectTextures(ctx, file));
+    MUST(Level_Section_ReadSpriteTextures(ctx, file));
     MUST(Level_Section_ReadSpriteSequences(ctx, file));
 
     if (loader->layout == LEVEL_FORMAT_LAYOUT_TR1_DEMO_PC) {
-        Level_Section_ReadPalettes(ctx, file);
+        MUST(Level_Section_ReadPalettes(ctx, file));
     }
 
-    Level_Section_ReadCamerasAndSinks(ctx, file);
-    Level_Section_ReadSoundSources(ctx, file);
-    Level_Section_ReadPathingData(ctx, file);
-    Level_Section_ReadAnimatedTextureRanges(ctx, file);
+    MUST(Level_Section_ReadCamerasAndSinks(ctx, file));
+    MUST(Level_Section_ReadSoundSources(ctx, file));
+    MUST(Level_Section_ReadPathingData(ctx, file));
+    MUST(Level_Section_ReadAnimatedTextureRanges(ctx, file));
     MUST(Level_Section_ReadItems(ctx, file));
-    Level_Section_ReadLightMap(ctx, file);
+    MUST(Level_Section_ReadLightMap(ctx, file));
 
     if (loader->layout != LEVEL_FORMAT_LAYOUT_TR1_DEMO_PC) {
-        Level_Section_ReadPalettes(ctx, file);
+        MUST(Level_Section_ReadPalettes(ctx, file));
     }
 
-    Level_Section_ReadCinematicFrames(ctx, file);
-    Level_Section_ReadDemoData(ctx, file);
-    Level_Section_ReadSamples(ctx, file);
+    MUST(Level_Section_ReadCinematicFrames(ctx, file));
+    MUST(Level_Section_ReadDemoData(ctx, file));
+    MUST(Level_Section_ReadSamples(ctx, file));
 
     if (loader->layout == LEVEL_FORMAT_LAYOUT_TR1X) {
         TRX_FILE *const embedded_injection =
@@ -168,7 +168,7 @@ static RESULT M_Load(
     }
 
     File_Seek(file, 4, FILE_SEEK_SET);
-    Level_Section_ReadTexturePages(ctx, file);
+    MUST(Level_Section_ReadTexturePages(ctx, file));
     Level_Section_PrepareTR123FlybyCameras();
 
     return OK;

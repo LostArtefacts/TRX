@@ -7,7 +7,7 @@
 
 #include <string.h>
 
-void Level_Section_ReadPathingData(
+RESULT Level_Section_ReadPathingData(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
@@ -60,4 +60,5 @@ void Level_Section_ReadPathingData(
     }
 
     Benchmark_End(&benchmark, nullptr);
+    return OK;
 }
