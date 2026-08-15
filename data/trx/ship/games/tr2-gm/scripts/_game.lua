@@ -1,7 +1,3 @@
-trx.events.on_game_start(function()
-  trx.rules.set("music.supports_delay", true)
-end)
-
 require("common.water_color").declare({
   order = { "pc_hardware", "pc_software", "custom" },
   modes = {
@@ -9,3 +5,5 @@ require("common.water_color").declare({
     pc_software = "AAAAFF",
   },
 })
+
+require("common.save_crystal").initialise()

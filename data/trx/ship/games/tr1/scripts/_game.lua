@@ -5,3 +5,5 @@ require("common.water_color").declare({
     dos = "99B2FF",
   },
 })
+
+require("common.save_crystal").initialise()

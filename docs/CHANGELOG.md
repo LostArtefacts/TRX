@@ -25,6 +25,9 @@
 - Changed a missing or unknown `lara_outfit` in a level to fall back to the default outfit, rather than stopping the game from starting
 - Removed the golden outfits, which the engine now produces from any outfit, freeing their model slots for outfits of your own
 
+**Saves and settings**
+- Changed the save crystal behavior to give Lara a crystal when starting a game, if the mode is set to Saving (pickups), in line with the TR3 PS1 version (Gameplay → General → Crystal mode)
+
 **TR1**
 - Changed Lara to retain her equipment when turning to gold on the Midas Hand, with the equipment also turning to gold
 - Fixed Lara's arm remaining in the flare pose if holding one on the Midas Hand

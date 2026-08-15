@@ -4,3 +4,5 @@ require("common.water_color").declare({
     pc = "80E0FF",
   },
 })
+
+require("common.save_crystal").initialise()
