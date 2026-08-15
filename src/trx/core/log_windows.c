@@ -86,6 +86,12 @@ static void M_CreateMiniDump(
     LOG_INFO("Crash dump info put in %s", path);
 }
 
+void Log_StackTrace(void)
+{
+    int32_t count = 0;
+    dwstOfLocation(&M_StackTrace, &count);
+}
+
 LONG WINAPI Log_CrashHandler(EXCEPTION_POINTERS *ex)
 {
     LOG_ERROR("== CRASH REPORT ==");
