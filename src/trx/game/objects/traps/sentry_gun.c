@@ -61,13 +61,14 @@ static const CREATURE_GUN m_FireRight = {
     .tr3_flash_rot_x = -DEG_180,
 };
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SHOULD(JSON_READ_OPT(io, "active_muzzle", &p->active_muzzle));
-    SHOULD(JSON_READ_OPT(io, "muzzle_flash_timer", &p->muzzle_flash_timer));
-    SHOULD(JSON_READ_OPT(io, "is_alerted", &p->is_alerted));
-    SHOULD(JSON_READ_OPT(io, "has_fired", &p->has_fired));
+    MUST(JSON_READ_OPT(io, "active_muzzle", &p->active_muzzle));
+    MUST(JSON_READ_OPT(io, "muzzle_flash_timer", &p->muzzle_flash_timer));
+    MUST(JSON_READ_OPT(io, "is_alerted", &p->is_alerted));
+    MUST(JSON_READ_OPT(io, "has_fired", &p->has_fired));
+    return OK;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

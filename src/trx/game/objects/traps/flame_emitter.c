@@ -24,13 +24,14 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "fx_num", Effect_GetInOrderNum(p->effect_num));
 }
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     if (!g_Config.gameplay.enable_enhanced_saves) {
-        return;
+        return OK;
     }
     M_PRIV *const p = item->priv;
-    SHOULD(JSON_READ_OPT(io, "fx_num", &p->effect_num));
+    MUST(JSON_READ_OPT(io, "fx_num", &p->effect_num));
+    return OK;
 }
 
 static void M_KillIfAlive(const ITEM *const item)

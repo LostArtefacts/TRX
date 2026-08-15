@@ -278,17 +278,18 @@ static int16_t M_FindFuseBox(const ITEM *const item)
     return fuse_box_num;
 }
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SHOULD(JSON_READ_OPT(io, "dropped_item", &p->dropped_item));
-    SHOULD(JSON_READ_OPT(io, "ring_count", &p->ring_count));
-    SHOULD(JSON_READ_OPT(io, "explode_count", &p->explode_count));
-    SHOULD(JSON_READ_OPT(io, "dead", &p->dead));
-    SHOULD(JSON_READ_OPT(io, "charged", &p->charged));
-    SHOULD(JSON_READ_OPT(io, "death_counter", &p->death_counter));
-    SHOULD(JSON_READ_OPT(io, "hp_counter", &p->hp_counter));
-    SHOULD(JSON_READ_OPT(io, "fuse_box_num", &p->fuse_box_num));
+    MUST(JSON_READ_OPT(io, "dropped_item", &p->dropped_item));
+    MUST(JSON_READ_OPT(io, "ring_count", &p->ring_count));
+    MUST(JSON_READ_OPT(io, "explode_count", &p->explode_count));
+    MUST(JSON_READ_OPT(io, "dead", &p->dead));
+    MUST(JSON_READ_OPT(io, "charged", &p->charged));
+    MUST(JSON_READ_OPT(io, "death_counter", &p->death_counter));
+    MUST(JSON_READ_OPT(io, "hp_counter", &p->hp_counter));
+    MUST(JSON_READ_OPT(io, "fuse_box_num", &p->fuse_box_num));
+    return OK;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

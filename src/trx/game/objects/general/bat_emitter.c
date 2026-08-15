@@ -111,11 +111,11 @@ static uint8_t M_GetInterpolatedWingYOffset(
     return (uint8_t)wing_interp;
 }
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SHOULD(JSON_READ_OPT(io, "bats_triggered", &p->bats_triggered));
-    SHOULD(JSON_READ_OPT(io, "bats_alive", &p->bats_alive));
+    MUST(JSON_READ_OPT(io, "bats_triggered", &p->bats_triggered));
+    MUST(JSON_READ_OPT(io, "bats_alive", &p->bats_alive));
 
     for (int32_t i = 0; i < M_MAX_BATS; i++) {
         p->bats[i] = (M_BAT) {};
@@ -126,20 +126,21 @@ static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
             const char *const key = String_FormatStatic("bat_%d", i);
             if (SHOULD(JSON_PUSH(io, key))) {
                 M_BAT *const bat = &p->bats[i];
-                SHOULD(JSON_READ_OPT(io, "pos", &bat->pos));
-                SHOULD(JSON_READ_OPT(io, "angle", &bat->angle));
-                SHOULD(JSON_READ_OPT(io, "speed", &bat->speed));
-                SHOULD(JSON_READ_OPT(io, "wing_y_off", &bat->wing_y_off));
-                SHOULD(JSON_READ_OPT(io, "active", &bat->active));
-                SHOULD(JSON_READ_OPT(io, "life", &bat->life));
-                SHOULD(JSON_POP(io));
+                MUST(JSON_READ_OPT(io, "pos", &bat->pos));
+                MUST(JSON_READ_OPT(io, "angle", &bat->angle));
+                MUST(JSON_READ_OPT(io, "speed", &bat->speed));
+                MUST(JSON_READ_OPT(io, "wing_y_off", &bat->wing_y_off));
+                MUST(JSON_READ_OPT(io, "active", &bat->active));
+                MUST(JSON_READ_OPT(io, "life", &bat->life));
+                MUST(JSON_POP(io));
             }
         }
-        SHOULD(JSON_POP(io));
+        MUST(JSON_POP(io));
     }
 
     p->draw.prepared = false;
     p->draw.valid = false;
+    return OK;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

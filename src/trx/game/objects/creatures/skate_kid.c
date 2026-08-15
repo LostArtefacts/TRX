@@ -52,10 +52,11 @@ static const CREATURE_GUN m_KidGun2 = {
     .muzzle = { .pos = { 0, 150, 37 }, .mesh_num = 4 },
 };
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SHOULD(JSON_READ_OPT(io, "speech_started", &p->speech_started));
+    MUST(JSON_READ_OPT(io, "speech_started", &p->speech_started));
+    return OK;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

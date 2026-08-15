@@ -65,19 +65,19 @@ static void M_ResetFishInterp(M_FISH *const fish)
     fish->interp.result.swim = fish->swim;
 }
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SHOULD(JSON_READ_OPT(io, "piranha_hit_wait", &p->piranha_hit_wait));
+    MUST(JSON_READ_OPT(io, "piranha_hit_wait", &p->piranha_hit_wait));
 
     if (SHOULD(JSON_PUSH(io, "leader"))) {
         M_LEADER *const leader = &p->leader;
-        SHOULD(JSON_READ_OPT(io, "on", &leader->on));
-        SHOULD(JSON_READ_OPT(io, "angle", &leader->angle));
-        SHOULD(JSON_READ_OPT(io, "speed", &leader->speed));
-        SHOULD(JSON_READ_OPT(io, "angle_time", &leader->angle_time));
-        SHOULD(JSON_READ_OPT(io, "speed_time", &leader->speed_time));
-        SHOULD(JSON_POP(io));
+        MUST(JSON_READ_OPT(io, "on", &leader->on));
+        MUST(JSON_READ_OPT(io, "angle", &leader->angle));
+        MUST(JSON_READ_OPT(io, "speed", &leader->speed));
+        MUST(JSON_READ_OPT(io, "angle_time", &leader->angle_time));
+        MUST(JSON_READ_OPT(io, "speed_time", &leader->speed_time));
+        MUST(JSON_POP(io));
     }
 
     if (SHOULD(JSON_PUSH(io, "fish"))) {
@@ -87,17 +87,18 @@ static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
                 break;
             }
             M_FISH *const fish = &p->fish[i];
-            SHOULD(JSON_READ_OPT(io, "pos", &fish->pos));
-            SHOULD(JSON_READ_OPT(io, "angle", &fish->angle));
-            SHOULD(JSON_READ_OPT(io, "dest_y", &fish->dest_y));
-            SHOULD(JSON_READ_OPT(io, "ang_add", &fish->ang_add));
-            SHOULD(JSON_READ_OPT(io, "speed", &fish->speed));
-            SHOULD(JSON_READ_OPT(io, "swim", &fish->swim));
+            MUST(JSON_READ_OPT(io, "pos", &fish->pos));
+            MUST(JSON_READ_OPT(io, "angle", &fish->angle));
+            MUST(JSON_READ_OPT(io, "dest_y", &fish->dest_y));
+            MUST(JSON_READ_OPT(io, "ang_add", &fish->ang_add));
+            MUST(JSON_READ_OPT(io, "speed", &fish->speed));
+            MUST(JSON_READ_OPT(io, "swim", &fish->swim));
             M_ResetFishInterp(fish);
-            SHOULD(JSON_POP(io));
+            MUST(JSON_POP(io));
         }
-        SHOULD(JSON_POP(io));
+        MUST(JSON_POP(io));
     }
+    return OK;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

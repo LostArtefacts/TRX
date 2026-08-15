@@ -70,13 +70,14 @@ static const LARA_TRX_STATE m_StopStates[] = {
     // clang-format on
 };
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SHOULD(JSON_READ_OPT(io, "counted_for_stats", &p->counted_for_stats));
-    SHOULD(JSON_READ_OPT(io, "used_for_save", &p->used_for_save));
-    SHOULD(JSON_READ_OPT(io, "initialised", &p->initialised));
-    SHOULD(JSON_READ_OPT(io, "initial_angle", &p->initial_angle));
+    MUST(JSON_READ_OPT(io, "counted_for_stats", &p->counted_for_stats));
+    MUST(JSON_READ_OPT(io, "used_for_save", &p->used_for_save));
+    MUST(JSON_READ_OPT(io, "initialised", &p->initialised));
+    MUST(JSON_READ_OPT(io, "initial_angle", &p->initial_angle));
+    return OK;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

@@ -727,7 +727,9 @@ skip_flags:
             : (JSON_ReadIO_HasKey(io, "data") ? "data" : nullptr);
         if (priv_key != nullptr) {
             MUST(JSON_PUSH(io, priv_key));
-            obj->priv_load_func(item, io);
+            MUST(
+                obj->priv_load_func(item, io), "%s",
+                Object_GetName(item->object_id));
             MUST(JSON_POP(io));
         }
     }

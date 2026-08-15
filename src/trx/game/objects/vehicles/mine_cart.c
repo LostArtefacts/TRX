@@ -105,30 +105,31 @@ typedef struct {
     } flags;
 } M_PRIV;
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SHOULD(JSON_READ_OPT(io, "speed", &p->speed));
-    SHOULD(JSON_READ_OPT(io, "mid_pos", &p->mid_pos));
-    SHOULD(JSON_READ_OPT(io, "front_pos", &p->front_pos));
-    SHOULD(JSON_READ_OPT(io, "y_velocity", &p->y_velocity));
-    SHOULD(JSON_READ_OPT(io, "gradient", &p->gradient));
-    SHOULD(JSON_READ_OPT(io, "stop_delay", &p->stop_delay));
+    MUST(JSON_READ_OPT(io, "speed", &p->speed));
+    MUST(JSON_READ_OPT(io, "mid_pos", &p->mid_pos));
+    MUST(JSON_READ_OPT(io, "front_pos", &p->front_pos));
+    MUST(JSON_READ_OPT(io, "y_velocity", &p->y_velocity));
+    MUST(JSON_READ_OPT(io, "gradient", &p->gradient));
+    MUST(JSON_READ_OPT(io, "stop_delay", &p->stop_delay));
     if (SHOULD(JSON_PUSH(io, "turn"))) {
-        SHOULD(JSON_READ_OPT(io, "pos.x", &p->turn.pos.x));
-        SHOULD(JSON_READ_OPT(io, "pos.z", &p->turn.pos.z));
-        SHOULD(JSON_READ_OPT(io, "angle", &p->turn.angle));
-        SHOULD(JSON_READ_OPT(io, "length", &p->turn.length));
-        SHOULD(JSON_READ_OPT(io, "side", &p->turn.side));
-        SHOULD(JSON_POP(io));
+        MUST(JSON_READ_OPT(io, "pos.x", &p->turn.pos.x));
+        MUST(JSON_READ_OPT(io, "pos.z", &p->turn.pos.z));
+        MUST(JSON_READ_OPT(io, "angle", &p->turn.angle));
+        MUST(JSON_READ_OPT(io, "length", &p->turn.length));
+        MUST(JSON_READ_OPT(io, "side", &p->turn.side));
+        MUST(JSON_POP(io));
     }
     if (SHOULD(JSON_PUSH(io, "flags"))) {
-        SHOULD(JSON_READ_OPT(io, "control", &p->flags.control));
-        SHOULD(JSON_READ_OPT(io, "dead", &p->flags.dead));
-        SHOULD(JSON_READ_OPT(io, "stopped", &p->flags.stopped));
-        SHOULD(JSON_READ_OPT(io, "suppress_anim", &p->flags.suppress_anim));
-        SHOULD(JSON_POP(io));
+        MUST(JSON_READ_OPT(io, "control", &p->flags.control));
+        MUST(JSON_READ_OPT(io, "dead", &p->flags.dead));
+        MUST(JSON_READ_OPT(io, "stopped", &p->flags.stopped));
+        MUST(JSON_READ_OPT(io, "suppress_anim", &p->flags.suppress_anim));
+        MUST(JSON_POP(io));
     }
+    return OK;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

@@ -98,23 +98,24 @@ static const XZ_16 m_MistPos[10] = {
 };
 // clang-format on
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SHOULD(JSON_READ_OPT(io, "vel", &p->vel));
-    SHOULD(JSON_READ_OPT(io, "rot", &p->rot));
-    SHOULD(JSON_READ_OPT(io, "fall_speed_f", &p->fall_speed_f));
-    SHOULD(JSON_READ_OPT(io, "fall_speed_l", &p->fall_speed_l));
-    SHOULD(JSON_READ_OPT(io, "fall_speed_r", &p->fall_speed_r));
-    SHOULD(JSON_READ_OPT(io, "water", &p->water));
-    SHOULD(JSON_READ_OPT(io, "old_pos", &p->old_pos));
-    SHOULD(JSON_READ_OPT(io, "turn", &p->turn));
-    SHOULD(JSON_READ_OPT(io, "forward", &p->forward));
-    SHOULD(JSON_READ_OPT(io, "true_water", &p->true_water));
-    SHOULD(JSON_READ_OPT(io, "counter", &p->counter));
-    SHOULD(JSON_READ(io, "paddle_frame2_latched", &p->paddle.frame2_latched));
-    SHOULD(JSON_READ_OPT(io, "paddle_stroke_count", &p->paddle.stroke_count));
-    SHOULD(JSON_READ_OPT(io, "paddle_equipped", &p->paddle.equipped));
+    MUST(JSON_READ_OPT(io, "vel", &p->vel));
+    MUST(JSON_READ_OPT(io, "rot", &p->rot));
+    MUST(JSON_READ_OPT(io, "fall_speed_f", &p->fall_speed_f));
+    MUST(JSON_READ_OPT(io, "fall_speed_l", &p->fall_speed_l));
+    MUST(JSON_READ_OPT(io, "fall_speed_r", &p->fall_speed_r));
+    MUST(JSON_READ_OPT(io, "water", &p->water));
+    MUST(JSON_READ_OPT(io, "old_pos", &p->old_pos));
+    MUST(JSON_READ_OPT(io, "turn", &p->turn));
+    MUST(JSON_READ_OPT(io, "forward", &p->forward));
+    MUST(JSON_READ_OPT(io, "true_water", &p->true_water));
+    MUST(JSON_READ_OPT(io, "counter", &p->counter));
+    MUST(JSON_READ(io, "paddle_frame2_latched", &p->paddle.frame2_latched));
+    MUST(JSON_READ_OPT(io, "paddle_stroke_count", &p->paddle.stroke_count));
+    MUST(JSON_READ_OPT(io, "paddle_equipped", &p->paddle.equipped));
+    return OK;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

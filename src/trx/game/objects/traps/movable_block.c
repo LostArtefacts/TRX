@@ -158,31 +158,32 @@ static void M_UpdateStoppers(const ITEM *const item, const bool enabled)
     sector->stopper = enabled;
 }
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SHOULD(JSON_READ_OPT(io, "gravity_frames", &p->gravity_frames));
-    SHOULD(JSON_READ_OPT(io, "is_push_pull", &p->is_push_pull));
-    SHOULD(JSON_READ_OPT(io, "is_forced_moving", &p->is_forced_moving));
+    MUST(JSON_READ_OPT(io, "gravity_frames", &p->gravity_frames));
+    MUST(JSON_READ_OPT(io, "is_push_pull", &p->is_push_pull));
+    MUST(JSON_READ_OPT(io, "is_forced_moving", &p->is_forced_moving));
 
     if (SHOULD(JSON_PUSH(io, "linked"))) {
-        SHOULD(JSON_READ_OPT(io, "x", &p->linked.pos.x));
-        SHOULD(JSON_READ_OPT(io, "y", &p->linked.pos.y));
-        SHOULD(JSON_READ_OPT(io, "z", &p->linked.pos.z));
-        SHOULD(JSON_POP(io));
+        MUST(JSON_READ_OPT(io, "x", &p->linked.pos.x));
+        MUST(JSON_READ_OPT(io, "y", &p->linked.pos.y));
+        MUST(JSON_READ_OPT(io, "z", &p->linked.pos.z));
+        MUST(JSON_POP(io));
     }
 
-    SHOULD(JSON_READ_OPT(io, "counter_rot_0", &p->extra_rotations[0]));
-    SHOULD(JSON_READ_OPT(io, "counter_rot_1", &p->extra_rotations[1]));
-    SHOULD(JSON_READ_OPT(io, "counter_rot_2", &p->extra_rotations[2]));
-    SHOULD(JSON_READ_OPT(io, "original_rot", &p->original_rot));
-    SHOULD(JSON_READ_OPT(io, "interaction_rot", &p->interaction_rot));
+    MUST(JSON_READ_OPT(io, "counter_rot_0", &p->extra_rotations[0]));
+    MUST(JSON_READ_OPT(io, "counter_rot_1", &p->extra_rotations[1]));
+    MUST(JSON_READ_OPT(io, "counter_rot_2", &p->extra_rotations[2]));
+    MUST(JSON_READ_OPT(io, "original_rot", &p->original_rot));
+    MUST(JSON_READ_OPT(io, "interaction_rot", &p->interaction_rot));
 
     if (SHOULD(JSON_PUSH(io, "move_origin"))) {
-        SHOULD(JSON_READ_OPT(io, "x", &p->move_origin.x));
-        SHOULD(JSON_READ_OPT(io, "z", &p->move_origin.z));
-        SHOULD(JSON_POP(io));
+        MUST(JSON_READ_OPT(io, "x", &p->move_origin.x));
+        MUST(JSON_READ_OPT(io, "z", &p->move_origin.z));
+        MUST(JSON_POP(io));
     }
+    return OK;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

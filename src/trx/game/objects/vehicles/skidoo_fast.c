@@ -5,16 +5,17 @@
 #include <trx/game/objects/vehicles/common.h>
 #include <trx/game/objects/vehicles/skidoo_common.h>
 
-static void M_PrivLoad(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_PrivLoad(ITEM *const item, JSON_READ_IO *const io)
 {
     SKIDOO_INFO *const p = item->priv;
-    SHOULD(JSON_READ_OPT(io, "track_mesh", &p->track_mesh));
-    SHOULD(JSON_READ_OPT(io, "skidoo_turn", &p->skidoo_turn));
-    SHOULD(JSON_READ_OPT(io, "left_fallspeed", &p->left_fallspeed));
-    SHOULD(JSON_READ_OPT(io, "right_fallspeed", &p->right_fallspeed));
-    SHOULD(JSON_READ_OPT(io, "momentum_angle", &p->momentum_angle));
-    SHOULD(JSON_READ_OPT(io, "extra_rotation", &p->extra_rotation));
-    SHOULD(JSON_READ_OPT(io, "pitch", &p->pitch));
+    MUST(JSON_READ_OPT(io, "track_mesh", &p->track_mesh));
+    MUST(JSON_READ_OPT(io, "skidoo_turn", &p->skidoo_turn));
+    MUST(JSON_READ_OPT(io, "left_fallspeed", &p->left_fallspeed));
+    MUST(JSON_READ_OPT(io, "right_fallspeed", &p->right_fallspeed));
+    MUST(JSON_READ_OPT(io, "momentum_angle", &p->momentum_angle));
+    MUST(JSON_READ_OPT(io, "extra_rotation", &p->extra_rotation));
+    MUST(JSON_READ_OPT(io, "pitch", &p->pitch));
+    return OK;
 }
 
 static void M_PrivSave(const ITEM *const item, JSON_WRITE_IO *const io)
