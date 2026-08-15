@@ -178,7 +178,7 @@ X_CFG_DYNAMIC_ENUM_EX("ui.exposurebar_color_ps1",            ui.lara_exposure_ba
 X_CFG_DYNAMIC_ENUM_EX("ui.healthbar_color",                  ui.lara_health_bar.color, "red")
 X_CFG_DYNAMIC_ENUM_EX("ui.healthbar_color_ps1",              ui.lara_health_bar.color_ps1, "red-green")
 X_CFG_DYNAMIC_ENUM_EX("ui.healthbar_poison_color",           ui.lara_health_bar.poison_color, "yellow")
-X_CFG_DYNAMIC_ENUM_EX("ui.healthbar_poison_color_ps1",       ui.lara_health_bar.poison_color_ps1, "dark-red-purple")
+X_CFG_DYNAMIC_ENUM_EX("ui.healthbar_poison_color_ps1",       ui.lara_health_bar.poison_color_ps1, "yellow")
 X_CFG_DYNAMIC_ENUM_EX("ui.sprintbar_color",                  ui.lara_sprint_bar.color, "green")
 X_CFG_DYNAMIC_ENUM_EX("ui.sprintbar_color_ps1",              ui.lara_sprint_bar.color_ps1, "red-yellow")
 X_CFG_ENUM(audio.music_load_condition,                       MUSIC_LOAD_CONDITION_NON_AMBIENT, MUSIC_LOAD_CONDITION)
