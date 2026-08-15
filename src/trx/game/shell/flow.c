@@ -55,7 +55,7 @@ static RESULT M_CreateGameWindow(void)
     return OK;
 }
 
-static RESULT M_FailUnsupportedGraphics(void)
+static RESULT M_FailUnsupportedGraphics(const RESULT cause)
 {
     char *driver = TRX_GL_Context_DescribeDriver(m_Window);
 
@@ -76,7 +76,7 @@ static RESULT M_FailUnsupportedGraphics(void)
         "Installing the latest drivers for the graphics card usually helps.%s",
         driver != nullptr ? driver : "unknown", hint);
 
-    const RESULT result = FAIL("%s", message);
+    const RESULT result = Result_Prefix(cause, "%s", message);
 
     Memory_FreePointer(&message);
     Memory_FreePointer(&driver);
@@ -92,8 +92,9 @@ static RESULT M_CreateGLContext(void)
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(
         SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    if (!TRX_GL_Context_Attach(m_Window)) {
-        return M_FailUnsupportedGraphics();
+    const RESULT attached = TRX_GL_Context_Attach(m_Window);
+    if (!IS_OK(attached)) {
+        return M_FailUnsupportedGraphics(attached);
     }
     return OK;
 }
@@ -363,7 +364,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
     GamePath_Init(s->args);
     EXIT_ON_FAIL(M_CreateGameWindow(), "TRX could not open a window");
     EXIT_ON_FAIL(M_CreateGLContext(), "TRX cannot draw the game");
-    Output_Init();
+    EXIT_ON_FAIL(Output_Init(), "TRX cannot draw the game");
     if (!s->args->headless) {
         M_ShowWindow();
     }

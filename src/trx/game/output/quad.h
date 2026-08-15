@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/core/colors.h>
+#include <trx/core/result.h>
 #include <trx/gl/enum.h>
 
 #include <GL/glew.h>
@@ -49,7 +50,7 @@ typedef enum {
 } OUTPUT_QUAD_FIT_MODE;
 
 // Create a quad renderer instance and initialize GL resources.
-OUTPUT_QUAD *Output_Quad_Create(void);
+RESULT Output_Quad_Create(OUTPUT_QUAD **out_quad);
 // Destroy a quad renderer instance and release its GL resources.
 void Output_Quad_Destroy(OUTPUT_QUAD *renderer);
 

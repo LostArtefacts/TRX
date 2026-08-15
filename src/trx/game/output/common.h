@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/result.h>
 #include <trx/game/objects/types.h>
 #include <trx/game/output/shaders/mesh.h>
 #include <trx/game/output/shaders/ui.h>
@@ -7,7 +8,7 @@
 #include <trx/game/rooms.h>
 #include <trx/game/viewport.h>
 
-void Output_Init(void);
+RESULT Output_Init(void);
 bool Output_IsHeadless(void);
 
 const OUTPUT_UNIFORMS *Output_GetUniforms(void);

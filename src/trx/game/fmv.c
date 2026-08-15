@@ -241,9 +241,12 @@ static bool M_Play(const char *const file_name)
         return false;
     }
 
-    M_RENDER_CONTEXT render_ctx = {
-        .renderer_2d = Output_Quad_Create(),
-    };
+    M_RENDER_CONTEXT render_ctx = {};
+    if (!SHOULD(
+            Output_Quad_Create(&render_ctx.renderer_2d),
+            "the video cannot be drawn")) {
+        return false;
+    }
 
     Video_SetSurfaceAllocatorFunc(video, M_AllocateSurface, nullptr);
     Video_SetSurfaceDeallocatorFunc(video, M_DeallocateSurface, nullptr);

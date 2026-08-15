@@ -209,7 +209,7 @@ static void M_SwapBuffers(TRX_GL_RENDERER *const renderer)
     TRX_GL_Context_SwitchToViewport(VIEWPORT_GAME);
 }
 
-static void M_Init(
+static RESULT M_Init(
     TRX_GL_RENDERER *const renderer, const TRX_GL_CONFIG *const config)
 {
     ASSERT(renderer != nullptr);
@@ -241,11 +241,13 @@ static void M_Init(
     TRX_GL_Sampler_Parameteri(&p->sampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     TRX_GL_Sampler_Parameteri(&p->sampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    TRX_GL_Program_Init(&p->program);
-    TRX_GL_Program_AttachShader(&p->program, GL_VERTEX_SHADER, "fbo.glsl");
-    TRX_GL_Program_AttachShader(&p->program, GL_FRAGMENT_SHADER, "fbo.glsl");
+    MUST(TRX_GL_Program_Init(&p->program));
+    MUST(
+        TRX_GL_Program_AttachShader(&p->program, GL_VERTEX_SHADER, "fbo.glsl"));
+    MUST(TRX_GL_Program_AttachShader(
+        &p->program, GL_FRAGMENT_SHADER, "fbo.glsl"));
     TRX_GL_Program_FragmentData(&p->program, "outColor");
-    TRX_GL_Program_Link(&p->program);
+    MUST(TRX_GL_Program_Link(&p->program));
     TRX_GL_Program_Bind(&p->program);
     TRX_GL_Program_Uniform1i(
         &p->program, TRX_GL_Program_UniformLocation(&p->program, "uTex0"), 0);
@@ -265,6 +267,7 @@ static void M_Init(
     rect = Viewport_GetRect(VIEWPORT_UI);
     TRX_GL_FBO_Init(
         &p->ui_fbo, rect.width, rect.height, 1, GL_RGBA8, GL_RGBA, false);
+    return OK;
 }
 
 static void M_Shutdown(TRX_GL_RENDERER *renderer)

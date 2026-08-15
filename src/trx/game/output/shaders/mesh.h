@@ -39,7 +39,7 @@ typedef enum {
 
 typedef struct OUTPUT_MESH_SHADER OUTPUT_MESH_SHADER;
 
-OUTPUT_MESH_SHADER *Output_MeshShader_Create(void);
+RESULT Output_MeshShader_Create(OUTPUT_MESH_SHADER **out_shader);
 void Output_MeshShader_Free(OUTPUT_MESH_SHADER *shader);
 void Output_MeshShader_Bind(OUTPUT_MESH_SHADER *shader);
 
