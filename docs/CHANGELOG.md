@@ -101,6 +101,7 @@ Showcase: https://youtu.be/DKpqz_Yum6o
 - Fixed touch controls not turning themselves on the first time the game is launched on a device that has a touchscreen
 - Fixed the key icons in the controls dialog sitting at slightly different heights, most visibly the left trigger and the shoulder buttons (#6151)
 - Fixed the + joining the two keys of a shortcut sitting lower than the icons beside it (#6151)
+- Fixed key icons ignoring the active keyboard layout, which swapped Z and Y on QWERTZ (#6257)
 
 **Camera and binoculars**
 - Added TR4 camera mode, which is similar to TR3 but more responsive to Lara's actions such as picking up items
