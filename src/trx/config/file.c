@@ -109,20 +109,15 @@ bool ConfigFile_WasFound(void)
     return m_CfgFound;
 }
 
-bool ConfigFile_Read(
+RESULT ConfigFile_Read(
     const char *const default_path, const char *const enforced_path)
 {
     ASSERT(default_path != nullptr);
     M_FreeRetained();
     m_CfgFound = FS_Exists(default_path);
 
-    bool result = false;
-    SHOULD(
-        JSONFile_Read(default_path, &m_CfgRoot),
-        "The settings start from their defaults");
-    if (m_CfgRoot != nullptr) {
-        result = true;
-    } else {
+    RESULT result = JSONFile_Read(default_path, &m_CfgRoot);
+    if (m_CfgRoot == nullptr) {
         // The settings still have to answer for themselves when the file is
         // missing, so stand an empty document in for it.
         JSON_OBJECT *const obj = JSON_ObjectNew();
@@ -131,9 +126,7 @@ bool ConfigFile_Read(
     }
     m_EnfRoot = nullptr;
     if (enforced_path != nullptr) {
-        SHOULD(
-            JSONFile_Read(enforced_path, &m_EnfRoot),
-            "The enforced settings are left out");
+        result = Result_Merge(result, JSONFile_Read(enforced_path, &m_EnfRoot));
     }
     return result;
 }
