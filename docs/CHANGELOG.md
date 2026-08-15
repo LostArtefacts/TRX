@@ -12,6 +12,7 @@
 - Fixed doors disappearing when seen from the far side of their doorway after loading a save (regression from 1.9)
 - Fixed breeze defaulting to being off in fresh installations (regression from 1.10)
 - Fixed Lara having the wrong state while grabbing a zipline (regression from 1.10)
+- Fixed key icons ignoring the active keyboard layout, which swapped Z and Y on QWERTZ (#6257)
 
 
 

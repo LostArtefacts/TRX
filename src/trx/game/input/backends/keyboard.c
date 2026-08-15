@@ -65,6 +65,67 @@ static KEYBOARD_BINDING m_CaptureBuffer = { .key_count = 0 };
 
 static bool m_CaptureActive = false;
 
+// Keycaps for the printable characters TRX has glyphs for, keyed by the
+// character rather than by scancode so that a key can be labelled with the
+// character the active keyboard layout makes it produce.
+static const struct {
+    char chr;
+    const char *glyph;
+} m_CharGlyphs[] = {
+    // clang-format off
+    { 'a',  "\\{keyboard a}" },
+    { 'b',  "\\{keyboard b}" },
+    { 'c',  "\\{keyboard c}" },
+    { 'd',  "\\{keyboard d}" },
+    { 'e',  "\\{keyboard e}" },
+    { 'f',  "\\{keyboard f}" },
+    { 'g',  "\\{keyboard g}" },
+    { 'h',  "\\{keyboard h}" },
+    { 'i',  "\\{keyboard i}" },
+    { 'j',  "\\{keyboard j}" },
+    { 'k',  "\\{keyboard k}" },
+    { 'l',  "\\{keyboard l}" },
+    { 'm',  "\\{keyboard m}" },
+    { 'n',  "\\{keyboard n}" },
+    { 'o',  "\\{keyboard o}" },
+    { 'p',  "\\{keyboard p}" },
+    { 'q',  "\\{keyboard q}" },
+    { 'r',  "\\{keyboard r}" },
+    { 's',  "\\{keyboard s}" },
+    { 't',  "\\{keyboard t}" },
+    { 'u',  "\\{keyboard u}" },
+    { 'v',  "\\{keyboard v}" },
+    { 'w',  "\\{keyboard w}" },
+    { 'x',  "\\{keyboard x}" },
+    { 'y',  "\\{keyboard y}" },
+    { 'z',  "\\{keyboard z}" },
+
+    { '0',  "\\{keyboard 0}" },
+    { '1',  "\\{keyboard 1}" },
+    { '2',  "\\{keyboard 2}" },
+    { '3',  "\\{keyboard 3}" },
+    { '4',  "\\{keyboard 4}" },
+    { '5',  "\\{keyboard 5}" },
+    { '6',  "\\{keyboard 6}" },
+    { '7',  "\\{keyboard 7}" },
+    { '8',  "\\{keyboard 8}" },
+    { '9',  "\\{keyboard 9}" },
+
+    { '-',  "\\{keyboard minus}" },
+    { '=',  "\\{keyboard equals}" },
+    { '[',  "\\{keyboard left_square_bracket}" },
+    { ']',  "\\{keyboard right_square_bracket}" },
+    { '\\', "\\{keyboard backslash}" },
+    { '#',  "\\{keyboard hash}" },
+    { ';',  "\\{keyboard semicolon}" },
+    { '\'', "\\{keyboard apostrophe}" },
+    { '`',  "\\{keyboard backtick}" },
+    { ',',  "\\{keyboard comma}" },
+    { '.',  "\\{keyboard period}" },
+    { '/',  "\\{keyboard slash}" },
+    // clang-format on
+};
+
 // Update internal controller button/axis state from SDL events.
 // @param event     Event to process.
 static void M_ProcessEvent(const SDL_Event *const event)
@@ -83,8 +144,45 @@ static void M_ProcessEvent(const SDL_Event *const event)
     }
 }
 
+// Keycap for a printable character, or nullptr if TRX has no glyph for it.
+// Accented, Cyrillic and Greek characters all land in the latter case.
+static const char *M_GetCharName(const char chr)
+{
+    for (size_t i = 0; i < ARRAY_SIZE(m_CharGlyphs); i++) {
+        if (m_CharGlyphs[i].chr == chr) {
+            return m_CharGlyphs[i].glyph;
+        }
+    }
+    return nullptr;
+}
+
+// Whether the character printed on a key varies with the keyboard layout.
+// Letters permute wholesale between layouts (QWERTY, QWERTZ, AZERTY, Dvorak)
+// and the punctuation block moves around with them. The digit row is
+// deliberately left out: it reads 1 to 0 on every Latin layout.
+static bool M_IsLayoutDependent(const SDL_Scancode scancode)
+{
+    return (scancode >= SDL_SCANCODE_A && scancode <= SDL_SCANCODE_Z)
+        || (scancode >= SDL_SCANCODE_MINUS && scancode <= SDL_SCANCODE_SLASH)
+        || scancode == SDL_SCANCODE_NONUSBACKSLASH;
+}
+
 static const char *M_GetScancodeName(SDL_Scancode scancode)
 {
+    // Scancodes name physical key positions after a US layout, so on QWERTZ
+    // the key labelled Z reports SDL_SCANCODE_Y. Ask SDL which character the
+    // key produces under the active layout and label it with that, falling
+    // back to the physical name when that character has no keycap glyph.
+    if (M_IsLayoutDependent(scancode)) {
+        const SDL_Keycode key = SDL_GetKeyFromScancode(scancode);
+        if (key > 0 && key < 0x80) {
+            const char *const name = M_GetCharName((char)key);
+            if (name != nullptr) {
+                return name;
+            }
+        }
+    }
+
     // clang-format off
     switch (scancode) {
         case SDL_SCANCODE_LCTRL:              return "\\{keyboard l_ctrl}";
