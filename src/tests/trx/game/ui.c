@@ -95,7 +95,7 @@ static bool M_LoadLanguage(const char *const lang)
 
     char *data = nullptr;
     size_t size = 0;
-    if (!FS_Load(path, &data, &size)) {
+    if (!IGNORE(FS_Load(path, &data, &size))) {
         return false;
     }
     JSON_VALUE *const root = JSON_ParseEx(

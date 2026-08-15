@@ -230,26 +230,23 @@ bool FS_GetMeta(
     return true;
 }
 
-bool FS_Load(const char *path, char **output_data, size_t *output_size)
+RESULT FS_Load(const char *path, char **output_data, size_t *output_size)
 {
     ASSERT(output_data != nullptr);
+    *output_data = nullptr;
 
     TRX_FILE *fp = File_OpenPath(path, FILE_OPEN_READ);
-    if (!fp) {
-        LOG_ERROR("Can't open file %s", path);
-        *output_data = nullptr;
-        return false;
-    }
+    FAIL_IF(fp == nullptr, "%s: the file could not be opened", path);
 
     size_t data_size = File_Size(fp);
     char *data = Memory_Alloc(data_size + 1);
     File_ReadData(fp, data, data_size);
     if (File_Pos(fp) != data_size) {
-        *output_data = nullptr;
-        LOG_ERROR("Can't read file %s", path);
         Memory_FreePointer(&data);
         File_Close(fp);
-        return false;
+        return FAIL(
+            "%s: the file ended after %zu of %zu bytes", path,
+            (size_t)File_Pos(fp), data_size);
     }
     File_Close(fp);
     data[data_size] = '\0';
@@ -258,7 +255,7 @@ bool FS_Load(const char *path, char **output_data, size_t *output_size)
     if (output_size != nullptr) {
         *output_size = data_size;
     }
-    return true;
+    return OK;
 }
 
 void FS_CreateDirectory(const char *path)

@@ -42,8 +42,7 @@ static bool M_Inflate(const char *const path)
 {
     char *file_data = nullptr;
     size_t file_size = 0;
-    if (!FS_Load(path, &file_data, &file_size)) {
-        LOG_ERROR("Failed to read %s", path);
+    if (!SHOULD(FS_Load(path, &file_data, &file_size))) {
         return false;
     }
     if (file_size < sizeof(uint32_t)) {

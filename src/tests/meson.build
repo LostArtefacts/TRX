@@ -214,7 +214,13 @@ unit_tests += {
 
 unit_tests += {
   'name': 'trx/game/cutseq/pak',
-  'engine': ['game/cutseq/pak.c', 'core/memory.c', 'core/subsystem.c'],
+  'engine': [
+    'game/cutseq/pak.c',
+    'core/memory.c',
+    'core/result.c',
+    'core/subsystem.c',
+  ],
+  'src': ['harness/stubs_result.c'],
   'deps': [dep_zlib],
 }
 
@@ -267,12 +273,14 @@ unit_tests += {
 unit_tests += {
   'name': 'trx/core/file',
   'engine': [
+    'core/result.c',
     'core/file.c',
     'core/filesystem.c',
     'core/memory.c',
     'core/strings/common.c',
     'core/vector.c',
   ],
+  'src': ['harness/stubs_result.c'],
   'deps': [dep_pcre2],
   'args': ['-DPCRE2_CODE_UNIT_WIDTH=8', '-D_DEFAULT_SOURCE'],
 }
@@ -280,12 +288,14 @@ unit_tests += {
 unit_tests += {
   'name': 'trx/core/filesystem',
   'engine': [
+    'core/result.c',
     'core/file.c',
     'core/filesystem.c',
     'core/memory.c',
     'core/strings/common.c',
     'core/vector.c',
   ],
+  'src': ['harness/stubs_result.c'],
   'deps': [dep_pcre2],
   'args': ['-DPCRE2_CODE_UNIT_WIDTH=8', '-D_DEFAULT_SOURCE'],
 }

@@ -29,6 +29,14 @@ __attribute__((weak)) char *String_Format(const char *const fmt, ...)
     return result;
 }
 
+__attribute__((weak)) const char *String_FormatStaticV(
+    const char *const fmt, va_list args)
+{
+    static char result[1024];
+    vsnprintf(result, sizeof(result), fmt, args);
+    return result;
+}
+
 __attribute__((weak)) void Shell_ExitSystem(const char *const message)
 {
     fprintf(stderr, "unexpected engine exit: %s\n", message);

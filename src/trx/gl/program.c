@@ -34,7 +34,7 @@ static const char *M_LoadFileCached(const char *const path)
     }
 
     char *content = nullptr;
-    if (!FS_Load(path, &content, nullptr)) {
+    if (!SHOULD(FS_Load(path, &content, nullptr))) {
         return nullptr;
     }
     M_SHADER_FILE_CACHE_ENTRY entry = {

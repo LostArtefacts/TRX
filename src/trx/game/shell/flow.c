@@ -137,9 +137,9 @@ static void M_LoadCatalog(
 {
     const char *const path =
         GamePath_Resolve(GAME_DYNAMIC_PATH_CATALOG, filename);
-    if (!Catalog_Load(context, path, allow_duplicates)) {
-        Shell_ExitSystemFmt("Failed to load catalogs from %s", path);
-    }
+    EXIT_ON_FAIL(
+        Catalog_Load(context, path, allow_duplicates),
+        "Failed to load catalogs");
 }
 
 static void M_InitModules(void)

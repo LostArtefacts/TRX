@@ -271,7 +271,7 @@ TRX_FILE *File_OpenPathInMemory(const char *const path)
 {
     char *data = nullptr;
     size_t size = 0;
-    if (!FS_Load(path, &data, &size)) {
+    if (!SHOULD(FS_Load(path, &data, &size))) {
         return nullptr;
     }
     TRX_FILE *const file = File_OpenBuffer(data, size);

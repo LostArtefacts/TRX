@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trx/core/result.h>
+
 #include <stdint.h>
 
 // Context discriminator for separate catalog namespaces
@@ -19,7 +21,7 @@ typedef int32_t CATALOG_ID;
 // game_id,name[,comment]
 // A game_id of -1 indicates no mapping for that entry.
 // Returns true on success.
-bool Catalog_Load(
+RESULT Catalog_Load(
     CATALOG_CONTEXT context, const char *csv_path, bool allow_duplicates);
 
 // Convert an item name to its CATALOG_ID within a context.

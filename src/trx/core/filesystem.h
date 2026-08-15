@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trx/core/result.h>
+
 #include <stddef.h>
 #include <stdint.h>
 
@@ -42,7 +44,9 @@ bool FS_GetMeta(const char *path, uint64_t *out_size, uint64_t *out_mtime);
 
 // Read the whole file at path into a newly allocated, zero-terminated buffer.
 // Caller must free it with Memory_Free().
-bool FS_Load(const char *path, char **output_data, size_t *output_size);
+// Reads a whole file into memory, reporting one that cannot be opened or that
+// ends early. Caller frees the data with Memory_FreePointer().
+RESULT FS_Load(const char *path, char **output_data, size_t *output_size);
 
 // Delete the file at path. Returns false if it could not be deleted.
 bool FS_Delete(const char *path);

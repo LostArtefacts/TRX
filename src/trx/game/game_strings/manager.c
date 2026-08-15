@@ -114,7 +114,7 @@ static void M_LoadLanguageNames(void)
         const M_FILE_ENTRY *const file_entry = Vector_Get(lang_entry->files, 0);
         char *data = nullptr;
         size_t size = 0;
-        if (!FS_Load(file_entry->path, &data, &size) || data == nullptr) {
+        if (!SHOULD(FS_Load(file_entry->path, &data, &size))) {
             continue;
         }
         JSON_PARSE_RESULT pr = { 0 };

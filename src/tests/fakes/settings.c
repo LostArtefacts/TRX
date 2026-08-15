@@ -83,12 +83,12 @@ const char *GamePath_Resolve(
     return entry->value;
 }
 
-bool FS_Load(
+RESULT FS_Load(
     const char *const path, char **const output_data, size_t *const output_size)
 {
     FILE *const fp = fopen(path, "rb");
     if (fp == nullptr) {
-        return false;
+        return FAIL("%s: the file could not be opened", path);
     }
     fseek(fp, 0, SEEK_END);
     const long size = ftell(fp);
@@ -101,7 +101,13 @@ bool FS_Load(
     if (output_size != nullptr) {
         *output_size = read_size;
     }
-    return true;
+    return OK;
+}
+
+bool FS_Exists(const char *const path)
+{
+    struct stat info;
+    return stat(path, &info) == 0;
 }
 
 bool FS_DirExists(const char *const path)

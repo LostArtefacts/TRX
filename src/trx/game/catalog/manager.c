@@ -135,7 +135,7 @@ static void M_Shutdown(void)
     m_Initialized = false;
 }
 
-bool Catalog_Load(
+RESULT Catalog_Load(
     const CATALOG_CONTEXT context, const char *const csv_path,
     const bool allow_duplicates)
 {
@@ -144,9 +144,7 @@ bool Catalog_Load(
     }
     char *file_data;
     size_t file_size;
-    if (!FS_Load(csv_path, &file_data, &file_size)) {
-        return false;
-    }
+    MUST(FS_Load(csv_path, &file_data, &file_size));
 
     const char *pos = file_data;
     const char *end = file_data + file_size;
@@ -193,7 +191,7 @@ bool Catalog_Load(
         }
     }
     Memory_FreePointer(&file_data);
-    return true;
+    return OK;
 }
 
 bool Catalog_NameToEnum(
