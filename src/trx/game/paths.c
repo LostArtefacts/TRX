@@ -1240,14 +1240,13 @@ const char *GamePath_TryResolve(
     return resolved;
 }
 
-const char *GamePath_Resolve(
-    const GAME_DYNAMIC_PATH path, const char *const rel)
+RESULT GamePath_Resolve(
+    const GAME_DYNAMIC_PATH path, const char *const rel,
+    const char **const out_path)
 {
-    const char *const resolved = GamePath_PeekResolve(path, rel);
-    if (resolved == nullptr) {
-        Shell_ExitSystem(M_GetResolveError(path, rel));
-    }
-    return resolved;
+    *out_path = GamePath_PeekResolve(path, rel);
+    FAIL_IF(*out_path == nullptr, "%s", M_GetResolveError(path, rel));
+    return OK;
 }
 
 RESULT GamePath_OpenFile(

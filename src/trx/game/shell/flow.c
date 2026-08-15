@@ -140,8 +140,8 @@ static RESULT M_LoadCatalog(
     const CATALOG_CONTEXT context, const char *const filename,
     const bool allow_duplicates)
 {
-    const char *const path =
-        GamePath_Resolve(GAME_DYNAMIC_PATH_CATALOG, filename);
+    const char *path = nullptr;
+    MUST(GamePath_Resolve(GAME_DYNAMIC_PATH_CATALOG, filename, &path));
     return Catalog_Load(context, path, allow_duplicates);
 }
 
