@@ -25,12 +25,9 @@
 
 local M = {}
 
-local LARA_SPEECH_HEADS = {
-  trx.catalog.objects.lara_speech_head_1,
-  trx.catalog.objects.lara_speech_head_2,
-  trx.catalog.objects.lara_speech_head_3,
-  trx.catalog.objects.lara_speech_head_4,
-}
+-- How many speech faces an outfit carries, which the one she talks with is
+-- drawn from.
+local LARA_SPEECH_FACES = 4
 
 -- A speaker's head is swapped every other frame rather than every one, which
 -- is the rate the original game talks at.
@@ -106,9 +103,8 @@ end
 local function prepare_chat(chat)
   local speakers = {}
   for _, speaker in ipairs(chat) do
-    local heads =
-      loaded_heads(speaker.lara and LARA_SPEECH_HEADS or speaker.speech_heads)
-    if #heads > 0 then
+    local heads = speaker.lara and {} or loaded_heads(speaker.speech_heads)
+    if speaker.lara or #heads > 0 then
       speakers[#speakers + 1] = {
         lara = speaker.lara,
         actor = speaker.actor,
@@ -121,18 +117,9 @@ local function prepare_chat(chat)
   return speakers
 end
 
--- A speech head object is a whole body with one node's mesh redrawn, so the
--- mesh to take off it is the one sitting at the same node as the one being
--- replaced, not its first.
-local LARA_HEAD_NODE = 14
-
 local function set_head(speaker)
   if speaker.lara then
-    trx.lara.set_mesh(
-      trx.lara.Mesh.HEAD,
-      trx.random.choice(speaker.heads),
-      LARA_HEAD_NODE
-    )
+    trx.lara.speech_face = trx.random.randint(0, LARA_SPEECH_FACES - 1)
   else
     trx.cutscenes.set_node_mesh(
       speaker.actor,
@@ -145,7 +132,7 @@ end
 
 local function clear_head(speaker)
   if speaker.lara then
-    trx.lara.clear_mesh(trx.lara.Mesh.HEAD)
+    trx.lara.speech_face = nil
   else
     trx.cutscenes.clear_node_mesh(speaker.actor, speaker.node)
   end
