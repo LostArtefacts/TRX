@@ -13,6 +13,8 @@
         },
         "config_presets": {
             "applied": "Profilo applicato.",
+            "confirm_apply": "\\{review}Applica",
+            "confirm_back": "\\{review}Indietro",
             "confirm_description": "Verranno modificate le seguenti impostazioni:",
             "confirm_restart_note": "Nota: per avere effetto, alcune impostazioni\n         potrebbero richiedere il riavvio del gioco.",
             "empty": "Nessun profilo trovato.",

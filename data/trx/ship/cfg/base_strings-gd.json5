@@ -13,6 +13,8 @@
         },
         "config_presets": {
             "applied": "Ro-shealladh air a chur an sàs.",
+            "confirm_apply": "\\{review}Cuir an sàs",
+            "confirm_back": "\\{review}Air ais",
             "confirm_description": "Bidh na suidheachaidhean a leanas air an atharrachadh:",
             "confirm_restart_note": "Nota: dh’fhaodadh gum feum cuid de shuidheachaidhean ath-thòiseachadh a’ gheama airson buaidh fhaighinn.",
             "empty": "Cha deach ro-shealladh sam bith a lorg.",

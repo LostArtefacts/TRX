@@ -13,6 +13,8 @@
         },
         "config_presets": {
             "applied": "\\{review}Voreinstellung angewendet.",
+            "confirm_apply": "\\{review}Anwenden",
+            "confirm_back": "\\{review}Zurück",
             "confirm_description": "\\{review}Die folgenden Einstellungen werden geändert:",
             "confirm_restart_note": "\\{review}Hinweis: Einige Einstellungen erfordern möglicherweise einen Neustart des Spiels, um wirksam zu werden.",
             "empty": "\\{review}Keine Voreinstellungen gefunden.",

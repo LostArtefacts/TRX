@@ -13,6 +13,8 @@
         },
         "config_presets": {
             "applied": "Preset applied.",
+            "confirm_apply": "Apply",
+            "confirm_back": "Go back",
             "confirm_description": "The following settings will be changed:",
             "confirm_restart_note": "Note: some settings may require a game restart to take effect.",
             "empty": "No presets found.",
