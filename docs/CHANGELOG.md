@@ -37,7 +37,7 @@
 - Fixed the Cabin in Natla's Mines remaining visible after dropping to the floor (regression from 1.10)
 
 **TR3**
-
+- Added crystals to each of the levels in The Lost Artefact, and made the crystal mode option visible (Gameplay → General → Crystal mode)
 - Fixed missing alpha blending on the MP5 and M16 gun flare in the gym (regression from 1.7)
 
 **TR4**
