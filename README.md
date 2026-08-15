@@ -108,17 +108,25 @@ Please refer to [this document](docs/CHANGELOG.md).
     getting new rendering improvements and texture fixes. But great stuff
     takes time.
 
-4. **Can I play this on Mac, Linux, Android...?**
+3. **Can I play this on Mac, Linux, Android...?**
 
     Currently supported platforms include Windows, Linux and macOS.
 
-5. **Can I play this with a controller?**
+4. **Can I play this with a controller?**
 
     TRX supports a wide variety of controllers out of the box with no
     additional software required. The keyboard or controller controls
     can be fully customized in the Controls menu with multiple layouts.
     Multi-key combo shortcuts (up to 3 keys) and two binding slots per
     action are also supported.
+
+5. **What about TR4 support?**
+
+    TR4 work is well underway! Still early, but we're moving _fast_. Keep track
+    of progress by checking out the [changelog](docs/CHANGELOG.md) and
+    [release showcases](https://www.youtube.com/@lostartefacts). Please note
+    that tickets for problems specific to TR4 raised before the game is fully
+    supported will most likely be closed.
 
 
 ## Website
