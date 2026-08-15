@@ -5,25 +5,36 @@
 #include <trx/game/rooms.h>
 #include <trx/version.h>
 
-static uint16_t *M_GetRoomTexture(
+static FACE *M_GetFace(
     const int16_t room_num, const FACE_TYPE face_type, const int16_t face_index)
 {
     const ROOM *const room = Room_Get(room_num);
-    if (face_type == FT_TEXTURED_QUAD && face_index < room->mesh.face4s.count) {
-        FACE *const face = &room->mesh.face4s.data[face_index];
-        return &face->texture_idx;
+    if (room == nullptr) {
+        LOG_WARNING("Room index %d is invalid", room_num);
+        return nullptr;
     }
 
-    if (face_type == FT_TEXTURED_TRIANGLE
+    if (face_type == FT_TEXTURED_QUAD && face_index >= 0
+        && face_index < room->mesh.face4s.count) {
+        return &room->mesh.face4s.data[face_index];
+    }
+
+    if (face_type == FT_TEXTURED_TRIANGLE && face_index >= 0
         && face_index < room->mesh.face3s.count) {
-        FACE *const face = &room->mesh.face3s.data[face_index];
-        return &face->texture_idx;
+        return &room->mesh.face3s.data[face_index];
     }
 
     LOG_WARNING(
         "Invalid room face lookup: %d, %d, %d", room_num, face_type,
         face_index);
     return nullptr;
+}
+
+static uint16_t *M_GetRoomTexture(
+    const int16_t room_num, const FACE_TYPE face_type, const int16_t face_index)
+{
+    FACE *const face = M_GetFace(room_num, face_type, face_index);
+    return face == nullptr ? nullptr : &face->texture_idx;
 }
 
 static void M_TextureRoomFace(const INJECTION *const injection)
@@ -47,35 +58,8 @@ static void M_TextureRoomFace(const INJECTION *const injection)
 static uint16_t *M_GetRoomFaceVertices(
     const int16_t room_num, const FACE_TYPE face_type, const int16_t face_index)
 {
-    if (room_num < 0 || room_num >= Room_GetCount()) {
-        LOG_WARNING("Room index %d is invalid", room_num);
-        return nullptr;
-    }
-
-    const ROOM *const room = Room_Get(room_num);
-    if (face_type == FT_TEXTURED_QUAD) {
-        if (face_index < 0 || face_index >= room->mesh.face4s.count) {
-            LOG_WARNING(
-                "Face4 index %d, room %d is invalid", face_index, room_num);
-            return nullptr;
-        }
-
-        FACE *const face = &room->mesh.face4s.data[face_index];
-        return (uint16_t *)(void *)&face->vertices;
-    }
-
-    if (face_type == FT_TEXTURED_TRIANGLE) {
-        if (face_index < 0 || face_index >= room->mesh.face3s.count) {
-            LOG_WARNING(
-                "Face3 index %d, room %d is invalid", face_index, room_num);
-            return nullptr;
-        }
-
-        FACE *const face = &room->mesh.face3s.data[face_index];
-        return (uint16_t *)(void *)&face->vertices;
-    }
-
-    return nullptr;
+    const FACE *const face = M_GetFace(room_num, face_type, face_index);
+    return face == nullptr ? nullptr : (uint16_t *)(void *)&face->vertices;
 }
 
 static void M_MoveRoomFace(const INJECTION *const injection)
@@ -345,6 +329,19 @@ static void M_EditRoomStatic3D(const INJECTION *const injection)
     }
 }
 
+static void M_SetFaceDoubleSided(const INJECTION *const injection)
+{
+    const int16_t room_num = File_ReadS16(injection->fp);
+    const FACE_TYPE face_type = File_ReadS32(injection->fp);
+    const int16_t face_index = File_ReadS16(injection->fp);
+    const bool double_sided = File_ReadU8(injection->fp) == 1;
+
+    FACE *const face = M_GetFace(room_num, face_type, face_index);
+    if (face != nullptr) {
+        face->double_sided = double_sided;
+    }
+}
+
 static void M_RoomMeshEdits(
     const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
     const int32_t data_count)
@@ -381,6 +378,9 @@ static void M_RoomMeshEdits(
             break;
         case RMET_EDIT_STATIC_3D:
             M_EditRoomStatic3D(injection);
+            break;
+        case RMET_DOUBLE_SIDED:
+            M_SetFaceDoubleSided(injection);
             break;
         default:
             LOG_WARNING("Unrecognised room mesh edit type: %d", type);
