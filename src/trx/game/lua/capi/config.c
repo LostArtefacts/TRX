@@ -381,24 +381,42 @@ static M_DECLARATION M_ReadDeclaration(lua_State *const L)
     return spec;
 }
 
-// Seeds a declared enum's values. Each label is a game string key derived from
-// the option, so a declared value is translated as every other one is.
+// Registers one value the option takes. Each label is a game string key derived
+// from the option, so a declared value is translated as every other one is.
+static void M_AddValue(
+    const CONFIG_OPTION *const option, const char *const value)
+{
+    char *label = String_Format("settings/%s/values/%s", option->name, value);
+    DynamicEnum_AddValue(Config_Option_GetEnumKey(option), value, label);
+    Memory_FreePointer(&label);
+}
+
+// Seeds a declared enum's values.
 static void M_SeedValues(lua_State *const L, const CONFIG_OPTION *const option)
 {
-    const void *const token = Config_Option_GetEnumKey(option);
-    DynamicEnum_ResetValues(token);
+    DynamicEnum_ResetValues(Config_Option_GetEnumKey(option));
     lua_getfield(L, 1, "values");
     const int32_t count = (int32_t)lua_rawlen(L, -1);
     for (int32_t i = 1; i <= count; i++) {
         lua_rawgeti(L, -1, i);
-        const char *const value = lua_tostring(L, -1);
-        char *label =
-            String_Format("settings/%s/values/%s", option->name, value);
-        DynamicEnum_AddValue(token, value, label);
-        Memory_FreePointer(&label);
+        M_AddValue(option, lua_tostring(L, -1));
         lua_pop(L, 1);
     }
     lua_pop(L, 1);
+}
+
+// A saved value this declaration does not list belongs to another game sharing
+// the settings file. Kept and turned off rather than dropped, so that game gets
+// it back.
+static void M_KeepUnlistedValue(
+    const CONFIG_OPTION *const option, const char *const value)
+{
+    if (value == nullptr
+        || DynamicEnum_IsValidValue(Config_Option_GetEnumKey(option), value)) {
+        return;
+    }
+    M_AddValue(option, value);
+    DynamicEnum_SetValueEnabled(Config_Option_GetEnumKey(option), value, false);
 }
 
 // trxc.config.declare(spec)
@@ -415,6 +433,8 @@ static int M_L_ConfigDeclare(lua_State *const L)
     }
     if (option->value.type == TVT_DYNAMIC_ENUM) {
         M_SeedValues(L, option);
+        M_KeepUnlistedValue(option, option->value.as_str);
+        M_KeepUnlistedValue(option, Config_Option_GetBaseValue(option)->as_str);
     }
     return 0;
 }
