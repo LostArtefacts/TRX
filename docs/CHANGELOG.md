@@ -41,6 +41,7 @@
 
 **TR3**
 - Added crystals to each of the levels in The Lost Artefact, and made the crystal mode option visible (Gameplay → General → Crystal mode)
+- Fixed z-fighting in rooms 21, 67 amd 122 in Jungle, and fixed incorrect lighting in room 87 (OG bugs)
 - Fixed missing alpha blending on the MP5 and M16 gun flare in the gym (regression from 1.7)
 
 **TR4**
