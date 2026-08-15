@@ -24,6 +24,49 @@
 #define M_SHADOW_LINE_POINTS 4
 #define M_SHADOW_GRID_POINTS (M_SHADOW_LINE_POINTS * M_SHADOW_LINE_POINTS)
 
+// Where Lara's shadow falls. Her item stays where it stands while the frame
+// she is drawn in moves her, so the shadow takes that frame's root and the
+// floor under it. Crawling puts the root away from her, and the item answers
+// there instead. False for anything but Lara on her feet.
+static bool M_GetLaraShadowAnchor(
+    const ITEM *const item, XYZ_32 *const anchor_pos, int32_t *const floor)
+{
+    const int16_t anim_state = item->current_anim_state;
+    if (item != Lara_GetItem() || anim_state == LS(LS_CRAWL_IDLE)
+        || anim_state == LS(LS_CRAWL_FORWARD) || anim_state == LS(LS_CRAWL_BACK)
+        || anim_state == LS(LS_CRAWL_TURN_LEFT)
+        || anim_state == LS(LS_CRAWL_TURN_RIGHT)) {
+        return false;
+    }
+
+    ANIM_FRAME *frames[2] = { nullptr, nullptr };
+    int32_t rate = 0;
+    const int32_t frac = Item_GetFrames(item, frames, &rate);
+    if (frames[0] == nullptr) {
+        return false;
+    }
+
+    const XYZ_32 offset_a = XYZ_32_From16(frames[0]->offset);
+    XYZ_32 offset = offset_a;
+    if (frames[1] != nullptr && rate != 0 && frac != 0) {
+        const XYZ_32 offset_b = XYZ_32_From16(frames[1]->offset);
+        offset.x += ((offset_b.x - offset_a.x) * frac) / rate;
+        offset.y += ((offset_b.y - offset_a.y) * frac) / rate;
+        offset.z += ((offset_b.z - offset_a.z) * frac) / rate;
+    }
+
+    *anchor_pos =
+        XYZ_32_OffsetLocalYaw(*anchor_pos, offset, item->interp.result.rot.y);
+
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector = Room_GetSector(*anchor_pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, *anchor_pos);
+    if (height != NO_HEIGHT) {
+        *floor = height;
+    }
+    return true;
+}
+
 static bool M_DrawShadow_Sprite(
     const int32_t size, const BOUNDS_16 *const bounds, const ITEM *const item)
 {
@@ -77,35 +120,7 @@ static bool M_DrawShadow_Sprite(
     // Determine the shadow anchor position.
     XYZ_32 anchor_pos = item->interp.result.pos;
     int32_t anchor_floor = item->interp.result.floor;
-    const int16_t anim_state = item->current_anim_state;
-    if (item == lara_item && anim_state != LS(LS_CRAWL_IDLE)
-        && anim_state != LS(LS_CRAWL_FORWARD) && anim_state != LS(LS_CRAWL_BACK)
-        && anim_state != LS(LS_CRAWL_TURN_LEFT)
-        && anim_state != LS(LS_CRAWL_TURN_RIGHT)) {
-        ANIM_FRAME *frames[2] = { nullptr, nullptr };
-        int32_t rate = 0;
-        const int32_t frac = Item_GetFrames(item, frames, &rate);
-        if (frames[0] != nullptr) {
-            XYZ_32 offset_a = XYZ_32_From16(frames[0]->offset);
-            XYZ_32 offset = offset_a;
-            if (frames[1] != nullptr && rate != 0 && frac != 0) {
-                const XYZ_32 offset_b = XYZ_32_From16(frames[1]->offset);
-                offset.x += ((offset_b.x - offset_a.x) * frac) / rate;
-                offset.y += ((offset_b.y - offset_a.y) * frac) / rate;
-                offset.z += ((offset_b.z - offset_a.z) * frac) / rate;
-            }
-
-            anchor_pos = XYZ_32_OffsetLocalYaw(
-                anchor_pos, offset, item->interp.result.rot.y);
-
-            int16_t room_num = item->room_num;
-            const SECTOR *const sector = Room_GetSector(anchor_pos, &room_num);
-            const int32_t height = Room_GetHeight(sector, anchor_pos);
-            if (height != NO_HEIGHT) {
-                anchor_floor = height;
-            }
-        }
-    } else {
+    if (!M_GetLaraShadowAnchor(item, &anchor_pos, &anchor_floor)) {
         // TR3 cutscene actors are driven by cutscene data, so their item origin
         // can diverge from the visual mesh center.
         const int32_t x_mid = (bounds->min.x + bounds->max.x) / 2;
@@ -312,9 +327,11 @@ void Output_DrawShadow(
     Matrix_Push();
     *g_MatrixPtr = g_ViewMatrix;
     *g_WMatrixPtr = g_IDMatrix;
-    Matrix_TranslateAbs(
-        item->interp.result.pos.x, item->interp.result.floor,
-        item->interp.result.pos.z);
+    XYZ_32 anchor_pos = item->interp.result.pos;
+    int32_t anchor_floor = item->interp.result.floor;
+    M_GetLaraShadowAnchor(item, &anchor_pos, &anchor_floor);
+
+    Matrix_TranslateAbs(anchor_pos.x, anchor_floor, anchor_pos.z);
     Matrix_RotY(item->interp.result.rot.y);
     Matrix_TranslateRel(x_mid, 0, z_mid);
     Matrix_ScaleX((1 << W2V_SHIFT) * x_size / UNIT_SHADOW);
