@@ -7,7 +7,7 @@
 
 #include <stdarg.h>
 
-RESULT Result_Fail(const char *const fmt, ...)
+RESULT Result_Fail(const RESULT_SITE *const site, const char *const fmt, ...)
 {
     va_list va;
     va_start(va, fmt);
@@ -16,7 +16,7 @@ RESULT Result_Fail(const char *const fmt, ...)
     // The message travels with the failure, and the consumer decides whether
     // to log it. A failure the caller only probed for and then absorbed is
     // never logged.
-    return (RESULT) { .ok = false, .msg = message };
+    return (RESULT) { .msg = message, .site = site };
 }
 
 RESULT Result_Prefix(RESULT result, const char *const fmt, ...)
@@ -51,7 +51,7 @@ RESULT Result_Merge(const RESULT a, const RESULT b)
     if (a.msg == nullptr) {
         return b;
     }
-    RESULT joined = { .ok = false };
+    RESULT joined = { .site = a.site };
     joined.msg = String_Format("%s\n%s", a.msg, b.msg);
     IGNORE(a);
     IGNORE(b);
@@ -73,23 +73,29 @@ void Result_ExitOnFail(RESULT result, const char *const fmt, ...)
         Memory_FreePointer(&result.msg);
         message = joined;
     }
-    Shell_ExitSystem(message);
+    char *const logged = String_Format(
+        "%s (at %s:%d:%s)", message, result.site->file, result.site->line,
+        result.site->func);
+    Shell_ExitSystemEx(logged, message);
 }
 
-bool Result_Should(
-    RESULT result, const char *const err, const char *const file,
-    const int line, const char *const func)
+bool Result_Should(RESULT result, const char *const err)
 {
     if (IS_OK(result)) {
         return true;
     }
+    const char *const src_file = result.site->file;
+    const int src_line = result.site->line;
+    const char *const src_func = result.site->func;
     if (result.msg != nullptr && err != nullptr) {
         Log_Message(
-            LOG_LEVEL_WARNING, file, line, func, "%s: %s", err, result.msg);
+            LOG_LEVEL_WARNING, src_file, src_line, src_func, "%s: %s", err,
+            result.msg);
     } else if (result.msg != nullptr) {
-        Log_Message(LOG_LEVEL_WARNING, file, line, func, "%s", result.msg);
+        Log_Message(
+            LOG_LEVEL_WARNING, src_file, src_line, src_func, "%s", result.msg);
     } else if (err != nullptr) {
-        Log_Message(LOG_LEVEL_WARNING, file, line, func, "%s", err);
+        Log_Message(LOG_LEVEL_WARNING, src_file, src_line, src_func, "%s", err);
     }
     Memory_FreePointer(&result.msg);
     return false;
