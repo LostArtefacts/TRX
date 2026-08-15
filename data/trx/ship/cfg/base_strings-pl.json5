@@ -1922,6 +1922,10 @@
                 "ps1": "\\{review}PS1",
                 "tombati": "\\{review}TombATI",
             }
+        },
+        "window.is_fullscreen": {
+            "title": "\\{review}Pełny ekran",
+            "description": "\\{review}Wypełnia ekran lub działa w oknie.",
         }
     },
     "objects": {
