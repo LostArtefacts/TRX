@@ -378,10 +378,15 @@ TARGET_TYPE Box_CalculateTarget(
         return TARGET_NONE;
     }
 
-    int32_t bottom = 0;
-    int32_t top = 0;
-    int32_t right = 0;
-    int32_t left = 0;
+    // TR1 leaves the running clip at zero and takes it that the first box of
+    // the walk sets it, which fails for an item standing outside its own box.
+    // TR3 onwards start it at that box instead.
+    const BOX_INFO *const own_box = Box_GetBox(box_num);
+    const bool seed_clip = g_TRVersion >= 3 && own_box != nullptr;
+    int32_t bottom = seed_clip ? own_box->bottom : 0;
+    int32_t top = seed_clip ? own_box->top : 0;
+    int32_t right = seed_clip ? own_box->right : 0;
+    int32_t left = seed_clip ? own_box->left : 0;
 
     const BOX_INFO *box = nullptr;
     int32_t prime_free = BOX_CLIP_ALL;
