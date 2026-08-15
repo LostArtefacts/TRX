@@ -77,10 +77,10 @@ static void M_Initialise(const int16_t item_num)
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ(io, "scared_timer", &p->scared_timer));
-    JSON_SHOULD(JSON_READ(io, "attack_lara", &p->attack_lara));
-    JSON_SHOULD(JSON_READ(io, "shared_scared_timer", &p->shared->scared_timer));
-    JSON_SHOULD(JSON_READ(io, "shared_attack_lara", &p->shared->attack_lara));
+    SHOULD(JSON_READ_OPT(io, "scared_timer", &p->scared_timer));
+    SHOULD(JSON_READ_OPT(io, "attack_lara", &p->attack_lara));
+    SHOULD(JSON_READ_OPT(io, "shared_scared_timer", &p->shared->scared_timer));
+    SHOULD(JSON_READ_OPT(io, "shared_attack_lara", &p->shared->attack_lara));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

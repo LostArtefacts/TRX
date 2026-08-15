@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/result.h>
 #include <trx/core/utils.h>
 #include <trx/core/value.h>
 
@@ -166,4 +167,4 @@ const char *ObjectProperty_GetItemName(const ITEM *item, int32_t index);
 
 void ObjectProperty_WriteItemOverrides(
     JSON_WRITE_IO *io, const ITEM *item, const char *key);
-bool ObjectProperty_ReadItemOverrides(JSON_READ_IO *io, ITEM *item);
+RESULT ObjectProperty_ReadItemOverrides(JSON_READ_IO *io, ITEM *item);

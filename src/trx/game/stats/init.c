@@ -208,8 +208,10 @@ static bool M_DeserializeLevelMaxStats(
 static bool M_TryLoadCache(
     const uint64_t expected_checksum, const GF_LEVEL_TABLE *const level_table)
 {
-    JSON_VALUE *const root_value =
-        LevelCache_ReadJSON(M_CACHE_FILENAME, expected_checksum);
+    JSON_VALUE *root_value = nullptr;
+    SHOULD(
+        LevelCache_ReadJSON(M_CACHE_FILENAME, expected_checksum, &root_value),
+        "The level statistics are worked out afresh");
     if (root_value == nullptr) {
         return false;
     }
@@ -281,7 +283,9 @@ static void M_WriteCache(
     JSON_ObjectAppendArray(root, "levels", levels);
 
     JSON_VALUE *const root_value = JSON_ValueFromObject(root);
-    LevelCache_WriteJSON(M_CACHE_FILENAME, checksum, root_value);
+    SHOULD(
+        LevelCache_WriteJSON(M_CACHE_FILENAME, checksum, root_value),
+        "The level statistics are not kept for next time");
     JSON_ValueFree(root_value);
 }
 

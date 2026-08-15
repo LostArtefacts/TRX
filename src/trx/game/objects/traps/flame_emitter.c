@@ -30,7 +30,7 @@ static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
         return;
     }
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ(io, "fx_num", &p->effect_num));
+    SHOULD(JSON_READ_OPT(io, "fx_num", &p->effect_num));
 }
 
 static void M_KillIfAlive(const ITEM *const item)

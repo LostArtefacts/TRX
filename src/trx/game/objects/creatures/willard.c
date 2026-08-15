@@ -126,9 +126,9 @@ static void M_ResetPriv(M_PRIV *const p)
 static void M_LoadShieldPoint(
     JSON_READ_IO *const io, M_SHIELD_POINT *const point)
 {
-    JSON_SHOULD(JSON_READ(io, "pos", &point->pos));
-    JSON_SHOULD(JSON_READ(io, "sub", &point->sub));
-    JSON_SHOULD(JSON_READ(io, "color", &point->color));
+    SHOULD(JSON_READ_OPT(io, "pos", &point->pos));
+    SHOULD(JSON_READ_OPT(io, "sub", &point->sub));
+    SHOULD(JSON_READ_OPT(io, "color", &point->color));
 }
 
 static void M_SaveShieldPoint(
@@ -143,8 +143,8 @@ static void M_SaveShieldPoint(
 
 static void M_LoadAIPoint(JSON_READ_IO *const io, M_AI_POINT *const point)
 {
-    JSON_SHOULD(JSON_READ(io, "pos", &point->pos));
-    JSON_SHOULD(JSON_READ(io, "rot", &point->rot));
+    SHOULD(JSON_READ_OPT(io, "pos", &point->pos));
+    SHOULD(JSON_READ_OPT(io, "rot", &point->rot));
 }
 
 static void M_SaveAIPoint(
@@ -160,61 +160,61 @@ static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
     M_ResetPriv(p);
-    JSON_SHOULD(JSON_READ(io, "puzzle_ready", &p->puzzle_ready));
-    JSON_SHOULD(JSON_READ(io, "ring_count", &p->ring_count));
-    JSON_SHOULD(JSON_READ(io, "explode_count", &p->explode_count));
-    JSON_SHOULD(JSON_READ(io, "dead", &p->dead));
-    JSON_SHOULD(JSON_READ(io, "death_count", &p->death_count));
-    JSON_SHOULD(JSON_READ(io, "direction", &p->direction));
-    JSON_SHOULD(JSON_READ(io, "desired_direction", &p->desired_direction));
-    JSON_SHOULD(JSON_READ(io, "closest_ai_path", &p->closest_ai_path));
-    JSON_SHOULD(JSON_READ(io, "lara_ai_path", &p->lara_ai_path));
-    JSON_SHOULD(JSON_READ(io, "lara_junction", &p->lara_junction));
+    SHOULD(JSON_READ_OPT(io, "puzzle_ready", &p->puzzle_ready));
+    SHOULD(JSON_READ_OPT(io, "ring_count", &p->ring_count));
+    SHOULD(JSON_READ_OPT(io, "explode_count", &p->explode_count));
+    SHOULD(JSON_READ_OPT(io, "dead", &p->dead));
+    SHOULD(JSON_READ_OPT(io, "death_count", &p->death_count));
+    SHOULD(JSON_READ_OPT(io, "direction", &p->direction));
+    SHOULD(JSON_READ_OPT(io, "desired_direction", &p->desired_direction));
+    SHOULD(JSON_READ_OPT(io, "closest_ai_path", &p->closest_ai_path));
+    SHOULD(JSON_READ_OPT(io, "lara_ai_path", &p->lara_ai_path));
+    SHOULD(JSON_READ_OPT(io, "lara_junction", &p->lara_junction));
 
-    if (JSON_SHOULD(JSON_PUSH(io, "shield"))) {
+    if (SHOULD(JSON_PUSH(io, "shield"))) {
         for (int32_t i = 0; i < 5; i++) {
-            if (!JSON_SHOULD(JSON_PUSH_INDEX(io, i))) {
+            if (!SHOULD(JSON_PUSH_INDEX(io, i))) {
                 continue;
             }
             for (int32_t j = 0; j < 8; j++) {
-                if (!JSON_SHOULD(JSON_PUSH_INDEX(io, j))) {
+                if (!SHOULD(JSON_PUSH_INDEX(io, j))) {
                     continue;
                 }
                 M_LoadShieldPoint(io, &p->shield[i][j]);
-                JSON_POP(io);
+                SHOULD(JSON_POP(io));
             }
-            JSON_POP(io);
+            SHOULD(JSON_POP(io));
         }
-        JSON_POP(io);
+        SHOULD(JSON_POP(io));
     }
 
-    if (JSON_SHOULD(JSON_PUSH(io, "junction_index"))) {
+    if (SHOULD(JSON_PUSH(io, "junction_index"))) {
         for (int32_t i = 0; i < 4; i++) {
-            JSON_SHOULD(JSON_READ_A(io, i, &p->junction_index[i]));
+            SHOULD(JSON_READ_A(io, i, &p->junction_index[i]));
         }
-        JSON_POP(io);
+        SHOULD(JSON_POP(io));
     }
 
-    if (JSON_SHOULD(JSON_PUSH(io, "ai_path"))) {
+    if (SHOULD(JSON_PUSH(io, "ai_path"))) {
         for (int32_t i = 0; i < 16; i++) {
-            if (!JSON_SHOULD(JSON_PUSH_INDEX(io, i))) {
+            if (!SHOULD(JSON_PUSH_INDEX(io, i))) {
                 continue;
             }
             M_LoadAIPoint(io, &p->ai_path[i]);
-            JSON_POP(io);
+            SHOULD(JSON_POP(io));
         }
-        JSON_POP(io);
+        SHOULD(JSON_POP(io));
     }
 
-    if (JSON_SHOULD(JSON_PUSH(io, "ai_junction"))) {
+    if (SHOULD(JSON_PUSH(io, "ai_junction"))) {
         for (int32_t i = 0; i < 4; i++) {
-            if (!JSON_SHOULD(JSON_PUSH_INDEX(io, i))) {
+            if (!SHOULD(JSON_PUSH_INDEX(io, i))) {
                 continue;
             }
             M_LoadAIPoint(io, &p->ai_junction[i]);
-            JSON_POP(io);
+            SHOULD(JSON_POP(io));
         }
-        JSON_POP(io);
+        SHOULD(JSON_POP(io));
     }
 }
 

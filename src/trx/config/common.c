@@ -185,7 +185,7 @@ bool Config_IsFirstRun(void)
     return m_Loaded && !m_FileFound;
 }
 
-bool Config_Write(void)
+RESULT Config_Write(void)
 {
     ASSERT(m_DefaultPath != nullptr);
     return ConfigFile_Write(m_DefaultPath, &Config_DumpToJSON);

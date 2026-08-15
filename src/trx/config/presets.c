@@ -64,9 +64,8 @@ static char *M_SerializeJSONValue(const JSON_VALUE *const val)
 
 static bool M_LoadPreset(const char *const path)
 {
-    JSON_VALUE *const root = JSONFile_ReadEx(path, false);
-    if (root == nullptr) {
-        LOG_WARNING("Failed to parse preset: %s", path);
+    JSON_VALUE *root = nullptr;
+    if (!Result_Absorb(JSONFile_ReadRequired(path, &root))) {
         return false;
     }
 

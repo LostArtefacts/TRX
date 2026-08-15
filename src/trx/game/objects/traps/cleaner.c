@@ -38,9 +38,9 @@ static const M_SPARK_NODE m_Nodes[M_NODE_COUNT] = {
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ(io, "resume", &p->resume));
-    JSON_SHOULD(JSON_READ(io, "turn", &p->turn));
-    JSON_SHOULD(JSON_READ(io, "velocity", &p->velocity));
+    SHOULD(JSON_READ_OPT(io, "resume", &p->resume));
+    SHOULD(JSON_READ_OPT(io, "turn", &p->turn));
+    SHOULD(JSON_READ_OPT(io, "velocity", &p->velocity));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

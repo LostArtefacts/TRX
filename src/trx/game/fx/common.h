@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trx/core/result.h>
+
 typedef struct JSON_READ_IO JSON_READ_IO;
 typedef struct JSON_WRITE_IO JSON_WRITE_IO;
 
@@ -13,7 +15,7 @@ typedef struct {
     void (*reset_func)(void);
     const char *save_key;
     void (*save_func)(JSON_WRITE_IO *io);
-    bool (*load_func)(JSON_READ_IO *io);
+    RESULT (*load_func)(JSON_READ_IO *io);
 } FX_MODULE;
 
 void FX_RegisterModule(const FX_MODULE *module);
@@ -32,4 +34,4 @@ void FX_Draw(void);
 
 void FX_Save(JSON_WRITE_IO *io);
 // Resets every persisting module before applying what the save holds.
-bool FX_Load(JSON_READ_IO *io);
+RESULT FX_Load(JSON_READ_IO *io);

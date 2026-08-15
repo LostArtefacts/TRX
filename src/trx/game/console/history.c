@@ -56,7 +56,10 @@ static JSON_VALUE *M_DumpToJSON(void)
 void Console_History_Init(void)
 {
     m_History = Vector_Create(sizeof(char *));
-    JSON_VALUE *const doc = JSONFile_Read(M_GetPath());
+    JSON_VALUE *doc = nullptr;
+    SHOULD(
+        JSONFile_Read(M_GetPath(), &doc),
+        "The console starts with an empty history");
     if (doc != nullptr) {
         M_LoadFromJSON(doc);
         JSON_ValueFree(doc);

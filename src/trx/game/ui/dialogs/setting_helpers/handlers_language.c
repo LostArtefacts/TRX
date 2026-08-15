@@ -1,6 +1,8 @@
 #include <trx/config.h>
 #include <trx/config/registry.h>
+#include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/result.h>
 #include <trx/core/strings.h>
 #include <trx/game/game_strings/manager.h>
 #include <trx/game/ui/dialogs/settings_handlers.h>
@@ -85,8 +87,10 @@ static bool M_Language_RequestChangeValue(
         // file was deleted), default to the first entry, which is English
         new_lang = *(char **)Vector_Get(langs, 0);
     }
-    Config_Option_SetFromString(option, new_lang, false);
-    GameStringManager_ReloadLanguage(new_lang);
+    if (!Config_Option_SetFromString(option, new_lang, false)) {
+        LOG_WARNING("Failed to set the language");
+    }
+    Result_Absorb(GameStringManager_ReloadLanguage(new_lang));
     return true;
 }
 

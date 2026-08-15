@@ -114,11 +114,12 @@ static void M_Save(JSON_WRITE_IO *const io)
     JSONW_POP_AND_SET(io, "prints");
 }
 
-static bool M_Load(JSON_READ_IO *const io)
+static RESULT M_Load(JSON_READ_IO *const io)
 {
-    if (!JSON_OPTIONAL(JSON_PUSH(io, "prints"))) {
-        return true;
+    if (!JSON_ReadIO_HasKey(io, "prints")) {
+        return OK;
     }
+    MUST(JSON_PUSH(io, "prints"));
 
     const int32_t count = JSON_ARRAY_LEN(io);
     for (int32_t i = 0; i < count; i++) {
@@ -130,16 +131,16 @@ static bool M_Load(JSON_READ_IO *const io)
         }
 
         M_FOOTPRINT *const print = &m_Priv.prints[i];
-        JSON_MUST(JSON_PUSH_INDEX(io, i));
-        JSON_MUST(JSON_READ(io, "pos", &print->pos));
-        JSON_MUST(JSON_READ(io, "room_num", &print->room_num));
-        JSON_MUST(JSON_READ(io, "y_rot", &print->y_rot));
-        JSON_MUST(JSON_READ(io, "life", &print->life));
-        JSON_MUST(JSON_POP(io));
+        MUST(JSON_PUSH_INDEX(io, i));
+        MUST(JSON_READ(io, "pos", &print->pos));
+        MUST(JSON_READ(io, "room_num", &print->room_num));
+        MUST(JSON_READ(io, "y_rot", &print->y_rot));
+        MUST(JSON_READ(io, "life", &print->life));
+        MUST(JSON_POP(io));
     }
 
-    JSON_MUST(JSON_POP(io));
-    JSON_FINISH();
+    MUST(JSON_POP(io));
+    return OK;
 }
 
 static void M_Control(void)

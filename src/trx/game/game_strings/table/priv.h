@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/result.h>
 #include <trx/core/vector.h>
 #include <trx/game/game_flow/enum.h>
 
@@ -39,5 +40,6 @@ typedef struct {
 
 void GS_Table_Free(GS_TABLE *gs_table);
 
-GS_FILE *GS_File_CreateFromPath(const char *path, bool load_levels);
+RESULT GS_File_CreateFromPath(
+    const char *path, bool load_levels, GS_FILE **out_gs_file);
 void GS_File_Free(GS_FILE *gs_file);

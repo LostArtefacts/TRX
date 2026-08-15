@@ -161,27 +161,27 @@ static void M_UpdateStoppers(const ITEM *const item, const bool enabled)
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ(io, "gravity_frames", &p->gravity_frames));
-    JSON_SHOULD(JSON_READ(io, "is_push_pull", &p->is_push_pull));
-    JSON_SHOULD(JSON_READ(io, "is_forced_moving", &p->is_forced_moving));
+    SHOULD(JSON_READ_OPT(io, "gravity_frames", &p->gravity_frames));
+    SHOULD(JSON_READ_OPT(io, "is_push_pull", &p->is_push_pull));
+    SHOULD(JSON_READ_OPT(io, "is_forced_moving", &p->is_forced_moving));
 
-    if (JSON_SHOULD(JSON_PUSH(io, "linked"))) {
-        JSON_SHOULD(JSON_READ(io, "x", &p->linked.pos.x));
-        JSON_SHOULD(JSON_READ(io, "y", &p->linked.pos.y));
-        JSON_SHOULD(JSON_READ(io, "z", &p->linked.pos.z));
-        JSON_SHOULD(JSON_POP(io));
+    if (SHOULD(JSON_PUSH(io, "linked"))) {
+        SHOULD(JSON_READ_OPT(io, "x", &p->linked.pos.x));
+        SHOULD(JSON_READ_OPT(io, "y", &p->linked.pos.y));
+        SHOULD(JSON_READ_OPT(io, "z", &p->linked.pos.z));
+        SHOULD(JSON_POP(io));
     }
 
-    JSON_SHOULD(JSON_READ(io, "counter_rot_0", &p->extra_rotations[0]));
-    JSON_SHOULD(JSON_READ(io, "counter_rot_1", &p->extra_rotations[1]));
-    JSON_SHOULD(JSON_READ(io, "counter_rot_2", &p->extra_rotations[2]));
-    JSON_SHOULD(JSON_READ(io, "original_rot", &p->original_rot));
-    JSON_SHOULD(JSON_READ(io, "interaction_rot", &p->interaction_rot));
+    SHOULD(JSON_READ_OPT(io, "counter_rot_0", &p->extra_rotations[0]));
+    SHOULD(JSON_READ_OPT(io, "counter_rot_1", &p->extra_rotations[1]));
+    SHOULD(JSON_READ_OPT(io, "counter_rot_2", &p->extra_rotations[2]));
+    SHOULD(JSON_READ_OPT(io, "original_rot", &p->original_rot));
+    SHOULD(JSON_READ_OPT(io, "interaction_rot", &p->interaction_rot));
 
-    if (JSON_SHOULD(JSON_PUSH(io, "move_origin"))) {
-        JSON_SHOULD(JSON_READ(io, "x", &p->move_origin.x));
-        JSON_SHOULD(JSON_READ(io, "z", &p->move_origin.z));
-        JSON_SHOULD(JSON_POP(io));
+    if (SHOULD(JSON_PUSH(io, "move_origin"))) {
+        SHOULD(JSON_READ_OPT(io, "x", &p->move_origin.x));
+        SHOULD(JSON_READ_OPT(io, "z", &p->move_origin.z));
+        SHOULD(JSON_POP(io));
     }
 }
 

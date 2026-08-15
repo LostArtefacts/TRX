@@ -20,11 +20,6 @@
 #define M_MAGIC_TR2X MKTAG('T', '2', 'X', 'B') // TOOD: remove me after TRX 1.5
 #define M_MAGIC_TRX MKTAG('T', 'R', 'X', 'S')
 
-#define M_MUST(x)                                                              \
-    if (!(x)) {                                                                \
-        goto fail;                                                             \
-    }
-
 static JSON_VALUE *M_ReadRaw(TRX_FILE *fp, int32_t *version_out);
 
 static JSON_VALUE *M_ParseFromBuffer(
@@ -114,6 +109,23 @@ static void M_SaveRaw(
     Memory_FreePointer(&compressed);
 }
 
+static RESULT M_Load(JSON_READ_IO *const io)
+{
+    MUST(SG_File_LoadResumeInfoList(io));
+    MUST(SG_File_LoadMisc(io));
+    MUST(SG_File_LoadInventory(io));
+    MUST(SG_File_LoadFlipmaps(io));
+    MUST(SG_File_LoadCameras(io));
+    MUST(SG_File_LoadItems(io));
+    MUST(SG_File_LoadEffects(io));
+    MUST(SG_File_LoadFX(io));
+    MUST(SG_File_LoadFlares(io));
+    MUST(SG_File_LoadMusic(io));
+    MUST(SG_File_LoadLara(io));
+    MUST(SG_File_LoadRules(io));
+    return OK;
+}
+
 const char *SG_File_GetSaveFilePattern(void)
 {
     return g_GameFlow.savegame_file_fmt;
@@ -132,28 +144,10 @@ const char *SG_File_GetQuickSaveFilePattern(void)
 
 bool SG_File_LoadFromFile(TRX_FILE *const fp)
 {
-    bool result = false;
-
     int32_t sg_version = -1;
     JSON_VALUE *const root = M_ReadRaw(fp, &sg_version);
     JSON_READ_IO *const io = JSON_ReadIO_Create(root, sg_version, nullptr);
-
-    M_MUST(SG_File_LoadResumeInfoList(io));
-    M_MUST(SG_File_LoadMisc(io));
-    M_MUST(SG_File_LoadInventory(io));
-    M_MUST(SG_File_LoadFlipmaps(io));
-    M_MUST(SG_File_LoadCameras(io));
-    M_MUST(SG_File_LoadItems(io));
-    M_MUST(SG_File_LoadEffects(io));
-    M_MUST(SG_File_LoadFX(io));
-    M_MUST(SG_File_LoadFlares(io));
-    M_MUST(SG_File_LoadMusic(io));
-    M_MUST(SG_File_LoadLara(io));
-    M_MUST(SG_File_LoadRules(io));
-
-    result = true;
-
-fail:
+    const bool result = SHOULD(M_Load(io));
     JSON_ReadIO_Destroy(io);
     JSON_ValueFree(root);
     return result;
@@ -244,7 +238,7 @@ bool SG_File_LoadOnlyResumeInfo(TRX_FILE *const fp)
     int32_t sg_version = -1;
     JSON_VALUE *const root = M_ReadRaw(fp, &sg_version);
     JSON_READ_IO *const io = JSON_ReadIO_Create(root, sg_version, nullptr);
-    const bool result = SG_File_LoadResumeInfoList(io);
+    const bool result = SHOULD(SG_File_LoadResumeInfoList(io));
     JSON_ReadIO_Destroy(io);
     JSON_ValueFree(root);
     return result;

@@ -4,6 +4,7 @@
 #include <trx/core/json.h>
 #include <trx/core/log.h>
 #include <trx/core/math/types.h>
+#include <trx/core/result.h>
 
 #include <stddef.h>
 #include <stdint.h>
@@ -56,16 +57,16 @@ void JSON_ReadIO_FormatError(
 void JSON_ReadIO_SetError(JSON_READ_IO *io, const char *fmt, ...);
 void JSON_ReadIO_SetErrorAt(
     JSON_READ_IO *io, int32_t line, int32_t col, const char *fmt, ...);
-bool JSON_ReadIO_PushObject(JSON_READ_IO *io, const char *key);
-bool JSON_ReadIO_PushArrayElem(JSON_READ_IO *io, size_t index);
-bool JSON_ReadIO_Pop(JSON_READ_IO *io);
+RESULT JSON_ReadIO_PushObject(JSON_READ_IO *io, const char *key);
+RESULT JSON_ReadIO_PushArrayElem(JSON_READ_IO *io, size_t index);
+RESULT JSON_ReadIO_Pop(JSON_READ_IO *io);
 int32_t JSON_ReadIO_GetArrayLength(JSON_READ_IO *io);
 bool JSON_ReadIO_HasKey(JSON_READ_IO *io, const char *key);
 JSON_OBJECT *JSON_ReadIO_GetCurrentObject(JSON_READ_IO *io);
 JSON_VALUE *JSON_ReadIO_GetCurrentValue(JSON_READ_IO *io);
 
 #define L_DECLARE_JSON_READ_IO_TYPE(name, ctype)                               \
-    bool JSON_ReadIO_Read##name##Current(JSON_READ_IO *io, void *target);
+    RESULT JSON_ReadIO_Read##name##Current(JSON_READ_IO *io, void *target);
 JSON_READ_IO_TYPE_LIST(L_DECLARE_JSON_READ_IO_TYPE)
 #undef L_DECLARE_JSON_READ_IO_TYPE
 
@@ -74,7 +75,7 @@ JSON_READ_IO_TYPE_LIST(L_DECLARE_JSON_READ_IO_TYPE)
 #define JSON_POP(io) JSON_ReadIO_Pop((io))
 #define JSON_ARRAY_LEN(io) JSON_ReadIO_GetArrayLength((io))
 
-// Read the value into target_ptr from the current stack value.
+// Reads the value into target_ptr from the value the stack is on.
 #define JSON_READ_CURRENT(io, target_ptr)                                      \
     _Generic(                                                                  \
         *(target_ptr),                                                         \
@@ -82,67 +83,51 @@ JSON_READ_IO_TYPE_LIST(L_DECLARE_JSON_READ_IO_TYPE)
             JSON_READ_IO_DUMMY: JSON_ReadIO_ReadS32Current)(                   \
         (io), (target_ptr))
 
-// Push a key onto stack, read the value into target_ptr, and pop the value.
-// Fails if the key is missing, or reading failed.
+typedef RESULT (*JSON_READ_IO_READ_FUNC)(JSON_READ_IO *io, void *target);
+
+// Reads the value at the given key, or at the given index. Reports a key that
+// is not there as well as one holding something other than what was asked
+// for. The optional read reports only the latter, leaving target_ptr alone
+// where the key is absent.
+RESULT JSON_ReadIO_ReadKey(
+    JSON_READ_IO *io, const char *key, void *target,
+    JSON_READ_IO_READ_FUNC read_func);
+RESULT JSON_ReadIO_ReadKeyOptional(
+    JSON_READ_IO *io, const char *key, void *target,
+    JSON_READ_IO_READ_FUNC read_func);
+RESULT JSON_ReadIO_ReadIndex(
+    JSON_READ_IO *io, size_t index, void *target,
+    JSON_READ_IO_READ_FUNC read_func);
+
+#define JSON_READ_IO_READ_FN_FOR(target_ptr)                                   \
+    _Generic(                                                                  \
+        *(target_ptr),                                                         \
+        JSON_READ_IO_TYPE_LIST(JSON_READ_IO_TYPE_TO_CURRENT_FN)                \
+            JSON_READ_IO_DUMMY: JSON_ReadIO_ReadS32Current)
+
+// The key has to be there and hold what was asked for.
 #define JSON_READ(io, key, target_ptr)                                         \
-    (JSON_PUSH((io), (key))                                                    \
-         ? (JSON_READ_CURRENT((io), (target_ptr)) ? JSON_POP((io))             \
-                                                  : (JSON_POP((io)), false))   \
-         : false)
+    JSON_ReadIO_ReadKey(                                                       \
+        (io), (key), (target_ptr), JSON_READ_IO_READ_FN_FOR(target_ptr))
 
-// Like JSON_READ(), except also supports default value to fall back to.
+// The key may be absent, in which case the default stands. A key that is
+// there still has to hold what was asked for.
 #define JSON_READ_D(io, key, target_ptr, default_value)                        \
-    ((*(target_ptr) = (default_value)), JSON_READ((io), (key), (target_ptr)))
+    (*(target_ptr) = (default_value),                                          \
+     JSON_ReadIO_ReadKeyOptional(                                              \
+         (io), (key), (target_ptr), JSON_READ_IO_READ_FN_FOR(target_ptr)))
 
-// Like JSON_READ(), except push an array index instead of an object key.
+// The key may be absent, in which case target_ptr is left alone. A key that
+// is there still has to hold what was asked for.
+#define JSON_READ_OPT(io, key, target_ptr)                                     \
+    JSON_ReadIO_ReadKeyOptional(                                               \
+        (io), (key), (target_ptr), JSON_READ_IO_READ_FN_FOR(target_ptr))
+
+// Like JSON_READ(), except an array index instead of an object key.
 #define JSON_READ_A(io, idx, target_ptr)                                       \
-    (JSON_PUSH_INDEX((io), (idx))                                              \
-         ? (JSON_READ_CURRENT((io), (target_ptr)) ? JSON_POP((io))             \
-                                                  : (JSON_POP((io)), false))   \
-         : false)
+    JSON_ReadIO_ReadIndex(                                                     \
+        (io), (idx), (target_ptr), JSON_READ_IO_READ_FN_FOR(target_ptr))
 
-// ============================================================================
-// Control flow macros.
-
-// Users of this API are expected to consume JSON_ReadIO_GetError() in the
-// outermost scope. Example usage:
-//
-// static bool M_CustomSectionReader(JSON_READ_IO *io)
-// {
-//     int32_t foo_value;
-//     JSON_MUST(JSON_READ(io, "foo", &foo_value);
-//     JSON_FINISH();
-// }
-//
-// static void M_OuterReader(void)
-// {
-//     JSON_READ_IO *io = JSON_ReadIO_Create(…);
-//     bool success = M_CustomSectionReader(io);
-//     JSON_ReadIO_Destroy(io);
-// }
-
-// If the expr fails, log an error, and carry on.
-#define JSON_SHOULD(expr)                                                      \
-    ((expr) ? 1 : (LOG_WARNING("%s", JSON_ReadIO_GetError(io)), 0))
-
-// Do nothing.
-#define JSON_OPTIONAL(expr) (expr)
-
-// If the expr fails, immediately go to the failure route.
-#define JSON_MUST(expr)                                                        \
-    if (!(expr)) {                                                             \
-        goto fail;                                                             \
-    }
-
-// Immediately go to the failure route (with `goto fail`).
-#define JSON_FAIL() goto fail;
-
-// Declare the failure route: by default, it just does return a bool.
-// To be used at the end of the function.
-#define JSON_FINISH()                                                          \
-    do {                                                                       \
-    success:                                                                   \
-        return true;                                                           \
-    fail:                                                                      \
-        return false;                                                          \
-    } while (0);
+// Records the trouble and hands it back as a failure, naming the file and the
+// place in it that the read had reached.
+RESULT JSON_ReadIO_Fail(JSON_READ_IO *io, const char *fmt, ...);

@@ -21,14 +21,14 @@ typedef struct {
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_OPTIONAL(JSON_READ(io, "cooldown", &p->cooldown));
-    JSON_OPTIONAL(JSON_READ(io, "spawn_count", &p->spawn_count));
-    JSON_OPTIONAL(JSON_READ(io, "spawn_total", &p->spawn_total));
-    if (JSON_SHOULD(JSON_PUSH(io, "slots"))) {
+    SHOULD(JSON_READ_OPT(io, "cooldown", &p->cooldown));
+    SHOULD(JSON_READ_OPT(io, "spawn_count", &p->spawn_count));
+    SHOULD(JSON_READ_OPT(io, "spawn_total", &p->spawn_total));
+    if (SHOULD(JSON_PUSH(io, "slots"))) {
         for (int32_t i = 0; i < M_MAX_SLOTS; i++) {
-            JSON_SHOULD(JSON_READ_A(io, i, &p->slots[i]));
+            SHOULD(JSON_READ_A(io, i, &p->slots[i]));
         }
-        JSON_POP(io);
+        SHOULD(JSON_POP(io));
     }
 }
 

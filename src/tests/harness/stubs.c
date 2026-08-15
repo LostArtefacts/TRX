@@ -4,6 +4,7 @@
 // gives the config a single definition across the whole test tree.
 
 #include <trx/config/types.h>
+#include <trx/core/result.h>
 #include <trx/core/log.h>
 
 #include <stdarg.h>
@@ -11,6 +12,17 @@
 #include <stdio.h>
 
 CONFIG g_ConfigStorage = {};
+
+// Walking the stack needs the platform log backend, which the tests leave
+// out.
+void Log_StackTrace(void)
+{
+}
+
+LOG_LEVEL Log_GetMinLevel(void)
+{
+    return LOG_LEVEL_WARNING;
+}
 
 void Log_Message(
     const LOG_LEVEL level, const char *const file, const int32_t line,

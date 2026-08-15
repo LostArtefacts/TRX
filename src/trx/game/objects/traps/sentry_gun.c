@@ -62,10 +62,10 @@ static const CREATURE_GUN m_FireRight = {
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_OPTIONAL(JSON_READ(io, "active_muzzle", &p->active_muzzle));
-    JSON_OPTIONAL(JSON_READ(io, "muzzle_flash_timer", &p->muzzle_flash_timer));
-    JSON_OPTIONAL(JSON_READ(io, "is_alerted", &p->is_alerted));
-    JSON_OPTIONAL(JSON_READ(io, "has_fired", &p->has_fired));
+    SHOULD(JSON_READ_OPT(io, "active_muzzle", &p->active_muzzle));
+    SHOULD(JSON_READ_OPT(io, "muzzle_flash_timer", &p->muzzle_flash_timer));
+    SHOULD(JSON_READ_OPT(io, "is_alerted", &p->is_alerted));
+    SHOULD(JSON_READ_OPT(io, "has_fired", &p->has_fired));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

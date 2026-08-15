@@ -34,7 +34,10 @@ static void M_LoadState(void)
         return;
     }
 
-    JSON_VALUE *const root = JSONFile_Read(M_GetStatePath());
+    JSON_VALUE *root = nullptr;
+    SHOULD(
+        JSONFile_Read(M_GetStatePath(), &root),
+        "TRX starts as though it had not run before");
     if (root == nullptr) {
         return;
     }

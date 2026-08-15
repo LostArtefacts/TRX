@@ -4,6 +4,7 @@
 #include <trx/core/filesystem.h>
 #include <trx/core/json.h>
 #include <trx/core/memory.h>
+#include <trx/core/result.h>
 #include <trx/core/strings.h>
 #include <trx/core/subsystem.h>
 #include <trx/core/utils.h>
@@ -182,32 +183,26 @@ static void M_ReorderLanguages(void)
 
 // Recursive load of language chain (handles 'extends' fallback between
 // dialects)
-static bool M_ReloadLangRec(const char *const lang, VECTOR *const visited)
+static RESULT M_ReloadLangRec(const char *const lang, VECTOR *const visited)
 {
     for (int32_t i = 0; i < visited->count; i++) {
         const char *const prev = *(char **)Vector_Get(visited, i);
-        if (String_Equivalent(prev, lang)) {
-            LOG_WARNING("cyclic language extends detected: %s", lang);
-            return false;
-        }
+        FAIL_IF(
+            String_Equivalent(prev, lang),
+            "cyclic language extends detected: %s", lang);
     }
     Vector_Add(visited, &lang);
     M_LANG_ENTRY *const entry = M_FindLangEntry(lang);
-    if (entry == nullptr) {
-        return false;
-    }
+    FAIL_IF(entry == nullptr, "unknown language: %s", lang);
     if (entry->extends) {
-        if (!M_ReloadLangRec(entry->extends, visited)) {
-            return false;
-        }
+        MUST(
+            M_ReloadLangRec(entry->extends, visited), "extended by '%s'", lang);
     }
     for (int32_t i = 0; i < entry->files->count; i++) {
         const M_FILE_ENTRY *const fe = Vector_Get(entry->files, i);
-        if (!GameStringTable_Load(fe->path, fe->load_levels)) {
-            return false;
-        }
+        MUST(GameStringTable_Load(fe->path, fe->load_levels));
     }
-    return true;
+    return OK;
 }
 
 static void M_Init(void)
@@ -339,37 +334,33 @@ static void M_ApplySystemLanguage(void)
     M_FreeCodes(available);
 }
 
-void GameStringManager_LoadForMod(const SHELL_MOD *const mod)
+RESULT GameStringManager_LoadForMod(const SHELL_MOD *const mod)
 {
     M_ClearSourceFiles();
 
     const char *const common_strings_path = Shell_GetCommonStringsPath();
-    if (common_strings_path == nullptr) {
-        Shell_ExitSystem("Missing common strings file");
-    }
+    FAIL_IF(common_strings_path == nullptr, "Missing common strings file");
     M_AddSourceFile(common_strings_path, false);
 
     if (mod->base_mod != nullptr) {
         char *base_strings_path = Shell_GetBaseGameStringsPath(mod);
-        if (base_strings_path == nullptr) {
-            Shell_ExitSystemFmt(
-                "Missing base mod strings file for '%s'", mod->name);
-        }
+        FAIL_IF(
+            base_strings_path == nullptr,
+            "Missing base mod strings file for '%s'", mod->name);
         M_AddSourceFile(base_strings_path, false);
         Memory_FreePointer(&base_strings_path);
     }
 
     char *mod_strings_path = Shell_GetGameStringsPath(mod);
-    if (mod_strings_path == nullptr) {
-        Shell_ExitSystemFmt(
-            "Missing strings file for selected mod '%s'", mod->name);
-    }
+    FAIL_IF(
+        mod_strings_path == nullptr,
+        "Missing strings file for selected mod '%s'", mod->name);
     M_AddSourceFile(mod_strings_path, true);
     Memory_FreePointer(&mod_strings_path);
 
     M_DiscoverLanguages();
     M_ApplySystemLanguage();
-    GameStringManager_ReloadLanguage(g_Config.language);
+    return GameStringManager_ReloadLanguage(g_Config.language);
 }
 
 VECTOR *GameStringManager_GetAvailableLanguages(void)
@@ -386,7 +377,7 @@ VECTOR *GameStringManager_GetAvailableLanguages(void)
     return out;
 }
 
-bool GameStringManager_ReloadLanguage(const char *lang)
+RESULT GameStringManager_ReloadLanguage(const char *lang)
 {
     const M_LANG_ENTRY *const base_entry =
         m_LangEntries ? M_FindLangEntry(lang) : nullptr;
@@ -397,9 +388,9 @@ bool GameStringManager_ReloadLanguage(const char *lang)
     GameStringTable_Shutdown();
     GameStringTable_Init();
     VECTOR *const visited = Vector_Create(sizeof(char *));
-    const bool success = M_ReloadLangRec(lang, visited);
+    const RESULT result = M_ReloadLangRec(lang, visited);
     Vector_Free(visited);
-    if (success) {
+    if (IS_OK(result)) {
         GameStringTable_Apply(GF_GetCurrentLevel());
         if (m_EventManager != nullptr) {
             const EVENT event = {
@@ -410,7 +401,7 @@ bool GameStringManager_ReloadLanguage(const char *lang)
             EventManager_Fire(m_EventManager, &event);
         }
     }
-    return success;
+    return result;
 }
 
 const char *GameStringManager_GetLanguageName(const char *const code)

@@ -1,9 +1,12 @@
 #pragma once
 
+#include <trx/core/result.h>
 #include <trx/game/game_flow/types.h>
 
 // Load the game flow from a file.
-void GF_LoadFromFile(const char *path);
+// Load the game flow from a file, reporting where the file stopped making
+// sense.
+RESULT GF_LoadFromFile(const char *path);
 
 // Load the game flow from a file.
 // Returns false on I/O or parse/validation failure instead of exiting.

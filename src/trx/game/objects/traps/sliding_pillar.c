@@ -33,11 +33,11 @@ typedef struct {
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    if (JSON_SHOULD(JSON_PUSH(io, "linked"))) {
-        JSON_SHOULD(JSON_READ(io, "x", &p->linked.pos.x));
-        JSON_SHOULD(JSON_READ(io, "y", &p->linked.pos.y));
-        JSON_SHOULD(JSON_READ(io, "z", &p->linked.pos.z));
-        JSON_SHOULD(JSON_POP(io));
+    if (SHOULD(JSON_PUSH(io, "linked"))) {
+        SHOULD(JSON_READ_OPT(io, "x", &p->linked.pos.x));
+        SHOULD(JSON_READ_OPT(io, "y", &p->linked.pos.y));
+        SHOULD(JSON_READ_OPT(io, "z", &p->linked.pos.z));
+        SHOULD(JSON_POP(io));
     }
 }
 

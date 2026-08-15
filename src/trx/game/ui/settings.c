@@ -91,13 +91,6 @@ static M_SETTINGS m_Settings;
 static UI_MENU_COLORS_PC m_MenuColorsPC[3]; // indexed [g_TRVersion - 1]
 static UI_MENU_COLORS_PS1 m_MenuColorsPS1[3]; // indexed [g_TRVersion - 1]
 
-static void M_ExitWithJSONError(
-    const char *const source_path, const JSON_READ_IO *const io)
-{
-    JSONFile_ExitWithReadIOError(
-        io, String_FormatStatic("%s: ui settings parse error", source_path));
-}
-
 static void M_FreeThemeGroup(M_THEME_GROUP *const group)
 {
     M_THEME_LOOKUP *entry = nullptr;
@@ -239,27 +232,28 @@ static void M_FreeBarThemes(void)
     m_Settings.bar_lookup = nullptr;
 }
 
-static bool M_ReadColorArray(
+static RESULT M_ReadColorArray(
     JSON_READ_IO *const io, RGBA_8888 colors[UI_BAR_COLOR_STEPS])
 {
     const int32_t count = JSON_ARRAY_LEN(io);
     if (count != UI_BAR_COLOR_STEPS) {
-        JSON_ReadIO_SetError(
+        MUST(JSON_POP(io));
+        return JSON_ReadIO_Fail(
             io, "invalid color array (expected %d entries)",
             UI_BAR_COLOR_STEPS);
-        JSON_FAIL();
+        return JSON_ReadIO_Fail(io, "a list was expected");
     }
 
     for (int32_t i = 0; i < UI_BAR_COLOR_STEPS; i++) {
         RGB_888 rgb = {};
-        JSON_MUST(JSON_READ_A(io, i, &rgb));
+        MUST(JSON_READ_A(io, i, &rgb));
         colors[i] = Color_RGBToRGBA(rgb);
     }
 
-    JSON_FINISH();
+    return OK;
 }
 
-static bool M_LoadThemesPC(JSON_READ_IO *const io, M_THEME_GROUP *const group)
+static RESULT M_LoadThemesPC(JSON_READ_IO *const io, M_THEME_GROUP *const group)
 {
     float basic_scale = 1.0f;
     RGBA_8888 border_light = {};
@@ -268,19 +262,17 @@ static bool M_LoadThemesPC(JSON_READ_IO *const io, M_THEME_GROUP *const group)
     JSON_READ_D(io, "scale", &basic_scale, 1.0f);
 
     RGB_888 border_light_rgb = {};
-    JSON_MUST(JSON_READ(io, "border_light", &border_light_rgb));
+    MUST(JSON_READ(io, "border_light", &border_light_rgb));
     border_light = Color_RGBToRGBA(border_light_rgb);
 
     RGB_888 border_dark_rgb = {};
-    JSON_MUST(JSON_READ(io, "border_dark", &border_dark_rgb));
+    MUST(JSON_READ(io, "border_dark", &border_dark_rgb));
     border_dark = Color_RGBToRGBA(border_dark_rgb);
 
-    JSON_MUST(JSON_PUSH(io, "colors"));
+    MUST(JSON_PUSH(io, "colors"));
     JSON_OBJECT *const colors_obj = JSON_ReadIO_GetCurrentObject(io);
     if (colors_obj == nullptr) {
-        JSON_ReadIO_SetError(io, "'colors' must be an object");
-        JSON_MUST(JSON_POP(io));
-        JSON_FAIL();
+        return JSON_ReadIO_Fail(io, "'colors' must be an object");
     }
 
     size_t count = 0;
@@ -289,9 +281,8 @@ static bool M_LoadThemesPC(JSON_READ_IO *const io, M_THEME_GROUP *const group)
         count++;
     }
     if (count == 0) {
-        JSON_ReadIO_SetError(io, "'colors' cannot be empty");
-        JSON_MUST(JSON_POP(io));
-        JSON_FAIL();
+        MUST(JSON_POP(io));
+        return JSON_ReadIO_Fail(io, "'colors' cannot be empty");
     }
 
     M_FreeThemeGroup(group);
@@ -303,16 +294,15 @@ static bool M_LoadThemesPC(JSON_READ_IO *const io, M_THEME_GROUP *const group)
     for (JSON_OBJECT_ELEMENT *elem = colors_obj->start; elem != nullptr;
          elem = elem->next) {
         const char *const name = elem->name->string;
-        JSON_MUST(JSON_PUSH(io, name));
+        MUST(JSON_PUSH(io, name));
 
         group->colors[idx].name = Memory_DupStr(name);
         M_THEME_LOOKUP *existing = nullptr;
         HASH_FIND_STR(group->lookup, group->colors[idx].name, existing);
         if (existing != nullptr) {
-            JSON_ReadIO_SetError(io, "duplicate color '%s'", name);
-            JSON_MUST(JSON_POP(io));
-            JSON_MUST(JSON_POP(io));
-            JSON_FAIL();
+            MUST(JSON_POP(io));
+            return JSON_ReadIO_Fail(io, "duplicate color '%s'", name);
+            MUST(JSON_POP(io));
         }
 
         M_THEME_LOOKUP *const entry = Memory_Alloc(sizeof(*entry));
@@ -328,16 +318,17 @@ static bool M_LoadThemesPC(JSON_READ_IO *const io, M_THEME_GROUP *const group)
             .border_light = border_light,
             .border_dark = border_dark,
         };
-        JSON_MUST(M_ReadColorArray(io, theme->ramp));
-        JSON_MUST(JSON_POP(io));
+        MUST(M_ReadColorArray(io, theme->ramp));
+        MUST(JSON_POP(io));
         idx++;
     }
 
-    JSON_MUST(JSON_POP(io));
-    JSON_FINISH();
+    MUST(JSON_POP(io));
+    return OK;
 }
 
-static bool M_LoadThemesPS1(JSON_READ_IO *const io, M_THEME_GROUP *const group)
+static RESULT M_LoadThemesPS1(
+    JSON_READ_IO *const io, M_THEME_GROUP *const group)
 {
     float basic_scale = 1.0f;
 
@@ -347,21 +338,20 @@ static bool M_LoadThemesPS1(JSON_READ_IO *const io, M_THEME_GROUP *const group)
     RGB_888 border_tr_rgb = {};
     RGB_888 border_bl_rgb = {};
     RGB_888 border_br_rgb = {};
-    JSON_MUST(JSON_READ(io, "border_tl", &border_tl_rgb));
-    JSON_MUST(JSON_READ(io, "border_tr", &border_tr_rgb));
-    JSON_MUST(JSON_READ(io, "border_bl", &border_bl_rgb));
-    JSON_MUST(JSON_READ(io, "border_br", &border_br_rgb));
+    MUST(JSON_READ(io, "border_tl", &border_tl_rgb));
+    MUST(JSON_READ(io, "border_tr", &border_tr_rgb));
+    MUST(JSON_READ(io, "border_bl", &border_bl_rgb));
+    MUST(JSON_READ(io, "border_br", &border_br_rgb));
     const RGBA_8888 border_tl = Color_RGBToRGBA(border_tl_rgb);
     const RGBA_8888 border_tr = Color_RGBToRGBA(border_tr_rgb);
     const RGBA_8888 border_bl = Color_RGBToRGBA(border_bl_rgb);
     const RGBA_8888 border_br = Color_RGBToRGBA(border_br_rgb);
 
-    JSON_MUST(JSON_PUSH(io, "colors"));
+    MUST(JSON_PUSH(io, "colors"));
     JSON_OBJECT *const colors_obj = JSON_ReadIO_GetCurrentObject(io);
     if (colors_obj == nullptr) {
-        JSON_ReadIO_SetError(io, "'colors' must be an object");
-        JSON_MUST(JSON_POP(io));
-        JSON_FAIL();
+        MUST(JSON_POP(io));
+        return JSON_ReadIO_Fail(io, "'colors' must be an object");
     }
 
     size_t count = 0;
@@ -370,9 +360,8 @@ static bool M_LoadThemesPS1(JSON_READ_IO *const io, M_THEME_GROUP *const group)
         count++;
     }
     if (count == 0) {
-        JSON_ReadIO_SetError(io, "'colors' cannot be empty");
-        JSON_MUST(JSON_POP(io));
-        JSON_FAIL();
+        MUST(JSON_POP(io));
+        return JSON_ReadIO_Fail(io, "'colors' cannot be empty");
     }
 
     M_FreeThemeGroup(group);
@@ -384,25 +373,23 @@ static bool M_LoadThemesPS1(JSON_READ_IO *const io, M_THEME_GROUP *const group)
     for (JSON_OBJECT_ELEMENT *elem = colors_obj->start; elem != nullptr;
          elem = elem->next) {
         const char *const name = elem->name->string;
-        JSON_MUST(JSON_PUSH(io, name));
+        MUST(JSON_PUSH(io, name));
 
         const int32_t ramps_count = JSON_ARRAY_LEN(io);
         if (ramps_count != 2) {
-            JSON_ReadIO_SetError(
+            MUST(JSON_POP(io));
+            return JSON_ReadIO_Fail(
                 io, "invalid '%s' color definition (expected 2 arrays)", name);
-            JSON_MUST(JSON_POP(io));
-            JSON_MUST(JSON_POP(io));
-            JSON_FAIL();
+            MUST(JSON_POP(io));
         }
 
         group->colors[idx].name = Memory_DupStr(name);
         M_THEME_LOOKUP *existing = nullptr;
         HASH_FIND_STR(group->lookup, group->colors[idx].name, existing);
         if (existing != nullptr) {
-            JSON_ReadIO_SetError(io, "duplicate color '%s'", name);
-            JSON_MUST(JSON_POP(io));
-            JSON_MUST(JSON_POP(io));
-            JSON_FAIL();
+            MUST(JSON_POP(io));
+            return JSON_ReadIO_Fail(io, "duplicate color '%s'", name);
+            MUST(JSON_POP(io));
         }
         M_THEME_LOOKUP *const entry = Memory_Alloc(sizeof(*entry));
         entry->name = group->colors[idx].name;
@@ -420,51 +407,51 @@ static bool M_LoadThemesPS1(JSON_READ_IO *const io, M_THEME_GROUP *const group)
             .border_br = border_br,
         };
 
-        JSON_MUST(JSON_PUSH_INDEX(io, 0));
-        JSON_MUST(M_ReadColorArray(io, theme->ramp_left));
-        JSON_MUST(JSON_POP(io));
+        MUST(JSON_PUSH_INDEX(io, 0));
+        MUST(M_ReadColorArray(io, theme->ramp_left));
+        MUST(JSON_POP(io));
 
-        JSON_MUST(JSON_PUSH_INDEX(io, 1));
-        JSON_MUST(M_ReadColorArray(io, theme->ramp_right));
-        JSON_MUST(JSON_POP(io));
+        MUST(JSON_PUSH_INDEX(io, 1));
+        MUST(M_ReadColorArray(io, theme->ramp_right));
+        MUST(JSON_POP(io));
 
-        JSON_MUST(JSON_POP(io));
+        MUST(JSON_POP(io));
         idx++;
     }
 
-    JSON_MUST(JSON_POP(io));
-    JSON_FINISH();
+    MUST(JSON_POP(io));
+    return OK;
 }
 
-static bool M_LoadTheme(JSON_READ_IO *const io, M_BAR_THEME_ENTRY *const theme)
+static RESULT M_LoadTheme(
+    JSON_READ_IO *const io, M_BAR_THEME_ENTRY *const theme)
 {
     const char *name_gs = nullptr;
-    JSON_MUST(JSON_READ(io, "name_gs", &name_gs));
+    MUST(JSON_READ(io, "name_gs", &name_gs));
     theme->name_gs = Memory_DupStr(name_gs);
 
     const char *style = nullptr;
-    JSON_MUST(JSON_READ(io, "style", &style));
+    MUST(JSON_READ(io, "style", &style));
     if (String_Equivalent(style, "pc")) {
         theme->kind = UI_BAR_THEME_PC_KIND;
-        JSON_MUST(M_LoadThemesPC(io, &theme->group));
+        MUST(M_LoadThemesPC(io, &theme->group));
     } else if (String_Equivalent(style, "ps1")) {
         theme->kind = UI_BAR_THEME_PS1_KIND;
-        JSON_MUST(M_LoadThemesPS1(io, &theme->group));
+        MUST(M_LoadThemesPS1(io, &theme->group));
     } else {
-        JSON_ReadIO_SetError(io, "invalid 'style' value '%s'", style);
-        JSON_FAIL();
+        MUST(JSON_POP(io));
+        return JSON_ReadIO_Fail(io, "invalid 'style' value '%s'", style);
     }
 
-    JSON_FINISH();
+    return OK;
 }
 
-static bool M_LoadBarThemes(JSON_READ_IO *const io)
+static RESULT M_LoadBarThemes(JSON_READ_IO *const io)
 {
     JSON_OBJECT *const root_obj = JSON_ReadIO_GetCurrentObject(io);
     if (root_obj == nullptr) {
-        JSON_ReadIO_SetError(
+        return JSON_ReadIO_Fail(
             io, "invalid ui settings file: root must be object");
-        JSON_FAIL();
     }
 
     size_t theme_count = 0;
@@ -473,8 +460,7 @@ static bool M_LoadBarThemes(JSON_READ_IO *const io)
         theme_count++;
     }
     if (theme_count == 0) {
-        JSON_ReadIO_SetError(io, "ui settings file has no bar themes");
-        JSON_FAIL();
+        return JSON_ReadIO_Fail(io, "ui settings file has no bar themes");
     }
 
     m_Settings.bar_themes =
@@ -486,7 +472,7 @@ static bool M_LoadBarThemes(JSON_READ_IO *const io)
     for (JSON_OBJECT_ELEMENT *elem = root_obj->start; elem != nullptr;
          elem = elem->next) {
         const char *const theme_name = elem->name->string;
-        JSON_MUST(JSON_PUSH(io, theme_name));
+        MUST(JSON_PUSH(io, theme_name));
 
         M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[idx];
         theme->name = Memory_DupStr(theme_name);
@@ -498,11 +484,9 @@ static bool M_LoadBarThemes(JSON_READ_IO *const io)
         HASH_FIND_STR(m_Settings.bar_lookup, theme->name, existing);
         if (existing != nullptr) {
             JSON_ReadIO_SetError(io, "duplicate theme '%s'", theme_name);
-            JSON_MUST(JSON_POP(io));
-            JSON_FAIL();
         }
 
-        JSON_MUST(M_LoadTheme(io, theme));
+        MUST(M_LoadTheme(io, theme));
 
         M_BAR_THEME_LOOKUP *const entry = Memory_Alloc(sizeof(*entry));
         entry->name = theme->name;
@@ -510,11 +494,11 @@ static bool M_LoadBarThemes(JSON_READ_IO *const io)
         HASH_ADD_KEYPTR(
             hh, m_Settings.bar_lookup, entry->name, strlen(entry->name), entry);
 
-        JSON_MUST(JSON_POP(io));
+        MUST(JSON_POP(io));
         idx++;
     }
 
-    JSON_FINISH();
+    return OK;
 }
 
 static M_BAR_THEME_ENTRY *M_FindBarThemeByName(const char *const name)
@@ -551,70 +535,67 @@ static const M_THEME_GROUP *M_GetCurrentBarGroup(void)
     return &theme->group;
 }
 
-static bool M_LoadMenuColorsPC(
+static RESULT M_LoadMenuColorsPC(
     JSON_READ_IO *const io, UI_MENU_COLORS_PC *const c)
 {
-    JSON_MUST(JSON_PUSH(io, "background"));
-    JSON_MUST(JSON_READ_A(io, 0, &c->background[0]));
-    JSON_MUST(JSON_READ_A(io, 1, &c->background[1]));
-    JSON_MUST(JSON_POP(io));
+    MUST(JSON_PUSH(io, "background"));
+    MUST(JSON_READ_A(io, 0, &c->background[0]));
+    MUST(JSON_READ_A(io, 1, &c->background[1]));
+    MUST(JSON_POP(io));
 
-    JSON_MUST(JSON_PUSH(io, "background_heavy"));
-    JSON_MUST(JSON_READ_A(io, 0, &c->background_heavy[0]));
-    JSON_MUST(JSON_READ_A(io, 1, &c->background_heavy[1]));
-    JSON_MUST(JSON_POP(io));
+    MUST(JSON_PUSH(io, "background_heavy"));
+    MUST(JSON_READ_A(io, 0, &c->background_heavy[0]));
+    MUST(JSON_READ_A(io, 1, &c->background_heavy[1]));
+    MUST(JSON_POP(io));
 
-    JSON_MUST(JSON_READ(io, "outline_light", &c->outline_light));
-    JSON_MUST(JSON_READ(io, "outline_dark", &c->outline_dark));
+    MUST(JSON_READ(io, "outline_light", &c->outline_light));
+    MUST(JSON_READ(io, "outline_dark", &c->outline_dark));
 
-    JSON_FINISH();
+    return OK;
 }
 
-static bool M_LoadMenuColorsPS1(
+static RESULT M_LoadMenuColorsPS1(
     JSON_READ_IO *const io, UI_MENU_COLORS_PS1 *const c)
 {
-    JSON_MUST(JSON_READ(io, "background_edge", &c->background_edge));
-    JSON_MUST(JSON_READ(io, "background_center", &c->background_center));
-    JSON_MUST(
-        JSON_READ(io, "background_heavy_edge", &c->background_heavy_edge));
-    JSON_MUST(
-        JSON_READ(io, "background_heavy_center", &c->background_heavy_center));
-    JSON_MUST(JSON_READ(io, "heading_edge", &c->heading_edge));
-    JSON_MUST(JSON_READ(io, "heading_center", &c->heading_center));
-    JSON_MUST(JSON_READ(io, "requested_edge", &c->requested_edge));
-    JSON_MUST(JSON_READ(io, "requested_center", &c->requested_center));
-    JSON_MUST(JSON_READ(io, "requested_outline_ch", &c->requested_outline_ch));
-    JSON_MUST(JSON_READ(io, "requested_outline_cv", &c->requested_outline_cv));
-    JSON_MUST(
-        JSON_READ(io, "requested_outline_edge", &c->requested_outline_edge));
-    JSON_MUST(JSON_READ(io, "outline_tl", &c->outline_tl));
-    JSON_MUST(JSON_READ(io, "outline_tr", &c->outline_tr));
-    JSON_MUST(JSON_READ(io, "outline_bl", &c->outline_bl));
-    JSON_MUST(JSON_READ(io, "outline_br", &c->outline_br));
-    JSON_MUST(JSON_READ(io, "heading_outline", &c->heading_outline));
+    MUST(JSON_READ(io, "background_edge", &c->background_edge));
+    MUST(JSON_READ(io, "background_center", &c->background_center));
+    MUST(JSON_READ(io, "background_heavy_edge", &c->background_heavy_edge));
+    MUST(JSON_READ(io, "background_heavy_center", &c->background_heavy_center));
+    MUST(JSON_READ(io, "heading_edge", &c->heading_edge));
+    MUST(JSON_READ(io, "heading_center", &c->heading_center));
+    MUST(JSON_READ(io, "requested_edge", &c->requested_edge));
+    MUST(JSON_READ(io, "requested_center", &c->requested_center));
+    MUST(JSON_READ(io, "requested_outline_ch", &c->requested_outline_ch));
+    MUST(JSON_READ(io, "requested_outline_cv", &c->requested_outline_cv));
+    MUST(JSON_READ(io, "requested_outline_edge", &c->requested_outline_edge));
+    MUST(JSON_READ(io, "outline_tl", &c->outline_tl));
+    MUST(JSON_READ(io, "outline_tr", &c->outline_tr));
+    MUST(JSON_READ(io, "outline_bl", &c->outline_bl));
+    MUST(JSON_READ(io, "outline_br", &c->outline_br));
+    MUST(JSON_READ(io, "heading_outline", &c->heading_outline));
 
-    JSON_FINISH();
+    return OK;
 }
 
-static bool M_LoadMenuColors(JSON_READ_IO *const io)
+static RESULT M_LoadMenuColors(JSON_READ_IO *const io)
 {
     static const char *const tr_keys[] = { "tr1", "tr2", "tr3" };
 
     for (int32_t i = 0; i < 3; i++) {
-        JSON_MUST(JSON_PUSH(io, tr_keys[i]));
+        MUST(JSON_PUSH(io, tr_keys[i]));
 
-        JSON_MUST(JSON_PUSH(io, "pc"));
-        JSON_MUST(M_LoadMenuColorsPC(io, &m_MenuColorsPC[i]));
-        JSON_MUST(JSON_POP(io));
+        MUST(JSON_PUSH(io, "pc"));
+        MUST(M_LoadMenuColorsPC(io, &m_MenuColorsPC[i]));
+        MUST(JSON_POP(io));
 
-        JSON_MUST(JSON_PUSH(io, "ps1"));
-        JSON_MUST(M_LoadMenuColorsPS1(io, &m_MenuColorsPS1[i]));
-        JSON_MUST(JSON_POP(io));
+        MUST(JSON_PUSH(io, "ps1"));
+        MUST(M_LoadMenuColorsPS1(io, &m_MenuColorsPS1[i]));
+        MUST(JSON_POP(io));
 
-        JSON_MUST(JSON_POP(io));
+        MUST(JSON_POP(io));
     }
 
-    JSON_FINISH();
+    return OK;
 }
 
 static void M_Shutdown(void)
@@ -658,26 +639,41 @@ static const UI_BAR_THEME *M_FindThemeByName(
     return nullptr;
 }
 
+static RESULT M_LoadSection(
+    JSON_READ_IO *const io, const char *const key,
+    RESULT (*const read_func)(JSON_READ_IO *))
+{
+    MUST(JSON_PUSH(io, key));
+    const RESULT result = read_func(io);
+    MUST(JSON_POP(io));
+    return result;
+}
+
+static RESULT M_LoadFrom(const char *const path)
+{
+    JSON_VALUE *root = nullptr;
+    MUST(JSONFile_ReadRequired(path, &root));
+    JSON_READ_IO *const io = JSON_ReadIO_Create(root, 0, path);
+
+    M_FreeBarThemes();
+    RESULT result = M_LoadSection(io, "bars", M_LoadBarThemes);
+    if (IS_OK(result)) {
+        result = M_LoadSection(io, "ui", M_LoadMenuColors);
+    }
+    if (IS_OK(result)) {
+        M_SeedDynamicEnumValues();
+    }
+
+    JSON_ReadIO_Destroy(io);
+    JSON_ValueFree(root);
+    return result;
+}
+
 static void M_Load(void)
 {
     const char *const path =
         GamePath_Resolve(GAME_DYNAMIC_PATH_COMMON_CONFIG, "ui.json5");
-    JSON_VALUE *const root = JSONFile_ReadEx(path, true);
-    JSON_READ_IO *const io = JSON_ReadIO_Create(root, 0, path);
-
-    M_FreeBarThemes();
-    if (!JSON_PUSH(io, "bars") || !M_LoadBarThemes(io) || !JSON_POP(io)) {
-        M_ExitWithJSONError(path, io);
-    }
-
-    if (!JSON_PUSH(io, "ui") || !M_LoadMenuColors(io) || !JSON_POP(io)) {
-        M_ExitWithJSONError(path, io);
-    }
-
-    M_SeedDynamicEnumValues();
-
-    JSON_ReadIO_Destroy(io);
-    JSON_ValueFree(root);
+    EXIT_ON_FAIL(M_LoadFrom(path), "Failed to load the interface settings");
 }
 
 bool UI_Settings_IsCurrentBarLookPS1(void)

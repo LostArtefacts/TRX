@@ -16,8 +16,8 @@ typedef struct {
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_OPTIONAL(JSON_READ(io, "life", &p->life));
-    JSON_OPTIONAL(JSON_READ(io, "alarm_active", &p->alarm_active));
+    SHOULD(JSON_READ_OPT(io, "life", &p->life));
+    SHOULD(JSON_READ_OPT(io, "alarm_active", &p->alarm_active));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

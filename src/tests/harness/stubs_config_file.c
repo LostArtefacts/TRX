@@ -37,10 +37,10 @@ void ConfigFile_ApplyEnforcedTo(CONFIG_OPTION *const option)
 {
 }
 
-bool ConfigFile_Write(
+RESULT ConfigFile_Write(
     const char *const default_path, void (*const action)(JSON_OBJECT *))
 {
-    return true;
+    return OK;
 }
 
 void ConfigFile_DumpOptions(JSON_OBJECT *const root_obj)

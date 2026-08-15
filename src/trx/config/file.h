@@ -2,6 +2,7 @@
 
 #include <trx/config/option.h>
 #include <trx/core/json.h>
+#include <trx/core/result.h>
 
 // The settings document and the game flow's, and what they have to say about an
 // option.
@@ -34,7 +35,8 @@ void ConfigFile_ApplyFileValueTo(CONFIG_OPTION *option);
 // the player's own value to set has to have set it by now.
 void ConfigFile_ApplyEnforcedTo(CONFIG_OPTION *option);
 
-bool ConfigFile_Write(const char *default_path, void (*action)(JSON_OBJECT *));
+RESULT ConfigFile_Write(
+    const char *default_path, void (*action)(JSON_OBJECT *));
 
 // Writes every option under its own key.
 void ConfigFile_DumpOptions(JSON_OBJECT *root_obj);

@@ -108,19 +108,19 @@ static uint8_t m_ExhaustSmokeVel;
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ(io, "velocity", &p->quad.velocity));
-    JSON_SHOULD(JSON_READ(io, "front_rot", &p->quad.front_rot));
-    JSON_SHOULD(JSON_READ(io, "rear_rot", &p->quad.rear_rot));
-    JSON_SHOULD(JSON_READ(io, "revs", &p->quad.revs));
-    JSON_SHOULD(JSON_READ(io, "engine_revs", &p->quad.engine_revs));
-    JSON_SHOULD(JSON_READ(io, "track_mesh", &p->quad.track_mesh));
-    JSON_SHOULD(JSON_READ(io, "skidoo_turn", &p->quad.skidoo_turn));
-    JSON_SHOULD(JSON_READ(io, "left_fall_speed", &p->quad.left_fall_speed));
-    JSON_SHOULD(JSON_READ(io, "right_fall_speed", &p->quad.right_fall_speed));
-    JSON_SHOULD(JSON_READ(io, "momentum_angle", &p->quad.momentum_angle));
-    JSON_SHOULD(JSON_READ(io, "extra_rotation", &p->quad.extra_rotation));
-    JSON_SHOULD(JSON_READ(io, "pitch", &p->quad.pitch));
-    JSON_SHOULD(JSON_READ(io, "flags", &p->quad.flags));
+    SHOULD(JSON_READ_OPT(io, "velocity", &p->quad.velocity));
+    SHOULD(JSON_READ_OPT(io, "front_rot", &p->quad.front_rot));
+    SHOULD(JSON_READ_OPT(io, "rear_rot", &p->quad.rear_rot));
+    SHOULD(JSON_READ_OPT(io, "revs", &p->quad.revs));
+    SHOULD(JSON_READ_OPT(io, "engine_revs", &p->quad.engine_revs));
+    SHOULD(JSON_READ_OPT(io, "track_mesh", &p->quad.track_mesh));
+    SHOULD(JSON_READ_OPT(io, "skidoo_turn", &p->quad.skidoo_turn));
+    SHOULD(JSON_READ_OPT(io, "left_fall_speed", &p->quad.left_fall_speed));
+    SHOULD(JSON_READ_OPT(io, "right_fall_speed", &p->quad.right_fall_speed));
+    SHOULD(JSON_READ_OPT(io, "momentum_angle", &p->quad.momentum_angle));
+    SHOULD(JSON_READ_OPT(io, "extra_rotation", &p->quad.extra_rotation));
+    SHOULD(JSON_READ_OPT(io, "pitch", &p->quad.pitch));
+    SHOULD(JSON_READ_OPT(io, "flags", &p->quad.flags));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

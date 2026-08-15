@@ -3,6 +3,7 @@
 #include <trx/core/file.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/json.h>
+#include <trx/core/result.h>
 #include <trx/game/game_flow/types.h>
 
 #include <stddef.h>
@@ -17,6 +18,10 @@ const char *LevelCache_GetLevelKey(const GF_LEVEL *level);
 TRX_FILE *LevelCache_OpenBinaryRead(const char *filename, uint64_t checksum);
 TRX_FILE *LevelCache_OpenBinaryWrite(const char *filename, uint64_t checksum);
 
-JSON_VALUE *LevelCache_ReadJSON(const char *filename, uint64_t checksum);
-bool LevelCache_WriteJSON(
+// Reads what was cached for the given level data. A cache that is not there
+// or was written for other data reads as nothing and is no fault; one that
+// cannot be read is reported.
+RESULT LevelCache_ReadJSON(
+    const char *filename, uint64_t checksum, JSON_VALUE **out_root);
+RESULT LevelCache_WriteJSON(
     const char *filename, uint64_t checksum, JSON_VALUE *root);

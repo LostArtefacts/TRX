@@ -31,10 +31,10 @@ typedef struct {
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ(io, "initialised", &p->initialised));
-    JSON_SHOULD(JSON_READ(io, "on_fire", &p->on_fire));
+    SHOULD(JSON_READ_OPT(io, "initialised", &p->initialised));
+    SHOULD(JSON_READ_OPT(io, "on_fire", &p->on_fire));
     if (g_Config.gameplay.enable_enhanced_saves) {
-        JSON_SHOULD(JSON_READ(io, "fx_num", &p->effect_num));
+        SHOULD(JSON_READ_OPT(io, "fx_num", &p->effect_num));
     }
 }
 

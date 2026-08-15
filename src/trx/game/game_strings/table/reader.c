@@ -1,13 +1,13 @@
 #include <trx/core/json/util/file.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/result.h>
 #include <trx/core/strings.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/table.h>
 #include <trx/game/game_strings/table/priv.h>
-#include <trx/game/shell.h>
 
 #include <string.h>
 
@@ -189,7 +189,7 @@ static void M_LoadTableFromJSON(
     }
 }
 
-static void M_LoadLevelsFromJSON(
+static RESULT M_LoadLevelsFromJSON(
     JSON_OBJECT *const obj, GS_FILE *const gs_file, const char *const key,
     const GF_LEVEL_TABLE_TYPE level_table_type)
 {
@@ -198,20 +198,19 @@ static void M_LoadLevelsFromJSON(
     GS_LEVEL_TABLE *const gs_level_table =
         &gs_file->level_tables[level_table_type];
     if (level_table->count == 0) {
-        return;
+        return OK;
     }
 
     JSON_ARRAY *const jlvl_arr = JSON_ObjectGetArray(obj, key);
     if (jlvl_arr == nullptr) {
-        return;
+        return OK;
     }
 
-    if (jlvl_arr->length != (size_t)level_table->count) {
-        Shell_ExitSystemFmt(
-            "%s: '%s' length must match with the game flow level count (got: "
-            "%d, expected: %d)",
-            gs_file->path, key, jlvl_arr->length, level_table->count);
-    }
+    FAIL_IF(
+        jlvl_arr->length != (size_t)level_table->count,
+        "%s: '%s' length must match with the game flow level count (got: "
+        "%d, expected: %d)",
+        gs_file->path, key, jlvl_arr->length, level_table->count);
 
     gs_level_table->count = jlvl_arr->length;
     gs_level_table->entries = Memory_Alloc(sizeof(GS_LEVEL) * jlvl_arr->length);
@@ -221,11 +220,9 @@ static void M_LoadLevelsFromJSON(
         GS_LEVEL *const level = &gs_level_table->entries[i];
 
         JSON_OBJECT *const jlvl_obj = JSON_ValueAsObject(jlvl_elem->value);
-        if (jlvl_obj == nullptr) {
-            Shell_ExitSystemFmt(
-                "%s: 'levels' elements must be dictionaries", gs_file->path);
-            return;
-        }
+        FAIL_IF(
+            jlvl_obj == nullptr, "%s: '%s' elements must be dictionaries",
+            gs_file->path, key);
 
         const char *const title =
             JSON_ObjectGetString(jlvl_obj, "title", JSON_INVALID_STRING);
@@ -235,22 +232,42 @@ static void M_LoadLevelsFromJSON(
 
         M_LoadTableFromJSON(jlvl_obj, &level->table);
     }
+    return OK;
 }
 
-GS_FILE *GS_File_CreateFromPath(const char *const path, const bool load_levels)
+RESULT GS_File_CreateFromPath(
+    const char *const path, const bool load_levels, GS_FILE **const out_gs_file)
 {
+    *out_gs_file = nullptr;
+
+    JSON_VALUE *doc = nullptr;
+    MUST(JSONFile_ReadRequired(path, &doc));
+
     GS_FILE *const gs_file = Memory_Alloc(sizeof(*gs_file));
     gs_file->path = Memory_DupStr(path);
 
-    JSON_VALUE *const doc = JSONFile_ReadEx(path, true);
     JSON_OBJECT *root_obj = JSON_ValueAsObject(doc);
     M_LoadTableFromJSON(root_obj, &gs_file->global);
+    RESULT result = OK;
     if (load_levels) {
-        M_LoadLevelsFromJSON(root_obj, gs_file, "levels", GFLT_MAIN);
-        M_LoadLevelsFromJSON(root_obj, gs_file, "demos", GFLT_DEMOS);
-        M_LoadLevelsFromJSON(root_obj, gs_file, "cutscenes", GFLT_CUTSCENES);
+        result = Result_Merge(
+            result,
+            M_LoadLevelsFromJSON(root_obj, gs_file, "levels", GFLT_MAIN));
+        result = Result_Merge(
+            result,
+            M_LoadLevelsFromJSON(root_obj, gs_file, "demos", GFLT_DEMOS));
+        result = Result_Merge(
+            result,
+            M_LoadLevelsFromJSON(
+                root_obj, gs_file, "cutscenes", GFLT_CUTSCENES));
     }
 
     JSON_ValueFree(doc);
-    return gs_file;
+    if (!IS_OK(result)) {
+        GS_File_Free(gs_file);
+        *out_gs_file = nullptr;
+        return result;
+    }
+    *out_gs_file = gs_file;
+    return OK;
 }

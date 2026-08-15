@@ -2,6 +2,7 @@
 
 #include <trx/core/json/util/file.h>
 #include <trx/core/memory.h>
+#include <trx/core/result.h>
 #include <trx/core/subsystem.h>
 #include <trx/debug.h>
 #include <trx/game/catalog/manager.h>
@@ -30,27 +31,10 @@ static void M_Shutdown(void)
     }
 }
 
-static void M_Load(void)
+static RESULT M_ReadItems(JSON_ARRAY *const arr, const char *const path)
 {
-    const char *const path =
-        GamePath_Resolve(GAME_DYNAMIC_PATH_COMMON_CONFIG, "inv_ring.json5");
 #define L_READ_INT(key, target) target = JSON_ObjectGetInt(obj, key, target);
 
-    for (int32_t i = 0; i < g_InvRing_Items->count; i++) {
-        INVENTORY_ITEM *const item =
-            *(INVENTORY_ITEM **)Vector_Get(g_InvRing_Items, i);
-        Memory_Free(item);
-    }
-    Vector_Clear(g_InvRing_Items);
-    for (int32_t i = 0; i < RT_NUMBER_OF; i++) {
-        g_InvRing_Source[i].count = 0;
-    }
-
-    JSON_VALUE *const root = JSONFile_ReadEx(path, true);
-    JSON_ARRAY *const arr = JSON_ValueAsArray(root);
-    if (arr == nullptr) {
-        Shell_ExitSystemFmt("invalid inventory ring vars file: %s", path);
-    }
     ASSERT(g_InvRing_Items != nullptr);
 
     for (size_t i = 0; i < arr->length; i++) {
@@ -58,9 +42,9 @@ static void M_Load(void)
         const char *const name =
             JSON_ObjectGetString(obj, "object_id", JSON_INVALID_STRING);
         CATALOG_ID id;
-        if (!Catalog_NameToEnum(CATALOG_OBJECTS, name, &id)) {
-            Shell_ExitSystemFmt("unknown object_id '%s' in %s", name, path);
-        }
+        FAIL_IF(
+            !Catalog_NameToEnum(CATALOG_OBJECTS, name, &id),
+            "%s: unknown object_id '%s'", path, name);
         INVENTORY_ITEM *const item = Memory_Alloc(sizeof(*item));
         item->object_id = id;
         L_READ_INT("frames_total", item->frames_total);
@@ -87,8 +71,37 @@ static void M_Load(void)
         Vector_Add(g_InvRing_Items, &item);
     }
 
-    JSON_ValueFree(root);
+    return OK;
 #undef L_READ_INT
+}
+
+static RESULT M_LoadFrom(const char *const path)
+{
+    for (int32_t i = 0; i < g_InvRing_Items->count; i++) {
+        INVENTORY_ITEM *const item =
+            *(INVENTORY_ITEM **)Vector_Get(g_InvRing_Items, i);
+        Memory_Free(item);
+    }
+    Vector_Clear(g_InvRing_Items);
+    for (int32_t i = 0; i < RT_NUMBER_OF; i++) {
+        g_InvRing_Source[i].count = 0;
+    }
+
+    JSON_VALUE *root = nullptr;
+    MUST(JSONFile_ReadRequired(path, &root));
+    JSON_ARRAY *const arr = JSON_ValueAsArray(root);
+    const RESULT result = arr == nullptr
+        ? FAIL("%s: the file must hold a list", path)
+        : M_ReadItems(arr, path);
+    JSON_ValueFree(root);
+    return result;
+}
+
+static void M_Load(void)
+{
+    const char *const path =
+        GamePath_Resolve(GAME_DYNAMIC_PATH_COMMON_CONFIG, "inv_ring.json5");
+    EXIT_ON_FAIL(M_LoadFrom(path), "Failed to load the inventory ring");
 }
 
 REGISTER_SUBSYSTEM(.init = M_Init, .load = M_Load, .shutdown = M_Shutdown)

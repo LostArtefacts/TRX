@@ -66,7 +66,7 @@ void FX_Save(JSON_WRITE_IO *const io)
     }
 }
 
-bool FX_Load(JSON_READ_IO *const io)
+RESULT FX_Load(JSON_READ_IO *const io)
 {
     for (int32_t i = 0; i < m_ModuleCount; i++) {
         const FX_MODULE *const module = m_Modules[i];
@@ -76,11 +76,12 @@ bool FX_Load(JSON_READ_IO *const io)
         if (module->reset_func != nullptr) {
             module->reset_func();
         }
-        if (!JSON_OPTIONAL(JSON_PUSH(io, module->save_key))) {
+        if (!JSON_ReadIO_HasKey(io, module->save_key)) {
             continue;
         }
-        JSON_MUST(module->load_func(io));
-        JSON_MUST(JSON_POP(io));
+        MUST(JSON_PUSH(io, module->save_key));
+        MUST(module->load_func(io));
+        MUST(JSON_POP(io));
     }
-    JSON_FINISH();
+    return OK;
 }

@@ -108,26 +108,26 @@ typedef struct {
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ(io, "speed", &p->speed));
-    JSON_SHOULD(JSON_READ(io, "mid_pos", &p->mid_pos));
-    JSON_SHOULD(JSON_READ(io, "front_pos", &p->front_pos));
-    JSON_SHOULD(JSON_READ(io, "y_velocity", &p->y_velocity));
-    JSON_SHOULD(JSON_READ(io, "gradient", &p->gradient));
-    JSON_SHOULD(JSON_READ(io, "stop_delay", &p->stop_delay));
-    if (JSON_SHOULD(JSON_PUSH(io, "turn"))) {
-        JSON_SHOULD(JSON_READ(io, "pos.x", &p->turn.pos.x));
-        JSON_SHOULD(JSON_READ(io, "pos.z", &p->turn.pos.z));
-        JSON_SHOULD(JSON_READ(io, "angle", &p->turn.angle));
-        JSON_SHOULD(JSON_READ(io, "length", &p->turn.length));
-        JSON_SHOULD(JSON_READ(io, "side", &p->turn.side));
-        JSON_POP(io);
+    SHOULD(JSON_READ_OPT(io, "speed", &p->speed));
+    SHOULD(JSON_READ_OPT(io, "mid_pos", &p->mid_pos));
+    SHOULD(JSON_READ_OPT(io, "front_pos", &p->front_pos));
+    SHOULD(JSON_READ_OPT(io, "y_velocity", &p->y_velocity));
+    SHOULD(JSON_READ_OPT(io, "gradient", &p->gradient));
+    SHOULD(JSON_READ_OPT(io, "stop_delay", &p->stop_delay));
+    if (SHOULD(JSON_PUSH(io, "turn"))) {
+        SHOULD(JSON_READ_OPT(io, "pos.x", &p->turn.pos.x));
+        SHOULD(JSON_READ_OPT(io, "pos.z", &p->turn.pos.z));
+        SHOULD(JSON_READ_OPT(io, "angle", &p->turn.angle));
+        SHOULD(JSON_READ_OPT(io, "length", &p->turn.length));
+        SHOULD(JSON_READ_OPT(io, "side", &p->turn.side));
+        SHOULD(JSON_POP(io));
     }
-    if (JSON_SHOULD(JSON_PUSH(io, "flags"))) {
-        JSON_SHOULD(JSON_READ(io, "control", &p->flags.control));
-        JSON_SHOULD(JSON_READ(io, "dead", &p->flags.dead));
-        JSON_SHOULD(JSON_READ(io, "stopped", &p->flags.stopped));
-        JSON_SHOULD(JSON_READ(io, "suppress_anim", &p->flags.suppress_anim));
-        JSON_POP(io);
+    if (SHOULD(JSON_PUSH(io, "flags"))) {
+        SHOULD(JSON_READ_OPT(io, "control", &p->flags.control));
+        SHOULD(JSON_READ_OPT(io, "dead", &p->flags.dead));
+        SHOULD(JSON_READ_OPT(io, "stopped", &p->flags.stopped));
+        SHOULD(JSON_READ_OPT(io, "suppress_anim", &p->flags.suppress_anim));
+        SHOULD(JSON_POP(io));
     }
 }
 

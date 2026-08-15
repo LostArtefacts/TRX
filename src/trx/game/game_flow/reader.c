@@ -42,7 +42,7 @@ typedef struct {
     void *handler_func_arg;
 } M_SEQUENCE_EVENT_HANDLER;
 
-typedef bool (*M_LOAD_ARRAY_FUNC)(
+typedef RESULT (*M_LOAD_ARRAY_FUNC)(
     const M_CONTEXT *ctx, void *target_elem, size_t target_elem_idx,
     void *user_arg);
 
@@ -93,29 +93,22 @@ static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     // clang-format on
 };
 
-static void M_ExitWithJSONError(const M_CONTEXT *const ctx)
-{
-    JSONFile_ExitWithReadIOError(
-        ctx->io,
-        String_FormatStatic("%s: gameflow parse error", ctx->script_path));
-}
-
-static bool M_ReadObjectID(
+static RESULT M_ReadObjectID(
     const M_CONTEXT *const ctx, OBJECT_ID *const object_id_out)
 {
     int32_t game_id;
-    if (JSON_OPTIONAL(JSON_READ_CURRENT(ctx->io, &game_id))) {
+    if (Result_Absorb(JSON_READ_CURRENT(ctx->io, &game_id))) {
         *object_id_out = Object_FromGameID(game_id);
     } else {
         const char *object_key;
-        JSON_MUST(JSON_READ_CURRENT(ctx->io, &object_key));
+        MUST(JSON_READ_CURRENT(ctx->io, &object_key));
         *object_id_out = Object_IdFromKey(object_key);
     }
     if (!ctx->validation_mode && *object_id_out == NO_OBJECT) {
-        JSON_ReadIO_SetError(ctx->io, "'object_id' must be a valid object id");
-        JSON_FAIL();
+        return JSON_ReadIO_Fail(
+            ctx->io, "'object_id' must be a valid object id");
     }
-    JSON_FINISH();
+    return OK;
 }
 
 static M_SEQUENCE_EVENT_HANDLER *M_GetSequenceEventHandlers(void)
@@ -140,7 +133,7 @@ static char *M_MakeLevelKey(const char *const path)
 // in that case).
 // Pass path_type=(GAME_DYNAMIC_PATH)-1 to skip resolution and return the first
 // candidate as-is.
-static bool M_ReadPath(
+static RESULT M_ReadPath(
     JSON_READ_IO *const io, const char *const key, const bool optional,
     const GAME_DYNAMIC_PATH path_type, char **const out_path,
     const bool suppress_errors)
@@ -149,183 +142,179 @@ static bool M_ReadPath(
     *out_path = nullptr;
     const bool resolve = path_type != (GAME_DYNAMIC_PATH)-1;
 
-    if (!JSON_PUSH(io, key)) {
-        if (suppress_errors) {
-            return true;
+    if (!JSON_ReadIO_HasKey(io, key)) {
+        if (suppress_errors || optional) {
+            return OK;
         }
-        if (optional) {
-            return true;
-        }
-        return false;
+        return JSON_ReadIO_Fail(io, "there is no '%s' here", key);
     }
+    MUST(JSON_PUSH(io, key));
 
-    // All failure paths below must pop before returning to keep the
-    // push/pop depth balanced and avoid corrupting the parser state.
-    bool ok = false;
+    // Every way out below pops first, so that a failure here leaves the
+    // reader where it started rather than partway into the file.
+    RESULT result = OK;
+    const char *first_candidate = nullptr;
     JSON_ARRAY *const path_array =
         JSON_ValueAsArray(JSON_ReadIO_GetCurrentValue(io));
     const int32_t count = path_array != nullptr ? JSON_ARRAY_LEN(io) : 1;
     if (count <= 0) {
-        if (!suppress_errors) {
-            JSON_ReadIO_SetError(
-                io, "path array must contain at least one entry");
-        }
+        result = JSON_ReadIO_Fail(io, "'%s' names no file at all", key);
     } else {
         for (int32_t i = 0; i < count; i++) {
             const char *path = nullptr;
-            const bool read_ok = path_array != nullptr
+            const RESULT read = path_array != nullptr
                 ? JSON_READ_A(io, i, &path)
                 : JSON_READ_CURRENT(io, &path);
-            if (!read_ok) {
+            if (!IS_OK(read)) {
+                result = read;
                 break;
+            }
+            if (first_candidate == nullptr) {
+                first_candidate = path;
             }
             if (!resolve) {
                 *out_path = Memory_DupStr(path);
-                ok = true;
                 break;
             }
             const char *const resolved = GamePath_PeekResolve(path_type, path);
             if (resolved != nullptr) {
                 *out_path = Memory_DupStr(resolved);
-                ok = true;
                 break;
             }
         }
-        if (!ok && resolve) {
-            if (optional) {
-                ok = true; // leave *out_path as nullptr
-            } else if (suppress_errors) {
-                ok = true; // sizing pass should not surface path failures
-            } else {
-                JSON_ReadIO_SetError(
-                    io, "failed to resolve any path candidate");
-            }
-        } else if (!ok && suppress_errors) {
-            ok = true; // sizing pass should not surface malformed path values
+        if (IS_OK(result) && *out_path == nullptr && resolve) {
+            result = JSON_ReadIO_Fail(
+                io, "no file named by '%s' is installed, starting with '%s'",
+                key, first_candidate != nullptr ? first_candidate : "");
         }
     }
 
-    if (!JSON_POP(io)) {
-        return false;
+    // The sizing pass and an optional path both do without one.
+    if (!IS_OK(result) && (suppress_errors || optional)) {
+        IGNORE(result);
+        result = OK;
     }
-    return ok;
+
+    const RESULT popped = JSON_ReadIO_Pop(io);
+    if (!IS_OK(result)) {
+        IGNORE(popped);
+        return result;
+    }
+    return popped;
 }
 
-static bool M_LoadSettings(
+static RESULT M_LoadSettings(
     const M_CONTEXT *const ctx, GF_LEVEL_SETTINGS *const settings)
 {
     JSON_READ_IO *const io = ctx->io;
 
-    if (JSON_OPTIONAL(JSON_PUSH(io, "fog_start"))) {
-        JSON_MUST(JSON_READ_CURRENT(io, &settings->fog_start.value));
+    if (JSON_ReadIO_HasKey(io, "fog_start")) {
+        MUST(JSON_READ(io, "fog_start", &settings->fog_start.value));
         settings->fog_start.is_present = true;
-        JSON_MUST(JSON_POP(io));
     }
 
-    if (JSON_OPTIONAL(JSON_PUSH(io, "fog_end"))) {
-        JSON_MUST(JSON_READ_CURRENT(io, &settings->fog_end.value));
+    if (JSON_ReadIO_HasKey(io, "fog_end")) {
+        MUST(JSON_READ(io, "fog_end", &settings->fog_end.value));
         settings->fog_end.is_present = true;
-        JSON_MUST(JSON_POP(io));
     }
 
-    if (JSON_OPTIONAL(JSON_PUSH(io, "fog_transparency"))) {
-        JSON_MUST(JSON_READ_CURRENT(io, &settings->fog_transparency.value));
+    if (JSON_ReadIO_HasKey(io, "fog_transparency")) {
+        MUST(JSON_READ(
+            io, "fog_transparency", &settings->fog_transparency.value));
         settings->fog_transparency.is_present = true;
-        JSON_MUST(JSON_POP(io));
     }
 
-    if (JSON_OPTIONAL(JSON_PUSH(io, "fog_color"))) {
-        JSON_MUST(JSON_READ_CURRENT(io, &settings->fog_color.value));
+    if (JSON_ReadIO_HasKey(io, "fog_color")) {
+        MUST(JSON_READ(io, "fog_color", &settings->fog_color.value));
         settings->fog_color.is_present = true;
-        JSON_MUST(JSON_POP(io));
     }
 
-    if (JSON_OPTIONAL(JSON_PUSH(io, "fog_bulbs"))) {
-        JSON_MUST(JSON_READ_CURRENT(io, &settings->fog_bulbs.value));
+    if (JSON_ReadIO_HasKey(io, "fog_bulbs")) {
+        MUST(JSON_READ(io, "fog_bulbs", &settings->fog_bulbs.value));
         settings->fog_bulbs.is_present = true;
-        JSON_MUST(JSON_POP(io));
     }
 
-    if (JSON_OPTIONAL(JSON_PUSH(io, "water_color"))) {
-        JSON_MUST(JSON_READ_CURRENT(io, &settings->water_color.value));
+    if (JSON_ReadIO_HasKey(io, "water_color")) {
+        MUST(JSON_READ(io, "water_color", &settings->water_color.value));
         settings->water_color.is_present = true;
-        JSON_MUST(JSON_POP(io));
     }
 
-    if (JSON_OPTIONAL(JSON_PUSH(io, "death_tile"))) {
+    if (JSON_ReadIO_HasKey(io, "death_tile")) {
+        MUST(JSON_PUSH(io, "death_tile"));
         const char *tmp_s = nullptr;
-        JSON_MUST(JSON_READ_CURRENT(io, &tmp_s));
+        MUST(JSON_READ_CURRENT(io, &tmp_s));
         const int32_t value =
             EnumMap_Get(ENUM_MAP_NAME(GF_DEATH_TILE), tmp_s, -1);
         if (value < 0) {
             JSON_ReadIO_SetError(io, "Invalid death_tile value '%s'", tmp_s);
-            JSON_FAIL();
         }
         settings->death_tile.is_present = true;
         settings->death_tile.value = value;
-        JSON_MUST(JSON_POP(io));
+        MUST(JSON_POP(io));
     }
 
-    if (JSON_OPTIONAL(JSON_PUSH(io, "sfx_path"))) {
-        JSON_MUST(JSON_POP(io));
-        JSON_SHOULD(M_ReadPath(
+    if (JSON_ReadIO_HasKey(io, "sfx_path")) {
+        MUST(JSON_PUSH(io, "sfx_path"));
+        MUST(JSON_POP(io));
+        SHOULD(M_ReadPath(
             io, "sfx_path", false, GAME_DYNAMIC_PATH_SFX_FILE,
             &settings->sfx_path, false));
     }
-    JSON_FINISH();
+    return OK;
 }
 
-static bool M_LoadLevelItemDrops(
+static RESULT M_LoadLevelItemDrops(
     const M_CONTEXT *const ctx, GF_LEVEL *const level)
 {
     JSON_READ_IO *const io = ctx->io;
     level->item_drops.count = 0;
 
-    if (!JSON_OPTIONAL(JSON_PUSH(io, "item_drops"))) {
-        return true;
+    if (!JSON_ReadIO_HasKey(io, "item_drops")) {
+        return OK;
     }
+    MUST(JSON_PUSH(io, "item_drops"));
 
     if (ctx->gf->enable_tr2_item_drops) {
         LOG_WARNING(
             "TR2 item drops are enabled: gameflow-defined drops for level "
             "%d will be ignored",
             level->num);
-        JSON_MUST(JSON_POP(io));
-        return true;
+        MUST(JSON_POP(io));
+        return OK;
     }
 
     level->item_drops.count = JSON_ARRAY_LEN(io);
     if (level->item_drops.count < 0) {
-        JSON_FAIL();
+        return JSON_ReadIO_Fail(io, "a list was expected");
     }
     level->item_drops.data = Memory_Alloc(
         sizeof(GF_DROP_ITEM_DATA) * (size_t)level->item_drops.count);
 
     for (int32_t i = 0; i < level->item_drops.count; i++) {
-        JSON_MUST(JSON_PUSH_INDEX(io, i));
+        MUST(JSON_PUSH_INDEX(io, i));
         GF_DROP_ITEM_DATA *data = &level->item_drops.data[i];
 
-        JSON_MUST(JSON_READ(io, "enemy_num", &data->enemy_num));
+        MUST(JSON_READ(io, "enemy_num", &data->enemy_num));
 
-        JSON_MUST(JSON_PUSH(io, "object_ids"));
+        MUST(JSON_PUSH(io, "object_ids"));
         const int32_t object_count = JSON_ARRAY_LEN(io);
         if (object_count < 0) {
-            JSON_FAIL();
+            return JSON_ReadIO_Fail(io, "a list was expected");
         }
         data->count = object_count;
         data->object_ids = Memory_Alloc(sizeof(int16_t) * data->count);
         for (int32_t j = 0; j < data->count; j++) {
-            JSON_MUST(JSON_PUSH_INDEX(io, j));
+            MUST(JSON_PUSH_INDEX(io, j));
             OBJECT_ID id = NO_OBJECT;
-            JSON_MUST(M_ReadObjectID(ctx, &id));
+            MUST(M_ReadObjectID(ctx, &id));
             data->object_ids[j] = (int16_t)id;
-            JSON_MUST(JSON_POP(io));
+            MUST(JSON_POP(io));
         }
-        JSON_MUST(JSON_POP(io));
-        JSON_MUST(JSON_POP(io));
+        MUST(JSON_POP(io));
+        MUST(JSON_POP(io));
     }
-    JSON_MUST(JSON_POP(io));
-    JSON_FINISH();
+    MUST(JSON_POP(io));
+    return OK;
 }
 
 static void M_CopyRootSettingsIntoLevel(
@@ -336,49 +325,54 @@ static void M_CopyRootSettingsIntoLevel(
         src->sfx_path != nullptr ? Memory_DupStr(src->sfx_path) : nullptr;
 }
 
-static void M_ReadModMeta(JSON_READ_IO *const io, GF_MOD_META *const meta)
+static RESULT M_ReadModMeta(JSON_READ_IO *const io, GF_MOD_META *const meta)
 {
     meta->name = nullptr;
     meta->engine = 0;
     meta->extends = nullptr;
 
     const char *tmp_s = nullptr;
-    if (JSON_OPTIONAL(JSON_READ(io, "name", &tmp_s)) && tmp_s != nullptr) {
+    MUST(JSON_READ_OPT(io, "name", &tmp_s));
+    if (tmp_s != nullptr) {
         meta->name = Memory_DupStr(tmp_s);
     }
 
-    JSON_OPTIONAL(JSON_READ(io, "engine", &meta->engine));
+    MUST(JSON_READ_OPT(io, "engine", &meta->engine));
 
     tmp_s = nullptr;
-    if (JSON_OPTIONAL(JSON_READ(io, "extends", &tmp_s)) && tmp_s != nullptr) {
+    MUST(JSON_READ_OPT(io, "extends", &tmp_s));
+    if (tmp_s != nullptr) {
         meta->extends = Memory_DupStr(tmp_s);
     }
+    return OK;
 }
 
-static bool M_LoadRoot(const M_CONTEXT *const ctx)
+static RESULT M_LoadRoot(const M_CONTEXT *const ctx)
 {
     JSON_READ_IO *const io = ctx->io;
     const char *tmp_s = nullptr;
 
-    M_ReadModMeta(io, &ctx->gf->meta);
+    MUST(M_ReadModMeta(io, &ctx->gf->meta));
 
     // A title that names no picture shows its own level behind the menu. One
     // that names a picture and cannot find it is a broken install, not that.
     tmp_s = nullptr;
-    if (JSON_OPTIONAL(JSON_READ(io, "main_menu_picture", &tmp_s))
-        && tmp_s != nullptr) {
+    MUST(JSON_READ_OPT(io, "main_menu_picture", &tmp_s));
+    if (tmp_s != nullptr) {
         ctx->gf->main_menu_background_path = Memory_DupStr(
             GamePath_TryResolve(GAME_DYNAMIC_PATH_IMAGE_FILE, tmp_s));
     }
     ctx->gf->main_menu_use_live_scene = tmp_s == nullptr;
 
-    JSON_MUST(JSON_READ(io, "savegame_file_fmt", &tmp_s));
+    MUST(JSON_READ(io, "savegame_file_fmt", &tmp_s));
     ctx->gf->savegame_file_fmt = Memory_DupStr(tmp_s);
 
-    if (JSON_PUSH(io, "ambient_tracks")) {
+    if (JSON_ReadIO_HasKey(io, "ambient_tracks")) {
+
+        MUST(JSON_PUSH(io, "ambient_tracks"));
         const int32_t count = JSON_ARRAY_LEN(io);
         if (count < 0) {
-            JSON_FAIL();
+            return JSON_ReadIO_Fail(io, "a list was expected");
         }
         if (count > 0) {
             ctx->gf->ambient_tracks.is_present = true;
@@ -387,11 +381,11 @@ static bool M_LoadRoot(const M_CONTEXT *const ctx)
                 Memory_Alloc(sizeof(MUSIC_ID) * (size_t)count);
             for (int32_t i = 0; i < count; i++) {
                 int32_t track = MX_INACTIVE;
-                JSON_SHOULD(JSON_READ_A(io, i, &track));
+                SHOULD(JSON_READ_A(io, i, &track));
                 ctx->gf->ambient_tracks.ids[i] = track;
             }
         }
-        JSON_MUST(JSON_POP(io));
+        MUST(JSON_POP(io));
     }
 
     ctx->gf->enable_tr2_item_drops = g_TRVersion > 1;
@@ -401,46 +395,45 @@ static bool M_LoadRoot(const M_CONTEXT *const ctx)
     JSON_READ_D(
         io, "convert_dropped_guns", &ctx->gf->convert_dropped_guns,
         g_TRVersion > 1);
-    JSON_FINISH();
+    return OK;
 }
 
-static bool M_LoadGlobeEntry(
+static RESULT M_LoadGlobeEntry(
     const M_CONTEXT *const ctx, void *const target_elem, size_t idx,
     void *const user_arg)
 {
     GF_GLOBE_ENTRY *const e = target_elem;
     ASSERT(user_arg == nullptr);
     JSON_READ_IO *const io = ctx->io;
-    JSON_MUST(JSON_READ(io, "rot", &e->rot));
+    MUST(JSON_READ(io, "rot", &e->rot));
 
-    JSON_MUST(JSON_READ(io, "start_level_ordinal", &e->start_level_ordinal));
-    JSON_MUST(JSON_READ(
+    MUST(JSON_READ(io, "start_level_ordinal", &e->start_level_ordinal));
+    MUST(JSON_READ(
         io, "completion_level_ordinal", &e->completion_level_ordinal));
 
-    JSON_MUST(JSON_PUSH(io, "prereq_zones"));
+    MUST(JSON_PUSH(io, "prereq_zones"));
     const int32_t prereq_count = JSON_ARRAY_LEN(io);
     if (prereq_count < 0) {
-        JSON_FAIL();
+        return JSON_ReadIO_Fail(io, "a list was expected");
     }
     uint32_t computed_prereq_mask = 0;
     for (int32_t i = 0; i < prereq_count; i++) {
         int32_t zone = JSON_INVALID_NUMBER;
-        JSON_MUST(JSON_READ_A(io, i, &zone));
+        MUST(JSON_READ_A(io, i, &zone));
         if (zone < 0 || zone >= MAX_GLOBE_ZONES) {
-            JSON_ReadIO_SetError(
+            return JSON_ReadIO_Fail(
                 io, "'prereq_zones' entries must be in range 0..%d",
                 MAX_GLOBE_ZONES - 1);
-            JSON_FAIL();
         }
         computed_prereq_mask |= 1u << zone;
     }
     e->prereq_mask = computed_prereq_mask;
-    JSON_MUST(JSON_POP(io));
+    MUST(JSON_POP(io));
 
     int32_t mesh_idx = JSON_INVALID_NUMBER;
-    JSON_MUST(JSON_READ(io, "mesh_idx", &mesh_idx));
+    MUST(JSON_READ(io, "mesh_idx", &mesh_idx));
     e->mesh_idx = (uint8_t)mesh_idx;
-    JSON_FINISH();
+    return OK;
 }
 
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleIntEvent)
@@ -458,7 +451,7 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandlePictureEvent)
 {
     JSON_READ_IO *const io = ctx->io;
     char *expanded_path = nullptr;
-    JSON_SHOULD(M_ReadPath(
+    SHOULD(M_ReadPath(
         io, "path", false, GAME_DYNAMIC_PATH_IMAGE_FILE, &expanded_path,
         event == nullptr));
 
@@ -494,7 +487,7 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleTotalStatsEvent)
 {
     JSON_READ_IO *const io = ctx->io;
     char *expanded_path = nullptr;
-    JSON_SHOULD(M_ReadPath(
+    SHOULD(M_ReadPath(
         io, "background_path", false, GAME_DYNAMIC_PATH_IMAGE_FILE,
         &expanded_path, event == nullptr));
     if (expanded_path == nullptr) {
@@ -517,9 +510,15 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleAddItemEvent)
 {
     JSON_READ_IO *const io = ctx->io;
     OBJECT_ID obj_id = NO_OBJECT;
-    JSON_MUST(JSON_PUSH(io, "object_id"));
-    JSON_MUST(M_ReadObjectID(ctx, &obj_id));
-    JSON_MUST(JSON_POP(io));
+    if (!SHOULD(JSON_PUSH(io, "object_id"))) {
+        return -1;
+    }
+    if (!Result_Absorb(M_ReadObjectID(ctx, &obj_id))) {
+        return -1;
+    }
+    if (!Result_Absorb(JSON_POP(io))) {
+        return -1;
+    }
     if (event != nullptr) {
         GF_ADD_ITEM_DATA *const event_data = extra_data;
         event_data->object_id = obj_id;
@@ -537,15 +536,17 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupHorizonEvent)
 {
     JSON_READ_IO *const io = ctx->io;
     RGB_888 color = {};
-    JSON_MUST(JSON_READ(io, "color", &color));
+    if (!Result_Absorb(JSON_READ(io, "color", &color))) {
+        return -1;
+    }
     if (event != nullptr) {
         GF_SETUP_HORIZON_DATA *const event_data = extra_data;
         event_data->color = color;
         JSON_READ_D(io, "layer", &event_data->layer, 0);
         if (event_data->layer < 0
             || event_data->layer >= OUTPUT_SKY_LAYER_COUNT) {
-            JSON_ReadIO_SetError(io, "'layer' must be 0 or 1");
-            JSON_FAIL();
+            IGNORE(JSON_ReadIO_Fail(io, "'layer' must be 0 or 1"));
+            return -1;
         }
         JSON_READ_D(io, "speed", &event_data->speed, 0);
         JSON_READ_D(io, "color_add", &event_data->color_add, false);
@@ -562,10 +563,18 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupLensFlareEvent)
     JSON_READ_IO *const io = ctx->io;
     XYZ_32 pos = {};
     RGB_888 color = {};
-    JSON_MUST(JSON_READ(io, "x", &pos.x));
-    JSON_MUST(JSON_READ(io, "y", &pos.y));
-    JSON_MUST(JSON_READ(io, "z", &pos.z));
-    JSON_MUST(JSON_READ(io, "color", &color));
+    if (!Result_Absorb(JSON_READ(io, "x", &pos.x))) {
+        return -1;
+    }
+    if (!Result_Absorb(JSON_READ(io, "y", &pos.y))) {
+        return -1;
+    }
+    if (!Result_Absorb(JSON_READ(io, "z", &pos.z))) {
+        return -1;
+    }
+    if (!Result_Absorb(JSON_READ(io, "color", &color))) {
+        return -1;
+    }
     if (event != nullptr) {
         GF_SETUP_LENS_FLARE_DATA *const event_data = extra_data;
         event_data->pos = pos;
@@ -605,32 +614,33 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleGlobeSelectEvent)
     return out_size;
 }
 
-static bool M_LoadArray(
+static RESULT M_LoadArray(
     const M_CONTEXT *const ctx, const char *const key, int32_t *const count,
     void **const elements, const size_t element_size,
     const M_LOAD_ARRAY_FUNC load_func, void *const load_func_arg)
 {
-    if (!JSON_OPTIONAL(JSON_PUSH(ctx->io, key))) {
-        return true;
+    if (!JSON_ReadIO_HasKey(ctx->io, key)) {
+        return OK;
     }
+    MUST(JSON_PUSH(ctx->io, key));
     const int32_t elem_count = JSON_ARRAY_LEN(ctx->io);
     if (elem_count < 0) {
-        JSON_FAIL();
+        return JSON_ReadIO_Fail(ctx->io, "a list was expected");
     }
     *count = elem_count;
     *elements = Memory_Alloc(element_size * (size_t)(*count));
 
     for (size_t i = 0; i < (size_t)elem_count; i++) {
         void *const element = (char *)*elements + i * element_size;
-        JSON_MUST(JSON_PUSH_INDEX(ctx->io, i));
-        JSON_MUST(load_func(ctx, element, i, load_func_arg));
-        JSON_MUST(JSON_POP(ctx->io));
+        MUST(JSON_PUSH_INDEX(ctx->io, i));
+        MUST(load_func(ctx, element, i, load_func_arg));
+        MUST(JSON_POP(ctx->io));
     }
-    JSON_MUST(JSON_POP(ctx->io));
-    JSON_FINISH();
+    MUST(JSON_POP(ctx->io));
+    return OK;
 }
 
-static bool M_LoadGlobeSelectEntries(const M_CONTEXT *const ctx)
+static RESULT M_LoadGlobeSelectEntries(const M_CONTEXT *const ctx)
 {
     ctx->gf->globe.count = 0;
     ctx->gf->globe.entries = nullptr;
@@ -645,13 +655,15 @@ static int32_t M_LoadSequenceEvent(
     void *const extra_data)
 {
     const char *type_str = nullptr;
-    JSON_MUST(JSON_READ(ctx->io, "type", &type_str));
+    if (!Result_Absorb(JSON_READ(ctx->io, "type", &type_str))) {
+        return -1;
+    }
     const GF_SEQUENCE_EVENT_TYPE type =
         ENUM_MAP_GET(GF_SEQUENCE_EVENT_TYPE, type_str, -1);
     if (type == (GF_SEQUENCE_EVENT_TYPE)-1) {
-        JSON_ReadIO_SetError(
-            ctx->io, "unknown game flow sequence event type: '%s'", type_str);
-        JSON_FAIL();
+        IGNORE(JSON_ReadIO_Fail(
+            ctx->io, "unknown game flow sequence event type: '%s'", type_str));
+        return -1;
     }
 
     const M_SEQUENCE_EVENT_HANDLER *handler = M_GetSequenceEventHandlers();
@@ -679,25 +691,25 @@ fail:
     return -1;
 }
 
-static bool M_LoadSequence(
+static RESULT M_LoadSequence(
     const M_CONTEXT *const ctx, GF_SEQUENCE *const sequence)
 {
     JSON_READ_IO *const io = ctx->io;
     sequence->length = 0;
     const int32_t seq_count = JSON_ARRAY_LEN(io);
     if (seq_count < 0) {
-        JSON_FAIL();
+        return JSON_ReadIO_Fail(io, "a list was expected");
     }
 
     const size_t event_base_size = sizeof(GF_SEQUENCE_EVENT);
     size_t total_data_size = 0;
     for (int32_t i = 0; i < seq_count; i++) {
-        JSON_MUST(JSON_PUSH_INDEX(io, i));
+        MUST(JSON_PUSH_INDEX(io, i));
         const int32_t event_extra_size =
             M_LoadSequenceEvent(ctx, nullptr, nullptr);
-        JSON_MUST(JSON_POP(io));
+        MUST(JSON_POP(io));
         if (event_extra_size < 0) {
-            JSON_FAIL();
+            return JSON_ReadIO_Fail(io, "a list was expected");
         }
         sequence->length++;
         total_data_size += Memory_Align((size_t)event_extra_size);
@@ -713,10 +725,10 @@ static bool M_LoadSequence(
 
     int32_t j = 0;
     for (int32_t i = 0; i < seq_count; i++) {
-        JSON_MUST(JSON_PUSH_INDEX(io, i));
+        MUST(JSON_PUSH_INDEX(io, i));
         const int32_t event_extra_size =
             M_LoadSequenceEvent(ctx, &sequence->events[j], extra_data_ptr);
-        JSON_MUST(JSON_POP(io));
+        MUST(JSON_POP(io));
         if (event_extra_size < 0) {
             // Parsing this event failed - discard it
             continue;
@@ -724,27 +736,28 @@ static bool M_LoadSequence(
         extra_data_ptr += Memory_Align((size_t)event_extra_size);
         j++;
     }
-    JSON_FINISH();
+    return OK;
 }
 
-static bool M_LoadLevelInjections(
+static RESULT M_LoadLevelInjections(
     const M_CONTEXT *const ctx, GF_LEVEL *const level)
 {
     JSON_READ_IO *const io = ctx->io;
     bool inherit;
     JSON_READ_D(io, "inherit_injections", &inherit, true);
     int32_t local_count = 0;
-    if (JSON_PUSH(io, "injections")) {
+    if (JSON_ReadIO_HasKey(io, "injections")) {
+        MUST(JSON_PUSH(io, "injections"));
         local_count = JSON_ARRAY_LEN(io);
         if (local_count < 0) {
-            JSON_FAIL();
+            return JSON_ReadIO_Fail(io, "a list was expected");
         }
-        JSON_MUST(JSON_POP(io));
+        MUST(JSON_POP(io));
     }
 
     level->injections.count = 0;
     if (local_count == 0 && !inherit) {
-        return true;
+        return OK;
     }
 
     if (inherit) {
@@ -765,26 +778,26 @@ static bool M_LoadLevelInjections(
     }
 
     if (local_count == 0) {
-        return true;
+        return OK;
     }
 
-    JSON_MUST(JSON_PUSH(io, "injections"));
+    MUST(JSON_PUSH(io, "injections"));
     for (int32_t i = 0; i < local_count; i++) {
         const char *str = nullptr;
-        JSON_MUST(JSON_READ_A(io, i, &str));
+        MUST(JSON_READ_A(io, i, &str));
         level->injections.data_paths[base_index + i] = Memory_DupStr(
             GamePath_TryResolve(GAME_DYNAMIC_PATH_INJECTION_FILE, str));
     }
-    JSON_MUST(JSON_POP(io));
-    JSON_FINISH();
+    MUST(JSON_POP(io));
+    return OK;
 }
 
-static bool M_LoadLevelSequence(
+static RESULT M_LoadLevelSequence(
     const M_CONTEXT *const ctx, GF_LEVEL *const level)
 {
-    JSON_MUST(JSON_PUSH(ctx->io, "sequence"));
-    JSON_MUST(M_LoadSequence(ctx, &level->sequence));
-    JSON_MUST(JSON_POP(ctx->io));
+    MUST(JSON_PUSH(ctx->io, "sequence"));
+    MUST(M_LoadSequence(ctx, &level->sequence));
+    MUST(JSON_POP(ctx->io));
 
     for (int32_t i = 0; i < level->sequence.length; i++) {
         GF_SEQUENCE_EVENT *const event = &level->sequence.events[i];
@@ -792,10 +805,10 @@ static bool M_LoadLevelSequence(
             event->data = (void *)(intptr_t)level->num;
         }
     }
-    JSON_FINISH();
+    return OK;
 }
 
-static bool M_LoadLevel(
+static RESULT M_LoadLevel(
     const M_CONTEXT *const ctx, void *const target_elem, const size_t idx,
     void *const user_arg)
 {
@@ -805,31 +818,30 @@ static bool M_LoadLevel(
 
     {
         level->type = (GF_LEVEL_TYPE)(intptr_t)user_arg;
-        if (JSON_OPTIONAL(JSON_PUSH(io, "type"))) {
+        if (JSON_ReadIO_HasKey(io, "type")) {
+            MUST(JSON_PUSH(io, "type"));
             const char *tmp = nullptr;
-            JSON_MUST(JSON_READ_CURRENT(io, &tmp));
-            JSON_MUST(JSON_POP(io));
+            MUST(JSON_READ_CURRENT(io, &tmp));
+            MUST(JSON_POP(io));
             const GF_LEVEL_TYPE user_type =
                 ENUM_MAP_GET(GF_LEVEL_TYPE, tmp, -1);
             if (user_type == (GF_LEVEL_TYPE)-1) {
-                JSON_ReadIO_SetError(io, "unrecognized type '%s'", tmp);
-                JSON_FAIL();
+                return JSON_ReadIO_Fail(io, "unrecognized type '%s'", tmp);
             }
 
             if (level->type != GFL_NORMAL
                 && GF_GetLevelTableType(user_type) != GFLT_MAIN) {
-                JSON_ReadIO_SetError(
+                return JSON_ReadIO_Fail(
                     io, "cannot override level type=%s to %s",
                     ENUM_MAP_TO_STRING(GF_LEVEL_TYPE, level->type),
                     ENUM_MAP_TO_STRING(GF_LEVEL_TYPE, user_type));
-                JSON_FAIL();
             }
             level->type = user_type;
         }
     }
 
     if (level->type == GFL_DUMMY) {
-        return true;
+        return OK;
     }
 
     {
@@ -839,8 +851,7 @@ static bool M_LoadLevel(
             : (level->type == GFL_TITLE || level->type == GFL_GYM)
             ? GAME_DYNAMIC_PATH_SHARED_LEVEL_FILE
             : GAME_DYNAMIC_PATH_LEVEL_FILE;
-        JSON_MUST(
-            M_ReadPath(io, "path", false, path_type, &level->path, false));
+        MUST(M_ReadPath(io, "path", false, path_type, &level->path, false));
         level->key = M_MakeLevelKey(level->path);
     }
     // A level's script is named after the level: wall.tr2 runs
@@ -857,15 +868,16 @@ static bool M_LoadLevel(
 
     {
         level->music_track = MX_INACTIVE;
-        if (JSON_OPTIONAL(JSON_PUSH(io, "music_track"))) {
-            JSON_MUST(JSON_READ_CURRENT(io, &level->music_track));
-            JSON_MUST(JSON_POP(io));
+        if (JSON_ReadIO_HasKey(io, "music_track")) {
+            MUST(JSON_PUSH(io, "music_track"));
+            MUST(JSON_READ_CURRENT(io, &level->music_track));
+            MUST(JSON_POP(io));
         }
     }
 
     {
         const char *tmp = nullptr;
-        JSON_OPTIONAL(JSON_READ(io, "lara_outfit", &tmp));
+        MUST(JSON_READ_OPT(io, "lara_outfit", &tmp));
         if (tmp != nullptr) {
             if (!ctx->validation_mode
                 && !Lara_Skin_IsOutfitDefined(
@@ -881,10 +893,11 @@ static bool M_LoadLevel(
 
     level->weather_type = WEATHER_NONE;
     {
-        if (JSON_OPTIONAL(JSON_PUSH(io, "weather_type"))) {
+        if (JSON_ReadIO_HasKey(io, "weather_type")) {
+            MUST(JSON_PUSH(io, "weather_type"));
             const char *tmp = nullptr;
-            JSON_MUST(JSON_READ_CURRENT(io, &tmp));
-            JSON_MUST(JSON_POP(io));
+            MUST(JSON_READ_CURRENT(io, &tmp));
+            MUST(JSON_POP(io));
             level->weather_type = ENUM_MAP_GET(WEATHER_TYPE, tmp, WEATHER_NONE);
         }
     }
@@ -898,57 +911,58 @@ static bool M_LoadLevel(
 
     M_CopyRootSettingsIntoLevel(&level->settings, &ctx->gf->settings);
 
-    JSON_MUST(M_LoadSettings(ctx, &level->settings));
-    JSON_MUST(M_LoadLevelItemDrops(ctx, level));
-    JSON_MUST(M_LoadLevelSequence(ctx, level));
-    JSON_MUST(M_LoadLevelInjections(ctx, level));
-    JSON_FINISH();
+    MUST(M_LoadSettings(ctx, &level->settings));
+    MUST(M_LoadLevelItemDrops(ctx, level));
+    MUST(M_LoadLevelSequence(ctx, level));
+    MUST(M_LoadLevelInjections(ctx, level));
+    return OK;
 }
 
-static bool M_LoadLevelTable(
+static RESULT M_LoadLevelTable(
     const M_CONTEXT *const ctx, const char *const key,
     GF_LEVEL_TABLE *const level_table, const GF_LEVEL_TYPE default_level_type)
 {
-    JSON_MUST(M_LoadArray(
+    MUST(M_LoadArray(
         ctx, key, &level_table->count, (void **)&level_table->levels,
         sizeof(GF_LEVEL), M_LoadLevel, (void *)(intptr_t)default_level_type));
-    JSON_FINISH();
+    return OK;
 }
 
-static bool M_LoadLevels(const M_CONTEXT *const ctx)
+static RESULT M_LoadLevels(const M_CONTEXT *const ctx)
 {
-    JSON_MUST(JSON_PUSH(ctx->io, "levels"));
-    JSON_MUST(JSON_POP(ctx->io));
-    JSON_MUST(M_LoadLevelTable(
+    MUST(JSON_PUSH(ctx->io, "levels"));
+    MUST(JSON_POP(ctx->io));
+    MUST(M_LoadLevelTable(
         ctx, "levels", &ctx->gf->level_tables[GFLT_MAIN], GFL_NORMAL));
-    JSON_FINISH();
+    return OK;
 }
 
-static bool M_LoadCutscenes(const M_CONTEXT *const ctx)
+static RESULT M_LoadCutscenes(const M_CONTEXT *const ctx)
 {
     return M_LoadLevelTable(
         ctx, "cutscenes", &ctx->gf->level_tables[GFLT_CUTSCENES], GFL_CUTSCENE);
 }
 
-static bool M_LoadDemos(const M_CONTEXT *const ctx)
+static RESULT M_LoadDemos(const M_CONTEXT *const ctx)
 {
     return M_LoadLevelTable(
         ctx, "demos", &ctx->gf->level_tables[GFLT_DEMOS], GFL_DEMO);
 }
 
-static bool M_LoadTitleLevel(const M_CONTEXT *const ctx)
+static RESULT M_LoadTitleLevel(const M_CONTEXT *const ctx)
 {
-    if (!JSON_OPTIONAL(JSON_PUSH(ctx->io, "title"))) {
-        return true;
+    if (!JSON_ReadIO_HasKey(ctx->io, "title")) {
+        return OK;
     }
+    MUST(JSON_PUSH(ctx->io, "title"));
     ctx->gf->title_level = Memory_Alloc(sizeof(GF_LEVEL));
-    JSON_MUST(
+    MUST(
         M_LoadLevel(ctx, ctx->gf->title_level, 0, (void *)(intptr_t)GFL_TITLE));
-    JSON_MUST(JSON_POP(ctx->io));
-    JSON_FINISH();
+    MUST(JSON_POP(ctx->io));
+    return OK;
 }
 
-static bool M_LoadFMV(
+static RESULT M_LoadFMV(
     const M_CONTEXT *const ctx, void *const target_elem, size_t idx,
     void *const user_arg)
 {
@@ -956,49 +970,64 @@ static bool M_LoadFMV(
     ASSERT(user_arg == nullptr);
     JSON_READ_IO *const io = ctx->io;
     char *path = nullptr;
-    JSON_SHOULD(M_ReadPath(
+    SHOULD(M_ReadPath(
         io, "path", false, GAME_DYNAMIC_PATH_FMV_FILE, &path, false));
     fmv->path = path;
     JSON_READ_D(io, "legal", &fmv->is_legal, false);
     JSON_READ_D(io, "credit", &fmv->is_credit, false);
     JSON_READ_D(io, "intro", &fmv->is_intro, false);
-    JSON_FINISH();
+    return OK;
 }
 
-static bool M_LoadFMVs(const M_CONTEXT *const ctx)
+static RESULT M_LoadFMVs(const M_CONTEXT *const ctx)
 {
-    JSON_MUST(M_LoadArray(
+    MUST(M_LoadArray(
         ctx, "fmvs", &ctx->gf->fmv_count, (void **)&ctx->gf->fmvs,
         sizeof(GF_FMV), M_LoadFMV, nullptr));
-    JSON_FINISH();
+    return OK;
 }
 
-static bool M_LoadGlobalInjections(const M_CONTEXT *const ctx)
+static RESULT M_LoadGlobalInjections(const M_CONTEXT *const ctx)
 {
     JSON_READ_IO *const io = ctx->io;
     ctx->gf->injections.count = 0;
-    if (!JSON_PUSH(io, "injections")) {
-        return true;
+    if (!JSON_ReadIO_HasKey(io, "injections")) {
+        return OK;
     }
+    MUST(JSON_PUSH(io, "injections"));
     ctx->gf->injections.count = JSON_ARRAY_LEN(io);
     if (ctx->gf->injections.count < 0) {
-        JSON_FAIL();
+        return JSON_ReadIO_Fail(io, "a list was expected");
     }
     ctx->gf->injections.data_paths =
         Memory_Alloc(sizeof(char *) * (size_t)ctx->gf->injections.count);
     for (int32_t i = 0; i < ctx->gf->injections.count; i++) {
         const char *str = nullptr;
-        JSON_MUST(JSON_READ_A(io, i, &str));
+        MUST(JSON_READ_A(io, i, &str));
         ctx->gf->injections.data_paths[i] = Memory_DupStr(
             GamePath_TryResolve(GAME_DYNAMIC_PATH_INJECTION_FILE, str));
     }
-    JSON_MUST(JSON_POP(io));
-    JSON_FINISH();
+    MUST(JSON_POP(io));
+    return OK;
 }
 
-static bool M_LoadGameFlowDoc(
-    JSON_VALUE *const doc, const char *const path, const bool exit_on_error,
-    const bool validation_mode, char **const error_out)
+static RESULT M_LoadSections(const M_CONTEXT *const ctx)
+{
+    MUST(M_LoadRoot(ctx));
+    MUST(M_LoadSettings(ctx, &ctx->gf->settings));
+    MUST(M_LoadGlobeSelectEntries(ctx));
+    MUST(M_LoadGlobalInjections(ctx));
+    MUST(M_LoadLevels(ctx));
+    MUST(M_LoadCutscenes(ctx));
+    MUST(M_LoadDemos(ctx));
+    MUST(M_LoadFMVs(ctx));
+    MUST(M_LoadTitleLevel(ctx));
+    return OK;
+}
+
+static RESULT M_LoadGameFlowDoc(
+    JSON_VALUE *const doc, const char *const path, const bool validation_mode,
+    char **const error_out)
 {
     GF_Shutdown();
 
@@ -1009,65 +1038,49 @@ static bool M_LoadGameFlowDoc(
 
     ctx.io = JSON_ReadIO_Create(doc, 0, path);
 
-    JSON_MUST(M_LoadRoot(&ctx));
-    JSON_MUST(M_LoadSettings(&ctx, &ctx.gf->settings));
-    JSON_MUST(M_LoadGlobeSelectEntries(&ctx));
-    JSON_MUST(M_LoadGlobalInjections(&ctx));
-    JSON_MUST(M_LoadLevels(&ctx));
-    JSON_MUST(M_LoadCutscenes(&ctx));
-    JSON_MUST(M_LoadDemos(&ctx));
-    JSON_MUST(M_LoadFMVs(&ctx));
-    JSON_MUST(M_LoadTitleLevel(&ctx));
+    const RESULT result = M_LoadSections(&ctx);
 
     JSON_ReadIO_Destroy(ctx.io);
     JSON_ValueFree(doc);
-    return true;
-fail:
-    if (exit_on_error) {
-        M_ExitWithJSONError(&ctx);
-    } else {
-        const char *const error = JSON_ReadIO_GetError(ctx.io);
-        LOG_WARNING("%s", error);
-        if (error_out != nullptr && error != nullptr) {
-            *error_out = Memory_DupStr(error);
+    if (!IS_OK(result)) {
+        // The failure already says what stopped the read and where; the mod
+        // list shows that to the player.
+        if (error_out != nullptr && result.msg != nullptr) {
+            *error_out = Memory_DupStr(result.msg);
         }
-        JSON_ReadIO_Destroy(ctx.io);
-        JSON_ValueFree(doc);
         GF_Shutdown();
     }
-    return false;
+    return result;
 }
 
-static bool M_LoadGameFlowEx(
-    const char *const path, const bool exit_on_error,
-    const bool validation_mode, char **const error_out)
+static RESULT M_LoadGameFlowEx(
+    const char *const path, const bool validation_mode, char **const error_out)
 {
-    JSON_VALUE *const doc =
-        JSONFile_ReadWithError(path, exit_on_error, error_out);
-    if (doc == nullptr) {
-        if (exit_on_error) {
-            Shell_ExitSystemFmt("Failed to open script file %s", path);
+    JSON_VALUE *doc = nullptr;
+    const RESULT read = JSONFile_ReadRequired(path, &doc);
+    if (!IS_OK(read)) {
+        if (error_out != nullptr && read.msg != nullptr) {
+            *error_out = Memory_DupStr(read.msg);
         }
-        return false;
+        return read;
     }
-    return M_LoadGameFlowDoc(
-        doc, path, exit_on_error, validation_mode, error_out);
+    return M_LoadGameFlowDoc(doc, path, validation_mode, error_out);
 }
 
-void GF_LoadFromFile(const char *const path)
+RESULT GF_LoadFromFile(const char *const path)
 {
-    M_LoadGameFlowEx(path, true, false, nullptr);
+    return M_LoadGameFlowEx(path, false, nullptr);
 }
 
 bool GF_TryLoadFromFile(const char *const path)
 {
-    return M_LoadGameFlowEx(path, false, false, nullptr);
+    return Result_Absorb(M_LoadGameFlowEx(path, false, nullptr));
 }
 
 bool GF_ValidateMod(
     const char *const mod_name, const char *const path, char **const error_out)
 {
-    if (!M_LoadGameFlowEx(path, false, true, error_out)) {
+    if (!Result_Absorb(M_LoadGameFlowEx(path, true, error_out))) {
         LOG_WARNING("Mod '%s' has invalid gameflow data", mod_name);
         return false;
     }
@@ -1080,14 +1093,19 @@ bool GF_ReadModMeta(
 {
     ASSERT(meta != nullptr);
 
-    JSON_VALUE *const doc = JSONFile_ReadWithError(path, false, error_out);
-    if (doc == nullptr) {
+    JSON_VALUE *doc = nullptr;
+    const RESULT read = JSONFile_ReadRequired(path, &doc);
+    if (!IS_OK(read)) {
+        if (error_out != nullptr && read.msg != nullptr) {
+            *error_out = Memory_DupStr(read.msg);
+        }
+        IGNORE(read);
         return false;
     }
 
     JSON_READ_IO *const io = JSON_ReadIO_Create(doc, 0, path);
-    M_ReadModMeta(io, meta);
+    const bool ok = Result_Absorb(M_ReadModMeta(io, meta));
     JSON_ReadIO_Destroy(io);
     JSON_ValueFree(doc);
-    return true;
+    return ok;
 }

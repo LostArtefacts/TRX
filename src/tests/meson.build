@@ -937,6 +937,7 @@ unit_tests += {
     'core/json/util/read_io.c',
     'core/json/write.c',
     'core/memory.c',
+    'core/result.c',
     'core/strings/case_funcs.c',
     'core/strings/common.c',
     'core/subsystem.c',

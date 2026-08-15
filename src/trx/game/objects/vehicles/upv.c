@@ -79,18 +79,18 @@ static const BITE m_UPVBites[6] = {
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ(io, "vel", &p->vel));
-    JSON_SHOULD(JSON_READ(io, "rot", &p->rot));
-    JSON_SHOULD(JSON_READ(io, "rot_x", &p->rot_x));
-    JSON_SHOULD(JSON_READ(io, "fan_rot", &p->fan_rot));
-    JSON_SHOULD(JSON_READ(io, "weapon_timer", &p->weapon_timer));
-    JSON_SHOULD(JSON_READ(io, "current_weapon", &p->current_weapon));
-    if (JSON_SHOULD(JSON_PUSH(io, "flags"))) {
-        JSON_SHOULD(JSON_READ(io, "control", &p->flags.control));
-        JSON_SHOULD(JSON_READ(io, "surface", &p->flags.surface));
-        JSON_SHOULD(JSON_READ(io, "dive", &p->flags.dive));
-        JSON_SHOULD(JSON_READ(io, "dead", &p->flags.dead));
-        JSON_POP(io);
+    SHOULD(JSON_READ_OPT(io, "vel", &p->vel));
+    SHOULD(JSON_READ_OPT(io, "rot", &p->rot));
+    SHOULD(JSON_READ_OPT(io, "rot_x", &p->rot_x));
+    SHOULD(JSON_READ_OPT(io, "fan_rot", &p->fan_rot));
+    SHOULD(JSON_READ_OPT(io, "weapon_timer", &p->weapon_timer));
+    SHOULD(JSON_READ_OPT(io, "current_weapon", &p->current_weapon));
+    if (SHOULD(JSON_PUSH(io, "flags"))) {
+        SHOULD(JSON_READ_OPT(io, "control", &p->flags.control));
+        SHOULD(JSON_READ_OPT(io, "surface", &p->flags.surface));
+        SHOULD(JSON_READ_OPT(io, "dive", &p->flags.dive));
+        SHOULD(JSON_READ_OPT(io, "dead", &p->flags.dead));
+        SHOULD(JSON_POP(io));
     }
 }
 

@@ -5,6 +5,7 @@
 #include <trx/core/json.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
+#include <trx/core/result.h>
 #include <trx/game/savegame/types.h>
 
 #include <stdint.h>
@@ -19,18 +20,18 @@ bool SG_File_UpdateDeathCounters(
     TRX_FILE *fp, int32_t level_num, int32_t death_count, bool is_quick);
 
 // Start of reader functions ===================================================
-bool SG_File_LoadLara(JSON_READ_IO *io);
-bool SG_File_LoadInventory(JSON_READ_IO *io);
-bool SG_File_LoadFlipmaps(JSON_READ_IO *io);
-bool SG_File_LoadCameras(JSON_READ_IO *io);
-bool SG_File_LoadItems(JSON_READ_IO *io);
-bool SG_File_LoadEffects(JSON_READ_IO *io);
-bool SG_File_LoadFX(JSON_READ_IO *io);
-bool SG_File_LoadFlares(JSON_READ_IO *io);
-bool SG_File_LoadMusic(JSON_READ_IO *io);
-bool SG_File_LoadResumeInfoList(JSON_READ_IO *io);
-bool SG_File_LoadRules(JSON_READ_IO *io);
-bool SG_File_LoadMisc(JSON_READ_IO *io);
+RESULT SG_File_LoadLara(JSON_READ_IO *io);
+RESULT SG_File_LoadInventory(JSON_READ_IO *io);
+RESULT SG_File_LoadFlipmaps(JSON_READ_IO *io);
+RESULT SG_File_LoadCameras(JSON_READ_IO *io);
+RESULT SG_File_LoadItems(JSON_READ_IO *io);
+RESULT SG_File_LoadEffects(JSON_READ_IO *io);
+RESULT SG_File_LoadFX(JSON_READ_IO *io);
+RESULT SG_File_LoadFlares(JSON_READ_IO *io);
+RESULT SG_File_LoadMusic(JSON_READ_IO *io);
+RESULT SG_File_LoadResumeInfoList(JSON_READ_IO *io);
+RESULT SG_File_LoadRules(JSON_READ_IO *io);
+RESULT SG_File_LoadMisc(JSON_READ_IO *io);
 // End of reader functions =====================================================
 
 // Start of writer functions ===================================================

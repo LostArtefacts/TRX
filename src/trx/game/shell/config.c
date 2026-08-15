@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/core/log.h>
+#include <trx/core/result.h>
 #include <trx/game/clock.h>
 #include <trx/game/game_strings/manager.h>
 #include <trx/game/gun/misc.h>
@@ -145,7 +146,7 @@ void Shell_HandleConfigChange(const CONFIG_CHANGE *const change)
     // A hold going on or coming off moves a setting without the player having
     // chosen anything, so there is nothing new to write down.
     if (change->persist && !TestReplay_IsOpened()) {
-        Config_Write();
+        SHOULD(Config_Write(), "The settings file was not written");
     }
 
 #define L_CHANGED(subject) Config_Change_HasMirror(change, &g_Config.subject)
@@ -159,7 +160,7 @@ void Shell_HandleConfigChange(const CONFIG_CHANGE *const change)
     }
 
     if (L_CHANGED(language)) {
-        GameStringManager_ReloadLanguage(g_Config.language);
+        Result_Absorb(GameStringManager_ReloadLanguage(g_Config.language));
     }
 
     if (L_CHANGED(window.is_fullscreen) || L_CHANGED(window.is_maximized)

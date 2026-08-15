@@ -30,11 +30,11 @@ static bool M_ShouldSpawnBlood(const ITEM *const item)
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ(io, "x_rot_speed", &p->x_rot_speed));
-    JSON_SHOULD(JSON_READ(io, "bounce_stage", &p->bounce_stage));
-    JSON_SHOULD(JSON_READ(io, "destroyed", &p->destroyed));
+    SHOULD(JSON_READ_OPT(io, "x_rot_speed", &p->x_rot_speed));
+    SHOULD(JSON_READ_OPT(io, "bounce_stage", &p->bounce_stage));
+    SHOULD(JSON_READ_OPT(io, "destroyed", &p->destroyed));
     p->targetable = !p->destroyed;
-    JSON_OPTIONAL(JSON_READ(io, "targetable", &p->targetable));
+    SHOULD(JSON_READ_OPT(io, "targetable", &p->targetable));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
