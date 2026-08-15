@@ -32,15 +32,14 @@ static void M_PlayIntroFMVs(void)
     }
 }
 
-GF_COMMAND GF_RunTitle(void)
+RESULT GF_RunTitle(GF_COMMAND *const out_cmd)
 {
     SG_Manager_UnbindSlot();
     GameStringTable_Apply(nullptr);
     const GF_LEVEL *const title_level = GF_GetTitleLevel();
-    if (!Result_Absorb(Level_Initialise(title_level, GFSC_NORMAL))) {
-        return (GF_COMMAND) { .action = GF_EXIT_GAME };
-    }
-    return GF_ShowInventory(INV_TITLE_MODE);
+    MUST(Level_Initialise(title_level, GFSC_NORMAL), "the title level");
+    *out_cmd = GF_ShowInventory(INV_TITLE_MODE);
+    return OK;
 }
 
 GF_COMMAND GF_EnterPhotoMode(void)
@@ -401,7 +400,7 @@ RESULT GF_RunUntilExit(GF_COMMAND gf_cmd)
             } else if (g_GameFlow.title_level == nullptr) {
                 return FAIL("the game flow names no title level");
             } else {
-                gf_cmd = GF_RunTitle();
+                MUST(GF_RunTitle(&gf_cmd));
             }
             break;
 
