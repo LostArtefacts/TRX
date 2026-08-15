@@ -28,6 +28,9 @@
 **Saves and settings**
 - Changed the save crystal behavior to give Lara a crystal when starting a game, if the mode is set to Saving (pickups), in line with the TR3 PS1 version (Gameplay → General → Crystal mode)
 
+**Music and sound**
+- Fixed crystal sound effects not playing if Lara collects one underwater (OG bug)
+
 **TR1**
 - Changed Lara to retain her equipment when turning to gold on the Midas Hand, with the equipment also turning to gold
 - Fixed Lara's arm remaining in the flare pose if holding one on the Midas Hand

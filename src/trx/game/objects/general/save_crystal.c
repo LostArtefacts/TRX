@@ -236,13 +236,13 @@ static void M_Heal(ITEM *const lara_item, const ITEM *const item)
     CLAMPG(lara_item->hit_points, LARA_MAX_HITPOINTS);
 
     // PS1: SFX_SAVE_CRYSTAL, PC: SFX_MENU_MEDI
-    Sound_Effect(SFX_MENU_MEDI, &lara_item->pos, SPM_NORMAL);
+    Sound_Effect(SFX_MENU_MEDI, &lara_item->pos, SPM_ALWAYS);
 }
 
 static void M_Collect(const ITEM *const lara_item)
 {
     Inv_AddItem(O_SAVE_CRYSTAL_ITEM);
-    Sound_Effect(SFX_SAVE_CRYSTAL, &lara_item->pos, SPM_NORMAL);
+    Sound_Effect(SFX_SAVE_CRYSTAL, &lara_item->pos, SPM_ALWAYS);
 }
 
 static void M_Control(const int16_t item_num)
