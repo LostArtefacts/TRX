@@ -7,7 +7,9 @@
 - Fixed the settings dialogs scrolling their list back to the top when the selection moved up to the tabs
 
 **Options and menus**
-- Changed the TR1 PC bars appearance to be named TR1, the bars being the ones both TR1 releases draw (Graphic Options → Bars → Bars appearance)
+- Changed the TR1 PC bars appearance to be named TR1, the bars being the ones both TR1 releases draw (Graphic Options → Bars → Bars appearance) (#6260)
+- Changed the PlayStation presets to place the health and air bars on the right, where the PlayStation releases put them (#6261)
+- Changed the PC presets to name the corners the health and air bars sit in, which they had been taking from the defaults
 - Fixed the TR1 PS1 preset picking the TR2 PS1 bars, where TR1 draws the same bars on both platforms (#6260)
 
 **Miscellaneous**
