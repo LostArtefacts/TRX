@@ -11,32 +11,55 @@
     #define NODISCARD
 #endif
 
-// The result of an operation that can fail. Failures may carry a message,
-// which is owned by the RESULT until it is consumed.
+// Where a failure was raised. One of these is emitted per failure site and
+// lives for the whole run, so a RESULT holds it by pointer.
+typedef struct {
+    const char *file;
+    const char *func;
+    int line;
+} RESULT_SITE;
+
+// A statement expression rather than a compound literal with static storage,
+// which C23 allows but Apple clang does not yet accept. Usable inside a
+// function only, which is where a failure is raised anyway.
+#define RESULT_SITE_HERE                                                       \
+    __extension__({                                                            \
+        static const RESULT_SITE site_ = {                                     \
+            .file = __FILE__,                                                  \
+            .func = __func__,                                                  \
+            .line = __LINE__,                                                  \
+        };                                                                     \
+        &site_;                                                                \
+    })
+
+// The result of an operation that can fail. A failure names the site where it
+// was raised, which travels unchanged no matter how far the failure is passed
+// up, and may carry a message, which the RESULT owns until it is consumed. A
+// success names no site, which is what tells the two apart.
 //
 // FAIL creates a failure and MUST passes one up the call stack, adding
 // context along the way. Every result eventually reaches a consumer:
 // EXIT_ON_FAIL reports it and exits, SHOULD logs it and carries on, and
 // IGNORE quietly frees it.
 typedef struct NODISCARD {
-    bool ok;
     char *msg;
+    const RESULT_SITE *site;
 } RESULT;
 
-#define OK ((RESULT) { .ok = true })
+#define OK ((RESULT) {})
 
 // A failure with no explanation. FAIL is the better choice in most cases;
 // ERR fits only where the caller already knows what went wrong.
-#define ERR ((RESULT) { .ok = false })
+#define ERR ((RESULT) { .site = RESULT_SITE_HERE })
 
-#define IS_OK(r_) ((r_).ok)
+#define IS_OK(r_) ((r_).site == nullptr)
 
-// Creates a failure with a formatted message.
+// Creates a failure with a formatted message, recording where it was raised.
 //
 // Example:
 // return FAIL("%s: bad '%s' at line %d", path, key, line);
-RESULT Result_Fail(const char *fmt, ...);
-#define FAIL(...) Result_Fail(__VA_ARGS__)
+RESULT Result_Fail(const RESULT_SITE *site, const char *fmt, ...);
+#define FAIL(...) Result_Fail(RESULT_SITE_HERE, __VA_ARGS__)
 
 // Returns a failure from the enclosing function when the condition is true.
 //
@@ -75,13 +98,14 @@ RESULT Result_Prefix(RESULT result, const char *fmt, ...);
     } while (0)
 
 // Combines two results. The result is OK only if both are OK; if both
-// failed, their messages are joined.
+// failed, their messages are joined and the first failure's site is kept.
 //
 // This fits collecting all errors instead of stopping at the first one.
 RESULT Result_Merge(RESULT a, RESULT b);
 
 // Reports a failed result and ends the run. The supplied message is the
-// headline and the RESULT's message provides the detail.
+// headline and the RESULT's message provides the detail. The log also names
+// where the failure was raised; the error dialog shows the message alone.
 //
 // This fits the boundary of a complete operation, such as loading a level or
 // script.
@@ -90,18 +114,13 @@ void Result_ExitOnFail(RESULT result, const char *fmt, ...);
 
 // Logs a failed result as a warning, frees its message, and carries on.
 // Returns true on success and false on failure, so it reads directly as a
-// condition.
+// condition. The warning names where the failure was raised.
 //
 // The optional error text adds context when the RESULT itself is not enough.
-// The warning names the call site rather than this module.
-bool Result_Should(
-    RESULT result, const char *err, const char *file, int line,
-    const char *func);
+bool Result_Should(RESULT result, const char *err);
 
-#define M_SHOULD_2(r_, err_)                                                   \
-    Result_Should((r_), (err_), __FILE__, __LINE__, __func__)
-#define M_SHOULD_1(r_)                                                         \
-    Result_Should((r_), nullptr, __FILE__, __LINE__, __func__)
+#define M_SHOULD_2(r_, err_) Result_Should((r_), (err_))
+#define M_SHOULD_1(r_) Result_Should((r_), nullptr)
 #define M_SHOULD_PICK(_1, _2, NAME, ...) NAME
 #define SHOULD(...)                                                            \
     M_SHOULD_PICK(__VA_ARGS__, M_SHOULD_2, M_SHOULD_1)(__VA_ARGS__)
