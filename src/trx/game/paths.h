@@ -84,7 +84,9 @@ const char *GamePath_PeekResolve(GAME_DYNAMIC_PATH path, const char *rel);
 // Same as GamePath_PeekResolve, but logs an error on miss.
 const char *GamePath_TryResolve(GAME_DYNAMIC_PATH path, const char *rel);
 // Same as GamePath_PeekResolve, but terminates the game on miss.
-const char *GamePath_Resolve(GAME_DYNAMIC_PATH path, const char *rel);
+// Works out where a path names a file, reporting one that names nothing.
+RESULT GamePath_Resolve(
+    GAME_DYNAMIC_PATH path, const char *rel, const char **out_path);
 
 // Resolves and opens a file in one call, reporting a path that names nothing
 // as well as a file that will not open.

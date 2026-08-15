@@ -177,7 +177,7 @@ static void M_ReadModMetaForKnownMods(void)
         }
 
         const char *const gameflow_path =
-            GamePath_Resolve(GAME_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
+            GamePath_PeekResolve(GAME_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
         if (gameflow_path == nullptr) {
             continue;
         }
@@ -539,5 +539,5 @@ char *Shell_GetGameStringsPath(const SHELL_MOD *const mod)
 
 const char *Shell_GetGameFlowPath(const SHELL_MOD *const mod)
 {
-    return GamePath_Resolve(GAME_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
+    return GamePath_PeekResolve(GAME_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
 }

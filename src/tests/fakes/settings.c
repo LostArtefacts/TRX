@@ -64,15 +64,17 @@ char *GamePath_ExpandVars(const char *const path)
 
 // Cached and valid for the run, as the engine's is: a caller may hold what it
 // was given.
-const char *GamePath_Resolve(
-    const GAME_DYNAMIC_PATH path, const char *const rel)
+RESULT GamePath_Resolve(
+    const GAME_DYNAMIC_PATH path, const char *const rel,
+    const char **const out_path)
 {
     char *const resolved = String_Format("%s/%s", TEST_SHIP_CFG_DIR, rel);
     for (const M_RESOLVED_PATH *entry = m_ResolvedPaths; entry != nullptr;
          entry = entry->next) {
         if (strcmp(entry->value, resolved) == 0) {
             Memory_Free(resolved);
-            return entry->value;
+            *out_path = entry->value;
+            return OK;
         }
     }
 
@@ -80,7 +82,8 @@ const char *GamePath_Resolve(
     entry->value = resolved;
     entry->next = m_ResolvedPaths;
     m_ResolvedPaths = entry;
-    return entry->value;
+    *out_path = entry->value;
+    return OK;
 }
 
 RESULT FS_Load(
