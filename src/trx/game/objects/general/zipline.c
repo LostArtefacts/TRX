@@ -141,7 +141,7 @@ static void M_Grab(
     ITEM *const zip_item, ITEM *const lara_item, LARA_INFO *const lara)
 {
     Item_SwitchToAnim(lara_item, LA(LA_ZIPLINE_GRAB), 0);
-    lara_item->current_anim_state == LS(LS_PULL_UP);
+    lara_item->current_anim_state = LS(LS_PULL_UP);
     lara_item->goal_anim_state = LS(LS_ZIPLINE);
     lara->gun_status = LGS_HANDS_BUSY;
 

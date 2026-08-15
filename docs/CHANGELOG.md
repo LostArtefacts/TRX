@@ -11,6 +11,7 @@
 - Fixed flames not being drawn if TR4 is launched and the game is then switched to a different mod (regression from 1.10)
 - Fixed doors disappearing when seen from the far side of their doorway after loading a save (regression from 1.9)
 - Fixed breeze defaulting to being off in fresh installations (regression from 1.10)
+- Fixed Lara having the wrong state while grabbing a zipline (regression from 1.10)
 
 
 
