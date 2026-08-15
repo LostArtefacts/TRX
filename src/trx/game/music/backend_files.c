@@ -236,7 +236,7 @@ static void M_LoadCatalog(M_BACKEND_DATA *const data)
 
     char *file_data = nullptr;
     size_t file_size = 0;
-    if (!FS_Load(data->catalog_path, &file_data, &file_size)) {
+    if (!IGNORE(FS_Load(data->catalog_path, &file_data, &file_size))) {
         return;
     }
 

@@ -34,7 +34,8 @@ static bool M_Parse(M_BACKEND_DATA *const data)
 
     char *track_content = nullptr;
     size_t track_content_size;
-    if (!FS_Load(data->control_path, &track_content, &track_content_size)) {
+    if (!IGNORE(
+            FS_Load(data->control_path, &track_content, &track_content_size))) {
         LOG_WARNING("Cannot find CDAudio control file: %s", data->control_path);
         return false;
     }

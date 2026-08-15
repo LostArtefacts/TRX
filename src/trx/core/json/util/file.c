@@ -17,12 +17,14 @@ RESULT JSONFile_Read(const char *const path, JSON_VALUE **const out_value)
 {
     *out_value = nullptr;
 
-    char *file_data = nullptr;
-    if (!FS_Load(path, &file_data, nullptr)) {
-        // A file that is not there is not a fault; the caller says whether it
-        // needed one.
+    // A file that is not there is not a fault; the caller says whether it
+    // needed one. One that is there and will not read is another matter.
+    if (!FS_Exists(path)) {
         return OK;
     }
+
+    char *file_data = nullptr;
+    MUST(FS_Load(path, &file_data, nullptr));
 
     JSON_PARSE_RESULT pr;
     JSON_VALUE *const value = JSON_ParseEx(
@@ -50,7 +52,7 @@ RESULT JSONFile_Write(const char *path, JSON_VALUE *const value)
 {
     RESULT result = OK;
     char *old_data = nullptr;
-    FS_Load(path, &old_data, nullptr);
+    IGNORE(FS_Load(path, &old_data, nullptr));
 
     size_t out_len;
     char *out_data = JSON_WritePretty(value, "  ", "\n", &out_len);

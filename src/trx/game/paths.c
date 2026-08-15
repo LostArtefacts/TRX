@@ -1261,20 +1261,18 @@ TRX_FILE *GamePath_OpenFile(
     return File_OpenPath(resolved, mode);
 }
 
-bool GamePath_LoadFile(
+RESULT GamePath_LoadFile(
     const GAME_DYNAMIC_PATH path, const char *const rel, char **const out_data,
     size_t *const out_size)
 {
-    const char *const resolved = GamePath_TryResolve(path, rel);
-    if (resolved == nullptr) {
-        if (out_data != nullptr) {
-            *out_data = nullptr;
-        }
-        if (out_size != nullptr) {
-            *out_size = 0;
-        }
-        return false;
+    if (out_data != nullptr) {
+        *out_data = nullptr;
     }
+    if (out_size != nullptr) {
+        *out_size = 0;
+    }
+    const char *const resolved = GamePath_TryResolve(path, rel);
+    FAIL_IF(resolved == nullptr, "%s: the path names nothing", rel);
     return FS_Load(resolved, out_data, out_size);
 }
 

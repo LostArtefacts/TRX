@@ -91,9 +91,10 @@ const char *GamePath_Resolve(GAME_DYNAMIC_PATH path, const char *rel);
 TRX_FILE *GamePath_OpenFile(
     GAME_DYNAMIC_PATH path, const char *rel, FILE_OPEN_MODE mode);
 
-// Resolve and load file contents into memory.
-// On failure, sets `out_data` to nullptr and `out_size` to 0 when provided.
-bool GamePath_LoadFile(
+// Resolves a path and reads the whole file into memory, reporting a path that
+// names nothing as well as a file that will not read. On failure out_data is
+// nullptr and out_size is 0.
+RESULT GamePath_LoadFile(
     GAME_DYNAMIC_PATH path, const char *rel, char **out_data, size_t *out_size);
 
 // Resolve and check whether the file exists.
