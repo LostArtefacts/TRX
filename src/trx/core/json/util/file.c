@@ -58,10 +58,9 @@ RESULT JSONFile_Write(const char *path, JSON_VALUE *const value)
     char *out_data = JSON_WritePretty(value, "  ", "\n", &out_len);
 
     if (old_data == nullptr || strcmp(old_data, out_data) != 0) {
-        TRX_FILE *const fp = File_OpenPath(path, FILE_OPEN_WRITE);
-        if (fp == nullptr) {
-            result = FAIL("%s: the file could not be opened for writing", path);
-        } else {
+        TRX_FILE *fp = nullptr;
+        result = File_OpenPath(path, FILE_OPEN_WRITE, &fp);
+        if (IS_OK(result)) {
             LOG_DEBUG("saving JSON to %s", path);
             File_WriteData(fp, out_data, out_len - 1); // w/o \0
             File_Close(fp);

@@ -287,9 +287,10 @@ static void M_InitialiseInjection(INJECTION *const injection)
 static void M_LoadFromFile(
     INJECTION *const injection, const char *const file_name)
 {
-    TRX_FILE *const file = File_OpenPathInMemory(file_name);
-    if (file == nullptr) {
-        LOG_WARNING("Could not open %s", file_name);
+    TRX_FILE *file = nullptr;
+    if (!SHOULD(
+            File_OpenPathInMemory(file_name, &file),
+            "the injection is left out")) {
         return;
     }
 

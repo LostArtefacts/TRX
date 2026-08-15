@@ -44,9 +44,9 @@ static void M_InitialiseSamplesFromFile(
         goto finish;
     }
 
-    fp = File_OpenPath(file_name, FILE_OPEN_READ);
-    if (fp == nullptr) {
-        LOG_ERROR("Could not open %s samples file", file_name);
+    if (!SHOULD(
+            File_OpenPath(file_name, FILE_OPEN_READ, &fp),
+            "the level plays without its sounds")) {
         goto finish;
     }
     LOG_DEBUG("Loading samples from %s", file_name);

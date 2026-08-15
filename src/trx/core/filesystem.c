@@ -236,8 +236,8 @@ RESULT FS_Load(const char *path, char **output_data, size_t *output_size)
     ASSERT(output_data != nullptr);
     *output_data = nullptr;
 
-    TRX_FILE *fp = File_OpenPath(path, FILE_OPEN_READ);
-    FAIL_IF(fp == nullptr, "%s: the file could not be opened", path);
+    TRX_FILE *fp = nullptr;
+    MUST(File_OpenPath(path, FILE_OPEN_READ, &fp));
 
     size_t data_size = File_Size(fp);
     char *data = Memory_Alloc(data_size + 1);
