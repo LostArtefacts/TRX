@@ -69,14 +69,14 @@ static void M_Shutdown(void)
     Output_Lights_Shutdown();
 }
 
-void Output_Init(void)
+RESULT Output_Init(void)
 {
     SceneCompositor_Init();
     Output_Textures_Init();
 
     m_Uniforms = Output_Uniforms_Create();
-    m_ShaderWorld = Output_MeshShader_Create();
-    m_ShaderUI = Output_UIShader_Create();
+    MUST(Output_MeshShader_Create(&m_ShaderWorld));
+    MUST(Output_UIShader_Create(&m_ShaderUI));
     m_Batcher = MeshBatcher_Create();
     OutputSource_Sky_Init();
     SceneCompositor_AddSource(MeshBatcher_AsSource(m_Batcher));
@@ -94,6 +94,7 @@ void Output_Init(void)
     OutputSource_UI_Init();
 
     Output_ApplyRenderSettings();
+    return OK;
 }
 
 bool Output_IsHeadless(void)

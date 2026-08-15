@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/result.h>
 #include <trx/gl/config.h>
 #include <trx/gl/texture.h>
 
@@ -7,7 +8,8 @@
 #include <stdint.h>
 
 typedef struct TRX_GL_Renderer {
-    void (*init)(struct TRX_GL_Renderer *renderer, const TRX_GL_CONFIG *config);
+    RESULT (*init)(
+        struct TRX_GL_Renderer *renderer, const TRX_GL_CONFIG *config);
     void (*shutdown)(struct TRX_GL_Renderer *renderer);
     void (*swap_buffers)(struct TRX_GL_Renderer *renderer);
     void *priv;
