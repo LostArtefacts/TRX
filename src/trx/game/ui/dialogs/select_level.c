@@ -40,7 +40,7 @@ UI_SELECT_LEVEL_DIALOG_STATE *UI_SelectLevelDialog_Init(
     ASSERT(info != nullptr);
     ASSERT(info->features.select_level);
 
-    Savegame_LoadOnlyResumeInfo(save_slot);
+    SHOULD(Savegame_LoadOnlyResumeInfo(save_slot));
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i <= info->level_num && i < level_table->count; i++) {
         const GF_LEVEL *const level = &level_table->levels[i];

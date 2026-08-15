@@ -123,7 +123,7 @@ static bool M_FillSlot(const SAVEGAME_SLOT_REF slot, const char *const path)
     TRX_FILE *fp = nullptr;
     if (SHOULD(File_OpenPath(path, FILE_OPEN_READ, &fp))) {
         SAVEGAME_INFO tmp_savegame_info;
-        if (SG_File_FillInfo(fp, &tmp_savegame_info)) {
+        if (SHOULD(SG_File_FillInfo(fp, &tmp_savegame_info))) {
             M_ClearSlot(savegame_info);
             *savegame_info = tmp_savegame_info;
             savegame_info->is_quick = slot.pool == SAVEGAME_SLOT_POOL_QUICK;
