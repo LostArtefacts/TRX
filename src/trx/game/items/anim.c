@@ -356,6 +356,9 @@ void Item_PlayAnimSFX(
     const ANIM_COMMAND_ENVIRONMENT mode = data->environment;
 
     if (mode != ACE_ALL && item->room_num != NO_ROOM) {
+        if (Room_Get(item->room_num)->flags.swamp) {
+            return;
+        }
         int32_t height = NO_HEIGHT;
         if (is_lara) {
             height = Lara_GetLaraInfo()->water_surface_dist;
