@@ -9,7 +9,8 @@ GF_COMMAND GF_EnterPhotoMode(void);
 GF_COMMAND GF_PauseGame(void);
 GF_COMMAND GF_ShowInventory(INVENTORY_MODE inv_mode);
 bool GF_ShowInventoryKeys(OBJECT_ID receptacle_type_id);
-GF_COMMAND GF_RunTitle(void);
+// Shows the title screen. Reports a title level that will not load.
+RESULT GF_RunTitle(GF_COMMAND *out_cmd);
 GF_COMMAND GF_RunDemo(int32_t demo_num);
 GF_COMMAND GF_RunCutscene(int32_t cutscene_num, bool cross_fade_in);
 GF_COMMAND GF_RunGame(const GF_LEVEL *level, GF_SEQUENCE_CONTEXT seq_ctx);
