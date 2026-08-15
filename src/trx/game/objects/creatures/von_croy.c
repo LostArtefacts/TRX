@@ -51,7 +51,7 @@
 #define M_CUT_FOV_MASK        0xFFFF
 
 #define M_SWAP_MESHES         0x40080
-#define M_SWAP_KNIFE          0x8000
+#define M_SWAP_BOOK           0x8000
 
 #define M_RANGE_MARKER        SQUARE(WALL_L / 8)
 #define M_RANGE_WALK          SQUARE(WALL_L * 5 / 8)
@@ -425,7 +425,6 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
 
     case 2:
         if (g_Input.look && p->waypoint != 43 && p->waypoint != 53) {
-            p->swap_bits &= ~M_SWAP_KNIFE;
             p->cut_phase = 3;
 
             if (p->waypoint != 14) {
@@ -463,6 +462,7 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
         Music_Stop();
         Music_Play_Direct(ambient, MPM_LOOP);
         Lara_SetControllable(true);
+        p->swap_bits &= ~M_SWAP_BOOK;
         p->cut_phase = 0;
         M_SetCutPlayed(p, p->waypoint);
         ang = info->enemy->rot.y - item->rot.y;
@@ -483,10 +483,10 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
 
     if (item->current_anim_state == 11) {
         if (item->frame_num == Anim_GetAnim(item->anim_num)->frame_base + 32) {
-            p->swap_bits |= M_SWAP_KNIFE;
+            p->swap_bits |= M_SWAP_BOOK;
         } else if (
             item->frame_num == Anim_GetAnim(item->anim_num)->frame_base + 216) {
-            p->swap_bits &= ~M_SWAP_KNIFE;
+            p->swap_bits &= ~M_SWAP_BOOK;
         }
     }
 }
