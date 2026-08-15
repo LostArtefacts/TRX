@@ -200,6 +200,20 @@ static int M_L_LaraSetHolstersVisible(lua_State *const L)
     return 0;
 }
 
+// trxc.lara.get_speech_face() → int
+static int M_L_LaraGetSpeechFace(lua_State *const L)
+{
+    lua_pushinteger(L, Lara_Skin_GetSpeechFace());
+    return 1;
+}
+
+// trxc.lara.set_speech_face(index)
+static int M_L_LaraSetSpeechFace(lua_State *const L)
+{
+    Lara_Skin_SetSpeechFace((int32_t)luaL_optinteger(L, 1, -1));
+    return 0;
+}
+
 // trxc.lara.has_pistol_weapon() → bool
 static int M_L_LaraHasPistolWeapon(lua_State *const L)
 {
@@ -310,6 +324,8 @@ static const luaL_Reg m_Module[] = {
     { "is_flying", M_L_LaraIsFlying },
     { "set_flying", M_L_LaraSetFlying },
     { "are_holsters_visible", M_L_LaraAreHolstersVisible },
+    { "get_speech_face", M_L_LaraGetSpeechFace },
+    { "set_speech_face", M_L_LaraSetSpeechFace },
     { "set_holsters_visible", M_L_LaraSetHolstersVisible },
     { "has_pistol_weapon", M_L_LaraHasPistolWeapon },
     { "get_extra_anim", M_L_LaraGetExtraAnim },

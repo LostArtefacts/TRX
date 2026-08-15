@@ -22,6 +22,8 @@ Her position, room and hit points are not here: she is an item like any other an
 - <a id="lara.target" name="lara.target"></a>**`trx.lara.target`** ([trx.items.Item](ITEMS.md#items.Item)). The item Lara's guns are locked onto, or `nil` if she has none. *(read-only)*
 - <a id="lara.outfit" name="lara.outfit"></a>**`trx.lara.outfit`** (string). The outfit Lara is wearing, by name, as defined in `cfg/outfits.json5`.
 - <a id="lara.holsters_visible" name="lara.holsters_visible"></a>**`trx.lara.holsters_visible`** (boolean). Whether Lara's holsters are drawn on her hips.
+- <a id="lara.speech_face" name="lara.speech_face"></a>**`trx.lara.speech_face`** (number). Which of her outfit's speech faces Lara wears while she talks, counted from 0, or `nil` for her own face. An outfit with no speech faces keeps her own.
+  The face is remembered, so putting her in another outfit mid-sentence dresses her in that outfit's face rather than leaving the one she had.
 - <a id="lara.is_flying" name="lara.is_flying"></a>**`trx.lara.is_flying`** (boolean). Whether Lara is in the fly-mode cheat. Setting it enters or leaves fly mode.
 - <a id="lara.is_wet" name="lara.is_wet"></a>**`trx.lara.is_wet`** (boolean). Whether Lara is still shedding droplets after a swim. [`trx.lara.dry`](#lara.dry) clears it. *(read-only)*
 - <a id="lara.has_pistol_weapon" name="lara.has_pistol_weapon"></a>**`trx.lara.has_pistol_weapon`** (boolean). Whether Lara is carrying a pistol-class weapon, which is what decides whether she has holsters to show at all. *(read-only)*
