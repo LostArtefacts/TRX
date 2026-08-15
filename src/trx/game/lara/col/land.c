@@ -339,8 +339,9 @@ static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
+    const ROOM *const room = Room_Get(item->room_num);
     if (coll->side_mid.floor > STEP_L / 2
-        && coll->side_mid.floor < STEPUP_HEIGHT) {
+        && coll->side_mid.floor < STEPUP_HEIGHT && !room->flags.swamp) {
         if (Item_TestFrameRange(
                 item, M_LF_WALK_BACK_R_START, M_LF_WALK_BACK_R_END)) {
             Item_SwitchToAnim(item, LA(LA_WALK_DOWN_BACK_RIGHT), 0);
@@ -353,7 +354,6 @@ static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    const ROOM *const room = Room_Get(item->room_num);
     if (coll->side_mid.floor >= 0 && room->flags.swamp) {
         item->pos.y += 2;
     } else if (lara->water_status == LWS_WADE && coll->side_mid.floor >= 50) {

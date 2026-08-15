@@ -1,5 +1,8 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.10...develop) - ××××-××-××
 
+**Lara's movement**
+- Fixed Lara entering the step down animation when walking backwards in a swamp room (OG bug) (#6248)
+
 **UI**
 - Changed the Fix one-shot music triggers option to sit with the other music settings (Sound → Misc)
 - Changed the tab arrows to no longer vanish once the selection moved into the list below them
