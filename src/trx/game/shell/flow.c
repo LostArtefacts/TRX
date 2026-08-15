@@ -263,7 +263,7 @@ static RESULT M_PrepareSystem(void)
     MUST(M_LoadCatalog(CATALOG_LARA_ANIMS, "catalog_lara_anims.csv", false));
     MUST(
         M_LoadCatalog(CATALOG_ITEM_ACTIONS, "catalog_item_actions.csv", false));
-    Subsystem_LoadAll();
+    MUST(Subsystem_LoadAll());
 
     if (test_replay_path != nullptr) {
         TestReplay_Start();
