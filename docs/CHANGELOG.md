@@ -33,6 +33,9 @@
 - Fixed Lara's arm remaining in the flare pose if holding one on the Midas Hand
 - Fixed the Cabin in Natla's Mines remaining visible after dropping to the floor (regression from 1.10)
 
+**TR3**
+- Fixed missing alpha blending on the MP5 and M16 gun flare in the gym (regression from 1.7)
+
 **TR4**
 - Added the ability to skip in-game cutscenes
 - Added waterfalls, which run and play their loop, and the mist that rises where they land
