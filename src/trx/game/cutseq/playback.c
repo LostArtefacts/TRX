@@ -592,6 +592,13 @@ void CutSeq_Reset(void)
     if (num != M_NO_CUTSCENE) {
         LUA_FireEventInt32(LUA_EVENT_CUTSCENE_END, num);
     }
+
+    // A handler answering that event by asking for another scene - the one a
+    // chain names - is asking it of the level being taken apart, so nothing it
+    // asked for is carried into the next one.
+    m_State.phase = M_PHASE_INACTIVE;
+    m_State.pending_num = M_NO_CUTSCENE;
+    m_State.fader = (FADER) {};
 }
 
 void CutSeq_Control(void)
