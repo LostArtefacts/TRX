@@ -123,12 +123,13 @@ static void M_ResetPriv(M_PRIV *const p)
     p->desired_direction = 1;
 }
 
-static void M_LoadShieldPoint(
+static RESULT M_LoadShieldPoint(
     JSON_READ_IO *const io, M_SHIELD_POINT *const point)
 {
-    SHOULD(JSON_READ_OPT(io, "pos", &point->pos));
-    SHOULD(JSON_READ_OPT(io, "sub", &point->sub));
-    SHOULD(JSON_READ_OPT(io, "color", &point->color));
+    MUST(JSON_READ_OPT(io, "pos", &point->pos));
+    MUST(JSON_READ_OPT(io, "sub", &point->sub));
+    MUST(JSON_READ_OPT(io, "color", &point->color));
+    return OK;
 }
 
 static void M_SaveShieldPoint(
@@ -141,10 +142,11 @@ static void M_SaveShieldPoint(
     JSONW_POP_AND_APPEND(io);
 }
 
-static void M_LoadAIPoint(JSON_READ_IO *const io, M_AI_POINT *const point)
+static RESULT M_LoadAIPoint(JSON_READ_IO *const io, M_AI_POINT *const point)
 {
-    SHOULD(JSON_READ_OPT(io, "pos", &point->pos));
-    SHOULD(JSON_READ_OPT(io, "rot", &point->rot));
+    MUST(JSON_READ_OPT(io, "pos", &point->pos));
+    MUST(JSON_READ_OPT(io, "rot", &point->rot));
+    return OK;
 }
 
 static void M_SaveAIPoint(
@@ -156,20 +158,20 @@ static void M_SaveAIPoint(
     JSONW_POP_AND_APPEND(io);
 }
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
     M_ResetPriv(p);
-    SHOULD(JSON_READ_OPT(io, "puzzle_ready", &p->puzzle_ready));
-    SHOULD(JSON_READ_OPT(io, "ring_count", &p->ring_count));
-    SHOULD(JSON_READ_OPT(io, "explode_count", &p->explode_count));
-    SHOULD(JSON_READ_OPT(io, "dead", &p->dead));
-    SHOULD(JSON_READ_OPT(io, "death_count", &p->death_count));
-    SHOULD(JSON_READ_OPT(io, "direction", &p->direction));
-    SHOULD(JSON_READ_OPT(io, "desired_direction", &p->desired_direction));
-    SHOULD(JSON_READ_OPT(io, "closest_ai_path", &p->closest_ai_path));
-    SHOULD(JSON_READ_OPT(io, "lara_ai_path", &p->lara_ai_path));
-    SHOULD(JSON_READ_OPT(io, "lara_junction", &p->lara_junction));
+    MUST(JSON_READ_OPT(io, "puzzle_ready", &p->puzzle_ready));
+    MUST(JSON_READ_OPT(io, "ring_count", &p->ring_count));
+    MUST(JSON_READ_OPT(io, "explode_count", &p->explode_count));
+    MUST(JSON_READ_OPT(io, "dead", &p->dead));
+    MUST(JSON_READ_OPT(io, "death_count", &p->death_count));
+    MUST(JSON_READ_OPT(io, "direction", &p->direction));
+    MUST(JSON_READ_OPT(io, "desired_direction", &p->desired_direction));
+    MUST(JSON_READ_OPT(io, "closest_ai_path", &p->closest_ai_path));
+    MUST(JSON_READ_OPT(io, "lara_ai_path", &p->lara_ai_path));
+    MUST(JSON_READ_OPT(io, "lara_junction", &p->lara_junction));
 
     if (SHOULD(JSON_PUSH(io, "shield"))) {
         for (int32_t i = 0; i < 5; i++) {
@@ -180,19 +182,19 @@ static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
                 if (!SHOULD(JSON_PUSH_INDEX(io, j))) {
                     continue;
                 }
-                M_LoadShieldPoint(io, &p->shield[i][j]);
-                SHOULD(JSON_POP(io));
+                MUST(M_LoadShieldPoint(io, &p->shield[i][j]));
+                MUST(JSON_POP(io));
             }
-            SHOULD(JSON_POP(io));
+            MUST(JSON_POP(io));
         }
-        SHOULD(JSON_POP(io));
+        MUST(JSON_POP(io));
     }
 
     if (SHOULD(JSON_PUSH(io, "junction_index"))) {
         for (int32_t i = 0; i < 4; i++) {
-            SHOULD(JSON_READ_A(io, i, &p->junction_index[i]));
+            MUST(JSON_READ_A(io, i, &p->junction_index[i]));
         }
-        SHOULD(JSON_POP(io));
+        MUST(JSON_POP(io));
     }
 
     if (SHOULD(JSON_PUSH(io, "ai_path"))) {
@@ -200,10 +202,10 @@ static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
             if (!SHOULD(JSON_PUSH_INDEX(io, i))) {
                 continue;
             }
-            M_LoadAIPoint(io, &p->ai_path[i]);
-            SHOULD(JSON_POP(io));
+            MUST(M_LoadAIPoint(io, &p->ai_path[i]));
+            MUST(JSON_POP(io));
         }
-        SHOULD(JSON_POP(io));
+        MUST(JSON_POP(io));
     }
 
     if (SHOULD(JSON_PUSH(io, "ai_junction"))) {
@@ -211,11 +213,12 @@ static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
             if (!SHOULD(JSON_PUSH_INDEX(io, i))) {
                 continue;
             }
-            M_LoadAIPoint(io, &p->ai_junction[i]);
-            SHOULD(JSON_POP(io));
+            MUST(M_LoadAIPoint(io, &p->ai_junction[i]));
+            MUST(JSON_POP(io));
         }
-        SHOULD(JSON_POP(io));
+        MUST(JSON_POP(io));
     }
+    return OK;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

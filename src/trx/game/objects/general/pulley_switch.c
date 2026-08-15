@@ -41,12 +41,13 @@ static int32_t M_RemainingPulls(const M_PRIV *const p)
     return MAX(0, p->required_pulls - p->pulls_done);
 }
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SHOULD(JSON_READ_OPT(io, "is_on", &p->is_on));
-    SHOULD(JSON_READ_OPT(io, "is_locked", &p->is_locked));
-    SHOULD(JSON_READ_OPT(io, "pulls_done", &p->pulls_done));
+    MUST(JSON_READ_OPT(io, "is_on", &p->is_on));
+    MUST(JSON_READ_OPT(io, "is_locked", &p->is_locked));
+    MUST(JSON_READ_OPT(io, "pulls_done", &p->pulls_done));
+    return OK;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

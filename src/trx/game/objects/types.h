@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/result.h>
 #include <trx/game/anims/types.h>
 #include <trx/game/collision.h>
 #include <trx/game/effects/types.h>
@@ -102,7 +103,7 @@ typedef struct OBJECT {
         int32_t *damage);
     void (*handle_flip_func)(ITEM *item, ROOM_FLIP_STATUS flip_status);
     void (*handle_save_func)(ITEM *item, SAVEGAME_STAGE stage);
-    void (*priv_load_func)(ITEM *item, JSON_READ_IO *io);
+    RESULT (*priv_load_func)(ITEM *item, JSON_READ_IO *io);
     void (*priv_save_func)(const ITEM *item, JSON_WRITE_IO *io);
     const OBJECT_BOUNDS *(*bounds_func)(void);
     bool (*is_usable_func)(int16_t item_num);

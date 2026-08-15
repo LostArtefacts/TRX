@@ -48,11 +48,12 @@ static bool M_CanBeExploded(const ITEM *const item)
     return false;
 }
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SHOULD(JSON_READ_OPT(io, "knockdown_timer", &p->knockdown_timer));
-    SHOULD(JSON_READ_OPT(io, "spawn_checked", &p->spawn_checked));
+    MUST(JSON_READ_OPT(io, "knockdown_timer", &p->knockdown_timer));
+    MUST(JSON_READ_OPT(io, "spawn_checked", &p->spawn_checked));
+    return OK;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

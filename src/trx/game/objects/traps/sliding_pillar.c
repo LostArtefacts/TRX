@@ -30,15 +30,16 @@ typedef struct {
     GAME_VECTOR linked;
 } M_PRIV;
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
     if (SHOULD(JSON_PUSH(io, "linked"))) {
-        SHOULD(JSON_READ_OPT(io, "x", &p->linked.pos.x));
-        SHOULD(JSON_READ_OPT(io, "y", &p->linked.pos.y));
-        SHOULD(JSON_READ_OPT(io, "z", &p->linked.pos.z));
-        SHOULD(JSON_POP(io));
+        MUST(JSON_READ_OPT(io, "x", &p->linked.pos.x));
+        MUST(JSON_READ_OPT(io, "y", &p->linked.pos.y));
+        MUST(JSON_READ_OPT(io, "z", &p->linked.pos.z));
+        MUST(JSON_POP(io));
     }
+    return OK;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

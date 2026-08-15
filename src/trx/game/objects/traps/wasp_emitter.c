@@ -18,18 +18,19 @@ typedef struct {
     int16_t slots[M_MAX_SLOTS];
 } M_PRIV;
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SHOULD(JSON_READ_OPT(io, "cooldown", &p->cooldown));
-    SHOULD(JSON_READ_OPT(io, "spawn_count", &p->spawn_count));
-    SHOULD(JSON_READ_OPT(io, "spawn_total", &p->spawn_total));
+    MUST(JSON_READ_OPT(io, "cooldown", &p->cooldown));
+    MUST(JSON_READ_OPT(io, "spawn_count", &p->spawn_count));
+    MUST(JSON_READ_OPT(io, "spawn_total", &p->spawn_total));
     if (SHOULD(JSON_PUSH(io, "slots"))) {
         for (int32_t i = 0; i < M_MAX_SLOTS; i++) {
-            SHOULD(JSON_READ_A(io, i, &p->slots[i]));
+            MUST(JSON_READ_A(io, i, &p->slots[i]));
         }
-        SHOULD(JSON_POP(io));
+        MUST(JSON_POP(io));
     }
+    return OK;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

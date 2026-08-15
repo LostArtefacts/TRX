@@ -35,12 +35,13 @@ static const M_SPARK_NODE m_Nodes[M_NODE_COUNT] = {
     { .joint_idx = 13, .node_idx = 11 },
 };
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SHOULD(JSON_READ_OPT(io, "resume", &p->resume));
-    SHOULD(JSON_READ_OPT(io, "turn", &p->turn));
-    SHOULD(JSON_READ_OPT(io, "velocity", &p->velocity));
+    MUST(JSON_READ_OPT(io, "resume", &p->resume));
+    MUST(JSON_READ_OPT(io, "turn", &p->turn));
+    MUST(JSON_READ_OPT(io, "velocity", &p->velocity));
+    return OK;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

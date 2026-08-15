@@ -24,10 +24,11 @@ typedef struct {
     int32_t fire_timer;
 } M_PRIV;
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SHOULD(JSON_READ_OPT(io, "fire_timer", &p->fire_timer));
+    MUST(JSON_READ_OPT(io, "fire_timer", &p->fire_timer));
+    return OK;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

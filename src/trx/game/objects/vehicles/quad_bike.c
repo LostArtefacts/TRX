@@ -105,22 +105,23 @@ static bool m_HandbrakeStarting;
 static bool m_CanHandbrakeStart;
 static uint8_t m_ExhaustSmokeVel;
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SHOULD(JSON_READ_OPT(io, "velocity", &p->quad.velocity));
-    SHOULD(JSON_READ_OPT(io, "front_rot", &p->quad.front_rot));
-    SHOULD(JSON_READ_OPT(io, "rear_rot", &p->quad.rear_rot));
-    SHOULD(JSON_READ_OPT(io, "revs", &p->quad.revs));
-    SHOULD(JSON_READ_OPT(io, "engine_revs", &p->quad.engine_revs));
-    SHOULD(JSON_READ_OPT(io, "track_mesh", &p->quad.track_mesh));
-    SHOULD(JSON_READ_OPT(io, "skidoo_turn", &p->quad.skidoo_turn));
-    SHOULD(JSON_READ_OPT(io, "left_fall_speed", &p->quad.left_fall_speed));
-    SHOULD(JSON_READ_OPT(io, "right_fall_speed", &p->quad.right_fall_speed));
-    SHOULD(JSON_READ_OPT(io, "momentum_angle", &p->quad.momentum_angle));
-    SHOULD(JSON_READ_OPT(io, "extra_rotation", &p->quad.extra_rotation));
-    SHOULD(JSON_READ_OPT(io, "pitch", &p->quad.pitch));
-    SHOULD(JSON_READ_OPT(io, "flags", &p->quad.flags));
+    MUST(JSON_READ_OPT(io, "velocity", &p->quad.velocity));
+    MUST(JSON_READ_OPT(io, "front_rot", &p->quad.front_rot));
+    MUST(JSON_READ_OPT(io, "rear_rot", &p->quad.rear_rot));
+    MUST(JSON_READ_OPT(io, "revs", &p->quad.revs));
+    MUST(JSON_READ_OPT(io, "engine_revs", &p->quad.engine_revs));
+    MUST(JSON_READ_OPT(io, "track_mesh", &p->quad.track_mesh));
+    MUST(JSON_READ_OPT(io, "skidoo_turn", &p->quad.skidoo_turn));
+    MUST(JSON_READ_OPT(io, "left_fall_speed", &p->quad.left_fall_speed));
+    MUST(JSON_READ_OPT(io, "right_fall_speed", &p->quad.right_fall_speed));
+    MUST(JSON_READ_OPT(io, "momentum_angle", &p->quad.momentum_angle));
+    MUST(JSON_READ_OPT(io, "extra_rotation", &p->quad.extra_rotation));
+    MUST(JSON_READ_OPT(io, "pitch", &p->quad.pitch));
+    MUST(JSON_READ_OPT(io, "flags", &p->quad.flags));
+    return OK;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

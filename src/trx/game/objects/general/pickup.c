@@ -138,10 +138,11 @@ static const XYZ_32 m_PickupPositionScion = { .x = 0, .y = 0, .z = -310 };
 static const XYZ_32 m_PickupPositionHidden = { .x = 0, .y = 0, .z = -690 };
 static const XYZ_32 m_PickupPositionCrowbar = { .x = 0, .y = 0, .z = 225 };
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SHOULD(JSON_READ_OPT(io, "animate", &p->animate));
+    MUST(JSON_READ_OPT(io, "animate", &p->animate));
+    return OK;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

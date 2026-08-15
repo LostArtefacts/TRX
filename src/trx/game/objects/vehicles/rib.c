@@ -82,17 +82,18 @@ static const BITE m_Propeller = {
     .mesh_num = 2,
 };
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SHOULD(JSON_READ_OPT(io, "boat_turn", &p->boat_turn));
-    SHOULD(JSON_READ_OPT(io, "left_fallspeed", &p->left_fallspeed));
-    SHOULD(JSON_READ_OPT(io, "right_fallspeed", &p->right_fallspeed));
-    SHOULD(JSON_READ_OPT(io, "tilt_angle", &p->tilt_angle));
-    SHOULD(JSON_READ_OPT(io, "extra_rotation", &p->extra_rotation));
-    SHOULD(JSON_READ_OPT(io, "water", &p->water));
-    SHOULD(JSON_READ_OPT(io, "pitch", &p->pitch));
-    SHOULD(JSON_READ_OPT(io, "propeller_roll", &p->propeller_roll));
+    MUST(JSON_READ_OPT(io, "boat_turn", &p->boat_turn));
+    MUST(JSON_READ_OPT(io, "left_fallspeed", &p->left_fallspeed));
+    MUST(JSON_READ_OPT(io, "right_fallspeed", &p->right_fallspeed));
+    MUST(JSON_READ_OPT(io, "tilt_angle", &p->tilt_angle));
+    MUST(JSON_READ_OPT(io, "extra_rotation", &p->extra_rotation));
+    MUST(JSON_READ_OPT(io, "water", &p->water));
+    MUST(JSON_READ_OPT(io, "pitch", &p->pitch));
+    MUST(JSON_READ_OPT(io, "propeller_roll", &p->propeller_roll));
+    return OK;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

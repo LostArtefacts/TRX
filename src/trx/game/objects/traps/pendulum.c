@@ -28,14 +28,15 @@ typedef struct {
     int16_t effect_num;
 } M_PRIV;
 
-static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    SHOULD(JSON_READ_OPT(io, "initialised", &p->initialised));
-    SHOULD(JSON_READ_OPT(io, "on_fire", &p->on_fire));
+    MUST(JSON_READ_OPT(io, "initialised", &p->initialised));
+    MUST(JSON_READ_OPT(io, "on_fire", &p->on_fire));
     if (g_Config.gameplay.enable_enhanced_saves) {
-        SHOULD(JSON_READ_OPT(io, "fx_num", &p->effect_num));
+        MUST(JSON_READ_OPT(io, "fx_num", &p->effect_num));
     }
+    return OK;
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
