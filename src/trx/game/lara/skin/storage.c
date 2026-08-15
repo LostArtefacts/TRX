@@ -494,7 +494,7 @@ static RESULT M_LoadFrom(const char *const source_path)
     return result;
 }
 
-static void M_Load(void)
+static RESULT M_Load(void)
 {
     const char *source_path = nullptr;
     RESULT result = GamePath_Resolve(
@@ -502,7 +502,7 @@ static void M_Load(void)
     if (IS_OK(result)) {
         result = M_LoadFrom(source_path);
     }
-    EXIT_ON_FAIL(result, "Failed to load the outfits");
+    return result;
 }
 
 LARA_SKIN_TYPE Lara_Skin_FindOutfitByName(const char *const name)

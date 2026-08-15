@@ -227,7 +227,7 @@ static RESULT M_LoadFrom(const char *const path)
     return result;
 }
 
-static void M_Load(void)
+static RESULT M_Load(void)
 {
     const char *path = nullptr;
     RESULT result = GamePath_Resolve(
@@ -235,7 +235,7 @@ static void M_Load(void)
     if (IS_OK(result)) {
         result = M_LoadFrom(path);
     }
-    EXIT_ON_FAIL(result, "Failed to load the weapon settings");
+    return result;
 }
 
 REGISTER_SUBSYSTEM(.load = M_Load)

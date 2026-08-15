@@ -254,7 +254,7 @@ static void M_SaveSection(JSON_OBJECT *const input_obj)
     }
 }
 
-static void M_Load(void)
+static RESULT M_Load(void)
 {
     for (int32_t i = 0; m_HoldChecks[i].role != (INPUT_ROLE)-1; i++) {
         m_HoldChecks[i].delay_timer.type = CLOCK_TIMER_REAL;
@@ -268,6 +268,7 @@ static void M_Load(void)
             impl->init();
         }
     }
+    return OK;
 }
 
 static void M_ApplyConfig(void)
