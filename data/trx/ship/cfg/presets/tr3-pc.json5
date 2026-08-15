@@ -5,6 +5,8 @@
         "ui.enable_smooth_bars": false,
         "ui.bar_look": "tr3_pc",
         "ui.ammo_counter_location": "top-right",
+        "ui.healthbar_location": "top-left",
+        "ui.airbar_location": "top-right",
         "audio.enable_ps1_sfx": false,
         "gameplay.restore_ps1_enemies": false,
         "gameplay.save_crystal_mode": "heal",
