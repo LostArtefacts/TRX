@@ -99,7 +99,7 @@ void Config_ReportChange(const CONFIG_OPTION *const option, const bool persist)
     Vector_Add(m_Pending, &option);
 }
 
-bool Config_Read(
+RESULT Config_Read(
     const char *const default_path, const char *const enforced_path)
 {
     // Always initialize the config, even if the file is missing, so that
@@ -115,13 +115,8 @@ bool Config_Read(
     LOG_DEBUG("  default_path=%s", m_DefaultPath);
     LOG_DEBUG("  enforced_path=%s", m_EnforcedPath);
 
-    const bool result = ConfigFile_Read(m_DefaultPath, m_EnforcedPath);
+    const RESULT result = ConfigFile_Read(m_DefaultPath, m_EnforcedPath);
     m_FileFound = ConfigFile_WasFound();
-    if (result) {
-        LOG_DEBUG("Config loaded");
-    } else {
-        LOG_WARNING("Errors while loading config");
-    }
 
     Config_LoadFromJSON(ConfigFile_GetRoot());
     Config_Sanitize();

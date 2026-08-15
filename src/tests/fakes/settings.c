@@ -135,10 +135,10 @@ void FS_CloseDirectory(FS_DIR *const dir)
     closedir((DIR *)dir);
 }
 
-bool ConfigFile_Read(
+RESULT ConfigFile_Read(
     const char *const default_path, const char *const enforced_path)
 {
-    return false;
+    return OK;
 }
 
 bool ConfigFile_WasFound(void)

@@ -273,11 +273,11 @@ static RESULT M_PrepareSystem(void)
         FAIL_IF(
             engine_config_path == nullptr,
             "the settings file path could not be worked out");
-        if (!Config_Read(
+        SHOULD(
+            Config_Read(
                 engine_config_path,
-                Shell_GetGameFlowPath(s->args->startup.mod))) {
-            LOG_WARNING("Failed to read the settings file");
-        }
+                Shell_GetGameFlowPath(s->args->startup.mod)),
+            "The settings start from their defaults");
         Memory_FreePointer(&engine_config_path);
 
         if (s->args->test_record_path != nullptr) {
