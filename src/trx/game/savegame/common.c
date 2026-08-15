@@ -116,19 +116,18 @@ bool Savegame_Save(const SAVEGAME_SLOT_REF slot)
     return SG_Manager_WriteSlot(slot);
 }
 
-bool Savegame_Load(const SAVEGAME_SLOT_REF slot)
+RESULT Savegame_Load(const SAVEGAME_SLOT_REF slot)
 {
     const SAVEGAME_INFO *const savegame_info = SG_Manager_GetSavegameInfo(slot);
-    if (savegame_info == nullptr) {
-        return false;
-    }
+    FAIL_IF(savegame_info == nullptr, "the slot holds no saved game");
     ASSERT(savegame_info->full_path != nullptr);
 
     M_LoadPreprocess();
 
-    bool result = false;
     TRX_FILE *fp = nullptr;
-    if (SHOULD(File_OpenPath(savegame_info->full_path, FILE_OPEN_READ, &fp))) {
+    RESULT result =
+        File_OpenPath(savegame_info->full_path, FILE_OPEN_READ, &fp);
+    if (IS_OK(result)) {
         result = SG_File_LoadFromFile(fp);
         File_Close(fp);
     }
@@ -138,43 +137,37 @@ bool Savegame_Load(const SAVEGAME_SLOT_REF slot)
     return result;
 }
 
-bool Savegame_UpdateDeathCounters(
+RESULT Savegame_UpdateDeathCounters(
     const SAVEGAME_SLOT_REF slot, const int32_t death_count)
 {
     const SAVEGAME_INFO *const savegame_info = SG_Manager_GetSavegameInfo(slot);
-    if (savegame_info == nullptr) {
-        return false;
-    }
+    FAIL_IF(savegame_info == nullptr, "the slot holds no saved game");
     ASSERT(savegame_info->full_path != nullptr);
 
-    bool ret = false;
     TRX_FILE *fp = nullptr;
-    if (SHOULD(File_OpenPath(
-            savegame_info->full_path, FILE_OPEN_READ_WRITE, &fp))) {
-        ret = SG_File_UpdateDeathCounters(
-            fp, savegame_info->level_num, death_count, savegame_info->is_quick);
-        File_Close(fp);
-    }
-    return ret;
+    MUST(File_OpenPath(savegame_info->full_path, FILE_OPEN_READ_WRITE, &fp));
+    const RESULT result = SG_File_UpdateDeathCounters(
+        fp, savegame_info->level_num, death_count, savegame_info->is_quick);
+    File_Close(fp);
+    return result;
 }
 
-bool Savegame_LoadOnlyResumeInfo(const SAVEGAME_SLOT_REF slot)
+RESULT Savegame_LoadOnlyResumeInfo(const SAVEGAME_SLOT_REF slot)
 {
     const SAVEGAME_INFO *const savegame_info = SG_Manager_GetSavegameInfo(slot);
-    if (savegame_info == nullptr) {
-        return false;
-    }
+    FAIL_IF(savegame_info == nullptr, "the slot holds no saved game");
     ASSERT(savegame_info->full_path != nullptr);
 
-    bool ret = false;
     TRX_FILE *fp = nullptr;
-    if (SHOULD(File_OpenPath(savegame_info->full_path, FILE_OPEN_READ, &fp))) {
-        ret = SG_File_LoadOnlyResumeInfo(fp);
+    RESULT result =
+        File_OpenPath(savegame_info->full_path, FILE_OPEN_READ, &fp);
+    if (IS_OK(result)) {
+        result = SG_File_LoadOnlyResumeInfo(fp);
         File_Close(fp);
     }
 
     Savegame_SetInitialVersion(savegame_info->initial_version);
-    return ret;
+    return result;
 }
 
 bool Savegame_RestartAvailable(const SAVEGAME_SLOT_REF slot)

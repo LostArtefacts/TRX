@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/result.h>
 #include <trx/game/savegame/types.h>
 
 // Loading a saved game is divided into two phases. First, the game reads the
@@ -21,7 +22,8 @@ bool Savegame_RestartAvailable(SAVEGAME_SLOT_REF slot);
 
 void Savegame_ProcessItemsBeforeLoad(void);
 void Savegame_ProcessItemsBeforeSave(void);
-bool Savegame_Load(SAVEGAME_SLOT_REF slot);
+RESULT Savegame_Load(SAVEGAME_SLOT_REF slot);
 bool Savegame_Save(SAVEGAME_SLOT_REF slot);
-bool Savegame_UpdateDeathCounters(SAVEGAME_SLOT_REF slot, int32_t death_count);
-bool Savegame_LoadOnlyResumeInfo(SAVEGAME_SLOT_REF slot);
+RESULT Savegame_UpdateDeathCounters(
+    SAVEGAME_SLOT_REF slot, int32_t death_count);
+RESULT Savegame_LoadOnlyResumeInfo(SAVEGAME_SLOT_REF slot);

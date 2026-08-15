@@ -188,7 +188,7 @@ RESULT GF_InterpretSequence(
             // select level feature
             SG_Resume_ResetAllEntries();
             if (level->num > GF_GetFirstLevel()->num) {
-                Savegame_LoadOnlyResumeInfo(slot);
+                SHOULD(Savegame_LoadOnlyResumeInfo(slot));
 
                 const int32_t prev_level_num =
                     SG_Resume_GetEntry(level)->prev_level;

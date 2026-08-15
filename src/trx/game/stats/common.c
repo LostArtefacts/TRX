@@ -214,7 +214,7 @@ void Stats_AddDeath(void)
     stats->death_count++;
     const SAVEGAME_SLOT_REF save_slot = SG_Manager_GetBoundSlot();
     if (SG_Manager_IsValidSlotRef(save_slot)) {
-        Savegame_UpdateDeathCounters(save_slot, stats->death_count);
+        SHOULD(Savegame_UpdateDeathCounters(save_slot, stats->death_count));
     }
 }
 

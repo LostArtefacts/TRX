@@ -2,14 +2,12 @@
 
 #include <trx/core/bson.h>
 #include <trx/core/file.h>
-#include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/utils.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/savegame.h>
-#include <trx/game/shell.h>
 #include <trx/version.h>
 
 #include <string.h>
@@ -20,16 +18,16 @@
 #define M_MAGIC_TR2X MKTAG('T', '2', 'X', 'B') // TOOD: remove me after TRX 1.5
 #define M_MAGIC_TRX MKTAG('T', 'R', 'X', 'S')
 
-static JSON_VALUE *M_ReadRaw(TRX_FILE *fp, int32_t *version_out);
-
-static JSON_VALUE *M_ParseFromBuffer(
-    const char *const buffer, int32_t *const version_out)
+static RESULT M_ParseFromBuffer(
+    const char *const buffer, int32_t *const version_out,
+    JSON_VALUE **const out_root)
 {
+    *out_root = nullptr;
+
     const SAVEGAME_BSON_HEADER *const header = (SAVEGAME_BSON_HEADER *)buffer;
     if (header->magic != M_MAGIC_TR1X && header->magic != M_MAGIC_TR2X
         && header->magic != M_MAGIC_TRX) {
-        LOG_ERROR("Invalid savegame magic");
-        return nullptr;
+        return FAIL("the file is not a savegame");
     }
 
     if (version_out != nullptr) {
@@ -44,26 +42,29 @@ static JSON_VALUE *M_ParseFromBuffer(
         (Bytef *)uncompressed, &uncompressed_size, (const Bytef *)compressed,
         (uLongf)header->compressed_size);
     if (error_code != Z_OK) {
-        LOG_ERROR("Failed to decompress the data (error %d)", error_code);
         Memory_FreePointer(&uncompressed);
-        return nullptr;
+        return FAIL(
+            "the savegame data would not decompress (error %d)", error_code);
     }
 
     JSON_VALUE *const root = BSON_Parse(uncompressed, uncompressed_size);
     Memory_FreePointer(&uncompressed);
-    return root;
+    FAIL_IF(root == nullptr, "the savegame data does not read as BSON");
+    *out_root = root;
+    return OK;
 }
 
-static JSON_VALUE *M_ReadRaw(TRX_FILE *const fp, int32_t *const version_out)
+static RESULT M_ReadRaw(
+    TRX_FILE *const fp, int32_t *const version_out, JSON_VALUE **const out_root)
 {
     const size_t buffer_size = File_Size(fp);
     char *buffer = Memory_Alloc(buffer_size);
     File_Seek(fp, 0, FILE_SEEK_SET);
     File_ReadData(fp, buffer, buffer_size);
 
-    JSON_VALUE *const result = M_ParseFromBuffer(buffer, version_out);
+    const RESULT result = M_ParseFromBuffer(buffer, version_out, out_root);
     Memory_FreePointer(&buffer);
-    return result;
+    return Result_Prefix(result, "%s", File_GetPath(fp));
 }
 
 static RESULT M_SaveRaw(
@@ -145,12 +146,14 @@ const char *SG_File_GetQuickSaveFilePattern(void)
     return String_FormatStatic("%.*sq%s", prefix_size, pattern, placeholder);
 }
 
-bool SG_File_LoadFromFile(TRX_FILE *const fp)
+RESULT SG_File_LoadFromFile(TRX_FILE *const fp)
 {
     int32_t sg_version = -1;
-    JSON_VALUE *const root = M_ReadRaw(fp, &sg_version);
-    JSON_READ_IO *const io = JSON_ReadIO_Create(root, sg_version, nullptr);
-    const bool result = SHOULD(M_Load(io));
+    JSON_VALUE *root = nullptr;
+    MUST(M_ReadRaw(fp, &sg_version, &root));
+    JSON_READ_IO *const io =
+        JSON_ReadIO_Create(root, sg_version, File_GetPath(fp));
+    const RESULT result = M_Load(io);
     JSON_ReadIO_Destroy(io);
     JSON_ValueFree(root);
     return result;
@@ -181,26 +184,23 @@ RESULT SG_File_SaveToFile(TRX_FILE *const fp, SAVEGAME_INFO *const info)
     return result;
 }
 
-bool SG_File_FillInfo(TRX_FILE *const fp, SAVEGAME_INFO *const info)
+RESULT SG_File_FillInfo(TRX_FILE *const fp, SAVEGAME_INFO *const info)
 {
     *info = (SAVEGAME_INFO) {};
 
     SAVEGAME_BSON_HEADER header = {};
     File_Seek(fp, 0, FILE_SEEK_SET);
-    if (!File_TryReadData(fp, &header, sizeof(SAVEGAME_BSON_HEADER))) {
-        return false;
-    }
-    if (header.magic != M_MAGIC_TR1X && header.magic != M_MAGIC_TR2X
-        && header.magic != M_MAGIC_TRX) {
-        return false;
-    }
-
-    if (header.version < SG_MIN_SUPPORTED_VERSION) {
-        LOG_WARNING(
-            "Too old SG version: %d (min supported: %d)", header.version,
-            SG_MIN_SUPPORTED_VERSION);
-        return false;
-    }
+    FAIL_IF(
+        !File_TryReadData(fp, &header, sizeof(SAVEGAME_BSON_HEADER)),
+        "%s: the savegame header could not be read", File_GetPath(fp));
+    FAIL_IF(
+        header.magic != M_MAGIC_TR1X && header.magic != M_MAGIC_TR2X
+            && header.magic != M_MAGIC_TRX,
+        "%s: the file is not a savegame", File_GetPath(fp));
+    FAIL_IF(
+        header.version < SG_MIN_SUPPORTED_VERSION,
+        "%s: the savegame is version %d, older than the %d TRX reads",
+        File_GetPath(fp), header.version, SG_MIN_SUPPORTED_VERSION);
     info->initial_version = header.initial_version;
     info->features.restart = header.initial_version >= SG_VERSION_LEGACY;
     info->features.select_level = header.initial_version >= SG_VERSION_1;
@@ -214,15 +214,19 @@ bool SG_File_FillInfo(TRX_FILE *const fp, SAVEGAME_INFO *const info)
         info->is_quick = (extra_header.flags & SAVEGAME_EXT_FLAG_QUICK) != 0;
         info->level_title = Memory_Alloc(extra_header.title_size + 1);
         File_ReadData(fp, info->level_title, extra_header.title_size);
-        return true;
+        return OK;
     }
 
     // recover the slot information from the savegame structures
-    bool result = false;
     File_Seek(fp, 0, FILE_SEEK_SET);
-    JSON_VALUE *root = M_ReadRaw(fp, nullptr);
-    JSON_OBJECT *root_obj = JSON_ValueAsObject(root);
-    if (root_obj != nullptr) {
+    JSON_VALUE *root = nullptr;
+    MUST(M_ReadRaw(fp, nullptr, &root));
+    JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
+    RESULT result = OK;
+    if (root_obj == nullptr) {
+        result =
+            FAIL("%s: the savegame holds no root object", File_GetPath(fp));
+    } else {
         info->counter = JSON_ObjectGetInt(root_obj, "save_counter", -1);
         info->level_num = JSON_ObjectGetInt(root_obj, "level_num", -1);
         const char *level_title =
@@ -230,39 +234,47 @@ bool SG_File_FillInfo(TRX_FILE *const fp, SAVEGAME_INFO *const info)
         if (level_title != nullptr) {
             info->level_title = Memory_DupStr(level_title);
         }
-        result = info->level_num != -1;
+        if (info->level_num == -1) {
+            result = FAIL(
+                "%s: the savegame names no level number", File_GetPath(fp));
+        }
     }
     JSON_ValueFree(root);
 
     return result;
 }
 
-bool SG_File_LoadOnlyResumeInfo(TRX_FILE *const fp)
+RESULT SG_File_LoadOnlyResumeInfo(TRX_FILE *const fp)
 {
     int32_t sg_version = -1;
-    JSON_VALUE *const root = M_ReadRaw(fp, &sg_version);
-    JSON_READ_IO *const io = JSON_ReadIO_Create(root, sg_version, nullptr);
-    const bool result = SHOULD(SG_File_LoadResumeInfoList(io));
+    JSON_VALUE *root = nullptr;
+    MUST(M_ReadRaw(fp, &sg_version, &root));
+    JSON_READ_IO *const io =
+        JSON_ReadIO_Create(root, sg_version, File_GetPath(fp));
+    const RESULT result = SG_File_LoadResumeInfoList(io);
     JSON_ReadIO_Destroy(io);
     JSON_ValueFree(root);
     return result;
 }
 
-bool SG_File_UpdateDeathCounters(
+RESULT SG_File_UpdateDeathCounters(
     TRX_FILE *const fp, int32_t level_num, const int32_t death_count,
     const bool is_quick)
 {
-    bool result = false;
-    JSON_VALUE *const root = M_ReadRaw(fp, nullptr);
+    JSON_VALUE *root = nullptr;
+    MUST(M_ReadRaw(fp, nullptr, &root));
+
+    RESULT result = OK;
     JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
     if (root_obj == nullptr) {
-        LOG_ERROR("Cannot find the root object");
+        result =
+            FAIL("%s: the savegame holds no root object", File_GetPath(fp));
         goto cleanup;
     }
 
     JSON_OBJECT *const misc_obj = JSON_ObjectGetObject(root_obj, "misc");
     if (misc_obj == nullptr) {
-        LOG_ERROR("Cannot find the misc object");
+        result = FAIL("%s: the savegame holds no 'misc'", File_GetPath(fp));
         goto cleanup;
     }
     JSON_ObjectEvictKey(misc_obj, "death_count");
@@ -288,10 +300,7 @@ bool SG_File_UpdateDeathCounters(
     }
 
     File_Seek(fp, 0, FILE_SEEK_SET);
-    if (!IS_OK(M_SaveRaw(fp, root, level_num, is_quick))) {
-        goto cleanup;
-    }
-    result = true;
+    result = M_SaveRaw(fp, root, level_num, is_quick);
 
 cleanup:
     JSON_ValueFree(root);
