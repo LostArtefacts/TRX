@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/core/json.h>
+#include <trx/core/result.h>
 #include <trx/core/value.h>
 
 // Bridges a TRX_VALUE and its JSON form, so the object property and config
@@ -13,14 +14,15 @@ void JSONValue_Write(
     JSON_OBJECT *obj, const char *key, TRX_VALUE_TYPE type, const void *param,
     const TRX_VALUE *value);
 
-// Reads `value` into `out` as `type`. Returns false if `value` is null or holds
-// the wrong shape, or names an enum the map does not know - the caller then
-// applies its own fallback. A read string is borrowed from `value`.
-bool JSONValue_ReadFrom(
+// Reads `value` into `out` as `type`. Reports a value that is not there, holds
+// the wrong shape, or names an enum the map does not know; the caller decides
+// whether to fall back on its own default. A read string is borrowed from
+// `value`.
+RESULT JSONValue_ReadFrom(
     const JSON_VALUE *value, TRX_VALUE_TYPE type, const void *param,
     TRX_VALUE *out);
 
 // JSONValue_ReadFrom on the value at `key` in `obj`.
-bool JSONValue_Read(
+RESULT JSONValue_Read(
     const JSON_OBJECT *obj, const char *key, TRX_VALUE_TYPE type,
     const void *param, TRX_VALUE *out);

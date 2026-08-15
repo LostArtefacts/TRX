@@ -1024,25 +1024,24 @@ static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
     p->shared = &m_SharedPriv;
-    JSON_SHOULD(JSON_READ(io, "dead", &p->dead));
-    JSON_SHOULD(JSON_READ(io, "attack_count", &p->attack_count));
-    JSON_SHOULD(JSON_READ(io, "death_count", &p->death_count));
-    JSON_SHOULD(JSON_READ(io, "attack_flag", &p->attack_flag));
-    JSON_SHOULD(JSON_READ(io, "attack_type", &p->attack_type));
-    JSON_SHOULD(JSON_READ(io, "attack_head_count", &p->attack_head_count));
-    JSON_SHOULD(JSON_READ(io, "ring_count", &p->ring_count));
-    JSON_SHOULD(JSON_READ(io, "explode_count", &p->explode_count));
-    JSON_SHOULD(JSON_READ(io, "lizard_item_num", &p->lizard_item_num));
-    JSON_SHOULD(JSON_READ(io, "lizard_room_num", &p->lizard_room_num));
-    JSON_SHOULD(JSON_READ(io, "dropped_item", &p->dropped_item));
-    JSON_SHOULD(JSON_READ(io, "shield_on", &p->shield_on));
-    JSON_SHOULD(JSON_READ(io, "shield_active", &p->shield_active));
-    JSON_SHOULD(JSON_READ(io, "turned", &p->turned));
-    JSON_SHOULD(JSON_READ(io, "beam_target_x", &p->beam_target.x));
-    JSON_SHOULD(JSON_READ(io, "beam_target_y", &p->beam_target.y));
-    JSON_SHOULD(JSON_READ(io, "beam_target_z", &p->beam_target.z));
-    JSON_SHOULD(
-        JSON_READ(io, "shared_lizard_active", &p->shared->lizard_active));
+    SHOULD(JSON_READ_OPT(io, "dead", &p->dead));
+    SHOULD(JSON_READ_OPT(io, "attack_count", &p->attack_count));
+    SHOULD(JSON_READ_OPT(io, "death_count", &p->death_count));
+    SHOULD(JSON_READ_OPT(io, "attack_flag", &p->attack_flag));
+    SHOULD(JSON_READ_OPT(io, "attack_type", &p->attack_type));
+    SHOULD(JSON_READ_OPT(io, "attack_head_count", &p->attack_head_count));
+    SHOULD(JSON_READ_OPT(io, "ring_count", &p->ring_count));
+    SHOULD(JSON_READ_OPT(io, "explode_count", &p->explode_count));
+    SHOULD(JSON_READ_OPT(io, "lizard_item_num", &p->lizard_item_num));
+    SHOULD(JSON_READ_OPT(io, "lizard_room_num", &p->lizard_room_num));
+    SHOULD(JSON_READ_OPT(io, "dropped_item", &p->dropped_item));
+    SHOULD(JSON_READ_OPT(io, "shield_on", &p->shield_on));
+    SHOULD(JSON_READ_OPT(io, "shield_active", &p->shield_active));
+    SHOULD(JSON_READ_OPT(io, "turned", &p->turned));
+    SHOULD(JSON_READ_OPT(io, "beam_target_x", &p->beam_target.x));
+    SHOULD(JSON_READ_OPT(io, "beam_target_y", &p->beam_target.y));
+    SHOULD(JSON_READ_OPT(io, "beam_target_z", &p->beam_target.z));
+    SHOULD(JSON_READ(io, "shared_lizard_active", &p->shared->lizard_active));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

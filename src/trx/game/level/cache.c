@@ -227,19 +227,23 @@ TRX_FILE *LevelCache_OpenBinaryWrite(
     return file;
 }
 
-JSON_VALUE *LevelCache_ReadJSON(
-    const char *const filename, const uint64_t checksum)
+RESULT LevelCache_ReadJSON(
+    const char *const filename, const uint64_t checksum,
+    JSON_VALUE **const out_root)
 {
+    *out_root = nullptr;
     const char *const path = M_GetPath(filename);
     if (path == nullptr) {
-        return nullptr;
+        return OK;
     }
 
-    JSON_VALUE *const root = JSONFile_Read(path);
+    JSON_VALUE *root = nullptr;
+    MUST(JSONFile_Read(path, &root));
     if (root == nullptr) {
-        return nullptr;
+        return OK;
     }
 
+    // A cache written for other level data is a miss, not a fault.
     JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
     const char *const checksum_str = root_obj != nullptr
         ? JSON_ObjectGetString(root_obj, "checksum", nullptr)
@@ -247,21 +251,22 @@ JSON_VALUE *LevelCache_ReadJSON(
     if (checksum_str == nullptr
         || (uint64_t)strtoull(checksum_str, nullptr, 16) != checksum) {
         JSON_ValueFree(root);
-        return nullptr;
+        return OK;
     }
 
-    return root;
+    *out_root = root;
+    return OK;
 }
 
-bool LevelCache_WriteJSON(
+RESULT LevelCache_WriteJSON(
     const char *const filename, const uint64_t checksum, JSON_VALUE *const root)
 {
     const char *const path = M_GetPath(filename);
     JSON_OBJECT *const root_obj =
         root != nullptr ? JSON_ValueAsObject(root) : nullptr;
-    if (path == nullptr || root_obj == nullptr) {
-        return false;
-    }
+    FAIL_IF(
+        path == nullptr || root_obj == nullptr,
+        "%s: there is nothing to write to the level cache", filename);
 
     FS_EnsureParentDirectories(path);
 

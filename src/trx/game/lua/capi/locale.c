@@ -4,6 +4,7 @@
 // would shadow Lua's own string library besides.
 
 #include <trx/config.h>
+#include <trx/core/result.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/game_strings/manager.h>
 #include <trx/game/lua/common.h>
@@ -41,7 +42,8 @@ static int M_L_LocaleDeclare(lua_State *const L)
 // trxc.locale.reload() -> bool
 static int M_L_LocaleReload(lua_State *const L)
 {
-    lua_pushboolean(L, GameStringManager_ReloadLanguage(g_Config.language));
+    lua_pushboolean(
+        L, Result_Absorb(GameStringManager_ReloadLanguage(g_Config.language)));
     return 1;
 }
 

@@ -2,6 +2,7 @@
 
 #include <trx/config/option.h>
 #include <trx/core/event_manager.h>
+#include <trx/core/result.h>
 
 #include <stdint.h>
 
@@ -15,7 +16,7 @@ bool Config_IsLoaded(void);
 // have been read and there was no file to read them from. False where nothing
 // has been read at all, as in a test replay.
 bool Config_IsFirstRun(void);
-bool Config_Write(void);
+RESULT Config_Write(void);
 
 // Holds every option to its bounds, then announces which have moved since the
 // last call. Announcing is what makes a change take effect: the settings file

@@ -420,59 +420,60 @@ static void M_Save(JSON_WRITE_IO *const io)
     M_SaveRings(io, FX_RING_TYPE_SUMMON, "summon");
 }
 
-static bool M_LoadRing(JSON_READ_IO *const io, FX_RING *const ring)
+static RESULT M_LoadRing(JSON_READ_IO *const io, FX_RING *const ring)
 {
-    JSON_MUST(JSON_READ(io, "on", &ring->on));
-    JSON_MUST(JSON_READ(io, "life", &ring->life));
-    JSON_MUST(JSON_READ(io, "speed", &ring->speed));
-    JSON_MUST(JSON_READ(io, "radius", &ring->radius));
-    JSON_MUST(JSON_READ(io, "prev_radius", &ring->prev_radius));
+    MUST(JSON_READ(io, "on", &ring->on));
+    MUST(JSON_READ(io, "life", &ring->life));
+    MUST(JSON_READ(io, "speed", &ring->speed));
+    MUST(JSON_READ(io, "radius", &ring->radius));
+    MUST(JSON_READ(io, "prev_radius", &ring->prev_radius));
 
     XYZ_16 rot = {};
-    JSON_MUST(JSON_READ(io, "rot", &rot));
+    MUST(JSON_READ(io, "rot", &rot));
     ring->rot = (XZ_16) { rot.x, rot.z };
 
     XYZ_16 prev_rot = {};
-    JSON_MUST(JSON_READ(io, "prev_rot", &prev_rot));
+    MUST(JSON_READ(io, "prev_rot", &prev_rot));
     ring->prev_rot = (XZ_16) { prev_rot.x, prev_rot.z };
 
-    JSON_MUST(JSON_READ(io, "pos", &ring->pos));
-    JSON_MUST(JSON_READ(io, "prev_pos", &ring->prev_pos));
-    JSON_FINISH();
+    MUST(JSON_READ(io, "pos", &ring->pos));
+    MUST(JSON_READ(io, "prev_pos", &ring->prev_pos));
+    return OK;
 }
 
-static bool M_LoadRings(
+static RESULT M_LoadRings(
     JSON_READ_IO *const io, const FX_RING_TYPE type, const char *const key)
 {
-    if (!JSON_OPTIONAL(JSON_PUSH(io, key))) {
-        return true;
+    if (!JSON_ReadIO_HasKey(io, key)) {
+        return OK;
     }
+    MUST(JSON_PUSH(io, key));
 
     const int32_t count = JSON_ARRAY_LEN(io);
     for (int32_t i = 0; i < count; i++) {
-        JSON_MUST(JSON_PUSH_INDEX(io, i));
+        MUST(JSON_PUSH_INDEX(io, i));
         FX_RING *const ring = FX_Ring_GetRing(type, i);
         if (ring != nullptr) {
-            JSON_MUST(M_LoadRing(io, ring));
+            MUST(M_LoadRing(io, ring));
         } else {
             LOG_WARNING(
                 "Malformed save: too many %s rings. Extra rings will be "
                 "ignored.",
                 key);
         }
-        JSON_MUST(JSON_POP(io));
+        MUST(JSON_POP(io));
     }
 
-    JSON_MUST(JSON_POP(io));
-    JSON_FINISH();
+    MUST(JSON_POP(io));
+    return OK;
 }
 
-static bool M_Load(JSON_READ_IO *const io)
+static RESULT M_Load(JSON_READ_IO *const io)
 {
-    JSON_MUST(M_LoadRings(io, FX_RING_TYPE_BLAST, "blast"));
-    JSON_MUST(M_LoadRings(io, FX_RING_TYPE_KNOCKBACK, "knockback"));
-    JSON_MUST(M_LoadRings(io, FX_RING_TYPE_SUMMON, "summon"));
-    JSON_FINISH();
+    MUST(M_LoadRings(io, FX_RING_TYPE_BLAST, "blast"));
+    MUST(M_LoadRings(io, FX_RING_TYPE_KNOCKBACK, "knockback"));
+    MUST(M_LoadRings(io, FX_RING_TYPE_SUMMON, "summon"));
+    return OK;
 }
 
 static void M_Control(void)

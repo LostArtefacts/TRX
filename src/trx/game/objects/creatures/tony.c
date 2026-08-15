@@ -69,12 +69,12 @@ static int32_t m_DeathHeights[5] = {};
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ(io, "dropped_item", &p->dropped_item));
-    JSON_SHOULD(JSON_READ(io, "ring_count", &p->ring_count));
-    JSON_SHOULD(JSON_READ(io, "explode_count", &p->explode_count));
-    JSON_SHOULD(JSON_READ(io, "dead", &p->dead));
-    JSON_SHOULD(JSON_READ(io, "phase", &p->phase));
-    JSON_SHOULD(JSON_READ(io, "attack_toggle", &p->attack_toggle));
+    SHOULD(JSON_READ_OPT(io, "dropped_item", &p->dropped_item));
+    SHOULD(JSON_READ_OPT(io, "ring_count", &p->ring_count));
+    SHOULD(JSON_READ_OPT(io, "explode_count", &p->explode_count));
+    SHOULD(JSON_READ_OPT(io, "dead", &p->dead));
+    SHOULD(JSON_READ_OPT(io, "phase", &p->phase));
+    SHOULD(JSON_READ_OPT(io, "attack_toggle", &p->attack_toggle));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

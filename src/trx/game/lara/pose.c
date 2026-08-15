@@ -30,49 +30,48 @@ static void M_WarnWithJSONError(const JSON_READ_IO *const io)
     LOG_WARNING("%s", warning_message);
 }
 
-static bool M_LoadPose(JSON_READ_IO *const io, LARA_POSE *const pose)
+static RESULT M_LoadPose(JSON_READ_IO *const io, LARA_POSE *const pose)
 {
-    JSON_MUST(JSON_READ(io, "offset", &pose->offset));
-    JSON_MUST(JSON_PUSH(io, "rots"));
+    MUST(JSON_READ(io, "offset", &pose->offset));
+    MUST(JSON_PUSH(io, "rots"));
     const int32_t rot_count = JSON_ARRAY_LEN(io);
     if (rot_count < 0) {
-        JSON_MUST(JSON_POP(io));
-        JSON_FAIL();
+        MUST(JSON_POP(io));
+        return JSON_ReadIO_Fail(io, "'rots' must be a list");
     }
     if (rot_count != LM_NUMBER_OF) {
-        JSON_ReadIO_SetError(
-            io, "expected exactly %d rotations, got %d", LM_NUMBER_OF,
+        MUST(JSON_POP(io));
+        return JSON_ReadIO_Fail(
+            io, "'rots' needs exactly %d rotations, not %d", LM_NUMBER_OF,
             rot_count);
-        JSON_MUST(JSON_POP(io));
-        JSON_FAIL();
     }
 
     for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
-        JSON_MUST(JSON_READ_A(io, i, &pose->rots[i]));
+        MUST(JSON_READ_A(io, i, &pose->rots[i]));
     }
 
-    JSON_MUST(JSON_POP(io));
-    JSON_FINISH();
+    MUST(JSON_POP(io));
+    return OK;
 }
 
-static bool M_LoadPosesArray(JSON_READ_IO *const io, VECTOR *const poses)
+static RESULT M_LoadPosesArray(JSON_READ_IO *const io, VECTOR *const poses)
 {
     const int32_t pose_count = JSON_ARRAY_LEN(io);
     if (pose_count < 0) {
-        JSON_FAIL();
+        return JSON_ReadIO_Fail(io, "the poses must be a list");
     }
 
     for (int32_t i = 0; i < pose_count; i++) {
-        JSON_MUST(JSON_PUSH_INDEX(io, i));
+        MUST(JSON_PUSH_INDEX(io, i));
 
         LARA_POSE pose = {};
-        if (JSON_SHOULD(M_LoadPose(io, &pose))) {
+        if (SHOULD(M_LoadPose(io, &pose))) {
             Vector_Add(poses, &pose);
         }
-        JSON_MUST(JSON_POP(io));
+        MUST(JSON_POP(io));
     }
 
-    JSON_FINISH();
+    return OK;
 }
 
 static void M_LoadPoses(void)
@@ -88,15 +87,14 @@ static void M_LoadPoses(void)
     if (poses_path == nullptr) {
         return;
     }
-    JSON_VALUE *const doc = JSONFile_Read(poses_path);
+    JSON_VALUE *doc = nullptr;
+    SHOULD(JSONFile_Read(poses_path, &doc), "Lara keeps her default poses");
     if (doc == nullptr) {
         return;
     }
 
     JSON_READ_IO *const io = JSON_ReadIO_Create(doc, 0, poses_path);
-    if (!M_LoadPosesArray(io, m_Poses)) {
-        M_WarnWithJSONError(io);
-    }
+    SHOULD(M_LoadPosesArray(io, m_Poses), "Lara keeps her default poses");
     JSON_ReadIO_Destroy(io);
     JSON_ValueFree(doc);
 }

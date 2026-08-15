@@ -42,14 +42,14 @@ static const BITE m_Mouth = {
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    if (JSON_SHOULD(JSON_PUSH(io, "blow_loops"))) {
-        JSON_SHOULD(JSON_READ(io, "max", &p->blow_loops.max));
-        JSON_SHOULD(JSON_READ(io, "current", &p->blow_loops.current));
-        JSON_POP(io);
+    if (SHOULD(JSON_PUSH(io, "blow_loops"))) {
+        SHOULD(JSON_READ_OPT(io, "max", &p->blow_loops.max));
+        SHOULD(JSON_READ_OPT(io, "current", &p->blow_loops.current));
+        SHOULD(JSON_POP(io));
     }
-    JSON_SHOULD(JSON_READ(io, "speed", &p->speed));
-    JSON_SHOULD(JSON_READ(io, "deadly_range", &p->deadly_range));
-    JSON_SHOULD(JSON_READ(io, "stop", &p->stop));
+    SHOULD(JSON_READ_OPT(io, "speed", &p->speed));
+    SHOULD(JSON_READ_OPT(io, "deadly_range", &p->deadly_range));
+    SHOULD(JSON_READ_OPT(io, "stop", &p->stop));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

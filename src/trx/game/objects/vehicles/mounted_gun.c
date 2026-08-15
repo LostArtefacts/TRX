@@ -57,12 +57,12 @@ typedef enum {
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ(io, "state", &p->state));
-    JSON_SHOULD(JSON_READ(io, "fire_count", &p->fire_count));
-    JSON_SHOULD(JSON_READ(io, "tilt", &p->tilt));
-    JSON_SHOULD(JSON_READ(io, "yaw", &p->yaw));
-    JSON_SHOULD(JSON_READ(io, "yaw_offset", &p->yaw_offset));
-    JSON_SHOULD(JSON_READ(io, "yaw_speed", &p->yaw_speed));
+    SHOULD(JSON_READ_OPT(io, "state", &p->state));
+    SHOULD(JSON_READ_OPT(io, "fire_count", &p->fire_count));
+    SHOULD(JSON_READ_OPT(io, "tilt", &p->tilt));
+    SHOULD(JSON_READ_OPT(io, "yaw", &p->yaw));
+    SHOULD(JSON_READ_OPT(io, "yaw_offset", &p->yaw_offset));
+    SHOULD(JSON_READ_OPT(io, "yaw_speed", &p->yaw_speed));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

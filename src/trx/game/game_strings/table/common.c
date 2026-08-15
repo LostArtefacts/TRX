@@ -120,13 +120,11 @@ void GameStringTable_Shutdown(void)
     }
 }
 
-bool GameStringTable_Load(const char *const path, const bool load_levels)
+RESULT GameStringTable_Load(const char *const path, const bool load_levels)
 {
-    GS_FILE *gs_file = GS_File_CreateFromPath(path, load_levels);
-    if (gs_file == nullptr) {
-        return false;
-    }
+    GS_FILE *gs_file = nullptr;
+    MUST(GS_File_CreateFromPath(path, load_levels, &gs_file));
     ASSERT(m_GST_Layers != nullptr);
     Vector_Add(m_GST_Layers, &gs_file);
-    return true;
+    return OK;
 }

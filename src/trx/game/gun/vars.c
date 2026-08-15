@@ -3,27 +3,27 @@
 #include <trx/core/enum_map.h>
 #include <trx/core/json/util/file.h>
 #include <trx/core/log.h>
+#include <trx/core/result.h>
 #include <trx/core/subsystem.h>
 #include <trx/game/catalog/manager.h>
 #include <trx/game/const.h>
 #include <trx/game/paths.h>
-#include <trx/game/shell/common.h>
 
 #include <string.h>
 
 WEAPON_INFO g_Weapons[NUM_WEAPONS] = {};
 
-static void M_ReadAngles(
+static RESULT M_ReadAngles(
     JSON_OBJECT *const obj, const char *const name, const char *const path,
     const char *const key, WEAPON_AIM_LIMITS *const limits)
 {
     JSON_ARRAY *const arr = JSON_ObjectGetArray(obj, key);
     if (arr == nullptr) {
-        return;
+        return OK;
     }
-    if (arr->length != 4) {
-        Shell_ExitSystemFmt("invalid '%s' for '%s' in %s", key, name, path);
-    }
+    FAIL_IF(
+        arr->length != 4, "%s: '%s' for '%s' must have four angles", path, key,
+        name);
     int16_t *const angles[] = {
         &limits->min_yaw,
         &limits->max_yaw,
@@ -33,6 +33,7 @@ static void M_ReadAngles(
     for (size_t i = 0; i < 4; i++) {
         *angles[i] = JSON_ArrayGetInt(arr, i, *angles[i]) * DEG_1;
     }
+    return OK;
 }
 
 static void M_ReadRGB_F(JSON_VALUE *const value, RGB_F *const target)
@@ -96,21 +97,13 @@ static void M_ReadAmmoInfo(JSON_OBJECT *const obj, const int32_t type)
     ammo->infinite = JSON_ObjectGetBool(ammo_obj, "infinite", ammo->infinite);
 }
 
-static void M_Load(void)
+static RESULT M_ReadWeapons(JSON_OBJECT *const root_obj, const char *const path)
 {
-    const char *const path =
-        GamePath_Resolve(GAME_DYNAMIC_PATH_COMMON_CONFIG, "weapons.json5");
 #define L_READ_ANGLE(name, target)                                             \
     target = JSON_ObjectGetInt(obj, name, target) * DEG_1;
 #define L_READ_DIST(name, target)                                              \
     target = JSON_ObjectGetDouble(obj, name, target / (float)WALL_L) * WALL_L;
 #define L_READ_INT(name, target) target = JSON_ObjectGetInt(obj, name, target)
-
-    JSON_VALUE *const root = JSONFile_ReadEx(path, true);
-    JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
-    if (root_obj == nullptr) {
-        Shell_ExitSystemFmt("invalid weapons vars file: %s", path);
-    }
 
     // Every weapon starts from nothing, so that what the file leaves out is
     // absent rather than left over from the mod played before this one.
@@ -123,9 +116,9 @@ static void M_Load(void)
          elem = elem->next) {
         const char *const name = elem->name->string;
         const int32_t type = ENUM_MAP_GET(LARA_GUN_TYPE, name, -1);
-        if (type < 0 || type >= NUM_WEAPONS) {
-            Shell_ExitSystemFmt("unknown weapon type '%s' in %s", name, path);
-        }
+        FAIL_IF(
+            type < 0 || type >= NUM_WEAPONS, "%s: unknown weapon '%s'", path,
+            name);
 
         JSON_OBJECT *const obj = JSON_ValueAsObject(elem->value);
 
@@ -135,19 +128,19 @@ static void M_Load(void)
         if (weapon_type != JSON_INVALID_STRING && weapon_type[0] != '\0') {
             const int32_t weapon_type_val =
                 ENUM_MAP_GET(WEAPON_TYPE, weapon_type, -1);
-            if (weapon_type_val < 0 || weapon_type_val >= NUM_WEAPON_TYPES) {
-                Shell_ExitSystemFmt(
-                    "unknown weapon type '%s' in %s", weapon_type, path);
-            } else {
-                g_Weapons[type].type = weapon_type_val;
-            }
+            FAIL_IF(
+                weapon_type_val < 0 || weapon_type_val >= NUM_WEAPON_TYPES,
+                "%s: unknown type '%s' for '%s'", path, weapon_type, name);
+            g_Weapons[type].type = weapon_type_val;
         }
 
         // angles
-        M_ReadAngles(obj, name, path, "lock_angles", &g_Weapons[type].lock);
-        M_ReadAngles(obj, name, path, "left_angles", &g_Weapons[type].left_arm);
-        M_ReadAngles(
-            obj, name, path, "right_angles", &g_Weapons[type].right_arm);
+        MUST(M_ReadAngles(
+            obj, name, path, "lock_angles", &g_Weapons[type].lock));
+        MUST(M_ReadAngles(
+            obj, name, path, "left_angles", &g_Weapons[type].left_arm));
+        MUST(M_ReadAngles(
+            obj, name, path, "right_angles", &g_Weapons[type].right_arm));
 
         // scalar properties
         L_READ_ANGLE("aim_speed", g_Weapons[type].aim_speed);
@@ -216,10 +209,29 @@ static void M_Load(void)
             JSON_ObjectGetBool(obj, "is_available", true);
     }
 
-    JSON_ValueFree(root);
+    return OK;
 #undef L_READ_ANGLE
 #undef L_READ_DIST
 #undef L_READ_INT
+}
+
+static RESULT M_LoadFrom(const char *const path)
+{
+    JSON_VALUE *root = nullptr;
+    MUST(JSONFile_ReadRequired(path, &root));
+    JSON_OBJECT *const root_obj = JSON_ValueAsObject(root);
+    const RESULT result = root_obj == nullptr
+        ? FAIL("%s: the file must hold a dictionary", path)
+        : M_ReadWeapons(root_obj, path);
+    JSON_ValueFree(root);
+    return result;
+}
+
+static void M_Load(void)
+{
+    const char *const path =
+        GamePath_Resolve(GAME_DYNAMIC_PATH_COMMON_CONFIG, "weapons.json5");
+    EXIT_ON_FAIL(M_LoadFrom(path), "Failed to load the weapon settings");
 }
 
 REGISTER_SUBSYSTEM(.load = M_Load)

@@ -71,10 +71,10 @@ static const LARA_TRX_STATE m_StopStates[] = {
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ(io, "counted_for_stats", &p->counted_for_stats));
-    JSON_SHOULD(JSON_READ(io, "used_for_save", &p->used_for_save));
-    JSON_SHOULD(JSON_READ(io, "initialised", &p->initialised));
-    JSON_SHOULD(JSON_READ(io, "initial_angle", &p->initial_angle));
+    SHOULD(JSON_READ_OPT(io, "counted_for_stats", &p->counted_for_stats));
+    SHOULD(JSON_READ_OPT(io, "used_for_save", &p->used_for_save));
+    SHOULD(JSON_READ_OPT(io, "initialised", &p->initialised));
+    SHOULD(JSON_READ_OPT(io, "initial_angle", &p->initial_angle));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

@@ -81,9 +81,9 @@ static const BITE m_Bite = {
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ(io, "stick_initialised", &p->stick.initialised));
-    JSON_SHOULD(JSON_READ(io, "stick_on_fire", &p->stick.on_fire));
-    JSON_SHOULD(JSON_READ(io, "stick_hit_count", &p->stick.hit_count));
+    SHOULD(JSON_READ_OPT(io, "stick_initialised", &p->stick.initialised));
+    SHOULD(JSON_READ_OPT(io, "stick_on_fire", &p->stick.on_fire));
+    SHOULD(JSON_READ_OPT(io, "stick_hit_count", &p->stick.hit_count));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

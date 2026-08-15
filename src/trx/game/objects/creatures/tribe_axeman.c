@@ -112,7 +112,7 @@ static int32_t M_GetAttackDamage(const ITEM *const item)
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ(io, "wants_wait_2", &p->wants_wait_2));
+    SHOULD(JSON_READ_OPT(io, "wants_wait_2", &p->wants_wait_2));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

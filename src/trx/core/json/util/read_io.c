@@ -100,11 +100,24 @@ static void M_SetErrorV(
 #pragma GCC diagnostic pop
     } else {
         if (final_line >= 0 && final_col >= 0) {
-            snprintf(
-                io->error_msg, sizeof(io->error_msg),
-                "(line %d, col %d): %.200s", final_line, final_col, body);
+            if (io->path[0] != '\0') {
+                snprintf(
+                    io->error_msg, sizeof(io->error_msg),
+                    "(line %d, col %d): %s - %.200s", final_line, final_col,
+                    io->path, body);
+            } else {
+                snprintf(
+                    io->error_msg, sizeof(io->error_msg),
+                    "(line %d, col %d): %.200s", final_line, final_col, body);
+            }
         } else {
-            snprintf(io->error_msg, sizeof(io->error_msg), "%.200s", body);
+            if (io->path[0] != '\0') {
+                snprintf(
+                    io->error_msg, sizeof(io->error_msg), "%s - %.200s",
+                    io->path, body);
+            } else {
+                snprintf(io->error_msg, sizeof(io->error_msg), "%.200s", body);
+            }
         }
     }
 }
@@ -115,6 +128,19 @@ static void M_SetError(JSON_READ_IO *const io, const char *fmt, ...)
     va_start(ap, fmt);
     M_SetErrorV(io, -1, -1, false, fmt, ap);
     va_end(ap);
+}
+
+// Records the trouble on the io, so the path and location bookkeeping stays
+// as it was, and hands it back as a failure the caller can pass along.
+static RESULT M_Fail(JSON_READ_IO *const io, const char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    M_SetErrorV(io, -1, -1, false, fmt, ap);
+    va_end(ap);
+    char message[1024];
+    JSON_ReadIO_FormatError(io, false, message, sizeof(message));
+    return FAIL("%s", message);
 }
 
 static void M_SetErrorAt(
@@ -164,52 +190,47 @@ static void M_PopPath(JSON_READ_IO *const io)
     io->path[pos] = '\0';
 }
 
-static bool M_PushValue(JSON_READ_IO *const io, JSON_VALUE *const value)
+static RESULT M_PushValue(JSON_READ_IO *const io, JSON_VALUE *const value)
 {
     if (value == nullptr) {
-        M_SetError(io, "pushing null value");
-        return false;
+        return M_Fail(io, "pushing null value");
     }
     if (io->current_pos + 1 >= M_MAX_STACK_SIZE) {
-        M_SetError(io, "stack overflow");
-        return false;
+        return M_Fail(io, "stack overflow");
     }
     io->current_pos++;
     io->stack[io->current_pos] = value;
     io->current = io->stack[io->current_pos];
-    return true;
+    return OK;
 }
 
-static bool M_ReadBoolCurrent(JSON_READ_IO *const io, bool *const target)
+static RESULT M_ReadBoolCurrent(JSON_READ_IO *const io, bool *const target)
 {
     if (JSON_ValueIsTrue(io->current)) {
         *target = true;
-        return true;
+        return OK;
     } else if (JSON_ValueIsFalse(io->current)) {
         *target = false;
-        return true;
+        return OK;
     } else {
-        M_SetError(io, "not a bool");
-        return false;
+        return M_Fail(io, "not a bool");
     }
 }
 
 #define L_DEFINE_M_READ_NUM_CURRENT(type_, name, minv, maxv)                   \
-    static bool M_ReadNumCurrent_##name(                                       \
+    static RESULT M_ReadNumCurrent_##name(                                     \
         JSON_READ_IO *const io, void *const target)                            \
     {                                                                          \
         if (io->current->type != JSON_TYPE_NUMBER) {                           \
-            M_SetError(io, "not a number");                                    \
-            return false;                                                      \
+            return M_Fail(io, "not a number");                                 \
         }                                                                      \
         const long long val = JSON_ValueGetInt(io->current, 0);                \
         if (val < (long long)(minv) || val > (long long)(maxv)) {              \
-            M_SetError(io, "value out of range: %lld", val);                   \
-            return false;                                                      \
+            return M_Fail(io, "value out of range: %lld", val);                \
         }                                                                      \
         const type_ parsed = (type_)val;                                       \
         memcpy(target, &parsed, sizeof(parsed));                               \
-        return true;                                                           \
+        return OK;                                                             \
     }
 L_DEFINE_M_READ_NUM_CURRENT(int8_t, S8, INT8_MIN, INT8_MAX)
 L_DEFINE_M_READ_NUM_CURRENT(int16_t, S16, INT16_MIN, INT16_MAX)
@@ -220,74 +241,70 @@ L_DEFINE_M_READ_NUM_CURRENT(uint32_t, U32, 0, UINT32_MAX)
 #undef L_DEFINE_M_READ_NUM_CURRENT
 
 #define L_DEFINE_M_READ_NUM64_CURRENT(type_, name)                             \
-    static bool M_ReadNumCurrent_##name(                                       \
+    static RESULT M_ReadNumCurrent_##name(                                     \
         JSON_READ_IO *const io, void *const target)                            \
     {                                                                          \
         if (io->current->type != JSON_TYPE_NUMBER) {                           \
-            M_SetError(io, "not a number");                                    \
-            return false;                                                      \
+            return M_Fail(io, "not a number");                                 \
         }                                                                      \
         const type_ parsed = (type_)JSON_ValueGetInt64(io->current, 0);        \
         memcpy(target, &parsed, sizeof(parsed));                               \
-        return true;                                                           \
+        return OK;                                                             \
     }
 L_DEFINE_M_READ_NUM64_CURRENT(int64_t, S64)
 L_DEFINE_M_READ_NUM64_CURRENT(uint64_t, U64)
 #undef L_DEFINE_M_READ_NUM64_CURRENT
 
-static bool M_ReadNumCurrent_Double(
+static RESULT M_ReadNumCurrent_Double(
     JSON_READ_IO *const io, double *const target)
 {
     if (io->current->type != JSON_TYPE_NUMBER) {
-        M_SetError(io, "not a number");
-        return false;
+        return M_Fail(io, "not a number");
     }
     const double val = JSON_ValueGetDouble(io->current, -1.0);
     memcpy(target, &val, sizeof(val));
-    return true;
+    return OK;
 }
 
-static bool M_ReadNumCurrent_Float(JSON_READ_IO *const io, float *const target)
+static RESULT M_ReadNumCurrent_Float(
+    JSON_READ_IO *const io, float *const target)
 {
     if (io->current->type != JSON_TYPE_NUMBER) {
-        M_SetError(io, "not a number");
-        return false;
+        return M_Fail(io, "not a number");
     }
     const double val = JSON_ValueGetDouble(io->current, -1.0);
     const float parsed = (float)val;
     memcpy(target, &parsed, sizeof(parsed));
-    return true;
+    return OK;
 }
 
-static bool M_ReadStringCurrent(
+static RESULT M_ReadStringCurrent(
     JSON_READ_IO *const io, const char **const target)
 {
     if (io->current->type != JSON_TYPE_STRING) {
-        M_SetError(io, "not a string");
-        return false;
+        return M_Fail(io, "not a string");
     }
     *target = JSON_ValueGetString(io->current, nullptr);
-    return *target != nullptr;
+    FAIL_IF(*target == nullptr, "not a string");
+    return OK;
 }
 
-static bool M_ReadRGB888Current(JSON_READ_IO *const io, RGB_888 *const target)
+static RESULT M_ReadRGB888Current(JSON_READ_IO *const io, RGB_888 *const target)
 {
     JSON_ARRAY *const tuple = JSON_ValueAsArray(io->current);
     if (tuple != nullptr) {
         const int32_t tuple_len = tuple->length;
         if (tuple_len != 3) {
-            M_SetError(io, "RGB array must have exactly 3 values");
-            JSON_FAIL();
+            return M_Fail(io, "RGB array must have exactly 3 values");
         }
 
         RGB_F color = { -1.0f, -1.0f, -1.0f };
-        JSON_MUST(JSON_READ_A(io, 0, &color.r));
-        JSON_MUST(JSON_READ_A(io, 1, &color.g));
-        JSON_MUST(JSON_READ_A(io, 2, &color.b));
+        MUST(JSON_READ_A(io, 0, &color.r));
+        MUST(JSON_READ_A(io, 1, &color.g));
+        MUST(JSON_READ_A(io, 2, &color.b));
         if (color.r < 0.0f || color.g < 0.0f || color.b < 0.0f || color.r > 1.0f
             || color.g > 1.0f || color.b > 1.0f) {
-            M_SetError(io, "RGB array values must be in range 0.0..1.0");
-            JSON_FAIL();
+            return M_Fail(io, "RGB array values must be in range 0.0..1.0");
         }
 
         *target = (RGB_888) {
@@ -297,29 +314,27 @@ static bool M_ReadRGB888Current(JSON_READ_IO *const io, RGB_888 *const target)
         };
     } else {
         const char *str = nullptr;
-        JSON_MUST(JSON_READ_CURRENT(io, &str));
+        MUST(JSON_READ_CURRENT(io, &str));
         if (!String_ParseRGB888(str, target)) {
-            M_SetError(io, "invalid RGB color string");
-            JSON_FAIL();
+            return M_Fail(io, "invalid RGB color string");
         }
     }
 
-    JSON_FINISH();
+    return OK;
 }
 
-static bool M_ReadRGBA8888Current(
+static RESULT M_ReadRGBA8888Current(
     JSON_READ_IO *const io, RGBA_8888 *const target)
 {
     const char *str = nullptr;
-    JSON_MUST(JSON_READ_CURRENT(io, &str));
+    MUST(JSON_READ_CURRENT(io, &str));
     if (!String_ParseRGBA8888(str, target)) {
-        M_SetError(io, "invalid RGBA color string");
-        JSON_FAIL();
+        return M_Fail(io, "invalid RGBA color string");
     }
-    JSON_FINISH();
+    return OK;
 }
 
-bool JSON_ReadIO_ReadXYZ32Current(
+RESULT JSON_ReadIO_ReadXYZ32Current(
     JSON_READ_IO *const io, void *const target_void)
 {
     XYZ_32 *const target = target_void;
@@ -327,39 +342,37 @@ bool JSON_ReadIO_ReadXYZ32Current(
     if (tuple != nullptr) {
         const int32_t tuple_len = tuple->length;
         if (tuple_len != 3) {
-            M_SetError(io, "XYZ tuple must have exactly 3 values");
-            JSON_FAIL();
+            return M_Fail(io, "XYZ tuple must have exactly 3 values");
         }
-        JSON_MUST(JSON_READ_A(io, 0, &target->x));
-        JSON_MUST(JSON_READ_A(io, 1, &target->y));
-        JSON_MUST(JSON_READ_A(io, 2, &target->z));
+        MUST(JSON_READ_A(io, 0, &target->x));
+        MUST(JSON_READ_A(io, 1, &target->y));
+        MUST(JSON_READ_A(io, 2, &target->z));
     } else {
-        JSON_MUST(JSON_READ(io, "x", &target->x));
-        JSON_MUST(JSON_READ(io, "y", &target->y));
-        JSON_MUST(JSON_READ(io, "z", &target->z));
+        MUST(JSON_READ(io, "x", &target->x));
+        MUST(JSON_READ(io, "y", &target->y));
+        MUST(JSON_READ(io, "z", &target->z));
     }
-    JSON_FINISH();
+    return OK;
 }
 
-bool JSON_ReadIO_ReadXYZ16Current(
+RESULT JSON_ReadIO_ReadXYZ16Current(
     JSON_READ_IO *const io, void *const target_void)
 {
     XYZ_32 tmp;
-    JSON_MUST(JSON_ReadIO_ReadXYZ32Current(io, &tmp));
+    MUST(JSON_ReadIO_ReadXYZ32Current(io, &tmp));
     if (tmp.x < INT16_MIN || tmp.x > INT16_MAX || tmp.y < INT16_MIN
         || tmp.y > INT16_MAX || tmp.z < INT16_MIN || tmp.z > INT16_MAX) {
-        M_SetError(io, "XYZ16 value out of range");
-        JSON_FAIL();
+        return M_Fail(io, "XYZ16 value out of range");
     }
     XYZ_16 *const target = target_void;
     target->x = tmp.x;
     target->y = tmp.y;
     target->z = tmp.z;
-    JSON_FINISH();
+    return OK;
 }
 
 #define L_DEFINE_JSON_READ_IO_TYPE(name, ctype, impl_func)                     \
-    bool JSON_ReadIO_Read##name##Current(                                      \
+    RESULT JSON_ReadIO_Read##name##Current(                                    \
         JSON_READ_IO *const io, void *const target)                            \
     {                                                                          \
         return impl_func(io, (ctype *)target);                                 \
@@ -477,54 +490,49 @@ void JSON_ReadIO_SetErrorAt(
     M_SetErrorAt(io, line, col, "%s", body);
 }
 
-bool JSON_ReadIO_PushObject(JSON_READ_IO *const io, const char *const key)
+RESULT JSON_ReadIO_PushObject(JSON_READ_IO *const io, const char *const key)
 {
     JSON_OBJECT *const current_obj = JSON_ValueAsObject(io->current);
     if (current_obj == nullptr) {
-        M_SetError(io, "not an object");
-        return false;
+        return M_Fail(io, "not an object");
     }
     JSON_VALUE *const child = JSON_ObjectGetValue(current_obj, key);
     if (child == nullptr) {
-        M_SetError(io, "key does not exist: %s", key);
-        return false;
+        return M_Fail(io, "key does not exist: %s", key);
     }
     if (!M_PushPathKey(io, key)) {
-        M_SetError(io, "path depth overflow");
-        return false;
+        return M_Fail(io, "path depth overflow");
     }
     return M_PushValue(io, child);
 }
 
-bool JSON_ReadIO_PushArrayElem(JSON_READ_IO *const io, const size_t index)
+RESULT JSON_ReadIO_PushArrayElem(JSON_READ_IO *const io, const size_t index)
 {
     JSON_ARRAY *const current_arr = JSON_ValueAsArray(io->current);
     if (current_arr == nullptr) {
-        M_SetError(io, "not an array");
-        return false;
+        return M_Fail(io, "not an array");
     }
     JSON_VALUE *const child = JSON_ArrayGetValue(current_arr, index);
     if (child == nullptr) {
-        M_SetError(io, "invalid array index");
-        return false;
+        return M_Fail(
+            io, "invalid array index %zu, array holds %d", index,
+            JSON_ReadIO_GetArrayLength(io));
     }
     if (!M_PushPathIndex(io, index)) {
-        M_SetError(io, "path depth overflow");
-        return false;
+        return M_Fail(io, "path depth overflow");
     }
     return M_PushValue(io, child);
 }
 
-bool JSON_ReadIO_Pop(JSON_READ_IO *const io)
+RESULT JSON_ReadIO_Pop(JSON_READ_IO *const io)
 {
     if (io->current_pos == 0) {
-        M_SetError(io, "pop from empty stack");
-        return false;
+        return M_Fail(io, "pop from empty stack");
     }
     io->current_pos--;
     io->current = io->stack[io->current_pos];
     M_PopPath(io);
-    return true;
+    return OK;
 }
 
 int32_t JSON_ReadIO_GetArrayLength(JSON_READ_IO *const io)
@@ -576,4 +584,51 @@ JSON_READ_IO *JSON_ReadIO_Create(
 void JSON_ReadIO_Destroy(JSON_READ_IO *const io)
 {
     Memory_Free(io);
+}
+
+RESULT JSON_ReadIO_ReadKey(
+    JSON_READ_IO *const io, const char *const key, void *const target,
+    const JSON_READ_IO_READ_FUNC read_func)
+{
+    MUST(JSON_ReadIO_PushObject(io, key));
+    const RESULT result = read_func(io, target);
+    if (!IS_OK(result)) {
+        IGNORE(JSON_ReadIO_Pop(io));
+        return result;
+    }
+    return JSON_ReadIO_Pop(io);
+}
+
+RESULT JSON_ReadIO_ReadKeyOptional(
+    JSON_READ_IO *const io, const char *const key, void *const target,
+    const JSON_READ_IO_READ_FUNC read_func)
+{
+    if (!JSON_ReadIO_HasKey(io, key)) {
+        return OK;
+    }
+    return JSON_ReadIO_ReadKey(io, key, target, read_func);
+}
+
+RESULT JSON_ReadIO_ReadIndex(
+    JSON_READ_IO *const io, const size_t index, void *const target,
+    const JSON_READ_IO_READ_FUNC read_func)
+{
+    MUST(JSON_ReadIO_PushArrayElem(io, index));
+    const RESULT result = read_func(io, target);
+    if (!IS_OK(result)) {
+        IGNORE(JSON_ReadIO_Pop(io));
+        return result;
+    }
+    return JSON_ReadIO_Pop(io);
+}
+
+RESULT JSON_ReadIO_Fail(JSON_READ_IO *const io, const char *const fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    M_SetErrorV(io, -1, -1, false, fmt, ap);
+    va_end(ap);
+    char message[1024];
+    JSON_ReadIO_FormatError(io, false, message, sizeof(message));
+    return FAIL("%s", message);
 }

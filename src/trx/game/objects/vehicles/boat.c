@@ -79,13 +79,13 @@ typedef struct {
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ(io, "boat_turn", &p->boat_turn));
-    JSON_SHOULD(JSON_READ(io, "left_fallspeed", &p->left_fallspeed));
-    JSON_SHOULD(JSON_READ(io, "right_fallspeed", &p->right_fallspeed));
-    JSON_SHOULD(JSON_READ(io, "tilt_angle", &p->tilt_angle));
-    JSON_SHOULD(JSON_READ(io, "extra_rotation", &p->extra_rotation));
-    JSON_SHOULD(JSON_READ(io, "water", &p->water));
-    JSON_SHOULD(JSON_READ(io, "pitch", &p->pitch));
+    SHOULD(JSON_READ_OPT(io, "boat_turn", &p->boat_turn));
+    SHOULD(JSON_READ_OPT(io, "left_fallspeed", &p->left_fallspeed));
+    SHOULD(JSON_READ_OPT(io, "right_fallspeed", &p->right_fallspeed));
+    SHOULD(JSON_READ_OPT(io, "tilt_angle", &p->tilt_angle));
+    SHOULD(JSON_READ_OPT(io, "extra_rotation", &p->extra_rotation));
+    SHOULD(JSON_READ_OPT(io, "water", &p->water));
+    SHOULD(JSON_READ_OPT(io, "pitch", &p->pitch));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

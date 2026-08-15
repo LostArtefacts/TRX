@@ -381,16 +381,19 @@ void ObjectProperty_WriteItemOverrides(
     JSONW_POP_AND_SET(io, key);
 }
 
-bool ObjectProperty_ReadItemOverrides(JSON_READ_IO *const io, ITEM *const item)
+RESULT ObjectProperty_ReadItemOverrides(
+    JSON_READ_IO *const io, ITEM *const item)
 {
-    if (!JSON_PUSH(io, "properties")) {
-        return true;
+    if (!JSON_ReadIO_HasKey(io, "properties")) {
+        return OK;
     }
+    MUST(JSON_PUSH(io, "properties"));
 
     const OBJECT *const obj =
         item == nullptr ? nullptr : Object_TryGet(item->object_id);
     if (obj == nullptr) {
-        goto fail;
+        MUST(JSON_POP(io));
+        return JSON_ReadIO_Fail(io, "the item names no object");
     }
 
     const JSON_OBJECT *const props = JSON_ReadIO_GetCurrentObject(io);
@@ -401,9 +404,11 @@ bool ObjectProperty_ReadItemOverrides(JSON_READ_IO *const io, ITEM *const item)
         }
 
         TRX_VALUE value;
-        if (!JSONValue_Read(
-                props, entry->name, entry->value.type, nullptr, &value)) {
-            goto fail;
+        const RESULT read = JSONValue_Read(
+            props, entry->name, entry->value.type, nullptr, &value);
+        if (!IS_OK(read)) {
+            IGNORE(JSON_ReadIO_Pop(io));
+            return read;
         }
         // A save is not worth losing over one value the property no longer
         // takes; the item keeps the object's.
@@ -414,10 +419,6 @@ bool ObjectProperty_ReadItemOverrides(JSON_READ_IO *const io, ITEM *const item)
     }
 
     return JSON_POP(io);
-
-fail:
-    JSON_POP(io);
-    return false;
 }
 
 REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

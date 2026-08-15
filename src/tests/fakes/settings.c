@@ -154,10 +154,10 @@ void ConfigFile_ApplyEnforcedTo(CONFIG_OPTION *const option)
 {
 }
 
-bool ConfigFile_Write(
+RESULT ConfigFile_Write(
     const char *const default_path, void (*const action)(JSON_OBJECT *))
 {
-    return true;
+    return OK;
 }
 
 void Config_LoadFromJSON(JSON_OBJECT *const root_obj)
@@ -328,9 +328,9 @@ const char *GameStringManager_GetLanguageName(const char *const code)
     return code;
 }
 
-bool GameStringManager_ReloadLanguage(const char *const lang)
+RESULT GameStringManager_ReloadLanguage(const char *const lang)
 {
-    return true;
+    return OK;
 }
 
 bool Catalog_NameToEnum(

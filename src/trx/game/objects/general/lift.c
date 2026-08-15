@@ -71,16 +71,16 @@ static const LARA_TRX_STATE m_ClimbingStates[] = {
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ(io, "start_height", &p->start_height));
-    JSON_SHOULD(JSON_READ(io, "wait_time", &p->wait_timer));
-    JSON_SHOULD(JSON_READ(io, "is_moving", &p->is_moving));
+    SHOULD(JSON_READ_OPT(io, "start_height", &p->start_height));
+    SHOULD(JSON_READ_OPT(io, "wait_time", &p->wait_timer));
+    SHOULD(JSON_READ_OPT(io, "is_moving", &p->is_moving));
     for (int32_t i = 0; i < M_NUM_SECTORS; i++) {
         const char *const key = String_FormatStatic("linked_%d", i);
-        if (JSON_SHOULD(JSON_PUSH(io, key))) {
-            JSON_SHOULD(JSON_READ(io, "x", &p->linked[i].pos.x));
-            JSON_SHOULD(JSON_READ(io, "y", &p->linked[i].pos.y));
-            JSON_SHOULD(JSON_READ(io, "z", &p->linked[i].pos.z));
-            JSON_SHOULD(JSON_POP(io));
+        if (SHOULD(JSON_PUSH(io, key))) {
+            SHOULD(JSON_READ_OPT(io, "x", &p->linked[i].pos.x));
+            SHOULD(JSON_READ_OPT(io, "y", &p->linked[i].pos.y));
+            SHOULD(JSON_READ_OPT(io, "z", &p->linked[i].pos.z));
+            SHOULD(JSON_POP(io));
         }
     }
 }

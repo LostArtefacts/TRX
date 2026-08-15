@@ -2,6 +2,7 @@
 #include <trx/config/registry.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/result.h>
 #include <trx/core/strings.h>
 #include <trx/core/subsystem.h>
 #include <trx/debug.h>
@@ -267,8 +268,11 @@ static void M_PrepareSystem(void)
         if (engine_config_path == nullptr) {
             Shell_ExitSystem("Failed to resolve engine config path");
         }
-        Config_Read(
-            engine_config_path, Shell_GetGameFlowPath(s->args->startup.mod));
+        if (!Config_Read(
+                engine_config_path,
+                Shell_GetGameFlowPath(s->args->startup.mod))) {
+            LOG_WARNING("Failed to read the settings file");
+        }
         Memory_FreePointer(&engine_config_path);
 
         if (s->args->test_record_path != nullptr) {
@@ -360,9 +364,14 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
     }
 
     GF_Init();
-    GF_LoadFromFile(Shell_GetGameFlowPath(s->args->startup.mod));
+    EXIT_ON_FAIL(
+        GF_LoadFromFile(Shell_GetGameFlowPath(s->args->startup.mod)),
+        "Failed to load the game flow");
 
-    GameStringManager_LoadForMod(s->args->startup.mod);
+    EXIT_ON_FAIL(
+        GameStringManager_LoadForMod(s->args->startup.mod),
+        "Failed to load the game strings for mod '%s'",
+        s->args->startup.mod->name);
 
     Savegame_Init();
     SG_Manager_ScanSavedGames();

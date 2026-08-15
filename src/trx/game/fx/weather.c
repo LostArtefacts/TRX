@@ -502,7 +502,7 @@ static void M_Save(JSON_WRITE_IO *const io)
     }
 }
 
-static bool M_LoadRain(JSON_READ_IO *const io)
+static RESULT M_LoadRain(JSON_READ_IO *const io)
 {
     const int32_t count = JSON_ARRAY_LEN(io);
     for (int32_t i = 0; i < count; i++) {
@@ -514,20 +514,20 @@ static bool M_LoadRain(JSON_READ_IO *const io)
         }
 
         M_RAINDROP *const drop = &m_Raindrops[i];
-        JSON_MUST(JSON_PUSH_INDEX(io, i));
-        JSON_MUST(JSON_READ(io, "pos", &drop->pos));
-        JSON_MUST(JSON_READ(io, "xv", &drop->xv));
-        JSON_MUST(JSON_READ(io, "yv", &drop->yv));
-        JSON_MUST(JSON_READ(io, "zv", &drop->zv));
-        JSON_MUST(JSON_READ(io, "life", &drop->life));
-        JSON_MUST(JSON_POP(io));
+        MUST(JSON_PUSH_INDEX(io, i));
+        MUST(JSON_READ(io, "pos", &drop->pos));
+        MUST(JSON_READ(io, "xv", &drop->xv));
+        MUST(JSON_READ(io, "yv", &drop->yv));
+        MUST(JSON_READ(io, "zv", &drop->zv));
+        MUST(JSON_READ(io, "life", &drop->life));
+        MUST(JSON_POP(io));
         drop->prev_pos = drop->pos;
         drop->prev_yv = drop->yv;
     }
-    JSON_FINISH();
+    return OK;
 }
 
-static bool M_LoadSnow(JSON_READ_IO *const io)
+static RESULT M_LoadSnow(JSON_READ_IO *const io)
 {
     const int32_t count = JSON_ARRAY_LEN(io);
     for (int32_t i = 0; i < count; i++) {
@@ -539,36 +539,38 @@ static bool M_LoadSnow(JSON_READ_IO *const io)
         }
 
         M_SNOWFLAKE *const snow = &m_Snowflakes[i];
-        JSON_MUST(JSON_PUSH_INDEX(io, i));
-        JSON_MUST(JSON_READ(io, "pos", &snow->pos));
-        JSON_MUST(JSON_READ(io, "xv", &snow->xv));
-        JSON_MUST(JSON_READ(io, "yv", &snow->yv));
-        JSON_MUST(JSON_READ(io, "zv", &snow->zv));
-        JSON_MUST(JSON_READ(io, "life", &snow->life));
-        JSON_MUST(JSON_READ(io, "stopped", &snow->stopped));
-        JSON_MUST(JSON_POP(io));
+        MUST(JSON_PUSH_INDEX(io, i));
+        MUST(JSON_READ(io, "pos", &snow->pos));
+        MUST(JSON_READ(io, "xv", &snow->xv));
+        MUST(JSON_READ(io, "yv", &snow->yv));
+        MUST(JSON_READ(io, "zv", &snow->zv));
+        MUST(JSON_READ(io, "life", &snow->life));
+        MUST(JSON_READ(io, "stopped", &snow->stopped));
+        MUST(JSON_POP(io));
         snow->prev_pos = snow->pos;
         snow->prev_yv = snow->yv;
         snow->prev_life = snow->life;
     }
-    JSON_FINISH();
+    return OK;
 }
 
-static bool M_Load(JSON_READ_IO *const io)
+static RESULT M_Load(JSON_READ_IO *const io)
 {
     float severity = 1.0f;
-    JSON_OPTIONAL(JSON_READ_D(io, "severity", &severity, 1.0f));
+    MUST(JSON_READ_D(io, "severity", &severity, 1.0f));
     FX_Weather_SetSeverity(severity);
 
-    if (JSON_OPTIONAL(JSON_PUSH(io, "rain"))) {
-        JSON_MUST(M_LoadRain(io));
-        JSON_MUST(JSON_POP(io));
+    if (JSON_ReadIO_HasKey(io, "rain")) {
+        MUST(JSON_PUSH(io, "rain"));
+        MUST(M_LoadRain(io));
+        MUST(JSON_POP(io));
     }
-    if (JSON_OPTIONAL(JSON_PUSH(io, "snow"))) {
-        JSON_MUST(M_LoadSnow(io));
-        JSON_MUST(JSON_POP(io));
+    if (JSON_ReadIO_HasKey(io, "snow")) {
+        MUST(JSON_PUSH(io, "snow"));
+        MUST(M_LoadSnow(io));
+        MUST(JSON_POP(io));
     }
-    JSON_FINISH();
+    return OK;
 }
 
 static void M_Control(void)

@@ -68,35 +68,35 @@ static void M_ResetFishInterp(M_FISH *const fish)
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_OPTIONAL(JSON_READ(io, "piranha_hit_wait", &p->piranha_hit_wait));
+    SHOULD(JSON_READ_OPT(io, "piranha_hit_wait", &p->piranha_hit_wait));
 
-    if (JSON_SHOULD(JSON_PUSH(io, "leader"))) {
+    if (SHOULD(JSON_PUSH(io, "leader"))) {
         M_LEADER *const leader = &p->leader;
-        JSON_SHOULD(JSON_READ(io, "on", &leader->on));
-        JSON_SHOULD(JSON_READ(io, "angle", &leader->angle));
-        JSON_SHOULD(JSON_READ(io, "speed", &leader->speed));
-        JSON_SHOULD(JSON_READ(io, "angle_time", &leader->angle_time));
-        JSON_SHOULD(JSON_READ(io, "speed_time", &leader->speed_time));
-        JSON_POP(io);
+        SHOULD(JSON_READ_OPT(io, "on", &leader->on));
+        SHOULD(JSON_READ_OPT(io, "angle", &leader->angle));
+        SHOULD(JSON_READ_OPT(io, "speed", &leader->speed));
+        SHOULD(JSON_READ_OPT(io, "angle_time", &leader->angle_time));
+        SHOULD(JSON_READ_OPT(io, "speed_time", &leader->speed_time));
+        SHOULD(JSON_POP(io));
     }
 
-    if (JSON_SHOULD(JSON_PUSH(io, "fish"))) {
+    if (SHOULD(JSON_PUSH(io, "fish"))) {
         const int32_t count = MIN(JSON_ARRAY_LEN(io), M_FISH_PER_SHOAL + 1);
         for (int32_t i = 0; i < count; i++) {
-            if (!JSON_SHOULD(JSON_PUSH_INDEX(io, i))) {
+            if (!SHOULD(JSON_PUSH_INDEX(io, i))) {
                 break;
             }
             M_FISH *const fish = &p->fish[i];
-            JSON_SHOULD(JSON_READ(io, "pos", &fish->pos));
-            JSON_SHOULD(JSON_READ(io, "angle", &fish->angle));
-            JSON_SHOULD(JSON_READ(io, "dest_y", &fish->dest_y));
-            JSON_SHOULD(JSON_READ(io, "ang_add", &fish->ang_add));
-            JSON_SHOULD(JSON_READ(io, "speed", &fish->speed));
-            JSON_SHOULD(JSON_READ(io, "swim", &fish->swim));
+            SHOULD(JSON_READ_OPT(io, "pos", &fish->pos));
+            SHOULD(JSON_READ_OPT(io, "angle", &fish->angle));
+            SHOULD(JSON_READ_OPT(io, "dest_y", &fish->dest_y));
+            SHOULD(JSON_READ_OPT(io, "ang_add", &fish->ang_add));
+            SHOULD(JSON_READ_OPT(io, "speed", &fish->speed));
+            SHOULD(JSON_READ_OPT(io, "swim", &fish->swim));
             M_ResetFishInterp(fish);
-            JSON_POP(io);
+            SHOULD(JSON_POP(io));
         }
-        JSON_POP(io);
+        SHOULD(JSON_POP(io));
     }
 }
 

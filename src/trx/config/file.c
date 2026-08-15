@@ -48,8 +48,8 @@ static void M_ReadValue(
     const CONFIG_OPTION *const option, const JSON_VALUE *const json,
     TRX_VALUE *const out)
 {
-    if (!JSONValue_ReadFrom(
-            json, option->value.type, Config_Option_GetEnumKey(option), out)) {
+    if (!Result_Absorb(JSONValue_ReadFrom(
+            json, option->value.type, Config_Option_GetEnumKey(option), out))) {
         *out = option->default_value;
         return;
     }
@@ -82,7 +82,8 @@ static bool M_IsNamed(const CONFIG_OPTION *const option, const char *const name)
 static void M_CarryOverUnwrittenKeys(
     JSON_OBJECT *const root_obj, const char *const path)
 {
-    JSON_VALUE *const old_root = JSONFile_Read(path);
+    JSON_VALUE *old_root = nullptr;
+    SHOULD(JSONFile_Read(path, &old_root), "The settings keep no unknown keys");
     const JSON_OBJECT *const old_obj = JSON_ValueAsObject(old_root);
     if (old_obj != nullptr) {
         for (const JSON_OBJECT_ELEMENT *elem = old_obj->start; elem != nullptr;
@@ -116,7 +117,9 @@ bool ConfigFile_Read(
     m_CfgFound = FS_Exists(default_path);
 
     bool result = false;
-    m_CfgRoot = JSONFile_Read(default_path);
+    SHOULD(
+        JSONFile_Read(default_path, &m_CfgRoot),
+        "The settings start from their defaults");
     if (m_CfgRoot != nullptr) {
         result = true;
     } else {
@@ -126,8 +129,12 @@ bool ConfigFile_Read(
         JSON_ObjectAppendInt(obj, "config_version", -1);
         m_CfgRoot = JSON_ValueFromObject(obj);
     }
-    m_EnfRoot =
-        enforced_path != nullptr ? JSONFile_Read(enforced_path) : nullptr;
+    m_EnfRoot = nullptr;
+    if (enforced_path != nullptr) {
+        SHOULD(
+            JSONFile_Read(enforced_path, &m_EnfRoot),
+            "The enforced settings are left out");
+    }
     return result;
 }
 
@@ -198,7 +205,7 @@ void ConfigFile_ApplyEnforcedTo(CONFIG_OPTION *const option)
     }
 }
 
-bool ConfigFile_Write(
+RESULT ConfigFile_Write(
     const char *const default_path, void (*const action)(JSON_OBJECT *))
 {
     ASSERT(default_path != nullptr);
@@ -207,10 +214,10 @@ bool ConfigFile_Write(
     M_CarryOverUnwrittenKeys(root_obj, default_path);
 
     JSON_VALUE *const new_root = JSON_ValueFromObject(root_obj);
-    const bool updated = JSONFile_Write(default_path, new_root);
+    const RESULT result = JSONFile_Write(default_path, new_root);
 
     JSON_ValueFree(new_root);
-    return updated;
+    return result;
 }
 
 void ConfigFile_DumpOptions(JSON_OBJECT *const root_obj)

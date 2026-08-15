@@ -55,7 +55,7 @@ static const CREATURE_GUN m_KidGun2 = {
 static void M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
-    JSON_SHOULD(JSON_READ(io, "speech_started", &p->speech_started));
+    SHOULD(JSON_READ_OPT(io, "speech_started", &p->speech_started));
 }
 
 static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)

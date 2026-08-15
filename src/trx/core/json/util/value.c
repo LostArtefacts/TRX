@@ -67,19 +67,20 @@ void JSONValue_Write(
     }
 }
 
-bool JSONValue_ReadFrom(
+RESULT JSONValue_ReadFrom(
     const JSON_VALUE *const value, const TRX_VALUE_TYPE type,
     const void *const param, TRX_VALUE *const out)
 {
     out->type = type;
-    if (value == nullptr) {
-        return false;
-    }
+    FAIL_IF(value == nullptr, "there is no value to read");
 
     switch (type) {
     case TVT_BOOL:
-        out->as_bool = JSON_ValueGetBool(value, false);
-        return true;
+        FAIL_IF(
+            !JSON_ValueIsTrue(value) && !JSON_ValueIsFalse(value),
+            "true or false was expected");
+        out->as_bool = JSON_ValueIsTrue(value);
+        return OK;
 
     case TVT_S8:
     case TVT_U8:
@@ -91,40 +92,46 @@ bool JSONValue_ReadFrom(
         // may spell an integer either way.
         if (value->type == JSON_TYPE_NUMBER) {
             out->as_int = JSON_ValueGetInt64(value, 0);
-            return true;
+            return OK;
         }
         if (value->type == JSON_TYPE_STRING) {
+            const char *const text = JSON_ValueGetString(value, "");
             int32_t parsed;
-            if (!String_ParseInteger(JSON_ValueGetString(value, ""), &parsed)) {
-                return false;
-            }
+            FAIL_IF(
+                !String_ParseInteger(text, &parsed),
+                "'%s' is not a whole number", text);
             out->as_int = parsed;
-            return true;
+            return OK;
         }
-        return false;
+        return FAIL("a whole number was expected");
 
     case TVT_FLOAT:
     case TVT_DOUBLE:
+        FAIL_IF(value->type != JSON_TYPE_NUMBER, "a number was expected");
         out->as_num = JSON_ValueGetDouble(value, 0.0);
-        return true;
+        return OK;
 
     case TVT_XYZ_16:
     case TVT_XYZ_32: {
         const JSON_OBJECT *const vec = JSON_ValueAsObject(value);
-        if (vec == nullptr) {
-            return false;
-        }
+        FAIL_IF(vec == nullptr, "a vector was expected");
+        FAIL_IF(
+            JSON_ObjectGetValue(vec, "x") == nullptr
+                || JSON_ObjectGetValue(vec, "y") == nullptr
+                || JSON_ObjectGetValue(vec, "z") == nullptr,
+            "a vector needs an x, a y and a z");
         out->as_xyz = (XYZ_32) {
             .x = JSON_ObjectGetInt(vec, "x", 0),
             .y = JSON_ObjectGetInt(vec, "y", 0),
             .z = JSON_ObjectGetInt(vec, "z", 0),
         };
-        return true;
+        return OK;
     }
 
     case TVT_RGB_888:
         // A number packs the channels; a string spells them, either the way the
-        // dump writes it or as a hand-edited hex value.
+        // dump writes it or as a hand-edited hex value. Anything else is
+        // neither.
         if (value->type == JSON_TYPE_NUMBER) {
             const uint32_t packed = JSON_ValueGetInt(value, 0);
             out->as_rgb = (RGB_888) {
@@ -132,34 +139,45 @@ bool JSONValue_ReadFrom(
                 .g = (packed >> 8) & 0xFF,
                 .b = (packed >> 16) & 0xFF,
             };
-            return true;
+            return OK;
         }
         const char *const rgb_text = JSON_ValueGetString(value, nullptr);
-        return rgb_text != nullptr
-            && String_ParseRGB888(rgb_text, &out->as_rgb);
+        FAIL_IF(rgb_text == nullptr, "a color was expected");
+        FAIL_IF(
+            !String_ParseRGB888(rgb_text, &out->as_rgb), "'%s' is not a color",
+            rgb_text);
+        return OK;
 
     case TVT_RGB_F: {
         const char *const rgb_f_text = JSON_ValueGetString(value, nullptr);
-        return rgb_f_text != nullptr
-            && Value_Parse(TVT_RGB_F, nullptr, rgb_f_text, out);
+        FAIL_IF(rgb_f_text == nullptr, "a color was expected");
+        FAIL_IF(
+            !Value_Parse(TVT_RGB_F, nullptr, rgb_f_text, out),
+            "'%s' is not a color", rgb_f_text);
+        return OK;
     }
 
     case TVT_ENUM: {
         // A name the map does not know leaves the caller to apply its own
         // default; Value_Parse reports that as a miss.
         const char *const text = JSON_ValueGetString(value, nullptr);
-        return text != nullptr && Value_Parse(TVT_ENUM, param, text, out);
+        FAIL_IF(text == nullptr, "a name was expected");
+        FAIL_IF(
+            !Value_Parse(TVT_ENUM, param, text, out),
+            "'%s' is not a known name", text);
+        return OK;
     }
 
     case TVT_STRING:
     case TVT_DYNAMIC_ENUM:
+        FAIL_IF(value->type != JSON_TYPE_STRING, "text was expected");
         out->as_str = JSON_ValueGetString(value, nullptr);
-        return true;
+        return OK;
     }
-    return false;
+    return FAIL("the value is of no type this reads");
 }
 
-bool JSONValue_Read(
+RESULT JSONValue_Read(
     const JSON_OBJECT *const obj, const char *const key,
     const TRX_VALUE_TYPE type, const void *const param, TRX_VALUE *const out)
 {

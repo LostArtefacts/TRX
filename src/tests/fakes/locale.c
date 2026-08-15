@@ -5,6 +5,7 @@
 // game_strings/entries.def and has cfg/base_strings.json5 and its translations
 // layered over it.
 
+#include <trx/core/result.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/game_strings/manager.h>
 
@@ -24,9 +25,9 @@ static int32_t m_EntryCount = 0;
 
 // trx.locale.reload() reloads the language files from disk. There is no disk
 // here, so report success without doing anything.
-bool GameStringManager_ReloadLanguage(const char *const lang)
+RESULT GameStringManager_ReloadLanguage(const char *const lang)
 {
-    return true;
+    return OK;
 }
 
 void GameString_Define(const char *const key, const char *const value)
