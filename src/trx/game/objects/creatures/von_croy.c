@@ -1681,7 +1681,7 @@ static void M_GuideControl(const int16_t item_num)
     case 35:
         creature->maximum_turn = 0;
 
-        if (p->hold != 0) {
+        if (p->hold != 0 && enemy != nullptr) {
             Creature_TurnTo(item, enemy->rot.y - item->rot.y, 512);
         } else {
             Creature_TurnTo(item, m_LaraAI.angle, 512);
