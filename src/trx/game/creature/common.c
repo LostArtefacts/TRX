@@ -17,6 +17,7 @@
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
+#include <trx/game/rooms/geometry.h>
 #include <trx/game/spawn.h>
 #include <trx/version.h>
 
@@ -38,7 +39,14 @@
 #define M_BITE_DISTANCE    (g_TRVersion < 3 ? STEP_L : STEP_L * 2)
 #define M_BOX_DAMAGE       20
 #define M_MARKER_REACH     (g_TRVersion >= 4 ? STEP_L * 5 / 2 : STEP_L * 3) // = 640 (TR4), 768
+#define M_FEEL_DISTANCE    (STEP_L * 2) // = 512
+#define M_FEEL_ARC         8190 // a little under 45 degrees, as the OG has it
 // clang-format on
+
+typedef struct {
+    XZ_32 pos;
+    bool is_stopper;
+} M_FEELER;
 
 static const LARA_TRX_STATE m_CrouchShiftStates[] = {
     // clang-format off
@@ -348,6 +356,43 @@ static const ITEM *M_GetBaddieOverlap(const int16_t item_num)
     }
 
     return nullptr;
+}
+
+static M_FEELER M_Feel(
+    const ITEM *const item, const ROOM *const room, const int16_t arc)
+{
+    const XZ_32 pos = {
+        .x = item->pos.x
+            + ((M_FEEL_DISTANCE * Math_Sin(item->rot.y + arc)) >> W2V_SHIFT),
+        .z = item->pos.z
+            + ((M_FEEL_DISTANCE * Math_Cos(item->rot.y + arc)) >> W2V_SHIFT),
+    };
+    return (M_FEELER) {
+        .pos = pos,
+        .is_stopper = Room_GetWorldSector(room, pos.x, pos.z)->stopper,
+    };
+}
+
+// Steers around the sectors a pushable block or a cleaner has closed off. With
+// the way ahead closed the creature aims at whichever shoulder is still open,
+// and with only a shoulder closed it aims straight ahead.
+static void M_AvoidStoppers(ITEM *const item, CREATURE *const creature)
+{
+    const ROOM *const room = Room_Get(item->room_num);
+    const M_FEELER plus = M_Feel(item, room, M_FEEL_ARC);
+    const M_FEELER minus = M_Feel(item, room, -M_FEEL_ARC);
+    const M_FEELER mid = M_Feel(item, room, 0);
+
+    if (minus.is_stopper && mid.is_stopper) {
+        creature->target.x = plus.pos.x;
+        creature->target.z = plus.pos.z;
+    } else if (plus.is_stopper && mid.is_stopper) {
+        creature->target.x = minus.pos.x;
+        creature->target.z = minus.pos.z;
+    } else if (plus.is_stopper || minus.is_stopper) {
+        creature->target.x = mid.pos.x;
+        creature->target.z = mid.pos.z;
+    }
 }
 
 void Creature_Initialise(const int16_t item_num)
@@ -704,12 +749,16 @@ void Creature_ApplyMood(
 
 int16_t Creature_Turn(ITEM *const item, int16_t max_turn)
 {
-    const CREATURE *const creature = item->creature_data;
+    CREATURE *const creature = item->creature_data;
     if (creature == nullptr || max_turn == 0) {
         return 0;
     }
     if (item->speed == 0 && g_TRVersion < 3) {
         return 0;
+    }
+
+    if (g_TRVersion >= 4) {
+        M_AvoidStoppers(item, creature);
     }
 
     const int32_t dx = creature->target.x - item->pos.x;
