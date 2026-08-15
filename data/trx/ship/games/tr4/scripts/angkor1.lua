@@ -42,18 +42,20 @@ trx.events.on_game_start(function()
   dress()
 end)
 
--- The trigger marks the scene played before it starts, so the frame is what
--- answers once it is on screen.
-trx.events.after_control(function()
-  if
-    not has_backpack
-    and trx.cutscenes.current == BACKPACK_CUTSCENE
-    and trx.cutscenes.frame_num >= BACKPACK_FRAME
-  then
+local function give_backpack()
+  if not has_backpack then
     has_backpack = true
     dress()
   end
-end)
+end
+
+-- The trigger marks the scene played before it starts, so the frame is what
+-- answers once it is on screen. A scene the player skips never reaches that
+-- frame, and its end hands the backpack over instead.
+cutscenes.register(BACKPACK_CUTSCENE, {
+  frames = { [BACKPACK_FRAME] = give_backpack },
+  on_end = give_backpack,
+})
 
 -- The outfit being put on, rather than the one still on her: a watcher is told
 -- before the skin is applied, and applying it is what reads the override. The
