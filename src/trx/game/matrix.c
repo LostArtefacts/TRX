@@ -9,6 +9,7 @@
 
 #define MAX_MATRICES 40
 #define MAX_NESTED_MATRICES 32
+#define M_ROT_LOCK_EPSILON 1e-3
 
 static MATRIX m_MatrixStack[MAX_MATRICES] = {};
 static MATRIX m_WMatrixStack[MAX_MATRICES] = {};
@@ -370,13 +371,15 @@ static XYZ_16 M_ToRot16(const MATRIX *const m)
 
     double sin_x = -e[1][2];
     CLAMP(sin_x, -1.0, 1.0);
-    const double x = asin(sin_x);
+    const double cos_x = sqrt(e[0][2] * e[0][2] + e[2][2] * e[2][2]);
+    double x = asin(sin_x);
     double y;
     double z;
-    if (fabs(sin_x) < 1.0 - 1e-9) {
+    if (cos_x > M_ROT_LOCK_EPSILON) {
         y = atan2(e[0][2], e[2][2]);
         z = atan2(e[1][0], e[1][1]);
     } else {
+        x = sin_x < 0.0 ? -M_PI / 2.0 : M_PI / 2.0;
         y = atan2(-e[2][0], e[0][0]);
         z = 0.0;
     }
