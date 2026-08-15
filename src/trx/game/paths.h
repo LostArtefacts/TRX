@@ -86,10 +86,11 @@ const char *GamePath_TryResolve(GAME_DYNAMIC_PATH path, const char *rel);
 // Same as GamePath_PeekResolve, but terminates the game on miss.
 const char *GamePath_Resolve(GAME_DYNAMIC_PATH path, const char *rel);
 
-// Resolve and open a file in one call.
-// Returns nullptr if resolution/open fails.
-TRX_FILE *GamePath_OpenFile(
-    GAME_DYNAMIC_PATH path, const char *rel, FILE_OPEN_MODE mode);
+// Resolves and opens a file in one call, reporting a path that names nothing
+// as well as a file that will not open.
+RESULT GamePath_OpenFile(
+    GAME_DYNAMIC_PATH path, const char *rel, FILE_OPEN_MODE mode,
+    TRX_FILE **out_file);
 
 // Resolves a path and reads the whole file into memory, reporting a path that
 // names nothing as well as a file that will not read. On failure out_data is

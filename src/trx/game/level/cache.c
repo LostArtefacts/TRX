@@ -188,8 +188,8 @@ TRX_FILE *LevelCache_OpenBinaryRead(
         return nullptr;
     }
 
-    TRX_FILE *const file = File_OpenPath(path, FILE_OPEN_READ);
-    if (file == nullptr) {
+    TRX_FILE *file = nullptr;
+    if (!IGNORE(File_OpenPath(path, FILE_OPEN_READ, &file))) {
         return nullptr;
     }
 
@@ -213,8 +213,8 @@ TRX_FILE *LevelCache_OpenBinaryWrite(
 
     SHOULD(FS_EnsureParentDirectories(path));
 
-    TRX_FILE *const file = File_OpenPath(path, FILE_OPEN_WRITE);
-    if (file == nullptr) {
+    TRX_FILE *file = nullptr;
+    if (!SHOULD(File_OpenPath(path, FILE_OPEN_WRITE, &file))) {
         return nullptr;
     }
 

@@ -310,9 +310,12 @@ void Shell_ExitSystemFmt(const char *const fmt, ...)
     Shell_ExitSystem(fmt);
 }
 
-TRX_FILE *File_OpenPath(const char *const path, const FILE_OPEN_MODE mode)
+RESULT File_OpenPath(
+    const char *const path, const FILE_OPEN_MODE mode,
+    TRX_FILE **const out_file)
 {
-    return nullptr;
+    *out_file = nullptr;
+    return FAIL("%s: the test opens no files", path);
 }
 
 void File_WriteData(

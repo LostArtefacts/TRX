@@ -8,6 +8,7 @@
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 
+#include <errno.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
@@ -227,8 +228,11 @@ static int32_t M_CheckCount(TRX_FILE *const file, const int32_t count)
     return count;
 }
 
-TRX_FILE *File_OpenPath(const char *const path, const FILE_OPEN_MODE mode)
+RESULT File_OpenPath(
+    const char *const path, const FILE_OPEN_MODE mode,
+    TRX_FILE **const out_file)
 {
+    *out_file = nullptr;
     const char *fopen_mode = nullptr;
     switch (mode) {
     case FILE_OPEN_WRITE:
@@ -241,14 +245,12 @@ TRX_FILE *File_OpenPath(const char *const path, const FILE_OPEN_MODE mode)
         fopen_mode = "r+b";
         break;
     }
-    if (fopen_mode == nullptr) {
-        return nullptr;
-    }
+    ASSERT(fopen_mode != nullptr);
 
     FILE *const fp = FS_PlatformFopen(path, fopen_mode);
-    if (fp == nullptr) {
-        return nullptr;
-    }
+    FAIL_IF(
+        fp == nullptr, "%s: the file could not be opened: %s", path,
+        strerror(errno));
 
     fseek(fp, 0, SEEK_END);
     const long end = ftell(fp);
@@ -264,20 +266,21 @@ TRX_FILE *File_OpenPath(const char *const path, const FILE_OPEN_MODE mode)
     file->state = disk;
     file->path = Memory_DupStr(path);
     file->size = end < 0 ? 0 : (size_t)end;
-    return file;
+    *out_file = file;
+    return OK;
 }
 
-TRX_FILE *File_OpenPathInMemory(const char *const path)
+RESULT File_OpenPathInMemory(const char *const path, TRX_FILE **const out_file)
 {
+    *out_file = nullptr;
     char *data = nullptr;
     size_t size = 0;
-    if (!SHOULD(FS_Load(path, &data, &size))) {
-        return nullptr;
-    }
+    MUST(FS_Load(path, &data, &size));
     TRX_FILE *const file = File_OpenBuffer(data, size);
     file->path = Memory_DupStr(path);
     Memory_FreePointer(&data);
-    return file;
+    *out_file = file;
+    return OK;
 }
 
 TRX_FILE *File_OpenBuffer(const char *const data, const size_t size)
@@ -482,18 +485,19 @@ int32_t File_ReadCountS32(TRX_FILE *const file)
     return M_CheckCount(file, File_ReadS32(file));
 }
 
-bool File_SetSize(TRX_FILE *const file, const size_t size)
+RESULT File_SetSize(TRX_FILE *const file, const size_t size)
 {
-    if (file->strategy->set_size == nullptr) {
-        return false;
-    }
-    if (!file->strategy->set_size(file->state, file->base + size)) {
-        return false;
-    }
+    FAIL_IF(
+        file->strategy->set_size == nullptr, "%s cannot be resized",
+        file->path != nullptr ? file->path : "a buffer");
+    FAIL_IF(
+        !file->strategy->set_size(file->state, file->base + size),
+        "%s could not be resized to %zu bytes",
+        file->path != nullptr ? file->path : "a buffer", size);
     file->size = size;
     file->pos = MIN(file->pos, size);
     file->window_size = 0;
-    return true;
+    return OK;
 }
 
 void File_WriteData(

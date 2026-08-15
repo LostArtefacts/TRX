@@ -1250,15 +1250,14 @@ const char *GamePath_Resolve(
     return resolved;
 }
 
-TRX_FILE *GamePath_OpenFile(
+RESULT GamePath_OpenFile(
     const GAME_DYNAMIC_PATH path, const char *const rel,
-    const FILE_OPEN_MODE mode)
+    const FILE_OPEN_MODE mode, TRX_FILE **const out_file)
 {
+    *out_file = nullptr;
     const char *const resolved = GamePath_TryResolve(path, rel);
-    if (resolved == nullptr) {
-        return nullptr;
-    }
-    return File_OpenPath(resolved, mode);
+    FAIL_IF(resolved == nullptr, "%s: the path names nothing", rel);
+    return File_OpenPath(resolved, mode, out_file);
 }
 
 RESULT GamePath_LoadFile(

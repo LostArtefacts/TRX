@@ -312,9 +312,9 @@ static void M_HandleGameEvent(const EVENT *const event, void *const user_data)
 void TestRecorder_Open(const char *path, VECTOR *const original_args)
 {
     M_PRIV *const p = &m_Priv;
-    p->file = File_OpenPath(path, FILE_OPEN_WRITE);
-    if (p->file == nullptr) {
-        LOG_ERROR("Cannot open record file '%s'", path);
+    if (!SHOULD(
+            File_OpenPath(path, FILE_OPEN_WRITE, &p->file),
+            "nothing is recorded")) {
         return;
     }
 

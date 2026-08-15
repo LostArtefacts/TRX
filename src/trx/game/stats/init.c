@@ -338,8 +338,8 @@ void Stats_CalculateMaxStats(void)
             continue;
         }
 
-        TRX_FILE *const file = File_OpenPathInMemory(level->path);
-        if (file == nullptr) {
+        TRX_FILE *file = nullptr;
+        if (!SHOULD(File_OpenPathInMemory(level->path, &file))) {
             continue;
         }
 

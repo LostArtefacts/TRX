@@ -83,8 +83,8 @@ static int32_t M_GuessEngineVersionFromLevelPath(const char *const path)
         return 0;
     }
 
-    TRX_FILE *const file = File_OpenPathInMemory(path);
-    if (file == nullptr) {
+    TRX_FILE *file = nullptr;
+    if (!SHOULD(File_OpenPathInMemory(path, &file))) {
         return 0;
     }
 
