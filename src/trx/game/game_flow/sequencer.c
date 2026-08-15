@@ -12,10 +12,10 @@
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 
-static GF_COMMAND M_RunEvent(
+static RESULT M_RunEvent(
     const GF_LEVEL *const level, const GF_SEQUENCE *const sequence,
     const int32_t event_idx, const GF_SEQUENCE_CONTEXT seq_ctx,
-    void *const seq_ctx_arg)
+    void *const seq_ctx_arg, GF_COMMAND *const out_cmd)
 {
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
@@ -27,17 +27,20 @@ static GF_COMMAND M_RunEvent(
     const GF_SEQUENCE_EVENT_HANDLER event_handler =
         GF_GetSequenceEventHandler(event->type);
     if (event_handler == nullptr) {
-        return gf_cmd;
+        *out_cmd = gf_cmd;
+        return OK;
     }
 
-    gf_cmd = event_handler(level, sequence, event_idx, seq_ctx, seq_ctx_arg);
+    MUST(event_handler(
+        level, sequence, event_idx, seq_ctx, seq_ctx_arg, &gf_cmd));
     LOG_DEBUG(
         "event type=%s(%d) data=0x%x finished, result: action=%s, "
         "param=%d",
         ENUM_MAP_TO_STRING(GF_SEQUENCE_EVENT_TYPE, event->type), event->type,
         event->data, ENUM_MAP_TO_STRING(GF_ACTION, gf_cmd.action),
         gf_cmd.param);
-    return gf_cmd;
+    *out_cmd = gf_cmd;
+    return OK;
 }
 
 // Events whose effects the level loader bakes into static data (e.g. the
@@ -125,9 +128,9 @@ static bool M_IsLevelDescendantOf(
     return false;
 }
 
-GF_COMMAND GF_InterpretSequence(
+RESULT GF_InterpretSequence(
     const GF_LEVEL *const level, GF_SEQUENCE_CONTEXT seq_ctx,
-    void *const seq_ctx_arg)
+    void *const seq_ctx_arg, GF_COMMAND *const out_cmd)
 {
     ASSERT(level != nullptr);
     LOG_DEBUG(
@@ -135,7 +138,8 @@ GF_COMMAND GF_InterpretSequence(
         level->type, seq_ctx);
 
     if (level->type == GFL_DUMMY || level->type == GFL_CURRENT) {
-        return (GF_COMMAND) { .action = GF_NOOP };
+        *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
+        return OK;
     }
 
     M_PreSequenceHook(seq_ctx, seq_ctx_arg);
@@ -265,7 +269,9 @@ GF_COMMAND GF_InterpretSequence(
     const GF_SEQUENCE *const sequence = &level->sequence;
     for (int32_t i = 0; i < sequence->length; i++) {
         if (M_IsPreLoadEvent(sequence->events[i].type)) {
-            M_RunEvent(level, sequence, i, seq_ctx, seq_ctx_arg);
+            GF_COMMAND pre_cmd;
+            MUST(
+                M_RunEvent(level, sequence, i, seq_ctx, seq_ctx_arg, &pre_cmd));
         }
     }
     if (seq_ctx != GFSC_STORY || level->type == GFL_CUTSCENE) {
@@ -285,9 +291,10 @@ GF_COMMAND GF_InterpretSequence(
         if (M_IsPreLoadEvent(event->type)) {
             continue;
         }
-        gf_cmd = M_RunEvent(level, sequence, i, seq_ctx, seq_ctx_arg);
+        MUST(M_RunEvent(level, sequence, i, seq_ctx, seq_ctx_arg, &gf_cmd));
         if (gf_cmd.action != GF_NOOP) {
-            return gf_cmd;
+            *out_cmd = gf_cmd;
+            return OK;
         }
 
         // Update sequence context if necessary
@@ -297,5 +304,6 @@ GF_COMMAND GF_InterpretSequence(
     LOG_DEBUG(
         "sequence finished: action=%s param=%d",
         ENUM_MAP_TO_STRING(GF_ACTION, gf_cmd.action), gf_cmd.param);
-    return gf_cmd;
+    *out_cmd = gf_cmd;
+    return OK;
 }
