@@ -37,6 +37,7 @@
 #define M_MAX_X_ROT        (20 * DEG_1) // = 3640
 #define M_BITE_DISTANCE    (g_TRVersion < 3 ? STEP_L : STEP_L * 2)
 #define M_BOX_DAMAGE       20
+#define M_MARKER_REACH     (g_TRVersion >= 4 ? STEP_L * 5 / 2 : STEP_L * 3) // = 640 (TR4), 768
 // clang-format on
 
 static const LARA_TRX_STATE m_CrouchShiftStates[] = {
@@ -1678,9 +1679,9 @@ void Creature_GetAITarget(CREATURE *const creature)
                 }
             }
         } else if (
-            ABS(enemy->pos.x - item->pos.x) < 768
-            && ABS(enemy->pos.y - item->pos.y) < 768
-            && ABS(enemy->pos.z - item->pos.z) < 768) {
+            ABS(enemy->pos.x - item->pos.x) < M_MARKER_REACH
+            && ABS(enemy->pos.y - item->pos.y) < M_MARKER_REACH
+            && ABS(enemy->pos.z - item->pos.z) < M_MARKER_REACH) {
             Room_TestTriggers(enemy);
             creature->patrol_2 = !creature->patrol_2;
         }
@@ -1700,9 +1701,9 @@ void Creature_GetAITarget(CREATURE *const creature)
                     }
                 }
             } else if (item->object_id != O_MONKEY) {
-                if (ABS(enemy->pos.x - item->pos.x) < 768
-                    && ABS(enemy->pos.y - item->pos.y) < 768
-                    && ABS(enemy->pos.z - item->pos.z) < 768) {
+                if (ABS(enemy->pos.x - item->pos.x) < M_MARKER_REACH
+                    && ABS(enemy->pos.y - item->pos.y) < M_MARKER_REACH
+                    && ABS(enemy->pos.z - item->pos.z) < M_MARKER_REACH) {
                     Room_TestTriggers(enemy);
                     creature->reached_goal = 1;
                     creature->enemy = lara_item;
@@ -1734,9 +1735,9 @@ void Creature_GetAITarget(CREATURE *const creature)
                 }
             }
         } else if (
-            ABS(enemy->pos.x - item->pos.x) < 768
-            && ABS(enemy->pos.y - item->pos.y) < 768
-            && ABS(enemy->pos.z - item->pos.z) < 768) {
+            ABS(enemy->pos.x - item->pos.x) < M_MARKER_REACH
+            && ABS(enemy->pos.y - item->pos.y) < M_MARKER_REACH
+            && ABS(enemy->pos.z - item->pos.z) < M_MARKER_REACH) {
             creature->reached_goal = 1;
             item->ai_bits &= ~AI_FOLLOW;
         }
