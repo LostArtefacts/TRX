@@ -181,7 +181,6 @@ static void M_StreamFinished(const int32_t stream_id, void *const user_data)
         m_TrackCurrent = MX_INACTIVE;
         M_StreamReset(stream);
         if (m_TrackLooped >= 0) {
-            m_TrackLastLooped = MX_INACTIVE;
             Music_Play_Direct(m_TrackLooped, MPM_LOOP);
         }
     } else {
@@ -410,7 +409,7 @@ static int32_t M_Play(
     }
 
     const bool is_looped = mode == MPM_LOOP || M_IsAmbientTrack(track_id);
-    if (is_looped && track_id == m_TrackLastLooped) {
+    if (is_looped && track_id == m_TrackLastLooped && m_MainStream.active) {
         M_SeekMainStream(timestamp);
         return 0;
     }
