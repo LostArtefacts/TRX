@@ -259,7 +259,7 @@ static RESULT M_LoadThemesPC(JSON_READ_IO *const io, M_THEME_GROUP *const group)
     RGBA_8888 border_light = {};
     RGBA_8888 border_dark = {};
 
-    JSON_READ_D(io, "scale", &basic_scale, 1.0f);
+    MUST(JSON_READ_D(io, "scale", &basic_scale, 1.0f));
 
     RGB_888 border_light_rgb = {};
     MUST(JSON_READ(io, "border_light", &border_light_rgb));
@@ -332,7 +332,7 @@ static RESULT M_LoadThemesPS1(
 {
     float basic_scale = 1.0f;
 
-    JSON_READ_D(io, "scale", &basic_scale, 1.0f);
+    MUST(JSON_READ_D(io, "scale", &basic_scale, 1.0f));
 
     RGB_888 border_tl_rgb = {};
     RGB_888 border_tr_rgb = {};

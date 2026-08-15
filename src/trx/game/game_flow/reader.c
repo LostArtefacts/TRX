@@ -389,12 +389,12 @@ static RESULT M_LoadRoot(const M_CONTEXT *const ctx)
     }
 
     ctx->gf->enable_tr2_item_drops = g_TRVersion > 1;
-    JSON_READ_D(
+    MUST(JSON_READ_D(
         io, "enable_tr2_item_drops", &ctx->gf->enable_tr2_item_drops,
-        g_TRVersion > 1);
-    JSON_READ_D(
+        g_TRVersion > 1));
+    MUST(JSON_READ_D(
         io, "convert_dropped_guns", &ctx->gf->convert_dropped_guns,
-        g_TRVersion > 1);
+        g_TRVersion > 1));
     return OK;
 }
 
@@ -441,7 +441,7 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleIntEvent)
     JSON_READ_IO *const io = ctx->io;
     if (event != nullptr) {
         int32_t value;
-        JSON_READ_D(io, user_arg, &value, -1);
+        SHOULD(JSON_READ_D(io, user_arg, &value, -1));
         event->data = (void *)(intptr_t)value;
     }
     return 0;
@@ -457,12 +457,14 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandlePictureEvent)
 
     if (event != nullptr) {
         GF_DISPLAY_PICTURE_DATA *const event_data = extra_data;
-        JSON_READ_D(io, "legal", &event_data->is_legal, false);
-        JSON_READ_D(io, "credit", &event_data->is_credit, false);
-        JSON_READ_D(io, "display_time", &event_data->display_time, 5.0f);
-        JSON_READ_D(io, "fade_in_time", &event_data->fade_in_time, 1.0f);
-        JSON_READ_D(
-            io, "fade_out_time", &event_data->fade_out_time, 1.0f / 3.0f);
+        SHOULD(JSON_READ_D(io, "legal", &event_data->is_legal, false));
+        SHOULD(JSON_READ_D(io, "credit", &event_data->is_credit, false));
+        SHOULD(
+            JSON_READ_D(io, "display_time", &event_data->display_time, 5.0f));
+        SHOULD(
+            JSON_READ_D(io, "fade_in_time", &event_data->fade_in_time, 1.0f));
+        SHOULD(JSON_READ_D(
+            io, "fade_out_time", &event_data->fade_out_time, 1.0f / 3.0f));
         if (expanded_path != nullptr) {
             event_data->path =
                 (char *)extra_data + sizeof(GF_DISPLAY_PICTURE_DATA);
@@ -522,7 +524,7 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleAddItemEvent)
     if (event != nullptr) {
         GF_ADD_ITEM_DATA *const event_data = extra_data;
         event_data->object_id = obj_id;
-        JSON_READ_D(io, "quantity", &event_data->quantity, 1);
+        SHOULD(JSON_READ_D(io, "quantity", &event_data->quantity, 1));
         event_data->inv_type =
             event->type == GFS_ADD_ITEM ? GF_INV_REGULAR : GF_INV_SECRET;
         event->data = event_data;
@@ -542,15 +544,16 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupHorizonEvent)
     if (event != nullptr) {
         GF_SETUP_HORIZON_DATA *const event_data = extra_data;
         event_data->color = color;
-        JSON_READ_D(io, "layer", &event_data->layer, 0);
+        SHOULD(JSON_READ_D(io, "layer", &event_data->layer, 0));
         if (event_data->layer < 0
             || event_data->layer >= OUTPUT_SKY_LAYER_COUNT) {
             IGNORE(JSON_ReadIO_Fail(io, "'layer' must be 0 or 1"));
             return -1;
         }
-        JSON_READ_D(io, "speed", &event_data->speed, 0);
-        JSON_READ_D(io, "color_add", &event_data->color_add, false);
-        JSON_READ_D(io, "fog_gradient", &event_data->fog_gradient, false);
+        SHOULD(JSON_READ_D(io, "speed", &event_data->speed, 0));
+        SHOULD(JSON_READ_D(io, "color_add", &event_data->color_add, false));
+        SHOULD(
+            JSON_READ_D(io, "fog_gradient", &event_data->fog_gradient, false));
         event->data = event_data;
     }
     return sizeof(GF_SETUP_HORIZON_DATA);
@@ -590,7 +593,7 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleGlobeSelectEvent)
 {
     JSON_READ_IO *const io = ctx->io;
     const char *image;
-    JSON_READ_D(io, "image", &image, nullptr);
+    SHOULD(JSON_READ_D(io, "image", &image, nullptr));
     char *expanded_image =
         Memory_DupStr(GamePath_TryResolve(GAME_DYNAMIC_PATH_IMAGE_FILE, image));
     if (expanded_image == nullptr) {
@@ -744,7 +747,7 @@ static RESULT M_LoadLevelInjections(
 {
     JSON_READ_IO *const io = ctx->io;
     bool inherit;
-    JSON_READ_D(io, "inherit_injections", &inherit, true);
+    MUST(JSON_READ_D(io, "inherit_injections", &inherit, true));
     int32_t local_count = 0;
     if (JSON_ReadIO_HasKey(io, "injections")) {
         MUST(JSON_PUSH(io, "injections"));
@@ -901,13 +904,15 @@ static RESULT M_LoadLevel(
             level->weather_type = ENUM_MAP_GET(WEATHER_TYPE, tmp, WEATHER_NONE);
         }
     }
-    JSON_READ_D(io, "water_particles", &level->water_particles, false);
+    MUST(JSON_READ_D(io, "water_particles", &level->water_particles, false));
 
-    JSON_READ_D(io, "unobtainable_pickups", &level->unobtainable.pickups, 0);
-    JSON_READ_D(io, "unobtainable_kills", &level->unobtainable.kills, 0);
-    JSON_READ_D(
-        io, "unobtainable_ally_kills", &level->unobtainable.ally_kills, 0);
-    JSON_READ_D(io, "unobtainable_secrets", &level->unobtainable.secrets, 0);
+    MUST(JSON_READ_D(
+        io, "unobtainable_pickups", &level->unobtainable.pickups, 0));
+    MUST(JSON_READ_D(io, "unobtainable_kills", &level->unobtainable.kills, 0));
+    MUST(JSON_READ_D(
+        io, "unobtainable_ally_kills", &level->unobtainable.ally_kills, 0));
+    MUST(JSON_READ_D(
+        io, "unobtainable_secrets", &level->unobtainable.secrets, 0));
 
     M_CopyRootSettingsIntoLevel(&level->settings, &ctx->gf->settings);
 
@@ -973,9 +978,9 @@ static RESULT M_LoadFMV(
     SHOULD(M_ReadPath(
         io, "path", false, GAME_DYNAMIC_PATH_FMV_FILE, &path, false));
     fmv->path = path;
-    JSON_READ_D(io, "legal", &fmv->is_legal, false);
-    JSON_READ_D(io, "credit", &fmv->is_credit, false);
-    JSON_READ_D(io, "intro", &fmv->is_intro, false);
+    MUST(JSON_READ_D(io, "legal", &fmv->is_legal, false));
+    MUST(JSON_READ_D(io, "credit", &fmv->is_credit, false));
+    MUST(JSON_READ_D(io, "intro", &fmv->is_intro, false));
     return OK;
 }
 

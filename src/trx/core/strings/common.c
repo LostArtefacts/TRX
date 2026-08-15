@@ -246,7 +246,7 @@ VECTOR *String_Paginate(const char *const text, const int32_t max_lines)
             line_count = 0;
         }
 
-        *iter_text++;
+        iter_text++;
     }
 
     // Anything that is left becomes its own page.

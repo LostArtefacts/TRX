@@ -377,7 +377,7 @@ static void M_ProcessEvent(const SDL_Event *const event)
         && !g_Config.input.enable_touch_controls) {
         CONFIG_SET(g_Config.input.enable_touch_controls, true);
         TouchOverlay_SetVisible(true);
-        Config_Write();
+        SHOULD(Config_Write());
     }
     TouchOverlay_ProcessEvent(event);
 }
