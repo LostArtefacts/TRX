@@ -22,6 +22,7 @@
 static LARA_SKIN_TYPE m_SkinType = LARA_SKIN_TYPE_DEFAULT;
 static bool m_HolstersVisible = true;
 static bool m_UseCombatFace = false;
+static int32_t m_SpeechFace = M_NO_MESH;
 static LARA_GUN_TYPE m_HolsterType_L = LGT_UNARMED;
 static LARA_GUN_TYPE m_HolsterType_R = LGT_UNARMED;
 static LARA_SKIN_EQUIPMENT m_Equipment[LM_NUMBER_OF] = {};
@@ -319,6 +320,28 @@ static void M_SetGunEquipment(
     }
 }
 
+static void M_SetSpeechFace(const int32_t index)
+{
+    const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
+    if (index == M_NO_MESH) {
+        const int32_t mesh_idx = M_GetMeshIdx(LM_HEAD, outfit);
+        if (mesh_idx != M_NO_MESH) {
+            Lara_Mesh_Set(LM_HEAD, Object_GetMesh(mesh_idx));
+        }
+        return;
+    }
+
+    if (outfit->speech_face_offset == M_NO_MESH) {
+        return;
+    }
+
+    const OBJECT *const extra_obj = Object_Get(outfit->extra_obj_id);
+    const int32_t offset = outfit->speech_face_offset + index;
+    if (offset >= 0 && offset < extra_obj->mesh_count) {
+        Lara_Mesh_Set(LM_HEAD, Object_GetMesh(extra_obj->mesh_idx + offset));
+    }
+}
+
 static void M_SetCombatFace(const bool enabled)
 {
     const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
@@ -426,6 +449,7 @@ void Lara_Skin_Initialise(void)
     m_HolsterType_L = LGT_UNARMED;
     m_HolsterType_R = LGT_UNARMED;
     m_UseCombatFace = false;
+    m_SpeechFace = M_NO_MESH;
 
     m_HolstersVisible = true;
     for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
@@ -586,6 +610,9 @@ void Lara_Skin_ApplyOutfit(void)
     M_SetGunEquipment(LM_THIGH_R, m_HolsterType_R, outfit);
     M_ReapplyEquipment(outfit);
     M_SetCombatFace(m_UseCombatFace);
+    if (m_SpeechFace != M_NO_MESH) {
+        M_SetSpeechFace(m_SpeechFace);
+    }
     M_UpdateSunglasses();
     Lara_Joints_Initialise(outfit);
     Lara_Hair_InitJoints(outfit);
@@ -617,16 +644,13 @@ void Lara_Skin_SetCombatFace(const bool enabled)
 
 void Lara_Skin_SetSpeechFace(const int32_t index)
 {
-    const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
-    if (outfit->speech_face_offset == M_NO_MESH) {
-        return;
-    }
+    m_SpeechFace = index;
+    M_SetSpeechFace(index);
+}
 
-    const OBJECT *const extra_obj = Object_Get(outfit->extra_obj_id);
-    const int32_t offset = outfit->speech_face_offset + index;
-    if (offset >= 0 && offset < extra_obj->mesh_count) {
-        Lara_Mesh_Set(LM_HEAD, Object_GetMesh(extra_obj->mesh_idx + offset));
-    }
+int32_t Lara_Skin_GetSpeechFace(void)
+{
+    return m_SpeechFace;
 }
 
 void Lara_Skin_SwapAllExtra(const LARA_EXTRA_STATE state)

@@ -21,6 +21,7 @@
 
 static LARA_INFO m_Lara;
 static bool m_HolstersVisible;
+static int32_t m_SpeechFace;
 static bool m_HasPistols;
 static LARA_SKIN_TYPE m_Skin;
 
@@ -63,6 +64,7 @@ static void M_Reset(void)
     // One damp mesh, so a test can watch is_wet flip when Lara is dried.
     m_Lara.wet[LM_HEAD] = 1;
     m_HolstersVisible = true;
+    m_SpeechFace = -1;
     m_HasPistols = true;
     m_Skin = 0;
     m_CanAdd = true;
@@ -369,6 +371,16 @@ bool Lara_Skin_AreHolstersVisible(void)
 void Lara_Skin_SetHolstersVisible(const bool visible)
 {
     m_HolstersVisible = visible;
+}
+
+int32_t Lara_Skin_GetSpeechFace(void)
+{
+    return m_SpeechFace;
+}
+
+void Lara_Skin_SetSpeechFace(const int32_t index)
+{
+    m_SpeechFace = index;
 }
 
 void Lara_Skin_ClearEquipment(const LARA_MESH mesh)

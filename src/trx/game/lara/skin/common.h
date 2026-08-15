@@ -26,7 +26,11 @@ void Lara_Skin_SetMeshOverride(LARA_MESH mesh, OBJECT_MESH *mesh_ptr);
 OBJECT_MESH *Lara_Skin_GetMeshOverride(LARA_MESH mesh);
 
 void Lara_Skin_SetCombatFace(bool enabled);
+// The speech face Lara wears, or -1 for her outfit's own. Remembered, so that
+// changing outfit mid-sentence puts the new outfit's face on rather than
+// leaving the old one.
 void Lara_Skin_SetSpeechFace(int32_t index);
+int32_t Lara_Skin_GetSpeechFace(void);
 void Lara_Skin_SwapAllExtra(LARA_EXTRA_STATE state);
 void Lara_Skin_SwapSingleExtra(LARA_MESH mesh, LARA_EXTRA_STATE state);
 const ANIM_BONE *Lara_Skin_GetBoneBase(void);

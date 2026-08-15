@@ -237,6 +237,24 @@ api.property("lara.holsters_visible", {
   set = raw.set_holsters_visible,
 })
 
+api.property("lara.speech_face", {
+  type = "number",
+  description = "Which of her outfit's speech faces Lara wears while she talks, counted from "
+    .. "0, or `nil` for her own face. An outfit with no speech faces keeps her own.\n\n"
+    .. "The face is remembered, so putting her in another outfit mid-sentence dresses her in "
+    .. "that outfit's face rather than leaving the one she had.",
+  get = function()
+    local index = raw.get_speech_face()
+    return index >= 0 and index or nil
+  end,
+  set = function(index)
+    raw.set_speech_face(index)
+  end,
+  examples = {
+    [[trx.lara.speech_face = trx.random.randint(0, 3)]],
+  },
+})
+
 api.property("lara.is_flying", {
   type = "boolean",
   description = "Whether Lara is in the fly-mode cheat. Setting it enters or leaves fly mode.",
