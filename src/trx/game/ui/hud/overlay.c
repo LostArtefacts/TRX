@@ -46,7 +46,7 @@ static struct {
 
 static bool M_AreLaraBarsAllowed(void)
 {
-    return Lara_IsControllable() && !CutSeq_IsActive();
+    return Lara_IsControllable() && !CutSeq_IsActive() && !CutSeq_IsFading();
 }
 
 static bool M_LaraHealthBar(

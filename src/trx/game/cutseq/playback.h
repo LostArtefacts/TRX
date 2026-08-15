@@ -29,6 +29,9 @@ bool CutSeq_IsAvailable(void);
 int32_t CutSeq_GetCount(void);
 bool CutSeq_IsActive(void);
 bool CutSeq_IsPlaying(void);
+// Whether the cutscene's own fade is still on screen. It runs on past the
+// scene, bringing the level back into view once the scene has been torn down.
+bool CutSeq_IsFading(void);
 int32_t CutSeq_GetCurrent(void);
 // Which frame of the running scene is on screen, or -1 when none is. A scene
 // has no other clock: its actors are pose tracks rather than items, so a
