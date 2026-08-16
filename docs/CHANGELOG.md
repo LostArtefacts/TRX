@@ -4,6 +4,7 @@
 - Fixed Lara entering the step down animation when walking backwards in a swamp room (OG bug) (#6251)
 - Fixed certain SFX, such as Lara's footsteps, playing in swamp rooms (#6248, regression from 1.0)
 - Fixed Lara being able to turn too quickly in swamp rooms (regression from 1.0)
+- Fixed Lara being able to vault or crawl through breakable walls that stand on the edge of a tile (Gameplay → Fixes → Fix breakable wall clipping) (OG bug)
 
 **UI**
 - Changed the Fix one-shot music triggers option to sit with the other music settings (Sound → Misc)
@@ -117,7 +118,6 @@ Showcase: https://youtu.be/DKpqz_Yum6o
 - Added the ability for Lara to pull up from ledges more quickly (Gameplay → Controls → Fast pull up) (#4857)
 - Improved state change handling when shimmying is requested while in the slow swing-in state on thin ledges (#5161)
 - Improved the pickup embed fix to prevent Lara becoming clamped when picking up items placed on sloped floors with low ceilings (Gameplay → Fixes → Fix pickup embed glitch) (OG bug)
-- Fixed Lara being able to vault or crawl through breakable walls that stand on the edge of a tile (Gameplay → Fixes → Fix breakable wall clipping) (OG bug)
 - Fixed Lara attempting to pull up into gaps that would not allow her to stand, resulting in her being pushed out (#5891)
 - Fixed Lara being teleported into the ceiling if a door shuts on the ledge she is climbing onto (Gameplay → Fixes → Wall glitch mode) (#6047)
 - Fixed differing ladder/hanging behavior when Lara comes to a stop from shimmying when corner shimmying is enabled (regression from 1.9)
