@@ -21,6 +21,7 @@
 - Fixed Lara having the wrong state while grabbing a zipline (regression from 1.10)
 - Fixed key icons ignoring the active keyboard layout, which swapped Z and Y on QWERTZ (#6257)
 - Fixed the PS1 water color preset showing as unnamed text in The Lost Artefact and Golden Mask (#6265)
+- Fixed a lit flare's sparks hanging in the air in front of the camera while the binoculars are up (#6269)
 
 
 
