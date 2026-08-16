@@ -80,6 +80,7 @@
         "enable_ally_targeting",
         "enable_weather",
         "enable_footprints",
+        "enable_swamp_sidestepping",
         "ally_hostility_policy",
         "fix_monkey_pickup_priority",
         "fix_pipeman_aim",

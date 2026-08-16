@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.10.1...develop) - ××××-××-××
 
 **Lara's movement**
+- Added an option to allow Lara to sidestep in swamps (Gameplay → Controls → Swamp sidesteps) (#6250)
 - Fixed Lara entering the step down animation when walking backwards in a swamp room (OG bug) (#6251)
 - Fixed certain SFX, such as Lara's footsteps, playing in swamp rooms (#6248, regression from 1.0)
 - Fixed Lara being able to turn too quickly in swamp rooms (regression from 1.0)

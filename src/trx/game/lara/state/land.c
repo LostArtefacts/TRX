@@ -12,6 +12,7 @@
 // clang-format off
 #define M_WALK_DIST                104
 #define M_WALK_BACK_DIST           140
+#define M_SIDE_STEP_DIST           148
 #define M_LF_ROLL                  2
 #define M_CANCEL_POSE_TIME         (10 * LOGIC_FPS)               // = 300
 #define M_CANCEL_POSE_CHANCE       0x40                           // = 64
@@ -339,6 +340,28 @@ static bool M_CanQuickTurn(const LARA_INFO *const lara, const ITEM *const item)
     return Anim_HasChange(anim, LS(LS_QUICK_TURN));
 }
 
+static bool M_CanSideStep(const ITEM *const item, const int16_t angle)
+{
+    if (g_TRVersion < 3) {
+        // Default to collision routines. This preserves sidestepping against an
+        // edge making Lara nudge forward, which was present in TR1/2.
+        return true;
+    }
+
+    const int32_t height =
+        Lara_FloorFront(item, item->rot.y + angle, M_SIDE_STEP_DIST);
+    const int32_t ceiling = Lara_CeilingFront(
+        item, item->rot.y + angle, M_SIDE_STEP_DIST, LARA_HEIGHT);
+    if (ceiling > 0) {
+        return false;
+    }
+
+    if (Room_Get(item->room_num)->flags.swamp) {
+        return height >= 0;
+    }
+    return ABS(height) < STEP_L / 2 && Room_GetHeightType() != HT_BIG_SLOPE;
+}
+
 static void M_Stop(ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -408,28 +431,14 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
     }
 
     const ROOM *const room = Room_Get(item->room_num);
-    if (room->flags.swamp) {
-        if (g_Input.left) {
-            item->goal_anim_state = LS(LS_TURN_LEFT);
-        } else if (g_Input.right) {
-            item->goal_anim_state = LS(LS_TURN_RIGHT);
-        }
-    } else if (g_Input.step_left) {
-        const int32_t h = Lara_FloorFront(item, item->rot.y - DEG_90, 148);
-        const int32_t c =
-            Lara_CeilingFront(item, item->rot.y - DEG_90, 148, LARA_HEIGHT);
-        if (g_TRVersion < 3
-            || (h < 128 && h > -128 && Room_GetHeightType() != HT_BIG_SLOPE
-                && c <= 0)) {
+    const bool is_sidestep_permitted =
+        !room->flags.swamp || g_Config.gameplay.enable_swamp_sidestepping;
+    if (g_Input.step_left && is_sidestep_permitted) {
+        if (M_CanSideStep(item, -DEG_90)) {
             item->goal_anim_state = LS(LS_STEP_LEFT);
         }
-    } else if (g_Input.step_right) {
-        const int32_t h = Lara_FloorFront(item, item->rot.y + DEG_90, 148);
-        const int32_t c =
-            Lara_CeilingFront(item, item->rot.y + DEG_90, 148, LARA_HEIGHT);
-        if (g_TRVersion < 3
-            || (h < 128 && h > -128 && Room_GetHeightType() != HT_BIG_SLOPE
-                && c <= 0)) {
+    } else if (g_Input.step_right && is_sidestep_permitted) {
+        if (M_CanSideStep(item, DEG_90)) {
             item->goal_anim_state = LS(LS_STEP_RIGHT);
         }
     } else if (g_Input.left) {

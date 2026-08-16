@@ -1216,6 +1216,10 @@
             "title": "\\{review}Boost de roulade de marche",
             "description": "\\{review}Permet à Lara d'être propulsée d'un pas haut à un clic si la roulade est pressée près du bord. Seul le TR1 d'origine fait cela ; TR2+ non.",
         },
+        "gameplay.enable_swamp_sidestepping": {
+            "title": "\\{review}Pas de côté dans les marais",
+            "description": "\\{review}Permet à Lara de faire des pas de côté dans les salles marécageuses.",
+        },
         "gameplay.enable_swing_cancel": {
             "title": "Annulation du balancement",
             "description": "\\{review}Permet d'annuler l'animation de balancement à un rebord de Lara en relâchant puis en se raccrochant aussitôt, comme possible depuis TR2. Le TR1 d'origine ne le permet pas.",

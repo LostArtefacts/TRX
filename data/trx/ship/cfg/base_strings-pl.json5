@@ -1216,6 +1216,10 @@
             "title": "Przewroty na schodkach",
             "description": "\\{review}Pozwala Larze uzyskać dodatkowy skok z małych schodków, jeśli spróbuje wykonać przewrót blisko krawędzi. Robi tak tylko oryginalny TR1; TR2+ nie.",
         },
+        "gameplay.enable_swamp_sidestepping": {
+            "title": "\\{review}Kroki w bok na bagnach",
+            "description": "\\{review}Umożliwia Larze wykonywanie kroków w bok w pomieszczeniach z bagnem.",
+        },
         "gameplay.enable_swing_cancel": {
             "title": "Łapanie krawędzi po puszczeniu",
             "description": "\\{review}Pozwala na anulowanie animacji huśtania Lary na krawędzi poprzez jej puszczenie i szybkie złapanie ponownie (tak jak w TR2+). Oryginalny TR1 na to nie pozwala.",

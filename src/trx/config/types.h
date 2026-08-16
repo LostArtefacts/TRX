@@ -229,6 +229,7 @@ typedef struct {
         bool enable_crouch_roll;
         bool enable_tr2_swimming;
         bool enable_wading;
+        bool enable_swamp_sidestepping;
         bool enable_tr2_swim_cancel;
         bool enable_tr2_jumping;
         bool enable_swing_cancel;
