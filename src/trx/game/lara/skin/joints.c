@@ -288,6 +288,12 @@ void Lara_Joints_Draw(
         return;
     }
 
+    const ITEM *const lara_item = Lara_GetItem();
+    if (!Item_IsMeshVisible(lara_item, joint->parent_mesh)
+        || !Item_IsMeshVisible(lara_item, joint->child_mesh)) {
+        return;
+    }
+
     const OBJECT_MESH *const mesh = Object_GetMesh(joint->joint_mesh_idx);
     const MATRIX *const parent = &m_State.mesh_matrices[joint->parent_mesh];
     const MATRIX *const child = &m_State.mesh_matrices[joint->child_mesh];
