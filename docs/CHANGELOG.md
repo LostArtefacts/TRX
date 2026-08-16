@@ -17,6 +17,7 @@
 - Changed the PS1 poison healthbar to flat yellow, as the PS1 releases had it (#5227)
 - Fixed ability to open the inventory ring while a flyby sequence has Lara's control
 - Fixed a setting description showing a question mark in place of a key that is bound to a combination, such as Alt+Enter
+- Changed the TR3 breeze mode to read TR3/4, as it covers both games (Graphic Options → Visuals → Breeze)
 
 **Developer console**
 - Added the `/outfit` console command, which shows or changes what Lara is wearing

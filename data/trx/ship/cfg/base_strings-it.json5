@@ -685,7 +685,7 @@
         "BREEZE_MODE": {
             "BREEZE_MODE_OFF": "Disattivato",
             "BREEZE_MODE_TR2": "TR2",
-            "BREEZE_MODE_TR3": "TR3",
+            "BREEZE_MODE_TR3": "TR3/4",
         },
         "CAMERA_MODE": {
             "CAMERA_MODE_TR1": "TR1",
@@ -1762,7 +1762,7 @@
         },
         "visuals.breeze_mode": {
             "title": "Effetto brezza",
-            "description": "Modifica il modo in cui l'effetto brezza influisce sulla treccia di Lara, sulle gocce d'acqua che cadono da Lara e sulla pioggia/neve nelle stanze appropriate.\n\n- Disattivato: disabilita l'effetto brezza.\n- TR2: l'effetto brezza soffia sempre nella stessa direzione.\n- TR3: la direzione dell'effetto brezza cambia nel tempo.",
+            "description": "Modifica il modo in cui l'effetto brezza influisce sulla treccia di Lara, sulle gocce d'acqua che cadono da Lara e sulla pioggia/neve nelle stanze appropriate.\n\n- Disattivato: disabilita l'effetto brezza.\n- TR2: l'effetto brezza soffia sempre nella stessa direzione.\n- TR3/4: la direzione dell'effetto brezza cambia nel tempo.",
         },
         "visuals.camera_mode": {
             "title": "Modalità telecamera",
