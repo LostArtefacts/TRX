@@ -1504,6 +1504,10 @@
             "title": "\\{review}Accrochage des sommets",
             "description": "\\{review}Arrondit la position des sommets aux pixels entiers d'un écran 320x240, pour la géométrie tremblante des versions PlayStation.",
         },
+        "rendering.enable_vertex_snap_at_upscale": {
+            "title": "\\{review}",
+            "description": "\\{review}",
+        },
         "rendering.enable_vsync": {
             "title": "VSync",
             "description": "Active ou désactive la synchronistaion verticale.",

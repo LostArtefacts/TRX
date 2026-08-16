@@ -1504,6 +1504,10 @@
             "title": "\\{review}Vertex-Snapping",
             "description": "\\{review}Rundet die Vertex-Positionen auf ganze Pixel eines 320x240-Bildschirms, für die wackelige Geometrie der PlayStation-Fassungen.",
         },
+        "rendering.enable_vertex_snap_at_upscale": {
+            "title": "\\{review}",
+            "description": "\\{review}",
+        },
         "rendering.enable_vsync": {
             "title": "VSync",
             "description": "Schaltet V-Sync an oder aus.",

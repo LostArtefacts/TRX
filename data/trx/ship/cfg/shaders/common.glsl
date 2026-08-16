@@ -31,6 +31,7 @@ layout(std140) uniform Globals {
     vec4 uFogColor;
     vec2 uFogDistance; // x = fog start, y = fog end
     vec2 uViewportSize;
+    vec2 uVertexSnapResolution;
     float uTime;
     float uTimeInGame;
     float uBrightnessMultiplier;

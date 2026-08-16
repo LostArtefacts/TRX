@@ -1504,6 +1504,10 @@
             "title": "\\{review}Привязка вершин",
             "description": "\\{review}Округляет положение вершин до целых пикселей экрана 320x240, воспроизводя дрожание геометрии в версиях для PlayStation.",
         },
+        "rendering.enable_vertex_snap_at_upscale": {
+            "title": "\\{review}",
+            "description": "\\{review}",
+        },
         "rendering.enable_vsync": {
             "title": "Вертикальная синхронизация",
             "description": "Включает или выключает вертикальную синхронизацию.",

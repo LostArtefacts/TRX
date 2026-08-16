@@ -1504,6 +1504,10 @@
             "title": "Glacadh nan oisean",
             "description": "Cruinnichidh seo suidheachadh nan oisean gu piocsailean slàna air sgrìn 320x240, airson geoimeatraidh chrithich coltach ri na tionndaidhean PlayStation.",
         },
+        "rendering.enable_vertex_snap_at_upscale": {
+            "title": "\\{review}",
+            "description": "\\{review}",
+        },
         "rendering.enable_vsync": {
             "title": "V-Sionc",
             "description": "Tionndaidheas sioncronachadh-inghearach air neo dheth.",

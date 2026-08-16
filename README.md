@@ -108,6 +108,11 @@ Please refer to [this document](docs/CHANGELOG.md).
     getting new rendering improvements and texture fixes. But great stuff
     takes time.
 
+    Players can reproduce the PlayStation releases' wobbly geometry with the
+    optional vertex snapping setting. When integer upscaling is enabled,
+    Vertex Snap At Upscale Resolution makes its snapping grid follow the
+    internal scene resolution instead of the original 320×240 grid.
+
 3. **Can I play this on Mac, Linux, Android...?**
 
     Currently supported platforms include Windows, Linux and macOS.

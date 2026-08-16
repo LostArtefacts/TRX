@@ -334,6 +334,7 @@ typedef struct {
         TEXTURE_FILTER upscaling_filter;
         TEXTURE_FILTER fmv_filter;
         bool enable_vertex_snap;
+        bool enable_vertex_snap_at_upscale;
         bool enable_dithering;
         bool enable_wireframe;
         float wireframe_width;

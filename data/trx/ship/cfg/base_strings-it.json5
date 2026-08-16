@@ -1504,6 +1504,10 @@
             "title": "Vertici tremolanti",
             "description": "Arrotonda le posizioni dei vertici ai pixel interi di uno schermo 320x240, per simulare la geometria tremolante delle versioni PlayStation.",
         },
+        "rendering.enable_vertex_snap_at_upscale": {
+            "title": "\\{review}",
+            "description": "\\{review}",
+        },
         "rendering.enable_vsync": {
             "title": "Sincronizzazione verticale",
             "description": "Attiva o disattiva la sincronizzazione verticale.",

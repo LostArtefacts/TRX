@@ -22,6 +22,7 @@
     X_DECLARE_MEMBER(float, fog_color, [4])                                    \
     X_DECLARE_MEMBER(float, fog_distance, [2])                                 \
     X_DECLARE_MEMBER(float, viewport_size, [2])                                \
+    X_DECLARE_MEMBER(float, vertex_snap_resolution, [2])                       \
     X_DECLARE_MEMBER(float, time)                                              \
     X_DECLARE_MEMBER(float, time_in_game)                                      \
     X_DECLARE_MEMBER(float, brightness_multiplier)                             \
@@ -37,7 +38,8 @@
     X_DECLARE_MEMBER(int, textures_enabled)                                    \
     X_DECLARE_MEMBER(int, vertex_snap_enabled)                                 \
     X_DECLARE_MEMBER(int, tr_version)                                          \
-    X_DECLARE_MEMBER(float, uv_scroll_tick)
+    X_DECLARE_MEMBER(float, uv_scroll_tick)                                    \
+    X_DECLARE_MEMBER(float, _pad, [2])
 
 #pragma pack(push, 4)
 typedef struct {
@@ -134,6 +136,9 @@ void Output_Uniforms_UploadViewMatrix(
 
 void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
 {
+    const bool snap_at_upscale_resolution =
+        g_Config.rendering.enable_vertex_snap
+        && g_Config.rendering.enable_vertex_snap_at_upscale;
     M_UNIFORM_GENERAL general = {
         .time = Output_GetTime(),
         .time_in_game = Output_GetTimeInGame(),
@@ -146,6 +151,14 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
         .viewport_size = {
             (float)Viewport_GetWidth(VIEWPORT_GAME),
             (float)Viewport_GetHeight(VIEWPORT_GAME),
+        },
+        .vertex_snap_resolution = {
+            snap_at_upscale_resolution
+                ? (float)Viewport_GetWidth(VIEWPORT_SCENE)
+                : 320.0f,
+            snap_at_upscale_resolution
+                ? (float)Viewport_GetHeight(VIEWPORT_SCENE)
+                : 240.0f,
         },
         .min_shade = M_GetMinShade(),
         .billboard_lock_mode = g_Config.rendering.sprite_lock_mode,

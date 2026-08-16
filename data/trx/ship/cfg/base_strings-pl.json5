@@ -1504,6 +1504,10 @@
             "title": "\\{review}Przyciąganie wierzchołków",
             "description": "\\{review}Zaokrągla pozycje wierzchołków do pełnych pikseli ekranu 320x240, odtwarzając drżenie geometrii z wersji na PlayStation.",
         },
+        "rendering.enable_vertex_snap_at_upscale": {
+            "title": "\\{review}",
+            "description": "\\{review}",
+        },
         "rendering.enable_vsync": {
             "title": "Synchronizacja pionowa",
             "description": "Włącza lub wyłącza synchronizację pionową.",
