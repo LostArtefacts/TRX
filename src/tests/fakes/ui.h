@@ -13,4 +13,10 @@ void FakeUI_SetGame(int32_t tr_version);
 
 void FakeUI_SetViewport(int32_t width, int32_t height);
 
+// Name the keys every "\{input <role>}" placeholder stands for; nullptr leaves
+// the roles unbound.
+void FakeUI_SetKeyName(const char *key_name);
+
+void FakeUI_ResetKeyName(void);
+
 void FakeUI_Shutdown(void);

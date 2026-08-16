@@ -82,6 +82,9 @@ typedef struct {
     UT_hash_handle hh;
 } M_TEXT_MAP_ENTRY;
 
+typedef void (*M_DRAW_FUNC)(
+    int32_t, int32_t, int32_t, int32_t, int32_t, int32_t, const RGBA_F[4]);
+
 static M_GLYPH_INFO m_Glyphs[] = {
 #define X_GLYPH_DEFINE(text_, role_, mesh_idx_)                                \
     { .text = text_, .role = role_, .mesh_idx = mesh_idx_ },
@@ -257,43 +260,52 @@ static const M_GLYPH_INFO **M_DecomposeWithCache(
     return entry->glyphs;
 }
 
-// Replace input placeholder glyph with the actual keyboard glyph for the
-// current binding
-static const M_GLYPH_INFO *M_GetResolvedGlyph(const M_GLYPH_INFO *glyph)
+// The keys an input placeholder stands for, as the glyphs that spell them out.
+// A combo such as Alt+Enter names several keys at once, so a placeholder can
+// expand to more than one glyph.
+static const M_GLYPH_INFO **M_GetInputGlyphs(
+    const M_GLYPH_INFO *const glyph, size_t *const out_count)
 {
-    if (glyph->role != GLYPH_INPUT) {
-        return glyph;
-    }
     const INPUT_BACKEND backend = g_Config.input.backend;
     const INPUT_LAYOUT layout = g_Config.input.layout[backend];
     const char *const key_name =
         Input_GetKeyName(backend, layout, glyph->input_role, 0);
-    // NOTE: this aliasing approach assumes that Input_GetKeyName returns
-    // text that resolves to a single glyph.
-    M_GLYPH_MAP_ENTRY *entry = nullptr;
-    if (key_name != nullptr) {
-        HASH_FIND_STR(m_GlyphMap, key_name, entry);
+    if (key_name == nullptr) {
+        return M_DecomposeWithCache("?", out_count);
     }
-    if (entry == nullptr) {
-        HASH_FIND_STR(m_GlyphMap, "?", entry);
-    }
-    return entry != nullptr ? entry->glyph : nullptr;
+
+    const M_GLYPH_INFO **const parts =
+        M_DecomposeWithCache(key_name, out_count);
+    return *out_count > 0 ? parts : M_DecomposeWithCache("?", out_count);
 }
 
-// Width the glyph occupies when drawn, matching the resolution and font
+static M_FONT M_GetGlyphFont(const M_GLYPH_INFO *const glyph, const M_FONT font)
+{
+    if (font == M_FONT_SMALL && !M_HasGlyph(font, glyph)) {
+        return M_FONT_DEFAULT;
+    }
+    return font;
+}
+
+// Width the glyph occupies when drawn, matching the expansion and font
 // fallback that M_Process applies.
 static float M_GetLayoutWidth(
     const M_GLYPH_INFO *const glyph, const M_FONT font)
 {
-    const M_GLYPH_INFO *const resolved = M_GetResolvedGlyph(glyph);
-    if (resolved == nullptr) {
-        return 0.0f;
+    if (glyph->role != GLYPH_INPUT) {
+        return glyph->width[M_GetGlyphFont(glyph, font)];
     }
-    M_FONT glyph_font = font;
-    if (glyph_font == M_FONT_SMALL && !M_HasGlyph(glyph_font, resolved)) {
-        glyph_font = M_FONT_DEFAULT;
+
+    size_t count = 0;
+    const M_GLYPH_INFO **const parts = M_GetInputGlyphs(glyph, &count);
+    float width = 0.0f;
+    for (size_t i = 0; i < count; i++) {
+        if (i > 0) {
+            width += M_LETTER_SPACING;
+        }
+        width += parts[i]->width[M_GetGlyphFont(parts[i], font)];
     }
-    return resolved->width[glyph_font];
+    return width;
 }
 
 // How far the continuations of a line are indented, so that a line broken in
@@ -367,10 +379,7 @@ static size_t M_WordWrap(
 
     // Iterate glyphs for wrapping
     for (size_t i = 0; i < glyph_count; i++) {
-        const M_GLYPH_INFO *const glyph = M_GetResolvedGlyph(glyphs[i]);
-        if (glyph == nullptr) {
-            continue;
-        }
+        const M_GLYPH_INFO *const glyph = glyphs[i];
 
         if (cur_width == 0.0f && hanging_indent == 0) {
             hanging_indent = M_DetectHangingIndent(glyphs, glyph_count, i);
@@ -473,6 +482,30 @@ static size_t M_WordWrap(
     return out_len;
 }
 
+// Draws one font glyph and returns how far the cursor moves past it.
+static float M_DrawGlyph(
+    const M_GLYPH_INFO *const glyph, const M_FONT font, const float x,
+    const float y, const int32_t z, const float scale, const bool spaced,
+    const bool visible, const int32_t color_idx, const M_DRAW_FUNC draw_func)
+{
+    const M_FONT glyph_font = M_GetGlyphFont(glyph, font);
+    float spacing = glyph->width[glyph_font];
+    if (spaced) {
+        spacing += M_LETTER_SPACING;
+    }
+
+    // A non-breaking space and its like take up room without drawing anything.
+    const bool renders = glyph->role != GLYPH_TEXT || glyph->mesh_idx >= 0;
+    if (renders && visible && draw_func != nullptr) {
+        const OBJECT *const object = Object_Get(m_FontObjects[glyph_font]);
+        draw_func(
+            x, y, z, scale, scale, object->mesh_idx + glyph->mesh_idx,
+            m_TextColor[color_idx]);
+    }
+
+    return spacing * scale / UI_TEXT_BASE_SCALE;
+}
+
 static void M_Process(
     const char *const text, float *const out_w, float *const out_h,
     const UI_TEXT_SETTINGS settings, const float base_x, const float base_y,
@@ -504,10 +537,7 @@ static void M_Process(
 
     const M_GLYPH_INFO **glyph_ptr = glyphs;
     while (*glyph_ptr != nullptr) {
-        const M_GLYPH_INFO *const glyph = M_GetResolvedGlyph(*glyph_ptr);
-        if (glyph == nullptr) {
-            goto loop_end;
-        }
+        const M_GLYPH_INFO *const glyph = *glyph_ptr;
 
         if (glyph->role == GLYPH_REVIEW_MARKER
             && !g_Config.debug.enable_review_markers) {
@@ -580,31 +610,24 @@ static void M_Process(
             goto loop_end;
         }
 
-        M_FONT glyph_font = current_font;
-        if (glyph_font == M_FONT_SMALL && !M_HasGlyph(glyph_font, glyph)) {
-            glyph_font = M_FONT_DEFAULT;
-        }
+        const bool spaced = glyph_ptr[1] != nullptr
+            && glyph_ptr[1]->role != GLYPH_NEW_LINE
+            && glyph_ptr[1]->role != GLYPH_NEW_PAGE;
 
-        float spacing = glyph->width[glyph_font];
-        if (glyph_ptr[1] != nullptr && glyph_ptr[1]->role != GLYPH_NEW_LINE
-            && glyph_ptr[1]->role != GLYPH_NEW_PAGE) {
-            spacing += M_LETTER_SPACING;
-        }
-
-        if (glyph->role == GLYPH_TEXT && glyph->mesh_idx < 0) {
-            // Non-breaking space or other non-rendered text glyphs.
-            x += spacing * scale / UI_TEXT_BASE_SCALE;
+        if (glyph->role == GLYPH_INPUT) {
+            size_t count = 0;
+            const M_GLYPH_INFO **const parts = M_GetInputGlyphs(glyph, &count);
+            for (size_t i = 0; i < count; i++) {
+                x += M_DrawGlyph(
+                    parts[i], current_font, x, y, z, scale,
+                    i + 1 < count || spaced, visible, color_idx, draw_func);
+            }
             goto loop_end;
         }
 
-        if (visible && draw_func != nullptr) {
-            const OBJECT *object = Object_Get(m_FontObjects[glyph_font]);
-            draw_func(
-                x, y, z, scale, scale, object->mesh_idx + glyph->mesh_idx,
-                m_TextColor[color_idx]);
-        }
-
-        x += spacing * scale / UI_TEXT_BASE_SCALE;
+        x += M_DrawGlyph(
+            glyph, current_font, x, y, z, scale, spaced, visible, color_idx,
+            draw_func);
 
     loop_end:
         max_width = MAX(max_width, x);

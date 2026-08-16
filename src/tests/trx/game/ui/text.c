@@ -77,3 +77,54 @@ TEST(ui_text_wrap_keeps_indent)
     M_CheckWrap("  - an indented bullet holding several words", 4);
     UI_ShutdownText();
 }
+
+static float M_Measure(const char *const text)
+{
+    float width = 0.0f;
+    UI_Text_Measure(
+        text, &width, nullptr, (UI_TEXT_SETTINGS) { .scale = 1.0f });
+    return width;
+}
+
+// A key role stands for the keys the player bound it to, and a binding can name
+// more than one: Alt+Enter spells out as two keycaps and the sign between them,
+// so a placeholder has to measure as wide as all three.
+TEST(ui_text_input_spells_out_a_combo)
+{
+    UI_InitText();
+    M_SetUp();
+
+    const char *const single = "\\{keyboard return}";
+    const char *const combo =
+        "\\{keyboard l_alt}\\{icon plus}\\{keyboard return}";
+    const char *const placeholder = "\\{input toggle_fullscreen}";
+
+    FakeUI_SetKeyName(single);
+    CHECK(M_Measure(placeholder) == M_Measure(single));
+
+    FakeUI_SetKeyName(combo);
+    const float combo_width = M_Measure(combo);
+    CHECK(M_Measure(placeholder) == combo_width);
+    CHECK(combo_width > M_Measure(single));
+
+    FakeUI_ResetKeyName();
+    UI_ShutdownText();
+}
+
+TEST(ui_text_input_falls_back_to_a_question_mark)
+{
+    UI_InitText();
+    M_SetUp();
+
+    const char *const placeholder = "\\{input toggle_fullscreen}";
+    const float unknown = M_Measure("?");
+
+    FakeUI_SetKeyName(nullptr);
+    CHECK(M_Measure(placeholder) == unknown);
+
+    FakeUI_SetKeyName("");
+    CHECK(M_Measure(placeholder) == unknown);
+
+    FakeUI_ResetKeyName();
+    UI_ShutdownText();
+}
