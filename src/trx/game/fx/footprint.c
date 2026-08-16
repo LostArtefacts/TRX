@@ -54,13 +54,7 @@ static const SAMPLE_TRX_ID m_StepSounds[14] = {
 static void M_GetWorldPoint(
     const M_FOOTPRINT *const print, const XYZ_32 local, XYZ_32 *const out_world)
 {
-    const int32_t s = Math_Sin(print->y_rot);
-    const int32_t c = Math_Cos(print->y_rot);
-    const int32_t dx = TRIGMULT2(local.x, c) + TRIGMULT2(local.z, s);
-    const int32_t dz = TRIGMULT2(local.z, c) - TRIGMULT2(local.x, s);
-    out_world->x = print->pos.x + dx;
-    out_world->y = print->pos.y + local.y;
-    out_world->z = print->pos.z + dz;
+    *out_world = XYZ_32_OffsetLocalYaw(print->pos, local, print->y_rot);
 }
 
 static int32_t M_GetVertexYOffset(

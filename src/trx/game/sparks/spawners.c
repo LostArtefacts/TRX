@@ -97,10 +97,8 @@ void Sparks_TriggerWaterfallMist(
 
         // the sparks are spread along the line perpendicular to the flow
         const int32_t offset = (Random_GetControl() & 0x1F) + offsets[i] - 16;
-        const int32_t spread_x =
-            (offset * Math_Sin(angle + DEG_90)) >> W2V_SHIFT;
-        const int32_t spread_z =
-            (offset * Math_Cos(angle + DEG_90)) >> W2V_SHIFT;
+        const XYZ_32 spread =
+            XYZ_32_RotateYaw((XYZ_32) { .z = offset }, angle + DEG_90);
 
         *spark = (SPARK) {
             .on = true,
@@ -114,15 +112,11 @@ void Sparks_TriggerWaterfallMist(
             .dynamic = -1,
             .sprite_idx = sprite_idx,
             .pos = {
-                .x = x + (Random_GetControl() % 16) - 8 + spread_x,
+                .x = x + (Random_GetControl() % 16) - 8 + spread.x,
                 .y = y + (Random_GetControl() % 16) - 8,
-                .z = z + (Random_GetControl() % 16) - 8 + spread_z,
+                .z = z + (Random_GetControl() % 16) - 8 + spread.z,
             },
-            .vel = {
-                .x = Math_Sin(angle) >> W2V_SHIFT,
-                .y = 0,
-                .z = Math_Cos(angle) >> W2V_SHIFT,
-            },
+            .vel = XYZ_32_RotateYaw((XYZ_32) { .z = 1 }, angle),
             .gravity = 0,
             .max_y_vel = 0,
             .friction = 3,
@@ -175,9 +169,10 @@ void Sparks_TriggerSmallSplash(const XYZ_32 pos, const int32_t count)
         spark->extras = 0;
         spark->dynamic = -1;
         const int32_t ang = Random_GetDraw() & 0xFFF;
-        spark->vel.x = -Math_Sin(ang << 4) >> 7;
+        const XYZ_32 dir = XYZ_32_RotateYaw((XYZ_32) { .z = 128 }, -(ang << 4));
+        spark->vel.x = dir.x;
         spark->vel.y = -640 - (Random_GetDraw() & 0xFF);
-        spark->vel.z = Math_Cos(ang << 4) >> 7;
+        spark->vel.z = dir.z;
         spark->pos.x = pos.x + (spark->vel.x >> 3);
         spark->pos.y = pos.y - (spark->vel.y >> 5);
         spark->pos.z = pos.z + (spark->vel.z >> 3);
@@ -585,11 +580,10 @@ void Sparks_TriggerSideFlame(
     }
     dist <<= 1;
 
-    const int32_t s = (dist * Math_Sin(angle)) >> W2V_SHIFT;
-    const int32_t c = (dist * Math_Cos(angle)) >> W2V_SHIFT;
-    spark->vel.x = (int16_t)((Random_GetControl() & 0x7F) + s - 64);
+    const XYZ_32 dir = XYZ_32_RotateYaw((XYZ_32) { .z = dist }, angle);
+    spark->vel.x = (int16_t)((Random_GetControl() & 0x7F) + dir.x - 64);
     spark->vel.y = -6 - (Random_GetControl() & 7);
-    spark->vel.z = (int16_t)((Random_GetControl() & 0x7F) + c - 64);
+    spark->vel.z = (int16_t)((Random_GetControl() & 0x7F) + dir.z - 64);
     spark->friction = 4;
     spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_SPRITE | SPARK_F_SCALE;
     spark->gravity = -8 - (Random_GetControl() & 0xF);
@@ -638,9 +632,11 @@ void Sparks_TriggerBlood(
         const int16_t dist = Random_GetControl() & 0xF;
         const int32_t ang =
             ((Random_GetControl() & 0x1F) + angle_12 - 16) & 0xFFF;
-        spark->vel.x = -(dist * Math_Sin(ang << 4)) >> 7;
+        const XYZ_32 dir =
+            XYZ_32_RotateYaw((XYZ_32) { .z = dist * 128 }, -(ang << 4));
+        spark->vel.x = dir.x;
         spark->vel.y = -128 - (Random_GetControl() & 0xFF);
-        spark->vel.z = dist * Math_Cos(ang << 4) >> 7;
+        spark->vel.z = dir.z;
         spark->friction = 4;
         spark->flags = SPARK_F_BLOOD | SPARK_F_SCALE;
         spark->scalar = 3;
@@ -683,9 +679,11 @@ void Sparks_TriggerBloodD(
         spark->pos.z = pos.z + (Random_GetDraw() & 0x1F) - 16;
         const int16_t dist = Random_GetDraw() & 0xF;
         const int32_t ang = ((Random_GetDraw() & 0x1F) + angle_12 - 16) & 0xFFF;
-        spark->vel.x = -(dist * Math_Sin(ang << 4)) >> 7;
+        const XYZ_32 dir =
+            XYZ_32_RotateYaw((XYZ_32) { .z = dist * 128 }, -(ang << 4));
+        spark->vel.x = dir.x;
         spark->vel.y = -128 - (Random_GetDraw() & 0xFF);
-        spark->vel.z = dist * Math_Cos(ang << 4) >> 7;
+        spark->vel.z = dir.z;
         spark->friction = 4;
         spark->flags = SPARK_F_SCALE;
         spark->scalar = 3;
@@ -1367,9 +1365,10 @@ void Sparks_TriggerRicochetTR3(
     spark->pos.y = pos.y;
     spark->pos.z = pos.z;
     int32_t ang = ((Random_GetControl() & 0x7FF) + angle - 1024) & 0xFFF;
-    spark->vel.x = -Math_Sin(ang << 4) >> 3;
+    XYZ_32 dir = XYZ_32_RotateYaw((XYZ_32) { .z = 2048 }, -(ang << 4));
+    spark->vel.x = dir.x;
     spark->vel.y = 2 * (Random_GetControl() & 0x1FF) - 768;
-    spark->vel.z = Math_Cos(ang << 4) >> 3;
+    spark->vel.z = dir.z;
     spark->friction = 1;
     spark->flags = SPARK_F_SCALE;
     spark->scalar = 3;
@@ -1405,9 +1404,10 @@ void Sparks_TriggerRicochetTR3(
     spark->pos.y = pos.y;
     spark->pos.z = pos.z;
     ang = ((Random_GetControl() & 0x7FF) + angle - 1023) & 0xFFF;
-    spark->vel.x = -Math_Sin(ang << 4) >> 3;
+    dir = XYZ_32_RotateYaw((XYZ_32) { .z = 2048 }, -(ang << 4));
+    spark->vel.x = dir.x;
     spark->vel.y = (Random_GetControl() & 0x1FF) - 384;
-    spark->vel.z = Math_Cos(ang << 4) >> 3;
+    spark->vel.z = dir.z;
     spark->friction = 33;
     spark->flags = SPARK_F_SCALE;
     spark->scalar = 3;
@@ -1448,8 +1448,10 @@ void Sparks_TriggerRicochetTR4(
             spark->vel.y = (rnd & 0xFFF) - 2048;
             spark->gravity = (rnd >> 7) & 0x1F;
             const int32_t ang = (((rnd >> 3) & 0x7FF) + angle - 1024) & 0xFFF;
-            spark->vel.x = -Math_Sin(ang << 4) >> 4;
-            spark->vel.z = Math_Cos(ang << 4) >> 4;
+            const XYZ_32 dir =
+                XYZ_32_RotateYaw((XYZ_32) { .z = 1024 }, -(ang << 4));
+            spark->vel.x = dir.x;
+            spark->vel.z = dir.z;
             spark->friction = 34;
             spark->flags = SPARK_F_NONE;
             spark->max_y_vel = 0;

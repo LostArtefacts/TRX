@@ -17,12 +17,10 @@ void Lara_Col_Push(
     const bool big_push)
 {
     ITEM *const target_item = Lara_GetItem();
-    int32_t dx = target_item->pos.x - item->pos.x;
-    int32_t dz = target_item->pos.z - item->pos.z;
-    const int32_t c = Math_Cos(item->rot.y);
-    const int32_t s = Math_Sin(item->rot.y);
-    int32_t rx = (c * dx - s * dz) >> W2V_SHIFT;
-    int32_t rz = (c * dz + s * dx) >> W2V_SHIFT;
+    const XYZ_32 delta = XYZ_32_Subtract(target_item->pos, item->pos);
+    const XYZ_32 local = XYZ_32_UnrotateYaw(delta, item->rot.y);
+    int32_t rx = local.x;
+    int32_t rz = local.z;
 
     const BOUNDS_16 *const bounds = &item->bounds;
     int32_t min_x = bounds->min.x;
@@ -56,16 +54,20 @@ void Lara_Col_Push(
         rz = min_z;
     }
 
-    target_item->pos.x = item->pos.x + ((rz * s + rx * c) >> W2V_SHIFT);
-    target_item->pos.z = item->pos.z + ((rz * c - rx * s) >> W2V_SHIFT);
+    const XYZ_32 pushed = XYZ_32_OffsetLocalYaw(
+        item->pos, (XYZ_32) { .x = rx, .z = rz }, item->rot.y);
+    target_item->pos.x = pushed.x;
+    target_item->pos.z = pushed.z;
 
-    rz = (bounds->max.z + bounds->min.z) / 2;
-    rx = (bounds->max.x + bounds->min.x) / 2;
-    dx -= (c * rx + s * rz) >> W2V_SHIFT;
-    dz -= (c * rz - s * rx) >> W2V_SHIFT;
+    // How far Lara stands from the middle of the item, rather than from the
+    // point it sits on.
+    const XYZ_32 centre = XYZ_32_RotateYaw(
+        (XYZ_32) { .x = (bounds->max.x + bounds->min.x) / 2,
+                   .z = (bounds->max.z + bounds->min.z) / 2 },
+        item->rot.y);
 
     if (hit_on && bounds->max.y - bounds->min.y > STEP_L) {
-        Lara_TakeHit(target_item, dx, dz);
+        Lara_TakeHit(target_item, delta.x - centre.x, delta.z - centre.z);
     }
 
     const int16_t old_facing = coll->facing;

@@ -377,8 +377,9 @@ static bool M_CheckGetOff(void)
         Item_SwitchToAnim(lara_item, LA(LA_STAND_STILL), 0);
         lara_item->current_anim_state = LS_STOP;
         lara_item->goal_anim_state = LS_STOP;
-        lara_item->pos.x -= (512 * Math_Sin(lara_item->rot.y)) >> W2V_SHIFT;
-        lara_item->pos.z -= (512 * Math_Cos(lara_item->rot.y)) >> W2V_SHIFT;
+        lara_item->pos = XYZ_32_Subtract(
+            lara_item->pos,
+            XYZ_32_RotateYaw((XYZ_32) { .z = 512 }, lara_item->rot.y));
         lara_item->rot.x = 0;
         lara_item->rot.z = 0;
         Lara_Vehicle_SetIndex(NO_ITEM);
@@ -420,14 +421,16 @@ static bool M_CheckGetOff(void)
 }
 
 static int32_t M_TestHeight(
-    const ITEM *const item, const int32_t x, const int32_t z, XYZ_32 *const pos)
+    const ITEM *const item, const int32_t z_off, const int32_t x_off,
+    XYZ_32 *const pos)
 {
-    const int32_t s = Math_Sin(item->rot.y);
-    const int32_t c = Math_Cos(item->rot.y);
-    pos->x = item->pos.x + ((z * c + x * s) >> W2V_SHIFT);
-    pos->y = item->pos.y + ((z * Math_Sin(item->rot.z)) >> W2V_SHIFT)
-        - ((x * Math_Sin(item->rot.x)) >> W2V_SHIFT);
-    pos->z = item->pos.z + ((x * c - z * s) >> W2V_SHIFT);
+    *pos = XYZ_32_OffsetLocalYaw(
+        item->pos, (XYZ_32) { .x = x_off, .z = z_off }, item->rot.y);
+
+    // The height a wheel sits at follows the quad's pitch and roll, which the
+    // yaw turn above says nothing about.
+    pos->y = item->pos.y + ((x_off * Math_Sin(item->rot.z)) >> W2V_SHIFT)
+        - ((z_off * Math_Sin(item->rot.x)) >> W2V_SHIFT);
 
     int16_t room_num = item->room_num;
     SECTOR *const sector = Room_GetSector(*pos, &room_num);
@@ -495,12 +498,11 @@ static void M_TriggerExhaustSmoke(
         .y = pos.y + (Random_GetControl() & 0xF) - 8,
         .z = pos.z + (Random_GetControl() & 0xF) - 8,
     };
+    const XYZ_32 dir = XYZ_32_RotateYaw((XYZ_32) { .z = speed }, angle);
     spark->vel = (XYZ_32) {
-        .x = (Random_GetControl() & 0xFF) + ((speed * Math_Sin(angle)) >> 16)
-            - 128,
+        .x = (Random_GetControl() & 0xFF) + (dir.x >> 2) - 128,
         .y = -8 - (Random_GetControl() & 7),
-        .z = (Random_GetControl() & 0xFF) + ((speed * Math_Cos(angle)) >> 16)
-            - 128,
+        .z = (Random_GetControl() & 0xFF) + (dir.z >> 2) - 128,
     };
     spark->friction = 4;
 
@@ -561,10 +563,9 @@ static int32_t M_GetCollisionAnim(ITEM *const item, XYZ_32 *const pos)
         return 0;
     }
 
-    const int32_t s = Math_Sin(item->rot.y);
-    const int32_t c = Math_Cos(item->rot.y);
-    const int32_t fb = (pos->x * s + pos->z * c) >> W2V_SHIFT;
-    const int32_t lr = (pos->x * c - pos->z * s) >> W2V_SHIFT;
+    const XYZ_32 local = XYZ_32_UnrotateYaw(*pos, item->rot.y);
+    const int32_t fb = local.z;
+    const int32_t lr = local.x;
 
     if (ABS(fb) > ABS(lr)) {
         return fb > 0 ? 14 : 13;
@@ -842,8 +843,7 @@ static int32_t M_SkidooDynamics(ITEM *const item)
         ? item->speed
         : (item->speed * Math_Cos(item->rot.x)) >> W2V_SHIFT;
 
-    item->pos.x += (speed * Math_Sin(quad->momentum_angle)) >> W2V_SHIFT;
-    item->pos.z += (speed * Math_Cos(quad->momentum_angle)) >> W2V_SHIFT;
+    item->pos = XYZ_32_OffsetYaw(item->pos, quad->momentum_angle, speed);
 
     int32_t slip = (100 * Math_Sin(item->rot.x)) >> W2V_SHIFT;
     if (ABS(slip) > 50) {
@@ -855,16 +855,20 @@ static int32_t M_SkidooDynamics(ITEM *const item)
             slip += 10;
         }
 
-        item->pos.x -= (slip * Math_Sin(item->rot.y)) >> W2V_SHIFT;
-        item->pos.z -= (slip * Math_Cos(item->rot.y)) >> W2V_SHIFT;
+        item->pos = XYZ_32_Subtract(
+            item->pos, XYZ_32_RotateYaw((XYZ_32) { .z = slip }, item->rot.y));
     }
 
     slip = (50 * Math_Sin(item->rot.z)) >> W2V_SHIFT;
 
     if (ABS(slip) > 25) {
         m_DontExitQuad = true;
-        item->pos.x += (slip * Math_Cos(item->rot.y)) >> W2V_SHIFT;
-        item->pos.z -= (slip * Math_Sin(item->rot.y)) >> W2V_SHIFT;
+        // Sideways, along the quad's own x, read off a forward turn so that
+        // each component rounds as it did.
+        const XYZ_32 roll_slip =
+            XYZ_32_RotateYaw((XYZ_32) { .z = slip }, item->rot.y);
+        item->pos.x += roll_slip.z;
+        item->pos.z -= roll_slip.x;
     }
 
     new_pos.x = item->pos.x;
@@ -969,11 +973,8 @@ static int32_t M_SkidooDynamics(ITEM *const item)
     const int32_t anim = M_GetCollisionAnim(item, &new_pos);
 
     if (anim != 0) {
-        const int32_t dx = item->pos.x - old_pos.x;
-        const int32_t dz = item->pos.z - old_pos.z;
-        int32_t speed2 = (dx * Math_Sin(quad->momentum_angle)
-                          + dz * Math_Cos(quad->momentum_angle))
-            >> W2V_SHIFT;
+        const XYZ_32 delta = XYZ_32_Subtract(item->pos, old_pos);
+        int32_t speed2 = XYZ_32_UnrotateYaw(delta, quad->momentum_angle).z;
         speed2 <<= 8;
 
         if (Lara_Vehicle_GetItem() == item && quad->velocity == 0xA000

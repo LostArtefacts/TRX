@@ -315,11 +315,11 @@ static void M_Control(const int16_t item_num)
 
     leader_fish->swim = (leader_fish->swim + (leader_fish->speed >> 4)) & 0x3F;
 
-    const int32_t angle16 = leader_fish->angle << 4;
-    int32_t x = leader_fish->pos.x
-        - (leader_fish->speed * Math_Sin(angle16) >> (W2V_SHIFT + 1));
-    int32_t z = leader_fish->pos.z
-        + (leader_fish->speed * Math_Cos(angle16) >> (W2V_SHIFT + 1));
+    // A fish swims with its x mirrored, so the step's x comes off against it.
+    const XYZ_32 step = XYZ_32_RotateYaw(
+        (XYZ_32) { .z = leader_fish->speed }, leader_fish->angle << 4);
+    int32_t x = leader_fish->pos.x - (step.x >> 1);
+    int32_t z = leader_fish->pos.z + (step.z >> 1);
 
     if (piranha_attack == 0) {
         if (z < -leader->range.z) {
@@ -479,11 +479,10 @@ static void M_Control(const int16_t item_num)
         fish->swim =
             (fish->swim + (fish->speed >> 4) + (fish->speed >> 5)) & 0x3F;
 
-        const int32_t fish_angle16 = fish->angle << 4;
-        int32_t next_x = fish->pos.x
-            - (fish->speed * Math_Sin(fish_angle16) >> (W2V_SHIFT + 1));
-        int32_t next_z = fish->pos.z
-            + (fish->speed * Math_Cos(fish_angle16) >> (W2V_SHIFT + 1));
+        const XYZ_32 fish_step =
+            XYZ_32_RotateYaw((XYZ_32) { .z = fish->speed }, fish->angle << 4);
+        int32_t next_x = fish->pos.x - (fish_step.x >> 1);
+        int32_t next_z = fish->pos.z + (fish_step.z >> 1);
         CLAMP(next_x, -32000, 32000);
         CLAMP(next_z, -32000, 32000);
         fish->pos.x = next_x;
@@ -594,9 +593,10 @@ static bool M_Draw(const ITEM *const item)
             (swim_wibble + fish->interp.result.angle - 2048) & 0xFFF;
 
         const int32_t size = ((128 * Math_Sin(i << 10)) >> W2V_SHIFT) + 192;
-        const int32_t ang16 = ang12 << 4;
-        const int32_t back_x = x - ((size * Math_Sin(ang16)) >> W2V_SHIFT);
-        const int32_t back_z = z + ((size * Math_Cos(ang16)) >> W2V_SHIFT);
+        const XYZ_32 back =
+            XYZ_32_RotateYaw((XYZ_32) { .z = size }, ang12 << 4);
+        const int32_t back_x = x - back.x;
+        const int32_t back_z = z + back.z;
 
         const XYZ_32 tri_world[3] = {
             { .x = x, .y = y, .z = z },

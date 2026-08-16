@@ -21,8 +21,7 @@ static void M_Control(const int16_t effect_num)
         return;
     }
 
-    effect->pos.x += (effect->speed * Math_Sin(effect->rot.y)) >> W2V_SHIFT;
-    effect->pos.z += (effect->speed * Math_Cos(effect->rot.y)) >> W2V_SHIFT;
+    effect->pos = XYZ_32_OffsetYaw(effect->pos, effect->rot.y, effect->speed);
     if (effect->fall_speed != 0) {
         effect->pos.y += effect->fall_speed;
         effect->fall_speed += GRAVITY;

@@ -778,11 +778,7 @@ static bool M_TestLedgeJump(const ITEM *const item, const COLL_INFO *const coll)
     }
 
     // Test for a solid surface in front of Lara to push against.
-    const XYZ_32 pos = {
-        .x = item->pos.x + ((Math_Sin(item->rot.y) * STEP_L) >> W2V_SHIFT),
-        .z = item->pos.z + ((Math_Cos(item->rot.y) * STEP_L) >> W2V_SHIFT),
-        .y = item->pos.y,
-    };
+    const XYZ_32 pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, STEP_L);
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
     const int32_t height = Room_GetHeight(sector, pos);

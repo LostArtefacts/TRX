@@ -368,20 +368,16 @@ static GAME_VECTOR M_GetIdeal(
     GAME_VECTOR temp[2] = {};
     GAME_VECTOR ideals[5] = {};
 
-    for (int32_t i = 0; i < 5; i++) {
-        ideals[i].y =
-            ((Math_Sin(g_Camera.target_elevation) * g_Camera.target_distance)
-             >> W2V_SHIFT)
-            + g_Camera.target.y;
-    }
+    const int32_t rise =
+        (Math_Sin(g_Camera.target_elevation) * g_Camera.target_distance)
+        >> W2V_SHIFT;
 
     for (int32_t i = 0; i < 5; i++) {
         const int16_t angle = i > 0 ? ((i - 1) << W2V_SHIFT)
                                     : (g_Camera.target_angle + target_rot_y);
-        ideals[i].x =
-            g_Camera.target.x - ((distance * Math_Sin(angle)) >> W2V_SHIFT);
-        ideals[i].z =
-            g_Camera.target.z - ((distance * Math_Cos(angle)) >> W2V_SHIFT);
+        ideals[i].pos = XYZ_32_OffsetLocalYaw(
+            g_Camera.target.pos, (XYZ_32) { .z = -distance }, angle);
+        ideals[i].y = g_Camera.target.y + rise;
 
         ideals[i].room_num = g_Camera.target.room_num;
 
@@ -900,8 +896,8 @@ static void M_Update(
 
         if (g_Camera.flags == CF_FOLLOW_CENTRE) {
             const int32_t shift = (bounds->min.z + bounds->max.z) / 2;
-            g_Camera.target.z += (shift * Math_Cos(item->rot.y)) >> W2V_SHIFT;
-            g_Camera.target.x += (shift * Math_Sin(item->rot.y)) >> W2V_SHIFT;
+            g_Camera.target.pos =
+                XYZ_32_OffsetYaw(g_Camera.target.pos, item->rot.y, shift);
         }
 
         g_Camera.target.room_num = item->room_num;

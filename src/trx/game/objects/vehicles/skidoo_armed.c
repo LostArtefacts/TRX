@@ -53,13 +53,10 @@ static void M_Setup(OBJECT *const obj)
 void SkidooArmed_Push(
     const ITEM *const item, ITEM *const lara_item, const int32_t radius)
 {
-    const int32_t dx = lara_item->pos.x - item->pos.x;
-    const int32_t dz = lara_item->pos.z - item->pos.z;
-    const int32_t cy = Math_Cos(item->rot.y);
-    const int32_t sy = Math_Sin(item->rot.y);
-
-    int32_t rx = (cy * dx - sy * dz) >> W2V_SHIFT;
-    int32_t rz = (sy * dx + cy * dz) >> W2V_SHIFT;
+    const XYZ_32 local = XYZ_32_UnrotateYaw(
+        XYZ_32_Subtract(lara_item->pos, item->pos), item->rot.y);
+    int32_t rx = local.x;
+    int32_t rz = local.z;
 
     const ANIM_FRAME *const best_frame = Item_GetBestFrame(item);
     BOUNDS_16 bounds = {
@@ -88,8 +85,10 @@ void SkidooArmed_Push(
         rz -= b;
     }
 
-    lara_item->pos.x = item->pos.x + ((rz * sy + rx * cy) >> W2V_SHIFT);
-    lara_item->pos.z = item->pos.z + ((rz * cy - rx * sy) >> W2V_SHIFT);
+    const XYZ_32 pushed = XYZ_32_OffsetLocalYaw(
+        item->pos, (XYZ_32) { .x = rx, .z = rz }, item->rot.y);
+    lara_item->pos.x = pushed.x;
+    lara_item->pos.z = pushed.z;
 }
 
 REGISTER_OBJECT(O_SKIDOO_ARMED, M_Setup)

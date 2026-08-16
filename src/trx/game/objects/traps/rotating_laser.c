@@ -116,8 +116,10 @@ static void M_Control(const int16_t item_num)
         CLAMPL(p->velocity, -512);
     }
 
-    item->pos.x += (p->velocity * Math_Sin(item->rot.y)) >> (W2V_SHIFT + 2);
-    item->pos.z += (p->velocity * Math_Cos(item->rot.y)) >> (W2V_SHIFT + 2);
+    const XYZ_32 step =
+        XYZ_32_RotateYaw((XYZ_32) { .z = p->velocity }, item->rot.y);
+    item->pos.x += step.x >> 2;
+    item->pos.z += step.z >> 2;
     int16_t room_num = item->room_num;
     Room_GetSector(item->pos, &room_num);
 

@@ -76,10 +76,8 @@ static void M_Animate(ITEM *const item)
         return;
     }
 
-    const int32_t speed = (item->speed * Math_Cos(item->rot.x)) >> W2V_SHIFT;
-    item->pos.x += (speed * Math_Sin(item->rot.y)) >> W2V_SHIFT;
-    item->pos.y -= (item->speed * Math_Sin(item->rot.x)) >> W2V_SHIFT;
-    item->pos.z += (speed * Math_Cos(item->rot.y)) >> W2V_SHIFT;
+    item->pos = XYZ_32_Add(
+        item->pos, XYZ_32_FromYawPitch(item->rot.y, item->rot.x, item->speed));
 }
 
 static void M_Control(const int16_t item_num)
@@ -127,12 +125,9 @@ static bool M_DrawPoisonDart(const ITEM *const item)
 {
     const XYZ_32 origin = item->interp.result.pos;
     const XYZ_16 rot = item->interp.result.rot;
-    const int32_t size = (-96 * Math_Cos(rot.x)) >> W2V_SHIFT;
-    const XYZ_32 to = {
-        .x = origin.x + ((size * Math_Sin(rot.y)) >> W2V_SHIFT),
-        .y = origin.y + ((96 * Math_Sin(rot.x)) >> W2V_SHIFT),
-        .z = origin.z + ((size * Math_Cos(rot.y)) >> W2V_SHIFT),
-    };
+    // The dart is drawn as a line back along its own heading.
+    const XYZ_32 to =
+        XYZ_32_Add(origin, XYZ_32_FromYawPitch(rot.y, rot.x, -96));
     const RGBA_8888 color = { 0x78, 0x3C, 0x14, 0xFF };
     OutputSource_PolyFX_StageLineSegment(
         origin, color, to, color, 2.0f, DRAW_BLEND);

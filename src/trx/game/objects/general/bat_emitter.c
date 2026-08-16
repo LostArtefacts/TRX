@@ -290,12 +290,13 @@ static void M_Update(M_PRIV *const p)
             Sound_Effect(SFX_BATS_1, &bat->pos, SPM_NORMAL);
         }
 
-        const int16_t angle = bat->angle << 4;
-        const int32_t sin_v = Math_Sin(angle) >> 2;
-        const int32_t cos_v = Math_Cos(angle) >> 2;
-        bat->pos.x -= ((int64_t)bat->speed * cos_v) >> W2V_SHIFT;
+        // A bat flies along its angle's right hand, so the components come
+        // off a forward turn swapped.
+        const XYZ_32 step =
+            XYZ_32_RotateYaw((XYZ_32) { .z = bat->speed }, bat->angle << 4);
+        bat->pos.x -= step.z >> 2;
         bat->pos.y -= Random_GetControl() & 3;
-        bat->pos.z += ((int64_t)bat->speed * sin_v) >> W2V_SHIFT;
+        bat->pos.z += step.x >> 2;
         bat->wing_y_off = (bat->wing_y_off + 11) & 0x3F;
 
         if (bat->life < 128) {

@@ -32,15 +32,13 @@ static int32_t M_GetHeight(
     const ITEM *const item, const int32_t x, const int32_t z,
     int16_t *const room_num)
 {
-    XYZ_32 pos = item->pos;
-    const int32_t sy = Math_Sin(item->rot.y);
-    const int32_t cy = Math_Cos(item->rot.y);
-    const int32_t sx = Math_Sin(item->rot.x);
-    const int32_t sz = Math_Sin(item->rot.z);
+    XYZ_32 pos = XYZ_32_OffsetLocalYaw(
+        item->pos, (XYZ_32) { .x = x, .z = z }, item->rot.y);
 
-    pos.x += (z * sy + x * cy) >> W2V_SHIFT;
-    pos.z += (z * cy - x * sy) >> W2V_SHIFT;
-    pos.y = ((x * sz) >> W2V_SHIFT) + (item->pos.y - ((z * sx) >> W2V_SHIFT));
+    // The height a wheel sits at follows the train's pitch and roll, which the
+    // yaw turn above says nothing about.
+    pos.y = ((x * Math_Sin(item->rot.z)) >> W2V_SHIFT)
+        + (item->pos.y - ((z * Math_Sin(item->rot.x)) >> W2V_SHIFT));
 
     *room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(pos, room_num);

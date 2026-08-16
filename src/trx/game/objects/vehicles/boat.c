@@ -109,10 +109,8 @@ static int32_t M_CheckGetOn(const int16_t item_num, const COLL_INFO *const coll)
 
     ITEM *const boat_item = Item_Get(item_num);
     const ITEM *const lara_item = Lara_GetItem();
-    const int32_t dist =
-        ((lara_item->pos.z - boat_item->pos.z) * Math_Cos(-boat_item->rot.y)
-         - (lara_item->pos.x - boat_item->pos.x) * Math_Sin(-boat_item->rot.y))
-        >> W2V_SHIFT;
+    const XYZ_32 delta = XYZ_32_Subtract(lara_item->pos, boat_item->pos);
+    const int32_t dist = XYZ_32_UnrotateYaw(delta, boat_item->rot.y).z;
 
     if (dist > 200) {
         return 0;
@@ -168,16 +166,16 @@ static int32_t M_TestWaterHeight(
     const ITEM *const item, const int32_t z_off, const int32_t x_off,
     XYZ_32 *const pos)
 {
+    *pos = XYZ_32_OffsetLocalYaw(
+        item->pos, (XYZ_32) { .x = x_off, .z = z_off }, item->rot.y);
+
+    // The height the boat sits at follows its pitch and roll, which the yaw
+    // turn above says nothing about.
     // clang-format off
     pos->y = item->pos.y
         + ((x_off * Math_Sin(item->rot.z)) >> W2V_SHIFT)
         - ((z_off * Math_Sin(item->rot.x)) >> W2V_SHIFT);
     // clang-format on
-
-    const int32_t c = Math_Cos(item->rot.y);
-    const int32_t s = Math_Sin(item->rot.y);
-    pos->x = item->pos.x + ((x_off * c + z_off * s) >> W2V_SHIFT);
-    pos->z = item->pos.z + ((z_off * c - x_off * s) >> W2V_SHIFT);
 
     int16_t room_num = item->room_num;
     Room_GetSector(*pos, &room_num);
@@ -213,13 +211,10 @@ static void M_DoWakeEffect(const ITEM *const boat_item)
         effect->room_num = boat_item->room_num;
         effect->frame_num = frame;
 
-        const int32_t c = Math_Cos(boat_item->rot.y);
-        const int32_t s = Math_Sin(boat_item->rot.y);
         const int32_t w = (1 - i) * M_SIDE;
         const int32_t h = M_WAKE_SIZE;
-        effect->pos.x = boat_item->pos.x + ((-c * w - s * h) >> W2V_SHIFT);
-        effect->pos.y = boat_item->pos.y;
-        effect->pos.z = boat_item->pos.z + ((-c * h + s * w) >> W2V_SHIFT);
+        effect->pos = XYZ_32_OffsetLocalYaw(
+            boat_item->pos, (XYZ_32) { .x = -w, .z = -h }, boat_item->rot.y);
         effect->rot.y = boat_item->rot.y + (i << W2V_SHIFT) - DEG_90;
 
         effect->counter = 20;
@@ -261,18 +256,19 @@ static void M_DoShift(const int32_t boat_num)
 
         if (item->object_id == O_GONDOLA
             && item->current_anim_state == GONDOLA_STATE_FLOATING) {
-            const int32_t c = Math_Cos(item->rot.y);
-            const int32_t s = Math_Sin(item->rot.y);
-            const int32_t ix = item->pos.x - ((s * STEP_L * 2) >> W2V_SHIFT);
-            const int32_t iz = item->pos.z - ((c * STEP_L * 2) >> W2V_SHIFT);
-            const int32_t dx = ix - boat_item->pos.x;
-            const int32_t dz = iz - boat_item->pos.z;
+            const XYZ_32 stern = XYZ_32_Subtract(
+                item->pos,
+                XYZ_32_RotateYaw((XYZ_32) { .z = STEP_L * 2 }, item->rot.y));
+            const int32_t dx = stern.x - boat_item->pos.x;
+            const int32_t dz = stern.z - boat_item->pos.z;
             const int32_t dist = SQUARE(dx) + SQUARE(dz);
 
             if (dist < SQUARE(M_RADIUS * 2)) {
                 if (boat_item->speed < M_MAX_SPEED - 10) {
-                    boat_item->pos.x = ix - SQUARE(M_RADIUS * 2) * dx / dist;
-                    boat_item->pos.z = iz - SQUARE(M_RADIUS * 2) * dz / dist;
+                    boat_item->pos.x =
+                        stern.x - SQUARE(M_RADIUS * 2) * dx / dist;
+                    boat_item->pos.z =
+                        stern.z - SQUARE(M_RADIUS * 2) * dz / dist;
                 } else if (item->pos.y - boat_item->pos.y < WALL_L * 2) {
                     Sound_Effect(SFX_BOAT_INTO_WATER, &item->pos, SPM_NORMAL);
                     item->goal_anim_state = GONDOLA_STATE_CRASH;
@@ -334,26 +330,29 @@ static int32_t M_Dynamics(const int16_t boat_num)
     boat_item->rot.y += p->extra_rotation + p->boat_turn;
     p->tilt_angle = p->boat_turn * 6;
 
-    boat_item->pos.z +=
-        (boat_item->speed * Math_Cos(boat_item->rot.y)) >> W2V_SHIFT;
-    boat_item->pos.x +=
-        (boat_item->speed * Math_Sin(boat_item->rot.y)) >> W2V_SHIFT;
+    boat_item->pos =
+        XYZ_32_OffsetYaw(boat_item->pos, boat_item->rot.y, boat_item->speed);
 
     int32_t slip = (Math_Sin(boat_item->rot.z) * 30) >> W2V_SHIFT;
     if (!slip && boat_item->rot.z) {
         slip = boat_item->rot.z > 0 ? 1 : -1;
     }
-    boat_item->pos.z -= (slip * Math_Sin(boat_item->rot.y)) >> W2V_SHIFT;
-    boat_item->pos.x += (slip * Math_Cos(boat_item->rot.y)) >> W2V_SHIFT;
+    // Sideways, along the boat's beam. Both slides read their components off
+    // a forward turn so that each rounds as it did: a slide runs frame after
+    // frame, and a unit a frame would tell.
+    const XYZ_32 roll_slip =
+        XYZ_32_RotateYaw((XYZ_32) { .z = slip }, boat_item->rot.y);
+    boat_item->pos.x += roll_slip.z;
+    boat_item->pos.z -= roll_slip.x;
 
     slip = (Math_Sin(boat_item->rot.x) * 10) >> W2V_SHIFT;
     if (!slip && boat_item->rot.x) {
         slip = boat_item->rot.x > 0 ? 1 : -1;
     }
 
-    boat_item->pos.z -= (slip * Math_Cos(boat_item->rot.y)) >> W2V_SHIFT;
-    boat_item->pos.x =
-        boat_item->pos.x - ((slip * Math_Sin(boat_item->rot.y)) >> W2V_SHIFT);
+    boat_item->pos = XYZ_32_Subtract(
+        boat_item->pos,
+        XYZ_32_RotateYaw((XYZ_32) { .z = slip }, boat_item->rot.y));
 
     XYZ_32 moved = {
         .x = boat_item->pos.x,
@@ -410,12 +409,8 @@ static int32_t M_Dynamics(const int16_t boat_num)
 
     const int32_t collide = Vehicle_GetCollisionAnim(boat_item, &moved);
     if (slip || collide) {
-        // clang-format off
-        const int32_t new_speed = (
-            (boat_item->pos.z - old.z) * Math_Cos(boat_item->rot.y) +
-            (boat_item->pos.x - old.x) * Math_Sin(boat_item->rot.y)
-        ) >> W2V_SHIFT;
-        // clang-format on
+        const XYZ_32 delta = XYZ_32_Subtract(boat_item->pos, old);
+        const int32_t new_speed = XYZ_32_UnrotateYaw(delta, boat_item->rot.y).z;
 
         if (Lara_Vehicle_GetIndex() == boat_num) {
             if (boat_item->speed > M_MAX_SPEED + M_ACCELERATION
@@ -820,13 +815,8 @@ static void M_Control(const int16_t item_num)
         lara_item->fall_speed = -40;
         Lara_Vehicle_SetIndex(NO_ITEM);
 
-        const XYZ_32 pos = {
-            .x = lara_item->pos.x
-                + ((360 * Math_Sin(lara_item->rot.y)) >> W2V_SHIFT),
-            .y = lara_item->pos.y - 90,
-            .z = lara_item->pos.z
-                + ((360 * Math_Cos(lara_item->rot.y)) >> W2V_SHIFT),
-        };
+        XYZ_32 pos = XYZ_32_OffsetYaw(lara_item->pos, lara_item->rot.y, 360);
+        pos.y -= 90;
 
         room_num = lara_item->room_num;
         sector = Room_GetSector(pos, &room_num);

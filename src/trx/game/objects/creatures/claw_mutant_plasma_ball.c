@@ -131,11 +131,10 @@ static void M_Control(const int16_t effect_num)
         }
     }
 
-    const int32_t speed =
-        (effect->speed * Math_Cos(effect->rot.x)) >> W2V_SHIFT;
-    effect->pos = XYZ_32_OffsetYaw(effect->pos, effect->rot.y, speed);
-    effect->pos.y += effect->fall_speed
-        - ((effect->speed * Math_Sin(effect->rot.x)) >> W2V_SHIFT);
+    effect->pos = XYZ_32_Add(
+        effect->pos,
+        XYZ_32_FromYawPitch(effect->rot.y, effect->rot.x, effect->speed));
+    effect->pos.y += effect->fall_speed;
 
     const int32_t time4 = Output_GetTimeInGame() * 4;
     if ((time4 & 4) != 0) {

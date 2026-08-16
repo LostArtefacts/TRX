@@ -33,8 +33,7 @@ static void M_CalcShootVectors(
     });
 
     const int32_t dist = WALL_L * 2;
-    target->x += (dist * Math_Sin(angle)) >> W2V_SHIFT;
-    target->z += (dist * Math_Cos(angle)) >> W2V_SHIFT;
+    *target = XYZ_32_OffsetYaw(*target, angle, dist);
 }
 
 static void M_TriggerTR3GunShell(

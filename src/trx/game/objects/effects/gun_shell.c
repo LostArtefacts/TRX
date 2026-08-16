@@ -21,11 +21,11 @@ static void M_Control(const int16_t effect_num)
     effect->rot.y += 182 * effect->speed;
     effect->rot.z += 4186;
 
-    effect->pos.x +=
-        (effect->speed * Math_Sin(effect->flag1)) >> (W2V_SHIFT + 1);
+    const XYZ_32 step =
+        XYZ_32_RotateYaw((XYZ_32) { .z = effect->speed }, effect->flag1);
+    effect->pos.x += step.x >> 1;
     effect->pos.y += effect->fall_speed;
-    effect->pos.z +=
-        (effect->speed * Math_Cos(effect->flag1)) >> (W2V_SHIFT + 1);
+    effect->pos.z += step.z >> 1;
 
     int16_t room_num = effect->room_num;
     const SECTOR *const sector = Room_GetSector(effect->pos, &room_num);

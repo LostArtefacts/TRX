@@ -148,12 +148,9 @@ static void M_EmitTorch(const XYZ_32 start, const XYZ_32 end)
             for (j = 0; j < 5; j++) {
                 XYZ_32 test;
                 if (offs[j] != 0) {
-                    test.x = pos.x
-                        + ((falloff * (Math_Sin(offs[j] + y_rot) / 4)) >> 5);
+                    test = XYZ_32_OffsetYaw(pos, offs[j] + y_rot, falloff << 7);
                     test.y = (offs[j] & 1) != 0 ? pos.y - (falloff << 7)
                                                 : pos.y + (falloff << 7);
-                    test.z = pos.z
-                        + ((falloff * (Math_Cos(offs[j] + y_rot) / 4)) >> 5);
                 } else {
                     test = pos;
                 }
@@ -283,12 +280,8 @@ void Camera_Binoculars_Update(void)
         eye.y += STEP_L / 4;
     }
 
-    const int32_t fwd = (M_TARGET_DIST * Math_Cos(pitch)) >> W2V_SHIFT;
-    const XYZ_32 target = {
-        .x = eye.x + ((Math_Sin(yaw) * fwd) >> W2V_SHIFT),
-        .y = eye.y - ((Math_Sin(pitch) * M_TARGET_DIST) >> W2V_SHIFT),
-        .z = eye.z + ((Math_Cos(yaw) * fwd) >> W2V_SHIFT),
-    };
+    const XYZ_32 target =
+        XYZ_32_Add(eye, XYZ_32_FromYawPitch(yaw, pitch, M_TARGET_DIST));
 
     g_Camera.pos.pos = eye;
     g_Camera.pos.room_num = room_num;

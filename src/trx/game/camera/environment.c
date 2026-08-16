@@ -159,11 +159,8 @@ void Camera_UpdateMicPosition(void)
         g_Camera.actual_angle = Math_Atan(
             g_Camera.target.z - g_Camera.pos.z,
             g_Camera.target.x - g_Camera.pos.x);
-        g_Camera.mic_pos.pos.x = g_Camera.pos.x
-            + ((g_PhdPersp * Math_Sin(g_Camera.actual_angle)) >> W2V_SHIFT);
-        g_Camera.mic_pos.pos.z = g_Camera.pos.z
-            + ((g_PhdPersp * Math_Cos(g_Camera.actual_angle)) >> W2V_SHIFT);
-        g_Camera.mic_pos.pos.y = g_Camera.pos.y;
+        g_Camera.mic_pos.pos = XYZ_32_OffsetYaw(
+            g_Camera.pos.pos, g_Camera.actual_angle, g_PhdPersp);
         g_Camera.mic_pos.room_num = g_Camera.pos.room_num;
     }
 }

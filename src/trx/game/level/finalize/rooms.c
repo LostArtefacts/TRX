@@ -21,8 +21,6 @@ static inline BOUNDS_32 M_GetStaticBounds(const STATIC_MESH *const mesh)
     // its Y rotation (see M_DrawSingleRoom). A box taken without that turn
     // sits askew of the mesh it stands for, and one at an angle the axes do
     // not share misses the portal it leans through.
-    const int32_t cos_y = Math_Cos(mesh->rot.y);
-    const int32_t sin_y = Math_Sin(mesh->rot.y);
     const int32_t xs[2] = { obj->draw_bounds.min.x, obj->draw_bounds.max.x };
     const int32_t zs[2] = { obj->draw_bounds.min.z, obj->draw_bounds.max.z };
 
@@ -40,14 +38,12 @@ static inline BOUNDS_32 M_GetStaticBounds(const STATIC_MESH *const mesh)
     };
     for (int32_t i = 0; i < 2; i++) {
         for (int32_t j = 0; j < 2; j++) {
-            const int32_t x =
-                mesh->pos.x + ((xs[i] * cos_y + zs[j] * sin_y) >> W2V_SHIFT);
-            const int32_t z =
-                mesh->pos.z + ((zs[j] * cos_y - xs[i] * sin_y) >> W2V_SHIFT);
-            bounds.min.x = MIN(bounds.min.x, x);
-            bounds.max.x = MAX(bounds.max.x, x);
-            bounds.min.z = MIN(bounds.min.z, z);
-            bounds.max.z = MAX(bounds.max.z, z);
+            const XYZ_32 corner = XYZ_32_OffsetLocalYaw(
+                mesh->pos, (XYZ_32) { .x = xs[i], .z = zs[j] }, mesh->rot.y);
+            bounds.min.x = MIN(bounds.min.x, corner.x);
+            bounds.max.x = MAX(bounds.max.x, corner.x);
+            bounds.min.z = MIN(bounds.min.z, corner.z);
+            bounds.max.z = MAX(bounds.max.z, corner.z);
         }
     }
 

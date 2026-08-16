@@ -34,8 +34,9 @@ static OUTPUT_MESH *M_GenerateShadow(
     for (int32_t i = 0; i <= fidelity; i++) {
         const int16_t angle = ((i * DEG_360) + DEG_180) / fidelity;
         const int32_t size = WALL_L / 2;
-        const int32_t x = (Math_Sin(angle) * size) >> W2V_SHIFT;
-        const int32_t z = (Math_Cos(angle) * size) >> W2V_SHIFT;
+        const XYZ_32 point = XYZ_32_RotateYaw((XYZ_32) { .z = size }, angle);
+        const int32_t x = point.x;
+        const int32_t z = point.z;
         OUTPUT_MESH_VERTEX edge = center;
         edge.pos.x = x;
         edge.pos.z = z;
