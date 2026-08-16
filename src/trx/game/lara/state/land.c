@@ -578,16 +578,19 @@ static void M_Turn(ITEM *const item, COLL_INFO *const coll)
         lara->turn_rate += LARA_TURN_RATE;
     }
 
-    if (lara->gun_status == LGS_READY) {
+    const bool can_turn_fast = !Room_Get(item->room_num)->flags.swamp
+        && (g_TRVersion < 3 || lara->water_status != LWS_WADE);
+
+    if (lara->gun_status == LGS_READY && can_turn_fast) {
         item->goal_anim_state = LS(LS_FAST_TURN);
     } else if (left_turn && lara->turn_rate < -LARA_SLOW_TURN) {
-        if (g_Input.slow) {
+        if (g_Input.slow || !can_turn_fast) {
             lara->turn_rate = -LARA_SLOW_TURN;
         } else {
             item->goal_anim_state = LS(LS_FAST_TURN);
         }
     } else if (!left_turn && lara->turn_rate > LARA_SLOW_TURN) {
-        if (g_Input.slow) {
+        if (g_Input.slow || !can_turn_fast) {
             lara->turn_rate = LARA_SLOW_TURN;
         } else {
             item->goal_anim_state = LS(LS_FAST_TURN);
