@@ -342,6 +342,15 @@ static void M_RotZ(MATRIX *const m, const int16_t angle)
     m->_21 = r1 >> W2V_SHIFT;
 }
 
+// Swaps a rotation for the one that undoes it. A rotation matrix's inverse is
+// its transpose, and these carry no scale.
+static void M_Transpose3x3(MATRIX *const m)
+{
+    SWAP(m->_01, m->_10);
+    SWAP(m->_02, m->_20);
+    SWAP(m->_12, m->_21);
+}
+
 static void M_RotYXZ(MATRIX *const m, const XYZ_16 rotation)
 {
     M_RotY(m, rotation.y);
@@ -467,26 +476,13 @@ void Matrix_ResetStack(void)
 
 void Matrix_GenerateW2V(const XYZ_32 *pos, const XYZ_16 *rot)
 {
-    const int32_t sx = Math_Sin(rot->x);
-    const int32_t cx = Math_Cos(rot->x);
-    const int32_t sy = Math_Sin(rot->y);
-    const int32_t cy = Math_Cos(rot->y);
-    const int32_t sz = Math_Sin(rot->z);
-    const int32_t cz = Math_Cos(rot->z);
-
     g_ViewPos = *pos;
-    g_ViewMatrix._00 = TRIGMULT3(sx, sy, sz) + TRIGMULT2(cy, cz);
-    g_ViewMatrix._01 = TRIGMULT2(cx, sz);
-    g_ViewMatrix._02 = TRIGMULT3(sx, cy, sz) - TRIGMULT2(sy, cz);
-    g_ViewMatrix._10 = TRIGMULT3(sx, sy, cz) - TRIGMULT2(cy, sz);
-    g_ViewMatrix._11 = TRIGMULT2(cx, cz);
-    g_ViewMatrix._12 = TRIGMULT3(sx, cy, cz) + TRIGMULT2(sy, sz);
-    g_ViewMatrix._20 = TRIGMULT2(cx, sy);
-    g_ViewMatrix._21 = -sx;
-    g_ViewMatrix._22 = TRIGMULT2(cx, cy);
-    g_ViewMatrix._03 = 0;
-    g_ViewMatrix._13 = 0;
-    g_ViewMatrix._23 = 0;
+
+    // The view takes the world into the camera's own axes, which is the
+    // rotation the camera stands at, undone.
+    g_ViewMatrix = g_IDMatrix;
+    M_RotYXZ(&g_ViewMatrix, *rot);
+    M_Transpose3x3(&g_ViewMatrix);
     M_TranslateRel(&g_ViewMatrix, (XYZ_32) { -pos->x, -pos->y, -pos->z });
 
     g_MatrixPtr = &m_MatrixStack[0];

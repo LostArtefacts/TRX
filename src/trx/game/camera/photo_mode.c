@@ -17,9 +17,6 @@
 #define PHOTO_MAX_PITCH_ROLL (DEG_90 - DEG_1)
 #define PHOTO_MAX_SPEED 100
 
-#define M_CosMul(a, b) TRIGMULT2(Math_Cos((a)), (b))
-#define M_SinMul(a, b) TRIGMULT2(Math_Sin((a)), (b))
-
 static int32_t m_PhotoSpeed = 0;
 static int32_t m_OriginalFOV;
 static FOV_MODE m_OriginalFOVMode;
@@ -85,36 +82,23 @@ static int32_t M_GetRotSpeed(void)
     return MAX(DEG_1, M_GetShiftSpeed(PHOTO_ROT_SHIFT));
 }
 
+// The step comes in along the camera's own axes, and has to land in the
+// world's.
 static XYZ_32 M_GetShift(const int32_t dx, const int32_t dy, const int32_t dz)
 {
-    const int16_t yaw = g_Camera.target_angle;
-    const int16_t pitch = g_Camera.target_elevation;
-    const int16_t roll = g_Camera.roll;
-
-    const int32_t dx_r = M_CosMul(roll, dx) - M_SinMul(roll, dy);
-    const int32_t dy_r = M_SinMul(roll, dx) + M_CosMul(roll, dy);
-    const int32_t dz_r = dz; // unchanged if roll is around Z
-
-    const int32_t dy_p = M_CosMul(pitch, dy_r) - M_SinMul(pitch, dz_r);
-    const int32_t dz_p = M_SinMul(pitch, dy_r) + M_CosMul(pitch, dz_r);
-    const int32_t dx_p = dx_r; // unchanged if pitch is around X
-
-    const int32_t dx_y = M_CosMul(yaw, dx_p) + M_SinMul(yaw, dz_p);
-    const int32_t dz_y = -M_SinMul(yaw, dx_p) + M_CosMul(yaw, dz_p);
-    const int32_t dy_y = dy_p; // unchanged if yaw is around Y
-
-    return (XYZ_32) { dx_y, dy_y, dz_y };
+    const XYZ_16 rot = {
+        .x = g_Camera.target_elevation,
+        .y = g_Camera.target_angle,
+        .z = g_Camera.roll,
+    };
+    return XYZ_32_Rotate((XYZ_32) { .x = dx, .y = dy, .z = dz }, rot);
 }
 
 static void M_ShiftCamera(int32_t dx, int32_t dy, int32_t dz)
 {
     const XYZ_32 shift = M_GetShift(dx, dy, dz);
-    g_Camera.pos.x += shift.x;
-    g_Camera.pos.y += shift.y;
-    g_Camera.pos.z += shift.z;
-    g_Camera.target.x += shift.x;
-    g_Camera.target.y += shift.y;
-    g_Camera.target.z += shift.z;
+    g_Camera.pos.pos = XYZ_32_Add(g_Camera.pos.pos, shift);
+    g_Camera.target.pos = XYZ_32_Add(g_Camera.target.pos, shift);
 }
 
 static void M_ApplyRotation(
@@ -127,8 +111,10 @@ static void M_ApplyRotation(
 
     // rotate with respect to current upright axis
     if (respect_roll) {
-        yaw += M_CosMul(roll, d_yaw) + M_SinMul(roll, d_pitch);
-        pitch += M_CosMul(roll, d_pitch) - M_SinMul(roll, d_yaw);
+        const XYZ_32 turned =
+            XYZ_32_RotateYaw((XYZ_32) { .x = d_yaw, .z = d_pitch }, roll);
+        yaw += turned.x;
+        pitch += turned.z;
     } else {
         yaw += d_yaw;
         pitch += d_pitch;
@@ -152,9 +138,7 @@ static void M_RotateCamera(
 {
     M_ApplyRotation(d_yaw, d_pitch, d_roll, true);
     const XYZ_32 shift = M_GetShift(0, 0, g_Camera.target_distance);
-    g_Camera.target.x = g_Camera.pos.x + shift.x;
-    g_Camera.target.y = g_Camera.pos.y + shift.y;
-    g_Camera.target.z = g_Camera.pos.z + shift.z;
+    g_Camera.target.pos = XYZ_32_Add(g_Camera.pos.pos, shift);
 }
 
 static void M_RotateTarget(
@@ -162,9 +146,7 @@ static void M_RotateTarget(
 {
     M_ApplyRotation(d_yaw, d_pitch, d_roll, false);
     const XYZ_32 shift = M_GetShift(0, 0, g_Camera.target_distance);
-    g_Camera.pos.x = g_Camera.target.x - shift.x;
-    g_Camera.pos.y = g_Camera.target.y - shift.y;
-    g_Camera.pos.z = g_Camera.target.z - shift.z;
+    g_Camera.pos.pos = XYZ_32_Subtract(g_Camera.target.pos, shift);
 }
 
 static void M_ClampCameraPos(void)
