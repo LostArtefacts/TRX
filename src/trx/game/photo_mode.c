@@ -143,24 +143,10 @@ static bool M_HandleItemPositionInputs(ITEM *const item)
         return false;
     }
 
-    const int32_t pitch = item->rot.x;
-    const int32_t cos_p = Math_Cos(pitch);
-    const int32_t sin_p = Math_Sin(pitch);
-    const int32_t local_y = delta.y - TRIGMULT2(sin_p, delta.z);
-    const int32_t local_z = TRIGMULT2(cos_p, delta.z);
-    const int32_t local_x = delta.x;
-
-    const int32_t yaw = item->rot.y;
-    const int32_t cos_y = Math_Cos(yaw);
-    const int32_t sin_y = Math_Sin(yaw);
-    const int32_t world_x =
-        TRIGMULT2(cos_y, local_x) + TRIGMULT2(sin_y, local_z);
-    const int32_t world_z =
-        -TRIGMULT2(sin_y, local_x) + TRIGMULT2(cos_y, local_z);
-
-    item->pos.x += world_x;
-    item->pos.y += local_y;
-    item->pos.z += world_z;
+    // The step is given along the camera's own axes, so it meets the whole
+    // orientation rather than the yaw alone.
+    item->pos = XYZ_32_OffsetLocal(
+        item->pos, delta, (XYZ_16) { .x = item->rot.x, .y = item->rot.y });
     return true;
 }
 
