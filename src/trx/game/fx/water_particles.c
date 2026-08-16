@@ -9,12 +9,12 @@
 #include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/output/const.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/output/state.h>
 #include <trx/game/output/vars.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
-#include <trx/game/viewport.h>
 
 #include <string.h>
 
@@ -26,6 +26,7 @@
 #define M_BASE_Y_OFF (-1024)
 #define M_MIN_SIZE 4.0f
 #define M_MAX_SIZE 16.0f
+#define M_SIZE_DIV 6.0f
 
 typedef struct {
     XYZ_32 pos;
@@ -62,17 +63,6 @@ static int64_t M_GetViewDepth(const XYZ_32 pos)
         g_ViewMatrix._22 * pos.z +
         g_ViewMatrix._23;
     // clang-format on
-}
-
-static float M_GetFixedScale(const float unit)
-{
-    const float base_w = 640.0f;
-    const float base_h = 480.0f;
-    const float game_w = (float)Viewport_GetWidth(VIEWPORT_GAME);
-    const float game_h = (float)Viewport_GetHeight(VIEWPORT_GAME);
-    const float x = game_w > base_w ? (game_w * unit) / base_w : unit;
-    const float y = game_h > base_h ? (game_h * unit) / base_h : unit;
-    return MIN(x, y);
 }
 
 static void M_Spawn(M_WATER_PARTICLE *const particle)
@@ -209,14 +199,17 @@ static void M_Draw(void)
             continue;
         }
 
-        if (zv <= near_z || zv >= far_z || g_PhdPersp <= 0) {
+        if (zv <= near_z || zv >= far_z) {
             continue;
         }
 
-        float size = (float)((g_PhdPersp * (particle->yv >> 3)) / vpos_z);
+        // The original sizes the speck in the screen pixels of its reference
+        // viewport, so the clamp is applied there and the result taken back
+        // into world units - a size in pixels of the rasterized picture would
+        // follow the resolution and the supersampling factor.
+        float size = (float)((REF_PERSP * (particle->yv >> 3)) / vpos_z);
         CLAMP(size, M_MIN_SIZE, M_MAX_SIZE);
-        size /= 3.0f;
-        size = M_GetFixedScale(size) / 2.0f;
+        size = (size * vpos_z) / (REF_PERSP * M_SIZE_DIV);
 
         uint32_t c;
         if ((particle->yv & 7) < 7) {

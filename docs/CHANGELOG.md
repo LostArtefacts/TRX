@@ -40,6 +40,11 @@
 - Changed the save crystal behavior to give Lara a crystal when starting a game, if the mode is set to Saving (pickups), in line with the TR3 PS1 version (Gameplay → General → Crystal mode)
 - Fixed the PS1 water color preset showing as unnamed text in The Lost Artefact and Golden Mask (#6265)
 
+**Rendering**
+- Fixed the water particles and the lightning bolts growing as the supersampling factor is raised, and following the resolution besides (regression from 1.10)
+- Fixed the sparks that keep a fixed size, such as ricochets, shrinking as the supersampling factor is raised (regression from 1.10)
+- Fixed the wireframe and debug portal lines thinning as the supersampling factor is raised (regression from 1.10)
+
 **Music and sound**
 - Fixed crystal sound effects not playing if Lara collects one underwater (OG bug)
 
