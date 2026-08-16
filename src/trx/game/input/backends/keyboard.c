@@ -190,8 +190,8 @@ static const char *M_GetScancodeName(SDL_Scancode scancode)
         case SDL_SCANCODE_RCTRL:              return "\\{keyboard r_ctrl}";
         case SDL_SCANCODE_RSHIFT:             return "\\{keyboard r_shift}";
         case SDL_SCANCODE_LSHIFT:             return "\\{keyboard l_shift}";
-        case SDL_SCANCODE_RALT:               return "\\{keyboard l_alt}";
-        case SDL_SCANCODE_LALT:               return "\\{keyboard r_alt}";
+        case SDL_SCANCODE_LALT:               return "\\{keyboard l_alt}";
+        case SDL_SCANCODE_RALT:               return "\\{keyboard r_alt}";
         case SDL_SCANCODE_LGUI:               return "\\{keyboard l_win}";
         case SDL_SCANCODE_RGUI:               return "\\{keyboard r_win}";
 
