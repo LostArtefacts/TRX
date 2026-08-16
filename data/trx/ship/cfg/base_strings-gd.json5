@@ -1216,6 +1216,10 @@
             "title": "Brùthadh le rolla bho cheum",
             "description": "Leigidh Lara leum bhon cheum aon-bhriog ma bhriogar rolla faisg air an oir. Chan eil seo ach san TR1 thùsail; chan eil e ann an TR2+.",
         },
+        "gameplay.enable_swamp_sidestepping": {
+            "title": "Ceumannan taobhach sa bhoglach",
+            "description": "Leigidh seo le Lara ceumannan a ghabhail gu taobh ann an seòmraichean boglaich.",
+        },
         "gameplay.enable_swing_cancel": {
             "title": "Sguir siùdadh",
             "description": "Leigidh seo le Lara leigeil às nuair a tha i a' siùdadh, agus grèim a ghlacadh sa bhad airson gluasad luath. Tha seo ann bho TR2 a-mach; chan eil an TR1 thùsail ga cheadachadh.",

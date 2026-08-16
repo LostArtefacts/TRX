@@ -871,6 +871,7 @@
         "enable_item_examining",
         "enable_ps1_crystals",
         "enable_ps1_sfx",
+        "enable_swamp_sidestepping",
         "enable_wading",
         "enable_weather",
         "exposurebar_color",

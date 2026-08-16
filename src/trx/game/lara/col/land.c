@@ -36,6 +36,7 @@
 #define M_LF_SPRINT_STEP_L_END 13
 
 #define M_CONTROLLED_DROP_MIN_HEIGHT (LARA_HEIGHT + (STEP_L * 3) / 4) // 954
+#define M_SWAMP_SINK_RATE 2
 
 static int16_t m_OldSlideAngle = 1;
 
@@ -355,7 +356,7 @@ static void M_WalkBack(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (coll->side_mid.floor >= 0 && room->flags.swamp) {
-        item->pos.y += 2;
+        item->pos.y += M_SWAMP_SINK_RATE;
     } else if (lara->water_status == LWS_WADE && coll->side_mid.floor >= 50) {
         item->pos.y += 50;
     } else {
@@ -395,12 +396,19 @@ static void M_SideStep(ITEM *const item, COLL_INFO *const coll)
         M_CollideStop(item, coll);
     }
 
-    if (g_Config.gameplay.fix_descending_glitch
+    const ROOM *const room = Room_Get(item->room_num);
+    if (g_Config.gameplay.fix_descending_glitch && !room->flags.swamp
         && Lara_Col_Fallen(item, coll)) {
         return;
     }
 
-    if (!Lara_Col_TestSlide(item, coll)) {
+    if (Lara_Col_TestSlide(item, coll)) {
+        return;
+    }
+
+    if (coll->side_mid.floor >= 0 && room->flags.swamp) {
+        item->pos.y += M_SWAMP_SINK_RATE;
+    } else {
         item->pos.y += coll->side_mid.floor;
     }
 }
@@ -496,7 +504,7 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
 
     Lara_Col_Shift(coll);
     if (room->flags.swamp && coll->side_mid.floor >= 0) {
-        item->pos.y += 2;
+        item->pos.y += M_SWAMP_SINK_RATE;
         CLAMPG(item->pos.y, item->floor);
     } else {
         item->pos.y += coll->side_mid.floor;
@@ -560,7 +568,7 @@ static void M_Turn(ITEM *const item, COLL_INFO *const coll)
     if (coll->side_mid.floor < 0 || !room->flags.swamp) {
         item->pos.y += coll->side_mid.floor;
     } else {
-        item->pos.y += 2;
+        item->pos.y += M_SWAMP_SINK_RATE;
     }
 }
 
@@ -772,7 +780,7 @@ static void M_Wade(ITEM *const item, COLL_INFO *const coll)
     } else if (coll->side_mid.floor < 0 || !room->flags.swamp) {
         item->pos.y += coll->side_mid.floor;
     } else {
-        item->pos.y += 2;
+        item->pos.y += M_SWAMP_SINK_RATE;
     }
 }
 

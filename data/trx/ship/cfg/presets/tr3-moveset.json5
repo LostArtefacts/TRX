@@ -26,6 +26,7 @@
         "gameplay.enable_soft_statics": false,
         "gameplay.enable_sprint": true,
         "gameplay.enable_step_roll_boost": false,
+        "gameplay.enable_swamp_sidestepping": false,
         "gameplay.enable_swing_cancel": true,
         "gameplay.enable_tr2_jumping": true,
         "gameplay.enable_tr2_swim_cancel": true,

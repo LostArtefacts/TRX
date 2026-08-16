@@ -227,6 +227,7 @@
         "change_pierre_spawn",
         "fix_chainblock_secret_sound",
         "enable_compass_stats",
+        "enable_swamp_sidestepping",
         "enable_wading",
         "restore_ps1_enemies",
         "fix_speeches_killing_music",

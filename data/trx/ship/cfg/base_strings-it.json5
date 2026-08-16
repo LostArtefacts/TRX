@@ -1216,6 +1216,10 @@
             "title": "Spinta su gradino",
             "description": "Fa in modo che Lara sia spinta giù da un gradino se si preme il tasto Capriola vicino al bordo. Questo è il comportamento della versione originale di TR1; non avviene in TR2+.",
         },
+        "gameplay.enable_swamp_sidestepping": {
+            "title": "\\{review}Passi laterali nelle paludi",
+            "description": "\\{review}Permette a Lara di fare passi laterali nelle stanze paludose.",
+        },
         "gameplay.enable_swing_cancel": {
             "title": "Annulla oscillazione",
             "description": "Consente di annullare l'animazione di oscillazione di Lara dalle sporgenze, lasciandole andare e afferrandole di nuovo rapidamente (come in TR2+). La versione originale di TR1 non lo consente.",

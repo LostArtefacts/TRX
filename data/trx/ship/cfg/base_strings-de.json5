@@ -1216,6 +1216,10 @@
             "title": "Stufen-Roll-Boost",
             "description": "\\{review}Erlaubt Lara von einer ein-Click hohen Stufe (standard) geboostet zu werden, wenn nahe der Stufen-Kante Rollen gedrückt wird. Nur das originale TR1 macht das; TR2+ nicht.",
         },
+        "gameplay.enable_swamp_sidestepping": {
+            "title": "\\{review}Seitwärtsschritte im Sumpf",
+            "description": "\\{review}Ermöglicht Lara, sich in Sumpfräumen seitwärts zu bewegen.",
+        },
         "gameplay.enable_swing_cancel": {
             "title": "Schwingen unterbrechen",
             "description": "\\{review}Erlaubt, Laras Kanten-Schwinganimation abzubrechen, indem man kurz loslässt und sich schnell wieder festhält. Das gibt es ab TR2; das originale TR1 erlaubt es nicht.",
