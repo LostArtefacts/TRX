@@ -849,6 +849,13 @@ unit_tests += {
   'engine': ['game/lua/capi/items.c'],
 }
 
+# The text a binding reads as. It knows nothing of SDL, so no backend comes
+# along.
+unit_tests += {
+  'name': 'trx/game/input/names',
+  'engine': ['game/input/names.c'],
+}
+
 unit_tests += {
   'name': 'trx/game/ui/scrollable',
   'engine': ['game/ui/scrollable.c'],

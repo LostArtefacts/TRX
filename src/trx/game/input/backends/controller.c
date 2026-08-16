@@ -3,6 +3,7 @@
 #include <trx/core/log.h>
 #include <trx/game/input/backends/internal.h>
 #include <trx/game/input/combo.h>
+#include <trx/game/input/names.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_gamecontroller.h>
@@ -617,26 +618,12 @@ static const char *M_GetMapName(const CONTROLLER_MAP *const map)
 static const char *M_GetName(
     const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot)
 {
-    const CONTROLLER_BINDING *bind = M_GetBinding(layout, role, slot);
-    if (bind->key_count == 0) {
-        return nullptr;
-    }
-    if (bind->key_count == 1) {
-        return M_GetMapName(&bind->keys[0]);
-    }
-    // Build composite name for multi-key combo
-    static char buf[256];
-    buf[0] = '\0';
+    const CONTROLLER_BINDING *const bind = M_GetBinding(layout, role, slot);
+    const char *names[INPUT_COMBO_MAX_KEYS];
     for (int32_t k = 0; k < bind->key_count; k++) {
-        if (k > 0) {
-            strcat(buf, INPUT_COMBO_SEPARATOR);
-        }
-        const char *name = M_GetMapName(&bind->keys[k]);
-        if (name != nullptr) {
-            strcat(buf, name);
-        }
+        names[k] = M_GetMapName(&bind->keys[k]);
     }
-    return buf;
+    return Input_JoinKeyNames(names, bind->key_count);
 }
 
 static void M_UnassignRole(

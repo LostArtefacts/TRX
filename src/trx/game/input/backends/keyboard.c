@@ -3,6 +3,7 @@
 #include <trx/core/utils.h>
 #include <trx/game/input/backends/internal.h>
 #include <trx/game/input/combo.h>
+#include <trx/game/input/names.h>
 #include <trx/version.h>
 
 #include <SDL2/SDL_events.h>
@@ -687,26 +688,13 @@ static const char *M_GetName(
         break;
     }
 
-    const KEYBOARD_BINDING *bind = M_GetBinding(layout, actual_role, slot);
-    if (bind->key_count == 0) {
-        return nullptr;
-    }
-    if (bind->key_count == 1) {
-        return M_GetScancodeName(bind->keys[0]);
-    }
-    // Build composite name for multi-key combo
-    static char buf[256];
-    buf[0] = '\0';
+    const KEYBOARD_BINDING *const bind =
+        M_GetBinding(layout, actual_role, slot);
+    const char *names[INPUT_COMBO_MAX_KEYS];
     for (int32_t k = 0; k < bind->key_count; k++) {
-        if (k > 0) {
-            strcat(buf, INPUT_COMBO_SEPARATOR);
-        }
-        const char *name = M_GetScancodeName(bind->keys[k]);
-        if (name != nullptr) {
-            strcat(buf, name);
-        }
+        names[k] = M_GetScancodeName(bind->keys[k]);
     }
-    return buf;
+    return Input_JoinKeyNames(names, bind->key_count);
 }
 
 static void M_UnassignRole(
