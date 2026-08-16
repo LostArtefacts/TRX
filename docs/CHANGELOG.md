@@ -47,6 +47,7 @@
 - Fixed z-fighting in rooms 21, 67 amd 122 in Jungle, and fixed incorrect lighting in room 87 (OG bugs)
 - Fixed missing alpha blending on the MP5 and M16 gun flare in the gym (regression from 1.7)
 - Fixed Lara being able to turn too quickly when wading (regression from 1.0)
+- Fixed the kayak at times not being drawn in certain rooms (regression from 1.10.1)
 
 **TR4**
 - Added the ability to skip in-game cutscenes
