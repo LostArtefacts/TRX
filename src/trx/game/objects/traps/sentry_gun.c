@@ -1,6 +1,7 @@
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/creature.h>
+#include <trx/game/items.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/property.h>
@@ -23,6 +24,7 @@ typedef enum {
 
 typedef struct {
     int32_t damage;
+    bool requires_alert;
     int16_t active_muzzle;
     int16_t muzzle_flash_timer;
     bool is_alerted;
@@ -123,6 +125,10 @@ static void M_Control(const int16_t item_num)
     CREATURE *const creature = item->creature_data;
     if (creature == nullptr) {
         return;
+    }
+
+    if (!p->requires_alert) {
+        p->is_alerted = Item_IsTriggerActive(item);
     }
 
     if (item->hit_status) {
@@ -250,6 +256,11 @@ static void M_Setup(OBJECT *const obj)
         OBJECT_PROPERTY(
             M_PRIV, damage, M_DEFAULT_DAMAGE,
             "Damage dealt when the sentry gun hits Lara."),
+        OBJECT_PROPERTY(
+            M_PRIV, requires_alert, true,
+            "Require an alert, such as a security laser Lara has crossed, "
+            "before the sentry gun opens fire. With this off, it fires for as "
+            "long as its own trigger is active."),
         ITEM_PROPERTY_MAX_HIT_POINTS(100));
 }
 
