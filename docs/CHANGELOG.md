@@ -13,6 +13,11 @@
 - Changed the PC presets to name the corners the health and air bars sit in, which they had been taking from the defaults
 - Fixed the TR1 PS1 preset picking the TR2 PS1 bars, where TR1 draws the same bars on both platforms (#6260)
 
+**Rendering**
+- Fixed the water particles and the lightning bolts growing as the supersampling factor is raised, and following the resolution besides (regression from 1.10)
+- Fixed the sparks that keep a fixed size, such as ricochets, shrinking as the supersampling factor is raised (regression from 1.10)
+- Fixed the wireframe and debug portal lines thinning as the supersampling factor is raised (regression from 1.10)
+
 **Miscellaneous**
 - Fixed the Cabin in Natla's Mines remaining visible after dropping to the floor (regression from 1.10)
 - Fixed flames not being drawn if TR4 is launched and the game is then switched to a different mod (regression from 1.10)

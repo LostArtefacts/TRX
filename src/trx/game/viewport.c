@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/core/log.h>
+#include <trx/core/utils.h>
 #include <trx/game/const.h>
 #include <trx/game/output/vars.h>
 #include <trx/game/shell.h>
@@ -138,6 +139,15 @@ int32_t Viewport_GetWidth(const VIEWPORT_SPACE space)
 int32_t Viewport_GetHeight(const VIEWPORT_SPACE space)
 {
     return m_Rects[space].height;
+}
+
+int32_t Viewport_GetSupersamplingFactor(void)
+{
+    const int32_t scene_w = m_Rects[VIEWPORT_SCENE].width;
+    if (scene_w <= 0) {
+        return 1;
+    }
+    return MAX(1, m_Rects[VIEWPORT_GAME].width / scene_w);
 }
 
 VIEWPORT_RECT Viewport_GetRect(const VIEWPORT_SPACE space)

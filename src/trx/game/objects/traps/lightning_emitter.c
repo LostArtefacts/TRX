@@ -6,12 +6,17 @@
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
-#include <trx/game/viewport.h>
 
 #define M_DEFAULT_DAMAGE 400
 #define M_STEPS 8
 #define M_RND 64
 #define M_SHOOTS 2
+
+// The original divides its 640-wide reference viewport by 6 and by 16. The
+// bolts are built in world space here, so the widths are those two figures
+// taken as world units rather than a share of the rasterized picture.
+#define M_MAIN_WIDTH (640 / 6)
+#define M_SHOOT_WIDTH (640 / 16)
 
 typedef struct {
     int32_t damage;
@@ -189,12 +194,12 @@ static void M_DrawBolts(const ITEM *const item)
             Output_DrawLightningSegment((LIGHTNING_SEGMENT) {
                 .from = { x1, y1 + p->wibble[i - 1].y, z1 },
                 .to = { x2, y2, z2 },
-                .thickness = Viewport_GetWidth(VIEWPORT_GAME) / 6 });
+                .thickness = M_MAIN_WIDTH });
         } else {
-            Output_DrawLightningSegment((LIGHTNING_SEGMENT) {
-                .from = { x1, y1, z1 },
-                .to = { x2, y2, z2 },
-                .thickness = Viewport_GetWidth(VIEWPORT_GAME) / 6 });
+            Output_DrawLightningSegment(
+                (LIGHTNING_SEGMENT) { .from = { x1, y1, z1 },
+                                      .to = { x2, y2, z2 },
+                                      .thickness = M_MAIN_WIDTH });
         }
 
         x1 = x2;
@@ -240,12 +245,12 @@ static void M_DrawBolts(const ITEM *const item)
                 Output_DrawLightningSegment((LIGHTNING_SEGMENT) {
                     .from = { x1, y1 + p->shoot[i][k - 1].y, z1 },
                     .to = { x2, y2, z2 },
-                    .thickness = Viewport_GetWidth(VIEWPORT_GAME) / 16 });
+                    .thickness = M_SHOOT_WIDTH });
             } else {
-                Output_DrawLightningSegment((LIGHTNING_SEGMENT) {
-                    .from = { x1, y1, z1 },
-                    .to = { x2, y2, z2 },
-                    .thickness = Viewport_GetWidth(VIEWPORT_GAME) / 16 });
+                Output_DrawLightningSegment(
+                    (LIGHTNING_SEGMENT) { .from = { x1, y1, z1 },
+                                          .to = { x2, y2, z2 },
+                                          .thickness = M_SHOOT_WIDTH });
             }
 
             x1 = x2;

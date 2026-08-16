@@ -15,6 +15,13 @@
 #define SHADE_SUNSET   0x400
 // clang-format on
 
+// The perspective divisor of the original's 640-wide, 80 degree reference
+// viewport. Sizes the original expressed in screen pixels become world units
+// when divided by it, which keeps them put as the resolution, the upscaling
+// factor and the supersampling factor change - the rasterized picture is
+// magnified back to the same rectangle at every one of those settings.
+#define REF_PERSP 381
+
 #define WIBBLE_SIZE 32
 
 #define LIGHT_MAP_SIZE 32

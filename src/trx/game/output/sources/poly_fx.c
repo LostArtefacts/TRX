@@ -8,6 +8,7 @@
 #include <trx/game/interpolation.h>
 #include <trx/game/items.h>
 #include <trx/game/output.h>
+#include <trx/game/output/const.h>
 #include <trx/game/output/lights/priv.h>
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/shaders/mesh.h>
@@ -828,12 +829,16 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
     const bool use_sprite = (spark->flags & SPARK_F_SPRITE) != 0U;
     if ((spark->flags & SPARK_F_SCALE) != 0U) {
         const int32_t scalar = spark->scalar;
-        sw = (int32_t)(((((int64_t)sw * g_PhdPersp) << scalar) / vpos_z));
-        sh = (int32_t)(((((int64_t)sh * g_PhdPersp) << scalar) / vpos_z));
+        sw = (int32_t)(((((int64_t)sw * REF_PERSP) << scalar) / vpos_z));
+        sh = (int32_t)(((((int64_t)sh * REF_PERSP) << scalar) / vpos_z));
     }
 
-    const float w = ((sw / 2.0f) * (float)vpos_z) / (float)g_PhdPersp;
-    const float h = ((sh / 2.0f) * (float)vpos_z) / (float)g_PhdPersp;
+    // A spark that does not scale keeps the size the original gave it in the
+    // screen pixels of its reference viewport, so the size is taken back into
+    // world units against the same reference - the pixels of the rasterized
+    // picture would shrink it as the supersampling factor goes up.
+    const float w = ((sw / 2.0f) * (float)vpos_z) / (float)REF_PERSP;
+    const float h = ((sh / 2.0f) * (float)vpos_z) / (float)REF_PERSP;
     float disp[4][2] = {
         { -w, -h },
         { -w, h },
