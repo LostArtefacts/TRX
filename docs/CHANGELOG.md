@@ -3,6 +3,7 @@
 **Lara's movement**
 - Fixed Lara entering the step down animation when walking backwards in a swamp room (OG bug) (#6251)
 - Fixed certain SFX, such as Lara's footsteps, playing in swamp rooms (#6248, regression from 1.0)
+- Fixed Lara being able to turn too quickly in swamp rooms (regression from 1.0)
 
 **UI**
 - Changed the Fix one-shot music triggers option to sit with the other music settings (Sound → Misc)
@@ -44,6 +45,7 @@
 - Added crystals to each of the levels in The Lost Artefact, and made the crystal mode option visible (Gameplay → General → Crystal mode)
 - Fixed z-fighting in rooms 21, 67 amd 122 in Jungle, and fixed incorrect lighting in room 87 (OG bugs)
 - Fixed missing alpha blending on the MP5 and M16 gun flare in the gym (regression from 1.7)
+- Fixed Lara being able to turn too quickly when wading (regression from 1.0)
 
 **TR4**
 - Added the ability to skip in-game cutscenes
