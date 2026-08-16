@@ -7,6 +7,18 @@
 
 #include <math.h>
 
+// Turns the (a, b) pair by an angle given as its already-taken sine and
+// cosine, so a caller can hand it a negated sine to turn the other way
+// without having to negate the angle itself.
+static void M_Turn(
+    int32_t *const a, int32_t *const b, const int32_t s, const int32_t c)
+{
+    const int32_t a0 = *a;
+    const int32_t b0 = *b;
+    *a = (int32_t)(((int64_t)a0 * c + (int64_t)b0 * s) >> W2V_SHIFT);
+    *b = (int32_t)(((int64_t)b0 * c - (int64_t)a0 * s) >> W2V_SHIFT);
+}
+
 int16_t XYZ_32_GetYaw(const XYZ_32 pos)
 {
     return Math_Atan(pos.z, pos.x);
@@ -99,6 +111,70 @@ XYZ_32 XYZ_32_From16(const XYZ_16 src)
     return (XYZ_32) { src.x, src.y, src.z };
 }
 
+XYZ_32 XYZ_32_Add(const XYZ_32 a, const XYZ_32 b)
+{
+    return (XYZ_32) {
+        .x = a.x + b.x,
+        .y = a.y + b.y,
+        .z = a.z + b.z,
+    };
+}
+
+XYZ_32 XYZ_32_Subtract(const XYZ_32 a, const XYZ_32 b)
+{
+    return (XYZ_32) {
+        .x = a.x - b.x,
+        .y = a.y - b.y,
+        .z = a.z - b.z,
+    };
+}
+
+XYZ_32 XYZ_32_RotateYaw(XYZ_32 vec, const int16_t yaw)
+{
+    if (yaw != 0) {
+        M_Turn(&vec.x, &vec.z, Math_Sin(yaw), Math_Cos(yaw));
+    }
+    return vec;
+}
+
+XYZ_32 XYZ_32_UnrotateYaw(XYZ_32 vec, const int16_t yaw)
+{
+    if (yaw != 0) {
+        M_Turn(&vec.x, &vec.z, -Math_Sin(yaw), Math_Cos(yaw));
+    }
+    return vec;
+}
+
+XYZ_32 XYZ_32_Rotate(XYZ_32 vec, const XYZ_16 rot)
+{
+    // Matrix_Rot16 composes the turns Y, X, Z, so a vector meets them in the
+    // opposite order.
+    if (rot.z != 0) {
+        M_Turn(&vec.x, &vec.y, -Math_Sin(rot.z), Math_Cos(rot.z));
+    }
+    if (rot.x != 0) {
+        M_Turn(&vec.y, &vec.z, -Math_Sin(rot.x), Math_Cos(rot.x));
+    }
+    if (rot.y != 0) {
+        M_Turn(&vec.x, &vec.z, Math_Sin(rot.y), Math_Cos(rot.y));
+    }
+    return vec;
+}
+
+XYZ_32 XYZ_32_Unrotate(XYZ_32 vec, const XYZ_16 rot)
+{
+    if (rot.y != 0) {
+        M_Turn(&vec.x, &vec.z, -Math_Sin(rot.y), Math_Cos(rot.y));
+    }
+    if (rot.x != 0) {
+        M_Turn(&vec.y, &vec.z, Math_Sin(rot.x), Math_Cos(rot.x));
+    }
+    if (rot.z != 0) {
+        M_Turn(&vec.x, &vec.y, Math_Sin(rot.z), Math_Cos(rot.z));
+    }
+    return vec;
+}
+
 XYZ_32 XYZ_32_OffsetYaw(
     const XYZ_32 src, const int16_t yaw, const int32_t distance)
 {
@@ -123,6 +199,18 @@ XYZ_32 XYZ_32_FromYawPitch(
         .y = -(int32_t)(((int64_t)distance * sx) >> W2V_SHIFT),
         .z = (int32_t)(((int64_t)horz * cy) >> W2V_SHIFT),
     };
+}
+
+XYZ_32 XYZ_32_OffsetLocalYaw(
+    const XYZ_32 src, const XYZ_32 offset, const int16_t yaw)
+{
+    return XYZ_32_Add(src, XYZ_32_RotateYaw(offset, yaw));
+}
+
+XYZ_32 XYZ_32_OffsetLocal(
+    const XYZ_32 src, const XYZ_32 offset, const XYZ_16 rot)
+{
+    return XYZ_32_Add(src, XYZ_32_Rotate(offset, rot));
 }
 
 int64_t XYZ_32_DotProduct_64(const XYZ_32 a, const XYZ_32 b)

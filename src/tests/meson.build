@@ -186,6 +186,17 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'trx/core/math/geom',
+  'engine': [
+    'core/math/func.c',
+    'core/math/geom.c',
+    'core/math/trig.c',
+    'game/matrix.c',
+  ],
+  'deps': [dep_mathlibrary],
+}
+
+unit_tests += {
   'name': 'trx/game/matrix',
   'engine': [
     'game/matrix.c',
