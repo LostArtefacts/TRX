@@ -20,6 +20,7 @@
 - Changed the PS1 poison healthbar to flat yellow, as the PS1 releases had it (#5227)
 - Fixed ability to open the inventory ring while a flyby sequence has Lara's control
 - Fixed the water color setting staying editable while a PS1 water color preset was picked (#6265)
+- Fixed a setting description showing a question mark in place of a key that is bound to a combination, such as Alt+Enter
 
 **Developer console**
 - Added the `/outfit` console command, which shows or changes what Lara is wearing

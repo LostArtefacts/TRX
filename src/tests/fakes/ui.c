@@ -17,11 +17,14 @@
 #include <trx/game/viewport.h>
 #include <trx/version.h>
 
+#define M_DEFAULT_KEY_NAME "\\{keyboard backspace}"
+
 static FONT_BIN m_Fonts[TR_VERSION_COUNT];
 static FONT_BIN *m_Font = nullptr;
 static OBJECT m_Objects[O_NUMBER_OF];
 static int32_t m_ViewportWidth = 640;
 static int32_t m_ViewportHeight = 480;
+static const char *m_KeyName = M_DEFAULT_KEY_NAME;
 
 void FakeUI_SetGame(const int32_t tr_version)
 {
@@ -61,6 +64,7 @@ void FakeUI_Shutdown(void)
         FontBin_Free(&m_Fonts[i]);
     }
     m_Font = nullptr;
+    m_KeyName = M_DEFAULT_KEY_NAME;
 }
 
 OBJECT *Object_Get(const OBJECT_ID object_id)
@@ -87,12 +91,23 @@ int32_t Viewport_GetHeight(const VIEWPORT_SPACE space)
     return m_ViewportHeight;
 }
 
-// The font resolves "\{input <role>}" through the current binding. Nothing here
-// binds keys, so every role reports the widest keycap in the sheet: a check
-// built on these metrics then holds for any binding a player can make.
+// The font resolves "\{input <role>}" through the current binding. By default
+// every role reports the widest keycap in the sheet, so a check built on these
+// metrics holds for any binding a player can make. A test about the binding
+// itself names the keys it wants instead.
 const char *Input_GetKeyName(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
     const INPUT_ROLE role, const int32_t slot)
 {
-    return "\\{keyboard backspace}";
+    return m_KeyName;
+}
+
+void FakeUI_SetKeyName(const char *const key_name)
+{
+    m_KeyName = key_name;
+}
+
+void FakeUI_ResetKeyName(void)
+{
+    m_KeyName = M_DEFAULT_KEY_NAME;
 }
