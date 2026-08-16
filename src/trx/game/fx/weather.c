@@ -401,11 +401,6 @@ static void M_DrawSnow(void)
             ? (int32_t)LERP(snow->prev_life, snow->life, ratio)
             : (int32_t)snow->life;
 
-        const int32_t game_w = Viewport_GetWidth(VIEWPORT_GAME);
-        const int32_t game_h = Viewport_GetHeight(VIEWPORT_GAME);
-        const int32_t ui_w = Viewport_GetWidth(VIEWPORT_UI);
-        const int32_t ui_h = Viewport_GetHeight(VIEWPORT_UI);
-
         const XYZ_32 world_pos[4] = { center, center, center, center };
         const float s = 8.0f;
         const float disp[4][2] = {
