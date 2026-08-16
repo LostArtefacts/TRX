@@ -1,6 +1,7 @@
 #include <trx/game/lara/flare.h>
 
 #include <trx/config.h>
+#include <trx/game/camera/binoculars.h>
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
 #include <trx/game/input.h>
@@ -197,6 +198,10 @@ static void M_ControlInHand(void)
 
     // A TR4 flare gives off no sparks; its light is the whole effect.
     if (g_TRVersion != 3) {
+        return;
+    }
+
+    if (Camera_Binoculars_IsActive()) {
         return;
     }
 

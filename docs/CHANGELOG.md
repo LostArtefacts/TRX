@@ -120,6 +120,7 @@ Showcase: https://youtu.be/DKpqz_Yum6o
 - Fixed flyby sequences set to loop playing only once, then swinging the camera back to Lara
 - Fixed a brief field of view flicker when exiting photo mode during Lara's special animations, such as turning to gold (regression from 1.5)
 - Fixed the black surround of the binoculars turning grey when looking in certain directions (regression from 1.9)
+- Fixed a lit flare's sparks hanging in the air in front of the camera while the binoculars are up (#6269)
 
 **Inventory and pickups**
 - Added an option for Lara to collect stacked pickups individually, as per OG TR4 (Gameplay → Controls → Multiple pickups)
