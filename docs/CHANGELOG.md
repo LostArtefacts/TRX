@@ -51,6 +51,7 @@
 - Fixed missing alpha blending on the MP5 and M16 gun flare in the gym (regression from 1.7)
 - Fixed Lara being able to turn too quickly when wading (regression from 1.0)
 - Fixed the kayak at times not being drawn in certain rooms (regression from 1.10.1)
+- Fixed some of Lara's skin joints incorrectly being drawn when riding the kayak (regression from 1.10)
 
 **TR4**
 - Added the ability to skip in-game cutscenes
