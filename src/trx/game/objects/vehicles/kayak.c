@@ -1145,10 +1145,12 @@ static void M_KayakToBaddieCollision(const ITEM *const p)
 static bool M_Draw(const ITEM *const item)
 {
     ((ITEM *)item)->pos.y += 32;
-    Object_DrawAnimatingItem(item);
+    const bool drawn = Object_DrawAnimatingItem(item);
     ((ITEM *)item)->pos.y -= 32;
-    FX_Wake_Draw(item);
-    return true;
+    if (drawn) {
+        FX_Wake_Draw(item);
+    }
+    return drawn;
 }
 
 static void M_Setup(OBJECT *const obj)

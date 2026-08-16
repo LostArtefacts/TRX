@@ -1,5 +1,9 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.10.1...develop) - ××××-××-××
 
+**TR3**
+- Fixed the kayak at times not being drawn in certain rooms (regression from 1.10.1)
+
+
 ## [1.10.1](https://github.com/LostArtefacts/TRX/compare/trx-1.10...trx-1.10.1) - 2026-08-16
 **UI**
 - Changed the tab arrows to no longer vanish once the selection moved into the list below them
