@@ -5,6 +5,7 @@
 - Fixed certain SFX, such as Lara's footsteps, playing in swamp rooms (#6248, regression from 1.0)
 - Fixed Lara being able to turn too quickly in swamp rooms (regression from 1.0)
 - Fixed Lara being able to vault or crawl through breakable walls that stand on the edge of a tile (Gameplay → Fixes → Fix breakable wall clipping) (OG bug)
+- Fixed Lara's rope-grab reach being shorter from certain directions (OG bug)
 
 **UI**
 - Changed the Fix one-shot music triggers option to sit with the other music settings (Sound → Misc)

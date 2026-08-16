@@ -59,7 +59,7 @@ static void M_Collision(
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(lara_item);
     XYZ_32 test_pos = lara_item->pos;
     test_pos.y += bounds->min.y + M_GRAB_Y_OFFSET;
-    test_pos.z += (bounds->max.z * Math_Cos(lara_item->rot.y)) >> W2V_SHIFT;
+    test_pos = XYZ_32_OffsetYaw(test_pos, lara_item->rot.y, bounds->max.z);
     const int32_t radius = is_reach ? M_REACH_GRAB_RADIUS : M_JUMP_GRAB_RADIUS;
 
     const int32_t segment = Rope_NodeCollision(rope, test_pos, radius);
