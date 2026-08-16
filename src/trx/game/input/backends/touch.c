@@ -6,6 +6,7 @@
 #include <trx/game/input/backends/internal.h>
 #include <trx/game/input/combo.h>
 #include <trx/game/input/common.h>
+#include <trx/game/input/names.h>
 #include <trx/game/ui/touch_overlay.h>
 
 #include <SDL2/SDL_events.h>
@@ -416,32 +417,23 @@ static bool M_IsRoleConflicted(const INPUT_LAYOUT layout, const INPUT_ROLE role)
     return m_Conflicts[layout][role];
 }
 
+static const char *M_GetPosGlyph(const int32_t pos)
+{
+    if (pos < 0 || pos >= (int32_t)ARRAY_SIZE(m_PosGlyphs)) {
+        return nullptr;
+    }
+    return m_PosGlyphs[pos];
+}
+
 static const char *M_GetName(
     const INPUT_LAYOUT layout, const INPUT_ROLE role, const int32_t slot)
 {
-    const M_BINDING *b = M_GetBinding(layout, role, slot);
-    if (b->pos_count == 0) {
-        return nullptr;
-    }
-    if (b->pos_count == 1) {
-        const int32_t p = b->positions[0];
-        if (p >= 0 && p < (int32_t)ARRAY_SIZE(m_PosGlyphs)) {
-            return m_PosGlyphs[p];
-        }
-        return nullptr;
-    }
-    static char buf[256];
-    buf[0] = '\0';
+    const M_BINDING *const b = M_GetBinding(layout, role, slot);
+    const char *names[INPUT_COMBO_MAX_KEYS];
     for (int32_t k = 0; k < b->pos_count; k++) {
-        if (k > 0) {
-            strcat(buf, INPUT_COMBO_SEPARATOR);
-        }
-        const int32_t p = b->positions[k];
-        if (p >= 0 && p < (int32_t)ARRAY_SIZE(m_PosGlyphs)) {
-            strcat(buf, m_PosGlyphs[p]);
-        }
+        names[k] = M_GetPosGlyph(b->positions[k]);
     }
-    return buf;
+    return Input_JoinKeyNames(names, b->pos_count);
 }
 
 static void M_UnassignRole(
