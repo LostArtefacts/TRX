@@ -20,24 +20,6 @@
 static FX_RING m_Rings[FX_RING_TYPE_NUMBER_OF][M_MAX_RINGS] = {};
 static bool m_Active[FX_RING_TYPE_NUMBER_OF] = {};
 
-static void M_RotateZX(
-    XYZ_32 *const out, const XYZ_32 in, const int32_t rot_z,
-    const int32_t rot_x)
-{
-    const int32_t sz = Math_Sin(rot_z);
-    const int32_t cz = Math_Cos(rot_z);
-    const int32_t sx = Math_Sin(rot_x);
-    const int32_t cx = Math_Cos(rot_x);
-
-    const int32_t xz = (in.x * cz - in.y * sz) >> W2V_SHIFT;
-    const int32_t yz = (in.x * sz + in.y * cz) >> W2V_SHIFT;
-    const int32_t zz = in.z;
-
-    out->x = xz;
-    out->y = (yz * cx - zz * sx) >> W2V_SHIFT;
-    out->z = (yz * sx + zz * cx) >> W2V_SHIFT;
-}
-
 static void M_RememberRing(FX_RING *const ring)
 {
     ring->prev_radius = ring->radius;
@@ -64,8 +46,10 @@ static void M_BuildRingCircle(
     int32_t angle = angle_base;
     for (int32_t i = 0; i < 8; i++) {
         FX_RING_VERT *const vtx = &ring->verts[band * 8 + i];
-        vtx->pos.x = (radius * Math_Sin(angle << 4)) >> W2V_SHIFT;
-        vtx->pos.z = (radius * Math_Cos(angle << 4)) >> W2V_SHIFT;
+        const XYZ_32 point =
+            XYZ_32_RotateYaw((XYZ_32) { .z = radius }, angle << 4);
+        vtx->pos.x = point.x;
+        vtx->pos.z = point.z;
         if (clear_inner && band != 0) {
             vtx->color = COLOR_RGB_888_BLACK;
         }
@@ -109,10 +93,9 @@ static void M_DrawTexturedRing(const FX_RING *const ring)
         XYZ_32 p_rot[4] = {};
         XYZ_32 p_world[4] = {};
         for (int32_t c = 0; c < 4; c++) {
-            M_RotateZX(&p_rot[c], p_local[c], rot_z, rot_x);
-            p_world[c].x = ring->pos.x + p_rot[c].x;
-            p_world[c].y = ring->pos.y + p_rot[c].y;
-            p_world[c].z = ring->pos.z + p_rot[c].z;
+            p_rot[c] =
+                XYZ_32_Rotate(p_local[c], (XYZ_16) { .x = rot_x, .z = rot_z });
+            p_world[c] = XYZ_32_Add(ring->pos, p_rot[c]);
         }
 
         const RGBA_8888 color[4] = {
@@ -155,10 +138,9 @@ static void M_DrawFlatRing(const FX_RING *const ring)
         XYZ_32 p_rot[4] = {};
         XYZ_32 p_world[4] = {};
         for (int32_t c = 0; c < 4; c++) {
-            M_RotateZX(&p_rot[c], p_local[c], rot_z, rot_x);
-            p_world[c].x = ring->pos.x + p_rot[c].x;
-            p_world[c].y = ring->pos.y + p_rot[c].y;
-            p_world[c].z = ring->pos.z + p_rot[c].z;
+            p_rot[c] =
+                XYZ_32_Rotate(p_local[c], (XYZ_16) { .x = rot_x, .z = rot_z });
+            p_world[c] = XYZ_32_Add(ring->pos, p_rot[c]);
         }
 
         const XYZ_32 world_pos[4] = {

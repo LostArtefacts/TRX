@@ -184,10 +184,12 @@ static void M_Explode(ITEM *const item)
         int32_t angle = (time4 & 0x3F) << 3;
         for (int32_t j = 0; j < 8; j++) {
             M_SHIELD_POINT *const shield = &p->shield[i][j];
+            const XYZ_32 ring =
+                XYZ_32_RotateYaw((XYZ_32) { .z = rad * 2 }, angle << 4);
             shield->pos = (XYZ_16) {
-                .x = ((rad * Math_Sin(angle << 4)) >> 13),
+                .x = ring.x,
                 .y = y,
-                .z = ((rad * Math_Cos(angle << 4)) >> 13),
+                .z = ring.z,
             };
 
             if (i != 0 && i != 4 && p->explode_count < 64) {
@@ -557,13 +559,13 @@ static void M_TriggerElectricBeam(
     const XYZ_32 src_pos = { src->x, src->y, src->z };
     const XYZ_32 dst_pos = { target.x, target.y, target.z };
 
+    // The two strands run either side of the line to the target.
     const int16_t side_angle = (angle + 1024) & 0xFFF;
-    const int32_t x_off = (p->attack_type == M_ATTACK_HEAD)
-        ? (Math_Sin(side_angle << 4) >> 10)
-        : (Math_Sin(side_angle << 4) >> 11);
-    const int32_t z_off = (p->attack_type == M_ATTACK_HEAD)
-        ? (Math_Cos(side_angle << 4) >> 10)
-        : (Math_Cos(side_angle << 4) >> 11);
+    const XYZ_32 side = XYZ_32_RotateYaw(
+        (XYZ_32) { .z = p->attack_type == M_ATTACK_HEAD ? 16 : 8 },
+        side_angle << 4);
+    const int32_t x_off = side.x;
+    const int32_t z_off = side.z;
 
     int32_t y_off1 = 0;
     int32_t y_off2 = 0;
@@ -1122,9 +1124,11 @@ static void M_Initialise(const int16_t item_num)
         int32_t angle = 0;
 
         for (int32_t j = 0; j < 8; j++) {
-            p->shield[i][j].pos.x = (int16_t)((r * Math_Sin(angle << 4)) >> 13);
+            const XYZ_32 ring =
+                XYZ_32_RotateYaw((XYZ_32) { .z = r * 2 }, angle << 4);
+            p->shield[i][j].pos.x = (int16_t)ring.x;
             p->shield[i][j].pos.y = (int16_t)y;
-            p->shield[i][j].pos.z = (int16_t)((r * Math_Cos(angle << 4)) >> 13);
+            p->shield[i][j].pos.z = (int16_t)ring.z;
             p->shield[i][j].color = (RGB_888) {};
             angle += 512;
         }

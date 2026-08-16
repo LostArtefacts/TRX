@@ -40,9 +40,8 @@ static void M_Control(const int16_t item_num)
     const XYZ_32 old_pos = item->pos;
     const int16_t old_room_num = item->room_num;
 
-    const int32_t speed = (item->speed * Math_Cos(item->rot.x)) >> W2V_SHIFT;
-    item->pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, speed);
-    item->pos.y -= (item->speed * Math_Sin(item->rot.x)) >> W2V_SHIFT;
+    item->pos = XYZ_32_Add(
+        item->pos, XYZ_32_FromYawPitch(item->rot.y, item->rot.x, item->speed));
 
     if (item->speed < M_SPEED) {
         item->speed += (item->speed >> 3) + 2;
@@ -155,12 +154,7 @@ static bool M_Draw(const ITEM *const item)
     const XYZ_32 origin = item->interp.result.pos;
     const XYZ_16 rot = item->interp.result.rot;
 
-    const int32_t beam_speed = (item->speed * Math_Cos(rot.x)) >> W2V_SHIFT;
-    const XYZ_32 dir = {
-        .x = (beam_speed * Math_Sin(rot.y)) >> W2V_SHIFT,
-        .y = -((item->speed * Math_Sin(rot.x)) >> W2V_SHIFT),
-        .z = (beam_speed * Math_Cos(rot.y)) >> W2V_SHIFT,
-    };
+    const XYZ_32 dir = XYZ_32_FromYawPitch(rot.y, rot.x, item->speed);
 
     Matrix_PushUnit();
     Matrix_Rot16(rot);

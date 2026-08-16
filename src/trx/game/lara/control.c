@@ -169,10 +169,11 @@ static void M_WaterCurrent_TR34(COLL_INFO *const coll)
         const int32_t angle =
             -Math_Atan(lara_item->pos.x - sink->x, lara_item->pos.z - sink->z)
             - DEG_90;
-        lara->current.vel.x +=
-            (((speed * Math_Sin(angle)) >> 4) - lara->current.vel.x) >> 4;
-        lara->current.vel.z +=
-            (((speed * Math_Cos(angle)) >> 4) - lara->current.vel.z) >> 4;
+        // A velocity carries ten bits more than a position does.
+        const XYZ_32 vel =
+            XYZ_32_RotateYaw((XYZ_32) { .z = speed << 10 }, angle);
+        lara->current.vel.x += (vel.x - lara->current.vel.x) >> 4;
+        lara->current.vel.z += (vel.z - lara->current.vel.z) >> 4;
         lara_item->pos.y += (sink->y - lara_item->pos.y) >> 4;
     } else {
         int32_t shifter;
@@ -749,16 +750,16 @@ static void M_HandleUnderwater(COLL_INFO *const coll)
     }
 
     Lara_Animate(item);
+    // The step is taken along the heading first and foreshortened by the
+    // pitch after, which is the order the original swims in and the one the
+    // recorded demos are played back against.
+    const XYZ_32 step =
+        XYZ_32_RotateYaw((XYZ_32) { .z = item->fall_speed }, item->rot.y);
+    const int32_t foreshorten = Math_Cos(item->rot.x);
+    item->pos.x += (foreshorten * (step.x >> 2)) >> W2V_SHIFT;
     item->pos.y -=
         (item->fall_speed * Math_Sin(item->rot.x)) >> (W2V_SHIFT + 2);
-    item->pos.x +=
-        (Math_Cos(item->rot.x)
-         * ((item->fall_speed * Math_Sin(item->rot.y)) >> (W2V_SHIFT + 2)))
-        >> W2V_SHIFT;
-    item->pos.z +=
-        (Math_Cos(item->rot.x)
-         * ((item->fall_speed * Math_Cos(item->rot.y)) >> (W2V_SHIFT + 2)))
-        >> W2V_SHIFT;
+    item->pos.z += (foreshorten * (step.z >> 2)) >> W2V_SHIFT;
 
     const SECTOR *const sector = M_GetCurrentSector();
     if (!lara_info->extra_anim) {
@@ -820,10 +821,10 @@ static void M_HandleSurface(COLL_INFO *const coll)
     }
 
     Lara_Animate(item);
-    item->pos.x +=
-        (item->fall_speed * Math_Sin(lara_info->move_angle)) >> (W2V_SHIFT + 2);
-    item->pos.z +=
-        (item->fall_speed * Math_Cos(lara_info->move_angle)) >> (W2V_SHIFT + 2);
+    const XYZ_32 step = XYZ_32_RotateYaw(
+        (XYZ_32) { .z = item->fall_speed }, lara_info->move_angle);
+    item->pos.x += step.x >> 2;
+    item->pos.z += step.z >> 2;
 
     const SECTOR *const sector = M_GetCurrentSector();
 

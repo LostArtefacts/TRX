@@ -16,11 +16,14 @@
 
 static void M_Move(EFFECT *const effect)
 {
+    const XYZ_32 step =
+        XYZ_32_FromYawPitch(effect->rot.y, effect->rot.x, effect->speed);
+    effect->pos.x += step.x;
+    effect->pos.z += step.z;
+
+    // The height negates before the shift, and a missile flies for long
+    // enough that the unit between that and XYZ_32_FromYawPitch would tell.
     effect->pos.y += (effect->speed * Math_Sin(-effect->rot.x)) >> W2V_SHIFT;
-    const int32_t speed =
-        (effect->speed * Math_Cos(effect->rot.x)) >> W2V_SHIFT;
-    effect->pos.z += (speed * Math_Cos(effect->rot.y)) >> W2V_SHIFT;
-    effect->pos.x += (speed * Math_Sin(effect->rot.y)) >> W2V_SHIFT;
 }
 
 static bool M_HitFloorOrCeiling(EFFECT *const effect)

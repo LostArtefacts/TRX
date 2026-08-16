@@ -266,13 +266,14 @@ int32_t Skidoo_TestHeight(
     const ITEM *const item, const int32_t z_off, const int32_t x_off,
     XYZ_32 *const out_pos)
 {
-    const int32_t sx = Math_Sin(item->rot.x);
-    const int32_t sz = Math_Sin(item->rot.z);
-    const int32_t cy = Math_Cos(item->rot.y);
-    const int32_t sy = Math_Sin(item->rot.y);
-    out_pos->x = item->pos.x + ((x_off * cy + z_off * sy) >> W2V_SHIFT);
-    out_pos->y = item->pos.y + ((x_off * sz - z_off * sx) >> W2V_SHIFT);
-    out_pos->z = item->pos.z + ((z_off * cy - x_off * sy) >> W2V_SHIFT);
+    *out_pos = XYZ_32_OffsetLocalYaw(
+        item->pos, (XYZ_32) { .x = x_off, .z = z_off }, item->rot.y);
+
+    // The height a ski sits at follows the skidoo's pitch and roll, which the
+    // yaw turn above says nothing about.
+    out_pos->y = item->pos.y
+        + ((x_off * Math_Sin(item->rot.z) - z_off * Math_Sin(item->rot.x))
+           >> W2V_SHIFT);
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(*out_pos, &room_num);
 
@@ -302,14 +303,12 @@ void Skidoo_DoSnowEffect(const ITEM *const skidoo)
         return;
     }
 
-    const int32_t sx = Math_Sin(skidoo->rot.x);
-    const int32_t sy = Math_Sin(skidoo->rot.y);
-    const int32_t cy = Math_Cos(skidoo->rot.y);
     const int32_t x = (M_SIDE * (Random_GetDraw() - 0x4000)) >> 14;
     EFFECT *const effect = Effect_Get(effect_num);
-    effect->pos.x = skidoo->pos.x - ((sy * M_SNOW + cy * x) >> W2V_SHIFT);
-    effect->pos.y = skidoo->pos.y + ((sx * M_SNOW) >> W2V_SHIFT);
-    effect->pos.z = skidoo->pos.z - ((cy * M_SNOW - sy * x) >> W2V_SHIFT);
+    effect->pos = XYZ_32_OffsetLocalYaw(
+        skidoo->pos, (XYZ_32) { .x = -x, .z = -M_SNOW }, skidoo->rot.y);
+    effect->pos.y =
+        skidoo->pos.y + ((Math_Sin(skidoo->rot.x) * M_SNOW) >> W2V_SHIFT);
     effect->room_num = skidoo->room_num;
     effect->object_id = O_SNOW_SPRITE;
     effect->frame_num = 0;
@@ -385,22 +384,25 @@ int32_t Skidoo_Dynamics(ITEM *const skidoo)
         }
     }
 
-    skidoo->pos.z +=
-        (skidoo->speed * Math_Cos(skidoo_data->momentum_angle)) >> W2V_SHIFT;
-    skidoo->pos.x +=
-        (skidoo->speed * Math_Sin(skidoo_data->momentum_angle)) >> W2V_SHIFT;
+    skidoo->pos = XYZ_32_OffsetYaw(
+        skidoo->pos, skidoo_data->momentum_angle, skidoo->speed);
 
     int32_t slip;
     slip = (M_SLIP * Math_Sin(skidoo->rot.x)) >> W2V_SHIFT;
     if (ABS(slip) > M_SLIP / 2) {
-        skidoo->pos.z -= (slip * Math_Cos(skidoo->rot.y)) >> W2V_SHIFT;
-        skidoo->pos.x -= (slip * Math_Sin(skidoo->rot.y)) >> W2V_SHIFT;
+        skidoo->pos = XYZ_32_Subtract(
+            skidoo->pos,
+            XYZ_32_RotateYaw((XYZ_32) { .z = slip }, skidoo->rot.y));
     }
 
     slip = (M_SLIP_SIDE * Math_Sin(skidoo->rot.z)) >> W2V_SHIFT;
     if (ABS(slip) > M_SLIP_SIDE / 2) {
-        skidoo->pos.z -= (slip * Math_Sin(skidoo->rot.y)) >> W2V_SHIFT;
-        skidoo->pos.x += (slip * Math_Cos(skidoo->rot.y)) >> W2V_SHIFT;
+        // Sideways, along the skidoo's own x, read off a forward turn so
+        // that each component rounds as it did.
+        const XYZ_32 roll_slip =
+            XYZ_32_RotateYaw((XYZ_32) { .z = slip }, skidoo->rot.y);
+        skidoo->pos.x += roll_slip.z;
+        skidoo->pos.z -= roll_slip.x;
     }
 
     XYZ_32 moved = {
@@ -445,11 +447,9 @@ int32_t Skidoo_Dynamics(ITEM *const skidoo)
 
     int32_t collide = Vehicle_GetCollisionAnim(skidoo, &moved);
     if (collide != 0) {
-        const int32_t c = Math_Cos(skidoo_data->momentum_angle);
-        const int32_t s = Math_Sin(skidoo_data->momentum_angle);
-        const int32_t dx = skidoo->pos.x - old.x;
-        const int32_t dz = skidoo->pos.z - old.z;
-        const int32_t new_speed = (s * dx + c * dz) >> W2V_SHIFT;
+        const XYZ_32 delta = XYZ_32_Subtract(skidoo->pos, old);
+        const int32_t new_speed =
+            XYZ_32_UnrotateYaw(delta, skidoo_data->momentum_angle).z;
 
         if (skidoo == Lara_Vehicle_GetItem()
             && skidoo->speed > SKIDOO_MAX_SPEED + M_ACCELERATION
@@ -720,10 +720,10 @@ bool Skidoo_CheckGetOff(void)
         Item_SwitchToAnim(lara_item, LA(LA_STAND_STILL), 0);
         lara_item->goal_anim_state = LS(LS_STOP);
         lara_item->current_anim_state = LS(LS_STOP);
-        lara_item->pos.x -=
-            (M_GET_OFF_DIST * Math_Sin(lara_item->rot.y)) >> W2V_SHIFT;
-        lara_item->pos.z -=
-            (M_GET_OFF_DIST * Math_Cos(lara_item->rot.y)) >> W2V_SHIFT;
+        lara_item->pos = XYZ_32_Subtract(
+            lara_item->pos,
+            XYZ_32_RotateYaw(
+                (XYZ_32) { .z = M_GET_OFF_DIST }, lara_item->rot.y));
         lara_item->rot.x = 0;
         lara_item->rot.z = 0;
         Lara_Vehicle_SetIndex(NO_ITEM);

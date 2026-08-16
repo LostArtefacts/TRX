@@ -24,8 +24,7 @@ static void M_Control_TR12(const int16_t effect_num)
     EFFECT *const effect = Effect_Get(effect_num);
     effect->rot.x += 5 * DEG_1;
     effect->rot.z += 10 * DEG_1;
-    effect->pos.x += (effect->speed * Math_Sin(effect->rot.y)) >> W2V_SHIFT;
-    effect->pos.z += (effect->speed * Math_Cos(effect->rot.y)) >> W2V_SHIFT;
+    effect->pos = XYZ_32_OffsetYaw(effect->pos, effect->rot.y, effect->speed);
     effect->pos.y += effect->fall_speed;
     effect->fall_speed += GRAVITY;
 
@@ -97,11 +96,11 @@ static void M_Control_TR3(const int16_t effect_num)
     effect->rot.x += 5 * DEG_1;
     effect->rot.z += 10 * DEG_1;
     effect->fall_speed += 3;
-    effect->pos.x +=
-        (effect->speed * Math_Sin(effect->rot.y)) >> (W2V_SHIFT + 2);
+    const XYZ_32 step =
+        XYZ_32_RotateYaw((XYZ_32) { .z = effect->speed }, effect->rot.y);
+    effect->pos.x += step.x >> 2;
     effect->pos.y += effect->fall_speed;
-    effect->pos.z +=
-        (effect->speed * Math_Cos(effect->rot.y)) >> (W2V_SHIFT + 2);
+    effect->pos.z += step.z >> 2;
 
     const int32_t time4 = (int32_t)Output_GetTimeInGame() * 4;
     if (!(time4 & 0xC)) {
@@ -193,9 +192,8 @@ static void M_Control_TR4(const int16_t effect_num)
         effect->rot.x += effect->fall_speed * 4;
     }
     effect->fall_speed += GRAVITY;
-    effect->pos.x += (effect->speed * Math_Sin(effect->rot.y)) >> W2V_SHIFT;
+    effect->pos = XYZ_32_OffsetYaw(effect->pos, effect->rot.y, effect->speed);
     effect->pos.y += effect->fall_speed;
-    effect->pos.z += (effect->speed * Math_Cos(effect->rot.y)) >> W2V_SHIFT;
 
     const int32_t time4 = (int32_t)Output_GetTimeInGame() * 4;
     if ((time4 & 0xC) == 0 && (effect->counter & 3) != 0) {

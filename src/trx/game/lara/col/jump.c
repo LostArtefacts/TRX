@@ -211,8 +211,8 @@ static void M_SlideEdgeJump(ITEM *const item, COLL_INFO *const coll)
         break;
 
     case COLL_CLAMP:
-        item->pos.z -= (Math_Cos(coll->facing) * 100) >> W2V_SHIFT;
-        item->pos.x -= (Math_Sin(coll->facing) * 100) >> W2V_SHIFT;
+        item->pos = XYZ_32_Subtract(
+            item->pos, XYZ_32_RotateYaw((XYZ_32) { .z = 100 }, coll->facing));
         item->speed = 0;
         coll->side_mid.floor = 0;
         if (item->fall_speed <= 0) {
@@ -680,8 +680,8 @@ void Lara_Col_DeflectEdgeJump(ITEM *const item, COLL_INFO *const coll)
         break;
 
     case COLL_CLAMP:
-        item->pos.z -= (Math_Cos(coll->facing) * 100) >> W2V_SHIFT;
-        item->pos.x -= (Math_Sin(coll->facing) * 100) >> W2V_SHIFT;
+        item->pos = XYZ_32_Subtract(
+            item->pos, XYZ_32_RotateYaw((XYZ_32) { .z = 100 }, coll->facing));
         item->speed = 0;
         coll->side_mid.floor = 0;
         if (item->fall_speed <= 0) {

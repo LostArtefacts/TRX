@@ -205,11 +205,9 @@ static void M_MarkDragonDead(ITEM *const dragon_back_item)
 static void M_PushLaraAway(
     ITEM *const lara_item, ITEM *const dragon_item, const int32_t shift)
 {
-    const int32_t cy = Math_Cos(dragon_item->rot.y);
-    const int32_t sy = Math_Sin(dragon_item->rot.y);
     const int32_t base = shift < M_MID_SHIFT ? M_CLOSE_SHIFT : M_FAR_SHIFT;
-    lara_item->pos.x += (cy * (base - shift)) >> W2V_SHIFT;
-    lara_item->pos.z -= (sy * (base - shift)) >> W2V_SHIFT;
+    lara_item->pos = XYZ_32_OffsetYaw(
+        lara_item->pos, dragon_item->rot.y + DEG_90, base - shift);
 }
 
 static void M_PullDagger(ITEM *const lara_item, ITEM *const dragon_back_item)
@@ -295,18 +293,16 @@ static void M_Collision(
         return;
     }
 
-    const int32_t dx = lara_item->pos.x - item->pos.x;
-    const int32_t dz = lara_item->pos.z - item->pos.z;
-    const int32_t cy = Math_Cos(item->rot.y);
-    const int32_t sy = Math_Sin(item->rot.y);
-    const int32_t side_shift = (cy * dz + sy * dx) >> W2V_SHIFT;
+    const XYZ_32 delta = XYZ_32_Subtract(lara_item->pos, item->pos);
+    const XYZ_32 local = XYZ_32_UnrotateYaw(delta, item->rot.y);
+    const int32_t side_shift = local.z;
 
     if (side_shift <= M_COL_L || side_shift >= M_COL_R) {
         Lara_Col_ItemPush(item, coll, true, false);
         return;
     }
 
-    const int32_t shift = (cy * dx - sy * dz) >> W2V_SHIFT;
+    const int32_t shift = local.x;
     const int32_t angle = lara_item->rot.y - item->rot.y;
     if (g_Input.action && item->object_id == O_DRAGON_BACK
         && M_IsTwoPhaseMode(item)

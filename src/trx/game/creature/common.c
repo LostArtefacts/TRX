@@ -394,20 +394,15 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
     const ITEM *const lara_item = Lara_GetItem();
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    const XZ_32 pivot = {
-        .x = (obj->pivot_length * Math_Sin(item->rot.y)) >> W2V_SHIFT,
-        .z = (obj->pivot_length * Math_Cos(item->rot.y)) >> W2V_SHIFT,
-    };
+    const XYZ_32 pivot_offset =
+        XYZ_32_RotateYaw((XYZ_32) { .z = obj->pivot_length }, item->rot.y);
+    const XZ_32 pivot = { .x = pivot_offset.x, .z = pivot_offset.z };
 
-    XZ_32 enemy_pos = {
-        .x = enemy->pos.x,
-        .z = enemy->pos.z,
-    };
+    XYZ_32 enemy_pos = enemy->pos;
     if (g_TRVersion >= 3) {
         const int16_t enemy_angle =
             enemy == lara_item ? lara->move_angle : enemy->rot.y;
-        enemy_pos.x += (14 * enemy->speed * Math_Sin(enemy_angle)) >> W2V_SHIFT;
-        enemy_pos.z += (14 * enemy->speed * Math_Cos(enemy_angle)) >> W2V_SHIFT;
+        enemy_pos = XYZ_32_OffsetYaw(enemy_pos, enemy_angle, 14 * enemy->speed);
     }
 
     int32_t x = enemy_pos.x - pivot.x - item->pos.x;
@@ -891,14 +886,12 @@ void Creature_Collision(
             false);
     } else if (coll->enable_hit && g_TRVersion == 3) {
         const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
-        const int32_t s = Math_Sin(lara_item->rot.y);
-        const int32_t c = Math_Cos(lara_item->rot.y);
-        const int32_t x = (bounds->min.x + bounds->max.x) / 2;
-        const int32_t z = (bounds->max.z - bounds->min.z) / 2;
-        const int32_t rx =
-            (lara_item->pos.x - item->pos.x) - ((c * x + s * z) >> W2V_SHIFT);
-        const int32_t rz =
-            (lara_item->pos.z - item->pos.z) - ((c * z - s * x) >> W2V_SHIFT);
+        const XYZ_32 centre = XYZ_32_RotateYaw(
+            (XYZ_32) { .x = (bounds->min.x + bounds->max.x) / 2,
+                       .z = (bounds->max.z - bounds->min.z) / 2 },
+            lara_item->rot.y);
+        const int32_t rx = lara_item->pos.x - item->pos.x - centre.x;
+        const int32_t rz = lara_item->pos.z - item->pos.z - centre.z;
 
         if (bounds->max.z - bounds->min.z > STEP_L) {
             lara->hit_direction =

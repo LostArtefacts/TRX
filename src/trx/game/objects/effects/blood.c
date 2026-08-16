@@ -8,8 +8,7 @@ static void M_Control(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
     const OBJECT *const obj = Object_Get(effect->object_id);
-    effect->pos.x += (effect->speed * Math_Sin(effect->rot.y)) >> W2V_SHIFT;
-    effect->pos.z += (effect->speed * Math_Cos(effect->rot.y)) >> W2V_SHIFT;
+    effect->pos = XYZ_32_OffsetYaw(effect->pos, effect->rot.y, effect->speed);
     effect->counter++;
     if (effect->counter == 4) {
         effect->frame_num--;

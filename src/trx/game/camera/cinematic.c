@@ -13,26 +13,10 @@ static CINE_DATA m_CineData = {};
 static void M_UpdateCutscene(const XYZ_32 base_pos, const int16_t angle)
 {
     const CINE_FRAME *const frame = Camera_GetCurrentCineFrame();
-    const int32_t c = Math_Cos(angle);
-    const int32_t s = Math_Sin(angle);
-
-#define SHIFT(prop, axis1, op, axis2)                                          \
-    (((frame->prop.shift.axis1 * c) op(frame->prop.shift.axis2 * s))           \
-     >> W2V_SHIFT)
-
-    const XYZ_32 camera_target = {
-        .x = base_pos.x + SHIFT(target, x, +, z),
-        .y = base_pos.y + frame->target.shift.y,
-        .z = base_pos.z + SHIFT(target, z, -, x),
-    };
-
-    const XYZ_32 camera_pos = {
-        .x = base_pos.x + SHIFT(camera, x, +, z),
-        .y = base_pos.y + frame->camera.shift.y,
-        .z = base_pos.z + SHIFT(camera, z, -, x),
-    };
-
-#undef SHIFT
+    const XYZ_32 camera_target = XYZ_32_OffsetLocalYaw(
+        base_pos, XYZ_32_From16(frame->target.shift), angle);
+    const XYZ_32 camera_pos = XYZ_32_OffsetLocalYaw(
+        base_pos, XYZ_32_From16(frame->camera.shift), angle);
 
     const int16_t room_num = Room_GetIndexFromPos(camera_pos);
     if (room_num != NO_ROOM) {

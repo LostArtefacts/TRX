@@ -144,9 +144,9 @@ static void M_Control(const int16_t effect_num)
             effect->fall_speed = 512;
         }
 
-        effect->pos.x += effect->speed * Math_Sin(effect->rot.y) >> W2V_SHIFT;
+        effect->pos =
+            XYZ_32_OffsetYaw(effect->pos, effect->rot.y, effect->speed);
         effect->pos.y += effect->fall_speed >> 1;
-        effect->pos.z += effect->speed * Math_Cos(effect->rot.y) >> W2V_SHIFT;
         const int32_t dx = (old_pos.x - effect->pos.x) << 3;
         const int32_t dy = (old_pos.y - effect->pos.y) << 3;
         const int32_t dz = (old_pos.z - effect->pos.z) << 3;

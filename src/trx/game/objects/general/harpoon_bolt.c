@@ -57,9 +57,8 @@ static void M_Control_TR3(const int16_t item_num)
 
     M_SetTR3ProjectileShade(item);
 
-    item->pos.x += (item->speed * Math_Sin(item->rot.y)) >> W2V_SHIFT;
+    item->pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, item->speed);
     item->pos.y += item->fall_speed;
-    item->pos.z += (item->speed * Math_Cos(item->rot.y)) >> W2V_SHIFT;
 
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
@@ -103,24 +102,18 @@ static void M_Control_TR3(const int16_t item_num)
             continue;
         }
 
-        const int32_t cy = Math_Cos(target_item->rot.y);
-        const int32_t sy = Math_Sin(target_item->rot.y);
-        const int32_t cdx = item->pos.x - target_item->pos.x;
-        const int32_t cdz = item->pos.z - target_item->pos.z;
-        const int32_t odx = old_pos.x - target_item->pos.x;
-        const int32_t odz = old_pos.z - target_item->pos.z;
+        const XYZ_32 now = XYZ_32_UnrotateYaw(
+            XYZ_32_Subtract(item->pos, target_item->pos), target_item->rot.y);
+        const XYZ_32 old = XYZ_32_UnrotateYaw(
+            XYZ_32_Subtract(old_pos.pos, target_item->pos), target_item->rot.y);
 
-        const int32_t rx = (cy * cdx - sy * cdz) >> W2V_SHIFT;
-        const int32_t sx = (cy * odx - sy * odz) >> W2V_SHIFT;
-        if ((rx < bounds->min.x && sx < bounds->min.x)
-            || (rx > bounds->max.x && sx > bounds->max.x)) {
+        if ((now.x < bounds->min.x && old.x < bounds->min.x)
+            || (now.x > bounds->max.x && old.x > bounds->max.x)) {
             continue;
         }
 
-        const int32_t rz = (sy * cdx + cy * cdz) >> W2V_SHIFT;
-        const int32_t sz = (sy * odx + cy * odz) >> W2V_SHIFT;
-        if ((rz < bounds->min.z && sz < bounds->min.z)
-            || (rz > bounds->max.z && sz > bounds->max.z)) {
+        if ((now.z < bounds->min.z && old.z < bounds->min.z)
+            || (now.z > bounds->max.z && old.z > bounds->max.z)) {
             continue;
         }
 
@@ -218,8 +211,7 @@ static void M_Control_TR12(const int16_t item_num)
         item->fall_speed += GRAVITY / 2;
     }
 
-    item->pos.x += (item->speed * Math_Sin(item->rot.y)) >> W2V_SHIFT;
-    item->pos.z += (item->speed * Math_Cos(item->rot.y)) >> W2V_SHIFT;
+    item->pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, item->speed);
     item->pos.y += item->fall_speed;
 
     int16_t room_num = item->room_num;
@@ -266,24 +258,18 @@ static void M_Control_TR12(const int16_t item_num)
             continue;
         }
 
-        const int32_t cy = Math_Cos(target_item->rot.y);
-        const int32_t sy = Math_Sin(target_item->rot.y);
-        const int32_t cdx = item->pos.x - target_item->pos.x;
-        const int32_t cdz = item->pos.z - target_item->pos.z;
-        const int32_t odx = old_pos.x - target_item->pos.x;
-        const int32_t odz = old_pos.z - target_item->pos.z;
+        const XYZ_32 now = XYZ_32_UnrotateYaw(
+            XYZ_32_Subtract(item->pos, target_item->pos), target_item->rot.y);
+        const XYZ_32 old = XYZ_32_UnrotateYaw(
+            XYZ_32_Subtract(old_pos.pos, target_item->pos), target_item->rot.y);
 
-        const int32_t rx = (cy * cdx - sy * cdz) >> W2V_SHIFT;
-        const int32_t sx = (cy * odx - sy * odz) >> W2V_SHIFT;
-        if ((rx < bounds->min.x && sx < bounds->min.x)
-            || (rx > bounds->max.x && sx > bounds->max.x)) {
+        if ((now.x < bounds->min.x && old.x < bounds->min.x)
+            || (now.x > bounds->max.x && old.x > bounds->max.x)) {
             continue;
         }
 
-        const int32_t rz = (sy * cdx + cy * cdz) >> W2V_SHIFT;
-        const int32_t sz = (sy * odx + cy * odz) >> W2V_SHIFT;
-        if ((rz < bounds->min.z && sz < bounds->min.z)
-            || (rz > bounds->max.z && sz > bounds->max.z)) {
+        if ((now.z < bounds->min.z && old.z < bounds->min.z)
+            || (now.z > bounds->max.z && old.z > bounds->max.z)) {
             continue;
         }
 

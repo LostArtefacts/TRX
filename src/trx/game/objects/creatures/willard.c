@@ -381,9 +381,11 @@ static void M_Explode(ITEM *const item)
 
         for (int32_t j = 0; j < 8; j++) {
             M_SHIELD_POINT *const shield = &p->shield[i][j];
-            shield->pos.x = (dist * Math_Sin(angle << 4)) >> 13;
+            const XYZ_32 ring =
+                XYZ_32_RotateYaw((XYZ_32) { .z = dist * 2 }, angle << 4);
+            shield->pos.x = ring.x;
             shield->pos.y = y;
-            shield->pos.z = (dist * Math_Cos(angle << 4)) >> 13;
+            shield->pos.z = ring.z;
             shield->sub = (RGB_888) { 0, 0, 0 };
 
             if (i != 0 && i != 4 && p->explode_count < 64) {

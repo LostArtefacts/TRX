@@ -305,10 +305,8 @@ int32_t Lara_CeilingFront(
     const ITEM *const item, const int16_t ang, const int32_t dist,
     const int32_t item_height)
 {
-    const int32_t x = item->pos.x + ((dist * Math_Sin(ang)) >> W2V_SHIFT);
-    const int32_t y = item->pos.y - item_height;
-    const int32_t z = item->pos.z + ((dist * Math_Cos(ang)) >> W2V_SHIFT);
-    const XYZ_32 pos = { x, y, z };
+    XYZ_32 pos = XYZ_32_OffsetYaw(item->pos, ang, dist);
+    pos.y -= item_height;
     // Something reaching down to where Lara's head would be leaves her no more
     // room than a ceiling at her feet does.
     if (Room_IsPathBlocked(

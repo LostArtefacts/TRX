@@ -752,19 +752,15 @@ bool Collide_TestBoundsCollide(
         return false;
     }
 
-    const int32_t c = Math_Cos(src_item->rot.y);
-    const int32_t s = Math_Sin(src_item->rot.y);
-    const int32_t dx = dst_item->pos.x - src_item->pos.x;
-    const int32_t dz = dst_item->pos.z - src_item->pos.z;
-    const int32_t rx = (c * dx - s * dz) >> W2V_SHIFT;
-    const int32_t rz = (c * dz + s * dx) >> W2V_SHIFT;
+    const XYZ_32 delta = XYZ_32_Subtract(dst_item->pos, src_item->pos);
+    const XYZ_32 local = XYZ_32_UnrotateYaw(delta, src_item->rot.y);
 
     // clang-format off
     return (
-        rx >= src_bounds->min.x - radius &&
-        rx <= src_bounds->max.x + radius &&
-        rz >= src_bounds->min.z - radius &&
-        rz <= src_bounds->max.z + radius);
+        local.x >= src_bounds->min.x - radius &&
+        local.x <= src_bounds->max.x + radius &&
+        local.z >= src_bounds->min.z - radius &&
+        local.z <= src_bounds->max.z + radius);
     // clang-format on
 }
 

@@ -126,10 +126,8 @@ static M_MOUNT_TYPE M_CheckMount(
 
     ITEM *const item = Item_Get(item_num);
     ITEM *const lara_item = Lara_GetItem();
-    const int32_t dx = lara_item->pos.x - item->pos.x;
-    const int32_t dz = lara_item->pos.z - item->pos.z;
-    if ((dz * Math_Cos(-item->rot.y) - dx * Math_Sin(-item->rot.y)) >> W2V_SHIFT
-        > WALL_L / 2) {
+    const XYZ_32 delta = XYZ_32_Subtract(lara_item->pos, item->pos);
+    if (XYZ_32_UnrotateYaw(delta, item->rot.y).z > WALL_L / 2) {
         return M_MOUNT_NONE;
     }
 
@@ -431,15 +429,13 @@ static int32_t M_TestWaterHeight(
     const ITEM *const item, const int32_t z_off, const int32_t x_off,
     XYZ_32 *const pos)
 {
-    const int32_t sx = Math_Sin(item->rot.x);
-    const int32_t sz = Math_Sin(item->rot.z);
-    pos->y =
-        item->pos.y + ((x_off * sz) >> W2V_SHIFT) - ((z_off * sx) >> W2V_SHIFT);
+    *pos = XYZ_32_OffsetLocalYaw(
+        item->pos, (XYZ_32) { .x = x_off, .z = z_off }, item->rot.y);
 
-    const int32_t sy = Math_Sin(item->rot.y);
-    const int32_t cy = Math_Cos(item->rot.y);
-    pos->x = item->pos.x + ((x_off * cy + z_off * sy) >> W2V_SHIFT);
-    pos->z = item->pos.z + ((z_off * cy - x_off * sy) >> W2V_SHIFT);
+    // The height the hull sits at follows the boat's pitch and roll, which the
+    // yaw turn above says nothing about.
+    pos->y = item->pos.y + ((x_off * Math_Sin(item->rot.z)) >> W2V_SHIFT)
+        - ((z_off * Math_Sin(item->rot.x)) >> W2V_SHIFT);
 
     int16_t room_num = item->room_num;
     Room_GetSector(*pos, &room_num);
@@ -549,15 +545,20 @@ static int32_t M_Dynamics(const int16_t item_num)
     if (slip == 0 && item->rot.z != 0) {
         slip = item->rot.z > 0 ? 1 : -1;
     }
-    item->pos.x += (slip * Math_Cos(item->rot.y)) >> W2V_SHIFT;
-    item->pos.z -= (slip * Math_Sin(item->rot.y)) >> W2V_SHIFT;
+    // Sideways, along the boat's beam. Both slides read their components off
+    // a forward turn so that each rounds as it did: a slide runs frame after
+    // frame, and a unit a frame would tell.
+    const XYZ_32 roll_slip =
+        XYZ_32_RotateYaw((XYZ_32) { .z = slip }, item->rot.y);
+    item->pos.x += roll_slip.z;
+    item->pos.z -= roll_slip.x;
 
     slip = (Math_Sin(item->rot.x) * 10) >> W2V_SHIFT;
     if (slip == 0 && item->rot.x != 0) {
         slip = item->rot.x > 0 ? 1 : -1;
     }
-    item->pos.x -= (slip * Math_Sin(item->rot.y)) >> W2V_SHIFT;
-    item->pos.z -= (slip * Math_Cos(item->rot.y)) >> W2V_SHIFT;
+    item->pos = XYZ_32_Subtract(
+        item->pos, XYZ_32_RotateYaw((XYZ_32) { .z = slip }, item->rot.y));
 
     XYZ_32 moved = {
         .x = item->pos.x,
@@ -590,9 +591,8 @@ static int32_t M_Dynamics(const int16_t item_num)
     const int32_t coll_anim = Vehicle_GetCollisionAnim(item, &moved);
 
     if (slip != 0 || coll_anim != 0) {
-        const int32_t sx = (item->pos.x - old_pos.x) * Math_Sin(item->rot.y);
-        const int32_t sz = (item->pos.z - old_pos.z) * Math_Cos(item->rot.y);
-        int32_t new_speed = (sx + sz) >> W2V_SHIFT;
+        const XYZ_32 delta = XYZ_32_Subtract(item->pos, old_pos);
+        int32_t new_speed = XYZ_32_UnrotateYaw(delta, item->rot.y).z;
 
         if (Lara_Vehicle_GetIndex() == item_num
             && item->speed > (M_MAX_SPEED + M_ACCELERATION)
@@ -681,11 +681,10 @@ static void M_TriggerMist(
     spark->pos.x = pos.x + (Random_GetControl() & 0xF) - 8;
     spark->pos.y = pos.y + (Random_GetControl() & 0xF) - 8;
     spark->pos.z = pos.z + (Random_GetControl() & 0xF) - 8;
-    spark->vel.x = (Random_GetControl() & 0x7F)
-        + ((speed * Math_Sin(angle)) >> (W2V_SHIFT + 2)) - 64;
+    const XYZ_32 dir = XYZ_32_RotateYaw((XYZ_32) { .z = speed }, angle);
+    spark->vel.x = (Random_GetControl() & 0x7F) + (dir.x >> 2) - 64;
     spark->vel.y = 12 * speed;
-    spark->vel.z = (Random_GetControl() & 0x7F)
-        + ((speed * Math_Cos(angle)) >> (W2V_SHIFT + 2)) - 64;
+    spark->vel.z = (Random_GetControl() & 0x7F) + (dir.z >> 2) - 64;
     spark->friction = 3;
 
     if ((Random_GetControl() & 1) != 0) {

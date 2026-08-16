@@ -132,10 +132,9 @@ static void M_UpdateWind(void)
         (m_TR3WindAngle + ((m_TR3DWindAngle - m_TR3WindAngle) >> 3)) & 0x1FFE;
 
     // Promote to DEG_360 for Math_Sin/Cos just at the end.
-    m_SmokeWind = (XZ_32) {
-        .x = (m_TR3Wind * Math_Sin(m_TR3WindAngle << 3)) >> W2V_SHIFT,
-        .z = (m_TR3Wind * Math_Cos(m_TR3WindAngle << 3)) >> W2V_SHIFT,
-    };
+    const XYZ_32 wind =
+        XYZ_32_RotateYaw((XYZ_32) { .z = m_TR3Wind }, m_TR3WindAngle << 3);
+    m_SmokeWind = (XZ_32) { .x = wind.x, .z = wind.z };
 
     m_HairWindZ = 0;
 }

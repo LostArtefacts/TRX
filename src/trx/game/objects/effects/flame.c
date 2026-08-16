@@ -109,16 +109,6 @@ static void M_TR3_SideFlameDetection(
     }
 }
 
-static inline XYZ_32 M_OffsetPos(
-    const XYZ_32 base_pos, const int32_t dx, const int32_t dy, const int32_t dz)
-{
-    return (XYZ_32) {
-        .x = base_pos.x + dx,
-        .y = base_pos.y + dy,
-        .z = base_pos.z + dz,
-    };
-}
-
 static void M_TR3_ControlBig(
     EFFECT *const effect, const int32_t time4, const int32_t rnd)
 {
@@ -145,21 +135,21 @@ static void M_TR3_ControlSmall(
 {
     if (effect->counter >= 0) {
         const int32_t angle = ((effect->rot.y >> 4) & 4095) << 1;
-        const int32_t s = (288 * Math_Sin(angle << 3)) >> W2V_SHIFT;
-        const int32_t c = (288 * Math_Cos(angle << 3)) >> W2V_SHIFT;
+        const XYZ_32 pos = XYZ_32_OffsetLocalYaw(
+            effect->pos, (XYZ_32) { .z = 288 }, angle << 3);
 
         Sparks_TriggerStaticFlame(
-            M_OffsetPos(effect->pos, s, -192, c),
+            XYZ_32_Add(pos, (XYZ_32) { .y = -192 }),
             (Random_GetControl() & 15) + 32);
 
         if ((time4 & 0x18) != 0) {
             return;
         }
 
-        Sparks_TriggerFireFlame(M_OffsetPos(effect->pos, s, -224, c), -1, 1);
+        Sparks_TriggerFireFlame(XYZ_32_Add(pos, (XYZ_32) { .y = -224 }), -1, 1);
 
         if ((time4 & 0x18) == 0) {
-            Sparks_TriggerFireSmoke(M_OffsetPos(effect->pos, s, 0, c), -1, 1);
+            Sparks_TriggerFireSmoke(pos, -1, 1);
         }
         return;
     }
@@ -240,9 +230,11 @@ static void M_TR3_ControlJet(
     const int32_t x1 = (m_TR3_XZOffsets[idx1][0] << 4) - 512;
     const int32_t z1 = (m_TR3_XZOffsets[idx1][1] << 4) - 512;
     if ((time4 & 4) == 0) {
-        Sparks_TriggerFireFlame(M_OffsetPos(effect->pos, x0, 0, z0), -1, 2);
+        Sparks_TriggerFireFlame(
+            XYZ_32_Add(effect->pos, (XYZ_32) { .x = x0, .z = z0 }), -1, 2);
     } else {
-        Sparks_TriggerFireFlame(M_OffsetPos(effect->pos, x1, 0, z1), -1, 2);
+        Sparks_TriggerFireFlame(
+            XYZ_32_Add(effect->pos, (XYZ_32) { .x = x1, .z = z1 }), -1, 2);
     }
 }
 
@@ -252,14 +244,13 @@ static void M_TR3_ControlSide(
     // Side flames: alternate between direction and length phases.
     const int32_t dist = (rnd & 0xFF) + 512;
     const int32_t angle = (effect->rot.y >> 3) & 0x1FFE;
-    const int32_t s = (dist * Math_Sin(angle << 3)) >> W2V_SHIFT;
-    const int32_t c = (dist * Math_Cos(angle << 3)) >> W2V_SHIFT;
+    const XYZ_32 pos =
+        XYZ_32_OffsetLocalYaw(effect->pos, (XYZ_32) { .z = dist }, angle << 3);
 
     if (effect->flag2 != 0) {
         if ((time4 & 4) != 0) {
             Sparks_TriggerSideFlame(
-                M_OffsetPos(effect->pos, s, 0, c),
-                ((angle - 4096) & 0x1FFF) << 3,
+                pos, ((angle - 4096) & 0x1FFF) << 3,
                 (!(Random_GetControl() & 7)) ? 1 : 0, 1);
         }
 
@@ -275,8 +266,7 @@ static void M_TR3_ControlSide(
                 }
 
                 Sparks_TriggerSideFlame(
-                    M_OffsetPos(effect->pos, s, 0, c),
-                    ((angle + 4096) & 0x1FFE) << 3, size, 0);
+                    pos, ((angle + 4096) & 0x1FFE) << 3, size, 0);
             }
 
             effect->flag1 -= 2;

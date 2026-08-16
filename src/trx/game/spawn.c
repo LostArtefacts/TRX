@@ -46,8 +46,8 @@ XYZ_32 Spawn_GetRayPos(
         .y = hit_pos.y - start.y,
         .z = hit_pos.z - start.z,
     });
-    hit_pos.pos.x -= (dist * Math_Sin(angle)) >> W2V_SHIFT;
-    hit_pos.pos.z -= (dist * Math_Cos(angle)) >> W2V_SHIFT;
+    hit_pos.pos = XYZ_32_Subtract(
+        hit_pos.pos, XYZ_32_RotateYaw((XYZ_32) { .z = dist }, angle));
 
     return hit_pos.pos;
 }

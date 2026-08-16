@@ -362,14 +362,13 @@ static int32_t M_GetCollision(
 
 static int32_t M_GetHeight(ITEM *const item, const int32_t x, const int32_t z)
 {
-    const int32_t s = Math_Sin(item->rot.y);
-    const int32_t c = Math_Cos(item->rot.y);
-    const XYZ_32 pos = {
-        .x = item->pos.x + ((x * c + z * s) >> W2V_SHIFT),
-        .y = (item->pos.y + ((x * Math_Sin(item->rot.z)) >> W2V_SHIFT))
-            - ((z * Math_Sin(item->rot.x)) >> W2V_SHIFT),
-        .z = item->pos.z + ((z * c - x * s) >> W2V_SHIFT),
-    };
+    XYZ_32 pos = XYZ_32_OffsetLocalYaw(
+        item->pos, (XYZ_32) { .x = x, .z = z }, item->rot.y);
+
+    // The height a wheel sits at follows the cart's pitch and roll, which the
+    // yaw turn above says nothing about.
+    pos.y = (item->pos.y + ((x * Math_Sin(item->rot.z)) >> W2V_SHIFT))
+        - ((z * Math_Sin(item->rot.x)) >> W2V_SHIFT);
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
     return Room_GetHeight(sector, pos);
@@ -783,29 +782,11 @@ static void M_Move(ITEM *const item)
         }
 
         if (p->turn.side != M_SIDE_NONE) {
-            const uint16_t quadrant = (uint16_t)item->rot.y >> W2V_SHIFT;
-            const int16_t angle = item->rot.y & M_ANGLE_CLAMP;
-
-            XZ_32 shift = {};
-            switch (quadrant) {
-            case DIR_NORTH:
-                shift.x = -Math_Cos(angle);
-                shift.z = Math_Sin(angle);
-                break;
-            case DIR_EAST:
-                shift.x = Math_Sin(angle);
-                shift.z = Math_Cos(angle);
-                break;
-            case DIR_SOUTH:
-                shift.x = Math_Cos(angle);
-                shift.z = -Math_Sin(angle);
-                break;
-            default:
-                shift.x = -Math_Sin(angle);
-                shift.z = -Math_Cos(angle);
-                break;
-            }
-
+            // The cart swings around a point off to one side, so the shift
+            // is a unit vector out to its left, at the scale the trig table
+            // works in. The original took the quadrant apart to get it.
+            XYZ_32 shift = XYZ_32_RotateYaw(
+                (XYZ_32) { .x = -(1 << W2V_SHIFT) }, item->rot.y);
             if (p->turn.side == M_SIDE_LEFT) {
                 shift.x = -shift.x;
                 shift.z = -shift.z;
