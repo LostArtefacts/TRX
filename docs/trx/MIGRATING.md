@@ -42,6 +42,11 @@ order: 3
    `gold_color`, and the mesh objects the golden ones used are free for outfits
    of your own.
 
+4. **`trx.game.end_level()` is silent**
+   The call ends the level without announcing it; the "Level complete!"
+   message belongs to the `/endlevel` console command. A script that wants the
+   message shown prints it itself.
+
 ### Version 1.9 to 1.10
 
 The Lua API was rewritten, and most of what it breaks is a rename. Run your

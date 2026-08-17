@@ -8,6 +8,7 @@
 
 #include <trx/game/demo.h>
 #include <trx/game/game/enum.h>
+#include <trx/game/game/state.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/savegame.h>
 #include <trx/game/screenshot.h>
@@ -135,7 +136,7 @@ void Screenshot_MakeToPath(const char *const path)
 {
 }
 
-void Lara_Cheat_EndLevel(void)
+void Game_SetIsLevelComplete(const bool is_complete)
 {
     FAKE_RECORD("end_level");
 }
