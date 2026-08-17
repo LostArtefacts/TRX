@@ -111,7 +111,9 @@ static XYZ_32 M_GetItemMaxDelta(const ITEM *const item)
     case O_LARA:
     case O_LARA_EXTRA: {
         const ITEM *const vehicle = Lara_Vehicle_GetItem();
-        if (vehicle == nullptr) {
+        if (vehicle == nullptr || vehicle == item
+            || vehicle->object_id == O_LARA
+            || vehicle->object_id == O_LARA_EXTRA) {
             break;
         }
         return M_GetItemMaxDelta(vehicle);
