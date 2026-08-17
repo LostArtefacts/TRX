@@ -1925,17 +1925,36 @@ static bool M_CanTakeDamage(const ITEM *const item)
 }
 
 // The mask names the meshes drawn from his own object, the other way round
-// from swap_bits.
+// from swap_bits. His climbs hang the mesh well below the item, outside the
+// clip window of the room the item is still in, so he draws against the whole
+// viewport the way doors and switches do.
 static bool M_Draw(const ITEM *const item)
 {
     const M_PRIV *const p = M_GetPriv(item);
     const OBJECT *const swap = Object_Get(O_MESH_SWAP_1);
     if (!swap->loaded
         || swap->mesh_count != Object_Get(item->object_id)->mesh_count) {
-        return Object_DrawAnimatingItem(item);
+        return Object_DrawUnclippedItem(item);
     }
-    return Object_DrawAnimatingItemWithSwap(
+
+    const int32_t left = g_PhdLeft;
+    const int32_t top = g_PhdTop;
+    const int32_t right = g_PhdRight;
+    const int32_t bottom = g_PhdBottom;
+
+    g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
+    g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
+    g_PhdRight = Viewport_GetMaxX(VIEWPORT_GAME);
+    g_PhdBottom = Viewport_GetMaxY(VIEWPORT_GAME);
+
+    const bool result = Object_DrawAnimatingItemWithSwap(
         item, swap, item->mesh_bits & ~p->swap_bits);
+
+    g_PhdLeft = left;
+    g_PhdTop = top;
+    g_PhdRight = right;
+    g_PhdBottom = bottom;
+    return result;
 }
 
 static void M_Setup(OBJECT *const obj)
