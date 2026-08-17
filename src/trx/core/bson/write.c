@@ -524,26 +524,24 @@ static char *M_WriteValueWrapped(
     }
 }
 
-void *BSON_Write(const JSON_VALUE *value, size_t *out_size)
+RESULT BSON_Write(
+    const JSON_VALUE *const value, void **const out_data,
+    size_t *const out_size)
 {
     ASSERT(value != nullptr);
+    *out_data = nullptr;
     *out_size = -1;
-    if (value == nullptr) {
-        return nullptr;
-    }
 
     size_t size = 0;
-    if (!M_GetValueSize(&size, value)) {
-        return nullptr;
-    }
+    FAIL_IF(
+        !M_GetValueSize(&size, value),
+        "the data does not fit what BSON can hold");
 
     char *data = Memory_Alloc(size);
     char *data_end = M_WriteValue(data, value);
     ASSERT((size_t)(data_end - data) == size);
 
-    if (out_size != nullptr) {
-        *out_size = size;
-    }
-
-    return data;
+    *out_data = data;
+    *out_size = size;
+    return OK;
 }

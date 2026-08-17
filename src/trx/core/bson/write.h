@@ -1,7 +1,8 @@
 #pragma once
 
 #include <trx/core/bson/types.h>
+#include <trx/core/result.h>
 
-/* Write out a BSON binary string. Return 0 if an error occurred (malformed
- * JSON input, or malloc failed). The out_size parameter is optional. */
-void *BSON_Write(const JSON_VALUE *value, size_t *out_size);
+// Writes a JSON structure out as BSON, reporting data BSON cannot hold.
+// Caller frees the bytes with Memory_Free().
+RESULT BSON_Write(const JSON_VALUE *value, void **out_data, size_t *out_size);

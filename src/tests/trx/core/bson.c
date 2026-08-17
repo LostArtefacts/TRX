@@ -13,15 +13,17 @@ static int64_t M_RoundTrip(const int64_t value)
     JSON_VALUE *const root = JSON_ValueFromObject(obj);
 
     size_t size = 0;
-    void *const blob = BSON_Write(root, &size);
+    void *blob = nullptr;
+    const bool written = IGNORE(BSON_Write(root, &blob, &size));
     JSON_ValueFree(root);
-    if (blob == nullptr) {
+    if (!written) {
         return M_UNREAD;
     }
 
-    JSON_VALUE *const parsed = BSON_Parse(blob, size);
+    JSON_VALUE *parsed = nullptr;
+    const bool read = IGNORE(BSON_Parse(blob, size, &parsed));
     Memory_Free(blob);
-    if (parsed == nullptr) {
+    if (!read) {
         return M_UNREAD;
     }
 
@@ -71,13 +73,13 @@ TEST(a_document_mixing_widths_writes_the_size_it_measured)
     JSON_VALUE *const root = JSON_ValueFromObject(obj);
 
     size_t size = 0;
-    void *const blob = BSON_Write(root, &size);
+    void *blob = nullptr;
+    CHECK(IGNORE(BSON_Write(root, &blob, &size)));
     JSON_ValueFree(root);
-    CHECK(blob != nullptr);
 
-    JSON_VALUE *const parsed = BSON_Parse(blob, size);
+    JSON_VALUE *parsed = nullptr;
+    CHECK(IGNORE(BSON_Parse(blob, size, &parsed)));
     Memory_Free(blob);
-    CHECK(parsed != nullptr);
 
     const JSON_OBJECT *const read = JSON_ValueAsObject(parsed);
     CHECK_EQ_INT(JSON_ObjectGetInt(read, "small", -1), 7);
