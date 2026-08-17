@@ -63,6 +63,7 @@ static void M_ResetCamera(const bool exiting)
     g_Camera = exiting ? m_OriginalCamera : m_StartingCamera;
     // ensure Camera_EnsureEnvironment() picks up the flag change
     g_Camera.underwater = camera.underwater;
+    g_Camera.interp = camera.interp;
     // Cinematic cameras control the FOV during their sequences, so avoid
     // resetting to user FOV on exit to prevent a 1-frame flicker.
     Viewport_AlterFOV(
@@ -85,12 +86,8 @@ static int32_t M_GetRotSpeed(void)
 // world's.
 static XYZ_32 M_GetShift(const int32_t dx, const int32_t dy, const int32_t dz)
 {
-    const XYZ_16 rot = {
-        .x = g_Camera.target_elevation,
-        .y = g_Camera.target_angle,
-        .z = g_Camera.roll,
-    };
-    return XYZ_32_Rotate((XYZ_32) { .x = dx, .y = dy, .z = dz }, rot);
+    return XYZ_32_Rotate(
+        (XYZ_32) { .x = dx, .y = dy, .z = dz }, Camera_PhotoMode_GetRot());
 }
 
 static void M_ShiftCamera(int32_t dx, int32_t dy, int32_t dz)
@@ -282,6 +279,15 @@ static bool M_HandleFOVInputs(void)
     CLAMP(m_CurrentFOV, MIN_PHOTO_FOV, MAX_PHOTO_FOV);
     Viewport_AlterFOV(m_CurrentFOV * DEG_1, m_CurrentFOVMode);
     return true;
+}
+
+XYZ_16 Camera_PhotoMode_GetRot(void)
+{
+    return (XYZ_16) {
+        .x = g_Camera.target_elevation,
+        .y = g_Camera.target_angle,
+        .z = g_Camera.roll,
+    };
 }
 
 void Camera_PhotoMode_Enter(void)
