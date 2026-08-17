@@ -113,7 +113,7 @@ static char *M_GetScreenshotPath(const SCREENSHOT_FORMAT format)
     char *full_path = Memory_DupStr(
         GamePath_Resolve(GAME_DYNAMIC_PATH_SCREENSHOT_WRITE_FILE, rel_path));
     Memory_FreePointer(&rel_path);
-    FS_EnsureParentDirectories(full_path);
+    SHOULD(FS_EnsureParentDirectories(full_path));
     if (FS_Exists(full_path)) {
         for (int i = 2; i < 100; i++) {
             Memory_FreePointer(&full_path);
