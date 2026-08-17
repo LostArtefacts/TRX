@@ -37,6 +37,7 @@
 
 **Saves and settings**
 - Changed the save crystal behavior to give Lara a crystal when starting a game, if the mode is set to Saving (pickups), in line with the TR3 PS1 version (Gameplay → General → Crystal mode)
+- Fixed save crystals activating even while Crystal mode is set to Disabled (Gameplay → General → Crystal mode) (regression from 1.10)
 
 **Music and sound**
 - Fixed crystal sound effects not playing if Lara collects one underwater (OG bug)
