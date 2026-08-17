@@ -58,13 +58,16 @@ static RESULT M_ParseFromBuffer(
 static RESULT M_ReadRaw(
     TRX_FILE *const fp, int32_t *const version_out, JSON_VALUE **const out_root)
 {
+    File_SetSoftFailure(fp, true);
     const size_t buffer_size = File_Size(fp);
-    char *buffer = Memory_Alloc(buffer_size);
+    AUTO_FREE char *buffer = Memory_Alloc(buffer_size);
     File_Seek(fp, 0, FILE_SEEK_SET);
     File_ReadData(fp, buffer, buffer_size);
+    if (File_HasFailed(fp)) {
+        return FAIL("%s: the saved game ends early", File_GetPath(fp));
+    }
 
     const RESULT result = M_ParseFromBuffer(buffer, version_out, out_root);
-    Memory_FreePointer(&buffer);
     return Result_Prefix(result, "%s", File_GetPath(fp));
 }
 
