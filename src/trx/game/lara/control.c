@@ -65,7 +65,7 @@ static void M_Cheat(void)
     }
 
     if (g_InputDB.level_skip_cheat) {
-        Lara_Cheat_EndLevel();
+        Console_Eval("endlevel");
     }
 
     if (g_InputDB.item_cheat) {

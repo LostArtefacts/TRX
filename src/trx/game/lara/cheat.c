@@ -161,12 +161,6 @@ void Lara_Cheat_GetStuff(void)
     M_GiveAllMedpacksImpl();
 }
 
-void Lara_Cheat_EndLevel(void)
-{
-    Game_SetIsLevelComplete(true);
-    Console_Log(GS("general/osd/complete_level"));
-}
-
 bool Lara_Cheat_OpenNearestDoor(void)
 {
     const ITEM *const lara_item = Lara_GetItem();

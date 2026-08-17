@@ -3,7 +3,6 @@
 #include <trx/game/game/state.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_flow/types.h>
-#include <trx/game/lara/cheat.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/field.h>
 #include <trx/game/lua/registry.h>
@@ -290,7 +289,7 @@ static int M_L_GamePlayGym(lua_State *const L)
 // trxc.game.end_level()
 static int M_L_GameEndLevel(lua_State *const L)
 {
-    Lara_Cheat_EndLevel();
+    Game_SetIsLevelComplete(true);
     return 0;
 }
 

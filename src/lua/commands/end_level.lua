@@ -15,7 +15,7 @@ local function run()
   end
 
   trx.game.end_level()
-  return trx.console.Result.OK
+  return trx.console.Result.OK, trx.locale.get("general/osd/complete_level")
 end
 
 trx.console.register({
