@@ -60,6 +60,7 @@
 - Fixed crystal sound effects not playing if Lara collects one underwater (OG bug) (TRX1111)
 
 **Rendering**
+- Added the PlayStation depth cue (Graphic Options → Rendering → PlayStation fog)
 - Fixed scenery in an adjoining room being cut off along the edges of the portal it is seen through (TRX1159)
 - Fixed objects showing through rooms that share their space with the room the object stands in (TRX1168)
 - Fixed objects that reach into a neighbouring room being cut off or vanishing when seen through that room (TRX1168)

@@ -1514,6 +1514,10 @@
             "title": "Dithering",
             "description": "\\{review}Taghaidh seo dubharadh paileid an reandarair bathar-bog PC tùsail no dithering RGB555 PlayStation.",
         },
+        "rendering.enable_ps1_fog": {
+            "title": "\\{review}Ceò PlayStation",
+            "description": "\\{review}Measgaichidh seo geoimeatraidh fad às a-steach do dhath a' cheò mar a rinn lasachadh doimhneachd na PlayStation: a rèir 1/astar seach an astar fhèin, agus air a thomhas gach oisean, agus mar sin nochdaidh bannan air uachdaran mòra.",
+        },
         "rendering.enable_trapezoid_filter": {
             "title": "Criathradh trapeasoid",
             "description": "Cuiridh seo ceartachadh air trapeasoidean (ceàrnan neo-chothromach) airson reandaradh nas fhearr.",

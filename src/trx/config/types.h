@@ -331,6 +331,7 @@ typedef struct {
         int32_t fps;
         bool enable_trapezoid_filter;
         bool enable_lighting;
+        bool enable_ps1_fog;
         bool enable_textures;
         TEXTURE_FILTER ui_filter;
         TEXTURE_FILTER texture_filter;

@@ -1514,6 +1514,10 @@
             "title": "\\{review}Dithering",
             "description": "\\{review}Wybiera cieniowanie palety oryginalnego renderera programowego PC lub dithering RGB555 z PlayStation.",
         },
+        "rendering.enable_ps1_fog": {
+            "title": "\\{review}Mgła z PlayStation",
+            "description": "\\{review}Zlewa odległą geometrię z kolorem mgły tak, jak robiło to wygaszanie głębi na PlayStation: wzdłuż 1/odległości zamiast odległości i liczone na wierzchołek, więc przejście pasmuje na dużych powierzchniach.",
+        },
         "rendering.enable_trapezoid_filter": {
             "title": "Filtr trapezoidalny",
             "description": "Poprawia rysowanie czworokątów, rozciągając teksturę między wszystkimi wierzchołkami zamiast dzielić je na dwa trójkąty.",

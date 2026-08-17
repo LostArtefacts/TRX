@@ -46,6 +46,7 @@ layout(std140) uniform Globals {
     int uReflectionsEnabled; // bool
     int uTexturesEnabled; // bool
     int uVertexSnapEnabled; // bool
+    int uPS1FogEnabled; // bool
     int uTRVersion;
     float uUVScrollTick;
 };
