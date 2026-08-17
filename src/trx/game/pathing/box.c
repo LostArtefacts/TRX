@@ -503,22 +503,35 @@ TARGET_TYPE Box_CalculateTarget(
         }
     } while (box_num != NO_BOX);
 
-    if ((prime_free & (BOX_CLIP_LEFT | BOX_CLIP_RIGHT)) != 0) {
-        target->z = box->left + WALL_L / 2
-            + (((box->right - box->left - WALL_L) * Random_GetControl()) >> 15);
-    } else if ((prime_free & BOX_CLIP_SECONDARY) == 0) {
-        CLAMP(target->z, box->left + BOX_BIFF, box->right - BOX_BIFF);
-    }
+    // TR4 keeps a steady fallback target where TR1-3 pick a fresh random
+    // point in the last box every frame, which would leave its guides pacing
+    // in front of a closed door.
+    if (g_TRVersion >= 4) {
+        if ((prime_free & BOX_CLIP_SECONDARY) == 0) {
+            CLAMP(target->z, box->left + BOX_BIFF, box->right - BOX_BIFF);
+            CLAMP(target->x, box->top + BOX_BIFF, box->bottom - BOX_BIFF);
+        }
+    } else {
+        if ((prime_free & (BOX_CLIP_LEFT | BOX_CLIP_RIGHT)) != 0) {
+            target->z = box->left + WALL_L / 2
+                + (((box->right - box->left - WALL_L) * Random_GetControl())
+                   >> 15);
+        } else if ((prime_free & BOX_CLIP_SECONDARY) == 0) {
+            CLAMP(target->z, box->left + BOX_BIFF, box->right - BOX_BIFF);
+        }
 
-    if ((prime_free & (BOX_CLIP_TOP | BOX_CLIP_BOTTOM)) != 0) {
-        target->x = box->top + WALL_L / 2
-            + (((box->bottom - box->top - WALL_L) * Random_GetControl()) >> 15);
-    } else if ((prime_free & BOX_CLIP_SECONDARY) == 0) {
-        CLAMP(target->x, box->top + BOX_BIFF, box->bottom - BOX_BIFF);
+        if ((prime_free & (BOX_CLIP_TOP | BOX_CLIP_BOTTOM)) != 0) {
+            target->x = box->top + WALL_L / 2
+                + (((box->bottom - box->top - WALL_L) * Random_GetControl())
+                   >> 15);
+        } else if ((prime_free & BOX_CLIP_SECONDARY) == 0) {
+            CLAMP(target->x, box->top + BOX_BIFF, box->bottom - BOX_BIFF);
+        }
     }
 
     if (lot->setup.fly != 0) {
-        target->y = box->height - STEP_L * 3 / 2;
+        target->y =
+            box->height - (g_TRVersion >= 4 ? STEP_L * 5 / 4 : STEP_L * 3 / 2);
     } else {
         target->y = box->height;
     }
