@@ -62,6 +62,23 @@ static void M_ApplyTurns(const JSON_VALUE *const value)
     }
 }
 
+static void M_ApplyVertexSnap(const JSON_VALUE *const value)
+{
+    CONFIG_SET(
+        g_Config.rendering.vertex_snap_mode,
+        JSON_ValueIsTrue(value) ? VERTEX_SNAP_MODE_320X240
+                                : VERTEX_SNAP_MODE_DISABLED);
+}
+
+static void M_ApplyVertexSnapAtUpscale(const JSON_VALUE *const value)
+{
+    if (JSON_ValueIsTrue(value)
+        && g_Config.rendering.vertex_snap_mode != VERTEX_SNAP_MODE_DISABLED) {
+        CONFIG_SET(
+            g_Config.rendering.vertex_snap_mode, VERTEX_SNAP_MODE_UPSCALE_RES);
+    }
+}
+
 // Every key no build writes any more, and what became of it.
 static const M_MIGRATION m_Migrations[] = {
     // TRX ..1.9: game modes changed to policy.
@@ -74,6 +91,10 @@ static const M_MIGRATION m_Migrations[] = {
     { "enable_save_crystals", "save_crystal_mode", M_ApplySaveCrystals },
     // TRX ..1.10: neutral twists on/off changed to cover multiple animations.
     { "enable_neutral_twists", "enable_alternative_turns", M_ApplyTurns },
+    // TRX ..1.10: vertex snapping on/off changed to a resolution selector.
+    { "enable_vertex_snap", "vertex_snap_mode", M_ApplyVertexSnap },
+    { "enable_vertex_snap_at_upscale", "vertex_snap_mode",
+      M_ApplyVertexSnapAtUpscale },
     {}, // sentinel
 };
 

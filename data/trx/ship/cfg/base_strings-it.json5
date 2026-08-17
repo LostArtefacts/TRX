@@ -869,6 +869,11 @@
             "UI_STYLE_PC": "PC",
             "UI_STYLE_PS1": "PS1",
         },
+        "VERTEX_SNAP_MODE": {
+            "VERTEX_SNAP_MODE_320X240": "\\{review}320x240",
+            "VERTEX_SNAP_MODE_DISABLED": "\\{review}Disabled",
+            "VERTEX_SNAP_MODE_UPSCALE_RES": "\\{review}Upscale Res",
+        },
         "WALL_GLITCH_MODE": {
             "WALL_GLITCH_FIXED": "Corretto",
             "WALL_GLITCH_TR1": "TR1",
@@ -1500,14 +1505,6 @@
             "title": "Filtro trapezoidale",
             "description": "Corregge la renderizzazione dei quadrilateri.",
         },
-        "rendering.enable_vertex_snap": {
-            "title": "Vertici tremolanti",
-            "description": "Arrotonda le posizioni dei vertici ai pixel interi di uno schermo 320x240, per simulare la geometria tremolante delle versioni PlayStation.",
-        },
-        "rendering.enable_vertex_snap_at_upscale": {
-            "title": "\\{review}",
-            "description": "\\{review}",
-        },
         "rendering.enable_vsync": {
             "title": "Sincronizzazione verticale",
             "description": "Attiva o disattiva la sincronizzazione verticale.",
@@ -1555,6 +1552,10 @@
         "rendering.upscaling_filter": {
             "title": "Filtro ridimensionamento",
             "description": "Alterna l'aspetto smussato o pixelato per l'intero schermo.",
+        },
+        "rendering.vertex_snap_mode": {
+            "title": "Vertici tremolanti",
+            "description": "\\{review}",
         },
         "ui.airbar_color": {
             "title": "Colore barra ossigeno",

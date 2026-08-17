@@ -6,7 +6,7 @@
 - Fixed Lara being able to turn too quickly in swamp rooms (regression from 1.0)
 
 **UI**
-- Added an option for vertex snapping to use the upscaled scene resolution instead of 320×240 (Graphic Options → Rendering → Vertex Snap At Upscale Resolution) (#6278)
+- Changed vertex snapping to offer Disabled, 320x240, and Upscale Res modes (#6278)
 - Changed the Fix one-shot music triggers option to sit with the other music settings (Sound → Misc)
 - Changed the tab arrows to no longer vanish once the selection moved into the list below them
 - Changed Lara's outfit setting to offer only the outfits the current level can dress her in

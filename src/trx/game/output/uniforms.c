@@ -111,6 +111,28 @@ static int16_t M_GetMinShade(void)
     }
 }
 
+static bool M_ResolveVertexSnapResolution(float resolution[2])
+{
+    int32_t width = 0;
+    int32_t height = 0;
+    switch (g_Config.rendering.vertex_snap_mode) {
+    case VERTEX_SNAP_MODE_DISABLED:
+        return false;
+    case VERTEX_SNAP_MODE_320X240:
+        width = 320;
+        height = 240;
+        break;
+    case VERTEX_SNAP_MODE_UPSCALE_RES:
+        width = Viewport_GetWidth(VIEWPORT_SCENE);
+        height = Viewport_GetHeight(VIEWPORT_SCENE);
+        break;
+    }
+
+    resolution[0] = (float)width;
+    resolution[1] = (float)height;
+    return true;
+}
+
 void Output_Uniforms_UploadOrthoMatrix(const OUTPUT_UNIFORMS *const uniforms)
 {
     M_UNIFORM_MATRICES matrices = {};
@@ -136,9 +158,9 @@ void Output_Uniforms_UploadViewMatrix(
 
 void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
 {
-    const bool snap_at_upscale_resolution =
-        g_Config.rendering.enable_vertex_snap
-        && g_Config.rendering.enable_vertex_snap_at_upscale;
+    float vertex_snap_resolution[2] = { 320.0f, 240.0f };
+    const bool vertex_snap_enabled =
+        M_ResolveVertexSnapResolution(vertex_snap_resolution);
     M_UNIFORM_GENERAL general = {
         .time = Output_GetTime(),
         .time_in_game = Output_GetTimeInGame(),
@@ -153,12 +175,8 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
             (float)Viewport_GetHeight(VIEWPORT_GAME),
         },
         .vertex_snap_resolution = {
-            snap_at_upscale_resolution
-                ? (float)Viewport_GetWidth(VIEWPORT_SCENE)
-                : 320.0f,
-            snap_at_upscale_resolution
-                ? (float)Viewport_GetHeight(VIEWPORT_SCENE)
-                : 240.0f,
+            vertex_snap_resolution[0],
+            vertex_snap_resolution[1],
         },
         .min_shade = M_GetMinShade(),
         .billboard_lock_mode = g_Config.rendering.sprite_lock_mode,
@@ -167,7 +185,7 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
         .textures_enabled = g_Config.rendering.enable_textures,
         .trapezoid_filter_enabled = g_Config.rendering.enable_trapezoid_filter,
         .reflections_enabled = g_Config.visuals.enable_reflections,
-        .vertex_snap_enabled = g_Config.rendering.enable_vertex_snap,
+        .vertex_snap_enabled = vertex_snap_enabled,
         .fog_distance = {Output_GetFogStart(), Output_GetFogEnd()},
         .fog_color = {
             Output_GetFogColor().r,

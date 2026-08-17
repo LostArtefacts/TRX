@@ -123,12 +123,6 @@ static bool M_Multisampling_IsAvailable(
     return g_Config.rendering.supersampling_factor <= 1;
 }
 
-static bool M_VertexSnapAtUpscaleResolution_IsAvailable(
-    const CONFIG_OPTION *const option, void *const user_data)
-{
-    return g_Config.rendering.enable_vertex_snap;
-}
-
 static bool M_EnableBreeze_IsAvailable(
     const CONFIG_OPTION *const option, void *const user_data)
 {
@@ -376,10 +370,6 @@ REGISTER_UI_SETTING_HANDLER(
 REGISTER_UI_SETTING_HANDLER(
         .key = "rendering.multisampling_factor", .delta_slow = 1,
         .delta_fast = 1, .is_available = M_Multisampling_IsAvailable)
-
-REGISTER_UI_SETTING_HANDLER(
-        .key = "rendering.enable_vertex_snap_at_upscale",
-        .is_available = M_VertexSnapAtUpscaleResolution_IsAvailable)
 
 REGISTER_UI_SETTING_HANDLER(
         .key = "rendering.borders", .delta_slow = 1, .delta_fast = 5)

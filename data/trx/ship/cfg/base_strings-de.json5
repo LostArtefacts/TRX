@@ -869,6 +869,11 @@
             "UI_STYLE_PC": "PC",
             "UI_STYLE_PS1": "PS1",
         },
+        "VERTEX_SNAP_MODE": {
+            "VERTEX_SNAP_MODE_320X240": "\\{review}320x240",
+            "VERTEX_SNAP_MODE_DISABLED": "\\{review}Disabled",
+            "VERTEX_SNAP_MODE_UPSCALE_RES": "\\{review}Upscale Res",
+        },
         "WALL_GLITCH_MODE": {
             "WALL_GLITCH_FIXED": "Gefixt",
             "WALL_GLITCH_TR1": "TR1",
@@ -1500,14 +1505,6 @@
             "title": "Trapezoid-Filter",
             "description": "Korrigiert das Rendern von Vierecken.",
         },
-        "rendering.enable_vertex_snap": {
-            "title": "\\{review}Vertex-Snapping",
-            "description": "\\{review}Rundet die Vertex-Positionen auf ganze Pixel eines 320x240-Bildschirms, für die wackelige Geometrie der PlayStation-Fassungen.",
-        },
-        "rendering.enable_vertex_snap_at_upscale": {
-            "title": "\\{review}",
-            "description": "\\{review}",
-        },
         "rendering.enable_vsync": {
             "title": "VSync",
             "description": "Schaltet V-Sync an oder aus.",
@@ -1555,6 +1552,10 @@
         "rendering.upscaling_filter": {
             "title": "Upscaling-Filter",
             "description": "Schaltet zwischen weichgezeichneter oder pixeliger Optik für das gesamte Bild.",
+        },
+        "rendering.vertex_snap_mode": {
+            "title": "\\{review}Vertex-Snapping",
+            "description": "\\{review}",
         },
         "ui.airbar_color": {
             "title": "Sauerstoffleistenfarbe",
