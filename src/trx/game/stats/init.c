@@ -342,6 +342,7 @@ void Stats_CalculateMaxStats(void)
         if (!SHOULD(File_OpenPathInMemory(level->path, &file))) {
             continue;
         }
+        File_SetSoftFailure(file, true);
 
         const LEVEL_FORMAT_LOADER *const loader =
             Level_Format_GuessLoader(file);
@@ -353,7 +354,8 @@ void Stats_CalculateMaxStats(void)
             LUA_RunLevelScript(level);
 
             Inject_InitLevel(level, INJECTION_MODE_STATS);
-            if (IS_OK(loader->probe(loader, file, LEVEL_FORMAT_PROBE_STATS))) {
+            if (IS_OK(loader->probe(loader, file, LEVEL_FORMAT_PROBE_STATS))
+                && !File_HasFailed(file)) {
                 Inject_AllInjections();
                 M_SetupStatsFullInitObjects();
 

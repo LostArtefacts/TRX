@@ -94,6 +94,7 @@ RESULT Level_Format_LoadFromFile(
     BENCHMARK benchmark = Benchmark_Start();
     TRX_FILE *file = nullptr;
     MUST(File_OpenPathInMemory(level->path, &file));
+    File_SetSoftFailure(file, true);
 
     const LEVEL_FORMAT_LOADER *const loader = Level_Format_GuessLoader(file);
     if (loader == nullptr) {
@@ -103,7 +104,10 @@ RESULT Level_Format_LoadFromFile(
     g_TRVersion = loader->game_version;
     Level_Context_Reset(loader);
     ASSERT(loader->load != nullptr);
-    const RESULT result = loader->load(loader, file);
+    RESULT result = loader->load(loader, file);
+    if (IS_OK(result) && File_HasFailed(file)) {
+        result = FAIL("the level ends before its data does");
+    }
 
     File_Close(file);
     Benchmark_End(&benchmark, nullptr);

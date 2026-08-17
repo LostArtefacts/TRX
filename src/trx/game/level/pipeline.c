@@ -49,6 +49,7 @@ static void M_InitialiseSamplesFromFile(
             "the level plays without its sounds")) {
         goto finish;
     }
+    File_SetSoftFailure(fp, true);
     LOG_DEBUG("Loading samples from %s", file_name);
 
     const int32_t sample_count = info->samples.offset_count;

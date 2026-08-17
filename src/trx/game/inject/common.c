@@ -205,9 +205,10 @@ static void M_ReadFile(
         file_name == nullptr ? M_VIRTUAL_NAME : file_name;
     char *payload = nullptr;
     injection->path = Memory_DupStr(inj_name);
+    File_SetSoftFailure(file, true);
 
     const uint32_t magic = File_ReadU32(file);
-    if (magic != INJECTION_MAGIC) {
+    if (File_HasFailed(file) || magic != INJECTION_MAGIC) {
         LOG_WARNING("Invalid injection magic in %s", inj_name);
         goto cleanup;
     }
@@ -249,6 +250,7 @@ static void M_ReadFile(
     }
 
     injection->fp = File_OpenBuffer(payload, uncompressed_size);
+    File_SetSoftFailure(injection->fp, true);
     if (m_Context.mode != INJECTION_MODE_STATS) {
         LOG_INFO("%s queued for injection", inj_name);
     }
