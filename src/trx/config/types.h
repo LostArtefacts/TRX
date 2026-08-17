@@ -330,6 +330,7 @@ typedef struct {
         ASPECT_MODE aspect_mode;
         int32_t fps;
         bool enable_trapezoid_filter;
+        bool enable_affine_mapping;
         bool enable_lighting;
         bool enable_ps1_fog;
         bool enable_textures;

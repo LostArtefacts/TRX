@@ -32,8 +32,10 @@ out float gShade;
 out vec4 gColor;
 out vec3 gAdd;
 flat out float gReflectivity;
-// Interpolates the PS1 fog factor linearly in screen space.
+// Interpolates the PS1 fog factor linearly in screen space, and with it a
+// second copy of the texture coordinates for affine mapping.
 noperspective out float gFogFactor;
+noperspective out vec4 gAffineUV;
 
 vec3 gammaCurve(vec3 rgb, float gamma_exp)
 {
@@ -132,6 +134,7 @@ void main(void) {
     if (uTrapezoidFilterEnabled != 0) {
         gTexUV *= inTrapezoidRatios;
     }
+    gAffineUV = vec4(gTexUV, gTrapezoidRatios);
 
     // The vertex diffuse is lit first and then modulated by the texture (or by
     // the flat polygon's palette color). Keep the lighting component separate
@@ -303,6 +306,7 @@ in vec3 gAdd;
 in vec2 gTrapezoidRatios;
 flat in float gReflectivity;
 noperspective in float gFogFactor;
+noperspective in vec4 gAffineUV;
 out vec4 outColor;
 
 vec4 applyFog(vec4 color, float dist)
@@ -393,9 +397,14 @@ void main(void) {
 
     // Texturing and base color
     if (gTexLayer >= 0) {
-        vec3 texCoords = vec3(gTexUV.x, gTexUV.y, gTexLayer);
+        // The PlayStation had no perspective correction: it interpolated the
+        // texture coordinates flat across the face, which is what warps its
+        // textures as the camera turns.
+        bool affine = uAffineMappingEnabled != 0;
+        vec2 uv = affine ? gAffineUV.xy : gTexUV;
+        vec3 texCoords = vec3(uv.x, uv.y, gTexLayer);
         if (uTrapezoidFilterEnabled != 0) {
-            texCoords.xy /= gTrapezoidRatios;
+            texCoords.xy /= affine ? gAffineUV.zw : gTrapezoidRatios;
         }
         if ((gFlags & VERT_TEX_WRAP) == 0u) {
             texCoords.xy = clampTexAtlas(texCoords.xy, gAtlasSize);

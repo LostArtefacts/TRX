@@ -4,6 +4,7 @@
         "rendering.dither_mode": "ps1",
         "rendering.enable_ps1_fog": true,
         "rendering.lighting_curve": "saturate",
+        "rendering.enable_affine_mapping": true,
         "ui.menu_style": "ps1",
         "ui.enable_smooth_bars": false,
         "ui.bar_look": "tr3_ps1",

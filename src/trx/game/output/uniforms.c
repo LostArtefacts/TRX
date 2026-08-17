@@ -39,6 +39,7 @@
     X_DECLARE_MEMBER(int, vertex_snap_enabled)                                 \
     X_DECLARE_MEMBER(int, ps1_fog_enabled)                                     \
     X_DECLARE_MEMBER(int, lighting_curve)                                      \
+    X_DECLARE_MEMBER(int, affine_mapping_enabled)                              \
     X_DECLARE_MEMBER(int, tr_version)                                          \
     X_DECLARE_MEMBER(float, uv_scroll_tick)                                    \
     X_DECLARE_MEMBER(float, _pad, [2])
@@ -190,6 +191,7 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
         .vertex_snap_enabled = vertex_snap_enabled,
         .ps1_fog_enabled = g_Config.rendering.enable_ps1_fog,
         .lighting_curve = g_Config.rendering.lighting_curve,
+        .affine_mapping_enabled = g_Config.rendering.enable_affine_mapping,
         .fog_distance = {Output_GetFogStart(), Output_GetFogEnd()},
         .fog_color = {
             Output_GetFogColor().r,

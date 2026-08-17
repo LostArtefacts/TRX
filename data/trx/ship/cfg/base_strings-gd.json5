@@ -1520,6 +1520,10 @@
             "title": "Dithering",
             "description": "\\{review}Taghaidh seo dubharadh paileid an reandarair bathar-bog PC tùsail no dithering RGB555 PlayStation.",
         },
+        "rendering.enable_affine_mapping": {
+            "title": "\\{review}Mapadh inneach afaineach",
+            "description": "\\{review}Bheir seo air falbh ceartachadh sealladh-doimhneachd bhon inneach, rud nach robh aig a' PlayStation, agus mar sin bidh na h-inneachan a' cur car dhiubh fhèin air uachdaran mòra nuair a ghluaiseas an camara.",
+        },
         "rendering.enable_ps1_fog": {
             "title": "\\{review}Ceò PlayStation",
             "description": "\\{review}Measgaichidh seo geoimeatraidh fad às a-steach do dhath a' cheò mar a rinn lasachadh doimhneachd na PlayStation: a rèir 1/astar seach an astar fhèin, agus air a thomhas gach oisean, agus mar sin nochdaidh bannan air uachdaran mòra.",

@@ -1520,6 +1520,10 @@
             "title": "Retinatura",
             "description": "\\{review}Seleziona l'ombreggiatura della tavolozza del renderer software originale per PC o il dithering RGB555 di PlayStation.",
         },
+        "rendering.enable_affine_mapping": {
+            "title": "\\{review}Mappatura texture affine",
+            "description": "\\{review}Rimuove la correzione prospettica dalla texturizzazione, che la PlayStation non aveva, così le texture si deformano e ondeggiano sulle superfici ampie quando la telecamera si muove.",
+        },
         "rendering.enable_ps1_fog": {
             "title": "\\{review}Nebbia PlayStation",
             "description": "\\{review}Sfuma la geometria lontana verso il colore della nebbia come faceva l'attenuazione in profondità della PlayStation: lungo 1/distanza anziché la distanza, e calcolata per vertice, così la sfumatura mostra bande sulle superfici ampie.",
