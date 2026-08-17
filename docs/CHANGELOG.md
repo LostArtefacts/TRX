@@ -47,6 +47,9 @@
 **Music and sound**
 - Fixed crystal sound effects not playing if Lara collects one underwater (OG bug)
 
+**Rendering**
+- Fixed scenery in an adjoining room being cut off along the edges of the portal it is seen through
+
 **TR1**
 - Changed Lara to retain her equipment when turning to gold on the Midas Hand, with the equipment also turning to gold
 - Fixed Lara's arm remaining in the flare pose if holding one on the Midas Hand
