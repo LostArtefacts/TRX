@@ -636,9 +636,16 @@ static void M_HandleValue(M_STATE *state, JSON_VALUE *value, uint8_t marker)
     }
 }
 
-JSON_VALUE *BSON_Parse(const char *src, size_t src_size)
+RESULT BSON_Parse(
+    const char *const src, const size_t src_size, JSON_VALUE **const out_value)
 {
-    return BSON_ParseEx(src, src_size, nullptr);
+    BSON_PARSE_RESULT parse_result = {};
+    *out_value = BSON_ParseEx(src, src_size, &parse_result);
+    FAIL_IF(
+        *out_value == nullptr, "%s at byte %zu",
+        BSON_GetErrorDescription(parse_result.error),
+        parse_result.error_offset);
+    return OK;
 }
 
 JSON_VALUE *BSON_ParseEx(

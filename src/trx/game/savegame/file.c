@@ -47,9 +47,10 @@ static RESULT M_ParseFromBuffer(
             "the savegame data would not decompress (error %d)", error_code);
     }
 
-    JSON_VALUE *const root = BSON_Parse(uncompressed, uncompressed_size);
+    JSON_VALUE *root = nullptr;
+    const RESULT result = BSON_Parse(uncompressed, uncompressed_size, &root);
     Memory_FreePointer(&uncompressed);
-    FAIL_IF(root == nullptr, "the savegame data does not read as BSON");
+    MUST(result, "the savegame data does not read as BSON");
     *out_root = root;
     return OK;
 }
@@ -71,8 +72,9 @@ static RESULT M_SaveRaw(
     TRX_FILE *const fp, const JSON_VALUE *const root, const int32_t level_num,
     const bool is_quick)
 {
-    size_t uncompressed_size;
-    char *uncompressed = BSON_Write(root, &uncompressed_size);
+    size_t uncompressed_size = 0;
+    char *uncompressed = nullptr;
+    MUST(BSON_Write(root, (void **)&uncompressed, &uncompressed_size));
 
     uLongf compressed_size = compressBound(uncompressed_size);
     char *compressed = Memory_Alloc(compressed_size);

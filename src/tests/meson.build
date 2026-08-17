@@ -250,7 +250,9 @@ unit_tests += {
     'core/bson/write.c',
     'core/json/base.c',
     'core/memory.c',
+    'core/result.c',
   ],
+  'src': ['harness/stubs_result.c'],
 }
 
 unit_tests += {
