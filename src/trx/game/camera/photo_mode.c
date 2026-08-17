@@ -14,7 +14,6 @@
 #define MIN_PHOTO_FOV 10
 #define MAX_PHOTO_FOV 150
 #define PHOTO_ROT_SHIFT (DEG_1 * 4)
-#define PHOTO_MAX_PITCH_ROLL (DEG_90 - DEG_1)
 #define PHOTO_MAX_SPEED 100
 
 static int32_t m_PhotoSpeed = 0;
@@ -121,11 +120,14 @@ static void M_ApplyRotation(
     }
     roll += d_roll;
 
-    // handle pivoting
-    if (pitch >= DEG_90 || pitch <= -DEG_90) {
-        roll += DEG_180;
+    if (pitch > DEG_90) {
+        pitch = DEG_180 - pitch;
         yaw += DEG_180;
-        pitch = g_Camera.target_elevation;
+        roll += DEG_180;
+    } else if (pitch < -DEG_90) {
+        pitch = -DEG_180 - pitch;
+        yaw += DEG_180;
+        roll += DEG_180;
     }
 
     g_Camera.target_angle = yaw;
