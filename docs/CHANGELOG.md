@@ -4,6 +4,9 @@
 - Fixed the kayak at times not being drawn in certain rooms (regression from 1.10.1)
 - Fixed some of Lara's skin joints incorrectly being drawn when riding the kayak (regression from 1.10)
 
+**Saves and settings**
+- Fixed save crystals activating even while Crystal mode is set to Disabled (Gameplay → General → Crystal mode) (regression from 1.10)
+
 
 ## [1.10.1](https://github.com/LostArtefacts/TRX/compare/trx-1.10...trx-1.10.1) - 2026-08-16
 **UI**

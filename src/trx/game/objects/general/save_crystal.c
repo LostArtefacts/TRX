@@ -37,6 +37,8 @@ typedef struct {
     int16_t initial_angle;
 } M_PRIV;
 
+static int32_t m_ConfigListener = -1;
+
 static const OBJECT_BOUNDS m_SaveCrystal_Bounds = {
     .shift = {
         .min = { .x = -STEP_L*3/2, .y = -100, .z = -STEP_L*3/2, },
@@ -123,9 +125,8 @@ static void M_Initialise(const int16_t item_num)
 
     M_ApplyMesh(item);
 
-    if (g_Config.gameplay.save_crystal_mode == SAVE_CRYSTAL_OFF) {
-        Item_SetVisible(item, false);
-    } else if (g_TRVersion != 3) {
+    if (g_Config.gameplay.save_crystal_mode != SAVE_CRYSTAL_OFF
+        && g_TRVersion != 3) {
         // TR3 places its crystals with the code bits already set, so the item
         // manager activates them; the injected TR1/TR2 ones need it done here.
         Item_AddSimulated(item_num);
@@ -324,6 +325,48 @@ static void M_Collision(
     GF_ShowInventory(INV_SAVE_CRYSTAL_MODE);
 }
 
+static void M_ApplyMode(OBJECT *const obj)
+{
+    const SAVE_CRYSTAL_MODE mode = g_Config.gameplay.save_crystal_mode;
+    const bool enabled = mode != SAVE_CRYSTAL_OFF;
+
+    obj->draw_func = enabled ? Object_DrawAnimatingItem : nullptr;
+    obj->control_func = enabled ? M_Control : nullptr;
+    obj->collision_func = mode == SAVE_CRYSTAL_SAVE ? M_Collision : nullptr;
+    obj->save_flags = enabled;
+    if (g_TRVersion != 3) {
+        Object_SetReflective(O_SAVE_CRYSTAL_ITEM, enabled);
+        Object_SetReflective(O_SAVE_CRYSTAL_OPTION, enabled);
+    }
+}
+
+static void M_ApplyModeToLevel(void)
+{
+    OBJECT *const obj = Object_Get(O_SAVE_CRYSTAL_ITEM);
+    if (!obj->loaded) {
+        return;
+    }
+
+    M_ApplyMode(obj);
+
+    for (int32_t item_num = 0; item_num < Item_GetTotalCount(); item_num++) {
+        ITEM *const item = Item_Get(item_num);
+        if (item->object_id != O_SAVE_CRYSTAL_ITEM) {
+            continue;
+        }
+        M_ApplyMesh(item);
+        Item_AddSimulated(item_num);
+    }
+}
+
+static void M_HandleConfigChange(const EVENT *const event, void *const data)
+{
+    if (Config_Change_HasMirror(
+            event->data, &g_Config.gameplay.save_crystal_mode)) {
+        M_ApplyModeToLevel();
+    }
+}
+
 static void M_Setup(OBJECT *const obj)
 {
     obj->initialise_func = M_Initialise;
@@ -350,19 +393,11 @@ static void M_Setup(OBJECT *const obj)
             M_PRIV, heal_amount, LARA_MAX_HITPOINTS / 2,
             "Health restored by a healing crystal."));
 
-    const SAVE_CRYSTAL_MODE mode = g_Config.gameplay.save_crystal_mode;
-    if (mode == SAVE_CRYSTAL_OFF) {
-        return;
-    }
+    M_ApplyMode(obj);
 
-    obj->control_func = M_Control;
-    obj->save_flags = true;
-    if (mode == SAVE_CRYSTAL_SAVE) {
-        obj->collision_func = M_Collision;
-    }
-    if (g_TRVersion != 3) {
-        Object_SetReflective(O_SAVE_CRYSTAL_ITEM, true);
-        Object_SetReflective(O_SAVE_CRYSTAL_OPTION, true);
+    if (m_ConfigListener < 0) {
+        m_ConfigListener =
+            Config_SubscribeChanges(M_HandleConfigChange, nullptr);
     }
 }
 
