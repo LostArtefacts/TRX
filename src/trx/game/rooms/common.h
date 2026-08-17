@@ -41,7 +41,12 @@ int32_t Room_GetOutsideStatus(
     XYZ_32 pos, int16_t *out_room_num, int16_t *out_bbox_room_num);
 
 bool Room_PointInside(const ROOM *room, XYZ_32 point);
+
+// Returns whether the two rooms share space. Rooms that merely touch, such
+// as neighbours meeting at a shared wall or stacked floor to ceiling, do not
+// count as overlapping.
 bool Room_CheckOverlap(int16_t room_num_0, int16_t room_num_1);
+
 void Room_GetNearbyRooms(XYZ_32 pos, int32_t r, int32_t h, int16_t room_num);
 
 bool Room_FindValidPos(XYZ_32 *out_pos, int16_t *out_room_num);

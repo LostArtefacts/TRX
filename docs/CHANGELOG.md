@@ -7,6 +7,9 @@
 **Saves and settings**
 - Fixed save crystals activating even while Crystal mode is set to Disabled (Gameplay → General → Crystal mode) (regression from 1.10)
 
+**Rendering**
+- Fixed scenery in an adjoining room being cut off along the edges of the portal it is seen through
+
 
 ## [1.10.1](https://github.com/LostArtefacts/TRX/compare/trx-1.10...trx-1.10.1) - 2026-08-16
 **UI**

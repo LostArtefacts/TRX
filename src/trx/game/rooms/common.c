@@ -661,12 +661,12 @@ bool Room_CheckOverlap(const int16_t room_num_0, const int16_t room_num_1)
 
     // clang-format off
     return (
-        room_0_bounds.min.x <= room_1_bounds.max.x &&
-        room_0_bounds.max.x >= room_1_bounds.min.x &&
-        room_0_bounds.min.y <= room_1_bounds.max.y &&
-        room_0_bounds.max.y >= room_1_bounds.min.y &&
-        room_0_bounds.min.z <= room_1_bounds.max.z &&
-        room_0_bounds.max.z >= room_1_bounds.min.z);
+        room_0_bounds.min.x < room_1_bounds.max.x &&
+        room_0_bounds.max.x > room_1_bounds.min.x &&
+        room_0_bounds.min.y < room_1_bounds.max.y &&
+        room_0_bounds.max.y > room_1_bounds.min.y &&
+        room_0_bounds.min.z < room_1_bounds.max.z &&
+        room_0_bounds.max.z > room_1_bounds.min.z);
     // clang-format on
 }
 
