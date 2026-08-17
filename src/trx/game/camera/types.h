@@ -56,6 +56,7 @@ typedef struct {
         struct {
             XYZ_32 target;
             XYZ_32 pos;
+            XYZ_16 rot;
             int32_t shift;
             int16_t fov;
         } result, prev;

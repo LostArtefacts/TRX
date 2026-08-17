@@ -306,12 +306,19 @@ void Camera_Apply(void)
     // so that the room portal culling that follows and the projection matrix
     // uploaded later in the frame agree on the same value.
     Output_ApplyFOV();
-    Matrix_LookAt(
-        g_Camera.interp.result.pos.x,
-        g_Camera.interp.result.pos.y + g_Camera.interp.result.shift,
-        g_Camera.interp.result.pos.z, g_Camera.interp.result.target.x,
-        g_Camera.interp.result.target.y, g_Camera.interp.result.target.z,
-        g_Camera.roll);
+    const XYZ_32 view_pos = {
+        .x = g_Camera.interp.result.pos.x,
+        .y = g_Camera.interp.result.pos.y + g_Camera.interp.result.shift,
+        .z = g_Camera.interp.result.pos.z,
+    };
+    if (g_Camera.type == CAM_PHOTO_MODE) {
+        Matrix_GenerateW2V(&view_pos, &g_Camera.interp.result.rot);
+    } else {
+        Matrix_LookAt(
+            view_pos.x, view_pos.y, view_pos.z, g_Camera.interp.result.target.x,
+            g_Camera.interp.result.target.y, g_Camera.interp.result.target.z,
+            g_Camera.roll);
+    }
 
     XYZ_32 poison_scale;
     if (Lara_Poison_GetViewScale(&poison_scale)) {

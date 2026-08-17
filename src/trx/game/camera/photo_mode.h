@@ -1,5 +1,9 @@
 #pragma once
 
+#include <trx/core/math/types.h>
+
+XYZ_16 Camera_PhotoMode_GetRot(void);
+
 void Camera_PhotoMode_Enter(void);
 void Camera_PhotoMode_Exit(void);
 void Camera_PhotoMode_Update(void);
