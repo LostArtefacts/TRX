@@ -1520,6 +1520,10 @@
             "title": "\\{review}Dithering",
             "description": "\\{review}Wybiera cieniowanie palety oryginalnego renderera programowego PC lub dithering RGB555 z PlayStation.",
         },
+        "rendering.enable_affine_mapping": {
+            "title": "\\{review}Afiniczne mapowanie tekstur",
+            "description": "\\{review}Usuwa korekcję perspektywy przy teksturowaniu, której PlayStation nie miało, więc tekstury falują i pływają po dużych powierzchniach przy ruchu kamery.",
+        },
         "rendering.enable_ps1_fog": {
             "title": "\\{review}Mgła z PlayStation",
             "description": "\\{review}Zlewa odległą geometrię z kolorem mgły tak, jak robiło to wygaszanie głębi na PlayStation: wzdłuż 1/odległości zamiast odległości i liczone na wierzchołek, więc przejście pasmuje na dużych powierzchniach.",

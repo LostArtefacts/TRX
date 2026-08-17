@@ -60,6 +60,7 @@
 - Fixed crystal sound effects not playing if Lara collects one underwater (OG bug) (TRX1111)
 
 **Rendering**
+- Added affine texture mapping, the uncorrected texturing of the PlayStation, so textures warp across large surfaces as the camera moves; the PlayStation presets turn it on (Graphic Options → Rendering → Affine texture mapping)
 - Added PlayStation RGB555 dithering and changed Dithering to offer Disabled, Software Renderer and PS1 (Graphic Options → Rendering → Dithering)
 - Added the PlayStation depth cue (Graphic Options → Rendering → PlayStation fog)
 - Added the PlayStation lighting model, which deepens bright surfaces into their own color rather than white (Graphic Options → Rendering → Lighting model)

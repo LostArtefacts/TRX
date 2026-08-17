@@ -4,6 +4,7 @@
         "rendering.dither_mode": "disabled",
         "rendering.enable_ps1_fog": false,
         "rendering.lighting_curve": "flat",
+        "rendering.enable_affine_mapping": false,
         "ui.menu_style": "pc",
         "ui.enable_smooth_bars": false,
         "ui.bar_look": "tr3_pc",

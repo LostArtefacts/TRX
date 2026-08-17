@@ -1520,6 +1520,10 @@
             "title": "\\{review}Dithering",
             "description": "\\{review}Wählt die Paletten-Schattierung des ursprünglichen PC-Software-Renderers oder PlayStation-RGB555-Dithering aus.",
         },
+        "rendering.enable_affine_mapping": {
+            "title": "\\{review}Affines Textur-Mapping",
+            "description": "\\{review}Lässt die perspektivische Korrektur beim Texturieren weg, die der PlayStation fehlte, sodass Texturen auf großen Flächen verzerren und wandern, wenn sich die Kamera bewegt.",
+        },
         "rendering.enable_ps1_fog": {
             "title": "\\{review}PlayStation-Nebel",
             "description": "\\{review}Blendet entfernte Geometrie so zur Nebelfarbe über, wie es die Tiefenabstufung der PlayStation tat: entlang 1/Entfernung statt der Entfernung und pro Vertex berechnet, sodass der Verlauf über große Flächen Stufen bildet.",

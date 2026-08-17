@@ -1520,6 +1520,10 @@
             "title": "Dithering",
             "description": "Selects original PC software-renderer palette shading or PlayStation RGB555 dithering.",
         },
+        "rendering.enable_affine_mapping": {
+            "title": "Affine texture mapping",
+            "description": "Drops perspective correction from texturing, as the PlayStation had none, so textures warp and swim across large surfaces when the camera moves.",
+        },
         "rendering.enable_ps1_fog": {
             "title": "PlayStation fog",
             "description": "Blends distant geometry toward the fog color the way the PlayStation depth cue did: along 1/distance rather than distance, and worked out per vertex, so the ramp bands across large surfaces.",

@@ -53,6 +53,7 @@ layout(std140) uniform Globals {
     int uVertexSnapEnabled; // bool
     int uPS1FogEnabled; // bool
     int uLightingCurve;
+    int uAffineMappingEnabled; // bool
     int uTRVersion;
     float uUVScrollTick;
 };
