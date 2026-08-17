@@ -69,6 +69,7 @@
 - Changed a broken settings, strings or game data file to say what is wrong with it and where
 - Changed Lara turning to gold on the Midas hand to gild the outfit she has on, rather than swap her for a golden model
 - Fixed the game closing when a language with a broken strings file is picked
+- Fixed the game closing when another game is switched to while Lara is riding a vehicle
 - Fixed a false warning that the settings could not be saved
 
 **Lua**
