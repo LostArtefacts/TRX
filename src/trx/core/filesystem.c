@@ -9,6 +9,7 @@
 #include <trx/debug.h>
 
 #include <dirent.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -258,49 +259,52 @@ RESULT FS_Load(const char *path, char **output_data, size_t *output_size)
     return OK;
 }
 
-void FS_CreateDirectory(const char *path)
+RESULT FS_CreateDirectory(const char *path)
 {
-    if (path == nullptr) {
-        return;
-    }
+    FAIL_IF(path == nullptr, "no directory was named");
 #if defined(_WIN32)
     wchar_t *const wide_path = M_UTF8ToWide(path);
-    _wmkdir(wide_path);
+    const bool made = _wmkdir(wide_path) == 0 || errno == EEXIST;
     Memory_Free(wide_path);
 #else
-    mkdir(path, 0775);
+    const bool made = mkdir(path, 0775) == 0 || errno == EEXIST;
 #endif
+    FAIL_IF(
+        !made, "%s: the directory could not be made: %s", path,
+        strerror(errno));
+    return OK;
 }
 
-bool FS_Delete(const char *const path)
+RESULT FS_Delete(const char *const path)
 {
-    if (path == nullptr) {
-        return false;
-    }
+    FAIL_IF(path == nullptr, "no file was named");
 #if defined(_WIN32)
     wchar_t *const wide_path = M_UTF8ToWide(path);
-    const bool result = _wremove(wide_path) == 0;
+    const bool removed = _wremove(wide_path) == 0;
     Memory_Free(wide_path);
-    return result;
 #else
-    return remove(path) == 0;
+    const bool removed = remove(path) == 0;
 #endif
+    FAIL_IF(
+        !removed, "%s: the file could not be deleted: %s", path,
+        strerror(errno));
+    return OK;
 }
 
-void FS_EnsureParentDirectories(const char *path)
+RESULT FS_EnsureParentDirectories(const char *path)
 {
     ASSERT(path != nullptr);
-    char *parent = FS_GetParentDirectory(path);
-    if (parent != nullptr) {
-        /* Only recurse/create if there is a distinct, non-empty parent */
-        if (parent[0] != '\0' && strcmp(parent, path) != 0) {
-            if (!FS_DirExists(parent)) {
-                FS_EnsureParentDirectories(parent);
-                FS_CreateDirectory(parent);
-            }
-        }
-        Memory_FreePointer(&parent);
+    AUTO_FREE char *parent = FS_GetParentDirectory(path);
+    if (parent == nullptr) {
+        return OK;
     }
+    // Only recurse/create if there is a distinct, non-empty parent
+    if (parent[0] == '\0' || strcmp(parent, path) == 0
+        || FS_DirExists(parent)) {
+        return OK;
+    }
+    MUST(FS_EnsureParentDirectories(parent));
+    return FS_CreateDirectory(parent);
 }
 
 FS_DIR *FS_OpenDirectory(const char *const path)

@@ -211,7 +211,7 @@ TRX_FILE *LevelCache_OpenBinaryWrite(
         return nullptr;
     }
 
-    FS_EnsureParentDirectories(path);
+    SHOULD(FS_EnsureParentDirectories(path));
 
     TRX_FILE *const file = File_OpenPath(path, FILE_OPEN_WRITE);
     if (file == nullptr) {
@@ -268,7 +268,7 @@ RESULT LevelCache_WriteJSON(
         path == nullptr || root_obj == nullptr,
         "%s: there is nothing to write to the level cache", filename);
 
-    FS_EnsureParentDirectories(path);
+    MUST(FS_EnsureParentDirectories(path));
 
     JSON_ObjectAppendString(
         root_obj, "checksum", String_FormatStatic("%016" PRIx64, checksum));

@@ -488,7 +488,7 @@ bool SG_Manager_WriteSlot(const SAVEGAME_SLOT_REF slot)
     const char *const save_pattern = M_GetSaveFilePatternForPool(slot.pool);
     char *file_name = String_Format(save_pattern, slot.index);
     char *full_path = M_GetSaveWritePath(file_name);
-    FS_EnsureParentDirectories(full_path);
+    SHOULD(FS_EnsureParentDirectories(full_path));
     TRX_FILE *const fp = File_OpenPath(full_path, FILE_OPEN_WRITE);
     if (fp != nullptr) {
         savegame_info->is_quick = slot.pool == SAVEGAME_SLOT_POOL_QUICK;
@@ -530,8 +530,7 @@ bool SG_Manager_Delete(const SAVEGAME_SLOT_REF slot)
         return false;
     }
 
-    const bool result = FS_Delete(savegame_info->full_path);
-    if (!result) {
+    if (!SHOULD(FS_Delete(savegame_info->full_path))) {
         return false;
     }
 
