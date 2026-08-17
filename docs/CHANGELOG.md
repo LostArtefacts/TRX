@@ -13,6 +13,7 @@
 - Fixed the icons beside the volume settings, which now show a note for the music and a speaker for the sound effects
 - Fixed the game flashing over the black bars beside the picture when a frame is advanced in photo mode (regression from 1.10)
 - Fixed the photo mode camera drifting upwards and overshooting when it is moved while pitched up or down
+- Changed moving Lara in photo mode to follow the direction the camera looks, rather than the way she faces
 - Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187)
 - Added a flat yellow color to the PS1 bar palettes (Graphic Options → UI → Bars) (#5227)
 - Changed the preset confirmation to offer Apply and Go back as choices, rather than leaving the keys unsaid (#6258)
