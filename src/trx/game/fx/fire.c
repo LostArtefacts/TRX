@@ -4,6 +4,7 @@
 #include <trx/game/const.h>
 #include <trx/game/fx/common.h>
 #include <trx/game/matrix.h>
+#include <trx/game/output/const.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/output/state.h>
 #include <trx/game/random.h>
@@ -15,10 +16,6 @@
 #define M_MAX_FIRES 32
 #define M_MAX_DRAW_DIST (20 * WALL_L)
 #define M_FADE_DRAW_DIST (12 * WALL_L)
-// The original's screen-space size clamp at its 640-wide, 80-degree FOV
-// reference (phd_persp); expressed in world space here so the clamp onset
-// does not shift with resolution or FOV.
-#define M_CLAMP_PERSP 381
 
 typedef struct {
     XYZ_32 pos;
@@ -271,7 +268,7 @@ static int32_t M_GetViewDepth(const XYZ_32 pos)
 static int32_t M_ScaleSize(
     const int32_t size, const int32_t shift, const int32_t depth)
 {
-    return MIN(size >> shift, size * depth / M_CLAMP_PERSP);
+    return MIN(size >> shift, size * depth / REF_PERSP);
 }
 
 static void M_DrawFire(const M_FIRE *const fire)

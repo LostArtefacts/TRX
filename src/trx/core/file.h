@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trx/core/result.h>
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -20,12 +22,14 @@ typedef enum {
 // memory. Reads and seeks work the same way on both.
 typedef struct TRX_FILE TRX_FILE;
 
-// Open a file on disk. Returns nullptr if the file cannot be opened.
-TRX_FILE *File_OpenPath(const char *path, FILE_OPEN_MODE mode);
+// Opens a file on disk, reporting one that will not open. Caller closes the
+// handle with File_Close().
+RESULT File_OpenPath(
+    const char *path, FILE_OPEN_MODE mode, TRX_FILE **out_file);
 
-// Open a file on disk and read all of it into memory. Only such a handle
-// supports views and peeking. Returns nullptr if the file cannot be read.
-TRX_FILE *File_OpenPathInMemory(const char *path);
+// Opens a file on disk and reads all of it into memory, reporting one that
+// will not read. Only such a handle supports views and peeking.
+RESULT File_OpenPathInMemory(const char *path, TRX_FILE **out_file);
 
 // Open a buffer that is already in memory. The handle keeps its own copy of
 // the data.
@@ -93,11 +97,11 @@ int32_t File_ReadCountS32(TRX_FILE *file);
 // file returns nullptr.
 const char *File_PeekBytes(const TRX_FILE *file, size_t *size);
 
-// Set the length of the file, cutting it short or extending it with zeros.
-// Returns false for a handle that cannot be written, such as a buffer or a
-// view. Rewriting a file with less data than it held before needs this,
-// otherwise the tail of the old data stays behind.
-bool File_SetSize(TRX_FILE *file, size_t size);
+// Sets the length of the file, cutting it short or extending it with zeros,
+// and reports a handle that cannot be written, such as a buffer or a view.
+// Rewriting a file with less data than it held before needs this, otherwise
+// the tail of the old data stays behind.
+RESULT File_SetSize(TRX_FILE *file, size_t size);
 
 void File_WriteData(TRX_FILE *file, const void *data, size_t size);
 void File_WriteItems(

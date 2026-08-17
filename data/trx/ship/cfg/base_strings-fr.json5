@@ -685,7 +685,7 @@
         "BREEZE_MODE": {
             "BREEZE_MODE_OFF": "\\{review}Désactivé",
             "BREEZE_MODE_TR2": "\\{review}TR2",
-            "BREEZE_MODE_TR3": "\\{review}TR3",
+            "BREEZE_MODE_TR3": "\\{review}TR3/4",
         },
         "CAMERA_MODE": {
             "CAMERA_MODE_TR1": "TR1",
@@ -1767,7 +1767,7 @@
         },
         "visuals.breeze_mode": {
             "title": "Vent",
-            "description": "\\{review}Modifie la façon dont la brise affecte la tresse de Lara, les gouttes d'eau tombant de Lara, ainsi que la pluie/neige dans les pièces appropriées.\n\n- Désactivé : désactive l'effet de brise.\n- TR2 : la brise souffle toujours dans la même direction.\n- TR3 : la direction de la brise change au fil du temps.",
+            "description": "\\{review}Modifie la façon dont la brise affecte la tresse de Lara, les gouttes d'eau tombant de Lara, ainsi que la pluie/neige dans les pièces appropriées.\n\n- Désactivé : désactive l'effet de brise.\n- TR2 : la brise souffle toujours dans la même direction.\n- TR3/4 : la direction de la brise change au fil du temps.",
         },
         "visuals.camera_mode": {
             "title": "Mode caméra",

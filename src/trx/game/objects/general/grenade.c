@@ -36,21 +36,6 @@ static void M_SetTR3ProjectileShade(ITEM *const item)
     item->shade.value_2 = -1;
 }
 
-static XYZ_32 M_GetLocalZOffset(const ITEM *const item, const int32_t dist)
-{
-    const int32_t cx = Math_Cos(item->rot.x);
-    const int32_t sx = Math_Sin(item->rot.x);
-    const int32_t cy = Math_Cos(item->rot.y);
-    const int32_t sy = Math_Sin(item->rot.y);
-
-    const int32_t horz = (dist * cx) >> W2V_SHIFT;
-    return (XYZ_32) {
-        .x = (horz * sy) >> W2V_SHIFT,
-        .y = -(dist * sx) >> W2V_SHIFT,
-        .z = (horz * cy) >> W2V_SHIFT,
-    };
-}
-
 static void M_Explode(int16_t grenade_item_num, const XYZ_32 pos)
 {
     const ITEM *const grenade_item = Item_Get(grenade_item_num);
@@ -141,24 +126,19 @@ static bool M_TryExplodeItem(
         return false;
     }
 
-    const int32_t cy = Math_Cos(target_item->rot.y);
-    const int32_t sy = Math_Sin(target_item->rot.y);
-    const int32_t cdx = projectile_item->pos.x - target_item->pos.x;
-    const int32_t cdz = projectile_item->pos.z - target_item->pos.z;
-    const int32_t odx = old_pos.x - target_item->pos.x;
-    const int32_t odz = old_pos.z - target_item->pos.z;
+    const XYZ_32 now = XYZ_32_UnrotateYaw(
+        XYZ_32_Subtract(projectile_item->pos, target_item->pos),
+        target_item->rot.y);
+    const XYZ_32 old = XYZ_32_UnrotateYaw(
+        XYZ_32_Subtract(old_pos.pos, target_item->pos), target_item->rot.y);
 
-    const int32_t rx = (cy * cdx - sy * cdz) >> W2V_SHIFT;
-    const int32_t sx = (cy * odx - sy * odz) >> W2V_SHIFT;
-    if ((rx + radius < bounds->min.x && sx + radius < bounds->min.x)
-        || (rx - radius > bounds->max.x && sx - radius > bounds->max.x)) {
+    if ((now.x + radius < bounds->min.x && old.x + radius < bounds->min.x)
+        || (now.x - radius > bounds->max.x && old.x - radius > bounds->max.x)) {
         return false;
     }
 
-    const int32_t rz = (sy * cdx + cy * cdz) >> W2V_SHIFT;
-    const int32_t sz = (sy * odx + cy * odz) >> W2V_SHIFT;
-    if ((rz + radius < bounds->min.z && sz + radius < bounds->min.z)
-        || (rz - radius > bounds->max.z && sz - radius > bounds->max.z)) {
+    if ((now.z + radius < bounds->min.z && old.z + radius < bounds->min.z)
+        || (now.z - radius > bounds->max.z && old.z - radius > bounds->max.z)) {
         return false;
     }
 
@@ -222,7 +202,8 @@ static void M_Control(const int16_t item_num)
     if (g_TRVersion == 3) {
         M_SetTR3ProjectileShade(item);
         if (!was_underwater && item->speed != 0) {
-            const XYZ_32 back_64 = M_GetLocalZOffset(item, -64);
+            const XYZ_32 back_64 =
+                XYZ_32_FromYawPitch(item->rot.y, item->rot.x, -64);
             Sparks_TriggerRocketSmoke(
                 (XYZ_32) {
                     .x = item->pos.x + back_64.x,
@@ -237,14 +218,10 @@ static void M_Control(const int16_t item_num)
     int32_t radius = 0;
 
     if (g_Config.gameplay.enable_bouncy_grenades) {
-        const XYZ_32 vel = {
-            .x = (item->speed * Math_Sin(item->goal_anim_state)) >> W2V_SHIFT,
-            .y = item->fall_speed,
-            .z = (item->speed * Math_Cos(item->goal_anim_state)) >> W2V_SHIFT,
-        };
-        item->pos.x += vel.x;
-        item->pos.y += vel.y;
-        item->pos.z += vel.z;
+        XYZ_32 vel = XYZ_32_RotateYaw(
+            (XYZ_32) { .z = item->speed }, item->goal_anim_state);
+        vel.y = item->fall_speed;
+        item->pos = XYZ_32_Add(item->pos, vel);
 
         const int16_t y_rot = item->rot.y;
         item->rot.y = item->goal_anim_state;
@@ -265,13 +242,10 @@ static void M_Control(const int16_t item_num)
         if (item->speed < M_FALL_SPEED) {
             item->fall_speed++;
         }
-        item->pos.y += item->fall_speed
-            - ((item->speed * Math_Sin(item->rot.x)) >> W2V_SHIFT);
-
-        const int16_t speed =
-            (item->speed * Math_Cos(item->rot.x)) >> W2V_SHIFT;
-        item->pos.z += (speed * Math_Cos(item->rot.y)) >> W2V_SHIFT;
-        item->pos.x += (speed * Math_Sin(item->rot.y)) >> W2V_SHIFT;
+        item->pos.y += item->fall_speed;
+        item->pos = XYZ_32_Add(
+            item->pos,
+            XYZ_32_FromYawPitch(item->rot.y, item->rot.x, item->speed));
 
         int16_t room_num = item->room_num;
         const SECTOR *const sector = Room_GetSector(item->pos, &room_num);

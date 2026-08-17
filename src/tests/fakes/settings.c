@@ -64,15 +64,17 @@ char *GamePath_ExpandVars(const char *const path)
 
 // Cached and valid for the run, as the engine's is: a caller may hold what it
 // was given.
-const char *GamePath_Resolve(
-    const GAME_DYNAMIC_PATH path, const char *const rel)
+RESULT GamePath_Resolve(
+    const GAME_DYNAMIC_PATH path, const char *const rel,
+    const char **const out_path)
 {
     char *const resolved = String_Format("%s/%s", TEST_SHIP_CFG_DIR, rel);
     for (const M_RESOLVED_PATH *entry = m_ResolvedPaths; entry != nullptr;
          entry = entry->next) {
         if (strcmp(entry->value, resolved) == 0) {
             Memory_Free(resolved);
-            return entry->value;
+            *out_path = entry->value;
+            return OK;
         }
     }
 
@@ -80,15 +82,16 @@ const char *GamePath_Resolve(
     entry->value = resolved;
     entry->next = m_ResolvedPaths;
     m_ResolvedPaths = entry;
-    return entry->value;
+    *out_path = entry->value;
+    return OK;
 }
 
-bool FS_Load(
+RESULT FS_Load(
     const char *const path, char **const output_data, size_t *const output_size)
 {
     FILE *const fp = fopen(path, "rb");
     if (fp == nullptr) {
-        return false;
+        return FAIL("%s: the file could not be opened", path);
     }
     fseek(fp, 0, SEEK_END);
     const long size = ftell(fp);
@@ -101,7 +104,13 @@ bool FS_Load(
     if (output_size != nullptr) {
         *output_size = read_size;
     }
-    return true;
+    return OK;
+}
+
+bool FS_Exists(const char *const path)
+{
+    struct stat info;
+    return stat(path, &info) == 0;
 }
 
 bool FS_DirExists(const char *const path)
@@ -126,10 +135,10 @@ void FS_CloseDirectory(FS_DIR *const dir)
     closedir((DIR *)dir);
 }
 
-bool ConfigFile_Read(
+RESULT ConfigFile_Read(
     const char *const default_path, const char *const enforced_path)
 {
-    return false;
+    return OK;
 }
 
 bool ConfigFile_WasFound(void)
@@ -304,9 +313,12 @@ void Shell_ExitSystemFmt(const char *const fmt, ...)
     Shell_ExitSystem(fmt);
 }
 
-TRX_FILE *File_OpenPath(const char *const path, const FILE_OPEN_MODE mode)
+RESULT File_OpenPath(
+    const char *const path, const FILE_OPEN_MODE mode,
+    TRX_FILE **const out_file)
 {
-    return nullptr;
+    *out_file = nullptr;
+    return FAIL("%s: the test opens no files", path);
 }
 
 void File_WriteData(

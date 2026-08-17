@@ -51,8 +51,8 @@ static void M_Control(const int16_t item_num)
     M_PRIV *const p = item->priv;
 
     int32_t pos = p->pos;
-    item->pos.z -= (pos * Math_Cos(item->rot.y)) >> W2V_SHIFT;
-    item->pos.x -= ((pos * Math_Sin(item->rot.y)) >> W2V_SHIFT);
+    item->pos = XYZ_32_Subtract(
+        item->pos, XYZ_32_RotateYaw((XYZ_32) { .z = pos }, item->rot.y));
 
     if (item->hit_points <= 0) {
         if (pos < M_SLIDE) {
@@ -92,8 +92,8 @@ static void M_Control(const int16_t item_num)
         }
     }
 
-    item->pos.x += (pos * Math_Sin(item->rot.y)) >> W2V_SHIFT;
-    item->pos.z += (pos * Math_Cos(item->rot.y)) >> W2V_SHIFT;
+    item->pos = XYZ_32_Add(
+        item->pos, XYZ_32_RotateYaw((XYZ_32) { .z = pos }, item->rot.y));
     p->pos = pos;
 
     Item_Animate(item);

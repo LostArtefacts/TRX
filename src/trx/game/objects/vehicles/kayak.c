@@ -781,10 +781,10 @@ static int32_t M_GetCollisionAnim(const ITEM *const item, int32_t x, int32_t z)
         return 0;
     }
 
-    const int32_t s = Math_Sin(item->rot.y);
-    const int32_t c = Math_Cos(item->rot.y);
-    const int32_t front = (x * s + z * c) >> W2V_SHIFT;
-    const int32_t side = (x * c - z * s) >> W2V_SHIFT;
+    const XYZ_32 local =
+        XYZ_32_UnrotateYaw((XYZ_32) { .x = x, .z = z }, item->rot.y);
+    const int32_t front = local.z;
+    const int32_t side = local.x;
     if (ABS(front) <= ABS(side)) {
         if (side > 0) {
             return 3;
@@ -919,11 +919,8 @@ static void M_KayakToBackground(ITEM *const item, M_PRIV *const p)
     }
 
     if (M_GetCollisionAnim(item, old_x, old_z)) {
-        const int32_t sin_y = Math_Sin(item->rot.y);
-        const int32_t cos_y = Math_Cos(item->rot.y);
-        const int32_t dx = item->pos.x - old_pos[8].x;
-        const int32_t dz = item->pos.z - old_pos[8].z;
-        int32_t speed = (dx * sin_y + dz * cos_y) >> W2V_SHIFT;
+        const XYZ_32 delta = XYZ_32_Subtract(item->pos, old_pos[8]);
+        int32_t speed = XYZ_32_UnrotateYaw(delta, item->rot.y).z;
         speed <<= 8;
 
         if ((p->vel > 0 && speed < p->vel) || (p->vel < 0 && speed > p->vel)) {
@@ -1144,10 +1141,12 @@ static void M_KayakToBaddieCollision(const ITEM *const p)
 static bool M_Draw(const ITEM *const item)
 {
     ((ITEM *)item)->pos.y += 32;
-    Object_DrawAnimatingItem(item);
+    const bool drawn = Object_DrawAnimatingItem(item);
     ((ITEM *)item)->pos.y -= 32;
-    FX_Wake_Draw(item);
-    return true;
+    if (drawn) {
+        FX_Wake_Draw(item);
+    }
+    return drawn;
 }
 
 static void M_Setup(OBJECT *const obj)

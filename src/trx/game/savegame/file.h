@@ -15,7 +15,7 @@ const char *SG_File_GetQuickSaveFilePattern(void);
 bool SG_File_FillInfo(TRX_FILE *fp, SAVEGAME_INFO *info);
 bool SG_File_LoadFromFile(TRX_FILE *fp);
 bool SG_File_LoadOnlyResumeInfo(TRX_FILE *fp);
-void SG_File_SaveToFile(TRX_FILE *fp, SAVEGAME_INFO *info);
+RESULT SG_File_SaveToFile(TRX_FILE *fp, SAVEGAME_INFO *info);
 bool SG_File_UpdateDeathCounters(
     TRX_FILE *fp, int32_t level_num, int32_t death_count, bool is_quick);
 

@@ -354,17 +354,16 @@ OUTPUT_LIGHT_INFO Output_GetLightInfo(void)
 
 void Output_RotateLight(const int16_t pitch, const int16_t yaw)
 {
-    const int32_t cp = Math_Cos(pitch);
-    const int32_t sp = Math_Sin(pitch);
-    const int32_t cy = Math_Cos(yaw);
-    const int32_t sy = Math_Sin(yaw);
-    const int32_t x = TRIGMULT2(cp, sy);
-    const int32_t y = -sp;
-    const int32_t z = TRIGMULT2(cp, cy);
+    // A direction, not a point, so the view matrix's translation stays out of
+    // it.
+    const XYZ_32 dir = XYZ_32_FromYawPitch(yaw, pitch, 1 << W2V_SHIFT);
     const MATRIX *const m = &g_ViewMatrix;
-    m_LsVectorView.x = (m->_00 * x + m->_01 * y + m->_02 * z) >> W2V_SHIFT;
-    m_LsVectorView.y = (m->_10 * x + m->_11 * y + m->_12 * z) >> W2V_SHIFT;
-    m_LsVectorView.z = (m->_20 * x + m->_21 * y + m->_22 * z) >> W2V_SHIFT;
+    m_LsVectorView.x =
+        (m->_00 * dir.x + m->_01 * dir.y + m->_02 * dir.z) >> W2V_SHIFT;
+    m_LsVectorView.y =
+        (m->_10 * dir.x + m->_11 * dir.y + m->_12 * dir.z) >> W2V_SHIFT;
+    m_LsVectorView.z =
+        (m->_20 * dir.x + m->_21 * dir.y + m->_22 * dir.z) >> W2V_SHIFT;
 }
 
 void Output_SetTR3Light(

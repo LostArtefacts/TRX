@@ -97,11 +97,15 @@ static RESULT M_LoadFrom(const char *const path)
     return result;
 }
 
-static void M_Load(void)
+static RESULT M_Load(void)
 {
-    const char *const path =
-        GamePath_Resolve(GAME_DYNAMIC_PATH_COMMON_CONFIG, "inv_ring.json5");
-    EXIT_ON_FAIL(M_LoadFrom(path), "Failed to load the inventory ring");
+    const char *path = nullptr;
+    RESULT result = GamePath_Resolve(
+        GAME_DYNAMIC_PATH_COMMON_CONFIG, "inv_ring.json5", &path);
+    if (IS_OK(result)) {
+        result = M_LoadFrom(path);
+    }
+    return result;
 }
 
 REGISTER_SUBSYSTEM(.init = M_Init, .load = M_Load, .shutdown = M_Shutdown)

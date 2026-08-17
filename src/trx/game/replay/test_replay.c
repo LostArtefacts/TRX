@@ -844,8 +844,8 @@ static bool M_ParseStartup(const char *const line, M_PARSE_CTX *const ctx)
             String_FormatStatic("%.*s", (int)str_len, str);
         ctx->startup.settings.mod = Shell_GetModByName(mod_name);
         if (ctx->startup.settings.mod == nullptr) {
-            Shell_ExitSystemFmt(
-                "Replay references unavailable mod '%s'", mod_name);
+            LOG_ERROR("the replay names a game that is not here: %s", mod_name);
+            return false;
         }
         if (ctx->startup.settings.engine_version <= 0) {
             ctx->startup.settings.engine_version =
@@ -908,7 +908,9 @@ static bool M_ParseArgs(const char *const line, M_PARSE_CTX *const ctx)
             p++;
         }
     }
-    ctx->args = Shell_ParseArgs(raw_args);
+    if (!Result_Absorb(Shell_ParseArgs(raw_args, &ctx->args))) {
+        return false;
+    }
     return true;
 }
 
@@ -1012,8 +1014,7 @@ SHELL_ARGS *TestReplay_Open(const char *path)
 
     char *data = nullptr;
     size_t size = 0;
-    if (!FS_Load(path, &data, &size)) {
-        Shell_ExitSystemFmt("Cannot open replay file '%s'", path);
+    if (!SHOULD(FS_Load(path, &data, &size))) {
         return nullptr;
     }
     p->data = data;
@@ -1134,7 +1135,7 @@ SHELL_ARGS *TestReplay_Open(const char *path)
         M_ResetParseArgs(&ctx);
         ctx.args = M_BuildArgsFromStartupSnapshot(&ctx);
     } else if (ctx.args == nullptr) {
-        ctx.args = Shell_ParseArgs(nullptr);
+        IGNORE(Shell_ParseArgs(nullptr, &ctx.args));
     }
     if (ctx.used_deprecated_args && !ctx.startup.seen) {
         LOG_WARNING(

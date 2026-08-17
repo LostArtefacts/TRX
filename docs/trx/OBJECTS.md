@@ -1311,6 +1311,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (64)</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>damage</code></td><td colspan="3" align="center">10</td><td>Damage dealt when the sentry gun hits Lara.</td></tr>
+<tr><td><code>requires_alert</code></td><td colspan="3" align="center">true</td><td>Require an alert, such as a security laser Lara has crossed, before the sentry gun opens fire. With this off, it fires for as long as its own trigger is active.</td></tr>
 <tr><td><code>max_hit_points</code></td><td colspan="3" align="center">100</td><td>Maximum hit points.</td></tr>
 </tbody>
 </table>

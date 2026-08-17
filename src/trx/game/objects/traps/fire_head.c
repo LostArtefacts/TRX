@@ -99,11 +99,10 @@ static void M_TriggerFlame(
     spark->pos.z = pos.z + (Random_GetControl() & 0x1F) - 16;
 
     const int32_t dist = speed - (Random_GetControl() % ((speed >> 3) + 1));
-    spark->vel.x =
-        ((dist * Math_Sin(angle)) >> 13) + (Random_GetControl() & 0x7F) - 64;
+    const XYZ_32 dir = XYZ_32_RotateYaw((XYZ_32) { .z = dist * 2 }, angle);
+    spark->vel.x = dir.x + (Random_GetControl() & 0x7F) - 64;
     spark->vel.y = (Random_GetControl() & 7) + 6;
-    spark->vel.z =
-        ((dist * Math_Cos(angle)) >> 13) + (Random_GetControl() & 0x7F) - 64;
+    spark->vel.z = dir.z + (Random_GetControl() & 0x7F) - 64;
 
     spark->friction = 4;
     spark->flags = SPARK_F_ALT_SPRITE | SPARK_F_SPRITE | SPARK_F_SCALE;

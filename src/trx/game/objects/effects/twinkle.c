@@ -26,10 +26,8 @@ static XYZ_32 M_GetTargetPos(const ITEM *const item)
 {
     XYZ_32 pos = item->pos;
     if (item->object_id == O_DRAGON_FRONT) {
-        const int32_t c = Math_Cos(item->rot.y);
-        const int32_t s = Math_Sin(item->rot.y);
-        pos.x += (c * 1100 + s * 490) >> W2V_SHIFT;
-        pos.z += (c * 490 - s * 1100) >> W2V_SHIFT;
+        pos = XYZ_32_OffsetLocalYaw(
+            pos, (XYZ_32) { .x = 1100, .z = 490 }, item->rot.y);
         pos.y -= 540;
     }
     return pos;

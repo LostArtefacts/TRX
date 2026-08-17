@@ -35,10 +35,9 @@ static void M_Collision(
 
     lara_item->gravity = true;
     lara_item->fall_speed = -50;
-    lara_item->pos.x =
-        item->pos.x + (((radius + 50) * Math_Sin(angle)) >> W2V_SHIFT);
-    lara_item->pos.z =
-        item->pos.z + (((radius + 50) * Math_Cos(angle)) >> W2V_SHIFT);
+    const int32_t y = lara_item->pos.y;
+    lara_item->pos = XYZ_32_OffsetYaw(item->pos, angle, radius + 50);
+    lara_item->pos.y = y;
     lara_item->rot.x = 0;
     lara_item->rot.z = 0;
     Item_SwitchToAnim(lara_item, LA(LA_FALL_START), 0);

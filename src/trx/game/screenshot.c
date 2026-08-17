@@ -110,17 +110,27 @@ static char *M_GetScreenshotPath(const SCREENSHOT_FORMAT format)
     const char *const ext = M_GetScreenshotFileExt(format);
     char *rel_path = String_Format("%s.%s", base_name, ext);
 
-    char *full_path = Memory_DupStr(
-        GamePath_Resolve(GAME_DYNAMIC_PATH_SCREENSHOT_WRITE_FILE, rel_path));
+    const char *resolved =
+        GamePath_PeekResolve(GAME_DYNAMIC_PATH_SCREENSHOT_WRITE_FILE, rel_path);
     Memory_FreePointer(&rel_path);
-    FS_EnsureParentDirectories(full_path);
+    if (resolved == nullptr) {
+        Memory_FreePointer(&base_name);
+        return nullptr;
+    }
+    char *full_path = Memory_DupStr(resolved);
+    SHOULD(FS_EnsureParentDirectories(full_path));
     if (FS_Exists(full_path)) {
         for (int i = 2; i < 100; i++) {
             Memory_FreePointer(&full_path);
             rel_path = String_Format("%s_%d.%s", base_name, i, ext);
-            full_path = Memory_DupStr(GamePath_Resolve(
-                GAME_DYNAMIC_PATH_SCREENSHOT_WRITE_FILE, rel_path));
+            resolved = GamePath_PeekResolve(
+                GAME_DYNAMIC_PATH_SCREENSHOT_WRITE_FILE, rel_path);
             Memory_FreePointer(&rel_path);
+            if (resolved == nullptr) {
+                Memory_FreePointer(&base_name);
+                return nullptr;
+            }
+            full_path = Memory_DupStr(resolved);
             if (!FS_Exists(full_path)) {
                 break;
             }

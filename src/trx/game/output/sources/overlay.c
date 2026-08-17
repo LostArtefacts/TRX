@@ -1052,10 +1052,16 @@ void Output_Overlay_DrawBlackRectangle(const float opacity, const bool post_ui)
 void OutputSource_Overlay_Init(void)
 {
     M_PRIV *const p = &m_Priv;
-    p->renderer = Output_Quad_Create();
-    p->image.renderer = Output_Quad_Create();
-    p->snapshot.renderer = Output_Quad_Create();
-    p->pattern.renderer = Output_Quad_Create();
+    SHOULD(Output_Quad_Create(&p->renderer), "the overlay cannot be drawn");
+    SHOULD(
+        Output_Quad_Create(&p->image.renderer),
+        "the overlay image cannot be drawn");
+    SHOULD(
+        Output_Quad_Create(&p->snapshot.renderer),
+        "the overlay snapshot cannot be drawn");
+    SHOULD(
+        Output_Quad_Create(&p->pattern.renderer),
+        "the overlay pattern cannot be drawn");
     p->pattern.uploaded = false;
     M_EnsureSolidBlackTexture();
 

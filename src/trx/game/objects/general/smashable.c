@@ -118,28 +118,22 @@ static bool M_Block(
         return false;
     }
 
-    const int32_t c = Math_Cos(item->rot.y);
-    const int32_t s = Math_Sin(item->rot.y);
-    const int32_t from_dx = from.x - item->pos.x;
-    const int32_t from_dz = from.z - item->pos.z;
-    const int32_t to_dx = to.x - item->pos.x;
-    const int32_t to_dz = to.z - item->pos.z;
-    const int32_t from_rx = (c * from_dx - s * from_dz) >> W2V_SHIFT;
-    const int32_t from_rz = (c * from_dz + s * from_dx) >> W2V_SHIFT;
-    const int32_t to_rx = (c * to_dx - s * to_dz) >> W2V_SHIFT;
-    const int32_t to_rz = (c * to_dz + s * to_dx) >> W2V_SHIFT;
+    const XYZ_32 from_r =
+        XYZ_32_UnrotateYaw(XYZ_32_Subtract(from, item->pos), item->rot.y);
+    const XYZ_32 to_r =
+        XYZ_32_UnrotateYaw(XYZ_32_Subtract(to, item->pos), item->rot.y);
 
     const bool is_thin_in_z =
         bounds->max.z - bounds->min.z <= bounds->max.x - bounds->min.x;
-    const int32_t along = is_thin_in_z ? to_rx : to_rz;
+    const int32_t along = is_thin_in_z ? to_r.x : to_r.z;
     const int32_t along_min = is_thin_in_z ? bounds->min.x : bounds->min.z;
     const int32_t along_max = is_thin_in_z ? bounds->max.x : bounds->max.z;
     if (along < along_min || along > along_max) {
         return false;
     }
 
-    const int32_t from_across = is_thin_in_z ? from_rz : from_rx;
-    const int32_t to_across = is_thin_in_z ? to_rz : to_rx;
+    const int32_t from_across = is_thin_in_z ? from_r.z : from_r.x;
+    const int32_t to_across = is_thin_in_z ? to_r.z : to_r.x;
     const int32_t middle = is_thin_in_z ? (bounds->min.z + bounds->max.z) / 2
                                         : (bounds->min.x + bounds->max.x) / 2;
     return (from_across < middle) != (to_across < middle)

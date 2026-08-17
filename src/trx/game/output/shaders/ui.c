@@ -2,12 +2,15 @@
 
 #include <trx/gl/utils.h>
 
-OUTPUT_UI_SHADER *Output_UIShader_Create(void)
+RESULT Output_UIShader_Create(OUTPUT_UI_SHADER **const out_shader)
 {
-    OUTPUT_SHADER *const shader = Output_Shader_Create("ui.glsl");
+    *out_shader = nullptr;
+    OUTPUT_SHADER *shader = nullptr;
+    MUST(Output_Shader_Create("ui.glsl", &shader));
     TRX_GL_TRACK_UNIFORM(
         glUniform1i, Output_Shader_LookupUniform(shader, "uTexAtlas"), 0);
-    return shader;
+    *out_shader = shader;
+    return OK;
 }
 
 void Output_UIShader_Bind(const OUTPUT_UI_SHADER *const shader)

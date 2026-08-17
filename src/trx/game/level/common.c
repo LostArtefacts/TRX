@@ -41,6 +41,7 @@ void Level_Unload(void)
     Sound_ResetSamples();
 
     Lara_InitialiseLoad(NO_ITEM);
+    Lara_Vehicle_SetIndex(NO_ITEM);
 
     Gym_TrackManager_Reset(GYM_TRACK_ASSAULT);
     Gym_TrackManager_Reset(GYM_TRACK_QUAD);

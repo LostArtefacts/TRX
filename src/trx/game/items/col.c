@@ -24,11 +24,9 @@ int32_t Item_GetDistance(const ITEM *const item, const XYZ_32 target)
 void Item_Translate(
     ITEM *const item, const int32_t x, const int32_t y, const int32_t z)
 {
-    const int32_t c = Math_Cos(item->rot.y);
-    const int32_t s = Math_Sin(item->rot.y);
-    item->pos.x += ((c * x + s * z) >> W2V_SHIFT);
+    item->pos = XYZ_32_OffsetLocalYaw(
+        item->pos, (XYZ_32) { .x = x, .z = z }, item->rot.y);
     item->pos.y += y;
-    item->pos.z += ((c * z - s * x) >> W2V_SHIFT);
 }
 
 bool Item_Test3DRange(

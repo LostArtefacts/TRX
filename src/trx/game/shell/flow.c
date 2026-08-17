@@ -38,23 +38,24 @@ static bool m_PrevQuiet = false;
 // leave a copy behind.
 static int32_t m_ConfigListener = -1;
 
-static void M_CreateGameWindow(void)
+static RESULT M_CreateGameWindow(void)
 {
     if (m_Window != nullptr) {
-        return; // Window persists across mod switches
+        return OK; // Window persists across mod switches
     }
     m_Window = SDL_CreateWindow(
         "TRX", g_Config.window.x, g_Config.window.y, g_Config.window.width,
         g_Config.window.height,
         SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
 
-    if (m_Window == nullptr) {
-        Shell_ExitSystemFmt("Failed to create SDL window: %s", SDL_GetError());
-    }
+    FAIL_IF(
+        m_Window == nullptr, "the game window could not be created: %s",
+        SDL_GetError());
     Shell_EnableThemeSupport(m_Window);
+    return OK;
 }
 
-static void M_ExitUnsupportedGraphics(void)
+static RESULT M_FailUnsupportedGraphics(const RESULT cause)
 {
     char *driver = TRX_GL_Context_DescribeDriver(m_Window);
 
@@ -75,24 +76,27 @@ static void M_ExitUnsupportedGraphics(void)
         "Installing the latest drivers for the graphics card usually helps.%s",
         driver != nullptr ? driver : "unknown", hint);
 
-    Shell_ExitSystem(message);
+    const RESULT result = Result_Prefix(cause, "%s", message);
 
     Memory_FreePointer(&message);
     Memory_FreePointer(&driver);
+    return result;
 }
 
-static void M_CreateGLContext(void)
+static RESULT M_CreateGLContext(void)
 {
     if (TRX_GL_Context_GetWindowHandle() != nullptr) {
-        return; // GL context persists across mod switches
+        return OK; // GL context persists across mod switches
     }
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetAttribute(
         SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    if (!TRX_GL_Context_Attach(m_Window)) {
-        M_ExitUnsupportedGraphics();
+    const RESULT attached = TRX_GL_Context_Attach(m_Window);
+    if (!IS_OK(attached)) {
+        return M_FailUnsupportedGraphics(attached);
     }
+    return OK;
 }
 
 static void M_ShowWindow(void)
@@ -108,16 +112,17 @@ static void M_HandleConfigChange(const EVENT *const event, void *const data)
     Shell_HandleConfigChange(event->data);
 }
 
-static void M_SetupSDL(void)
+static RESULT M_SetupSDL(void)
 {
     SDL_version compiled;
     SDL_VERSION(&compiled);
     LOG_INFO(
         "SDL version: %d.%d.%d", compiled.major, compiled.minor,
         compiled.patch);
-    if (SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO) < 0) {
-        Shell_ExitSystemFmt("Cannot initialize SDL: %s", SDL_GetError());
-    }
+    FAIL_IF(
+        SDL_Init(SDL_INIT_EVENTS | SDL_INIT_VIDEO) < 0,
+        "SDL could not be brought up: %s", SDL_GetError());
+    return OK;
 }
 
 static void M_SetupGL(void)
@@ -131,35 +136,34 @@ static void M_SetupGL(void)
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 }
 
-static void M_LoadCatalog(
+static RESULT M_LoadCatalog(
     const CATALOG_CONTEXT context, const char *const filename,
     const bool allow_duplicates)
 {
-    const char *const path =
-        GamePath_Resolve(GAME_DYNAMIC_PATH_CATALOG, filename);
-    if (!Catalog_Load(context, path, allow_duplicates)) {
-        Shell_ExitSystemFmt("Failed to load catalogs from %s", path);
-    }
+    const char *path = nullptr;
+    MUST(GamePath_Resolve(GAME_DYNAMIC_PATH_CATALOG, filename, &path));
+    return Catalog_Load(context, path, allow_duplicates);
 }
 
-static void M_InitModules(void)
+static RESULT M_InitModules(void)
 {
     Shell_SetupHiDPI();
     Shell_SetupLibAV();
-    M_SetupSDL();
+    MUST(M_SetupSDL());
     M_SetupGL();
 
     // Some of the subsystems read the clock or the video state as they come
     // up, so the platform stands first.
     Subsystem_InitAll();
 
-    LUA_Init();
+    MUST(LUA_Init(), "the Lua runtime could not be brought up");
 
     const SHELL_ARGS *const args = Shell_GetArgs();
     if (args != nullptr && args->startup.dump_lua_api) {
         LUA_DumpAPI();
         exit(0);
     }
+    return OK;
 }
 
 static void M_ShutdownModules(void)
@@ -183,16 +187,16 @@ static void M_ShutdownModules(void)
     Subsystem_ShutdownAll();
 }
 
-static void M_PrepareSystem(void)
+static RESULT M_PrepareSystem(void)
 {
     SHELL_SESSION *const s = m_Session;
     ASSERT(s != nullptr);
     const char *const test_replay_path = s->args->test_replay_path;
 
-    if (s->args->test_record_path != nullptr
-        && s->args->test_replay_path != nullptr) {
-        Shell_ExitSystem("Cannot use both --test-record and --test-replay");
-    }
+    FAIL_IF(
+        s->args->test_record_path != nullptr
+            && s->args->test_replay_path != nullptr,
+        "--test-record and --test-replay cannot both be given");
 
     if (test_replay_path != nullptr) {
         // Allow inferring engine version from outer args for replays lacking
@@ -206,7 +210,7 @@ static void M_PrepareSystem(void)
             ShellSession_UseArgs(s, tmp_args);
         }
     } else if (s->args->headless) {
-        Shell_ExitSystem("--headless can only be used with --test-replay");
+        return FAIL("--headless can only be given with --test-replay");
     }
 
     g_TRVersion = s->args->startup.engine_version;
@@ -222,24 +226,24 @@ static void M_PrepareSystem(void)
             : s->args->startup.mod_request;
         const char *const reason = Shell_GetModRejection(name);
         if (reason != nullptr) {
-            Shell_ExitSystemFmt("Cannot play %s.\n\n%s", name, reason);
+            return FAIL("%s cannot be played.\n\n%s", name, reason);
         }
         if (requested_mod == nullptr) {
-            Shell_ExitSystemFmt("There is no game called %s.", name);
+            return FAIL("there is no game called %s.", name);
         }
-        Shell_ExitSystemFmt("Cannot play %s.", name);
+        return FAIL("%s cannot be played.", name);
     }
 
     if (s->args->startup.engine_version <= 0
         || s->args->startup.mod == nullptr) {
         const char *const rejections = Shell_GetModRejections();
         if (rejections != nullptr) {
-            Shell_ExitSystemFmt(
-                "No playable mods available.\n\nThe following were passed "
+            return FAIL(
+                "There is no game to play.\n\nThe following were passed "
                 "over:\n%s",
                 rejections);
         }
-        Shell_ExitSystem("No playable mods available.");
+        return FAIL("There is no game to play.");
     }
     if (s->args->startup.mod->mod_type != MOD_DIRECT_LEVEL
         && test_replay_path == nullptr) {
@@ -252,27 +256,28 @@ static void M_PrepareSystem(void)
 
     // The catalogs name the objects, samples and music the subsystem loads
     // look themselves up in.
-    M_LoadCatalog(CATALOG_OBJECTS, "catalog_objects.csv", false);
-    M_LoadCatalog(CATALOG_MUSIC, "catalog_music.csv", false);
-    M_LoadCatalog(CATALOG_SAMPLES, "catalog_samples.csv", true);
-    M_LoadCatalog(CATALOG_LARA_STATES, "catalog_lara_states.csv", false);
-    M_LoadCatalog(CATALOG_LARA_ANIMS, "catalog_lara_anims.csv", false);
-    M_LoadCatalog(CATALOG_ITEM_ACTIONS, "catalog_item_actions.csv", false);
-    Subsystem_LoadAll();
+    MUST(M_LoadCatalog(CATALOG_OBJECTS, "catalog_objects.csv", false));
+    MUST(M_LoadCatalog(CATALOG_MUSIC, "catalog_music.csv", false));
+    MUST(M_LoadCatalog(CATALOG_SAMPLES, "catalog_samples.csv", true));
+    MUST(M_LoadCatalog(CATALOG_LARA_STATES, "catalog_lara_states.csv", false));
+    MUST(M_LoadCatalog(CATALOG_LARA_ANIMS, "catalog_lara_anims.csv", false));
+    MUST(
+        M_LoadCatalog(CATALOG_ITEM_ACTIONS, "catalog_item_actions.csv", false));
+    MUST(Subsystem_LoadAll());
 
     if (test_replay_path != nullptr) {
         TestReplay_Start();
     } else {
         char *engine_config_path =
             GamePath_ExpandVars("%config_dir%/TR%tr_version%X.json5");
-        if (engine_config_path == nullptr) {
-            Shell_ExitSystem("Failed to resolve engine config path");
-        }
-        if (!Config_Read(
+        FAIL_IF(
+            engine_config_path == nullptr,
+            "the settings file path could not be worked out");
+        SHOULD(
+            Config_Read(
                 engine_config_path,
-                Shell_GetGameFlowPath(s->args->startup.mod))) {
-            LOG_WARNING("Failed to read the settings file");
-        }
+                Shell_GetGameFlowPath(s->args->startup.mod)),
+            "The settings start from their defaults");
         Memory_FreePointer(&engine_config_path);
 
         if (s->args->test_record_path != nullptr) {
@@ -283,6 +288,7 @@ static void M_PrepareSystem(void)
     m_ConfigListener = Config_SubscribeChanges(M_HandleConfigChange, nullptr);
 
     Subsystem_ApplyConfigAll();
+    return OK;
 }
 
 void Shell_RequestModSwitch(const char *const mod_name)
@@ -349,16 +355,16 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
 
     LOG_INFO("Game directory: %s", GamePath_Get(GAME_PATH_TRX_DIR));
 
-    M_InitModules();
-    M_PrepareSystem();
+    EXIT_ON_FAIL(M_InitModules(), "TRX could not start");
+    EXIT_ON_FAIL(M_PrepareSystem(), "TRX could not start");
     if (s->args->startup.mod == nullptr) {
         Shell_ExitSystem("No --mod specified.");
         return 1;
     }
     GamePath_Init(s->args);
-    M_CreateGameWindow();
-    M_CreateGLContext();
-    Output_Init();
+    EXIT_ON_FAIL(M_CreateGameWindow(), "TRX could not open a window");
+    EXIT_ON_FAIL(M_CreateGLContext(), "TRX cannot draw the game");
+    EXIT_ON_FAIL(Output_Init(), "TRX cannot draw the game");
     if (!s->args->headless) {
         M_ShowWindow();
     }

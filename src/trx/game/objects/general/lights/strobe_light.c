@@ -35,13 +35,7 @@ static void M_TriggerAlertLight(
     Room_GetSector(pos, &src.room_num);
 
     const int32_t dist = 8 * WALL_L;
-    GAME_VECTOR dst = {
-        .pos = {
-            .x = pos.x + ((dist * Math_Sin(angle)) >> W2V_SHIFT),
-            .y = pos.y,
-            .z = pos.z + ((dist * Math_Cos(angle)) >> W2V_SHIFT),
-        },
-    };
+    GAME_VECTOR dst = { .pos = XYZ_32_OffsetYaw(pos, angle, dist) };
 
     if (!LOS_Check(&src, &dst, false)) {
         Output_AddDynamicLightRGB(dst.pos, 8, color);
@@ -67,13 +61,9 @@ static void M_Control(const int16_t item_num)
         (XYZ_32) { item->pos.x, item->pos.y - WALL_L / 2, item->pos.z },
         (RGB_888) { 255, 64, 0 }, angle, item->room_num);
 
-    Output_AddDynamicLightRGB(
-        (XYZ_32) {
-            item->pos.x + ((STEP_L * Math_Sin(angle)) >> W2V_SHIFT),
-            item->pos.y - STEP_L * 3,
-            item->pos.z + ((STEP_L * Math_Cos(angle)) >> W2V_SHIFT),
-        },
-        6, (RGB_888) { 255, 96, 0 });
+    XYZ_32 lamp_pos = XYZ_32_OffsetYaw(item->pos, angle, STEP_L);
+    lamp_pos.y -= STEP_L * 3;
+    Output_AddDynamicLightRGB(lamp_pos, 6, (RGB_888) { 255, 96, 0 });
 
     const int32_t time4 = Output_GetTimeInGame() * 4;
     if (!(time4 & 0x7F)) {

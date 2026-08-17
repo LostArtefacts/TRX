@@ -102,7 +102,7 @@ void ThreadPool_Destroy(THREAD_POOL *const pool)
     Memory_Free(pool);
 }
 
-bool ThreadPool_AddJob(
+void ThreadPool_AddJob(
     THREAD_POOL *const pool, THREAD_FUNC func, void *const user_data)
 {
     JOB *const job = Memory_Alloc(sizeof(JOB));
@@ -119,7 +119,6 @@ bool ThreadPool_AddJob(
     }
     SDL_CondSignal(pool->queue_cond);
     SDL_UnlockMutex(pool->queue_mutex);
-    return true;
 }
 
 void ThreadPool_Wait(THREAD_POOL *pool)

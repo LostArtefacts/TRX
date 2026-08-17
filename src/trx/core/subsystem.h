@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trx/core/result.h>
+
 // The lifecycle of a module that stands itself up and needs no other module to
 // have been brought up first.
 //
@@ -14,6 +16,10 @@
 
 typedef void (*SUBSYSTEM_FUNC)(void);
 
+// A phase that can fail and says so. What it reports carries the module's
+// name, so the shell names the module that stopped the game.
+typedef RESULT (*SUBSYSTEM_RESULT_FUNC)(void);
+
 // A tier comes up before the tiers after it and goes down after them. Within a
 // tier the order is the linker's, which is the order the source list happens to
 // be in, so nothing may rest on it.
@@ -27,10 +33,15 @@ typedef enum {
 // A module names only the phases it has.
 typedef struct SUBSYSTEM {
     SUBSYSTEM_TIER tier;
+    // What the module is called in a report. This is the source file it
+    // registers from, unless the registration names something else.
+    const char *name;
     // Stand the module up. Only the tiers below this one are up.
     SUBSYSTEM_FUNC init;
     // Read what the module keeps on disk. The mod's paths are resolved by now.
-    SUBSYSTEM_FUNC load;
+    // A module that cannot read what it needs reports it rather than ending
+    // the run, and the shell decides what that costs.
+    SUBSYSTEM_RESULT_FUNC load;
     // Take the config as first read. This is the work the module already does
     // when one of its options is written later.
     SUBSYSTEM_FUNC apply_config;
@@ -50,7 +61,9 @@ void Subsystem_Register(SUBSYSTEM *subsystem);
 void Subsystem_InitAll(void);
 
 // Read what each subsystem keeps on disk, once the mod's paths are resolved.
-void Subsystem_LoadAll(void);
+// Reports the first module that could not read what it needs, naming it, and
+// leaves the modules after it unread.
+RESULT Subsystem_LoadAll(void);
 
 // Hand each subsystem the config the session starts with.
 void Subsystem_ApplyConfigAll(void);
@@ -61,7 +74,9 @@ void Subsystem_ShutdownAll(void);
 #define M_REGISTER_SUBSYSTEM(tier_, ...)                                       \
     __attribute__((constructor)) static void M_RegisterSubsystem(void)         \
     {                                                                          \
-        static SUBSYSTEM m_Subsystem = { .tier = (tier_), __VA_ARGS__ };       \
+        static SUBSYSTEM m_Subsystem = { .tier = (tier_),                      \
+                                         .name = __FILE__,                     \
+                                         __VA_ARGS__ };                        \
         Subsystem_Register(&m_Subsystem);                                      \
     }
 

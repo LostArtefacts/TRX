@@ -32,13 +32,7 @@ static void M_Control(const int16_t item_num)
         const int32_t offset =
             g_TRVersion == 3 ? M_MIST_OFFSET_TR3 : M_MIST_OFFSET_TR4;
         if ((int32_t)Output_GetTimeInGame() % 4 == 0) {
-            const XYZ_32 pos = {
-                .x = item->pos.x
-                    + ((offset * Math_Sin(item->rot.y)) >> W2V_SHIFT),
-                .y = item->pos.y,
-                .z = item->pos.z
-                    + ((offset * Math_Cos(item->rot.y)) >> W2V_SHIFT),
-            };
+            const XYZ_32 pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, offset);
             Sparks_TriggerWaterfallMist(pos.x, pos.y, pos.z, item->rot.y);
         }
 

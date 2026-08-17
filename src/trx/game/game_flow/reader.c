@@ -1061,6 +1061,7 @@ static RESULT M_LoadGameFlowDoc(
 static RESULT M_LoadGameFlowEx(
     const char *const path, const bool validation_mode, char **const error_out)
 {
+    FAIL_IF(path == nullptr, "the game flow file is not where TRX looked");
     JSON_VALUE *doc = nullptr;
     const RESULT read = JSONFile_ReadRequired(path, &doc);
     if (!IS_OK(read)) {

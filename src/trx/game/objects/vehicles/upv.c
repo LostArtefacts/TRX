@@ -159,13 +159,8 @@ static bool M_CanGetOff(const ITEM *const item)
     }
 
     const int32_t rad = WALL_L * Math_Cos(item->rot.x) >> W2V_SHIFT;
-    XYZ_32 pos = {
-        .x = item->pos.x
-            + ((rad * Math_Sin(item->rot.y + DEG_180)) >> W2V_SHIFT),
-        .y = item->pos.y - ((WALL_L * Math_Sin(item->rot.x)) >> W2V_SHIFT),
-        .z = item->pos.z
-            + ((rad * Math_Cos(item->rot.y + DEG_180)) >> W2V_SHIFT),
-    };
+    XYZ_32 pos = XYZ_32_OffsetYaw(item->pos, item->rot.y + DEG_180, rad);
+    pos.y = item->pos.y - ((WALL_L * Math_Sin(item->rot.x)) >> W2V_SHIFT);
 
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
@@ -580,11 +575,12 @@ static void M_DoCurrent(ITEM *const item)
                                   lara_item->pos.x - camera_obj->pos.x,
                                   lara_item->pos.z - camera_obj->pos.z)
             - DEG_90;
+        // A velocity carries ten bits more than a position does.
         const int32_t speed = camera_obj->data;
-        const int32_t xvel = (speed * Math_Sin(angle)) >> 4;
-        const int32_t zvel = (speed * Math_Cos(angle)) >> 4;
-        lara->current.vel.x += ((xvel - lara->current.vel.x) >> 4);
-        lara->current.vel.z += ((zvel - lara->current.vel.z) >> 4);
+        const XYZ_32 vel =
+            XYZ_32_RotateYaw((XYZ_32) { .z = speed << 10 }, angle);
+        lara->current.vel.x += ((vel.x - lara->current.vel.x) >> 4);
+        lara->current.vel.z += ((vel.z - lara->current.vel.z) >> 4);
     } else {
         int32_t shifter;
 
@@ -764,11 +760,10 @@ static void M_TriggerMist(
     spark->pos.y = pos.y + (Random_GetControl() & 0xF) - 8;
     spark->pos.z = pos.z + (Random_GetControl() & 0xF) - 8;
 
-    spark->vel.x = (Random_GetControl() & 0x7F)
-        + ((speed * Math_Sin(angle)) >> (W2V_SHIFT + 2)) - 64;
+    const XYZ_32 dir = XYZ_32_RotateYaw((XYZ_32) { .z = speed }, angle);
+    spark->vel.x = (Random_GetControl() & 0x7F) + (dir.x >> 2) - 64;
     spark->vel.y = 0;
-    spark->vel.z = (Random_GetControl() & 0x7F)
-        + ((speed * Math_Cos(angle)) >> (W2V_SHIFT + 2)) - 64;
+    spark->vel.z = (Random_GetControl() & 0x7F) + (dir.z >> 2) - 64;
 
     spark->friction = 3;
 
@@ -900,13 +895,14 @@ bool UPV_Control(void)
             item->rot.x = -14560;
         }
 
-        item->pos.x += (Math_Cos(item->rot.x)
-                        * ((item->speed * Math_Sin(item->rot.y)) >> W2V_SHIFT))
-            >> W2V_SHIFT;
+        // As Lara's own swim does, along the heading first and foreshortened
+        // by the pitch after.
+        const XYZ_32 step =
+            XYZ_32_RotateYaw((XYZ_32) { .z = item->speed }, item->rot.y);
+        const int32_t foreshorten = Math_Cos(item->rot.x);
+        item->pos.x += (foreshorten * step.x) >> W2V_SHIFT;
         item->pos.y -= (item->speed * Math_Sin(item->rot.x)) >> W2V_SHIFT;
-        item->pos.z += (Math_Cos(item->rot.x)
-                        * ((item->speed * Math_Cos(item->rot.y)) >> W2V_SHIFT))
-            >> W2V_SHIFT;
+        item->pos.z += (foreshorten * step.z) >> W2V_SHIFT;
     }
 
     int16_t room_num = item->room_num;

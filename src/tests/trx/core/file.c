@@ -12,6 +12,13 @@ static const char m_Bytes[] = {
     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
 };
 
+static TRX_FILE *M_Open(const char *const path, const FILE_OPEN_MODE mode)
+{
+    TRX_FILE *file = nullptr;
+    CHECK(IGNORE(File_OpenPath(path, mode, &file)));
+    return file;
+}
+
 static TRX_FILE *M_Buffer(void)
 {
     return File_OpenBuffer(m_Bytes, sizeof(m_Bytes));
@@ -23,7 +30,7 @@ static TRX_FILE *M_Disk(void)
     CHECK_NOT_NULL(fp);
     fwrite(m_Bytes, 1, sizeof(m_Bytes), fp);
     fclose(fp);
-    return File_OpenPath(M_TEMP_PATH, FILE_OPEN_READ);
+    return M_Open(M_TEMP_PATH, FILE_OPEN_READ);
 }
 
 static void M_DropDisk(void)
@@ -190,14 +197,14 @@ TEST(a_file_on_disk_cannot_peek)
 
 TEST(what_was_written_reads_back)
 {
-    TRX_FILE *const file = File_OpenPath(M_TEMP_PATH, FILE_OPEN_WRITE);
+    TRX_FILE *const file = M_Open(M_TEMP_PATH, FILE_OPEN_WRITE);
     CHECK_NOT_NULL(file);
     File_WriteU8(file, 0x11);
     File_WriteU32(file, 0x44332211);
     CHECK_EQ_INT((int32_t)File_Size(file), 5);
     File_Close(file);
 
-    TRX_FILE *const read = File_OpenPath(M_TEMP_PATH, FILE_OPEN_READ);
+    TRX_FILE *const read = M_Open(M_TEMP_PATH, FILE_OPEN_READ);
     CHECK_NOT_NULL(read);
     CHECK_EQ_INT(File_ReadU8(read), 0x11);
     CHECK_EQ_INT((int32_t)File_ReadU32(read), 0x44332211);
@@ -207,17 +214,17 @@ TEST(what_was_written_reads_back)
 
 TEST(a_write_at_a_seeked_spot_leaves_the_rest_alone)
 {
-    TRX_FILE *const file = File_OpenPath(M_TEMP_PATH, FILE_OPEN_WRITE);
+    TRX_FILE *const file = M_Open(M_TEMP_PATH, FILE_OPEN_WRITE);
     File_WriteData(file, m_Bytes, sizeof(m_Bytes));
     File_Close(file);
 
-    TRX_FILE *const patch = File_OpenPath(M_TEMP_PATH, FILE_OPEN_READ_WRITE);
+    TRX_FILE *const patch = M_Open(M_TEMP_PATH, FILE_OPEN_READ_WRITE);
     CHECK_NOT_NULL(patch);
     File_Seek(patch, 3, FILE_SEEK_SET);
     File_WriteU8(patch, 0xFF);
     File_Close(patch);
 
-    TRX_FILE *const read = File_OpenPath(M_TEMP_PATH, FILE_OPEN_READ);
+    TRX_FILE *const read = M_Open(M_TEMP_PATH, FILE_OPEN_READ);
     CHECK_EQ_INT((int32_t)File_Size(read), (int32_t)sizeof(m_Bytes));
     File_Seek(read, 2, FILE_SEEK_SET);
     CHECK_EQ_INT(File_ReadU8(read), 0x03);
@@ -229,13 +236,13 @@ TEST(a_write_at_a_seeked_spot_leaves_the_rest_alone)
 
 TEST(a_file_cut_short_loses_its_tail)
 {
-    TRX_FILE *const file = File_OpenPath(M_TEMP_PATH, FILE_OPEN_WRITE);
+    TRX_FILE *const file = M_Open(M_TEMP_PATH, FILE_OPEN_WRITE);
     File_WriteData(file, m_Bytes, sizeof(m_Bytes));
-    CHECK(File_SetSize(file, 3));
+    CHECK(IGNORE(File_SetSize(file, 3)));
     CHECK_EQ_INT((int32_t)File_Size(file), 3);
     File_Close(file);
 
-    TRX_FILE *const read = File_OpenPath(M_TEMP_PATH, FILE_OPEN_READ);
+    TRX_FILE *const read = M_Open(M_TEMP_PATH, FILE_OPEN_READ);
     CHECK_EQ_INT((int32_t)File_Size(read), 3);
     CHECK_EQ_INT(File_ReadU8(read), 0x01);
     File_Close(read);
@@ -245,7 +252,7 @@ TEST(a_file_cut_short_loses_its_tail)
 TEST(a_buffer_cannot_be_resized)
 {
     TRX_FILE *const file = M_Buffer();
-    CHECK(!File_SetSize(file, 3));
+    CHECK(!IGNORE(File_SetSize(file, 3)));
     CHECK_EQ_INT((int32_t)File_Size(file), (int32_t)sizeof(m_Bytes));
     File_Close(file);
 }

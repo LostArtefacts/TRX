@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+# Ensures changelog entries are only appended to unreleased versions,
+# and the stable release changelogs remain frozen.
+
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from harness import LintWarning, repo_check
+from shared.paths import DOCS_DIR, REPO_DIR
+
+CHANGELOG_PATH = DOCS_DIR / "CHANGELOG.md"
+HEADER_RE = re.compile(r"^## \[(?P<name>[^\]]+)\]")
+
+
+def _sections(text: str) -> dict[str, list[str]]:
+    sections: dict[str, list[str]] = {}
+    name: str | None = None
+    for line in text.splitlines():
+        if match := HEADER_RE.match(line):
+            name = match.group("name")
+            sections[name] = []
+        elif name is not None and line.startswith("- "):
+            sections[name].append(line)
+    return sections
+
+
+def _head_text() -> str | None:
+    result = subprocess.run(
+        ["git", "show", f"HEAD:{CHANGELOG_PATH.relative_to(REPO_DIR)}"],
+        capture_output=True,
+        text=True,
+        cwd=REPO_DIR,
+    )
+    return result.stdout if result.returncode == 0 else None
+
+
+def check():
+    head_text = _head_text()
+    if head_text is None:
+        return
+
+    head = _sections(head_text)
+    current = _sections(CHANGELOG_PATH.read_text(encoding="utf-8"))
+    lines = CHANGELOG_PATH.read_text(encoding="utf-8").splitlines()
+
+    for name, entries in current.items():
+        if name.lower() == "unreleased" or name not in head:
+            continue
+        known = set(head[name])
+        for entry in entries:
+            if entry in known:
+                continue
+            yield LintWarning(
+                CHANGELOG_PATH.relative_to(REPO_DIR),
+                f"[{name}] has shipped - move this entry to [Unreleased]: "
+                f"{entry[2:]}",
+                line=lines.index(entry) + 1 if entry in lines else None,
+            )
+
+
+repo_check(check)

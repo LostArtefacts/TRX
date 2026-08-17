@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/result.h>
 #include <trx/gl/enum.h>
 
 #include <GL/glew.h>
@@ -10,13 +11,13 @@ typedef struct {
     GLuint id;
 } TRX_GL_PROGRAM;
 
-bool TRX_GL_Program_Init(TRX_GL_PROGRAM *program);
+RESULT TRX_GL_Program_Init(TRX_GL_PROGRAM *program);
 void TRX_GL_Program_Close(TRX_GL_PROGRAM *program);
 
 void TRX_GL_Program_Bind(const TRX_GL_PROGRAM *program);
-void TRX_GL_Program_AttachShader(
+RESULT TRX_GL_Program_AttachShader(
     TRX_GL_PROGRAM *program, GLenum type, const char *path);
-void TRX_GL_Program_Link(TRX_GL_PROGRAM *program);
+RESULT TRX_GL_Program_Link(TRX_GL_PROGRAM *program);
 void TRX_GL_Program_FragmentData(TRX_GL_PROGRAM *program, const char *name);
 GLint TRX_GL_Program_UniformLocation(TRX_GL_PROGRAM *program, const char *name);
 

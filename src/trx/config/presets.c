@@ -153,6 +153,12 @@ static void M_Shutdown(void)
     M_FreeAllPresets();
 }
 
+static RESULT M_Load(void)
+{
+    Config_Presets_ScanFiles();
+    return OK;
+}
+
 void Config_Presets_ScanFiles(void)
 {
     M_FreeAllPresets();
@@ -236,6 +242,4 @@ void Config_Presets_Apply(const int32_t idx)
     SHOULD(Config_Write());
 }
 
-REGISTER_SUBSYSTEM(
-        .init = M_Init, .load = Config_Presets_ScanFiles,
-        .shutdown = M_Shutdown)
+REGISTER_SUBSYSTEM(.init = M_Init, .load = M_Load, .shutdown = M_Shutdown)

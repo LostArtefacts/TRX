@@ -95,13 +95,8 @@ void Gun_AddDynamicLight(void)
     }
 
     const ITEM *const lara_item = Lara_GetItem();
-    const int32_t c = Math_Cos(lara_item->rot.y);
-    const int32_t s = Math_Sin(lara_item->rot.y);
-    const XYZ_32 pos = {
-        .x = lara_item->pos.x + (s >> (W2V_SHIFT - 10)),
-        .y = lara_item->pos.y - WALL_L / 2,
-        .z = lara_item->pos.z + (c >> (W2V_SHIFT - 10)),
-    };
+    XYZ_32 pos = XYZ_32_OffsetYaw(lara_item->pos, lara_item->rot.y, 1024);
+    pos.y -= WALL_L / 2;
     if (g_TRVersion >= 3) {
         Output_AddDynamicLightRGB(pos, 12, (RGB_888) { 192, 144, 0 });
     } else {

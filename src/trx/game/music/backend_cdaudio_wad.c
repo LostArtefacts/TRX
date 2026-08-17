@@ -67,8 +67,8 @@ static bool M_LoadTrackAsWaveFile(
         return false;
     }
 
-    TRX_FILE *const fp = File_OpenPath(data->path, FILE_OPEN_READ);
-    if (fp == nullptr) {
+    TRX_FILE *fp = nullptr;
+    if (!IGNORE(File_OpenPath(data->path, FILE_OPEN_READ, &fp))) {
         return false;
     }
 
@@ -150,8 +150,8 @@ static bool M_Init(MUSIC_BACKEND *const backend)
     M_BACKEND_DATA *const data = backend->data;
     ASSERT(data != nullptr);
 
-    TRX_FILE *const fp = File_OpenPath(data->path, FILE_OPEN_READ);
-    if (fp == nullptr) {
+    TRX_FILE *fp = nullptr;
+    if (!IGNORE(File_OpenPath(data->path, FILE_OPEN_READ, &fp))) {
         return false;
     }
 

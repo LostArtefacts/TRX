@@ -11,6 +11,7 @@
 #include <trx/game/output/textures_gl.h>
 #include <trx/game/output/uniforms.h>
 #include <trx/game/shell.h>
+#include <trx/game/viewport.h>
 #include <trx/gl/context.h>
 #include <trx/gl/utils.h>
 
@@ -108,7 +109,8 @@ static bool M_IsAnySourceDirty(const M_PRIV *const p)
 static void M_PrepareScene(const M_PRIV *const p)
 {
 #ifndef __APPLE__
-    glLineWidth(g_Config.rendering.wireframe_width);
+    glLineWidth(
+        g_Config.rendering.wireframe_width * Viewport_GetSupersamplingFactor());
     TRX_GL_CheckError();
 #endif
 

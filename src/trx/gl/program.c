@@ -34,7 +34,7 @@ static const char *M_LoadFileCached(const char *const path)
     }
 
     char *content = nullptr;
-    if (!FS_Load(path, &content, nullptr)) {
+    if (!SHOULD(FS_Load(path, &content, nullptr))) {
         return nullptr;
     }
     M_SHADER_FILE_CACHE_ENTRY entry = {
@@ -60,10 +60,12 @@ __attribute__((destructor)) static void M_ShutdownCache(void)
     m_ShaderFileCache = nullptr;
 }
 
-static char *M_PreprocessIncludes(const char *src, const char *dir)
+static RESULT M_PreprocessIncludes(
+    const char *src, const char *dir, char **out_result)
 {
     ASSERT(src != nullptr);
     ASSERT(dir != nullptr);
+    *out_result = nullptr;
 
     const char *p = src;
     size_t result_cap = strlen(src) + 1;
@@ -102,8 +104,8 @@ static char *M_PreprocessIncludes(const char *src, const char *dir)
         const char *end_quote =
             start_quote ? strchr(start_quote + 1, '"') : nullptr;
         if (!start_quote || !end_quote) {
-            Shell_ExitSystemFmt(
-                "Malformed #include directive near: %.32s", include);
+            Memory_FreePointer(&result);
+            return FAIL("a #include says no file name near: %.32s", include);
         }
 
         char filename[512];
@@ -116,14 +118,20 @@ static char *M_PreprocessIncludes(const char *src, const char *dir)
 
         const char *const include_src = M_LoadFileCached(full_path);
         if (include_src == nullptr) {
-            Shell_ExitSystemFmt("Failed to include shader file: %s", full_path);
+            Memory_FreePointer(&result);
+            return FAIL("%s: the included shader could not be read", full_path);
         }
 
         // Handle nested includes
         char *include_dir = FS_GetParentDirectory(full_path);
-        char *processed_include =
-            M_PreprocessIncludes(include_src, include_dir ? include_dir : dir);
+        char *processed_include = nullptr;
+        const RESULT included = M_PreprocessIncludes(
+            include_src, include_dir ? include_dir : dir, &processed_include);
         Memory_FreePointer(&include_dir);
+        if (!IS_OK(included)) {
+            Memory_FreePointer(&result);
+            return included;
+        }
 
         // Append included content
         size_t block_len = strlen(processed_include);
@@ -143,7 +151,8 @@ static char *M_PreprocessIncludes(const char *src, const char *dir)
     }
 
     result[used] = '\0';
-    return result;
+    *out_result = result;
+    return OK;
 }
 
 static char *M_Preprocess(const char *content, GLenum type)
@@ -177,16 +186,13 @@ static char *M_Preprocess(const char *content, GLenum type)
     return processed_content;
 }
 
-bool TRX_GL_Program_Init(TRX_GL_PROGRAM *const program)
+RESULT TRX_GL_Program_Init(TRX_GL_PROGRAM *const program)
 {
     ASSERT(program != nullptr);
     program->id = glCreateProgram();
     TRX_GL_CheckError();
-    if (!program->id) {
-        LOG_ERROR("Can't create shader program");
-        return false;
-    }
-    return true;
+    FAIL_IF(!program->id, "the shader program could not be created");
+    return OK;
 }
 
 void TRX_GL_Program_Close(TRX_GL_PROGRAM *const program)
@@ -207,33 +213,32 @@ void TRX_GL_Program_Bind(const TRX_GL_PROGRAM *const program)
     TRX_GL_CheckError();
 }
 
-void TRX_GL_Program_AttachShader(
+RESULT TRX_GL_Program_AttachShader(
     TRX_GL_PROGRAM *program, GLenum type, const char *path)
 {
     ASSERT(program != nullptr);
     ASSERT(path != nullptr);
 
-    const char *const resolved_path =
-        GamePath_Resolve(GAME_DYNAMIC_PATH_SHADER_FILE, path);
+    const char *resolved_path = nullptr;
+    MUST(GamePath_Resolve(GAME_DYNAMIC_PATH_SHADER_FILE, path, &resolved_path));
     Memory_FreePointer(&program->path);
     program->path = Memory_DupStr(resolved_path);
 
     GLuint shader_id = glCreateShader(type);
     TRX_GL_CheckError();
-    if (!shader_id) {
-        Shell_ExitSystem("Failed to create shader");
-    }
+    FAIL_IF(!shader_id, "%s: the shader could not be created", program->path);
 
     const char *content = M_LoadFileCached(program->path);
     char *processed_content = nullptr;
-    if (content == nullptr) {
-        Shell_ExitSystemFmt("Unable to find shader file: %s", program->path);
-    }
+    FAIL_IF(
+        content == nullptr, "%s: the shader could not be read", program->path);
 
     char *shader_dir = FS_GetParentDirectory(program->path);
-    processed_content = M_PreprocessIncludes(content, shader_dir);
-    ASSERT(processed_content != nullptr);
+    const RESULT preprocessed =
+        M_PreprocessIncludes(content, shader_dir, &processed_content);
     Memory_FreePointer(&shader_dir);
+    MUST(preprocessed, "%s", program->path);
+    ASSERT(processed_content != nullptr);
 
     char *expanded_content = processed_content;
     processed_content = M_Preprocess(expanded_content, type);
@@ -257,12 +262,13 @@ void TRX_GL_Program_AttachShader(
         glGetShaderInfoLog(shader_id, info_log_size, &info_log_size, info_log);
         TRX_GL_CheckError();
 
+        Memory_FreePointer(&processed_content);
+        glDeleteShader(shader_id);
         if (info_log[0]) {
-            Shell_ExitSystemFmt(
-                "%s: compilation failed\n%s", program->path, info_log);
-        } else {
-            Shell_ExitSystemFmt("%s: compilation failed.", program->path);
+            return FAIL(
+                "%s: the shader did not compile\n%s", program->path, info_log);
         }
+        return FAIL("%s: the shader did not compile", program->path);
     }
 
     Memory_FreePointer(&processed_content);
@@ -272,9 +278,10 @@ void TRX_GL_Program_AttachShader(
 
     glDeleteShader(shader_id);
     TRX_GL_CheckError();
+    return OK;
 }
 
-void TRX_GL_Program_Link(TRX_GL_PROGRAM *const program)
+RESULT TRX_GL_Program_Link(TRX_GL_PROGRAM *const program)
 {
     ASSERT(program != nullptr);
     glLinkProgram(program->id);
@@ -291,12 +298,13 @@ void TRX_GL_Program_Link(TRX_GL_PROGRAM *const program)
             program->id, info_log_size, &info_log_size, info_log);
         TRX_GL_CheckError();
         if (info_log[0]) {
-            Shell_ExitSystemFmt(
-                "%s: shader linking failed\n%s", program->path, info_log);
-        } else {
-            Shell_ExitSystemFmt("%s: shader linking failed", program->path);
+            return FAIL(
+                "%s: the shader program did not link\n%s", program->path,
+                info_log);
         }
+        return FAIL("%s: the shader program did not link", program->path);
     }
+    return OK;
 }
 
 void TRX_GL_Program_FragmentData(

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trx/core/result.h>
+
 #include <stddef.h>
 #include <stdint.h>
 
@@ -40,20 +42,22 @@ char *FS_GetStem(const char *path);
 // Read the size and modification time of a path without opening it.
 bool FS_GetMeta(const char *path, uint64_t *out_size, uint64_t *out_mtime);
 
-// Read the whole file at path into a newly allocated, zero-terminated buffer.
-// Caller must free it with Memory_Free().
-bool FS_Load(const char *path, char **output_data, size_t *output_size);
+// Reads a whole file into memory, reporting one that cannot be opened or that
+// ends early. Caller frees the data with Memory_FreePointer().
+RESULT FS_Load(const char *path, char **output_data, size_t *output_size);
 
-// Delete the file at path. Returns false if it could not be deleted.
-bool FS_Delete(const char *path);
+// Deletes the file at path, reporting one that will not go.
+RESULT FS_Delete(const char *path);
 
 // ============================================================================
 // Directory functions
 
-// Create one directory path component.
-void FS_CreateDirectory(const char *path);
-// Recursively ensure all parent directories for `path` exist.
-void FS_EnsureParentDirectories(const char *path);
+// Creates one directory path component, reporting one that cannot be made. A
+// directory that is already there is no fault.
+RESULT FS_CreateDirectory(const char *path);
+// Recursively ensure all parent directories for `path` exist, reporting the
+// first that cannot be made.
+RESULT FS_EnsureParentDirectories(const char *path);
 
 typedef struct FS_DIR FS_DIR;
 

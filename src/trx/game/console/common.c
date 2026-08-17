@@ -28,11 +28,12 @@ static void M_Shutdown(void)
     m_IsOpened = false;
 }
 
-static void M_Load(void)
+static RESULT M_Load(void)
 {
     UI_Console_Init(&m_UIState);
 
     Console_History_Init();
+    return OK;
 }
 
 void Console_Open(void)

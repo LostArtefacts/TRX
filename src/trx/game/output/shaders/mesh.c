@@ -68,8 +68,9 @@ static void M_UploadEnvMapRect(
     }
 }
 
-OUTPUT_MESH_SHADER *Output_MeshShader_Create(void)
+RESULT Output_MeshShader_Create(OUTPUT_MESH_SHADER **const out_shader)
 {
+    *out_shader = nullptr;
     OUTPUT_MESH_SHADER *const shader = Memory_Alloc(sizeof(*shader));
     for (int32_t i = 0; i < M_VARIANT_COUNT; i++) {
         shader->has_model_matrix[i] = false;
@@ -82,7 +83,7 @@ OUTPUT_MESH_SHADER *Output_MeshShader_Create(void)
         shader->tint[i] = (RGBA_F) { 0.0f, 0.0f, 0.0f, 0.0f };
         shader->env_map_rect[i] = (OUTPUT_ATLAS_RECT) { .layer = -1 };
 
-        shader->base[i] = Output_Shader_Create(m_VariantPaths[i]);
+        MUST(Output_Shader_Create(m_VariantPaths[i], &shader->base[i]));
         Output_Shader_Bind(shader->base[i]);
         TRX_GL_TRACK_UNIFORM(
             glUniform1i,
@@ -95,7 +96,8 @@ OUTPUT_MESH_SHADER *Output_MeshShader_Create(void)
             TRX_GL_TRACK_UNIFORM(glUniform1i, loc, 1);
         }
     }
-    return shader;
+    *out_shader = shader;
+    return OK;
 }
 
 void Output_MeshShader_Bind(OUTPUT_MESH_SHADER *const shader)

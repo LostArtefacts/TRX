@@ -186,6 +186,17 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'trx/core/math/geom',
+  'engine': [
+    'core/math/func.c',
+    'core/math/geom.c',
+    'core/math/trig.c',
+    'game/matrix.c',
+  ],
+  'deps': [dep_mathlibrary],
+}
+
+unit_tests += {
   'name': 'trx/game/matrix',
   'engine': [
     'game/matrix.c',
@@ -203,7 +214,13 @@ unit_tests += {
 
 unit_tests += {
   'name': 'trx/game/cutseq/pak',
-  'engine': ['game/cutseq/pak.c', 'core/memory.c', 'core/subsystem.c'],
+  'engine': [
+    'game/cutseq/pak.c',
+    'core/memory.c',
+    'core/result.c',
+    'core/subsystem.c',
+  ],
+  'src': ['harness/stubs_result.c'],
   'deps': [dep_zlib],
 }
 
@@ -256,12 +273,14 @@ unit_tests += {
 unit_tests += {
   'name': 'trx/core/file',
   'engine': [
+    'core/result.c',
     'core/file.c',
     'core/filesystem.c',
     'core/memory.c',
     'core/strings/common.c',
     'core/vector.c',
   ],
+  'src': ['harness/stubs_result.c'],
   'deps': [dep_pcre2],
   'args': ['-DPCRE2_CODE_UNIT_WIDTH=8', '-D_DEFAULT_SOURCE'],
 }
@@ -269,12 +288,14 @@ unit_tests += {
 unit_tests += {
   'name': 'trx/core/filesystem',
   'engine': [
+    'core/result.c',
     'core/file.c',
     'core/filesystem.c',
     'core/memory.c',
     'core/strings/common.c',
     'core/vector.c',
   ],
+  'src': ['harness/stubs_result.c'],
   'deps': [dep_pcre2],
   'args': ['-DPCRE2_CODE_UNIT_WIDTH=8', '-D_DEFAULT_SOURCE'],
 }
@@ -311,9 +332,11 @@ unit_tests += {
     'game/console/completion.c',
     'game/console/registry.c',
     'core/memory.c',
+    'core/result.c',
     'core/subsystem.c',
     'core/vector.c',
   ],
+  'src': ['harness/stubs_result.c'],
 }
 
 unit_tests += {
@@ -350,10 +373,11 @@ unit_tests += {
     'core/event_manager.c',
     'core/json/base.c',
     'core/json/parse.c',
+    'core/result.c',
     'core/subsystem.c',
     'version.c',
   ],
-  'src': ['harness/stubs_config_file.c'],
+  'src': ['harness/stubs_config_file.c', 'harness/stubs_result.c'],
 }
 
 # The migrations that carry an older release's settings file forward. They
@@ -407,6 +431,7 @@ unit_tests += {
     'core/dynamic_enum.c',
     'core/enum_map.c',
     'core/memory.c',
+    'core/result.c',
     'core/value.c',
     'core/vector.c',
     'game/lua/capi/events.c',
@@ -414,7 +439,11 @@ unit_tests += {
     'game/lua/registry.c',
     'game/lua/utils.c',
   ],
-  'src': ['harness/stubs_enum_map.c', 'harness/stubs_game_script.c'],
+  'src': [
+    'harness/stubs_enum_map.c',
+    'harness/stubs_game_script.c',
+    'harness/stubs_result.c',
+  ],
   'deps': [dep_lua],
 }
 
@@ -492,7 +521,13 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/random',
   'bundles': [b_lua_surface, b_lua_math],
-  'engine': ['core/subsystem.c', 'game/lua/capi/random.c', 'game/random.c'],
+  'engine': [
+    'core/result.c',
+    'core/subsystem.c',
+    'game/lua/capi/random.c',
+    'game/random.c',
+  ],
+  'src': ['harness/stubs_result.c'],
 }
 
 unit_tests += {
@@ -865,12 +900,18 @@ unit_tests += {
 # decides rests on glyph widths, so a stub font would agree with anything.
 unit_tests += {
   'name': 'trx/game/ui/text',
-  'src': ['fakes/ui.c', 'fakes/ui_draw.c', 'harness/font_bin.c'],
+  'src': [
+    'fakes/ui.c',
+    'fakes/ui_draw.c',
+    'harness/font_bin.c',
+    'harness/stubs_result.c',
+  ],
   'engine': [
     'core/enum_map.c',
     'core/memory.c',
     'core/strings/case_funcs.c',
     'core/strings/common.c',
+    'core/result.c',
     'core/subsystem.c',
     'core/vector.c',
     'game/enum.c',
@@ -902,12 +943,13 @@ unit_tests += {
     'core/event_manager.c',
     'core/json/base.c',
     'core/json/parse.c',
+    'core/result.c',
     'core/subsystem.c',
     'game/ui/dialogs/settings_handlers.c',
     'game/ui/dialogs/settings_rows.c',
     'version.c',
   ],
-  'src': ['harness/stubs_config_file.c'],
+  'src': ['harness/stubs_config_file.c', 'harness/stubs_result.c'],
 }
 
 # The UI layout test is the widest of the unit tests: it stands up the settings
@@ -918,6 +960,7 @@ unit_tests += {
 unit_tests += {
   'name': 'trx/game/ui',
   'src': [
+    'harness/stubs_result.c',
     'fakes/settings.c',
     'fakes/ui.c',
     'fakes/ui_draw.c',

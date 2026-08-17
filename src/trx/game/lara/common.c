@@ -628,8 +628,7 @@ void Lara_Animate(ITEM *const item)
     }
 
     if (!lara->interact_target.is_moving) {
-        item->pos.x += (item->speed * Math_Sin(lara->move_angle)) >> W2V_SHIFT;
-        item->pos.z += (item->speed * Math_Cos(lara->move_angle)) >> W2V_SHIFT;
+        item->pos = XYZ_32_OffsetYaw(item->pos, lara->move_angle, item->speed);
     }
 }
 

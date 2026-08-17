@@ -92,11 +92,8 @@ static bool M_DrawShadow_Sprite(
                 offset.z += ((offset_b.z - offset_a.z) * frac) / rate;
             }
 
-            const int32_t sy = Math_Sin(item->interp.result.rot.y);
-            const int32_t cy = Math_Cos(item->interp.result.rot.y);
-            anchor_pos.x += (offset.x * cy + offset.z * sy) >> W2V_SHIFT;
-            anchor_pos.y += offset.y;
-            anchor_pos.z += (offset.z * cy - offset.x * sy) >> W2V_SHIFT;
+            anchor_pos = XYZ_32_OffsetLocalYaw(
+                anchor_pos, offset, item->interp.result.rot.y);
 
             int16_t room_num = item->room_num;
             const SECTOR *const sector = Room_GetSector(anchor_pos, &room_num);
@@ -123,19 +120,15 @@ static bool M_DrawShadow_Sprite(
     }
 
     const int32_t base_y = anchor_floor - 16;
-    const int32_t sy = Math_Sin(item->interp.result.rot.y);
-    const int32_t cy = Math_Cos(item->interp.result.rot.y);
 
     // Compute the world-space grid points with floor-conforming Y offsets.
     XYZ_32 grid_world[M_SHADOW_GRID_POINTS];
     for (int32_t i = 0; i < M_SHADOW_GRID_POINTS; i++) {
-        const int32_t lx = grid_local_x[i];
-        const int32_t lz = grid_local_z[i];
-        const int32_t rx = (lx * cy + lz * sy) >> W2V_SHIFT;
-        const int32_t rz = (lz * cy - lx * sy) >> W2V_SHIFT;
-
-        const int32_t wx = anchor_pos.x + rx;
-        const int32_t wz = anchor_pos.z + rz;
+        const XYZ_32 corner = XYZ_32_OffsetLocalYaw(
+            anchor_pos, (XYZ_32) { .x = grid_local_x[i], .z = grid_local_z[i] },
+            item->interp.result.rot.y);
+        const int32_t wx = corner.x;
+        const int32_t wz = corner.z;
 
         int16_t room_num = item->room_num;
         XYZ_32 test_pos = { wx, anchor_floor, wz };

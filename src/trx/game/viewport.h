@@ -55,6 +55,12 @@ int32_t Viewport_GetCenterX(VIEWPORT_SPACE space);
 int32_t Viewport_GetCenterY(VIEWPORT_SPACE space);
 VIEWPORT_RECT Viewport_GetRect(VIEWPORT_SPACE space);
 
+// Returns how many rasterized pixels the scene draws per pixel the player
+// sees, along one axis. Anything sized in the pixels the driver rasterizes
+// with, such as the line width, has to be multiplied by it to keep the width
+// it had before supersampling.
+int32_t Viewport_GetSupersamplingFactor(void);
+
 // Return the current FOV as overriden by the game mechanics, such as special
 // cameras or cutscenes. If the FOV is not overriden, returns -1.
 int16_t Viewport_GetSystemFOV(void);

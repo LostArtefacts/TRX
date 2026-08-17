@@ -78,20 +78,19 @@ VIEWPORT_SPACE TRX_GL_Context_GetViewport(void)
     return m_Context.space;
 }
 
-bool TRX_GL_Context_Attach(void *window_handle)
+RESULT TRX_GL_Context_Attach(void *window_handle)
 {
     const char *shading_ver;
 
     if (m_Context.window_handle) {
-        LOG_ERROR("Context already attached");
-        return false;
+        return FAIL("the OpenGL context is already attached");
     }
 
     LOG_INFO("Attaching to window %p", window_handle);
     m_Context.context = SDL_GL_CreateContext(window_handle);
     if (m_Context.context == nullptr) {
-        LOG_ERROR("Can't create OpenGL context: %s", SDL_GetError());
-        return false;
+        return FAIL(
+            "the OpenGL context could not be created: %s", SDL_GetError());
     }
 
     m_Context.config.line_width = 1;
@@ -101,16 +100,17 @@ bool TRX_GL_Context_Attach(void *window_handle)
 
     m_Context.window_handle = window_handle;
 
-    if (SDL_GL_MakeCurrent(m_Context.window_handle, m_Context.context)) {
-        Shell_ExitSystemFmt(
-            "Can't activate OpenGL context: %s", SDL_GetError());
-    }
+    FAIL_IF(
+        SDL_GL_MakeCurrent(m_Context.window_handle, m_Context.context),
+        "the OpenGL context could not be activated: %s", SDL_GetError());
 
     const GLenum err = glewInit();
     if (err != GLEW_OK) {
         if (err != 4) {
-            Shell_ExitSystemFmt(
-                "Can't initialize GLEW for OpenGL extension loading: %d", err);
+            return FAIL(
+                "GLEW could not be brought up to load the OpenGL "
+                "extensions: %d",
+                err);
         }
         // https://github.com/nigels-com/glew/issues/417
         LOG_WARNING("GLEW failed to init: %d", err);
@@ -143,10 +143,10 @@ bool TRX_GL_Context_Attach(void *window_handle)
 
     m_Context.renderer = &g_TRX_GL_Renderer;
     if (m_Context.renderer->init != nullptr) {
-        m_Context.renderer->init(m_Context.renderer, &m_Context.config);
+        MUST(m_Context.renderer->init(m_Context.renderer, &m_Context.config));
     }
 
-    return true;
+    return OK;
 }
 
 char *TRX_GL_Context_DescribeDriver(void *const window_handle)

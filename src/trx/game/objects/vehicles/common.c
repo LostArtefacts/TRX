@@ -144,10 +144,9 @@ int32_t Vehicle_GetCollisionAnim(const ITEM *const vehicle, XYZ_32 *const moved)
     moved->z = vehicle->pos.z - moved->z;
 
     if (moved->x != 0 || moved->z != 0) {
-        const int32_t c = Math_Cos(vehicle->rot.y);
-        const int32_t s = Math_Sin(vehicle->rot.y);
-        const int32_t front = (moved->x * s + moved->z * c) >> W2V_SHIFT;
-        const int32_t side = (moved->x * c - moved->z * s) >> W2V_SHIFT;
+        const XYZ_32 local = XYZ_32_UnrotateYaw(*moved, vehicle->rot.y);
+        const int32_t front = local.z;
+        const int32_t side = local.x;
         if (ABS(front) > ABS(side)) {
             if (front > 0) {
                 return LA_VEHICLE_HIT_BACK;

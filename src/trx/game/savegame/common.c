@@ -127,9 +127,8 @@ bool Savegame_Load(const SAVEGAME_SLOT_REF slot)
     M_LoadPreprocess();
 
     bool result = false;
-    TRX_FILE *const fp =
-        File_OpenPath(savegame_info->full_path, FILE_OPEN_READ);
-    if (fp != nullptr) {
+    TRX_FILE *fp = nullptr;
+    if (SHOULD(File_OpenPath(savegame_info->full_path, FILE_OPEN_READ, &fp))) {
         result = SG_File_LoadFromFile(fp);
         File_Close(fp);
     }
@@ -149,9 +148,9 @@ bool Savegame_UpdateDeathCounters(
     ASSERT(savegame_info->full_path != nullptr);
 
     bool ret = false;
-    TRX_FILE *const fp =
-        File_OpenPath(savegame_info->full_path, FILE_OPEN_READ_WRITE);
-    if (fp != nullptr) {
+    TRX_FILE *fp = nullptr;
+    if (SHOULD(File_OpenPath(
+            savegame_info->full_path, FILE_OPEN_READ_WRITE, &fp))) {
         ret = SG_File_UpdateDeathCounters(
             fp, savegame_info->level_num, death_count, savegame_info->is_quick);
         File_Close(fp);
@@ -168,9 +167,8 @@ bool Savegame_LoadOnlyResumeInfo(const SAVEGAME_SLOT_REF slot)
     ASSERT(savegame_info->full_path != nullptr);
 
     bool ret = false;
-    TRX_FILE *const fp =
-        File_OpenPath(savegame_info->full_path, FILE_OPEN_READ);
-    if (fp != nullptr) {
+    TRX_FILE *fp = nullptr;
+    if (SHOULD(File_OpenPath(savegame_info->full_path, FILE_OPEN_READ, &fp))) {
         ret = SG_File_LoadOnlyResumeInfo(fp);
         File_Close(fp);
     }

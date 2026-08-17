@@ -1,27 +1,26 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.10...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.10.1...develop) - ××××-××-××
 
 **Lara's movement**
 - Fixed Lara entering the step down animation when walking backwards in a swamp room (OG bug) (#6251)
 - Fixed certain SFX, such as Lara's footsteps, playing in swamp rooms (#6248, regression from 1.0)
 - Fixed Lara being able to turn too quickly in swamp rooms (regression from 1.0)
+- Fixed Lara being able to vault or crawl through breakable walls that stand on the edge of a tile (Gameplay → Fixes → Fix breakable wall clipping) (OG bug)
+- Fixed Lara's rope-grab reach being shorter from certain directions (OG bug)
 
 **UI**
 - Changed vertex snapping to offer Disabled, 320x240, and Upscale Res modes (#6278)
 - Changed the Fix one-shot music triggers option to sit with the other music settings (Sound → Misc)
-- Changed the tab arrows to no longer vanish once the selection moved into the list below them
 - Changed Lara's outfit setting to offer only the outfits the current level can dress her in
-- Fixed the settings and controls dialog tabs ignoring rebound step left and step right keys
-- Fixed the settings dialogs scrolling their list back to the top when the selection moved up to the tabs
 - Fixed the icons beside the volume settings, which now show a note for the music and a speaker for the sound effects
-- Fixed the controls key list jumping after switching to a tab with fewer keys (regression from 1.3)
 - Fixed the game flashing over the black bars beside the picture when a frame is advanced in photo mode (regression from 1.10)
+- Fixed the photo mode camera drifting upwards and overshooting when it is moved while pitched up or down
 - Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187)
 - Added a flat yellow color to the PS1 bar palettes (Graphic Options → UI → Bars) (#5227)
 - Changed the preset confirmation to offer Apply and Go back as choices, rather than leaving the keys unsaid (#6258)
 - Changed the PS1 poison healthbar to flat yellow, as the PS1 releases had it (#5227)
 - Fixed ability to open the inventory ring while a flyby sequence has Lara's control
-- Fixed the water color setting staying editable while a PS1 water color preset was picked (#6265)
 - Fixed a setting description showing a question mark in place of a key that is bound to a combination, such as Alt+Enter
+- Changed the TR3 breeze mode to read TR3/4, as it covers both games (Graphic Options → Visuals → Breeze)
 
 **Developer console**
 - Added the `/outfit` console command, which shows or changes what Lara is wearing
@@ -34,12 +33,13 @@
 **Level and game data**
 - Added Natla as an outfit for Lara, selectable in every game (Graphic Options → Visuals → Lara's outfit)
 - Added injection support for putting a room in a flip group, which only TR4 levels carry themselves (#5336)
+- Added a `requires_alert` property to the sentry gun, which lets a plain trigger set it firing where it would otherwise wait for a security laser (#1141)
 - Changed a missing or unknown `lara_outfit` in a level to fall back to the default outfit, rather than stopping the game from starting
 - Removed the golden outfits, which the engine now produces from any outfit, freeing their model slots for outfits of your own
 
 **Saves and settings**
 - Changed the save crystal behavior to give Lara a crystal when starting a game, if the mode is set to Saving (pickups), in line with the TR3 PS1 version (Gameplay → General → Crystal mode)
-- Fixed the PS1 water color preset showing as unnamed text in The Lost Artefact and Golden Mask (#6265)
+- Fixed save crystals activating even while Crystal mode is set to Disabled (Gameplay → General → Crystal mode) (regression from 1.10)
 
 **Music and sound**
 - Fixed crystal sound effects not playing if Lara collects one underwater (OG bug)
@@ -47,13 +47,14 @@
 **TR1**
 - Changed Lara to retain her equipment when turning to gold on the Midas Hand, with the equipment also turning to gold
 - Fixed Lara's arm remaining in the flare pose if holding one on the Midas Hand
-- Fixed the Cabin in Natla's Mines remaining visible after dropping to the floor (regression from 1.10)
 
 **TR3**
 - Added crystals to each of the levels in The Lost Artefact, and made the crystal mode option visible (Gameplay → General → Crystal mode)
 - Fixed z-fighting in rooms 21, 67 amd 122 in Jungle, and fixed incorrect lighting in room 87 (OG bugs)
 - Fixed missing alpha blending on the MP5 and M16 gun flare in the gym (regression from 1.7)
 - Fixed Lara being able to turn too quickly when wading (regression from 1.0)
+- Fixed the kayak at times not being drawn in certain rooms (regression from 1.10.1)
+- Fixed some of Lara's skin joints incorrectly being drawn when riding the kayak (regression from 1.10)
 
 **TR4**
 - Added the ability to skip in-game cutscenes
@@ -70,11 +71,8 @@
 - Changed a game named with `--mod` to say why it cannot be played, rather than quietly starting a different one
 - Changed a broken settings, strings or game data file to say what is wrong with it and where
 - Changed Lara turning to gold on the Midas hand to gild the outfit she has on, rather than swap her for a golden model
-- Fixed flames not being drawn if TR4 is launched and the game is then switched to a different mod (regression from 1.10)
-- Fixed doors disappearing when seen from the far side of their doorway after loading a save (regression from 1.9)
-- Fixed breeze defaulting to being off in fresh installations (regression from 1.10)
-- Fixed Lara having the wrong state while grabbing a zipline (regression from 1.10)
 - Fixed the game closing when a language with a broken strings file is picked
+- Fixed the game closing when another game is switched to while Lara is riding a vehicle
 - Fixed a false warning that the settings could not be saved
 
 **Lua**
@@ -88,6 +86,37 @@
 
 
 
+## [1.10.1](https://github.com/LostArtefacts/TRX/compare/trx-1.10...trx-1.10.1) - 2026-08-16
+**UI**
+- Changed the tab arrows to no longer vanish once the selection moved into the list below them
+- Fixed the controls key list jumping after switching to a tab with fewer keys (regression from 1.3)
+- Fixed the settings and controls dialog tabs ignoring rebound step left and step right keys
+- Fixed the settings dialogs scrolling their list back to the top when the selection moved up to the tabs
+- Fixed the water color setting staying editable while a PS1 water color preset was picked (#6265)
+
+**Options and menus**
+- Changed the TR1 PC bars appearance to be named TR1, the bars being the ones both TR1 releases draw (Graphic Options → Bars → Bars appearance) (#6260)
+- Changed the PlayStation presets to place the health and air bars on the right, where the PlayStation releases put them (#6261)
+- Changed the PC presets to name the corners the health and air bars sit in, which they had been taking from the defaults
+- Fixed the TR1 PS1 preset picking the TR2 PS1 bars, where TR1 draws the same bars on both platforms (#6260)
+
+**Rendering**
+- Fixed the water particles and the lightning bolts growing as the supersampling factor is raised, and following the resolution besides (regression from 1.10)
+- Fixed the sparks that keep a fixed size, such as ricochets, shrinking as the supersampling factor is raised (regression from 1.10)
+- Fixed the wireframe and debug portal lines thinning as the supersampling factor is raised (regression from 1.10)
+
+**Miscellaneous**
+- Fixed the Cabin in Natla's Mines remaining visible after dropping to the floor (regression from 1.10)
+- Fixed flames not being drawn if TR4 is launched and the game is then switched to a different mod (regression from 1.10)
+- Fixed doors disappearing when seen from the far side of their doorway after loading a save (regression from 1.9)
+- Fixed breeze defaulting to being off in fresh installations (regression from 1.10)
+- Fixed Lara having the wrong state while grabbing a zipline (regression from 1.10)
+- Fixed key icons ignoring the active keyboard layout, which swapped Z and Y on QWERTZ (#6257)
+- Fixed the PS1 water color preset showing as unnamed text in The Lost Artefact and Golden Mask (#6265)
+- Fixed a lit flare's sparks hanging in the air in front of the camera while the binoculars are up (#6269)
+
+
+
 ## [1.10](https://github.com/LostArtefacts/TRX/compare/trx-1.9.3...trx-1.10) - 2026-08-12
 Showcase: https://youtu.be/DKpqz_Yum6o
 
@@ -98,7 +127,6 @@ Showcase: https://youtu.be/DKpqz_Yum6o
 - Added the ability for Lara to pull up from ledges more quickly (Gameplay → Controls → Fast pull up) (#4857)
 - Improved state change handling when shimmying is requested while in the slow swing-in state on thin ledges (#5161)
 - Improved the pickup embed fix to prevent Lara becoming clamped when picking up items placed on sloped floors with low ceilings (Gameplay → Fixes → Fix pickup embed glitch) (OG bug)
-- Fixed Lara being able to vault or crawl through breakable walls that stand on the edge of a tile (Gameplay → Fixes → Fix breakable wall clipping) (OG bug)
 - Fixed Lara attempting to pull up into gaps that would not allow her to stand, resulting in her being pushed out (#5891)
 - Fixed Lara being teleported into the ceiling if a door shuts on the ledge she is climbing onto (Gameplay → Fixes → Wall glitch mode) (#6047)
 - Fixed differing ladder/hanging behavior when Lara comes to a stop from shimmying when corner shimmying is enabled (regression from 1.9)
@@ -116,7 +144,6 @@ Showcase: https://youtu.be/DKpqz_Yum6o
 - Fixed touch controls not turning themselves on the first time the game is launched on a device that has a touchscreen
 - Fixed the key icons in the controls dialog sitting at slightly different heights, most visibly the left trigger and the shoulder buttons (#6151)
 - Fixed the + joining the two keys of a shortcut sitting lower than the icons beside it (#6151)
-- Fixed key icons ignoring the active keyboard layout, which swapped Z and Y on QWERTZ (#6257)
 
 **Camera and binoculars**
 - Added TR4 camera mode, which is similar to TR3 but more responsive to Lara's actions such as picking up items
@@ -126,7 +153,6 @@ Showcase: https://youtu.be/DKpqz_Yum6o
 - Fixed flyby sequences set to loop playing only once, then swinging the camera back to Lara
 - Fixed a brief field of view flicker when exiting photo mode during Lara's special animations, such as turning to gold (regression from 1.5)
 - Fixed the black surround of the binoculars turning grey when looking in certain directions (regression from 1.9)
-- Fixed a lit flare's sparks hanging in the air in front of the camera while the binoculars are up (#6269)
 
 **Inventory and pickups**
 - Added an option for Lara to collect stacked pickups individually, as per OG TR4 (Gameplay → Controls → Multiple pickups)
@@ -224,12 +250,8 @@ Showcase: https://youtu.be/DKpqz_Yum6o
 - Changed the Neutral twists option to Alternative turns, which now turns Lara on the spot and on monkeybars as well as twisting her in the air (Gameplay → Controls → Alternative turns)
 - Changed the presets to be listed by name rather than in the order they were found (Gameplay → Presets)
 - Changed a setting a script is holding to be greyed out, where the row carried only the star saying who took it
-- Changed the TR1 PC bars appearance to be named TR1, the bars being the ones both TR1 releases draw (Graphic Options → Bars → Bars appearance) (#6260)
-- Changed the PlayStation presets to place the health and air bars on the right, where the PlayStation releases put them (#6261)
-- Changed the PC presets to name the corners the health and air bars sit in, which they had been taking from the defaults
 - Fixed settings text running off both sides of the screen in the longer languages, most visibly at 4:3 (#6000)
 - Fixed the list of settings a preset would change spilling outside its dialog, and its text now wraps (#6000)
-- Fixed the TR1 PS1 preset picking the TR2 PS1 bars, where TR1 draws the same bars on both platforms (#6260)
 - Fixed the load and save game dialogs covering the rest of the screen at larger text scales, where the list now shows as many slots as there is room for (#6175)
 
 **Saves and settings**

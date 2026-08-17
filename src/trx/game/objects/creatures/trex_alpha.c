@@ -155,16 +155,12 @@ static bool M_CanAttack(const ITEM *const item, const ITEM *const target)
         return false;
     }
 
+    const XYZ_32 pivot =
+        XYZ_32_OffsetYaw(item->pos, item->rot.y, M_PIVOT_LENGTH);
     const XYZ_32 pos = {
-        .x =
-            ABS(target->pos.x
-                - (item->pos.x
-                   + ((M_PIVOT_LENGTH * Math_Sin(item->rot.y)) >> W2V_SHIFT))),
+        .x = ABS(target->pos.x - pivot.x),
         .y = ABS(target->pos.y - item->pos.y),
-        .z =
-            ABS(target->pos.z
-                - (item->pos.z
-                   + ((M_PIVOT_LENGTH * Math_Cos(item->rot.y)) >> W2V_SHIFT))),
+        .z = ABS(target->pos.z - pivot.z),
     };
     return pos.x < M_HIT_RADIUS && pos.y <= M_HIT_RADIUS
         && pos.z < M_HIT_RADIUS;

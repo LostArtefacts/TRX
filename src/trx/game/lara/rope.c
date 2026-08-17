@@ -23,9 +23,10 @@ const ANIM *Lara_Rope_GetSwingAnim(void)
 
 void Lara_Rope_ApplyVelocity(const int16_t angle, const uint16_t vel)
 {
-    const int32_t x_vel = (vel * Math_Sin(angle)) >> 2;
-    const int32_t z_vel = (vel * Math_Cos(angle)) >> 2;
-    Rope_SetPendulumVelocity(x_vel, 0, z_vel);
+    // A rope velocity carries twelve bits more than a position does.
+    const XYZ_32 pendulum =
+        XYZ_32_RotateYaw((XYZ_32) { .z = vel << 12 }, angle);
+    Rope_SetPendulumVelocity(pendulum.x, 0, pendulum.z);
 }
 
 void Lara_Rope_UpdateSwing(ITEM *const item)

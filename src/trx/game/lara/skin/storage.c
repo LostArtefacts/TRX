@@ -494,11 +494,15 @@ static RESULT M_LoadFrom(const char *const source_path)
     return result;
 }
 
-static void M_Load(void)
+static RESULT M_Load(void)
 {
-    const char *const source_path =
-        GamePath_Resolve(GAME_DYNAMIC_PATH_COMMON_CONFIG, "outfits.json5");
-    EXIT_ON_FAIL(M_LoadFrom(source_path), "Failed to load the outfits");
+    const char *source_path = nullptr;
+    RESULT result = GamePath_Resolve(
+        GAME_DYNAMIC_PATH_COMMON_CONFIG, "outfits.json5", &source_path);
+    if (IS_OK(result)) {
+        result = M_LoadFrom(source_path);
+    }
+    return result;
 }
 
 LARA_SKIN_TYPE Lara_Skin_FindOutfitByName(const char *const name)

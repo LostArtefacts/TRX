@@ -168,6 +168,7 @@
     </moveable>
     <moveable id="64">
         <property category="TRX" defaultValue="10" description="Damage dealt when the sentry gun hits Lara." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="true" description="Require an alert, such as a security laser Lara has crossed, before the sentry gun opens fire. With this off, it fires for as long as its own trigger is active." displayName="Requires Alert" internalName="requires_alert" type="Bool" />
         <property category="TRX" defaultValue="100" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
     </moveable>
     <moveable id="65">

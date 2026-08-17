@@ -1,6 +1,8 @@
 #include <harness/harness.h>
 
 #include <trx/core/math/const.h>
+#include <trx/core/math/geom.h>
+#include <trx/core/utils.h>
 #include <trx/game/matrix.h>
 
 // Rotations reach the renderer as three angles, and the tempting way to meet
@@ -113,4 +115,27 @@ TEST(test_slerp_rot16_reads_back_a_locked_rotation)
     // and cannot be told apart. Any spelling of it has to survive the trip.
     const XYZ_16 rot = { .x = DEG_90, .y = DEG_45, .z = DEG_45 };
     M_CHECK_NEAR(Matrix_SlerpRot16(rot, rot, 0.5), rot, M_TOLERANCE);
+}
+
+TEST(the_view_matrix_undoes_the_rotation_the_camera_stands_at)
+{
+    // A point straight ahead of a camera has to land on the view's own z, and
+    // nowhere else, whichever way the camera is turned.
+    const XYZ_16 rot = { .x = DEG_45, .y = -12000, .z = DEG_1 * 10 };
+    const XYZ_32 eye = { .x = 1000, .y = -2000, .z = 3000 };
+
+    MATRIX facing = g_IDMatrix;
+    Matrix_RotY_M(&facing, rot.y);
+    Matrix_RotX_M(&facing, rot.x);
+    Matrix_RotZ_M(&facing, rot.z);
+    const XYZ_32 ahead =
+        XYZ_32_Add(eye, Matrix_MulVec32_M(&facing, (XYZ_32) { .z = 4096 }));
+
+    Matrix_GenerateW2V(&eye, &rot);
+    const XYZ_32 seen = Matrix_MulVec32_M(&g_ViewMatrix, ahead);
+
+    // A thousandth of the distance, which is what the trig table is worth.
+    CHECK(ABS(seen.x) < 8);
+    CHECK(ABS(seen.y) < 8);
+    CHECK(seen.z > 4096 - 8 && seen.z < 4096 + 8);
 }

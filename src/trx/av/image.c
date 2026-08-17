@@ -366,10 +366,10 @@ bool Image_SaveToFile(const IMAGE *const image, const char *const path)
         goto cleanup;
     }
 
-    FS_EnsureParentDirectories(path);
-    fp = File_OpenPath(path, FILE_OPEN_WRITE);
-    if (fp == nullptr) {
-        LOG_ERROR("Cannot create image file: %s", path);
+    if (!SHOULD(FS_EnsureParentDirectories(path))) {
+        goto cleanup;
+    }
+    if (!SHOULD(File_OpenPath(path, FILE_OPEN_WRITE, &fp))) {
         goto cleanup;
     }
 

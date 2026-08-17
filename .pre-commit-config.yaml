@@ -124,6 +124,13 @@ repos:
     pass_filenames: false
     files: ^src/lua/api/.*\.lua$
 
+  - id: lint-changelog-guard
+    name: Released changelog sections stay frozen
+    entry: tools/lint/checks/changelog_guard
+    language: python
+    pass_filenames: false
+    files: ^docs/CHANGELOG\.md$
+
   - id: gen-sort-imports
     name: Sort C includes
     entry: tools/lint/gen/sort_imports

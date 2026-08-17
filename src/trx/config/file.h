@@ -11,7 +11,11 @@
 // they had to say about it. They belong to the read rather than to the process:
 // a game being swapped for another ends them.
 
-bool ConfigFile_Read(const char *default_path, const char *enforced_path);
+// Reads the settings file and the game flow's, keeping what each had to say.
+// A file that is not there is no fault and leaves the options at their
+// defaults; one that does not parse is reported, and both faults are reported
+// together where both files are wrong.
+RESULT ConfigFile_Read(const char *default_path, const char *enforced_path);
 
 // Whether the settings file was there for the last read, apart from whether it
 // parsed.

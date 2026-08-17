@@ -91,10 +91,9 @@ const LEVEL_FORMAT_LOADER *Level_Format_LoadFromFile(
     GameBuf_Reset();
 
     BENCHMARK benchmark = Benchmark_Start();
-    TRX_FILE *const file = File_OpenPathInMemory(level->path);
-    if (file == nullptr) {
-        Shell_ExitSystemFmt("Could not open %s", level->path);
-    }
+    TRX_FILE *file = nullptr;
+    EXIT_ON_FAIL(
+        File_OpenPathInMemory(level->path, &file), "The level cannot be read");
 
     const LEVEL_FORMAT_LOADER *const loader = Level_Format_GuessLoader(file);
     if (loader == nullptr) {

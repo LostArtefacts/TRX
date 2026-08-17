@@ -1,12 +1,13 @@
 #pragma once
 
+#include <trx/core/result.h>
 #include <trx/game/viewport.h>
 #include <trx/gl/enum.h>
 #include <trx/gl/renderer.h>
 
 #include <stdint.h>
 
-bool TRX_GL_Context_Attach(void *window_handle);
+RESULT TRX_GL_Context_Attach(void *window_handle);
 void TRX_GL_Context_Detach(void);
 
 // Describes the OpenGL driver the system offers, in the shape of

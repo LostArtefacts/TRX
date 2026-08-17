@@ -564,12 +564,10 @@ static void M_Chase(const ITEM *const item)
 
     g_Camera.target_square = SQUARE(distance);
 
-    const XYZ_32 offset = {
-        .y = (g_Camera.target_distance * Math_Sin(g_Camera.target_elevation))
-            >> W2V_SHIFT,
-        .x = -((distance * Math_Sin(angle)) >> W2V_SHIFT),
-        .z = -((distance * Math_Cos(angle)) >> W2V_SHIFT),
-    };
+    // The camera trails the target, so it steps against the angle.
+    XYZ_32 offset = XYZ_32_RotateYaw((XYZ_32) { .z = -distance }, angle);
+    offset.y = (g_Camera.target_distance * Math_Sin(g_Camera.target_elevation))
+        >> W2V_SHIFT;
 
     GAME_VECTOR target = {
         .x = g_Camera.target.x + offset.x,
@@ -607,13 +605,10 @@ static void M_Combat(const ITEM *const item)
     const int32_t distance =
         (M_COMBAT_DISTANCE * Math_Cos(g_Camera.target_elevation)) >> W2V_SHIFT;
 
-    const XYZ_32 offset = {
-        .y =
-            +((g_Camera.target_distance * Math_Sin(g_Camera.target_elevation))
-              >> W2V_SHIFT),
-        .x = -((distance * Math_Sin(g_Camera.target_angle)) >> W2V_SHIFT),
-        .z = -((distance * Math_Cos(g_Camera.target_angle)) >> W2V_SHIFT),
-    };
+    XYZ_32 offset =
+        XYZ_32_RotateYaw((XYZ_32) { .z = -distance }, g_Camera.target_angle);
+    offset.y = (g_Camera.target_distance * Math_Sin(g_Camera.target_elevation))
+        >> W2V_SHIFT;
 
     GAME_VECTOR target = {
         .x = g_Camera.target.x + offset.x,
@@ -693,8 +688,8 @@ static void M_Look(const ITEM *const item)
 
     g_Camera.shift =
         (-STEP_L * 2 * Math_Sin(g_Camera.target_elevation)) >> W2V_SHIFT;
-    g_Camera.target.z += (g_Camera.shift * Math_Cos(item->rot.y)) >> W2V_SHIFT;
-    g_Camera.target.x += (g_Camera.shift * Math_Sin(item->rot.y)) >> W2V_SHIFT;
+    g_Camera.target.pos =
+        XYZ_32_OffsetYaw(g_Camera.target.pos, item->rot.y, g_Camera.shift);
 
     if (!M_IsGoodPosition(
             g_Camera.target.x, g_Camera.target.y, g_Camera.target.z,
@@ -705,13 +700,10 @@ static void M_Look(const ITEM *const item)
 
     g_Camera.target.y += M_ShiftClamp(&g_Camera.target, M_LOOK_CLAMP);
 
-    const XYZ_32 offset = {
-        .y =
-            +((g_Camera.target_distance * Math_Sin(g_Camera.target_elevation))
-              >> W2V_SHIFT),
-        .x = -((distance * Math_Sin(g_Camera.target_angle)) >> W2V_SHIFT),
-        .z = -((distance * Math_Cos(g_Camera.target_angle)) >> W2V_SHIFT),
-    };
+    XYZ_32 offset =
+        XYZ_32_RotateYaw((XYZ_32) { .z = -distance }, g_Camera.target_angle);
+    offset.y = (g_Camera.target_distance * Math_Sin(g_Camera.target_elevation))
+        >> W2V_SHIFT;
 
     GAME_VECTOR target = {
         .x = g_Camera.target.x + offset.x,
@@ -853,8 +845,8 @@ static void M_Update(
 
         if (g_Camera.flags == CF_FOLLOW_CENTRE) {
             const int32_t shift = (bounds->min.z + bounds->max.z) / 2;
-            g_Camera.target.z += (shift * Math_Cos(item->rot.y)) >> W2V_SHIFT;
-            g_Camera.target.x += (shift * Math_Sin(item->rot.y)) >> W2V_SHIFT;
+            g_Camera.target.pos =
+                XYZ_32_OffsetYaw(g_Camera.target.pos, item->rot.y, shift);
         }
 
         g_Camera.target.room_num = item->room_num;

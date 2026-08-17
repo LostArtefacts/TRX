@@ -216,23 +216,14 @@ static void M_TriggerFlamethrower(const ITEM *const item, const int16_t speed)
 
     for (int32_t i = 0; i < 2; i++) {
         const int32_t s = Random_GetControl() % (speed << 2) + 32;
-        const int32_t r = (s * Math_Cos(effect->rot.x)) >> W2V_SHIFT;
-        const XYZ_32 vel = {
-            .x = (r * Math_Sin(effect->rot.y)) >> W2V_SHIFT,
-            .y = -((s * Math_Sin(effect->rot.x)) >> W2V_SHIFT),
-            .z = (r * Math_Cos(effect->rot.y)) >> W2V_SHIFT,
-        };
+        const XYZ_32 vel = XYZ_32_FromYawPitch(effect->rot.y, effect->rot.x, s);
         M_TriggerFlameSparks(
             effect->pos, (XYZ_32) { vel.x << 5, vel.y << 5, vel.z << 5 }, -1);
     }
 
     {
-        const int32_t r = ((speed << 1) * Math_Cos(effect->rot.x)) >> W2V_SHIFT;
-        const XYZ_32 vel = {
-            .x = (r * Math_Sin(effect->rot.y)) >> W2V_SHIFT,
-            .y = -(((speed << 1) * Math_Sin(effect->rot.x)) >> W2V_SHIFT),
-            .z = (r * Math_Cos(effect->rot.y)) >> W2V_SHIFT,
-        };
+        const XYZ_32 vel =
+            XYZ_32_FromYawPitch(effect->rot.y, effect->rot.x, speed << 1);
         M_TriggerFlameSparks(
             effect->pos, (XYZ_32) { vel.x << 5, vel.y << 5, vel.z << 5 }, -2);
     }

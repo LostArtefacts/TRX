@@ -307,16 +307,16 @@ const char *GamePath_TryResolve(
     return m_FileExists ? rel : nullptr;
 }
 
-bool FS_Load(
+RESULT FS_Load(
     const char *const path, char **const output_data, size_t *const output_size)
 {
     if (!m_FileExists) {
-        return false;
+        return FAIL("%s: the file could not be opened", path);
     }
     *output_data = Memory_Alloc(m_ImageSize);
     memcpy(*output_data, m_Image, m_ImageSize);
     *output_size = m_ImageSize;
-    return true;
+    return OK;
 }
 
 OBJECT_ID Object_FromGameID(const int32_t game_id)

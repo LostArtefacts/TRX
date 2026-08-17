@@ -1,5 +1,6 @@
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
+#include <trx/core/log.h>
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/lara.h>
@@ -9,7 +10,6 @@
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
-#include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/spawn.h>
@@ -496,7 +496,13 @@ static void M_Setup(OBJECT *const obj)
     }
 
     if (!Object_Get(O_MESH_SWAP_1)->loaded) {
-        Shell_ExitSystem("Shiva requires O_MESH_SWAP_1 (statue)");
+        // The level names the creature but ships no statue to swap in, so it
+        // is left out rather than drawn wrong.
+        LOG_ERROR(
+            "Shiva needs O_MESH_SWAP_1 (statue), which the level does not "
+            "have");
+        obj->loaded = false;
+        return;
     }
 
     obj->initialise_func = M_Initialise;

@@ -177,7 +177,7 @@ static void M_ReadModMetaForKnownMods(void)
         }
 
         const char *const gameflow_path =
-            GamePath_Resolve(GAME_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
+            GamePath_PeekResolve(GAME_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
         if (gameflow_path == nullptr) {
             continue;
         }
@@ -229,13 +229,13 @@ static void M_ValidateEngineVersions(void)
     }
 }
 
-static void M_ValidateNoMixedModLayouts(void)
+static RESULT M_ValidateNoMixedModLayouts(void)
 {
     const char *const games_dir = GamePath_Get(GAME_PATH_GAMES_DIR);
     const char *const config_dir = GamePath_Get(GAME_PATH_CONFIG_DIR);
     if (games_dir == nullptr || config_dir == nullptr
         || strcmp(games_dir, config_dir) == 0) {
-        return;
+        return OK;
     }
 
     for (int32_t i = 0; i < m_Mods->count; i++) {
@@ -248,7 +248,7 @@ static void M_ValidateNoMixedModLayouts(void)
         if (FS_Exists(legacy_gameflow)) {
             // The paths are long enough that the message box cannot fit them
             // on one line, and it does not wrap.
-            Shell_ExitSystemFmt(
+            return FAIL(
                 "Mixed mod layout detected.\n"
                 "\n"
                 "Legacy mod data found at:\n"
@@ -262,6 +262,7 @@ static void M_ValidateNoMixedModLayouts(void)
                 legacy_gameflow, games_dir, mod->name, games_dir, mod->name);
         }
     }
+    return OK;
 }
 
 static char *M_GetModStringsPath(const char *const mod_id)
@@ -354,7 +355,7 @@ const char *Shell_GetModRejections(void)
     return m_RejectionSummary;
 }
 
-void Shell_ScanAvailableMods(void)
+RESULT Shell_ScanAvailableMods(void)
 {
     if (m_Mods != nullptr) {
         M_Shutdown();
@@ -372,7 +373,7 @@ void Shell_ScanAvailableMods(void)
         mod->is_valid = mod->is_available;
     }
 
-    M_ValidateNoMixedModLayouts();
+    MUST(M_ValidateNoMixedModLayouts());
     M_ScanForCustomMods();
 
     // Mark availability for newly added custom mods.
@@ -387,6 +388,7 @@ void Shell_ScanAvailableMods(void)
 
     M_ReadModMetaForKnownMods();
     M_ValidateEngineVersions();
+    return OK;
 }
 
 void Shell_ValidateMods(void)
@@ -537,5 +539,5 @@ char *Shell_GetGameStringsPath(const SHELL_MOD *const mod)
 
 const char *Shell_GetGameFlowPath(const SHELL_MOD *const mod)
 {
-    return GamePath_Resolve(GAME_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
+    return GamePath_PeekResolve(GAME_DYNAMIC_PATH_GAMEFLOW_FILE, mod->name);
 }

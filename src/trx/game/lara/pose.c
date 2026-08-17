@@ -74,10 +74,10 @@ static RESULT M_LoadPosesArray(JSON_READ_IO *const io, VECTOR *const poses)
     return OK;
 }
 
-static void M_LoadPoses(void)
+static RESULT M_LoadPoses(void)
 {
     if (m_Poses != nullptr) {
-        return;
+        return OK;
     }
     m_Poses = Vector_Create(sizeof(LARA_POSE));
     ASSERT(m_Poses != nullptr);
@@ -85,18 +85,19 @@ static void M_LoadPoses(void)
     const char *const poses_path =
         GamePath_TryResolve(GAME_DYNAMIC_PATH_COMMON_CONFIG, "poses.json5");
     if (poses_path == nullptr) {
-        return;
+        return OK;
     }
     JSON_VALUE *doc = nullptr;
     SHOULD(JSONFile_Read(poses_path, &doc), "Lara keeps her default poses");
     if (doc == nullptr) {
-        return;
+        return OK;
     }
 
     JSON_READ_IO *const io = JSON_ReadIO_Create(doc, 0, poses_path);
     SHOULD(M_LoadPosesArray(io, m_Poses), "Lara keeps her default poses");
     JSON_ReadIO_Destroy(io);
     JSON_ValueFree(doc);
+    return OK;
 }
 
 static void M_Shutdown(void)

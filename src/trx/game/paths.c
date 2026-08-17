@@ -1240,41 +1240,37 @@ const char *GamePath_TryResolve(
     return resolved;
 }
 
-const char *GamePath_Resolve(
-    const GAME_DYNAMIC_PATH path, const char *const rel)
-{
-    const char *const resolved = GamePath_PeekResolve(path, rel);
-    if (resolved == nullptr) {
-        Shell_ExitSystem(M_GetResolveError(path, rel));
-    }
-    return resolved;
-}
-
-TRX_FILE *GamePath_OpenFile(
+RESULT GamePath_Resolve(
     const GAME_DYNAMIC_PATH path, const char *const rel,
-    const FILE_OPEN_MODE mode)
+    const char **const out_path)
 {
-    const char *const resolved = GamePath_TryResolve(path, rel);
-    if (resolved == nullptr) {
-        return nullptr;
-    }
-    return File_OpenPath(resolved, mode);
+    *out_path = GamePath_PeekResolve(path, rel);
+    FAIL_IF(*out_path == nullptr, "%s", M_GetResolveError(path, rel));
+    return OK;
 }
 
-bool GamePath_LoadFile(
+RESULT GamePath_OpenFile(
+    const GAME_DYNAMIC_PATH path, const char *const rel,
+    const FILE_OPEN_MODE mode, TRX_FILE **const out_file)
+{
+    *out_file = nullptr;
+    const char *const resolved = GamePath_TryResolve(path, rel);
+    FAIL_IF(resolved == nullptr, "%s: the path names nothing", rel);
+    return File_OpenPath(resolved, mode, out_file);
+}
+
+RESULT GamePath_LoadFile(
     const GAME_DYNAMIC_PATH path, const char *const rel, char **const out_data,
     size_t *const out_size)
 {
-    const char *const resolved = GamePath_TryResolve(path, rel);
-    if (resolved == nullptr) {
-        if (out_data != nullptr) {
-            *out_data = nullptr;
-        }
-        if (out_size != nullptr) {
-            *out_size = 0;
-        }
-        return false;
+    if (out_data != nullptr) {
+        *out_data = nullptr;
     }
+    if (out_size != nullptr) {
+        *out_size = 0;
+    }
+    const char *const resolved = GamePath_TryResolve(path, rel);
+    FAIL_IF(resolved == nullptr, "%s: the path names nothing", rel);
     return FS_Load(resolved, out_data, out_size);
 }
 

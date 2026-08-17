@@ -84,16 +84,20 @@ const char *GamePath_PeekResolve(GAME_DYNAMIC_PATH path, const char *rel);
 // Same as GamePath_PeekResolve, but logs an error on miss.
 const char *GamePath_TryResolve(GAME_DYNAMIC_PATH path, const char *rel);
 // Same as GamePath_PeekResolve, but terminates the game on miss.
-const char *GamePath_Resolve(GAME_DYNAMIC_PATH path, const char *rel);
+// Works out where a path names a file, reporting one that names nothing.
+RESULT GamePath_Resolve(
+    GAME_DYNAMIC_PATH path, const char *rel, const char **out_path);
 
-// Resolve and open a file in one call.
-// Returns nullptr if resolution/open fails.
-TRX_FILE *GamePath_OpenFile(
-    GAME_DYNAMIC_PATH path, const char *rel, FILE_OPEN_MODE mode);
+// Resolves and opens a file in one call, reporting a path that names nothing
+// as well as a file that will not open.
+RESULT GamePath_OpenFile(
+    GAME_DYNAMIC_PATH path, const char *rel, FILE_OPEN_MODE mode,
+    TRX_FILE **out_file);
 
-// Resolve and load file contents into memory.
-// On failure, sets `out_data` to nullptr and `out_size` to 0 when provided.
-bool GamePath_LoadFile(
+// Resolves a path and reads the whole file into memory, reporting a path that
+// names nothing as well as a file that will not read. On failure out_data is
+// nullptr and out_size is 0.
+RESULT GamePath_LoadFile(
     GAME_DYNAMIC_PATH path, const char *rel, char **out_data, size_t *out_size);
 
 // Resolve and check whether the file exists.

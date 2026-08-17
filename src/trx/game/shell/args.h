@@ -40,6 +40,6 @@ typedef struct {
 // - `raw_args` items must be `char *` allocated on heap (or nullptr).
 // - ownership of vector + strings transfers to returned SHELL_ARGS.
 // - caller must not free or mutate `raw_args` after this call.
-SHELL_ARGS *Shell_ParseArgs(VECTOR *raw_args);
+RESULT Shell_ParseArgs(VECTOR *raw_args, SHELL_ARGS **out_args);
 // Frees SHELL_ARGS and its adopted `original_args` vector + strings.
 void Shell_FreeArgs(SHELL_ARGS *args);

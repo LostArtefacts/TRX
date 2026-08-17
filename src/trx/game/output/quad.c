@@ -145,8 +145,9 @@ static void M_UploadVertices(OUTPUT_QUAD *const r)
     TRX_GL_CheckError();
 }
 
-OUTPUT_QUAD *Output_Quad_Create(void)
+RESULT Output_Quad_Create(OUTPUT_QUAD **const out_quad)
 {
+    *out_quad = nullptr;
     OUTPUT_QUAD *const r = Memory_Alloc(sizeof(OUTPUT_QUAD));
 
     r->effect = OUTPUT_QUAD_EFFECT_NONE;
@@ -188,7 +189,7 @@ OUTPUT_QUAD *Output_Quad_Create(void)
     glGenTextures(1, &r->texture);
     TRX_GL_CheckError();
 
-    r->shader = Output_Shader_Create("2d.glsl");
+    MUST(Output_Shader_Create("2d.glsl", &r->shader));
 
     r->loc[M_UNIFORM_TEXTURE_MAIN] =
         Output_Shader_LookupUniform(r->shader, "uTexMain");
@@ -223,7 +224,8 @@ OUTPUT_QUAD *Output_Quad_Create(void)
         r->global_tint.b);
     TRX_GL_CheckError();
 
-    return r;
+    *out_quad = r;
+    return OK;
 }
 
 void Output_Quad_Destroy(OUTPUT_QUAD *const r)

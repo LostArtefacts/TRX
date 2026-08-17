@@ -6,7 +6,10 @@
 
 #include <stdint.h>
 
-bool Config_Read(const char *default_path, const char *enforced_path);
+// Reads the settings the session starts from. A missing file is no fault -
+// Config_IsFirstRun answers for that - while a file that does not parse is
+// reported, and the options start from their defaults.
+RESULT Config_Read(const char *default_path, const char *enforced_path);
 
 // Whether the settings file has been read. Until it has, what the options hold
 // is their defaults rather than the player's own choices.

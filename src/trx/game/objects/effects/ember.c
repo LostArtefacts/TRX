@@ -10,8 +10,7 @@ static void M_Control(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
     effect->fall_speed += GRAVITY;
-    effect->pos.z += (effect->speed * Math_Cos(effect->rot.y)) >> W2V_SHIFT;
-    effect->pos.x += (effect->speed * Math_Sin(effect->rot.y)) >> W2V_SHIFT;
+    effect->pos = XYZ_32_OffsetYaw(effect->pos, effect->rot.y, effect->speed);
     effect->pos.y += effect->fall_speed;
 
     int16_t room_num = effect->room_num;
