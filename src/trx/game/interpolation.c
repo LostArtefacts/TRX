@@ -7,6 +7,7 @@
 #include <trx/game/effects.h>
 #include <trx/game/game/state.h>
 #include <trx/game/lara.h>
+#include <trx/game/matrix.h>
 #include <trx/game/rooms.h>
 #include <trx/game/shell.h>
 #include <trx/game/viewport.h>
@@ -155,6 +156,9 @@ static XYZ_32 M_GetEffectMaxDelta(const EFFECT *const effect)
 static void M_RememberCamera(void)
 {
     m_PrevCameraType = g_Camera.type;
+    if (g_Camera.type == CAM_PHOTO_MODE) {
+        g_Camera.interp.prev.rot = Camera_PhotoMode_GetRot();
+    }
     REMEMBER(&g_Camera, fov);
     REMEMBER(&g_Camera, shift);
     REMEMBER(&g_Camera, pos.x);
@@ -508,17 +512,27 @@ void Interpolation_Interpolate(void)
         g_Camera.fov = Viewport_GetEffectiveFOV();
         INTERPOLATE(&g_Camera, fov, m_CameraRate, FOV_MAX_DELTA);
 
-        if (!sustained_binoculars
+        const bool snap = !sustained_binoculars
             && (DIFF(&g_Camera, shift) >= 128
                 || DIFF(&g_Camera, pos.x) >= CAM_MAX_DELTA
                 || DIFF(&g_Camera, pos.y) >= CAM_MAX_DELTA
                 || DIFF(&g_Camera, pos.z) >= CAM_MAX_DELTA
                 || DIFF(&g_Camera, target.x) >= CAM_MAX_DELTA
                 || DIFF(&g_Camera, target.y) >= CAM_MAX_DELTA
-                || DIFF(&g_Camera, target.z) >= CAM_MAX_DELTA)) {
+                || DIFF(&g_Camera, target.z) >= CAM_MAX_DELTA);
+        if (snap) {
             M_CommitCamera();
         } else {
             M_InterpolateCamera(m_CameraRate);
+        }
+
+        if (g_Camera.type == CAM_PHOTO_MODE) {
+            const XYZ_16 rot = Camera_PhotoMode_GetRot();
+            g_Camera.interp.result.rot =
+                snap || m_PrevCameraType != CAM_PHOTO_MODE
+                ? rot
+                : Matrix_SlerpRot16(
+                      g_Camera.interp.prev.rot, rot, m_CameraRate);
         }
 
         g_Camera.interp.room_num = g_Camera.pos.room_num;

@@ -8,19 +8,21 @@
 - Fixed Lara's rope-grab reach being shorter from certain directions (OG bug)
 
 **UI**
-- Changed vertex snapping to offer Disabled, 320x240, and Upscale Res modes (#6278)
-- Changed the Fix one-shot music triggers option to sit with the other music settings (Sound → Misc)
-- Changed Lara's outfit setting to offer only the outfits the current level can dress her in
-- Fixed the icons beside the volume settings, which now show a note for the music and a speaker for the sound effects
-- Fixed the game flashing over the black bars beside the picture when a frame is advanced in photo mode (regression from 1.10)
-- Fixed the photo mode camera drifting upwards and overshooting when it is moved while pitched up or down
 - Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187)
 - Added a flat yellow color to the PS1 bar palettes (Graphic Options → UI → Bars) (#5227)
-- Changed the preset confirmation to offer Apply and Go back as choices, rather than leaving the keys unsaid (#6258)
+- Changed Lara's outfit setting to offer only the outfits the current level can dress her in
+- Changed moving Lara in photo mode to follow the direction the camera looks, rather than the way she faces
+- Changed the Fix one-shot music triggers option to sit with the other music settings (Sound → Misc)
 - Changed the PS1 poison healthbar to flat yellow, as the PS1 releases had it (#5227)
-- Fixed ability to open the inventory ring while a flyby sequence has Lara's control
-- Fixed a setting description showing a question mark in place of a key that is bound to a combination, such as Alt+Enter
 - Changed the TR3 breeze mode to read TR3/4, as it covers both games (Graphic Options → Visuals → Breeze)
+- Changed the preset confirmation to offer Apply and Go back as choices, rather than leaving the keys unsaid (#6258)
+- Changed vertex snapping to offer Disabled, 320x240, and Upscale Res modes (#6278)
+- Fixed a setting description showing a question mark in place of a key that is bound to a combination, such as Alt+Enter
+- Fixed ability to open the inventory ring while a flyby sequence has Lara's control
+- Fixed the game flashing over the black bars beside the picture when a frame is advanced in photo mode (regression from 1.10)
+- Fixed the icons beside the volume settings, which now show a note for the music and a speaker for the sound effects
+- Fixed the photo mode camera drifting upwards and overshooting when it is moved while pitched up or down
+- Fixed the photo mode camera flickering and refusing to turn over when it is pitched past straight up or down, and turning in coarse steps while aimed near vertical
 
 **Developer console**
 - Added the `/outfit` console command, which shows or changes what Lara is wearing

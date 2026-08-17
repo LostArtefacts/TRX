@@ -143,10 +143,7 @@ static bool M_HandleItemPositionInputs(ITEM *const item)
         return false;
     }
 
-    // The step is given along the camera's own axes, so it meets the whole
-    // orientation rather than the yaw alone.
-    item->pos = XYZ_32_OffsetLocal(
-        item->pos, delta, (XYZ_16) { .x = item->rot.x, .y = item->rot.y });
+    item->pos = XYZ_32_OffsetLocalYaw(item->pos, delta, g_Camera.target_angle);
     return true;
 }
 
