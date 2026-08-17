@@ -871,8 +871,8 @@
         },
         "VERTEX_SNAP_MODE": {
             "VERTEX_SNAP_MODE_320X240": "\\{review}320x240",
-            "VERTEX_SNAP_MODE_DISABLED": "\\{review}Disabled",
-            "VERTEX_SNAP_MODE_UPSCALE_RES": "\\{review}Upscale Res",
+            "VERTEX_SNAP_MODE_DISABLED": "\\{review}Отключено",
+            "VERTEX_SNAP_MODE_UPSCALE_RES": "\\{review}Масштабированное разрешение",
         },
         "WALL_GLITCH_MODE": {
             "WALL_GLITCH_FIXED": "Исправлен",
@@ -1555,7 +1555,7 @@
         },
         "rendering.vertex_snap_mode": {
             "title": "\\{review}Привязка вершин",
-            "description": "\\{review}",
+            "description": "\\{review}Управляет сеткой привязки вершин для дрожащей геометрии изданий для PlayStation.\n\n- Отключено: отключает привязку вершин.\n- 320x240: использует исходную сетку 320x240.\n- Масштабированное разрешение: использует масштабированное разрешение.",
         },
         "ui.airbar_color": {
             "title": "Цвет шкалы воздуха",

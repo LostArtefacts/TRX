@@ -871,8 +871,8 @@
         },
         "VERTEX_SNAP_MODE": {
             "VERTEX_SNAP_MODE_320X240": "\\{review}320x240",
-            "VERTEX_SNAP_MODE_DISABLED": "\\{review}Disabled",
-            "VERTEX_SNAP_MODE_UPSCALE_RES": "\\{review}Upscale Res",
+            "VERTEX_SNAP_MODE_DISABLED": "\\{review}Deaktiviert",
+            "VERTEX_SNAP_MODE_UPSCALE_RES": "\\{review}Hochskalierte Auflösung",
         },
         "WALL_GLITCH_MODE": {
             "WALL_GLITCH_FIXED": "Gefixt",
@@ -1555,7 +1555,7 @@
         },
         "rendering.vertex_snap_mode": {
             "title": "\\{review}Vertex-Snapping",
-            "description": "\\{review}",
+            "description": "\\{review}Steuert das Vertex-Raster für die wackelige Geometrie der PlayStation-Versionen.\n\n- Deaktiviert: deaktiviert die Vertex-Rasterung.\n- 320x240: verwendet das ursprüngliche 320x240-Raster.\n- Hochskalierte Auflösung: verwendet die hochskalierte Auflösung.",
         },
         "ui.airbar_color": {
             "title": "Sauerstoffleistenfarbe",

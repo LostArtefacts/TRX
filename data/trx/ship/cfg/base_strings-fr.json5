@@ -871,8 +871,8 @@
         },
         "VERTEX_SNAP_MODE": {
             "VERTEX_SNAP_MODE_320X240": "\\{review}320x240",
-            "VERTEX_SNAP_MODE_DISABLED": "\\{review}Disabled",
-            "VERTEX_SNAP_MODE_UPSCALE_RES": "\\{review}Upscale Res",
+            "VERTEX_SNAP_MODE_DISABLED": "\\{review}Désactivé",
+            "VERTEX_SNAP_MODE_UPSCALE_RES": "\\{review}Résolution agrandie",
         },
         "WALL_GLITCH_MODE": {
             "WALL_GLITCH_FIXED": "\\{review}Réparé",
@@ -1555,7 +1555,7 @@
         },
         "rendering.vertex_snap_mode": {
             "title": "\\{review}Accrochage des sommets",
-            "description": "\\{review}",
+            "description": "\\{review}Contrôle la grille d'accrochage des sommets pour la géométrie instable des versions PlayStation.\n\n- Désactivé : désactive l'accrochage des sommets.\n- 320x240 : utilise la grille originale de 320x240.\n- Résolution agrandie : utilise la résolution agrandie.",
         },
         "ui.airbar_color": {
             "title": "Couleur de la barre d'air",

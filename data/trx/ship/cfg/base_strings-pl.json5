@@ -871,8 +871,8 @@
         },
         "VERTEX_SNAP_MODE": {
             "VERTEX_SNAP_MODE_320X240": "\\{review}320x240",
-            "VERTEX_SNAP_MODE_DISABLED": "\\{review}Disabled",
-            "VERTEX_SNAP_MODE_UPSCALE_RES": "\\{review}Upscale Res",
+            "VERTEX_SNAP_MODE_DISABLED": "\\{review}Wyłączone",
+            "VERTEX_SNAP_MODE_UPSCALE_RES": "\\{review}Rozdzielczość skalowania",
         },
         "WALL_GLITCH_MODE": {
             "WALL_GLITCH_FIXED": "Naprawione",
@@ -1555,7 +1555,7 @@
         },
         "rendering.vertex_snap_mode": {
             "title": "\\{review}Przyciąganie wierzchołków",
-            "description": "\\{review}",
+            "description": "\\{review}Kontroluje siatkę przyciągania wierzchołków dla drgającej geometrii z wydań na PlayStation.\n\n- Wyłączone: wyłącza przyciąganie wierzchołków.\n- 320x240: używa oryginalnej siatki 320x240.\n- Rozdzielczość skalowania: używa rozdzielczości skalowania.",
         },
         "ui.airbar_color": {
             "title": "Kolor paska tlenu",
