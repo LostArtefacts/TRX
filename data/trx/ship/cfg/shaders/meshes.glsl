@@ -30,6 +30,8 @@ out float gShade;
 out vec4 gColor;
 out vec3 gAdd;
 flat out float gReflectivity;
+// Interpolates the PS1 fog factor linearly in screen space.
+noperspective out float gFogFactor;
 
 vec3 gammaCurve(vec3 rgb, float gamma_exp)
 {
@@ -65,6 +67,17 @@ vec4 vertexSnap(vec4 clipPos)
     ndc.xy = floor(ndc.xy * uVertexSnapResolution * 0.5)
         / (uVertexSnapResolution * 0.5);
     return vec4(ndc * clipPos.w, clipPos.w);
+}
+
+// Returns the PlayStation depth-cue factor from eye distance. The GTE evaluates
+// IR0 = DQB + DQA * (h / sz) per vertex, so the blend is linear in 1/z.
+// The configured near and far distances solve DQA and DQB.
+float ps1FogFactor(float dist)
+{
+    float near_dist = max(uFogDistance.x, 1.0);
+    float far_dist = max(uFogDistance.y, near_dist + 1.0);
+    float dqa = 1.0 / far_dist - 1.0 / near_dist;
+    return clamp((1.0 / max(dist, 1.0) - 1.0 / near_dist) / dqa, 0.0, 1.0);
 }
 
 void main(void) {
@@ -113,6 +126,7 @@ void main(void) {
         gTexUV.y += mod(uUVScrollTick * inUVScroll.x, inUVScroll.y);
     }
     gReflectivity = inReflectivity;
+    gFogFactor = ps1FogFactor(length(gEyePos.xyz));
     if (uTrapezoidFilterEnabled != 0) {
         gTexUV *= inTrapezoidRatios;
     }
@@ -246,12 +260,16 @@ in vec4 gColor;
 in vec3 gAdd;
 in vec2 gTrapezoidRatios;
 flat in float gReflectivity;
+noperspective in float gFogFactor;
 out vec4 outColor;
 
 vec4 applyFog(vec4 color, float dist)
 {
-    float fogFactor = clamp(
-        (dist - uFogDistance.x) / (uFogDistance.y - uFogDistance.x), 0.0, 1.0);
+    float fogFactor = uPS1FogEnabled != 0
+        ? gFogFactor
+        : clamp(
+              (dist - uFogDistance.x) / (uFogDistance.y - uFogDistance.x), 0.0,
+              1.0);
     return mix(color, uFogColor, fogFactor);
 }
 

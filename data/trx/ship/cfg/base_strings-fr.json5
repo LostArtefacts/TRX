@@ -1510,6 +1510,10 @@
             "title": "\\{review}Tramage",
             "description": "\\{review}Sélectionne l'ombrage de palette du moteur de rendu logiciel PC original ou le tramage RGB555 de la PlayStation.",
         },
+        "rendering.enable_ps1_fog": {
+            "title": "\\{review}Brouillard PlayStation",
+            "description": "\\{review}Fond la géométrie lointaine vers la couleur du brouillard comme le faisait l'atténuation en profondeur de la PlayStation : selon 1/distance plutôt que la distance, et calculée par sommet, ce qui fait apparaître des bandes sur les grandes surfaces.",
+        },
         "rendering.enable_trapezoid_filter": {
             "title": "Filtre trapézoïdal",
             "description": "Corrige le rendu des quadrilatères.",
