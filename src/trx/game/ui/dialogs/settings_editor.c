@@ -18,6 +18,8 @@
 
 #include <math.h>
 
+#define M_COLUMN_SPACING 20.0f
+#define M_FOOTER_SPACING 20.0f
 #define M_BAR_WIDTH 60
 #define M_BAR_HEIGHT 12
 
@@ -42,6 +44,20 @@ typedef struct UI_SETTINGS_EDITOR_STATE {
     // are made anew when the game changes and announce nothing when they are.
     int32_t config_generation;
     int32_t handler_generation;
+    // How wide the tab's titles and values measure. Measuring walks every
+    // row and every value it can take, so the answer is kept until the text
+    // scale, the rows or the strings move.
+    struct {
+        float label_w;
+        float value_w;
+        // The widest single row: its title and its own widest value, which is
+        // less than the widest title beside the widest value whenever the two
+        // sit on different rows.
+        float row_w;
+        float text_scale;
+        int32_t row_count;
+        int32_t strings_epoch;
+    } widths;
     int32_t change_listener;
     UI_SCROLLABLE scroll;
     struct {
@@ -50,6 +66,8 @@ typedef struct UI_SETTINGS_EDITOR_STATE {
     } description;
     UI_COLOR_EDITOR_DIALOG_STATE *color_editor;
 } UI_SETTINGS_EDITOR_STATE;
+
+static int32_t m_StringsEpoch = 0;
 
 // What the option accepts, in the units a row steps in: whole numbers for an
 // integer setting, hundredths for a float one. False where the option takes
@@ -516,34 +534,6 @@ static bool M_RequestChangeValue(
     return true;
 }
 
-static float M_GetMaxLabelWidth(const UI_SETTINGS_EDITOR_STATE *const s)
-{
-    float result = -1.0f;
-    const int32_t row_count = UI_Settings_GetRowCount(s->tab);
-    for (int32_t i = 0; i < row_count; i++) {
-        const float label_w =
-            UI_Label_MeasureW(M_GetOptionTitle(UI_Settings_GetRow(s->tab, i)));
-        result = MAX(label_w, result);
-    }
-    return result;
-}
-
-static float M_GetMaxValueWidth(const UI_SETTINGS_EDITOR_STATE *const s)
-{
-    float result = -1.0f;
-    const int32_t row_count = UI_Settings_GetRowCount(s->tab);
-    for (int32_t i = 0; i < row_count; i++) {
-        const float value_w =
-            M_MeasureMaxValueWidth(UI_Settings_GetRow(s->tab, i));
-        result = MAX(value_w, result);
-    }
-
-    result += UI_Label_MeasureW("\\{button left}");
-    result += UI_Label_MeasureW("\\{button right}");
-    result += UI_ROW_ARROWS_TIGHT * 2;
-    return result;
-}
-
 static bool M_IsValueOnOffer(const UI_SETTINGS_ROW *const row)
 {
     if (row == nullptr || row->option->value.type != TVT_DYNAMIC_ENUM) {
@@ -574,6 +564,51 @@ static void M_OptionLabel(
     } else {
         UI_Label(text);
     }
+}
+
+static float M_GetValueArrowsWidth(void)
+{
+    return UI_Label_MeasureW("\\{button left}")
+        + UI_Label_MeasureW("\\{button right}") + UI_ROW_ARROWS_TIGHT * 2;
+}
+
+static void M_MeasureWidths(UI_SETTINGS_EDITOR_STATE *const s)
+{
+    const float text_scale = UI_Scaler_GetTextScale();
+    const int32_t row_count = UI_Settings_GetRowCount(s->tab);
+    if (s->widths.text_scale == text_scale && s->widths.row_count == row_count
+        && s->widths.strings_epoch == m_StringsEpoch) {
+        return;
+    }
+
+    const float arrows = M_GetValueArrowsWidth();
+    const float spacing = M_COLUMN_SPACING * text_scale;
+    s->widths.label_w = -1.0f;
+    s->widths.value_w = -1.0f;
+    s->widths.row_w = -1.0f;
+    for (int32_t i = 0; i < row_count; i++) {
+        const UI_SETTINGS_ROW *const row = UI_Settings_GetRow(s->tab, i);
+        const float label_w = UI_Label_MeasureW(M_GetOptionTitle(row));
+        const float value_w = M_MeasureMaxValueWidth(row) + arrows;
+        s->widths.label_w = MAX(s->widths.label_w, label_w);
+        s->widths.value_w = MAX(s->widths.value_w, value_w);
+        s->widths.row_w = MAX(s->widths.row_w, label_w + spacing + value_w);
+    }
+
+    s->widths.text_scale = text_scale;
+    s->widths.row_count = row_count;
+    s->widths.strings_epoch = m_StringsEpoch;
+}
+
+static float M_GetFooterWidth(void)
+{
+    return UI_Label_MeasureW(String_FormatStatic(
+               "\\{input menu_confirm} %s",
+               GS("general/settings/common/edit_value")))
+        + M_FOOTER_SPACING * UI_Scaler_GetTextScale()
+        + UI_Label_MeasureW(String_FormatStatic(
+            "\\{input unbind_key} %s",
+            GS("general/settings/common/restore_default")));
 }
 
 UI_SETTINGS_EDITOR_STATE *UI_SettingsEditor_Init(const CONFIG_TAB tab)
@@ -611,10 +646,22 @@ void UI_SettingsEditor_Free(UI_SETTINGS_EDITOR_STATE *const s)
     Memory_Free(s);
 }
 
-float UI_SettingsEditor_GetContentWidth(const UI_SETTINGS_EDITOR_STATE *const s)
+void UI_SettingsEditor_ForgetWidths(void)
 {
-    return M_GetMaxLabelWidth(s) + 20.0f * UI_Scaler_GetTextScale()
-        + M_GetMaxValueWidth(s);
+    m_StringsEpoch++;
+}
+
+float UI_SettingsEditor_GetContentWidth(UI_SETTINGS_EDITOR_STATE *const s)
+{
+    M_MeasureWidths(s);
+    return s->widths.label_w + M_COLUMN_SPACING * UI_Scaler_GetTextScale()
+        + s->widths.value_w;
+}
+
+float UI_SettingsEditor_GetMinContentWidth(UI_SETTINGS_EDITOR_STATE *const s)
+{
+    M_MeasureWidths(s);
+    return s->widths.row_w;
 }
 
 float UI_SettingsEditor_GetContentHeight(
@@ -835,13 +882,9 @@ void UI_SettingsEditor_Draw(
     UI_SETTINGS_EDITOR_STATE *const s, const UI_SCROLLABLE *const dialog_scroll,
     const UI_SETTINGS_PHASE dialog_phase, const float row_width)
 {
-    const float max_label_w = M_GetMaxLabelWidth(s) / UI_Scaler_GetTextScale();
-    const float max_value_w = M_GetMaxValueWidth(s) / UI_Scaler_GetTextScale();
-    float label_w = max_label_w;
-    const float total_w = max_label_w + 20.0f + max_value_w;
-    if (row_width > total_w) {
-        label_w += row_width - total_w;
-    }
+    M_MeasureWidths(s);
+    const float scale = UI_Scaler_GetTextScale();
+    const float max_value_w = s->widths.value_w / scale;
 
     const int32_t sel_row = UI_Scrollable_GetSelectedItem(dialog_scroll);
 
@@ -878,18 +921,26 @@ void UI_SettingsEditor_Draw(
             .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
         });
         UI_SetNodeName(UI_NODE_NAME_DIALOG_ROW);
-        UI_BeginResize(label_w, -1.0f);
+
+        const UI_SETTINGS_ROW *const row = M_GetOptionByRow(s, row_idx);
+        const char *const name = row != nullptr ? M_GetOptionTitle(row) : "";
+        const float title_w = UI_Label_MeasureW(name) / scale;
+        const float own_value_w = row != nullptr
+            ? (M_MeasureMaxValueWidth(row) + M_GetValueArrowsWidth()) / scale
+            : 0.0f;
+        float value_lane =
+            MIN(max_value_w, row_width - M_COLUMN_SPACING - title_w);
+        value_lane = MAX(value_lane, own_value_w);
+        const float label_lane =
+            MAX(title_w, row_width - M_COLUMN_SPACING - value_lane);
+
+        UI_BeginResize(label_lane, -1.0f);
         UI_SetNodeName(UI_NODE_NAME_ROW_TITLE);
-        {
-            const UI_SETTINGS_ROW *const row = M_GetOptionByRow(s, row_idx);
-            const char *const name =
-                row != nullptr ? M_GetOptionTitle(row) : "";
-            M_OptionLabel(row, name, true);
-        }
+        M_OptionLabel(row, name, true);
         UI_EndResize();
         UI_Spacer(20.0f, 0.0f);
 
-        UI_BeginResize(max_value_w, -1.0f);
+        UI_BeginResize(value_lane, -1.0f);
         UI_SetNodeName(UI_NODE_NAME_ROW_VALUE);
         UI_BeginAnchor(1.0f, 0.5f);
 
@@ -898,7 +949,6 @@ void UI_SettingsEditor_Draw(
             is_row_focused && M_CanChangeValue(s, row_idx, +1),
             UI_ROW_ARROWS_MEDIUM);
         {
-            const UI_SETTINGS_ROW *const row = M_GetOptionByRow(s, row_idx);
             if (M_IsBarColorEnum(row)) {
                 UI_Bar((UI_BAR_SETTINGS) {
                     .w = M_BAR_WIDTH,
@@ -947,7 +997,8 @@ void UI_SettingsEditor_Draw(
 }
 
 void UI_SettingsEditor_DrawFooter(
-    UI_SETTINGS_EDITOR_STATE *const s, const UI_SETTINGS_PHASE dialog_phase)
+    UI_SETTINGS_EDITOR_STATE *const s, const UI_SETTINGS_PHASE dialog_phase,
+    const float dialog_width)
 {
     const int32_t row_idx = UI_Scrollable_GetSelectedItem(&s->scroll);
     const UI_SETTINGS_ROW *const row = M_GetOptionByRow(s, row_idx);
@@ -964,10 +1015,15 @@ void UI_SettingsEditor_DrawFooter(
         && row != nullptr && !M_IsOptionHeld(row)
         && !Config_Option_IsAtDefault(row->option);
 
+    const float footer_width = M_GetFooterWidth();
+    const float footer_fit = footer_width > 0.0f
+        ? MIN(1.0f, dialog_width * UI_Scaler_GetTextScale() / footer_width)
+        : 1.0f;
+    UI_Scaler_PushTextScale(footer_fit);
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_HORIZONTAL,
         .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
-        .spacing = { .h = 20 },
+        .spacing = { .h = M_FOOTER_SPACING },
     });
     UI_SetNodeName(UI_NODE_NAME_DIALOG_HINT_ROW);
     UI_BeginHide(!can_examine && !can_edit_value);
@@ -987,4 +1043,5 @@ void UI_SettingsEditor_DrawFooter(
         GS("general/settings/common/restore_default"));
     UI_EndHide();
     UI_EndStack();
+    UI_Scaler_PopTextScale();
 }

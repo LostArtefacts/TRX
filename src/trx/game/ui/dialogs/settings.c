@@ -7,6 +7,7 @@
 #include <trx/game/game_strings/manager.h>
 #include <trx/game/input.h>
 #include <trx/game/ui.h>
+#include <trx/game/ui/dialogs/settings_editor.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/viewport.h>
 
@@ -99,6 +100,7 @@ static void M_RecomputeSizesOnce(UI_SETTINGS_DIALOG_STATE *const s)
     const float visible_content_height =
         M_GetVisibleContentHeight(s->fit_scale);
     float max_content_width = 0.0f;
+    float min_content_width = 0.0f;
     float max_content_height = -1.0f;
 
     for (int32_t i = 0; i < s->tab_count; i++) {
@@ -107,8 +109,13 @@ static void M_RecomputeSizesOnce(UI_SETTINGS_DIALOG_STATE *const s)
             tab->ops->recompute(tab->user_data, visible_content_height);
         }
         if (tab->ops != nullptr && tab->ops->get_content_width != nullptr) {
-            max_content_width = MAX(
-                max_content_width, tab->ops->get_content_width(tab->user_data));
+            const float tab_width = tab->ops->get_content_width(tab->user_data);
+            max_content_width = MAX(max_content_width, tab_width);
+            min_content_width =
+                MAX(min_content_width,
+                    tab->ops->get_min_content_width != nullptr
+                        ? tab->ops->get_min_content_width(tab->user_data)
+                        : tab_width);
         }
         if (tab->ops != nullptr) {
             const UI_SCROLLABLE *const tab_scroll = M_GetTabScrollable(tab);
@@ -124,6 +131,7 @@ static void M_RecomputeSizesOnce(UI_SETTINGS_DIALOG_STATE *const s)
     }
 
     s->max_content_width = max_content_width / UI_Scaler_GetTextScale();
+    min_content_width /= UI_Scaler_GetTextScale();
     s->max_content_height = max_content_height;
 
     if (s->tab_switch != nullptr) {
@@ -131,9 +139,21 @@ static void M_RecomputeSizesOnce(UI_SETTINGS_DIALOG_STATE *const s)
         UI_TabSwitch(s->tab_switch, UI_TAB_SWITCH_DRAW_ARROWS);
         float tabs_width = 0.0f;
         UI_EndMeasure(&tabs_width, nullptr);
-        s->max_content_width =
-            MAX(s->max_content_width, tabs_width / UI_Scaler_GetTextScale());
+        tabs_width /= UI_Scaler_GetTextScale();
+        s->max_content_width = MAX(s->max_content_width, tabs_width);
+        min_content_width = MAX(min_content_width, tabs_width);
     }
+
+    // The whitespace inside the rows gives way before the text size does: the
+    // dialog keeps the width the aligned columns ask for while the screen has
+    // room for it, closes in on the widest single row where it does not, and
+    // only then is drawn smaller.
+    const float available = (UI_GetSafeCanvasWidth() / UI_Scaler_GetTextScale()
+                             - UI_Window_GetChromeWidth())
+        / M_MEASURE_SLACK;
+    s->max_content_width =
+        MAX(min_content_width, MIN(s->max_content_width, available));
+
     s->fit_scale = UI_GetFitScale(
         s->max_content_width * M_MEASURE_SLACK + UI_Window_GetChromeWidth(),
         -1.0f);
@@ -167,6 +187,7 @@ static void M_WindowHeader(void *const user_data)
 static void M_HandleLanguageReload(const EVENT *const, void *const data)
 {
     UI_SETTINGS_DIALOG_STATE *const s = data;
+    UI_SettingsEditor_ForgetWidths();
     M_RecomputeSizes(s);
 }
 
@@ -397,7 +418,9 @@ void UI_SettingsDialog(UI_SETTINGS_DIALOG_STATE *const s)
     UI_EndWindow();
     if (tab != nullptr && tab->ops != nullptr
         && tab->ops->draw_footer != nullptr) {
-        tab->ops->draw_footer(tab->user_data, s->phase);
+        tab->ops->draw_footer(
+            tab->user_data, s->phase,
+            s->max_content_width + UI_Window_GetChromeWidth());
     } else {
         UI_Spacer(0.0f, UI_TEXT_HEIGHT);
     }

@@ -18,9 +18,10 @@ static void M_EditorDraw(
 }
 
 static void M_EditorDrawFooter(
-    void *const user_data, const UI_SETTINGS_PHASE phase)
+    void *const user_data, const UI_SETTINGS_PHASE phase,
+    const float dialog_width)
 {
-    UI_SettingsEditor_DrawFooter(user_data, phase);
+    UI_SettingsEditor_DrawFooter(user_data, phase, dialog_width);
 }
 
 static void M_EditorDrawOverlay(void *const user_data)
@@ -49,6 +50,11 @@ static float M_EditorGetContentWidth(void *const user_data)
     return UI_SettingsEditor_GetContentWidth(user_data);
 }
 
+static float M_EditorGetMinContentWidth(void *const user_data)
+{
+    return UI_SettingsEditor_GetMinContentWidth(user_data);
+}
+
 static float M_EditorGetContentHeight(void *const user_data)
 {
     return UI_SettingsEditor_GetContentHeight(user_data);
@@ -68,6 +74,7 @@ static const UI_SETTINGS_TAB_OPS m_EditorOps = {
     .get_scrollable = M_EditorGetScrollable,
     .recompute = M_EditorRecompute,
     .get_content_width = M_EditorGetContentWidth,
+    .get_min_content_width = M_EditorGetMinContentWidth,
     .get_content_height = M_EditorGetContentHeight,
     .get_item_count = M_EditorGetItemCount,
 };
