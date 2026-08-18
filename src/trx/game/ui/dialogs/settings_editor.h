@@ -20,9 +20,13 @@ void UI_SettingsEditor_Draw(
     UI_SETTINGS_PHASE dialog_phase, float row_width);
 void UI_SettingsEditor_DrawOverlay(UI_SETTINGS_EDITOR_STATE *s);
 void UI_SettingsEditor_DrawFooter(
-    UI_SETTINGS_EDITOR_STATE *s, UI_SETTINGS_PHASE dialog_phase);
+    UI_SETTINGS_EDITOR_STATE *s, UI_SETTINGS_PHASE dialog_phase,
+    float dialog_width);
 
-float UI_SettingsEditor_GetContentWidth(const UI_SETTINGS_EDITOR_STATE *s);
+float UI_SettingsEditor_GetContentWidth(UI_SETTINGS_EDITOR_STATE *s);
+float UI_SettingsEditor_GetMinContentWidth(UI_SETTINGS_EDITOR_STATE *s);
+
+void UI_SettingsEditor_ForgetWidths(void);
 float UI_SettingsEditor_GetContentHeight(const UI_SETTINGS_EDITOR_STATE *s);
 int32_t UI_SettingsEditor_GetItemCount(UI_SETTINGS_EDITOR_STATE *s);
 void UI_SettingsEditor_RequestChange(CONFIG_OPTION *option, int32_t dir);
