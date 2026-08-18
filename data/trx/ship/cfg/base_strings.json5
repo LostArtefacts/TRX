@@ -698,6 +698,11 @@
             "CREATURE_DROWN_POLICY_NEVER": "Never",
             "CREATURE_DROWN_POLICY_SUBMERGED": "Submerged",
         },
+        "DITHER_MODE": {
+            "DITHER_MODE_DISABLED": "Disabled",
+            "DITHER_MODE_PS1": "PS1",
+            "DITHER_MODE_SOFTWARE_RENDERER": "Software Renderer",
+        },
         "GAME_MODES_POLICY": {
             "GAME_MODES_POLICY_ALWAYS": "Always",
             "GAME_MODES_POLICY_NEVER": "Never",
@@ -1501,9 +1506,9 @@
             "title": "Borders",
             "description": "Adds black borders around the game window.",
         },
-        "rendering.enable_dithering": {
+        "rendering.dither_mode": {
             "title": "Dithering",
-            "description": "Reduces the picture to 8-bit color with an ordered dither pattern, for the look of the software-rendered releases.",
+            "description": "Selects original PC software-renderer palette shading or PlayStation RGB555 dithering.",
         },
         "rendering.enable_trapezoid_filter": {
             "title": "Trapezoid filter",

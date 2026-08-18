@@ -45,9 +45,6 @@
         "input.quick_guns_mode": {
             "description": "Controls the behaviour of the quick gun equip keys.\n\n- Draw only: pressing a key will cause Lara to equip the assigned gun.\n- Draw or holster: same as above, plus Lara will undraw the assigned gun if she's currently carrying it.",
         },
-        "rendering.enable_dithering": {
-            "description": "Reduces the picture to 8-bit colour with an ordered dither pattern, for the look of the software-rendered releases.",
-        },
         "rendering.sprite_lock_mode": {
             "description": "Controls which axes to lock when showing sprites on the screen.\n\n- None: show the sprites normally.\n- Roll: lock the roll axis – useful only in photo mode.\n- Roll & pitch: ensure the sprites stand upright and do not lie on the ground when looking at them from above.\n- Perspective: lock roll and pitch axes and additionally, rotate the sprites slightly towards the centre of the screen.",
         },
