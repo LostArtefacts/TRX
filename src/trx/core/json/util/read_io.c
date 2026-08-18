@@ -70,9 +70,11 @@ static void M_SetErrorV(
     if (io == nullptr) {
         return;
     }
-    if (io->source_path[0] != '\0') {
+    // The message is the summary, while the path or parser text may span
+    // multiple lines. Their full contents are stored separately above.
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-truncation"
+    if (io->source_path[0] != '\0') {
         if (final_line >= 0 && final_col >= 0) {
             if (io->path[0] != '\0') {
                 snprintf(
@@ -97,7 +99,6 @@ static void M_SetErrorV(
                     "Error parsing '%s': %s", io->source_path, body);
             }
         }
-#pragma GCC diagnostic pop
     } else {
         if (final_line >= 0 && final_col >= 0) {
             if (io->path[0] != '\0') {
@@ -120,6 +121,7 @@ static void M_SetErrorV(
             }
         }
     }
+#pragma GCC diagnostic pop
 }
 
 static void M_SetError(JSON_READ_IO *const io, const char *fmt, ...)
