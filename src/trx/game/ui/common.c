@@ -17,7 +17,19 @@
 
 #include <string.h>
 
+// How small a dialog may be drawn against the size the player asked for. A
+// dialog that still does not fit is wording to shorten rather than a dialog to
+// shrink away to nothing.
+#define M_MIN_FIT_SCALE 0.65f
+
 static struct {
+    // What each source keeps clear at the screen edges: what the scene being
+    // built has stated so far, and what the last one drawn ended up with.
+    struct {
+        float top;
+        float bottom;
+    } inset_pending[UI_SCREEN_INSET_SOURCE_COUNT],
+        inset_current[UI_SCREEN_INSET_SOURCE_COUNT];
     MEMORY_ARENA_ALLOCATOR alloc;
     UI_NODE *root; // The top-level container
     UI_NODE *current; // The current container into which we attach nodes
@@ -27,6 +39,8 @@ static struct {
         .default_chunk_size = 1024 * 4,
     },
 };
+
+static float m_SmallestFitScale = 1.0f;
 
 extern void UI_ClearDraw(void);
 
@@ -75,6 +89,14 @@ static void M_DrawNode(const UI_NODE *const node)
 
     node->ops.draw(node);
     // Recursing to children is a responsibility of the draw function.
+}
+
+static float M_GetAxisFitScale(const float natural, const float available)
+{
+    if (natural <= 0.0f || natural <= available) {
+        return 1.0f;
+    }
+    return available / natural;
 }
 
 static void M_Init(void)
@@ -183,6 +205,10 @@ void UI_EndMeasure(float *const out_w, float *const out_h)
 // Scene management
 void UI_BeginScene(void)
 {
+    memcpy(
+        m_Priv.inset_current, m_Priv.inset_pending,
+        sizeof(m_Priv.inset_current));
+    memset(m_Priv.inset_pending, 0, sizeof(m_Priv.inset_pending));
     UI_ClearDraw();
     Memory_ArenaReset(&m_Priv.alloc);
     UI_BeginAnchor(0.5f, 0.5f); // Make a root node.
@@ -226,6 +252,80 @@ int32_t UI_GetCanvasHeight(void)
 float UI_GetSafeCanvasWidth(void)
 {
     return MAX(0.0f, UI_GetCanvasWidth() - 2.0f * UI_SCREEN_MARGIN);
+}
+
+void UI_SetScreenInset(
+    const UI_SCREEN_INSET_SOURCE source, const float top, const float bottom)
+{
+    m_Priv.inset_pending[source].top = top;
+    m_Priv.inset_pending[source].bottom = bottom;
+}
+
+float UI_GetScreenInsetTop(void)
+{
+    float result = 0.0f;
+    for (int32_t i = 0; i < UI_SCREEN_INSET_SOURCE_COUNT; i++) {
+        result = MAX(result, m_Priv.inset_current[i].top);
+    }
+    return result;
+}
+
+float UI_GetScreenInsetBottom(void)
+{
+    float result = 0.0f;
+    for (int32_t i = 0; i < UI_SCREEN_INSET_SOURCE_COUNT; i++) {
+        result = MAX(result, m_Priv.inset_current[i].bottom);
+    }
+    return result;
+}
+
+float UI_GetSafeCanvasTop(void)
+{
+    return MAX(
+        UI_SCREEN_MARGIN,
+        UI_GetScreenInsetTop() * UI_Scaler_GetBaseTextScale());
+}
+
+float UI_GetSafeCanvasBottom(void)
+{
+    return UI_GetCanvasHeight()
+        - MAX(UI_SCREEN_MARGIN,
+              UI_GetScreenInsetBottom() * UI_Scaler_GetBaseTextScale());
+}
+
+float UI_GetSafeCanvasHeight(void)
+{
+    return MAX(0.0f, UI_GetSafeCanvasBottom() - UI_GetSafeCanvasTop());
+}
+
+void UI_ForgetSmallestFitScale(void)
+{
+    m_SmallestFitScale = 1.0f;
+}
+
+float UI_GetSmallestFitScale(void)
+{
+    return m_SmallestFitScale;
+}
+
+bool UI_HasFitScaleFloored(void)
+{
+    return m_SmallestFitScale <= M_MIN_FIT_SCALE;
+}
+
+float UI_GetFitScale(const float content_width, const float content_height)
+{
+    const float text_scale = UI_Scaler_GetTextScale();
+    if (text_scale <= 0.0f) {
+        return 1.0f;
+    }
+    const float scale = MIN(
+        M_GetAxisFitScale(content_width, UI_GetSafeCanvasWidth() / text_scale),
+        M_GetAxisFitScale(
+            content_height, UI_GetSafeCanvasHeight() / text_scale));
+    const float result = MAX(scale, M_MIN_FIT_SCALE);
+    m_SmallestFitScale = MIN(m_SmallestFitScale, result);
+    return result;
 }
 
 float UI_ScaleX(const float x)

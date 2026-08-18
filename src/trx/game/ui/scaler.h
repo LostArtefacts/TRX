@@ -18,6 +18,11 @@ float UI_Scaler_CalcInverse(float unit, UI_SCALER_TARGET target);
 // rather than from the config, so a subtree can be scaled as a whole.
 float UI_Scaler_GetTextScale(void);
 
+// Returns the player's text scale, without any fit factor pushed over it. The
+// screen edges are drawn at this scale, so the area left to a dialog is
+// measured in it.
+float UI_Scaler_GetBaseTextScale(void);
+
 // The fit factor on its own, without the player's text scale. Widgets that
 // carry their own scale - a label - fold this into it, because they are
 // measured after the tree is built and the factor is no longer pushed by then.

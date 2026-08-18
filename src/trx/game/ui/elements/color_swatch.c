@@ -10,14 +10,16 @@
 typedef struct {
     float w;
     float h;
+    float content_scale;
     RGBA_8888 color;
 } M_DATA;
 
 static void M_Measure(UI_NODE *const node)
 {
     const M_DATA *const data = node->data;
-    node->measure_w = data->w * UI_Scaler_GetTextScale();
-    node->measure_h = data->h * UI_Scaler_GetTextScale();
+    const float scale = UI_Scaler_GetTextScale() * data->content_scale;
+    node->measure_w = data->w * scale;
+    node->measure_h = data->h * scale;
 }
 
 static void M_Draw(const UI_NODE *const node)
@@ -51,6 +53,7 @@ void UI_ColorSwatch(const UI_COLOR_SWATCH_SETTINGS settings)
     M_DATA *const data = node->data;
     data->w = settings.w;
     data->h = settings.h;
+    data->content_scale = UI_Scaler_GetContentScale();
     data->color = Color_RGBToRGBA(settings.color);
     UI_AddChild(node);
 }

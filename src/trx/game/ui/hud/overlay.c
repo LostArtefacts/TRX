@@ -409,6 +409,15 @@ static void M_BottomRightRegion(const UI_OVERLAY_STATE *const s)
     UI_EndOverlayRegion();
 }
 
+static void M_StateInsets(const UI_OVERLAY_STATE *const s)
+{
+    const float inset = UI_Overlay_GetTextInset() + UI_TEXT_HEIGHT / 2.0f;
+    UI_SetScreenInset(
+        UI_SCREEN_INSET_OVERLAY,
+        M_ResolveOverlayText(&s->top_text) != nullptr ? inset : 0.0f,
+        M_ResolveOverlayText(&s->bottom_text) != nullptr ? inset : 0.0f);
+}
+
 UI_OVERLAY_STATE *UI_Overlay_Init(void)
 {
     UI_OVERLAY_STATE *const s = Memory_Alloc(sizeof(UI_OVERLAY_STATE));
@@ -449,6 +458,7 @@ void UI_Overlay_ForceHealthBar(UI_OVERLAY_STATE *const s, const bool show)
 
 void UI_Overlay(UI_OVERLAY_STATE *const s)
 {
+    M_StateInsets(s);
     M_TopLeftRegion(s);
     M_TopCenterRegion(s);
     M_TopRightRegion(s);
@@ -466,7 +476,7 @@ void UI_BeginOverlayRegion(const float x, const float y)
         x < 0.45f ? UI_STACK_H_ALIGN_LEFT :
         UI_STACK_H_ALIGN_CENTER;
     // clang-format on
-    UI_BeginModal(x, y);
+    UI_BeginScreenModal(x, y);
     UI_BeginPad(M_REGION_PAD_X, M_REGION_PAD_Y);
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_VERTICAL,

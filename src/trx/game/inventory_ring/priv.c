@@ -18,6 +18,7 @@
 #include <trx/game/overlay.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui.h>
+#include <trx/game/ui/scaler.h>
 #include <trx/version.h>
 
 #include <stdio.h>
@@ -26,6 +27,7 @@
 #define M_RING_SWITCH_FRAMES (96 / 2)
 #define M_CAMERA_Y_OFFSET (-96)
 #define M_MANUAL_ROT_RESET_RATE 0.15
+#define M_UI_BOTTOM_SPACING 50.0f
 
 typedef enum {
     // clang-format off
@@ -656,7 +658,13 @@ void InvRing_ShowExamine(const OBJECT_ID object_id, const bool show)
 
 void InvRing_DrawUI(INV_RING *const ring)
 {
-    UI_BeginModal(0.5f, 1.0f);
+    const bool has_content = m_ButtonHintDrawFunc != nullptr
+        || (m_CountText != nullptr && m_CountText[0] != '\0');
+    UI_SetScreenInset(
+        UI_SCREEN_INSET_INVENTORY_RING, 0.0f,
+        has_content ? M_UI_BOTTOM_SPACING + UI_TEXT_HEIGHT : 0.0f);
+
+    UI_BeginScreenModal(0.5f, 1.0f);
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_VERTICAL,
         .align = { .h = UI_STACK_H_ALIGN_CENTER },
@@ -672,7 +680,7 @@ void InvRing_DrawUI(INV_RING *const ring)
         UI_Label(m_CountText);
         UI_EndOffset();
     }
-    UI_Spacer(0.0f, 50.0f);
+    UI_Spacer(0.0f, M_UI_BOTTOM_SPACING);
     UI_EndStack();
     UI_EndModal();
 }
@@ -688,6 +696,10 @@ void InvRing_RemoveItemTexts(void)
 void InvRing_ShowHeader(INV_RING *const ring)
 {
     if (ring->mode == INV_TITLE_MODE) {
+        Overlay_SetTopText((OVERLAY_TEXT) {
+            .kind = UI_OVERLAY_TEXT_LITERAL,
+            .literal = " ",
+        });
         return;
     }
 
