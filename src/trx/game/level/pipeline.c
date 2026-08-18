@@ -178,6 +178,7 @@ static void M_CompleteSetup(
     } else {
         M_InitialiseSamplesFromFile(ctx, level->settings.sfx_path);
     }
+    SHOULD(Sound_CheckSamples(), "those sounds stay silent");
 
     Benchmark_End(&benchmark, nullptr);
 }

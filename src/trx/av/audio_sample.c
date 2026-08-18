@@ -337,6 +337,14 @@ void Audio_Sample_Pump(void)
     Audio_WorkerUnlock();
 }
 
+bool Audio_Sample_IsLoaded(const int32_t sample_id)
+{
+    if (sample_id < 0 || sample_id >= AUDIO_MAX_SAMPLES) {
+        return false;
+    }
+    return m_LoadedSamples[sample_id].original_data != nullptr;
+}
+
 RESULT Audio_Sample_Unload(const int32_t sample_id)
 {
     MUST(M_CheckSampleID(sample_id));

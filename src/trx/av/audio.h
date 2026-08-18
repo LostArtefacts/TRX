@@ -59,6 +59,9 @@ RESULT Audio_Stream_SetStopTimestamp(int32_t sound_id, double timestamp);
 // Stores the data of a sample for later playback, reporting data it cannot
 // use and a slot that is already in use.
 RESULT Audio_Sample_Load(int32_t sample_num, const char *content, size_t size);
+
+// Returns whether a sample slot holds audio to play.
+bool Audio_Sample_IsLoaded(int32_t sample_num);
 RESULT Audio_Sample_Unload(int32_t sample_id);
 RESULT Audio_Sample_UnloadAll(void);
 
