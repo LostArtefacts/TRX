@@ -30,6 +30,12 @@ static struct {
 
 extern void UI_ClearDraw(void);
 
+static struct {
+    UI_NODE *saved_root;
+    UI_NODE *saved_current;
+    bool active;
+} m_Measure = {};
+
 // Depth-first measure pass
 static void M_MeasureNode(UI_NODE *const node)
 {
@@ -143,6 +149,35 @@ const UI_NODE *UI_GetCurrent(void)
 const UI_NODE *UI_GetSceneRoot(void)
 {
     return m_Priv.scene_root;
+}
+
+void UI_BeginMeasure(void)
+{
+    ASSERT(!m_Measure.active);
+    m_Measure.active = true;
+    m_Measure.saved_root = m_Priv.root;
+    m_Measure.saved_current = m_Priv.current;
+    m_Priv.root = nullptr;
+    m_Priv.current = nullptr;
+    UI_BeginAnchor(0.5f, 0.5f);
+}
+
+void UI_EndMeasure(float *const out_w, float *const out_h)
+{
+    ASSERT(m_Measure.active);
+    UI_NODE *const root = m_Priv.root;
+    UI_EndAnchor();
+    ASSERT(m_Priv.root == nullptr);
+    M_MeasureNode(root);
+    if (out_w != nullptr) {
+        *out_w = root->measure_w;
+    }
+    if (out_h != nullptr) {
+        *out_h = root->measure_h;
+    }
+    m_Priv.root = m_Measure.saved_root;
+    m_Priv.current = m_Measure.saved_current;
+    m_Measure.active = false;
 }
 
 // Scene management
