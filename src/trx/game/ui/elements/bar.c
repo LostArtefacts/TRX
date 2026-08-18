@@ -125,6 +125,9 @@ static void M_DrawFillPS1(
 static void M_Draw(const UI_NODE *const node)
 {
     M_DATA *const data = node->data;
+    if (data->theme == nullptr) {
+        return;
+    }
     const UI_BAR_SETTINGS *const settings = &data->settings;
 
     float percent = settings->value / (float)MAX(1, settings->max_value);
@@ -185,6 +188,8 @@ void UI_Bar(const UI_BAR_SETTINGS settings)
     M_DATA *const data = node->data;
     data->settings = settings;
     data->theme = UI_Settings_GetBarTheme(settings.type);
-    data->scale = data->settings.preview ? 1.0f : data->theme->basic_scale;
+    const float basic_scale =
+        data->theme != nullptr ? data->theme->basic_scale : 1.0f;
+    data->scale = data->settings.preview ? 1.0f : basic_scale;
     UI_AddChild(node);
 }
