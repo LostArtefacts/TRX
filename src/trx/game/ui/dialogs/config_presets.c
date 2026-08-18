@@ -28,6 +28,7 @@
 #include <string.h>
 
 #define M_CONFIRM_VISIBLE_ROWS 10
+#define M_CONFIRM_MIN_VISIBLE_ROWS 4
 #define M_CHOICE_SPACING 12.0f
 #define M_CHOICE_PAD 8.0f
 // A narrow list of changes should stay narrow; this is the floor, not the
@@ -38,6 +39,7 @@
 // Measuring a text leaves off the spacing after its final glyph, which the
 // wrapper still counts. Without this, a line given exactly its own measured
 // width loses its last word to a second line.
+#define M_CONFIRM_ROW_SPACING 2.0f
 #define M_MEASURE_SLACK 1.0f
 
 typedef enum {
@@ -57,6 +59,8 @@ struct UI_CONFIG_PRESETS_STATE {
     M_PHASE phase;
     UI_REQUESTER_STATE req;
     UI_SCROLLABLE confirm_scroll;
+    float content_width;
+    float fit_scale;
     int32_t selected_idx;
     M_CHOICE confirm_choice;
 };
@@ -236,6 +240,69 @@ static float M_GetConfirmContentWidth(UI_CONFIG_PRESETS_STATE *const s)
     return MIN(natural, MAX(budget, M_CONFIRM_MIN_W * scale));
 }
 
+static int32_t M_CountWrappedLines(
+    const char *const text, const float max_width)
+{
+    char *const wrapped = UI_Text_WordWrap(text, 1.0f, max_width);
+    int32_t lines = 1;
+    for (const char *c = wrapped != nullptr ? wrapped : text; *c != '\0'; c++) {
+        if (*c == '\n') {
+            lines++;
+        }
+    }
+    Memory_Free(wrapped);
+    return lines;
+}
+
+static float M_GetConfirmRowPitch(void)
+{
+    return UI_TEXT_HEIGHT + M_CONFIRM_ROW_SPACING;
+}
+
+static float M_GetConfirmFixedHeight(UI_CONFIG_PRESETS_STATE *const s)
+{
+    const float content_width = M_GetConfirmContentWidth(s);
+    const float scale = UI_Scaler_GetTextScale();
+    char *const title = M_FormatTitle(s);
+    int32_t lines = M_CountWrappedLines(title, content_width);
+    Memory_Free(title);
+
+    const char *const message = M_GetPhaseMessage(s->phase);
+    if (message != nullptr) {
+        lines += M_CountWrappedLines(message, content_width);
+    } else if (s->phase == M_PHASE_CONFIRM) {
+        lines += 1
+            + M_CountWrappedLines(
+                     GS("general/config_presets/confirm_description"),
+                     content_width);
+        lines += 3
+            + M_CountWrappedLines(
+                     GS("general/config_presets/confirm_restart_note"),
+                     content_width);
+    }
+
+    const UI_WINDOW_SETTINGS window = {
+        .title = "",
+        .scrollable =
+            s->phase == M_PHASE_CONFIRM ? &s->confirm_scroll : nullptr,
+        .title_spacing = -1.0f,
+        .heavy = true,
+        .reserve_scroll_space = true,
+    };
+    return lines * UI_TEXT_HEIGHT + UI_Window_GetChromeHeight(&window)
+        + 2.0f * M_CONFIRM_PAD
+        + (message != nullptr ? 2.0f * M_CONFIRM_PAD : 0.0f)
+        + M_MEASURE_SLACK * scale;
+}
+
+static float M_GetConfirmContentHeight(UI_CONFIG_PRESETS_STATE *const s)
+{
+    return M_GetConfirmFixedHeight(s)
+        + (s->phase == M_PHASE_CONFIRM
+               ? s->confirm_scroll.vis_items * M_GetConfirmRowPitch()
+               : 0.0f);
+}
+
 static void M_DrawConfirmRows(
     UI_CONFIG_PRESETS_STATE *const s, const float content_width)
 {
@@ -256,13 +323,25 @@ static void M_DrawConfirmRows(
     }
 }
 
+static void M_RecomputeConfirmSize(UI_CONFIG_PRESETS_STATE *const s)
+{
+    s->content_width = M_GetConfirmContentWidth(s);
+
+    const float available = UI_GetSafeCanvasHeight() / UI_Scaler_GetTextScale();
+    int32_t rows =
+        (available - M_GetConfirmFixedHeight(s)) / M_GetConfirmRowPitch();
+    CLAMP(rows, M_CONFIRM_MIN_VISIBLE_ROWS, M_CONFIRM_VISIBLE_ROWS);
+    s->confirm_scroll.vis_items = rows;
+
+    s->fit_scale = UI_GetFitScale(-1.0f, M_GetConfirmContentHeight(s));
+}
+
 static void M_Header(void *const user_data)
 {
     UI_CONFIG_PRESETS_STATE *const s = user_data;
     if (s->phase == M_PHASE_CONFIRM) {
         M_WrappedLabel(
-            GS("general/config_presets/confirm_description"),
-            M_GetConfirmContentWidth(s));
+            GS("general/config_presets/confirm_description"), s->content_width);
         UI_Spacer(0.0f, UI_TEXT_HEIGHT);
     }
 }
@@ -298,7 +377,7 @@ static void M_Footer(void *const user_data)
         UI_Spacer(0.0f, UI_TEXT_HEIGHT);
         M_WrappedLabel(
             GS("general/config_presets/confirm_restart_note"),
-            M_GetConfirmContentWidth(s));
+            s->content_width);
         UI_Spacer(0.0f, UI_TEXT_HEIGHT);
         M_DrawConfirmChoices(s);
     }
@@ -482,11 +561,13 @@ void UI_ConfigPresetsApplyModal(UI_CONFIG_PRESETS_STATE *const s)
         return;
     }
 
-    const float content_width = M_GetConfirmContentWidth(s);
+    M_RecomputeConfirmSize(s);
+    const float content_width = s->content_width;
 
     char *const title = M_FormatTitle(s);
     char *const wrapped_title = UI_Text_WordWrap(title, 1.0f, content_width);
 
+    UI_Scaler_PushTextScale(s->fit_scale);
     UI_BeginModal(0.5f, 0.5f);
     UI_BeginPad(M_CONFIRM_PAD, M_CONFIRM_PAD);
     UI_BeginWindow((UI_WINDOW_SETTINGS) {
@@ -511,7 +592,7 @@ void UI_ConfigPresetsApplyModal(UI_CONFIG_PRESETS_STATE *const s)
             &s->confirm_scroll,
             (UI_SCROLLABLE_STACK_SETTINGS) {
                 .orientation = UI_STACK_VERTICAL,
-                .spacing = 2.0f,
+                .spacing = M_CONFIRM_ROW_SPACING,
             });
         M_DrawConfirmRows(s, content_width);
         UI_EndScrollableStack();
@@ -520,6 +601,7 @@ void UI_ConfigPresetsApplyModal(UI_CONFIG_PRESETS_STATE *const s)
     UI_EndWindow();
     UI_EndPad();
     UI_EndModal();
+    UI_Scaler_PopTextScale();
     Memory_Free(wrapped_title);
     Memory_Free(title);
 }
