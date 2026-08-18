@@ -438,7 +438,7 @@ test(
 
     local out, rstart, rend = p:complete("")
     assert(
-      #out == 2 and out[1] == "uzi",
+      table.concat(out, ",") == "shotgun,uzi",
       "the tail is what an empty line takes"
     )
     assert(rstart == 0 and rend == 0)
@@ -463,6 +463,29 @@ test("a greedy run reaches back over the words already typed", function()
   out, rstart, rend = p:complete("big med")
   assert(#out == 1 and out[1] == "big medipack")
   assert(rstart == 0 and rend == 7, "the whole tail, not the last word alone")
+end)
+
+test("completion sorts the keys the typed text opens to the front", function()
+  local p = trx.argparse.new()
+  p:positional("option", {
+    suggest = { "zzz.ui.zzz", "ui.cc", "aaa.ui.zzz", "ui.aa", "ui.bb" },
+  })
+  assert(
+    table.concat(p:complete("ui."), ",")
+      == "ui.aa,ui.bb,ui.cc,aaa.ui.zzz,zzz.ui.zzz"
+  )
+end)
+
+test("completion sorts a list nothing is typed into", function()
+  local p = trx.argparse.new()
+  p:positional("weather", { choices = { "snow", "rain", "fog" } })
+  assert(table.concat(p:complete(""), ",") == "fog,rain,snow")
+end)
+
+test("completion sorts without regard to case", function()
+  local p = trx.argparse.new()
+  p:positional("level", { suggest = { "bacon", "Angkor", "apple" } })
+  assert(table.concat(p:complete(""), ",") == "Angkor,apple,bacon")
 end)
 
 return h.report()

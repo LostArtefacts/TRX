@@ -459,9 +459,33 @@ function P:format_error(err)
   return msg
 end
 
--- The keys an argument offers for `active`, best first. An empty `active` offers
--- them all. Both the choices its matchers restrict to and its `suggest` list
--- contribute; a boolean offers on/off without being told to.
+-- Puts the keys in alphabetical order for the completion list. The keys that
+-- start with the typed text come first, and the `-` that puts the default back
+-- comes last. Upper case and lower case letters have the same order, and `Rain`
+-- stays together with `rain`.
+local function sort_candidates(keys, active)
+  local prefix = active:lower()
+  local function has_prefix(key)
+    return key:lower():sub(1, #prefix) == prefix
+  end
+  table.sort(keys, function(a, b)
+    if has_prefix(a) ~= has_prefix(b) then
+      return has_prefix(a)
+    end
+    if (a == "-") ~= (b == "-") then
+      return b == "-"
+    end
+    if a:lower() ~= b:lower() then
+      return a:lower() < b:lower()
+    end
+    return a < b
+  end)
+  return keys
+end
+
+-- The keys an argument offers for `active`, in alphabetical order. An empty
+-- `active` offers them all. Both the choices its matchers restrict to and its
+-- `suggest` list contribute; a boolean offers on/off without being told to.
 local function candidates_for(arg, parsed, active)
   local out = {}
   local seen = {}
@@ -498,7 +522,7 @@ local function candidates_for(arg, parsed, active)
     add(choices)
   end
   add(safe_choices(arg.suggest, parsed))
-  return out
+  return sort_candidates(out, active)
 end
 
 -- The candidates for the token the caret sits in within `text`, best first, and
@@ -551,7 +575,7 @@ function P:complete(text, caret)
         end
       end
     end
-    return out, rstart, rend
+    return sort_candidates(out, prefix), rstart, rend
   end
 
   -- The positionals filled before the active one: non-flag tokens ending at or
