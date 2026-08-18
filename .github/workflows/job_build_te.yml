@@ -23,10 +23,10 @@ jobs:
 
     steps:
       - name: Install dependencies
-        uses: taiki-e/install-action@just
+        uses: taiki-e/install-action@6d97d0d47ea06f0bb4e81bc7911476e7cc61b312 # just
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           submodules: 'true'
           fetch-depth: 0
@@ -40,7 +40,7 @@ jobs:
           echo "te_dir=build/artifacts/te/" >> $GITHUB_OUTPUT
 
       - name: Download windows build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: ${{ steps.vars.outputs.win_asset }}
           path: build/artifacts/trx/
@@ -54,7 +54,7 @@ jobs:
           fi
 
       - name: Upload TE bundle artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: ${{ steps.vars.outputs.te_asset }}
           path: ${{ steps.vars.outputs.te_dir }}

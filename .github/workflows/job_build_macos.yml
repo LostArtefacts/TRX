@@ -45,7 +45,7 @@ jobs:
           security set-key-partition-list -S "apple-tool:,apple:,codesign:" -s -k $MACOS_KEYCHAIN_PWD $KEYCHAIN_PATH
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           submodules: 'true'
           fetch-depth: 0
@@ -66,7 +66,7 @@ jobs:
 
       - name: "Try restore dependencies from cache"
         id: restore-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           key: ${{ runner.os }}-tooling-${{ hashFiles('.github/actions/prepare_macos_tooling/action.yml') }}
           path: |
@@ -156,7 +156,7 @@ jobs:
           xcrun stapler staple -v "${DMG_NAME}"
 
       - name: Upload signed+notarized installer image
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: ${{ steps.vars.outputs.asset_name }}
           path: |

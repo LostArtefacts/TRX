@@ -18,7 +18,7 @@ runs:
   steps:
     - name: Select latest stable Xcode
       if: steps.restore-cache.outputs.cache-hit != 'true'
-      uses: maxim-lobanov/setup-xcode@v1
+      uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1
       with:
         xcode-version: latest-stable
 
@@ -197,7 +197,7 @@ runs:
 
     - name: "Save dependencies to cache"
       if: steps.restore-cache.outputs.cache-hit != 'true'
-      uses: actions/cache/save@v4
+      uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
       with:
         key: ${{ runner.os }}-tooling-${{ hashFiles('.github/actions/prepare_macos_tooling/action.yml') }}
         path: |
