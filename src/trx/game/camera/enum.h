@@ -17,6 +17,7 @@ typedef enum {
     CF_FOLLOW_CENTRE = 1,
     CF_NO_CHUNKY = 2,
     CF_CHASE_OBJECT = 3,
+    CF_BLOCK_UPDATE = 4,
 } CAMERA_FLAGS;
 
 // Flags of a fixed camera's OBJECT_VECTOR word. The value is fixed by the
