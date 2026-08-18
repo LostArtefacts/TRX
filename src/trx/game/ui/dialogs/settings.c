@@ -25,6 +25,7 @@
 typedef struct UI_SETTINGS_DIALOG_STATE {
     UI_SETTINGS_PHASE phase;
     int32_t visible_rows;
+    bool collapsed_tabs;
 
     float max_content_width;
     float max_content_height;
@@ -116,6 +117,31 @@ static UI_SCROLLABLE *M_GetTabScrollable(UI_SETTINGS_TAB *const tab)
     return tab->ops->get_scrollable(tab->user_data);
 }
 
+// What the nav bar measures as it stands, in text units before the player's
+// text scale. A collapsed bar shows one tab at a time, so the widest is found
+// by putting each tab in front.
+static float M_MeasureTabsWidth(UI_SETTINGS_DIALOG_STATE *const s)
+{
+    const int32_t active = s->tab_switch->active_tab_idx;
+    float result = 0.0f;
+    for (int32_t i = 0; i < (s->collapsed_tabs ? s->tab_count : 1); i++) {
+        if (s->collapsed_tabs) {
+            s->tab_switch->active_tab_idx = i;
+        }
+        UI_BeginMeasure();
+        if (s->collapsed_tabs) {
+            UI_TabSwitchSingle(s->tab_switch, UI_TAB_SWITCH_DRAW_ARROWS);
+        } else {
+            UI_TabSwitch(s->tab_switch, UI_TAB_SWITCH_DRAW_ARROWS);
+        }
+        float width = 0.0f;
+        UI_EndMeasure(&width, nullptr);
+        result = MAX(result, width);
+    }
+    s->tab_switch->active_tab_idx = active;
+    return result / UI_Scaler_GetTextScale();
+}
+
 static void M_RecomputeSizesOnce(UI_SETTINGS_DIALOG_STATE *const s)
 {
     const float visible_content_height = M_GetVisibleContentHeight(s);
@@ -154,23 +180,21 @@ static void M_RecomputeSizesOnce(UI_SETTINGS_DIALOG_STATE *const s)
     min_content_width /= UI_Scaler_GetTextScale();
     s->max_content_height = max_content_height;
 
-    if (s->tab_switch != nullptr) {
-        UI_BeginMeasure();
-        UI_TabSwitch(s->tab_switch, UI_TAB_SWITCH_DRAW_ARROWS);
-        float tabs_width = 0.0f;
-        UI_EndMeasure(&tabs_width, nullptr);
-        tabs_width /= UI_Scaler_GetTextScale();
-        s->max_content_width = MAX(s->max_content_width, tabs_width);
-        min_content_width = MAX(min_content_width, tabs_width);
-    }
-
-    // The whitespace inside the rows gives way before the text size does: the
-    // dialog keeps the width the aligned columns ask for while the screen has
-    // room for it, closes in on the widest single row where it does not, and
-    // only then is drawn smaller.
     const float available = (UI_GetSafeCanvasWidth() / UI_Scaler_GetTextScale()
                              - UI_Window_GetChromeWidth())
         / M_MEASURE_SLACK;
+
+    if (s->tab_switch != nullptr) {
+        s->collapsed_tabs = false;
+        const float tabs_width = M_MeasureTabsWidth(s);
+        if (tabs_width > MAX(min_content_width, available)) {
+            s->collapsed_tabs = true;
+        }
+        const float bar_width =
+            s->collapsed_tabs ? M_MeasureTabsWidth(s) : tabs_width;
+        s->max_content_width = MAX(s->max_content_width, bar_width);
+        min_content_width = MAX(min_content_width, bar_width);
+    }
     s->max_content_width =
         MAX(min_content_width, MIN(s->max_content_width, available));
 
@@ -195,11 +219,15 @@ static void M_WindowHeader(void *const user_data)
 {
     UI_SETTINGS_DIALOG_STATE *const s = user_data;
     if (s->tab_switch != nullptr && s->tab_count > 0) {
-        UI_TabSwitch(
-            s->tab_switch,
+        const UI_TAB_SWITCH_DRAW_MODE mode =
             s->phase == UI_SETTINGS_PHASE_NAVIGATE_TABS
-                ? UI_TAB_SWITCH_DRAW_FOCUSED
-                : UI_TAB_SWITCH_DRAW_ARROWS);
+            ? UI_TAB_SWITCH_DRAW_FOCUSED
+            : UI_TAB_SWITCH_DRAW_ARROWS;
+        if (s->collapsed_tabs) {
+            UI_TabSwitchSingle(s->tab_switch, mode);
+        } else {
+            UI_TabSwitch(s->tab_switch, mode);
+        }
         UI_Spacer(0.0f, M_TAB_BAR_SPACING);
     }
 }

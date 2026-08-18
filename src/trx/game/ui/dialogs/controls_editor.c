@@ -459,7 +459,27 @@ static void M_GroupsHeader(const UI_CONTROLS_EDITOR_STATE *const s)
         || s->phase == M_PHASE_LISTEN_DEBOUNCE) {
         mode = UI_TAB_SWITCH_DRAW_ARROWS;
     }
-    UI_TabSwitch(s->controls_tab_switch, mode);
+    if (s->collapsed_groups) {
+        UI_TabSwitchSingle(s->controls_tab_switch, mode);
+    } else {
+        UI_TabSwitch(s->controls_tab_switch, mode);
+    }
+}
+
+static float M_MeasureWidestTab(UI_TAB_SWITCH_STATE *const tabs)
+{
+    const int32_t active = tabs->active_tab_idx;
+    float result = 0.0f;
+    for (int32_t i = 0; i < tabs->tab_count; i++) {
+        tabs->active_tab_idx = i;
+        UI_BeginMeasure();
+        UI_TabSwitchSingle(tabs, UI_TAB_SWITCH_DRAW_ARROWS);
+        float width = 0.0f;
+        UI_EndMeasure(&width, nullptr);
+        result = MAX(result, width);
+    }
+    tabs->active_tab_idx = active;
+    return result;
 }
 
 static void M_InputLabel(
@@ -585,28 +605,23 @@ static float M_GetContentWidth(UI_CONTROLS_EDITOR_STATE *const s)
     float footer = 0.0f;
     UI_EndMeasure(&footer, nullptr);
 
-    // The layout switch shows one layout at a time, so the widest is found
-    // by putting each in front.
-    float header = 0.0f;
-    UI_TAB_SWITCH_STATE *const layouts = s->layout_tab_switch;
-    const int32_t active_layout_tab = layouts->active_tab_idx;
-    for (int32_t i = 0; i < layouts->tab_count; i++) {
-        layouts->active_tab_idx = i;
-        UI_BeginMeasure();
-        UI_TabSwitchSingle(layouts, UI_TAB_SWITCH_DRAW_ARROWS);
-        float width = 0.0f;
-        UI_EndMeasure(&width, nullptr);
-        header = MAX(header, width);
-    }
-    layouts->active_tab_idx = active_layout_tab;
+    const float header = M_MeasureWidestTab(s->layout_tab_switch);
 
     UI_BeginMeasure();
     UI_TabSwitch(s->controls_tab_switch, UI_TAB_SWITCH_DRAW_ARROWS);
     float groups = 0.0f;
     UI_EndMeasure(&groups, nullptr);
 
-    return MAX(MAX(rows, footer / scale), MAX(header, groups) / scale)
-        * M_MEASURE_SLACK
+    const float rest = MAX(MAX(rows, footer / scale), header / scale);
+    const float available =
+        (UI_GetSafeCanvasWidth() / scale - UI_Window_GetChromeWidth())
+        / M_MEASURE_SLACK;
+    s->collapsed_groups = groups / scale > MAX(rest, available);
+    if (s->collapsed_groups) {
+        groups = M_MeasureWidestTab(s->controls_tab_switch);
+    }
+
+    return MAX(rest, groups / scale) * M_MEASURE_SLACK
         + UI_Window_GetChromeWidth();
 }
 
