@@ -54,6 +54,11 @@ float UI_ScaleY(float y);
 void UI_BeginScene(void);
 void UI_EndScene(void);
 
+// Measures widgets built between these calls without drawing them.
+// Measured nodes stay valid until UI_BeginScene resets the arena.
+void UI_BeginMeasure(void);
+void UI_EndMeasure(float *out_w, float *out_h);
+
 // Helpers to add children, etc.
 UI_NODE *UI_AllocNode(const UI_WIDGET_OPS *ops, size_t additional_size);
 void UI_AddChild(UI_NODE *child);
