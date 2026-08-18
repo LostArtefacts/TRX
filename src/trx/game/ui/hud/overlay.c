@@ -512,10 +512,12 @@ void UI_Overlay_SetTopText(
     UI_OVERLAY_STATE *const s, const UI_OVERLAY_TEXT text)
 {
     s->top_text = text;
+    M_StateInsets(s);
 }
 
 void UI_Overlay_SetBottomText(
     UI_OVERLAY_STATE *const s, const UI_OVERLAY_TEXT text)
 {
     s->bottom_text = text;
+    M_StateInsets(s);
 }
