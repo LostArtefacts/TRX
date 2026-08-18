@@ -63,4 +63,25 @@ test("a held setting reports as enforced, and -f writes through", function()
   assert(trx.config.get("visuals.fov") == 90, "the forced write did not land")
 end)
 
+test("an enum option offers its values, spelled with dashes", function()
+  assert(
+    table.concat(fake.complete_args("set", "shadow-type "), ",")
+      == "circle,sprite,extra-dark,-"
+  )
+end)
+
+test("a boolean option offers on and off", function()
+  assert(
+    table.concat(fake.complete_args("set", "enable-music "), ",") == "on,off,-"
+  )
+end)
+
+test("an option with no list of values offers nothing", function()
+  assert(#fake.complete_args("set", "fov ") == 0)
+end)
+
+test("a name that could be several options offers nothing", function()
+  assert(#fake.complete_args("set", "visuals ") == 0)
+end)
+
 return h.report()
