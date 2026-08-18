@@ -29,10 +29,10 @@ jobs:
 
     steps:
       - name: Install dependencies
-        uses: taiki-e/install-action@just
+        uses: taiki-e/install-action@6d97d0d47ea06f0bb4e81bc7911476e7cc61b312 # just
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           submodules: 'true'
           fetch-depth: 0
@@ -55,7 +55,7 @@ jobs:
       - name: Restore ccache
         id: ccache
         if: ${{ inputs.platform == 'linux' || inputs.platform == 'win' }}
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .cache/ccache
           key: ccache-v1-${{ runner.os }}-${{ inputs.platform }}-${{ inputs.target }}-${{ hashFiles('justfile', 'tools/shared/docker/game-linux/Dockerfile', 'tools/shared/docker/game-win/Dockerfile', 'tools/shared/docker/game-win/meson_linux_mingw32.txt') }}
@@ -81,7 +81,7 @@ jobs:
       # skip this step and stay restore-only.
       - name: Save ccache
         if: ${{ github.event_name != 'pull_request' && steps.ccache.outputs.cache-primary-key && (inputs.platform == 'linux' || inputs.platform == 'win') }}
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .cache/ccache
           key: ${{ steps.ccache.outputs.cache-primary-key }}
@@ -100,7 +100,7 @@ jobs:
           just lua-api-check
 
       - name: Upload artifacts (combined)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: ${{ steps.vars.outputs.trx_asset }}
           path: ${{ steps.vars.outputs.trx_dir }}
