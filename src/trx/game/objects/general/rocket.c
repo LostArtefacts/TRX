@@ -251,9 +251,9 @@ static void M_Control(const int16_t item_num)
             new_room != nullptr && new_room->flags.underwater;
         if (is_underwater && !was_underwater) {
             FX_Water_SetupSplash(&(FX_WATER_SPLASH_SETUP) {
-                .x = item->pos.x,
-                .y = new_room->max_ceiling,
-                .z = item->pos.z,
+                .pos = { .x = item->pos.x,
+                         .y = new_room->max_ceiling,
+                         .z = item->pos.z },
                 .inner_xz_off = 16,
                 .inner_xz_size = 12,
                 .inner_y_size = -96,

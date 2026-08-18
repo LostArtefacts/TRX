@@ -130,6 +130,15 @@ void JSON_WriteIO_PushXYZ16(JSON_WRITE_IO *const io, const XYZ_16 value)
     JSON_WriteIO_PopAndSet(io, "z");
 }
 
+void JSON_WriteIO_PushXZ32(JSON_WRITE_IO *const io, const XZ_32 value)
+{
+    JSON_WriteIO_PushObject(io);
+    JSON_WriteIO_PushInt(io, value.x);
+    JSON_WriteIO_PopAndSet(io, "x");
+    JSON_WriteIO_PushInt(io, value.z);
+    JSON_WriteIO_PopAndSet(io, "z");
+}
+
 void JSON_WriteIO_PushXYZ32(JSON_WRITE_IO *const io, const XYZ_32 value)
 {
     JSON_WriteIO_PushObject(io);

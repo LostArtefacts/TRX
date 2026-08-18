@@ -378,6 +378,9 @@ static void M_SaveRings(
     JSONW_PUSH_ARRAY(io);
     for (int32_t i = 0; i < M_MAX_RINGS; i++) {
         const FX_RING *const ring = &m_Rings[type][i];
+        if (!ring->on) {
+            continue;
+        }
         JSONW_PUSH_OBJECT(io);
         JSONW_WRITE(io, "on", ring->on);
         JSONW_WRITE(io, "life", ring->life);

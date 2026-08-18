@@ -8,6 +8,7 @@
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/savegame.h>
+#include <trx/game/sparks/manager.h>
 #include <trx/version.h>
 
 #include <string.h>
@@ -128,6 +129,7 @@ static RESULT M_Load(JSON_READ_IO *const io)
     MUST(SG_File_LoadItems(io));
     MUST(SG_File_LoadEffects(io));
     MUST(SG_File_LoadFX(io));
+    MUST(Sparks_Load(io));
     MUST(SG_File_LoadFlares(io));
     MUST(SG_File_LoadMusic(io));
     MUST(SG_File_LoadLara(io));
@@ -176,6 +178,7 @@ RESULT SG_File_SaveToFile(TRX_FILE *const fp, SAVEGAME_INFO *const info)
     SG_File_DumpItems(io);
     SG_File_DumpEffects(io);
     SG_File_DumpFX(io);
+    Sparks_Save(io);
     SG_File_DumpLara(io);
     SG_File_DumpMusic(io);
     SG_File_DumpFlares(io);

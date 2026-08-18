@@ -624,9 +624,7 @@ static void M_Splash(
     const int32_t water_height)
 {
     FX_WATER_SPLASH_SETUP splash_setup = {
-        .x = item->pos.x,
-        .y = water_height,
-        .z = item->pos.z,
+        .pos = { .x = item->pos.x, .y = water_height, .z = item->pos.z },
         .inner_xz_off = 64,
         .inner_xz_size = 48,
         .inner_y_size = -384,

@@ -357,6 +357,25 @@ RESULT JSON_ReadIO_ReadXYZ32Current(
     return OK;
 }
 
+RESULT JSON_ReadIO_ReadXZ32Current(
+    JSON_READ_IO *const io, void *const target_void)
+{
+    XZ_32 *const target = target_void;
+    JSON_ARRAY *const tuple = JSON_ValueAsArray(io->current);
+    if (tuple != nullptr) {
+        const int32_t tuple_len = tuple->length;
+        if (tuple_len != 2) {
+            return M_Fail(io, "XZ tuple must have exactly 2 values");
+        }
+        MUST(JSON_READ_A(io, 0, &target->x));
+        MUST(JSON_READ_A(io, 1, &target->z));
+    } else {
+        MUST(JSON_READ(io, "x", &target->x));
+        MUST(JSON_READ(io, "z", &target->z));
+    }
+    return OK;
+}
+
 RESULT JSON_ReadIO_ReadXYZ16Current(
     JSON_READ_IO *const io, void *const target_void)
 {

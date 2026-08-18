@@ -1,9 +1,13 @@
 #include <trx/game/sparks/manager.h>
 
 #include <trx/config.h>
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects.h>
 #include <trx/game/output/lights.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/random.h>
@@ -139,6 +143,115 @@ static void M_UpdateWind(void)
     m_HairWindZ = 0;
 }
 
+void Sparks_SaveSpark(JSON_WRITE_IO *const io, const SPARK *const spark)
+{
+    JSONW_WRITE(io, "s_life", spark->s_life);
+    JSONW_WRITE(io, "life", spark->life);
+    JSONW_WRITE(io, "pos", spark->pos);
+    JSONW_WRITE(io, "vel", spark->vel);
+    JSONW_WRITE(io, "src_width", spark->src_size.width);
+    JSONW_WRITE(io, "src_height", spark->src_size.height);
+    JSONW_WRITE(io, "dst_width", spark->dst_size.width);
+    JSONW_WRITE(io, "dst_height", spark->dst_size.height);
+    JSONW_WRITE(io, "width", spark->size.width);
+    JSONW_WRITE(io, "height", spark->size.height);
+    JSONW_WRITE(io, "src_color", spark->src_color);
+    JSONW_WRITE(io, "dst_color", spark->dst_color);
+    JSONW_WRITE(io, "color", spark->color);
+    JSONW_WRITE(io, "scalar", spark->scalar);
+    JSONW_WRITE(io, "col_fade_speed", spark->col_fade_speed);
+    JSONW_WRITE(io, "fade_to_black", spark->fade_to_black);
+    JSONW_WRITE(io, "gravity", spark->gravity);
+    JSONW_WRITE(io, "max_y_vel", spark->max_y_vel);
+    JSONW_WRITE(io, "friction", spark->friction);
+    JSONW_WRITE(io, "flags", spark->flags);
+    JSONW_WRITE(io, "room_num", spark->room_num);
+    JSONW_WRITE(io, "node_num", spark->node_num);
+    JSONW_WRITE(io, "extras", spark->extras);
+    JSONW_WRITE(io, "dynamic", spark->dynamic);
+    JSONW_WRITE(io, "rot_angle", spark->rot_angle);
+    JSONW_WRITE(io, "rot_add", spark->rot_add);
+    JSONW_WRITE(io, "draw_type", (int32_t)spark->draw_type);
+
+    if ((spark->flags & SPARK_F_SPRITE) != 0U) {
+        const OBJECT *const obj = Object_Get(spark->sprite_obj_id);
+        JSONW_WRITE(io, "sprite_obj_id", Object_ToGameID(spark->sprite_obj_id));
+        JSONW_WRITE(io, "sprite_offset", spark->sprite_idx - obj->mesh_idx);
+    }
+
+    if ((spark->flags & SPARK_F_ITEM) != 0U) {
+        JSONW_WRITE(io, "item_num", spark->item_num);
+    } else if ((spark->flags & SPARK_F_FX) != 0U) {
+        JSONW_WRITE(io, "effect_num", Effect_GetInOrderNum(spark->effect_num));
+    }
+}
+
+RESULT Sparks_LoadSpark(JSON_READ_IO *const io, SPARK *const spark)
+{
+    MUST(JSON_READ(io, "s_life", &spark->s_life));
+    MUST(JSON_READ(io, "life", &spark->life));
+    MUST(JSON_READ(io, "pos", &spark->pos));
+    MUST(JSON_READ(io, "vel", &spark->vel));
+    MUST(JSON_READ(io, "src_width", &spark->src_size.width));
+    MUST(JSON_READ(io, "src_height", &spark->src_size.height));
+    MUST(JSON_READ(io, "dst_width", &spark->dst_size.width));
+    MUST(JSON_READ(io, "dst_height", &spark->dst_size.height));
+    MUST(JSON_READ(io, "width", &spark->size.width));
+    MUST(JSON_READ(io, "height", &spark->size.height));
+    MUST(JSON_READ(io, "src_color", &spark->src_color));
+    MUST(JSON_READ(io, "dst_color", &spark->dst_color));
+    MUST(JSON_READ(io, "color", &spark->color));
+    MUST(JSON_READ(io, "scalar", &spark->scalar));
+    MUST(JSON_READ(io, "col_fade_speed", &spark->col_fade_speed));
+    MUST(JSON_READ(io, "fade_to_black", &spark->fade_to_black));
+    MUST(JSON_READ(io, "gravity", &spark->gravity));
+    MUST(JSON_READ(io, "max_y_vel", &spark->max_y_vel));
+    MUST(JSON_READ(io, "friction", &spark->friction));
+    MUST(JSON_READ(io, "flags", &spark->flags));
+    MUST(JSON_READ(io, "room_num", &spark->room_num));
+    MUST(JSON_READ(io, "node_num", &spark->node_num));
+    MUST(JSON_READ(io, "extras", &spark->extras));
+    MUST(JSON_READ(io, "dynamic", &spark->dynamic));
+    MUST(JSON_READ(io, "rot_angle", &spark->rot_angle));
+    MUST(JSON_READ(io, "rot_add", &spark->rot_add));
+
+    int32_t draw_type = 0;
+    MUST(JSON_READ(io, "draw_type", &draw_type));
+    spark->draw_type = (DRAW_TYPE)draw_type;
+
+    spark->sprite_obj_id = NO_OBJECT;
+    spark->sprite_idx = 0;
+    if ((spark->flags & SPARK_F_SPRITE) != 0U) {
+        int32_t game_id = 0;
+        int32_t sprite_offset = 0;
+        MUST(JSON_READ(io, "sprite_obj_id", &game_id));
+        MUST(JSON_READ(io, "sprite_offset", &sprite_offset));
+        spark->sprite_obj_id = Object_FromGameID(game_id);
+        if (spark->sprite_obj_id == NO_OBJECT) {
+            return JSON_ReadIO_Fail(io, "unsupported object #%d", game_id);
+        }
+        const OBJECT *const obj = Object_Get(spark->sprite_obj_id);
+        if (!obj->loaded || sprite_offset < 0
+            || sprite_offset >= ABS(obj->mesh_count)) {
+            return JSON_ReadIO_Fail(
+                io, "sprite #%d is not in object #%d", sprite_offset, game_id);
+        }
+        spark->sprite_idx = obj->mesh_idx + sprite_offset;
+    }
+
+    if ((spark->flags & SPARK_F_ITEM) != 0U) {
+        MUST(JSON_READ(io, "item_num", &spark->item_num));
+    } else if ((spark->flags & SPARK_F_FX) != 0U) {
+        MUST(JSON_READ(io, "effect_num", &spark->effect_num));
+        if (Effect_GetInOrderNum(spark->effect_num) == NO_EFFECT) {
+            return JSON_ReadIO_Fail(
+                io, "no effect #%d to attach to", spark->effect_num);
+        }
+    }
+
+    return OK;
+}
+
 XYZ_32 Sparks_GetWorldPos(const SPARK *const spark)
 {
     if (spark == nullptr) {
@@ -207,6 +320,7 @@ SPARK *Sparks_InitialiseSpriteSpark(const SPARK_SPRITE_TYPE type)
     SPARK *const spark = Sparks_GetFreeSpark();
     spark->on = true;
     spark->sprite_idx = sprite_idx;
+    spark->sprite_obj_id = O_SPARKS_GFX;
     return spark;
 }
 
@@ -220,6 +334,61 @@ int32_t Sparks_GetSpriteIndex(const SPARK_SPRITE_TYPE type)
         return NO_ITEM;
     }
     return obj->mesh_idx + type;
+}
+
+void Sparks_Save(JSON_WRITE_IO *const io)
+{
+    if (!g_Config.gameplay.enable_enhanced_saves) {
+        return;
+    }
+
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
+        const SPARK *const spark = &m_Sparks[i];
+        if (!spark->on) {
+            continue;
+        }
+        if ((spark->flags & SPARK_F_FX) != 0U
+            && Effect_GetInOrderNum(spark->effect_num) == NO_EFFECT) {
+            continue;
+        }
+        JSONW_PUSH_OBJECT(io);
+        Sparks_SaveSpark(io, spark);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET(io, "sparks");
+}
+
+RESULT Sparks_Load(JSON_READ_IO *const io)
+{
+    if (!g_Config.gameplay.enable_enhanced_saves) {
+        return OK;
+    }
+
+    if (!JSON_ReadIO_HasKey(io, "sparks")) {
+        return OK;
+    }
+    MUST(JSON_PUSH(io, "sparks"));
+
+    const int32_t count = JSON_ARRAY_LEN(io);
+    for (int32_t i = 0; i < count; i++) {
+        if (i >= M_MAX_SPARKS) {
+            LOG_WARNING(
+                "Malformed save: too many sparks. Extra sparks will be "
+                "ignored.");
+            break;
+        }
+        SPARK *const spark = &m_Sparks[i];
+        MUST(JSON_PUSH_INDEX(io, i));
+        MUST(Sparks_LoadSpark(io, spark));
+        MUST(JSON_POP(io));
+        spark->on = true;
+        Sparks_Sync(spark);
+    }
+    m_NextSpark = count < M_MAX_SPARKS ? count : 0;
+
+    MUST(JSON_POP(io));
+    return OK;
 }
 
 void Sparks_Sync(SPARK *const spark)
@@ -367,6 +536,7 @@ void Sparks_Control(void)
         if ((spark->flags & SPARK_F_ALT_SPRITE) != 0U) {
             const int32_t base = Sparks_GetSpriteIndex(SPARK_TYPE_EXPLOSION);
             if (base != NO_ITEM) {
+                spark->sprite_obj_id = O_SPARKS_GFX;
                 if (spark->color.r < 16 && spark->color.g < 16
                     && spark->color.b < 16) {
                     spark->sprite_idx = base + 3;

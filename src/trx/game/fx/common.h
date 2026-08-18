@@ -5,9 +5,8 @@
 typedef struct JSON_READ_IO JSON_READ_IO;
 typedef struct JSON_WRITE_IO JSON_WRITE_IO;
 
-// Lifecycle hooks an effect module takes part in. Every hook is optional.
-// A module that persists across saves fills in save_key together with save
-// and load; its state is written as an object under that key.
+// Defines the optional lifecycle hooks for an effect module. A persistent
+// module sets save_key, save_func and load_func.
 typedef struct {
     void (*new_frame_func)(void);
     void (*control_func)(void);
@@ -32,6 +31,10 @@ void FX_NewFrame(void);
 void FX_Control(void);
 void FX_Draw(void);
 
+// Writes the state of each persistent module, or nothing while the effect
+// saving setting is off.
 void FX_Save(JSON_WRITE_IO *io);
-// Resets every persisting module before applying what the save holds.
+
+// Resets each persistent module before applying what the save holds. While
+// the effect saving setting is off, the reset stands and the save is ignored.
 RESULT FX_Load(JSON_READ_IO *io);

@@ -1,14 +1,13 @@
 #pragma once
 
+#include <trx/core/math/types.h>
 #include <trx/game/items/types.h>
 #include <trx/game/types.h>
 
 #include <stdint.h>
 
 typedef struct {
-    int32_t x;
-    int32_t y;
-    int32_t z;
+    XYZ_32 pos;
     int32_t prev_size;
     int32_t prev_life;
     int32_t prev_init;
@@ -19,25 +18,17 @@ typedef struct {
 } FX_WATER_RIPPLE;
 
 typedef struct {
-    int16_t wx;
-    int16_t wy;
-    int16_t wz;
-    int16_t prev_wx;
-    int16_t prev_wy;
-    int16_t prev_wz;
-    int16_t xv;
-    int32_t yv;
-    int16_t zv;
-    int16_t oxv;
-    int16_t ozv;
+    XYZ_16 pos;
+    XYZ_16 prev_pos;
+    XYZ_32 vel;
+    // Gives the speed that friction decays the point toward.
+    XZ_32 min_vel;
     uint8_t friction;
     uint8_t gravity;
 } FX_WATER_SPLASH_VERT;
 
 typedef struct {
-    int32_t x;
-    int32_t y;
-    int32_t z;
+    XYZ_32 pos;
     int32_t prev_life;
     uint8_t flags;
     uint8_t life;
@@ -46,9 +37,7 @@ typedef struct {
 } FX_WATER_SPLASH;
 
 typedef struct {
-    int32_t x;
-    int32_t y;
-    int32_t z;
+    XYZ_32 pos;
     int16_t inner_xz_off;
     int16_t inner_xz_size;
     int16_t inner_y_size;

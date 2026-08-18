@@ -1,5 +1,7 @@
 #include <trx/game/fx/fire.h>
 
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/core/utils.h>
 #include <trx/game/const.h>
 #include <trx/game/fx/common.h>
@@ -382,6 +384,47 @@ static void M_Draw(void)
     }
 }
 
+static void M_Save(JSON_WRITE_IO *const io)
+{
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
+        const SPARK *const spark = &m_Sparks[i];
+        if (!spark->on) {
+            continue;
+        }
+        JSONW_PUSH_OBJECT(io);
+        JSONW_WRITE(io, "idx", i);
+        Sparks_SaveSpark(io, spark);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET_NZ(io, "sparks");
+}
+
+static RESULT M_Load(JSON_READ_IO *const io)
+{
+    if (!JSON_ReadIO_HasKey(io, "sparks")) {
+        return OK;
+    }
+    MUST(JSON_PUSH(io, "sparks"));
+
+    const int32_t count = JSON_ARRAY_LEN(io);
+    for (int32_t i = 0; i < count; i++) {
+        MUST(JSON_PUSH_INDEX(io, i));
+        int32_t idx = 0;
+        MUST(JSON_READ(io, "idx", &idx));
+        if (idx < 0 || idx >= M_MAX_SPARKS) {
+            return JSON_ReadIO_Fail(io, "spark slot #%d is not there", idx);
+        }
+        SPARK *const spark = &m_Sparks[idx];
+        MUST(Sparks_LoadSpark(io, spark));
+        MUST(JSON_POP(io));
+        spark->on = true;
+    }
+
+    MUST(JSON_POP(io));
+    return OK;
+}
+
 void FX_Fire_Add(
     const XYZ_32 pos, const int32_t size, const int16_t room_num,
     const int32_t fade)
@@ -408,6 +451,9 @@ static const FX_MODULE m_Module = {
     .control_func = M_Control,
     .draw_func = M_Draw,
     .reset_func = M_Reset,
+    .save_key = "fire",
+    .save_func = M_Save,
+    .load_func = M_Load,
 };
 
 REGISTER_FX(m_Module)

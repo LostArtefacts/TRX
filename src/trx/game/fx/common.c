@@ -1,5 +1,6 @@
 #include <trx/game/fx/common.h>
 
+#include <trx/config.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/debug.h>
@@ -55,6 +56,10 @@ void FX_Reset(void)
 
 void FX_Save(JSON_WRITE_IO *const io)
 {
+    if (!g_Config.gameplay.enable_enhanced_saves) {
+        return;
+    }
+
     for (int32_t i = 0; i < m_ModuleCount; i++) {
         const FX_MODULE *const module = m_Modules[i];
         if (module->save_func == nullptr) {
@@ -68,6 +73,7 @@ void FX_Save(JSON_WRITE_IO *const io)
 
 RESULT FX_Load(JSON_READ_IO *const io)
 {
+    const bool enabled = g_Config.gameplay.enable_enhanced_saves;
     for (int32_t i = 0; i < m_ModuleCount; i++) {
         const FX_MODULE *const module = m_Modules[i];
         if (module->load_func == nullptr) {
@@ -76,7 +82,7 @@ RESULT FX_Load(JSON_READ_IO *const io)
         if (module->reset_func != nullptr) {
             module->reset_func();
         }
-        if (!JSON_ReadIO_HasKey(io, module->save_key)) {
+        if (!enabled || !JSON_ReadIO_HasKey(io, module->save_key)) {
             continue;
         }
         MUST(JSON_PUSH(io, module->save_key));

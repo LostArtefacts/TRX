@@ -269,9 +269,9 @@ static void M_Control(const int16_t item_num)
             const int32_t middle_y_vel =
                 -1024 - ((int32_t)item->fall_speed << 4);
             FX_Water_SetupSplash(&(FX_WATER_SPLASH_SETUP) {
-                .x = item->pos.x,
-                .y = new_room->max_ceiling,
-                .z = item->pos.z,
+                .pos = { .x = item->pos.x,
+                         .y = new_room->max_ceiling,
+                         .z = item->pos.z },
                 .inner_xz_off = 16,
                 .inner_xz_size = 12,
                 .inner_y_size = -96,
