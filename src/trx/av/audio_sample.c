@@ -154,10 +154,10 @@ static bool M_DecoderOpen(AUDIO_SAMPLE *const sample)
 {
     ASSERT(sample->decoder == nullptr);
 
-    AUDIO_DECODER *const source = AudioDecoder_CreateFromMemory(
-        (const uint8_t *)sample->original_data, sample->original_size,
-        SAMPLE_CHANNELS);
-    if (source == nullptr) {
+    AUDIO_DECODER *source = nullptr;
+    if (!SHOULD(AudioDecoder_CreateFromMemory(
+            (const uint8_t *)sample->original_data, sample->original_size,
+            SAMPLE_CHANNELS, &source))) {
         return false;
     }
 

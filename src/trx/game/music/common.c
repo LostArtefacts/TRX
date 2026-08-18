@@ -552,8 +552,8 @@ double Music_GetTrackDuration(const MUSIC_ID track)
     double duration = -1.0;
     char *const path = Music_GetTrackPath(track);
     if (path != nullptr) {
-        AUDIO_DECODER *decoder = AudioDecoder_CreateFromPath(path, 2);
-        if (decoder != nullptr) {
+        AUDIO_DECODER *decoder = nullptr;
+        if (SHOULD(AudioDecoder_CreateFromPath(path, 2, &decoder))) {
             duration = AudioDecoder_GetDuration(decoder);
             AudioDecoder_Free(&decoder);
         }
