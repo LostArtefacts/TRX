@@ -67,8 +67,8 @@ static OUTPUT_QUAD_SURFACE_DESC M_MakeSurfaceDesc(
 
 static int32_t M_OpenAudioStream(const char *const file_name)
 {
-    int32_t audio_id = Audio_Stream_CreateFromFile(file_name);
-    if (audio_id != AUDIO_NO_SOUND) {
+    int32_t audio_id = AUDIO_NO_SOUND;
+    if (IGNORE(Audio_Stream_CreateFromFile(file_name, &audio_id))) {
         return audio_id;
     }
 
@@ -84,9 +84,10 @@ static int32_t M_OpenAudioStream(const char *const file_name)
         char *const candidate =
             String_Format("%.*s%s", (int)base_len, file_name, *ext);
         if (FS_Exists(candidate)) {
-            audio_id = Audio_Stream_CreateFromFile(candidate);
+            const bool opened =
+                IGNORE(Audio_Stream_CreateFromFile(candidate, &audio_id));
             Memory_Free(candidate);
-            if (audio_id != AUDIO_NO_SOUND) {
+            if (opened) {
                 return audio_id;
             }
         } else {
@@ -257,8 +258,8 @@ static RESULT M_Play(const char *const file_name)
     M_SetPauseText(false);
     Video_Start(video);
 
-    Audio_Stream_SetVolume(audio_id, M_GetAudioVolume());
-    Audio_Stream_Unpause(audio_id);
+    IGNORE(Audio_Stream_SetVolume(audio_id, M_GetAudioVolume()));
+    IGNORE(Audio_Stream_Unpause(audio_id));
 
     while (video->is_playing) {
         Shell_ProcessEvents();
@@ -274,11 +275,11 @@ static RESULT M_Play(const char *const file_name)
         const bool should_pause = focus_paused || input_paused;
         if (should_pause != paused) {
             Video_SetPaused(video, should_pause);
-            Audio_Stream_SetPaused(audio_id, should_pause);
+            IGNORE(Audio_Stream_SetPaused(audio_id, should_pause));
             paused = should_pause;
         }
 
-        Audio_Stream_SetVolume(audio_id, M_GetAudioVolume());
+        IGNORE(Audio_Stream_SetVolume(audio_id, M_GetAudioVolume()));
         const double audio_ts = Audio_Stream_GetTimestamp(audio_id);
         if (audio_ts >= 0.0) {
             Video_SetExternalAudioClock(video, audio_ts);
@@ -309,7 +310,7 @@ static RESULT M_Play(const char *const file_name)
     }
 
     M_SetPauseText(false);
-    Audio_Stream_Close(audio_id);
+    IGNORE(Audio_Stream_Close(audio_id));
     Video_Close(video);
 
     Output_Quad_Destroy(render_ctx.renderer_2d);

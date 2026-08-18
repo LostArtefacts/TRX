@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/result.h>
 #include <trx/game/music/enum.h>
 #include <trx/game/music/ids.h>
 #include <trx/game/music/types.h>
@@ -14,7 +15,9 @@ typedef struct {
     double timestamp;
 } MUSIC_STREAM_STATE;
 
-bool Music_Init(void);
+// Selects a backend and opens the audio device, reporting a device that will
+// not open. A headless run creates the backend without a device.
+RESULT Music_Init(void);
 
 // Stops playing current track and plays a single track.
 //

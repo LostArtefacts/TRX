@@ -69,8 +69,8 @@ static void M_HandleSFXData(
                 const int32_t sample_length = File_ReadS32(chunk.injection->fp);
                 char *const data = Memory_Alloc(sample_length);
                 File_ReadData(chunk.injection->fp, data, sample_length);
-                Sound_LoadSampleData(
-                    sample_info->number + j, data, sample_length);
+                SHOULD(Sound_LoadSampleData(
+                    sample_info->number + j, data, sample_length));
                 Memory_Free(data);
             }
         } else if (g_TRVersion >= 2) {

@@ -400,9 +400,11 @@ static int32_t M_Play(
         return -1;
     }
 
-    const int32_t stream_id = Audio_Stream_CreateFromFile(file_path);
+    int32_t stream_id = AUDIO_NO_SOUND;
+    const bool opened =
+        SHOULD(Audio_Stream_CreateFromFile(file_path, &stream_id));
     Memory_Free(file_path);
-    return stream_id;
+    return opened ? stream_id : -1;
 }
 
 static void M_Shutdown(MUSIC_BACKEND *backend)

@@ -12,6 +12,9 @@
 
 extern SDL_AudioDeviceID g_AudioDeviceID;
 
+// Reports an audio device that is not open.
+RESULT Audio_CheckDevice(void);
+
 void Audio_LockDevice(void);
 void Audio_UnlockDevice(void);
 

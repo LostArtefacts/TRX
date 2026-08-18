@@ -89,6 +89,24 @@ static AUDIO_SAMPLE_SOUND m_Samples[AUDIO_MAX_ACTIVE_SAMPLES] = {};
 static int32_t m_DecodeQueue[AUDIO_MAX_SAMPLES] = {};
 static int32_t m_DecodeQueueCount = 0;
 
+static RESULT M_CheckSampleID(const int32_t sample_id)
+{
+    FAIL_IF(
+        sample_id < 0 || sample_id >= AUDIO_MAX_SAMPLES,
+        "sample %d is outside the %d samples that fit", sample_id,
+        AUDIO_MAX_SAMPLES);
+    return OK;
+}
+
+static RESULT M_CheckSoundID(const int32_t sound_id)
+{
+    MUST(Audio_CheckDevice());
+    FAIL_IF(
+        sound_id < 0 || sound_id >= AUDIO_MAX_ACTIVE_SAMPLES,
+        "sound %d is not playing", sound_id);
+    return OK;
+}
+
 static double M_DecibelToMultiplier(double db_gain)
 {
     if (g_TRVersion < 3) {
@@ -292,8 +310,8 @@ void Audio_Sample_Init(void)
 
 void Audio_Sample_Shutdown(void)
 {
-    Audio_Sample_CloseAll();
-    Audio_Sample_UnloadAll();
+    IGNORE(Audio_Sample_CloseAll());
+    IGNORE(Audio_Sample_UnloadAll());
 }
 
 void Audio_Sample_Pump(void)
@@ -319,27 +337,23 @@ void Audio_Sample_Pump(void)
     Audio_WorkerUnlock();
 }
 
-bool Audio_Sample_Unload(const int32_t sample_id)
+RESULT Audio_Sample_Unload(const int32_t sample_id)
 {
-    if (sample_id < 0 || sample_id >= AUDIO_MAX_SAMPLES) {
-        LOG_ERROR("Maximum allowed samples: %d", AUDIO_MAX_SAMPLES);
-        return false;
-    }
+    MUST(M_CheckSampleID(sample_id));
 
     AUDIO_SAMPLE *const sample = &m_LoadedSamples[sample_id];
-    if (sample->original_data == nullptr) {
-        LOG_ERROR("Sample %d is already unloaded", sample_id);
-        return false;
-    }
+    FAIL_IF(
+        sample->original_data == nullptr, "sample %d is already unloaded",
+        sample_id);
 
     Audio_WorkerLock();
     M_UnloadSample(sample);
     Audio_WorkerUnlock();
     m_LoadedSamplesCount--;
-    return true;
+    return OK;
 }
 
-bool Audio_Sample_UnloadAll(void)
+RESULT Audio_Sample_UnloadAll(void)
 {
     Audio_WorkerLock();
     m_LoadedSamplesCount = 0;
@@ -347,40 +361,28 @@ bool Audio_Sample_UnloadAll(void)
         M_UnloadSample(&m_LoadedSamples[i]);
     }
     Audio_WorkerUnlock();
-    return true;
+    return OK;
 }
 
-bool Audio_Sample_Load(
+RESULT Audio_Sample_Load(
     const int32_t sample_id, const char *const data, const size_t size)
 {
-    if (data == nullptr || size == 0) {
-        LOG_ERROR("Missing sample data %d", sample_id);
-        return false;
-    }
-
-    if (!g_AudioDeviceID) {
-        LOG_ERROR("Unitialized audio device");
-        return false;
-    }
-
-    if (sample_id < 0 || sample_id >= AUDIO_MAX_SAMPLES) {
-        LOG_ERROR("Maximum allowed samples: %d", AUDIO_MAX_SAMPLES);
-        return false;
-    }
+    FAIL_IF(
+        data == nullptr || size == 0, "sample %d carries no data", sample_id);
+    MUST(Audio_CheckDevice());
+    MUST(M_CheckSampleID(sample_id));
 
     AUDIO_SAMPLE *const sample = &m_LoadedSamples[sample_id];
-    if (sample->original_data != nullptr) {
-        LOG_ERROR(
-            "Sample %d is already loaded (trying to overwrite with %d bytes)",
-            sample_id, size);
-        return false;
-    }
+    FAIL_IF(
+        sample->original_data != nullptr,
+        "sample %d is already loaded, and %zu bytes would overwrite it",
+        sample_id, size);
 
     sample->original_data = Memory_Alloc(size);
     sample->original_size = size;
     memcpy(sample->original_data, data, size);
     m_LoadedSamplesCount++;
-    return true;
+    return OK;
 }
 
 int32_t Audio_Sample_Play(
@@ -447,142 +449,108 @@ bool Audio_Sample_IsPlaying(int32_t sound_id)
     return m_Samples[sound_id].is_playing;
 }
 
-bool Audio_Sample_Pause(int32_t sound_id)
+RESULT Audio_Sample_Pause(int32_t sound_id)
 {
-    if (!g_AudioDeviceID) {
-        return false;
-    }
-
+    MUST(Audio_CheckDevice());
     if (m_Samples[sound_id].is_playing) {
         Audio_LockDevice();
         m_Samples[sound_id].is_playing = false;
         Audio_UnlockDevice();
     }
-
-    return true;
+    return OK;
 }
 
-bool Audio_Sample_PauseAll(void)
+RESULT Audio_Sample_PauseAll(void)
 {
-    if (!g_AudioDeviceID) {
-        return false;
-    }
-
+    MUST(Audio_CheckDevice());
     for (int32_t sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_SAMPLES;
          sound_id++) {
         if (m_Samples[sound_id].is_used) {
-            Audio_Sample_Pause(sound_id);
+            IGNORE(Audio_Sample_Pause(sound_id));
         }
     }
-
-    return true;
+    return OK;
 }
 
-bool Audio_Sample_Unpause(int32_t sound_id)
+RESULT Audio_Sample_Unpause(int32_t sound_id)
 {
-    if (!g_AudioDeviceID) {
-        return false;
-    }
-
+    MUST(Audio_CheckDevice());
     if (!m_Samples[sound_id].is_playing) {
         Audio_LockDevice();
         m_Samples[sound_id].is_playing = true;
         Audio_UnlockDevice();
     }
-
-    return true;
+    return OK;
 }
 
-bool Audio_Sample_UnpauseAll(void)
+RESULT Audio_Sample_UnpauseAll(void)
 {
-    if (!g_AudioDeviceID) {
-        return false;
-    }
-
+    MUST(Audio_CheckDevice());
     for (int32_t sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_SAMPLES;
          sound_id++) {
         if (m_Samples[sound_id].is_used) {
-            Audio_Sample_Unpause(sound_id);
+            IGNORE(Audio_Sample_Unpause(sound_id));
         }
     }
-
-    return true;
+    return OK;
 }
 
-bool Audio_Sample_Close(int32_t sound_id)
+RESULT Audio_Sample_Close(int32_t sound_id)
 {
-    if (!g_AudioDeviceID || sound_id < 0
-        || sound_id >= AUDIO_MAX_ACTIVE_SAMPLES) {
-        return false;
-    }
-
+    MUST(M_CheckSoundID(sound_id));
     Audio_LockDevice();
     m_Samples[sound_id].is_used = false;
     m_Samples[sound_id].is_playing = false;
     Audio_UnlockDevice();
-
-    return true;
+    return OK;
 }
 
-bool Audio_Sample_CloseAll(void)
+RESULT Audio_Sample_CloseAll(void)
 {
-    if (!g_AudioDeviceID) {
-        return false;
-    }
-
+    MUST(Audio_CheckDevice());
     for (int32_t sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_SAMPLES;
          sound_id++) {
         if (m_Samples[sound_id].is_used) {
-            Audio_Sample_Close(sound_id);
+            IGNORE(Audio_Sample_Close(sound_id));
         }
     }
-
-    return true;
+    return OK;
 }
 
-bool Audio_Sample_SetPan(int32_t sound_id, int32_t pan)
+RESULT Audio_Sample_SetPan(int32_t sound_id, int32_t pan)
 {
-    if (!g_AudioDeviceID || sound_id < 0
-        || sound_id >= AUDIO_MAX_ACTIVE_SAMPLES) {
-        return false;
-    }
+    MUST(M_CheckSoundID(sound_id));
 
     Audio_LockDevice();
     m_Samples[sound_id].pan = pan;
     M_RecalculateChannelVolumes(sound_id);
     Audio_UnlockDevice();
 
-    return true;
+    return OK;
 }
 
-bool Audio_Sample_SetVolume(int32_t sound_id, int32_t volume)
+RESULT Audio_Sample_SetVolume(int32_t sound_id, int32_t volume)
 {
-    if (!g_AudioDeviceID || sound_id < 0
-        || sound_id >= AUDIO_MAX_ACTIVE_SAMPLES) {
-        return false;
-    }
+    MUST(M_CheckSoundID(sound_id));
 
     Audio_LockDevice();
     m_Samples[sound_id].volume = volume;
     M_RecalculateChannelVolumes(sound_id);
     Audio_UnlockDevice();
 
-    return true;
+    return OK;
 }
 
-bool Audio_Sample_SetPitch(int32_t sound_id, float pitch)
+RESULT Audio_Sample_SetPitch(int32_t sound_id, float pitch)
 {
-    if (!g_AudioDeviceID || sound_id < 0
-        || sound_id >= AUDIO_MAX_ACTIVE_SAMPLES) {
-        return false;
-    }
+    MUST(M_CheckSoundID(sound_id));
 
     Audio_LockDevice();
     m_Samples[sound_id].pitch = pitch;
     M_RecalculateChannelVolumes(sound_id);
     Audio_UnlockDevice();
 
-    return true;
+    return OK;
 }
 
 void Audio_Sample_Mix(float *dst_buffer, size_t len)
@@ -633,7 +601,7 @@ void Audio_Sample_Mix(float *dst_buffer, size_t len)
         sound->current_sample = src_sample_idx;
         if (sample->is_decoded && !sound->is_looped
             && (int32_t)src_sample_idx >= ready) {
-            Audio_Sample_Close(sound_id);
+            IGNORE(Audio_Sample_Close(sound_id));
         }
     }
 }

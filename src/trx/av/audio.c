@@ -80,21 +80,20 @@ static void M_MixerCallback(void *userdata, Uint8 *stream_data, int32_t len)
     memcpy(stream_data, m_MixBuffer, len);
 }
 
-bool Audio_Init(void)
+RESULT Audio_Init(void)
 {
     m_RefCount++;
     if (g_AudioDeviceID) {
         // already initialized
-        return true;
+        return OK;
     }
 
     m_CallbackSeen = false;
     m_ShouldSkipSDLQuitAudio = false;
     int32_t result = SDL_InitSubSystem(SDL_INIT_AUDIO);
-    if (result < 0) {
-        LOG_ERROR("Error while calling SDL_Init: 0x%lx", result);
-        return false;
-    }
+    FAIL_IF(
+        result < 0, "the audio subsystem could not be brought up: %s",
+        SDL_GetError());
 
     SDL_AudioSpec desired;
     SDL_memset(&desired, 0, sizeof(desired));
@@ -108,10 +107,9 @@ bool Audio_Init(void)
     SDL_AudioSpec delivered;
     g_AudioDeviceID = SDL_OpenAudioDevice(nullptr, 0, &desired, &delivered, 0);
 
-    if (!g_AudioDeviceID) {
-        LOG_ERROR("Failed to open audio device: %s", SDL_GetError());
-        return false;
-    }
+    FAIL_IF(
+        g_AudioDeviceID == 0, "the audio device could not be opened: %s",
+        SDL_GetError());
 
     m_Silence = desired.silence;
     m_MixBufferCapacity = desired.samples * desired.channels
@@ -127,14 +125,20 @@ bool Audio_Init(void)
     Audio_Reverb_Init(AUDIO_WORKING_RATE, AUDIO_WORKING_CHANNELS);
     M_StartWorker();
 
-    return true;
+    return OK;
 }
 
-bool Audio_Shutdown(void)
+RESULT Audio_CheckDevice(void)
+{
+    FAIL_IF(g_AudioDeviceID == 0, "the audio device is not open");
+    return OK;
+}
+
+RESULT Audio_Shutdown(void)
 {
     m_RefCount--;
     if (m_RefCount > 0) {
-        return false;
+        return OK;
     }
 
     M_StopWorker();
@@ -162,7 +166,7 @@ bool Audio_Shutdown(void)
     if (!m_ShouldSkipSDLQuitAudio) {
         SDL_QuitSubSystem(SDL_INIT_AUDIO);
     }
-    return true;
+    return OK;
 }
 
 bool Audio_ShouldSkipSDLQuitAudio(void)

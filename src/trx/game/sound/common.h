@@ -2,6 +2,7 @@
 
 #include <trx/core/handle.h>
 #include <trx/core/math.h>
+#include <trx/core/result.h>
 #include <trx/game/sound/enum.h>
 #include <trx/game/sound/ids.h>
 #include <trx/game/sound/types.h>
@@ -11,7 +12,9 @@
 
 #define SOUND_DEFAULT_PITCH 0x10000
 
-bool Sound_Init(void);
+// Starts the sound system and opens the audio device, reporting a device that
+// will not open.
+RESULT Sound_Init(void);
 bool Sound_IsInitialised(void);
 
 void Sound_SetMasterVolume(float volume);
@@ -20,7 +23,7 @@ void Sound_SetReverbType(uint8_t reverb_type);
 
 void Sound_ResetSamples(void);
 
-bool Sound_LoadSampleData(
+RESULT Sound_LoadSampleData(
     int32_t sample_data_id, const char *sample_data, size_t size);
 
 void Sound_InitialiseSources(int32_t num_sources);

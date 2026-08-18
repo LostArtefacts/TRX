@@ -234,7 +234,7 @@ static void M_ClearAllActiveSounds(void)
 
 static void M_CloseActiveSound(M_ACTIVE_SOUND *const sound)
 {
-    Audio_Sample_Close(sound->handle);
+    IGNORE(Audio_Sample_Close(sound->handle));
     M_ClearActiveSound(sound);
 }
 
@@ -266,10 +266,11 @@ static void M_ClearSampleMaps(void)
 
 static void M_SyncActiveSoundHandle(M_ACTIVE_SOUND *const sound)
 {
-    Audio_Sample_SetPan(sound->handle, M_ConvertPanToDecibel(sound->pan));
-    Audio_Sample_SetPitch(sound->handle, M_ConvertPitch(sound->pitch));
-    Audio_Sample_SetVolume(
-        sound->handle, M_ConvertVolumeToDecibel(sound->volume));
+    IGNORE(
+        Audio_Sample_SetPan(sound->handle, M_ConvertPanToDecibel(sound->pan)));
+    IGNORE(Audio_Sample_SetPitch(sound->handle, M_ConvertPitch(sound->pitch)));
+    IGNORE(Audio_Sample_SetVolume(
+        sound->handle, M_ConvertVolumeToDecibel(sound->volume)));
 }
 
 static void M_UpdateActiveSoundParams(M_ACTIVE_SOUND *const sound)
@@ -303,7 +304,7 @@ static M_ACTIVE_SOUND *M_GetActiveSlot(const int32_t slot)
 static void M_Shutdown(void)
 {
     m_Initialised = false;
-    Audio_Shutdown();
+    IGNORE(Audio_Shutdown());
     M_ClearSampleMaps();
 }
 
@@ -312,11 +313,11 @@ static void M_ApplyConfig(void)
     if (Shell_GetArgs()->headless) {
         return;
     }
-    Sound_Init();
+    SHOULD(Sound_Init());
     Sound_SetMasterVolume(g_Config.audio.sound_volume);
 }
 
-bool Sound_Init(void)
+RESULT Sound_Init(void)
 {
     m_MasterVolume = g_Config.audio.sound_volume;
     m_DecibelLUT[0] = -10000;
@@ -336,17 +337,14 @@ bool Sound_Init(void)
         }
     }
 
-    if (!Audio_Init()) {
-        LOG_ERROR("Failed to initialize libtrx sound system");
-        return false;
-    }
+    MUST(Audio_Init());
 
     m_Initialised = true;
     if (m_SlotHandles.gens == nullptr) {
         Handle_RegistryInit(&m_SlotHandles, m_SlotGens, M_MAX_ACTIVE_SOUNDS);
     }
     M_ClearAllActiveSounds();
-    return true;
+    return OK;
 }
 
 bool Sound_IsInitialised(void)
@@ -374,19 +372,17 @@ void Sound_ResetSamples(void)
     if (!Sound_IsInitialised()) {
         return;
     }
-    Audio_Sample_CloseAll();
-    Audio_Sample_UnloadAll();
+    IGNORE(Audio_Sample_CloseAll());
+    IGNORE(Audio_Sample_UnloadAll());
     M_ClearAllActiveSounds();
     M_ClearSampleMaps();
 }
 
-bool Sound_LoadSampleData(
+RESULT Sound_LoadSampleData(
     const int32_t sample_data_id, const char *const sample_data,
     const size_t size)
 {
-    if (!Sound_IsInitialised()) {
-        return false;
-    }
+    FAIL_IF(!Sound_IsInitialised(), "the sound system is not up");
     return Audio_Sample_Load(sample_data_id, sample_data, size);
 }
 
@@ -702,12 +698,12 @@ void Sound_UpdateEffects(void)
 
 void Sound_PauseAll(void)
 {
-    Audio_Sample_PauseAll();
+    IGNORE(Audio_Sample_PauseAll());
 }
 
 void Sound_UnpauseAll(void)
 {
-    Audio_Sample_UnpauseAll();
+    IGNORE(Audio_Sample_UnpauseAll());
 }
 
 void Sound_StopAll(void)
@@ -715,7 +711,7 @@ void Sound_StopAll(void)
     if (!Sound_IsInitialised()) {
         return;
     }
-    Audio_Sample_CloseAll();
+    IGNORE(Audio_Sample_CloseAll());
     M_ClearAllActiveSounds();
 }
 
@@ -762,7 +758,7 @@ void Sound_PauseActiveSlot(const int32_t slot)
 {
     const M_ACTIVE_SOUND *const sound = M_GetActiveSlot(slot);
     if (sound != nullptr) {
-        Audio_Sample_Pause(sound->handle);
+        IGNORE(Audio_Sample_Pause(sound->handle));
     }
 }
 
@@ -770,7 +766,7 @@ void Sound_UnpauseActiveSlot(const int32_t slot)
 {
     const M_ACTIVE_SOUND *const sound = M_GetActiveSlot(slot);
     if (sound != nullptr) {
-        Audio_Sample_Unpause(sound->handle);
+        IGNORE(Audio_Sample_Unpause(sound->handle));
     }
 }
 

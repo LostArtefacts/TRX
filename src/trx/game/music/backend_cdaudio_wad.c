@@ -197,9 +197,11 @@ static int32_t M_Play(
         return AUDIO_NO_SOUND;
     }
 
-    const int32_t stream_id = Audio_Stream_CreateFromMemory(wav_data, wav_size);
-    if (stream_id < 0) {
+    int32_t stream_id = AUDIO_NO_SOUND;
+    if (!SHOULD(
+            Audio_Stream_CreateFromMemory(wav_data, wav_size, &stream_id))) {
         Memory_Free(wav_data);
+        return AUDIO_NO_SOUND;
     }
     return stream_id;
 }
