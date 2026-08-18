@@ -94,9 +94,3 @@ void UI_ProgressButton(UI_PROGRESS_BUTTON_STATE *const s)
     UI_EndStack();
     UI_EndPad();
 }
-
-float UI_ProgressButton_GetHeight(void)
-{
-    return 2.0f * M_PAD_Y + M_TEXT_SCALE * UI_TEXT_HEIGHT + M_SPACING
-        + UI_SLEEK_BAR_HEIGHT;
-}
