@@ -1,97 +1,97 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.10.1...develop) - ××××-××-××
 
 **Lara's movement**
-- Added an option to allow Lara to sidestep in swamps (Gameplay → Controls → Swamp sidesteps) (#6250)
-- Fixed Lara entering the step down animation when walking backwards in a swamp room (OG bug) (#6251)
-- Fixed certain SFX, such as Lara's footsteps, playing in swamp rooms (#6248, regression from 1.0)
-- Fixed Lara being able to turn too quickly in swamp rooms (regression from 1.0)
-- Fixed Lara being able to vault or crawl through breakable walls that stand on the edge of a tile (Gameplay → Fixes → Fix breakable wall clipping) (OG bug)
-- Fixed Lara's rope-grab reach being shorter from certain directions (OG bug)
+- Added an option to allow Lara to sidestep in swamps (Gameplay → Controls → Swamp sidesteps) (#6250 / TRX1117)
+- Fixed Lara entering the step down animation when walking backwards in a swamp room (OG bug) (#6251 / TRX1118)
+- Fixed certain SFX, such as Lara's footsteps, playing in swamp rooms (#6248 / TRX1115, regression from 1.0)
+- Fixed Lara being able to turn too quickly in swamp rooms (regression from 1.0) (TRX1129)
+- Fixed Lara being able to vault or crawl through breakable walls that stand on the edge of a tile (Gameplay → Fixes → Fix breakable wall clipping) (OG bug) (TRX1024)
+- Fixed Lara's rope-grab reach being shorter from certain directions (OG bug) (TRX1143)
 
 **UI**
-- Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187)
-- Added a flat yellow color to the PS1 bar palettes (Graphic Options → UI → Bars) (#5227)
-- Changed Lara's outfit setting to offer only the outfits the current level can dress her in
-- Changed moving Lara in photo mode to follow the direction the camera looks, rather than the way she faces
-- Changed the Fix one-shot music triggers option to sit with the other music settings (Sound → Misc)
-- Changed the PS1 poison healthbar to flat yellow, as the PS1 releases had it (#5227)
-- Changed the TR3 breeze mode to read TR3/4, as it covers both games (Graphic Options → Visuals → Breeze)
-- Changed the preset confirmation to offer Apply and Go back as choices, rather than leaving the keys unsaid (#6258)
-- Changed vertex snapping to offer Disabled, 320x240, and Upscale Res modes (#6278)
-- Fixed a setting description showing a question mark in place of a key that is bound to a combination, such as Alt+Enter
-- Fixed ability to open the inventory ring while a flyby sequence has Lara's control
-- Fixed the game flashing over the black bars beside the picture when a frame is advanced in photo mode (regression from 1.10)
-- Fixed the icons beside the volume settings, which now show a note for the music and a speaker for the sound effects
-- Fixed the photo mode camera drifting upwards and overshooting when it is moved while pitched up or down
-- Fixed the photo mode camera flickering and refusing to turn over when it is pitched past straight up or down, and turning in coarse steps while aimed near vertical
+- Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187 / TRX1036)
+- Added a flat yellow color to the PS1 bar palettes (Graphic Options → UI → Bars) (#5227 / TRX1135)
+- Changed Lara's outfit setting to offer only the outfits the current level can dress her in (TRX1086)
+- Changed moving Lara in photo mode to follow the direction the camera looks, rather than the way she faces (TRX1153)
+- Changed the Fix one-shot music triggers option to sit with the other music settings (Sound → Misc) (TRX1045)
+- Changed the PS1 poison healthbar to flat yellow, as the PS1 releases had it (#5227 / TRX1135)
+- Changed the TR3 breeze mode to read TR3/4, as it covers both games (Graphic Options → Visuals → Breeze) (TRX1133)
+- Changed the preset confirmation to offer Apply and Go back as choices, rather than leaving the keys unsaid (#6258 / TRX1126)
+- Changed vertex snapping to offer Disabled, 320x240, and Upscale Res modes (#6278 / TRX1137)
+- Fixed a setting description showing a question mark in place of a key that is bound to a combination, such as Alt+Enter (TRX1136)
+- Fixed ability to open the inventory ring while a flyby sequence has Lara's control (TRX1057)
+- Fixed the game flashing over the black bars beside the picture when a frame is advanced in photo mode (regression from 1.10) (TRX1068)
+- Fixed the icons beside the volume settings, which now show a note for the music and a speaker for the sound effects (TRX1040)
+- Fixed the photo mode camera drifting upwards and overshooting when it is moved while pitched up or down (TRX1142)
+- Fixed the photo mode camera flickering and refusing to turn over when it is pitched past straight up or down, and turning in coarse steps while aimed near vertical (TRX1152)
 
 **Developer console**
-- Added the `/outfit` console command, which shows or changes what Lara is wearing
-- Added the `/golden` console command, which casts Lara in gold
-- Changed the `/flip` console command to take a flip group, so `/flip 3` moves that group alone while `/flip` on its own moves them all
+- Added the `/outfit` console command, which shows or changes what Lara is wearing (TRX1070)
+- Added the `/golden` console command, which casts Lara in gold (TRX1070)
+- Changed the `/flip` console command to take a flip group, so `/flip 3` moves that group alone while `/flip` on its own moves them all (TRX173)
 
 **Weapons and ammunition**
-- Added an option to keep Lara firing the M16/MP5 from her hip while the action key is held, rather than shouldering the gun the moment she stops moving (Gameplay → Controls → M16/MP5 aiming variants) (#3861)
+- Added an option to keep Lara firing the M16/MP5 from her hip while the action key is held, rather than shouldering the gun the moment she stops moving (Gameplay → Controls → M16/MP5 aiming variants) (#3861 / TRX1048)
 
 **Level and game data**
-- Added Natla as an outfit for Lara, selectable in every game (Graphic Options → Visuals → Lara's outfit)
-- Added injection support for putting a room in a flip group, which only TR4 levels carry themselves (#5336)
-- Added a `requires_alert` property to the sentry gun, which lets a plain trigger set it firing where it would otherwise wait for a security laser (#1141)
-- Changed a missing or unknown `lara_outfit` in a level to fall back to the default outfit, rather than stopping the game from starting
-- Removed the golden outfits, which the engine now produces from any outfit, freeing their model slots for outfits of your own
+- Added Natla as an outfit for Lara, selectable in every game (Graphic Options → Visuals → Lara's outfit) (TRX1050)
+- Added injection support for putting a room in a flip group, which only TR4 levels carry themselves (#5336 / TRX173)
+- Added a `requires_alert` property to the sentry gun, which lets a plain trigger set it firing where it would otherwise wait for a security laser (TRX1141)
+- Changed a missing or unknown `lara_outfit` in a level to fall back to the default outfit, rather than stopping the game from starting (TRX1087)
+- Removed the golden outfits, which the engine now produces from any outfit, freeing their model slots for outfits of your own (TRX1070)
 
 **Saves and settings**
-- Changed the save crystal behavior to give Lara a crystal when starting a game, if the mode is set to Saving (pickups), in line with the TR3 PS1 version (Gameplay → General → Crystal mode)
-- Fixed save crystals activating even while Crystal mode is set to Disabled (Gameplay → General → Crystal mode) (regression from 1.10)
+- Changed the save crystal behavior to give Lara a crystal when starting a game, if the mode is set to Saving (pickups), in line with the TR3 PS1 version (Gameplay → General → Crystal mode) (TRX1101)
+- Fixed save crystals activating even while Crystal mode is set to Disabled (Gameplay → General → Crystal mode) (regression from 1.10) (TRX1149)
 
 **Music and sound**
-- Fixed crystal sound effects not playing if Lara collects one underwater (OG bug)
+- Fixed crystal sound effects not playing if Lara collects one underwater (OG bug) (TRX1111)
 
 **Rendering**
-- Fixed scenery in an adjoining room being cut off along the edges of the portal it is seen through
-- Fixed objects showing through rooms that share their space with the room the object stands in
-- Fixed objects that reach into a neighbouring room being cut off or vanishing when seen through that room
+- Fixed scenery in an adjoining room being cut off along the edges of the portal it is seen through (TRX1159)
+- Fixed objects showing through rooms that share their space with the room the object stands in (TRX1168)
+- Fixed objects that reach into a neighbouring room being cut off or vanishing when seen through that room (TRX1168)
 
 **TR1**
-- Changed Lara to retain her equipment when turning to gold on the Midas Hand, with the equipment also turning to gold
-- Fixed the boulder in room 78 getting drawn in the overlapping room 74 in Tomb of Tihocan (regression from 1.10.1)
-- Fixed Lara's arm remaining in the flare pose if holding one on the Midas Hand
+- Changed Lara to retain her equipment when turning to gold on the Midas Hand, with the equipment also turning to gold (TRX1073)
+- Fixed the boulder in room 78 getting drawn in the overlapping room 74 in Tomb of Tihocan (regression from 1.10.1) (TRX1168)
+- Fixed Lara's arm remaining in the flare pose if holding one on the Midas Hand (TRX1073)
 
 **TR3**
-- Added crystals to each of the levels in The Lost Artefact, and made the crystal mode option visible (Gameplay → General → Crystal mode)
-- Fixed z-fighting in rooms 21, 67 amd 122 in Jungle, and fixed incorrect lighting in room 87 (OG bugs)
-- Fixed missing alpha blending on the MP5 and M16 gun flare in the gym (regression from 1.7)
-- Fixed Lara being able to turn too quickly when wading (regression from 1.0)
-- Fixed the kayak at times not being drawn in certain rooms (regression from 1.10.1)
-- Fixed some of Lara's skin joints incorrectly being drawn when riding the kayak (regression from 1.10)
+- Added crystals to each of the levels in The Lost Artefact, and made the crystal mode option visible (Gameplay → General → Crystal mode) (TRX1111)
+- Fixed z-fighting in rooms 21, 67 amd 122 in Jungle, and fixed incorrect lighting in room 87 (OG bugs) (TRX1088)
+- Fixed missing alpha blending on the MP5 and M16 gun flare in the gym (regression from 1.7) (TRX1066)
+- Fixed Lara being able to turn too quickly when wading (regression from 1.0) (TRX1129)
+- Fixed the kayak at times not being drawn in certain rooms (regression from 1.10.1) (TRX1145)
+- Fixed some of Lara's skin joints incorrectly being drawn when riding the kayak (regression from 1.10) (TRX1146)
 
 **TR4**
-- Added the ability to skip in-game cutscenes
-- Added waterfalls, which run and play their loop, and the mist that rises where they land
-- Changed a flip to move the group of rooms the trigger names, rather than every flip room in the level
-- Fixed animations that move an item sideways playing with the item standing still, such as TR4's guide shimmy.
-- Fixed creatures walking through squares a pushable block stands on
-- Fixed rooms and their contents sometimes disappearing while an in-game cutscene plays
-- Fixed a crash while an in-game cutscene poses Lara
+- Added the ability to skip in-game cutscenes (TRX1051)
+- Added waterfalls, which run and play their loop, and the mist that rises where they land (TRX1067)
+- Changed a flip to move the group of rooms the trigger names, rather than every flip room in the level (TRX173)
+- Fixed animations that move an item sideways playing with the item standing still, such as TR4's guide shimmy (TRX1062)
+- Fixed creatures walking through squares a pushable block stands on (TRX1060)
+- Fixed rooms and their contents sometimes disappearing while an in-game cutscene plays (TRX1052)
+- Fixed a crash while an in-game cutscene poses Lara (TRX1059)
 
 **Miscellaneous**
-- Added an option to cast Lara in gold whatever she is wearing (Graphic Options → Visuals → Golden Lara)
-- Changed the message shown when there is nothing to play to name each game it passed over and say what is wrong with it, rather than leaving the reason in the log
-- Changed a game named with `--mod` to say why it cannot be played, rather than quietly starting a different one
-- Changed a broken settings, strings or game data file to say what is wrong with it and where
-- Changed Lara turning to gold on the Midas hand to gild the outfit she has on, rather than swap her for a golden model
-- Fixed the game closing when a language with a broken strings file is picked
-- Fixed the game closing when another game is switched to while Lara is riding a vehicle
-- Fixed a false warning that the settings could not be saved
+- Added an option to cast Lara in gold whatever she is wearing (Graphic Options → Visuals → Golden Lara) (TRX1070)
+- Changed the message shown when there is nothing to play to name each game it passed over and say what is wrong with it, rather than leaving the reason in the log (TRX1083)
+- Changed a game named with `--mod` to say why it cannot be played, rather than quietly starting a different one (TRX1083)
+- Changed a broken settings, strings or game data file to say what is wrong with it and where (TRX1112)
+- Changed Lara turning to gold on the Midas hand to gild the outfit she has on, rather than swap her for a golden model (TRX1070)
+- Fixed the game closing when a language with a broken strings file is picked (TRX1112)
+- Fixed the game closing when another game is switched to while Lara is riding a vehicle (TRX1148)
+- Fixed a false warning that the settings could not be saved (TRX1112)
 
 **Lua**
-- Added the full weapon definition to `trx.weapons`, so a script can read and change what a weapon does: its damage, reach and accuracy, its aim limits, its ammunition, the animations it is drawn by, and the flash, glow, smoke and shells it throws
-- Added `trx.math.Color` and `trx.math.color()`, so a color is a value with its channels and its hex text on it rather than a string
-- Added `trx.cutscenes.actor_count`, `trx.cutscenes.set_actor_visible()`, `trx.cutscenes.set_node_mesh()` and `trx.cutscenes.clear_node_mesh()`, for hiding an actor in the scene on screen or putting another object's mesh on one
-- Fixed creatures taking wrong routes where crossing to the next square needs a jump or a monkey swing
-- Changed `trx.cutscenes.play()` to take whether to fade out first, so a scene that opens a level begins on the black screen the level loaded behind
-- Changed a color setting to read as a `trx.math.Color` rather than as hex text, and to be written with either
-- Changed the `trx.weapons` functions that take a weapon id to be deprecated, the weapon itself now answering what it is available as, what it is carried as, and what it is fed
+- Added the full weapon definition to `trx.weapons`, so a script can read and change what a weapon does: its damage, reach and accuracy, its aim limits, its ammunition, the animations it is drawn by, and the flash, glow, smoke and shells it throws (TRX1091)
+- Added `trx.math.Color` and `trx.math.color()`, so a color is a value with its channels and its hex text on it rather than a string (TRX1091)
+- Added `trx.cutscenes.actor_count`, `trx.cutscenes.set_actor_visible()`, `trx.cutscenes.set_node_mesh()` and `trx.cutscenes.clear_node_mesh()`, for hiding an actor in the scene on screen or putting another object's mesh on one (TRX1058)
+- Fixed creatures taking wrong routes where crossing to the next square needs a jump or a monkey swing (TRX1061)
+- Changed `trx.cutscenes.play()` to take whether to fade out first, so a scene that opens a level begins on the black screen the level loaded behind (TRX1063)
+- Changed a color setting to read as a `trx.math.Color` rather than as hex text, and to be written with either (TRX1091)
+- Changed the `trx.weapons` functions that take a weapon id to be deprecated, the weapon itself now answering what it is available as, what it is carried as, and what it is fed (TRX1091)
 
 
 
