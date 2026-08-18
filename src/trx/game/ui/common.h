@@ -60,49 +60,54 @@ int32_t UI_GetCanvasHeight(void);
 // edge. What sizes itself to fit the screen fits to this.
 float UI_GetSafeCanvasWidth(void);
 
-// What is drawn over the edges of the screen, and so says how far into it a
-// dialog must not reach.
+// Screen elements that reserve space for dialogs.
 typedef enum {
     UI_SCREEN_INSET_OVERLAY,
     UI_SCREEN_INSET_INVENTORY_RING,
     UI_SCREEN_INSET_SOURCE_COUNT,
 } UI_SCREEN_INSET_SOURCE;
 
-// States what a source keeps clear at the top and bottom of the screen, in
-// text units, for the scene being built. A source states this as it draws, so
-// one that draws nothing gives its room back and the dialogs grow into it.
+// Reserves top and bottom space, in text units, for the scene being built.
 void UI_SetScreenInset(UI_SCREEN_INSET_SOURCE source, float top, float bottom);
 
-// The deepest any source reaches into the screen from the top or the bottom,
-// in text units, as of the scene last drawn.
+// Returns the largest top or bottom inset from the previous scene.
 float UI_GetScreenInsetTop(void);
 float UI_GetScreenInsetBottom(void);
 
-// Where the area a dialog may occupy begins and ends down the screen, in
-// canvas units: the screen margin, or the inset a source keeps where that
-// reaches further in.
+// Returns the vertical bounds available to dialogs, in canvas units.
 float UI_GetSafeCanvasTop(void);
 float UI_GetSafeCanvasBottom(void);
 
-// The height a dialog may occupy: what lies between the two.
+// Returns the height available to dialogs.
 float UI_GetSafeCanvasHeight(void);
 
-// The factor a dialog is drawn at so that it fits the safe canvas, to pass
-// to UI_Scaler_PushTextScale. Both sizes are the whole dialog, frame and
-// padding included, in text units before the player's text scale; -1 leaves
-// an axis unconstrained. A dialog always fits: the factor gives way as far as
-// the wording asks, so text a player set larger than the screen has room for
-// stops growing rather than running off the edge. Every answer also feeds the
-// smallest-fit record below.
+// Returns the text-scale factor needed to fit a dialog into the safe canvas.
+// Pass -1 for an unconstrained axis. Both sizes include frame and padding, in
+// text units before the player's text scale.
 float UI_GetFitScale(float content_width, float content_height);
 
-// The smallest factor UI_GetFitScale has answered with since it was last
-// forgotten. Multiplied by the player's text scale, it states the size the
-// text is drawn at, which is what the wording holds a dialog to.
+// Tracks the smallest fit factor returned since the last reset.
 void UI_ForgetSmallestFitScale(void);
 float UI_GetSmallestFitScale(void);
 float UI_ScaleX(float x);
 float UI_ScaleY(float y);
+
+#ifdef TESTING
+// Records the widest dialog text measured by a test scene.
+typedef struct {
+    // Identifies the dialog part that owns the text.
+    const char *part;
+    const char *text;
+    float width;
+} UI_MEASURE_NOTE;
+
+// Reports measured dialog text and keeps the widest entry.
+void UI_Measure_Note(const char *part, const char *text, float width);
+void UI_Measure_Forget(void);
+UI_MEASURE_NOTE UI_Measure_GetWidest(void);
+#else
+    #define UI_Measure_Note(part, text, width) ((void)0)
+#endif
 
 // Public API for scene management
 void UI_BeginScene(void);

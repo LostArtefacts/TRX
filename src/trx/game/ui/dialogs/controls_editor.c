@@ -233,10 +233,15 @@ static void M_MeasureColumns(UI_CONTROLS_EDITOR_STATE *const s)
 {
     s->label_size = 0.0f;
     s->input_size = M_MIN_INPUT_SIZE;
+    s->widest_role = nullptr;
     for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
         float w;
         UI_Label_Measure(Input_GetRoleName(role), &w, nullptr);
-        s->label_size = MAX(s->label_size, w / UI_Scaler_GetTextScale());
+        w /= UI_Scaler_GetTextScale();
+        if (w > s->label_size) {
+            s->label_size = w;
+            s->widest_role = Input_GetRoleName(role);
+        }
 
         for (INPUT_LAYOUT layout = 0; layout < INPUT_LAYOUT_NUMBER_OF;
              layout++) {
@@ -620,6 +625,13 @@ static float M_GetContentWidth(UI_CONTROLS_EDITOR_STATE *const s)
     if (s->collapsed_groups) {
         groups = M_MeasureWidestTab(s->controls_tab_switch);
     }
+
+    UI_Measure_Note("dialog row", s->widest_role, rows);
+    UI_Measure_Note(
+        "dialog footer", GS("general/actions/reset_defaults"), footer / scale);
+    UI_Measure_Note(
+        "dialog nav bar", GameString_Get(s->active_group->header_gs),
+        groups / scale);
 
     return MAX(rest, groups / scale) * M_MEASURE_SLACK
         + UI_Window_GetChromeWidth();
