@@ -12,6 +12,7 @@
 #include <trx/config/priv.h>
 #include <trx/core/file.h>
 #include <trx/core/memory.h>
+#include <trx/core/vector.h>
 #include <trx/core/strings.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/shell.h>
@@ -332,7 +333,10 @@ void File_Close(TRX_FILE *const file)
 
 VECTOR *GameStringManager_GetAvailableLanguages(void)
 {
-    return nullptr;
+    VECTOR *const result = Vector_Create(sizeof(char *));
+    char *const lang = Memory_DupStr("en");
+    Vector_Add(result, &lang);
+    return result;
 }
 
 const char *GameStringManager_GetLanguageName(const char *const code)
