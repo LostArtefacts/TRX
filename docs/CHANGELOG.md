@@ -36,6 +36,7 @@
 - Added the `/outfit` console command, which shows or changes what Lara is wearing (TRX1070)
 - Added the `/golden` console command, which casts Lara in gold (TRX1070)
 - Changed the `/flip` console command to take a flip group, so `/flip 3` moves that group alone while `/flip` on its own moves them all (TRX173)
+- Changed the `/set` console command to complete the values a setting accepts, such as its enum values or on and off (TRX1174)
 
 **Weapons and ammunition**
 - Added an option to keep Lara firing the M16/MP5 from her hip while the action key is held, rather than shouldering the gun the moment she stops moving (Gameplay → Controls → M16/MP5 aiming variants) (#3861 / TRX1048)
