@@ -2,12 +2,12 @@
 
 #include <trx/config.h>
 #include <trx/config/section.h>
+#include <trx/core/strings.h>
 #include <trx/core/utils.h>
 #include <trx/game/const.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
 #include <trx/game/input.h>
-#include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui/elements/anchor.h>
 #include <trx/game/ui/elements/frame.h>
@@ -29,6 +29,14 @@
 
 #define M_MIN_INPUT_SIZE 80.0f
 #define M_INPUT_PADDING 6.0f
+#define M_HEADER_ROWS 2
+#define M_HEADER_SPACING 9.0f
+#define M_FOOTER_ROWS 1
+#define M_FOOTER_SPACING 5.0f
+#define M_BUTTON_SPACING 40.0f
+#define M_MEASURE_SLACK 1.05f
+#define M_MIN_VISIBLE_ROWS 3
+#define M_MAX_VISIBLE_ROWS 15
 
 typedef enum {
     M_PHASE_NAVIGATE_LAYOUT,
@@ -146,33 +154,41 @@ static bool M_IsTouch(const UI_CONTROLS_EDITOR_STATE *const s)
     return s->backend == INPUT_BACKEND_TOUCH;
 }
 
-static int32_t M_GetVisibleRows(void)
+static int32_t M_GetInputRoleCount(const UI_CONTROLS_EDITOR_GROUP *const group)
 {
-    const int32_t res_h = UI_Scaler_CalcInverse(
-        Viewport_GetHeight(VIEWPORT_UI), UI_SCALER_TARGET_TEXT);
-    if (res_h <= 240) {
-        return 5;
-    } else if (res_h <= 252) {
-        return 6;
-    } else if (res_h <= 266) {
-        return 7;
-    } else if (res_h <= 282) {
-        return 8;
-    } else if (res_h <= 300) {
-        return 9;
-    } else if (res_h <= 320) {
-        return 10;
-    } else if (res_h <= 342) {
-        return 11;
-    } else if (res_h <= 370) {
-        return 12;
-    } else if (res_h <= 420) {
-        return 13;
-    } else if (res_h <= 480) {
-        return 15;
-    } else {
-        return 16;
+    int32_t count = 0;
+    for (int32_t i = 0; group->rows[i].role != (INPUT_ROLE)-1; i++) {
+        count++;
     }
+    return count;
+}
+
+static float M_GetRowHeight(void)
+{
+    float height = 0.0f;
+    UI_Label_Measure("0", nullptr, &height);
+    return height / UI_Scaler_GetTextScale();
+}
+
+static int32_t M_GetVisibleRows(
+    const UI_CONTROLS_EDITOR_STATE *const s, const float fit_scale)
+{
+    const float row_height = M_GetRowHeight();
+    const UI_WINDOW_SETTINGS window = {
+        .title = GS("general/settings/controls/customize"),
+        .scrollable = &s->scroll,
+        .title_spacing = -1.0f,
+        .reserve_scroll_space = true,
+    };
+    const float around = UI_Window_GetChromeHeight(&window)
+        + M_HEADER_ROWS * row_height + M_HEADER_SPACING
+        + M_FOOTER_ROWS * row_height + M_FOOTER_SPACING;
+
+    const float available = UI_GetSafeCanvasHeight()
+        / (UI_Scaler_GetTextScale() * MAX(0.01f, fit_scale) * M_MEASURE_SLACK);
+    int32_t rows = (available - around) / row_height;
+    CLAMP(rows, M_MIN_VISIBLE_ROWS, M_MAX_VISIBLE_ROWS);
+    return rows;
 }
 
 static bool M_IsRoleUsable(const INPUT_ROLE role)
@@ -209,15 +225,6 @@ static bool M_IsRoleUsable(const INPUT_ROLE role)
         break;
     }
     return true;
-}
-
-static int32_t M_GetInputRoleCount(const UI_CONTROLS_EDITOR_GROUP *const group)
-{
-    int32_t count = 0;
-    for (int32_t i = 0; group->rows[i].role != (INPUT_ROLE)-1; i++) {
-        count++;
-    }
-    return count;
 }
 
 // The key column takes its width from the longest binding any layout holds, so
@@ -540,6 +547,7 @@ static void M_Group(
             UI_EndResize();
         }
         UI_BeginResize(s->label_size, -1.0f);
+        UI_SetNodeName(UI_NODE_NAME_ROW_TITLE);
         UI_BeginAnchor(0.0f, 0.5f);
         M_InputLabel(s, row);
         UI_EndAnchor();
@@ -554,7 +562,7 @@ static void M_Footer(UI_CONTROLS_EDITOR_STATE *const s)
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_HORIZONTAL,
         .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
-        .spacing = { .h = 40.0f },
+        .spacing = { .h = M_BUTTON_SPACING },
     });
     UI_SetNodeName(UI_NODE_NAME_DIALOG_FOOTER);
     UI_BeginHide(!M_CanResetLayout(s));
@@ -565,6 +573,41 @@ static void M_Footer(UI_CONTROLS_EDITOR_STATE *const s)
     UI_ProgressButton(s->unbind_key_button);
     UI_EndHide();
     UI_EndStack();
+}
+
+static float M_GetContentWidth(UI_CONTROLS_EDITOR_STATE *const s)
+{
+    const float scale = UI_Scaler_GetTextScale();
+    const float rows = INPUT_BINDING_SLOTS * s->input_size + s->label_size;
+
+    UI_BeginMeasure();
+    M_Footer(s);
+    float footer = 0.0f;
+    UI_EndMeasure(&footer, nullptr);
+
+    // The layout switch shows one layout at a time, so the widest is found
+    // by putting each in front.
+    float header = 0.0f;
+    UI_TAB_SWITCH_STATE *const layouts = s->layout_tab_switch;
+    const int32_t active_layout_tab = layouts->active_tab_idx;
+    for (int32_t i = 0; i < layouts->tab_count; i++) {
+        layouts->active_tab_idx = i;
+        UI_BeginMeasure();
+        UI_TabSwitchSingle(layouts, UI_TAB_SWITCH_DRAW_ARROWS);
+        float width = 0.0f;
+        UI_EndMeasure(&width, nullptr);
+        header = MAX(header, width);
+    }
+    layouts->active_tab_idx = active_layout_tab;
+
+    UI_BeginMeasure();
+    UI_TabSwitch(s->controls_tab_switch, UI_TAB_SWITCH_DRAW_ARROWS);
+    float groups = 0.0f;
+    UI_EndMeasure(&groups, nullptr);
+
+    return MAX(MAX(rows, footer / scale), MAX(header, groups) / scale)
+        * M_MEASURE_SLACK
+        + UI_Window_GetChromeWidth();
 }
 
 static void M_Header(void *const user_data)
@@ -625,17 +668,11 @@ void UI_ControlsEditor_Init(
         s->controls_tab_switch = UI_TabSwitch_Init(tab_count, controls_tabs);
     }
 
-    s->max_group_items = 0;
-    for (const UI_CONTROLS_EDITOR_GROUP *group = m_Groups;
-         group->rows != nullptr; group++) {
-        s->max_group_items =
-            MAX(s->max_group_items, M_GetInputRoleCount(group));
-    }
-
     s->active_group = &m_Groups[0];
     s->scroll.first_item = 0;
     s->scroll.sel_item = 0;
-    s->scroll.vis_items = MIN(s->max_group_items, M_GetVisibleRows());
+    s->scroll.vis_items =
+        M_GetVisibleRows(s, UI_GetFitScale(M_GetContentWidth(s), -1.0f));
     s->scroll.max_items = M_GetInputRoleCount(s->active_group);
     s->active_role = s->active_group->rows[s->scroll.sel_item].role;
 
@@ -657,6 +694,8 @@ void UI_ControlsEditor_Free(UI_CONTROLS_EDITOR_STATE *const s)
 
 UI_CONTROLS_CHOICE UI_ControlsEditor_Control(UI_CONTROLS_EDITOR_STATE *const s)
 {
+    s->scroll.vis_items =
+        M_GetVisibleRows(s, UI_GetFitScale(M_GetContentWidth(s), -1.0f));
     UI_Flash_Control(&s->flash);
     switch (s->phase) {
     case M_PHASE_NAVIGATE_LAYOUT:
@@ -678,7 +717,11 @@ UI_CONTROLS_CHOICE UI_ControlsEditor_Control(UI_CONTROLS_EDITOR_STATE *const s)
 
 void UI_ControlsEditor(UI_CONTROLS_EDITOR_STATE *const s)
 {
+    const float fit_scale = UI_GetFitScale(M_GetContentWidth(s), -1.0f);
+    s->scroll.vis_items = M_GetVisibleRows(s, fit_scale);
+    UI_Scaler_PushTextScale(fit_scale);
     UI_BeginModal(0.5f, 0.55f);
+    UI_BeginResize(M_GetContentWidth(s), -1.0f);
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_VERTICAL,
         .align = { .h = UI_STACK_H_ALIGN_SPAN },
@@ -686,10 +729,11 @@ void UI_ControlsEditor(UI_CONTROLS_EDITOR_STATE *const s)
 
     UI_BeginWindow((UI_WINDOW_SETTINGS) {
         .title = GS("general/settings/controls/customize"),
-        .scrollable = nullptr,
+        .scrollable = &s->scroll,
         .title_spacing = -1.0f,
         .header_func = M_Header,
         .user_data = s,
+        .reserve_scroll_space = true,
     });
 
     UI_BeginStack(UI_STACK_HORIZONTAL);
@@ -701,5 +745,7 @@ void UI_ControlsEditor(UI_CONTROLS_EDITOR_STATE *const s)
     UI_Spacer(0.0f, 5.0f);
     M_Footer(s);
     UI_EndStack();
+    UI_EndResize();
     UI_EndModal();
+    UI_Scaler_PopTextScale();
 }
