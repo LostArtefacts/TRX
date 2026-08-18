@@ -46,9 +46,12 @@
 
 **Rendering**
 - Fixed scenery in an adjoining room being cut off along the edges of the portal it is seen through
+- Fixed objects showing through rooms that share their space with the room the object stands in
+- Fixed objects that reach into a neighbouring room being cut off or vanishing when seen through that room
 
 **TR1**
 - Changed Lara to retain her equipment when turning to gold on the Midas Hand, with the equipment also turning to gold
+- Fixed the boulder in room 78 getting drawn in the overlapping room 74 in Tomb of Tihocan (regression from 1.10.1)
 - Fixed Lara's arm remaining in the flare pose if holding one on the Midas Hand
 
 **TR3**

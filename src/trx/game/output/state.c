@@ -40,6 +40,8 @@ static float m_DepthFactor = 0.0f;
 static float m_DepthUnits = 0.0f;
 
 static const ROOM *m_CurrentRoom = nullptr;
+static VIEWPORT_RECT m_ObjectScissor = {};
+static bool m_ObjectScissorEnabled = false;
 static int32_t m_LsAdder = 0;
 static int32_t m_LsDivider = 0;
 static XYZ_32 m_LsVectorView = {};
@@ -309,6 +311,19 @@ void Output_SetCurrentRoom(const ROOM *const room)
 const ROOM *Output_GetCurrentRoom(void)
 {
     return m_CurrentRoom;
+}
+
+void Output_SetObjectScissor(const VIEWPORT_RECT *const rect)
+{
+    m_ObjectScissorEnabled = rect != nullptr;
+    if (rect != nullptr) {
+        m_ObjectScissor = *rect;
+    }
+}
+
+const VIEWPORT_RECT *Output_GetObjectScissor(void)
+{
+    return m_ObjectScissorEnabled ? &m_ObjectScissor : nullptr;
 }
 
 int32_t Output_GetLightAdder(void)
