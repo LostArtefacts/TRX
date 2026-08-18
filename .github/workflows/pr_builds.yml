@@ -3,6 +3,12 @@ name: Create a test build
 permissions:
   contents: write
 
+# Keep the trigger on `pull_request`, never `pull_request_target`. On a fork PR
+# `pull_request` runs with a read-only token and withholds every repository
+# secret, so the `secrets: inherit` below resolves to nothing an attacker can
+# reach. Switching to `pull_request_target` would run this same untrusted code
+# in the base-repo context with those secrets exposed, turning a hostile PR into
+# a full secret leak.
 on:
   pull_request:
   push:
