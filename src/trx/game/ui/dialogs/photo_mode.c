@@ -100,17 +100,8 @@ static void M_Actions(const PHOTO_MODE current_mode)
     UI_Label(GS("general/misc/exit"));
 }
 
-void UI_PhotoMode(const PHOTO_MODE current_mode)
+static void M_Body(const PHOTO_MODE current_mode)
 {
-    const int32_t frame_thickness =
-        (int32_t)(UI_Scaler_Calc(4.0f, UI_SCALER_TARGET_TEXT) + 0.5f);
-    Output_DrawPhotoModeFrame(frame_thickness);
-
-    if (!g_Config.ui.enable_photo_mode_ui) {
-        return;
-    }
-
-    UI_BeginModal(0.0f, 0.0f);
     UI_BeginPad(8.0f, 8.0f);
     UI_BeginFrame(UI_FRAME_DIALOG_BACKGROUND);
     UI_BeginPad(8.0, 6.0);
@@ -142,5 +133,32 @@ void UI_PhotoMode(const PHOTO_MODE current_mode)
     UI_EndPad();
     UI_EndFrame();
     UI_EndPad();
+}
+
+void UI_PhotoMode(const PHOTO_MODE current_mode)
+{
+    const int32_t frame_thickness =
+        (int32_t)(UI_Scaler_Calc(4.0f, UI_SCALER_TARGET_TEXT) + 0.5f);
+    Output_DrawPhotoModeFrame(frame_thickness);
+
+    if (!g_Config.ui.enable_photo_mode_ui) {
+        return;
+    }
+
+    float width = 0.0f;
+    float height = 0.0f;
+    UI_BeginMeasure();
+    M_Body(current_mode);
+    UI_EndMeasure(&width, &height);
+
+    const float text_scale = UI_Scaler_GetTextScale();
+    const float fit_scale =
+        UI_GetFitScale(width / text_scale, height / text_scale);
+    const float anchor = fit_scale < 1.0f ? 0.5f : 0.0f;
+
+    UI_Scaler_PushTextScale(fit_scale);
+    UI_BeginScreenModal(anchor, anchor);
+    M_Body(current_mode);
     UI_EndModal();
+    UI_Scaler_PopTextScale();
 }
