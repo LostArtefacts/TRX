@@ -19,6 +19,7 @@
 - Changed the TR3 breeze mode to read TR3/4, as it covers both games (Graphic Options → Visuals → Breeze) (TRX1133)
 - Changed the preset confirmation to offer Apply and Go back as choices, rather than leaving the keys unsaid (#6258 / TRX1126)
 - Changed the settings dialogs to give up the space between a setting and its value before shrinking the text at large text sizes
+- Changed the settings dialogs to shrink as far as they must to fit the screen, rather than stopping short of it and running over the edge at large text sizes
 - Changed vertex snapping to offer Disabled, 320x240, and Upscale Res modes (#6278 / TRX1137)
 - Fixed a setting description showing a question mark in place of a key that is bound to a combination, such as Alt+Enter (TRX1136)
 - Fixed ability to open the inventory ring while a flyby sequence has Lara's control (TRX1057)

@@ -17,11 +17,6 @@
 
 #include <string.h>
 
-// How small a dialog may be drawn against the size the player asked for. A
-// dialog that still does not fit is wording to shorten rather than a dialog to
-// shrink away to nothing.
-#define M_MIN_FIT_SCALE 0.65f
-
 static struct {
     // What each source keeps clear at the screen edges: what the scene being
     // built has stated so far, and what the last one drawn ended up with.
@@ -315,22 +310,16 @@ float UI_GetSmallestFitScale(void)
     return m_SmallestFitScale;
 }
 
-bool UI_HasFitScaleFloored(void)
-{
-    return m_SmallestFitScale <= M_MIN_FIT_SCALE;
-}
-
 float UI_GetFitScale(const float content_width, const float content_height)
 {
     const float text_scale = UI_Scaler_GetTextScale();
     if (text_scale <= 0.0f) {
         return 1.0f;
     }
-    const float scale = MIN(
+    const float result = MIN(
         M_GetAxisFitScale(content_width, UI_GetSafeCanvasWidth() / text_scale),
         M_GetAxisFitScale(
             content_height, UI_GetSafeCanvasHeight() / text_scale));
-    const float result = MAX(scale, M_MIN_FIT_SCALE);
     m_SmallestFitScale = MIN(m_SmallestFitScale, result);
     return result;
 }

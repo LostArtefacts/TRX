@@ -90,17 +90,17 @@ float UI_GetSafeCanvasHeight(void);
 // The factor a dialog is drawn at so that it fits the safe canvas, to pass
 // to UI_Scaler_PushTextScale. Both sizes are the whole dialog, frame and
 // padding included, in text units before the player's text scale; -1 leaves
-// an axis unconstrained. The factor never goes below two thirds: wording that
-// does not fit there is a string to shorten. Every answer also feeds the
+// an axis unconstrained. A dialog always fits: the factor gives way as far as
+// the wording asks, so text a player set larger than the screen has room for
+// stops growing rather than running off the edge. Every answer also feeds the
 // smallest-fit record below.
 float UI_GetFitScale(float content_width, float content_height);
 
 // The smallest factor UI_GetFitScale has answered with since it was last
-// forgotten, and whether that answer was the floor: the screen then has no
-// room for the dialog at any wording.
+// forgotten. Multiplied by the player's text scale, it states the size the
+// text is drawn at, which is what the wording holds a dialog to.
 void UI_ForgetSmallestFitScale(void);
 float UI_GetSmallestFitScale(void);
-bool UI_HasFitScaleFloored(void);
 float UI_ScaleX(float x);
 float UI_ScaleY(float y);
 
