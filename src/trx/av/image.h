@@ -38,8 +38,6 @@ RESULT Image_CreateFromFileInto(
 
 void Image_Free(IMAGE *image);
 
-bool Image_GetFileInfo(const char *path, int32_t *width, int32_t *height);
-
 // Writes an image to disk, reporting a path it cannot write and a format with
 // no encoder.
 RESULT Image_SaveToFile(const IMAGE *image, const char *path);

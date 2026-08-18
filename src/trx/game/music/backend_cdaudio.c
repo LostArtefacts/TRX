@@ -176,10 +176,14 @@ static int32_t M_Play(
         return -1;
     }
 
-    const int32_t audio_stream_id = Audio_Stream_CreateFromFile(data->path);
-    Audio_Stream_SetStartTimestamp(audio_stream_id, track->from / 1000.0);
-    Audio_Stream_SetStopTimestamp(audio_stream_id, track->to / 1000.0);
-    Audio_Stream_SeekTimestamp(audio_stream_id, 0.0f);
+    int32_t audio_stream_id = AUDIO_NO_SOUND;
+    if (!SHOULD(Audio_Stream_CreateFromFile(data->path, &audio_stream_id))) {
+        return -1;
+    }
+    SHOULD(
+        Audio_Stream_SetStartTimestamp(audio_stream_id, track->from / 1000.0));
+    SHOULD(Audio_Stream_SetStopTimestamp(audio_stream_id, track->to / 1000.0));
+    SHOULD(Audio_Stream_SeekTimestamp(audio_stream_id, 0.0f));
     return audio_stream_id;
 }
 

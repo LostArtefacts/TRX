@@ -126,11 +126,19 @@ static bool M_IsValidID(const int32_t sound_id)
         && sound_id < AUDIO_MAX_ACTIVE_STREAMS;
 }
 
+static RESULT M_CheckID(const int32_t sound_id)
+{
+    MUST(Audio_CheckDevice());
+    FAIL_IF(
+        sound_id < 0 || sound_id >= AUDIO_MAX_ACTIVE_STREAMS,
+        "stream %d is not playing", sound_id);
+    return OK;
+}
+
 static void M_ResetPlaybackState(
     AUDIO_STREAM_SOUND *const stream, const double relative_timestamp)
 {
     ASSERT(stream != nullptr);
-
     const double clamped = MAX(0.0, relative_timestamp);
     Audio_LockDevice();
     stream->played_samples =
@@ -141,12 +149,10 @@ static void M_ResetPlaybackState(
 static bool M_Rewind(AUDIO_STREAM_SOUND *const stream)
 {
     ASSERT(stream != nullptr);
-
     if (!stream->is_looped
         || !AudioDecoder_Rewind(stream->decoder, stream->start_at)) {
         return false;
     }
-
     stream->decode_timestamp = MAX(stream->start_at, 0.0);
     M_ResetPlaybackState(stream, 0.0);
     return true;
@@ -336,71 +342,61 @@ void Audio_Stream_Pump(void)
     }
 }
 
-bool Audio_Stream_SyncTimestamp(const int32_t sound_id, const double timestamp)
+RESULT Audio_Stream_SyncTimestamp(
+    const int32_t sound_id, const double timestamp)
 {
-    if (!M_IsValidID(sound_id)) {
-        return false;
-    }
-
+    MUST(M_CheckID(sound_id));
     double drift = Audio_Stream_GetTimestamp(sound_id) - timestamp;
     if (drift < 0) {
         drift = -drift;
     }
     if (drift >= AUDIO_DRIFT_THRESHOLD) {
         LOG_DEBUG("Detected audio drift: %f s", drift);
-        Audio_Stream_SeekTimestamp(sound_id, timestamp);
-        return true;
+        MUST(Audio_Stream_SeekTimestamp(sound_id, timestamp));
     }
-    return false;
+    return OK;
 }
 
-bool Audio_Stream_Pause(const int32_t sound_id)
+RESULT Audio_Stream_Pause(const int32_t sound_id)
 {
-    if (!M_IsValidID(sound_id)) {
-        return false;
-    }
-
+    MUST(M_CheckID(sound_id));
     AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
     if (stream->is_playing) {
         Audio_LockDevice();
         stream->is_playing = false;
         Audio_UnlockDevice();
     }
-
-    return true;
+    return OK;
 }
 
-bool Audio_Stream_Unpause(const int32_t sound_id)
+RESULT Audio_Stream_Unpause(const int32_t sound_id)
 {
-    if (!M_IsValidID(sound_id)) {
-        return false;
-    }
-
+    MUST(M_CheckID(sound_id));
     AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
     if (!stream->is_playing) {
         Audio_LockDevice();
         stream->is_playing = true;
         Audio_UnlockDevice();
     }
-
-    return true;
+    return OK;
 }
 
-bool Audio_Stream_SetPaused(const int32_t sound_id, const bool is_paused)
+RESULT Audio_Stream_SetPaused(const int32_t sound_id, const bool is_paused)
 {
     return is_paused ? Audio_Stream_Pause(sound_id)
                      : Audio_Stream_Unpause(sound_id);
 }
 
-int32_t Audio_Stream_CreateFromFile(const char *const file_path)
+RESULT Audio_Stream_CreateFromFile(
+    const char *const file_path, int32_t *const out_sound_id)
 {
-    if (g_AudioDeviceID == 0) {
-        return AUDIO_NO_SOUND;
-    }
+    *out_sound_id = AUDIO_NO_SOUND;
+    FAIL_IF(g_AudioDeviceID == 0, "the audio device is not open");
 
     ASSERT(file_path != nullptr);
 
-    int32_t result = AUDIO_NO_SOUND;
+    RESULT result = FAIL(
+        "%s: all %d streams are in use", file_path, AUDIO_MAX_ACTIVE_STREAMS);
     Audio_WorkerLock();
     for (int32_t sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS;
          sound_id++) {
@@ -410,7 +406,10 @@ int32_t Audio_Stream_CreateFromFile(const char *const file_path)
         AUDIO_DECODER *const decoder =
             AudioDecoder_CreateFromPath(file_path, AUDIO_WORKING_CHANNELS);
         if (M_Initialise(sound_id, decoder, nullptr)) {
-            result = sound_id;
+            *out_sound_id = sound_id;
+            result = OK;
+        } else {
+            result = FAIL("%s: the audio could not be read", file_path);
         }
         break;
     }
@@ -419,16 +418,16 @@ int32_t Audio_Stream_CreateFromFile(const char *const file_path)
     return result;
 }
 
-int32_t Audio_Stream_CreateFromMemory(uint8_t *const data, const size_t size)
+RESULT Audio_Stream_CreateFromMemory(
+    uint8_t *const data, const size_t size, int32_t *const out_sound_id)
 {
-    if (g_AudioDeviceID == 0) {
-        return AUDIO_NO_SOUND;
-    }
+    *out_sound_id = AUDIO_NO_SOUND;
+    FAIL_IF(g_AudioDeviceID == 0, "the audio device is not open");
 
     ASSERT(data != nullptr);
     ASSERT(size != 0);
 
-    int32_t result = AUDIO_NO_SOUND;
+    RESULT result = FAIL("all %d streams are in use", AUDIO_MAX_ACTIVE_STREAMS);
     Audio_WorkerLock();
     for (int32_t sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS;
          sound_id++) {
@@ -438,7 +437,10 @@ int32_t Audio_Stream_CreateFromMemory(uint8_t *const data, const size_t size)
         AUDIO_DECODER *const decoder =
             AudioDecoder_CreateFromMemory(data, size, AUDIO_WORKING_CHANNELS);
         if (M_Initialise(sound_id, decoder, data)) {
-            result = sound_id;
+            *out_sound_id = sound_id;
+            result = OK;
+        } else {
+            result = FAIL("the audio in memory could not be read");
         }
         break;
     }
@@ -447,11 +449,9 @@ int32_t Audio_Stream_CreateFromMemory(uint8_t *const data, const size_t size)
     return result;
 }
 
-bool Audio_Stream_Close(const int32_t sound_id)
+RESULT Audio_Stream_Close(const int32_t sound_id)
 {
-    if (!M_IsValidID(sound_id)) {
-        return false;
-    }
+    MUST(M_CheckID(sound_id));
 
     Audio_WorkerLock();
     AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
@@ -463,37 +463,35 @@ bool Audio_Stream_Close(const int32_t sound_id)
         notification.func(sound_id, notification.user_data);
     }
 
-    return true;
+    return OK;
 }
 
-bool Audio_Stream_SetVolume(const int32_t sound_id, const float volume)
+RESULT Audio_Stream_SetVolume(const int32_t sound_id, const float volume)
 {
-    if (!M_IsValidID(sound_id)) {
-        return false;
-    }
-
+    MUST(M_CheckID(sound_id));
     m_Streams[sound_id].volume = volume;
-
-    return true;
+    return OK;
 }
 
-bool Audio_Stream_SetSpeed(const int32_t sound_id, const double speed)
+RESULT Audio_Stream_SetSpeed(const int32_t sound_id, const double speed)
 {
-    if (!M_IsValidID(sound_id) || speed <= 0.0) {
-        return false;
-    }
+    MUST(M_CheckID(sound_id));
+    FAIL_IF(speed <= 0.0, "a stream cannot play at %f times its rate", speed);
 
     Audio_WorkerLock();
     AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
-    bool result = false;
+    bool reached = false;
     if (stream->is_used) {
-        result = AudioDecoder_SetSpeed(stream->decoder, speed);
+        reached = AudioDecoder_SetSpeed(stream->decoder, speed);
         // a rate the decoder cannot reach leaves it playing at its own
-        stream->speed = result ? speed : 1.0;
+        stream->speed = reached ? speed : 1.0;
     }
     Audio_WorkerUnlock();
 
-    return result;
+    FAIL_IF(
+        !reached, "stream %d cannot play at %f times its rate", sound_id,
+        speed);
+    return OK;
 }
 
 bool Audio_Stream_IsLooped(const int32_t sound_id)
@@ -501,36 +499,27 @@ bool Audio_Stream_IsLooped(const int32_t sound_id)
     if (!M_IsValidID(sound_id)) {
         return false;
     }
-
     return m_Streams[sound_id].is_looped;
 }
 
-bool Audio_Stream_SetIsLooped(const int32_t sound_id, const bool is_looped)
+RESULT Audio_Stream_SetIsLooped(const int32_t sound_id, const bool is_looped)
 {
-    if (!M_IsValidID(sound_id)) {
-        return false;
-    }
-
+    MUST(M_CheckID(sound_id));
     m_Streams[sound_id].is_looped = is_looped;
-
-    return true;
+    return OK;
 }
 
-bool Audio_Stream_SetFinishCallback(
+RESULT Audio_Stream_SetFinishCallback(
     const int32_t sound_id,
     void (*const callback)(int32_t sound_id, void *user_data),
     void *const user_data)
 {
-    if (!M_IsValidID(sound_id)) {
-        return false;
-    }
-
+    MUST(M_CheckID(sound_id));
     Audio_WorkerLock();
     m_Streams[sound_id].finish_callback = callback;
     m_Streams[sound_id].finish_callback_user_data = user_data;
     Audio_WorkerUnlock();
-
-    return true;
+    return OK;
 }
 
 void Audio_Stream_Mix(float *const dst_buffer, const size_t len)
@@ -587,21 +576,20 @@ double Audio_Stream_GetDuration(const int32_t sound_id)
     return duration;
 }
 
-bool Audio_Stream_SeekTimestamp(const int32_t sound_id, const double timestamp)
+RESULT Audio_Stream_SeekTimestamp(
+    const int32_t sound_id, const double timestamp)
 {
-    if (!M_IsValidID(sound_id)) {
-        return false;
-    }
+    MUST(M_CheckID(sound_id));
 
     Audio_WorkerLock();
     AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
-    bool result = false;
+    bool sought = false;
     if (stream->is_used) {
         const double target = MAX(stream->start_at, 0.0) + timestamp;
-        result = AudioDecoder_Seek(stream->decoder, target);
+        sought = AudioDecoder_Seek(stream->decoder, target);
     }
 
-    if (result) {
+    if (sought) {
         Audio_LockDevice();
         M_RingReset(&stream->ring);
         Audio_UnlockDevice();
@@ -613,27 +601,22 @@ bool Audio_Stream_SeekTimestamp(const int32_t sound_id, const double timestamp)
     }
     Audio_WorkerUnlock();
 
-    return result;
+    FAIL_IF(!sought, "stream %d could not seek to %f s", sound_id, timestamp);
+    return OK;
 }
 
-bool Audio_Stream_SetStartTimestamp(
+RESULT Audio_Stream_SetStartTimestamp(
     const int32_t sound_id, const double timestamp)
 {
-    if (!M_IsValidID(sound_id)) {
-        return false;
-    }
-
+    MUST(M_CheckID(sound_id));
     m_Streams[sound_id].start_at = timestamp;
-    return true;
+    return OK;
 }
 
-bool Audio_Stream_SetStopTimestamp(
+RESULT Audio_Stream_SetStopTimestamp(
     const int32_t sound_id, const double timestamp)
 {
-    if (!M_IsValidID(sound_id)) {
-        return false;
-    }
-
+    MUST(M_CheckID(sound_id));
     m_Streams[sound_id].stop_at = timestamp;
-    return true;
+    return OK;
 }

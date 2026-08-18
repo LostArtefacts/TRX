@@ -84,7 +84,7 @@ static void M_InitialiseSamplesFromFile(
         char *sample_data = Memory_Alloc(size);
         memcpy(sample_data, header, header_size);
         File_ReadData(fp, sample_data + header_size, aligned_size);
-        Sound_LoadSampleData(entry->game_index, sample_data, size);
+        SHOULD(Sound_LoadSampleData(entry->game_index, sample_data, size));
         Memory_FreePointer(&sample_data);
 
         current_sample++;
@@ -115,7 +115,7 @@ static void M_InitialiseSamplesFromLevelInfo(LEVEL_CONTEXT *const ctx)
 
         const char *const sample_data = &info->samples.data[current_offset];
         const size_t sample_size = next_offset - current_offset;
-        Sound_LoadSampleData(i, sample_data, sample_size);
+        SHOULD(Sound_LoadSampleData(i, sample_data, sample_size));
     }
 
     Memory_FreePointer(&info->samples.offsets);
