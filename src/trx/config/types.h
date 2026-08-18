@@ -184,6 +184,7 @@ typedef struct {
         bool fix_chainblock_secret_sound;
         bool fix_secrets_killing_music;
         bool fix_speeches_killing_music;
+        bool fix_sliding_sfx;
         bool enable_lara_mic;
         bool enable_music_in_menu;
         bool enable_music_in_inventory;

@@ -277,6 +277,13 @@ void Lara_RapidsDrown(void)
     lara_info->gun_type = LGT_UNARMED;
 }
 
+void Lara_StopSlidingSFX(void)
+{
+    if (g_Config.audio.fix_sliding_sfx) {
+        Sound_StopEffect(SFX_LARA_SLIDING);
+    }
+}
+
 int32_t Lara_FloorFront(
     const ITEM *const item, const int16_t ang, const int32_t dist)
 {

@@ -1088,7 +1088,7 @@
     },
     {
       "bulk": true,
-      "count": 204,
+      "count": 205,
       "description": "Every sound sample TRX has a name for.",
       "examples": [
         "trx.sound.play(trx.catalog.samples.LARA_NO)"
@@ -1191,6 +1191,7 @@
         "LARA_ROPE_CREAK",
         "LARA_SHOTGUN",
         "LARA_SHOTGUN_SHELL",
+        "LARA_SLIDING",
         "LARA_SPLASH",
         "LARA_THUD",
         "LARA_UZI_FIRE",

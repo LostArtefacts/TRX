@@ -326,6 +326,10 @@ static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
 
 static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
 {
+    if (Item_TestAnimEqual(item, LA(LA_JUMP_FORWARD_START))) {
+        Lara_StopSlidingSFX();
+    }
+
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (item->speed < 0
         && g_Config.gameplay.wall_glitch_mode != WALL_GLITCH_TR1) {
@@ -377,6 +381,10 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
 
 static void M_SideBackJump(ITEM *const item, COLL_INFO *const coll)
 {
+    if (Item_TestAnimEqual(item, LA(LA_JUMP_BACK_START))) {
+        Lara_StopSlidingSFX();
+    }
+
     int32_t angle = 0;
     switch (LS_U(item->current_anim_state)) {
     case LS_JUMP_BACK:

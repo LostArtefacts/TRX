@@ -925,6 +925,10 @@
             "title": "Überlagernde Geheimnis-Musik",
             "description": "Fixt dass der Ton vom Geheimnis-Einsammeln den momentan spielenden Musik-Titel unterbricht.",
         },
+        "audio.fix_sliding_sfx": {
+            "title": "\\{review}Rutsch-SFX korrigieren",
+            "description": "\\{review}Behebt, dass Laras Rutsch-SFX weiter abgespielt werden, obwohl sie sich nicht mehr in einem gültigen Rutschzustand befindet (TR3+-Stil). Wenn diese Option deaktiviert wird, werden die SFX unabhängig von Laras Zustand normal zu Ende abgespielt (TR1/2-Stil).",
+        },
         "audio.fix_speeches_killing_music": {
             "title": "Überlagernde Feind-Sprache",
             "description": "Fixt dass Feinde beim Sprechen den momentan spielenden Musiktitel unterbrechen.",
