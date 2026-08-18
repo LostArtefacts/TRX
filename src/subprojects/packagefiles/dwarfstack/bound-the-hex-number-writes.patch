@@ -1,0 +1,60 @@
+--- a/src/dwst-exception-dialog.c
++++ b/src/dwst-exception-dialog.c
+@@ -87,19 +87,19 @@
+ 
+     if( num>=0 )
+     {
+-      _stprintf( hexNum,20,TEXT("%02d"),num );
++      _sntprintf( hexNum,20,TEXT("%02d"),num );
+       Edit_ReplaceSel( hwnd,hexNum );
+     }
+ 
+     Edit_ReplaceSel( hwnd,TEXT(": 0x") );
+-    _stprintf( hexNum,20,TEXT("%p"),ptr );
++    _sntprintf( hexNum,20,TEXT("%p"),ptr );
+     Edit_ReplaceSel( hwnd,hexNum );
+   }
+   else
+   {
+-    _stprintf( hexNum,20,TEXT("%*s"),14,TEXT("") );
++    _sntprintf( hexNum,20,TEXT("%*s"),14,TEXT("") );
+     Edit_ReplaceSel( hwnd,hexNum );
+-    _stprintf( hexNum,20,TEXT("%*s"),2+(int)sizeof(void*)*2,TEXT("") );
++    _sntprintf( hexNum,20,TEXT("%*s"),2+(int)sizeof(void*)*2,TEXT("") );
+     Edit_ReplaceSel( hwnd,hexNum );
+   }
+ 
+@@ -111,13 +111,13 @@
+     if( posLine>0 )
+     {
+       Edit_ReplaceSel( hwnd,TEXT(":") );
+-      _stprintf( hexNum,20,TEXT("%d"),posLine );
++      _sntprintf( hexNum,20,TEXT("%d"),posLine );
+       Edit_ReplaceSel( hwnd,hexNum );
+ 
+       if( posColumn>0 )
+       {
+         Edit_ReplaceSel( hwnd,TEXT(":") );
+-        _stprintf( hexNum,20,TEXT("%d"),posColumn );
++        _sntprintf( hexNum,20,TEXT("%d"),posColumn );
+         Edit_ReplaceSel( hwnd,hexNum );
+       }
+     }
+@@ -308,7 +308,7 @@
+   TCHAR hexNum[20];
+ 
+   Edit_ReplaceSel( textHwnd,TEXT("code: 0x") );
+-  _stprintf( hexNum,20,TEXT("%08lX"),code );
++  _sntprintf( hexNum,20,TEXT("%08lX"),code );
+   Edit_ReplaceSel( textHwnd,hexNum );
+   if( desc )
+     Edit_ReplaceSel( textHwnd,desc );
+@@ -323,7 +323,7 @@
+         flag==8?TEXT("data execution prevention"):
+         (flag?TEXT("write access"):TEXT("read access")) );
+     Edit_ReplaceSel( textHwnd,TEXT(" violation at 0x") );
+-    _stprintf( hexNum,20,TEXT("%p"),(void*)addr );
++    _sntprintf( hexNum,20,TEXT("%p"),(void*)addr );
+     Edit_ReplaceSel( textHwnd,hexNum );
+     Edit_ReplaceSel( textHwnd,TEXT("\r\n") );
+   }
