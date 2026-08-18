@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trx/core/result.h>
+
 #include <libavutil/pixfmt.h>
 #include <stdint.h>
 
@@ -12,7 +14,10 @@ typedef struct {
 typedef void *(*VIDEO_SURFACE_ALLOCATOR_FUNC)(
     int32_t width, int32_t height, void *user_data);
 
-VIDEO *Video_Open(const char *path);
+// Opens a video and prepares it for playback, reporting a path that does not
+// exist and a file the reader cannot decode. Caller closes it with
+// Video_Close().
+RESULT Video_Open(const char *path, VIDEO **out_video);
 void Video_SetAudioEnabled(VIDEO *video, bool enabled);
 void Video_SetVolume(VIDEO *video, double volume);
 void Video_SetSurfacePixelFormat(VIDEO *video, enum AVPixelFormat pixel_format);
