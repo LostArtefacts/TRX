@@ -12,6 +12,7 @@
 - Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187 / TRX1036)
 - Added a flat yellow color to the PS1 bar palettes (Graphic Options → UI → Bars) (#5227 / TRX1135)
 - Changed Lara's outfit setting to offer only the outfits the current level can dress her in (TRX1086)
+- Changed a dialog's tabs to show only the tab in front where the screen has no room for the whole strip, rather than holding the dialog to its width
 - Changed moving Lara in photo mode to follow the direction the camera looks, rather than the way she faces (TRX1153)
 - Changed the Fix one-shot music triggers option to sit with the other music settings (Sound → Misc) (TRX1045)
 - Changed the PS1 poison healthbar to flat yellow, as the PS1 releases had it (#5227 / TRX1135)

@@ -35,6 +35,7 @@ typedef struct {
 
     int32_t input_size;
     int32_t label_size;
+    bool collapsed_groups;
     UI_TAB_SWITCH_STATE *layout_tab_switch;
     UI_TAB_SWITCH_STATE *controls_tab_switch;
     UI_PROGRESS_BUTTON_STATE *reset_bindings_button;

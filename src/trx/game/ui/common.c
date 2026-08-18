@@ -18,8 +18,6 @@
 #include <string.h>
 
 static struct {
-    // What each source keeps clear at the screen edges: what the scene being
-    // built has stated so far, and what the last one drawn ended up with.
     struct {
         float top;
         float bottom;
