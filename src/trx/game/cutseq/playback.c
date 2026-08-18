@@ -657,6 +657,7 @@ void CutSeq_UpdateCamera(void)
     }
 
     const CUTSEQ_INFO *const info = &m_State.info;
+    GAME_VECTOR old_pos = g_Camera.pos;
     g_Camera.target.pos = (XYZ_32) {
         .x = info->origin.x + 2 * m_State.camera_nodes[0].x_run,
         .y = info->origin.y + 2 * m_State.camera_nodes[0].y_run,
@@ -668,9 +669,13 @@ void CutSeq_UpdateCamera(void)
         .z = info->origin.z + 2 * m_State.camera_nodes[1].z_run,
     };
 
-    int16_t room_num = g_Camera.pos.room_num;
-    Room_GetSector(g_Camera.pos.pos, &room_num);
-    g_Camera.pos.room_num = room_num;
+    const int16_t room_num =
+        Room_FindByTraversal(old_pos.pos, g_Camera.pos.pos, old_pos.room_num);
+    if (room_num != NO_ROOM) {
+        g_Camera.pos.room_num = room_num;
+    }
+    g_Camera.target.room_num = g_Camera.pos.room_num;
+    Room_GetSector(g_Camera.target.pos, &g_Camera.target.room_num);
     g_Camera.roll = 0;
     g_Camera.shift = 0;
     Viewport_AlterFOV(m_State.fov, FOV_MODE_CUTSCENE);
