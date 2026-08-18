@@ -6,7 +6,7 @@
         "actions": {
             "examine_item": "Untersuchen",
             "hide_dialog": "Dialog ausblenden",
-            "reset_defaults": "Auf Standard zurücksetzen",
+            "reset_defaults": "\\{review}Zurücksetzen",
             "rotate": "Drehen",
             "unbind": "Freigeben",
             "use_item": "Benutzen",
@@ -43,7 +43,7 @@
             "demo_mode": "Demo Modus",
             "empty_slot_fmt": "- LEERER SLOT -",
             "exit": "Beenden",
-            "hold_fmt": "Gedrückt halten %s",
+            "hold_fmt": "\\{review}Halten %s",
             "off": "Aus",
             "on": "Ein",
             "pagination_nav": "%d / %d",
@@ -150,12 +150,12 @@
             "common": {
                 "all_hidden_disclaimer": "\\{review}Die Einstellungen sind für dieses Level-Set deaktiviert.",
                 "chroma": "Chroma",
-                "edit_value": "Wert bearbeiten",
+                "edit_value": "\\{review}Bearbeiten",
                 "frozen_option_disclaimer": "Diese Einstellung ist vom Ersteller des Levels erzwungen und kann nicht geändert werden.",
                 "hue": "Farbton",
                 "lightness": "Helligkeit",
                 "restore_default": "Standard wiederherstellen",
-                "toggle_help": "Hilfe Ein/Aus",
+                "toggle_help": "\\{review}Hilfe",
             },
             "controls": {
                 "backend": {
@@ -719,7 +719,7 @@
             "INPUT_ROLE_CHANGE_OUTFIT": "\\{review}Outfit wechseln",
             "INPUT_ROLE_CHANGE_TARGET": "Ziel wechseln",
             "INPUT_ROLE_CROUCH": "\\{review}Ducken",
-            "INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "Beleuchtungs-Kontrast durchschalten",
+            "INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "\\{review}Kontrast wechseln",
             "INPUT_ROLE_DOWN": "Zurück",
             "INPUT_ROLE_DRAW_WEAPON": "Waffe ziehen",
             "INPUT_ROLE_ENTER_CONSOLE": "Entwickler-Konsole",
@@ -756,8 +756,8 @@
             "INPUT_ROLE_SPRINT": "\\{review}Sprinten",
             "INPUT_ROLE_STEP_LEFT": "Seit-Schritt Links",
             "INPUT_ROLE_STEP_RIGHT": "Seit-Schritt Rechts",
-            "INPUT_ROLE_SWITCH_BORDERS": "Wechsel zwischen Rahmen-Größen",
-            "INPUT_ROLE_SWITCH_UPSCALING": "Wechsel zwischen Upscaling-Faktoren",
+            "INPUT_ROLE_SWITCH_BORDERS": "\\{review}Rahmengröße wechseln",
+            "INPUT_ROLE_SWITCH_UPSCALING": "\\{review}Upscaling wechseln",
             "INPUT_ROLE_TOGGLE_BILINEAR_FILTER": "Bilinear-Filter Ein/Aus",
             "INPUT_ROLE_TOGGLE_FULLSCREEN": "Vollbild Ein/Aus",
             "INPUT_ROLE_TOGGLE_PHOTO_MODE": "Foto-Modus Ein/Aus",
@@ -942,7 +942,7 @@
             "description": "\\{review}Passt die Musiklautstärke im Inventarbildschirm an.",
         },
         "audio.load_music_triggers": {
-            "title": "Fix: Trigger für Musik, die nur einmal spielen soll",
+            "title": "\\{review}Fix: Einmal-Musiktrigger",
             "description": "Lädt vorher getriggerte Musik, so dass Musik, die nur einmal spielen soll, nicht ein weiteres Mal abgespielt wird.",
         },
         "audio.master_volume": {
@@ -950,7 +950,7 @@
             "description": "\\{review}Passt die gesamte Spiel-Lautstärke an. Die restlichen Einstellungen sind relativ zu dieser Lautstärke.",
         },
         "audio.music_load_condition": {
-            "title": "Musik beim Laden wiederherstellen",
+            "title": "\\{review}Musik beim Laden",
             "description": "Lädt den Musiktitel der vor dem Speichern des Spiels abgespielt wurde.\n\n- Nie: keine Musik-Titel beim laden wiederherstellen.\n- Nicht-Umgebung: stellt nur Nicht-Umgebungs-Musiktitel beim laden wieder her.\n- Immer: stellt jede Art von Musiktitel beim Laden wieder her.",
         },
         "audio.music_volume": {
@@ -1018,7 +1018,7 @@
             "description": "\\{review}Zählt die von Laras Verbündeten erzielten Feind-Kills zur Gesamtzahl der Kills.",
         },
         "gameplay.enable_ally_targeting": {
-            "title": "Erlaube das ziehlen auf freundliche Einheiten",
+            "title": "\\{review}Zielen auf Verbündete",
             "description": "Erlaubt Lara, auf freundliche Einheiten zu ziehlen, wie zum Beispiel Mönche. Wenn diese Option deaktiviert ist, sind freundliche Einheiten immun gegen Laras Munition.",
         },
         "gameplay.enable_alternative_turns": {
@@ -1326,7 +1326,7 @@
             "description": "\\{review}Fixt die Genauigkeit des M16/MP5, während Lara rennt.",
         },
         "gameplay.fix_monkey_pickup_priority": {
-            "title": "\\{review}Behebe die Priorität beim Aufheben von Affen",
+            "title": "\\{review}Fix: Aufheben beim Hangeln",
             "description": "\\{review}Angegriffene Affen werden das Zurückschlagen priorisieren, bevor sie Medi-Packs und Schlüssel aufsammeln.",
         },
         "gameplay.fix_pipeman_aim": {
@@ -1406,7 +1406,7 @@
             "description": "\\{review}Stoppt den Spielfortschritt, wenn das Spiel-Fenster den Fokus verliert.",
         },
         "gameplay.projectile_area_damage": {
-            "title": "\\{review}Flächenschaden durch Projektile",
+            "title": "\\{review}Flächenschaden",
             "description": "\\{review}Steuert, wie der Wirkungsbereich für Raketenwerfer und Granatwerfer sich ausbreitet.\n\n- Einzelfeger: Verhalten von TR1 & TR2.\n- Mehrfachfeger: Verhalten von TR3.\n\nDie Mehrfachfeger-Option führt oft zu doppeltem Schaden bei einzelnen Gegnern.",
         },
         "gameplay.remember_gun_status": {
@@ -1426,7 +1426,7 @@
             "description": "\\{review}Legt fest, was die in den Leveln verteilten Kristalle bewirken.\n\n- Aus: Es sind keine Kristalle vorhanden.\n- Speichern: Kristalle sind einmalig verwendbar und erlauben Lara, das Spiel an Ort und Stelle zu speichern, wie in der PS1-Fassung von TR1. Ansonsten kann nur am Anfang eines Levels gespeichert werden.\n- Speichern (Fundstücke): Kristalle werden eingesammelt und erlauben Lara, das Spiel überall aus dem Inventar heraus zu speichern, wie in der PS1-Fassung von TR3. Ansonsten kann nur am Anfang eines Levels gespeichert werden.\n- Heilung: Kristalle stellen die Hälfte von Laras Gesundheit wieder her und heilen Vergiftungen, sobald sie sie berührt, wie in der PC-Version von TR3.\n- Fundstücke: Kristalle sind Sammelobjekte, die in der Levelstatistik gezählt werden, und bewirken sonst nichts.\n\nEine Änderung dieser Option erfordert einen Neustart des Levels.",
         },
         "gameplay.start_lara_hitpoints": {
-            "title": "Laras Lebensenergie beim Starten eines Levels",
+            "title": "\\{review}Laras Startenergie",
             "description": "Legt die Höhe des Gesundheitswertes von Lara für den Start eines jeden Levels fest.",
         },
         "gameplay.target_change_mode": {
@@ -1434,7 +1434,7 @@
             "description": "\\{review}Ändert, wie Lara beim Zielen zwischen Zielen wechselt.\n\n- Aus: Lara behält das aktuelle Ziel.\n- Erweitert: Drücke die Zielwechsel-Taste, um zu wechseln.\n- TR4: Tippe die Umsehen-Taste an, um zu wechseln; hältst du sie gedrückt, sieht sie sich nach kurzer Verzögerung um.",
         },
         "gameplay.target_mode": {
-            "title": "Modis für automatische Anvisierung",
+            "title": "\\{review}Zielmodus",
             "description": "Ändert das automatische Anvisierungsverhalten von Laras Waffen gegenüber Zielen.\n\n- Volles Lock-On: Das Ziel immer bleibt anvisiert, selbst wenn sich der Feind außer Sicht ist oder stirbt (OG TR1-3).\n- Halbes Lock-On: Das Ziel bleibt anvisiert wenn der Feind sich außer Sicht bewegt, löst aber die Anvisierung sobald der Gegner stibt.\n- Kein Lock-On: Löse die Anvisierung sobald der Feind sich außer Sicht bewegt oder stibt (TR4+).",
         },
         "gameplay.wall_glitch_mode": {
@@ -1570,7 +1570,7 @@
             "description": "Farbe der Sauerstoffleiste.",
         },
         "ui.airbar_location": {
-            "title": "Position der Sauerstoffleiste",
+            "title": "\\{review}Position der Luftleiste",
             "description": "Position, an der die Sauerstoffleiste angezeigt wird.",
         },
         "ui.ammo_counter_location": {
@@ -1614,7 +1614,7 @@
             "description": "Gesundheitsleisten-Farbe der Feinde",
         },
         "ui.enemy_healthbar_location": {
-            "title": "Position der Gesundheitsleiste der Feinde",
+            "title": "\\{review}Position der Feindleiste",
             "description": "Die Position, an der die feindliche Gesundheitsleiste angezeigt wird.",
         },
         "ui.enemy_healthbar_show_mode": {
@@ -1862,7 +1862,7 @@
             "description": "\\{review}Behebt die ursprünglichen Unterwasser-Pflanzen-Sprites, sodass sie in Wasserbereichen richtig animiert werden.",
         },
         "visuals.fix_item_rots": {
-            "title": "\\{review}Behebt Probleme mit der Objektplatzierung",
+            "title": "\\{review}Fix: Objektplatzierung",
             "description": "\\{review}Behebt mehrere Probleme aus den Originalspielen, die durch falsch platzierte oder ausgerichtete Objekte verursacht werden.",
         },
         "visuals.fix_texture_issues": {

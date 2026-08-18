@@ -43,9 +43,9 @@
             "demo_mode": "Modalità Demo",
             "empty_slot_fmt": "- SLOT VUOTO -",
             "exit": "Esci",
-            "hold_fmt": "Tieni premuto %s",
-            "off": "Spento",
-            "on": "Acceso",
+            "hold_fmt": "\\{review}Tieni %s",
+            "off": "\\{review}No",
+            "on": "\\{review}Sì",
             "pagination_nav": "%d / %d",
         },
         "osd": {
@@ -150,12 +150,12 @@
             "common": {
                 "all_hidden_disclaimer": "Le impostazioni sono disabilitate per questo gruppo di livelli.",
                 "chroma": "Chroma",
-                "edit_value": "Modifica valore",
+                "edit_value": "\\{review}Modifica",
                 "frozen_option_disclaimer": "Questa impostazione è applicata dal generatore di livelli e non può essere modificata.",
                 "hue": "Tonalità",
                 "lightness": "Luminosità",
                 "restore_default": "Ripristina predefiniti",
-                "toggle_help": "Visualizza guida",
+                "toggle_help": "\\{review}Guida",
             },
             "controls": {
                 "backend": {
@@ -762,7 +762,7 @@
             "INPUT_ROLE_TOGGLE_FULLSCREEN": "Attiva/Disattiva Schermo Intero",
             "INPUT_ROLE_TOGGLE_PHOTO_MODE": "Attiva/Disattiva Modalità Foto",
             "INPUT_ROLE_TOGGLE_TEXTURES": "Attiva/Disattiva Texture",
-            "INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER": "Attiva/Disattiva Filtro Trapezoidale",
+            "INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER": "\\{review}Filtro Trapezoidale",
             "INPUT_ROLE_TOGGLE_UI": "Attiva/Disattiva Interfaccia",
             "INPUT_ROLE_TOGGLE_WIREFRAME": "Attiva/Disattiva Modalità Reticolo",
             "INPUT_ROLE_TURBO_CHEAT": "Velocità Turbo",
@@ -1286,7 +1286,7 @@
             "description": "Risolve il problema per cui gli attacchi con la zampa degli orsi non colpiscono Lara.",
         },
         "gameplay.fix_breakable_wall_clip": {
-            "title": "\\{review}Correggi attraversamento dei muri fragili",
+            "title": "\\{review}Correggi muri fragili",
             "description": "\\{review}Risolve il problema per cui Lara riesce ad arrampicarsi o a strisciare attraverso i muri fragili posti sul bordo di un settore. Se attivo, Lara si ferma davanti al muro finché non viene distrutto.",
         },
         "gameplay.fix_bridge_collision": {
@@ -1466,7 +1466,7 @@
             "description": "Abilita i passi laterali in stile TR3+, ad es. MAIUSC+frecce direzionali. I pulsanti dedicati per i passi laterali continueranno a funzionare.",
         },
         "input.quick_guns_mode": {
-            "title": "Equipaggiamento rapido armi",
+            "title": "\\{review}Armi rapide",
             "description": "Controlla il comportamento dei tasti per l'equipaggiamento rapido delle armi.\n\n- Solo equipaggia: premendo il tasto, Lara equipaggerà l'arma assegnata.\n- Equipaggia o riponi: premendo il tasto, Lara equipaggerà l'arma assegnata. In aggiunta, con lo stesso tasto, la riporrà se la sta attualmente tenendo in mano.",
         },
         "input.touch_button_scale": {
@@ -1574,7 +1574,7 @@
             "description": "Posizione in cui viene visualizzata la barra dell'ossigeno.",
         },
         "ui.ammo_counter_location": {
-            "title": "Posizione indicatore munizioni",
+            "title": "\\{review}Indicatore munizioni",
             "description": "Posizione in cui viene visualizzato l'indicatore delle munizioni.",
         },
         "ui.bar_look": {
