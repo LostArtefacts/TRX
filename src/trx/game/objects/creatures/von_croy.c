@@ -222,6 +222,7 @@ static void M_SetCutCamera(const ITEM *const item)
         return;
     }
     g_Camera.type = CAM_CINEMATIC;
+    g_Camera.flags = CF_BLOCK_UPDATE;
     const M_CUT_DATA *const cut = &m_CutData[cut_idx];
     const int32_t flags = cut->flags;
 
@@ -270,6 +271,7 @@ static void M_ClearCutCamera(void)
     g_Camera.target = m_OldCamera.target;
     g_Camera.speed = 1;
     g_Camera.type = m_OldCamera.type;
+    g_Camera.flags = m_OldCamera.flags;
     Viewport_AlterFOV(-1, FOV_MODE_GAME);
 }
 

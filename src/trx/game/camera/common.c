@@ -178,6 +178,10 @@ void Camera_ClampInterpResult(void)
 
 void Camera_Update(void)
 {
+    if (g_Camera.flags == CF_BLOCK_UPDATE) {
+        return;
+    }
+
     if (g_Camera.type == CAM_PHOTO_MODE) {
         Camera_PhotoMode_Update();
         Camera_EnsureEnvironment();
