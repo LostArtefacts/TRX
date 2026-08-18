@@ -9,8 +9,10 @@
 
 #include <harness/font_bin.h>
 
+#include <trx/core/enum_map.h>
 #include <trx/core/strings.h>
 #include <trx/debug.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/input/common.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output/textures.h>
@@ -110,4 +112,75 @@ void FakeUI_SetKeyName(const char *const key_name)
 void FakeUI_ResetKeyName(void)
 {
     m_KeyName = M_DEFAULT_KEY_NAME;
+}
+
+const char *Input_GetRoleName(const INPUT_ROLE role)
+{
+    return EnumMap_GetLabel(ENUM_MAP_NAME(INPUT_ROLE), role);
+}
+
+const char *const *Input_GetLayoutNamePtr(const INPUT_LAYOUT layout)
+{
+    static const GAME_STRING_ID layout_names[INPUT_LAYOUT_NUMBER_OF] = {
+        [INPUT_LAYOUT_DEFAULT] =
+            GS_ID("general/settings/controls/layout/default"),
+        [INPUT_LAYOUT_CUSTOM_1] =
+            GS_ID("general/settings/controls/layout/custom_1"),
+        [INPUT_LAYOUT_CUSTOM_2] =
+            GS_ID("general/settings/controls/layout/custom_2"),
+        [INPUT_LAYOUT_CUSTOM_3] =
+            GS_ID("general/settings/controls/layout/custom_3"),
+    };
+    return GameString_GetPtr(layout_names[layout]);
+}
+
+void Input_Update(void)
+{
+}
+
+bool Input_IsInListenMode(void)
+{
+    return false;
+}
+
+bool Input_IsRoleUnbindable(const INPUT_ROLE role)
+{
+    return true;
+}
+
+bool Input_IsKeyConflicted(
+    const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
+    const INPUT_ROLE role)
+{
+    return false;
+}
+
+bool Input_ReadAndAssignRole(
+    const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
+    const INPUT_ROLE role, const int32_t slot)
+{
+    return false;
+}
+
+void Input_UnassignRole(
+    const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
+    const INPUT_ROLE role, const int32_t slot)
+{
+}
+
+void Input_ResetLayout(const INPUT_BACKEND backend, const INPUT_LAYOUT layout)
+{
+}
+
+bool InputState_IsAnyPressed(const INPUT_STATE state)
+{
+    return false;
+}
+
+void TouchOverlay_EnterSelectionMode(void)
+{
+}
+
+void TouchOverlay_ExitSelectionMode(void)
+{
 }

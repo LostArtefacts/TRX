@@ -32,6 +32,11 @@ add_project_arguments(
   language: 'c',
 )
 
+# Engine sources built here answer what they measured themselves against, so a
+# test can name the wording that holds a dialog to its size without piloting
+# the dialog to find it.
+add_project_arguments('-DTESTING', language: 'c')
+
 # The engine takes the dependency name from -Dlua_dep; standing alone, this
 # project has to find Lua itself, and distributions disagree on the name.
 dep_lua = dependency('lua5.4', 'lua-5.4', 'lua54', 'lua')
@@ -1003,6 +1008,7 @@ unit_tests += {
     'game/ui/common.c',
     'game/ui/dialogs/color_editor.c',
     'game/ui/dialogs/config_presets.c',
+    'game/ui/dialogs/controls_editor.c',
     'game/ui/dialogs/gameplay_settings.c',
     'game/ui/dialogs/graphic_settings.c',
     'game/ui/dialogs/setting_helpers/handlers.c',
