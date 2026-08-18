@@ -112,13 +112,13 @@ void Music_UnpauseStream(const int32_t slot)
     FAKE_RECORD("stream_unpause", FV(slot));
 }
 
-bool Music_SeekStream(const int32_t slot, const double timestamp)
+RESULT Music_SeekStream(const int32_t slot, const double timestamp)
 {
     FAKE_RECORD("stream_seek", FV(slot), FV(timestamp));
-    if (slot < 0 || slot >= FAKE_MUSIC_SLOT_COUNT || !m_Slots[slot].active) {
-        return false;
-    }
-    return true;
+    FAIL_IF(
+        slot < 0 || slot >= FAKE_MUSIC_SLOT_COUNT || !m_Slots[slot].active,
+        "slot %d holds no music", slot);
+    return OK;
 }
 
 void Music_Pause(void)

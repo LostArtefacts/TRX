@@ -273,8 +273,8 @@ static void M_EndHouse(ITEM *const item, COLL_INFO *const coll)
     if (Music_GetCurrentPlayingTrack() == Music_ToGameID(MX_CUTSCENE_BATH)) {
         const int32_t frame_num = Item_GetRelativeFrame(item);
         const double ts = (frame_num - M_LF_SHOWER_START) / (double)LOGIC_FPS;
-        Music_SetSpeed(Clock_GetSpeedMultiplier());
-        Music_SyncTimestamp(ts);
+        IGNORE(Music_SetSpeed(Clock_GetSpeedMultiplier()));
+        IGNORE(Music_SyncTimestamp(ts));
     }
 }
 
