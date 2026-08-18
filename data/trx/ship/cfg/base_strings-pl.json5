@@ -44,8 +44,8 @@
             "empty_slot_fmt": "- PUSTY SLOT -",
             "exit": "Wyjście",
             "hold_fmt": "%s",
-            "off": "Wyłączone",
-            "on": "Włączone",
+            "off": "\\{review}Wył.",
+            "on": "\\{review}Wł.",
             "pagination_nav": "%d / %d",
         },
         "osd": {
@@ -150,12 +150,12 @@
             "common": {
                 "all_hidden_disclaimer": "Ustawienia są wyłączone dla tego zestawu poziomów.",
                 "chroma": "Chroma",
-                "edit_value": "Edytuj wartość",
+                "edit_value": "\\{review}Edytuj",
                 "frozen_option_disclaimer": "To ustawienie jest wymuszane przez twórcę poziomu i nie może być zmienione.",
                 "hue": "Odcień",
                 "lightness": "Jasność",
                 "restore_default": "Przywróć domyślne",
-                "toggle_help": "Pokaż pomoc",
+                "toggle_help": "\\{review}Pomoc",
             },
             "controls": {
                 "backend": {
@@ -894,7 +894,7 @@
             "description": "Ustawia mikrofon na pozycji Lary. Domyślnie mikrofon jest na pozycji kamery. Wpływa to głównie na głośność efektów – czy przy kamerach daleko od Lary będą one cicho, czy głośno.",
         },
         "audio.enable_music_in_inventory": {
-            "title": "Odtwarzaj muzykę w ekranie ekwipunku",
+            "title": "\\{review}Muzyka w ekwipunku",
             "description": "Pozwala na odtwarzanie dźwięków gry, dźwięków otoczenia i muzyki podczas przeglądania ekwipunku.",
         },
         "audio.enable_music_in_menu": {
@@ -950,7 +950,7 @@
             "description": "Reguluje głośność wszystkich dźwięków w grze. Pozostałe ustawienia są względem tej głośności.",
         },
         "audio.music_load_condition": {
-            "title": "Przywróć muzykę po wczytaniu",
+            "title": "\\{review}Muzyka po wczytaniu",
             "description": "Ładuje ścieżkę dźwiękową graną podczas zapisu gry.\n\n- Nigdy: restartuje dźwięki otoczenia od 0.\n- Tylko muzyka: przywraca utwory muzyczne.\n- Zawsze: przywraca także dźwięki otoczenia od momentu, w którym gracz dokonał zapisu.",
         },
         "audio.music_volume": {
@@ -958,7 +958,7 @@
             "description": "Reguluje głośność muzyki.",
         },
         "audio.mute_out_of_focus": {
-            "title": "Wycisz dźwięk po zminimalizowaniu",
+            "title": "\\{review}Wycisz w tle",
             "description": "Wycisza muzykę i efekty dźwiękowe, kiedy okno gry jest nieaktywne.",
         },
         "audio.sound_volume": {
@@ -1014,7 +1014,7 @@
             "description": "Usuwa wszelką kolizję z tyranozaurem po jego śmierci, co pomaga w sytuacjach, gdy jego cielsko uniemożliwia przejście.",
         },
         "gameplay.enable_ally_kill_count": {
-            "title": "Zliczaj śmierci zadane przez sojuszników",
+            "title": "\\{review}Licz zabójstwa od sojuszników",
             "description": "Uwzględnia zabójstwa wrogów dokonane przez sojuszników Lary do łącznej liczby pokonanych przeciwników.",
         },
         "gameplay.enable_ally_targeting": {
@@ -1118,7 +1118,7 @@
             "description": "Zapisuje efekty graficzne, mgłę wodospadu, emitery płomieni itp., dzięki czemu nie znikają już po wczytaniu.",
         },
         "gameplay.enable_environment_kill_count": {
-            "title": "Zliczaj śmierci zadane przez środowisko",
+            "title": "\\{review}Licz śmierci od środowiska",
             "description": "Uwzględnia zabójstwa wrogów przez środowisko, takie jak lasery ochronne lub utonięcie, do łącznej liczby pokonanych przeciwników.",
         },
         "gameplay.enable_fast_pickups": {
@@ -1130,7 +1130,7 @@
             "description": "\\{review}Pozwala Larze szybciej podciągać się na krawędzie.",
         },
         "gameplay.enable_fast_shimmying": {
-            "title": "\\{review}Szybkie przemieszczanie się w zwisie",
+            "title": "\\{review}Szybkie przemieszczanie w zwisie",
             "description": "\\{review}Pozwala Larze poruszać się szybciej podczas przemieszczania się w lewo lub w prawo w zwisie.",
         },
         "gameplay.enable_fmv": {
@@ -1210,7 +1210,7 @@
             "description": "\\{review}Pozwala Larze natychmiast ustawiać się przy obiektach interaktywnych, takich jak przedmioty do podniesienia i przełączniki. Jeśli opcja jest wyłączona, Lara będzie musiała najpierw całkowicie się zatrzymać, zanim będzie mogła wejść w interakcję. Natychmiastowe ustawianie odpowiada TR1/2, a wcześniejsze zatrzymanie TR3+.",
         },
         "gameplay.enable_soft_statics": {
-            "title": "Miękka kolizja ze statycznymi obiektami",
+            "title": "\\{review}Miękka kolizja z obiektami",
             "description": "Pozwala Larze płynnie przesuwać się wzdłuż statycznych obiektów, jak w TR4+, zamiast nagle się zatrzymywać.",
         },
         "gameplay.enable_sprint": {
@@ -1286,7 +1286,7 @@
             "description": "Naprawia atak niedźwiedzia, aby nie chybiał Lary.",
         },
         "gameplay.fix_breakable_wall_clip": {
-            "title": "\\{review}Napraw przenikanie kruchych ścian",
+            "title": "\\{review}Napraw kruche ściany",
             "description": "\\{review}Naprawia problem, w którym Lara może podciągnąć się lub przeczołgać przez kruche ściany stojące na krawędzi sektora. Po włączeniu Lara zatrzymuje się przed ścianą, dopóki nie zostanie ona zniszczona.",
         },
         "gameplay.fix_bridge_collision": {
@@ -1374,7 +1374,7 @@
             "description": "Pozwala Larze przyjąć pozę po określonej liczbie sekund bezczynności. Wartość 0 wyłącza tę funkcję.",
         },
         "gameplay.intro_fmv_mode": {
-            "title": "\\{review}Czas trwania wstępnego filmu FMV",
+            "title": "\\{review}Czas wstępnego FMV",
             "description": "\\{review}Kontroluje, kiedy odtwarzany jest wstępny film fabularny FMV w każdej grze.\n\n- Nowa gra: odtwarzaj go podczas rozpoczynania nowej gry.\n- Uruchomienie: odtwarzaj go za każdym razem, gdy gra jest uruchamiana lub przełączana, tak jak w oryginalnych grach.",
         },
         "gameplay.jump_lock_mode": {
@@ -1410,7 +1410,7 @@
             "description": "Kontroluje metodę liczenia zasięgu eksplozji pocisków z wyrzutni rakiet i granatników.\n\n- Pojedynczy przebieg: zachowanie z TR1 i TR2.\n- Wielokrotny przebieg: zachowanie z TR3.\n\nWielokrotny przebieg często powoduje podwójne obrażenia dla pojedynczych celów.",
         },
         "gameplay.remember_gun_status": {
-            "title": "Zapamiętuj broń między poziomami",
+            "title": "\\{review}Broń między poziomami",
             "description": "Włączenie tej opcji sprawi, że Lara zapamięta wybór broni z poprzedniego poziomu. W przeciwnym wypadku Lara zawsze będzie wracać do pistoletów, domyślnie schowanych w kaburach.",
         },
         "gameplay.restore_ps1_enemies": {
@@ -1418,7 +1418,7 @@
             "description": "\\{review}Dodaje mumię, która pojawia się w wersji na PlayStation w City of Khamoon w TR1, pokój 25.\nZmiana tej opcji do poprawnego działania wymaga ponownego uruchomienia gry.",
         },
         "gameplay.ring_memory_mode": {
-            "title": "\\{review}Zapamiętaj pozycję w ekwipunku",
+            "title": "\\{review}Pozycja w ekwipunku",
             "description": "\\{review}Otwiera pierścień na pozycji, na której go zamknięto, zamiast na pierwszej.\n\n- Wył.: każde otwarcie zaczyna się od pierwszej pozycji, jak w oryginalnej grze.\n- Pierścień główny: zapamiętywany jest tylko pierścień przedmiotów.\n- Wszystkie pierścienie: zapamiętywane są pierścienie przedmiotów i kluczy.\n\nPierwsza pozycja wraca, gdy Lara nie ma już zapamiętanej rzeczy, a każdy poziom zaczyna się od niej.",
         },
         "gameplay.save_crystal_mode": {
@@ -1482,7 +1482,7 @@
             "description": "Dostosowuje rozmiar ekranowego D-pada.",
         },
         "input.touch_opacity": {
-            "title": "Przezroczystość sterowania dotykowego",
+            "title": "\\{review}Przezroczystość dotyku",
             "description": "Dostosowuje przezroczystość ekranowych przycisków sterowania dotykowego.",
         },
         "language": {
@@ -1862,7 +1862,7 @@
             "description": "Przywraca glonom efekt animacji w wodnych poziomach.",
         },
         "visuals.fix_item_rots": {
-            "title": "\\{review}Napraw rozmieszczeniem przedmiotów",
+            "title": "\\{review}Napraw pozycje obiektów",
             "description": "\\{review}Naprawia kilka błędów z oryginalnych gier spowodowanych nieprawidłowym rozmieszczeniem lub orientacją obiektów.",
         },
         "visuals.fix_texture_issues": {

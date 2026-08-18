@@ -150,12 +150,12 @@
             "common": {
                 "all_hidden_disclaimer": "Tha na roghainnean ciorramach airson nan ìrean seo.",
                 "chroma": "Chroma",
-                "edit_value": "Deasaich luach",
+                "edit_value": "\\{review}Deasaich",
                 "frozen_option_disclaimer": "Tha an suidheachadh seo air a chur an gnìomh le ùghdar nan ìrean agus chan urrainnear ga atharrachadh.",
                 "hue": "Tuar",
                 "lightness": "Soilleireachd",
                 "restore_default": "Ath-shuidhich",
-                "toggle_help": "Tionndaidh cuideachadh",
+                "toggle_help": "\\{review}Cuideachadh",
             },
             "controls": {
                 "backend": {
@@ -723,7 +723,7 @@
             "INPUT_ROLE_DOWN": "Air Ais",
             "INPUT_ROLE_DRAW_WEAPON": "Uidheamaich",
             "INPUT_ROLE_ENTER_CONSOLE": "Consol Leasachaidh",
-            "INPUT_ROLE_EQUIP_AUTOS": "Uidheamaich Piostalan Fèin-obrachail",
+            "INPUT_ROLE_EQUIP_AUTOS": "\\{review}Piostalan Fèin-obrachail",
             "INPUT_ROLE_EQUIP_DESERT_EAGLE": "Uidheamaich an Desert Eagle",
             "INPUT_ROLE_EQUIP_GRENADE_LAUNCHER": "Uidheamaich Lannsair Grenèad",
             "INPUT_ROLE_EQUIP_HARPOON": "Uidheamaich Harpùn",
@@ -758,11 +758,11 @@
             "INPUT_ROLE_STEP_RIGHT": "Ceum air Dheas",
             "INPUT_ROLE_SWITCH_BORDERS": "Atharraich Meud nan Iomallan",
             "INPUT_ROLE_SWITCH_UPSCALING": "Atharraich Factar Sgèileachaidh",
-            "INPUT_ROLE_TOGGLE_BILINEAR_FILTER": "Tionndaidh Criathradh Teacsdaire",
+            "INPUT_ROLE_TOGGLE_BILINEAR_FILTER": "\\{review}Criathradh Teacsdaire",
             "INPUT_ROLE_TOGGLE_FULLSCREEN": "Tionndaidh Modh-làn-sgrìn",
             "INPUT_ROLE_TOGGLE_PHOTO_MODE": "Tionndaidh Modh Dealbh",
             "INPUT_ROLE_TOGGLE_TEXTURES": "Cuir dheth Teacsaichean",
-            "INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER": "Tionndaidh Criathradh Trapeasoid",
+            "INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER": "\\{review}Criathradh Trapeasoid",
             "INPUT_ROLE_TOGGLE_UI": "Tionndaidh an Eadar-aghaidh",
             "INPUT_ROLE_TOGGLE_WIREFRAME": "Tionndaidh air frèam-uèir",
             "INPUT_ROLE_TURBO_CHEAT": "Luas Turbo",
@@ -982,7 +982,7 @@
             "description": "Cùimidh seo Lara a' ruith gu bràth fhad 's a tha am putan freagairteach air a phutadh.",
         },
         "gameplay.ally_hostility_policy": {
-            "title": "Poileasaidh nàimhdeas aonaid",
+            "title": "\\{review}Nàimhdeas aonaid",
             "description": "Atharraichidh seo an doigh anns a bhios cairdean a' freagairt nuair a thèid an dochann.\n\n- Fa leth: bidh an caraid - agus an caraid seo a-mhàin - a-nis na nàmhaid (stoidhle TR3).\n- Air a cho-roinn: bidh gach caraid a-nis na nàmhaid (stoidhle TR2).",
         },
         "gameplay.camera_speed": {
@@ -998,7 +998,7 @@
             "description": "Bheir buaidh air an doigh anns a bhios creutairean tìreil gan giùlan fhèin ann an seòmraichean uisge.\n\n- A-riamh: cha bhàsaichidh creutairean tìreil gu bràth (stoidhle TR1).\n- Bunaiteach: bàsaichidh creutairean tìreil ann an uisge 2 chlic no nas doimhne (stoidhle TR2/3).\n- Fo uisge: bàsaichidh creutairean tìreil a-mhàin nuair a tha iad gu tur fon uisge.",
         },
         "gameplay.disable_extra_guns": {
-            "title": "Thoir air falbh armachd a bharrachd",
+            "title": "\\{review}Gun armachd a bharrachd",
             "description": "Thoir air falbh gach armachd agus ammo bhon gheama ach Pistols (airson ruith dùbhlain Pistols a-mhàin).",
         },
         "gameplay.disable_healing_between_levels": {
@@ -1014,7 +1014,7 @@
             "description": "Cuiridh seo às ri buaidh-bhualaidh corp T-Rex às deidh bàs, gus casg a chur air bacadh slighe a-mach.",
         },
         "gameplay.enable_ally_kill_count": {
-            "title": "Àireamhachadh murtan a' chom-pàirtiche",
+            "title": "\\{review}Murtan a' chom-pàirtiche",
             "description": "A' cunntadh murtan nàmhaid a chaidh a dhèanamh le com-pàirtichean Lara a dh'ionnsaigh an àireamh iomlan de mhurtan.",
         },
         "gameplay.enable_ally_targeting": {
@@ -1326,7 +1326,7 @@
             "description": "Càradh cruinneas M16/MP5 fhad 's a tha Lara a' ruith.",
         },
         "gameplay.fix_monkey_pickup_priority": {
-            "title": "Cuir prìomhachas air togail muncaidh ceart",
+            "title": "\\{review}Càraich togail muncaidh",
             "description": "Bidh muncaidhean air an ionnsaigh a' cur prìomhachas air freagairt air ais seach a bhith a' cruinneachadh pacaidean Medi agus iuchraichean.",
         },
         "gameplay.fix_pipeman_aim": {
@@ -1466,7 +1466,7 @@
             "description": "Cuiridh seo ceumannan-taoibh stoidhle TR3+ an comas, m.e. coisich + saigheadan. Bidh na putanan sònraichte fhathast ag obair.",
         },
         "input.quick_guns_mode": {
-            "title": "Iuchraichean luatha armachd",
+            "title": "\\{review}Iuchraichean armachd",
             "description": "Smachd air mar a dh'èireas na h-iuchraichean uidheamachaidh armachd luatha.\n\n- Tarraing a-mhàin: bheir iuchair teth air Lara an arm ainmichte a tharraing.\n- Tarraing/falach: mar roimhe, ach bheir seo cuideachd air Lara an arm a chur air falach ma tha i ga ghiùlan.",
         },
         "input.touch_button_scale": {
@@ -1654,7 +1654,7 @@
             "description": "Dath a' bhàr-shlàinte nuair a tha Lara air a puinnseanachadh.",
         },
         "ui.inventory_background_style": {
-            "title": "Dealbh-cùil sa chlàr-seilbhe",
+            "title": "\\{review}Dealbh-cùil seilbhe",
             "description": "Atharraichidh an doigh anns a bhitheas an dealbh-cùil air a shealltainn sa chlàr-seilbhe.\n\n- Dorcha: TR1 (PC).\n- Fìor dhorcha: TR1 (PS1).\n- Statach: TR2 (PC).\n- Crathadh: TR2 (PS1).\n- Aon-dhathach: TR3.",
         },
         "ui.inventory_fade_effects": {
@@ -1698,7 +1698,7 @@
             "description": "Dath a' bhàr ruith luath.",
         },
         "ui.sprintbar_location": {
-            "title": "Suidheachadh bàr ruith luath",
+            "title": "\\{review}Bàr ruith luath",
             "description": "Far a nochdas am bàr ruith luath air an sgrion.",
         },
         "ui.stats.show_ammo": {

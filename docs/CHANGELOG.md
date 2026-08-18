@@ -13,24 +13,21 @@
 - Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187 / TRX1036)
 - Added a flat yellow color to the PS1 bar palettes (Graphic Options → UI → Bars) (#5227 / TRX1135)
 - Changed Lara's outfit setting to offer only the outfits the current level can dress her in (TRX1086)
-- Changed a dialog's tabs to show only the tab in front where the screen has no room for the whole strip, rather than holding the dialog to its width
 - Changed moving Lara in photo mode to follow the direction the camera looks, rather than the way she faces (TRX1153)
+- Changed settings dialogs to stay readable at large text sizes, with shorter setting names and tighter layouts where needed
 - Changed the Fix one-shot music triggers option to sit with the other music settings (Sound → Misc) (TRX1045)
 - Changed the PS1 poison healthbar to flat yellow, as the PS1 releases had it (#5227 / TRX1135)
 - Changed the TR3 breeze mode to read TR3/4, as it covers both games (Graphic Options → Visuals → Breeze) (TRX1133)
 - Changed the preset confirmation to offer Apply and Go back as choices, rather than leaving the keys unsaid (#6258 / TRX1126)
-- Changed the settings dialogs to give up the space between a setting and its value before shrinking the text at large text sizes
-- Changed the settings dialogs to shrink as far as they must to fit the screen, rather than stopping short of it and running over the edge at large text sizes
 - Changed vertex snapping to offer Disabled, 320x240, and Upscale Res modes (#6278 / TRX1137)
 - Fixed a setting description showing a question mark in place of a key that is bound to a combination, such as Alt+Enter (TRX1136)
 - Fixed ability to open the inventory ring while a flyby sequence has Lara's control (TRX1057)
+- Fixed several dialogs running past the screen edges or overlapping headings at large text sizes (#6293 / TRX1154)
 - Fixed the game flashing over the black bars beside the picture when a frame is advanced in photo mode (regression from 1.10) (TRX1068)
 - Fixed the icons beside the volume settings, which now show a note for the music and a speaker for the sound effects (TRX1040)
 - Fixed the photo mode camera drifting upwards and overshooting when it is moved while pitched up or down (TRX1142)
 - Fixed the photo mode camera flickering and refusing to turn over when it is pitched past straight up or down, and turning in coarse steps while aimed near vertical (TRX1152)
-- Fixed the preset confirmation running over the screen heading and wrapping into a narrow column at large text sizes
-- Fixed the Customize Controls box running past the edges of the screen at large text sizes (#6293 / TRX1154)
-- Fixed the statistics overlapping the inventory heading and the item name at large text sizes (#6295 / TRX1156)
+- Fixed the statistics overlapping inventory text at large text sizes (#6295 / TRX1156)
 
 **Developer console**
 - Added the `/outfit` console command, which shows or changes what Lara is wearing (TRX1070)

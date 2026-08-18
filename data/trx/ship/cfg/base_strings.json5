@@ -150,12 +150,12 @@
             "common": {
                 "all_hidden_disclaimer": "Settings are disabled for this level set.",
                 "chroma": "Chroma",
-                "edit_value": "Edit value",
+                "edit_value": "Edit",
                 "frozen_option_disclaimer": "This setting is enforced by the level builder and cannot be changed.",
                 "hue": "Hue",
                 "lightness": "Lightness",
                 "restore_default": "Restore default",
-                "toggle_help": "Toggle help",
+                "toggle_help": "Help",
             },
             "controls": {
                 "backend": {

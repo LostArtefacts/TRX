@@ -6,7 +6,7 @@
         "actions": {
             "examine_item": "Examiner",
             "hide_dialog": "Masquer le dialogue",
-            "reset_defaults": "Réinitialiser tout",
+            "reset_defaults": "\\{review}Réinitialiser",
             "rotate": "Tourner",
             "unbind": "Dissocier",
             "use_item": "Utiliser",
@@ -43,9 +43,9 @@
             "demo_mode": "Mode Démo",
             "empty_slot_fmt": "- EMPLACEMENT VIDE %d -",
             "exit": "Sortie",
-            "hold_fmt": "Maintenir %s",
-            "off": "Désactivé",
-            "on": "Activé",
+            "hold_fmt": "\\{review}Tenir %s",
+            "off": "\\{review}Non",
+            "on": "\\{review}Oui",
             "pagination_nav": "%d / %d",
         },
         "osd": {
@@ -150,12 +150,12 @@
             "common": {
                 "all_hidden_disclaimer": "\\{review}Les paramètres sont désactivés pour cet ensemble de niveaux.",
                 "chroma": "Chroma",
-                "edit_value": "Modifier la valeur",
+                "edit_value": "\\{review}Modifier",
                 "frozen_option_disclaimer": "Ce paramètre est imposé par le créateur du niveau et ne peut pas être modifié.",
                 "hue": "Teinte",
                 "lightness": "Luminosité",
                 "restore_default": "Restaurer",
-                "toggle_help": "Active l'aide",
+                "toggle_help": "\\{review}Aide",
             },
             "controls": {
                 "backend": {
@@ -757,7 +757,7 @@
             "INPUT_ROLE_STEP_LEFT": "Pas à gauche",
             "INPUT_ROLE_STEP_RIGHT": "Pas à droite",
             "INPUT_ROLE_SWITCH_BORDERS": "\\{review}Changer la taille des bordures",
-            "INPUT_ROLE_SWITCH_UPSCALING": "\\{review}Changer le facteur de mise à l'échelle",
+            "INPUT_ROLE_SWITCH_UPSCALING": "\\{review}Changer l'échelle",
             "INPUT_ROLE_TOGGLE_BILINEAR_FILTER": "\\{review}Basculer le filtre bilinéaire",
             "INPUT_ROLE_TOGGLE_FULLSCREEN": "\\{review}Basculer en plein écran",
             "INPUT_ROLE_TOGGLE_PHOTO_MODE": "Basculer le mode photo",
@@ -894,7 +894,7 @@
             "description": "Place le micro au niveau de Lara. Si cette option est désactivée, le micro sera placé au niveau de la caméra.",
         },
         "audio.enable_music_in_inventory": {
-            "title": "\\{review}Jouer de la musique dans l'inventaire",
+            "title": "\\{review}Musique dans l'inventaire",
             "description": "\\{review}Permet aux sons du jeu, à l'ambiance et à la musique de continuer à jouer dans l'écran d'inventaire.",
         },
         "audio.enable_music_in_menu": {
@@ -926,7 +926,7 @@
             "description": "Corrige le fait que la musique est coupée à la découverte d'un secret.",
         },
         "audio.fix_speeches_killing_music": {
-            "title": "Superposer les voix des ennemis",
+            "title": "\\{review}Voix des ennemis",
             "description": "Corrige le fait que la musique est coupée lorsque les ennemis se mettent à parler.",
         },
         "audio.fmv_volume": {
@@ -950,7 +950,7 @@
             "description": "\\{review}Ajuste le volume de tous les sons du jeu. Les autres réglages sont relatifs à ce volume.",
         },
         "audio.music_load_condition": {
-            "title": "Reprendre la musique au chargement",
+            "title": "\\{review}Reprendre la musique",
             "description": "Restaure la lecture des pistes audio qui étaient en cours de lecture lors de la sauvegarde.\n- Aucune : ne restaure jamais la lecture au chargement.\n- Pistes musicales : reprend uniquement les pistes musicales (hors ambiance) au chargement.\n- Tout : restaure tout type de piste audio au chargement.",
         },
         "audio.music_volume": {
@@ -958,7 +958,7 @@
             "description": "\\{review}Ajuste le volume de la musique.",
         },
         "audio.mute_out_of_focus": {
-            "title": "\\{review}Couper le son lorsque la fenêtre perd le focus",
+            "title": "\\{review}Couper le son en arrière-plan",
             "description": "\\{review}Coupe toute la musique et les effets sonores lorsque la fenêtre du jeu n'est pas au premier plan.",
         },
         "audio.sound_volume": {
@@ -990,11 +990,11 @@
             "description": "Modifie la vitesse à laquelle se déplace la caméra manuelle.",
         },
         "gameplay.change_pierre_spawn": {
-            "title": "Modifier le comportement d'apparition de Pierre",
+            "title": "\\{review}Apparition de Pierre",
             "description": "Fait en sorte que l'apparition d'un nouveau Pierre (qui s'échappe) remplace l'éventuel Pierre (qui s'échappe) déjà existant.",
         },
         "gameplay.creature_drown_policy": {
-            "title": "\\{review}Comportement de noyade des créatures",
+            "title": "\\{review}Noyade des créatures",
             "description": "\\{review}Contrôle le comportement des créatures terrestres dans les zones d’eau.\n\n- Jamais: les créatures terrestres ne se noient jamais (style TR1).\n- Par défaut: les créatures terrestres se noient dans une eau d’une profondeur de 2 clics ou plus (style TR2/3).\n- Submergé: les créatures terrestres se noient uniquement lorsqu’elles sont entièrement immergées.",
         },
         "gameplay.disable_extra_guns": {
@@ -1010,7 +1010,7 @@
             "description": "Supprime toutes les trousses de soin de tous les niveaux (pour les No Meds challenges).",
         },
         "gameplay.disable_trex_collision": {
-            "title": "Supprimer la colision du le cadavre du T-Rex",
+            "title": "\\{review}Cadavre du T-Rex traversable",
             "description": "Supprime toutes les collisions avec le cadavre T-Rex. Cela aide lorsque son cadavre bloque un passage.",
         },
         "gameplay.enable_ally_kill_count": {
@@ -1118,7 +1118,7 @@
             "description": "Améliore les sauvegardes afin que les effets graphiques, la brume des cascades, les émetteurs de flammes, etc. soient sauvegardés au lieu de disparaître au chargement.",
         },
         "gameplay.enable_environment_kill_count": {
-            "title": "\\{review}Compter les éliminations par l'environnement",
+            "title": "\\{review}Éliminations par le décor",
             "description": "\\{review}Compte les ennemis achevés par l'environnement, tels que les lasers de sécurité ou la noyade, dans le total des éliminations.",
         },
         "gameplay.enable_fast_pickups": {
@@ -1230,7 +1230,7 @@
             "description": "\\{review}Permet d'annuler l'animation de balancement à un rebord de Lara en relâchant puis en se raccrochant aussitôt, comme possible depuis TR2. Le TR1 d'origine ne le permet pas.",
         },
         "gameplay.enable_timer_in_inventory": {
-            "title": "Comptabiliser du temps de jeu dans l'inventaire",
+            "title": "\\{review}Temps de jeu dans l'inventaire",
             "description": "Fait avancer le compteur du jeu même quand l'inventaire est ouvert.",
         },
         "gameplay.enable_toggle_crouch": {
@@ -1326,7 +1326,7 @@
             "description": "\\{review}Corrige la précision du M16/MP5 pendant que Lara court.",
         },
         "gameplay.fix_monkey_pickup_priority": {
-            "title": "\\{review}Corriger la priorité de ramassage des singes",
+            "title": "\\{review}Priorité de ramassage",
             "description": "\\{review}Les singes attaqués privilégieront la riposte plutôt que de collecter les trousses de soins et les clés.",
         },
         "gameplay.fix_pipeman_aim": {
@@ -1374,7 +1374,7 @@
             "description": "\\{review}Permet à Lara d'entrer dans une animation de pose après le nombre de secondes d'inactivité défini. Réglez sur 0 pour désactiver.",
         },
         "gameplay.intro_fmv_mode": {
-            "title": "\\{review}Timing de la cinématique d'introduction",
+            "title": "\\{review}Durée de l'introduction",
             "description": "\\{review}Contrôle quand la cinématique d'ouverture de l'histoire de chaque jeu est diffusée.\n\n- Nouvelle partie : la jouer au début d'une nouvelle partie.\n- Lancement : la jouer à chaque fois que le jeu est lancé ou repris, comme dans les jeux originaux.",
         },
         "gameplay.jump_lock_mode": {
@@ -1382,7 +1382,7 @@
             "description": "\\{review}Pour un saut réactif, permet de contrôler à quel moment après le début de la course Lara est autorisée à sauter.\n\n- Hérité : correspond au timing original de TR2.\n- Ajusté : le saut est possible 2 images plus tôt que dans TR2 d'origine.\n- Désactivé : le saut est possible immédiatement après l'animation de départ en course.",
         },
         "gameplay.loading_screens": {
-            "title": "Activer les écrans de chargement",
+            "title": "\\{review}Écrans de chargement",
             "description": "\\{review}Contrôle les écrans de chargement avant le chargement des niveaux.\n\n- Désactivé : n'affiche jamais les écrans de chargement.\n- Toujours : affiche les écrans de chargement.\n- Nouvelles parties : n'affiche pas les écrans de chargement lors du chargement d'une sauvegarde.",
         },
         "gameplay.look_mode": {
@@ -1394,7 +1394,7 @@
             "description": "\\{review}Détermine quand Lara épaule le M16/MP5 au lieu de tirer à la hanche.\n\n- Original : Lara épaule l'arme dès qu'elle s'arrête.\n- Amélioré : Lara continue de tirer à la hanche tant que la touche Action est maintenue et n'épaule l'arme que si elle commence à tirer à l'arrêt. Avec la correction de précision activée, le tir à la hanche est moins précis et inflige moins de dégâts par balle.",
         },
         "gameplay.maximum_quick_save_slots": {
-            "title": "\\{review}Nombre d'emplacements de sauvegarde rapide",
+            "title": "\\{review}Emplacements de sauvegarde rapide",
             "description": "\\{review}Modifie le nombre d'emplacements de sauvegarde rapide disponibles.",
         },
         "gameplay.maximum_save_slots": {
@@ -1418,7 +1418,7 @@
             "description": "\\{review}Ajoute la momie qui apparaît dans la version PlayStation de City of Khamoon, dans TR1, salle 25.\nModifier cette option nécessitera de redémarrer le jeu.",
         },
         "gameplay.ring_memory_mode": {
-            "title": "\\{review}Mémoriser la position dans l'inventaire",
+            "title": "\\{review}Position dans l'inventaire",
             "description": "\\{review}Ouvre un anneau sur l'entrée où il a été laissé, plutôt que sur la première.\n\n- Désactivé : chaque ouverture commence à la première entrée, comme dans le jeu d'origine.\n- Anneau principal : seul l'anneau des objets est mémorisé.\n- Tous les anneaux : les anneaux des objets et des clés sont mémorisés.\n\nLa première entrée revient si Lara ne porte plus ce qui était mémorisé, et chaque niveau y commence.",
         },
         "gameplay.save_crystal_mode": {
@@ -1534,7 +1534,7 @@
             "description": "Format de fichier pour les captures d'écran.",
         },
         "rendering.sprite_lock_mode": {
-            "title": "\\{review}Mode verrouillage des sprites",
+            "title": "\\{review}Verrouillage des sprites",
             "description": "\\{review}Contrôle les axes à verrouiller lors de l'affichage des sprites à l'écran.\n\n- Aucun : afficher les sprites normalement.\n- Roulis : verrouiller l'axe de roulis – utile uniquement en mode photo.\n- Roulis et tangage : garantir que les sprites restent debout et ne reposent pas au sol lorsqu'on les regarde d'en haut.\n- Perspective : verrouiller les axes de roulis et de tangage et, en plus, faire pivoter légèrement les sprites vers le centre de l'écran.",
         },
         "rendering.supersampling_factor": {
@@ -1570,11 +1570,11 @@
             "description": "Couleur de la barre d'air.",
         },
         "ui.airbar_location": {
-            "title": "Emplacement de la barre d'air",
+            "title": "\\{review}Barre d'air",
             "description": "Emplacement de la barre d'air.",
         },
         "ui.ammo_counter_location": {
-            "title": "\\{review}Emplacement du compteur de munitions",
+            "title": "\\{review}Compteur de munitions",
             "description": "\\{review}Emplacement où le compteur de munitions est affiché.",
         },
         "ui.bar_look": {
@@ -1614,11 +1614,11 @@
             "description": "Couleur de la barre de santé des ennemis.",
         },
         "ui.enemy_healthbar_location": {
-            "title": "Emplacement de la barre des ennemis",
+            "title": "\\{review}Barre des ennemis",
             "description": "Emplacement de la barre de santé des ennemis.",
         },
         "ui.enemy_healthbar_show_mode": {
-            "title": "Comportement de la barre des ennemis",
+            "title": "\\{review}Barre des ennemis",
             "description": "\\{review}Détermine quand une barre de vie est affichée pour l'ennemi visé par Lara.\n\n- Toujours : l'afficher pour toute cible.\n- Boss uniquement : ne l'afficher que si la cible est un boss.\n- Jamais : ne jamais l'afficher.",
         },
         "ui.exposurebar_color": {
@@ -1630,7 +1630,7 @@
             "description": "\\{review}Couleur de la barre d'exposition à l'eau froide.",
         },
         "ui.exposurebar_location": {
-            "title": "\\{review}Emplacement de la barre d'exposition",
+            "title": "\\{review}Barre d'exposition",
             "description": "\\{review}Emplacement où la barre d'exposition à l'eau froide est affichée.",
         },
         "ui.healthbar_color": {
@@ -1642,19 +1642,19 @@
             "description": "Couleur de la barre de santé.",
         },
         "ui.healthbar_location": {
-            "title": "Emplacement barre de santé",
+            "title": "\\{review}Barre de santé",
             "description": "Emplacement de la barre de santé",
         },
         "ui.healthbar_poison_color": {
-            "title": "\\{review}Couleur de la barre de santé empoisonnée",
+            "title": "\\{review}Barre de santé: empoisonnée",
             "description": "\\{review}Couleur de la barre de santé lorsque Lara est empoisonnée.",
         },
         "ui.healthbar_poison_color_ps1": {
-            "title": "\\{review}Couleur de la barre de santé empoisonnée",
+            "title": "\\{review}Barre de santé: empoisonnée",
             "description": "\\{review}Couleur de la barre de santé lorsque Lara est empoisonnée.",
         },
         "ui.inventory_background_style": {
-            "title": "\\{review}Arrière-plan de l'inventaire",
+            "title": "\\{review}Fond de l'inventaire",
             "description": "\\{review}Modifie la façon dont l'arrière-plan de l'anneau d'inventaire est affiché.\n\n- Sombre : TR1 (PC).\n- Très sombre : TR1 (PS1).\n- Statique : TR2 (PC).\n- Ondulé : TR2 (PS1).\n- Monochrome : TR3.",
         },
         "ui.inventory_fade_effects": {
@@ -1698,7 +1698,7 @@
             "description": "\\{review}Couleur de la barre de sprint.",
         },
         "ui.sprintbar_location": {
-            "title": "\\{review}Emplacement de la barre de sprint",
+            "title": "\\{review}Barre de sprint",
             "description": "\\{review}Emplacement où la barre de sprint est affichée.",
         },
         "ui.stats.show_ammo": {
@@ -1750,7 +1750,7 @@
             "description": "\\{review}Contrôle la façon dont la fenêtre des statistiques est affichée.\n\n- Simple : affiche la mise en page plus simple sans cadre.\n- Encadré : affiche la mise en page encadrée.",
         },
         "ui.stats_background_style": {
-            "title": "\\{review}Arrière-plan des statistiques",
+            "title": "\\{review}Fond des statistiques",
             "description": "\\{review}Modifie la façon dont l'arrière-plan des statistiques de fin de niveau est affiché.\n\n- Sombre : TR1 (PC).\n- Très sombre : TR1 (PS1).\n- Statique : TR2 (PC).\n- Ondulé : TR2 (PS1).\n- Monochrome : TR3.",
         },
         "ui.stats_fade_effects": {
@@ -1862,7 +1862,7 @@
             "description": "\\{review}Corrige les sprites originaux des plantes sous-marines pour qu'ils s'animent correctement dans les zones aquatiques.",
         },
         "visuals.fix_item_rots": {
-            "title": "\\{review}Corriger le placement des objets à ramasser",
+            "title": "\\{review}Placement des objets",
             "description": "\\{review}Corrige plusieurs problèmes des jeux d'origine causés par des objets mal placés ou mal orientés.",
         },
         "visuals.fix_texture_issues": {
