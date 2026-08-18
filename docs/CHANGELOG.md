@@ -13,6 +13,9 @@
 - Fixed objects that reach into a neighbouring room being cut off or vanishing when seen through that room
 - Fixed the boulder in room 78 getting drawn in the overlapping room 74 in Tomb of Tihocan (regression from 1.10.1)
 
+**Lara's movement**
+- Fixed Lara being able to continue shimmying on monkeybars after death (#6300 / TRX1161, regression from 1.0)
+
 
 ## [1.10.1](https://github.com/LostArtefacts/TRX/compare/trx-1.10...trx-1.10.1) - 2026-08-16
 **UI**
