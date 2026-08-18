@@ -44,9 +44,12 @@ typedef struct UI_SETTINGS_EDITOR_STATE {
     // are made anew when the game changes and announce nothing when they are.
     int32_t config_generation;
     int32_t handler_generation;
-    // How wide the tab's titles and values measure. Measuring walks every
-    // row and every value it can take, so the answer is kept until the text
-    // scale, the rows or the strings move.
+    // How wide the tab's titles and values measure, in text units before the
+    // player's text scale. Measuring walks every row and every value it can
+    // take, so the answer is kept until the strings or the scale it was made
+    // against move. It is held against the scale the player set rather than
+    // the one a dialog is drawn at, so that giving way does not send it round
+    // again.
     struct {
         float label_w;
         float value_w;
@@ -55,8 +58,8 @@ typedef struct UI_SETTINGS_EDITOR_STATE {
         // sit on different rows.
         float row_w;
         float text_scale;
-        int32_t row_count;
         int32_t strings_epoch;
+        bool measured;
     } widths;
     int32_t change_listener;
     UI_SCROLLABLE scroll;
@@ -254,7 +257,9 @@ static void M_EnsureRows(UI_SETTINGS_EDITOR_STATE *const s)
 static void M_HandleConfigChange(
     const EVENT *const event, void *const user_data)
 {
-    M_ArrangeRows(user_data);
+    UI_SETTINGS_EDITOR_STATE *const s = user_data;
+    M_ArrangeRows(s);
+    s->widths.measured = false;
 }
 
 static const UI_SETTINGS_ROW *M_GetOptionByRow(
@@ -574,30 +579,32 @@ static float M_GetValueArrowsWidth(void)
 
 static void M_MeasureWidths(UI_SETTINGS_EDITOR_STATE *const s)
 {
-    const float text_scale = UI_Scaler_GetTextScale();
-    const int32_t row_count = UI_Settings_GetRowCount(s->tab);
-    if (s->widths.text_scale == text_scale && s->widths.row_count == row_count
+    const float text_scale = g_Config.ui.text_scale;
+    if (s->widths.measured && s->widths.text_scale == text_scale
         && s->widths.strings_epoch == m_StringsEpoch) {
         return;
     }
 
-    const float arrows = M_GetValueArrowsWidth();
-    const float spacing = M_COLUMN_SPACING * text_scale;
+    const float measure_scale = UI_Scaler_GetTextScale();
+    const float arrows = M_GetValueArrowsWidth() / measure_scale;
+    const int32_t row_count = UI_Settings_GetRowCount(s->tab);
     s->widths.label_w = -1.0f;
     s->widths.value_w = -1.0f;
     s->widths.row_w = -1.0f;
     for (int32_t i = 0; i < row_count; i++) {
         const UI_SETTINGS_ROW *const row = UI_Settings_GetRow(s->tab, i);
-        const float label_w = UI_Label_MeasureW(M_GetOptionTitle(row));
-        const float value_w = M_MeasureMaxValueWidth(row) + arrows;
+        const float label_w =
+            UI_Label_MeasureW(M_GetOptionTitle(row)) / measure_scale;
+        const float value_w =
+            M_MeasureMaxValueWidth(row) / measure_scale + arrows;
         s->widths.label_w = MAX(s->widths.label_w, label_w);
         s->widths.value_w = MAX(s->widths.value_w, value_w);
-        s->widths.row_w = MAX(s->widths.row_w, label_w + spacing + value_w);
+        s->widths.row_w =
+            MAX(s->widths.row_w, label_w + M_COLUMN_SPACING + value_w);
     }
-
     s->widths.text_scale = text_scale;
-    s->widths.row_count = row_count;
     s->widths.strings_epoch = m_StringsEpoch;
+    s->widths.measured = true;
 }
 
 static float M_GetFooterWidth(void)
@@ -654,14 +661,14 @@ void UI_SettingsEditor_ForgetWidths(void)
 float UI_SettingsEditor_GetContentWidth(UI_SETTINGS_EDITOR_STATE *const s)
 {
     M_MeasureWidths(s);
-    return s->widths.label_w + M_COLUMN_SPACING * UI_Scaler_GetTextScale()
-        + s->widths.value_w;
+    return (s->widths.label_w + M_COLUMN_SPACING + s->widths.value_w)
+        * UI_Scaler_GetTextScale();
 }
 
 float UI_SettingsEditor_GetMinContentWidth(UI_SETTINGS_EDITOR_STATE *const s)
 {
     M_MeasureWidths(s);
-    return s->widths.row_w;
+    return s->widths.row_w * UI_Scaler_GetTextScale();
 }
 
 float UI_SettingsEditor_GetContentHeight(
@@ -884,7 +891,7 @@ void UI_SettingsEditor_Draw(
 {
     M_MeasureWidths(s);
     const float scale = UI_Scaler_GetTextScale();
-    const float max_value_w = s->widths.value_w / scale;
+    const float max_value_w = s->widths.value_w;
 
     const int32_t sel_row = UI_Scrollable_GetSelectedItem(dialog_scroll);
 
