@@ -1,10 +1,3 @@
-// Enough of the engine for the UI to measure and lay out a scene: the font
-// metrics, the viewport it sizes itself against, and no-op draw scheduling.
-//
-// The metrics come out of the game's own font.bin, so text measures here
-// exactly as it does in the game. Each game ships its own font, hence one per
-// version.
-
 #include <fakes/ui.h>
 
 #include <harness/font_bin.h>
@@ -93,10 +86,6 @@ int32_t Viewport_GetHeight(const VIEWPORT_SPACE space)
     return m_ViewportHeight;
 }
 
-// The font resolves "\{input <role>}" through the current binding. By default
-// every role reports the widest keycap in the sheet, so a check built on these
-// metrics holds for any binding a player can make. A test about the binding
-// itself names the keys it wants instead.
 const char *Input_GetKeyName(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
     const INPUT_ROLE role, const int32_t slot)

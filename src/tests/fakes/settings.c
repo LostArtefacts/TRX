@@ -1,11 +1,3 @@
-// The engine surface the settings dialogs reach for while they build a scene:
-// the file layer their presets come from, the input state they poll, and the
-// gameplay predicates that decide whether a row is shown at all.
-//
-// The file layer is a read-only shim over the shipped data in the repository,
-// so the dialogs see the presets players see. Writes go nowhere: a test that
-// measures a dialog has no business leaving a config file behind.
-
 #include <fakes/settings.h>
 
 #include <trx/config/file.h>
@@ -50,8 +42,6 @@ INPUT_STATE g_InputDB = {};
 
 static M_RESOLVED_PATH *m_ResolvedPaths = nullptr;
 
-// Every path variable resolves to the shipped config directory, which is where
-// the presets live.
 char *GamePath_ExpandVars(const char *const path)
 {
     const char *const opening = strchr(path, '%');
@@ -63,8 +53,6 @@ char *GamePath_ExpandVars(const char *const path)
     return String_Format("%s%s", TEST_SHIP_CFG_DIR, closing + 1);
 }
 
-// Cached and valid for the run, as the engine's is: a caller may hold what it
-// was given.
 RESULT GamePath_Resolve(
     const GAME_DYNAMIC_PATH path, const char *const rel,
     const char **const out_path)
