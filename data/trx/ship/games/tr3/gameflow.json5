@@ -158,6 +158,7 @@
                 "ganges_textures.bin",
                 "common_pickup_meshes.bin",
                 "fish_sprites.bin",
+                "ganges_animating_bounds.bin",
             ],
         },
 
@@ -400,6 +401,7 @@
                 "nevada_door132_frames.bin",
                 "common_pickup_meshes.bin",
                 "nevada_textures.bin",
+                "nevada_animating_bounds.bin",
             ],
             "unobtainable_pickups": 1,
         },

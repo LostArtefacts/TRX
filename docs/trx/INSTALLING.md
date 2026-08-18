@@ -1037,6 +1037,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── fish_sprites.bin
 │   │   │   ├── flamethrower_sfx.bin
 │   │   │   ├── font.bin
+│   │   │   ├── ganges_animating_bounds.bin
 │   │   │   ├── ganges_door131_frames.bin
 │   │   │   ├── ganges_textures.bin
 │   │   │   ├── globe_model.bin
@@ -1063,6 +1064,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── menu_artefacts_london.bin
 │   │   │   ├── mines_textures.bin
 │   │   │   ├── misc_sprites.bin
+│   │   │   ├── nevada_animating_bounds.bin
 │   │   │   ├── nevada_door132_frames.bin
 │   │   │   ├── nevada_sky.bin
 │   │   │   ├── nevada_textures.bin
@@ -2393,6 +2395,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── fish_sprites.bin
     │   │   │   │   ├── flamethrower_sfx.bin
     │   │   │   │   ├── font.bin
+    │   │   │   │   ├── ganges_animating_bounds.bin
     │   │   │   │   ├── ganges_door131_frames.bin
     │   │   │   │   ├── ganges_textures.bin
     │   │   │   │   ├── globe_model.bin
@@ -2419,6 +2422,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── menu_artefacts_london.bin
     │   │   │   │   ├── mines_textures.bin
     │   │   │   │   ├── misc_sprites.bin
+    │   │   │   │   ├── nevada_animating_bounds.bin
     │   │   │   │   ├── nevada_door132_frames.bin
     │   │   │   │   ├── nevada_sky.bin
     │   │   │   │   ├── nevada_textures.bin
