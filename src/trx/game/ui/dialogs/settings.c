@@ -8,12 +8,19 @@
 #include <trx/game/input.h>
 #include <trx/game/ui.h>
 #include <trx/game/ui/dialogs/settings_editor.h>
+#include <trx/game/ui/elements/label.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/viewport.h>
 
 #define M_MEASURE_SLACK 1.08f
 
 #define M_RECOMPUTE_ROUNDS 3
+
+#define M_TAB_BAR_SPACING 8.0f
+#define M_FOOTER_SPACING 5.0f
+
+#define M_MIN_VISIBLE_ROWS 5
+#define M_MAX_VISIBLE_ROWS 16
 
 typedef struct UI_SETTINGS_DIALOG_STATE {
     UI_SETTINGS_PHASE phase;
@@ -31,34 +38,48 @@ typedef struct UI_SETTINGS_DIALOG_STATE {
     int32_t listener_id;
 } UI_SETTINGS_DIALOG_STATE;
 
-static int32_t M_GetVisibleRows(const float fit_scale)
+static float M_GetRowHeight(void)
 {
-    const int32_t res_h =
-        UI_Scaler_CalcInverse(
-            Viewport_GetHeight(VIEWPORT_UI), UI_SCALER_TARGET_TEXT)
-        / MAX(0.01f, fit_scale);
-    static struct {
-        int32_t threshold;
-        int32_t rows;
-    } thresholds[] = {
-        { 240, 5 },  { 252, 6 },  { 266, 7 },  { 282, 8 },
-        { 300, 9 },  { 320, 10 }, { 342, 11 }, { 370, 12 },
-        { 420, 13 }, { 480, 15 }, { -1, 16 },
-    };
-    for (int32_t i = 0;; i++) {
-        if (res_h <= thresholds[i].threshold || thresholds[i].threshold == -1) {
-            return thresholds[i].rows;
-        }
-    }
+    float height = 0.0f;
+    UI_Label_Measure("0", nullptr, &height);
+    return height / UI_Scaler_GetTextScale();
 }
 
-static float M_GetVisibleContentHeight(const float fit_scale)
+static float M_GetChromeHeight(const UI_SETTINGS_DIALOG_STATE *const s)
 {
-    const int32_t visible_rows = M_GetVisibleRows(fit_scale);
-    if (visible_rows <= 0) {
-        return 0.0f;
+    const UI_WINDOW_SETTINGS window = {
+        .title = GameString_Get(s->title),
+        .title_spacing = -1.0f,
+        .reserve_scroll_space = true,
+    };
+    const float row_height = M_GetRowHeight();
+    float result =
+        UI_Window_GetChromeHeight(&window) - UI_TEXT_HEIGHT + row_height;
+    if (s->tab_switch != nullptr && s->tab_count > 0) {
+        result += row_height + M_TAB_BAR_SPACING;
     }
-    return visible_rows * UI_TEXT_HEIGHT;
+    result += M_FOOTER_SPACING + row_height;
+    return result;
+}
+
+static int32_t M_GetVisibleRows(const UI_SETTINGS_DIALOG_STATE *const s)
+{
+    const float available =
+        UI_GetSafeCanvasHeight() / UI_Scaler_GetBaseTextScale();
+    const float rows = (available - M_GetChromeHeight(s)) / M_GetRowHeight();
+    int32_t result = (int32_t)rows;
+    CLAMP(result, M_MIN_VISIBLE_ROWS, M_MAX_VISIBLE_ROWS);
+    return result;
+}
+
+static float M_GetVisibleContentHeight(const UI_SETTINGS_DIALOG_STATE *const s)
+{
+    return M_GetVisibleRows(s) * M_GetRowHeight();
+}
+
+static float M_GetContentHeight(const UI_SETTINGS_DIALOG_STATE *const s)
+{
+    return M_GetChromeHeight(s) + M_GetVisibleContentHeight(s);
 }
 
 static UI_SETTINGS_TAB *M_GetActiveTab(UI_SETTINGS_DIALOG_STATE *const s)
@@ -97,8 +118,7 @@ static UI_SCROLLABLE *M_GetTabScrollable(UI_SETTINGS_TAB *const tab)
 
 static void M_RecomputeSizesOnce(UI_SETTINGS_DIALOG_STATE *const s)
 {
-    const float visible_content_height =
-        M_GetVisibleContentHeight(s->fit_scale);
+    const float visible_content_height = M_GetVisibleContentHeight(s);
     float max_content_width = 0.0f;
     float min_content_width = 0.0f;
     float max_content_height = -1.0f;
@@ -156,8 +176,8 @@ static void M_RecomputeSizesOnce(UI_SETTINGS_DIALOG_STATE *const s)
 
     s->fit_scale = UI_GetFitScale(
         s->max_content_width * M_MEASURE_SLACK + UI_Window_GetChromeWidth(),
-        -1.0f);
-    s->visible_rows = M_GetVisibleRows(s->fit_scale);
+        M_GetContentHeight(s));
+    s->visible_rows = M_GetVisibleRows(s);
 }
 
 static void M_RecomputeSizes(UI_SETTINGS_DIALOG_STATE *const s)
@@ -180,7 +200,7 @@ static void M_WindowHeader(void *const user_data)
             s->phase == UI_SETTINGS_PHASE_NAVIGATE_TABS
                 ? UI_TAB_SWITCH_DRAW_FOCUSED
                 : UI_TAB_SWITCH_DRAW_ARROWS);
-        UI_Spacer(0.0f, 8.0f);
+        UI_Spacer(0.0f, M_TAB_BAR_SPACING);
     }
 }
 
@@ -377,10 +397,9 @@ void UI_SettingsDialog(UI_SETTINGS_DIALOG_STATE *const s)
 
     UI_Scaler_PushTextScale(s->fit_scale);
     UI_BeginModal(0.5f, 0.6f);
-    UI_BeginResize(s->max_content_width + UI_Window_GetChromeWidth(), -1.0f);
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_VERTICAL,
-        .spacing = { .v = 5.0f },
+        .spacing = { .v = M_FOOTER_SPACING },
         .align = { .h = UI_STACK_H_ALIGN_SPAN },
     });
 
@@ -393,6 +412,7 @@ void UI_SettingsDialog(UI_SETTINGS_DIALOG_STATE *const s)
         .user_data = s,
         .reserve_scroll_space = true,
     });
+    UI_Spacer(s->max_content_width, 0.0f);
 
     if (tab == nullptr || tab->ops == nullptr || tab->ops->draw == nullptr) {
         UI_BeginResize(-1.0f, -1.0f);
@@ -426,7 +446,6 @@ void UI_SettingsDialog(UI_SETTINGS_DIALOG_STATE *const s)
     }
 
     UI_EndStack();
-    UI_EndResize();
     UI_EndModal();
     UI_Scaler_PopTextScale();
 
