@@ -107,7 +107,7 @@ static int M_L_MusicStreamSeek(lua_State *const L)
         LUA_Struct_CheckRef(L, 1, &TYPE_MUSIC_STREAM_VIEW);
     LUA_Struct_Deref(L, ref);
     const double timestamp = luaL_checknumber(L, 2);
-    lua_pushboolean(L, Music_SeekStream(ref->handle.id, timestamp));
+    lua_pushboolean(L, IGNORE(Music_SeekStream(ref->handle.id, timestamp)));
     return 1;
 }
 

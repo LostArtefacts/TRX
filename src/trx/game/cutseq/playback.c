@@ -351,8 +351,8 @@ static void M_Step(void)
 
     if (info->audio_track != -1
         && Music_GetCurrentPlayingTrack() == (MUSIC_ID)info->audio_track) {
-        Music_SetSpeed(Clock_GetSpeedMultiplier());
-        Music_SyncTimestamp(m_State.frame / (double)LOGIC_FPS);
+        IGNORE(Music_SetSpeed(Clock_GetSpeedMultiplier()));
+        IGNORE(Music_SyncTimestamp(m_State.frame / (double)LOGIC_FPS));
     }
 
     m_State.frame++;

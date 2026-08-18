@@ -295,6 +295,15 @@ static int32_t M_PlayOverlayTrack(
     return slot + 1;
 }
 
+// What every call that speaks to the music answers for first.
+static RESULT M_CheckMainStream(void)
+{
+    FAIL_IF(
+        !m_MainStream.active || m_MainStream.audio_stream_id < 0,
+        "no music is playing");
+    return OK;
+}
+
 static bool M_GetMainTrackState(MUSIC_STREAM_STATE *const state)
 {
     if (!m_MainStream.active || state == nullptr) {
@@ -320,7 +329,7 @@ static bool M_GetMainTrackState(MUSIC_STREAM_STATE *const state)
 static void M_SeekMainStream(const double timestamp)
 {
     if (timestamp > 0.0) {
-        Music_SeekTimestamp(timestamp);
+        SHOULD(Music_SeekTimestamp(timestamp));
     }
 }
 
@@ -623,30 +632,22 @@ double Music_GetTimestamp(void)
     return Audio_Stream_GetTimestamp(m_MainStream.audio_stream_id);
 }
 
-bool Music_SeekTimestamp(const double timestamp)
+RESULT Music_SeekTimestamp(const double timestamp)
 {
-    if (!m_MainStream.active || m_MainStream.audio_stream_id < 0) {
-        return false;
-    }
-    return IGNORE(
-        Audio_Stream_SeekTimestamp(m_MainStream.audio_stream_id, timestamp));
+    MUST(M_CheckMainStream());
+    return Audio_Stream_SeekTimestamp(m_MainStream.audio_stream_id, timestamp);
 }
 
-bool Music_SetSpeed(const double speed)
+RESULT Music_SetSpeed(const double speed)
 {
-    if (!m_MainStream.active || m_MainStream.audio_stream_id < 0) {
-        return false;
-    }
-    return IGNORE(Audio_Stream_SetSpeed(m_MainStream.audio_stream_id, speed));
+    MUST(M_CheckMainStream());
+    return Audio_Stream_SetSpeed(m_MainStream.audio_stream_id, speed);
 }
 
-bool Music_SyncTimestamp(const double timestamp)
+RESULT Music_SyncTimestamp(const double timestamp)
 {
-    if (!m_MainStream.active || m_MainStream.audio_stream_id < 0) {
-        return false;
-    }
-    return IGNORE(
-        Audio_Stream_SyncTimestamp(m_MainStream.audio_stream_id, timestamp));
+    MUST(M_CheckMainStream());
+    return Audio_Stream_SyncTimestamp(m_MainStream.audio_stream_id, timestamp);
 }
 
 int32_t Music_GetStreamCount(void)
@@ -759,17 +760,16 @@ void Music_UnpauseStream(const int32_t slot)
     }
 }
 
-bool Music_SeekStream(const int32_t slot, const double timestamp)
+RESULT Music_SeekStream(const int32_t slot, const double timestamp)
 {
     const M_MUSIC_STREAM *const stream = M_GetStreamBySlot(slot);
-    if (stream == nullptr || !stream->active || stream->audio_stream_id < 0) {
-        return false;
-    }
-    return IGNORE(
-        Audio_Stream_SeekTimestamp(stream->audio_stream_id, timestamp));
+    FAIL_IF(
+        stream == nullptr || !stream->active || stream->audio_stream_id < 0,
+        "slot %d holds no music", slot);
+    return Audio_Stream_SeekTimestamp(stream->audio_stream_id, timestamp);
 }
 
-bool Music_SeekTrackTimestamp(
+RESULT Music_SeekTrackTimestamp(
     const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode, const double timestamp)
 {
     if (mode == MPM_OVERLAY) {
@@ -778,21 +778,18 @@ bool Music_SeekTrackTimestamp(
                 || m_OverlayStreams[i].track_id != track_id) {
                 continue;
             }
-            return IGNORE(Audio_Stream_SeekTimestamp(
-                m_OverlayStreams[i].audio_stream_id, timestamp));
+            return Audio_Stream_SeekTimestamp(
+                m_OverlayStreams[i].audio_stream_id, timestamp);
         }
-        return false;
+        return FAIL("track %d is not playing as an overlay", track_id);
     }
 
     MUSIC_STREAM_STATE state = {};
-    if (!M_GetMainTrackState(&state)) {
-        return false;
-    }
-    if (state.track_id != track_id || state.mode != mode) {
-        return false;
-    }
-    return IGNORE(
-        Audio_Stream_SeekTimestamp(m_MainStream.audio_stream_id, timestamp));
+    FAIL_IF(!M_GetMainTrackState(&state), "no music is playing");
+    FAIL_IF(
+        state.track_id != track_id || state.mode != mode,
+        "track %d is not what the music is playing", track_id);
+    return Audio_Stream_SeekTimestamp(m_MainStream.audio_stream_id, timestamp);
 }
 
 MUSIC_ID Music_GetDelayedTrack(void)

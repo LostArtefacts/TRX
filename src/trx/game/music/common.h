@@ -83,15 +83,16 @@ void Music_Unpause(void);
 // Get the current timestamp of the current stream in seconds.
 double Music_GetTimestamp(void);
 
-// Seek to timestamp of current stream.
-bool Music_SeekTimestamp(double timestamp);
+// Seeks the current stream to the given timestamp, reporting a state where no
+// music plays.
+RESULT Music_SeekTimestamp(double timestamp);
 
 // Seeks to the given timestamp if the drift is too big.
-bool Music_SyncTimestamp(double timestamp);
+RESULT Music_SyncTimestamp(double timestamp);
 
 // Play the current track at the given rate, so a sped-up cutscene carries its
 // music with it instead of seeking away from it.
-bool Music_SetSpeed(double speed);
+RESULT Music_SetSpeed(double speed);
 
 // Returns the number of currently active serializable streams.
 int32_t Music_GetStreamCount(void);
@@ -115,12 +116,12 @@ void Music_StopStream(int32_t slot);
 void Music_PauseStream(int32_t slot);
 void Music_UnpauseStream(int32_t slot);
 
-// Seeks the stream in a slot to a timestamp. Returns false when the slot is
-// inactive.
-bool Music_SeekStream(int32_t slot, double timestamp);
+// Seeks the stream in a slot to the given timestamp, reporting a slot that
+// holds no music.
+RESULT Music_SeekStream(int32_t slot, double timestamp);
 
 // Seeks timestamp for the active stream that matches track and mode.
-bool Music_SeekTrackTimestamp(
+RESULT Music_SeekTrackTimestamp(
     MUSIC_ID track, MUSIC_PLAY_MODE mode, double timestamp);
 
 // Returns the delayed track. Ignores looped tracks.

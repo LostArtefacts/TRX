@@ -383,8 +383,9 @@ void Cutscene_End(void)
 GF_COMMAND Cutscene_Control(void)
 {
     Interpolation_Remember();
-    Music_SetSpeed(Clock_GetSpeedMultiplier());
-    Music_SyncTimestamp(Camera_GetCineData()->frame_idx / (double)LOGIC_FPS);
+    IGNORE(Music_SetSpeed(Clock_GetSpeedMultiplier()));
+    IGNORE(Music_SyncTimestamp(
+        Camera_GetCineData()->frame_idx / (double)LOGIC_FPS));
 
     Input_Update();
     Shell_ProcessInput();
