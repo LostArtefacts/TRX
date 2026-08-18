@@ -50,6 +50,11 @@ bool Sound_IsAvailable(SAMPLE_TRX_ID sample_id);
 // Returns SFX_INVALID if no samples are available.
 SAMPLE_ID Sound_GetMaxDirectSampleID(void);
 
+// Reports each sample that the level declares without audio. Such samples
+// play silently, and the play call cannot report them because it runs every
+// frame, so this function reports them at the end of the level load.
+RESULT Sound_CheckSamples(void);
+
 // Play a sample with the given number. pos is an optional world position to
 // play the sound at, and can be nullptr. Returns the active-sound slot the
 // sample plays in, or -1 when it does not play.

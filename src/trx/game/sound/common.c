@@ -6,6 +6,7 @@
 #include <trx/core/math/geom.h>
 #include <trx/core/memory.h>
 #include <trx/core/subsystem.h>
+#include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/lara.h>
@@ -460,6 +461,34 @@ bool Sound_IsAvailable(const SAMPLE_TRX_ID sample_id)
 
 // Get the maximum direct SAMPLE_ID loaded for playback.
 // Returns SFX_INVALID if no samples are available.
+RESULT Sound_CheckSamples(void)
+{
+    RESULT result = OK;
+    const SAMPLE_ID max_id = Sound_GetMaxDirectSampleID();
+    for (SAMPLE_ID sample_id = 0; sample_id <= max_id; sample_id++) {
+        const SAMPLE_INFO *const sample = Sound_GetSample(sample_id);
+        if (sample == nullptr) {
+            continue;
+        }
+        if (sample->number < 0) {
+            result = Result_Merge(
+                result, FAIL("sample %d names no audio", sample_id));
+            continue;
+        }
+        for (int32_t i = 0; i < MAX(sample->flags.num_samples, 1); i++) {
+            if (!Audio_Sample_IsLoaded(sample->number + i)) {
+                result = Result_Merge(
+                    result,
+                    FAIL(
+                        "sample %d names audio %d, which the level does not "
+                        "carry",
+                        sample_id, sample->number + i));
+            }
+        }
+    }
+    return result;
+}
+
 SAMPLE_ID Sound_GetMaxDirectSampleID(void)
 {
     M_SAMPLE_ENTRY *entry, *tmp;
