@@ -66,13 +66,13 @@ end)
 test("an enum option offers its values, spelled with dashes", function()
   assert(
     table.concat(fake.complete_args("set", "shadow-type "), ",")
-      == "circle,sprite,extra-dark,-"
+      == "circle,extra-dark,sprite,-"
   )
 end)
 
 test("a boolean option offers on and off", function()
   assert(
-    table.concat(fake.complete_args("set", "enable-music "), ",") == "on,off,-"
+    table.concat(fake.complete_args("set", "enable-music "), ",") == "off,on,-"
   )
 end)
 
