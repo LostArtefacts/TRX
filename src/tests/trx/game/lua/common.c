@@ -1,6 +1,7 @@
 #include <harness/harness.h>
 
 #include <harness/stubs_game_script.h>
+#include <trx/core/result.h>
 #include <trx/core/strings/common.h>
 #include <trx/core/utils.h>
 #include <trx/game/game_flow/common.h>
@@ -139,7 +140,7 @@ static void M_Booted(void)
 {
     M_ClearScripts();
     LUA_SetScriptContext(LUA_CONTEXT_GLOBAL);
-    LUA_Init();
+    EXIT_ON_FAIL(LUA_Init(), "failed to start Lua");
 }
 
 static void M_Done(void)
