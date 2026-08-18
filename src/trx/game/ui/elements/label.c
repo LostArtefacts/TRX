@@ -68,6 +68,15 @@ void UI_LabelEx(const char *text, const UI_LABEL_SETTINGS settings)
     UI_AddChild(node);
 }
 
+const char *UI_Label_GetText(const UI_NODE *const node)
+{
+    if (node == nullptr || node->ops.measure != M_Measure) {
+        return nullptr;
+    }
+    const M_DATA *const data = node->data;
+    return data->text;
+}
+
 void UI_Label_Measure(
     const char *const text, float *const out_w, float *const out_h)
 {

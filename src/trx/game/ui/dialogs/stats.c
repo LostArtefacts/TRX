@@ -271,6 +271,7 @@ static void M_Row(
             .spacing = { .h = s->look->row_spacing },
             .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
         });
+        UI_SetNodeName(UI_NODE_NAME_DIALOG_ROW);
         UI_Label(key);
         UI_Label(value);
         UI_EndStack();
