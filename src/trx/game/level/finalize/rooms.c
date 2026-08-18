@@ -54,31 +54,6 @@ static inline BOUNDS_32 M_GetStaticBounds(const STATIC_MESH *const mesh)
     return bounds;
 }
 
-// Whether the mesh reaches through the portal into the room behind it. A wall
-// portal stands across the mesh, so meeting its quad is the question there. A
-// floor or ceiling portal lies flat, and a mesh that clears it sits wholly in
-// the room beyond, so what counts is standing over the opening and reaching
-// past its plane.
-static inline bool M_BoundsReachPortal(
-    const BOUNDS_32 *const bounds, const PORTAL *const portal)
-{
-    if (portal->normal.y == 0) {
-        return Bounds32_Intersect(bounds, &portal->bounds);
-    }
-
-    if (bounds->min.x > portal->bounds.max.x
-        || bounds->max.x < portal->bounds.min.x
-        || bounds->min.z > portal->bounds.max.z
-        || bounds->max.z < portal->bounds.min.z) {
-        return false;
-    }
-
-    // A portal's normal points back into the room it belongs to, so a positive
-    // Y puts the room beyond above this one.
-    return portal->normal.y > 0 ? bounds->min.y <= portal->bounds.min.y
-                                : bounds->max.y >= portal->bounds.max.y;
-}
-
 static void M_ComputePortalBounds(void)
 {
     for (int32_t i = 0; i < Room_GetCount(); i++) {
@@ -162,7 +137,7 @@ static void M_FixStaticsVisibility(void)
                 const STATIC_MESH *const mesh =
                     Vector_Get(room_stat_vecs[i], m);
                 const BOUNDS_32 bounds = M_GetStaticBounds(mesh);
-                if (!M_BoundsReachPortal(&bounds, portal)) {
+                if (!Room_BoundsReachPortal(&bounds, portal)) {
                     continue;
                 }
                 if (Vector_Contains(room_stat_vecs[portal->room_num], mesh)) {
@@ -237,5 +212,6 @@ void Level_Finalize_LoadRooms(LEVEL_CONTEXT *const ctx)
     M_ComputePortalBounds();
     M_FixStaticsCollision();
     M_FixStaticsVisibility();
+    Room_InitialiseOverlapMap();
     Item_InitialiseDrawQueues();
 }

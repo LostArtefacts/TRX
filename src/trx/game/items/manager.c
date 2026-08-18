@@ -31,10 +31,6 @@ static int16_t m_NextItemFree = NO_ITEM;
 static uint32_t m_ItemGens[MAX_ITEMS];
 static HANDLE_REGISTRY m_ItemHandles;
 
-// Take the item out of a room's draw queues: the room itself and every portal
-// neighbour. The exact mirror of M_AddToDrawQueues below, plus the flipped
-// room, whose portals may differ if the map has been flipped. Paired with the
-// chain unlink below; both must run when an item leaves a room.
 static void M_RemoveFromDrawQueues(
     const int16_t item_num, const int16_t room_num)
 {
@@ -51,12 +47,26 @@ static void M_RemoveFromDrawQueues(
     }
 }
 
-// Put the item into a room's draw queues: the room itself and every portal
-// neighbour, unconditionally, so the removal above undoes exactly this and an
-// item drawn from a neighbouring room - a door, seen from the far side of its
-// doorway - is queued there again after every room change. The draw pass
-// dedups per frame and clips per room, so a queue entry the camera cannot
-// reach costs one rejected clip test.
+static BOUNDS_32 M_GetOccupancyBounds(const ITEM *const item)
+{
+    const BOUNDS_16 *const b = &Object_Get(item->object_id)->anim_bounds;
+    const int32_t radius =
+        MAX(MAX(ABS((int32_t)b->min.x), ABS((int32_t)b->max.x)),
+            MAX(ABS((int32_t)b->min.z), ABS((int32_t)b->max.z)));
+    return (BOUNDS_32) {
+        .min = {
+            .x = item->pos.x - radius,
+            .y = item->pos.y + b->min.y,
+            .z = item->pos.z - radius,
+        },
+        .max = {
+            .x = item->pos.x + radius,
+            .y = item->pos.y + b->max.y,
+            .z = item->pos.z + radius,
+        },
+    };
+}
+
 static void M_AddToDrawQueues(const int16_t item_num, const int16_t room_num)
 {
     if (room_num == NO_ROOM) {
@@ -67,8 +77,12 @@ static void M_AddToDrawQueues(const int16_t item_num, const int16_t room_num)
     if (room == nullptr || room->portals == nullptr) {
         return;
     }
+    const BOUNDS_32 bounds = M_GetOccupancyBounds(&m_Items[item_num]);
     for (int32_t i = 0; i < room->portals->count; i++) {
-        Room_AddDrawnItem(room->portals->portal[i].room_num, item_num);
+        const PORTAL *const portal = &room->portals->portal[i];
+        if (Room_BoundsReachPortal(&bounds, portal)) {
+            Room_AddDrawnItem(portal->room_num, item_num);
+        }
     }
 }
 
@@ -676,9 +690,6 @@ void Item_UpdateRoom(const int16_t item_num, const int16_t room_num)
     }
 }
 
-// Seed every item's draw queues once the rooms are in place. Item_Initialise
-// runs before the portals have their bounds, so the neighbour test can only be
-// answered here.
 void Item_InitialiseDrawQueues(void)
 {
     for (int32_t i = 0; i < m_LevelItemCount; i++) {

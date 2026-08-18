@@ -354,6 +354,7 @@ static void M_Stage(const OBJECT_MESH *const mesh)
     }
     Output_Lights_FillInstanceLight(&light_info, g_WMatrixPtr);
 
+    const VIEWPORT_RECT *const scissor = Output_GetObjectScissor();
     const MESH_INSTANCE inst = {
         .mesh = batch->mesh_batch,
         .cwmatrix = *g_MatrixPtr,
@@ -364,6 +365,8 @@ static void M_Stage(const OBJECT_MESH *const mesh)
             (mesh->enable_caustics && Output_GetWaterEffect()) ? 1 : 0,
         .light_info = light_info,
         .room = Output_GetCurrentRoom(),
+        .enable_scissor = scissor != nullptr,
+        .scissor = scissor != nullptr ? *scissor : (VIEWPORT_RECT) {},
     };
     MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_OPAQUE);
     MeshBatcher_Stage(p->batcher, &inst, SCENE_PASS_TRANSPARENT);

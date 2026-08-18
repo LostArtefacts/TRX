@@ -17,7 +17,6 @@ typedef struct {
     MESH_BATCHER *batcher;
     size_t mesh_count;
     OUTPUT_MESH **meshes;
-    bool *overlapping;
 } M_PRIV;
 
 static M_PRIV m_Priv = {};
@@ -174,28 +173,6 @@ static int32_t M_GetWaterEffect(const ROOM *const room)
     return Output_GetWaterEffect() ? 1 : 0;
 }
 
-static void M_PrepareOverlaps(M_PRIV *const p)
-{
-    const int32_t room_count = Room_GetCount();
-    p->overlapping = Memory_Alloc(sizeof(bool) * room_count);
-
-    for (int32_t i = 0; i < room_count; i++) {
-        for (int32_t j = i + 1; j < room_count; j++) {
-            if (p->overlapping[i] && p->overlapping[j]) {
-                continue;
-            }
-            if (Room_Get(i)->flipped_room == j
-                || Room_Get(j)->flipped_room == i) {
-                continue;
-            }
-            if (Room_CheckOverlap(i, j)) {
-                p->overlapping[i] = true;
-                p->overlapping[j] = true;
-            }
-        }
-    }
-}
-
 static void M_PrepareMeshes(M_PRIV *const p)
 {
     p->mesh_count = Room_GetCount();
@@ -251,7 +228,6 @@ static void M_FreeMeshes(M_PRIV *const p)
         }
         Memory_FreePointer(&p->meshes);
     }
-    Memory_FreePointer(&p->overlapping);
 }
 
 void OutputSource_Rooms_Init(MESH_BATCHER *const batcher)
@@ -271,7 +247,6 @@ void OutputSource_Rooms_ObserveLevelLoad(void)
     M_PRIV *const p = &m_Priv;
     M_FreeMeshes(p);
     M_PrepareMeshes(p);
-    M_PrepareOverlaps(p);
 }
 
 void OutputSource_Rooms_ObserveLevelUnload(void)
@@ -301,7 +276,7 @@ void OutputSource_Rooms_StageRoom(const ROOM *const room)
         .tint = Output_GetTint(),
         .wibble = Output_GetWibbleEffect(),
         .water_effect = M_GetWaterEffect(room),
-        .enable_scissor = p->overlapping[Room_GetIndex(room)],
+        .enable_scissor = Room_IsOverlapping(Room_GetIndex(room)),
         .scissor = {
             .x = bind->bound_left,
             .y = bind->bound_bottom,

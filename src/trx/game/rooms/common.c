@@ -32,6 +32,7 @@ static int32_t m_FlipEffect = -1;
 static int32_t m_FlipTimer = 0;
 static FLIP_SLOT m_FlipSlots[MAX_FLIP_MAPS] = {};
 
+static bool *m_OverlapMap = nullptr;
 static int16_t *m_OutsideRoomTable = nullptr;
 static uint16_t *m_OutsideRoomOffsets = nullptr;
 static int32_t m_OutsideGridX = 0;
@@ -48,6 +49,7 @@ static void M_Shutdown(void)
     m_FlipTimer = 0;
     memset(m_FlipSlots, 0, sizeof(m_FlipSlots));
 
+    Memory_FreePointer(&m_OverlapMap);
     m_OutsideRoomTable = nullptr;
     m_OutsideRoomOffsets = nullptr;
     m_OutsideGridX = 0;
@@ -668,6 +670,33 @@ bool Room_CheckOverlap(const int16_t room_num_0, const int16_t room_num_1)
         room_0_bounds.min.z < room_1_bounds.max.z &&
         room_0_bounds.max.z > room_1_bounds.min.z);
     // clang-format on
+}
+
+void Room_InitialiseOverlapMap(void)
+{
+    Memory_FreePointer(&m_OverlapMap);
+    m_OverlapMap = Memory_Alloc(sizeof(bool) * m_RoomCount);
+
+    for (int32_t i = 0; i < m_RoomCount; i++) {
+        for (int32_t j = i + 1; j < m_RoomCount; j++) {
+            if (m_OverlapMap[i] && m_OverlapMap[j]) {
+                continue;
+            }
+            if (Room_Get(i)->flipped_room == j
+                || Room_Get(j)->flipped_room == i) {
+                continue;
+            }
+            if (Room_CheckOverlap(i, j)) {
+                m_OverlapMap[i] = true;
+                m_OverlapMap[j] = true;
+            }
+        }
+    }
+}
+
+bool Room_IsOverlapping(const int16_t room_num)
+{
+    return m_OverlapMap != nullptr && m_OverlapMap[room_num];
 }
 
 bool Room_FindValidPos(XYZ_32 *const out_pos, int16_t *const out_room_num)

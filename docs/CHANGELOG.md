@@ -9,6 +9,9 @@
 
 **Rendering**
 - Fixed scenery in an adjoining room being cut off along the edges of the portal it is seen through
+- Fixed objects showing through rooms that share their space with the room the object stands in
+- Fixed objects that reach into a neighbouring room being cut off or vanishing when seen through that room
+- Fixed the boulder in room 78 getting drawn in the overlapping room 74 in Tomb of Tihocan (regression from 1.10.1)
 
 
 ## [1.10.1](https://github.com/LostArtefacts/TRX/compare/trx-1.10...trx-1.10.1) - 2026-08-16

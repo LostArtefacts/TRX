@@ -47,6 +47,13 @@ bool Room_PointInside(const ROOM *room, XYZ_32 point);
 // count as overlapping.
 bool Room_CheckOverlap(int16_t room_num_0, int16_t room_num_1);
 
+// Builds the per-room overlap map after room bounds are finalized. A room and
+// its flip alternative occupy the same space by design and do not count.
+void Room_InitialiseOverlapMap(void);
+
+// Returns whether the room shares space with any other non-flip room.
+bool Room_IsOverlapping(int16_t room_num);
+
 void Room_GetNearbyRooms(XYZ_32 pos, int32_t r, int32_t h, int16_t room_num);
 
 bool Room_FindValidPos(XYZ_32 *out_pos, int16_t *out_room_num);

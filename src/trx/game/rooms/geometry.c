@@ -1,6 +1,7 @@
 #include <trx/game/rooms/geometry.h>
 
 #include <trx/config.h>
+#include <trx/core/math/util.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
@@ -178,6 +179,24 @@ static bool M_IsPortalSolid(
     default:
         return false;
     }
+}
+
+bool Room_BoundsReachPortal(
+    const BOUNDS_32 *const bounds, const PORTAL *const portal)
+{
+    if (portal->normal.y == 0) {
+        return Bounds32_Intersect(bounds, &portal->bounds);
+    }
+
+    if (bounds->min.x > portal->bounds.max.x
+        || bounds->max.x < portal->bounds.min.x
+        || bounds->min.z > portal->bounds.max.z
+        || bounds->max.z < portal->bounds.min.z) {
+        return false;
+    }
+
+    return portal->normal.y > 0 ? bounds->min.y <= portal->bounds.min.y
+                                : bounds->max.y >= portal->bounds.max.y;
 }
 
 BOUNDS_32 Room_GetRoomBounds(const ROOM *const room)

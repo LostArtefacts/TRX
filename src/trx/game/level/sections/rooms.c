@@ -10,11 +10,9 @@
 #include <trx/game/inject.h>
 #include <trx/game/level/format/format.h>
 #include <trx/game/level/sections/read.h>
-#include <trx/game/output/bind.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 #include <trx/game/shell.h>
-#include <trx/game/viewport.h>
 
 #define M_NO_ROOM_LEGACY 255
 #define M_NO_BOX_TR3_LEGACY 0x7FF
@@ -475,11 +473,6 @@ void Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, VFILE *const file)
         room->flags.no_lens_flare = (flags & 0x80) != 0 && g_TRVersion >= 4;
         // clang-format on
 
-        OUTPUT_ROOM_BIND *const bind = Output_Bind_GetRoom(room);
-        bind->bound_left = Viewport_GetMaxX(VIEWPORT_GAME);
-        bind->bound_top = Viewport_GetMaxY(VIEWPORT_GAME);
-        bind->bound_bottom = Viewport_GetMinY(VIEWPORT_GAME);
-        bind->bound_right = Viewport_GetMinX(VIEWPORT_GAME);
         room->item_num = NO_ITEM;
         room->effect_num = NO_EFFECT;
 

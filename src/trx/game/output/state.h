@@ -4,6 +4,7 @@
 #include <trx/core/math/types.h>
 #include <trx/game/output/uniforms.h>
 #include <trx/game/rooms.h>
+#include <trx/game/viewport.h>
 
 #include <GL/glew.h>
 
@@ -46,6 +47,11 @@ int32_t Output_GetFarZ_UI(void);
 
 void Output_SetCurrentRoom(const ROOM *room_num);
 const ROOM *Output_GetCurrentRoom(void);
+
+// Clips object meshes staged after this call to the given game viewport
+// rectangle. Passing nullptr disables the object clip.
+void Output_SetObjectScissor(const VIEWPORT_RECT *rect);
+const VIEWPORT_RECT *Output_GetObjectScissor(void);
 
 int32_t Output_GetLightAdder(void);
 int32_t Output_GetLightDivider(void);
