@@ -28,6 +28,7 @@ static void M_Draw(
         .align = { .h = UI_STACK_H_ALIGN_CENTER },
         .spacing = { .h = 10.0f },
     });
+    UI_SetNodeName(UI_NODE_NAME_DIALOG_NAV_BAR);
     for (int32_t i = 0; i < s->tab_count; i++) {
         if (single && i != s->active_tab_idx) {
             continue;

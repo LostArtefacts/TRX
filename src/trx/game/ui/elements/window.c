@@ -70,6 +70,7 @@ static void M_ScrollHintRow(
 static void M_Title(const char *const title)
 {
     UI_BeginFrame(UI_FRAME_DIALOG_HEADING);
+    UI_SetNodeName(UI_NODE_NAME_DIALOG_HEADER);
     UI_BeginPad(10.0f, M_GetTitlePadY());
     UI_BeginAnchor(0.5f, 0.5f);
     UI_Label(title);

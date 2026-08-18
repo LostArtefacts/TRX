@@ -531,6 +531,7 @@ static void M_Group(
 
         const UI_CONTROLS_EDITOR_ROW *const row = &group->rows[row_idx];
         UI_BeginStack(UI_STACK_HORIZONTAL);
+        UI_SetNodeName(UI_NODE_NAME_DIALOG_ROW);
         for (int32_t slot = 0; slot < INPUT_BINDING_SLOTS; slot++) {
             UI_BeginResize(s->input_size, -1.0f);
             UI_BeginAnchor(0.0f, 0.5f);
@@ -555,6 +556,7 @@ static void M_Footer(UI_CONTROLS_EDITOR_STATE *const s)
         .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
         .spacing = { .h = 40.0f },
     });
+    UI_SetNodeName(UI_NODE_NAME_DIALOG_FOOTER);
     UI_BeginHide(!M_CanResetLayout(s));
     UI_ProgressButton(s->reset_bindings_button);
     UI_EndHide();

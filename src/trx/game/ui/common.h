@@ -34,7 +34,19 @@ typedef struct UI_NODE {
 
     // Widget-specific data
     void *data;
+
+    // Names a node for diagnostics.
+    const char *name;
 } UI_NODE;
+
+// Shared names for dialog nodes.
+#define UI_NODE_NAME_DIALOG_HEADER "dialog header"
+#define UI_NODE_NAME_DIALOG_FOOTER "dialog footer"
+#define UI_NODE_NAME_DIALOG_HINT_ROW "dialog hint row"
+#define UI_NODE_NAME_DIALOG_NAV_BAR "dialog nav bar"
+#define UI_NODE_NAME_DIALOG_ROW "dialog row"
+#define UI_NODE_NAME_ROW_TITLE "title"
+#define UI_NODE_NAME_ROW_VALUE "value"
 
 // How far a dialog stays clear of the screen edges, in canvas units.
 #define UI_SCREEN_MARGIN 5.0f
@@ -106,6 +118,8 @@ UI_NODE *UI_AllocNode(const UI_WIDGET_OPS *ops, size_t additional_size);
 void UI_AddChild(UI_NODE *child);
 void UI_PushCurrent(UI_NODE *child);
 
+// Names the current node.
+void UI_SetNodeName(const char *name);
 void UI_PopCurrent(void);
 const UI_NODE *UI_GetCurrent(void);
 

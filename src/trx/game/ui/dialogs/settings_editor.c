@@ -877,7 +877,9 @@ void UI_SettingsEditor_Draw(
             .orientation = UI_STACK_HORIZONTAL,
             .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
         });
+        UI_SetNodeName(UI_NODE_NAME_DIALOG_ROW);
         UI_BeginResize(label_w, -1.0f);
+        UI_SetNodeName(UI_NODE_NAME_ROW_TITLE);
         {
             const UI_SETTINGS_ROW *const row = M_GetOptionByRow(s, row_idx);
             const char *const name =
@@ -888,6 +890,7 @@ void UI_SettingsEditor_Draw(
         UI_Spacer(20.0f, 0.0f);
 
         UI_BeginResize(max_value_w, -1.0f);
+        UI_SetNodeName(UI_NODE_NAME_ROW_VALUE);
         UI_BeginAnchor(1.0f, 0.5f);
 
         UI_BeginRowArrows(
@@ -966,6 +969,7 @@ void UI_SettingsEditor_DrawFooter(
         .align = { .h = UI_STACK_H_ALIGN_DISTRIBUTE },
         .spacing = { .h = 20 },
     });
+    UI_SetNodeName(UI_NODE_NAME_DIALOG_HINT_ROW);
     UI_BeginHide(!can_examine && !can_edit_value);
     if (can_edit_value) {
         UI_LabelFmt(

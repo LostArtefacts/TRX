@@ -154,6 +154,13 @@ void UI_PushCurrent(UI_NODE *const child)
     m_Priv.current = child;
 }
 
+void UI_SetNodeName(const char *const name)
+{
+    if (m_Priv.current != nullptr) {
+        m_Priv.current->name = name;
+    }
+}
+
 void UI_PopCurrent(void)
 {
     ASSERT(m_Priv.current != nullptr);
