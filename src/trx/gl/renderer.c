@@ -185,8 +185,8 @@ static void M_Render(TRX_GL_RENDERER *renderer)
 
     if (TRX_GL_Context_GetScheduledScreenshotPath() != nullptr) {
         TRX_GL_Context_SwitchToViewport(VIEWPORT_TARGET);
-        TRX_GL_Screenshot_CaptureToFile(
-            TRX_GL_Context_GetScheduledScreenshotPath());
+        SHOULD(TRX_GL_Screenshot_CaptureToFile(
+            TRX_GL_Context_GetScheduledScreenshotPath()));
         TRX_GL_Context_ClearScheduledScreenshotPath();
     }
 }

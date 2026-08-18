@@ -362,8 +362,8 @@ static bool M_Image_LoadIntoTexture(
     ASSERT(e != nullptr);
     ASSERT(path != nullptr);
 
-    IMAGE *const img = Image_CreateFromFile(path);
-    if (img == nullptr) {
+    IMAGE *img = nullptr;
+    if (!SHOULD(Image_CreateFromFile(path, &img))) {
         return false;
     }
 
