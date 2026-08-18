@@ -4,9 +4,12 @@ on:
     workflows: ['Create a test build']
     types: [completed]
 
+# This workflow runs in the privileged base-repo context with a read-write
+# token, so it holds no more than it needs: it reads the run's artifacts and
+# writes one PR comment. It never checks out or executes pull request code.
 permissions:
-  actions: write
-  contents: write
+  actions: read
+  contents: read
   pull-requests: write
 jobs:
   pr_comment:
@@ -150,12 +153,19 @@ jobs:
               handleError(error, 'fetch artifacts', prNumber);
             }
 
+            // Artifact names come from the pull request's own tree, so escape
+            // them before they enter the comment. This keeps a crafted name from
+            // injecting markdown or breaking out of the link label.
+            function escapeLinkLabel(name) {
+              return String(name).replace(/[\\\[\]`<>\r\n]/g, '');
+            }
+
             // Construct the comment body
             let body = 'Download the built assets for this pull request:\n' +
               allArtifacts
                 .filter(item => item.name !== "assets")
                 .sort((a, b) => a.name.localeCompare(b.name))
-                .map(item => `* [${item.name}.zip](https://nightly.link/${context.repo.owner}/${context.repo.repo}/actions/artifacts/${item.id}.zip)`)
+                .map(item => `* [${escapeLinkLabel(item.name)}.zip](https://nightly.link/${context.repo.owner}/${context.repo.repo}/actions/artifacts/${item.id}.zip)`)
                 .join('\n');
 
             // Upsert the comment on the PR

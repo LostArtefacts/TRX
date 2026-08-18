@@ -49,9 +49,13 @@ jobs:
         if: ${{ inputs.target == 'release' }}
         run: just download-assets
 
+      # A pull request restores the shared ccache read-only and never writes it
+      # back (see the Save step). This stops a malicious branch from poisoning
+      # the compiler cache that a later develop or release build would consume.
       - name: Restore ccache
+        id: ccache
         if: ${{ inputs.platform == 'linux' || inputs.platform == 'win' }}
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: .cache/ccache
           key: ccache-v1-${{ runner.os }}-${{ inputs.platform }}-${{ inputs.target }}-${{ hashFiles('justfile', 'tools/shared/docker/game-linux/Dockerfile', 'tools/shared/docker/game-win/Dockerfile', 'tools/shared/docker/game-win/meson_linux_mingw32.txt') }}
@@ -72,6 +76,15 @@ jobs:
           else
             just trx-package-${{ inputs.platform }} "${{ inputs.target }}" -o "${{ steps.vars.outputs.trx_dir }}" --no-zip
           fi
+
+      # Only a push from a trusted branch writes the shared ccache. Pull requests
+      # skip this step and stay restore-only.
+      - name: Save ccache
+        if: ${{ github.event_name != 'pull_request' && steps.ccache.outputs.cache-primary-key && (inputs.platform == 'linux' || inputs.platform == 'win') }}
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/ccache
+          key: ${{ steps.ccache.outputs.cache-primary-key }}
 
       # The dump needs a binary to query, so it rides along with the Linux build
       # rather than paying for one of its own. The engine boots SDL before it

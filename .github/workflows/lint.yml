@@ -30,8 +30,12 @@ jobs:
       - name: Ensure prek cache dir exists
         run: mkdir -p "${PREK_HOME}"
 
+      # A pull request restores the prek cache read-only and never writes it back
+      # (see the Save step), so a malicious branch cannot poison the cache that a
+      # later push consumes.
       - name: Restore prek cache
-        uses: actions/cache@v4
+        id: prek_cache
+        uses: actions/cache/restore@v4
         with:
           path: .cache/prek
           key: prek-v1-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
@@ -58,3 +62,11 @@ jobs:
             echo 'just lint failed.'
             exit "${lint_status}"
           fi
+
+      # Only a push writes the prek cache back. Pull requests stay restore-only.
+      - name: Save prek cache
+        if: ${{ github.event_name != 'pull_request' && steps.prek_cache.outputs.cache-primary-key }}
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/prek
+          key: ${{ steps.prek_cache.outputs.cache-primary-key }}
