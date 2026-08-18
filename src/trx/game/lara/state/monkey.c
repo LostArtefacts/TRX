@@ -72,6 +72,11 @@ static void M_MonkeyForward(ITEM *const item, COLL_INFO *const coll)
 
 static void M_MonkeyShimmy(ITEM *const item, COLL_INFO *const coll)
 {
+    if (item->hit_points <= 0) {
+        item->goal_anim_state = LS(LS_MONKEY_IDLE);
+        return;
+    }
+
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
     g_Camera.target_elevation = M_CAM_MONKEY_ELEVATION;
