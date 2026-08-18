@@ -117,9 +117,14 @@ static UI_SCROLLABLE *M_GetTabScrollable(UI_SETTINGS_TAB *const tab)
     return tab->ops->get_scrollable(tab->user_data);
 }
 
-// What the nav bar measures as it stands, in text units before the player's
-// text scale. A collapsed bar shows one tab at a time, so the widest is found
-// by putting each tab in front.
+static const char *M_GetActiveTabName(UI_SETTINGS_DIALOG_STATE *const s)
+{
+    const UI_TAB_SWITCH_TAB *const tab =
+        &s->tab_switch->tabs[s->tab_switch->active_tab_idx];
+    return tab->header.live_ptr != nullptr ? *tab->header.live_ptr
+                                           : tab->header.one_off;
+}
+
 static float M_MeasureTabsWidth(UI_SETTINGS_DIALOG_STATE *const s)
 {
     const int32_t active = s->tab_switch->active_tab_idx;
@@ -194,6 +199,7 @@ static void M_RecomputeSizesOnce(UI_SETTINGS_DIALOG_STATE *const s)
             s->collapsed_tabs ? M_MeasureTabsWidth(s) : tabs_width;
         s->max_content_width = MAX(s->max_content_width, bar_width);
         min_content_width = MAX(min_content_width, bar_width);
+        UI_Measure_Note("dialog nav bar", M_GetActiveTabName(s), bar_width);
     }
     s->max_content_width =
         MAX(min_content_width, MIN(s->max_content_width, available));

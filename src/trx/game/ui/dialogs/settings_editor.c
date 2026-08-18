@@ -44,19 +44,11 @@ typedef struct UI_SETTINGS_EDITOR_STATE {
     // are made anew when the game changes and announce nothing when they are.
     int32_t config_generation;
     int32_t handler_generation;
-    // How wide the tab's titles and values measure, in text units before the
-    // player's text scale. Measuring walks every row and every value it can
-    // take, so the answer is kept until the strings or the scale it was made
-    // against move. It is held against the scale the player set rather than
-    // the one a dialog is drawn at, so that giving way does not send it round
-    // again.
     struct {
         float label_w;
         float value_w;
-        // The widest single row: its title and its own widest value, which is
-        // less than the widest title beside the widest value whenever the two
-        // sit on different rows.
         float row_w;
+        const char *row_title;
         float text_scale;
         int32_t strings_epoch;
         bool measured;
@@ -591,17 +583,23 @@ static void M_MeasureWidths(UI_SETTINGS_EDITOR_STATE *const s)
     s->widths.label_w = -1.0f;
     s->widths.value_w = -1.0f;
     s->widths.row_w = -1.0f;
+    s->widths.row_title = nullptr;
     for (int32_t i = 0; i < row_count; i++) {
         const UI_SETTINGS_ROW *const row = UI_Settings_GetRow(s->tab, i);
-        const float label_w =
-            UI_Label_MeasureW(M_GetOptionTitle(row)) / measure_scale;
+        const char *const title = M_GetOptionTitle(row);
+        const float label_w = UI_Label_MeasureW(title) / measure_scale;
         const float value_w =
             M_MeasureMaxValueWidth(row) / measure_scale + arrows;
+        const float row_w = label_w + M_COLUMN_SPACING + value_w;
         s->widths.label_w = MAX(s->widths.label_w, label_w);
         s->widths.value_w = MAX(s->widths.value_w, value_w);
-        s->widths.row_w =
-            MAX(s->widths.row_w, label_w + M_COLUMN_SPACING + value_w);
+        if (row_w > s->widths.row_w) {
+            s->widths.row_w = row_w;
+            s->widths.row_title = title;
+        }
     }
+    UI_Measure_Note("dialog row", s->widths.row_title, s->widths.row_w);
+
     s->widths.text_scale = text_scale;
     s->widths.strings_epoch = m_StringsEpoch;
     s->widths.measured = true;

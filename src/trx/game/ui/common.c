@@ -35,6 +35,11 @@ static struct {
 
 static float m_SmallestFitScale = 1.0f;
 
+#ifdef TESTING
+static UI_MEASURE_NOTE m_Widest = {};
+static char m_WidestText[256] = "";
+#endif
+
 extern void UI_ClearDraw(void);
 
 static struct {
@@ -321,6 +326,35 @@ float UI_GetFitScale(const float content_width, const float content_height)
     m_SmallestFitScale = MIN(m_SmallestFitScale, result);
     return result;
 }
+
+#ifdef TESTING
+void UI_Measure_Note(
+    const char *const part, const char *const text, const float width)
+{
+    if (width <= m_Widest.width) {
+        return;
+    }
+    const char *const source = text != nullptr ? text : "?";
+    strncpy(m_WidestText, source, sizeof(m_WidestText) - 1);
+    m_WidestText[sizeof(m_WidestText) - 1] = '\0';
+    m_Widest = (UI_MEASURE_NOTE) {
+        .part = part,
+        .text = m_WidestText,
+        .width = width,
+    };
+}
+
+void UI_Measure_Forget(void)
+{
+    m_Widest = (UI_MEASURE_NOTE) {};
+    m_WidestText[0] = '\0';
+}
+
+UI_MEASURE_NOTE UI_Measure_GetWidest(void)
+{
+    return m_Widest;
+}
+#endif
 
 float UI_ScaleX(const float x)
 {
