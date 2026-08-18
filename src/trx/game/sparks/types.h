@@ -2,6 +2,7 @@
 
 #include <trx/core/colors.h>
 #include <trx/core/math/types.h>
+#include <trx/game/objects/ids.h>
 #include <trx/game/output/types.h>
 #include <trx/game/sparks/enum.h>
 
@@ -53,5 +54,6 @@ typedef struct SPARK {
     int8_t rot_add;
 
     int32_t sprite_idx;
+    OBJECT_ID sprite_obj_id;
     DRAW_TYPE draw_type;
 } SPARK;

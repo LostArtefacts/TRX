@@ -1,6 +1,8 @@
 #include <trx/game/fx/water.h>
 
 #include <trx/config.h>
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/core/utils.h>
 #include <trx/game/fx/common.h>
 #include <trx/game/interpolation.h>
@@ -56,9 +58,7 @@ static void M_RememberSplash(FX_WATER_SPLASH *const splash)
     splash->prev_life = splash->life;
     for (int32_t i = 0; i < 48; i++) {
         FX_WATER_SPLASH_VERT *const v = &splash->v[i];
-        v->prev_wx = v->wx;
-        v->prev_wy = v->wy;
-        v->prev_wz = v->wz;
+        v->prev_pos = v->pos;
     }
 }
 
@@ -104,13 +104,16 @@ static void M_DrawSplash(const FX_WATER_SPLASH *s)
     for (int32_t i = 0; i < 48; i++) {
         const FX_WATER_SPLASH_VERT *const v = &s->v[i];
         points[i] = (XYZ_32) {
-            .x = s->x
-                + ((do_interp ? (int16_t)LERP(v->prev_wx, v->wx, ratio) : v->wx)
+            .x = s->pos.x
+                + ((do_interp ? (int16_t)LERP(v->prev_pos.x, v->pos.x, ratio)
+                              : v->pos.x)
                    >> 4),
-            .y = s->y
-                + (do_interp ? (int16_t)LERP(v->prev_wy, v->wy, ratio) : v->wy),
-            .z = s->z
-                + ((do_interp ? (int16_t)LERP(v->prev_wz, v->wz, ratio) : v->wz)
+            .y = s->pos.y
+                + (do_interp ? (int16_t)LERP(v->prev_pos.y, v->pos.y, ratio)
+                             : v->pos.y),
+            .z = s->pos.z
+                + ((do_interp ? (int16_t)LERP(v->prev_pos.z, v->pos.z, ratio)
+                              : v->pos.z)
                    >> 4),
         };
     }
@@ -194,10 +197,10 @@ static void M_DrawRipple(const FX_WATER_RIPPLE *r)
     }
 
     const XYZ_32 quad_pos[4] = {
-        { r->x - n, r->y, r->z - n },
-        { r->x + n, r->y, r->z - n },
-        { r->x + n, r->y, r->z + n },
-        { r->x - n, r->y, r->z + n },
+        { r->pos.x - n, r->pos.y, r->pos.z - n },
+        { r->pos.x + n, r->pos.y, r->pos.z - n },
+        { r->pos.x + n, r->pos.y, r->pos.z + n },
+        { r->pos.x - n, r->pos.y, r->pos.z + n },
     };
     const RGBA_8888 quad_color[4] = { color, color, color, color };
     OutputSource_PolyFX_StageSpriteQuadWorldDepth(
@@ -241,32 +244,32 @@ static void M_Control(void)
         bool set = false;
         for (int32_t j = 0; j < 48; j++) {
             FX_WATER_SPLASH_VERT *const v = &splash->v[j];
-            v->wx += v->xv >> 2;
-            v->wy += (int16_t)(v->yv >> 6);
-            v->wz += v->zv >> 2;
-            v->xv -= v->xv >> v->friction;
-            v->zv -= v->zv >> v->friction;
+            v->pos.x += v->vel.x >> 2;
+            v->pos.y += (int16_t)(v->vel.y >> 6);
+            v->pos.z += v->vel.z >> 2;
+            v->vel.x -= v->vel.x >> v->friction;
+            v->vel.z -= v->vel.z >> v->friction;
 
-            if ((v->oxv < 0 && v->xv > v->oxv)
-                || (v->oxv > 0 && v->xv < v->oxv)) {
-                v->xv = v->oxv;
+            if ((v->min_vel.x < 0 && v->vel.x > v->min_vel.x)
+                || (v->min_vel.x > 0 && v->vel.x < v->min_vel.x)) {
+                v->vel.x = v->min_vel.x;
             } else if (
-                (v->ozv < 0 && v->zv > v->ozv)
-                || (v->ozv > 0 && v->zv < v->ozv)) {
-                v->zv = v->ozv;
+                (v->min_vel.z < 0 && v->vel.z > v->min_vel.z)
+                || (v->min_vel.z > 0 && v->vel.z < v->min_vel.z)) {
+                v->vel.z = v->min_vel.z;
             }
 
-            v->yv += (int32_t)v->gravity << 3;
-            CLAMPG(v->yv, 0x10000);
+            v->vel.y += (int32_t)v->gravity << 3;
+            CLAMPG(v->vel.y, 0x10000);
 
-            if (v->wy > 0) {
+            if (v->pos.y > 0) {
                 if (j < 16) {
                     splash->flags |= 4U;
                 } else if (j < 32) {
                     splash->flags |= 8U;
                 }
 
-                v->wy = 0;
+                v->pos.y = 0;
                 set = true;
             }
         }
@@ -305,6 +308,141 @@ static void M_Control(void)
     }
 }
 
+static void M_SaveSplashes(JSON_WRITE_IO *const io)
+{
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Splashes); i++) {
+        const FX_WATER_SPLASH *const splash = &m_Splashes[i];
+        if ((splash->flags & 1U) == 0U) {
+            continue;
+        }
+        JSONW_PUSH_OBJECT(io);
+        JSONW_WRITE(io, "pos", splash->pos);
+        JSONW_WRITE(io, "flags", splash->flags);
+        JSONW_WRITE(io, "life", splash->life);
+        JSONW_PUSH_ARRAY(io);
+        for (int32_t j = 0; j < (int32_t)ARRAY_SIZE(splash->v); j++) {
+            const FX_WATER_SPLASH_VERT *const v = &splash->v[j];
+            JSONW_PUSH_OBJECT(io);
+            JSONW_WRITE(io, "pos", v->pos);
+            JSONW_WRITE(io, "vel", v->vel);
+            JSONW_WRITE(io, "min_vel", v->min_vel);
+            JSONW_WRITE(io, "friction", v->friction);
+            JSONW_WRITE(io, "gravity", v->gravity);
+            JSONW_POP_AND_APPEND(io);
+        }
+        JSONW_POP_AND_SET(io, "verts");
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET_NZ(io, "splashes");
+}
+
+static void M_SaveRipples(JSON_WRITE_IO *const io)
+{
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Ripples); i++) {
+        const FX_WATER_RIPPLE *const ripple = &m_Ripples[i];
+        if ((ripple->flags & 1U) == 0U) {
+            continue;
+        }
+        JSONW_PUSH_OBJECT(io);
+        JSONW_WRITE(io, "pos", ripple->pos);
+        JSONW_WRITE(io, "flags", ripple->flags);
+        JSONW_WRITE(io, "life", ripple->life);
+        JSONW_WRITE(io, "size", ripple->size);
+        JSONW_WRITE(io, "init", ripple->init);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET_NZ(io, "ripples");
+}
+
+static void M_Save(JSON_WRITE_IO *const io)
+{
+    JSONW_WRITE_NZ(io, "splash_count", m_SplashCount);
+    M_SaveSplashes(io);
+    M_SaveRipples(io);
+}
+
+static RESULT M_LoadSplashes(JSON_READ_IO *const io)
+{
+    const int32_t count = JSON_ARRAY_LEN(io);
+    for (int32_t i = 0; i < count; i++) {
+        if (i >= (int32_t)ARRAY_SIZE(m_Splashes)) {
+            LOG_WARNING(
+                "Malformed save: too many splashes. Extra splashes will be "
+                "ignored.");
+            break;
+        }
+
+        FX_WATER_SPLASH *const splash = &m_Splashes[i];
+        MUST(JSON_PUSH_INDEX(io, i));
+        MUST(JSON_READ(io, "pos", &splash->pos));
+        MUST(JSON_READ(io, "flags", &splash->flags));
+        MUST(JSON_READ(io, "life", &splash->life));
+        MUST(JSON_PUSH(io, "verts"));
+        const int32_t vert_count = JSON_ARRAY_LEN(io);
+        if (vert_count != (int32_t)ARRAY_SIZE(splash->v)) {
+            return JSON_ReadIO_Fail(
+                io, "a splash holds %d points, not %d", vert_count,
+                (int32_t)ARRAY_SIZE(splash->v));
+        }
+        for (int32_t j = 0; j < vert_count; j++) {
+            FX_WATER_SPLASH_VERT *const v = &splash->v[j];
+            MUST(JSON_PUSH_INDEX(io, j));
+            MUST(JSON_READ(io, "pos", &v->pos));
+            MUST(JSON_READ(io, "vel", &v->vel));
+            MUST(JSON_READ(io, "min_vel", &v->min_vel));
+            MUST(JSON_READ(io, "friction", &v->friction));
+            MUST(JSON_READ(io, "gravity", &v->gravity));
+            MUST(JSON_POP(io));
+        }
+        MUST(JSON_POP(io));
+        MUST(JSON_POP(io));
+        M_RememberSplash(splash);
+    }
+    return OK;
+}
+
+static RESULT M_LoadRipples(JSON_READ_IO *const io)
+{
+    const int32_t count = JSON_ARRAY_LEN(io);
+    for (int32_t i = 0; i < count; i++) {
+        if (i >= (int32_t)ARRAY_SIZE(m_Ripples)) {
+            LOG_WARNING(
+                "Malformed save: too many ripples. Extra ripples will be "
+                "ignored.");
+            break;
+        }
+
+        FX_WATER_RIPPLE *const ripple = &m_Ripples[i];
+        MUST(JSON_PUSH_INDEX(io, i));
+        MUST(JSON_READ(io, "pos", &ripple->pos));
+        MUST(JSON_READ(io, "flags", &ripple->flags));
+        MUST(JSON_READ(io, "life", &ripple->life));
+        MUST(JSON_READ(io, "size", &ripple->size));
+        MUST(JSON_READ(io, "init", &ripple->init));
+        MUST(JSON_POP(io));
+        M_RememberRipple(ripple);
+    }
+    return OK;
+}
+
+static RESULT M_Load(JSON_READ_IO *const io)
+{
+    MUST(JSON_READ_D(io, "splash_count", &m_SplashCount, 0));
+    if (JSON_ReadIO_HasKey(io, "splashes")) {
+        MUST(JSON_PUSH(io, "splashes"));
+        MUST(M_LoadSplashes(io));
+        MUST(JSON_POP(io));
+    }
+    if (JSON_ReadIO_HasKey(io, "ripples")) {
+        MUST(JSON_PUSH(io, "ripples"));
+        MUST(M_LoadRipples(io));
+        MUST(JSON_POP(io));
+    }
+    return OK;
+}
+
 FX_WATER_RIPPLE *FX_Water_SetupRipple(
     const int32_t x, const int32_t y, const int32_t z, int32_t size,
     const bool is_still)
@@ -332,9 +470,9 @@ FX_WATER_RIPPLE *FX_Water_SetupRipple(
     ripple->init = 1U;
     ripple->size = (uint8_t)size;
     ripple->life = (uint8_t)((Random_GetControl() & 0xF) + 48);
-    ripple->x = (Random_GetControl() & 0x7F) + x - 64;
-    ripple->y = y;
-    ripple->z = (Random_GetControl() & 0x7F) + z - 64;
+    ripple->pos.x = (Random_GetControl() & 0x7F) + x - 64;
+    ripple->pos.y = y;
+    ripple->pos.z = (Random_GetControl() & 0x7F) + z - 64;
     M_RememberRipple(ripple);
     return ripple;
 }
@@ -353,8 +491,8 @@ void FX_Water_SetupSplash(const FX_WATER_SPLASH_SETUP *const setup_)
 
     if (idx < 0) {
         Sound_Effect(
-            SFX_LARA_SPLASH, &(XYZ_32) { setup.x, setup.y, setup.z },
-            SPM_NORMAL);
+            SFX_LARA_SPLASH,
+            &(XYZ_32) { setup.pos.x, setup.pos.y, setup.pos.z }, SPM_NORMAL);
         return;
     }
 
@@ -366,130 +504,119 @@ void FX_Water_SetupSplash(const FX_WATER_SPLASH_SETUP *const setup_)
         setup.outer_friction = 9;
     }
 
-    splash->x = setup.x;
-    splash->y = setup.y;
-    splash->z = setup.z;
+    splash->pos.x = setup.pos.x;
+    splash->pos.y = setup.pos.y;
+    splash->pos.z = setup.pos.z;
     splash->life = 63U;
 
     FX_WATER_SPLASH_VERT *v = splash->v;
 
     for (int32_t i = 0; i < 8; i++) {
-        v->wx = (setup.inner_xz_off * m_SplashRings[i][0]) * 2;
-        v->wy = 0;
-        v->wz = (setup.inner_xz_off * m_SplashRings[i][1]) * 2;
-        v->xv = (setup.inner_xz_vel * m_SplashRings[i][0]) / 12;
-        v->yv = 0;
-        v->zv = (setup.inner_xz_vel * m_SplashRings[i][1]) / 12;
-        v->oxv = v->xv >> 3;
-        v->ozv = v->zv >> 3;
+        v->pos.x = (setup.inner_xz_off * m_SplashRings[i][0]) * 2;
+        v->pos.y = 0;
+        v->pos.z = (setup.inner_xz_off * m_SplashRings[i][1]) * 2;
+        v->vel.x = (setup.inner_xz_vel * m_SplashRings[i][0]) / 12;
+        v->vel.y = 0;
+        v->vel.z = (setup.inner_xz_vel * m_SplashRings[i][1]) / 12;
+        v->min_vel.x = v->vel.x >> 3;
+        v->min_vel.z = v->vel.z >> 3;
         v->gravity = 0;
         v->friction = (uint8_t)(setup.inner_friction - 2);
-        v->prev_wx = v->wx;
-        v->prev_wy = v->wy;
-        v->prev_wz = v->wz;
+        v->prev_pos = v->pos;
         v++;
     }
 
     for (int32_t i = 0; i < 8; i++) {
-        v->wx =
+        v->pos.x =
             ((setup.inner_xz_off + setup.inner_xz_size) * m_SplashRings[i][0])
             * 2;
-        v->wy = setup.inner_y_size;
-        v->wz =
+        v->pos.y = setup.inner_y_size;
+        v->pos.z =
             ((setup.inner_xz_off + setup.inner_xz_size) * m_SplashRings[i][1])
             * 2;
-        v->xv = (setup.inner_xz_vel * m_SplashRings[i][0]) >> 3;
-        v->yv = setup.inner_y_vel;
-        v->zv = (setup.inner_xz_vel * m_SplashRings[i][1]) >> 3;
-        v->oxv = v->xv >> 3;
-        v->ozv = v->zv >> 3;
+        v->vel.x = (setup.inner_xz_vel * m_SplashRings[i][0]) >> 3;
+        v->vel.y = setup.inner_y_vel;
+        v->vel.z = (setup.inner_xz_vel * m_SplashRings[i][1]) >> 3;
+        v->min_vel.x = v->vel.x >> 3;
+        v->min_vel.z = v->vel.z >> 3;
         v->gravity = (uint8_t)setup.inner_gravity;
         v->friction = (uint8_t)setup.inner_friction;
-        v->prev_wx = v->wx;
-        v->prev_wy = v->wy;
-        v->prev_wz = v->wz;
+        v->prev_pos = v->pos;
         v++;
     }
 
     for (int32_t i = 0; i < 8; i++) {
-        v->wx = (setup.middle_xz_off * m_SplashRings[i][0]) * 2;
-        v->wy = 0;
-        v->wz = (setup.middle_xz_off * m_SplashRings[i][1]) * 2;
-        v->xv = (setup.middle_xz_vel * m_SplashRings[i][0]) / 12;
-        v->yv = 0;
-        v->zv = (setup.middle_xz_vel * m_SplashRings[i][1]) / 12;
-        v->oxv = v->xv >> 3;
-        v->ozv = v->zv >> 3;
+        v->pos.x = (setup.middle_xz_off * m_SplashRings[i][0]) * 2;
+        v->pos.y = 0;
+        v->pos.z = (setup.middle_xz_off * m_SplashRings[i][1]) * 2;
+        v->vel.x = (setup.middle_xz_vel * m_SplashRings[i][0]) / 12;
+        v->vel.y = 0;
+        v->vel.z = (setup.middle_xz_vel * m_SplashRings[i][1]) / 12;
+        v->min_vel.x = v->vel.x >> 3;
+        v->min_vel.z = v->vel.z >> 3;
         v->gravity = 0;
         v->friction = (uint8_t)(setup.middle_friction - 2);
-        v->prev_wx = v->wx;
-        v->prev_wy = v->wy;
-        v->prev_wz = v->wz;
+        v->prev_pos = v->pos;
         v++;
     }
 
     for (int32_t i = 0; i < 8; i++) {
-        v->wx =
+        v->pos.x =
             ((setup.middle_xz_off + setup.middle_xz_size) * m_SplashRings[i][0])
             * 2;
-        v->wy = setup.middle_y_size;
-        v->wz =
+        v->pos.y = setup.middle_y_size;
+        v->pos.z =
             ((setup.middle_xz_off + setup.middle_xz_size) * m_SplashRings[i][1])
             * 2;
-        v->xv = (setup.middle_xz_vel * m_SplashRings[i][0]) >> 3;
-        v->yv = setup.middle_y_vel;
-        v->zv = (setup.middle_xz_vel * m_SplashRings[i][1]) >> 3;
-        v->oxv = v->xv >> 3;
-        v->ozv = v->zv >> 3;
+        v->vel.x = (setup.middle_xz_vel * m_SplashRings[i][0]) >> 3;
+        v->vel.y = setup.middle_y_vel;
+        v->vel.z = (setup.middle_xz_vel * m_SplashRings[i][1]) >> 3;
+        v->min_vel.x = v->vel.x >> 3;
+        v->min_vel.z = v->vel.z >> 3;
         v->gravity = (uint8_t)setup.middle_gravity;
         v->friction = (uint8_t)setup.middle_friction;
-        v->prev_wx = v->wx;
-        v->prev_wy = v->wy;
-        v->prev_wz = v->wz;
+        v->prev_pos = v->pos;
         v++;
     }
 
     for (int32_t i = 0; i < 8; i++) {
-        v->wx = (setup.outer_xz_off * m_SplashRings[i][0]) * 2;
-        v->wy = 0;
-        v->wz = (setup.outer_xz_off * m_SplashRings[i][1]) * 2;
-        v->xv = (setup.outer_xz_vel * m_SplashRings[i][0]) / 12;
-        v->yv = 0;
-        v->zv = (setup.outer_xz_vel * m_SplashRings[i][1]) / 12;
-        v->oxv = v->xv >> 3;
-        v->ozv = v->zv >> 3;
+        v->pos.x = (setup.outer_xz_off * m_SplashRings[i][0]) * 2;
+        v->pos.y = 0;
+        v->pos.z = (setup.outer_xz_off * m_SplashRings[i][1]) * 2;
+        v->vel.x = (setup.outer_xz_vel * m_SplashRings[i][0]) / 12;
+        v->vel.y = 0;
+        v->vel.z = (setup.outer_xz_vel * m_SplashRings[i][1]) / 12;
+        v->min_vel.x = v->vel.x >> 3;
+        v->min_vel.z = v->vel.z >> 3;
         v->gravity = 0;
         v->friction = (uint8_t)(setup.outer_friction - 2);
-        v->prev_wx = v->wx;
-        v->prev_wy = v->wy;
-        v->prev_wz = v->wz;
+        v->prev_pos = v->pos;
         v++;
     }
 
     for (int32_t i = 0; i < 8; i++) {
-        v->wx =
+        v->pos.x =
             ((setup.outer_xz_off + setup.outer_xz_size) * m_SplashRings[i][0])
             * 2;
-        v->wy = 0;
-        v->wz =
+        v->pos.y = 0;
+        v->pos.z =
             ((setup.outer_xz_off + setup.outer_xz_size) * m_SplashRings[i][1])
             * 2;
-        v->xv = (setup.outer_xz_vel * m_SplashRings[i][0]) >> 3;
-        v->yv = 0;
-        v->zv = (setup.outer_xz_vel * m_SplashRings[i][1]) >> 3;
-        v->oxv = v->xv >> 3;
-        v->ozv = v->zv >> 3;
+        v->vel.x = (setup.outer_xz_vel * m_SplashRings[i][0]) >> 3;
+        v->vel.y = 0;
+        v->vel.z = (setup.outer_xz_vel * m_SplashRings[i][1]) >> 3;
+        v->min_vel.x = v->vel.x >> 3;
+        v->min_vel.z = v->vel.z >> 3;
         v->gravity = 0;
         v->friction = (uint8_t)setup.outer_friction;
-        v->prev_wx = v->wx;
-        v->prev_wy = v->wy;
-        v->prev_wz = v->wz;
+        v->prev_pos = v->pos;
         v++;
     }
     splash->prev_life = splash->life;
 
     Sound_Effect(
-        SFX_LARA_SPLASH, &(XYZ_32) { setup.x, setup.y, setup.z }, SPM_NORMAL);
+        SFX_LARA_SPLASH, &(XYZ_32) { setup.pos.x, setup.pos.y, setup.pos.z },
+        SPM_NORMAL);
 }
 
 void FX_Water_Splash(const ITEM *const item)
@@ -502,9 +629,7 @@ void FX_Water_Splash(const ITEM *const item)
 
     const int32_t water_height = Room_GetWaterHeight(item->pos, room_num);
     FX_WATER_SPLASH_SETUP setup = {
-        .x = item->pos.x,
-        .y = water_height,
-        .z = item->pos.z,
+        .pos = { .x = item->pos.x, .y = water_height, .z = item->pos.z },
         .inner_xz_off = 32,
         .inner_xz_size = 8,
         .inner_y_size = -128,
@@ -557,9 +682,7 @@ void FX_Water_WadeSplash(const ITEM *const item, const int32_t depth)
     const int32_t time4 = Output_GetTimeInGame() * 4;
     if (item->fall_speed > 0 && depth < 474 && m_SplashCount == 0) {
         const FX_WATER_SPLASH_SETUP setup = {
-            .x = item->pos.x,
-            .y = water_height,
-            .z = item->pos.z,
+            .pos = { .x = item->pos.x, .y = water_height, .z = item->pos.z },
             .inner_xz_off = 16,
             .inner_xz_size = 12,
             .inner_y_size = -96,
@@ -610,9 +733,9 @@ void FX_Water_TriggerUnderwaterBlood(const XYZ_32 pos, const int32_t size)
     ripple->init = 1U;
     ripple->life = (Random_GetControl() & 7) - 16;
     ripple->size = size;
-    ripple->x = pos.x + (Random_GetControl() & 0x3F) - 32;
-    ripple->y = pos.y;
-    ripple->z = pos.z + (Random_GetControl() & 0x3F) - 32;
+    ripple->pos.x = pos.x + (Random_GetControl() & 0x3F) - 32;
+    ripple->pos.y = pos.y;
+    ripple->pos.z = pos.z + (Random_GetControl() & 0x3F) - 32;
     M_RememberRipple(ripple);
 }
 
@@ -634,9 +757,9 @@ void FX_Water_TriggerUnderwaterBloodD(const XYZ_32 pos, const int32_t size)
     ripple->init = 1U;
     ripple->life = (Random_GetDraw() & 7) - 16;
     ripple->size = size;
-    ripple->x = pos.x + (Random_GetDraw() & 0x3F) - 32;
-    ripple->y = pos.y;
-    ripple->z = pos.z + (Random_GetDraw() & 0x3F) - 32;
+    ripple->pos.x = pos.x + (Random_GetDraw() & 0x3F) - 32;
+    ripple->pos.y = pos.y;
+    ripple->pos.z = pos.z + (Random_GetDraw() & 0x3F) - 32;
     M_RememberRipple(ripple);
 }
 
@@ -644,6 +767,9 @@ static const FX_MODULE m_Module = {
     .control_func = M_Control,
     .draw_func = M_Draw,
     .reset_func = M_Reset,
+    .save_key = "water",
+    .save_func = M_Save,
+    .load_func = M_Load,
 };
 
 REGISTER_FX(m_Module)

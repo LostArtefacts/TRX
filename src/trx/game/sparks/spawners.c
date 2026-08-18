@@ -59,6 +59,7 @@ void Sparks_TriggerBubble(
             SPARK_F_ATTACHED_POS | SPARK_F_FX | SPARK_F_SPRITE | SPARK_F_SCALE,
         .effect_num = effect_num,
         .sprite_idx = bubble_obj->mesh_idx,
+        .sprite_obj_id = O_BUBBLE_1,
         .pos = { .x = 0, .y = 0, .z = 0 },
         .vel = { .x = 0, .y = 0, .z = 0 },
         .gravity = 0,
@@ -111,6 +112,7 @@ void Sparks_TriggerWaterfallMist(
             .life = (uint8_t)((Random_GetControl() & 3) + 6),
             .dynamic = -1,
             .sprite_idx = sprite_idx,
+            .sprite_obj_id = O_SPARKS_GFX,
             .pos = {
                 .x = x + (Random_GetControl() % 16) - 8 + spread.x,
                 .y = y + (Random_GetControl() % 16) - 8,
@@ -218,6 +220,7 @@ void Sparks_TriggerBreath(
         .life = (uint8_t)((Random_GetControl() & 3) + 37),
         .dynamic = -1,
         .sprite_idx = sprite_idx,
+        .sprite_obj_id = O_SPARKS_GFX,
         .pos = {
             .x = pos.x + jitter_x,
             .y = pos.y + jitter_y,
@@ -727,9 +730,7 @@ void Sparks_TriggerUnderwaterExplosion(const ITEM *item)
 
     const ROOM *const room = Room_Get(item->room_num);
     FX_Water_SetupSplash(&(FX_WATER_SPLASH_SETUP) {
-        .x = item->pos.x,
-        .y = room->max_ceiling,
-        .z = item->pos.z,
+        .pos = { .x = item->pos.x, .y = room->max_ceiling, .z = item->pos.z },
         .inner_y_size = -96,
         .inner_xz_vel = 160,
         .inner_gravity = 96,
@@ -784,6 +785,7 @@ void Sparks_TriggerExplosionSparks(
         .life = 0,
         .dynamic = (int8_t)dynamic,
         .sprite_idx = sprite_idx,
+        .sprite_obj_id = O_SPARKS_GFX,
         .pos = pos,
         .vel = {
             .x = (Random_GetControl() & 0xFFF) - 2048,
@@ -899,6 +901,7 @@ void Sparks_TriggerExplosionBubble(const XYZ_32 pos, const int16_t room_num)
         .extras = 0,
         .dynamic = -1,
         .sprite_idx = sprite_idx,
+        .sprite_obj_id = O_SPARKS_GFX,
         .pos = pos,
         .vel = { .x = 0, .y = 0, .z = 0 },
         .gravity = 0,
@@ -1225,6 +1228,7 @@ void Sparks_TriggerPickupAid(const XYZ_32 pos, const XZ_32 vel)
     const OBJECT *const obj = Object_Get(O_PICKUP_AID);
     const int32_t mesh_count = ABS(obj->mesh_count) - 1;
     spark->sprite_idx = obj->mesh_idx + (Random_GetControl() & mesh_count);
+    spark->sprite_obj_id = O_PICKUP_AID;
 
     spark->scalar = 1;
     int32_t rnd = (Random_GetControl() & 0x3F) + 36;

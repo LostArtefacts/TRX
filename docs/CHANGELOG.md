@@ -48,6 +48,7 @@
 - Removed the golden outfits, which the engine now produces from any outfit, freeing their model slots for outfits of your own (TRX1070)
 
 **Saves and settings**
+- Added smoke, sparks, mist and bubbles to saves (Gameplay → General → Save effects)
 - Changed the save crystal behavior to give Lara a crystal when starting a game, if the mode is set to Saving (pickups), in line with the TR3 PS1 version (Gameplay → General → Crystal mode) (TRX1101)
 - Fixed save crystals activating even while Crystal mode is set to Disabled (Gameplay → General → Crystal mode) (regression from 1.10) (TRX1149)
 

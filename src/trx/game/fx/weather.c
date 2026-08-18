@@ -42,9 +42,7 @@ typedef struct {
     XYZ_32 pos;
     XYZ_32 prev_pos;
     int32_t prev_yv;
-    int8_t xv;
-    uint8_t yv;
-    int8_t zv;
+    XYZ_32 vel;
     uint8_t life;
 } M_RAINDROP;
 
@@ -54,9 +52,7 @@ typedef struct {
     bool stopped;
     int32_t prev_yv;
     int32_t prev_life;
-    int8_t xv;
-    uint8_t yv;
-    int8_t zv;
+    XYZ_32 vel;
     uint8_t life;
 } M_SNOWFLAKE;
 
@@ -135,13 +131,13 @@ static void M_SpawnRainDrop(M_RAINDROP *const drop)
         return;
     }
 
-    drop->yv =
+    drop->vel.y =
         (uint8_t)((Random_GetDraw() & M_RAIN_YV_RND_MASK) + M_RAIN_BASE_YV);
-    drop->xv = (int8_t)((Random_GetDraw() & 7) - 4);
-    drop->zv = (int8_t)((Random_GetDraw() & 7) - 4);
-    drop->life = (uint8_t)(M_RAIN_LIFE_BASE - ((int32_t)drop->yv << 1));
+    drop->vel.x = (int8_t)((Random_GetDraw() & 7) - 4);
+    drop->vel.z = (int8_t)((Random_GetDraw() & 7) - 4);
+    drop->life = (uint8_t)(M_RAIN_LIFE_BASE - ((int32_t)drop->vel.y << 1));
     drop->prev_pos = drop->pos;
-    drop->prev_yv = drop->yv;
+    drop->prev_yv = drop->vel.y;
 }
 
 static void M_UpdateRain(void)
@@ -164,7 +160,7 @@ static void M_UpdateRain(void)
         }
 
         drop->prev_pos = drop->pos;
-        drop->prev_yv = drop->yv;
+        drop->prev_yv = drop->vel.y;
 
         int16_t room_num = NO_ROOM;
         const int32_t outside =
@@ -178,27 +174,27 @@ static void M_UpdateRain(void)
             continue;
         }
 
-        drop->pos.x += (int32_t)drop->xv + 4 * wind.x;
-        drop->pos.y += (int32_t)drop->yv * 8;
-        drop->pos.z += (int32_t)drop->zv + 4 * wind.z;
+        drop->pos.x += (int32_t)drop->vel.x + 4 * wind.x;
+        drop->pos.y += (int32_t)drop->vel.y * 8;
+        drop->pos.z += (int32_t)drop->vel.z + 4 * wind.z;
 
         int32_t rnd = Random_GetDraw();
         if ((rnd & 3) != 3) {
-            drop->xv += (int8_t)((rnd & 3) - 1);
-            if (drop->xv < -4) {
-                drop->xv = -4;
-            } else if (drop->xv > 4) {
-                drop->xv = 4;
+            drop->vel.x += (int8_t)((rnd & 3) - 1);
+            if (drop->vel.x < -4) {
+                drop->vel.x = -4;
+            } else if (drop->vel.x > 4) {
+                drop->vel.x = 4;
             }
         }
 
         rnd = (rnd >> 2) & 3;
         if (rnd != 3) {
-            drop->zv += (int8_t)(rnd - 1);
-            if (drop->zv < -4) {
-                drop->zv = -4;
-            } else if (drop->zv > 4) {
-                drop->zv = 4;
+            drop->vel.z += (int8_t)(rnd - 1);
+            if (drop->vel.z < -4) {
+                drop->vel.z = -4;
+            } else if (drop->vel.z > 4) {
+                drop->vel.z = 4;
             }
         }
 
@@ -232,8 +228,8 @@ static void M_DrawRain(void)
         }
 
         const int32_t yv = do_interp
-            ? (int32_t)LERP(drop->prev_yv, drop->yv, ratio)
-            : (int32_t)drop->yv;
+            ? (int32_t)LERP(drop->prev_yv, drop->vel.y, ratio)
+            : (int32_t)drop->vel.y;
         const XYZ_32 to = do_interp
             ? (XYZ_32) {
                   .x = (int32_t)LERP(drop->prev_pos.x, drop->pos.x, ratio),
@@ -259,13 +255,13 @@ static void M_SpawnSnowflake(M_SNOWFLAKE *const snow)
     }
 
     snow->stopped = false;
-    snow->xv = (int8_t)((Random_GetDraw() & 7) - 4);
-    snow->yv =
+    snow->vel.x = (int8_t)((Random_GetDraw() & 7) - 4);
+    snow->vel.y =
         (uint8_t)(((Random_GetDraw() % M_SNOW_YV_RANGE) + M_SNOW_YV_MIN) * 8);
-    snow->zv = (int8_t)((Random_GetDraw() & 7) - 4);
-    snow->life = (uint8_t)(M_SNOW_LIFE_BASE - ((int32_t)snow->yv << 1));
+    snow->vel.z = (int8_t)((Random_GetDraw() & 7) - 4);
+    snow->life = (uint8_t)(M_SNOW_LIFE_BASE - ((int32_t)snow->vel.y << 1));
     snow->prev_pos = snow->pos;
-    snow->prev_yv = snow->yv;
+    snow->prev_yv = snow->vel.y;
     snow->prev_life = snow->life;
 }
 
@@ -288,7 +284,7 @@ static void M_UpdateSnow(void)
         }
 
         snow->prev_pos = snow->pos;
-        snow->prev_yv = snow->yv;
+        snow->prev_yv = snow->vel.y;
         snow->prev_life = snow->life;
 
         const XYZ_32 old_pos = snow->pos;
@@ -296,9 +292,9 @@ static void M_UpdateSnow(void)
         int16_t room_num = NO_ROOM;
         int32_t outside = 1;
         if (!snow->stopped) {
-            snow->pos.x += snow->xv;
-            snow->pos.y += (snow->yv & 0xF8) >> 2;
-            snow->pos.z += snow->zv;
+            snow->pos.x += snow->vel.x;
+            snow->pos.y += (snow->vel.y & 0xF8) >> 2;
+            snow->pos.z += snow->vel.z;
 
             outside = Room_GetOutsideStatus(snow->pos, &room_num, nullptr);
             if (outside == -3) {
@@ -315,8 +311,8 @@ static void M_UpdateSnow(void)
                 if (snow->life > 16) {
                     snow->life = 16;
                 }
-                if (snow->yv > 16) {
-                    snow->yv -= 16;
+                if (snow->vel.y > 16) {
+                    snow->vel.y -= 16;
                 }
             }
         }
@@ -334,21 +330,21 @@ static void M_UpdateSnow(void)
 
         const XZ_32 wind = Sparks_GetSmokeWind();
 
-        if (snow->xv < (wind.x * 2)) {
-            snow->xv++;
-        } else if (snow->xv > (wind.x * 2)) {
-            snow->xv--;
+        if (snow->vel.x < (wind.x * 2)) {
+            snow->vel.x++;
+        } else if (snow->vel.x > (wind.x * 2)) {
+            snow->vel.x--;
         }
 
-        if (snow->zv < (wind.z * 2)) {
-            snow->zv++;
-        } else if (snow->zv > (wind.z * 2)) {
-            snow->zv--;
+        if (snow->vel.z < (wind.z * 2)) {
+            snow->vel.z++;
+        } else if (snow->vel.z > (wind.z * 2)) {
+            snow->vel.z--;
         }
 
         snow->life -= 2;
-        if ((snow->yv & 7) != 7) {
-            snow->yv++;
+        if ((snow->vel.y & 7) != 7) {
+            snow->vel.y++;
         }
     }
 }
@@ -395,8 +391,8 @@ static void M_DrawSnow(void)
         }
 
         const int32_t yv = do_interp
-            ? (int32_t)LERP(snow->prev_yv, snow->yv, ratio)
-            : (int32_t)snow->yv;
+            ? (int32_t)LERP(snow->prev_yv, snow->vel.y, ratio)
+            : (int32_t)snow->vel.y;
         const int32_t life = do_interp
             ? (int32_t)LERP(snow->prev_life, snow->life, ratio)
             : (int32_t)snow->life;
@@ -455,9 +451,7 @@ static void M_SaveRain(JSON_WRITE_IO *const io)
 
         JSONW_PUSH_OBJECT(io);
         JSONW_WRITE(io, "pos", drop->pos);
-        JSONW_WRITE(io, "xv", drop->xv);
-        JSONW_WRITE(io, "yv", drop->yv);
-        JSONW_WRITE(io, "zv", drop->zv);
+        JSONW_WRITE(io, "vel", drop->vel);
         JSONW_WRITE(io, "life", drop->life);
         JSONW_POP_AND_APPEND(io);
     }
@@ -475,9 +469,7 @@ static void M_SaveSnow(JSON_WRITE_IO *const io)
 
         JSONW_PUSH_OBJECT(io);
         JSONW_WRITE(io, "pos", snow->pos);
-        JSONW_WRITE(io, "xv", snow->xv);
-        JSONW_WRITE(io, "yv", snow->yv);
-        JSONW_WRITE(io, "zv", snow->zv);
+        JSONW_WRITE(io, "vel", snow->vel);
         JSONW_WRITE(io, "life", snow->life);
         JSONW_WRITE(io, "stopped", snow->stopped);
         JSONW_POP_AND_APPEND(io);
@@ -497,6 +489,17 @@ static void M_Save(JSON_WRITE_IO *const io)
     }
 }
 
+static RESULT M_LoadVelocity(JSON_READ_IO *const io, XYZ_32 *const vel)
+{
+    if (JSON_ReadIO_HasKey(io, "vel")) {
+        return JSON_READ(io, "vel", vel);
+    }
+    MUST(JSON_READ(io, "xv", &vel->x));
+    MUST(JSON_READ(io, "yv", &vel->y));
+    MUST(JSON_READ(io, "zv", &vel->z));
+    return OK;
+}
+
 static RESULT M_LoadRain(JSON_READ_IO *const io)
 {
     const int32_t count = JSON_ARRAY_LEN(io);
@@ -511,13 +514,11 @@ static RESULT M_LoadRain(JSON_READ_IO *const io)
         M_RAINDROP *const drop = &m_Raindrops[i];
         MUST(JSON_PUSH_INDEX(io, i));
         MUST(JSON_READ(io, "pos", &drop->pos));
-        MUST(JSON_READ(io, "xv", &drop->xv));
-        MUST(JSON_READ(io, "yv", &drop->yv));
-        MUST(JSON_READ(io, "zv", &drop->zv));
+        MUST(M_LoadVelocity(io, &drop->vel));
         MUST(JSON_READ(io, "life", &drop->life));
         MUST(JSON_POP(io));
         drop->prev_pos = drop->pos;
-        drop->prev_yv = drop->yv;
+        drop->prev_yv = drop->vel.y;
     }
     return OK;
 }
@@ -536,14 +537,12 @@ static RESULT M_LoadSnow(JSON_READ_IO *const io)
         M_SNOWFLAKE *const snow = &m_Snowflakes[i];
         MUST(JSON_PUSH_INDEX(io, i));
         MUST(JSON_READ(io, "pos", &snow->pos));
-        MUST(JSON_READ(io, "xv", &snow->xv));
-        MUST(JSON_READ(io, "yv", &snow->yv));
-        MUST(JSON_READ(io, "zv", &snow->zv));
+        MUST(M_LoadVelocity(io, &snow->vel));
         MUST(JSON_READ(io, "life", &snow->life));
         MUST(JSON_READ(io, "stopped", &snow->stopped));
         MUST(JSON_POP(io));
         snow->prev_pos = snow->pos;
-        snow->prev_yv = snow->yv;
+        snow->prev_yv = snow->vel.y;
         snow->prev_life = snow->life;
     }
     return OK;

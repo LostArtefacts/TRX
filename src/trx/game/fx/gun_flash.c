@@ -2,6 +2,8 @@
 
 #include <trx/config.h>
 #include <trx/core/colors.h>
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/core/math.h>
 #include <trx/game/collision.h>
 #include <trx/game/fx/common.h>
@@ -173,6 +175,76 @@ static void M_Draw(void)
     }
 }
 
+static void M_Reset(void)
+{
+    m_Priv = (M_PRIV) {};
+}
+
+static void M_Save(JSON_WRITE_IO *const io)
+{
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < M_MAX_FLASHES; i++) {
+        const M_GUN_FLASH *const flash = &m_Priv.flashes[i];
+        if (!flash->active) {
+            continue;
+        }
+        JSONW_PUSH_OBJECT(io);
+        JSONW_WRITE(io, "owner_item_num", flash->owner_item_num);
+        JSONW_WRITE(io, "room_num", flash->room_num);
+        JSONW_WRITE(io, "lifetime", flash->lifetime);
+        JSONW_WRITE(io, "rot", ((XZ_32) { flash->rot.x, flash->rot.z }));
+        JSONW_WRITE(io, "bite_pos", flash->bite.pos);
+        JSONW_WRITE(io, "bite_mesh_num", flash->bite.mesh_num);
+        JSONW_WRITE(io, "light_pos", flash->light_pos);
+        JSONW_WRITE(
+            io, "flash_object_id", Object_ToGameID(flash->flash_object_id));
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET_NZ(io, "flashes");
+}
+
+static RESULT M_Load(JSON_READ_IO *const io)
+{
+    if (!JSON_ReadIO_HasKey(io, "flashes")) {
+        return OK;
+    }
+    MUST(JSON_PUSH(io, "flashes"));
+
+    const int32_t count = JSON_ARRAY_LEN(io);
+    for (int32_t i = 0; i < count; i++) {
+        if (i >= M_MAX_FLASHES) {
+            LOG_WARNING(
+                "Malformed save: too many gun flashes. Extra flashes will be "
+                "ignored.");
+            break;
+        }
+
+        M_GUN_FLASH *const flash = &m_Priv.flashes[i];
+        MUST(JSON_PUSH_INDEX(io, i));
+        MUST(JSON_READ(io, "owner_item_num", &flash->owner_item_num));
+        MUST(JSON_READ(io, "room_num", &flash->room_num));
+        MUST(JSON_READ(io, "lifetime", &flash->lifetime));
+        XZ_32 rot = {};
+        MUST(JSON_READ(io, "rot", &rot));
+        flash->rot = (XZ_16) { rot.x, rot.z };
+        MUST(JSON_READ(io, "bite_pos", &flash->bite.pos));
+        MUST(JSON_READ(io, "bite_mesh_num", &flash->bite.mesh_num));
+        MUST(JSON_READ(io, "light_pos", &flash->light_pos));
+        int32_t game_id = 0;
+        MUST(JSON_READ(io, "flash_object_id", &game_id));
+        flash->flash_object_id = Object_FromGameID(game_id);
+        if (flash->flash_object_id == NO_OBJECT) {
+            return JSON_ReadIO_Fail(io, "unsupported object #%d", game_id);
+        }
+        MUST(JSON_POP(io));
+        flash->active = true;
+        m_Priv.next_idx = (i + 1) % M_MAX_FLASHES;
+    }
+
+    MUST(JSON_POP(io));
+    return OK;
+}
+
 bool FX_GunFlash_Spawn(
     const ITEM *const owner_item, const CREATURE_GUN *const gun)
 {
@@ -198,6 +270,10 @@ bool FX_GunFlash_Spawn(
 static const FX_MODULE m_Module = {
     .control_func = M_Control,
     .draw_func = M_Draw,
+    .reset_func = M_Reset,
+    .save_key = "gun_flashes",
+    .save_func = M_Save,
+    .load_func = M_Load,
 };
 
 REGISTER_FX(m_Module)

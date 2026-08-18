@@ -25,11 +25,6 @@
 #include <trx/game/savegame/file.h>
 #include <trx/version.h>
 
-typedef struct {
-    int16_t count;
-    int16_t id_map[MAX_EFFECTS];
-} M_FX_ORDER;
-
 static void M_WriteXYZ32(
     JSON_WRITE_IO *const io, const char *const key, const XYZ_32 source)
 {
@@ -94,20 +89,6 @@ static void M_WriteRopeState(JSON_WRITE_IO *const io)
     JSONW_POP_AND_SET(io, "rope_state");
 }
 
-static void M_GetFXOrder(M_FX_ORDER *const order)
-{
-    order->count = 0;
-    for (int32_t i = 0; i < MAX_EFFECTS; i++) {
-        order->id_map[i] = -1;
-    }
-
-    for (int16_t link_num = Effect_GetActiveNum(); link_num != NO_ITEM;
-         link_num = Effect_Get(link_num)->next_active) {
-        order->id_map[link_num] = order->count;
-        order->count++;
-    }
-}
-
 // Global anim indices shift as injections append anims, so persist the owning
 // object and an index relative to it.
 static void M_WriteAnimNum(JSON_WRITE_IO *const io, const int16_t anim_num)
@@ -161,9 +142,7 @@ static uint16_t M_PackItemFlags(const ITEM *const item)
         | (item->is_destroyed ? IF_DESTROYED : 0);
 }
 
-static void M_WriteItem(
-    JSON_WRITE_IO *const io, const ITEM *const item,
-    const M_FX_ORDER *const fx_order)
+static void M_WriteItem(JSON_WRITE_IO *const io, const ITEM *const item)
 {
     JSONW_WRITE(io, "index", Item_GetIndex(item));
     if (item->name != nullptr) {
@@ -404,9 +383,6 @@ void SG_File_DumpFlares(JSON_WRITE_IO *const io)
 
 void SG_File_DumpEffects(JSON_WRITE_IO *const io)
 {
-    M_FX_ORDER fx_order;
-    M_GetFXOrder(&fx_order);
-
     JSONW_PUSH_ARRAY(io);
     for (int16_t link_num = Effect_GetActiveNum(); link_num != NO_ITEM;
          link_num = Effect_Get(link_num)->next_active) {
@@ -529,13 +505,11 @@ void SG_File_DumpMusic(JSON_WRITE_IO *const io)
 void SG_File_DumpItems(JSON_WRITE_IO *const io)
 {
     Savegame_ProcessItemsBeforeSave();
-    M_FX_ORDER fx_order;
-    M_GetFXOrder(&fx_order);
 
     JSONW_PUSH_ARRAY(io);
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         JSONW_PUSH_OBJECT(io);
-        M_WriteItem(io, Item_Get(i), &fx_order);
+        M_WriteItem(io, Item_Get(i));
         JSONW_POP_AND_APPEND(io);
     }
     JSONW_POP_AND_SET(io, "items");

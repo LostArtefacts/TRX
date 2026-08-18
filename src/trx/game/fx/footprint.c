@@ -79,25 +79,14 @@ static int32_t M_GetVertexYOffset(
     return dy;
 }
 
-static bool M_HasActivePrints(void)
-{
-    for (int32_t i = 0; i < M_MAX_FOOTPRINTS; i++) {
-        if (m_Priv.prints[i].life != 0) {
-            return true;
-        }
-    }
-    return false;
-}
-
 static void M_Save(JSON_WRITE_IO *const io)
 {
-    if (!M_HasActivePrints()) {
-        return;
-    }
-
     JSONW_PUSH_ARRAY(io);
     for (int32_t i = 0; i < M_MAX_FOOTPRINTS; i++) {
         const M_FOOTPRINT *const print = &m_Priv.prints[i];
+        if (print->life == 0) {
+            continue;
+        }
         JSONW_PUSH_OBJECT(io);
         JSONW_WRITE(io, "pos", print->pos);
         JSONW_WRITE(io, "room_num", print->room_num);
@@ -105,7 +94,7 @@ static void M_Save(JSON_WRITE_IO *const io)
         JSONW_WRITE(io, "life", print->life);
         JSONW_POP_AND_APPEND(io);
     }
-    JSONW_POP_AND_SET(io, "prints");
+    JSONW_POP_AND_SET_NZ(io, "prints");
 }
 
 static RESULT M_Load(JSON_READ_IO *const io)
@@ -131,6 +120,7 @@ static RESULT M_Load(JSON_READ_IO *const io)
         MUST(JSON_READ(io, "y_rot", &print->y_rot));
         MUST(JSON_READ(io, "life", &print->life));
         MUST(JSON_POP(io));
+        m_Priv.next_idx = (i + 1) % M_MAX_FOOTPRINTS;
     }
 
     MUST(JSON_POP(io));

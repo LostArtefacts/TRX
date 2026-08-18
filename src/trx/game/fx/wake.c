@@ -1,5 +1,7 @@
 #include <trx/game/fx/wake.h>
 
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/const.h>
@@ -58,6 +60,69 @@ static void M_Control(void)
     if (!any_active) {
         m_Active = false;
     }
+}
+
+static void M_Save(JSON_WRITE_IO *const io)
+{
+    JSONW_WRITE_NZ(io, "shade", m_Shade);
+    JSONW_WRITE_NZ(io, "start_idx", m_StartIndex);
+
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < M_MAX_POINTS; i++) {
+        for (int32_t side = 0; side < 2; side++) {
+            const FX_WAKE_POINT *const pt = &m_Points[i][side];
+            if (pt->life == 0) {
+                continue;
+            }
+            JSONW_PUSH_OBJECT(io);
+            JSONW_WRITE(io, "idx", i);
+            JSONW_WRITE(io, "side", side);
+            JSONW_WRITE(io, "life", pt->life);
+            JSONW_WRITE(io, "pos_left", pt->pos[0]);
+            JSONW_WRITE(io, "pos_right", pt->pos[1]);
+            JSONW_WRITE(io, "vel_left", pt->vel[0]);
+            JSONW_WRITE(io, "vel_right", pt->vel[1]);
+            JSONW_POP_AND_APPEND(io);
+        }
+    }
+    JSONW_POP_AND_SET_NZ(io, "points");
+}
+
+static RESULT M_Load(JSON_READ_IO *const io)
+{
+    MUST(JSON_READ_D(io, "shade", &m_Shade, 0));
+    MUST(JSON_READ_D(io, "start_idx", &m_StartIndex, 0));
+
+    if (!JSON_ReadIO_HasKey(io, "points")) {
+        return OK;
+    }
+    MUST(JSON_PUSH(io, "points"));
+
+    const int32_t count = JSON_ARRAY_LEN(io);
+    for (int32_t i = 0; i < count; i++) {
+        MUST(JSON_PUSH_INDEX(io, i));
+        int32_t idx = 0;
+        int32_t side = 0;
+        MUST(JSON_READ(io, "idx", &idx));
+        MUST(JSON_READ(io, "side", &side));
+        if (idx < 0 || idx >= M_MAX_POINTS || side < 0 || side > 1) {
+            return JSON_ReadIO_Fail(
+                io, "wake point %d/%d is not there", idx, side);
+        }
+        FX_WAKE_POINT *const pt = &m_Points[idx][side];
+        MUST(JSON_READ(io, "life", &pt->life));
+        MUST(JSON_READ(io, "pos_left", &pt->pos[0]));
+        MUST(JSON_READ(io, "pos_right", &pt->pos[1]));
+        MUST(JSON_READ(io, "vel_left", &pt->vel[0]));
+        MUST(JSON_READ(io, "vel_right", &pt->vel[1]));
+        MUST(JSON_POP(io));
+        pt->prev_pos[0] = pt->pos[0];
+        pt->prev_pos[1] = pt->pos[1];
+        m_Active = true;
+    }
+
+    MUST(JSON_POP(io));
+    return OK;
 }
 
 void FX_Wake_Reset(void)
@@ -220,6 +285,9 @@ void FX_Wake_Draw(const ITEM *const item)
 static const FX_MODULE m_Module = {
     .control_func = M_Control,
     .reset_func = FX_Wake_Reset,
+    .save_key = "wake",
+    .save_func = M_Save,
+    .load_func = M_Load,
 };
 
 REGISTER_FX(m_Module)

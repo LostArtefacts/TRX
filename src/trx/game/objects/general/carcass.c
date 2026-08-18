@@ -18,9 +18,7 @@ static void M_SpawnSplash(const ITEM *const item)
 {
     const ROOM *const room = Room_Get(item->room_num);
     const FX_WATER_SPLASH_SETUP setup = {
-        .x = item->pos.x,
-        .y = room->max_ceiling,
-        .z = item->pos.z,
+        .pos = { .x = item->pos.x, .y = room->max_ceiling, .z = item->pos.z },
         .inner_xz_off = 16,
         .inner_xz_size = 16,
         .inner_y_size = -96,

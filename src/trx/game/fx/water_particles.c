@@ -2,6 +2,8 @@
 // submerged. The droplets falling off her once she is out of the water are
 // fx/droplets.c.
 #include <trx/config.h>
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/fx/common.h>
@@ -32,9 +34,7 @@ typedef struct {
     XYZ_32 pos;
     XYZ_32 prev_pos;
     uint8_t life;
-    uint8_t yv;
-    int8_t xv;
-    int8_t zv;
+    XYZ_32 vel;
 } M_WATER_PARTICLE;
 
 static M_WATER_PARTICLE m_WaterParticles[M_MAX_WATER_PARTICLES];
@@ -85,15 +85,15 @@ static void M_Spawn(M_WATER_PARTICLE *const particle)
     }
 
     particle->life = (uint8_t)((Random_GetDraw() & 7) + 16);
-    particle->xv = (int8_t)(Random_GetDraw() & 3);
-    if (particle->xv == 2) {
-        particle->xv = -1;
+    particle->vel.x = Random_GetDraw() & 3;
+    if (particle->vel.x == 2) {
+        particle->vel.x = -1;
     }
 
-    particle->yv = (uint8_t)(((Random_GetDraw() & 7) + 8) << 3);
-    particle->zv = (int8_t)(Random_GetDraw() & 3);
-    if (particle->zv == 2) {
-        particle->zv = -1;
+    particle->vel.y = ((Random_GetDraw() & 7) + 8) << 3;
+    particle->vel.z = Random_GetDraw() & 3;
+    if (particle->vel.z == 2) {
+        particle->vel.z = -1;
     }
 
     particle->prev_pos = particle->pos;
@@ -125,9 +125,9 @@ static void M_Control(void)
         }
 
         particle->prev_pos = particle->pos;
-        particle->pos.x += particle->xv;
-        particle->pos.y += (particle->yv & 0xF8) >> 6;
-        particle->pos.z += particle->zv;
+        particle->pos.x += particle->vel.x;
+        particle->pos.y += (particle->vel.y & 0xF8) >> 6;
+        particle->pos.z += particle->vel.z;
 
         if (particle->life == 0) {
             particle->pos.x = 0;
@@ -135,8 +135,8 @@ static void M_Control(void)
         }
 
         particle->life--;
-        if ((particle->yv & 7) != 7) {
-            particle->yv++;
+        if ((particle->vel.y & 7) != 7) {
+            particle->vel.y++;
         }
     }
 }
@@ -207,13 +207,13 @@ static void M_Draw(void)
         // viewport, so the clamp is applied there and the result taken back
         // into world units - a size in pixels of the rasterized picture would
         // follow the resolution and the supersampling factor.
-        float size = (float)((REF_PERSP * (particle->yv >> 3)) / vpos_z);
+        float size = (float)((REF_PERSP * (particle->vel.y >> 3)) / vpos_z);
         CLAMP(size, M_MIN_SIZE, M_MAX_SIZE);
         size = (size * vpos_z) / (REF_PERSP * M_SIZE_DIV);
 
         uint32_t c;
-        if ((particle->yv & 7) < 7) {
-            c = (uint32_t)(particle->yv & 7);
+        if ((particle->vel.y & 7) < 7) {
+            c = (uint32_t)(particle->vel.y & 7);
         } else if (particle->life > 18) {
             c = 15;
         } else {
@@ -239,10 +239,59 @@ static void M_Draw(void)
     }
 }
 
+static void M_Save(JSON_WRITE_IO *const io)
+{
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < M_MAX_WATER_PARTICLES; i++) {
+        const M_WATER_PARTICLE *const particle = &m_WaterParticles[i];
+        if (particle->life == 0) {
+            continue;
+        }
+        JSONW_PUSH_OBJECT(io);
+        JSONW_WRITE(io, "pos", particle->pos);
+        JSONW_WRITE(io, "life", particle->life);
+        JSONW_WRITE(io, "vel", particle->vel);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET_NZ(io, "particles");
+}
+
+static RESULT M_Load(JSON_READ_IO *const io)
+{
+    if (!JSON_ReadIO_HasKey(io, "particles")) {
+        return OK;
+    }
+    MUST(JSON_PUSH(io, "particles"));
+
+    const int32_t count = JSON_ARRAY_LEN(io);
+    for (int32_t i = 0; i < count; i++) {
+        if (i >= M_MAX_WATER_PARTICLES) {
+            LOG_WARNING(
+                "Malformed save: too many water particles. Extra particles "
+                "will be ignored.");
+            break;
+        }
+
+        M_WATER_PARTICLE *const particle = &m_WaterParticles[i];
+        MUST(JSON_PUSH_INDEX(io, i));
+        MUST(JSON_READ(io, "pos", &particle->pos));
+        MUST(JSON_READ(io, "life", &particle->life));
+        MUST(JSON_READ(io, "vel", &particle->vel));
+        MUST(JSON_POP(io));
+        particle->prev_pos = particle->pos;
+    }
+
+    MUST(JSON_POP(io));
+    return OK;
+}
+
 static const FX_MODULE m_Module = {
     .control_func = M_Control,
     .draw_func = M_Draw,
     .reset_func = M_Reset,
+    .save_key = "water_particles",
+    .save_func = M_Save,
+    .load_func = M_Load,
 };
 
 REGISTER_FX(m_Module)

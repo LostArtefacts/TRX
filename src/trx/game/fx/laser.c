@@ -1,5 +1,7 @@
 #include <trx/game/fx/laser.h>
 
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/core/utils.h>
 #include <trx/game/const.h>
 #include <trx/game/fx/common.h>
@@ -113,6 +115,72 @@ static void M_Draw(void)
     }
 }
 
+static void M_Reset(void)
+{
+    m_Priv = (M_PRIV) {};
+}
+
+static void M_Save(JSON_WRITE_IO *const io)
+{
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < M_MAX_LASERS; i++) {
+        const M_LASER *const laser = &m_Priv.lasers[i];
+        if (!laser->active) {
+            continue;
+        }
+        JSONW_PUSH_OBJECT(io);
+        JSONW_WRITE(io, "owner_item_num", laser->owner_item_num);
+        JSONW_WRITE(io, "lifetime", laser->lifetime);
+        JSONW_WRITE(io, "bite_pos", laser->bite.pos);
+        JSONW_WRITE(io, "bite_mesh_num", laser->bite.mesh_num);
+        JSONW_WRITE(
+            io, "color",
+            ((RGB_888) { laser->color.r, laser->color.g, laser->color.b }));
+        JSONW_WRITE(io, "alpha", laser->color.a);
+        JSONW_WRITE(io, "width", laser->width);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET_NZ(io, "lasers");
+}
+
+static RESULT M_Load(JSON_READ_IO *const io)
+{
+    if (!JSON_ReadIO_HasKey(io, "lasers")) {
+        return OK;
+    }
+    MUST(JSON_PUSH(io, "lasers"));
+
+    const int32_t count = JSON_ARRAY_LEN(io);
+    for (int32_t i = 0; i < count; i++) {
+        if (i >= M_MAX_LASERS) {
+            LOG_WARNING(
+                "Malformed save: too many lasers. Extra lasers will be "
+                "ignored.");
+            break;
+        }
+
+        M_LASER *const laser = &m_Priv.lasers[i];
+        MUST(JSON_PUSH_INDEX(io, i));
+        MUST(JSON_READ(io, "owner_item_num", &laser->owner_item_num));
+        MUST(JSON_READ(io, "lifetime", &laser->lifetime));
+        MUST(JSON_READ(io, "bite_pos", &laser->bite.pos));
+        MUST(JSON_READ(io, "bite_mesh_num", &laser->bite.mesh_num));
+        RGB_888 color = {};
+        MUST(JSON_READ(io, "color", &color));
+        MUST(JSON_READ(io, "alpha", &laser->color.a));
+        laser->color.r = color.r;
+        laser->color.g = color.g;
+        laser->color.b = color.b;
+        MUST(JSON_READ(io, "width", &laser->width));
+        MUST(JSON_POP(io));
+        laser->active = true;
+        m_Priv.next_idx = (i + 1) % M_MAX_LASERS;
+    }
+
+    MUST(JSON_POP(io));
+    return OK;
+}
+
 bool FX_Laser_Spawn(const ITEM *const owner_item, const CREATURE_GUN *const gun)
 {
     if (owner_item == nullptr || gun == nullptr || !gun->tr3_enemy_flash) {
@@ -134,6 +202,10 @@ bool FX_Laser_Spawn(const ITEM *const owner_item, const CREATURE_GUN *const gun)
 static const FX_MODULE m_Module = {
     .control_func = M_Control,
     .draw_func = M_Draw,
+    .reset_func = M_Reset,
+    .save_key = "lasers",
+    .save_func = M_Save,
+    .load_func = M_Load,
 };
 
 REGISTER_FX(m_Module)

@@ -1,10 +1,26 @@
 #pragma once
 
+#include <trx/core/result.h>
 #include <trx/game/sparks/types.h>
+
+typedef struct JSON_READ_IO JSON_READ_IO;
+typedef struct JSON_WRITE_IO JSON_WRITE_IO;
 
 void Sparks_Reset(void);
 void Sparks_Control(void);
 void Sparks_Draw(void);
+
+// Writes and reads one spark. A sprite spark stores its object and sprite
+// offset. The owning pool stores the on flag and attachment.
+void Sparks_SaveSpark(JSON_WRITE_IO *io, const SPARK *spark);
+RESULT Sparks_LoadSpark(JSON_READ_IO *io, SPARK *spark);
+
+// Writes each live spark, or nothing while enhanced saves are off.
+void Sparks_Save(JSON_WRITE_IO *io);
+
+// Reads saved sparks. Reports failure if the save names a sprite the level does
+// not carry. Leaves unnamed slots as Sparks_Reset set them.
+RESULT Sparks_Load(JSON_READ_IO *io);
 
 void Sparks_DetachEffect(int16_t effect_num);
 void Sparks_DetachItem(int16_t item_num);

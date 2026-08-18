@@ -37,6 +37,7 @@ void JSON_WriteIO_PushDouble(JSON_WRITE_IO *io, double value);
 void JSON_WriteIO_PushRGB888(JSON_WRITE_IO *io, RGB_888 value);
 void JSON_WriteIO_PushXYZ16(JSON_WRITE_IO *io, XYZ_16 value);
 void JSON_WriteIO_PushXYZ32(JSON_WRITE_IO *io, XYZ_32 value);
+void JSON_WriteIO_PushXZ32(JSON_WRITE_IO *io, XZ_32 value);
 void JSON_WriteIO_PushString(JSON_WRITE_IO *io, const char *value);
 
 #define JSONW_PUSH_OBJECT(io) JSON_WriteIO_PushObject((io))
@@ -62,6 +63,7 @@ void JSON_WriteIO_PushString(JSON_WRITE_IO *io, const char *value);
         RGB_888: JSON_WriteIO_PushRGB888,                                      \
         XYZ_16: JSON_WriteIO_PushXYZ16,                                        \
         XYZ_32: JSON_WriteIO_PushXYZ32,                                        \
+        XZ_32: JSON_WriteIO_PushXZ32,                                          \
         const char *: JSON_WriteIO_PushString,                                 \
         char *: JSON_WriteIO_PushString)(io, value)
 

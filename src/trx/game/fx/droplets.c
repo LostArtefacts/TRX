@@ -5,6 +5,8 @@
 // fx/water_particles.c, which is the TR3 residue drifting around Lara
 // while she is submerged.
 #include <trx/config.h>
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/core/math.h>
 #include <trx/game/fx/common.h>
 #include <trx/game/interpolation.h>
@@ -239,10 +241,67 @@ static void M_Draw(void)
     }
 }
 
+static void M_Save(JSON_WRITE_IO *const io)
+{
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < M_MAX_DROPLETS; i++) {
+        const M_DROPLET *const droplet = &m_Droplets[i];
+        if (!droplet->on) {
+            continue;
+        }
+        JSONW_PUSH_OBJECT(io);
+        JSONW_WRITE(io, "pos", droplet->pos);
+        JSONW_WRITE(io, "color", droplet->color);
+        JSONW_WRITE(io, "y_vel", droplet->y_vel);
+        JSONW_WRITE(io, "gravity", droplet->gravity);
+        JSONW_WRITE(io, "life", droplet->life);
+        JSONW_WRITE(io, "room_num", droplet->room_num);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET_NZ(io, "drops");
+}
+
+static RESULT M_Load(JSON_READ_IO *const io)
+{
+    if (!JSON_ReadIO_HasKey(io, "drops")) {
+        return OK;
+    }
+    MUST(JSON_PUSH(io, "drops"));
+
+    const int32_t count = JSON_ARRAY_LEN(io);
+    for (int32_t i = 0; i < count; i++) {
+        if (i >= M_MAX_DROPLETS) {
+            LOG_WARNING(
+                "Malformed save: too many droplets. Extra droplets will be "
+                "ignored.");
+            break;
+        }
+
+        M_DROPLET *const droplet = &m_Droplets[i];
+        MUST(JSON_PUSH_INDEX(io, i));
+        MUST(JSON_READ(io, "pos", &droplet->pos));
+        MUST(JSON_READ(io, "color", &droplet->color));
+        MUST(JSON_READ(io, "y_vel", &droplet->y_vel));
+        MUST(JSON_READ(io, "gravity", &droplet->gravity));
+        MUST(JSON_READ(io, "life", &droplet->life));
+        MUST(JSON_READ(io, "room_num", &droplet->room_num));
+        MUST(JSON_POP(io));
+        droplet->on = true;
+        droplet->prev_pos = droplet->pos;
+        m_NextDroplet = (i + 1) % M_MAX_DROPLETS;
+    }
+
+    MUST(JSON_POP(io));
+    return OK;
+}
+
 static const FX_MODULE m_Module = {
     .control_func = M_Control,
     .draw_func = M_Draw,
     .reset_func = M_Reset,
+    .save_key = "droplets",
+    .save_func = M_Save,
+    .load_func = M_Load,
 };
 
 REGISTER_FX(m_Module)

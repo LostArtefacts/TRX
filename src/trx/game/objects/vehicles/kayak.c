@@ -939,9 +939,7 @@ static void M_KayakSplash(
         return;
     }
     FX_WATER_SPLASH_SETUP splash_setup = {
-        .x = item->pos.x,
-        .y = item->pos.y,
-        .z = item->pos.z,
+        .pos = { .x = item->pos.x, .y = item->pos.y, .z = item->pos.z },
         .inner_xz_off = 128,
         .inner_xz_size = 48,
         .inner_y_size = -384,
