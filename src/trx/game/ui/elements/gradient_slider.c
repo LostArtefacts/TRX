@@ -18,6 +18,7 @@
 typedef struct {
     float width;
     float value;
+    float content_scale;
     int32_t stop_count;
 } M_DATA;
 
@@ -94,8 +95,9 @@ static void M_Draw(const UI_NODE *const node)
 static void M_Measure(UI_NODE *const node)
 {
     const M_DATA *const data = node->data;
-    node->measure_w = data->width;
-    node->measure_h = UI_TEXT_HEIGHT * 0.5f * UI_Scaler_GetTextScale();
+    node->measure_w = data->width * data->content_scale;
+    node->measure_h =
+        UI_TEXT_HEIGHT * 0.5f * UI_Scaler_GetTextScale() * data->content_scale;
 }
 
 void UI_GradientSlider(const UI_GRADIENT_SLIDER_SETTINGS settings)
@@ -114,6 +116,7 @@ void UI_GradientSlider(const UI_GRADIENT_SLIDER_SETTINGS settings)
         extra_size);
     M_DATA *const data = node->data;
     data->width = settings.width;
+    data->content_scale = UI_Scaler_GetContentScale();
     data->value = settings.value;
     CLAMP(data->value, 0.0f, 1.0f);
     data->stop_count = settings.stop_count;

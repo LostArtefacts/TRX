@@ -53,6 +53,11 @@ float UI_Scaler_GetTextScale(void)
     return g_Config.ui.text_scale * m_TextScaleStack[m_TextScaleDepth];
 }
 
+float UI_Scaler_GetBaseTextScale(void)
+{
+    return g_Config.ui.text_scale;
+}
+
 float UI_Scaler_GetContentScale(void)
 {
     return m_TextScaleStack[m_TextScaleDepth];

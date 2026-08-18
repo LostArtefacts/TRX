@@ -10,10 +10,9 @@
 #include <trx/game/ui/scaler.h>
 #include <trx/game/viewport.h>
 
-// How small the dialog may be scaled before a long string counts as too long.
-// The widest shipped translation needs 0.87; the room below that is headroom,
-// not licence to keep growing.
-#define M_MIN_FIT_SCALE 0.85f
+#define M_MEASURE_SLACK 1.08f
+
+#define M_RECOMPUTE_ROUNDS 3
 
 typedef struct UI_SETTINGS_DIALOG_STATE {
     UI_SETTINGS_PHASE phase;
@@ -31,10 +30,12 @@ typedef struct UI_SETTINGS_DIALOG_STATE {
     int32_t listener_id;
 } UI_SETTINGS_DIALOG_STATE;
 
-static int32_t M_GetVisibleRows(void)
+static int32_t M_GetVisibleRows(const float fit_scale)
 {
-    const int32_t res_h = UI_Scaler_CalcInverse(
-        Viewport_GetHeight(VIEWPORT_UI), UI_SCALER_TARGET_TEXT);
+    const int32_t res_h =
+        UI_Scaler_CalcInverse(
+            Viewport_GetHeight(VIEWPORT_UI), UI_SCALER_TARGET_TEXT)
+        / MAX(0.01f, fit_scale);
     static struct {
         int32_t threshold;
         int32_t rows;
@@ -50,32 +51,13 @@ static int32_t M_GetVisibleRows(void)
     }
 }
 
-static float M_GetVisibleContentHeight(void)
+static float M_GetVisibleContentHeight(const float fit_scale)
 {
-    const int32_t visible_rows = M_GetVisibleRows();
+    const int32_t visible_rows = M_GetVisibleRows(fit_scale);
     if (visible_rows <= 0) {
         return 0.0f;
     }
     return visible_rows * UI_TEXT_HEIGHT;
-}
-
-// The dialog is as wide as its widest tab, and it is centred, so a tab wider
-// than the canvas loses text off both edges. Where that happens, the dialog is
-// drawn smaller until it fits. M_MIN_FIT_SCALE bounds how far that goes:
-// wording that still does not fit is a string to shorten, and the layout test
-// says so rather than the dialog shrinking away to nothing.
-static float M_GetFitScale(const float content_width)
-{
-    const float natural_width = content_width + UI_Window_GetChromeWidth();
-    if (natural_width <= 0.0f) {
-        return 1.0f;
-    }
-    const float available_width =
-        UI_GetSafeCanvasWidth() / UI_Scaler_GetTextScale();
-    if (natural_width <= available_width) {
-        return 1.0f;
-    }
-    return MAX(M_MIN_FIT_SCALE, available_width / natural_width);
 }
 
 static UI_SETTINGS_TAB *M_GetActiveTab(UI_SETTINGS_DIALOG_STATE *const s)
@@ -112,9 +94,10 @@ static UI_SCROLLABLE *M_GetTabScrollable(UI_SETTINGS_TAB *const tab)
     return tab->ops->get_scrollable(tab->user_data);
 }
 
-static void M_RecomputeSizes(UI_SETTINGS_DIALOG_STATE *const s)
+static void M_RecomputeSizesOnce(UI_SETTINGS_DIALOG_STATE *const s)
 {
-    const float visible_content_height = M_GetVisibleContentHeight();
+    const float visible_content_height =
+        M_GetVisibleContentHeight(s->fit_scale);
     float max_content_width = 0.0f;
     float max_content_height = -1.0f;
 
@@ -140,10 +123,32 @@ static void M_RecomputeSizes(UI_SETTINGS_DIALOG_STATE *const s)
         }
     }
 
-    s->visible_rows = M_GetVisibleRows();
     s->max_content_width = max_content_width / UI_Scaler_GetTextScale();
     s->max_content_height = max_content_height;
-    s->fit_scale = M_GetFitScale(s->max_content_width);
+
+    if (s->tab_switch != nullptr) {
+        UI_BeginMeasure();
+        UI_TabSwitch(s->tab_switch, UI_TAB_SWITCH_DRAW_ARROWS);
+        float tabs_width = 0.0f;
+        UI_EndMeasure(&tabs_width, nullptr);
+        s->max_content_width =
+            MAX(s->max_content_width, tabs_width / UI_Scaler_GetTextScale());
+    }
+    s->fit_scale = UI_GetFitScale(
+        s->max_content_width * M_MEASURE_SLACK + UI_Window_GetChromeWidth(),
+        -1.0f);
+    s->visible_rows = M_GetVisibleRows(s->fit_scale);
+}
+
+static void M_RecomputeSizes(UI_SETTINGS_DIALOG_STATE *const s)
+{
+    for (int32_t round = 0; round < M_RECOMPUTE_ROUNDS; round++) {
+        const float prev_fit_scale = s->fit_scale;
+        M_RecomputeSizesOnce(s);
+        if (s->fit_scale == prev_fit_scale) {
+            break;
+        }
+    }
 }
 
 static void M_WindowHeader(void *const user_data)
@@ -169,6 +174,7 @@ static UI_SETTINGS_DIALOG_STATE *M_InitCommon(const GAME_STRING_ID title)
 {
     UI_SETTINGS_DIALOG_STATE *const s = Memory_Alloc(sizeof(*s));
     s->title = title;
+    s->fit_scale = 1.0f;
     s->listener_id =
         GameStringManager_SubscribeReload(M_HandleLanguageReload, s);
     return s;
@@ -350,6 +356,7 @@ void UI_SettingsDialog(UI_SETTINGS_DIALOG_STATE *const s)
 
     UI_Scaler_PushTextScale(s->fit_scale);
     UI_BeginModal(0.5f, 0.6f);
+    UI_BeginResize(s->max_content_width + UI_Window_GetChromeWidth(), -1.0f);
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_VERTICAL,
         .spacing = { .v = 5.0f },
@@ -396,6 +403,7 @@ void UI_SettingsDialog(UI_SETTINGS_DIALOG_STATE *const s)
     }
 
     UI_EndStack();
+    UI_EndResize();
     UI_EndModal();
     UI_Scaler_PopTextScale();
 

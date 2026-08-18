@@ -190,6 +190,7 @@ void UI_Bar(const UI_BAR_SETTINGS settings)
     data->theme = UI_Settings_GetBarTheme(settings.type);
     const float basic_scale =
         data->theme != nullptr ? data->theme->basic_scale : 1.0f;
-    data->scale = data->settings.preview ? 1.0f : basic_scale;
+    data->scale = (data->settings.preview ? 1.0f : basic_scale)
+        * UI_Scaler_GetContentScale();
     UI_AddChild(node);
 }

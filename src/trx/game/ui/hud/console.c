@@ -162,7 +162,7 @@ void UI_Console(UI_CONSOLE_STATE *const s)
     UI_AddChild(node);
     UI_PushCurrent(node);
 
-    UI_BeginModal(0.0f, 1.0f);
+    UI_BeginScreenModal(0.0f, 1.0f);
     UI_BeginPad(UI_CONSOLE_PADDING, UI_CONSOLE_PADDING);
     UI_BeginStack(UI_STACK_VERTICAL);
 
