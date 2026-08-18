@@ -2,7 +2,7 @@
 
 #include <trx/game/input/common.h>
 
-#include <SDL2/SDL_events.h>
+union SDL_Event;
 
 void TouchOverlay_Init(void);
 void TouchOverlay_Shutdown(void);
@@ -13,7 +13,7 @@ bool TouchOverlay_IsVisible(void);
 void TouchOverlay_Draw(void);
 
 // Returns true if the event was consumed by the touch overlay.
-bool TouchOverlay_ProcessEvent(const SDL_Event *event);
+bool TouchOverlay_ProcessEvent(const union SDL_Event *event);
 
 // Returns true if any finger is currently touching the screen.
 bool TouchOverlay_HasAnyFingerDown(void);

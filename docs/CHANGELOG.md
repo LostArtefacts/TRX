@@ -26,6 +26,7 @@
 - Fixed the photo mode camera drifting upwards and overshooting when it is moved while pitched up or down (TRX1142)
 - Fixed the photo mode camera flickering and refusing to turn over when it is pitched past straight up or down, and turning in coarse steps while aimed near vertical (TRX1152)
 - Fixed the preset confirmation running over the screen heading and wrapping into a narrow column at large text sizes
+- Fixed the Customize Controls box running past the edges of the screen at large text sizes (#6293 / TRX1154)
 
 **Developer console**
 - Added the `/outfit` console command, which shows or changes what Lara is wearing (TRX1070)

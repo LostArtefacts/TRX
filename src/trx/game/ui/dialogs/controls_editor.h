@@ -33,7 +33,6 @@ typedef struct {
 
     UI_SCROLLABLE scroll;
 
-    int32_t max_group_items;
     int32_t input_size;
     int32_t label_size;
     UI_TAB_SWITCH_STATE *layout_tab_switch;
