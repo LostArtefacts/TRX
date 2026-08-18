@@ -195,7 +195,7 @@ void Shell_HandleConfigChange(const CONFIG_CHANGE *const change)
 
     if (L_CHANGED(rendering.upscaling_filter)
         || L_CHANGED(rendering.multisampling_factor)
-        || L_CHANGED(rendering.enable_dithering)
+        || L_CHANGED(rendering.dither_mode)
         || L_CHANGED(rendering.enable_wireframe)
         || L_CHANGED(rendering.wireframe_width)
         || L_CHANGED(rendering.enable_vsync)

@@ -698,6 +698,11 @@
             "CREATURE_DROWN_POLICY_NEVER": "\\{review}Jamais",
             "CREATURE_DROWN_POLICY_SUBMERGED": "\\{review}Submergé",
         },
+        "DITHER_MODE": {
+            "DITHER_MODE_DISABLED": "\\{review}Désactivé",
+            "DITHER_MODE_PS1": "\\{review}PS1",
+            "DITHER_MODE_SOFTWARE_RENDERER": "\\{review}Rendu logiciel",
+        },
         "GAME_MODES_POLICY": {
             "GAME_MODES_POLICY_ALWAYS": "\\{review}Toujours ",
             "GAME_MODES_POLICY_NEVER": "\\{review}Jamais",
@@ -1501,9 +1506,9 @@
             "title": "\\{review}Bordures",
             "description": "\\{review}Ajoute des bordures noires autour de la fenêtre du jeu.",
         },
-        "rendering.enable_dithering": {
+        "rendering.dither_mode": {
             "title": "\\{review}Tramage",
-            "description": "\\{review}Réduit l'image à des couleurs 8 bits avec un motif de tramage ordonné, pour l'aspect des versions au rendu logiciel.",
+            "description": "\\{review}Sélectionne l'ombrage de palette du moteur de rendu logiciel PC original ou le tramage RGB555 de la PlayStation.",
         },
         "rendering.enable_trapezoid_filter": {
             "title": "Filtre trapézoïdal",

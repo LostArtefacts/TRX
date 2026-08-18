@@ -7,7 +7,7 @@
 
 // What last wrote the file, for a migration that has to tell one build from
 // another rather than one key from another. Nothing keys on it today.
-#define M_CONFIG_VERSION_CURRENT 1
+#define M_CONFIG_VERSION_CURRENT 2
 
 // Reads one key an older release wrote. The value is what the file holds for
 // it, or nullptr where the file does not have it at all.
@@ -62,6 +62,14 @@ static void M_ApplyTurns(const JSON_VALUE *const value)
     }
 }
 
+static void M_ApplyDithering(const JSON_VALUE *const value)
+{
+    CONFIG_SET(
+        g_Config.rendering.dither_mode,
+        JSON_ValueIsTrue(value) ? DITHER_MODE_SOFTWARE_RENDERER
+                                : DITHER_MODE_DISABLED);
+}
+
 static void M_ApplyVertexSnap(const JSON_VALUE *const value)
 {
     CONFIG_SET(
@@ -91,6 +99,8 @@ static const M_MIGRATION m_Migrations[] = {
     { "enable_save_crystals", "save_crystal_mode", M_ApplySaveCrystals },
     // TRX ..1.10: neutral twists on/off changed to cover multiple animations.
     { "enable_neutral_twists", "enable_alternative_turns", M_ApplyTurns },
+    // TRX ..1.10: dithering on/off changed to mode.
+    { "enable_dithering", "dither_mode", M_ApplyDithering },
     // TRX ..1.10: vertex snapping on/off changed to a resolution selector.
     { "enable_vertex_snap", "vertex_snap_mode", M_ApplyVertexSnap },
     { "enable_vertex_snap_at_upscale", "vertex_snap_mode",

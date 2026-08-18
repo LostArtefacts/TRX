@@ -67,6 +67,21 @@ TEST(a_migration_that_reads_the_game_answers_for_the_game_it_is_run_for)
     CHECK_EQ_INT(g_Config.visuals.breeze_mode, BREEZE_MODE_OFF);
 }
 
+TEST(the_old_dithering_choice_is_carried_to_the_software_renderer_mode)
+{
+    g_ConfigStorage.rendering.dither_mode = DITHER_MODE_DISABLED;
+    M_Load("{\"enable_dithering\":true}");
+    CHECK_EQ_INT(g_Config.rendering.dither_mode, DITHER_MODE_SOFTWARE_RENDERER);
+
+    g_ConfigStorage.rendering.dither_mode = DITHER_MODE_PS1;
+    M_Load("{\"enable_dithering\":false}");
+    CHECK_EQ_INT(g_Config.rendering.dither_mode, DITHER_MODE_DISABLED);
+
+    g_ConfigStorage.rendering.dither_mode = DITHER_MODE_PS1;
+    M_Load("{\"enable_dithering\":false,\"dither_mode\":\"ps1\"}");
+    CHECK_EQ_INT(g_Config.rendering.dither_mode, DITHER_MODE_PS1);
+}
+
 TEST(vertex_snap_booleans_migrate_to_the_fixed_resolution)
 {
     g_ConfigStorage.rendering.vertex_snap_mode = VERTEX_SNAP_MODE_DISABLED;
@@ -107,7 +122,7 @@ TEST(the_version_the_file_was_last_written_by_is_brought_up_to_date)
 {
     g_ConfigStorage.config_version = 0;
     M_Load("{}");
-    CHECK_EQ_INT(g_Config.config_version, 1);
+    CHECK_EQ_INT(g_Config.config_version, 2);
 
     // A file with no version at all is one nothing has written yet.
     g_ConfigStorage.config_version = -1;
@@ -123,6 +138,7 @@ TEST(a_key_a_migration_reads_is_one_the_writer_drops)
     CHECK(ConfigLegacy_IsKey("enable_breeze"));
     CHECK(ConfigLegacy_IsKey("enable_save_crystals"));
     CHECK(ConfigLegacy_IsKey("enable_game_modes"));
+    CHECK(ConfigLegacy_IsKey("enable_dithering"));
     CHECK(ConfigLegacy_IsKey("enable_vertex_snap"));
     CHECK(ConfigLegacy_IsKey("enable_vertex_snap_at_upscale"));
 }

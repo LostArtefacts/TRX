@@ -204,9 +204,9 @@ void TRX_GL_Context_SetMultisamplingFactor(const int32_t factor)
     m_Context.config.multisampling_factor = factor;
 }
 
-void TRX_GL_Context_SetDithering(const bool enable)
+void TRX_GL_Context_SetDitherMode(const DITHER_MODE mode)
 {
-    m_Context.config.enable_dithering = enable;
+    m_Context.config.dither_mode = mode;
 }
 
 bool TRX_GL_Context_GetWireframeMode(void)

@@ -9,6 +9,9 @@
 - Fixed Lara's rope-grab reach being shorter from certain directions (OG bug) (TRX1143)
 - Fixed Lara being able to continue shimmying on monkeybars after death (#6300 / TRX1161, regression from 1.0)
 
+**Rendering**
+- Added PlayStation RGB555 dithering and changed Dithering to offer Disabled, Software Renderer and PS1 (Graphic Options → Rendering → Dithering)
+
 **UI**
 - Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187 / TRX1036)
 - Added a flat yellow color to the PS1 bar palettes (Graphic Options → UI → Bars) (#5227 / TRX1135)
