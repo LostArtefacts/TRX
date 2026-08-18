@@ -3,6 +3,12 @@
 #include <trx/game/rooms/types.h>
 
 BOUNDS_32 Room_GetRoomBounds(const ROOM *room);
+
+// Returns whether the box reaches through the portal into the room behind it.
+// Wall portals match on full bounds intersection. Floor and ceiling portals
+// match when the box stands over the opening and crosses the portal plane.
+// Portal bounds must already be finalized.
+bool Room_BoundsReachPortal(const BOUNDS_32 *bounds, const PORTAL *portal);
 SECTOR *Room_GetSector(XYZ_32 pos, int16_t *room_num);
 SECTOR *Room_GetSectorOnWalkable(XYZ_32 pos, int16_t *room_num);
 SECTOR *Room_GetWorldSector(const ROOM *room, int32_t x_pos, int32_t z_pos);

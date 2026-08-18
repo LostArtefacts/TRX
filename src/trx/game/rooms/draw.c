@@ -328,6 +328,42 @@ static void M_DrawRoomItem(const int16_t item_num, void *const ud)
         return;
     }
 
+    int32_t left = Viewport_GetMaxX(VIEWPORT_GAME);
+    int32_t top = Viewport_GetMaxY(VIEWPORT_GAME);
+    int32_t right = Viewport_GetMinX(VIEWPORT_GAME);
+    int32_t bottom = Viewport_GetMinY(VIEWPORT_GAME);
+    bool overlap = false;
+    for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
+        const int16_t room_num = Room_DrawGetRoom(i);
+        const ROOM *const room = Room_Get(room_num);
+        if (!M_DrawSet_Has(&room->drawn_items, item_num)) {
+            continue;
+        }
+        const OUTPUT_ROOM_BIND *const room_bind = Output_Bind_GetRoom(room);
+        CLAMPG(left, room_bind->bound_left);
+        CLAMPG(top, room_bind->bound_top);
+        CLAMPL(right, room_bind->bound_right);
+        CLAMPL(bottom, room_bind->bound_bottom);
+        overlap = overlap || Room_IsOverlapping(room_num);
+    }
+
+    const int32_t old_left = g_PhdLeft;
+    const int32_t old_top = g_PhdTop;
+    const int32_t old_right = g_PhdRight;
+    const int32_t old_bottom = g_PhdBottom;
+    g_PhdLeft = left;
+    g_PhdTop = top;
+    g_PhdRight = right;
+    g_PhdBottom = bottom;
+    if (overlap) {
+        Output_SetObjectScissor(&(VIEWPORT_RECT) {
+            .x = left,
+            .y = bottom,
+            .width = right - left,
+            .height = bottom - top,
+        });
+    }
+
     M_SetupWaterStatus(Room_Get(item->room_num));
 
     // A fading body scales down the tint already in force rather than
@@ -342,6 +378,12 @@ static void M_DrawRoomItem(const int16_t item_num, void *const ud)
     if (is_fading) {
         Output_PopTintOverride();
     }
+
+    Output_SetObjectScissor(nullptr);
+    g_PhdLeft = old_left;
+    g_PhdTop = old_top;
+    g_PhdRight = old_right;
+    g_PhdBottom = old_bottom;
 
     if (Output_IsControlFrame()) {
         Item_ControlDraw(item);
@@ -420,11 +462,6 @@ static void M_DrawSingleRoom(const ROOM *const room)
     }
 
     Matrix_Pop();
-
-    bind->bound_left = Viewport_GetMaxX(VIEWPORT_GAME);
-    bind->bound_top = Viewport_GetMaxY(VIEWPORT_GAME);
-    bind->bound_right = Viewport_GetMinX(VIEWPORT_GAME);
-    bind->bound_bottom = Viewport_GetMinY(VIEWPORT_GAME);
 }
 
 static void M_Shutdown(void)
@@ -476,7 +513,6 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
     bind->test_right = Viewport_GetMaxX(VIEWPORT_GAME);
     bind->test_bottom = Viewport_GetMaxY(VIEWPORT_GAME);
     bind->active = true;
-    bind->drawn = false;
 
     g_PhdLeft = bind->test_left;
     g_PhdTop = bind->test_top;
@@ -512,11 +548,7 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
 
     for (int32_t i = 0; i < Room_DrawGetCount(); i++) {
         const int16_t draw_room_num = Room_DrawGetRoom(i);
-        const ROOM *const draw_room = Room_Get(draw_room_num);
-        M_DrawSingleRoom(draw_room);
-        OUTPUT_ROOM_BIND *const draw_bind = Output_Bind_GetRoom(draw_room);
-        draw_bind->active = false;
-        draw_bind->drawn = false;
+        M_DrawSingleRoom(Room_Get(draw_room_num));
     }
 
     // A title level running behind the menu may hold her object without ever
