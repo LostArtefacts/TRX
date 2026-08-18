@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trx/core/result.h>
+
 #include <stddef.h>
 #include <stdint.h>
 
@@ -24,17 +26,23 @@ typedef enum {
 
 IMAGE *Image_Create(int width, int height);
 
-IMAGE *Image_CreateFromFile(const char *path);
+// Reads an image from disk, reporting a file that does not exist and one the
+// reader cannot decode. Caller frees it with Image_Free().
+RESULT Image_CreateFromFile(const char *path, IMAGE **out_image);
 
-IMAGE *Image_CreateFromFileInto(
+// As Image_CreateFromFile, but scales the image to the given size during the
+// read.
+RESULT Image_CreateFromFileInto(
     const char *path, int32_t target_width, int32_t target_height,
-    IMAGE_FIT_MODE fit_mode);
+    IMAGE_FIT_MODE fit_mode, IMAGE **out_image);
 
 void Image_Free(IMAGE *image);
 
 bool Image_GetFileInfo(const char *path, int32_t *width, int32_t *height);
 
-bool Image_SaveToFile(const IMAGE *image, const char *path);
+// Writes an image to disk, reporting a path it cannot write and a format with
+// no encoder.
+RESULT Image_SaveToFile(const IMAGE *image, const char *path);
 
 IMAGE *Image_Scale(
     const IMAGE *source_image, size_t target_width, size_t target_height,

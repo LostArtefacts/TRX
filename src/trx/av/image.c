@@ -60,7 +60,7 @@ static void M_Free(IMAGE_READER_CONTEXT *const ctx)
     }
 }
 
-static bool M_Init(const char *const path, IMAGE_READER_CONTEXT *const ctx)
+static RESULT M_Init(const char *const path, IMAGE_READER_CONTEXT *const ctx)
 {
     ASSERT(ctx != nullptr);
     ctx->format_ctx = nullptr;
@@ -157,13 +157,11 @@ static bool M_Init(const char *const path, IMAGE_READER_CONTEXT *const ctx)
 
 finish:
     if (error_code != 0) {
-        LOG_ERROR(
-            "Error while opening image %s: %s", path, av_err2str(error_code));
         M_Free(ctx);
-        return false;
+        return FAIL("%s: %s", path, av_err2str(error_code));
     }
 
-    return true;
+    return OK;
 }
 
 static IMAGE_BLIT M_GetBlit(
@@ -300,48 +298,44 @@ IMAGE *Image_Create(const int width, const int height)
     return image;
 }
 
-IMAGE *Image_CreateFromFile(const char *const path)
+RESULT Image_CreateFromFile(const char *const path, IMAGE **const out_image)
 {
     ASSERT(path != nullptr);
+    *out_image = nullptr;
 
     IMAGE_READER_CONTEXT ctx;
-    if (!M_Init(path, &ctx)) {
-        return nullptr;
-    }
+    MUST(M_Init(path, &ctx));
 
-    IMAGE *target_image = M_ConstructImage(
+    *out_image = M_ConstructImage(
         &ctx, ctx.frame->width, ctx.frame->height, IMAGE_FIT_STRETCH);
 
     M_Free(&ctx);
-
-    return target_image;
+    return OK;
 }
 
-IMAGE *Image_CreateFromFileInto(
+RESULT Image_CreateFromFileInto(
     const char *const path, const int32_t target_width,
-    const int32_t target_height, const IMAGE_FIT_MODE fit_mode)
+    const int32_t target_height, const IMAGE_FIT_MODE fit_mode,
+    IMAGE **const out_image)
 {
     ASSERT(path != nullptr);
+    *out_image = nullptr;
 
     IMAGE_READER_CONTEXT ctx;
-    if (!M_Init(path, &ctx)) {
-        return nullptr;
-    }
+    MUST(M_Init(path, &ctx));
 
-    IMAGE *target_image =
-        M_ConstructImage(&ctx, target_width, target_height, fit_mode);
+    *out_image = M_ConstructImage(&ctx, target_width, target_height, fit_mode);
 
     M_Free(&ctx);
-
-    return target_image;
+    return OK;
 }
 
-bool Image_SaveToFile(const IMAGE *const image, const char *const path)
+RESULT Image_SaveToFile(const IMAGE *const image, const char *const path)
 {
     ASSERT(image != nullptr);
     ASSERT(path != nullptr);
 
-    bool result = false;
+    RESULT result = OK;
 
     int error_code = 0;
     const AVCodec *codec = nullptr;
@@ -362,14 +356,13 @@ bool Image_SaveToFile(const IMAGE *const image, const char *const path)
         dst_pix_fmt = AV_PIX_FMT_RGB24;
         codec_id = AV_CODEC_ID_PNG;
     } else {
-        LOG_ERROR("Cannot determine image format based on path '%s'", path);
+        result = FAIL("%s: the picture format is not one TRX writes", path);
         goto cleanup;
     }
 
-    if (!SHOULD(FS_EnsureParentDirectories(path))) {
-        goto cleanup;
-    }
-    if (!SHOULD(File_OpenPath(path, FILE_OPEN_WRITE, &fp))) {
+    MUST(FS_EnsureParentDirectories(path));
+    result = File_OpenPath(path, FILE_OPEN_WRITE, &fp);
+    if (!IS_OK(result)) {
         goto cleanup;
     }
 
@@ -461,11 +454,8 @@ bool Image_SaveToFile(const IMAGE *const image, const char *const path)
     }
 
 cleanup:
-    if (error_code) {
-        LOG_ERROR(
-            "Error while saving image %s: %s", path, av_err2str(error_code));
-    } else {
-        result = true;
+    if (error_code != 0) {
+        result = FAIL("%s: %s", path, av_err2str(error_code));
     }
 
     if (fp) {

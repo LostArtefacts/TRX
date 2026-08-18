@@ -7,10 +7,8 @@
 
 #include <string.h>
 
-bool TRX_GL_Screenshot_CaptureToFile(const char *path)
+RESULT TRX_GL_Screenshot_CaptureToFile(const char *path)
 {
-    bool ret = false;
-
     GLint width;
     GLint height;
     TRX_GL_Screenshot_CaptureToBuffer(
@@ -23,12 +21,12 @@ bool TRX_GL_Screenshot_CaptureToFile(const char *path)
         (uint8_t *)image->data, &width, &height, 3, GL_RGB, GL_UNSIGNED_BYTE,
         true);
 
-    ret = Image_SaveToFile(image, path);
+    const RESULT result = Image_SaveToFile(image, path);
 
     if (image) {
         Image_Free(image);
     }
-    return ret;
+    return result;
 }
 
 void TRX_GL_Screenshot_CaptureToBuffer(
