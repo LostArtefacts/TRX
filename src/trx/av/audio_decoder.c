@@ -111,7 +111,7 @@ static int64_t M_MemorySeek(
     return new_pos;
 }
 
-static bool M_OpenCodec(AUDIO_DECODER *const decoder)
+static RESULT M_OpenCodec(AUDIO_DECODER *const decoder)
 {
     int32_t error_code =
         avformat_find_stream_info(decoder->format_ctx, nullptr);
@@ -179,11 +179,10 @@ static bool M_OpenCodec(AUDIO_DECODER *const decoder)
         goto fail;
     }
 
-    return true;
+    return OK;
 
 fail:
-    LOG_ERROR("Error while opening audio: %s", av_err2str(error_code));
-    return false;
+    return FAIL("the audio could not be opened: %s", av_err2str(error_code));
 }
 
 static void M_FreeFilterGraph(AUDIO_DECODER *const decoder)
@@ -201,15 +200,15 @@ static void M_FreeFilterGraph(AUDIO_DECODER *const decoder)
     decoder->filter_sink = nullptr;
 }
 
-static bool M_BuildFilterGraph(AUDIO_DECODER *const decoder)
+static RESULT M_BuildFilterGraph(AUDIO_DECODER *const decoder)
 {
     decoder->filter_graph = avfilter_graph_alloc();
     decoder->filter_in = av_frame_alloc();
     decoder->filter_out = av_frame_alloc();
-    if (decoder->filter_graph == nullptr || decoder->filter_in == nullptr
-        || decoder->filter_out == nullptr) {
-        return false;
-    }
+    FAIL_IF(
+        decoder->filter_graph == nullptr || decoder->filter_in == nullptr
+            || decoder->filter_out == nullptr,
+        "the filter graph could not be set up");
 
     AVChannelLayout layout;
     av_channel_layout_default(&layout, decoder->channels);
@@ -224,18 +223,15 @@ static bool M_BuildFilterGraph(AUDIO_DECODER *const decoder)
         &decoder->filter_src, avfilter_get_by_name("abuffer"), "in", args,
         nullptr, decoder->filter_graph);
     Memory_Free(args);
-    if (error_code < 0) {
-        LOG_ERROR(
-            "Failed to create the filter source: %s", av_err2str(error_code));
-        return false;
-    }
+    FAIL_IF(
+        error_code < 0, "the filter source could not be created: %s",
+        av_err2str(error_code));
 
     decoder->filter_sink = avfilter_graph_alloc_filter(
         decoder->filter_graph, avfilter_get_by_name("abuffersink"), "out");
-    if (decoder->filter_sink == nullptr) {
-        LOG_ERROR("Failed to create the filter sink");
-        return false;
-    }
+    FAIL_IF(
+        decoder->filter_sink == nullptr,
+        "the filter sink could not be created");
 
     // the sink only takes its format before it is initialised
     static const enum AVSampleFormat sample_fmts[] = {
@@ -247,8 +243,7 @@ static bool M_BuildFilterGraph(AUDIO_DECODER *const decoder)
             sizeof(sample_fmts), AV_OPT_SEARCH_CHILDREN)
             < 0
         || avfilter_init_dict(decoder->filter_sink, nullptr) < 0) {
-        LOG_ERROR("Failed to pin the filter output format");
-        return false;
+        return FAIL("the filter output format would not hold");
     }
 
     char *const tempo_args = String_Format("tempo=%f", decoder->speed);
@@ -259,17 +254,15 @@ static bool M_BuildFilterGraph(AUDIO_DECODER *const decoder)
     Memory_Free(tempo_args);
     if (stretch_result < 0
         || avfilter_link(decoder->filter_src, 0, stretch, 0) < 0) {
-        LOG_ERROR("Failed to create the time stretch filter");
-        return false;
+        return FAIL("the time stretch filter could not be created");
     }
 
     if (avfilter_link(stretch, 0, decoder->filter_sink, 0) < 0
         || avfilter_graph_config(decoder->filter_graph, nullptr) < 0) {
-        LOG_ERROR("Failed to configure the filter graph");
-        return false;
+        return FAIL("the filter graph could not be configured");
     }
 
-    return true;
+    return OK;
 }
 
 // Drops the samples the stretcher holds, which a seek makes stale.
@@ -279,7 +272,7 @@ static void M_RebuildFilterGraph(AUDIO_DECODER *const decoder)
         return;
     }
     M_FreeFilterGraph(decoder);
-    if (!M_BuildFilterGraph(decoder)) {
+    if (!SHOULD(M_BuildFilterGraph(decoder))) {
         M_FreeFilterGraph(decoder);
         decoder->speed = 1.0;
     }
@@ -383,33 +376,37 @@ static AUDIO_DECODER *M_Create(const int32_t channels)
     return decoder;
 }
 
-AUDIO_DECODER *AudioDecoder_CreateFromPath(
-    const char *const path, const int32_t channels)
+RESULT AudioDecoder_CreateFromPath(
+    const char *const path, const int32_t channels,
+    AUDIO_DECODER **const out_decoder)
 {
     ASSERT(path != nullptr);
+    *out_decoder = nullptr;
 
     AUDIO_DECODER *decoder = M_Create(channels);
     const int32_t error_code =
         avformat_open_input(&decoder->format_ctx, path, nullptr, nullptr);
     if (error_code != 0) {
-        LOG_ERROR(
-            "Error while opening audio %s: %s", path, av_err2str(error_code));
         AudioDecoder_Free(&decoder);
-        return nullptr;
+        return FAIL("%s: %s", path, av_err2str(error_code));
     }
 
-    if (!M_OpenCodec(decoder)) {
+    const RESULT result = Result_Prefix(M_OpenCodec(decoder), "%s", path);
+    if (!IS_OK(result)) {
         AudioDecoder_Free(&decoder);
-        return nullptr;
+        return result;
     }
-    return decoder;
+    *out_decoder = decoder;
+    return OK;
 }
 
-AUDIO_DECODER *AudioDecoder_CreateFromMemory(
-    const uint8_t *const data, const size_t size, const int32_t channels)
+RESULT AudioDecoder_CreateFromMemory(
+    const uint8_t *const data, const size_t size, const int32_t channels,
+    AUDIO_DECODER **const out_decoder)
 {
     ASSERT(data != nullptr);
     ASSERT(size != 0);
+    *out_decoder = nullptr;
 
     AUDIO_DECODER *decoder = M_Create(channels);
     decoder->memory = (M_MEMORY_SOURCE) {
@@ -423,13 +420,13 @@ AUDIO_DECODER *AudioDecoder_CreateFromMemory(
         M_MemoryRead, nullptr, M_MemorySeek);
     if (decoder->avio_ctx == nullptr) {
         AudioDecoder_Free(&decoder);
-        return nullptr;
+        return FAIL("the audio reader could not be set up");
     }
 
     decoder->format_ctx = avformat_alloc_context();
     if (decoder->format_ctx == nullptr) {
         AudioDecoder_Free(&decoder);
-        return nullptr;
+        return FAIL("the audio format context could not be set up");
     }
     decoder->format_ctx->pb = decoder->avio_ctx;
     decoder->format_ctx->flags |= AVFMT_FLAG_CUSTOM_IO;
@@ -437,18 +434,19 @@ AUDIO_DECODER *AudioDecoder_CreateFromMemory(
     const int32_t error_code =
         avformat_open_input(&decoder->format_ctx, nullptr, nullptr, nullptr);
     if (error_code != 0) {
-        LOG_ERROR(
-            "Error while opening audio memory stream: %s",
-            av_err2str(error_code));
         AudioDecoder_Free(&decoder);
-        return nullptr;
+        return FAIL(
+            "the audio in memory could not be opened: %s",
+            av_err2str(error_code));
     }
 
-    if (!M_OpenCodec(decoder)) {
+    const RESULT result = M_OpenCodec(decoder);
+    if (!IS_OK(result)) {
         AudioDecoder_Free(&decoder);
-        return nullptr;
+        return result;
     }
-    return decoder;
+    *out_decoder = decoder;
+    return OK;
 }
 
 void AudioDecoder_Free(AUDIO_DECODER **const decoder_ref)
@@ -501,56 +499,53 @@ double AudioDecoder_GetTimestamp(const AUDIO_DECODER *const decoder)
     return decoder->timestamp;
 }
 
-bool AudioDecoder_SetSpeed(AUDIO_DECODER *const decoder, const double speed)
+RESULT AudioDecoder_SetSpeed(AUDIO_DECODER *const decoder, const double speed)
 {
     ASSERT(decoder != nullptr);
 
-    if (speed <= 0.0 || speed == decoder->speed) {
-        return speed > 0.0;
+    FAIL_IF(speed <= 0.0, "audio cannot decode at %f times its rate", speed);
+    if (speed == decoder->speed) {
+        return OK;
     }
 
     M_FreeFilterGraph(decoder);
     decoder->speed = speed;
     if (speed == 1.0) {
-        return true;
+        return OK;
     }
 
-    if (!M_BuildFilterGraph(decoder)) {
+    const RESULT result = M_BuildFilterGraph(decoder);
+    if (!IS_OK(result)) {
         M_FreeFilterGraph(decoder);
         decoder->speed = 1.0;
-        return false;
     }
-    return true;
+    return result;
 }
 
-bool AudioDecoder_Seek(AUDIO_DECODER *const decoder, const double timestamp)
+RESULT AudioDecoder_Seek(AUDIO_DECODER *const decoder, const double timestamp)
 {
     ASSERT(decoder != nullptr);
 
     const double time_base_sec = av_q2d(decoder->stream->time_base);
-    if (time_base_sec <= 0.0) {
-        LOG_ERROR("Invalid time base %f", time_base_sec);
-        return false;
-    }
+    FAIL_IF(
+        time_base_sec <= 0.0, "the audio names a time base of %f",
+        time_base_sec);
 
     const int32_t error_code = av_seek_frame(
         decoder->format_ctx, decoder->stream->index,
         (int64_t)(timestamp / time_base_sec), AVSEEK_FLAG_ANY);
-    if (error_code < 0) {
-        LOG_ERROR(
-            "seek failed for timestamp %f: %s", timestamp,
-            av_err2str(error_code));
-        return false;
-    }
+    FAIL_IF(
+        error_code < 0, "the audio could not seek to %f s: %s", timestamp,
+        av_err2str(error_code));
 
     avcodec_flush_buffers(decoder->codec_ctx);
     M_RebuildFilterGraph(decoder);
     decoder->timestamp = timestamp;
     decoder->is_drained = false;
-    return true;
+    return OK;
 }
 
-bool AudioDecoder_Rewind(AUDIO_DECODER *const decoder, const double start_at)
+RESULT AudioDecoder_Rewind(AUDIO_DECODER *const decoder, const double start_at)
 {
     ASSERT(decoder != nullptr);
 
@@ -570,18 +565,15 @@ bool AudioDecoder_Rewind(AUDIO_DECODER *const decoder, const double start_at)
         return AudioDecoder_Seek(decoder, start_at);
     }
 
-    if (error_code < 0) {
-        LOG_ERROR(
-            "seek failed for timestamp %f: %s", start_at,
-            av_err2str(error_code));
-        return false;
-    }
+    FAIL_IF(
+        error_code < 0, "the audio could not seek to %f s: %s", start_at,
+        av_err2str(error_code));
 
     avcodec_flush_buffers(decoder->codec_ctx);
     M_RebuildFilterGraph(decoder);
     decoder->timestamp = start_at;
     decoder->is_drained = false;
-    return true;
+    return OK;
 }
 
 int32_t AudioDecoder_Read(AUDIO_DECODER *const decoder, const float **const out)

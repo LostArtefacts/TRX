@@ -150,7 +150,7 @@ static bool M_Rewind(AUDIO_STREAM_SOUND *const stream)
 {
     ASSERT(stream != nullptr);
     if (!stream->is_looped
-        || !AudioDecoder_Rewind(stream->decoder, stream->start_at)) {
+        || !SHOULD(AudioDecoder_Rewind(stream->decoder, stream->start_at))) {
         return false;
     }
     stream->decode_timestamp = MAX(stream->start_at, 0.0);
@@ -403,13 +403,13 @@ RESULT Audio_Stream_CreateFromFile(
         if (m_Streams[sound_id].is_used) {
             continue;
         }
-        AUDIO_DECODER *const decoder =
-            AudioDecoder_CreateFromPath(file_path, AUDIO_WORKING_CHANNELS);
-        if (M_Initialise(sound_id, decoder, nullptr)) {
+        AUDIO_DECODER *decoder = nullptr;
+        result = AudioDecoder_CreateFromPath(
+            file_path, AUDIO_WORKING_CHANNELS, &decoder);
+        if (IS_OK(result) && M_Initialise(sound_id, decoder, nullptr)) {
             *out_sound_id = sound_id;
-            result = OK;
-        } else {
-            result = FAIL("%s: the audio could not be read", file_path);
+        } else if (IS_OK(result)) {
+            result = FAIL("%s: the stream could not be set up", file_path);
         }
         break;
     }
@@ -434,13 +434,13 @@ RESULT Audio_Stream_CreateFromMemory(
         if (m_Streams[sound_id].is_used) {
             continue;
         }
-        AUDIO_DECODER *const decoder =
-            AudioDecoder_CreateFromMemory(data, size, AUDIO_WORKING_CHANNELS);
-        if (M_Initialise(sound_id, decoder, data)) {
+        AUDIO_DECODER *decoder = nullptr;
+        result = AudioDecoder_CreateFromMemory(
+            data, size, AUDIO_WORKING_CHANNELS, &decoder);
+        if (IS_OK(result) && M_Initialise(sound_id, decoder, data)) {
             *out_sound_id = sound_id;
-            result = OK;
-        } else {
-            result = FAIL("the audio in memory could not be read");
+        } else if (IS_OK(result)) {
+            result = FAIL("the stream could not be set up");
         }
         break;
     }
@@ -480,17 +480,15 @@ RESULT Audio_Stream_SetSpeed(const int32_t sound_id, const double speed)
 
     Audio_WorkerLock();
     AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
-    bool reached = false;
+    RESULT result = OK;
     if (stream->is_used) {
-        reached = AudioDecoder_SetSpeed(stream->decoder, speed);
+        result = AudioDecoder_SetSpeed(stream->decoder, speed);
         // a rate the decoder cannot reach leaves it playing at its own
-        stream->speed = reached ? speed : 1.0;
+        stream->speed = IS_OK(result) ? speed : 1.0;
     }
     Audio_WorkerUnlock();
 
-    FAIL_IF(
-        !reached, "stream %d cannot play at %f times its rate", sound_id,
-        speed);
+    MUST(result, "stream %d", sound_id);
     return OK;
 }
 
@@ -583,13 +581,13 @@ RESULT Audio_Stream_SeekTimestamp(
 
     Audio_WorkerLock();
     AUDIO_STREAM_SOUND *const stream = &m_Streams[sound_id];
-    bool sought = false;
+    RESULT result = FAIL("stream %d holds no audio", sound_id);
     if (stream->is_used) {
         const double target = MAX(stream->start_at, 0.0) + timestamp;
-        sought = AudioDecoder_Seek(stream->decoder, target);
+        result = AudioDecoder_Seek(stream->decoder, target);
     }
 
-    if (sought) {
+    if (IS_OK(result)) {
         Audio_LockDevice();
         M_RingReset(&stream->ring);
         Audio_UnlockDevice();
@@ -601,7 +599,7 @@ RESULT Audio_Stream_SeekTimestamp(
     }
     Audio_WorkerUnlock();
 
-    FAIL_IF(!sought, "stream %d could not seek to %f s", sound_id, timestamp);
+    MUST(result, "stream %d", sound_id);
     return OK;
 }
 
