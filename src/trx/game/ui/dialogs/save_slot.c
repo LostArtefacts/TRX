@@ -52,9 +52,13 @@ static const GAME_STRING_ID m_DeleteConfirmOptions[2] = {
 };
 
 // The delete button under the list, and the gap above it.
-static float M_GetFooterHeight(void)
+static float M_GetFooterHeight(UI_SAVE_SLOT_DIALOG_STATE *const s)
 {
-    return M_FOOTER_SPACING + UI_ProgressButton_GetHeight();
+    UI_BeginMeasure();
+    UI_ProgressButton(s->delete_button);
+    float height = 0.0f;
+    UI_EndMeasure(nullptr, &height);
+    return M_FOOTER_SPACING + height / UI_Scaler_GetTextScale();
 }
 
 static void M_NonEmptySlot(
@@ -183,7 +187,7 @@ static void M_RebuildRows(
     UI_Requester_Free(&s->req);
     Memory_FreePointer(&s->rows);
     M_BuildRows(s);
-    UI_BasePassportDialog_Init(&s->req, s->row_count, M_GetFooterHeight());
+    UI_BasePassportDialog_Init(&s->req, s->row_count, M_GetFooterHeight(s));
     CLAMP(selected_row, 0, s->row_count - 1);
     UI_Requester_SelectRow(&s->req, selected_row);
 }
@@ -243,10 +247,10 @@ UI_SAVE_SLOT_DIALOG_STATE *UI_SaveSlotDialog_Init(
             }
         }
     }
-    UI_BasePassportDialog_Init(&s->req, s->row_count, M_GetFooterHeight());
+    M_ResetDeleteButton(s);
+    UI_BasePassportDialog_Init(&s->req, s->row_count, M_GetFooterHeight(s));
     UI_Requester_SelectRow(&s->req, initial_row);
     s->last_selected_row = initial_row;
-    M_ResetDeleteButton(s);
     return s;
 }
 
