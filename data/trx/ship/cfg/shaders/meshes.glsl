@@ -56,14 +56,14 @@ vec3 waterWibble(vec4 worldPosition, vec4 screenPosition)
 }
 
 // The PS1 GTE computed screen coordinates as integers, so vertices could only
-// land on whole pixels of its 320x240 output. Quantizing the clip position the
-// same way reproduces the wobble that geometry shows when the camera moves.
-#define VERTEX_SNAP_RES vec2(320.0, 240.0)
-
+// land on whole output pixels. Quantizing the clip position to the selected
+// simulated pixel grid reproduces the wobble that geometry shows when the
+// camera moves.
 vec4 vertexSnap(vec4 clipPos)
 {
     vec3 ndc = clipPos.xyz / clipPos.w;
-    ndc.xy = floor(ndc.xy * VERTEX_SNAP_RES * 0.5) / (VERTEX_SNAP_RES * 0.5);
+    ndc.xy = floor(ndc.xy * uVertexSnapResolution * 0.5)
+        / (uVertexSnapResolution * 0.5);
     return vec4(ndc * clipPos.w, clipPos.w);
 }
 

@@ -869,6 +869,11 @@
             "UI_STYLE_PC": "PC",
             "UI_STYLE_PS1": "PS1",
         },
+        "VERTEX_SNAP_MODE": {
+            "VERTEX_SNAP_MODE_320X240": "\\{review}320x240",
+            "VERTEX_SNAP_MODE_DISABLED": "\\{review}Отключено",
+            "VERTEX_SNAP_MODE_UPSCALE_RES": "\\{review}Масштабированное разрешение",
+        },
         "WALL_GLITCH_MODE": {
             "WALL_GLITCH_FIXED": "Исправлен",
             "WALL_GLITCH_TR1": "TR1",
@@ -1504,10 +1509,6 @@
             "title": "Четырёхугольная интерполяция",
             "description": "Исправляет отображение четырёхугольников.",
         },
-        "rendering.enable_vertex_snap": {
-            "title": "\\{review}Привязка вершин",
-            "description": "\\{review}Округляет положение вершин до целых пикселей экрана 320x240, воспроизводя дрожание геометрии в версиях для PlayStation.",
-        },
         "rendering.enable_vsync": {
             "title": "Вертикальная синхронизация",
             "description": "Включает или выключает вертикальную синхронизацию.",
@@ -1555,6 +1556,10 @@
         "rendering.upscaling_filter": {
             "title": "Фильтр масштабирования",
             "description": "Переключает сглаженный или пиксельный вид для всего экрана.",
+        },
+        "rendering.vertex_snap_mode": {
+            "title": "\\{review}Привязка вершин",
+            "description": "\\{review}Управляет сеткой привязки вершин для дрожащей геометрии изданий для PlayStation.\n\n- Отключено: отключает привязку вершин.\n- 320x240: использует исходную сетку 320x240.\n- Масштабированное разрешение: использует масштабированное разрешение.",
         },
         "ui.airbar_color": {
             "title": "Цвет шкалы воздуха",

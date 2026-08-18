@@ -869,6 +869,11 @@
             "UI_STYLE_PC": "PC",
             "UI_STYLE_PS1": "PS1",
         },
+        "VERTEX_SNAP_MODE": {
+            "VERTEX_SNAP_MODE_320X240": "\\{review}320x240",
+            "VERTEX_SNAP_MODE_DISABLED": "\\{review}Disattivato",
+            "VERTEX_SNAP_MODE_UPSCALE_RES": "\\{review}Risoluzione ingrandita",
+        },
         "WALL_GLITCH_MODE": {
             "WALL_GLITCH_FIXED": "Corretto",
             "WALL_GLITCH_TR1": "TR1",
@@ -1504,10 +1509,6 @@
             "title": "Filtro trapezoidale",
             "description": "Corregge la renderizzazione dei quadrilateri.",
         },
-        "rendering.enable_vertex_snap": {
-            "title": "Vertici tremolanti",
-            "description": "Arrotonda le posizioni dei vertici ai pixel interi di uno schermo 320x240, per simulare la geometria tremolante delle versioni PlayStation.",
-        },
         "rendering.enable_vsync": {
             "title": "Sincronizzazione verticale",
             "description": "Attiva o disattiva la sincronizzazione verticale.",
@@ -1555,6 +1556,10 @@
         "rendering.upscaling_filter": {
             "title": "Filtro ridimensionamento",
             "description": "Alterna l'aspetto smussato o pixelato per l'intero schermo.",
+        },
+        "rendering.vertex_snap_mode": {
+            "title": "Vertici tremolanti",
+            "description": "\\{review}Controlla la griglia di snap dei vertici per la geometria tremolante delle versioni PlayStation.\n\n- Disattivato: disattiva lo snap dei vertici.\n- 320x240: utilizza la griglia originale 320x240.\n- Risoluzione ingrandita: utilizza la risoluzione ingrandita.",
         },
         "ui.airbar_color": {
             "title": "Colore barra ossigeno",

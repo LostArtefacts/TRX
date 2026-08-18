@@ -869,6 +869,11 @@
             "UI_STYLE_PC": "PC",
             "UI_STYLE_PS1": "PS1",
         },
+        "VERTEX_SNAP_MODE": {
+            "VERTEX_SNAP_MODE_320X240": "\\{review}320x240",
+            "VERTEX_SNAP_MODE_DISABLED": "\\{review}Wyłączone",
+            "VERTEX_SNAP_MODE_UPSCALE_RES": "\\{review}Rozdzielczość skalowania",
+        },
         "WALL_GLITCH_MODE": {
             "WALL_GLITCH_FIXED": "Naprawione",
             "WALL_GLITCH_TR1": "TR1",
@@ -1504,10 +1509,6 @@
             "title": "Filtr trapezoidalny",
             "description": "Poprawia rysowanie czworokątów, rozciągając teksturę między wszystkimi wierzchołkami zamiast dzielić je na dwa trójkąty.",
         },
-        "rendering.enable_vertex_snap": {
-            "title": "\\{review}Przyciąganie wierzchołków",
-            "description": "\\{review}Zaokrągla pozycje wierzchołków do pełnych pikseli ekranu 320x240, odtwarzając drżenie geometrii z wersji na PlayStation.",
-        },
         "rendering.enable_vsync": {
             "title": "Synchronizacja pionowa",
             "description": "Włącza lub wyłącza synchronizację pionową.",
@@ -1555,6 +1556,10 @@
         "rendering.upscaling_filter": {
             "title": "Filtr skalowania",
             "description": "Przełącza gładki lub pikselowy wygląd dla całego ekranu.",
+        },
+        "rendering.vertex_snap_mode": {
+            "title": "\\{review}Przyciąganie wierzchołków",
+            "description": "\\{review}Kontroluje siatkę przyciągania wierzchołków dla drgającej geometrii z wydań na PlayStation.\n\n- Wyłączone: wyłącza przyciąganie wierzchołków.\n- 320x240: używa oryginalnej siatki 320x240.\n- Rozdzielczość skalowania: używa rozdzielczości skalowania.",
         },
         "ui.airbar_color": {
             "title": "Kolor paska tlenu",

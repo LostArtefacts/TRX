@@ -869,6 +869,11 @@
             "UI_STYLE_PC": "PC",
             "UI_STYLE_PS1": "PS1",
         },
+        "VERTEX_SNAP_MODE": {
+            "VERTEX_SNAP_MODE_320X240": "320x240",
+            "VERTEX_SNAP_MODE_DISABLED": "Disabled",
+            "VERTEX_SNAP_MODE_UPSCALE_RES": "Upscale Res",
+        },
         "WALL_GLITCH_MODE": {
             "WALL_GLITCH_FIXED": "Fixed",
             "WALL_GLITCH_TR1": "TR1",
@@ -1504,10 +1509,6 @@
             "title": "Trapezoid filter",
             "description": "Corrects rendering of quadrilaterals.",
         },
-        "rendering.enable_vertex_snap": {
-            "title": "Vertex snapping",
-            "description": "Rounds vertex positions to whole pixels of a 320x240 screen, for the wobbly geometry of the PlayStation releases.",
-        },
         "rendering.enable_vsync": {
             "title": "VSync",
             "description": "Turns V-Sync on or off.",
@@ -1555,6 +1556,10 @@
         "rendering.upscaling_filter": {
             "title": "Upscaling filter",
             "description": "Switches smooth or pixel look for the whole screen.",
+        },
+        "rendering.vertex_snap_mode": {
+            "title": "Vertex snapping",
+            "description": "Controls the vertex snapping grid for the wobbly geometry of the PlayStation releases.\n\n- Disabled: turns vertex snapping off.\n- 320x240: uses the original 320x240 grid.\n- Upscale Res: uses the upscale resolution.",
         },
         "ui.airbar_color": {
             "title": "Airbar color",

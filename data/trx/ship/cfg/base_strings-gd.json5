@@ -869,6 +869,11 @@
             "UI_STYLE_PC": "PC",
             "UI_STYLE_PS1": "PS1",
         },
+        "VERTEX_SNAP_MODE": {
+            "VERTEX_SNAP_MODE_320X240": "320x240",
+            "VERTEX_SNAP_MODE_DISABLED": "Dheth",
+            "VERTEX_SNAP_MODE_UPSCALE_RES": "Rùn leudaichte",
+        },
         "WALL_GLITCH_MODE": {
             "WALL_GLITCH_FIXED": "Air a chàradh",
             "WALL_GLITCH_TR1": "TR1",
@@ -1504,10 +1509,6 @@
             "title": "Criathradh trapeasoid",
             "description": "Cuiridh seo ceartachadh air trapeasoidean (ceàrnan neo-chothromach) airson reandaradh nas fhearr.",
         },
-        "rendering.enable_vertex_snap": {
-            "title": "Glacadh nan oisean",
-            "description": "Cruinnichidh seo suidheachadh nan oisean gu piocsailean slàna air sgrìn 320x240, airson geoimeatraidh chrithich coltach ri na tionndaidhean PlayStation.",
-        },
         "rendering.enable_vsync": {
             "title": "V-Sionc",
             "description": "Tionndaidheas sioncronachadh-inghearach air neo dheth.",
@@ -1555,6 +1556,10 @@
         "rendering.upscaling_filter": {
             "title": "Criathradh sgèileachaidh",
             "description": "Tionndaidh eadar coltas rèidh neo piogsaileach airson na sgrìn air fad.",
+        },
+        "rendering.vertex_snap_mode": {
+            "title": "Glacadh nan oisean",
+            "description": "Cruinnichidh seo suidheachadh nan oisean gu piocsailean slàna air an sgrìn, airson geoimeatraidh chrithich coltach ri na tionndaidhean PlayStation.\n\n- Dheth: cuiridh seo greimeachadh nan oisean dheth.\n- 320x240: cleachdaidh seo an griod 320x240 tùsail.\n- Rùn leudaichte: cleachdaidh seo an rùn leudaichte.",
         },
         "ui.airbar_color": {
             "title": "Dath bàr-èadhair",

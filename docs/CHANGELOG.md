@@ -17,6 +17,7 @@
 - Changed the PS1 poison healthbar to flat yellow, as the PS1 releases had it (#5227)
 - Changed the TR3 breeze mode to read TR3/4, as it covers both games (Graphic Options → Visuals → Breeze)
 - Changed the preset confirmation to offer Apply and Go back as choices, rather than leaving the keys unsaid (#6258)
+- Changed vertex snapping to offer Disabled, 320x240, and Upscale Res modes (#6278)
 - Fixed a setting description showing a question mark in place of a key that is bound to a combination, such as Alt+Enter
 - Fixed ability to open the inventory ring while a flyby sequence has Lara's control
 - Fixed the game flashing over the black bars beside the picture when a frame is advanced in photo mode (regression from 1.10)
