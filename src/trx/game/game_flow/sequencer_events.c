@@ -247,7 +247,7 @@ M_GF_HANDLER(M_HandlePlayFMV)
         *out_cmd = gf_cmd;
         return OK;
     }
-    FMV_Play(fmv->path);
+    SHOULD(FMV_Play(fmv->path));
     *out_cmd = gf_cmd;
     return OK;
 }

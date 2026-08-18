@@ -27,7 +27,7 @@ static void M_PlayIntroFMVs(void)
     for (int32_t i = 0; i < g_GameFlow.fmv_count; i++) {
         const GF_FMV *const fmv = &g_GameFlow.fmvs[i];
         if (fmv->is_intro) {
-            FMV_Play(fmv->path);
+            SHOULD(FMV_Play(fmv->path));
         }
     }
 }

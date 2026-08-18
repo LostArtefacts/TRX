@@ -229,24 +229,13 @@ static void M_RedrawFrame(M_RENDER_CONTEXT *const ctx)
     Output_FlipScreen();
 }
 
-static bool M_Play(const char *const file_name)
+static RESULT M_Play(const char *const file_name)
 {
-    if (file_name == nullptr || String_IsEmpty(file_name)) {
-        LOG_ERROR("Cannot play FMV: empty file path");
-        return false;
-    }
-
-    VIDEO *const video = Video_Open(file_name);
-    if (video == nullptr) {
-        return false;
-    }
+    VIDEO *video = nullptr;
+    MUST(Video_Open(file_name, &video));
 
     M_RENDER_CONTEXT render_ctx = {};
-    if (!SHOULD(
-            Output_Quad_Create(&render_ctx.renderer_2d),
-            "the video cannot be drawn")) {
-        return false;
-    }
+    MUST(Output_Quad_Create(&render_ctx.renderer_2d));
 
     Video_SetSurfaceAllocatorFunc(video, M_AllocateSurface, nullptr);
     Video_SetSurfaceDeallocatorFunc(video, M_DeallocateSurface, nullptr);
@@ -325,21 +314,21 @@ static bool M_Play(const char *const file_name)
 
     Output_Quad_Destroy(render_ctx.renderer_2d);
     Output_ApplyRenderSettings();
-    return true;
+    return OK;
 }
 
-bool FMV_Play(const char *const file_path)
+RESULT FMV_Play(const char *const file_path)
 {
     Music_Stop();
     Sound_StopAll();
 
     if (!g_Config.gameplay.enable_fmv) {
-        return false;
+        return OK;
     }
 
     m_IsPlaying = true;
     Output_SetSupersamplingEnabled(false);
-    const bool result = M_Play(file_path);
+    const RESULT result = M_Play(file_path);
     Output_SetSupersamplingEnabled(true);
     m_IsPlaying = false;
     return result;

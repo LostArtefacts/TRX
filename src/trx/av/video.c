@@ -1930,19 +1930,18 @@ fail:
     return nullptr;
 }
 
-VIDEO *Video_Open(const char *const file_path)
+RESULT Video_Open(const char *const file_path, VIDEO **const out_video)
 {
-    if (file_path == nullptr || String_IsEmpty(file_path)) {
-        LOG_ERROR("Cannot open video: empty file path");
-        return nullptr;
-    }
+    *out_video = nullptr;
+    FAIL_IF(
+        file_path == nullptr || String_IsEmpty(file_path),
+        "the video has no path to play from");
 
     LOG_DEBUG("Playing video: %s", file_path);
     int flags = SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER;
-    if (SDL_Init(flags)) {
-        LOG_ERROR("Could not initialize SDL - %s", SDL_GetError());
-        return nullptr;
-    }
+    FAIL_IF(
+        SDL_Init(flags), "%s: SDL could not be brought up: %s", file_path,
+        SDL_GetError());
 
     SDL_EventState(SDL_SYSWMEVENT, SDL_IGNORE);
     SDL_EventState(SDL_USEREVENT, SDL_IGNORE);
@@ -1952,13 +1951,16 @@ VIDEO *Video_Open(const char *const file_path)
     result->priv = M_StreamOpen(file_path);
     if (result->priv == nullptr) {
         Memory_Free(result);
-        LOG_ERROR("Failed to initialize video!");
-        return nullptr;
+        return FAIL(
+            "%s: the video could not be opened, and the log says where the "
+            "reader stopped",
+            file_path);
     }
 
     result->path = Memory_DupStr(file_path);
     result->is_playing = true;
-    return result;
+    *out_video = result;
+    return OK;
 }
 
 void Video_PumpEvents(VIDEO *video)
