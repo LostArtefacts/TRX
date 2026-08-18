@@ -108,10 +108,6 @@ Please refer to [this document](docs/CHANGELOG.md).
     getting new rendering improvements and texture fixes. But great stuff
     takes time.
 
-    Players can reproduce the PlayStation releases' wobbly geometry with the
-    vertex snapping setting. It can be disabled, use the original 320×240
-    grid, or use the upscale resolution.
-
 3. **Can I play this on Mac, Linux, Android...?**
 
     Currently supported platforms include Windows, Linux and macOS.
