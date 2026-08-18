@@ -83,3 +83,9 @@ bool Room_IsOverlapping(int16_t room_num);
 void Room_GetNearbyRooms(XYZ_32 pos, int32_t r, int32_t h, int16_t room_num);
 
 bool Room_FindValidPos(XYZ_32 *out_pos, int16_t *out_room_num);
+
+// Attempts direct traversal first with Room_GetSector, then individual axis
+// travseral to resolve cases where direct movement is not possible. Returns
+// NO_ROOM if all attempts fail.
+int16_t Room_FindByTraversal(
+    XYZ_32 old_pos, XYZ_32 new_pos, int16_t start_room);

@@ -105,6 +105,18 @@ static void M_GetNewRoom(
     Room_MarkToBeDrawn(room_num);
 }
 
+static bool M_TryResolveRoom(
+    const XYZ_32 pos, int16_t start_room, int16_t *const out_room)
+{
+    Room_GetSector(pos, &start_room);
+    if (!Room_PointInside(Room_Get(start_room), pos)) {
+        return false;
+    }
+
+    *out_room = start_room;
+    return true;
+}
+
 void Room_InitialiseRooms(const int32_t num_rooms)
 {
     m_RoomCount = num_rooms;
@@ -798,6 +810,35 @@ bool Room_FindValidPos(XYZ_32 *const out_pos, int16_t *const out_room_num)
     *out_room_num = room_num;
 
     return true;
+}
+
+int16_t Room_FindByTraversal(
+    const XYZ_32 old_pos, const XYZ_32 new_pos, const int16_t start_room)
+{
+    int16_t room_num;
+    if (M_TryResolveRoom(new_pos, start_room, &room_num)) {
+        return room_num;
+    }
+
+#define L_TRY_TRAVERSE(test_pos)                                               \
+    do {                                                                       \
+        if (M_TryResolveRoom(test_pos, start_room, &room_num)                  \
+            && M_TryResolveRoom(new_pos, room_num, &room_num)) {               \
+            return room_num;                                                   \
+        }                                                                      \
+    } while (false)
+
+    const XYZ_32 x_first = { .x = new_pos.x, .y = old_pos.y, .z = old_pos.z };
+    L_TRY_TRAVERSE(x_first);
+
+    const XYZ_32 y_first = { .x = old_pos.x, .y = new_pos.y, .z = old_pos.z };
+    L_TRY_TRAVERSE(y_first);
+
+    const XYZ_32 z_first = { .x = old_pos.x, .y = old_pos.y, .z = new_pos.z };
+    L_TRY_TRAVERSE(z_first);
+
+#undef L_TRY_TRAVERSE
+    return NO_ROOM;
 }
 
 REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

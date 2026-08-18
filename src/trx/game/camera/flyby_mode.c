@@ -177,42 +177,6 @@ static void M_PrepareSplineToGame(void)
     g_Camera = cam_info;
 }
 
-static bool M_TryResolveRoom(
-    const XYZ_32 pos, int16_t start_room, int16_t *const out_room)
-{
-    Room_GetSector(pos, &start_room);
-    if (!Room_PointInside(Room_Get(start_room), pos)) {
-        return false;
-    }
-
-    *out_room = start_room;
-    return true;
-}
-
-static int16_t M_GetBestRoomNum(
-    const XYZ_32 current_pos, const FLYBY_CAMERA *const camera)
-{
-    // Handle cases where the current spline position wants to use the next
-    // node's room number, but normal x/z/y traversal (Room_GetSector) is
-    // not possible. Try y/x/z, then fallback to the previous camera room.
-    int16_t room_num;
-    if (M_TryResolveRoom(current_pos, camera->room_num, &room_num)) {
-        return room_num;
-    }
-
-    const XYZ_32 y_first_pos = {
-        .x = camera->pos.x,
-        .y = current_pos.y,
-        .z = camera->pos.z,
-    };
-    if (M_TryResolveRoom(y_first_pos, camera->room_num, &room_num)
-        && M_TryResolveRoom(current_pos, room_num, &room_num)) {
-        return room_num;
-    }
-
-    return g_Camera.pos.room_num;
-}
-
 static void M_TestTriggers(void)
 {
     if (!m_State.flags.test_triggers) {
@@ -431,8 +395,11 @@ void Camera_FlybyMode_Update(void)
         }
     }
 
-    const int16_t room_num = M_GetBestRoomNum(pos, current_camera);
-    g_Camera.pos.room_num = room_num;
+    const int16_t room_num = Room_FindByTraversal(
+        current_camera->pos, pos, current_camera->room_num);
+    if (room_num != NO_ROOM) {
+        g_Camera.pos.room_num = room_num;
+    }
     g_Camera.target.room_num = g_Camera.pos.room_num;
     Room_GetSector(g_Camera.target.pos, &g_Camera.target.room_num);
     g_Camera.shift = 0;
