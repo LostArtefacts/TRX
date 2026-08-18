@@ -930,6 +930,10 @@
             "title": "Superposer le son du secret",
             "description": "Corrige le fait que la musique est coupée à la découverte d'un secret.",
         },
+        "audio.fix_sliding_sfx": {
+            "title": "\\{review}Corriger les SFX de glissade",
+            "description": "\\{review}Corrige les SFX de glissade de Lara qui continuent à jouer lorsqu'elle n'est plus dans un état de glissade valide (style TR3+). Désactiver cette option laisse les SFX terminer leur lecture normalement, quel que soit l'état de Lara (style TR1/2).",
+        },
         "audio.fix_speeches_killing_music": {
             "title": "\\{review}Voix des ennemis",
             "description": "Corrige le fait que la musique est coupée lorsque les ennemis se mettent à parler.",

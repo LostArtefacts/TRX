@@ -650,6 +650,7 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
         }
         item->gravity = true;
         item->fall_speed = 0;
+        Lara_StopSlidingSFX();
         return;
     }
 
@@ -657,6 +658,7 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
     item->pos.y += coll->side_mid.floor;
     if (ABS(coll->tilt.x) <= MAX_SLOPE && ABS(coll->tilt.z) <= MAX_SLOPE) {
         item->goal_anim_state = LS(LS_STOP);
+        Lara_StopSlidingSFX();
     }
 }
 

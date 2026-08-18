@@ -930,6 +930,10 @@
             "title": "Musica segreti in polifonia",
             "description": "Risolve il problema per cui il suono riprodotto dalla scoperta di un segreto interrompe la traccia musicale attiva.",
         },
+        "audio.fix_sliding_sfx": {
+            "title": "\\{review}Correggi gli SFX dello scivolamento",
+            "description": "\\{review}Corregge la riproduzione continua degli SFX dello scivolamento di Lara quando non si trova più in uno stato di scivolamento valido (stile TR3+). Disattivando questa opzione, gli SFX termineranno normalmente la riproduzione, indipendentemente dallo stato di Lara (stile TR1/2).",
+        },
         "audio.fix_speeches_killing_music": {
             "title": "Dialoghi nemici in polifonia",
             "description": "Risolve il problema per cui i nemici, quando parlano, interrompono la traccia musicale attiva.",

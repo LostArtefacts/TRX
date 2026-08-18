@@ -930,6 +930,10 @@
             "title": "Warstwowe dźwięki sekretów",
             "description": "Sprawia, że podnoszenie sekretów nie zatrzymuje aktualnie odtwarzanej muzyki.",
         },
+        "audio.fix_sliding_sfx": {
+            "title": "\\{review}Napraw odgłosy ślizgania",
+            "description": "\\{review}Naprawia dalsze odtwarzanie odgłosów ślizgania Lary, gdy nie znajduje się już ona w prawidłowym stanie ślizgania (styl TR3+). Wyłączenie tej opcji pozwala odgłosom zakończyć odtwarzanie normalnie, niezależnie od stanu Lary (styl TR1/2).",
+        },
         "audio.fix_speeches_killing_music": {
             "title": "Warstwowe wypowiedzi wrogów",
             "description": "Sprawia, że wypowiedzi wrogów nie zatrzymuje aktualnie odtwarzanej muzyki.",

@@ -930,6 +930,10 @@
             "title": "Ceòl dìomhaireachd ioma-fhilleadh",
             "description": "Cuiridh seo ceartachadh air far a bheil ceòl dìomhaireachd a' stad an slighe-ciùil a tha a' cluich.",
         },
+        "audio.fix_sliding_sfx": {
+            "title": "SFX sleamhnachaidh",
+            "description": "Ceartaichidh seo SFX sleamhnachaidh Lara a' leantainn air adhart nuair nach eil i ann an staid sleamhnachaidh dhligheach tuilleadh (stoidhle TR3+). Ma thèid seo a chur dheth, leigidh e leis na SFX crìochnachadh mar as àbhaist, ge bith dè an staid anns a bheil Lara (stoidhle TR1/2).",
+        },
         "audio.fix_speeches_killing_music": {
             "title": "Labhairt nàmhaid ioma-fhilleadh",
             "description": "Cuiridh seo ceartachadh air far a bheil nàimhdean a' stad ciùil gnìomhach nuair a bhruidhneas iad.",

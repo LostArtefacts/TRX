@@ -14,6 +14,7 @@ bool Lara_IsWet(void);
 void Lara_TouchLava(void);
 void Lara_TouchDeathSector(GF_DEATH_TILE death_tile);
 void Lara_RapidsDrown(void);
+void Lara_StopSlidingSFX(void);
 
 int32_t Lara_FloorFront(const ITEM *item, int16_t ang, int32_t dist);
 int32_t Lara_CeilingFront(

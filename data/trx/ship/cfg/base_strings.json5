@@ -930,6 +930,10 @@
             "title": "Layered secret music",
             "description": "Fixes the sound of collecting a secret stopping the active music track.",
         },
+        "audio.fix_sliding_sfx": {
+            "title": "Fix sliding SFX",
+            "description": "Fixes Lara's sliding SFX continuing to play when she is no longer on a slope (TR3+ style). Turning this off will leave the SFX to finish playing normally, regardless of where Lara is (TR1/2 style).",
+        },
         "audio.fix_speeches_killing_music": {
             "title": "Layered enemy speech",
             "description": "Fixes enemies stopping the active music track when they speak.",
