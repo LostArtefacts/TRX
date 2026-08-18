@@ -11,12 +11,17 @@
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
 #include <trx/game/ui.h>
+#include <trx/game/ui/scaler.h>
 #include <trx/version.h>
 
 #include <stdio.h>
 #include <string.h>
 
-#define M_MIN_ASSAULT_COURSE_ROWS 7
+#define M_MAX_ASSAULT_COURSE_ROWS 7
+#define M_ASSAULT_COURSE_CHROME 80.0f
+#define M_BARE_ROW_SPACING 11.0f
+#define M_MIN_MARGIN_ROWS 0.5f
+#define M_MIN_ROW_SPACING_ROWS (1.0f / 6.0f)
 
 typedef enum {
     M_ROW_GENERIC,
@@ -66,6 +71,10 @@ typedef struct UI_STATS_DIALOG_STATE {
     };
 
     const M_LOOK *look;
+    float window_margin;
+    float bare_row_spacing;
+    float fit_scale;
+    bool is_squeezed;
     UI_PROGRESS_BUTTON_STATE *reset_button;
     bool has_floordata_secrets;
     bool has_visible_rows;
@@ -432,19 +441,17 @@ static void M_RowFromRole(
     }
 }
 
-static bool M_EmitRow(
+static void M_EmitRow(
     const UI_STATS_DIALOG_STATE *const s, const M_ROW_ROLE role,
     const int32_t param)
 {
     M_RowFromRole(s, role, param);
-    return true;
 }
 
-static bool M_EmitDummyRow(
+static void M_EmitDummyRow(
     const UI_STATS_DIALOG_STATE *const s, const M_ROW_ROLE role,
     const int32_t param)
 {
-    return true;
 }
 
 // Pickup crystals exist only to be counted, so their row is not optional.
@@ -454,73 +461,77 @@ static bool M_ShowCrystals(void)
         || g_Config.gameplay.save_crystal_mode == SAVE_CRYSTAL_PICKUP;
 }
 
-static bool M_EmitConfiguredStatsRows(
+static int32_t M_EmitConfiguredStatsRows(
     const UI_STATS_DIALOG_STATE *const s, const bool dry_run)
 {
-    bool has_rows = false;
-    bool (*emit_row_func)(const UI_STATS_DIALOG_STATE *, M_ROW_ROLE, int32_t) =
+    int32_t rows = 0;
+    void (*emit_row_func)(const UI_STATS_DIALOG_STATE *, M_ROW_ROLE, int32_t) =
         dry_run ? M_EmitDummyRow : M_EmitRow;
+
+#define L_EMIT_ROW(...)                                                        \
+    emit_row_func(__VA_ARGS__);                                                \
+    rows++;
 
     if (s->args.style == UI_STATS_DIALOG_STYLE_BARE) {
         if (g_Config.ui.stats.show_kills) {
-            has_rows |= emit_row_func(s, M_ROW_KILLS, 0);
+            L_EMIT_ROW(s, M_ROW_KILLS, 0);
         }
         if (g_Config.ui.stats.show_pickups) {
-            has_rows |= emit_row_func(s, M_ROW_PICKUPS, 0);
+            L_EMIT_ROW(s, M_ROW_PICKUPS, 0);
         }
         if (M_ShowCrystals() && s->max_stats->maxes[STATS_CAT_CRYSTALS] != 0) {
-            has_rows |= emit_row_func(s, M_ROW_CRYSTALS, 0);
+            L_EMIT_ROW(s, M_ROW_CRYSTALS, 0);
         }
         if (g_Config.ui.stats.show_secrets
             && s->max_stats->maxes[STATS_CAT_SECRETS] != 0) {
-            has_rows |= emit_row_func(s, M_ROW_AUTO_SECRETS, 0);
+            L_EMIT_ROW(s, M_ROW_AUTO_SECRETS, 0);
         }
         if (g_Config.ui.stats.show_time_taken) {
-            has_rows |= emit_row_func(s, M_ROW_TIMER, 0);
+            L_EMIT_ROW(s, M_ROW_TIMER, 0);
         }
     } else {
         if (g_Config.ui.stats.show_time_taken) {
-            has_rows |= emit_row_func(s, M_ROW_TIMER, 0);
+            L_EMIT_ROW(s, M_ROW_TIMER, 0);
         }
         if (g_Config.ui.stats.show_secrets
             && s->max_stats->maxes[STATS_CAT_SECRETS] != 0) {
-            has_rows |= emit_row_func(s, M_ROW_AUTO_SECRETS, 0);
+            L_EMIT_ROW(s, M_ROW_AUTO_SECRETS, 0);
         }
         if (M_ShowCrystals() && s->max_stats->maxes[STATS_CAT_CRYSTALS] != 0) {
-            has_rows |= emit_row_func(s, M_ROW_CRYSTALS, 0);
+            L_EMIT_ROW(s, M_ROW_CRYSTALS, 0);
         }
         if (g_Config.ui.stats.show_pickups) {
-            has_rows |= emit_row_func(s, M_ROW_PICKUPS, 0);
+            L_EMIT_ROW(s, M_ROW_PICKUPS, 0);
         }
         if (g_Config.ui.stats.show_kills) {
-            has_rows |= emit_row_func(s, M_ROW_KILLS, 0);
+            L_EMIT_ROW(s, M_ROW_KILLS, 0);
         }
     }
 
     if (g_Config.ui.stats.show_ammo) {
         if (s->args.style == UI_STATS_DIALOG_STYLE_BARE) {
-            M_RowFromRole(s, M_ROW_AMMO_USED, 0);
-            M_RowFromRole(s, M_ROW_AMMO_HITS, 0);
+            L_EMIT_ROW(s, M_ROW_AMMO_USED, 0);
+            L_EMIT_ROW(s, M_ROW_AMMO_HITS, 0);
         } else {
-            M_RowFromRole(s, M_ROW_AMMO, 0);
+            L_EMIT_ROW(s, M_ROW_AMMO, 0);
         }
-        has_rows = true;
     }
     if (g_Config.ui.stats.show_medipacks_used) {
-        has_rows |= emit_row_func(s, M_ROW_MEDIPACKS_USED, 0);
+        L_EMIT_ROW(s, M_ROW_MEDIPACKS_USED, 0);
     }
     if (g_Config.ui.stats.show_distance_travelled) {
-        has_rows |= emit_row_func(s, M_ROW_DISTANCE_TRAVELLED, 0);
+        L_EMIT_ROW(s, M_ROW_DISTANCE_TRAVELLED, 0);
     }
     if (g_Config.ui.stats.show_deaths && s->stats->death_count >= 0) {
         // Always use the sum of all levels for deaths.
         // Deaths get stored in the resume info for the level they happen on,
         // so if the player dies in Vilcabamba and reloads Caves, they should
         // still see an incremented death counter.
-        has_rows |= emit_row_func(s, M_ROW_DEATHS, 0);
+        L_EMIT_ROW(s, M_ROW_DEATHS, 0);
     }
 
-    return has_rows;
+#undef L_EMIT_ROW
+    return rows;
 }
 
 static bool M_HasVisibleRows(const UI_STATS_DIALOG_STATE *const s)
@@ -530,7 +541,7 @@ static bool M_HasVisibleRows(const UI_STATS_DIALOG_STATE *const s)
         return true;
     }
 
-    return M_EmitConfiguredStatsRows(s, true);
+    return M_EmitConfiguredStatsRows(s, true) > 0;
 }
 
 static void M_LevelStatsRows(const UI_STATS_DIALOG_STATE *const s)
@@ -567,6 +578,22 @@ static const char *M_GetDialogTitle(const UI_STATS_DIALOG_STATE *const s)
         return GS("general/stats/assault_title");
     }
     return nullptr;
+}
+
+static int32_t M_GetAssaultCourseMaxRows(void)
+{
+    const int32_t record_limit = g_TRVersion >= 3 ? 3 : MAX_ASSAULT_TIMES;
+    const int32_t rows = Gym_TrackManager_HasStats(GYM_TRACK_QUAD)
+        ? 3 + 2 * record_limit
+        : record_limit;
+    const float available =
+        UI_GetSafeCanvasHeight() / UI_Scaler_GetBaseTextScale()
+        - M_ASSAULT_COURSE_CHROME;
+    int32_t result =
+        MIN(MIN(rows, M_MAX_ASSAULT_COURSE_ROWS),
+            (int32_t)(available / UI_TEXT_HEIGHT));
+    CLAMP(result, 1, rows);
+    return result;
 }
 
 static void M_AssaultCourseStatsRows(UI_STATS_DIALOG_STATE *const s)
@@ -611,7 +638,7 @@ static void M_AssaultCourseStatsRows(UI_STATS_DIALOG_STATE *const s)
 
 #undef L_EMIT_ROW
 
-    while (count < M_MIN_ASSAULT_COURSE_ROWS) {
+    while (count < M_GetAssaultCourseMaxRows()) {
         M_RowFromRole(s, M_ROW_SPACER, 0);
         count++;
     }
@@ -652,7 +679,7 @@ static int32_t M_GetAssaultCourseRowCount(const UI_STATS_DIALOG_STATE *const s)
         }
     }
 
-    return MAX(count, M_MIN_ASSAULT_COURSE_ROWS);
+    return MAX(count, M_GetAssaultCourseMaxRows());
 }
 
 static bool M_HasAnyRecordedTime(const UI_STATS_DIALOG_STATE *const s)
@@ -687,12 +714,109 @@ static UI_WINDOW_SETTINGS M_GetWindowSettings(
     };
 }
 
+static int32_t M_CountRows(const UI_STATS_DIALOG_STATE *const s)
+{
+    switch (s->args.mode) {
+    case UI_STATS_DIALOG_MODE_LEVEL:
+    case UI_STATS_DIALOG_MODE_FINAL: {
+        int32_t rows = MAX(1, M_EmitConfiguredStatsRows(s, true));
+        if (s->args.mode == UI_STATS_DIALOG_MODE_LEVEL
+            && g_Config.ui.stats.show_level_header) {
+            rows++;
+        }
+        return rows;
+    }
+
+    case UI_STATS_DIALOG_MODE_ASSAULT_COURSE:
+        return s->scrollable.vis_items + 1;
+    }
+    return 0;
+}
+
+static float M_GetRowHeight(void)
+{
+    float height = 0.0f;
+    UI_Label_Measure("0", nullptr, &height);
+    return height / UI_Scaler_GetTextScale();
+}
+
+static float M_GetTextHeight(
+    const UI_STATS_DIALOG_STATE *const s, const int32_t rows,
+    const float row_height)
+{
+    float height = rows * row_height;
+    if (s->args.style == UI_STATS_DIALOG_STYLE_BARE) {
+        height += row_height;
+    } else {
+        const UI_WINDOW_SETTINGS window = M_GetWindowSettings(s);
+        height += UI_Window_GetChromeHeight(&window);
+    }
+    return height;
+}
+
+static float M_GetContentHeight(
+    const UI_STATS_DIALOG_STATE *const s, const int32_t rows,
+    const float row_height)
+{
+    float height =
+        M_GetTextHeight(s, rows, row_height) + 2.0f * s->window_margin;
+    if (s->args.style == UI_STATS_DIALOG_STYLE_BARE) {
+        height += (rows + 1) * s->bare_row_spacing;
+    }
+    return height;
+}
+
+static float M_GetAvailableHeight(void)
+{
+    return UI_GetSafeCanvasHeight() / UI_Scaler_GetTextScale();
+}
+
+static void M_RecomputeLayout(
+    UI_STATS_DIALOG_STATE *const s, const int32_t rows, const float row_height)
+{
+    const bool is_bare = s->args.style == UI_STATS_DIALOG_STYLE_BARE;
+    const float natural_spacing = is_bare ? M_BARE_ROW_SPACING : 0.0f;
+    const float natural_margin = s->look->window_margin;
+    const int32_t gaps = is_bare ? rows + 1 : 0;
+
+    s->window_margin = natural_margin;
+    s->bare_row_spacing = natural_spacing;
+    s->fit_scale = 1.0f;
+
+    const float available = M_GetAvailableHeight();
+    const float text_height = M_GetTextHeight(s, rows, row_height);
+    const float natural = 2.0f * natural_margin + gaps * natural_spacing;
+    s->is_squeezed = text_height + natural > available;
+    if (!s->is_squeezed) {
+        return;
+    }
+
+    const float min_margin =
+        MIN(row_height * M_MIN_MARGIN_ROWS, natural_margin);
+    const float min_spacing =
+        MIN(row_height * M_MIN_ROW_SPACING_ROWS, natural_spacing);
+
+    float excess = text_height + natural - available;
+    const float spare_spacing = gaps * (natural_spacing - min_spacing);
+    s->bare_row_spacing =
+        gaps > 0 ? natural_spacing - MIN(excess, spare_spacing) / gaps : 0.0f;
+
+    excess -= spare_spacing;
+    if (excess > 0.0f) {
+        const float spare_margin = 2.0f * (natural_margin - min_margin);
+        s->window_margin = natural_margin - MIN(excess, spare_margin) / 2.0f;
+    }
+
+    s->fit_scale =
+        UI_GetFitScale(-1.0f, M_GetContentHeight(s, rows, row_height));
+}
+
 static void M_BeginDialog(const UI_STATS_DIALOG_STATE *const s)
 {
     if (s->args.style == UI_STATS_DIALOG_STYLE_BARE) {
         UI_BeginStackEx((UI_STACK_SETTINGS) {
             .orientation = UI_STACK_VERTICAL,
-            .spacing = { .v = 11.0f },
+            .spacing = { .v = s->bare_row_spacing },
             .align = { .h = UI_STACK_H_ALIGN_CENTER },
         });
         const char *const title = M_GetDialogTitle(s);
@@ -720,7 +844,7 @@ UI_STATS_DIALOG_STATE *UI_StatsDialog_Init(const UI_STATS_DIALOG_ARGS args)
     UI_STATS_DIALOG_STATE *const s = Memory_Alloc(sizeof(*s));
 
     s->has_floordata_secrets = false;
-    s->scrollable.vis_items = M_MIN_ASSAULT_COURSE_ROWS;
+    s->scrollable.vis_items = M_GetAssaultCourseMaxRows();
     s->args = args;
     s->look = &m_Looks[g_TRVersion - 1];
 
@@ -798,8 +922,12 @@ int32_t UI_StatsDialog_Control(UI_STATS_DIALOG_STATE *const s)
 
 void UI_StatsDialog(UI_STATS_DIALOG_STATE *const s)
 {
-    UI_BeginModal(0.5f, s->look->window_y);
-    UI_BeginPad(s->look->window_margin, s->look->window_margin);
+    const int32_t rows = M_CountRows(s);
+    const float row_height = M_GetRowHeight();
+    M_RecomputeLayout(s, rows, row_height);
+    UI_Scaler_PushTextScale(s->fit_scale);
+    UI_BeginModal(0.5f, s->is_squeezed ? 0.5f : s->look->window_y);
+    UI_BeginPad(s->window_margin, s->window_margin);
 
     M_BeginDialog(s);
     switch (s->args.mode) {
@@ -834,4 +962,5 @@ void UI_StatsDialog(UI_STATS_DIALOG_STATE *const s)
 
     UI_EndPad();
     UI_EndModal();
+    UI_Scaler_PopTextScale();
 }
