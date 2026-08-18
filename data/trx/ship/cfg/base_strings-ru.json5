@@ -872,7 +872,7 @@
         "VERTEX_SNAP_MODE": {
             "VERTEX_SNAP_MODE_320X240": "\\{review}320x240",
             "VERTEX_SNAP_MODE_DISABLED": "\\{review}Отключено",
-            "VERTEX_SNAP_MODE_UPSCALE_RES": "\\{review}Масштабированное разрешение",
+            "VERTEX_SNAP_MODE_UPSCALE_RES": "\\{review}Разрешение масштаба",
         },
         "WALL_GLITCH_MODE": {
             "WALL_GLITCH_FIXED": "Исправлен",
