@@ -119,7 +119,8 @@ static bool M_IsOnlyUnderwaterUsable(void)
         || lara->water_status == LWS_SURFACE;
 }
 
-static bool M_IsTooSubmerged(const LARA_GUN_TYPE gun_type)
+// Where the water stands below the muzzle, so that the weapon still fires.
+static bool M_IsAboveWaterLine(const LARA_GUN_TYPE gun_type)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     return lara->water_surface_dist > -g_Weapons[gun_type].gun_height;
@@ -171,19 +172,12 @@ static bool M_CanEquip(void)
     case LWS_SURFACE:
     case LWS_UNDERWATER:
         return M_IsUsableUnderwater(lara->request_gun_type);
-    case LWS_WADE: {
-        if (M_IsUsableUnderwater(lara->request_gun_type)) {
-            return true;
-        }
-        if (lara->gun_status == LGS_ARMLESS
-            || M_IsTooSubmerged(lara->gun_type)) {
-            return true;
-        }
-        return false;
+    case LWS_WADE:
+        return M_IsUsableUnderwater(lara->request_gun_type)
+            || M_IsAboveWaterLine(lara->request_gun_type);
     default:
         ASSERT_FAIL();
         return false;
-    }
     }
 }
 
@@ -224,7 +218,7 @@ static bool M_NeedToUndraw(void)
         return false;
     case LWS_WADE:
         return !M_IsUsableUnderwater(lara->request_gun_type)
-            && !M_IsTooSubmerged(lara->gun_type);
+            && !M_IsAboveWaterLine(lara->gun_type);
     default:
         return false;
     }
