@@ -7,6 +7,7 @@
 #include <trx/game/items.h>
 #include <trx/game/items/anim.h>
 #include <trx/game/lara/common.h>
+#include <trx/game/lara/pose.h>
 #include <trx/game/matrix.h>
 #include <trx/game/rooms.h>
 #include <trx/version.h>
@@ -148,13 +149,17 @@ int32_t Collide_GetSpheres(
 
     const ANIM_FRAME *const frame = Item_GetBestFrame(item);
     const OBJECT *const obj = Object_Get(item->object_id);
+    const LARA_POSE *const pose =
+        item == Lara_GetItem() ? Lara_Pose_Get() : nullptr;
 
     ANIM_WALK walk;
     Anim_Walk_Begin(
         &walk,
         &(ANIM_WALK_DESC) {
             .obj = obj,
-            .pose = Anim_Pose_FromFrame(frame),
+            .pose = pose != nullptr
+                ? Anim_Pose_FromRots(pose->rots, pose->offset)
+                : Anim_Pose_FromFrame(frame),
             .extra_rotations = item->extra_rotations,
         });
     while (Anim_Walk_Next(&walk)) {
@@ -225,7 +230,10 @@ void Collide_GetJointAbsPosition(
     const XYZ_16 item_rot =
         use_item_interp ? item->interp.result.rot : item->rot;
 
-    if (frames[0] == nullptr) {
+    const LARA_POSE *const pose =
+        item == Lara_GetItem() ? Lara_Pose_Get() : nullptr;
+
+    if (frames[0] == nullptr && pose == nullptr) {
         Matrix_PushUnit();
         Matrix_Rot16(item_rot);
         Matrix_TranslateRel32(*out_vec);
@@ -247,7 +255,9 @@ void Collide_GetJointAbsPosition(
         &walk,
         &(ANIM_WALK_DESC) {
             .obj = obj,
-            .pose = Anim_Pose_FromFrames(frame_a, frame_b, frac, rate),
+            .pose = pose != nullptr
+                ? Anim_Pose_FromRots(pose->rots, pose->offset)
+                : Anim_Pose_FromFrames(frame_a, frame_b, frac, rate),
             .extra_rotations = item->extra_rotations,
         },
         MIN(joint, MAX(obj->mesh_count - 1, 0)));
