@@ -62,6 +62,7 @@
             "fps_counter_off": "Cuntair FPS dheth",
             "fps_counter_on": "Cuntair FPS air",
             "lighting_contrast_fmt": "Coimeas Solais: %s",
+            "lighting_curve_fmt": "\\{review}Modail an t-solais: %s",
             "load_game": "Geama air a luchdadh bho slot %d",
             "quick_load": "Slot luchdaichte gu luath %d",
             "quick_load_fail_no_bound_slot": "Chan eil slot sàbhalaidh sam bith ceangailte an-dràsta",
@@ -724,7 +725,7 @@
             "INPUT_ROLE_CHANGE_OUTFIT": "Atharraich aodach",
             "INPUT_ROLE_CHANGE_TARGET": "Atharraich an Targaid",
             "INPUT_ROLE_CROUCH": "Crùb",
-            "INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "Cuairt Coimeas Solais",
+            "INPUT_ROLE_CYCLE_LIGHTING_MODEL": "\\{review}Cuairt Modail an t-Solais",
             "INPUT_ROLE_DOWN": "Air Ais",
             "INPUT_ROLE_DRAW_WEAPON": "Uidheamaich",
             "INPUT_ROLE_ENTER_CONSOLE": "Consol Leasachaidh",
@@ -790,6 +791,11 @@
             "LIGHTING_CONTRAST_HIGH": "Àrd",
             "LIGHTING_CONTRAST_LOW": "Ìosal",
             "LIGHTING_CONTRAST_MEDIUM": "Meadhanach",
+        },
+        "LIGHTING_CURVE": {
+            "LIGHTING_CURVE_FLAT": "\\{review}Rèidh",
+            "LIGHTING_CURVE_OVERBRIGHT": "\\{review}Overbright",
+            "LIGHTING_CURVE_SATURATE": "\\{review}Sàthachadh",
         },
         "LOADING_SCREENS_MODE": {
             "LOADING_SCREENS_ALWAYS": "An-còmhnaidh",
@@ -1537,6 +1543,10 @@
         "rendering.lighting_contrast": {
             "title": "Iomsgaradh solais",
             "description": "Cuiridh seo atharrachadh air iomsgaradh solais fiùghantach, airson m.e. lasraichean neo losgadh armachd.",
+        },
+        "rendering.lighting_curve": {
+            "title": "\\{review}Modail an t-solais",
+            "description": "\\{review}Taghaidh seo dè cho fada 's a sgèilicheas solas nan oisean an t-inneach. Tha overbright mar a bha na h-einnseanan PC: bheir oisean làn-shoillsichte an texel gu dà uiread de shoillseachd, leis a' chòrr air a chur ris às a dhèidh. Tha sàthachadh mar a bha air a' PlayStation: dùblaichidh e an texel cuideachd, ach leigidh e le gach dath a ghearradh far an ruig e, agus mar sin cumaidh uachdaran soilleir an dath fhèin an àite a dhol geal. Stadaidh am modail rèidh aig soillseachd an inneach fhèin, agus tha e nas duirche.",
         },
         "rendering.multisampling_factor": {
             "title": "Ioma-shamplachadh",

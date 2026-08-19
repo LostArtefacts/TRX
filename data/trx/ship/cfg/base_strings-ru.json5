@@ -62,6 +62,7 @@
             "fps_counter_off": "Счётчик FPS выключен",
             "fps_counter_on": "Счётчик FPS включен",
             "lighting_contrast_fmt": "\\{review}Контраст освещения: %s",
+            "lighting_curve_fmt": "\\{review}Модель освещения: %s",
             "load_game": "Игра загружена из слота %d",
             "quick_load": "\\{review}Быстро загруженный слот %d",
             "quick_load_fail_no_bound_slot": "\\{review}В данный момент не привязан ни один слот сохранения",
@@ -724,7 +725,7 @@
             "INPUT_ROLE_CHANGE_OUTFIT": "\\{review}Сменить костюм",
             "INPUT_ROLE_CHANGE_TARGET": "Изменить цель",
             "INPUT_ROLE_CROUCH": "\\{review}Присесть",
-            "INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "\\{review}Цикл контраста освещения",
+            "INPUT_ROLE_CYCLE_LIGHTING_MODEL": "\\{review}Цикл модели освещения",
             "INPUT_ROLE_DOWN": "Назад",
             "INPUT_ROLE_DRAW_WEAPON": "Оружие",
             "INPUT_ROLE_ENTER_CONSOLE": "Консоль разработчика",
@@ -790,6 +791,11 @@
             "LIGHTING_CONTRAST_HIGH": "Высокая",
             "LIGHTING_CONTRAST_LOW": "Низкая",
             "LIGHTING_CONTRAST_MEDIUM": "Средняя",
+        },
+        "LIGHTING_CURVE": {
+            "LIGHTING_CURVE_FLAT": "\\{review}Плоская",
+            "LIGHTING_CURVE_OVERBRIGHT": "\\{review}Overbright",
+            "LIGHTING_CURVE_SATURATE": "\\{review}Насыщение",
         },
         "LOADING_SCREENS_MODE": {
             "LOADING_SCREENS_ALWAYS": "\\{review}Всегда",
@@ -1537,6 +1543,10 @@
         "rendering.lighting_contrast": {
             "title": "\\{review}Контраст освещения",
             "description": "Увеличивает контрастность динамических источников света, таких как вспышки и выстрелы.",
+        },
+        "rendering.lighting_curve": {
+            "title": "\\{review}Модель освещения",
+            "description": "\\{review}Определяет, насколько освещение вершин масштабирует текстуру. Overbright повторяет рендереры для ПК: полностью освещённая вершина делает тексель вдвое ярче, а избыток добавляется после. Насыщение — модель PlayStation: тексель тоже удваивается, но каждый цвет обрезается там, где оказался, поэтому яркие поверхности сохраняют собственный цвет, а не выцветают к белому. Плоская модель ограничена яркостью самой текстуры и выглядит темнее.",
         },
         "rendering.multisampling_factor": {
             "title": "\\{review}Мультисэмплинг",

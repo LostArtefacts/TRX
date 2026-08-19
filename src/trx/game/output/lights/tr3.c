@@ -1,3 +1,4 @@
+#include <trx/config.h>
 #include <trx/core/colors.h>
 #include <trx/core/math/geom.h>
 #include <trx/core/utils.h>
@@ -15,6 +16,7 @@
 #include <string.h>
 
 #define M_A_SHIFT 5
+#define M_A_SHIFT_PS1 6
 
 typedef struct {
     XYZ_32 sun_dir_world;
@@ -33,6 +35,21 @@ typedef struct {
 } M_ITEM_LIGHT;
 
 static M_ITEM_LIGHT m_ItemLights[MAX_ITEMS] = {};
+
+static bool M_IsPS1Light(void)
+{
+    return g_Config.rendering.lighting_curve == LIGHTING_CURVE_SATURATE;
+}
+
+static int32_t M_GetAmbientShift(void)
+{
+    return M_IsPS1Light() ? M_A_SHIFT_PS1 : M_A_SHIFT;
+}
+
+static float M_GetLightColorScale(void)
+{
+    return M_IsPS1Light() ? 0.5f : 1.0f;
+}
 
 static RGB_F M_RGB15ToRGBF(const int16_t rgb15)
 {
@@ -111,7 +128,7 @@ static void M_CalculateLightSmoothed(
     int32_t brightest = -1;
     XYZ_32 bulb_delta = {};
 
-    int32_t ambience = ((SHADE_MAX - room->ambient) >> M_A_SHIFT) + 1;
+    int32_t ambience = ((SHADE_MAX - room->ambient) >> M_GetAmbientShift()) + 1;
 
     for (int32_t i = 0; i < room->num_lights; i++) {
         const LIGHT *const light = &room->lights[i];
@@ -225,7 +242,7 @@ static void M_CalculateLightSmoothed(
     XYZ_32 sun_dir_world_target = {};
     RGB_888 sun_target = {};
 
-    int32_t ambient_base = (SHADE_MAX - room->ambient) >> M_A_SHIFT;
+    int32_t ambient_base = (SHADE_MAX - room->ambient) >> M_GetAmbientShift();
     CLAMP(ambient_base, 0, 255);
 
     if (has_sun && sun_light != nullptr) {
@@ -324,33 +341,34 @@ static void M_CalculateLightSmoothed(
         .b = il->ambient / 255.0f,
     };
 
+    const float color_scale = M_GetLightColorScale() / 255.0f;
     RGB_F colors[3] = {};
     XYZ_32 dirs_view[3] = {};
 
     if (want_sun && il->flags.has_sun) {
         dirs_view[0] = Output_Lights_VectorViewFromWorld(il->sun_dir_world);
         colors[0] = (RGB_F) {
-            .r = il->sun_color.r / 255.0f,
-            .g = il->sun_color.g / 255.0f,
-            .b = il->sun_color.b / 255.0f,
+            .r = il->sun_color.r * color_scale,
+            .g = il->sun_color.g * color_scale,
+            .b = il->sun_color.b * color_scale,
         };
     }
 
     if (want_bulb && il->flags.has_bulb) {
         dirs_view[1] = Output_Lights_VectorViewFromWorld(il->bulb_dir_world);
         colors[1] = (RGB_F) {
-            .r = il->bulb_color.r / 255.0f,
-            .g = il->bulb_color.g / 255.0f,
-            .b = il->bulb_color.b / 255.0f,
+            .r = il->bulb_color.r * color_scale,
+            .g = il->bulb_color.g * color_scale,
+            .b = il->bulb_color.b * color_scale,
         };
     }
 
     if (want_dynamic && il->flags.has_dynamic) {
         dirs_view[2] = Output_Lights_VectorViewFromWorld(il->dynamic_dir_world);
         colors[2] = (RGB_F) {
-            .r = il->dynamic_color.r / 255.0f,
-            .g = il->dynamic_color.g / 255.0f,
-            .b = il->dynamic_color.b / 255.0f,
+            .r = il->dynamic_color.r * color_scale,
+            .g = il->dynamic_color.g * color_scale,
+            .b = il->dynamic_color.b * color_scale,
         };
     }
 

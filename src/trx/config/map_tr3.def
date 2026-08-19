@@ -24,6 +24,7 @@ X_CFG_ENUM(gameplay.jump_lock_mode,                  JUMP_LOCK_LEGACY, JUMP_LOCK
 X_CFG_ENUM(gameplay.projectile_area_damage,          PROJECTILE_AREA_DAMAGE_MULTI_SWEEP, PROJECTILE_AREA_DAMAGE)
 X_CFG_ENUM(gameplay.save_crystal_mode,               SAVE_CRYSTAL_HEAL, SAVE_CRYSTAL_MODE)
 X_CFG_ENUM(gameplay.target_mode,                     TARGET_LOCK_MODE_FULL, TARGET_LOCK_MODE)
+X_CFG_ENUM(rendering.lighting_curve,                 LIGHTING_CURVE_SATURATE, LIGHTING_CURVE)
 X_CFG_ENUM(ui.inventory_background_style,            BK_MONOCHROME, BACKGROUND_TYPE)
 X_CFG_ENUM(ui.pause_background_style,                BK_TRANSPARENT_DARK, BACKGROUND_TYPE)
 X_CFG_ENUM(ui.stats_background_style,                BK_MONOCHROME, BACKGROUND_TYPE)

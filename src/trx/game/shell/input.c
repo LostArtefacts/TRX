@@ -1,6 +1,7 @@
 #include <trx/game/shell/input.h>
 
 #include <trx/config.h>
+#include <trx/config/registry.h>
 #include <trx/core/enum_map.h>
 #include <trx/core/utils.h>
 #include <trx/game/clock.h>
@@ -72,16 +73,30 @@ static void M_ToggleTextures(void)
                                            : GS("general/osd/textures_off"));
 }
 
-static void M_CycleLightingContrast(void)
+static void M_CycleLightingModel(void)
 {
-    CONFIG_CYCLE(
-        g_Config.rendering.lighting_contrast, g_Input.slow ? -1 : 1,
-        LIGHTING_CONTRAST_NUMBER_OF);
-    Config_Update();
-    Console_Log(
-        GS("general/osd/lighting_contrast_fmt"),
-        ENUM_MAP_TO_STRING(
-            LIGHTING_CONTRAST, g_Config.rendering.lighting_contrast));
+    const int32_t dir = g_Input.slow ? -1 : 1;
+    if (Config_FindOptionByMirror(&g_Config.rendering.lighting_curve)
+        != nullptr) {
+        CONFIG_CYCLE(
+            g_Config.rendering.lighting_curve, dir, LIGHTING_CURVE_NUMBER_OF);
+        Config_Update();
+        Console_Log(
+            GS("general/osd/lighting_curve_fmt"),
+            ENUM_MAP_TO_STRING(
+                LIGHTING_CURVE, g_Config.rendering.lighting_curve));
+    } else if (
+        Config_FindOptionByMirror(&g_Config.rendering.lighting_contrast)
+        != nullptr) {
+        CONFIG_CYCLE(
+            g_Config.rendering.lighting_contrast, dir,
+            LIGHTING_CONTRAST_NUMBER_OF);
+        Config_Update();
+        Console_Log(
+            GS("general/osd/lighting_contrast_fmt"),
+            ENUM_MAP_TO_STRING(
+                LIGHTING_CONTRAST, g_Config.rendering.lighting_contrast));
+    }
 }
 
 static void M_CycleUpscalingFactor(void)
@@ -138,8 +153,8 @@ void Shell_ProcessInput(void)
     if (g_InputDB.toggle_textures) {
         M_ToggleTextures();
     }
-    if (g_InputDB.cycle_lighting_contrast) {
-        M_CycleLightingContrast();
+    if (g_InputDB.cycle_lighting_model) {
+        M_CycleLightingModel();
     }
     if (g_InputDB.switch_upscaling) {
         M_CycleUpscalingFactor();

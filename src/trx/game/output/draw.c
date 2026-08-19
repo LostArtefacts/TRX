@@ -40,6 +40,9 @@ static bool M_DrawShadow_Sprite(
     // OG: shadow intensity is based on Lara's height above the floor, even for
     // non-Lara items.
     int32_t c = ((4096 - ABS(item->floor - item->pos.y)) >> 4) - 1;
+    if (g_Config.rendering.lighting_curve == LIGHTING_CURVE_SATURATE) {
+        c >>= 1;
+    }
     CLAMP(c, 32, 255);
 
     const RGBA_8888 shadow_color = { c, c, c, 255 };

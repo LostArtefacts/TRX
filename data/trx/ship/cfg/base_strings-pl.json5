@@ -62,6 +62,7 @@
             "fps_counter_off": "Licznik klatek na sekundę wyłączony",
             "fps_counter_on": "Licznik klatek na sekundę włączony",
             "lighting_contrast_fmt": "Kontrast oświetlenia: %s",
+            "lighting_curve_fmt": "\\{review}Model oświetlenia: %s",
             "load_game": "Wczytano grę ze slotu %d",
             "quick_load": "Wczytano szybki zapis %d",
             "quick_load_fail_no_bound_slot": "Obecnie nie przypisano żadnego zapisu",
@@ -724,7 +725,7 @@
             "INPUT_ROLE_CHANGE_OUTFIT": "Zmień strój",
             "INPUT_ROLE_CHANGE_TARGET": "Zmień cel",
             "INPUT_ROLE_CROUCH": "Kucnij",
-            "INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "Zmiana kontrastu oświetlenia",
+            "INPUT_ROLE_CYCLE_LIGHTING_MODEL": "\\{review}Zmiana modelu oświetlenia",
             "INPUT_ROLE_DOWN": "Cofanie",
             "INPUT_ROLE_DRAW_WEAPON": "Wyciągnij broń",
             "INPUT_ROLE_ENTER_CONSOLE": "Otwórz konsolę",
@@ -790,6 +791,11 @@
             "LIGHTING_CONTRAST_HIGH": "Wysoki",
             "LIGHTING_CONTRAST_LOW": "Niski",
             "LIGHTING_CONTRAST_MEDIUM": "Średni",
+        },
+        "LIGHTING_CURVE": {
+            "LIGHTING_CURVE_FLAT": "\\{review}Płaski",
+            "LIGHTING_CURVE_OVERBRIGHT": "\\{review}Overbright",
+            "LIGHTING_CURVE_SATURATE": "\\{review}Nasycenie",
         },
         "LOADING_SCREENS_MODE": {
             "LOADING_SCREENS_ALWAYS": "Zawsze",
@@ -1537,6 +1543,10 @@
         "rendering.lighting_contrast": {
             "title": "Kontrast oświetlenia",
             "description": "Zwiększa kontrast dla dynamicznych źródeł światła, takich jak flary i rozbłyski broni.",
+        },
+        "rendering.lighting_curve": {
+            "title": "\\{review}Model oświetlenia",
+            "description": "\\{review}Określa, jak mocno oświetlenie wierzchołków skaluje teksturę. Overbright odpowiada rendererom PC: w pełni oświetlony wierzchołek rozjaśnia teksel dwukrotnie, a nadmiar jest dodawany później. Nasycenie to model PlayStation: również podwaja teksel, ale pozwala każdemu kolorowi obciąć się tam, gdzie trafi, dzięki czemu jasne powierzchnie zachowują własny kolor zamiast blaknąć do bieli. Płaski zatrzymuje się na jasności samej tekstury, więc jest ciemniejszy.",
         },
         "rendering.multisampling_factor": {
             "title": "\\{review}Wielopróbkowanie",

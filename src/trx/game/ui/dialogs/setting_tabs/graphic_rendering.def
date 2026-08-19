@@ -13,6 +13,7 @@ X_UI_ROW(visuals.background_brightness)
 X_UI_ROW(visuals.gamma)
 
 X_UI_ROW(rendering.lighting_contrast)
+X_UI_ROW(rendering.lighting_curve)
 X_UI_ROW(rendering.sprite_lock_mode)
 
 X_UI_ROW(rendering.aspect_mode)

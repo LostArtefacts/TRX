@@ -130,6 +130,17 @@ typedef enum {
     QUICK_GUNS_MODE_DRAW_AND_HOLSTER,
 } QUICK_GUNS_MODE;
 
+// Controls the diffuse range used by mesh lighting. Flat caps a fully lit texel
+// at texture brightness. Overbright adds the excess after texturing. Saturate
+// keeps the doubled range until texturing clips each color channel separately,
+// matching PlayStation modulation.
+typedef enum {
+    LIGHTING_CURVE_FLAT,
+    LIGHTING_CURVE_OVERBRIGHT,
+    LIGHTING_CURVE_SATURATE,
+    LIGHTING_CURVE_NUMBER_OF,
+} LIGHTING_CURVE;
+
 typedef enum {
     LIGHTING_CONTRAST_LOW,
     LIGHTING_CONTRAST_MEDIUM,

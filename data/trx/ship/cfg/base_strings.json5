@@ -62,6 +62,7 @@
             "fps_counter_off": "FPS counter: off",
             "fps_counter_on": "FPS counter: on",
             "lighting_contrast_fmt": "Lighting Contrast: %s",
+            "lighting_curve_fmt": "Lighting Model: %s",
             "load_game": "Loaded game from save slot %d",
             "quick_load": "Quick-loaded slot %d",
             "quick_load_fail_no_bound_slot": "No save slot is currently bound",
@@ -724,7 +725,7 @@
             "INPUT_ROLE_CHANGE_OUTFIT": "Change Outfit",
             "INPUT_ROLE_CHANGE_TARGET": "Change Target",
             "INPUT_ROLE_CROUCH": "Crouch",
-            "INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "Cycle Lighting Contrast",
+            "INPUT_ROLE_CYCLE_LIGHTING_MODEL": "Cycle Lighting Model",
             "INPUT_ROLE_DOWN": "Back",
             "INPUT_ROLE_DRAW_WEAPON": "Draw Weapon",
             "INPUT_ROLE_ENTER_CONSOLE": "Dev Console",
@@ -790,6 +791,11 @@
             "LIGHTING_CONTRAST_HIGH": "High",
             "LIGHTING_CONTRAST_LOW": "Low",
             "LIGHTING_CONTRAST_MEDIUM": "Medium",
+        },
+        "LIGHTING_CURVE": {
+            "LIGHTING_CURVE_FLAT": "Flat",
+            "LIGHTING_CURVE_OVERBRIGHT": "Overbright",
+            "LIGHTING_CURVE_SATURATE": "Saturate",
         },
         "LOADING_SCREENS_MODE": {
             "LOADING_SCREENS_ALWAYS": "Always",
@@ -1537,6 +1543,10 @@
         "rendering.lighting_contrast": {
             "title": "Lighting contrast",
             "description": "Boosts contrast for dynamic light sources such as flares and gun flashes.",
+        },
+        "rendering.lighting_curve": {
+            "title": "Lighting model",
+            "description": "Chooses how far vertex lighting scales the texture. Overbright is what the PC renderers did: a fully lit vertex takes the texel to twice its brightness, with the excess added on afterwards. Saturate is the PlayStation's, doubling the texel as well but letting each color clip where it lands, which keeps bright surfaces in their own color instead of washing them out. Flat stops at the texture's own brightness, which is dimmer.",
         },
         "rendering.multisampling_factor": {
             "title": "Multisampling",

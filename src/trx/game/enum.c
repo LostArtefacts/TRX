@@ -33,6 +33,11 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(INPUT_ROLE, role_name, #state_name);
 #include <trx/game/input/roles.def>
 #undef X_INPUT_ROLE
+    // TRX ..1.10 spelled the lighting model role after the contrast setting
+    // it cycled. The first name a value takes is the one it is written back
+    // as, so this only reads what an older settings file holds.
+    ENUM_MAP(
+        INPUT_ROLE, INPUT_ROLE_CYCLE_LIGHTING_MODEL, "cycle_lighting_contrast");
 
     // The catalogs: every object, sample, music track, Lara state, Lara
     // animation and item action TRX knows, by its canonical name. These are the

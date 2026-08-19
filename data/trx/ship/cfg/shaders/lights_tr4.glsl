@@ -108,12 +108,10 @@ LightingResult light(
     }
 
     if ((flags & VERT_USE_DYNAMIC_LIGHT) != 0u) {
-        result.add +=
-            lightDynamicRoomTR4(normal, pos) * getDynamicLightContrastMul();
+        result.add += lightDynamicRoomTR4(normal, pos);
     } else if (
         (flags & VERT_USE_OWN_LIGHT) != 0u && uStaticLightingEnabled != 0) {
-        result.add +=
-            lightDynamicStaticTR4(pos) * getDynamicLightContrastMul();
+        result.add += lightDynamicStaticTR4(pos);
     }
 
     // Water shimmer, in the 128-neutral scale: the OG adds

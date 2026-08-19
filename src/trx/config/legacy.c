@@ -1,6 +1,8 @@
 #include <trx/config/legacy.h>
 
 #include <trx/config/common.h>
+#include <trx/config/option.h>
+#include <trx/config/registry.h>
 #include <trx/config/vars.h>
 
 #include <string.h>
@@ -87,6 +89,19 @@ static void M_ApplyVertexSnapAtUpscale(const JSON_VALUE *const value)
     }
 }
 
+static void M_ApplyLightingCurve(const JSON_VALUE *const value)
+{
+    if (value == nullptr
+        || Config_FindOption("rendering.lighting_curve") == nullptr) {
+        return;
+    }
+    Config_Option_RestoreDefault(
+        Config_FindOptionByMirror(&g_Config.visuals.game_brightness), false);
+    Config_Option_RestoreDefault(
+        Config_FindOptionByMirror(&g_Config.visuals.gamma), false);
+    CONFIG_SET(g_Config.rendering.lighting_curve, LIGHTING_CURVE_SATURATE);
+}
+
 // Every key no build writes any more, and what became of it.
 static const M_MIGRATION m_Migrations[] = {
     // TRX ..1.9: game modes changed to policy.
@@ -99,12 +114,14 @@ static const M_MIGRATION m_Migrations[] = {
     { "enable_save_crystals", "save_crystal_mode", M_ApplySaveCrystals },
     // TRX ..1.10: neutral twists on/off changed to cover multiple animations.
     { "enable_neutral_twists", "enable_alternative_turns", M_ApplyTurns },
-    // TRX ..1.10: dithering on/off changed to mode.
+    // TRX 1.11: dithering on/off changed to mode.
     { "enable_dithering", "dither_mode", M_ApplyDithering },
-    // TRX ..1.10: vertex snapping on/off changed to a resolution selector.
+    // TRX 1.11: vertex snapping on/off changed to a resolution selector.
     { "enable_vertex_snap", "vertex_snap_mode", M_ApplyVertexSnap },
     { "enable_vertex_snap_at_upscale", "vertex_snap_mode",
       M_ApplyVertexSnapAtUpscale },
+    // TRX 1.11: brightness and gamma stood in for the lighting curve.
+    { "game_brightness", "lighting_curve", M_ApplyLightingCurve },
     {}, // sentinel
 };
 
