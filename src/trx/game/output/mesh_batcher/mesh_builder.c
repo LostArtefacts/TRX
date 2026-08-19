@@ -69,6 +69,16 @@ static void M_FillFanIndices(
     const size_t tri_count = vertex_count - 2;
     const size_t index_count = tri_count * 3 * (double_sided ? 2 : 1);
     int32_t *const out = Vector_Expand(indices, index_count);
+    if (vertex_count == 4) {
+        static const int32_t strip[6] = { 0, 3, 1, 3, 2, 1 };
+        for (size_t j = 0; j < 6; j++) {
+            out[j] = strip[j];
+            if (double_sided) {
+                out[6 + j] = strip[5 - j];
+            }
+        }
+        return;
+    }
     for (size_t i = 0, j = 0; i < tri_count; i++) {
         out[j++] = 0;
         out[j++] = i + 2;

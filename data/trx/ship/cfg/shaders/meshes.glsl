@@ -2,6 +2,29 @@
 
 uniform vec4 uTint;
 
+// One definition of what the mesh stages hand each other. The geometry stage
+// is optional, so the vertex stage names its block after whichever stage reads
+// it: a block is matched across stages by its name, and a stage cannot declare
+// an input block and an output block under one name.
+#define MESH_VARYINGS             \
+    vec4 eyePos;                  \
+    vec3 normal;                  \
+    flat uint flags;              \
+    flat int texLayer;            \
+    vec2 texUV;                   \
+    flat vec4 atlasSize;          \
+    vec2 trapezoidRatios;         \
+    vec4 color;                   \
+    vec3 add;                     \
+    flat float reflectivity;      \
+    noperspective vec4 affineUV;
+
+#ifdef SUBDIVIDE
+    #define MESH_VS_BLOCK VertexData
+#else
+    #define MESH_VS_BLOCK GeomData
+#endif
+
 #ifdef VERTEX
 
 uniform mat4 uMatModel;
@@ -21,21 +44,9 @@ layout(location = 7) in float inShade;
 layout(location = 8) in float inReflectivity;
 layout(location = 9) in vec2 inUVScroll; // x = V per game frame, y = wrap
 
-out vec4 gEyePos;
-out vec3 gNormal;
-flat out uint gFlags;
-flat out int gTexLayer;
-out vec2 gTexUV;
-flat out vec4 gAtlasSize;
-out vec2 gTrapezoidRatios;
-out float gShade;
-out vec4 gColor;
-out vec3 gAdd;
-flat out float gReflectivity;
-// Interpolates the PS1 fog factor linearly in screen space, and with it a
-// second copy of the texture coordinates for affine mapping.
-noperspective out float gFogFactor;
-noperspective out vec4 gAffineUV;
+out MESH_VS_BLOCK {
+    MESH_VARYINGS
+} gOut;
 
 vec3 gammaCurve(vec3 rgb, float gamma_exp)
 {
@@ -95,9 +106,9 @@ void main(void) {
 
     if ((inFlags & (VERT_ABS_SPRITE | VERT_BILLBOARD)) != 0u) {
         int lockMode = (inFlags & VERT_ABS_SPRITE) != 0u ? BILLBOARD_LOCK_NONE : uBillboardLockMode;
-        gEyePos = offsetBillboard(inPosition.xyz, inNormal.xy, uMatView, uMatModel, uMatProj, lockMode);
+        gOut.eyePos = offsetBillboard(inPosition.xyz, inNormal.xy, uMatView, uMatModel, uMatProj, lockMode);
     } else {
-        gEyePos = uMatView * worldPos;
+        gOut.eyePos = uMatView * worldPos;
     }
 
     // Reflections are sphere-mapped, so the normal has to be in view space for
@@ -105,8 +116,8 @@ void main(void) {
     // the object instead. This is what the OG does for TR4, transforming the
     // mesh normals by the view matrix. Normalize because ours arrive as raw
     // int16s rather than the unit vectors the mapping expects.
-    gNormal = normalize(mat3(uMatView * uMatModel) * inNormal.xyz);
-    gl_Position = uMatProj * gEyePos;
+    gOut.normal = normalize(mat3(uMatView * uMatModel) * inNormal.xyz);
+    gl_Position = uMatProj * gOut.eyePos;
     gl_Position.z += inPosition.w;
 
     // Apply water wibble effect only to non-sprite vertices
@@ -121,27 +132,27 @@ void main(void) {
         gl_Position = vertexSnap(gl_Position);
     }
 
-    gFlags = inFlags;
-    gAtlasSize = inTextureSize;
-    gTexLayer = (uTexturesEnabled != 0) && (gFlags & VERT_FLAT_SHADED) == 0u ? int(inUVW.z) : -1;
-    gTrapezoidRatios = inTrapezoidRatios;
-    gTexUV = inUVW.xy;
+    gOut.flags = inFlags;
+    gOut.atlasSize = inTextureSize;
+    gOut.texLayer = (uTexturesEnabled != 0) && (gOut.flags & VERT_FLAT_SHADED) == 0u ? int(inUVW.z) : -1;
+    gOut.trapezoidRatios = inTrapezoidRatios;
+    gOut.texUV = inUVW.xy;
     if (inUVScroll.y > 0.0) {
-        gTexUV.y += mod(uUVScrollTick * inUVScroll.x, inUVScroll.y);
+        gOut.texUV.y += mod(uUVScrollTick * inUVScroll.x, inUVScroll.y);
     }
-    gReflectivity = inReflectivity;
-    gFogFactor = ps1FogFactor(length(gEyePos.xyz));
+    gOut.reflectivity = inReflectivity;
+    float fogFactor = ps1FogFactor(length(gOut.eyePos.xyz));
     if (uTrapezoidFilterEnabled != 0) {
-        gTexUV *= inTrapezoidRatios;
+        gOut.texUV *= inTrapezoidRatios;
     }
-    gAffineUV = vec4(gTexUV, gTrapezoidRatios);
+    gOut.affineUV = vec4(gOut.texUV, gOut.trapezoidRatios);
 
     // The vertex diffuse is lit first and then modulated by the texture (or by
     // the flat polygon's palette color). Keep the lighting component separate
     // from the base color so gamma is applied in the right place.
     LightingResult lr =
-        light(inShade, gFlags, inNormal.xyz, lightWorldPos, inNormal.w);
-    gShade = lr.shade;
+        light(inShade, gOut.flags, inNormal.xyz, lightWorldPos, inNormal.w);
+    float shade = lr.shade;
 
     float gamma_exp = 1.0 / ((uGamma / 10.0) * 4.0);
 
@@ -156,19 +167,19 @@ void main(void) {
     // applied after texturing (CalcColorSplit).
     vec3 lightIn;
     vec3 modulate;
-    if ((gFlags & VERT_FLAT_SHADED) != 0u) {
+    if ((gOut.flags & VERT_FLAT_SHADED) != 0u) {
         lightIn = vec3(128.0 / 255.0); // neutral: no lighting, no overbright
         modulate = inColor.rgb;
     } else if (uLightingEnabled == 0) {
         lightIn = vec3(128.0 / 255.0);
         modulate = vec3(1);
     } else {
-        if ((gFlags & VERT_USE_OBJECT_LIGHT) != 0u) {
+        if ((gOut.flags & VERT_USE_OBJECT_LIGHT) != 0u) {
             lightIn = lightObjectsTR4(inNormal.xyz);
             // White for regular meshes; mesh policies may recolor vertices
             // (e.g. the skybox fog gradient faces are painted black).
             modulate = inColor.rgb;
-        } else if ((gFlags & VERT_USE_OWN_LIGHT) != 0u) {
+        } else if ((gOut.flags & VERT_USE_OWN_LIGHT) != 0u) {
             lightIn = lightOwnTR4(inShade);
             modulate = inColor.rgb;
         } else {
@@ -180,23 +191,23 @@ void main(void) {
     bool overbright = uLightingCurve == LIGHTING_CURVE_OVERBRIGHT;
     bool saturate = uLightingCurve == LIGHTING_CURVE_SATURATE;
     vec3 L = lightIn * (overbright || saturate ? 255.0 / 128.0 : 1.0) + lr.add;
-    gAdd = overbright ? max(L - vec3(1.0), vec3(0.0)) * (64.0 / 255.0)
+    gOut.add = overbright ? max(L - vec3(1.0), vec3(0.0)) * (64.0 / 255.0)
                       : vec3(0.0);
-    if ((gFlags & VERT_ADDITIVE) != 0u) {
+    if ((gOut.flags & VERT_ADDITIVE) != 0u) {
         // The OG draws additive polys with specular disabled
         // (HWR_DrawSortList drawtype 2), so no overbright excess.
-        gAdd = vec3(0.0);
+        gOut.add = vec3(0.0);
     }
     // Keeps the saturating excess past the gamma curve so texture modulation
     // clips each color channel separately, as the PlayStation does.
     L = min(L * tintReg, vec3(255.0 / 128.0));
     vec3 over = saturate ? max(L - vec3(1.0), vec3(0.0)) : vec3(0.0);
     vec3 lit = gammaCurve(L, gamma_exp) + over;
-    gColor = vec4(lit * modulate, inColor.a);
+    gOut.color = vec4(lit * modulate, inColor.a);
 #elif TR_VERSION >= 3
     vec3 lightIn;
     vec3 modulate;
-    if ((gFlags & VERT_FLAT_SHADED) == 0u) {
+    if ((gOut.flags & VERT_FLAT_SHADED) == 0u) {
         if (uLightingEnabled == 0) {
             lightIn = vec3(1);
         } else {
@@ -211,8 +222,8 @@ void main(void) {
     // Combine lighting in linear-ish space first: (base + add) * mul
     bool saturate = uLightingCurve == LIGHTING_CURVE_SATURATE;
     vec3 lit;
-    gAdd = vec3(0.0);
-    if ((gFlags & VERT_OVERBRIGHT) != 0u && uLightingEnabled != 0) {
+    gOut.add = vec3(0.0);
+    if ((gOut.flags & VERT_OVERBRIGHT) != 0u && uLightingEnabled != 0) {
         // OG "128 = neutral" lighting: inColor is a raw prelit color where
         // 128/255 means full brightness. Doubling it saturates the diffuse
         // part; the excess becomes an additive term applied after texturing
@@ -221,7 +232,7 @@ void main(void) {
         if (saturate) {
             lit = L;
         } else {
-            gAdd = max(L - vec3(1.0), vec3(0.0)) * (64.0 / 255.0);
+            gOut.add = max(L - vec3(1.0), vec3(0.0)) * (64.0 / 255.0);
             lit = clamp(L, 0.0, 1.0);
         }
     } else {
@@ -232,12 +243,12 @@ void main(void) {
 
     // Doubles non-overbright TR3 light only when the selected curve uses the
     // OG hardware renderer's 128-neutral scale.
-    if (uLightingEnabled != 0 && (gFlags & VERT_OVERBRIGHT) == 0u) {
+    if (uLightingEnabled != 0 && (gOut.flags & VERT_OVERBRIGHT) == 0u) {
         if (saturate) {
             lit *= 255.0 / 128.0;
         } else if (uLightingCurve == LIGHTING_CURVE_OVERBRIGHT) {
             vec3 L = lit * (255.0 / 128.0);
-            gAdd += max(L - vec3(1.0), vec3(0.0)) * (64.0 / 255.0);
+            gOut.add += max(L - vec3(1.0), vec3(0.0)) * (64.0 / 255.0);
             lit = clamp(L, 0.0, 1.0);
         }
     }
@@ -248,12 +259,12 @@ void main(void) {
     lit = gammaCurve(lit, gamma_exp) + over;
 
     // Apply flat shading AFTER modulation
-    gColor = vec4(lit * modulate, inColor.a);
+    gOut.color = vec4(lit * modulate, inColor.a);
 #else
-    gAdd = vec3(0.0);
+    gOut.add = vec3(0.0);
     float shade_mul = 1.0;
-    if ((gFlags & VERT_NO_LIGHTING) == 0u) {
-        shade_mul = (2.0 - (max(gShade, uMinShade) / SHADE_NEUTRAL));
+    if ((gOut.flags & VERT_NO_LIGHTING) == 0u) {
+        shade_mul = (2.0 - (max(shade, uMinShade) / SHADE_NEUTRAL));
     }
 
     // `shade_mul` is roughly in [0..2]. Remap to [0..1], apply the gamma
@@ -261,22 +272,135 @@ void main(void) {
     // since we're applying it to the shade (TR1-2) rather than RGB (TR3).
     vec3 mul = gammaCurve(vec3(shade_mul * 0.5), sqrt(gamma_exp)) * 2.0;
 
-    gColor = inColor;
-    if ((gFlags & VERT_FLAT_SHADED) == 0u) {
-        gColor.rgb = gammaCurve(gColor.rgb, gamma_exp);
+    gOut.color = inColor;
+    if ((gOut.flags & VERT_FLAT_SHADED) == 0u) {
+        gOut.color.rgb = gammaCurve(gOut.color.rgb, gamma_exp);
     }
-    gColor.rgb *= mul;
+    gOut.color.rgb *= mul;
     // Preserve the >1.0 lighting range until after texturing so TR1/TR2
     // high contrast can still brighten textured geometry.
-    gColor.rgb += lr.add;
+    gOut.color.rgb += lr.add;
 #endif
 
     // Applies PlayStation depth cue before texture modulation, as tomb3's
     // transform.cpp does, so fog keeps the surface texture.
-    if (uPS1FogEnabled != 0 && (gFlags & VERT_NO_LIGHTING) == 0u
+    if (uPS1FogEnabled != 0 && (gOut.flags & VERT_NO_LIGHTING) == 0u
         && uLightingEnabled != 0) {
-        gColor.rgb = mix(gColor.rgb, uFogColor.rgb, gFogFactor);
-        gAdd *= 1.0 - gFogFactor;
+        gOut.color.rgb = mix(gOut.color.rgb, uFogColor.rgb, fogFactor);
+        gOut.add *= 1.0 - fogFactor;
+    }
+}
+
+#elif defined(GEOMETRY)
+
+layout(triangles) in;
+layout(triangle_strip, max_vertices = 24) out;
+
+in VertexData {
+    MESH_VARYINGS
+} gIn[];
+
+out GeomData {
+    MESH_VARYINGS
+} gOut;
+
+// How far, in pixels, the flat mapping puts a texel from where perspective
+// would put it. Across one edge the flat mapping reaches the halfway point at
+// the middle of the edge on screen, while perspective reaches it at
+// w0 / (w0 + w1), and the gap between the two carries that much of the edge's
+// screen length.
+//
+// The OG picked the split from view distance instead, at 2000 and 3500 world
+// units (HWI_InsertGT4_Sorted), which it could do because it drew at one
+// resolution. Those distances leave an error of about a pixel at 320x240 and
+// grow with the render size, so the same numbers pop visibly once the render
+// is larger. Measuring the error keeps the split where the OG put it at the
+// OG's resolution, and moves it outward as the render grows.
+float affineErrorPixels(void)
+{
+    float w0 = gl_in[0].gl_Position.w;
+    float w1 = gl_in[1].gl_Position.w;
+    float w2 = gl_in[2].gl_Position.w;
+    float wMin = min(min(w0, w1), w2);
+    float wMax = max(max(w0, w1), w2);
+
+    // A face that reaches the eye plane has no finite size on screen. It is as
+    // close as a face can be, so it takes the finest split.
+    if (wMin < 1.0) {
+        return 1.0e9;
+    }
+
+    vec2 p0 = gl_in[0].gl_Position.xy / w0;
+    vec2 p1 = gl_in[1].gl_Position.xy / w1;
+    vec2 p2 = gl_in[2].gl_Position.xy / w2;
+    vec2 span = (max(max(p0, p1), p2) - min(min(p0, p1), p2)) * uViewportSize
+        * 0.5;
+    float extent = max(span.x, span.y);
+    return extent * (wMax - wMin) / (2.0 * (wMax + wMin));
+}
+
+// Splitting a face in two halves the screen span and the depth range at once,
+// so it quarters the error: a level of N leaves an Nth squared of it. The
+// levels below are the ones that bring the error under a pixel.
+int subdivideLevel(void)
+{
+    float error = affineErrorPixels();
+    if (error > 4.0) {
+        return 4;
+    }
+    if (error > 1.0) {
+        return 2;
+    }
+    return 1;
+}
+
+// Clip space is a linear map of view space, so weighting the clip positions
+// puts the new vertex where the OG's own SubdivideEdge puts it, and keeps the
+// depth offset, the wibble, and the vertex snap the vertex stage applied.
+void emitAt(vec3 w)
+{
+    gl_Position = gl_in[0].gl_Position * w.x + gl_in[1].gl_Position * w.y
+        + gl_in[2].gl_Position * w.z;
+    gOut.eyePos =
+        gIn[0].eyePos * w.x + gIn[1].eyePos * w.y + gIn[2].eyePos * w.z;
+    gOut.normal =
+        gIn[0].normal * w.x + gIn[1].normal * w.y + gIn[2].normal * w.z;
+    gOut.texUV =
+        gIn[0].texUV * w.x + gIn[1].texUV * w.y + gIn[2].texUV * w.z;
+    gOut.trapezoidRatios = gIn[0].trapezoidRatios * w.x
+        + gIn[1].trapezoidRatios * w.y + gIn[2].trapezoidRatios * w.z;
+    gOut.color = gIn[0].color * w.x + gIn[1].color * w.y + gIn[2].color * w.z;
+    gOut.add = gIn[0].add * w.x + gIn[1].add * w.y + gIn[2].add * w.z;
+    gOut.affineUV =
+        gIn[0].affineUV * w.x + gIn[1].affineUV * w.y + gIn[2].affineUV * w.z;
+
+    // The flat members hold one value for the whole face.
+    gOut.flags = gIn[0].flags;
+    gOut.texLayer = gIn[0].texLayer;
+    gOut.atlasSize = gIn[0].atlasSize;
+    gOut.reflectivity = gIn[0].reflectivity;
+    EmitVertex();
+}
+
+// Row i of the grid holds i + 1 points, from the first corner down to the
+// edge that joins the other two.
+vec3 gridWeights(int i, int j, float inv)
+{
+    return vec3(
+        1.0 - float(i) * inv, float(i - j) * inv, float(j) * inv);
+}
+
+void main(void)
+{
+    int level = subdivideLevel();
+    float inv = 1.0 / float(level);
+    for (int i = 0; i < level; i++) {
+        for (int j = 0; j <= i; j++) {
+            emitAt(gridWeights(i, j, inv));
+            emitAt(gridWeights(i + 1, j, inv));
+        }
+        emitAt(gridWeights(i + 1, i + 1, inv));
+        EndPrimitive();
     }
 }
 
@@ -294,19 +418,9 @@ uniform vec2 uEnvMapUV1;
 uniform int uEnvMapLayer;
 #endif
 
-in vec4 gEyePos;
-in vec3 gNormal;
-flat in uint gFlags;
-flat in int gTexLayer;
-in vec2 gTexUV;
-flat in vec4 gAtlasSize;
-in float gShade;
-in vec4 gColor;
-in vec3 gAdd;
-in vec2 gTrapezoidRatios;
-flat in float gReflectivity;
-noperspective in float gFogFactor;
-noperspective in vec4 gAffineUV;
+in GeomData {
+    MESH_VARYINGS
+} gIn;
 out vec4 outColor;
 
 vec4 applyFog(vec4 color, float dist)
@@ -345,7 +459,7 @@ vec4 applyFogBulbs(vec4 color)
     float fogAmount = 0.0;
     vec3 fogColor = vec3(0.0);
     for (int i = 0; i < uNumFogBulbs; i++) {
-        vec3 p = gEyePos.xyz;
+        vec3 p = gIn.eyePos.xyz;
         // Fragments beyond the bulb are pulled back onto the eye-sphere at
         // the bulb's distance, so the fog reads as a volume. The OG projects
         // onto the plane z == dist instead, which is discontinuous across
@@ -393,21 +507,21 @@ vec4 applyFogBulbs(vec4 color)
 }
 
 void main(void) {
-    vec4 texColor = gColor;
+    vec4 texColor = gIn.color;
 
     // Texturing and base color
-    if (gTexLayer >= 0) {
+    if (gIn.texLayer >= 0) {
         // The PlayStation had no perspective correction: it interpolated the
         // texture coordinates flat across the face, which is what warps its
         // textures as the camera turns.
         bool affine = uAffineMappingEnabled != 0;
-        vec2 uv = affine ? gAffineUV.xy : gTexUV;
-        vec3 texCoords = vec3(uv.x, uv.y, gTexLayer);
+        vec2 uv = affine ? gIn.affineUV.xy : gIn.texUV;
+        vec3 texCoords = vec3(uv.x, uv.y, gIn.texLayer);
         if (uTrapezoidFilterEnabled != 0) {
-            texCoords.xy /= affine ? gAffineUV.zw : gTrapezoidRatios;
+            texCoords.xy /= affine ? gIn.affineUV.zw : gIn.trapezoidRatios;
         }
-        if ((gFlags & VERT_TEX_WRAP) == 0u) {
-            texCoords.xy = clampTexAtlas(texCoords.xy, gAtlasSize);
+        if ((gIn.flags & VERT_TEX_WRAP) == 0u) {
+            texCoords.xy = clampTexAtlas(texCoords.xy, gIn.atlasSize);
         }
         texColor *= texture(uTexAtlas, texCoords);
     } else {
@@ -415,7 +529,7 @@ void main(void) {
     }
 
     // Overbright lighting excess, added after texturing (OG specular).
-    texColor.rgb += gAdd;
+    texColor.rgb += gIn.add;
 
     // Clips saturating light before fog and bulb blending.
     if (uLightingCurve == LIGHTING_CURVE_SATURATE) {
@@ -425,12 +539,12 @@ void main(void) {
     // Alpha discard - chroma keying || transparent pixels in the opaque pass
     if (texColor.a <= 0.0
         || (uDiscardAlpha && texColor.a < 0.99
-            && (gFlags & VERT_NO_ALPHA_DISCARD) == 0u)) {
+            && (gIn.flags & VERT_NO_ALPHA_DISCARD) == 0u)) {
         discard;
     }
 
     // Reflections
-    if ((gFlags & VERT_REFLECTIVE) != 0u && uReflectionsEnabled != 0) {
+    if ((gIn.flags & VERT_REFLECTIVE) != 0u && uReflectionsEnabled != 0) {
 #if TR_VERSION >= 4
         // The normal maps across the env map window. No y-flip here: view
         // space is Y-down (the GL/D3D flip lives in the projection) and the
@@ -440,25 +554,25 @@ void main(void) {
         // the face (drawtype 2 = ONE/ONE), textured with the env map and
         // modulated by the lit vertex color scaled by the face's reflectivity.
         if (uEnvMapLayer >= 0) {
-            vec2 env_uv = mix(uEnvMapUV0, uEnvMapUV1, gNormal.xy * 0.5 + 0.5);
+            vec2 env_uv = mix(uEnvMapUV0, uEnvMapUV1, gIn.normal.xy * 0.5 + 0.5);
             vec3 env_color = texture(uTexAtlas, vec3(env_uv, uEnvMapLayer)).rgb;
-            texColor.rgb += env_color * gColor.rgb * gReflectivity * texColor.a;
+            texColor.rgb += env_color * gIn.color.rgb * gIn.reflectivity * texColor.a;
         }
 #else
         // The env map is a capture of the framebuffer, whose origin is at the
         // bottom left, hence the flip.
-        vec2 env_uv = normalize(gNormal).xy * 0.5 + 0.5;
+        vec2 env_uv = normalize(gIn.normal).xy * 0.5 + 0.5;
         env_uv.y = 1.0 - env_uv.y;
         texColor.rgb *= texture(uTexEnvMap, env_uv).rgb * 2.0;
 #endif
     }
 
     // Fog
-    if ((gFlags & VERT_NO_LIGHTING) == 0u && uLightingEnabled != 0) {
-        texColor = applyFog(texColor, length(gEyePos.xyz));
+    if ((gIn.flags & VERT_NO_LIGHTING) == 0u && uLightingEnabled != 0) {
+        texColor = applyFog(texColor, length(gIn.eyePos.xyz));
         // The OG skips fog bulbs on additive polys (AddTriClippedSorted
         // excludes drawtypes 2 and 5 from OmniFog).
-        if ((gFlags & VERT_ADDITIVE) == 0u) {
+        if ((gIn.flags & VERT_ADDITIVE) == 0u) {
             texColor = applyFogBulbs(texColor);
         }
     }
