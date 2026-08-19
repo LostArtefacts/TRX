@@ -1546,7 +1546,7 @@
         },
         "rendering.lighting_curve": {
             "title": "\\{review}Modello di illuminazione",
-            "description": "\\{review}Sceglie quanto l'illuminazione per vertice scala la texture. Overbright è ciò che facevano i renderer per PC: un vertice pienamente illuminato porta il texel al doppio della luminosità, con l'eccesso aggiunto dopo. Saturazione è quella della PlayStation: raddoppia anch'essa il texel, ma lascia che ogni colore si tronchi dove arriva, così le superfici luminose restano nel proprio colore invece di sbiadire verso il bianco. Piatto si ferma alla luminosità della texture, quindi più scuro.",
+            "description": "\\{review}Sceglie quanto l'illuminazione per vertice scala la texture.\n\n- Piatto si ferma alla luminosità della texture, quindi più scuro (TR3 PC).\n- Overbright è ciò che facevano i renderer per PC: un vertice pienamente illuminato porta il texel al doppio della luminosità, con l'eccesso aggiunto dopo (TR4 PC).\n- Saturazione è quella della PlayStation: raddoppia anch'essa il texel, ma lascia che ogni colore si tronchi dove arriva, così le superfici luminose restano nel proprio colore invece di sbiadire verso il bianco (TR3/TR4 PS1).",
         },
         "rendering.multisampling_factor": {
             "title": "Multicampionamento (MSAA)",

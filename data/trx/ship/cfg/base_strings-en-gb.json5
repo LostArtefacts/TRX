@@ -48,6 +48,9 @@
         "rendering.enable_ps1_fog": {
             "description": "Blends distant geometry toward the fog colour the way the PlayStation depth cue did: along 1/distance rather than distance, and worked out per vertex, so the ramp bands across large surfaces.",
         },
+        "rendering.lighting_curve": {
+            "description": "Chooses how far vertex lighting scales the texture.\n\n- Flat stops at the texture's own brightness, which is dimmer (TR3 PC).\n- Overbright is what the PC renderers did: a fully lit vertex takes the texel to twice its brightness, with the excess added on afterwards (TR4 PC).\n- Saturate is the PlayStation's, doubling the texel as well but letting each colour clip where it lands, which keeps bright surfaces in their own colour instead of washing them out (TR3/TR4 PS1).",
+        },
         "rendering.sprite_lock_mode": {
             "description": "Controls which axes to lock when showing sprites on the screen.\n\n- None: show the sprites normally.\n- Roll: lock the roll axis – useful only in photo mode.\n- Roll & pitch: ensure the sprites stand upright and do not lie on the ground when looking at them from above.\n- Perspective: lock roll and pitch axes and additionally, rotate the sprites slightly towards the centre of the screen.",
         },

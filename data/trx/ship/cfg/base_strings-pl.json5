@@ -1546,7 +1546,7 @@
         },
         "rendering.lighting_curve": {
             "title": "\\{review}Model oświetlenia",
-            "description": "\\{review}Określa, jak mocno oświetlenie wierzchołków skaluje teksturę. Overbright odpowiada rendererom PC: w pełni oświetlony wierzchołek rozjaśnia teksel dwukrotnie, a nadmiar jest dodawany później. Nasycenie to model PlayStation: również podwaja teksel, ale pozwala każdemu kolorowi obciąć się tam, gdzie trafi, dzięki czemu jasne powierzchnie zachowują własny kolor zamiast blaknąć do bieli. Płaski zatrzymuje się na jasności samej tekstury, więc jest ciemniejszy.",
+            "description": "\\{review}Określa, jak mocno oświetlenie wierzchołków skaluje teksturę.\n\n- Płaski zatrzymuje się na jasności samej tekstury, więc jest ciemniejszy (TR3 PC).\n- Overbright odpowiada rendererom PC: w pełni oświetlony wierzchołek rozjaśnia teksel dwukrotnie, a nadmiar jest dodawany później (TR4 PC).\n- Nasycenie to model PlayStation: również podwaja teksel, ale pozwala każdemu kolorowi obciąć się tam, gdzie trafi, dzięki czemu jasne powierzchnie zachowują własny kolor zamiast blaknąć do bieli (TR3/TR4 PS1).",
         },
         "rendering.multisampling_factor": {
             "title": "\\{review}Wielopróbkowanie",

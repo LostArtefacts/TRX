@@ -1546,7 +1546,7 @@
         },
         "rendering.lighting_curve": {
             "title": "\\{review}Beleuchtungsmodell",
-            "description": "\\{review}Legt fest, wie weit die Vertex-Beleuchtung die Textur skaliert. Overbright entspricht den PC-Renderern: ein voll beleuchteter Vertex hebt das Texel auf die doppelte Helligkeit, der Überschuss wird danach addiert. Sättigung ist die der PlayStation: sie verdoppelt das Texel ebenfalls, lässt aber jede Farbe dort abschneiden, wo sie landet, sodass helle Flächen ihre eigene Farbe behalten, statt ins Weiße auszubleichen. Flach endet bei der Helligkeit der Textur selbst und wirkt dunkler.",
+            "description": "\\{review}Legt fest, wie weit die Vertex-Beleuchtung die Textur skaliert.\n\n- Flach endet bei der Helligkeit der Textur selbst und wirkt dunkler (TR3 PC).\n- Overbright entspricht den PC-Renderern: ein voll beleuchteter Vertex hebt das Texel auf die doppelte Helligkeit, der Überschuss wird danach addiert (TR4 PC).\n- Sättigung ist die der PlayStation: sie verdoppelt das Texel ebenfalls, lässt aber jede Farbe dort abschneiden, wo sie landet, sodass helle Flächen ihre eigene Farbe behalten, statt ins Weiße auszubleichen (TR3/TR4 PS1).",
         },
         "rendering.multisampling_factor": {
             "title": "\\{review}Multisampling",
