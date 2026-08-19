@@ -156,6 +156,13 @@ typedef struct {
     // Whether he waits for Lara and lectures her at his markers rather than
     // running them on his own.
     bool guides_lara;
+
+    // The speech head he wears, and how long the flyby's track has been
+    // playing, which together decide whose lips move during it.
+    struct {
+        int32_t talk_timer;
+        OBJECT_ID swapped_head;
+    } flyby;
 } M_PRIV;
 
 typedef struct {
@@ -204,11 +211,6 @@ static int16_t m_CutTracks[M_MAX_WAYPOINTS] = {
 
 // Where the camera was before a scene took it, and what it was doing.
 static CAMERA_INFO m_OldCamera = {};
-
-// The speech head he wears, and how long the flyby's track has been playing,
-// which together decide whose lips move during it.
-static OBJECT_ID m_SwappedHead = NO_OBJECT;
-static int32_t m_TalkTimer = 0;
 
 // What he knows about his marker and about Lara. The original keeps both
 // across frames, and the guide reads them again after a scene of his.
@@ -566,6 +568,8 @@ static void M_Initialise(const int16_t item_num)
     item->current_anim_state = M_STATE_GET_KNIFE;
     item->goal_anim_state = M_STATE_GET_KNIFE;
     p->swap_bits = M_SWAP_MESHES;
+    p->flyby.swapped_head = NO_OBJECT;
+    p->flyby.talk_timer = 0;
 }
 
 // The path ahead, sampled a sector at a time along his facing. He jumps a gap
@@ -663,37 +667,38 @@ static void M_RaceControl(const int16_t item_num)
     if (FlybyMode_IsActive()
         && Music_GetCurrentPlayingTrack() == M_FLYBY_TALK_TRACK) {
         IGNORE(Music_SetSpeed(Clock_GetSpeedMultiplier()));
-        m_TalkTimer++;
+        p->flyby.talk_timer++;
 
-        if ((m_TalkTimer > 0 && m_TalkTimer < 565)
-            || (m_TalkTimer > 705 && m_TalkTimer < 927)) {
+        if ((p->flyby.talk_timer > 0 && p->flyby.talk_timer < 565)
+            || (p->flyby.talk_timer > 705 && p->flyby.talk_timer < 927)) {
             const OBJECT_ID head_id =
                 O_ACTOR_1_SPEECH_HEAD_1 + (Random_GetControl() & 1);
-            if (m_SwappedHead != head_id) {
-                if (m_SwappedHead != NO_OBJECT) {
-                    Object_SwapMesh(O_VON_CROY, m_SwappedHead, M_HEAD_MESH);
+            if (p->flyby.swapped_head != head_id) {
+                if (p->flyby.swapped_head != NO_OBJECT) {
+                    Object_SwapMesh(
+                        O_VON_CROY, p->flyby.swapped_head, M_HEAD_MESH);
                 }
                 Object_SwapMesh(O_VON_CROY, head_id, M_HEAD_MESH);
-                m_SwappedHead = head_id;
+                p->flyby.swapped_head = head_id;
             }
         } else {
-            if (m_SwappedHead != NO_OBJECT) {
-                Object_SwapMesh(O_VON_CROY, m_SwappedHead, M_HEAD_MESH);
-                m_SwappedHead = NO_OBJECT;
+            if (p->flyby.swapped_head != NO_OBJECT) {
+                Object_SwapMesh(O_VON_CROY, p->flyby.swapped_head, M_HEAD_MESH);
+                p->flyby.swapped_head = NO_OBJECT;
             }
         }
 
-        if (m_TalkTimer > 580 && m_TalkTimer < 693) {
+        if (p->flyby.talk_timer > 580 && p->flyby.talk_timer < 693) {
             Lara_Skin_SetSpeechFace(Random_GetControl() & 3);
         } else {
             Lara_Skin_SetSpeechFace(-1);
         }
     } else {
-        m_TalkTimer = 0;
+        p->flyby.talk_timer = 0;
         Lara_Skin_SetSpeechFace(-1);
-        if (m_SwappedHead != NO_OBJECT) {
-            Object_SwapMesh(O_VON_CROY, m_SwappedHead, M_HEAD_MESH);
-            m_SwappedHead = NO_OBJECT;
+        if (p->flyby.swapped_head != NO_OBJECT) {
+            Object_SwapMesh(O_VON_CROY, p->flyby.swapped_head, M_HEAD_MESH);
+            p->flyby.swapped_head = NO_OBJECT;
         }
     }
 
