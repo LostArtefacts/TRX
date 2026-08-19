@@ -6,6 +6,12 @@
 
 #include <stdint.h>
 
+#define FX_RIPPLE_ACTIVE 0x01u
+#define FX_RIPPLE_SLOW 0x02u
+#define FX_RIPPLE_DARK 0x10u
+#define FX_RIPPLE_BLOOD 0x20u
+#define FX_RIPPLE_JITTER 0x40u
+
 typedef struct {
     XYZ_32 pos;
     int32_t prev_size;
@@ -58,8 +64,7 @@ typedef struct {
     int16_t outer_friction;
 } FX_WATER_SPLASH_SETUP;
 
-FX_WATER_RIPPLE *FX_Water_SetupRipple(
-    int32_t x, int32_t y, int32_t z, int32_t size, bool is_still);
+FX_WATER_RIPPLE *FX_Water_SetupRipple(XYZ_32 pos, int32_t size, uint32_t flags);
 void FX_Water_SetupSplash(const FX_WATER_SPLASH_SETUP *setup);
 void FX_Water_Splash(const ITEM *item);
 void FX_Water_WadeSplash(const ITEM *item, int32_t depth);

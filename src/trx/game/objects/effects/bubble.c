@@ -66,8 +66,9 @@ static void M_Control_TR3(const int16_t effect_num)
     if (!Room_Get(room_num)->flags.underwater) {
         const ROOM *const old_room = Room_Get(effect->room_num);
         FX_Water_SetupRipple(
-            effect->pos.x, old_room->max_ceiling, effect->pos.z,
-            -2 - (Random_GetControl() & 1), true);
+            (XYZ_32) { effect->pos.x, old_room->max_ceiling, effect->pos.z },
+            2 + (Random_GetControl() & 1),
+            FX_RIPPLE_SLOW | FX_RIPPLE_DARK | FX_RIPPLE_JITTER);
         Effect_Destroy(effect_num);
         return;
     }

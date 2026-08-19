@@ -176,22 +176,39 @@ static void M_DrawRipple(const FX_WATER_RIPPLE *r)
     int32_t sprite_idx = Sparks_GetSpriteIndex(SPARK_TYPE_RIPPLE);
     RGBA_8888 color;
 
-    if ((r->flags & 0x10U) != 0U) {
-        if ((r->flags & 0x20U) != 0U) {
+    const int32_t fade = init != 0 ? init : life;
+    if (g_TRVersion == 4) {
+        if ((r->flags & FX_RIPPLE_BLOOD) != 0U) {
+            sprite_idx = Sparks_GetSpriteIndex(SPARK_TYPE_EXPLOSION);
+        }
+        if ((r->flags & FX_RIPPLE_DARK) != 0U) {
+            if ((r->flags & FX_RIPPLE_BLOOD) != 0U) {
+                color = (RGBA_8888) {
+                    .r = MIN((fade >> 1) << 1, 255),
+                    .g = 0,
+                    .b = MIN((fade >> 4) << 1, 255),
+                    .a = 255,
+                };
+            } else {
+                color = M_Gray(MIN(fade << 1, 255));
+            }
+        } else {
+            color = M_Gray(MIN(fade << 2, 255));
+        }
+    } else if ((r->flags & FX_RIPPLE_DARK) != 0U) {
+        if ((r->flags & FX_RIPPLE_BLOOD) != 0U) {
             sprite_idx = Sparks_GetSpriteIndex(SPARK_TYPE_EXPLOSION);
             const int32_t shade = g_TRVersion == 4 && init != 0 ? init : life;
             if (!M_GetUnderwaterBloodColor(&color, shade)) {
                 return;
             }
         } else {
-            int32_t c1 = init != 0 ? (init >> 2) : (life >> 2);
-            c1 <<= 3;
+            int32_t c1 = (fade >> 2) << 3;
             CLAMPG(c1, 255);
             color = M_Gray(c1);
         }
     } else {
-        int32_t c1 = init != 0 ? (init >> 1) : (life >> 1);
-        c1 <<= 3;
+        int32_t c1 = (fade >> 1) << 3;
         CLAMPG(c1, 255);
         color = M_Gray(c1);
     }
@@ -224,7 +241,7 @@ static void M_Draw(void)
 
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Ripples); i++) {
         const FX_WATER_RIPPLE *const ripple = &m_Ripples[i];
-        if ((ripple->flags & 1U) == 0U) {
+        if ((ripple->flags & FX_RIPPLE_ACTIVE) == 0U) {
             continue;
         }
         M_DrawRipple(ripple);
@@ -288,17 +305,17 @@ static void M_Control(void)
 
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Ripples); i++) {
         FX_WATER_RIPPLE *const ripple = &m_Ripples[i];
-        if ((ripple->flags & 1U) == 0U) {
+        if ((ripple->flags & FX_RIPPLE_ACTIVE) == 0U) {
             continue;
         }
 
         M_RememberRipple(ripple);
 
+        const bool is_slow = (ripple->flags & FX_RIPPLE_SLOW) != 0U;
         const bool is_tr4 = g_TRVersion == 4;
-        const bool is_gentle = (ripple->flags & 2U) != 0U;
 
         if (ripple->size < (is_tr4 ? 252U : 254U)) {
-            ripple->size += is_tr4 && !is_gentle ? 4U : 2U;
+            ripple->size += is_tr4 && !is_slow ? 4U : 2U;
         }
 
         if (ripple->init == 0U) {
@@ -307,7 +324,7 @@ static void M_Control(void)
                 ripple->flags = 0U;
             }
         } else if (ripple->init < ripple->life) {
-            ripple->init += is_tr4 && is_gentle ? 8U : 4U;
+            ripple->init += is_tr4 && is_slow ? 8U : 4U;
             if (ripple->init >= ripple->life) {
                 ripple->init = 0U;
             }
@@ -349,7 +366,7 @@ static void M_SaveRipples(JSON_WRITE_IO *const io)
     JSONW_PUSH_ARRAY(io);
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Ripples); i++) {
         const FX_WATER_RIPPLE *const ripple = &m_Ripples[i];
-        if ((ripple->flags & 1U) == 0U) {
+        if ((ripple->flags & FX_RIPPLE_ACTIVE) == 0U) {
             continue;
         }
         JSONW_PUSH_OBJECT(io);
@@ -451,12 +468,11 @@ static RESULT M_Load(JSON_READ_IO *const io)
 }
 
 FX_WATER_RIPPLE *FX_Water_SetupRipple(
-    const int32_t x, const int32_t y, const int32_t z, int32_t size,
-    const bool is_still)
+    const XYZ_32 pos, const int32_t size, const uint32_t flags)
 {
     int32_t idx = -1;
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Ripples); i++) {
-        if ((m_Ripples[i].flags & 1U) == 0U) {
+        if ((m_Ripples[i].flags & FX_RIPPLE_ACTIVE) == 0U) {
             idx = i;
             break;
         }
@@ -466,20 +482,15 @@ FX_WATER_RIPPLE *FX_Water_SetupRipple(
     }
 
     FX_WATER_RIPPLE *const ripple = &m_Ripples[idx];
-
-    if (size < 0) {
-        ripple->flags = is_still ? 19U : 3U;
-        size = -size;
-    } else {
-        ripple->flags = 1U;
-    }
-
+    ripple->flags = (uint8_t)(flags | FX_RIPPLE_ACTIVE);
     ripple->init = 1U;
     ripple->size = (uint8_t)size;
     ripple->life = (uint8_t)((Random_GetControl() & 0xF) + 48);
-    ripple->pos.x = (Random_GetControl() & 0x7F) + x - 64;
-    ripple->pos.y = y;
-    ripple->pos.z = (Random_GetControl() & 0x7F) + z - 64;
+    ripple->pos = pos;
+    if ((flags & FX_RIPPLE_JITTER) != 0U) {
+        ripple->pos.x += (Random_GetControl() & 0x7F) - 64;
+        ripple->pos.z += (Random_GetControl() & 0x7F) - 64;
+    }
     M_RememberRipple(ripple);
     return ripple;
 }
@@ -715,10 +726,18 @@ void FX_Water_WadeSplash(const ITEM *const item, const int32_t depth)
         (time4 & 0xF) == 0
         && (((Random_GetControl() & 0xF) == 0)
             || item->current_anim_state != LS(LS_STOP))) {
-        FX_Water_SetupRipple(
-            item->pos.x, water_height, item->pos.z,
-            -16 - (Random_GetControl() & 0xF),
-            item->current_anim_state == LS(LS_STOP));
+        const bool is_still = item->current_anim_state == LS(LS_STOP);
+        const XYZ_32 pos = { item->pos.x, water_height, item->pos.z };
+        if (g_TRVersion == 4) {
+            FX_Water_SetupRipple(
+                pos, (Random_GetControl() & 0xF) + 112,
+                is_still ? FX_RIPPLE_DARK : FX_RIPPLE_DARK | FX_RIPPLE_SLOW);
+        } else {
+            FX_Water_SetupRipple(
+                pos, 16 + (Random_GetControl() & 0xF),
+                is_still ? FX_RIPPLE_SLOW | FX_RIPPLE_DARK | FX_RIPPLE_JITTER
+                         : FX_RIPPLE_SLOW | FX_RIPPLE_JITTER);
+        }
     }
 }
 
@@ -726,7 +745,7 @@ void FX_Water_TriggerUnderwaterBlood(const XYZ_32 pos, const int32_t size)
 {
     int32_t idx = -1;
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Ripples); i++) {
-        if ((m_Ripples[i].flags & 1U) == 0U) {
+        if ((m_Ripples[i].flags & FX_RIPPLE_ACTIVE) == 0U) {
             idx = i;
             break;
         }
@@ -736,7 +755,8 @@ void FX_Water_TriggerUnderwaterBlood(const XYZ_32 pos, const int32_t size)
     }
 
     FX_WATER_RIPPLE *const ripple = &m_Ripples[idx];
-    ripple->flags = g_TRVersion == 4 ? 0x31U : 0x33U;
+    ripple->flags = FX_RIPPLE_ACTIVE | FX_RIPPLE_DARK | FX_RIPPLE_BLOOD
+        | (g_TRVersion == 4 ? 0U : FX_RIPPLE_SLOW);
     ripple->init = 1U;
     ripple->life = (Random_GetControl() & 7) - 16;
     ripple->size = size;
@@ -750,7 +770,7 @@ void FX_Water_TriggerUnderwaterBloodD(const XYZ_32 pos, const int32_t size)
 {
     int32_t idx = -1;
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_Ripples); i++) {
-        if ((m_Ripples[i].flags & 1U) == 0U) {
+        if ((m_Ripples[i].flags & FX_RIPPLE_ACTIVE) == 0U) {
             idx = i;
             break;
         }
@@ -760,7 +780,8 @@ void FX_Water_TriggerUnderwaterBloodD(const XYZ_32 pos, const int32_t size)
     }
 
     FX_WATER_RIPPLE *const ripple = &m_Ripples[idx];
-    ripple->flags = 0x33U;
+    ripple->flags =
+        FX_RIPPLE_ACTIVE | FX_RIPPLE_SLOW | FX_RIPPLE_DARK | FX_RIPPLE_BLOOD;
     ripple->init = 1U;
     ripple->life = (Random_GetDraw() & 7) - 16;
     ripple->size = size;

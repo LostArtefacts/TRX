@@ -255,7 +255,7 @@ static void M_DoRipple(
     }
 
     FX_WATER_RIPPLE *const ripple = FX_Water_SetupRipple(
-        pos.x, pos.y, pos.z, -2 - (Random_GetControl() & 1), 0);
+        pos, 2 + (Random_GetControl() & 1), FX_RIPPLE_SLOW | FX_RIPPLE_JITTER);
     if (ripple != nullptr) {
         ripple->init = 0;
     }
