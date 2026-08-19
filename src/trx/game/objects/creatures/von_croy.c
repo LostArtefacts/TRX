@@ -61,6 +61,68 @@
 #define M_RANGE_LOST          SQUARE(WALL_L * 5)
 // clang-format on
 
+typedef enum {
+    // clang-format off
+    M_ANIM_STAND                = 4,
+    M_ANIM_GET_KNIFE            = 11,
+    M_ANIM_JUMP_FORWARD_START   = 22,
+    M_ANIM_JUMP_FORWARD_1_BLOCK = 23,
+    M_ANIM_JUMP_FORWARD_2_BLOCK = 25,
+    M_ANIM_VAULT_4_CLICKS       = 27,
+    M_ANIM_VAULT_3_CLICKS       = 28,
+    M_ANIM_VAULT_2_CLICKS       = 29,
+    M_ANIM_DROP_4_CLICKS        = 35,
+    M_ANIM_DROP_8_CLICKS        = 36,
+    M_ANIM_JUMP_TO_HANG         = 37,
+    M_ANIM_DROP_3_CLICKS        = 41,
+    M_ANIM_DROP_2_CLICKS        = 42,
+    M_ANIM_HANGING              = 43,
+    M_ANIM_RAISE_ARM            = 47,
+    M_ANIM_GRAB_CLIMB_ON        = 52,
+    // clang-format on
+} M_ANIM;
+
+typedef enum {
+    M_STATE_NULL,
+    M_STATE_STOP,
+    M_STATE_WALK,
+    M_STATE_RUN,
+    M_STATE_MONKEY_IDLE,
+    M_STATE_MONKEY_FORWARD,
+    M_STATE_GET_KNIFE,
+    M_STATE_CHECK_GROUND,
+    M_STATE_TALK_1,
+    M_STATE_TALK_2,
+    M_STATE_TALK_3,
+    M_STATE_READ_BOOK,
+    M_STATE_STOP_LARA,
+    M_STATE_USHER_FAR,
+    M_STATE_USHER_NEAR,
+    M_STATE_JUMP_FORWARD_1_BLOCK,
+    M_STATE_JUMP_FORWARD_2_BLOCK,
+    M_STATE_VAULT_4_CLICKS,
+    M_STATE_VAULT_3_CLICKS,
+    M_STATE_VAULT_2_CLICKS,
+    M_STATE_USE_SWITCH,
+    M_STATE_ATTACK_HIGH,
+    M_STATE_TURN_LEFT,
+    M_STATE_DROP_2_CLICKS,
+    M_STATE_DROP_3_CLICKS,
+    M_STATE_DROP_4_CLICKS,
+    M_STATE_DROP_8_CLICKS,
+    M_STATE_HANGING,
+    M_STATE_SHIMMY_RIGHT,
+    M_STATE_JUMP_TO_HANG,
+    M_STATE_CLIMB_ON,
+    M_STATE_ATTACK_LOW,
+    M_STATE_RAISED_ARM,
+    M_STATE_GRAB_CLIMB_ON,
+    M_STATE_HOP_BACK,
+    M_STATE_TURN_RIGHT,
+    M_STATE_CORRECT_POSITION_FRONT,
+    M_STATE_CORRECT_POSITION_BACK,
+} M_STATE;
+
 typedef struct {
     // Which of his meshes come from the swap object, which the original keeps
     // in a field of its own. It is not ITEM.mesh_bits: that says which meshes
@@ -359,15 +421,13 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
         g_Input = (INPUT_STATE) {};
 
         if (p->waypoint == 14) {
-            item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 43;
-            item->frame_num = Anim_GetAnim(item->anim_num)->frame_base;
-            item->current_anim_state = 27;
-            item->goal_anim_state = 30;
+            Item_SwitchToAnim(item, M_ANIM_HANGING, 0);
+            item->current_anim_state = M_STATE_HANGING;
+            item->goal_anim_state = M_STATE_CLIMB_ON;
         } else {
-            item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 4;
-            item->frame_num = Anim_GetAnim(item->anim_num)->frame_base;
-            item->current_anim_state = 1;
-            item->goal_anim_state = 1;
+            Item_SwitchToAnim(item, M_ANIM_STAND, 0);
+            item->current_anim_state = M_STATE_STOP;
+            item->goal_anim_state = M_STATE_STOP;
         }
 
         M_GetAIEnemy(info, Waypoint_GetPad());
@@ -430,27 +490,28 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
             p->cut_phase = 3;
 
             if (p->waypoint != 14) {
-                item->goal_anim_state = 1;
+                item->goal_anim_state = M_STATE_STOP;
             }
         } else {
             if (M_HasSpeechEnded(p)) {
                 p->cut_phase = 3;
             }
 
-            if (item->current_anim_state == 1) {
+            if (item->current_anim_state == M_STATE_STOP) {
                 if (info->enemy
                     && Creature_GetAIObjectFlags(info->enemy) == 36) {
-                    item->goal_anim_state = 11;
+                    item->goal_anim_state = M_STATE_READ_BOOK;
                 } else {
-                    item->goal_anim_state = Random_GetControl() % 3 + 8;
+                    item->goal_anim_state =
+                        M_STATE_TALK_1 + (Random_GetControl() % 3);
                 }
-            } else if (item->current_anim_state != 27) {
+            } else if (item->current_anim_state != M_STATE_HANGING) {
                 if (info->enemy
                     && Creature_GetAIObjectFlags(info->enemy) == 36) {
                     Creature_SetAIObjectSpent(info->enemy);
                 }
 
-                item->goal_anim_state = 1;
+                item->goal_anim_state = M_STATE_STOP;
             }
         }
 
@@ -470,12 +531,12 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
         ang = info->enemy->rot.y - item->rot.y;
 
         if (ang > 1024) {
-            item->required_anim_state = 22;
+            item->required_anim_state = M_STATE_TURN_LEFT;
         } else if (ang < -1024) {
-            item->required_anim_state = 35;
+            item->required_anim_state = M_STATE_TURN_RIGHT;
         }
 
-        item->goal_anim_state = 1;
+        item->goal_anim_state = M_STATE_STOP;
         p->hold = 2;
         break;
     };
@@ -483,11 +544,10 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
     Output_Overlay_SetFade(Fader_GetCurrentValue(&m_Fader));
     Item_Animate(item);
 
-    if (item->current_anim_state == 11) {
-        if (item->frame_num == Anim_GetAnim(item->anim_num)->frame_base + 32) {
+    if (item->current_anim_state == M_STATE_READ_BOOK) {
+        if (Item_TestFrameEqual(item, 32)) {
             p->swap_bits |= M_SWAP_BOOK;
-        } else if (
-            item->frame_num == Anim_GetAnim(item->anim_num)->frame_base + 216) {
+        } else if (Item_TestFrameEqual(item, 216)) {
             p->swap_bits &= ~M_SWAP_BOOK;
         }
     }
@@ -502,10 +562,9 @@ static void M_Initialise(const int16_t item_num)
     p->cut_phase = (int16_t)M_GetOCB(item);
     p->cut_heard = false;
     Creature_Initialise(item_num);
-    item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 11;
-    item->frame_num = Anim_GetAnim(item->anim_num)->frame_base;
-    item->current_anim_state = 6;
-    item->goal_anim_state = 6;
+    Item_SwitchToAnim(item, M_ANIM_GET_KNIFE, 0);
+    item->current_anim_state = M_STATE_GET_KNIFE;
+    item->goal_anim_state = M_STATE_GET_KNIFE;
     p->swap_bits = M_SWAP_MESHES;
 }
 
@@ -564,14 +623,14 @@ static void M_RaceControl(const int16_t item_num)
     ITEM *const enemy = creature->enemy;
 
     AI_INFO info;
-    if (item->anim_num == Object_Get(O_VON_CROY)->anim_idx + 36
-        || item->anim_num == Object_Get(O_VON_CROY)->anim_idx + 52) {
+    if (Item_TestAnimEqual(item, M_ANIM_DROP_8_CLICKS)
+        || Item_TestAnimEqual(item, M_ANIM_GRAB_CLIMB_ON)) {
         const XYZ_32 old_pos = item->pos;
         const int16_t room_num = item->room_num;
         item->pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, M_STEP_AHEAD);
         Room_GetSector(item->pos, &item->room_num);
 
-        if (item->frame_num == Anim_GetAnim(item->anim_num)->frame_base + 1) {
+        if (Item_TestFrameEqual(item, 1)) {
             LOT_CreateZone(item);
         }
 
@@ -639,7 +698,7 @@ static void M_RaceControl(const int16_t item_num)
     }
 
     switch (item->current_anim_state) {
-    case 1:
+    case M_STATE_STOP:
         creature->lot.is_jumping = false;
         creature->lot.is_monkeying = false;
         creature->flags = 0;
@@ -655,7 +714,7 @@ static void M_RaceControl(const int16_t item_num)
             // DIVERGENCE: the original also tests the audio stream's own
             // state here (XAFlag 5 or 6), which nothing in TRX reports.
             || Music_GetCurrentPlayingTrack() == 80) {
-            item->goal_anim_state = 1;
+            item->goal_anim_state = M_STATE_STOP;
             break;
         }
 
@@ -674,18 +733,16 @@ static void M_RaceControl(const int16_t item_num)
                     break;
 
                 case 2:
-                    item->current_anim_state = 29;
-                    item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 37;
-                    item->frame_num = Anim_GetAnim(item->anim_num)->frame_base;
+                    item->current_anim_state = M_STATE_JUMP_TO_HANG;
+                    Item_SwitchToAnim(item, M_ANIM_JUMP_TO_HANG, 0);
                     item->pos = enemy->pos;
                     item->rot = enemy->rot;
                     advance = 1;
                     break;
 
                 case 4:
-                    item->current_anim_state = 26;
-                    item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 36;
-                    item->frame_num = Anim_GetAnim(item->anim_num)->frame_base;
+                    item->current_anim_state = M_STATE_DROP_8_CLICKS;
+                    Item_SwitchToAnim(item, M_ANIM_DROP_8_CLICKS, 0);
                     creature->lot.is_jumping = true;
                     item->pos = enemy->pos;
                     item->rot = enemy->rot;
@@ -696,9 +753,9 @@ static void M_RaceControl(const int16_t item_num)
                     if (Waypoint_Get() > p->waypoint) {
                         advance = 1;
                     } else if ((p->swap_bits & M_SWAP_MESHES) != 0) {
-                        item->goal_anim_state = 6;
+                        item->goal_anim_state = M_STATE_GET_KNIFE;
                     } else {
-                        item->goal_anim_state = 31;
+                        item->goal_anim_state = M_STATE_ATTACK_LOW;
                     }
 
                     break;
@@ -707,7 +764,7 @@ static void M_RaceControl(const int16_t item_num)
                     if (Waypoint_Get() > p->waypoint) {
                         advance = 1;
                     } else {
-                        item->goal_anim_state = 20;
+                        item->goal_anim_state = M_STATE_USE_SWITCH;
                     }
 
                     break;
@@ -716,7 +773,7 @@ static void M_RaceControl(const int16_t item_num)
                     if (Waypoint_Get() > p->waypoint) {
                         advance = 1;
                     } else {
-                        item->goal_anim_state = 7;
+                        item->goal_anim_state = M_STATE_CHECK_GROUND;
                     }
 
                     break;
@@ -725,7 +782,7 @@ static void M_RaceControl(const int16_t item_num)
                     if (Waypoint_Get() > p->waypoint) {
                         advance = 2;
                     } else {
-                        item->goal_anim_state = 32;
+                        item->goal_anim_state = M_STATE_RAISED_ARM;
                     }
 
                     break;
@@ -734,16 +791,16 @@ static void M_RaceControl(const int16_t item_num)
                     if (Waypoint_Get() > p->waypoint) {
                         advance = 1;
                     } else {
-                        item->goal_anim_state = 11;
+                        item->goal_anim_state = M_STATE_READ_BOOK;
                     }
 
                     break;
 
                 case 40:
                     if (p->hold == 6) {
-                        item->goal_anim_state = 3;
+                        item->goal_anim_state = M_STATE_RUN;
                     } else {
-                        item->goal_anim_state = 34;
+                        item->goal_anim_state = M_STATE_HOP_BACK;
                         item->pos = enemy->pos;
                         item->rot = enemy->rot;
                     }
@@ -755,14 +812,13 @@ static void M_RaceControl(const int16_t item_num)
             }
         } else if (jump_ahead || long_jump_ahead) {
             creature->maximum_turn = 0;
-            item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 22;
-            item->frame_num = Anim_GetAnim(item->anim_num)->frame_base;
-            item->current_anim_state = 15;
+            Item_SwitchToAnim(item, M_ANIM_JUMP_FORWARD_START, 0);
+            item->current_anim_state = M_STATE_JUMP_FORWARD_1_BLOCK;
 
             if (long_jump_ahead) {
-                item->goal_anim_state = 16;
+                item->goal_anim_state = M_STATE_JUMP_FORWARD_2_BLOCK;
             } else {
-                item->goal_anim_state = 15;
+                item->goal_anim_state = M_STATE_JUMP_FORWARD_1_BLOCK;
             }
 
             creature->lot.is_jumping = true;
@@ -773,17 +829,17 @@ static void M_RaceControl(const int16_t item_num)
             const int32_t ceiling = Room_GetCeiling(sector, item->pos);
 
             if (ceiling == height - WALL_L * 3 / 2) {
-                item->goal_anim_state = 4;
+                item->goal_anim_state = M_STATE_MONKEY_IDLE;
             } else {
-                item->goal_anim_state = 2;
+                item->goal_anim_state = M_STATE_WALK;
             }
         } else if (enemy != lara || info.distance > M_RANGE_WALK) {
-            item->goal_anim_state = 2;
+            item->goal_anim_state = M_STATE_WALK;
         }
 
         break;
 
-    case 2:
+    case M_STATE_WALK:
         creature->lot.is_jumping = false;
         creature->lot.is_monkeying = false;
         creature->maximum_turn = 1092;
@@ -798,33 +854,33 @@ static void M_RaceControl(const int16_t item_num)
         // level itself, so there is nothing to start.
 
         if (Waypoint_Get() < p->waypoint) {
-            item->goal_anim_state = 1;
+            item->goal_anim_state = M_STATE_STOP;
         } else if (jump_ahead || long_jump_ahead) {
             creature->maximum_turn = 0;
-            item->goal_anim_state = 1;
+            item->goal_anim_state = M_STATE_STOP;
         } else if (creature->monkey_ahead) {
-            item->goal_anim_state = 1;
+            item->goal_anim_state = M_STATE_STOP;
         } else if (!creature->reached_goal) {
             if (info.distance < M_RANGE_WALK
                 && Creature_GetAIObjectFlags(enemy) != 32) {
-                item->goal_anim_state = 1;
+                item->goal_anim_state = M_STATE_STOP;
             } else if (info.distance > M_RANGE_RUN) {
-                item->goal_anim_state = 3;
+                item->goal_anim_state = M_STATE_RUN;
             }
         } else if (Creature_GetAIObjectFlags(enemy) == 32) {
             advance = -1;
         } else {
-            item->goal_anim_state = 1;
+            item->goal_anim_state = M_STATE_STOP;
         }
 
         break;
 
-    case 3:
+    case M_STATE_RUN:
         if (info.ahead) {
             head = info.angle;
         }
 
-        if (item->frame_num == Anim_GetAnim(item->anim_num)->frame_base) {
+        if (Item_TestFrameEqual(item, 0)) {
             creature->lot.is_jumping = false;
             creature->maximum_turn = 1456;
         }
@@ -833,35 +889,35 @@ static void M_RaceControl(const int16_t item_num)
 
         if (p->hold == 6) {
             creature->maximum_turn = 0;
-            item->goal_anim_state = 16;
+            item->goal_anim_state = M_STATE_JUMP_FORWARD_2_BLOCK;
         } else if (Waypoint_Get() < p->waypoint || jump_ahead) {
-            item->goal_anim_state = 1;
+            item->goal_anim_state = M_STATE_STOP;
         } else if (long_jump_ahead) {
             creature->maximum_turn = 0;
-            item->goal_anim_state = 16;
+            item->goal_anim_state = M_STATE_JUMP_FORWARD_2_BLOCK;
         } else if (creature->monkey_ahead) {
-            item->goal_anim_state = 1;
+            item->goal_anim_state = M_STATE_STOP;
         } else if (creature->reached_goal) {
             if (Creature_GetAIObjectFlags(enemy) == 32) {
                 advance = -1;
             } else if (info.distance >= M_RANGE_MARKER) {
-                item->goal_anim_state = 1;
+                item->goal_anim_state = M_STATE_STOP;
             } else if (Creature_GetAIObjectFlags(enemy) == 40) {
                 creature->maximum_turn = 0;
                 item->rot.y = enemy->rot.y;
-                item->goal_anim_state = 16;
+                item->goal_anim_state = M_STATE_JUMP_FORWARD_2_BLOCK;
                 p->hold = 6;
             }
         } else if (
             info.distance < M_RANGE_WALK
             && Creature_GetAIObjectFlags(enemy) != 32
             && Creature_GetAIObjectFlags(enemy) != 40) {
-            item->goal_anim_state = 1;
+            item->goal_anim_state = M_STATE_STOP;
         }
 
         break;
 
-    case 4:
+    case M_STATE_MONKEY_IDLE:
         creature->maximum_turn = 0;
 
         if (item->box_num == creature->lot.target_box
@@ -872,15 +928,15 @@ static void M_RaceControl(const int16_t item_num)
             const int32_t ceiling = Room_GetCeiling(sector, item->pos);
 
             if (ceiling == height - WALL_L * 3 / 2) {
-                item->goal_anim_state = 1;
+                item->goal_anim_state = M_STATE_STOP;
             }
         } else {
-            item->goal_anim_state = 5;
+            item->goal_anim_state = M_STATE_MONKEY_FORWARD;
         }
 
         break;
 
-    case 5:
+    case M_STATE_MONKEY_FORWARD:
         creature->lot.is_jumping = true;
         creature->lot.is_monkeying = true;
         creature->maximum_turn = 1092;
@@ -893,14 +949,14 @@ static void M_RaceControl(const int16_t item_num)
             const int32_t ceiling = Room_GetCeiling(sector, item->pos);
 
             if (ceiling == height - WALL_L * 3 / 2) {
-                item->goal_anim_state = 4;
+                item->goal_anim_state = M_STATE_MONKEY_IDLE;
             }
         }
 
         break;
 
-    case 6:
-        if (item->frame_num == Anim_GetAnim(item->anim_num)->frame_base + 28) {
+    case M_STATE_GET_KNIFE:
+        if (Item_TestFrameEqual(item, 28)) {
             if ((p->swap_bits & M_SWAP_MESHES) != 0) {
                 p->swap_bits &= ~M_SWAP_MESHES;
             } else {
@@ -910,42 +966,41 @@ static void M_RaceControl(const int16_t item_num)
 
         break;
 
-    case 15:
-        if (item->anim_num == Object_Get(O_VON_CROY)->anim_idx + 23) {
-            item->goal_anim_state = 3;
+    case M_STATE_JUMP_FORWARD_1_BLOCK:
+        if (Item_TestAnimEqual(item, M_ANIM_JUMP_FORWARD_1_BLOCK)) {
+            item->goal_anim_state = M_STATE_RUN;
         }
 
         break;
 
-    case 16:
-        if (item->anim_num == Object_Get(O_VON_CROY)->anim_idx + 25
-            || item->frame_num > Anim_GetAnim(item->anim_num)->frame_base + 7) {
+    case M_STATE_JUMP_FORWARD_2_BLOCK:
+        if (Item_TestAnimEqual(item, M_ANIM_JUMP_FORWARD_2_BLOCK)
+            || Item_GetRelativeFrame(item) > 7) {
             creature->lot.is_jumping = true;
         } else if (jump_ahead) {
-            item->goal_anim_state = 15;
+            item->goal_anim_state = M_STATE_JUMP_FORWARD_1_BLOCK;
         } else if (!Object_Get(O_BAT)->loaded) {
-            item->goal_anim_state = 3;
+            item->goal_anim_state = M_STATE_RUN;
         }
 
         if (p->hold == 6) {
-            item->goal_anim_state = 33;
+            item->goal_anim_state = M_STATE_GRAB_CLIMB_ON;
         }
 
         break;
 
-    case 20:
-        if (item->frame_num == Anim_GetAnim(item->anim_num)->frame_base) {
+    case M_STATE_USE_SWITCH:
+        if (Item_TestFrameEqual(item, 0)) {
             item->pos = enemy->pos;
             item->rot = enemy->rot;
-        } else if (
-            item->frame_num == Anim_GetAnim(item->anim_num)->frame_base + 120) {
+        } else if (Item_TestFrameEqual(item, 120)) {
             advance = -1;
         }
 
         break;
 
-    case 22:
-    case 35:
+    case M_STATE_TURN_LEFT:
+    case M_STATE_TURN_RIGHT:
         creature->maximum_turn = 0;
 
         if (p->hold != 0) {
@@ -956,7 +1011,7 @@ static void M_RaceControl(const int16_t item_num)
 
         break;
 
-    case 31:
+    case M_STATE_ATTACK_LOW:
         if (info.ahead) {
             head = info.angle >> 1;
             torso_y = info.angle >> 1;
@@ -974,13 +1029,10 @@ static void M_RaceControl(const int16_t item_num)
         }
 
         if (enemy != nullptr && Creature_GetAIObjectFlags(enemy) == 6
-            && item->frame_num
-                > Anim_GetAnim(item->anim_num)->frame_base + 21) {
+            && Item_GetRelativeFrame(item) > 21) {
             advance = -1;
         } else if (creature->flags == 0 && enemy != nullptr) {
-            if (item->frame_num > Anim_GetAnim(item->anim_num)->frame_base + 15
-                && item->frame_num
-                    < Anim_GetAnim(item->anim_num)->frame_base + 26) {
+            if (Item_TestFrameRange(item, 16, 25)) {
                 if (ABS(enemy->pos.x - item->pos.x) < 512
                     && ABS(enemy->pos.y - item->pos.y) <= 512
                     && ABS(enemy->pos.z - item->pos.z) < 512) {
@@ -994,22 +1046,22 @@ static void M_RaceControl(const int16_t item_num)
 
         break;
 
-    case 33:
-        if (item->anim_num == Object_Get(O_VON_CROY)->anim_idx + 52
-            && item->frame_num == Anim_GetAnim(item->anim_num)->frame_base) {
+    case M_STATE_GRAB_CLIMB_ON:
+        if (Item_TestAnimEqual(item, M_ANIM_GRAB_CLIMB_ON)
+            && Item_GetRelativeFrame(item) == 0) {
             advance = 1;
         }
 
-        item->goal_anim_state = 2;
+        item->goal_anim_state = M_STATE_WALK;
         p->hold = 0;
         break;
 
-    case 34:
+    case M_STATE_HOP_BACK:
         p->hold = 6;
         break;
 
-    case 36:
-    case 37:
+    case M_STATE_CORRECT_POSITION_FRONT:
+    case M_STATE_CORRECT_POSITION_BACK:
         creature->maximum_turn = 0;
         Creature_MoveTo(item, enemy, 8, enemy->rot.y - item->rot.y, 512);
         break;
@@ -1033,50 +1085,45 @@ static void M_RaceControl(const int16_t item_num)
     Creature_Joint(item, 2, head);
     Creature_Joint(item, 3, torso_x);
 
-    if (item->current_anim_state >= 15 || item->current_anim_state == 5) {
+    if (item->current_anim_state >= M_STATE_JUMP_FORWARD_1_BLOCK
+        || item->current_anim_state == M_STATE_MONKEY_FORWARD) {
         Creature_Animate(item_num, angle, 0);
     } else {
         switch (Creature_Vault(item_num, angle, 2, 260)) {
         case -4:
             creature->maximum_turn = 0;
-            item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 35;
-            item->frame_num = Anim_GetAnim(item->anim_num)->frame_base;
-            item->current_anim_state = 25;
+            Item_SwitchToAnim(item, M_ANIM_DROP_4_CLICKS, 0);
+            item->current_anim_state = M_STATE_DROP_4_CLICKS;
             break;
 
         case -3:
             creature->maximum_turn = 0;
-            item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 41;
-            item->frame_num = Anim_GetAnim(item->anim_num)->frame_base;
-            item->current_anim_state = 24;
+            Item_SwitchToAnim(item, M_ANIM_DROP_3_CLICKS, 0);
+            item->current_anim_state = M_STATE_DROP_3_CLICKS;
             break;
 
         case -2:
             creature->maximum_turn = 0;
-            item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 42;
-            item->frame_num = Anim_GetAnim(item->anim_num)->frame_base;
-            item->current_anim_state = 23;
+            Item_SwitchToAnim(item, M_ANIM_DROP_2_CLICKS, 0);
+            item->current_anim_state = M_STATE_DROP_2_CLICKS;
             break;
 
         case 2:
             creature->maximum_turn = 0;
-            item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 29;
-            item->frame_num = Anim_GetAnim(item->anim_num)->frame_base;
-            item->current_anim_state = 19;
+            Item_SwitchToAnim(item, M_ANIM_VAULT_2_CLICKS, 0);
+            item->current_anim_state = M_STATE_VAULT_2_CLICKS;
             break;
 
         case 3:
             creature->maximum_turn = 0;
-            item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 28;
-            item->frame_num = Anim_GetAnim(item->anim_num)->frame_base;
-            item->current_anim_state = 18;
+            Item_SwitchToAnim(item, M_ANIM_VAULT_3_CLICKS, 0);
+            item->current_anim_state = M_STATE_VAULT_3_CLICKS;
             break;
 
         case 4:
             creature->maximum_turn = 0;
-            item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 27;
-            item->frame_num = Anim_GetAnim(item->anim_num)->frame_base;
-            item->current_anim_state = 17;
+            Item_SwitchToAnim(item, M_ANIM_VAULT_4_CLICKS, 0);
+            item->current_anim_state = M_STATE_VAULT_4_CLICKS;
             break;
         }
     }
@@ -1147,14 +1194,14 @@ static void M_GuideControl(const int16_t item_num)
         creature->enemy = target;
     }
 
-    if (item->anim_num == Object_Get(O_VON_CROY)->anim_idx + 36
-        || item->anim_num == Object_Get(O_VON_CROY)->anim_idx + 52) {
+    if (Item_TestAnimEqual(item, M_ANIM_DROP_8_CLICKS)
+        || Item_TestAnimEqual(item, M_ANIM_GRAB_CLIMB_ON)) {
         const XYZ_32 old_pos = item->pos;
         const int16_t room_num = item->room_num;
         item->pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, M_STEP_AHEAD);
         Room_GetSector(item->pos, &item->room_num);
 
-        if (item->frame_num == Anim_GetAnim(item->anim_num)->frame_base + 1) {
+        if (Item_TestFrameEqual(item, 1)) {
             LOT_CreateZone(item);
         }
 
@@ -1218,9 +1265,8 @@ static void M_GuideControl(const int16_t item_num)
     } else if (
         Waypoint_GetPad() == 10 && p->waypoint == 12
         && (p->climb_done
-            || (lara->anim_num == Object_Get(O_LARA)->anim_idx + 90
-                && lara->frame_num
-                    == Anim_GetAnim(lara->anim_num)->frame_end))) {
+            || (Item_TestAnimEqual(lara, LA(LA_SMALL_JUMP_BACK_END))
+                && Item_TestFrameEqual(lara, -1)))) {
         Waypoint_SetPad((int16_t)p->waypoint);
         p->climb_done = true;
     } else if (
@@ -1251,7 +1297,7 @@ static void M_GuideControl(const int16_t item_num)
     }
 
     switch (item->current_anim_state) {
-    case 1:
+    case M_STATE_STOP:
         creature->lot.is_jumping = false;
         creature->lot.is_monkeying = false;
         creature->flags = 0;
@@ -1263,13 +1309,13 @@ static void M_GuideControl(const int16_t item_num)
             torso_y = m_AI.angle >> 1;
         }
 
-        if (item->required_anim_state != 0) {
+        if (item->required_anim_state != M_STATE_NULL) {
             item->goal_anim_state = item->required_anim_state;
         } else if (p->hold == 2) {
             if (enemy->rot.y - item->rot.y < -1024) {
-                item->goal_anim_state = 35;
+                item->goal_anim_state = M_STATE_TURN_RIGHT;
             } else if (enemy->rot.y - item->rot.y > 1024) {
-                item->goal_anim_state = 22;
+                item->goal_anim_state = M_STATE_TURN_LEFT;
             } else {
                 p->hold = 0;
 
@@ -1278,32 +1324,32 @@ static void M_GuideControl(const int16_t item_num)
                 }
             }
         } else if (Waypoint_Get() < p->waypoint && creature->reached_goal) {
-            item->goal_anim_state = 1;
+            item->goal_anim_state = M_STATE_STOP;
         } else if (
             target != nullptr && m_AI.distance < M_RANGE_RUN
             && (p->swap_bits & M_SWAP_MESHES) != 0) {
-            item->goal_anim_state = 6;
+            item->goal_anim_state = M_STATE_GET_KNIFE;
         } else if (target != nullptr && m_AI.distance < M_RANGE_ATTACK) {
             if (m_AI.bite) {
-                item->goal_anim_state = 31;
+                item->goal_anim_state = M_STATE_ATTACK_LOW;
             } else if (enemy->hit_points > 0 && m_AI.ahead) {
                 if (ABS(enemy->pos.y + 512 - item->pos.y) < 512) {
-                    item->goal_anim_state = 21;
+                    item->goal_anim_state = M_STATE_ATTACK_HIGH;
                 }
             }
         } else if (
             target != nullptr && enemy != lara
             && m_AI.distance > M_RANGE_WALK) {
-            item->goal_anim_state = 2;
+            item->goal_anim_state = M_STATE_WALK;
         } else if (creature->reached_goal) {
             if (m_AI.distance > M_RANGE_MARKER
                 && Creature_GetAIObjectFlags(enemy) != 0 && p->hold != 6) {
                 creature->maximum_turn = 0;
 
                 if (m_AI.ahead) {
-                    item->required_anim_state = 36;
+                    item->required_anim_state = M_STATE_CORRECT_POSITION_FRONT;
                 } else {
-                    item->required_anim_state = 37;
+                    item->required_anim_state = M_STATE_CORRECT_POSITION_BACK;
                 }
 
                 break;
@@ -1321,7 +1367,7 @@ static void M_GuideControl(const int16_t item_num)
                         if (Waypoint_Get() > p->waypoint) {
                             advance = 2;
                         } else {
-                            item->goal_anim_state = 32;
+                            item->goal_anim_state = M_STATE_RAISED_ARM;
                         }
 
                         break;
@@ -1330,16 +1376,16 @@ static void M_GuideControl(const int16_t item_num)
                         if (Waypoint_Get() > p->waypoint) {
                             advance = 1;
                         } else {
-                            item->goal_anim_state = 1;
+                            item->goal_anim_state = M_STATE_STOP;
                         }
 
                         break;
 
                     case 40:
                         if (p->hold == 6) {
-                            item->goal_anim_state = 3;
+                            item->goal_anim_state = M_STATE_RUN;
                         } else {
-                            item->goal_anim_state = 34;
+                            item->goal_anim_state = M_STATE_HOP_BACK;
                             item->pos = enemy->pos;
                             item->rot = enemy->rot;
                         }
@@ -1363,20 +1409,16 @@ static void M_GuideControl(const int16_t item_num)
                         break;
 
                     case 2:
-                        item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 37;
-                        item->frame_num =
-                            Anim_GetAnim(item->anim_num)->frame_base;
-                        item->current_anim_state = 29;
+                        Item_SwitchToAnim(item, M_ANIM_JUMP_TO_HANG, 0);
+                        item->current_anim_state = M_STATE_JUMP_TO_HANG;
                         item->pos = enemy->pos;
                         item->rot = enemy->rot;
                         advance = 1;
                         break;
 
                     case 4:
-                        item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 36;
-                        item->frame_num =
-                            Anim_GetAnim(item->anim_num)->frame_base;
-                        item->current_anim_state = 26;
+                        Item_SwitchToAnim(item, M_ANIM_DROP_8_CLICKS, 0);
+                        item->current_anim_state = M_STATE_DROP_8_CLICKS;
                         creature->lot.is_jumping = true;
                         item->pos = enemy->pos;
                         item->rot = enemy->rot;
@@ -1384,24 +1426,24 @@ static void M_GuideControl(const int16_t item_num)
                         break;
 
                     case 8:
-                        item->goal_anim_state = 20;
+                        item->goal_anim_state = M_STATE_USE_SWITCH;
                         break;
 
                     case 10:
-                        item->goal_anim_state = 7;
+                        item->goal_anim_state = M_STATE_CHECK_GROUND;
                         break;
 
                     case 12:
                         creature->maximum_turn = 0;
-                        item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 22;
-                        item->frame_num =
-                            Anim_GetAnim(item->anim_num)->frame_base;
-                        item->current_anim_state = 15;
+                        Item_SwitchToAnim(item, M_ANIM_JUMP_FORWARD_START, 0);
+                        item->current_anim_state = M_STATE_JUMP_FORWARD_1_BLOCK;
 
                         if (long_jump_ahead) {
-                            item->goal_anim_state = 16;
+                            item->goal_anim_state =
+                                M_STATE_JUMP_FORWARD_2_BLOCK;
                         } else {
-                            item->goal_anim_state = 15;
+                            item->goal_anim_state =
+                                M_STATE_JUMP_FORWARD_1_BLOCK;
                         }
 
                         creature->lot.is_jumping = true;
@@ -1414,26 +1456,26 @@ static void M_GuideControl(const int16_t item_num)
             } else if (
                 enemy && Creature_GetAIObjectFlags(enemy)
                 && m_LaraAI.distance >= M_RANGE_RUN) {
-                item->goal_anim_state = 1;
+                item->goal_anim_state = M_STATE_STOP;
             } else if (p->hold != 0) {
                 if (p->hold != 1) {
                     advance = 1;
                 } else if ((Random_GetControl() & 0xF) != 0) {
                     p->hold = 0;
                 } else if (m_LaraAI.distance >= M_RANGE_RUN) {
-                    item->goal_anim_state = 13;
+                    item->goal_anim_state = M_STATE_USHER_FAR;
                 } else {
-                    item->goal_anim_state = 14;
+                    item->goal_anim_state = M_STATE_USHER_NEAR;
                 }
             } else if (m_LaraAI.angle > 1024) {
-                item->goal_anim_state = 35;
+                item->goal_anim_state = M_STATE_TURN_RIGHT;
             } else if (m_LaraAI.angle < -1024) {
-                item->goal_anim_state = 22;
+                item->goal_anim_state = M_STATE_TURN_LEFT;
             } else {
                 p->hold = 1;
             }
         } else if (m_LaraAI.bite) {
-            item->goal_anim_state = 1;
+            item->goal_anim_state = M_STATE_STOP;
         } else if (creature->monkey_ahead) {
             int16_t room_num = item->room_num;
             const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
@@ -1442,34 +1484,34 @@ static void M_GuideControl(const int16_t item_num)
 
             if (ceiling == height - WALL_L * 3 / 2) {
                 if ((p->swap_bits & M_SWAP_MESHES) != 0) {
-                    item->goal_anim_state = 4;
+                    item->goal_anim_state = M_STATE_MONKEY_IDLE;
                 } else {
-                    item->goal_anim_state = 6;
+                    item->goal_anim_state = M_STATE_GET_KNIFE;
                 }
             } else {
-                item->goal_anim_state = 2;
+                item->goal_anim_state = M_STATE_WALK;
             }
         } else if (
             target != nullptr && m_AI.distance < M_RANGE_RUN
             && (p->swap_bits & M_SWAP_MESHES) != 0) {
-            item->goal_anim_state = 6;
+            item->goal_anim_state = M_STATE_GET_KNIFE;
         } else if (target != nullptr && m_AI.distance < M_RANGE_ATTACK) {
             if (m_AI.bite) {
-                item->goal_anim_state = 31;
+                item->goal_anim_state = M_STATE_ATTACK_LOW;
             } else if (enemy->hit_points > 0 && m_AI.ahead) {
                 if (ABS(enemy->pos.y + 512 - item->pos.y) < 512) {
-                    item->goal_anim_state = 21;
+                    item->goal_anim_state = M_STATE_ATTACK_HIGH;
                 }
             }
         } else if (
             (m_AI.distance > M_RANGE_WALK && m_LaraAI.distance < M_RANGE_LOST)
             || Waypoint_Get() >= p->waypoint) {
-            item->goal_anim_state = 2;
+            item->goal_anim_state = M_STATE_WALK;
         }
 
         break;
 
-    case 2:
+    case M_STATE_WALK:
         creature->lot.is_jumping = false;
         creature->lot.is_monkeying = false;
         creature->maximum_turn = 1092;
@@ -1480,19 +1522,19 @@ static void M_GuideControl(const int16_t item_num)
             head = m_AI.angle;
         }
 
-        if (item->required_anim_state != 0) {
+        if (item->required_anim_state != M_STATE_NULL) {
             item->goal_anim_state = item->required_anim_state;
         } else if (
             (Waypoint_Get() < p->waypoint && m_LaraAI.distance > M_RANGE_LOST)
             || m_LaraAI.bite) {
-            item->goal_anim_state = 1;
+            item->goal_anim_state = M_STATE_STOP;
         } else if (creature->monkey_ahead) {
-            item->goal_anim_state = 1;
+            item->goal_anim_state = M_STATE_STOP;
         } else if (creature->reached_goal) {
             if (Creature_GetAIObjectFlags(enemy) == 32) {
                 advance = -1;
             } else {
-                item->goal_anim_state = 1;
+                item->goal_anim_state = M_STATE_STOP;
             }
         } else if (
             target == nullptr
@@ -1501,23 +1543,23 @@ static void M_GuideControl(const int16_t item_num)
                     || m_AI.distance >= M_RANGE_RUN))) {
             if (m_AI.distance < M_RANGE_WALK
                 && Creature_GetAIObjectFlags(enemy) != 32) {
-                item->goal_anim_state = 1;
+                item->goal_anim_state = M_STATE_STOP;
             } else if (
                 m_AI.distance > M_RANGE_RUN && Waypoint_Get() >= p->waypoint) {
-                item->goal_anim_state = 3;
+                item->goal_anim_state = M_STATE_RUN;
             }
         } else {
-            item->goal_anim_state = 1;
+            item->goal_anim_state = M_STATE_STOP;
         }
 
         break;
 
-    case 3:
+    case M_STATE_RUN:
         if (m_AI.ahead) {
             head = m_AI.angle;
         }
 
-        if (item->frame_num == Anim_GetAnim(item->anim_num)->frame_base) {
+        if (Item_TestFrameEqual(item, 0)) {
             creature->lot.is_jumping = false;
             creature->maximum_turn = 1456;
         }
@@ -1526,33 +1568,33 @@ static void M_GuideControl(const int16_t item_num)
 
         if (p->hold == 6) {
             creature->maximum_turn = 0;
-            item->goal_anim_state = 16;
+            item->goal_anim_state = M_STATE_JUMP_FORWARD_2_BLOCK;
         } else if (
             Waypoint_Get() < p->waypoint || jump_ahead || m_LaraAI.bite) {
-            item->goal_anim_state = 1;
+            item->goal_anim_state = M_STATE_STOP;
         } else if (creature->monkey_ahead) {
-            item->goal_anim_state = 1;
+            item->goal_anim_state = M_STATE_STOP;
         } else if (creature->reached_goal) {
             if (Creature_GetAIObjectFlags(enemy) == 32) {
                 advance = -1;
             } else if (m_AI.distance >= 512) {
-                item->goal_anim_state = 1;
+                item->goal_anim_state = M_STATE_STOP;
             } else if (Creature_GetAIObjectFlags(enemy) == 40) {
                 creature->maximum_turn = 0;
                 item->rot.y = enemy->rot.y;
-                item->goal_anim_state = 16;
+                item->goal_anim_state = M_STATE_JUMP_FORWARD_2_BLOCK;
                 p->hold = 6;
             }
         } else if (
             m_AI.distance < M_RANGE_WALK
             && Creature_GetAIObjectFlags(enemy) != 32
             && Creature_GetAIObjectFlags(enemy) != 40) {
-            item->goal_anim_state = 1;
+            item->goal_anim_state = M_STATE_STOP;
         }
 
         break;
 
-    case 4:
+    case M_STATE_MONKEY_IDLE:
         creature->maximum_turn = 0;
 
         if (item->box_num == creature->lot.target_box
@@ -1563,15 +1605,15 @@ static void M_GuideControl(const int16_t item_num)
             const int32_t ceiling = Room_GetCeiling(sector, item->pos);
 
             if (ceiling == height - WALL_L * 3 / 2) {
-                item->goal_anim_state = 1;
+                item->goal_anim_state = M_STATE_STOP;
             }
         } else {
-            item->goal_anim_state = 5;
+            item->goal_anim_state = M_STATE_MONKEY_FORWARD;
         }
 
         break;
 
-    case 5:
+    case M_STATE_MONKEY_FORWARD:
         creature->lot.is_jumping = true;
         creature->lot.is_monkeying = true;
         creature->maximum_turn = 1092;
@@ -1584,14 +1626,14 @@ static void M_GuideControl(const int16_t item_num)
             const int32_t ceiling = Room_GetCeiling(sector, item->pos);
 
             if (ceiling == height - WALL_L * 3 / 2) {
-                item->goal_anim_state = 4;
+                item->goal_anim_state = M_STATE_MONKEY_IDLE;
             }
         }
 
         break;
 
-    case 6:
-        if (item->frame_num == Anim_GetAnim(item->anim_num)->frame_base + 28) {
+    case M_STATE_GET_KNIFE:
+        if (Item_TestFrameEqual(item, 28)) {
             if ((p->swap_bits & M_SWAP_MESHES) != 0) {
                 p->swap_bits &= ~M_SWAP_MESHES;
             } else {
@@ -1601,17 +1643,16 @@ static void M_GuideControl(const int16_t item_num)
 
         break;
 
-    case 7:
-        if (item->frame_num == Anim_GetAnim(item->anim_num)->frame_base) {
+    case M_STATE_CHECK_GROUND:
+        if (Item_TestFrameEqual(item, 0)) {
             item->pos = enemy->pos;
             item->rot = enemy->rot;
 
             if (p->waypoint == 6) {
                 creature->maximum_turn = 0;
-                item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 22;
-                item->frame_num = Anim_GetAnim(item->anim_num)->frame_base;
-                item->current_anim_state = 15;
-                item->goal_anim_state = 16;
+                Item_SwitchToAnim(item, M_ANIM_JUMP_FORWARD_START, 0);
+                item->current_anim_state = M_STATE_JUMP_FORWARD_1_BLOCK;
+                item->goal_anim_state = M_STATE_JUMP_FORWARD_2_BLOCK;
                 creature->lot.is_jumping = true;
             }
 
@@ -1620,32 +1661,31 @@ static void M_GuideControl(const int16_t item_num)
 
         break;
 
-    case 16:
-        if (item->anim_num == Object_Get(O_VON_CROY)->anim_idx + 25
-            || item->frame_num > Anim_GetAnim(item->anim_num)->frame_base + 5) {
+    case M_STATE_JUMP_FORWARD_2_BLOCK:
+        if (Item_TestAnimEqual(item, M_ANIM_JUMP_FORWARD_2_BLOCK)
+            || Item_GetRelativeFrame(item) > 5) {
             creature->lot.is_jumping = true;
         } else if (jump_ahead) {
-            item->goal_anim_state = 15;
+            item->goal_anim_state = M_STATE_JUMP_FORWARD_1_BLOCK;
         }
 
         if (p->hold == 6) {
-            item->goal_anim_state = 33;
+            item->goal_anim_state = M_STATE_GRAB_CLIMB_ON;
         }
 
         break;
 
-    case 20:
-        if (item->frame_num == Anim_GetAnim(item->anim_num)->frame_base) {
+    case M_STATE_USE_SWITCH:
+        if (Item_TestFrameEqual(item, 0)) {
             item->pos = enemy->pos;
             item->rot = enemy->rot;
-        } else if (
-            item->frame_num == Anim_GetAnim(item->anim_num)->frame_base + 120) {
+        } else if (Item_TestFrameEqual(item, 120)) {
             advance = -1;
         }
 
         break;
 
-    case 21:
+    case M_STATE_ATTACK_HIGH:
         if (m_AI.ahead) {
             torso_y = m_AI.angle >> 1;
             head = m_AI.angle >> 1;
@@ -1656,9 +1696,7 @@ static void M_GuideControl(const int16_t item_num)
         Creature_TurnTo(item, m_AI.angle, 1092);
 
         if (creature->flags == 0 && enemy != nullptr
-            && item->frame_num > Anim_GetAnim(item->anim_num)->frame_base + 20
-            && item->frame_num
-                < Anim_GetAnim(item->anim_num)->frame_base + 45) {
+            && Item_TestFrameRange(item, 21, 44)) {
             if (ABS(enemy->pos.x - item->pos.x) < 512
                 && ABS(enemy->pos.y + 768 - item->pos.y) <= 512
                 && ABS(enemy->pos.z - item->pos.z) < 512) {
@@ -1676,8 +1714,8 @@ static void M_GuideControl(const int16_t item_num)
 
         break;
 
-    case 22:
-    case 35:
+    case M_STATE_TURN_LEFT:
+    case M_STATE_TURN_RIGHT:
         creature->maximum_turn = 0;
 
         if (p->hold != 0 && enemy != nullptr) {
@@ -1688,25 +1726,25 @@ static void M_GuideControl(const int16_t item_num)
 
         break;
 
-    case 27:
+    case M_STATE_HANGING:
         creature->lot.is_jumping = true;
         creature->maximum_turn = 0;
 
         if (creature->reached_goal) {
-            item->goal_anim_state = 30;
+            item->goal_anim_state = M_STATE_CLIMB_ON;
             advance = 1;
         } else {
-            item->goal_anim_state = 28;
+            item->goal_anim_state = M_STATE_SHIMMY_RIGHT;
         }
 
         break;
 
-    case 28:
+    case M_STATE_SHIMMY_RIGHT:
         creature->lot.is_jumping = true;
         creature->maximum_turn = 0;
         break;
 
-    case 31:
+    case M_STATE_ATTACK_LOW:
         if (m_AI.ahead) {
             torso_y = m_AI.angle >> 1;
             head = m_AI.angle >> 1;
@@ -1717,15 +1755,12 @@ static void M_GuideControl(const int16_t item_num)
         Creature_TurnTo(item, m_AI.angle, 1092);
 
         if (enemy != nullptr && Creature_GetAIObjectFlags(enemy) == 6
-            && item->frame_num
-                > Anim_GetAnim(item->anim_num)->frame_base + 21) {
+            && Item_GetRelativeFrame(item) > 21) {
             advance = -1;
             creature->flags = 1;
         } else if (
             creature->flags == 0 && enemy != nullptr
-            && item->frame_num > Anim_GetAnim(item->anim_num)->frame_base + 15
-            && item->frame_num
-                < Anim_GetAnim(item->anim_num)->frame_base + 26) {
+            && Item_TestFrameRange(item, 16, 25)) {
             if (ABS(enemy->pos.x - item->pos.x) < 512
                 && ABS(enemy->pos.y - item->pos.y) <= 512
                 && ABS(enemy->pos.z - item->pos.z) < 512) {
@@ -1743,7 +1778,7 @@ static void M_GuideControl(const int16_t item_num)
 
         break;
 
-    case 32:
+    case M_STATE_RAISED_ARM:
         if (m_AI.ahead) {
             torso_y = m_AI.angle >> 1;
             head = m_AI.angle >> 1;
@@ -1753,34 +1788,34 @@ static void M_GuideControl(const int16_t item_num)
         creature->maximum_turn = 0;
         Creature_TurnTo(item, m_AI.angle, 1092);
 
-        if (item->anim_num == Object_Get(O_VON_CROY)->anim_idx + 47) {
-            if (item->frame_num == Anim_GetAnim(item->anim_num)->frame_base) {
+        if (Item_TestAnimEqual(item, M_ANIM_RAISE_ARM)) {
+            if (Item_TestFrameEqual(item, 0)) {
                 advance = 1;
             }
         } else if ((Random_GetControl() & 0x1F) == 0) {
             advance = 1;
-            item->goal_anim_state = 1;
+            item->goal_anim_state = M_STATE_STOP;
         }
 
         break;
 
-    case 33:
-        if (item->anim_num == Object_Get(O_VON_CROY)->anim_idx + 52
-            && item->frame_num == Anim_GetAnim(item->anim_num)->frame_base) {
+    case M_STATE_GRAB_CLIMB_ON:
+        if (Item_TestAnimEqual(item, M_ANIM_GRAB_CLIMB_ON)
+            && Item_TestFrameEqual(item, 0)) {
             advance = 1;
         }
 
-        item->goal_anim_state = 2;
-        item->required_anim_state = 3;
+        item->goal_anim_state = M_STATE_WALK;
+        item->required_anim_state = M_STATE_RUN;
         p->hold = 0;
         break;
 
-    case 34:
+    case M_STATE_HOP_BACK:
         p->hold = 6;
         break;
 
-    case 36:
-    case 37:
+    case M_STATE_CORRECT_POSITION_FRONT:
+    case M_STATE_CORRECT_POSITION_BACK:
         creature->maximum_turn = 0;
         Creature_MoveTo(item, enemy, 15, enemy->rot.y - item->rot.y, 512);
         break;
@@ -1807,50 +1842,45 @@ static void M_GuideControl(const int16_t item_num)
     Creature_Joint(item, 2, head);
     Creature_Joint(item, 3, torso_x);
 
-    if (item->current_anim_state >= 15 || item->current_anim_state == 5) {
+    if (item->current_anim_state >= M_STATE_JUMP_FORWARD_1_BLOCK
+        || item->current_anim_state == M_STATE_MONKEY_FORWARD) {
         Creature_Animate(item_num, angle, 0);
     } else {
         switch (Creature_Vault(item_num, angle, 2, 260)) {
         case -4:
             creature->maximum_turn = 0;
-            item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 35;
-            item->frame_num = Anim_GetAnim(item->anim_num)->frame_base;
-            item->current_anim_state = 25;
+            Item_SwitchToAnim(item, M_ANIM_DROP_4_CLICKS, 0);
+            item->current_anim_state = M_STATE_DROP_4_CLICKS;
             break;
 
         case -3:
             creature->maximum_turn = 0;
-            item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 41;
-            item->frame_num = Anim_GetAnim(item->anim_num)->frame_base;
-            item->current_anim_state = 24;
+            Item_SwitchToAnim(item, M_ANIM_DROP_3_CLICKS, 0);
+            item->current_anim_state = M_STATE_DROP_3_CLICKS;
             break;
 
         case -2:
             creature->maximum_turn = 0;
-            item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 42;
-            item->frame_num = Anim_GetAnim(item->anim_num)->frame_base;
-            item->current_anim_state = 23;
+            Item_SwitchToAnim(item, M_ANIM_DROP_2_CLICKS, 0);
+            item->current_anim_state = M_STATE_DROP_2_CLICKS;
             break;
 
         case 2:
             creature->maximum_turn = 0;
-            item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 29;
-            item->frame_num = Anim_GetAnim(item->anim_num)->frame_base;
-            item->current_anim_state = 19;
+            Item_SwitchToAnim(item, M_ANIM_VAULT_2_CLICKS, 0);
+            item->current_anim_state = M_STATE_VAULT_2_CLICKS;
             break;
 
         case 3:
             creature->maximum_turn = 0;
-            item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 28;
-            item->frame_num = Anim_GetAnim(item->anim_num)->frame_base;
-            item->current_anim_state = 18;
+            Item_SwitchToAnim(item, M_ANIM_VAULT_3_CLICKS, 0);
+            item->current_anim_state = M_STATE_VAULT_3_CLICKS;
             break;
 
         case 4:
             creature->maximum_turn = 0;
-            item->anim_num = Object_Get(O_VON_CROY)->anim_idx + 27;
-            item->frame_num = Anim_GetAnim(item->anim_num)->frame_base;
-            item->current_anim_state = 17;
+            Item_SwitchToAnim(item, M_ANIM_VAULT_4_CLICKS, 0);
+            item->current_anim_state = M_STATE_VAULT_4_CLICKS;
             break;
         }
     }
