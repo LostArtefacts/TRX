@@ -625,16 +625,13 @@ static void M_RaceControl(const int16_t item_num)
         }
 
         if (m_TalkTimer > 580 && m_TalkTimer < 693) {
-            const OBJECT *const head_obj =
-                Object_Get(O_LARA_SPEECH_HEAD_1 + (Random_GetControl() & 3));
-            Lara_Skin_SetMeshOverride(
-                LM_HEAD, Object_GetMesh(head_obj->mesh_idx + LM_HEAD));
+            Lara_Skin_SetSpeechFace(Random_GetControl() & 3);
         } else {
-            Lara_Skin_SetMeshOverride(LM_HEAD, nullptr);
+            Lara_Skin_SetSpeechFace(-1);
         }
     } else {
         m_TalkTimer = 0;
-        Lara_Skin_SetMeshOverride(LM_HEAD, nullptr);
+        Lara_Skin_SetSpeechFace(-1);
         if (m_SwappedHead != NO_OBJECT) {
             Object_SwapMesh(O_VON_CROY, m_SwappedHead, M_HEAD_MESH);
             m_SwappedHead = NO_OBJECT;
