@@ -10,6 +10,7 @@ X_UI_ROW(ui.menu_style)
 
 X_UI_ROW(ui.inventory_background_style)
 X_UI_ROW(ui.inventory_fade_effects)
+X_UI_ROW(ui.instant_save_load_screen)
 X_UI_ROW(ui.pause_background_style)
 X_UI_ROW(ui.pause_fade_effects)
 X_UI_ROW(ui.stats_background_style)

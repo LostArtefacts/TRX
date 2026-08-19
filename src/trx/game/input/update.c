@@ -67,6 +67,21 @@ void Input_HoldOffRole(const INPUT_ROLE role)
     InputState_SetRole(&m_HoldOff, role, true);
 }
 
+void Input_HoldOffMenu(void)
+{
+    static const INPUT_ROLE roles[] = {
+        INPUT_ROLE_MENU_CONFIRM,     INPUT_ROLE_MENU_BACK,
+        INPUT_ROLE_MENU_LEFT,        INPUT_ROLE_MENU_UP,
+        INPUT_ROLE_MENU_DOWN,        INPUT_ROLE_MENU_RIGHT,
+        INPUT_ROLE_MENU_SKIP,        INPUT_ROLE_MENU_TAB_LEFT,
+        INPUT_ROLE_MENU_TAB_RIGHT,   INPUT_ROLE_MENU_SHOW_INFO,
+        INPUT_ROLE_MENU_FINE_ADJUST, INPUT_ROLE_MENU_COARSE_ADJUST,
+    };
+    for (size_t i = 0; i < sizeof roles / sizeof roles[0]; i++) {
+        Input_HoldOffRole(roles[i]);
+    }
+}
+
 void Input_HoldOffSkip(void)
 {
     Input_HoldOffRole(INPUT_ROLE_INVENTORY);

@@ -35,6 +35,11 @@ void Input_HoldOffRole(INPUT_ROLE role);
 // the press that ended the scene does not open the ring behind it.
 void Input_HoldOffSkip(void);
 
+// Ignores every menu role until the player lets go, so a screen that opens
+// with no animation does not act on keys that were already down. Roles the
+// game itself reads, such as movement, are left alone.
+void Input_HoldOffMenu(void);
+
 // Reconciles the connected devices with the current configuration: enabled
 // backends acquire the hardware that is present, disabled ones release it.
 void Input_Discover(void);

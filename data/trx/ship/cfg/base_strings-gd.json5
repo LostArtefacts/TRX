@@ -1658,6 +1658,10 @@
             "title": "Dath bàr-shlàinte puinnseanta",
             "description": "Dath a' bhàr-shlàinte nuair a tha Lara air a puinnseanachadh.",
         },
+        "ui.instant_save_load_screen": {
+            "title": "\\{review}Sgrìn sàbhalaidh/luchdaidh sa bhad",
+            "description": "\\{review}Seallaidh e na slotaichean sàbhalaidh air sgrìn aca fhèin, gun fhàinne clàr-stòrais, gun bheòthachadh, gun chrìonadh 's gun fhuaim, gus an nochd iad sa bhad.",
+        },
         "ui.inventory_background_style": {
             "title": "\\{review}Dealbh-cùil seilbhe",
             "description": "Atharraichidh an doigh anns a bhitheas an dealbh-cùil air a shealltainn sa chlàr-seilbhe.\n\n- Dorcha: TR1 (PC).\n- Fìor dhorcha: TR1 (PS1).\n- Statach: TR2 (PC).\n- Crathadh: TR2 (PS1).\n- Aon-dhathach: TR3.",
