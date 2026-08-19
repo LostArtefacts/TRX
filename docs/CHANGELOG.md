@@ -43,6 +43,8 @@
 
 **Weapons and ammunition**
 - Added an option to keep Lara firing the M16/MP5 from her hip while the action key is held, rather than shouldering the gun the moment she stops moving (Gameplay → Controls → M16/MP5 aiming variants) (#3861 / TRX1048)
+- Fixed Lara taking out a two-handed weapon in wading-depth water only to put it away at once (OG bug) (#6253 / TRX1120)
+- Fixed Lara taking out a weapon while she is fully submerged in a swamp (#6255 / TRX1122)
 
 **Level and game data**
 - Added Natla as an outfit for Lara, selectable in every game (Graphic Options → Visuals → Lara's outfit) (TRX1050)
