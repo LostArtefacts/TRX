@@ -139,6 +139,7 @@ typedef struct {
         bool inventory_fade_effects;
         bool stats_fade_effects;
         bool pause_fade_effects;
+        bool instant_save_load_screen;
 
         bool enable_smooth_bars;
         char *bar_look;

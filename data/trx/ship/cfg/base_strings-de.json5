@@ -1662,6 +1662,10 @@
             "title": "\\{review}Gift Gesundheitsbalken Farbe",
             "description": "\\{review}Farbe des Gesundheitsbalkens, wenn Lara vergiftet ist.",
         },
+        "ui.instant_save_load_screen": {
+            "title": "\\{review}Sofortiger Speicher-/Ladebildschirm",
+            "description": "\\{review}Zeigt die Speicherplätze auf einem eigenen Bildschirm, ohne Inventarring, Animation, Überblendung oder Ton, sodass sie sofort erscheinen.",
+        },
         "ui.inventory_background_style": {
             "title": "\\{review}Inventar-Hintergrund",
             "description": "\\{review}Ändert die Art und Weise, wie der Hintergrund für den Inventarring angezeigt wird.\n\n- Dunkel: TR1 (PC).\n- Sehr dunkel: TR1 (PS1).\n- Statisch: TR2 (PC).\n- Welle: TR2 (PS1).\n- Monochrom: TR3.",

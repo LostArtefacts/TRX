@@ -60,6 +60,13 @@ GF_COMMAND GF_PauseGame(void)
 
 GF_COMMAND GF_ShowInventory(const INVENTORY_MODE mode)
 {
+    if (Phase_SaveLoad_IsAvailable(mode)) {
+        PHASE *const phase = Phase_SaveLoad_Create(mode);
+        const GF_COMMAND gf_cmd = PhaseExecutor_Run(phase);
+        Phase_SaveLoad_Destroy(phase);
+        return gf_cmd;
+    }
+
     PHASE *const phase = Phase_Inventory_Create(mode);
     const GF_COMMAND gf_cmd = PhaseExecutor_Run(phase);
     Phase_Inventory_Destroy(phase);

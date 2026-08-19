@@ -1662,6 +1662,10 @@
             "title": "Poison healthbar color",
             "description": "Color of the healthbar when Lara is poisoned.",
         },
+        "ui.instant_save_load_screen": {
+            "title": "Instant save/load screen",
+            "description": "Shows the save slots on their own screen, with no inventory ring, animation, fade or sound, so that they appear at once.",
+        },
         "ui.inventory_background_style": {
             "title": "Inventory background",
             "description": "Changes the way the background for the inventory ring is displayed.\n\n- Dark: TR1 (PC).\n- Very dark: TR1 (PS1).\n- Static: TR2 (PC).\n- Wave: TR2 (PS1).\n- Monochrome: TR3.",

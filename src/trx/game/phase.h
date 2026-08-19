@@ -10,5 +10,6 @@
 #include <trx/game/phase/phase_pause.h>
 #include <trx/game/phase/phase_photo_mode.h>
 #include <trx/game/phase/phase_picture.h>
+#include <trx/game/phase/phase_save_load.h>
 #include <trx/game/phase/phase_stats.h>
 #include <trx/game/phase/types.h>
