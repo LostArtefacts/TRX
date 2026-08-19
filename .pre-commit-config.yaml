@@ -125,7 +125,7 @@ repos:
     files: ^src/lua/api/.*\.lua$
 
   - id: lint-changelog-guard
-    name: Released changelog sections stay frozen
+    name: Changelog stays frozen, unique and ordered
     entry: tools/lint/checks/changelog_guard
     language: python
     pass_filenames: false

@@ -9,10 +9,6 @@
 - Fixed Lara's rope-grab reach being shorter from certain directions (OG bug) (TRX1143)
 - Fixed Lara being able to continue shimmying on monkeybars after death (#6300 / TRX1161, regression from 1.0)
 
-**Rendering**
-- Added PlayStation RGB555 dithering and changed Dithering to offer Disabled, Software Renderer and PS1 (Graphic Options → Rendering → Dithering)
-- Fixed a visible seam across the sky in TR4 levels (TRX563, regression from 1.9)
-
 **UI**
 - Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187 / TRX1036)
 - Added a flat yellow color to the PS1 bar palettes (Graphic Options → UI → Bars) (#5227 / TRX1135)
@@ -64,13 +60,15 @@
 - Fixed crystal sound effects not playing if Lara collects one underwater (OG bug) (TRX1111)
 
 **Rendering**
+- Added PlayStation RGB555 dithering and changed Dithering to offer Disabled, Software Renderer and PS1 (Graphic Options → Rendering → Dithering)
 - Added the PlayStation depth cue (Graphic Options → Rendering → PlayStation fog)
-- Changed the lighting contrast option to appear in TR1 and TR2 only, as the other games light dynamic sources their own way (Graphic Options → Rendering → Lighting contrast)
 - Added the PlayStation lighting model, which deepens bright surfaces into their own color rather than white (Graphic Options → Rendering → Lighting model)
+- Changed the lighting contrast option to appear in TR1 and TR2 only, as the other games light dynamic sources their own way (Graphic Options → Rendering → Lighting contrast)
 - Changed TR3 to light geometry on the brighter curve its hardware renderer used (Graphic Options → Rendering → Lighting model)
 - Fixed scenery in an adjoining room being cut off along the edges of the portal it is seen through (TRX1159)
 - Fixed objects showing through rooms that share their space with the room the object stands in (TRX1168)
 - Fixed objects that reach into a neighbouring room being cut off or vanishing when seen through that room (TRX1168)
+- Fixed a visible seam across the sky in TR4 levels (TRX563, regression from 1.9)
 
 **TR1**
 - Changed Lara to retain her equipment when turning to gold on the Midas Hand, with the equipment also turning to gold (TRX1073)
@@ -110,10 +108,10 @@
 - Added the full weapon definition to `trx.weapons`, so a script can read and change what a weapon does: its damage, reach and accuracy, its aim limits, its ammunition, the animations it is drawn by, and the flash, glow, smoke and shells it throws (TRX1091)
 - Added `trx.math.Color` and `trx.math.color()`, so a color is a value with its channels and its hex text on it rather than a string (TRX1091)
 - Added `trx.cutscenes.actor_count`, `trx.cutscenes.set_actor_visible()`, `trx.cutscenes.set_node_mesh()` and `trx.cutscenes.clear_node_mesh()`, for hiding an actor in the scene on screen or putting another object's mesh on one (TRX1058)
-- Fixed creatures taking wrong routes where crossing to the next square needs a jump or a monkey swing (TRX1061)
 - Changed `trx.cutscenes.play()` to take whether to fade out first, so a scene that opens a level begins on the black screen the level loaded behind (TRX1063)
 - Changed a color setting to read as a `trx.math.Color` rather than as hex text, and to be written with either (TRX1091)
 - Changed the `trx.weapons` functions that take a weapon id to be deprecated, the weapon itself now answering what it is available as, what it is carried as, and what it is fed (TRX1091)
+- Fixed creatures taking wrong routes where crossing to the next square needs a jump or a monkey swing (TRX1061)
 
 
 
@@ -640,11 +638,12 @@ Showcase: https://youtu.be/FapipqrYQI0
 - added climbing poles for custom levels
 - added a setting to control whether the opening story FMV plays on new game or at launch (Gameplay → General → Intro FMV timing) (#5658)
 - added an option to render gun/flare flashes semi-transparent with a glow bloom effect, like the TR2 PS1 version, for TR1/TR2 (Graphic Options → Visuals → Gun glow) (#1709)
+- improved the `-l` command line option to match installed level titles when no file path is found
+- improved handling of dead enemies used as switch triggers in custom levels by not altering their activation status and by adding detection for having been exploded (#5682)
 - changed `Game mode selection` to allow hiding the dialog even after having completed the game (Gameplay → General → Game mode selection)
 - changed opening story FMVs to play on new game rather than on every launch/switch by default (#5658)
 - changed `O_SPARKS_GFX` sprite ordering and contents - refer to migration guide
-- improved the `-l` command line option to match installed level titles when no file path is found
-- improved handling of dead enemies used as switch triggers in custom levels by not altering their activation status and by adding detection for having been exploded (#5682)
+- removed the hard-coded spawn distance between Puna and his Lizards (#5686)
 - fixed the Gameplay settings dialog layout so settings lists and presets use the available space more consistently
 - fixed Lara having an empty left holster if the option to remember guns between levels is used and she finished with the Desert Eagle (#5697)
 - fixed Lara getting stuck in the flare throwing animation if she is killed in this state
@@ -676,13 +675,12 @@ Showcase: https://youtu.be/FapipqrYQI0
 - fixed Lara continuing to travel in the zip line state despite the zip line having stopped, allowing her to void in some cases
 - fixed Lara jittering when letting go of zip lines in some cases (#2823)
 - fixed Lara's lower meshes re-appearing after saving and loading in the kayak (regression from 1.3)
-- removed the hard-coded spawn distance between Puna and his Lizards (#5686)
 
 **TR1**:
 - added Lara's PS1 shimmying sound effects (Sound → Misc → PS1 SFX replacements) (#943)
 - added the TR2 inventory background as an option for the inventory, pause and stats screens
-- fixed missing hand grab SFX when Lara is climbing a ladder (#4266)
 - removed the option to fix the chain block sound via the UI in Unfinished Business
+- fixed missing hand grab SFX when Lara is climbing a ladder (#4266)
 
 **TR2**:
 - added the option to toggle FMVs via the UI in The Golden Mask
@@ -746,6 +744,7 @@ Showcase: https://youtu.be/dwb3eT2zRHU
 - added the ability for fish shoals to be affected by surrounding lighting and fog via a `use_room_lighting` property (#5618)
 - added animated interaction support to keyholes and puzzle slots (#4471)
 - added an option to control snap interactions for targets such as pickups and switches (Gameplay → Controls → Snap interactions)
+- improved injected gun/ammo model consistency between each game
 - changed `/music` to show the current track, deferred ambient, and any active overlay tracks when used without arguments
 - changed `/music` to accept `stop` and list playable track ranges for invalid track IDs
 - changed vehicles to allow defining in Lua whether or not they can activate heavy triggers; refer to migration notes
@@ -756,7 +755,6 @@ Showcase: https://youtu.be/dwb3eT2zRHU
 - changed hard-coded small Cobra radius setup to be configurable via Lua
 - changed the hard-coded creature melee and hitscanner damage values to be configurable via Lua. Exemption: visible projectiles.
 - changed the hard-coded traps damage to be configurable via Lua. Exemption: one-shot traps such as crushing boulders.
-- improved injected gun/ammo model consistency between each game
 - removed the hard-coded movement speed and moved it to Lua instead for the following objects:
     - `O_CEILING_SPIKES`
     - `O_LAVA_WEDGE`
@@ -801,6 +799,7 @@ Showcase: https://youtu.be/dwb3eT2zRHU
 **TR3**:
 - added the ability to define the flame interval of `O_FLAME_EMITTER_SIDE` objects
 - added an option to fix animated spikes resetting when loading a save (Gameplay → Fixes → Fix animated spikes)
+- improved the scaling of the grenades item inside the inventory
 - changed spark effects to no longer cap their screen size, so they scale more naturally when zooming in photo mode
 - changed spark effects to use `O_SPARKS_GFX` rather than `O_EXPLOSION_1`
 - changed piranhas, tropical fish and bat emitters to use dedicated sprite objects; refer to migration guide
@@ -812,7 +811,6 @@ Showcase: https://youtu.be/dwb3eT2zRHU
 - changed animated spikes sound effects in specific levels to use animation commands instead
 - changed animated spikes to work outside levels 5 and 7
 - changed `O_AI_PATROL_1` behavior in High Security Compound and Area 51 to be configurable; refer to migration docs
-- improved the scaling of the grenades item inside the inventory
 - removed the hard-coded Aldwych drill speed override and moved it to Lua instead
 - removed the option to fix animated sprites, which has no relevance in TR3/TR3LA
 - fixed handheld flare sparks appearing inside the flare instead of above the tip
@@ -867,10 +865,10 @@ Showcase: https://youtu.be/L1g4tavx23Y
     - `O_LARA_MINE_CART`
 - added Lara's Antarctica beta outfit (#5190)
 - added support for heavy switch, heavy antitrigger, crouch, climb, and monkeyswing trigger types in custom levels
-- changed weather to spawn at the camera's position when fixed cameras are in use (#5516)
 - improved pathfinding checks to guard against potential crashes when enemies are in invalid locations
 - improved vaulting logic for Lara, allowing her to grab the lowest reachable ledge in front of her when only action is held, regardless of room layout (#5205)
 - improved crouch turning for Lara to allow for more responsive transitions to crouch idle, crouch roll, and crawl idle states
+- changed weather to spawn at the camera's position when fixed cameras are in use (#5516)
 - changed `/set` to refuse level-enforced settings unless `--force` is used
 - changed ally kills to optionally count towards the kill total (Gameplay Options → General → Count ally kills)
 - changed environment kills counting towards the kill total to be optional (Gameplay Options → General → Count environment kills)
@@ -966,11 +964,11 @@ Showcase: https://youtu.be/yTW99iecK3U
 - added `O_DISPOSABLE_ANIMATING_1`...`O_DISPOSABLE_ANIMATING_10`, which will behave like regular animating objects but are removed from being drawn when deactivated
 - added an option to fix inaccurate wall geometry in original levels (Gameplay Options → Fixes → Fix wall geometry)
 - added an option to control how land creatures behave in water (Gameplay Options → General → Creature drown policy) (#5387)
-- changed the PS1 crystal tint option to take effect without having to reload the level
-- changed the `ITEM_ACTION_FLOOD` sound effect to play when underwater rather than only when above water
 - improved weapon setup so picking up a weapon can now give a different amount of ammo than picking up its matching ammo item (#5352)
 - improved `--level PATH` so it accepts relative paths and reports clearer startup errors when the level cannot be launched
 - improved savegame loading if item counts have changed between making the save and loading it
+- changed the PS1 crystal tint option to take effect without having to reload the level
+- changed the `ITEM_ACTION_FLOOD` sound effect to play when underwater rather than only when above water
 - fixed max stats not refreshing after changing unobtainable pickups, kills, or secrets in the gameflow
 - fixed TR1 and TR2 camera modes potentially going out of bounds in some rare scenarios
 - fixed Lara rapidly switching animations when shimmying across the top of a ladder (#5295)
@@ -1029,9 +1027,9 @@ Showcase: https://youtu.be/yTW99iecK3U
 - added Fire Head control
 - added Disposable Animating control (Tinnos light shaft)
 - added an option to disable body bag triggers, so that killed enemies will always be visible
-- changed Sophia's final height to follow the level setup instead of using a fixed value
 - restored the animated mine cart tracks in RX-Tech Mines
 - restored the missing flamethrower blast sound effect in RX-Tech Mines and Meteorite Cavern
+- changed Sophia's final height to follow the level setup instead of using a fixed value
 - removed Lara's Home from TR3:LA to stay compatible with the OG and other expansion packs
 - removed the need to define Wasp items near to Wasp Emitters
 - fixed Wasp Emitters not spawning items if previously spawned Wasps are still active and unreachable
@@ -1085,9 +1083,9 @@ Showcase: https://youtu.be/TTlajgcM9-8
 - added the ability for security lasers to activate heavy triggers when tripped by Lara (#5225)
 - added `trx.camera.reset()` to Lua, which will reposition the camera based on Lara's position
 - added an option to disable cinematics at the start of levels (Offshore Rig, Home Sweet Home and High Security Compound) (Gameplay → General → Cinematics) (#5284)
+- improved rendering line segments (poison darts, rain drops, SWAT laser sights)
 - changed `--level` to no longer require `-e/--engine` to work
 - changed background images on title, inventory, and statistics screens to always use smooth bilinear filtering instead of the pixel-sharp look
-- improved rendering line segments (poison darts, rain drops, SWAT laser sights)
 - fixed recordings keeping unbound hotkeys active during playback
 - fixed being unable to change FOV after using photo mode without restarting the level (#5246, regression from TR1X 4.15)
 - fixed Lara getting stuck if using crouch-roll near very low ceilings (#5248)
@@ -1187,10 +1185,10 @@ Showcase: https://youtu.be/8SavYv2SawI
 - added an option for Lara to wear semi-transparent sunglasses (Graphic Options → Lara's sunglasses)
 - added four additional general animating object slots, `O_ANIMATING_7` to `O_ANIMATING_10`
 - added `O_FLICKERING_LIGHT`, which is similar to `O_ELECTRICAL_LIGHT` but is permanently flickering
-- changed the reflections option to be available in all game modes (Graphic Options → Enable reflections)
-- changed the delay in performing a running jump by one frame less, when jump lock mode is set to disabled (Gameplay → Controls → Jump lock mode) (#3841)
 - improved level loading times by 15%
 - improved FMV audio to play through the game's existing audio mixer instead of opening a separate audio device
+- changed the reflections option to be available in all game modes (Graphic Options → Enable reflections)
+- changed the delay in performing a running jump by one frame less, when jump lock mode is set to disabled (Gameplay → Controls → Jump lock mode) (#3841)
 - fixed High lighting contrast not attenuating brightness properly in TR1 and TR2 (regression from 1.1)
 - fixed the photo mode red frame not covering the full screen when using integer upscaling
 - fixed boulders that have moved vertically reactivating for a frame after loading a save (regression from 1.2)
@@ -1233,6 +1231,7 @@ Showcase: https://youtu.be/8SavYv2SawI
     - wake effects
     - explosion rings
     - bat emitters
+- added PSX-style underwater water particles to Madubu Gorge, Aldwych, and Lud's Gate
 - changed Ammo Counter to appear in red when the Menu Style is set to PS1
 - changed Punks to have friendliness assignable through Lua, so removing the hard-coded behaviour in the Lud's Gate level sequence
 - changed Trains to no longer hard-code speed based on the level number and instead take it from their default animation
@@ -1246,7 +1245,6 @@ Showcase: https://youtu.be/8SavYv2SawI
 - fixed TR1/TR2-only options showing up in TR3 gameplay settings (#5055)
 - fixed Lara stopping against one-click raised slopes when running instead of beginning to slide (#5038)
 - fixed rain not spawning in outside rooms in the Thames Wharf cutscene
-- added PSX-style underwater water particles to Madubu Gorge, Aldwych, and Lud's Gate
 - fixed the punk in the cutscene before Lud's Gate walking through a wall
 - fixed Lara appearing frozen at the beginning of the cutscene before City
 - fixed incorrect texturing on the fish in City
@@ -1310,6 +1308,7 @@ Showcase: https://youtu.be/FgB9JgDM65E
 - added `/tp precise {x} {y} {z}` to teleport using raw world-space coordinates (no `/1024` scaling – matches TRView)
 - added the ability to use glide cameras when using TR3 camera mode
 - added an option to toggle glide cameras (Graphic Options → Visuals → Glide cameras)
+- improved error reporting for gameflow issues to now display full key paths for faulty nodes
 - changed PC and PS1 UI colors to no longer be hardcoded by moving it to `ui.json5` (#5003)
 - changed Fog start and Fog end to change by 10 by default, with Slow allowing 1-step precision (#5015)
 - changed `O_WINDOW_1` and `O_WINDOW_2` to `O_SMASH_OBJECT_1` and `O_SMASH_OBJECT_2` respectively
@@ -1318,7 +1317,6 @@ Showcase: https://youtu.be/FgB9JgDM65E
 - changed loading screens setting to use modes (`disabled`, `always`, `new-games`). Previously, they were hardcoded to not show for saves (#1290)
 - changed logs to no longer emit ANSI color characters when the game's output is piped to a file / process
 - changed the degenerate static mesh collision check to only apply when all axes have an empty size
-- improved error reporting for gameflow issues to now display full key paths for faulty nodes
 - fixed Lara teleporting after vaulting 2 or 3 clicks when there is a room below the target position that has no immediately adjoining portal (#4530)
 - fixed Lara attempting to jump up (using action) despite the ceiling above her making it impossible to grab any ledge (#3558)
 - fixed Lara not being able to grab ledges when under low ceilings (#4093)
@@ -1355,6 +1353,7 @@ Showcase: https://youtu.be/FgB9JgDM65E
 - added an option to allow Lara to crouch and crawl (Gameplay → Controls → Crawling)
 - added support for monkey bars
 - changed Lara to be able to grab ealier when performing forward jumps, like TR3
+- removed the requirement to use `main.sfx` in custom levels (#3898)
 - fixed secret reward in Venice giving Magnums ammo instead of Automatic Pistol Clips (#4951, regression from 1.1)
 - fixed flickering switches and spike ceilings in Temple of Xian and Floating Islands (#4874)
 - fixed Airlock door handles not getting drawn from certain angles (#4886, regression from 1.0)
@@ -1362,7 +1361,6 @@ Showcase: https://youtu.be/FgB9JgDM65E
 - fixed Lara not being able to move after exiting water, having used an underwater lever with the animated interactions setting enabled (#4912, regression from 1.0)
 - fixed Bell in room 48 being shootable from room 55 (#4949, regression from TR2X 1.4)
 - fixed "Disable T-Rex Collision" option missing from The Golden Mask (there are T-Rex enemies in Nightmare in Vegas)
-- removed the requirement to use `main.sfx` in custom levels (#3898)
 
 **TR3**:
 - added reverb support
@@ -1392,6 +1390,10 @@ Showcase: https://youtu.be/FgB9JgDM65E
   - added the ability to turn while in the crouch idle state
   - restored an unused pickup animation when in the crawling state, bypassing the crouch transition
 - added a transition from ladder to crawlspaces instead of first having to drop and re-grab the ladder (#4954)
+- restored the ability for Lara to perform grab cancels, like TR1 and TR2
+- restored glide camera functionality
+- removed the limitation of one Carcass instance per level working with Piranhas
+- removed the limitation of Piranhas only attacking Carcass instances if the level sequence matches Crash Site's
 - fixed Uzis having wrong clips capacity (was 80, is now 40 – sorry!)
 - fixed Lara briefly switching from run back to wade when crossing from 2-click to 1-click water depth
 - fixed Lara unable to climb small ledges with low crawlspaces
@@ -1414,10 +1416,6 @@ Showcase: https://youtu.be/FgB9JgDM65E
 - fixed Lara's footprints sometimes spawning when standing on a bridge, trapdoor or pushblock
 - fixed Lara being unable to walk or sidestep at times when standing on a bridge that sits over a steep slope (regression from 1.1)
 - fixed Lara's left arm elevating when holding a flare and performing a crouch pickup (regression from 1.1)
-- removed the limitation of one Carcass instance per level working with Piranhas
-- removed the limitation of Piranhas only attacking Carcass instances if the level sequence matches Crash Site's
-- restored the ability for Lara to perform grab cancels, like TR1 and TR2
-- restored glide camera functionality
 
 
 

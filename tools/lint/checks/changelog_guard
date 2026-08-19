@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
-# Ensures changelog entries are only appended to unreleased versions,
-# and the stable release changelogs remain frozen.
+# Ensures changelog entries are only appended to unreleased versions, that the
+# stable release changelogs remain frozen, that a version lists a section only
+# once, and that the entries in a section run added, restored, improved,
+# changed, removed, fixed.
 
 import re
 import subprocess
 import sys
+from dataclasses import dataclass, field
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -13,19 +16,76 @@ from harness import LintWarning, repo_check
 from shared.paths import DOCS_DIR, REPO_DIR
 
 CHANGELOG_PATH = DOCS_DIR / "CHANGELOG.md"
-HEADER_RE = re.compile(r"^## \[(?P<name>[^\]]+)\]")
+VERSION_RE = re.compile(r"^## \[(?P<name>[^\]]+)\]")
+SECTION_RE = re.compile(r"^\*\*(?P<name>.+?)\*\*:?$")
+SUBSECTION_RE = re.compile(r"^\*(?P<name>[^*].*?)\*:?$")
+ENTRY_RE = re.compile(r"^- (?P<verb>\w+)")
+VERB_ORDER = [
+    "added",
+    "restored",
+    "improved",
+    "changed",
+    "removed",
+    "fixed",
+]
 
 
-def _sections(text: str) -> dict[str, list[str]]:
-    sections: dict[str, list[str]] = {}
-    name: str | None = None
-    for line in text.splitlines():
-        if match := HEADER_RE.match(line):
-            name = match.group("name")
-            sections[name] = []
-        elif name is not None and line.startswith("- "):
-            sections[name].append(line)
-    return sections
+@dataclass
+class Entry:
+    text: str
+    verb: str
+    line: int
+
+
+@dataclass
+class Section:
+    # The bold heading, then the italic one nested under it; either is absent
+    # where the version does not use that level.
+    name: tuple[str | None, str | None]
+    line: int
+    entries: list[Entry] = field(default_factory=list)
+
+    def __str__(self) -> str:
+        parts = [f"**{self.name[0]}**"] if self.name[0] is not None else []
+        if self.name[1] is not None:
+            parts.append(f"*{self.name[1]}*")
+        return " ".join(parts)
+
+
+@dataclass
+class Version:
+    name: str
+    line: int
+    sections: list[Section] = field(default_factory=list)
+
+    @property
+    def entries(self) -> list[Entry]:
+        return [entry for s in self.sections for entry in s.entries]
+
+
+def _parse(text: str) -> list[Version]:
+    versions: list[Version] = []
+    for line_no, line in enumerate(text.splitlines(), start=1):
+        if match := VERSION_RE.match(line):
+            versions.append(Version(match.group("name"), line_no))
+        elif not versions:
+            continue
+        elif match := SECTION_RE.match(line):
+            versions[-1].sections.append(
+                Section((match.group("name"), None), line_no)
+            )
+        elif match := SUBSECTION_RE.match(line):
+            sections = versions[-1].sections
+            parent = sections[-1].name[0] if sections else None
+            sections.append(Section((parent, match.group("name")), line_no))
+        elif match := ENTRY_RE.match(line):
+            sections = versions[-1].sections
+            if not sections:
+                sections.append(Section((None, None), line_no))
+            sections[-1].entries.append(
+                Entry(line, match.group("verb").lower(), line_no)
+            )
+    return versions
 
 
 def _head_text() -> str | None:
@@ -38,28 +98,84 @@ def _head_text() -> str | None:
     return result.stdout if result.returncode == 0 else None
 
 
-def check():
+def _check_frozen(versions: list[Version]):
     head_text = _head_text()
     if head_text is None:
         return
+    head = {v.name: {e.text for e in v.entries} for v in _parse(head_text)}
 
-    head = _sections(head_text)
-    current = _sections(CHANGELOG_PATH.read_text(encoding="utf-8"))
-    lines = CHANGELOG_PATH.read_text(encoding="utf-8").splitlines()
-
-    for name, entries in current.items():
-        if name.lower() == "unreleased" or name not in head:
+    for version in versions:
+        if version.name.lower() == "unreleased" or version.name not in head:
             continue
-        known = set(head[name])
-        for entry in entries:
-            if entry in known:
+        for entry in version.entries:
+            if entry.text in head[version.name]:
                 continue
             yield LintWarning(
                 CHANGELOG_PATH.relative_to(REPO_DIR),
-                f"[{name}] has shipped - move this entry to [Unreleased]: "
-                f"{entry[2:]}",
-                line=lines.index(entry) + 1 if entry in lines else None,
+                f"[{version.name}] has shipped - move this entry to "
+                f"[Unreleased]: {entry.text[2:]}",
+                line=entry.line,
             )
+
+
+def _check_duplicates(versions: list[Version]):
+    seen_versions: dict[str, int] = {}
+    for version in versions:
+        if first := seen_versions.get(version.name):
+            yield LintWarning(
+                CHANGELOG_PATH.relative_to(REPO_DIR),
+                f"[{version.name}] is already listed on line {first}",
+                line=version.line,
+            )
+        else:
+            seen_versions[version.name] = version.line
+
+        seen_sections: dict[tuple[str | None, str | None], int] = {}
+        for section in version.sections:
+            if section.name == (None, None):
+                continue
+            if first := seen_sections.get(section.name):
+                yield LintWarning(
+                    CHANGELOG_PATH.relative_to(REPO_DIR),
+                    f"[{version.name}] lists {section} twice - merge it into "
+                    f"the one on line {first}",
+                    line=section.line,
+                )
+            else:
+                seen_sections[section.name] = section.line
+
+
+def _check_order(versions: list[Version]):
+    for version in versions:
+        for section in version.sections:
+            where = f"[{version.name}]"
+            if section.name != (None, None):
+                where += f" {section}"
+            rank = -1
+            for entry in section.entries:
+                if entry.verb not in VERB_ORDER:
+                    yield LintWarning(
+                        CHANGELOG_PATH.relative_to(REPO_DIR),
+                        f"{where} opens an entry with an unknown word: "
+                        f"{entry.verb}",
+                        line=entry.line,
+                    )
+                    continue
+                if VERB_ORDER.index(entry.verb) < rank:
+                    yield LintWarning(
+                        CHANGELOG_PATH.relative_to(REPO_DIR),
+                        f"{where} runs out of order - move this entry up to "
+                        f"the other {entry.verb} entries",
+                        line=entry.line,
+                    )
+                rank = max(rank, VERB_ORDER.index(entry.verb))
+
+
+def check():
+    versions = _parse(CHANGELOG_PATH.read_text(encoding="utf-8"))
+    yield from _check_frozen(versions)
+    yield from _check_duplicates(versions)
+    yield from _check_order(versions)
 
 
 repo_check(check)
