@@ -1542,7 +1542,7 @@
         },
         "rendering.lighting_curve": {
             "title": "\\{review}Modail an t-solais",
-            "description": "\\{review}Taghaidh seo dè cho fada 's a sgèilicheas solas nan oisean an t-inneach. Tha overbright mar a bha na h-einnseanan PC: bheir oisean làn-shoillsichte an texel gu dà uiread de shoillseachd, leis a' chòrr air a chur ris às a dhèidh. Tha sàthachadh mar a bha air a' PlayStation: dùblaichidh e an texel cuideachd, ach leigidh e le gach dath a ghearradh far an ruig e, agus mar sin cumaidh uachdaran soilleir an dath fhèin an àite a dhol geal. Stadaidh am modail rèidh aig soillseachd an inneach fhèin, agus tha e nas duirche.",
+            "description": "\\{review}Taghaidh seo dè cho fada 's a sgèilicheas solas nan oisean an t-inneach.\n\n- Stadaidh am modail rèidh aig soillseachd an inneach fhèin, agus tha e nas duirche (TR3 PC).\n- Tha overbright mar a bha na h-einnseanan PC: bheir oisean làn-shoillsichte an texel gu dà uiread de shoillseachd, leis a' chòrr air a chur ris às a dhèidh (TR4 PC).\n- Tha sàthachadh mar a bha air a' PlayStation: dùblaichidh e an texel cuideachd, ach leigidh e le gach dath a ghearradh far an ruig e, agus mar sin cumaidh uachdaran soilleir an dath fhèin an àite a dhol geal (TR3/TR4 PS1).",
         },
         "rendering.multisampling_factor": {
             "title": "Ioma-shamplachadh",

@@ -1542,7 +1542,7 @@
         },
         "rendering.lighting_curve": {
             "title": "Lighting model",
-            "description": "Chooses how far vertex lighting scales the texture. Overbright is what the PC renderers did: a fully lit vertex takes the texel to twice its brightness, with the excess added on afterwards. Saturate is the PlayStation's, doubling the texel as well but letting each color clip where it lands, which keeps bright surfaces in their own color instead of washing them out. Flat stops at the texture's own brightness, which is dimmer.",
+            "description": "Chooses how far vertex lighting scales the texture.\n\n- Flat stops at the texture's own brightness, which is dimmer (TR3 PC).\n- Overbright is what the PC renderers did: a fully lit vertex takes the texel to twice its brightness, with the excess added on afterwards (TR4 PC).\n- Saturate is the PlayStation's, doubling the texel as well but letting each color clip where it lands, which keeps bright surfaces in their own color instead of washing them out (TR3/TR4 PS1).",
         },
         "rendering.multisampling_factor": {
             "title": "Multisampling",
