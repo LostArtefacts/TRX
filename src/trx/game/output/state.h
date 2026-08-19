@@ -30,7 +30,12 @@ RGBA_F Output_GetTint(void);
 void Output_PushTintOverride(RGBA_F tint);
 void Output_PopTintOverride(void);
 bool Output_GetWaterEffect(void);
+// Reports whether room geometry distorts. TR1 to TR3 distort water seen from
+// above and dry rooms seen from below the surface. TR4 distorts every room
+// while the camera is below the surface.
 bool Output_GetWibbleEffect(void);
+// Reports whether objects and static meshes distort.
+bool Output_GetObjectWibbleEffect(void);
 
 RGBA_F Output_GetFogColor(void);
 int32_t Output_GetFogStart(void);

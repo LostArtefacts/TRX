@@ -140,7 +140,7 @@ void Output_SetFogEnd(const int32_t dist)
 void Output_SetupBelowWater(const bool underwater)
 {
     m_IsWaterEffect = true;
-    m_IsWibbleEffect = !underwater;
+    m_IsWibbleEffect = g_TRVersion == 4 ? underwater : !underwater;
     m_IsShadeEffect = true;
 }
 
@@ -159,6 +159,11 @@ bool Output_GetWaterEffect(void)
 bool Output_GetWibbleEffect(void)
 {
     return m_IsWibbleEffect;
+}
+
+bool Output_GetObjectWibbleEffect(void)
+{
+    return g_TRVersion == 4 && m_IsWibbleEffect;
 }
 
 void Output_SetFogColor(const RGBA_8888 color)

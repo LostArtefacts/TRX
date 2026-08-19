@@ -116,7 +116,10 @@ static void M_AddRoomFace(
             &room->mesh.vertices[face->vertices[i]];
 
         uint16_t flags = 0;
-        if (room_vert->flags.disable_wibble) {
+        const bool disable_wibble = g_TRVersion == 4
+            ? room_vert->flags.move
+            : room_vert->flags.disable_wibble;
+        if (disable_wibble) {
             flags |= VERT_NO_WIBBLE;
         }
         if (room_vert->flags.move) {
