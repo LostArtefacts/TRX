@@ -3,8 +3,10 @@
 #include <trx/config.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
+#include <trx/game/anims/walk.h>
 #include <trx/game/collision/common.h>
 #include <trx/game/lara/common.h>
+#include <trx/game/lara/pose.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
@@ -61,9 +63,9 @@ static OUTPUT_MESH *M_GenerateShadow(
 }
 
 // Answers for Lara alone, whose shadow takes the floor under the place the
-// frame moves her to rather than the floor her item stands on. Crawling puts
-// the root away from her, and the item answers there instead. False for
-// anything but Lara on her feet.
+// frame or the pose moves her to rather than the floor her item stands on.
+// Crawling puts the root away from her, and the item answers there instead.
+// False for anything but Lara on her feet.
 static bool M_GetLaraAnchor(
     const ITEM *const item, XYZ_32 *const anchor_pos, int32_t *const floor)
 {
@@ -85,6 +87,61 @@ static bool M_GetLaraAnchor(
     if (height != NO_HEIGHT) {
         *floor = height;
     }
+    return true;
+}
+
+// Measures the box a pose puts around Lara, in the space her item stands in.
+// A pose holds her through a scene while her item keeps the animation frame it
+// stopped on, so the box that frame carries reports the wrong size. False for
+// anything but Lara under a pose.
+static bool M_GetPoseBounds(const ITEM *const item, BOUNDS_16 *const out)
+{
+    if (item != Lara_GetItem()) {
+        return false;
+    }
+    const LARA_POSE *const pose = Lara_Pose_Get();
+    if (pose == nullptr) {
+        return false;
+    }
+
+    const OBJECT *const obj = Object_Get(item->object_id);
+    XYZ_32 min = { INT32_MAX, INT32_MAX, INT32_MAX };
+    XYZ_32 max = { INT32_MIN, INT32_MIN, INT32_MIN };
+
+    Matrix_PushUnit();
+    ANIM_WALK walk;
+    Anim_Walk_Begin(
+        &walk,
+        &(ANIM_WALK_DESC) {
+            .obj = obj,
+            .pose = Anim_Pose_FromRots(pose->rots, pose->offset),
+            .extra_rotations = item->extra_rotations,
+        });
+    while (Anim_Walk_Next(&walk)) {
+        const OBJECT_MESH *const mesh =
+            Object_GetMesh(obj->mesh_idx + walk.joint);
+        for (int32_t i = 0; i < mesh->num_vertices; i++) {
+            const XYZ_32 vertex =
+                Anim_Walk_GetPos(&walk, XYZ_32_From16(mesh->vertices[i]));
+            min.x = MIN(min.x, vertex.x);
+            min.y = MIN(min.y, vertex.y);
+            min.z = MIN(min.z, vertex.z);
+            max.x = MAX(max.x, vertex.x);
+            max.y = MAX(max.y, vertex.y);
+            max.z = MAX(max.z, vertex.z);
+        }
+    }
+    Anim_Walk_End(&walk);
+    Matrix_Pop();
+
+    if (min.x > max.x) {
+        return false;
+    }
+
+    *out = (BOUNDS_16) {
+        .min = { min.x, min.y, min.z },
+        .max = { max.x, max.y, max.z },
+    };
     return true;
 }
 
@@ -332,7 +389,7 @@ void OutputSource_Shadows_Shutdown(void)
 }
 
 void OutputSource_Shadows_Draw(
-    const int16_t size, const BOUNDS_16 *const bounds, const ITEM *const item)
+    const int16_t size, const BOUNDS_16 *bounds, const ITEM *const item)
 {
     if (!item->enable_shadow) {
         return;
@@ -343,6 +400,11 @@ void OutputSource_Shadows_Draw(
         return;
     }
     bind->shadow_drawn = true;
+
+    BOUNDS_16 pose_bounds;
+    if (M_GetPoseBounds(item, &pose_bounds)) {
+        bounds = &pose_bounds;
+    }
 
     if (g_Config.visuals.shadow_type == SHADOW_TYPE_SPRITE) {
         if (M_DrawSprite(size, bounds, item)) {

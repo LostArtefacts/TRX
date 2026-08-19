@@ -6,11 +6,11 @@
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/subsystem.h>
+#include <trx/core/utils.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/interpolation.h>
-#include <trx/game/items.h>
 #include <trx/game/lara/hair.h>
 #include <trx/game/objects.h>
 #include <trx/game/shell.h>
