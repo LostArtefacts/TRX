@@ -50,6 +50,13 @@ function M.hide_items(object)
   end
 end
 
+-- Shows or hides every item of an object.
+function M.set_items_visible(object, visible)
+  for _, item in ipairs(trx.items.query:of_object(object):matches()) do
+    item.is_visible = visible
+  end
+end
+
 -- Plays a cutscene as the level opens. Some scenes are named by no floor
 -- trigger at all: the original game starts them from the level's own entry in
 -- the game flow, and a level script is where TRX says so. One that has already
