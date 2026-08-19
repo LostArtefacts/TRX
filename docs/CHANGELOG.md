@@ -92,6 +92,7 @@
 - Added level statistics scanning (TRX1201)
 - Added the timer Race for the Iris runs between its cutscenes (TRX1109)
 - Added the wobble effect the original shows while the camera is under water (TRX523)
+- Added the drifting specks the original shows in water rooms (TRX553)
 - Changed a flip to move the group of rooms the trigger names, rather than every flip room in the level (TRX173)
 - Fixed animations that move an item sideways playing with the item standing still, such as TR4's guide shimmy (TRX1062)
 - Fixed creatures walking through squares a pushable block stands on (TRX1060)

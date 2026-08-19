@@ -243,7 +243,7 @@
         },
         "water_particles": {
           "type": "boolean",
-          "description": "Enables PSX-style underwater water particles in this level."
+          "description": "Enables PSX-style underwater water particles in this level. TR4 shows them in every water room and ignores this property."
         },
         "death_tile": {
           "type": "string",

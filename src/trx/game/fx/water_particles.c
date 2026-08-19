@@ -1,6 +1,3 @@
-// TR3 underwater residue: faint specks drifting around Lara while she is
-// submerged. The droplets falling off her once she is out of the water are
-// fx/droplets.c.
 #include <trx/config.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
@@ -17,6 +14,7 @@
 #include <trx/game/output/vars.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
+#include <trx/version.h>
 
 #include <string.h>
 
@@ -43,6 +41,10 @@ static bool M_IsEnabled(void)
 {
     if (!g_Config.visuals.enable_weather) {
         return false;
+    }
+
+    if (g_TRVersion == 4) {
+        return true;
     }
 
     const GF_LEVEL *const level = GF_GetCurrentLevel();
