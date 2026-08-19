@@ -131,9 +131,7 @@ vec3 safeNormalize(vec3 v)
 
 float getDynamicLightContrastMul()
 {
-    // `uMinShade` is configured via the "lighting contrast" option.
-    // For TR1/TR2 it clamps the minimum shade; in TR3+ the lighting is
-    // additive, so we remap it to a multiplier:
+    // Returns the dynamic-light contrast multiplier from the minimum shade.
     // LOW: uMinShade = SHADE_NEUTRAL -> 1.0
     // MED: uMinShade = SHADE_HIGH    -> 1.5
     // HIGH:uMinShade = 0             -> 2.0

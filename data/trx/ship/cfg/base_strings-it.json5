@@ -62,6 +62,7 @@
             "fps_counter_off": "Contatore FPS disabilitato",
             "fps_counter_on": "Contatore FPS abilitato",
             "lighting_contrast_fmt": "Contrasto: %s",
+            "lighting_curve_fmt": "\\{review}Modello di illuminazione: %s",
             "load_game": "Partita caricata dallo slot di salvataggio %d",
             "quick_load": "Caricamento rapido dallo slot %d",
             "quick_load_fail_no_bound_slot": "Nessuno slot di salvataggio attualmente assegnato",
@@ -724,7 +725,7 @@
             "INPUT_ROLE_CHANGE_OUTFIT": "Cambia Costume",
             "INPUT_ROLE_CHANGE_TARGET": "Cambia Bersaglio",
             "INPUT_ROLE_CROUCH": "Accovacciati",
-            "INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "Livello Contrasto",
+            "INPUT_ROLE_CYCLE_LIGHTING_MODEL": "\\{review}Cambia modello di illuminazione",
             "INPUT_ROLE_DOWN": "Indietro",
             "INPUT_ROLE_DRAW_WEAPON": "Estrai Arma",
             "INPUT_ROLE_ENTER_CONSOLE": "Apri Console",
@@ -790,6 +791,11 @@
             "LIGHTING_CONTRAST_HIGH": "Alto",
             "LIGHTING_CONTRAST_LOW": "Basso",
             "LIGHTING_CONTRAST_MEDIUM": "Medio",
+        },
+        "LIGHTING_CURVE": {
+            "LIGHTING_CURVE_FLAT": "\\{review}Piatto",
+            "LIGHTING_CURVE_OVERBRIGHT": "\\{review}Overbright",
+            "LIGHTING_CURVE_SATURATE": "\\{review}Saturazione",
         },
         "LOADING_SCREENS_MODE": {
             "LOADING_SCREENS_ALWAYS": "Sempre",
@@ -1533,6 +1539,10 @@
         "rendering.lighting_contrast": {
             "title": "Contrasto",
             "description": "Aumenta il contrasto per fonti di luce dinamiche come razzi di segnalazione e lampi di armi da fuoco.",
+        },
+        "rendering.lighting_curve": {
+            "title": "\\{review}Modello di illuminazione",
+            "description": "\\{review}Sceglie quanto l'illuminazione per vertice scala la texture. Overbright è ciò che facevano i renderer per PC: un vertice pienamente illuminato porta il texel al doppio della luminosità, con l'eccesso aggiunto dopo. Saturazione è quella della PlayStation: raddoppia anch'essa il texel, ma lascia che ogni colore si tronchi dove arriva, così le superfici luminose restano nel proprio colore invece di sbiadire verso il bianco. Piatto si ferma alla luminosità della texture, quindi più scuro.",
         },
         "rendering.multisampling_factor": {
             "title": "Multicampionamento (MSAA)",

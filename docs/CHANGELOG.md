@@ -22,6 +22,7 @@
 - Changed the PS1 poison healthbar to flat yellow, as the PS1 releases had it (#5227 / TRX1135)
 - Changed the TR3 breeze mode to read TR3/4, as it covers both games (Graphic Options → Visuals → Breeze) (TRX1133)
 - Changed the preset confirmation to offer Apply and Go back as choices, rather than leaving the keys unsaid (#6258 / TRX1126)
+- Changed the F9 key to cycle the lighting model in TR3 and TR4, and the lighting contrast in TR1 and TR2
 - Changed vertex snapping to offer Disabled, 320x240, and Upscale Res modes (#6278 / TRX1137)
 - Fixed a setting description showing a question mark in place of a key that is bound to a combination, such as Alt+Enter (TRX1136)
 - Fixed ability to open the inventory ring while a flyby sequence has Lara's control (TRX1057)
@@ -56,6 +57,9 @@
 
 **Rendering**
 - Added the PlayStation depth cue (Graphic Options → Rendering → PlayStation fog)
+- Changed the lighting contrast option to appear in TR1 and TR2 only, as the other games light dynamic sources their own way (Graphic Options → Rendering → Lighting contrast)
+- Added the PlayStation lighting model, which deepens bright surfaces into their own color rather than white (Graphic Options → Rendering → Lighting model)
+- Changed TR3 to light geometry on the brighter curve its hardware renderer used (Graphic Options → Rendering → Lighting model)
 - Fixed scenery in an adjoining room being cut off along the edges of the portal it is seen through (TRX1159)
 - Fixed objects showing through rooms that share their space with the room the object stands in (TRX1168)
 - Fixed objects that reach into a neighbouring room being cut off or vanishing when seen through that room (TRX1168)

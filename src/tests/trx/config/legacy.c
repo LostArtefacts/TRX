@@ -9,10 +9,23 @@
 
 #include <trx/config/common.h>
 #include <trx/config/legacy.h>
+#include <trx/config/option.h>
+#include <trx/config/registry.h>
 #include <trx/config/vars.h>
 #include <trx/version.h>
 
 #include <string.h>
+
+// The options a migration reaches for by name rather than through g_Config.
+// Standing the registry up would bring the settings file with it, so these
+// answer for the three options the migrations name and record what was put
+// back.
+static CONFIG_OPTION m_LightingCurveOption;
+static CONFIG_OPTION m_BrightnessOption;
+static CONFIG_OPTION m_GammaOption;
+static bool m_HasLightingCurve;
+static bool m_BrightnessRestored;
+static bool m_GammaRestored;
 
 // A migration writes through the option that owns the setting. Standing one up
 // would mean the registry and the settings file behind it, and neither is what
@@ -30,6 +43,32 @@ bool Config_SetValue(const void *const mirror, const TRX_VALUE value)
     // Every setting a migration writes is int32 storage: a mode the file spells
     // as a name, or the version it was last written by.
     *(int32_t *)mirror = value.as_int;
+    return true;
+}
+
+CONFIG_OPTION *Config_FindOption(const char *const path)
+{
+    if (m_HasLightingCurve && strcmp(path, "rendering.lighting_curve") == 0) {
+        return &m_LightingCurveOption;
+    }
+    return nullptr;
+}
+
+CONFIG_OPTION *Config_FindOptionByMirror(const void *const mirror)
+{
+    if (mirror == &g_Config.visuals.game_brightness) {
+        return &m_BrightnessOption;
+    }
+    if (mirror == &g_Config.visuals.gamma) {
+        return &m_GammaOption;
+    }
+    return nullptr;
+}
+
+bool Config_Option_RestoreDefault(CONFIG_OPTION *const option, const bool force)
+{
+    m_BrightnessRestored |= option == &m_BrightnessOption;
+    m_GammaRestored |= option == &m_GammaOption;
     return true;
 }
 
@@ -130,6 +169,40 @@ TEST(the_version_the_file_was_last_written_by_is_brought_up_to_date)
     CHECK_EQ_INT(g_Config.config_version, -1);
 }
 
+TEST(a_file_that_predates_the_lighting_curve_gives_up_its_brightness)
+{
+    m_HasLightingCurve = true;
+    m_BrightnessRestored = false;
+    m_GammaRestored = false;
+    g_ConfigStorage.rendering.lighting_curve = LIGHTING_CURVE_OVERBRIGHT;
+    M_Load("{\"game_brightness\":1.5}");
+    CHECK_EQ_INT(g_Config.rendering.lighting_curve, LIGHTING_CURVE_SATURATE);
+    CHECK(m_BrightnessRestored);
+    CHECK(m_GammaRestored);
+}
+
+TEST(a_file_that_carries_the_lighting_curve_keeps_its_brightness)
+{
+    m_HasLightingCurve = true;
+    m_BrightnessRestored = false;
+    m_GammaRestored = false;
+    g_ConfigStorage.rendering.lighting_curve = LIGHTING_CURVE_FLAT;
+    M_Load("{\"game_brightness\":1.5,\"lighting_curve\":\"flat\"}");
+    CHECK_EQ_INT(g_Config.rendering.lighting_curve, LIGHTING_CURVE_FLAT);
+    CHECK(!m_BrightnessRestored);
+    CHECK(!m_GammaRestored);
+}
+
+TEST(a_game_without_the_lighting_curve_keeps_its_brightness)
+{
+    m_HasLightingCurve = false;
+    m_BrightnessRestored = false;
+    m_GammaRestored = false;
+    M_Load("{\"game_brightness\":1.5}");
+    CHECK(!m_BrightnessRestored);
+    CHECK(!m_GammaRestored);
+}
+
 TEST(a_key_a_migration_reads_is_one_the_writer_drops)
 {
     // The answer stands on the migrations this build has, not on what any file
@@ -141,6 +214,7 @@ TEST(a_key_a_migration_reads_is_one_the_writer_drops)
     CHECK(ConfigLegacy_IsKey("enable_dithering"));
     CHECK(ConfigLegacy_IsKey("enable_vertex_snap"));
     CHECK(ConfigLegacy_IsKey("enable_vertex_snap_at_upscale"));
+    CHECK(ConfigLegacy_IsKey("game_brightness"));
 }
 
 TEST(an_option_a_game_still_writes_is_not_a_legacy_key)

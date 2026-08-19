@@ -343,6 +343,7 @@ typedef struct {
         float anisotropy_filter;
         SCREENSHOT_FORMAT screenshot_format;
         LIGHTING_CONTRAST lighting_contrast;
+        LIGHTING_CURVE lighting_curve;
         BILLBOARD_LOCK_MODE sprite_lock_mode;
         int32_t upscaling_factor;
         int32_t supersampling_factor;

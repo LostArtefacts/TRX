@@ -62,6 +62,7 @@
             "fps_counter_off": "Compteur de FPS désactivé",
             "fps_counter_on": "Compteur de FPS activé",
             "lighting_contrast_fmt": "\\{review}Contraste de l'éclairage : %s",
+            "lighting_curve_fmt": "\\{review}Modèle d'éclairage : %s",
             "load_game": "Partie chargée depuis l'emplacement de sauvegarde %d",
             "quick_load": "\\{review}Emplacement de chargement rapide %d",
             "quick_load_fail_no_bound_slot": "\\{review}Aucun emplacement de sauvegarde n'est actuellement assigné",
@@ -724,7 +725,7 @@
             "INPUT_ROLE_CHANGE_OUTFIT": "\\{review}Changer de tenue",
             "INPUT_ROLE_CHANGE_TARGET": "Changer de cible",
             "INPUT_ROLE_CROUCH": "\\{review}S'accroupir",
-            "INPUT_ROLE_CYCLE_LIGHTING_CONTRAST": "\\{review}Contraste de l'éclairage en cycle",
+            "INPUT_ROLE_CYCLE_LIGHTING_MODEL": "\\{review}Modèle d'éclairage en cycle",
             "INPUT_ROLE_DOWN": "Retour",
             "INPUT_ROLE_DRAW_WEAPON": "Dégainer",
             "INPUT_ROLE_ENTER_CONSOLE": "Console de développement",
@@ -790,6 +791,11 @@
             "LIGHTING_CONTRAST_HIGH": "Élevé",
             "LIGHTING_CONTRAST_LOW": "Bas",
             "LIGHTING_CONTRAST_MEDIUM": "Moyen",
+        },
+        "LIGHTING_CURVE": {
+            "LIGHTING_CURVE_FLAT": "\\{review}Plat",
+            "LIGHTING_CURVE_OVERBRIGHT": "\\{review}Overbright",
+            "LIGHTING_CURVE_SATURATE": "\\{review}Saturation",
         },
         "LOADING_SCREENS_MODE": {
             "LOADING_SCREENS_ALWAYS": "\\{review}Toujours",
@@ -1533,6 +1539,10 @@
         "rendering.lighting_contrast": {
             "title": "Éclairage contrasté",
             "description": "Augmente le contraste pour les sources de lumière dynamiques telles que les torches et les flashs des armes.",
+        },
+        "rendering.lighting_curve": {
+            "title": "\\{review}Modèle d'éclairage",
+            "description": "\\{review}Détermine jusqu'où l'éclairage par sommet module la texture. Overbright correspond aux moteurs de rendu PC : un sommet pleinement éclairé porte le texel au double de sa luminosité, l'excédent étant ajouté ensuite. Saturation est celui de la PlayStation : il double aussi le texel mais laisse chaque couleur se couper là où elle arrive, ce qui garde aux surfaces vives leur propre couleur au lieu de les délaver vers le blanc. Plat s'arrête à la luminosité de la texture, donc plus sombre.",
         },
         "rendering.multisampling_factor": {
             "title": "\\{review}Multiéchantillonnage",

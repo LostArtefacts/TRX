@@ -196,7 +196,6 @@ X_CFG_ENUM(input.quick_guns_mode,                            QUICK_GUNS_MODE_DRA
 X_CFG_ENUM(rendering.aspect_mode,                            ASPECT_MODE_ANY, ASPECT_MODE)
 X_CFG_ENUM(rendering.dither_mode,                            DITHER_MODE_DISABLED, DITHER_MODE)
 X_CFG_ENUM(rendering.fmv_filter,                             TEXTURE_FILTER_BILINEAR, TEXTURE_FILTER)
-X_CFG_ENUM(rendering.lighting_contrast,                      LIGHTING_CONTRAST_MEDIUM, LIGHTING_CONTRAST)
 X_CFG_ENUM(rendering.screenshot_format,                      SCREENSHOT_FORMAT_JPEG, SCREENSHOT_FORMAT)
 X_CFG_ENUM(rendering.sprite_lock_mode,                       BILLBOARD_LOCK_PERSPECTIVE, BILLBOARD_LOCK_MODE)
 X_CFG_ENUM(rendering.texture_filter,                         TEXTURE_FILTER_POINT, TEXTURE_FILTER)

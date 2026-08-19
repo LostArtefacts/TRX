@@ -69,7 +69,7 @@ LightingResult light(
     }
 
     if ((flags & VERT_USE_DYNAMIC_LIGHT) != 0u) {
-        result.add += lightDynamicTR3(pos) * getDynamicLightContrastMul();
+        result.add += lightDynamicTR3(pos);
     }
 
     if ((flags & VERT_USE_OBJECT_LIGHT) != 0u) {

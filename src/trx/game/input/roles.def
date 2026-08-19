@@ -66,7 +66,7 @@ X_INPUT_ROLE(INPUT_ROLE_TOGGLE_PHOTO_MODE,       toggle_photo_mode)
 X_INPUT_ROLE(INPUT_ROLE_TOGGLE_UI,               toggle_ui)
 
 X_INPUT_ROLE(INPUT_ROLE_TOGGLE_BILINEAR_FILTER,  toggle_bilinear_filter)
-X_INPUT_ROLE(INPUT_ROLE_CYCLE_LIGHTING_CONTRAST, cycle_lighting_contrast)
+X_INPUT_ROLE(INPUT_ROLE_CYCLE_LIGHTING_MODEL,    cycle_lighting_model)
 X_INPUT_ROLE(INPUT_ROLE_CHANGE_OUTFIT,           change_outfit)
 X_INPUT_ROLE(INPUT_ROLE_TOGGLE_TRAPEZOID_FILTER, toggle_trapezoid_filter)
 X_INPUT_ROLE(INPUT_ROLE_TOGGLE_WIREFRAME,        toggle_wireframe)

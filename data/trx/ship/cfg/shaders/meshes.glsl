@@ -1,5 +1,7 @@
 #include "common.glsl"
 
+uniform vec4 uTint;
+
 #ifdef VERTEX
 
 uniform mat4 uMatModel;
@@ -140,6 +142,11 @@ void main(void) {
 
     float gamma_exp = 1.0 / ((uGamma / 10.0) * 4.0);
 
+    // Applies PlayStation water tint before the gamma curve and texture
+    // modulation, where the GTE combines it with the light register.
+    vec3 tintReg =
+        uLightingCurve == LIGHTING_CURVE_SATURATE ? uTint.rgb : vec3(1.0);
+
 #if TR_VERSION >= 4
     // The OG engine lights everything in the "128 = neutral" scale: the lit value is
     // doubled and the excess above 1.0 becomes an additive overbright term
@@ -167,15 +174,21 @@ void main(void) {
         }
     }
 
-    vec3 L = lightIn * (255.0 / 128.0) + lr.add;
-    gAdd = max(L - vec3(1.0), vec3(0.0)) * (64.0 / 255.0);
+    bool overbright = uLightingCurve == LIGHTING_CURVE_OVERBRIGHT;
+    bool saturate = uLightingCurve == LIGHTING_CURVE_SATURATE;
+    vec3 L = lightIn * (overbright || saturate ? 255.0 / 128.0 : 1.0) + lr.add;
+    gAdd = overbright ? max(L - vec3(1.0), vec3(0.0)) * (64.0 / 255.0)
+                      : vec3(0.0);
     if ((gFlags & VERT_ADDITIVE) != 0u) {
         // The OG draws additive polys with specular disabled
         // (HWR_DrawSortList drawtype 2), so no overbright excess.
         gAdd = vec3(0.0);
     }
-    vec3 lit = clamp(L, 0.0, 1.0);
-    lit = gammaCurve(lit, gamma_exp);
+    // Keeps the saturating excess past the gamma curve so texture modulation
+    // clips each color channel separately, as the PlayStation does.
+    L = min(L * tintReg, vec3(255.0 / 128.0));
+    vec3 over = saturate ? max(L - vec3(1.0), vec3(0.0)) : vec3(0.0);
+    vec3 lit = gammaCurve(L, gamma_exp) + over;
     gColor = vec4(lit * modulate, inColor.a);
 #elif TR_VERSION >= 3
     vec3 lightIn;
@@ -193,6 +206,7 @@ void main(void) {
     }
 
     // Combine lighting in linear-ish space first: (base + add) * mul
+    bool saturate = uLightingCurve == LIGHTING_CURVE_SATURATE;
     vec3 lit;
     gAdd = vec3(0.0);
     if ((gFlags & VERT_OVERBRIGHT) != 0u && uLightingEnabled != 0) {
@@ -201,13 +215,34 @@ void main(void) {
         // part; the excess becomes an additive term applied after texturing
         // (tomb4's CalcColorSplit: diffuse = min(2c, 255), add = (c-128)/2).
         vec3 L = lightIn * (255.0 / 128.0) + lr.add;
-        gAdd = max(L - vec3(1.0), vec3(0.0)) * (64.0 / 255.0);
-        lit = clamp(L, 0.0, 1.0);
+        if (saturate) {
+            lit = L;
+        } else {
+            gAdd = max(L - vec3(1.0), vec3(0.0)) * (64.0 / 255.0);
+            lit = clamp(L, 0.0, 1.0);
+        }
     } else {
-        lit = clamp(lightIn + lr.add, 0.0, 1.0);
+        vec3 L = lightIn + lr.add;
+        lit = saturate ? L : clamp(L, 0.0, 1.0);
     }
     lit *= lr.mul;
-    lit = gammaCurve(lit, gamma_exp);
+
+    // Doubles non-overbright TR3 light only when the selected curve uses the
+    // OG hardware renderer's 128-neutral scale.
+    if (uLightingEnabled != 0 && (gFlags & VERT_OVERBRIGHT) == 0u) {
+        if (saturate) {
+            lit *= 255.0 / 128.0;
+        } else if (uLightingCurve == LIGHTING_CURVE_OVERBRIGHT) {
+            vec3 L = lit * (255.0 / 128.0);
+            gAdd += max(L - vec3(1.0), vec3(0.0)) * (64.0 / 255.0);
+            lit = clamp(L, 0.0, 1.0);
+        }
+    }
+
+    // Keeps the saturating excess past the gamma curve.
+    lit = min(lit * tintReg, vec3(255.0 / 128.0));
+    vec3 over = max(lit - vec3(1.0), vec3(0.0));
+    lit = gammaCurve(lit, gamma_exp) + over;
 
     // Apply flat shading AFTER modulation
     gColor = vec4(lit * modulate, inColor.a);
@@ -232,13 +267,20 @@ void main(void) {
     // high contrast can still brighten textured geometry.
     gColor.rgb += lr.add;
 #endif
+
+    // Applies PlayStation depth cue before texture modulation, as tomb3's
+    // transform.cpp does, so fog keeps the surface texture.
+    if (uPS1FogEnabled != 0 && (gFlags & VERT_NO_LIGHTING) == 0u
+        && uLightingEnabled != 0) {
+        gColor.rgb = mix(gColor.rgb, uFogColor.rgb, gFogFactor);
+        gAdd *= 1.0 - gFogFactor;
+    }
 }
 
 #elif defined(FRAGMENT)
 
 uniform sampler2DArray uTexAtlas;
 uniform sampler2D uTexEnvMap;
-uniform vec4 uTint;
 uniform bool uDiscardAlpha;
 
 #if TR_VERSION >= 4
@@ -265,11 +307,12 @@ out vec4 outColor;
 
 vec4 applyFog(vec4 color, float dist)
 {
-    float fogFactor = uPS1FogEnabled != 0
-        ? gFogFactor
-        : clamp(
-              (dist - uFogDistance.x) / (uFogDistance.y - uFogDistance.x), 0.0,
-              1.0);
+    // Leaves PlayStation depth cue on the vertex color.
+    if (uPS1FogEnabled != 0) {
+        return color;
+    }
+    float fogFactor = clamp(
+        (dist - uFogDistance.x) / (uFogDistance.y - uFogDistance.x), 0.0, 1.0);
     return mix(color, uFogColor, fogFactor);
 }
 
@@ -363,6 +406,11 @@ void main(void) {
     // Overbright lighting excess, added after texturing (OG specular).
     texColor.rgb += gAdd;
 
+    // Clips saturating light before fog and bulb blending.
+    if (uLightingCurve == LIGHTING_CURVE_SATURATE) {
+        texColor.rgb = min(texColor.rgb, vec3(1.0));
+    }
+
     // Alpha discard - chroma keying || transparent pixels in the opaque pass
     if (texColor.a <= 0.0
         || (uDiscardAlpha && texColor.a < 0.99
@@ -408,7 +456,11 @@ void main(void) {
     // The framebuffer blend is premultiplied alpha, so the color carries the
     // coverage: fading a fragment out scales both, and the color a second time
     // by the alpha it is premultiplied against.
-    texColor *= uTint;
+    if (uLightingCurve == LIGHTING_CURVE_SATURATE) {
+        texColor.a *= uTint.a;
+    } else {
+        texColor *= uTint;
+    }
     texColor.rgb *= uTint.a;
 
     outColor = texColor;
