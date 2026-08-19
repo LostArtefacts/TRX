@@ -1,6 +1,7 @@
 {
     "name_gs": "dynamic/config_presets/tr1_pc",
     "config": {
+        "rendering.dither_mode": "disabled",
         "rendering.enable_ps1_fog": false,
         "ui.menu_style": "pc",
         "ui.enable_smooth_bars": true,
