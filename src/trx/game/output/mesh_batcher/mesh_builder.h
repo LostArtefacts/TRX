@@ -34,6 +34,11 @@ void MeshBuilder_AddFace(
 // Add a triangle fan face using the last vertices added: a center followed by
 // ring vertices.If double_sided is true, generates mirrored winding
 // for backfaces as well.
+// Joins the pending vertices into a triangle fan and adds it as one face. A
+// face of four vertices is wound as the PlayStation wound it, so that the edge
+// its two triangles share is the edge a flat texture mapping folds along. The
+// order the corners come in is part of that: it decides which corner a face
+// subdivides from, and so where the folds land.
 void MeshBuilder_AddFan(
     MESH_BUILDER *builder, SCENE_PASS pass, bool double_sided,
     bool depth_write);

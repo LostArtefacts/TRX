@@ -1,5 +1,6 @@
 #include <trx/game/output/shaders/mesh.h>
 
+#include <trx/config.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/game/output/lights/priv.h>
@@ -11,7 +12,14 @@
 
 #include <string.h>
 
-#define M_VARIANT_COUNT 3
+#define M_VARIANT_COUNT 6
+
+// The lighting family picks the file; affine mapping picks whether the file
+// gets its geometry stage, which splits near faces so the mapping has a
+// smaller depth range to go wrong over. A game that maps textures with
+// perspective needs no such split, so it binds a program with no geometry
+// stage at all and pays nothing for the feature.
+#define M_LIGHTING_VARIANT_COUNT 3
 
 struct OUTPUT_MESH_SHADER {
     OUTPUT_SHADER *base[M_VARIANT_COUNT];
@@ -27,14 +35,21 @@ struct OUTPUT_MESH_SHADER {
 };
 
 static const char *const m_VariantPaths[M_VARIANT_COUNT] = {
-    "meshes_tr12.glsl",
-    "meshes_tr3.glsl",
-    "meshes_tr4.glsl",
+    "meshes_tr12.glsl", "meshes_tr3.glsl", "meshes_tr4.glsl",
+    "meshes_tr12.glsl", "meshes_tr3.glsl", "meshes_tr4.glsl",
 };
+
+static bool M_VariantSubdivides(const int32_t variant_idx)
+{
+    return variant_idx >= M_LIGHTING_VARIANT_COUNT;
+}
 
 static int32_t M_GetVariantIndex(void)
 {
-    return Output_Lights_GetModel()->shader_variant;
+    const int32_t lighting = Output_Lights_GetModel()->shader_variant;
+    return g_Config.rendering.enable_affine_mapping
+        ? lighting + M_LIGHTING_VARIANT_COUNT
+        : lighting;
 }
 
 static OUTPUT_SHADER *M_GetVariantBase(
@@ -83,7 +98,10 @@ RESULT Output_MeshShader_Create(OUTPUT_MESH_SHADER **const out_shader)
         shader->tint[i] = (RGBA_F) { 0.0f, 0.0f, 0.0f, 0.0f };
         shader->env_map_rect[i] = (OUTPUT_ATLAS_RECT) { .layer = -1 };
 
-        MUST(Output_Shader_Create(m_VariantPaths[i], &shader->base[i]));
+        const bool subdivides = M_VariantSubdivides(i);
+        MUST(Output_Shader_CreateEx(
+            m_VariantPaths[i], subdivides ? "#define SUBDIVIDE\n" : nullptr,
+            subdivides, &shader->base[i]));
         Output_Shader_Bind(shader->base[i]);
         TRX_GL_TRACK_UNIFORM(
             glUniform1i,
