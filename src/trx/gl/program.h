@@ -15,8 +15,14 @@ RESULT TRX_GL_Program_Init(TRX_GL_PROGRAM *program);
 void TRX_GL_Program_Close(TRX_GL_PROGRAM *program);
 
 void TRX_GL_Program_Bind(const TRX_GL_PROGRAM *program);
+// Compiles one stage of a shader file and attaches it to the program. The
+// stage is selected with type, and the file sees a VERTEX, GEOMETRY, or
+// FRAGMENT define for it. Pass extra preprocessor text as defines, or nullptr
+// for none; every stage of one program must receive the same text, because the
+// stages have to agree on the interfaces it selects.
 RESULT TRX_GL_Program_AttachShader(
-    TRX_GL_PROGRAM *program, GLenum type, const char *path);
+    TRX_GL_PROGRAM *program, GLenum type, const char *path,
+    const char *defines);
 RESULT TRX_GL_Program_Link(TRX_GL_PROGRAM *program);
 void TRX_GL_Program_FragmentData(TRX_GL_PROGRAM *program, const char *name);
 GLint TRX_GL_Program_UniformLocation(TRX_GL_PROGRAM *program, const char *name);

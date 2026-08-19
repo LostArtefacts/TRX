@@ -155,33 +155,30 @@ static RESULT M_PreprocessIncludes(
     return OK;
 }
 
-static char *M_Preprocess(const char *content, GLenum type)
+static char *M_Preprocess(
+    const char *const content, const GLenum type, const char *const defines)
 {
     ASSERT(content != nullptr);
 
-    const char *version_ogl33c = "#version 330 core\n";
-    const char *define_vertex = "#define VERTEX\n";
-    const char *define_fragment = "#define FRAGMENT\n";
-
-    size_t bufsize = strlen(content) + 1;
-
-    bufsize += strlen(version_ogl33c);
-
+    const char *const version_ogl33c = "#version 330 core\n";
+    const char *stage_define = "";
     if (type == GL_VERTEX_SHADER) {
-        bufsize += strlen(define_vertex);
+        stage_define = "#define VERTEX\n";
+    } else if (type == GL_GEOMETRY_SHADER) {
+        stage_define = "#define GEOMETRY\n";
     } else if (type == GL_FRAGMENT_SHADER) {
-        bufsize += strlen(define_fragment);
+        stage_define = "#define FRAGMENT\n";
     }
 
-    char *processed_content = Memory_Alloc(bufsize);
+    const size_t bufsize = strlen(version_ogl33c) + strlen(stage_define)
+        + (defines != nullptr ? strlen(defines) : 0) + strlen(content) + 1;
+
+    char *const processed_content = Memory_Alloc(bufsize);
     strcpy(processed_content, version_ogl33c);
-
-    if (type == GL_VERTEX_SHADER) {
-        strcat(processed_content, define_vertex);
-    } else if (type == GL_FRAGMENT_SHADER) {
-        strcat(processed_content, define_fragment);
+    strcat(processed_content, stage_define);
+    if (defines != nullptr) {
+        strcat(processed_content, defines);
     }
-
     strcat(processed_content, content);
     return processed_content;
 }
@@ -214,7 +211,7 @@ void TRX_GL_Program_Bind(const TRX_GL_PROGRAM *const program)
 }
 
 RESULT TRX_GL_Program_AttachShader(
-    TRX_GL_PROGRAM *program, GLenum type, const char *path)
+    TRX_GL_PROGRAM *program, GLenum type, const char *path, const char *defines)
 {
     ASSERT(program != nullptr);
     ASSERT(path != nullptr);
@@ -241,7 +238,7 @@ RESULT TRX_GL_Program_AttachShader(
     ASSERT(processed_content != nullptr);
 
     char *expanded_content = processed_content;
-    processed_content = M_Preprocess(expanded_content, type);
+    processed_content = M_Preprocess(expanded_content, type, defines);
     ASSERT(processed_content != nullptr);
     Memory_FreePointer(&expanded_content);
 
