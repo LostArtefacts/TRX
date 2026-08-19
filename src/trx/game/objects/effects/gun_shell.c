@@ -38,9 +38,15 @@ static void M_Control(const int16_t effect_num)
     if (room->flags.underwater) {
         Sparks_TriggerSmallSplash(
             (XYZ_32) { effect->pos.x, room->max_ceiling, effect->pos.z }, 8);
-        FX_Water_SetupRipple(
-            effect->pos.x, room->max_ceiling, effect->pos.z,
-            -8 - (Random_GetControl() & 3), true);
+        const XYZ_32 pos = { effect->pos.x, room->max_ceiling, effect->pos.z };
+        if (g_TRVersion == 4) {
+            FX_Water_SetupRipple(
+                pos, (Random_GetControl() & 3) + 8, FX_RIPPLE_SLOW);
+        } else {
+            FX_Water_SetupRipple(
+                pos, 8 + (Random_GetControl() & 3),
+                FX_RIPPLE_SLOW | FX_RIPPLE_DARK | FX_RIPPLE_JITTER);
+        }
         Effect_Destroy(effect_num);
         return;
     }

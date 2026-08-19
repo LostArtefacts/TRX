@@ -131,7 +131,9 @@ static void M_Control(int16_t item_num)
 
         if (water_height != NO_HEIGHT && pos.y < water_height) {
             FX_WATER_RIPPLE *const ripple = FX_Water_SetupRipple(
-                pos.x, water_height, pos.z, -2 - (Random_GetControl() & 1), 0);
+                (XYZ_32) { pos.x, water_height, pos.z },
+                2 + (Random_GetControl() & 1),
+                FX_RIPPLE_SLOW | FX_RIPPLE_JITTER);
             if (ripple != nullptr) {
                 ripple->init = 0;
             }
