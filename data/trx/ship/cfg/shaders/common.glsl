@@ -21,6 +21,7 @@
 #define VERT_MOVE              0x0400u
 #define VERT_GLOW              0x0800u
 #define VERT_OVERBRIGHT        0x1000u
+#define VERT_TEX_WRAP          0x2000u
 #define VERT_ADDITIVE          0x4000u
 
 #define LIGHTING_CURVE_FLAT       0
