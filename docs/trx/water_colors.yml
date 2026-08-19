@@ -102,3 +102,7 @@ TR3 PS1:
     color: "#80E0FF"
   - name: All Hallows
     color: "#B2E6E6"
+
+TR4 PC:
+  - name: default PC renderer color
+    color: "#80E0FF"

@@ -276,7 +276,7 @@ void OutputSource_Rooms_StageRoom(const ROOM *const room)
         .mesh = mesh,
         .cwmatrix = *g_MatrixPtr,
         .wmatrix = *g_WMatrixPtr,
-        .tint = Output_GetTint(),
+        .tint = Output_GetRoomTint(),
         .wibble = Output_GetWibbleEffect(),
         .water_effect = M_GetWaterEffect(room),
         .enable_scissor = Room_IsOverlapping(Room_GetIndex(room)),
