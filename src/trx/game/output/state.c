@@ -52,6 +52,7 @@ static XYZ_32 m_TR3LightDirView[3] = {};
 static bool m_IsWibbleEffect = false;
 static bool m_IsWaterEffect = false;
 static bool m_IsShadeEffect = false;
+static bool m_IsRoomShadeEffect = false;
 static bool m_IsSkyboxEnabled = false;
 
 static int32_t m_TintOverrideDepth = 0;
@@ -141,7 +142,8 @@ void Output_SetupBelowWater(const bool underwater)
 {
     m_IsWaterEffect = true;
     m_IsWibbleEffect = g_TRVersion == 4 ? underwater : !underwater;
-    m_IsShadeEffect = true;
+    m_IsShadeEffect = g_TRVersion != 4;
+    m_IsRoomShadeEffect = g_TRVersion == 4 ? underwater : true;
 }
 
 void Output_SetupAboveWater(const bool underwater)
@@ -149,6 +151,7 @@ void Output_SetupAboveWater(const bool underwater)
     m_IsWaterEffect = false;
     m_IsWibbleEffect = underwater;
     m_IsShadeEffect = underwater;
+    m_IsRoomShadeEffect = underwater;
 }
 
 bool Output_GetWaterEffect(void)
@@ -192,6 +195,17 @@ RGBA_F Output_GetTint(void)
         return m_TintOverrideStack[m_TintOverrideDepth - 1];
     }
     if (m_IsShadeEffect) {
+        return Color_RGBToRGBA(m_WaterColor);
+    }
+    return COLOR_RGBA_F_WHITE;
+}
+
+RGBA_F Output_GetRoomTint(void)
+{
+    if (m_TintOverrideDepth != 0) {
+        return m_TintOverrideStack[m_TintOverrideDepth - 1];
+    }
+    if (m_IsRoomShadeEffect) {
         return Color_RGBToRGBA(m_WaterColor);
     }
     return COLOR_RGBA_F_WHITE;

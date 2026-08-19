@@ -26,7 +26,13 @@ void Output_SetupAboveWater(bool is_underwater);
 RGB_F Output_GetWaterColor(void);
 void Output_SetWaterColor(RGB_888 color);
 
+// Returns the tint for objects and static meshes. TR1 to TR3 tint objects in
+// water and dry rooms seen from below the surface. TR4 tints only dry rooms
+// seen from below the surface.
 RGBA_F Output_GetTint(void);
+// Returns the tint for room geometry. TR4 tints wet and dry rooms while the
+// camera is below the surface.
+RGBA_F Output_GetRoomTint(void);
 void Output_PushTintOverride(RGBA_F tint);
 void Output_PopTintOverride(void);
 bool Output_GetWaterEffect(void);

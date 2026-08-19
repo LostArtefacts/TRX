@@ -277,3 +277,23 @@ order: 8
     </tr>
 </tbody>
 </table>
+
+<h4 colspan="4">TR4</h4>
+<table>
+<thead>
+    <tr>
+        <th>Platform</th>
+        <th>Color</th>
+        <th>Color&nbsp;(array)</th>
+        <th>Usage</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td rowspan="1">PC</td>
+        <td><img src="https://dummyimage.com/20x20/80e0ff/80e0ff.png" width="20" height="20" alt="#80E0FF" valign="middle"/> <code>#80E0FF</code></td>
+        <td><code>[0.502, 0.878, 1]</code></td>
+        <td>default PC renderer color</td>
+    </tr>
+</tbody>
+</table>
