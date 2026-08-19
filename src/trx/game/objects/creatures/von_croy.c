@@ -357,7 +357,7 @@ static bool M_HasSpeechEnded(M_PRIV *const p)
     const MUSIC_ID track = (MUSIC_ID)M_GetTrack(p->waypoint);
     if (Music_GetCurrentPlayingTrack() == track) {
         p->cut_heard = true;
-        Music_SetSpeed(Clock_GetSpeedMultiplier());
+        IGNORE(Music_SetSpeed(Clock_GetSpeedMultiplier()));
     }
 
     if (p->cut_length > 0) {
@@ -662,7 +662,7 @@ static void M_RaceControl(const int16_t item_num)
 
     if (FlybyMode_IsActive()
         && Music_GetCurrentPlayingTrack() == M_FLYBY_TALK_TRACK) {
-        Music_SetSpeed(Clock_GetSpeedMultiplier());
+        IGNORE(Music_SetSpeed(Clock_GetSpeedMultiplier()));
         m_TalkTimer++;
 
         if ((m_TalkTimer > 0 && m_TalkTimer < 565)
