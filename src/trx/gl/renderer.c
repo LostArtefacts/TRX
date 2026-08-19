@@ -243,10 +243,10 @@ static RESULT M_Init(
     TRX_GL_Sampler_Parameteri(&p->sampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     MUST(TRX_GL_Program_Init(&p->program));
-    MUST(
-        TRX_GL_Program_AttachShader(&p->program, GL_VERTEX_SHADER, "fbo.glsl"));
     MUST(TRX_GL_Program_AttachShader(
-        &p->program, GL_FRAGMENT_SHADER, "fbo.glsl"));
+        &p->program, GL_VERTEX_SHADER, "fbo.glsl", nullptr));
+    MUST(TRX_GL_Program_AttachShader(
+        &p->program, GL_FRAGMENT_SHADER, "fbo.glsl", nullptr));
     TRX_GL_Program_FragmentData(&p->program, "outColor");
     MUST(TRX_GL_Program_Link(&p->program));
     TRX_GL_Program_Bind(&p->program);

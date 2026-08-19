@@ -76,13 +76,25 @@ static void M_DebugUBO(const GLuint program_id, const GLuint block_idx)
 RESULT Output_Shader_Create(
     const char *const path, OUTPUT_SHADER **const out_shader)
 {
+    return Output_Shader_CreateEx(path, nullptr, false, out_shader);
+}
+
+RESULT Output_Shader_CreateEx(
+    const char *const path, const char *const defines,
+    const bool has_geometry_stage, OUTPUT_SHADER **const out_shader)
+{
     *out_shader = nullptr;
     OUTPUT_SHADER *const shader = Memory_Alloc(sizeof(OUTPUT_SHADER));
 
     MUST(TRX_GL_Program_Init(&shader->program));
-    MUST(TRX_GL_Program_AttachShader(&shader->program, GL_VERTEX_SHADER, path));
     MUST(TRX_GL_Program_AttachShader(
-        &shader->program, GL_FRAGMENT_SHADER, path));
+        &shader->program, GL_VERTEX_SHADER, path, defines));
+    if (has_geometry_stage) {
+        MUST(TRX_GL_Program_AttachShader(
+            &shader->program, GL_GEOMETRY_SHADER, path, defines));
+    }
+    MUST(TRX_GL_Program_AttachShader(
+        &shader->program, GL_FRAGMENT_SHADER, path, defines));
     TRX_GL_Program_FragmentData(&shader->program, "outColor");
     MUST(TRX_GL_Program_Link(&shader->program));
 
