@@ -23,6 +23,14 @@ typedef struct {
     bool music_paused;
 } M_PRIV;
 
+static INVENTORY_MODE M_ResolveMode(const INVENTORY_MODE mode)
+{
+    if (mode == INV_LOAD_MODE && SG_Manager_GetTotalCount() == 0) {
+        return INV_SAVE_MODE;
+    }
+    return mode;
+}
+
 static bool M_IsLoading(const M_PRIV *const p)
 {
     return p->mode == INV_LOAD_MODE;
@@ -162,17 +170,16 @@ static void M_Draw(PHASE *const phase)
 bool Phase_SaveLoad_IsAvailable(const INVENTORY_MODE mode)
 {
     if (!g_Config.ui.instant_save_load_screen
-        || g_Config.flow.load_save_disabled
-        || SG_Manager_GetSlotCount(SAVEGAME_SLOT_POOL_NORMAL) == 0) {
+        || g_Config.flow.load_save_disabled) {
         return false;
     }
 
-    switch (mode) {
-    case INV_LOAD_MODE:
-        return SG_Manager_GetTotalCount() > 0;
-
+    switch (M_ResolveMode(mode)) {
     case INV_SAVE_MODE:
         return !Game_IsInGym() && Savegame_IsManualSaveAllowed();
+
+    case INV_LOAD_MODE:
+        return SG_Manager_GetTotalCount() > 0;
 
     case INV_SAVE_CRYSTAL_MODE:
         return !Game_IsInGym();
@@ -186,7 +193,7 @@ PHASE *Phase_SaveLoad_Create(const INVENTORY_MODE mode)
 {
     PHASE *const phase = Memory_Alloc(sizeof(PHASE));
     M_PRIV *const p = Memory_Alloc(sizeof(M_PRIV));
-    p->mode = mode;
+    p->mode = M_ResolveMode(mode);
     phase->priv = p;
     phase->start = M_Start;
     phase->end = M_End;
