@@ -53,6 +53,13 @@ vec3 gammaCurve(vec3 rgb, float gamma_exp)
     return pow(clamp(rgb, 0.0, 1.0), vec3(gamma_exp));
 }
 
+float wibbleTable(float phase, float pos, float scale)
+{
+    float idx =
+        mod(floor(phase / 8.0 + pos / (8.0 * scale)), float(WIBBLE_SIZE));
+    return float(MAX_WIBBLE) * scale * sin(idx * (2.0 * PI / float(WIBBLE_SIZE)));
+}
+
 vec3 waterWibble(vec4 worldPosition, vec4 screenPosition)
 {
     vec3 ndc = screenPosition.xyz / screenPosition.w;
@@ -62,6 +69,12 @@ vec3 waterWibble(vec4 worldPosition, vec4 screenPosition)
     float scale = length(uViewportSize) / length(vec2(640.0, 480.0));
     float adjustedWibble = scale;
     pixelPos.y += sin(phases) * adjustedWibble;
+#elif TR_VERSION == 4
+    float phase = uTimeInGame * 4.0;
+    float scale = length(uViewportSize) / length(vec2(640.0, 480.0));
+    vec2 srcPos = pixelPos;
+    pixelPos.x += wibbleTable(phase, srcPos.y, scale);
+    pixelPos.y += wibbleTable(phase, srcPos.x, scale);
 #else
     float phases = (uTimeInGame + length(worldPosition.xyz)) * (2.0 * PI / WIBBLE_SIZE);
     float amplitude = MAX_WIBBLE * float(uSupersamplingFactor);
