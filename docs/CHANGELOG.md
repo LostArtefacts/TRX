@@ -11,6 +11,7 @@
 
 **Rendering**
 - Added PlayStation RGB555 dithering and changed Dithering to offer Disabled, Software Renderer and PS1 (Graphic Options → Rendering → Dithering)
+- Fixed a visible seam across the sky in TR4 levels (TRX563, regression from 1.9)
 
 **UI**
 - Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187 / TRX1036)

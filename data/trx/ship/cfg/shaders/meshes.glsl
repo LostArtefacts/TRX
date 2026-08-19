@@ -397,7 +397,9 @@ void main(void) {
         if (uTrapezoidFilterEnabled != 0) {
             texCoords.xy /= gTrapezoidRatios;
         }
-        texCoords.xy = clampTexAtlas(texCoords.xy, gAtlasSize);
+        if ((gFlags & VERT_TEX_WRAP) == 0u) {
+            texCoords.xy = clampTexAtlas(texCoords.xy, gAtlasSize);
+        }
         texColor *= texture(uTexAtlas, texCoords);
     } else {
         texColor.rgb *= texColor.a;

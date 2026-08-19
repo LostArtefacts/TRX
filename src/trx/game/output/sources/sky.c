@@ -1,9 +1,11 @@
 #include <trx/game/output/sources/sky.h>
 
+#include <trx/config.h>
 #include <trx/core/utils.h>
 #include <trx/game/output.h>
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/utils.h>
+#include <trx/gl/sampler.h>
 #include <trx/gl/utils.h>
 
 // TR4 flat sky layers: for each layer, two colored quads tiling along the
@@ -43,6 +45,7 @@ typedef struct {
     int32_t texture_page;
     GLuint vao;
     GLuint vbo;
+    TRX_GL_SAMPLER sampler;
     MATRIX gradient_wmatrix;
     int32_t gradient_vertex_count;
     bool gradient_staged;
@@ -156,7 +159,7 @@ static void M_RenderPass(
         glEnableVertexAttribArray(OUTPUT_MESH_ATTR_UVW);
         // Layer colors are in the OG 128-neutral scale; the shader doubles
         // them and adds the overbright excess after texturing.
-        flags |= VERT_OVERBRIGHT;
+        flags |= VERT_OVERBRIGHT | VERT_TEX_WRAP;
     } else {
         glDisableVertexAttribArray(OUTPUT_MESH_ATTR_UVW);
         glVertexAttrib3f(OUTPUT_MESH_ATTR_UVW, 0.0f, 0.0f, 0.0f);
@@ -164,6 +167,20 @@ static void M_RenderPass(
     }
     glVertexAttribI1ui(OUTPUT_MESH_ATTR_FLAGS, flags);
     Output_MeshShader_UploadTint(p->shader, COLOR_RGBA_F_WHITE);
+
+    GLint prev_sampler = 0;
+    if (texture_page >= 0) {
+        const GLint gl_filter =
+            g_Config.rendering.texture_filter == TEXTURE_FILTER_BILINEAR
+            ? GL_LINEAR
+            : GL_NEAREST;
+        TRX_GL_Sampler_Parameteri(
+            &p->sampler, GL_TEXTURE_MIN_FILTER, gl_filter);
+        TRX_GL_Sampler_Parameteri(
+            &p->sampler, GL_TEXTURE_MAG_FILTER, gl_filter);
+        glGetIntegeri_v(GL_SAMPLER_BINDING, 0, &prev_sampler);
+        TRX_GL_Sampler_Bind(&p->sampler, 0);
+    }
 
     for (int32_t i = 0; i < p->layer_count; i++) {
         const M_LAYER *const layer = &p->layers[i];
@@ -186,6 +203,9 @@ static void M_RenderPass(
         if (layer->additive) {
             glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
         }
+    }
+    if (texture_page >= 0) {
+        glBindSampler(0, (GLuint)prev_sampler);
     }
     TRX_GL_CheckError();
 }
@@ -253,6 +273,10 @@ void OutputSource_Sky_Init(void)
     p->texture_page = -1;
     SceneCompositor_AddSource(&p->source);
 
+    TRX_GL_Sampler_Init(&p->sampler);
+    TRX_GL_Sampler_Parameteri(&p->sampler, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    TRX_GL_Sampler_Parameteri(&p->sampler, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
     glGenVertexArrays(1, &p->vao);
     glBindVertexArray(p->vao);
 
@@ -298,6 +322,7 @@ void OutputSource_Sky_Init(void)
 void OutputSource_Sky_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
+    TRX_GL_Sampler_Close(&p->sampler);
     if (p->vao != 0) {
         glDeleteVertexArrays(1, &p->vao);
         p->vao = 0;

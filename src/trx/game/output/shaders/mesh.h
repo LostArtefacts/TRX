@@ -18,6 +18,7 @@
 #define VERT_MOVE              0b0100'0000'0000 // = 0x0400
 #define VERT_GLOW              0b1000'0000'0000 // = 0x0800
 #define VERT_OVERBRIGHT      0b1'0000'0000'0000 // = 0x1000
+#define VERT_TEX_WRAP       0b10'0000'0000'0000 // = 0x2000
 #define VERT_ADDITIVE      0b100'0000'0000'0000 // = 0x4000
 // clang-format on
 
