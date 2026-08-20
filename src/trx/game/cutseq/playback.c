@@ -381,6 +381,16 @@ static void M_Step(void)
     CLAMPG(m_State.frame, info->num_frames);
 }
 
+static int16_t M_GetCameraRoomNum(const GAME_VECTOR old_pos)
+{
+    int16_t room_num =
+        Room_FindByTraversal(old_pos.pos, g_Camera.pos.pos, old_pos.room_num);
+    if (room_num == NO_ROOM) {
+        room_num = Room_GetIndexFromPos(g_Camera.pos.pos);
+    }
+    return room_num == NO_ROOM ? g_Camera.pos.room_num : room_num;
+}
+
 void CutSeq_Load(void)
 {
     m_State.letterbox = M_GetDefaultLetterbox();
@@ -698,11 +708,7 @@ void CutSeq_UpdateCamera(void)
         .z = info->origin.z + 2 * m_State.camera_nodes[1].z_run,
     };
 
-    const int16_t room_num =
-        Room_FindByTraversal(old_pos.pos, g_Camera.pos.pos, old_pos.room_num);
-    if (room_num != NO_ROOM) {
-        g_Camera.pos.room_num = room_num;
-    }
+    g_Camera.pos.room_num = M_GetCameraRoomNum(old_pos);
     g_Camera.target.room_num = g_Camera.pos.room_num;
     Room_GetSector(g_Camera.target.pos, &g_Camera.target.room_num);
     g_Camera.roll = 0;
