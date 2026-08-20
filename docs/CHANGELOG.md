@@ -97,6 +97,7 @@
 - Fixed the parked jeep showing in the temple during the cutscene that opens Karnak (TRX1092)
 - Fixed a crash while an in-game cutscene poses Lara (TRX1059)
 - Fixed Lara's shadow and the flames around her when she burns staying where an in-game cutscene began, rather than following her (TRX911)
+- Fixed Von Croy's shadow floating at the height of his knees during the scenes he plays in Angkor Wat (TRX911)
 
 **Miscellaneous**
 - Added an option to cast Lara in gold whatever she is wearing (Graphic Options → Visuals → Golden Lara) (TRX1070)

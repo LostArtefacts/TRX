@@ -368,6 +368,20 @@ static bool M_HasSpeechEnded(M_PRIV *const p)
     return p->cut_heard && Music_GetCurrentPlayingTrack() != track;
 }
 
+// Puts the ground he stands on back in step with where he stands. His scenes
+// place him on a marker and animate him from there without the creature
+// movement that ordinarily answers for the floor, and his shadow falls at the
+// height this reports.
+static void M_UpdateFloor(ITEM *const item)
+{
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, item->pos);
+    if (height != NO_HEIGHT) {
+        item->floor = height;
+    }
+}
+
 static void M_DoCutscene(ITEM *const item, CREATURE *const info)
 {
     M_PRIV *const p = M_GetPriv(item);
@@ -411,6 +425,7 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
         }
 
         Item_Animate(item);
+        M_UpdateFloor(item);
         return;
     }
 
@@ -545,6 +560,7 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
 
     Output_Overlay_SetFade(Fader_GetCurrentValue(&m_Fader));
     Item_Animate(item);
+    M_UpdateFloor(item);
 
     if (item->current_anim_state == M_STATE_READ_BOOK) {
         if (Item_TestFrameEqual(item, 32)) {
