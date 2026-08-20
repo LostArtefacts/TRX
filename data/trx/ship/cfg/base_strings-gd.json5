@@ -1073,7 +1073,7 @@
         },
         "gameplay.enable_cinematic_skips": {
             "title": "Leum troimh seallaidhean",
-            "description": "Leigidh seo leat leum troimh sreathan itealaich a' chamara le bhith a' cleachdadh am putan Air ais/Clàr-taice.",
+            "description": "\\{review}Leigidh seo leat leum troimh sreathan itealaich a' chamara leis a' phutan Air ais/Clàr-taice, agus le seall, fiù 's nuair a tha an ìre a' comharrachadh na sreatha mar tè nach gabh briseadh.",
         },
         "gameplay.enable_cinematics": {
             "title": "Seallaidhean sgriobtaichte",

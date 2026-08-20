@@ -67,7 +67,7 @@ static int M_L_CameraPlayFlyby(lua_State *const L)
 // trxc.camera.cancel_flyby()
 static int M_L_CameraCancelFlyby(lua_State *const L)
 {
-    FlybyMode_Cancel();
+    FlybyMode_Cancel(true);
     return 0;
 }
 
