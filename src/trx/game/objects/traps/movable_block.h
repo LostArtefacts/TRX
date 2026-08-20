@@ -3,6 +3,12 @@
 #include <trx/game/objects/types.h>
 #include <trx/game/rooms.h>
 
+// Reports whether a movable block stands on the square at pos, or has begun
+// to move onto it, with the top of the block at or above the height pos
+// gives. A block claims the square it enters from the moment its animation
+// shifts it, which the floor data reports only once the move ends.
+bool MovableBlock_TestSquareClaimed(XYZ_32 pos);
+
 // Block or unblock a block's box overlap index.
 void MovableBlock_UpdateBox(const ITEM *item, bool blocked);
 
