@@ -1,6 +1,7 @@
 #include <trx/core/benchmark.h>
 #include <trx/core/file.h>
 #include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
@@ -49,16 +50,6 @@ static TRX_FILE *M_ReadChunk(TRX_FILE *const file, const char *const name)
     TRX_FILE *const result = File_OpenBuffer(payload, uncompressed_size);
     Memory_Free(payload);
     return result;
-}
-
-static RESULT M_Probe(
-    const LEVEL_FORMAT_LOADER *const, TRX_FILE *const file,
-    const LEVEL_FORMAT_PROBE_MODE)
-{
-    File_Seek(file, 0, FILE_SEEK_SET);
-    uint32_t version;
-    LEVEL_FORMAT_TRY_OR_FAIL(File_TryReadU32(file, &version));
-    return version == M_VERSION_TR45 ? OK : ERR;
 }
 
 static void M_InitialiseDummyPalette(LEVEL_CONTEXT *const ctx)
@@ -264,6 +255,7 @@ static RESULT M_ReadItemsTR4(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
         item->init_flags = tr4_item->flags;
         if (item->object_id == NO_OBJECT) {
             LOG_WARNING("Unsupported TR4 item object %d on item %d", obj_id, i);
+            item->object_id = O_CAMERA_TARGET;
         }
     }
 
@@ -322,6 +314,96 @@ static void M_ReadSampleData(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
         File_ReadData(file, data, sizeof(char) * sample_size);
         data += sample_size;
     }
+}
+
+static RESULT M_ProbeImages(TRX_FILE *const file)
+{
+    LEVEL_FORMAT_SKIP_OR_FAIL(6); // page counts
+    for (int32_t i = 0; i < 3; i++) {
+        TRX_FILE *const images =
+            M_ReadChunk(file, String_Format("probe images %d", i));
+        if (images == nullptr) {
+            return ERR;
+        }
+        File_Close(images);
+    }
+    return OK;
+}
+
+static RESULT M_ProbeLevelChunk(
+    const LEVEL_FORMAT_LOADER *const loader, TRX_FILE *const file,
+    const LEVEL_FORMAT_PROBE_MODE mode)
+{
+    LEVEL_CONTEXT probe_ctx = {
+        .loader = loader,
+    };
+    LEVEL_FORMAT_SKIP_OR_FAIL(4); // unused version number
+
+    MUST(Level_Section_ReadRooms(&probe_ctx, file));
+
+    LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(2); // object meshes
+    LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(4); // object mesh pointers
+    LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(40); // animations
+    LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(6); // animation changes
+    LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(8); // animation ranges
+    LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(2); // animation commands
+    LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(4); // animation bones
+    LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(2); // animation frames
+
+    MUST(Level_Section_ReadObjects(&probe_ctx, file));
+
+    LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(32); // static objects
+    LEVEL_FORMAT_SKIP_OR_FAIL(3); // SPR marker
+    LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(16); // sprite textures
+    LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(8); // sprites sequences
+    LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(16); // cameras/sinks
+    LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(40); // flybys
+    LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(16); // sound sources
+
+    int32_t box_count;
+    LEVEL_FORMAT_TRY_OR_FAIL(File_TryReadS32(file, &box_count));
+    LEVEL_FORMAT_SKIP_OR_FAIL(box_count * 8);
+    LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(2); // overlaps
+    LEVEL_FORMAT_SKIP_OR_FAIL(box_count * 20); // zones
+
+    LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(2); // animated texture ranges
+    LEVEL_FORMAT_SKIP_OR_FAIL(1); // uv rotate count
+    LEVEL_FORMAT_SKIP_OR_FAIL(3); // TEX marker
+    LEVEL_FORMAT_SKIP_ARR_S32_OR_FAIL(38); // object textures
+
+    MUST(M_ReadItemsTR4(&probe_ctx, file));
+
+    return OK;
+}
+
+static RESULT M_Probe(
+    const LEVEL_FORMAT_LOADER *const loader, TRX_FILE *const file,
+    const LEVEL_FORMAT_PROBE_MODE mode)
+{
+    File_Seek(file, 0, FILE_SEEK_SET);
+    uint32_t version;
+    LEVEL_FORMAT_TRY_OR_FAIL(File_TryReadU32(file, &version));
+    if (version != M_VERSION_TR45) {
+        return ERR;
+    }
+
+    if (mode == LEVEL_FORMAT_PROBE_MINIMAL) {
+        // TODO: once TR4X level format is in place, detect this as a separate
+        // chunk at the end of the file. For now, minimal probes need only the
+        // version number.
+        return OK;
+    }
+
+    MUST(M_ProbeImages(file));
+
+    TRX_FILE *const level_data = M_ReadChunk(file, "level data");
+    if (level_data == nullptr) {
+        return ERR;
+    }
+
+    const RESULT result = M_ProbeLevelChunk(loader, level_data, mode);
+    File_Close(level_data);
+    return result;
 }
 
 static RESULT M_Load(

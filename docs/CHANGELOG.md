@@ -85,6 +85,7 @@
 - Added waterfalls, which run and play their loop, and the mist that rises where they land (TRX1067)
 - Added the in-game cutscenes of Angkor Wat and Race for the Iris, with the characters speaking their lines and the outcome of the race deciding which ending plays
 - Added Boar control (TRX1185)
+- Added level statistics scanning (TRX1201)
 - Changed a flip to move the group of rooms the trigger names, rather than every flip room in the level (TRX173)
 - Fixed animations that move an item sideways playing with the item standing still, such as TR4's guide shimmy (TRX1062)
 - Fixed creatures walking through squares a pushable block stands on (TRX1060)
