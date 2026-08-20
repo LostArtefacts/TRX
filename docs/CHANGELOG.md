@@ -85,6 +85,7 @@
 - Fixed the kayak at times not being drawn in certain rooms (regression from 1.10.1) (TRX1145)
 - Fixed some of Lara's skin joints incorrectly being drawn when riding the kayak (regression from 1.10) (TRX1146)
 - Fixed Lara's sliding SFX continuing after she leaves a slope (#6294 / TRX1155, regression from 1.0)
+- Fixed underwater blood clouds appearing in the air when the security lasers hurt Lara at the water surface (OG bug) (#6323 / TRX1180)
 
 **TR4**
 - Added the ability to skip in-game cutscenes (TRX1051)
