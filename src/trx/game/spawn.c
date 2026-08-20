@@ -17,6 +17,12 @@
 #include <trx/game/sparks/spawners.h>
 #include <trx/version.h>
 
+static bool M_IsUnderwaterAt(const XYZ_32 pos, int16_t room_num)
+{
+    Room_GetSector(pos, &room_num);
+    return Room_Get(room_num)->flags.underwater;
+}
+
 static void M_ShootAtLara(EFFECT *const effect)
 {
     const ITEM *const lara_item = Lara_GetItem();
@@ -182,7 +188,7 @@ int16_t Spawn_Blood(
     const int16_t y_rot, const int16_t room_num)
 {
     if (g_TRVersion == 3) {
-        if (Room_Get(room_num)->flags.underwater) {
+        if (M_IsUnderwaterAt((XYZ_32) { x, y, z }, room_num)) {
             FX_Water_TriggerUnderwaterBlood(
                 (XYZ_32) { x, y, z }, Random_GetControl() & 7);
         } else {
@@ -230,7 +236,7 @@ int16_t Spawn_BloodD(
     const int16_t y_rot, const int16_t room_num)
 {
     if (g_TRVersion == 3) {
-        if (Room_Get(room_num)->flags.underwater) {
+        if (M_IsUnderwaterAt((XYZ_32) { x, y, z }, room_num)) {
             FX_Water_TriggerUnderwaterBloodD(
                 (XYZ_32) { x, y + 64, z }, Random_GetDraw() & 7);
         } else {
