@@ -2,6 +2,7 @@
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/property.h>
 #include <trx/game/objects/traps/common.h>
+#include <trx/game/objects/traps/movable_block.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
@@ -37,6 +38,13 @@ static void M_Move(const int16_t item_num)
     int16_t room_num = item->room_num;
     const XYZ_32 pos = { item->pos.x, item->pos.y + p->speed, item->pos.z };
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
+
+    if (MovableBlock_TestSquareClaimed(
+            (XYZ_32) { item->pos.x, item->pos.y + WALL_L, item->pos.z })) {
+        Sound_StopEffect(SFX_SPIKE_WALL);
+        return;
+    }
+
     if (Room_GetHeight(sector, pos) < pos.y + WALL_L) {
         Item_SetFinished(item, true);
         Sound_StopEffect(SFX_SPIKE_WALL);

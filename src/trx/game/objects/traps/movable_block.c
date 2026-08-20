@@ -1109,6 +1109,49 @@ static void M_Setup(OBJECT *const obj)
     obj->save_position = true;
 }
 
+static bool M_IsSameSquare(const XYZ_32 pos_1, const XYZ_32 pos_2)
+{
+    return (pos_1.x >> WALL_SHIFT) == (pos_2.x >> WALL_SHIFT)
+        && (pos_1.z >> WALL_SHIFT) == (pos_2.z >> WALL_SHIFT);
+}
+
+static bool M_HasStartedMoving(const ITEM *const item)
+{
+    const ANIM *const anim = Item_GetAnim(item);
+    const ANIM_FRAME *const current = Item_GetBestFrame(item);
+    if (anim == nullptr || anim->frame_ptr == nullptr || current == nullptr) {
+        return false;
+    }
+
+    return current->offset.x != anim->frame_ptr->offset.x
+        || current->offset.z != anim->frame_ptr->offset.z;
+}
+
+bool MovableBlock_TestSquareClaimed(const XYZ_32 pos)
+{
+    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+        const ITEM *const item = Item_Get(i);
+        if (!Object_IsType(item->object_id, g_MovableBlockObjects)
+            || !item->is_visible || !M_IsPushPull(item)
+            || !M_HasStartedMoving(item)) {
+            continue;
+        }
+
+        if (item->pos.y - WALL_L > pos.y) {
+            continue;
+        }
+
+        const M_PRIV *const p = item->priv;
+        const XYZ_32 target =
+            XYZ_32_OffsetYaw(item->pos, p->interaction_rot, WALL_L);
+        if (M_IsSameSquare(item->pos, pos) || M_IsSameSquare(target, pos)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void MovableBlock_UpdateBox(const ITEM *const item, const bool blocked)
 {
     if (blocked
