@@ -106,7 +106,7 @@ static RGBA_8888 M_ExpandTR4RoomVertexColor(const uint16_t color)
 
 static void M_ReadRoomMesh(
     const LEVEL_FORMAT_LOADER *const loader, const int32_t room_num,
-    TRX_FILE *const file, const INJECTION_MESH_META inj_data)
+    TRX_FILE *const file, const INJECTION_ROOM_META inj_data)
 {
     ROOM *const room = Room_Get(room_num);
     const uint32_t mesh_length = File_ReadU32(file);
@@ -293,7 +293,7 @@ RESULT Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
         room->min_floor = File_ReadS32(file);
         room->max_ceiling = File_ReadS32(file);
 
-        const INJECTION_MESH_META inj_data = Inject_GetRoomMeshMeta(i);
+        const INJECTION_ROOM_META inj_data = Inject_GetRoomMeta(i);
         M_ReadRoomMesh(loader, i, file, inj_data);
 
         const int16_t num_portals = File_ReadCountS16(file);
@@ -328,8 +328,9 @@ RESULT Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
         room->size.x = File_ReadS16(file);
 
         const int32_t sector_count = room->size.x * room->size.z;
-        room->sectors =
-            GameBuf_Alloc(sizeof(SECTOR) * sector_count, GBUF_ROOM_SECTORS);
+        room->sectors = GameBuf_Alloc(
+            sizeof(SECTOR) * (sector_count + inj_data.num_sectors),
+            GBUF_ROOM_SECTORS);
         for (int32_t j = 0; j < sector_count; j++) {
             SECTOR *const sector = &room->sectors[j];
             sector->idx = File_ReadU16(file);

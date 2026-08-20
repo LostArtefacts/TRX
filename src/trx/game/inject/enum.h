@@ -17,7 +17,8 @@ typedef enum {
     INJ_VERSION_8 = 8,
     INJ_VERSION_9 = 9,
     INJ_VERSION_10 = 10,
-    INJ_CURRENT_VERSION = INJ_VERSION_10,
+    INJ_VERSION_11 = 11,
+    INJ_CURRENT_VERSION = INJ_VERSION_11,
 } INJECTION_VERSION;
 
 typedef enum {
@@ -123,6 +124,7 @@ typedef enum {
     FET_TRIANGULATE       = 13,
     FET_MINE_CART         = 14,
     FET_MATERIAL          = 15,
+    FET_EXTEND_SECTORS    = 16,
 } FLOOR_EDIT_TYPE;
 
 typedef enum {

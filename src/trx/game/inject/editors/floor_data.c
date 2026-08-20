@@ -387,6 +387,22 @@ static void M_SetMaterial(
     sector->fx = File_ReadU8(injection->fp);
 }
 
+static void M_ExtendSectors(
+    const INJECTION *const injection, const int16_t room_num)
+{
+    const uint16_t x_change = File_ReadU16(injection->fp);
+    const uint16_t z_change = File_ReadU16(injection->fp);
+
+    ROOM *const room = Room_Get(room_num);
+    if (room == nullptr) {
+        LOG_WARNING("%d is not a valid room number", room_num);
+        return;
+    }
+
+    room->size.x += x_change;
+    room->size.z += z_change;
+}
+
 static void M_FloorDataEdits(
     const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
     const int32_t data_count)
@@ -465,6 +481,9 @@ static void M_FloorDataEdits(
                 break;
             case FET_MATERIAL:
                 M_SetMaterial(injection, sector);
+                break;
+            case FET_EXTEND_SECTORS:
+                M_ExtendSectors(injection, room_num);
                 break;
             default:
                 LOG_WARNING("Unknown floor data edit type: %d", edit_type);
