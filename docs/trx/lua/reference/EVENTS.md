@@ -488,7 +488,7 @@ An event that carries a default the script may take over says so in its descript
   A trigger Lara stands on fires every frame, so this happens only for a
   cutscene that has not run yet and while none is playing. Asking counts as
   running it, however it ended, so the same handler is not asked again on
-  the next frame. Clear the mark with [`trx.cutscenes.set_played`](CUTSCENES.md#cutscenes.set_played) to hear
+  the next frame. Clear the mark by writing [`trx.cutscenes.Cutscene.is_played`](CUTSCENES.md#cutscenes.Cutscene.is_played) to hear
   about one again.
 
   The number a trigger names need not be one the game has a cutscene for -
@@ -510,7 +510,7 @@ An event that carries a default the script may take over says so in its descript
       return false
     end
     if trx.lara.item.room_num == 55 then
-      trx.cutscenes.play(27)
+      trx.cutscenes[27]:play()
     else
       trx.camera.play_flyby(3)
     end
@@ -524,7 +524,7 @@ An event that carries a default the script may take over says so in its descript
   Parameters:
   - <a id="events.on_cutscene_start.callback" name="events.on_cutscene_start.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - <a id="events.on_cutscene_start.cutscene_num" name="events.on_cutscene_start.cutscene_num"></a>**`cutscene_num`** ([trx.cutscenes.Num](CUTSCENES.md#cutscenes.Num)).
+    - <a id="events.on_cutscene_start.cutscene" name="events.on_cutscene_start.cutscene"></a>**`cutscene`** ([trx.cutscenes.Cutscene](CUTSCENES.md#cutscenes.Cutscene)). The cutscene starting.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -538,15 +538,15 @@ An event that carries a default the script may take over says so in its descript
   Parameters:
   - <a id="events.on_cutscene_frame.callback" name="events.on_cutscene_frame.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - <a id="events.on_cutscene_frame.cutscene_num" name="events.on_cutscene_frame.cutscene_num"></a>**`cutscene_num`** ([trx.cutscenes.Num](CUTSCENES.md#cutscenes.Num)).
+    - <a id="events.on_cutscene_frame.cutscene" name="events.on_cutscene_frame.cutscene"></a>**`cutscene`** ([trx.cutscenes.Cutscene](CUTSCENES.md#cutscenes.Cutscene)). The cutscene the frame belongs to.
     - <a id="events.on_cutscene_frame.frame_num" name="events.on_cutscene_frame.frame_num"></a>**`frame_num`** ([trx.cutscenes.FrameNum](CUTSCENES.md#cutscenes.FrameNum)).
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
   Example:
   ```lua
-  trx.events.on_cutscene_frame(function(cutscene_num, frame_num)
-    if cutscene_num == 5 and frame_num == 1350 then
+  trx.events.on_cutscene_frame(function(cutscene, frame_num)
+    if cutscene.num == 5 and frame_num == 1350 then
       -- something happens here
     end
   end)
@@ -558,14 +558,14 @@ An event that carries a default the script may take over says so in its descript
   Parameters:
   - <a id="events.on_cutscene_end.callback" name="events.on_cutscene_end.callback"></a>**`callback`** (function). What to run when it happens.
     Called with:
-    - <a id="events.on_cutscene_end.cutscene_num" name="events.on_cutscene_end.cutscene_num"></a>**`cutscene_num`** ([trx.cutscenes.Num](CUTSCENES.md#cutscenes.Num)).
+    - <a id="events.on_cutscene_end.cutscene" name="events.on_cutscene_end.cutscene"></a>**`cutscene`** ([trx.cutscenes.Cutscene](CUTSCENES.md#cutscenes.Cutscene)). The cutscene that finished.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
   Example:
   ```lua
-  trx.events.on_cutscene_end(function(cutscene_num)
-    trx.log.info("cutscene " .. cutscene_num .. " finished")
+  trx.events.on_cutscene_end(function(cutscene)
+    trx.log.info("cutscene " .. cutscene.num .. " finished")
   end)
   ```
 

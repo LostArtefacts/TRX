@@ -38,7 +38,7 @@ end
 -- Nothing records whether she is carrying it: the cutscene having run says so,
 -- and that is what a savegame already remembers.
 trx.events.on_game_start(function()
-  has_backpack = trx.cutscenes.is_played(BACKPACK_CUTSCENE)
+  has_backpack = trx.cutscenes[BACKPACK_CUTSCENE].is_played
   dress()
 end)
 
@@ -68,13 +68,13 @@ trx.config.on_change("visuals.lara_outfit", function(outfit)
   dress(outfit)
 end)
 
-trx.events.on_cutscene_start(function(cutscene_num)
-  if cutscene_num == BACKPACK_CUTSCENE then
+trx.events.on_cutscene_start(function(cutscene)
+  if cutscene.num == BACKPACK_CUTSCENE then
     -- The scene starts while Lara is crawling, and the crawlspace she triggers
     -- it from is no place to stand up in. The original engine carries her out
     -- to the floor beyond it.
     trx.cutscenes.set_lara_return({ x = 100938, y = 768, z = 58040 }, -32552)
-  elseif cutscene_num == ENTRANCE_CUTSCENE then
+  elseif cutscene.num == ENTRANCE_CUTSCENE then
     -- The scene plays at the temple entrance and leaves her facing the way in.
     trx.cutscenes.set_lara_return({ x = 5632, y = 1280, z = 86528 }, 28987)
   end

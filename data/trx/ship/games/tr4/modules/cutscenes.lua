@@ -63,8 +63,9 @@ end
 -- run is left alone, so coming back to the level does not play it again.
 function M.play_on_start(num)
   trx.events.on_game_start(function()
-    if trx.cutscenes.count > 0 and not trx.cutscenes.is_played(num) then
-      trx.cutscenes.play(num, false)
+    local cutscene = trx.cutscenes[num]
+    if #trx.cutscenes > 0 and not cutscene.is_played then
+      cutscene:play({ fade = false })
     end
   end)
 end
@@ -165,25 +166,14 @@ end
 function M.register(num, def)
   local state = {}
 
-  trx.events.on_cutscene_start(function(started_num)
-    if started_num ~= num then
-      return
-    end
+  trx.cutscenes[num]:on_start(function()
     state = { speakers = def.chat and prepare_chat(def.chat) or {} }
     if def.on_start then
       def.on_start()
     end
   end)
 
-  -- The last frame stays on screen while the scene fades out, so a frame is
-  -- acted on the once rather than for as long as it is shown.
-  trx.events.after_control(function()
-    local frame = trx.cutscenes.frame_num
-    if trx.cutscenes.current ~= num or frame == state.frame then
-      return
-    end
-    state.frame = frame
-
+  trx.cutscenes[num]:on_frame(function(_, frame)
     local handler = def.frames and def.frames[frame]
     if handler then
       handler(frame)
@@ -196,10 +186,7 @@ function M.register(num, def)
     end
   end)
 
-  trx.events.on_cutscene_end(function(ended_num)
-    if ended_num ~= num then
-      return
-    end
+  trx.cutscenes[num]:on_end(function()
     for _, speaker in ipairs(state.speakers or {}) do
       if speaker.lara then
         clear_head(speaker)
@@ -211,7 +198,7 @@ function M.register(num, def)
     -- Played from the end event, where the scene it follows is torn down and
     -- the screen is still black, so the two run as one.
     if def.chain then
-      trx.cutscenes.play(def.chain)
+      trx.cutscenes[def.chain]:play()
     end
   end)
 end
