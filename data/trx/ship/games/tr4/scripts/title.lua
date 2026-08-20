@@ -49,6 +49,31 @@ trx.events.on_trigger(function(item, trigger)
   end
 end)
 
+-- Places blood where the mummy lands on the spikes.
+local BLOOD_CUTSCENE_NUM = CYCLE[3].cutscene_num
+local BLOOD_FIRST_FRAME = 349
+local BLOOD_LAST_FRAME = 357
+local BLOOD_Z = 76209
+
+trx.cutscenes[BLOOD_CUTSCENE_NUM]:on_frame(function(_, frame_num)
+  if
+    frame_num < BLOOD_FIRST_FRAME
+    or frame_num > BLOOD_LAST_FRAME
+    or frame_num % 2 == 0
+  then
+    return
+  end
+
+  trx.fx.blood({
+    pos = {
+      x = 6799 - trx.random.draw:randint(0, 255),
+      y = trx.random.draw:randint(0, 511) - 768,
+      z = BLOOD_Z,
+    },
+    strength = 7,
+  })
+end)
+
 -- Lara is one of a cutscene's actors, and has no business being on screen
 -- between them. The level script runs before the level exists, so she is only
 -- ever reached from a handler.
