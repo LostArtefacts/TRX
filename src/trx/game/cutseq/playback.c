@@ -324,6 +324,10 @@ static void M_Finish(void)
     M_ReleaseNodes();
     Lara_Pose_SetOverride(nullptr);
     M_TeleportLara(m_State.lara_return.pos, m_State.lara_return.rot);
+    if (Lara_GetLaraInfo()->water_status == LWS_CHEAT) {
+        Lara_Cheat_ExitFlyMode();
+        Lara_Cheat_EnterFlyMode();
+    }
     m_State.lara_return.is_present = false;
     m_State.lara_shadow_bounds.is_present = false;
     Lara_Hair_Initialise();
