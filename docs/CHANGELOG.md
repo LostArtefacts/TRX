@@ -1,8 +1,8 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.10.1...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.10.2...develop) - ××××-××-××
 
-**TR3**
-- Fixed the kayak at times not being drawn in certain rooms (regression from 1.10.1)
-- Fixed some of Lara's skin joints incorrectly being drawn when riding the kayak (regression from 1.10)
+## [1.10.2](https://github.com/LostArtefacts/TRX/compare/trx-1.10.1...trx-1.10.2) - 2026-08-20
+**Lara's movement**
+- Fixed Lara being able to continue shimmying on monkeybars after death (#6300 / TRX1161, regression from 1.0)
 
 **Saves and settings**
 - Fixed save crystals activating even while Crystal mode is set to Disabled (Gameplay → General → Crystal mode) (regression from 1.10)
@@ -13,8 +13,9 @@
 - Fixed objects that reach into a neighbouring room being cut off or vanishing when seen through that room
 - Fixed the boulder in room 78 getting drawn in the overlapping room 74 in Tomb of Tihocan (regression from 1.10.1)
 
-**Lara's movement**
-- Fixed Lara being able to continue shimmying on monkeybars after death (#6300 / TRX1161, regression from 1.0)
+**TR3**
+- Fixed the kayak at times not being drawn in certain rooms (regression from 1.10.1)
+- Fixed some of Lara's skin joints incorrectly being drawn when riding the kayak (regression from 1.10)
 
 
 ## [1.10.1](https://github.com/LostArtefacts/TRX/compare/trx-1.10...trx-1.10.1) - 2026-08-16
