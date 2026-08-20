@@ -146,10 +146,10 @@ static void M_InitialiseBlock(
 
     case IDT_ROOM_EDIT_META: {
         if (m_RoomMeta == nullptr) {
-            m_RoomMeta = Vector_Create(sizeof(INJECTION_MESH_META));
+            m_RoomMeta = Vector_Create(sizeof(INJECTION_ROOM_META));
         }
         for (int32_t i = 0; i < data_count; i++) {
-            INJECTION_MESH_META meta = {
+            INJECTION_ROOM_META meta = {
                 .room_index = File_ReadS16(file),
                 .num_vertices = File_ReadS16(file),
                 .num_quads = File_ReadS16(file),
@@ -158,6 +158,9 @@ static void M_InitialiseBlock(
             };
             if (version >= INJ_VERSION_3) {
                 meta.num_static_3ds = File_ReadS16(file);
+            }
+            if (version >= INJ_VERSION_11) {
+                meta.num_sectors = File_ReadS16(file);
             }
             Vector_Add(m_RoomMeta, &meta);
         }
@@ -491,15 +494,15 @@ void Inject_Cleanup(void)
     Benchmark_End(&benchmark, nullptr);
 }
 
-INJECTION_MESH_META Inject_GetRoomMeshMeta(const int32_t room_index)
+INJECTION_ROOM_META Inject_GetRoomMeta(const int32_t room_index)
 {
-    INJECTION_MESH_META summed_meta = {};
+    INJECTION_ROOM_META summed_meta = {};
     if (m_RoomMeta == nullptr) {
         return summed_meta;
     }
 
     for (int32_t i = 0; i < m_RoomMeta->count; i++) {
-        const INJECTION_MESH_META *const meta = Vector_Get(m_RoomMeta, i);
+        const INJECTION_ROOM_META *const meta = Vector_Get(m_RoomMeta, i);
         if (meta->room_index != room_index) {
             continue;
         }
@@ -509,6 +512,7 @@ INJECTION_MESH_META Inject_GetRoomMeshMeta(const int32_t room_index)
         summed_meta.num_triangles += meta->num_triangles;
         summed_meta.num_static_2ds += meta->num_static_2ds;
         summed_meta.num_static_3ds += meta->num_static_3ds;
+        summed_meta.num_sectors += meta->num_sectors;
     }
 
     return summed_meta;

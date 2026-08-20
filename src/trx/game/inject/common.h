@@ -11,7 +11,7 @@ void Inject_AppendInjection(TRX_FILE *file);
 void Inject_AllInjections(void);
 void Inject_Cleanup(void);
 
-INJECTION_MESH_META Inject_GetRoomMeshMeta(int32_t room_index);
+INJECTION_ROOM_META Inject_GetRoomMeta(int32_t room_index);
 int32_t Inject_GetDataCount(INJECTION_DATA_TYPE type);
 int32_t Inject_GetMaxStaticObject3DId(void);
 int32_t Inject_GetMaxStaticObject2DId(void);
