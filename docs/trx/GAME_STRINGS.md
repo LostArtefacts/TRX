@@ -57,7 +57,7 @@ For example, if the same key exists in both `base_strings.json5` and
 `tr1/strings.json5`, the value `tr1/strings.json5` will take precedence.
 
 Each layer can also have a variant translated to other languages - see
-[this section](./4-GAME_STRINGS.md#translating-each-layer).
+[this section](./GAME_STRINGS.md#translating-each-layer).
 
 ## General structure
 

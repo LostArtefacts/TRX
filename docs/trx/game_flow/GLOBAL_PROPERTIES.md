@@ -261,7 +261,7 @@ remains distinct for each game.
     <td>
       Water color (R, G, B) or `#RRGGBB`. 1.0 or `FF` means pass-through, 0.0
       or `00` means completely black color.
-      See <a href="../7-WATER_COLORS.md">this table</a> for reference values.</a>
+      See <a href="../WATER_COLORS.md">this table</a> for reference values.</a>
     </td>
   </tr>
   <tr valign="top">
@@ -445,7 +445,7 @@ remains distinct for each game.
     <td>
       Water color (R, G, B) or `#RRGGBB`. 1.0 or `FF` means pass-through, 0.0
       or `00` means completely black color.
-      See <a href="../7-WATER_COLORS.md">this table</a> for reference values.</a>
+      See <a href="../WATER_COLORS.md">this table</a> for reference values.</a>
     </td>
   </tr>
   <tr valign="top">

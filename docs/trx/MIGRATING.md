@@ -555,7 +555,7 @@ themselves.
    preparation to eventually support internationalization. Elements such as
    item titles or item names need to be configured entirely in the new file, so
    all `"strings"` keys can be safely removed from the game flow. Refer to
-   [game strings documentation](4-GAME_STRINGS.md) for more details.
+   [game strings documentation](GAME_STRINGS.md) for more details.
 
 
 
