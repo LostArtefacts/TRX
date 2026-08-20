@@ -100,6 +100,7 @@
 - Fixed a crash while an in-game cutscene poses Lara (TRX1059)
 - Fixed Lara's shadow and the flames around her when she burns staying where an in-game cutscene began, rather than following her (TRX911)
 - Fixed Von Croy's shadow floating at the height of his knees during the scenes he plays in Angkor Wat (TRX911)
+- Fixed Lara's shadow being too small to read as the jeep's during the cutscene that opens Karnak (TRX911)
 
 **Miscellaneous**
 - Added an option to cast Lara in gold whatever she is wearing (Graphic Options → Visuals → Golden Lara) (TRX1070)
@@ -117,6 +118,7 @@
 - Added `trx.cutscenes.actor_count`, `trx.cutscenes.set_actor_visible()`, `trx.cutscenes.set_node_mesh()` and `trx.cutscenes.clear_node_mesh()`, for hiding an actor in the scene on screen or putting another object's mesh on one (TRX1058)
 - Added a new Lua module, `trx.waypoints`, for how far along a level's own progression Lara has got, which TR4 marks out and its guides follow; it is saved with the game and reports the furthest she has ever reached as well as where she is now
 - Added `trx.lara.speech_face`, for the face Lara talks with, which follows the outfit she is wearing rather than the one a level carries
+- Added `trx.cutscenes.set_lara_shadow_bounds()`, for the box a cutscene gives Lara's shadow, so a scene can make it read as something she rides in (TRX911)
 - Changed `trx.cutscenes.play()` to take whether to fade out first, so a scene that opens a level begins on the black screen the level loaded behind (TRX1063)
 - Changed `trx.game.end_level()` to end the level silently, leaving the "Level complete!" message to the `/endlevel` console command
 - Changed a color setting to read as a `trx.math.Color` rather than as hex text, and to be written with either (TRX1091)

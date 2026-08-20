@@ -73,6 +73,19 @@ void CutSeq_SetActorNodeMesh(
 // the original engine does for the scenes that move her.
 void CutSeq_SetLaraReturn(XYZ_32 pos, int16_t rot);
 
+// The box Lara's shadow takes while a cutscene runs, or null when none does.
+// A scene holds one box for the whole of it, rather than the box her pose
+// would make, so that her shadow keeps a steady size while the scene moves
+// her. The original game does the same.
+const BOUNDS_16 *CutSeq_GetLaraShadowBounds(void);
+
+// Gives Lara's shadow another box for the running cutscene. It holds for one
+// cutscene, whether named before CutSeq_Request or while the scene runs, and
+// the next scene starts from the ordinary box again. A wide box is how the
+// original game makes her shadow read as the jeep's when she arrives at
+// Karnak.
+void CutSeq_SetLaraShadowBounds(BOUNDS_16 bounds);
+
 // Ends the running cutscene early, fading out as it would at its own last
 // frames, so the scene finishes rather than being torn away: Lara is put back
 // where she belongs and the end event still fires. Does nothing when no

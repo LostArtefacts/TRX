@@ -5,6 +5,7 @@
 #include <trx/core/utils.h>
 #include <trx/game/anims/walk.h>
 #include <trx/game/collision/common.h>
+#include <trx/game/cutseq/playback.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/lara/pose.h>
 #include <trx/game/matrix.h>
@@ -90,15 +91,18 @@ static bool M_GetLaraAnchor(
     return true;
 }
 
-// Measures the box a pose puts around Lara, in the space her item stands in.
-// A pose holds her through a scene while her item keeps the animation frame it
-// stopped on, so the box that frame carries reports the wrong size. False for
-// anything but Lara under a pose.
-static bool M_GetPoseBounds(const ITEM *const item, BOUNDS_16 *const out)
+static bool M_GetLaraBounds(const ITEM *const item, BOUNDS_16 *const out)
 {
     if (item != Lara_GetItem()) {
         return false;
     }
+
+    const BOUNDS_16 *const cutscene_bounds = CutSeq_GetLaraShadowBounds();
+    if (cutscene_bounds != nullptr) {
+        *out = *cutscene_bounds;
+        return true;
+    }
+
     const LARA_POSE *const pose = Lara_Pose_Get();
     if (pose == nullptr) {
         return false;
@@ -401,9 +405,9 @@ void OutputSource_Shadows_Draw(
     }
     bind->shadow_drawn = true;
 
-    BOUNDS_16 pose_bounds;
-    if (M_GetPoseBounds(item, &pose_bounds)) {
-        bounds = &pose_bounds;
+    BOUNDS_16 lara_bounds;
+    if (M_GetLaraBounds(item, &lara_bounds)) {
+        bounds = &lara_bounds;
     }
 
     if (g_Config.visuals.shadow_type == SHADOW_TYPE_SPRITE) {

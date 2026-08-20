@@ -3614,6 +3614,20 @@
       "path": "cutscenes.set_lara_return"
     },
     {
+      "description": "Gives Lara's shadow another box for the running cutscene. A scene holds one\nbox for the whole of it, rather than the box her pose would make, so that\nher shadow keeps a steady size while the scene moves her; this names a\ndifferent one. A wide box is how the original game makes her shadow read as\nthe jeep's when she arrives at Karnak.\n\nIt holds for one cutscene, whether named before `trx.cutscenes.play` or\nwhile the scene runs, and the next scene starts from the ordinary box\nagain.",
+      "examples": [
+        "trx.events.on_cutscene_start(function(num)\n  if num == 12 then\n    trx.cutscenes.set_lara_shadow_bounds({\n      min_x = -600, min_y = -777, min_z = -600,\n      max_x = 600, max_y = 1, max_z = 600,\n    })\n  end\nend)"
+      ],
+      "params": [
+        {
+          "description": "The box, in Lara's own frame.",
+          "name": "bounds",
+          "type": "math.Box"
+        }
+      ],
+      "path": "cutscenes.set_lara_shadow_bounds"
+    },
+    {
       "description": "Happens as a level starts running, before its first frame is drawn. By then\nthe level file is loaded, its items are set up and any savegame state has\nbeen applied, so this is where a script sets object properties, declares\nallies, changes room state and plays sound effects. Every kind of level\nfires it: a played level, a cutscene and the attract demo alike. The title\nscreen has `trx.events.on_title_start` instead.\n\nWhich level is starting is `trx.game.current_level`, whose `trx.game.Level.num` and `trx.game.Level.type`\nsay where it counts and what kind it is. A level script already knows both,\nwhich is why the handler is not handed them.",
       "examples": [
         "trx.events.on_game_start(function(is_save)\n  trx.log.info(trx.game.current_level.title .. \" is up\")\nend)"

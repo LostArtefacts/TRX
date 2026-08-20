@@ -10,6 +10,16 @@ cutscenes.play_on_start(ARRIVAL)
 cutscenes.register(ARRIVAL, {
   on_start = function()
     cutscenes.set_items_visible(trx.catalog.objects.animating_6, false)
+    -- She rides in on the jeep, and her shadow is the one the scene casts for
+    -- it, so it is far wider than the one she casts on foot.
+    trx.cutscenes.set_lara_shadow_bounds({
+      min_x = -600,
+      min_y = -777,
+      min_z = -600,
+      max_x = 600,
+      max_y = 1,
+      max_z = 600,
+    })
   end,
   on_end = function()
     cutscenes.set_items_visible(trx.catalog.objects.animating_6, true)
