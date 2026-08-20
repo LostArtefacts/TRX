@@ -4428,6 +4428,34 @@
       }
     },
     {
+      "description": "Happens on every frame of a TR4 cutscene, before the frame is posed.\n\nA cutscene has no items to listen to. Its actors are animation tracks, so\nthe frame number is the only thing a script can act on. The original game\nkeys its own cutscene events to frame numbers as well.",
+      "examples": [
+        "trx.events.on_cutscene_frame(function(cutscene_num, frame_num)\n  if cutscene_num == 5 and frame_num == 1350 then\n    -- something happens here\n  end\nend)"
+      ],
+      "params": [
+        {
+          "description": "What to run when it happens.",
+          "name": "callback",
+          "params": [
+            {
+              "name": "cutscene_num",
+              "type": "cutscenes.Num"
+            },
+            {
+              "name": "frame_num",
+              "type": "cutscenes.FrameNum"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_cutscene_frame",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
+      }
+    },
+    {
       "description": "Happens once a TR4 cutscene has finished and the scene it interrupted is back. This is where a script decides what follows.",
       "examples": [
         "trx.events.on_cutscene_end(function(cutscene_num)\n  trx.log.info(\"cutscene \" .. cutscene_num .. \" finished\")\nend)"
