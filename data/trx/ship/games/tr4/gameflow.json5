@@ -167,6 +167,9 @@
                 {"type": "loop_game"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "karnak_fd.bin",
+            ],
         },
 
         // 8. The Great Hypostyle Hall
