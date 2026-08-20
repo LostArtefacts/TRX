@@ -49,6 +49,7 @@ const OBJECT_ID g_CreatureObjects[] = {
     O_BARRACUDA,
     O_BAT,
     O_BEAR,
+    O_BOAR,
     O_BIG_EEL,
     O_BIG_SPIDER,
     O_BIRD_GUARDIAN,

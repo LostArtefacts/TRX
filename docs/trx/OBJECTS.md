@@ -165,6 +165,15 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### O_BOAR
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">40</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">30</td><td>Damage dealt by the boar's attack.</td></tr>
+</tbody>
+</table>
+
 #### O_CENTAUR
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (23)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>

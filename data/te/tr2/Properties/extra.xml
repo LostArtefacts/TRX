@@ -55,6 +55,11 @@
         <property category="TRX" defaultValue="true" description="Show a twinkle effect above the item." displayName="Show Pickup Aid" internalName="show_pickup_aid" type="Bool" />
         <property category="TRX" defaultValue="0" description="How much to rotate the item by each frame while it's active, in engine angle units." displayName="Rotation" internalName="rotation" maxValue="16384" minValue="-16384" type="Int" />
     </moveable>
+    <!--placeholder for O_BOAR-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="40" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="30" description="Damage dealt by the boar's attack." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
     <!--placeholder for O_CEILING_TRAPDOOR_1..O_FLOOR_TRAPDOOR_2-->
     <moveable id="-1">
         <property category="TRX" defaultValue="true" description="Whether the trapdoor opens automatically when triggered." displayName="Auto Open" internalName="auto_open" type="Bool" />

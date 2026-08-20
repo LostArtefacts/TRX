@@ -2174,6 +2174,9 @@
         "blue_light": {
             "name": "\\{review}Blaues Licht",
         },
+        "boar": {
+            "name": "\\{review}Wildschwein",
+        },
         "boat": {
             "name": "Boot",
         },

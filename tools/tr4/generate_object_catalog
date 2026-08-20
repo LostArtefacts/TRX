@@ -337,6 +337,7 @@ ALIAS_MAP: dict[str, str] = {
     "WATERSKIN2_3": "O_WATERSKIN_2_3",
     "WATERSKIN2_4": "O_WATERSKIN_2_4",
     "WATERSKIN2_5": "O_WATERSKIN_2_5",
+    "WILD_BOAR": "O_BOAR",
 }
 
 KNOWN_UNUSED = {

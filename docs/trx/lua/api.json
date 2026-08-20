@@ -256,7 +256,7 @@
     },
     {
       "bulk": true,
-      "count": 820,
+      "count": 821,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -346,6 +346,7 @@
         "BLOOD",
         "BLOOD_PINK",
         "BLUE_LIGHT",
+        "BOAR",
         "BOAT",
         "BOAT_BITS",
         "BODY_PART",
