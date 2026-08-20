@@ -1,4 +1,4 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.10.1...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.10.2...develop) - ××××-××-××
 
 **Lara's movement**
 - Added an option to allow Lara to sidestep in swamps (Gameplay → Controls → Swamp sidesteps) (#6250 / TRX1117)
@@ -7,7 +7,6 @@
 - Fixed Lara being able to turn too quickly in swamp rooms (regression from 1.0) (TRX1129)
 - Fixed Lara being able to vault or crawl through breakable walls that stand on the edge of a tile (Gameplay → Fixes → Fix breakable wall clipping) (OG bug) (TRX1024)
 - Fixed Lara's rope-grab reach being shorter from certain directions (OG bug) (TRX1143)
-- Fixed Lara being able to continue shimmying on monkeybars after death (#6300 / TRX1161, regression from 1.0)
 
 **UI**
 - Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187 / TRX1036)
@@ -53,7 +52,6 @@
 **Saves and settings**
 - Added smoke, sparks, mist and bubbles to saves (Gameplay → General → Save effects)
 - Changed the save crystal behavior to give Lara a crystal when starting a game, if the mode is set to Saving (pickups), in line with the TR3 PS1 version (Gameplay → General → Crystal mode) (TRX1101)
-- Fixed save crystals activating even while Crystal mode is set to Disabled (Gameplay → General → Crystal mode) (regression from 1.10) (TRX1149)
 
 **Music and sound**
 - Added an option to have Lara's sliding SFX stop as soon as she leaves a slope (#6294 / TRX1155)
@@ -66,14 +64,10 @@
 - Added the PlayStation lighting model, which deepens bright surfaces into their own color rather than white (Graphic Options → Rendering → Lighting model)
 - Changed the lighting contrast option to appear in TR1 and TR2 only, as the other games light dynamic sources their own way (Graphic Options → Rendering → Lighting contrast)
 - Changed TR3 to light geometry on the brighter curve its hardware renderer used (Graphic Options → Rendering → Lighting model)
-- Fixed scenery in an adjoining room being cut off along the edges of the portal it is seen through (TRX1159)
-- Fixed objects showing through rooms that share their space with the room the object stands in (TRX1168)
-- Fixed objects that reach into a neighbouring room being cut off or vanishing when seen through that room (TRX1168)
 - Fixed a visible seam across the sky in TR4 levels (TRX563, regression from 1.9)
 
 **TR1**
 - Changed Lara to retain her equipment when turning to gold on the Midas Hand, with the equipment also turning to gold (TRX1073)
-- Fixed the boulder in room 78 getting drawn in the overlapping room 74 in Tomb of Tihocan (regression from 1.10.1) (TRX1168)
 - Fixed Lara's arm remaining in the flare pose if holding one on the Midas Hand (TRX1073)
 
 **TR3**
@@ -82,8 +76,6 @@
 - Fixed Vultures in The River Ganges and Nevada Desert having incorrect animation bounds (OG bug) (#6303 / TRX1163)
 - Fixed missing alpha blending on the MP5 and M16 gun flare in the gym (regression from 1.7) (TRX1066)
 - Fixed Lara being able to turn too quickly when wading (regression from 1.0) (TRX1129)
-- Fixed the kayak at times not being drawn in certain rooms (regression from 1.10.1) (TRX1145)
-- Fixed some of Lara's skin joints incorrectly being drawn when riding the kayak (regression from 1.10) (TRX1146)
 - Fixed Lara's sliding SFX continuing after she leaves a slope (#6294 / TRX1155, regression from 1.0)
 - Fixed underwater blood clouds appearing in the air when the security lasers hurt Lara at the water surface (OG bug) (#6323 / TRX1180)
 
@@ -126,6 +118,25 @@
 - Changed a color setting to read as a `trx.math.Color` rather than as hex text, and to be written with either (TRX1091)
 - Changed the `trx.weapons` functions that take a weapon id to be deprecated, the weapon itself now answering what it is available as, what it is carried as, and what it is fed (TRX1091)
 - Fixed creatures taking wrong routes where crossing to the next square needs a jump or a monkey swing (TRX1061)
+
+
+
+## [1.10.2](https://github.com/LostArtefacts/TRX/compare/trx-1.10.1...trx-1.10.2) - 2026-08-20
+**Lara's movement**
+- Fixed Lara being able to continue shimmying on monkeybars after death (#6300 / TRX1161, regression from 1.0)
+
+**Saves and settings**
+- Fixed save crystals activating even while Crystal mode is set to Disabled (Gameplay → General → Crystal mode) (regression from 1.10)
+
+**Rendering**
+- Fixed scenery in an adjoining room being cut off along the edges of the portal it is seen through
+- Fixed objects showing through rooms that share their space with the room the object stands in
+- Fixed objects that reach into a neighbouring room being cut off or vanishing when seen through that room
+- Fixed the boulder in room 78 getting drawn in the overlapping room 74 in Tomb of Tihocan (regression from 1.10.1)
+
+**TR3**
+- Fixed the kayak at times not being drawn in certain rooms (regression from 1.10.1)
+- Fixed some of Lara's skin joints incorrectly being drawn when riding the kayak (regression from 1.10)
 
 
 
