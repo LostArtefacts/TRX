@@ -10,6 +10,7 @@
 #include <trx/game/los.h>
 #include <trx/game/objects/vehicles/common.h>
 #include <trx/game/output.h>
+#include <trx/game/output/sources/shadows.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
@@ -242,7 +243,7 @@ static bool M_Draw(const ITEM *const item)
     const int32_t frac = Item_GetFrames(item, frames, &rate);
 
     OBJECT *const obj = Object_Get(item->object_id);
-    Output_DrawShadow(256, &frames[0]->bounds, item);
+    OutputSource_Shadows_Draw(256, &frames[0]->bounds, item);
 
     Matrix_Push();
     Matrix_TranslateAbs32((XYZ_32) {

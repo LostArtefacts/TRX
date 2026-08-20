@@ -13,7 +13,6 @@ void Output_DrawRoom(const ROOM *room, bool is_outside);
 void Output_DrawSprite(
     int32_t x, int32_t y, int32_t z, int16_t sprnum, int16_t shade, RGBA_F tint,
     DRAW_TYPE draw_type, float scale);
-void Output_DrawShadow(int16_t size, const BOUNDS_16 *bounds, const ITEM *item);
 void Output_DrawLightningSegment(const LIGHTNING_SEGMENT segment);
 
 // UI

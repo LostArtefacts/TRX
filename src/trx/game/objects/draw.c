@@ -8,6 +8,7 @@
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
+#include <trx/game/output/sources/shadows.h>
 #include <trx/game/output/vars.h>
 #include <trx/version.h>
 
@@ -176,7 +177,7 @@ bool Object_DrawAnimatingItemWithSwap(
     }
 
     if (obj->shadow_size != 0) {
-        Output_DrawShadow(obj->shadow_size, bounds, item);
+        OutputSource_Shadows_Draw(obj->shadow_size, bounds, item);
     }
 
     Matrix_Push();
