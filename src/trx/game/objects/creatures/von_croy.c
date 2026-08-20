@@ -404,8 +404,9 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
         p->waypoint = Waypoint_GetPad();
     }
 
-    if (Waypoint_GetPad() == 20
-        && lara->current_anim_state != LS(LS_SURF_TREAD)) {
+    const bool fly_cheat_active = Lara_GetLaraInfo()->water_status == LWS_CHEAT;
+    if (Waypoint_GetPad() == 20 && lara->current_anim_state != LS(LS_SURF_TREAD)
+        && !fly_cheat_active) {
         return;
     }
 
@@ -467,7 +468,10 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
 
         lara->rot.y = angle + 0x8000;
 
-        if (lara->current_anim_state != LS(LS_SURF_TREAD)) {
+        if (fly_cheat_active) {
+            lara->speed = 0;
+            lara->fall_speed = 0;
+        } else if (lara->current_anim_state != LS(LS_SURF_TREAD)) {
             int16_t room_num = lara->room_num;
             const SECTOR *const sector = Room_GetSector(lara->pos, &room_num);
             lara->pos.y = Room_GetHeight(sector, lara->pos);
@@ -613,7 +617,7 @@ static void M_RaceControl(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     CREATURE *const creature = item->creature_data;
     M_PRIV *const p = M_GetPriv(item);
-    const ITEM *const lara = Lara_GetItem();
+    ITEM *const lara = Lara_GetItem();
 
     int16_t tilt = 0;
     int16_t angle = 0;
@@ -675,6 +679,10 @@ static void M_RaceControl(const int16_t item_num)
 
     if (FlybyMode_IsActive()
         && Music_GetCurrentPlayingTrack() == M_FLYBY_TALK_TRACK) {
+        if (Lara_GetLaraInfo()->water_status == LWS_CHEAT) {
+            lara->speed = 0;
+            lara->fall_speed = 0;
+        }
         IGNORE(Music_SetSpeed(Clock_GetSpeedMultiplier()));
         p->flyby.talk_timer++;
 
