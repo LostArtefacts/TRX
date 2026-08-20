@@ -16,6 +16,7 @@ uniform vec4 uTint;
     vec2 trapezoidRatios;         \
     vec4 color;                   \
     vec3 add;                     \
+    float tintWeight;             \
     flat float reflectivity;      \
     noperspective vec4 affineUV;
 
@@ -170,10 +171,19 @@ void main(void) {
 
     float gamma_exp = 1.0 / ((uGamma / 10.0) * 4.0);
 
+    float tintWeight = 1.0;
+#if TR_VERSION == 4
+    if ((inFlags & (VERT_MOVE | VERT_GLOW)) != 0u) {
+        tintWeight = 0.0;
+    }
+#endif
+    gOut.tintWeight = tintWeight;
+
     // Applies PlayStation water tint before the gamma curve and texture
     // modulation, where the GTE combines it with the light register.
-    vec3 tintReg =
-        uLightingCurve == LIGHTING_CURVE_SATURATE ? uTint.rgb : vec3(1.0);
+    vec3 tintReg = uLightingCurve == LIGHTING_CURVE_SATURATE
+        ? mix(vec3(1.0), uTint.rgb, tintWeight)
+        : vec3(1.0);
 
 #if TR_VERSION >= 4
     // The OG engine lights everything in the "128 = neutral" scale: the lit value is
@@ -385,6 +395,8 @@ void emitAt(vec3 w)
         + gIn[1].trapezoidRatios * w.y + gIn[2].trapezoidRatios * w.z;
     gOut.color = gIn[0].color * w.x + gIn[1].color * w.y + gIn[2].color * w.z;
     gOut.add = gIn[0].add * w.x + gIn[1].add * w.y + gIn[2].add * w.z;
+    gOut.tintWeight = gIn[0].tintWeight * w.x + gIn[1].tintWeight * w.y
+        + gIn[2].tintWeight * w.z;
     gOut.affineUV =
         gIn[0].affineUV * w.x + gIn[1].affineUV * w.y + gIn[2].affineUV * w.z;
 
@@ -598,7 +610,8 @@ void main(void) {
     if (uLightingCurve == LIGHTING_CURVE_SATURATE) {
         texColor.a *= uTint.a;
     } else {
-        texColor *= uTint;
+        texColor.rgb *= mix(vec3(1.0), uTint.rgb, gIn.tintWeight);
+        texColor.a *= uTint.a;
     }
     texColor.rgb *= uTint.a;
 
