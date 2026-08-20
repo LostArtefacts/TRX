@@ -299,6 +299,7 @@ common_sources = [
   'trx/game/anims/commands.c',
   'trx/game/anims/common.c',
   'trx/game/anims/frames.c',
+  'trx/game/anims/walk.c',
   'trx/game/camera/binoculars.c',
   'trx/game/camera/box_camera.c',
   'trx/game/camera/cinematic.c',
