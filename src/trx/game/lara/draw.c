@@ -8,6 +8,7 @@
 #include <trx/game/lara/pose.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output.h>
+#include <trx/game/output/sources/shadows.h>
 #include <trx/game/output/state.h>
 #include <trx/game/output/vars.h>
 #include <trx/game/random.h>
@@ -165,7 +166,7 @@ static bool M_Draw_I(
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
 
     if (!Lara_Vehicle_IsMounted()) {
-        Output_DrawShadow(obj->shadow_size, bounds, item);
+        OutputSource_Shadows_Draw(obj->shadow_size, bounds, item);
     }
 
     MATRIX saved_matrix = *g_MatrixPtr;
@@ -462,7 +463,7 @@ bool Lara_Draw(const ITEM *const item)
     const OBJECT *const obj = Object_Get(item->object_id);
     const BOUNDS_16 *const shadow_bounds = Item_GetBoundsAccurate(item);
     if (!Lara_Vehicle_IsMounted()) {
-        Output_DrawShadow(obj->shadow_size, shadow_bounds, item);
+        OutputSource_Shadows_Draw(obj->shadow_size, shadow_bounds, item);
     }
 
     MATRIX saved_matrix = *g_MatrixPtr;
