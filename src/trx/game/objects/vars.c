@@ -171,6 +171,13 @@ const OBJECT_ID g_WaterObjects[] = {
     // clang-format on
 };
 
+const OBJECT_ID g_NoHitReactionObjects[] = {
+    // clang-format off
+    O_VON_CROY,
+    NO_OBJECT,
+    // clang-format on
+};
+
 const OBJECT_ID g_LoyalObjects[] = {
     // clang-format off
     O_LARA,

@@ -7,6 +7,7 @@ extern const OBJECT_ID g_CreatureObjects[];
 extern const OBJECT_ID g_ProjectileObjects[];
 extern const OBJECT_ID g_WaterObjects[];
 extern const OBJECT_ID g_LoyalObjects[];
+extern const OBJECT_ID g_NoHitReactionObjects[];
 extern const OBJECT_ID g_PickupObjects[];
 extern const OBJECT_ID g_ElevatedPickupObjects[];
 extern const OBJECT_ID g_SwitchObjects[];
