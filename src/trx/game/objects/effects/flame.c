@@ -5,6 +5,7 @@
 #include <trx/core/utils.h>
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/pose.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -24,6 +25,19 @@ static const uint8_t m_TR3_XZOffsets[16][2] = {
     { 40, 24 }, { 55, 24 }, { 9, 40 },  { 24, 40 }, { 40, 40 }, { 55, 40 },
     { 9, 55 },  { 24, 55 }, { 40, 55 }, { 55, 55 },
 };
+
+// Where the light of the flames around Lara belongs. A cutscene leaves her item
+// at the scene's origin and poses her from there, so the light hangs off the
+// same joint the flames hang off rather than off the item.
+static XYZ_32 M_GetLaraFireLightPos(const ITEM *const lara_item)
+{
+    if (Lara_Pose_Get() == nullptr) {
+        return lara_item->pos;
+    }
+    XYZ_32 pos = {};
+    Collide_GetJointAbsPosition(lara_item, &pos, LM_HIPS);
+    return pos;
+}
 
 static bool M_IsGreenAttachedFlame(const EFFECT *const effect)
 {
@@ -189,7 +203,7 @@ static void M_TR3_ControlSmall(
             color.g = ((rnd >> 4) & 0x1F) + 96;
             color.b = 0;
         }
-        Output_AddDynamicLightRGB(lara_item->pos, 13, color);
+        Output_AddDynamicLightRGB(M_GetLaraFireLightPos(lara_item), 13, color);
     }
 
     if (lara_item->room_num != effect->room_num) {
@@ -485,7 +499,7 @@ static void M_TR4_Control(const int16_t effect_num)
             color.g = (Random_GetControl() & 0x1F) + 96;
             color.b = 0;
         }
-        Output_AddDynamicLightRGB(lara_item->pos, 13, color);
+        Output_AddDynamicLightRGB(M_GetLaraFireLightPos(lara_item), 13, color);
     }
 
     if (lara_item->room_num != effect->room_num) {
