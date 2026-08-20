@@ -247,6 +247,11 @@ static const luaL_Reg m_Module[] = {
 static void M_Create(lua_State *const L)
 {
     LUA_RegisterModule(L, "cutscenes", m_Module);
+
+    LUA_GetModule(L, "cutscenes");
+    lua_pushinteger(L, CUTSEQ_MAX_TRIGGERS);
+    lua_setfield(L, -2, "MAX_TRIGGERS");
+    lua_pop(L, 1);
 }
 
 REGISTER_LUA_CAPI(.create = M_Create)

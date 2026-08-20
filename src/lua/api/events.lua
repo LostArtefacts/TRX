@@ -73,6 +73,17 @@ local function hook(event_type)
   end
 end
 
+-- trx.cutscenes is reached at call time, so its module need not load before
+-- this one.
+local function cutscene_hook(event_type)
+  assert(event_type ~= nil, "events: the engine has no such event type")
+  return function(callback)
+    return listener_of(raw.attach(event_type, function(num, ...)
+      callback(trx.cutscenes[num], ...)
+    end))
+  end
+end
+
 local LISTENER = {
   type = "events.Listener",
   description = "The attached handler.",
@@ -715,7 +726,7 @@ api.define("events.on_cutscene_trigger", {
     A trigger Lara stands on fires every frame, so this happens only for a
     cutscene that has not run yet and while none is playing. Asking counts as
     running it, however it ended, so the same handler is not asked again on
-    the next frame. Clear the mark with `trx.cutscenes.set_played` to hear
+    the next frame. Clear the mark by writing `trx.cutscenes.Cutscene.is_played` to hear
     about one again.
 
     The number a trigger names need not be one the game has a cutscene for -
@@ -745,7 +756,7 @@ trx.events.on_cutscene_trigger(function(cutscene_num)
     return false
   end
   if trx.lara.item.room_num == 55 then
-    trx.cutscenes.play(27)
+    trx.cutscenes[27]:play()
   else
     trx.camera.play_flyby(3)
   end
@@ -764,14 +775,15 @@ api.define("events.on_cutscene_start", {
       description = "What to run when it happens.",
       params = {
         {
-          name = "cutscene_num",
-          type = "cutscenes.Num",
+          name = "cutscene",
+          type = "cutscenes.Cutscene",
+          description = "The cutscene starting.",
         },
       },
     },
   },
   returns = LISTENER,
-  impl = hook(types.CUTSCENE_START),
+  impl = cutscene_hook(types.CUTSCENE_START),
 })
 
 api.define("events.on_cutscene_frame", {
@@ -789,8 +801,9 @@ api.define("events.on_cutscene_frame", {
       description = "What to run when it happens.",
       params = {
         {
-          name = "cutscene_num",
-          type = "cutscenes.Num",
+          name = "cutscene",
+          type = "cutscenes.Cutscene",
+          description = "The cutscene the frame belongs to.",
         },
         {
           name = "frame_num",
@@ -801,13 +814,13 @@ api.define("events.on_cutscene_frame", {
   },
   returns = LISTENER,
   examples = {
-    [[trx.events.on_cutscene_frame(function(cutscene_num, frame_num)
-  if cutscene_num == 5 and frame_num == 1350 then
+    [[trx.events.on_cutscene_frame(function(cutscene, frame_num)
+  if cutscene.num == 5 and frame_num == 1350 then
     -- something happens here
   end
 end)]],
   },
-  impl = hook(types.CUTSCENE_FRAME),
+  impl = cutscene_hook(types.CUTSCENE_FRAME),
 })
 
 api.define("events.on_cutscene_end", {
@@ -820,19 +833,20 @@ api.define("events.on_cutscene_end", {
       description = "What to run when it happens.",
       params = {
         {
-          name = "cutscene_num",
-          type = "cutscenes.Num",
+          name = "cutscene",
+          type = "cutscenes.Cutscene",
+          description = "The cutscene that finished.",
         },
       },
     },
   },
   returns = LISTENER,
   examples = {
-    [[trx.events.on_cutscene_end(function(cutscene_num)
-  trx.log.info("cutscene " .. cutscene_num .. " finished")
+    [[trx.events.on_cutscene_end(function(cutscene)
+  trx.log.info("cutscene " .. cutscene.num .. " finished")
 end)]],
   },
-  impl = hook(types.CUTSCENE_END),
+  impl = cutscene_hook(types.CUTSCENE_END),
 })
 
 api.define("events.on_flyby_end", {

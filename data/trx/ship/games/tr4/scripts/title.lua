@@ -71,17 +71,17 @@ trx.events.on_flyby_end(function(sequence_num)
   trx.camera.play_flyby(sequence_num)
 end)
 
-trx.events.on_cutscene_start(function(cutscene_num)
+trx.events.on_cutscene_start(function(cutscene)
   set_lara_visible(true)
-  if cutscene_num == CYCLE[1].cutscene_num then
+  if cutscene.num == CYCLE[1].cutscene_num then
     rewind_doors()
   end
 end)
 
-trx.events.on_cutscene_end(function(cutscene_num)
+trx.events.on_cutscene_end(function(cutscene)
   set_lara_visible(false)
 
-  local step, index = cycle_step(cutscene_num)
+  local step, index = cycle_step(cutscene.num)
   if step == nil then
     return
   end

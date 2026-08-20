@@ -30,16 +30,16 @@ trx.events.on_cutscene_trigger(function(cutscene_num)
 
   -- Her trigger sits past the finish, so she can cross it again after the
   -- scenes have run.
-  if trx.cutscenes.is_played(IRIS_CHAMBER) then
+  if trx.cutscenes[IRIS_CHAMBER].is_played then
     return true
   end
 
-  if trx.cutscenes.is_played(LARA_LOST) then
-    trx.cutscenes.play(LARA_LOST)
+  if trx.cutscenes[LARA_LOST].is_played then
+    trx.cutscenes[LARA_LOST]:play()
   else
     -- She won, so the ending where he did is spent along with it.
-    trx.cutscenes.set_played(LARA_LOST, true)
-    trx.cutscenes.play(LARA_WON)
+    trx.cutscenes[LARA_LOST].is_played = true
+    trx.cutscenes[LARA_WON]:play()
   end
   return true
 end)

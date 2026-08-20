@@ -52,6 +52,28 @@ order: 3
    as the constant it is:
    - `trx.game.trx_version` is now `trx.game.TRX_VERSION`
 
+6. **A cutscene is reached by number**
+   `trx.cutscenes[30]` is the cutscene itself, and `trx.cutscenes.current`
+   hands over one of those rather than a number:
+   - `trx.cutscenes.current == 5` becomes
+     `trx.cutscenes.current == trx.cutscenes[5]`, or
+     `trx.cutscenes.current.num == 5`
+
+   The cutscene events hand one over as well, `on_cutscene_trigger` apart,
+   which still names a number because a trigger may name one no scene
+   answers to:
+   - `trx.events.on_cutscene_start(function(num)` becomes
+     `function(cutscene)`, and `num` becomes `cutscene.num`
+   - `trx.events.on_cutscene_end` the same, as does the new
+     `trx.events.on_cutscene_frame`
+
+   The functions taking a number still work and say what to use instead:
+   - `trx.cutscenes.play(5)` becomes `trx.cutscenes[5]:play()`, taking
+     `{ fade = false }` where it took `false`
+   - `trx.cutscenes.is_played(5)` becomes `trx.cutscenes[5].is_played`
+   - `trx.cutscenes.set_played(5, true)` becomes
+     `trx.cutscenes[5].is_played = true`
+
 ### Version 1.9 to 1.10
 
 The Lua API was rewritten, and most of what it breaks is a rename. Run your

@@ -22,7 +22,243 @@ api.number("cutscenes.FrameNum", {
   description = "A frame's number within the cutscene it belongs to.",
 })
 
+-- Maps each handle to the cutscene number it stands for. A handle is an empty
+-- table, so the number is reachable only through this map.
+local nums = setmetatable({}, { __mode = "k" })
+local handles = {}
+local Cutscene
+
+local function num_of(self)
+  return nums[self]
+end
+
+-- Returns one handle per number, so that two ways of reaching the same scene
+-- give the same value and compare equal.
+local function handle_of(num)
+  if
+    type(num) ~= "number"
+    or num % 1 ~= 0
+    or num < 0
+    or num >= raw.MAX_TRIGGERS
+  then
+    return nil
+  end
+  local handle = handles[num]
+  if handle == nil then
+    handle = setmetatable({}, Cutscene)
+    nums[handle] = num
+    handles[num] = handle
+  end
+  return handle
+end
+
+-- Narrows one of the module's events to a single scene. trx.events is reached
+-- at call time, so its module need not load before this one.
+local function cutscene_hook(event_name)
+  return function(self, callback)
+    return trx.events[event_name](function(fired, ...)
+      if fired == self then
+        callback(self, ...)
+      end
+    end)
+  end
+end
+
+local CUTSCENE_LISTENER = {
+  type = "events.Listener",
+  description = "The attached handler.",
+}
+
+Cutscene = api.type("cutscenes.Cutscene", {
+  description = [[
+    One of the scenes a cutscene trigger can name. A number the pak holds no
+    scene for is still one of these, because the engine remembers it as played
+    the same way; `trx.cutscenes.Cutscene:play` is what such a number has
+    nothing to do.
+  ]],
+
+  fields = {
+    num = {
+      type = "cutscenes.Num",
+      description = "Which scene this is.",
+      get = num_of,
+    },
+
+    is_played = {
+      type = "boolean",
+      description = "Whether a trigger naming this number has already been "
+        .. "answered. True keeps its trigger from firing; writing false lets "
+        .. "it run again.",
+      get = function(self)
+        return raw.is_played(num_of(self))
+      end,
+      set = function(self, value)
+        raw.set_played(num_of(self), value and true or false)
+      end,
+    },
+
+    is_playing = {
+      type = "boolean",
+      description = "Whether this scene is the one on screen.",
+      get = function(self)
+        return raw.get_current() == num_of(self)
+      end,
+    },
+
+    frame_num = {
+      type = "cutscenes.FrameNum",
+      nullable = true,
+      description = "Which frame of this scene is on screen, or `nil` unless "
+        .. "it is the one playing.",
+      get = function(self)
+        if raw.get_current() ~= num_of(self) then
+          return nil
+        end
+        return raw.get_frame_num()
+      end,
+    },
+  },
+
+  methods = {
+    play = {
+      description = "Plays this scene. Does nothing if one is already playing "
+        .. "or the game holds no scene for this number.",
+      params = {
+        {
+          name = "opts",
+          type = "table",
+          optional = true,
+          description = "How to play it.",
+          fields = {
+            {
+              name = "fade",
+              type = "boolean",
+              optional = true,
+              default = true,
+              description = "Whether to fade the scene out before the first "
+                .. "frame. A cutscene that opens a level passes false: the "
+                .. "original game holds the screen black rather than showing "
+                .. "the level for a moment first, and the scene's own fade in "
+                .. "follows either way.",
+            },
+          },
+        },
+      },
+      examples = { [[trx.cutscenes[28]:play()]] },
+      impl = function(self, opts)
+        local fade = true
+        if opts ~= nil and opts.fade ~= nil then
+          fade = opts.fade
+        end
+        raw.play(num_of(self), fade)
+      end,
+    },
+
+    on_start = {
+      description = "Happens when this scene's first frame is about to show. "
+        .. "`trx.events.on_cutscene_start`, narrowed to this cutscene.",
+      params = {
+        {
+          name = "callback",
+          type = "function",
+          description = "What to run when it happens.",
+          params = {
+            {
+              name = "cutscene",
+              type = "cutscenes.Cutscene",
+              description = "This cutscene.",
+            },
+          },
+        },
+      },
+      returns = CUTSCENE_LISTENER,
+      impl = cutscene_hook("on_cutscene_start"),
+    },
+
+    on_frame = {
+      description = [[
+        Happens on every frame of this scene, before the frame is posed.
+
+        A cutscene has no items to listen to. Its actors are animation
+        tracks, so the frame number is the only thing a script can act on.
+
+        `trx.events.on_cutscene_frame`, narrowed to this cutscene.
+      ]],
+      params = {
+        {
+          name = "callback",
+          type = "function",
+          description = "What to run when it happens.",
+          params = {
+            {
+              name = "cutscene",
+              type = "cutscenes.Cutscene",
+              description = "This cutscene.",
+            },
+            {
+              name = "frame_num",
+              type = "cutscenes.FrameNum",
+              description = "The frame about to be posed.",
+            },
+          },
+        },
+      },
+      returns = CUTSCENE_LISTENER,
+      examples = {
+        [[trx.cutscenes[5]:on_frame(function(cutscene, frame_num)
+  if frame_num == 1350 then
+    -- something happens here
+  end
+end)]],
+      },
+      impl = cutscene_hook("on_cutscene_frame"),
+    },
+
+    on_end = {
+      description = "Happens once this scene has finished and what it "
+        .. "interrupted is back. `trx.events.on_cutscene_end`, narrowed to "
+        .. "this cutscene.",
+      params = {
+        {
+          name = "callback",
+          type = "function",
+          description = "What to run when it happens.",
+          params = {
+            {
+              name = "cutscene",
+              type = "cutscenes.Cutscene",
+              description = "This cutscene.",
+            },
+          },
+        },
+      },
+      returns = CUTSCENE_LISTENER,
+      impl = cutscene_hook("on_cutscene_end"),
+    },
+  },
+})
+
+api.container("cutscenes", {
+  description = "Indexing the module reaches a cutscene by the number a trigger names it with. "
+    .. "`#trx.cutscenes` is how many the game can play, and `pairs()` walks those in order; the "
+    .. "numbers past them are reachable as well, because the engine remembers any of them as "
+    .. "played.",
+  key = {
+    type = "cutscenes.Num",
+    description = "The number a cutscene trigger names.",
+  },
+  value = { type = "cutscenes.Cutscene", nullable = true },
+  examples = {
+    [[trx.cutscenes[30]:on_frame(function(cutscene, frame_num)
+  trx.log.info("frame " .. frame_num .. " of " .. cutscene.num)
+end)]],
+  },
+  get = handle_of,
+  count = raw.get_count,
+})
+
 api.define("cutscenes.play", {
+  deprecated = "Call `trx.cutscenes.Cutscene:play` instead.",
   description = "Plays a cutscene, fading the scene out first. Does nothing if one is already "
     .. "playing or the game has no cutscene data.",
   params = {
@@ -37,14 +273,16 @@ api.define("cutscenes.play", {
         .. "in follows either way.",
     },
   },
-  examples = { [[trx.cutscenes.play(28)]] },
   impl = raw.play,
 })
 
 api.property("cutscenes.current", {
-  type = "cutscenes.Num",
-  description = "Number of the cutscene playing, or `nil` if none is.",
-  get = raw.get_current,
+  type = "cutscenes.Cutscene",
+  nullable = true,
+  description = "The cutscene playing, or `nil` if none is.",
+  get = function()
+    return handle_of(raw.get_current())
+  end,
 })
 
 api.property("cutscenes.frame_num", {
@@ -56,8 +294,8 @@ api.property("cutscenes.frame_num", {
     script acts part-way through one, as the original game does.
   ]],
   examples = {
-    [[trx.events.after_control(function()
-  if trx.cutscenes.current == 5 and trx.cutscenes.frame_num == 1350 then
+    [[trx.cutscenes[5]:on_frame(function(cutscene, frame_num)
+  if frame_num == 1350 then
     -- something happens here
   end
 end)]],
@@ -165,6 +403,7 @@ api.define("cutscenes.clear_node_mesh", {
 })
 
 api.define("cutscenes.is_played", {
+  deprecated = "Read `trx.cutscenes.Cutscene.is_played` instead.",
   description = "Whether a cutscene trigger naming this number has already been answered.",
   params = {
     { name = "num", type = "cutscenes.Num" },
@@ -177,6 +416,7 @@ api.define("cutscenes.is_played", {
 })
 
 api.define("cutscenes.set_played", {
+  deprecated = "Write `trx.cutscenes.Cutscene.is_played` instead.",
   description = [[
     Marks a cutscene as played or unplayed. Marking one as played keeps its
     trigger from firing; unmarking one lets it run again.
@@ -195,7 +435,6 @@ api.define("cutscenes.set_played", {
       description = "Whether it counts as played.",
     },
   },
-  examples = { [[trx.cutscenes.set_played(7, true)]] },
   impl = raw.set_played,
 })
 

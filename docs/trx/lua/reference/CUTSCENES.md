@@ -18,9 +18,23 @@ the engine remembers which ones have run, and a script may consult or
 rewrite that memory. The cutscene levels of TR1-TR3, which the game flow
 lists and `/cut` plays, are a different thing: see [`trx.game.cutscenes`](GAME.md#game.cutscenes).
 
+### Indexing
+
+Indexing the module reaches a cutscene by the number a trigger names it with. `#trx.cutscenes` is how many the game can play, and `pairs()` walks those in order; the numbers past them are reachable as well, because the engine remembers any of them as played.
+
+- <a id="cutscenes[]" name="cutscenes[]"></a>**`trx.cutscenes[key]`** (key: [trx.cutscenes.Num](#cutscenes.Num), value: [trx.cutscenes.Cutscene](#cutscenes.Cutscene) or `nil`). The number a cutscene trigger names.
+- **`#trx.cutscenes`** (integer). How many there are.
+
+Example:
+```lua
+trx.cutscenes[30]:on_frame(function(cutscene, frame_num)
+  trx.log.info("frame " .. frame_num .. " of " .. cutscene.num)
+end)
+```
+
 ### Properties
 
-- <a id="cutscenes.current" name="cutscenes.current"></a>**`trx.cutscenes.current`** ([trx.cutscenes.Num](#cutscenes.Num)). Number of the cutscene playing, or `nil` if none is. *(read-only)*
+- <a id="cutscenes.current" name="cutscenes.current"></a>**`trx.cutscenes.current`** ([trx.cutscenes.Cutscene](#cutscenes.Cutscene)). The cutscene playing, or `nil` if none is. *(read-only)*
 - <a id="cutscenes.frame_num" name="cutscenes.frame_num"></a>**`trx.cutscenes.frame_num`** ([trx.cutscenes.FrameNum](#cutscenes.FrameNum)). Which frame of the running cutscene is on screen, or `nil` if none is
   running. A cutscene's actors are animation tracks rather than items, so
   nothing in it can be triggered or listened to; naming a frame is how a
@@ -50,19 +64,90 @@ lists and `/cut` plays, are a different thing: see [`trx.game.cutscenes`](GAME.m
 
     Which of an actor's meshes, the root being the first. Counted from 0.
 
+- <a id="cutscenes.Cutscene" name="cutscenes.Cutscene"></a>[lua]`trx.cutscenes.Cutscene`
+
+    One of the scenes a cutscene trigger can name. A number the pak holds no
+    scene for is still one of these, because the engine remembers it as played
+    the same way; [`play`](#cutscenes.Cutscene.play) is what such a number has
+    nothing to do.
+
+    Properties:
+    - <a id="cutscenes.Cutscene.frame_num" name="cutscenes.Cutscene.frame_num"></a>**`frame_num`**: [trx.cutscenes.FrameNum](#cutscenes.FrameNum). Which frame of this scene is on screen, or `nil` unless it is the one playing. *(read-only)*
+    - <a id="cutscenes.Cutscene.is_played" name="cutscenes.Cutscene.is_played"></a>**`is_played`**: boolean. Whether a trigger naming this number has already been answered. True keeps its trigger from firing; writing false lets it run again.
+    - <a id="cutscenes.Cutscene.is_playing" name="cutscenes.Cutscene.is_playing"></a>**`is_playing`**: boolean. Whether this scene is the one on screen. *(read-only)*
+    - <a id="cutscenes.Cutscene.num" name="cutscenes.Cutscene.num"></a>**`num`**: [trx.cutscenes.Num](#cutscenes.Num). Which scene this is. *(read-only)*
+
+    Methods:
+
+    - <a id="cutscenes.Cutscene.on_end" name="cutscenes.Cutscene.on_end"></a>[lua]`cutscene:on_end(callback)`  
+      Happens once this scene has finished and what it interrupted is back. [`trx.events.on_cutscene_end`](EVENTS.md#events.on_cutscene_end), narrowed to this cutscene.
+
+      Parameters:
+      - <a id="cutscenes.Cutscene.on_end.callback" name="cutscenes.Cutscene.on_end.callback"></a>**`callback`** (function). What to run when it happens.
+        Called with:
+        - <a id="cutscenes.Cutscene.on_end.cutscene" name="cutscenes.Cutscene.on_end.cutscene"></a>**`cutscene`** ([trx.cutscenes.Cutscene](#cutscenes.Cutscene)). This cutscene.
+
+      Returns: [trx.events.Listener](EVENTS.md#events.Listener). The attached handler.
+
+    - <a id="cutscenes.Cutscene.on_frame" name="cutscenes.Cutscene.on_frame"></a>[lua]`cutscene:on_frame(callback)`  
+      Happens on every frame of this scene, before the frame is posed.
+
+      A cutscene has no items to listen to. Its actors are animation
+      tracks, so the frame number is the only thing a script can act on.
+
+      [`trx.events.on_cutscene_frame`](EVENTS.md#events.on_cutscene_frame), narrowed to this cutscene.
+
+      Parameters:
+      - <a id="cutscenes.Cutscene.on_frame.callback" name="cutscenes.Cutscene.on_frame.callback"></a>**`callback`** (function). What to run when it happens.
+        Called with:
+        - <a id="cutscenes.Cutscene.on_frame.cutscene" name="cutscenes.Cutscene.on_frame.cutscene"></a>**`cutscene`** ([trx.cutscenes.Cutscene](#cutscenes.Cutscene)). This cutscene.
+        - <a id="cutscenes.Cutscene.on_frame.frame_num" name="cutscenes.Cutscene.on_frame.frame_num"></a>**`frame_num`** ([trx.cutscenes.FrameNum](#cutscenes.FrameNum)). The frame about to be posed.
+
+      Returns: [trx.events.Listener](EVENTS.md#events.Listener). The attached handler.
+
+      Example:
+      ```lua
+      trx.cutscenes[5]:on_frame(function(cutscene, frame_num)
+        if frame_num == 1350 then
+          -- something happens here
+        end
+      end)
+      ```
+
+    - <a id="cutscenes.Cutscene.on_start" name="cutscenes.Cutscene.on_start"></a>[lua]`cutscene:on_start(callback)`  
+      Happens when this scene's first frame is about to show. [`trx.events.on_cutscene_start`](EVENTS.md#events.on_cutscene_start), narrowed to this cutscene.
+
+      Parameters:
+      - <a id="cutscenes.Cutscene.on_start.callback" name="cutscenes.Cutscene.on_start.callback"></a>**`callback`** (function). What to run when it happens.
+        Called with:
+        - <a id="cutscenes.Cutscene.on_start.cutscene" name="cutscenes.Cutscene.on_start.cutscene"></a>**`cutscene`** ([trx.cutscenes.Cutscene](#cutscenes.Cutscene)). This cutscene.
+
+      Returns: [trx.events.Listener](EVENTS.md#events.Listener). The attached handler.
+
+    - <a id="cutscenes.Cutscene.play" name="cutscenes.Cutscene.play"></a>[lua]`cutscene:play([opts])`  
+      Plays this scene. Does nothing if one is already playing or the game holds no scene for this number.
+
+      Parameters:
+      - <a id="cutscenes.Cutscene.play.opts" name="cutscenes.Cutscene.play.opts"></a>**`opts`** (table, optional). How to play it.
+
+        Keys:
+        - <a id="cutscenes.Cutscene.play.opts.fade" name="cutscenes.Cutscene.play.opts.fade"></a>**`fade`** (boolean, optional, default `true`). Whether to fade the scene out before the first frame. A cutscene that opens a level passes false: the original game holds the screen black rather than showing the level for a moment first, and the scene's own fade in follows either way.
+
+      Example:
+      ```lua
+      trx.cutscenes[28]:play()
+      ```
+
 ### Functions
 
 - <a id="cutscenes.play" name="cutscenes.play"></a>[lua]`trx.cutscenes.play(num, [fade])`  
+  **Deprecated.** Call [`trx.cutscenes.Cutscene:play`](#cutscenes.Cutscene.play) instead.
+
   Plays a cutscene, fading the scene out first. Does nothing if one is already playing or the game has no cutscene data.
 
   Parameters:
   - <a id="cutscenes.play.num" name="cutscenes.play.num"></a>**`num`** ([trx.cutscenes.Num](#cutscenes.Num)).
   - <a id="cutscenes.play.fade" name="cutscenes.play.fade"></a>**`fade`** (boolean, optional). Whether to fade the scene out before the first frame. Defaults to true. A cutscene that opens a level passes false: the original game holds the screen black rather than showing the level for a moment first, and the scene's own fade in follows either way.
-
-  Example:
-  ```lua
-  trx.cutscenes.play(28)
-  ```
 
 - <a id="cutscenes.set_actor_visible" name="cutscenes.set_actor_visible"></a>[lua]`trx.cutscenes.set_actor_visible(actor, visible)`  
   Whether an actor is drawn. A scene brings its whole cast on from its first
@@ -111,6 +196,8 @@ lists and `/cut` plays, are a different thing: see [`trx.game.cutscenes`](GAME.m
   - <a id="cutscenes.clear_node_mesh.node" name="cutscenes.clear_node_mesh.node"></a>**`node`** ([trx.cutscenes.NodeNum](#cutscenes.NodeNum)).
 
 - <a id="cutscenes.is_played" name="cutscenes.is_played"></a>[lua]`trx.cutscenes.is_played(num)`  
+  **Deprecated.** Read [`trx.cutscenes.Cutscene.is_played`](#cutscenes.Cutscene.is_played) instead.
+
   Whether a cutscene trigger naming this number has already been answered.
 
   Parameters:
@@ -119,6 +206,8 @@ lists and `/cut` plays, are a different thing: see [`trx.game.cutscenes`](GAME.m
   Returns: boolean. True once it has run, which is what keeps its trigger from firing again.
 
 - <a id="cutscenes.set_played" name="cutscenes.set_played"></a>[lua]`trx.cutscenes.set_played(num, played)`  
+  **Deprecated.** Write [`trx.cutscenes.Cutscene.is_played`](#cutscenes.Cutscene.is_played) instead.
+
   Marks a cutscene as played or unplayed. Marking one as played keeps its
   trigger from firing; unmarking one lets it run again.
 
@@ -131,11 +220,6 @@ lists and `/cut` plays, are a different thing: see [`trx.game.cutscenes`](GAME.m
   Parameters:
   - <a id="cutscenes.set_played.num" name="cutscenes.set_played.num"></a>**`num`** ([trx.cutscenes.Num](#cutscenes.Num)).
   - <a id="cutscenes.set_played.played" name="cutscenes.set_played.played"></a>**`played`** (boolean). Whether it counts as played.
-
-  Example:
-  ```lua
-  trx.cutscenes.set_played(7, true)
-  ```
 
 - <a id="cutscenes.forget_played" name="cutscenes.forget_played"></a>[lua]`trx.cutscenes.forget_played()`  
   Forgets every cutscene, so all of them may run again.
