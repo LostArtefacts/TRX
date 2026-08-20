@@ -4,7 +4,6 @@
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/game/anims/walk.h>
-#include <trx/game/collision/common.h>
 #include <trx/game/cutseq/playback.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/lara/pose.h>
@@ -63,44 +62,10 @@ static OUTPUT_MESH *M_GenerateShadow(
     return MeshBuilder_Seal(builder);
 }
 
-// Answers for Lara alone, whose shadow takes the floor under the place the
-// frame or the pose moves her to rather than the floor her item stands on.
-// Crawling puts the root away from her, and the item answers there instead.
-// False for anything but Lara on her feet.
-static bool M_GetLaraAnchor(
-    const ITEM *const item, XYZ_32 *const anchor_pos, int32_t *const floor)
-{
-    const int16_t anim_state = item->current_anim_state;
-    if (item != Lara_GetItem() || anim_state == LS(LS_CRAWL_IDLE)
-        || anim_state == LS(LS_CRAWL_FORWARD) || anim_state == LS(LS_CRAWL_BACK)
-        || anim_state == LS(LS_CRAWL_TURN_LEFT)
-        || anim_state == LS(LS_CRAWL_TURN_RIGHT)) {
-        return false;
-    }
-
-    XYZ_32 hips = {};
-    Collide_GetJointAbsPosition(item, &hips, LM_HIPS);
-    *anchor_pos = hips;
-
-    int16_t room_num = item->room_num;
-    const SECTOR *const sector = Room_GetSector(*anchor_pos, &room_num);
-    const int32_t height = Room_GetHeight(sector, *anchor_pos);
-    if (height != NO_HEIGHT) {
-        *floor = height;
-    }
-    return true;
-}
-
 static bool M_GetLaraBounds(const ITEM *const item, BOUNDS_16 *const out)
 {
     if (item != Lara_GetItem()) {
         return false;
-    }
-
-    const BOUNDS_16 *const cutscene_bounds = CutSeq_GetLaraShadowBounds();
-    if (cutscene_bounds != nullptr) {
-        *out = *cutscene_bounds;
-        return true;
     }
 
     const LARA_POSE *const pose = Lara_Pose_Get();
@@ -152,28 +117,34 @@ static bool M_GetLaraBounds(const ITEM *const item, BOUNDS_16 *const out)
 // Where an item's shadow lies and the floor it lies on. Both shadow styles ask
 // here, so that the two agree. An item stands at its own origin, which can sit
 // away from the meshes it draws, so the middle of the box it carries is what
-// the shadow follows. The Lara anchor already answers at her middle and takes
-// no such offset.
+// the shadow follows. Lara takes the floor under that middle, because a frame
+// or a pose can move her away from the floor her item stands on.
 static void M_GetPlacement(
     const ITEM *const item, const BOUNDS_16 *const bounds,
     XYZ_32 *const anchor_pos, int32_t *const floor)
 {
-    *anchor_pos = item->interp.result.pos;
-    *floor = item->interp.result.floor;
-    if (M_GetLaraAnchor(item, anchor_pos, floor)) {
-        return;
-    }
-
     const XYZ_32 offset = {
         .x = (bounds->min.x + bounds->max.x) / 2,
         .z = (bounds->min.z + bounds->max.z) / 2,
     };
-    *anchor_pos =
-        XYZ_32_OffsetLocalYaw(*anchor_pos, offset, item->interp.result.rot.y);
+    *anchor_pos = XYZ_32_OffsetLocalYaw(
+        item->interp.result.pos, offset, item->interp.result.rot.y);
+    *floor = item->interp.result.floor;
+    if (item != Lara_GetItem()) {
+        return;
+    }
+
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector = Room_GetSector(*anchor_pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, *anchor_pos);
+    if (height != NO_HEIGHT) {
+        *floor = height;
+    }
 }
 
 static bool M_DrawSprite(
-    const int32_t size, const BOUNDS_16 *const bounds, const ITEM *const item)
+    const int32_t size, const BOUNDS_16 *const place_bounds,
+    const BOUNDS_16 *const size_bounds, const ITEM *const item)
 {
     const ITEM *const lara_item = Lara_GetItem();
     if (lara_item == nullptr) {
@@ -201,8 +172,10 @@ static bool M_DrawSprite(
         shadow_color,
     };
 
-    const int32_t x_size = size * (bounds->max.x - bounds->min.x) / 128;
-    const int32_t z_size = size * (bounds->max.z - bounds->min.z) / 128;
+    const int32_t x_size =
+        size * (size_bounds->max.x - size_bounds->min.x) / 128;
+    const int32_t z_size =
+        size * (size_bounds->max.z - size_bounds->min.z) / 128;
     const int32_t x_dist = x_size / M_SHADOW_LINE_POINTS;
     const int32_t z_dist = z_size / M_SHADOW_LINE_POINTS;
 
@@ -224,7 +197,7 @@ static bool M_DrawSprite(
 
     XYZ_32 anchor_pos;
     int32_t anchor_floor;
-    M_GetPlacement(item, bounds, &anchor_pos, &anchor_floor);
+    M_GetPlacement(item, place_bounds, &anchor_pos, &anchor_floor);
 
     const int32_t base_y = anchor_floor - 16;
 
@@ -410,14 +383,24 @@ void OutputSource_Shadows_Draw(
         bounds = &lara_bounds;
     }
 
+    const BOUNDS_16 *size_bounds = bounds;
+    if (item == Lara_GetItem()) {
+        const BOUNDS_16 *const cutscene_bounds = CutSeq_GetLaraShadowBounds();
+        if (cutscene_bounds != nullptr) {
+            size_bounds = cutscene_bounds;
+        }
+    }
+
     if (g_Config.visuals.shadow_type == SHADOW_TYPE_SPRITE) {
-        if (M_DrawSprite(size, bounds, item)) {
+        if (M_DrawSprite(size, bounds, size_bounds, item)) {
             return;
         }
     }
 
-    const int32_t x_size = (bounds->max.x - bounds->min.x) * size / 1024;
-    const int32_t z_size = (bounds->max.z - bounds->min.z) * size / 1024;
+    const int32_t x_size =
+        (size_bounds->max.x - size_bounds->min.x) * size / 1024;
+    const int32_t z_size =
+        (size_bounds->max.z - size_bounds->min.z) * size / 1024;
 
     Matrix_Push();
     *g_MatrixPtr = g_ViewMatrix;
