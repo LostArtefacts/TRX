@@ -545,6 +545,9 @@
                 "triggered": "Nìomhaichte nithean: %s",
                 "untriggered": "Gun nìomhaichte nithean: %s",
             },
+            "version": {
+                "help": "\\{review}Seall an tionndadh aig an togail seo.",
+            },
             "vsync": {
                 "help": "Tionndaidheas sioncronachadh-inghearach air neo dheth.",
             },

@@ -286,3 +286,6 @@ whichever key you have bound, and not include it as part of the command itself.
 
 - `/lua {string}`
   Type any LUA code to run it on the spot. Proceed with caution, or at least a sense of adventure!
+
+- `/version`
+  Owns up to which build you are playing. Handy for bug reports, so nobody has to guess!

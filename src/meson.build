@@ -121,6 +121,7 @@ trx_lua_script_sources = files(
   'lua/commands/teleport.lua',
   'lua/commands/test_text.lua',
   'lua/commands/trigger.lua',
+  'lua/commands/version.lua',
   'lua/commands/winston.lua',
   'lua/commands/weather.lua',
 )

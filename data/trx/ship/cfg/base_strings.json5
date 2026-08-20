@@ -545,6 +545,9 @@
                 "triggered": "Triggered item(s): %s",
                 "untriggered": "Untriggered item(s): %s",
             },
+            "version": {
+                "help": "Shows the version this build reports.",
+            },
             "vsync": {
                 "help": "Toggles vertical sync.",
             },
