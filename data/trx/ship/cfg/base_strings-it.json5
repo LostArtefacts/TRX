@@ -2178,6 +2178,9 @@
         "blue_light": {
             "name": "Luce Blu",
         },
+        "boar": {
+            "name": "\\{review}Cinghiale",
+        },
         "boat": {
             "name": "Barca",
         },

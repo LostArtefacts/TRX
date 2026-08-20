@@ -2178,6 +2178,9 @@
         "blue_light": {
             "name": "\\{review}Lumière Bleue",
         },
+        "boar": {
+            "name": "\\{review}Sanglier",
+        },
         "boat": {
             "name": "\\{review}Bateau",
         },

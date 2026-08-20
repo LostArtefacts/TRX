@@ -2178,6 +2178,9 @@
         "blue_light": {
             "name": "\\{review}Синий свет",
         },
+        "boar": {
+            "name": "\\{review}Кабан",
+        },
         "boat": {
             "name": "Лодка",
         },

@@ -37,7 +37,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     - `trx.catalog.Context.ITEM_ACTIONS` = `5`  
         Item actions, which the flip effects trigger.
 
-- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 820 names
+- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 821 names
 
     Every object TRX has a name for.
 
@@ -67,7 +67,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     `BEAR`, `BELL`, `BIG_BOWL`, `BIG_EEL`, `BIG_POD`, `BIG_SPIDER`,
     `BINOCULARS_ITEM`, `BINOCULARS_OPTION`, `BINOCULAR_GFX`, `BIRD_GUARDIAN`,
     `BIRD_TWEETER_1`, `BIRD_TWEETER_2`, `BLADE`, `BLOOD`, `BLOOD_PINK`,
-    `BLUE_LIGHT`, `BOAT`, `BOAT_BITS`, `BODY_PART`, `BRIDGE_FLAT`,
+    `BLUE_LIGHT`, `BOAR`, `BOAT`, `BOAT_BITS`, `BODY_PART`, `BRIDGE_FLAT`,
     `BRIDGE_TILT_1`, `BRIDGE_TILT_2`, `BUBBLE_1`, `BUBBLE_2`, `BUBBLE_EMITTER`,
     `CAMERA_TARGET`, `CARCASS`, `CEILING_SPIKES`, `CEILING_TRAPDOOR_1`,
     `CEILING_TRAPDOOR_2`, `CENTAUR`, `CENTAUR_STATUE`, `CIVILIAN`,

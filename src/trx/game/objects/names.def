@@ -314,6 +314,7 @@ X_OBJ_NAME_DEFINE(O_HYBRID_MUTANT,        "hybrid_mutant",        X_OBJ_NAMES("H
 X_OBJ_NAME_DEFINE(O_WASP_MUTANT,          "wasp_mutant",          X_OBJ_NAMES("Wasp Mutant"))
 X_OBJ_NAME_DEFINE(O_CLAW_MUTANT,          "claw_mutant",          X_OBJ_NAMES("Claw Mutant"))
 X_OBJ_NAME_DEFINE(O_DOLPHIN,              "dolphin",              X_OBJ_NAMES("Dolphin"))
+X_OBJ_NAME_DEFINE(O_BOAR,                 "boar",                 X_OBJ_NAMES("Boar"))
 
 // Traps
 X_OBJ_NAME_DEFINE(O_BLADE,                    "blade",                    X_OBJ_NAMES("Wall-mounted Blade"))

@@ -2181,6 +2181,9 @@
         "blue_light": {
             "name": "Niebieskie światło",
         },
+        "boar": {
+            "name": "\\{review}Dzik",
+        },
         "boat": {
             "name": "Łódź",
         },
