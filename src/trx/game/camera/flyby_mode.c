@@ -30,8 +30,6 @@ static struct {
         bool spline_to_game;
         bool test_triggers;
         bool pending_trigger_check;
-        bool look_requested;
-        bool look_cancelled;
     } flags;
     SPLINE_DATA data;
     int16_t timer;
@@ -203,17 +201,6 @@ static void M_TestTriggers(void)
     m_State.flags.test_triggers = false;
 }
 
-static void M_HandleLook(const bool no_break)
-{
-    // TODO: && game_mode != 1
-    if (m_State.flags.look_requested && !m_State.flags.look_cancelled
-        && !no_break) {
-        Camera_FlybyMode_Deactivate();
-    }
-    m_State.flags.look_requested = false;
-    m_State.flags.look_cancelled = false;
-}
-
 bool Camera_FlybyMode_Activate(const int32_t sequence_idx, const bool one_shot)
 {
     FLYBY_SEQUENCE *const sequence = Camera_GetSequence(sequence_idx);
@@ -223,7 +210,6 @@ bool Camera_FlybyMode_Activate(const int32_t sequence_idx, const bool one_shot)
 
     if (sequence_idx == m_CurrentSequence) {
         m_State.flags.pending_trigger_check = false;
-        m_State.flags.look_cancelled = true;
         return false;
     } else if (m_CurrentSequence != M_NO_SEQUENCE) {
         return false;
@@ -250,7 +236,7 @@ bool Camera_FlybyMode_IsActive(void)
     return m_CurrentSequence != M_NO_SEQUENCE;
 }
 
-bool Camera_Flybymode_Cancel(void)
+bool Camera_Flybymode_Cancel(const bool force)
 {
     if (m_CurrentSequence == M_NO_SEQUENCE) {
         return false;
@@ -260,7 +246,8 @@ bool Camera_Flybymode_Cancel(void)
         Camera_GetSequence(m_CurrentSequence);
     const FLYBY_CAMERA *const first_camera =
         Camera_GetFlybyCamera(sequence->camera_idx);
-    if (first_camera->flags.track_path) {
+    if (first_camera->flags.track_path
+        || (first_camera->flags.no_break && !force)) {
         return false;
     }
 
@@ -307,11 +294,6 @@ void Camera_FlybyMode_Deactivate(void)
         Camera_Update();
     }
     // TODO: undo fade clip
-}
-
-void Camera_FlybyMode_RequestLook(void)
-{
-    m_State.flags.look_requested = true;
 }
 
 void Camera_FlybyMode_Update(void)
@@ -374,11 +356,6 @@ void Camera_FlybyMode_Update(void)
         }
     } else if (m_State.timer == 0) {
         m_State.current.spline_pos += speed;
-    }
-
-    M_HandleLook(first_camera->flags.no_break);
-    if (!Camera_FlybyMode_IsActive()) {
-        return;
     }
 
     g_Camera.pos.pos = pos;

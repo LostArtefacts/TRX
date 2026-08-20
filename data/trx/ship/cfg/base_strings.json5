@@ -1073,7 +1073,7 @@
         },
         "gameplay.enable_cinematic_skips": {
             "title": "Cinematic skips",
-            "description": "Enables jumping through flyby sequences using the inventory/menu back input.",
+            "description": "Enables jumping through flyby sequences with the inventory/menu back input, and with the look input even where the level marks the sequence unbreakable.",
         },
         "gameplay.enable_cinematics": {
             "title": "Cinematics",

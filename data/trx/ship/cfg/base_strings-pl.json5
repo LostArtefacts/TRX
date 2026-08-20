@@ -1073,7 +1073,7 @@
         },
         "gameplay.enable_cinematic_skips": {
             "title": "\\{review}Pomijanie scenek",
-            "description": "\\{review}Umożliwia pomijanie sekwencji przelotów kamery za pomocą przycisku Wstecz/Menu.",
+            "description": "\\{review}Umożliwia pomijanie sekwencji przelotów kamery przyciskiem Wstecz/Menu oraz przyciskiem patrzenia, nawet jeśli poziom oznacza sekwencję jako nieprzerywalną.",
         },
         "gameplay.enable_cinematics": {
             "title": "Animacje startowe",

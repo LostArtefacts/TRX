@@ -1073,7 +1073,7 @@
         },
         "gameplay.enable_cinematic_skips": {
             "title": "Salta sequenze",
-            "description": "Consente di passare tra una sequenza panoramica all'altra utilizzando il tasto Indietro dell'inventario/menu.",
+            "description": "\\{review}Consente di saltare le sequenze panoramiche con il tasto Indietro dell'inventario/menu e con Guarda, anche quando il livello contrassegna la sequenza come non interrompibile.",
         },
         "gameplay.enable_cinematics": {
             "title": "Scene iniziali",

@@ -48,7 +48,7 @@ bool FlybyMode_Activate(const int32_t sequence_idx, const bool one_shot)
     return !was_active;
 }
 
-bool FlybyMode_Cancel(void)
+bool FlybyMode_Cancel(const bool force)
 {
     FAKE_RECORD("cancel_flyby");
     m_FlybyActive = false;
