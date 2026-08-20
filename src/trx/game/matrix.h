@@ -13,6 +13,26 @@ typedef struct {
     int64_t _00, _01, _02, _03, _10, _11, _12, _13, _20, _21, _22, _23;
 } MATRIX;
 
+// Transforms are held on two parallel stacks: the view stack that g_MatrixPtr
+// addresses, and the world stack that g_WMatrixPtr addresses. An operation
+// with no suffix applies to both, so that the two stay in step.
+//
+// Three suffixes vary that:
+//
+// _M   applies to the matrix passed in and leaves both stacks alone.
+// _I   applies to the two stacks and to the interpolation stacks as well,
+//      with the same value everywhere.
+// _ID  applies the first value to the two stacks and the second value to the
+//      interpolation stacks, which is how the two ends of a blend are given
+//      different rotations or offsets at the same joint.
+//
+// The interpolation stacks carry the far end of a blend. Matrix_InitInterpolate
+// copies the current matrices into them and sets the weight, the transform then
+// proceeds in _I and _ID operations, and Matrix_Interpolate collapses the two
+// ends into the current matrices. Push and pop the interpolation stacks with
+// Matrix_Push_I and Matrix_Pop_I; they are shallower than the ordinary stacks,
+// so a blend nests less deeply than a plain transform.
+
 extern MATRIX *g_MatrixPtr;
 extern MATRIX *g_WMatrixPtr;
 extern XYZ_32 g_ViewPos;
@@ -81,8 +101,20 @@ void Matrix_TranslateRel_ID(
 void Matrix_TranslateRel16_ID(XYZ_16 offset_1, XYZ_16 offset_2);
 void Matrix_TranslateRel32_ID(XYZ_32 offset_1, XYZ_32 offset_2);
 
+// Starts a blend, at the weight frac/rate. The interpolation stacks take a
+// copy of the current matrices, and the operations that follow reach them
+// through the _I and _ID suffixes.
 void Matrix_InitInterpolate(int32_t frac, int32_t rate);
+
+// Ends a blend, replacing the current matrices with the result. Rotation
+// follows the shortest arc between the two ends and position runs straight,
+// both at the weight the blend began with.
 void Matrix_Interpolate(void);
+
+// Ends a blend for an arm, taking the position from the blend as
+// Matrix_Interpolate does, but the rotation from two entries lower on the
+// stack. An arm keeps the orientation the item holds it at, so that a gun
+// stays pointed where it is aimed while the frames move under it.
 void Matrix_InterpolateArm(void);
 
 XYZ_32 Matrix_MulVec32_M(const MATRIX *m, const XYZ_32 v);
