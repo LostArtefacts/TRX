@@ -4622,7 +4622,7 @@
       }
     },
     {
-      "description": "Lights the world around a point for this frame.\n\nTR1 and TR2 light in brightness alone, so there the light is as bright as its\nbrightest channel and comes out white.",
+      "description": "Lights the world around a point for this frame. Make the call every frame to\nkeep the light up, and at a new position each time to move it.\n\nA frame shows only `trx.fx.MAX_LIGHTS` lights. A light asked for past that\ntakes the place of the one furthest from the camera, so the nearest are the\nones seen. No error is raised.\n\nTR1 and TR2 light in brightness alone, so there the light is as bright as its\nbrightest channel and comes out white.",
       "examples": [
         "trx.events.after_control(function()\n  trx.fx.emit_light({\n    pos = trx.lara.item.pos,\n    radius = 2048,\n    color = { r = 0, g = 255, b = 192 },\n  })\nend)"
       ],
@@ -4673,7 +4673,7 @@
       "path": "fx.emit_light"
     },
     {
-      "description": "Fills a ball of air with fog for this frame, which the player sees through\nrather than on. Where a light brightens what it falls on, this hangs in the\nspace itself.",
+      "description": "Fills a ball of air with fog for this frame, which the player sees through\nrather than on. Where a light brightens what it falls on, this hangs in the\nspace itself. Make the call every frame to keep the fog up.\n\nA frame shows only `trx.fx.MAX_FOG` balls of fog. A ball asked for past that\ntakes the place of the one furthest from the camera, so the nearest are the\nones seen. No error is raised.",
       "examples": [
         "trx.events.after_control(function()\n  trx.fx.emit_fog({\n    pos = { x = 32768, y = -1024, z = 45056 },\n    radius = 3072,\n    density = 64,\n    color = { r = 128, g = 160, b = 192 },\n  })\nend)"
       ],
@@ -4729,6 +4729,81 @@
         }
       ],
       "path": "fx.emit_fog"
+    },
+    {
+      "description": "Throws a spray of blood into the world at a point, the way a blow that lands\ndoes. The drops then fall on their own.\n\nTR3 and TR4 throw drops that fall and darken as they go, and in TR4 a hit under\nwater spreads as a cloud instead. TR1 and TR2 have one blood sprite that drifts\nup.\n\nUnlike the rest of the module, this has a bearing on what the game decides. The\nengine places the drops from the control random stream, and in TR1 and TR2 the\nspray takes a slot from the effect pool a save holds.",
+      "examples": [
+        "trx.events.on_hit(function(item, damage)\n  trx.fx.blood({ pos = item.pos, angle = item.rot.y, strength = damage })\nend)"
+      ],
+      "params": [
+        {
+          "description": "Where the blood is and how much of it.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "description": "The way the drops fly. Left out, TR4 throws them every way, which is what its own hits do where nothing aims them; the other games read it as straight ahead.",
+              "name": "angle",
+              "optional": true,
+              "type": "math.Angle"
+            },
+            {
+              "default": 5,
+              "description": "How heavy the hit reads, from 1 to 255. TR3 and TR4 count it in drops, TR4 measures the width of a cloud under water with it, and TR1 and TR2 have one drifting sprite whose speed it sets.",
+              "name": "strength",
+              "optional": true,
+              "type": "integer"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.blood"
+    },
+    {
+      "description": "Throws several sprays of blood about a point, the way a trap that kills does.\nEach one lands anywhere in the half-sector box around the point, so the blood\ncovers a body rather than a spot.\n\nEach spray costs what `trx.fx.blood` costs, in random draws and in effect\nslots.",
+      "examples": [
+        "trx.fx.blood_bath({ pos = trx.lara.item.pos, count = 10 })"
+      ],
+      "params": [
+        {
+          "description": "Where the blood is, how much of it, and how many sprays.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "description": "The way the drops fly. Left out, TR4 throws them every way, which is what its own hits do where nothing aims them; the other games read it as straight ahead.",
+              "name": "angle",
+              "optional": true,
+              "type": "math.Angle"
+            },
+            {
+              "default": 5,
+              "description": "How heavy the hit reads, from 1 to 255. TR3 and TR4 count it in drops, TR4 measures the width of a cloud under water with it, and TR1 and TR2 have one drifting sprite whose speed it sets.",
+              "name": "strength",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": 5,
+              "description": "How many sprays, from 1 to 255.",
+              "name": "count",
+              "optional": true,
+              "type": "integer"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.blood_bath"
     },
     {
       "description": "Starts a level from `trx.game.levels`.",
@@ -6771,7 +6846,7 @@
       "order": 1
     },
     {
-      "description": "What a script puts in front of the player: things seen rather than things the\ngame holds.\n\nNothing here takes a place in a save or has a bearing on what anything decides.\n\nEvery call here lasts the frame it is made in. A light that stays is the same\ncall made every frame, which is also how one follows something that moves;\nthere is nothing to remove.\n\nA frame shows only so much: see `trx.fx.MAX_LIGHTS` and `trx.fx.MAX_FOG`. Once\na frame is full, what is asked for takes the place of the one furthest from the\ncamera, so the nearest are the ones seen. Neither raises an error.",
+      "description": "What a script puts in front of the player: things seen rather than things the\ngame holds.",
       "name": "fx",
       "order": 17
     },

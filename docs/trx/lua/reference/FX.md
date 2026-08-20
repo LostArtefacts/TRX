@@ -15,16 +15,6 @@ order: 17
 What a script puts in front of the player: things seen rather than things the
 game holds.
 
-Nothing here takes a place in a save or has a bearing on what anything decides.
-
-Every call here lasts the frame it is made in. A light that stays is the same
-call made every frame, which is also how one follows something that moves;
-there is nothing to remove.
-
-A frame shows only so much: see [`trx.fx.MAX_LIGHTS`](#fx.MAX_LIGHTS) and [`trx.fx.MAX_FOG`](#fx.MAX_FOG). Once
-a frame is full, what is asked for takes the place of the one furthest from the
-camera, so the nearest are the ones seen. Neither raises an error.
-
 ### Constants
 
 - <a id="fx.MAX_LIGHTS" name="fx.MAX_LIGHTS"></a>[lua]`trx.fx.MAX_LIGHTS` = `64` (integer)  
@@ -36,7 +26,12 @@ camera, so the nearest are the ones seen. Neither raises an error.
 ### Functions
 
 - <a id="fx.emit_light" name="fx.emit_light"></a>[lua]`trx.fx.emit_light(opts)`  
-  Lights the world around a point for this frame.
+  Lights the world around a point for this frame. Make the call every frame to
+  keep the light up, and at a new position each time to move it.
+
+  A frame shows only [`trx.fx.MAX_LIGHTS`](#fx.MAX_LIGHTS) lights. A light asked for past that
+  takes the place of the one furthest from the camera, so the nearest are the
+  ones seen. No error is raised.
 
   TR1 and TR2 light in brightness alone, so there the light is as bright as its
   brightest channel and comes out white.
@@ -63,7 +58,11 @@ camera, so the nearest are the ones seen. Neither raises an error.
 - <a id="fx.emit_fog" name="fx.emit_fog"></a>[lua]`trx.fx.emit_fog(opts)`  
   Fills a ball of air with fog for this frame, which the player sees through
   rather than on. Where a light brightens what it falls on, this hangs in the
-  space itself.
+  space itself. Make the call every frame to keep the fog up.
+
+  A frame shows only [`trx.fx.MAX_FOG`](#fx.MAX_FOG) balls of fog. A ball asked for past that
+  takes the place of the one furthest from the camera, so the nearest are the
+  ones seen. No error is raised.
 
   Parameters:
   - <a id="fx.emit_fog.opts" name="fx.emit_fog.opts"></a>**`opts`** (table). Where the fog is and what it looks like.
@@ -84,4 +83,53 @@ camera, so the nearest are the ones seen. Neither raises an error.
       color = { r = 128, g = 160, b = 192 },
     })
   end)
+  ```
+
+- <a id="fx.blood" name="fx.blood"></a>[lua]`trx.fx.blood(opts)`  
+  Throws a spray of blood into the world at a point, the way a blow that lands
+  does. The drops then fall on their own.
+
+  TR3 and TR4 throw drops that fall and darken as they go, and in TR4 a hit under
+  water spreads as a cloud instead. TR1 and TR2 have one blood sprite that drifts
+  up.
+
+  Unlike the rest of the module, this has a bearing on what the game decides. The
+  engine places the drops from the control random stream, and in TR1 and TR2 the
+  spray takes a slot from the effect pool a save holds.
+
+  Parameters:
+  - <a id="fx.blood.opts" name="fx.blood.opts"></a>**`opts`** (table). Where the blood is and how much of it.
+
+    Keys:
+    - <a id="fx.blood.opts.pos" name="fx.blood.opts.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position. Must lie inside the level.
+    - <a id="fx.blood.opts.angle" name="fx.blood.opts.angle"></a>**`angle`** ([trx.math.Angle](MATH.md#math.Angle), optional). The way the drops fly. Left out, TR4 throws them every way, which is what its own hits do where nothing aims them; the other games read it as straight ahead.
+    - <a id="fx.blood.opts.strength" name="fx.blood.opts.strength"></a>**`strength`** (integer, optional, default `5`). How heavy the hit reads, from 1 to 255. TR3 and TR4 count it in drops, TR4 measures the width of a cloud under water with it, and TR1 and TR2 have one drifting sprite whose speed it sets.
+
+  Example:
+  ```lua
+  trx.events.on_hit(function(item, damage)
+    trx.fx.blood({ pos = item.pos, angle = item.rot.y, strength = damage })
+  end)
+  ```
+
+- <a id="fx.blood_bath" name="fx.blood_bath"></a>[lua]`trx.fx.blood_bath(opts)`  
+  Throws several sprays of blood about a point, the way a trap that kills does.
+  Each one lands anywhere in the half-sector box around the point, so the blood
+  covers a body rather than a spot.
+
+  Each spray costs what [`trx.fx.blood`](#fx.blood) costs, in random draws and in effect
+  slots.
+
+  Parameters:
+  - <a id="fx.blood_bath.opts" name="fx.blood_bath.opts"></a>**`opts`** (table). Where the blood is, how much of it, and how many sprays.
+
+    Keys:
+    - <a id="fx.blood_bath.opts.pos" name="fx.blood_bath.opts.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position. Must lie inside the level.
+    - <a id="fx.blood_bath.opts.angle" name="fx.blood_bath.opts.angle"></a>**`angle`** ([trx.math.Angle](MATH.md#math.Angle), optional). The way the drops fly. Left out, TR4 throws them every way, which is what its own hits do where nothing aims them; the other games read it as straight ahead.
+    - <a id="fx.blood_bath.opts.strength" name="fx.blood_bath.opts.strength"></a>**`strength`** (integer, optional, default `5`). How heavy the hit reads, from 1 to 255. TR3 and TR4 count it in drops, TR4 measures the width of a cloud under water with it, and TR1 and TR2 have one drifting sprite whose speed it sets.
+    - <a id="fx.blood_bath.opts.count" name="fx.blood_bath.opts.count"></a>**`count`** (integer, optional, default `5`). How many sprays, from 1 to 255.
+
+  Example:
+  ```lua
+  trx.fx.blood_bath({ pos = trx.lara.item.pos, count = 10 })
   ```
