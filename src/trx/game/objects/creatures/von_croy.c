@@ -400,10 +400,6 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
         Input_HoldOffSkip();
     }
 
-    const SECTOR *sector;
-    int32_t height;
-    int16_t ang, room_num;
-
     if (Waypoint_GetPad() != 8 && Waypoint_GetPad() != 15) {
         p->waypoint = Waypoint_GetPad();
     }
@@ -448,10 +444,8 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
         }
 
         M_GetAIEnemy(info, Waypoint_GetPad());
-        item->pos.x = info->enemy->pos.x;
-        item->pos.y = info->enemy->pos.y;
-        item->pos.z = info->enemy->pos.z;
-        ang = (int16_t)Math_Atan(
+        item->pos = info->enemy->pos;
+        const int16_t angle = (int16_t)Math_Atan(
             lara->pos.z - item->pos.z, lara->pos.x - item->pos.x);
 
         if (p->waypoint == 14 || p->waypoint == 3) {
@@ -462,7 +456,7 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
             info->maximum_turn = 0;
             item->rot.y = -0x6000;
         } else {
-            item->rot.y = ang;
+            item->rot.y = angle;
         }
         const int16_t probe_room = Room_GetIndexFromPos((XYZ_32) {
             .x = item->pos.x, .y = item->pos.y - 64, .z = item->pos.z });
@@ -471,13 +465,12 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
             Item_UpdateRoom(Item_GetIndex(item), probe_room);
         }
 
-        lara->rot.y = ang + 0x8000;
+        lara->rot.y = angle + 0x8000;
 
         if (lara->current_anim_state != LS(LS_SURF_TREAD)) {
-            room_num = lara->room_num;
-            sector = Room_GetSector(lara->pos, &room_num);
-            height = Room_GetHeight(sector, lara->pos);
-            lara->pos.y = height;
+            int16_t room_num = lara->room_num;
+            const SECTOR *const sector = Room_GetSector(lara->pos, &room_num);
+            lara->pos.y = Room_GetHeight(sector, lara->pos);
             Item_SwitchToAnim(lara, LA(LA_STAND_STILL), 0);
             lara->current_anim_state = LS(LS_STOP);
             lara->goal_anim_state = LS(LS_STOP);
@@ -545,11 +538,11 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
         p->swap_bits &= ~M_SWAP_BOOK;
         p->cut_phase = 0;
         M_SetCutPlayed(p, p->waypoint);
-        ang = info->enemy->rot.y - item->rot.y;
+        const int16_t angle_delta = info->enemy->rot.y - item->rot.y;
 
-        if (ang > 1024) {
+        if (angle_delta > 1024) {
             item->required_anim_state = M_STATE_TURN_LEFT;
-        } else if (ang < -1024) {
+        } else if (angle_delta < -1024) {
             item->required_anim_state = M_STATE_TURN_RIGHT;
         }
 
