@@ -165,6 +165,35 @@ static int M_L_CutscenesSetLaraReturn(lua_State *const L)
     return 0;
 }
 
+// trxc.cutscenes.set_lara_shadow_bounds({min_x=, ..., max_z=})
+static int M_L_CutscenesSetLaraShadowBounds(lua_State *const L)
+{
+    luaL_checktype(L, 1, LUA_TTABLE);
+
+    BOUNDS_16 bounds = {};
+    int16_t *const members[] = {
+        &bounds.min.x, &bounds.min.y, &bounds.min.z,
+        &bounds.max.x, &bounds.max.y, &bounds.max.z,
+    };
+    static const char *const names[] = {
+        "min_x", "min_y", "min_z", "max_x", "max_y", "max_z",
+    };
+    for (int32_t i = 0; i < 6; i++) {
+        lua_getfield(L, 1, names[i]);
+        int is_integer = 0;
+        const lua_Integer value = lua_tointegerx(L, -1, &is_integer);
+        if (is_integer == 0 || value < INT16_MIN || value > INT16_MAX) {
+            luaL_argerror(
+                L, 1, lua_pushfstring(L, "%s must be an integer", names[i]));
+        }
+        *members[i] = (int16_t)value;
+        lua_pop(L, 1);
+    }
+
+    CutSeq_SetLaraShadowBounds(bounds);
+    return 0;
+}
+
 // trxc.cutscenes.get_fov() → int
 static int M_L_CutscenesGetFOV(lua_State *const L)
 {
@@ -207,6 +236,7 @@ static const luaL_Reg m_Module[] = {
     { "set_played", M_L_CutscenesSetPlayed },
     { "forget_played", M_L_CutscenesForgetPlayed },
     { "set_lara_return", M_L_CutscenesSetLaraReturn },
+    { "set_lara_shadow_bounds", M_L_CutscenesSetLaraShadowBounds },
     { "get_fov", M_L_CutscenesGetFOV },
     { "set_fov", M_L_CutscenesSetFOV },
     { "get_letterbox", M_L_CutscenesGetLetterbox },

@@ -161,3 +161,29 @@ lists and `/cut` plays, are a different thing: see [`trx.game.cutscenes`](GAME.m
     end
   end)
   ```
+
+- <a id="cutscenes.set_lara_shadow_bounds" name="cutscenes.set_lara_shadow_bounds"></a>[lua]`trx.cutscenes.set_lara_shadow_bounds(bounds)`  
+  Gives Lara's shadow another box for the running cutscene. A scene holds one
+  box for the whole of it, rather than the box her pose would make, so that
+  her shadow keeps a steady size while the scene moves her; this names a
+  different one. A wide box is how the original game makes her shadow read as
+  the jeep's when she arrives at Karnak.
+
+  It holds for one cutscene, whether named before [`trx.cutscenes.play`](#cutscenes.play) or
+  while the scene runs, and the next scene starts from the ordinary box
+  again.
+
+  Parameters:
+  - <a id="cutscenes.set_lara_shadow_bounds.bounds" name="cutscenes.set_lara_shadow_bounds.bounds"></a>**`bounds`** ([trx.math.Box](MATH.md#math.Box)). The box, in Lara's own frame.
+
+  Example:
+  ```lua
+  trx.events.on_cutscene_start(function(num)
+    if num == 12 then
+      trx.cutscenes.set_lara_shadow_bounds({
+        min_x = -600, min_y = -777, min_z = -600,
+        max_x = 600, max_y = 1, max_z = 600,
+      })
+    end
+  end)
+  ```

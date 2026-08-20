@@ -64,6 +64,11 @@ typedef struct {
     ITEM dummy_item;
 } M_ACTOR;
 
+static const BOUNDS_16 m_LaraShadowBounds = {
+    .min = { .x = -165, .y = -777, .z = -87 },
+    .max = { .x = 150, .y = 1, .z = 78 },
+};
+
 static struct {
     M_PHASE phase;
     int32_t num;
@@ -82,6 +87,10 @@ static struct {
         int16_t rot;
         bool is_present;
     } lara_return;
+    struct {
+        BOUNDS_16 value;
+        bool is_present;
+    } lara_shadow_bounds;
     uint64_t played_mask;
     int32_t fov;
     float letterbox;
@@ -264,6 +273,7 @@ static bool M_Begin(const int32_t num)
     m_State.old_cam_type =
         g_Camera.type == CAM_FLYBY_MODE ? CAM_CHASE : g_Camera.type;
     CutSeq_SetPlayed(num, true);
+    m_State.lara_shadow_bounds.is_present = false;
 
     M_TeleportLara(info->origin, 0);
     M_SetLaraPose(&m_State.actors[0].pose_curr);
@@ -299,6 +309,7 @@ static void M_Abort(void)
     m_State.num = M_NO_CUTSCENE;
     m_State.pending_num = M_NO_CUTSCENE;
     m_State.lara_return.is_present = false;
+    m_State.lara_shadow_bounds.is_present = false;
     Fader_InitFromCurrent(&m_State.fader, 0.0f, M_FADE_DURATION);
 }
 
@@ -314,6 +325,7 @@ static void M_Finish(void)
     Lara_Pose_SetOverride(nullptr);
     M_TeleportLara(m_State.lara_return.pos, m_State.lara_return.rot);
     m_State.lara_return.is_present = false;
+    m_State.lara_shadow_bounds.is_present = false;
     Lara_Hair_Initialise();
     Interpolation_CommitLara();
 
@@ -533,6 +545,22 @@ void CutSeq_SetActorNodeMesh(
         .obj_id = obj_id,
         .src_node = src_node,
     };
+}
+
+const BOUNDS_16 *CutSeq_GetLaraShadowBounds(void)
+{
+    if (!CutSeq_IsPlaying()) {
+        return nullptr;
+    }
+    return m_State.lara_shadow_bounds.is_present
+        ? &m_State.lara_shadow_bounds.value
+        : &m_LaraShadowBounds;
+}
+
+void CutSeq_SetLaraShadowBounds(const BOUNDS_16 bounds)
+{
+    m_State.lara_shadow_bounds.value = bounds;
+    m_State.lara_shadow_bounds.is_present = true;
 }
 
 void CutSeq_SetLaraReturn(const XYZ_32 pos, const int16_t rot)
