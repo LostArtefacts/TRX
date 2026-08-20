@@ -528,6 +528,30 @@ An event that carries a default the script may take over says so in its descript
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
+- <a id="events.on_cutscene_frame" name="events.on_cutscene_frame"></a>[lua]`trx.events.on_cutscene_frame(callback)`  
+  Happens on every frame of a TR4 cutscene, before the frame is posed.
+
+  A cutscene has no items to listen to. Its actors are animation tracks, so
+  the frame number is the only thing a script can act on. The original game
+  keys its own cutscene events to frame numbers as well.
+
+  Parameters:
+  - <a id="events.on_cutscene_frame.callback" name="events.on_cutscene_frame.callback"></a>**`callback`** (function). What to run when it happens.
+    Called with:
+    - <a id="events.on_cutscene_frame.cutscene_num" name="events.on_cutscene_frame.cutscene_num"></a>**`cutscene_num`** ([trx.cutscenes.Num](CUTSCENES.md#cutscenes.Num)).
+    - <a id="events.on_cutscene_frame.frame_num" name="events.on_cutscene_frame.frame_num"></a>**`frame_num`** ([trx.cutscenes.FrameNum](CUTSCENES.md#cutscenes.FrameNum)).
+
+  Returns: [trx.events.Listener](#events.Listener). The attached handler.
+
+  Example:
+  ```lua
+  trx.events.on_cutscene_frame(function(cutscene_num, frame_num)
+    if cutscene_num == 5 and frame_num == 1350 then
+      -- something happens here
+    end
+  end)
+  ```
+
 - <a id="events.on_cutscene_end" name="events.on_cutscene_end"></a>[lua]`trx.events.on_cutscene_end(callback)`  
   Happens once a TR4 cutscene has finished and the scene it interrupted is back. This is where a script decides what follows.
 

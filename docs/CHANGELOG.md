@@ -131,6 +131,7 @@
 - Fixed the camera when using binoculars clipping into the ceiling if the ceiling around Lara is very low (#6352 / TRX1205)
 
 **Lua**
+- Added `trx.events.on_cutscene_frame()`, which reports every frame of a TR4 cutscene, so a script can act part-way through one (TRX1199)
 - Added `trx.fx.blood()` and `trx.fx.blood_bath()`, so a script can make a hit or a kill bleed wherever it wants (TRX1199)
 - Added the full weapon definition to `trx.weapons`, so a script can read and change what a weapon does: its damage, reach and accuracy, its aim limits, its ammunition, the animations it is drawn by, and the flash, glow, smoke and shells it throws (TRX1091)
 - Added `trx.math.Color` and `trx.math.color()`, so a color is a value with its channels and its hex text on it rather than a string (TRX1091)

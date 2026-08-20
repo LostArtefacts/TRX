@@ -74,6 +74,10 @@ static struct {
     int32_t num;
     int32_t pending_num;
     int32_t frame;
+    // Holds the frame last reported to a script. The frame counter stops at
+    // the last frame while a scene fades out, so the field keeps the event
+    // from firing again for every frame of the fade.
+    int32_t event_frame;
     int32_t decoded_frames;
     CUTSEQ_INFO info;
     CUTSEQ_PACK_NODE camera_nodes[2];
@@ -265,6 +269,7 @@ static bool M_Begin(const int32_t num)
     m_State.info = parsed;
     m_State.num = num;
     m_State.frame = 0;
+    m_State.event_frame = -1;
     m_State.decoded_frames = 0;
     // Taken here rather than at the request, so a camera trigger hit during
     // the fade out is what the scene hands back to. A flyby is the exception:
@@ -350,6 +355,15 @@ static void M_Finish(void)
 static void M_Step(void)
 {
     const CUTSEQ_INFO *const info = &m_State.info;
+    if (m_State.frame != m_State.event_frame) {
+        m_State.event_frame = m_State.frame;
+        const LUA_EVENT_ARG args[] = {
+            { .type = LUA_EVENT_ARG_INT32, .value.i32 = m_State.num },
+            { .type = LUA_EVENT_ARG_INT32, .value.i32 = m_State.frame },
+        };
+        LUA_FireEventEx(LUA_EVENT_CUTSCENE_FRAME, args, ARRAY_SIZE(args));
+    }
+
     if (m_State.frame > 0 && m_State.decoded_frames < info->num_frames) {
         m_State.decoded_frames++;
         CutSeq_Decoder_Advance(m_State.camera_nodes, 2, 0xFFFF);
@@ -621,6 +635,7 @@ void CutSeq_Reset(void)
     m_State.num = M_NO_CUTSCENE;
     m_State.pending_num = M_NO_CUTSCENE;
     m_State.frame = 0;
+    m_State.event_frame = -1;
     m_State.decoded_frames = 0;
     m_State.lara_return.is_present = false;
     m_State.info = (CUTSEQ_INFO) {};

@@ -774,6 +774,42 @@ api.define("events.on_cutscene_start", {
   impl = hook(types.CUTSCENE_START),
 })
 
+api.define("events.on_cutscene_frame", {
+  description = [[
+    Happens on every frame of a TR4 cutscene, before the frame is posed.
+
+    A cutscene has no items to listen to. Its actors are animation tracks, so
+    the frame number is the only thing a script can act on. The original game
+    keys its own cutscene events to frame numbers as well.
+  ]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      description = "What to run when it happens.",
+      params = {
+        {
+          name = "cutscene_num",
+          type = "cutscenes.Num",
+        },
+        {
+          name = "frame_num",
+          type = "cutscenes.FrameNum",
+        },
+      },
+    },
+  },
+  returns = LISTENER,
+  examples = {
+    [[trx.events.on_cutscene_frame(function(cutscene_num, frame_num)
+  if cutscene_num == 5 and frame_num == 1350 then
+    -- something happens here
+  end
+end)]],
+  },
+  impl = hook(types.CUTSCENE_FRAME),
+})
+
 api.define("events.on_cutscene_end", {
   description = "Happens once a TR4 cutscene has finished and the scene it interrupted is back. "
     .. "This is where a script decides what follows.",
