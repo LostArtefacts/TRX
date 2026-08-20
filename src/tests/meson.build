@@ -758,6 +758,15 @@ unit_tests += {
 # dispatches it. Everything the command touches is a real bridge, so the test
 # says whether the command works, not whether it was written the way we
 # expected.
+# The version command, exercised through the console that dispatches it. It
+# reads what the build calls itself and logs it, so the test watches the log.
+unit_tests += {
+  'name': 'lua/commands/version',
+  'bundles': [b_lua_surface, b_console],
+  'src': ['fakes/game.c'],
+  'engine': ['game/lua/capi/game.c'],
+}
+
 unit_tests += {
   'name': 'lua/commands/heal',
   'bundles': [b_lua_surface, b_console, b_lua_math],

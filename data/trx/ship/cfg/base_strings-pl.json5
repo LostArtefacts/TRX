@@ -545,6 +545,9 @@
                 "triggered": "Cel aktywowany: %s",
                 "untriggered": "Cel dezaktywowany: %s",
             },
+            "version": {
+                "help": "\\{review}Pokazuje wersję tej kompilacji.",
+            },
             "vsync": {
                 "help": "Włącza lub wyłącza synchronizację pionową.",
             },

@@ -545,6 +545,9 @@
                 "triggered": "\\{review}Ausgelöstes Element(e): %s",
                 "untriggered": "\\{review}Nicht ausgelöstes Element(e): %s",
             },
+            "version": {
+                "help": "\\{review}Zeigt die Version dieses Builds an.",
+            },
             "vsync": {
                 "help": "Vertical Sync. Ein/Aus",
             },

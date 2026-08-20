@@ -545,6 +545,9 @@
                 "triggered": "Oggetto(i) attivato(i): %s",
                 "untriggered": "Oggetto(i) non attivato(i): %s",
             },
+            "version": {
+                "help": "\\{review}Mostra la versione riportata da questa build.",
+            },
             "vsync": {
                 "help": "Attiva o disattiva la sincronizzazione verticale.",
             },
