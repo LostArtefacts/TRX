@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/vars.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
 
@@ -145,7 +146,10 @@ void Lara_Col_ItemPush(
         .pos = item->pos,
         .rot = item->rot,
     };
-    Lara_Col_Push(&src_item, coll, hit_on, big_push);
+    Lara_Col_Push(
+        &src_item, coll,
+        hit_on && !Object_IsType(item->object_id, g_NoHitReactionObjects),
+        big_push);
 }
 
 void Lara_Col_Static3DPush(const STATIC_MESH *const mesh, COLL_INFO *const coll)
