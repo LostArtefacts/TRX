@@ -3,6 +3,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
+#include <trx/game/anims/walk.h>
 #include <trx/game/camera.h>
 #include <trx/game/clock.h>
 #include <trx/game/const.h>
@@ -739,20 +740,18 @@ void CutSeq_DrawActors(void)
 
         const int32_t mesh_count =
             MIN(MIN(obj->mesh_count, actor->node_count - 1), CUTSEQ_MAX_MESHES);
-        for (int32_t mesh_idx = 0; mesh_idx < mesh_count; mesh_idx++) {
-            if (mesh_idx != 0) {
-                const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
-                if (bone->matrix_pop) {
-                    Matrix_Pop();
-                }
-                if (bone->matrix_push) {
-                    Matrix_Push();
-                }
-                Matrix_TranslateRel32(bone->pos);
-            }
-            Matrix_Rot16(pose->rots[mesh_idx]);
 
-            const M_MESH_OVERRIDE *const override = &actor->overrides[mesh_idx];
+        ANIM_WALK walk;
+        Anim_Walk_BeginToJoint(
+            &walk,
+            &(ANIM_WALK_DESC) {
+                .obj = obj,
+                .pose = Anim_Pose_FromRots(pose->rots, (XYZ_16) {}),
+            },
+            mesh_count - 1);
+        while (Anim_Walk_Next(&walk)) {
+            const M_MESH_OVERRIDE *const override =
+                &actor->overrides[walk.joint];
             const OBJECT *const src_obj = override->obj_id == NO_OBJECT
                 ? nullptr
                 : Object_TryGet(override->obj_id);
@@ -762,9 +761,11 @@ void CutSeq_DrawActors(void)
                     false);
             } else {
                 Object_DrawMesh(
-                    obj->mesh_idx + mesh_idx, CLIP_FULLY_VISIBLE, false);
+                    obj->mesh_idx + walk.joint, CLIP_FULLY_VISIBLE, false);
             }
         }
+        Anim_Walk_End(&walk);
+
         Matrix_Pop();
     }
 }

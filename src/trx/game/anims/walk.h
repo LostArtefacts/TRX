@@ -39,17 +39,27 @@ typedef struct {
     int32_t last_joint;
     int32_t depth;
     bool interpolated;
+    bool ended;
 } ANIM_WALK;
 
-// Starts from the caller's current matrix without pushing a new one.
+// Starts from the caller's current matrix without pushing a new one. Every
+// walk must end with Anim_Walk_End, on all exit paths.
 void Anim_Walk_Begin(ANIM_WALK *walk, const ANIM_WALK_DESC *desc);
-void Anim_Walk_BeginToJoint(
-    ANIM_WALK *walk, const ANIM_WALK_DESC *desc, int32_t joint);
 
-// Moves the matrix to the next joint. Returns false at the end and cleans up
-// any matrices left on the stack, unless the walk was exited early.
+// Starts a walk that stops after last_joint. The caller clamps the value to
+// the object's mesh count; a negative value visits no joint at all.
+void Anim_Walk_BeginToJoint(
+    ANIM_WALK *walk, const ANIM_WALK_DESC *desc, int32_t last_joint);
+
+// Moves the matrix to the next joint. Returns false past the last joint, and
+// leaves the matrix stack as it stands.
 bool Anim_Walk_Next(ANIM_WALK *walk);
 
 // Gets a point's position relative to where the walk started. Blending
-// continues for the remaining joints.
+// continues for the remaining joints. Call this before Anim_Walk_End, which
+// discards the matrices the walk built.
 XYZ_32 Anim_Walk_GetPos(ANIM_WALK *walk, XYZ_32 local);
+
+// Ends the walk and pops every matrix it pushed. Fatal if called twice, or
+// after the walk has already ended.
+void Anim_Walk_End(ANIM_WALK *walk);

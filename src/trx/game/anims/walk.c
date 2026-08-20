@@ -1,6 +1,7 @@
 #include <trx/game/anims/walk.h>
 
 #include <trx/core/utils.h>
+#include <trx/debug.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/draw.h>
@@ -119,7 +120,7 @@ ANIM_POSE Anim_Pose_FromRots(const XYZ_16 *const rots, const XYZ_16 offset)
 
 void Anim_Walk_BeginToJoint(
     ANIM_WALK *const walk, const ANIM_WALK_DESC *const desc,
-    const int32_t joint)
+    const int32_t last_joint)
 {
     *walk = (ANIM_WALK) {
         .desc = *desc,
@@ -129,7 +130,7 @@ void Anim_Walk_BeginToJoint(
         .interpolated = desc->pose.rots_b != nullptr && desc->pose.frac != 0
             && desc->pose.rate != 0,
     };
-    walk->last_joint = MIN(joint, desc->obj->mesh_count - 1);
+    walk->last_joint = last_joint;
     if (walk->desc.pose.rots_b == nullptr) {
         walk->desc.pose.rots_b = walk->desc.pose.rots_a;
     }
@@ -144,10 +145,6 @@ bool Anim_Walk_Next(ANIM_WALK *const walk)
 {
     walk->joint++;
     if (walk->joint > walk->last_joint) {
-        while (walk->depth > 0) {
-            walk->depth--;
-            M_Pop(walk->interpolated);
-        }
         return false;
     }
 
@@ -161,6 +158,7 @@ bool Anim_Walk_Next(ANIM_WALK *const walk)
 
 XYZ_32 Anim_Walk_GetPos(ANIM_WALK *const walk, const XYZ_32 local)
 {
+    ASSERT(!walk->ended);
     M_Push(walk->interpolated);
     M_TranslateRel32(local, walk->interpolated);
     if (walk->interpolated) {
@@ -173,4 +171,14 @@ XYZ_32 Anim_Walk_GetPos(ANIM_WALK *const walk, const XYZ_32 local)
     };
     M_Pop(walk->interpolated);
     return result;
+}
+
+void Anim_Walk_End(ANIM_WALK *const walk)
+{
+    ASSERT(!walk->ended);
+    walk->ended = true;
+    while (walk->depth > 0) {
+        walk->depth--;
+        M_Pop(walk->interpolated);
+    }
 }

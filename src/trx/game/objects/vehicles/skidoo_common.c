@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
+#include <trx/game/anims/walk.h>
 #include <trx/game/collision.h>
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
@@ -957,8 +958,6 @@ bool Skidoo_Draw(const ITEM *const item)
         track_mesh = Object_GetMesh(track_obj->mesh_idx + 7);
     }
 
-    // TODO: merge common code parts down below with Object_DrawAnimatingItem.
-
     ANIM_FRAME *frames[2];
     int32_t rate;
     const int32_t frac = Item_GetFrames(item, frames, &rate);
@@ -975,55 +974,26 @@ bool Skidoo_Draw(const ITEM *const item)
 
     Output_CalculateObjectLighting(item, &frames[0]->bounds);
 
-    if (frac) {
-        Matrix_InitInterpolate(frac, rate);
-        Matrix_TranslateRel16_ID(frames[0]->offset, frames[1]->offset);
-        Matrix_Rot16_ID(frames[0]->mesh_rots[0], frames[1]->mesh_rots[0]);
-
-        Object_DrawMesh(obj->mesh_idx, clip, true);
-        for (int32_t mesh_idx = 1; mesh_idx < obj->mesh_count; mesh_idx++) {
-            const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
-            if (bone->matrix_pop) {
-                Matrix_Pop_I();
-            }
-            if (bone->matrix_push) {
-                Matrix_Push_I();
-            }
-
-            Matrix_TranslateRel32_I(bone->pos);
-            Matrix_Rot16_ID(
-                frames[0]->mesh_rots[mesh_idx], frames[1]->mesh_rots[mesh_idx]);
-
-            if (mesh_idx == 1 && track_mesh != nullptr) {
+    ANIM_WALK walk;
+    Anim_Walk_Begin(
+        &walk,
+        &(ANIM_WALK_DESC) {
+            .obj = obj,
+            .pose = Anim_Pose_FromFrames(frames[0], frames[1], frac, rate),
+        });
+    while (Anim_Walk_Next(&walk)) {
+        if (walk.joint == 1 && track_mesh != nullptr) {
+            if (walk.interpolated) {
                 Output_DrawObjectMesh_I(track_mesh, clip);
             } else {
-                Object_DrawMesh(obj->mesh_idx + mesh_idx, clip, true);
-            }
-        }
-    } else {
-        Matrix_TranslateRel16(frames[0]->offset);
-        Matrix_Rot16(frames[0]->mesh_rots[0]);
-
-        Object_DrawMesh(obj->mesh_idx, clip, false);
-        for (int32_t mesh_idx = 1; mesh_idx < obj->mesh_count; mesh_idx++) {
-            const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
-            if (bone->matrix_pop) {
-                Matrix_Pop();
-            }
-            if (bone->matrix_push) {
-                Matrix_Push();
-            }
-
-            Matrix_TranslateRel32(bone->pos);
-            Matrix_Rot16(frames[0]->mesh_rots[mesh_idx]);
-
-            if (mesh_idx == 1 && track_mesh != nullptr) {
                 Output_DrawObjectMesh(track_mesh, clip);
-            } else {
-                Object_DrawMesh(obj->mesh_idx + mesh_idx, clip, false);
             }
+        } else {
+            Object_DrawMesh(
+                obj->mesh_idx + walk.joint, clip, walk.interpolated);
         }
     }
+    Anim_Walk_End(&walk);
 
     Matrix_Pop();
     return true;

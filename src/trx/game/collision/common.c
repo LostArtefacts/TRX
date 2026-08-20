@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/core/utils.h>
+#include <trx/game/anims/walk.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/items.h>
 #include <trx/game/items/anim.h>
@@ -146,43 +147,28 @@ int32_t Collide_GetSpheres(
     Matrix_Rot16(item->rot);
 
     const ANIM_FRAME *const frame = Item_GetBestFrame(item);
-    Matrix_TranslateRel16(frame->offset);
-    Matrix_Rot16(frame->mesh_rots[0]);
-
     const OBJECT *const obj = Object_Get(item->object_id);
-    const OBJECT_MESH *mesh = Object_GetMesh(obj->mesh_idx);
-    Matrix_Push();
-    Matrix_TranslateRel16(mesh->center);
-    spheres[0].pos.x = pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT);
-    spheres[0].pos.y = pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT);
-    spheres[0].pos.z = pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT);
-    spheres[0].r = mesh->radius;
-    Matrix_Pop();
 
-    const int16_t *extra_rotation = item->extra_rotations;
-    for (int32_t i = 1; i < obj->mesh_count; i++) {
-        const ANIM_BONE *const bone = Object_GetBone(obj, i - 1);
-        if (bone->matrix_pop) {
-            Matrix_Pop();
-        }
-        if (bone->matrix_push) {
-            Matrix_Push();
-        }
-
-        Matrix_TranslateRel32(bone->pos);
-        Matrix_Rot16(frame->mesh_rots[i]);
-        Object_ApplyExtraRotation(&extra_rotation, bone->rot, false);
-
-        mesh = Object_GetMesh(obj->mesh_idx + i);
-        Matrix_Push();
-        Matrix_TranslateRel16(mesh->center);
-        SPHERE *const sphere = &spheres[i];
-        sphere->pos.x = pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT);
-        sphere->pos.y = pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT);
-        sphere->pos.z = pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT);
+    ANIM_WALK walk;
+    Anim_Walk_Begin(
+        &walk,
+        &(ANIM_WALK_DESC) {
+            .obj = obj,
+            .pose = Anim_Pose_FromFrame(frame),
+            .extra_rotations = item->extra_rotations,
+        });
+    while (Anim_Walk_Next(&walk)) {
+        const OBJECT_MESH *const mesh =
+            Object_GetMesh(obj->mesh_idx + walk.joint);
+        const XYZ_32 center =
+            Anim_Walk_GetPos(&walk, XYZ_32_From16(mesh->center));
+        SPHERE *const sphere = &spheres[walk.joint];
+        sphere->pos.x = pos.x + center.x;
+        sphere->pos.y = pos.y + center.y;
+        sphere->pos.z = pos.z + center.z;
         sphere->r = mesh->radius;
-        Matrix_Pop();
     }
+    Anim_Walk_End(&walk);
 
     Matrix_Pop();
     return obj->mesh_count;
@@ -252,71 +238,24 @@ void Collide_GetJointAbsPosition(
 
     const ANIM_FRAME *const frame_a = frames[0];
     const ANIM_FRAME *const frame_b = frames[1];
-    const bool do_interp = frame_b != nullptr && frac != 0 && rate != 0;
 
-    int32_t stack = 1;
     Matrix_PushUnit();
     Matrix_Rot16(item_rot);
-    if (do_interp) {
-        Matrix_InitInterpolate(frac, rate);
-        Matrix_TranslateRel16_ID(frame_a->offset, frame_b->offset);
-        Matrix_Rot16_ID(frame_a->mesh_rots[0], frame_b->mesh_rots[0]);
-    } else {
-        Matrix_TranslateRel16(frame_a->offset);
-        Matrix_Rot16(frame_a->mesh_rots[0]);
-    }
 
-    const int16_t *extra_rotation = item->extra_rotations;
-    const int32_t max_joint = obj->mesh_count > 0 ? obj->mesh_count - 1 : 0;
-    const int32_t abs_joint = MIN(max_joint, joint);
-    for (int32_t i = 0; i < abs_joint; i++) {
-        const ANIM_BONE *const bone = Object_GetBone(obj, i);
-        if (bone->matrix_pop) {
-            stack--;
-            if (do_interp) {
-                Matrix_Pop_I();
-            } else {
-                Matrix_Pop();
-            }
-        }
-        if (bone->matrix_push) {
-            stack++;
-            if (do_interp) {
-                Matrix_Push_I();
-            } else {
-                Matrix_Push();
-            }
-        }
+    ANIM_WALK walk;
+    Anim_Walk_BeginToJoint(
+        &walk,
+        &(ANIM_WALK_DESC) {
+            .obj = obj,
+            .pose = Anim_Pose_FromFrames(frame_a, frame_b, frac, rate),
+            .extra_rotations = item->extra_rotations,
+        },
+        MIN(joint, MAX(obj->mesh_count - 1, 0)));
+    while (Anim_Walk_Next(&walk)) {}
 
-        if (do_interp) {
-            Matrix_TranslateRel32_I(bone->pos);
-            Matrix_Rot16_ID(
-                frame_a->mesh_rots[i + 1], frame_b->mesh_rots[i + 1]);
-            Object_ApplyExtraRotation(&extra_rotation, bone->rot, true);
-        } else {
-            Matrix_TranslateRel32(bone->pos);
-            Matrix_Rot16(frame_a->mesh_rots[i + 1]);
-            Object_ApplyExtraRotation(&extra_rotation, bone->rot, false);
-        }
-    }
-
-    if (do_interp) {
-        Matrix_TranslateRel32_I(*out_vec);
-        Matrix_Interpolate();
-    } else {
-        Matrix_TranslateRel32(*out_vec);
-    }
-    out_vec->x = item_pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT);
-    out_vec->y = item_pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT);
-    out_vec->z = item_pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT);
-
-    while (stack--) {
-        if (do_interp) {
-            Matrix_Pop_I();
-        } else {
-            Matrix_Pop();
-        }
-    }
+    *out_vec = XYZ_32_Add(item_pos, Anim_Walk_GetPos(&walk, *out_vec));
+    Anim_Walk_End(&walk);
+    Matrix_Pop();
 }
 
 void Collide_GetCollisionInfo(

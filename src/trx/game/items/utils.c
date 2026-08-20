@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/core/utils.h>
+#include <trx/game/anims/walk.h>
 #include <trx/game/const.h>
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
@@ -256,21 +257,31 @@ int32_t Item_Shatter(
 
     Matrix_PushUnit();
     Matrix_Rot16(item->rot);
-    Matrix_TranslateRel16(best_frame->offset);
-    Matrix_Rot16(best_frame->mesh_rots[0]);
 
     const int32_t speed_shift = item->object_id == O_TORSO ? 7 : 8;
     const bool is_tr3 = M_UseTR3ExplodingEffects(item);
 
-    // main mesh
-    int32_t bit = 1;
-    if ((mesh_bits & bit) && (item->mesh_bits & bit)) {
+    ANIM_WALK walk;
+    Anim_Walk_Begin(
+        &walk,
+        &(ANIM_WALK_DESC) {
+            .obj = obj,
+            .pose = Anim_Pose_FromFrame(best_frame),
+            .extra_rotations = item->extra_rotations,
+        });
+    while (Anim_Walk_Next(&walk)) {
+        const int32_t bit = 1 << walk.joint;
+        if (!(mesh_bits & bit) || !(item->mesh_bits & bit)) {
+            continue;
+        }
+
         const int16_t effect_num = Effect_Create(item->room_num);
         if (effect_num != NO_EFFECT) {
             EFFECT *const effect = Effect_Get(effect_num);
-            effect->pos.x = item->pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT);
-            effect->pos.y = item->pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT);
-            effect->pos.z = item->pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT);
+            const XYZ_32 local = Anim_Walk_GetPos(&walk, (XYZ_32) {});
+            effect->pos.x = item->pos.x + local.x;
+            effect->pos.y = item->pos.y + local.y;
+            effect->pos.z = item->pos.z + local.z;
             effect->rot.y = (Random_GetControl() - 0x4000) * 2;
             effect->room_num = item->room_num;
             effect->speed = Random_GetControl() >> speed_shift;
@@ -278,49 +289,12 @@ int32_t Item_Shatter(
             effect->counter =
                 is_tr3 ? ((damage << 2) | (Random_GetControl() & 3)) : damage;
             effect->object_id = O_BODY_PART;
-            effect->frame_num = Object_GetItemMeshIndex(item, 0);
+            effect->frame_num = Object_GetItemMeshIndex(item, walk.joint);
             effect->shade = Output_GetLightAdder() - 0x300;
         }
         item->mesh_bits &= ~bit;
     }
-
-    // additional meshes
-    const int16_t *extra_rotation = item->extra_rotations;
-    for (int32_t i = 1; i < obj->mesh_count; i++) {
-        const ANIM_BONE *const bone = Object_GetBone(obj, i - 1);
-        if (bone->matrix_pop) {
-            Matrix_Pop();
-        }
-        if (bone->matrix_push) {
-            Matrix_Push();
-        }
-
-        Matrix_TranslateRel32(bone->pos);
-        Matrix_Rot16(best_frame->mesh_rots[i]);
-        Object_ApplyExtraRotation(&extra_rotation, bone->rot, false);
-
-        bit <<= 1;
-        if ((mesh_bits & bit) && (item->mesh_bits & bit)) {
-            const int16_t effect_num = Effect_Create(item->room_num);
-            if (effect_num != NO_EFFECT) {
-                EFFECT *const effect = Effect_Get(effect_num);
-                effect->pos.x = item->pos.x + (g_MatrixPtr->_03 >> W2V_SHIFT);
-                effect->pos.y = item->pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT);
-                effect->pos.z = item->pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT);
-                effect->rot.y = (Random_GetControl() - 0x4000) * 2;
-                effect->room_num = item->room_num;
-                effect->speed = Random_GetControl() >> speed_shift;
-                effect->fall_speed = -Random_GetControl() >> speed_shift;
-                effect->counter = is_tr3
-                    ? ((damage << 2) | (Random_GetControl() & 3))
-                    : damage;
-                effect->object_id = O_BODY_PART;
-                effect->frame_num = Object_GetItemMeshIndex(item, i);
-                effect->shade = Output_GetLightAdder() - 0x300;
-            }
-            item->mesh_bits &= ~bit;
-        }
-    }
+    Anim_Walk_End(&walk);
 
     Matrix_Pop();
 

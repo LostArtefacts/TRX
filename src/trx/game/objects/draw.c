@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/debug.h>
+#include <trx/game/anims/walk.h>
 #include <trx/game/inventory.h>
 #include <trx/game/items/col.h>
 #include <trx/game/matrix.h>
@@ -230,63 +231,25 @@ bool Object_DrawInterpolatedObjectWithSwap(
     ASSERT(rate != 0);
     Matrix_Push();
 
-    if (frac != 0) {
-        for (int32_t mesh_idx = 0; mesh_idx < obj->mesh_count; mesh_idx++) {
-            if (mesh_idx == 0) {
-                Matrix_InitInterpolate(frac, rate);
-                Matrix_TranslateRel16_ID(frame1->offset, frame2->offset);
-                Matrix_Rot16_ID(
-                    frame1->mesh_rots[mesh_idx], frame2->mesh_rots[mesh_idx]);
-                Object_ApplyExtraRotation(&extra_rotation, obj->base_rot, true);
-            } else {
-                const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
-                if (bone->matrix_pop) {
-                    Matrix_Pop_I();
-                }
-                if (bone->matrix_push) {
-                    Matrix_Push_I();
-                }
-
-                Matrix_TranslateRel32_I(bone->pos);
-                Matrix_Rot16_ID(
-                    frame1->mesh_rots[mesh_idx], frame2->mesh_rots[mesh_idx]);
-                Object_ApplyExtraRotation(&extra_rotation, bone->rot, true);
-            }
-
-            if ((mesh_mask & (1u << mesh_idx)) != 0) {
-                Object_DrawMesh(obj->mesh_idx + mesh_idx, clip, true);
-            } else if (mesh_swap != nullptr) {
-                Object_DrawMesh(mesh_swap->mesh_idx + mesh_idx, clip, true);
-            }
-        }
-    } else {
-        for (int32_t mesh_idx = 0; mesh_idx < obj->mesh_count; mesh_idx++) {
-            if (mesh_idx == 0) {
-                Matrix_TranslateRel16(frame1->offset);
-                Matrix_Rot16(frame1->mesh_rots[mesh_idx]);
-                Object_ApplyExtraRotation(
-                    &extra_rotation, obj->base_rot, false);
-            } else {
-                const ANIM_BONE *const bone = Object_GetBone(obj, mesh_idx - 1);
-                if (bone->matrix_pop) {
-                    Matrix_Pop();
-                }
-                if (bone->matrix_push) {
-                    Matrix_Push();
-                }
-
-                Matrix_TranslateRel32(bone->pos);
-                Matrix_Rot16(frame1->mesh_rots[mesh_idx]);
-                Object_ApplyExtraRotation(&extra_rotation, bone->rot, false);
-            }
-
-            if ((mesh_mask & (1u << mesh_idx)) != 0) {
-                Object_DrawMesh(obj->mesh_idx + mesh_idx, clip, false);
-            } else if (mesh_swap != nullptr) {
-                Object_DrawMesh(mesh_swap->mesh_idx + mesh_idx, clip, false);
-            }
+    ANIM_WALK walk;
+    Anim_Walk_Begin(
+        &walk,
+        &(ANIM_WALK_DESC) {
+            .obj = obj,
+            .pose = Anim_Pose_FromFrames(frame1, frame2, frac, rate),
+            .extra_rotations = extra_rotation,
+            .applies_base_rot = true,
+        });
+    while (Anim_Walk_Next(&walk)) {
+        const int32_t mesh_idx = walk.joint;
+        if ((mesh_mask & (1u << mesh_idx)) != 0) {
+            Object_DrawMesh(obj->mesh_idx + mesh_idx, clip, walk.interpolated);
+        } else if (mesh_swap != nullptr) {
+            Object_DrawMesh(
+                mesh_swap->mesh_idx + mesh_idx, clip, walk.interpolated);
         }
     }
+    Anim_Walk_End(&walk);
 
     Matrix_Pop();
     return true;
