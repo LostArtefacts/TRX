@@ -42,7 +42,8 @@
     X_DECLARE_MEMBER(int, affine_mapping_enabled)                              \
     X_DECLARE_MEMBER(int, tr_version)                                          \
     X_DECLARE_MEMBER(float, uv_scroll_tick)                                    \
-    X_DECLARE_MEMBER(float, _pad, [2])
+    X_DECLARE_MEMBER(int, supersampling_factor)                                \
+    X_DECLARE_MEMBER(float, _pad, [1])
 
 #pragma pack(push, 4)
 typedef struct {
@@ -173,6 +174,7 @@ void Output_Uniforms_UploadGeneral(const OUTPUT_UNIFORMS *const uniforms)
         .sunset_duration = Output_GetSunsetDuration(),
         .tr_version = g_TRVersion,
         .uv_scroll_tick = Output_GetUVScrollTick(),
+        .supersampling_factor = Viewport_GetSupersamplingFactor(),
         .viewport_size = {
             (float)Viewport_GetWidth(VIEWPORT_GAME),
             (float)Viewport_GetHeight(VIEWPORT_GAME),
