@@ -357,6 +357,12 @@ static void M_CrawlJumpDown(ITEM *const item, COLL_INFO *const coll)
     lara->gun_status = LGS_ARMLESS;
 }
 
+static void M_CrawlClimb(ITEM *const item, COLL_INFO *const coll)
+{
+    coll->enable_baddie_push = 0;
+    coll->enable_hit = 0;
+}
+
 // clang-format off
 REGISTER_LARA_STATE(LS_CROUCH_IDLE,       M_CrouchIdle)
 REGISTER_LARA_STATE(LS_CROUCH_ROLL,       M_CrouchRoll)
@@ -368,4 +374,6 @@ REGISTER_LARA_STATE(LS_CRAWL_TURN_LEFT,   M_CrawlTurn)
 REGISTER_LARA_STATE(LS_CRAWL_TURN_RIGHT,  M_CrawlTurn)
 REGISTER_LARA_STATE(LS_CRAWL_BACK,        M_CrawlBack)
 REGISTER_LARA_STATE(LS_CRAWL_JUMP_DOWN,   M_CrawlJumpDown)
+REGISTER_LARA_STATE(LS_CRAWL_TO_CLIMB,    M_CrawlClimb)
+REGISTER_LARA_STATE(LS_CLIMB_TO_CRAWL,    M_CrawlClimb)
 // clang-format on
