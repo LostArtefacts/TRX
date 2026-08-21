@@ -3,10 +3,10 @@
 #include <trx/core/json/util/write_io.h>
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
+#include <trx/game/camera/vars.h>
 #include <trx/game/fx/common.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/interpolation.h>
-#include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/output/const.h>
 #include <trx/game/output/sources/poly_fx.h>
@@ -69,14 +69,9 @@ static int64_t M_GetViewDepth(const XYZ_32 pos)
 
 static void M_Spawn(M_WATER_PARTICLE *const particle)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    if (lara_item == nullptr) {
-        return;
-    }
-
     const int32_t dist = Random_GetDraw() & M_SPAWN_DIST_MASK;
     const int32_t angle = (Random_GetDraw() & M_SPAWN_ANGLE_MASK) * 8;
-    particle->pos = XYZ_32_OffsetYaw(lara_item->pos, angle, dist);
+    particle->pos = XYZ_32_OffsetYaw(g_Camera.pos.pos, angle, dist);
     particle->pos.y += (Random_GetDraw() & M_SPAWN_Y_MASK) + M_BASE_Y_OFF;
 
     int16_t room_num = NO_ROOM;
