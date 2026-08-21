@@ -137,6 +137,7 @@
 - Added `trx.math.Color` and `trx.math.color()`, so a color is a value with its channels and its hex text on it rather than a string (TRX1091)
 - Added `trx.cutscenes.actor_count`, `trx.cutscenes.set_actor_visible()`, `trx.cutscenes.set_node_mesh()` and `trx.cutscenes.clear_node_mesh()`, for hiding an actor in the scene on screen or putting another object's mesh on one (TRX1058)
 - Added `trx.game.LOGIC_FPS`, the rate the game runs its logic at
+- Added `trx.random.Stream`, `trx.random.control` and `trx.random.draw`, so a script can draw randomness without changing what the creatures decide next (TRX1199)
 - Added a new Lua module, `trx.store`, for what a script remembers across a save: one table for the level and one for the playthrough (TRX87)
 - Added a new Lua module, `trx.ui`, for drawing over the game from a script: text, bars and the widgets that lay them out, through a new `trx.events.on_ui_draw` event (#5351 / TRX185)
 - Added a new Lua module, `trx.waypoints`, for how far along a level's own progression Lara has got, which TR4 marks out and its guides follow; it is saved with the game and reports the furthest she has ever reached as well as where she is now

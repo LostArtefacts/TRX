@@ -12,15 +12,90 @@ order: 32
 
 ## <a id="random" name="random"></a>Random module
 
-Random numbers, drawn from the sequence the simulation itself runs on.
+Random numbers, drawn from one of the two sequences the engine runs on.
 
-The savegame carries that sequence, so what a script draws comes back the same
-after a reload, and a script needs no seed of its own. The sequence moves on
-for the engine as well: a script drawing every frame changes what the creatures
-decide next.
+The module's own calls draw from the control stream. This is the sequence the
+simulation runs on, so a script that draws every frame changes what the
+creatures decide next. The draw stream, [`trx.random.draw`](#random.draw), is the one the
+original game keeps for what is only seen. Drawing from it leaves the
+simulation as it was. Both streams are the same generator and offer the same
+calls, described in [`trx.random.Stream`](#random.Stream).
+
+The savegame carries both sequences. A script's draws come back the same
+after a reload, and a script needs no seed of its own.
 
 Lua's own `math.random` is a separate generator that nothing saves. It has no
 place in anything the simulation reads.
+
+### Properties
+
+- <a id="random.control" name="random.control"></a>**`trx.random.control`** ([trx.random.Stream](#random.Stream)). The sequence the simulation runs on, which the module's own functions draw from. *(read-only)*
+- <a id="random.draw" name="random.draw"></a>**`trx.random.draw`** ([trx.random.Stream](#random.Stream)). The sequence kept for what is only seen. Drawing from it leaves what the creatures decide next as it was, which is what the original game keeps it for. *(read-only)*
+
+### Structures
+
+- <a id="random.Stream" name="random.Stream"></a>[lua]`trx.random.Stream`
+
+    One of the engine's two random sequences.
+
+    Drawing from [`trx.random.control`](#random.control) changes what the game does next,
+    because the simulation runs on it. Drawing from [`trx.random.draw`](#random.draw)
+    changes nothing, because only the picture uses it.
+
+    Both have the same calls. The module's own functions draw from the
+    control stream.
+
+    Methods:
+
+    - <a id="random.Stream.angle" name="random.Stream.angle"></a>[lua]`stream:angle()`  
+      A direction, anywhere around the turn.
+
+      Returns: [trx.math.Angle](MATH.md#math.Angle). An angle within one turn.
+
+    - <a id="random.Stream.chance" name="random.Stream.chance"></a>[lua]`stream:chance(p)`  
+      Whether something with the given likelihood happens this time.
+
+      Parameters:
+      - <a id="random.Stream.chance.p" name="random.Stream.chance.p"></a>**`p`** (number). How likely, from 0 for never to 1 for always.
+
+      Returns: boolean. Whether it happens.
+
+    - <a id="random.Stream.choice" name="random.Stream.choice"></a>[lua]`stream:choice(seq)`  
+      One item out of a list, each as likely as the next.
+
+      Parameters:
+      - <a id="random.Stream.choice.seq" name="random.Stream.choice.seq"></a>**`seq`** (a list of any). What to choose from. An empty list raises.
+
+      Returns: any. The item chosen.
+
+    - <a id="random.Stream.choices" name="random.Stream.choices"></a>[lua]`stream:choices(seq, [weights], [k])`  
+      Several items out of a list, drawn one after another so that the same item can come up more than once. Weights give some items a greater share than others.
+
+      Parameters:
+      - <a id="random.Stream.choices.seq" name="random.Stream.choices.seq"></a>**`seq`** (a list of any). What to choose from. An empty list raises.
+      - <a id="random.Stream.choices.weights" name="random.Stream.choices.weights"></a>**`weights`** (a list of number, optional). One share per item, none of them negative and not all zero. Defaults to an equal share each.
+      - <a id="random.Stream.choices.k" name="random.Stream.choices.k"></a>**`k`** (integer, optional, default `1`). How many to draw. Below 0 raises.
+
+      Returns: a list of any. The items chosen.
+
+    - <a id="random.Stream.randint" name="random.Stream.randint"></a>[lua]`stream:randint(a, b)`  
+      A whole number between two bounds, both of them included.
+
+      Parameters:
+      - <a id="random.Stream.randint.a" name="random.Stream.randint.a"></a>**`a`** (integer). Lowest value.
+      - <a id="random.Stream.randint.b" name="random.Stream.randint.b"></a>**`b`** (integer). Highest value. Below the lowest raises.
+
+      Returns: integer. A value in [a, b].
+
+      Example:
+      ```lua
+      local pips = trx.random.draw:randint(1, 6)
+      ```
+
+    - <a id="random.Stream.random" name="random.Stream.random"></a>[lua]`stream:random()`  
+      A fraction of one, the whole number itself excepted.
+
+      Returns: number. A value in [0, 1).
 
 ### Functions
 
