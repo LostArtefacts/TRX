@@ -89,6 +89,7 @@
 - Added waterfalls, which run and play their loop, and the mist that rises where they land (TRX1067)
 - Added the in-game cutscenes of Angkor Wat and Race for the Iris, with the characters speaking their lines and the outcome of the race deciding which ending plays
 - Added Boar control (TRX1185)
+- Added Poison Dart control (TRX1215 / TRX1216)
 - Added level statistics scanning (TRX1201)
 - Added the timer Race for the Iris runs between its cutscenes (TRX1109)
 - Changed a flip to move the group of rooms the trigger names, rather than every flip room in the level (TRX173)
