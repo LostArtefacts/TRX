@@ -31,19 +31,18 @@ struct LightingResult {
 
 float ogPhaseTurns(vec3 worldPos, int scheme)
 {
-    // bucket like OG: xyz * (1/64, 1/64, 1/128)
-    ivec3 q = ivec3(floor(vec3(worldPos.x / 64.0,
-                               worldPos.y / 64.0,
-                               worldPos.z / 128.0)));
+    // The lane is a sum of the position, not a hash of the three axes: it
+    // steps once every four units of that sum, so vertices near each other
+    // share a lane and the light runs in broad bands. Hashing each vertex on
+    // its own leaves neighbours unrelated, which reads as speckle.
+    float sum = floor(worldPos.x / 64.0) + floor(worldPos.y / 64.0)
+        + floor(worldPos.z / 128.0);
+    float lane = mod(floor(sum / 4.0), 16.0);
 
-    // cheap hash -> 0..1
-    float n = fract(sin(
-        dot(vec3(q), vec3(12.9898, 78.233, 37.719)) + float(scheme) * 19.19
-    ) * 43758.5453);
-
-    // OG-ish: random is multiples of 4, then &63 => 16 lanes
-    float lane = floor(n * 16.0);  // 0..15
-    float offTurns = lane / 16.0;  // 0,1/16,...15/16
+    // stands in for the random byte the OG table holds per lane
+    float n =
+        fract(sin(lane * 12.9898 + float(scheme) * 19.19) * 43758.5453);
+    float offTurns = floor(n * 16.0) / 16.0;
 
     // time base is uTimeInGame with period 64
     float tTurns = fract(uTimeInGame / 64.0);
