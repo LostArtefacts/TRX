@@ -350,17 +350,14 @@ static void M_DrawOpaqueInstance(
     }
 
     Output_MeshShader_UploadWaterEffect(batcher->shader, inst->water_effect);
-    if (inst->wibble) {
+    if (inst->wibble && inst->wibble_fill) {
         Output_MeshShader_UploadWibbleEffect(batcher->shader, false);
         glDepthMask(GL_FALSE);
         M_DrawOpaqueVertices(batcher, inst);
         glDepthMask(GL_TRUE);
-        Output_MeshShader_UploadWibbleEffect(batcher->shader, true);
-        M_DrawOpaqueVertices(batcher, inst);
-    } else {
-        Output_MeshShader_UploadWibbleEffect(batcher->shader, false);
-        M_DrawOpaqueVertices(batcher, inst);
     }
+    Output_MeshShader_UploadWibbleEffect(batcher->shader, inst->wibble);
+    M_DrawOpaqueVertices(batcher, inst);
 
     if (inst->enable_scissor) {
         Output_DisableScissor();

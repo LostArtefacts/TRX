@@ -18,6 +18,11 @@ typedef struct MESH_INSTANCE {
     const ROOM *room;
     RGBA_F tint;
     bool wibble;
+    // Draws the instance a second time without the distortion, under the
+    // distorted one and without writing depth. Faces that distort next to
+    // faces that do not crack apart at the seam, and the plain copy fills
+    // the cracks. An instance that distorts as a whole needs no fill.
+    bool wibble_fill;
     int32_t water_effect;
 
     // Where the instance sits among the sorted pass's layers, drawn low first
