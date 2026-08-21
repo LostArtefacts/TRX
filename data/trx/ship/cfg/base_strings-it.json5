@@ -3428,6 +3428,9 @@
         "save_crystal": {
             "name": "Cristallo di Salvataggio",
         },
+        "scaled_spikes": {
+            "name": "\\{review}Spuntoni ridimensionati",
+        },
         "scion": {
             "name": "Scion",
         },

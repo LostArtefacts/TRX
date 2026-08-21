@@ -1299,6 +1299,14 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### O_SCALED_SPIKES
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">8</td><td>Damage dealt when Lara hits the spikes without dying instantly.</td></tr>
+</tbody>
+</table>
+
 #### O_SECURITY_LASER_ALARM
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (66)</th><th>Description</th></tr></thead>

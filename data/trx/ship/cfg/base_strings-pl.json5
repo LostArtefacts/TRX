@@ -3379,6 +3379,9 @@
         "save_crystal": {
             "name": "Kryształ do zapisu",
         },
+        "scaled_spikes": {
+            "name": "\\{review}Przeskalowane kolce",
+        },
         "scion": {
             "name": "Scion",
         },

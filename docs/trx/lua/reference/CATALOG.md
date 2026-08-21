@@ -37,7 +37,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     - `trx.catalog.Context.ITEM_ACTIONS` = `5`  
         Item actions, which the flip effects trigger.
 
-- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 821 names
+- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 822 names
 
     Every object TRX has a name for.
 
@@ -219,8 +219,8 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     `ROCKET_GUN_ITEM`, `ROCKET_GUN_OPTION`, `ROLLING_BALL_1`, `ROLLING_BALL_2`,
     `ROLLING_BALL_3`, `ROLLING_BALL_4`, `ROPE`, `ROTATING_LASER`, `RX_WORKER_1`,
     `RX_WORKER_2`, `RX_WORKER_3`, `SARCOPHAGUS`, `SAVE_CRYSTAL_ITEM`,
-    `SAVE_CRYSTAL_OPTION`, `SCION_HOLDER`, `SCION_ITEM_1`, `SCION_ITEM_2`,
-    `SCION_ITEM_3`, `SCION_ITEM_4`, `SCION_OPTION`, `SECRET_1`,
+    `SAVE_CRYSTAL_OPTION`, `SCALED_SPIKES`, `SCION_HOLDER`, `SCION_ITEM_1`,
+    `SCION_ITEM_2`, `SCION_ITEM_3`, `SCION_ITEM_4`, `SCION_OPTION`, `SECRET_1`,
     `SECRET_1_OPTION`, `SECRET_2`, `SECRET_2_OPTION`, `SECRET_3`,
     `SECRET_3_OPTION`, `SECURITY_GUARD`, `SECURITY_LASER_ALARM`,
     `SECURITY_LASER_DEADLY`, `SECURITY_LASER_KILLER`, `SENTRY_GUN`, `SHADOW`,
@@ -260,7 +260,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
 
     </details>
 
-- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 205 names
+- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 206 names
 
     Every sound sample TRX has a name for.
 
@@ -314,13 +314,14 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     `SHIVA_SWORD_2`, `SHUTTERS_BREAK`, `SKATEBOARD_HIT`, `SKATEKID_SPEECH`,
     `SKIDOO_IDLE`, `SKIDOO_MOVING`, `SMALL_FAN_ON`, `SOPHIA_SUMMON`,
     `SOPHIA_SUMMON_NOT`, `SOPHIA_TAKE_HIT`, `SPANNER_CLUNK`, `SPIDER_EXPLODE`,
-    `SPIKE_WALL`, `STAGE_BACKDROP`, `STAIRS_2_SLOPE_FX`, `STONE_DOOR_SLIDE`,
-    `TARGET_HITS`, `TARGET_SMASH`, `THUNDER`, `TORSO_HIT`, `TRAIN_LOOP`,
-    `TRAPDOOR_OPEN`, `TRIBOSS_TAKE_HIT`, `TRIBOSS_TURN_CHAIR`, `UNDERWATER`,
-    `UNDERWATER_FAN_OFF`, `UNDERWATER_FAN_ON`, `UPV_HARPOON`, `UPV_LOOP`,
-    `UPV_START`, `UPV_STOP`, `WARRIOR_HOVER`, `WATERFALL_2`, `WATERFALL_BIG`,
-    `WATERFALL_LOOP`, `WINSTON_CUPS`, `WINSTON_GRUNT_1`, `WINSTON_GRUNT_2`,
-    `WINSTON_GRUNT_3`, `WOLF_HURT`, `ZIPLINE_GO`, `ZIPLINE_STOP`
+    `SPIKES`, `SPIKE_WALL`, `STAGE_BACKDROP`, `STAIRS_2_SLOPE_FX`,
+    `STONE_DOOR_SLIDE`, `TARGET_HITS`, `TARGET_SMASH`, `THUNDER`, `TORSO_HIT`,
+    `TRAIN_LOOP`, `TRAPDOOR_OPEN`, `TRIBOSS_TAKE_HIT`, `TRIBOSS_TURN_CHAIR`,
+    `UNDERWATER`, `UNDERWATER_FAN_OFF`, `UNDERWATER_FAN_ON`, `UPV_HARPOON`,
+    `UPV_LOOP`, `UPV_START`, `UPV_STOP`, `WARRIOR_HOVER`, `WATERFALL_2`,
+    `WATERFALL_BIG`, `WATERFALL_LOOP`, `WINSTON_CUPS`, `WINSTON_GRUNT_1`,
+    `WINSTON_GRUNT_2`, `WINSTON_GRUNT_3`, `WOLF_HURT`, `ZIPLINE_GO`,
+    `ZIPLINE_STOP`
 
     </details>
 
