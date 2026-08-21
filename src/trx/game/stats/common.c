@@ -176,18 +176,13 @@ void Stats_MarkSecretCollected(const ITEM *const item)
     Stats_UpdateSecrets(stats);
 }
 
-bool Stats_CheckAllLevelSecretsPickedUp(void)
+bool Stats_CheckAllLevelSecretsCollected(void)
 {
     const GF_LEVEL *const level = Game_GetCurrentLevel();
     const LEVEL_MAX_STATS *const max_stats = Stats_GetLevelMaxStats(level);
     const LEVEL_STATS *const stats = Stats_GetLevelStats(level);
-    int32_t flags = stats->secret_flags;
-    size_t count = 0;
-    while (flags != 0) {
-        count += flags & 1;
-        flags >>= 1;
-    }
-    return count >= max_stats->max_pickup_secret_count;
+    return stats->counts[STATS_CAT_SECRETS]
+        >= max_stats->maxes[STATS_CAT_SECRETS];
 }
 
 bool Stats_CheckAllSecretsCollected(void)
