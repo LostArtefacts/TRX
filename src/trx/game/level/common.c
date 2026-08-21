@@ -14,6 +14,7 @@
 #include <trx/game/lara/skin/common.h>
 #include <trx/game/level.h>
 #include <trx/game/lua.h>
+#include <trx/game/lua/store.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
 #include <trx/game/option.h>
@@ -90,6 +91,8 @@ RESULT Level_Initialise(
     if (level->type != GFL_TITLE) {
         Stats_ResetLevel(level);
     }
+
+    LUA_Store_ClearLevel();
 
     if (level == nullptr) {
         return FAIL("there is no level to load");

@@ -9,6 +9,7 @@
 #include <trx/game/gun.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
+#include <trx/game/lua/store.h>
 #include <trx/game/objects.h>
 #include <trx/game/rules.h>
 #include <trx/game/savegame.h>
@@ -178,6 +179,9 @@ void SG_Resume_ResetAllEntries(void)
 
     // And so does how far Lara has got along a level's own progression.
     Waypoint_Reset();
+
+    // The game store spans a playthrough, so a fresh one starts empty.
+    LUA_Store_ClearGame();
 }
 
 void SG_Resume_ResetEntry(const GF_LEVEL *const level)

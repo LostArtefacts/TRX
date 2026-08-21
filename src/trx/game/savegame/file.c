@@ -7,6 +7,7 @@
 #include <trx/core/utils.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
+#include <trx/game/lua/store.h>
 #include <trx/game/savegame.h>
 #include <trx/game/sparks/manager.h>
 #include <trx/version.h>
@@ -134,6 +135,7 @@ static RESULT M_Load(JSON_READ_IO *const io)
     MUST(SG_File_LoadMusic(io));
     MUST(SG_File_LoadLara(io));
     MUST(SG_File_LoadRules(io));
+    MUST(LUA_Store_Load(io));
     return OK;
 }
 
@@ -184,6 +186,7 @@ RESULT SG_File_SaveToFile(TRX_FILE *const fp, SAVEGAME_INFO *const info)
     SG_File_DumpFlares(io);
     SG_File_DumpRules(io);
     SG_File_DumpMisc(io);
+    LUA_Store_Dump(io);
 
     const RESULT result = M_SaveRaw(
         fp, JSON_WriteIO_GetRoot(io), current_level->num,

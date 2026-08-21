@@ -1,7 +1,7 @@
 local api = trx.api
 
 api.module("json", {
-  order = 33,
+  order = 34,
   title = "JSON",
   description = "Writing Lua values out as JSON. The API dump the reference is generated from "
     .. "goes through this, so what a script writes out is encoded the way the engine's own data "

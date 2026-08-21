@@ -2,7 +2,7 @@ local raw = trxc.log
 local api = trx.api
 
 api.module("log", {
-  order = 29,
+  order = 30,
   title = "Logging",
   description = "Logs a message to the terminal and to `TRX.log` in the installation directory. "
     .. "<!--noref: TRX.log--> "
