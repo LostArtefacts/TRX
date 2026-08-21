@@ -101,6 +101,7 @@
 - Fixed Von Croy's shadow floating at the height of his knees during the scenes he plays in Angkor Wat (TRX911)
 - Fixed Lara's shadow being too small to read as the jeep's during the cutscene that opens Karnak (TRX911)
 - Fixed the geometry in Karnak causing the opening cutscene camera to be in the void, and some rooms not rendering fully as a result (TRX1184)
+- Fixed a dropped flare turning black after a save is loaded (TRX904)
 
 **Miscellaneous**
 - Added an option to cast Lara in gold whatever she is wearing (Graphic Options → Visuals → Golden Lara) (TRX1070)
