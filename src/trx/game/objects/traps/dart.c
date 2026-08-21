@@ -31,9 +31,11 @@ static void M_DamageLara(const ITEM *const item)
     }
 
     const ITEM *const lara_item = Lara_GetItem();
+    const int16_t speed =
+        g_TRVersion <= 3 ? lara_item->speed : ((Random_GetControl() & 3) + 4);
     Spawn_Blood(
-        item->pos.x, item->pos.y, item->pos.z, lara_item->speed,
-        lara_item->rot.y, lara_item->room_num);
+        item->pos.x, item->pos.y, item->pos.z, speed, lara_item->rot.y,
+        lara_item->room_num);
 }
 
 static void M_Hit(
