@@ -55,6 +55,19 @@ static bool M_NarrowValue(TRX_VALUE *const value)
     return true;
 }
 
+static void M_ClearMirror(const CONFIG_OPTION *const option)
+{
+    if (option->mirror == nullptr) {
+        return;
+    }
+    if (M_IsStringLike(option->default_value.type)) {
+        Memory_FreePointer((char **)option->mirror);
+        return;
+    }
+    const TRX_VALUE zero = { .type = option->default_value.type };
+    Value_WritePtr(zero.type, option->mirror, &zero);
+}
+
 // Narrows the carrier into the field g_Config keeps for this option.
 static void M_WriteMirror(const CONFIG_OPTION *const option)
 {
@@ -138,11 +151,8 @@ void Config_Option_Free(CONFIG_OPTION *const option)
     }
     Config_Option_ReleaseHolds(option);
     M_FreeValue(&option->value);
+    M_ClearMirror(option);
     M_FreeValue(&option->default_value);
-    if (option->mirror != nullptr
-        && M_IsStringLike(option->default_value.type)) {
-        Memory_FreePointer((char **)option->mirror);
-    }
     Memory_Free((CONFIG_OPTION_BOUNDS *)option->bounds);
     Memory_Free((char *)option->name);
 }
