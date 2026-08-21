@@ -13,6 +13,12 @@
       "value": 10
     },
     {
+      "description": "How many logical frames the game runs a second, which is the rate `trx.events.before_control` fires at. A script that counts frames divides by this to reach seconds.",
+      "path": "game.LOGIC_FPS",
+      "type": "integer",
+      "value": 30
+    },
+    {
       "description": "One degree. Multiply by it to say an angle in degrees: `45 * trx.math.DEG_1`.",
       "path": "math.DEG_1",
       "type": "math.Angle",

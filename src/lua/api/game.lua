@@ -20,6 +20,14 @@ api.unit("game.Seconds", {
   spellings = { "in seconds" },
 })
 
+api.const("game.LOGIC_FPS", {
+  value = raw.LOGIC_FPS,
+  type = "integer",
+  description = "How many logical frames the game runs a second, which is the rate "
+    .. "`trx.events.before_control` fires at. A script that counts frames divides by this to reach "
+    .. "seconds.",
+})
+
 api.number("game.LevelNum", {
   base = 1,
   description = "The number a level goes by, which is what the player is shown and what a "
