@@ -1272,12 +1272,11 @@ static void M_GuideControl(const int16_t item_num)
         enemy = target;
     }
 
-    if (p->waypoint == 43 && Stats_CheckAllLevelSecretsPickedUp()) {
+    if (p->waypoint == 43 && Stats_CheckAllLevelSecretsCollected()) {
         creature->reached_goal = false;
         creature->enemy = nullptr;
         item->ai_bits = AI_FOLLOW;
         p->waypoint = 53;
-        Waypoint_Set(53);
     }
 
     if ((Waypoint_GetPad() == 9 || Waypoint_GetPad() == 10)
@@ -1295,9 +1294,7 @@ static void M_GuideControl(const int16_t item_num)
         Waypoint_SetPad((int16_t)p->waypoint);
         Waypoint_Set(Waypoint_GetPad());
     } else if (
-        Waypoint_Get() == 43
-        && (p->waypoint == 44 || p->waypoint == 54 || p->waypoint == 44
-            || p->waypoint == 54)) {
+        Waypoint_Get() == 43 && (p->waypoint == 44 || p->waypoint == 54)) {
         Waypoint_Set((int16_t)p->waypoint);
     }
 

@@ -33,7 +33,7 @@ uint32_t Stats_GetSecretMaskForItem(const GF_LEVEL *level, int16_t item_num);
 void Stats_UpdateSecrets(LEVEL_STATS *stats);
 void Stats_MarkSecretCollected(const ITEM *item);
 bool Stats_CheckAllSecretsCollected(void);
-bool Stats_CheckAllLevelSecretsPickedUp(void);
+bool Stats_CheckAllLevelSecretsCollected(void);
 
 void Stats_UpdateTimer(void);
 void Stats_AddKill(void);

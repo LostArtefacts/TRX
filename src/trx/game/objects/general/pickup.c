@@ -394,7 +394,7 @@ static void M_DoPickup(const int16_t item_num)
     Overlay_AddDisplayPickup(item->object_id);
     if (Object_IsType(item->object_id, g_SecretObjects)) {
         Stats_MarkSecretCollected(item);
-        if (Stats_CheckAllLevelSecretsPickedUp()) {
+        if (Stats_CheckAllLevelSecretsCollected()) {
             GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_SECRET);
         }
     } else {
