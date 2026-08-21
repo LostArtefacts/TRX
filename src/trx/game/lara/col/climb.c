@@ -394,6 +394,24 @@ static XZ_32 M_GetOuterCornerPos(const XYZ_32 pos, const DIRECTION dir)
     }
 }
 
+static bool M_IsHangingOnLadder(const ITEM *const item, const COLL_INFO *coll)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (lara->climb_status) {
+        return true;
+    }
+
+    const LADDER_DIRECTION facing = 1 << Math_GetDirection(item->rot.y);
+    for (int32_t side = -1; side <= 1; side += 2) {
+        const XYZ_32 pos = XYZ_32_OffsetYaw(
+            item->pos, item->rot.y + side * DEG_90, coll->radius);
+        if (M_GetClimbFlags(pos.x, pos.z, item->room_num) & facing) {
+            return true;
+        }
+    }
+    return false;
+}
+
 // Returns +1 when Lara can traverse an outer corner in the given
 // direction, -1 for an inner corner, and 0 when no turn is possible.
 // On success, lara->corner_pos holds the destination.
@@ -408,6 +426,7 @@ static int32_t M_TestHangCorner(
     const XYZ_32 old_pos = item->pos;
     const int16_t old_rot = item->rot.y;
     const int32_t front = coll->side_front.floor;
+    const bool on_ladder = M_IsHangingOnLadder(item, coll);
     const DIRECTION dir = Math_GetDirection(old_rot);
     const DIRECTION corner_dir = M_GetCornerDirection(dir, right);
     const int16_t turn = right ? DEG_90 : -DEG_90;
@@ -420,7 +439,7 @@ static int32_t M_TestHangCorner(
     int32_t result = M_IsValidHangPos(item, coll) ? -1 : 0;
 
     if (result != 0) {
-        if (lara->climb_status) {
+        if (on_ladder) {
             const LADDER_DIRECTION flag = 1 << ((dir + (right ? 1 : 3)) % 4);
             if (!(M_GetClimbFlags(corner.x, corner.z, item->room_num) & flag)) {
                 result = 0;
@@ -451,7 +470,7 @@ static int32_t M_TestHangCorner(
             item->rot.y = old_rot;
             lara->move_angle = old_rot;
 
-            if (lara->climb_status) {
+            if (on_ladder) {
                 const LADDER_DIRECTION flag = 1
                     << ((dir + (right ? 3 : 1)) % 4);
                 if (!(M_GetClimbFlags(corner.x, corner.z, item->room_num)
