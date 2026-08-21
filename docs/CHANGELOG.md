@@ -82,6 +82,7 @@
 - Fixed Lara's sliding SFX continuing after she leaves a slope (#6294 / TRX1155, regression from 1.0)
 - Fixed underwater blood clouds appearing in the air when the security lasers hurt Lara at the water surface (OG bug) (#6323 / TRX1180)
 - Fixed the ceiling spikes not stopping on a pushable block until Lara finishes pushing it (OG bug) (#6308 / TRX1169)
+- Fixed the piranhas in It's a Madhouse! being invisible if attacking Lara while she collects the Aviary Key (#6345 / TRX1200)
 
 **TR4**
 - Added the ability to skip in-game cutscenes (TRX1051)

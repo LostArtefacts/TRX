@@ -506,7 +506,9 @@ static void M_Control(const int16_t item_num)
         .y = p->anchor.y + leader_fish->pos.y,
         .z = p->anchor.z + leader_fish->pos.z,
     };
-    int16_t room_num = item->room_num;
+    int16_t room_num = (piranha_attack != 0 && enemy != nullptr)
+        ? enemy->room_num
+        : item->room_num;
     Room_GetSector(item->pos, &room_num);
     if (room_num != item->room_num) {
         Item_UpdateRoom(item_num, room_num);
