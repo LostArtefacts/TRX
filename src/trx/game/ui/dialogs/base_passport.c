@@ -51,7 +51,7 @@ void UI_BasePassportDialog_Init(
     UI_Requester_Init(req, 0, max_rows, true);
     req->row_pad = 4.0f;
     req->row_spacing = g_TRVersion == 1 ? 2.0f : 3.0f;
-    req->show_arrows = g_TRVersion == 1;
+    req->show_arrows = true;
     req->reserve_space = true;
     req->footer_height = footer_height;
     UI_BasePassportDialog_Control(req);
