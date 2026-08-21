@@ -114,14 +114,24 @@ LightingResult light(
         result.add += lightDynamicStaticTR4(pos);
     }
 
-    // Water shimmer, in the 128-neutral scale: the OG adds
-    // (shimmer + abs) << 3 onto the raw room channels of both water (0x2000)
-    // and shore (0x4000) vertices. Choppy is a position offset only in TR4,
-    // never a color term.
-    if ((flags & (VERT_MOVE | VERT_GLOW)) != 0u) {
-        float add = effectShimmer(pos.xyz) / 128.0 + effectAbs() / 128.0;
-        result.add += vec3(add);
+    // Water shimmer, on the 0 to 255 scale of the room color. A water vertex
+    // (0x2000) darkens by the height the choppy table lifted it, and a shore
+    // vertex (0x4000) takes the shimmer and the absolute term together. The
+    // two classes never share a term.
+    float add = 0.0;
+    if ((flags & VERT_MOVE) != 0u) {
+        add += effectChoppy(pos.xyz) / 256.0;
     }
+    if ((flags & VERT_GLOW) != 0u) {
+        add += effectShimmer(pos.xyz) / 256.0 + effectAbs() / 256.0;
+    }
+    result.add += vec3(add);
+
+    // The added light stands on its own and never cuts into the room color.
+    // The OG sums the dynamic light and the shimmer, clamps that sum at zero,
+    // and only then adds the room color on top, so a shimmer that swings
+    // negative cancels the lights and stops there.
+    result.add = max(result.add, vec3(0.0));
 
     return result;
 }
