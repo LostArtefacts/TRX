@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/game/const.h>
 #include <trx/game/demo.h>
 #include <trx/game/game/state.h>
 #include <trx/game/game_flow.h>
@@ -342,6 +343,12 @@ static void M_Create(lua_State *const L)
 {
     LUA_Struct_Register(L, &TYPE_GF_LEVEL, nullptr);
     LUA_RegisterModule(L, "game", m_Module);
+
+    // The frame rate is a number, not a function.
+    LUA_GetModule(L, "game");
+    lua_pushinteger(L, LOGIC_FPS);
+    lua_setfield(L, -2, "LOGIC_FPS");
+    lua_pop(L, 1);
 }
 
 REGISTER_LUA_CAPI(.create = M_Create)

@@ -27,6 +27,11 @@ Module for the game flow: which levels there are, and which one is being played.
 - <a id="game.is_playable" name="game.is_playable"></a>**`trx.game.is_playable`** (boolean). Whether the game is loaded and taking input - not in a menu, and not in a cutscene. *(read-only)*
 - <a id="game.is_ngplus" name="game.is_ngplus"></a>**`trx.game.is_ngplus`** (boolean). Whether this is a new game plus run, which is what the passport's bonus start sets. Lara keeps her weapons between levels and her ammunition does not run down. *(read-only)*
 
+### Constants
+
+- <a id="game.LOGIC_FPS" name="game.LOGIC_FPS"></a>[lua]`trx.game.LOGIC_FPS` = `30` (integer)  
+  How many logical frames the game runs a second, which is the rate [`trx.events.before_control`](EVENTS.md#events.before_control) fires at. A script that counts frames divides by this to reach seconds.
+
 ### Enums
 
 - <a id="game.LevelTable" name="game.LevelTable"></a>[lua]`trx.game.LevelTable`

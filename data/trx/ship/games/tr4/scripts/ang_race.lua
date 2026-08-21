@@ -1,4 +1,5 @@
 local cutscenes = require("tr4.cutscenes")
+local race_timer = require("tr4.race_timer")
 
 -- The race for the Iris. Von Croy's heavy triggers name LARA_LOST when he
 -- reaches the finish first; Lara's own trigger then plays whichever of the two
@@ -12,6 +13,7 @@ trx.events.on_game_start(function(is_save)
   trx.objects.animating_15.properties.collidable = false
   trx.objects.animating_16.properties.collidable = false
   trx.lara.holsters_visible = trx.lara.has_pistol_weapon
+  race_timer.arm(is_save)
   trx.objects.switch_type_generic_1.properties.switch_mode =
     trx.items.SwitchMode.HIDDEN_REACH
 end)
@@ -59,6 +61,7 @@ local VON_CROY_ACTOR = 1
 -- Both endings play at the finish, where the racers themselves stand as level
 -- items and the scene brings its own.
 local function clear_the_finish()
+  race_timer.finish()
   cutscenes.hide_items(trx.catalog.objects.animating_3)
   cutscenes.hide_items(trx.catalog.objects.von_croy)
   cutscenes.dress_von_croy(VON_CROY_ACTOR)
