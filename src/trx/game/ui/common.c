@@ -271,6 +271,7 @@ float UI_GetScreenInsetTop(void)
     float result = 0.0f;
     for (int32_t i = 0; i < UI_SCREEN_INSET_SOURCE_COUNT; i++) {
         result = MAX(result, m_Priv.inset_current[i].top);
+        result = MAX(result, m_Priv.inset_pending[i].top);
     }
     return result;
 }
@@ -280,6 +281,7 @@ float UI_GetScreenInsetBottom(void)
     float result = 0.0f;
     for (int32_t i = 0; i < UI_SCREEN_INSET_SOURCE_COUNT; i++) {
         result = MAX(result, m_Priv.inset_current[i].bottom);
+        result = MAX(result, m_Priv.inset_pending[i].bottom);
     }
     return result;
 }

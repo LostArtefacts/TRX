@@ -368,7 +368,7 @@ static bool M_IsNear(const float actual, const float expected)
     return fabsf(actual - expected) < 0.001f;
 }
 
-TEST(ui_screen_insets_come_from_the_last_scene)
+TEST(ui_screen_insets_cover_the_scene_being_built)
 {
     Subsystem_InitAll();
     M_SetLanguage(nullptr);
@@ -376,8 +376,9 @@ TEST(ui_screen_insets_come_from_the_last_scene)
 
     UI_BeginScene();
     UI_SetScreenInset(UI_SCREEN_INSET_OVERLAY, 20.0f, 10.0f);
+    CHECK_EQ_INT(UI_GetScreenInsetTop(), 20);
+    CHECK_EQ_INT(UI_GetScreenInsetBottom(), 10);
     UI_EndScene();
-    CHECK_EQ_INT(UI_GetScreenInsetTop(), 0);
 
     UI_BeginScene();
     UI_EndScene();
