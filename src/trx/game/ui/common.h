@@ -70,7 +70,9 @@ typedef enum {
 // Reserves top and bottom space, in text units, for the scene being built.
 void UI_SetScreenInset(UI_SCREEN_INSET_SOURCE source, float top, float bottom);
 
-// Returns the largest top or bottom inset from the previous scene.
+// Returns the largest top or bottom inset, taking the scene being built and
+// the previous one together, so a dialog laid out before the overlay
+// declares its inset still keeps that space clear.
 float UI_GetScreenInsetTop(void);
 float UI_GetScreenInsetBottom(void);
 
