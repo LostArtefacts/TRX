@@ -432,9 +432,14 @@ static void M_BottomRightRegion(const UI_OVERLAY_STATE *const s)
     UI_EndOverlayRegion();
 }
 
+static float M_GetTextInset(void)
+{
+    return M_REGION_PAD_Y + UI_TEXT_HEIGHT;
+}
+
 static void M_StateInsets(const UI_OVERLAY_STATE *const s)
 {
-    const float inset = UI_Overlay_GetTextInset() + UI_TEXT_HEIGHT / 2.0f;
+    const float inset = M_GetTextInset() + UI_TEXT_HEIGHT / 2.0f;
     UI_SetScreenInset(
         UI_SCREEN_INSET_OVERLAY,
         M_ResolveOverlayText(&s->top_text) != nullptr ? inset : 0.0f,
@@ -513,11 +518,6 @@ void UI_EndOverlayRegion(void)
     UI_EndStack();
     UI_EndPad();
     UI_EndModal();
-}
-
-float UI_Overlay_GetTextInset(void)
-{
-    return M_REGION_PAD_Y + UI_TEXT_HEIGHT;
 }
 
 void UI_Overlay_ShowArrow(

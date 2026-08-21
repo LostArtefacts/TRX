@@ -6,7 +6,6 @@
 #include <trx/game/ui/elements/modal.h>
 #include <trx/game/ui/elements/requester.h>
 #include <trx/game/ui/elements/resize.h>
-#include <trx/game/ui/hud/overlay.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/version.h>
 
@@ -19,10 +18,7 @@
 
 static float M_GetAvailableHeight(void)
 {
-    // The ring writes its heading above the dialog and the name of the page
-    // below it, and the dialog belongs between the two.
-    return UI_GetCanvasHeight() / UI_Scaler_GetTextScale()
-        - 2.0f * UI_Overlay_GetTextInset();
+    return UI_GetSafeCanvasHeight() / UI_Scaler_GetTextScale();
 }
 
 static int32_t M_GetVisibleRows(const UI_REQUESTER_STATE *const req)
@@ -64,8 +60,8 @@ void UI_BasePassportDialog_Control(UI_REQUESTER_STATE *const req)
 
 void UI_BeginBasePassportDialog(const UI_REQUESTER_STATE *const req)
 {
-    const float modal_y = g_InvRing_Mode == INV_TITLE_MODE ? 0.81f : 0.62f;
-    UI_BeginModalEx(0.5f, modal_y, UI_Overlay_GetTextInset());
+    const float modal_y = g_InvRing_Mode == INV_TITLE_MODE ? 0.98f : 0.67f;
+    UI_BeginModal(0.5f, modal_y);
     UI_Scaler_PushTextScale(M_GetFitScale(req));
     UI_BeginResizeEx((UI_RESIZE_SETTINGS) {
         .w = 300.0f,

@@ -57,13 +57,8 @@ static void M_Begin(const float x, const float y, const bool whole_screen)
 
 void UI_BeginModal(const float x, const float y)
 {
-    UI_BeginModalEx(x, y, 0.0f);
-}
-
-void UI_BeginModalEx(const float x, const float y, const float inset_v)
-{
     M_Begin(x, y, false);
-    UI_BeginPad(0.0f, inset_v);
+    UI_BeginPad(0.0f, 0.0f);
     UI_BeginAnchor(x, y);
 }
 
