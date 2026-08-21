@@ -108,6 +108,7 @@
 - Fixed the game closing when a language with a broken strings file is picked (TRX1112)
 - Fixed the game closing when another game is switched to while Lara is riding a vehicle (TRX1148)
 - Fixed a false warning that the settings could not be saved (TRX1112)
+- Fixed the camera when using binoculars clipping into the ceiling if the ceiling around Lara is very low (#6352 / TRX1205)
 
 **Lua**
 - Added the full weapon definition to `trx.weapons`, so a script can read and change what a weapon does: its damage, reach and accuracy, its aim limits, its ammunition, the animations it is drawn by, and the flash, glow, smoke and shells it throws (TRX1091)

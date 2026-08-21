@@ -280,6 +280,14 @@ void Camera_Binoculars_Update(void)
         eye.y += STEP_L / 4;
     }
 
+    // Avoid clipping into low ceilings either directly above or just ahead.
+    GAME_VECTOR clamp_pos = {
+        .pos = XYZ_32_OffsetYaw(eye, yaw, STEP_L / 4),
+        .room_num = room_num,
+    };
+    Camera_Collide(&clamp_pos, STEP_L / 4, true);
+    eye.y = clamp_pos.y;
+
     const XYZ_32 target =
         XYZ_32_Add(eye, XYZ_32_FromYawPitch(yaw, pitch, M_TARGET_DIST));
 
