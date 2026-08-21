@@ -100,6 +100,7 @@ static void M_FixStaticsVisibility(void)
             if (Object_IsValidStatid3D(static_mesh->static_num)) {
                 ASSERT(draw_num < MAX_ITEMS);
                 static_mesh->draw_num = draw_num++;
+                static_mesh->room_num = i;
                 Vector_Add(room_stat_vecs[i], static_mesh);
             } else {
                 LOG_WARNING(
