@@ -23,6 +23,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+// The smallest size a blood drop is drawn at, in the screen pixels of the
+// REF_PERSP reference viewport.
+#define M_BLOOD_MIN_SIZE 16
+
 typedef struct {
     XYZW_F pos;
     XYZW_F normal;
@@ -831,6 +835,10 @@ void OutputSource_PolyFX_StageSpark(const SPARK *const spark)
         const int32_t scalar = spark->scalar;
         sw = (int32_t)(((((int64_t)sw * REF_PERSP) << scalar) / vpos_z));
         sh = (int32_t)(((((int64_t)sh * REF_PERSP) << scalar) / vpos_z));
+    }
+    if (g_TRVersion == 4 && (spark->flags & SPARK_F_BLOOD) != 0U) {
+        CLAMP(sw, M_BLOOD_MIN_SIZE, render_width << 3);
+        CLAMP(sh, M_BLOOD_MIN_SIZE, render_height << 3);
     }
 
     // A spark that does not scale keeps the size the original gave it in the
