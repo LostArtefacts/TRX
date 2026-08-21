@@ -793,6 +793,7 @@ static RESULT M_ReadFlare(JSON_READ_IO *const io)
     MUST(JSON_READ(io, "rot", &item->rot));
     MUST(JSON_READ(io, "room_num", &item->room_num));
     Item_Initialise(item_num);
+    item->shade.value_1 = -1;
     MUST(JSON_READ(io, "speed", &item->speed));
     MUST(JSON_READ(io, "fall_speed", &item->fall_speed));
     int32_t flare_age;
