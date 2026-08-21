@@ -6,7 +6,7 @@ require("trx.locale")
 require("trx.math")
 
 api.module("config", {
-  order = 25,
+  order = 26,
   description = [[Module for reading, changing and declaring engine settings.
 
 These are the player's settings, not the level's. `trx.config.set` writes to them and keeps the

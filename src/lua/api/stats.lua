@@ -2,7 +2,7 @@ local raw = trxc.stats
 local api = trx.api
 
 api.module("stats", {
-  order = 27,
+  order = 28,
   description = [[
 Module for what a level keeps count of: what Lara has found in it, and how much
 there was to find.

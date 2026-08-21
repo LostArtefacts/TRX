@@ -325,6 +325,7 @@ unit_tests += {
 
 unit_tests += {
   'name': 'trx/game/savegame/resume',
+  'src': ['fakes/lua_store.c'],
   'engine': [
     'game/savegame/resume.c',
     'game/savegame/vars.c',
@@ -536,6 +537,21 @@ unit_tests += {
     'game/random.c',
   ],
   'src': ['harness/stubs_result.c'],
+}
+
+unit_tests += {
+  'name': 'lua/api/store',
+  'bundles': [b_lua_surface, b_lua_strings],
+  'src': ['lua/api/store.c'],
+  'engine': [
+    'core/colors.c',
+    'core/json/base.c',
+    'core/json/util/read_io.c',
+    'core/json/util/value.c',
+    'core/json/util/write_io.c',
+    'game/lua/capi/store.c',
+  ],
+  'deps': [dep_mathlibrary],
 }
 
 unit_tests += {

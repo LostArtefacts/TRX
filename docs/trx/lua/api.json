@@ -6709,13 +6709,13 @@
     {
       "description": "Argument checking for the whole of `trx`.",
       "name": "api",
-      "order": 35,
+      "order": 36,
       "title": "API registry"
     },
     {
       "description": "A small, declarative argument parser for console commands, in the shape of\nPython's argparse.\n\nA parser both reads a command's arguments and offers completions for them,\nfrom one declaration. Every command written with `trx.console.register` has\none; a command shapes it through the `trx.console.register.spec.args` function\nit hands over, and `trx.console.register.spec.run` then receives a table of\nparsed values. A command that shapes nothing takes no arguments, and is told so\nwhen given one.\n\nEvery parser answers `-h` and `--help` on its own, printing what it accepts.\n\nHow a positional reads a token is its matcher: a type to coerce to, a set of\nchoices, or a function of its own. These do not combine on one positional; a\nvalue that is a number *or* a name is two matchers, declared with\n`trx.argparse.Parser:any_of`.\n\nPositionals are read in order, and an optional one a token does not fit is\npassed over: the token goes to the next positional, and the one skipped stays\nnil. That is what lets a command take a leading argument it can also be used\nwithout - a verb before a value, a count before a name. Completion follows the\nsame path, so a slot offers what every argument reachable from it takes. A\ntoken nothing takes is reported against the first argument that refused it.\n\nA choice is either a bare string, where the key and value are the same, or a\n`{ key, value }` pair, where the key is matched and shown and the value is what\n`trx.argparse.Parser:parse` gives back. Matching is forgiving, through\n`trx.strings.fuzzy_match`.",
       "name": "argparse",
-      "order": 24
+      "order": 25
     },
     {
       "description": "Module for controlling the Assault Course and Quad Bike timers in gym levels.",
@@ -6736,12 +6736,12 @@
     {
       "description": "Module for reading, changing and declaring engine settings.\n\nThese are the player's settings, not the level's. `trx.config.set` writes to them and keeps the\nchange: it is remembered across saves and relaunches, exactly as if the player had made it\nthemselves. A level that wants to tint the water or pull the fog in wants `trx.config.override`\ninstead, which lasts as long as the script keeps it and leaves the player's own value untouched\nunderneath.\n\nA game can also add settings of its own with `trx.config.declare`: they are saved and loaded with\nthe player's own, and shown in the settings menu where the declaration asks for. A setting a\ngame's `scripts/_game.lua` declares belongs to that game and goes when it does.",
       "name": "config",
-      "order": 25
+      "order": 26
     },
     {
       "description": "Module for interacting with the developer console.\n\n`trx.console.log` writes to the console overlay in-game, where `trx.log` writes only to the terminal and the log file.",
       "name": "console",
-      "order": 23
+      "order": 24
     },
     {
       "description": "Module for controlling certain creature behavior.",
@@ -6782,7 +6782,7 @@
     {
       "description": "Writing Lua values out as JSON. The API dump the reference is generated from goes through this, so what a script writes out is encoded the way the engine's own data is.",
       "name": "json",
-      "order": 33,
+      "order": 34,
       "title": "JSON"
     },
     {
@@ -6794,33 +6794,33 @@
     {
       "description": "The text the player reads, in the player's own language.",
       "name": "locale",
-      "order": 22
+      "order": 23
     },
     {
       "description": "Logs a message to the terminal and to `TRX.log` in the installation directory. <!--noref: TRX.log--> Each call records the Lua script's filename, function name and line number.",
       "name": "log",
-      "order": 29,
+      "order": 30,
       "title": "Logging"
     },
     {
       "description": "Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the same state as every other script.",
       "name": "lua",
-      "order": 34
+      "order": 35
     },
     {
       "description": "Fixed-point trigonometry, matching the engine's own tables. Using these rather than Lua's `math` library guarantees a script places things exactly where the engine would. `trx.math.Angle` says what an angle is here.",
       "name": "math",
-      "order": 30
+      "order": 31
     },
     {
       "description": "The mods the game was built with, and which one is loaded.",
       "name": "mod",
-      "order": 28
+      "order": 29
     },
     {
       "description": "Module for playing and controlling the soundtrack.",
       "name": "music",
-      "order": 21
+      "order": 22
     },
     {
       "description": "Module for the object definitions a level is built from.\n\nAn object is the pattern every item of that type is cut from: a wolf's radius, not this wolf's. Per-item state lives on the item - see `trx.items`.",
@@ -6837,7 +6837,7 @@
     {
       "description": "Random numbers, drawn from the sequence the simulation itself runs on.\n\nThe savegame carries that sequence, so what a script draws comes back the same\nafter a reload, and a script needs no seed of its own. The sequence moves on\nfor the engine as well: a script drawing every frame changes what the creatures\ndecide next.\n\nLua's own `math.random` is a separate generator that nothing saves. It has no\nplace in anything the simulation reads. <!--noref: math.random-->",
       "name": "random",
-      "order": 31
+      "order": 32
     },
     {
       "description": "Module for inspecting and altering the rooms of the current level.",
@@ -6852,23 +6852,29 @@
     {
       "description": "The save slots, and starting or reading a saved game.",
       "name": "savegame",
-      "order": 26
+      "order": 27
     },
     {
       "description": "Module for playing sound effects.",
       "name": "sound",
-      "order": 20
+      "order": 21
     },
     {
       "description": "Module for what a level keeps count of: what Lara has found in it, and how much\nthere was to find.\n\nThe module is the level being played, so `trx.stats.pickups.count` is what she\nhas picked up in it. Any other level's counters are reached the same way through\n`trx.game.Level.stats`. At the title screen there is no level, and everything\nhere reads `nil`.",
       "instance_type": "stats.Stats",
       "name": "stats",
-      "order": 27
+      "order": 28
+    },
+    {
+      "description": "Module for what a script remembers across a save.\n\nTwo plain tables. What a script writes into either one is written into the\nsavegame and read back on load, so a script keeps its state across a save. The\ntables themselves never change identity, so `local s = trx.store.level` taken\nonce still names the store after a load.\n\nA store holds numbers, strings, booleans and tables of those. A value of any\nother type, a function among them, is dropped when the game is saved and the\nkey it sat at is named in the log. A value is checked as the game is written\nrather than as a script assigns it, so a value a save cannot hold is reported\nlater than the line that stored it.\n\nPut one table in two places and you get one table back, not two copies. Change\nit through the first place and the second place shows the change. A table that\nrefers to itself, directly or through another table, works too.\n\nAn item handle, and any other handle the engine owns, is not a value a store\ntakes. A script that wants to name an item across a save should store something\nthe level carries, such as the item's index.",
+      "name": "store",
+      "order": 20,
+      "title": "Persistent storage"
     },
     {
       "description": "Utilities for working with strings.\n\nNot to be confused with `trx.locale`, which is the text a player reads: this module is about manipulating strings, that one is about which string the player gets.",
       "name": "strings",
-      "order": 32
+      "order": 33
     },
     {
       "description": "Module for drawing on top of the game.\n\nEvery function here is available only from a `trx.events.on_ui_draw` handler,\nand raises anywhere else: the interface is built afresh each drawn frame, and\nthere is no scene to add to outside one.\n\nA handler adds to the region the game is building, which it is told the name\nof. Widgets land in the same stack as the health bars and the item names, so a\nscript cannot draw over them and the player's choice of where each element sits\nstill holds.\n\nWidgets that hold other widgets take the body as a function rather than opening\nand closing by hand, so a scene stays whole even where the body fails.\n\nSizes are in canvas units, not screen pixels. `trx.ui.canvas` reports the\ncanvas, and `trx.ui.safe_area` the part of it that is free to draw in.\n\nText carries the same markup the rest of the game uses, and it is part of this\nAPI: `\\{small}` draws the rest of the line small, `\\{arrow up}` draws an arrow,\nand `\\{button left}` draws the button the player has bound.",
@@ -6879,7 +6885,7 @@
     {
       "description": "Module for how far along a level's own progression Lara has got.\n\nTR4 marks the points of a level with flip effects, and its guides read\nthem: Von Croy waits at a waypoint until Lara has reached it, says the\nline that belongs to it, and only then moves on. A level uses the same\nmarks to tell a first visit from a return.\n\nNothing about a waypoint is positional. It counts progress, and it lasts\nas long as the playthrough rather than the level, so it is saved with the\ngame.",
       "name": "waypoints",
-      "order": 36
+      "order": 37
     },
     {
       "description": "What a weapon is, rather than what Lara has of it.\n\nNone of this differs between the inventory she carries and the one a level\nkeeps for her, so it belongs to neither: what she holds and how many shots she\nhas are `trx.inventory`.\n\nA weapon is shared by every copy of it. Changes last for the rest of the\nsession, so levels should restore any values they change when they end.",
@@ -7374,6 +7380,18 @@
       "path": "rules.carrier.inherit_facing",
       "type": "boolean",
       "writable": true
+    },
+    {
+      "description": "What the level remembers. Emptied when a level loads, so a script that wants a starting state writes it from `trx.events.on_game_start`.",
+      "path": "store.level",
+      "type": "table",
+      "writable": false
+    },
+    {
+      "description": "What the playthrough remembers. It survives a level change and is emptied only when a new game starts.",
+      "path": "store.game",
+      "type": "table",
+      "writable": false
     },
     {
       "description": "The whole canvas. Widget sizes are in these units rather than in screen pixels, and the canvas is 640 by 480 for a 4:3 screen at the default text size.",

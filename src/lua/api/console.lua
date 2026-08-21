@@ -8,7 +8,7 @@ require("trx.locale")
 local LogLevel = trx.log.LogLevel
 
 api.module("console", {
-  order = 23,
+  order = 24,
   description = "Module for interacting with the developer console.\n\n"
     .. "`trx.console.log` writes to the console overlay in-game, where `trx.log` writes only to "
     .. "the terminal and the log file.",
