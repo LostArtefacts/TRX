@@ -5,17 +5,23 @@
 
 #include <lauxlib.h>
 
-// The stream is the simulation's own; the reasoning is in trx.random.
-
-// trxc.random.next() -> integer in [0, RANDOM_SPAN - 1]
-static int M_L_Next(lua_State *const L)
+// trxc.random.next_control() -> integer in [0, RANDOM_SPAN - 1]
+static int M_L_NextControl(lua_State *const L)
 {
     lua_pushinteger(L, Random_GetControl());
     return 1;
 }
 
+// trxc.random.next_draw() -> integer in [0, RANDOM_SPAN - 1]
+static int M_L_NextDraw(lua_State *const L)
+{
+    lua_pushinteger(L, Random_GetDraw());
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
-    { "next", M_L_Next },
+    { "next_control", M_L_NextControl },
+    { "next_draw", M_L_NextDraw },
     { nullptr, nullptr },
 };
 

@@ -6966,7 +6966,7 @@
       "title": "Query"
     },
     {
-      "description": "Random numbers, drawn from the sequence the simulation itself runs on.\n\nThe savegame carries that sequence, so what a script draws comes back the same\nafter a reload, and a script needs no seed of its own. The sequence moves on\nfor the engine as well: a script drawing every frame changes what the creatures\ndecide next.\n\nLua's own `math.random` is a separate generator that nothing saves. It has no\nplace in anything the simulation reads. <!--noref: math.random-->",
+      "description": "Random numbers, drawn from one of the two sequences the engine runs on.\n\nThe module's own calls draw from the control stream. This is the sequence the\nsimulation runs on, so a script that draws every frame changes what the\ncreatures decide next. The draw stream, `trx.random.draw`, is the one the\noriginal game keeps for what is only seen. Drawing from it leaves the\nsimulation as it was. Both streams are the same generator and offer the same\ncalls, described in `trx.random.Stream`.\n\nThe savegame carries both sequences. A script's draws come back the same\nafter a reload, and a script needs no seed of its own.\n\nLua's own `math.random` is a separate generator that nothing saves. It has no\nplace in anything the simulation reads. <!--noref: math.random-->",
       "name": "random",
       "order": 32
     },
@@ -7438,6 +7438,18 @@
       "description": "The identity query over every object definition. Narrow it and read it.",
       "path": "objects.query",
       "type": "objects.ObjectQuery",
+      "writable": false
+    },
+    {
+      "description": "The sequence the simulation runs on, which the module's own functions draw from.",
+      "path": "random.control",
+      "type": "random.Stream",
+      "writable": false
+    },
+    {
+      "description": "The sequence kept for what is only seen. Drawing from it leaves what the creatures decide next as it was, which is what the original game keeps it for.",
+      "path": "random.draw",
+      "type": "random.Stream",
       "writable": false
     },
     {
@@ -10407,6 +10419,118 @@
       ],
       "operators": [],
       "path": "query.NamedQuery"
+    },
+    {
+      "description": "One of the engine's two random sequences.\n\nDrawing from `trx.random.control` changes what the game does next,\nbecause the simulation runs on it. Drawing from `trx.random.draw`\nchanges nothing, because only the picture uses it.\n\nBoth have the same calls. The module's own functions draw from the\ncontrol stream.",
+      "extensions": [],
+      "fields": [],
+      "handle": false,
+      "methods": [
+        {
+          "description": "A direction, anywhere around the turn.",
+          "name": "angle",
+          "params": [],
+          "returns": {
+            "description": "An angle within one turn.",
+            "type": "math.Angle"
+          }
+        },
+        {
+          "description": "Whether something with the given likelihood happens this time.",
+          "name": "chance",
+          "params": [
+            {
+              "description": "How likely, from 0 for never to 1 for always.",
+              "name": "p",
+              "type": "number"
+            }
+          ],
+          "returns": {
+            "description": "Whether it happens.",
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "One item out of a list, each as likely as the next.",
+          "name": "choice",
+          "params": [
+            {
+              "description": "What to choose from. An empty list raises.",
+              "list": true,
+              "name": "seq",
+              "type": "any"
+            }
+          ],
+          "returns": {
+            "description": "The item chosen.",
+            "type": "any"
+          }
+        },
+        {
+          "description": "Several items out of a list, drawn one after another so that the same item can come up more than once. Weights give some items a greater share than others.",
+          "name": "choices",
+          "params": [
+            {
+              "description": "What to choose from. An empty list raises.",
+              "list": true,
+              "name": "seq",
+              "type": "any"
+            },
+            {
+              "description": "One share per item, none of them negative and not all zero. Defaults to an equal share each.",
+              "list": true,
+              "name": "weights",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "default": 1,
+              "description": "How many to draw. Below 0 raises.",
+              "name": "k",
+              "optional": true,
+              "type": "integer"
+            }
+          ],
+          "returns": {
+            "description": "The items chosen.",
+            "list": true,
+            "type": "any"
+          }
+        },
+        {
+          "description": "A whole number between two bounds, both of them included.",
+          "examples": [
+            "local pips = trx.random.draw:randint(1, 6)"
+          ],
+          "name": "randint",
+          "params": [
+            {
+              "description": "Lowest value.",
+              "name": "a",
+              "type": "integer"
+            },
+            {
+              "description": "Highest value. Below the lowest raises.",
+              "name": "b",
+              "type": "integer"
+            }
+          ],
+          "returns": {
+            "description": "A value in [a, b].",
+            "type": "integer"
+          }
+        },
+        {
+          "description": "A fraction of one, the whole number itself excepted.",
+          "name": "random",
+          "returns": {
+            "description": "A value in [0, 1).",
+            "type": "number"
+          }
+        }
+      ],
+      "operators": [],
+      "path": "random.Stream"
     },
     {
       "description": "A room in the current level.",
