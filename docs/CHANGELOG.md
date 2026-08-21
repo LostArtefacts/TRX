@@ -68,6 +68,7 @@
 - Changed TR3 to light geometry on the brighter curve its hardware renderer used (Graphic Options → Rendering → Lighting model)
 - Fixed a visible seam across the sky in TR4 levels (TRX563, regression from 1.9)
 - Fixed the underwater view wobbling less at higher supersampling values (TRX1207)
+- Fixed static objects that reach through a doorway taking the water tint and the light of the room next door
 
 **TR1**
 - Changed Lara to retain her equipment when turning to gold on the Midas Hand, with the equipment also turning to gold (TRX1073)

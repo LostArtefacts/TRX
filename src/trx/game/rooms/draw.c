@@ -436,9 +436,12 @@ static void M_DrawSingleRoom(const ROOM *const room)
         Matrix_RotY(mesh->rot.y);
         const CLIP clip = Output_CheckBoundsClip(&obj->draw_bounds);
         if (clip != CLIP_NOT_VISIBLE) {
+            const ROOM *const owner = Room_Get(mesh->room_num);
             M_DrawSet_Add(&m_DrawnStatics, mesh->draw_num);
-            Output_CalculateStaticMeshLight(mesh->pos, mesh->shade, room);
+            M_SetupWaterStatus(owner);
+            Output_CalculateStaticMeshLight(mesh->pos, mesh->shade, owner);
             Object_DrawMesh(obj->mesh_idx, clip, false);
+            M_SetupWaterStatus(room);
             if (g_Config.debug.enable_debug_bounding_boxes) {
                 Output_DrawCuboid(&obj->draw_bounds);
             }

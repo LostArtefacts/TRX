@@ -194,6 +194,10 @@ typedef struct {
     SHADE shade;
     int16_t static_num;
     int16_t draw_num;
+    // The room that holds the mesh. A mesh that reaches through a portal is
+    // lent to the room on the other side, so the room that draws it is not
+    // always the room it stands in.
+    int16_t room_num;
 } STATIC_MESH;
 
 typedef struct {
