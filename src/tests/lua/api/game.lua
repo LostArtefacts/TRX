@@ -112,7 +112,7 @@ end)
 
 test("version reads through", function()
   assert(trx.game.version == 1)
-  assert(trx.game.trx_version == "TRX-test")
+  assert(trx.game.TRX_VERSION == "TRX-test")
 end)
 
 test("play_level queues the level the list named", function()
