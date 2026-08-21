@@ -1,5 +1,6 @@
 #include <trx/game/ui/elements/anchor.h>
 
+#include <trx/core/utils.h>
 #include <trx/game/ui/helpers.h>
 #include <trx/game/ui/text.h>
 
@@ -14,6 +15,14 @@ static void M_Measure(UI_NODE *const node)
     node->measure_h = UI_GetCanvasHeight() - UI_TEXT_HEIGHT;
 }
 
+static float M_Offset(const float slack, const float ratio)
+{
+    if (slack >= 0.0f || ratio < 0.0f || ratio > 1.0f) {
+        return slack * ratio;
+    }
+    return 0.0f;
+}
+
 static void M_Layout(
     UI_NODE *const node, const float x, const float y, const float w,
     const float h)
@@ -24,8 +33,8 @@ static void M_Layout(
     while (child != nullptr) {
         const float cw = child->measure_w;
         const float ch = child->measure_h;
-        const float cx = x + (w - cw) * data->x;
-        const float cy = y + (h - ch) * data->y;
+        const float cx = x + M_Offset(w - cw, data->x);
+        const float cy = y + M_Offset(h - ch, data->y);
         child->ops.layout(child, cx, cy, cw, ch);
         child = child->next_sibling;
     }
