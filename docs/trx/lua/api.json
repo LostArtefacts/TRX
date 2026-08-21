@@ -13,6 +13,12 @@
       "value": 10
     },
     {
+      "description": "What this build reports as its version: `1.9.3` for a release, and the tag with the commits since then for a development build.",
+      "path": "game.TRX_VERSION",
+      "type": "string",
+      "value": "TRX 1.9.3-42-g0f4c2a1"
+    },
+    {
       "description": "How many logical frames the game runs a second, which is the rate `trx.events.before_control` fires at. A script that counts frames divides by this to reach seconds.",
       "path": "game.LOGIC_FPS",
       "type": "integer",
@@ -7210,12 +7216,6 @@
       "description": "Which Tomb Raider this build is: 1, 2, 3 or 4.",
       "path": "game.version",
       "type": "integer",
-      "writable": false
-    },
-    {
-      "description": "What this build reports as its version: `1.9.3` for a release, and the tag with the commits since it for a development build.",
-      "path": "game.trx_version",
-      "type": "string",
       "writable": false
     },
     {

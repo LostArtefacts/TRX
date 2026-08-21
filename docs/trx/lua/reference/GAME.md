@@ -22,12 +22,14 @@ Module for the game flow: which levels there are, and which one is being played.
 - <a id="game.current_level" name="game.current_level"></a>**`trx.game.current_level`** ([trx.game.Level](#game.Level)). The level being played, or `nil` if none is. *(read-only)*
 - <a id="game.gym" name="game.gym"></a>**`trx.game.gym`** ([trx.game.Level](#game.Level)). The gym level, or `nil` if this game has no gym. *(read-only)*
 - <a id="game.version" name="game.version"></a>**`trx.game.version`** (integer). Which Tomb Raider this build is: 1, 2, 3 or 4. *(read-only)*
-- <a id="game.trx_version" name="game.trx_version"></a>**`trx.game.trx_version`** (string). What this build reports as its version: `1.9.3` for a release, and the tag with the commits since it for a development build. *(read-only)*
 - <a id="game.is_loaded" name="game.is_loaded"></a>**`trx.game.is_loaded`** (boolean). Whether a level is loaded. *(read-only)*
 - <a id="game.is_playable" name="game.is_playable"></a>**`trx.game.is_playable`** (boolean). Whether the game is loaded and taking input - not in a menu, and not in a cutscene. *(read-only)*
 - <a id="game.is_ngplus" name="game.is_ngplus"></a>**`trx.game.is_ngplus`** (boolean). Whether this is a new game plus run, which is what the passport's bonus start sets. Lara keeps her weapons between levels and her ammunition does not run down. *(read-only)*
 
 ### Constants
+
+- <a id="game.TRX_VERSION" name="game.TRX_VERSION"></a>[lua]`trx.game.TRX_VERSION` = `TRX 1.9.3-42-g0f4c2a1` (string)  
+  What this build reports as its version: `1.9.3` for a release, and the tag with the commits since then for a development build.
 
 - <a id="game.LOGIC_FPS" name="game.LOGIC_FPS"></a>[lua]`trx.game.LOGIC_FPS` = `30` (integer)  
   How many logical frames the game runs a second, which is the rate [`trx.events.before_control`](EVENTS.md#events.before_control) fires at. A script that counts frames divides by this to reach seconds.

@@ -1357,7 +1357,7 @@ api.const = declarator("const", "constants", {
     local doc = as_doc(entry.spec)
     return {
       path = entry.path,
-      value = doc.value,
+      value = doc.sample ~= nil and doc.sample or doc.value,
       type = doc.type,
       description = doc.description,
     }

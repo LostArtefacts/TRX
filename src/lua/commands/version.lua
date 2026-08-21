@@ -8,7 +8,7 @@ trx.locale.declare({
 })
 
 local function run()
-  trx.console.log(trx.game.trx_version)
+  trx.console.log(trx.game.TRX_VERSION)
   return trx.console.Result.OK
 end
 

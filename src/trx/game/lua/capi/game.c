@@ -107,13 +107,6 @@ static int M_L_GameVersion(lua_State *const L)
     return 1;
 }
 
-// trxc.game.get_trx_version() → string
-static int M_L_TRXVersion(lua_State *const L)
-{
-    lua_pushstring(L, g_TRXVersion);
-    return 1;
-}
-
 // trxc.game.count_levels() → int
 static int M_L_GameCountLevels(lua_State *const L)
 {
@@ -321,7 +314,6 @@ static int M_L_GameScreenshot(lua_State *const L)
 
 static const luaL_Reg m_Module[] = {
     { "get_version", M_L_GameVersion },
-    { "get_trx_version", M_L_TRXVersion },
     { "count_levels", M_L_GameCountLevels },
     { "get_level", M_L_GameGetLevel },
     { "get_current_level", M_L_GameGetCurrentLevel },
@@ -344,10 +336,12 @@ static void M_Create(lua_State *const L)
     LUA_Struct_Register(L, &TYPE_GF_LEVEL, nullptr);
     LUA_RegisterModule(L, "game", m_Module);
 
-    // The frame rate is a number, not a function.
+    // The frame rate and the build's version are values, not functions.
     LUA_GetModule(L, "game");
     lua_pushinteger(L, LOGIC_FPS);
     lua_setfield(L, -2, "LOGIC_FPS");
+    lua_pushstring(L, g_TRXVersion);
+    lua_setfield(L, -2, "TRX_VERSION");
     lua_pop(L, 1);
 }
 

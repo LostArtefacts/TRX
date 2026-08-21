@@ -20,6 +20,16 @@ api.unit("game.Seconds", {
   spellings = { "in seconds" },
 })
 
+api.const("game.TRX_VERSION", {
+  value = raw.TRX_VERSION,
+  -- The real version names this checkout, so the reference prints a sample
+  -- instead.
+  sample = "TRX 1.9.3-42-g0f4c2a1",
+  type = "string",
+  description = "What this build reports as its version: `1.9.3` for a release, and the tag with "
+    .. "the commits since then for a development build.",
+})
+
 api.const("game.LOGIC_FPS", {
   value = raw.LOGIC_FPS,
   type = "integer",
@@ -234,13 +244,6 @@ api.property("game.version", {
   type = "integer",
   description = "Which Tomb Raider this build is: 1, 2, 3 or 4.",
   get = raw.get_version,
-})
-
-api.property("game.trx_version", {
-  type = "string",
-  description = "What this build reports as its version: `1.9.3` for a release, and the tag with "
-    .. "the commits since it for a development build.",
-  get = raw.get_trx_version,
 })
 
 api.property("game.is_loaded", {

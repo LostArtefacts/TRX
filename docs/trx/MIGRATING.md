@@ -47,6 +47,11 @@ order: 3
    message belongs to the `/endlevel` console command. A script that wants the
    message shown prints it itself.
 
+5. **`trx.game.trx_version` is now a constant**
+   The build's own version never changes while the game runs, so it is spelled
+   as the constant it is:
+   - `trx.game.trx_version` is now `trx.game.TRX_VERSION`
+
 ### Version 1.9 to 1.10
 
 The Lua API was rewritten, and most of what it breaks is a rename. Run your
