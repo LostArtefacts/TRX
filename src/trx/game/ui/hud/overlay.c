@@ -9,6 +9,8 @@
 #include <trx/game/game.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/lara.h>
+#include <trx/game/lua/events.h>
+#include <trx/game/lua/ui.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/photo_mode.h>
 #include <trx/game/ui.h>
@@ -325,6 +327,15 @@ static bool M_CommonRegion(
     return shown;
 }
 
+// Lets a script add to the region being built. Its widgets become children of
+// the same stack the bars and the overlay text sit in.
+static void M_ScriptWidgets(const UI_ELEMENT_LOCATION location)
+{
+    LUA_UI_SetDrawing(true);
+    LUA_FireEventInt32(LUA_EVENT_UI_DRAW, location);
+    LUA_UI_SetDrawing(false);
+}
+
 static void M_TopLeftRegion(const UI_OVERLAY_STATE *const s)
 {
     UI_BeginOverlayRegion(0.0f, 0.0f);
@@ -337,6 +348,7 @@ static void M_TopLeftRegion(const UI_OVERLAY_STATE *const s)
             UI_FPSCounter(s->fps);
         }
     }
+    M_ScriptWidgets(UI_ELEMENT_LOCATION_TOP_LEFT);
     UI_EndOverlayRegion();
 }
 
@@ -356,6 +368,7 @@ static void M_TopCenterRegion(const UI_OVERLAY_STATE *const s)
             }
         }
     }
+    M_ScriptWidgets(UI_ELEMENT_LOCATION_TOP_CENTER);
     UI_EndOverlayRegion();
 }
 
@@ -368,6 +381,7 @@ static void M_TopRightRegion(const UI_OVERLAY_STATE *const s)
     if (g_Config.ui.enable_game_ui) {
         M_DebugPosTopRight();
     }
+    M_ScriptWidgets(UI_ELEMENT_LOCATION_TOP_RIGHT);
     UI_EndOverlayRegion();
 }
 
@@ -377,6 +391,7 @@ static void M_BottomLeftRegion(const UI_OVERLAY_STATE *const s)
     if (!M_CommonRegion(s, UI_ELEMENT_LOCATION_BOTTOM_LEFT)) {
         M_Arrow(s, UI_OVERLAY_ARROW_BL);
     }
+    M_ScriptWidgets(UI_ELEMENT_LOCATION_BOTTOM_LEFT);
     UI_EndOverlayRegion();
 }
 
@@ -400,6 +415,7 @@ static void M_BottomCenterRegion(const UI_OVERLAY_STATE *const s)
         }
     }
     M_CommonRegion(s, UI_ELEMENT_LOCATION_BOTTOM_CENTER);
+    M_ScriptWidgets(UI_ELEMENT_LOCATION_BOTTOM_CENTER);
     UI_EndOverlayRegion();
 }
 
@@ -412,6 +428,7 @@ static void M_BottomRightRegion(const UI_OVERLAY_STATE *const s)
     if (s->show_version && g_Config.ui.show_title_version) {
         UI_LabelEx(g_TRXVersion, (UI_LABEL_SETTINGS) { .scale = 0.5f });
     }
+    M_ScriptWidgets(UI_ELEMENT_LOCATION_BOTTOM_RIGHT);
     UI_EndOverlayRegion();
 }
 

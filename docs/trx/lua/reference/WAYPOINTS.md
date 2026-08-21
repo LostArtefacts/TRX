@@ -1,6 +1,6 @@
 ---
 title: Waypoints
-order: 35
+order: 36
 ---
 
 <!--

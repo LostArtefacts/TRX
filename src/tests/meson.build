@@ -539,6 +539,30 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'lua/api/ui',
+  'bundles': [b_lua_surface],
+  'src': ['lua/api/ui.c', 'fakes/ui_draw.c'],
+  'engine': [
+    'config/enum.c',
+    'core/event_manager.c',
+    'game/ui/events.c',
+    'game/lua/capi/ui.c',
+    'game/ui/common.c',
+    'game/ui/elements/anchor.c',
+    'game/ui/elements/frame.c',
+    'game/ui/elements/hide.c',
+    'game/ui/elements/offset.c',
+    'game/ui/elements/pad.c',
+    'game/ui/elements/resize.c',
+    'game/ui/elements/spacer.c',
+    'game/ui/elements/span.c',
+    'game/ui/elements/stack.c',
+    'game/ui/helpers.c',
+    'game/ui/scaler.c',
+  ],
+}
+
+unit_tests += {
   'name': 'lua/api/assault',
   'bundles': [b_lua_surface],
   'src': ['fakes/assault.c'],
@@ -1033,6 +1057,7 @@ unit_tests += {
     'game/ui/events.c',
     'game/ui/helpers.c',
     'game/ui/scaler.c',
+    'game/ui/scaler.c',
     'game/ui/scrollable.c',
     'game/ui/settings.c',
     'game/ui/text.c',
@@ -1067,6 +1092,8 @@ unit_tests += {
     'game/ui/elements/spacer.c',
     'game/ui/elements/span.c',
     'game/ui/elements/stack.c',
+    'game/ui/helpers.c',
+    'game/ui/scaler.c',
     'game/ui/elements/tab_switch.c',
     'game/ui/elements/window.c',
   ],

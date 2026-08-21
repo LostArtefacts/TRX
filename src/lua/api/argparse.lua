@@ -3,7 +3,7 @@ local api = trx.api
 require("trx.locale")
 
 api.module("argparse", {
-  order = 23,
+  order = 24,
   description = [[
 A small, declarative argument parser for console commands, in the shape of
 Python's argparse.
