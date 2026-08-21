@@ -203,12 +203,12 @@ static RESULT M_PrepareSystem(void)
         // embedded info (created with the old directory layout).
         g_TRVersion = s->args->startup.engine_version;
         SHELL_ARGS *const tmp_args = TestReplay_Open(test_replay_path);
-        if (tmp_args != nullptr) {
-            tmp_args->headless = s->args->headless;
-            tmp_args->debug_render_performance =
-                s->args->debug_render_performance;
-            ShellSession_UseArgs(s, tmp_args);
-        }
+        FAIL_IF(
+            tmp_args == nullptr, "the replay file '%s' could not be read",
+            test_replay_path);
+        tmp_args->headless = s->args->headless;
+        tmp_args->debug_render_performance = s->args->debug_render_performance;
+        ShellSession_UseArgs(s, tmp_args);
     } else if (s->args->headless) {
         return FAIL("--headless can only be given with --test-replay");
     }
