@@ -24,9 +24,9 @@
 #define M_SPAWN_ANGLE_MASK 0x1FFE
 #define M_SPAWN_Y_MASK 0x7FF
 #define M_BASE_Y_OFF (-1024)
-#define M_MIN_SIZE 4.0f
-#define M_MAX_SIZE 16.0f
-#define M_SIZE_DIV 6.0f
+#define M_SMALL_SIZE 6.0f
+#define M_MAX_SIZE 12.0f
+#define M_SIZE_DIV 3.0f
 
 typedef struct {
     XYZ_32 pos;
@@ -210,7 +210,11 @@ static void M_Draw(void)
         // into world units - a size in pixels of the rasterized picture would
         // follow the resolution and the supersampling factor.
         float size = (float)((REF_PERSP * (particle->vel.y >> 3)) / vpos_z);
-        CLAMP(size, M_MIN_SIZE, M_MAX_SIZE);
+        if (size < 1.0f) {
+            size = M_SMALL_SIZE;
+        } else {
+            CLAMPG(size, M_MAX_SIZE);
+        }
         size = (size * vpos_z) / (REF_PERSP * M_SIZE_DIV);
 
         uint32_t c;
