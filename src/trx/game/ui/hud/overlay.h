@@ -45,11 +45,6 @@ void UI_Overlay(UI_OVERLAY_STATE *s);
 void UI_BeginOverlayRegion(float x, float y);
 void UI_EndOverlayRegion(void);
 
-// How far a region's text reaches into the screen from the edge it sits at:
-// one line of text and the padding above it. A dialog that must not run into
-// the heading or the item name keeps this much clear at the top and bottom.
-float UI_Overlay_GetTextInset(void);
-
 void UI_Overlay_ForceHealthBar(UI_OVERLAY_STATE *s, bool show);
 void UI_Overlay_ShowArrow(
     UI_OVERLAY_STATE *s, UI_OVERLAY_ARROW arrow, bool show);
