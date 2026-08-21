@@ -7,6 +7,7 @@
 - Fixed Lara being able to turn too quickly in swamp rooms (regression from 1.0) (TRX1129)
 - Fixed Lara being able to vault or crawl through breakable walls that stand on the edge of a tile (Gameplay → Fixes → Fix breakable wall clipping) (OG bug) (TRX1024)
 - Fixed Lara's rope-grab reach being shorter from certain directions (OG bug) (TRX1143)
+- Fixed Lara being thrown across the room when she shimmies to the end of a ladder (Gameplay → Controls → Corner shimmying) (TRX1203)
 
 **UI**
 - Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187 / TRX1036)
