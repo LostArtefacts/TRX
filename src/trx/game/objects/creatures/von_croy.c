@@ -321,7 +321,11 @@ static void M_SetCutCamera(const ITEM *const item)
         g_Camera.target.z = item->pos.z;
     }
 
-    const int16_t cam_room = Room_GetIndexFromPos(g_Camera.pos.pos);
+    int16_t cam_room =
+        Room_FindByTraversal(item->pos, g_Camera.pos.pos, item->room_num);
+    if (cam_room == NO_ROOM) {
+        cam_room = Room_GetIndexFromPos(g_Camera.pos.pos);
+    }
     if (cam_room == NO_ROOM || !M_IsValidPos(g_Camera.pos.pos, cam_room)) {
         g_Camera.pos = m_OldCamera.pos;
     } else {

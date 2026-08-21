@@ -103,6 +103,7 @@
 - Fixed Lara's shadow being too small to read as the jeep's during the cutscene that opens Karnak (TRX911)
 - Fixed the geometry in Karnak causing the opening cutscene camera to be in the void, and some rooms not rendering fully as a result (TRX1184)
 - Fixed a dropped flare turning black after a save is loaded (TRX904)
+- Fixed the camera getting stuck during a Von Croy tutorial at the end of Angkor Wat, Route of the Virtuous (TRX1213)
 
 **Miscellaneous**
 - Added an option to cast Lara in gold whatever she is wearing (Graphic Options → Visuals → Golden Lara) (TRX1070)
