@@ -3398,6 +3398,9 @@
         "save_crystal": {
             "name": "Speicherkristall",
         },
+        "scaled_spikes": {
+            "name": "\\{review}Skalierte Stacheln",
+        },
         "scion": {
             "name": "Scion",
         },

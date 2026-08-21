@@ -284,7 +284,7 @@
     },
     {
       "bulk": true,
-      "count": 821,
+      "count": 822,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -960,6 +960,7 @@
         "SARCOPHAGUS",
         "SAVE_CRYSTAL_ITEM",
         "SAVE_CRYSTAL_OPTION",
+        "SCALED_SPIKES",
         "SCION_HOLDER",
         "SCION_ITEM_1",
         "SCION_ITEM_2",
@@ -1117,7 +1118,7 @@
     },
     {
       "bulk": true,
-      "count": 205,
+      "count": 206,
       "description": "Every sound sample TRX has a name for.",
       "examples": [
         "trx.sound.play(trx.catalog.samples.LARA_NO)"
@@ -1298,6 +1299,7 @@
         "SOPHIA_TAKE_HIT",
         "SPANNER_CLUNK",
         "SPIDER_EXPLODE",
+        "SPIKES",
         "SPIKE_WALL",
         "STAGE_BACKDROP",
         "STAIRS_2_SLOPE_FX",

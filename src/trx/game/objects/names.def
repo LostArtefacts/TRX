@@ -365,6 +365,7 @@ X_OBJ_NAME_DEFINE(O_ROLLING_BALL_1,           "rolling_ball_1",           X_OBJ_
 X_OBJ_NAME_DEFINE(O_ROLLING_BALL_2,           "rolling_ball_2",           X_OBJ_NAMES("Boulder 2", "Rolling Ball 2"))
 X_OBJ_NAME_DEFINE(O_ROLLING_BALL_3,           "rolling_ball_3",           X_OBJ_NAMES("Boulder 3", "Rolling Ball 3"))
 X_OBJ_NAME_DEFINE(O_ROLLING_BALL_4,           "rolling_ball_4",           X_OBJ_NAMES("Boulder 4", "Rolling Ball 4"))
+X_OBJ_NAME_DEFINE(O_SCALED_SPIKES,            "scaled_spikes",            X_OBJ_NAMES("Spikes", "Scaled Spikes"))
 X_OBJ_NAME_DEFINE(O_SPIKES,                   "spikes",                   X_OBJ_NAMES("Spikes"))
 X_OBJ_NAME_DEFINE(O_SPIKE_WALL,               "spike_wall",               X_OBJ_NAMES("Spike Wall"))
 X_OBJ_NAME_DEFINE(O_SPINNING_BLADE,           "spinning_blade",           X_OBJ_NAMES("Spinning Blade"))

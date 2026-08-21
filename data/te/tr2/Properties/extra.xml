@@ -318,6 +318,10 @@
     <moveable id="-1">
         <property category="TRX" defaultValue="36" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_SCALED_SPIKES-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="8" description="Damage dealt when Lara hits the spikes without dying instantly." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
     <!--placeholder for O_SCION_ITEM_3-->
     <moveable id="-1">
         <property category="TRX" defaultValue="5" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />

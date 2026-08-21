@@ -250,6 +250,10 @@
         <property category="TRX" defaultValue="20" description="Damage dealt by the bite attack." displayName="Bite Damage" internalName="bite_damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="20" description="Damage dealt by the charge attack." displayName="Charge Damage" internalName="charge_damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_SCALED_SPIKES-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="8" description="Damage dealt when Lara hits the spikes without dying instantly." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
     <!--placeholder for O_SCION_ITEM_3-->
     <moveable id="-1">
         <property category="TRX" defaultValue="5" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />

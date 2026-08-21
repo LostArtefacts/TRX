@@ -3392,6 +3392,9 @@
         "save_crystal": {
             "name": "Cristal de Sauvegarde",
         },
+        "scaled_spikes": {
+            "name": "\\{review}Pointes redimensionnées",
+        },
         "scion": {
             "name": "Scion",
         },
