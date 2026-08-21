@@ -2,7 +2,7 @@ local raw = trxc.waypoints
 local api = trx.api
 
 api.module("waypoints", {
-  order = 35,
+  order = 36,
   description = [[
     Module for how far along a level's own progression Lara has got.
 

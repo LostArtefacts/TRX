@@ -2737,6 +2737,209 @@
     },
     {
       "bulk": false,
+      "count": 2,
+      "description": "The direction a stack lays its children out in.",
+      "path": "ui.Orientation",
+      "values": [
+        {
+          "description": "One below the next.",
+          "name": "VERTICAL",
+          "value": 0
+        },
+        {
+          "description": "One beside the next.",
+          "name": "HORIZONTAL",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "bulk": false,
+      "count": 5,
+      "description": "Where a stack puts its children across its width.",
+      "path": "ui.HAlign",
+      "values": [
+        {
+          "description": "Against the left edge.",
+          "name": "LEFT",
+          "value": 0
+        },
+        {
+          "description": "In the middle.",
+          "name": "CENTER",
+          "value": 1
+        },
+        {
+          "description": "Against the right edge.",
+          "name": "RIGHT",
+          "value": 2
+        },
+        {
+          "description": "Stretched to the full width.",
+          "name": "SPAN",
+          "value": 3
+        },
+        {
+          "description": "Spread out, with the gaps taking the spare width.",
+          "name": "DISTRIBUTE",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "bulk": false,
+      "count": 5,
+      "description": "Where a stack puts its children down its height.",
+      "path": "ui.VAlign",
+      "values": [
+        {
+          "description": "Against the top edge.",
+          "name": "TOP",
+          "value": 0
+        },
+        {
+          "description": "In the middle.",
+          "name": "CENTER",
+          "value": 1
+        },
+        {
+          "description": "Against the bottom edge.",
+          "name": "BOTTOM",
+          "value": 2
+        },
+        {
+          "description": "Stretched to the full height.",
+          "name": "SPAN",
+          "value": 3
+        },
+        {
+          "description": "Spread out, with the gaps taking the spare height.",
+          "name": "DISTRIBUTE",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "bulk": false,
+      "count": 6,
+      "description": "One of the six places the interface is built in. A handler is told which one is being built and adds to it; where each sits on screen, and what the player put there, is the game's to decide.",
+      "path": "ui.Location",
+      "values": [
+        {
+          "description": "The top left corner.",
+          "name": "TOP_LEFT",
+          "value": 0
+        },
+        {
+          "description": "The top edge, in the middle.",
+          "name": "TOP_CENTER",
+          "value": 1
+        },
+        {
+          "description": "The top right corner.",
+          "name": "TOP_RIGHT",
+          "value": 2
+        },
+        {
+          "description": "The bottom left corner.",
+          "name": "BOTTOM_LEFT",
+          "value": 3
+        },
+        {
+          "description": "The bottom edge, in the middle.",
+          "name": "BOTTOM_CENTER",
+          "value": 4
+        },
+        {
+          "description": "The bottom right corner.",
+          "name": "BOTTOM_RIGHT",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "bulk": false,
+      "count": 5,
+      "description": "The look a frame draws around what it holds.",
+      "path": "ui.FrameStyle",
+      "values": [
+        {
+          "description": "The background a dialog sits on.",
+          "name": "DIALOG_BACKGROUND",
+          "value": 0
+        },
+        {
+          "description": "The same background, drawn heavier.",
+          "name": "DIALOG_BACKGROUND_HEAVY",
+          "value": 1
+        },
+        {
+          "description": "The band a dialog puts its title in.",
+          "name": "DIALOG_HEADING",
+          "value": 2
+        },
+        {
+          "description": "The highlight on the option the player is on.",
+          "name": "SELECTED_OPTION",
+          "value": 3
+        },
+        {
+          "description": "An outline, with nothing behind it.",
+          "name": "OUTLINE_ONLY",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "bulk": false,
+      "count": 8,
+      "description": "Which of the game's bars to draw, which decides its colors.",
+      "path": "ui.BarType",
+      "values": [
+        {
+          "description": "Lara's health.",
+          "name": "LARA_HP",
+          "value": 0
+        },
+        {
+          "description": "Lara's health while she is poisoned.",
+          "name": "LARA_HP_POISON",
+          "value": 1
+        },
+        {
+          "description": "Lara's air.",
+          "name": "LARA_AIR",
+          "value": 2
+        },
+        {
+          "description": "Lara's stamina.",
+          "name": "LARA_STAMINA",
+          "value": 3
+        },
+        {
+          "description": "Lara's exposure to the cold.",
+          "name": "LARA_EXPOSURE",
+          "value": 4
+        },
+        {
+          "description": "An enemy's health.",
+          "name": "ENEMY_HP",
+          "value": 5
+        },
+        {
+          "description": "An ally's health.",
+          "name": "ALLY_HP",
+          "value": 6
+        },
+        {
+          "description": "A general progress bar.",
+          "name": "PROGRESS",
+          "value": 7
+        }
+      ]
+    },
+    {
+      "bulk": false,
       "count": 4,
       "description": "How the engine holds and fires a weapon, which decides which arm animations and firing routine it uses.",
       "path": "weapons.Kind",
@@ -3683,6 +3886,24 @@
         }
       ],
       "path": "events.on_level_unload",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
+      }
+    },
+    {
+      "description": "Happens as the game builds one of the six regions of the on-screen\ninterface, once per region on every drawn frame. A handler draws with\n`trx.ui`, which is available here and nowhere else, and what it draws lands\nin the region being built. The handler takes the region as a\n`trx.ui.Location` and answers for the one it wants.\n\nEvery path that puts an interface on screen fires it, so a handler draws\nduring a fade and over an FMV as well as in play. It follows the frame rate\nrather than the game clock, so a handler reads state and draws it and does\nno counting of its own.",
+      "examples": [
+        "trx.events.on_ui_draw(function(location)\n  if location == trx.ui.Location.TOP_CENTER then\n    trx.ui.label(\"hello\")\n  end\nend)"
+      ],
+      "params": [
+        {
+          "description": "What to run when it happens.",
+          "name": "callback",
+          "type": "function"
+        }
+      ],
+      "path": "events.on_ui_draw",
       "returns": {
         "description": "The attached handler.",
         "type": "events.Listener"
@@ -5833,6 +6054,382 @@
       }
     },
     {
+      "description": "Draws a line of text. It takes the player's font and text size, and the text markup applies.",
+      "params": [
+        {
+          "description": "What to draw.",
+          "name": "text",
+          "type": "string"
+        },
+        {
+          "description": "How to draw it.",
+          "fields": [
+            {
+              "description": "How much to multiply the text size by. `1.0` by default.",
+              "name": "scale",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "description": "What to draw in front of. Higher draws later. `0` by default.",
+              "name": "z",
+              "optional": true,
+              "type": "integer"
+            }
+          ],
+          "name": "settings",
+          "optional": true,
+          "type": "table"
+        }
+      ],
+      "path": "ui.label"
+    },
+    {
+      "description": "Answers how much room a line of text takes, without drawing it. Unlike the rest of the module, this is available at any time.",
+      "params": [
+        {
+          "description": "What to measure.",
+          "name": "text",
+          "type": "string"
+        },
+        {
+          "description": "The settings `trx.ui.label` would draw it with.",
+          "fields": [
+            {
+              "description": "How much to multiply the text size by. `1.0` by default.",
+              "name": "scale",
+              "optional": true,
+              "type": "number"
+            }
+          ],
+          "name": "settings",
+          "optional": true,
+          "type": "table"
+        }
+      ],
+      "path": "ui.measure",
+      "returns": [
+        {
+          "description": "The width, in canvas units.",
+          "type": "number"
+        },
+        {
+          "description": "The height, in canvas units.",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "description": "Leaves a gap. It draws nothing and takes the room it is given.",
+      "params": [
+        {
+          "description": "The width, in canvas units.",
+          "name": "w",
+          "type": "number"
+        },
+        {
+          "description": "The height, in canvas units.",
+          "name": "h",
+          "type": "number"
+        }
+      ],
+      "path": "ui.spacer"
+    },
+    {
+      "description": "Draws one of the game's own bars, in the player's chosen bar style.",
+      "examples": [
+        "trx.ui.bar({\n  type = trx.ui.BarType.PROGRESS,\n  value = 40,\n  max_value = 100,\n})"
+      ],
+      "params": [
+        {
+          "description": "Which bar to draw and how full it is.",
+          "fields": [
+            {
+              "description": "Which bar it is. `trx.ui.BarType.LARA_HP` by default.",
+              "name": "type",
+              "optional": true,
+              "type": "ui.BarType"
+            },
+            {
+              "description": "How much is filled. `0` by default.",
+              "name": "value",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "description": "What a full bar holds. `100` by default.",
+              "name": "max_value",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "description": "The width, in canvas units. The game's own width by default.",
+              "name": "w",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "description": "The height, in canvas units. The game's own height by default.",
+              "name": "h",
+              "optional": true,
+              "type": "integer"
+            }
+          ],
+          "name": "settings",
+          "type": "table"
+        }
+      ],
+      "path": "ui.bar"
+    },
+    {
+      "description": "Lays several widgets out in a row or a column.",
+      "examples": [
+        "trx.ui.stack({\n  orientation = trx.ui.Orientation.HORIZONTAL,\n  spacing = { h = 4 },\n}, function()\n  trx.ui.label(\"00:12\")\n  trx.ui.label(\"\\{small}elapsed\")\nend)"
+      ],
+      "params": [
+        {
+          "description": "How to lay the children out.",
+          "fields": [
+            {
+              "description": "Which way the children run. `trx.ui.Orientation.VERTICAL` by default.",
+              "name": "orientation",
+              "optional": true,
+              "type": "ui.Orientation"
+            },
+            {
+              "description": "Where the children sit within the stack.",
+              "fields": [
+                {
+                  "description": "Where they sit across its width.",
+                  "name": "h",
+                  "optional": true,
+                  "type": "ui.HAlign"
+                },
+                {
+                  "description": "Where they sit down its height.",
+                  "name": "v",
+                  "optional": true,
+                  "type": "ui.VAlign"
+                }
+              ],
+              "name": "align",
+              "optional": true,
+              "type": "table"
+            },
+            {
+              "description": "The gap left between one child and the next.",
+              "fields": [
+                {
+                  "description": "The horizontal gap, in canvas units.",
+                  "name": "h",
+                  "optional": true,
+                  "type": "number"
+                },
+                {
+                  "description": "The vertical gap, in canvas units.",
+                  "name": "v",
+                  "optional": true,
+                  "type": "number"
+                }
+              ],
+              "name": "spacing",
+              "optional": true,
+              "type": "table"
+            }
+          ],
+          "name": "settings",
+          "type": "table"
+        },
+        {
+          "description": "Draws the children.",
+          "name": "body",
+          "type": "function"
+        }
+      ],
+      "path": "ui.stack"
+    },
+    {
+      "description": "Puts what it holds at a spot in the room it is given. The spot is a ratio, so `0.5, 0.5` is the middle and `1.0, 0.0` is the top right.",
+      "params": [
+        {
+          "description": "How far across, from 0 to 1.",
+          "name": "x",
+          "type": "number"
+        },
+        {
+          "description": "How far down, from 0 to 1.",
+          "name": "y",
+          "type": "number"
+        },
+        {
+          "description": "Draws what it holds.",
+          "name": "body",
+          "type": "function"
+        }
+      ],
+      "path": "ui.anchor"
+    },
+    {
+      "description": "Keeps a border clear around what it holds.",
+      "params": [
+        {
+          "description": "How much to keep clear, in canvas units.",
+          "fields": [
+            {
+              "description": "How much to keep clear at the left and the right. `0` by default.",
+              "name": "x",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "description": "How much to keep clear at the top and the bottom. `0` by default.",
+              "name": "y",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "description": "The left side on its own, which wins over the pair.",
+              "name": "l",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "description": "The right side on its own, which wins over the pair.",
+              "name": "r",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "description": "The top on its own, which wins over the pair.",
+              "name": "t",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "description": "The bottom on its own, which wins over the pair.",
+              "name": "b",
+              "optional": true,
+              "type": "number"
+            }
+          ],
+          "name": "settings",
+          "type": "table"
+        },
+        {
+          "description": "Draws what it holds.",
+          "name": "body",
+          "type": "function"
+        }
+      ],
+      "path": "ui.pad"
+    },
+    {
+      "description": "Draws what it holds, or not. What it holds takes its room either way, so a widget that comes and goes does not move the widgets beside it.",
+      "params": [
+        {
+          "description": "Whether to leave it undrawn.",
+          "name": "hidden",
+          "type": "boolean"
+        },
+        {
+          "description": "Draws what it holds.",
+          "name": "body",
+          "type": "function"
+        }
+      ],
+      "path": "ui.hide"
+    },
+    {
+      "description": "Gives what it holds a size of its own.",
+      "params": [
+        {
+          "description": "The size to give it, in canvas units.",
+          "fields": [
+            {
+              "description": "The width. Its own width by default; `0` hides it but keeps its room.",
+              "name": "w",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "description": "The height. Its own height by default; `0` hides it but keeps its room.",
+              "name": "h",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "description": "Where it sits across the width, from 0 to 1. `0` by default.",
+              "name": "align_h",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "description": "Where it sits down the height, from 0 to 1. `0` by default.",
+              "name": "align_v",
+              "optional": true,
+              "type": "number"
+            }
+          ],
+          "name": "settings",
+          "type": "table"
+        },
+        {
+          "description": "Draws what it holds.",
+          "name": "body",
+          "type": "function"
+        }
+      ],
+      "path": "ui.resize"
+    },
+    {
+      "description": "Draws one of the game's frames behind what it holds.",
+      "params": [
+        {
+          "description": "Which frame to draw.",
+          "name": "style",
+          "type": "ui.FrameStyle"
+        },
+        {
+          "description": "Draws what it holds.",
+          "name": "body",
+          "type": "function"
+        }
+      ],
+      "path": "ui.frame"
+    },
+    {
+      "description": "Moves what it holds. The room it takes does not move with it, so the widgets beside it stay where they are.",
+      "params": [
+        {
+          "description": "How far to move it across, in canvas units.",
+          "name": "x",
+          "type": "number"
+        },
+        {
+          "description": "How far to move it down, in canvas units.",
+          "name": "y",
+          "type": "number"
+        },
+        {
+          "description": "Draws what it holds.",
+          "name": "body",
+          "type": "function"
+        }
+      ],
+      "path": "ui.offset"
+    },
+    {
+      "description": "Draws what it holds one on top of the next, every one as big as the biggest.",
+      "params": [
+        {
+          "description": "Draws what it holds.",
+          "name": "body",
+          "type": "function"
+        }
+      ],
+      "path": "ui.span"
+    },
+    {
       "description": "Retrieves a weapon definition by id or by name.",
       "examples": [
         "local uzis = trx.weapons.get(trx.catalog.weapons.UZIS)\nuzis.damage = 5"
@@ -6112,13 +6709,13 @@
     {
       "description": "Argument checking for the whole of `trx`.",
       "name": "api",
-      "order": 34,
+      "order": 35,
       "title": "API registry"
     },
     {
       "description": "A small, declarative argument parser for console commands, in the shape of\nPython's argparse.\n\nA parser both reads a command's arguments and offers completions for them,\nfrom one declaration. Every command written with `trx.console.register` has\none; a command shapes it through the `trx.console.register.spec.args` function\nit hands over, and `trx.console.register.spec.run` then receives a table of\nparsed values. A command that shapes nothing takes no arguments, and is told so\nwhen given one.\n\nEvery parser answers `-h` and `--help` on its own, printing what it accepts.\n\nHow a positional reads a token is its matcher: a type to coerce to, a set of\nchoices, or a function of its own. These do not combine on one positional; a\nvalue that is a number *or* a name is two matchers, declared with\n`trx.argparse.Parser:any_of`.\n\nPositionals are read in order, and an optional one a token does not fit is\npassed over: the token goes to the next positional, and the one skipped stays\nnil. That is what lets a command take a leading argument it can also be used\nwithout - a verb before a value, a count before a name. Completion follows the\nsame path, so a slot offers what every argument reachable from it takes. A\ntoken nothing takes is reported against the first argument that refused it.\n\nA choice is either a bare string, where the key and value are the same, or a\n`{ key, value }` pair, where the key is matched and shown and the value is what\n`trx.argparse.Parser:parse` gives back. Matching is forgiving, through\n`trx.strings.fuzzy_match`.",
       "name": "argparse",
-      "order": 23
+      "order": 24
     },
     {
       "description": "Module for controlling the Assault Course and Quad Bike timers in gym levels.",
@@ -6139,12 +6736,12 @@
     {
       "description": "Module for reading, changing and declaring engine settings.\n\nThese are the player's settings, not the level's. `trx.config.set` writes to them and keeps the\nchange: it is remembered across saves and relaunches, exactly as if the player had made it\nthemselves. A level that wants to tint the water or pull the fog in wants `trx.config.override`\ninstead, which lasts as long as the script keeps it and leaves the player's own value untouched\nunderneath.\n\nA game can also add settings of its own with `trx.config.declare`: they are saved and loaded with\nthe player's own, and shown in the settings menu where the declaration asks for. A setting a\ngame's `scripts/_game.lua` declares belongs to that game and goes when it does.",
       "name": "config",
-      "order": 24
+      "order": 25
     },
     {
       "description": "Module for interacting with the developer console.\n\n`trx.console.log` writes to the console overlay in-game, where `trx.log` writes only to the terminal and the log file.",
       "name": "console",
-      "order": 22
+      "order": 23
     },
     {
       "description": "Module for controlling certain creature behavior.",
@@ -6185,7 +6782,7 @@
     {
       "description": "Writing Lua values out as JSON. The API dump the reference is generated from goes through this, so what a script writes out is encoded the way the engine's own data is.",
       "name": "json",
-      "order": 32,
+      "order": 33,
       "title": "JSON"
     },
     {
@@ -6197,33 +6794,33 @@
     {
       "description": "The text the player reads, in the player's own language.",
       "name": "locale",
-      "order": 21
+      "order": 22
     },
     {
       "description": "Logs a message to the terminal and to `TRX.log` in the installation directory. <!--noref: TRX.log--> Each call records the Lua script's filename, function name and line number.",
       "name": "log",
-      "order": 28,
+      "order": 29,
       "title": "Logging"
     },
     {
       "description": "Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the same state as every other script.",
       "name": "lua",
-      "order": 33
+      "order": 34
     },
     {
       "description": "Fixed-point trigonometry, matching the engine's own tables. Using these rather than Lua's `math` library guarantees a script places things exactly where the engine would. `trx.math.Angle` says what an angle is here.",
       "name": "math",
-      "order": 29
+      "order": 30
     },
     {
       "description": "The mods the game was built with, and which one is loaded.",
       "name": "mod",
-      "order": 27
+      "order": 28
     },
     {
       "description": "Module for playing and controlling the soundtrack.",
       "name": "music",
-      "order": 20
+      "order": 21
     },
     {
       "description": "Module for the object definitions a level is built from.\n\nAn object is the pattern every item of that type is cut from: a wolf's radius, not this wolf's. Per-item state lives on the item - see `trx.items`.",
@@ -6240,7 +6837,7 @@
     {
       "description": "Random numbers, drawn from the sequence the simulation itself runs on.\n\nThe savegame carries that sequence, so what a script draws comes back the same\nafter a reload, and a script needs no seed of its own. The sequence moves on\nfor the engine as well: a script drawing every frame changes what the creatures\ndecide next.\n\nLua's own `math.random` is a separate generator that nothing saves. It has no\nplace in anything the simulation reads. <!--noref: math.random-->",
       "name": "random",
-      "order": 30
+      "order": 31
     },
     {
       "description": "Module for inspecting and altering the rooms of the current level.",
@@ -6255,28 +6852,34 @@
     {
       "description": "The save slots, and starting or reading a saved game.",
       "name": "savegame",
-      "order": 25
+      "order": 26
     },
     {
       "description": "Module for playing sound effects.",
       "name": "sound",
-      "order": 19
+      "order": 20
     },
     {
       "description": "Module for what a level keeps count of: what Lara has found in it, and how much\nthere was to find.\n\nThe module is the level being played, so `trx.stats.pickups.count` is what she\nhas picked up in it. Any other level's counters are reached the same way through\n`trx.game.Level.stats`. At the title screen there is no level, and everything\nhere reads `nil`.",
       "instance_type": "stats.Stats",
       "name": "stats",
-      "order": 26
+      "order": 27
     },
     {
       "description": "Utilities for working with strings.\n\nNot to be confused with `trx.locale`, which is the text a player reads: this module is about manipulating strings, that one is about which string the player gets.",
       "name": "strings",
-      "order": 31
+      "order": 32
+    },
+    {
+      "description": "Module for drawing on top of the game.\n\nEvery function here is available only from a `trx.events.on_ui_draw` handler,\nand raises anywhere else: the interface is built afresh each drawn frame, and\nthere is no scene to add to outside one.\n\nA handler adds to the region the game is building, which it is told the name\nof. Widgets land in the same stack as the health bars and the item names, so a\nscript cannot draw over them and the player's choice of where each element sits\nstill holds.\n\nWidgets that hold other widgets take the body as a function rather than opening\nand closing by hand, so a scene stays whole even where the body fails.\n\nSizes are in canvas units, not screen pixels. `trx.ui.canvas` reports the\ncanvas, and `trx.ui.safe_area` the part of it that is free to draw in.\n\nText carries the same markup the rest of the game uses, and it is part of this\nAPI: `\\{small}` draws the rest of the line small, `\\{arrow up}` draws an arrow,\nand `\\{button left}` draws the button the player has bound.",
+      "name": "ui",
+      "order": 19,
+      "title": "User interface"
     },
     {
       "description": "Module for how far along a level's own progression Lara has got.\n\nTR4 marks the points of a level with flip effects, and its guides read\nthem: Von Croy waits at a waypoint until Lara has reached it, says the\nline that belongs to it, and only then moves on. A level uses the same\nmarks to tell a first visit from a return.\n\nNothing about a waypoint is positional. It counts progress, and it lasts\nas long as the playthrough rather than the level, so it is saved with the\ngame.",
       "name": "waypoints",
-      "order": 35
+      "order": 36
     },
     {
       "description": "What a weapon is, rather than what Lara has of it.\n\nNone of this differs between the inventory she carries and the one a level\nkeeps for her, so it belongs to neither: what she holds and how many shots she\nhas are `trx.inventory`.\n\nA weapon is shared by every copy of it. Changes last for the rest of the\nsession, so levels should restore any values they change when they end.",
@@ -6771,6 +7374,18 @@
       "path": "rules.carrier.inherit_facing",
       "type": "boolean",
       "writable": true
+    },
+    {
+      "description": "The whole canvas. Widget sizes are in these units rather than in screen pixels, and the canvas is 640 by 480 for a 4:3 screen at the default text size.",
+      "path": "ui.canvas",
+      "type": "ui.Area",
+      "writable": false
+    },
+    {
+      "description": "The part of the canvas that is free to draw in: the canvas, less the margin kept at the edges, less what the game reserves at the top and the bottom for the bars and the text it puts there.",
+      "path": "ui.safe_area",
+      "type": "ui.Area",
+      "writable": false
     },
     {
       "description": "Where Lara has reached, or `nil` before she has reached anywhere. Setting\nit carries the furthest reached along with it where that is further on.",
@@ -10096,6 +10711,36 @@
       "methods": [],
       "operators": [],
       "path": "strings.Match"
+    },
+    {
+      "description": "A rectangle on the canvas, in canvas units, counted from the top left.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "How tall it is.",
+          "name": "height",
+          "type": "number"
+        },
+        {
+          "description": "How wide it is.",
+          "name": "width",
+          "type": "number"
+        },
+        {
+          "description": "The left edge.",
+          "name": "x",
+          "type": "number"
+        },
+        {
+          "description": "The top edge.",
+          "name": "y",
+          "type": "number"
+        }
+      ],
+      "handle": false,
+      "methods": [],
+      "operators": [],
+      "path": "ui.Area"
     },
     {
       "description": "How far off straight ahead an aim may go, as a pair of limits about each axis.",

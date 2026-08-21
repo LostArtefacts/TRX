@@ -25,6 +25,8 @@
 #include <trx/game/screenshot.h>
 #include <trx/game/shell/mod.h>
 #include <trx/game/sound/ids.h>
+#include <trx/game/ui/elements/frame.h>
+#include <trx/game/ui/elements/stack.h>
 #include <trx/game/ui/settings.h>
 
 static __attribute__((constructor)) void M_Init(void)
@@ -131,6 +133,29 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(ITEM_TRIGGER_KIND, ITEM_TRIGGER_ANTI, "antitrigger");
 
     // LUA_EVENT_NUMBER_OF is a sentinel, not an event.
+    ENUM_MAP(UI_STACK_ORIENTATION, UI_STACK_VERTICAL, "vertical");
+    ENUM_MAP(UI_STACK_ORIENTATION, UI_STACK_HORIZONTAL, "horizontal");
+
+    ENUM_MAP(UI_STACK_H_ALIGN, UI_STACK_H_ALIGN_LEFT, "left");
+    ENUM_MAP(UI_STACK_H_ALIGN, UI_STACK_H_ALIGN_CENTER, "center");
+    ENUM_MAP(UI_STACK_H_ALIGN, UI_STACK_H_ALIGN_RIGHT, "right");
+    ENUM_MAP(UI_STACK_H_ALIGN, UI_STACK_H_ALIGN_SPAN, "span");
+    ENUM_MAP(UI_STACK_H_ALIGN, UI_STACK_H_ALIGN_DISTRIBUTE, "distribute");
+
+    ENUM_MAP(UI_STACK_V_ALIGN, UI_STACK_V_ALIGN_TOP, "top");
+    ENUM_MAP(UI_STACK_V_ALIGN, UI_STACK_V_ALIGN_CENTER, "center");
+    ENUM_MAP(UI_STACK_V_ALIGN, UI_STACK_V_ALIGN_BOTTOM, "bottom");
+    ENUM_MAP(UI_STACK_V_ALIGN, UI_STACK_V_ALIGN_SPAN, "span");
+    ENUM_MAP(UI_STACK_V_ALIGN, UI_STACK_V_ALIGN_DISTRIBUTE, "distribute");
+
+    ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_DIALOG_BACKGROUND, "dialog_background");
+    ENUM_MAP(
+        UI_FRAME_STYLE, UI_FRAME_DIALOG_BACKGROUND_HEAVY,
+        "dialog_background_heavy");
+    ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_DIALOG_HEADING, "dialog_heading");
+    ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_SELECTED_OPTION, "selected_option");
+    ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_OUTLINE_ONLY, "outline_only");
+
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_GAME_START, "game_start");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_TITLE_START, "title_start");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_PICKUP, "pickup");
@@ -156,6 +181,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_CUTSCENE_START, "cutscene_start");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_CUTSCENE_END, "cutscene_end");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_LEVEL_UNLOAD, "level_unload");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_DRAW, "ui_draw");
 
     // LOG_LEVEL_MAX is a sentinel, not a level.
     ENUM_MAP(LOG_LEVEL, LOG_LEVEL_DEBUG, "debug");

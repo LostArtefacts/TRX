@@ -15,17 +15,16 @@
 // reflects them into Lua so the declaration there (trx.api.enum) can say which
 // constants are public and what they mean without repeating a single number.
 //
-// The public key is the uppercased ENUM_MAP string: "active" -> ACTIVE.
+// The public key is the uppercased ENUM_MAP string, with hyphens written as
+// underscores: "active" -> ACTIVE, "top-left" -> TOP_LEFT.
 
-// The public key, uppercased into a Lua string. A C allocation would have to
-// survive the pushes below, and a push that raises never comes back to free it.
 static void M_PushKey(lua_State *const L, const char *const name)
 {
     const size_t len = strlen(name);
     luaL_Buffer buffer;
     char *const key = luaL_buffinitsize(L, &buffer, len);
     for (size_t i = 0; i < len; i++) {
-        key[i] = (char)toupper((unsigned char)name[i]);
+        key[i] = name[i] == '-' ? '_' : (char)toupper((unsigned char)name[i]);
     }
     luaL_pushresultsize(&buffer, len);
 }
