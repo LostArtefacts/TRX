@@ -65,6 +65,7 @@
 - Changed the lighting contrast option to appear in TR1 and TR2 only, as the other games light dynamic sources their own way (Graphic Options → Rendering → Lighting contrast)
 - Changed TR3 to light geometry on the brighter curve its hardware renderer used (Graphic Options → Rendering → Lighting model)
 - Fixed a visible seam across the sky in TR4 levels (TRX563, regression from 1.9)
+- Fixed the underwater view wobbling less at higher supersampling values (TRX1207)
 
 **TR1**
 - Changed Lara to retain her equipment when turning to gold on the Midas Hand, with the equipment also turning to gold (TRX1073)

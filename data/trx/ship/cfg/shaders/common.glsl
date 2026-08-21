@@ -56,6 +56,7 @@ layout(std140) uniform Globals {
     int uAffineMappingEnabled; // bool
     int uTRVersion;
     float uUVScrollTick;
+    int uSupersamplingFactor;
 };
 
 layout(std140) uniform Matrices {

@@ -64,8 +64,9 @@ vec3 waterWibble(vec4 worldPosition, vec4 screenPosition)
     pixelPos.y += sin(phases) * adjustedWibble;
 #else
     float phases = (uTimeInGame + length(worldPosition.xyz)) * (2.0 * PI / WIBBLE_SIZE);
-    pixelPos.x += sin(phases) * MAX_WIBBLE;
-    pixelPos.y += cos(phases) * MAX_WIBBLE;
+    float amplitude = MAX_WIBBLE * float(uSupersamplingFactor);
+    pixelPos.x += sin(phases) * amplitude;
+    pixelPos.y += cos(phases) * amplitude;
 #endif
     // reverse transform
     ndc.xy = (pixelPos / uViewportSize - 0.5) * 2.0;
