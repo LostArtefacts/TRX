@@ -69,6 +69,7 @@
 - Added the PlayStation lighting model, which deepens bright surfaces into their own color rather than white (Graphic Options → Rendering → Lighting model)
 - Changed the lighting contrast option to appear in TR1 and TR2 only, as the other games light dynamic sources their own way (Graphic Options → Rendering → Lighting contrast)
 - Changed TR3 to light geometry on the brighter curve its hardware renderer used (Graphic Options → Rendering → Lighting model)
+- Fixed a headless run drawing none of the title screen's objects, such as the passport
 - Fixed a visible seam across the sky in TR4 levels (TRX563, regression from 1.9)
 - Fixed the inventory background showing black, and objects around it going missing, in a headless run
 - Fixed the underwater view wobbling less at higher supersampling values (TRX1207)

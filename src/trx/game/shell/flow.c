@@ -365,7 +365,9 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
     EXIT_ON_FAIL(M_CreateGameWindow(), "TRX could not open a window");
     EXIT_ON_FAIL(M_CreateGLContext(), "TRX cannot draw the game");
     EXIT_ON_FAIL(Output_Init(), "TRX cannot draw the game");
-    if (!s->args->headless) {
+    if (s->args->headless) {
+        Shell_RefreshRendererViewport();
+    } else {
         M_ShowWindow();
     }
 
