@@ -29,6 +29,7 @@
 typedef struct {
     VECTOR *sources;
     GLuint sampler_id;
+    int32_t capture_depth;
 } M_PRIV;
 
 static M_PRIV m_Priv = {};
@@ -185,8 +186,20 @@ static void M_RenderScenePasses(const M_PRIV *const p)
 
 static bool M_IsActive(void)
 {
-    return !Output_IsHeadless() || Shell_GetArgs()->debug_render_performance
+    return !Output_IsHeadless() || m_Priv.capture_depth > 0
+        || Shell_GetArgs()->debug_render_performance
         || TRX_GL_Context_GetScheduledScreenshotPath() != nullptr;
+}
+
+void SceneCompositor_BeginCapture(void)
+{
+    m_Priv.capture_depth++;
+}
+
+void SceneCompositor_EndCapture(void)
+{
+    ASSERT(m_Priv.capture_depth > 0);
+    m_Priv.capture_depth--;
 }
 
 void SceneCompositor_Init(void)
@@ -228,6 +241,7 @@ void SceneCompositor_Flush(void)
 {
     M_PRIV *const p = &m_Priv;
     if (!M_IsActive()) {
+        M_PROCESS_SOURCES(p, render_begin);
         return;
     }
     M_RenderScenePasses(p);
@@ -240,6 +254,7 @@ void SceneCompositor_EndScene(void)
 {
     M_PRIV *const p = &m_Priv;
     if (!M_IsActive()) {
+        M_PROCESS_SOURCES(p, render_begin);
         return;
     }
     M_RenderScenePasses(p);

@@ -894,9 +894,11 @@ void Output_Overlay_CaptureGameSnapshot(void)
     Interpolation_Disable();
     Output_SwitchViewport(VIEWPORT_GAME);
 
+    SceneCompositor_BeginCapture();
     SceneCompositor_BeginScene();
     Game_Draw(false);
     SceneCompositor_EndScene();
+    SceneCompositor_EndCapture();
     Interpolation_Enable();
 
     M_CopyFboToTexture(

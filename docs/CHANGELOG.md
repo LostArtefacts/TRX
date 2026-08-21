@@ -70,6 +70,7 @@
 - Changed the lighting contrast option to appear in TR1 and TR2 only, as the other games light dynamic sources their own way (Graphic Options → Rendering → Lighting contrast)
 - Changed TR3 to light geometry on the brighter curve its hardware renderer used (Graphic Options → Rendering → Lighting model)
 - Fixed a visible seam across the sky in TR4 levels (TRX563, regression from 1.9)
+- Fixed the inventory background showing black, and objects around it going missing, in a headless run
 - Fixed the underwater view wobbling less at higher supersampling values (TRX1207)
 - Fixed static objects that reach through a doorway taking the water tint and the light of the room next door
 - Fixed the underwater view wobbling less at higher supersampling values (TRX1207)
