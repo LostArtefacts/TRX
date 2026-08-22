@@ -364,7 +364,7 @@ bool Item_IsTriggerActiveRO(const ITEM *const item)
     if (item->timer == 0) {
         return ok;
     }
-    if (item->timer == -1) {
+    if (item->timer <= -1) {
         return !ok;
     }
     return ok;
@@ -373,10 +373,15 @@ bool Item_IsTriggerActiveRO(const ITEM *const item)
 bool Item_IsTriggerActive(ITEM *const item)
 {
     const bool result = Item_IsTriggerActiveRO(item);
-    if (item->timer != 0 && item->timer != -1) {
+    if (item->timer > 0) {
         item->timer--;
         if (item->timer == 0) {
             item->timer = -1;
+        }
+    } else if (item->timer < -1) {
+        item->timer++;
+        if (item->timer == -1) {
+            item->timer = 0;
         }
     }
     return result;
