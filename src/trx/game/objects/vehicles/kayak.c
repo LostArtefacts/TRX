@@ -8,6 +8,7 @@
 #include <trx/game/collision.h>
 #include <trx/game/fx/wake.h>
 #include <trx/game/fx/water.h>
+#include <trx/game/gun/flare.h>
 #include <trx/game/input.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
@@ -212,7 +213,7 @@ static void M_Collision(
 
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     if (lara_info->gun_type == LGT_FLARE) {
-        Lara_Flare_Dispose(false);
+        Gun_Flare_Dispose(false);
         lara_info->flare.control = false;
         lara_info->gun_type = LGT_UNARMED;
         lara_info->request_gun_type = LGT_UNARMED;

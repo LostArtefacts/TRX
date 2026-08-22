@@ -1,4 +1,4 @@
-#include <trx/game/lara/flare.h>
+#include <trx/game/gun/flare.h>
 
 #include <trx/config.h>
 #include <trx/game/camera/binoculars.h>
@@ -277,7 +277,7 @@ static void M_UndrawMeshes(void)
     Lara_Skin_ClearEquipment(LM_HAND_L);
 }
 
-void Lara_Flare_Control(void)
+void Gun_Flare_Control(void)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     const ITEM *const lara_item = Lara_GetItem();
@@ -294,7 +294,7 @@ void Lara_Flare_Control(void)
     }
 }
 
-void Lara_Flare_Draw(void)
+void Gun_Flare_Draw(void)
 {
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
@@ -318,7 +318,7 @@ void Lara_Flare_Draw(void)
     if (frame_num < LF_FL_DRAW || frame_num > LF_FL_2_HOLD - 1) {
         frame_num = LF_FL_DRAW;
     } else if (frame_num == LF_FL_DRAW_GOT_IT) {
-        Lara_Flare_DrawMeshes();
+        Gun_Flare_DrawMeshes();
         if (!Gun_HasInfiniteAmmo(LGT_FLARE)) {
             Inv_RemoveItem(O_FLAREBOX_ITEM);
         }
@@ -337,7 +337,7 @@ void Lara_Flare_Draw(void)
     M_SetArm(frame_num);
 }
 
-void Lara_Flare_Undraw(void)
+void Gun_Flare_Undraw(void)
 {
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
@@ -393,7 +393,7 @@ void Lara_Flare_Undraw(void)
     } else if (frame_num_1 >= LF_FL_THROW && frame_num_1 < LF_FL_DRAW) {
         frame_num_1++;
         if (frame_num_1 == LF_FL_THROW_RELEASE) {
-            Lara_Flare_Dispose(true);
+            Gun_Flare_Dispose(true);
             lara_info->flare.age = M_NO_AGE;
         } else if (frame_num_1 == LF_FL_DRAW) {
             frame_num_1 = 0;
@@ -422,7 +422,7 @@ void Lara_Flare_Undraw(void)
     M_SetArm(frame_num_1);
 }
 
-void Lara_Flare_Dispose(const bool thrown)
+void Gun_Flare_Dispose(const bool thrown)
 {
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
@@ -491,14 +491,14 @@ finish:
     }
 }
 
-bool Lara_Flare_HasExpired(void)
+bool Gun_Flare_HasExpired(void)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     return lara->gun_type == LGT_FLARE
         && (lara->flare.age <= 0 || lara->flare.age >= Flare_GetMaxAge());
 }
 
-bool Lara_Flare_IsMeshActive(void)
+bool Gun_Flare_IsMeshActive(void)
 {
     const LARA_SKIN_EQUIPMENT *const equipment =
         Lara_Skin_GetEquipment(LM_HAND_L);
@@ -506,7 +506,7 @@ bool Lara_Flare_IsMeshActive(void)
         && equipment->data == LGT_FLARE;
 }
 
-void Lara_Flare_DrawMeshes(void)
+void Gun_Flare_DrawMeshes(void)
 {
     Lara_Skin_SetGunEquipment(LM_HAND_L, LGT_FLARE);
 }

@@ -471,7 +471,7 @@ static void M_Collect(const ITEM *const item, const bool controlled)
     if (item->object_id == O_FLARE_ITEM
         && (lara->water_status == LWS_UNDERWATER
             || lara->water_status == LWS_CHEAT)) {
-        Lara_Flare_DrawMeshes();
+        Gun_Flare_DrawMeshes();
     }
 }
 

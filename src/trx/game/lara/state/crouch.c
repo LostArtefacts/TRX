@@ -2,10 +2,10 @@
 #include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/collision/los.h>
+#include <trx/game/gun/flare.h>
 #include <trx/game/input.h>
 #include <trx/game/items/anim.h>
 #include <trx/game/lara.h>
-#include <trx/game/lara/flare.h>
 #include <trx/game/lara/misc.h>
 #include <trx/game/lara/util.h>
 #include <trx/game/objects/general/flare_item.h>
@@ -69,7 +69,7 @@ static bool M_CanCrouchRoll(const ITEM *const item, const LARA_INFO *const lara)
         return false;
     }
 
-    if (Lara_Flare_HasExpired()) {
+    if (Gun_Flare_HasExpired()) {
         return false;
     }
 

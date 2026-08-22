@@ -189,7 +189,7 @@ static void M_GetOn(ITEM *const item)
     lara->water_status = LWS_ABOVE_WATER;
 
     if (lara->gun_type == LGT_FLARE) {
-        Lara_Flare_Dispose(false);
+        Gun_Flare_Dispose(false);
         lara->flare.control = false;
         lara->gun_type = LGT_UNARMED;
         lara->request_gun_type = LGT_UNARMED;
