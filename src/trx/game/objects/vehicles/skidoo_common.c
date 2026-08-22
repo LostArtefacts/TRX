@@ -226,7 +226,7 @@ void Skidoo_Collision(
     LARA_INFO *const lara = Lara_GetLaraInfo();
     Lara_Vehicle_SetIndex(item_num);
     if (lara->gun_type == LGT_FLARE) {
-        Lara_Flare_Dispose(false);
+        Gun_Flare_Dispose(false);
         lara->gun_type = LGT_UNARMED;
         lara->request_gun_type = LGT_UNARMED;
     }

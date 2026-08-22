@@ -6,6 +6,7 @@
 #include <trx/game/collision/los.h>
 #include <trx/game/game.h>
 #include <trx/game/gun/common.h>
+#include <trx/game/gun/flare.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/pistols.h>
 #include <trx/game/gun/rifle.h>
@@ -297,7 +298,7 @@ static void M_DrawRequestedWeapon(void)
         }
 
         if (lara->gun_type == LGT_FLARE) {
-            Lara_Flare_Dispose(false);
+            Gun_Flare_Dispose(false);
         }
 
         lara->gun_type = lara->request_gun_type;
@@ -398,7 +399,7 @@ void Gun_Control(void)
     case LGS_ARMLESS:
     case LGS_HANDS_BUSY:
         if (lara->gun_type == LGT_FLARE) {
-            Lara_Flare_Control();
+            Gun_Flare_Control();
         }
         break;
 
@@ -430,7 +431,7 @@ void Gun_Control(void)
             break;
 
         case LGT_FLARE:
-            Lara_Flare_Draw();
+            Gun_Flare_Draw();
             break;
 
         default:
@@ -463,7 +464,7 @@ void Gun_Control(void)
             break;
 
         case LGT_FLARE:
-            Lara_Flare_Undraw();
+            Gun_Flare_Undraw();
             break;
 
         default:
@@ -513,7 +514,7 @@ void Gun_Control(void)
         break;
 
     case LGS_SPECIAL:
-        Lara_Flare_Draw();
+        Gun_Flare_Draw();
         break;
 
     default:

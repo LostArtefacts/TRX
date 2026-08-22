@@ -79,7 +79,7 @@ static void M_ReinitialiseGunMeshes(void)
 static void M_ClearHandWeaponMeshes(void)
 {
     Gun_SetLaraHandRMesh(LGT_UNARMED);
-    if (!Lara_Flare_IsMeshActive()) {
+    if (!Gun_Flare_IsMeshActive()) {
         Gun_SetLaraHandLMesh(LGT_UNARMED);
     }
 }
@@ -88,7 +88,7 @@ static void M_ResetGunStatus(void)
 {
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    const bool has_flare = Lara_Flare_IsMeshActive();
+    const bool has_flare = Gun_Flare_IsMeshActive();
     if (has_flare) {
         lara_info->gun_type = LGT_FLARE;
         return;
@@ -227,8 +227,8 @@ bool Lara_Cheat_EnterFlyMode(void)
     if (lara_info->extra_anim || lara_item->hit_points < 0) {
         M_ResetGunStatus();
         M_ClearHandWeaponMeshes();
-        if (Lara_Flare_HasExpired()) {
-            Lara_Flare_Dispose(false);
+        if (Gun_Flare_HasExpired()) {
+            Gun_Flare_Dispose(false);
             lara_info->gun_type = LGT_UNARMED;
             lara_info->request_gun_type = LGT_UNARMED;
         }

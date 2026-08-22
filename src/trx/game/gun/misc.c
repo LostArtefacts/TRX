@@ -5,6 +5,7 @@
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/gun/common.h>
+#include <trx/game/gun/flare.h>
 #include <trx/game/gun/pistols.h>
 #include <trx/game/gun/rifle.h>
 #include <trx/game/gun/vars.h>
@@ -337,7 +338,7 @@ void Gun_InitialiseNewWeapon(void)
             break;
 
         case LGT_FLARE:
-            Lara_Flare_DrawMeshes();
+            Gun_Flare_DrawMeshes();
             break;
 
         default:
