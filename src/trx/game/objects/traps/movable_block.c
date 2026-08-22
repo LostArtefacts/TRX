@@ -237,6 +237,15 @@ static bool M_TestCurrentSector(
     return true;
 }
 
+static bool M_IsFloorHeight(const XYZ_32 pos, int16_t room_num)
+{
+    XYZ_32 test_pos = pos;
+    test_pos.y = MAX_HEIGHT;
+    const SECTOR *const sector = Room_GetSector(test_pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, test_pos);
+    return height == pos.y;
+}
+
 static bool M_TestPush(
     const ITEM *const item, const int32_t block_height,
     const DIRECTION quadrant)
@@ -275,6 +284,10 @@ static bool M_TestPush(
     }
 
     if (Room_GetHeight(sector, base_pos) != base_pos.y) {
+        return false;
+    }
+
+    if (sector->floor.is_split && M_IsFloorHeight(base_pos, room_num)) {
         return false;
     }
 
@@ -337,6 +350,10 @@ static bool M_TestPull(
     }
 
     if (Room_GetHeight(sector, base_pos) != base_pos.y) {
+        return false;
+    }
+
+    if (sector->floor.is_split && M_IsFloorHeight(base_pos, room_num)) {
         return false;
     }
 
