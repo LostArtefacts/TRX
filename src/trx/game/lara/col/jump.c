@@ -342,7 +342,10 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = M_BAD_JUMP_CEILING;
 
     Lara_Col_GetInfo(item, coll);
-    Lara_Col_DeflectEdgeJump(item, coll);
+    if (!Item_TestAnimEqual(item, LA(LA_HANG_TO_JUMP_BACK_CONTINUE))) {
+        Lara_Col_DeflectEdgeJump(item, coll);
+    }
+
     if (item->speed < 0
         && g_Config.gameplay.wall_glitch_mode != WALL_GLITCH_TR1) {
         lara->move_angle = item->rot.y;
