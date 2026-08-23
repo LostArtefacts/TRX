@@ -7,6 +7,11 @@
 
 #define M_FORMAT "%s | %s [%s:%d:%s] "
 
+// How much log text the file holds before it reaches the disk. Every write
+// that reaches the disk costs the thread that logs, and a virus scanner makes
+// it cost more, so the game must not pay it for each line.
+#define M_FILE_BUFFER_SIZE 65536
+
 static LOG_LEVEL m_LogLevel = LOG_LEVEL_MAX;
 static FILE *m_LogHandle = nullptr;
 static bool m_UseAnsiColors = true;
@@ -34,6 +39,9 @@ void Log_Init(const char *path, const LOG_LEVEL min_level)
     m_UseAnsiColors = Log_ShouldUseAnsiColors();
     if (path != nullptr) {
         m_LogHandle = fopen(path, "w");
+        if (m_LogHandle != nullptr) {
+            setvbuf(m_LogHandle, nullptr, _IOFBF, M_FILE_BUFFER_SIZE);
+        }
     }
     Log_Init_Extra(path);
 }
@@ -77,7 +85,6 @@ void Log_Message(
             m_LogHandle, M_FORMAT, log_str, timestamp_str, file, line, func);
         vfprintf(m_LogHandle, fmt, vb);
         fprintf(m_LogHandle, "\n");
-        fflush(m_LogHandle);
 
         va_end(vb);
     }
@@ -97,6 +104,13 @@ void Log_Message(
     }
 
     va_end(va);
+}
+
+void Log_Flush(void)
+{
+    if (m_LogHandle != nullptr) {
+        fflush(m_LogHandle);
+    }
 }
 
 void Log_Shutdown(void)

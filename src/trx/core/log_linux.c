@@ -39,6 +39,7 @@ static void M_SignalHandler(int sig)
     LOG_ERROR("SIGNAL: %d", sig);
     LOG_ERROR("STACK TRACE:");
     M_WalkStack();
+    Log_Flush();
     exit(EXIT_FAILURE);
 }
 
