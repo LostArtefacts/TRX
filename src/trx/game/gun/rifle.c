@@ -612,6 +612,14 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
     lara->right_arm.frame_num = Item_GetRelativeFrame(item);
 }
 
+static void M_Control(
+    const LARA_GUN_TYPE gun_type, const LARA_GUN_STATE gun_status)
+{
+    if (gun_status == LGS_READY) {
+        Gun_Rifle_Control(gun_type);
+    }
+}
+
 void Gun_Rifle_Control(const LARA_GUN_TYPE weapon_type)
 {
     const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
@@ -758,23 +766,65 @@ void Gun_Rifle_EnsureReady(const LARA_GUN_TYPE weapon_type)
 
 // clang-format off
 REGISTER_GUN_TYPE(
-    .gun_type = LGT_SHOTGUN)
+    .gun_type = LGT_SHOTGUN,
+    .is_remembered = true,
+    .wants_combat_camera = true,
+    .draw_func = Gun_Rifle_Draw,
+    .undraw_func = Gun_Rifle_Undraw,
+    .draw_meshes_func = Gun_Rifle_DrawMeshes,
+    .control_func = M_Control)
 
 REGISTER_GUN_TYPE(
-    .gun_type = LGT_M16)
+    .gun_type = LGT_M16,
+    .is_remembered = true,
+    .wants_combat_camera = true,
+    .draw_func = Gun_Rifle_Draw,
+    .undraw_func = Gun_Rifle_Undraw,
+    .draw_meshes_func = Gun_Rifle_DrawMeshes,
+    .control_func = M_Control)
 
 REGISTER_GUN_TYPE(
-    .gun_type = LGT_MP5)
+    .gun_type = LGT_MP5,
+    .is_remembered = true,
+    .wants_combat_camera = true,
+    .draw_func = Gun_Rifle_Draw,
+    .undraw_func = Gun_Rifle_Undraw,
+    .draw_meshes_func = Gun_Rifle_DrawMeshes,
+    .control_func = M_Control)
 
 REGISTER_GUN_TYPE(
-    .gun_type = LGT_GRENADE)
+    .gun_type = LGT_GRENADE,
+    .is_remembered = true,
+    .wants_combat_camera = true,
+    .draw_func = Gun_Rifle_Draw,
+    .undraw_func = Gun_Rifle_Undraw,
+    .draw_meshes_func = Gun_Rifle_DrawMeshes,
+    .control_func = M_Control)
 
 REGISTER_GUN_TYPE(
-    .gun_type = LGT_ROCKET)
+    .gun_type = LGT_ROCKET,
+    .is_remembered = true,
+    .wants_combat_camera = true,
+    .draw_func = Gun_Rifle_Draw,
+    .undraw_func = Gun_Rifle_Undraw,
+    .draw_meshes_func = Gun_Rifle_DrawMeshes,
+    .control_func = M_Control)
 
 REGISTER_GUN_TYPE(
-    .gun_type = LGT_HARPOON)
+    .gun_type = LGT_HARPOON,
+    .is_remembered = true,
+    .wants_combat_camera = true,
+    .draw_func = Gun_Rifle_Draw,
+    .undraw_func = Gun_Rifle_Undraw,
+    .draw_meshes_func = Gun_Rifle_DrawMeshes,
+    .control_func = M_Control)
 
 REGISTER_GUN_TYPE(
-    .gun_type = LGT_CROSSBOW)
+    .gun_type = LGT_CROSSBOW,
+    .is_remembered = true,
+    .wants_combat_camera = true,
+    .draw_func = Gun_Rifle_Draw,
+    .undraw_func = Gun_Rifle_Undraw,
+    .draw_meshes_func = Gun_Rifle_DrawMeshes,
+    .control_func = M_Control)
 // clang-format on

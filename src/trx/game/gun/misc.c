@@ -317,32 +317,9 @@ void Gun_InitialiseNewWeapon(void)
     lara->right_arm.frame_base = obj->frame_base;
 
     if (lara->gun_status != LGS_ARMLESS) {
-        switch (lara->gun_type) {
-        case LGT_PISTOLS:
-        case LGT_MAGNUMS:
-        case LGT_AUTOS:
-        case LGT_DESERT_EAGLE:
-        case LGT_REVOLVER:
-        case LGT_UZIS:
-            Gun_Pistols_DrawMeshes(lara->gun_type);
-            break;
-
-        case LGT_SHOTGUN:
-        case LGT_M16:
-        case LGT_MP5:
-        case LGT_GRENADE:
-        case LGT_ROCKET:
-        case LGT_HARPOON:
-        case LGT_CROSSBOW:
-            Gun_Rifle_DrawMeshes(lara->gun_type);
-            break;
-
-        case LGT_FLARE:
-            Gun_Flare_DrawMeshes();
-            break;
-
-        default:
-            break;
+        const WEAPON_INFO *const info = Gun_Registry_Get(lara->gun_type);
+        if (info->draw_meshes_func != nullptr) {
+            info->draw_meshes_func(lara->gun_type);
         }
     }
 }

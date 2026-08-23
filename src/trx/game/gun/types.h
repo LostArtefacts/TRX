@@ -74,6 +74,19 @@ typedef struct {
     // is one the engine carries but nothing drives, such as empty hands or a
     // gun fixed to a vehicle.
     bool is_declared;
+    // Whether Lara returns to it after she puts away what she holds now.
+    bool is_remembered;
+    // Whether drawing it swings the camera to her back.
+    bool wants_combat_camera;
+    void (*draw_func)(LARA_GUN_TYPE gun_type);
+    void (*undraw_func)(LARA_GUN_TYPE gun_type);
+    // Puts what Lara carries into her hands, once the level holds the meshes
+    // it is made of.
+    void (*draw_meshes_func)(LARA_GUN_TYPE gun_type);
+    // Runs each frame the weapon is live, which is not the same phase for
+    // every one: a gun acts once it is ready, while a flare acts while Lara
+    // is otherwise unarmed. The phase says which one runs.
+    void (*control_func)(LARA_GUN_TYPE gun_type, LARA_GUN_STATE gun_status);
     WEAPON_TYPE type;
     // Where auto-aim may lock on, and how far each arm may follow it.
     WEAPON_AIM_LIMITS lock;

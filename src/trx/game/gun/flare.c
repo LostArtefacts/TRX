@@ -278,6 +278,29 @@ static void M_UndrawMeshes(void)
     Lara_Skin_ClearEquipment(LM_HAND_L);
 }
 
+static void M_Draw(const LARA_GUN_TYPE gun_type)
+{
+    Gun_Flare_Draw();
+}
+
+static void M_Undraw(const LARA_GUN_TYPE gun_type)
+{
+    Gun_Flare_Undraw();
+}
+
+static void M_DrawMeshes(const LARA_GUN_TYPE gun_type)
+{
+    Gun_Flare_DrawMeshes();
+}
+
+static void M_Control(
+    const LARA_GUN_TYPE gun_type, const LARA_GUN_STATE gun_status)
+{
+    if (gun_status == LGS_ARMLESS || gun_status == LGS_HANDS_BUSY) {
+        Gun_Flare_Control();
+    }
+}
+
 void Gun_Flare_Control(void)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
@@ -514,5 +537,9 @@ void Gun_Flare_DrawMeshes(void)
 
 // clang-format off
 REGISTER_GUN_TYPE(
-    .gun_type = LGT_FLARE)
+    .gun_type = LGT_FLARE,
+    .draw_func = M_Draw,
+    .undraw_func = M_Undraw,
+    .draw_meshes_func = M_DrawMeshes,
+    .control_func = M_Control)
 // clang-format on
