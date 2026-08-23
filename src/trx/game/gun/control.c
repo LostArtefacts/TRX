@@ -107,7 +107,7 @@ static void M_CheckSmashablesBehindTarget(
 
 static bool M_IsUsableUnderwater(const LARA_GUN_TYPE gun_type)
 {
-    return gun_type == LGT_HARPOON;
+    return Gun_Registry_Get(gun_type)->is_usable_underwater;
 }
 
 // Where Lara is deep enough that only an underwater weapon can come out.

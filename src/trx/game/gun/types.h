@@ -87,6 +87,14 @@ typedef struct {
     // every one: a gun acts once it is ready, while a flare acts while Lara
     // is otherwise unarmed. The phase says which one runs.
     void (*control_func)(LARA_GUN_TYPE gun_type, LARA_GUN_STATE gun_status);
+    // Sends a shot on its way. Whether Lara may fire while she runs is the
+    // weapon's own business, so the routine is given her state and decides.
+    void (*fire_func)(LARA_GUN_TYPE gun_type, bool running);
+    // Whether it keeps firing while the trigger is held, which also lets
+    // Lara fire it on the move.
+    bool is_machine_gun;
+    // Whether Lara may bring it out under water.
+    bool is_usable_underwater;
     WEAPON_TYPE type;
     // Where auto-aim may lock on, and how far each arm may follow it.
     WEAPON_AIM_LIMITS lock;

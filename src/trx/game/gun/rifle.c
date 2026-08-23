@@ -107,8 +107,12 @@ static void M_Ready(const LARA_GUN_TYPE weapon_type)
     }
 }
 
-static void M_FireGeneric(const LARA_GUN_TYPE weapon_type)
+static void M_FireGeneric(const LARA_GUN_TYPE weapon_type, const bool running)
 {
+    if (running) {
+        return;
+    }
+
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
     bool fired = false;
@@ -145,7 +149,7 @@ static void M_FireGeneric(const LARA_GUN_TYPE weapon_type)
     }
 }
 
-static void M_FireM16(const bool running, const LARA_GUN_TYPE weapon_type)
+static void M_FireM16(const LARA_GUN_TYPE weapon_type, const bool running)
 {
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -173,11 +177,11 @@ static void M_FireM16(const bool running, const LARA_GUN_TYPE weapon_type)
     }
 }
 
-static void M_FireHarpoon(void)
+static void M_FireHarpoon(const LARA_GUN_TYPE weapon_type, const bool running)
 {
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (!Gun_HasRoundsLeft(LGT_HARPOON)) {
+    if (!Gun_HasRoundsLeft(weapon_type)) {
         goto finish;
     }
 
@@ -186,7 +190,7 @@ static void M_FireHarpoon(void)
         goto finish;
     }
 
-    const WEAPON_INFO *const weapon = Gun_Registry_Get(LGT_HARPOON);
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
     const GAME_VECTOR origin = {
         .pos = {
             .x = lara_item->pos.x,
@@ -254,7 +258,7 @@ static void M_FireHarpoon(void)
         },
         nullptr, projectile_item->object_id);
 
-    Gun_SpendRound(LGT_HARPOON);
+    Gun_SpendRound(weapon_type);
     Stats_AddAmmoUsed();
 
 finish:
@@ -266,22 +270,26 @@ finish:
     // that point when the count divides by the interval; one that spends none
     // counts the shots instead.
     m_HarpoonShots = (m_HarpoonShots + 1) % recoil;
-    const int32_t count = Gun_HasInfiniteAmmo(LGT_HARPOON)
+    const int32_t count = Gun_HasInfiniteAmmo(weapon_type)
         ? m_HarpoonShots
-        : Inv_GetAmmo(LGT_HARPOON);
+        : Inv_GetAmmo(weapon_type);
     if ((count % recoil) == 0) {
-        m_ReloadHarpoon = Gun_HasRoundsLeft(LGT_HARPOON);
+        m_ReloadHarpoon = Gun_HasRoundsLeft(weapon_type);
     }
 }
 
-static void M_FireGrenade(void)
+static void M_FireGrenade(const LARA_GUN_TYPE weapon_type, const bool running)
 {
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    const ITEM *const lara_item = Lara_GetItem();
-    if (!Gun_HasRoundsLeft(LGT_GRENADE)) {
+    if (running) {
         return;
     }
-    const WEAPON_INFO *const weapon = Gun_Registry_Get(LGT_GRENADE);
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const ITEM *const lara_item = Lara_GetItem();
+    if (!Gun_HasRoundsLeft(weapon_type)) {
+        return;
+    }
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
     const GAME_VECTOR origin = {
         .pos = {
             .x = lara_item->pos.x,
@@ -355,20 +363,20 @@ static void M_FireGrenade(void)
         },
         nullptr, projectile_item->object_id);
 
-    Gun_SpendRound(LGT_GRENADE);
+    Gun_SpendRound(weapon_type);
     Stats_AddAmmoUsed();
 
-    Gun_Smoke_OnFire(LGT_GRENADE, true);
+    Gun_Smoke_OnFire(weapon_type, true);
 }
 
-static void M_FireRocket(void)
+static void M_FireRocket(const LARA_GUN_TYPE weapon_type, const bool running)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const ITEM *const lara_item = Lara_GetItem();
-    if (!Gun_HasRoundsLeft(LGT_ROCKET)) {
+    if (!Gun_HasRoundsLeft(weapon_type)) {
         return;
     }
-    const WEAPON_INFO *const weapon = Gun_Registry_Get(LGT_ROCKET);
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
     const GAME_VECTOR origin = {
         .pos = {
         .x = lara_item->pos.x,
@@ -416,14 +424,14 @@ static void M_FireRocket(void)
         },
         nullptr, projectile_item->object_id);
 
-    Gun_SpendRound(LGT_ROCKET);
+    Gun_SpendRound(weapon_type);
     Stats_AddAmmoUsed();
 
     if (g_TRVersion >= 3) {
         Sound_Effect(SFX_EXPLOSION_1, &lara_item->pos, 0x5000000 | SPM_PITCH);
     }
 
-    Gun_Smoke_OnFire(LGT_ROCKET, true);
+    Gun_Smoke_OnFire(weapon_type, true);
 
     if (g_TRVersion == 3) {
         M_SetTR3ProjectileShade(projectile_item);
@@ -447,27 +455,9 @@ static void M_FireRocket(void)
 
 static void M_Fire(const LARA_GUN_TYPE weapon_type, const bool running)
 {
-    switch (weapon_type) {
-    case LGT_HARPOON:
-        M_FireHarpoon();
-        break;
-    case LGT_GRENADE:
-        if (!running) {
-            M_FireGrenade();
-        }
-        break;
-    case LGT_ROCKET:
-        M_FireRocket();
-        break;
-    case LGT_M16:
-    case LGT_MP5:
-        M_FireM16(running, weapon_type);
-        break;
-    default:
-        if (!running) {
-            M_FireGeneric(weapon_type);
-        }
-        break;
+    const WEAPON_INFO *const info = Gun_Registry_Get(weapon_type);
+    if (info->fire_func != nullptr) {
+        info->fire_func(weapon_type, running);
     }
 }
 
@@ -498,8 +488,8 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    const bool is_machine_gun =
-        weapon_type == LGT_M16 || weapon_type == LGT_MP5;
+    const WEAPON_INFO *const gun_info = Gun_Registry_Get(weapon_type);
+    const bool is_machine_gun = gun_info->is_machine_gun;
     const bool running = is_machine_gun && lara_item->speed != 0;
     const bool hold_hip_fire = is_machine_gun && !running && g_Input.action
         && g_Config.gameplay.m16_aim_mode == M16_AIM_MODE_ENHANCED;
@@ -772,7 +762,8 @@ REGISTER_GUN_TYPE(
     .draw_func = Gun_Rifle_Draw,
     .undraw_func = Gun_Rifle_Undraw,
     .draw_meshes_func = Gun_Rifle_DrawMeshes,
-    .control_func = M_Control)
+    .control_func = M_Control,
+    .fire_func = M_FireGeneric)
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_M16,
@@ -781,7 +772,9 @@ REGISTER_GUN_TYPE(
     .draw_func = Gun_Rifle_Draw,
     .undraw_func = Gun_Rifle_Undraw,
     .draw_meshes_func = Gun_Rifle_DrawMeshes,
-    .control_func = M_Control)
+    .control_func = M_Control,
+    .fire_func = M_FireM16,
+    .is_machine_gun = true)
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_MP5,
@@ -790,7 +783,9 @@ REGISTER_GUN_TYPE(
     .draw_func = Gun_Rifle_Draw,
     .undraw_func = Gun_Rifle_Undraw,
     .draw_meshes_func = Gun_Rifle_DrawMeshes,
-    .control_func = M_Control)
+    .control_func = M_Control,
+    .fire_func = M_FireM16,
+    .is_machine_gun = true)
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_GRENADE,
@@ -799,7 +794,8 @@ REGISTER_GUN_TYPE(
     .draw_func = Gun_Rifle_Draw,
     .undraw_func = Gun_Rifle_Undraw,
     .draw_meshes_func = Gun_Rifle_DrawMeshes,
-    .control_func = M_Control)
+    .control_func = M_Control,
+    .fire_func = M_FireGrenade)
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_ROCKET,
@@ -808,7 +804,8 @@ REGISTER_GUN_TYPE(
     .draw_func = Gun_Rifle_Draw,
     .undraw_func = Gun_Rifle_Undraw,
     .draw_meshes_func = Gun_Rifle_DrawMeshes,
-    .control_func = M_Control)
+    .control_func = M_Control,
+    .fire_func = M_FireRocket)
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_HARPOON,
@@ -817,7 +814,9 @@ REGISTER_GUN_TYPE(
     .draw_func = Gun_Rifle_Draw,
     .undraw_func = Gun_Rifle_Undraw,
     .draw_meshes_func = Gun_Rifle_DrawMeshes,
-    .control_func = M_Control)
+    .control_func = M_Control,
+    .fire_func = M_FireHarpoon,
+    .is_usable_underwater = true)
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_CROSSBOW,
@@ -826,5 +825,6 @@ REGISTER_GUN_TYPE(
     .draw_func = Gun_Rifle_Draw,
     .undraw_func = Gun_Rifle_Undraw,
     .draw_meshes_func = Gun_Rifle_DrawMeshes,
-    .control_func = M_Control)
+    .control_func = M_Control,
+    .fire_func = M_FireGeneric)
 // clang-format on
