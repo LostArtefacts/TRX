@@ -1,5 +1,6 @@
 #include <trx/game/camera.h>
 #include <trx/game/game_flow.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
@@ -30,7 +31,7 @@ static void M_KillLara(const ITEM *const item)
 {
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (lara->gun_type == LGT_FLARE) {
+    if (Gun_IsFlareType(lara->gun_type)) {
         lara->flare.control = false;
     }
 

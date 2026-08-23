@@ -4,6 +4,7 @@
 #include <trx/game/creature.h>
 #include <trx/game/effects.h>
 #include <trx/game/fx/water.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/registry.h>
 #include <trx/game/gun/smashing.h>
@@ -151,7 +152,9 @@ static bool M_TryExplodeItem(
         .room_num = projectile_item->room_num,
     };
     Gun_HitTarget(
-        target_item, &old_pos, &hit_pos, Gun_Registry_Get(LGT_GRENADE)->damage);
+        target_item, &old_pos, &hit_pos,
+        Gun_Registry_Get(Gun_GetTypeForProjectile(projectile_item->object_id))
+            ->damage);
     Stats_AddAmmoHits();
 
     if (Gun_GetSmashPolicy(target_item) != GUN_SMASH_POLICY_NONE) {

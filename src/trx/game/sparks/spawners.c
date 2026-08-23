@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/game/fx/water.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
 #include <trx/game/lara.h>
 #include <trx/game/output/sources/poly_fx.h>
@@ -1640,8 +1641,7 @@ void Sparks_TriggerGunSmokeDirected(
     spark->life = (Random_GetControl() & 3) + 40;
     spark->s_life = spark->life;
 
-    if ((weapon == LGT_PISTOLS || weapon == LGT_MAGNUMS || weapon == LGT_UZIS)
-        && spark->dst_color.r > 64) {
+    if (Gun_IsDualPistolType(weapon) && spark->dst_color.r > 64) {
         spark->dst_color.r = 64;
         spark->dst_color.g = 64;
         spark->dst_color.b = 64;

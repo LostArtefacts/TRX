@@ -13,23 +13,6 @@ typedef struct {
 } SAVEGAME_INVENTORY_ENTRY;
 
 typedef struct {
-    LARA_GUN_TYPE gun_type;
-    const char *key;
-    // A save written before the weapon existed carries no key for it.
-    bool required;
-} SAVEGAME_AMMO_ENTRY;
-
-// What a level's resume info holds of one weapon, under the names savegames
-// have always given them. They are not the names Lara's own ammunition goes
-// by, so they are written down rather than built from them.
-typedef struct {
-    LARA_GUN_TYPE gun_type;
-    const char *has_key;
-    const char *ammo_key;
-    bool required;
-} SAVEGAME_RESUME_WEAPON;
-
-typedef struct {
     OBJECT_ID object_id;
     const char *key;
     bool required;

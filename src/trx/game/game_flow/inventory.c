@@ -2,6 +2,8 @@
 
 #include <trx/config.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/common.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/inventory.h>
 #include <trx/game/objects.h>
 #include <trx/game/overlay.h>
@@ -241,8 +243,8 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
     RESUME_INFO *const resume = SG_Resume_GetEntry(level);
 
     if (m_RemoveWeapons) {
-        for (LARA_GUN_TYPE gun_type = LGT_UNARMED + 1; gun_type < NUM_WEAPONS;
-             gun_type++) {
+        for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
+            const LARA_GUN_TYPE gun_type = Gun_Registry_GetByIndex(i)->gun_type;
             Inv_State_SetCount(&resume->inv, Gun_GetGunObject(gun_type), 0);
         }
         resume->holsters_gun_type = LGT_UNARMED;
@@ -251,12 +253,15 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
         resume->gun_status = LGS_ARMLESS;
     }
 
-    const bool pistols_given = !Inv_State_Has(&resume->inv, O_PISTOL_ITEM)
-        && m_Add2InvItems[O_PISTOL_ITEM] != 0;
-    if (pistols_given) {
-        Inv_State_SetCount(&resume->inv, O_PISTOL_ITEM, 1);
+    const LARA_GUN_TYPE default_gun = Gun_GetDefaultType();
+    const OBJECT_ID default_gun_object = Gun_GetGunObject(default_gun);
+    const bool default_gun_given =
+        !Inv_State_Has(&resume->inv, default_gun_object)
+        && m_Add2InvItems[default_gun_object] != 0;
+    if (default_gun_given) {
+        Inv_State_SetCount(&resume->inv, default_gun_object, 1);
         if (resume->equipped_gun_type == LGT_UNARMED) {
-            resume->equipped_gun_type = LGT_PISTOLS;
+            resume->equipped_gun_type = default_gun;
         }
     }
 
@@ -264,12 +269,11 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
         memset(resume->inv.ammo, 0, sizeof(resume->inv.ammo));
     }
 
-    // Pistols the game flow hands over come loaded, even where the level took
-    // the rest away. An endless supply needs no such rounds: the count follows
-    // the gun, and Inv_State_SetCount has already written it.
-    if (pistols_given && !Gun_HasInfiniteAmmo(LGT_PISTOLS)) {
+    // The game flow always uses the loaded gun, even if the level took the
+    // rest away. The count is updated in Inv_State_SetCount.
+    if (default_gun_given && !Gun_HasInfiniteAmmo(default_gun)) {
         Inv_State_AddAmmo(
-            &resume->inv, LGT_PISTOLS, Gun_GetInitialRounds(LGT_PISTOLS));
+            &resume->inv, default_gun, Gun_GetInitialRounds(default_gun));
     }
 
     if (m_RemoveScions) {
@@ -296,8 +300,8 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
         M_ModifyResumeInfo_Item(resume, O_BINOCULARS_ITEM);
     }
 
-    for (LARA_GUN_TYPE gun_type = LGT_UNARMED + 1; gun_type < NUM_WEAPONS;
-         gun_type++) {
+    for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
+        const LARA_GUN_TYPE gun_type = Gun_Registry_GetByIndex(i)->gun_type;
         if (Gun_GetGunObject(gun_type) != NO_OBJECT) {
             M_ModifyResumeInfo_GunOrAmmo(resume, gun_type);
         }
@@ -318,18 +322,19 @@ void GF_InventoryModifier_Apply(
     // GF_InventoryModifier_ApplyToResumeInfo and Lara_InitialiseInventory.
 
     if (type == GF_INV_SECRET) {
-        if (m_Add2InvItems[O_PISTOL_ITEM]) {
-            Inv_AddItem(O_PISTOL_ITEM);
+        const LARA_GUN_TYPE default_gun = Gun_GetDefaultType();
+        if (m_Add2InvItems[Gun_GetGunObject(default_gun)]) {
+            Inv_AddItem(Gun_GetGunObject(default_gun));
             if (resume->equipped_gun_type == LGT_UNARMED) {
-                resume->equipped_gun_type = LGT_PISTOLS;
+                resume->equipped_gun_type = default_gun;
             }
         }
 
-        // The pistols are handled above: they arrive without ammunition of
-        // their own to convert.
-        for (LARA_GUN_TYPE gun_type = LGT_PISTOLS + 1; gun_type < NUM_WEAPONS;
-             gun_type++) {
-            if (Gun_GetGunObject(gun_type) != NO_OBJECT) {
+        // The default weapon arrives without ammunition.
+        for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
+            const LARA_GUN_TYPE gun_type = Gun_Registry_GetByIndex(i)->gun_type;
+            if (gun_type != default_gun
+                && Gun_GetGunObject(gun_type) != NO_OBJECT) {
                 M_ModifyInventory_GunOrAmmo(type, gun_type);
             }
         }

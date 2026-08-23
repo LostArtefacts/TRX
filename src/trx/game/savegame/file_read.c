@@ -12,6 +12,7 @@
 #include <trx/game/game_buf.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/inventory.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
@@ -332,12 +333,15 @@ static RESULT M_ReadLara(JSON_READ_IO *const io)
     // Arms need no repair; the gun control recomputes them every frame.
     MUST(M_ReadArm(io, "left_arm", &lara->left_arm));
     MUST(M_ReadArm(io, "right_arm", &lara->right_arm));
-    for (const SAVEGAME_AMMO_ENTRY *entry = g_Savegame_WeaponAmmo;
-         entry->key != nullptr; entry++) {
-        if (entry->required) {
-            MUST(M_ReadAmmo(io, entry->key, entry->gun_type));
+    for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
+        const WEAPON_INFO *const info = Gun_Registry_GetByIndex(i);
+        if (info->save_ammo_key == nullptr) {
+            continue;
+        }
+        if (info->save_keys_required) {
+            MUST(M_ReadAmmo(io, info->save_ammo_key, info->gun_type));
         } else {
-            SHOULD(M_ReadAmmo(io, entry->key, entry->gun_type));
+            SHOULD(M_ReadAmmo(io, info->save_ammo_key, info->gun_type));
         }
     }
 
@@ -909,21 +913,23 @@ static RESULT M_ReadResumeInfo(
     MUST(JSON_READ(io, "back_gun_type", &resume->back_gun_type)); // LGT_UNKNOWN
     MUST(JSON_READ(io, "costume", &resume->flags.costume));
 
-    for (const SAVEGAME_RESUME_WEAPON *entry = g_Savegame_ResumeWeapons;
-         entry->has_key != nullptr; entry++) {
+    for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
+        const WEAPON_INFO *const info = Gun_Registry_GetByIndex(i);
+        if (info->save_resume_has_key == nullptr) {
+            continue;
+        }
         int32_t ammo = 0;
         bool has_weapon = false;
-        if (entry->required) {
-            MUST(JSON_READ(io, entry->ammo_key, &ammo));
-            MUST(JSON_READ(io, entry->has_key, &has_weapon));
+        if (info->save_keys_required) {
+            MUST(JSON_READ(io, info->save_resume_ammo_key, &ammo));
+            MUST(JSON_READ(io, info->save_resume_has_key, &has_weapon));
         } else {
-            SHOULD(JSON_READ_OPT(io, entry->ammo_key, &ammo));
-            SHOULD(JSON_READ_OPT(io, entry->has_key, &has_weapon));
+            SHOULD(JSON_READ_OPT(io, info->save_resume_ammo_key, &ammo));
+            SHOULD(JSON_READ_OPT(io, info->save_resume_has_key, &has_weapon));
         }
-        resume->inv.ammo[entry->gun_type] = ammo;
+        resume->inv.ammo[info->gun_type] = ammo;
         Inv_State_SetCount(
-            &resume->inv, Gun_GetGunObject(entry->gun_type),
-            has_weapon ? 1 : 0);
+            &resume->inv, Gun_GetGunObject(info->gun_type), has_weapon ? 1 : 0);
     }
 
     // Introduced in TRX 1.9

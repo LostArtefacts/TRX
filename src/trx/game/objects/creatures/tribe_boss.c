@@ -6,6 +6,7 @@
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/fx/ring.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/items.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
@@ -894,8 +895,7 @@ static void M_FindClosestShieldPoint(ITEM *const item, const XYZ_32 pos)
         shield->sub.g = (Random_GetControl() & 7) + 8;
         shield->sub.b = (Random_GetControl() & 7) + 8;
 
-        if (lara_info->gun_type == LGT_ROCKET
-            || lara_info->gun_type == LGT_GRENADE) {
+        if (Gun_IsLauncherType(lara_info->gun_type)) {
             shield->sub.r >>= 1;
             shield->sub.g >>= 1;
             shield->sub.b >>= 1;

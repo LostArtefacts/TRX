@@ -35,48 +35,6 @@ const SAVEGAME_INVENTORY_ENTRY g_Savegame_InventoryItems[] = {
     // clang-format on
 };
 
-// Lara's ammunition as savegames name it.
-const SAVEGAME_AMMO_ENTRY g_Savegame_WeaponAmmo[] = {
-    // clang-format off
-    { LGT_PISTOLS,      "pistols",      true  },
-    { LGT_MAGNUMS,      "magnums",      true  },
-    { LGT_UZIS,         "uzis",         true  },
-    { LGT_SHOTGUN,      "shotgun",      true  },
-    { LGT_HARPOON,      "harpoon",      true  },
-    { LGT_GRENADE,      "grenade",      true  },
-    { LGT_M16,          "m16",          true  },
-    { LGT_AUTOS,        "autos",        false },
-    { LGT_DESERT_EAGLE, "desert_eagle", false },
-    { LGT_MP5,          "mp5",          false },
-    { LGT_ROCKET,       "rocket",       false },
-    { LGT_CROSSBOW,     "crossbow",     false },
-    { LGT_REVOLVER,     "revolver",     false },
-    { LGT_UNARMED,      nullptr,        false },
-    // clang-format on
-};
-
-// What a level keeps for Lara's return, under the names savegames give them.
-const SAVEGAME_RESUME_WEAPON g_Savegame_ResumeWeapons[] = {
-    // clang-format off
-    { LGT_PISTOLS,      "has_pistols",      "pistol_ammo",       true  },
-    { LGT_SHOTGUN,      "has_shotgun",      "shotgun_ammo",      true  },
-    { LGT_UZIS,         "has_uzis",         "uzi_ammo",          true  },
-    { LGT_M16,          "has_m16",          "m16_ammo",          true  },
-    { LGT_GRENADE,      "has_grenade",      "grenade_ammo",      true  },
-    { LGT_HARPOON,      "has_harpoon",      "harpoon_ammo",      true  },
-    { LGT_MAGNUMS,      "has_magnums",      "magnum_ammo",       true  },
-    // Introduced in TRX 1.1
-    { LGT_AUTOS,        "has_autos",        "autos_ammo",        false },
-    { LGT_DESERT_EAGLE, "has_desert_eagle", "desert_eagle_ammo", false },
-    { LGT_MP5,          "has_mp5",          "mp5_ammo",          false },
-    { LGT_ROCKET,       "has_rocket",       "rocket_ammo",       false },
-    // Introduced in TRX 1.9
-    { LGT_CROSSBOW,     "has_crossbow",     "crossbow_ammo",     false },
-    { LGT_REVOLVER,     "has_revolver",     "revolver_ammo",     false },
-    { LGT_UNARMED,      nullptr,            nullptr,             false },
-    // clang-format on
-};
-
 const SAVEGAME_RESUME_ITEM g_Savegame_ResumeItems[] = {
     // clang-format off
     { O_SMALL_MEDIPACK_ITEM, "num_medis",         true  },

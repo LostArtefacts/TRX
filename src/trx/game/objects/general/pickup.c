@@ -415,8 +415,8 @@ static void M_DoFlarePickup(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    lara->request_gun_type = LGT_FLARE;
-    lara->gun_type = LGT_FLARE;
+    lara->request_gun_type = Gun_GetFlareType();
+    lara->gun_type = lara->request_gun_type;
     Gun_InitialiseNewWeapon();
     lara->gun_status = LGS_SPECIAL;
     lara->flare.age = FlareItem_GetAge(item);
@@ -947,7 +947,7 @@ static bool M_CanCollide(const int16_t item_num)
     }
 
     if (item->object_id == O_FLARE_ITEM) {
-        return Lara_GetLaraInfo()->gun_type != LGT_FLARE;
+        return !Gun_IsFlareType(Lara_GetLaraInfo()->gun_type);
     }
 
     const M_PRIV *const p = item->priv;
