@@ -2,6 +2,7 @@
 
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
@@ -38,45 +39,19 @@ static void M_CompleteLevel(void)
 static void M_GiveItems(void)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    if (Lara_Cheat_GiveGun(LGT_SHOTGUN, false)) {
-        Inv_SetAmmo(LGT_SHOTGUN, 500);
-    }
-    if (Lara_Cheat_GiveGun(LGT_MAGNUMS, false)) {
-        Inv_SetAmmo(LGT_MAGNUMS, 500);
-    }
-    if (Lara_Cheat_GiveGun(LGT_AUTOS, false)) {
-        Inv_SetAmmo(LGT_AUTOS, 500);
-    }
-    if (Lara_Cheat_GiveGun(LGT_DESERT_EAGLE, false)) {
-        Inv_SetAmmo(LGT_DESERT_EAGLE, 500);
-    }
-    if (Lara_Cheat_GiveGun(LGT_UZIS, false)) {
-        Inv_SetAmmo(LGT_UZIS, 5000);
-    }
-    if (Lara_Cheat_GiveGun(LGT_HARPOON, false)) {
-        Inv_SetAmmo(LGT_HARPOON, 5000);
-    }
-    if (Lara_Cheat_GiveGun(LGT_GRENADE, false)) {
-        Inv_SetAmmo(LGT_GRENADE, 5000);
-    }
-    if (Lara_Cheat_GiveGun(LGT_ROCKET, false)) {
-        Inv_SetAmmo(LGT_ROCKET, 5000);
-    }
-    if (Lara_Cheat_GiveGun(LGT_M16, false)) {
-        Inv_SetAmmo(LGT_M16, 5000);
-    }
-    if (Lara_Cheat_GiveGun(LGT_MP5, false)) {
-        Inv_SetAmmo(LGT_MP5, 5000);
-    }
-    if (Lara_Cheat_GiveGun(LGT_CROSSBOW, false)) {
-        Inv_SetAmmo(LGT_CROSSBOW, 5000);
-    }
-    if (Lara_Cheat_GiveGun(LGT_REVOLVER, false)) {
-        Inv_SetAmmo(LGT_REVOLVER, 500);
+    for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
+        const WEAPON_INFO *const info = Gun_Registry_GetByIndex(i);
+        const LARA_GUN_TYPE gun_type = info->gun_type;
+        if (info->cheat_key_ammo == 0) {
+            continue;
+        }
+        if (Lara_Cheat_GiveGun(gun_type, false)) {
+            Inv_SetAmmo(gun_type, info->cheat_key_ammo);
+        }
     }
     Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, 50);
     Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, 50);
-    if (Gun_Registry_Get(LGT_FLARE)->is_available) {
+    if (Gun_Registry_Get(Gun_GetFlareType())->is_available) {
         Inv_AddItemNTimes(O_FLARE_ITEM, 50);
     }
     Sound_Effect(SFX_LARA_HOLSTER, nullptr, SPM_ALWAYS);
@@ -115,7 +90,7 @@ static bool M_ProcessOutcome(
         break;
 
     case 2:
-        if (m_InitialGunType == LGT_FLARE
+        if (Gun_IsFlareType(m_InitialGunType)
             && lara_info->gun_type == m_InitialGunType
             && lara_info->gun_status == m_InitialGunState) {
             if (state == LS(LS_JUMP_FORWARD)) {
@@ -129,7 +104,8 @@ static bool M_ProcessOutcome(
         break;
 
     case 3:
-        if (m_InitialGunType == LGT_PISTOLS && m_InitialGunState == LGS_READY
+        if (m_InitialGunType == Gun_GetDefaultType()
+            && m_InitialGunState == LGS_READY
             && lara_info->gun_type == m_InitialGunType
             && lara_info->gun_status == m_InitialGunState) {
             if (state == LS(LS_JUMP_FORWARD)) {

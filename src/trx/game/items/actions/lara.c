@@ -1,4 +1,5 @@
 #include <trx/game/camera.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/gun/smoke.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/skin/common.h>
@@ -41,11 +42,11 @@ static void M_ToggleGun(
     const bool armed =
         Lara_Skin_GetEquipment(hand_mesh_idx)->type == EQUIPMENT_TYPE_WEAPON;
     if (armed) {
-        Lara_Skin_SetGunEquipment(thigh_mesh_idx, LGT_PISTOLS);
+        Lara_Skin_SetGunEquipment(thigh_mesh_idx, Gun_GetDefaultType());
         Lara_Skin_SetGunEquipment(hand_mesh_idx, LGT_UNARMED);
     } else {
         Lara_Skin_SetGunEquipment(thigh_mesh_idx, LGT_UNARMED);
-        Lara_Skin_SetGunEquipment(hand_mesh_idx, LGT_PISTOLS);
+        Lara_Skin_SetGunEquipment(hand_mesh_idx, Gun_GetDefaultType());
     }
 }
 
@@ -63,8 +64,8 @@ static void M_ShootRightGun(ITEM *const item)
 {
     Lara_GetLaraInfo()->right_arm.flash_gun = 3;
     if (g_TRVersion == 3) {
-        Spawn_GunShell(LGT_PISTOLS, true);
-        Gun_Smoke_OnFire(LGT_PISTOLS, true);
+        Spawn_GunShell(Gun_GetDefaultType(), true);
+        Gun_Smoke_OnFire(Gun_GetDefaultType(), true);
     }
 }
 
@@ -72,8 +73,8 @@ static void M_ShootLeftGun(ITEM *const item)
 {
     Lara_GetLaraInfo()->left_arm.flash_gun = 3;
     if (g_TRVersion == 3) {
-        Spawn_GunShell(LGT_PISTOLS, false);
-        Gun_Smoke_OnFire(LGT_PISTOLS, false);
+        Spawn_GunShell(Gun_GetDefaultType(), false);
+        Gun_Smoke_OnFire(Gun_GetDefaultType(), false);
     }
 }
 

@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/console.h>
@@ -12,6 +13,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/gym.h>
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
@@ -162,12 +164,17 @@ static void M_ShowAmmoQuantity(
 }
 
 // What a weapon has left, counted in shots rather than in the rounds behind
-// them: the shotgun spends six of those on one shot.
-static void M_ShowGunAmmoQuantity(
-    const LARA_GUN_TYPE gun_type, const char *const fmt)
+// them: the shotgun spends six of those on one shot. TR1 draws the icon of
+// the ammunition beside the number, where the weapon has one.
+static void M_ShowGunAmmoQuantity(const LARA_GUN_TYPE gun_type)
 {
+    const WEAPON_INFO *const info = Gun_Registry_Get(gun_type);
+    const char *const icon = g_TRVersion == 1 ? info->ammo_icon : nullptr;
+    char *fmt = icon != nullptr ? String_Format("%%5d %s", icon) : nullptr;
     M_ShowAmmoQuantity(
-        gun_type, fmt, Inv_GetAmmo(gun_type) / Gun_GetRoundsPerShot(gun_type));
+        gun_type, fmt != nullptr ? fmt : "%5d",
+        Inv_GetAmmo(gun_type) / Gun_GetRoundsPerShot(gun_type));
+    Memory_FreePointer(&fmt);
 }
 
 static void M_RingIsOpen(INV_RING *const ring)
@@ -189,44 +196,13 @@ static void M_RingNotActive(
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     const int32_t qty = Inv_GetItemCount(inv_item->object_id);
 
-    switch (inv_item->object_id) {
-    case O_PISTOL_OPTION:
-        M_ShowGunAmmoQuantity(LGT_PISTOLS, "%5d");
-        break;
-    case O_SHOTGUN_OPTION:
-        M_ShowGunAmmoQuantity(
-            LGT_SHOTGUN, g_TRVersion == 1 ? "%5d \\{ammo shotgun}" : "%5d");
-        break;
-    case O_MAGNUM_OPTION:
-        M_ShowGunAmmoQuantity(
-            LGT_MAGNUMS, g_TRVersion == 1 ? "%5d \\{ammo magnums}" : "%5d");
-        break;
-    case O_AUTOS_OPTION:
-        M_ShowGunAmmoQuantity(LGT_AUTOS, "%5d");
-        break;
-    case O_DESERT_EAGLE_OPTION:
-        M_ShowGunAmmoQuantity(LGT_DESERT_EAGLE, "%5d");
-        break;
-    case O_UZI_OPTION:
-        M_ShowGunAmmoQuantity(
-            LGT_UZIS, g_TRVersion == 1 ? "%5d \\{ammo uzis}" : "%5d");
-        break;
-    case O_HARPOON_OPTION:
-        M_ShowGunAmmoQuantity(LGT_HARPOON, "%5d");
-        break;
-    case O_M16_OPTION:
-        M_ShowGunAmmoQuantity(LGT_M16, "%5d");
-        break;
-    case O_MP5_OPTION:
-        M_ShowGunAmmoQuantity(LGT_MP5, "%5d");
-        break;
-    case O_GRENADE_GUN_OPTION:
-        M_ShowGunAmmoQuantity(LGT_GRENADE, "%5d");
-        break;
-    case O_ROCKET_GUN_OPTION:
-        M_ShowGunAmmoQuantity(LGT_ROCKET, "%5d");
-        break;
+    const LARA_GUN_TYPE gun_type =
+        Gun_GetType(Inv_GetItemPickup(inv_item->object_id));
+    if (gun_type != LGT_UNARMED) {
+        M_ShowGunAmmoQuantity(gun_type);
+    }
 
+    switch (inv_item->object_id) {
     case O_PISTOL_AMMO_OPTION:
     case O_SHOTGUN_AMMO_OPTION:
     case O_MAGNUM_AMMO_OPTION:
@@ -239,15 +215,16 @@ static void M_RingNotActive(
     case O_GRENADE_AMMO_OPTION:
     case O_ROCKET_AMMO_OPTION: {
         const OBJECT_ID ammo_object_id = Inv_GetItemPickup(inv_item->object_id);
-        const LARA_GUN_TYPE gun_type = Gun_GetType(
+        const LARA_GUN_TYPE ammo_gun_type = Gun_GetType(
             Object_GetCognateInverse(ammo_object_id, g_GunAmmoObjectMap));
         M_ShowAmmoQuantity(
-            gun_type, "%d", qty * Gun_GetAmmoInventoryQuantity(gun_type));
+            ammo_gun_type, "%d",
+            qty * Gun_GetAmmoInventoryQuantity(ammo_gun_type));
         break;
     }
 
     case O_FLAREBOX_OPTION:
-        M_ShowAmmoQuantity(LGT_FLARE, "%d", qty);
+        M_ShowAmmoQuantity(Gun_GetFlareType(), "%d", qty);
         break;
 
     case O_SMALL_MEDIPACK_OPTION:

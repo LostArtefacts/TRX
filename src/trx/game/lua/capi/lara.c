@@ -1,4 +1,5 @@
 #include <trx/game/gun.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
 #include <trx/game/inventory.h>
 #include <trx/game/items/const.h>
@@ -219,11 +220,12 @@ static int M_L_LaraSetSpeechFace(lua_State *const L)
 static int M_L_LaraHasPistolWeapon(lua_State *const L)
 {
     bool has_pistol = false;
-    for (int32_t i = 0; i < NUM_WEAPONS; i++) {
-        const WEAPON_INFO *const weapon = Gun_Registry_Get(i);
+    for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
+        const WEAPON_INFO *const weapon = Gun_Registry_GetByIndex(i);
+        const LARA_GUN_TYPE gun_type = weapon->gun_type;
         if ((weapon->type == WEAPON_TYPE_DUAL_PISTOLS
              || weapon->type == WEAPON_TYPE_SINGLE_PISTOL)
-            && Inv_HasItem(Gun_GetGunObject(i))) {
+            && Inv_HasItem(Gun_GetGunObject(gun_type))) {
             has_pistol = true;
             break;
         }

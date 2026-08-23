@@ -1,5 +1,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/common.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/inventory.h>
 #include <trx/game/inventory_ring/types.h>
 #include <trx/game/lua/common.h>
@@ -101,7 +103,7 @@ static int32_t M_GetCount(lua_State *const L, const int arg)
 static LARA_GUN_TYPE M_GetWeapon(lua_State *const L, const int arg)
 {
     const lua_Integer gun_type = luaL_checkinteger(L, arg);
-    if (gun_type <= LGT_UNARMED || gun_type >= NUM_WEAPONS) {
+    if (gun_type <= LGT_UNARMED || !Gun_Registry_IsValidType(gun_type)) {
         luaL_argerror(L, arg, "not a weapon");
     }
     return (LARA_GUN_TYPE)gun_type;

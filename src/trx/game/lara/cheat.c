@@ -7,6 +7,7 @@
 #include <trx/game/game.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
@@ -23,48 +24,22 @@ static void M_GiveAllGunsImpl(const bool ignore_exclusions)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     const bool bonus_flag = Game_IsBonusFlagSet(GBF_NGPLUS);
-    Inv_AddItem(O_PISTOL_ITEM);
-    if (Lara_Cheat_GiveGun(LGT_SHOTGUN, ignore_exclusions)) {
-        Inv_SetAmmo(LGT_SHOTGUN, bonus_flag ? 10001 : 300);
-    }
-    if (Lara_Cheat_GiveGun(LGT_MAGNUMS, ignore_exclusions)) {
-        Inv_SetAmmo(LGT_MAGNUMS, bonus_flag ? 10001 : 1000);
-    }
-    if (Lara_Cheat_GiveGun(LGT_AUTOS, ignore_exclusions)) {
-        Inv_SetAmmo(LGT_AUTOS, bonus_flag ? 10001 : 1000);
-    }
-    if (Lara_Cheat_GiveGun(LGT_DESERT_EAGLE, ignore_exclusions)) {
-        Inv_SetAmmo(LGT_DESERT_EAGLE, bonus_flag ? 10001 : 1000);
-    }
-    if (Lara_Cheat_GiveGun(LGT_UZIS, ignore_exclusions)) {
-        Inv_SetAmmo(LGT_UZIS, bonus_flag ? 10001 : 2000);
-    }
-    if (Lara_Cheat_GiveGun(LGT_HARPOON, ignore_exclusions)) {
-        Inv_SetAmmo(LGT_HARPOON, bonus_flag ? 10001 : 300);
-    }
-    if (Lara_Cheat_GiveGun(LGT_M16, ignore_exclusions)) {
-        Inv_SetAmmo(LGT_M16, bonus_flag ? 10001 : 300);
-    }
-    if (Lara_Cheat_GiveGun(LGT_MP5, ignore_exclusions)) {
-        Inv_SetAmmo(LGT_MP5, bonus_flag ? 10001 : 300);
-    }
-    if (Lara_Cheat_GiveGun(LGT_GRENADE, ignore_exclusions)) {
-        Inv_SetAmmo(LGT_GRENADE, bonus_flag ? 10001 : 300);
-    }
-    if (Lara_Cheat_GiveGun(LGT_ROCKET, ignore_exclusions)) {
-        Inv_SetAmmo(LGT_ROCKET, bonus_flag ? 10001 : 300);
-    }
-    if (Lara_Cheat_GiveGun(LGT_CROSSBOW, ignore_exclusions)) {
-        Inv_SetAmmo(LGT_CROSSBOW, bonus_flag ? 10001 : 300);
-    }
-    if (Lara_Cheat_GiveGun(LGT_REVOLVER, ignore_exclusions)) {
-        Inv_SetAmmo(LGT_REVOLVER, bonus_flag ? 10001 : 1000);
+    Inv_AddItem(Gun_GetGunObject(Gun_GetDefaultType()));
+    for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
+        const WEAPON_INFO *const info = Gun_Registry_GetByIndex(i);
+        const LARA_GUN_TYPE gun_type = info->gun_type;
+        if (info->cheat_ammo == 0) {
+            continue;
+        }
+        if (Lara_Cheat_GiveGun(gun_type, ignore_exclusions)) {
+            Inv_SetAmmo(gun_type, bonus_flag ? 10001 : info->cheat_ammo);
+        }
     }
 }
 
 static void M_GiveAllMedpacksImpl(void)
 {
-    if (Gun_Registry_Get(LGT_FLARE)->is_available) {
+    if (Gun_Registry_Get(Gun_GetFlareType())->is_available) {
         Inv_AddItemNTimes(O_FLAREBOX_ITEM, 10);
     }
     Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, 10);
@@ -91,7 +66,7 @@ static void M_ResetGunStatus(void)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     const bool has_flare = Gun_Flare_IsMeshActive();
     if (has_flare) {
-        lara_info->gun_type = LGT_FLARE;
+        lara_info->gun_type = Gun_GetFlareType();
         return;
     }
 

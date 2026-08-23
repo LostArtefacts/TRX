@@ -1,4 +1,5 @@
 #include <trx/game/gun.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/field.h>
@@ -112,7 +113,7 @@ TYPE_DEFINE(WEAPON_INFO, m_WeaponFields)
 static LARA_GUN_TYPE M_GetWeapon(lua_State *const L, const int arg)
 {
     const lua_Integer gun_type = luaL_checkinteger(L, arg);
-    if (gun_type <= LGT_UNARMED || gun_type >= NUM_WEAPONS) {
+    if (gun_type <= LGT_UNARMED || !Gun_Registry_IsValidType(gun_type)) {
         luaL_argerror(L, arg, "not a weapon");
     }
     return (LARA_GUN_TYPE)gun_type;
@@ -179,7 +180,8 @@ static const char *M_SetEquipAnim(void *const self, const TRX_VALUE *const in)
 
 static void *M_ResolveWeapon(const LUA_STRUCT_REF *const ref)
 {
-    if (ref->handle.id <= LGT_UNARMED || ref->handle.id >= NUM_WEAPONS) {
+    if (ref->handle.id <= LGT_UNARMED
+        || !Gun_Registry_IsValidType(ref->handle.id)) {
         return nullptr;
     }
     return Gun_Registry_Get(ref->handle.id);

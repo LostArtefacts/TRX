@@ -3,6 +3,7 @@
 #include <trx/core/log.h>
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
 #include <trx/game/inventory_ring.h>
 #include <trx/game/lara.h>
@@ -42,13 +43,13 @@ static const INVENTORY_ENTRY *M_FindEntry(
 static void M_SetCount(
     INVENTORY_STATE *const state, const OBJECT_ID object_id, const int32_t qty)
 {
-    // While the pistols' supply never runs out, the number behind it stands
+    // While an endless supply never runs out, the number behind it stands
     // for the gun rather than for anything she picked up. Left behind, it
     // would draw boxes of clips she never found.
-    if (object_id == O_PISTOL_OPTION && Gun_HasInfiniteAmmo(LGT_PISTOLS)) {
+    const LARA_GUN_TYPE gun_type = Gun_GetType(Inv_GetItemPickup(object_id));
+    if (gun_type != LGT_UNARMED && Gun_HasInfiniteAmmo(gun_type)) {
         Inv_State_SetAmmo(
-            state, LGT_PISTOLS,
-            qty > 0 ? Gun_GetInitialRounds(LGT_PISTOLS) : 0);
+            state, gun_type, qty > 0 ? Gun_GetInitialRounds(gun_type) : 0);
     }
 
     const int32_t idx = M_FindEntryIndex(state, object_id);
@@ -111,16 +112,17 @@ static int32_t M_GetAmmoBoxCount(
     return Inv_State_GetAmmo(state, gun_type) / Gun_GetRoundsPerBox(gun_type);
 }
 
-// Where a weapon's rounds are kept, or nullptr for one that spends none. The
-// skidoo shoots from the pistols' endless supply.
+// Where a weapon's rounds are kept, or nullptr for one that spends none. A
+// weapon fixed to a vehicle shoots from the default weapon's endless supply.
 static int32_t *M_GetAmmoSlot(
     INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type)
 {
-    if (gun_type == LGT_SKIDOO) {
-        return &state->ammo[LGT_PISTOLS];
+    if (Gun_Registry_IsValidType(gun_type)
+        && Gun_Registry_Get(gun_type)->type == WEAPON_TYPE_MOUNTED) {
+        return &state->ammo[Gun_GetDefaultType()];
     }
-    if (gun_type <= LGT_UNARMED || gun_type >= NUM_WEAPONS
-        || gun_type == LGT_FLARE) {
+    if (gun_type <= LGT_UNARMED || !Gun_Registry_IsValidType(gun_type)
+        || Gun_IsFlareType(gun_type)) {
         return nullptr;
     }
     return &state->ammo[gun_type];
@@ -282,8 +284,8 @@ int32_t Inv_State_GetDrawnEntries(
     }
     // A box of ammunition is drawn for rounds she has no gun to spend, and
     // stops being drawn the moment she finds one.
-    for (LARA_GUN_TYPE gun_type = LGT_PISTOLS;
-         gun_type < NUM_WEAPONS && count < max_count; gun_type++) {
+    for (int32_t i = 0; i < Gun_Registry_GetCount() && count < max_count; i++) {
+        const LARA_GUN_TYPE gun_type = Gun_Registry_GetByIndex(i)->gun_type;
         const OBJECT_ID ammo_object = Gun_GetAmmoObject(gun_type);
         if (ammo_object == NO_OBJECT
             || Inv_State_Has(state, Gun_GetGunObject(gun_type))
@@ -398,7 +400,7 @@ bool Inv_AddItem(const OBJECT_ID object_id)
     }
 
     const int32_t qty = object_id == O_FLAREBOX_ITEM
-        ? Gun_Registry_Get(LGT_FLARE)->ammo.box_shots
+        ? Gun_Registry_Get(Gun_GetFlareType())->ammo.box_shots
         : 1;
     const OBJECT_ID entry_id = M_GetEntryID(object_id);
 
@@ -418,14 +420,16 @@ bool Inv_AddItem(const OBJECT_ID object_id)
         return true;
     }
 
-    // The pistols arrive loaded, as every other weapon arrives with the rounds
-    // it is picked up with. They are kept out of Item_GlobalReplace: a level
-    // that is not meant to hold them says so through the game flow.
-    if (inv_object_id == O_PISTOL_OPTION) {
-        Inv_AddAmmo(LGT_PISTOLS, Gun_GetInitialRounds(LGT_PISTOLS));
-        M_SetCount(&m_State, O_PISTOL_OPTION, 1);
+    // The default weapon arrives loaded, as every other weapon arrives with
+    // the rounds it is picked up with. It is kept out of Item_GlobalReplace:
+    // a level that is not meant to hold it says so through the game flow.
+    const LARA_GUN_TYPE default_gun = Gun_GetDefaultType();
+    if (Gun_GetType(Inv_GetItemPickup(inv_object_id)) == default_gun
+        && default_gun != LGT_UNARMED) {
+        Inv_AddAmmo(default_gun, Gun_GetInitialRounds(default_gun));
+        M_SetCount(&m_State, inv_object_id, 1);
         if (lara->last_gun_type == LGT_UNARMED) {
-            lara->last_gun_type = LGT_PISTOLS;
+            lara->last_gun_type = default_gun;
         }
         InvRing_Rebuild();
         return true;

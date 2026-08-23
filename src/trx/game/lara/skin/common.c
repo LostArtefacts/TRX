@@ -12,6 +12,8 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/common.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/skin/gold.h>
 #include <trx/version.h>
@@ -758,7 +760,7 @@ void Lara_Skin_SetGunEquipment(
     const LARA_MESH mesh, const LARA_GUN_TYPE gun_type)
 {
     // The armed meshes live in the swap object, and a level need not carry it.
-    if (gun_type < 0 || gun_type >= NUM_WEAPONS
+    if (!Gun_Registry_IsValidType(gun_type)
         || !Object_Get(M_GetCurrentOutfit()->guns_obj_id)->loaded) {
         return;
     }

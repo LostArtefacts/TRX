@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/util.h>
@@ -63,7 +64,8 @@ static bool M_TestWaterClimbOut(ITEM *const item, const COLL_INFO *const coll)
     }
 
     if (lara->gun_status != LGS_ARMLESS
-        && (lara->gun_status != LGS_READY || lara->gun_type != LGT_FLARE)) {
+        && (lara->gun_status != LGS_READY
+            || !Gun_IsFlareType(lara->gun_type))) {
         return false;
     }
 

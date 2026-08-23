@@ -16,6 +16,16 @@ static const GAME_OBJECT_PAIR m_AnimMap[] = {
     { NO_OBJECT, NO_OBJECT },
 };
 
+// The weapon a vehicle shoots with. Lara's own is put away while she rides,
+// so what her ammunition counter shows comes from here.
+static const struct {
+    OBJECT_ID object_id;
+    LARA_GUN_TYPE gun_type;
+} m_GunMap[] = {
+    { O_UPV, LGT_HARPOON },
+    { NO_OBJECT, LGT_UNARMED },
+};
+
 static int16_t m_VehicleItemNum = NO_ITEM;
 static OBJECT_ID m_AnimationObject = NO_OBJECT;
 
@@ -31,6 +41,20 @@ static void M_UpdateAnimationObject(void)
     m_AnimationObject = obj_id != NO_OBJECT && Object_Get(obj_id)->loaded
         ? obj_id
         : O_LARA_VEHICLE_ANIM;
+}
+
+LARA_GUN_TYPE Lara_Vehicle_GetGunType(void)
+{
+    if (!Lara_Vehicle_IsMounted()) {
+        return LGT_UNARMED;
+    }
+    const ITEM *const vehicle = Lara_Vehicle_GetItem();
+    for (int32_t i = 0; m_GunMap[i].object_id != NO_OBJECT; i++) {
+        if (m_GunMap[i].object_id == vehicle->object_id) {
+            return m_GunMap[i].gun_type;
+        }
+    }
+    return LGT_UNARMED;
 }
 
 bool Lara_Vehicle_IsMounted(void)

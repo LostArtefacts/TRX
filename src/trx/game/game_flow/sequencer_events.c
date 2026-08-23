@@ -190,7 +190,7 @@ M_GF_HANDLER(M_HandlePlayLevel)
         gf_cmd = GF_RunCutscene(level->num, (bool)(intptr_t)seq_ctx_arg);
     } else {
         if (seq_ctx != GFSC_SAVED && level != GF_GetFirstLevel()) {
-            Lara_RevertToPistolsIfNeeded();
+            Lara_RevertToDefaultGunIfNeeded();
         }
         gf_cmd = GF_RunGame(level, seq_ctx);
     }
