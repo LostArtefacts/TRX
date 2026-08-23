@@ -141,6 +141,9 @@
         <property category="TRX" defaultValue="150" description="Damage dealt by melee attacks." displayName="Damage" internalName="damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="5" description="Damage dealt by melee attacks against non-player targets." displayName="Enemy Damage" internalName="enemy_damage" minValue="0" type="Int" />
     </moveable>
+    <moveable id="55-57">
+        <property category="TRX" defaultValue="false" description="Whether the block can only be activated from heavy triggers." displayName="Requires Heavy Trigger" internalName="requires_heavy_trigger" type="Bool" />
+    </moveable>
     <moveable id="58,96">
         <property category="TRX" defaultValue="50" description="Damage dealt while Lara is touching the pendulum." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>

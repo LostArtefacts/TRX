@@ -1028,6 +1028,30 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### O_FALLING_BLOCK_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (35)</th><th align="center">TR2 (55)</th><th align="center">TR3 (83)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>requires_heavy_trigger</code></td><td colspan="3" align="center">false</td><td>Whether the block can only be activated from heavy triggers.</td></tr>
+</tbody>
+</table>
+
+#### O_FALLING_BLOCK_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (56)</th><th align="center">TR3 (84)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>requires_heavy_trigger</code></td><td colspan="3" align="center">false</td><td>Whether the block can only be activated from heavy triggers.</td></tr>
+</tbody>
+</table>
+
+#### O_FALLING_BLOCK_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (57)</th><th align="center">TR3 (85)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>requires_heavy_trigger</code></td><td colspan="3" align="center">false</td><td>Whether the block can only be activated from heavy triggers.</td></tr>
+</tbody>
+</table>
+
 #### O_FALLING_CEILING_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (53)</th><th align="center">TR2 (79)</th><th align="center">TR3 (107)</th><th>Description</th></tr></thead>

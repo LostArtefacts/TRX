@@ -1,4 +1,5 @@
 #include <trx/game/effects.h>
+#include <trx/game/fx/debris.h>
 #include <trx/game/lara.h>
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
@@ -180,6 +181,18 @@ static void M_SpawnTR4Explosion(const XYZ_32 pos, const int16_t room_num)
     Sound_Effect(SFX_EXPLOSION_1, &pos, SPM_NORMAL);
 }
 
+static void M_SpawnTR4Shatter(
+    const EFFECT *const effect, const int32_t xz_vel, const int32_t face_count)
+{
+    const SHATTER_ITEM shatter_item = {
+        .mesh = Object_GetMesh(effect->frame_num),
+        .pos = effect->pos,
+        .yaw = effect->rot.y,
+        .flags = effect->flag1 & 0x400,
+    };
+    FX_Debris_ShatterItem(&shatter_item, face_count, effect->room_num, xz_vel);
+}
+
 // Port of the TR4 ControlBodyPart (missile.cpp). OG only shatters the part
 // into debris on landing; we trail fire sparks and burst instead, since the
 // parts here come from an exploding death.
@@ -195,8 +208,11 @@ static void M_Control_TR4(const int16_t effect_num)
     effect->pos = XYZ_32_OffsetYaw(effect->pos, effect->rot.y, effect->speed);
     effect->pos.y += effect->fall_speed;
 
+    // Collapsible tiles don't burn/explode
+    const bool do_burn_effects = (effect->flag1 & 0x800) == 0;
+
     const int32_t time4 = (int32_t)Output_GetTimeInGame() * 4;
-    if ((time4 & 0xC) == 0 && (effect->counter & 3) != 0) {
+    if ((time4 & 0xC) == 0 && (effect->counter & 3) != 0 && do_burn_effects) {
         Sparks_TriggerFireFlame(effect->pos, effect_num, 0);
     }
 
@@ -212,9 +228,20 @@ static void M_Control_TR4(const int16_t effect_num)
 
     const int32_t height = Room_GetHeight(sector, effect->pos);
     if (effect->pos.y >= height) {
-        if ((effect->counter & 3) != 0) {
+        if ((effect->counter & 3) != 0 && do_burn_effects) {
             M_SpawnTR4Explosion(
                 (XYZ_32) { effect->pos.x, height, effect->pos.z }, room_num);
+            Effect_Destroy(effect_num);
+            return;
+        }
+
+        if ((effect->counter & 1) != 0 && !do_burn_effects) {
+            if ((effect->flag1 & 0x200) != 0) {
+                M_SpawnTR4Shatter(effect, -2, 32);
+            } else {
+                M_SpawnTR4Shatter(effect, -1, 32);
+            }
+            Sound_Effect(SFX_ROCK_FALL_LAND, &effect->pos, SPM_NORMAL);
             Effect_Destroy(effect_num);
             return;
         }

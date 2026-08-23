@@ -208,6 +208,9 @@
     <moveable id="74-82">
         <property category="TRX" defaultValue="0" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
     </moveable>
+    <moveable id="83-85">
+        <property category="TRX" defaultValue="false" description="Whether the block can only be activated from heavy triggers." displayName="Requires Heavy Trigger" internalName="requires_heavy_trigger" type="Bool" />
+    </moveable>
     <moveable id="86,121">
         <property category="TRX" defaultValue="50" description="Damage dealt while Lara is touching the pendulum." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>

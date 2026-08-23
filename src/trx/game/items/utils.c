@@ -242,7 +242,7 @@ int32_t Item_Shatter(
     // fireball. OG raises it at the call site rather than inside
     // ExplodingDeath2; here the damage tells the explosive shatters apart from
     // the likes of falling blocks, which come apart in silence.
-    if (g_TRVersion == 4 && damage != 0) {
+    if (g_TRVersion == 4 && damage != 0 && (damage & 0x800) == 0) {
         const BOUNDS_16 bounds = best_frame->bounds;
         const XYZ_32 pos = {
             .x = item->pos.x,
@@ -282,10 +282,27 @@ int32_t Item_Shatter(
             effect->pos.x = item->pos.x + local.x;
             effect->pos.y = item->pos.y + local.y;
             effect->pos.z = item->pos.z + local.z;
-            effect->rot.y = (Random_GetControl() - 0x4000) * 2;
             effect->room_num = item->room_num;
-            effect->speed = Random_GetControl() >> speed_shift;
-            effect->fall_speed = -Random_GetControl() >> speed_shift;
+            if (g_TRVersion < 4) {
+                effect->rot.y = (Random_GetControl() - 0x4000) * 2;
+                effect->speed = Random_GetControl() >> speed_shift;
+                effect->fall_speed = -Random_GetControl() >> speed_shift;
+            } else {
+                effect->rot.y = Random_GetControl() * 2;
+                if ((damage & 0x20) != 0) {
+                    effect->speed = Random_GetControl() >> 12;
+                } else if ((damage & 0x10) == 0) {
+                    effect->speed = Random_GetControl() >> 8;
+                }
+                if ((damage & 0x80) != 0) {
+                    effect->speed = -Random_GetControl() >> 12;
+                } else if ((damage & 0x40) == 0) {
+                    effect->speed = -Random_GetControl() >> 8;
+                }
+
+                effect->flag1 = damage;
+            }
+
             effect->counter =
                 is_tr3 ? ((damage << 2) | (Random_GetControl() & 3)) : damage;
             effect->object_id = O_BODY_PART;
