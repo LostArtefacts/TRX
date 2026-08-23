@@ -24,11 +24,17 @@ void Gun_Registry_Register(const WEAPON_INFO *const info)
 
 void Gun_Registry_Seed(void)
 {
+    memset(m_Weapons, 0, sizeof(m_Weapons));
     for (int32_t i = 0; i < MAX_WEAPONS; i++) {
         m_Weapons[i] = (WEAPON_INFO) {
             .gun_type = (LARA_GUN_TYPE)i,
+            .equip_input_role = (INPUT_ROLE)-1,
             .glow.scale = 1.0f,
+            .gun_object_id = NO_OBJECT,
+            .ammo_object_id = NO_OBJECT,
+            .anim_object_id = NO_OBJECT,
             .shell_object_id = NO_OBJECT,
+            .projectile_object_id = NO_OBJECT,
         };
         if (m_Declared[i] != nullptr) {
             m_Weapons[i] = *m_Declared[i];

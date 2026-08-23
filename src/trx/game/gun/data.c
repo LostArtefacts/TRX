@@ -5,6 +5,7 @@
 #include <trx/core/subsystem.h>
 #include <trx/game/catalog/manager.h>
 #include <trx/game/const.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/paths.h>
@@ -92,6 +93,8 @@ static void M_ReadAmmoInfo(JSON_OBJECT *const obj, const int32_t type)
         M_ReadAmmoValue(ammo_obj, "box_shots", "pickup_qty", ammo->box_shots);
     ammo->box_label_qty = M_ReadAmmoValue(
         ammo_obj, "box_label_qty", "inventory_qty", ammo->box_label_qty);
+    ammo->rounds_per_shot = M_ReadAmmoValue(
+        ammo_obj, "rounds_per_shot", "rounds_per_shot", ammo->rounds_per_shot);
     ammo->infinite = JSON_ObjectGetBool(ammo_obj, "infinite", ammo->infinite);
 }
 
@@ -102,13 +105,24 @@ static RESULT M_ReadWeapons(JSON_OBJECT *const root_obj, const char *const path)
 #define L_READ_DIST(name, target)                                              \
     target = JSON_ObjectGetDouble(obj, name, target / (float)WALL_L) * WALL_L;
 #define L_READ_INT(name, target) target = JSON_ObjectGetInt(obj, name, target)
+#define L_READ_OBJECT(name, target)                                            \
+    do {                                                                       \
+        const char *const key =                                                \
+            JSON_ObjectGetString(obj, name, JSON_INVALID_STRING);              \
+        if (key != JSON_INVALID_STRING && key[0] != '\0') {                    \
+            const OBJECT_ID obj_id = Object_IdFromKey(key);                    \
+            FAIL_IF(                                                           \
+                obj_id == NO_OBJECT, "%s: unknown object '%s'", path, key);    \
+            target = obj_id;                                                   \
+        }                                                                      \
+    } while (0)
 
     for (JSON_OBJECT_ELEMENT *elem = root_obj->start; elem != nullptr;
          elem = elem->next) {
         const char *const name = elem->name->string;
         const int32_t type = ENUM_MAP_GET(LARA_GUN_TYPE, name, -1);
         FAIL_IF(
-            type < 0 || type >= NUM_WEAPONS, "%s: unknown weapon '%s'", path,
+            !Gun_Registry_IsValidType(type), "%s: unknown weapon '%s'", path,
             name);
 
         JSON_OBJECT *const obj = JSON_ValueAsObject(elem->value);
@@ -199,23 +213,33 @@ static RESULT M_ReadWeapons(JSON_OBJECT *const root_obj, const char *const path)
             JSON_ObjectGetValue(obj, "smoke_tip_alt"),
             &Gun_Registry_Get(type)->smoke_tip.left);
 
-        const char *const shell_object =
-            JSON_ObjectGetString(obj, "shell_object", JSON_INVALID_STRING);
-        if (shell_object != JSON_INVALID_STRING && shell_object[0] != '\0') {
-            const OBJECT_ID shell_object_id = Object_IdFromKey(shell_object);
+        L_READ_OBJECT("gun_object", Gun_Registry_Get(type)->gun_object_id);
+        L_READ_OBJECT("ammo_object", Gun_Registry_Get(type)->ammo_object_id);
+        L_READ_OBJECT("anim_object", Gun_Registry_Get(type)->anim_object_id);
+        L_READ_OBJECT("shell_object", Gun_Registry_Get(type)->shell_object_id);
+
+        const char *const stow_place =
+            JSON_ObjectGetString(obj, "stow_place", JSON_INVALID_STRING);
+        if (stow_place != JSON_INVALID_STRING && stow_place[0] != '\0') {
+            const int32_t place = ENUM_MAP_GET(STOW_PLACE, stow_place, -1);
             FAIL_IF(
-                shell_object_id == NO_OBJECT,
-                "%s: unknown object '%s' for '%s'", path, shell_object, name);
-            Gun_Registry_Get(type)->shell_object_id = shell_object_id;
+                place < 0, "%s: unknown stow place '%s' for '%s'", path,
+                stow_place, name);
+            Gun_Registry_Get(type)->stow_place = place;
+        }
+        Gun_Registry_Get(type)->stow_order = JSON_ObjectGetInt(
+            obj, "stow_order", Gun_Registry_Get(type)->stow_order);
+
+        const char *const equip_role =
+            JSON_ObjectGetString(obj, "equip_input_role", JSON_INVALID_STRING);
+        if (equip_role != JSON_INVALID_STRING && equip_role[0] != '\0') {
+            const int32_t role = ENUM_MAP_GET(INPUT_ROLE, equip_role, -1);
+            FAIL_IF(
+                role < 0, "%s: unknown input role '%s' for '%s'", path,
+                equip_role, name);
+            Gun_Registry_Get(type)->equip_input_role = role;
         }
 
-        Gun_Registry_Get(type)->shell_throws_forward = JSON_ObjectGetBool(
-            obj, "shell_throws_forward",
-            Gun_Registry_Get(type)->shell_throws_forward);
-        Gun_Registry_Get(type)->shell_angle = JSON_ObjectGetInt(
-            obj, "shell_angle", Gun_Registry_Get(type)->shell_angle);
-        Gun_Registry_Get(type)->shell_min_speed = JSON_ObjectGetInt(
-            obj, "shell_min_speed", Gun_Registry_Get(type)->shell_min_speed);
         Gun_Registry_Get(type)->unaims_on_release = JSON_ObjectGetBool(
             obj, "unaims_on_release",
             Gun_Registry_Get(type)->unaims_on_release);
@@ -225,6 +249,14 @@ static RESULT M_ReadWeapons(JSON_OBJECT *const root_obj, const char *const path)
         Gun_Registry_Get(type)->flash_is_optional = JSON_ObjectGetBool(
             obj, "flash_is_optional",
             Gun_Registry_Get(type)->flash_is_optional);
+
+        Gun_Registry_Get(type)->shell_throws_forward = JSON_ObjectGetBool(
+            obj, "shell_throws_forward",
+            Gun_Registry_Get(type)->shell_throws_forward);
+        Gun_Registry_Get(type)->shell_angle = JSON_ObjectGetInt(
+            obj, "shell_angle", Gun_Registry_Get(type)->shell_angle);
+        Gun_Registry_Get(type)->shell_min_speed = JSON_ObjectGetInt(
+            obj, "shell_min_speed", Gun_Registry_Get(type)->shell_min_speed);
 
         M_ReadAmmoInfo(obj, type);
 
@@ -249,6 +281,7 @@ static RESULT M_ReadWeapons(JSON_OBJECT *const root_obj, const char *const path)
 #undef L_READ_ANGLE
 #undef L_READ_DIST
 #undef L_READ_INT
+#undef L_READ_OBJECT
 }
 
 static RESULT M_LoadFrom(const char *const path)

@@ -379,43 +379,22 @@ void Gun_DrawFlash(
 
 void Gun_UpdateLaraMeshes(const OBJECT_ID obj_id)
 {
-    const bool lara_has_rifle = Inv_HasItem(O_SHOTGUN_ITEM)
-        || Inv_HasItem(O_HARPOON_ITEM) || Inv_HasItem(O_M16_ITEM)
-        || Inv_HasItem(O_MP5_ITEM) || Inv_HasItem(O_GRENADE_GUN_ITEM)
-        || Inv_HasItem(O_ROCKET_GUN_ITEM);
-    const bool lara_has_pistols = Inv_HasItem(O_PISTOL_ITEM)
-        || Inv_HasItem(O_MAGNUM_ITEM) || Inv_HasItem(O_AUTOS_ITEM)
-        || Inv_HasItem(O_DESERT_EAGLE_ITEM) || Inv_HasItem(O_UZI_ITEM);
+    const INVENTORY_STATE *const inv = Inv_GetState();
+    const bool lara_has_rifle = Gun_GetBackChoice(inv) != LGT_UNARMED;
+    const bool lara_has_pistols = Gun_GetHolsterChoice(inv) != LGT_UNARMED;
+
+    const LARA_GUN_TYPE picked_up = Gun_GetTypeForObject(obj_id);
+    const STOW_PLACE stow_place = picked_up == LGT_UNARMED
+        ? STOW_PLACE_NONE
+        : Gun_Registry_Get(picked_up)->stow_place;
 
     LARA_GUN_TYPE back_gun_type = LGT_UNARMED;
     LARA_GUN_TYPE holsters_gun_type = LGT_UNARMED;
 
-    if (!lara_has_rifle && obj_id == O_SHOTGUN_ITEM) {
-        back_gun_type = LGT_SHOTGUN;
-    } else if (!lara_has_rifle && obj_id == O_HARPOON_ITEM) {
-        back_gun_type = LGT_HARPOON;
-    } else if (!lara_has_rifle && obj_id == O_M16_ITEM) {
-        back_gun_type = LGT_M16;
-    } else if (!lara_has_rifle && obj_id == O_MP5_ITEM) {
-        back_gun_type = LGT_MP5;
-    } else if (!lara_has_rifle && obj_id == O_GRENADE_GUN_ITEM) {
-        back_gun_type = LGT_GRENADE;
-    } else if (!lara_has_rifle && obj_id == O_ROCKET_GUN_ITEM) {
-        back_gun_type = LGT_ROCKET;
-    } else if (!lara_has_rifle && obj_id == O_CROSSBOW_ITEM) {
-        back_gun_type = LGT_CROSSBOW;
-    } else if (!lara_has_pistols && obj_id == O_PISTOL_ITEM) {
-        holsters_gun_type = LGT_PISTOLS;
-    } else if (!lara_has_pistols && obj_id == O_MAGNUM_ITEM) {
-        holsters_gun_type = LGT_MAGNUMS;
-    } else if (!lara_has_pistols && obj_id == O_AUTOS_ITEM) {
-        holsters_gun_type = LGT_AUTOS;
-    } else if (!lara_has_pistols && obj_id == O_DESERT_EAGLE_ITEM) {
-        holsters_gun_type = LGT_DESERT_EAGLE;
-    } else if (!lara_has_pistols && obj_id == O_UZI_ITEM) {
-        holsters_gun_type = LGT_UZIS;
-    } else if (!lara_has_pistols && obj_id == O_REVOLVER_ITEM) {
-        holsters_gun_type = LGT_REVOLVER;
+    if (!lara_has_rifle && stow_place == STOW_PLACE_BACK) {
+        back_gun_type = picked_up;
+    } else if (!lara_has_pistols && stow_place == STOW_PLACE_HOLSTER) {
+        holsters_gun_type = picked_up;
     }
 
     if (back_gun_type != LGT_UNARMED) {
@@ -643,4 +622,12 @@ void Gun_ChangeTarget(const WEAPON_INFO *const weapon)
     }
 
     Gun_TargetInfo(weapon);
+}
+
+void Gun_DrawFlashMirrored(const LARA_GUN_TYPE weapon_type, const CLIP clip)
+{
+    WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
+    SWAP(weapon->flash.pos.right, weapon->flash.pos.left);
+    Gun_DrawFlash(weapon_type, clip, false);
+    SWAP(weapon->flash.pos.right, weapon->flash.pos.left);
 }

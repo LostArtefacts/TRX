@@ -7,6 +7,7 @@
 #include <trx/game/const.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/input.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui/elements/anchor.h>

@@ -22,13 +22,13 @@ void Gun_Registry_Seed(void);
 // and for a gun fixed to a vehicle. Read is_declared to tell the two apart.
 WEAPON_INFO *Gun_Registry_Get(LARA_GUN_TYPE gun_type);
 
-// The number of weapons the engine implements, which is fewer than the gun
-// types it knows.
-int32_t Gun_Registry_GetCount(void);
-
 // Returns the weapon at an index, counting from zero, in the order the gun
 // types are numbered, and passing over the types nothing implements.
 const WEAPON_INFO *Gun_Registry_GetByIndex(int32_t idx);
+
+// The number of weapons the engine implements, which is fewer than the gun
+// types it knows.
+int32_t Gun_Registry_GetCount(void);
 
 // Whether the engine knows the gun type. A legacy save can hold one it no
 // longer knows.
@@ -55,7 +55,12 @@ bool Gun_Registry_IsValidType(LARA_GUN_TYPE gun_type);
         _Pragma("GCC diagnostic push")                                         \
         M_GUN_TYPE_SEED_DIAGNOSTIC                                             \
         static const WEAPON_INFO m_GunType = {                                 \
+            .projectile_object_id = NO_OBJECT,                                 \
+            .equip_input_role = (INPUT_ROLE)-1,                                \
             .glow.scale = 1.0f,                                                \
+            .gun_object_id = NO_OBJECT,                                        \
+            .ammo_object_id = NO_OBJECT,                                       \
+            .anim_object_id = NO_OBJECT,                                       \
             .shell_object_id = NO_OBJECT,                                      \
             __VA_ARGS__,                                                       \
         };                                                                     \

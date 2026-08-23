@@ -52,6 +52,8 @@ trx.weapons.flare.glow.color = "33e5ff"
         Held in both hands, drawn from Lara's back.
     - `trx.weapons.Kind.MOUNTED` = `3`  
         Fixed to a vehicle rather than held.
+    - `trx.weapons.Kind.FLARE` = `4`  
+        Held in one hand and burning, rather than fired.
 
 ### Structures
 

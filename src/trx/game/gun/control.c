@@ -25,26 +25,6 @@
 #include <trx/game/stats.h>
 #include <trx/version.h>
 
-static struct {
-    LARA_GUN_TYPE gun_type;
-    INPUT_ROLE input_role;
-} m_QuicDrawKeys[] = {
-    { .gun_type = LGT_PISTOLS, .input_role = INPUT_ROLE_EQUIP_PISTOLS },
-    { .gun_type = LGT_SHOTGUN, .input_role = INPUT_ROLE_EQUIP_SHOTGUN },
-    { .gun_type = LGT_MAGNUMS, .input_role = INPUT_ROLE_EQUIP_MAGNUMS },
-    { .gun_type = LGT_AUTOS, .input_role = INPUT_ROLE_EQUIP_AUTOS },
-    { .gun_type = LGT_DESERT_EAGLE,
-      .input_role = INPUT_ROLE_EQUIP_DESERT_EAGLE },
-    { .gun_type = LGT_UZIS, .input_role = INPUT_ROLE_EQUIP_UZIS },
-    { .gun_type = LGT_HARPOON, .input_role = INPUT_ROLE_EQUIP_HARPOON },
-    { .gun_type = LGT_M16, .input_role = INPUT_ROLE_EQUIP_M16 },
-    { .gun_type = LGT_MP5, .input_role = INPUT_ROLE_EQUIP_MP5 },
-    { .gun_type = LGT_GRENADE,
-      .input_role = INPUT_ROLE_EQUIP_GRENADE_LAUNCHER },
-    { .gun_type = LGT_ROCKET, .input_role = INPUT_ROLE_EQUIP_ROCKET_LAUNCHER },
-    { .gun_type = LGT_UNKNOWN, .input_role = (INPUT_ROLE)-1 },
-};
-
 static const LARA_TRX_STATE m_CrawlStates[] = {
     // clang-format off
     LS_CRAWL_IDLE,
@@ -57,12 +37,14 @@ static const LARA_TRX_STATE m_CrawlStates[] = {
     // clang-format on
 };
 
-// What Lara reaches for when the weapon in her hands has run dry: the pistols,
-// so long as she carries them and they have anything left to spend.
+// What Lara reaches for when the weapon in her hands has ran out of ammo:
+// the default weapon, so long as she carries it and it has ammo left.
 static LARA_GUN_TYPE M_GetFallbackGunType(void)
 {
-    return Inv_HasItem(O_PISTOL_ITEM) && Gun_HasRoundsLeft(LGT_PISTOLS)
-        ? LGT_PISTOLS
+    const LARA_GUN_TYPE gun_type = Gun_GetDefaultType();
+    return Inv_HasItem(Gun_GetGunObject(gun_type))
+            && Gun_HasRoundsLeft(gun_type)
+        ? gun_type
         : LGT_UNARMED;
 }
 
@@ -107,7 +89,8 @@ static void M_CheckSmashablesBehindTarget(
 
 static bool M_IsUsableUnderwater(const LARA_GUN_TYPE gun_type)
 {
-    return Gun_Registry_Get(gun_type)->is_usable_underwater;
+    const WEAPON_INFO *const info = Gun_Registry_Get(gun_type);
+    return info->is_usable_underwater;
 }
 
 // Where Lara is deep enough that only an underwater weapon can come out.
@@ -130,10 +113,16 @@ static bool M_IsAboveWaterLine(const LARA_GUN_TYPE gun_type)
 static LARA_GUN_TYPE M_NeedToQuickDraw(void)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    for (int32_t i = 0; m_QuicDrawKeys[i].gun_type != LGT_UNKNOWN; i++) {
-        if (Input_IsPressedDB(m_QuicDrawKeys[i].input_role)
-            && Inv_HasItem(Gun_GetGunObject(m_QuicDrawKeys[i].gun_type))) {
-            return m_QuicDrawKeys[i].gun_type;
+    for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
+        const WEAPON_INFO *const weapon = Gun_Registry_GetByIndex(i);
+        const LARA_GUN_TYPE gun_type = weapon->gun_type;
+        const INPUT_ROLE role = weapon->equip_input_role;
+        if ((int32_t)role < 0) {
+            continue;
+        }
+        if (Input_IsPressedDB(role)
+            && Inv_HasItem(Gun_GetGunObject(gun_type))) {
+            return gun_type;
         }
     }
     return LGT_UNKNOWN;
@@ -153,8 +142,8 @@ static bool M_QuickDrawWeapon(void)
 static bool M_CanEquip(void)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (lara->request_gun_type == LGT_FLARE) {
-        return lara->gun_type != LGT_FLARE;
+    if (Gun_IsFlareType(lara->request_gun_type)) {
+        return !Gun_IsFlareType(lara->gun_type);
     }
     if (lara->is_crouched && Gun_IsRifleType(lara->request_gun_type)) {
         return false;
@@ -244,11 +233,12 @@ static void M_DecideRequestedWeapon(void)
     if (g_Input.draw) {
         LARA_GUN_TYPE requested_gun = lara->last_gun_type != LGT_UNARMED
             ? lara->last_gun_type
-            : LGT_PISTOLS;
+            : Gun_GetDefaultType();
         if (g_Config.gameplay.enable_underwater_auto_draw
             && M_IsOnlyUnderwaterUsable()
             && !M_IsUsableUnderwater(requested_gun)) {
-            for (LARA_GUN_TYPE gun = 0; gun < NUM_WEAPONS; gun++) {
+            for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
+                const LARA_GUN_TYPE gun = Gun_Registry_GetByIndex(i)->gun_type;
                 if (M_IsUsableUnderwater(gun)
                     && Inv_HasItem(Gun_GetGunObject(gun))) {
                     requested_gun = gun;
@@ -257,7 +247,8 @@ static void M_DecideRequestedWeapon(void)
             }
         }
         if (!Inv_HasItem(Gun_GetGunObject(requested_gun))) {
-            for (LARA_GUN_TYPE gun = 0; gun < NUM_WEAPONS; gun++) {
+            for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
+                const LARA_GUN_TYPE gun = Gun_Registry_GetByIndex(i)->gun_type;
                 if (Inv_HasItem(Gun_GetGunObject(gun))) {
                     requested_gun = gun;
                     break;
@@ -275,13 +266,13 @@ static void M_DecideRequestedWeapon(void)
     }
 
     if (g_Input.use_flare) {
-        if (lara->gun_type == LGT_FLARE) {
+        if (Gun_IsFlareType(lara->gun_type)) {
             lara->gun_status = LGS_UNDRAW;
         } else if (
             Inv_HasItem(O_FLAREBOX_ITEM)
             && (!g_Config.gameplay.fix_free_flare_glitch
                 || lara_item->current_anim_state != LS(LS_PICKUP))) {
-            lara->request_gun_type = LGT_FLARE;
+            lara->request_gun_type = Gun_GetFlareType();
         }
     }
 }
@@ -297,7 +288,7 @@ static void M_DrawRequestedWeapon(void)
             return;
         }
 
-        if (lara->gun_type == LGT_FLARE) {
+        if (Gun_IsFlareType(lara->gun_type)) {
             Gun_Flare_Dispose(false);
         }
 
@@ -307,12 +298,12 @@ static void M_DrawRequestedWeapon(void)
         lara->right_arm.frame_num = 0;
         lara->left_arm.frame_num = 0;
     } else {
-        if (lara->request_gun_type != LGT_FLARE
+        if (!Gun_IsFlareType(lara->request_gun_type)
             && lara->request_gun_type != LGT_UNARMED) {
             lara->last_gun_type = lara->request_gun_type;
         }
-        if (lara->gun_type == LGT_FLARE) {
-            lara->request_gun_type = LGT_FLARE;
+        if (Gun_IsFlareType(lara->gun_type)) {
+            lara->request_gun_type = lara->gun_type;
         } else {
             lara->gun_type = lara->request_gun_type;
         }
@@ -323,7 +314,7 @@ static void M_TryUndrawWeapon(void)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (g_Input.use_flare && Inv_HasItem(O_FLAREBOX_ITEM)) {
-        lara->request_gun_type = LGT_FLARE;
+        lara->request_gun_type = Gun_GetFlareType();
     }
     if (M_NeedToUndraw()) {
         lara->gun_status = LGS_UNDRAW;
@@ -387,7 +378,8 @@ void Gun_Control(void)
 
     // Selecting a flare from the inventory while crawling will cache the
     // requested gun type, resulting in a free ghost flare when she stands up.
-    if (lara->request_gun_type == LGT_FLARE && lara->gun_type != LGT_FLARE
+    if (Gun_IsFlareType(lara->request_gun_type)
+        && !Gun_IsFlareType(lara->gun_type)
         && g_Config.gameplay.fix_free_flare_glitch && M_IsLaraCrawling()) {
         lara->request_gun_type = LGT_UNARMED;
         return;

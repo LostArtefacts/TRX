@@ -208,7 +208,7 @@ static void M_FireHarpoon(const LARA_GUN_TYPE weapon_type, const bool running)
     };
 
     ITEM *const projectile_item = Item_Get(item_num);
-    projectile_item->object_id = O_HARPOON_BOLT;
+    projectile_item->object_id = Gun_GetProjectileObject(weapon_type);
     projectile_item->room_num = lara_item->room_num;
 
     XYZ_32 offset = {
@@ -312,7 +312,7 @@ static void M_FireGrenade(const LARA_GUN_TYPE weapon_type, const bool running)
     }
 
     ITEM *const projectile_item = Item_Get(item_num);
-    projectile_item->object_id = O_GRENADE;
+    projectile_item->object_id = Gun_GetProjectileObject(weapon_type);
     projectile_item->room_num = lara_item->room_num;
 
     XYZ_32 offset =
@@ -399,7 +399,7 @@ static void M_FireRocket(const LARA_GUN_TYPE weapon_type, const bool running)
     }
 
     ITEM *const projectile_item = Item_Get(item_num);
-    projectile_item->object_id = O_ROCKET;
+    projectile_item->object_id = Gun_GetProjectileObject(weapon_type);
     projectile_item->room_num = lara_item->room_num;
 
     XYZ_32 offset = {
@@ -554,7 +554,7 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
                 if (g_Input.action) {
                     if (lara->target == nullptr || lara->left_arm.lock) {
                         M_Fire(weapon_type, false);
-                        if (weapon_type == LGT_M16 || weapon_type == LGT_MP5) {
+                        if (is_machine_gun) {
                             M_PlayMachineGunSound(weapon_type, false);
                             m_M16Firing = true;
                         }
@@ -600,8 +600,7 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
             }
         }
 
-        if (item->goal_anim_state == LA_G_URECOIL
-            && (weapon_type == LGT_M16 || weapon_type == LGT_MP5)) {
+        if (item->goal_anim_state == LA_G_URECOIL && is_machine_gun) {
             M_PlayMachineGunSound(weapon_type, false);
         }
         break;
@@ -617,11 +616,6 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
     lara->right_arm.anim_num = item->anim_num;
     lara->right_arm.frame_base = Item_GetAnim(item)->frame_ptr;
     lara->right_arm.frame_num = Item_GetRelativeFrame(item);
-}
-
-static uint8_t M_GetLauncherSmokeSize(void)
-{
-    return (Random_GetControl() & 7) + 24;
 }
 
 static GUN_FLASH M_GetM16Flash(void)
@@ -645,6 +639,11 @@ static GUN_FLASH M_GetMp5Flash(void)
                 + (Random_GetDraw() & 0xFFF) + 0x1800,
         },
     };
+}
+
+static uint8_t M_GetLauncherSmokeSize(void)
+{
+    return (Random_GetControl() & 7) + 24;
 }
 
 static void M_Control(
@@ -800,18 +799,29 @@ void Gun_Rifle_EnsureReady(const LARA_GUN_TYPE weapon_type)
 // clang-format off
 REGISTER_GUN_TYPE(
     .gun_type = LGT_SHOTGUN,
+    .save_ammo_key = "shotgun",
+    .save_resume_has_key = "has_shotgun",
+    .save_resume_ammo_key = "shotgun_ammo",
+    .save_keys_required = true,
+    .ammo_icon = "\\{ammo shotgun}",
     .is_remembered = true,
     .wants_combat_camera = true,
     .draw_func = Gun_Rifle_Draw,
     .undraw_func = Gun_Rifle_Undraw,
     .draw_meshes_func = Gun_Rifle_DrawMeshes,
     .control_func = M_Control,
-    .fire_func = M_FireGeneric)
+    .fire_func = M_FireGeneric,
+    .cheat_ammo = 300,
+    .cheat_key_ammo = 500)
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_M16,
     .flash_func = M_GetM16Flash,
     .rapid_fire_sound_func = M_PlayM16Sound,
+    .save_ammo_key = "m16",
+    .save_resume_has_key = "has_m16",
+    .save_resume_ammo_key = "m16_ammo",
+    .save_keys_required = true,
     .is_remembered = true,
     .wants_combat_camera = true,
     .draw_func = Gun_Rifle_Draw,
@@ -819,12 +829,17 @@ REGISTER_GUN_TYPE(
     .draw_meshes_func = Gun_Rifle_DrawMeshes,
     .control_func = M_Control,
     .fire_func = M_FireM16,
+    .cheat_ammo = 300,
+    .cheat_key_ammo = 5000,
     .is_machine_gun = true)
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_MP5,
     .flash_func = M_GetMp5Flash,
     .rapid_fire_sound_func = M_PlayMp5Sound,
+    .save_ammo_key = "mp5",
+    .save_resume_has_key = "has_mp5",
+    .save_resume_ammo_key = "mp5_ammo",
     .is_remembered = true,
     .wants_combat_camera = true,
     .draw_func = Gun_Rifle_Draw,
@@ -832,22 +847,37 @@ REGISTER_GUN_TYPE(
     .draw_meshes_func = Gun_Rifle_DrawMeshes,
     .control_func = M_Control,
     .fire_func = M_FireM16,
+    .cheat_ammo = 300,
+    .cheat_key_ammo = 5000,
     .is_machine_gun = true)
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_GRENADE,
-    .smoke_size_func = M_GetLauncherSmokeSize,
+    .projectile_object_id = O_GRENADE,
     .ready_anim_func = M_GetGrenadeReadyAnim,
+    .save_ammo_key = "grenade",
+    .save_resume_has_key = "has_grenade",
+    .save_resume_ammo_key = "grenade_ammo",
+    .save_keys_required = true,
+    .is_launcher = true,
+    .smoke_size_func = M_GetLauncherSmokeSize,
     .is_remembered = true,
     .wants_combat_camera = true,
     .draw_func = Gun_Rifle_Draw,
     .undraw_func = Gun_Rifle_Undraw,
     .draw_meshes_func = Gun_Rifle_DrawMeshes,
     .control_func = M_Control,
-    .fire_func = M_FireGrenade)
+    .fire_func = M_FireGrenade,
+    .cheat_ammo = 300,
+    .cheat_key_ammo = 5000)
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_ROCKET,
+    .projectile_object_id = O_ROCKET,
+    .save_ammo_key = "rocket",
+    .save_resume_has_key = "has_rocket",
+    .save_resume_ammo_key = "rocket_ammo",
+    .is_launcher = true,
     .smoke_size_func = M_GetLauncherSmokeSize,
     .is_remembered = true,
     .wants_combat_camera = true,
@@ -855,11 +885,18 @@ REGISTER_GUN_TYPE(
     .undraw_func = Gun_Rifle_Undraw,
     .draw_meshes_func = Gun_Rifle_DrawMeshes,
     .control_func = M_Control,
-    .fire_func = M_FireRocket)
+    .fire_func = M_FireRocket,
+    .cheat_ammo = 300,
+    .cheat_key_ammo = 5000)
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_HARPOON,
+    .projectile_object_id = O_HARPOON_BOLT,
     .ready_anim_func = M_GetHarpoonReadyAnim,
+    .save_ammo_key = "harpoon",
+    .save_resume_has_key = "has_harpoon",
+    .save_resume_ammo_key = "harpoon_ammo",
+    .save_keys_required = true,
     .is_remembered = true,
     .wants_combat_camera = true,
     .draw_func = Gun_Rifle_Draw,
@@ -867,15 +904,22 @@ REGISTER_GUN_TYPE(
     .draw_meshes_func = Gun_Rifle_DrawMeshes,
     .control_func = M_Control,
     .fire_func = M_FireHarpoon,
+    .cheat_ammo = 300,
+    .cheat_key_ammo = 5000,
     .is_usable_underwater = true)
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_CROSSBOW,
+    .save_ammo_key = "crossbow",
+    .save_resume_has_key = "has_crossbow",
+    .save_resume_ammo_key = "crossbow_ammo",
     .is_remembered = true,
     .wants_combat_camera = true,
     .draw_func = Gun_Rifle_Draw,
     .undraw_func = Gun_Rifle_Undraw,
     .draw_meshes_func = Gun_Rifle_DrawMeshes,
     .control_func = M_Control,
-    .fire_func = M_FireGeneric)
+    .fire_func = M_FireGeneric,
+    .cheat_ammo = 300,
+    .cheat_key_ammo = 5000)
 // clang-format on

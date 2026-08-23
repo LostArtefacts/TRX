@@ -2,6 +2,7 @@
 
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/sound.h>

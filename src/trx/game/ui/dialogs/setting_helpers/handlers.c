@@ -2,6 +2,7 @@
 #include <trx/core/strings.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/input/backends/touch.h>
 #include <trx/game/music.h>
 #include <trx/game/objects/common.h>
