@@ -5,6 +5,6 @@
 #include <trx/game/gun/flare.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/pistols.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/gun/rifle.h>
 #include <trx/game/gun/smashing.h>
-#include <trx/game/gun/vars.h>

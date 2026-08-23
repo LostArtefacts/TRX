@@ -19,6 +19,10 @@
 #include <lauxlib.h>
 #include <string.h>
 
+static WEAPON_INFO m_Weapons[MAX_WEAPONS] = {
+    [LGT_PISTOLS] = { .type = WEAPON_TYPE_DUAL_PISTOLS },
+};
+
 static LARA_INFO m_Lara;
 static bool m_HolstersVisible;
 static int32_t m_SpeechFace;
@@ -75,9 +79,13 @@ static void M_Reset(void)
 }
 
 // The weapon table the bridge walks to decide whether Lara has a pistol at all.
-WEAPON_INFO g_Weapons[NUM_WEAPONS] = {
-    [LGT_PISTOLS] = { .type = WEAPON_TYPE_DUAL_PISTOLS },
-};
+WEAPON_INFO *Gun_Registry_Get(const LARA_GUN_TYPE gun_type)
+{
+    // The real registry stamps a weapon with its own type as it
+    // seeds them, which nothing here does.
+    m_Weapons[gun_type].gun_type = gun_type;
+    return &m_Weapons[gun_type];
+}
 
 LARA_INFO *Lara_GetLaraInfo(void)
 {
@@ -506,7 +514,7 @@ void FakeLara_SetCanAdd(const bool can_add)
 void FakeLara_SetWeaponAvailable(
     const LARA_GUN_TYPE gun_type, const bool available)
 {
-    g_Weapons[gun_type].is_available = available;
+    m_Weapons[gun_type].is_available = available;
 }
 
 void FakeLara_ShareInvEntry(const OBJECT_ID variant, const OBJECT_ID base)

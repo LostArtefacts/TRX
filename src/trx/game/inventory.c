@@ -396,8 +396,9 @@ bool Inv_AddItem(const OBJECT_ID object_id)
         }
     }
 
-    const int32_t qty =
-        object_id == O_FLAREBOX_ITEM ? g_Weapons[LGT_FLARE].ammo.box_shots : 1;
+    const int32_t qty = object_id == O_FLAREBOX_ITEM
+        ? Gun_Registry_Get(LGT_FLARE)->ammo.box_shots
+        : 1;
     const OBJECT_ID entry_id = M_GetEntryID(object_id);
 
     // Every spelling of a box of ammunition goes the same way, including the

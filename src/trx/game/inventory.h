@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/game/gun/const.h>
 #include <trx/game/lara/enum.h>
 #include <trx/game/objects/ids.h>
 
@@ -24,7 +25,7 @@ typedef struct {
     int32_t count;
     // Rounds for each weapon, addressed by LARA_GUN_TYPE. Ammunition is
     // carried whether or not she has the gun to spend it from.
-    int32_t ammo[NUM_WEAPONS];
+    int32_t ammo[MAX_WEAPONS];
 } INVENTORY_STATE;
 
 // What Lara is carrying, which the rings are drawn from. Writing it puts her

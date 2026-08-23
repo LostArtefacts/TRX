@@ -1,8 +1,8 @@
 #include <trx/core/math.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/gun/misc.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/gun/smashing.h>
-#include <trx/game/gun/vars.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/vars.h>
@@ -126,7 +126,8 @@ static void M_Control_TR3(const int16_t item_num)
             const GAME_VECTOR hit_pos = { .pos = item->pos,
                                           .room_num = item->room_num };
             Gun_HitTarget(
-                target_item, &old_pos, &hit_pos, g_Weapons[LGT_HARPOON].damage);
+                target_item, &old_pos, &hit_pos,
+                Gun_Registry_Get(LGT_HARPOON)->damage);
             Stats_AddAmmoHits();
         }
 
@@ -284,7 +285,8 @@ static void M_Control_TR12(const int16_t item_num)
                 .room_num = item->room_num,
             };
             Gun_HitTarget(
-                target_item, &old_pos, &hit_pos, g_Weapons[LGT_HARPOON].damage);
+                target_item, &old_pos, &hit_pos,
+                Gun_Registry_Get(LGT_HARPOON)->damage);
             Stats_AddAmmoHits();
         }
         hit = true;

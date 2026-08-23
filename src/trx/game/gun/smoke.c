@@ -1,6 +1,6 @@
 #include <trx/game/gun/smoke.h>
 
-#include <trx/game/gun/vars.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/lara/misc.h>
@@ -17,8 +17,8 @@ static XYZ_32 M_GetHandAbsPosition(const LARA_MESH hand, XYZ_32 offset)
 static XYZ_32 M_GetMuzzleOffset(
     const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
 {
-    return is_right_hand ? g_Weapons[weapon_type].muzzle_pos.right
-                         : g_Weapons[weapon_type].muzzle_pos.left;
+    return is_right_hand ? Gun_Registry_Get(weapon_type)->muzzle_pos.right
+                         : Gun_Registry_Get(weapon_type)->muzzle_pos.left;
 }
 
 void Gun_Smoke_OnFire(const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
@@ -28,7 +28,7 @@ void Gun_Smoke_OnFire(const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    const int32_t count = g_Weapons[weapon_type].smoke_count;
+    const int32_t count = Gun_Registry_Get(weapon_type)->smoke_count;
     if (count == 0) {
         return;
     }

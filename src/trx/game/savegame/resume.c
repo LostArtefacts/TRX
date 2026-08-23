@@ -254,7 +254,8 @@ void SG_Resume_ApplyRulesToEntry(const GF_LEVEL *const level)
         for (LARA_GUN_TYPE gun_type = LGT_UNARMED + 1; gun_type < NUM_WEAPONS;
              gun_type++) {
             const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
-            if (gun_object == NO_OBJECT || !g_Weapons[gun_type].is_available) {
+            if (gun_object == NO_OBJECT
+                || !Gun_Registry_Get(gun_type)->is_available) {
                 continue;
             }
             Inv_State_SetCount(&resume->inv, gun_object, 1);

@@ -772,7 +772,7 @@ bool Skidoo_CheckGetOff(void)
 
 void Skidoo_Guns(void)
 {
-    WEAPON_INFO *const weapon = &g_Weapons[LGT_SKIDOO];
+    WEAPON_INFO *const weapon = Gun_Registry_Get(LGT_SKIDOO);
     const ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara = Lara_GetLaraInfo();
 

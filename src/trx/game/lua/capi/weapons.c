@@ -1,5 +1,5 @@
 #include <trx/game/gun.h>
-#include <trx/game/gun/vars.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/field.h>
 #include <trx/game/lua/registry.h>
@@ -126,14 +126,13 @@ static const WEAPON_INFO *M_WeaponOfAnim(const void *const anim)
                                  - offsetof(WEAPON_INFO, anim));
 }
 
-// Which weapon this is. The definition carries no id of its own - the table it
-// sits in is the id - so it is read off where it sits, which is what lets a
-// script go from a weapon back to everything that takes one.
+// Which weapon this is, which is what lets a script go from a weapon back to
+// everything that takes one.
 static bool M_GetID(const void *const self, TRX_VALUE *const out)
 {
     *out = (TRX_VALUE) {
         .type = TVT_S32,
-        .as_int = (const WEAPON_INFO *)self - g_Weapons,
+        .as_int = ((const WEAPON_INFO *)self)->gun_type,
     };
     return true;
 }
@@ -166,8 +165,7 @@ static const char *M_SetEquipAnim(void *const self, const TRX_VALUE *const in)
     if (in->as_int < 0) {
         return "invalid animation index";
     }
-    const LARA_GUN_TYPE gun_type =
-        (LARA_GUN_TYPE)(M_WeaponOfAnim(self) - g_Weapons);
+    const LARA_GUN_TYPE gun_type = M_WeaponOfAnim(self)->gun_type;
     const OBJECT_ID object_id = Gun_GetWeaponAnim(gun_type);
     if (object_id != NO_OBJECT) {
         const OBJECT *const obj = Object_Get(object_id);
@@ -184,7 +182,7 @@ static void *M_ResolveWeapon(const LUA_STRUCT_REF *const ref)
     if (ref->handle.id <= LGT_UNARMED || ref->handle.id >= NUM_WEAPONS) {
         return nullptr;
     }
-    return &g_Weapons[ref->handle.id];
+    return Gun_Registry_Get(ref->handle.id);
 }
 
 static void *M_ResolveLimits(const LUA_STRUCT_REF *const ref)
@@ -272,7 +270,7 @@ static int M_L_WeaponGet(lua_State *const L)
 // trxc.weapons.is_available(weapon) -> bool
 static int M_L_WeaponIsAvailable(lua_State *const L)
 {
-    lua_pushboolean(L, g_Weapons[M_GetWeapon(L, 1)].is_available);
+    lua_pushboolean(L, Gun_Registry_Get(M_GetWeapon(L, 1))->is_available);
     return 1;
 }
 

@@ -6,9 +6,9 @@
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/control.h>
 #include <trx/game/gun/misc.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/gun/smashing.h>
 #include <trx/game/gun/smoke.h>
-#include <trx/game/gun/vars.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
@@ -137,10 +137,11 @@ static void M_FireGeneric(const LARA_GUN_TYPE weapon_type)
     }
 
     if (fired) {
-        lara->right_arm.flash_gun = g_Weapons[weapon_type].flash.time;
+        lara->right_arm.flash_gun = Gun_Registry_Get(weapon_type)->flash.time;
         Gun_Smoke_OnFire(weapon_type, true);
         Sound_Effect(
-            g_Weapons[weapon_type].sample_num, &lara_item->pos, SPM_NORMAL);
+            Gun_Registry_Get(weapon_type)->sample_num, &lara_item->pos,
+            SPM_NORMAL);
     }
 }
 
@@ -158,15 +159,15 @@ static void M_FireM16(const bool running, const LARA_GUN_TYPE weapon_type)
     }
 
     if (g_Config.gameplay.fix_m16_accuracy && running) {
-        g_Weapons[weapon_type].shot_accuracy = DEG_1 * 12;
-        g_Weapons[weapon_type].damage = 1;
+        Gun_Registry_Get(weapon_type)->shot_accuracy = DEG_1 * 12;
+        Gun_Registry_Get(weapon_type)->damage = 1;
     } else {
-        g_Weapons[weapon_type].shot_accuracy = DEG_1 * 4;
-        g_Weapons[weapon_type].damage = 3;
+        Gun_Registry_Get(weapon_type)->shot_accuracy = DEG_1 * 4;
+        Gun_Registry_Get(weapon_type)->damage = 3;
     }
 
     if (Gun_FireWeapon(weapon_type, lara->target, lara_item, angles)) {
-        lara->right_arm.flash_gun = g_Weapons[weapon_type].flash.time;
+        lara->right_arm.flash_gun = Gun_Registry_Get(weapon_type)->flash.time;
         Spawn_GunShell(weapon_type, true);
         Gun_Smoke_OnFire(weapon_type, true);
     }
@@ -185,7 +186,7 @@ static void M_FireHarpoon(void)
         goto finish;
     }
 
-    const WEAPON_INFO *const weapon = &g_Weapons[LGT_HARPOON];
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(LGT_HARPOON);
     const GAME_VECTOR origin = {
         .pos = {
             .x = lara_item->pos.x,
@@ -280,7 +281,7 @@ static void M_FireGrenade(void)
     if (!Gun_HasRoundsLeft(LGT_GRENADE)) {
         return;
     }
-    const WEAPON_INFO *const weapon = &g_Weapons[LGT_GRENADE];
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(LGT_GRENADE);
     const GAME_VECTOR origin = {
         .pos = {
             .x = lara_item->pos.x,
@@ -367,7 +368,7 @@ static void M_FireRocket(void)
     if (!Gun_HasRoundsLeft(LGT_ROCKET)) {
         return;
     }
-    const WEAPON_INFO *const weapon = &g_Weapons[LGT_ROCKET];
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(LGT_ROCKET);
     const GAME_VECTOR origin = {
         .pos = {
         .x = lara_item->pos.x,
@@ -613,7 +614,7 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
 
 void Gun_Rifle_Control(const LARA_GUN_TYPE weapon_type)
 {
-    const WEAPON_INFO *const weapon = &g_Weapons[weapon_type];
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
     Gun_GetNewTarget(weapon);
@@ -647,7 +648,7 @@ void Gun_Rifle_Draw(const LARA_GUN_TYPE weapon_type)
 {
     ITEM *item;
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    const WEAPON_INFO *const weapon = &g_Weapons[weapon_type];
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
 
     if (lara->gun_item_num != NO_ITEM) {
         item = Item_Get(lara->gun_item_num);
@@ -698,7 +699,7 @@ void Gun_Rifle_Undraw(const LARA_GUN_TYPE weapon_type)
     }
     M_AnimateGun(item);
 
-    const WEAPON_INFO *const weapon = &g_Weapons[weapon_type];
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
     if (item->is_finished) {
         Item_Destroy(lara->gun_item_num);
         lara->gun_item_num = NO_ITEM;
@@ -754,3 +755,26 @@ void Gun_Rifle_EnsureReady(const LARA_GUN_TYPE weapon_type)
         Gun_Rifle_Draw(weapon_type);
     } while (Item_GetRelativeAnim(item) != goal_anim);
 }
+
+// clang-format off
+REGISTER_GUN_TYPE(
+    .gun_type = LGT_SHOTGUN)
+
+REGISTER_GUN_TYPE(
+    .gun_type = LGT_M16)
+
+REGISTER_GUN_TYPE(
+    .gun_type = LGT_MP5)
+
+REGISTER_GUN_TYPE(
+    .gun_type = LGT_GRENADE)
+
+REGISTER_GUN_TYPE(
+    .gun_type = LGT_ROCKET)
+
+REGISTER_GUN_TYPE(
+    .gun_type = LGT_HARPOON)
+
+REGISTER_GUN_TYPE(
+    .gun_type = LGT_CROSSBOW)
+// clang-format on

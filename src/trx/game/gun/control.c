@@ -9,10 +9,10 @@
 #include <trx/game/gun/flare.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/pistols.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/gun/rifle.h>
 #include <trx/game/gun/smashing.h>
 #include <trx/game/gun/smoke.h>
-#include <trx/game/gun/vars.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
@@ -124,7 +124,7 @@ static bool M_IsOnlyUnderwaterUsable(void)
 static bool M_IsAboveWaterLine(const LARA_GUN_TYPE gun_type)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    return lara->water_surface_dist > -g_Weapons[gun_type].gun_height;
+    return lara->water_surface_dist > -Gun_Registry_Get(gun_type)->gun_height;
 }
 
 static LARA_GUN_TYPE M_NeedToQuickDraw(void)
@@ -534,7 +534,7 @@ int32_t Gun_FireWeapon(
     const LARA_GUN_TYPE weapon_type, ITEM *const target, const ITEM *const src,
     const int16_t *const angles)
 {
-    const WEAPON_INFO *const weapon = &g_Weapons[weapon_type];
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
     ASSERT(Inv_HasAmmoSlot(weapon_type));

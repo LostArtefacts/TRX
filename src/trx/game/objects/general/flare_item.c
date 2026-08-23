@@ -152,7 +152,7 @@ static void M_Control(const int16_t item_num)
 
 static void M_DrawFlash(const CLIP clip)
 {
-    WEAPON_INFO *const flare_info = &g_Weapons[LGT_FLARE];
+    WEAPON_INFO *const flare_info = Gun_Registry_Get(LGT_FLARE);
     SWAP(flare_info->flash.pos.right, flare_info->flash.pos.left);
     Gun_DrawFlash(LGT_FLARE, clip, false);
     SWAP(flare_info->flash.pos.right, flare_info->flash.pos.left);

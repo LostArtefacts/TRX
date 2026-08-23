@@ -30,7 +30,7 @@
 static INVENTORY_STATE m_Inv;
 static RESUME_INFO m_Resume;
 static int32_t m_PickupCount;
-static int32_t m_Ammo[NUM_WEAPONS];
+static int32_t m_Ammo[MAX_WEAPONS];
 
 // The Great Wall's reward, which is the shape the bug was reported against: a
 // gun, two boxes of ammunition for it, and a medipack.

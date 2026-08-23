@@ -37,12 +37,12 @@ static LARA_GUN_TYPE M_DetermineBackGun(void)
 
 static void M_EnsureDefaultDualPistolMesh(const LARA_GUN_TYPE holster_gun)
 {
-    if (g_Weapons[holster_gun].type != WEAPON_TYPE_SINGLE_PISTOL) {
+    if (Gun_Registry_Get(holster_gun)->type != WEAPON_TYPE_SINGLE_PISTOL) {
         return;
     }
 
     for (LARA_GUN_TYPE gun = 0; gun < NUM_WEAPONS; gun++) {
-        if (g_Weapons[gun].type == WEAPON_TYPE_DUAL_PISTOLS
+        if (Gun_Registry_Get(gun)->type == WEAPON_TYPE_DUAL_PISTOLS
             && Inv_HasItem(Gun_GetGunObject(gun))) {
             Lara_Skin_SetGunEquipment(LM_THIGH_L, gun);
             break;

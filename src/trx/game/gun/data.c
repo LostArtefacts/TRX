@@ -1,5 +1,3 @@
-#include <trx/game/gun/vars.h>
-
 #include <trx/core/enum_map.h>
 #include <trx/core/json/util/file.h>
 #include <trx/core/log.h>
@@ -7,11 +5,10 @@
 #include <trx/core/subsystem.h>
 #include <trx/game/catalog/manager.h>
 #include <trx/game/const.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/paths.h>
 
 #include <string.h>
-
-WEAPON_INFO g_Weapons[NUM_WEAPONS] = {};
 
 static RESULT M_ReadAngles(
     JSON_OBJECT *const obj, const char *const name, const char *const path,
@@ -87,7 +84,7 @@ static void M_ReadAmmoInfo(JSON_OBJECT *const obj, const int32_t type)
         return;
     }
 
-    WEAPON_AMMO_INFO *const ammo = &g_Weapons[type].ammo;
+    WEAPON_AMMO_INFO *const ammo = &Gun_Registry_Get(type)->ammo;
     ammo->initial_shots = M_ReadAmmoValue(
         ammo_obj, "initial_shots", "initial_qty", ammo->initial_shots);
     ammo->box_shots =
@@ -104,13 +101,6 @@ static RESULT M_ReadWeapons(JSON_OBJECT *const root_obj, const char *const path)
 #define L_READ_DIST(name, target)                                              \
     target = JSON_ObjectGetDouble(obj, name, target / (float)WALL_L) * WALL_L;
 #define L_READ_INT(name, target) target = JSON_ObjectGetInt(obj, name, target)
-
-    // Every weapon starts from nothing, so that what the file leaves out is
-    // absent rather than left over from the mod played before this one.
-    memset(g_Weapons, 0, sizeof(g_Weapons));
-    for (int32_t i = 0; i < NUM_WEAPONS; i++) {
-        g_Weapons[i].glow.scale = 1.0f;
-    }
 
     for (JSON_OBJECT_ELEMENT *elem = root_obj->start; elem != nullptr;
          elem = elem->next) {
@@ -131,64 +121,67 @@ static RESULT M_ReadWeapons(JSON_OBJECT *const root_obj, const char *const path)
             FAIL_IF(
                 weapon_type_val < 0 || weapon_type_val >= NUM_WEAPON_TYPES,
                 "%s: unknown type '%s' for '%s'", path, weapon_type, name);
-            g_Weapons[type].type = weapon_type_val;
+            Gun_Registry_Get(type)->type = weapon_type_val;
         }
 
         // angles
         MUST(M_ReadAngles(
-            obj, name, path, "lock_angles", &g_Weapons[type].lock));
+            obj, name, path, "lock_angles", &Gun_Registry_Get(type)->lock));
         MUST(M_ReadAngles(
-            obj, name, path, "left_angles", &g_Weapons[type].left_arm));
+            obj, name, path, "left_angles", &Gun_Registry_Get(type)->left_arm));
         MUST(M_ReadAngles(
-            obj, name, path, "right_angles", &g_Weapons[type].right_arm));
+            obj, name, path, "right_angles",
+            &Gun_Registry_Get(type)->right_arm));
 
         // scalar properties
-        L_READ_ANGLE("aim_speed", g_Weapons[type].aim_speed);
-        L_READ_ANGLE("shot_accuracy", g_Weapons[type].shot_accuracy);
-        L_READ_INT("gun_height", g_Weapons[type].gun_height);
-        L_READ_INT("damage", g_Weapons[type].damage);
-        L_READ_DIST("target_dist", g_Weapons[type].target_dist);
-        L_READ_INT("equip_anim_idx", g_Weapons[type].anim.equip_anim_idx);
-        L_READ_INT("draw_frame", g_Weapons[type].anim.draw_frame);
-        L_READ_INT("undraw_frame", g_Weapons[type].anim.undraw_frame);
-        L_READ_INT("recoil_frame", g_Weapons[type].anim.recoil_frame);
-        L_READ_INT("flash_time", g_Weapons[type].flash.time);
-        L_READ_INT("flash_shade", g_Weapons[type].flash.shade);
-        L_READ_INT("smoke_count", g_Weapons[type].smoke_count);
+        L_READ_ANGLE("aim_speed", Gun_Registry_Get(type)->aim_speed);
+        L_READ_ANGLE("shot_accuracy", Gun_Registry_Get(type)->shot_accuracy);
+        L_READ_INT("gun_height", Gun_Registry_Get(type)->gun_height);
+        L_READ_INT("damage", Gun_Registry_Get(type)->damage);
+        L_READ_DIST("target_dist", Gun_Registry_Get(type)->target_dist);
+        L_READ_INT(
+            "equip_anim_idx", Gun_Registry_Get(type)->anim.equip_anim_idx);
+        L_READ_INT("draw_frame", Gun_Registry_Get(type)->anim.draw_frame);
+        L_READ_INT("undraw_frame", Gun_Registry_Get(type)->anim.undraw_frame);
+        L_READ_INT("recoil_frame", Gun_Registry_Get(type)->anim.recoil_frame);
+        L_READ_INT("flash_time", Gun_Registry_Get(type)->flash.time);
+        L_READ_INT("flash_shade", Gun_Registry_Get(type)->flash.shade);
+        L_READ_INT("smoke_count", Gun_Registry_Get(type)->smoke_count);
 
         M_ReadXYZ32(
             JSON_ObjectGetValue(obj, "flash_pos"),
-            &g_Weapons[type].flash.pos.right);
+            &Gun_Registry_Get(type)->flash.pos.right);
         M_ReadXYZ32(
             JSON_ObjectGetValue(obj, "flash_pos_alt"),
-            &g_Weapons[type].flash.pos.left);
+            &Gun_Registry_Get(type)->flash.pos.left);
         M_ReadRGB_F(
             JSON_ObjectGetValue(obj, "flash_color"),
-            &g_Weapons[type].flash.color);
+            &Gun_Registry_Get(type)->flash.color);
 
         M_ReadXYZ32(
-            JSON_ObjectGetValue(obj, "glow_pos"), &g_Weapons[type].glow.pos);
+            JSON_ObjectGetValue(obj, "glow_pos"),
+            &Gun_Registry_Get(type)->glow.pos);
         M_ReadRGB_F(
             JSON_ObjectGetValue(obj, "glow_color"),
-            &g_Weapons[type].glow.color);
-        g_Weapons[type].glow.scale =
-            JSON_ObjectGetDouble(obj, "glow_scale", g_Weapons[type].glow.scale);
-        g_Weapons[type].glow.flicker = JSON_ObjectGetBool(
-            obj, "glow_flicker", g_Weapons[type].glow.flicker);
+            &Gun_Registry_Get(type)->glow.color);
+        Gun_Registry_Get(type)->glow.scale = JSON_ObjectGetDouble(
+            obj, "glow_scale", Gun_Registry_Get(type)->glow.scale);
+        Gun_Registry_Get(type)->glow.flicker = JSON_ObjectGetBool(
+            obj, "glow_flicker", Gun_Registry_Get(type)->glow.flicker);
 
         M_ReadXYZ32(
             JSON_ObjectGetValue(obj, "muzzle_pos"),
-            &g_Weapons[type].muzzle_pos.right);
+            &Gun_Registry_Get(type)->muzzle_pos.right);
         M_ReadXYZ32(
             JSON_ObjectGetValue(obj, "muzzle_pos_alt"),
-            &g_Weapons[type].muzzle_pos.left);
+            &Gun_Registry_Get(type)->muzzle_pos.left);
 
         M_ReadXYZ32(
             JSON_ObjectGetValue(obj, "shell_pos"),
-            &g_Weapons[type].shell_pos.right);
+            &Gun_Registry_Get(type)->shell_pos.right);
         M_ReadXYZ32(
             JSON_ObjectGetValue(obj, "shell_pos_alt"),
-            &g_Weapons[type].shell_pos.left);
+            &Gun_Registry_Get(type)->shell_pos.left);
 
         M_ReadAmmoInfo(obj, type);
 
@@ -201,11 +194,11 @@ static RESULT M_ReadWeapons(JSON_OBJECT *const root_obj, const char *const path)
                 LOG_WARNING(
                     "unknown sample '%s' for '%s' in %s", sample, name, path);
             } else {
-                g_Weapons[type].sample_num = sample_id;
+                Gun_Registry_Get(type)->sample_num = sample_id;
             }
         }
 
-        g_Weapons[type].is_available =
+        Gun_Registry_Get(type)->is_available =
             JSON_ObjectGetBool(obj, "is_available", true);
     }
 
@@ -227,6 +220,11 @@ static RESULT M_LoadFrom(const char *const path)
     return result;
 }
 
+static void M_Init(void)
+{
+    Gun_Registry_Seed();
+}
+
 static RESULT M_Load(void)
 {
     const char *path = nullptr;
@@ -238,4 +236,4 @@ static RESULT M_Load(void)
     return result;
 }
 
-REGISTER_SUBSYSTEM(.load = M_Load)
+REGISTER_SUBSYSTEM(.init = M_Init, .load = M_Load)
