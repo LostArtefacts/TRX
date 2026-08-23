@@ -10,6 +10,7 @@
 - Fixed Lara being thrown across the room when she shimmies to the end of a ladder (Gameplay → Controls → Corner shimmying) (TRX1203)
 - Fixed Lara getting pushed by enemies while climbing into or out of crawlspaces (OG bug) (TRX1182)
 - Fixed static meshes affecting ledge jumps when soft static collision is not enabled (#6366 / TRX1218)
+- Fixed Lara sliding on walkable items (trapdoors, bridges etc) when there is a steep slope directly below and touching the item (OG bug)
 
 **UI**
 - Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187 / TRX1036)
