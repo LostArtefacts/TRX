@@ -612,9 +612,10 @@ bool Room_IsOnWalkable(
 {
     sector = Room_GetPitSector(sector, pos.x, pos.z);
 
-    int32_t height = sector->floor.height;
+    int32_t height = Room_GetHeight(
+        sector, (XYZ_32) { pos.x, sector->floor.height + STEP_L, pos.z });
     bool object_found = false;
-    for (WALKABLE *w = sector->walkable; w != nullptr; w = w->next) {
+    for (const WALKABLE *w = sector->walkable; w != nullptr; w = w->next) {
         // Optionally ignore a walkable.
         if (w->item_num == ignore_item_num) {
             continue;
