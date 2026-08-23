@@ -208,6 +208,10 @@ static void M_WriteItem(JSON_WRITE_IO *const io, const ITEM *const item)
             JSONW_WRITE(io, "patrol_2", creature->patrol_2);
             JSONW_WRITE(io, "hurt_by_lara", creature->hurt_by_lara);
             JSONW_WRITE(io, "damage_from_lara", creature->damage_from_lara);
+            JSONW_WRITE(
+                io, "enemy",
+                creature->enemy == nullptr ? NO_ITEM
+                                           : Item_GetIndex(creature->enemy));
             JSONW_PUSH_ARRAY(io);
             for (int32_t i = 0; i < 4; i++) {
                 JSONW_PUSH_VALUE(io, creature->joint_rotation[i]);

@@ -667,6 +667,11 @@ static RESULT M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
                         JSON_READ(io, "hurt_by_lara", &creature->hurt_by_lara));
                     MUST(JSON_READ(
                         io, "damage_from_lara", &creature->damage_from_lara));
+                    // Introduced in TRX 1.11
+                    int32_t enemy_num = NO_ITEM;
+                    SHOULD(JSON_READ_OPT(io, "enemy", &enemy_num));
+                    creature->enemy =
+                        enemy_num == NO_ITEM ? nullptr : Item_Get(enemy_num);
                     MUST(JSON_PUSH(io, "joint_rotations"));
                     for (int32_t i = 0; i < 4; i++) {
                         // Introduced in TRX 1.2
