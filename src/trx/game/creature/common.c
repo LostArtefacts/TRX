@@ -396,6 +396,15 @@ static void M_AvoidStoppers(ITEM *const item, CREATURE *const creature)
     }
 }
 
+XYZ_32 Creature_GetAITargetPos(const ITEM *const item)
+{
+    if (g_TRVersion < 4 || !M_IsAIObject(item->object_id)
+        || (item->init_flags & AI_OBJECT_FLAGS_NO_OFFSET) != 0) {
+        return item->pos;
+    }
+    return XYZ_32_OffsetYaw(item->pos, item->rot.y, STEP_L);
+}
+
 void Creature_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -690,7 +699,7 @@ void Creature_ApplyMood(
     case MOOD_ATTACK: {
         const int32_t smartness = Object_Get(item->object_id)->smartness;
         if (smartness < 0 || Random_GetControl() < smartness) {
-            lot->target = enemy->pos;
+            lot->target = Creature_GetAITargetPos(enemy);
             lot->required_box = enemy->box_num;
             if (lot->setup.fly != 0
                 && Lara_GetLaraInfo()->water_status == LWS_ABOVE_WATER) {
