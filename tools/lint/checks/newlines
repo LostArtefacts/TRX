@@ -10,6 +10,8 @@ from harness import LintWarning, file_check
 def check(path, text):
     if not text:
         return
+    if text.startswith(("\n", "\r\n")):
+        yield LintWarning(path, "file starts with a blank line", line=1)
     if not text.endswith("\n"):
         yield LintWarning(path, "missing newline character at end of file")
     if text.endswith("\n\n"):
