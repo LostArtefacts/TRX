@@ -179,7 +179,7 @@ X_OBJ_NAME_DEFINE(O_LARA_UZIS,         "lara_uzis",         X_OBJ_NAMES("Uzis An
 X_OBJ_NAME_DEFINE(O_LARA_M16,          "lara_m16",          X_OBJ_NAMES("M16 Animation"))
 X_OBJ_NAME_DEFINE(O_LARA_MP5,          "lara_mp5",          X_OBJ_NAMES("MP5 Animation"))
 X_OBJ_NAME_DEFINE(O_LARA_GRENADE_GUN,  "lara_grenade",      X_OBJ_NAMES("Grenade Launcher Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_GRENADE_GUN,  "lara_rocket",       X_OBJ_NAMES("Rocket Launcher Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_ROCKET_GUN,   "lara_rocket",       X_OBJ_NAMES("Rocket Launcher Animation"))
 X_OBJ_NAME_DEFINE(O_LARA_HARPOON_GUN,  "lara_harpoon",      X_OBJ_NAMES("Harpoon Animation"))
 X_OBJ_NAME_DEFINE(O_LARA_CROSSBOW,     "lara_crossbow",     X_OBJ_NAMES("Crossbow Animation"))
 X_OBJ_NAME_DEFINE(O_LARA_REVOLVER,     "lara_revolver",     X_OBJ_NAMES("Revolver Animation"))
