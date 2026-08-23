@@ -9,6 +9,7 @@
 #include <trx/game/effects.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/matrix.h>

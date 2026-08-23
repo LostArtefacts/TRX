@@ -34,6 +34,7 @@ api.enum("weapons.Kind", {
     SINGLE_PISTOL = "One in the right hand.",
     RIFLE = "Held in both hands, drawn from Lara's back.",
     MOUNTED = "Fixed to a vehicle rather than held.",
+    FLARE = "Held in one hand and burning, rather than fired.",
   },
 })
 

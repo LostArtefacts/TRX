@@ -2970,7 +2970,7 @@
     },
     {
       "bulk": false,
-      "count": 4,
+      "count": 5,
       "description": "How the engine holds and fires a weapon, which decides which arm animations and firing routine it uses.",
       "path": "weapons.Kind",
       "values": [
@@ -2993,6 +2993,11 @@
           "description": "Fixed to a vehicle rather than held.",
           "name": "MOUNTED",
           "value": 3
+        },
+        {
+          "description": "Held in one hand and burning, rather than fired.",
+          "name": "FLARE",
+          "value": 4
         }
       ]
     },

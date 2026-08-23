@@ -2,6 +2,7 @@
 
 #include <trx/core/utils.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/items/anim.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>

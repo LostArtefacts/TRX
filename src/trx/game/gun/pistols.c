@@ -454,6 +454,11 @@ void Gun_Pistols_UndrawMeshRight(const LARA_GUN_TYPE weapon_type)
 // clang-format off
 REGISTER_GUN_TYPE(
     .gun_type = LGT_PISTOLS,
+    .save_ammo_key = "pistols",
+    .save_resume_has_key = "has_pistols",
+    .save_resume_ammo_key = "pistol_ammo",
+    .save_keys_required = true,
+    .is_default = true,
     .is_remembered = true,
     .wants_combat_camera = true,
     .draw_func = Gun_Pistols_Draw,
@@ -463,47 +468,76 @@ REGISTER_GUN_TYPE(
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_MAGNUMS,
+    .save_ammo_key = "magnums",
+    .save_resume_has_key = "has_magnums",
+    .save_resume_ammo_key = "magnum_ammo",
+    .save_keys_required = true,
+    .ammo_icon = "\\{ammo magnums}",
     .is_remembered = true,
     .wants_combat_camera = true,
     .draw_func = Gun_Pistols_Draw,
     .undraw_func = Gun_Pistols_Undraw,
     .draw_meshes_func = Gun_Pistols_DrawMeshes,
-    .control_func = M_Control)
+    .control_func = M_Control,
+    .cheat_ammo = 1000,
+    .cheat_key_ammo = 500)
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_AUTOS,
+    .save_ammo_key = "autos",
+    .save_resume_has_key = "has_autos",
+    .save_resume_ammo_key = "autos_ammo",
     .is_remembered = true,
     .wants_combat_camera = true,
     .draw_func = Gun_Pistols_Draw,
     .undraw_func = Gun_Pistols_Undraw,
     .draw_meshes_func = Gun_Pistols_DrawMeshes,
-    .control_func = M_Control)
+    .control_func = M_Control,
+    .cheat_ammo = 1000,
+    .cheat_key_ammo = 500)
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_UZIS,
     .has_alternating_fire_sound = true,
+    .save_ammo_key = "uzis",
+    .save_resume_has_key = "has_uzis",
+    .save_resume_ammo_key = "uzi_ammo",
+    .save_keys_required = true,
+    .ammo_icon = "\\{ammo uzis}",
     .is_remembered = true,
     .wants_combat_camera = true,
     .draw_func = Gun_Pistols_Draw,
     .undraw_func = Gun_Pistols_Undraw,
     .draw_meshes_func = Gun_Pistols_DrawMeshes,
-    .control_func = M_Control)
+    .control_func = M_Control,
+    .cheat_ammo = 2000,
+    .cheat_key_ammo = 5000)
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_DESERT_EAGLE,
+    .save_ammo_key = "desert_eagle",
+    .save_resume_has_key = "has_desert_eagle",
+    .save_resume_ammo_key = "desert_eagle_ammo",
     .is_remembered = true,
     .wants_combat_camera = true,
     .draw_func = Gun_Pistols_Draw,
     .undraw_func = Gun_Pistols_Undraw,
     .draw_meshes_func = Gun_Pistols_DrawMeshes,
-    .control_func = M_Control)
+    .control_func = M_Control,
+    .cheat_ammo = 1000,
+    .cheat_key_ammo = 500)
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_REVOLVER,
+    .save_ammo_key = "revolver",
+    .save_resume_has_key = "has_revolver",
+    .save_resume_ammo_key = "revolver_ammo",
     .is_remembered = true,
     .wants_combat_camera = true,
     .draw_func = Gun_Pistols_Draw,
     .undraw_func = Gun_Pistols_Undraw,
     .draw_meshes_func = Gun_Pistols_DrawMeshes,
-    .control_func = M_Control)
+    .control_func = M_Control,
+    .cheat_ammo = 1000,
+    .cheat_key_ammo = 500)
 // clang-format on

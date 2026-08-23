@@ -526,7 +526,7 @@ finish:
 bool Gun_Flare_HasExpired(void)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    return lara->gun_type == LGT_FLARE
+    return Gun_IsFlareType(lara->gun_type)
         && (lara->flare.age <= 0 || lara->flare.age >= Flare_GetMaxAge());
 }
 
@@ -535,7 +535,7 @@ bool Gun_Flare_IsMeshActive(void)
     const LARA_SKIN_EQUIPMENT *const equipment =
         Lara_Skin_GetEquipment(LM_HAND_L);
     return equipment->type == EQUIPMENT_TYPE_WEAPON
-        && equipment->data == LGT_FLARE;
+        && Gun_IsFlareType(equipment->data);
 }
 
 void Gun_Flare_DrawMeshes(void)

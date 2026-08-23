@@ -20,6 +20,10 @@ void Gun_HitTarget(
 
 void Gun_DrawFlash(LARA_GUN_TYPE weapon_type, CLIP clip, bool interpolated);
 
+// Draws the flash with the two hand positions exchanged, as a weapon held in
+// the other hand shows it.
+void Gun_DrawFlashMirrored(LARA_GUN_TYPE weapon_type, CLIP clip);
+
 // Marks the TR1/TR2 muzzle flash and flare fire meshes semi-transparent per
 // the gun glow setting, matching the PS1 versions.
 void Gun_ApplyFlashSemiTransparency(void);
