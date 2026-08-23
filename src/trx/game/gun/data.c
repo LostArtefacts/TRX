@@ -6,6 +6,7 @@
 #include <trx/game/catalog/manager.h>
 #include <trx/game/const.h>
 #include <trx/game/gun/registry.h>
+#include <trx/game/objects/names.h>
 #include <trx/game/paths.h>
 
 #include <string.h>
@@ -144,6 +145,7 @@ static RESULT M_ReadWeapons(JSON_OBJECT *const root_obj, const char *const path)
         L_READ_INT("draw_frame", Gun_Registry_Get(type)->anim.draw_frame);
         L_READ_INT("undraw_frame", Gun_Registry_Get(type)->anim.undraw_frame);
         L_READ_INT("recoil_frame", Gun_Registry_Get(type)->anim.recoil_frame);
+        L_READ_INT("shell_frame", Gun_Registry_Get(type)->anim.shell_frame);
         L_READ_INT("flash_time", Gun_Registry_Get(type)->flash.time);
         L_READ_INT("flash_shade", Gun_Registry_Get(type)->flash.shade);
         L_READ_INT("smoke_count", Gun_Registry_Get(type)->smoke_count);
@@ -182,6 +184,47 @@ static RESULT M_ReadWeapons(JSON_OBJECT *const root_obj, const char *const path)
         M_ReadXYZ32(
             JSON_ObjectGetValue(obj, "shell_pos_alt"),
             &Gun_Registry_Get(type)->shell_pos.left);
+
+        M_ReadXYZ32(
+            JSON_ObjectGetValue(obj, "smoke_pos"),
+            &Gun_Registry_Get(type)->smoke_pos.right);
+        M_ReadXYZ32(
+            JSON_ObjectGetValue(obj, "smoke_pos_alt"),
+            &Gun_Registry_Get(type)->smoke_pos.left);
+
+        M_ReadXYZ32(
+            JSON_ObjectGetValue(obj, "smoke_tip"),
+            &Gun_Registry_Get(type)->smoke_tip.right);
+        M_ReadXYZ32(
+            JSON_ObjectGetValue(obj, "smoke_tip_alt"),
+            &Gun_Registry_Get(type)->smoke_tip.left);
+
+        const char *const shell_object =
+            JSON_ObjectGetString(obj, "shell_object", JSON_INVALID_STRING);
+        if (shell_object != JSON_INVALID_STRING && shell_object[0] != '\0') {
+            const OBJECT_ID shell_object_id = Object_IdFromKey(shell_object);
+            FAIL_IF(
+                shell_object_id == NO_OBJECT,
+                "%s: unknown object '%s' for '%s'", path, shell_object, name);
+            Gun_Registry_Get(type)->shell_object_id = shell_object_id;
+        }
+
+        Gun_Registry_Get(type)->shell_throws_forward = JSON_ObjectGetBool(
+            obj, "shell_throws_forward",
+            Gun_Registry_Get(type)->shell_throws_forward);
+        Gun_Registry_Get(type)->shell_angle = JSON_ObjectGetInt(
+            obj, "shell_angle", Gun_Registry_Get(type)->shell_angle);
+        Gun_Registry_Get(type)->shell_min_speed = JSON_ObjectGetInt(
+            obj, "shell_min_speed", Gun_Registry_Get(type)->shell_min_speed);
+        Gun_Registry_Get(type)->unaims_on_release = JSON_ObjectGetBool(
+            obj, "unaims_on_release",
+            Gun_Registry_Get(type)->unaims_on_release);
+        Gun_Registry_Get(type)->flash_lights_room = JSON_ObjectGetBool(
+            obj, "flash_lights_room",
+            Gun_Registry_Get(type)->flash_lights_room);
+        Gun_Registry_Get(type)->flash_is_optional = JSON_ObjectGetBool(
+            obj, "flash_is_optional",
+            Gun_Registry_Get(type)->flash_is_optional);
 
         M_ReadAmmoInfo(obj, type);
 

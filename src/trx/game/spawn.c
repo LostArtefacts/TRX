@@ -370,7 +370,8 @@ void Spawn_GunShell(const LARA_GUN_TYPE weapon_type, const bool right)
         return;
     }
 
-    const bool shotgun = weapon_type == LGT_SHOTGUN;
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
+    const OBJECT_ID shell_object_id = weapon->shell_object_id;
     EFFECT *const effect = Effect_Get(effect_num);
     effect->pos = offset;
     effect->room_num = lara_item->room_num;
@@ -378,18 +379,19 @@ void Spawn_GunShell(const LARA_GUN_TYPE weapon_type, const bool right)
     effect->rot.y = 0;
     effect->rot.z = (int16_t)Random_GetControl();
     effect->speed = (int16_t)((Random_GetControl() & 0x1F) + 16);
-    effect->object_id = shotgun ? O_SHOTGUN_SHELL : O_GUN_SHELL;
+    effect->object_id =
+        shell_object_id == NO_OBJECT ? O_GUN_SHELL : shell_object_id;
     effect->frame_num = Object_Get(effect->object_id)->mesh_idx;
     effect->fall_speed = (int16_t)(-48 - (Random_GetControl() & 7));
     effect->shade = 0x4210;
     effect->counter = (int16_t)((Random_GetControl() & 1) + 1);
 
-    if (shotgun || weapon_type == LGT_M16 || weapon_type == LGT_MP5) {
+    if (weapon->shell_throws_forward) {
         const int32_t spread = (Random_GetControl() & 0xFFF);
         effect->flag1 = lara->left_arm.rot.y + lara_item->rot.y - spread
-            + lara->torso_rot.y + (shotgun ? 0x2800 : 0x4800);
-        if (!shotgun && effect->speed < 24) {
-            effect->speed += 24;
+            + lara->torso_rot.y + weapon->shell_angle;
+        if (effect->speed < weapon->shell_min_speed) {
+            effect->speed += weapon->shell_min_speed;
         }
     } else if (right) {
         effect->flag1 = lara_item->rot.y - (Random_GetControl() & 0xFFF)

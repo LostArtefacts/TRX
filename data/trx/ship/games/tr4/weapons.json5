@@ -108,6 +108,13 @@
     },
 
     "LGT_SHOTGUN": {
+        "shell_frame": 12,
+        "flash_lights_room": true,
+        "unaims_on_release": true,
+        "flash_is_optional": true,
+        "shell_throws_forward": true,
+        "shell_angle": 10240,
+        "shell_object": "shotgun_shell",
         "type": "WEAPON_TYPE_RIFLE",
         "lock_angles": [-60, +60, -55, +55],
         "left_angles": [-80, +80, -65, +65],
