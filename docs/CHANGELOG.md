@@ -52,6 +52,7 @@
 - Added Natla as an outfit for Lara, selectable in every game (Graphic Options → Visuals → Lara's outfit) (TRX1050)
 - Added injection support for putting a room in a flip group, which only TR4 levels carry themselves (#5336 / TRX173)
 - Added a `requires_alert` property to the sentry gun, which lets a plain trigger set it firing where it would otherwise wait for a security laser (TRX1141)
+- Changed weather to follow flyby cameras (TRX1231)
 - Changed a missing or unknown `lara_outfit` in a level to fall back to the default outfit, rather than stopping the game from starting (TRX1087)
 - Removed the golden outfits, which the engine now produces from any outfit, freeing their model slots for outfits of your own (TRX1070)
 

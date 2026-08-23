@@ -99,7 +99,7 @@ static bool M_SpawnParticle(XYZ_32 *const pos)
     }
 
     XYZ_32 base_pos = {};
-    if (g_Camera.type == CAM_FIXED) {
+    if (g_Camera.type == CAM_FIXED || g_Camera.type == CAM_FLYBY_MODE) {
         base_pos = g_Camera.pos.pos;
         if (g_Camera.target.y < g_Camera.pos.y) {
             base_pos.y += M_RAIN_BASE_Y_OFF;
