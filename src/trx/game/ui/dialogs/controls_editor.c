@@ -195,23 +195,23 @@ static bool M_IsRoleUsable(const INPUT_ROLE role)
 {
     switch (role) {
     case INPUT_ROLE_USE_FLARE:
-        return g_Weapons[LGT_FLARE].is_available;
+        return Gun_Registry_Get(LGT_FLARE)->is_available;
     case INPUT_ROLE_EQUIP_MAGNUMS:
-        return g_Weapons[LGT_MAGNUMS].is_available;
+        return Gun_Registry_Get(LGT_MAGNUMS)->is_available;
     case INPUT_ROLE_EQUIP_AUTOS:
-        return g_Weapons[LGT_AUTOS].is_available;
+        return Gun_Registry_Get(LGT_AUTOS)->is_available;
     case INPUT_ROLE_EQUIP_DESERT_EAGLE:
-        return g_Weapons[LGT_DESERT_EAGLE].is_available;
+        return Gun_Registry_Get(LGT_DESERT_EAGLE)->is_available;
     case INPUT_ROLE_EQUIP_HARPOON:
-        return g_Weapons[LGT_HARPOON].is_available;
+        return Gun_Registry_Get(LGT_HARPOON)->is_available;
     case INPUT_ROLE_EQUIP_M16:
-        return g_Weapons[LGT_M16].is_available;
+        return Gun_Registry_Get(LGT_M16)->is_available;
     case INPUT_ROLE_EQUIP_MP5:
-        return g_Weapons[LGT_MP5].is_available;
+        return Gun_Registry_Get(LGT_MP5)->is_available;
     case INPUT_ROLE_EQUIP_GRENADE_LAUNCHER:
-        return g_Weapons[LGT_GRENADE].is_available;
+        return Gun_Registry_Get(LGT_GRENADE)->is_available;
     case INPUT_ROLE_EQUIP_ROCKET_LAUNCHER:
-        return g_Weapons[LGT_ROCKET].is_available;
+        return Gun_Registry_Get(LGT_ROCKET)->is_available;
     case INPUT_ROLE_FLY_CHEAT:
     case INPUT_ROLE_ITEM_CHEAT:
     case INPUT_ROLE_LEVEL_SKIP_CHEAT:

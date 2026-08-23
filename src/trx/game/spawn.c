@@ -6,7 +6,7 @@
 #include <trx/game/collision/los.h>
 #include <trx/game/effects.h>
 #include <trx/game/fx/water.h>
-#include <trx/game/gun/vars.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/output.h>
@@ -357,8 +357,8 @@ void Spawn_GunShell(const LARA_GUN_TYPE weapon_type, const bool right)
     const ITEM *const lara_item = Lara_GetItem();
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    XYZ_32 offset = right ? g_Weapons[weapon_type].shell_pos.right
-                          : g_Weapons[weapon_type].shell_pos.left;
+    XYZ_32 offset = right ? Gun_Registry_Get(weapon_type)->shell_pos.right
+                          : Gun_Registry_Get(weapon_type)->shell_pos.left;
     if (offset.x == 0 && offset.y == 0 && offset.z == 0) {
         return;
     }

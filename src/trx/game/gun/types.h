@@ -2,6 +2,7 @@
 
 #include <trx/core/colors.h>
 #include <trx/core/math/types.h>
+#include <trx/game/lara/enum.h>
 #include <trx/game/sound/ids.h>
 
 typedef enum {
@@ -68,6 +69,11 @@ typedef struct {
 } WEAPON_ANIM_INFO;
 
 typedef struct {
+    LARA_GUN_TYPE gun_type;
+    // Whether a module implements this weapon. A gun type that none declares
+    // is one the engine carries but nothing drives, such as empty hands or a
+    // gun fixed to a vehicle.
+    bool is_declared;
     WEAPON_TYPE type;
     // Where auto-aim may lock on, and how far each arm may follow it.
     WEAPON_AIM_LIMITS lock;

@@ -63,7 +63,7 @@ static void M_GiveAllGunsImpl(const bool ignore_exclusions)
 
 static void M_GiveAllMedpacksImpl(void)
 {
-    if (g_Weapons[LGT_FLARE].is_available) {
+    if (Gun_Registry_Get(LGT_FLARE)->is_available) {
         Inv_AddItemNTimes(O_FLAREBOX_ITEM, 10);
     }
     Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, 10);
@@ -148,7 +148,7 @@ bool Lara_Cheat_GiveGun(
         return false;
     }
 
-    if (!ignore_exclusions && !g_Weapons[gun_type].is_available) {
+    if (!ignore_exclusions && !Gun_Registry_Get(gun_type)->is_available) {
         return false;
     }
 

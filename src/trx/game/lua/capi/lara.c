@@ -219,7 +219,7 @@ static int M_L_LaraHasPistolWeapon(lua_State *const L)
 {
     bool has_pistol = false;
     for (int32_t i = 0; i < NUM_WEAPONS; i++) {
-        const WEAPON_INFO *const weapon = &g_Weapons[i];
+        const WEAPON_INFO *const weapon = Gun_Registry_Get(i);
         if ((weapon->type == WEAPON_TYPE_DUAL_PISTOLS
              || weapon->type == WEAPON_TYPE_SINGLE_PISTOL)
             && Inv_HasItem(Gun_GetGunObject(i))) {

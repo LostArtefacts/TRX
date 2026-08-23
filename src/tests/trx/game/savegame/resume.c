@@ -31,6 +31,8 @@
 #define M_CURRENT 3
 #define M_PISTOL_ROUNDS 50
 
+static WEAPON_INFO m_Weapons[MAX_WEAPONS] = {};
+
 static GF_LEVEL m_MainLevels[] = {
     { .num = M_GYM, .type = GFL_GYM },
     { .num = M_FIRST, .type = GFL_NORMAL },
@@ -67,7 +69,13 @@ static void M_SetUp(void)
 }
 
 int32_t g_TRVersion = 1;
-WEAPON_INFO g_Weapons[NUM_WEAPONS] = {};
+WEAPON_INFO *Gun_Registry_Get(const LARA_GUN_TYPE gun_type)
+{
+    // The real registry stamps a weapon with its own type as it
+    // seeds them, which nothing here does.
+    m_Weapons[gun_type].gun_type = gun_type;
+    return &m_Weapons[gun_type];
+}
 
 const GF_LEVEL_TABLE *GF_GetLevelTable(const GF_LEVEL_TABLE_TYPE type)
 {

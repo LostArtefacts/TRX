@@ -4,6 +4,7 @@
 #include <trx/game/camera/binoculars.h>
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
@@ -510,3 +511,8 @@ void Gun_Flare_DrawMeshes(void)
 {
     Lara_Skin_SetGunEquipment(LM_HAND_L, LGT_FLARE);
 }
+
+// clang-format off
+REGISTER_GUN_TYPE(
+    .gun_type = LGT_FLARE)
+// clang-format on

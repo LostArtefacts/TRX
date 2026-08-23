@@ -7,8 +7,8 @@
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/flare.h>
 #include <trx/game/gun/pistols.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/gun/rifle.h>
-#include <trx/game/gun/vars.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
 #include <trx/game/items.h>
@@ -382,7 +382,7 @@ void Gun_DrawFlash(
         break;
     }
 
-    const WEAPON_INFO weapon = g_Weapons[weapon_type];
+    const WEAPON_INFO weapon = (*Gun_Registry_Get(weapon_type));
     if (interpolated) {
         Matrix_TranslateRel32_I(weapon.flash.pos.right);
         Matrix_RotX_I(rot.x);

@@ -77,7 +77,7 @@ static bool M_IsWeapon(const LARA_GUN_TYPE gun_type)
 static bool M_IsGunType(
     const LARA_GUN_TYPE gun_type, const WEAPON_TYPE weapon_type)
 {
-    return g_Weapons[gun_type].type == weapon_type;
+    return Gun_Registry_Get(gun_type)->type == weapon_type;
 }
 
 // weapons.json5 counts in shots, which is what the player's counter shows. The
@@ -146,17 +146,18 @@ OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
 
 int32_t Gun_GetInitialRounds(const LARA_GUN_TYPE gun_type)
 {
-    return M_GetRounds(gun_type, g_Weapons[gun_type].ammo.initial_shots);
+    return M_GetRounds(
+        gun_type, Gun_Registry_Get(gun_type)->ammo.initial_shots);
 }
 
 int32_t Gun_GetRoundsPerBox(const LARA_GUN_TYPE gun_type)
 {
-    return M_GetRounds(gun_type, g_Weapons[gun_type].ammo.box_shots);
+    return M_GetRounds(gun_type, Gun_Registry_Get(gun_type)->ammo.box_shots);
 }
 
 int32_t Gun_GetAmmoInventoryQuantity(const LARA_GUN_TYPE gun_type)
 {
-    return g_Weapons[gun_type].ammo.box_label_qty;
+    return Gun_Registry_Get(gun_type)->ammo.box_label_qty;
 }
 
 int32_t Gun_GetRoundsPerShot(const LARA_GUN_TYPE gun_type)
@@ -179,7 +180,7 @@ bool Gun_HasInfiniteAmmo(const LARA_GUN_TYPE gun_type)
     if (Game_IsBonusFlagSet(GBF_NGPLUS)) {
         return true;
     }
-    return M_IsWeapon(gun_type) && g_Weapons[gun_type].ammo.infinite;
+    return M_IsWeapon(gun_type) && Gun_Registry_Get(gun_type)->ammo.infinite;
 }
 
 bool Gun_HasRoundsLeft(const LARA_GUN_TYPE gun_type)

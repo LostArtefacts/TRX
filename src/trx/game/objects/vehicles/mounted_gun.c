@@ -175,7 +175,7 @@ static void M_Fire(ITEM *const gun_item)
         .pos = projectile_item->pos,
         .room_num = projectile_item->room_num,
     };
-    const int32_t smoke_count = g_Weapons[LGT_ROCKET].smoke_count;
+    const int32_t smoke_count = Gun_Registry_Get(LGT_ROCKET)->smoke_count;
     Sparks_TriggerGunSmoke(pos, true, LGT_ROCKET, smoke_count);
 
     projectile_item->shade.value_1 = -1;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/game/gun/const.h>
 #include <trx/game/lara/skin/enum.h>
 #include <trx/game/lara/skin/seam.h>
 #include <trx/game/lara/types.h>
@@ -17,7 +18,7 @@ typedef struct {
 } LARA_SKIN_MESH_MAP;
 
 typedef struct {
-    LARA_SKIN_MESH_MAP mesh_offsets[NUM_WEAPONS];
+    LARA_SKIN_MESH_MAP mesh_offsets[MAX_WEAPONS];
 } LARA_SKIN_GUN_MAP;
 
 // The braid top ring welds onto these head vertices so it meets the scalp

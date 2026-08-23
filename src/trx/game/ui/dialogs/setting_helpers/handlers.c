@@ -262,32 +262,33 @@ static bool M_Volume_RequestChange(
 static bool M_Flare_IsAvailable(
     const CONFIG_OPTION *const option, void *const user_data)
 {
-    return g_Weapons[LGT_FLARE].is_available;
+    return Gun_Registry_Get(LGT_FLARE)->is_available;
 }
 
 static bool M_Grenade_IsAvailable(
     const CONFIG_OPTION *const option, void *const user_data)
 {
-    return g_Weapons[LGT_GRENADE].is_available;
+    return Gun_Registry_Get(LGT_GRENADE)->is_available;
 }
 
 static bool M_Harpoon_IsAvailable(
     const CONFIG_OPTION *const option, void *const user_data)
 {
-    return g_Weapons[LGT_HARPOON].is_available;
+    return Gun_Registry_Get(LGT_HARPOON)->is_available;
 }
 
 static bool M_M16_IsAvailable(
     const CONFIG_OPTION *const option, void *const user_data)
 {
-    return g_Weapons[LGT_M16].is_available || g_Weapons[LGT_MP5].is_available;
+    return Gun_Registry_Get(LGT_M16)->is_available
+        || Gun_Registry_Get(LGT_MP5)->is_available;
 }
 
 static bool M_ProjectileAreaDamage_IsAvailable(
     const CONFIG_OPTION *const option, void *const user_data)
 {
-    return g_Weapons[LGT_ROCKET].is_available
-        || g_Weapons[LGT_GRENADE].is_available;
+    return Gun_Registry_Get(LGT_ROCKET)->is_available
+        || Gun_Registry_Get(LGT_GRENADE)->is_available;
 }
 
 static bool M_TouchControls_IsAvailable(

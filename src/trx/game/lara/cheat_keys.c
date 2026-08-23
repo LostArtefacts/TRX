@@ -75,7 +75,7 @@ static void M_GiveItems(void)
     }
     Inv_AddItemNTimes(O_SMALL_MEDIPACK_ITEM, 50);
     Inv_AddItemNTimes(O_LARGE_MEDIPACK_ITEM, 50);
-    if (g_Weapons[LGT_FLARE].is_available) {
+    if (Gun_Registry_Get(LGT_FLARE)->is_available) {
         Inv_AddItemNTimes(O_FLARE_ITEM, 50);
     }
     Sound_Effect(SFX_LARA_HOLSTER, nullptr, SPM_ALWAYS);

@@ -5,8 +5,8 @@
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/control.h>
 #include <trx/game/gun/misc.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/gun/smoke.h>
-#include <trx/game/gun/vars.h>
 #include <trx/game/input.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/sound.h>
@@ -120,7 +120,7 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const M_FRAME_SETUP *const setup = M_GetSetup(weapon_type);
-    const WEAPON_INFO *const weapon = &g_Weapons[weapon_type];
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
     const ITEM *const lara_item = Lara_GetItem();
 
     bool sound_already = false;
@@ -241,7 +241,7 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
 
 void Gun_Pistols_Control(const LARA_GUN_TYPE weapon_type)
 {
-    const WEAPON_INFO *const weapon = &g_Weapons[weapon_type];
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
     LARA_INFO *const lara = Lara_GetLaraInfo();
 
     Gun_GetNewTarget(weapon);
@@ -441,3 +441,23 @@ void Gun_Pistols_UndrawMeshRight(const LARA_GUN_TYPE weapon_type)
     Gun_SetLaraHolsterRMesh(weapon_type);
     Sound_Effect(SFX_LARA_HOLSTER, &Lara_GetItem()->pos, SPM_NORMAL);
 }
+
+// clang-format off
+REGISTER_GUN_TYPE(
+    .gun_type = LGT_PISTOLS)
+
+REGISTER_GUN_TYPE(
+    .gun_type = LGT_MAGNUMS)
+
+REGISTER_GUN_TYPE(
+    .gun_type = LGT_AUTOS)
+
+REGISTER_GUN_TYPE(
+    .gun_type = LGT_UZIS)
+
+REGISTER_GUN_TYPE(
+    .gun_type = LGT_DESERT_EAGLE)
+
+REGISTER_GUN_TYPE(
+    .gun_type = LGT_REVOLVER)
+// clang-format on
