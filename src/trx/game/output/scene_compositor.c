@@ -110,9 +110,12 @@ static bool M_IsAnySourceDirty(const M_PRIV *const p)
 static void M_PrepareScene(const M_PRIV *const p)
 {
 #ifndef __APPLE__
-    glLineWidth(
-        g_Config.rendering.wireframe_width * Viewport_GetSupersamplingFactor());
-    TRX_GL_CheckError();
+    if (g_Config.rendering.enable_wireframe) {
+        glLineWidth(
+            g_Config.rendering.wireframe_width
+            * Viewport_GetSupersamplingFactor());
+        TRX_GL_CheckError();
+    }
 #endif
 
     glBindSampler(0, p->sampler_id);
