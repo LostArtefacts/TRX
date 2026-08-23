@@ -47,6 +47,8 @@
 - Added an option to keep Lara firing the M16/MP5 from her hip while the action key is held, rather than shouldering the gun the moment she stops moving (Gameplay → Controls → M16/MP5 aiming variants) (#3861 / TRX1048)
 - Fixed Lara taking out a two-handed weapon in wading-depth water only to put it away at once (OG bug) (#6253 / TRX1120)
 - Fixed Lara taking out a weapon while she is fully submerged in a swamp (#6255 / TRX1122)
+- Fixed Lara's back staying empty in a level that takes her weapons away and gives her a rocket launcher
+- Fixed the automatic pistols smoking undimmed, unlike the magnums and the uzis
 
 **Level and game data**
 - Added Natla as an outfit for Lara, selectable in every game (Graphic Options → Visuals → Lara's outfit) (TRX1050)
@@ -59,6 +61,7 @@
 **Saves and settings**
 - Added smoke, sparks, mist and bubbles to saves (Gameplay → General → Save effects)
 - Changed the save crystal behavior to give Lara a crystal when starting a game, if the mode is set to Saving (pickups), in line with the TR3 PS1 version (Gameplay → General → Crystal mode) (TRX1101)
+- Removed support for saves from TRX 1.0, and TR1X/TR2X era
 
 **Music and sound**
 - Added an option to have Lara's sliding SFX stop as soon as she leaves a slope (#6294 / TRX1155)
@@ -140,6 +143,7 @@
 - Fixed the game closing when another game is switched to while Lara is riding a vehicle (TRX1148)
 - Fixed a false warning that the settings could not be saved (TRX1112)
 - Fixed the camera when using binoculars clipping into the ceiling if the ceiling around Lara is very low (#6352 / TRX1205)
+- Fixed the rocket launcher's animation object having no name
 
 **Lua**
 - Added `trx.events.on_cutscene_frame()`, which reports every frame of a TR4 cutscene, so a script can act part-way through one (TRX1199)
