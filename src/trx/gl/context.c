@@ -11,6 +11,7 @@
 
 #include <GL/glew.h>
 #include <SDL2/SDL_video.h>
+#include <stdint.h>
 #include <string.h>
 
 typedef struct {
@@ -32,6 +33,13 @@ extern RGBA_F Output_GetFogColor(void);
 
 static TRX_GL_CONTEXT m_Context = {};
 
+// The driver reports the same message once a frame, which the log has no room
+// for. Only the first of a run is logged. The count of the rest names the
+// message it belongs to, because other modules log between the two lines.
+static bool m_HasLastDebug = false;
+static GLuint m_LastDebugID = 0;
+static uint32_t m_LastDebugRepeats = 0;
+
 static bool M_IsExtensionSupported(const char *name)
 {
     int number_of_extensions;
@@ -50,6 +58,17 @@ static bool M_IsExtensionSupported(const char *name)
     return false;
 }
 
+static void M_ReportDebugRepeats(void)
+{
+    if (m_LastDebugRepeats == 0) {
+        return;
+    }
+    LOG_INFO(
+        "OpenGL message #%u repeated %u more times", m_LastDebugID,
+        m_LastDebugRepeats);
+    m_LastDebugRepeats = 0;
+}
+
 static GLvoid GLAPIENTRY M_GLDebug(
     const GLenum source, const GLenum type, const GLuint id,
     const GLenum severity, const GLsizei length, const GLchar *const message,
@@ -58,11 +77,20 @@ static GLvoid GLAPIENTRY M_GLDebug(
     if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) {
         return;
     }
+
+    if (m_HasLastDebug && id == m_LastDebugID) {
+        m_LastDebugRepeats++;
+        return;
+    }
+    M_ReportDebugRepeats();
+    m_HasLastDebug = true;
+    m_LastDebugID = id;
+
     size_t len = strlen(message);
     if (len > 0 && message[len - 1] == '\n') {
         len--;
     }
-    LOG_INFO("%d %*s", source, len, message);
+    LOG_INFO("%d #%u %.*s", source, id, (int)len, message);
 }
 
 void TRX_GL_Context_SwitchToViewport(const VIEWPORT_SPACE space)
@@ -138,6 +166,11 @@ RESULT TRX_GL_Context_Attach(void *window_handle)
     if (glDebugMessageCallback != nullptr) {
         glDebugMessageCallback(M_GLDebug, nullptr);
     }
+    if (glDebugMessageControl != nullptr) {
+        glDebugMessageControl(
+            GL_DONT_CARE, GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR, GL_DONT_CARE, 0,
+            nullptr, GL_FALSE);
+    }
     glEnable(GL_DEBUG_OUTPUT);
 #endif
 
@@ -176,6 +209,8 @@ char *TRX_GL_Context_DescribeDriver(void *const window_handle)
 
 void TRX_GL_Context_Detach(void)
 {
+    M_ReportDebugRepeats();
+
     if (!m_Context.window_handle) {
         return;
     }
