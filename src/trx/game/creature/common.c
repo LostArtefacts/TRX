@@ -25,6 +25,7 @@
 
 // clang-format off
 #define M_FLOAT_SPEED      32
+#define M_ROOM_PROBE       32
 #define M_MAX_DISTANCE     (g_TRVersion < 3 ? WALL_L * 30 : STEP_L * 125) // = 30720 (TR1/2), 32000 (TR3)
 #define M_ATTACK_RANGE     SQUARE(WALL_L * 3) // = 0x900000 = 9437184
 #define M_ESCAPE_CHANCE    2048
@@ -1366,7 +1367,7 @@ bool Creature_Animate(
         item->rot.x = 0;
     }
 
-    if (!Object_IsType(item->object_id, g_WaterObjects)) {
+    if (g_TRVersion <= 3 && !Object_IsType(item->object_id, g_WaterObjects)) {
         // Get the room just above the enemy so that if it is in one-click high
         // water, its effects behave still as though in a dry room.
         Room_GetSector(
@@ -1375,6 +1376,13 @@ bool Creature_Animate(
         if (M_TestDrowned(item, bounds, room_num)) {
             Item_TakeFatalDamage(item, nullptr);
         }
+    }
+
+    if (g_TRVersion >= 4) {
+        room_num = item->room_num;
+        Room_GetSector(
+            (XYZ_32) { item->pos.x, item->pos.y - M_ROOM_PROBE, item->pos.z },
+            &room_num);
     }
 
     Item_UpdateRoom(item_num, room_num);
