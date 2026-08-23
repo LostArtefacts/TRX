@@ -388,6 +388,10 @@ TARGET_TYPE Box_CalculateTarget(
     int32_t right = seed_clip ? own_box->right : 0;
     int32_t left = seed_clip ? own_box->left : 0;
 
+    // TR4 also leaves an axis alone where the running clip is the opposite
+    // side of that axis. TR1 to TR3 test only the near side.
+    const bool pair_clip = g_TRVersion >= 4;
+
     const BOX_INFO *box = nullptr;
     int32_t prime_free = BOX_CLIP_ALL;
     do {
@@ -415,7 +419,9 @@ TARGET_TYPE Box_CalculateTarget(
                     CLAMPL(top, box->top);
                     CLAMPG(bottom, box->bottom);
                     prime_free = BOX_CLIP_LEFT;
-                } else if (prime_free != BOX_CLIP_LEFT) {
+                } else if (
+                    prime_free != BOX_CLIP_LEFT
+                    && (!pair_clip || prime_free != BOX_CLIP_RIGHT)) {
                     target->z = right - BOX_BIFF;
                     if (prime_free != BOX_CLIP_ALL) {
                         return TARGET_SECONDARY;
@@ -432,7 +438,9 @@ TARGET_TYPE Box_CalculateTarget(
                     CLAMPL(top, box->top);
                     CLAMPG(bottom, box->bottom);
                     prime_free = BOX_CLIP_RIGHT;
-                } else if (prime_free != BOX_CLIP_RIGHT) {
+                } else if (
+                    prime_free != BOX_CLIP_RIGHT
+                    && (!pair_clip || prime_free != BOX_CLIP_LEFT)) {
                     target->z = left + BOX_BIFF;
                     if (prime_free != BOX_CLIP_ALL) {
                         return TARGET_SECONDARY;
@@ -451,7 +459,9 @@ TARGET_TYPE Box_CalculateTarget(
                     CLAMPL(left, box->left);
                     CLAMPG(right, box->right);
                     prime_free = BOX_CLIP_TOP;
-                } else if (prime_free != BOX_CLIP_TOP) {
+                } else if (
+                    prime_free != BOX_CLIP_TOP
+                    && (!pair_clip || prime_free != BOX_CLIP_BOTTOM)) {
                     target->x = bottom - BOX_BIFF;
                     if (prime_free != BOX_CLIP_ALL) {
                         return TARGET_SECONDARY;
@@ -468,7 +478,9 @@ TARGET_TYPE Box_CalculateTarget(
                     CLAMPL(left, box->left);
                     CLAMPG(right, box->right);
                     prime_free = BOX_CLIP_BOTTOM;
-                } else if (prime_free != BOX_CLIP_BOTTOM) {
+                } else if (
+                    prime_free != BOX_CLIP_BOTTOM
+                    && (!pair_clip || prime_free != BOX_CLIP_TOP)) {
                     target->x = top + BOX_BIFF;
                     if (prime_free != BOX_CLIP_ALL) {
                         return TARGET_SECONDARY;
