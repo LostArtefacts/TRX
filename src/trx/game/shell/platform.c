@@ -18,6 +18,14 @@
 #include <libavutil/log.h>
 
 #ifdef _WIN32
+// Asks the NVIDIA Optimus and AMD switchable graphics drivers for the discrete
+// GPU. The drivers read these exported symbols from the executable, so nothing
+// in the game refers to them.
+__declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
+__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+#endif
+
+#ifdef _WIN32
 // NOTE – taken from SDL3:
 // From 8994878767cfb9403f525d12c0770c1e149a4d08 Mon Sep 17 00:00:00 2001
 // From: Sam Lantinga <slouken@libsdl.org>
