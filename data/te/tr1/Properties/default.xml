@@ -116,6 +116,9 @@
         <property category="TRX" defaultValue="500" description="Damage dealt by swipe attacks." displayName="Attack Damage" internalName="attack_damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="250" description="Damage dealt by the death explosion." displayName="Part Damage" internalName="part_damage" minValue="0" type="Int" />
     </moveable>
+    <moveable id="35">
+        <property category="TRX" defaultValue="false" description="Whether the block can only be activated from heavy triggers." displayName="Requires Heavy Trigger" internalName="requires_heavy_trigger" type="Bool" />
+    </moveable>
     <moveable id="36">
         <property category="TRX" defaultValue="100" description="Damage dealt while Lara is touching the swinging axe." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>

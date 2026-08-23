@@ -1118,7 +1118,7 @@
     },
     {
       "bulk": true,
-      "count": 206,
+      "count": 208,
       "description": "Every sound sample TRX has a name for.",
       "examples": [
         "trx.sound.play(trx.catalog.samples.LARA_NO)"
@@ -1269,6 +1269,8 @@
         "RIB_IDLE",
         "RIB_MOVING",
         "ROCKET_FIRE",
+        "ROCK_FALL_CRUMBLE",
+        "ROCK_FALL_LAND",
         "ROLLING_BALL_1_ROLL",
         "ROLLING_BALL_1_STOP",
         "ROLLING_BALL_2_ROLL",

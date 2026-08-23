@@ -1296,6 +1296,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── csplit1.lua
 │   │   │   ├── csplit2.lua
 │   │   │   ├── highstrt.lua
+│   │   │   ├── jeepchs2.lua
 │   │   │   ├── joby1a.lua
 │   │   │   ├── joby2.lua
 │   │   │   ├── joby3b.lua
@@ -2668,6 +2669,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── csplit1.lua
     │   │   │   │   ├── csplit2.lua
     │   │   │   │   ├── highstrt.lua
+    │   │   │   │   ├── jeepchs2.lua
     │   │   │   │   ├── joby1a.lua
     │   │   │   │   ├── joby2.lua
     │   │   │   │   ├── joby3b.lua

@@ -260,7 +260,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
 
     </details>
 
-- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 206 names
+- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 208 names
 
     Every sound sample TRX has a name for.
 
@@ -306,11 +306,12 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     `NATLA_SPEECH`, `PIERRE_SPEECH`, `PLATFORM_ALARM`, `POWERUP_FX`,
     `PROJECTILE_HIT`, `PULLEY_CRANE`, `PUSHBLOCK_LAND`, `QUAD_FRONT_IMPACT`,
     `QUAD_IDLE`, `QUAD_MOVE`, `RAISINGBLOCK_FX`, `RAT_CHIRP`, `RIB_IDLE`,
-    `RIB_MOVING`, `ROCKET_FIRE`, `ROLLING_BALL_1_ROLL`, `ROLLING_BALL_1_STOP`,
-    `ROLLING_BALL_2_ROLL`, `ROLLING_BALL_2_STOP`, `ROLLING_BALL_3_ROLL`,
-    `ROLLING_BALL_3_STOP`, `ROLLING_BALL_4_ROLL`, `ROLLING_BALL_4_STOP`,
-    `ROLLING_BLADE`, `SANDBAG_HIT`, `SAND_FX`, `SAND_LOOP`, `SAVE_CRYSTAL`,
-    `SAW_REVVING`, `SAW_STOP`, `SECRET`, `SECURITY_GUARD_FIRE`, `SHIVA_SWORD_1`,
+    `RIB_MOVING`, `ROCKET_FIRE`, `ROCK_FALL_CRUMBLE`, `ROCK_FALL_LAND`,
+    `ROLLING_BALL_1_ROLL`, `ROLLING_BALL_1_STOP`, `ROLLING_BALL_2_ROLL`,
+    `ROLLING_BALL_2_STOP`, `ROLLING_BALL_3_ROLL`, `ROLLING_BALL_3_STOP`,
+    `ROLLING_BALL_4_ROLL`, `ROLLING_BALL_4_STOP`, `ROLLING_BLADE`,
+    `SANDBAG_HIT`, `SAND_FX`, `SAND_LOOP`, `SAVE_CRYSTAL`, `SAW_REVVING`,
+    `SAW_STOP`, `SECRET`, `SECURITY_GUARD_FIRE`, `SHIVA_SWORD_1`,
     `SHIVA_SWORD_2`, `SHUTTERS_BREAK`, `SKATEBOARD_HIT`, `SKATEKID_SPEECH`,
     `SKIDOO_IDLE`, `SKIDOO_MOVING`, `SMALL_FAN_ON`, `SOPHIA_SUMMON`,
     `SOPHIA_SUMMON_NOT`, `SOPHIA_TAKE_HIT`, `SPANNER_CLUNK`, `SPIDER_EXPLODE`,

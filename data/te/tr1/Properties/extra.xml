@@ -159,6 +159,10 @@
         <property category="TRX" defaultValue="5" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="50" description="Damage dealt by the eel bite." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_FALLING_BLOCK_2..O_FALLING_BLOCK_3-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="false" description="Whether the block can only be activated from heavy triggers." displayName="Requires Heavy Trigger" internalName="requires_heavy_trigger" type="Bool" />
+    </moveable>
     <!--placeholder for O_FLAME_EMITTER_SIDE-->
     <moveable id="-1">
         <property category="TRX" defaultValue="2" description="Interval between flame bursts, in seconds." displayName="Interval" internalName="interval" minValue="0" type="Float" />
