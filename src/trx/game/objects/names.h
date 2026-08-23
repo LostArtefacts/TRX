@@ -40,6 +40,10 @@ void Object_SetDescription(OBJECT_ID obj_id, const char *description);
 OBJECT_NAME_MATCH *Object_IdsFromName(
     const char *name, int32_t *out_match_count, bool (*filter)(OBJECT_ID));
 
+// Returns the object an id stands for, which is the id itself unless it is
+// an alias, as an inventory option is an alias of the item it shows.
+OBJECT_ID Object_ResolveAlias(OBJECT_ID obj_id);
+
 // Return an unique object id for a given programmatic string.
 // Example:
 //     Given a string "key_1", returns O_KEY_1.

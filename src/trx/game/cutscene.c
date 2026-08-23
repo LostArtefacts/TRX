@@ -11,6 +11,7 @@
 #include <trx/game/effects.h>
 #include <trx/game/fx.h>
 #include <trx/game/game/control.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/smoke.h>
 #include <trx/game/input.h>
@@ -244,7 +245,7 @@ static void M_DrawGunFlash(const LARA_MESH hand_mesh)
         hand_rot._23 = 0;
         Matrix_Mul3x3(&hand_rot);
     }
-    Gun_DrawFlash(LGT_PISTOLS, CLIP_FULLY_VISIBLE, false);
+    Gun_DrawFlash(Gun_GetDefaultType(), CLIP_FULLY_VISIBLE, false);
     Matrix_Pop();
 }
 

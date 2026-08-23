@@ -15,6 +15,7 @@
 #include <trx/game/game/state.h>
 #include <trx/game/game_strings/manager.h>
 #include <trx/game/gun/common.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/input/common.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/lara/vehicle.h>
@@ -243,6 +244,26 @@ bool Gun_HasInfiniteAmmo(const LARA_GUN_TYPE gun_type)
     return gun_type == LGT_PISTOLS;
 }
 
+LARA_GUN_TYPE Gun_GetTypeForInputRole(const INPUT_ROLE role)
+{
+    return LGT_UNARMED;
+}
+
+bool Gun_HasAvailableMachineGun(void)
+{
+    return false;
+}
+
+bool Gun_HasAvailableLauncher(void)
+{
+    return false;
+}
+
+LARA_GUN_TYPE Gun_GetFlareType(void)
+{
+    return LGT_FLARE;
+}
+
 int32_t Inv_GetAmmo(const LARA_GUN_TYPE gun_type)
 {
     return 0;
@@ -261,6 +282,11 @@ LARA_INFO *Lara_GetLaraInfo(void)
 ITEM *Lara_Vehicle_GetItem(void)
 {
     return nullptr;
+}
+
+LARA_GUN_TYPE Lara_Vehicle_GetGunType(void)
+{
+    return LGT_UNARMED;
 }
 
 bool Lara_Vehicle_IsOnType(const OBJECT_ID obj_id)

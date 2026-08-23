@@ -16,7 +16,7 @@ ITEM *Lara_GetItem(void);
 void Lara_Initialise(const GF_LEVEL *level);
 void Lara_InitialiseLoad(int16_t item_num);
 void Lara_InitialiseInventory(const GF_LEVEL *level);
-void Lara_RevertToPistolsIfNeeded(void);
+void Lara_RevertToDefaultGunIfNeeded(void);
 void Lara_UseItem(OBJECT_ID obj_id);
 void Lara_SetStartAnimState(LARA_EXTRA_STATE state);
 bool Lara_IsControllable(void);

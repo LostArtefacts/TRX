@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/game/camera.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
@@ -42,8 +43,10 @@ static void M_EnsureDefaultDualPistolMesh(const LARA_GUN_TYPE holster_gun)
         return;
     }
 
-    for (LARA_GUN_TYPE gun = 0; gun < NUM_WEAPONS; gun++) {
-        if (Gun_Registry_Get(gun)->type == WEAPON_TYPE_DUAL_PISTOLS
+    for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
+        const WEAPON_INFO *const weapon = Gun_Registry_GetByIndex(i);
+        const LARA_GUN_TYPE gun = weapon->gun_type;
+        if (weapon->type == WEAPON_TYPE_DUAL_PISTOLS
             && Inv_HasItem(Gun_GetGunObject(gun))) {
             Lara_Skin_SetGunEquipment(LM_THIGH_L, gun);
             break;
@@ -53,8 +56,8 @@ static void M_EnsureDefaultDualPistolMesh(const LARA_GUN_TYPE holster_gun)
 
 static void M_InitialiseCutsceneLevel(void)
 {
-    Lara_Skin_SetGunEquipment(LM_THIGH_L, LGT_PISTOLS);
-    Lara_Skin_SetGunEquipment(LM_THIGH_R, LGT_PISTOLS);
+    Lara_Skin_SetGunEquipment(LM_THIGH_L, Gun_GetDefaultType());
+    Lara_Skin_SetGunEquipment(LM_THIGH_R, Gun_GetDefaultType());
 }
 
 static void M_InitialiseNormalLevel(const GF_LEVEL *const level)
@@ -62,7 +65,7 @@ static void M_InitialiseNormalLevel(const GF_LEVEL *const level)
     const RESUME_INFO *const resume = SG_Resume_GetEntry(level);
 
     const LARA_GUN_TYPE holster_gun = M_DetermineHolsterGun();
-    if (holster_gun != LGT_UNARMED && holster_gun != LGT_FLARE) {
+    if (holster_gun != LGT_UNARMED && !Gun_IsFlareType(holster_gun)) {
         Gun_SetLaraHolsterLMesh(holster_gun);
         Gun_SetLaraHolsterRMesh(holster_gun);
         M_EnsureDefaultDualPistolMesh(holster_gun);
@@ -73,8 +76,8 @@ static void M_InitialiseNormalLevel(const GF_LEVEL *const level)
         Gun_SetLaraBackMesh(back_gun);
     }
 
-    if (resume != nullptr && resume->equipped_gun_type == LGT_FLARE) {
-        Lara_Skin_SetGunEquipment(LM_HAND_L, LGT_FLARE);
+    if (resume != nullptr && Gun_IsFlareType(resume->equipped_gun_type)) {
+        Lara_Skin_SetGunEquipment(LM_HAND_L, resume->equipped_gun_type);
     }
 }
 

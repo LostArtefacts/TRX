@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/game/effects.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/lara.h>
 #include <trx/game/level/settings.h>
 #include <trx/game/matrix.h>
@@ -43,7 +44,7 @@ static void M_GetJointAbsPosition_I(
         gun_type = lara_info->gun_type;
     }
 
-    if (lara_info->gun_type == LGT_FLARE) {
+    if (Gun_IsFlareType(lara_info->gun_type)) {
         Matrix_Interpolate();
         Matrix_TranslateRel32(bone[LM_UARM_L - 1].pos);
         if (lara_info->flare.control) {
@@ -123,7 +124,7 @@ void Lara_GetJointAbsPosition(XYZ_32 *const vec, const LARA_MESH joint)
         gun_type = lara_info->gun_type;
     }
 
-    if (lara_info->gun_type == LGT_FLARE) {
+    if (Gun_IsFlareType(lara_info->gun_type)) {
         Matrix_TranslateRel32(bone[LM_UARM_L - 1].pos);
         if (lara_info->flare.control) {
             const LARA_ARM *const arm = &lara_info->left_arm;
@@ -409,12 +410,12 @@ int32_t Lara_GetWaterDepth(
     return NO_HEIGHT;
 }
 
-bool Lara_IsM16Active(void)
+bool Lara_IsMachineGunActive(void)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     ITEM *const lara_item = Lara_GetItem();
     if (lara->gun_item_num == NO_ITEM || lara_item->hit_points <= 0
-        || (lara->gun_type != LGT_M16 && lara->gun_type != LGT_MP5)) {
+        || !Gun_IsMachineGunType(lara->gun_type)) {
         return false;
     }
 

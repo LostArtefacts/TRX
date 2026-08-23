@@ -7,6 +7,8 @@
 #include <trx/game/creature.h>
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/common.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/draw.h>
@@ -17,6 +19,7 @@
 #include <trx/game/objects/general/door.h>
 #include <trx/game/objects/general/pickup.h>
 #include <trx/game/objects/general/switch.h>
+#include <trx/game/objects/names.h>
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
@@ -212,21 +215,26 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
 
     if (resume != nullptr) {
         Inv_SetState(&resume->inv);
-        if (Gun_HasInfiniteAmmo(LGT_PISTOLS)) {
-            // The pistols never run out, regardless of what the level she is
-            // arriving from left in the resume info, and what she has none of
-            // she carries no rounds for.
+        const LARA_GUN_TYPE default_gun = Gun_GetDefaultType();
+        if (Gun_HasInfiniteAmmo(default_gun)) {
+            // The default weapon never runs out, regardless of what the level
+            // she is arriving from left in the resume info, and what she has
+            // none of she carries no rounds for.
             Inv_SetAmmo(
-                LGT_PISTOLS,
-                Inv_HasItem(O_PISTOL_ITEM) ? Gun_GetInitialRounds(LGT_PISTOLS)
-                                           : 0);
+                default_gun,
+                Inv_HasItem(Gun_GetGunObject(default_gun))
+                    ? Gun_GetInitialRounds(default_gun)
+                    : 0);
         }
 
         // A weapon she already carries turns the ones lying in the level into
-        // boxes of ammunition for it. The pistols are left alone: a level that
-        // is not meant to hold them says so through the game flow.
-        for (LARA_GUN_TYPE gun_type = LGT_PISTOLS + 1; gun_type < NUM_WEAPONS;
-             gun_type++) {
+        // boxes of ammunition for it. The default weapon is left alone: a
+        // level that is not meant to hold it says so through the game flow.
+        for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
+            const LARA_GUN_TYPE gun_type = Gun_Registry_GetByIndex(i)->gun_type;
+            if (gun_type == default_gun) {
+                continue;
+            }
             const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
             if (gun_object != NO_OBJECT && Inv_HasItem(gun_object)) {
                 Item_GlobalReplace(gun_object, Gun_GetAmmoObject(gun_type));
@@ -253,26 +261,24 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
     Gun_EnsureReady();
 }
 
-void Lara_RevertToPistolsIfNeeded(void)
+void Lara_RevertToDefaultGunIfNeeded(void)
 {
-    if (g_Config.gameplay.remember_gun_status || !Inv_HasItem(O_PISTOL_ITEM)) {
+    const LARA_GUN_TYPE default_gun = Gun_GetDefaultType();
+    if (g_Config.gameplay.remember_gun_status
+        || !Inv_HasItem(Gun_GetGunObject(default_gun))) {
         return;
     }
 
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    lara_info->last_gun_type = LGT_PISTOLS;
-    lara_info->holsters_gun_type = LGT_PISTOLS;
+    lara_info->last_gun_type = default_gun;
+    lara_info->holsters_gun_type = default_gun;
 
     if (lara_info->gun_status != LGS_ARMLESS) {
         lara_info->holsters_gun_type = LGT_UNARMED;
-        lara_info->request_gun_type = LGT_PISTOLS;
-        lara_info->gun_type = LGT_PISTOLS;
+        lara_info->request_gun_type = default_gun;
+        lara_info->gun_type = default_gun;
     }
-    if (Inv_HasItem(O_SHOTGUN_ITEM)) {
-        lara_info->back_gun_type = LGT_SHOTGUN;
-    } else {
-        lara_info->back_gun_type = LGT_UNARMED;
-    }
+    lara_info->back_gun_type = Gun_GetBackChoice(Inv_GetState());
     Gun_InitialiseNewWeapon();
     Gun_SetLaraHolsterLMesh(lara_info->holsters_gun_type);
     Gun_SetLaraHolsterRMesh(lara_info->holsters_gun_type);
@@ -284,76 +290,13 @@ void Lara_UseItem(const OBJECT_ID obj_id)
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     ITEM *const lara_item = Lara_GetItem();
 
-    LARA_GUN_TYPE request_gun_type = LGT_UNARMED;
+    LARA_GUN_TYPE request_gun_type =
+        Gun_GetTypeForObject(Object_ResolveAlias(obj_id));
+
     switch (obj_id) {
-    case O_PISTOL_ITEM:
-    case O_PISTOL_OPTION:
-        request_gun_type = LGT_PISTOLS;
-        break;
-
-    case O_SHOTGUN_ITEM:
-    case O_SHOTGUN_OPTION:
-        request_gun_type = LGT_SHOTGUN;
-        break;
-
-    case O_MAGNUM_ITEM:
-    case O_MAGNUM_OPTION:
-        request_gun_type = LGT_MAGNUMS;
-        break;
-
-    case O_AUTOS_ITEM:
-    case O_AUTOS_OPTION:
-        request_gun_type = LGT_AUTOS;
-        break;
-
-    case O_DESERT_EAGLE_ITEM:
-    case O_DESERT_EAGLE_OPTION:
-        request_gun_type = LGT_DESERT_EAGLE;
-        break;
-
-    case O_UZI_ITEM:
-    case O_UZI_OPTION:
-        request_gun_type = LGT_UZIS;
-        break;
-
-    case O_HARPOON_ITEM:
-    case O_HARPOON_OPTION:
-        request_gun_type = LGT_HARPOON;
-        break;
-
-    case O_M16_ITEM:
-    case O_M16_OPTION:
-        request_gun_type = LGT_M16;
-        break;
-
-    case O_MP5_ITEM:
-    case O_MP5_OPTION:
-        request_gun_type = LGT_MP5;
-        break;
-
-    case O_GRENADE_GUN_ITEM:
-    case O_GRENADE_GUN_OPTION:
-        request_gun_type = LGT_GRENADE;
-        break;
-
-    case O_ROCKET_GUN_ITEM:
-    case O_ROCKET_GUN_OPTION:
-        request_gun_type = LGT_ROCKET;
-        break;
-
-    case O_CROSSBOW_ITEM:
-    case O_CROSSBOW_OPTION:
-        request_gun_type = LGT_CROSSBOW;
-        break;
-
-    case O_REVOLVER_ITEM:
-    case O_REVOLVER_OPTION:
-        request_gun_type = LGT_REVOLVER;
-        break;
-
     case O_FLAREBOX_ITEM:
     case O_FLAREBOX_OPTION:
-        lara_info->request_gun_type = LGT_FLARE;
+        lara_info->request_gun_type = Gun_GetFlareType();
         break;
 
     case O_BINOCULARS_ITEM:

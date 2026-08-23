@@ -10,6 +10,8 @@
 #include <fakes/rooms.h>
 
 #include <trx/game/const.h>
+#include <trx/game/gun/common.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/gun/types.h>
 #include <trx/game/inventory.h>
 #include <trx/game/items/manager.h>
@@ -19,6 +21,7 @@
 #include <lauxlib.h>
 #include <string.h>
 
+// The weapon table the bridge walks to decide whether Lara has a pistol at all.
 static WEAPON_INFO m_Weapons[MAX_WEAPONS] = {
     [LGT_PISTOLS] = { .type = WEAPON_TYPE_DUAL_PISTOLS },
 };
@@ -40,6 +43,12 @@ static struct {
 // before it counts; the fake keeps that mapping and nothing else.
 static INVENTORY_STATE m_LiveState;
 static bool m_CanAdd = true;
+
+// The gun types the engine has registered, which the bridges walk instead of
+// counting weapon slots.
+static const WEAPON_INFO m_GunTypes[] = {
+    { .gun_type = LGT_PISTOLS },
+};
 
 // A stored inventory is a plain struct, so the fake works it as the engine
 // does rather than standing in for it.
@@ -78,11 +87,10 @@ static void M_Reset(void)
     m_LiveState = (INVENTORY_STATE) {};
 }
 
-// The weapon table the bridge walks to decide whether Lara has a pistol at all.
 WEAPON_INFO *Gun_Registry_Get(const LARA_GUN_TYPE gun_type)
 {
-    // The real registry stamps a weapon with its own type as it
-    // seeds them, which nothing here does.
+    // The real registry stamps the row with its own type as it seeds the
+    // table, which nothing here does.
     m_Weapons[gun_type].gun_type = gun_type;
     return &m_Weapons[gun_type];
 }
@@ -290,6 +298,21 @@ int32_t Inv_State_GetDrawnEntries(
         entries[count++] = state->entries[i];
     }
     return count;
+}
+
+int32_t Gun_Registry_GetCount(void)
+{
+    return sizeof(m_GunTypes) / sizeof(m_GunTypes[0]);
+}
+
+const WEAPON_INFO *Gun_Registry_GetByIndex(const int32_t idx)
+{
+    return &m_GunTypes[idx];
+}
+
+bool Gun_Registry_IsValidType(const LARA_GUN_TYPE gun_type)
+{
+    return gun_type >= LGT_UNARMED && gun_type < NUM_WEAPONS;
 }
 
 LARA_GUN_TYPE Gun_GetType(const OBJECT_ID object_id)
@@ -514,7 +537,7 @@ void FakeLara_SetCanAdd(const bool can_add)
 void FakeLara_SetWeaponAvailable(
     const LARA_GUN_TYPE gun_type, const bool available)
 {
-    m_Weapons[gun_type].is_available = available;
+    Gun_Registry_Get(gun_type)->is_available = available;
 }
 
 void FakeLara_ShareInvEntry(const OBJECT_ID variant, const OBJECT_ID base)

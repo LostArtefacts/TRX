@@ -2,6 +2,8 @@
 
 #include <trx/config.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/common.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/items/utils.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/electric.h>
@@ -15,8 +17,33 @@
 #include <trx/game/rooms.h>
 #include <trx/version.h>
 
+typedef enum {
+    M_ARMS_EMPTY,
+    M_ARMS_PISTOLS,
+    M_ARMS_RIFLE,
+    M_ARMS_OTHER,
+} M_ARMS;
+
 static bool m_CacheMatrices = false;
 static bool m_IsLara = true;
+
+static M_ARMS M_GetArms(const LARA_GUN_TYPE gun_type)
+{
+    if (!Gun_Registry_Get(gun_type)->is_declared) {
+        return M_ARMS_EMPTY;
+    }
+    switch (Gun_Registry_Get(gun_type)->type) {
+    case WEAPON_TYPE_DUAL_PISTOLS:
+    case WEAPON_TYPE_SINGLE_PISTOL:
+        return M_ARMS_PISTOLS;
+    case WEAPON_TYPE_RIFLE:
+        return M_ARMS_RIFLE;
+    case WEAPON_TYPE_FLARE:
+        return M_ARMS_EMPTY;
+    default:
+        return M_ARMS_OTHER;
+    }
+}
 
 static void M_CalculateLight(
     const ITEM *const item, const ANIM_FRAME *const frame)
@@ -221,7 +248,7 @@ static bool M_Draw_I(
     Matrix_Pop_I();
 
     Matrix_TranslateRel32_I(bone[LM_TORSO - 1].pos);
-    if (Lara_IsM16Active()) {
+    if (Lara_IsMachineGunActive()) {
         mesh_rots_2 =
             lara->right_arm.frame_base[lara->right_arm.frame_num].mesh_rots;
         mesh_rots_1 = mesh_rots_2;
@@ -254,9 +281,8 @@ static bool M_Draw_I(
         gun_type = lara->gun_type;
     }
 
-    switch (gun_type) {
-    case LGT_UNARMED:
-    case LGT_FLARE:
+    switch (M_GetArms(gun_type)) {
+    case M_ARMS_EMPTY:
         Matrix_Push_I();
         M_DrawBodyPart(LM_UARM_R, bone, mesh_rots_1, mesh_rots_2, clip);
         M_DrawBodyPart(LM_LARM_R, bone, mesh_rots_1, mesh_rots_2, clip);
@@ -283,19 +309,14 @@ static bool M_Draw_I(
         M_DrawBodyPart(LM_HAND_L, bone, mesh_rots_1, mesh_rots_2, clip);
         M_DrawEquipment(LM_HAND_L, clip, true);
 
-        if (g_TRVersion < 3 && lara->gun_type == LGT_FLARE
+        if (g_TRVersion < 3 && Gun_IsFlareType(lara->gun_type)
             && lara->left_arm.flash_gun) {
-            Gun_DrawFlash(LGT_FLARE, clip, true);
+            Gun_DrawFlash(lara->gun_type, clip, true);
         }
         Matrix_Pop();
         break;
 
-    case LGT_PISTOLS:
-    case LGT_MAGNUMS:
-    case LGT_AUTOS:
-    case LGT_DESERT_EAGLE:
-    case LGT_REVOLVER:
-    case LGT_UZIS: {
+    case M_ARMS_PISTOLS: {
         Matrix_Push_I();
         Matrix_TranslateRel32_I(bone[LM_UARM_R - 1].pos);
         Matrix_InterpolateArm();
@@ -357,13 +378,7 @@ static bool M_Draw_I(
         break;
     }
 
-    case LGT_SHOTGUN:
-    case LGT_M16:
-    case LGT_MP5:
-    case LGT_GRENADE:
-    case LGT_ROCKET:
-    case LGT_HARPOON:
-    case LGT_CROSSBOW: {
+    case M_ARMS_RIFLE: {
         Matrix_Push_I();
         Matrix_TranslateRel32_I(bone[LM_UARM_R - 1].pos);
         mesh_rots_1 =
@@ -518,7 +533,7 @@ bool Lara_Draw(const ITEM *const item)
     Matrix_Pop();
 
     Matrix_TranslateRel32(bone[LM_TORSO - 1].pos);
-    if (Lara_IsM16Active() && pose == nullptr) {
+    if (Lara_IsMachineGunActive() && pose == nullptr) {
         mesh_rots =
             lara->right_arm.frame_base[lara->right_arm.frame_num].mesh_rots;
     }
@@ -553,9 +568,8 @@ bool Lara_Draw(const ITEM *const item)
         gun_type = lara->gun_type;
     }
 
-    switch (gun_type) {
-    case LGT_UNARMED:
-    case LGT_FLARE:
+    switch (M_GetArms(gun_type)) {
+    case M_ARMS_EMPTY:
         Matrix_Push();
         M_DrawBodyPart(LM_UARM_R, bone, mesh_rots, nullptr, clip);
         M_DrawBodyPart(LM_LARM_R, bone, mesh_rots, nullptr, clip);
@@ -580,20 +594,15 @@ bool Lara_Draw(const ITEM *const item)
         M_DrawBodyPart(LM_HAND_L, bone, mesh_rots, nullptr, clip);
         M_DrawEquipment(LM_HAND_L, clip, false);
 
-        if (g_TRVersion < 3 && lara->gun_type == LGT_FLARE
+        if (g_TRVersion < 3 && Gun_IsFlareType(lara->gun_type)
             && lara->left_arm.flash_gun) {
-            Gun_DrawFlash(LGT_FLARE, clip, false);
+            Gun_DrawFlash(lara->gun_type, clip, false);
         }
 
         Matrix_Pop();
         break;
 
-    case LGT_PISTOLS:
-    case LGT_MAGNUMS:
-    case LGT_AUTOS:
-    case LGT_DESERT_EAGLE:
-    case LGT_REVOLVER:
-    case LGT_UZIS: {
+    case M_ARMS_PISTOLS: {
         Matrix_Push();
         Matrix_TranslateRel32(bone[LM_UARM_R - 1].pos);
         g_MatrixPtr->_00 = item_matrix._00;
@@ -694,13 +703,7 @@ bool Lara_Draw(const ITEM *const item)
         break;
     }
 
-    case LGT_SHOTGUN:
-    case LGT_M16:
-    case LGT_MP5:
-    case LGT_GRENADE:
-    case LGT_ROCKET:
-    case LGT_HARPOON:
-    case LGT_CROSSBOW: {
+    case M_ARMS_RIFLE: {
         Matrix_Push();
         Matrix_TranslateRel32(bone[LM_UARM_R - 1].pos);
         if (pose == nullptr) {

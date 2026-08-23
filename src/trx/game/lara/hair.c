@@ -96,7 +96,7 @@ static void M_CalculateSpheres(
 
     const ANIM_BONE *bone = Object_GetBone(lara_obj, 0);
     Matrix_TranslateRel32(bone[LM_TORSO - 1].pos);
-    if (Lara_IsM16Active() && pose == nullptr) {
+    if (Lara_IsMachineGunActive() && pose == nullptr) {
         mesh_rots =
             lara->right_arm.frame_base[lara->right_arm.frame_num].mesh_rots;
     }
@@ -176,7 +176,7 @@ static void M_CalculateSpheres_I(
 
     const ANIM_BONE *bone = Object_GetBone(lara_obj, 0);
     Matrix_TranslateRel32_I(bone[LM_TORSO - 1].pos);
-    if (Lara_IsM16Active()) {
+    if (Lara_IsMachineGunActive()) {
         mesh_rots_1 =
             lara->right_arm.frame_base[lara->right_arm.frame_num].mesh_rots;
         mesh_rots_2 = mesh_rots_1;

@@ -1053,7 +1053,6 @@ unit_tests += {
     'core/vector.c',
     'game/enum.c',
     'game/game_strings/entries.c',
-    'game/gun/data.c',
     'game/gun/registry.c',
     'game/objects/names.c',
     'game/objects/vars.c',

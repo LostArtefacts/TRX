@@ -13,6 +13,8 @@
 #include <trx/debug.h>
 #include <trx/game/catalog/manager.h>
 #include <trx/game/game_strings/entries.h>
+#include <trx/game/gun/common.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/shell.h>

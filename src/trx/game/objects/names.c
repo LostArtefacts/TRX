@@ -98,6 +98,14 @@ static void M_Shutdown(void)
     M_ClearAllNames();
 }
 
+OBJECT_ID Object_ResolveAlias(const OBJECT_ID obj_id)
+{
+    if (obj_id < O_FIRST || obj_id >= O_NUMBER_OF) {
+        return obj_id;
+    }
+    return m_AliasResolver[obj_id];
+}
+
 void Object_ClearNames(const OBJECT_ID obj_id)
 {
     ASSERT(obj_id >= O_FIRST && obj_id < O_NUMBER_OF);
