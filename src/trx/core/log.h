@@ -44,6 +44,12 @@ void Log_Init(const char *path, LOG_LEVEL min_level);
 LOG_LEVEL Log_GetMinLevel(void);
 void Log_SetMinLevel(LOG_LEVEL min_level);
 void Log_Shutdown(void);
+
+// Writes out the log lines the file still holds. The file is buffered, so a
+// path that ends the game without a clean shutdown calls this to keep the
+// lines that name the cause.
+void Log_Flush(void);
+
 void Log_Message(
     LOG_LEVEL level, const char *file, int line, const char *func,
     const char *fmt, ...);

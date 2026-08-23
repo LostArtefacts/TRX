@@ -145,6 +145,7 @@
 - Fixed a false warning that the settings could not be saved (TRX1112)
 - Fixed the camera when using binoculars clipping into the ceiling if the ceiling around Lara is very low (#6352 / TRX1205)
 - Fixed the rocket launcher's animation object having no name
+- Fixed the game stuttering while it writes its log
 
 **Lua**
 - Added `trx.events.on_cutscene_frame()`, which reports every frame of a TR4 cutscene, so a script can act part-way through one (TRX1199)

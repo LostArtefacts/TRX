@@ -103,6 +103,7 @@ LONG WINAPI Log_CrashHandler(EXCEPTION_POINTERS *ex)
     dwstOfException(ex->ContextRecord, &M_StackTrace, &count);
 
     M_CreateMiniDump(ex, m_MiniDumpPath);
+    Log_Flush();
 
     return EXCEPTION_EXECUTE_HANDLER;
 }

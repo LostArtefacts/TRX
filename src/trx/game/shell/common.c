@@ -36,6 +36,7 @@ static void M_ShowFatalError(
     const char *const log_message, const char *const dialog_message)
 {
     LOG_ERROR("%s", log_message);
+    Log_Flush();
     if (M_IsInteractive()) {
         // The dialog is placed over its parent window. Until the game window is
         // shown, it is still hidden at the position the config named, so the
