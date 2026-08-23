@@ -4,6 +4,7 @@
 #include <trx/core/strings.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/lara/vehicle.h>
@@ -20,12 +21,12 @@ bool UI_AmmoLabel(void)
     const bool use_icon = g_TRVersion == 1;
     const char *icon_str = nullptr;
 
-    const ITEM *const vehicle_item = Lara_Vehicle_GetItem();
-    if (vehicle_item != nullptr && vehicle_item->object_id == O_UPV) {
-        if (Gun_HasInfiniteAmmo(LGT_HARPOON)) {
+    const LARA_GUN_TYPE vehicle_gun = Lara_Vehicle_GetGunType();
+    if (vehicle_gun != LGT_UNARMED) {
+        if (Gun_HasInfiniteAmmo(vehicle_gun)) {
             return false;
         }
-        ammo = Inv_GetAmmo(LGT_HARPOON);
+        ammo = Inv_GetAmmo(vehicle_gun);
     } else {
         if (lara->gun_status != LGS_READY) {
             return false;
@@ -43,20 +44,9 @@ bool UI_AmmoLabel(void)
         ammo =
             Inv_GetAmmo(lara->gun_type) / Gun_GetRoundsPerShot(lara->gun_type);
 
+        const WEAPON_INFO *const info = Gun_Registry_Get(lara->gun_type);
         if (use_icon) {
-            switch (lara->gun_type) {
-            case LGT_SHOTGUN:
-                icon_str = "\\{ammo shotgun}";
-                break;
-            case LGT_UZIS:
-                icon_str = "\\{ammo uzis}";
-                break;
-            case LGT_MAGNUMS:
-                icon_str = "\\{ammo magnums}";
-                break;
-            default:
-                break;
-            }
+            icon_str = info->ammo_icon;
         }
     }
 

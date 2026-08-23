@@ -3,6 +3,7 @@
 #include <trx/core/log.h>
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/draw.h>
@@ -77,8 +78,7 @@ static bool M_ShouldSpawnBlood(const ITEM *const item)
     const LARA_INFO *const lara = Lara_GetLaraInfo();
     // XXX: This uses Lara's currently equipped gun. If she swaps weapons before
     // a projectile impact resolves, this can differ from the projectile weapon.
-    if (lara->gun_type == LGT_ROCKET || lara->gun_type == LGT_GRENADE
-        || lara->gun_type == LGT_HARPOON) {
+    if (Gun_FiresProjectile(lara->gun_type)) {
         return true;
     }
 

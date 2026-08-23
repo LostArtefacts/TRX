@@ -4,9 +4,11 @@
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/camera.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/vehicle.h>
 #include <trx/game/los.h>
 #include <trx/game/objects/vehicles/common.h>
 #include <trx/game/output.h>
@@ -188,7 +190,7 @@ static void M_GetOn(ITEM *const item)
     Lara_Vehicle_SetIndex(Item_GetIndex(item));
     lara->water_status = LWS_ABOVE_WATER;
 
-    if (lara->gun_type == LGT_FLARE) {
+    if (Gun_IsFlareType(lara->gun_type)) {
         Gun_Flare_Dispose(false);
         lara->flare.control = false;
         lara->gun_type = LGT_UNARMED;
@@ -625,7 +627,7 @@ static void M_DoCurrent(ITEM *const item)
 static void M_FireHarpoon(ITEM *const item)
 {
     M_PRIV *const p = item->priv;
-    if (!Gun_HasRoundsLeft(LGT_HARPOON)) {
+    if (!Gun_HasRoundsLeft(Lara_Vehicle_GetGunType())) {
         return;
     }
 
@@ -656,7 +658,7 @@ static void M_FireHarpoon(ITEM *const item)
     Item_AddSimulated(item_num);
     Sound_Effect(SFX_UPV_HARPOON, &Lara_GetItem()->pos, SPM_ALWAYS);
 
-    Gun_SpendRound(LGT_HARPOON);
+    Gun_SpendRound(Lara_Vehicle_GetGunType());
     Stats_AddAmmoUsed();
     p->current_weapon ^= 1;
 }

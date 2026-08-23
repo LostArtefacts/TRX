@@ -38,9 +38,12 @@ static void M_PersistInventory(RESUME_INFO *const resume)
     resume->inv = (INVENTORY_STATE) {};
     memcpy(resume->inv.ammo, live->ammo, sizeof(resume->inv.ammo));
 
-    for (const SAVEGAME_RESUME_WEAPON *entry = g_Savegame_ResumeWeapons;
-         entry->has_key != nullptr; entry++) {
-        const OBJECT_ID gun_object = Gun_GetGunObject(entry->gun_type);
+    for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
+        const WEAPON_INFO *const info = Gun_Registry_GetByIndex(i);
+        if (info->save_resume_has_key == nullptr) {
+            continue;
+        }
+        const OBJECT_ID gun_object = Gun_GetGunObject(info->gun_type);
         Inv_State_SetCount(
             &resume->inv, gun_object, Inv_HasItem(gun_object) ? 1 : 0);
     }
@@ -67,11 +70,12 @@ void SG_Resume_Init(void)
             SG_Resume_GetEntry(&level_table->levels[i]);
         resume_info->lara_hitpoints = LARA_MAX_HITPOINTS;
         resume_info->flags.available = true;
-        Inv_State_SetCount(&resume_info->inv, O_PISTOL_ITEM, 1);
-        resume_info->inv.ammo[LGT_PISTOLS] = Gun_GetInitialRounds(LGT_PISTOLS);
+        const LARA_GUN_TYPE default_gun = Gun_GetDefaultType();
+        Inv_State_SetCount(&resume_info->inv, Gun_GetGunObject(default_gun), 1);
+        resume_info->inv.ammo[default_gun] = Gun_GetInitialRounds(default_gun);
         resume_info->gun_status = LGS_ARMLESS;
-        resume_info->equipped_gun_type = LGT_PISTOLS;
-        resume_info->holsters_gun_type = LGT_PISTOLS;
+        resume_info->equipped_gun_type = default_gun;
+        resume_info->holsters_gun_type = default_gun;
         resume_info->back_gun_type = LGT_UNARMED;
         resume_info->prev_level = -1;
     }
@@ -239,29 +243,30 @@ void SG_Resume_ApplyRulesToEntry(const GF_LEVEL *const level)
         resume->flags.available = true;
         resume->flags.costume = false;
 
-        // She starts the game with her pistols and nothing else.
+        // She starts the game with the default weapon and nothing else.
+        const LARA_GUN_TYPE default_gun = Gun_GetDefaultType();
         resume->inv = (INVENTORY_STATE) {};
-        Inv_State_SetCount(&resume->inv, O_PISTOL_ITEM, 1);
-        resume->inv.ammo[LGT_PISTOLS] = Gun_GetInitialRounds(LGT_PISTOLS);
+        Inv_State_SetCount(&resume->inv, Gun_GetGunObject(default_gun), 1);
+        resume->inv.ammo[default_gun] = Gun_GetInitialRounds(default_gun);
 
-        resume->equipped_gun_type = LGT_PISTOLS;
-        resume->holsters_gun_type = LGT_PISTOLS;
+        resume->equipped_gun_type = default_gun;
+        resume->holsters_gun_type = default_gun;
         resume->back_gun_type = LGT_UNARMED;
         resume->gun_status = LGS_ARMLESS;
     }
 
     if (Game_IsBonusFlagSet(GBF_NGPLUS) && level != GF_GetGymLevel()) {
         // A bonus game hands her every weapon the game has, loaded.
-        for (LARA_GUN_TYPE gun_type = LGT_UNARMED + 1; gun_type < NUM_WEAPONS;
-             gun_type++) {
+        for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
+            const WEAPON_INFO *const weapon = Gun_Registry_GetByIndex(i);
+            const LARA_GUN_TYPE gun_type = weapon->gun_type;
             const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
-            if (gun_object == NO_OBJECT
-                || !Gun_Registry_Get(gun_type)->is_available) {
+            if (gun_object == NO_OBJECT || !weapon->is_available) {
                 continue;
             }
             Inv_State_SetCount(&resume->inv, gun_object, 1);
-            resume->inv.ammo[gun_type] = gun_type == LGT_PISTOLS
-                ? Gun_GetInitialRounds(LGT_PISTOLS)
+            resume->inv.ammo[gun_type] = Gun_GetDefaultType() == gun_type
+                ? Gun_GetInitialRounds(gun_type)
                 : 10000;
         }
         if (g_TRVersion > 1) {

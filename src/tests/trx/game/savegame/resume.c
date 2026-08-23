@@ -17,6 +17,7 @@
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/rules.h>
@@ -54,6 +55,14 @@ static LARA_INFO m_Lara;
 static ITEM m_LaraItem;
 static bool m_BonusFlag;
 
+// The code counts only the gun types registered in the engine, not the number
+// of weapon slots.
+static const WEAPON_INFO m_GunTypes[] = {
+    { .gun_type = LGT_PISTOLS, .save_resume_has_key = "has_pistols" },
+    { .gun_type = LGT_UZIS, .save_resume_has_key = "has_uzis" },
+    { .gun_type = LGT_SHOTGUN, .save_resume_has_key = "has_shotgun" },
+};
+
 static void M_SetUp(void)
 {
     g_ConfigStorage = (CONFIG) {};
@@ -71,8 +80,8 @@ static void M_SetUp(void)
 int32_t g_TRVersion = 1;
 WEAPON_INFO *Gun_Registry_Get(const LARA_GUN_TYPE gun_type)
 {
-    // The real registry stamps a weapon with its own type as it
-    // seeds them, which nothing here does.
+    // The real registry stamps the row with its own type as it seeds the
+    // table, which nothing here does.
     m_Weapons[gun_type].gun_type = gun_type;
     return &m_Weapons[gun_type];
 }
@@ -160,6 +169,21 @@ LARA_INFO *Lara_GetLaraInfo(void)
 ITEM *Lara_GetItem(void)
 {
     return &m_LaraItem;
+}
+
+int32_t Gun_Registry_GetCount(void)
+{
+    return sizeof(m_GunTypes) / sizeof(m_GunTypes[0]);
+}
+
+const WEAPON_INFO *Gun_Registry_GetByIndex(const int32_t idx)
+{
+    return &m_GunTypes[idx];
+}
+
+LARA_GUN_TYPE Gun_GetDefaultType(void)
+{
+    return LGT_PISTOLS;
 }
 
 OBJECT_ID Gun_GetGunObject(const LARA_GUN_TYPE gun_type)

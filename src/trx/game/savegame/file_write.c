@@ -9,6 +9,7 @@
 #include <trx/game/fx/weather.h>
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/inventory.h>
 #include <trx/game/items.h>
 #include <trx/game/items/carrier.h>
@@ -313,12 +314,16 @@ static void M_WriteResumeInfo(
     JSONW_WRITE(io, "holsters_gun_type", resume->holsters_gun_type);
     JSONW_WRITE(io, "back_gun_type", resume->back_gun_type);
 
-    for (const SAVEGAME_RESUME_WEAPON *entry = g_Savegame_ResumeWeapons;
-         entry->has_key != nullptr; entry++) {
+    for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
+        const WEAPON_INFO *const info = Gun_Registry_GetByIndex(i);
+        if (info->save_resume_has_key == nullptr) {
+            continue;
+        }
         JSONW_WRITE(
-            io, entry->has_key,
-            Inv_State_Has(&resume->inv, Gun_GetGunObject(entry->gun_type)));
-        JSONW_WRITE(io, entry->ammo_key, resume->inv.ammo[entry->gun_type]);
+            io, info->save_resume_has_key,
+            Inv_State_Has(&resume->inv, Gun_GetGunObject(info->gun_type)));
+        JSONW_WRITE(
+            io, info->save_resume_ammo_key, resume->inv.ammo[info->gun_type]);
     }
     JSONW_WRITE(
         io, "has_binoculars", Inv_State_Has(&resume->inv, O_BINOCULARS_ITEM));
@@ -604,9 +609,11 @@ void SG_File_DumpLara(JSON_WRITE_IO *const io)
     M_WriteXYZ32(io, "last_pos", lara->last_pos);
     M_WriteArm(io, "left_arm", &lara->left_arm);
     M_WriteArm(io, "right_arm", &lara->right_arm);
-    for (const SAVEGAME_AMMO_ENTRY *entry = g_Savegame_WeaponAmmo;
-         entry->key != nullptr; entry++) {
-        M_WriteAmmo(io, entry->key, Inv_GetAmmo(entry->gun_type));
+    for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
+        const WEAPON_INFO *const info = Gun_Registry_GetByIndex(i);
+        if (info->save_ammo_key != nullptr) {
+            M_WriteAmmo(io, info->save_ammo_key, Inv_GetAmmo(info->gun_type));
+        }
     }
 
     if (lara->gun_item_num != NO_ITEM) {

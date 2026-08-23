@@ -6,6 +6,7 @@
 #include <trx/game/collision/los.h>
 #include <trx/game/effects.h>
 #include <trx/game/fx/water.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/common.h>

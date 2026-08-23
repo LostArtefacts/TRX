@@ -16,6 +16,7 @@
 #include <trx/config.h>
 #include <trx/game/game_flow/inventory.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/inventory.h>
 #include <trx/game/objects.h>
 #include <trx/game/overlay.h>
@@ -31,6 +32,13 @@ static INVENTORY_STATE m_Inv;
 static RESUME_INFO m_Resume;
 static int32_t m_PickupCount;
 static int32_t m_Ammo[MAX_WEAPONS];
+
+// The gun types the engine has registered, which the code under test
+// walks instead of counting weapon slots.
+static const WEAPON_INFO m_GunTypes[] = {
+    { .gun_type = LGT_PISTOLS },
+    { .gun_type = LGT_GRENADE },
+};
 
 // The Great Wall's reward, which is the shape the bug was reported against: a
 // gun, two boxes of ammunition for it, and a medipack.
@@ -89,6 +97,21 @@ bool Object_IsType(const OBJECT_ID object_id, const OBJECT_ID *const test_arr)
         }
     }
     return false;
+}
+
+int32_t Gun_Registry_GetCount(void)
+{
+    return sizeof(m_GunTypes) / sizeof(m_GunTypes[0]);
+}
+
+const WEAPON_INFO *Gun_Registry_GetByIndex(const int32_t idx)
+{
+    return &m_GunTypes[idx];
+}
+
+LARA_GUN_TYPE Gun_GetDefaultType(void)
+{
+    return LGT_PISTOLS;
 }
 
 OBJECT_ID Gun_GetGunObject(const LARA_GUN_TYPE gun_type)

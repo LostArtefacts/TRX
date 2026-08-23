@@ -2,6 +2,7 @@
 #include <trx/core/json/util/write_io.h>
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/general/flare_item.h>
 #include <trx/game/objects/property.h>
@@ -235,7 +236,7 @@ static void M_Control(const int16_t item_num)
     }
 
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (lara->gun_type != LGT_FLARE
+    if (!Gun_IsFlareType(lara->gun_type)
         && (lara_item->current_anim_state == LS(LS_STOP)
             || lara_item->current_anim_state == LS(LS_CROUCH_IDLE))
         && lara_item->current_anim_state == lara_item->goal_anim_state

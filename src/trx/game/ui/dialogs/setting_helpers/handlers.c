@@ -2,6 +2,7 @@
 #include <trx/core/strings.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
 #include <trx/game/input/backends/touch.h>
 #include <trx/game/music.h>
@@ -263,7 +264,7 @@ static bool M_Volume_RequestChange(
 static bool M_Flare_IsAvailable(
     const CONFIG_OPTION *const option, void *const user_data)
 {
-    return Gun_Registry_Get(LGT_FLARE)->is_available;
+    return Gun_Registry_Get(Gun_GetFlareType())->is_available;
 }
 
 static bool M_Grenade_IsAvailable(
@@ -281,15 +282,13 @@ static bool M_Harpoon_IsAvailable(
 static bool M_M16_IsAvailable(
     const CONFIG_OPTION *const option, void *const user_data)
 {
-    return Gun_Registry_Get(LGT_M16)->is_available
-        || Gun_Registry_Get(LGT_MP5)->is_available;
+    return Gun_HasAvailableMachineGun();
 }
 
 static bool M_ProjectileAreaDamage_IsAvailable(
     const CONFIG_OPTION *const option, void *const user_data)
 {
-    return Gun_Registry_Get(LGT_ROCKET)->is_available
-        || Gun_Registry_Get(LGT_GRENADE)->is_available;
+    return Gun_HasAvailableLauncher();
 }
 
 static bool M_TouchControls_IsAvailable(

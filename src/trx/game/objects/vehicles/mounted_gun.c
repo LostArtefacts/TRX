@@ -5,6 +5,7 @@
 #include <trx/core/math.h>
 #include <trx/game/camera.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
@@ -117,7 +118,7 @@ static void M_Collision(
     Lara_Vehicle_SetIndex(item_num);
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (lara->gun_type == LGT_FLARE) {
+    if (Gun_IsFlareType(lara->gun_type)) {
         Gun_Flare_Dispose(false);
         lara->gun_type = LGT_UNARMED;
         lara->request_gun_type = LGT_UNARMED;

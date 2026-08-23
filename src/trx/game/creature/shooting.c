@@ -2,6 +2,7 @@
 #include <trx/game/effects.h>
 #include <trx/game/fx/gun_flash.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
@@ -81,7 +82,7 @@ static void M_TriggerTR3GunSmoke(
         .room_num = item->room_num,
     };
     Room_GetSector(smoke_pos.pos, &smoke_pos.room_num);
-    Sparks_TriggerGunSmoke(smoke_pos, true, LGT_PISTOLS, 32);
+    Sparks_TriggerGunSmoke(smoke_pos, true, Gun_GetDefaultType(), 32);
 }
 
 bool Creature_Shoot(

@@ -7,6 +7,7 @@
 #include <trx/game/const.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/gun.h>
+#include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
 #include <trx/game/input.h>
 #include <trx/game/sound.h>
@@ -194,25 +195,14 @@ static int32_t M_GetVisibleRows(
 
 static bool M_IsRoleUsable(const INPUT_ROLE role)
 {
+    const LARA_GUN_TYPE gun_type = Gun_GetTypeForInputRole(role);
+    if (gun_type != LGT_UNARMED) {
+        return Gun_Registry_Get(gun_type)->is_available;
+    }
+
     switch (role) {
     case INPUT_ROLE_USE_FLARE:
-        return Gun_Registry_Get(LGT_FLARE)->is_available;
-    case INPUT_ROLE_EQUIP_MAGNUMS:
-        return Gun_Registry_Get(LGT_MAGNUMS)->is_available;
-    case INPUT_ROLE_EQUIP_AUTOS:
-        return Gun_Registry_Get(LGT_AUTOS)->is_available;
-    case INPUT_ROLE_EQUIP_DESERT_EAGLE:
-        return Gun_Registry_Get(LGT_DESERT_EAGLE)->is_available;
-    case INPUT_ROLE_EQUIP_HARPOON:
-        return Gun_Registry_Get(LGT_HARPOON)->is_available;
-    case INPUT_ROLE_EQUIP_M16:
-        return Gun_Registry_Get(LGT_M16)->is_available;
-    case INPUT_ROLE_EQUIP_MP5:
-        return Gun_Registry_Get(LGT_MP5)->is_available;
-    case INPUT_ROLE_EQUIP_GRENADE_LAUNCHER:
-        return Gun_Registry_Get(LGT_GRENADE)->is_available;
-    case INPUT_ROLE_EQUIP_ROCKET_LAUNCHER:
-        return Gun_Registry_Get(LGT_ROCKET)->is_available;
+        return Gun_Registry_Get(Gun_GetFlareType())->is_available;
     case INPUT_ROLE_FLY_CHEAT:
     case INPUT_ROLE_ITEM_CHEAT:
     case INPUT_ROLE_LEVEL_SKIP_CHEAT:
