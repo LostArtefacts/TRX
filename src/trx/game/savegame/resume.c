@@ -53,41 +53,6 @@ static void M_PersistInventory(RESUME_INFO *const resume)
         Inv_HasItem(O_BINOCULARS_ITEM) ? 1 : 0);
 }
 
-static void M_DetermineLegacyGunTypes(RESUME_INFO *const resume)
-{
-    // Fallback logic to figure out holster and back gun items for saves from
-    // TR1X 4.2 and earlier (including TombATI) and TR2X 1.2 and earlier, where
-    // these values are missing. Make educated guesses based on the type of gun
-    // equipped.
-    if (resume->holsters_gun_type == LGT_UNKNOWN) {
-        switch (resume->equipped_gun_type) {
-        case LGT_PISTOLS:
-        case LGT_MAGNUMS:
-        case LGT_AUTOS:
-        case LGT_DESERT_EAGLE:
-        case LGT_UZIS:
-        case LGT_REVOLVER:
-            resume->holsters_gun_type = resume->equipped_gun_type;
-            break;
-        case LGT_SHOTGUN:
-        case LGT_M16:
-        case LGT_MP5:
-        case LGT_GRENADE:
-        case LGT_ROCKET:
-        case LGT_HARPOON:
-        case LGT_CROSSBOW:
-            resume->holsters_gun_type = Gun_GetHolsterChoice(&resume->inv);
-            break;
-        default:
-            resume->holsters_gun_type = LGT_UNARMED;
-            break;
-        }
-    }
-    if (resume->back_gun_type == LGT_UNKNOWN) {
-        resume->back_gun_type = Gun_GetBackChoice(&resume->inv);
-    }
-}
-
 void SG_Resume_Init(void)
 {
     m_ResumeInfo = Memory_Alloc(
@@ -326,8 +291,6 @@ void SG_Resume_ApplyRulesToEntry(const GF_LEVEL *const level)
     }
 
     resume->stats.secret_flags = 0;
-
-    M_DetermineLegacyGunTypes(resume);
 }
 
 int32_t SG_Resume_CountCompletedLevels(void)

@@ -216,16 +216,6 @@ static RESULT M_ReadLara(JSON_READ_IO *const io)
     MUST(JSON_READ(io, "gun_type", &lara->gun_type));
     MUST(JSON_READ(io, "request_gun_type", &lara->request_gun_type));
 
-    // TRX <1.1
-    if (g_TRVersion == 2 && JSON_ReadIO_GetVersion(io) < SG_VERSION_14) {
-        if (lara->gun_type == LGT_MAGNUMS) {
-            lara->gun_type = LGT_AUTOS;
-        }
-        if (lara->request_gun_type == LGT_MAGNUMS) {
-            lara->request_gun_type = LGT_AUTOS;
-        }
-    }
-
     MUST(JSON_READ(io, "last_gun_type", &lara->last_gun_type));
     MUST(JSON_READ(io, "calc_fall_speed", &lara->calc_fall_speed));
     MUST(JSON_READ(io, "water_status", &lara->water_status));
@@ -915,16 +905,6 @@ static RESULT M_ReadResumeInfo(
     MUST(JSON_READ(
         io, "holsters_gun_type",
         &resume->holsters_gun_type)); // LGT_UNKNOWN
-
-    // TRX <1.1
-    if (g_TRVersion == 2 && JSON_ReadIO_GetVersion(io) < SG_VERSION_14) {
-        if (resume->equipped_gun_type == LGT_MAGNUMS) {
-            resume->equipped_gun_type = LGT_AUTOS;
-        }
-        if (resume->holsters_gun_type == LGT_MAGNUMS) {
-            resume->holsters_gun_type = LGT_AUTOS;
-        }
-    }
 
     MUST(JSON_READ(io, "back_gun_type", &resume->back_gun_type)); // LGT_UNKNOWN
     MUST(JSON_READ(io, "costume", &resume->flags.costume));
