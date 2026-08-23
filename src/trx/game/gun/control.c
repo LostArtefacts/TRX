@@ -397,80 +397,39 @@ void Gun_Control(void)
 
     switch (lara->gun_status) {
     case LGS_ARMLESS:
-    case LGS_HANDS_BUSY:
-        if (lara->gun_type == LGT_FLARE) {
-            Gun_Flare_Control();
+    case LGS_HANDS_BUSY: {
+        const WEAPON_INFO *const info = Gun_Registry_Get(lara->gun_type);
+        if (info->control_func != nullptr) {
+            info->control_func(lara->gun_type, lara->gun_status);
         }
         break;
+    }
 
-    case LGS_DRAW:
-        if (lara->gun_type != LGT_FLARE && lara->gun_type != LGT_UNARMED) {
-            lara->last_gun_type = lara->gun_type;
-        }
-
-        switch (lara->gun_type) {
-        case LGT_PISTOLS:
-        case LGT_MAGNUMS:
-        case LGT_AUTOS:
-        case LGT_DESERT_EAGLE:
-        case LGT_REVOLVER:
-        case LGT_UZIS:
-            M_RequestCombatCamera();
-            Gun_Pistols_Draw(lara->gun_type);
-            break;
-
-        case LGT_SHOTGUN:
-        case LGT_M16:
-        case LGT_MP5:
-        case LGT_GRENADE:
-        case LGT_ROCKET:
-        case LGT_HARPOON:
-        case LGT_CROSSBOW:
-            M_RequestCombatCamera();
-            Gun_Rifle_Draw(lara->gun_type);
-            break;
-
-        case LGT_FLARE:
-            Gun_Flare_Draw();
-            break;
-
-        default:
+    case LGS_DRAW: {
+        const WEAPON_INFO *const info = Gun_Registry_Get(lara->gun_type);
+        if (info->draw_func == nullptr) {
             lara->gun_status = LGS_ARMLESS;
             break;
         }
+        if (info->is_remembered) {
+            lara->last_gun_type = lara->gun_type;
+        }
+        if (info->wants_combat_camera) {
+            M_RequestCombatCamera();
+        }
+        info->draw_func(lara->gun_type);
         break;
+    }
 
-    case LGS_UNDRAW:
+    case LGS_UNDRAW: {
         Lara_Skin_SetCombatFace(false);
-
-        switch (lara->gun_type) {
-        case LGT_PISTOLS:
-        case LGT_MAGNUMS:
-        case LGT_AUTOS:
-        case LGT_DESERT_EAGLE:
-        case LGT_REVOLVER:
-        case LGT_UZIS:
-            Gun_Pistols_Undraw(lara->gun_type);
-            break;
-
-        case LGT_SHOTGUN:
-        case LGT_M16:
-        case LGT_MP5:
-        case LGT_GRENADE:
-        case LGT_ROCKET:
-        case LGT_HARPOON:
-        case LGT_CROSSBOW:
-            Gun_Rifle_Undraw(lara->gun_type);
-            break;
-
-        case LGT_FLARE:
-            Gun_Flare_Undraw();
-            break;
-
-        default:
+        const WEAPON_INFO *const info = Gun_Registry_Get(lara->gun_type);
+        if (info->undraw_func == nullptr) {
             return;
         }
+        info->undraw_func(lara->gun_type);
         break;
+    }
 
     case LGS_READY:
         const bool has_rounds = Gun_HasRoundsLeft(lara->gun_type);
@@ -488,29 +447,11 @@ void Gun_Control(void)
             }
         }
 
-        switch (lara->gun_type) {
-        case LGT_PISTOLS:
-        case LGT_MAGNUMS:
-        case LGT_AUTOS:
-        case LGT_DESERT_EAGLE:
-        case LGT_REVOLVER:
-        case LGT_UZIS:
-            Gun_Pistols_Control(lara->gun_type);
-            break;
-
-        case LGT_SHOTGUN:
-        case LGT_M16:
-        case LGT_MP5:
-        case LGT_GRENADE:
-        case LGT_ROCKET:
-        case LGT_HARPOON:
-        case LGT_CROSSBOW:
-            Gun_Rifle_Control(lara->gun_type);
-            break;
-
-        default:
+        const WEAPON_INFO *const info = Gun_Registry_Get(lara->gun_type);
+        if (info->control_func == nullptr) {
             return;
         }
+        info->control_func(lara->gun_type, lara->gun_status);
         break;
 
     case LGS_SPECIAL:

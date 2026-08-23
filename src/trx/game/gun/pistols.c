@@ -239,6 +239,14 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
     M_SetArmInfo(&lara->left_arm, frame_l);
 }
 
+static void M_Control(
+    const LARA_GUN_TYPE gun_type, const LARA_GUN_STATE gun_status)
+{
+    if (gun_status == LGS_READY) {
+        Gun_Pistols_Control(gun_type);
+    }
+}
+
 void Gun_Pistols_Control(const LARA_GUN_TYPE weapon_type)
 {
     const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
@@ -444,20 +452,56 @@ void Gun_Pistols_UndrawMeshRight(const LARA_GUN_TYPE weapon_type)
 
 // clang-format off
 REGISTER_GUN_TYPE(
-    .gun_type = LGT_PISTOLS)
+    .gun_type = LGT_PISTOLS,
+    .is_remembered = true,
+    .wants_combat_camera = true,
+    .draw_func = Gun_Pistols_Draw,
+    .undraw_func = Gun_Pistols_Undraw,
+    .draw_meshes_func = Gun_Pistols_DrawMeshes,
+    .control_func = M_Control)
 
 REGISTER_GUN_TYPE(
-    .gun_type = LGT_MAGNUMS)
+    .gun_type = LGT_MAGNUMS,
+    .is_remembered = true,
+    .wants_combat_camera = true,
+    .draw_func = Gun_Pistols_Draw,
+    .undraw_func = Gun_Pistols_Undraw,
+    .draw_meshes_func = Gun_Pistols_DrawMeshes,
+    .control_func = M_Control)
 
 REGISTER_GUN_TYPE(
-    .gun_type = LGT_AUTOS)
+    .gun_type = LGT_AUTOS,
+    .is_remembered = true,
+    .wants_combat_camera = true,
+    .draw_func = Gun_Pistols_Draw,
+    .undraw_func = Gun_Pistols_Undraw,
+    .draw_meshes_func = Gun_Pistols_DrawMeshes,
+    .control_func = M_Control)
 
 REGISTER_GUN_TYPE(
-    .gun_type = LGT_UZIS)
+    .gun_type = LGT_UZIS,
+    .is_remembered = true,
+    .wants_combat_camera = true,
+    .draw_func = Gun_Pistols_Draw,
+    .undraw_func = Gun_Pistols_Undraw,
+    .draw_meshes_func = Gun_Pistols_DrawMeshes,
+    .control_func = M_Control)
 
 REGISTER_GUN_TYPE(
-    .gun_type = LGT_DESERT_EAGLE)
+    .gun_type = LGT_DESERT_EAGLE,
+    .is_remembered = true,
+    .wants_combat_camera = true,
+    .draw_func = Gun_Pistols_Draw,
+    .undraw_func = Gun_Pistols_Undraw,
+    .draw_meshes_func = Gun_Pistols_DrawMeshes,
+    .control_func = M_Control)
 
 REGISTER_GUN_TYPE(
-    .gun_type = LGT_REVOLVER)
+    .gun_type = LGT_REVOLVER,
+    .is_remembered = true,
+    .wants_combat_camera = true,
+    .draw_func = Gun_Pistols_Draw,
+    .undraw_func = Gun_Pistols_Undraw,
+    .draw_meshes_func = Gun_Pistols_DrawMeshes,
+    .control_func = M_Control)
 // clang-format on
