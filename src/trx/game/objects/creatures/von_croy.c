@@ -662,8 +662,7 @@ static void M_RaceControl(const int16_t item_num)
         Creature_AIInfo(item, &info);
     }
 
-    Creature_ApplyMood(item, &info, 1);
-    Creature_Mood(item, &info, 1);
+    Creature_Mood(item, &info, true);
 
     int32_t lara_angle;
     int32_t distance;
@@ -1238,8 +1237,7 @@ static void M_GuideControl(const int16_t item_num)
         Creature_AIInfo(item, &m_AI);
     }
 
-    Creature_ApplyMood(item, &m_AI, 1);
-    Creature_Mood(item, &m_AI, 1);
+    Creature_Mood(item, &m_AI, true);
 
     if (creature->enemy == lara) {
         m_LaraAI = m_AI;
