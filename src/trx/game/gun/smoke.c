@@ -21,6 +21,27 @@ static XYZ_32 M_GetMuzzleOffset(
                          : Gun_Registry_Get(weapon_type)->muzzle_pos.left;
 }
 
+static bool M_IsSet(const XYZ_32 pos)
+{
+    return pos.x != 0 || pos.y != 0 || pos.z != 0;
+}
+
+static XYZ_32 M_GetSmokeOffset(
+    const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
+{
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
+    const XYZ_32 pos =
+        is_right_hand ? weapon->smoke_pos.right : weapon->smoke_pos.left;
+    return M_IsSet(pos) ? pos : M_GetMuzzleOffset(weapon_type, is_right_hand);
+}
+
+static XYZ_32 M_GetSmokeTip(
+    const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
+{
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
+    return is_right_hand ? weapon->smoke_tip.right : weapon->smoke_tip.left;
+}
+
 void Gun_Smoke_OnFire(const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
 {
     if (g_TRVersion != 3) {
@@ -41,18 +62,16 @@ void Gun_Smoke_OnFire(const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
     }
 
     const LARA_MESH hand = is_right_hand ? LM_HAND_R : LM_HAND_L;
-    const XYZ_32 muzzle_pos = weapon_type == LGT_SHOTGUN && is_right_hand
-        ? M_GetHandAbsPosition(hand, (XYZ_32) { .x = 0, .y = 228, .z = 32 })
-        : M_GetHandAbsPosition(
-              hand, M_GetMuzzleOffset(weapon_type, is_right_hand));
+    const XYZ_32 muzzle_pos = M_GetHandAbsPosition(
+        hand, M_GetSmokeOffset(weapon_type, is_right_hand));
+    const XYZ_32 tip_offset = M_GetSmokeTip(weapon_type, is_right_hand);
 
     GAME_VECTOR pos = { .pos = muzzle_pos,
                         .room_num = Lara_GetItem()->room_num };
     Room_GetSector(pos.pos, &pos.room_num);
 
-    if (weapon_type == LGT_SHOTGUN && is_right_hand) {
-        const XYZ_32 muzzle_tip_pos =
-            M_GetHandAbsPosition(hand, (XYZ_32) { .x = 0, .y = 1508, .z = 32 });
+    if (M_IsSet(tip_offset)) {
+        const XYZ_32 muzzle_tip_pos = M_GetHandAbsPosition(hand, tip_offset);
         const XYZ_32 vel = {
             .x = muzzle_tip_pos.x - muzzle_pos.x,
             .y = muzzle_tip_pos.y - muzzle_pos.y,

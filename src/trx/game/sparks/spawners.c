@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/game/fx/water.h>
+#include <trx/game/gun/registry.h>
 #include <trx/game/lara.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/random.h>
@@ -1692,8 +1693,10 @@ void Sparks_TriggerGunSmokeDirected(
     spark->gravity = -2 - (Random_GetControl() & 1);
     spark->max_y_vel = -2 - (Random_GetControl() & 1);
 
-    uint8_t size = (Random_GetControl() & 7)
-        - ((weapon == LGT_ROCKET || weapon == LGT_GRENADE) ? 0 : 12) + 24;
+    const WEAPON_INFO *const info = Gun_Registry_Get(weapon);
+    const uint8_t size = info->smoke_size_func != nullptr
+        ? info->smoke_size_func()
+        : (Random_GetControl() & 7) + 12;
 
     if (initial) {
         spark->size.width = size >> 1;

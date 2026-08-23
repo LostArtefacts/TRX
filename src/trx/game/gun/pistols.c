@@ -66,7 +66,8 @@ static bool m_SoundLeft = false;
 
 static bool M_EnableFastSound(const LARA_GUN_TYPE weapon_type)
 {
-    return g_TRVersion >= 2 && weapon_type == LGT_UZIS;
+    const WEAPON_INFO *const info = Gun_Registry_Get(weapon_type);
+    return g_TRVersion >= 2 && info->has_alternating_fire_sound;
 }
 
 static void M_FireSound(const SAMPLE_TRX_ID sample_trx_id, const bool alternate)
@@ -480,6 +481,7 @@ REGISTER_GUN_TYPE(
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_UZIS,
+    .has_alternating_fire_sound = true,
     .is_remembered = true,
     .wants_combat_camera = true,
     .draw_func = Gun_Pistols_Draw,

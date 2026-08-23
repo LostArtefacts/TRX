@@ -56,6 +56,7 @@ bool Gun_Registry_IsValidType(LARA_GUN_TYPE gun_type);
         M_GUN_TYPE_SEED_DIAGNOSTIC                                             \
         static const WEAPON_INFO m_GunType = {                                 \
             .glow.scale = 1.0f,                                                \
+            .shell_object_id = NO_OBJECT,                                      \
             __VA_ARGS__,                                                       \
         };                                                                     \
         _Pragma("GCC diagnostic pop")                                          \

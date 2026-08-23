@@ -327,37 +327,22 @@ void Gun_InitialiseNewWeapon(void)
 void Gun_DrawFlash(
     const LARA_GUN_TYPE weapon_type, const CLIP clip, const bool interpolated)
 {
-    if (weapon_type == LGT_SHOTGUN && !g_Config.visuals.enable_shotgun_flash) {
+    if (Gun_Registry_Get(weapon_type)->flash_is_optional
+        && !g_Config.visuals.enable_shotgun_flash) {
         return;
     }
 
-    OBJECT_ID flash_object_id = O_GUN_FLASH;
-    XYZ_16 rot = {};
-
-    switch (weapon_type) {
-    case LGT_M16:
-    case LGT_MP5:
-        rot.x = -85 * DEG_1;
-        rot.z = ((2 * Random_GetDraw()) & 0x4000);
-        if (weapon_type == LGT_M16) {
-            rot.z += 0x2000;
-        } else {
-            rot.z += (Random_GetDraw() & 0xFFF) + 0x1800;
-        }
-        flash_object_id = O_M16_FLASH;
-        break;
-
-    case LGT_FLARE:
-        rot.x = -DEG_90;
-        rot.y = 2 * Random_GetDraw();
-        flash_object_id = O_FLARE_FIRE;
-        break;
-
-    default:
-        rot.x = -DEG_90;
-        rot.z = 2 * Random_GetDraw();
-        break;
+    const WEAPON_INFO *const info = Gun_Registry_Get(weapon_type);
+    GUN_FLASH flash;
+    if (info->flash_func != nullptr) {
+        flash = info->flash_func();
+    } else {
+        flash = (GUN_FLASH) {
+            .object_id = O_GUN_FLASH,
+            .rot = { .x = -DEG_90, .z = 2 * Random_GetDraw() },
+        };
     }
+    const XYZ_16 rot = flash.rot;
 
     const WEAPON_INFO weapon = (*Gun_Registry_Get(weapon_type));
     if (interpolated) {
@@ -383,7 +368,7 @@ void Gun_DrawFlash(
     } else {
         Output_CalculateStaticLightRGB_F(weapon.flash.color);
     }
-    const OBJECT *const flash_obj = Object_Get(flash_object_id);
+    const OBJECT *const flash_obj = Object_Get(flash.object_id);
     if (flash_obj->loaded) {
         Object_DrawMesh(flash_obj->mesh_idx, clip, interpolated);
     }

@@ -3,6 +3,7 @@
 #include <trx/core/colors.h>
 #include <trx/core/math/types.h>
 #include <trx/game/lara/enum.h>
+#include <trx/game/objects/ids.h>
 #include <trx/game/sound/ids.h>
 
 typedef enum {
@@ -12,6 +13,13 @@ typedef enum {
     WEAPON_TYPE_MOUNTED,
     NUM_WEAPON_TYPES,
 } WEAPON_TYPE;
+
+// The muzzle flash one shot shows: the object it is drawn from, and how that
+// object is turned at the barrel.
+typedef struct {
+    OBJECT_ID object_id;
+    XYZ_16 rot;
+} GUN_FLASH;
 
 // A shot is one pull of the trigger, which for the shotgun spends six rounds.
 // The flare counts a flare where a weapon counts a shot.
@@ -66,6 +74,9 @@ typedef struct {
     int16_t draw_frame;
     int16_t undraw_frame;
     int16_t recoil_frame;
+    // The frame a spent shell leaves the weapon at. A weapon that names no
+    // frame drops its shells as it fires instead.
+    int16_t shell_frame;
 } WEAPON_ANIM_INFO;
 
 typedef struct {
@@ -95,6 +106,22 @@ typedef struct {
     bool is_machine_gun;
     // Whether Lara may bring it out under water.
     bool is_usable_underwater;
+    // Whether it sounds every shot as it fires, alternating between its
+    // sample and the one beside it, as a weapon that empties fast does.
+    bool has_alternating_fire_sound;
+    // Returns the animation the weapon rests in once it is out, which is
+    // the aim unless the weapon names a routine of its own.
+    int16_t (*ready_anim_func)(void);
+    // Plays the sound the weapon makes while the trigger is held, and again
+    // as it stops. A weapon that names no routine falls silent between the
+    // shots its own sample marks.
+    void (*rapid_fire_sound_func)(bool stopping);
+    // Returns the muzzle flash one shot shows. A weapon that names no
+    // routine shows the ordinary flash, upright at the barrel.
+    GUN_FLASH (*flash_func)(void);
+    // Returns how big the smoke one shot leaves is. A weapon that names no
+    // routine smokes as an ordinary round does.
+    uint8_t (*smoke_size_func)(void);
     WEAPON_TYPE type;
     // Where auto-aim may lock on, and how far each arm may follow it.
     WEAPON_AIM_LIMITS lock;
@@ -112,6 +139,30 @@ typedef struct {
     WEAPON_GLOW_INFO glow;
     WEAPON_HAND_POS muzzle_pos;
     WEAPON_HAND_POS shell_pos;
+    // Where smoke leaves the weapon, which is the muzzle unless the weapon
+    // gives another place, and the far end of the barrel. A weapon that
+    // names a barrel end drives its smoke along the barrel and throws
+    // sparks with it; one that does not lets the smoke drift.
+    WEAPON_HAND_POS smoke_pos;
+    WEAPON_HAND_POS smoke_tip;
+    // What the weapon throws out as it fires, which is an ordinary shell
+    // where the weapon names nothing.
+    OBJECT_ID shell_object_id;
+    // Whether spent shells leave ahead of Lara rather than fall from the
+    // hand that fired, and at what angle they go.
+    bool shell_throws_forward;
+    int16_t shell_angle;
+    // A shell slower than this carries the amount again, so that a weapon
+    // that throws them far does not drop one at Lara's feet.
+    int16_t shell_min_speed;
+    // Whether the weapon comes down as soon as Lara stops firing, rather
+    // than staying up until she puts it away.
+    bool unaims_on_release;
+    // Whether its flash lights the room around her.
+    bool flash_lights_room;
+    // Whether the player may turn its flash off, which the shotgun flash
+    // setting governs.
+    bool flash_is_optional;
     int32_t smoke_count;
     bool is_available;
 } WEAPON_INFO;

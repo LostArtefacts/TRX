@@ -54,17 +54,24 @@ static void M_SetTR3ProjectileShade(ITEM *const item)
     item->shade.value_2 = -1;
 }
 
-static M_ANIM M_GetReadyAnim(const LARA_GUN_TYPE weapon_type)
+static int16_t M_GetHarpoonReadyAnim(void)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    switch (weapon_type) {
-    case LGT_HARPOON:
-        return lara->water_status == LWS_UNDERWATER ? LA_G_UAIM : LA_G_AIM;
-    case LGT_GRENADE:
-        return LA_G_DRAW;
-    default:
+    return lara->water_status == LWS_UNDERWATER ? LA_G_UAIM : LA_G_AIM;
+}
+
+static int16_t M_GetGrenadeReadyAnim(void)
+{
+    return LA_G_DRAW;
+}
+
+static M_ANIM M_GetReadyAnim(const LARA_GUN_TYPE weapon_type)
+{
+    const WEAPON_INFO *const info = Gun_Registry_Get(weapon_type);
+    if (info->ready_anim_func == nullptr) {
         return LA_G_AIM;
     }
+    return info->ready_anim_func();
 }
 
 static void M_AnimateGun(ITEM *const item)
@@ -461,17 +468,16 @@ static void M_Fire(const LARA_GUN_TYPE weapon_type, const bool running)
     }
 }
 
-static void M_PlayMachineGunSound(
-    const LARA_GUN_TYPE weapon_type, const bool stopping)
+static void M_PlayM16Sound(const bool stopping)
 {
     const ITEM *const lara_item = Lara_GetItem();
-    if (weapon_type == LGT_M16) {
-        Sound_Effect(
-            stopping ? SFX_M16_STOP : SFX_M16_FIRE, &lara_item->pos,
-            SPM_NORMAL);
-        return;
-    }
+    Sound_Effect(
+        stopping ? SFX_M16_STOP : SFX_M16_FIRE, &lara_item->pos, SPM_NORMAL);
+}
 
+static void M_PlayMp5Sound(const bool stopping)
+{
+    const ITEM *const lara_item = Lara_GetItem();
     // The MP5 uses a high-pitched explosion when either firing or stopping.
     // This is intentionally omitted in TR1/2 due to the sample's quality when
     // played in rapid succession.
@@ -480,6 +486,15 @@ static void M_PlayMachineGunSound(
     }
     if (!stopping) {
         Sound_Effect(SFX_MP5_FIRE, &lara_item->pos, SPM_NORMAL);
+    }
+}
+
+static void M_PlayMachineGunSound(
+    const LARA_GUN_TYPE weapon_type, const bool stopping)
+{
+    const WEAPON_INFO *const info = Gun_Registry_Get(weapon_type);
+    if (info->rapid_fire_sound_func != nullptr) {
+        info->rapid_fire_sound_func(stopping);
     }
 }
 
@@ -494,6 +509,7 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
     const bool hold_hip_fire = is_machine_gun && !running && g_Input.action
         && g_Config.gameplay.m16_aim_mode == M16_AIM_MODE_ENHANCED;
     ITEM *const item = Item_Get(lara->gun_item_num);
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
 
     switch (item->current_anim_state) {
     case LA_G_AIM:
@@ -556,13 +572,14 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
         } else if (m_M16Firing) {
             M_PlayMachineGunSound(weapon_type, false);
         } else if (
-            weapon_type == LGT_SHOTGUN && !g_Input.action
+            weapon->unaims_on_release && !g_Input.action
             && !lara->left_arm.lock) {
             item->goal_anim_state = LA_G_UNAIM;
         }
 
-        if (weapon_type == LGT_SHOTGUN && Item_TestFrameEqual(item, 12)) {
-            Spawn_GunShell(LGT_SHOTGUN, true);
+        if (weapon->anim.shell_frame != 0
+            && Item_TestFrameEqual(item, weapon->anim.shell_frame)) {
+            Spawn_GunShell(weapon_type, true);
         }
         break;
 
@@ -602,6 +619,34 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
     lara->right_arm.frame_num = Item_GetRelativeFrame(item);
 }
 
+static uint8_t M_GetLauncherSmokeSize(void)
+{
+    return (Random_GetControl() & 7) + 24;
+}
+
+static GUN_FLASH M_GetM16Flash(void)
+{
+    return (GUN_FLASH) {
+        .object_id = O_M16_FLASH,
+        .rot = {
+            .x = -85 * DEG_1,
+            .z = ((2 * Random_GetDraw()) & 0x4000) + 0x2000,
+        },
+    };
+}
+
+static GUN_FLASH M_GetMp5Flash(void)
+{
+    return (GUN_FLASH) {
+        .object_id = O_M16_FLASH,
+        .rot = {
+            .x = -85 * DEG_1,
+            .z = ((2 * Random_GetDraw()) & 0x4000)
+                + (Random_GetDraw() & 0xFFF) + 0x1800,
+        },
+    };
+}
+
 static void M_Control(
     const LARA_GUN_TYPE gun_type, const LARA_GUN_STATE gun_status)
 {
@@ -635,9 +680,7 @@ void Gun_Rifle_Control(const LARA_GUN_TYPE weapon_type)
 
     M_Animate(weapon_type);
 
-    if (lara->right_arm.flash_gun
-        && (weapon_type == LGT_SHOTGUN || weapon_type == LGT_M16
-            || weapon_type == LGT_MP5)) {
+    if (lara->right_arm.flash_gun && weapon->flash_lights_room) {
         Gun_AddDynamicLight();
     }
 }
@@ -767,6 +810,8 @@ REGISTER_GUN_TYPE(
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_M16,
+    .flash_func = M_GetM16Flash,
+    .rapid_fire_sound_func = M_PlayM16Sound,
     .is_remembered = true,
     .wants_combat_camera = true,
     .draw_func = Gun_Rifle_Draw,
@@ -778,6 +823,8 @@ REGISTER_GUN_TYPE(
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_MP5,
+    .flash_func = M_GetMp5Flash,
+    .rapid_fire_sound_func = M_PlayMp5Sound,
     .is_remembered = true,
     .wants_combat_camera = true,
     .draw_func = Gun_Rifle_Draw,
@@ -789,6 +836,8 @@ REGISTER_GUN_TYPE(
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_GRENADE,
+    .smoke_size_func = M_GetLauncherSmokeSize,
+    .ready_anim_func = M_GetGrenadeReadyAnim,
     .is_remembered = true,
     .wants_combat_camera = true,
     .draw_func = Gun_Rifle_Draw,
@@ -799,6 +848,7 @@ REGISTER_GUN_TYPE(
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_ROCKET,
+    .smoke_size_func = M_GetLauncherSmokeSize,
     .is_remembered = true,
     .wants_combat_camera = true,
     .draw_func = Gun_Rifle_Draw,
@@ -809,6 +859,7 @@ REGISTER_GUN_TYPE(
 
 REGISTER_GUN_TYPE(
     .gun_type = LGT_HARPOON,
+    .ready_anim_func = M_GetHarpoonReadyAnim,
     .is_remembered = true,
     .wants_combat_camera = true,
     .draw_func = Gun_Rifle_Draw,

@@ -28,6 +28,7 @@ void Gun_Registry_Seed(void)
         m_Weapons[i] = (WEAPON_INFO) {
             .gun_type = (LARA_GUN_TYPE)i,
             .glow.scale = 1.0f,
+            .shell_object_id = NO_OBJECT,
         };
         if (m_Declared[i] != nullptr) {
             m_Weapons[i] = *m_Declared[i];

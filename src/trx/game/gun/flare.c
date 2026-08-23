@@ -278,6 +278,14 @@ static void M_UndrawMeshes(void)
     Lara_Skin_ClearEquipment(LM_HAND_L);
 }
 
+static GUN_FLASH M_GetFlash(void)
+{
+    return (GUN_FLASH) {
+        .object_id = O_FLARE_FIRE,
+        .rot = { .x = -DEG_90, .y = 2 * Random_GetDraw() },
+    };
+}
+
 static void M_Draw(const LARA_GUN_TYPE gun_type)
 {
     Gun_Flare_Draw();
@@ -538,6 +546,7 @@ void Gun_Flare_DrawMeshes(void)
 // clang-format off
 REGISTER_GUN_TYPE(
     .gun_type = LGT_FLARE,
+    .flash_func = M_GetFlash,
     .draw_func = M_Draw,
     .undraw_func = M_Undraw,
     .draw_meshes_func = M_DrawMeshes,
