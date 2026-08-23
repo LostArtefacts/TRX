@@ -18,7 +18,7 @@ repos:
     files: \.json$
 
   - id: lint-newlines
-    name: Files end in a single newline
+    name: Files start with content and end in a single newline
     entry: tools/lint/checks/newlines
     language: python
     exclude: \.patch$
