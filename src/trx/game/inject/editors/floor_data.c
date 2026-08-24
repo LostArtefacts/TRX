@@ -212,6 +212,12 @@ static void M_TriggeredItem(const INJECTION *const injection)
     const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);
     item->object_id = obj_info.id;
     item->room_num = File_ReadS16(injection->fp);
+    if (Room_Get(item->room_num) == nullptr) {
+        LOG_WARNING(
+            "Injected item names room %d, which the level does not have",
+            item->room_num);
+        item->room_num = NO_ROOM;
+    }
     item->pos.x = File_ReadS32(injection->fp);
     item->pos.y = File_ReadS32(injection->fp);
     item->pos.z = File_ReadS32(injection->fp);

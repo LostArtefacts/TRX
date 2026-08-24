@@ -1,6 +1,7 @@
 #include <trx/game/items/manager.h>
 
 #include <trx/core/handle.h>
+#include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
@@ -301,6 +302,12 @@ int16_t Item_Spawn(const ITEM *const item, const OBJECT_ID obj_id)
 void Item_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    if (Room_Get(item->room_num) == nullptr) {
+        LOG_WARNING(
+            "Item %d names room %d, which the level does not have", item_num,
+            item->room_num);
+        return;
+    }
     const OBJECT *const obj = Object_Get(item->object_id);
 
     Item_SwitchToAnim(item, 0, 0);
