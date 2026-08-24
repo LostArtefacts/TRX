@@ -103,6 +103,7 @@
 - Fixed the specks drifting in water being too small and all one size
 - Fixed crystal 206 in Thames Wharf not being triggered if the alternative route is used to reach it (#6349 / TRX1202)
 - Fixed Lara being embedded in the floor at the beginning of Temple Ruins, which causes the camera to pop after the first frame (TRX1028)
+- Fixed being able to see the zipline in Lara's Home reset if certain paths are taken (#5367 / TRX1134)
 
 **TR4**
 - Added the ability to skip in-game cutscenes (TRX1051)
