@@ -106,6 +106,7 @@
 - Fixed being able to see the zipline in Lara's Home reset if certain paths are taken (#5367 / TRX1134)
 - Fixed the wrong SFX playing when Lara draws a rifle type weapon, and missing SFX when drawing/holstering the harpoon when underwater (#5367 / TRX1134)
 - Fixed z-fighting on the passport in each level (#5367 / TRX1134)
+- Fixed a faulty portal in Antarctica room 20 (TRX1246)
 
 **TR4**
 - Added the ability to skip in-game cutscenes (TRX1051)

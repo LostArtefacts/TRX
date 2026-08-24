@@ -986,6 +986,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── aldwych_textures.bin
 │   │   │   ├── antarc_airlock.bin
 │   │   │   ├── antarc_door134_frames.bin
+│   │   │   ├── antarc_fd.bin
 │   │   │   ├── antarc_sky.bin
 │   │   │   ├── antarc_textures.bin
 │   │   │   ├── antarc_wheel_frames.bin
@@ -2357,6 +2358,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── aldwych_textures.bin
     │   │   │   │   ├── antarc_airlock.bin
     │   │   │   │   ├── antarc_door134_frames.bin
+    │   │   │   │   ├── antarc_fd.bin
     │   │   │   │   ├── antarc_sky.bin
     │   │   │   │   ├── antarc_textures.bin
     │   │   │   │   ├── antarc_wheel_frames.bin
