@@ -999,6 +999,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── cavern_pickup_meshes.bin
 │   │   │   ├── cavern_sky.bin
 │   │   │   ├── cavern_textures.bin
+│   │   │   ├── caves_textures.bin
 │   │   │   ├── city_textures.bin
 │   │   │   ├── cliff_animating_bounds.bin
 │   │   │   ├── cliff_crystals.bin
@@ -1019,6 +1020,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── crash_animating_bounds.bin
 │   │   │   ├── crash_pickup_meshes.bin
 │   │   │   ├── crash_sky.bin
+│   │   │   ├── crash_textures.bin
 │   │   │   ├── crystal.bin
 │   │   │   ├── cut1_setup.bin
 │   │   │   ├── cut2_setup.bin
@@ -1078,6 +1080,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── rapids_sky.bin
 │   │   │   ├── reunion_crystals.bin
 │   │   │   ├── reunion_flames.bin
+│   │   │   ├── reunion_textures.bin
 │   │   │   ├── scotland_crystals.bin
 │   │   │   ├── scotland_sky.bin
 │   │   │   ├── scotland_textures.bin
@@ -1085,6 +1088,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── stpaul_animating_bounds.bin
 │   │   │   ├── stpaul_textures.bin
 │   │   │   ├── temple_itemrots.bin
+│   │   │   ├── temple_textures.bin
 │   │   │   ├── thames_animating_bounds.bin
 │   │   │   ├── thames_fd.bin
 │   │   │   ├── thames_textures.bin
@@ -1092,6 +1096,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── tinnos_fd.bin
 │   │   │   ├── tinnos_flames.bin
 │   │   │   ├── tinnos_textures.bin
+│   │   │   ├── title_textures.bin
 │   │   │   ├── undersea_animating_bounds.bin
 │   │   │   ├── undersea_animating_ext.bin
 │   │   │   ├── undersea_crystals.bin
@@ -2365,6 +2370,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── cavern_pickup_meshes.bin
     │   │   │   │   ├── cavern_sky.bin
     │   │   │   │   ├── cavern_textures.bin
+    │   │   │   │   ├── caves_textures.bin
     │   │   │   │   ├── city_textures.bin
     │   │   │   │   ├── cliff_animating_bounds.bin
     │   │   │   │   ├── cliff_crystals.bin
@@ -2385,6 +2391,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── crash_animating_bounds.bin
     │   │   │   │   ├── crash_pickup_meshes.bin
     │   │   │   │   ├── crash_sky.bin
+    │   │   │   │   ├── crash_textures.bin
     │   │   │   │   ├── crystal.bin
     │   │   │   │   ├── cut1_setup.bin
     │   │   │   │   ├── cut2_setup.bin
@@ -2444,6 +2451,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── rapids_sky.bin
     │   │   │   │   ├── reunion_crystals.bin
     │   │   │   │   ├── reunion_flames.bin
+    │   │   │   │   ├── reunion_textures.bin
     │   │   │   │   ├── scotland_crystals.bin
     │   │   │   │   ├── scotland_sky.bin
     │   │   │   │   ├── scotland_textures.bin
@@ -2451,6 +2459,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── stpaul_animating_bounds.bin
     │   │   │   │   ├── stpaul_textures.bin
     │   │   │   │   ├── temple_itemrots.bin
+    │   │   │   │   ├── temple_textures.bin
     │   │   │   │   ├── thames_animating_bounds.bin
     │   │   │   │   ├── thames_fd.bin
     │   │   │   │   ├── thames_textures.bin
@@ -2458,6 +2467,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── tinnos_fd.bin
     │   │   │   │   ├── tinnos_flames.bin
     │   │   │   │   ├── tinnos_textures.bin
+    │   │   │   │   ├── title_textures.bin
     │   │   │   │   ├── undersea_animating_bounds.bin
     │   │   │   │   ├── undersea_animating_ext.bin
     │   │   │   │   ├── undersea_crystals.bin
