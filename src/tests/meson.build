@@ -90,6 +90,7 @@ b_lua_surface = {
     'harness/fake_calls.c',
     'harness/lua_surface.c',
     'harness/stubs_enum_map.c',
+    'harness/stubs_lua_context.c',
     'harness/stubs_result.c',
   ],
   'deps': [dep_lua],

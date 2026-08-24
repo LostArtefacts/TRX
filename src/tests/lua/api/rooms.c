@@ -44,17 +44,6 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "fire_room_change");
 }
 
-// The room hooks go through the real listener registry, which asks for the
-// script context to scope a listener.
-LUA_CONTEXT LUA_GetScriptContext(void)
-{
-    return LUA_CONTEXT_GLOBAL;
-}
-
-void LUA_SetScriptContext(const LUA_CONTEXT context)
-{
-}
-
 int main(void)
 {
     const LUA_SURFACE_TEST test = {

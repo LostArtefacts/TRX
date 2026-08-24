@@ -8,8 +8,6 @@
 
 #include <lauxlib.h>
 
-static LUA_CONTEXT m_Context = LUA_CONTEXT_GLOBAL;
-
 static int M_FakeSetEnforced(lua_State *const L)
 {
     FakeConfig_SetEnforced(lua_toboolean(L, 1));
@@ -19,7 +17,8 @@ static int M_FakeSetEnforced(lua_State *const L)
 // What a level script's own registrations are made under, and what ends them.
 static int M_FakeAsLevelScript(lua_State *const L)
 {
-    m_Context = lua_toboolean(L, 1) ? LUA_CONTEXT_LEVEL : LUA_CONTEXT_GLOBAL;
+    LUA_SetScriptContext(
+        lua_toboolean(L, 1) ? LUA_CONTEXT_LEVEL : LUA_CONTEXT_GLOBAL);
     return 0;
 }
 
@@ -37,16 +36,6 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "as_level_script");
     lua_pushcfunction(L, M_FakeEndLevel);
     lua_setfield(L, -2, "end_level");
-}
-
-LUA_CONTEXT LUA_GetScriptContext(void)
-{
-    return m_Context;
-}
-
-void LUA_SetScriptContext(const LUA_CONTEXT context)
-{
-    m_Context = context;
 }
 
 int main(void)
