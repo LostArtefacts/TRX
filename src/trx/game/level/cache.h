@@ -9,6 +9,12 @@
 #include <stddef.h>
 #include <stdint.h>
 
+// Drops the level checksums held from earlier calls. The checksums are kept
+// against the address of each level, so they must be dropped before the game
+// flow frees its levels; otherwise a level allocated at a reused address
+// reads back the checksum of the level that stood there before it.
+void LevelCache_Reset(void);
+
 uint64_t LevelCache_InitChecksum(const char *scope, uint32_t version);
 uint64_t LevelCache_UpdateLevelChecksum(
     uint64_t checksum, const GF_LEVEL *level);
