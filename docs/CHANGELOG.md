@@ -2,6 +2,7 @@
 
 **Lara's movement**
 - Added an option to allow Lara to sidestep in swamps (Gameplay → Controls → Swamp sidesteps) (#6250 / TRX1117)
+- Added an option to allow Lara to turn while shimmying along monkey bars, similarly to how she can while sidestepping or swimming sideways on water surfaces (#6386)
 - Fixed Lara entering the step down animation when walking backwards in a swamp room (OG bug) (#6251 / TRX1118)
 - Fixed certain SFX, such as Lara's footsteps, playing in swamp rooms (#6248 / TRX1115, regression from 1.0)
 - Fixed Lara being able to turn too quickly in swamp rooms (regression from 1.0) (TRX1129)

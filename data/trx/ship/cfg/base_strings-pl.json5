@@ -1191,6 +1191,10 @@
             "title": "Manualna kamera",
             "description": "Umożliwia klawiszom kamery obracanie jej także podczas gry, nie tylko w trybie zdjęć.",
         },
+        "gameplay.enable_monkey_bar_shimmy_turn": {
+            "title": "\\{review}Obracanie się na drabinkach",
+            "description": "\\{review}Pozwala Larze obracać się podczas przemieszczania się bokiem po drabinkach, podobnie jak może to robić podczas poruszania się bokiem lub pływania bokiem po powierzchni wody.",
+        },
         "gameplay.enable_multiple_pickups": {
             "title": "\\{review}Podnoszenie wielu przedmiotów",
             "description": "\\{review}Pozwala Larze podnieść wszystkie przedmioty znajdujące się w tym samym miejscu w ramach jednej animacji (TR1–3). Po wyłączeniu tej opcji Lara musi powtórzyć animację dla każdego przedmiotu (TR4+).",

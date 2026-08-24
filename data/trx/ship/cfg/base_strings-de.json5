@@ -1191,6 +1191,10 @@
             "title": "\\{review}Manuelle Kamera",
             "description": "\\{review}Aktiviert die Kameratasten (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}), die zur Steuerung der Kamera im Fotomodus verwendet werden, um auch die Ingame-Kamera zu drehen.",
         },
+        "gameplay.enable_monkey_bar_shimmy_turn": {
+            "title": "\\{review}Drehen beim Hangeln",
+            "description": "\\{review}Ermöglicht Lara, sich beim seitlichen Hangeln an den Sprossen zu drehen, ähnlich wie beim seitlichen Bewegen oder Seitwärtsschwimmen an der Wasseroberfläche.",
+        },
         "gameplay.enable_multiple_pickups": {
             "title": "\\{review}Mehrere Gegenstände aufnehmen",
             "description": "\\{review}Ermöglicht Lara, alle Gegenstände, die sich an derselben Position befinden, in derselben Animation aufzunehmen (TR1–3). Wenn deaktiviert, muss Lara die Animation für jeden Gegenstand wiederholen (TR4+).",
