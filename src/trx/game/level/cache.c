@@ -122,6 +122,11 @@ static const char *M_GetPath(const char *const filename)
         "%s/%s/%s", Shell_GetCacheDir(), args->startup.mod->name, filename);
 }
 
+void LevelCache_Reset(void)
+{
+    M_ClearLevelHashMap();
+}
+
 uint64_t LevelCache_InitChecksum(
     const char *const scope, const uint32_t version)
 {

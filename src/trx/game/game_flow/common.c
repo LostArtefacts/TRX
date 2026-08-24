@@ -6,6 +6,7 @@
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/game_flow/vars.h>
+#include <trx/game/level/cache.h>
 
 static const GF_LEVEL *m_CurrentLevel = nullptr;
 static GF_COMMAND m_OverrideCommand = { .action = GF_NOOP };
@@ -78,6 +79,8 @@ void GF_Shutdown(void)
 {
     m_CurrentLevel = nullptr;
     m_OverrideCommand = (GF_COMMAND) { .action = GF_NOOP };
+
+    LevelCache_Reset();
 
     GAME_FLOW *const gf = &g_GameFlow;
     M_FreeInjections(&gf->injections);
