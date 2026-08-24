@@ -23,6 +23,7 @@
         "injections": [
             "common_pickup_meshes.bin",
             "inv_background.bin",
+            "title_textures.bin",
         ]
     },
 
@@ -207,6 +208,7 @@
                 "reunion_flames.bin",
                 "common_pickup_meshes.bin",
                 "reunion_crystals.bin",
+                "reunion_textures.bin",
             ],
             "unobtainable_pickups": 1,
             "unobtainable_secrets": 1,

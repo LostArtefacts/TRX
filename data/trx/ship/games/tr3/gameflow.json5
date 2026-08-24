@@ -22,6 +22,7 @@
         "injections": [
             "common_pickup_meshes.bin",
             "inv_background.bin",
+            "title_textures.bin",
         ]
     },
 
@@ -139,6 +140,7 @@
                 "common_pickup_meshes.bin",
                 "fish_sprites.bin",
                 "temple_itemrots.bin",
+                "temple_textures.bin",
             ],
         },
 
@@ -183,6 +185,7 @@
                 "lara_guns.bin",
                 "globe_model.bin",
                 "common_pickup_meshes.bin",
+                "caves_textures.bin",
             ],
         },
 
@@ -235,6 +238,7 @@
                 "lara_guns.bin",
                 "crash_animating_bounds.bin",
                 "fish_sprites.bin",
+                "crash_textures.bin",
             ],
         },
 
