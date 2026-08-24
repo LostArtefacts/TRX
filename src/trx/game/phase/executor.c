@@ -9,6 +9,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
+#include <trx/game/lua/events.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
 #include <trx/game/output/overlay.h>
@@ -112,6 +113,8 @@ static GF_COMMAND M_RunFadeToBlackTransition(const FADER_ARGS args)
             return (GF_COMMAND) { .action = GF_EXIT_GAME };
         }
 
+        LUA_FireEvent(LUA_EVENT_TICK);
+
         Interpolation_SetRate(1.0f);
         Output_SetTime(m_CurrentFrame);
         M_DrawFadeToBlackTransition(Fader_GetCurrentValue(&fader));
@@ -155,10 +158,15 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
     }
 
+    // Publish signals after phase control updates the frame state.
     if (phase != nullptr && phase->control != nullptr) {
         Output_DropPendingLights();
-        return phase->control(phase);
+        const PHASE_CONTROL control = phase->control(phase);
+        LUA_FireEvent(LUA_EVENT_TICK);
+        return control;
     }
+
+    LUA_FireEvent(LUA_EVENT_TICK);
     return (PHASE_CONTROL) {
         .action = PHASE_ACTION_END,
         .gf_cmd = { .action = GF_NOOP },

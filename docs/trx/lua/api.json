@@ -3928,6 +3928,21 @@
       }
     },
     {
+      "description": "Happens once for every tick the game runs, whatever is on screen: while a\nlevel is played, while a menu is open, over a cutscene and through a fade.\n\nThis is the clock a script keeps its own state on. It is not the world\nstepping - `trx.events.before_control` is that, and it happens only while\na level is running - and it is not a frame reaching the screen, which\nhappens twice as often while frames are interpolated.",
+      "params": [
+        {
+          "description": "Called once per tick.",
+          "name": "callback",
+          "type": "function"
+        }
+      ],
+      "path": "events.on_tick",
+      "returns": {
+        "description": "The listener id.",
+        "type": "integer"
+      }
+    },
+    {
       "description": "Happens as the game builds one of the nine regions of the on-screen\ninterface, once per region on every drawn frame. A handler draws with\n`trx.ui`, which is available here and nowhere else, and what it draws lands\nin the region being built. The handler takes the region as a\n`trx.ui.Location` and answers for the one it wants.\n\nEvery path that puts an interface on screen fires it, so a handler runs\nduring a fade and over an FMV as well as in play. It follows the frame rate\nrather than the game clock, so a handler reads state and does no counting\nof its own.",
       "examples": [
         "trx.events.on_ui_draw(function(location)\n  if location == trx.ui.Location.TOP_CENTER then\n    trx.ui.label(\"hello\")\n  end\nend)"
@@ -6019,6 +6034,75 @@
       ]
     },
     {
+      "description": "Creates a signal by reading a value once per tick and notifying listeners only\nwhen that value changes.\n\nUse this for state that has no dedicated engine signal. The read function runs\nevery tick, but listeners run only on changes, so several listeners on one\npolled signal share one read.",
+      "params": [
+        {
+          "description": "The function to read each tick. Tables compare by identity, so returning a fresh table every tick reports a change every tick.",
+          "name": "read",
+          "type": "function"
+        }
+      ],
+      "path": "signal.polled",
+      "returns": {
+        "description": "The polled signal.",
+        "type": "signal.Signal"
+      }
+    },
+    {
+      "description": "Returns a signal for a config setting.\n\nThe signal holds the setting's current value and updates whenever the player or\na script changes it. Asking for the same setting twice returns the same signal.",
+      "params": [
+        {
+          "description": "Dotted setting path, as accepted by `trx.config.get`.",
+          "name": "key",
+          "type": "string"
+        }
+      ],
+      "path": "signal.config",
+      "returns": {
+        "description": "The setting's signal.",
+        "type": "signal.Signal"
+      }
+    },
+    {
+      "description": "Creates a signal by applying a function to several source signals.\n\nPass the signals first and the function last. `trx.signal.Signal:map` is the\none-signal version. For boolean combinations, `&`, `|` and `~` are shorter.",
+      "examples": [
+        "local fill = trx.signal.combine(\n  trx.lara.signals.hp,\n  trx.lara.signals.max_hp,\n  function(hp, max_hp)\n    return hp / max_hp\n  end\n)"
+      ],
+      "params": [
+        {
+          "description": "The signals to read, in the order the function takes them.",
+          "name": "...",
+          "type": "signal.Signal"
+        },
+        {
+          "description": "The function that computes the derived value.",
+          "name": "fn",
+          "type": "function"
+        }
+      ],
+      "path": "signal.combine",
+      "returns": {
+        "description": "The derived signal.",
+        "type": "signal.Signal"
+      }
+    },
+    {
+      "description": "Creates a script-owned signal with an initial value.",
+      "params": [
+        {
+          "description": "The initial value.",
+          "name": "value",
+          "nullable": true,
+          "type": "any"
+        }
+      ],
+      "path": "signal.new",
+      "returns": {
+        "description": "The new signal.",
+        "type": "signal.Signal"
+      }
+    },
+    {
       "description": "Plays a sound effect by catalog id, mapping it to the level's own sample. A game that does not carry the sample plays nothing.",
       "examples": [
         "trx.sound.play(trx.catalog.samples.LARA_NO)\ntrx.sound.play(trx.catalog.samples.LARA_NO, { pos = { x = 100, y = 200, z = 50 } })"
@@ -6997,6 +7081,12 @@
       "order": 27
     },
     {
+      "description": "A value that can notify listeners when it changes.\n\nA signal lets a script react to changes without polling every frame. You can\nread the current value, listen for changes, and combine signals with `&`, `|`\nand `~`.\n\nSetting a signal to its current value does nothing: listeners do not run, and\nsignals derived from it do not update. This keeps combined signals cheap to\nlisten to. A combined signal fires only when its own result changes, not every\ntime one of its inputs changes.\n\nA derived signal is read like any other signal, so one expression can provide\nboth the current result and change notifications.\n\nSignals should carry numbers, strings or booleans, not handles. Handles are\ncreated fresh on each read, so two reads of the same handle do not compare\nequal and would make the signal report a change every frame. When a signal\nrepresents an engine-owned object, it carries the object's numeric id; listeners\ncan then read the handle when they need it.\n\nSignals stay idle until something uses them: a polled signal starts reading only\nwhen it is created.",
+      "name": "signal",
+      "order": 38,
+      "title": "Signals"
+    },
+    {
       "description": "Module for playing sound effects.",
       "name": "sound",
       "order": 21
@@ -7539,6 +7629,12 @@
       "path": "rules.fx.rotate_debris",
       "type": "boolean",
       "writable": true
+    },
+    {
+      "description": "A signal that increments on every engine tick, regardless of what is on screen.\nAnything listening to it runs every tick.\n\nUse this when a script needs to poll state that has no dedicated signal, such as\nLara's current position. A dedicated signal is cheaper when one exists, because\nthis one wakes listeners even when the state they care about has not changed.",
+      "path": "signal.tick",
+      "type": "signal.Signal",
+      "writable": false
     },
     {
       "description": "What the level remembers. Emptied when a level loads, so a script that wants a starting state writes it from `trx.events.on_game_start`.",
@@ -10811,6 +10907,152 @@
       ],
       "operators": [],
       "path": "rooms.RoomQuery"
+    },
+    {
+      "description": "A value that notifies listeners when it changes.",
+      "extensions": [],
+      "fields": [],
+      "handle": false,
+      "methods": [
+        {
+          "description": "Whether the signal holds more than this number.",
+          "name": "above",
+          "params": [
+            {
+              "description": "What to compare against.",
+              "name": "amount",
+              "type": "number"
+            }
+          ],
+          "returns": {
+            "description": "The derived signal.",
+            "type": "signal.Signal"
+          }
+        },
+        {
+          "description": "Whether the signal holds this value.",
+          "name": "eq",
+          "params": [
+            {
+              "description": "What to compare against.",
+              "name": "value",
+              "type": "any"
+            }
+          ],
+          "returns": {
+            "description": "The derived signal.",
+            "type": "signal.Signal"
+          }
+        },
+        {
+          "description": "The value the signal holds now.",
+          "name": "get",
+          "returns": {
+            "description": "What it holds.",
+            "type": "any"
+          }
+        },
+        {
+          "description": "Creates a signal by applying a function to this signal's value.\n\nUse this for derived values that are not simple boolean combinations, such as a\nbar fill amount or resolved key text.",
+          "name": "map",
+          "params": [
+            {
+              "description": "The function that computes the derived value.",
+              "name": "fn",
+              "params": [
+                {
+                  "description": "This signal's value.",
+                  "name": "value",
+                  "type": "any"
+                }
+              ],
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "The derived signal.",
+            "type": "signal.Signal"
+          }
+        },
+        {
+          "description": "Calls the handler with the new value whenever the signal changes. Attaching a listener does not call it immediately; read the signal directly when you need its current value.",
+          "name": "on",
+          "params": [
+            {
+              "description": "The function to call when the signal changes.",
+              "name": "fn",
+              "params": [
+                {
+                  "description": "The new value.",
+                  "name": "value",
+                  "type": "any"
+                }
+              ],
+              "type": "function"
+            }
+          ],
+          "returns": {
+            "description": "The listener handle used to detach later.",
+            "type": "signal.Listener"
+          }
+        },
+        {
+          "description": "Sets the signal's value. Setting the current value again does nothing, so repeated writes are cheap.",
+          "name": "set",
+          "params": [
+            {
+              "description": "The new value.",
+              "name": "value",
+              "type": "any"
+            }
+          ],
+          "returns": {
+            "description": "Whether the value changed and listeners ran.",
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "Stops a derived signal from following its sources. It keeps its last value and will not update again. Signals made by level scripts stop when the level ends; global scripts can call this to stop one earlier.",
+          "name": "stop",
+          "returns": {
+            "description": "Whether the signal was still following any sources.",
+            "type": "boolean"
+          }
+        }
+      ],
+      "operators": [
+        {
+          "description": "Both signals are true. Fires when the result changes.",
+          "name": "band"
+        },
+        {
+          "description": "The signal is not true: `~trx.cutscenes.signals.is_playing`.",
+          "name": "bnot"
+        },
+        {
+          "description": "Either signal is true. Fires when the result changes.",
+          "name": "bor"
+        }
+      ],
+      "path": "signal.Signal"
+    },
+    {
+      "description": "A signal listener that can be detached later.",
+      "extensions": [],
+      "fields": [],
+      "handle": false,
+      "methods": [
+        {
+          "description": "Detaches the listener so it no longer receives changes.",
+          "name": "detach",
+          "returns": {
+            "description": "Whether it was still listening.",
+            "type": "boolean"
+          }
+        }
+      ],
+      "operators": [],
+      "path": "signal.Listener"
     },
     {
       "description": "A sound sample the current level carries. Reach them through `trx.sound.samples`. A handle to a sample the loaded level does not carry goes stale, so `trx.sound.Sample:is_valid` answers whether it is still there.",

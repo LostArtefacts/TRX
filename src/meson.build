@@ -67,6 +67,7 @@ trx_lua_api_sources = files(
   'lua/api/rooms.lua',
   'lua/api/rules.lua',
   'lua/api/savegame.lua',
+  'lua/api/signal.lua',
   'lua/api/sound.lua',
   'lua/api/stats.lua',
   'lua/api/store.lua',

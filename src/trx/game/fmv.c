@@ -13,6 +13,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
+#include <trx/game/lua/events.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
 #include <trx/game/output/overlay.h>
@@ -271,6 +272,7 @@ static RESULT M_Play(const char *const file_name)
         render_ctx.show_pause_overlay = input_paused;
         M_SetPauseText(M_ShouldShowPauseText(&render_ctx));
         Overlay_Control();
+        LUA_FireEvent(LUA_EVENT_TICK);
 
         const bool should_pause = focus_paused || input_paused;
         if (should_pause != paused) {
