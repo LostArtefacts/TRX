@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/core/subsystem.h>
+#include <trx/game/clock/timer.h>
 #include <trx/game/level.h>
 #include <trx/game/output/binocular_mask.h>
 #include <trx/game/output/func.h>
@@ -32,6 +33,11 @@ static MESH_BATCHER *m_Batcher = nullptr;
 static OUTPUT_UNIFORMS *m_Uniforms = nullptr;
 static OUTPUT_MESH_SHADER *m_ShaderWorld = nullptr;
 static OUTPUT_UI_SHADER *m_ShaderUI = nullptr;
+
+// Counts presented frames, not game ticks.
+static int32_t m_DrawnFrames = 0;
+static int32_t m_FPS = 0;
+static CLOCK_TIMER m_FPSTimer = { .type = CLOCK_TIMER_REAL };
 
 static void M_Shutdown(void)
 {
@@ -137,6 +143,16 @@ void Output_BeginScene(void)
 void Output_EndScene(void)
 {
     SceneCompositor_EndScene();
+    m_DrawnFrames++;
+    if (ClockTimer_CheckElapsedAndTake(&m_FPSTimer, 1.0)) {
+        m_FPS = m_DrawnFrames;
+        m_DrawnFrames = 0;
+    }
+}
+
+int32_t Output_GetMeasuredFPS(void)
+{
+    return m_FPS;
 }
 
 void Output_Flush(void)

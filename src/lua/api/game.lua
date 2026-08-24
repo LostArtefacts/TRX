@@ -1,3 +1,5 @@
+require("trx.signal")
+
 local raw = trxc.game
 local raw_inventory = trxc.inventory
 local raw_stats = trxc.stats
@@ -254,10 +256,58 @@ api.property("game.is_loaded", {
   get = raw.is_loaded,
 })
 
+api.property("game.measured_fps", {
+  type = "integer",
+  description = "How many frames reached the screen in the last second, counted against the "
+    .. "wall clock. Frames are drawn more often than the game ticks, so this is not the rate "
+    .. "the game runs at.",
+  get = raw.measured_fps,
+})
+
+api.property("game.is_playing", {
+  type = "boolean",
+  description = "Whether a level is running: Lara and the creatures move and the game answers "
+    .. "to the player. It goes false while the inventory ring, the pause screen or photo mode "
+    .. "holds the level still, and outside a level altogether.",
+  get = raw.is_playing,
+})
+
 api.property("game.is_playable", {
   type = "boolean",
   description = "Whether the game is loaded and taking input - not in a menu, and not in a cutscene.",
   get = raw.is_playable,
+})
+
+api.property("game.real_time", {
+  type = "number",
+  description = "Seconds of wall-clock time since the game started, which keeps running while "
+    .. "the game is held still. Use it to time something against the player's clock rather "
+    .. "than against the frames the game has run.",
+  get = raw.real_time,
+})
+
+api.property("game.tr_version", {
+  type = "integer",
+  description = "Which Tomb Raider the level being played belongs to: `1` through `4`. The "
+    .. "games differ in what they draw and in what the player expects, so a script that "
+    .. "dresses more than one reads this to tell them apart. Zero before a level is loaded.",
+  get = raw.tr_version,
+})
+
+api.property("game.is_suspended", {
+  type = "boolean",
+  description = "Whether a loaded level is held still: the pause screen, photo mode, or the "
+    .. "inventory ring. Lara and the creatures do not move while it is true. It is false "
+    .. "outside a level, which is what tells it apart from the opposite of "
+    .. "`trx.game.is_playing`.",
+  get = raw.is_suspended,
+})
+
+api.property("game.is_photo_mode", {
+  type = "boolean",
+  description = "Whether the player is in photo mode, where the camera is theirs to move and "
+    .. "the game is held still.",
+  get = raw.is_photo_mode,
 })
 
 api.property("game.is_ngplus", {

@@ -139,6 +139,7 @@ end
     - <a id="items.Item.gravity" name="items.Item.gravity"></a>**`gravity`**: boolean. Whether gravity applies to this item.
     - <a id="items.Item.hit_points" name="items.Item.hit_points"></a>**`hit_points`**: integer. Current hit points. Raising this above the maximum also raises the `max_hit_points` entry of [`properties`](#items.Item.properties).
     - <a id="items.Item.is_alive" name="items.Item.is_alive"></a>**`is_alive`**: boolean. Whether the item is a living creature with hit points remaining. *(read-only)*
+    - <a id="items.Item.is_ally" name="items.Item.is_ally"></a>**`is_ally`**: boolean. Whether this item is a creature that fights on Lara's side. An ally is shown in its own colour where an enemy would be. *(read-only)*
     - <a id="items.Item.is_finished" name="items.Item.is_finished"></a>**`is_finished`**: boolean. Whether the item has finished its run - a creature that died, or a one-shot trigger that fired. It stays in the level but no longer acts.
     - <a id="items.Item.is_hostile" name="items.Item.is_hostile"></a>**`is_hostile`**: boolean. Whether this item is a creature currently hostile to Lara. *(read-only)*
     - <a id="items.Item.is_in_play" name="items.Item.is_in_play"></a>**`is_in_play`**: boolean. Whether the item is live: simulated, visible and not finished - the state a targetable enemy is in. A read-only composite of the axes. *(read-only)*

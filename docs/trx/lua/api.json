@@ -25,6 +25,16 @@
       "value": 30
     },
     {
+      "description": "Lara's maximum air, which is what her air runs down from.",
+      "path": "lara.MAX_AIR",
+      "value": 1800
+    },
+    {
+      "description": "Lara's maximum sprint, which is what her sprint runs down from.",
+      "path": "lara.MAX_SPRINT",
+      "value": 120
+    },
+    {
       "description": "One degree. Multiply by it to say an angle in degrees: `45 * trx.math.DEG_1`.",
       "path": "math.DEG_1",
       "type": "math.Angle",
@@ -7587,8 +7597,44 @@
       "writable": false
     },
     {
+      "description": "How many frames reached the screen in the last second, counted against the wall clock. Frames are drawn more often than the game ticks, so this is not the rate the game runs at.",
+      "path": "game.measured_fps",
+      "type": "integer",
+      "writable": false
+    },
+    {
+      "description": "Whether a level is running: Lara and the creatures move and the game answers to the player. It goes false while the inventory ring, the pause screen or photo mode holds the level still, and outside a level altogether.",
+      "path": "game.is_playing",
+      "type": "boolean",
+      "writable": false
+    },
+    {
       "description": "Whether the game is loaded and taking input - not in a menu, and not in a cutscene.",
       "path": "game.is_playable",
+      "type": "boolean",
+      "writable": false
+    },
+    {
+      "description": "Seconds of wall-clock time since the game started, which keeps running while the game is held still. Use it to time something against the player's clock rather than against the frames the game has run.",
+      "path": "game.real_time",
+      "type": "number",
+      "writable": false
+    },
+    {
+      "description": "Which Tomb Raider the level being played belongs to: `1` through `4`. The games differ in what they draw and in what the player expects, so a script that dresses more than one reads this to tell them apart. Zero before a level is loaded.",
+      "path": "game.tr_version",
+      "type": "integer",
+      "writable": false
+    },
+    {
+      "description": "Whether a loaded level is held still: the pause screen, photo mode, or the inventory ring. Lara and the creatures do not move while it is true. It is false outside a level, which is what tells it apart from the opposite of `trx.game.is_playing`.",
+      "path": "game.is_suspended",
+      "type": "boolean",
+      "writable": false
+    },
+    {
+      "description": "Whether the player is in photo mode, where the camera is theirs to move and the game is held still.",
+      "path": "game.is_photo_mode",
       "type": "boolean",
       "writable": false
     },
@@ -7605,6 +7651,12 @@
       "writable": false
     },
     {
+      "description": "The object Lara's animations are coming from. It is normally Lara herself, and something else while a vehicle or a scripted sequence drives her.",
+      "path": "lara.animation_object",
+      "type": "catalog.objects",
+      "writable": false
+    },
+    {
       "description": "Lara's own item, or `nil` outside a level. Her position, room and hit points are read and written there.",
       "path": "lara.item",
       "type": "items.Item",
@@ -7614,6 +7666,18 @@
       "description": "The item Lara's guns are locked onto, or `nil` if she has none.",
       "path": "lara.target",
       "type": "items.Item",
+      "writable": false
+    },
+    {
+      "description": "The vehicle Lara is riding, or `nil` when she is on her own feet. Its speed and position are the ones that move her while she rides it.",
+      "path": "lara.vehicle",
+      "type": "items.Item",
+      "writable": false
+    },
+    {
+      "description": "Whether Lara answers to the player. False while she is dead, while the inventory or a dialog holds the game, and while a cutscene or flyby is active.",
+      "path": "lara.is_controllable",
+      "type": "boolean",
       "writable": false
     },
     {
@@ -7644,6 +7708,12 @@
       "description": "Whether Lara is still shedding droplets after a swim. `trx.lara.dry` clears it.",
       "path": "lara.is_wet",
       "type": "boolean",
+      "writable": false
+    },
+    {
+      "description": "The weapon the vehicle Lara is riding carries. Her own weapons are put away while she rides, so this is what her ammunition counter shows. `nil` where she is riding nothing, or riding something unarmed.",
+      "path": "lara.vehicle_gun",
+      "type": "catalog.weapons",
       "writable": false
     },
     {
@@ -8974,6 +9044,12 @@
           "writable": false
         },
         {
+          "description": "Whether this item is a creature that fights on Lara's side. An ally is shown in its own colour where an enemy would be.",
+          "name": "is_ally",
+          "type": "boolean",
+          "writable": false
+        },
+        {
           "description": "Whether the item has finished its run - a creature that died, or a one-shot trigger that fired. It stays in the level but no longer acts.",
           "name": "is_finished",
           "type": "boolean",
@@ -9809,6 +9885,12 @@
           "writable": false
         },
         {
+          "description": "Whether the flare Lara holds is driving her arm.",
+          "name": "flare_control",
+          "type": "boolean",
+          "writable": false
+        },
+        {
           "description": "What Lara's hands are doing.",
           "name": "gun_status",
           "type": "lara.GunState",
@@ -9817,6 +9899,18 @@
         {
           "description": "Which way the last hit came from, or -1 if she has not been hit.",
           "name": "hit_direction",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "The item Lara is lining herself up with, by number, or -1 for none.",
+          "name": "interact_item_num",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "How many frames she has spent moving into place for it.",
+          "name": "interact_move_count",
           "type": "integer",
           "writable": false
         },
@@ -9836,6 +9930,24 @@
           "description": "Whether Lara is crouching.",
           "name": "is_crouched",
           "type": "boolean",
+          "writable": false
+        },
+        {
+          "description": "Whether Lara is still moving towards her interaction target.",
+          "name": "is_interact_moving",
+          "type": "boolean",
+          "writable": false
+        },
+        {
+          "description": "The animation Lara's left arm is playing, which follows the weapon in it rather than the rest of her.",
+          "name": "left_arm_anim_num",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "The frame that animation is on.",
+          "name": "left_arm_frame_num",
+          "type": "integer",
           "writable": false
         },
         {
@@ -9860,6 +9972,18 @@
           "description": "The weapon Lara is drawing, while she is drawing it.",
           "name": "requested_gun",
           "type": "catalog.weapons",
+          "writable": false
+        },
+        {
+          "description": "The animation Lara's right arm is playing.",
+          "name": "right_arm_anim_num",
+          "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "The frame that animation is on.",
+          "name": "right_arm_frame_num",
+          "type": "integer",
           "writable": false
         },
         {
@@ -10365,6 +10489,14 @@
         {
           "description": "An animation an object borrows rather than a thing of its own.",
           "name": "animation",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "query.Query"
+          }
+        },
+        {
+          "description": "A creature the game treats as a boss, which the enemy health bar can be held to.",
+          "name": "boss",
           "returns": {
             "description": "The narrowed query.",
             "type": "query.Query"
@@ -11833,6 +11965,11 @@
           "type": "weapons.Ammo"
         },
         {
+          "description": "The markup drawn beside the ammunition count in TR1. Later games count without one, and a weapon that carries no icon answers with `nil`.",
+          "name": "ammo_icon",
+          "type": "string"
+        },
+        {
           "description": "The box of ammunition it takes, or `nil` where it takes none.",
           "name": "ammo_object",
           "type": "catalog.objects"
@@ -11851,6 +11988,11 @@
           "description": "The glow drawn where it burns.",
           "name": "glow",
           "type": "weapons.Glow"
+        },
+        {
+          "description": "Whether the weapon never runs dry. The pistols do in most games, and a level or a script may say so of any weapon. A count of shots left means nothing in this context.",
+          "name": "has_infinite_ammo",
+          "type": "boolean"
         },
         {
           "description": "How far the left arm may follow a target it has locked onto. A dual-wielded weapon drops the lock on the arm that cannot reach.",

@@ -340,6 +340,13 @@ api.type("items.Item", {
       writable = false,
       description = "Whether this item is a creature currently hostile to Lara.",
     },
+    is_ally = {
+      from = "is_ally",
+      type = "boolean",
+      writable = false,
+      description = "Whether this item is a creature that fights on Lara's side. An ally is "
+        .. "shown in its own colour where an enemy would be.",
+    },
     is_simulated = {
       from = "is_simulated",
       type = "boolean",

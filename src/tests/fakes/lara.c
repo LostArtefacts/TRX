@@ -108,6 +108,21 @@ ITEM *Lara_GetItem(void)
     return Item_Get(0);
 }
 
+OBJECT_ID Lara_GetAnimationObject(void)
+{
+    return O_LARA;
+}
+
+ITEM *Lara_Vehicle_GetItem(void)
+{
+    return nullptr;
+}
+
+bool Lara_IsControllable(void)
+{
+    return true;
+}
+
 int16_t Item_GetRelativeObjAnim(const ITEM *const item, const OBJECT_ID obj_id)
 {
     return -1;
@@ -186,6 +201,11 @@ OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
 OBJECT_ID Gun_GetWeaponAnim(const LARA_GUN_TYPE gun_type)
 {
     return FakeLara_GunObject(gun_type);
+}
+
+bool Gun_HasInfiniteAmmo(const LARA_GUN_TYPE gun_type)
+{
+    return false;
 }
 
 // The shotgun spends six rounds a shot, as the engine's table says, so a test
@@ -548,4 +568,9 @@ void FakeLara_ShareInvEntry(const OBJECT_ID variant, const OBJECT_ID base)
             return;
         }
     }
+}
+
+LARA_GUN_TYPE Lara_Vehicle_GetGunType(void)
+{
+    return LGT_UNARMED;
 }

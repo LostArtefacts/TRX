@@ -157,6 +157,14 @@ b_console = {
   'src': ['fakes/console.c', 'fakes/locale.c'],
 }
 
+# The event bridge, which trx.signal listens to for its tick. A module offering
+# signals needs it. The item action interceptor it installs does nothing here,
+# because no test that only wants the tick exercises flipeffects.
+b_lua_events = {
+  'engine': ['game/lua/capi/events.c'],
+  'src': ['harness/stubs_item_action.c'],
+}
+
 # The trig bridge. A module that hands back a math.Box needs trx.math loaded,
 # and loading it means its own declarations resolve, so the bridge comes along.
 b_lua_math = {
@@ -663,8 +671,8 @@ unit_tests += {
 
 unit_tests += {
   'name': 'lua/api/stats',
-  'bundles': [b_lua_surface],
-  'src': ['fakes/game.c', 'fakes/stats.c'],
+  'bundles': [b_lua_surface, b_lua_events],
+  'src': ['harness/stubs_console.c', 'fakes/game.c', 'fakes/stats.c'],
   'engine': ['game/lua/capi/game.c', 'game/lua/capi/stats.c'],
 }
 
@@ -737,8 +745,8 @@ unit_tests += {
 
 unit_tests += {
   'name': 'lua/api/game',
-  'bundles': [b_lua_surface],
-  'src': ['fakes/game.c'],
+  'bundles': [b_lua_surface, b_lua_events],
+  'src': ['harness/stubs_console.c', 'fakes/game.c'],
   'engine': ['game/lua/capi/game.c'],
 }
 
@@ -777,8 +785,14 @@ unit_tests += {
 
 unit_tests += {
   'name': 'lua/api/lara',
-  'bundles': [b_lua_surface, b_lua_math],
-  'src': ['fakes/level.c', 'fakes/lara.c', 'fakes/items.c', 'fakes/catalog.c'],
+  'bundles': [b_lua_surface, b_lua_math, b_lua_events],
+  'src': [
+    'harness/stubs_console.c',
+    'fakes/level.c',
+    'fakes/lara.c',
+    'fakes/items.c',
+    'fakes/catalog.c',
+  ],
   'engine': [
     'game/lua/capi/catalog.c',
     'game/lua/capi/items.c',
@@ -829,14 +843,14 @@ unit_tests += {
 # reads what the build calls itself and logs it, so the test watches the log.
 unit_tests += {
   'name': 'lua/commands/version',
-  'bundles': [b_lua_surface, b_console],
+  'bundles': [b_lua_surface, b_console, b_lua_events],
   'src': ['fakes/game.c'],
   'engine': ['game/lua/capi/game.c'],
 }
 
 unit_tests += {
   'name': 'lua/commands/heal',
-  'bundles': [b_lua_surface, b_console, b_lua_math],
+  'bundles': [b_lua_surface, b_console, b_lua_math, b_lua_events],
   'src': ['fakes/level.c', 'fakes/game.c', 'fakes/items.c', 'fakes/lara.c'],
   'engine': [
     'game/lua/capi/game.c',
@@ -850,7 +864,7 @@ unit_tests += {
 # stay light: the real matcher is covered by lua_strings and lua_argparse.
 unit_tests += {
   'name': 'lua/commands/play_level',
-  'bundles': [b_lua_surface, b_console],
+  'bundles': [b_lua_surface, b_console, b_lua_events],
   'src': ['fakes/game.c', 'fakes/strings.c'],
   'engine': ['game/lua/capi/game.c'],
 }
@@ -876,15 +890,18 @@ unit_tests += {
 
 unit_tests += {
   'name': 'lua/commands/secret',
-  'bundles': [b_lua_surface, b_console, b_lua_strings],
+  'bundles': [b_lua_surface, b_console, b_lua_strings, b_lua_events],
   'src': ['fakes/game.c', 'fakes/stats.c'],
   'engine': ['game/lua/capi/game.c', 'game/lua/capi/stats.c'],
 }
 
 unit_tests += {
   'name': 'lua/commands/give',
-  'bundles': [b_lua_surface, b_console, b_lua_math, b_lua_strings],
-  'src': ['fakes/level.c',
+  'bundles': [
+    b_lua_surface, b_console, b_lua_math, b_lua_strings, b_lua_events,
+  ],
+  'src': [
+    'fakes/level.c',
     'fakes/game.c',
     'fakes/items.c',
     'fakes/lara.c',
@@ -917,6 +934,7 @@ unit_tests += {
   'engine': [
     'game/lua/capi/camera.c',
     'game/lua/capi/catalog.c',
+    'game/lua/capi/events.c',
     'game/lua/capi/game.c',
     'game/lua/capi/items.c',
     'game/lua/capi/lara.c',
@@ -929,14 +947,14 @@ unit_tests += {
 
 unit_tests += {
   'name': 'lua/commands/save_game',
-  'bundles': [b_lua_surface, b_console],
+  'bundles': [b_lua_surface, b_console, b_lua_events],
   'src': ['fakes/game.c', 'fakes/savegame.c'],
   'engine': ['game/lua/capi/game.c'],
 }
 
 unit_tests += {
   'name': 'lua/commands/weather',
-  'bundles': [b_lua_surface, b_console],
+  'bundles': [b_lua_surface, b_console, b_lua_events],
   'src': ['fakes/game.c', 'fakes/strings.c', 'fakes/weather.c'],
   'engine': ['game/lua/capi/game.c', 'game/lua/capi/weather.c'],
 }
