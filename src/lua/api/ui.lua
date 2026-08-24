@@ -61,15 +61,20 @@ api.enum("ui.VAlign", {
   },
 })
 
-api.enum("ui.Location", {
-  backing = "UI_ELEMENT_LOCATION",
-  description = "One of the six places the interface is built in. A handler is told which one is "
-    .. "being built and adds to it; where each sits on screen, and what the player put there, is "
-    .. "the game's to decide.",
+api.enum("ui.Region", {
+  backing = "UI_REGION",
+  description = "One of the nine places the interface is built in. A handler is told which one "
+    .. "is being built and adds to it, and everything asking for a place is laid out together "
+    .. "there rather than over what else asked for it.\n\nThe eight around the edge stack what "
+    .. "they hold away from the edge they sit at. The middle is what the others leave, and is "
+    .. "where a dialog goes.",
   values = {
     TOP_LEFT = "The top left corner.",
     TOP_CENTER = "The top edge, in the middle.",
     TOP_RIGHT = "The top right corner.",
+    LEFT = "The left edge, halfway down.",
+    CENTER = "The middle of the screen, inside what the others leave.",
+    RIGHT = "The right edge, halfway down.",
     BOTTOM_LEFT = "The bottom left corner.",
     BOTTOM_CENTER = "The bottom edge, in the middle.",
     BOTTOM_RIGHT = "The bottom right corner.",

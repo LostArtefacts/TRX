@@ -128,10 +128,12 @@ An event that carries a default the script may take over says so in its descript
 
 - <a id="events.on_ui_draw" name="events.on_ui_draw"></a>[lua]`trx.events.on_ui_draw(callback)`  
   Happens as the game builds one of the nine regions of the on-screen
-  interface, once per region on every drawn frame. A handler draws with
-  [`trx.ui`](UI.md#ui), which is available here and nowhere else, and what it draws lands
-  in the region being built. The handler takes the region as a
-  [`trx.ui.Location`](UI.md#ui.Location) and answers for the one it wants.
+  interface, once per region on every drawn frame. The handler takes the
+  region as a [`trx.ui.Region`](UI.md#ui.Region) and answers for the one it wants.
+
+  This is where room is kept, not where anything is drawn: a handler says how
+  much room it needs in the region, and draws into that room later, in
+  [`trx.events.on_ui_paint`](#events.on_ui_paint).
 
   Every path that puts an interface on screen fires it, so a handler runs
   during a fade and over an FMV as well as in play. It follows the frame rate
@@ -145,12 +147,35 @@ An event that carries a default the script may take over says so in its descript
 
   Example:
   ```lua
-  trx.events.on_ui_draw(function(location)
-    if location == trx.ui.Location.TOP_CENTER then
-      trx.ui.label("hello")
+  local slot = nil
+  
+  trx.events.on_ui_draw(function(region)
+    if region == trx.ui.Region.TOP_CENTER then
+      local w, h = trx.ui.primitive.measure_text("hello")
+      slot = trx.ui.primitive.reserve(region, w, h)
+    end
+  end)
+  
+  trx.events.on_ui_paint(function()
+    local x, y = trx.ui.primitive.slot_box(slot)
+    if x ~= nil then
+      trx.ui.primitive.text("hello", x, y)
     end
   end)
   ```
+
+- <a id="events.on_ui_paint" name="events.on_ui_paint"></a>[lua]`trx.events.on_ui_paint(callback)`  
+  Fires after UI layout and before drawing. Reservation boxes are available
+  during this event.
+
+  Use this event to draw into space reserved earlier during
+  [`trx.events.on_ui_draw`](#events.on_ui_draw). Primitive drawing calls are available during this
+  event only.
+
+  Parameters:
+  - <a id="events.on_ui_paint.callback" name="events.on_ui_paint.callback"></a>**`callback`** (function). Called once per painted scene.
+
+  Returns: integer. The listener id.
 
 - <a id="events.on_pickup" name="events.on_pickup"></a>[lua]`trx.events.on_pickup(callback)`  
   Happens just after Lara picks up an item.

@@ -10,6 +10,7 @@
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/lua/events.h>
+#include <trx/game/lua/ui.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
 #include <trx/game/output/overlay.h>
@@ -65,6 +66,7 @@ static void M_DrawFadeToBlackTransition(const float opacity)
     Output_Overlay_DrawBlackRectangle(opacity, false);
 
     Overlay_Draw();
+    LUA_UI_DrawRegions();
     TouchOverlay_Draw();
     Console_Draw();
     UI_EndScene();
@@ -185,6 +187,7 @@ static void M_Draw(PHASE *const phase)
     }
 
     Overlay_Draw();
+    LUA_UI_DrawRegions();
     TouchOverlay_Draw();
     Console_Draw();
     UI_EndScene();

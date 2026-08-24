@@ -2855,9 +2855,9 @@
     },
     {
       "bulk": false,
-      "count": 6,
-      "description": "One of the six places the interface is built in. A handler is told which one is being built and adds to it; where each sits on screen, and what the player put there, is the game's to decide.",
-      "path": "ui.Location",
+      "count": 9,
+      "description": "One of the nine places the interface is built in. A handler is told which one is being built and adds to it, and everything asking for a place is laid out together there rather than over what else asked for it.\n\nThe eight around the edge stack what they hold away from the edge they sit at. The middle is what the others leave, and is where a dialog goes.",
+      "path": "ui.Region",
       "values": [
         {
           "description": "The top left corner.",
@@ -2875,19 +2875,34 @@
           "value": 2
         },
         {
+          "description": "The left edge, halfway down.",
+          "name": "LEFT",
+          "value": 3
+        },
+        {
+          "description": "The middle of the screen, inside what the others leave.",
+          "name": "CENTER",
+          "value": 4
+        },
+        {
+          "description": "The right edge, halfway down.",
+          "name": "RIGHT",
+          "value": 5
+        },
+        {
           "description": "The bottom left corner.",
           "name": "BOTTOM_LEFT",
-          "value": 3
+          "value": 6
         },
         {
           "description": "The bottom edge, in the middle.",
           "name": "BOTTOM_CENTER",
-          "value": 4
+          "value": 7
         },
         {
           "description": "The bottom right corner.",
           "name": "BOTTOM_RIGHT",
-          "value": 5
+          "value": 8
         }
       ]
     },
@@ -3943,9 +3958,9 @@
       }
     },
     {
-      "description": "Happens as the game builds one of the nine regions of the on-screen\ninterface, once per region on every drawn frame. A handler draws with\n`trx.ui`, which is available here and nowhere else, and what it draws lands\nin the region being built. The handler takes the region as a\n`trx.ui.Location` and answers for the one it wants.\n\nEvery path that puts an interface on screen fires it, so a handler runs\nduring a fade and over an FMV as well as in play. It follows the frame rate\nrather than the game clock, so a handler reads state and does no counting\nof its own.",
+      "description": "Happens as the game builds one of the nine regions of the on-screen\ninterface, once per region on every drawn frame. The handler takes the\nregion as a `trx.ui.Region` and answers for the one it wants.\n\nThis is where room is kept, not where anything is drawn: a handler says how\nmuch room it needs in the region, and draws into that room later, in\n`trx.events.on_ui_paint`.\n\nEvery path that puts an interface on screen fires it, so a handler runs\nduring a fade and over an FMV as well as in play. It follows the frame rate\nrather than the game clock, so a handler reads state and does no counting\nof its own.",
       "examples": [
-        "trx.events.on_ui_draw(function(location)\n  if location == trx.ui.Location.TOP_CENTER then\n    trx.ui.label(\"hello\")\n  end\nend)"
+        "local slot = nil\n\ntrx.events.on_ui_draw(function(region)\n  if region == trx.ui.Region.TOP_CENTER then\n    local w, h = trx.ui.primitive.measure_text(\"hello\")\n    slot = trx.ui.primitive.reserve(region, w, h)\n  end\nend)\n\ntrx.events.on_ui_paint(function()\n  local x, y = trx.ui.primitive.slot_box(slot)\n  if x ~= nil then\n    trx.ui.primitive.text(\"hello\", x, y)\n  end\nend)"
       ],
       "params": [
         {
@@ -3958,6 +3973,21 @@
       "returns": {
         "description": "The attached handler.",
         "type": "events.Listener"
+      }
+    },
+    {
+      "description": "Fires after UI layout and before drawing. Reservation boxes are available\nduring this event.\n\nUse this event to draw into space reserved earlier during\n`trx.events.on_ui_draw`. Primitive drawing calls are available during this\nevent only.",
+      "params": [
+        {
+          "description": "Called once per painted scene.",
+          "name": "callback",
+          "type": "function"
+        }
+      ],
+      "path": "events.on_ui_paint",
+      "returns": {
+        "description": "The listener id.",
+        "type": "integer"
       }
     },
     {

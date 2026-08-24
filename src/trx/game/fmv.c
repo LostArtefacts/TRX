@@ -14,6 +14,7 @@
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
 #include <trx/game/lua/events.h>
+#include <trx/game/lua/ui.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
 #include <trx/game/output/overlay.h>
@@ -137,6 +138,7 @@ static void M_DrawUI(void)
 {
     UI_BeginScene();
     Overlay_Draw();
+    LUA_UI_DrawRegions();
     Console_Draw();
     Console_Control();
     Console_Control();

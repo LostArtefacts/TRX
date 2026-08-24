@@ -9,6 +9,8 @@
 // The eight edge regions stack their children away from the edge. The center
 // region is reserved for dialogs.
 
+#include <stdint.h>
+
 typedef enum {
     UI_REGION_TOP_LEFT,
     UI_REGION_TOP_CENTER,
@@ -30,3 +32,9 @@ void UI_EndRegion(void);
 
 // Returns the middle box from the last laid-out scene.
 void UI_Region_GetCenterBox(float *x, float *y, float *w, float *h);
+
+// Reserves space in a region and returns its slot for the current scene.
+int32_t UI_Region_Reserve(UI_REGION region, float w, float h);
+
+// Returns a reservation box from the last layout, or false for a stale slot.
+bool UI_Region_GetSlotBox(int32_t slot, float *x, float *y, float *w, float *h);

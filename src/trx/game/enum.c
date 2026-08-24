@@ -67,6 +67,7 @@ static __attribute__((constructor)) void M_Init(void)
 
 #define X_CATALOG_ID(enum_value) ENUM_MAP_SELF(ITEM_TRX_ACTION, enum_value);
 #include <trx/game/catalog/item_actions.def>
+#include <trx/game/ui/regions.h>
 #undef X_CATALOG_ID
 
     ENUM_MAP(CATALOG_CONTEXT, CATALOG_OBJECTS, "objects");
@@ -183,7 +184,18 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_CUTSCENE_END, "cutscene_end");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_LEVEL_UNLOAD, "level_unload");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_DRAW, "ui_draw");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_PAINT, "ui_paint");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_TICK, "tick");
+
+    ENUM_MAP(UI_REGION, UI_REGION_TOP_LEFT, "top-left");
+    ENUM_MAP(UI_REGION, UI_REGION_TOP_CENTER, "top-center");
+    ENUM_MAP(UI_REGION, UI_REGION_TOP_RIGHT, "top-right");
+    ENUM_MAP(UI_REGION, UI_REGION_LEFT, "left");
+    ENUM_MAP(UI_REGION, UI_REGION_CENTER, "center");
+    ENUM_MAP(UI_REGION, UI_REGION_RIGHT, "right");
+    ENUM_MAP(UI_REGION, UI_REGION_BOTTOM_LEFT, "bottom-left");
+    ENUM_MAP(UI_REGION, UI_REGION_BOTTOM_CENTER, "bottom-center");
+    ENUM_MAP(UI_REGION, UI_REGION_BOTTOM_RIGHT, "bottom-right");
 
     // LOG_LEVEL_MAX is a sentinel, not a level.
     ENUM_MAP(LOG_LEVEL, LOG_LEVEL_DEBUG, "debug");

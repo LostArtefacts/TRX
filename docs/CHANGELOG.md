@@ -179,6 +179,7 @@
 - Added a new Lua module, `trx.waypoints`, for how far along a level's own progression Lara has got, which TR4 marks out and its guides follow; it is saved with the game and reports the furthest she has ever reached as well as where she is now
 - Added `trx.lara.speech_face`, for the face Lara talks with, which follows the outfit she is wearing rather than the one a level carries
 - Added `trx.cutscenes.set_lara_shadow_bounds()`, for the box a cutscene gives Lara's shadow, so a scene can make it read as something she rides in (TRX911)
+- Changed `trx.events.on_ui_draw` to name one of nine places rather than six, so a script can draw down either side of the screen and in the middle, and added `trx.events.on_ui_paint`, where a script draws into the room a region kept for it
 - Changed `trx.cutscenes` to hand over the cutscene itself, so `trx.cutscenes[30]` says whether it has played, plays it, and narrows the cutscene events to it; the cutscene events hand one over too, and the functions that take a number are deprecated (TRX1199)
 - Changed `trx.cutscenes.play()` to take whether to fade out first, so a scene that opens a level begins on the black screen the level loaded behind (TRX1063)
 - Changed `trx.game.trx_version` to `trx.game.TRX_VERSION`

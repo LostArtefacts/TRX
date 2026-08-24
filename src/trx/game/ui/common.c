@@ -30,6 +30,7 @@ static struct {
     },
 };
 
+static void (*m_PaintHook)(void);
 static float m_SmallestFitScale = 1.0f;
 
 #ifdef TESTING
@@ -220,6 +221,7 @@ void UI_EndMeasure(float *const out_w, float *const out_h)
 }
 
 // Scene management
+
 void UI_BeginScene(void)
 {
     m_Priv.generation++;
@@ -228,11 +230,19 @@ void UI_BeginScene(void)
     UI_BeginAnchor(0.5f, 0.5f); // Make a root node.
 }
 
+void UI_SetPaintHook(void (*const hook)(void))
+{
+    m_PaintHook = hook;
+}
+
 void UI_EndScene(void)
 {
     m_Priv.scene_root = m_Priv.root;
     M_MeasureNode(m_Priv.root);
     M_LayoutNode(m_Priv.root, 0, 0, UI_GetCanvasWidth(), UI_GetCanvasHeight());
+    if (m_PaintHook != nullptr) {
+        m_PaintHook();
+    }
     M_DrawNode(m_Priv.root);
     UI_EndAnchor();
     ASSERT(m_Priv.root == nullptr);
