@@ -39,6 +39,7 @@ end)
   running. A cutscene's actors are animation tracks rather than items, so
   nothing in it can be triggered or listened to; naming a frame is how a
   script acts part-way through one, as the original game does. *(read-only)*
+- <a id="cutscenes.signals.is_playing" name="cutscenes.signals.is_playing"></a>**`trx.cutscenes.signals.is_playing`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when a cutscene takes the screen, and when it gives it back. *(read-only)*
 - <a id="cutscenes.is_playing" name="cutscenes.is_playing"></a>**`trx.cutscenes.is_playing`** (boolean). Whether a cutscene is on screen. *(read-only)*
 - <a id="cutscenes.count" name="cutscenes.count"></a>**`trx.cutscenes.count`** (integer). How many cutscenes this game can play. `0` where it has none, which is every game but TR4 and a TR4 install with no `cutseq.pak` beside its levels. *(read-only)*
 - <a id="cutscenes.actor_count" name="cutscenes.actor_count"></a>**`trx.cutscenes.actor_count`** (integer). How many actors the running cutscene has, or `0` if none is running. *(read-only)*
@@ -139,6 +140,9 @@ end)
       ```
 
 ### Functions
+
+- <a id="cutscenes.signals" name="cutscenes.signals"></a>[lua]`trx.cutscenes.signals`  
+  The signals a cutscene speaks through, for a script that would rather hear about a change than ask after one.
 
 - <a id="cutscenes.play" name="cutscenes.play"></a>[lua]`trx.cutscenes.play(num, [fade])`  
   **Deprecated.** Call [`trx.cutscenes.Cutscene:play`](#cutscenes.Cutscene.play) instead.

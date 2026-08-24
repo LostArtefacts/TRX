@@ -7293,6 +7293,21 @@
     },
     {
       "callable": false,
+      "description": "The signals a cutscene speaks through, for a script that would rather hear about a change than ask after one.",
+      "path": "cutscenes.signals"
+    },
+    {
+      "callable": false,
+      "description": "The signals the game's own state speaks through, for a script that would rather hear about a change than ask after one. Each is read once a frame, so what listens runs on a change rather than on a frame.",
+      "path": "game.signals"
+    },
+    {
+      "callable": false,
+      "description": "The signals Lara's own state speaks through, for a script that would rather hear about a change than ask after one. Each is read once a frame and compared, so a listener runs when the value moved and a value that stood still costs nothing.\n\nWhat names an item is its number rather than the item itself, because a handle is made afresh on every read and a signal holding one would report a change every frame.",
+      "path": "lara.signals"
+    },
+    {
+      "callable": false,
       "implicit": true,
       "path": "rules.exposure"
     },
@@ -7524,6 +7539,12 @@
       "writable": false
     },
     {
+      "description": "Says when a cutscene takes the screen, and when it gives it back.",
+      "path": "cutscenes.signals.is_playing",
+      "type": "signal.Signal",
+      "writable": false
+    },
+    {
       "description": "Whether a cutscene is on screen.",
       "path": "cutscenes.is_playing",
       "type": "boolean",
@@ -7617,6 +7638,30 @@
       "writable": false
     },
     {
+      "description": "Says when a level starts being played, and when it stops.",
+      "path": "game.signals.is_playing",
+      "type": "signal.Signal",
+      "writable": false
+    },
+    {
+      "description": "Says when the game is held still, and when it runs on again.",
+      "path": "game.signals.is_suspended",
+      "type": "signal.Signal",
+      "writable": false
+    },
+    {
+      "description": "Says when photo mode opens and closes.",
+      "path": "game.signals.is_photo_mode",
+      "type": "signal.Signal",
+      "writable": false
+    },
+    {
+      "description": "Says when the kind of level running changes.",
+      "path": "game.signals.is_playable",
+      "type": "signal.Signal",
+      "writable": false
+    },
+    {
       "description": "Seconds of wall-clock time since the game started, which keeps running while the game is held still. Use it to time something against the player's clock rather than against the frames the game has run.",
       "path": "game.real_time",
       "type": "number",
@@ -7668,6 +7713,90 @@
       "description": "The item Lara's guns are locked onto, or `nil` if she has none.",
       "path": "lara.target",
       "type": "items.Item",
+      "writable": false
+    },
+    {
+      "description": "Says when Lara enters the world, and when she leaves it.",
+      "path": "lara.signals.exists",
+      "type": "signal.Signal",
+      "writable": false
+    },
+    {
+      "description": "Says when Lara's hit points change.",
+      "path": "lara.signals.hp",
+      "type": "signal.Signal",
+      "writable": false
+    },
+    {
+      "description": "Says when Lara's maximum hit points change.",
+      "path": "lara.signals.max_hp",
+      "type": "signal.Signal",
+      "writable": false
+    },
+    {
+      "description": "Says when Lara's poison value changes.",
+      "path": "lara.signals.poison",
+      "type": "signal.Signal",
+      "writable": false
+    },
+    {
+      "description": "Says when the air Lara has left underwater changes.",
+      "path": "lara.signals.air",
+      "type": "signal.Signal",
+      "writable": false
+    },
+    {
+      "description": "Says when the sprint Lara has left changes.",
+      "path": "lara.signals.sprint",
+      "type": "signal.Signal",
+      "writable": false
+    },
+    {
+      "description": "Says when the warmth Lara has left in the cold changes.",
+      "path": "lara.signals.exposure",
+      "type": "signal.Signal",
+      "writable": false
+    },
+    {
+      "description": "Says when Lara draws a weapon or puts one away.",
+      "path": "lara.signals.gun_status",
+      "type": "signal.Signal",
+      "writable": false
+    },
+    {
+      "description": "Says when Lara enters or leaves the water.",
+      "path": "lara.signals.water_status",
+      "type": "signal.Signal",
+      "writable": false
+    },
+    {
+      "description": "Says when Lara changes rooms. Read `trx.lara.item.room` for the room itself.",
+      "path": "lara.signals.room_num",
+      "type": "signal.Signal",
+      "writable": false
+    },
+    {
+      "description": "Says when Lara stops answering to the player, or starts again.",
+      "path": "lara.signals.is_controllable",
+      "type": "signal.Signal",
+      "writable": false
+    },
+    {
+      "description": "Says when what Lara's guns are locked onto changes. Read `trx.lara.target` for the item itself.",
+      "path": "lara.signals.target",
+      "type": "signal.Signal",
+      "writable": false
+    },
+    {
+      "description": "Says when Lara gets on or off a vehicle. Read `trx.lara.vehicle` for it.",
+      "path": "lara.signals.vehicle",
+      "type": "signal.Signal",
+      "writable": false
+    },
+    {
+      "description": "Says when Lara changes weapon.",
+      "path": "lara.signals.equipped_gun",
+      "type": "signal.Signal",
       "writable": false
     },
     {

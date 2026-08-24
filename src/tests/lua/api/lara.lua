@@ -173,4 +173,36 @@ test("dry clears the wetness that is_wet reads", function()
   assert(fake.calls().dry.count == 1)
 end)
 
+-- What a signal reads has to be the same value the field hands over, or a
+-- comparison against an enum member silently never matches. That is what kept
+-- the health bar off screen while Lara was armed.
+test("a signal carries what the field carries", function()
+  assert(trx.lara.signals.gun_status:get() == trx.lara.gun_status)
+  assert(trx.lara.signals.water_status:get() == trx.lara.water_status)
+  assert(trx.lara.signals.air:get() == trx.lara.air_bar)
+  assert(trx.lara.signals.poison:get() == trx.lara.poison)
+  assert(trx.lara.signals.sprint:get() == trx.lara.sprint_timer)
+  assert(trx.lara.signals.exposure:get() == trx.lara.exposure_bar)
+end)
+
+test("an enum signal compares against the enum a script names", function()
+  local armed = trx.lara.signals.gun_status:eq(trx.lara.GunState.READY)
+  assert(armed:get() == (trx.lara.gun_status == trx.lara.GunState.READY))
+end)
+
+test("a signal says so only when the value moves", function()
+  local air = trx.lara.signals.air
+  local seen = 0
+  air:on(function()
+    seen = seen + 1
+  end)
+
+  trx.signal.tick:set(trx.signal.tick:get() + 1)
+  assert(seen == 0, "nothing moved between one tick and the next")
+
+  trx.lara.air_bar = trx.lara.air_bar - 1
+  trx.signal.tick:set(trx.signal.tick:get() + 1)
+  assert(seen == 1)
+end)
+
 return h.report()

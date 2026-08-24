@@ -21,6 +21,20 @@ Her position, room and hit points are not here: she is an item like any other an
 - <a id="lara.animation_object" name="lara.animation_object"></a>**`trx.lara.animation_object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The object Lara's animations are coming from. It is normally Lara herself, and something else while a vehicle or a scripted sequence drives her. *(read-only)*
 - <a id="lara.item" name="lara.item"></a>**`trx.lara.item`** ([trx.items.Item](ITEMS.md#items.Item)). Lara's own item, or `nil` outside a level. Her position, room and hit points are read and written there. *(read-only)*
 - <a id="lara.target" name="lara.target"></a>**`trx.lara.target`** ([trx.items.Item](ITEMS.md#items.Item)). The item Lara's guns are locked onto, or `nil` if she has none. *(read-only)*
+- <a id="lara.signals.exists" name="lara.signals.exists"></a>**`trx.lara.signals.exists`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when Lara enters the world, and when she leaves it. *(read-only)*
+- <a id="lara.signals.hp" name="lara.signals.hp"></a>**`trx.lara.signals.hp`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when Lara's hit points change. *(read-only)*
+- <a id="lara.signals.max_hp" name="lara.signals.max_hp"></a>**`trx.lara.signals.max_hp`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when Lara's maximum hit points change. *(read-only)*
+- <a id="lara.signals.poison" name="lara.signals.poison"></a>**`trx.lara.signals.poison`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when Lara's poison value changes. *(read-only)*
+- <a id="lara.signals.air" name="lara.signals.air"></a>**`trx.lara.signals.air`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when the air Lara has left underwater changes. *(read-only)*
+- <a id="lara.signals.sprint" name="lara.signals.sprint"></a>**`trx.lara.signals.sprint`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when the sprint Lara has left changes. *(read-only)*
+- <a id="lara.signals.exposure" name="lara.signals.exposure"></a>**`trx.lara.signals.exposure`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when the warmth Lara has left in the cold changes. *(read-only)*
+- <a id="lara.signals.gun_status" name="lara.signals.gun_status"></a>**`trx.lara.signals.gun_status`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when Lara draws a weapon or puts one away. *(read-only)*
+- <a id="lara.signals.water_status" name="lara.signals.water_status"></a>**`trx.lara.signals.water_status`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when Lara enters or leaves the water. *(read-only)*
+- <a id="lara.signals.room_num" name="lara.signals.room_num"></a>**`trx.lara.signals.room_num`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when Lara changes rooms. Read [`trx.lara.item.room`](ITEMS.md#items.Item.room) for the room itself. *(read-only)*
+- <a id="lara.signals.is_controllable" name="lara.signals.is_controllable"></a>**`trx.lara.signals.is_controllable`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when Lara stops answering to the player, or starts again. *(read-only)*
+- <a id="lara.signals.target" name="lara.signals.target"></a>**`trx.lara.signals.target`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when what Lara's guns are locked onto changes. Read [`trx.lara.target`](#lara.target) for the item itself. *(read-only)*
+- <a id="lara.signals.vehicle" name="lara.signals.vehicle"></a>**`trx.lara.signals.vehicle`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when Lara gets on or off a vehicle. Read [`trx.lara.vehicle`](#lara.vehicle) for it. *(read-only)*
+- <a id="lara.signals.equipped_gun" name="lara.signals.equipped_gun"></a>**`trx.lara.signals.equipped_gun`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when Lara changes weapon. *(read-only)*
 - <a id="lara.vehicle" name="lara.vehicle"></a>**`trx.lara.vehicle`** ([trx.items.Item](ITEMS.md#items.Item)). The vehicle Lara is riding, or `nil` when she is on her own feet. Its speed and position are the ones that move her while she rides it. *(read-only)*
 - <a id="lara.is_controllable" name="lara.is_controllable"></a>**`trx.lara.is_controllable`** (boolean). Whether Lara answers to the player. False while she is dead, while the inventory or a dialog holds the game, and while a cutscene or flyby is active. *(read-only)*
 - <a id="lara.outfit" name="lara.outfit"></a>**`trx.lara.outfit`** (string). The outfit Lara is wearing, by name, as defined in `cfg/outfits.json5`.
@@ -193,6 +207,11 @@ Her position, room and hit points are not here: she is an item like any other an
     - <a id="lara.Lara.water_status" name="lara.Lara.water_status"></a>**`water_status`**: [trx.lara.WaterState](#lara.WaterState). Where Lara is with respect to water. *(read-only)*
 
 ### Functions
+
+- <a id="lara.signals" name="lara.signals"></a>[lua]`trx.lara.signals`  
+  The signals Lara's own state speaks through, for a script that would rather hear about a change than ask after one. Each is read once a frame and compared, so a listener runs when the value moved and a value that stood still costs nothing.
+
+  What names an item is its number rather than the item itself, because a handle is made afresh on every read and a signal holding one would report a change every frame.
 
 - <a id="lara.set_extra_equipment" name="lara.set_extra_equipment"></a>[lua]`trx.lara.set_extra_equipment(mesh, extra_mesh)`  
   Hangs an extra mesh on one of Lara's own, replacing the mesh there.

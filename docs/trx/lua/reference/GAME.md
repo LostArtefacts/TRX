@@ -26,6 +26,10 @@ Module for the game flow: which levels there are, and which one is being played.
 - <a id="game.measured_fps" name="game.measured_fps"></a>**`trx.game.measured_fps`** (integer). How many frames reached the screen in the last second, counted against the wall clock. Frames are drawn more often than the game ticks, so this is not the rate the game runs at. *(read-only)*
 - <a id="game.is_playing" name="game.is_playing"></a>**`trx.game.is_playing`** (boolean). Whether a level is running: Lara and the creatures move and the game answers to the player. It goes false while the inventory ring, the pause screen or photo mode holds the level still, and outside a level altogether. *(read-only)*
 - <a id="game.is_playable" name="game.is_playable"></a>**`trx.game.is_playable`** (boolean). Whether the game is loaded and taking input - not in a menu, and not in a cutscene. *(read-only)*
+- <a id="game.signals.is_playing" name="game.signals.is_playing"></a>**`trx.game.signals.is_playing`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when a level starts being played, and when it stops. *(read-only)*
+- <a id="game.signals.is_suspended" name="game.signals.is_suspended"></a>**`trx.game.signals.is_suspended`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when the game is held still, and when it runs on again. *(read-only)*
+- <a id="game.signals.is_photo_mode" name="game.signals.is_photo_mode"></a>**`trx.game.signals.is_photo_mode`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when photo mode opens and closes. *(read-only)*
+- <a id="game.signals.is_playable" name="game.signals.is_playable"></a>**`trx.game.signals.is_playable`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when the kind of level running changes. *(read-only)*
 - <a id="game.real_time" name="game.real_time"></a>**`trx.game.real_time`** (number). Seconds of wall-clock time since the game started, which keeps running while the game is held still. Use it to time something against the player's clock rather than against the frames the game has run. *(read-only)*
 - <a id="game.tr_version" name="game.tr_version"></a>**`trx.game.tr_version`** (integer). Which Tomb Raider the level being played belongs to: `1` through `4`. The games differ in what they draw and in what the player expects, so a script that dresses more than one reads this to tell them apart. Zero before a level is loaded. *(read-only)*
 - <a id="game.is_suspended" name="game.is_suspended"></a>**`trx.game.is_suspended`** (boolean). Whether a loaded level is held still: the pause screen, photo mode, or the inventory ring. Lara and the creatures do not move while it is true. It is false outside a level, which is what tells it apart from the opposite of [`trx.game.is_playing`](#game.is_playing). *(read-only)*
@@ -129,6 +133,9 @@ Module for the game flow: which levels there are, and which one is being played.
     - <a id="game.Level.stats" name="game.Level.stats"></a>**`stats`**: [trx.stats.Stats](STATS.md#stats.Stats). What the level keeps count of, or `nil` for a level that counts nothing: the title screen and the cutscenes. The level being played is also [`trx.stats`](STATS.md#stats) itself.
 
 ### Functions
+
+- <a id="game.signals" name="game.signals"></a>[lua]`trx.game.signals`  
+  The signals the game's own state speaks through, for a script that would rather hear about a change than ask after one. Each is read once a frame, so what listens runs on a change rather than on a frame.
 
 - <a id="game.play_level" name="game.play_level"></a>[lua]`trx.game.play_level(level_num, [opts])`  
   Starts a level from [`trx.game.levels`](#game.levels).
