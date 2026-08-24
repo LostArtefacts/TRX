@@ -44,6 +44,7 @@
         "inv_background.bin",
         "binoculars.bin",
         "crystal.bin",
+        "lara_rifle_sfx.bin",
     ],
 
     "globe_select_entries": [
@@ -86,6 +87,7 @@
                 "inv_background.bin",
                 "binoculars.bin",
                 "gym_fd.bin",
+                "lara_rifle_sfx.bin",
             ],
         },
 

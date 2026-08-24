@@ -1054,6 +1054,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── lara_guns.bin
 │   │   │   ├── lara_gym_guns.bin
 │   │   │   ├── lara_outfits.bin
+│   │   │   ├── lara_rifle_sfx.bin
 │   │   │   ├── london_sky.bin
 │   │   │   ├── luds_animating_bounds.bin
 │   │   │   ├── luds_diver_animation.bin
@@ -2419,6 +2420,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── lara_guns.bin
     │   │   │   │   ├── lara_gym_guns.bin
     │   │   │   │   ├── lara_outfits.bin
+    │   │   │   │   ├── lara_rifle_sfx.bin
     │   │   │   │   ├── london_sky.bin
     │   │   │   │   ├── luds_animating_bounds.bin
     │   │   │   │   ├── luds_diver_animation.bin
