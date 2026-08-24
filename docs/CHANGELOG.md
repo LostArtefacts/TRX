@@ -77,6 +77,7 @@
 - Changed TR3 to light geometry on the brighter curve its hardware renderer used (Graphic Options → Rendering → Lighting model)
 - Changed the game to run on the dedicated graphics card on laptops that have two
 - Fixed a headless run drawing none of the title screen's objects, such as the passport
+- Fixed the first frame of a level being drawn small and in the corner of the screen when the game renders below the window size
 - Fixed a visible seam across the sky in TR4 levels (TRX563, regression from 1.9)
 - Fixed the inventory background showing black, and objects around it going missing, in a headless run
 - Fixed the underwater view wobbling less at higher supersampling values (TRX1207)
