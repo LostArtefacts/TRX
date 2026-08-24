@@ -26,8 +26,6 @@ static int32_t m_CommandCount;
 
 static bool m_Verbose;
 static COMMAND_RESULT m_EvalResult;
-static LUA_CONTEXT m_Context = LUA_CONTEXT_GLOBAL;
-
 // The aliases arrive comma-joined ("secondary, third"); each spelling
 // dispatches.
 static bool M_FakeAliasMatch(const char *const aliases, const char *const word)
@@ -61,7 +59,7 @@ static void M_Reset(void)
 {
     m_Verbose = false;
     m_EvalResult = CR_SUCCESS;
-    m_Context = LUA_CONTEXT_GLOBAL;
+    LUA_SetScriptContext(LUA_CONTEXT_GLOBAL);
     // The commands stay: a command is registered once, at load time.
 }
 
@@ -84,9 +82,9 @@ static int M_L_Run(lua_State *const L)
 static int M_L_AsLevelScript(lua_State *const L)
 {
     luaL_checktype(L, 1, LUA_TFUNCTION);
-    m_Context = LUA_CONTEXT_LEVEL;
+    LUA_SetScriptContext(LUA_CONTEXT_LEVEL);
     const int status = lua_pcall(L, 0, 0, 0);
-    m_Context = LUA_CONTEXT_GLOBAL;
+    LUA_SetScriptContext(LUA_CONTEXT_GLOBAL);
     if (status != LUA_OK) {
         return lua_error(L);
     }
@@ -154,16 +152,6 @@ static int M_L_IsVerbose(lua_State *const L)
 {
     lua_pushboolean(L, Console_IsVerbose());
     return 1;
-}
-
-LUA_CONTEXT LUA_GetScriptContext(void)
-{
-    return m_Context;
-}
-
-void LUA_SetScriptContext(const LUA_CONTEXT context)
-{
-    m_Context = context;
 }
 
 void Console_LogEx(

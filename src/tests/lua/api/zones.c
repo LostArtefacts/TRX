@@ -20,8 +20,6 @@
 
 #include <lauxlib.h>
 
-static LUA_CONTEXT m_Context = LUA_CONTEXT_GLOBAL;
-
 static int M_L_Control(lua_State *const L)
 {
     LUA_FireEvent(LUA_EVENT_AFTER_CONTROL);
@@ -61,9 +59,9 @@ static int M_L_GameStart(lua_State *const L)
 static int M_L_AsLevelScript(lua_State *const L)
 {
     luaL_checktype(L, 1, LUA_TFUNCTION);
-    m_Context = LUA_CONTEXT_LEVEL;
+    LUA_SetScriptContext(LUA_CONTEXT_LEVEL);
     const int status = lua_pcall(L, 0, 0, 0);
-    m_Context = LUA_CONTEXT_GLOBAL;
+    LUA_SetScriptContext(LUA_CONTEXT_GLOBAL);
     if (status != LUA_OK) {
         return lua_error(L);
     }
@@ -100,7 +98,7 @@ static int M_L_Flyby(lua_State *const L)
 static int M_FakeReset(lua_State *const L)
 {
     FakeCalls_Reset();
-    m_Context = LUA_CONTEXT_GLOBAL;
+    LUA_SetScriptContext(LUA_CONTEXT_GLOBAL);
     M_DropLevelScript();
     return 0;
 }
@@ -119,16 +117,6 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "destroy");
     lua_pushcfunction(L, M_L_Flyby);
     lua_setfield(L, -2, "flyby");
-}
-
-LUA_CONTEXT LUA_GetScriptContext(void)
-{
-    return m_Context;
-}
-
-void LUA_SetScriptContext(const LUA_CONTEXT context)
-{
-    m_Context = context;
 }
 
 int main(void)

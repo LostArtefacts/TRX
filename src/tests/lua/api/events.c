@@ -17,8 +17,6 @@
 #include <lauxlib.h>
 #include <string.h>
 
-static LUA_CONTEXT m_Context = LUA_CONTEXT_GLOBAL;
-
 // fake.fire(name, ...) - mirrors the engine's own fire sites, argument for
 // argument.
 // Drops every listener, then stands the module back up: the shutdown clears
@@ -28,7 +26,7 @@ static int M_FakeReset(lua_State *const L)
     FakeCalls_Reset();
     LUA_Registry_ShutdownAll();
     LUA_Registry_CreateAll(L);
-    m_Context = LUA_CONTEXT_GLOBAL;
+    LUA_SetScriptContext(LUA_CONTEXT_GLOBAL);
     return 0;
 }
 
@@ -67,9 +65,9 @@ static int M_FakeFire(lua_State *const L)
 static int M_FakeAsLevelScript(lua_State *const L)
 {
     luaL_checktype(L, 1, LUA_TFUNCTION);
-    m_Context = LUA_CONTEXT_LEVEL;
+    LUA_SetScriptContext(LUA_CONTEXT_LEVEL);
     const int status = lua_pcall(L, 0, 0, 0);
-    m_Context = LUA_CONTEXT_GLOBAL;
+    LUA_SetScriptContext(LUA_CONTEXT_GLOBAL);
     if (status != LUA_OK) {
         return lua_error(L);
     }
@@ -91,16 +89,6 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "as_level_script");
     lua_pushcfunction(L, M_FakeEndLevel);
     lua_setfield(L, -2, "end_level");
-}
-
-LUA_CONTEXT LUA_GetScriptContext(void)
-{
-    return m_Context;
-}
-
-void LUA_SetScriptContext(const LUA_CONTEXT context)
-{
-    m_Context = context;
 }
 
 int main(void)
