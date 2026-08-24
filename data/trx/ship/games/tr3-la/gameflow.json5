@@ -45,6 +45,7 @@
         "inv_background.bin",
         "binoculars.bin",
         "crystal.bin",
+        "lara_rifle_sfx.bin",
     ],
 
     "levels": [
