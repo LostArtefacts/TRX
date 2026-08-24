@@ -11,6 +11,7 @@
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/elements/anchor.h>
 #include <trx/game/ui/events.h>
+#include <trx/game/ui/regions.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/ui/text.h>
 #include <trx/game/viewport.h>
@@ -18,15 +19,11 @@
 #include <string.h>
 
 static struct {
-    struct {
-        float top;
-        float bottom;
-    } inset_pending[UI_SCREEN_INSET_SOURCE_COUNT],
-        inset_current[UI_SCREEN_INSET_SOURCE_COUNT];
     MEMORY_ARENA_ALLOCATOR alloc;
     UI_NODE *root; // The top-level container
     UI_NODE *current; // The current container into which we attach nodes
     UI_NODE *scene_root; // The tree the last UI_EndScene laid out
+    uint32_t generation; // scene counter
 } m_Priv = {
     .alloc = {
         .default_chunk_size = 1024 * 4,
@@ -173,6 +170,21 @@ const UI_NODE *UI_GetCurrent(void)
     return m_Priv.current;
 }
 
+uint32_t UI_GetSceneGeneration(void)
+{
+    return m_Priv.generation;
+}
+
+UI_NODE *UI_GetBuildRoot(void)
+{
+    return m_Priv.root;
+}
+
+void UI_SetCurrent(UI_NODE *const node)
+{
+    m_Priv.current = node;
+}
+
 const UI_NODE *UI_GetSceneRoot(void)
 {
     return m_Priv.scene_root;
@@ -210,10 +222,7 @@ void UI_EndMeasure(float *const out_w, float *const out_h)
 // Scene management
 void UI_BeginScene(void)
 {
-    memcpy(
-        m_Priv.inset_current, m_Priv.inset_pending,
-        sizeof(m_Priv.inset_current));
-    memset(m_Priv.inset_pending, 0, sizeof(m_Priv.inset_pending));
+    m_Priv.generation++;
     UI_ClearDraw();
     Memory_ArenaReset(&m_Priv.alloc);
     UI_BeginAnchor(0.5f, 0.5f); // Make a root node.
@@ -259,45 +268,24 @@ float UI_GetSafeCanvasWidth(void)
     return MAX(0.0f, UI_GetCanvasWidth() - 2.0f * UI_SCREEN_MARGIN);
 }
 
-void UI_SetScreenInset(
-    const UI_SCREEN_INSET_SOURCE source, const float top, const float bottom)
-{
-    m_Priv.inset_pending[source].top = top;
-    m_Priv.inset_pending[source].bottom = bottom;
-}
-
-float UI_GetScreenInsetTop(void)
-{
-    float result = 0.0f;
-    for (int32_t i = 0; i < UI_SCREEN_INSET_SOURCE_COUNT; i++) {
-        result = MAX(result, m_Priv.inset_current[i].top);
-        result = MAX(result, m_Priv.inset_pending[i].top);
-    }
-    return result;
-}
-
-float UI_GetScreenInsetBottom(void)
-{
-    float result = 0.0f;
-    for (int32_t i = 0; i < UI_SCREEN_INSET_SOURCE_COUNT; i++) {
-        result = MAX(result, m_Priv.inset_current[i].bottom);
-        result = MAX(result, m_Priv.inset_pending[i].bottom);
-    }
-    return result;
-}
-
 float UI_GetSafeCanvasTop(void)
 {
-    return MAX(
-        UI_SCREEN_MARGIN,
-        UI_GetScreenInsetTop() * UI_Scaler_GetBaseTextScale());
+    float x = 0.0f;
+    float y = 0.0f;
+    float w = 0.0f;
+    float h = 0.0f;
+    UI_Region_GetCenterBox(&x, &y, &w, &h);
+    return MAX(UI_SCREEN_MARGIN, y);
 }
 
 float UI_GetSafeCanvasBottom(void)
 {
-    return UI_GetCanvasHeight()
-        - MAX(UI_SCREEN_MARGIN,
-              UI_GetScreenInsetBottom() * UI_Scaler_GetBaseTextScale());
+    float x = 0.0f;
+    float y = 0.0f;
+    float w = 0.0f;
+    float h = 0.0f;
+    UI_Region_GetCenterBox(&x, &y, &w, &h);
+    return MIN(UI_GetCanvasHeight() - UI_SCREEN_MARGIN, y + h);
 }
 
 float UI_GetSafeCanvasHeight(void)

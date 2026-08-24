@@ -3928,7 +3928,7 @@
       }
     },
     {
-      "description": "Happens as the game builds one of the six regions of the on-screen\ninterface, once per region on every drawn frame. A handler draws with\n`trx.ui`, which is available here and nowhere else, and what it draws lands\nin the region being built. The handler takes the region as a\n`trx.ui.Location` and answers for the one it wants.\n\nEvery path that puts an interface on screen fires it, so a handler draws\nduring a fade and over an FMV as well as in play. It follows the frame rate\nrather than the game clock, so a handler reads state and draws it and does\nno counting of its own.",
+      "description": "Happens as the game builds one of the nine regions of the on-screen\ninterface, once per region on every drawn frame. A handler draws with\n`trx.ui`, which is available here and nowhere else, and what it draws lands\nin the region being built. The handler takes the region as a\n`trx.ui.Location` and answers for the one it wants.\n\nEvery path that puts an interface on screen fires it, so a handler runs\nduring a fade and over an FMV as well as in play. It follows the frame rate\nrather than the game clock, so a handler reads state and does no counting\nof its own.",
       "examples": [
         "trx.events.on_ui_draw(function(location)\n  if location == trx.ui.Location.TOP_CENTER then\n    trx.ui.label(\"hello\")\n  end\nend)"
       ],

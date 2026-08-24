@@ -40,6 +40,7 @@ typedef struct UI_NODE {
 } UI_NODE;
 
 // Shared names for dialog nodes.
+#define UI_NODE_NAME_REGIONS "regions"
 #define UI_NODE_NAME_DIALOG_HEADER "dialog header"
 #define UI_NODE_NAME_DIALOG_FOOTER "dialog footer"
 #define UI_NODE_NAME_DIALOG_HINT_ROW "dialog hint row"
@@ -60,23 +61,7 @@ int32_t UI_GetCanvasHeight(void);
 // edge. What sizes itself to fit the screen fits to this.
 float UI_GetSafeCanvasWidth(void);
 
-// Screen elements that reserve space for dialogs.
-typedef enum {
-    UI_SCREEN_INSET_OVERLAY,
-    UI_SCREEN_INSET_INVENTORY_RING,
-    UI_SCREEN_INSET_SOURCE_COUNT,
-} UI_SCREEN_INSET_SOURCE;
-
-// Reserves top and bottom space, in text units, for the scene being built.
-void UI_SetScreenInset(UI_SCREEN_INSET_SOURCE source, float top, float bottom);
-
-// Returns the largest top or bottom inset, taking the scene being built and
-// the previous one together, so a dialog laid out before the overlay
-// declares its inset still keeps that space clear.
-float UI_GetScreenInsetTop(void);
-float UI_GetScreenInsetBottom(void);
-
-// Returns the vertical bounds available to dialogs, in canvas units.
+// Returns the vertical dialog bounds from the middle region box.
 float UI_GetSafeCanvasTop(void);
 float UI_GetSafeCanvasBottom(void);
 
@@ -129,6 +114,15 @@ void UI_PushCurrent(UI_NODE *child);
 void UI_SetNodeName(const char *name);
 void UI_PopCurrent(void);
 const UI_NODE *UI_GetCurrent(void);
+
+// Returns the scene counter.
+uint32_t UI_GetSceneGeneration(void);
+
+// Returns the scene root used while building the current scene.
+UI_NODE *UI_GetBuildRoot(void);
+
+// Sets the current node without changing the tree.
+void UI_SetCurrent(UI_NODE *node);
 
 // The tree the last UI_EndScene measured and laid out. Its nodes stay valid
 // until the next UI_BeginScene resets the arena they live in.

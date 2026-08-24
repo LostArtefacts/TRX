@@ -14,11 +14,9 @@
 #include <trx/game/objects/names.h>
 #include <trx/game/photo_mode.h>
 #include <trx/game/ui.h>
+#include <trx/game/ui/regions.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/version.h>
-
-#define M_REGION_PAD_X 20.0f
-#define M_REGION_PAD_Y 14.0f
 
 typedef struct UI_OVERLAY_STATE {
     struct {
@@ -338,7 +336,7 @@ static void M_ScriptWidgets(const UI_ELEMENT_LOCATION location)
 
 static void M_TopLeftRegion(const UI_OVERLAY_STATE *const s)
 {
-    UI_BeginOverlayRegion(0.0f, 0.0f);
+    UI_BeginRegion(UI_REGION_TOP_LEFT);
     if (!M_CommonRegion(s, UI_ELEMENT_LOCATION_TOP_LEFT)) {
         M_Arrow(s, UI_OVERLAY_ARROW_TL);
     }
@@ -349,12 +347,12 @@ static void M_TopLeftRegion(const UI_OVERLAY_STATE *const s)
         }
     }
     M_ScriptWidgets(UI_ELEMENT_LOCATION_TOP_LEFT);
-    UI_EndOverlayRegion();
+    UI_EndRegion();
 }
 
 static void M_TopCenterRegion(const UI_OVERLAY_STATE *const s)
 {
-    UI_BeginOverlayRegion(0.5f, 0.0f);
+    UI_BeginRegion(UI_REGION_TOP_CENTER);
     M_CommonRegion(s, UI_ELEMENT_LOCATION_TOP_CENTER);
     {
         const char *const txt = M_ResolveOverlayText(&s->top_text);
@@ -369,12 +367,12 @@ static void M_TopCenterRegion(const UI_OVERLAY_STATE *const s)
         }
     }
     M_ScriptWidgets(UI_ELEMENT_LOCATION_TOP_CENTER);
-    UI_EndOverlayRegion();
+    UI_EndRegion();
 }
 
 static void M_TopRightRegion(const UI_OVERLAY_STATE *const s)
 {
-    UI_BeginOverlayRegion(1.0f, 0.0f);
+    UI_BeginRegion(UI_REGION_TOP_RIGHT);
     if (!M_CommonRegion(s, UI_ELEMENT_LOCATION_TOP_RIGHT)) {
         M_Arrow(s, UI_OVERLAY_ARROW_TR);
     }
@@ -382,22 +380,22 @@ static void M_TopRightRegion(const UI_OVERLAY_STATE *const s)
         M_DebugPosTopRight();
     }
     M_ScriptWidgets(UI_ELEMENT_LOCATION_TOP_RIGHT);
-    UI_EndOverlayRegion();
+    UI_EndRegion();
 }
 
 static void M_BottomLeftRegion(const UI_OVERLAY_STATE *const s)
 {
-    UI_BeginOverlayRegion(0.0f, 1.0f);
+    UI_BeginRegion(UI_REGION_BOTTOM_LEFT);
     if (!M_CommonRegion(s, UI_ELEMENT_LOCATION_BOTTOM_LEFT)) {
         M_Arrow(s, UI_OVERLAY_ARROW_BL);
     }
     M_ScriptWidgets(UI_ELEMENT_LOCATION_BOTTOM_LEFT);
-    UI_EndOverlayRegion();
+    UI_EndRegion();
 }
 
 static void M_BottomCenterRegion(const UI_OVERLAY_STATE *const s)
 {
-    UI_BeginOverlayRegion(0.5f, 1.0f);
+    UI_BeginRegion(UI_REGION_BOTTOM_CENTER);
     {
         const char *const txt = M_ResolveOverlayText(&s->bottom_text);
         if (txt != nullptr) {
@@ -416,12 +414,12 @@ static void M_BottomCenterRegion(const UI_OVERLAY_STATE *const s)
     }
     M_CommonRegion(s, UI_ELEMENT_LOCATION_BOTTOM_CENTER);
     M_ScriptWidgets(UI_ELEMENT_LOCATION_BOTTOM_CENTER);
-    UI_EndOverlayRegion();
+    UI_EndRegion();
 }
 
 static void M_BottomRightRegion(const UI_OVERLAY_STATE *const s)
 {
-    UI_BeginOverlayRegion(1.0f, 1.0f);
+    UI_BeginRegion(UI_REGION_BOTTOM_RIGHT);
     if (!M_CommonRegion(s, UI_ELEMENT_LOCATION_BOTTOM_RIGHT)) {
         M_Arrow(s, UI_OVERLAY_ARROW_BR);
     }
@@ -429,21 +427,7 @@ static void M_BottomRightRegion(const UI_OVERLAY_STATE *const s)
         UI_LabelEx(g_TRXVersion, (UI_LABEL_SETTINGS) { .scale = 0.5f });
     }
     M_ScriptWidgets(UI_ELEMENT_LOCATION_BOTTOM_RIGHT);
-    UI_EndOverlayRegion();
-}
-
-static float M_GetTextInset(void)
-{
-    return M_REGION_PAD_Y + UI_TEXT_HEIGHT;
-}
-
-static void M_StateInsets(const UI_OVERLAY_STATE *const s)
-{
-    const float inset = M_GetTextInset() + UI_TEXT_HEIGHT / 2.0f;
-    UI_SetScreenInset(
-        UI_SCREEN_INSET_OVERLAY,
-        M_ResolveOverlayText(&s->top_text) != nullptr ? inset : 0.0f,
-        M_ResolveOverlayText(&s->bottom_text) != nullptr ? inset : 0.0f);
+    UI_EndRegion();
 }
 
 UI_OVERLAY_STATE *UI_Overlay_Init(void)
@@ -486,7 +470,6 @@ void UI_Overlay_ForceHealthBar(UI_OVERLAY_STATE *const s, const bool show)
 
 void UI_Overlay(UI_OVERLAY_STATE *const s)
 {
-    M_StateInsets(s);
     M_TopLeftRegion(s);
     M_TopCenterRegion(s);
     M_TopRightRegion(s);
@@ -494,30 +477,6 @@ void UI_Overlay(UI_OVERLAY_STATE *const s)
     M_BottomLeftRegion(s);
     M_BottomCenterRegion(s);
     M_BottomRightRegion(s);
-}
-
-void UI_BeginOverlayRegion(const float x, const float y)
-{
-    // clang-format off
-    const UI_STACK_H_ALIGN h_align =
-        x > 0.55f ? UI_STACK_H_ALIGN_RIGHT :
-        x < 0.45f ? UI_STACK_H_ALIGN_LEFT :
-        UI_STACK_H_ALIGN_CENTER;
-    // clang-format on
-    UI_BeginScreenModal(x, y);
-    UI_BeginPad(M_REGION_PAD_X, M_REGION_PAD_Y);
-    UI_BeginStackEx((UI_STACK_SETTINGS) {
-        .orientation = UI_STACK_VERTICAL,
-        .align = { .h = h_align },
-        .spacing = { .v = 3 },
-    });
-}
-
-void UI_EndOverlayRegion(void)
-{
-    UI_EndStack();
-    UI_EndPad();
-    UI_EndModal();
 }
 
 void UI_Overlay_ShowArrow(
@@ -535,12 +494,10 @@ void UI_Overlay_SetTopText(
     UI_OVERLAY_STATE *const s, const UI_OVERLAY_TEXT text)
 {
     s->top_text = text;
-    M_StateInsets(s);
 }
 
 void UI_Overlay_SetBottomText(
     UI_OVERLAY_STATE *const s, const UI_OVERLAY_TEXT text)
 {
     s->bottom_text = text;
-    M_StateInsets(s);
 }
