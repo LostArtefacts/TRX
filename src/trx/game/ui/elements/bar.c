@@ -61,7 +61,7 @@ static void M_DrawBorderPS1(
 #endif
     Output_DrawScreenGradientQuad(
         rect.x, rect.y, 0, rect.w, rect.h, theme->border_tl, theme->border_tr,
-        theme->border_br, theme->border_bl);
+        theme->border_bl, theme->border_br);
 }
 
 static void M_DrawFillPC(
