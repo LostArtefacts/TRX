@@ -278,6 +278,58 @@ api.property("game.is_playable", {
   get = raw.is_playable,
 })
 
+api.namespace("game.signals", {
+  description = "The signals the game's own state speaks through, for a script that would "
+    .. "rather hear about a change than ask after one. Each is read once a frame, so what "
+    .. "listens runs on a change rather than on a frame.",
+})
+
+local GAME_SIGNALS = {
+  {
+    "is_playing",
+    "Says when a level starts being played, and when it stops.",
+    function()
+      return trx.game.is_playing
+    end,
+  },
+  {
+    "is_suspended",
+    "Says when the game is held still, and when it runs on again.",
+    function()
+      return trx.game.is_suspended
+    end,
+  },
+  {
+    "is_photo_mode",
+    "Says when photo mode opens and closes.",
+    function()
+      return trx.game.is_photo_mode
+    end,
+  },
+  {
+    "is_playable",
+    "Says when the kind of level running changes.",
+    function()
+      return trx.game.is_playable
+    end,
+  },
+}
+
+for _, entry in ipairs(GAME_SIGNALS) do
+  local name, description, read = entry[1], entry[2], entry[3]
+  local held = nil
+  api.property("game.signals." .. name, {
+    type = "signal.Signal",
+    description = description,
+    get = function()
+      if held == nil then
+        held = trx.signal.polled(read)
+      end
+      return held
+    end,
+  })
+end
+
 api.property("game.real_time", {
   type = "number",
   description = "Seconds of wall-clock time since the game started, which keeps running while "

@@ -293,6 +293,154 @@ api.property("lara.target", {
   end,
 })
 
+api.namespace("lara.signals", {
+  description = "The signals Lara's own state speaks through, for a script that would rather "
+    .. "hear about a change than ask after one. Each is read once a frame and compared, so a "
+    .. "listener runs when the value moved and a value that stood still costs nothing.\n\n"
+    .. "What names an item is its number rather than the item itself, because a handle is made "
+    .. "afresh on every read and a signal holding one would report a change every frame.",
+})
+
+-- What a signal carries is a number, a string or nothing, never a handle: a
+-- handle is made afresh on every read, so a signal holding one would report a
+-- change every frame. A script woken by one of these reads the handle itself.
+local SIGNALS = {
+  {
+    "exists",
+    "boolean",
+    "Says when Lara enters the world, and when she leaves it.",
+    function()
+      return trx.lara.item ~= nil
+    end,
+  },
+  {
+    "hp",
+    "integer",
+    "Says when Lara's hit points change.",
+    function()
+      local item = trx.lara.item
+      return item ~= nil and item.hit_points or nil
+    end,
+  },
+  {
+    "max_hp",
+    "integer",
+    "Says when Lara's maximum hit points change.",
+    function()
+      local item = trx.lara.item
+      return item ~= nil and item.max_hit_points or nil
+    end,
+  },
+  {
+    "poison",
+    "integer",
+    "Says when Lara's poison value changes.",
+    function()
+      return trx.lara.poison
+    end,
+  },
+  {
+    "air",
+    "integer",
+    "Says when the air Lara has left underwater changes.",
+    function()
+      return trx.lara.air_bar
+    end,
+  },
+  {
+    "sprint",
+    "integer",
+    "Says when the sprint Lara has left changes.",
+    function()
+      return trx.lara.sprint_timer
+    end,
+  },
+  {
+    "exposure",
+    "integer",
+    "Says when the warmth Lara has left in the cold changes.",
+    function()
+      return trx.lara.exposure_bar
+    end,
+  },
+  {
+    "gun_status",
+    "lara.GunState",
+    "Says when Lara draws a weapon or puts one away.",
+    function()
+      return trx.lara.gun_status
+    end,
+  },
+  {
+    "water_status",
+    "lara.WaterState",
+    "Says when Lara enters or leaves the water.",
+    function()
+      return trx.lara.water_status
+    end,
+  },
+  {
+    "room_num",
+    "integer",
+    "Says when Lara changes rooms. Read `trx.lara.item.room` for the room itself.",
+    function()
+      local item = trx.lara.item
+      return item ~= nil and item.room_num or nil
+    end,
+  },
+  {
+    "is_controllable",
+    "boolean",
+    "Says when Lara stops answering to the player, or starts again.",
+    function()
+      return trx.lara.is_controllable
+    end,
+  },
+  {
+    "target",
+    "integer",
+    "Says when what Lara's guns are locked onto changes. Read `trx.lara.target` for "
+      .. "the item itself.",
+    function()
+      local target = trx.lara.target
+      return target ~= nil and target.num or nil
+    end,
+  },
+  {
+    "vehicle",
+    "integer",
+    "Says when Lara gets on or off a vehicle. Read `trx.lara.vehicle` for it.",
+    function()
+      local vehicle = trx.lara.vehicle
+      return vehicle ~= nil and vehicle.num or nil
+    end,
+  },
+  {
+    "equipped_gun",
+    "string",
+    "Says when Lara changes weapon.",
+    function()
+      return trx.lara.equipped_gun
+    end,
+  },
+}
+
+for _, entry in ipairs(SIGNALS) do
+  local name, value_type, description, read =
+    entry[1], entry[2], entry[3], entry[4]
+  local held = nil
+  api.property("lara.signals." .. name, {
+    type = "signal.Signal",
+    description = description,
+    get = function()
+      if held == nil then
+        held = trx.signal.polled(read)
+      end
+      return held
+    end,
+  })
+end
+
 api.property("lara.vehicle", {
   type = "items.Item",
   description = "The vehicle Lara is riding, or `nil` when she is on her own feet. Its speed "

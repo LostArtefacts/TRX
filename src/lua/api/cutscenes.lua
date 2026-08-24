@@ -1,3 +1,5 @@
+require("trx.signal")
+
 local raw = trxc.cutscenes
 local api = trx.api
 
@@ -301,6 +303,26 @@ api.property("cutscenes.frame_num", {
 end)]],
   },
   get = raw.get_frame_num,
+})
+
+api.namespace("cutscenes.signals", {
+  description = "The signals a cutscene speaks through, for a script that would rather hear "
+    .. "about a change than ask after one.",
+})
+
+local cutscene_playing = nil
+
+api.property("cutscenes.signals.is_playing", {
+  type = "signal.Signal",
+  description = "Says when a cutscene takes the screen, and when it gives it back.",
+  get = function()
+    if cutscene_playing == nil then
+      cutscene_playing = trx.signal.polled(function()
+        return trx.cutscenes.is_playing
+      end)
+    end
+    return cutscene_playing
+  end,
 })
 
 api.property("cutscenes.is_playing", {

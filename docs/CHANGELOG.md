@@ -169,6 +169,7 @@
 - Fixed the game stuttering while it writes its log
 
 **Lua**
+- Added `trx.lara.signals`, `trx.game.signals` and `trx.cutscenes.signals`, so a script hears when Lara's state, the game's or a cutscene's changes rather than asking after it
 - Added `trx.lara.is_controllable`, `trx.lara.vehicle`, `trx.lara.MAX_AIR`, `trx.lara.MAX_SPRINT`, what her arms and the flare in them are doing, and what she is lining herself up with, so a script can report what the overlay reports
 - Added `trx.game.is_playing`, `trx.game.is_suspended`, `trx.game.is_photo_mode`, `trx.game.tr_version`, `trx.game.real_time` and `trx.game.measured_fps`, so a script can tell what the game is doing and how fast it is drawing
 - Added a new Lua module, `trx.overlay`, for the part of the overlay the engine still owns, so a script drawing the rest can follow it
