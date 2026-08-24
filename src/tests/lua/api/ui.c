@@ -1,12 +1,16 @@
 // The interface surface. The assertions live in ui.lua; this stands up a
 // scene for them to draw into.
 
+#include <fakes/ui_draw.h>
 #include <harness/lua_surface.h>
 
+#include <trx/game/lua/common.h>
+#include <trx/game/lua/events.h>
 #include <trx/game/lua/ui.h>
 #include <trx/config/option.h>
 #include <trx/game/console/common.h>
 #include <trx/game/ui/common.h>
+#include <trx/game/ui/settings.h>
 #include <trx/game/ui/elements/bar.h>
 #include <trx/game/ui/elements/label.h>
 #include <trx/game/ui/text.h>
@@ -18,6 +22,10 @@
 // The label as the scene records it. Standing the real one up would bring the
 // text renderer, the fonts and the game strings with it, and the bindings are
 // not tested for any of those.
+// The viewport matches the canvas unless a test changes it.
+static int32_t m_ViewportW = 640;
+static int32_t m_ViewportH = 480;
+
 static char m_LastLabel[64] = {};
 static int32_t m_LastBarValue = -1;
 
@@ -71,8 +79,75 @@ static int M_FakeDraw(lua_State *const L)
     return 1;
 }
 
+// fake.paint(body) -> table of scheduled operations
+//
+// Runs body during the paint hook and returns the scheduled draw calls.
+static int M_FakePaint(lua_State *const L)
+{
+    luaL_checktype(L, 1, LUA_TFUNCTION);
+    UI_BeginScene();
+    FakeUIDraw_Forget();
+    LUA_UI_SetPainting(true);
+    lua_pushvalue(L, 1);
+    const int status = lua_pcall(L, 0, 0, 0);
+    LUA_UI_SetPainting(false);
+    if (status != LUA_OK) {
+        UI_EndScene();
+        return lua_error(L);
+    }
+
+    // Read before UI_EndScene clears the scene state.
+    const int32_t count = FakeUIDraw_GetCount();
+    lua_createtable(L, count, 0);
+    for (int32_t i = 0; i < count; i++) {
+        lua_pushstring(L, FakeUIDraw_GetLine(i));
+        lua_rawseti(L, -2, i + 1);
+    }
+    UI_EndScene();
+    return 1;
+}
+
+// fake.set_viewport(w, h)
+static int M_FakeSetViewport(lua_State *const L)
+{
+    m_ViewportW = (int32_t)luaL_checkinteger(L, 1);
+    m_ViewportH = (int32_t)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+// fake.as_level_script(fn) - run fn as a level script rather than a global one,
+// so the widgets it places are the level's.
+static int M_FakeAsLevelScript(lua_State *const L)
+{
+    luaL_checktype(L, 1, LUA_TFUNCTION);
+    LUA_SetScriptContext(LUA_CONTEXT_LEVEL);
+    const int status = lua_pcall(L, 0, 0, 0);
+    LUA_SetScriptContext(LUA_CONTEXT_GLOBAL);
+    if (status != LUA_OK) {
+        return lua_error(L);
+    }
+    return 0;
+}
+
+// fake.end_level() - what the engine does when a level ends, in the order it
+// does it: the script hears the unload, and then its listeners go.
+static int M_FakeEndLevel(lua_State *const L)
+{
+    LUA_FireEvent(LUA_EVENT_LEVEL_UNLOAD);
+    LUA_ClearLevelListeners();
+    return 0;
+}
+
 static void M_PushFake(lua_State *const L)
 {
+    lua_pushcfunction(L, M_FakeAsLevelScript);
+    lua_setfield(L, -2, "as_level_script");
+    lua_pushcfunction(L, M_FakeEndLevel);
+    lua_setfield(L, -2, "end_level");
+    lua_pushcfunction(L, M_FakeSetViewport);
+    lua_setfield(L, -2, "set_viewport");
+    lua_pushcfunction(L, M_FakePaint);
+    lua_setfield(L, -2, "paint");
     lua_pushcfunction(L, M_FakeDraw);
     lua_setfield(L, -2, "draw");
     lua_pushcfunction(L, M_FakeLastLabel);
@@ -126,33 +201,53 @@ void Console_LogEx(
     const char *const func, const char *const fmt, ...)
 {
 }
-CONFIG_OPTION *Config_FindOptionByMirror(const void *const mirror)
-{
-    return nullptr;
-}
-void Config_Option_Write(CONFIG_OPTION *const option, const TRX_VALUE *value)
-{
-}
-void Config_Update(void)
-{
-}
-// Reports a fixed canvas, where the real one measures the window.
 int32_t Viewport_GetWidth(const VIEWPORT_SPACE space)
 {
-    return 640;
+    return m_ViewportW;
 }
 
 int32_t Viewport_GetHeight(const VIEWPORT_SPACE space)
 {
-    return 480;
+    return m_ViewportH;
 }
 
 int main(void)
 {
     const LUA_SURFACE_TEST test = {
         .module = "ui",
+        // ui.widgets is loaded explicitly because trx.ui does not require it.
+        .deps = { "signal", "math", "events", "ui.primitive", "ui.widgets",
+                  "ui.regions", nullptr },
         .tests = "api/ui",
         .push_fake = M_PushFake,
     };
     return LuaSurface_Run(&test);
+}
+
+void UI_Text_Draw(
+    const char *const text, const float x, const float y,
+    const UI_TEXT_SETTINGS settings)
+{
+}
+
+void UI_Text_Measure(
+    const char *const text, float *const out_w, float *const out_h,
+    const UI_TEXT_SETTINGS settings)
+{
+    if (out_w != nullptr) {
+        *out_w = (float)strlen(text) * 8.0f * settings.scale;
+    }
+    if (out_h != nullptr) {
+        *out_h = 16.0f * settings.scale;
+    }
+}
+
+// A minimal theme is enough for geometry tests.
+const UI_BAR_THEME *UI_Settings_GetBarTheme(const UI_BAR_TYPE type)
+{
+    static UI_BAR_THEME theme = {
+        .kind = UI_BAR_THEME_PC_KIND,
+        .basic_scale = 1.0f,
+    };
+    return &theme;
 }

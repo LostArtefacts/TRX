@@ -205,18 +205,16 @@ api.define("events.on_tick", {
 
 api.define("events.on_ui_draw", {
   description = [[
-    Happens as the game builds one of the nine regions of the on-screen
-    interface, once per region on every drawn frame. The handler takes the
-    region as a `trx.ui.Region` and answers for the one it wants.
+    Fires once for each of the nine on-screen UI regions on every drawn frame.
+    The callback receives the current `trx.ui.Region`.
 
-    This is where room is kept, not where anything is drawn: a handler says how
-    much room it needs in the region, and draws into that room later, in
-    `trx.events.on_ui_paint`.
+    Use this event to reserve layout space, not to draw. Call
+    `trx.ui.primitive.reserve` during this event, then draw into the assigned
+    box later during `trx.events.on_ui_paint`. `trx.ui.regions.place` handles
+    both steps for widgets.
 
-    Every path that puts an interface on screen fires it, so a handler runs
-    during a fade and over an FMV as well as in play. It follows the frame rate
-    rather than the game clock, so a handler reads state and does no counting
-    of its own.
+    This event fires anywhere the game draws UI, including fades, FMVs, and
+    normal gameplay. It follows the frame rate, not the game clock.
   ]],
   params = {
     {

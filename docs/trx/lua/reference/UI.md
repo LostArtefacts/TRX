@@ -104,21 +104,6 @@ and `\{button left}` draws the button the player has bound.
     - `trx.ui.Region.BOTTOM_RIGHT` = `8`  
         The bottom right corner.
 
-- <a id="ui.FrameStyle" name="ui.FrameStyle"></a>[lua]`trx.ui.FrameStyle`
-
-    The look a frame draws around what it holds.
-
-    - `trx.ui.FrameStyle.DIALOG_BACKGROUND` = `0`  
-        The background a dialog sits on.
-    - `trx.ui.FrameStyle.DIALOG_BACKGROUND_HEAVY` = `1`  
-        The same background, drawn heavier.
-    - `trx.ui.FrameStyle.DIALOG_HEADING` = `2`  
-        The band a dialog puts its title in.
-    - `trx.ui.FrameStyle.SELECTED_OPTION` = `3`  
-        The highlight on the option the player is on.
-    - `trx.ui.FrameStyle.OUTLINE_ONLY` = `4`  
-        An outline, with nothing behind it.
-
 - <a id="ui.BarType" name="ui.BarType"></a>[lua]`trx.ui.BarType`
 
     Which of the game's bars to draw, which decides its colors.
@@ -152,145 +137,316 @@ and `\{button left}` draws the button the player has bound.
     - <a id="ui.Area.x" name="ui.Area.x"></a>**`x`**: number. The left edge.
     - <a id="ui.Area.y" name="ui.Area.y"></a>**`y`**: number. The top edge.
 
+- <a id="ui.Widget" name="ui.Widget"></a>[lua]`trx.ui.Widget`
+
+    A reusable UI element drawn over the game.
+
+    A widget holds its own state. Give it signals instead of fixed values, then
+    register those signals with [`wakes_on`](#ui.Widget.wakes_on). The widget remeasures
+    only when a registered signal changes.
+
+    Register every signal that the widget reads. Otherwise the widget can keep a
+    stale cached size.
+
+    Methods:
+
+    - <a id="ui.Widget.is_shown" name="ui.Widget.is_shown"></a>[lua]`widget:is_shown()`  
+      Returns whether the widget participates in layout.
+
+      A widget that is not shown keeps no room and leaves no gap. A hidden widget
+      keeps its room but draws nothing.
+
+      Returns: boolean. Whether it draws.
+
+    - <a id="ui.Widget.measure" name="ui.Widget.measure"></a>[lua]`widget:measure()`  
+      How much room the widget wants.
+
+      Returns:
+      - number. The width, in canvas units.
+      - number. The height, in canvas units.
+
+    - <a id="ui.Widget.paint" name="ui.Widget.paint"></a>[lua]`widget:paint(x, y, w, h)`  
+      Draws the widget in an assigned box.
+
+      [`trx.ui.regions.place`](#ui.regions.place) calls this automatically. Custom layout code can call it
+      during [`trx.events.on_ui_paint`](EVENTS.md#events.on_ui_paint).
+
+      Parameters:
+      - <a id="ui.Widget.paint.x" name="ui.Widget.paint.x"></a>**`x`** (number). The left edge.
+      - <a id="ui.Widget.paint.y" name="ui.Widget.paint.y"></a>**`y`** (number). The top edge.
+      - <a id="ui.Widget.paint.w" name="ui.Widget.paint.w"></a>**`w`** (number). The width it was given.
+      - <a id="ui.Widget.paint.h" name="ui.Widget.paint.h"></a>**`h`** (number). The height it was given.
+
+    - <a id="ui.Widget.release" name="ui.Widget.release"></a>[lua]`widget:release()`  
+      Detaches the widget and its children from registered signals.
+
+      Signals keep references to their listeners. Release temporary widgets when they
+      are no longer needed. Remove a placed widget from its region before releasing
+      it.
+
+      Returns: boolean. Whether it was still listening to anything.
+
+    - <a id="ui.Widget.wake" name="ui.Widget.wake"></a>[lua]`widget:wake()`  
+      Invalidates the widget's cached size manually.
+
+      Returns: [trx.ui.Widget](#ui.Widget). The same widget.
+
+    - <a id="ui.Widget.wakes_on" name="ui.Widget.wakes_on"></a>[lua]`widget:wakes_on(...)`  
+      Registers the signals that invalidate the widget's cached size.
+
+      When one of these signals changes, the widget and its parents are measured
+      again on the next layout pass.
+
+      Parameters:
+      - <a id="ui.Widget.wakes_on...." name="ui.Widget.wakes_on...."></a>**`...`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). The signals the widget reads.
+
+      Returns: [trx.ui.Widget](#ui.Widget). The same widget, for method chaining.
+
 ### Functions
 
-- <a id="ui.label" name="ui.label"></a>[lua]`trx.ui.label(text, [settings])`  
-  Draws a line of text. It takes the player's font and text size, and the text markup applies.
+- <a id="ui.primitive" name="ui.primitive"></a>[lua]`trx.ui.primitive`  
+  Low-level drawing calls and layout reservations.
+
+  Use [`trx.ui.widgets`](#ui.widgets) for normal UI. Use these primitives only when building a
+  custom widget. Primitive drawing does not affect region layout unless code
+  reserves space first.
+
+  Drawing calls are available only during [`trx.events.on_ui_paint`](EVENTS.md#events.on_ui_paint). They report
+  an error at any other time.
+
+- <a id="ui.widgets" name="ui.widgets"></a>[lua]`trx.ui.widgets`  
+  The widgets a script builds its screen from.
+
+  A widget is created once and kept. Give it signals instead of fixed values, then
+  register those signals with [`trx.ui.Widget:wakes_on`](#ui.Widget.wakes_on).
+
+  Put a widget on screen with [`trx.ui.regions.place`](#ui.regions.place).
+
+- <a id="ui.regions" name="ui.regions"></a>[lua]`trx.ui.regions`  
+  Places script widgets on the screen.
+
+  The screen has nine regions. Engine UI uses those regions for bars, overlay
+  text, inventory-ring hints, and dialogs. A widget placed in a region stacks
+  after the engine UI in that region.
+
+  Place a widget once when the script loads. Use signals when the widget must
+  change later.
+
+- <a id="ui.primitive.reserve" name="ui.primitive.reserve"></a>[lua]`trx.ui.primitive.reserve(region, w, h)`  
+  Reserves space in a region and returns a slot for it.
+
+  The reservation is stacked with the engine UI in that region. Reserve space
+  during [`trx.events.on_ui_draw`](EVENTS.md#events.on_ui_draw), then read the assigned box during
+  [`trx.events.on_ui_paint`](EVENTS.md#events.on_ui_paint).
+
+  A slot is valid only for the scene that created it.
 
   Parameters:
-  - <a id="ui.label.text" name="ui.label.text"></a>**`text`** (string). What to draw.
-  - <a id="ui.label.settings" name="ui.label.settings"></a>**`settings`** (table, optional). How to draw it.
+  - <a id="ui.primitive.reserve.region" name="ui.primitive.reserve.region"></a>**`region`** ([trx.ui.Region](#ui.Region)). Which region to keep room in.
+  - <a id="ui.primitive.reserve.w" name="ui.primitive.reserve.w"></a>**`w`** (number). How wide, in canvas units.
+  - <a id="ui.primitive.reserve.h" name="ui.primitive.reserve.h"></a>**`h`** (number). How tall, in canvas units.
 
-    Keys:
-    - <a id="ui.label.settings.scale" name="ui.label.settings.scale"></a>**`scale`** (number, optional). How much to multiply the text size by. `1.0` by default.
-    - <a id="ui.label.settings.z" name="ui.label.settings.z"></a>**`z`** (integer, optional). What to draw in front of. Higher draws later. `0` by default.
+  Returns: integer. The slot.
 
-- <a id="ui.measure" name="ui.measure"></a>[lua]`trx.ui.measure(text, [settings])`  
-  Answers how much room a line of text takes, without drawing it. Unlike the rest of the module, this is available at any time.
+- <a id="ui.primitive.slot_box" name="ui.primitive.slot_box"></a>[lua]`trx.ui.primitive.slot_box(slot)`  
+  Returns the box assigned to a reservation by the last layout.
 
   Parameters:
-  - <a id="ui.measure.text" name="ui.measure.text"></a>**`text`** (string). What to measure.
-  - <a id="ui.measure.settings" name="ui.measure.settings"></a>**`settings`** (table, optional). The settings [`trx.ui.label`](#ui.label) would draw it with.
+  - <a id="ui.primitive.slot_box.slot" name="ui.primitive.slot_box.slot"></a>**`slot`** (integer). The reservation slot.
 
-    Keys:
-    - <a id="ui.measure.settings.scale" name="ui.measure.settings.scale"></a>**`scale`** (number, optional). How much to multiply the text size by. `1.0` by default.
+  Returns:
+  - number. The left edge, or `nil` when the slot is no longer valid.
+  - number. The top edge.
+  - number. The width.
+  - number. The height.
+
+- <a id="ui.primitive.measure_text" name="ui.primitive.measure_text"></a>[lua]`trx.ui.primitive.measure_text(text, [scale])`  
+  Measures one line of text. Available at any time.
+
+  Parameters:
+  - <a id="ui.primitive.measure_text.text" name="ui.primitive.measure_text.text"></a>**`text`** (string). What to measure.
+  - <a id="ui.primitive.measure_text.scale" name="ui.primitive.measure_text.scale"></a>**`scale`** (number, optional). Multiplies the text size. `1.0` by default.
 
   Returns:
   - number. The width, in canvas units.
   - number. The height, in canvas units.
 
-- <a id="ui.spacer" name="ui.spacer"></a>[lua]`trx.ui.spacer(w, h)`  
-  Leaves a gap. It draws nothing and takes the room it is given.
+- <a id="ui.primitive.text" name="ui.primitive.text"></a>[lua]`trx.ui.primitive.text(text, x, y, [scale], [z])`  
+  Draws one line of text on the canvas.
 
   Parameters:
-  - <a id="ui.spacer.w" name="ui.spacer.w"></a>**`w`** (number). The width, in canvas units.
-  - <a id="ui.spacer.h" name="ui.spacer.h"></a>**`h`** (number). The height, in canvas units.
+  - <a id="ui.primitive.text.text" name="ui.primitive.text.text"></a>**`text`** (string). What to draw.
+  - <a id="ui.primitive.text.x" name="ui.primitive.text.x"></a>**`x`** (number). The left edge.
+  - <a id="ui.primitive.text.y" name="ui.primitive.text.y"></a>**`y`** (number). The top edge.
+  - <a id="ui.primitive.text.scale" name="ui.primitive.text.scale"></a>**`scale`** (number, optional). Multiplies the text size.
+  - <a id="ui.primitive.text.z" name="ui.primitive.text.z"></a>**`z`** (integer, optional). The draw order.
 
-- <a id="ui.bar" name="ui.bar"></a>[lua]`trx.ui.bar(settings)`  
-  Draws one of the game's own bars, in the player's chosen bar style.
+- <a id="ui.primitive.to_screen" name="ui.primitive.to_screen"></a>[lua]`trx.ui.primitive.to_screen(length)`  
+  Converts a canvas length to screen pixels.
+
+  The canvas is a fixed 640x480 grid, and the screen size depends on the player
+  settings and window. Use this with [`to_canvas`](#ui.primitive.to_canvas) when geometry
+  must align to whole screen pixels, such as an even border.
 
   Parameters:
-  - <a id="ui.bar.settings" name="ui.bar.settings"></a>**`settings`** (table). Which bar to draw and how full it is.
+  - <a id="ui.primitive.to_screen.length" name="ui.primitive.to_screen.length"></a>**`length`** (number). A canvas length.
+
+  Returns: number. The same length in screen pixels.
+
+- <a id="ui.primitive.to_canvas" name="ui.primitive.to_canvas"></a>[lua]`trx.ui.primitive.to_canvas(pixels)`  
+  Converts a screen-pixel length to canvas units.
+
+  Use this with [`to_screen`](#ui.primitive.to_screen) when geometry must align to whole
+  screen pixels.
+
+  Parameters:
+  - <a id="ui.primitive.to_canvas.pixels" name="ui.primitive.to_canvas.pixels"></a>**`pixels`** (number). A length in screen pixels.
+
+  Returns: number. The same length in canvas units.
+
+- <a id="ui.primitive.quad" name="ui.primitive.quad"></a>[lua]`trx.ui.primitive.quad(x, y, z, w, h, color)`  
+  Draws a rectangle of one color.
+
+  Parameters:
+  - <a id="ui.primitive.quad.x" name="ui.primitive.quad.x"></a>**`x`** (number). The left edge.
+  - <a id="ui.primitive.quad.y" name="ui.primitive.quad.y"></a>**`y`** (number). The top edge.
+  - <a id="ui.primitive.quad.z" name="ui.primitive.quad.z"></a>**`z`** (integer). The draw order.
+  - <a id="ui.primitive.quad.w" name="ui.primitive.quad.w"></a>**`w`** (number). The width.
+  - <a id="ui.primitive.quad.h" name="ui.primitive.quad.h"></a>**`h`** (number). The height.
+  - <a id="ui.primitive.quad.color" name="ui.primitive.quad.color"></a>**`color`** ([trx.math.Color](MATH.md#math.Color)). What color to fill it with.
+
+- <a id="ui.primitive.gradient_quad" name="ui.primitive.gradient_quad"></a>[lua]`trx.ui.primitive.gradient_quad(x, y, z, w, h, tl, tr, bl, br)`  
+  Draws a rectangle whose corners each carry a color.
+
+  Parameters:
+  - <a id="ui.primitive.gradient_quad.x" name="ui.primitive.gradient_quad.x"></a>**`x`** (number). The left edge.
+  - <a id="ui.primitive.gradient_quad.y" name="ui.primitive.gradient_quad.y"></a>**`y`** (number). The top edge.
+  - <a id="ui.primitive.gradient_quad.z" name="ui.primitive.gradient_quad.z"></a>**`z`** (integer). What to draw in front of.
+  - <a id="ui.primitive.gradient_quad.w" name="ui.primitive.gradient_quad.w"></a>**`w`** (number). The width.
+  - <a id="ui.primitive.gradient_quad.h" name="ui.primitive.gradient_quad.h"></a>**`h`** (number). The height.
+  - <a id="ui.primitive.gradient_quad.tl" name="ui.primitive.gradient_quad.tl"></a>**`tl`** ([trx.math.Color](MATH.md#math.Color)). The top-left color.
+  - <a id="ui.primitive.gradient_quad.tr" name="ui.primitive.gradient_quad.tr"></a>**`tr`** ([trx.math.Color](MATH.md#math.Color)). The top-right color.
+  - <a id="ui.primitive.gradient_quad.bl" name="ui.primitive.gradient_quad.bl"></a>**`bl`** ([trx.math.Color](MATH.md#math.Color)). The bottom-left color.
+  - <a id="ui.primitive.gradient_quad.br" name="ui.primitive.gradient_quad.br"></a>**`br`** ([trx.math.Color](MATH.md#math.Color)). The bottom-right color.
+
+- <a id="ui.widgets.Label" name="ui.widgets.Label"></a>[lua]`trx.ui.widgets.Label(settings)`  
+  A line of text. Use a signal for text that changes.
+
+  Parameters:
+  - <a id="ui.widgets.Label.settings" name="ui.widgets.Label.settings"></a>**`settings`** (table). The label settings.
 
     Keys:
-    - <a id="ui.bar.settings.type" name="ui.bar.settings.type"></a>**`type`** ([trx.ui.BarType](#ui.BarType), optional). Which bar it is. [`trx.ui.BarType.LARA_HP`](#ui.BarType) by default.
-    - <a id="ui.bar.settings.value" name="ui.bar.settings.value"></a>**`value`** (integer, optional). How much is filled. `0` by default.
-    - <a id="ui.bar.settings.max_value" name="ui.bar.settings.max_value"></a>**`max_value`** (integer, optional). What a full bar holds. `100` by default.
-    - <a id="ui.bar.settings.w" name="ui.bar.settings.w"></a>**`w`** (integer, optional). The width, in canvas units. The game's own width by default.
-    - <a id="ui.bar.settings.h" name="ui.bar.settings.h"></a>**`h`** (integer, optional). The height, in canvas units. The game's own height by default.
+    - <a id="ui.widgets.Label.settings.text" name="ui.widgets.Label.settings.text"></a>**`text`** (any). The text, or a signal carrying it.
+    - <a id="ui.widgets.Label.settings.scale" name="ui.widgets.Label.settings.scale"></a>**`scale`** (number, optional). Multiplies the text size. `1.0` by default.
+    - <a id="ui.widgets.Label.settings.shown" name="ui.widgets.Label.settings.shown"></a>**`shown`** (any, optional). Whether the label is shown, or a signal that holds that value.
+
+  Returns: [trx.ui.Widget](#ui.Widget). The label.
+
+- <a id="ui.widgets.Bar" name="ui.widgets.Bar"></a>[lua]`trx.ui.widgets.Bar(settings)`  
+  One of the game's bars, drawn with the player's bar settings.
+
+  The bar uses the same theme, border, and fill bands as the engine UI. Use a
+  signal for a fill value that changes.
+
+  Parameters:
+  - <a id="ui.widgets.Bar.settings" name="ui.widgets.Bar.settings"></a>**`settings`** (table). The bar settings.
+
+    Keys:
+    - <a id="ui.widgets.Bar.settings.type" name="ui.widgets.Bar.settings.type"></a>**`type`** ([trx.ui.BarType](#ui.BarType)). The bar theme to use.
+    - <a id="ui.widgets.Bar.settings.value" name="ui.widgets.Bar.settings.value"></a>**`value`** (any). The fill amount from 0 to 1, or a signal that holds it.
+    - <a id="ui.widgets.Bar.settings.w" name="ui.widgets.Bar.settings.w"></a>**`w`** (number, optional). The width, in canvas units. The game's own by default.
+    - <a id="ui.widgets.Bar.settings.h" name="ui.widgets.Bar.settings.h"></a>**`h`** (number, optional). The height, in canvas units. The game's own by default.
+    - <a id="ui.widgets.Bar.settings.shown" name="ui.widgets.Bar.settings.shown"></a>**`shown`** (any, optional). Whether the bar is shown, or a signal that holds that value.
+
+  Returns: [trx.ui.Widget](#ui.Widget). The bar.
+
+- <a id="ui.widgets.Resize" name="ui.widgets.Resize"></a>[lua]`trx.ui.widgets.Resize(settings)`  
+  Gives a child widget an explicit size.
+
+  Use h_bars when a widget must match the height of the game's bars after the
+  player's bar scale is applied.
+
+  Parameters:
+  - <a id="ui.widgets.Resize.settings" name="ui.widgets.Resize.settings"></a>**`settings`** (table). The resize settings.
+
+    Keys:
+    - <a id="ui.widgets.Resize.settings.child" name="ui.widgets.Resize.settings.child"></a>**`child`** ([trx.ui.Widget](#ui.Widget)). The child widget.
+    - <a id="ui.widgets.Resize.settings.w" name="ui.widgets.Resize.settings.w"></a>**`w`** (number, optional). The width, in canvas units. Its own by default.
+    - <a id="ui.widgets.Resize.settings.h" name="ui.widgets.Resize.settings.h"></a>**`h`** (number, optional). The height, in canvas units. Its own by default.
+    - <a id="ui.widgets.Resize.settings.h_bars" name="ui.widgets.Resize.settings.h_bars"></a>**`h_bars`** (number, optional). The height in bar heights. This overrides the plain height.
+    - <a id="ui.widgets.Resize.settings.shown" name="ui.widgets.Resize.settings.shown"></a>**`shown`** (any, optional). Whether the resized widget is shown, or a signal that holds that value.
+
+  Returns: [trx.ui.Widget](#ui.Widget). The resized widget.
+
+- <a id="ui.widgets.Row" name="ui.widgets.Row"></a>[lua]`trx.ui.widgets.Row(settings)`  
+  A widget with a left and right arrow beside a child widget.
+
+  Unlit arrows stay hidden but keep their room, so the child widget does not move
+  when arrows appear or disappear.
+
+  Parameters:
+  - <a id="ui.widgets.Row.settings" name="ui.widgets.Row.settings"></a>**`settings`** (table). The row settings.
+
+    Keys:
+    - <a id="ui.widgets.Row.settings.child" name="ui.widgets.Row.settings.child"></a>**`child`** ([trx.ui.Widget](#ui.Widget)). The child widget placed between the arrows.
+    - <a id="ui.widgets.Row.settings.left" name="ui.widgets.Row.settings.left"></a>**`left`** (any). Whether the left arrow is lit, or a signal that holds that value.
+    - <a id="ui.widgets.Row.settings.right" name="ui.widgets.Row.settings.right"></a>**`right`** (any). Whether the right arrow is lit, or a signal that holds that value.
+    - <a id="ui.widgets.Row.settings.spacing" name="ui.widgets.Row.settings.spacing"></a>**`spacing`** (number, optional). The gap between each arrow and the child widget. 15 by default.
+    - <a id="ui.widgets.Row.settings.shown" name="ui.widgets.Row.settings.shown"></a>**`shown`** (any, optional). Whether the row is shown, or a signal that holds that value.
+
+  Returns: [trx.ui.Widget](#ui.Widget). The row.
+
+- <a id="ui.widgets.Stack" name="ui.widgets.Stack"></a>[lua]`trx.ui.widgets.Stack(settings)`  
+  Lays widgets out one after another.
+
+  Widgets that are not shown take no room and leave no gap.
+
+  Parameters:
+  - <a id="ui.widgets.Stack.settings" name="ui.widgets.Stack.settings"></a>**`settings`** (table). The stack settings.
+
+    Keys:
+    - <a id="ui.widgets.Stack.settings.children" name="ui.widgets.Stack.settings.children"></a>**`children`** (a list of table). The widgets, in the order they are laid out.
+    - <a id="ui.widgets.Stack.settings.orientation" name="ui.widgets.Stack.settings.orientation"></a>**`orientation`** ([trx.ui.Orientation](#ui.Orientation), optional). The layout direction. Vertical by default.
+    - <a id="ui.widgets.Stack.settings.spacing" name="ui.widgets.Stack.settings.spacing"></a>**`spacing`** (number, optional). The gap between one and the next. `0` by default.
+    - <a id="ui.widgets.Stack.settings.align" name="ui.widgets.Stack.settings.align"></a>**`align`** ([trx.ui.HAlign](#ui.HAlign), optional). Where a narrower child sits in a vertical stack.
+    - <a id="ui.widgets.Stack.settings.v_align" name="ui.widgets.Stack.settings.v_align"></a>**`v_align`** ([trx.ui.VAlign](#ui.VAlign), optional). Where a shorter child sits in a horizontal stack.
+    - <a id="ui.widgets.Stack.settings.shown" name="ui.widgets.Stack.settings.shown"></a>**`shown`** (any, optional). Whether the stack is shown, or a signal that holds that value.
+
+  Returns: [trx.ui.Widget](#ui.Widget). The stack.
+
+- <a id="ui.regions.place" name="ui.regions.place"></a>[lua]`trx.ui.regions.place(region, widget)`  
+  Places a widget in a region.
+
+  If the region argument is a signal, the widget moves when the signal changes.
+
+  Parameters:
+  - <a id="ui.regions.place.region" name="ui.regions.place.region"></a>**`region`** (any). The target region, or a signal that holds one.
+  - <a id="ui.regions.place.widget" name="ui.regions.place.widget"></a>**`widget`** ([trx.ui.Widget](#ui.Widget)). The widget to place.
 
   Example:
   ```lua
-  trx.ui.bar({
-    type = trx.ui.BarType.PROGRESS,
-    value = 40,
-    max_value = 100,
-  })
+  trx.ui.regions.place(trx.ui.Region.TOP_LEFT, health_bar)
   ```
 
-- <a id="ui.stack" name="ui.stack"></a>[lua]`trx.ui.stack(settings, body)`  
-  Lays several widgets out in a row or a column.
+- <a id="ui.regions.remove" name="ui.regions.remove"></a>[lua]`trx.ui.regions.remove(widget)`  
+  Removes a widget from its region.
+
+  Use this for temporary widgets. Widgets owned by a level script are removed
+  when the level ends. Call [`trx.ui.Widget:release`](#ui.Widget.release) separately to detach their
+  signal listeners.
 
   Parameters:
-  - <a id="ui.stack.settings" name="ui.stack.settings"></a>**`settings`** (table). How to lay the children out.
+  - <a id="ui.regions.remove.widget" name="ui.regions.remove.widget"></a>**`widget`** ([trx.ui.Widget](#ui.Widget)). The widget to remove.
 
-    Keys:
-    - <a id="ui.stack.settings.orientation" name="ui.stack.settings.orientation"></a>**`orientation`** ([trx.ui.Orientation](#ui.Orientation), optional). Which way the children run. [`trx.ui.Orientation.VERTICAL`](#ui.Orientation) by default.
-    - <a id="ui.stack.settings.align" name="ui.stack.settings.align"></a>**`align`** (table, optional). Where the children sit within the stack.
-    - <a id="ui.stack.settings.spacing" name="ui.stack.settings.spacing"></a>**`spacing`** (table, optional). The gap left between one child and the next.
-  - <a id="ui.stack.body" name="ui.stack.body"></a>**`body`** (function). Draws the children.
+  Returns: boolean. Whether the widget was in a region.
 
-  Example:
-  ```lua
-  trx.ui.stack({
-    orientation = trx.ui.Orientation.HORIZONTAL,
-    spacing = { h = 4 },
-  }, function()
-    trx.ui.label("00:12")
-    trx.ui.label("\{small}elapsed")
-  end)
-  ```
+- <a id="ui.regions.fallback" name="ui.regions.fallback"></a>[lua]`trx.ui.regions.fallback(region, widget)`  
+  Sets the widget to draw when a region has no visible content.
 
-- <a id="ui.anchor" name="ui.anchor"></a>[lua]`trx.ui.anchor(x, y, body)`  
-  Puts what it holds at a spot in the room it is given. The spot is a ratio, so `0.5, 0.5` is the middle and `1.0, 0.0` is the top right.
+  A region with only non-shown widgets draws nothing. A fallback can reserve that
+  empty place instead, for example the corner arrows shown when a bar is off
+  screen. Each region has at most one fallback.
 
   Parameters:
-  - <a id="ui.anchor.x" name="ui.anchor.x"></a>**`x`** (number). How far across, from 0 to 1.
-  - <a id="ui.anchor.y" name="ui.anchor.y"></a>**`y`** (number). How far down, from 0 to 1.
-  - <a id="ui.anchor.body" name="ui.anchor.body"></a>**`body`** (function). Draws what it holds.
-
-- <a id="ui.pad" name="ui.pad"></a>[lua]`trx.ui.pad(settings, body)`  
-  Keeps a border clear around what it holds.
-
-  Parameters:
-  - <a id="ui.pad.settings" name="ui.pad.settings"></a>**`settings`** (table). How much to keep clear, in canvas units.
-
-    Keys:
-    - <a id="ui.pad.settings.x" name="ui.pad.settings.x"></a>**`x`** (number, optional). How much to keep clear at the left and the right. `0` by default.
-    - <a id="ui.pad.settings.y" name="ui.pad.settings.y"></a>**`y`** (number, optional). How much to keep clear at the top and the bottom. `0` by default.
-    - <a id="ui.pad.settings.l" name="ui.pad.settings.l"></a>**`l`** (number, optional). The left side on its own, which wins over the pair.
-    - <a id="ui.pad.settings.r" name="ui.pad.settings.r"></a>**`r`** (number, optional). The right side on its own, which wins over the pair.
-    - <a id="ui.pad.settings.t" name="ui.pad.settings.t"></a>**`t`** (number, optional). The top on its own, which wins over the pair.
-    - <a id="ui.pad.settings.b" name="ui.pad.settings.b"></a>**`b`** (number, optional). The bottom on its own, which wins over the pair.
-  - <a id="ui.pad.body" name="ui.pad.body"></a>**`body`** (function). Draws what it holds.
-
-- <a id="ui.hide" name="ui.hide"></a>[lua]`trx.ui.hide(hidden, body)`  
-  Draws what it holds, or not. What it holds takes its room either way, so a widget that comes and goes does not move the widgets beside it.
-
-  Parameters:
-  - <a id="ui.hide.hidden" name="ui.hide.hidden"></a>**`hidden`** (boolean). Whether to leave it undrawn.
-  - <a id="ui.hide.body" name="ui.hide.body"></a>**`body`** (function). Draws what it holds.
-
-- <a id="ui.resize" name="ui.resize"></a>[lua]`trx.ui.resize(settings, body)`  
-  Gives what it holds a size of its own.
-
-  Parameters:
-  - <a id="ui.resize.settings" name="ui.resize.settings"></a>**`settings`** (table). The size to give it, in canvas units.
-
-    Keys:
-    - <a id="ui.resize.settings.w" name="ui.resize.settings.w"></a>**`w`** (number, optional). The width. Its own width by default; `0` hides it but keeps its room.
-    - <a id="ui.resize.settings.h" name="ui.resize.settings.h"></a>**`h`** (number, optional). The height. Its own height by default; `0` hides it but keeps its room.
-    - <a id="ui.resize.settings.align_h" name="ui.resize.settings.align_h"></a>**`align_h`** (number, optional). Where it sits across the width, from 0 to 1. `0` by default.
-    - <a id="ui.resize.settings.align_v" name="ui.resize.settings.align_v"></a>**`align_v`** (number, optional). Where it sits down the height, from 0 to 1. `0` by default.
-  - <a id="ui.resize.body" name="ui.resize.body"></a>**`body`** (function). Draws what it holds.
-
-- <a id="ui.frame" name="ui.frame"></a>[lua]`trx.ui.frame(style, body)`  
-  Draws one of the game's frames behind what it holds.
-
-  Parameters:
-  - <a id="ui.frame.style" name="ui.frame.style"></a>**`style`** ([trx.ui.FrameStyle](#ui.FrameStyle)). Which frame to draw.
-  - <a id="ui.frame.body" name="ui.frame.body"></a>**`body`** (function). Draws what it holds.
-
-- <a id="ui.offset" name="ui.offset"></a>[lua]`trx.ui.offset(x, y, body)`  
-  Moves what it holds. The room it takes does not move with it, so the widgets beside it stay where they are.
-
-  Parameters:
-  - <a id="ui.offset.x" name="ui.offset.x"></a>**`x`** (number). How far to move it across, in canvas units.
-  - <a id="ui.offset.y" name="ui.offset.y"></a>**`y`** (number). How far to move it down, in canvas units.
-  - <a id="ui.offset.body" name="ui.offset.body"></a>**`body`** (function). Draws what it holds.
-
-- <a id="ui.span" name="ui.span"></a>[lua]`trx.ui.span(body)`  
-  Draws what it holds one on top of the next, every one as big as the biggest.
-
-  Parameters:
-  - <a id="ui.span.body" name="ui.span.body"></a>**`body`** (function). Draws what it holds.
+  - <a id="ui.regions.fallback.region" name="ui.regions.fallback.region"></a>**`region`** ([trx.ui.Region](#ui.Region)). The target region.
+  - <a id="ui.regions.fallback.widget" name="ui.regions.fallback.widget"></a>**`widget`** ([trx.ui.Widget](#ui.Widget)). The fallback widget.
