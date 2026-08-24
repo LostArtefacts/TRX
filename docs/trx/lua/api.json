@@ -2908,39 +2908,6 @@
     },
     {
       "bulk": false,
-      "count": 5,
-      "description": "The look a frame draws around what it holds.",
-      "path": "ui.FrameStyle",
-      "values": [
-        {
-          "description": "The background a dialog sits on.",
-          "name": "DIALOG_BACKGROUND",
-          "value": 0
-        },
-        {
-          "description": "The same background, drawn heavier.",
-          "name": "DIALOG_BACKGROUND_HEAVY",
-          "value": 1
-        },
-        {
-          "description": "The band a dialog puts its title in.",
-          "name": "DIALOG_HEADING",
-          "value": 2
-        },
-        {
-          "description": "The highlight on the option the player is on.",
-          "name": "SELECTED_OPTION",
-          "value": 3
-        },
-        {
-          "description": "An outline, with nothing behind it.",
-          "name": "OUTLINE_ONLY",
-          "value": 4
-        }
-      ]
-    },
-    {
-      "bulk": false,
       "count": 8,
       "description": "Which of the game's bars to draw, which decides its colors.",
       "path": "ui.BarType",
@@ -3958,7 +3925,7 @@
       }
     },
     {
-      "description": "Happens as the game builds one of the nine regions of the on-screen\ninterface, once per region on every drawn frame. The handler takes the\nregion as a `trx.ui.Region` and answers for the one it wants.\n\nThis is where room is kept, not where anything is drawn: a handler says how\nmuch room it needs in the region, and draws into that room later, in\n`trx.events.on_ui_paint`.\n\nEvery path that puts an interface on screen fires it, so a handler runs\nduring a fade and over an FMV as well as in play. It follows the frame rate\nrather than the game clock, so a handler reads state and does no counting\nof its own.",
+      "description": "Fires once for each of the nine on-screen UI regions on every drawn frame.\nThe callback receives the current `trx.ui.Region`.\n\nUse this event to reserve layout space, not to draw. Call\n`trx.ui.primitive.reserve` during this event, then draw into the assigned\nbox later during `trx.events.on_ui_paint`. `trx.ui.regions.place` handles\nboth steps for widgets.\n\nThis event fires anywhere the game draws UI, including fades, FMVs, and\nnormal gameplay. It follows the frame rate, not the game clock.",
       "examples": [
         "local slot = nil\n\ntrx.events.on_ui_draw(function(region)\n  if region == trx.ui.Region.TOP_CENTER then\n    local w, h = trx.ui.primitive.measure_text(\"hello\")\n    slot = trx.ui.primitive.reserve(region, w, h)\n  end\nend)\n\ntrx.events.on_ui_paint(function()\n  local x, y = trx.ui.primitive.slot_box(slot)\n  if x ~= nil then\n    trx.ui.primitive.text(\"hello\", x, y)\n  end\nend)"
       ],
@@ -6310,38 +6277,61 @@
       }
     },
     {
-      "description": "Draws a line of text. It takes the player's font and text size, and the text markup applies.",
+      "description": "Reserves space in a region and returns a slot for it.\n\nThe reservation is stacked with the engine UI in that region. Reserve space\nduring `trx.events.on_ui_draw`, then read the assigned box during\n`trx.events.on_ui_paint`.\n\nA slot is valid only for the scene that created it.",
       "params": [
         {
-          "description": "What to draw.",
-          "name": "text",
-          "type": "string"
+          "description": "Which region to keep room in.",
+          "name": "region",
+          "type": "ui.Region"
         },
         {
-          "description": "How to draw it.",
-          "fields": [
-            {
-              "description": "How much to multiply the text size by. `1.0` by default.",
-              "name": "scale",
-              "optional": true,
-              "type": "number"
-            },
-            {
-              "description": "What to draw in front of. Higher draws later. `0` by default.",
-              "name": "z",
-              "optional": true,
-              "type": "integer"
-            }
-          ],
-          "name": "settings",
-          "optional": true,
-          "type": "table"
+          "description": "How wide, in canvas units.",
+          "name": "w",
+          "type": "number"
+        },
+        {
+          "description": "How tall, in canvas units.",
+          "name": "h",
+          "type": "number"
         }
       ],
-      "path": "ui.label"
+      "path": "ui.primitive.reserve",
+      "returns": {
+        "description": "The slot.",
+        "type": "integer"
+      }
     },
     {
-      "description": "Answers how much room a line of text takes, without drawing it. Unlike the rest of the module, this is available at any time.",
+      "description": "Returns the box assigned to a reservation by the last layout.",
+      "params": [
+        {
+          "description": "The reservation slot.",
+          "name": "slot",
+          "type": "integer"
+        }
+      ],
+      "path": "ui.primitive.slot_box",
+      "returns": [
+        {
+          "description": "The left edge, or `nil` when the slot is no longer valid.",
+          "type": "number"
+        },
+        {
+          "description": "The top edge.",
+          "type": "number"
+        },
+        {
+          "description": "The width.",
+          "type": "number"
+        },
+        {
+          "description": "The height.",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "description": "Measures one line of text. Available at any time.",
       "params": [
         {
           "description": "What to measure.",
@@ -6349,21 +6339,13 @@
           "type": "string"
         },
         {
-          "description": "The settings `trx.ui.label` would draw it with.",
-          "fields": [
-            {
-              "description": "How much to multiply the text size by. `1.0` by default.",
-              "name": "scale",
-              "optional": true,
-              "type": "number"
-            }
-          ],
-          "name": "settings",
+          "description": "Multiplies the text size. `1.0` by default.",
+          "name": "scale",
           "optional": true,
-          "type": "table"
+          "type": "number"
         }
       ],
-      "path": "ui.measure",
+      "path": "ui.primitive.measure_text",
       "returns": [
         {
           "description": "The width, in canvas units.",
@@ -6376,314 +6358,426 @@
       ]
     },
     {
-      "description": "Leaves a gap. It draws nothing and takes the room it is given.",
+      "description": "Draws one line of text on the canvas.",
       "params": [
         {
-          "description": "The width, in canvas units.",
+          "description": "What to draw.",
+          "name": "text",
+          "type": "string"
+        },
+        {
+          "description": "The left edge.",
+          "name": "x",
+          "type": "number"
+        },
+        {
+          "description": "The top edge.",
+          "name": "y",
+          "type": "number"
+        },
+        {
+          "description": "Multiplies the text size.",
+          "name": "scale",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "description": "The draw order.",
+          "name": "z",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "ui.primitive.text"
+    },
+    {
+      "description": "Converts a canvas length to screen pixels.\n\nThe canvas is a fixed 640x480 grid, and the screen size depends on the player\nsettings and window. Use this with `trx.ui.primitive.to_canvas` when geometry\nmust align to whole screen pixels, such as an even border.",
+      "params": [
+        {
+          "description": "A canvas length.",
+          "name": "length",
+          "type": "number"
+        }
+      ],
+      "path": "ui.primitive.to_screen",
+      "returns": {
+        "description": "The same length in screen pixels.",
+        "type": "number"
+      }
+    },
+    {
+      "description": "Converts a screen-pixel length to canvas units.\n\nUse this with `trx.ui.primitive.to_screen` when geometry must align to whole\nscreen pixels.",
+      "params": [
+        {
+          "description": "A length in screen pixels.",
+          "name": "pixels",
+          "type": "number"
+        }
+      ],
+      "path": "ui.primitive.to_canvas",
+      "returns": {
+        "description": "The same length in canvas units.",
+        "type": "number"
+      }
+    },
+    {
+      "description": "Draws a rectangle of one color.",
+      "params": [
+        {
+          "description": "The left edge.",
+          "name": "x",
+          "type": "number"
+        },
+        {
+          "description": "The top edge.",
+          "name": "y",
+          "type": "number"
+        },
+        {
+          "description": "The draw order.",
+          "name": "z",
+          "type": "integer"
+        },
+        {
+          "description": "The width.",
           "name": "w",
           "type": "number"
         },
         {
-          "description": "The height, in canvas units.",
+          "description": "The height.",
           "name": "h",
           "type": "number"
+        },
+        {
+          "description": "What color to fill it with.",
+          "name": "color",
+          "type": "math.Color"
         }
       ],
-      "path": "ui.spacer"
+      "path": "ui.primitive.quad"
     },
     {
-      "description": "Draws one of the game's own bars, in the player's chosen bar style.",
-      "examples": [
-        "trx.ui.bar({\n  type = trx.ui.BarType.PROGRESS,\n  value = 40,\n  max_value = 100,\n})"
-      ],
+      "description": "Draws a rectangle whose corners each carry a color.",
       "params": [
         {
-          "description": "Which bar to draw and how full it is.",
+          "description": "The left edge.",
+          "name": "x",
+          "type": "number"
+        },
+        {
+          "description": "The top edge.",
+          "name": "y",
+          "type": "number"
+        },
+        {
+          "description": "What to draw in front of.",
+          "name": "z",
+          "type": "integer"
+        },
+        {
+          "description": "The width.",
+          "name": "w",
+          "type": "number"
+        },
+        {
+          "description": "The height.",
+          "name": "h",
+          "type": "number"
+        },
+        {
+          "description": "The top-left color.",
+          "name": "tl",
+          "type": "math.Color"
+        },
+        {
+          "description": "The top-right color.",
+          "name": "tr",
+          "type": "math.Color"
+        },
+        {
+          "description": "The bottom-left color.",
+          "name": "bl",
+          "type": "math.Color"
+        },
+        {
+          "description": "The bottom-right color.",
+          "name": "br",
+          "type": "math.Color"
+        }
+      ],
+      "path": "ui.primitive.gradient_quad"
+    },
+    {
+      "description": "A line of text. Use a signal for text that changes.",
+      "params": [
+        {
+          "description": "The label settings.",
           "fields": [
             {
-              "description": "Which bar it is. `trx.ui.BarType.LARA_HP` by default.",
-              "name": "type",
-              "optional": true,
-              "type": "ui.BarType"
+              "description": "The text, or a signal carrying it.",
+              "name": "text",
+              "type": "any"
             },
             {
-              "description": "How much is filled. `0` by default.",
-              "name": "value",
+              "description": "Multiplies the text size. `1.0` by default.",
+              "name": "scale",
               "optional": true,
-              "type": "integer"
+              "type": "number"
             },
             {
-              "description": "What a full bar holds. `100` by default.",
-              "name": "max_value",
+              "description": "Whether the label is shown, or a signal that holds that value.",
+              "name": "shown",
               "optional": true,
-              "type": "integer"
-            },
-            {
-              "description": "The width, in canvas units. The game's own width by default.",
-              "name": "w",
-              "optional": true,
-              "type": "integer"
-            },
-            {
-              "description": "The height, in canvas units. The game's own height by default.",
-              "name": "h",
-              "optional": true,
-              "type": "integer"
+              "type": "any"
             }
           ],
           "name": "settings",
           "type": "table"
         }
       ],
-      "path": "ui.bar"
+      "path": "ui.widgets.Label",
+      "returns": {
+        "description": "The label.",
+        "type": "ui.Widget"
+      }
     },
     {
-      "description": "Lays several widgets out in a row or a column.",
-      "examples": [
-        "trx.ui.stack({\n  orientation = trx.ui.Orientation.HORIZONTAL,\n  spacing = { h = 4 },\n}, function()\n  trx.ui.label(\"00:12\")\n  trx.ui.label(\"\\{small}elapsed\")\nend)"
-      ],
+      "description": "One of the game's bars, drawn with the player's bar settings.\n\nThe bar uses the same theme, border, and fill bands as the engine UI. Use a\nsignal for a fill value that changes.",
       "params": [
         {
-          "description": "How to lay the children out.",
+          "description": "The bar settings.",
           "fields": [
             {
-              "description": "Which way the children run. `trx.ui.Orientation.VERTICAL` by default.",
+              "description": "The bar theme to use.",
+              "name": "type",
+              "type": "ui.BarType"
+            },
+            {
+              "description": "The fill amount from 0 to 1, or a signal that holds it.",
+              "name": "value",
+              "type": "any"
+            },
+            {
+              "description": "The width, in canvas units. The game's own by default.",
+              "name": "w",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "description": "The height, in canvas units. The game's own by default.",
+              "name": "h",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "description": "Whether the bar is shown, or a signal that holds that value.",
+              "name": "shown",
+              "optional": true,
+              "type": "any"
+            }
+          ],
+          "name": "settings",
+          "type": "table"
+        }
+      ],
+      "path": "ui.widgets.Bar",
+      "returns": {
+        "description": "The bar.",
+        "type": "ui.Widget"
+      }
+    },
+    {
+      "description": "Gives a child widget an explicit size.\n\nUse h_bars when a widget must match the height of the game's bars after the\nplayer's bar scale is applied.",
+      "params": [
+        {
+          "description": "The resize settings.",
+          "fields": [
+            {
+              "description": "The child widget.",
+              "name": "child",
+              "type": "ui.Widget"
+            },
+            {
+              "description": "The width, in canvas units. Its own by default.",
+              "name": "w",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "description": "The height, in canvas units. Its own by default.",
+              "name": "h",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "description": "The height in bar heights. This overrides the plain height.",
+              "name": "h_bars",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "description": "Whether the resized widget is shown, or a signal that holds that value.",
+              "name": "shown",
+              "optional": true,
+              "type": "any"
+            }
+          ],
+          "name": "settings",
+          "type": "table"
+        }
+      ],
+      "path": "ui.widgets.Resize",
+      "returns": {
+        "description": "The resized widget.",
+        "type": "ui.Widget"
+      }
+    },
+    {
+      "description": "A widget with a left and right arrow beside a child widget.\n\nUnlit arrows stay hidden but keep their room, so the child widget does not move\nwhen arrows appear or disappear.",
+      "params": [
+        {
+          "description": "The row settings.",
+          "fields": [
+            {
+              "description": "The child widget placed between the arrows.",
+              "name": "child",
+              "type": "ui.Widget"
+            },
+            {
+              "description": "Whether the left arrow is lit, or a signal that holds that value.",
+              "name": "left",
+              "type": "any"
+            },
+            {
+              "description": "Whether the right arrow is lit, or a signal that holds that value.",
+              "name": "right",
+              "type": "any"
+            },
+            {
+              "description": "The gap between each arrow and the child widget. 15 by default.",
+              "name": "spacing",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "description": "Whether the row is shown, or a signal that holds that value.",
+              "name": "shown",
+              "optional": true,
+              "type": "any"
+            }
+          ],
+          "name": "settings",
+          "type": "table"
+        }
+      ],
+      "path": "ui.widgets.Row",
+      "returns": {
+        "description": "The row.",
+        "type": "ui.Widget"
+      }
+    },
+    {
+      "description": "Lays widgets out one after another.\n\nWidgets that are not shown take no room and leave no gap.",
+      "params": [
+        {
+          "description": "The stack settings.",
+          "fields": [
+            {
+              "description": "The widgets, in the order they are laid out.",
+              "list": true,
+              "name": "children",
+              "type": "table"
+            },
+            {
+              "description": "The layout direction. Vertical by default.",
               "name": "orientation",
               "optional": true,
               "type": "ui.Orientation"
             },
             {
-              "description": "Where the children sit within the stack.",
-              "fields": [
-                {
-                  "description": "Where they sit across its width.",
-                  "name": "h",
-                  "optional": true,
-                  "type": "ui.HAlign"
-                },
-                {
-                  "description": "Where they sit down its height.",
-                  "name": "v",
-                  "optional": true,
-                  "type": "ui.VAlign"
-                }
-              ],
-              "name": "align",
-              "optional": true,
-              "type": "table"
-            },
-            {
-              "description": "The gap left between one child and the next.",
-              "fields": [
-                {
-                  "description": "The horizontal gap, in canvas units.",
-                  "name": "h",
-                  "optional": true,
-                  "type": "number"
-                },
-                {
-                  "description": "The vertical gap, in canvas units.",
-                  "name": "v",
-                  "optional": true,
-                  "type": "number"
-                }
-              ],
+              "description": "The gap between one and the next. `0` by default.",
               "name": "spacing",
               "optional": true,
-              "type": "table"
+              "type": "number"
+            },
+            {
+              "description": "Where a narrower child sits in a vertical stack.",
+              "name": "align",
+              "optional": true,
+              "type": "ui.HAlign"
+            },
+            {
+              "description": "Where a shorter child sits in a horizontal stack.",
+              "name": "v_align",
+              "optional": true,
+              "type": "ui.VAlign"
+            },
+            {
+              "description": "Whether the stack is shown, or a signal that holds that value.",
+              "name": "shown",
+              "optional": true,
+              "type": "any"
             }
           ],
           "name": "settings",
           "type": "table"
-        },
-        {
-          "description": "Draws the children.",
-          "name": "body",
-          "type": "function"
         }
       ],
-      "path": "ui.stack"
+      "path": "ui.widgets.Stack",
+      "returns": {
+        "description": "The stack.",
+        "type": "ui.Widget"
+      }
     },
     {
-      "description": "Puts what it holds at a spot in the room it is given. The spot is a ratio, so `0.5, 0.5` is the middle and `1.0, 0.0` is the top right.",
+      "description": "Places a widget in a region.\n\nIf the region argument is a signal, the widget moves when the signal changes.",
+      "examples": [
+        "trx.ui.regions.place(trx.ui.Region.TOP_LEFT, health_bar)"
+      ],
       "params": [
         {
-          "description": "How far across, from 0 to 1.",
-          "name": "x",
-          "type": "number"
+          "description": "The target region, or a signal that holds one.",
+          "name": "region",
+          "type": "any"
         },
         {
-          "description": "How far down, from 0 to 1.",
-          "name": "y",
-          "type": "number"
-        },
-        {
-          "description": "Draws what it holds.",
-          "name": "body",
-          "type": "function"
+          "description": "The widget to place.",
+          "name": "widget",
+          "type": "ui.Widget"
         }
       ],
-      "path": "ui.anchor"
+      "path": "ui.regions.place"
     },
     {
-      "description": "Keeps a border clear around what it holds.",
+      "description": "Removes a widget from its region.\n\nUse this for temporary widgets. Widgets owned by a level script are removed\nwhen the level ends. Call `trx.ui.Widget:release` separately to detach their\nsignal listeners.",
       "params": [
         {
-          "description": "How much to keep clear, in canvas units.",
-          "fields": [
-            {
-              "description": "How much to keep clear at the left and the right. `0` by default.",
-              "name": "x",
-              "optional": true,
-              "type": "number"
-            },
-            {
-              "description": "How much to keep clear at the top and the bottom. `0` by default.",
-              "name": "y",
-              "optional": true,
-              "type": "number"
-            },
-            {
-              "description": "The left side on its own, which wins over the pair.",
-              "name": "l",
-              "optional": true,
-              "type": "number"
-            },
-            {
-              "description": "The right side on its own, which wins over the pair.",
-              "name": "r",
-              "optional": true,
-              "type": "number"
-            },
-            {
-              "description": "The top on its own, which wins over the pair.",
-              "name": "t",
-              "optional": true,
-              "type": "number"
-            },
-            {
-              "description": "The bottom on its own, which wins over the pair.",
-              "name": "b",
-              "optional": true,
-              "type": "number"
-            }
-          ],
-          "name": "settings",
-          "type": "table"
-        },
-        {
-          "description": "Draws what it holds.",
-          "name": "body",
-          "type": "function"
+          "description": "The widget to remove.",
+          "name": "widget",
+          "type": "ui.Widget"
         }
       ],
-      "path": "ui.pad"
+      "path": "ui.regions.remove",
+      "returns": {
+        "description": "Whether the widget was in a region.",
+        "type": "boolean"
+      }
     },
     {
-      "description": "Draws what it holds, or not. What it holds takes its room either way, so a widget that comes and goes does not move the widgets beside it.",
+      "description": "Sets the widget to draw when a region has no visible content.\n\nA region with only non-shown widgets draws nothing. A fallback can reserve that\nempty place instead, for example the corner arrows shown when a bar is off\nscreen. Each region has at most one fallback.",
       "params": [
         {
-          "description": "Whether to leave it undrawn.",
-          "name": "hidden",
-          "type": "boolean"
+          "description": "The target region.",
+          "name": "region",
+          "type": "ui.Region"
         },
         {
-          "description": "Draws what it holds.",
-          "name": "body",
-          "type": "function"
+          "description": "The fallback widget.",
+          "name": "widget",
+          "type": "ui.Widget"
         }
       ],
-      "path": "ui.hide"
-    },
-    {
-      "description": "Gives what it holds a size of its own.",
-      "params": [
-        {
-          "description": "The size to give it, in canvas units.",
-          "fields": [
-            {
-              "description": "The width. Its own width by default; `0` hides it but keeps its room.",
-              "name": "w",
-              "optional": true,
-              "type": "number"
-            },
-            {
-              "description": "The height. Its own height by default; `0` hides it but keeps its room.",
-              "name": "h",
-              "optional": true,
-              "type": "number"
-            },
-            {
-              "description": "Where it sits across the width, from 0 to 1. `0` by default.",
-              "name": "align_h",
-              "optional": true,
-              "type": "number"
-            },
-            {
-              "description": "Where it sits down the height, from 0 to 1. `0` by default.",
-              "name": "align_v",
-              "optional": true,
-              "type": "number"
-            }
-          ],
-          "name": "settings",
-          "type": "table"
-        },
-        {
-          "description": "Draws what it holds.",
-          "name": "body",
-          "type": "function"
-        }
-      ],
-      "path": "ui.resize"
-    },
-    {
-      "description": "Draws one of the game's frames behind what it holds.",
-      "params": [
-        {
-          "description": "Which frame to draw.",
-          "name": "style",
-          "type": "ui.FrameStyle"
-        },
-        {
-          "description": "Draws what it holds.",
-          "name": "body",
-          "type": "function"
-        }
-      ],
-      "path": "ui.frame"
-    },
-    {
-      "description": "Moves what it holds. The room it takes does not move with it, so the widgets beside it stay where they are.",
-      "params": [
-        {
-          "description": "How far to move it across, in canvas units.",
-          "name": "x",
-          "type": "number"
-        },
-        {
-          "description": "How far to move it down, in canvas units.",
-          "name": "y",
-          "type": "number"
-        },
-        {
-          "description": "Draws what it holds.",
-          "name": "body",
-          "type": "function"
-        }
-      ],
-      "path": "ui.offset"
-    },
-    {
-      "description": "Draws what it holds one on top of the next, every one as big as the biggest.",
-      "params": [
-        {
-          "description": "Draws what it holds.",
-          "name": "body",
-          "type": "function"
-        }
-      ],
-      "path": "ui.span"
+      "path": "ui.regions.fallback"
     },
     {
       "description": "Retrieves a weapon definition by id or by name.",
@@ -7206,6 +7300,21 @@
       "callable": false,
       "implicit": true,
       "path": "rules.fx"
+    },
+    {
+      "callable": false,
+      "description": "Low-level drawing calls and layout reservations.\n\nUse `trx.ui.widgets` for normal UI. Use these primitives only when building a\ncustom widget. Primitive drawing does not affect region layout unless code\nreserves space first.\n\nDrawing calls are available only during `trx.events.on_ui_paint`. They report\nan error at any other time.",
+      "path": "ui.primitive"
+    },
+    {
+      "callable": false,
+      "description": "The widgets a script builds its screen from.\n\nA widget is created once and kept. Give it signals instead of fixed values, then\nregister those signals with `trx.ui.Widget:wakes_on`.\n\nPut a widget on screen with `trx.ui.regions.place`.",
+      "path": "ui.widgets"
+    },
+    {
+      "callable": false,
+      "description": "Places script widgets on the screen.\n\nThe screen has nine regions. Engine UI uses those regions for bars, overlay\ntext, inventory-ring hints, and dialogs. A widget placed in a region stacks\nafter the engine UI in that region.\n\nPlace a widget once when the script loads. Use signals when the widget must\nchange later.",
+      "path": "ui.regions"
     }
   ],
   "numbers": [
@@ -11435,6 +11544,95 @@
       "methods": [],
       "operators": [],
       "path": "ui.Area"
+    },
+    {
+      "description": "A reusable UI element drawn over the game.\n\nA widget holds its own state. Give it signals instead of fixed values, then\nregister those signals with `trx.ui.Widget:wakes_on`. The widget remeasures\nonly when a registered signal changes.\n\nRegister every signal that the widget reads. Otherwise the widget can keep a\nstale cached size.",
+      "extensions": [],
+      "fields": [],
+      "handle": false,
+      "methods": [
+        {
+          "description": "Returns whether the widget participates in layout.\n\nA widget that is not shown keeps no room and leaves no gap. A hidden widget\nkeeps its room but draws nothing.",
+          "name": "is_shown",
+          "returns": {
+            "description": "Whether it draws.",
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "How much room the widget wants.",
+          "name": "measure",
+          "returns": [
+            {
+              "description": "The width, in canvas units.",
+              "type": "number"
+            },
+            {
+              "description": "The height, in canvas units.",
+              "type": "number"
+            }
+          ]
+        },
+        {
+          "description": "Draws the widget in an assigned box.\n\n`trx.ui.regions.place` calls this automatically. Custom layout code can call it\nduring `trx.events.on_ui_paint`.",
+          "name": "paint",
+          "params": [
+            {
+              "description": "The left edge.",
+              "name": "x",
+              "type": "number"
+            },
+            {
+              "description": "The top edge.",
+              "name": "y",
+              "type": "number"
+            },
+            {
+              "description": "The width it was given.",
+              "name": "w",
+              "type": "number"
+            },
+            {
+              "description": "The height it was given.",
+              "name": "h",
+              "type": "number"
+            }
+          ]
+        },
+        {
+          "description": "Detaches the widget and its children from registered signals.\n\nSignals keep references to their listeners. Release temporary widgets when they\nare no longer needed. Remove a placed widget from its region before releasing\nit.",
+          "name": "release",
+          "returns": {
+            "description": "Whether it was still listening to anything.",
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "Invalidates the widget's cached size manually.",
+          "name": "wake",
+          "returns": {
+            "description": "The same widget.",
+            "type": "ui.Widget"
+          }
+        },
+        {
+          "description": "Registers the signals that invalidate the widget's cached size.\n\nWhen one of these signals changes, the widget and its parents are measured\nagain on the next layout pass.",
+          "name": "wakes_on",
+          "params": [
+            {
+              "description": "The signals the widget reads.",
+              "name": "...",
+              "type": "signal.Signal"
+            }
+          ],
+          "returns": {
+            "description": "The same widget, for method chaining.",
+            "type": "ui.Widget"
+          }
+        }
+      ],
+      "operators": [],
+      "path": "ui.Widget"
     },
     {
       "description": "How far off straight ahead an aim may go, as a pair of limits about each axis.",

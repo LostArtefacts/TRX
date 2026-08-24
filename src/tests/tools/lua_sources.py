@@ -19,21 +19,29 @@ ROOT = Path(__file__).resolve().parents[3]
 MESON = ROOT / "src/meson.build"
 
 
-def listed(variable: str) -> set[str]:
+def listed(variable: str, prefix: str) -> set[str]:
     body = re.search(rf"^{variable} = files\((.*?)^\)", MESON.read_text(), re.S | re.M)
     assert body is not None, f"{variable} is not a files() list in src/meson.build"
-    return {Path(m).name for m in re.findall(r"'([^']+)'", body.group(1))}
+    # A module in a directory of its own is named by its path, so the whole
+    # path past the tree it sits in is what identifies it.
+    return {
+        Path(m).relative_to(prefix).as_posix()
+        for m in re.findall(r"'([^']+)'", body.group(1))
+    }
 
 
 def main() -> int:
     failures = []
 
-    for variable, directory in (
-        ("trx_lua_api_sources", ROOT / "src/lua/api"),
-        ("trx_lua_script_sources", ROOT / "src/lua/commands"),
+    for variable, directory, prefix in (
+        ("trx_lua_api_sources", ROOT / "src/lua/api", "lua/api"),
+        ("trx_lua_script_sources", ROOT / "src/lua/commands", "lua/commands"),
     ):
-        on_disk = {path.name for path in directory.glob("*.lua")}
-        in_meson = listed(variable)
+        on_disk = {
+            path.relative_to(directory).as_posix()
+            for path in directory.rglob("*.lua")
+        }
+        in_meson = listed(variable, prefix)
 
         for name in sorted(on_disk - in_meson):
             failures.append(

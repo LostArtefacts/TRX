@@ -7,6 +7,7 @@
 
 #include <harness/fake_calls.h>
 
+#include <trx/config.h>
 #include <trx/config/common.h>
 #include <trx/config/priv.h>
 #include <trx/config/registry.h>
@@ -45,6 +46,18 @@ static const CONFIG_OPTION_DESC m_Descs[] = {
       .default_value = { .type = TVT_ENUM, .as_int = 0 },
       .mirror = &m_ShadowType,
       .enum_map = "FAKE_SHADOW" },
+    // Widget layout listens to these two options.
+    { .name = "ui.text_scale",
+      .default_value = { .type = TVT_FLOAT, .as_num = 1.0 },
+      .mirror = &g_ConfigStorage.ui.text_scale,
+      .percent = true },
+    { .name = "ui.bar_scale",
+      .default_value = { .type = TVT_FLOAT, .as_num = 1.0 },
+      .mirror = &g_ConfigStorage.ui.bar_scale,
+      .percent = true },
+    { .name = "ui.enable_smooth_bars",
+      .default_value = { .type = TVT_BOOL, .as_bool = true },
+      .mirror = &g_ConfigStorage.ui.enable_smooth_bars },
 };
 
 static int32_t m_Listener = -1;
@@ -115,6 +128,7 @@ static bool M_Parse(
         break;
     }
 
+    case TVT_FLOAT:
     case TVT_DOUBLE: {
         char *end = nullptr;
         const double parsed = strtod(new_value, &end);
@@ -158,6 +172,7 @@ const char *Config_Option_GetValueAsString(
     case TVT_S32:
         snprintf(buf, sizeof(buf), "%d", (int32_t)option->value.as_int);
         return buf;
+    case TVT_FLOAT:
     case TVT_DOUBLE:
         snprintf(buf, sizeof(buf), "%g", option->value.as_num);
         return buf;

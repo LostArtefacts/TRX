@@ -21,7 +21,7 @@ typedef struct {
     // requires is read off its source and loaded with it, so a dependency of a
     // dependency is not named here. NULL-terminated; a full list is an error
     // rather than a truncation.
-    const char *deps[16];
+    const char *deps[24];
     // src/lua/commands/<script>.lua, run once the modules are up, the way the
     // engine runs it after sealing. Optional.
     const char *script;

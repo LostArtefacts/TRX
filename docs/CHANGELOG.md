@@ -165,6 +165,7 @@
 - Fixed the game stuttering while it writes its log
 
 **Lua**
+- Added a new Lua module, `trx.ui`, for drawing over the game from a script: widgets that are built once and follow the signals they are given, put in one of the nine places the interface is laid out in, over a small set of drawing calls the engine offers (#5351 / TRX185)
 - Added `trx.events.on_tick()` and `trx.signal.tick`, which happen once for every tick the game runs, whether a level is being played or a menu is open
 - Added a new Lua module, `trx.signal`, for a value that says when it changes: signals combine with `&`, `|` and `~`, a combination reports only when its own answer moves, `trx.signal.config` gives a setting one of its own, and `trx.signal.polled` makes one out of anything read once a tick
 - Added `trx.events.on_cutscene_frame()`, which reports every frame of a TR4 cutscene, so a script can act part-way through one (TRX1199)

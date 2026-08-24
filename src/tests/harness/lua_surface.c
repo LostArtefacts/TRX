@@ -143,6 +143,23 @@ static void M_DiscoverRequired(lua_State *const L, const char *const source)
 // Records the module and everything it requires, dependencies first. A test
 // names what it wants for real; everything else is taken only where nothing
 // answers for it yet.
+// Converts a require name to a module path.
+static void M_PathFromName(
+    char *const out, const size_t size, const char *const name)
+{
+    snprintf(out, size, REPO_ROOT "/src/lua/api/%s.lua", name);
+    for (char *c = out + strlen(REPO_ROOT "/src/lua/api/"); *c != '\0'; c++) {
+        if (*c == '.') {
+            *c = '/';
+        }
+    }
+    // Restore the .lua suffix after the slash conversion.
+    const size_t len = strlen(out);
+    if (len > 4) {
+        out[len - 4] = '.';
+    }
+}
+
 static void M_Discover(
     lua_State *const L, const char *const name, const bool forced)
 {
@@ -151,7 +168,7 @@ static void M_Discover(
     }
 
     char path[512];
-    snprintf(path, sizeof(path), REPO_ROOT "/src/lua/api/%s.lua", name);
+    M_PathFromName(path, sizeof(path), name);
     size_t size;
     char *const source = M_ReadFile(path, &size);
     M_DiscoverRequired(L, source);
@@ -170,7 +187,7 @@ static void M_RunModule(lua_State *const L, const char *const name)
 {
     char path[512];
     char chunk_name[256];
-    snprintf(path, sizeof(path), REPO_ROOT "/src/lua/api/%s.lua", name);
+    M_PathFromName(path, sizeof(path), name);
     snprintf(
         chunk_name, sizeof(chunk_name), LUA_API_CHUNK_PREFIX "%s.lua", name);
     M_RunFileAs(L, path, chunk_name);

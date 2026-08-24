@@ -574,13 +574,19 @@ unit_tests += {
 
 unit_tests += {
   'name': 'lua/api/ui',
-  'bundles': [b_lua_surface],
-  'src': ['lua/api/ui.c', 'fakes/ui_draw.c'],
+  'bundles': [b_lua_surface, b_lua_math, b_config],
+  'src': ['lua/api/ui.c', 'fakes/ui_draw.c', 'fakes/locale.c', 'fakes/rooms.c'],
   'engine': [
     'config/enum.c',
     'core/event_manager.c',
     'game/ui/events.c',
+    'game/lua/capi/config.c',
+    'game/lua/capi/events.c',
+    'game/lua/capi/locale.c',
     'game/lua/capi/ui.c',
+    'game/ui/dialogs/settings_handlers.c',
+    'game/ui/dialogs/settings_lua.c',
+    'game/ui/dialogs/settings_rows.c',
     'game/ui/common.c',
     'game/ui/regions.c',
     'game/ui/elements/anchor.c',
