@@ -1191,6 +1191,10 @@
             "title": "Camara làimhe",
             "description": "Cuir comas air putanan a' chamara (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}) a thathas a' cleachdadh gus smachd a chumail air camara Modh Dealbh, gus cuideachd camara a' gheama a chuairteachadh.",
         },
+        "gameplay.enable_monkey_bar_shimmy_turn": {
+            "title": "\\{review}Tionndadh air na bàraichean",
+            "description": "\\{review}Leigidh seo le Lara tionndadh fhad ’s a tha i a’ gluasad air gach taobh air na bàraichean, mar as urrainn dhi nuair a tha i a’ gluasad air gach taobh no a’ snàmh air gach taobh air uachdar an uisge.",
+        },
         "gameplay.enable_multiple_pickups": {
             "title": "Togail iomadh nì",
             "description": "Leigidh seo le Lara na nithean togail uile a tha san aon àite a thogail san aon bheothachadh (TR1–3). Ma tha seo à comas, feumaidh Lara am beothachadh ath-aithris airson gach nì (TR4+).",

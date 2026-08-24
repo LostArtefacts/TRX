@@ -1191,6 +1191,10 @@
             "title": "\\{review}Caméra manuelle",
             "description": "\\{review}Active les touches de la caméra (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}) utilisées pour contrôler la caméra du mode photo, pour également faire pivoter la caméra en jeu.",
         },
+        "gameplay.enable_monkey_bar_shimmy_turn": {
+            "title": "\\{review}Virage sur les barres",
+            "description": "\\{review}Permet à Lara de se tourner lorsqu'elle se déplace latéralement sur les barres, de la même manière qu'elle peut le faire en se déplaçant latéralement ou en nageant de côté à la surface de l'eau.",
+        },
         "gameplay.enable_multiple_pickups": {
             "title": "\\{review}Ramassage multiple",
             "description": "\\{review}Permet à Lara de ramasser tous les objets situés au même endroit au cours de la même animation (TR1–3). Si cette option est désactivée, Lara doit répéter l’animation pour chaque objet (TR4+).",

@@ -1191,6 +1191,10 @@
             "title": "Telecamera manuale",
             "description": "Usa i tasti della telecamera (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}) utilizzati nella Modalità Foto, anche per ruotare la telecamera di gioco.",
         },
+        "gameplay.enable_monkey_bar_shimmy_turn": {
+            "title": "\\{review}Rotazione sulle sbarre",
+            "description": "\\{review}Consente a Lara di girarsi mentre si sposta lateralmente sulle sbarre, analogamente a quanto può fare quando si muove lateralmente o nuota di lato sulla superficie dell'acqua.",
+        },
         "gameplay.enable_multiple_pickups": {
             "title": "Raccolta multipla",
             "description": "Permette a Lara di raccogliere, con la stessa animazione, tutti gli oggetti che condividono la stessa posizione (TR1–3). Se disabilitato, Lara deve ripetere l’animazione di raccolta per ogni oggetto (TR4+).",

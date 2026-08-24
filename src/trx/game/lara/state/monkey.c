@@ -94,6 +94,16 @@ static void M_MonkeyShimmy(ITEM *const item, COLL_INFO *const coll)
     if (stop) {
         item->goal_anim_state = LS(LS_MONKEY_IDLE);
     }
+
+    if (g_Config.gameplay.enable_monkey_bar_shimmy_turn) {
+        if (g_Input.left) {
+            lara->turn_rate -= LARA_TURN_RATE;
+            CLAMPL(lara->turn_rate, -M_MONKEY_TURN);
+        } else if (g_Input.right) {
+            lara->turn_rate += LARA_TURN_RATE;
+            CLAMPG(lara->turn_rate, +M_MONKEY_TURN);
+        }
+    }
 }
 
 static void M_MonkeyTurn(ITEM *const item, COLL_INFO *const coll)

@@ -1191,6 +1191,10 @@
             "title": "Manual camera",
             "description": "Enables the camera keys (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}) used to control Photo Mode camera, to also rotate the ingame camera.",
         },
+        "gameplay.enable_monkey_bar_shimmy_turn": {
+            "title": "Monkey bar shimmy turn",
+            "description": "Allows Lara to turn while shimmying along monkey bars, similarly to how she can while sidestepping or swimming sideways on water surfaces.",
+        },
         "gameplay.enable_multiple_pickups": {
             "title": "Multiple pickups",
             "description": "Allows Lara to collect all pickup items that share the same position in the same animation (TR1-3). If disabled, Lara must repeat the animation for each item (TR4+).",
