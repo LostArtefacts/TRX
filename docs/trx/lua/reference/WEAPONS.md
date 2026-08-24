@@ -166,10 +166,12 @@ trx.weapons.flare.glow.color = "33e5ff"
 
     Computed properties (derived, not stored on the object):
     - <a id="weapons.Weapon.ammo" name="weapons.Weapon.ammo"></a>**`ammo`**: [trx.weapons.Ammo](#weapons.Ammo). What the weapon is fed.
+    - <a id="weapons.Weapon.ammo_icon" name="weapons.Weapon.ammo_icon"></a>**`ammo_icon`**: string. The markup drawn beside the ammunition count in TR1. Later games count without one, and a weapon that carries no icon answers with `nil`.
     - <a id="weapons.Weapon.ammo_object" name="weapons.Weapon.ammo_object"></a>**`ammo_object`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The box of ammunition it takes, or `nil` where it takes none.
     - <a id="weapons.Weapon.anim" name="weapons.Weapon.anim"></a>**`anim`**: [trx.weapons.Anim](#weapons.Anim). The animation numbers it is drawn and fired by.
     - <a id="weapons.Weapon.flash" name="weapons.Weapon.flash"></a>**`flash`**: [trx.weapons.Flash](#weapons.Flash). The muzzle flash a shot draws.
     - <a id="weapons.Weapon.glow" name="weapons.Weapon.glow"></a>**`glow`**: [trx.weapons.Glow](#weapons.Glow). The glow drawn where it burns.
+    - <a id="weapons.Weapon.has_infinite_ammo" name="weapons.Weapon.has_infinite_ammo"></a>**`has_infinite_ammo`**: boolean. Whether the weapon never runs dry. The pistols do in most games, and a level or a script may say so of any weapon. A count of shots left means nothing in this context.
     - <a id="weapons.Weapon.left_arm" name="weapons.Weapon.left_arm"></a>**`left_arm`**: [trx.weapons.AimLimits](#weapons.AimLimits). How far the left arm may follow a target it has locked onto. A dual-wielded weapon drops the lock on the arm that cannot reach.
     - <a id="weapons.Weapon.lock" name="weapons.Weapon.lock"></a>**`lock`**: [trx.weapons.AimLimits](#weapons.AimLimits). Where auto-aim may lock on, measured from where Lara faces.
     - <a id="weapons.Weapon.muzzle_pos" name="weapons.Weapon.muzzle_pos"></a>**`muzzle_pos`**: [trx.weapons.HandPos](#weapons.HandPos). Where the barrel ends, which is where smoke and sparks come from.

@@ -166,6 +166,11 @@
 - Fixed the game stuttering while it writes its log
 
 **Lua**
+- Added `trx.lara.is_controllable`, `trx.lara.vehicle`, `trx.lara.MAX_AIR`, `trx.lara.MAX_SPRINT`, what her arms and the flare in them are doing, and what she is lining herself up with, so a script can report what the overlay reports
+- Added `trx.game.is_playing`, `trx.game.is_suspended`, `trx.game.is_photo_mode`, `trx.game.tr_version`, `trx.game.real_time` and `trx.game.measured_fps`, so a script can tell what the game is doing and how fast it is drawing
+- Added a new Lua module, `trx.overlay`, for the part of the overlay the engine still owns, so a script drawing the rest can follow it
+- Added `trx.items.Item.is_ally` and a `boss` family to `trx.objects.query`, so a script can tell a creature that fights for Lara from one that fights her, and pick out the ones the game treats as bosses
+- Added `trx.weapons.Weapon.has_infinite_ammo` and `trx.weapons.Weapon.ammo_icon`, so a script can tell a weapon that never runs dry from one whose shots are worth counting, and draw the icon the count is shown with
 - Added a new Lua module, `trx.ui`, for drawing over the game from a script: widgets that are built once and follow the signals they are given, put in one of the nine places the interface is laid out in, over a small set of drawing calls the engine offers (#5351 / TRX185)
 - Added `trx.events.on_tick()` and `trx.signal.tick`, which happen once for every tick the game runs, whether a level is being played or a menu is open
 - Added a new Lua module, `trx.signal`, for a value that says when it changes: signals combine with `&`, `|` and `~`, a combination reports only when its own answer moves, `trx.signal.config` gives a setting one of its own, and `trx.signal.polled` makes one out of anything read once a tick

@@ -112,6 +112,7 @@ static const struct {
     const OBJECT_ID *objects;
 } m_Families[] = {
     { "creature", g_CreatureObjects },
+    { "boss", g_BossObjects },
     { "loyal", g_LoyalObjects },
     { "pickup", g_PickupObjects },
     { "gun", g_GunObjects },

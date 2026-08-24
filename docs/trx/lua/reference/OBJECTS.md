@@ -111,6 +111,11 @@ trx.objects.wolf.properties.max_hit_points = 30
 
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
+    - <a id="objects.ObjectQuery.boss" name="objects.ObjectQuery.boss"></a>[lua]`objectquery:boss()`  
+      A creature the game treats as a boss, which the enemy health bar can be held to.
+
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+
     - <a id="objects.ObjectQuery.collectible" name="objects.ObjectQuery.collectible"></a>[lua]`objectquery:collectible()`  
       A collectible, by the slot it fills.
 

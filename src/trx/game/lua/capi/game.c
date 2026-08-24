@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/game/clock/common.h>
 #include <trx/game/const.h>
 #include <trx/game/demo.h>
 #include <trx/game/game/state.h>
@@ -9,6 +10,8 @@
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
 #include <trx/game/lua/utils.h>
+#include <trx/game/output/func.h>
+#include <trx/game/photo_mode.h>
 #include <trx/game/savegame.h>
 #include <trx/game/screenshot.h>
 #include <trx/version.h>
@@ -170,10 +173,52 @@ static int M_L_GameIsLoaded(lua_State *const L)
     return 1;
 }
 
+// trxc.game.measured_fps() -> int
+static int M_L_GameMeasuredFPS(lua_State *const L)
+{
+    lua_pushinteger(L, Output_GetMeasuredFPS());
+    return 1;
+}
+
+// trxc.game.is_playing() -> bool
+static int M_L_GameIsPlaying(lua_State *const L)
+{
+    lua_pushboolean(L, Game_IsPlaying());
+    return 1;
+}
+
 // trxc.game.is_playable() -> bool
 static int M_L_GameIsPlayable(lua_State *const L)
 {
     lua_pushboolean(L, Game_IsPlayable());
+    return 1;
+}
+
+// trxc.game.real_time() -> number
+static int M_L_GameRealTime(lua_State *const L)
+{
+    lua_pushnumber(L, Clock_GetRealTime());
+    return 1;
+}
+
+// trxc.game.tr_version() -> integer
+static int M_L_GameTRVersion(lua_State *const L)
+{
+    lua_pushinteger(L, g_TRVersion);
+    return 1;
+}
+
+// trxc.game.is_suspended() -> bool
+static int M_L_GameIsSuspended(lua_State *const L)
+{
+    lua_pushboolean(L, Game_IsLoaded() && !Game_IsPlaying());
+    return 1;
+}
+
+// trxc.game.is_photo_mode() -> bool
+static int M_L_GameIsPhotoMode(lua_State *const L)
+{
+    lua_pushboolean(L, PhotoMode_IsActive());
     return 1;
 }
 
@@ -318,7 +363,13 @@ static const luaL_Reg m_Module[] = {
     { "get_level", M_L_GameGetLevel },
     { "get_current_level", M_L_GameGetCurrentLevel },
     { "is_loaded", M_L_GameIsLoaded },
+    { "measured_fps", M_L_GameMeasuredFPS },
+    { "is_playing", M_L_GameIsPlaying },
     { "is_playable", M_L_GameIsPlayable },
+    { "tr_version", M_L_GameTRVersion },
+    { "real_time", M_L_GameRealTime },
+    { "is_suspended", M_L_GameIsSuspended },
+    { "is_photo_mode", M_L_GameIsPhotoMode },
     { "is_ngplus", M_L_GameIsNGPlus },
     { "play_level", M_L_GamePlayLevel },
     { "play_cutscene", M_L_GamePlayCutscene },

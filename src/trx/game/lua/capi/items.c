@@ -144,6 +144,15 @@ static bool M_GetIsHostile(const void *const self, TRX_VALUE *const out)
     return true;
 }
 
+static bool M_GetIsAlly(const void *const self, TRX_VALUE *const out)
+{
+    *out = (TRX_VALUE) {
+        .type = TVT_BOOL,
+        .as_bool = Creature_IsAlly(self),
+    };
+    return true;
+}
+
 static bool M_GetIndex(const void *const self, TRX_VALUE *const out)
 {
     // The index trx.items[i] takes; counts from 0, as the engine does.
@@ -233,6 +242,7 @@ static const FIELD_DESC m_Fields[] = {
     FIELD_FN("relative_frame_num", TVT_S16,  M_GetFrame,        M_SetFrame),
     FIELD_FN("item_num",           TVT_S16,  M_GetIndex,        nullptr),
     FIELD_FN("is_hostile",         TVT_BOOL, M_GetIsHostile,    nullptr),
+    FIELD_FN("is_ally",            TVT_BOOL, M_GetIsAlly,       nullptr),
     FIELD_FN("is_alive",           TVT_BOOL, M_GetIsAlive,      nullptr),
     FIELD_FN("is_targetable",      TVT_BOOL, M_GetIsTargetable, nullptr),
     FIELD_FN("is_killed",          TVT_BOOL, M_GetIsKilled,     nullptr),

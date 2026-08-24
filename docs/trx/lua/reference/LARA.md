@@ -18,15 +18,27 @@ Her position, room and hit points are not here: she is an item like any other an
 
 ### Properties
 
+- <a id="lara.animation_object" name="lara.animation_object"></a>**`trx.lara.animation_object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The object Lara's animations are coming from. It is normally Lara herself, and something else while a vehicle or a scripted sequence drives her. *(read-only)*
 - <a id="lara.item" name="lara.item"></a>**`trx.lara.item`** ([trx.items.Item](ITEMS.md#items.Item)). Lara's own item, or `nil` outside a level. Her position, room and hit points are read and written there. *(read-only)*
 - <a id="lara.target" name="lara.target"></a>**`trx.lara.target`** ([trx.items.Item](ITEMS.md#items.Item)). The item Lara's guns are locked onto, or `nil` if she has none. *(read-only)*
+- <a id="lara.vehicle" name="lara.vehicle"></a>**`trx.lara.vehicle`** ([trx.items.Item](ITEMS.md#items.Item)). The vehicle Lara is riding, or `nil` when she is on her own feet. Its speed and position are the ones that move her while she rides it. *(read-only)*
+- <a id="lara.is_controllable" name="lara.is_controllable"></a>**`trx.lara.is_controllable`** (boolean). Whether Lara answers to the player. False while she is dead, while the inventory or a dialog holds the game, and while a cutscene or flyby is active. *(read-only)*
 - <a id="lara.outfit" name="lara.outfit"></a>**`trx.lara.outfit`** (string). The outfit Lara is wearing, by name, as defined in `cfg/outfits.json5`.
 - <a id="lara.holsters_visible" name="lara.holsters_visible"></a>**`trx.lara.holsters_visible`** (boolean). Whether Lara's holsters are drawn on her hips.
 - <a id="lara.speech_face" name="lara.speech_face"></a>**`trx.lara.speech_face`** (number). Which of her outfit's speech faces Lara wears while she talks, counted from 0, or `nil` for her own face. An outfit with no speech faces keeps her own.
   The face is remembered, so putting her in another outfit mid-sentence dresses her in that outfit's face rather than leaving the one she had.
 - <a id="lara.is_flying" name="lara.is_flying"></a>**`trx.lara.is_flying`** (boolean). Whether Lara is in the fly-mode cheat. Setting it enters or leaves fly mode.
 - <a id="lara.is_wet" name="lara.is_wet"></a>**`trx.lara.is_wet`** (boolean). Whether Lara is still shedding droplets after a swim. [`trx.lara.dry`](#lara.dry) clears it. *(read-only)*
+- <a id="lara.vehicle_gun" name="lara.vehicle_gun"></a>**`trx.lara.vehicle_gun`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). The weapon the vehicle Lara is riding carries. Her own weapons are put away while she rides, so this is what her ammunition counter shows. `nil` where she is riding nothing, or riding something unarmed. *(read-only)*
 - <a id="lara.has_pistol_weapon" name="lara.has_pistol_weapon"></a>**`trx.lara.has_pistol_weapon`** (boolean). Whether Lara is carrying a pistol-class weapon, which is what decides whether she has holsters to show at all. *(read-only)*
+
+### Constants
+
+- <a id="lara.MAX_AIR" name="lara.MAX_AIR"></a>[lua]`trx.lara.MAX_AIR` = `1800`  
+  Lara's maximum air, which is what her air runs down from.
+
+- <a id="lara.MAX_SPRINT" name="lara.MAX_SPRINT"></a>[lua]`trx.lara.MAX_SPRINT` = `120`  
+  Lara's maximum sprint, which is what her sprint runs down from.
 
 ### Enums
 
@@ -160,15 +172,23 @@ Her position, room and hit points are not here: she is an item like any other an
     - <a id="lara.Lara.equipped_gun" name="lara.Lara.equipped_gun"></a>**`equipped_gun`**: [trx.catalog.weapons](CATALOG.md#catalog.weapons). The weapon Lara is holding. *(read-only)*
     - <a id="lara.Lara.exposure_bar" name="lara.Lara.exposure_bar"></a>**`exposure_bar`**: integer. Warmth remaining in the cold, out of [`trx.rules.exposure.max`](RULES.md#rules.exposure.max). Only moves in a level whose rooms carry the [`trx.rooms.Room.damaging`](ROOMS.md#rooms.Room.damaging) flag.
     - <a id="lara.Lara.extra_anim" name="lara.Lara.extra_anim"></a>**`extra_anim`**: boolean. Whether a scripted animation is driving Lara rather than her own state machine. *(read-only)*
+    - <a id="lara.Lara.flare_control" name="lara.Lara.flare_control"></a>**`flare_control`**: boolean. Whether the flare Lara holds is driving her arm. *(read-only)*
     - <a id="lara.Lara.gun_status" name="lara.Lara.gun_status"></a>**`gun_status`**: [trx.lara.GunState](#lara.GunState). What Lara's hands are doing. *(read-only)*
     - <a id="lara.Lara.hit_direction" name="lara.Lara.hit_direction"></a>**`hit_direction`**: integer. Which way the last hit came from, or -1 if she has not been hit. *(read-only)*
+    - <a id="lara.Lara.interact_item_num" name="lara.Lara.interact_item_num"></a>**`interact_item_num`**: integer. The item Lara is lining herself up with, by number, or -1 for none. *(read-only)*
+    - <a id="lara.Lara.interact_move_count" name="lara.Lara.interact_move_count"></a>**`interact_move_count`**: integer. How many frames she has spent moving into place for it. *(read-only)*
     - <a id="lara.Lara.is_burning" name="lara.Lara.is_burning"></a>**`is_burning`**: boolean. Whether Lara is on fire. Setting it lights her or puts her out.
     - <a id="lara.Lara.is_climbing" name="lara.Lara.is_climbing"></a>**`is_climbing`**: boolean. Whether Lara is on a climbable wall. *(read-only)*
     - <a id="lara.Lara.is_crouched" name="lara.Lara.is_crouched"></a>**`is_crouched`**: boolean. Whether Lara is crouching. *(read-only)*
+    - <a id="lara.Lara.is_interact_moving" name="lara.Lara.is_interact_moving"></a>**`is_interact_moving`**: boolean. Whether Lara is still moving towards her interaction target. *(read-only)*
+    - <a id="lara.Lara.left_arm_anim_num" name="lara.Lara.left_arm_anim_num"></a>**`left_arm_anim_num`**: integer. The animation Lara's left arm is playing, which follows the weapon in it rather than the rest of her. *(read-only)*
+    - <a id="lara.Lara.left_arm_frame_num" name="lara.Lara.left_arm_frame_num"></a>**`left_arm_frame_num`**: integer. The frame that animation is on. *(read-only)*
     - <a id="lara.Lara.poison" name="lara.Lara.poison"></a>**`poison`**: integer. How poisoned Lara is, and 0 when she is not.
     - <a id="lara.Lara.poison_target" name="lara.Lara.poison_target"></a>**`poison_target`**: integer. The poison reservoir that drains into [`trx.lara.poison`](#lara.Lara.poison) over time. TR4 only.
     - <a id="lara.Lara.pose_count" name="lara.Lara.pose_count"></a>**`pose_count`**: [trx.game.Frames](GAME.md#game.Frames). How long Lara has stood still, which is what starts an idle animation. *(read-only)*
     - <a id="lara.Lara.requested_gun" name="lara.Lara.requested_gun"></a>**`requested_gun`**: [trx.catalog.weapons](CATALOG.md#catalog.weapons). The weapon Lara is drawing, while she is drawing it. *(read-only)*
+    - <a id="lara.Lara.right_arm_anim_num" name="lara.Lara.right_arm_anim_num"></a>**`right_arm_anim_num`**: integer. The animation Lara's right arm is playing. *(read-only)*
+    - <a id="lara.Lara.right_arm_frame_num" name="lara.Lara.right_arm_frame_num"></a>**`right_arm_frame_num`**: integer. The frame that animation is on. *(read-only)*
     - <a id="lara.Lara.sprint_timer" name="lara.Lara.sprint_timer"></a>**`sprint_timer`**: integer. Sprint left in her legs.
     - <a id="lara.Lara.water_status" name="lara.Lara.water_status"></a>**`water_status`**: [trx.lara.WaterState](#lara.WaterState). Where Lara is with respect to water. *(read-only)*
 

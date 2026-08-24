@@ -319,6 +319,21 @@ bool Game_IsPlayable(void)
     return m_CurrentLevel != nullptr && !m_InCutscene;
 }
 
+bool Game_IsPlaying(void)
+{
+    return true;
+}
+
+double Clock_GetRealTime(void)
+{
+    return 0.0;
+}
+
+bool PhotoMode_IsActive(void)
+{
+    return false;
+}
+
 void FakeGame_SetInCutscene(const bool in_cutscene)
 {
     m_InCutscene = in_cutscene;
@@ -353,4 +368,9 @@ void FakeGame_PushLua(lua_State *const L)
     // The levels the game numbers: the gym is in the table but is not one.
     lua_pushinteger(L, FAKE_LEVEL_COUNT - 1);
     lua_setfield(L, -2, "NUMBERED_LEVEL_COUNT");
+}
+
+int32_t Output_GetMeasuredFPS(void)
+{
+    return 0;
 }

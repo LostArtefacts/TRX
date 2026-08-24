@@ -291,6 +291,24 @@ api.type("weapons.Weapon", {
         return raw.get_ammo_object(weapon.id)
       end,
     },
+    has_infinite_ammo = {
+      type = "boolean",
+      description = "Whether the weapon never runs dry. The pistols do in most games, and a "
+        .. "level or a script may say so of any weapon. A count of shots left means nothing "
+        .. "in this context.",
+      impl = function(weapon)
+        return raw.has_infinite_ammo(weapon.id)
+      end,
+    },
+    ammo_icon = {
+      type = "string",
+      nullable = true,
+      description = "The markup drawn beside the ammunition count in TR1. Later games count "
+        .. "without one, and a weapon that carries no icon answers with `nil`.",
+      impl = function(weapon)
+        return raw.ammo_icon(weapon.id)
+      end,
+    },
     rounds_per_shot = {
       type = "integer",
       description = "How many rounds one pull of the trigger spends: six for the shotgun, one for "

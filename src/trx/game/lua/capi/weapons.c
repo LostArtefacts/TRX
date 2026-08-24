@@ -320,6 +320,27 @@ static int M_L_WeaponRoundsPerShot(lua_State *const L)
     return 1;
 }
 
+// trxc.weapons.ammo_icon(weapon) -> string or nil
+//
+// Returns the TR1 ammunition-count icon markup.
+static int M_L_WeaponAmmoIcon(lua_State *const L)
+{
+    const char *const icon = Gun_Registry_Get(M_GetWeapon(L, 1))->ammo_icon;
+    if (icon == nullptr) {
+        lua_pushnil(L);
+    } else {
+        lua_pushstring(L, icon);
+    }
+    return 1;
+}
+
+// trxc.weapons.has_infinite_ammo(weapon) -> bool
+static int M_L_WeaponHasInfiniteAmmo(lua_State *const L)
+{
+    lua_pushboolean(L, Gun_HasInfiniteAmmo(M_GetWeapon(L, 1)));
+    return 1;
+}
+
 // trxc.weapons.shots_per_box(weapon) -> int
 static int M_L_WeaponShotsPerBox(lua_State *const L)
 {
@@ -428,6 +449,8 @@ static const luaL_Reg m_Module[] = {
     { "get_object", M_L_WeaponGetObject },
     { "get_ammo_object", M_L_WeaponGetAmmoObject },
     { "rounds_per_shot", M_L_WeaponRoundsPerShot },
+    { "ammo_icon", M_L_WeaponAmmoIcon },
+    { "has_infinite_ammo", M_L_WeaponHasInfiniteAmmo },
     { "shots_per_box", M_L_WeaponShotsPerBox },
     { "get_lock", M_L_WeaponGetLock },
     { "get_left_arm", M_L_WeaponGetLeftArm },

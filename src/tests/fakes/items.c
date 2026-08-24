@@ -74,6 +74,7 @@ static const char *const m_ScionNames[] = { "scion", nullptr };
 static const char *const m_CrystalNames[] = { "crystal", nullptr };
 
 const OBJECT_ID g_CreatureObjects[] = { FAKE_OBJ_WOLF, NO_OBJECT };
+const OBJECT_ID g_BossObjects[] = { NO_OBJECT };
 const OBJECT_ID g_LoyalObjects[] = { NO_OBJECT };
 // The fake's own two, and then the real ones a pickup family names, so a
 // command that selects on a family has something here to select. The crystal is
@@ -699,6 +700,11 @@ const char *ObjectProperty_GetItemName(const ITEM *const item, const int32_t i)
 bool Creature_IsHostile(const ITEM *const item)
 {
     return Object_Get(item->object_id)->intelligent && Item_IsAlive(item);
+}
+
+bool Creature_IsAlly(const ITEM *const item)
+{
+    return false;
 }
 
 void Creature_Die(const int16_t item_num, const bool explode)

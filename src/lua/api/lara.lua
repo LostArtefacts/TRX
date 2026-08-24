@@ -1,3 +1,5 @@
+require("trx.signal")
+
 local raw = trxc.lara
 local api = trx.api
 
@@ -202,7 +204,75 @@ api.type("lara.Lara", {
       writable = false,
       description = "How long Lara has stood still, which is what starts an idle animation.",
     },
+    left_arm_anim_num = {
+      from = "left_arm.anim_num",
+      type = "integer",
+      writable = false,
+      description = "The animation Lara's left arm is playing, which follows the weapon in it "
+        .. "rather than the rest of her.",
+    },
+    left_arm_frame_num = {
+      from = "left_arm.frame_num",
+      type = "integer",
+      writable = false,
+      description = "The frame that animation is on.",
+    },
+    right_arm_anim_num = {
+      from = "right_arm.anim_num",
+      type = "integer",
+      writable = false,
+      description = "The animation Lara's right arm is playing.",
+    },
+    right_arm_frame_num = {
+      from = "right_arm.frame_num",
+      type = "integer",
+      writable = false,
+      description = "The frame that animation is on.",
+    },
+    flare_control = {
+      from = "flare.control",
+      type = "boolean",
+      writable = false,
+      description = "Whether the flare Lara holds is driving her arm.",
+    },
+    interact_item_num = {
+      from = "interact_target.item_num",
+      type = "integer",
+      writable = false,
+      description = "The item Lara is lining herself up with, by number, or -1 for none.",
+    },
+    interact_move_count = {
+      from = "interact_target.move_count",
+      type = "integer",
+      writable = false,
+      description = "How many frames she has spent moving into place for it.",
+    },
+    is_interact_moving = {
+      from = "interact_target.is_moving",
+      type = "boolean",
+      writable = false,
+      description = "Whether Lara is still moving towards her interaction target.",
+    },
   },
+})
+
+api.property("lara.animation_object", {
+  type = "catalog.objects",
+  description = "The object Lara's animations are coming from. It is normally Lara herself, "
+    .. "and something else while a vehicle or a scripted sequence drives her.",
+  get = function()
+    return raw.get_animation_object()
+  end,
+})
+
+api.const("lara.MAX_AIR", {
+  value = trxc.lara.get_max_air(),
+  description = "Lara's maximum air, which is what her air runs down from.",
+})
+
+api.const("lara.MAX_SPRINT", {
+  value = trxc.lara.get_max_sprint(),
+  description = "Lara's maximum sprint, which is what her sprint runs down from.",
 })
 
 api.property("lara.item", {
@@ -221,6 +291,23 @@ api.property("lara.target", {
     local target = raw.get_target()
     return target ~= nil and trx.items[target] or nil
   end,
+})
+
+api.property("lara.vehicle", {
+  type = "items.Item",
+  description = "The vehicle Lara is riding, or `nil` when she is on her own feet. Its speed "
+    .. "and position are the ones that move her while she rides it.",
+  get = function()
+    local vehicle = raw.get_vehicle()
+    return vehicle ~= nil and trx.items[vehicle] or nil
+  end,
+})
+
+api.property("lara.is_controllable", {
+  type = "boolean",
+  description = "Whether Lara answers to the player. False while she is dead, while the "
+    .. "inventory or a dialog holds the game, and while a cutscene or flyby is active.",
+  get = raw.is_controllable,
 })
 
 api.property("lara.outfit", {
@@ -266,6 +353,15 @@ api.property("lara.is_wet", {
   type = "boolean",
   description = "Whether Lara is still shedding droplets after a swim. `trx.lara.dry` clears it.",
   get = raw.is_wet,
+})
+
+api.property("lara.vehicle_gun", {
+  type = "catalog.weapons",
+  nullable = true,
+  description = "The weapon the vehicle Lara is riding carries. Her own weapons are put away "
+    .. "while she rides, so this is what her ammunition counter shows. `nil` where she is "
+    .. "riding nothing, or riding something unarmed.",
+  get = raw.vehicle_gun,
 })
 
 api.property("lara.has_pistol_weapon", {

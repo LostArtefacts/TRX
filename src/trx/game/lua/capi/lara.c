@@ -5,10 +5,13 @@
 #include <trx/game/items/const.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/cheat.h>
+#include <trx/game/lara/common.h>
+#include <trx/game/lara/const.h>
 #include <trx/game/lara/misc.h>
 #include <trx/game/lara/poison.h>
 #include <trx/game/lara/skin/storage.h>
 #include <trx/game/lara/types.h>
+#include <trx/game/lara/vehicle.h>
 #include <trx/game/level/common.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/field.h>
@@ -69,6 +72,18 @@ static const FIELD_DESC m_Fields[] = {
     FIELD_RO(LARA_INFO, hit_frame),
     FIELD_RO(LARA_INFO, pose_count),
 
+    // arm and flare state
+    FIELD_RO(LARA_INFO, left_arm.anim_num),
+    FIELD_RO(LARA_INFO, left_arm.frame_num),
+    FIELD_RO(LARA_INFO, right_arm.anim_num),
+    FIELD_RO(LARA_INFO, right_arm.frame_num),
+    FIELD_RO(LARA_INFO, flare.control),
+
+    // interaction target
+    FIELD_RO(LARA_INFO, interact_target.item_num),
+    FIELD_RO(LARA_INFO, interact_target.move_count),
+    FIELD_RO(LARA_INFO, interact_target.is_moving),
+
     // Deliberately absent: the arms, the LOT, the mesh pointers, the rope and
     // interaction state, and the interpolation snapshots. They are how the
     // engine drives Lara, not a contract, and a script writing them mid-frame
@@ -119,6 +134,43 @@ static int M_L_LaraGetTarget(lua_State *const L)
     LUA_PushOptIndex(
         L, lara->target != nullptr ? Item_GetIndex(lara->target) : NO_ITEM,
         NO_ITEM);
+    return 1;
+}
+
+// item_num = trxc.lara.get_vehicle()
+static int M_L_LaraGetVehicle(lua_State *const L)
+{
+    const ITEM *const item = Lara_Vehicle_GetItem();
+    LUA_PushOptIndex(
+        L, item != nullptr ? Item_GetIndex(item) : NO_ITEM, NO_ITEM);
+    return 1;
+}
+
+// trxc.lara.get_animation_object() -> integer
+static int M_L_LaraGetAnimationObject(lua_State *const L)
+{
+    lua_pushinteger(L, Lara_GetAnimationObject());
+    return 1;
+}
+
+// trxc.lara.get_max_air() -> integer
+static int M_L_LaraGetMaxAir(lua_State *const L)
+{
+    lua_pushinteger(L, LARA_MAX_AIR);
+    return 1;
+}
+
+// trxc.lara.get_max_sprint() -> integer
+static int M_L_LaraGetMaxSprint(lua_State *const L)
+{
+    lua_pushinteger(L, LARA_MAX_SPRINT);
+    return 1;
+}
+
+// trxc.lara.is_controllable() -> boolean
+static int M_L_LaraIsControllable(lua_State *const L)
+{
+    lua_pushboolean(L, Lara_IsControllable());
     return 1;
 }
 
@@ -315,9 +367,29 @@ static int M_L_LaraTeleport(lua_State *const L)
     return 1;
 }
 
+// trxc.lara.vehicle_gun() -> weapon or nil
+//
+// Returns the weapon mounted on Lara's vehicle.
+static int M_L_LaraVehicleGun(lua_State *const L)
+{
+    const LARA_GUN_TYPE gun_type = Lara_Vehicle_GetGunType();
+    if (gun_type == LGT_UNARMED) {
+        lua_pushnil(L);
+    } else {
+        lua_pushinteger(L, gun_type);
+    }
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
+    { "vehicle_gun", M_L_LaraVehicleGun },
     { "get_item", M_L_LaraGetItem },
     { "get_target", M_L_LaraGetTarget },
+    { "get_vehicle", M_L_LaraGetVehicle },
+    { "is_controllable", M_L_LaraIsControllable },
+    { "get_animation_object", M_L_LaraGetAnimationObject },
+    { "get_max_air", M_L_LaraGetMaxAir },
+    { "get_max_sprint", M_L_LaraGetMaxSprint },
     { "get_outfit", M_L_LaraGetOutfit },
     { "set_outfit", M_L_LaraSetOutfit },
     { "set_extra_equipment", M_L_LaraSetExtraEquipment },

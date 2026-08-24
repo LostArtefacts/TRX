@@ -242,6 +242,11 @@ end
 local FAMILIES = {
   { "creature", "creature", "The object is a creature." },
   {
+    "boss",
+    "boss",
+    "A creature the game treats as a boss, which the enemy health bar can be held to.",
+  },
+  {
     "loyal",
     "loyal",
     "One of Lara's own: the butler, and Lara herself.",
