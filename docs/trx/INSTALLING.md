@@ -1041,6 +1041,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── ganges_door131_frames.bin
 │   │   │   ├── ganges_textures.bin
 │   │   │   ├── globe_model.bin
+│   │   │   ├── gym_fd.bin
 │   │   │   ├── gym_sky.bin
 │   │   │   ├── gym_textures.bin
 │   │   │   ├── hiss_sfx.bin
@@ -2405,6 +2406,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── ganges_door131_frames.bin
     │   │   │   │   ├── ganges_textures.bin
     │   │   │   │   ├── globe_model.bin
+    │   │   │   │   ├── gym_fd.bin
     │   │   │   │   ├── gym_sky.bin
     │   │   │   │   ├── gym_textures.bin
     │   │   │   │   ├── hiss_sfx.bin
