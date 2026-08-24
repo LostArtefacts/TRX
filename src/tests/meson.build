@@ -526,6 +526,23 @@ unit_tests += {
   'bundles': [b_lua_surface, b_lua_math],
 }
 
+# Signals: what they hold and when they say so. The config layer stands here
+# because a setting speaks through a signal of its own, and that is what it
+# speaks with.
+unit_tests += {
+  'name': 'lua/api/signal',
+  'bundles': [b_lua_surface, b_config, b_lua_math, b_lua_strings],
+  'src': ['fakes/locale.c', 'fakes/rooms.c'],
+  'engine': [
+    'game/lua/capi/config.c',
+    'game/lua/capi/events.c',
+    'game/lua/capi/locale.c',
+    'game/ui/dialogs/settings_handlers.c',
+    'game/ui/dialogs/settings_lua.c',
+    'game/ui/dialogs/settings_rows.c',
+  ],
+}
+
 # No fake engine either: the real generator is the thing under test. trx.math
 # comes along for the angle unit that trx.random.angle reports in.
 unit_tests += {

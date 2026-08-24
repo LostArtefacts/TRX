@@ -112,6 +112,20 @@ An event that carries a default the script may take over says so in its descript
   end)
   ```
 
+- <a id="events.on_tick" name="events.on_tick"></a>[lua]`trx.events.on_tick(callback)`  
+  Happens once for every tick the game runs, whatever is on screen: while a
+  level is played, while a menu is open, over a cutscene and through a fade.
+
+  This is the clock a script keeps its own state on. It is not the world
+  stepping - [`trx.events.before_control`](#events.before_control) is that, and it happens only while
+  a level is running - and it is not a frame reaching the screen, which
+  happens twice as often while frames are interpolated.
+
+  Parameters:
+  - <a id="events.on_tick.callback" name="events.on_tick.callback"></a>**`callback`** (function). Called once per tick.
+
+  Returns: integer. The listener id.
+
 - <a id="events.on_ui_draw" name="events.on_ui_draw"></a>[lua]`trx.events.on_ui_draw(callback)`  
   Happens as the game builds one of the nine regions of the on-screen
   interface, once per region on every drawn frame. A handler draws with

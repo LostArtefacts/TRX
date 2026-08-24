@@ -165,6 +165,8 @@
 - Fixed the game stuttering while it writes its log
 
 **Lua**
+- Added `trx.events.on_tick()` and `trx.signal.tick`, which happen once for every tick the game runs, whether a level is being played or a menu is open
+- Added a new Lua module, `trx.signal`, for a value that says when it changes: signals combine with `&`, `|` and `~`, a combination reports only when its own answer moves, `trx.signal.config` gives a setting one of its own, and `trx.signal.polled` makes one out of anything read once a tick
 - Added `trx.events.on_cutscene_frame()`, which reports every frame of a TR4 cutscene, so a script can act part-way through one (TRX1199)
 - Added `trx.fx.blood()` and `trx.fx.blood_bath()`, so a script can make a hit or a kill bleed wherever it wants (TRX1199)
 - Added the full weapon definition to `trx.weapons`, so a script can read and change what a weapon does: its damage, reach and accuracy, its aim limits, its ammunition, the animations it is drawn by, and the flash, glow, smoke and shells it throws (TRX1091)

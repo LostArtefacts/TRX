@@ -182,6 +182,27 @@ end)]],
   impl = hook(types.LEVEL_UNLOAD),
 })
 
+api.define("events.on_tick", {
+  description = [[
+    Happens once for every tick the game runs, whatever is on screen: while a
+    level is played, while a menu is open, over a cutscene and through a fade.
+
+    This is the clock a script keeps its own state on. It is not the world
+    stepping - `trx.events.before_control` is that, and it happens only while
+    a level is running - and it is not a frame reaching the screen, which
+    happens twice as often while frames are interpolated.
+  ]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      description = "Called once per tick.",
+    },
+  },
+  returns = { type = "integer", description = "The listener id." },
+  impl = hook(types.TICK),
+})
+
 api.define("events.on_ui_draw", {
   description = [[
     Happens as the game builds one of the nine regions of the on-screen

@@ -183,6 +183,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_CUTSCENE_END, "cutscene_end");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_LEVEL_UNLOAD, "level_unload");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_DRAW, "ui_draw");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_TICK, "tick");
 
     // LOG_LEVEL_MAX is a sentinel, not a level.
     ENUM_MAP(LOG_LEVEL, LOG_LEVEL_DEBUG, "debug");
