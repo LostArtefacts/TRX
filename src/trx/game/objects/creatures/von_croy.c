@@ -391,7 +391,7 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
     M_PRIV *const p = M_GetPriv(item);
     ITEM *const lara = Lara_GetItem();
 
-    const bool skip_requested = g_InputDB.option || g_InputDB.look;
+    const bool skip_requested = g_InputDB.menu_back || g_InputDB.look;
 
     if (!Lara_IsControllable()) {
         InputState_Clear(&g_Input);
