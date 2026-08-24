@@ -307,6 +307,17 @@ int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
         M_RunFileAs(L, path, chunk_name);
     }
 
+    if (test->mod_script != nullptr) {
+        // Use the same chunk name as the engine require path.
+        char path[512];
+        char chunk_name[sizeof(path) + 1];
+        snprintf(
+            path, sizeof(path), REPO_ROOT "/data/trx/ship/modules/%s.lua",
+            test->mod_script);
+        snprintf(chunk_name, sizeof(chunk_name), "@%s", path);
+        M_RunFileAs(L, path, chunk_name);
+    }
+
     if (test->harden) {
         LUA_HardenGlobals(L);
     }

@@ -25,6 +25,7 @@
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 #include <trx/game/stats.h>
+#include <trx/game/ui/common.h>
 #include <trx/version.h>
 
 #define M_FRAME_BUFFER(key)                                                    \

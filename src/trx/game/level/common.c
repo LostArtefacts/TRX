@@ -137,7 +137,6 @@ RESULT Level_Initialise(
 
     Option_Reset();
     Overlay_Reset();
-    Overlay_SetHealthBarTimer(100);
 
     // Every other level type reaches Lara_Initialise through the sequencer;
     // the title is loaded on its own, and still has to dress her for the

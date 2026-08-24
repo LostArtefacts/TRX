@@ -38,3 +38,6 @@ int32_t UI_Region_Reserve(UI_REGION region, float w, float h);
 
 // Returns a reservation box from the last layout, or false for a stale slot.
 bool UI_Region_GetSlotBox(int32_t slot, float *x, float *y, float *w, float *h);
+
+// Returns whether a region has no children in the current scene.
+bool UI_Region_IsEmpty(UI_REGION region);

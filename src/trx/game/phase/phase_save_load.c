@@ -51,7 +51,7 @@ static SAVEGAME_SLOT_REF M_GetInitialSlot(void)
 static void M_SetTitle(const M_PRIV *const p)
 {
     Overlay_SetBottomText((OVERLAY_TEXT) {
-        .kind = UI_OVERLAY_TEXT_GS_KEY,
+        .kind = OVERLAY_TEXT_GS_KEY,
         .gs_key = M_IsLoading(p) ? GS_ID("general/passport/load_game")
                                  : GS_ID("general/passport/save_game"),
         .fmt_gs_key = GS_ID("general/inventory_ring/object_name_fmt"),

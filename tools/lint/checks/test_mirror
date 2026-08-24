@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # src/tests mirrors the tree it tests: src/tests/trx/core/vector.c exercises
-# src/trx/core/vector.c, and src/tests/lua/api/music.c stands trx.music up out of
-# src/lua/api/music.lua. That is the whole convention, and it is worth only as
-# much as it is kept - a test filed under the wrong path is a test nobody looking
-# in the right place will find.
+# src/trx/core/vector.c, src/tests/lua/api/music.c stands trx.music up out of
+# src/lua/api/music.lua, and src/tests/modules/overlay.c runs the shipped module
+# data/trx/ship/modules/overlay.lua. That is the whole convention, and it is
+# worth only as much as it is kept - a test filed under the wrong path is a test
+# nobody looking in the right place will find.
 #
 # This checks the mirror both ways: that every test source answers to something
 # real, and that every test source is registered in src/tests/meson.build. A file
@@ -25,6 +26,7 @@ TEST_DIR = SRC_DIR / "tests"
 MIRRORS = {
     "trx": SRC_DIR / "trx",
     "lua": SRC_DIR / "lua",
+    "modules": REPO_DIR / "data" / "trx" / "ship" / "modules",
 }
 
 # Tests of the surface as a whole rather than of one module, so there is no

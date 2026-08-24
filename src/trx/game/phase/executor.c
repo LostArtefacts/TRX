@@ -65,8 +65,8 @@ static void M_DrawFadeToBlackTransition(const float opacity)
     Output_Overlay_DrawSnapshot(1.0f);
     Output_Overlay_DrawBlackRectangle(opacity, false);
 
-    Overlay_Draw();
     LUA_UI_DrawRegions();
+    Overlay_DrawUI();
     TouchOverlay_Draw();
     Console_Draw();
     UI_EndScene();
@@ -186,8 +186,8 @@ static void M_Draw(PHASE *const phase)
         phase->draw(phase);
     }
 
-    Overlay_Draw();
     LUA_UI_DrawRegions();
+    Overlay_DrawUI();
     TouchOverlay_Draw();
     Console_Draw();
     UI_EndScene();

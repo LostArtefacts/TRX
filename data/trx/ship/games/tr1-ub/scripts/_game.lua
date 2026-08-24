@@ -1,3 +1,4 @@
+require("common.overlay")
 require("common.water_color").declare({
   order = { "tombati", "dos", "custom" },
   modes = {

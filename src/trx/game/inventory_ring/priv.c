@@ -615,7 +615,7 @@ void InvRing_ShowItemName(const INVENTORY_ITEM *const inv_item)
     }
 
     Overlay_SetBottomText((OVERLAY_TEXT) {
-        .kind = UI_OVERLAY_TEXT_OBJECT_NAME,
+        .kind = OVERLAY_TEXT_OBJECT_NAME,
         .object_id = object_id,
         .fmt_gs_key = GS_ID("general/inventory_ring/object_name_fmt"),
     });
@@ -693,7 +693,7 @@ void InvRing_ShowHeader(INV_RING *const ring)
 {
     if (ring->mode == INV_TITLE_MODE) {
         Overlay_SetTopText((OVERLAY_TEXT) {
-            .kind = UI_OVERLAY_TEXT_LITERAL,
+            .kind = OVERLAY_TEXT_LITERAL,
             .literal = " ",
         });
         return;
@@ -702,7 +702,7 @@ void InvRing_ShowHeader(INV_RING *const ring)
     switch (ring->type) {
     case RT_MAIN:
         Overlay_SetTopText((OVERLAY_TEXT) {
-            .kind = UI_OVERLAY_TEXT_GS_KEY,
+            .kind = OVERLAY_TEXT_GS_KEY,
             .gs_key = GS_ID("general/inventory_ring/heading_inventory"),
             .fmt_gs_key = GS_ID("general/inventory_ring/heading_fmt"),
         });
@@ -710,13 +710,13 @@ void InvRing_ShowHeader(INV_RING *const ring)
     case RT_OPTION:
         if (ring->mode == INV_DEATH_MODE) {
             Overlay_SetTopText((OVERLAY_TEXT) {
-                .kind = UI_OVERLAY_TEXT_GS_KEY,
+                .kind = OVERLAY_TEXT_GS_KEY,
                 .gs_key = GS_ID("general/inventory_ring/heading_game_over"),
                 .fmt_gs_key = GS_ID("general/inventory_ring/heading_fmt"),
             });
         } else {
             Overlay_SetTopText((OVERLAY_TEXT) {
-                .kind = UI_OVERLAY_TEXT_GS_KEY,
+                .kind = OVERLAY_TEXT_GS_KEY,
                 .gs_key = GS_ID("general/inventory_ring/heading_option"),
                 .fmt_gs_key = GS_ID("general/inventory_ring/heading_fmt"),
             });
@@ -724,7 +724,7 @@ void InvRing_ShowHeader(INV_RING *const ring)
         break;
     case RT_KEYS:
         Overlay_SetTopText((OVERLAY_TEXT) {
-            .kind = UI_OVERLAY_TEXT_GS_KEY,
+            .kind = OVERLAY_TEXT_GS_KEY,
             .gs_key = GS_ID("general/inventory_ring/heading_items"),
             .fmt_gs_key = GS_ID("general/inventory_ring/heading_fmt"),
         });
@@ -744,20 +744,20 @@ void InvRing_ShowHeader(INV_RING *const ring)
     const bool show_bottom_arrow = ring->type == RT_KEYS
         || (ring->type == RT_MAIN && !InvRing_IsOptionLockedOut());
 
-    Overlay_ShowArrow(UI_OVERLAY_ARROW_TL, show_up_arrow);
-    Overlay_ShowArrow(UI_OVERLAY_ARROW_TR, show_up_arrow);
+    Overlay_ShowArrow(OVERLAY_ARROW_TL, show_up_arrow);
+    Overlay_ShowArrow(OVERLAY_ARROW_TR, show_up_arrow);
 
-    Overlay_ShowArrow(UI_OVERLAY_ARROW_BL, show_bottom_arrow);
-    Overlay_ShowArrow(UI_OVERLAY_ARROW_BR, show_bottom_arrow);
+    Overlay_ShowArrow(OVERLAY_ARROW_BL, show_bottom_arrow);
+    Overlay_ShowArrow(OVERLAY_ARROW_BR, show_bottom_arrow);
 }
 
 void InvRing_RemoveHeader(void)
 {
     Overlay_SetTopText((OVERLAY_TEXT) { 0 });
-    Overlay_ShowArrow(UI_OVERLAY_ARROW_TL, false);
-    Overlay_ShowArrow(UI_OVERLAY_ARROW_TR, false);
-    Overlay_ShowArrow(UI_OVERLAY_ARROW_BL, false);
-    Overlay_ShowArrow(UI_OVERLAY_ARROW_BR, false);
+    Overlay_ShowArrow(OVERLAY_ARROW_TL, false);
+    Overlay_ShowArrow(OVERLAY_ARROW_TR, false);
+    Overlay_ShowArrow(OVERLAY_ARROW_BL, false);
+    Overlay_ShowArrow(OVERLAY_ARROW_BR, false);
 }
 
 bool InvRing_CanExamine(void)
