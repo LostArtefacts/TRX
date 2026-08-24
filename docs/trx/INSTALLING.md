@@ -1082,6 +1082,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── sparks_gfx.bin
 │   │   │   ├── stpaul_animating_bounds.bin
 │   │   │   ├── stpaul_textures.bin
+│   │   │   ├── temple_itemrots.bin
 │   │   │   ├── thames_animating_bounds.bin
 │   │   │   ├── thames_fd.bin
 │   │   │   ├── thames_textures.bin
@@ -2445,6 +2446,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── sparks_gfx.bin
     │   │   │   │   ├── stpaul_animating_bounds.bin
     │   │   │   │   ├── stpaul_textures.bin
+    │   │   │   │   ├── temple_itemrots.bin
     │   │   │   │   ├── thames_animating_bounds.bin
     │   │   │   │   ├── thames_fd.bin
     │   │   │   │   ├── thames_textures.bin
