@@ -318,10 +318,15 @@ static void M_ReadSampleData(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 
 static RESULT M_ProbeImages(TRX_FILE *const file)
 {
+    const char *const chunk_names[] = {
+        "images32",
+        "images16",
+        "sky/font",
+    };
+
     LEVEL_FORMAT_SKIP_OR_FAIL(6); // page counts
-    for (int32_t i = 0; i < 3; i++) {
-        TRX_FILE *const images =
-            M_ReadChunk(file, String_Format("probe images %d", i));
+    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(chunk_names); i++) {
+        TRX_FILE *const images = M_ReadChunk(file, chunk_names[i]);
         if (images == nullptr) {
             return ERR;
         }
