@@ -79,6 +79,7 @@
 - Fixed a visible seam across the sky in TR4 levels (TRX563, regression from 1.9)
 - Fixed the inventory background showing black, and objects around it going missing, in a headless run
 - Fixed the underwater view wobbling less at higher supersampling values (TRX1207)
+- Fixed sprite shadows breaking apart on uneven ground (Graphic Options → Visuals → Shadows shape) (#6388 / TRX1244)
 - Fixed static objects that reach through a doorway taking the water tint and the light of the room next door
 - Fixed the underwater view wobbling less at higher supersampling values (TRX1207)
 - Fixed being able to push pushblocks onto floors with triangular geometry (TRX1228, regression from 1.0)
