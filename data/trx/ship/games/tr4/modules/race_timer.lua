@@ -6,10 +6,6 @@
 -- good when the finish is reached, before the scenes that close the level.
 --
 --   local race_timer = require("tr4.race_timer")
---
---   trx.events.on_game_start(function(is_save)
---     race_timer.arm(is_save)
---   end)
 
 local M = {}
 
@@ -22,11 +18,10 @@ local GUIDE_RUN = 3
 local MAX_FRAMES = 60 * 60 * trx.game.LOGIC_FPS
 
 -- The store is the same table for the life of the session, so taking it once
--- is safe: a load refills it rather than replacing it.
+-- is safe: a load refills it rather than replacing it. It is also the only
+-- place the race is kept, so a script that runs again over a level already
+-- under way, as a load makes it, picks the race up where it stands.
 local store = trx.store.level
-
--- The clock as it is drawn, built once a logic frame.
-local clock = nil
 
 local function guide_has_set_off()
   local racers =
@@ -51,43 +46,15 @@ local function format_clock(frames)
 end
 
 local function tick()
-  local frames = store.race_frames
-  if frames == nil or store.race_done then
-    clock = nil
+  if store.race_done then
     return
   end
 
   if not store.race_running then
-    if guide_has_set_off() then
-      store.race_running = true
-    end
+    store.race_running = guide_has_set_off()
   elseif not trx.cutscenes.is_playing then
-    frames = frames + 1
-    store.race_frames = frames
+    store.race_frames = (store.race_frames or 0) + 1
   end
-
-  clock = frames > 0 and frames < MAX_FRAMES and format_clock(frames) or nil
-end
-
-local function draw(location)
-  if location ~= trx.ui.Location.TOP_CENTER or clock == nil then
-    return
-  end
-  if not trx.game.is_playable or trx.cutscenes.is_playing then
-    return
-  end
-  trx.ui.label(clock)
-end
-
--- Gives the level a timer. A fresh start puts it back to zero; a load leaves
--- what the save carried.
-function M.arm(is_save)
-  if not is_save then
-    store.race_frames = 0
-    store.race_running = false
-    store.race_done = false
-  end
-  clock = nil
 end
 
 -- Ends the race. The clock stops and leaves the screen for the rest of the
@@ -95,10 +62,36 @@ end
 function M.finish()
   store.race_done = true
   store.race_running = false
-  clock = nil
 end
 
+-- The clock as it reads now, or nil while it has nothing to show. It stays
+-- hidden during the race cutscenes and once the race is over.
+local function clock()
+  local frames = store.race_frames or 0
+  if store.race_done or frames <= 0 or frames >= MAX_FRAMES then
+    return nil
+  end
+  if not trx.game.is_playable or trx.cutscenes.is_playing then
+    return nil
+  end
+  return format_clock(frames)
+end
+
+-- The clock is a single label at the top of the screen.
+local text = trx.signal.polled(clock)
+
+trx.ui.regions.place(
+  trx.ui.Region.TOP_CENTER,
+  trx.ui.widgets.Label({
+    text = text:map(function(value)
+      return value or ""
+    end),
+    shown = text:map(function(value)
+      return value ~= nil
+    end),
+  })
+)
+
 trx.events.before_control(tick)
-trx.events.on_ui_draw(draw)
 
 return M

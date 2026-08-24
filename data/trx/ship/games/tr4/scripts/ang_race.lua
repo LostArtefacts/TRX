@@ -8,12 +8,11 @@ local LARA_WON = 7
 local LARA_LOST = 8
 local IRIS_CHAMBER = 9
 
-trx.events.on_game_start(function(is_save)
+trx.events.on_game_start(function()
   trx.objects.animating_14.properties.collidable = false
   trx.objects.animating_15.properties.collidable = false
   trx.objects.animating_16.properties.collidable = false
   trx.lara.holsters_visible = trx.lara.has_pistol_weapon
-  race_timer.arm(is_save)
   trx.objects.switch_type_generic_1.properties.switch_mode =
     trx.items.SwitchMode.HIDDEN_REACH
 end)
