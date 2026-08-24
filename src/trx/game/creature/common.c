@@ -1051,7 +1051,8 @@ bool Creature_Animate(
 
     const int16_t *const zone = Box_GetLotZone(lot);
 
-    if (g_TRVersion >= 2 && !Object_IsType(item->object_id, g_WaterObjects)) {
+    if (g_TRVersion >= 2 && g_TRVersion < 4
+        && !Object_IsType(item->object_id, g_WaterObjects)) {
         int16_t room_num = item->room_num;
         Room_GetSector(item->pos, &room_num);
         Item_UpdateRoom(item_num, room_num);
