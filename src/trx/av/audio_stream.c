@@ -395,14 +395,15 @@ RESULT Audio_Stream_CreateFromFile(
 
     ASSERT(file_path != nullptr);
 
-    RESULT result = FAIL(
-        "%s: all %d streams are in use", file_path, AUDIO_MAX_ACTIVE_STREAMS);
+    RESULT result = OK;
+    bool have_slot = false;
     Audio_WorkerLock();
     for (int32_t sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS;
          sound_id++) {
         if (m_Streams[sound_id].is_used) {
             continue;
         }
+        have_slot = true;
         AUDIO_DECODER *decoder = nullptr;
         result = AudioDecoder_CreateFromPath(
             file_path, AUDIO_WORKING_CHANNELS, &decoder);
@@ -415,6 +416,11 @@ RESULT Audio_Stream_CreateFromFile(
     }
     Audio_WorkerUnlock();
 
+    if (!have_slot) {
+        result = FAIL(
+            "%s: all %d streams are in use", file_path,
+            AUDIO_MAX_ACTIVE_STREAMS);
+    }
     return result;
 }
 
@@ -427,13 +433,15 @@ RESULT Audio_Stream_CreateFromMemory(
     ASSERT(data != nullptr);
     ASSERT(size != 0);
 
-    RESULT result = FAIL("all %d streams are in use", AUDIO_MAX_ACTIVE_STREAMS);
+    RESULT result = OK;
+    bool have_slot = false;
     Audio_WorkerLock();
     for (int32_t sound_id = 0; sound_id < AUDIO_MAX_ACTIVE_STREAMS;
          sound_id++) {
         if (m_Streams[sound_id].is_used) {
             continue;
         }
+        have_slot = true;
         AUDIO_DECODER *decoder = nullptr;
         result = AudioDecoder_CreateFromMemory(
             data, size, AUDIO_WORKING_CHANNELS, &decoder);
@@ -446,6 +454,9 @@ RESULT Audio_Stream_CreateFromMemory(
     }
     Audio_WorkerUnlock();
 
+    if (!have_slot) {
+        result = FAIL("all %d streams are in use", AUDIO_MAX_ACTIVE_STREAMS);
+    }
     return result;
 }
 
