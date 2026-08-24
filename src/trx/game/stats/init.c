@@ -373,8 +373,10 @@ void Stats_CalculateMaxStats(void)
                         Item_Initialise(item_num);
                     } else {
                         ROOM *const room = Room_Get(item->room_num);
-                        item->next_item = room->item_num;
-                        room->item_num = item_num;
+                        if (room != nullptr) {
+                            item->next_item = room->item_num;
+                            room->item_num = item_num;
+                        }
                     }
                 }
 
