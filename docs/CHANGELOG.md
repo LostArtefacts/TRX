@@ -78,6 +78,7 @@
 - Changed the game to run on the dedicated graphics card on laptops that have two
 - Fixed a headless run drawing none of the title screen's objects, such as the passport
 - Fixed a visible seam across the sky in TR4 levels (TRX563, regression from 1.9)
+- Fixed the debug room clip frames being drawn in the wrong place and size when the upscaling factor is raised
 - Fixed the inventory background showing black, and objects around it going missing, in a headless run
 - Fixed the underwater view wobbling less at higher supersampling values (TRX1207)
 - Fixed static objects that reach through a doorway taking the water tint and the light of the room next door
