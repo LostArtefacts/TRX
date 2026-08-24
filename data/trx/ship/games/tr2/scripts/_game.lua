@@ -1,3 +1,4 @@
+require("common.overlay")
 require("common.water_color").declare({
   order = { "pc_hardware", "pc_software", "ps1", "custom" },
   modes = {

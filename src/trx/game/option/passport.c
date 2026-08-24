@@ -102,8 +102,8 @@ static void M_ResetNavStack(M_PAGE *const page)
 
 static void M_InitText(void)
 {
-    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCL, false);
-    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCR, false);
+    Overlay_ShowArrow(OVERLAY_ARROW_BCL, false);
+    Overlay_ShowArrow(OVERLAY_ARROW_BCR, false);
     Overlay_SetBottomText((OVERLAY_TEXT) { 0 });
 }
 
@@ -143,8 +143,8 @@ static void M_FreeAllDialogs(void)
 static void M_RemoveAllText(void)
 {
     m_Priv.error_msg = nullptr;
-    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCL, false);
-    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCR, false);
+    Overlay_ShowArrow(OVERLAY_ARROW_BCL, false);
+    Overlay_ShowArrow(OVERLAY_ARROW_BCR, false);
     Overlay_SetBottomText((OVERLAY_TEXT) { 0 });
 }
 
@@ -183,15 +183,15 @@ static bool M_IsArrowVisible(int32_t direction)
 
 static void M_SyncArrowsVisibility(void)
 {
-    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCL, M_IsArrowVisible(-1));
-    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCR, M_IsArrowVisible(1));
+    Overlay_ShowArrow(OVERLAY_ARROW_BCL, M_IsArrowVisible(-1));
+    Overlay_ShowArrow(OVERLAY_ARROW_BCR, M_IsArrowVisible(1));
 }
 
 static void M_ChangePageTextContent(const char *const content)
 {
     InvRing_RemoveAllText();
     Overlay_SetBottomText((OVERLAY_TEXT) {
-        .kind = UI_OVERLAY_TEXT_LITERAL,
+        .kind = OVERLAY_TEXT_LITERAL,
         .literal = content,
         .fmt_gs_key = GS_ID("general/inventory_ring/object_name_fmt"),
     });

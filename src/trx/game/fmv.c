@@ -137,8 +137,8 @@ static void M_RenderBegin(void *const surface, void *const user_data)
 static void M_DrawUI(void)
 {
     UI_BeginScene();
-    Overlay_Draw();
     LUA_UI_DrawRegions();
+    Overlay_DrawUI();
     Console_Draw();
     Console_Control();
     Console_Control();
@@ -208,7 +208,7 @@ static void M_SetPauseText(const bool show)
 {
     if (show) {
         Overlay_SetBottomText((OVERLAY_TEXT) {
-            .kind = UI_OVERLAY_TEXT_GS_KEY,
+            .kind = OVERLAY_TEXT_GS_KEY,
             .gs_key = GS_ID("general/pause/paused"),
         });
     } else {

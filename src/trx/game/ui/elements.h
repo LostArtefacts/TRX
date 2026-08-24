@@ -1,16 +1,9 @@
 #pragma once
 
-#include <trx/game/ui/elements/ammo_label.h>
 #include <trx/game/ui/elements/anchor.h>
 #include <trx/game/ui/elements/bar.h>
-#include <trx/game/ui/elements/bar_enemy_hp.h>
-#include <trx/game/ui/elements/bar_lara_air.h>
-#include <trx/game/ui/elements/bar_lara_exposure.h>
-#include <trx/game/ui/elements/bar_lara_hp.h>
-#include <trx/game/ui/elements/bar_lara_sprint.h>
 #include <trx/game/ui/elements/color_swatch.h>
 #include <trx/game/ui/elements/flash.h>
-#include <trx/game/ui/elements/fps_counter.h>
 #include <trx/game/ui/elements/frame.h>
 #include <trx/game/ui/elements/gradient_slider.h>
 #include <trx/game/ui/elements/hide.h>

@@ -170,8 +170,8 @@ void Option_GlobeSelect_UpdateSelectable(INV_RING *const ring)
         }
     }
 
-    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCL, selectable_count > 1);
-    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCR, selectable_count > 1);
+    Overlay_ShowArrow(OVERLAY_ARROW_BCL, selectable_count > 1);
+    Overlay_ShowArrow(OVERLAY_ARROW_BCR, selectable_count > 1);
 
     if (ring->globe_select.selection < 0
         || ring->globe_select.selection >= entry_count
@@ -195,7 +195,7 @@ void Option_GlobeSelect_Control(
     }
 
     Overlay_SetTopText((OVERLAY_TEXT) {
-        .kind = UI_OVERLAY_TEXT_GS_KEY,
+        .kind = OVERLAY_TEXT_GS_KEY,
         .fmt_gs_key = GS_ID("general/inventory_ring/heading_fmt"),
         .literal = GS_ID("general/inventory_ring/heading_adventure"),
     });
@@ -221,7 +221,7 @@ void Option_GlobeSelect_Control(
         && ring->globe_select.selection < entry_count
         && ring->globe_select.selection < (int32_t)ARRAY_SIZE(m_AreaStrings)) {
         Overlay_SetBottomText((OVERLAY_TEXT) {
-            .kind = UI_OVERLAY_TEXT_GS_KEY,
+            .kind = OVERLAY_TEXT_GS_KEY,
             .fmt_gs_key = GS_ID("general/inventory_ring/object_name_fmt"),
             .literal = m_AreaStrings[ring->globe_select.selection].gs_area_id,
         });

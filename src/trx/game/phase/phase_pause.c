@@ -83,7 +83,7 @@ static void M_ExitToTitle(M_PRIV *const p)
 static void M_CreateText(M_PRIV *const p)
 {
     Overlay_SetBottomText((OVERLAY_TEXT) {
-        .kind = UI_OVERLAY_TEXT_GS_KEY,
+        .kind = OVERLAY_TEXT_GS_KEY,
         .gs_key = GS_ID("general/pause/paused"),
     });
 }

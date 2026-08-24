@@ -7189,6 +7189,12 @@
       "title": "Object"
     },
     {
+      "description": "What the engine draws over the game and no script owns: the pickups that slide in, the assault course digits, and the lines of text the rest of the engine asks for.\n\nOnly what a script has to answer for is here. The lines of text are the engine's own, and a script neither reads nor writes them.",
+      "name": "overlay",
+      "order": 39,
+      "title": "Overlay"
+    },
+    {
       "description": "A composable filter over a domain of things - the objects a level is built\nfrom, or the items alive in it. `trx.objects.query` and `trx.items.query` are\neach the identity query, matching everything; narrow one down, then read the\nresult.\n\nA query is immutable. Every method returns a fresh query, so a base can be kept\nand branched from without one narrowing leaking into another.\n\nEach domain adds narrowings of its own on top of the ones below - see\n`trx.items.ItemQuery` and `trx.objects.ObjectQuery` - and chained methods read\nleft to right, combining with AND: `q:spawnable():by_name(\"wolf\")`.",
       "name": "query",
       "order": 9,
@@ -7305,6 +7311,11 @@
       "callable": false,
       "description": "The signals Lara's own state speaks through, for a script that would rather hear about a change than ask after one. Each is read once a frame and compared, so a listener runs when the value moved and a value that stood still costs nothing.\n\nWhat names an item is its number rather than the item itself, because a handle is made afresh on every read and a signal holding one would report a change every frame.",
       "path": "lara.signals"
+    },
+    {
+      "callable": false,
+      "description": "What the overlay tells a script, for the parts of it a script draws.",
+      "path": "overlay.signals"
     },
     {
       "callable": false,
@@ -7882,6 +7893,12 @@
       "description": "The identity query over every object definition. Narrow it and read it.",
       "path": "objects.query",
       "type": "objects.ObjectQuery",
+      "writable": false
+    },
+    {
+      "description": "Says when something asks for Lara's health bar whatever else is on screen, which the inventory ring does while it shows a medipack.",
+      "path": "overlay.signals.health_bar_forced",
+      "type": "signal.Signal",
       "writable": false
     },
     {

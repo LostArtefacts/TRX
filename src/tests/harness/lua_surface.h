@@ -25,6 +25,8 @@ typedef struct {
     // src/lua/commands/<script>.lua, run once the modules are up, the way the
     // engine runs it after sealing. Optional.
     const char *script;
+    // Mod module path under data/trx/ship/modules. Optional.
+    const char *mod_script;
     // Seal the surface and take trxc off the globals, as the engine does once
     // the modules have declared.
     bool seal;

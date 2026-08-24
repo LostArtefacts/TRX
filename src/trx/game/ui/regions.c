@@ -299,3 +299,10 @@ void UI_Region_GetCenterBox(
     *w = m_CenterBox.w;
     *h = m_CenterBox.h;
 }
+
+bool UI_Region_IsEmpty(const UI_REGION region)
+{
+    M_ForgetStaleNodes();
+    const UI_NODE *const stack = m_Stacks[region];
+    return stack == nullptr || stack->first_child == nullptr;
+}

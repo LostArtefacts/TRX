@@ -172,9 +172,8 @@
 - Added a new Lua module, `trx.overlay`, for the part of the overlay the engine still owns, so a script drawing the rest can follow it
 - Added `trx.items.Item.is_ally` and a `boss` family to `trx.objects.query`, so a script can tell a creature that fights for Lara from one that fights her, and pick out the ones the game treats as bosses
 - Added `trx.weapons.Weapon.has_infinite_ammo` and `trx.weapons.Weapon.ammo_icon`, so a script can tell a weapon that never runs dry from one whose shots are worth counting, and draw the icon the count is shown with
-- Added a new Lua module, `trx.ui`, for drawing over the game from a script: widgets that are built once and follow the signals they are given, put in one of the nine places the interface is laid out in, over a small set of drawing calls the engine offers (#5351 / TRX185)
 - Added `trx.events.on_tick()` and `trx.signal.tick`, which happen once for every tick the game runs, whether a level is being played or a menu is open
-- Added a new Lua module, `trx.signal`, for a value that says when it changes: signals combine with `&`, `|` and `~`, a combination reports only when its own answer moves, `trx.signal.config` gives a setting one of its own, and `trx.signal.polled` makes one out of anything read once a tick
+- Added a new Lua module, `trx.signal`, for a value that says when it changes: signals combine with `&`, `|` and `~`, a combination reports only when its own answer moves, `trx.signal.Signal:map` and `trx.signal.combine` make one out of what a script works out for itself, `trx.signal.config` gives a setting one of its own, and `trx.signal.polled` makes one out of anything read once a tick
 - Added `trx.events.on_cutscene_frame()`, which reports every frame of a TR4 cutscene, so a script can act part-way through one (TRX1199)
 - Added `trx.fx.blood()` and `trx.fx.blood_bath()`, so a script can make a hit or a kill bleed wherever it wants (TRX1199)
 - Added the full weapon definition to `trx.weapons`, so a script can read and change what a weapon does: its damage, reach and accuracy, its aim limits, its ammunition, the animations it is drawn by, and the flash, glow, smoke and shells it throws (TRX1091)
@@ -183,11 +182,11 @@
 - Added `trx.game.LOGIC_FPS`, the rate the game runs its logic at
 - Added `trx.random.Stream`, `trx.random.control` and `trx.random.draw`, so a script can draw randomness without changing what the creatures decide next (TRX1199)
 - Added a new Lua module, `trx.store`, for what a script remembers across a save: one table for the level and one for the playthrough (TRX87)
-- Added a new Lua module, `trx.ui`, for drawing over the game from a script: text, bars and the widgets that lay them out, through a new `trx.events.on_ui_draw` event (#5351 / TRX185)
+- Added a new Lua module, `trx.ui`, for drawing over the game from a script: widgets that are built once and follow the signals they are given, put in one of the nine places the interface is laid out in, through the new `trx.events.on_ui_draw` and `trx.events.on_ui_paint` events and a small set of drawing calls the engine offers (#5351 / TRX185)
 - Added a new Lua module, `trx.waypoints`, for how far along a level's own progression Lara has got, which TR4 marks out and its guides follow; it is saved with the game and reports the furthest she has ever reached as well as where she is now
 - Added `trx.lara.speech_face`, for the face Lara talks with, which follows the outfit she is wearing rather than the one a level carries
 - Added `trx.cutscenes.set_lara_shadow_bounds()`, for the box a cutscene gives Lara's shadow, so a scene can make it read as something she rides in (TRX911)
-- Changed `trx.events.on_ui_draw` to name one of nine places rather than six, so a script can draw down either side of the screen and in the middle, and added `trx.events.on_ui_paint`, where a script draws into the room a region kept for it
+- Changed the in-game overlay to be drawn by a script rather than by the engine, so what it shows and where it sits can be changed without a build
 - Changed `trx.cutscenes` to hand over the cutscene itself, so `trx.cutscenes[30]` says whether it has played, plays it, and narrows the cutscene events to it; the cutscene events hand one over too, and the functions that take a number are deprecated (TRX1199)
 - Changed `trx.cutscenes.play()` to take whether to fade out first, so a scene that opens a level begins on the black screen the level loaded behind (TRX1063)
 - Changed `trx.game.trx_version` to `trx.game.TRX_VERSION`

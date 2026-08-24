@@ -71,8 +71,8 @@ static void M_End(PHASE *const phase)
     }
 
     Overlay_SetBottomText((OVERLAY_TEXT) { 0 });
-    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCL, false);
-    Overlay_ShowArrow(UI_OVERLAY_ARROW_BCR, false);
+    Overlay_ShowArrow(OVERLAY_ARROW_BCL, false);
+    Overlay_ShowArrow(OVERLAY_ARROW_BCR, false);
 }
 
 static PHASE_CONTROL M_Control(PHASE *const phase)
