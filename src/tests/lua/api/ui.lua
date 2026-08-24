@@ -81,9 +81,9 @@ test("nested stacks come back to where they started", function()
 end)
 
 test("the regions are the ones the game builds", function()
-  assert(trx.ui.Location.TOP_CENTER ~= trx.ui.Location.BOTTOM_CENTER)
-  assert(trx.ui.Location.TOP_LEFT ~= nil)
-  assert(trx.ui.Location.BOTTOM_RIGHT ~= nil)
+  assert(trx.ui.Region.TOP_CENTER ~= trx.ui.Region.BOTTOM_CENTER)
+  assert(trx.ui.Region.TOP_LEFT ~= nil)
+  assert(trx.ui.Region.BOTTOM_RIGHT ~= nil)
 end)
 
 test("a label takes settings", function()

@@ -79,21 +79,29 @@ and `\{button left}` draws the button the player has bound.
     - `trx.ui.VAlign.DISTRIBUTE` = `4`  
         Spread out, with the gaps taking the spare height.
 
-- <a id="ui.Location" name="ui.Location"></a>[lua]`trx.ui.Location`
+- <a id="ui.Region" name="ui.Region"></a>[lua]`trx.ui.Region`
 
-    One of the six places the interface is built in. A handler is told which one is being built and adds to it; where each sits on screen, and what the player put there, is the game's to decide.
+    One of the nine places the interface is built in. A handler is told which one is being built and adds to it, and everything asking for a place is laid out together there rather than over what else asked for it.
 
-    - `trx.ui.Location.TOP_LEFT` = `0`  
+    The eight around the edge stack what they hold away from the edge they sit at. The middle is what the others leave, and is where a dialog goes.
+
+    - `trx.ui.Region.TOP_LEFT` = `0`  
         The top left corner.
-    - `trx.ui.Location.TOP_CENTER` = `1`  
+    - `trx.ui.Region.TOP_CENTER` = `1`  
         The top edge, in the middle.
-    - `trx.ui.Location.TOP_RIGHT` = `2`  
+    - `trx.ui.Region.TOP_RIGHT` = `2`  
         The top right corner.
-    - `trx.ui.Location.BOTTOM_LEFT` = `3`  
+    - `trx.ui.Region.LEFT` = `3`  
+        The left edge, halfway down.
+    - `trx.ui.Region.CENTER` = `4`  
+        The middle of the screen, inside what the others leave.
+    - `trx.ui.Region.RIGHT` = `5`  
+        The right edge, halfway down.
+    - `trx.ui.Region.BOTTOM_LEFT` = `6`  
         The bottom left corner.
-    - `trx.ui.Location.BOTTOM_CENTER` = `4`  
+    - `trx.ui.Region.BOTTOM_CENTER` = `7`  
         The bottom edge, in the middle.
-    - `trx.ui.Location.BOTTOM_RIGHT` = `5`  
+    - `trx.ui.Region.BOTTOM_RIGHT` = `8`  
         The bottom right corner.
 
 - <a id="ui.FrameStyle" name="ui.FrameStyle"></a>[lua]`trx.ui.FrameStyle`

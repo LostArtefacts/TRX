@@ -100,6 +100,9 @@ UI_MEASURE_NOTE UI_Measure_GetWidest(void);
 void UI_BeginScene(void);
 void UI_EndScene(void);
 
+// Runs after layout and before draw, while reservation boxes are known.
+void UI_SetPaintHook(void (*hook)(void));
+
 // Measures widgets built between these calls without drawing them.
 // Measured nodes stay valid until UI_BeginScene resets the arena.
 void UI_BeginMeasure(void);

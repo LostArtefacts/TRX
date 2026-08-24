@@ -536,6 +536,7 @@ common_sources = [
   'trx/game/lua/guard.c',
   'trx/game/lua/registry.c',
   'trx/game/lua/sandbox.c',
+  'trx/game/lua/ui.c',
   'trx/game/lua/utils.c',
   'trx/game/matrix.c',
   'trx/game/music/backend_cdaudio.c',

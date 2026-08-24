@@ -8,6 +8,7 @@
 #include <lauxlib.h>
 
 static bool m_Drawing = false;
+static bool m_Painting = false;
 
 static void M_CheckDrawing(lua_State *const L)
 {
@@ -307,6 +308,16 @@ static void M_Create(lua_State *const L)
 static void M_Shutdown(void)
 {
     m_Drawing = false;
+}
+
+bool LUA_UI_IsPainting(void)
+{
+    return m_Painting;
+}
+
+void LUA_UI_SetPainting(const bool painting)
+{
+    m_Painting = painting;
 }
 
 void LUA_UI_SetDrawing(const bool drawing)

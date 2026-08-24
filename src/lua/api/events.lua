@@ -206,10 +206,12 @@ api.define("events.on_tick", {
 api.define("events.on_ui_draw", {
   description = [[
     Happens as the game builds one of the nine regions of the on-screen
-    interface, once per region on every drawn frame. A handler draws with
-    `trx.ui`, which is available here and nowhere else, and what it draws lands
-    in the region being built. The handler takes the region as a
-    `trx.ui.Location` and answers for the one it wants.
+    interface, once per region on every drawn frame. The handler takes the
+    region as a `trx.ui.Region` and answers for the one it wants.
+
+    This is where room is kept, not where anything is drawn: a handler says how
+    much room it needs in the region, and draws into that room later, in
+    `trx.events.on_ui_paint`.
 
     Every path that puts an interface on screen fires it, so a handler runs
     during a fade and over an FMV as well as in play. It follows the frame rate
@@ -225,13 +227,43 @@ api.define("events.on_ui_draw", {
   },
   returns = LISTENER,
   examples = {
-    [[trx.events.on_ui_draw(function(location)
-  if location == trx.ui.Location.TOP_CENTER then
-    trx.ui.label("hello")
+    [[local slot = nil
+
+trx.events.on_ui_draw(function(region)
+  if region == trx.ui.Region.TOP_CENTER then
+    local w, h = trx.ui.primitive.measure_text("hello")
+    slot = trx.ui.primitive.reserve(region, w, h)
+  end
+end)
+
+trx.events.on_ui_paint(function()
+  local x, y = trx.ui.primitive.slot_box(slot)
+  if x ~= nil then
+    trx.ui.primitive.text("hello", x, y)
   end
 end)]],
   },
   impl = hook(types.UI_DRAW),
+})
+
+api.define("events.on_ui_paint", {
+  description = [[
+    Fires after UI layout and before drawing. Reservation boxes are available
+    during this event.
+
+    Use this event to draw into space reserved earlier during
+    `trx.events.on_ui_draw`. Primitive drawing calls are available during this
+    event only.
+  ]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      description = "Called once per painted scene.",
+    },
+  },
+  returns = { type = "integer", description = "The listener id." },
+  impl = hook(types.UI_PAINT),
 })
 
 api.define("events.on_pickup", {
