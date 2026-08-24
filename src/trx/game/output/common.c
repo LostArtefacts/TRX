@@ -120,6 +120,8 @@ OUTPUT_UI_SHADER *Output_GetUIShader(void)
 void Output_BeginScene(void)
 {
     Output_ApplyFOV();
+    // Resize framebuffers before the first frame draws into them.
+    TRX_GL_Renderer_SyncFboSizes();
     // The frame that was presented is still in the framebuffers until this
     // point, so that a snapshot can be composited from it between frames.
     TRX_GL_Renderer_BindGeometryFbo();
