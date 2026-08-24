@@ -101,6 +101,7 @@
 - Fixed the ceiling spikes not stopping on a pushable block until Lara finishes pushing it (OG bug) (#6308 / TRX1169)
 - Fixed the piranhas in It's a Madhouse! being invisible if attacking Lara while she collects the Aviary Key (#6345 / TRX1200)
 - Fixed the specks drifting in water being too small and all one size
+- Fixed crystal 206 in Thames Wharf not being triggered if the alternative route is used to reach it (#6349 / TRX1202)
 
 **TR4**
 - Added the ability to skip in-game cutscenes (TRX1051)
