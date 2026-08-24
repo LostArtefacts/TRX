@@ -13,6 +13,7 @@
 #include <trx/game/rooms.h>
 #include <trx/game/rope.h>
 #include <trx/game/sparks.h>
+#include <trx/game/viewport.h>
 
 #include <string.h>
 
@@ -402,9 +403,15 @@ static void M_DrawSingleRoom(const ROOM *const room)
     g_PhdBottom = bind->bound_bottom;
 
     if (g_Config.debug.enable_debug_room_clip) {
+        const VIEWPORT_RECT game = Viewport_GetRect(VIEWPORT_GAME);
+        const VIEWPORT_RECT ui = Viewport_GetRect(VIEWPORT_UI);
+        const float scale = ui.width / (float)game.width;
         Output_DrawScreenFrame(
-            g_PhdLeft, g_PhdTop, g_PhdRight - g_PhdLeft, g_PhdBottom - g_PhdTop,
-            (RGBA_8888) { 0, 255, 0, 128 }, (RGBA_8888) { 0, 255, 0, 128 }, 1);
+            ui.x + (g_PhdLeft - game.x) * scale,
+            ui.y + (g_PhdTop - game.y) * scale,
+            (g_PhdRight - g_PhdLeft) * scale, (g_PhdBottom - g_PhdTop) * scale,
+            (RGBA_8888) { 0, 255, 0, 128 }, (RGBA_8888) { 0, 255, 0, 128 },
+            scale);
     }
 
     Matrix_TranslateAbs32(room->pos);
