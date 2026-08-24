@@ -18,6 +18,7 @@
 #include <trx/game/overlay.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui.h>
+#include <trx/game/ui/regions.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/version.h>
 
@@ -658,13 +659,8 @@ void InvRing_ShowExamine(const OBJECT_ID object_id, const bool show)
 
 void InvRing_DrawUI(INV_RING *const ring)
 {
-    const bool has_content = m_ButtonHintDrawFunc != nullptr
-        || (m_CountText != nullptr && m_CountText[0] != '\0');
-    UI_SetScreenInset(
-        UI_SCREEN_INSET_INVENTORY_RING, 0.0f,
-        has_content ? M_UI_BOTTOM_SPACING + UI_TEXT_HEIGHT : 0.0f);
-
-    UI_BeginScreenModal(0.5f, 1.0f);
+    // Share the bottom-center region with overlay text.
+    UI_BeginRegion(UI_REGION_BOTTOM_CENTER);
     UI_BeginStackEx((UI_STACK_SETTINGS) {
         .orientation = UI_STACK_VERTICAL,
         .align = { .h = UI_STACK_H_ALIGN_CENTER },
@@ -682,7 +678,7 @@ void InvRing_DrawUI(INV_RING *const ring)
     }
     UI_Spacer(0.0f, M_UI_BOTTOM_SPACING);
     UI_EndStack();
-    UI_EndModal();
+    UI_EndRegion();
 }
 
 void InvRing_RemoveItemTexts(void)

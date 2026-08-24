@@ -9,6 +9,9 @@
 
 #include <fakes/settings.h>
 #include <fakes/ui.h>
+#include <fakes/ui_draw.h>
+
+#include <trx/game/ui/regions.h>
 #include <harness/harness.h>
 
 #include <trx/config.h>
@@ -46,7 +49,6 @@
 #define M_TARGET_SCALE 1.2f
 // What the overlay keeps clear at the bottom of the screen for one line of
 // text, in text units.
-#define M_EDGE_INSET 25.0f
 #define M_TEXT_BUF_SIZE 256
 #define M_KEY_BUF_SIZE 256
 
@@ -255,6 +257,12 @@ static void M_CheckNode(
         return;
     }
 
+    // Region stacks sit outside the middle box being checked here.
+    if (node->name != nullptr
+        && strcmp(node->name, UI_NODE_NAME_REGIONS) == 0) {
+        return;
+    }
+
     // A node with no box was never laid out - a row scrolled out of its list,
     // say - and the draw pass skips it along with everything under it.
     if (node->w <= 0.0f || node->h <= 0.0f) {
@@ -363,35 +371,153 @@ static void M_SetUp(
     UI_LoadText();
 }
 
+// Reserves screen-edge text at the player's text scale.
+static void M_ReserveScreenEdges(void)
+{
+    UI_BeginRegion(UI_REGION_TOP_CENTER);
+    UI_Label("Heading");
+    UI_EndRegion();
+    UI_BeginRegion(UI_REGION_BOTTOM_CENTER);
+    UI_Label("Item name");
+    UI_EndRegion();
+}
+
 static bool M_IsNear(const float actual, const float expected)
 {
     return fabsf(actual - expected) < 0.001f;
 }
 
-TEST(ui_screen_insets_cover_the_scene_being_built)
+static int32_t M_CountLabels(const UI_NODE *const node)
+{
+    int32_t count = UI_Label_GetText(node) != nullptr ? 1 : 0;
+    for (const UI_NODE *child = node->first_child; child != nullptr;
+         child = child->next_sibling) {
+        count += M_CountLabels(child);
+    }
+    return count;
+}
+
+// Reusing a region in one scene appends to the same stack.
+TEST(ui_a_region_is_one_stack_however_often_it_is_asked_for)
 {
     Subsystem_InitAll();
     M_SetLanguage(nullptr);
     M_SetUp(1, nullptr, 1.0f);
 
     UI_BeginScene();
-    UI_SetScreenInset(UI_SCREEN_INSET_OVERLAY, 20.0f, 10.0f);
-    CHECK_EQ_INT(UI_GetScreenInsetTop(), 20);
-    CHECK_EQ_INT(UI_GetScreenInsetBottom(), 10);
+    UI_BeginRegion(UI_REGION_BOTTOM_CENTER);
+    UI_Label("first");
+    UI_EndRegion();
+    UI_BeginRegion(UI_REGION_BOTTOM_CENTER);
+    UI_Label("second");
+    UI_EndRegion();
     UI_EndScene();
+
+    const UI_NODE *const root = UI_GetSceneRoot();
+    int32_t regions = 0;
+    for (const UI_NODE *child = root->first_child; child != nullptr;
+         child = child->next_sibling) {
+        regions++;
+    }
+    CHECK_EQ_INT(regions, 1);
+
+    // Both labels survive the shared-stack layout.
+    CHECK_EQ_INT(M_CountLabels(root), 2);
+
+    Subsystem_ShutdownAll();
+}
+
+// A region attaches to the scene root, not to the open stack.
+TEST(ui_a_region_does_not_land_inside_what_was_open)
+{
+    Subsystem_InitAll();
+    M_SetLanguage(nullptr);
+    M_SetUp(1, nullptr, 1.0f);
+
+    UI_BeginScene();
+    UI_BeginStack(UI_STACK_VERTICAL);
+    UI_Label("before");
+    UI_BeginRegion(UI_REGION_TOP_LEFT);
+    UI_Label("in the region");
+    UI_EndRegion();
+    UI_Label("after");
+    UI_EndStack();
+    UI_EndScene();
+
+    const UI_NODE *const root = UI_GetSceneRoot();
+    // The open stack and the region are both scene-root children.
+    int32_t children = 0;
+    for (const UI_NODE *child = root->first_child; child != nullptr;
+         child = child->next_sibling) {
+        children++;
+    }
+    CHECK_EQ_INT(children, 2);
+
+    Subsystem_ShutdownAll();
+}
+
+// Edge regions reduce the middle box available to dialogs.
+TEST(ui_the_middle_region_gets_what_the_bands_leave)
+{
+    Subsystem_InitAll();
+    M_SetLanguage(nullptr);
+    M_SetUp(1, nullptr, 1.0f);
+
+    float x = 0.0f;
+    float y = 0.0f;
+    float w = 0.0f;
+    float h = 0.0f;
+
+    // Matching top and bottom text leaves a centered middle box.
+    UI_BeginScene();
+    UI_BeginRegion(UI_REGION_TOP_CENTER);
+    UI_Label("heading");
+    UI_EndRegion();
+    UI_BeginRegion(UI_REGION_BOTTOM_CENTER);
+    UI_Label("item name");
+    UI_EndRegion();
+    UI_EndScene();
+
+    UI_Region_GetCenterBox(&x, &y, &w, &h);
+    CHECK(y > 0);
+    CHECK(h < UI_GetCanvasHeight());
+    CHECK_EQ_INT(y + h, UI_GetCanvasHeight() - y);
+
+    Subsystem_ShutdownAll();
+}
+
+// Recorded draw calls describe the scene without rendering it.
+TEST(ui_draw_describes_what_a_scene_scheduled)
+{
+    Subsystem_InitAll();
+    M_SetLanguage(nullptr);
+    M_SetUp(1, nullptr, 1.0f);
 
     UI_BeginScene();
     UI_EndScene();
-    CHECK_EQ_INT(UI_GetScreenInsetTop(), 20);
-    CHECK_EQ_INT(UI_GetScreenInsetBottom(), 10);
-    CHECK_EQ_INT(UI_GetSafeCanvasTop(), 20);
-    CHECK_EQ_INT(UI_GetSafeCanvasBottom(), 470);
-    CHECK_EQ_INT(UI_GetSafeCanvasHeight(), 450);
+    char *empty = FakeUIDraw_Describe();
+    CHECK_EQ_STR(empty, "");
+    Memory_FreePointer(&empty);
 
     UI_BeginScene();
+    UI_ScheduleDrawScreenFlatQuad(
+        10, 20, 3, 30, 40, (RGBA_8888) { 0x11, 0x22, 0x33, 0x44 });
+    UI_ScheduleDrawScreenCircle(
+        5, 6, 1, 2, 7, (RGBA_8888) { 0xAA, 0xBB, 0xCC, 0xDD });
+    char *described = FakeUIDraw_Describe();
+    CHECK_EQ_STR(
+        described,
+        "quad x=10 y=20 z=3 w=30 h=40 color=11223344\n"
+        "circle cx=5 cy=6 r_inner=1 r_outer=2 z=7 color=aabbccdd\n");
+    Memory_FreePointer(&described);
     UI_EndScene();
-    CHECK_EQ_INT(UI_GetScreenInsetTop(), 0);
-    CHECK_EQ_INT(UI_GetSafeCanvasTop(), UI_SCREEN_MARGIN);
+
+    // A new scene starts with no recorded draw calls.
+    UI_BeginScene();
+    char *fresh = FakeUIDraw_Describe();
+    CHECK_EQ_STR(fresh, "");
+    Memory_FreePointer(&fresh);
+    UI_EndScene();
 
     Subsystem_ShutdownAll();
 }
@@ -631,16 +757,13 @@ TEST(ui_settings_dialogs_clear_the_screen_edges)
                 UI_Measure_Forget();
                 UI_SETTINGS_DIALOG_STATE *const state = m_Dialogs[j].init();
 
-                // An inset reaches the dialog in the scene after the one that
-                // states it, and the dialog sizes itself in its control pass,
-                // so it takes a few frames to settle the way it does in game.
+                // Region and dialog layout settle across frames in game.
                 for (int32_t frame = 0; frame < 3; frame++) {
                     g_InputDB = (INPUT_STATE) { .menu_down = frame == 0 };
                     UI_SettingsDialog_Control(state);
                     g_InputDB = (INPUT_STATE) {};
                     UI_BeginScene();
-                    UI_SetScreenInset(
-                        UI_SCREEN_INSET_OVERLAY, M_EDGE_INSET, M_EDGE_INSET);
+                    M_ReserveScreenEdges();
                     m_Dialogs[j].draw(state);
                     UI_EndScene();
                 }

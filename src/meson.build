@@ -955,6 +955,7 @@ common_sources = [
   'trx/game/ui/hud/console_logs.c',
   'trx/game/ui/hud/overlay.c',
   'trx/game/ui/keys.c',
+  'trx/game/ui/regions.c',
   'trx/game/ui/scaler.c',
   'trx/game/ui/scrollable.c',
   'trx/game/ui/settings.c',

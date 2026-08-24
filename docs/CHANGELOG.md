@@ -33,6 +33,8 @@
 - Fixed several dialogs running past the screen edges or overlapping headings at large text sizes (#6293 / TRX1154)
 - Fixed the save and load dialogs covering the inventory headings at large text sizes
 - Fixed the game flashing over the black bars beside the picture when a frame is advanced in photo mode (regression from 1.10) (TRX1068)
+- Fixed dialogs sitting against a band of screen that no longer matched what the overlay was drawing there, which could leave them overlapping the heading or the item name
+- Fixed the inventory ring's button hints and item count overlapping the line of text the game puts at the foot of the screen
 - Fixed the icons beside the volume settings, which now show a note for the music and a speaker for the sound effects (TRX1040)
 - Fixed the photo mode camera drifting upwards and overshooting when it is moved while pitched up or down (TRX1142)
 - Fixed the photo mode camera flickering and refusing to turn over when it is pitched past straight up or down, and turning in coarse steps while aimed near vertical (TRX1152)

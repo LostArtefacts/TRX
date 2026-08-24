@@ -42,8 +42,6 @@ void UI_Overlay_Control(UI_OVERLAY_STATE *s);
 
 // draw functions
 void UI_Overlay(UI_OVERLAY_STATE *s);
-void UI_BeginOverlayRegion(float x, float y);
-void UI_EndOverlayRegion(void);
 
 void UI_Overlay_ForceHealthBar(UI_OVERLAY_STATE *s, bool show);
 void UI_Overlay_ShowArrow(

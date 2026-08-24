@@ -113,16 +113,16 @@ An event that carries a default the script may take over says so in its descript
   ```
 
 - <a id="events.on_ui_draw" name="events.on_ui_draw"></a>[lua]`trx.events.on_ui_draw(callback)`  
-  Happens as the game builds one of the six regions of the on-screen
+  Happens as the game builds one of the nine regions of the on-screen
   interface, once per region on every drawn frame. A handler draws with
   [`trx.ui`](UI.md#ui), which is available here and nowhere else, and what it draws lands
   in the region being built. The handler takes the region as a
   [`trx.ui.Location`](UI.md#ui.Location) and answers for the one it wants.
 
-  Every path that puts an interface on screen fires it, so a handler draws
+  Every path that puts an interface on screen fires it, so a handler runs
   during a fade and over an FMV as well as in play. It follows the frame rate
-  rather than the game clock, so a handler reads state and draws it and does
-  no counting of its own.
+  rather than the game clock, so a handler reads state and does no counting
+  of its own.
 
   Parameters:
   - <a id="events.on_ui_draw.callback" name="events.on_ui_draw.callback"></a>**`callback`** (function). What to run when it happens.
