@@ -13,28 +13,24 @@
 
 #define FAKE_SLOT_OFFSET 13
 
-bool Catalog_EnumToGameID(
-    const CATALOG_CONTEXT context, const CATALOG_ID id,
-    int32_t *const out_game_id)
+int32_t Catalog_ToSlot(
+    const CATALOG_CONTEXT context, const CATALOG_ID id, const int32_t fallback)
 {
     if (context == CATALOG_SAMPLES) {
-        *out_game_id = FAKE_SAMPLE;
-        return true;
+        return FAKE_SAMPLE;
     }
     if (context != CATALOG_OBJECTS) {
-        return false;
+        return fallback;
     }
-    *out_game_id = id + FAKE_SLOT_OFFSET;
-    return true;
+    return id + FAKE_SLOT_OFFSET;
 }
 
-bool Catalog_GameIDToEnum(
-    const CATALOG_CONTEXT context, const int32_t game_id,
-    CATALOG_ID *const out_id)
+CATALOG_ID Catalog_FromSlot(
+    const CATALOG_CONTEXT context, const int32_t slot,
+    const CATALOG_ID fallback)
 {
-    if (context != CATALOG_OBJECTS || game_id < FAKE_SLOT_OFFSET) {
-        return false;
+    if (context != CATALOG_OBJECTS || slot < FAKE_SLOT_OFFSET) {
+        return fallback;
     }
-    *out_id = game_id - FAKE_SLOT_OFFSET;
-    return true;
+    return slot - FAKE_SLOT_OFFSET;
 }

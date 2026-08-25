@@ -154,20 +154,12 @@ STATIC_OBJECT_2D *Object_Get2DStatic(const int32_t static_id)
 
 OBJECT_ID Object_FromGameID(const int32_t game_id)
 {
-    int32_t out;
-    if (Catalog_GameIDToEnum(CATALOG_OBJECTS, game_id, &out)) {
-        return out;
-    }
-    return NO_OBJECT;
+    return Catalog_FromSlot(CATALOG_OBJECTS, game_id, NO_OBJECT);
 }
 
 int32_t Object_ToGameID(const OBJECT_ID object_id)
 {
-    int32_t out;
-    if (Catalog_EnumToGameID(CATALOG_OBJECTS, object_id, &out)) {
-        return out;
-    }
-    return -1;
+    return Catalog_ToSlot(CATALOG_OBJECTS, object_id, -1);
 }
 
 bool Object_IsType(const OBJECT_ID object_id, const OBJECT_ID *test_arr)

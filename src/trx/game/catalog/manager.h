@@ -30,10 +30,10 @@ const char *Catalog_GetKey(CATALOG_CONTEXT context, CATALOG_ID id);
 // How many identities the context holds, built-in and minted together.
 int32_t Catalog_GetCount(CATALOG_CONTEXT context);
 
-// Bind an identity to this game's ID. Reports failure when another identity
-// already holds that game ID; the identity keeps the binding either way.
-RESULT Catalog_BindGameID(
-    CATALOG_CONTEXT context, CATALOG_ID id, int32_t game_id);
+// Bind an identity to the slot this game's files use for it. Reports failure
+// when another identity already holds that slot; the binding is made either
+// way, because a context such as the samples shares a slot on purpose.
+RESULT Catalog_BindSlot(CATALOG_CONTEXT context, CATALOG_ID id, int32_t slot);
 
 // Load mappings for a specific context from a CSV file of the form:
 // game_id,name[,comment]
@@ -42,17 +42,15 @@ RESULT Catalog_BindGameID(
 RESULT Catalog_Load(
     CATALOG_CONTEXT context, const char *csv_path, bool allow_duplicates);
 
-// Convert an item name to its CATALOG_ID within a context.
-// Returns false if not found.
-bool Catalog_NameToEnum(
-    CATALOG_CONTEXT context, const char *name, CATALOG_ID *out_id);
+// The identity a key names, or fallback when the context holds no such key.
+CATALOG_ID Catalog_FromKey(
+    CATALOG_CONTEXT context, const char *key, CATALOG_ID fallback);
 
-// Convert a CATALOG_ID to its game-specific ID within a context.
-// Returns false if unmapped.
-bool Catalog_EnumToGameID(
-    CATALOG_CONTEXT context, CATALOG_ID id, int32_t *out_game_id);
+// The slot an identity is bound to here, or fallback when it has none.
+int32_t Catalog_ToSlot(
+    CATALOG_CONTEXT context, CATALOG_ID id, int32_t fallback);
 
-// Convert a game-specific ID to its CATALOG_ID within a context.
-// Returns false if not found.
-bool Catalog_GameIDToEnum(
-    CATALOG_CONTEXT context, int32_t game_id, CATALOG_ID *out_id);
+// The identity a slot names here, or fallback when none holds it. A slot that
+// two identities share answers with the first of them.
+CATALOG_ID Catalog_FromSlot(
+    CATALOG_CONTEXT context, int32_t slot, CATALOG_ID fallback);

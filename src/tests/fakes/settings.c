@@ -369,11 +369,11 @@ RESULT GameStringManager_ReloadLanguage(const char *const lang)
     return OK;
 }
 
-bool Catalog_NameToEnum(
-    const CATALOG_CONTEXT context, const char *const name,
-    CATALOG_ID *const out_id)
+CATALOG_ID Catalog_FromKey(
+    const CATALOG_CONTEXT context, const char *const key,
+    const CATALOG_ID fallback)
 {
-    return false;
+    return fallback;
 }
 
 void Music_SetVolume(const float volume)
