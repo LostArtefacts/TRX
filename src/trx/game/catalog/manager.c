@@ -12,6 +12,7 @@
 #include <trx/game/objects/ids.h>
 #include <trx/game/sound/ids.h>
 
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 #include <uthash.h>
@@ -65,6 +66,25 @@ static const M_ENTRY m_CatalogEntryDefs[] = {
 // Number of catalog entries
 static const size_t m_CatalogEntryCount = ARRAY_SIZE(m_CatalogEntryDefs);
 
+// The key of every object that names.def gives one, indexed by OBJECT_ID
+static const char *const m_ObjectKeys[O_NUMBER_OF] = {
+#define X_OBJ_NAMES(...)
+#define X_OBJ_NAME_DEFINE(object_id_, key_name_, names_array_)                 \
+    [object_id_] = key_name_,
+#define X_OBJ_ALIAS_DEFINE(target_object_id_, source_object_id_)
+#include <trx/game/objects/names.def>
+#undef X_OBJ_ALIAS_DEFINE
+#undef X_OBJ_NAME_DEFINE
+#undef X_OBJ_NAMES
+};
+
+// What the C spelling of each context puts in front of the name
+static const char *const m_ContextPrefixes[CATALOG_CONTEXT_MAX] = {
+    [CATALOG_OBJECTS] = "O_",     [CATALOG_MUSIC] = "MX_",
+    [CATALOG_SAMPLES] = "SFX_",   [CATALOG_LARA_STATES] = "LS_",
+    [CATALOG_LARA_ANIMS] = "LA_", [CATALOG_ITEM_ACTIONS] = "ITEM_ACTION_",
+};
+
 static M_NAME_ENTRY *m_Name2EnumMap[CATALOG_CONTEXT_MAX] = { nullptr };
 
 static M_GAME_ID_ENTRY *m_GameID2EnumMap[CATALOG_CONTEXT_MAX] = { nullptr };
@@ -105,6 +125,40 @@ static RESULT M_AddName(
     return OK;
 }
 
+// The C spelling without its prefix and in lower case.
+static const char *M_DerivedKey(
+    const CATALOG_CONTEXT context, const char *const enum_name)
+{
+    const char *const prefix = m_ContextPrefixes[context];
+    const size_t prefix_len = strlen(prefix);
+    const char *name = enum_name;
+    if (strncmp(name, prefix, prefix_len) == 0) {
+        name += prefix_len;
+    }
+
+    // The caller copies this before the next call needs it.
+    static char key[64];
+    ASSERT(strlen(name) < sizeof(key));
+    size_t i = 0;
+    for (; name[i] != '\0' && i < sizeof(key) - 1; i++) {
+        key[i] = (char)tolower((unsigned char)name[i]);
+    }
+    key[i] = '\0';
+    return key;
+}
+
+// The name a built-in is known by: what names.def calls it where it says, and
+// the C spelling without its prefix where it does not.
+static const char *M_KeyForEnum(
+    const CATALOG_CONTEXT context, const CATALOG_ID id,
+    const char *const enum_name)
+{
+    if (context == CATALOG_OBJECTS && m_ObjectKeys[id] != nullptr) {
+        return m_ObjectKeys[id];
+    }
+    return M_DerivedKey(context, enum_name);
+}
+
 // Mint the built-ins, walking each .def in file order, so that the ID of a
 // built-in equals the enum constant it was declared with. This runs before
 // main because the mods are scanned before the subsystems come up, and that
@@ -113,11 +167,17 @@ __attribute__((constructor)) static void M_MintBuiltIns(void)
 {
     for (size_t idx = 0; idx < m_CatalogEntryCount; idx++) {
         const CATALOG_CONTEXT ctx = m_CatalogEntryDefs[idx].context;
+        const char *const enum_name = m_CatalogEntryDefs[idx].name_str;
         CATALOG_ID id;
+        // Two identities that resolve to the same key is a defect in
+        // names.def, and the failure names both the key and this one.
         EXIT_ON_FAIL(
-            Catalog_Mint(ctx, m_CatalogEntryDefs[idx].name_str, &id),
-            "cannot seed the catalog");
+            Catalog_Mint(
+                ctx, M_KeyForEnum(ctx, m_CatalogEntryDefs[idx].id, enum_name),
+                &id),
+            "cannot name %s", enum_name);
         ASSERT(id == m_CatalogEntryDefs[idx].id);
+        IGNORE(Catalog_AddAlias(ctx, id, enum_name));
     }
     for (size_t ctx = 0; ctx < CATALOG_CONTEXT_MAX; ctx++) {
         m_BuiltInCounts[ctx] = m_Counts[ctx];
