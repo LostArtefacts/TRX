@@ -7,6 +7,7 @@
 #include <trx/game/gun/registry.h>
 #include <trx/game/lara.h>
 #include <trx/game/output.h>
+#include <trx/game/sound.h>
 #include <trx/version.h>
 
 // What a weapon is made of outside the numbers weapons.json5 carries: the
@@ -65,6 +66,16 @@ void Gun_AddDynamicLight(void)
     } else {
         Output_AddDynamicLight(pos, 12, 11);
     }
+}
+
+void Gun_FireOverlaySound(const WEAPON_INFO *const weapon)
+{
+    if (weapon->sample_overlay_num == SFX_TRX_INVALID) {
+        return;
+    }
+    const uint32_t pitch = weapon->sample_overlay_pitch << 8;
+    Sound_Effect(
+        weapon->sample_overlay_num, &Lara_GetItem()->pos, pitch | SPM_PITCH);
 }
 
 OBJECT_ID Gun_GetLaraAnim(const LARA_GUN_TYPE gun_type)

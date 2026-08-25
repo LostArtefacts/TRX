@@ -40,6 +40,7 @@ static const WEAPON_INFO *M_WeaponOfAnim(const void *anim);
 static bool M_GetID(const void *self, TRX_VALUE *out);
 static const char *M_SetKind(void *self, const TRX_VALUE *in);
 static const char *M_SetSample(void *self, const TRX_VALUE *in);
+static const char *M_SetOverlaySample(void *self, const TRX_VALUE *in);
 static const char *M_SetEquipAnim(void *self, const TRX_VALUE *in);
 
 // clang-format off
@@ -95,6 +96,8 @@ static const FIELD_DESC m_WeaponFields[] = {
     FIELD(WEAPON_INFO, target_dist),
     FIELD(WEAPON_INFO, smoke_count),
     FIELD_SET(WEAPON_INFO, sample_num, M_SetSample),
+    FIELD_SET(WEAPON_INFO, sample_overlay_num, M_SetOverlaySample),
+    FIELD(WEAPON_INFO, sample_overlay_pitch),
 
     // Deliberately absent: the groups. lock, left_arm, right_arm, ammo, anim,
     // flash, glow, muzzle_pos and shell_pos are structs, and each is reached as
@@ -155,6 +158,16 @@ static const char *M_SetSample(void *const self, const TRX_VALUE *const in)
         return "not a sample";
     }
     ((WEAPON_INFO *)self)->sample_num = (SAMPLE_TRX_ID)in->as_int;
+    return nullptr;
+}
+
+static const char *M_SetOverlaySample(
+    void *const self, const TRX_VALUE *const in)
+{
+    if (in->as_int < 0) {
+        return "not a sample";
+    }
+    ((WEAPON_INFO *)self)->sample_overlay_num = (SAMPLE_TRX_ID)in->as_int;
     return nullptr;
 }
 

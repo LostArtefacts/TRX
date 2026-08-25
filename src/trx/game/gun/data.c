@@ -98,6 +98,24 @@ static void M_ReadAmmoInfo(JSON_OBJECT *const obj, const int32_t type)
     ammo->infinite = JSON_ObjectGetBool(ammo_obj, "infinite", ammo->infinite);
 }
 
+static SAMPLE_TRX_ID M_ReadSample(
+    JSON_OBJECT *const obj, const char *const key, const char *const name,
+    const char *const path)
+{
+    const char *const sample =
+        JSON_ObjectGetString(obj, key, JSON_INVALID_STRING);
+    if (sample != JSON_INVALID_STRING && sample[0] != '\0') {
+        CATALOG_ID sample_id;
+        if (!Catalog_NameToEnum(CATALOG_SAMPLES, sample, &sample_id)) {
+            LOG_WARNING(
+                "unknown sample '%s' for '%s' in %s", sample, name, path);
+        } else {
+            return sample_id;
+        }
+    }
+    return SFX_TRX_INVALID;
+}
+
 static RESULT M_ReadWeapons(JSON_OBJECT *const root_obj, const char *const path)
 {
 #define L_READ_ANGLE(name, target)                                             \
@@ -260,18 +278,13 @@ static RESULT M_ReadWeapons(JSON_OBJECT *const root_obj, const char *const path)
 
         M_ReadAmmoInfo(obj, type);
 
-        // sample_num
-        const char *const sample =
-            JSON_ObjectGetString(obj, "sample_num", JSON_INVALID_STRING);
-        if (sample != JSON_INVALID_STRING && sample[0] != '\0') {
-            CATALOG_ID sample_id;
-            if (!Catalog_NameToEnum(CATALOG_SAMPLES, sample, &sample_id)) {
-                LOG_WARNING(
-                    "unknown sample '%s' for '%s' in %s", sample, name, path);
-            } else {
-                Gun_Registry_Get(type)->sample_num = sample_id;
-            }
-        }
+        Gun_Registry_Get(type)->sample_num =
+            M_ReadSample(obj, "sample_num", name, path);
+        Gun_Registry_Get(type)->sample_overlay_num =
+            M_ReadSample(obj, "sample_overlay_num", name, path);
+        Gun_Registry_Get(type)->sample_overlay_pitch = JSON_ObjectGetInt(
+            obj, "sample_overlay_pitch",
+            Gun_Registry_Get(type)->sample_overlay_pitch);
 
         Gun_Registry_Get(type)->is_available =
             JSON_ObjectGetBool(obj, "is_available", true);
