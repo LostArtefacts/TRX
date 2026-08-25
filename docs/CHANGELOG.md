@@ -60,6 +60,7 @@
 - Changed a missing or unknown `lara_outfit` in a level to fall back to the default outfit, rather than stopping the game from starting (TRX1087)
 - Removed the golden outfits, which the engine now produces from any outfit, freeing their model slots for outfits of your own (TRX1070)
 - Fixed a crash when switching mods (TRX1239)
+- Fixed Lara's arms leaving their intended positions when looking around in the crouched stance (OG bug) (#6402)
 
 **Saves and settings**
 - Added smoke, sparks, mist and bubbles to saves (Gameplay → General → Save effects)

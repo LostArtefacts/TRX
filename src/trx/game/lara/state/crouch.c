@@ -120,13 +120,6 @@ static void M_CrouchIdle(ITEM *const item, COLL_INFO *const coll)
     coll->enable_hit = 1;
     coll->enable_baddie_push = 1;
 
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    const bool crouch_active = g_Config.gameplay.enable_toggle_crouch
-        ? lara->crouching || lara->keep_crouched
-        : g_Input.crouch || lara->keep_crouched;
-    lara->sprinting = false;
-    lara->is_crouched = true;
-
     if (item->hit_points <= 0) {
         item->goal_anim_state = LS(LS_CRAWL_IDLE);
         return;
@@ -139,6 +132,15 @@ static void M_CrouchIdle(ITEM *const item, COLL_INFO *const coll)
     if (g_Input.look) {
         Lara_Look_UpDown();
     }
+
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->torso_rot.x = 0;
+    lara->torso_rot.y = 0;
+    const bool crouch_active = g_Config.gameplay.enable_toggle_crouch
+        ? lara->crouching || lara->keep_crouched
+        : g_Input.crouch || lara->keep_crouched;
+    lara->sprinting = false;
+    lara->is_crouched = true;
 
     if ((g_Input.forward || g_Input.back) && crouch_active
         && lara->gun_status == LGS_ARMLESS && M_CanEnterCrawlFromCrouch(item)) {
@@ -166,6 +168,8 @@ static void M_CrouchRoll(ITEM *const item, COLL_INFO *const coll)
     g_Camera.target_elevation = -3640;
     item->goal_anim_state = LS(LS_CROUCH_IDLE);
     LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->torso_rot.x = 0;
+    lara->torso_rot.y = 0;
     lara->is_crouched = true;
 }
 
@@ -179,6 +183,8 @@ static void M_CrouchTurn(ITEM *const item, COLL_INFO *const coll)
     coll->enable_hit = 0;
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->torso_rot.x = 0;
+    lara->torso_rot.y = 0;
     const bool crouch_active = g_Config.gameplay.enable_toggle_crouch
         ? lara->crouching || lara->keep_crouched
         : g_Input.crouch || lara->keep_crouched;
