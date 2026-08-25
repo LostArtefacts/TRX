@@ -310,7 +310,7 @@ unit_tests += {
 
 unit_tests += {
   'name': 'trx/game/items/actions',
-  'engine': ['game/items/actions/common.c'],
+  'engine': ['core/memory.c', 'game/catalog/table.c', 'game/items/actions/common.c'],
 }
 
 unit_tests += {
@@ -321,7 +321,7 @@ unit_tests += {
 
 unit_tests += {
   'name': 'trx/game/game_flow/inventory',
-  'engine': ['game/game_flow/inventory.c'],
+  'engine': ['core/memory.c', 'game/catalog/table.c', 'game/game_flow/inventory.c'],
 }
 
 unit_tests += {
@@ -1079,6 +1079,7 @@ unit_tests += {
     'core/subsystem.c',
     'core/value.c',
     'core/vector.c',
+    'game/catalog/table.c',
     'game/enum.c',
     'game/game_strings/entries.c',
     'game/gun/registry.c',

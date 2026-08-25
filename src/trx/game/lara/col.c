@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/debug.h>
+#include <trx/game/catalog/table.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/rooms.h>
@@ -10,8 +11,11 @@
 #define M_MONKEY_CEILING_SNAP 704
 #define M_PUSH_TIMEOUT 15
 
-static void (*m_CollisionRoutines[LS_NUMBER_OF])(
-    ITEM *item, COLL_INFO *coll) = {};
+typedef void (*M_COLLISION_ROUTINE)(ITEM *item, COLL_INFO *coll);
+
+CATALOG_TABLE_DEFINE(
+    m_CollisionRoutines, CATALOG_LARA_STATES, M_COLLISION_ROUTINE,
+    LS_NUMBER_OF);
 
 void Lara_Col_Push(
     const COLL_ITEM *const item, COLL_INFO *const coll, const bool hit_on,
@@ -103,15 +107,17 @@ void Lara_Col_Register(
     void (*const handle_func)(ITEM *item, COLL_INFO *coll))
 {
     ASSERT(state >= 0 && state < LS_NUMBER_OF);
-    m_CollisionRoutines[state] = handle_func;
+    *(M_COLLISION_ROUTINE *)CatalogTable_Get(&m_CollisionRoutines, state) =
+        handle_func;
 }
 
 void Lara_Col_Update(ITEM *const item, COLL_INFO *const coll)
 {
     const LARA_TRX_STATE state = LS_U(item->current_anim_state);
-    if (state >= 0 && state < LS_NUMBER_OF
-        && m_CollisionRoutines[state] != nullptr) {
-        m_CollisionRoutines[state](item, coll);
+    const M_COLLISION_ROUTINE *const routine =
+        CatalogTable_Get(&m_CollisionRoutines, state);
+    if (routine != nullptr && *routine != nullptr) {
+        (*routine)(item, coll);
     }
 }
 

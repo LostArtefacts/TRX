@@ -1,6 +1,7 @@
 #include <trx/game/game_flow/inventory.h>
 
 #include <trx/config.h>
+#include <trx/game/catalog/table.h>
 #include <trx/game/gun.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
@@ -12,8 +13,8 @@
 
 #include <string.h>
 
-static int8_t m_SecretInvItems[O_NUMBER_OF] = {};
-static int8_t m_Add2InvItems[O_NUMBER_OF] = {};
+CATALOG_TABLE_DEFINE(m_SecretInvItems, CATALOG_OBJECTS, int8_t, O_NUMBER_OF);
+CATALOG_TABLE_DEFINE(m_Add2InvItems, CATALOG_OBJECTS, int8_t, O_NUMBER_OF);
 static bool m_RemoveWeapons = false;
 static bool m_RemoveAmmo = false;
 static bool m_RemoveFlares = false;
@@ -27,6 +28,16 @@ static const OBJECT_ID m_ScionObjects[] = {
     O_SCION_ITEM_1, O_QUEST_ITEM_1, O_QUEST_ITEM_2,
     O_QUEST_ITEM_3, O_QUEST_ITEM_4, NO_OBJECT,
 };
+
+static int8_t *M_SecretInvItem(const OBJECT_ID object_id)
+{
+    return CatalogTable_Get(&m_SecretInvItems, object_id);
+}
+
+static int8_t *M_Add2InvItem(const OBJECT_ID object_id)
+{
+    return CatalogTable_Get(&m_Add2InvItems, object_id);
+}
 
 static bool M_CanHaveItem(const OBJECT_ID object_id)
 {
@@ -70,9 +81,9 @@ static void M_ModifyResumeInfo_GunOrAmmo(
 
     Inv_State_AddAmmo(
         &resume->inv, gun_type,
-        ammo_pickup_qty * m_Add2InvItems[ammo_object_id]);
+        ammo_pickup_qty * *M_Add2InvItem(ammo_object_id));
     if (!Inv_State_Has(&resume->inv, gun_object_id)
-        && m_Add2InvItems[gun_object_id] > 0) {
+        && *M_Add2InvItem(gun_object_id) > 0) {
         Inv_State_SetCount(&resume->inv, gun_object_id, 1);
         Inv_State_AddAmmo(&resume->inv, gun_type, ammo_initial_qty);
     }
@@ -85,7 +96,7 @@ static void M_ModifyResumeInfo_Item(
         return;
     }
 
-    M_ResumeInfo_AddItem(resume, object_id, m_Add2InvItems[object_id]);
+    M_ResumeInfo_AddItem(resume, object_id, *M_Add2InvItem(object_id));
 }
 
 static void M_CollectNewPickup(const OBJECT_ID object_id)
@@ -111,43 +122,43 @@ static void M_ModifyInventory_GunOrAmmo(
             // Convert already collected guns into ammo to maintain stats
             // accuracy.
             Inv_AddAmmo(
-                gun_type, ammo_pickup_qty * m_SecretInvItems[ammo_object_id]);
+                gun_type, ammo_pickup_qty * *M_SecretInvItem(ammo_object_id));
             Inv_AddAmmo(
-                gun_type, ammo_initial_qty * m_SecretInvItems[gun_object_id]);
-            for (int32_t i = 0; i < m_SecretInvItems[ammo_object_id]; i++) {
+                gun_type, ammo_initial_qty * *M_SecretInvItem(gun_object_id));
+            for (int32_t i = 0; i < *M_SecretInvItem(ammo_object_id); i++) {
                 M_CollectNewPickup(ammo_object_id);
             }
-            for (int32_t i = 0; i < m_SecretInvItems[gun_object_id]; i++) {
+            for (int32_t i = 0; i < *M_SecretInvItem(gun_object_id); i++) {
                 M_CollectNewPickup(ammo_object_id);
             }
         } else if (type == GF_INV_REGULAR) {
             Inv_AddAmmo(
-                gun_type, ammo_pickup_qty * m_Add2InvItems[ammo_object_id]);
+                gun_type, ammo_pickup_qty * *M_Add2InvItem(ammo_object_id));
         }
     } else if (
-        (type == GF_INV_REGULAR && m_Add2InvItems[gun_object_id] > 0)
-        || (type == GF_INV_SECRET && m_SecretInvItems[gun_object_id] > 0)) {
+        (type == GF_INV_REGULAR && *M_Add2InvItem(gun_object_id) > 0)
+        || (type == GF_INV_SECRET && *M_SecretInvItem(gun_object_id) > 0)) {
 
         Inv_AddItem(gun_object_id);
 
         if (type == GF_INV_SECRET) {
             Inv_AddAmmo(
-                gun_type, ammo_pickup_qty * m_SecretInvItems[ammo_object_id]);
+                gun_type, ammo_pickup_qty * *M_SecretInvItem(ammo_object_id));
             M_CollectNewPickup(gun_object_id);
-            for (int32_t i = 0; i < m_SecretInvItems[ammo_object_id]; i++) {
+            for (int32_t i = 0; i < *M_SecretInvItem(ammo_object_id); i++) {
                 M_CollectNewPickup(ammo_object_id);
             }
         } else if (type == GF_INV_REGULAR) {
             Inv_AddAmmo(
-                gun_type, ammo_pickup_qty * m_Add2InvItems[ammo_object_id]);
+                gun_type, ammo_pickup_qty * *M_Add2InvItem(ammo_object_id));
         }
     } else if (type == GF_INV_SECRET) {
-        for (int32_t i = 0; i < m_SecretInvItems[ammo_object_id]; i++) {
+        for (int32_t i = 0; i < *M_SecretInvItem(ammo_object_id); i++) {
             Inv_AddItem(ammo_object_id);
             M_CollectNewPickup(ammo_object_id);
         }
     } else if (type == GF_INV_REGULAR) {
-        for (int32_t i = 0; i < m_Add2InvItems[ammo_object_id]; i++) {
+        for (int32_t i = 0; i < *M_Add2InvItem(ammo_object_id); i++) {
             Inv_AddItem(ammo_object_id);
         }
     }
@@ -158,9 +169,9 @@ static void M_ModifyInventory_Item(
 {
     int32_t qty = 0;
     if (type == GF_INV_SECRET) {
-        qty = m_SecretInvItems[object_id];
+        qty = *M_SecretInvItem(object_id);
     } else if (type == GF_INV_REGULAR) {
-        qty = m_Add2InvItems[object_id];
+        qty = *M_Add2InvItem(object_id);
     }
 
     // Check for gameplay mods from secret rewards
@@ -178,8 +189,8 @@ static void M_ModifyInventory_Item(
 void GF_InventoryModifier_Scan(const GF_LEVEL *const level)
 {
     for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
-        m_SecretInvItems[i] = 0;
-        m_Add2InvItems[i] = 0;
+        *M_SecretInvItem(i) = 0;
+        *M_Add2InvItem(i) = 0;
     }
     m_RemoveWeapons = false;
     m_RemoveAmmo = false;
@@ -200,9 +211,9 @@ void GF_InventoryModifier_Scan(const GF_LEVEL *const level)
                 continue;
             }
             if (data->inv_type == GF_INV_SECRET) {
-                m_SecretInvItems[data->object_id] += data->quantity;
+                *M_SecretInvItem(data->object_id) += data->quantity;
             } else if (data->inv_type == GF_INV_REGULAR) {
-                m_Add2InvItems[data->object_id] += data->quantity;
+                *M_Add2InvItem(data->object_id) += data->quantity;
             }
         } else if (event->type == GFS_REMOVE_WEAPONS) {
             m_RemoveWeapons = true;
@@ -257,7 +268,7 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
     const OBJECT_ID default_gun_object = Gun_GetGunObject(default_gun);
     const bool default_gun_given =
         !Inv_State_Has(&resume->inv, default_gun_object)
-        && m_Add2InvItems[default_gun_object] != 0;
+        && *M_Add2InvItem(default_gun_object) != 0;
     if (default_gun_given) {
         Inv_State_SetCount(&resume->inv, default_gun_object, 1);
         if (resume->equipped_gun_type == LGT_UNARMED) {
@@ -323,7 +334,7 @@ void GF_InventoryModifier_Apply(
 
     if (type == GF_INV_SECRET) {
         const LARA_GUN_TYPE default_gun = Gun_GetDefaultType();
-        if (m_Add2InvItems[Gun_GetGunObject(default_gun)]) {
+        if (*M_Add2InvItem(Gun_GetGunObject(default_gun))) {
             Inv_AddItem(Gun_GetGunObject(default_gun));
             if (resume->equipped_gun_type == LGT_UNARMED) {
                 resume->equipped_gun_type = default_gun;

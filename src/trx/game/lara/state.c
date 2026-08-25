@@ -1,7 +1,10 @@
 #include <trx/game/lara/state.h>
 
 #include <trx/debug.h>
+#include <trx/game/catalog/table.h>
 #include <trx/game/lara.h>
+
+typedef void (*M_STATE_ROUTINE)(ITEM *item, COLL_INFO *coll);
 
 static const LARA_TRX_ANIMATION m_TestResponsiveAnims[] = {
     // clang-format off
@@ -14,8 +17,9 @@ static const LARA_TRX_ANIMATION m_TestResponsiveAnims[] = {
     // clang-format on
 };
 
-static bool m_ResponsiveAnims[LA_NUMBER_OF] = {};
-static void (*m_StateRoutines[LS_NUMBER_OF])(ITEM *item, COLL_INFO *coll) = {};
+CATALOG_TABLE_DEFINE(m_ResponsiveAnims, CATALOG_LARA_ANIMS, bool, LA_NUMBER_OF);
+CATALOG_TABLE_DEFINE(
+    m_StateRoutines, CATALOG_LARA_STATES, M_STATE_ROUTINE, LS_NUMBER_OF);
 static void (*m_ExtraRoutines[LS_EXTRA_NUMBER_OF])(
     ITEM *item, COLL_INFO *coll) = {};
 
@@ -41,7 +45,7 @@ void Lara_State_Register(
     const LARA_TRX_STATE state,
     void (*const handle_func)(ITEM *item, COLL_INFO *coll))
 {
-    m_StateRoutines[state] = handle_func;
+    *(M_STATE_ROUTINE *)CatalogTable_Get(&m_StateRoutines, state) = handle_func;
 }
 
 void Lara_State_RegisterExtra(
@@ -56,13 +60,16 @@ void Lara_State_Initialise(void)
 {
     for (int32_t i = 0; m_TestResponsiveAnims[i] != LA_TRX_INVALID; i++) {
         const LARA_TRX_ANIMATION anim = m_TestResponsiveAnims[i];
-        m_ResponsiveAnims[anim] = M_HasResponsiveState(anim);
+        *(bool *)CatalogTable_Get(&m_ResponsiveAnims, anim) =
+            M_HasResponsiveState(anim);
     }
 }
 
 bool Lara_State_IsResponsive(const LARA_TRX_ANIMATION anim_idx)
 {
-    return m_ResponsiveAnims[anim_idx];
+    const bool *const responsive =
+        CatalogTable_Get(&m_ResponsiveAnims, anim_idx);
+    return responsive != nullptr && *responsive;
 }
 
 void Lara_State_Update(ITEM *const item, COLL_INFO *const coll)
@@ -76,10 +83,9 @@ void Lara_State_Update(ITEM *const item, COLL_INFO *const coll)
     }
 
     const LARA_TRX_STATE state = LS_U(item->current_anim_state);
-    if (state >= 0 && state < LS_NUMBER_OF) {
-        if (m_StateRoutines[state] != nullptr) {
-            m_StateRoutines[state](item, coll);
-        }
-        return;
+    const M_STATE_ROUTINE *const routine =
+        CatalogTable_Get(&m_StateRoutines, state);
+    if (routine != nullptr && *routine != nullptr) {
+        (*routine)(item, coll);
     }
 }

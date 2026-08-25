@@ -5,6 +5,7 @@
 #include <trx/debug.h>
 #include <trx/game/anims.h>
 #include <trx/game/catalog/manager.h>
+#include <trx/game/catalog/table.h>
 #include <trx/game/const.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/lara/common.h>
@@ -16,7 +17,7 @@ typedef struct {
     OBJECT obj;
 } M_UNCATALOGED_SLOT;
 
-static OBJECT m_Objects[O_NUMBER_OF] = {};
+CATALOG_TABLE_DEFINE(m_Objects, CATALOG_OBJECTS, OBJECT, O_NUMBER_OF);
 static STATIC_OBJECT_3D *m_StaticObjects3D = nullptr;
 static STATIC_OBJECT_2D *m_StaticObjects2D = nullptr;
 static int32_t m_StaticObjects3DCount = 0;
@@ -24,13 +25,13 @@ static int32_t m_StaticObjects2DCount = 0;
 static VECTOR *m_MeshPointers = nullptr;
 
 static VECTOR *m_UncatalogedSlots = nullptr;
-static VECTOR *m_MintedObjects = nullptr;
 
 void Object_Reset(void)
 {
     for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
-        ObjectProperty_ResetObject(&m_Objects[i]);
-        m_Objects[i].loaded = false;
+        OBJECT *const obj = Object_TryGet(i);
+        ObjectProperty_ResetObject(obj);
+        obj->loaded = false;
     }
 
     m_StaticObjects3D = nullptr;
@@ -47,14 +48,7 @@ void Object_Reset(void)
         m_UncatalogedSlots = nullptr;
     }
 
-    if (m_MintedObjects != nullptr) {
-        for (int32_t i = 0; i < m_MintedObjects->count; i++) {
-            OBJECT **const obj = Vector_Get(m_MintedObjects, i);
-            Memory_FreePointer(obj);
-        }
-        Vector_Free(m_MintedObjects);
-        m_MintedObjects = nullptr;
-    }
+    CatalogTable_Free(&m_Objects);
 }
 
 void Object_InitialiseStaticObjects3D(const int32_t count)
@@ -85,18 +79,10 @@ int32_t Object_GetStaticObjects2DCount(void)
 
 OBJECT *Object_TryGet(const OBJECT_ID object_id)
 {
-    if (object_id >= O_NUMBER_OF) {
-        const int32_t minted_idx = object_id - O_NUMBER_OF;
-        if (m_MintedObjects == nullptr
-            || minted_idx >= m_MintedObjects->count) {
-            return nullptr;
-        }
-        return *(OBJECT **)Vector_Get(m_MintedObjects, minted_idx);
-    }
     if (object_id < O_FIRST) {
         return nullptr;
     }
-    return &m_Objects[object_id];
+    return CatalogTable_Get(&m_Objects, object_id);
 }
 
 OBJECT *Object_Get(const OBJECT_ID object_id)
@@ -108,14 +94,8 @@ OBJECT *Object_Get(const OBJECT_ID object_id)
 
 OBJECT_ID Object_Mint(void)
 {
-    if (m_MintedObjects == nullptr) {
-        m_MintedObjects = Vector_Create(sizeof(OBJECT *));
-    }
-    // Each record is allocated on its own, so a pointer handed out earlier
-    // survives the next mint.
-    OBJECT *const obj = Memory_Alloc(sizeof(OBJECT));
-    Vector_Add(m_MintedObjects, (void *)&obj);
-    return O_NUMBER_OF + m_MintedObjects->count - 1;
+    CatalogTable_Append(&m_Objects);
+    return O_NUMBER_OF + m_Objects.tail_count - 1;
 }
 
 OBJECT *Object_GetByGameID(const int32_t game_id)
@@ -124,7 +104,7 @@ OBJECT *Object_GetByGameID(const int32_t game_id)
     if (object_id == NO_OBJECT) {
         return nullptr;
     }
-    return &m_Objects[object_id];
+    return Object_TryGet(object_id);
 }
 
 void Object_StoreUncatalogedSlot(const int32_t game_id, const OBJECT *const obj)
