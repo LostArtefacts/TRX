@@ -77,12 +77,6 @@ void LUA_Config_ClearLevelWatchers(void);
 // first level of a session passes in silence.
 void LUA_DropLevelScript(void);
 
-// Whether the level scripts being run are probes rather than levels being
-// played. The stats scan runs every level's script to count what the level
-// holds; a probe's listeners go the way any other level script's do, and
-// nothing is told about it, no level having been played.
-void LUA_SetLevelScriptProbing(bool probing);
-
 // Run a level's script.
 void LUA_RunLevelScript(const GF_LEVEL *level);
 

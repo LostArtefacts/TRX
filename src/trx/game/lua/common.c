@@ -32,10 +32,9 @@ typedef struct {
     LUA_CONTEXT context;
     // Whether a level's script run is outstanding. Level_Unload runs at the top
     // of every level load, the first one included, where there is nothing to
-    // let go of and nobody to tell about it.
+    // let go of and nobody to tell about it. A probe run counts as one, because
+    // it leaves the same state behind as a level being played.
     bool level_script_live;
-    // Whether the scripts being run are probes rather than levels being played.
-    bool level_script_probing;
 } M_PRIV;
 
 static M_PRIV m_Priv = {
@@ -499,21 +498,14 @@ void LUA_DropLevelScript(void)
         LUA_FireEvent(LUA_EVENT_LEVEL_UNLOAD);
     }
 
-    // A probe leaves listeners behind as readily as a level does, and they go
-    // here whether anything was told about it or not.
     LUA_ClearLevelListeners();
     LUA_Config_ClearLevelWatchers();
     LUA_DropLevelModules(p->state);
 }
 
-void LUA_SetLevelScriptProbing(const bool probing)
-{
-    m_Priv.level_script_probing = probing;
-}
-
 void LUA_RunLevelScript(const GF_LEVEL *const level)
 {
-    m_Priv.level_script_live = !m_Priv.level_script_probing;
+    m_Priv.level_script_live = true;
     LUA_SetScriptContext(LUA_CONTEXT_LEVEL);
 
     if (level->script_path != nullptr) {
