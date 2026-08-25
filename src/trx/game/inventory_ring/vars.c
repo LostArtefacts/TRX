@@ -41,10 +41,8 @@ static RESULT M_ReadItems(JSON_ARRAY *const arr, const char *const path)
         JSON_OBJECT *const obj = JSON_ArrayGetObject(arr, i);
         const char *const name =
             JSON_ObjectGetString(obj, "object_id", JSON_INVALID_STRING);
-        CATALOG_ID id;
-        FAIL_IF(
-            !Catalog_NameToEnum(CATALOG_OBJECTS, name, &id),
-            "%s: unknown object_id '%s'", path, name);
+        const CATALOG_ID id = Catalog_FromKey(CATALOG_OBJECTS, name, NO_OBJECT);
+        FAIL_IF(id == NO_OBJECT, "%s: unknown object_id '%s'", path, name);
         INVENTORY_ITEM *const item = Memory_Alloc(sizeof(*item));
         item->object_id = id;
         L_READ_INT("frames_total", item->frames_total);

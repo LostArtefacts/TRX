@@ -105,8 +105,9 @@ static SAMPLE_TRX_ID M_ReadSample(
     const char *const sample =
         JSON_ObjectGetString(obj, key, JSON_INVALID_STRING);
     if (sample != JSON_INVALID_STRING && sample[0] != '\0') {
-        CATALOG_ID sample_id;
-        if (!Catalog_NameToEnum(CATALOG_SAMPLES, sample, &sample_id)) {
+        const CATALOG_ID sample_id =
+            Catalog_FromKey(CATALOG_SAMPLES, sample, -1);
+        if (sample_id < 0) {
             LOG_WARNING(
                 "unknown sample '%s' for '%s' in %s", sample, name, path);
         } else {

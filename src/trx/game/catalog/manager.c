@@ -133,9 +133,8 @@ RESULT Catalog_Mint(
     const CATALOG_CONTEXT context, const char *const key,
     CATALOG_ID *const out_id)
 {
-    CATALOG_ID existing;
     FAIL_IF(
-        Catalog_NameToEnum(context, key, &existing),
+        Catalog_FromKey(context, key, -1) >= 0,
         "context %d already holds the key '%s'", context, key);
 
     const CATALOG_ID id = m_Counts[context]++;
@@ -170,7 +169,7 @@ int32_t Catalog_GetCount(const CATALOG_CONTEXT context)
     return m_Counts[context];
 }
 
-RESULT Catalog_BindGameID(
+RESULT Catalog_BindSlot(
     const CATALOG_CONTEXT context, const CATALOG_ID id, const int32_t game_id)
 {
     FAIL_IF(
@@ -226,12 +225,12 @@ RESULT Catalog_Load(
         char *const name_str = CSV_Trim(name_buf);
         const int32_t game_id = (int32_t)strtol(id_str, nullptr, 10);
 
-        CATALOG_ID id;
-        if (!Catalog_NameToEnum(context, name_str, &id)) {
+        const CATALOG_ID id = Catalog_FromKey(context, name_str, -1);
+        if (id < 0) {
             continue;
         }
 
-        RESULT result = Catalog_BindGameID(context, id, game_id);
+        RESULT result = Catalog_BindSlot(context, id, game_id);
         if (allow_duplicates) {
             IGNORE(result);
         } else {
@@ -242,40 +241,31 @@ RESULT Catalog_Load(
     return OK;
 }
 
-bool Catalog_NameToEnum(
-    const CATALOG_CONTEXT context, const char *name, CATALOG_ID *const out_id)
+CATALOG_ID Catalog_FromKey(
+    const CATALOG_CONTEXT context, const char *const key,
+    const CATALOG_ID fallback)
 {
     M_NAME_ENTRY *entry = nullptr;
-    HASH_FIND_STR(m_Name2EnumMap[context], name, entry);
-    if (entry != nullptr) {
-        *out_id = (CATALOG_ID)entry->enum_value;
-        return true;
-    }
-    return false;
+    HASH_FIND_STR(m_Name2EnumMap[context], key, entry);
+    return entry != nullptr ? (CATALOG_ID)entry->enum_value : fallback;
 }
 
-bool Catalog_EnumToGameID(
-    const CATALOG_CONTEXT context, const CATALOG_ID id,
-    int32_t *const out_game_id)
+int32_t Catalog_ToSlot(
+    const CATALOG_CONTEXT context, const CATALOG_ID id, const int32_t fallback)
 {
     if (id < 0 || id >= m_Counts[context] || m_GameIDs[context][id] < 0) {
-        return false;
+        return fallback;
     }
-    *out_game_id = m_GameIDs[context][id];
-    return true;
+    return m_GameIDs[context][id];
 }
 
-bool Catalog_GameIDToEnum(
-    const CATALOG_CONTEXT context, const int32_t game_id,
-    CATALOG_ID *const out_id)
+CATALOG_ID Catalog_FromSlot(
+    const CATALOG_CONTEXT context, const int32_t slot,
+    const CATALOG_ID fallback)
 {
     M_GAME_ID_ENTRY *entry = nullptr;
-    HASH_FIND_INT(m_GameID2EnumMap[context], &game_id, entry);
-    if (entry != nullptr) {
-        *out_id = (CATALOG_ID)entry->enum_value;
-        return true;
-    }
-    return false;
+    HASH_FIND_INT(m_GameID2EnumMap[context], &slot, entry);
+    return entry != nullptr ? (CATALOG_ID)entry->enum_value : fallback;
 }
 
 REGISTER_BASE_SUBSYSTEM(.shutdown = M_Shutdown)

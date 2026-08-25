@@ -873,36 +873,20 @@ bool Lara_MovePositionEx(
 
 LARA_ANIMATION Lara_AnimToGameID(const LARA_TRX_ANIMATION anim)
 {
-    int32_t out;
-    if (!Catalog_EnumToGameID(CATALOG_LARA_ANIMS, anim, &out)) {
-        out = -1;
-    }
-    return out;
+    return Catalog_ToSlot(CATALOG_LARA_ANIMS, anim, -1);
 }
 
 LARA_STATE Lara_StateToGameID(const LARA_TRX_STATE state)
 {
-    int32_t out;
-    if (!Catalog_EnumToGameID(CATALOG_LARA_STATES, state, &out)) {
-        out = -1;
-    }
-    return out;
+    return Catalog_ToSlot(CATALOG_LARA_STATES, state, -1);
 }
 
 LARA_TRX_ANIMATION Lara_AnimFromGameID(const LARA_ANIMATION anim)
 {
-    int32_t out;
-    if (!Catalog_GameIDToEnum(CATALOG_LARA_ANIMS, anim, &out)) {
-        out = -1;
-    }
-    return out;
+    return Catalog_FromSlot(CATALOG_LARA_ANIMS, anim, -1);
 }
 
 LARA_TRX_STATE Lara_StateFromGameID(const LARA_STATE state)
 {
-    int32_t out;
-    if (!Catalog_GameIDToEnum(CATALOG_LARA_STATES, state, &out)) {
-        out = -1;
-    }
-    return out;
+    return Catalog_FromSlot(CATALOG_LARA_STATES, state, -1);
 }

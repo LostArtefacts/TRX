@@ -13,8 +13,8 @@
 // same number as the TRX id: TRX names an object once, across all four games,
 // and each game's files number it differently.
 
-// Neither Catalog_EnumToGameID nor Catalog_GameIDToEnum checks the context
-// before indexing its table with it.
+// Neither Catalog_ToSlot nor Catalog_FromSlot checks the context before
+// indexing its table with it.
 static CATALOG_CONTEXT M_CheckContext(lua_State *const L, const int arg)
 {
     return (CATALOG_CONTEXT)LUA_CheckRange(
@@ -26,14 +26,17 @@ static int M_L_CatalogToSlot(lua_State *const L)
 {
     const CATALOG_CONTEXT context = M_CheckContext(L, 1);
     CATALOG_ID id;
-    int32_t game_id;
     // Whether the narrowed id is in the catalog at all is Catalog_*'s to say.
-    if (!LUA_CheckBoundedInt(L, 2, INT32_MIN, INT32_MAX, &id)
-        || !Catalog_EnumToGameID(context, id, &game_id)) {
+    if (!LUA_CheckBoundedInt(L, 2, INT32_MIN, INT32_MAX, &id)) {
         lua_pushnil(L);
         return 1;
     }
-    lua_pushinteger(L, game_id);
+    const int32_t slot = Catalog_ToSlot(context, id, -1);
+    if (slot < 0) {
+        lua_pushnil(L);
+        return 1;
+    }
+    lua_pushinteger(L, slot);
     return 1;
 }
 
@@ -41,10 +44,13 @@ static int M_L_CatalogToSlot(lua_State *const L)
 static int M_L_CatalogFromSlot(lua_State *const L)
 {
     const CATALOG_CONTEXT context = M_CheckContext(L, 1);
-    int32_t game_id;
-    CATALOG_ID id;
-    if (!LUA_CheckBoundedInt(L, 2, INT32_MIN, INT32_MAX, &game_id)
-        || !Catalog_GameIDToEnum(context, game_id, &id)) {
+    int32_t slot;
+    if (!LUA_CheckBoundedInt(L, 2, INT32_MIN, INT32_MAX, &slot)) {
+        lua_pushnil(L);
+        return 1;
+    }
+    const CATALOG_ID id = Catalog_FromSlot(context, slot, -1);
+    if (id < 0) {
         lua_pushnil(L);
         return 1;
     }
