@@ -2940,6 +2940,9 @@
         "monkey": {
             "name": "\\{review}Affe",
         },
+        "moored_boat": {
+            "name": "Boot",
+        },
         "mounted_gun": {
             "name": "\\{review}Montiertes Geschütz",
         },
