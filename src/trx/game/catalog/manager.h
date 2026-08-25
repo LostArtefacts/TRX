@@ -23,8 +23,14 @@ typedef int32_t CATALOG_ID;
 RESULT Catalog_Mint(
     CATALOG_CONTEXT context, const char *key, CATALOG_ID *out_id);
 
-// The key an ID answers to, which is what a savegame stores. Null when the
-// context holds no such ID.
+// Give an identity another name to answer to. Fails where the context already
+// holds the name. An alias resolves like the canonical key, and is never
+// written back out.
+RESULT Catalog_AddAlias(
+    CATALOG_CONTEXT context, CATALOG_ID id, const char *alias);
+
+// The canonical key an ID answers to, which is what a savegame stores. Null
+// when the context holds no such ID.
 const char *Catalog_GetKey(CATALOG_CONTEXT context, CATALOG_ID id);
 
 // How many identities the context holds, built-in and minted together.
