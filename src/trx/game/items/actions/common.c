@@ -1,9 +1,13 @@
+#include <trx/game/catalog/table.h>
 #include <trx/game/items/actions.h>
 #include <trx/game/items/const.h>
 #include <trx/game/items/manager.h>
 #include <trx/game/rooms.h>
 
-static void (*m_Routines[ITEM_ACTION_NUMBER_OF])(ITEM *item) = {};
+typedef void (*M_ACTION_ROUTINE)(ITEM *item);
+
+CATALOG_TABLE_DEFINE(
+    m_Routines, CATALOG_ITEM_ACTIONS, M_ACTION_ROUTINE, ITEM_ACTION_NUMBER_OF);
 static int16_t m_FXType = 0;
 static ITEM_ACTION_INTERCEPTOR m_Interceptor = nullptr;
 
@@ -32,14 +36,15 @@ int16_t ItemAction_GetFXType(void)
 void ItemAction_Register(
     const ITEM_TRX_ACTION action, void (*const action_func)(ITEM *item))
 {
-    m_Routines[action] = action_func;
+    *(M_ACTION_ROUTINE *)CatalogTable_Get(&m_Routines, action) = action_func;
 }
 
 void ItemAction_Run(const ITEM_TRX_ACTION action_id, ITEM *const item)
 {
-    if (action_id >= 0 && action_id < ITEM_ACTION_NUMBER_OF
-        && m_Routines[action_id] != nullptr) {
-        m_Routines[action_id](item);
+    const M_ACTION_ROUTINE *const routine =
+        CatalogTable_Get(&m_Routines, action_id);
+    if (routine != nullptr && *routine != nullptr) {
+        (*routine)(item);
     }
 }
 
