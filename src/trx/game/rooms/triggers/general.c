@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/game/game.h>
+#include <trx/game/hub.h>
 #include <trx/game/items.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
@@ -46,6 +47,8 @@ static void M_HandleFinish(
     TRIGGER_STATUS *const status)
 {
     Game_SetIsLevelComplete(true);
+    Hub_SetNextLevelIndex((int16_t)(intptr_t)cmd->parameter);
+    Hub_SetLaraStartIndex(trigger->timer);
 }
 
 REGISTER_TRIGGER_HANDLER(TO_BODY_BAG, M_HandleBodyBag)

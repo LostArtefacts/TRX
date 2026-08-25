@@ -28,6 +28,11 @@ static void M_SetupLara(OBJECT *const obj)
         });
 }
 
+static void M_SetupLaraStartPos(OBJECT *const obj)
+{
+    obj->draw_func = nullptr;
+}
+
 void Object_SetupAllObjects(void)
 {
     for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
@@ -80,3 +85,4 @@ void Object_SetupAllObjects(void)
 }
 
 REGISTER_OBJECT(O_LARA, M_SetupLara)
+REGISTER_OBJECT(O_LARA_START_POS, M_SetupLaraStartPos)

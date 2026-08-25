@@ -37,7 +37,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     - `trx.catalog.Context.ITEM_ACTIONS` = `5`  
         Item actions, which the flip effects trigger.
 
-- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 822 names
+- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 823 names
 
     Every object TRX has a name for.
 
@@ -156,11 +156,11 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     `LARA_SKIN_SWAP_8`, `LARA_SKIN_SWAP_9`, `LARA_SKIN_SWAP_EXTRA`,
     `LARA_SKIN_SWAP_GUNS`, `LARA_SKIN_SWAP_LEGS`, `LARA_SPEECH_HEAD_1`,
     `LARA_SPEECH_HEAD_2`, `LARA_SPEECH_HEAD_3`, `LARA_SPEECH_HEAD_4`,
-    `LARA_UPV`, `LARA_UZIS`, `LARA_VEHICLE_ANIM`, `LARGE_MEDIPACK_ITEM`,
-    `LARGE_MEDIPACK_OPTION`, `LARSON`, `LASERSIGHT_ITEM`, `LASERSIGHT_OPTION`,
-    `LAVA_WEDGE`, `LEADBAR_ITEM`, `LEADBAR_OPTION`, `LENS_FLARE`, `LIFT`,
-    `LIGHTNING_EMITTER`, `LION`, `LIONESS`, `LIZARD`, `M16_AMMO_ITEM`,
-    `M16_AMMO_OPTION`, `M16_FLASH`, `M16_ITEM`, `M16_OPTION`,
+    `LARA_START_POS`, `LARA_UPV`, `LARA_UZIS`, `LARA_VEHICLE_ANIM`,
+    `LARGE_MEDIPACK_ITEM`, `LARGE_MEDIPACK_OPTION`, `LARSON`, `LASERSIGHT_ITEM`,
+    `LASERSIGHT_OPTION`, `LAVA_WEDGE`, `LEADBAR_ITEM`, `LEADBAR_OPTION`,
+    `LENS_FLARE`, `LIFT`, `LIGHTNING_EMITTER`, `LION`, `LIONESS`, `LIZARD`,
+    `M16_AMMO_ITEM`, `M16_AMMO_OPTION`, `M16_FLASH`, `M16_ITEM`, `M16_OPTION`,
     `MAGNUM_AMMO_ITEM`, `MAGNUM_AMMO_OPTION`, `MAGNUM_ITEM`, `MAGNUM_OPTION`,
     `MESH_SWAP_1`, `MESH_SWAP_2`, `MESH_SWAP_3`, `MIDAS_TOUCH`, `MINE`,
     `MINE_CART`, `MINI_COPTER`, `MISSILE_ATLANTEAN_BOMB`,

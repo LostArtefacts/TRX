@@ -9,6 +9,7 @@
 #include <trx/game/game_flow/sequencer.h>
 #include <trx/game/game_flow/util.h>
 #include <trx/game/game_flow/vars.h>
+#include <trx/game/hub.h>
 #include <trx/game/lara.h>
 #include <trx/game/lua.h>
 #include <trx/game/music.h>
@@ -104,7 +105,10 @@ M_GF_HANDLER(M_HandleLevelComplete)
     }
     M_FinishLevelBasic();
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
-    const GF_LEVEL *const next_level = M_GetCanonicalNextLevel(current_level);
+    const GF_LEVEL *const next_hub_level = Hub_GetNextLevel();
+    const GF_LEVEL *const next_level = next_hub_level != nullptr
+        ? next_hub_level
+        : M_GetCanonicalNextLevel(current_level);
 
     if (next_level == nullptr) {
         *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
