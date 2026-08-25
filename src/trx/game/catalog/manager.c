@@ -23,9 +23,10 @@ typedef struct {
     const char *name_str;
 } M_ENTRY;
 
-// Internal map from name to CATALOG_ID
+// Internal map from a name to the CATALOG_ID it resolves to. One identity has
+// one entry for its canonical key and one for each of its aliases.
 typedef struct {
-    const char *name_str;
+    char *name_str;
     int32_t enum_value;
     UT_hash_handle hh;
 } M_NAME_ENTRY;
@@ -88,6 +89,22 @@ static void M_ClearGameIDMap(M_GAME_ID_ENTRY **const map)
     }
 }
 
+static RESULT M_AddName(
+    const CATALOG_CONTEXT context, const CATALOG_ID id, const char *const name)
+{
+    FAIL_IF(
+        Catalog_FromKey(context, name, -1) >= 0,
+        "context %d already holds the name '%s'", context, name);
+
+    M_NAME_ENTRY *const entry = Memory_Alloc(sizeof(*entry));
+    entry->name_str = Memory_DupStr(name);
+    entry->enum_value = id;
+    HASH_ADD_KEYPTR(
+        hh, m_Name2EnumMap[context], entry->name_str,
+        (uint32_t)strlen(entry->name_str), entry);
+    return OK;
+}
+
 // Mint the built-ins, walking each .def in file order, so that the ID of a
 // built-in equals the enum constant it was declared with. This runs before
 // main because the mods are scanned before the subsystems come up, and that
@@ -113,15 +130,18 @@ static void M_Shutdown(void)
 {
     for (size_t ctx = 0; ctx < CATALOG_CONTEXT_MAX; ctx++) {
         M_ClearGameIDMap(&m_GameID2EnumMap[ctx]);
-        while (m_Counts[ctx] > m_BuiltInCounts[ctx]) {
-            const int32_t id = --m_Counts[ctx];
-            M_NAME_ENTRY *entry = nullptr;
-            HASH_FIND_STR(m_Name2EnumMap[ctx], m_Keys[ctx][id], entry);
-            if (entry != nullptr) {
-                HASH_DEL(m_Name2EnumMap[ctx], entry);
-                Memory_Free(entry);
+        M_NAME_ENTRY *cur, *tmp;
+        HASH_ITER(hh, m_Name2EnumMap[ctx], cur, tmp)
+        {
+            if (cur->enum_value < m_BuiltInCounts[ctx]) {
+                continue;
             }
-            Memory_FreePointer(&m_Keys[ctx][id]);
+            HASH_DEL(m_Name2EnumMap[ctx], cur);
+            Memory_FreePointer(&cur->name_str);
+            Memory_Free(cur);
+        }
+        while (m_Counts[ctx] > m_BuiltInCounts[ctx]) {
+            Memory_FreePointer(&m_Keys[ctx][--m_Counts[ctx]]);
         }
         for (int32_t id = 0; id < m_Counts[ctx]; id++) {
             m_GameIDs[ctx][id] = -1;
@@ -133,11 +153,10 @@ RESULT Catalog_Mint(
     const CATALOG_CONTEXT context, const char *const key,
     CATALOG_ID *const out_id)
 {
-    FAIL_IF(
-        Catalog_FromKey(context, key, -1) >= 0,
-        "context %d already holds the key '%s'", context, key);
+    const CATALOG_ID id = m_Counts[context];
+    MUST(M_AddName(context, id, key));
 
-    const CATALOG_ID id = m_Counts[context]++;
+    m_Counts[context]++;
     m_Keys[context] =
         Memory_Realloc(m_Keys[context], sizeof(char *) * m_Counts[context]);
     m_GameIDs[context] =
@@ -145,15 +164,17 @@ RESULT Catalog_Mint(
     m_Keys[context][id] = Memory_DupStr(key);
     m_GameIDs[context][id] = -1;
 
-    M_NAME_ENTRY *const entry = Memory_Alloc(sizeof(*entry));
-    entry->name_str = m_Keys[context][id];
-    entry->enum_value = id;
-    HASH_ADD_KEYPTR(
-        hh, m_Name2EnumMap[context], entry->name_str,
-        (uint32_t)strlen(entry->name_str), entry);
-
     *out_id = id;
     return OK;
+}
+
+RESULT Catalog_AddAlias(
+    const CATALOG_CONTEXT context, const CATALOG_ID id, const char *const alias)
+{
+    FAIL_IF(
+        id < 0 || id >= m_Counts[context], "context %d holds no ID %d", context,
+        id);
+    return M_AddName(context, id, alias);
 }
 
 const char *Catalog_GetKey(const CATALOG_CONTEXT context, const CATALOG_ID id)
