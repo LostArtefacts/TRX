@@ -68,8 +68,11 @@ static M_NAME_ENTRY *m_Name2EnumMap[CATALOG_CONTEXT_MAX] = { nullptr };
 
 static M_GAME_ID_ENTRY *m_GameID2EnumMap[CATALOG_CONTEXT_MAX] = { nullptr };
 
-// Parsed game IDs arrays (dynamically sized)
+// Parsed game IDs arrays, one per context, sized by that context's entries
 static int32_t **m_CatalogGameIDs = nullptr;
+
+// Entry count of each context
+static int32_t m_CatalogCounts[CATALOG_CONTEXT_MAX] = {};
 
 // State flag
 static bool m_Initialized = false;
@@ -99,14 +102,18 @@ static void M_ClearNameMap(M_NAME_ENTRY **const map)
 // Build initial maps on first load
 static void M_Initialize(void)
 {
-    const size_t count = m_CatalogEntryCount;
+    for (size_t idx = 0; idx < m_CatalogEntryCount; idx++) {
+        const CATALOG_CONTEXT ctx = m_CatalogEntryDefs[idx].context;
+        m_CatalogCounts[ctx] =
+            MAX(m_CatalogCounts[ctx], m_CatalogEntryDefs[idx].id + 1);
+    }
     m_CatalogGameIDs =
         Memory_Alloc(sizeof(*m_CatalogGameIDs) * CATALOG_CONTEXT_MAX);
     for (size_t ctx = 0; ctx < CATALOG_CONTEXT_MAX; ctx++) {
         m_CatalogGameIDs[ctx] =
-            Memory_Alloc(sizeof(*m_CatalogGameIDs[ctx]) * count);
+            Memory_Alloc(sizeof(*m_CatalogGameIDs[ctx]) * m_CatalogCounts[ctx]);
     }
-    for (size_t idx = 0; idx < count; idx++) {
+    for (size_t idx = 0; idx < m_CatalogEntryCount; idx++) {
         const CATALOG_CONTEXT ctx = m_CatalogEntryDefs[idx].context;
         const CATALOG_ID id = m_CatalogEntryDefs[idx].id;
         m_CatalogGameIDs[ctx][id] = -1;
@@ -210,7 +217,7 @@ bool Catalog_EnumToGameID(
     const CATALOG_CONTEXT context, const CATALOG_ID id,
     int32_t *const out_game_id)
 {
-    if (id < 0 || (size_t)id >= m_CatalogEntryCount) {
+    if (id < 0 || id >= m_CatalogCounts[context]) {
         return false;
     }
     const int32_t gid = m_CatalogGameIDs[context][id];
