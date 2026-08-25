@@ -133,7 +133,7 @@ test("all gives one of everything, and the supplies by the ten", function()
   assert(count(fake.TOOL) == 1, "and the tool, once")
   assert(trx.inventory:shots(UZIS) == 2000, "with the guns loaded")
   assert(
-    count(trx.catalog.objects.SMALL_MEDIPACK_ITEM) == 10,
+    count(trx.catalog.objects.SMALL_MEDIPACK) == 10,
     "the supplies come by the ten"
   )
 end)

@@ -90,6 +90,18 @@ order: 3
      `trx.catalog.objects.EXPLOSIVE_OPTION` no longer exist
    - the slots are free for an object of your own to take
 
+9. **The catalogs report the name an author writes**
+   A catalog constant is the name `objects/names.def` gives a thing rather
+   than its C spelling, so `trx.catalog.objects.SHOTGUN_ITEM` is now
+   `trx.catalog.objects.SHOTGUN`, and it is the word `trx.objects.shotgun`
+   already answered to. The old spelling still resolves, so no script has to
+   be rewritten:
+   - `trx.catalog.objects.SHOTGUN_ITEM` and `trx.catalog.objects.SHOTGUN` are
+     the same constant, in any case
+   - a catalog value written back as text now reads `shotgun` where it read
+     `O_SHOTGUN_ITEM`, so a file a build of this version writes is not one an
+     older build reads
+
 ### Version 1.9 to 1.10
 
 The Lua API was rewritten, and most of what it breaks is a rename. Run your

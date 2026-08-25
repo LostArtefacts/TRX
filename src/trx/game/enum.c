@@ -42,33 +42,46 @@ static __attribute__((constructor)) void M_Init(void)
         INPUT_ROLE, INPUT_ROLE_CYCLE_LIGHTING_MODEL, "cycle_lighting_contrast");
 
     // The catalogs: every object, sample, music track, Lara state, Lara
-    // animation and item action TRX knows, by its canonical name. These are the
-    // names a script says - the O_/SFX_/MX_ prefixes come off in the
-    // declaration, not here, because the prefix is what tells them apart in C.
-#define X_CATALOG_ID(enum_value) ENUM_MAP_SELF(OBJECT_ID, enum_value);
+    // animation and item action TRX knows. The first name is the one an author
+    // writes and the one a value is written back as; the C spelling follows it,
+    // so a file written against O_WOLF still reads.
+#define X_CATALOG_MAP(enum_type, context, enum_value)                          \
+    ENUM_MAP(                                                                  \
+        enum_type, enum_value,                                                 \
+        Catalog_KeyForEnum(context, enum_value, #enum_value));                 \
+    ENUM_MAP_SELF(enum_type, enum_value);
+
+#define X_CATALOG_ID(enum_value)                                               \
+    X_CATALOG_MAP(OBJECT_ID, CATALOG_OBJECTS, enum_value)
 #include <trx/game/catalog/objects.def>
 #undef X_CATALOG_ID
 
-#define X_CATALOG_ID(enum_value) ENUM_MAP_SELF(SAMPLE_TRX_ID, enum_value);
+#define X_CATALOG_ID(enum_value)                                               \
+    X_CATALOG_MAP(SAMPLE_TRX_ID, CATALOG_SAMPLES, enum_value)
 #include <trx/game/catalog/samples.def>
 #undef X_CATALOG_ID
 
-#define X_CATALOG_ID(enum_value) ENUM_MAP_SELF(MUSIC_TRX_ID, enum_value);
+#define X_CATALOG_ID(enum_value)                                               \
+    X_CATALOG_MAP(MUSIC_TRX_ID, CATALOG_MUSIC, enum_value)
 #include <trx/game/catalog/music.def>
 #undef X_CATALOG_ID
 
-#define X_CATALOG_ID(enum_value) ENUM_MAP_SELF(LARA_TRX_STATE, enum_value);
+#define X_CATALOG_ID(enum_value)                                               \
+    X_CATALOG_MAP(LARA_TRX_STATE, CATALOG_LARA_STATES, enum_value)
 #include <trx/game/catalog/lara_states.def>
 #undef X_CATALOG_ID
 
-#define X_CATALOG_ID(enum_value) ENUM_MAP_SELF(LARA_TRX_ANIMATION, enum_value);
+#define X_CATALOG_ID(enum_value)                                               \
+    X_CATALOG_MAP(LARA_TRX_ANIMATION, CATALOG_LARA_ANIMS, enum_value)
 #include <trx/game/catalog/lara_anims.def>
 #undef X_CATALOG_ID
 
-#define X_CATALOG_ID(enum_value) ENUM_MAP_SELF(ITEM_TRX_ACTION, enum_value);
+#define X_CATALOG_ID(enum_value)                                               \
+    X_CATALOG_MAP(ITEM_TRX_ACTION, CATALOG_ITEM_ACTIONS, enum_value)
 #include <trx/game/catalog/item_actions.def>
 #include <trx/game/ui/regions.h>
 #undef X_CATALOG_ID
+#undef X_CATALOG_MAP
 
     ENUM_MAP(CATALOG_CONTEXT, CATALOG_OBJECTS, "objects");
     ENUM_MAP(CATALOG_CONTEXT, CATALOG_MUSIC, "music");

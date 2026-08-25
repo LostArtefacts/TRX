@@ -5,9 +5,12 @@ api.module("catalog", {
   order = 8,
   description = "The names TRX knows things by.\n\n"
     .. "Each catalog is an enum of every object, sample, music track, Lara state, Lara animation "
-    .. "or item action the engine has a name for. The names are the C ones with their prefix "
-    .. "taken off - `O_WOLF` is `trx.catalog.objects.WOLF` - and a catalog answers to a name in "
-    .. "any case, so `trx.catalog.objects.wolf` is the same constant.\n\n"
+    .. "or item action the engine has a name for. A name is the one an author writes rather than "
+    .. "the C spelling, so the shotgun is `trx.catalog.objects.SHOTGUN` and not "
+    .. "`O_SHOTGUN_ITEM`, and it is the same word `trx.objects.shotgun` answers to. A catalog "
+    .. "takes a name in any case, so `trx.catalog.objects.shotgun` is the same constant, and "
+    .. "the C spelling without its prefix answers as well, so a script written against "
+    .. "`SHOTGUN_ITEM` still reads.\n\n"
     .. "The ids in a catalog are TRX's own, and they are the same in all four games. The number a "
     .. "builder reads off Tomb Editor is not: that is the slot the game's own files use. "
     .. "`trx.catalog.to_slot` and `trx.catalog.from_slot` convert between the two.",

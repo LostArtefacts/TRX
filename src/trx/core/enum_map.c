@@ -181,6 +181,21 @@ int32_t EnumMap_Get(
     return M_Str2Id(&m_Str2IdMap, enum_type_name, str_value, default_value);
 }
 
+bool EnumMap_TryGet(
+    const char *const enum_type_name, const char *const str_value,
+    int32_t *const out_value)
+{
+    const char *const key =
+        String_FormatStatic("%s|%s", enum_type_name, str_value);
+    M_STR_TO_ID_ENTRY *entry;
+    HASH_FIND_STR(m_Str2IdMap, key, entry);
+    if (entry == nullptr) {
+        return false;
+    }
+    *out_value = entry->value;
+    return true;
+}
+
 const char *EnumMap_ToString(
     const char *const enum_type_name, const int32_t enum_value)
 {

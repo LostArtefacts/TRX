@@ -17,6 +17,14 @@ test("a catalog answers to a name in any case", function()
   assert(trx.catalog.weapons.desert_eagle == trx.catalog.weapons.DESERT_EAGLE)
 end)
 
+-- The name an author writes is the one a catalog reports, and the C spelling
+-- answers beside it, so a script written before the two agreed still runs.
+test("a catalog answers to the C spelling as well", function()
+  assert(trx.catalog.objects.SHOTGUN_ITEM == trx.catalog.objects.SHOTGUN)
+  assert(trx.catalog.objects.shotgun_item == trx.catalog.objects.SHOTGUN)
+  assert(trx.catalog.objects.KEY_ITEM_1 == trx.catalog.objects.KEY_1)
+end)
+
 test("a name the engine does not have is nil, in any case", function()
   assert(trx.catalog.objects.WOMBAT == nil)
   assert(trx.catalog.objects.wombat == nil)

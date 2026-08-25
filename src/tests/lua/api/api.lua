@@ -48,6 +48,14 @@ local function fresh_env()
     -- Stands in for the ENUM_MAP reflection. Deliberately not in numeric order,
     -- and with a gap, so the tests pin what api.lua does with what C hands it.
     enum = {
+      -- The names a value answers to beyond the one values() reports. The real
+      -- one reads ENUM_MAP, which holds every name a value was defined under.
+      get = function(backing, name)
+        if backing == "WIDGET_STATE" and name == "WIDGET_BROKEN_ALIAS" then
+          return 7
+        end
+        return nil
+      end,
       values = function(backing)
         if backing == "PREFIXED_STATE" then
           -- A C enum whose constants all carry the enum's own name, the way
@@ -649,6 +657,32 @@ test(
     assert(e.ON == 1, "and the write must not have landed")
   end
 )
+
+-- A value answers to every name it was defined under, and the constant list
+-- reports one. The rest - the C spelling of a catalog identity - are read
+-- from the enum itself.
+test("an enum answers to a name its constant list leaves out", function()
+  local api = fresh_env()
+  api.module("things", {})
+
+  local e = api.enum("things.State", {
+    backing = "WIDGET_STATE",
+    values = { OFF = "off.", ON = "on.", BROKEN = "broken." },
+  })
+
+  assert(e.WIDGET_BROKEN_ALIAS == 7, "a name only the enum knows must resolve")
+  assert(e.widget_broken_alias == 7, "in any case")
+
+  local names = {}
+  for name in pairs(e) do
+    names[#names + 1] = name
+  end
+  table.sort(names)
+  assert(
+    table.concat(names, ",") == "BROKEN,OFF,ON",
+    "and it must stay out of the constant list"
+  )
+end)
 
 test(
   "a bulk enum is described as a whole, not a constant at a time",

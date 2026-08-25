@@ -53,13 +53,13 @@ local ARSENAL = {
 -- stats count it apart. It has an inventory icon all the same, so the cheat can
 -- hand her one - by name only, since it is in none of the families a group
 -- reaches.
-local CRYSTAL = trx.catalog.objects.SAVE_CRYSTAL_ITEM
+local CRYSTAL = trx.catalog.objects.SAVE_CRYSTAL
 
 -- The lead bar fills no numbered slot, so its family is `tool` alongside the
 -- crowbar and the binoculars. A level that carries one has a Midas hand to put
 -- it in, which is what makes it a plot item to the player looking for it, so it
 -- is named here rather than reached through a family.
-local LEADBAR = trx.catalog.objects.LEADBAR_ITEM
+local LEADBAR = trx.catalog.objects.LEAD_BAR
 
 -- A pickup with several states goes into one backpack entry - the scion whether
 -- or not Lara carries it, a waterskin at each fill level - and answers to one
@@ -120,7 +120,7 @@ local function give_gun(weapon, ammo, ignore_exclusions)
 end
 
 local function give_guns(ignore_exclusions)
-  local given = trx.inventory:give(trx.catalog.objects.PISTOL_ITEM)
+  local given = trx.inventory:give(trx.catalog.objects.PISTOLS)
   for _, entry in ipairs(ARSENAL) do
     given = given + give_gun(entry[1], entry[2], ignore_exclusions)
   end
@@ -139,8 +139,8 @@ local function give_supplies()
   -- What a cheat hands over rather than one of.
   local SUPPLY_COUNT = 10
   local SUPPLIES = {
-    trx.catalog.objects.SMALL_MEDIPACK_ITEM,
-    trx.catalog.objects.LARGE_MEDIPACK_ITEM,
+    trx.catalog.objects.SMALL_MEDIPACK,
+    trx.catalog.objects.LARGE_MEDIPACK,
   }
 
   local given = 0
@@ -150,7 +150,7 @@ local function give_supplies()
   -- Flares come only where they are Lara's to carry.
   if trx.weapons.is_available(trx.catalog.weapons.FLARE) then
     given = given
-      + trx.inventory:give(trx.catalog.objects.FLAREBOX_ITEM, SUPPLY_COUNT)
+      + trx.inventory:give(trx.catalog.objects.FLARES_BOX, SUPPLY_COUNT)
   end
   return given
 end

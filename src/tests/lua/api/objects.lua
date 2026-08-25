@@ -185,21 +185,21 @@ test("the pickup families say what a pickup is", function()
     return id_set(query:ids())[id]
   end
 
-  assert(has(q:gun(), o.SHOTGUN_ITEM), "a shotgun is a gun")
-  assert(has(q:ammo(), o.SHOTGUN_AMMO_ITEM), "its shells are ammo")
-  assert(has(q:supply(), o.SMALL_MEDIPACK_ITEM), "a medipack is spent")
-  assert(has(q:tool(), o.CROWBAR_ITEM), "a crowbar is carried and used")
-  assert(has(q:tool(), o.WATERSKIN_1_EMPTY), "so is a waterskin")
-  assert(has(q:key(), o.KEY_ITEM_1))
-  assert(has(q:puzzle(), o.PUZZLE_ITEM_1))
-  assert(has(q:quest(), o.QUEST_ITEM_1))
-  assert(has(q:quest(), o.SCION_ITEM_1), "the scion is what TR1 sends her for")
-  assert(has(q:examine(), o.EXAMINE_ITEM_1))
-  assert(has(q:collectible(), o.PICKUP_ITEM_1))
+  assert(has(q:gun(), o.SHOTGUN), "a shotgun is a gun")
+  assert(has(q:ammo(), o.SHOTGUN_AMMO), "its shells are ammo")
+  assert(has(q:supply(), o.SMALL_MEDIPACK), "a medipack is spent")
+  assert(has(q:tool(), o.CROWBAR), "a crowbar is carried and used")
+  assert(has(q:tool(), o.WATERSKIN_1), "so is a waterskin")
+  assert(has(q:key(), o.KEY_1))
+  assert(has(q:puzzle(), o.PUZZLE_1))
+  assert(has(q:quest(), o.QUEST_1))
+  assert(has(q:quest(), o.SCION), "the scion is what TR1 sends her for")
+  assert(has(q:examine(), o.EXAMINE_1))
+  assert(has(q:collectible(), o.PICKUP_1))
   assert(has(q:secret(), o.SECRET_1))
 
   -- A combo half belongs to the family its whole does.
-  assert(has(q:key(), o.KEY_ITEM_4_COMBO_1), "a key combo is a key")
+  assert(has(q:key(), o.KEY_4_COMBO_1), "a key combo is a key")
 
   -- Not a partition: a second state of something Lara already carries is in
   -- none of them, only the base it shares a backpack entry with.

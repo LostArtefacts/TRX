@@ -1260,13 +1260,21 @@ api.enum = declarator("enum", "enums", {
     -- __index also folds the case, so trx.catalog.objects.wolf and
     -- trx.catalog.objects.WOLF are the same constant. Upper case is canonical: it
     -- is what pairs() yields and what the docs list.
+    --
+    -- A value may answer to more than one name - a catalog identity carries the
+    -- C spelling beside the name an author writes - and only the first reaches
+    -- `public`. The others are read from the enum itself, so a script written
+    -- against either name runs.
+    local prefix = spec.strip or ""
     local face = {}
     setmetatable(face, {
       __index = function(_, key)
         if type(key) ~= "string" then
           return nil
         end
-        return public[key] or public[key:upper()]
+        return public[key]
+          or public[key:upper()]
+          or enum.get(spec.backing, prefix .. key:upper())
       end,
       __newindex = function(_, key)
         error(

@@ -28,6 +28,12 @@ void EnumMap_Define(
     const char *enum_type_name, const char *enum_name, const char *label_key,
     int32_t enum_value, const char *str_value);
 
+// Read an integer enum value from a string representation, which may be any
+// of the names the value answers to. Returns false where the type holds no
+// such name.
+bool EnumMap_TryGet(
+    const char *enum_type_name, const char *str_value, int32_t *out_value);
+
 // Retrieve an integer enum value from a string representation.
 // @param enum_type_name    Name of the enum type, such as "WEATHER".
 // @param str_value         String representation of the enum, such as "snow".

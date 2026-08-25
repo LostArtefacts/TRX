@@ -62,7 +62,25 @@ static int M_L_EnumValues(lua_State *const L)
     return 1;
 }
 
+// trxc.enum.get(type, name) -> int or nil
+//
+// The name is matched as it is written, so this reaches the names a value
+// answers to beside the one M_L_EnumValues reports.
+static int M_L_EnumGet(lua_State *const L)
+{
+    const char *const type_name = luaL_checkstring(L, 1);
+    const char *const str_value = luaL_checkstring(L, 2);
+    int32_t value;
+    if (!EnumMap_TryGet(type_name, str_value, &value)) {
+        lua_pushnil(L);
+        return 1;
+    }
+    lua_pushinteger(L, value);
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
+    { "get", M_L_EnumGet },
     { "values", M_L_EnumValues },
     { nullptr, nullptr },
 };
