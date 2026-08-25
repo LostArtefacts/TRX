@@ -53,6 +53,8 @@
         "shell_pos_alt": {"x": -12, "y": 48, "z": 40},
         "smoke_count": 28,
         "sample_num": "SFX_LARA_PISTOLS",
+        "sample_overlay_num": "SFX_GUN_FIRE_EXPLOSION",
+        "sample_overlay_pitch": 131072,
     },
 
     "LGT_MAGNUMS": {
@@ -163,6 +165,8 @@
         "shell_pos_alt": {"x": -16, "y": 40, "z": 56},
         "smoke_count": 28,
         "sample_num": "SFX_LARA_DESERT_EAGLE",
+        "sample_overlay_num": "SFX_GUN_FIRE_EXPLOSION",
+        "sample_overlay_pitch": 131072,
     },
 
     "LGT_UZIS": {
@@ -199,6 +203,8 @@
         "shell_pos_alt": {"x": -16, "y": 35, "z": 48},
         "smoke_count": 28,
         "sample_num": "SFX_LARA_UZI_FIRE",
+        "sample_overlay_num": "SFX_GUN_FIRE_EXPLOSION",
+        "sample_overlay_pitch": 131072,
     },
 
     "LGT_SHOTGUN": {
@@ -254,6 +260,8 @@
         "shell_pos": {"x": 16, "y": 114, "z": 32},
         "smoke_count": 32,
         "sample_num": "SFX_LARA_SHOTGUN",
+        "sample_overlay_num": "SFX_GUN_FIRE_EXPLOSION",
+        "sample_overlay_pitch": 81920,
     },
 
     "LGT_M16": {
@@ -337,6 +345,8 @@
         "shell_pos": {"x": 16, "y": 2, "z": 64},
         "smoke_count": 24,
         "sample_num": "",
+        "sample_overlay_num": "SFX_GUN_FIRE_EXPLOSION",
+        "sample_overlay_pitch": 327680,
     },
 
     "LGT_GRENADE": {
@@ -399,6 +409,8 @@
         "muzzle_pos": {"x": 0, "y": 84, "z": 72},
         "smoke_count": 32,
         "sample_num": "",
+        "sample_overlay_num": "SFX_GUN_FIRE_EXPLOSION",
+        "sample_overlay_pitch": 327680,
     },
 
     "LGT_HARPOON": {

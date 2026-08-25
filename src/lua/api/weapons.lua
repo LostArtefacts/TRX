@@ -261,6 +261,16 @@ api.type("weapons.Weapon", {
       type = "catalog.samples",
       description = "The sample a shot plays. One this game has no sound for is silent.",
     },
+    fire_overlay_sample = {
+      from = "sample_overlay_num",
+      type = "catalog.samples",
+      description = "The overlay sample a shot plays. One this game has no sound for is silent.",
+    },
+    fire_overlay_pitch = {
+      from = "sample_overlay_pitch",
+      type = "integer",
+      description = "The pitch at which to play the overlay sample.",
+    },
   },
 
   extensions = {

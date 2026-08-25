@@ -150,6 +150,7 @@ static void M_FireGeneric(const LARA_GUN_TYPE weapon_type, const bool running)
     if (fired) {
         lara->right_arm.flash_gun = Gun_Registry_Get(weapon_type)->flash.time;
         Gun_Smoke_OnFire(weapon_type, true);
+        Gun_FireOverlaySound(Gun_Registry_Get(weapon_type));
         Sound_Effect(
             Gun_Registry_Get(weapon_type)->sample_num, &lara_item->pos,
             SPM_NORMAL);
@@ -434,10 +435,7 @@ static void M_FireRocket(const LARA_GUN_TYPE weapon_type, const bool running)
     Gun_SpendRound(weapon_type);
     Stats_AddAmmoUsed();
 
-    if (g_TRVersion >= 3) {
-        Sound_Effect(SFX_EXPLOSION_1, &lara_item->pos, 0x5000000 | SPM_PITCH);
-    }
-
+    Gun_FireOverlaySound(Gun_Registry_Get(weapon_type));
     Gun_Smoke_OnFire(weapon_type, true);
 
     if (g_TRVersion == 3) {
@@ -471,6 +469,7 @@ static void M_Fire(const LARA_GUN_TYPE weapon_type, const bool running)
 static void M_PlayM16Sound(const bool stopping)
 {
     const ITEM *const lara_item = Lara_GetItem();
+    Gun_FireOverlaySound(Gun_Registry_Get(LGT_M16));
     Sound_Effect(
         stopping ? SFX_M16_STOP : SFX_M16_FIRE, &lara_item->pos, SPM_NORMAL);
 }
@@ -478,12 +477,7 @@ static void M_PlayM16Sound(const bool stopping)
 static void M_PlayMp5Sound(const bool stopping)
 {
     const ITEM *const lara_item = Lara_GetItem();
-    // The MP5 uses a high-pitched explosion when either firing or stopping.
-    // This is intentionally omitted in TR1/2 due to the sample's quality when
-    // played in rapid succession.
-    if (g_TRVersion >= 3) {
-        Sound_Effect(SFX_EXPLOSION_1, &lara_item->pos, 0x5000000 | SPM_PITCH);
-    }
+    Gun_FireOverlaySound(Gun_Registry_Get(LGT_MP5));
     if (!stopping) {
         Sound_Effect(SFX_MP5_FIRE, &lara_item->pos, SPM_NORMAL);
     }

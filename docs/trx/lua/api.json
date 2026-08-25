@@ -1118,7 +1118,7 @@
     },
     {
       "bulk": true,
-      "count": 208,
+      "count": 209,
       "description": "Every sound sample TRX has a name for.",
       "examples": [
         "trx.sound.play(trx.catalog.samples.LARA_NO)"
@@ -1186,6 +1186,7 @@
         "FOOTSTEPS_SNOW",
         "FOOTSTEPS_WOOD",
         "GLASS_BREAK",
+        "GUN_FIRE_EXPLOSION",
         "HELICOPTER_LOOP",
         "HUGE_ROCKET_LOOP",
         "ICICLE",
@@ -11429,6 +11430,18 @@
           "description": "Hit points one shot takes off what it hits.",
           "name": "damage",
           "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "The pitch at which to play the overlay sample.",
+          "name": "fire_overlay_pitch",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "The overlay sample a shot plays. One this game has no sound for is silent.",
+          "name": "fire_overlay_sample",
+          "type": "catalog.samples",
           "writable": true
         },
         {

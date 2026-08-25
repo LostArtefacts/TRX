@@ -76,3 +76,4 @@ bool Gun_IsSinglePistolType(LARA_GUN_TYPE gun_type);
 bool Gun_IsDualPistolType(LARA_GUN_TYPE gun_type);
 
 void Gun_AddDynamicLight(void);
+void Gun_FireOverlaySound(const WEAPON_INFO *weapon);

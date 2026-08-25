@@ -260,7 +260,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
 
     </details>
 
-- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 208 names
+- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 209 names
 
     Every sound sample TRX has a name for.
 
@@ -286,10 +286,10 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     `EXPLOSION_FX`, `FLAME_THROWER_LOOP`, `FLOOD`, `FOOTSTEPS_GRAVEL`,
     `FOOTSTEPS_ICE`, `FOOTSTEPS_METAL`, `FOOTSTEPS_MUD`,
     `FOOTSTEPS_SAND_OR_GRASS`, `FOOTSTEPS_SNOW`, `FOOTSTEPS_WOOD`,
-    `GLASS_BREAK`, `HELICOPTER_LOOP`, `HUGE_ROCKET_LOOP`, `ICICLE`,
-    `LARA_AUTOS`, `LARA_BAREFOOT`, `LARA_BAREFOOT_LAND`, `LARA_BODYSL`,
-    `LARA_BREATH`, `LARA_BUBBLES`, `LARA_BULLETHIT`, `LARA_CLIMB_3`,
-    `LARA_DESERT_EAGLE`, `LARA_DRAW`, `LARA_EMPTY`, `LARA_FALL`,
+    `GLASS_BREAK`, `GUN_FIRE_EXPLOSION`, `HELICOPTER_LOOP`, `HUGE_ROCKET_LOOP`,
+    `ICICLE`, `LARA_AUTOS`, `LARA_BAREFOOT`, `LARA_BAREFOOT_LAND`,
+    `LARA_BODYSL`, `LARA_BREATH`, `LARA_BUBBLES`, `LARA_BULLETHIT`,
+    `LARA_CLIMB_3`, `LARA_DESERT_EAGLE`, `LARA_DRAW`, `LARA_EMPTY`, `LARA_FALL`,
     `LARA_FALL_DEATH`, `LARA_FLARE_BURN`, `LARA_FLARE_IGNITE`,
     `LARA_FLESH_WOUND`, `LARA_FOOTSTEP`, `LARA_GENERAL_DEATH`, `LARA_GET_OUT`,
     `LARA_HOLSTER`, `LARA_INJURY`, `LARA_KEY`, `LARA_LAND`, `LARA_MAGNUMS`,
