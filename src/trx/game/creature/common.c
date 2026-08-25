@@ -26,7 +26,7 @@
 // clang-format off
 #define M_FLOAT_SPEED      32
 #define M_ROOM_PROBE       32
-#define M_MAX_DISTANCE     (g_TRVersion < 3 ? WALL_L * 30 : STEP_L * 125) // = 30720 (TR1/2), 32000 (TR3)
+#define M_MAX_DISTANCE     (g_TRVersion < 3 ? WALL_L * 30 : STEP_L * 125) // = 30720 (TR1/2), 32000 (TR3+)
 #define M_ATTACK_RANGE     SQUARE(WALL_L * 3) // = 0x900000 = 9437184
 #define M_ESCAPE_CHANCE    2048
 #define M_RECOVER_CHANCE   256
@@ -499,7 +499,7 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
     }
 
     const bool too_far = ABS(z) > M_MAX_DISTANCE || ABS(x) > M_MAX_DISTANCE;
-    if (creature->enemy == nullptr || (g_TRVersion == 3 && too_far)) {
+    if (creature->enemy == nullptr || (g_TRVersion >= 3 && too_far)) {
         info->distance = INT32_MAX;
     } else if (g_TRVersion < 3 && too_far) {
         info->distance = SQUARE(M_MAX_DISTANCE);
