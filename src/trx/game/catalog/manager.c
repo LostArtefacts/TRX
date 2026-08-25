@@ -2,10 +2,10 @@
 
 #include <trx/core/csv.h>
 #include <trx/core/filesystem.h>
-#include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/subsystem.h>
 #include <trx/core/utils.h>
+#include <trx/debug.h>
 #include <trx/game/items/actions/ids.h>
 #include <trx/game/lara/enum.h>
 #include <trx/game/music/ids.h>
@@ -68,14 +68,14 @@ static M_NAME_ENTRY *m_Name2EnumMap[CATALOG_CONTEXT_MAX] = { nullptr };
 
 static M_GAME_ID_ENTRY *m_GameID2EnumMap[CATALOG_CONTEXT_MAX] = { nullptr };
 
-// Parsed game IDs arrays, one per context, sized by that context's entries
-static int32_t **m_CatalogGameIDs = nullptr;
+// The identities of each context. A resolve reads m_GameIDs by ID, so this is
+// a flat array rather than anything with a lookup in it.
+static char **m_Keys[CATALOG_CONTEXT_MAX] = { nullptr };
+static int32_t *m_GameIDs[CATALOG_CONTEXT_MAX] = { nullptr };
+static int32_t m_Counts[CATALOG_CONTEXT_MAX] = {};
 
-// Entry count of each context
-static int32_t m_CatalogCounts[CATALOG_CONTEXT_MAX] = {};
-
-// State flag
-static bool m_Initialized = false;
+// How many identities of each context the exe has a constant for
+static int32_t m_BuiltInCounts[CATALOG_CONTEXT_MAX] = {};
 
 // Helper: clear game_id->enum map
 static void M_ClearGameIDMap(M_GAME_ID_ENTRY **const map)
@@ -88,67 +88,116 @@ static void M_ClearGameIDMap(M_GAME_ID_ENTRY **const map)
     }
 }
 
-// Helper: clear name->enum map
-static void M_ClearNameMap(M_NAME_ENTRY **const map)
-{
-    M_NAME_ENTRY *cur, *tmp;
-    HASH_ITER(hh, *map, cur, tmp)
-    {
-        HASH_DEL(*map, cur);
-        Memory_Free(cur);
-    }
-}
-
-// Build initial maps on first load
-static void M_Initialize(void)
+// Mint the built-ins, walking each .def in file order, so that the ID of a
+// built-in equals the enum constant it was declared with. This runs before
+// main because the mods are scanned before the subsystems come up, and that
+// scan already names objects.
+__attribute__((constructor)) static void M_MintBuiltIns(void)
 {
     for (size_t idx = 0; idx < m_CatalogEntryCount; idx++) {
         const CATALOG_CONTEXT ctx = m_CatalogEntryDefs[idx].context;
-        m_CatalogCounts[ctx] =
-            MAX(m_CatalogCounts[ctx], m_CatalogEntryDefs[idx].id + 1);
+        CATALOG_ID id;
+        EXIT_ON_FAIL(
+            Catalog_Mint(ctx, m_CatalogEntryDefs[idx].name_str, &id),
+            "cannot seed the catalog");
+        ASSERT(id == m_CatalogEntryDefs[idx].id);
     }
-    m_CatalogGameIDs =
-        Memory_Alloc(sizeof(*m_CatalogGameIDs) * CATALOG_CONTEXT_MAX);
     for (size_t ctx = 0; ctx < CATALOG_CONTEXT_MAX; ctx++) {
-        m_CatalogGameIDs[ctx] =
-            Memory_Alloc(sizeof(*m_CatalogGameIDs[ctx]) * m_CatalogCounts[ctx]);
+        m_BuiltInCounts[ctx] = m_Counts[ctx];
     }
-    for (size_t idx = 0; idx < m_CatalogEntryCount; idx++) {
-        const CATALOG_CONTEXT ctx = m_CatalogEntryDefs[idx].context;
-        const CATALOG_ID id = m_CatalogEntryDefs[idx].id;
-        m_CatalogGameIDs[ctx][id] = -1;
-        M_NAME_ENTRY *const entry = Memory_Alloc(sizeof(*entry));
-        entry->name_str = m_CatalogEntryDefs[idx].name_str;
-        entry->enum_value = id;
-        HASH_ADD_KEYPTR(
-            hh, m_Name2EnumMap[ctx], entry->name_str,
-            (uint32_t)strlen(entry->name_str), entry);
-    }
-    m_Initialized = true;
 }
 
+// Drop what the session minted and unbind the built-ins, so that the next mod
+// starts from what the exe names.
 static void M_Shutdown(void)
 {
-    if (!m_Initialized) {
-        return;
-    }
     for (size_t ctx = 0; ctx < CATALOG_CONTEXT_MAX; ctx++) {
         M_ClearGameIDMap(&m_GameID2EnumMap[ctx]);
-        M_ClearNameMap(&m_Name2EnumMap[ctx]);
-        Memory_Free(m_CatalogGameIDs[ctx]);
+        while (m_Counts[ctx] > m_BuiltInCounts[ctx]) {
+            const int32_t id = --m_Counts[ctx];
+            M_NAME_ENTRY *entry = nullptr;
+            HASH_FIND_STR(m_Name2EnumMap[ctx], m_Keys[ctx][id], entry);
+            if (entry != nullptr) {
+                HASH_DEL(m_Name2EnumMap[ctx], entry);
+                Memory_Free(entry);
+            }
+            Memory_FreePointer(&m_Keys[ctx][id]);
+        }
+        for (int32_t id = 0; id < m_Counts[ctx]; id++) {
+            m_GameIDs[ctx][id] = -1;
+        }
     }
-    Memory_Free(m_CatalogGameIDs);
-    m_CatalogGameIDs = nullptr;
-    m_Initialized = false;
+}
+
+RESULT Catalog_Mint(
+    const CATALOG_CONTEXT context, const char *const key,
+    CATALOG_ID *const out_id)
+{
+    CATALOG_ID existing;
+    FAIL_IF(
+        Catalog_NameToEnum(context, key, &existing),
+        "context %d already holds the key '%s'", context, key);
+
+    const CATALOG_ID id = m_Counts[context]++;
+    m_Keys[context] =
+        Memory_Realloc(m_Keys[context], sizeof(char *) * m_Counts[context]);
+    m_GameIDs[context] =
+        Memory_Realloc(m_GameIDs[context], sizeof(int32_t) * m_Counts[context]);
+    m_Keys[context][id] = Memory_DupStr(key);
+    m_GameIDs[context][id] = -1;
+
+    M_NAME_ENTRY *const entry = Memory_Alloc(sizeof(*entry));
+    entry->name_str = m_Keys[context][id];
+    entry->enum_value = id;
+    HASH_ADD_KEYPTR(
+        hh, m_Name2EnumMap[context], entry->name_str,
+        (uint32_t)strlen(entry->name_str), entry);
+
+    *out_id = id;
+    return OK;
+}
+
+const char *Catalog_GetKey(const CATALOG_CONTEXT context, const CATALOG_ID id)
+{
+    if (id < 0 || id >= m_Counts[context]) {
+        return nullptr;
+    }
+    return m_Keys[context][id];
+}
+
+int32_t Catalog_GetCount(const CATALOG_CONTEXT context)
+{
+    return m_Counts[context];
+}
+
+RESULT Catalog_BindGameID(
+    const CATALOG_CONTEXT context, const CATALOG_ID id, const int32_t game_id)
+{
+    FAIL_IF(
+        id < 0 || id >= m_Counts[context], "context %d holds no ID %d", context,
+        id);
+    m_GameIDs[context][id] = game_id;
+    if (game_id < 0) {
+        return OK;
+    }
+
+    M_GAME_ID_ENTRY *existing = nullptr;
+    HASH_FIND_INT(m_GameID2EnumMap[context], &game_id, existing);
+    FAIL_IF(
+        existing != nullptr, "duplicate game ID %d for context %d", game_id,
+        context);
+
+    M_GAME_ID_ENTRY *const entry = Memory_Alloc(sizeof(*entry));
+    entry->game_id = game_id;
+    entry->enum_value = id;
+    HASH_ADD_INT(m_GameID2EnumMap[context], game_id, entry);
+    return OK;
 }
 
 RESULT Catalog_Load(
     const CATALOG_CONTEXT context, const char *const csv_path,
     const bool allow_duplicates)
 {
-    if (!m_Initialized) {
-        M_Initialize();
-    }
     char *file_data;
     size_t file_size;
     MUST(FS_Load(csv_path, &file_data, &file_size));
@@ -182,19 +231,11 @@ RESULT Catalog_Load(
             continue;
         }
 
-        m_CatalogGameIDs[context][id] = game_id;
-        if (game_id >= 0) {
-            M_GAME_ID_ENTRY *existing = nullptr;
-            HASH_FIND_INT(m_GameID2EnumMap[context], &game_id, existing);
-            if (existing == nullptr) {
-                M_GAME_ID_ENTRY *gentry = Memory_Alloc(sizeof(*gentry));
-                gentry->game_id = game_id;
-                gentry->enum_value = id;
-                HASH_ADD_INT(m_GameID2EnumMap[context], game_id, gentry);
-            } else if (!allow_duplicates) {
-                LOG_ERROR(
-                    "Duplicate game ID %d for context %d", game_id, context);
-            }
+        RESULT result = Catalog_BindGameID(context, id, game_id);
+        if (allow_duplicates) {
+            IGNORE(result);
+        } else {
+            SHOULD(result);
         }
     }
     Memory_FreePointer(&file_data);
@@ -217,14 +258,10 @@ bool Catalog_EnumToGameID(
     const CATALOG_CONTEXT context, const CATALOG_ID id,
     int32_t *const out_game_id)
 {
-    if (id < 0 || id >= m_CatalogCounts[context]) {
+    if (id < 0 || id >= m_Counts[context] || m_GameIDs[context][id] < 0) {
         return false;
     }
-    const int32_t gid = m_CatalogGameIDs[context][id];
-    if (gid < 0) {
-        return false;
-    }
-    *out_game_id = gid;
+    *out_game_id = m_GameIDs[context][id];
     return true;
 }
 
