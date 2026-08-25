@@ -39,6 +39,8 @@ that wants the defaults back asks for them.
   did, rather than keeping the rotation the level gave it. This only reaches
   drops the level data places on the enemy; a drop the gameflow names always
   takes the enemy's facing.
+- <a id="rules.fx.rotate_debris" name="rules.fx.rotate_debris"></a>**`trx.rules.fx.rotate_debris`** (boolean). Whether debris pieces generated from shattered meshes should rotate in yaw
+  and pitch while they are active. The original TR4 did not apply rotation.
 
 ### Functions
 
