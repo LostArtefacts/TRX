@@ -7077,6 +7077,11 @@
       "callable": false,
       "implicit": true,
       "path": "rules.carrier"
+    },
+    {
+      "callable": false,
+      "implicit": true,
+      "path": "rules.fx"
     }
   ],
   "numbers": [
@@ -7522,6 +7527,12 @@
     {
       "description": "Whether an item a defeated enemy carried turns to face the way the enemy\ndid, rather than keeping the rotation the level gave it. This only reaches\ndrops the level data places on the enemy; a drop the gameflow names always\ntakes the enemy's facing.",
       "path": "rules.carrier.inherit_facing",
+      "type": "boolean",
+      "writable": true
+    },
+    {
+      "description": "Whether debris pieces generated from shattered meshes should rotate in yaw\nand pitch while they are active. The original TR4 did not apply rotation.",
+      "path": "rules.fx.rotate_debris",
       "type": "boolean",
       "writable": true
     },

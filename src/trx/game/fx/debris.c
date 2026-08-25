@@ -16,6 +16,7 @@
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
+#include <trx/game/rules.h>
 
 #define M_MAX_DEBRIS 256
 #define M_MAX_VERTICES 256
@@ -373,8 +374,10 @@ static void M_DrawDebris(const M_DEBRIS *const debris, const double ratio)
 
     Matrix_Push();
     Matrix_TranslateAbs32(pos);
-    Matrix_RotY(y_rot);
-    Matrix_RotX(x_rot);
+    if (g_Rules.fx.rotate_debris) {
+        Matrix_RotY(y_rot);
+        Matrix_RotX(x_rot);
+    }
 
     XYZ_32 world[3] = {};
     OUTPUT_UVW uvw[3] = {};

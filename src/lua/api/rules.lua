@@ -86,6 +86,14 @@ rule("carrier.inherit_facing", {
   ]],
 })
 
+rule("fx.rotate_debris", {
+  type = "boolean",
+  description = [[
+    Whether debris pieces generated from shattered meshes should rotate in yaw
+    and pitch while they are active. The original TR4 did not apply rotation.
+  ]],
+})
+
 api.define("rules.list", {
   description = "Every rule there is, as dotted `group.field` keys, in no particular order. "
     .. "<!--noref: group.field-->",

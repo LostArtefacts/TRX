@@ -33,3 +33,7 @@ X_GROUP_BEGIN(carrier)
 X_RULE(bool, carrier, snap_to_sector, false)
 X_RULE(bool, carrier, inherit_facing, true)
 X_GROUP_END(carrier)
+
+X_GROUP_BEGIN(fx)
+X_RULE(bool, fx, rotate_debris, true)
+X_GROUP_END(fx)
