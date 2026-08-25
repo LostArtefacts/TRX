@@ -17,6 +17,13 @@ typedef enum CATALOG_CONTEXT {
 
 typedef int32_t CATALOG_ID;
 
+// The name a built-in of the exe is known by: what objects/names.def calls it
+// where it says, and the C spelling without its prefix and in lower case where
+// it does not. This reads compile-time data alone, so it answers before the
+// registry is seeded.
+const char *Catalog_KeyForEnum(
+    CATALOG_CONTEXT context, CATALOG_ID id, const char *enum_name);
+
 // Declare an identity and return its ID. Fails if the context already holds
 // the key. The context is the namespace, so the same key in two contexts is
 // two identities.
