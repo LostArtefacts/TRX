@@ -92,6 +92,9 @@
 - Changed Lara to retain her equipment when turning to gold on the Midas Hand, with the equipment also turning to gold (TRX1073)
 - Fixed Lara's arm remaining in the flare pose if holding one on the Midas Hand (TRX1073)
 
+**TR2**
+- Fixed Underwater Propeller that doesn't untrigger
+
 **TR3**
 - Added crystals to each of the levels in The Lost Artefact, and made the crystal mode option visible (Gameplay → General → Crystal mode) (TRX1111)
 - Changed the underwater light patterns to run in broad bands, as the original draws them, rather than fine speckle

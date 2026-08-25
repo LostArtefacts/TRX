@@ -27,9 +27,25 @@ static void M_Collision(
     }
 }
 
+static void M_Activate(ITEM *const item)
+{
+    const int16_t item_num = Item_GetIndex(item);
+
+    Item_SetFinished(item, false);
+    Item_SwitchToAnim(item, 0, 0);
+    const ANIM *const anim = Item_GetAnim(item);
+    item->current_anim_state = anim->current_anim_state;
+    item->goal_anim_state = M_STATE_ON;
+    item->required_anim_state = 0;
+    item->touch_bits = 0;
+    item->is_collidable = true;
+    Item_AddSimulated(item_num);
+}
+
 static void M_Setup(OBJECT *const obj)
 {
     obj->priv_size = sizeof(PROPELLER_PRIV);
+    obj->activate_func = M_Activate;
     obj->control_func = Propeller_Control;
     obj->collision_func = M_Collision;
     obj->save_flags = true;
@@ -55,8 +71,14 @@ void Propeller_Control(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     const PROPELLER_PRIV *const p = item->priv;
 
-    if (Item_IsTriggerActive(item) && !item->trigger.spent) {
+    if (Item_IsTriggerActive(item)
+        && (item->object_id == O_PROPELLER_1 || item->object_id == O_PROPELLER_2
+            || !item->trigger.spent)) {
         item->goal_anim_state = M_STATE_ON;
+        if (item->object_id == O_PROPELLER_1
+            || item->object_id == O_PROPELLER_2) {
+            item->is_collidable = true;
+        }
 
         if ((item->touch_bits & 6) != 0) {
             const ITEM *const lara_item = Lara_GetItem();

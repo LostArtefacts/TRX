@@ -35,6 +35,10 @@ static void M_FireTriggerEvent(
 static bool M_IsOneShotSpent(
     const ITEM_TRIGGER *const trigger, const ITEM *const item)
 {
+    if (item->object_id == O_PROPELLER_1 || item->object_id == O_PROPELLER_2) {
+        return false;
+    }
+
     if (g_TRVersion == 3) {
         switch (trigger->kind) {
         case ITEM_TRIGGER_SWITCH:
@@ -92,7 +96,7 @@ void Item_Trigger(const int16_t item_num, const ITEM_TRIGGER *const trigger)
             break;
         }
 
-        if (item->trigger.mask == TRIGGER_MASK_ALL) {
+        if (Item_IsTriggerActiveRO(item)) {
             if (trigger->one_shot) {
                 item->trigger.spent = true;
             }
