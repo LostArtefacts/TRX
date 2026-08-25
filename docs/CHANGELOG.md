@@ -83,6 +83,7 @@
 - Fixed static objects that reach through a doorway taking the water tint and the light of the room next door
 - Fixed the underwater view wobbling less at higher supersampling values (TRX1207)
 - Fixed being able to push pushblocks onto floors with triangular geometry (TRX1228, regression from 1.0)
+- Fixed the debug portal and bounding box lines becoming thinner at higher supersampling values (TRX1251)
 
 **TR1**
 - Changed Lara to retain her equipment when turning to gold on the Midas Hand, with the equipment also turning to gold (TRX1073)
