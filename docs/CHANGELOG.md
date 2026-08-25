@@ -46,6 +46,7 @@
 - Changed the `/flip` console command to take a flip group, so `/flip 3` moves that group alone while `/flip` on its own moves them all (TRX173)
 - Changed the `/set` console command to complete the values a setting accepts, such as its enum values or on and off (TRX1174)
 - Changed the developer console to sort completions alphabetically, prioritizing those that start with the text typed (TRX1175)
+- Fixed the TR3 SWAT 2 and SWAT 3 enemies being named as SWAT 1, so a command that took either of them acted on the wrong enemy
 
 **Weapons and ammunition**
 - Added an option to keep Lara firing the M16/MP5 from her hip while the action key is held, rather than shouldering the gun the moment she stops moving (Gameplay → Controls → M16/MP5 aiming variants) (#3861 / TRX1048)
