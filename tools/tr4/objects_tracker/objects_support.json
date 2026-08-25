@@ -112,7 +112,7 @@
   "O_KNIGHT_TEMPLAR":           { "status": "not implemented",       "todo": "port from KNIGHTS_TEMPLAR"         },
   "O_LARA":                     { "status": "partially implemented", "todo": "check 100% parity"                 },
   "O_LARA_DOUBLE":              { "status": "not implemented",       "todo": "port from LARA_DOUBLE"             },
-  "O_LARA_START_POS":           { "status": "not implemented",       "todo": "port from LARA_START_POS"          },
+  "O_LARA_START_POS":           { "status": "fully implemented" },
   "O_LARGE_MEDIPACK_ITEM":      { "status": "partially implemented", "todo": "check 100% parity"                 },
   "O_LASERSIGHT_ITEM":          { "status": "partially implemented", "todo": "check 100% parity"                 },
   "O_LENS_FLARE":               { "status": "fully implemented" },

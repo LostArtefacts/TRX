@@ -9,6 +9,7 @@
 #include <trx/game/gun.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
+#include <trx/game/hub.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/draw.h>
@@ -203,6 +204,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
         Lara_InitialiseInventory(level);
     }
 
+    Hub_InitialiseLaraStart();
     Lara_Control_Initialise(level->type, m_StartAnimState);
 }
 
