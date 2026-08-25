@@ -286,24 +286,19 @@ TEST(a_level_script_run_is_let_go_of_once)
     lua_close(L);
 }
 
-// The stats scan runs every level's script to count what the level holds.
-TEST(a_probe_run_is_let_go_of_without_a_word)
+// The stats scan runs every level's script to count what the level holds. Such
+// a run leaves the same state behind as a level being played, so it is let go
+// of the same way.
+TEST(a_probe_run_is_let_go_of_as_a_level_is)
 {
     lua_State *const L = M_Listening();
 
-    LUA_SetLevelScriptProbing(true);
     LUA_RunLevelScript(&m_Level);
     LUA_DropLevelScript();
-    CHECK_EQ_INT(M_Heard(L), 0);
-    LUA_SetLevelScriptProbing(false);
+    CHECK_EQ_INT(M_Heard(L), 1);
 
     // The scan leaves nothing outstanding, so the level that opens the game
-    // finds nothing to let go of either.
-    LUA_DropLevelScript();
-    CHECK_EQ_INT(M_Heard(L), 0);
-
-    // And a level played after one says so as any other does.
-    LUA_RunLevelScript(&m_Level);
+    // finds nothing to let go of.
     LUA_DropLevelScript();
     CHECK_EQ_INT(M_Heard(L), 1);
 

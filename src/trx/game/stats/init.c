@@ -329,9 +329,7 @@ void Stats_CalculateMaxStats(void)
         goto finish;
     }
 
-    // Every level's script runs here to count what the level holds. None of
-    // them is a level being played, so nothing hears the unload between them.
-    LUA_SetLevelScriptProbing(true);
+    // Every level's script runs here to count what the level holds.
     for (int32_t i = 0; i < level_table->count; i++) {
         const GF_LEVEL *const level = GF_GetLevel(GFLT_MAIN, i);
         if (level->type != GFL_NORMAL && level->type != GFL_BONUS) {
@@ -402,7 +400,6 @@ void Stats_CalculateMaxStats(void)
         LOG_INFO("    secrets:   %d", max_stats->maxes[STATS_CAT_SECRETS]);
 #endif
     }
-    LUA_SetLevelScriptProbing(false);
 
     M_WriteCache(expected_checksum, level_table);
 
