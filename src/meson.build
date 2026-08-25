@@ -319,6 +319,7 @@ common_sources = [
   'trx/game/camera/spline.c',
   'trx/game/camera/vars.c',
   'trx/game/catalog/manager.c',
+  'trx/game/catalog/table.c',
   'trx/game/clock/common.c',
   'trx/game/clock/timer.c',
   'trx/game/clock/turbo.c',
