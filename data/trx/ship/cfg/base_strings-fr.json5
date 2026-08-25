@@ -2937,6 +2937,9 @@
         "monkey": {
             "name": "\\{review}Singe",
         },
+        "moored_boat": {
+            "name": "\\{review}Bateau",
+        },
         "mounted_gun": {
             "name": "\\{review}Mitrailleuse Fixe",
         },

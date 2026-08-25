@@ -2959,6 +2959,9 @@
         "monkey": {
             "name": "Scimmia",
         },
+        "moored_boat": {
+            "name": "Barca",
+        },
         "mounted_gun": {
             "name": "Mitragliatrice Fissa",
         },

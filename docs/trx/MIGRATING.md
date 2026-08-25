@@ -74,6 +74,14 @@ order: 3
    - `trx.cutscenes.set_played(5, true)` becomes
      `trx.cutscenes[5].is_played = true`
 
+7. **The TR1 moored boat was renamed**
+   The boat moored in TR1 is `moored_boat`, leaving the `boat` name to TR2's
+   speedboat. A script naming the old one, and a strings file overriding its
+   name, need updating:
+   - `trx.catalog.objects.MOTOR_BOAT` is now `trx.catalog.objects.MOORED_BOAT`
+   - `trx.objects.boat` is now `trx.objects.moored_boat`
+   - the string key `objects/boat/name` is now `objects/moored_boat/name`
+
 ### Version 1.9 to 1.10
 
 The Lua API was rewritten, and most of what it breaks is a rename. Run your

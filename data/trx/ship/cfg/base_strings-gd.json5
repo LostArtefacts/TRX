@@ -2943,6 +2943,9 @@
         "monkey": {
             "name": "Muncaidh",
         },
+        "moored_boat": {
+            "name": "Bàta",
+        },
         "mounted_gun": {
             "name": "Gunna Stèidhichte",
         },

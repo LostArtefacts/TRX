@@ -568,7 +568,7 @@ X_OBJ_NAME_DEFINE(O_MISSILE_FLAME,           "missile_flame",           X_OBJ_NA
 X_OBJ_NAME_DEFINE(O_MISSILE_HARPOON,         "missile_harpoon",         X_OBJ_NAMES("Missile (Harpoon)"))
 X_OBJ_NAME_DEFINE(O_MISSILE_KNIFE,           "missile_knife",           X_OBJ_NAMES("Missile (Knife)"))
 X_OBJ_NAME_DEFINE(O_MISSILE_POISON,          "missile_poison",          X_OBJ_NAMES("Missile (Poison)"))
-X_OBJ_NAME_DEFINE(O_MOTOR_BOAT,              "boat",                    X_OBJ_NAMES("Boat"))
+X_OBJ_NAME_DEFINE(O_MOORED_BOAT,             "moored_boat",             X_OBJ_NAMES("Boat"))
 X_OBJ_NAME_DEFINE(O_NATLA_GUN,               "natla_gun",               X_OBJ_NAMES("Natla's Gun"))
 X_OBJ_NAME_DEFINE(O_PICKUP_AID,              "pickup_aid",              X_OBJ_NAMES("Pickup Aid"))
 X_OBJ_NAME_DEFINE(O_PIRAHNAS,                "pirahnas",                X_OBJ_NAMES("Pirahnas"))

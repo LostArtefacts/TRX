@@ -2985,6 +2985,9 @@
         "monkey": {
             "name": "Monkey",
         },
+        "moored_boat": {
+            "name": "Boat",
+        },
         "mounted_gun": {
             "name": "Mounted Gun",
         },

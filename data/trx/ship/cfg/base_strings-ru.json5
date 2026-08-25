@@ -2939,6 +2939,9 @@
         "monkey": {
             "name": "\\{review}Обезьяна",
         },
+        "moored_boat": {
+            "name": "Лодка",
+        },
         "mounted_gun": {
             "name": "\\{review}Установленный пулемёт",
         },

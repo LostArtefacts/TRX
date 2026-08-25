@@ -2939,6 +2939,9 @@
         "monkey": {
             "name": "Małpa",
         },
+        "moored_boat": {
+            "name": "Łódź",
+        },
         "mounted_gun": {
             "name": "Działo przeciwpancerne",
         },
