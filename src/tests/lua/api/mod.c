@@ -72,10 +72,11 @@ const SHELL_MOD *Shell_GetModByName(const char *const name)
     return nullptr;
 }
 
-// A mod stands in for one that can be switched to when it is valid.
+// A mod stands in for one that can be switched to when it is valid and is not
+// a single level loaded on its own.
 bool Shell_CanSwitchToMod(const SHELL_MOD *const mod)
 {
-    return mod != nullptr && mod->is_valid;
+    return mod != nullptr && mod->is_valid && mod->mod_type != MOD_DIRECT_LEVEL;
 }
 
 void Shell_RequestModSwitch(const char *const mod_name)

@@ -10318,6 +10318,12 @@
           "writable": false
         },
         {
+          "description": "Whether `trx.mod.switch` accepts the mod. A single level loaded on its own is valid, but is not a mod to switch to.",
+          "name": "can_switch",
+          "type": "boolean",
+          "writable": false
+        },
+        {
           "description": "Which Tomb Raider the mod runs on.",
           "name": "engine_version",
           "type": "integer",

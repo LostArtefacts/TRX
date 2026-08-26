@@ -48,6 +48,7 @@ The mods the game was built with, and which one is loaded.
 
     Properties:
     - <a id="mod.Mod.base_mod" name="mod.Mod.base_mod"></a>**`base_mod`**: string. The mod this one builds on, or `nil` if it stands alone. *(read-only)*
+    - <a id="mod.Mod.can_switch" name="mod.Mod.can_switch"></a>**`can_switch`**: boolean. Whether [`trx.mod.switch`](#mod.switch) accepts the mod. A single level loaded on its own is valid, but is not a mod to switch to. *(read-only)*
     - <a id="mod.Mod.engine_version" name="mod.Mod.engine_version"></a>**`engine_version`**: integer. Which Tomb Raider the mod runs on. *(read-only)*
     - <a id="mod.Mod.is_available" name="mod.Mod.is_available"></a>**`is_available`**: boolean. Whether the mod's files are present. *(read-only)*
     - <a id="mod.Mod.is_valid" name="mod.Mod.is_valid"></a>**`is_valid`**: boolean. Whether the mod can be loaded. *(read-only)*

@@ -14,6 +14,13 @@
 // handle to one never goes stale. It is addressed by its place in the list,
 // which the ref carries as the handle id.
 
+static bool M_GetCanSwitch(const void *const self, TRX_VALUE *const out)
+{
+    *out =
+        (TRX_VALUE) { .type = TVT_BOOL, .as_bool = Shell_CanSwitchToMod(self) };
+    return true;
+}
+
 // clang-format off
 static const FIELD_DESC m_Fields[] = {
     FIELD_RO(SHELL_MOD, name),
@@ -23,6 +30,7 @@ static const FIELD_DESC m_Fields[] = {
     FIELD_RO(SHELL_MOD, base_mod),
     FIELD_RO(SHELL_MOD, is_available),
     FIELD_RO(SHELL_MOD, is_valid),
+    FIELD_FN("can_switch", TVT_BOOL, M_GetCanSwitch, nullptr),
 };
 // clang-format on
 
