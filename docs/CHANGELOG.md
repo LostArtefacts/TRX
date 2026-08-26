@@ -192,6 +192,7 @@
 - Added the full weapon definition to `trx.weapons`, so a script can read and change what a weapon does: its damage, reach and accuracy, its aim limits, its ammunition, the animations it is drawn by, and the flash, glow, smoke and shells it throws (TRX1091)
 - Added `trx.math.Color` and `trx.math.color()`, so a color is a value with its channels and its hex text on it rather than a string (TRX1091)
 - Added `trx.cutscenes.actor_count`, `trx.cutscenes.set_actor_visible()`, `trx.cutscenes.set_node_mesh()` and `trx.cutscenes.clear_node_mesh()`, for hiding an actor in the scene on screen or putting another object's mesh on one (TRX1058)
+- Added `trx.assault.get_time()`, `trx.assault.get_best_time()`, and the penalty and lap timings beside them, so a script can draw the assault course clock the game keeps
 - Added `trx.game.LOGIC_FPS`, the rate the game runs its logic at
 - Added `trx.random.Stream`, `trx.random.control` and `trx.random.draw`, so a script can draw randomness without changing what the creatures decide next (TRX1199)
 - Added a new Lua module, `trx.store`, for what a script remembers across a save: one table for the level and one for the playthrough (TRX87)

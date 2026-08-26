@@ -92,6 +92,62 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
 
   Returns: boolean. True while the timer is drawn, counting or not.
 
+- <a id="assault.get_time" name="assault.get_time"></a>[lua]`trx.assault.get_time()`  
+  How long the current run has taken.
+
+  This is the level clock, which is what a gym level times its tracks with, so it
+  takes no track.
+
+  Returns: [trx.game.Frames](GAME.md#game.Frames). The time on the clock, counting up while the timer runs.
+
+- <a id="assault.get_best_time" name="assault.get_best_time"></a>[lua]`trx.assault.get_best_time([track])`  
+  The fastest time the track has on record.
+
+  Parameters:
+  - <a id="assault.get_best_time.track" name="assault.get_best_time.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
+
+  Returns: [trx.game.Frames](GAME.md#game.Frames). The best time, or 0 where the track has none.
+
+- <a id="assault.get_penalty" name="assault.get_penalty"></a>[lua]`trx.assault.get_penalty([track])`  
+  The penalty the run has taken for missed pads.
+
+  Parameters:
+  - <a id="assault.get_penalty.track" name="assault.get_penalty.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
+
+  Returns: [trx.game.Frames](GAME.md#game.Frames). The penalty, added to the time when the run is filed.
+
+- <a id="assault.get_target_penalty" name="assault.get_target_penalty"></a>[lua]`trx.assault.get_target_penalty([track])`  
+  The penalty the run has taken for missed targets.
+
+  Parameters:
+  - <a id="assault.get_target_penalty.track" name="assault.get_target_penalty.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
+
+  Returns: [trx.game.Frames](GAME.md#game.Frames). The penalty, added to the time when the run is filed.
+
+- <a id="assault.get_penalty_timer" name="assault.get_penalty_timer"></a>[lua]`trx.assault.get_penalty_timer([track])`  
+  How much longer a penalty stays on screen.
+
+  Parameters:
+  - <a id="assault.get_penalty_timer.track" name="assault.get_penalty_timer.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
+
+  Returns: [trx.game.Frames](GAME.md#game.Frames). The time left, and 0 where no penalty is shown.
+
+- <a id="assault.get_lap_time" name="assault.get_lap_time"></a>[lua]`trx.assault.get_lap_time([track])`  
+  How long the last lap took.
+
+  Parameters:
+  - <a id="assault.get_lap_time.track" name="assault.get_lap_time.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
+
+  Returns: [trx.game.Frames](GAME.md#game.Frames). The lap time, and 0 before a lap is finished.
+
+- <a id="assault.get_lap_timer" name="assault.get_lap_timer"></a>[lua]`trx.assault.get_lap_timer([track])`  
+  How much longer the lap times stay on screen.
+
+  Parameters:
+  - <a id="assault.get_lap_timer.track" name="assault.get_lap_timer.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
+
+  Returns: [trx.game.Frames](GAME.md#game.Frames). The time left, and 0 where no lap time is shown.
+
 - <a id="assault.stats.add_record" name="assault.stats.add_record"></a>[lua]`trx.assault.stats.add_record(time, [track])`  
   Files a new record, inserting it in time order and bumping the attempt count.
 

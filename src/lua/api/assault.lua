@@ -91,6 +91,66 @@ api.define("assault.is_visible", {
   impl = raw.is_visible,
 })
 
+-- The timings the digits are drawn from. Every one reads 0 outside a gym level
+-- rather than raising, so that a widget can read one each frame.
+local function timing(name, description, returns)
+  api.define("assault." .. name, {
+    description = description,
+    params = { track_param() },
+    returns = { type = "game.Frames", description = returns },
+    impl = raw[name],
+  })
+end
+
+api.define("assault.get_time", {
+  description = [[
+How long the current run has taken.
+
+This is the level clock, which is what a gym level times its tracks with, so it
+takes no track.]],
+  returns = {
+    type = "game.Frames",
+    description = "The time on the clock, counting up while the timer runs.",
+  },
+  impl = raw.get_time,
+})
+
+timing(
+  "get_best_time",
+  "The fastest time the track has on record.",
+  "The best time, or 0 where the track has none."
+)
+
+timing(
+  "get_penalty",
+  "The penalty the run has taken for missed pads.",
+  "The penalty, added to the time when the run is filed."
+)
+
+timing(
+  "get_target_penalty",
+  "The penalty the run has taken for missed targets.",
+  "The penalty, added to the time when the run is filed."
+)
+
+timing(
+  "get_penalty_timer",
+  "How much longer a penalty stays on screen.",
+  "The time left, and 0 where no penalty is shown."
+)
+
+timing(
+  "get_lap_time",
+  "How long the last lap took.",
+  "The lap time, and 0 before a lap is finished."
+)
+
+timing(
+  "get_lap_timer",
+  "How much longer the lap times stay on screen.",
+  "The time left, and 0 where no lap time is shown."
+)
+
 api.property("assault.active_track", {
   type = "assault.Track",
   description = "The track Lara is currently running, or `nil` if none.",

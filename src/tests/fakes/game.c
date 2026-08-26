@@ -23,6 +23,7 @@ static GF_LEVEL m_Demos[FAKE_DEMO_COUNT];
 static GF_FMV m_FMVs[FAKE_FMV_COUNT];
 static GF_LEVEL m_TitleLevel;
 static GF_LEVEL_TABLE m_Tables[GFLT_NUMBER_OF];
+static RESUME_INFO m_Resume;
 static const GF_LEVEL *m_CurrentLevel;
 static bool m_HasGym;
 static bool m_InCutscene;
@@ -317,7 +318,12 @@ void SG_Resume_StoreGameToEntry(const GF_LEVEL *const level)
 
 RESUME_INFO *SG_Resume_GetEntry(const GF_LEVEL *const level)
 {
-    return nullptr;
+    return level == nullptr ? nullptr : &m_Resume;
+}
+
+void FakeGame_SetRunTime(const int32_t frames)
+{
+    m_Resume.stats.timer = frames;
 }
 
 int32_t g_TRVersion = 1;

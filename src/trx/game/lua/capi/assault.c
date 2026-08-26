@@ -6,6 +6,7 @@
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils.h>
+#include <trx/game/savegame/resume.h>
 
 #include <lauxlib.h>
 #include <stdint.h>
@@ -167,6 +168,62 @@ static int M_L_AssaultIsVisible(lua_State *const L)
     return 1;
 }
 
+// trxc.assault.get_time() -> frames
+static int M_L_AssaultGetTime(lua_State *const L)
+{
+    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    const RESUME_INFO *const resume =
+        level == nullptr ? nullptr : SG_Resume_GetEntry(level);
+    lua_pushinteger(
+        L, resume == nullptr ? 0 : (lua_Integer)resume->stats.timer);
+    return 1;
+}
+
+// trxc.assault.get_best_time([track]) -> frames
+static int M_L_AssaultGetBestTime(lua_State *const L)
+{
+    const GYM_TRACK_TYPE track = M_GetTrack(L);
+    const GYM_TRACK_STATS *const stats = Gym_TrackManager_GetStats(track);
+    const bool has_time = stats != nullptr && stats->total_attempts > 0;
+    lua_pushinteger(L, has_time ? (lua_Integer)stats->entries[0].time : 0);
+    return 1;
+}
+
+// trxc.assault.get_penalty([track]) -> frames
+static int M_L_AssaultGetPenalty(lua_State *const L)
+{
+    lua_pushinteger(L, Gym_TrackManager_GetPenaltyFrames(M_GetTrack(L)));
+    return 1;
+}
+
+// trxc.assault.get_target_penalty([track]) -> frames
+static int M_L_AssaultGetTargetPenalty(lua_State *const L)
+{
+    lua_pushinteger(L, Gym_TrackManager_GetTargetPenaltyFrames(M_GetTrack(L)));
+    return 1;
+}
+
+// trxc.assault.get_penalty_timer([track]) -> frames
+static int M_L_AssaultGetPenaltyTimer(lua_State *const L)
+{
+    lua_pushinteger(L, Gym_TrackManager_GetPenaltyDisplayTimer(M_GetTrack(L)));
+    return 1;
+}
+
+// trxc.assault.get_lap_time([track]) -> frames
+static int M_L_AssaultGetLapTime(lua_State *const L)
+{
+    lua_pushinteger(L, Gym_TrackManager_GetLapTime(M_GetTrack(L)));
+    return 1;
+}
+
+// trxc.assault.get_lap_timer([track]) -> frames
+static int M_L_AssaultGetLapTimer(lua_State *const L)
+{
+    lua_pushinteger(L, Gym_TrackManager_GetLapTimeDisplayTimer(M_GetTrack(L)));
+    return 1;
+}
+
 // trxc.assault.get_active_track() -> track or nil
 static int M_L_AssaultGetActiveTrack(lua_State *const L)
 {
@@ -247,6 +304,13 @@ static const luaL_Reg m_Module[] = {
     { "finish", M_L_AssaultFinish },
     { "is_running", M_L_AssaultIsRunning },
     { "is_visible", M_L_AssaultIsVisible },
+    { "get_time", M_L_AssaultGetTime },
+    { "get_best_time", M_L_AssaultGetBestTime },
+    { "get_penalty", M_L_AssaultGetPenalty },
+    { "get_target_penalty", M_L_AssaultGetTargetPenalty },
+    { "get_penalty_timer", M_L_AssaultGetPenaltyTimer },
+    { "get_lap_time", M_L_AssaultGetLapTime },
+    { "get_lap_timer", M_L_AssaultGetLapTimer },
     { "get_active_track", M_L_AssaultGetActiveTrack },
     { nullptr, nullptr },
 };

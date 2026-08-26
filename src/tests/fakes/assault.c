@@ -13,6 +13,7 @@ static bool m_HasStats[GYM_TRACK_NUMBER_OF];
 static bool m_Running[GYM_TRACK_NUMBER_OF];
 static bool m_Visible[GYM_TRACK_NUMBER_OF];
 static GYM_TRACK_TYPE m_ActiveTrack;
+static int32_t m_Timings[GYM_TRACK_NUMBER_OF][FAKE_ASSAULT_TIMING_NUMBER_OF];
 
 static GYM_TRACK_STATS m_AssaultStats = {};
 static GYM_TRACK_STATS m_RacetrackStats = {};
@@ -25,21 +26,29 @@ static void M_Reset(void)
     m_InGym = true;
     m_ActiveTrack = GYM_TRACK_NONE;
     for (int32_t i = 0; i < GYM_TRACK_NUMBER_OF; i++) {
+        for (int32_t j = 0; j < FAKE_ASSAULT_TIMING_NUMBER_OF; j++) {
+            m_Timings[i][j] = 0;
+        }
+    }
+    for (int32_t i = 0; i < GYM_TRACK_NUMBER_OF; i++) {
         m_HasStats[i] = true;
         m_Running[i] = false;
         m_Visible[i] = false;
     }
 }
 
+static int32_t M_GetTiming(
+    const GYM_TRACK_TYPE track, const FAKE_ASSAULT_TIMING timing)
+{
+    if (track < 0 || track >= GYM_TRACK_NUMBER_OF) {
+        return 0;
+    }
+    return m_Timings[track][timing];
+}
+
 bool Game_IsInGym(void)
 {
     return m_InGym;
-}
-
-bool Config_Update(void)
-{
-    FAKE_RECORD("config_write");
-    return true;
 }
 
 // Which game this is decides whether a track has a record table, not which
@@ -59,6 +68,36 @@ GYM_TRACK_STATS *Gym_TrackManager_GetMutableStats(const GYM_TRACK_TYPE track)
     default:
         return nullptr;
     }
+}
+
+const GYM_TRACK_STATS *Gym_TrackManager_GetStats(const GYM_TRACK_TYPE track)
+{
+    return Gym_TrackManager_GetMutableStats(track);
+}
+
+int32_t Gym_TrackManager_GetPenaltyFrames(const GYM_TRACK_TYPE track)
+{
+    return M_GetTiming(track, FAKE_ASSAULT_TIMING_PENALTY);
+}
+
+int32_t Gym_TrackManager_GetTargetPenaltyFrames(const GYM_TRACK_TYPE track)
+{
+    return M_GetTiming(track, FAKE_ASSAULT_TIMING_TARGET_PENALTY);
+}
+
+int32_t Gym_TrackManager_GetPenaltyDisplayTimer(const GYM_TRACK_TYPE track)
+{
+    return M_GetTiming(track, FAKE_ASSAULT_TIMING_PENALTY_TIMER);
+}
+
+int32_t Gym_TrackManager_GetLapTime(const GYM_TRACK_TYPE track)
+{
+    return M_GetTiming(track, FAKE_ASSAULT_TIMING_LAP_TIME);
+}
+
+int32_t Gym_TrackManager_GetLapTimeDisplayTimer(const GYM_TRACK_TYPE track)
+{
+    return M_GetTiming(track, FAKE_ASSAULT_TIMING_LAP_TIMER);
 }
 
 GYM_TRACK_TYPE Gym_TrackManager_GetActiveTrackType(void)
@@ -116,6 +155,15 @@ void FakeAssault_SetRunning(const GYM_TRACK_TYPE track, const bool running)
 void FakeAssault_SetVisible(const GYM_TRACK_TYPE track, const bool visible)
 {
     m_Visible[track] = visible;
+}
+
+void FakeAssault_SetTiming(
+    const GYM_TRACK_TYPE track, const FAKE_ASSAULT_TIMING timing,
+    const int32_t frames)
+{
+    if (track >= 0 && track < GYM_TRACK_NUMBER_OF) {
+        m_Timings[track][timing] = frames;
+    }
 }
 
 void FakeAssault_SetActiveTrack(const GYM_TRACK_TYPE track)
