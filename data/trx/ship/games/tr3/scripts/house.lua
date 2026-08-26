@@ -1,3 +1,5 @@
+require("common.assault")
+
 trx.events.on_game_start(function()
   -- Setup shoals
   trx.items[55].properties.range = { x = 22, y = 2, z = 10 }

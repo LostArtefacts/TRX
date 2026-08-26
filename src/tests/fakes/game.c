@@ -30,6 +30,7 @@ static bool m_InCutscene;
 
 // The bonus start is a passport choice, so a test says whether this run is one.
 static bool m_IsNGPlus;
+static bool m_IsPlaying = true;
 
 static void M_Reset(void)
 {
@@ -92,6 +93,7 @@ static void M_Reset(void)
 
     m_CurrentLevel = nullptr;
     m_IsNGPlus = false;
+    m_IsPlaying = true;
     m_HasGym = true;
     m_InCutscene = false;
 }
@@ -351,7 +353,12 @@ bool Game_IsPlayable(void)
 
 bool Game_IsPlaying(void)
 {
-    return true;
+    return m_IsPlaying;
+}
+
+void FakeGame_SetPlaying(const bool playing)
+{
+    m_IsPlaying = playing;
 }
 
 double Clock_GetRealTime(void)
