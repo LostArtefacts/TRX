@@ -154,7 +154,7 @@ static int M_L_IsVerbose(lua_State *const L)
     return 1;
 }
 
-void Console_LogEx(
+void Console_LogImpl(
     const LOG_LEVEL level, const char *const file, const int line,
     const char *const func, const char *const fmt, ...)
 {

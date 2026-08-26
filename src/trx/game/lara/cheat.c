@@ -180,12 +180,12 @@ bool Lara_Cheat_OpenNearestDoor(void)
     }
 
     if (opened > 0 || closed > 0) {
-        Console_Log(
+        Console_Info(
             opened > 0 ? GS("general/osd/door_open")
                        : GS("general/osd/door_close"));
         return true;
     }
-    Console_LogError(GS("general/osd/door_open_fail"));
+    Console_Error(GS("general/osd/door_open_fail"));
     return false;
 }
 
@@ -258,7 +258,7 @@ bool Lara_Cheat_EnterFlyMode(void)
     Lara_Skin_ApplyOutfit();
     g_Camera.type = CAM_CHASE;
 
-    Console_Log(GS("general/osd/fly_mode_on"));
+    Console_Info(GS("general/osd/fly_mode_on"));
     return true;
 }
 
@@ -308,7 +308,7 @@ bool Lara_Cheat_ExitFlyMode(void)
         Lara_Control();
     }
 
-    Console_Log(GS("general/osd/fly_mode_off"));
+    Console_Info(GS("general/osd/fly_mode_off"));
     return true;
 }
 

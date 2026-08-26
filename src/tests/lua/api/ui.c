@@ -196,7 +196,7 @@ void UI_ShutdownText(void)
 {
 }
 
-void Console_LogEx(
+void Console_LogImpl(
     const LOG_LEVEL level, const char *const file, const int line,
     const char *const func, const char *const fmt, ...)
 {

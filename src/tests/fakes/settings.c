@@ -193,7 +193,7 @@ void GameStringManager_UnsubscribeReload(const int32_t listener_id)
 {
 }
 
-void Console_LogEx(
+void Console_LogImpl(
     const LOG_LEVEL level, const char *const file, const int line,
     const char *const func, const char *const fmt, ...)
 {

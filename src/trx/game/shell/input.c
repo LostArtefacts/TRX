@@ -23,7 +23,7 @@ static void M_ToggleFPSCounter(void)
 {
     CONFIG_TOGGLE(g_Config.ui.enable_fps_counter);
     Config_Update();
-    Console_Log(
+    Console_Info(
         "%s",
         g_Config.ui.enable_fps_counter ? GS("general/osd/fps_counter_on")
                                        : GS("general/osd/fps_counter_off"));
@@ -34,7 +34,7 @@ static void M_ToggleBilinearFilter(void)
     CONFIG_CYCLE(
         g_Config.rendering.texture_filter, 1, TEXTURE_FILTER_NUMBER_OF);
     Config_Update();
-    Console_Log(
+    Console_Info(
         "%s",
         g_Config.rendering.texture_filter == TEXTURE_FILTER_BILINEAR
             ? GS("general/osd/bilinear_filter_on")
@@ -45,7 +45,7 @@ static void M_ToggleTrapezoidFilter(void)
 {
     CONFIG_TOGGLE(g_Config.rendering.enable_trapezoid_filter);
     Config_Update();
-    Console_Log(
+    Console_Info(
         "%s",
         g_Config.rendering.enable_trapezoid_filter
             ? GS("general/osd/trapezoid_filter_on")
@@ -56,7 +56,7 @@ static void M_ToggleWireframe(void)
 {
     CONFIG_TOGGLE(g_Config.rendering.enable_wireframe);
     Config_Update();
-    Console_Log(
+    Console_Info(
         "%s",
         g_Config.rendering.enable_wireframe
             ? GS("general/osd/wireframe_mode_on")
@@ -67,7 +67,7 @@ static void M_ToggleTextures(void)
 {
     CONFIG_TOGGLE(g_Config.rendering.enable_textures);
     Config_Update();
-    Console_Log(
+    Console_Info(
         "%s",
         g_Config.rendering.enable_textures ? GS("general/osd/textures_on")
                                            : GS("general/osd/textures_off"));
@@ -81,7 +81,7 @@ static void M_CycleLightingModel(void)
         CONFIG_CYCLE(
             g_Config.rendering.lighting_curve, dir, LIGHTING_CURVE_NUMBER_OF);
         Config_Update();
-        Console_Log(
+        Console_Info(
             GS("general/osd/lighting_curve_fmt"),
             ENUM_MAP_TO_STRING(
                 LIGHTING_CURVE, g_Config.rendering.lighting_curve));
@@ -92,7 +92,7 @@ static void M_CycleLightingModel(void)
             g_Config.rendering.lighting_contrast, dir,
             LIGHTING_CONTRAST_NUMBER_OF);
         Config_Update();
-        Console_Log(
+        Console_Info(
             GS("general/osd/lighting_contrast_fmt"),
             ENUM_MAP_TO_STRING(
                 LIGHTING_CONTRAST, g_Config.rendering.lighting_contrast));
@@ -105,7 +105,7 @@ static void M_CycleUpscalingFactor(void)
         g_Config.rendering.upscaling_factor,
         g_Config.rendering.upscaling_factor + (g_Input.slow ? -1 : 1));
     Config_Update();
-    Console_Log(
+    Console_Info(
         GS("general/osd/upscaling_factor"),
         g_Config.rendering.upscaling_factor);
 }
