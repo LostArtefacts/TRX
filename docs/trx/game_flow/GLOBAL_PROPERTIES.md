@@ -163,7 +163,7 @@ remains distinct for each game.
     <code>enforced_config</code></td>
     <td>String-to-object map</td>
     <td>
-      This allows <em>any</em> regular game config setting to be overriden. See
+      This allows <em>any</em> regular game config setting to be overridden. See
       <a href="./USER_CONFIGURATION.md">User configuration</a> for full details.
     </td>
   </tr>
