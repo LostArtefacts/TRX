@@ -916,6 +916,11 @@ static bool M_ForEachResolveAttempt(
 
         for (const char **ext = &policy->extensions[0]; *ext != nullptr;
              ext++) {
+            // The candidate carries an extension of its own and has been tried
+            // already, so the one that matches it would name the same file.
+            if (String_Equivalent(dot, *ext)) {
+                continue;
+            }
             const size_t out_size =
                 (size_t)(dot - candidate) + strlen(*ext) + 1;
             char *out = Memory_Alloc(out_size);
