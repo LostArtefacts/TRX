@@ -484,6 +484,39 @@ and `\{button left}` draws the button the player has bound.
 
   Returns: [trx.ui.Widget](#ui.Widget). The stack.
 
+- <a id="ui.widgets.Digits" name="ui.widgets.Digits"></a>[lua]`trx.ui.widgets.Digits(settings)`  
+  A line of text drawn from an object's sprites, one sprite per character.
+
+  The object supplies the ten digits, then a colon, a full stop, a `T` and an
+  `s`, in that order, which is how the assault course digits are laid out. A
+  space and a dash move the pen without drawing.
+
+  The widget measures nothing where the level did not load the object, so a
+  script can keep it on screen for a level that has no digits.
+
+  Parameters:
+  - <a id="ui.widgets.Digits.settings" name="ui.widgets.Digits.settings"></a>**`settings`** (table). The digit settings.
+
+    Keys:
+    - <a id="ui.widgets.Digits.settings.object" name="ui.widgets.Digits.settings.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The sprite object to draw the characters from.
+    - <a id="ui.widgets.Digits.settings.text" name="ui.widgets.Digits.settings.text"></a>**`text`** (any). The text, or a signal carrying it.
+    - <a id="ui.widgets.Digits.settings.color" name="ui.widgets.Digits.settings.color"></a>**`color`** (any). What color to draw the characters in, or a signal carrying one.
+    - <a id="ui.widgets.Digits.settings.color_bottom" name="ui.widgets.Digits.settings.color_bottom"></a>**`color_bottom`** (any, optional). The color the characters fade to down their height. The main color by default, which draws them flat.
+    - <a id="ui.widgets.Digits.settings.mark_color" name="ui.widgets.Digits.settings.mark_color"></a>**`mark_color`** (any, optional). What color to draw the `T` in. The main color by default.
+    - <a id="ui.widgets.Digits.settings.mark_color_bottom" name="ui.widgets.Digits.settings.mark_color_bottom"></a>**`mark_color_bottom`** (any, optional). The color the `T` fades to. Its own color by default.
+    - <a id="ui.widgets.Digits.settings.shown" name="ui.widgets.Digits.settings.shown"></a>**`shown`** (any, optional). Whether the digits are shown, or a signal that holds that value.
+
+  Returns: [trx.ui.Widget](#ui.Widget). The digits.
+
+  Example:
+  ```lua
+  trx.ui.widgets.Digits({
+    object = trx.catalog.objects.assault_digits,
+    text = timer:map(format_time),
+    color = trx.math.color("ffffff"),
+  })
+  ```
+
 - <a id="ui.regions.place" name="ui.regions.place"></a>[lua]`trx.ui.regions.place(region, widget)`  
   Places a widget in a region.
 
