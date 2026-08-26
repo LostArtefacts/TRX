@@ -1,4 +1,6 @@
 local raw = trxc.game
+local raw_inventory = trxc.inventory
+local raw_stats = trxc.stats
 local api = trx.api
 
 api.module("game", {
@@ -171,7 +173,7 @@ this install.]],
         .. "she will arrive there with rather than what she is carrying now, which is "
         .. "`trx.inventory` itself.",
       impl = function(level)
-        return trxc.inventory.get(level.num)
+        return raw_inventory.get(level.num)
       end,
     },
     stats = {
@@ -180,7 +182,7 @@ this install.]],
         .. "that counts nothing: the title screen and the cutscenes. The level being played is "
         .. "also `trx.stats` itself.",
       impl = function(level)
-        return trxc.stats.get(level.num)
+        return raw_stats.get(level.num)
       end,
     },
   },
