@@ -23,6 +23,7 @@
 - Changed the PS1 poison healthbar to flat yellow, as the PS1 releases had it (#5227 / TRX1135)
 - Changed the Customize Controls dialog to show a scroll arrow when the key list runs longer than the dialog (TRX546)
 - Changed the TR3 breeze mode to read TR3/4, as it covers both games (Graphic Options → Visuals → Breeze) (TRX1133)
+- Changed TR4 to stop the timer while the inventory is open by default, as the original game does (Gameplay → General → Timer counts in inventory) (TRX1256)
 - Changed the preset confirmation to offer Apply and Go back as choices, rather than leaving the keys unsaid (#6258 / TRX1126)
 - Changed the F9 key to cycle the lighting model in TR3 and TR4, and the lighting contrast in TR1 and TR2
 - Changed the save, load, level select and mod dialogs to show scroll arrows in every game, as TR1 does (TRX547)
