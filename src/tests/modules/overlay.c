@@ -5,6 +5,7 @@
 
 #include <trx/core/memory.h>
 #include <trx/game/lua/common.h>
+#include <trx/game/lua/events.h>
 #include <trx/game/lua/ui.h>
 #include <trx/config/registry.h>
 #include <trx/config/types.h>
@@ -29,6 +30,16 @@ static int M_FakeErrors(lua_State *const L)
 {
     lua_pushinteger(L, m_ErrorCount);
     return 1;
+}
+
+// fake.tick()
+//
+// The module reads much of its state once a tick, so nothing a setting or a
+// fake changes reaches a widget until a tick has gone by.
+static int M_FakeTick(lua_State *const L)
+{
+    LUA_FireEvent(LUA_EVENT_TICK);
+    return 0;
 }
 
 // fake.draw_regions() -> description, balanced
@@ -64,6 +75,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "draw_regions");
     lua_pushcfunction(L, M_FakeErrors);
     lua_setfield(L, -2, "errors");
+    lua_pushcfunction(L, M_FakeTick);
+    lua_setfield(L, -2, "tick");
 }
 
 CONFIG g_ConfigStorage = {};
@@ -177,7 +190,19 @@ void UI_Text_Measure(
     }
 }
 
+// A bar with no theme draws nothing, which would leave the recorded scene
+// empty however much the module placed in it.
 const UI_BAR_THEME *UI_Settings_GetBarTheme(const UI_BAR_TYPE type)
 {
-    return nullptr;
+    static const UI_BAR_THEME theme = {
+        .kind = UI_BAR_THEME_PC_KIND,
+        .basic_scale = 1.0f,
+        .border_light = { 255, 255, 255, 255 },
+        .border_dark = { 0, 0, 0, 255 },
+        .border_tl = { 255, 255, 255, 255 },
+        .border_tr = { 255, 255, 255, 255 },
+        .border_bl = { 0, 0, 0, 255 },
+        .border_br = { 0, 0, 0, 255 },
+    };
+    return &theme;
 }
