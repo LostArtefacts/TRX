@@ -29,8 +29,12 @@
 #include <trx/game/stats.h>
 #include <trx/game/ui.h>
 
+static bool m_WorldLoaded = false;
+
 void Level_Unload(void)
 {
+    m_WorldLoaded = false;
+
     // First, so the end event a dropped cutscene fires reaches a script that
     // can still read the world it played in.
     CutSeq_Reset();
@@ -63,6 +67,11 @@ void Level_Unload(void)
 
     Sound_StopAll();
     Viewport_AlterFOV(-1, FOV_MODE_GAME);
+}
+
+bool Level_IsWorldLoaded(void)
+{
+    return m_WorldLoaded;
 }
 
 RESULT Level_Initialise(
@@ -108,6 +117,7 @@ RESULT Level_Initialise(
     LUA_RunLevelScript(level);
 
     MUST(Level_Pipeline_Load(level));
+    m_WorldLoaded = true;
 
     UI_LoadText();
     Output_SetSkyboxEnabled(Object_Get(O_SKYBOX)->loaded);

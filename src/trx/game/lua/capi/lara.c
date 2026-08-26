@@ -9,6 +9,7 @@
 #include <trx/game/lara/poison.h>
 #include <trx/game/lara/skin/storage.h>
 #include <trx/game/lara/types.h>
+#include <trx/game/level/common.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/field.h>
 #include <trx/game/lua/registry.h>
@@ -161,6 +162,9 @@ static int M_L_LaraSetMesh(lua_State *const L)
     const LARA_MESH lara_mesh = M_CheckLaraMesh(L, 1);
     const OBJECT_ID object_id = LUA_CheckObjectID(L, 2);
     const OBJECT *const obj = Object_Get(object_id);
+    if (!Level_IsWorldLoaded()) {
+        return luaL_error(L, "the level has not loaded its objects yet");
+    }
     if (!obj->loaded) {
         return luaL_error(L, "this level does not carry that object");
     }
