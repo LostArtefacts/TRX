@@ -7,6 +7,11 @@
 
 typedef struct {
     char *text;
+    // The line as it is drawn, wrapped to the width below. Both are dropped
+    // when the canvas changes width, so a line follows the window it is shown
+    // in rather than the one it arrived in.
+    char *wrapped;
+    float wrap_width;
     double expire_at;
 } UI_CONSOLE_LOG_LINE;
 

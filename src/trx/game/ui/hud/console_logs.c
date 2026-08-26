@@ -45,6 +45,7 @@ static void M_ScrollLogs(UI_CONSOLE_LOGS *const s)
            && Clock_GetRealTime() >= s->logs[i].expire_at) {
         s->logs[i].expire_at = 0.0;
         Memory_FreePointer(&s->logs[i].text);
+        Memory_FreePointer(&s->logs[i].wrapped);
         need_layout = true;
         i--;
     }
@@ -59,13 +60,16 @@ static void M_HandleLog(const EVENT *const event, void *const user_data)
     const char *text = event->data;
     UI_CONSOLE_LOGS *const s = user_data;
     Memory_FreePointer(&s->logs[s->max_lines - 1].text);
+    Memory_FreePointer(&s->logs[s->max_lines - 1].wrapped);
     for (int32_t i = s->max_lines - 1; i > 0; i--) {
         s->logs[i] = s->logs[i - 1];
     }
 
     s->logs[0].expire_at =
         Clock_GetRealTime() + strlen(text) * M_DELAY_PER_CHAR;
-    s->logs[0].text = UI_Text_WordWrap(text, M_LOG_SCALE, M_GetWrapWidth());
+    s->logs[0].text = Memory_DupStr(text);
+    s->logs[0].wrapped = nullptr;
+    s->logs[0].wrap_width = 0.0f;
     M_UpdateLogCount(s);
 }
 
@@ -94,6 +98,7 @@ void UI_ConsoleLogs_Free(UI_CONSOLE_LOGS *const s)
     if (s->logs != nullptr) {
         for (int32_t i = 0; i < M_MAX_LOG_LINES; i++) {
             Memory_FreePointer(&s->logs[i].text);
+            Memory_FreePointer(&s->logs[i].wrapped);
         }
         Memory_FreePointer(&s->logs);
     }
@@ -112,9 +117,19 @@ void UI_ConsoleLogs(UI_CONSOLE_LOGS *const s)
             .v = UI_STACK_V_ALIGN_CENTER,
         },
     });
+    const float wrap_width = M_GetWrapWidth();
     for (int32_t i = s->vis_lines - 1; i >= 0; i--) {
+        UI_CONSOLE_LOG_LINE *const line = &s->logs[i];
+        if (line->wrapped == nullptr || line->wrap_width != wrap_width) {
+            Memory_FreePointer(&line->wrapped);
+            line->wrapped =
+                UI_Text_WordWrap(line->text, M_LOG_SCALE, wrap_width);
+            line->wrap_width = wrap_width;
+        }
+        // A canvas with no width to wrap to leaves the line as it came.
         UI_LabelEx(
-            s->logs[i].text, (UI_LABEL_SETTINGS) { .scale = M_LOG_SCALE });
+            line->wrapped != nullptr ? line->wrapped : line->text,
+            (UI_LABEL_SETTINGS) { .scale = M_LOG_SCALE });
     }
     UI_EndStack();
 }
