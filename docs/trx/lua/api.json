@@ -6918,6 +6918,65 @@
       }
     },
     {
+      "description": "A line of text drawn from an object's sprites, one sprite per character.\n\nThe object supplies the ten digits, then a colon, a full stop, a `T` and an\n`s`, in that order, which is how the assault course digits are laid out. A\nspace and a dash move the pen without drawing. <!--noref: s-->\n\nThe widget measures nothing where the level did not load the object, so a\nscript can keep it on screen for a level that has no digits.",
+      "examples": [
+        "trx.ui.widgets.Digits({\n  object = trx.catalog.objects.assault_digits,\n  text = timer:map(format_time),\n  color = trx.math.color(\"ffffff\"),\n})"
+      ],
+      "params": [
+        {
+          "description": "The digit settings.",
+          "fields": [
+            {
+              "description": "The sprite object to draw the characters from.",
+              "name": "object",
+              "type": "catalog.objects"
+            },
+            {
+              "description": "The text, or a signal carrying it.",
+              "name": "text",
+              "type": "any"
+            },
+            {
+              "description": "What color to draw the characters in, or a signal carrying one.",
+              "name": "color",
+              "type": "any"
+            },
+            {
+              "description": "The color the characters fade to down their height. The main color by default, which draws them flat.",
+              "name": "color_bottom",
+              "optional": true,
+              "type": "any"
+            },
+            {
+              "description": "What color to draw the `T` in. The main color by default.",
+              "name": "mark_color",
+              "optional": true,
+              "type": "any"
+            },
+            {
+              "description": "The color the `T` fades to. Its own color by default.",
+              "name": "mark_color_bottom",
+              "optional": true,
+              "type": "any"
+            },
+            {
+              "description": "Whether the digits are shown, or a signal that holds that value.",
+              "name": "shown",
+              "optional": true,
+              "type": "any"
+            }
+          ],
+          "name": "settings",
+          "type": "table"
+        }
+      ],
+      "path": "ui.widgets.Digits",
+      "returns": {
+        "description": "The digits.",
+        "type": "ui.Widget"
+      }
+    },
+    {
       "description": "Places a widget in a region.\n\nIf the region argument is a signal, the widget moves when the signal changes.",
       "examples": [
         "trx.ui.regions.place(trx.ui.Region.TOP_LEFT, health_bar)"
