@@ -20,6 +20,7 @@
 static GF_LEVEL m_Levels[FAKE_LEVEL_COUNT];
 static GF_LEVEL m_Cutscenes[FAKE_CUTSCENE_COUNT];
 static GF_LEVEL m_Demos[FAKE_DEMO_COUNT];
+static GF_FMV m_FMVs[FAKE_FMV_COUNT];
 static GF_LEVEL m_TitleLevel;
 static GF_LEVEL_TABLE m_Tables[GFLT_NUMBER_OF];
 static const GF_LEVEL *m_CurrentLevel;
@@ -72,6 +73,8 @@ static void M_Reset(void)
         .type = GFL_DEMO,
         .title = "Demo 1",
     };
+    m_FMVs[0] = (GF_FMV) { .path = "fmv/legal.rpl", .is_legal = true };
+    m_FMVs[1] = (GF_FMV) { .path = "fmv/intro.rpl", .is_intro = true };
     m_TitleLevel = (GF_LEVEL) {
         .num = 0,
         .type = GFL_TITLE,
@@ -139,6 +142,24 @@ void Screenshot_MakeToPath(const char *const path)
 void Game_SetIsLevelComplete(const bool is_complete)
 {
     FAKE_RECORD("end_level");
+}
+
+int32_t GF_GetFMVCount(void)
+{
+    return FAKE_FMV_COUNT;
+}
+
+const GF_FMV *GF_GetFMV(const int32_t num)
+{
+    if (num < 1 || num > FAKE_FMV_COUNT) {
+        return nullptr;
+    }
+    return &m_FMVs[num - 1];
+}
+
+int32_t GF_GetFMVNumber(const GF_FMV *const fmv)
+{
+    return (int32_t)(fmv - m_FMVs) + 1;
 }
 
 const GF_LEVEL_TABLE *GF_GetLevelTable(const GF_LEVEL_TABLE_TYPE table_type)
@@ -278,6 +299,9 @@ void GF_OverrideCommand(const GF_COMMAND command)
         break;
     case GF_START_DEMO:
         FAKE_RECORD("play_demo", FV(num));
+        break;
+    case GF_START_FMV:
+        FAKE_RECORD("play_fmv", FV(num));
         break;
     case GF_SELECT_GAME:
         FAKE_RECORD("play_gym", FV(num));

@@ -8,6 +8,7 @@
 #define FAKE_LEVEL_COUNT 3
 #define FAKE_CUTSCENE_COUNT 1
 #define FAKE_DEMO_COUNT 1
+#define FAKE_FMV_COUNT 2
 
 // A negative index leaves the current level unset.
 void FakeGame_SetCurrentLevel(int32_t idx);

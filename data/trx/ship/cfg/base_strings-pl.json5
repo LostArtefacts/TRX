@@ -429,6 +429,13 @@
                 "loading": "Wczytano demo %d",
                 "none": "\\{review}W tej grze nie ma dem",
             },
+            "play_fmv": {
+                "disabled": "\\{review}Filmy są wyłączone",
+                "help": "\\{review}Odtwarza film o podanym numerze.",
+                "invalid": "\\{review}Nieprawidłowy film",
+                "loading": "\\{review}Odtwarzanie filmu %d",
+                "none": "\\{review}W tej grze nie ma filmów",
+            },
             "play_gym": {
                 "help": "Wczytuje poziom z domem Lary.",
                 "invalid": "Nieznany poziom",

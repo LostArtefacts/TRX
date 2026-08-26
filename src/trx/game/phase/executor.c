@@ -5,6 +5,7 @@
 #include <trx/game/clock.h>
 #include <trx/game/console/common.h>
 #include <trx/game/fader.h>
+#include <trx/game/fmv.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/input.h>
@@ -37,6 +38,16 @@ static FADER_ARGS m_PendingFadeToBlackArgs;
 static GF_COMMAND M_HandleOverride(void)
 {
     const GF_COMMAND gf_override_cmd = GF_GetOverrideCommand();
+    if (gf_override_cmd.action == GF_START_FMV) {
+        GF_OverrideCommand((GF_COMMAND) { .action = GF_NOOP });
+        // A movie plays over the phase and hands it back, so the flow is not
+        // derailed and none of the teardown below applies.
+        const GF_FMV *const fmv = GF_GetFMV(gf_override_cmd.param);
+        if (fmv != nullptr) {
+            SHOULD(FMV_Play(fmv->path));
+        }
+        return (GF_COMMAND) { .action = GF_NOOP };
+    }
     if (gf_override_cmd.action != GF_NOOP) {
         const GF_COMMAND gf_cmd = gf_override_cmd;
         GF_OverrideCommand((GF_COMMAND) { .action = GF_NOOP });

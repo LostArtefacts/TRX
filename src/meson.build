@@ -109,6 +109,7 @@ trx_lua_script_sources = files(
   'lua/commands/mod.lua',
   'lua/commands/play_cutscene.lua',
   'lua/commands/play_demo.lua',
+  'lua/commands/play_fmv.lua',
   'lua/commands/music.lua',
   'lua/commands/outfit.lua',
   'lua/commands/play_gym.lua',

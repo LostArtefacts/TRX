@@ -429,6 +429,13 @@
                 "loading": "Loading demo %d",
                 "none": "This game has no demos",
             },
+            "play_fmv": {
+                "disabled": "FMVs are turned off",
+                "help": "Plays the FMV with the given number.",
+                "invalid": "Invalid FMV",
+                "loading": "Playing FMV %d",
+                "none": "This game has no FMVs",
+            },
             "play_gym": {
                 "help": "Plays the Gym level.",
                 "invalid": "Invalid level",

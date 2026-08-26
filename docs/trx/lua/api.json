@@ -4937,6 +4937,19 @@
       ]
     },
     {
+      "description": "Plays a movie, and returns once it has finished. The game resumes where it left off.",
+      "examples": [
+        "trx.game.play_fmv(1)"
+      ],
+      "params": [
+        {
+          "name": "fmv_num",
+          "type": "game.FMVNum"
+        }
+      ],
+      "path": "game.play_fmv"
+    },
+    {
       "description": "Starts the gym. Raises if this game has no gym.",
       "path": "game.play_gym"
     },
@@ -7425,6 +7438,11 @@
     },
     {
       "base": 1,
+      "description": "The number an FMV goes by, which is its place in the list the game flow declares.",
+      "path": "game.FMVNum"
+    },
+    {
+      "base": 1,
       "description": "Where a demo sits in the table of demos.",
       "path": "game.DemoNum"
     },
@@ -7620,6 +7638,13 @@
       "list": true,
       "path": "game.demos",
       "type": "game.Level",
+      "writable": false
+    },
+    {
+      "description": "The movies the game flow declares, counted from one.",
+      "list": true,
+      "path": "game.fmvs",
+      "type": "game.FMV",
       "writable": false
     },
     {
@@ -8861,6 +8886,45 @@
       "methods": [],
       "operators": [],
       "path": "game.Level"
+    },
+    {
+      "description": "A movie, as the game flow file declares it. Everything on it is read-only.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "Whether the movie is part of the credits, which the Credits setting hides.",
+          "name": "is_credit",
+          "type": "boolean",
+          "writable": false
+        },
+        {
+          "description": "Whether the movie opens the game.",
+          "name": "is_intro",
+          "type": "boolean",
+          "writable": false
+        },
+        {
+          "description": "Whether the movie is a legal notice, which the Legal screen setting hides.",
+          "name": "is_legal",
+          "type": "boolean",
+          "writable": false
+        },
+        {
+          "name": "num",
+          "type": "game.FMVNum",
+          "writable": false
+        },
+        {
+          "description": "Path to the movie file.",
+          "name": "path",
+          "type": "string",
+          "writable": false
+        }
+      ],
+      "handle": true,
+      "methods": [],
+      "operators": [],
+      "path": "game.FMV"
     },
     {
       "description": "One kind of thing an inventory holds, and how many of it.\n\nAn entry stands for the icon rather than for where it sits, so it goes on\nnaming the same thing as what is drawn around it changes. A box of ammunition\nis an entry like any other, counting what its rounds come to.",

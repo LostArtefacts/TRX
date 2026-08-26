@@ -63,6 +63,42 @@ static const FIELD_DESC m_Fields[] = {
 
 TYPE_DEFINE(GF_LEVEL, m_Fields)
 
+static bool M_GetFMVOrdinal(const void *const self, TRX_VALUE *const out)
+{
+    const GF_FMV *const fmv = self;
+    *out = (TRX_VALUE) {
+        .type = TVT_S32,
+        .as_int = GF_GetFMVNumber(fmv),
+    };
+    return true;
+}
+
+// clang-format off
+static const FIELD_DESC m_FMVFields[] = {
+    FIELD_FN("num", TVT_S32, M_GetFMVOrdinal, nullptr),
+    FIELD_RO(GF_FMV, path),
+    FIELD_RO(GF_FMV, is_legal),
+    FIELD_RO(GF_FMV, is_credit),
+    FIELD_RO(GF_FMV, is_intro),
+};
+// clang-format on
+
+TYPE_DEFINE(GF_FMV, m_FMVFields)
+
+static void *M_ResolveFMV(const LUA_STRUCT_REF *const ref)
+{
+    return (void *)GF_GetFMV(ref->handle.id);
+}
+
+static void M_PushFMV(lua_State *const L, const int32_t num)
+{
+    if (GF_GetFMV(num) == nullptr) {
+        lua_pushnil(L);
+        return;
+    }
+    LUA_Struct_Push(L, &TYPE_GF_FMV, M_ResolveFMV, (TRX_HANDLE) { .id = num });
+}
+
 // GF_GetLevelTable indexes the level tables with this and does not check it,
 // and GFLT_UNKNOWN is -1, so the range starts at zero.
 static GF_LEVEL_TABLE_TYPE M_CheckTableType(lua_State *const L, const int arg)
@@ -272,6 +308,42 @@ static int M_L_GamePlayLevel(lua_State *const L)
     return 0;
 }
 
+// trxc.game.count_fmvs() → int
+static int M_L_GameCountFMVs(lua_State *const L)
+{
+    lua_pushinteger(L, GF_GetFMVCount());
+    return 1;
+}
+
+// trxc.game.get_fmv(num) → GF_FMV handle or nil
+static int M_L_GameGetFMV(lua_State *const L)
+{
+    int32_t num;
+    if (!LUA_CheckBoundedInt(L, 1, 1, INT32_MAX, &num)) {
+        lua_pushnil(L);
+        return 1;
+    }
+    M_PushFMV(L, num);
+    return 1;
+}
+
+// trxc.game.play_fmv(num) → nil
+// The movie plays over the level or the menu on screen and hands it back,
+// unlike the play_* verbs, whose commands derail the game flow.
+static int M_L_GamePlayFMV(lua_State *const L)
+{
+    int32_t num;
+    const GF_FMV *const fmv = LUA_CheckBoundedInt(L, 1, 1, INT32_MAX, &num)
+        ? GF_GetFMV(num)
+        : nullptr;
+    luaL_argcheck(L, fmv != nullptr, 1, "unknown FMV");
+    GF_OverrideCommand((GF_COMMAND) {
+        .action = GF_START_FMV,
+        .param = GF_GetFMVNumber(fmv),
+    });
+    return 0;
+}
+
 // trxc.game.play_cutscene(num) → nil
 static int M_L_GamePlayCutscene(lua_State *const L)
 {
@@ -374,6 +446,9 @@ static const luaL_Reg m_Module[] = {
     { "play_level", M_L_GamePlayLevel },
     { "play_cutscene", M_L_GamePlayCutscene },
     { "play_demo", M_L_GamePlayDemo },
+    { "play_fmv", M_L_GamePlayFMV },
+    { "count_fmvs", M_L_GameCountFMVs },
+    { "get_fmv", M_L_GameGetFMV },
     { "play_gym", M_L_GamePlayGym },
     { "screenshot", M_L_GameScreenshot },
     { "end_level", M_L_GameEndLevel },
@@ -385,6 +460,7 @@ static const luaL_Reg m_Module[] = {
 static void M_Create(lua_State *const L)
 {
     LUA_Struct_Register(L, &TYPE_GF_LEVEL, nullptr);
+    LUA_Struct_Register(L, &TYPE_GF_FMV, nullptr);
     LUA_RegisterModule(L, "game", m_Module);
 
     // The frame rate and the build's version are values, not functions.

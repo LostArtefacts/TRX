@@ -19,6 +19,7 @@ Module for the game flow: which levels there are, and which one is being played.
 - <a id="game.levels" name="game.levels"></a>**`trx.game.levels`** (a list of [trx.game.Level](#game.Level)). The levels of the game, in order, counted from one. *(read-only)*
 - <a id="game.cutscenes" name="game.cutscenes"></a>**`trx.game.cutscenes`** (a list of [trx.game.Level](#game.Level)). The cutscene levels, counted from one. TR4's in-game cutscenes are a different thing, and live in [`trx.cutscenes`](CUTSCENES.md#cutscenes). *(read-only)*
 - <a id="game.demos" name="game.demos"></a>**`trx.game.demos`** (a list of [trx.game.Level](#game.Level)). The demos, counted from one. *(read-only)*
+- <a id="game.fmvs" name="game.fmvs"></a>**`trx.game.fmvs`** (a list of [trx.game.FMV](#game.FMV)). The movies the game flow declares, counted from one. *(read-only)*
 - <a id="game.current_level" name="game.current_level"></a>**`trx.game.current_level`** ([trx.game.Level](#game.Level)). The level being played, or `nil` if none is. *(read-only)*
 - <a id="game.gym" name="game.gym"></a>**`trx.game.gym`** ([trx.game.Level](#game.Level)). The gym level, or `nil` if this game has no gym. *(read-only)*
 - <a id="game.version" name="game.version"></a>**`trx.game.version`** (integer). Which Tomb Raider this build is: 1, 2, 3 or 4. *(read-only)*
@@ -86,6 +87,10 @@ Module for the game flow: which levels there are, and which one is being played.
 
     The number a level goes by, which is what the player is shown and what a gameflow names. Not its place in a table: a level the game flow skips does not count, and a gym level has no number at all and reads 0. Counted from 1.
 
+- <a id="game.FMVNum" name="game.FMVNum"></a>[lua]`trx.game.FMVNum`
+
+    The number an FMV goes by, which is its place in the list the game flow declares. Counted from 1.
+
 - <a id="game.DemoNum" name="game.DemoNum"></a>[lua]`trx.game.DemoNum`
 
     Where a demo sits in the table of demos. Counted from 1.
@@ -132,6 +137,21 @@ Module for the game flow: which levels there are, and which one is being played.
     - <a id="game.Level.inventory" name="game.Level.inventory"></a>**`inventory`**: [trx.inventory.Inventory](INVENTORY.md#inventory.Inventory). What the level keeps for Lara's return, or `nil` for a level that keeps nothing: the title screen and the cutscenes. It is what she will arrive there with rather than what she is carrying now, which is [`trx.inventory`](INVENTORY.md#inventory) itself.
     - <a id="game.Level.stats" name="game.Level.stats"></a>**`stats`**: [trx.stats.Stats](STATS.md#stats.Stats). What the level keeps count of, or `nil` for a level that counts nothing: the title screen and the cutscenes. The level being played is also [`trx.stats`](STATS.md#stats) itself.
 
+- <a id="game.FMV" name="game.FMV"></a>[lua]`trx.game.FMV`
+
+    A movie, as the game flow file declares it. Everything on it is read-only.
+
+    Handles are live references: if the underlying object is destroyed,
+    using the handle raises an error rather than silently reading an
+    unrelated one.
+
+    Properties:
+    - <a id="game.FMV.is_credit" name="game.FMV.is_credit"></a>**`is_credit`**: boolean. Whether the movie is part of the credits, which the Credits setting hides. *(read-only)*
+    - <a id="game.FMV.is_intro" name="game.FMV.is_intro"></a>**`is_intro`**: boolean. Whether the movie opens the game. *(read-only)*
+    - <a id="game.FMV.is_legal" name="game.FMV.is_legal"></a>**`is_legal`**: boolean. Whether the movie is a legal notice, which the Legal screen setting hides. *(read-only)*
+    - <a id="game.FMV.num" name="game.FMV.num"></a>**`num`**: [trx.game.FMVNum](#game.FMVNum). *(read-only)*
+    - <a id="game.FMV.path" name="game.FMV.path"></a>**`path`**: string. Path to the movie file. *(read-only)*
+
 ### Functions
 
 - <a id="game.signals" name="game.signals"></a>[lua]`trx.game.signals`  
@@ -166,6 +186,17 @@ Module for the game flow: which levels there are, and which one is being played.
 
   Returns:
   - [trx.game.Level](#game.Level) or `nil`. The demo that started, or `nil` if the game has no demos.
+
+- <a id="game.play_fmv" name="game.play_fmv"></a>[lua]`trx.game.play_fmv(fmv_num)`  
+  Plays a movie, and returns once it has finished. The game resumes where it left off.
+
+  Parameters:
+  - <a id="game.play_fmv.fmv_num" name="game.play_fmv.fmv_num"></a>**`fmv_num`** ([trx.game.FMVNum](#game.FMVNum)).
+
+  Example:
+  ```lua
+  trx.game.play_fmv(1)
+  ```
 
 - <a id="game.play_gym" name="game.play_gym"></a>[lua]`trx.game.play_gym()`  
   Starts the gym. Raises if this game has no gym.

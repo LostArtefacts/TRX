@@ -13,6 +13,13 @@ GF_LEVEL_TABLE_TYPE GF_GetLevelTableType(const GF_LEVEL_TYPE level_type);
 const GF_LEVEL_TABLE *GF_GetLevelTable(GF_LEVEL_TABLE_TYPE level_type);
 int32_t GF_GetLevelCount(GF_LEVEL_TABLE_TYPE level_table_type);
 
+int32_t GF_GetFMVCount(void);
+// Returns the FMV the game flow declares at the given place, counted from
+// one, or nullptr where the flow declares none there.
+const GF_FMV *GF_GetFMV(int32_t num);
+// Returns where the FMV sits in the game flow, counted from one.
+int32_t GF_GetFMVNumber(const GF_FMV *fmv);
+
 const GF_LEVEL *GF_GetCurrentLevel(void);
 const GF_LEVEL *GF_GetTitleLevel(void);
 const GF_LEVEL *GF_GetGymLevel(void);
