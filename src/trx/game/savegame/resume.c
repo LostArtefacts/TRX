@@ -156,7 +156,6 @@ void SG_Resume_ResetAllEntries(void)
 
 void SG_Resume_ResetEntry(const GF_LEVEL *const level)
 {
-    LOG_INFO("Resetting resume info for level #%d", level->num);
     RESUME_INFO *const current = SG_Resume_GetEntry(level);
     *current = (RESUME_INFO) { .prev_level = -1, .level_completed = false };
 }
@@ -218,8 +217,6 @@ void SG_Resume_ApplyRulesToEntry(const GF_LEVEL *const level)
     if (resume == nullptr) {
         return;
     }
-
-    LOG_INFO("Applying game logic to level #%d", level->num);
 
     if (!g_Config.gameplay.disable_healing_between_levels
         || level == GF_GetGymLevel() || level == GF_GetFirstLevel()) {
