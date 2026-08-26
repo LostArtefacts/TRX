@@ -5,5 +5,6 @@
 
 #include <GL/glew.h>
 
-void TRX_GL_CheckError(void);
+void TRX_GL_CheckErrorAt(const char *file, int line, const char *func);
+#define TRX_GL_CheckError() TRX_GL_CheckErrorAt(__FILE__, __LINE__, __func__)
 const char *TRX_GL_GetErrorString(GLenum err);
