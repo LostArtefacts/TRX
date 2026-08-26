@@ -13,7 +13,11 @@
 #include <trx/game/spawn.h>
 #include <trx/version.h>
 
-#define M_ENABLE_FAST_UZI (g_TRVersion >= 2)
+typedef enum {
+    M_SOUND_NORMAL,
+    M_SOUND_ALTERNATE,
+    M_SOUND_OVERLAY,
+} M_SOUND_TYPE;
 
 typedef enum {
     // clang-format off
@@ -70,17 +74,18 @@ static bool M_EnableFastSound(const LARA_GUN_TYPE weapon_type)
     return g_TRVersion >= 2 && info->has_alternating_fire_sound;
 }
 
-static void M_FireSound(const WEAPON_INFO *const weapon, const bool alternate)
+static void M_FireSound(
+    const WEAPON_INFO *const weapon, const M_SOUND_TYPE sound_type)
 {
+    if (sound_type == M_SOUND_OVERLAY) {
+        Gun_FireOverlaySound(weapon);
+    }
     SAMPLE_ID sample_id = Sound_ToGameID(weapon->sample_num);
     if (sample_id == SFX_INVALID) {
         return;
     }
-    if (alternate) {
+    if (sound_type == M_SOUND_ALTERNATE) {
         sample_id += 1;
-    }
-    if (!alternate) {
-        Gun_FireOverlaySound(weapon);
     }
     Sound_Effect_Direct(sample_id, &Lara_GetItem()->pos, SPM_NORMAL);
 }
@@ -140,7 +145,7 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
             frame_r--;
         }
         if (m_SoundRight) {
-            M_FireSound(weapon, true);
+            M_FireSound(weapon, M_SOUND_ALTERNATE);
             m_SoundRight = false;
         }
     } else {
@@ -158,7 +163,7 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
                     Spawn_GunShell(weapon_type, true);
                     Gun_Smoke_OnFire(weapon_type, true);
                     if (!sound_already) {
-                        M_FireSound(weapon, false);
+                        M_FireSound(weapon, M_SOUND_OVERLAY);
                     }
                     sound_already = true;
                     if (M_EnableFastSound(weapon_type)) {
@@ -167,7 +172,7 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
                 }
                 frame_r = setup->recoil.start;
             } else if (m_SoundRight) {
-                M_FireSound(weapon, true);
+                M_FireSound(weapon, M_SOUND_ALTERNATE);
                 m_SoundRight = false;
             }
         } else if (
@@ -178,7 +183,7 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
                 frame_r = setup->aim.end;
             }
             if (M_EnableFastSound(weapon_type)) {
-                M_FireSound(weapon, false);
+                M_FireSound(weapon, M_SOUND_NORMAL);
                 m_SoundRight = true;
             }
         }
@@ -195,7 +200,7 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
             frame_l--;
         }
         if (m_SoundLeft) {
-            M_FireSound(weapon, true);
+            M_FireSound(weapon, M_SOUND_ALTERNATE);
             m_SoundLeft = false;
         }
     } else if (
@@ -217,7 +222,7 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
                 }
 
                 if (!sound_already) {
-                    M_FireSound(weapon, false);
+                    M_FireSound(weapon, M_SOUND_OVERLAY);
                 }
                 if (M_EnableFastSound(weapon_type)) {
                     m_SoundLeft = true;
@@ -225,7 +230,7 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
             }
             frame_l = setup->recoil.start;
         } else if (m_SoundLeft) {
-            M_FireSound(weapon, true);
+            M_FireSound(weapon, M_SOUND_ALTERNATE);
             m_SoundLeft = false;
         }
     } else if (
@@ -236,7 +241,7 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
             frame_l = setup->aim.end;
         }
         if (M_EnableFastSound(weapon_type)) {
-            M_FireSound(weapon, false);
+            M_FireSound(weapon, M_SOUND_NORMAL);
             m_SoundLeft = true;
         }
     }
