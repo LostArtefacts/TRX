@@ -119,6 +119,10 @@ RESULT Level_Initialise(
     MUST(Level_Pipeline_Load(level));
     m_WorldLoaded = true;
 
+    // The level script ran before any of this was here, so the watchers it
+    // attached are still owed the call for the value in force.
+    LUA_Config_FlushPendingWatchers();
+
     UI_LoadText();
     Output_SetSkyboxEnabled(Object_Get(O_SKYBOX)->loaded);
     Output_DispatchLevelLoad();

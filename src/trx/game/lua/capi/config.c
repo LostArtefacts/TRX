@@ -8,6 +8,7 @@
 #include <trx/core/strings.h>
 #include <trx/core/vector.h>
 #include <trx/game/console/common.h>
+#include <trx/game/level/common.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils.h>
@@ -39,6 +40,10 @@ typedef struct {
     // Set up by a level script, so it goes when the level does, as a
     // trx.events listener does.
     bool level_scoped;
+    // Still owed the call that every watcher gets for the value in force. A
+    // level script attaches before the level is read, where a handler can
+    // reach nothing the level carries, so the call waits for the world.
+    bool pending_initial;
     bool dead;
 } M_WATCHER;
 
@@ -444,9 +449,10 @@ static int M_L_ConfigDeclare(lua_State *const L)
 // the rest of them with it: the setting has moved either way, and the others
 // still have to hear about it.
 static void M_CallWatcher(
-    lua_State *const L, const M_WATCHER *const watcher,
+    lua_State *const L, M_WATCHER *const watcher,
     const CONFIG_OPTION *const option)
 {
+    watcher->pending_initial = false;
     lua_rawgeti(L, LUA_REGISTRYINDEX, watcher->fn_ref);
     LUA_Config_PushOptionValue(L, option);
     if (lua_pcall(L, 1, 0, 0) != LUA_OK) {
@@ -501,7 +507,7 @@ static void M_HandleChange(const EVENT *const event, void *const user_data)
     for (int32_t i = 0; i < change->count; i++) {
         const CONFIG_OPTION *const option = change->options[i];
         for (int32_t j = 0; j < count && j < m_Watchers->count; j++) {
-            const M_WATCHER *const watcher = Vector_Get(m_Watchers, j);
+            M_WATCHER *const watcher = Vector_Get(m_Watchers, j);
             if (watcher->dead || strcmp(watcher->key, option->name) != 0) {
                 continue;
             }
@@ -526,17 +532,22 @@ static int M_L_ConfigOnChange(lua_State *const L)
     // Taken before the call below, which may attach a watcher of its own and
     // leave the counter naming that one instead.
     const int32_t id = m_NextWatcherId++;
+    const bool level_scoped = LUA_GetScriptContext() == LUA_CONTEXT_LEVEL;
+    const bool wait_for_world = level_scoped && !Level_IsWorldLoaded();
     Vector_Add(
         m_Watchers,
         &(M_WATCHER) {
             .id = id,
             .key = Memory_DupStr(option->name),
             .fn_ref = luaL_ref(L, LUA_REGISTRYINDEX),
-            .level_scoped = LUA_GetScriptContext() == LUA_CONTEXT_LEVEL,
+            .level_scoped = level_scoped,
+            .pending_initial = wait_for_world,
         });
     // The setting already holds something, and a script asking to hear about it
     // is asking about the value in force as much as the ones to come.
-    M_CallWatcher(L, Vector_Get(m_Watchers, m_Watchers->count - 1), option);
+    if (!wait_for_world) {
+        M_CallWatcher(L, Vector_Get(m_Watchers, m_Watchers->count - 1), option);
+    }
     lua_pushinteger(L, id);
     return 1;
 }
@@ -617,6 +628,31 @@ void LUA_Config_PushOptionValue(
         return;
     }
     LUA_PushValue(L, &option->value);
+}
+
+void LUA_Config_FlushPendingWatchers(void)
+{
+    lua_State *const L = m_L;
+    if (L == nullptr || m_Watchers == nullptr) {
+        return;
+    }
+    m_DispatchDepth++;
+    for (int32_t i = 0; i < m_Watchers->count; i++) {
+        M_WATCHER *const watcher = Vector_Get(m_Watchers, i);
+        if (watcher->dead || !watcher->pending_initial) {
+            continue;
+        }
+        const CONFIG_OPTION *const option = Config_FindOption(watcher->key);
+        if (option == nullptr) {
+            watcher->pending_initial = false;
+            continue;
+        }
+        M_CallWatcher(L, watcher, option);
+    }
+    m_DispatchDepth--;
+    if (m_DispatchDepth == 0) {
+        M_CompactWatchers(L);
+    }
 }
 
 void LUA_Config_ClearLevelWatchers(void)

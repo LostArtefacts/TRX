@@ -70,6 +70,10 @@ void LUA_Config_PushOptionValue(lua_State *L, const CONFIG_OPTION *option);
 // are dropped. A watcher a game script set up stays.
 void LUA_Config_ClearLevelWatchers(void);
 
+// Makes the calls a level script's watchers are still owed, now that the level
+// has its objects. Level_Initialise does this once the level is read.
+void LUA_Config_FlushPendingWatchers(void);
+
 // Let go of the outgoing level's script: what it set up hears about it, and
 // then its listeners go. Level_Unload does this for a level change; a path that
 // re-runs a script without unloading the level does it for itself. The event

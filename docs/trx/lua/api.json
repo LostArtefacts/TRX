@@ -3472,7 +3472,7 @@
       "path": "config.declare"
     },
     {
-      "description": "Calls `fn(value)` whenever the setting changes, and once as the watcher is\nattached with the value it holds now - so a script applies the player's saved value rather than\nwaiting for them to touch it again.\n\nA watcher that changes a setting itself is heard by that setting's watchers too. One that raises\nis logged and the rest still run; it is called again on the next change.\n\nA watcher a level script attaches goes when the level ends, as a `trx.events` listener does. One a\ngame script attaches stays for as long as the game.",
+      "description": "Calls `fn(value)` whenever the setting changes, and once as the watcher is\nattached with the value it holds now - so a script applies the player's saved value rather than\nwaiting for them to touch it again.\n\nA watcher that changes a setting itself is heard by that setting's watchers too. One that raises\nis logged and the rest still run; it is called again on the next change.\n\nA watcher a level script attaches goes when the level ends, as a `trx.events` listener does. One a\ngame script attaches stays for as long as the game.\n\nA level script runs before the level is read, where a handler can reach nothing the level carries.\nThe call for the value in force therefore waits until the level has its objects. Every other\nwatcher is called as it is attached.",
       "examples": [
         "local watcher = trx.config.on_change(\"mod.scanlines\", function(value)\n  trx.log.info(\"scanlines are now \" .. tostring(value))\nend)\n-- ... and when the script is done with it:\nwatcher:detach()"
       ],
