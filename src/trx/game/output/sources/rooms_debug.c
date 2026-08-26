@@ -217,6 +217,7 @@ static void M_RenderPass(
         return;
     }
 
+    Output_MeshShader_SuspendSubdivision(p->shader, true);
     Output_MeshShader_UploadTint(p->shader, COLOR_RGBA_F_WHITE);
 
     glBindVertexArray(p->vao);
@@ -253,6 +254,8 @@ static void M_RenderPass(
             glEnable(GL_DEPTH_TEST);
         }
     }
+
+    Output_MeshShader_SuspendSubdivision(p->shader, false);
 }
 
 static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)

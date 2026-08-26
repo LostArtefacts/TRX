@@ -39,6 +39,11 @@ static const char *const m_VariantPaths[M_VARIANT_COUNT] = {
     "meshes_tr12.glsl", "meshes_tr3.glsl", "meshes_tr4.glsl",
 };
 
+// Suspends the geometry stage for the pass that asked for it. The subdividing
+// variant takes triangles, so a pass that draws lines cannot use it, and a
+// pass that draws flat debug geometry gains nothing from the split.
+static bool m_SubdivisionSuspended;
+
 static bool M_VariantSubdivides(const int32_t variant_idx)
 {
     return variant_idx >= M_LIGHTING_VARIANT_COUNT;
@@ -47,7 +52,7 @@ static bool M_VariantSubdivides(const int32_t variant_idx)
 static int32_t M_GetVariantIndex(void)
 {
     const int32_t lighting = Output_Lights_GetModel()->shader_variant;
-    return g_Config.rendering.enable_affine_mapping
+    return g_Config.rendering.enable_affine_mapping && !m_SubdivisionSuspended
         ? lighting + M_LIGHTING_VARIANT_COUNT
         : lighting;
 }
@@ -123,6 +128,13 @@ void Output_MeshShader_Bind(OUTPUT_MESH_SHADER *const shader)
     const int32_t variant_idx = M_GetVariantIndex();
     Output_Shader_Bind(M_GetVariantBase(shader, variant_idx));
     M_UploadEnvMapRect(shader, variant_idx);
+}
+
+void Output_MeshShader_SuspendSubdivision(
+    OUTPUT_MESH_SHADER *const shader, const bool is_suspended)
+{
+    m_SubdivisionSuspended = is_suspended;
+    Output_MeshShader_Bind(shader);
 }
 
 void Output_MeshShader_Free(OUTPUT_MESH_SHADER *const shader)
