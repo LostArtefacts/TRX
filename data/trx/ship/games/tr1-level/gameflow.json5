@@ -5,7 +5,6 @@
     "extends": "tr1",
     "name": "TR1 Direct Level",
 
-    "main_menu_picture": "title.webp",
     "savegame_file_fmt": "save_tmp_%02d.dat",
 
     "injections": [
