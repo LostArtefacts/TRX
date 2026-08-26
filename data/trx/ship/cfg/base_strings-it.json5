@@ -1859,6 +1859,10 @@
             "title": "Illuminazione spari",
             "description": "Abilita l'illuminazione dinamica per spari ed esplosioni.",
         },
+        "visuals.enable_photo_mode_collision": {
+            "title": "\\{review}Collisione in modalità foto",
+            "description": "\\{review}Impedisce alla telecamera di attraversare la geometria durante gli spostamenti in un livello in modalità foto. Se disabilitata, la telecamera può attraversare liberamente pareti, soffitti e pavimenti.",
+        },
         "visuals.enable_poison_vision": {
             "title": "Visione da avvelenamento",
             "description": "Deforma la visuale mentre Lara è avvelenata. Disattiva se soggetto a cinetosi.",

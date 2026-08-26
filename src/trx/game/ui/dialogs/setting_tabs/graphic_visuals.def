@@ -8,6 +8,7 @@ X_UI_ROW(visuals.water_color)
 
 X_UI_ROW(visuals.camera_mode)
 X_UI_ROW(visuals.enable_glide_cameras)
+X_UI_ROW(visuals.enable_photo_mode_collision)
 
 X_UI_ROW(visuals.fov)
 

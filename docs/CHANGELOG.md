@@ -18,7 +18,6 @@
 - Added a flat yellow color to the PS1 bar palettes (Graphic Options → UI → Bars) (#5227 / TRX1135)
 - Added an option to open the save and load screens instantly (Graphic Options → UI → Instant save/load screen) (TRX1170)
 - Changed Lara's outfit setting to offer only the outfits the current level can dress her in (TRX1086)
-- Changed moving Lara in photo mode to follow the direction the camera looks, rather than the way she faces (TRX1153)
 - Changed settings dialogs to stay readable at large text sizes, with shorter setting names and tighter layouts where needed
 - Changed the Fix one-shot music triggers option to sit with the other music settings (Sound → Misc) (TRX1045)
 - Changed the PS1 poison healthbar to flat yellow, as the PS1 releases had it (#5227 / TRX1135)
@@ -36,9 +35,13 @@
 - Fixed dialogs sitting against a band of screen that no longer matched what the overlay was drawing there, which could leave them overlapping the heading or the item name
 - Fixed the inventory ring's button hints and item count overlapping the line of text the game puts at the foot of the screen
 - Fixed the icons beside the volume settings, which now show a note for the music and a speaker for the sound effects (TRX1040)
+- Fixed the statistics overlapping inventory text at large text sizes (#6295 / TRX1156)
+
+**Camera**
+- Added an option to have the photo mode camera collide with level geometry (Graphic Options → Visuals → Photo mode collision) (#5719 / TRX540)
+- Changed moving Lara in photo mode to follow the direction the camera looks, rather than the way she faces (TRX1153)
 - Fixed the photo mode camera drifting upwards and overshooting when it is moved while pitched up or down (TRX1142)
 - Fixed the photo mode camera flickering and refusing to turn over when it is pitched past straight up or down, and turning in coarse steps while aimed near vertical (TRX1152)
-- Fixed the statistics overlapping inventory text at large text sizes (#6295 / TRX1156)
 
 **Developer console**
 - Added the `/outfit` console command, which shows or changes what Lara is wearing (TRX1070)

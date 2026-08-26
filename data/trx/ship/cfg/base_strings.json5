@@ -1859,6 +1859,10 @@
             "title": "Gun lighting",
             "description": "Enables dynamic lighting to be generated for gunshots and explosions.",
         },
+        "visuals.enable_photo_mode_collision": {
+            "title": "Photo mode collision",
+            "description": "Enforces the camera to conform to geometry when navigating a level in photo mode. If disabled, the camera can be moved freely through walls, ceilings and floors.",
+        },
         "visuals.enable_poison_vision": {
             "title": "Poison vision",
             "description": "Warps the view while Lara is poisoned. Disable if prone to motion sickness.",

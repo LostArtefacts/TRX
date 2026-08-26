@@ -1859,6 +1859,10 @@
             "title": "Solais armachd",
             "description": "Cuiridh seo solais beòthail ri losgadh agus spreadhadh.",
         },
+        "visuals.enable_photo_mode_collision": {
+            "title": "Bualadh modh dhealbhan",
+            "description": "Leanntaidh an camara geoimeatraidh na h-ìre ann am modh dhealbhan. Ma tha seo à comas, faodaidh an camara gluasad gu saor tro bhallachan, mullaichean agus an làir.",
+        },
         "visuals.enable_poison_vision": {
             "title": "Sealladh puinnseanta",
             "description": "Buaileas am faicsinneachd fhad 's a tha Lara puinnseanta. Cuir dheth ma tha thu buailteach do tinneas gluasad.",
