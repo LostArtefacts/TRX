@@ -160,12 +160,6 @@ void Camera_ApplyBounce(void)
 
 void Camera_ClampInterpResult(void)
 {
-    // A cutscene camera can jump between places without sector walking,
-    // and its room is already known.
-    if (g_Camera.type == CAM_CINEMATIC) {
-        return;
-    }
-
     if (g_Camera.type == CAM_PHOTO_MODE || g_Camera.type == CAM_FLYBY_MODE
         || g_Camera.type == CAM_BINOCULARS) {
         Room_GetSector(
