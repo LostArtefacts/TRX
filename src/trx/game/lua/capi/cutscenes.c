@@ -1,4 +1,5 @@
 #include <trx/game/cutseq.h>
+#include <trx/game/level/common.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils.h>
@@ -134,6 +135,9 @@ static int M_L_CutscenesSetNodeMesh(lua_State *const L)
     const int32_t node = M_CheckNode(L, 2);
     const OBJECT_ID object_id = LUA_CheckObjectID(L, 3);
     const OBJECT *const obj = Object_Get(object_id);
+    if (!Level_IsWorldLoaded()) {
+        return luaL_error(L, "the level has not loaded its objects yet");
+    }
     if (!obj->loaded) {
         return luaL_error(L, "this level does not carry that object");
     }

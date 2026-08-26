@@ -533,7 +533,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/signal',
   'bundles': [b_lua_surface, b_config, b_lua_math, b_lua_strings],
-  'src': ['harness/stubs_console.c', 'fakes/locale.c', 'fakes/rooms.c'],
+  'src': ['fakes/level.c', 'harness/stubs_console.c', 'fakes/locale.c', 'fakes/rooms.c'],
   'engine': [
     'game/lua/capi/config.c',
     'game/lua/capi/events.c',
@@ -576,7 +576,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/ui',
   'bundles': [b_lua_surface, b_lua_math, b_config],
-  'src': ['lua/api/ui.c', 'fakes/ui_draw.c', 'fakes/locale.c', 'fakes/rooms.c'],
+  'src': ['fakes/level.c', 'lua/api/ui.c', 'fakes/ui_draw.c', 'fakes/locale.c', 'fakes/rooms.c'],
   'engine': [
     'config/enum.c',
     'core/event_manager.c',
@@ -688,7 +688,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/zones',
   'bundles': [b_lua_surface, b_lua_math],
-  'src': [
+  'src': ['fakes/level.c',
     'harness/stubs_console.c',
     'fakes/items.c',
     'fakes/rooms.c',
@@ -778,7 +778,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/lara',
   'bundles': [b_lua_surface, b_lua_math],
-  'src': ['fakes/lara.c', 'fakes/items.c', 'fakes/catalog.c'],
+  'src': ['fakes/level.c', 'fakes/lara.c', 'fakes/items.c', 'fakes/catalog.c'],
   'engine': [
     'game/lua/capi/catalog.c',
     'game/lua/capi/items.c',
@@ -798,7 +798,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/config',
   'bundles': [b_lua_surface, b_config, b_lua_math, b_lua_strings],
-  'src': ['harness/stubs_console.c', 'fakes/locale.c'],
+  'src': ['fakes/level.c', 'harness/stubs_console.c', 'fakes/locale.c'],
   'engine': [
     'game/lua/capi/config.c',
     'game/lua/capi/locale.c',
@@ -837,7 +837,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/commands/heal',
   'bundles': [b_lua_surface, b_console, b_lua_math],
-  'src': ['fakes/game.c', 'fakes/items.c', 'fakes/lara.c'],
+  'src': ['fakes/level.c', 'fakes/game.c', 'fakes/items.c', 'fakes/lara.c'],
   'engine': [
     'game/lua/capi/game.c',
     'game/lua/capi/items.c',
@@ -884,7 +884,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/commands/give',
   'bundles': [b_lua_surface, b_console, b_lua_math, b_lua_strings],
-  'src': [
+  'src': ['fakes/level.c',
     'fakes/game.c',
     'fakes/items.c',
     'fakes/lara.c',
@@ -906,7 +906,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/commands/teleport',
   'bundles': [b_lua_surface, b_console, b_lua_strings, b_lua_math],
-  'src': [
+  'src': ['fakes/level.c',
     'fakes/camera.c',
     'fakes/catalog.c',
     'fakes/game.c',
@@ -943,7 +943,8 @@ unit_tests += {
 
 unit_tests += {
   'name': 'lua/commands/set',
-  'bundles': [b_lua_surface, b_config, b_lua_math, b_lua_strings, b_console],
+
+  'src': ['fakes/level.c'],  'bundles': [b_lua_surface, b_config, b_lua_math, b_lua_strings, b_console],
   'engine': ['game/lua/capi/config.c'],
 }
 
