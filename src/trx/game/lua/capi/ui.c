@@ -251,8 +251,6 @@ static int M_L_UIDrawText(lua_State *const L)
     return 0;
 }
 
-// Convert both rectangle edges so adjacent canvas edges round together.
-
 // trxc.ui.flat_quad(x, y, z, w, h, color)
 static int M_L_UIFlatQuad(lua_State *const L)
 {
@@ -415,6 +413,7 @@ static void M_Create(lua_State *const L)
 static void M_Shutdown(void)
 {
     m_Drawing = false;
+    m_Painting = false;
 }
 
 bool LUA_UI_IsPainting(void)
