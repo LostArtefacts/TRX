@@ -65,6 +65,7 @@ typedef struct {
 
         CAMERA_MODE camera_mode;
         bool enable_glide_cameras;
+        bool enable_photo_mode_collision;
         float game_brightness;
         float ui_brightness;
         float background_brightness;

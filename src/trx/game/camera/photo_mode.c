@@ -150,6 +150,12 @@ static void M_RotateTarget(
 
 static void M_ClampCameraPos(void)
 {
+    if (g_Config.visuals.enable_photo_mode_collision) {
+        Camera_Collide(&g_Camera.pos, STEP_L, false);
+        Camera_Collide(&g_Camera.target, STEP_L, false);
+        return;
+    }
+
     // While the camera is free, we want to clamp to within overall world bounds
     // to help counteract getting lost in the void.
     const GAME_VECTOR prev_cam_pos = g_Camera.pos;

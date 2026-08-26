@@ -1859,6 +1859,10 @@
             "title": "Dynamisches Licht für Waffen",
             "description": "Aktiviert die verwendung von dynamischer Beleuchtung für Schüsse und Explosionen.",
         },
+        "visuals.enable_photo_mode_collision": {
+            "title": "\\{review}Kollision im Fotomodus",
+            "description": "\\{review}Zwingt die Kamera dazu, der Geometrie zu folgen, wenn sie sich im Fotomodus durch ein Level bewegt. Wenn diese Option deaktiviert ist, kann sich die Kamera frei durch Wände, Decken und Böden bewegen.",
+        },
         "visuals.enable_poison_vision": {
             "title": "\\{review}Giftvision",
             "description": "\\{review}Verzerrt die Sicht, während Lara vergiftet ist. Deaktivieren, wenn Sie zu Reisekrankheit neigen.",

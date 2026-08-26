@@ -1859,6 +1859,10 @@
             "title": "Efekty świetlne broni",
             "description": "Włącza dynamiczne oświetlenie przy strzelaniu z broni i eksplozjach.",
         },
+        "visuals.enable_photo_mode_collision": {
+            "title": "\\{review}Kolizja w trybie fotograficznym",
+            "description": "\\{review}Wymusza zgodność kamery z geometrią podczas poruszania się po poziomie w trybie fotograficznym. Po wyłączeniu tej opcji kamera może swobodnie przenikać przez ściany, sufity i podłogi.",
+        },
         "visuals.enable_poison_vision": {
             "title": "\\{review}Zatrute widzenie",
             "description": "\\{review}Zniekształca widok, gdy Lara jest zatruta. Wyłącz, jeśli masz skłonność do choroby lokomocyjnej.",

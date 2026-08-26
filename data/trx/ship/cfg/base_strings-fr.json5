@@ -1859,6 +1859,10 @@
             "title": "Éclairage des armes",
             "description": "\\{review}Permet de générer un éclairage dynamique pour les coups de feu et les explosions.",
         },
+        "visuals.enable_photo_mode_collision": {
+            "title": "\\{review}Collision en mode photo",
+            "description": "\\{review}Force la caméra à respecter la géométrie lors des déplacements dans un niveau en mode photo. Si cette option est désactivée, la caméra peut traverser librement les murs, les plafonds et les sols.",
+        },
         "visuals.enable_poison_vision": {
             "title": "\\{review}Vision empoisonnée",
             "description": "\\{review}Déforme la vue lorsque Lara est empoisonnée. Désactivez si vous êtes sujet au mal des transports.",
