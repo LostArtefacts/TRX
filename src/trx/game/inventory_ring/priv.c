@@ -667,16 +667,25 @@ void InvRing_DrawUI(INV_RING *const ring)
         .spacing = { .v = 20.0f },
     });
 
-    if (m_ButtonHintDrawFunc != nullptr) {
+    const bool has_hint = m_ButtonHintDrawFunc != nullptr;
+    const bool has_count = m_CountText != nullptr && m_CountText[0] != '\0';
+
+    if (has_hint) {
         m_ButtonHintDrawFunc(m_ButtonHintUserData);
     }
 
-    if (m_CountText != nullptr && m_CountText[0] != '\0') {
+    if (has_count) {
         UI_BeginOffset(64.0f, 0.0f);
         UI_Label(m_CountText);
         UI_EndOffset();
     }
-    UI_Spacer(0.0f, M_UI_COUNT_NAME_GAP);
+
+    // The gap separates the hint and the count from the item name below them.
+    // Without either, it only takes room away from the region.
+    if (has_hint || has_count) {
+        UI_Spacer(0.0f, M_UI_COUNT_NAME_GAP);
+    }
+
     UI_EndStack();
     UI_EndRegion();
 }
