@@ -99,6 +99,19 @@ Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a pl
   if trx.strings.regex_match(args, "^\\d+$") then ... end
   ```
 
+- <a id="strings.dash_case" name="strings.dash_case"></a>[lua]`trx.strings.dash_case(text)`  
+  Spells a name the way the console shows one: lower case, with underscores read as dashes. This is how an enum constant is offered for completion, and a catalog name resolves in either spelling.
+
+  Parameters:
+  - <a id="strings.dash_case.text" name="strings.dash_case.text"></a>**`text`** (string). The name to spell.
+
+  Returns: string. The name in dashed lower case.
+
+  Example:
+  ```lua
+  trx.strings.dash_case("LARA_NO") -- "lara-no"
+  ```
+
 - <a id="strings.dedent" name="strings.dedent"></a>[lua]`trx.strings.dedent(text)`  
   Takes the shared indentation off a block of text, so that a long string
   written inside `[[ ]]` reads as what it says rather than as where it sat in

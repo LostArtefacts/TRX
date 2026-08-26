@@ -16,15 +16,10 @@ trx.locale.declare({
   ["console/cmd/outfit/worn"] = "Lara changed into %s",
 })
 
--- The console spells outfit names with dashes, as it does every enum value.
-local function display(name)
-  return (name:gsub("_", "-"))
-end
-
 local function choices()
   local out = { { key = "-", value = "-" } }
   for _, name in ipairs(trx.config.describe(OPTION).values) do
-    out[#out + 1] = { key = display(name), value = name }
+    out[#out + 1] = { key = trx.strings.dash_case(name), value = name }
   end
   return out
 end
@@ -35,7 +30,10 @@ local function report()
     return trx.console.Result.OK, trx.locale.get("console/cmd/outfit/default")
   end
   return trx.console.Result.OK,
-    trx.locale.format("console/cmd/outfit/current", display(worn))
+    trx.locale.format(
+      "console/cmd/outfit/current",
+      trx.strings.dash_case(worn)
+    )
 end
 
 trx.console.register({
@@ -68,6 +66,9 @@ trx.console.register({
         trx.locale.format("console/cmd/outfit/unknown", args.outfit)
     end
     return trx.console.Result.OK,
-      trx.locale.format("console/cmd/outfit/worn", display(args.outfit))
+      trx.locale.format(
+        "console/cmd/outfit/worn",
+        trx.strings.dash_case(args.outfit)
+      )
   end,
 })

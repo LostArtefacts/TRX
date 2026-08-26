@@ -174,6 +174,20 @@ api.define("strings.regex_match", {
   impl = raw.regex_match,
 })
 
+api.define("strings.dash_case", {
+  description = "Spells a name the way the console shows one: lower case, with underscores read "
+    .. "as dashes. This is how an enum constant is offered for completion, and a catalog name "
+    .. "resolves in either spelling.",
+  params = {
+    { name = "text", type = "string", description = "The name to spell." },
+  },
+  returns = { type = "string", description = "The name in dashed lower case." },
+  examples = { [[trx.strings.dash_case("LARA_NO") -- "lara-no"]] },
+  impl = function(text)
+    return (text:lower():gsub("_", "-"))
+  end,
+})
+
 api.define("strings.dedent", {
   description = [=[
     Takes the shared indentation off a block of text, so that a long string
