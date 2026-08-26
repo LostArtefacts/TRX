@@ -12,8 +12,17 @@ test("the module registers a draw handler", function()
 end)
 
 test("drawing every region reaches only names the API has", function()
+  -- Every size the widgets measure is a multiple of these, and a reset leaves
+  -- the settings at zero, which measures the whole overlay away.
+  trx.config.set("ui.text_scale", 1)
+  trx.config.set("ui.bar_scale", 1)
+  trx.config.set("ui.enable_game_ui", true)
+  trx.config.set("ui.show_bars", true)
+
+  fake.tick()
+
   local description, balanced = fake.draw_regions()
-  assert(type(description) == "string")
+  assert(description:match("quad"), "the overlay drew nothing")
   assert(balanced, "a widget was left open for the next frame to draw into")
   -- The dispatcher logs a handler's error and carries on, so a region that
   -- raised would otherwise read as a region that drew nothing.
