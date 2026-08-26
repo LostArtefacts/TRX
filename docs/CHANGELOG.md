@@ -182,6 +182,7 @@
 - Changed a color setting to read as a `trx.math.Color` rather than as hex text, and to be written with either (TRX1091)
 - Changed the `trx.weapons` functions that take a weapon id to be deprecated, the weapon itself now answering what it is available as, what it is carried as, and what it is fed (TRX1091)
 - Fixed creatures taking wrong routes where crossing to the next square needs a jump or a monkey swing (TRX1061)
+- Fixed reading a level's `inventory` or `stats` raising an error
 
 
 
