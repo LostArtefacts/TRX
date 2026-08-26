@@ -257,7 +257,7 @@ void UI_ToggleState(const bool *const config_setting)
     };
     Config_Option_Write(option, &value);
     Config_Update();
-    Console_Log(
+    Console_Info(
         *config_setting ? GS("general/osd/ui_on") : GS("general/osd/ui_off"));
 }
 

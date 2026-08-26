@@ -61,7 +61,7 @@ bool Console_IsOpened(void)
     return m_IsOpened;
 }
 
-void Console_LogEx(
+void Console_LogImpl(
     const LOG_LEVEL level, const char *file, int line, const char *func,
     const char *const fmt, ...)
 {
@@ -122,7 +122,7 @@ COMMAND_RESULT Console_Eval(const char *const cmdline)
 
     const CONSOLE_COMMAND *const matching_cmd = Console_Registry_Get(line);
     if (matching_cmd == nullptr) {
-        Console_LogError(GS("general/osd/unknown_command"), line);
+        Console_Error(GS("general/osd/unknown_command"), line);
         return CR_BAD_INVOCATION;
     }
 
@@ -145,11 +145,11 @@ COMMAND_RESULT Console_Eval(const char *const cmdline)
 
     switch (result) {
     case CR_BAD_INVOCATION:
-        Console_LogError(GS("general/osd/command_bad_invocation"), cmdline);
+        Console_Error(GS("general/osd/command_bad_invocation"), cmdline);
         break;
 
     case CR_UNAVAILABLE:
-        Console_LogError(GS("general/osd/command_unavailable"));
+        Console_Error(GS("general/osd/command_unavailable"));
         break;
 
     case CR_SUCCESS:

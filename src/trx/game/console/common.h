@@ -7,18 +7,17 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define Console_LogGeneric(level, ...)                                         \
-    Console_LogEx(level, __FILE__, __LINE__, __func__, __VA_ARGS__)
-#define Console_Log(...) Console_LogGeneric(LOG_LEVEL_INFO, __VA_ARGS__)
-#define Console_LogWarning(...)                                                \
-    Console_LogGeneric(LOG_LEVEL_WARNING, __VA_ARGS__)
-#define Console_LogError(...) Console_LogGeneric(LOG_LEVEL_ERROR, __VA_ARGS__)
+#define Console_Log(level, ...)                                                \
+    Console_LogImpl(level, __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define Console_Info(...) Console_Log(LOG_LEVEL_INFO, __VA_ARGS__)
+#define Console_Warn(...) Console_Log(LOG_LEVEL_WARNING, __VA_ARGS__)
+#define Console_Error(...) Console_Log(LOG_LEVEL_ERROR, __VA_ARGS__)
 
 void Console_Open(void);
 void Console_Close(void);
 bool Console_IsOpened(void);
 
-void Console_LogEx(
+void Console_LogImpl(
     LOG_LEVEL level, const char *file, int line, const char *func,
     const char *fmt, ...);
 void Console_Clear(void);

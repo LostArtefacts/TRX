@@ -25,7 +25,7 @@ static int M_L_ConsoleLog(lua_State *const L)
 {
     LUA_LOG_CALL call;
     LUA_CheckLogCall(L, &call);
-    Console_LogEx(call.level, call.src, call.line, call.func, "%s", call.msg);
+    Console_LogImpl(call.level, call.src, call.line, call.func, "%s", call.msg);
     return 0;
 }
 
@@ -88,7 +88,7 @@ static COMMAND_RESULT M_LuaCommandProc(const COMMAND_CONTEXT *const ctx)
 
     lua_pushstring(L, ctx->args != nullptr ? ctx->args : "");
     if (lua_pcall(L, 1, 1, 0) != LUA_OK) {
-        Console_LogError("%s: %s", ctx->prefix, lua_tostring(L, -1));
+        Console_Error("%s: %s", ctx->prefix, lua_tostring(L, -1));
         lua_settop(L, base);
         return CR_FAILURE;
     }
@@ -103,7 +103,7 @@ static COMMAND_RESULT M_LuaCommandProc(const COMMAND_CONTEXT *const ctx)
             && ENUM_MAP_TO_STRING(COMMAND_RESULT, lua_tointeger(L, -1))
                 != nullptr;
         if (!is_result) {
-            Console_LogError(
+            Console_Error(
                 "%s: the handler must give back a console result, or nothing",
                 ctx->prefix);
             lua_settop(L, base);
@@ -138,7 +138,7 @@ static void M_LuaArgComplete(
     lua_pushstring(L, text != nullptr ? text : "");
     lua_pushinteger(L, caret);
     if (lua_pcall(L, 2, 3, 0) != LUA_OK) {
-        Console_LogError("%s: %s", cmd->prefix, lua_tostring(L, -1));
+        Console_Error("%s: %s", cmd->prefix, lua_tostring(L, -1));
         lua_settop(L, base);
         return;
     }
