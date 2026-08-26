@@ -3156,6 +3156,110 @@
       }
     },
     {
+      "description": "How long the current run has taken.\n\nThis is the level clock, which is what a gym level times its tracks with, so it\ntakes no track.",
+      "path": "assault.get_time",
+      "returns": {
+        "description": "The time on the clock, counting up while the timer runs.",
+        "type": "game.Frames"
+      }
+    },
+    {
+      "description": "The fastest time the track has on record.",
+      "params": [
+        {
+          "default": 1,
+          "name": "track",
+          "optional": true,
+          "type": "assault.Track"
+        }
+      ],
+      "path": "assault.get_best_time",
+      "returns": {
+        "description": "The best time, or 0 where the track has none.",
+        "type": "game.Frames"
+      }
+    },
+    {
+      "description": "The penalty the run has taken for missed pads.",
+      "params": [
+        {
+          "default": 1,
+          "name": "track",
+          "optional": true,
+          "type": "assault.Track"
+        }
+      ],
+      "path": "assault.get_penalty",
+      "returns": {
+        "description": "The penalty, added to the time when the run is filed.",
+        "type": "game.Frames"
+      }
+    },
+    {
+      "description": "The penalty the run has taken for missed targets.",
+      "params": [
+        {
+          "default": 1,
+          "name": "track",
+          "optional": true,
+          "type": "assault.Track"
+        }
+      ],
+      "path": "assault.get_target_penalty",
+      "returns": {
+        "description": "The penalty, added to the time when the run is filed.",
+        "type": "game.Frames"
+      }
+    },
+    {
+      "description": "How much longer a penalty stays on screen.",
+      "params": [
+        {
+          "default": 1,
+          "name": "track",
+          "optional": true,
+          "type": "assault.Track"
+        }
+      ],
+      "path": "assault.get_penalty_timer",
+      "returns": {
+        "description": "The time left, and 0 where no penalty is shown.",
+        "type": "game.Frames"
+      }
+    },
+    {
+      "description": "How long the last lap took.",
+      "params": [
+        {
+          "default": 1,
+          "name": "track",
+          "optional": true,
+          "type": "assault.Track"
+        }
+      ],
+      "path": "assault.get_lap_time",
+      "returns": {
+        "description": "The lap time, and 0 before a lap is finished.",
+        "type": "game.Frames"
+      }
+    },
+    {
+      "description": "How much longer the lap times stay on screen.",
+      "params": [
+        {
+          "default": 1,
+          "name": "track",
+          "optional": true,
+          "type": "assault.Track"
+        }
+      ],
+      "path": "assault.get_lap_timer",
+      "returns": {
+        "description": "The time left, and 0 where no lap time is shown.",
+        "type": "game.Frames"
+      }
+    },
+    {
       "description": "Files a new record, inserting it in time order and bumping the attempt count.",
       "examples": [
         "trx.assault.stats.add_record(30.0)"
