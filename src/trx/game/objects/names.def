@@ -1,7 +1,6 @@
 // Consumables
 X_OBJ_NAME_DEFINE(O_FLARE_ITEM,          "flare",          X_OBJ_NAMES("Flare"))
 X_OBJ_NAME_DEFINE(O_FLAREBOX_ITEM,       "flares_box",     X_OBJ_NAMES("Flares Box"))
-X_OBJ_NAME_DEFINE(O_EXPLOSIVE_ITEM,      "grenade",        X_OBJ_NAMES("Grenade"))
 X_OBJ_NAME_DEFINE(O_SMALL_MEDIPACK_ITEM, "small_medipack", X_OBJ_NAMES("Small Medipack"))
 X_OBJ_NAME_DEFINE(O_LARGE_MEDIPACK_ITEM, "large_medipack", X_OBJ_NAMES("Large Medipack", "Big Medipack"))
 

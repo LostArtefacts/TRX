@@ -82,6 +82,14 @@ order: 3
    - `trx.objects.boat` is now `trx.objects.moored_boat`
    - the string key `objects/boat/name` is now `objects/moored_boat/name`
 
+8. **TR1's grenade pickup was removed**
+   No TR1 level places it, so the pickup and its inventory item are gone, and
+   so are the TR1 catalog rows that bound them to slots 92 and 107. A script naming either one, and
+   a catalog file listing either row, need updating:
+   - `trx.catalog.objects.EXPLOSIVE_ITEM` and
+     `trx.catalog.objects.EXPLOSIVE_OPTION` no longer exist
+   - the slots are free for an object of your own to take
+
 ### Version 1.9 to 1.10
 
 The Lua API was rewritten, and most of what it breaks is a rename. Run your

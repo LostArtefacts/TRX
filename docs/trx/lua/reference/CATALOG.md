@@ -37,7 +37,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     - `trx.catalog.Context.ITEM_ACTIONS` = `5`  
         Item actions, which the flip effects trigger.
 
-- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 823 names
+- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 821 names
 
     Every object TRX has a name for.
 
@@ -90,9 +90,9 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     `ELECTRIC_CLEANER`, `ELECTRIC_FENCE`, `EMBER`, `EMBER_EMITTER`,
     `EXAMINE_ITEM_1`, `EXAMINE_ITEM_2`, `EXAMINE_ITEM_3`, `EXAMINE_OPTION_1`,
     `EXAMINE_OPTION_2`, `EXAMINE_OPTION_3`, `EXPLOSION_1`, `EXPLOSION_2`,
-    `EXPLOSIVE_ITEM`, `EXPLOSIVE_OPTION`, `FALLING_BLOCK_1`, `FALLING_BLOCK_2`,
-    `FALLING_BLOCK_3`, `FALLING_CEILING_1`, `FALLING_CEILING_2`, `FIRE_HEAD`,
-    `FISH`, `FLAME`, `FLAME_EMITTER`, `FLAME_EMITTER_BIG`, `FLAME_EMITTER_JET`,
+    `FALLING_BLOCK_1`, `FALLING_BLOCK_2`, `FALLING_BLOCK_3`,
+    `FALLING_CEILING_1`, `FALLING_CEILING_2`, `FIRE_HEAD`, `FISH`, `FLAME`,
+    `FLAME_EMITTER`, `FLAME_EMITTER_BIG`, `FLAME_EMITTER_JET`,
     `FLAME_EMITTER_SIDE`, `FLAME_EMITTER_SMALL`, `FLAME_EMITTER_TR4_GROUND`,
     `FLAME_EMITTER_TR4_WALL`, `FLAREBOX_ITEM`, `FLAREBOX_OPTION`, `FLARE_FIRE`,
     `FLARE_ITEM`, `FLICKERING_LIGHT`, `FLOOR_TRAPDOOR_1`, `FLOOR_TRAPDOOR_2`,
