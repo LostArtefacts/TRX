@@ -28,7 +28,7 @@
 #define M_RING_SWITCH_FRAMES (96 / 2)
 #define M_CAMERA_Y_OFFSET (-96)
 #define M_MANUAL_ROT_RESET_RATE 0.15
-#define M_UI_BOTTOM_SPACING 50.0f
+#define M_UI_COUNT_NAME_GAP 8.0f
 
 typedef enum {
     // clang-format off
@@ -676,7 +676,7 @@ void InvRing_DrawUI(INV_RING *const ring)
         UI_Label(m_CountText);
         UI_EndOffset();
     }
-    UI_Spacer(0.0f, M_UI_BOTTOM_SPACING);
+    UI_Spacer(0.0f, M_UI_COUNT_NAME_GAP);
     UI_EndStack();
     UI_EndRegion();
 }
