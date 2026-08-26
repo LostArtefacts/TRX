@@ -26,9 +26,12 @@ const char *TRX_GL_GetErrorString(GLenum err)
     }
 }
 
-void TRX_GL_CheckError(void)
+void TRX_GL_CheckErrorAt(
+    const char *const file, const int line, const char *const func)
 {
     for (GLenum err; (err = glGetError()) != GL_NO_ERROR;) {
-        LOG_ERROR("glGetError: (%s)", TRX_GL_GetErrorString(err));
+        Log_Message(
+            LOG_LEVEL_ERROR, file, line, func, "glGetError: (%s)",
+            TRX_GL_GetErrorString(err));
     }
 }
