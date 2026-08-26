@@ -2,6 +2,7 @@
 #include <trx/core/math/const.h>
 #include <trx/core/math/trig.h>
 #include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
@@ -12,6 +13,16 @@
 #include <trx/game/rooms.h>
 
 #include <string.h>
+
+// One placed static reaching one room. The placement is what bleeds, and what
+// the level author has to move; the static it is placed from only says what
+// the shape is.
+typedef struct {
+    int16_t draw_num;
+    int16_t static_num;
+    int16_t home_room;
+    int16_t room_num;
+} M_BLEED;
 
 static inline BOUNDS_32 M_GetStaticBounds(const STATIC_MESH *const mesh)
 {
@@ -85,6 +96,68 @@ static void M_ComputePortalBounds(void)
     }
 }
 
+// Reports every placed static that reaches past the room it stands in, as one
+// list. A placement is what the level author has to move; the static it is
+// placed from only says what the shape is.
+static void M_ReportBleeds(const VECTOR *const bleeds)
+{
+    if (bleeds->count == 0) {
+        return;
+    }
+
+    VECTOR *const named = Vector_Create(sizeof(int16_t));
+    VECTOR *const rooms = Vector_Create(sizeof(int16_t));
+    char *text = nullptr;
+
+    for (int32_t i = 0; i < bleeds->count; i++) {
+        const M_BLEED *const bleed = Vector_Get(bleeds, i);
+        if (Vector_Contains(named, &bleed->draw_num)) {
+            continue;
+        }
+        Vector_Add(named, &(int16_t) { bleed->draw_num });
+
+        Vector_Clear(rooms);
+        for (int32_t j = i; j < bleeds->count; j++) {
+            const M_BLEED *const other = Vector_Get(bleeds, j);
+            if (other->draw_num != bleed->draw_num
+                || Vector_Contains(rooms, &other->room_num)) {
+                continue;
+            }
+            // In room order, so the same placement reads the same way
+            // whichever portal happened to reach it first.
+            int32_t at = rooms->count;
+            while (at > 0
+                   && *(int16_t *)Vector_Get(rooms, at - 1) > other->room_num) {
+                at--;
+            }
+            Vector_Insert(rooms, at, &(int16_t) { other->room_num });
+        }
+
+        char *list = nullptr;
+        for (int32_t j = 0; j < rooms->count; j++) {
+            const int16_t room_num = *(int16_t *)Vector_Get(rooms, j);
+            char *const grown = list == nullptr
+                ? String_Format("#%d", room_num)
+                : String_Format("%s, #%d", list, room_num);
+            Memory_FreePointer(&list);
+            list = grown;
+        }
+
+        char *const grown = String_Format(
+            "%s\n  - mesh #%d of static #%d in room #%d extends into %s %s",
+            text != nullptr ? text : "", bleed->draw_num, bleed->static_num,
+            bleed->home_room, rooms->count == 1 ? "room" : "rooms", list);
+        Memory_FreePointer(&list);
+        Memory_FreePointer(&text);
+        text = grown;
+    }
+
+    LOG_WARNING("Statics found to extend beyond their room:%s", text);
+    Memory_FreePointer(&text);
+    Vector_Free(rooms);
+    Vector_Free(named);
+}
+
 static void M_FixStaticsVisibility(void)
 {
     int32_t total_rooms = Room_GetCount();
@@ -118,6 +191,7 @@ static void M_FixStaticsVisibility(void)
         own_counts[i] = room_stat_vecs[i]->count;
     }
 
+    VECTOR *const bleeds = Vector_Create(sizeof(M_BLEED));
     for (int32_t i = 0; i < total_rooms; i++) {
         ROOM *const room = Room_Get(i);
         PORTALS *const portals = room->portals;
@@ -141,12 +215,20 @@ static void M_FixStaticsVisibility(void)
                     continue;
                 }
                 Vector_Add(room_stat_vecs[portal->room_num], mesh);
-                LOG_WARNING(
-                    "Static #%d bleeds into room #%d", mesh->static_num,
-                    portal->room_num);
+                Vector_Add(
+                    bleeds,
+                    &(M_BLEED) {
+                        .draw_num = mesh->draw_num,
+                        .static_num = mesh->static_num,
+                        .home_room = mesh->room_num,
+                        .room_num = portal->room_num,
+                    });
             }
         }
     }
+
+    M_ReportBleeds(bleeds);
+    Vector_Free(bleeds);
 
     Memory_FreePointer(&own_counts);
 
@@ -181,6 +263,7 @@ static void M_FixStaticsVisibility(void)
 
 static void M_FixStaticsCollision(void)
 {
+    char *degenerate = nullptr;
     const int32_t count = Object_GetStaticObjects3DCount();
     for (int32_t i = 0; i < count; i++) {
         STATIC_OBJECT_3D *const obj = Object_Get3DStatic(i);
@@ -195,12 +278,22 @@ static void M_FixStaticsCollision(void)
         };
 
         if (hitbox.x <= 0 && hitbox.y <= 0 && hitbox.z <= 0) {
-            LOG_WARNING(
-                "Static %d is marked as collidable, but has degenerate "
-                "hitbox (%d x %d x %d)",
-                i, hitbox.x, hitbox.y, hitbox.z);
+            char *const grown = String_Format(
+                "%s\n  - static #%d (%d x %d x %d)",
+                degenerate != nullptr ? degenerate : "", i, hitbox.x, hitbox.y,
+                hitbox.z);
+            Memory_FreePointer(&degenerate);
+            degenerate = grown;
             obj->collidable = false;
         }
+    }
+
+    if (degenerate != nullptr) {
+        LOG_WARNING(
+            "Collidable statics found to have degenerate hitboxes (their "
+            "meshes will have no collision):%s",
+            degenerate);
+        Memory_FreePointer(&degenerate);
     }
 }
 
