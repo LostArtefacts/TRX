@@ -120,6 +120,7 @@
 - Fixed z-fighting on the passport in each level (#5367 / TRX1134)
 - Fixed a faulty portal in Antarctica room 20 (TRX1246)
 - Fixed the explosion overlay sample not playing when firing weapons (TRX1255, regression from 1.0)
+- Fixed missing sound effects when Lara is killed by the T-Rex (#6414 / TRX1273, regression from 1.0)
 
 **TR4**
 - Added the ability to skip in-game cutscenes (TRX1051)
