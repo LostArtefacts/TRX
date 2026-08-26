@@ -429,6 +429,13 @@
                 "loading": "A' luchdachadh taisbeanaidh %d",
                 "none": "Chan eil taisbeanaidhean sa gheama seo",
             },
+            "play_fmv": {
+                "disabled": "\\{review}Tha na filmichean à comas",
+                "help": "\\{review}Cluichidh am film leis an àireamh a chaidh a thoirt seachad.",
+                "invalid": "\\{review}Film mì-dhligheach",
+                "loading": "\\{review}A' cluich film %d",
+                "none": "\\{review}Chan eil filmichean sa gheama seo",
+            },
             "play_gym": {
                 "help": "Cluich ìre an t-Seòmair-eacarsaich.",
                 "invalid": "Ìre mì-dhligheach",

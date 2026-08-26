@@ -429,6 +429,13 @@
                 "loading": "Lade Demo %d",
                 "none": "\\{review}Dieses Spiel hat keine Demos",
             },
+            "play_fmv": {
+                "disabled": "\\{review}Videos sind deaktiviert",
+                "help": "\\{review}Spielt das Video mit der angegebenen Nummer ab.",
+                "invalid": "\\{review}Unzulässiges Video",
+                "loading": "\\{review}Spiele Video %d",
+                "none": "\\{review}Dieses Spiel hat keine Videos",
+            },
             "play_gym": {
                 "help": "Startet das Gym-Level.",
                 "invalid": "Unzulässiger Level",

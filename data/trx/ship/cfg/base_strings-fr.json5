@@ -429,6 +429,13 @@
                 "loading": "Chargement de la démo %d",
                 "none": "\\{review}Ce jeu ne contient aucune démo",
             },
+            "play_fmv": {
+                "disabled": "\\{review}Les séquences vidéo sont désactivées",
+                "help": "\\{review}Lit la séquence vidéo portant ce numéro.",
+                "invalid": "\\{review}Séquence vidéo invalide",
+                "loading": "\\{review}Lecture de la séquence vidéo %d",
+                "none": "\\{review}Ce jeu ne contient aucune séquence vidéo",
+            },
             "play_gym": {
                 "help": "Lance le niveau de gym.",
                 "invalid": "Niveau invalide",

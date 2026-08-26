@@ -166,6 +166,24 @@ int32_t GF_GetLevelCount(const GF_LEVEL_TABLE_TYPE level_table_type)
     return count;
 }
 
+int32_t GF_GetFMVCount(void)
+{
+    return g_GameFlow.fmv_count;
+}
+
+const GF_FMV *GF_GetFMV(const int32_t num)
+{
+    if (num < 1 || num > g_GameFlow.fmv_count) {
+        return nullptr;
+    }
+    return &g_GameFlow.fmvs[num - 1];
+}
+
+int32_t GF_GetFMVNumber(const GF_FMV *const fmv)
+{
+    return (int32_t)(fmv - g_GameFlow.fmvs) + 1;
+}
+
 int32_t GF_GetLevelOrdinalNumber(
     GF_LEVEL_TABLE_TYPE level_table_type, const GF_LEVEL *const ref_level)
 {

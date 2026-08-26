@@ -429,6 +429,13 @@
                 "loading": "Caricamento demo %d",
                 "none": "Questo gioco non ha demo",
             },
+            "play_fmv": {
+                "disabled": "\\{review}I filmati sono disattivati",
+                "help": "\\{review}Riproduce il filmato con il numero indicato.",
+                "invalid": "\\{review}Filmato non valido",
+                "loading": "\\{review}Riproduzione filmato %d",
+                "none": "\\{review}Questo gioco non ha filmati",
+            },
             "play_gym": {
                 "help": "Gioca al livello di addestramento.",
                 "invalid": "Livello non valido",

@@ -198,6 +198,48 @@ local function level_list(table_type)
   return levels
 end
 
+api.number("game.FMVNum", {
+  base = 1,
+  description = "The number an FMV goes by, which is its place in the list the game flow declares.",
+})
+
+api.type("game.FMV", {
+  backing = "GF_FMV",
+  description = "A movie, as the game flow file declares it. Everything on it is read-only.",
+
+  fields = {
+    num = {
+      from = "num",
+      type = "game.FMVNum",
+      writable = false,
+    },
+    path = {
+      from = "path",
+      type = "string",
+      writable = false,
+      description = "Path to the movie file.",
+    },
+    is_legal = {
+      from = "is_legal",
+      type = "boolean",
+      writable = false,
+      description = "Whether the movie is a legal notice, which the Legal screen setting hides.",
+    },
+    is_credit = {
+      from = "is_credit",
+      type = "boolean",
+      writable = false,
+      description = "Whether the movie is part of the credits, which the Credits setting hides.",
+    },
+    is_intro = {
+      from = "is_intro",
+      type = "boolean",
+      writable = false,
+      description = "Whether the movie opens the game.",
+    },
+  },
+})
+
 api.property("game.levels", {
   type = "game.Level",
   list = true,
@@ -223,6 +265,19 @@ api.property("game.demos", {
   description = "The demos, counted from one.",
   get = function()
     return level_list(LevelTable.DEMOS)
+  end,
+})
+
+api.property("game.fmvs", {
+  type = "game.FMV",
+  list = true,
+  description = "The movies the game flow declares, counted from one.",
+  get = function()
+    local result = {}
+    for i = 1, raw.count_fmvs() do
+      result[i] = raw.get_fmv(i)
+    end
+    return result
   end,
 })
 
@@ -431,6 +486,19 @@ api.define("game.play_demo", {
     },
   },
   impl = raw.play_demo,
+})
+
+api.define("game.play_fmv", {
+  description = "Plays a movie, and returns once it has finished. The game resumes where it "
+    .. "left off.",
+  params = {
+    {
+      name = "fmv_num",
+      type = "game.FMVNum",
+    },
+  },
+  examples = { [[trx.game.play_fmv(1)]] },
+  impl = raw.play_fmv,
 })
 
 api.define("game.play_gym", {
