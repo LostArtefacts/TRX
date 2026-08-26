@@ -284,7 +284,7 @@
     },
     {
       "bulk": true,
-      "count": 823,
+      "count": 821,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -477,8 +477,6 @@
         "EXAMINE_OPTION_3",
         "EXPLOSION_1",
         "EXPLOSION_2",
-        "EXPLOSIVE_ITEM",
-        "EXPLOSIVE_OPTION",
         "FALLING_BLOCK_1",
         "FALLING_BLOCK_2",
         "FALLING_BLOCK_3",
