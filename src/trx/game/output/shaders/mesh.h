@@ -44,6 +44,12 @@ RESULT Output_MeshShader_Create(OUTPUT_MESH_SHADER **out_shader);
 void Output_MeshShader_Free(OUTPUT_MESH_SHADER *shader);
 void Output_MeshShader_Bind(OUTPUT_MESH_SHADER *shader);
 
+// Binds the variant with no geometry stage, and returns to the variant the
+// settings ask for once the pass is done. The geometry stage takes triangles,
+// so a pass that draws lines fails on it.
+void Output_MeshShader_SuspendSubdivision(
+    OUTPUT_MESH_SHADER *shader, bool is_suspended);
+
 // TODO: these could could use UBOs
 void Output_MeshShader_UploadModelMatrix(
     OUTPUT_MESH_SHADER *shader, const MATRIX *source);
