@@ -63,8 +63,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
 
     switch (p->state) {
     case STATE_FADE_IN:
-        if (g_InputDB.menu_confirm || g_InputDB.menu_back
-            || g_InputDB.menu_skip) {
+        if (g_InputDB.menu_skip) {
             M_FadeOut(p);
         } else if (!Fader_IsActive(&p->fader)) {
             p->state = STATE_DISPLAY;
@@ -73,7 +72,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         break;
 
     case STATE_DISPLAY:
-        if (g_InputDB.menu_confirm || g_InputDB.menu_back || g_InputDB.menu_skip
+        if (g_InputDB.menu_skip
             || ClockTimer_CheckElapsed(
                 &p->timer,
                 p->args.display_time
@@ -94,8 +93,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
             };
         }
 
-        if (g_InputDB.menu_confirm || g_InputDB.menu_back || g_InputDB.menu_skip
-            || !Fader_IsActive(&p->fader)) {
+        if (g_InputDB.menu_skip || !Fader_IsActive(&p->fader)) {
             return (PHASE_CONTROL) {
                 .action = PHASE_ACTION_END,
                 .gf_cmd = { .action = GF_NOOP },

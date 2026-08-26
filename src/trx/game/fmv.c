@@ -305,8 +305,7 @@ static RESULT M_Play(const char *const file_name)
             }
         } else if (
             (!paused
-             && (g_InputDB.menu_back || g_InputDB.menu_confirm
-                 || TouchOverlay_HasAnyFingerDown()))
+             && (g_InputDB.menu_skip || TouchOverlay_HasAnyFingerDown()))
             || GF_GetOverrideCommand().action != GF_NOOP || Shell_IsExiting()) {
             Video_Stop(video);
             break;
