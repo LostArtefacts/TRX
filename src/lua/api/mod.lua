@@ -65,6 +65,13 @@ api.type("mod.Mod", {
       writable = false,
       description = "Whether the mod can be loaded.",
     },
+    can_switch = {
+      from = "can_switch",
+      type = "boolean",
+      writable = false,
+      description = "Whether `trx.mod.switch` accepts the mod. A single level "
+        .. "loaded on its own is valid, but is not a mod to switch to.",
+    },
   },
 })
 

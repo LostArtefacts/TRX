@@ -6,11 +6,21 @@ trx.locale.declare({
   ["console/cmd/mod/invalid"] = "Invalid mod: %s",
 })
 
+local function mod_names()
+  local out = {}
+  for _, mod in ipairs(trx.mod.list) do
+    if mod.can_switch then
+      out[#out + 1] = mod.name
+    end
+  end
+  return out
+end
+
 trx.console.register({
   name = "mod",
   help = "console/cmd/mod/help",
   args = function(parser)
-    parser:rest("name", { optional = true })
+    parser:rest("name", { optional = true, suggest = mod_names })
   end,
   run = function(args)
     if args.name == nil then

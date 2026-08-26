@@ -44,6 +44,7 @@
 - Added the `/outfit` console command, which shows or changes what Lara is wearing (TRX1070)
 - Added the `/golden` console command, which casts Lara in gold (TRX1070)
 - Changed the `/flip` console command to take a flip group, so `/flip 3` moves that group alone while `/flip` on its own moves them all (TRX173)
+- Changed the `/mod` console command to complete the names of the mods it can switch to
 - Changed the `/set` console command to complete the values a setting accepts, such as its enum values or on and off (TRX1174)
 - Changed the developer console to sort completions alphabetically, prioritizing those that start with the text typed (TRX1175)
 - Fixed TR1's moored boat sharing its name with TR2's speedboat, so a command that took `boat` could act on either
@@ -191,6 +192,7 @@
 - Added a new Lua module, `trx.waypoints`, for how far along a level's own progression Lara has got, which TR4 marks out and its guides follow; it is saved with the game and reports the furthest she has ever reached as well as where she is now
 - Added `trx.lara.speech_face`, for the face Lara talks with, which follows the outfit she is wearing rather than the one a level carries
 - Added `trx.cutscenes.set_lara_shadow_bounds()`, for the box a cutscene gives Lara's shadow, so a scene can make it read as something she rides in (TRX911)
+- Added `trx.mod.Mod.can_switch`, which says whether `trx.mod.switch` accepts the mod, so a single level loaded on its own is told apart from a mod a player picks
 - Changed the in-game overlay to be drawn by a script rather than by the engine, so what it shows and where it sits can be changed without a build
 - Changed `trx.cutscenes` to hand over the cutscene itself, so `trx.cutscenes[30]` says whether it has played, plays it, and narrows the cutscene events to it; the cutscene events hand one over too, and the functions that take a number are deprecated (TRX1199)
 - Changed `trx.cutscenes.play()` to take whether to fade out first, so a scene that opens a level begins on the black screen the level loaded behind (TRX1063)
