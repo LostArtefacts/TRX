@@ -419,4 +419,68 @@ test("a level script's watcher goes when the level does", function()
   kept:detach()
 end)
 
+-- A level script runs before the level is read, so a handler that reaches for
+-- what the level carries would find nothing. The call it is owed waits for the
+-- world instead.
+test(
+  "a level script's watcher hears the value once the level is read",
+  function()
+    local heard = {}
+    fake.set_world_loaded(false)
+    fake.as_level_script(true)
+    local watcher = trx.config.on_change("visuals.fov", function(value)
+      heard[#heard + 1] = value
+    end)
+    fake.as_level_script(false)
+
+    assert(#heard == 0, "it was called before the level was read")
+    fake.load_world()
+    assert(#heard == 1, "it was not called once the level was read")
+
+    watcher:detach()
+    fake.end_level()
+  end
+)
+
+test("a watcher attached after the level is read hears it at once", function()
+  local heard = 0
+  fake.as_level_script(true)
+  local watcher = trx.config.on_change("visuals.fov", function()
+    heard = heard + 1
+  end)
+  fake.as_level_script(false)
+
+  assert(heard == 1, "the call did not come with the attach")
+  watcher:detach()
+  fake.end_level()
+end)
+
+test("a global script's watcher hears the value before any level", function()
+  local heard = 0
+  fake.set_world_loaded(false)
+  local watcher = trx.config.on_change("visuals.fov", function()
+    heard = heard + 1
+  end)
+  fake.set_world_loaded(true)
+
+  assert(heard == 1, "a global watcher was made to wait")
+  watcher:detach()
+end)
+
+-- A level that goes before it is ever read leaves its watchers owed a call
+-- that must not arrive against the next level.
+test("a watcher owed a call and dropped with its level stays quiet", function()
+  local heard = 0
+  fake.set_world_loaded(false)
+  fake.as_level_script(true)
+  trx.config.on_change("visuals.fov", function()
+    heard = heard + 1
+  end)
+  fake.as_level_script(false)
+
+  fake.end_level()
+  fake.load_world()
+  assert(heard == 0, "a dropped watcher was still called: " .. heard)
+end)
+
 return h.report()

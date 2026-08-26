@@ -449,7 +449,11 @@ A watcher that changes a setting itself is heard by that setting's watchers too.
 is logged and the rest still run; it is called again on the next change.
 
 A watcher a level script attaches goes when the level ends, as a `trx.events` listener does. One a
-game script attaches stays for as long as the game.]],
+game script attaches stays for as long as the game.
+
+A level script runs before the level is read, where a handler can reach nothing the level carries.
+The call for the value in force therefore waits until the level has its objects. Every other
+watcher is called as it is attached.]],
   params = {
     { name = "key", type = "string", description = "Dotted path to watch." },
     {

@@ -224,6 +224,10 @@ game's `scripts/_game.lua` declares belongs to that game and goes when it does.
   A watcher a level script attaches goes when the level ends, as a [`trx.events`](EVENTS.md#events) listener does. One a
   game script attaches stays for as long as the game.
 
+  A level script runs before the level is read, where a handler can reach nothing the level carries.
+  The call for the value in force therefore waits until the level has its objects. Every other
+  watcher is called as it is attached.
+
   Parameters:
   - <a id="config.on_change.key" name="config.on_change.key"></a>**`key`** (string). Dotted path to watch.
   - <a id="config.on_change.fn" name="config.on_change.fn"></a>**`fn`** (function). Called with the setting's value.
