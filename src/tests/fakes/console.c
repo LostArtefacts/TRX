@@ -166,6 +166,18 @@ void Console_LogImpl(
     FAKE_RECORD("log", FV(level), FV_STR(message));
 }
 
+void Console_ShowImpl(
+    const LOG_LEVEL level, const char *const file, const int line,
+    const char *const func, const char *const fmt, ...)
+{
+    char message[256];
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(message, sizeof(message), fmt, args);
+    va_end(args);
+    FAKE_RECORD("show", FV(level), FV_STR(message));
+}
+
 void Console_Clear(void)
 {
     FAKE_RECORD("clear");

@@ -6,6 +6,7 @@
 #include <trx/core/shell.h>
 #include <trx/core/strings.h>
 #include <trx/debug.h>
+#include <trx/game/console/common.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/lua/api.h>
 #include <trx/game/lua/embedded_scripts.h>
@@ -481,7 +482,7 @@ void LUA_RunGameScript(void)
     LOG_INFO("Loading game script: %s", path);
     LUA_RESULT res = LUA_EvalFile(path);
     if (res.code != LUA_OK) {
-        LOG_ERROR("Lua game script error: %s", res.message);
+        Console_ShowError("Lua game script error: %s", res.message);
     }
     LUA_FreeResult(&res);
 }
@@ -511,7 +512,7 @@ void LUA_RunLevelScript(const GF_LEVEL *const level)
     if (level->script_path != nullptr) {
         LUA_RESULT res = LUA_EvalFile(level->script_path);
         if (res.code != LUA_OK) {
-            LOG_ERROR("Lua level script error: %s", res.message);
+            Console_ShowError("Lua level script error: %s", res.message);
         }
         LUA_FreeResult(&res);
     }

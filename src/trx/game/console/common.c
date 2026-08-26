@@ -36,6 +36,32 @@ static RESULT M_Load(void)
     return OK;
 }
 
+static void M_Emit(
+    const LOG_LEVEL level, const char *const file, const int line,
+    const char *const func, const bool show, const char *const fmt, va_list va)
+{
+    va_list va_copy;
+    va_copy(va_copy, va);
+
+    const size_t text_length = vsnprintf(nullptr, 0, fmt, va);
+    char *text = Memory_Alloc(text_length + 1);
+
+    vsnprintf(text, text_length + 1, fmt, va_copy);
+    va_end(va_copy);
+
+    Log_Message(level, file, line, func, "%s", text);
+
+    if (show) {
+        UI_FireEvent((EVENT) {
+            .name = "console_log",
+            .sender = nullptr,
+            .data = text,
+        });
+    }
+
+    Memory_FreePointer(&text);
+}
+
 void Console_Open(void)
 {
     if (m_IsOpened) {
@@ -69,27 +95,20 @@ void Console_LogImpl(
 
     va_list va;
     va_start(va, fmt);
-    va_list va_copy;
-    va_copy(va_copy, va);
-
-    const size_t text_length = vsnprintf(nullptr, 0, fmt, va);
-    char *text = Memory_Alloc(text_length + 1);
+    M_Emit(level, file, line, func, m_Verbose, fmt, va);
     va_end(va);
+}
 
-    vsnprintf(text, text_length + 1, fmt, va_copy);
-    va_end(va_copy);
+void Console_ShowImpl(
+    const LOG_LEVEL level, const char *file, int line, const char *func,
+    const char *const fmt, ...)
+{
+    ASSERT(fmt != nullptr);
 
-    Log_Message(level, file, line, func, "%s", text);
-
-    if (m_Verbose) {
-        UI_FireEvent((EVENT) {
-            .name = "console_log",
-            .sender = nullptr,
-            .data = text,
-        });
-    }
-
-    Memory_FreePointer(&text);
+    va_list va;
+    va_start(va, fmt);
+    M_Emit(level, file, line, func, true, fmt, va);
+    va_end(va);
 }
 
 void Console_SetVerbose(const bool verbose)

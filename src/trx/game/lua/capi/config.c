@@ -7,6 +7,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/vector.h>
+#include <trx/game/console/common.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils.h>
@@ -449,7 +450,7 @@ static void M_CallWatcher(
     lua_rawgeti(L, LUA_REGISTRYINDEX, watcher->fn_ref);
     LUA_Config_PushOptionValue(L, option);
     if (lua_pcall(L, 1, 0, 0) != LUA_OK) {
-        LOG_ERROR(
+        Console_ShowError(
             "config watcher for %s failed: %s", option->name,
             lua_tostring(L, -1));
         lua_pop(L, 1);
@@ -485,7 +486,7 @@ static void M_HandleChange(const EVENT *const event, void *const user_data)
         return;
     }
     if (m_DispatchDepth >= M_MAX_DISPATCH_DEPTH) {
-        LOG_ERROR(
+        Console_ShowError(
             "config watchers are still changing settings %d calls deep; "
             "giving up on this change",
             m_DispatchDepth);

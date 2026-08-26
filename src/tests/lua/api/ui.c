@@ -201,6 +201,12 @@ void Console_LogImpl(
     const char *const func, const char *const fmt, ...)
 {
 }
+void Console_ShowImpl(
+    const LOG_LEVEL level, const char *const file, const int line,
+    const char *const func, const char *const fmt, ...)
+{
+}
+
 int32_t Viewport_GetWidth(const VIEWPORT_SPACE space)
 {
     return m_ViewportW;
