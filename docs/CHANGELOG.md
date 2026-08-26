@@ -17,6 +17,7 @@
 - Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187 / TRX1036)
 - Added a flat yellow color to the PS1 bar palettes (Graphic Options → UI → Bars) (#5227 / TRX1135)
 - Added an option to open the save and load screens instantly (Graphic Options → UI → Instant save/load screen) (TRX1170)
+- Changed the assault course clock and its penalties to sit with the rest of the interface, so they follow where the other elements are laid out
 - Changed Lara's outfit setting to offer only the outfits the current level can dress her in (TRX1086)
 - Changed settings dialogs to stay readable at large text sizes, with shorter setting names and tighter layouts where needed
 - Changed the Fix one-shot music triggers option to sit with the other music settings (Sound → Misc) (TRX1045)

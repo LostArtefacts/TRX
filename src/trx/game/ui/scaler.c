@@ -31,8 +31,6 @@ double UI_Scaler_GetScale(const UI_SCALER_TARGET target)
         return g_Config.ui.bar_scale;
     case UI_SCALER_TARGET_TEXT:
         return UI_Scaler_GetTextScale();
-    case UI_SCALER_TARGET_ASSAULT_DIGITS:
-        return UI_Scaler_GetTextScale();
     default:
         return 1.0;
     }

@@ -38,6 +38,18 @@ static M_COLOR_TEXT M_Color(const RGBA_8888 color)
 
 #define M_COLOR(color) (M_Color(color).text)
 
+static M_COLOR_TEXT M_ColorF(const RGBA_F color)
+{
+    return M_Color((RGBA_8888) {
+        .r = (uint8_t)(color.r * 255.0f + 0.5f),
+        .g = (uint8_t)(color.g * 255.0f + 0.5f),
+        .b = (uint8_t)(color.b * 255.0f + 0.5f),
+        .a = (uint8_t)(color.a * 255.0f + 0.5f),
+    });
+}
+
+#define M_COLOR_F(color) (M_ColorF(color).text)
+
 void UI_InitDraw(void)
 {
 }
@@ -57,8 +69,10 @@ void UI_ScheduleDrawScreenSprite(
     const int32_t scale_v, const int32_t sprite_idx, const RGBA_F colors[4])
 {
     M_Record(String_FormatStatic(
-        "sprite idx=%d x=%d y=%d z=%d scale_h=%d scale_v=%d", sprite_idx, sx,
-        sy, z, scale_h, scale_v));
+        "sprite idx=%d x=%d y=%d z=%d scale_h=%d scale_v=%d tl=%s tr=%s bl=%s "
+        "br=%s",
+        sprite_idx, sx, sy, z, scale_h, scale_v, M_COLOR_F(colors[0]),
+        M_COLOR_F(colors[1]), M_COLOR_F(colors[2]), M_COLOR_F(colors[3])));
 }
 
 void UI_ScheduleDrawTextBackground(

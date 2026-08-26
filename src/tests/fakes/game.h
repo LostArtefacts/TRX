@@ -18,6 +18,10 @@ void FakeGame_SetGymPresent(bool present);
 
 void FakeGame_SetInCutscene(bool in_cutscene);
 
+// Whether a level is running rather than held still by the inventory ring,
+// the pause screen or photo mode.
+void FakeGame_SetPlaying(bool playing);
+
 // Whether this run started from the passport's bonus entry.
 void FakeGame_SetNGPlus(bool ngplus);
 

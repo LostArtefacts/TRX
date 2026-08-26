@@ -8,7 +8,6 @@
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/entries.h>
-#include <trx/game/gym.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/inventory.h>
 #include <trx/game/inventory_ring.h>
@@ -17,7 +16,6 @@
 #include <trx/game/objects/names.h>
 #include <trx/game/output.h>
 #include <trx/game/output/sources/ui.h>
-#include <trx/game/savegame.h>
 #include <trx/game/ui.h>
 #include <trx/game/ui/elements/flash.h>
 #include <trx/game/ui/elements/label.h>
@@ -83,41 +81,6 @@ static const RGBA_F m_WhiteTextColor[4] = {
     { 1.0f, 1.0f, 1.0f, 1.0f },
 };
 
-static const RGBA_F m_NeutralTextColor[4] = {
-    { 1.0f, 1.0f, 1.0f, 1.0f },
-    { 1.0f, 1.0f, 1.0f, 1.0f },
-    { 0.25f, 0.25f, 0.25f, 1.0f },
-    { 0.25f, 0.25f, 0.25f, 1.0f },
-};
-
-static const RGBA_F m_GreyTextColor[4] = {
-    { 0.5f, 0.5f, 0.5f, 1.0f },
-    { 0.5f, 0.5f, 0.5f, 1.0f },
-    { 0.1f, 0.1f, 0.1f, 1.0f },
-    { 0.1f, 0.1f, 0.1f, 1.0f },
-};
-
-static const RGBA_F m_GreenTextColor[4] = {
-    { 0.35f, 0.75f, 0.2f, 1.0f },
-    { 0.35f, 0.75f, 0.2f, 1.0f },
-    { 0.1f, 0.25f, 0.0f, 1.0f },
-    { 0.1f, 0.25f, 0.0f, 1.0f },
-};
-
-static const RGBA_F m_RedTextColor[4] = {
-    { 0.9f, 0.2f, 0.0f, 1.0f },
-    { 0.9f, 0.2f, 0.0f, 1.0f },
-    { 0.3f, 0.0f, 0.0f, 1.0f },
-    { 0.3f, 0.0f, 0.0f, 1.0f },
-};
-
-static const RGBA_F m_PinkTextColor[4] = {
-    { 1.0f, 0.0f, 1.0f, 1.0f },
-    { 1.0f, 0.0f, 1.0f, 1.0f },
-    { 0.25f, 0.0f, 0.25f, 1.0f },
-    { 0.25f, 0.0f, 0.25f, 1.0f },
-};
-
 static const char *M_ResolveTextRaw(const OVERLAY_TEXT *const text)
 {
     switch (text->kind) {
@@ -143,81 +106,6 @@ static const char *M_ResolveText(const OVERLAY_TEXT *const text)
     return String_FormatStatic(GameString_Get(text->fmt_gs_key), raw);
 }
 
-static const char *M_FormatAssaultTimeText(
-    const int32_t frames, const bool placeholder)
-{
-    if (placeholder && frames <= 0) {
-        return "--:--.-";
-    }
-    const int32_t total_sec = frames / LOGIC_FPS;
-    const int32_t frame = frames % LOGIC_FPS;
-    return String_FormatStatic(
-        "%d:%02d.%d", total_sec / 60, total_sec % 60, frame * 10 / LOGIC_FPS);
-}
-
-static int32_t M_DrawAssaultTimerText(
-    const OBJECT *const digits_obj, const char *const text, int32_t x,
-    const int32_t y, const RGBA_F color[4])
-{
-    const int32_t scale_h =
-        UI_Scaler_Calc(PHD_ONE, UI_SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t scale_v =
-        UI_Scaler_Calc(PHD_ONE, UI_SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t d0 = UI_Scaler_Calc(-6, UI_SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t d1 = UI_Scaler_Calc(14, UI_SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t d2 = UI_Scaler_Calc(20, UI_SCALER_TARGET_ASSAULT_DIGITS);
-
-    for (const char *c = text; *c != '\0'; c++) {
-        if (*c == '-') {
-            x += d2;
-            continue;
-        }
-
-        int32_t mesh_num = 0;
-        int32_t offset = 0;
-        int32_t width = 0;
-        if (*c == ':') {
-            mesh_num = 10;
-            offset = d0;
-            width = d1;
-        } else if (*c == '.') {
-            mesh_num = 11;
-            offset = d0;
-            width = d1;
-        } else {
-            mesh_num = *c - '0';
-            offset = 0;
-            width = d2;
-        }
-
-        x += offset;
-        UI_ScheduleDrawScreenSprite(
-            x, y, 0, scale_h, scale_v, digits_obj->mesh_idx + mesh_num, color);
-        x += width;
-    }
-
-    return x;
-}
-
-static int32_t M_MeasureAssaultTimerText(const char *const text)
-{
-    const int32_t d0 = UI_Scaler_Calc(-6, UI_SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t d1 = UI_Scaler_Calc(14, UI_SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t d2 = UI_Scaler_Calc(20, UI_SCALER_TARGET_ASSAULT_DIGITS);
-
-    int32_t w = 0;
-    for (const char *c = text; *c != '\0'; c++) {
-        if (*c == ':' || *c == '.') {
-            w += d0 + d1;
-        } else if (*c == '-') {
-            w += d2;
-        } else {
-            w += d2;
-        }
-    }
-    return w;
-}
-
 static bool M_IsSprite(const DISPLAY_PICKUP *const pickup)
 {
     return !g_Config.visuals.enable_3d_pickups
@@ -239,159 +127,6 @@ static float M_Ease(float current, const float start, const float goal)
         const float new_ratio = ratio - 1.0f;
         return 1.0f - 2.0f * SQUARE(new_ratio);
     }
-}
-
-static void M_DrawTrackTimer(const GYM_TRACK_TYPE track_type)
-{
-    if (!Gym_TrackManager_IsTimerDisplay(track_type)) {
-        return;
-    }
-
-    const OBJECT *const digits_obj = Object_Get(O_ASSAULT_DIGITS);
-    if (!digits_obj->loaded) {
-        return;
-    }
-
-    const RESUME_INFO *const resume =
-        SG_Resume_GetEntry(Game_GetCurrentLevel());
-    const char *const buffer =
-        M_FormatAssaultTimeText(resume->stats.timer, false);
-
-    const int32_t y = UI_Scaler_Calc(36, UI_SCALER_TARGET_ASSAULT_DIGITS);
-    int32_t x = Viewport_GetCenterX(VIEWPORT_UI)
-        - UI_Scaler_Calc(50, UI_SCALER_TARGET_ASSAULT_DIGITS);
-
-    M_DrawAssaultTimerText(
-        digits_obj, buffer, x, y,
-        g_TRVersion < 3 ? m_WhiteTextColor : m_NeutralTextColor);
-}
-
-static void M_DrawAssaultPenalties(
-    const GYM_TRACK_TYPE track_type, const bool is_target_penalty)
-{
-    if (!Gym_TrackManager_IsTimerDisplay(track_type)
-        || Gym_TrackManager_GetPenaltyDisplayTimer(track_type) <= 0) {
-        return;
-    }
-
-    const OBJECT *const digits_obj = Object_Get(O_ASSAULT_DIGITS);
-    if (!digits_obj->loaded) {
-        return;
-    }
-
-    const int32_t timer = is_target_penalty
-        ? Gym_TrackManager_GetTargetPenaltyFrames(track_type)
-        : Gym_TrackManager_GetPenaltyFrames(track_type);
-    if (timer <= 0) {
-        return;
-    }
-
-    const int32_t total_sec = timer / LOGIC_FPS;
-    const char *const fmt = is_target_penalty ? "T %d:%02d s" : "%d:%02d s";
-    const char *const buffer =
-        String_FormatStatic(fmt, total_sec / 60, total_sec % 60);
-
-    const int32_t scale_h =
-        UI_Scaler_Calc(PHD_ONE, UI_SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t scale_v =
-        UI_Scaler_Calc(PHD_ONE, UI_SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t p = UI_Scaler_Calc(1, UI_SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t d0 = UI_Scaler_Calc(-6, UI_SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t d1 = UI_Scaler_Calc(14, UI_SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t d2 = UI_Scaler_Calc(20, UI_SCALER_TARGET_ASSAULT_DIGITS);
-    const int32_t d3 = UI_Scaler_Calc(8, UI_SCALER_TARGET_ASSAULT_DIGITS);
-
-    int32_t x =
-        Viewport_GetCenterX(VIEWPORT_UI)
-        - UI_Scaler_Calc(
-            is_target_penalty ? 193 : 175, UI_SCALER_TARGET_ASSAULT_DIGITS);
-    int32_t y = UI_Scaler_Calc(36, UI_SCALER_TARGET_ASSAULT_DIGITS);
-    if (is_target_penalty
-        && Gym_TrackManager_GetPenaltyFrames(track_type) != 0) {
-        y = UI_Scaler_Calc(64, UI_SCALER_TARGET_ASSAULT_DIGITS);
-    }
-
-    for (const char *c = buffer; *c != '\0'; c++) {
-        if (*c == ' ') {
-            x += d3;
-        } else if (*c == 'T') {
-            x += d0;
-            UI_ScheduleDrawScreenSprite(
-                x, y + p, 0, scale_h, scale_v, digits_obj->mesh_idx + 12,
-                g_TRVersion < 3 ? m_WhiteTextColor : m_NeutralTextColor);
-            x += d1 + (p * 2);
-        } else if (*c == 's') {
-            x += d0;
-            UI_ScheduleDrawScreenSprite(
-                x - (p * 4), y, 0, scale_h, scale_v, digits_obj->mesh_idx + 13,
-                m_PinkTextColor);
-            x += d1;
-        } else if (*c == ':') {
-            x += d0;
-            UI_ScheduleDrawScreenSprite(
-                x, y, 0, scale_h, scale_v, digits_obj->mesh_idx + 10,
-                m_PinkTextColor);
-            x += d1;
-        } else if (*c == '.') {
-            x += d0;
-            UI_ScheduleDrawScreenSprite(
-                x, y, 0, scale_h, scale_v, digits_obj->mesh_idx + 11,
-                m_PinkTextColor);
-            x += d1;
-        } else {
-            UI_ScheduleDrawScreenSprite(
-                x, y, 0, scale_h, scale_v, digits_obj->mesh_idx + (*c - '0'),
-                m_PinkTextColor);
-            x += d2;
-        }
-    }
-}
-
-static int32_t M_GetBestTrackTime(const GYM_TRACK_TYPE track_type)
-{
-    const GYM_TRACK_STATS *const stats = Gym_TrackManager_GetStats(track_type);
-    return stats->total_attempts > 0 ? (int32_t)stats->entries[0].time : 0;
-}
-
-static void M_DrawRacetrackLapTimes(const GYM_TRACK_TYPE track_type)
-{
-    const int32_t last_lap_frames = Gym_TrackManager_GetLapTime(track_type);
-    if (last_lap_frames <= 0) {
-        return;
-    }
-
-    const OBJECT *const digits_obj = Object_Get(O_ASSAULT_DIGITS);
-    if (!digits_obj->loaded) {
-        return;
-    }
-
-    const int32_t best_lap_frames = M_GetBestTrackTime(track_type);
-    const bool is_best_lap =
-        best_lap_frames > 0 && last_lap_frames == best_lap_frames;
-
-    const char *const last_text =
-        M_FormatAssaultTimeText(last_lap_frames, true);
-    const char *const best_text = best_lap_frames > 0
-        ? M_FormatAssaultTimeText(best_lap_frames, true)
-        : "";
-
-    const int32_t w_last = M_MeasureAssaultTimerText(last_text);
-    const int32_t w_best = M_MeasureAssaultTimerText(best_text);
-    const int32_t gap = UI_Scaler_Calc(20, UI_SCALER_TARGET_ASSAULT_DIGITS);
-
-    const int32_t cx = Viewport_GetCenterX(VIEWPORT_UI);
-    const int32_t y = UI_Scaler_Calc(36, UI_SCALER_TARGET_ASSAULT_DIGITS);
-
-    int32_t x = cx - w_last / 2;
-    x = M_DrawAssaultTimerText(
-        digits_obj, last_text, x, y,
-        is_best_lap               ? m_GreenTextColor
-            : best_lap_frames > 0 ? m_RedTextColor
-                                  : m_NeutralTextColor);
-    x += gap;
-    M_DrawAssaultTimerText(
-        digits_obj, best_text, x, y,
-        is_best_lap ? m_GreenTextColor : m_GreyTextColor);
 }
 
 static void M_DrawPickup2D(const DISPLAY_PICKUP *const pickup)
@@ -558,18 +293,6 @@ void Overlay_DrawGameInfo(void)
         SceneCompositor_Flush();
         Output_SetFogStart(old_fog_start);
         Output_SetFogEnd(old_fog_end);
-    }
-
-    if (Gym_TrackManager_GetLapTimeDisplayTimer(GYM_TRACK_QUAD) > 0) {
-        M_DrawRacetrackLapTimes(GYM_TRACK_QUAD);
-    } else {
-        const GYM_TRACK_TYPE track_type = Gym_TrackManager_GetActiveTrackType();
-        if (track_type == GYM_TRACK_NONE) {
-            return;
-        }
-        M_DrawTrackTimer(track_type);
-        M_DrawAssaultPenalties(track_type, false);
-        M_DrawAssaultPenalties(track_type, true);
     }
 }
 
