@@ -1,6 +1,7 @@
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/vector.h>
+#include <trx/game/console/common.h>
 #include <trx/game/items/actions.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/events.h>
@@ -429,7 +430,8 @@ static bool M_FireEvent(
     // up: from here to the matching decrement nothing may raise, or the
     // listeners would never be compacted again.
     if (lua_checkstack(L, 2) == 0) {
-        LOG_ERROR("Lua stack exhausted; event %d not dispatched", (int32_t)ev);
+        Console_ShowError(
+            "Lua stack exhausted; event %d not dispatched", (int32_t)ev);
         return false;
     }
 
@@ -460,7 +462,8 @@ static bool M_FireEvent(
         lua_pushcfunction(L, M_CallListener);
         lua_pushlightuserdata(L, &dispatch);
         if (lua_pcall(L, 1, 0, 0) != LUA_OK) {
-            LOG_ERROR("Lua event handler error: %s", lua_tostring(L, -1));
+            Console_ShowError(
+                "Lua event handler error: %s", lua_tostring(L, -1));
             lua_pop(L, 1);
         }
         LUA_SetScriptContext(outer_context);

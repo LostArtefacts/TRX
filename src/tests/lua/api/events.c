@@ -9,6 +9,7 @@
 #include <harness/fake_calls.h>
 #include <harness/lua_surface.h>
 
+#include <trx/game/console/common.h>
 #include <trx/game/items/actions.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/events.h>
@@ -16,6 +17,10 @@
 
 #include <lauxlib.h>
 #include <string.h>
+
+// What the console was told to show. A handler that raises reports through the
+// console, so the count is how the tests see that it did.
+static int32_t m_ConsoleShows = 0;
 
 // fake.fire(name, ...) - mirrors the engine's own fire sites, argument for
 // argument.
@@ -81,6 +86,13 @@ static int M_FakeEndLevel(lua_State *const L)
     return 0;
 }
 
+// fake.console_shows() -> integer
+static int M_FakeConsoleShows(lua_State *const L)
+{
+    lua_pushinteger(L, m_ConsoleShows);
+    return 1;
+}
+
 static void M_PushFake(lua_State *const L)
 {
     lua_pushcfunction(L, M_FakeFire);
@@ -89,6 +101,21 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "as_level_script");
     lua_pushcfunction(L, M_FakeEndLevel);
     lua_setfield(L, -2, "end_level");
+    lua_pushcfunction(L, M_FakeConsoleShows);
+    lua_setfield(L, -2, "console_shows");
+}
+
+void Console_LogImpl(
+    const LOG_LEVEL level, const char *const file, const int line,
+    const char *const func, const char *const fmt, ...)
+{
+}
+
+void Console_ShowImpl(
+    const LOG_LEVEL level, const char *const file, const int line,
+    const char *const func, const char *const fmt, ...)
+{
+    m_ConsoleShows++;
 }
 
 int main(void)

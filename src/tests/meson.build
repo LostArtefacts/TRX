@@ -450,6 +450,7 @@ unit_tests += {
     'game/lua/utils.c',
   ],
   'src': [
+    'harness/stubs_console.c',
     'harness/stubs_enum_map.c',
     'harness/stubs_game_script.c',
     'harness/stubs_result.c',
@@ -491,7 +492,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/rooms',
   'bundles': [b_lua_surface, b_lua_math],
-  'src': ['fakes/rooms.c', 'fakes/items.c'],
+  'src': ['harness/stubs_console.c', 'fakes/rooms.c', 'fakes/items.c'],
   'engine': [
     'game/lua/capi/events.c',
     'game/lua/capi/items.c',
@@ -502,7 +503,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/items',
   'bundles': [b_lua_surface, b_lua_strings, b_lua_math],
-  'src': ['fakes/items.c', 'fakes/catalog.c'],
+  'src': ['harness/stubs_console.c', 'fakes/items.c', 'fakes/catalog.c'],
   'engine': [
     'game/lua/capi/catalog.c',
     'game/lua/capi/events.c',
@@ -532,7 +533,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/signal',
   'bundles': [b_lua_surface, b_config, b_lua_math, b_lua_strings],
-  'src': ['fakes/locale.c', 'fakes/rooms.c'],
+  'src': ['harness/stubs_console.c', 'fakes/locale.c', 'fakes/rooms.c'],
   'engine': [
     'game/lua/capi/config.c',
     'game/lua/capi/events.c',
@@ -688,6 +689,7 @@ unit_tests += {
   'name': 'lua/api/zones',
   'bundles': [b_lua_surface, b_lua_math],
   'src': [
+    'harness/stubs_console.c',
     'fakes/items.c',
     'fakes/rooms.c',
     'fakes/lara.c',
@@ -796,7 +798,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/config',
   'bundles': [b_lua_surface, b_config, b_lua_math, b_lua_strings],
-  'src': ['fakes/locale.c'],
+  'src': ['harness/stubs_console.c', 'fakes/locale.c'],
   'engine': [
     'game/lua/capi/config.c',
     'game/lua/capi/locale.c',

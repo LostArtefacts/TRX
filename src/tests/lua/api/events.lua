@@ -386,4 +386,17 @@ test("an event carries four arguments, of the kinds it can hold", function()
   end, "carries no value of this type")
 end)
 
+-- A handler that raises is reported where a script author can see it: the log
+-- alone leaves the game looking as if nothing happened.
+test("a handler that raises is reported through the console", function()
+  local before = fake.console_shows()
+  local listener = trx.events.before_control(function()
+    error("boom")
+  end)
+  fake.fire("before_control")
+  listener:detach()
+
+  assert(fake.console_shows() > before, "the console was told nothing")
+end)
+
 return h.report()

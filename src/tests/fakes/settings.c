@@ -199,6 +199,12 @@ void Console_LogImpl(
 {
 }
 
+void Console_ShowImpl(
+    const LOG_LEVEL level, const char *const file, const int line,
+    const char *const func, const char *const fmt, ...)
+{
+}
+
 bool ClockTimer_CheckElapsedAndTake(CLOCK_TIMER *const timer, const double sec)
 {
     return false;

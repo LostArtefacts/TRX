@@ -13,11 +13,20 @@
 #define Console_Warn(...) Console_Log(LOG_LEVEL_WARNING, __VA_ARGS__)
 #define Console_Error(...) Console_Log(LOG_LEVEL_ERROR, __VA_ARGS__)
 
+// Logs and displays the message in the console, even when no command is
+// running. Use when nothing else shows the message to the player.
+// Other levels need their own macro.
+#define Console_ShowError(...)                                                 \
+    Console_ShowImpl(LOG_LEVEL_ERROR, __FILE__, __LINE__, __func__, __VA_ARGS__)
+
 void Console_Open(void);
 void Console_Close(void);
 bool Console_IsOpened(void);
 
 void Console_LogImpl(
+    LOG_LEVEL level, const char *file, int line, const char *func,
+    const char *fmt, ...);
+void Console_ShowImpl(
     LOG_LEVEL level, const char *file, int line, const char *func,
     const char *fmt, ...);
 void Console_Clear(void);
