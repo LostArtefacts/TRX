@@ -201,3 +201,114 @@ api.define("ui.primitive.gradient_quad", {
   },
   impl = raw.gradient_quad,
 })
+
+-- The sprite primitives share their leading parameters and differ only in how
+-- many colors they take.
+local function sprite_params(...)
+  local params = {
+    {
+      name = "object",
+      type = "catalog.objects",
+      description = "The sprite object to draw from.",
+    },
+    {
+      name = "sprite_num",
+      type = "integer",
+      description = "Which sprite of the object to draw, counted from 0.",
+    },
+    { name = "x", type = "number", description = "The left edge." },
+    { name = "y", type = "number", description = "The top edge." },
+    { name = "z", type = "integer", description = "The draw order." },
+    {
+      name = "scale",
+      type = "number",
+      description = "Multiplies the sprite size. At 1 the sprite draws at its "
+        .. "own size on the canvas.",
+    },
+  }
+  for _, color in ipairs({ ... }) do
+    params[#params + 1] = {
+      name = color[1],
+      type = "math.Color",
+      description = color[2],
+    }
+  end
+  return params
+end
+
+api.define("ui.primitive.sprite_count", {
+  description = [[
+Reports how many sprites an object has.
+
+An object the level did not load has none, so this answers whether there is
+anything to draw before `trx.ui.primitive.sprite` is asked to draw it.]],
+  params = {
+    {
+      name = "object",
+      type = "catalog.objects",
+      description = "The sprite object to count.",
+    },
+  },
+  returns = { type = "integer", description = "How many sprites it has." },
+  impl = raw.sprite_count,
+})
+
+api.define("ui.primitive.sprite_bounds", {
+  description = [[
+Reports the edges of one sprite of an object, in canvas units at a scale of one.
+
+The edges sit around the point the sprite is drawn at, so both left and top are
+usually negative. Multiply them by the scale the sprite is drawn at.
+
+Raises where the level did not load the object, so check
+`trx.objects.get(object).loaded` first.]],
+  params = {
+    {
+      name = "object",
+      type = "catalog.objects",
+      description = "The sprite object to read from.",
+    },
+    {
+      name = "sprite_num",
+      type = "integer",
+      description = "Which sprite of the object to read, counted from 0.",
+    },
+  },
+  returns = {
+    { type = "number", description = "The left edge." },
+    { type = "number", description = "The top edge." },
+    { type = "number", description = "The right edge." },
+    { type = "number", description = "The bottom edge." },
+  },
+  impl = raw.sprite_bounds,
+})
+
+api.define("ui.primitive.sprite", {
+  description = [[
+Draws one sprite of an object on the canvas.
+
+Raises where the level did not load the object, so check
+`trx.objects.get(object).loaded` first.]],
+  params = sprite_params({ "color", "What color to tint it with." }),
+  examples = {
+    [[trx.ui.primitive.sprite(
+  trx.catalog.objects.assault_digits, 3, 100, 20, 0, 1,
+  trx.math.color("ffffff"))]],
+  },
+  impl = raw.sprite,
+})
+
+api.define("ui.primitive.gradient_sprite", {
+  description = [[
+Draws one sprite of an object, with a color at each corner.
+
+Raises where the level did not load the object, so check
+`trx.objects.get(object).loaded` first.]],
+  params = sprite_params(
+    { "tl", "The top-left color." },
+    { "tr", "The top-right color." },
+    { "bl", "The bottom-left color." },
+    { "br", "The bottom-right color." }
+  ),
+  impl = raw.gradient_sprite,
+})

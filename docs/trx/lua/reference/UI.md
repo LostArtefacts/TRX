@@ -329,6 +329,76 @@ and `\{button left}` draws the button the player has bound.
   - <a id="ui.primitive.gradient_quad.bl" name="ui.primitive.gradient_quad.bl"></a>**`bl`** ([trx.math.Color](MATH.md#math.Color)). The bottom-left color.
   - <a id="ui.primitive.gradient_quad.br" name="ui.primitive.gradient_quad.br"></a>**`br`** ([trx.math.Color](MATH.md#math.Color)). The bottom-right color.
 
+- <a id="ui.primitive.sprite_count" name="ui.primitive.sprite_count"></a>[lua]`trx.ui.primitive.sprite_count(object)`  
+  Reports how many sprites an object has.
+
+  An object the level did not load has none, so this answers whether there is
+  anything to draw before [`sprite`](#ui.primitive.sprite) is asked to draw it.
+
+  Parameters:
+  - <a id="ui.primitive.sprite_count.object" name="ui.primitive.sprite_count.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The sprite object to count.
+
+  Returns: integer. How many sprites it has.
+
+- <a id="ui.primitive.sprite_bounds" name="ui.primitive.sprite_bounds"></a>[lua]`trx.ui.primitive.sprite_bounds(object, sprite_num)`  
+  Reports the edges of one sprite of an object, in canvas units at a scale of one.
+
+  The edges sit around the point the sprite is drawn at, so both left and top are
+  usually negative. Multiply them by the scale the sprite is drawn at.
+
+  Raises where the level did not load the object, so check
+  `trx.objects.get(object).loaded` first.
+
+  Parameters:
+  - <a id="ui.primitive.sprite_bounds.object" name="ui.primitive.sprite_bounds.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The sprite object to read from.
+  - <a id="ui.primitive.sprite_bounds.sprite_num" name="ui.primitive.sprite_bounds.sprite_num"></a>**`sprite_num`** (integer). Which sprite of the object to read, counted from 0.
+
+  Returns:
+  - number. The left edge.
+  - number. The top edge.
+  - number. The right edge.
+  - number. The bottom edge.
+
+- <a id="ui.primitive.sprite" name="ui.primitive.sprite"></a>[lua]`trx.ui.primitive.sprite(object, sprite_num, x, y, z, scale, color)`  
+  Draws one sprite of an object on the canvas.
+
+  Raises where the level did not load the object, so check
+  `trx.objects.get(object).loaded` first.
+
+  Parameters:
+  - <a id="ui.primitive.sprite.object" name="ui.primitive.sprite.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The sprite object to draw from.
+  - <a id="ui.primitive.sprite.sprite_num" name="ui.primitive.sprite.sprite_num"></a>**`sprite_num`** (integer). Which sprite of the object to draw, counted from 0.
+  - <a id="ui.primitive.sprite.x" name="ui.primitive.sprite.x"></a>**`x`** (number). The left edge.
+  - <a id="ui.primitive.sprite.y" name="ui.primitive.sprite.y"></a>**`y`** (number). The top edge.
+  - <a id="ui.primitive.sprite.z" name="ui.primitive.sprite.z"></a>**`z`** (integer). The draw order.
+  - <a id="ui.primitive.sprite.scale" name="ui.primitive.sprite.scale"></a>**`scale`** (number). Multiplies the sprite size. At 1 the sprite draws at its own size on the canvas.
+  - <a id="ui.primitive.sprite.color" name="ui.primitive.sprite.color"></a>**`color`** ([trx.math.Color](MATH.md#math.Color)). What color to tint it with.
+
+  Example:
+  ```lua
+  trx.ui.primitive.sprite(
+    trx.catalog.objects.assault_digits, 3, 100, 20, 0, 1,
+    trx.math.color("ffffff"))
+  ```
+
+- <a id="ui.primitive.gradient_sprite" name="ui.primitive.gradient_sprite"></a>[lua]`trx.ui.primitive.gradient_sprite(object, sprite_num, x, y, z, scale, tl, tr, bl, br)`  
+  Draws one sprite of an object, with a color at each corner.
+
+  Raises where the level did not load the object, so check
+  `trx.objects.get(object).loaded` first.
+
+  Parameters:
+  - <a id="ui.primitive.gradient_sprite.object" name="ui.primitive.gradient_sprite.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The sprite object to draw from.
+  - <a id="ui.primitive.gradient_sprite.sprite_num" name="ui.primitive.gradient_sprite.sprite_num"></a>**`sprite_num`** (integer). Which sprite of the object to draw, counted from 0.
+  - <a id="ui.primitive.gradient_sprite.x" name="ui.primitive.gradient_sprite.x"></a>**`x`** (number). The left edge.
+  - <a id="ui.primitive.gradient_sprite.y" name="ui.primitive.gradient_sprite.y"></a>**`y`** (number). The top edge.
+  - <a id="ui.primitive.gradient_sprite.z" name="ui.primitive.gradient_sprite.z"></a>**`z`** (integer). The draw order.
+  - <a id="ui.primitive.gradient_sprite.scale" name="ui.primitive.gradient_sprite.scale"></a>**`scale`** (number). Multiplies the sprite size. At 1 the sprite draws at its own size on the canvas.
+  - <a id="ui.primitive.gradient_sprite.tl" name="ui.primitive.gradient_sprite.tl"></a>**`tl`** ([trx.math.Color](MATH.md#math.Color)). The top-left color.
+  - <a id="ui.primitive.gradient_sprite.tr" name="ui.primitive.gradient_sprite.tr"></a>**`tr`** ([trx.math.Color](MATH.md#math.Color)). The top-right color.
+  - <a id="ui.primitive.gradient_sprite.bl" name="ui.primitive.gradient_sprite.bl"></a>**`bl`** ([trx.math.Color](MATH.md#math.Color)). The bottom-left color.
+  - <a id="ui.primitive.gradient_sprite.br" name="ui.primitive.gradient_sprite.br"></a>**`br`** ([trx.math.Color](MATH.md#math.Color)). The bottom-right color.
+
 - <a id="ui.widgets.Label" name="ui.widgets.Label"></a>[lua]`trx.ui.widgets.Label(settings)`  
   A line of text. Use a signal for text that changes.
 

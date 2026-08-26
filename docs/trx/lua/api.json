@@ -6547,6 +6547,155 @@
       "path": "ui.primitive.gradient_quad"
     },
     {
+      "description": "Reports how many sprites an object has.\n\nAn object the level did not load has none, so this answers whether there is\nanything to draw before `trx.ui.primitive.sprite` is asked to draw it.",
+      "params": [
+        {
+          "description": "The sprite object to count.",
+          "name": "object",
+          "type": "catalog.objects"
+        }
+      ],
+      "path": "ui.primitive.sprite_count",
+      "returns": {
+        "description": "How many sprites it has.",
+        "type": "integer"
+      }
+    },
+    {
+      "description": "Reports the edges of one sprite of an object, in canvas units at a scale of one.\n\nThe edges sit around the point the sprite is drawn at, so both left and top are\nusually negative. Multiply them by the scale the sprite is drawn at.\n\nRaises where the level did not load the object, so check\n`trx.objects.get(object).loaded` first.",
+      "params": [
+        {
+          "description": "The sprite object to read from.",
+          "name": "object",
+          "type": "catalog.objects"
+        },
+        {
+          "description": "Which sprite of the object to read, counted from 0.",
+          "name": "sprite_num",
+          "type": "integer"
+        }
+      ],
+      "path": "ui.primitive.sprite_bounds",
+      "returns": [
+        {
+          "description": "The left edge.",
+          "type": "number"
+        },
+        {
+          "description": "The top edge.",
+          "type": "number"
+        },
+        {
+          "description": "The right edge.",
+          "type": "number"
+        },
+        {
+          "description": "The bottom edge.",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "description": "Draws one sprite of an object on the canvas.\n\nRaises where the level did not load the object, so check\n`trx.objects.get(object).loaded` first.",
+      "examples": [
+        "trx.ui.primitive.sprite(\n  trx.catalog.objects.assault_digits, 3, 100, 20, 0, 1,\n  trx.math.color(\"ffffff\"))"
+      ],
+      "params": [
+        {
+          "description": "The sprite object to draw from.",
+          "name": "object",
+          "type": "catalog.objects"
+        },
+        {
+          "description": "Which sprite of the object to draw, counted from 0.",
+          "name": "sprite_num",
+          "type": "integer"
+        },
+        {
+          "description": "The left edge.",
+          "name": "x",
+          "type": "number"
+        },
+        {
+          "description": "The top edge.",
+          "name": "y",
+          "type": "number"
+        },
+        {
+          "description": "The draw order.",
+          "name": "z",
+          "type": "integer"
+        },
+        {
+          "description": "Multiplies the sprite size. At 1 the sprite draws at its own size on the canvas.",
+          "name": "scale",
+          "type": "number"
+        },
+        {
+          "description": "What color to tint it with.",
+          "name": "color",
+          "type": "math.Color"
+        }
+      ],
+      "path": "ui.primitive.sprite"
+    },
+    {
+      "description": "Draws one sprite of an object, with a color at each corner.\n\nRaises where the level did not load the object, so check\n`trx.objects.get(object).loaded` first.",
+      "params": [
+        {
+          "description": "The sprite object to draw from.",
+          "name": "object",
+          "type": "catalog.objects"
+        },
+        {
+          "description": "Which sprite of the object to draw, counted from 0.",
+          "name": "sprite_num",
+          "type": "integer"
+        },
+        {
+          "description": "The left edge.",
+          "name": "x",
+          "type": "number"
+        },
+        {
+          "description": "The top edge.",
+          "name": "y",
+          "type": "number"
+        },
+        {
+          "description": "The draw order.",
+          "name": "z",
+          "type": "integer"
+        },
+        {
+          "description": "Multiplies the sprite size. At 1 the sprite draws at its own size on the canvas.",
+          "name": "scale",
+          "type": "number"
+        },
+        {
+          "description": "The top-left color.",
+          "name": "tl",
+          "type": "math.Color"
+        },
+        {
+          "description": "The top-right color.",
+          "name": "tr",
+          "type": "math.Color"
+        },
+        {
+          "description": "The bottom-left color.",
+          "name": "bl",
+          "type": "math.Color"
+        },
+        {
+          "description": "The bottom-right color.",
+          "name": "br",
+          "type": "math.Color"
+        }
+      ],
+      "path": "ui.primitive.gradient_sprite"
+    },
+    {
       "description": "A line of text. Use a signal for text that changes.",
       "params": [
         {

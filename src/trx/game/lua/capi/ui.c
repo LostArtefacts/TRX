@@ -2,6 +2,9 @@
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/ui.h>
 #include <trx/game/lua/utils.h>
+#include <trx/game/objects/common.h>
+#include <trx/game/output/const.h>
+#include <trx/game/output/textures.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/elements.h>
@@ -92,6 +95,98 @@ static RGBA_8888 M_CheckColor(lua_State *const L, const int arg)
         .b = M_CheckChannel(L, arg, "b", 0.0),
         .a = M_CheckChannel(L, arg, "a", 255.0),
     };
+}
+
+// Reads a trx.math.Color table as floats, defaulting alpha to opaque.
+static RGBA_F M_CheckColorF(lua_State *const L, const int arg)
+{
+    const RGBA_8888 color = M_CheckColor(L, arg);
+    return (RGBA_F) {
+        .r = color.r / 255.0f,
+        .g = color.g / 255.0f,
+        .b = color.b / 255.0f,
+        .a = color.a / 255.0f,
+    };
+}
+
+// Resolves a script object and sprite number to a sprite index.
+static int32_t M_CheckSpriteIdx(lua_State *const L)
+{
+    const OBJECT_ID object_id = LUA_CheckObjectID(L, 1);
+    const OBJECT *const object = Object_Get(object_id);
+    if (!object->loaded) {
+        luaL_error(L, "object %d is not loaded", (int32_t)object_id);
+    }
+    const int32_t sprite_num = (int32_t)luaL_checkinteger(L, 2);
+    if (sprite_num < 0 || sprite_num >= ABS(object->mesh_count)) {
+        luaL_error(L, "sprite %d is out of range", sprite_num);
+    }
+    return object->mesh_idx + sprite_num;
+}
+
+// Returns the number of sprites for object_id.
+// Returns 0 when object_id is not loaded, allowing widgets to test for
+// drawable sprites without raising an error.
+static int M_L_UISpriteCount(lua_State *const L)
+{
+    const OBJECT *const object = Object_Get(LUA_CheckObjectID(L, 1));
+    lua_pushinteger(L, object->loaded ? ABS(object->mesh_count) : 0);
+    return 1;
+}
+
+// Returns the bounds of sprite_num in object_id as x0, y0, x1, y1.
+// Returns bounds relative to the drawing position, so x0 and y0 are usually
+// negative, in canvas units at scale 1.
+static int M_L_UISpriteBounds(lua_State *const L)
+{
+    const SPRITE_TEXTURE *const sprite =
+        Output_GetSpriteTexture(M_CheckSpriteIdx(L));
+    if (sprite == nullptr) {
+        return luaL_error(L, "the sprite has no texture");
+    }
+    lua_pushnumber(L, sprite->x0);
+    lua_pushnumber(L, sprite->y0);
+    lua_pushnumber(L, sprite->x1);
+    lua_pushnumber(L, sprite->y1);
+    return 4;
+}
+
+// Draws sprite_num from object_id at the specified position, scale and
+// colour.
+static int M_L_UISprite(lua_State *const L)
+{
+    M_CheckPainting(L);
+    const int32_t sprite_idx = M_CheckSpriteIdx(L);
+    const int32_t x = lroundf(UI_ScaleX((float)luaL_checknumber(L, 3)));
+    const int32_t y = lroundf(UI_ScaleY((float)luaL_checknumber(L, 4)));
+    const int32_t z = (int32_t)luaL_optinteger(L, 5, 0);
+    const int32_t scale =
+        lroundf(UI_ScaleX((float)luaL_optnumber(L, 6, 1.0)) * PHD_ONE);
+    const RGBA_F color = M_CheckColorF(L, 7);
+    const RGBA_F colors[4] = { color, color, color, color };
+    UI_ScheduleDrawScreenSprite(x, y, z, scale, scale, sprite_idx, colors);
+    return 0;
+}
+
+// trxc.ui.gradient_sprite(object_id, sprite_num, x, y, z, scale, tl, tr, bl,
+// br)
+static int M_L_UIGradientSprite(lua_State *const L)
+{
+    M_CheckPainting(L);
+    const int32_t sprite_idx = M_CheckSpriteIdx(L);
+    const int32_t x = lroundf(UI_ScaleX((float)luaL_checknumber(L, 3)));
+    const int32_t y = lroundf(UI_ScaleY((float)luaL_checknumber(L, 4)));
+    const int32_t z = (int32_t)luaL_optinteger(L, 5, 0);
+    const int32_t scale =
+        lroundf(UI_ScaleX((float)luaL_optnumber(L, 6, 1.0)) * PHD_ONE);
+    const RGBA_F colors[4] = {
+        M_CheckColorF(L, 7),
+        M_CheckColorF(L, 8),
+        M_CheckColorF(L, 9),
+        M_CheckColorF(L, 10),
+    };
+    UI_ScheduleDrawScreenSprite(x, y, z, scale, scale, sprite_idx, colors);
+    return 0;
 }
 
 // trxc.ui.reserve(region, w, h) -> slot
@@ -281,6 +376,13 @@ static int M_L_UIBarScale(lua_State *const L)
     return 1;
 }
 
+// Returns the UI text scale.
+static int M_L_UITextScale(lua_State *const L)
+{
+    lua_pushnumber(L, UI_Scaler_GetScale(UI_SCALER_TARGET_TEXT));
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
     { "get_canvas_height", M_L_UICanvasHeight },
     { "get_canvas_width", M_L_UICanvasWidth },
@@ -289,12 +391,17 @@ static const luaL_Reg m_Module[] = {
     { "get_safe_width", M_L_UISafeWidth },
     { "bar_theme", M_L_UIBarTheme },
     { "bar_scale", M_L_UIBarScale },
+    { "text_scale", M_L_UITextScale },
     { "reserve", M_L_UIReserve },
     { "slot_box", M_L_UISlotBox },
     { "measure_text", M_L_UIMeasureText },
     { "draw_text", M_L_UIDrawText },
     { "flat_quad", M_L_UIFlatQuad },
     { "gradient_quad", M_L_UIGradientQuad },
+    { "sprite", M_L_UISprite },
+    { "sprite_bounds", M_L_UISpriteBounds },
+    { "sprite_count", M_L_UISpriteCount },
+    { "gradient_sprite", M_L_UIGradientSprite },
     { "to_screen", M_L_UIToScreen },
     { "to_canvas", M_L_UIToCanvas },
     { nullptr, nullptr },

@@ -584,7 +584,15 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/ui',
   'bundles': [b_lua_surface, b_lua_math, b_config],
-  'src': ['fakes/level.c', 'lua/api/ui.c', 'fakes/ui_draw.c', 'fakes/locale.c', 'fakes/rooms.c'],
+  'src': [
+    'fakes/level.c',
+    'lua/api/ui.c',
+    'fakes/objects.c',
+    'fakes/sprites.c',
+    'fakes/ui_draw.c',
+    'fakes/locale.c',
+    'fakes/rooms.c',
+  ],
   'engine': [
     'config/enum.c',
     'core/event_manager.c',
@@ -937,6 +945,7 @@ unit_tests += {
     'fakes/locale.c',
     'fakes/overlay.c',
     'fakes/rooms.c',
+    'fakes/sprites.c',
     'fakes/ui_draw.c',
   ],
   'engine': [
