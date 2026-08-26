@@ -30,7 +30,12 @@ typedef enum {
 void UI_BeginRegion(UI_REGION region);
 void UI_EndRegion(void);
 
-// Returns the middle box from the last laid-out scene.
+// Lays the regions out and updates the middle box. Called once per scene,
+// after every widget is measured and before the scene is laid out, so that
+// the middle box describes the current scene.
+void UI_Region_Layout(void);
+
+// Returns the middle box from the last call to UI_Region_Layout.
 void UI_Region_GetCenterBox(float *x, float *y, float *w, float *h);
 
 // Reserves space in a region and returns its slot for the current scene.

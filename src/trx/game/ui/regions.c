@@ -59,7 +59,7 @@ static UI_NODE *m_Caller;
 // Scene counter for the nodes above.
 static uint32_t m_Generation;
 
-// Middle box from the last laid-out scene.
+// Middle box from the last call to UI_Region_Layout.
 static struct {
     float x;
     float y;
@@ -281,6 +281,18 @@ bool UI_Region_GetSlotBox(
     *w = node->w;
     *h = node->h;
     return true;
+}
+
+void UI_Region_Layout(void)
+{
+    M_ForgetStaleNodes();
+    if (m_Container == nullptr) {
+        m_CenterBox.w = 0.0f;
+        m_CenterBox.h = 0.0f;
+        return;
+    }
+    m_Container->ops.layout(
+        m_Container, 0.0f, 0.0f, UI_GetCanvasWidth(), UI_GetCanvasHeight());
 }
 
 void UI_Region_GetCenterBox(

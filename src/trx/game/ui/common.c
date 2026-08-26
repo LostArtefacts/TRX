@@ -239,6 +239,7 @@ void UI_EndScene(void)
 {
     m_Priv.scene_root = m_Priv.root;
     M_MeasureNode(m_Priv.root);
+    UI_Region_Layout();
     M_LayoutNode(m_Priv.root, 0, 0, UI_GetCanvasWidth(), UI_GetCanvasHeight());
     if (m_PaintHook != nullptr) {
         m_PaintHook();
