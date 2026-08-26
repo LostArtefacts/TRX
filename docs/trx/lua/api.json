@@ -6267,6 +6267,24 @@
       }
     },
     {
+      "description": "Spells a name the way the console shows one: lower case, with underscores read as dashes. This is how an enum constant is offered for completion, and a catalog name resolves in either spelling.",
+      "examples": [
+        "trx.strings.dash_case(\"LARA_NO\") -- \"lara-no\""
+      ],
+      "params": [
+        {
+          "description": "The name to spell.",
+          "name": "text",
+          "type": "string"
+        }
+      ],
+      "path": "strings.dash_case",
+      "returns": {
+        "description": "The name in dashed lower case.",
+        "type": "string"
+      }
+    },
+    {
       "description": "Takes the shared indentation off a block of text, so that a long string\nwritten inside `[[ ]]` reads as what it says rather than as where it sat in\nthe file. Leading and trailing blank lines go too.\n\nThe deepest lines keep the rest of their indentation, since a block may lay\nsomething out, and four spaces of it is a code block in markdown. Text may\nopen on the line the brackets are on, and that line then sets nothing and\nkeeps what it has, however the ones under it are written.",
       "examples": [
         "local help = trx.strings.dedent([[\n      Usage: /give <what>\n        keys   every plot item the level has a place for\n    ]])"

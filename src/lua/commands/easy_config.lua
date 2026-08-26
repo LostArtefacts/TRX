@@ -50,11 +50,6 @@ local COMMANDS = {
   },
 }
 
--- The console shows an option key with dashes, not underscores.
-local function display(key)
-  return (key:gsub("_", "-"))
-end
-
 -- What the setting takes, for completion: on/off or the enum values, and the
 -- dash that puts the default back. A number has no list to offer, so nothing is
 -- advertised for it.
@@ -66,7 +61,10 @@ local function value_choices(key)
     out[#out + 1] = { key = "off", value = "off" }
   elseif desc.kind == "enum" or desc.kind == "dynamic_enum" then
     for _, value in ipairs(desc.values) do
-      out[#out + 1] = { key = display(value), value = display(value) }
+      out[#out + 1] = {
+        key = trx.strings.dash_case(value),
+        value = trx.strings.dash_case(value),
+      }
     end
   else
     return nil
@@ -80,7 +78,7 @@ local function run(key, args)
     trx.console.log(
       trx.locale.format(
         "console/cmd/set/option_get",
-        display(key),
+        trx.strings.dash_case(key),
         trx.config.format_value(key)
       )
     )
@@ -89,7 +87,10 @@ local function run(key, args)
 
   if trx.config.is_overridden(key) then
     return trx.console.Result.FAILURE,
-      trx.locale.format("console/cmd/set/option_enforced", display(key))
+      trx.locale.format(
+        "console/cmd/set/option_enforced",
+        trx.strings.dash_case(key)
+      )
   end
 
   local ok
@@ -115,7 +116,7 @@ local function run(key, args)
   trx.console.log(
     trx.locale.format(
       "console/cmd/set/option_set",
-      display(key),
+      trx.strings.dash_case(key),
       trx.config.format_value(key)
     )
   )

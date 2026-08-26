@@ -17,7 +17,7 @@ trx.locale.declare({
 local function type_names()
   local names = {}
   for name in pairs(trx.weather.Type) do
-    names[#names + 1] = name:lower()
+    names[#names + 1] = trx.strings.dash_case(name)
   end
   table.sort(names)
   return names
@@ -26,7 +26,7 @@ end
 local function name_of(value)
   for name, v in pairs(trx.weather.Type) do
     if v == value then
-      return name:lower()
+      return trx.strings.dash_case(name)
     end
   end
   return tostring(value)
@@ -70,10 +70,10 @@ trx.console.register({
     end
 
     if args.state ~= nil then
-      local want = args.state:lower()
+      local want = trx.strings.dash_case(args.state)
       local found = nil
       for name, value in pairs(trx.weather.Type) do
-        if name:lower() == want then
+        if trx.strings.dash_case(name) == want then
           found = value
         end
       end

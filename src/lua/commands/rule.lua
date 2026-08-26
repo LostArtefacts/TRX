@@ -19,15 +19,11 @@ trx.locale.declare({
   ["console/cmd/rule/unknown_rule"] = "Unknown rule: %s",
 })
 
--- The console shows keys with dashes, not underscores.
-local function display(text)
-  return (text:gsub("_", "-"))
-end
-
 local function rule_sources()
   local sources = {}
   for _, key in ipairs(trx.rules.list()) do
-    sources[#sources + 1] = { key = display(key), value = key, weight = 1 }
+    sources[#sources + 1] =
+      { key = trx.strings.dash_case(key), value = key, weight = 1 }
   end
   return sources
 end
@@ -35,7 +31,7 @@ end
 local function report(key)
   return trx.locale.format(
     "console/cmd/rule/rule_get",
-    display(key),
+    trx.strings.dash_case(key),
     trx.rules.format_value(key)
   )
 end
@@ -81,7 +77,7 @@ local function run(args)
   return trx.console.Result.OK,
     trx.locale.format(
       "console/cmd/rule/rule_set",
-      display(key),
+      trx.strings.dash_case(key),
       trx.rules.format_value(key)
     )
 end

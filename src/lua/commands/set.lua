@@ -18,16 +18,12 @@ trx.locale.declare({
   ["console/cmd/set/valid_values"] = "Valid values: %s",
 })
 
--- The console shows keys and enum values with dashes, not underscores.
-local function display(text)
-  return (text:gsub("_", "-"))
-end
-
 -- Every setting, by its dashed name, for matching and completion.
 local function option_sources()
   local sources = {}
   for key in pairs(trx.config.list()) do
-    sources[#sources + 1] = { key = display(key), value = key, weight = 1 }
+    sources[#sources + 1] =
+      { key = trx.strings.dash_case(key), value = key, weight = 1 }
   end
   return sources
 end
@@ -54,7 +50,10 @@ local function value_choices(parsed)
     out[#out + 1] = { key = "off", value = "off" }
   elseif desc.kind == "enum" or desc.kind == "dynamic_enum" then
     for _, value in ipairs(desc.values) do
-      out[#out + 1] = { key = display(value), value = display(value) }
+      out[#out + 1] = {
+        key = trx.strings.dash_case(value),
+        value = trx.strings.dash_case(value),
+      }
     end
   else
     return nil
@@ -105,7 +104,7 @@ local function run(args)
     trx.console.log(
       trx.locale.format(
         "console/cmd/set/option_get",
-        display(key),
+        trx.strings.dash_case(key),
         trx.config.format_value(key)
       )
     )
@@ -114,7 +113,10 @@ local function run(args)
 
   if not args.force and trx.config.is_overridden(key) then
     return trx.console.Result.FAILURE,
-      trx.locale.format("console/cmd/set/option_enforced", display(key))
+      trx.locale.format(
+        "console/cmd/set/option_enforced",
+        trx.strings.dash_case(key)
+      )
   end
 
   local value = args.value
@@ -139,7 +141,7 @@ local function run(args)
   trx.console.log(
     trx.locale.format(
       "console/cmd/set/option_set",
-      display(key),
+      trx.strings.dash_case(key),
       trx.config.format_value(key)
     )
   )

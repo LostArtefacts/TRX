@@ -28,15 +28,11 @@ local KEYS = {
   "debug.enable_debug_status",
 }
 
-local function display(key)
-  return (key:gsub("_", "-"))
-end
-
 local function log_get(key)
   trx.console.log(
     trx.locale.format(
       "console/cmd/debug/option_get",
-      display(key),
+      trx.strings.dash_case(key),
       tostring(trx.config.get(key))
     )
   )
@@ -46,7 +42,7 @@ local function log_set(key)
   trx.console.log(
     trx.locale.format(
       "console/cmd/debug/option_set",
-      display(key),
+      trx.strings.dash_case(key),
       tostring(trx.config.get(key))
     )
   )
@@ -62,7 +58,8 @@ end
 local function match_keys(text)
   local sources = {}
   for _, key in ipairs(KEYS) do
-    sources[#sources + 1] = { key = display(key), value = key, weight = 1 }
+    sources[#sources + 1] =
+      { key = trx.strings.dash_case(key), value = key, weight = 1 }
   end
   local matched = {}
   for _, m in ipairs(trx.strings.fuzzy_match(text, sources)) do
@@ -74,7 +71,7 @@ end
 local function overlay_choices()
   local out = {}
   for _, key in ipairs(KEYS) do
-    out[#out + 1] = { key = display(key), value = key }
+    out[#out + 1] = { key = trx.strings.dash_case(key), value = key }
   end
   return out
 end
