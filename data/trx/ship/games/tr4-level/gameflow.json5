@@ -5,13 +5,11 @@
     "extends": "tr4",
     "name": "TR4 Direct Level",
 
-    "main_menu_picture": "title_eu.webp",
     "savegame_file_fmt": "save_tr4_custom_%02d.dat",
 
     "enable_tr2_item_drops": true,
     "convert_dropped_guns": true,
 
-    "sfx_path": "main.sfx",
     "injections": [
         "font.bin",
         "lara_outfits.bin",
