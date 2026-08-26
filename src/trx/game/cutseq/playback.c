@@ -1,5 +1,6 @@
 #include <trx/game/cutseq/playback.h>
 
+#include <trx/core/math/geom.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
@@ -16,6 +17,7 @@
 #include <trx/game/interpolation.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/hair.h>
 #include <trx/game/lara/pose.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/matrix.h>
@@ -40,6 +42,12 @@
 // A title level shows none of it: the OG guards both the set and the clear
 // with gfCurrentLevel, which is 0 there.
 #define M_TITLE_LETTERBOX 0.0f
+
+// Distance an actor root can travel in one frame before the move reads as a
+// cut rather than as motion. The original engine shifts an actor to its new
+// place in a single frame, so the pose interpolation must not sweep the actor
+// across the gap.
+#define M_CUT_DISTANCE (WALL_L / 2)
 
 typedef enum {
     M_PHASE_INACTIVE,
@@ -114,6 +122,20 @@ static int32_t M_LerpOffset(
     const int32_t from, const int32_t to, const double alpha)
 {
     return from + (int32_t)((int16_t)(to - from) * alpha);
+}
+
+// Reports whether the actor was shifted between the two poses. The offsets
+// wrap the way M_LerpOffset reads them, so a track that runs past the int16
+// boundary stays motion.
+static bool M_IsPoseCut(
+    const CUTSEQ_POSE *const from, const CUTSEQ_POSE *const to)
+{
+    const XYZ_32 delta = {
+        .x = (int16_t)(to->offset.x - from->offset.x),
+        .y = (int16_t)(to->offset.y - from->offset.y),
+        .z = (int16_t)(to->offset.z - from->offset.z),
+    };
+    return XYZ_32_GetDistance((XYZ_32) {}, delta) > M_CUT_DISTANCE;
 }
 
 static void M_LerpPose(
@@ -364,6 +386,7 @@ static void M_Step(void)
         LUA_FireEventEx(LUA_EVENT_CUTSCENE_FRAME, args, ARRAY_SIZE(args));
     }
 
+    bool is_lara_cut = false;
     if (m_State.frame > 0 && m_State.decoded_frames < info->num_frames) {
         m_State.decoded_frames++;
         CutSeq_Decoder_Advance(m_State.camera_nodes, 2, 0xFFFF);
@@ -373,6 +396,10 @@ static void M_Step(void)
             CutSeq_Decoder_Advance(actor->nodes, actor->node_count, 1023);
             CutSeq_Decoder_BuildPose(
                 actor->nodes, actor->node_count, &actor->pose_curr);
+            if (M_IsPoseCut(&actor->pose_prev, &actor->pose_curr)) {
+                actor->pose_prev = actor->pose_curr;
+                is_lara_cut = is_lara_cut || i == 0;
+            }
         }
     } else {
         for (int32_t i = 0; i < info->num_actors; i++) {
@@ -382,7 +409,14 @@ static void M_Step(void)
     }
 
     M_SetLaraPose(&m_State.actors[0].pose_curr);
+
+    if (is_lara_cut) {
+        Lara_Hair_Initialise();
+    }
     Lara_Hair_Control(true);
+    if (is_lara_cut) {
+        Interpolation_CommitBraid();
+    }
 
     if (info->audio_track != -1
         && Music_GetCurrentPlayingTrack() == (MUSIC_ID)info->audio_track) {
