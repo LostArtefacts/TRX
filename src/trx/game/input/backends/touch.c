@@ -406,9 +406,10 @@ static bool M_IsPressed(const INPUT_LAYOUT layout, const INPUT_ROLE role)
 
 static bool M_CustomUpdate(INPUT_STATE *const result, const INPUT_LAYOUT layout)
 {
+    result->menu_skip |=
+        result->menu_confirm || M_IsPressed(layout, INPUT_ROLE_ACTION);
     result->menu_confirm |= M_IsPressed(layout, INPUT_ROLE_ACTION);
     result->menu_back |= M_IsPressed(layout, INPUT_ROLE_JUMP);
-    result->menu_skip = result->menu_confirm || result->menu_back;
     return true;
 }
 

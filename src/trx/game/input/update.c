@@ -87,6 +87,7 @@ void Input_HoldOffSkip(void)
     Input_HoldOffRole(INPUT_ROLE_INVENTORY);
     Input_HoldOffRole(INPUT_ROLE_MENU_BACK);
     Input_HoldOffRole(INPUT_ROLE_MENU_CONFIRM);
+    Input_HoldOffRole(INPUT_ROLE_MENU_SKIP);
 }
 
 void Input_Update(void)
@@ -122,6 +123,7 @@ void Input_Update(void)
     g_Input.menu_left |= g_Input.left;
     g_Input.menu_right |= g_Input.right;
     g_Input.menu_back |= g_Input.option;
+    g_Input.menu_skip |= g_Input.menu_back;
     // A cutscene holds the option ring shut from the moment it is requested,
     // which is before it takes the camera.
     g_Input.option &= g_Camera.type != CAM_CINEMATIC && !CutSeq_IsActive();

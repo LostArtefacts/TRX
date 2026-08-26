@@ -663,7 +663,7 @@ void CutSeq_Control(void)
 {
     // As a cutscene level answers them, and for the same reason: a scene the
     // player has seen before is a scene to get past.
-    if (g_InputDB.menu_confirm || g_InputDB.menu_back || g_InputDB.look) {
+    if (g_InputDB.menu_skip || g_InputDB.look) {
         CutSeq_Skip();
         Input_HoldOffSkip();
     }
