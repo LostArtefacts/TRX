@@ -1073,7 +1073,7 @@
         },
         "gameplay.enable_cinematic_skips": {
             "title": "\\{review}Passer les cinématiques",
-            "description": "\\{review}Permet de passer les séquences de caméra avec la commande Retour/Menu, et avec regarder, même lorsque le niveau marque la séquence comme non interruptible.",
+            "description": "\\{review}Permet de passer les séquences de caméra avec Inventaire, Retour, Confirmer ou Action, et avec Regarder, même lorsque le niveau marque la séquence comme non interruptible.",
         },
         "gameplay.enable_cinematics": {
             "title": "\\{review}Séquences scénarisées",

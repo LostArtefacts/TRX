@@ -65,9 +65,10 @@ void FlybyMode_PreControl(void)
 
     const bool skips_enabled = g_Config.gameplay.enable_cinematic_skips;
     const bool skip_requested =
-        g_InputDB.look || (g_InputDB.option && skips_enabled);
+        g_InputDB.look || (g_InputDB.menu_skip && skips_enabled);
     if (skip_requested && FlybyMode_Cancel(skips_enabled)) {
         g_InputDB.look = false;
+        g_InputDB.menu_skip = false;
         g_InputDB.option = false;
         Input_HoldOffSkip();
         return;

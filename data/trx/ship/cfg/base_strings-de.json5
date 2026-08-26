@@ -1073,7 +1073,7 @@
         },
         "gameplay.enable_cinematic_skips": {
             "title": "\\{review}Überspringen von Zwischensequenzen",
-            "description": "\\{review}Ermöglicht das Überspringen von Kameraflügen mit der Zurück-/Menü-Eingabe und mit Schauen, auch wenn das Level die Sequenz als nicht abbrechbar markiert.",
+            "description": "\\{review}Ermöglicht das Überspringen von Kameraflügen mit Inventar, Zurück, Bestätigen oder Aktion, und mit Umsehen, auch wenn das Level die Sequenz als nicht abbrechbar markiert.",
         },
         "gameplay.enable_cinematics": {
             "title": "\\{review}Skriptsequenzen",

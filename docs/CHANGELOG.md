@@ -170,6 +170,7 @@
 - Fixed the game closing when a language with a broken strings file is picked (TRX1112)
 - Fixed the game closing when another game is switched to while Lara is riding a vehicle (TRX1148)
 - Fixed a false warning that the settings could not be saved (TRX1112)
+- Fixed flyby sequences not skipping with the action and confirm inputs (TRX1262)
 - Fixed the camera when using binoculars clipping into the ceiling if the ceiling around Lara is very low (#6352 / TRX1205)
 - Fixed the rocket launcher's animation object having no name
 - Fixed the game stuttering while it writes its log
