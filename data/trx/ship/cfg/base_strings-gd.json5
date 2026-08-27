@@ -660,9 +660,9 @@
             "ALLY_HOSTILITY_POLICY_SHARED": "Air a cho-roinn",
         },
         "ASPECT_MODE": {
-            "ASPECT_MODE_16_10": "16:10",
-            "ASPECT_MODE_16_9": "16:9",
             "ASPECT_MODE_4_3": "4:3",
+            "ASPECT_MODE_16_9": "16:9",
+            "ASPECT_MODE_16_10": "16:10",
             "ASPECT_MODE_ANY": "Gin sam bith",
         },
         "BACKGROUND_TYPE": {
@@ -2007,27 +2007,6 @@
         "animating_1": {
             "name": "Beòthaladh 1",
         },
-        "animating_10": {
-            "name": "Beòthaladh 10",
-        },
-        "animating_11": {
-            "name": "Beòthaladh 11",
-        },
-        "animating_12": {
-            "name": "Beòthaladh 12",
-        },
-        "animating_13": {
-            "name": "Beòthaladh 13",
-        },
-        "animating_14": {
-            "name": "Beòthaladh 14",
-        },
-        "animating_15": {
-            "name": "Beòthaladh 15",
-        },
-        "animating_16": {
-            "name": "Beòthaladh 16",
-        },
         "animating_2": {
             "name": "Beòthaladh 2",
         },
@@ -2052,11 +2031,29 @@
         "animating_9": {
             "name": "Beòthaladh 9",
         },
+        "animating_10": {
+            "name": "Beòthaladh 10",
+        },
+        "animating_11": {
+            "name": "Beòthaladh 11",
+        },
+        "animating_12": {
+            "name": "Beòthaladh 12",
+        },
+        "animating_13": {
+            "name": "Beòthaladh 13",
+        },
+        "animating_14": {
+            "name": "Beòthaladh 14",
+        },
+        "animating_15": {
+            "name": "Beòthaladh 15",
+        },
+        "animating_16": {
+            "name": "Beòthaladh 16",
+        },
         "animating_ext_1": {
             "name": "Beòthaladh Leudaichte 1",
-        },
-        "animating_ext_10": {
-            "name": "Beòthaladh Leudaichte 10",
         },
         "animating_ext_2": {
             "name": "Beòthaladh Leudaichte 2",
@@ -2081,6 +2078,9 @@
         },
         "animating_ext_9": {
             "name": "Beòthaladh Leudaichte 9",
+        },
+        "animating_ext_10": {
+            "name": "Beòthaladh Leudaichte 10",
         },
         "ape": {
             "name": "Apa",
@@ -2647,15 +2647,6 @@
         "key_hole_1": {
             "name": "Toll Iuchrach 1",
         },
-        "key_hole_10": {
-            "name": "Toll Iuchrach 10",
-        },
-        "key_hole_11": {
-            "name": "Toll Iuchrach 11",
-        },
-        "key_hole_12": {
-            "name": "Toll Iuchrach 12",
-        },
         "key_hole_2": {
             "name": "Toll Iuchrach 2",
         },
@@ -2680,17 +2671,17 @@
         "key_hole_9": {
             "name": "Toll Iuchrach 9",
         },
+        "key_hole_10": {
+            "name": "Toll Iuchrach 10",
+        },
+        "key_hole_11": {
+            "name": "Toll Iuchrach 11",
+        },
+        "key_hole_12": {
+            "name": "Toll Iuchrach 12",
+        },
         "key_item_1": {
             "name": "Iuchair 1",
-        },
-        "key_item_10": {
-            "name": "Iuchair 10",
-        },
-        "key_item_11": {
-            "name": "Iuchair 11",
-        },
-        "key_item_12": {
-            "name": "Iuchair 12",
         },
         "key_item_1_combo_1": {
             "name": "Iuchair 1 (Measg 1)",
@@ -2763,6 +2754,15 @@
         },
         "key_item_9": {
             "name": "Iuchair 9",
+        },
+        "key_item_10": {
+            "name": "Iuchair 10",
+        },
+        "key_item_11": {
+            "name": "Iuchair 11",
+        },
+        "key_item_12": {
+            "name": "Iuchair 12",
         },
         "kick_door_1": {
             "name": "Doras breabaidh 1",
@@ -3086,9 +3086,6 @@
         "player_1": {
             "name": "Actair 1",
         },
-        "player_10": {
-            "name": "Actair 10",
-        },
         "player_2": {
             "name": "Actair 2",
         },
@@ -3112,6 +3109,9 @@
         },
         "player_9": {
             "name": "Actair 9",
+        },
+        "player_10": {
+            "name": "Actair 10",
         },
         "pods": {
             "name": "Spàlagan",
@@ -3161,15 +3161,6 @@
         "puzzle_done_1": {
             "name": "Toll Tòimhseachain 1 (Deiseil)",
         },
-        "puzzle_done_10": {
-            "name": "Toll Tòimhseachain 10 (Deiseil)",
-        },
-        "puzzle_done_11": {
-            "name": "Toll Tòimhseachain 11 (Deiseil)",
-        },
-        "puzzle_done_12": {
-            "name": "Toll Tòimhseachain 12 (Deiseil)",
-        },
         "puzzle_done_2": {
             "name": "Toll Tòimhseachain 2 (Deiseil)",
         },
@@ -3194,17 +3185,17 @@
         "puzzle_done_9": {
             "name": "Toll Tòimhseachain 9 (Deiseil)",
         },
+        "puzzle_done_10": {
+            "name": "Toll Tòimhseachain 10 (Deiseil)",
+        },
+        "puzzle_done_11": {
+            "name": "Toll Tòimhseachain 11 (Deiseil)",
+        },
+        "puzzle_done_12": {
+            "name": "Toll Tòimhseachain 12 (Deiseil)",
+        },
         "puzzle_hole_1": {
             "name": "Toll Tòimhseachain 1 (Falamh)",
-        },
-        "puzzle_hole_10": {
-            "name": "Toll Tòimhseachain 10 (Falamh)",
-        },
-        "puzzle_hole_11": {
-            "name": "Toll Tòimhseachain 11 (Falamh)",
-        },
-        "puzzle_hole_12": {
-            "name": "Toll Tòimhseachain 12 (Falamh)",
         },
         "puzzle_hole_2": {
             "name": "Toll Tòimhseachain 2 (Falamh)",
@@ -3230,17 +3221,17 @@
         "puzzle_hole_9": {
             "name": "Toll Tòimhseachain 9 (Falamh)",
         },
+        "puzzle_hole_10": {
+            "name": "Toll Tòimhseachain 10 (Falamh)",
+        },
+        "puzzle_hole_11": {
+            "name": "Toll Tòimhseachain 11 (Falamh)",
+        },
+        "puzzle_hole_12": {
+            "name": "Toll Tòimhseachain 12 (Falamh)",
+        },
         "puzzle_item_1": {
             "name": "Nì Tòimhseachain 1",
-        },
-        "puzzle_item_10": {
-            "name": "Nì Tòimhseachain 10",
-        },
-        "puzzle_item_11": {
-            "name": "Nì Tòimhseachain 11",
-        },
-        "puzzle_item_12": {
-            "name": "Nì Tòimhseachain 12",
         },
         "puzzle_item_1_combo_1": {
             "name": "Nì Tòimhseachain 1 (Cothlamadh 1)",
@@ -3313,6 +3304,15 @@
         },
         "puzzle_item_9": {
             "name": "Nì Tòimhseachain 9",
+        },
+        "puzzle_item_10": {
+            "name": "Nì Tòimhseachain 10",
+        },
+        "puzzle_item_11": {
+            "name": "Nì Tòimhseachain 11",
+        },
+        "puzzle_item_12": {
+            "name": "Nì Tòimhseachain 12",
         },
         "quad_bike": {
             "name": "Quad-baidhsagal",

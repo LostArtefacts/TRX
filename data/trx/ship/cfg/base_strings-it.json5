@@ -660,9 +660,9 @@
             "ALLY_HOSTILITY_POLICY_SHARED": "Condiviso",
         },
         "ASPECT_MODE": {
-            "ASPECT_MODE_16_10": "16:10",
-            "ASPECT_MODE_16_9": "16:9",
             "ASPECT_MODE_4_3": "4:3",
+            "ASPECT_MODE_16_9": "16:9",
+            "ASPECT_MODE_16_10": "16:10",
             "ASPECT_MODE_ANY": "Qualsiasi",
         },
         "BACKGROUND_TYPE": {
@@ -2007,27 +2007,6 @@
         "animating_1": {
             "name": "Oggetto Animato 1",
         },
-        "animating_10": {
-            "name": "Oggetto Animato 10",
-        },
-        "animating_11": {
-            "name": "Oggetto Animato 11",
-        },
-        "animating_12": {
-            "name": "Oggetto Animato 12",
-        },
-        "animating_13": {
-            "name": "Oggetto Animato 13",
-        },
-        "animating_14": {
-            "name": "Oggetto Animato 14",
-        },
-        "animating_15": {
-            "name": "Oggetto Animato 15",
-        },
-        "animating_16": {
-            "name": "Oggetto Animato 16",
-        },
         "animating_2": {
             "name": "Oggetto Animato 2",
         },
@@ -2052,11 +2031,29 @@
         "animating_9": {
             "name": "Oggetto Animato 9",
         },
+        "animating_10": {
+            "name": "Oggetto Animato 10",
+        },
+        "animating_11": {
+            "name": "Oggetto Animato 11",
+        },
+        "animating_12": {
+            "name": "Oggetto Animato 12",
+        },
+        "animating_13": {
+            "name": "Oggetto Animato 13",
+        },
+        "animating_14": {
+            "name": "Oggetto Animato 14",
+        },
+        "animating_15": {
+            "name": "Oggetto Animato 15",
+        },
+        "animating_16": {
+            "name": "Oggetto Animato 16",
+        },
         "animating_ext_1": {
             "name": "Oggetto Animato Esteso 1",
-        },
-        "animating_ext_10": {
-            "name": "Oggetto Animato Esteso 10",
         },
         "animating_ext_2": {
             "name": "Oggetto Animato Esteso 2",
@@ -2081,6 +2078,9 @@
         },
         "animating_ext_9": {
             "name": "Oggetto Animato Esteso 9",
+        },
+        "animating_ext_10": {
+            "name": "Oggetto Animato Esteso 10",
         },
         "ape": {
             "name": "Scimmia",
@@ -2660,15 +2660,6 @@
         "key_hole_1": {
             "name": "Serratura 1",
         },
-        "key_hole_10": {
-            "name": "Serratura 10",
-        },
-        "key_hole_11": {
-            "name": "Serratura 11",
-        },
-        "key_hole_12": {
-            "name": "Serratura 12",
-        },
         "key_hole_2": {
             "name": "Serratura 2",
         },
@@ -2693,17 +2684,17 @@
         "key_hole_9": {
             "name": "Serratura 9",
         },
+        "key_hole_10": {
+            "name": "Serratura 10",
+        },
+        "key_hole_11": {
+            "name": "Serratura 11",
+        },
+        "key_hole_12": {
+            "name": "Serratura 12",
+        },
         "key_item_1": {
             "name": "Chiave 1",
-        },
-        "key_item_10": {
-            "name": "Chiave 10",
-        },
-        "key_item_11": {
-            "name": "Chiave 11",
-        },
-        "key_item_12": {
-            "name": "Chiave 12",
         },
         "key_item_1_combo_1": {
             "name": "Chiave 1 (Combinato 1)",
@@ -2776,6 +2767,15 @@
         },
         "key_item_9": {
             "name": "Chiave 9",
+        },
+        "key_item_10": {
+            "name": "Chiave 10",
+        },
+        "key_item_11": {
+            "name": "Chiave 11",
+        },
+        "key_item_12": {
+            "name": "Chiave 12",
         },
         "kick_door_1": {
             "name": "Porta da Sfondare 1",
@@ -3113,9 +3113,6 @@
         "player_1": {
             "name": "Attore Intermezzo 1",
         },
-        "player_10": {
-            "name": "Attore Intermezzo 10",
-        },
         "player_2": {
             "name": "Attore Intermezzo 2",
         },
@@ -3139,6 +3136,9 @@
         },
         "player_9": {
             "name": "Attore Intermezzo 9",
+        },
+        "player_10": {
+            "name": "Attore Intermezzo 10",
         },
         "pods": {
             "name": "Guscio",
@@ -3188,15 +3188,6 @@
         "puzzle_done_1": {
             "name": "Serratura Enigma 1 (Usata)",
         },
-        "puzzle_done_10": {
-            "name": "Serratura Enigma 10 (Usata)",
-        },
-        "puzzle_done_11": {
-            "name": "Serratura Enigma 11 (Usata)",
-        },
-        "puzzle_done_12": {
-            "name": "Serratura Enigma 12 (Usata)",
-        },
         "puzzle_done_2": {
             "name": "Serratura Enigma 2 (Usata)",
         },
@@ -3221,17 +3212,17 @@
         "puzzle_done_9": {
             "name": "Serratura Enigma 9 (Usata)",
         },
+        "puzzle_done_10": {
+            "name": "Serratura Enigma 10 (Usata)",
+        },
+        "puzzle_done_11": {
+            "name": "Serratura Enigma 11 (Usata)",
+        },
+        "puzzle_done_12": {
+            "name": "Serratura Enigma 12 (Usata)",
+        },
         "puzzle_hole_1": {
             "name": "Serratura Enigma 1 (Vuota)",
-        },
-        "puzzle_hole_10": {
-            "name": "Serratura Enigma 10 (Vuota)",
-        },
-        "puzzle_hole_11": {
-            "name": "Serratura Enigma 11 (Vuota)",
-        },
-        "puzzle_hole_12": {
-            "name": "Serratura Enigma 12 (Vuota)",
         },
         "puzzle_hole_2": {
             "name": "Serratura Enigma 2 (Vuota)",
@@ -3257,17 +3248,17 @@
         "puzzle_hole_9": {
             "name": "Serratura Enigma 9 (Vuota)",
         },
+        "puzzle_hole_10": {
+            "name": "Serratura Enigma 10 (Vuota)",
+        },
+        "puzzle_hole_11": {
+            "name": "Serratura Enigma 11 (Vuota)",
+        },
+        "puzzle_hole_12": {
+            "name": "Serratura Enigma 12 (Vuota)",
+        },
         "puzzle_item_1": {
             "name": "Oggetto Enigma 1",
-        },
-        "puzzle_item_10": {
-            "name": "Oggetto Enigma 10",
-        },
-        "puzzle_item_11": {
-            "name": "Oggetto Enigma 11",
-        },
-        "puzzle_item_12": {
-            "name": "Oggetto Enigma 12",
         },
         "puzzle_item_1_combo_1": {
             "name": "Oggetto Enigma 1 (Combinato 1)",
@@ -3340,6 +3331,15 @@
         },
         "puzzle_item_9": {
             "name": "Oggetto Enigma 9",
+        },
+        "puzzle_item_10": {
+            "name": "Oggetto Enigma 10",
+        },
+        "puzzle_item_11": {
+            "name": "Oggetto Enigma 11",
+        },
+        "puzzle_item_12": {
+            "name": "Oggetto Enigma 12",
         },
         "quad_bike": {
             "name": "Quad",

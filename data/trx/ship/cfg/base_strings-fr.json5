@@ -660,9 +660,9 @@
             "ALLY_HOSTILITY_POLICY_SHARED": "\\{review}Partagé",
         },
         "ASPECT_MODE": {
-            "ASPECT_MODE_16_10": "16:10",
-            "ASPECT_MODE_16_9": "16:9",
             "ASPECT_MODE_4_3": "4:3",
+            "ASPECT_MODE_16_9": "16:9",
+            "ASPECT_MODE_16_10": "16:10",
             "ASPECT_MODE_ANY": "Automatique",
         },
         "BACKGROUND_TYPE": {
@@ -2007,27 +2007,6 @@
         "animating_1": {
             "name": "\\{review}Animation de l'objet 1",
         },
-        "animating_10": {
-            "name": "\\{review}Animation de l'objet 10",
-        },
-        "animating_11": {
-            "name": "\\{review}Animation de l'objet 11",
-        },
-        "animating_12": {
-            "name": "\\{review}Animation de l'objet 12",
-        },
-        "animating_13": {
-            "name": "\\{review}Animation de l'objet 13",
-        },
-        "animating_14": {
-            "name": "\\{review}Animation de l'objet 14",
-        },
-        "animating_15": {
-            "name": "\\{review}Animation de l'objet 15",
-        },
-        "animating_16": {
-            "name": "\\{review}Animation de l'objet 16",
-        },
         "animating_2": {
             "name": "\\{review}Animation de l'objet 2",
         },
@@ -2052,11 +2031,29 @@
         "animating_9": {
             "name": "\\{review}Animation de l'objet 9",
         },
+        "animating_10": {
+            "name": "\\{review}Animation de l'objet 10",
+        },
+        "animating_11": {
+            "name": "\\{review}Animation de l'objet 11",
+        },
+        "animating_12": {
+            "name": "\\{review}Animation de l'objet 12",
+        },
+        "animating_13": {
+            "name": "\\{review}Animation de l'objet 13",
+        },
+        "animating_14": {
+            "name": "\\{review}Animation de l'objet 14",
+        },
+        "animating_15": {
+            "name": "\\{review}Animation de l'objet 15",
+        },
+        "animating_16": {
+            "name": "\\{review}Animation de l'objet 16",
+        },
         "animating_ext_1": {
             "name": "\\{review}Objet animé étendu 1",
-        },
-        "animating_ext_10": {
-            "name": "\\{review}Objet animé étendu 10",
         },
         "animating_ext_2": {
             "name": "\\{review}Objet animé étendu 2",
@@ -2081,6 +2078,9 @@
         },
         "animating_ext_9": {
             "name": "\\{review}Objet animé étendu 9",
+        },
+        "animating_ext_10": {
+            "name": "\\{review}Objet animé étendu 10",
         },
         "ape": {
             "name": "Singe",
@@ -2644,15 +2644,6 @@
         "key_hole_1": {
             "name": "\\{review}Trou de clé 1",
         },
-        "key_hole_10": {
-            "name": "\\{review}Serrure 10",
-        },
-        "key_hole_11": {
-            "name": "\\{review}Serrure 11",
-        },
-        "key_hole_12": {
-            "name": "\\{review}Serrure 12",
-        },
         "key_hole_2": {
             "name": "\\{review}Trou de clé 2",
         },
@@ -2677,17 +2668,17 @@
         "key_hole_9": {
             "name": "\\{review}Serrure 9",
         },
+        "key_hole_10": {
+            "name": "\\{review}Serrure 10",
+        },
+        "key_hole_11": {
+            "name": "\\{review}Serrure 11",
+        },
+        "key_hole_12": {
+            "name": "\\{review}Serrure 12",
+        },
         "key_item_1": {
             "name": "\\{review}Clé 1",
-        },
-        "key_item_10": {
-            "name": "\\{review}Clé 10",
-        },
-        "key_item_11": {
-            "name": "\\{review}Clé 11",
-        },
-        "key_item_12": {
-            "name": "\\{review}Clé 12",
         },
         "key_item_1_combo_1": {
             "name": "\\{review}Clé 1 (Combo 1)",
@@ -2760,6 +2751,15 @@
         },
         "key_item_9": {
             "name": "\\{review}Clé 9",
+        },
+        "key_item_10": {
+            "name": "\\{review}Clé 10",
+        },
+        "key_item_11": {
+            "name": "\\{review}Clé 11",
+        },
+        "key_item_12": {
+            "name": "\\{review}Clé 12",
         },
         "kick_door_1": {
             "name": "\\{review}Porte à enfoncer 1",
@@ -3080,9 +3080,6 @@
         "player_1": {
             "name": "\\{review}Acteur de cinématique 1",
         },
-        "player_10": {
-            "name": "\\{review}Acteur de cinématique 10",
-        },
         "player_2": {
             "name": "\\{review}Acteur de cinématique 2",
         },
@@ -3106,6 +3103,9 @@
         },
         "player_9": {
             "name": "\\{review}Acteur de cinématique 9",
+        },
+        "player_10": {
+            "name": "\\{review}Acteur de cinématique 10",
         },
         "pods": {
             "name": "Gousse",
@@ -3155,15 +3155,6 @@
         "puzzle_done_1": {
             "name": "\\{review}Trou de puzzle 1 (Fait)",
         },
-        "puzzle_done_10": {
-            "name": "\\{review}Trou d'énigme 10 (Terminé)",
-        },
-        "puzzle_done_11": {
-            "name": "\\{review}Trou d'énigme 11 (Terminé)",
-        },
-        "puzzle_done_12": {
-            "name": "\\{review}Trou d'énigme 12 (Terminé)",
-        },
         "puzzle_done_2": {
             "name": "\\{review}Trou de puzzle 2 (Fait)",
         },
@@ -3188,17 +3179,17 @@
         "puzzle_done_9": {
             "name": "\\{review}Trou d'énigme 9 (Terminé)",
         },
+        "puzzle_done_10": {
+            "name": "\\{review}Trou d'énigme 10 (Terminé)",
+        },
+        "puzzle_done_11": {
+            "name": "\\{review}Trou d'énigme 11 (Terminé)",
+        },
+        "puzzle_done_12": {
+            "name": "\\{review}Trou d'énigme 12 (Terminé)",
+        },
         "puzzle_hole_1": {
             "name": "\\{review}Trou de puzzle 1 (Vide)",
-        },
-        "puzzle_hole_10": {
-            "name": "\\{review}Trou d'énigme 10 (Vide)",
-        },
-        "puzzle_hole_11": {
-            "name": "\\{review}Trou d'énigme 11 (Vide)",
-        },
-        "puzzle_hole_12": {
-            "name": "\\{review}Trou d'énigme 12 (Vide)",
         },
         "puzzle_hole_2": {
             "name": "\\{review}Trou de puzzle 2 (Vide)",
@@ -3224,17 +3215,17 @@
         "puzzle_hole_9": {
             "name": "\\{review}Trou d'énigme 9 (Vide)",
         },
+        "puzzle_hole_10": {
+            "name": "\\{review}Trou d'énigme 10 (Vide)",
+        },
+        "puzzle_hole_11": {
+            "name": "\\{review}Trou d'énigme 11 (Vide)",
+        },
+        "puzzle_hole_12": {
+            "name": "\\{review}Trou d'énigme 12 (Vide)",
+        },
         "puzzle_item_1": {
             "name": "\\{review}Objet de puzzle 1",
-        },
-        "puzzle_item_10": {
-            "name": "\\{review}Objet d'énigme 10",
-        },
-        "puzzle_item_11": {
-            "name": "\\{review}Objet d'énigme 11",
-        },
-        "puzzle_item_12": {
-            "name": "\\{review}Objet d'énigme 12",
         },
         "puzzle_item_1_combo_1": {
             "name": "\\{review}Objet d'énigme 1 (Combo 1)",
@@ -3307,6 +3298,15 @@
         },
         "puzzle_item_9": {
             "name": "\\{review}Objet d'énigme 9",
+        },
+        "puzzle_item_10": {
+            "name": "\\{review}Objet d'énigme 10",
+        },
+        "puzzle_item_11": {
+            "name": "\\{review}Objet d'énigme 11",
+        },
+        "puzzle_item_12": {
+            "name": "\\{review}Objet d'énigme 12",
         },
         "quad_bike": {
             "name": "\\{review}Quad",
