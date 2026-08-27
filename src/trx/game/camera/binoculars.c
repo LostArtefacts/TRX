@@ -1,5 +1,6 @@
 #include <trx/game/camera/binoculars.h>
 
+#include <trx/config.h>
 #include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/game/camera.h>
@@ -101,12 +102,15 @@ static void M_HandleLookInput(void)
         }
     }
 
-    if (g_Input.forward) {
+    const bool inverted = g_Config.gameplay.enable_inverted_look;
+    const bool tilt_up = inverted ? g_Input.back : g_Input.forward;
+    const bool tilt_down = inverted ? g_Input.forward : g_Input.back;
+    if (tilt_up) {
         const int16_t turn = M_HEAD_TURN * (1792 - m_Range) / 3072;
         if (lara_info->head_rot.x > M_MIN_HEAD_ROT_X) {
             lara_info->head_rot.x -= turn;
         }
-    } else if (g_Input.back) {
+    } else if (tilt_down) {
         const int16_t turn = M_HEAD_TURN * (1792 - m_Range) / 3072;
         if (lara_info->head_rot.x < M_MAX_HEAD_ROT_X) {
             lara_info->head_rot.x += turn;
