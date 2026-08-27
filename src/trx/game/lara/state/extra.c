@@ -97,7 +97,7 @@ static void M_UseMidas(ITEM *const item, COLL_INFO *const coll)
 
     if (Item_TestFrameEqual(item, M_LF_PICKUP_GOLD_BAR)) {
         Overlay_AddDisplayPickup(O_PUZZLE_ITEM_1);
-        Inv_RemoveItem(O_LEADBAR_ITEM);
+        Inv_RemoveItem(O_LEAD_BAR_ITEM);
         Inv_AddItem(O_PUZZLE_ITEM_1);
         LARA_INFO *const lara = Lara_GetLaraInfo();
         lara->interact_target.item_num = NO_ITEM;

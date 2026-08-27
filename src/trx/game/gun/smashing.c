@@ -26,16 +26,16 @@ void Gun_SmashItem(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
 
     switch (item->object_id) {
-    case O_SMASH_OBJECT_1:
-    case O_SMASH_OBJECT_4:
+    case O_SMASHABLE_1:
+    case O_SMASHABLE_4:
         Smashable_Smash(item_num);
         break;
 
     case O_BELL:
     case O_CARCASS:
     case O_FUSE_BOX:
-    case O_SMASH_OBJECT_2:
-    case O_SMASH_OBJECT_3:
+    case O_SMASHABLE_2:
+    case O_SMASHABLE_3:
         if (!Item_IsInPlay(item)) {
             Item_AddSimulated(item_num);
         }

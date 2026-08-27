@@ -475,7 +475,7 @@ void Gun_HitTarget(
             Sound_Effect(SFX_RAT_CHIRP, &item->pos, SPM_NORMAL);
             break;
 
-        case O_SKATEKID:
+        case O_SKATE_KID:
             Sound_Effect(SFX_SKATEBOARD_HIT, &item->pos, SPM_NORMAL);
             break;
 

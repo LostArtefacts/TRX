@@ -247,7 +247,7 @@ void Inv_SetState(const INVENTORY_STATE *const state)
     // so they are put back regardless of what the state says.
     Inv_EnsureItem(O_STOPWATCH_OPTION);
     Inv_EnsureItem(O_COMPASS_OPTION);
-    Inv_EnsureItem(O_GLOBE_SELECT_OPTION);
+    Inv_EnsureItem(O_GLOBE_OPTION);
     InvRing_Rebuild();
 }
 
@@ -399,7 +399,7 @@ bool Inv_AddItem(const OBJECT_ID object_id)
         }
     }
 
-    const int32_t qty = object_id == O_FLAREBOX_ITEM
+    const int32_t qty = object_id == O_FLARES_BOX_ITEM
         ? Gun_Registry_Get(Gun_GetFlareType())->ammo.box_shots
         : 1;
     const OBJECT_ID entry_id = M_GetEntryID(object_id);

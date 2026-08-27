@@ -43,7 +43,7 @@
     },
 
     {
-        "object_id": "O_FLAREBOX_OPTION",
+        "object_id": "O_FLARES_BOX_OPTION",
         "frames_total": 31,
         "open_frame": 30,
         "anim_direction": 1,
@@ -57,7 +57,7 @@
     },
 
     {
-        "object_id": "O_PISTOL_OPTION",
+        "object_id": "O_PISTOLS_OPTION",
         "frames_total": 12,
         "open_frame": 11,
         "anim_direction": 1,
@@ -85,7 +85,7 @@
     },
 
     {
-        "object_id": "O_MAGNUM_OPTION",
+        "object_id": "O_MAGNUMS_OPTION",
         "frames_total": 12,
         "open_frame": 11,
         "anim_direction": 1,
@@ -128,7 +128,7 @@
     },
 
     {
-        "object_id": "O_UZI_OPTION",
+        "object_id": "O_UZIS_OPTION",
         "frames_total": 13,
         "open_frame": 12,
         "anim_direction": 1,
@@ -142,7 +142,7 @@
     },
 
     {
-        "object_id": "O_HARPOON_OPTION",
+        "object_id": "O_HARPOON_GUN_OPTION",
         "frames_total": 12,
         "open_frame": 11,
         "anim_direction": 1,
@@ -222,7 +222,7 @@
     },
 
     {
-        "object_id": "O_PISTOL_AMMO_OPTION",
+        "object_id": "O_PISTOLS_AMMO_OPTION",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -248,7 +248,7 @@
     },
 
     {
-        "object_id": "O_MAGNUM_AMMO_OPTION",
+        "object_id": "O_MAGNUMS_AMMO_OPTION",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -287,7 +287,7 @@
     },
 
     {
-        "object_id": "O_UZI_AMMO_OPTION",
+        "object_id": "O_UZIS_AMMO_OPTION",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -300,7 +300,7 @@
     },
 
     {
-        "object_id": "O_HARPOON_AMMO_OPTION",
+        "object_id": "O_HARPOON_GUN_AMMO_OPTION",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -378,7 +378,7 @@
     },
 
     {
-        "object_id": "O_LEADBAR_OPTION",
+        "object_id": "O_LEAD_BAR_OPTION",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -562,7 +562,7 @@
     },
 
     {
-        "object_id": "O_DETAIL_OPTION",
+        "object_id": "O_GRAPHICS_OPTION",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -588,7 +588,7 @@
     },
 
     {
-        "object_id": "O_CONTROL_OPTION",
+        "object_id": "O_CONTROLS_OPTION",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,

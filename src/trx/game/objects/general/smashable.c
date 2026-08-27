@@ -81,9 +81,9 @@ static void M_Control2(const int16_t item_num)
     item->is_collidable = false;
     Item_Shatter(item_num, 65278, 0);
 
-    if (item->object_id == O_SMASH_OBJECT_2) {
+    if (item->object_id == O_SMASHABLE_2) {
         Sound_Effect(SFX_BRITTLE_GROUND_BREAK, &item->pos, SPM_NORMAL);
-    } else if (item->object_id == O_SMASH_OBJECT_3) {
+    } else if (item->object_id == O_SMASHABLE_3) {
         Sound_Effect(SFX_EXPLOSION_1, &item->pos, SPM_NORMAL);
         Sound_Effect(SFX_EXPLOSION_2, &item->pos, SPM_NORMAL);
     }
@@ -171,9 +171,9 @@ void Smashable_Smash(const int16_t item_num)
     item->mesh_bits = ~1;
     Item_Shatter(item_num, 0b11111110'11111110, 0);
 
-    if (item->object_id == O_SMASH_OBJECT_1) {
+    if (item->object_id == O_SMASHABLE_1) {
         Sound_Effect(SFX_GLASS_BREAK, &item->pos, SPM_NORMAL);
-    } else if (item->object_id == O_SMASH_OBJECT_4) {
+    } else if (item->object_id == O_SMASHABLE_4) {
         Sound_Effect(SFX_SHUTTERS_BREAK, &item->pos, SPM_NORMAL);
     }
 
@@ -184,7 +184,7 @@ void Smashable_Smash(const int16_t item_num)
     Item_SetFinished(item, true);
 }
 
-REGISTER_OBJECT(O_SMASH_OBJECT_1, M_Setup1)
-REGISTER_OBJECT(O_SMASH_OBJECT_2, M_Setup2)
-REGISTER_OBJECT(O_SMASH_OBJECT_3, M_Setup2)
-REGISTER_OBJECT(O_SMASH_OBJECT_4, M_Setup1)
+REGISTER_OBJECT(O_SMASHABLE_1, M_Setup1)
+REGISTER_OBJECT(O_SMASHABLE_2, M_Setup2)
+REGISTER_OBJECT(O_SMASHABLE_3, M_Setup2)
+REGISTER_OBJECT(O_SMASHABLE_4, M_Setup1)

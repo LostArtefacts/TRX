@@ -199,7 +199,7 @@ static void M_DrawItem(
         return;
     }
 
-    if (inv_item->object_id == O_GLOBE_SELECT_OPTION) {
+    if (inv_item->object_id == O_GLOBE_OPTION) {
         Matrix_Rot16(ring->globe_select.rot);
 
         InvRing_Light(ring);

@@ -41,7 +41,7 @@
         <property category="TRX" defaultValue="50" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="50" description="Damage dealt by the bandit's shot." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
-    <!--placeholder for O_BARRACUDA..O_FISH-->
+    <!--placeholder for O_BARRACUDA..O_FISH_MUTANT-->
     <moveable id="-1">
         <property category="TRX" defaultValue="12" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="100" description="Damage dealt by the barracuda bite." displayName="Damage" internalName="damage" minValue="0" type="Int" />
@@ -137,7 +137,7 @@
         <property category="TRX" defaultValue="50" description="Damage dealt on hit." displayName="Damage" internalName="damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="false" description="Apply poison buildup in addition to hit damage." displayName="Poison" internalName="poison" type="Bool" />
     </moveable>
-    <!--placeholder for O_DINO_WARRIOR..O_TREX-->
+    <!--placeholder for O_DINO_MUTANT..O_TREX-->
     <moveable id="-1">
         <property category="TRX" defaultValue="100" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="1" description="Damage dealt by body contact." displayName="Touch Damage" internalName="touch_damage" minValue="0" type="Int" />
@@ -263,7 +263,7 @@
         <property category="TRX" defaultValue="30" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="400" description="Damage dealt by bite attacks." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
-    <!--placeholder for O_SKATEKID-->
+    <!--placeholder for O_SKATE_KID-->
     <moveable id="-1">
         <property category="TRX" defaultValue="125" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="50" description="Damage dealt by shots while stopped." displayName="Stop Shot Damage" internalName="stop_shot_damage" minValue="0" type="Int" />

@@ -47,8 +47,8 @@ static int16_t M_FindLinkedDoor(const ITEM *const item)
 
         const int16_t door_item_num = (int16_t)(intptr_t)cmd->parameter;
         const ITEM *const door_item = Item_Get(door_item_num);
-        if (door_item->object_id >= O_DOOR_TYPE_1
-            && door_item->object_id <= O_DOOR_TYPE_8) {
+        if (door_item->object_id >= O_DOOR_1
+            && door_item->object_id <= O_DOOR_8) {
             return door_item_num;
         }
     }

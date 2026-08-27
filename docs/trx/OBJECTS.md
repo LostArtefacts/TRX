@@ -305,7 +305,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DINO_WARRIOR
+#### O_DINO_MUTANT
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (25)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -362,7 +362,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_FISH
+#### O_FISH_MUTANT
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (26)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -662,7 +662,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SKATEKID
+#### O_SKATE_KID
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (30)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1840,7 +1840,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DOOR_TYPE_1
+#### O_DOOR_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (57)</th><th align="center">TR2 (106)</th><th align="center">TR3 (131)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1849,7 +1849,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DOOR_TYPE_2
+#### O_DOOR_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (58)</th><th align="center">TR2 (107)</th><th align="center">TR3 (132)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1858,7 +1858,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DOOR_TYPE_3
+#### O_DOOR_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (59)</th><th align="center">TR2 (108)</th><th align="center">TR3 (133)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1867,7 +1867,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DOOR_TYPE_4
+#### O_DOOR_4
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (60)</th><th align="center">TR2 (109)</th><th align="center">TR3 (134)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1876,7 +1876,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DOOR_TYPE_5
+#### O_DOOR_5
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (61)</th><th align="center">TR2 (110)</th><th align="center">TR3 (135)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1885,7 +1885,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DOOR_TYPE_6
+#### O_DOOR_6
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (62)</th><th align="center">TR2 (111)</th><th align="center">TR3 (136)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1894,7 +1894,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DOOR_TYPE_7
+#### O_DOOR_7
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (63)</th><th align="center">TR2 (112)</th><th align="center">TR3 (137)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1903,7 +1903,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DOOR_TYPE_8
+#### O_DOOR_8
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (64)</th><th align="center">TR2 (113)</th><th align="center">TR3 (138)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1945,7 +1945,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_FLAREBOX_ITEM
+#### O_FLARES_BOX_ITEM
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (187)</th><th align="center">TR2 (151)</th><th align="center">TR3 (178)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2024,7 +2024,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_HARPOON_AMMO_ITEM
+#### O_HARPOON_GUN_AMMO_ITEM
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (246)</th><th align="center">TR2 (146)</th><th align="center">TR3 (172)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2035,7 +2035,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_HARPOON_ITEM
+#### O_HARPOON_GUN_ITEM
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (243)</th><th align="center">TR2 (139)</th><th align="center">TR3 (164)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2392,7 +2392,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_LEADBAR_ITEM
+#### O_LEAD_BAR_ITEM
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (126)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2435,7 +2435,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_MAGNUM_AMMO_ITEM
+#### O_MAGNUMS_AMMO_ITEM
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (90)</th><th align="center">TR2 (283)</th><th align="center">TR3 (382)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2446,7 +2446,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_MAGNUM_ITEM
+#### O_MAGNUMS_ITEM
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (86)</th><th align="center">TR2 (282)</th><th align="center">TR3 (381)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2622,7 +2622,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PIRAHNAS
+#### O_PIRANHAS
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (338)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2631,7 +2631,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PISTOL_AMMO_ITEM
+#### O_PISTOLS_AMMO_ITEM
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (88)</th><th align="center">TR2 (142)</th><th align="center">TR3 (168)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2642,7 +2642,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PISTOL_ITEM
+#### O_PISTOLS_ITEM
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (84)</th><th align="center">TR2 (135)</th><th align="center">TR3 (160)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3392,7 +3392,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_TRAPDOOR_TYPE_1
+#### O_TRAPDOOR_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (65)</th><th align="center">TR2 (114)</th><th align="center">TR3 (139)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3400,7 +3400,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_TRAPDOOR_TYPE_2
+#### O_TRAPDOOR_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (66)</th><th align="center">TR2 (115)</th><th align="center">TR3 (140)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3408,7 +3408,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_TRAPDOOR_TYPE_3
+#### O_TRAPDOOR_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (67)</th><th align="center">TR2 (116)</th><th align="center">TR3 (141)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3434,7 +3434,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_UZI_AMMO_ITEM
+#### O_UZIS_AMMO_ITEM
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (91)</th><th align="center">TR2 (145)</th><th align="center">TR3 (171)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3445,7 +3445,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_UZI_ITEM
+#### O_UZIS_ITEM
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (87)</th><th align="center">TR2 (138)</th><th align="center">TR3 (163)</th><th>Description</th></tr></thead>
 <tbody>
