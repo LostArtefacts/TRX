@@ -993,11 +993,6 @@ static bool M_DrawSprite(
     const int32_t size, const BOUNDS_16 *const place_bounds,
     const BOUNDS_16 *const size_bounds, const ITEM *const item)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    if (lara_item == nullptr) {
-        return false;
-    }
-
     const OBJECT *const shadow_obj = Object_Get(O_SHADOW);
     if (!shadow_obj->loaded) {
         return false;
@@ -1011,17 +1006,17 @@ static bool M_DrawSprite(
         return false;
     }
 
-    // OG: shadow intensity is based on Lara's height above the floor, even for
-    // non-Lara items.
-    int32_t c = ((4096 - ABS(item->floor - item->pos.y)) >> 4) - 1;
+    XYZ_32 anchor_pos;
+    int32_t anchor_floor;
+    M_GetPlacement(item, place_bounds, &anchor_pos, &anchor_floor);
+
+    // OG: the shadow fades as the item rises above the floor.
+    int32_t c =
+        ((4096 - ABS(anchor_floor - item->interp.result.pos.y)) >> 4) - 1;
     if (g_Config.rendering.lighting_curve == LIGHTING_CURVE_SATURATE) {
         c >>= 1;
     }
     CLAMP(c, 32, 255);
-
-    XYZ_32 anchor_pos;
-    int32_t anchor_floor;
-    M_GetPlacement(item, place_bounds, &anchor_pos, &anchor_floor);
 
     const int32_t sprite_idx = shadow_obj->mesh_idx;
     const int32_t uvw_idx = Output_Textures_GetSpriteUVWIndex(sprite_idx, 0);
