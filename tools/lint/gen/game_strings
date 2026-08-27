@@ -668,6 +668,11 @@ def get_used_preset_strings(
             yield 0, name_gs
 
 
+def is_object_ref(value: object) -> bool:
+    """Report whether an object entry references another object."""
+    return isinstance(value, str) and value.startswith("$objects/")
+
+
 def get_objects_map(paths: list[Path]) -> dict[str, dict[str, str | list[str]]]:
     """
     Parse object-name definitions from names.def-like files.
@@ -687,7 +692,6 @@ def get_objects_map(paths: list[Path]) -> dict[str, dict[str, str | list[str]]]:
             {
                 "X_OBJ_NAME_DEFINE(id, names)": "@NAME(id, names)",
                 "X_OBJ_NAMES(...)": "__VA_ARGS__",
-                "X_OBJ_ALIAS_DEFINE(a, b)": "",
             },
         )
         for match in RE_OBJ_NAME_DEFINE.finditer(text):
@@ -812,6 +816,10 @@ class BaseResolver:
         trans_objs = self.trans_file.data.setdefault("objects", {})
         missing_objs: dict[str, str] = {}
         for key, obj in base_objs.items():
+            if is_object_ref(obj):
+                # A reference carries no words to translate.
+                trans_objs.pop(key, None)
+                continue
             if not isinstance(obj, dict):
                 continue
             base_name = obj.get("name")
@@ -1007,6 +1015,16 @@ def sync_base_strings(ctx: RunContext) -> None:
         if not isinstance(old_value, dict):
             old_value = {}
         new[key] = {**old_value, **value}
+    # Keep object references declared in the strings file.
+    for key, value in old.items():
+        if key not in new and is_object_ref(value):
+            target = value.removeprefix("$objects/")
+            if target not in ctx.object_names_dict:
+                raise SystemExit(
+                    f"objects/{key} names objects/{target}, which nothing declares"
+                )
+            new[key] = value
+    new = dict(sorted(new.items()))
     changed = [
         k for k, v in new.items() if json.dumps(old.get(k)) != json.dumps(v)
     ]
@@ -1116,6 +1134,8 @@ def flatten_object_names(ctx):
     for file in ctx.all_files:
         if object_names_map := file.data.get("objects"):
             for key, obj in object_names_map.items():
+                if is_object_ref(obj):
+                    continue
                 if obj.get("names"):
                     names = obj.pop("names")
                 else:

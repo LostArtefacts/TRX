@@ -2124,9 +2124,11 @@
         "autos_ammo_item": {
             "name": "Automatic Pistol Clips",
         },
+        "autos_ammo_option": "$objects/autos_ammo_item",
         "autos_item": {
             "name": "Automatic Pistols",
         },
+        "autos_option": "$objects/autos_item",
         "bacon_lara": {
             "name": "Bacon Lara",
         },
@@ -2187,6 +2189,7 @@
         "binoculars_item": {
             "name": "Binoculars",
         },
+        "binoculars_option": "$objects/binoculars_item",
         "bird_guardian": {
             "name": "Bird Monster",
         },
@@ -2316,12 +2319,16 @@
         "crossbow_ammo_1_item": {
             "name": "Crossbow Bolts",
         },
+        "crossbow_ammo_2_item": "$objects/crossbow_ammo_1_item",
+        "crossbow_ammo_3_item": "$objects/crossbow_ammo_1_item",
+        "crossbow_ammo_option": "$objects/crossbow_ammo_1_item",
         "crossbow_bolt": {
             "name": "Crossbow Bolt",
         },
         "crossbow_item": {
             "name": "Crossbow",
         },
+        "crossbow_option": "$objects/crossbow_item",
         "crow": {
             "name": "Crow",
         },
@@ -2331,6 +2338,7 @@
         "crowbar_item": {
             "name": "Crowbar",
         },
+        "crowbar_option": "$objects/crowbar_item",
         "cult_1": {
             "name": "Masked Goon 1",
         },
@@ -2364,9 +2372,11 @@
         "desert_eagle_ammo_item": {
             "name": "Desert Eagle Clips",
         },
+        "desert_eagle_ammo_option": "$objects/desert_eagle_ammo_item",
         "desert_eagle_item": {
             "name": "Desert Eagle",
         },
+        "desert_eagle_option": "$objects/desert_eagle_item",
         "detonator_box": {
             "name": "Detonator Box",
         },
@@ -2481,6 +2491,9 @@
         "examine_item_3": {
             "name": "Examine Item 3",
         },
+        "examine_option_1": "$objects/examine_item_1",
+        "examine_option_2": "$objects/examine_item_2",
+        "examine_option_3": "$objects/examine_item_3",
         "explosion_1": {
             "name": "Explosion 1",
         },
@@ -2571,6 +2584,7 @@
         "flares_box_item": {
             "name": "Flares Box",
         },
+        "flares_box_option": "$objects/flare_item",
         "flickering_light": {
             "name": "Flickering Light",
         },
@@ -2622,12 +2636,16 @@
         "grenade": {
             "name": "Grenade",
         },
+        "grenade_ammo_2_item": "$objects/grenade_ammo_item",
+        "grenade_ammo_3_item": "$objects/grenade_ammo_item",
         "grenade_ammo_item": {
             "name": "Grenades",
         },
+        "grenade_ammo_option": "$objects/grenade_ammo_item",
         "grenade_gun_item": {
             "name": "Grenade Launcher",
         },
+        "grenade_gun_option": "$objects/grenade_gun_item",
         "gun_flash": {
             "name": "Gun Flash",
         },
@@ -2640,9 +2658,11 @@
         "harpoon_gun_ammo_item": {
             "name": "Harpoons",
         },
+        "harpoon_gun_ammo_option": "$objects/harpoon_gun_ammo_item",
         "harpoon_gun_item": {
             "name": "Harpoon Gun",
         },
+        "harpoon_gun_option": "$objects/harpoon_gun_item",
         "hook": {
             "name": "Hook",
         },
@@ -2791,6 +2811,34 @@
         "key_item_9": {
             "name": "Key 9",
         },
+        "key_option_1": "$objects/key_item_1",
+        "key_option_10": "$objects/key_item_10",
+        "key_option_11": "$objects/key_item_11",
+        "key_option_12": "$objects/key_item_12",
+        "key_option_1_combo_1": "$objects/key_item_1_combo_1",
+        "key_option_1_combo_2": "$objects/key_item_1_combo_2",
+        "key_option_2": "$objects/key_item_2",
+        "key_option_2_combo_1": "$objects/key_item_2_combo_1",
+        "key_option_2_combo_2": "$objects/key_item_2_combo_2",
+        "key_option_3": "$objects/key_item_3",
+        "key_option_3_combo_1": "$objects/key_item_3_combo_1",
+        "key_option_3_combo_2": "$objects/key_item_3_combo_2",
+        "key_option_4": "$objects/key_item_4",
+        "key_option_4_combo_1": "$objects/key_item_4_combo_1",
+        "key_option_4_combo_2": "$objects/key_item_4_combo_2",
+        "key_option_5": "$objects/key_item_5",
+        "key_option_5_combo_1": "$objects/key_item_5_combo_1",
+        "key_option_5_combo_2": "$objects/key_item_5_combo_2",
+        "key_option_6": "$objects/key_item_6",
+        "key_option_6_combo_1": "$objects/key_item_6_combo_1",
+        "key_option_6_combo_2": "$objects/key_item_6_combo_2",
+        "key_option_7": "$objects/key_item_7",
+        "key_option_7_combo_1": "$objects/key_item_7_combo_1",
+        "key_option_7_combo_2": "$objects/key_item_7_combo_2",
+        "key_option_8": "$objects/key_item_8",
+        "key_option_8_combo_1": "$objects/key_item_8_combo_1",
+        "key_option_8_combo_2": "$objects/key_item_8_combo_2",
+        "key_option_9": "$objects/key_item_9",
         "kick_door_1": {
             "name": "Kick Door 1",
         },
@@ -2899,12 +2947,14 @@
                 "Big Medipack",
             ]
         },
+        "large_medipack_option": "$objects/large_medipack_item",
         "larson": {
             "name": "Larson",
         },
         "lasersight_item": {
             "name": "Laser Sight",
         },
+        "lasersight_option": "$objects/lasersight_item",
         "lava_wedge": {
             "name": "Lava Wedge",
         },
@@ -2912,6 +2962,7 @@
             "description": "",
             "name": "Lead Bar",
         },
+        "lead_bar_option": "$objects/lead_bar_item",
         "lens_flare": {
             "name": "Lens Flare",
         },
@@ -2936,18 +2987,22 @@
         "m16_ammo_item": {
             "name": "M16 Clips",
         },
+        "m16_ammo_option": "$objects/m16_ammo_item",
         "m16_flash": {
             "name": "M16 Flash",
         },
         "m16_item": {
             "name": "M16",
         },
+        "m16_option": "$objects/m16_item",
         "magnums_ammo_item": {
             "name": "Magnum Clips",
         },
+        "magnums_ammo_option": "$objects/magnums_ammo_item",
         "magnums_item": {
             "name": "Magnums",
         },
+        "magnums_option": "$objects/magnums_item",
         "mesh_swap_1": {
             "name": "Mesh Swap 1",
         },
@@ -3035,9 +3090,11 @@
         "mp5_ammo_item": {
             "name": "MP5 Clips",
         },
+        "mp5_ammo_option": "$objects/mp5_ammo_item",
         "mp5_item": {
             "name": "MP5",
         },
+        "mp5_option": "$objects/mp5_item",
         "mp_1": {
             "name": "MP 1",
         },
@@ -3059,6 +3116,7 @@
         "orca": {
             "name": "Orca",
         },
+        "passport_closed": "$objects/passport_option",
         "passport_option": {
             "name": "Game",
         },
@@ -3127,6 +3185,18 @@
         "pickup_item_4_combo_2": {
             "name": "Pickup Item 4 (Combo 2)",
         },
+        "pickup_option_1": "$objects/pickup_item_1",
+        "pickup_option_1_combo_1": "$objects/pickup_item_1_combo_1",
+        "pickup_option_1_combo_2": "$objects/pickup_item_1_combo_2",
+        "pickup_option_2": "$objects/pickup_item_2",
+        "pickup_option_2_combo_1": "$objects/pickup_item_2_combo_1",
+        "pickup_option_2_combo_2": "$objects/pickup_item_2_combo_2",
+        "pickup_option_3": "$objects/pickup_item_3",
+        "pickup_option_3_combo_1": "$objects/pickup_item_3_combo_1",
+        "pickup_option_3_combo_2": "$objects/pickup_item_3_combo_2",
+        "pickup_option_4": "$objects/pickup_item_4",
+        "pickup_option_4_combo_1": "$objects/pickup_item_4_combo_1",
+        "pickup_option_4_combo_2": "$objects/pickup_item_4_combo_2",
         "pierre": {
             "name": "Pierre",
         },
@@ -3136,9 +3206,11 @@
         "pistols_ammo_item": {
             "name": "Pistol Clips",
         },
+        "pistols_ammo_option": "$objects/pistols_ammo_item",
         "pistols_item": {
             "name": "Pistols",
         },
+        "pistols_option": "$objects/pistols_item",
         "player_1": {
             "name": "Cutscene Actor 1",
         },
@@ -3370,6 +3442,34 @@
         "puzzle_item_9": {
             "name": "Puzzle Item 9",
         },
+        "puzzle_option_1": "$objects/puzzle_item_1",
+        "puzzle_option_10": "$objects/puzzle_item_10",
+        "puzzle_option_11": "$objects/puzzle_item_11",
+        "puzzle_option_12": "$objects/puzzle_item_12",
+        "puzzle_option_1_combo_1": "$objects/puzzle_item_1_combo_1",
+        "puzzle_option_1_combo_2": "$objects/puzzle_item_1_combo_2",
+        "puzzle_option_2": "$objects/puzzle_item_2",
+        "puzzle_option_2_combo_1": "$objects/puzzle_item_2_combo_1",
+        "puzzle_option_2_combo_2": "$objects/puzzle_item_2_combo_2",
+        "puzzle_option_3": "$objects/puzzle_item_3",
+        "puzzle_option_3_combo_1": "$objects/puzzle_item_3_combo_1",
+        "puzzle_option_3_combo_2": "$objects/puzzle_item_3_combo_2",
+        "puzzle_option_4": "$objects/puzzle_item_4",
+        "puzzle_option_4_combo_1": "$objects/puzzle_item_4_combo_1",
+        "puzzle_option_4_combo_2": "$objects/puzzle_item_4_combo_2",
+        "puzzle_option_5": "$objects/puzzle_item_5",
+        "puzzle_option_5_combo_1": "$objects/puzzle_item_5_combo_1",
+        "puzzle_option_5_combo_2": "$objects/puzzle_item_5_combo_2",
+        "puzzle_option_6": "$objects/puzzle_item_6",
+        "puzzle_option_6_combo_1": "$objects/puzzle_item_6_combo_1",
+        "puzzle_option_6_combo_2": "$objects/puzzle_item_6_combo_2",
+        "puzzle_option_7": "$objects/puzzle_item_7",
+        "puzzle_option_7_combo_1": "$objects/puzzle_item_7_combo_1",
+        "puzzle_option_7_combo_2": "$objects/puzzle_item_7_combo_2",
+        "puzzle_option_8": "$objects/puzzle_item_8",
+        "puzzle_option_8_combo_1": "$objects/puzzle_item_8_combo_1",
+        "puzzle_option_8_combo_2": "$objects/puzzle_item_8_combo_2",
+        "puzzle_option_9": "$objects/puzzle_item_9",
         "quad_bike": {
             "name": "Quad Bike",
         },
@@ -3391,6 +3491,12 @@
         "quest_item_6": {
             "name": "Quest Item 6",
         },
+        "quest_option_1": "$objects/quest_item_1",
+        "quest_option_2": "$objects/quest_item_2",
+        "quest_option_3": "$objects/quest_item_3",
+        "quest_option_4": "$objects/quest_item_4",
+        "quest_option_5": "$objects/quest_item_5",
+        "quest_option_6": "$objects/quest_item_6",
         "raptor": {
             "name": "Raptor",
         },
@@ -3409,9 +3515,11 @@
         "revolver_ammo_item": {
             "name": "Revolver Ammo",
         },
+        "revolver_ammo_option": "$objects/revolver_ammo_item",
         "revolver_item": {
             "name": "Revolver",
         },
+        "revolver_option": "$objects/revolver_item",
         "rib": {
             "name": [
                 "Rigid Inflatable Boat",
@@ -3427,9 +3535,11 @@
         "rocket_ammo_item": {
             "name": "Rockets",
         },
+        "rocket_ammo_option": "$objects/rocket_ammo_item",
         "rocket_gun_item": {
             "name": "Rocket Launcher",
         },
+        "rocket_gun_option": "$objects/rocket_gun_item",
         "rolling_ball_1": {
             "name": [
                 "Boulder 1",
@@ -3496,6 +3606,10 @@
         "scion_item_1": {
             "name": "Scion",
         },
+        "scion_item_2": "$objects/scion_item_1",
+        "scion_item_3": "$objects/scion_item_1",
+        "scion_item_4": "$objects/scion_item_1",
+        "scion_option": "$objects/scion_item_1",
         "secret_1": {
             "name": "Secret 1",
         },
@@ -3529,12 +3643,15 @@
         "shiva": {
             "name": "Shiva",
         },
+        "shotgun_ammo_2_item": "$objects/shotgun_ammo_item",
         "shotgun_ammo_item": {
             "name": "Shotgun Shells",
         },
+        "shotgun_ammo_option": "$objects/shotgun_ammo_item",
         "shotgun_item": {
             "name": "Shotgun",
         },
+        "shotgun_option": "$objects/shotgun_item",
         "shotgun_shell": {
             "name": "Shotgun Shell",
         },
@@ -3565,6 +3682,7 @@
         "small_medipack_item": {
             "name": "Small Medipack",
         },
+        "small_medipack_option": "$objects/small_medipack_item",
         "smashable_1": {
             "name": [
                 "Smashable 1",
@@ -3851,9 +3969,11 @@
         "uzis_ammo_item": {
             "name": "Uzi Clips",
         },
+        "uzis_ammo_option": "$objects/uzis_ammo_item",
         "uzis_item": {
             "name": "Uzis",
         },
+        "uzis_option": "$objects/uzis_item",
         "vole": {
             "name": [
                 "Vole",
@@ -3887,12 +4007,22 @@
         "waterfall_mist": {
             "name": "Waterfall Mist",
         },
+        "waterskin_1_1": "$objects/waterskin_1_empty",
+        "waterskin_1_2": "$objects/waterskin_1_empty",
+        "waterskin_1_3": "$objects/waterskin_1_empty",
         "waterskin_1_empty": {
             "name": "Small Waterskin",
         },
+        "waterskin_1_option": "$objects/waterskin_1_empty",
+        "waterskin_2_1": "$objects/waterskin_2_empty",
+        "waterskin_2_2": "$objects/waterskin_2_empty",
+        "waterskin_2_3": "$objects/waterskin_2_empty",
+        "waterskin_2_4": "$objects/waterskin_2_empty",
+        "waterskin_2_5": "$objects/waterskin_2_empty",
         "waterskin_2_empty": {
             "name": "Large Waterskin",
         },
+        "waterskin_2_option": "$objects/waterskin_2_empty",
         "white_light": {
             "name": "White Light",
         },

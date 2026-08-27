@@ -33,66 +33,41 @@ X_OBJ_NAME_DEFINE(O_GRENADE_AMMO_ITEM,      X_OBJ_NAMES("Grenades"))
 X_OBJ_NAME_DEFINE(O_ROCKET_AMMO_ITEM,       X_OBJ_NAMES("Rockets"))
 X_OBJ_NAME_DEFINE(O_CROSSBOW_AMMO_1_ITEM,   X_OBJ_NAMES("Crossbow Bolts"))
 X_OBJ_NAME_DEFINE(O_REVOLVER_AMMO_ITEM,     X_OBJ_NAMES("Revolver Ammo"))
-X_OBJ_ALIAS_DEFINE(O_CROSSBOW_AMMO_2_ITEM, O_CROSSBOW_AMMO_1_ITEM)
-X_OBJ_ALIAS_DEFINE(O_CROSSBOW_AMMO_3_ITEM, O_CROSSBOW_AMMO_1_ITEM)
-X_OBJ_ALIAS_DEFINE(O_SHOTGUN_AMMO_2_ITEM,  O_SHOTGUN_AMMO_ITEM)
-X_OBJ_ALIAS_DEFINE(O_GRENADE_AMMO_2_ITEM,  O_GRENADE_AMMO_ITEM)
-X_OBJ_ALIAS_DEFINE(O_GRENADE_AMMO_3_ITEM,  O_GRENADE_AMMO_ITEM)
-
 // Pickups
-X_OBJ_NAME_DEFINE(O_LEAD_BAR_ITEM,     X_OBJ_NAMES("Lead Bar"))
-X_OBJ_NAME_DEFINE(O_SCION_ITEM_1,      X_OBJ_NAMES("Scion"))
-X_OBJ_NAME_DEFINE(O_LASERSIGHT_ITEM,   X_OBJ_NAMES("Laser Sight"))
-X_OBJ_NAME_DEFINE(O_BINOCULARS_ITEM,   X_OBJ_NAMES("Binoculars"))
-X_OBJ_NAME_DEFINE(O_CROWBAR_ITEM,      X_OBJ_NAMES("Crowbar"))
-X_OBJ_NAME_DEFINE(O_WATERSKIN_1_EMPTY, X_OBJ_NAMES("Small Waterskin"))
-X_OBJ_NAME_DEFINE(O_WATERSKIN_2_EMPTY, X_OBJ_NAMES("Large Waterskin"))
-X_OBJ_ALIAS_DEFINE(O_WATERSKIN_1_1, O_WATERSKIN_1_EMPTY)
-X_OBJ_ALIAS_DEFINE(O_WATERSKIN_1_2, O_WATERSKIN_1_EMPTY)
-X_OBJ_ALIAS_DEFINE(O_WATERSKIN_1_3, O_WATERSKIN_1_EMPTY)
-X_OBJ_ALIAS_DEFINE(O_WATERSKIN_2_1, O_WATERSKIN_2_EMPTY)
-X_OBJ_ALIAS_DEFINE(O_WATERSKIN_2_2, O_WATERSKIN_2_EMPTY)
-X_OBJ_ALIAS_DEFINE(O_WATERSKIN_2_3, O_WATERSKIN_2_EMPTY)
-X_OBJ_ALIAS_DEFINE(O_WATERSKIN_2_4, O_WATERSKIN_2_EMPTY)
-X_OBJ_ALIAS_DEFINE(O_WATERSKIN_2_5, O_WATERSKIN_2_EMPTY)
-
+X_OBJ_NAME_DEFINE(O_LEAD_BAR_ITEM,          X_OBJ_NAMES("Lead Bar"))
+X_OBJ_NAME_DEFINE(O_SCION_ITEM_1,           X_OBJ_NAMES("Scion"))
+X_OBJ_NAME_DEFINE(O_LASERSIGHT_ITEM,        X_OBJ_NAMES("Laser Sight"))
+X_OBJ_NAME_DEFINE(O_BINOCULARS_ITEM,        X_OBJ_NAMES("Binoculars"))
+X_OBJ_NAME_DEFINE(O_CROWBAR_ITEM,           X_OBJ_NAMES("Crowbar"))
+X_OBJ_NAME_DEFINE(O_WATERSKIN_1_EMPTY,      X_OBJ_NAMES("Small Waterskin"))
+X_OBJ_NAME_DEFINE(O_WATERSKIN_2_EMPTY,      X_OBJ_NAMES("Large Waterskin"))
 // Slot-numbered pickups: names and inventory ring aliases
 #define X_PICKUP_KEY(n)                                                        \
-    X_OBJ_NAME_DEFINE(O_KEY_ITEM_##n, X_OBJ_NAMES("Key " #n))       \
-    X_OBJ_ALIAS_DEFINE(O_KEY_OPTION_##n, O_KEY_ITEM_##n)
+    X_OBJ_NAME_DEFINE(O_KEY_ITEM_##n, X_OBJ_NAMES("Key " #n))
 #define X_PICKUP_PUZZLE(n)                                                     \
     X_OBJ_NAME_DEFINE(                                                         \
-        O_PUZZLE_ITEM_##n, X_OBJ_NAMES("Puzzle Item " #n))       \
-    X_OBJ_ALIAS_DEFINE(O_PUZZLE_OPTION_##n, O_PUZZLE_ITEM_##n)
+        O_PUZZLE_ITEM_##n, X_OBJ_NAMES("Puzzle Item " #n))
 #define X_PICKUP_PICKUP(n)                                                     \
     X_OBJ_NAME_DEFINE(                                                         \
-        O_PICKUP_ITEM_##n, X_OBJ_NAMES("Pickup Item " #n))       \
-    X_OBJ_ALIAS_DEFINE(O_PICKUP_OPTION_##n, O_PICKUP_ITEM_##n)
+        O_PICKUP_ITEM_##n, X_OBJ_NAMES("Pickup Item " #n))
 #define X_PICKUP_QUEST(n)                                                      \
     X_OBJ_NAME_DEFINE(                                                         \
-        O_QUEST_ITEM_##n, X_OBJ_NAMES("Quest Item " #n))          \
-    X_OBJ_ALIAS_DEFINE(O_QUEST_OPTION_##n, O_QUEST_ITEM_##n)
+        O_QUEST_ITEM_##n, X_OBJ_NAMES("Quest Item " #n))
 #define X_PICKUP_KEY_COMBO(n, c)                                               \
     X_OBJ_NAME_DEFINE(                                                         \
         O_KEY_ITEM_##n##_COMBO_##c,                    \
-        X_OBJ_NAMES("Key " #n " (Combo " #c ")"))                              \
-    X_OBJ_ALIAS_DEFINE(O_KEY_OPTION_##n##_COMBO_##c, O_KEY_ITEM_##n##_COMBO_##c)
+        X_OBJ_NAMES("Key " #n " (Combo " #c ")"))
 #define X_PICKUP_PUZZLE_COMBO(n, c)                                            \
     X_OBJ_NAME_DEFINE(                                                         \
         O_PUZZLE_ITEM_##n##_COMBO_##c,              \
-        X_OBJ_NAMES("Puzzle Item " #n " (Combo " #c ")"))                      \
-    X_OBJ_ALIAS_DEFINE(                                                        \
-        O_PUZZLE_OPTION_##n##_COMBO_##c, O_PUZZLE_ITEM_##n##_COMBO_##c)
+        X_OBJ_NAMES("Puzzle Item " #n " (Combo " #c ")"))
 #define X_PICKUP_PICKUP_COMBO(n, c)                                            \
     X_OBJ_NAME_DEFINE(                                                         \
         O_PICKUP_ITEM_##n##_COMBO_##c,              \
-        X_OBJ_NAMES("Pickup Item " #n " (Combo " #c ")"))                      \
-    X_OBJ_ALIAS_DEFINE(                                                        \
-        O_PICKUP_OPTION_##n##_COMBO_##c, O_PICKUP_ITEM_##n##_COMBO_##c)
+        X_OBJ_NAMES("Pickup Item " #n " (Combo " #c ")"))
 #define X_PICKUP_EXAMINE(n)                                                    \
     X_OBJ_NAME_DEFINE(                                                         \
-        O_EXAMINE_ITEM_##n, X_OBJ_NAMES("Examine Item " #n))    \
-    X_OBJ_ALIAS_DEFINE(O_EXAMINE_OPTION_##n, O_EXAMINE_ITEM_##n)
+        O_EXAMINE_ITEM_##n, X_OBJ_NAMES("Examine Item " #n))
 #include <trx/game/objects/pickups.def>
 #undef X_PICKUP_EXAMINE
 #undef X_PICKUP_PICKUP_COMBO
@@ -102,97 +77,51 @@ X_OBJ_ALIAS_DEFINE(O_WATERSKIN_2_5, O_WATERSKIN_2_EMPTY)
 #undef X_PICKUP_PICKUP
 #undef X_PICKUP_PUZZLE
 #undef X_PICKUP_KEY
-X_OBJ_NAME_DEFINE(O_SECRET_1, X_OBJ_NAMES("Secret 1"))
-X_OBJ_NAME_DEFINE(O_SECRET_2, X_OBJ_NAMES("Secret 2"))
-X_OBJ_NAME_DEFINE(O_SECRET_3, X_OBJ_NAMES("Secret 3"))
-X_OBJ_ALIAS_DEFINE(O_SCION_ITEM_2, O_SCION_ITEM_1)
-X_OBJ_ALIAS_DEFINE(O_SCION_ITEM_3, O_SCION_ITEM_1)
-X_OBJ_ALIAS_DEFINE(O_SCION_ITEM_4, O_SCION_ITEM_1)
-
+X_OBJ_NAME_DEFINE(O_SECRET_1,               X_OBJ_NAMES("Secret 1"))
+X_OBJ_NAME_DEFINE(O_SECRET_2,               X_OBJ_NAMES("Secret 2"))
+X_OBJ_NAME_DEFINE(O_SECRET_3,               X_OBJ_NAMES("Secret 3"))
 // Inventory ring
-X_OBJ_NAME_DEFINE(O_COMPASS_OPTION,   X_OBJ_NAMES("Compass"))
-X_OBJ_NAME_DEFINE(O_STOPWATCH_OPTION, X_OBJ_NAMES("Statistics"))
-X_OBJ_NAME_DEFINE(O_PASSPORT_OPTION,  X_OBJ_NAMES("Game"))
-X_OBJ_NAME_DEFINE(O_PHOTO_OPTION,     X_OBJ_NAMES("Lara's Home"))
-X_OBJ_NAME_DEFINE(O_GRAPHICS_OPTION,  X_OBJ_NAMES("Graphics"))
-X_OBJ_NAME_DEFINE(O_CONTROLS_OPTION,  X_OBJ_NAMES("Controls"))
-X_OBJ_NAME_DEFINE(O_SOUND_OPTION,     X_OBJ_NAMES("Sound"))
-X_OBJ_NAME_DEFINE(O_GAMMA_OPTION,     X_OBJ_NAMES("Gamma"))
-X_OBJ_NAME_DEFINE(O_GLOBE_OPTION,     X_OBJ_NAMES("Globe"))
-X_OBJ_NAME_DEFINE(O_PDA_OPTION,       X_OBJ_NAMES("Gameplay"))
-X_OBJ_ALIAS_DEFINE(O_PASSPORT_CLOSED,    O_PASSPORT_OPTION)
-
+X_OBJ_NAME_DEFINE(O_COMPASS_OPTION,         X_OBJ_NAMES("Compass"))
+X_OBJ_NAME_DEFINE(O_STOPWATCH_OPTION,       X_OBJ_NAMES("Statistics"))
+X_OBJ_NAME_DEFINE(O_PASSPORT_OPTION,        X_OBJ_NAMES("Game"))
+X_OBJ_NAME_DEFINE(O_PHOTO_OPTION,           X_OBJ_NAMES("Lara's Home"))
+X_OBJ_NAME_DEFINE(O_GRAPHICS_OPTION,        X_OBJ_NAMES("Graphics"))
+X_OBJ_NAME_DEFINE(O_CONTROLS_OPTION,        X_OBJ_NAMES("Controls"))
+X_OBJ_NAME_DEFINE(O_SOUND_OPTION,           X_OBJ_NAMES("Sound"))
+X_OBJ_NAME_DEFINE(O_GAMMA_OPTION,           X_OBJ_NAMES("Gamma"))
+X_OBJ_NAME_DEFINE(O_GLOBE_OPTION,           X_OBJ_NAMES("Globe"))
+X_OBJ_NAME_DEFINE(O_PDA_OPTION,             X_OBJ_NAMES("Gameplay"))
 // Inventory ring - consumables
-X_OBJ_ALIAS_DEFINE(O_SMALL_MEDIPACK_OPTION, O_SMALL_MEDIPACK_ITEM)
-X_OBJ_ALIAS_DEFINE(O_LARGE_MEDIPACK_OPTION, O_LARGE_MEDIPACK_ITEM)
-X_OBJ_ALIAS_DEFINE(O_FLARES_BOX_OPTION,     O_FLARE_ITEM)
-
 // Inventory ring - guns
-X_OBJ_ALIAS_DEFINE(O_PISTOLS_OPTION,      O_PISTOLS_ITEM)
-X_OBJ_ALIAS_DEFINE(O_SHOTGUN_OPTION,      O_SHOTGUN_ITEM)
-X_OBJ_ALIAS_DEFINE(O_MAGNUMS_OPTION,      O_MAGNUMS_ITEM)
-X_OBJ_ALIAS_DEFINE(O_AUTOS_OPTION,        O_AUTOS_ITEM)
-X_OBJ_ALIAS_DEFINE(O_DESERT_EAGLE_OPTION, O_DESERT_EAGLE_ITEM)
-X_OBJ_ALIAS_DEFINE(O_UZIS_OPTION,         O_UZIS_ITEM)
-X_OBJ_ALIAS_DEFINE(O_HARPOON_GUN_OPTION,  O_HARPOON_GUN_ITEM)
-X_OBJ_ALIAS_DEFINE(O_M16_OPTION,          O_M16_ITEM)
-X_OBJ_ALIAS_DEFINE(O_MP5_OPTION,          O_MP5_ITEM)
-X_OBJ_ALIAS_DEFINE(O_GRENADE_GUN_OPTION,  O_GRENADE_GUN_ITEM)
-X_OBJ_ALIAS_DEFINE(O_ROCKET_GUN_OPTION,   O_ROCKET_GUN_ITEM)
-X_OBJ_ALIAS_DEFINE(O_CROSSBOW_OPTION,     O_CROSSBOW_ITEM)
-X_OBJ_ALIAS_DEFINE(O_REVOLVER_OPTION,     O_REVOLVER_ITEM)
-
 // Inventory ring - ammo
-X_OBJ_ALIAS_DEFINE(O_PISTOLS_AMMO_OPTION,      O_PISTOLS_AMMO_ITEM)
-X_OBJ_ALIAS_DEFINE(O_SHOTGUN_AMMO_OPTION,      O_SHOTGUN_AMMO_ITEM)
-X_OBJ_ALIAS_DEFINE(O_MAGNUMS_AMMO_OPTION,      O_MAGNUMS_AMMO_ITEM)
-X_OBJ_ALIAS_DEFINE(O_AUTOS_AMMO_OPTION,        O_AUTOS_AMMO_ITEM)
-X_OBJ_ALIAS_DEFINE(O_DESERT_EAGLE_AMMO_OPTION, O_DESERT_EAGLE_AMMO_ITEM)
-X_OBJ_ALIAS_DEFINE(O_UZIS_AMMO_OPTION,         O_UZIS_AMMO_ITEM)
-X_OBJ_ALIAS_DEFINE(O_HARPOON_GUN_AMMO_OPTION,  O_HARPOON_GUN_AMMO_ITEM)
-X_OBJ_ALIAS_DEFINE(O_M16_AMMO_OPTION,          O_M16_AMMO_ITEM)
-X_OBJ_ALIAS_DEFINE(O_MP5_AMMO_OPTION,          O_MP5_AMMO_ITEM)
-X_OBJ_ALIAS_DEFINE(O_GRENADE_AMMO_OPTION,      O_GRENADE_AMMO_ITEM)
-X_OBJ_ALIAS_DEFINE(O_ROCKET_AMMO_OPTION,       O_ROCKET_AMMO_ITEM)
-X_OBJ_ALIAS_DEFINE(O_CROSSBOW_AMMO_OPTION,     O_CROSSBOW_AMMO_1_ITEM)
-X_OBJ_ALIAS_DEFINE(O_REVOLVER_AMMO_OPTION,     O_REVOLVER_AMMO_ITEM)
-
 // Inventory ring - pickups
-X_OBJ_ALIAS_DEFINE(O_LEAD_BAR_OPTION,    O_LEAD_BAR_ITEM)
-X_OBJ_ALIAS_DEFINE(O_SCION_OPTION,       O_SCION_ITEM_1)
-X_OBJ_ALIAS_DEFINE(O_LASERSIGHT_OPTION,  O_LASERSIGHT_ITEM)
-X_OBJ_ALIAS_DEFINE(O_BINOCULARS_OPTION,  O_BINOCULARS_ITEM)
-X_OBJ_ALIAS_DEFINE(O_CROWBAR_OPTION,     O_CROWBAR_ITEM)
-X_OBJ_ALIAS_DEFINE(O_WATERSKIN_1_OPTION, O_WATERSKIN_1_EMPTY)
-X_OBJ_ALIAS_DEFINE(O_WATERSKIN_2_OPTION, O_WATERSKIN_2_EMPTY)
-
 // Lara animations
-X_OBJ_NAME_DEFINE(O_LARA,              X_OBJ_NAMES("Lara"))
-X_OBJ_NAME_DEFINE(O_LARA_HAIR,         X_OBJ_NAMES("Lara's Braid"))
-X_OBJ_NAME_DEFINE(O_LARA_PISTOLS,      X_OBJ_NAMES("Pistols Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_SHOTGUN,      X_OBJ_NAMES("Shotgun Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_MAGNUMS,      X_OBJ_NAMES("Magnums Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_AUTOS,        X_OBJ_NAMES("Automatic Pistols Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_DESERT_EAGLE, X_OBJ_NAMES("Desert Eagle Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_UZIS,         X_OBJ_NAMES("Uzis Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_M16,          X_OBJ_NAMES("M16 Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_MP5,          X_OBJ_NAMES("MP5 Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_GRENADE_GUN,  X_OBJ_NAMES("Grenade Launcher Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_ROCKET_GUN,   X_OBJ_NAMES("Rocket Launcher Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_HARPOON_GUN,  X_OBJ_NAMES("Harpoon Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_CROSSBOW,     X_OBJ_NAMES("Crossbow Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_REVOLVER,     X_OBJ_NAMES("Revolver Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_FLARE,        X_OBJ_NAMES("Flare Animation"))
-X_OBJ_NAME_DEFINE(O_CROWBAR_ANIM,      X_OBJ_NAMES("Crowbar Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_EXTRA,        X_OBJ_NAMES("Lara's Extra Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_SKIDOO,       X_OBJ_NAMES("Snowmobile Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_BOAT,         X_OBJ_NAMES("Boat Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_QUAD_BIKE,    X_OBJ_NAMES("Quad Bike Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_MOUNTED_GUN,  X_OBJ_NAMES("Mounted Gun Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_KAYAK,        X_OBJ_NAMES("Kayak Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_UPV,          X_OBJ_NAMES("UPV Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_RIB,          X_OBJ_NAMES("RIB Animation"))
-X_OBJ_NAME_DEFINE(O_LARA_MINE_CART,    X_OBJ_NAMES("Mine Cart Animation"))
+X_OBJ_NAME_DEFINE(O_LARA,                   X_OBJ_NAMES("Lara"))
+X_OBJ_NAME_DEFINE(O_LARA_HAIR,              X_OBJ_NAMES("Lara's Braid"))
+X_OBJ_NAME_DEFINE(O_LARA_PISTOLS,           X_OBJ_NAMES("Pistols Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_SHOTGUN,           X_OBJ_NAMES("Shotgun Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_MAGNUMS,           X_OBJ_NAMES("Magnums Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_AUTOS,             X_OBJ_NAMES("Automatic Pistols Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_DESERT_EAGLE,      X_OBJ_NAMES("Desert Eagle Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_UZIS,              X_OBJ_NAMES("Uzis Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_M16,               X_OBJ_NAMES("M16 Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_MP5,               X_OBJ_NAMES("MP5 Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_GRENADE_GUN,       X_OBJ_NAMES("Grenade Launcher Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_ROCKET_GUN,        X_OBJ_NAMES("Rocket Launcher Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_HARPOON_GUN,       X_OBJ_NAMES("Harpoon Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_CROSSBOW,          X_OBJ_NAMES("Crossbow Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_REVOLVER,          X_OBJ_NAMES("Revolver Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_FLARE,             X_OBJ_NAMES("Flare Animation"))
+X_OBJ_NAME_DEFINE(O_CROWBAR_ANIM,           X_OBJ_NAMES("Crowbar Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_EXTRA,             X_OBJ_NAMES("Lara's Extra Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_SKIDOO,            X_OBJ_NAMES("Snowmobile Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_BOAT,              X_OBJ_NAMES("Boat Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_QUAD_BIKE,         X_OBJ_NAMES("Quad Bike Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_MOUNTED_GUN,       X_OBJ_NAMES("Mounted Gun Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_KAYAK,             X_OBJ_NAMES("Kayak Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_UPV,               X_OBJ_NAMES("UPV Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_RIB,               X_OBJ_NAMES("RIB Animation"))
+X_OBJ_NAME_DEFINE(O_LARA_MINE_CART,         X_OBJ_NAMES("Mine Cart Animation"))
 
 // Vehicles
 X_OBJ_NAME_DEFINE(O_SKIDOO_FAST, X_OBJ_NAMES("Red Snowmobile"))

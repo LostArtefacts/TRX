@@ -131,6 +131,7 @@ The document is organized as follows:
     "objects": {
         "lara": {"name": "Lara"},
         "dog": {"names": ["Dog", "Doberman"]},
+        "key_option_1": "$objects/key_item_1",
         // etc
     }
 }
@@ -265,6 +266,22 @@ The document is organized as follows:
   </tr>
 </table>
 
+### Objects that stand for other objects
+
+An object entry can name another object instead of holding its own fields:
+
+```json5
+"objects": {
+    "key_item_1": {"name": "Gold Key"},
+    "key_option_1": "$objects/key_item_1"
+}
+```
+
+The object reads fields from the object it names, including `name` and
+`description`. A level that renames that object renames the reference too.
+This keeps an inventory option in step with the item it shows. Reference
+entries hold no text, so translation files do not need them.
+
 ### Object entry fields
 
 <table>
@@ -336,8 +353,10 @@ The document is organized as follows:
 > [!NOTE]
 > Nearly all pickup items exist in two forms, as early games differentiate
 > between a sprite displayed on the ground and a 3D object depicted in the
-> inventory ring. Each form has its own key. Secrets are a notable exception,
-> as they never appear in the inventory ring in the original game.
+> inventory ring. Each form has its own key, and the inventory one references
+> the ground one, so renaming the ground key renames both. Secrets are a
+> notable exception, as they never appear in the inventory ring in the
+> original game.
 
 ## Translation Workflow
 

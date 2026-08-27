@@ -293,7 +293,7 @@ void Lara_UseItem(const OBJECT_ID obj_id)
     ITEM *const lara_item = Lara_GetItem();
 
     LARA_GUN_TYPE request_gun_type =
-        Gun_GetTypeForObject(Object_ResolveAlias(obj_id));
+        Gun_GetTypeForObject(Inv_GetItemPickup(obj_id));
 
     switch (obj_id) {
     case O_FLARES_BOX_ITEM:

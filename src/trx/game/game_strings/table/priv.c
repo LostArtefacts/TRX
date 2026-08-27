@@ -13,6 +13,7 @@ static void M_FreeTable(GS_TABLE *const gs_table)
         GS_OBJECT_ENTRY *cur = gs_table->objects;
         while (cur->key != nullptr) {
             Memory_FreePointer(&cur->key);
+            Memory_FreePointer(&cur->ref);
             if (cur->names != nullptr) {
                 for (size_t j = 0; cur->names[j] != nullptr; j++) {
                     Memory_FreePointer((void **)&cur->names[j]);
