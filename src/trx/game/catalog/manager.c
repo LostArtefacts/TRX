@@ -3,9 +3,11 @@
 #include <trx/core/csv.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/core/subsystem.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
+#include <trx/game/catalog/table.h>
 #include <trx/game/items/actions/ids.h>
 #include <trx/game/lara/enum.h>
 #include <trx/game/music/ids.h>
@@ -131,6 +133,10 @@ __attribute__((constructor)) static void M_MintBuiltIns(void)
 // starts from what the exe names.
 static void M_Shutdown(void)
 {
+    // Drop what is keyed by a minted identity before the ids are given out
+    // again, so that the next mod does not read the last one's rows.
+    CatalogTable_FreeAll();
+
     for (size_t ctx = 0; ctx < CATALOG_CONTEXT_MAX; ctx++) {
         M_ClearGameIDMap(&m_GameID2EnumMap[ctx]);
         M_NAME_ENTRY *cur, *tmp;
@@ -152,22 +158,48 @@ static void M_Shutdown(void)
     }
 }
 
-RESULT Catalog_Mint(
-    const CATALOG_CONTEXT context, const char *const key,
-    CATALOG_ID *const out_id)
+static CATALOG_ID M_Add(const CATALOG_CONTEXT context, const char *const key)
 {
     const CATALOG_ID id = m_Counts[context];
-    MUST(M_AddName(context, id, key));
-
     m_Counts[context]++;
     m_Keys[context] =
         Memory_Realloc(m_Keys[context], sizeof(char *) * m_Counts[context]);
     m_GameIDs[context] =
         Memory_Realloc(m_GameIDs[context], sizeof(int32_t) * m_Counts[context]);
-    m_Keys[context][id] = Memory_DupStr(key);
+    m_Keys[context][id] = key != nullptr ? Memory_DupStr(key) : nullptr;
     m_GameIDs[context][id] = -1;
+    return id;
+}
 
-    *out_id = id;
+CATALOG_ID Catalog_MintAnonymous(const CATALOG_CONTEXT context)
+{
+    return M_Add(context, nullptr);
+}
+
+bool Catalog_IsValidKey(const char *const key)
+{
+    if (key == nullptr || key[0] == '\0') {
+        return false;
+    }
+    for (const char *c = key; *c != '\0'; c++) {
+        const bool ok = (*c >= 'a' && *c <= 'z') || (*c >= 'A' && *c <= 'Z')
+            || (*c >= '0' && *c <= '9') || *c == ':' || *c == '_' || *c == '-';
+        if (!ok) {
+            return false;
+        }
+    }
+    return true;
+}
+
+RESULT Catalog_Mint(
+    const CATALOG_CONTEXT context, const char *const key,
+    CATALOG_ID *const out_id)
+{
+    FAIL_IF(
+        !Catalog_IsValidKey(key), "'%s' is not a name an identity may take",
+        key);
+    MUST(M_AddName(context, m_Counts[context], key));
+    *out_id = M_Add(context, key);
     return OK;
 }
 
@@ -249,9 +281,13 @@ RESULT Catalog_Load(
         char *const name_str = CSV_Trim(name_buf);
         const int32_t game_id = (int32_t)strtol(id_str, nullptr, 10);
 
-        const CATALOG_ID id = Catalog_FromKey(context, name_str, -1);
+        CATALOG_ID id = Catalog_FromKey(context, name_str, -1);
         if (id < 0) {
-            continue;
+            // A row naming something the exe has no constant for declares the
+            // identity it names.
+            if (!SHOULD(Catalog_Mint(context, name_str, &id), csv_path)) {
+                continue;
+            }
         }
 
         RESULT result = Catalog_BindSlot(context, id, game_id);
