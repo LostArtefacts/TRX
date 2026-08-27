@@ -1,7 +1,6 @@
 #include <trx/game/objects/names.h>
 
 #include <trx/core/memory.h>
-#include <trx/core/strings/fuzzy_match.h>
 #include <trx/core/subsystem.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
@@ -147,12 +146,6 @@ const char *Object_GetName(const OBJECT_ID obj_id)
     return entry ? entry->slot : nullptr;
 }
 
-const char *const *Object_GetNamePtr(const OBJECT_ID obj_id)
-{
-    M_NAME_ENTRY *entry = M_ResolveNameEntry(obj_id);
-    return entry ? &entry->slot : nullptr;
-}
-
 const char *Object_GetDescription(OBJECT_ID obj_id)
 {
     M_NAME_ENTRY *const entry = M_ResolveNameEntry(obj_id);
@@ -181,90 +174,6 @@ const char *const *Object_GetDefaultNames(const OBJECT_ID obj_id)
 {
     const M_DEFAULT *const def = M_ResolveDefault(obj_id);
     return def != nullptr ? def->default_names : nullptr;
-}
-
-OBJECT_NAME_MATCH *Object_IdsFromName(
-    const char *user_input, int32_t *out_match_count, bool (*filter)(OBJECT_ID))
-{
-    VECTOR *source = Vector_Create(sizeof(STRING_FUZZY_SOURCE));
-
-    for (OBJECT_ID obj_id = O_FIRST; obj_id < O_NUMBER_OF; obj_id++) {
-        if (filter != nullptr && !filter(obj_id)) {
-            continue;
-        }
-
-        const M_NAME_ENTRY *const name_entry = M_ResolveNameEntry(obj_id);
-        if (name_entry->names != nullptr) {
-            for (int32_t i = 0; i < name_entry->names->count; i++) {
-                const char *name = *(char **)Vector_Get(name_entry->names, i);
-                if (name != nullptr) {
-                    STRING_FUZZY_SOURCE source_item = {
-                        .key = name,
-                        .value = (void *)(intptr_t)obj_id,
-                        .weight = 2,
-                    };
-                    Vector_Add(source, &source_item);
-                }
-            }
-        }
-
-        if (Object_IsType(obj_id, g_PickupObjects)) {
-            STRING_FUZZY_SOURCE source_item = {
-                .key = "pickup",
-                .value = (void *)(intptr_t)obj_id,
-                .weight = 1,
-            };
-            Vector_Add(source, &source_item);
-        }
-    }
-
-    VECTOR *matches = String_FuzzyMatch(user_input, source);
-
-    // Fallback: if no localized matches, fuzzy-search the compile-time English
-    // defaults.
-    if (matches->count == 0) {
-        Vector_Free(matches);
-        Vector_Clear(source);
-
-        for (OBJECT_ID obj_id = O_FIRST; obj_id < O_NUMBER_OF; obj_id++) {
-            if (filter != nullptr && !filter(obj_id)) {
-                continue;
-            }
-            const M_DEFAULT *const def = M_ResolveDefault(obj_id);
-            if (def == nullptr) {
-                continue;
-            }
-            for (const char **name = def->default_names; *name != nullptr;
-                 name++) {
-                // Add primary compile-time default name if it passes the filter
-                STRING_FUZZY_SOURCE s = {
-                    .key = *name,
-                    .value = (void *)(intptr_t)obj_id,
-                    .weight = 2,
-                };
-                Vector_Add(source, &s);
-            }
-        }
-
-        matches = String_FuzzyMatch(user_input, source);
-    }
-
-    OBJECT_NAME_MATCH *results =
-        Memory_Alloc(sizeof(OBJECT_NAME_MATCH) * (matches->count + 1));
-    for (int32_t i = 0; i < matches->count; i++) {
-        const STRING_FUZZY_MATCH *const match = Vector_Get(matches, i);
-        results[i].object_id = (OBJECT_ID)(intptr_t)match->value;
-        results[i].matched_name = match->key;
-    }
-    results[matches->count].object_id = NO_OBJECT;
-    results[matches->count].matched_name = nullptr;
-    if (out_match_count != nullptr) {
-        *out_match_count = matches->count;
-    }
-
-    Vector_Free(matches);
-    Vector_Free(source);
-    return results;
 }
 
 OBJECT_ID Object_IdFromKey(const char *const key)
