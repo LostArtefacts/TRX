@@ -176,21 +176,6 @@ CATALOG_ID Catalog_MintAnonymous(const CATALOG_CONTEXT context)
     return M_Add(context, nullptr);
 }
 
-bool Catalog_IsValidKey(const char *const key)
-{
-    if (key == nullptr || key[0] == '\0') {
-        return false;
-    }
-    for (const char *c = key; *c != '\0'; c++) {
-        const bool ok = (*c >= 'a' && *c <= 'z') || (*c >= 'A' && *c <= 'Z')
-            || (*c >= '0' && *c <= '9') || *c == ':' || *c == '_' || *c == '-';
-        if (!ok) {
-            return false;
-        }
-    }
-    return true;
-}
-
 RESULT Catalog_Mint(
     const CATALOG_CONTEXT context, const char *const key,
     CATALOG_ID *const out_id)

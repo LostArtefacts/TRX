@@ -98,6 +98,40 @@ api.enum("catalog.weapons", {
   },
 })
 
+api.define("catalog.mint", {
+  description = "Declares an identity the engine has no constant for, and gives back its id. "
+    .. "This is how a mod that ships only a script introduces an object of its own, without "
+    .. "touching the catalog the game owns.\n\n"
+    .. "The identity carries no slot, because nothing in the game's own files refers to it. "
+    .. "It lasts until the mod is unloaded.\n\n"
+    .. "A savegame records an object by the slot this game's files use, so an item of a minted "
+    .. "object is not written to one and does not come back on load. Spawn it from a script "
+    .. "until savegames record a name.",
+  params = {
+    {
+      name = "context",
+      type = "catalog.Context",
+      description = "Which catalog.",
+    },
+    {
+      name = "name",
+      type = "string",
+      description = "The name to declare. Letters, digits and `:_-`, so a mod can put its own "
+        .. "prefix in front of what it brings.",
+    },
+  },
+  returns = {
+    type = "catalog.Id",
+    nullable = true,
+    description = "`nil` if the name is not one an identity may take, or the catalog already "
+      .. "holds it.",
+  },
+  examples = {
+    [[local drum = trx.catalog.mint(trx.catalog.Context.OBJECTS, "oil_drum")]],
+  },
+  impl = raw.mint,
+})
+
 api.define("catalog.key", {
   description = "Gives back the name an id answers to, which is the name a savegame stores "
     .. "and the name a mod writes. An id a script read out of the engine is a number, and this "
