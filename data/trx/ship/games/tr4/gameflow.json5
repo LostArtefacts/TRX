@@ -19,6 +19,7 @@
         "lara_outfits.bin",
         "lara_animations.bin",
         "sparks_gfx.bin",
+        "shadow_sprite.bin",
     ],
 
     "title": {

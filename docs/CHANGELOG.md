@@ -141,6 +141,7 @@
 - Added Collapsible Floor control, with a `requires_heavy_trigger` property for those that need heavy activators (TRX1230)
 - Added level statistics scanning (TRX1201)
 - Added the timer Race for the Iris runs between its cutscenes (TRX1109)
+- Added the sprite shadow, so the shadow shape setting offers it as in the other games (Graphic Options → Visuals → Shadows shape) (TRX1290)
 - Added the wobble effect the original shows while the camera is under water (TRX523)
 - Added the drifting specks the original shows in water rooms (TRX553)
 - Added the water ripples the original shows, in their size, their color and the speed they spread at (TRX590)

@@ -1281,6 +1281,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── karnak_fd.bin
 │   │   │   ├── lara_animations.bin
 │   │   │   ├── lara_outfits.bin
+│   │   │   ├── shadow_sprite.bin
 │   │   │   └── sparks_gfx.bin
 │   │   ├── modules
 │   │   │   ├── cutscenes.lua
@@ -2656,6 +2657,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── karnak_fd.bin
     │   │   │   │   ├── lara_animations.bin
     │   │   │   │   ├── lara_outfits.bin
+    │   │   │   │   ├── shadow_sprite.bin
     │   │   │   │   └── sparks_gfx.bin
     │   │   │   ├── modules
     │   │   │   │   ├── cutscenes.lua
