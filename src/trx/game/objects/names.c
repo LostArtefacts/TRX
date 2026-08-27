@@ -2,9 +2,9 @@
 
 #include <trx/core/strings.h>
 #include <trx/debug.h>
+#include <trx/game/catalog/manager.h>
 #include <trx/game/game_strings/entries.h>
 
-#include <ctype.h>
 #include <string.h>
 
 typedef struct {
@@ -36,14 +36,7 @@ static const M_KEY m_Keys[] = {
 
 static bool M_KeyMatches(const char *const enum_name, const char *const key)
 {
-    const char *const name = enum_name + strlen("O_");
-    size_t i = 0;
-    for (; name[i] != '\0' && key[i] != '\0'; i++) {
-        if ((char)tolower((unsigned char)name[i]) != key[i]) {
-            return false;
-        }
-    }
-    return name[i] == '\0' && key[i] == '\0';
+    return strcmp(Catalog_KeyForEnum(CATALOG_OBJECTS, enum_name), key) == 0;
 }
 
 static const M_DEFAULT *M_GetDefault(const OBJECT_ID obj_id)
@@ -60,7 +53,7 @@ static const char *M_KeyFromId(const OBJECT_ID obj_id)
 {
     for (int32_t i = 0; m_Keys[i].object_id != NO_OBJECT; i++) {
         if (m_Keys[i].object_id == obj_id) {
-            return m_Keys[i].enum_name + strlen("O_");
+            return m_Keys[i].enum_name;
         }
     }
     return nullptr;
@@ -74,14 +67,8 @@ static const char *M_StringPath(const OBJECT_ID obj_id, const char *const what)
     if (enum_name == nullptr) {
         return nullptr;
     }
-    char key[64];
-    ASSERT(strlen(enum_name) < sizeof(key));
-    size_t i = 0;
-    for (; enum_name[i] != '\0' && i < sizeof(key) - 1; i++) {
-        key[i] = (char)tolower((unsigned char)enum_name[i]);
-    }
-    key[i] = '\0';
-    return String_FormatStatic("objects/%s/%s", key, what);
+    return String_FormatStatic(
+        "objects/%s/%s", Catalog_KeyForEnum(CATALOG_OBJECTS, enum_name), what);
 }
 
 static const char *M_Get(const OBJECT_ID obj_id, const char *const what)

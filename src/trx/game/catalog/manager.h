@@ -17,6 +17,11 @@ typedef enum CATALOG_CONTEXT {
 
 typedef int32_t CATALOG_ID;
 
+// Return the executable built-in key: the lower-case C spelling without the
+// context prefix. Use only compile-time data, so this works before registry
+// initialisation; the next call overwrites the result.
+const char *Catalog_KeyForEnum(CATALOG_CONTEXT context, const char *enum_name);
+
 // Declare an identity and return its ID. Fails if the context already holds
 // the key. The context is the namespace, so the same key in two contexts is
 // two identities.
