@@ -41,6 +41,7 @@
 **Camera**
 - Added an option to have the photo mode camera collide with level geometry (Graphic Options → Visuals → Photo mode collision) (#5719 / TRX540)
 - Changed moving Lara in photo mode to follow the direction the camera looks, rather than the way she faces (TRX1153)
+- Fixed the Inverted look option not applying to the binoculars (#6431 / TRX1291)
 - Fixed the photo mode camera drifting upwards and overshooting when it is moved while pitched up or down (TRX1142)
 - Fixed the photo mode camera flickering and refusing to turn over when it is pitched past straight up or down, and turning in coarse steps while aimed near vertical (TRX1152)
 
