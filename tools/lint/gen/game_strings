@@ -1038,8 +1038,21 @@ def sync_base_strings(ctx: RunContext) -> None:
                 )
             new[key] = value
     new = dict(sorted(new.items(), key=lambda kv: nat_key(kv[0])))
+    def translated_part(value: object) -> tuple[Any, Any]:
+        # Review only the displayed name and the description.
+        if not isinstance(value, dict):
+            return (None, None)
+        name = value.get("name")
+        if isinstance(name, list):
+            name = name[0] if name else None
+        elif isinstance(name, str):
+            name = name.split("|")[0]
+        return (name, value.get("description"))
+
     changed = [
-        k for k, v in new.items() if json.dumps(old.get(k)) != json.dumps(v)
+        k
+        for k, v in new.items()
+        if translated_part(old.get(k)) != translated_part(v)
     ]
     ctx.base.main.data["objects"] = new
     for key in changed:
