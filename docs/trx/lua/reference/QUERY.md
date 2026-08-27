@@ -130,7 +130,7 @@ left to right, combining with AND: `q:spawnable():by_name("wolf")`.
     - <a id="query.new.domain.id_of" name="query.new.domain.id_of"></a>**`id_of`** (function). The id of a thing the domain hands out.
     - <a id="query.new.domain.searchable" name="query.new.domain.searchable"></a>**`searchable`** (function). Whether an id is one a name may reach.
     - <a id="query.new.domain.names_of" name="query.new.domain.names_of"></a>**`names_of`** (function, optional). The names an id answers to, for a domain that has them.
-    - <a id="query.new.domain.default_names_of" name="query.new.domain.default_names_of"></a>**`default_names_of`** (function, optional). The same names before a language file is loaded.
+    - <a id="query.new.domain.default_names_of" name="query.new.domain.default_names_of"></a>**`default_names_of`** (function, optional). The names the engine was built with. The query tries these when `names_of` finds no match.
   - <a id="query.new.class" name="query.new.class"></a>**`class`** (table). The query type the domain's narrowings were declared on.
 
   Returns: [trx.query.Query](#query.Query). The identity query, matching everything until narrowed.
