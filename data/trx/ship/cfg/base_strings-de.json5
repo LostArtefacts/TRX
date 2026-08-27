@@ -2861,8 +2861,8 @@
             "name": "Lava-Keil",
         },
         "lead_bar_item": {
-            "description": "",
             "name": "Bleibarren",
+            "description": "",
         },
         "lens_flare": {
             "name": "\\{review}Linsenreflex",

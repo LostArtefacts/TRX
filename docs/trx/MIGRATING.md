@@ -285,6 +285,27 @@ order: 3
    | `waterskin_1`           | `waterskin_1_empty`      |
    | `waterskin_2`           | `waterskin_2_empty`      |
 
+11. **An object's names are one string**
+   A strings file now gives an object one `name` string. Put `|` between the
+   name the game shows and the names the console accepts:
+
+   ```json5
+   "objects": {
+       "large_medipack_item": {
+           "name": "Large Medipack|Big Medipack",
+       },
+   }
+   ```
+
+   The names live as the game string `objects/<key>/name`, so
+   `trx.locale.get("objects/large_medipack_item/name")` reads them. An object
+   can also name another object with a reference such as
+   `$objects/key_item_1`. It then reads that object's fields, including
+   `name` and `description`, and follows level-specific names.
+
+   `object.names` still returns a list. Inventory options reference the items
+   they show, so `object.default_names` is empty for those options.
+
 ### Version 1.9 to 1.10
 
 The Lua API was rewritten, and most of what it breaks is a rename. Run your

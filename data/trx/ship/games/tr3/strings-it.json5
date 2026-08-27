@@ -36,20 +36,20 @@
             "name": "Kit Medico Grande",
         },
         "quest_item_1": {
-            "description": "",
             "name": "Pietra Infada",
+            "description": "",
         },
         "quest_item_2": {
-            "description": "",
             "name": "Elemento 115",
+            "description": "",
         },
         "quest_item_3": {
-            "description": "",
             "name": "Occhio di Iside",
+            "description": "",
         },
         "quest_item_4": {
-            "description": "",
             "name": "Pugnale Ora",
+            "description": "",
         },
         "small_medipack_item": {
             "name": "Kit Medico Piccolo",

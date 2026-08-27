@@ -8,20 +8,10 @@
 
 typedef struct {
     const char *key;
-    // Set where the object stands for another one, and null otherwise; the
-    // names and the description are then the ones that object holds.
-    const char *ref;
-    const char **names;
-    const char *description;
-} GS_OBJECT_ENTRY;
-
-typedef struct {
-    const char *key;
     const char *value;
 } GS_GAME_STRING_ENTRY;
 
 typedef struct {
-    GS_OBJECT_ENTRY *objects;
     GS_GAME_STRING_ENTRY *game_strings;
 } GS_TABLE;
 

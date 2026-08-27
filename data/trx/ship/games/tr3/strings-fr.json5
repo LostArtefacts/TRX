@@ -36,20 +36,20 @@
             "name": "Grande trousse de soins",
         },
         "quest_item_1": {
-            "description": "",
             "name": "Pierre Infada",
+            "description": "",
         },
         "quest_item_2": {
-            "description": "",
             "name": "Objet 115",
+            "description": "",
         },
         "quest_item_3": {
-            "description": "",
             "name": "L'Œil d'Isis",
+            "description": "",
         },
         "quest_item_4": {
-            "description": "",
             "name": "Dague d'Ora",
+            "description": "",
         },
         "small_medipack_item": {
             "name": "Petite trousse de soins",

@@ -12,6 +12,7 @@
 
 #include <trx/game/const.h>
 #include <trx/core/handle.h>
+#include <trx/core/strings.h>
 #include <trx/game/anims.h>
 #include <trx/game/creature.h>
 #include <trx/game/items.h>
@@ -52,26 +53,42 @@ static struct {
 // is exactly what item.properties overlays, so the default lives here.
 static int32_t m_ObjectHP[FAKE_OBJ_COUNT];
 
-// The names an object answers to. The lookup that fuzzy-matches them is Lua
-// now, so all the engine has to do is say what they are.
-static const char *const m_WolfNames[] = { "wolf", nullptr };
-static const char *const m_VaseNames[] = { "vase", "large vase",
-                                           // A name with none of its own
-                                           // words in it, the way a large
-                                           // medipack answers to "big
-                                           // medipack".
-                                           "big urn", nullptr };
-static const char *const m_KeyNames[] = { "key", nullptr };
+// Give each pickup a unique search name. "big urn" shares no words with
+// "large medipack".
+static const struct {
+    OBJECT_ID object_id;
+    const char *names;
+} m_ObjectNames[] = {
+    { FAKE_OBJ_WOLF, "wolf" },
+    { FAKE_OBJ_VASE, "vase|large vase|big urn" },
+    { FAKE_OBJ_KEY, "key" },
+    { FAKE_OBJ_REAL_KEY, "latch" },
+    { FAKE_OBJ_PUZZLE, "cog" },
+    { FAKE_OBJ_TOOL, "crowbar" },
+    { FAKE_OBJ_LEADBAR, "ingot" },
+    { FAKE_OBJ_TRINKET, "trinket" },
+    // Give both scion states the same name.
+    { FAKE_OBJ_SCION, "scion" },
+    { FAKE_OBJ_SCION_2, "scion" },
+    { FAKE_OBJ_CRYSTAL, "crystal" },
+    { NO_OBJECT, nullptr },
+};
 
-// The real pickups answer to names of their own. None shares a word with
-// another, so a name reaches exactly one of them.
-static const char *const m_LatchNames[] = { "latch", nullptr };
-static const char *const m_CogNames[] = { "cog", nullptr };
-static const char *const m_CrowbarNames[] = { "crowbar", nullptr };
-static const char *const m_LeadbarNames[] = { "ingot", nullptr };
-static const char *const m_TrinketNames[] = { "trinket", nullptr };
-static const char *const m_ScionNames[] = { "scion", nullptr };
-static const char *const m_CrystalNames[] = { "crystal", nullptr };
+static int32_t M_FindObjectName(const OBJECT_ID obj_id)
+{
+    for (int32_t i = 0; m_ObjectNames[i].object_id != NO_OBJECT; i++) {
+        if (m_ObjectNames[i].object_id == obj_id) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+static const char *M_ObjectNames(const OBJECT_ID obj_id)
+{
+    const int32_t idx = M_FindObjectName(obj_id);
+    return idx >= 0 ? m_ObjectNames[idx].names : nullptr;
+}
 
 const OBJECT_ID g_CreatureObjects[] = { FAKE_OBJ_WOLF, NO_OBJECT };
 const OBJECT_ID g_BossObjects[] = { NO_OBJECT };
@@ -542,33 +559,35 @@ OBJECT_MESH *Object_GetMesh(const int32_t index)
     return &m_Mesh;
 }
 
-const VECTOR *Object_GetNames(const OBJECT_ID obj_id)
+const char *Object_GetName(const OBJECT_ID obj_id)
 {
     // The fake level localizes nothing, so a lookup always takes the
     // compile-time fallback.
-    return nullptr;
+    return Object_GetDefaultName(obj_id);
 }
 
-const char *const *Object_GetDefaultNames(const OBJECT_ID obj_id)
+const char *Object_GetAliases(const OBJECT_ID obj_id)
 {
-    // clang-format off
-    switch (obj_id) {
-    case FAKE_OBJ_WOLF:     return m_WolfNames;
-    case FAKE_OBJ_VASE:     return m_VaseNames;
-    case FAKE_OBJ_KEY:      return m_KeyNames;
-    case FAKE_OBJ_REAL_KEY: return m_LatchNames;
-    case FAKE_OBJ_PUZZLE:   return m_CogNames;
-    case FAKE_OBJ_TOOL:     return m_CrowbarNames;
-    case FAKE_OBJ_LEADBAR:  return m_LeadbarNames;
-    case FAKE_OBJ_TRINKET:  return m_TrinketNames;
-    // Both states of the scion answer to the one name, as the alias in
-    // names.def has them do.
-    case FAKE_OBJ_SCION:
-    case FAKE_OBJ_SCION_2:  return m_ScionNames;
-    case FAKE_OBJ_CRYSTAL:  return m_CrystalNames;
-    default:                return nullptr;
+    return Object_GetDefaultAliases(obj_id);
+}
+
+const char *Object_GetDefaultName(const OBJECT_ID obj_id)
+{
+    const char *const names = M_ObjectNames(obj_id);
+    if (names == nullptr) {
+        return nullptr;
     }
-    // clang-format on
+    const char *const sep = strchr(names, '|');
+    return sep == nullptr
+        ? names
+        : String_FormatStatic("%.*s", (int32_t)(sep - names), names);
+}
+
+const char *Object_GetDefaultAliases(const OBJECT_ID obj_id)
+{
+    const char *const names = M_ObjectNames(obj_id);
+    const char *const sep = names != nullptr ? strchr(names, '|') : nullptr;
+    return sep != nullptr ? sep + 1 : nullptr;
 }
 
 OBJECT *Object_TryGet(const OBJECT_ID object_id)

@@ -2136,22 +2136,13 @@
             "name": "Baldy",
         },
         "bandit_1": {
-            "name": [
-                "Mercenary 1",
-                "Masked Goon 1",
-            ]
+            "name": "Mercenary 1|Masked Goon 1",
         },
         "bandit_2": {
-            "name": [
-                "Mercenary 2",
-                "Masked Goon 2",
-            ]
+            "name": "Mercenary 2|Masked Goon 2",
         },
         "bandit_2b": {
-            "name": [
-                "Mercenary 3",
-                "Masked Goon 3",
-            ]
+            "name": "Mercenary 3|Masked Goon 3",
         },
         "barracuda": {
             "name": "Barracuda",
@@ -2275,10 +2266,7 @@
             "name": "Bartoli Hideout clock",
         },
         "cobra": {
-            "name": [
-                "Snake",
-                "Cobra",
-            ]
+            "name": "Snake|Cobra",
         },
         "cog_1": {
             "name": "Cog 1",
@@ -2396,10 +2384,7 @@
             "name": "Scuba Diver",
         },
         "dog": {
-            "name": [
-                "Dog",
-                "Doberman",
-            ]
+            "name": "Dog|Doberman",
         },
         "dolphin": {
             "name": "Dolphin",
@@ -2501,25 +2486,13 @@
             "name": "Explosion 2",
         },
         "falling_block_1": {
-            "name": [
-                "Falling Block 1",
-                "Collapsible Floor 1",
-                "Collapsible Tiles 1",
-            ]
+            "name": "Falling Block 1|Collapsible Floor 1|Collapsible Tiles 1",
         },
         "falling_block_2": {
-            "name": [
-                "Falling Block 2",
-                "Collapsible Floor 2",
-                "Collapsible Tiles 2",
-            ]
+            "name": "Falling Block 2|Collapsible Floor 2|Collapsible Tiles 2",
         },
         "falling_block_3": {
-            "name": [
-                "Falling Block 3",
-                "Collapsible Floor 3",
-                "Collapsible Tiles 3",
-            ]
+            "name": "Falling Block 3|Collapsible Floor 3|Collapsible Tiles 3",
         },
         "falling_ceiling_1": {
             "name": "Falling Ceiling 1",
@@ -2534,40 +2507,22 @@
             "name": "Mutant Fish",
         },
         "flame": {
-            "name": [
-                "Flame",
-                "Fire",
-            ]
+            "name": "Flame|Fire",
         },
         "flame_emitter": {
-            "name": [
-                "Flame Emitter",
-                "Fire Emitter",
-            ]
+            "name": "Flame Emitter|Fire Emitter",
         },
         "flame_emitter_big": {
-            "name": [
-                "Flame Emitter (Big)",
-                "Fire Emitter (Big)",
-            ]
+            "name": "Flame Emitter (Big)|Fire Emitter (Big)",
         },
         "flame_emitter_jet": {
-            "name": [
-                "Flame Emitter (Jet)",
-                "Fire Emitter (Jet)",
-            ]
+            "name": "Flame Emitter (Jet)|Fire Emitter (Jet)",
         },
         "flame_emitter_side": {
-            "name": [
-                "Flame Emitter (Side)",
-                "Fire Emitter (Side)",
-            ]
+            "name": "Flame Emitter (Side)|Fire Emitter (Side)",
         },
         "flame_emitter_small": {
-            "name": [
-                "Flame Emitter (Small)",
-                "Fire Emitter (Small)",
-            ]
+            "name": "Flame Emitter (Small)|Fire Emitter (Small)",
         },
         "flame_emitter_tr4_ground": {
             "name": "Flame Emitter (TR4 Ground)",
@@ -2670,11 +2625,7 @@
             "name": "Extra Fire",
         },
         "huskie": {
-            "name": [
-                "Dog",
-                "Patrol Dog",
-                "Huskie",
-            ]
+            "name": "Dog|Patrol Dog|Huskie",
         },
         "hybrid_mutant": {
             "name": "Hybrid Mutant",
@@ -2942,10 +2893,7 @@
             "name": "Uzis Animation",
         },
         "large_medipack_item": {
-            "name": [
-                "Large Medipack",
-                "Big Medipack",
-            ]
+            "name": "Large Medipack|Big Medipack",
         },
         "large_medipack_option": "$objects/large_medipack_item",
         "larson": {
@@ -2959,8 +2907,8 @@
             "name": "Lava Wedge",
         },
         "lead_bar_item": {
-            "description": "",
             "name": "Lead Bar",
+            "description": "",
         },
         "lead_bar_option": "$objects/lead_bar_item",
         "lens_flare": {
@@ -2976,10 +2924,7 @@
             "name": "Lion",
         },
         "lioness": {
-            "name": [
-                "Lioness",
-                "Lion",
-            ]
+            "name": "Lioness|Lion",
         },
         "lizard": {
             "name": "Lizard",
@@ -3061,28 +3006,16 @@
             "name": "Rat",
         },
         "movable_block_1": {
-            "name": [
-                "Push Block 1",
-                "Movable Block 1",
-            ]
+            "name": "Push Block 1|Movable Block 1",
         },
         "movable_block_2": {
-            "name": [
-                "Push Block 2",
-                "Movable Block 2",
-            ]
+            "name": "Push Block 2|Movable Block 2",
         },
         "movable_block_3": {
-            "name": [
-                "Push Block 3",
-                "Movable Block 3",
-            ]
+            "name": "Push Block 3|Movable Block 3",
         },
         "movable_block_4": {
-            "name": [
-                "Push Block 4",
-                "Movable Block 4",
-            ]
+            "name": "Push Block 4|Movable Block 4",
         },
         "moving_bar": {
             "name": "Moving Bar",
@@ -3121,27 +3054,16 @@
             "name": "Game",
         },
         "patrol_dog": {
-            "name": [
-                "Dog",
-                "Patrol Dog",
-            ]
+            "name": "Dog|Patrol Dog",
         },
         "pda_option": {
             "name": "Gameplay",
         },
         "pendulum_1": {
-            "name": [
-                "Pendulum",
-                "Sandbag",
-                "Swinging box",
-            ]
+            "name": "Pendulum|Sandbag|Swinging box",
         },
         "pendulum_2": {
-            "name": [
-                "Pendulum",
-                "Sandbag",
-                "Swinging box",
-            ]
+            "name": "Pendulum|Sandbag|Swinging box",
         },
         "photo_option": {
             "name": "Lara's Home",
@@ -3504,10 +3426,7 @@
             "name": "Raptor Emitter",
         },
         "rat": {
-            "name": [
-                "Rat",
-                "Land Rat",
-            ]
+            "name": "Rat|Land Rat",
         },
         "red_light": {
             "name": "Red Light",
@@ -3521,10 +3440,7 @@
         },
         "revolver_option": "$objects/revolver_item",
         "rib": {
-            "name": [
-                "Rigid Inflatable Boat",
-                "RIB",
-            ]
+            "name": "Rigid Inflatable Boat|RIB",
         },
         "ricochet": {
             "name": "Ricochet",
@@ -3541,28 +3457,16 @@
         },
         "rocket_gun_option": "$objects/rocket_gun_item",
         "rolling_ball_1": {
-            "name": [
-                "Boulder 1",
-                "Rolling Ball 1",
-            ]
+            "name": "Boulder 1|Rolling Ball 1",
         },
         "rolling_ball_2": {
-            "name": [
-                "Boulder 2",
-                "Rolling Ball 2",
-            ]
+            "name": "Boulder 2|Rolling Ball 2",
         },
         "rolling_ball_3": {
-            "name": [
-                "Boulder 3",
-                "Rolling Ball 3",
-            ]
+            "name": "Boulder 3|Rolling Ball 3",
         },
         "rolling_ball_4": {
-            "name": [
-                "Boulder 4",
-                "Rolling Ball 4",
-            ]
+            "name": "Boulder 4|Rolling Ball 4",
         },
         "rope": {
             "name": "Rope",
@@ -3577,10 +3481,7 @@
             "name": "RX Worker 2",
         },
         "rx_worker_3": {
-            "name": [
-                "RX Worker 3",
-                "Flamethrower",
-            ]
+            "name": "RX Worker 3|Flamethrower",
         },
         "sarcophagus": {
             "name": "Sarcophagus",
@@ -3589,16 +3490,10 @@
             "name": "Savegame Crystal",
         },
         "save_crystal_option": {
-            "name": [
-                "Crystal",
-                "Savegame Crystal",
-            ]
+            "name": "Crystal|Savegame Crystal",
         },
         "scaled_spikes": {
-            "name": [
-                "Spikes",
-                "Scaled Spikes",
-            ]
+            "name": "Spikes|Scaled Spikes",
         },
         "scion_holder": {
             "name": "Scion Holder",
@@ -3684,28 +3579,16 @@
         },
         "small_medipack_option": "$objects/small_medipack_item",
         "smashable_1": {
-            "name": [
-                "Smashable 1",
-                "Breakable Window 1",
-            ]
+            "name": "Smashable 1|Breakable Window 1",
         },
         "smashable_2": {
-            "name": [
-                "Smashable 2",
-                "Breakable Window 2",
-            ]
+            "name": "Smashable 2|Breakable Window 2",
         },
         "smashable_3": {
-            "name": [
-                "Smashable 3",
-                "Breakable Window 3",
-            ]
+            "name": "Smashable 3|Breakable Window 3",
         },
         "smashable_4": {
-            "name": [
-                "Smashable 4",
-                "Breakable Window 4",
-            ]
+            "name": "Smashable 4|Breakable Window 4",
         },
         "smoke_emitter_black": {
             "name": "Smoke Emitter (Black)",
@@ -3777,127 +3660,58 @@
             "name": "Swinging Axe",
         },
         "switch_type_airlock": {
-            "name": [
-                "Airlock Switch",
-                "Switch",
-            ]
+            "name": "Airlock Switch|Switch",
         },
         "switch_type_button": {
-            "name": [
-                "Button",
-                "Push Button",
-                "Switch",
-            ]
+            "name": "Button|Push Button|Switch",
         },
         "switch_type_crowbar": {
-            "name": [
-                "Lever",
-                "Switch",
-                "Crowbar Switch",
-            ]
+            "name": "Lever|Switch|Crowbar Switch",
         },
         "switch_type_floor": {
-            "name": [
-                "Lever",
-                "Switch",
-                "Floor Switch",
-            ]
+            "name": "Lever|Switch|Floor Switch",
         },
         "switch_type_generic_1": {
-            "name": [
-                "Generic Switch 1",
-                "Lever",
-                "Switch",
-            ]
+            "name": "Generic Switch 1|Lever|Switch",
         },
         "switch_type_generic_2": {
-            "name": [
-                "Generic Switch 2",
-                "Lever",
-                "Switch",
-            ]
+            "name": "Generic Switch 2|Lever|Switch",
         },
         "switch_type_generic_3": {
-            "name": [
-                "Generic Switch 3",
-                "Lever",
-                "Switch",
-            ]
+            "name": "Generic Switch 3|Lever|Switch",
         },
         "switch_type_generic_4": {
-            "name": [
-                "Generic Switch 4",
-                "Lever",
-                "Switch",
-            ]
+            "name": "Generic Switch 4|Lever|Switch",
         },
         "switch_type_generic_5": {
-            "name": [
-                "Generic Switch 5",
-                "Lever",
-                "Switch",
-            ]
+            "name": "Generic Switch 5|Lever|Switch",
         },
         "switch_type_generic_6": {
-            "name": [
-                "Generic Switch 6",
-                "Lever",
-                "Switch",
-            ]
+            "name": "Generic Switch 6|Lever|Switch",
         },
         "switch_type_jump": {
-            "name": [
-                "Jump Switch",
-                "Switch",
-            ]
+            "name": "Jump Switch|Switch",
         },
         "switch_type_normal": {
-            "name": [
-                "Lever",
-                "Switch",
-            ]
+            "name": "Lever|Switch",
         },
         "switch_type_pulley": {
-            "name": [
-                "Pulley Switch",
-                "Switch",
-            ]
+            "name": "Pulley Switch|Switch",
         },
         "switch_type_small": {
-            "name": [
-                "Small Switch",
-                "Switch",
-            ]
+            "name": "Small Switch|Switch",
         },
         "switch_type_uw": {
-            "name": [
-                "Underwater Lever",
-                "Underwater Switch",
-                "Lever",
-                "Switch",
-            ]
+            "name": "Underwater Lever|Underwater Switch|Lever|Switch",
         },
         "switch_type_uw_ceiling": {
-            "name": [
-                "Underwater Ceiling Lever",
-                "Underwater Ceiling Switch",
-                "Lever",
-                "Switch",
-            ]
+            "name": "Underwater Ceiling Lever|Underwater Ceiling Switch|Lever|Switch",
         },
         "switch_type_wheel": {
-            "name": [
-                "Wheel Switch",
-                "Pulley Switch",
-                "Valve Switch",
-                "Switch",
-            ]
+            "name": "Wheel Switch|Pulley Switch|Valve Switch|Switch",
         },
         "teeth_trap": {
-            "name": [
-                "Teeth Trap",
-                "Clang-clang Door",
-            ]
+            "name": "Teeth Trap|Clang-clang Door",
         },
         "teleporter": {
             "name": "Teleporter",
@@ -3918,11 +3732,7 @@
             "name": "Tony",
         },
         "torso": {
-            "name": [
-                "Torso",
-                "Adam",
-                "Giant Mutant",
-            ]
+            "name": "Torso|Adam|Giant Mutant",
         },
         "train": {
             "name": "Train",
@@ -3961,10 +3771,7 @@
             "name": "Underwater Door",
         },
         "upv": {
-            "name": [
-                "UPV",
-                "Minisub",
-            ]
+            "name": "UPV|Minisub",
         },
         "uzis_ammo_item": {
             "name": "Uzi Clips",
@@ -3975,10 +3782,7 @@
         },
         "uzis_option": "$objects/uzis_item",
         "vole": {
-            "name": [
-                "Vole",
-                "Water Rat",
-            ]
+            "name": "Vole|Water Rat",
         },
         "von_croy": {
             "name": "Von Croy",
@@ -4033,10 +3837,7 @@
             "name": "Winston",
         },
         "winston_army": {
-            "name": [
-                "Winston (army)",
-                "Army Winston",
-            ]
+            "name": "Winston (army)|Army Winston",
         },
         "wolf": {
             "name": "Wolf",

@@ -1,7 +1,6 @@
 #include <trx/game/game_strings/table/priv.h>
 
 #include <trx/core/filesystem.h>
-#include <trx/core/log.h>
 #include <trx/core/memory.h>
 
 static void M_FreeTable(GS_TABLE *const gs_table)
@@ -9,25 +8,6 @@ static void M_FreeTable(GS_TABLE *const gs_table)
     if (gs_table == nullptr) {
         return;
     }
-    if (gs_table->objects != nullptr) {
-        GS_OBJECT_ENTRY *cur = gs_table->objects;
-        while (cur->key != nullptr) {
-            Memory_FreePointer(&cur->key);
-            Memory_FreePointer(&cur->ref);
-            if (cur->names != nullptr) {
-                for (size_t j = 0; cur->names[j] != nullptr; j++) {
-                    Memory_FreePointer((void **)&cur->names[j]);
-                }
-                Memory_Free(cur->names);
-                cur->names = nullptr;
-            }
-            Memory_FreePointer(&cur->description);
-            cur++;
-        }
-        Memory_Free(gs_table->objects);
-        gs_table->objects = nullptr;
-    }
-
     if (gs_table->game_strings != nullptr) {
         GS_GAME_STRING_ENTRY *cur = gs_table->game_strings;
         while (cur->key != nullptr) {

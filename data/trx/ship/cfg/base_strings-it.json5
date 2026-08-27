@@ -2880,8 +2880,8 @@
             "name": "Cascata di Lava",
         },
         "lead_bar_item": {
-            "description": "",
             "name": "Barra di Piombo",
+            "description": "",
         },
         "lens_flare": {
             "name": "Riflesso dell'Obiettivo",

@@ -1,27 +1,25 @@
 #pragma once
 
-#include <trx/core/vector.h>
 #include <trx/game/objects/ids.h>
 
-// Get the current name for an object (may change on language reload).
+// Return an object's localized name from "objects/<key>/name", or nullptr if
+// none exists.
 const char *Object_GetName(OBJECT_ID obj_id);
 
-// Every localized name the object answers to, or nullptr if it has none. A
-// vector of char*, owned by the name table.
-const VECTOR *Object_GetNames(OBJECT_ID obj_id);
+// Return an object's localized aliases joined with "|", or nullptr if none
+// exist. Object lookups match aliases and the primary name.
+const char *Object_GetAliases(OBJECT_ID obj_id);
 
-// The compile-time English names, nullptr-terminated, or nullptr if the object
-// has none. A name lookup falls back on these when the player's language has no
-// name to match - which is the case before a language file is loaded at all.
-const char *const *Object_GetDefaultNames(OBJECT_ID obj_id);
-
+// Return an object's inventory description, or nullptr if none exists.
 const char *Object_GetDescription(OBJECT_ID obj_id);
 
-void Object_ResetAllNames(void);
-void Object_ClearNames(OBJECT_ID obj_id);
-void Object_AddName(OBJECT_ID obj_id, const char *name);
+// Return the compile-time English name and aliases. Object lookups use them
+// when the player's language has no matching name.
+const char *Object_GetDefaultName(OBJECT_ID obj_id);
+const char *Object_GetDefaultAliases(OBJECT_ID obj_id);
 
-void Object_SetDescription(OBJECT_ID obj_id, const char *description);
+// Restore the compile-time names as game strings.
+void Object_ResetAllNames(void);
 
 // Return the object named by a key, or NO_OBJECT where nothing matches. A key
 // is the C spelling without the O_ prefix and in lower case.

@@ -244,6 +244,17 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'trx/game/game_strings/entries',
+  'src': ['harness/stubs_result.c'],
+  'engine': [
+    'core/memory.c',
+    'core/result.c',
+    'core/subsystem.c',
+    'game/game_strings/entries.c',
+  ],
+}
+
+unit_tests += {
   'name': 'trx/game/game_strings/lang_match',
   'engine': [
     'core/memory.c',

@@ -68,6 +68,7 @@
 - Added a `requires_alert` property to the sentry gun, which lets a plain trigger set it firing where it would otherwise wait for a security laser (TRX1141)
 - Added object references in strings files, so inventory entries can use the same name and description as their pickup
 - Changed object keys in strings files, game flows and weapon definitions to use the C object name without `O_`
+- Changed object names in strings files to use `|` between the name the game shows and the names the console accepts
 - Changed weather to follow flyby cameras (TRX1231)
 - Changed a missing or unknown `lara_outfit` in a level to fall back to the default outfit, rather than stopping the game from starting (TRX1087)
 - Removed TR1's grenade pickup, freeing its model and inventory slots for objects of your own

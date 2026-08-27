@@ -36,20 +36,20 @@
             "name": "Large Medi Pack",
         },
         "quest_item_1": {
-            "description": "",
             "name": "Infada Stone",
+            "description": "",
         },
         "quest_item_2": {
-            "description": "",
             "name": "Element 115",
+            "description": "",
         },
         "quest_item_3": {
-            "description": "",
             "name": "Eye of Isis",
+            "description": "",
         },
         "quest_item_4": {
-            "description": "",
             "name": "Ora Dagger",
+            "description": "",
         },
         "small_medipack_item": {
             "name": "Small Medi Pack",
