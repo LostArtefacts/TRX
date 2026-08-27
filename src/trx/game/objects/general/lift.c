@@ -183,9 +183,9 @@ static void M_FloorCeiling(
                 *out_ceiling = -UNDEFINED_HEIGHT;
             }
         } else if (point_in_shaft) {
-            if (lara_item->pos.y < lift_ceiling) {
+            if (lara_item->pos.y <= lift_ceiling) {
                 *out_floor = lift_top;
-            } else if (lara_item->pos.y < lift_bottom) {
+            } else if (lara_item->pos.y <= lift_bottom) {
                 *out_floor = lift_floor;
                 *out_ceiling = lift_ceiling;
             } else {
