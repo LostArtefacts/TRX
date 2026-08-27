@@ -5,7 +5,7 @@
         {
             "title": "A' tilleadh dhan Eiphit",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair Òir",
                 }
             }
@@ -13,7 +13,7 @@
         {
             "title": "Teampall a' Chait",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair Grinn",
                 }
             }

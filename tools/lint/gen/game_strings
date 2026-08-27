@@ -44,7 +44,9 @@ RE_ENUM_MAP_SELF_DEFINE = re.compile(
 RE_INPUT_ROLE_USAGE = re.compile(
     r"X_INPUT_ROLE\(\s*(INPUT_ROLE_[A-Z0-9_]+)\s*,"
 )
-RE_OBJ_NAME_DEFINE = re.compile(r'@NAME\("([^"]+)"((?:,\s*"[^"]*")+)\)')
+RE_OBJ_NAME_DEFINE = re.compile(
+    r'@NAME\(\s*([A-Za-z_][A-Za-z0-9_]*)\s*((?:,\s*"[^"]*")+)\)'
+)
 
 RE_LUA_GAME_STRING_USAGE = re.compile(
     r"trx\.locale\.(?:get|format)\(\s*"
@@ -670,7 +672,9 @@ def get_objects_map(paths: list[Path]) -> dict[str, dict[str, str | list[str]]]:
     """
     Parse object-name definitions from names.def-like files.
     Supports:
-      X_OBJ_NAME_DEFINE(..., "key", X_OBJ_NAMES("Name1", "Name2", ...))
+      X_OBJ_NAME_DEFINE(O_ID, X_OBJ_NAMES("Name1", "Name2", ...))
+    The key comes from the id: the O_ prefix comes off and the rest is lower
+    case, matching the source lookup.
     The files may include other .def files (pickups.def), so they are expanded
     with the real C preprocessor first.
     """
@@ -681,13 +685,13 @@ def get_objects_map(paths: list[Path]) -> dict[str, dict[str, str | list[str]]]:
         text = expand_def_file(
             path,
             {
-                "X_OBJ_NAME_DEFINE(id, key, names)": "@NAME(key, names)",
+                "X_OBJ_NAME_DEFINE(id, names)": "@NAME(id, names)",
                 "X_OBJ_NAMES(...)": "__VA_ARGS__",
                 "X_OBJ_ALIAS_DEFINE(a, b)": "",
             },
         )
         for match in RE_OBJ_NAME_DEFINE.finditer(text):
-            key = match.group(1)
+            key = match.group(1).removeprefix("O_").lower()
             names_list = uniq(re.findall(r'"([^"]+)"', match.group(2)))
             result.setdefault(key, {})["name"] = (
                 names_list[0] if len(names_list) == 1 else names_list

@@ -18,10 +18,10 @@
         }
     },
     "objects": {
-        "large_medipack": {
+        "large_medipack_item": {
             "name": "Pasgan Mòr Slàinte",
         },
-        "small_medipack": {
+        "small_medipack_item": {
             "name": "Pasgan Beag Slàinte",
         }
     },
@@ -49,10 +49,10 @@
         {
             "title": "Baile Vilcabamba",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair Airgid",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Ìomhaigh Òir",
                 }
             }
@@ -60,7 +60,7 @@
         {
             "title": "Gleann Caillte",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Gèar Inneil",
                 }
             }
@@ -71,16 +71,16 @@
         {
             "title": "Gòraiche Naoimh Frang",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair Neaptain",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Iuchair Atlas",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Iuchair Damocles",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Iuchair Thor",
                 }
             }
@@ -88,7 +88,7 @@
         {
             "title": "Colasaem",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair Meirgeach",
                 }
             }
@@ -96,7 +96,7 @@
         {
             "title": "Lùchairt Mìdas",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Bàr Òir",
                 }
             }
@@ -104,13 +104,13 @@
         {
             "title": "An t-Siasarn",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair Òir",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Iuchair Airgid",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Iuchair Meirgeach",
                 }
             }
@@ -118,13 +118,13 @@
         {
             "title": "Uaigh Tihocan",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair Òir",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Iuchair Meirgeach",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Iuchair Meirgeach",
                 }
             }
@@ -132,7 +132,7 @@
         {
             "title": "Baile Khamoon",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair Saoirbheir",
                 }
             }
@@ -140,19 +140,19 @@
         {
             "title": "Obelisk Khamoon",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair Saoirbheir",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Sùil Horus",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Sgarab",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Ròn Anubis",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Ankh",
                 }
             }
@@ -160,13 +160,13 @@
         {
             "title": "Naomh-chomhnaidh an Scion",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair Òir",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Ankh",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Sgarab",
                 }
             }
@@ -174,10 +174,10 @@
         {
             "title": "Mèinnean Natla",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Tadhail",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Iuchair Pioramaid",
                 }
             }
@@ -211,10 +211,10 @@
         {
             "title": "Baile Vilcabamba",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair Airgid",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Ìomhaigh Òir",
                 }
             }
@@ -222,7 +222,7 @@
         {
             "title": "Gleann Caillte",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Fiaclan Inneil",
                 }
             }

@@ -11,10 +11,10 @@
                 "tiger": {
                     "name": "Leopardo delle Nevi",
                 },
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave della Guardiola",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Chiave del Tunnel \"B\"",
                 }
             }
@@ -22,13 +22,13 @@
         {
             "title": "L'Oro degli Sciocchi",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave Magnetica 1",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Chiave Magnetica 2",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Circuito d'Avvio",
                 }
             }
@@ -42,10 +42,10 @@
                 "spider": {
                     "name": "Lupo",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Maschera di Tornarsuk",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Pepita d'Oro",
                 }
             }
@@ -56,7 +56,7 @@
                 "tiger": {
                     "name": "Leopardo delle Nevi",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Maschera di Tornarsuk",
                 }
             }
@@ -64,13 +64,13 @@
         {
             "title": "Incubo a Las Vegas",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave dell'Hotel",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Giunto per Ascensore",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Circuito della Porta",
                 }
             }

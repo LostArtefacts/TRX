@@ -2121,11 +2121,11 @@
         "atlantean_winged": {
             "name": "Winged Atlantean",
         },
-        "autos": {
-            "name": "Automatic Pistols",
-        },
-        "autos_ammo": {
+        "autos_ammo_item": {
             "name": "Automatic Pistol Clips",
+        },
+        "autos_item": {
+            "name": "Automatic Pistols",
         },
         "bacon_lara": {
             "name": "Bacon Lara",
@@ -2184,7 +2184,7 @@
         "big_spider": {
             "name": "Giant Spider",
         },
-        "binoculars": {
+        "binoculars_item": {
             "name": "Binoculars",
         },
         "bird_guardian": {
@@ -2271,6 +2271,12 @@
         "clock_chimes": {
             "name": "Bartoli Hideout clock",
         },
+        "cobra": {
+            "name": [
+                "Snake",
+                "Cobra",
+            ]
+        },
         "cog_1": {
             "name": "Cog 1",
         },
@@ -2286,13 +2292,13 @@
         "combat_end": {
             "name": "Combat End",
         },
-        "compass": {
+        "compass_option": {
             "name": "Compass",
         },
         "compy": {
             "name": "Compsognathus",
         },
-        "controls": {
+        "controls_option": {
             "name": "Controls",
         },
         "copter": {
@@ -2307,29 +2313,23 @@
         "crocodile": {
             "name": "Crocodile",
         },
-        "crossbow": {
-            "name": "Crossbow",
-        },
-        "crossbow_ammo": {
+        "crossbow_ammo_1_item": {
             "name": "Crossbow Bolts",
         },
         "crossbow_bolt": {
             "name": "Crossbow Bolt",
         },
+        "crossbow_item": {
+            "name": "Crossbow",
+        },
         "crow": {
             "name": "Crow",
-        },
-        "crowbar": {
-            "name": "Crowbar",
         },
         "crowbar_anim": {
             "name": "Crowbar Animation",
         },
-        "crystal": {
-            "name": [
-                "Crystal",
-                "Savegame Crystal",
-            ]
+        "crowbar_item": {
+            "name": "Crowbar",
         },
         "cult_1": {
             "name": "Masked Goon 1",
@@ -2361,11 +2361,11 @@
         "dart_emitter": {
             "name": "Dart Emitter",
         },
-        "desert_eagle": {
-            "name": "Desert Eagle",
-        },
-        "desert_eagle_ammo": {
+        "desert_eagle_ammo_item": {
             "name": "Desert Eagle Clips",
+        },
+        "desert_eagle_item": {
+            "name": "Desert Eagle",
         },
         "detonator_box": {
             "name": "Detonator Box",
@@ -2472,13 +2472,13 @@
         "ember_emitter": {
             "name": "Ember Emitter",
         },
-        "examine_1": {
+        "examine_item_1": {
             "name": "Examine Item 1",
         },
-        "examine_2": {
+        "examine_item_2": {
             "name": "Examine Item 2",
         },
-        "examine_3": {
+        "examine_item_3": {
             "name": "Examine Item 3",
         },
         "explosion_1": {
@@ -2562,13 +2562,13 @@
         "flame_emitter_tr4_wall": {
             "name": "Flame Emitter (TR4 Wall)",
         },
-        "flare": {
-            "name": "Flare",
-        },
         "flare_fire": {
             "name": "Flare sparks",
         },
-        "flares_box": {
+        "flare_item": {
+            "name": "Flare",
+        },
+        "flares_box_item": {
             "name": "Flares Box",
         },
         "flickering_light": {
@@ -2586,7 +2586,7 @@
         "fx_reserved": {
             "name": "Gray disk",
         },
-        "gamma": {
+        "gamma_option": {
             "name": "Gamma",
         },
         "gas_emitter_green": {
@@ -2595,7 +2595,7 @@
         "general": {
             "name": "Minisub",
         },
-        "globe": {
+        "globe_option": {
             "name": "Globe",
         },
         "glow": {
@@ -2613,7 +2613,7 @@
         "gong_bonger": {
             "name": "Gong Stick",
         },
-        "graphics": {
+        "graphics_option": {
             "name": "Graphics",
         },
         "green_light": {
@@ -2622,11 +2622,11 @@
         "grenade": {
             "name": "Grenade",
         },
-        "grenade_launcher": {
-            "name": "Grenade Launcher",
-        },
-        "grenade_launcher_ammo": {
+        "grenade_ammo_item": {
             "name": "Grenades",
+        },
+        "grenade_gun_item": {
+            "name": "Grenade Launcher",
         },
         "gun_flash": {
             "name": "Gun Flash",
@@ -2637,11 +2637,11 @@
         "harpoon_bolt": {
             "name": "Harpoon Bolt",
         },
-        "harpoon_gun": {
-            "name": "Harpoon Gun",
-        },
-        "harpoon_gun_ammo": {
+        "harpoon_gun_ammo_item": {
             "name": "Harpoons",
+        },
+        "harpoon_gun_item": {
+            "name": "Harpoon Gun",
         },
         "hook": {
             "name": "Hook",
@@ -2670,90 +2670,6 @@
         },
         "kayak": {
             "name": "Kayak",
-        },
-        "key_1": {
-            "name": "Key 1",
-        },
-        "key_10": {
-            "name": "Key 10",
-        },
-        "key_11": {
-            "name": "Key 11",
-        },
-        "key_12": {
-            "name": "Key 12",
-        },
-        "key_1_combo_1": {
-            "name": "Key 1 (Combo 1)",
-        },
-        "key_1_combo_2": {
-            "name": "Key 1 (Combo 2)",
-        },
-        "key_2": {
-            "name": "Key 2",
-        },
-        "key_2_combo_1": {
-            "name": "Key 2 (Combo 1)",
-        },
-        "key_2_combo_2": {
-            "name": "Key 2 (Combo 2)",
-        },
-        "key_3": {
-            "name": "Key 3",
-        },
-        "key_3_combo_1": {
-            "name": "Key 3 (Combo 1)",
-        },
-        "key_3_combo_2": {
-            "name": "Key 3 (Combo 2)",
-        },
-        "key_4": {
-            "name": "Key 4",
-        },
-        "key_4_combo_1": {
-            "name": "Key 4 (Combo 1)",
-        },
-        "key_4_combo_2": {
-            "name": "Key 4 (Combo 2)",
-        },
-        "key_5": {
-            "name": "Key 5",
-        },
-        "key_5_combo_1": {
-            "name": "Key 5 (Combo 1)",
-        },
-        "key_5_combo_2": {
-            "name": "Key 5 (Combo 2)",
-        },
-        "key_6": {
-            "name": "Key 6",
-        },
-        "key_6_combo_1": {
-            "name": "Key 6 (Combo 1)",
-        },
-        "key_6_combo_2": {
-            "name": "Key 6 (Combo 2)",
-        },
-        "key_7": {
-            "name": "Key 7",
-        },
-        "key_7_combo_1": {
-            "name": "Key 7 (Combo 1)",
-        },
-        "key_7_combo_2": {
-            "name": "Key 7 (Combo 2)",
-        },
-        "key_8": {
-            "name": "Key 8",
-        },
-        "key_8_combo_1": {
-            "name": "Key 8 (Combo 1)",
-        },
-        "key_8_combo_2": {
-            "name": "Key 8 (Combo 2)",
-        },
-        "key_9": {
-            "name": "Key 9",
         },
         "key_hole_1": {
             "name": "Keyhole 1",
@@ -2791,6 +2707,90 @@
         "key_hole_9": {
             "name": "Keyhole 9",
         },
+        "key_item_1": {
+            "name": "Key 1",
+        },
+        "key_item_10": {
+            "name": "Key 10",
+        },
+        "key_item_11": {
+            "name": "Key 11",
+        },
+        "key_item_12": {
+            "name": "Key 12",
+        },
+        "key_item_1_combo_1": {
+            "name": "Key 1 (Combo 1)",
+        },
+        "key_item_1_combo_2": {
+            "name": "Key 1 (Combo 2)",
+        },
+        "key_item_2": {
+            "name": "Key 2",
+        },
+        "key_item_2_combo_1": {
+            "name": "Key 2 (Combo 1)",
+        },
+        "key_item_2_combo_2": {
+            "name": "Key 2 (Combo 2)",
+        },
+        "key_item_3": {
+            "name": "Key 3",
+        },
+        "key_item_3_combo_1": {
+            "name": "Key 3 (Combo 1)",
+        },
+        "key_item_3_combo_2": {
+            "name": "Key 3 (Combo 2)",
+        },
+        "key_item_4": {
+            "name": "Key 4",
+        },
+        "key_item_4_combo_1": {
+            "name": "Key 4 (Combo 1)",
+        },
+        "key_item_4_combo_2": {
+            "name": "Key 4 (Combo 2)",
+        },
+        "key_item_5": {
+            "name": "Key 5",
+        },
+        "key_item_5_combo_1": {
+            "name": "Key 5 (Combo 1)",
+        },
+        "key_item_5_combo_2": {
+            "name": "Key 5 (Combo 2)",
+        },
+        "key_item_6": {
+            "name": "Key 6",
+        },
+        "key_item_6_combo_1": {
+            "name": "Key 6 (Combo 1)",
+        },
+        "key_item_6_combo_2": {
+            "name": "Key 6 (Combo 2)",
+        },
+        "key_item_7": {
+            "name": "Key 7",
+        },
+        "key_item_7_combo_1": {
+            "name": "Key 7 (Combo 1)",
+        },
+        "key_item_7_combo_2": {
+            "name": "Key 7 (Combo 2)",
+        },
+        "key_item_8": {
+            "name": "Key 8",
+        },
+        "key_item_8_combo_1": {
+            "name": "Key 8 (Combo 1)",
+        },
+        "key_item_8_combo_2": {
+            "name": "Key 8 (Combo 2)",
+        },
+        "key_item_9": {
+            "name": "Key 9",
+        },
         "kick_door_1": {
             "name": "Kick Door 1",
         },
@@ -2827,13 +2827,13 @@
         "lara_flare": {
             "name": "Flare Animation",
         },
-        "lara_grenade": {
+        "lara_grenade_gun": {
             "name": "Grenade Launcher Animation",
         },
         "lara_hair": {
             "name": "Lara's Braid",
         },
-        "lara_harpoon": {
+        "lara_harpoon_gun": {
             "name": "Harpoon Animation",
         },
         "lara_kayak": {
@@ -2866,7 +2866,7 @@
         "lara_rib": {
             "name": "RIB Animation",
         },
-        "lara_rocket": {
+        "lara_rocket_gun": {
             "name": "Rocket Launcher Animation",
         },
         "lara_shotgun": {
@@ -2893,7 +2893,7 @@
         "lara_uzis": {
             "name": "Uzis Animation",
         },
-        "large_medipack": {
+        "large_medipack_item": {
             "name": [
                 "Large Medipack",
                 "Big Medipack",
@@ -2902,13 +2902,13 @@
         "larson": {
             "name": "Larson",
         },
-        "lasersight": {
+        "lasersight_item": {
             "name": "Laser Sight",
         },
         "lava_wedge": {
             "name": "Lava Wedge",
         },
-        "lead_bar": {
+        "lead_bar_item": {
             "description": "",
             "name": "Lead Bar",
         },
@@ -2933,20 +2933,20 @@
         "lizard": {
             "name": "Lizard",
         },
-        "m16": {
-            "name": "M16",
-        },
-        "m16_ammo": {
+        "m16_ammo_item": {
             "name": "M16 Clips",
         },
         "m16_flash": {
             "name": "M16 Flash",
         },
-        "magnums": {
-            "name": "Magnums",
+        "m16_item": {
+            "name": "M16",
         },
-        "magnums_ammo": {
+        "magnums_ammo_item": {
             "name": "Magnum Clips",
+        },
+        "magnums_item": {
+            "name": "Magnums",
         },
         "mesh_swap_1": {
             "name": "Mesh Swap 1",
@@ -3032,11 +3032,11 @@
         "moving_bar": {
             "name": "Moving Bar",
         },
-        "mp5": {
-            "name": "MP5",
-        },
-        "mp5_ammo": {
+        "mp5_ammo_item": {
             "name": "MP5 Clips",
+        },
+        "mp5_item": {
+            "name": "MP5",
         },
         "mp_1": {
             "name": "MP 1",
@@ -3059,7 +3059,7 @@
         "orca": {
             "name": "Orca",
         },
-        "passport": {
+        "passport_option": {
             "name": "Game",
         },
         "patrol_dog": {
@@ -3068,7 +3068,7 @@
                 "Patrol Dog",
             ]
         },
-        "pda": {
+        "pda_option": {
             "name": "Gameplay",
         },
         "pendulum_1": {
@@ -3085,59 +3085,59 @@
                 "Swinging box",
             ]
         },
-        "photo": {
+        "photo_option": {
             "name": "Lara's Home",
-        },
-        "pickup_1": {
-            "name": "Pickup Item 1",
-        },
-        "pickup_1_combo_1": {
-            "name": "Pickup Item 1 (Combo 1)",
-        },
-        "pickup_1_combo_2": {
-            "name": "Pickup Item 1 (Combo 2)",
-        },
-        "pickup_2": {
-            "name": "Pickup Item 2",
-        },
-        "pickup_2_combo_1": {
-            "name": "Pickup Item 2 (Combo 1)",
-        },
-        "pickup_2_combo_2": {
-            "name": "Pickup Item 2 (Combo 2)",
-        },
-        "pickup_3": {
-            "name": "Pickup Item 3",
-        },
-        "pickup_3_combo_1": {
-            "name": "Pickup Item 3 (Combo 1)",
-        },
-        "pickup_3_combo_2": {
-            "name": "Pickup Item 3 (Combo 2)",
-        },
-        "pickup_4": {
-            "name": "Pickup Item 4",
-        },
-        "pickup_4_combo_1": {
-            "name": "Pickup Item 4 (Combo 1)",
-        },
-        "pickup_4_combo_2": {
-            "name": "Pickup Item 4 (Combo 2)",
         },
         "pickup_aid": {
             "name": "Pickup Aid",
         },
+        "pickup_item_1": {
+            "name": "Pickup Item 1",
+        },
+        "pickup_item_1_combo_1": {
+            "name": "Pickup Item 1 (Combo 1)",
+        },
+        "pickup_item_1_combo_2": {
+            "name": "Pickup Item 1 (Combo 2)",
+        },
+        "pickup_item_2": {
+            "name": "Pickup Item 2",
+        },
+        "pickup_item_2_combo_1": {
+            "name": "Pickup Item 2 (Combo 1)",
+        },
+        "pickup_item_2_combo_2": {
+            "name": "Pickup Item 2 (Combo 2)",
+        },
+        "pickup_item_3": {
+            "name": "Pickup Item 3",
+        },
+        "pickup_item_3_combo_1": {
+            "name": "Pickup Item 3 (Combo 1)",
+        },
+        "pickup_item_3_combo_2": {
+            "name": "Pickup Item 3 (Combo 2)",
+        },
+        "pickup_item_4": {
+            "name": "Pickup Item 4",
+        },
+        "pickup_item_4_combo_1": {
+            "name": "Pickup Item 4 (Combo 1)",
+        },
+        "pickup_item_4_combo_2": {
+            "name": "Pickup Item 4 (Combo 2)",
+        },
         "pierre": {
             "name": "Pierre",
         },
-        "pirahnas": {
+        "piranhas": {
             "name": "Pirahnas",
         },
-        "pistols": {
-            "name": "Pistols",
-        },
-        "pistols_ammo": {
+        "pistols_ammo_item": {
             "name": "Pistol Clips",
+        },
+        "pistols_item": {
+            "name": "Pistols",
         },
         "player_1": {
             "name": "Cutscene Actor 1",
@@ -3214,90 +3214,6 @@
         "pushpull_door_2": {
             "name": "Push/Pull Door 2",
         },
-        "puzzle_1": {
-            "name": "Puzzle Item 1",
-        },
-        "puzzle_10": {
-            "name": "Puzzle Item 10",
-        },
-        "puzzle_11": {
-            "name": "Puzzle Item 11",
-        },
-        "puzzle_12": {
-            "name": "Puzzle Item 12",
-        },
-        "puzzle_1_combo_1": {
-            "name": "Puzzle Item 1 (Combo 1)",
-        },
-        "puzzle_1_combo_2": {
-            "name": "Puzzle Item 1 (Combo 2)",
-        },
-        "puzzle_2": {
-            "name": "Puzzle Item 2",
-        },
-        "puzzle_2_combo_1": {
-            "name": "Puzzle Item 2 (Combo 1)",
-        },
-        "puzzle_2_combo_2": {
-            "name": "Puzzle Item 2 (Combo 2)",
-        },
-        "puzzle_3": {
-            "name": "Puzzle Item 3",
-        },
-        "puzzle_3_combo_1": {
-            "name": "Puzzle Item 3 (Combo 1)",
-        },
-        "puzzle_3_combo_2": {
-            "name": "Puzzle Item 3 (Combo 2)",
-        },
-        "puzzle_4": {
-            "name": "Puzzle Item 4",
-        },
-        "puzzle_4_combo_1": {
-            "name": "Puzzle Item 4 (Combo 1)",
-        },
-        "puzzle_4_combo_2": {
-            "name": "Puzzle Item 4 (Combo 2)",
-        },
-        "puzzle_5": {
-            "name": "Puzzle Item 5",
-        },
-        "puzzle_5_combo_1": {
-            "name": "Puzzle Item 5 (Combo 1)",
-        },
-        "puzzle_5_combo_2": {
-            "name": "Puzzle Item 5 (Combo 2)",
-        },
-        "puzzle_6": {
-            "name": "Puzzle Item 6",
-        },
-        "puzzle_6_combo_1": {
-            "name": "Puzzle Item 6 (Combo 1)",
-        },
-        "puzzle_6_combo_2": {
-            "name": "Puzzle Item 6 (Combo 2)",
-        },
-        "puzzle_7": {
-            "name": "Puzzle Item 7",
-        },
-        "puzzle_7_combo_1": {
-            "name": "Puzzle Item 7 (Combo 1)",
-        },
-        "puzzle_7_combo_2": {
-            "name": "Puzzle Item 7 (Combo 2)",
-        },
-        "puzzle_8": {
-            "name": "Puzzle Item 8",
-        },
-        "puzzle_8_combo_1": {
-            "name": "Puzzle Item 8 (Combo 1)",
-        },
-        "puzzle_8_combo_2": {
-            "name": "Puzzle Item 8 (Combo 2)",
-        },
-        "puzzle_9": {
-            "name": "Puzzle Item 9",
-        },
         "puzzle_done_1": {
             "name": "Puzzle Hole 1 (Done)",
         },
@@ -3370,25 +3286,109 @@
         "puzzle_hole_9": {
             "name": "Puzzle Hole 9 (Empty)",
         },
+        "puzzle_item_1": {
+            "name": "Puzzle Item 1",
+        },
+        "puzzle_item_10": {
+            "name": "Puzzle Item 10",
+        },
+        "puzzle_item_11": {
+            "name": "Puzzle Item 11",
+        },
+        "puzzle_item_12": {
+            "name": "Puzzle Item 12",
+        },
+        "puzzle_item_1_combo_1": {
+            "name": "Puzzle Item 1 (Combo 1)",
+        },
+        "puzzle_item_1_combo_2": {
+            "name": "Puzzle Item 1 (Combo 2)",
+        },
+        "puzzle_item_2": {
+            "name": "Puzzle Item 2",
+        },
+        "puzzle_item_2_combo_1": {
+            "name": "Puzzle Item 2 (Combo 1)",
+        },
+        "puzzle_item_2_combo_2": {
+            "name": "Puzzle Item 2 (Combo 2)",
+        },
+        "puzzle_item_3": {
+            "name": "Puzzle Item 3",
+        },
+        "puzzle_item_3_combo_1": {
+            "name": "Puzzle Item 3 (Combo 1)",
+        },
+        "puzzle_item_3_combo_2": {
+            "name": "Puzzle Item 3 (Combo 2)",
+        },
+        "puzzle_item_4": {
+            "name": "Puzzle Item 4",
+        },
+        "puzzle_item_4_combo_1": {
+            "name": "Puzzle Item 4 (Combo 1)",
+        },
+        "puzzle_item_4_combo_2": {
+            "name": "Puzzle Item 4 (Combo 2)",
+        },
+        "puzzle_item_5": {
+            "name": "Puzzle Item 5",
+        },
+        "puzzle_item_5_combo_1": {
+            "name": "Puzzle Item 5 (Combo 1)",
+        },
+        "puzzle_item_5_combo_2": {
+            "name": "Puzzle Item 5 (Combo 2)",
+        },
+        "puzzle_item_6": {
+            "name": "Puzzle Item 6",
+        },
+        "puzzle_item_6_combo_1": {
+            "name": "Puzzle Item 6 (Combo 1)",
+        },
+        "puzzle_item_6_combo_2": {
+            "name": "Puzzle Item 6 (Combo 2)",
+        },
+        "puzzle_item_7": {
+            "name": "Puzzle Item 7",
+        },
+        "puzzle_item_7_combo_1": {
+            "name": "Puzzle Item 7 (Combo 1)",
+        },
+        "puzzle_item_7_combo_2": {
+            "name": "Puzzle Item 7 (Combo 2)",
+        },
+        "puzzle_item_8": {
+            "name": "Puzzle Item 8",
+        },
+        "puzzle_item_8_combo_1": {
+            "name": "Puzzle Item 8 (Combo 1)",
+        },
+        "puzzle_item_8_combo_2": {
+            "name": "Puzzle Item 8 (Combo 2)",
+        },
+        "puzzle_item_9": {
+            "name": "Puzzle Item 9",
+        },
         "quad_bike": {
             "name": "Quad Bike",
         },
-        "quest_1": {
+        "quest_item_1": {
             "name": "Quest Item 1",
         },
-        "quest_2": {
+        "quest_item_2": {
             "name": "Quest Item 2",
         },
-        "quest_3": {
+        "quest_item_3": {
             "name": "Quest Item 3",
         },
-        "quest_4": {
+        "quest_item_4": {
             "name": "Quest Item 4",
         },
-        "quest_5": {
+        "quest_item_5": {
             "name": "Quest Item 5",
         },
-        "quest_6": {
+        "quest_item_6": {
             "name": "Quest Item 6",
         },
         "raptor": {
@@ -3406,11 +3406,11 @@
         "red_light": {
             "name": "Red Light",
         },
-        "revolver": {
-            "name": "Revolver",
-        },
-        "revolver_ammo": {
+        "revolver_ammo_item": {
             "name": "Revolver Ammo",
+        },
+        "revolver_item": {
+            "name": "Revolver",
         },
         "rib": {
             "name": [
@@ -3424,11 +3424,11 @@
         "rocket": {
             "name": "Rocket",
         },
-        "rocket_launcher": {
-            "name": "Rocket Launcher",
-        },
-        "rocket_launcher_ammo": {
+        "rocket_ammo_item": {
             "name": "Rockets",
+        },
+        "rocket_gun_item": {
+            "name": "Rocket Launcher",
         },
         "rolling_ball_1": {
             "name": [
@@ -3475,8 +3475,14 @@
         "sarcophagus": {
             "name": "Sarcophagus",
         },
-        "save_crystal": {
+        "save_crystal_item": {
             "name": "Savegame Crystal",
+        },
+        "save_crystal_option": {
+            "name": [
+                "Crystal",
+                "Savegame Crystal",
+            ]
         },
         "scaled_spikes": {
             "name": [
@@ -3484,11 +3490,11 @@
                 "Scaled Spikes",
             ]
         },
-        "scion": {
-            "name": "Scion",
-        },
         "scion_holder": {
             "name": "Scion Holder",
+        },
+        "scion_item_1": {
+            "name": "Scion",
         },
         "secret_1": {
             "name": "Secret 1",
@@ -3523,11 +3529,11 @@
         "shiva": {
             "name": "Shiva",
         },
-        "shotgun": {
-            "name": "Shotgun",
-        },
-        "shotgun_ammo": {
+        "shotgun_ammo_item": {
             "name": "Shotgun Shells",
+        },
+        "shotgun_item": {
+            "name": "Shotgun",
         },
         "shotgun_shell": {
             "name": "Shotgun Shell",
@@ -3556,7 +3562,7 @@
         "sliding_pillar": {
             "name": "Sliding Pillar",
         },
-        "small_medipack": {
+        "small_medipack_item": {
             "name": "Small Medipack",
         },
         "smashable_1": {
@@ -3589,19 +3595,13 @@
         "smoke_emitter_white": {
             "name": "Smoke Emitter (White)",
         },
-        "snake": {
-            "name": [
-                "Snake",
-                "Cobra",
-            ]
-        },
         "snow_sprite": {
             "name": "Snowmobile Wake",
         },
         "sophia": {
             "name": "Sophia",
         },
-        "sound": {
+        "sound_option": {
             "name": "Sound",
         },
         "sphere_of_doom_1": {
@@ -3640,7 +3640,7 @@
         "sthpac_mercenary": {
             "name": "South Pacific Mercenary",
         },
-        "stopwatch": {
+        "stopwatch_option": {
             "name": "Statistics",
         },
         "strobe_light": {
@@ -3848,11 +3848,11 @@
                 "Minisub",
             ]
         },
-        "uzis": {
-            "name": "Uzis",
-        },
-        "uzis_ammo": {
+        "uzis_ammo_item": {
             "name": "Uzi Clips",
+        },
+        "uzis_item": {
+            "name": "Uzis",
         },
         "vole": {
             "name": [
@@ -3887,10 +3887,10 @@
         "waterfall_mist": {
             "name": "Waterfall Mist",
         },
-        "waterskin_1": {
+        "waterskin_1_empty": {
             "name": "Small Waterskin",
         },
-        "waterskin_2": {
+        "waterskin_2_empty": {
             "name": "Large Waterskin",
         },
         "white_light": {

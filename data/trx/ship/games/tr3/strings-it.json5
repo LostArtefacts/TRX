@@ -32,26 +32,26 @@
         }
     },
     "objects": {
-        "large_medipack": {
+        "large_medipack_item": {
             "name": "Kit Medico Grande",
         },
-        "quest_1": {
+        "quest_item_1": {
             "description": "",
             "name": "Pietra Infada",
         },
-        "quest_2": {
+        "quest_item_2": {
             "description": "",
             "name": "Elemento 115",
         },
-        "quest_3": {
+        "quest_item_3": {
             "description": "",
             "name": "Occhio di Iside",
         },
-        "quest_4": {
+        "quest_item_4": {
             "description": "",
             "name": "Pugnale Ora",
         },
-        "small_medipack": {
+        "small_medipack_item": {
             "name": "Kit Medico Piccolo",
         }
     },
@@ -94,7 +94,7 @@
         {
             "title": "Casa di Lara",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave del Circuito",
                 }
             }
@@ -102,7 +102,7 @@
         {
             "title": "Giungla",
             "objects": {
-                "key_4": {
+                "key_item_4": {
                     "name": "Chiave di Indra",
                 }
             }
@@ -110,13 +110,13 @@
         {
             "title": "Rovine del Tempio",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave di Ganesha",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Scimitarra",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Scimitarra",
                 }
             }
@@ -124,7 +124,7 @@
         {
             "title": "Il Fiume Gange",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave del Cancello",
                 }
             }
@@ -135,10 +135,10 @@
         {
             "title": "Villaggio Costiero",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave del Contrabbandiere",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Pietra del Serpente",
                 }
             }
@@ -146,13 +146,13 @@
         {
             "title": "Luogo dello Schianto",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave del Comandante Bishop",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Chiave del Tenente Tuckerman",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Mappa della Palude",
                     "description": "",
                 }
@@ -167,10 +167,10 @@
         {
             "title": "Molo sul Tamigi",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave della Canna Fumaria",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Chiave della Cattedrale",
                 }
             }
@@ -178,25 +178,25 @@
         {
             "title": "Aldwych",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave di Manutenzione",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Chiave di Salomone",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Chiave di Salomone",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Vecchio Penny",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Biglietto",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Martello Massonico",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Stella Ornata",
                 }
             }
@@ -204,10 +204,10 @@
         {
             "title": "Porta di Lud",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave della Caldaia",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Fluido di Imbalsamazione",
                 }
             }
@@ -218,10 +218,10 @@
         {
             "title": "Deserto del Nevada",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave d'Accesso al Generatore",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Chiave del Detonatore",
                 }
             }
@@ -229,16 +229,16 @@
         {
             "title": "Reparto di Massima Sicurezza",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Scheda Elettronica di Tipo A",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Scheda Elettronica di Tipo B",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Chiave di Sicurezza Elettronica Blu",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Chiave di Sicurezza Elettronica Gialla",
                 }
             }
@@ -246,19 +246,19 @@
         {
             "title": "Area 51",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Scheda Codice di Lancio",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Chiave di Accesso alla Torre",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Disco del Codice d'Accesso",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Disco del Codice d'Accesso",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Chiave di Accesso all'Hangar",
                 }
             }
@@ -266,13 +266,13 @@
         {
             "title": "Antartide",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave della Capanna",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Piede di Porco",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Chiave di Controllo del Cancello",
                 }
             }
@@ -280,13 +280,13 @@
         {
             "title": "Miniere della RX-Tech",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Piede di Porco",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Batteria al Piombo",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Avviamento dell'Argano",
                 }
             }
@@ -294,10 +294,10 @@
         {
             "title": "Città Perduta di Tinnos",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave Uli",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Maschera Oceaniana",
                 }
             }
@@ -308,7 +308,7 @@
         {
             "title": "All Hallows",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave della Cripta",
                 }
             }

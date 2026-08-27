@@ -5,10 +5,10 @@
         {
             "title": "\\{review}La cité de Vilcabamba",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "\\{review}Clé d'argent",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "\\{review}Idole dorée",
                 }
             }

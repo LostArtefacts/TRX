@@ -11,10 +11,10 @@
                 "tiger": {
                     "name": "Schneeleopard",
                 },
-                "key_1": {
+                "key_item_1": {
                     "name": "Wachraum-Schlüssel",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Schacht'B' Schlüssel",
                 }
             }
@@ -22,13 +22,13 @@
         {
             "title": "Das Gold des Narren",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Schlüsselkarte 1",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Schlüsselkarte 2",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Platine",
                 }
             }
@@ -42,10 +42,10 @@
                 "spider": {
                     "name": "Wolf",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Maske des Tornarsuk",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Goldklumpen",
                 }
             }
@@ -56,7 +56,7 @@
                 "tiger": {
                     "name": "Schneeleopard",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Maske des Tornarsuk",
                 }
             }
@@ -64,13 +64,13 @@
         {
             "title": "Alptraum in Vegas",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Hotelschlüssel",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Fahrstulteil",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Türstromkreis",
                 }
             }

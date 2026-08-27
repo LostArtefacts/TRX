@@ -26,11 +26,11 @@ This document serves two main audiences:
 
 ```json5
 {
-    // Override only the key_1 pickup in Level 0
+    // Override only the key_item_1 pickup in Level 0
     "levels": [
         {
             "title": "City of Vilcabamba",
-            "objects": { "key_1": { "name": "Gold Key" } }
+            "objects": { "key_item_1": { "name": "Gold Key" } }
         }
     ]
 }
@@ -70,15 +70,15 @@ The document is organized as follows:
         {
             "title": "City of Vilcabamba",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Silver Key",
-                    "description": "This shows when the player examines key1 in the inventory.",
+                    "description": "This shows when the player examines the key in the inventory.",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Gold Idol",
                     "description": "You can use \n to make new lines and \f to make new pages.",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Rusty Key",
                 },
                 // etc
@@ -313,32 +313,31 @@ The document is organized as follows:
 
 ## Common Object IDs and names
 
-| JSON key   | Object ID (TR1) | Object ID (TR2) | Object ID (TR3) |
-|------------|-----------------|-----------------|-----------------|
-| `key_1`    | 129 and 133     | 193 and 197     | 224 and 228     |
-| `key_2`    | 130 and 134     | 194 and 198     | 225 and 229     |
-| `key_3`    | 131 and 135     | 195 and 199     | 226 and 230     |
-| `key_4`    | 132 and 136     | 196 and 200     | 227 and 231     |
-| `pickup_1` | 141 and 148     | 205 and 207     | 236 and 238     |
-| `pickup_2` | 142 and 149     | 206 and 208     | 237 and 239     |
-| `puzzle_1` | 110 and 114     | 174 and 178     | 205 and 209     |
-| `puzzle_2` | 111 and 115     | 175 and 179     | 206 and 210     |
-| `puzzle_3` | 112 and 116     | 176 and 180     | 207 and 211     |
-| `puzzle_4` | 113 and 117     | 177 and 181     | 208 and 212     |
-| `quest_1`  | -               | -               | 240 and 244     |
-| `quest_2`  | -               | -               | 241 and 245     |
-| `quest_3`  | -               | -               | 242 and 246     |
-| `quest_4`  | -               | -               | 243 and 247     |
-| `secret_1` | -               | 190             | -               |
-| `secret_2` | -               | 191             | -               |
-| `secret_3` | -               | 192             | -               |
+| Ground key       | Inventory key      | Object ID (TR1) | Object ID (TR2) | Object ID (TR3) |
+|------------------|--------------------|-----------------|-----------------|-----------------|
+| `key_item_1`     | `key_option_1`     | 129 and 133     | 193 and 197     | 224 and 228     |
+| `key_item_2`     | `key_option_2`     | 130 and 134     | 194 and 198     | 225 and 229     |
+| `key_item_3`     | `key_option_3`     | 131 and 135     | 195 and 199     | 226 and 230     |
+| `key_item_4`     | `key_option_4`     | 132 and 136     | 196 and 200     | 227 and 231     |
+| `pickup_item_1`  | `pickup_option_1`  | 141 and 148     | 205 and 207     | 236 and 238     |
+| `pickup_item_2`  | `pickup_option_2`  | 142 and 149     | 206 and 208     | 237 and 239     |
+| `puzzle_item_1`  | `puzzle_option_1`  | 110 and 114     | 174 and 178     | 205 and 209     |
+| `puzzle_item_2`  | `puzzle_option_2`  | 111 and 115     | 175 and 179     | 206 and 210     |
+| `puzzle_item_3`  | `puzzle_option_3`  | 112 and 116     | 176 and 180     | 207 and 211     |
+| `puzzle_item_4`  | `puzzle_option_4`  | 113 and 117     | 177 and 181     | 208 and 212     |
+| `quest_item_1`   | `quest_option_1`   | -               | -               | 240 and 244     |
+| `quest_item_2`   | `quest_option_2`   | -               | -               | 241 and 245     |
+| `quest_item_3`   | `quest_option_3`   | -               | -               | 242 and 246     |
+| `quest_item_4`   | `quest_option_4`   | -               | -               | 243 and 247     |
+| `secret_1`       | -                  | -               | 190             | -               |
+| `secret_2`       | -                  | -               | 191             | -               |
+| `secret_3`       | -                  | -               | 192             | -               |
 
 > [!NOTE]
 > Nearly all pickup items exist in two forms, as early games differentiate
 > between a sprite displayed on the ground and a 3D object depicted in the
-> inventory ring. Secrets are a notable exception, as they never appear in the
-> inventory ring in the original game. For convenience, both forms are defined
-> using a single key.
+> inventory ring. Each form has its own key. Secrets are a notable exception,
+> as they never appear in the inventory ring in the original game.
 
 ## Translation Workflow
 
@@ -418,7 +417,7 @@ menu. For example:
           {
               "title": "City of Vilcabamba",
               "objects": {
-                  "key_1": {"name": "Gold Key"}
+                  "key_item_1": {"name": "Gold Key"}
               }
           }
       ]

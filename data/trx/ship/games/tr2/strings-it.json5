@@ -10,10 +10,10 @@
         }
     },
     "objects": {
-        "large_medipack": {
+        "large_medipack_item": {
             "name": "Kit Medico Grande",
         },
-        "small_medipack": {
+        "small_medipack_item": {
             "name": "Kit Medico Piccolo",
         }
     },
@@ -38,10 +38,10 @@
         {
             "title": "La Grande Muraglia",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave della Guardiola",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Chiave Arrugginita",
                 }
             }
@@ -49,13 +49,13 @@
         {
             "title": "Venezia",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave della Rimessa",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Chiave d'Acciaio",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Chiave di Ferro",
                 }
             }
@@ -63,10 +63,10 @@
         {
             "title": "Covo di Bartoli",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave della Biblioteca",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Chiave del Detonatore",
                 }
             }
@@ -74,13 +74,13 @@
         {
             "title": "Teatro dell'Opera",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave Cesellata",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Scatola Fusibili",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Circuito d'Avvio",
                 }
             }
@@ -88,13 +88,13 @@
         {
             "title": "Piattaforma Offshore",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Tessera Rossa",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Tessera Gialla",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Tessera Verde",
                 }
             }
@@ -102,13 +102,13 @@
         {
             "title": "Area di immersione",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Tessera Rossa",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Tessera Blu",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Chip",
                 }
             }
@@ -119,16 +119,16 @@
         {
             "title": "Relitto della Maria Doria",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave del Guardaroba",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Chiave Arrugginita",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Chiave della Cabina",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Interruttore di Circuito",
                 }
             }
@@ -136,10 +136,10 @@
         {
             "title": "Alloggi",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave del Teatro",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Chiave Arrugginita",
                 }
             }
@@ -147,16 +147,16 @@
         {
             "title": "Sul Ponte",
             "objects": {
-                "key_2": {
+                "key_item_2": {
                     "name": "Chiave di Poppa",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Chiave del Ripostiglio",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Chiave della Cabina",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Il Serafo",
                 }
             }
@@ -167,13 +167,13 @@
                 "tiger": {
                     "name": "Leopardo delle Nevi",
                 },
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave del Ponte",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Chiave della Capanna",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Il Serafo",
                 }
             }
@@ -181,25 +181,25 @@
         {
             "title": "Monastero di Barkhang",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave del Caveau",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Chiave della Botola",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Chiave del Solaio",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Chiave dell’Atrio",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Ruote della Preghiera",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Gemme",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Il Serafo",
                 }
             }
@@ -210,10 +210,10 @@
                 "tiger": {
                     "name": "Leopardo delle Nevi",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Martello del Gong",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Maschera Tibetana",
                 }
             }
@@ -224,13 +224,13 @@
                 "tiger": {
                     "name": "Tigre Bianca",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Martello del Gong",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "Talion",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Maschera Tibetana",
                 }
             }
@@ -238,16 +238,16 @@
         {
             "title": "Tempio dello Xian",
             "objects": {
-                "key_2": {
+                "key_item_2": {
                     "name": "Chiave d'Oro",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Chiave d'Argento",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Chiave Camera Principale",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Sigillo del Drago",
                 }
             }
@@ -255,10 +255,10 @@
         {
             "title": "Isole Galleggianti",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Piastra Mistica",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Piastra Mistica",
                 }
             }
@@ -266,10 +266,10 @@
         {
             "title": "La Tana del Drago",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Piastra Mistica",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Pugnale di Xian",
                 }
             }
@@ -277,10 +277,10 @@
         {
             "title": "Casa Dolce Casa",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave Arsenale",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Pugnale di Xian",
                 }
             }
@@ -290,13 +290,13 @@
         {
             "title": "Venezia",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave della Rimessa",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Chiave d'Acciaio",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Chiave di Ferro",
                 }
             }
@@ -304,16 +304,16 @@
         {
             "title": "Relitto della Maria Doria",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave del Guardaroba",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Chiave Arrugginita",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Chiave della Cabina",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Interruttore di Circuito",
                 }
             }
@@ -324,13 +324,13 @@
                 "tiger": {
                     "name": "Leopardo delle Nevi",
                 },
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave del Ponte",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Chiave della Capanna",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Il Serafo",
                 }
             }

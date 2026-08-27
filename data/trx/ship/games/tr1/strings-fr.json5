@@ -18,10 +18,10 @@
         }
     },
     "objects": {
-        "large_medipack": {
+        "large_medipack_item": {
             "name": "Grande trousse de soins",
         },
-        "small_medipack": {
+        "small_medipack_item": {
             "name": "Petite trousse de soins",
         }
     },
@@ -49,10 +49,10 @@
         {
             "title": "La cité de Vilcabamba",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé d'argent",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Idole dorée",
                 }
             }
@@ -60,7 +60,7 @@
         {
             "title": "La vallée perdue",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Roue dentée",
                 }
             }
@@ -71,16 +71,16 @@
         {
             "title": "Le monument St Francis",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé de Neptune",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Clé d'Atlas",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Clé de Damoclès",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Clé de Thor",
                 }
             }
@@ -88,7 +88,7 @@
         {
             "title": "Colosseum",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé rouillée",
                 }
             }
@@ -96,7 +96,7 @@
         {
             "title": "Le palais de Midas",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Lingot d'or",
                 }
             }
@@ -104,13 +104,13 @@
         {
             "title": "La citerne",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé en or",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Clé d'argent",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Clé rouillée",
                 }
             }
@@ -118,13 +118,13 @@
         {
             "title": "La tombe de Tihocan",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé en or",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Clé rouillée",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Clé rouillée",
                 }
             }
@@ -132,7 +132,7 @@
         {
             "title": "La cité de Khamoon",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé de saphir",
                 }
             }
@@ -140,19 +140,19 @@
         {
             "title": "L'obélisque de Khamoon",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé de saphir",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Œil d'Horus",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Scarabée",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Sceau d'Anubis",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Ankh",
                 }
             }
@@ -160,13 +160,13 @@
         {
             "title": "Le sanctuaire du Scion",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé en or",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Ankh",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Scarabée",
                 }
             }
@@ -174,10 +174,10 @@
         {
             "title": "Les mines de Natla",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Fusible",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Clé de la pyramide",
                 }
             }
@@ -211,10 +211,10 @@
         {
             "title": "La cité de Vilcabamba",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé d'argent",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Idole dorée",
                 }
             }
@@ -222,7 +222,7 @@
         {
             "title": "La vallée perdue",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Roue dentée",
                 }
             }

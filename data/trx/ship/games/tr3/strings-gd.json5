@@ -32,26 +32,26 @@
         }
     },
     "objects": {
-        "large_medipack": {
+        "large_medipack_item": {
             "name": "Pasgan Mòr Slàinte",
         },
-        "quest_1": {
+        "quest_item_1": {
             "description": "",
             "name": "Clach Infada",
         },
-        "quest_2": {
+        "quest_item_2": {
             "description": "",
             "name": "Bunabhas 115",
         },
-        "quest_3": {
+        "quest_item_3": {
             "description": "",
             "name": "Sùil Isis",
         },
-        "quest_4": {
+        "quest_item_4": {
             "description": "",
             "name": "Biodag Ora",
         },
-        "small_medipack": {
+        "small_medipack_item": {
             "name": "Pasgan Beag Slàinte",
         }
     },
@@ -94,7 +94,7 @@
         {
             "title": "Dachaigh Lara",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair a' Chùrsa Rèis",
                 }
             }
@@ -102,7 +102,7 @@
         {
             "title": "Dlùth-choille",
             "objects": {
-                "key_4": {
+                "key_item_4": {
                     "name": "Iuchair Indra",
                 }
             }
@@ -110,13 +110,13 @@
         {
             "title": "Creachan an Teampaill",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair Ganesha",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Claidheamh Crom",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Claidheamh Crom",
                 }
             }
@@ -124,7 +124,7 @@
         {
             "title": "Abhainn nan Ganges",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair a' Gheata",
                 }
             }
@@ -135,10 +135,10 @@
         {
             "title": "Baile na h-Oirthire",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair a' Chùl-mhalairtiche",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Clach na Nathrach",
                 }
             }
@@ -146,13 +146,13 @@
         {
             "title": "Làrach na Tubaist",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair a' Cheannaird Bishop",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Iuchair an Fho-cheannaird Tuckerman",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Mapa a' Bhoglaich",
                     "description": "",
                 }
@@ -167,10 +167,10 @@
         {
             "title": "Cidhe Thames",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair Seòmar an t-Simileir",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Iuchair na Cathair-eaglaise",
                 }
             }
@@ -178,25 +178,25 @@
         {
             "title": "Aldwych",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair a' Chàraidh",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Iuchair Sholaimh",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Iuchair Sholaimh",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Seann Bhonn-airgid",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Tiocaid",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Òrd Clachaireachd",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Rionnag Sgeadaichte",
                 }
             }
@@ -204,10 +204,10 @@
         {
             "title": "Geata Lud",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair Seòmar a' Ghoileadair",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Lionn-spìosrachaidh",
                 }
             }
@@ -218,10 +218,10 @@
         {
             "title": "Fàsach Nebhada",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Cead-inntrigidh a' Ghineadair",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Suidse an Spreadhaidh",
                 }
             }
@@ -229,16 +229,16 @@
         {
             "title": "Ionad Àrd-thèarainteachd",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Cairt-iuchrach A",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Cairt-iuchrach B",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Pas Tèarainteachd Gorm",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Pas Tèarainteachd Buidhe",
                 }
             }
@@ -246,19 +246,19 @@
         {
             "title": "Raon 51",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Pas Còd Cur-air-bhog",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Iuchair Inntrigidh an Tùir",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Diosg Fuasglaidh Còd",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Diosg Fuasglaidh Còd",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Iuchair Inntrigidh an Hangair",
                 }
             }
@@ -266,13 +266,13 @@
         {
             "title": "An Antartaig",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair a' Bhothain",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Cròbh-iarainn",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Iuchair Smachd a' Gheata",
                 }
             }
@@ -280,13 +280,13 @@
         {
             "title": "Mèinnean RX-Tech",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Cròbh-iarainn",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Bataraidh Geurag-luaidhe",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Tòiseadair na Crangaid",
                 }
             }
@@ -294,10 +294,10 @@
         {
             "title": "Baile Caillte Tinnos",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair Uli",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Masg Cuantail",
                 }
             }
@@ -308,7 +308,7 @@
         {
             "title": "Oidhche nan Naomhaich",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair an Ionmhais",
                 }
             }

@@ -63,7 +63,7 @@
             "lara_outfit": "tr1_classic",
             "sequence": [
                 {"type": "loading_screen", "path": "ub_loading1.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "give_item", "object_id": "binoculars"},
+                {"type": "give_item", "object_id": "binoculars_item"},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
                 {"type": "level_complete"},

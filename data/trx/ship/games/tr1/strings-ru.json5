@@ -18,10 +18,10 @@
         }
     },
     "objects": {
-        "large_medipack": {
+        "large_medipack_item": {
             "name": "Большая аптечка",
         },
-        "small_medipack": {
+        "small_medipack_item": {
             "name": "Маленькая аптечка",
         }
     },
@@ -49,10 +49,10 @@
         {
             "title": "Город Вилкабамба",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Серебряный ключ",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Золотой идол",
                 }
             }
@@ -60,7 +60,7 @@
         {
             "title": "Затерянная долина",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Шестерёнка",
                 }
             }
@@ -71,16 +71,16 @@
         {
             "title": "Монастырь св. Франциска",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Ключ Нептуна",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Ключ Атласа",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Ключ Дамокла",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Ключ Тора",
                 }
             }
@@ -88,7 +88,7 @@
         {
             "title": "Колизей",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Ржавый ключ",
                 }
             }
@@ -96,7 +96,7 @@
         {
             "title": "Дворец Мидаса",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Золотой слиток",
                 }
             }
@@ -104,13 +104,13 @@
         {
             "title": "Цистерна",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Золотой ключ",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Серебряный ключ",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Ржавый ключ",
                 }
             }
@@ -118,13 +118,13 @@
         {
             "title": "Гробница Тихокана",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Золотой ключ",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Ржавый ключ",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Ржавый ключ",
                 }
             }
@@ -132,7 +132,7 @@
         {
             "title": "Город Хамун",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Сапфировый ключ",
                 }
             }
@@ -140,19 +140,19 @@
         {
             "title": "Обелиск Хамун",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Сапфировый ключ",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Глаз Гора",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Скарабей",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Печать Анубиса",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Анк",
                 }
             }
@@ -160,13 +160,13 @@
         {
             "title": "Святилище Наследия",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Золотой ключ",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Анк",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Скарабей",
                 }
             }
@@ -174,10 +174,10 @@
         {
             "title": "Раскопки Натлы",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Предохранитель",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Ключ к пирамиде",
                 }
             }
@@ -211,10 +211,10 @@
         {
             "title": "Город Вилкабамба",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Серебряный ключ",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Золотой идол",
                 }
             }
@@ -222,7 +222,7 @@
         {
             "title": "Затерянная долина",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Шестерёнка",
                 }
             }

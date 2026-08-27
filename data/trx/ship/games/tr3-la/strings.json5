@@ -2,7 +2,7 @@
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
     "objects": {
-        "quest_1": {
+        "quest_item_1": {
             "description": "",
             "name": "Hand of Rathmore",
         }
@@ -11,7 +11,7 @@
         {
             "title": "Lara's Home",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Racetrack Key",
                 }
             }
@@ -19,10 +19,10 @@
         {
             "title": "Highland Fling",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Crowbar",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Thistle Stone",
                 }
             }
@@ -30,10 +30,10 @@
         {
             "title": "Willard's Lair",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Cairn Key",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Crowbar",
                 }
             }
@@ -41,10 +41,10 @@
         {
             "title": "Shakespeare Cliff",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Drill Activator Card",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Pump Access Disk",
                 }
             }
@@ -55,16 +55,16 @@
                 "orca": {
                     "name": "Dolphin",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Circuit Bulb",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Mutant Sample",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Mutant Sample",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Circuit Bulb",
                 }
             }
@@ -72,13 +72,13 @@
         {
             "title": "It's a Madhouse!",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Zoo Key",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Aviary Key",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Hand of Rathmore",
                 }
             }
@@ -86,7 +86,7 @@
         {
             "title": "Reunion",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Hand of Rathmore",
                 }
             }

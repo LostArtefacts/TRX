@@ -10,6 +10,7 @@
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/vars.h>
 
+#include <ctype.h>
 #include <string.h>
 
 typedef struct {
@@ -19,9 +20,13 @@ typedef struct {
 
 typedef struct {
     OBJECT_ID object_id;
-    const char *key;
     const char **default_names;
 } M_DEFAULT;
+
+typedef struct {
+    OBJECT_ID object_id;
+    const char *enum_name;
+} M_KEY;
 
 typedef struct {
     VECTOR *names;
@@ -35,22 +40,20 @@ CATALOG_TABLE_DEFINE(m_AliasResolver, CATALOG_OBJECTS, OBJECT_ID, O_NUMBER_OF);
 // Compile-time default names (ignoring key aliases)
 static const M_DEFAULT m_Defaults[] = {
 #define X_OBJ_NAMES(...) ((const char *[]) { __VA_ARGS__, nullptr })
-#define X_OBJ_NAME_DEFINE(object_id_, key_name_, names_array_)                 \
-    { .object_id = object_id_,                                                 \
-      .key = key_name_,                                                        \
-      .default_names = names_array_ },
+#define X_OBJ_NAME_DEFINE(object_id_, names_array_)                            \
+    { .object_id = object_id_, .default_names = names_array_ },
 #define X_OBJ_ALIAS_DEFINE(target_object_id, source_object_id)
 #include <trx/game/objects/names.def>
 #undef X_OBJ_ALIAS_DEFINE
 #undef X_OBJ_NAME_DEFINE
 #undef X_OBJ_NAMES
-    { .object_id = NO_OBJECT, .key = nullptr, .default_names = nullptr },
+    { .object_id = NO_OBJECT, .default_names = nullptr },
 };
 
 // Compile-time aliases (ignoring key strings and names)
 static M_ALIAS m_ObjectAliases[] = {
 #define X_OBJ_NAMES(...)
-#define X_OBJ_NAME_DEFINE(object_id_, key_name_, default_name)
+#define X_OBJ_NAME_DEFINE(object_id_, default_name)
 #define X_OBJ_ALIAS_DEFINE(target_object_id_, source_object_id_)               \
     { .target_object_id = target_object_id_,                                   \
       .source_object_id = source_object_id_ },
@@ -60,6 +63,27 @@ static M_ALIAS m_ObjectAliases[] = {
 #undef X_OBJ_NAMES
     { .target_object_id = NO_OBJECT },
 };
+
+// List every object with the C spelling its key comes from.
+static const M_KEY m_Keys[] = {
+#define X_CATALOG_ID(enum_value_)                                              \
+    { .object_id = enum_value_, .enum_name = #enum_value_ },
+#include <trx/game/catalog/objects.def>
+#undef X_CATALOG_ID
+    { .object_id = NO_OBJECT, .enum_name = nullptr },
+};
+
+static bool M_KeyMatches(const char *const enum_name, const char *const key)
+{
+    const char *const name = enum_name + strlen("O_");
+    size_t i = 0;
+    for (; name[i] != '\0' && key[i] != '\0'; i++) {
+        if ((char)tolower((unsigned char)name[i]) != key[i]) {
+            return false;
+        }
+    }
+    return name[i] == '\0' && key[i] == '\0';
+}
 
 static OBJECT_ID M_ResolveAlias(const OBJECT_ID obj_id)
 {
@@ -294,9 +318,9 @@ OBJECT_NAME_MATCH *Object_IdsFromName(
 
 OBJECT_ID Object_IdFromKey(const char *const key)
 {
-    for (int32_t i = 0; m_Defaults[i].object_id != NO_OBJECT; i++) {
-        if (strcmp(m_Defaults[i].key, key) == 0) {
-            return m_Defaults[i].object_id;
+    for (int32_t i = 0; m_Keys[i].object_id != NO_OBJECT; i++) {
+        if (M_KeyMatches(m_Keys[i].enum_name, key)) {
+            return m_Keys[i].object_id;
         }
     }
     return NO_OBJECT;

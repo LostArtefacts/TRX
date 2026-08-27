@@ -28,8 +28,8 @@
     },
 
     "LGT_PISTOLS": {
-        "gun_object": "pistols",
-        "ammo_object": "pistols_ammo",
+        "gun_object": "pistols_item",
+        "ammo_object": "pistols_ammo_item",
         "anim_object": "lara_pistols",
         "stow_place": "holster",
         "stow_order": 1,
@@ -64,8 +64,8 @@
     },
 
     "LGT_MAGNUMS": {
-        "gun_object": "magnums",
-        "ammo_object": "magnums_ammo",
+        "gun_object": "magnums_item",
+        "ammo_object": "magnums_ammo_item",
         "anim_object": "lara_magnums",
         "stow_place": "holster",
         "stow_order": 2,
@@ -100,8 +100,8 @@
     },
 
     "LGT_AUTOS": {
-        "gun_object": "autos",
-        "ammo_object": "autos_ammo",
+        "gun_object": "autos_item",
+        "ammo_object": "autos_ammo_item",
         "anim_object": "lara_autos",
         "stow_place": "holster",
         "stow_order": 3,
@@ -135,8 +135,8 @@
     },
 
     "LGT_DESERT_EAGLE": {
-        "gun_object": "desert_eagle",
-        "ammo_object": "desert_eagle_ammo",
+        "gun_object": "desert_eagle_item",
+        "ammo_object": "desert_eagle_ammo_item",
         "anim_object": "lara_desert_eagle",
         "stow_place": "holster",
         "stow_order": 4,
@@ -170,8 +170,8 @@
     },
 
     "LGT_UZIS": {
-        "gun_object": "uzis",
-        "ammo_object": "uzis_ammo",
+        "gun_object": "uzis_item",
+        "ammo_object": "uzis_ammo_item",
         "anim_object": "lara_uzis",
         "stow_place": "holster",
         "stow_order": 5,
@@ -205,8 +205,8 @@
     },
 
     "LGT_SHOTGUN": {
-        "gun_object": "shotgun",
-        "ammo_object": "shotgun_ammo",
+        "gun_object": "shotgun_item",
+        "ammo_object": "shotgun_ammo_item",
         "anim_object": "lara_shotgun",
         "flash_is_optional": true,
         "stow_place": "back",
@@ -250,8 +250,8 @@
     },
 
     "LGT_M16": {
-        "gun_object": "m16",
-        "ammo_object": "m16_ammo",
+        "gun_object": "m16_item",
+        "ammo_object": "m16_ammo_item",
         "anim_object": "lara_m16",
         "stow_place": "back",
         "stow_order": 2,
@@ -292,8 +292,8 @@
     },
 
     "LGT_MP5": {
-        "gun_object": "mp5",
-        "ammo_object": "mp5_ammo",
+        "gun_object": "mp5_item",
+        "ammo_object": "mp5_ammo_item",
         "anim_object": "lara_mp5",
         "stow_place": "back",
         "stow_order": 3,
@@ -335,9 +335,9 @@
     },
 
     "LGT_GRENADE": {
-        "gun_object": "grenade_launcher",
-        "ammo_object": "grenade_launcher_ammo",
-        "anim_object": "lara_grenade",
+        "gun_object": "grenade_gun_item",
+        "ammo_object": "grenade_ammo_item",
+        "anim_object": "lara_grenade_gun",
         "stow_place": "back",
         "stow_order": 4,
         "equip_input_role": "equip_grenade_launcher",
@@ -364,9 +364,9 @@
     },
 
     "LGT_ROCKET": {
-        "gun_object": "rocket_launcher",
-        "ammo_object": "rocket_launcher_ammo",
-        "anim_object": "lara_rocket",
+        "gun_object": "rocket_gun_item",
+        "ammo_object": "rocket_ammo_item",
+        "anim_object": "lara_rocket_gun",
         "stow_place": "back",
         "stow_order": 5,
         "equip_input_role": "equip_rocket_launcher",
@@ -394,9 +394,9 @@
     },
 
     "LGT_HARPOON": {
-        "gun_object": "harpoon_gun",
-        "ammo_object": "harpoon_gun_ammo",
-        "anim_object": "lara_harpoon",
+        "gun_object": "harpoon_gun_item",
+        "ammo_object": "harpoon_gun_ammo_item",
+        "anim_object": "lara_harpoon_gun",
         "stow_place": "back",
         "stow_order": 6,
         "equip_input_role": "equip_harpoon",

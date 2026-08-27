@@ -70,7 +70,7 @@
         {
             "title": "Dom Lary",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz do toru wyścigowego",
                 }
             }
@@ -78,7 +78,7 @@
         {
             "title": "Dżungla",
             "objects": {
-                "key_4": {
+                "key_item_4": {
                     "name": "Klucz Indry",
                 }
             }
@@ -86,13 +86,13 @@
         {
             "title": "Ruiny Świątyni",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz Ganeszy",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Szabla",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Szabla",
                 }
             }
@@ -100,7 +100,7 @@
         {
             "title": "Rzeka Ganges",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz do bramy",
                 }
             }
@@ -111,10 +111,10 @@
         {
             "title": "Wioska Nadbrzeżna",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz przemytnika",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Kamień węża",
                 }
             }
@@ -122,13 +122,13 @@
         {
             "title": "Miejsce Katastrofy",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz komandora Bishopa",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Klucz porucznika Tuckermana",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Mapa bagna",
                     "description": "",
                 }
@@ -143,10 +143,10 @@
         {
             "title": "Nabrzeże Tamizy",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz do kotłowni",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Klucz do katedry",
                 }
             }
@@ -154,25 +154,25 @@
         {
             "title": "Aldwych",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz konserwacyjny",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Klucz Salomona",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Klucz Salomona",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Stara moneta",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Bilet",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Masoński młotek",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Ozdobna gwiazda",
                 }
             }
@@ -180,10 +180,10 @@
         {
             "title": "Brama Lud'a",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz do kotłowni",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Płyn balsamujący",
                 }
             }
@@ -194,10 +194,10 @@
         {
             "title": "Pustynia Nevady",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Dostęp do generatora",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Przełącznik detonatora",
                 }
             }
@@ -205,16 +205,16 @@
         {
             "title": "Ściśle Strzeżona Baza",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Karta dostępu typu A",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Karta dostępu typu B",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Niebieska przepustka bezpieczeństwa",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Żółta przepustka bezpieczeństwa",
                 }
             }
@@ -222,19 +222,19 @@
         {
             "title": "Strefa 51",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Przepustka z kodem startowym",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Klucz dostępu do wieży",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Dysk z kodem dostępu",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Dysk z kodem dostępu",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Klucz dostępu do hangaru",
                 }
             }
@@ -242,13 +242,13 @@
         {
             "title": "Antarktyda",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz do chaty",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Łom",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Klucz do bramy",
                 }
             }
@@ -256,13 +256,13 @@
         {
             "title": "Kopalnie RX-Tech",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Łom",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Akumulator",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Rozrusznik wyciągarki",
                 }
             }
@@ -270,10 +270,10 @@
         {
             "title": "Zaginione Miasto Tinnos",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz Uli",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Maska",
                 }
             }
@@ -284,23 +284,23 @@
         {
             "title": "Wszystkich Świętych",
             "objects": {
-                "quest_1": {
+                "quest_item_1": {
                     "name": "Kamień Infada",
                     "description": "",
                 },
-                "quest_2": {
+                "quest_item_2": {
                     "name": "Pierwiastek 115",
                     "description": "",
                 },
-                "quest_3": {
+                "quest_item_3": {
                     "name": "Oko Izydy",
                     "description": "",
                 },
-                "quest_4": {
+                "quest_item_4": {
                     "name": "Sztylet Ora",
                     "description": "",
                 },
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz do skarbca",
                 }
             }

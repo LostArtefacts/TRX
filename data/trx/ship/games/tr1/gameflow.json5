@@ -62,7 +62,7 @@
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 3},
                 {"type": "loading_screen", "path": "gym.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "give_item", "object_id": "binoculars"},
+                {"type": "give_item", "object_id": "binoculars_item"},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
                 {"type": "exit_to_title"},
@@ -96,7 +96,7 @@
                 {"type": "play_fmv", "fmv_id": 2},
                 {"type": "play_fmv", "fmv_id": 4},
                 {"type": "loading_screen", "path": "peru.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "give_item", "object_id": "binoculars"},
+                {"type": "give_item", "object_id": "binoculars_item"},
                 {"type": "loop_game"},
                 {"type": "level_stats"},
                 {"type": "level_complete"},
@@ -376,7 +376,7 @@
             "sequence": [
                 {"type": "play_fmv", "fmv_id": 8},
                 {"type": "loading_screen", "path": "atlantis.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
-                {"type": "give_item", "object_id": "pistols", "quantity": 1},
+                {"type": "give_item", "object_id": "pistols_item", "quantity": 1},
                 {"type": "loop_game"},
                 {"type": "play_fmv", "fmv_id": 9},
                 {"type": "play_cutscene", "cutscene_id": 3},

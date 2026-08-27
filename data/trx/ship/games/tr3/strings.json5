@@ -32,26 +32,26 @@
         }
     },
     "objects": {
-        "large_medipack": {
+        "large_medipack_item": {
             "name": "Large Medi Pack",
         },
-        "quest_1": {
+        "quest_item_1": {
             "description": "",
             "name": "Infada Stone",
         },
-        "quest_2": {
+        "quest_item_2": {
             "description": "",
             "name": "Element 115",
         },
-        "quest_3": {
+        "quest_item_3": {
             "description": "",
             "name": "Eye of Isis",
         },
-        "quest_4": {
+        "quest_item_4": {
             "description": "",
             "name": "Ora Dagger",
         },
-        "small_medipack": {
+        "small_medipack_item": {
             "name": "Small Medi Pack",
         }
     },
@@ -94,7 +94,7 @@
         {
             "title": "Lara's Home",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Racetrack Key",
                 }
             }
@@ -102,7 +102,7 @@
         {
             "title": "Jungle",
             "objects": {
-                "key_4": {
+                "key_item_4": {
                     "name": "Indra Key",
                 }
             }
@@ -110,13 +110,13 @@
         {
             "title": "Temple Ruins",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Key of Ganesha",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Scimitar",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Scimitar",
                 }
             }
@@ -124,7 +124,7 @@
         {
             "title": "The River Ganges",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Gate Key",
                 }
             }
@@ -135,10 +135,10 @@
         {
             "title": "Coastal Village",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Smuggler's Key",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Serpent Stone",
                 }
             }
@@ -146,13 +146,13 @@
         {
             "title": "Crash Site",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Commander Bishop's Key",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Lt. Tuckerman's Key",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Swamp Map",
                     "description": "",
                 }
@@ -167,10 +167,10 @@
         {
             "title": "Thames Wharf",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Flue Room Key",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Cathedral Key",
                 }
             }
@@ -178,25 +178,25 @@
         {
             "title": "Aldwych",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Maintenance Key",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Solomon's Key",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Solomon's Key",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Old Penny",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Ticket",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Masonic Mallet",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Ornate Star",
                 }
             }
@@ -204,10 +204,10 @@
         {
             "title": "Lud's Gate",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Boiler Room Key",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Embalming Fluid",
                 }
             }
@@ -218,10 +218,10 @@
         {
             "title": "Nevada Desert",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Generator Access",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Detonator Switch",
                 }
             }
@@ -229,16 +229,16 @@
         {
             "title": "High Security Compound",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Keycard Type A",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Keycard Type B",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Blue Security Pass",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Yellow Security Pass",
                 }
             }
@@ -246,19 +246,19 @@
         {
             "title": "Area 51",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Launch Code Pass",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Tower Access Key",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Code Clearance Disk",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Code Clearance Disk",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Hanger Access Key",
                 }
             }
@@ -266,13 +266,13 @@
         {
             "title": "Antarctica",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Hut Key",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Crowbar",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Gate Control Key",
                 }
             }
@@ -280,13 +280,13 @@
         {
             "title": "RX-Tech Mines",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Crowbar",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Lead Acid Battery",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Winch Starter",
                 }
             }
@@ -294,10 +294,10 @@
         {
             "title": "Lost City of Tinnos",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Uli Key",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Oceanic Mask",
                 }
             }
@@ -308,7 +308,7 @@
         {
             "title": "All Hallows",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Vault Key",
                 }
             }

@@ -5,10 +5,10 @@
         {
             "title": "Baile Vilcabamba",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair Airgid",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Ìomhaigh Òir",
                 }
             }

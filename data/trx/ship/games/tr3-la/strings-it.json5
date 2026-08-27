@@ -5,7 +5,7 @@
         {
             "title": "Casa di Lara",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave del Circuito",
                 }
             }
@@ -13,10 +13,10 @@
         {
             "title": "Balzo nell'Altopiano",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Piede di Porco",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Gemma del Cardo",
                 }
             }
@@ -24,10 +24,10 @@
         {
             "title": "Nascondiglio di Willard",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave del Tumulo",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Piede di Porco",
                 }
             }
@@ -35,10 +35,10 @@
         {
             "title": "Scogliera di Shakespeare",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Scheda di Attivazione della Trivella",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Disco di Accesso alla Pompa",
                 }
             }
@@ -49,16 +49,16 @@
                 "orca": {
                     "name": "Delfino",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Lampadina",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Campione Mutante",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Campione Mutante",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Lampadina",
                 }
             }
@@ -66,13 +66,13 @@
         {
             "title": "È un Manicomio!",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave dello Zoo",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Chiave della Voliera",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Mano di Rathmore",
                 }
             }
@@ -80,7 +80,7 @@
         {
             "title": "Riunione",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Mano di Rathmore",
                 }
             }

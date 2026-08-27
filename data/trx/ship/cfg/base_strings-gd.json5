@@ -2109,11 +2109,11 @@
         "atlantean_winged": {
             "name": "Atlantach Sgiathach",
         },
-        "autos": {
-            "name": "Piostalan Fèin-obrachail",
-        },
-        "autos_ammo": {
+        "autos_ammo_item": {
             "name": "Lòin Gunna Fèin-obrachail",
+        },
+        "autos_item": {
+            "name": "Piostalan Fèin-obrachail",
         },
         "bacon_lara": {
             "name": "Lara Bèicein",
@@ -2172,7 +2172,7 @@
         "big_spider": {
             "name": "Damhan-allaidh Fuamhaireil",
         },
-        "binoculars": {
+        "binoculars_item": {
             "name": "Prosbaig",
         },
         "bird_guardian": {
@@ -2259,6 +2259,9 @@
         "clock_chimes": {
             "name": "Gleoc Bartoli",
         },
+        "cobra": {
+            "name": "Nathair",
+        },
         "cog_1": {
             "name": "Inneal Gèaraichean 1",
         },
@@ -2274,13 +2277,13 @@
         "combat_end": {
             "name": "Crioch-shabaid",
         },
-        "compass": {
+        "compass_option": {
             "name": "Staitistig",
         },
         "compy": {
             "name": "Compsognathus",
         },
-        "controls": {
+        "controls_option": {
             "name": "Smachdan",
         },
         "copter": {
@@ -2298,29 +2301,23 @@
                 "Crogall",
             ]
         },
-        "crossbow": {
-            "name": "Cros-bhogha",
-        },
-        "crossbow_ammo": {
+        "crossbow_ammo_1_item": {
             "name": "Boltaichean Cros-bhogha",
         },
         "crossbow_bolt": {
             "name": "Bolt Cros-bhogha",
         },
+        "crossbow_item": {
+            "name": "Cros-bhogha",
+        },
         "crow": {
             "name": "Feannag",
-        },
-        "crowbar": {
-            "name": "Bàr-craobh",
         },
         "crowbar_anim": {
             "name": "Beothachadh Bàrr-craobh",
         },
-        "crystal": {
-            "name": [
-                "Criostal",
-                "Criostal Geama Sàbhalaidh",
-            ]
+        "crowbar_item": {
+            "name": "Bàr-craobh",
         },
         "cult_1": {
             "name": "Ruspal le Masg 1",
@@ -2352,11 +2349,11 @@
         "dart_emitter": {
             "name": "Sgaoiladair Dàrt",
         },
-        "desert_eagle": {
-            "name": "Desert Eagle",
-        },
-        "desert_eagle_ammo": {
+        "desert_eagle_ammo_item": {
             "name": "Lòin an Desert Eagle",
+        },
+        "desert_eagle_item": {
+            "name": "Desert Eagle",
         },
         "detonator_box": {
             "name": "Spreadhaichear",
@@ -2463,13 +2460,13 @@
         "ember_emitter": {
             "name": "Sgaoiladair Èibhleag",
         },
-        "examine_1": {
+        "examine_item_1": {
             "name": "Sgrùdadh Nì 1",
         },
-        "examine_2": {
+        "examine_item_2": {
             "name": "Sgrùdadh Nì 2",
         },
-        "examine_3": {
+        "examine_item_3": {
             "name": "Sgrùdadh Nì 3",
         },
         "explosion_1": {
@@ -2542,13 +2539,13 @@
         "flame_emitter_tr4_wall": {
             "name": "Sgaoiladair Teine (TR4, balla)",
         },
-        "flare": {
-            "name": "Lòchran",
-        },
         "flare_fire": {
             "name": "Teinntreach Lòchran",
         },
-        "flares_box": {
+        "flare_item": {
+            "name": "Lòchran",
+        },
+        "flares_box_item": {
             "name": "Bogsa Lòchrain",
         },
         "flickering_light": {
@@ -2566,7 +2563,7 @@
         "fx_reserved": {
             "name": "Cearcall Glas",
         },
-        "gamma": {
+        "gamma_option": {
             "name": "Gamma",
         },
         "gas_emitter_green": {
@@ -2575,7 +2572,7 @@
         "general": {
             "name": "Bàt-aigeil Beag",
         },
-        "globe": {
+        "globe_option": {
             "name": "Cruinne",
         },
         "glow": {
@@ -2593,7 +2590,7 @@
         "gong_bonger": {
             "name": "Bata a' Ghong",
         },
-        "graphics": {
+        "graphics_option": {
             "name": "Grafaigean",
         },
         "green_light": {
@@ -2602,11 +2599,11 @@
         "grenade": {
             "name": "Grenèad",
         },
-        "grenade_launcher": {
-            "name": "Lannsair Grenèad",
-        },
-        "grenade_launcher_ammo": {
+        "grenade_ammo_item": {
             "name": "Grenèadan",
+        },
+        "grenade_gun_item": {
+            "name": "Lannsair Grenèad",
         },
         "gun_flash": {
             "name": "Lasadh Ghunna",
@@ -2617,11 +2614,11 @@
         "harpoon_bolt": {
             "name": "Harpùn",
         },
-        "harpoon_gun": {
-            "name": "Harpùn",
-        },
-        "harpoon_gun_ammo": {
+        "harpoon_gun_ammo_item": {
             "name": "Harpùnaichean",
+        },
+        "harpoon_gun_item": {
+            "name": "Harpùn",
         },
         "hook": {
             "name": "Dubhan",
@@ -2646,90 +2643,6 @@
         },
         "kayak": {
             "name": "Càbaig",
-        },
-        "key_1": {
-            "name": "Iuchair 1",
-        },
-        "key_10": {
-            "name": "Iuchair 10",
-        },
-        "key_11": {
-            "name": "Iuchair 11",
-        },
-        "key_12": {
-            "name": "Iuchair 12",
-        },
-        "key_1_combo_1": {
-            "name": "Iuchair 1 (Measg 1)",
-        },
-        "key_1_combo_2": {
-            "name": "Iuchair 1 (Measg 2)",
-        },
-        "key_2": {
-            "name": "Iuchair 2",
-        },
-        "key_2_combo_1": {
-            "name": "Iuchair 2 (Measg 1)",
-        },
-        "key_2_combo_2": {
-            "name": "Iuchair 2 (Measg 2)",
-        },
-        "key_3": {
-            "name": "Iuchair 3",
-        },
-        "key_3_combo_1": {
-            "name": "Iuchair 3 (Measg 1)",
-        },
-        "key_3_combo_2": {
-            "name": "Iuchair 3 (Measg 2)",
-        },
-        "key_4": {
-            "name": "Iuchair 4",
-        },
-        "key_4_combo_1": {
-            "name": "Iuchair 4 (Measg 1)",
-        },
-        "key_4_combo_2": {
-            "name": "Iuchair 4 (Measg 2)",
-        },
-        "key_5": {
-            "name": "Iuchair 5",
-        },
-        "key_5_combo_1": {
-            "name": "Iuchair 5 (Measg 1)",
-        },
-        "key_5_combo_2": {
-            "name": "Iuchair 5 (Measg 2)",
-        },
-        "key_6": {
-            "name": "Iuchair 6",
-        },
-        "key_6_combo_1": {
-            "name": "Iuchair 6 (Measg 1)",
-        },
-        "key_6_combo_2": {
-            "name": "Iuchair 6 (Measg 2)",
-        },
-        "key_7": {
-            "name": "Iuchair 7",
-        },
-        "key_7_combo_1": {
-            "name": "Iuchair 7 (Measg 1)",
-        },
-        "key_7_combo_2": {
-            "name": "Iuchair 7 (Measg 2)",
-        },
-        "key_8": {
-            "name": "Iuchair 8",
-        },
-        "key_8_combo_1": {
-            "name": "Iuchair 8 (Measg 1)",
-        },
-        "key_8_combo_2": {
-            "name": "Iuchair 8 (Combo 2)",
-        },
-        "key_9": {
-            "name": "Iuchair 9",
         },
         "key_hole_1": {
             "name": "Toll Iuchrach 1",
@@ -2767,6 +2680,90 @@
         "key_hole_9": {
             "name": "Toll Iuchrach 9",
         },
+        "key_item_1": {
+            "name": "Iuchair 1",
+        },
+        "key_item_10": {
+            "name": "Iuchair 10",
+        },
+        "key_item_11": {
+            "name": "Iuchair 11",
+        },
+        "key_item_12": {
+            "name": "Iuchair 12",
+        },
+        "key_item_1_combo_1": {
+            "name": "Iuchair 1 (Measg 1)",
+        },
+        "key_item_1_combo_2": {
+            "name": "Iuchair 1 (Measg 2)",
+        },
+        "key_item_2": {
+            "name": "Iuchair 2",
+        },
+        "key_item_2_combo_1": {
+            "name": "Iuchair 2 (Measg 1)",
+        },
+        "key_item_2_combo_2": {
+            "name": "Iuchair 2 (Measg 2)",
+        },
+        "key_item_3": {
+            "name": "Iuchair 3",
+        },
+        "key_item_3_combo_1": {
+            "name": "Iuchair 3 (Measg 1)",
+        },
+        "key_item_3_combo_2": {
+            "name": "Iuchair 3 (Measg 2)",
+        },
+        "key_item_4": {
+            "name": "Iuchair 4",
+        },
+        "key_item_4_combo_1": {
+            "name": "Iuchair 4 (Measg 1)",
+        },
+        "key_item_4_combo_2": {
+            "name": "Iuchair 4 (Measg 2)",
+        },
+        "key_item_5": {
+            "name": "Iuchair 5",
+        },
+        "key_item_5_combo_1": {
+            "name": "Iuchair 5 (Measg 1)",
+        },
+        "key_item_5_combo_2": {
+            "name": "Iuchair 5 (Measg 2)",
+        },
+        "key_item_6": {
+            "name": "Iuchair 6",
+        },
+        "key_item_6_combo_1": {
+            "name": "Iuchair 6 (Measg 1)",
+        },
+        "key_item_6_combo_2": {
+            "name": "Iuchair 6 (Measg 2)",
+        },
+        "key_item_7": {
+            "name": "Iuchair 7",
+        },
+        "key_item_7_combo_1": {
+            "name": "Iuchair 7 (Measg 1)",
+        },
+        "key_item_7_combo_2": {
+            "name": "Iuchair 7 (Measg 2)",
+        },
+        "key_item_8": {
+            "name": "Iuchair 8",
+        },
+        "key_item_8_combo_1": {
+            "name": "Iuchair 8 (Measg 1)",
+        },
+        "key_item_8_combo_2": {
+            "name": "Iuchair 8 (Combo 2)",
+        },
+        "key_item_9": {
+            "name": "Iuchair 9",
+        },
         "kick_door_1": {
             "name": "Doras breabaidh 1",
         },
@@ -2803,13 +2800,13 @@
         "lara_flare": {
             "name": "Beòthalachd Lòchran",
         },
-        "lara_grenade": {
+        "lara_grenade_gun": {
             "name": "Beòthalachd Lannsair Grenèad",
         },
         "lara_hair": {
             "name": "Feaman-fuilt Lara",
         },
-        "lara_harpoon": {
+        "lara_harpoon_gun": {
             "name": "Beòthalachd Harpùn",
         },
         "lara_kayak": {
@@ -2842,7 +2839,7 @@
         "lara_rib": {
             "name": "Beòthalachd RIB",
         },
-        "lara_rocket": {
+        "lara_rocket_gun": {
             "name": "Beòthalachd Lannsair Rocaid",
         },
         "lara_shotgun": {
@@ -2860,13 +2857,13 @@
         "larson": {
             "name": "Larson",
         },
-        "lasersight": {
+        "lasersight_item": {
             "name": "Sgàil Laser",
         },
         "lava_wedge": {
             "name": "Cliathaich Teine-teinteach",
         },
-        "lead_bar": {
+        "lead_bar_item": {
             "description": "",
             "name": "Bàr Luaidhe",
         },
@@ -2891,20 +2888,20 @@
         "lizard": {
             "name": "Laghairt",
         },
-        "m16": {
-            "name": "M16",
-        },
-        "m16_ammo": {
+        "m16_ammo_item": {
             "name": "Lòin M16",
         },
         "m16_flash": {
             "name": "Lasadh M16",
         },
-        "magnums": {
-            "name": "Magnuman",
+        "m16_item": {
+            "name": "M16",
         },
-        "magnums_ammo": {
+        "magnums_ammo_item": {
             "name": "Lòin Magnum",
+        },
+        "magnums_item": {
+            "name": "Magnuman",
         },
         "mesh_swap_1": {
             "name": "Suaip Lìonra 1",
@@ -2990,11 +2987,11 @@
         "moving_bar": {
             "name": "Bàr Gluasadach",
         },
-        "mp5": {
-            "name": "MP5",
-        },
-        "mp5_ammo": {
+        "mp5_ammo_item": {
             "name": "Lòin MP5",
+        },
+        "mp5_item": {
+            "name": "MP5",
         },
         "mp_1": {
             "name": "MP 1",
@@ -3017,13 +3014,13 @@
         "orca": {
             "name": "Orca",
         },
-        "passport": {
+        "passport_option": {
             "name": "Geama",
         },
         "patrol_dog": {
             "name": "Cù",
         },
-        "pda": {
+        "pda_option": {
             "name": "Cluiche",
         },
         "pendulum_1": {
@@ -3032,59 +3029,59 @@
         "pendulum_2": {
             "name": "Bocsa",
         },
-        "photo": {
+        "photo_option": {
             "name": "Dachaigh Lara",
-        },
-        "pickup_1": {
-            "name": "Nì Togail 1",
-        },
-        "pickup_1_combo_1": {
-            "name": "Nì Togail 1 (Cothlamadh 1)",
-        },
-        "pickup_1_combo_2": {
-            "name": "Nì Togail 1 (Cothlamadh 2)",
-        },
-        "pickup_2": {
-            "name": "Nì Togail 2",
-        },
-        "pickup_2_combo_1": {
-            "name": "Nì Togail 2 (Cothlamadh 1)",
-        },
-        "pickup_2_combo_2": {
-            "name": "Nì Togail 2 (Cothlamadh 2)",
-        },
-        "pickup_3": {
-            "name": "Nì Togail 3",
-        },
-        "pickup_3_combo_1": {
-            "name": "Nì Togail 3 (Cothlamadh 1)",
-        },
-        "pickup_3_combo_2": {
-            "name": "Nì Togail 3 (Cothlamadh 2)",
-        },
-        "pickup_4": {
-            "name": "Nì Togail 4",
-        },
-        "pickup_4_combo_1": {
-            "name": "Nì Togail 4 (Cothlamadh 1)",
-        },
-        "pickup_4_combo_2": {
-            "name": "Nì Togail 4 (Cothlamadh 2)",
         },
         "pickup_aid": {
             "name": "Cobhair Togail",
         },
+        "pickup_item_1": {
+            "name": "Nì Togail 1",
+        },
+        "pickup_item_1_combo_1": {
+            "name": "Nì Togail 1 (Cothlamadh 1)",
+        },
+        "pickup_item_1_combo_2": {
+            "name": "Nì Togail 1 (Cothlamadh 2)",
+        },
+        "pickup_item_2": {
+            "name": "Nì Togail 2",
+        },
+        "pickup_item_2_combo_1": {
+            "name": "Nì Togail 2 (Cothlamadh 1)",
+        },
+        "pickup_item_2_combo_2": {
+            "name": "Nì Togail 2 (Cothlamadh 2)",
+        },
+        "pickup_item_3": {
+            "name": "Nì Togail 3",
+        },
+        "pickup_item_3_combo_1": {
+            "name": "Nì Togail 3 (Cothlamadh 1)",
+        },
+        "pickup_item_3_combo_2": {
+            "name": "Nì Togail 3 (Cothlamadh 2)",
+        },
+        "pickup_item_4": {
+            "name": "Nì Togail 4",
+        },
+        "pickup_item_4_combo_1": {
+            "name": "Nì Togail 4 (Cothlamadh 1)",
+        },
+        "pickup_item_4_combo_2": {
+            "name": "Nì Togail 4 (Cothlamadh 2)",
+        },
         "pierre": {
             "name": "Pierre",
         },
-        "pirahnas": {
+        "piranhas": {
             "name": "Pirahnan",
         },
-        "pistols": {
-            "name": "Piostalan",
-        },
-        "pistols_ammo": {
+        "pistols_ammo_item": {
             "name": "Lòin Phiostail",
+        },
+        "pistols_item": {
+            "name": "Piostalan",
         },
         "player_1": {
             "name": "Actair 1",
@@ -3161,90 +3158,6 @@
         "pushpull_door_2": {
             "name": "Doras putaidh/tarraing 2",
         },
-        "puzzle_1": {
-            "name": "Nì Tòimhseachain 1",
-        },
-        "puzzle_10": {
-            "name": "Nì Tòimhseachain 10",
-        },
-        "puzzle_11": {
-            "name": "Nì Tòimhseachain 11",
-        },
-        "puzzle_12": {
-            "name": "Nì Tòimhseachain 12",
-        },
-        "puzzle_1_combo_1": {
-            "name": "Nì Tòimhseachain 1 (Cothlamadh 1)",
-        },
-        "puzzle_1_combo_2": {
-            "name": "Nì Tòimhseachain 1 (Cothlamadh 2)",
-        },
-        "puzzle_2": {
-            "name": "Nì Tòimhseachain 2",
-        },
-        "puzzle_2_combo_1": {
-            "name": "Nì Tòimhseachain 2 (Cothlamadh 1)",
-        },
-        "puzzle_2_combo_2": {
-            "name": "Nì Tòimhseachain 2 (Cothlamadh 2)",
-        },
-        "puzzle_3": {
-            "name": "Nì Tòimhseachain 3",
-        },
-        "puzzle_3_combo_1": {
-            "name": "Nì Tòimhseachain 3 (Cothlamadh 1)",
-        },
-        "puzzle_3_combo_2": {
-            "name": "Nì Tòimhseachain 3 (Cothlamadh 2)",
-        },
-        "puzzle_4": {
-            "name": "Nì Tòimhseachain 4",
-        },
-        "puzzle_4_combo_1": {
-            "name": "Nì Tòimhseachain 4 (Cothlamadh 1)",
-        },
-        "puzzle_4_combo_2": {
-            "name": "Nì Tòimhseachain 4 (Cothlamadh 2)",
-        },
-        "puzzle_5": {
-            "name": "Nì Tòimhseachain 5",
-        },
-        "puzzle_5_combo_1": {
-            "name": "Nì Tòimhseachain 5 (Cothlamadh 1)",
-        },
-        "puzzle_5_combo_2": {
-            "name": "Nì Tòimhseachain 5 (Cothlamadh 2)",
-        },
-        "puzzle_6": {
-            "name": "Nì Tòimhseachain 6",
-        },
-        "puzzle_6_combo_1": {
-            "name": "Nì Tòimhseachain 6 (Cothlamadh 1)",
-        },
-        "puzzle_6_combo_2": {
-            "name": "Nì Tòimhseachain 6 (Cothlamadh 2)",
-        },
-        "puzzle_7": {
-            "name": "Nì Tòimhseachain 7",
-        },
-        "puzzle_7_combo_1": {
-            "name": "Nì Tòimhseachain 7 (Cothlamadh 1)",
-        },
-        "puzzle_7_combo_2": {
-            "name": "Nì Tòimhseachain 7 (Cothlamadh 2)",
-        },
-        "puzzle_8": {
-            "name": "Nì Tòimhseachain 8",
-        },
-        "puzzle_8_combo_1": {
-            "name": "Nì Tòimhseachain 8 (Cothlamadh 1)",
-        },
-        "puzzle_8_combo_2": {
-            "name": "Nì Tòimhseachain 8 (Cothlamadh 2)",
-        },
-        "puzzle_9": {
-            "name": "Nì Tòimhseachain 9",
-        },
         "puzzle_done_1": {
             "name": "Toll Tòimhseachain 1 (Deiseil)",
         },
@@ -3317,25 +3230,109 @@
         "puzzle_hole_9": {
             "name": "Toll Tòimhseachain 9 (Falamh)",
         },
+        "puzzle_item_1": {
+            "name": "Nì Tòimhseachain 1",
+        },
+        "puzzle_item_10": {
+            "name": "Nì Tòimhseachain 10",
+        },
+        "puzzle_item_11": {
+            "name": "Nì Tòimhseachain 11",
+        },
+        "puzzle_item_12": {
+            "name": "Nì Tòimhseachain 12",
+        },
+        "puzzle_item_1_combo_1": {
+            "name": "Nì Tòimhseachain 1 (Cothlamadh 1)",
+        },
+        "puzzle_item_1_combo_2": {
+            "name": "Nì Tòimhseachain 1 (Cothlamadh 2)",
+        },
+        "puzzle_item_2": {
+            "name": "Nì Tòimhseachain 2",
+        },
+        "puzzle_item_2_combo_1": {
+            "name": "Nì Tòimhseachain 2 (Cothlamadh 1)",
+        },
+        "puzzle_item_2_combo_2": {
+            "name": "Nì Tòimhseachain 2 (Cothlamadh 2)",
+        },
+        "puzzle_item_3": {
+            "name": "Nì Tòimhseachain 3",
+        },
+        "puzzle_item_3_combo_1": {
+            "name": "Nì Tòimhseachain 3 (Cothlamadh 1)",
+        },
+        "puzzle_item_3_combo_2": {
+            "name": "Nì Tòimhseachain 3 (Cothlamadh 2)",
+        },
+        "puzzle_item_4": {
+            "name": "Nì Tòimhseachain 4",
+        },
+        "puzzle_item_4_combo_1": {
+            "name": "Nì Tòimhseachain 4 (Cothlamadh 1)",
+        },
+        "puzzle_item_4_combo_2": {
+            "name": "Nì Tòimhseachain 4 (Cothlamadh 2)",
+        },
+        "puzzle_item_5": {
+            "name": "Nì Tòimhseachain 5",
+        },
+        "puzzle_item_5_combo_1": {
+            "name": "Nì Tòimhseachain 5 (Cothlamadh 1)",
+        },
+        "puzzle_item_5_combo_2": {
+            "name": "Nì Tòimhseachain 5 (Cothlamadh 2)",
+        },
+        "puzzle_item_6": {
+            "name": "Nì Tòimhseachain 6",
+        },
+        "puzzle_item_6_combo_1": {
+            "name": "Nì Tòimhseachain 6 (Cothlamadh 1)",
+        },
+        "puzzle_item_6_combo_2": {
+            "name": "Nì Tòimhseachain 6 (Cothlamadh 2)",
+        },
+        "puzzle_item_7": {
+            "name": "Nì Tòimhseachain 7",
+        },
+        "puzzle_item_7_combo_1": {
+            "name": "Nì Tòimhseachain 7 (Cothlamadh 1)",
+        },
+        "puzzle_item_7_combo_2": {
+            "name": "Nì Tòimhseachain 7 (Cothlamadh 2)",
+        },
+        "puzzle_item_8": {
+            "name": "Nì Tòimhseachain 8",
+        },
+        "puzzle_item_8_combo_1": {
+            "name": "Nì Tòimhseachain 8 (Cothlamadh 1)",
+        },
+        "puzzle_item_8_combo_2": {
+            "name": "Nì Tòimhseachain 8 (Cothlamadh 2)",
+        },
+        "puzzle_item_9": {
+            "name": "Nì Tòimhseachain 9",
+        },
         "quad_bike": {
             "name": "Quad-baidhsagal",
         },
-        "quest_1": {
+        "quest_item_1": {
             "name": "Nì Tòir 1",
         },
-        "quest_2": {
+        "quest_item_2": {
             "name": "Nì Tòir 2",
         },
-        "quest_3": {
+        "quest_item_3": {
             "name": "Nì Tòir 3",
         },
-        "quest_4": {
+        "quest_item_4": {
             "name": "Nì Tòir 4",
         },
-        "quest_5": {
+        "quest_item_5": {
             "name": "Nì Tòir 5",
         },
-        "quest_6": {
+        "quest_item_6": {
             "name": "Nì Tòir 6",
         },
         "raptor": {
@@ -3356,11 +3353,11 @@
         "red_light": {
             "name": "Solas Dearg",
         },
-        "revolver": {
-            "name": "Dag",
-        },
-        "revolver_ammo": {
+        "revolver_ammo_item": {
             "name": "Lòin Dag",
+        },
+        "revolver_item": {
+            "name": "Dag",
         },
         "rib": {
             "name": "RIB",
@@ -3371,11 +3368,11 @@
         "rocket": {
             "name": "Rocaid",
         },
-        "rocket_launcher": {
-            "name": "Lannsair Rocaid",
-        },
-        "rocket_launcher_ammo": {
+        "rocket_ammo_item": {
             "name": "Rocaidean",
+        },
+        "rocket_gun_item": {
+            "name": "Lannsair Rocaid",
         },
         "rolling_ball_1": {
             "name": [
@@ -3419,17 +3416,23 @@
         "sarcophagus": {
             "name": "Sarcophagus",
         },
-        "save_crystal": {
+        "save_crystal_item": {
             "name": "Criostal Geama Sàbhalaidh",
+        },
+        "save_crystal_option": {
+            "name": [
+                "Criostal",
+                "Criostal Geama Sàbhalaidh",
+            ]
         },
         "scaled_spikes": {
             "name": "Geugan Sgèileachaidh",
         },
-        "scion": {
-            "name": "Scion",
-        },
         "scion_holder": {
             "name": "Greimiche Scion",
+        },
+        "scion_item_1": {
+            "name": "Scion",
         },
         "secret_1": {
             "name": "Dìomhair 1",
@@ -3464,11 +3467,11 @@
         "shiva": {
             "name": "Sìabha",
         },
-        "shotgun": {
-            "name": "Gunna-sgaoil",
-        },
-        "shotgun_ammo": {
+        "shotgun_ammo_item": {
             "name": "Sligean Gunna-sgaoil",
+        },
+        "shotgun_item": {
+            "name": "Gunna-sgaoil",
         },
         "shotgun_shell": {
             "name": "Sgèith Gunna-sgaoil",
@@ -3515,16 +3518,13 @@
         "smoke_emitter_white": {
             "name": "Sgaoileadair Smùid (Geal)",
         },
-        "snake": {
-            "name": "Nathair",
-        },
         "snow_sprite": {
             "name": "Rotal Cairt-shneachda",
         },
         "sophia": {
             "name": "Sophia",
         },
-        "sound": {
+        "sound_option": {
             "name": "Fuaim",
         },
         "sphere_of_doom_1": {
@@ -3563,7 +3563,7 @@
         "sthpac_mercenary": {
             "name": "Saighdear a' Chuain Shèimh a Deas",
         },
-        "stopwatch": {
+        "stopwatch_option": {
             "name": "Staitistig",
         },
         "strobe_light": {
@@ -3714,11 +3714,11 @@
         "upv": {
             "name": "Carbad fon uisge",
         },
-        "uzis": {
-            "name": "Uzis",
-        },
-        "uzis_ammo": {
+        "uzis_ammo_item": {
             "name": "Lòin Uzi",
+        },
+        "uzis_item": {
+            "name": "Uzis",
         },
         "vole": {
             "name": [
@@ -3750,10 +3750,10 @@
         "waterfall_mist": {
             "name": "Ceò Eas",
         },
-        "waterskin_1": {
+        "waterskin_1_empty": {
             "name": "Botal Uisge Beag",
         },
-        "waterskin_2": {
+        "waterskin_2_empty": {
             "name": "Botal Uisge Mòr",
         },
         "white_light": {

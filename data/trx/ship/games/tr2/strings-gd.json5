@@ -10,10 +10,10 @@
         }
     },
     "objects": {
-        "large_medipack": {
+        "large_medipack_item": {
             "name": "Pasgan Mòr Slàinte",
         },
-        "small_medipack": {
+        "small_medipack_item": {
             "name": "Pasgan Beag Slàinte",
         }
     },
@@ -38,10 +38,10 @@
         {
             "title": "Am Balla Mòr",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair an Gheàrd-taighe",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Iuchair Meirgeach",
                 }
             }
@@ -49,13 +49,13 @@
         {
             "title": "Venise",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair an Taigh-bàta",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Iuchair Stàilinn",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Iuchair Iarainn",
                 }
             }
@@ -63,10 +63,10 @@
         {
             "title": "Taigh-falaich Bartoli",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair an Leabharlainn",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Iuchair an Spreadhaichear",
                 }
             }
@@ -74,13 +74,13 @@
         {
             "title": "Taigh na h-Opera",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair Grinn",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Bogsa-iomlaid",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Bòrd-chuairt",
                 }
             }
@@ -88,13 +88,13 @@
         {
             "title": "Inneal-ola Farraige",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Cairt-pasa Dearg",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Cairt-pasa Buidhe",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Cairt-pasa Uaine",
                 }
             }
@@ -102,13 +102,13 @@
         {
             "title": "Roinn Dàibheadh",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Cairt-pasa Dearg",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Cairt-pasa Gorm",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Sgealb",
                 }
             }
@@ -119,16 +119,16 @@
         {
             "title": "Long-bhriste na Maria Doria",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair an t-Seòmair Fois",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Iuchair Meirgeach",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Iuchair a' Chaibine",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Briseadair-cuairt",
                 }
             }
@@ -136,10 +136,10 @@
         {
             "title": "Na Còmhnaidhean",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair an Taigh-cluiche",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Iuchair Meirgeach",
                 }
             }
@@ -147,16 +147,16 @@
         {
             "title": "An Deic",
             "objects": {
-                "key_2": {
+                "key_item_2": {
                     "name": "Iuchair an Stìùir",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Iuchair an Stòrais",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Iuchair a' Chaibine",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "An t-Seraph",
                 }
             }
@@ -167,13 +167,13 @@
                 "tiger": {
                     "name": "Lìopaird-shneachda",
                 },
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair an Drochaid-tarraing",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Iuchair na Bothain",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "An t-Seraph",
                 }
             }
@@ -181,25 +181,25 @@
         {
             "title": "Manachainn Barkhang",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair an t-Seòmair Làidir",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Iuchair an Làr-lùbte",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Iuchair nam Mullaichean",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Iuchair na Prìomh Thalla",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Cuibhlichean-ùrnaigh",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Clachan-luaidh",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "An t-Seraph",
                 }
             }
@@ -210,10 +210,10 @@
                 "tiger": {
                     "name": "Lìopaird-shneachda",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Òrd a' Ghong",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Masg Tìbeata",
                 }
             }
@@ -224,13 +224,13 @@
                 "tiger": {
                     "name": "Tìgear Geal",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Òrd a' Ghong",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "An Talion",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Masg Tìbeata",
                 }
             }
@@ -238,16 +238,16 @@
         {
             "title": "Teampall Xian",
             "objects": {
-                "key_2": {
+                "key_item_2": {
                     "name": "Iuchair Òir",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Iuchair Airgid",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Iuchair na Prìomh Sheòmair",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Ròn an Dràgon",
                 }
             }
@@ -255,10 +255,10 @@
         {
             "title": "Eileanan Fleòdraidh",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Plaic Dhìomhair",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Plaic Dhìomhair",
                 }
             }
@@ -266,10 +266,10 @@
         {
             "title": "Uaimh an Dràgon",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Plaic Dhìomhair",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Biodag Xian",
                 }
             }
@@ -277,10 +277,10 @@
         {
             "title": "Dachaigh, mo Ghràdh",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair an Clòsaid-armachd",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Biodag Xian",
                 }
             }
@@ -290,13 +290,13 @@
         {
             "title": "Venise",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair an Taigh-bàta",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Iuchair Stàilinn",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Iuchair Iarainn",
                 }
             }
@@ -304,16 +304,16 @@
         {
             "title": "Long-bhriste na Maria Doria",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair an t-Seòmair Fois",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Iuchair Meirgeach",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Iuchair a' Chaibine",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Briseadair-cuairt",
                 }
             }
@@ -324,13 +324,13 @@
                 "tiger": {
                     "name": "Lìopaird-shneachda",
                 },
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair an Drochaid-tarraing",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Iuchair na Bothain",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "An t-Seraph",
                 }
             }

@@ -5,10 +5,10 @@
         {
             "title": "City of Vilcabamba",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Silver Key",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Gold Idol",
                 }
             }

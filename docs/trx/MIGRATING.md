@@ -143,6 +143,148 @@ order: 3
    | `O_SMASH_OBJECT_3`      | `O_SMASHABLE_3`             |
    | `O_SMASH_OBJECT_4`      | `O_SMASHABLE_4`             |
 
+10. **An object's key is its C spelling without the prefix**
+   Object keys now come from the C object name without `O_`, in lower case:
+   `O_SHOTGUN_ITEM` is `shotgun_item`. Before this,
+   `objects/names.def` declared separate keys. Update strings files, game
+   flows and weapon definitions that name an object:
+   - the string key `objects/shotgun/name` is now `objects/shotgun_item/name`
+   - `"object_id": "pistols"` becomes `"object_id": "pistols_item"`
+
+   | Was                     | Is now                   |
+   | ---                     | ---                      |
+   | `autos`                 | `autos_item`             |
+   | `autos_ammo`            | `autos_ammo_item`        |
+   | `binoculars`            | `binoculars_item`        |
+   | `compass`               | `compass_option`         |
+   | `controls`              | `controls_option`        |
+   | `crossbow`              | `crossbow_item`          |
+   | `crossbow_ammo`         | `crossbow_ammo_1_item`   |
+   | `crowbar`               | `crowbar_item`           |
+   | `crystal`               | `save_crystal_option`    |
+   | `desert_eagle`          | `desert_eagle_item`      |
+   | `desert_eagle_ammo`     | `desert_eagle_ammo_item` |
+   | `examine_1`             | `examine_item_1`         |
+   | `examine_2`             | `examine_item_2`         |
+   | `examine_3`             | `examine_item_3`         |
+   | `flare`                 | `flare_item`             |
+   | `flares_box`            | `flares_box_item`        |
+   | `gamma`                 | `gamma_option`           |
+   | `globe`                 | `globe_option`           |
+   | `graphics`              | `graphics_option`        |
+   | `grenade_launcher`      | `grenade_gun_item`       |
+   | `grenade_launcher_ammo` | `grenade_ammo_item`      |
+   | `harpoon_gun`           | `harpoon_gun_item`       |
+   | `harpoon_gun_ammo`      | `harpoon_gun_ammo_item`  |
+   | `key_1`                 | `key_item_1`             |
+   | `key_10`                | `key_item_10`            |
+   | `key_11`                | `key_item_11`            |
+   | `key_12`                | `key_item_12`            |
+   | `key_1_combo_1`         | `key_item_1_combo_1`     |
+   | `key_1_combo_2`         | `key_item_1_combo_2`     |
+   | `key_2`                 | `key_item_2`             |
+   | `key_2_combo_1`         | `key_item_2_combo_1`     |
+   | `key_2_combo_2`         | `key_item_2_combo_2`     |
+   | `key_3`                 | `key_item_3`             |
+   | `key_3_combo_1`         | `key_item_3_combo_1`     |
+   | `key_3_combo_2`         | `key_item_3_combo_2`     |
+   | `key_4`                 | `key_item_4`             |
+   | `key_4_combo_1`         | `key_item_4_combo_1`     |
+   | `key_4_combo_2`         | `key_item_4_combo_2`     |
+   | `key_5`                 | `key_item_5`             |
+   | `key_5_combo_1`         | `key_item_5_combo_1`     |
+   | `key_5_combo_2`         | `key_item_5_combo_2`     |
+   | `key_6`                 | `key_item_6`             |
+   | `key_6_combo_1`         | `key_item_6_combo_1`     |
+   | `key_6_combo_2`         | `key_item_6_combo_2`     |
+   | `key_7`                 | `key_item_7`             |
+   | `key_7_combo_1`         | `key_item_7_combo_1`     |
+   | `key_7_combo_2`         | `key_item_7_combo_2`     |
+   | `key_8`                 | `key_item_8`             |
+   | `key_8_combo_1`         | `key_item_8_combo_1`     |
+   | `key_8_combo_2`         | `key_item_8_combo_2`     |
+   | `key_9`                 | `key_item_9`             |
+   | `lara_grenade`          | `lara_grenade_gun`       |
+   | `lara_harpoon`          | `lara_harpoon_gun`       |
+   | `lara_rocket`           | `lara_rocket_gun`        |
+   | `large_medipack`        | `large_medipack_item`    |
+   | `lasersight`            | `lasersight_item`        |
+   | `lead_bar`              | `lead_bar_item`          |
+   | `m16`                   | `m16_item`               |
+   | `m16_ammo`              | `m16_ammo_item`          |
+   | `magnums`               | `magnums_item`           |
+   | `magnums_ammo`          | `magnums_ammo_item`      |
+   | `mp5`                   | `mp5_item`               |
+   | `mp5_ammo`              | `mp5_ammo_item`          |
+   | `passport`              | `passport_option`        |
+   | `pda`                   | `pda_option`             |
+   | `photo`                 | `photo_option`           |
+   | `pickup_1`              | `pickup_item_1`          |
+   | `pickup_1_combo_1`      | `pickup_item_1_combo_1`  |
+   | `pickup_1_combo_2`      | `pickup_item_1_combo_2`  |
+   | `pickup_2`              | `pickup_item_2`          |
+   | `pickup_2_combo_1`      | `pickup_item_2_combo_1`  |
+   | `pickup_2_combo_2`      | `pickup_item_2_combo_2`  |
+   | `pickup_3`              | `pickup_item_3`          |
+   | `pickup_3_combo_1`      | `pickup_item_3_combo_1`  |
+   | `pickup_3_combo_2`      | `pickup_item_3_combo_2`  |
+   | `pickup_4`              | `pickup_item_4`          |
+   | `pickup_4_combo_1`      | `pickup_item_4_combo_1`  |
+   | `pickup_4_combo_2`      | `pickup_item_4_combo_2`  |
+   | `pirahnas`              | `piranhas`               |
+   | `pistols`               | `pistols_item`           |
+   | `pistols_ammo`          | `pistols_ammo_item`      |
+   | `puzzle_1`              | `puzzle_item_1`          |
+   | `puzzle_10`             | `puzzle_item_10`         |
+   | `puzzle_11`             | `puzzle_item_11`         |
+   | `puzzle_12`             | `puzzle_item_12`         |
+   | `puzzle_1_combo_1`      | `puzzle_item_1_combo_1`  |
+   | `puzzle_1_combo_2`      | `puzzle_item_1_combo_2`  |
+   | `puzzle_2`              | `puzzle_item_2`          |
+   | `puzzle_2_combo_1`      | `puzzle_item_2_combo_1`  |
+   | `puzzle_2_combo_2`      | `puzzle_item_2_combo_2`  |
+   | `puzzle_3`              | `puzzle_item_3`          |
+   | `puzzle_3_combo_1`      | `puzzle_item_3_combo_1`  |
+   | `puzzle_3_combo_2`      | `puzzle_item_3_combo_2`  |
+   | `puzzle_4`              | `puzzle_item_4`          |
+   | `puzzle_4_combo_1`      | `puzzle_item_4_combo_1`  |
+   | `puzzle_4_combo_2`      | `puzzle_item_4_combo_2`  |
+   | `puzzle_5`              | `puzzle_item_5`          |
+   | `puzzle_5_combo_1`      | `puzzle_item_5_combo_1`  |
+   | `puzzle_5_combo_2`      | `puzzle_item_5_combo_2`  |
+   | `puzzle_6`              | `puzzle_item_6`          |
+   | `puzzle_6_combo_1`      | `puzzle_item_6_combo_1`  |
+   | `puzzle_6_combo_2`      | `puzzle_item_6_combo_2`  |
+   | `puzzle_7`              | `puzzle_item_7`          |
+   | `puzzle_7_combo_1`      | `puzzle_item_7_combo_1`  |
+   | `puzzle_7_combo_2`      | `puzzle_item_7_combo_2`  |
+   | `puzzle_8`              | `puzzle_item_8`          |
+   | `puzzle_8_combo_1`      | `puzzle_item_8_combo_1`  |
+   | `puzzle_8_combo_2`      | `puzzle_item_8_combo_2`  |
+   | `puzzle_9`              | `puzzle_item_9`          |
+   | `quest_1`               | `quest_item_1`           |
+   | `quest_2`               | `quest_item_2`           |
+   | `quest_3`               | `quest_item_3`           |
+   | `quest_4`               | `quest_item_4`           |
+   | `quest_5`               | `quest_item_5`           |
+   | `quest_6`               | `quest_item_6`           |
+   | `revolver`              | `revolver_item`          |
+   | `revolver_ammo`         | `revolver_ammo_item`     |
+   | `rocket_launcher`       | `rocket_gun_item`        |
+   | `rocket_launcher_ammo`  | `rocket_ammo_item`       |
+   | `save_crystal`          | `save_crystal_item`      |
+   | `scion`                 | `scion_item_1`           |
+   | `shotgun`               | `shotgun_item`           |
+   | `shotgun_ammo`          | `shotgun_ammo_item`      |
+   | `small_medipack`        | `small_medipack_item`    |
+   | `snake`                 | `cobra`                  |
+   | `sound`                 | `sound_option`           |
+   | `stopwatch`             | `stopwatch_option`       |
+   | `uzis`                  | `uzis_item`              |
+   | `uzis_ammo`             | `uzis_ammo_item`         |
+   | `waterskin_1`           | `waterskin_1_empty`      |
+   | `waterskin_2`           | `waterskin_2_empty`      |
+
 ### Version 1.9 to 1.10
 
 The Lua API was rewritten, and most of what it breaks is a rename. Run your

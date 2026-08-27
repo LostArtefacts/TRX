@@ -2,10 +2,10 @@
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
     "objects": {
-        "flare": {
+        "flare_item": {
             "name": "Flares",
         },
-        "grenade_launcher": {
+        "grenade_gun_item": {
             "name": "Grenade Gun",
         }
     },
@@ -15,7 +15,7 @@
             "title": "Angkor Wat",
             "legend": "Kambodscha, 1984",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Der goldene Totenschädel",
                 }
             }
@@ -23,7 +23,7 @@
         {
             "title": "Die Jagt nach der Iris",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Der goldene Totenschädel",
                 }
             }
@@ -32,16 +32,16 @@
             "title": "Das Grabmal des Seth",
             "legend": "Ägypten, heute",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Auge des Horus",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Zeitloser Sand",
                 },
-                "puzzle_1_combo_1": {
+                "puzzle_item_1_combo_1": {
                     "name": "Okular",
                 },
-                "puzzle_1_combo_2": {
+                "puzzle_item_1_combo_2": {
                     "name": "Okular",
                 }
             }
@@ -49,16 +49,16 @@
         {
             "title": "Die Grabkammer",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Die Hand des Orion",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Die Hand des Sirius",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Skarabäus Talisman",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Die goldene Schlange",
                 }
             }
@@ -66,7 +66,7 @@
         {
             "title": "Im Tal der Könige",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Zündschlüssel",
                 }
             }
@@ -74,7 +74,7 @@
         {
             "title": "Das fünfte Grabmal im Tal der Könige",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Zündschlüssel",
                 }
             }
@@ -82,22 +82,22 @@
         {
             "title": "Der Tempel von Karnak",
             "objects": {
-                "key_2": {
+                "key_item_2": {
                     "name": "Hypostelschlüssel",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Sonnentalisman",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Vase 1",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Vase 2",
                 },
-                "puzzle_1_combo_1": {
+                "puzzle_item_1_combo_1": {
                     "name": "Sonnenscheibe",
                 },
-                "puzzle_1_combo_2": {
+                "puzzle_item_1_combo_2": {
                     "name": "Sonnenkönigin",
                 }
             }
@@ -105,25 +105,25 @@
         {
             "title": "Die große Hypostyle Halle",
             "objects": {
-                "key_2": {
+                "key_item_2": {
                     "name": "Hypostelschlüssel",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Tempelschlüssel",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Sonnentalisman",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Vase 1",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Vase 2",
                 },
-                "puzzle_1_combo_1": {
+                "puzzle_item_1_combo_1": {
                     "name": "Sonnenscheibe",
                 },
-                "puzzle_1_combo_2": {
+                "puzzle_item_1_combo_2": {
                     "name": "Sonnenkönigin",
                 }
             }
@@ -131,25 +131,25 @@
         {
             "title": "Der heilige See",
             "objects": {
-                "key_2": {
+                "key_item_2": {
                     "name": "Hypostelschlüssel",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Tempelschlüssel",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Sonnentalisman",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Vase 1",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Vase 2",
                 },
-                "puzzle_1_combo_1": {
+                "puzzle_item_1_combo_1": {
                     "name": "Sonnenscheibe",
                 },
-                "puzzle_1_combo_2": {
+                "puzzle_item_1_combo_2": {
                     "name": "Sonnenkönigin",
                 }
             }
@@ -160,19 +160,19 @@
         {
             "title": "Das Grabmal Semerkhet",
             "objects": {
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Ba Kartusche",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Ra Kartusche",
                 },
-                "puzzle_4_combo_1": {
+                "puzzle_item_4_combo_1": {
                     "name": "Kartusche Stück 1",
                 },
-                "puzzle_4_combo_2": {
+                "puzzle_item_4_combo_2": {
                     "name": "Kartusche Stück 2",
                 },
-                "examine_2": {
+                "examine_item_2": {
                     "name": "Die Gesetze des Senet",
                     "description": "\\{color grey}Sie gewinnen das Spiel, wenn Sie jeden Ihrer Brettsteine auf dem letzten Ankhfeld positionieren. Drehen Sie die Sticks, wenn Sie an der Reihe sind. Die Anzahl der weissen Flächen zeigt Ihre Wurfanzahl.\n\nWerden keine weissen Flächen gezeigt, haben Sie eine Sechs geworfen. Wenn Sie eine Sechs werfen, oder auf einem Ankhfeld landen, sind Sie nochmals am Zug. Landen Sie auf einem gegnerischen Stein, wird Ihrer an den Anfang zurückgesetzt.",
                 }
@@ -181,10 +181,10 @@
         {
             "title": "Der Wächter des Semerkhet",
             "objects": {
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Goldener Vraeus",
                 },
-                "puzzle_7": {
+                "puzzle_item_7": {
                     "name": "Schlüssel des Wächters",
                 }
             }
@@ -195,55 +195,55 @@
         {
             "title": "Alexandria",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Münze",
                 },
-                "key_10": {
+                "key_item_10": {
                     "name": "Torschlüssel",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Dreizack",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Musikrolle",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Goldener Stern",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Haken und Stab",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Portalwächter",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Reiter Juwel",
                 },
-                "puzzle_10": {
+                "puzzle_item_10": {
                     "name": "Pharo's Knoten",
                 },
-                "puzzle_11": {
+                "puzzle_item_11": {
                     "name": "Pharo's Säule",
                 },
-                "puzzle_12": {
+                "puzzle_item_12": {
                     "name": "Schwarzer Käfer",
                 },
-                "puzzle_4_combo_1": {
+                "puzzle_item_4_combo_1": {
                     "name": "Wandhaken",
                 },
-                "puzzle_4_combo_2": {
+                "puzzle_item_4_combo_2": {
                     "name": "Defekter Griff",
                 },
-                "puzzle_5_combo_1": {
+                "puzzle_item_5_combo_1": {
                     "name": "Verzierter Griff",
                 },
-                "puzzle_5_combo_2": {
+                "puzzle_item_5_combo_2": {
                     "name": "Hathorbildnis",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Zerbrochener Käfer",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "Zerbrochene Brille",
                 }
             }
@@ -251,55 +251,55 @@
         {
             "title": "Die Küstenruinen",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Münze",
                 },
-                "key_10": {
+                "key_item_10": {
                     "name": "Torschlüssel",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Dreizack",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Musikrolle",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Goldener Stern",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Haken und Stab",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Portalwächter",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Reiter Juwel",
                 },
-                "puzzle_10": {
+                "puzzle_item_10": {
                     "name": "Pharo's Knoten",
                 },
-                "puzzle_11": {
+                "puzzle_item_11": {
                     "name": "Pharo's Säule",
                 },
-                "puzzle_12": {
+                "puzzle_item_12": {
                     "name": "Schwarzer Käfer",
                 },
-                "puzzle_4_combo_1": {
+                "puzzle_item_4_combo_1": {
                     "name": "Wandhaken",
                 },
-                "puzzle_4_combo_2": {
+                "puzzle_item_4_combo_2": {
                     "name": "Defekter Griff",
                 },
-                "puzzle_5_combo_1": {
+                "puzzle_item_5_combo_1": {
                     "name": "Verzierter Griff",
                 },
-                "puzzle_5_combo_2": {
+                "puzzle_item_5_combo_2": {
                     "name": "Hathorbildnis",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Zerbrochener Käfer",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "Zerbrochene Brille",
                 }
             }
@@ -307,52 +307,52 @@
         {
             "title": "Der Isistempel von Pharos",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Münze",
                 },
-                "key_10": {
+                "key_item_10": {
                     "name": "Torschlüssel",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Dreizack",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Musikrolle",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Goldener Stern",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Haken und Stab",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Portalwächter",
                 },
-                "puzzle_10": {
+                "puzzle_item_10": {
                     "name": "Pharo's Knoten",
                 },
-                "puzzle_11": {
+                "puzzle_item_11": {
                     "name": "Pharo's Säule",
                 },
-                "puzzle_12": {
+                "puzzle_item_12": {
                     "name": "Schwarzer Käfer",
                 },
-                "puzzle_4_combo_1": {
+                "puzzle_item_4_combo_1": {
                     "name": "Wandhaken",
                 },
-                "puzzle_4_combo_2": {
+                "puzzle_item_4_combo_2": {
                     "name": "Defekter Griff",
                 },
-                "puzzle_5_combo_1": {
+                "puzzle_item_5_combo_1": {
                     "name": "Verzierter Griff",
                 },
-                "puzzle_5_combo_2": {
+                "puzzle_item_5_combo_2": {
                     "name": "Hathorbildnis",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Zerbrochener Käfer",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "Zerbrochene Brille",
                 }
             }
@@ -360,25 +360,25 @@
         {
             "title": "Der Palast der Kleopatra",
             "objects": {
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Portalwächter",
                 },
-                "puzzle_10": {
+                "puzzle_item_10": {
                     "name": "Pharo's Knoten",
                 },
-                "puzzle_12": {
+                "puzzle_item_12": {
                     "name": "Schwarzer Käfer",
                 },
-                "puzzle_5_combo_1": {
+                "puzzle_item_5_combo_1": {
                     "name": "Verzierter Griff",
                 },
-                "puzzle_5_combo_2": {
+                "puzzle_item_5_combo_2": {
                     "name": "Hathorbildnis",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Zerbrochener Käfer",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "Zerbrochene Brille",
                 }
             }
@@ -386,46 +386,46 @@
         {
             "title": "Die Katakomben",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Münze",
                 },
-                "key_10": {
+                "key_item_10": {
                     "name": "Torschlüssel",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Dreizack",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Musikrolle",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Goldener Stern",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Portalwächter",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Reiter Juwel",
                 },
-                "puzzle_10": {
+                "puzzle_item_10": {
                     "name": "Pharo's Knoten",
                 },
-                "puzzle_11": {
+                "puzzle_item_11": {
                     "name": "Pharo's Säule",
                 },
-                "puzzle_12": {
+                "puzzle_item_12": {
                     "name": "Schwarzer Käfer",
                 },
-                "puzzle_5_combo_1": {
+                "puzzle_item_5_combo_1": {
                     "name": "Verzierter Griff",
                 },
-                "puzzle_5_combo_2": {
+                "puzzle_item_5_combo_2": {
                     "name": "Hathorbildnis",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Zerbrochener Käfer",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "Zerbrochene Brille",
                 }
             }
@@ -433,40 +433,40 @@
         {
             "title": "Der Poseidontempel",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Dreizack",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Musikrolle",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Goldener Stern",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Portalwächter",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Reiter Juwel",
                 },
-                "puzzle_10": {
+                "puzzle_item_10": {
                     "name": "Pharo's Knoten",
                 },
-                "puzzle_11": {
+                "puzzle_item_11": {
                     "name": "Pharo's Säule",
                 },
-                "puzzle_12": {
+                "puzzle_item_12": {
                     "name": "Schwarzer Käfer",
                 },
-                "puzzle_5_combo_1": {
+                "puzzle_item_5_combo_1": {
                     "name": "Verzierter Griff",
                 },
-                "puzzle_5_combo_2": {
+                "puzzle_item_5_combo_2": {
                     "name": "Hathorbildnis",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Zerbrochener Käfer",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "Zerbrochene Brille",
                 }
             }
@@ -474,40 +474,40 @@
         {
             "title": "Die verschwundene Bibliothek",
             "objects": {
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Musikrolle",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Goldener Stern",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Portalwächter",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Reiter Juwel",
                 },
-                "puzzle_10": {
+                "puzzle_item_10": {
                     "name": "Pharo's Knoten",
                 },
-                "puzzle_11": {
+                "puzzle_item_11": {
                     "name": "Pharo's Säule",
                 },
-                "puzzle_12": {
+                "puzzle_item_12": {
                     "name": "Schwarzer Käfer",
                 },
-                "puzzle_5_combo_1": {
+                "puzzle_item_5_combo_1": {
                     "name": "Verzierter Griff",
                 },
-                "puzzle_5_combo_2": {
+                "puzzle_item_5_combo_2": {
                     "name": "Hathorbildnis",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Zerbrochener Käfer",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "Zerbrochene Brille",
                 },
-                "examine_3": {
+                "examine_item_3": {
                     "name": "Feuerzirkelrolle",
                     "description": "\\{color yellow}Damit die Schlangen leben können, muss ihr Hunger zuerst gestillt werden. Reize sie nacheinander, und der Kreis wird gänzlich brennen.",
                 }
@@ -516,28 +516,28 @@
         {
             "title": "Die Hallen des Demetrius",
             "objects": {
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Portalwächter",
                 },
-                "puzzle_10": {
+                "puzzle_item_10": {
                     "name": "Pharo's Knoten",
                 },
-                "puzzle_11": {
+                "puzzle_item_11": {
                     "name": "Pharo's Säule",
                 },
-                "puzzle_12": {
+                "puzzle_item_12": {
                     "name": "Schwarzer Käfer",
                 },
-                "puzzle_5_combo_1": {
+                "puzzle_item_5_combo_1": {
                     "name": "Verzierter Griff",
                 },
-                "puzzle_5_combo_2": {
+                "puzzle_item_5_combo_2": {
                     "name": "Hathorbildnis",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Zerbrochener Käfer",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "Zerbrochene Brille",
                 }
             }
@@ -545,37 +545,37 @@
         {
             "title": "Die Stadt der Toten",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Verteiler Spezialbenzin",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Wagenheber",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Dachbodenschlüssel",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Waffencodeschlüssel",
                 },
-                "puzzle_8": {
+                "puzzle_item_8": {
                     "name": "Minendetonator",
                 },
-                "puzzle_1_combo_1": {
+                "puzzle_item_1_combo_1": {
                     "name": "Druckventil",
                 },
-                "puzzle_1_combo_2": {
+                "puzzle_item_1_combo_2": {
                     "name": "Spezialbenzin Kanister",
                 },
-                "puzzle_2_combo_1": {
+                "puzzle_item_2_combo_1": {
                     "name": "Defekter Wagenheber",
                 },
-                "puzzle_2_combo_2": {
+                "puzzle_item_2_combo_2": {
                     "name": "Kurbel",
                 },
-                "puzzle_8_combo_1": {
+                "puzzle_item_8_combo_1": {
                     "name": "Gehäuse Minendetonator",
                 },
-                "puzzle_8_combo_2": {
+                "puzzle_item_8_combo_2": {
                     "name": "Minenpositionsdaten",
                 }
             }
@@ -583,37 +583,37 @@
         {
             "title": "Die Gräben",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Verteiler Spezialbenzin",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Wagenheber",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Dachbodenschlüssel",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Waffencodeschlüssel",
                 },
-                "puzzle_8": {
+                "puzzle_item_8": {
                     "name": "Minendetonator",
                 },
-                "puzzle_1_combo_1": {
+                "puzzle_item_1_combo_1": {
                     "name": "Druckventil",
                 },
-                "puzzle_1_combo_2": {
+                "puzzle_item_1_combo_2": {
                     "name": "Spezialbenzin Kanister",
                 },
-                "puzzle_2_combo_1": {
+                "puzzle_item_2_combo_1": {
                     "name": "Defekter Wagenheber",
                 },
-                "puzzle_2_combo_2": {
+                "puzzle_item_2_combo_2": {
                     "name": "Kurbel",
                 },
-                "puzzle_8_combo_1": {
+                "puzzle_item_8_combo_1": {
                     "name": "Gehäuse Minendetonator",
                 },
-                "puzzle_8_combo_2": {
+                "puzzle_item_8_combo_2": {
                     "name": "Minenpositionsdaten",
                 }
             }
@@ -621,37 +621,37 @@
         {
             "title": "Die Tulun Moschee",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Verteiler Spezialbenzin",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Wagenheber",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Dachbodenschlüssel",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Waffencodeschlüssel",
                 },
-                "puzzle_8": {
+                "puzzle_item_8": {
                     "name": "Minendetonator",
                 },
-                "puzzle_1_combo_1": {
+                "puzzle_item_1_combo_1": {
                     "name": "Druckventil",
                 },
-                "puzzle_1_combo_2": {
+                "puzzle_item_1_combo_2": {
                     "name": "Spezialbenzin Kanister",
                 },
-                "puzzle_2_combo_1": {
+                "puzzle_item_2_combo_1": {
                     "name": "Defekter Wagenheber",
                 },
-                "puzzle_2_combo_2": {
+                "puzzle_item_2_combo_2": {
                     "name": "Kurbel",
                 },
-                "puzzle_8_combo_1": {
+                "puzzle_item_8_combo_1": {
                     "name": "Gehäuse Minendetonator",
                 },
-                "puzzle_8_combo_2": {
+                "puzzle_item_8_combo_2": {
                     "name": "Minenpositionsdaten",
                 }
             }
@@ -659,37 +659,37 @@
         {
             "title": "Der Straßenbasar",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Verteiler Spezialbenzin",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Wagenheber",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Dachbodenschlüssel",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Waffencodeschlüssel",
                 },
-                "puzzle_8": {
+                "puzzle_item_8": {
                     "name": "Minendetonator",
                 },
-                "puzzle_1_combo_1": {
+                "puzzle_item_1_combo_1": {
                     "name": "Druckventil",
                 },
-                "puzzle_1_combo_2": {
+                "puzzle_item_1_combo_2": {
                     "name": "Spezialbenzin Kanister",
                 },
-                "puzzle_2_combo_1": {
+                "puzzle_item_2_combo_1": {
                     "name": "Defekter Wagenheber",
                 },
-                "puzzle_2_combo_2": {
+                "puzzle_item_2_combo_2": {
                     "name": "Kurbel",
                 },
-                "puzzle_8_combo_1": {
+                "puzzle_item_8_combo_1": {
                     "name": "Gehäuse Minendetonator",
                 },
-                "puzzle_8_combo_2": {
+                "puzzle_item_8_combo_2": {
                     "name": "Minenpositionsdaten",
                 }
             }
@@ -697,37 +697,37 @@
         {
             "title": "Das Tor zur Zitadelle",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Verteiler Spezialbenzin",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Wagenheber",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Dachbodenschlüssel",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Waffencodeschlüssel",
                 },
-                "puzzle_8": {
+                "puzzle_item_8": {
                     "name": "Minendetonator",
                 },
-                "puzzle_1_combo_1": {
+                "puzzle_item_1_combo_1": {
                     "name": "Druckventil",
                 },
-                "puzzle_1_combo_2": {
+                "puzzle_item_1_combo_2": {
                     "name": "Spezialbenzin Kanister",
                 },
-                "puzzle_2_combo_1": {
+                "puzzle_item_2_combo_1": {
                     "name": "Defekter Wagenheber",
                 },
-                "puzzle_2_combo_2": {
+                "puzzle_item_2_combo_2": {
                     "name": "Kurbel",
                 },
-                "puzzle_8_combo_1": {
+                "puzzle_item_8_combo_1": {
                     "name": "Gehäuse Minendetonator",
                 },
-                "puzzle_8_combo_2": {
+                "puzzle_item_8_combo_2": {
                     "name": "Minenpositionsdaten",
                 }
             }
@@ -738,28 +738,28 @@
         {
             "title": "Der Sphinx Komplex",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Silberschlüssel",
                 },
-                "key_11": {
+                "key_item_11": {
                     "name": "Waffenkammerschlüssel",
                 },
-                "key_12": {
+                "key_item_12": {
                     "name": "Schlüssel der Wachen",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Schaufel",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Heilige Schrift",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Schlüssel zum Westschaft",
                 },
-                "puzzle_1_combo_1": {
+                "puzzle_item_1_combo_1": {
                     "name": "Metallklinge",
                 },
-                "puzzle_1_combo_2": {
+                "puzzle_item_1_combo_2": {
                     "name": "Holzgriff",
                 }
             }
@@ -770,31 +770,31 @@
         {
             "title": "Der Tempel im Tal",
             "objects": {
-                "key_11": {
+                "key_item_11": {
                     "name": "Waffenkammerschlüssel",
                 },
-                "key_12": {
+                "key_item_12": {
                     "name": "Schlüssel der Wachen",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Stein des Maat",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Stein des Khepri",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Stein des Atum",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Stein des Re",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Heilige Schrift",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Schlüssel zum Westschaft",
                 },
-                "examine_1": {
+                "examine_item_1": {
                     "name": "Papierfetzen",
                     "description": "",
                 }
@@ -803,16 +803,16 @@
         {
             "title": "Die Pyramide des Menkaure",
             "objects": {
-                "key_11": {
+                "key_item_11": {
                     "name": "Waffenkammerschlüssel",
                 },
-                "key_12": {
+                "key_item_12": {
                     "name": "Schlüssel der Wachen",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Heilige Schrift",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Schlüssel zum Westschaft",
                 }
             }
@@ -820,16 +820,16 @@
         {
             "title": "In der Pyramide des Menkaure",
             "objects": {
-                "key_11": {
+                "key_item_11": {
                     "name": "Waffenkammerschlüssel",
                 },
-                "key_12": {
+                "key_item_12": {
                     "name": "Schlüssel der Wachen",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Heilige Schrift",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Schlüssel zum Westschaft",
                 }
             }
@@ -837,28 +837,28 @@
         {
             "title": "Die Mastabas",
             "objects": {
-                "key_11": {
+                "key_item_11": {
                     "name": "Waffenkammerschlüssel",
                 },
-                "key_12": {
+                "key_item_12": {
                     "name": "Schlüssel der Wachen",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Heilige Schrift",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Schlüssel zum Westschaft",
                 },
-                "puzzle_7": {
+                "puzzle_item_7": {
                     "name": "Schlüssel zum Nordschaft",
                 },
-                "puzzle_8": {
+                "puzzle_item_8": {
                     "name": "Schlüssel zum Südschaft",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Sandsack",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "Kanister",
                 }
             }
@@ -866,22 +866,22 @@
         {
             "title": "Die Große Pyramide",
             "objects": {
-                "key_11": {
+                "key_item_11": {
                     "name": "Waffenkammerschlüssel",
                 },
-                "key_12": {
+                "key_item_12": {
                     "name": "Schlüssel der Wachen",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Heilige Schrift",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Schlüssel zum Westschaft",
                 },
-                "puzzle_7": {
+                "puzzle_item_7": {
                     "name": "Schlüssel zum Nordschaft",
                 },
-                "puzzle_8": {
+                "puzzle_item_8": {
                     "name": "Schlüssel zum Südschaft",
                 }
             }
@@ -889,25 +889,25 @@
         {
             "title": "Die Königspyramiden von Khufu",
             "objects": {
-                "key_11": {
+                "key_item_11": {
                     "name": "Waffenkammerschlüssel",
                 },
-                "key_12": {
+                "key_item_12": {
                     "name": "Schlüssel der Wachen",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Heilige Schrift",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Schlüssel zum Westschaft",
                 },
-                "puzzle_7": {
+                "puzzle_item_7": {
                     "name": "Schlüssel zum Nordschaft",
                 },
-                "puzzle_8": {
+                "puzzle_item_8": {
                     "name": "Schlüssel zum Südschaft",
                 },
-                "puzzle_9": {
+                "puzzle_item_9": {
                     "name": "Schlüssel zum Ostschaft",
                 }
             }
@@ -915,25 +915,25 @@
         {
             "title": "In der großen Pyramide",
             "objects": {
-                "key_11": {
+                "key_item_11": {
                     "name": "Waffenkammerschlüssel",
                 },
-                "key_12": {
+                "key_item_12": {
                     "name": "Schlüssel der Wachen",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Heilige Schrift",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Schlüssel zum Westschaft",
                 },
-                "puzzle_7": {
+                "puzzle_item_7": {
                     "name": "Schlüssel zum Nordschaft",
                 },
-                "puzzle_8": {
+                "puzzle_item_8": {
                     "name": "Schlüssel zum Südschaft",
                 },
-                "puzzle_9": {
+                "puzzle_item_9": {
                     "name": "Schlüssel zum Ostschaft",
                 }
             }
@@ -941,13 +941,13 @@
         {
             "title": "Der Tempel des Horus",
             "objects": {
-                "key_11": {
+                "key_item_11": {
                     "name": "Waffenkammerschlüssel",
                 },
-                "key_12": {
+                "key_item_12": {
                     "name": "Schlüssel der Wachen",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Heilige Schrift",
                 }
             }
@@ -955,10 +955,10 @@
         {
             "title": "Der Tempel des Horus",
             "objects": {
-                "key_11": {
+                "key_item_11": {
                     "name": "Waffenkammerschlüssel",
                 },
-                "key_12": {
+                "key_item_12": {
                     "name": "Schlüssel der Wachen",
                 }
             }
