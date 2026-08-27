@@ -23,7 +23,7 @@ api.number("catalog.Slot", {
     .. "Editor. It differs from game to game.",
 })
 
-api.enum("catalog.Context", {
+local Context = api.enum("catalog.Context", {
   backing = "CATALOG_CONTEXT",
   strip = "CATALOG_",
   description = "Which catalog a slot belongs to.",
@@ -39,7 +39,7 @@ api.enum("catalog.Context", {
 
 api.enum("catalog.objects", {
   backing = "OBJECT_ID",
-  strip = "O_",
+  context = Context.OBJECTS,
   bulk = true,
   description = "Every object TRX has a name for.",
   examples = { [[if item.object_id == trx.catalog.objects.WOLF then ... end]] },
@@ -47,7 +47,7 @@ api.enum("catalog.objects", {
 
 api.enum("catalog.samples", {
   backing = "SAMPLE_TRX_ID",
-  strip = "SFX_",
+  context = Context.SAMPLES,
   bulk = true,
   description = "Every sound sample TRX has a name for.",
   examples = { [[trx.sound.play(trx.catalog.samples.LARA_NO)]] },
@@ -55,7 +55,7 @@ api.enum("catalog.samples", {
 
 api.enum("catalog.music", {
   backing = "MUSIC_TRX_ID",
-  strip = "MX_",
+  context = Context.MUSIC,
   bulk = true,
   description = "Every music track TRX has a name for.",
   examples = { [[trx.music.play(trx.catalog.music.SECRET)]] },
@@ -63,7 +63,7 @@ api.enum("catalog.music", {
 
 api.enum("catalog.lara_states", {
   backing = "LARA_TRX_STATE",
-  strip = "LS_",
+  context = Context.LARA_STATES,
   bulk = true,
   description = "Every state Lara can be in.",
   examples = {
@@ -73,14 +73,14 @@ api.enum("catalog.lara_states", {
 
 api.enum("catalog.lara_anims", {
   backing = "LARA_TRX_ANIMATION",
-  strip = "LA_",
+  context = Context.LARA_ANIMS,
   bulk = true,
   description = "Every animation Lara has.",
 })
 
 api.enum("catalog.flip_effects", {
   backing = "ITEM_TRX_ACTION",
-  strip = "ITEM_ACTION_",
+  context = Context.ITEM_ACTIONS,
   bulk = true,
   description = "Every item action a flip effect can trigger.",
   examples = {

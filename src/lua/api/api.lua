@@ -15,6 +15,7 @@
 local struct = trxc.struct
 
 local enum = trxc.enum
+local catalog = trxc.catalog
 
 local capi = trxc.api
 
@@ -1192,6 +1193,11 @@ end
 -- the data files are keyed by and cannot move, but
 -- trx.lara.ExtraMesh.EXTRA_MESH_OAR only says EXTRA_MESH twice.
 function api.enum_name(spec, reflected_name)
+  -- A catalog reports its keys in lower case, and upper case is what a
+  -- constant reads as everywhere else.
+  if spec.context ~= nil then
+    return reflected_name:upper()
+  end
   local strip = spec.strip
   if strip ~= nil and reflected_name:sub(1, #strip) == strip then
     return reflected_name:sub(#strip + 1)
@@ -1210,9 +1216,15 @@ api.enum = declarator("enum", "enums", {
     local bulk = spec.bulk == true
     need(bulk or type(spec.values) == "table", "values must be a table")
 
+    -- A catalog reports what it holds itself. It is the one enum whose values
+    -- are not fixed at build time, because a mod mints identities of its own.
+    local from_catalog = spec.context ~= nil
+    local constants = from_catalog and catalog.values(spec.context)
+      or enum.values(spec.backing)
+
     local public = {}
     local reflected = {}
-    for _, constant in ipairs(enum.values(spec.backing)) do
+    for _, constant in ipairs(constants) do
       local value_name = api.enum_name(spec, constant.name)
       -- Stripping a prefix can collide two C constants onto one Lua name, and the
       -- second would quietly take the first one's place.
@@ -1266,7 +1278,14 @@ api.enum = declarator("enum", "enums", {
         if type(key) ~= "string" then
           return nil
         end
-        return public[key] or public[key:upper()]
+        local value = public[key] or public[key:upper()]
+        if value ~= nil or not from_catalog then
+          return value
+        end
+        -- A name minted after the enum was declared is not in public, so the
+        -- catalog is asked for it.
+        return catalog.from_key(spec.context, key)
+          or catalog.from_key(spec.context, key:lower())
       end,
       __newindex = function(_, key)
         error(
@@ -1314,14 +1333,16 @@ api.enum = declarator("enum", "enums", {
     }
     -- A bulk enum reads as names only, and no values: the ids are TRX's own, and
     -- a script refers to them by name.
+    local constants = spec.context ~= nil and catalog.values(spec.context)
+      or enum.values(spec.backing)
     if out.bulk then
       out.names = {}
-      for _, constant in ipairs(enum.values(spec.backing)) do
+      for _, constant in ipairs(constants) do
         table.insert(out.names, api.enum_name(spec, constant.name))
       end
       table.sort(out.names)
     else
-      for _, constant in ipairs(enum.values(spec.backing)) do
+      for _, constant in ipairs(constants) do
         local value_name = api.enum_name(spec, constant.name)
         table.insert(out.values, {
           name = value_name,

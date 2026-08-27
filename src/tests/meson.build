@@ -71,6 +71,7 @@ b_lua_surface = {
   'engine': [
     'core/dynamic_enum.c',
     'core/enum_map.c',
+    'game/catalog/keys.c',
     'core/handle.c',
     'core/memory.c',
     'core/result.c',
