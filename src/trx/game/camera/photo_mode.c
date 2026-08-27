@@ -6,15 +6,17 @@
 #include <trx/game/camera.h>
 #include <trx/game/input.h>
 #include <trx/game/lara/pose.h>
-#include <trx/game/matrix.h>
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
 #include <trx/game/viewport.h>
 
-#define MIN_PHOTO_FOV 10
-#define MAX_PHOTO_FOV 150
-#define PHOTO_ROT_SHIFT (DEG_1 * 4)
-#define PHOTO_MAX_SPEED 100
+// clang-format off
+#define M_MIN_FOV     10
+#define M_MAX_FOV     150
+#define M_ROT_SHIFT   (DEG_1 * 4) // = 728
+#define M_MAX_SPEED   100
+#define M_CLAMP_SHIFT STEP_L
+// clang-format on
 
 static int32_t m_PhotoSpeed = 0;
 static int32_t m_OriginalFOV;
@@ -74,12 +76,12 @@ static void M_ResetCamera(const bool exiting)
 
 static int32_t M_GetShiftSpeed(const int32_t val)
 {
-    return val * m_PhotoSpeed / (float)PHOTO_MAX_SPEED;
+    return val * m_PhotoSpeed / (float)M_MAX_SPEED;
 }
 
 static int32_t M_GetRotSpeed(void)
 {
-    return MAX(DEG_1, M_GetShiftSpeed(PHOTO_ROT_SHIFT));
+    return MAX(DEG_1, M_GetShiftSpeed(M_ROT_SHIFT));
 }
 
 // The step comes in along the camera's own axes, and has to land in the
@@ -90,7 +92,7 @@ static XYZ_32 M_GetShift(const int32_t dx, const int32_t dy, const int32_t dz)
         (XYZ_32) { .x = dx, .y = dy, .z = dz }, Camera_PhotoMode_GetRot());
 }
 
-static void M_ShiftCamera(int32_t dx, int32_t dy, int32_t dz)
+static void M_ShiftCamera(const int32_t dx, const int32_t dy, const int32_t dz)
 {
     const XYZ_32 shift = M_GetShift(dx, dy, dz);
     g_Camera.pos.pos = XYZ_32_Add(g_Camera.pos.pos, shift);
@@ -138,6 +140,9 @@ static void M_RotateCamera(
     M_ApplyRotation(d_yaw, d_pitch, d_roll, true);
     const XYZ_32 shift = M_GetShift(0, 0, g_Camera.target_distance);
     g_Camera.target.pos = XYZ_32_Add(g_Camera.pos.pos, shift);
+    if (g_Config.visuals.enable_photo_mode_collision) {
+        Camera_LOSCheck(&g_Camera.pos, &g_Camera.target, M_CLAMP_SHIFT);
+    }
 }
 
 static void M_RotateTarget(
@@ -146,13 +151,29 @@ static void M_RotateTarget(
     M_ApplyRotation(d_yaw, d_pitch, d_roll, false);
     const XYZ_32 shift = M_GetShift(0, 0, g_Camera.target_distance);
     g_Camera.pos.pos = XYZ_32_Subtract(g_Camera.target.pos, shift);
+    if (g_Config.visuals.enable_photo_mode_collision) {
+        Camera_LOSCheck(&g_Camera.target, &g_Camera.pos, M_CLAMP_SHIFT);
+    }
+}
+
+static void M_Clamp(GAME_VECTOR *const pos)
+{
+    Camera_Collide(pos, M_CLAMP_SHIFT, false);
+    int16_t room_num = pos->room_num;
+    const SECTOR *const sector =
+        Room_GetSector((XYZ_32) { pos->x, MAX_HEIGHT, pos->z }, &room_num);
+    const ROOM *const room = Room_Get(room_num);
+    if (room->flags.swamp) {
+        CLAMPG(pos->y, room->max_ceiling - M_CLAMP_SHIFT);
+        Room_GetSector(pos->pos, &pos->room_num);
+    }
 }
 
 static void M_ClampCameraPos(void)
 {
     if (g_Config.visuals.enable_photo_mode_collision) {
-        Camera_Collide(&g_Camera.pos, STEP_L, false);
-        Camera_Collide(&g_Camera.target, STEP_L, false);
+        M_Clamp(&g_Camera.pos);
+        M_Clamp(&g_Camera.target);
         return;
     }
 
@@ -282,7 +303,7 @@ static bool M_HandleFOVInputs(void)
     } else {
         m_CurrentFOV++;
     }
-    CLAMP(m_CurrentFOV, MIN_PHOTO_FOV, MAX_PHOTO_FOV);
+    CLAMP(m_CurrentFOV, M_MIN_FOV, M_MAX_FOV);
     Viewport_AlterFOV(m_CurrentFOV * DEG_1, m_CurrentFOVMode);
     return true;
 }
@@ -357,7 +378,7 @@ void Camera_PhotoMode_Update(void)
 
     if (changed) {
         m_PhotoSpeed++;
-        CLAMPG(m_PhotoSpeed, PHOTO_MAX_SPEED);
+        CLAMPG(m_PhotoSpeed, M_MAX_SPEED);
     } else {
         m_PhotoSpeed = 0;
     }
