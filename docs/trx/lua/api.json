@@ -10578,6 +10578,11 @@
           "type": "table"
         },
         {
+          "description": "The name the game shows for the object. It is the first value in `trx.objects.Object.names`, or `nil` where the object has no name.",
+          "name": "name",
+          "type": "string"
+        },
+        {
           "description": "Every name the object answers to, in the player's language. An object has more than one: a large medipack is also a `medipack` and a `big medi`. <!--noref: medipack-->",
           "name": "names",
           "type": "table"
