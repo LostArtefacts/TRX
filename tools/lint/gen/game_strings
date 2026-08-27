@@ -45,7 +45,7 @@ RE_INPUT_ROLE_USAGE = re.compile(
     r"X_INPUT_ROLE\(\s*(INPUT_ROLE_[A-Z0-9_]+)\s*,"
 )
 RE_OBJ_NAME_DEFINE = re.compile(
-    r'@NAME\(\s*([A-Za-z_][A-Za-z0-9_]*)\s*((?:,\s*"[^"]*")+)\)'
+    r'@NAME\(\s*([A-Za-z_][A-Za-z0-9_]*)\s*,\s*"([^"]*)"\s*\)'
 )
 
 RE_LUA_GAME_STRING_USAGE = re.compile(
@@ -108,6 +108,12 @@ def nat_key(value: str) -> tuple[tuple[int, Any], ...]:
 
 def sort_mapping_rec(value: Any) -> Any:
     if isinstance(value, dict):
+        if set(value.keys()).issubset({"name", "description"}):
+            ordered = {}
+            for field in ("name", "description"):
+                if field in value:
+                    ordered[field] = sort_mapping_rec(value[field])
+            return ordered
         if set(value.keys()).issubset({"title", "description"}):
             ordered: dict[str, Any] = {}
             if "title" in value:
@@ -690,7 +696,7 @@ def get_objects_map(paths: list[Path]) -> dict[str, dict[str, str | list[str]]]:
     """
     Parse object-name definitions from names.def-like files.
     Supports:
-      X_OBJ_NAME_DEFINE(O_ID, X_OBJ_NAMES("Name1", "Name2", ...))
+      X_OBJ_NAME_DEFINE(O_ID, "Name|Alias1|Alias2")
     The key comes from the id: the O_ prefix comes off and the rest is lower
     case, matching the source lookup.
     The files may include other .def files (pickups.def), so they are expanded
@@ -704,15 +710,11 @@ def get_objects_map(paths: list[Path]) -> dict[str, dict[str, str | list[str]]]:
             path,
             {
                 "X_OBJ_NAME_DEFINE(id, names)": "@NAME(id, names)",
-                "X_OBJ_NAMES(...)": "__VA_ARGS__",
             },
         )
         for match in RE_OBJ_NAME_DEFINE.finditer(text):
             key = match.group(1).removeprefix("O_").lower()
-            names_list = uniq(re.findall(r'"([^"]+)"', match.group(2)))
-            result.setdefault(key, {})["name"] = (
-                names_list[0] if len(names_list) == 1 else names_list
-            )
+            result.setdefault(key, {})["name"] = match.group(2)
     return result
 
 
@@ -1038,6 +1040,7 @@ def sync_base_strings(ctx: RunContext) -> None:
                 )
             new[key] = value
     new = dict(sorted(new.items(), key=lambda kv: nat_key(kv[0])))
+
     def translated_part(value: object) -> tuple[Any, Any]:
         # Review only the displayed name and the description.
         if not isinstance(value, dict):

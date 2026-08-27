@@ -94,80 +94,9 @@ static void M_LoadNestedGameStrings(
 static void M_LoadTableFromJSON(
     JSON_OBJECT *const root_obj, GS_TABLE *const out_table)
 {
-    // Load objects
-    JSON_OBJECT *const jobjs = JSON_ObjectGetObject(root_obj, "objects");
-    if (jobjs != nullptr) {
-        const size_t object_count = jobjs->length;
-        out_table->objects =
-            Memory_Alloc(sizeof(GS_OBJECT_ENTRY) * (object_count + 1));
-
-        JSON_OBJECT_ELEMENT *jobj_elem = jobjs->start;
-        for (size_t i = 0; i < object_count; i++, jobj_elem = jobj_elem->next) {
-            JSON_OBJECT *const jobj_obj = JSON_ValueAsObject(jobj_elem->value);
-
-            const char *const key = jobj_elem->name->string;
-            if (key == JSON_INVALID_STRING) {
-                LOG_WARNING(
-                    "Invalid game string object entry %d: missing key.", i);
-                continue;
-            }
-
-            GS_OBJECT_ENTRY *const object_entry = &out_table->objects[i];
-            const char *const ref =
-                JSON_ValueGetString(jobj_elem->value, JSON_INVALID_STRING);
-            if (ref != JSON_INVALID_STRING) {
-                object_entry->key = Memory_DupStr(key);
-                object_entry->ref = Memory_DupStr(ref);
-                continue;
-            }
-
-            const char *const single_name =
-                JSON_ObjectGetString(jobj_obj, "name", JSON_INVALID_STRING);
-            JSON_ARRAY *jnames_arr = JSON_ObjectGetArray(jobj_obj, "name");
-            if (jnames_arr == nullptr) {
-                jnames_arr = JSON_ObjectGetArray(jobj_obj, "names");
-            }
-
-            if (single_name == JSON_INVALID_STRING
-                && (jnames_arr == nullptr || jnames_arr->length == 0)) {
-                LOG_WARNING(
-                    "Invalid game string object entry %s: missing name.", key);
-                continue;
-            }
-
-            object_entry->key = Memory_DupStr(key);
-            if (jnames_arr != nullptr) {
-                object_entry->names = Memory_Alloc(
-                    sizeof(const char *) * (jnames_arr->length + 1));
-                JSON_ARRAY_ELEMENT *elem = jnames_arr->start;
-                size_t count = 0;
-                for (size_t j = 0; j < jnames_arr->length;
-                     j++, elem = elem->next) {
-                    const char *const name =
-                        JSON_ValueGetString(elem->value, JSON_INVALID_STRING);
-                    if (name != JSON_INVALID_STRING) {
-                        object_entry->names[count] = Memory_DupStr(name);
-                        count++;
-                    }
-                }
-                object_entry->names[count] = nullptr;
-            } else {
-                object_entry->names = Memory_Alloc(sizeof(const char *) * 2);
-                object_entry->names[0] = Memory_DupStr(single_name);
-                object_entry->names[1] = nullptr;
-            }
-
-            const char *const description = JSON_ObjectGetString(
-                jobj_obj, "description", JSON_INVALID_STRING);
-            object_entry->description = description != JSON_INVALID_STRING
-                ? Memory_DupStr(description)
-                : nullptr;
-        }
-    }
-
     // Load localized string tables.
     const char *const nested_sections[] = {
-        "general", "console", "settings", "enums", "dynamic",
+        "general", "console", "settings", "enums", "dynamic", "objects",
     };
     size_t gs_count = 0;
     size_t gs_capacity = 0;

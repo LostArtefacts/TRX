@@ -248,40 +248,43 @@ static int M_L_ObjectsIsType(lua_State *const L)
     return luaL_error(L, "unknown object kind '%s'", kind);
 }
 
-// The names an object answers to are lists, because it has more than one: a
-// large medipack is also a "medipack" and a "big medi". get_names is the
-// player's language; get_default_names is the compile-time English fallback a
-// lookup takes before any language file is loaded.
+// Push the primary name followed by aliases.
+static int M_L_PushNames(
+    lua_State *const L, const char *const name, const char *const aliases)
+{
+    lua_newtable(L);
+    int32_t count = 0;
+    if (name != nullptr) {
+        lua_pushstring(L, name);
+        lua_seti(L, -2, ++count);
+    }
+    for (const char *cur = aliases; cur != nullptr && *cur != '\0';) {
+        const char *const sep = strchr(cur, '|');
+        if (sep == nullptr) {
+            lua_pushstring(L, cur);
+            cur = nullptr;
+        } else {
+            lua_pushlstring(L, cur, sep - cur);
+            cur = sep + 1;
+        }
+        lua_seti(L, -2, ++count);
+    }
+    return 1;
+}
+
 static int M_L_GetNames(lua_State *const L)
 {
     const LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_OBJECT);
-    lua_newtable(L);
-    const VECTOR *const names = Object_GetNames((OBJECT_ID)ref->handle.id);
-    if (names != nullptr) {
-        for (int32_t i = 0; i < names->count; i++) {
-            const char *const name = *(char **)Vector_Get(names, i);
-            if (name != nullptr) {
-                lua_pushstring(L, name);
-                lua_seti(L, -2, lua_rawlen(L, -2) + 1);
-            }
-        }
-    }
-    return 1;
+    const OBJECT_ID obj_id = (OBJECT_ID)ref->handle.id;
+    return M_L_PushNames(L, Object_GetName(obj_id), Object_GetAliases(obj_id));
 }
 
 static int M_L_GetDefaultNames(lua_State *const L)
 {
     const LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_OBJECT);
-    lua_newtable(L);
-    const char *const *const names =
-        Object_GetDefaultNames((OBJECT_ID)ref->handle.id);
-    if (names != nullptr) {
-        for (int32_t i = 0; names[i] != nullptr; i++) {
-            lua_pushstring(L, names[i]);
-            lua_seti(L, -2, i + 1);
-        }
-    }
-    return 1;
+    const OBJECT_ID obj_id = (OBJECT_ID)ref->handle.id;
+    return M_L_PushNames(
+        L, Object_GetDefaultName(obj_id), Object_GetDefaultAliases(obj_id));
 }
 
 static const luaL_Reg m_Methods[] = {

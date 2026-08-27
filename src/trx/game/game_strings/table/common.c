@@ -1,5 +1,4 @@
 #include <trx/core/log.h>
-#include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/entries.h>
@@ -8,132 +7,18 @@
 #include <trx/game/objects/names.h>
 #include <trx/game/shell.h>
 
-#include <string.h>
-
-// A value may name another instead of holding words of its own. The name is
-// what it stands for, after a "$": an object names another object, so that
-// "objects/compass_option" holding "$objects/compass_item" takes that
-// object's names and description, and a game string names another game
-// string.
-#define M_REF_MARK '$'
-#define M_REF_OBJECTS "$objects/"
-
-// How many references one value may go through before the chain is treated as
-// a loop.
-#define M_REF_DEPTH_MAX 8
-
 typedef void (*M_LOAD_STRING_FUNC)(const char *, const char *);
 
 static VECTOR *m_GST_Layers = nullptr;
-
-static bool M_IsRef(const char *const value)
-{
-    return value != nullptr && value[0] == M_REF_MARK;
-}
-
-// The object a key names, taken from the last layer that holds it.
-static const GS_OBJECT_ENTRY *M_FindObjectEntry(const char *const key)
-{
-    for (int32_t i = m_GST_Layers->count - 1; i >= 0; i--) {
-        const GS_FILE *const gs_file = *(GS_FILE **)Vector_Get(m_GST_Layers, i);
-        for (const GS_OBJECT_ENTRY *cur = gs_file->global.objects;
-             cur != nullptr && cur->key != nullptr; cur++) {
-            if (strcmp(cur->key, key) == 0) {
-                return cur;
-            }
-        }
-    }
-    return nullptr;
-}
-
-// The game string a path names, taken from the last layer that holds it.
-static const char *M_FindGameString(const char *const path)
-{
-    for (int32_t i = m_GST_Layers->count - 1; i >= 0; i--) {
-        const GS_FILE *const gs_file = *(GS_FILE **)Vector_Get(m_GST_Layers, i);
-        for (const GS_GAME_STRING_ENTRY *cur = gs_file->global.game_strings;
-             cur != nullptr && cur->key != nullptr; cur++) {
-            if (strcmp(cur->key, path) == 0) {
-                return cur->value;
-            }
-        }
-    }
-    return nullptr;
-}
-
-// Follow the objects an object stands for and return the one that holds words
-// of its own, or null where a reference names nothing or the chain runs past
-// M_REF_DEPTH_MAX.
-static const GS_OBJECT_ENTRY *M_ResolveObjectEntry(
-    const GS_OBJECT_ENTRY *const entry, const int32_t depth)
-{
-    if (entry == nullptr || entry->ref == nullptr) {
-        return entry;
-    }
-    if (depth >= M_REF_DEPTH_MAX) {
-        LOG_ERROR("'%s' stands on a loop of references", entry->ref);
-        return nullptr;
-    }
-    if (strncmp(entry->ref, M_REF_OBJECTS, strlen(M_REF_OBJECTS)) != 0) {
-        LOG_ERROR("'%s' names no object", entry->ref);
-        return nullptr;
-    }
-    const GS_OBJECT_ENTRY *const target =
-        M_FindObjectEntry(entry->ref + strlen(M_REF_OBJECTS));
-    if (target == nullptr) {
-        LOG_ERROR("'%s' names no object", entry->ref);
-        return nullptr;
-    }
-    return M_ResolveObjectEntry(target, depth + 1);
-}
-
-// The same for a game string.
-static const char *M_ResolveValue(const char *const value, const int32_t depth)
-{
-    if (!M_IsRef(value)) {
-        return value;
-    }
-    if (depth >= M_REF_DEPTH_MAX) {
-        LOG_ERROR("'%s' stands on a loop of references", value);
-        return nullptr;
-    }
-    const char *const target = M_FindGameString(value + 1);
-    if (target == nullptr) {
-        LOG_ERROR("'%s' names no game string", value);
-        return nullptr;
-    }
-    return M_ResolveValue(target, depth + 1);
-}
 
 static void M_Apply(const GS_TABLE *const table)
 {
     for (const GS_GAME_STRING_ENTRY *cur = table->game_strings;
          cur != nullptr && cur->key != nullptr; cur++) {
-        const char *const value = M_ResolveValue(cur->value, 0);
-        if (value == nullptr) {
+        if (cur->value == nullptr) {
             LOG_ERROR("Invalid game string value: %s", cur->key);
         } else {
-            GameString_Define(cur->key, value);
-        }
-    }
-
-    for (const GS_OBJECT_ENTRY *cur = table->objects;
-         cur != nullptr && cur->key != nullptr; cur++) {
-        const OBJECT_ID obj_id = Object_IdFromKey(cur->key);
-        if (obj_id == NO_OBJECT) {
-            LOG_ERROR("Invalid object id: %s", cur->key);
-        } else {
-            const GS_OBJECT_ENTRY *const entry = M_ResolveObjectEntry(cur, 0);
-            if (entry == nullptr || entry->names == nullptr) {
-                LOG_ERROR("Invalid object name(s): %s", cur->key);
-                continue;
-            }
-            Object_ClearNames(obj_id);
-            for (const char *const *name = entry->names; *name != nullptr;
-                 name++) {
-                Object_AddName(obj_id, *name);
-            }
-            Object_SetDescription(obj_id, entry->description);
+            GameString_Define(cur->key, cur->value);
         }
     }
 }

@@ -1,20 +1,15 @@
 #include <trx/game/objects/names.h>
 
-#include <trx/core/memory.h>
-#include <trx/core/subsystem.h>
-#include <trx/core/vector.h>
+#include <trx/core/strings.h>
 #include <trx/debug.h>
-#include <trx/game/catalog/table.h>
 #include <trx/game/game_strings/entries.h>
-#include <trx/game/objects/common.h>
-#include <trx/game/objects/vars.h>
 
 #include <ctype.h>
 #include <string.h>
 
 typedef struct {
     OBJECT_ID object_id;
-    const char **default_names;
+    const char *names;
 } M_DEFAULT;
 
 typedef struct {
@@ -22,23 +17,12 @@ typedef struct {
     const char *enum_name;
 } M_KEY;
 
-typedef struct {
-    VECTOR *names;
-    char *description;
-    const char *slot; // stable first-name slot for this object
-} M_NAME_ENTRY;
-
-CATALOG_TABLE_DEFINE(m_NamesTable, CATALOG_OBJECTS, M_NAME_ENTRY, O_NUMBER_OF);
-
-// Compile-time default names (ignoring key aliases)
 static const M_DEFAULT m_Defaults[] = {
-#define X_OBJ_NAMES(...) ((const char *[]) { __VA_ARGS__, nullptr })
-#define X_OBJ_NAME_DEFINE(object_id_, names_array_)                            \
-    { .object_id = object_id_, .default_names = names_array_ },
+#define X_OBJ_NAME_DEFINE(object_id_, names_)                                  \
+    { .object_id = object_id_, .names = names_ },
 #include <trx/game/objects/names.def>
 #undef X_OBJ_NAME_DEFINE
-#undef X_OBJ_NAMES
-    { .object_id = NO_OBJECT, .default_names = nullptr },
+    { .object_id = NO_OBJECT, .names = nullptr },
 };
 
 // List every object with the C spelling its key comes from.
@@ -62,7 +46,7 @@ static bool M_KeyMatches(const char *const enum_name, const char *const key)
     return name[i] == '\0' && key[i] == '\0';
 }
 
-static const M_DEFAULT *M_ResolveDefault(OBJECT_ID obj_id)
+static const M_DEFAULT *M_GetDefault(const OBJECT_ID obj_id)
 {
     for (int32_t i = 0; m_Defaults[i].object_id != NO_OBJECT; i++) {
         if (m_Defaults[i].object_id == obj_id) {
@@ -72,108 +56,96 @@ static const M_DEFAULT *M_ResolveDefault(OBJECT_ID obj_id)
     return nullptr;
 }
 
-static M_NAME_ENTRY *M_ResolveNameEntry(const OBJECT_ID obj_id)
+static const char *M_KeyFromId(const OBJECT_ID obj_id)
 {
-    return CatalogTable_Get(&m_NamesTable, obj_id);
-}
-
-static void M_ClearAllNames(void)
-{
-    for (OBJECT_ID obj_id = O_FIRST; obj_id < O_NUMBER_OF; obj_id++) {
-        M_NAME_ENTRY *const entry = CatalogTable_Get(&m_NamesTable, obj_id);
-        if (entry->names != nullptr) {
-            for (int32_t i = 0; i < entry->names->count; i++) {
-                char *n = *(char **)Vector_Get(entry->names, i);
-                Memory_FreePointer(&n);
-            }
-            Vector_Free(entry->names);
-            entry->names = nullptr;
+    for (int32_t i = 0; m_Keys[i].object_id != NO_OBJECT; i++) {
+        if (m_Keys[i].object_id == obj_id) {
+            return m_Keys[i].enum_name + strlen("O_");
         }
-        Memory_FreePointer(&entry->description);
-        entry->slot = nullptr;
     }
+    return nullptr;
 }
 
-static void M_Shutdown(void)
+// Return the game-string path for an object's name or description. The next
+// call overwrites the result.
+static const char *M_StringPath(const OBJECT_ID obj_id, const char *const what)
 {
-    M_ClearAllNames();
-    CatalogTable_Free(&m_NamesTable);
+    const char *const enum_name = M_KeyFromId(obj_id);
+    if (enum_name == nullptr) {
+        return nullptr;
+    }
+    char key[64];
+    ASSERT(strlen(enum_name) < sizeof(key));
+    size_t i = 0;
+    for (; enum_name[i] != '\0' && i < sizeof(key) - 1; i++) {
+        key[i] = (char)tolower((unsigned char)enum_name[i]);
+    }
+    key[i] = '\0';
+    return String_FormatStatic("objects/%s/%s", key, what);
 }
 
-void Object_ClearNames(const OBJECT_ID obj_id)
+static const char *M_Get(const OBJECT_ID obj_id, const char *const what)
 {
-    ASSERT(obj_id >= O_FIRST && obj_id < O_NUMBER_OF);
-    M_NAME_ENTRY *const entry = M_ResolveNameEntry(obj_id);
-    if (entry->names != nullptr) {
-        for (int32_t i = 0; i < entry->names->count; i++) {
-            char *n = *(char **)Vector_Get(entry->names, i);
-            Memory_FreePointer(&n);
-        }
-        Vector_Clear(entry->names);
-    }
-    entry->slot = nullptr;
+    const char *const path = M_StringPath(obj_id, what);
+    return path != nullptr ? GameString_Get(path) : nullptr;
 }
 
-void Object_AddName(const OBJECT_ID obj_id, const char *const name)
+// Return the first name in a "|"-separated list.
+static const char *M_HeadName(const char *const names)
 {
-    ASSERT(obj_id >= O_FIRST && obj_id < O_NUMBER_OF);
-    ASSERT(name != nullptr);
-    M_NAME_ENTRY *const entry = M_ResolveNameEntry(obj_id);
-    if (entry->names == nullptr) {
-        entry->names = Vector_Create(sizeof(char *));
+    if (names == nullptr) {
+        return nullptr;
     }
-    char *const dup = Memory_DupStr(name);
-    Vector_Add(entry->names, &dup);
-    // on first insertion, update stable slot
-    if (entry->names->count == 1) {
-        entry->slot = dup;
+    const char *const sep = strchr(names, '|');
+    if (sep == nullptr) {
+        return names;
     }
+    return String_FormatStatic("%.*s", (int32_t)(sep - names), names);
 }
 
-void Object_SetDescription(
-    const OBJECT_ID obj_id, const char *const description)
+// Return the names after the first, or nullptr if the object has no aliases.
+static const char *M_TailNames(const char *const names)
 {
-    M_NAME_ENTRY *const entry = M_ResolveNameEntry(obj_id);
-    Memory_FreePointer(&entry->description);
-    if (description != nullptr) {
-        entry->description = Memory_DupStr(description);
+    if (names == nullptr) {
+        return nullptr;
     }
+    const char *const sep = strchr(names, '|');
+    return sep != nullptr ? sep + 1 : nullptr;
 }
 
 const char *Object_GetName(const OBJECT_ID obj_id)
 {
-    M_NAME_ENTRY *const entry = M_ResolveNameEntry(obj_id);
-    return entry ? entry->slot : nullptr;
+    return M_HeadName(M_Get(obj_id, "name"));
 }
 
-const char *Object_GetDescription(OBJECT_ID obj_id)
+const char *Object_GetAliases(const OBJECT_ID obj_id)
 {
-    M_NAME_ENTRY *const entry = M_ResolveNameEntry(obj_id);
-    return entry != nullptr ? entry->description : nullptr;
+    return M_TailNames(M_Get(obj_id, "name"));
+}
+
+const char *Object_GetDescription(const OBJECT_ID obj_id)
+{
+    return M_Get(obj_id, "description");
+}
+
+const char *Object_GetDefaultName(const OBJECT_ID obj_id)
+{
+    const M_DEFAULT *const def = M_GetDefault(obj_id);
+    return def != nullptr ? M_HeadName(def->names) : nullptr;
+}
+
+const char *Object_GetDefaultAliases(const OBJECT_ID obj_id)
+{
+    const M_DEFAULT *const def = M_GetDefault(obj_id);
+    return def != nullptr ? M_TailNames(def->names) : nullptr;
 }
 
 void Object_ResetAllNames(void)
 {
-    M_ClearAllNames();
-
-    // Now apply default names
-    for (size_t i = 0; m_Defaults[i].object_id != NO_OBJECT; i++) {
-        for (size_t j = 0; m_Defaults[i].default_names[j] != nullptr; j++) {
-            Object_AddName(
-                m_Defaults[i].object_id, m_Defaults[i].default_names[j]);
-        }
+    for (int32_t i = 0; m_Defaults[i].object_id != NO_OBJECT; i++) {
+        GameString_Define(
+            M_StringPath(m_Defaults[i].object_id, "name"), m_Defaults[i].names);
     }
-}
-
-const VECTOR *Object_GetNames(const OBJECT_ID obj_id)
-{
-    return M_ResolveNameEntry(obj_id)->names;
-}
-
-const char *const *Object_GetDefaultNames(const OBJECT_ID obj_id)
-{
-    const M_DEFAULT *const def = M_ResolveDefault(obj_id);
-    return def != nullptr ? def->default_names : nullptr;
 }
 
 OBJECT_ID Object_IdFromKey(const char *const key)
@@ -185,5 +157,3 @@ OBJECT_ID Object_IdFromKey(const char *const key)
     }
     return NO_OBJECT;
 }
-
-REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

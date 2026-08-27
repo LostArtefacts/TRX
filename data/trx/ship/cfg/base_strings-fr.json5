@@ -2861,8 +2861,8 @@
             "name": "Coulée de lave",
         },
         "lead_bar_item": {
-            "description": "",
             "name": "Lingot de plomb",
+            "description": "",
         },
         "lens_flare": {
             "name": "\\{review}Éblouissement de l'objectif",

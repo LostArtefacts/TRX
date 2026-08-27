@@ -3,8 +3,8 @@
     // https://lostartefacts.dev/trx/docs/stable/game_strings
     "objects": {
         "quest_item_1": {
-            "description": "",
             "name": "Dłoń Rathmore'a",
+            "description": "",
         }
     },
     "levels": [

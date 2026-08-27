@@ -36,20 +36,20 @@
             "name": "Großes Medi-Pack",
         },
         "quest_item_1": {
-            "description": "",
             "name": "\\{review}Infada-Stein",
+            "description": "",
         },
         "quest_item_2": {
-            "description": "",
             "name": "\\{review}Element 115",
+            "description": "",
         },
         "quest_item_3": {
-            "description": "",
             "name": "\\{review}Auge des Isis",
+            "description": "",
         },
         "quest_item_4": {
-            "description": "",
             "name": "\\{review}Ora-Dolch",
+            "description": "",
         },
         "small_medipack_item": {
             "name": "Kleines Medi-Pack",

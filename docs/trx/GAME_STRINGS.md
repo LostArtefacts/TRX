@@ -130,7 +130,7 @@ The document is organized as follows:
     },
     "objects": {
         "lara": {"name": "Lara"},
-        "dog": {"names": ["Dog", "Doberman"]},
+        "dog": {"name": "Dog|Doberman"},
         "key_option_1": "$objects/key_item_1",
         // etc
     }
@@ -296,13 +296,14 @@ entries hold no text, so translation files do not need them.
     <td>
       <code>name</code>
     </td>
-    <td>String&nbsp;/&nbsp;String&nbsp;array</td>
+    <td>String</td>
     <td>No</td>
     <td>
       Object entry field (<code>objects.&lt;id&gt;.name</code>).
-      Allows renaming any object, including key items and pickups. Can be a
-      list of strings: inventory objects use the first name; additional names
-      can be used with commands like <code>/tp</code> and <code>/give</code>.
+      Renames any object, including key items and pickups. Use one name, or
+      separate the displayed name from console aliases with <code>|</code>.
+      Inventory objects use the first name. Commands such as <code>/tp</code>
+      and <code>/give</code> also accept the aliases.
     </td>
   </tr>
 
