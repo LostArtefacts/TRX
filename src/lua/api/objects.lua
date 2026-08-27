@@ -125,9 +125,9 @@ local Object = api.type("objects.Object", {
     },
     default_names = {
       type = "table",
-      description = "The compile-time English names. A lookup falls back on these when the "
-        .. "player's language has no name to match, which is the case before a language file is "
-        .. "loaded at all.",
+      description = "The compile-time English names. A lookup tries these when the "
+        .. "player's language has no matching name, so an English name still reaches the object "
+        .. "in a translated install.",
       impl = function(object)
         return object:get_default_names()
       end,
@@ -155,8 +155,8 @@ local Object = api.type("objects.Object", {
         type = "string",
         list = true,
       },
-      description = "The compile-time English names, which a lookup falls back on before a "
-        .. "language file is loaded. Prefer `trx.objects.Object.default_names`.",
+      description = "The compile-time English names. A lookup tries these when the "
+        .. "player's language has no matching name. Prefer `trx.objects.Object.default_names`.",
     },
     get_property = {
       params = {

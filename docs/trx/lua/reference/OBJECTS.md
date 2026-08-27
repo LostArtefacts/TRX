@@ -57,7 +57,7 @@ trx.objects.wolf.properties.max_hit_points = 30
     - <a id="objects.Object.smartness" name="objects.Object.smartness"></a>**`smartness`**: integer. How readily a creature of this type finds its way to Lara.
 
     Computed properties (derived, not stored on the object):
-    - <a id="objects.Object.default_names" name="objects.Object.default_names"></a>**`default_names`**: table. The compile-time English names. A lookup falls back on these when the player's language has no name to match, which is the case before a language file is loaded at all.
+    - <a id="objects.Object.default_names" name="objects.Object.default_names"></a>**`default_names`**: table. The compile-time English names. A lookup tries these when the player's language has no matching name, so an English name still reaches the object in a translated install.
     - <a id="objects.Object.name" name="objects.Object.name"></a>**`name`**: string. The name the game shows for the object. It is the first value in [`names`](#objects.Object.names), or `nil` where the object has no name.
     - <a id="objects.Object.names" name="objects.Object.names"></a>**`names`**: table. Every name the object answers to, in the player's language. An object has more than one: a large medipack is also a `medipack` and a `big medi`.
     - <a id="objects.Object.properties" name="objects.Object.properties"></a>**`properties`**: table. The object's own typed properties, which every item of the type inherits. Writing here changes the default for all of them; write to [`trx.items.Item.properties`](ITEMS.md#items.Item.properties) to change one item only. Iterable with `pairs()`. See [Objects](../../OBJECTS.md).
@@ -65,7 +65,7 @@ trx.objects.wolf.properties.max_hit_points = 30
     Methods:
 
     - <a id="objects.Object.get_default_names" name="objects.Object.get_default_names"></a>[lua]`object:get_default_names()`  
-      The compile-time English names, which a lookup falls back on before a language file is loaded. Prefer [`default_names`](#objects.Object.default_names).
+      The compile-time English names. A lookup tries these when the player's language has no matching name. Prefer [`default_names`](#objects.Object.default_names).
 
       Returns: a list of string.
 

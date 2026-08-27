@@ -5617,7 +5617,7 @@
               "type": "function"
             },
             {
-              "description": "The same names before a language file is loaded.",
+              "description": "The names the engine was built with. The query tries these when `names_of` finds no match. <!--noref: names_of-->",
               "name": "default_names_of",
               "optional": true,
               "type": "function"
@@ -10573,7 +10573,7 @@
       "description": "An object definition.",
       "extensions": [
         {
-          "description": "The compile-time English names. A lookup falls back on these when the player's language has no name to match, which is the case before a language file is loaded at all.",
+          "description": "The compile-time English names. A lookup tries these when the player's language has no matching name, so an English name still reaches the object in a translated install.",
           "name": "default_names",
           "type": "table"
         },
@@ -10652,7 +10652,7 @@
       "handle": true,
       "methods": [
         {
-          "description": "The compile-time English names, which a lookup falls back on before a language file is loaded. Prefer `trx.objects.Object.default_names`.",
+          "description": "The compile-time English names. A lookup tries these when the player's language has no matching name. Prefer `trx.objects.Object.default_names`.",
           "name": "get_default_names",
           "returns": {
             "list": true,

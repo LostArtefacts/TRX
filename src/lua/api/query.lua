@@ -27,7 +27,8 @@ left to right, combining with AND: `q:spawnable():by_name("wolf")`.
 --     by a group spelled out in full. Its presence is what gives a domain
 --     by_name, names and best.
 --   default_names_of(handle) - optional. A fallback set tried when nothing in
---     names_of matched, for before a language file is loaded.
+--     names_of matched, so that a name the engine was built with reaches a
+--     thing whatever language the player reads.
 
 -- A fresh query over the same domain, carrying this one's class so the domain's
 -- own narrowings ride along.
@@ -85,7 +86,8 @@ local function candidates(domain, kept, names_getter, spelled)
 end
 
 -- The player's language is tried first; nothing there matching falls back on
--- the names the engine was built with, present before any language file.
+-- the names the engine was built with, so an English name still reaches a
+-- thing on a translated install.
 local function rank(domain, name, kept)
   local spelled = name:lower():match("^%s*(.-)%s*$")
   local matches = trx.strings.fuzzy_match(
@@ -389,7 +391,8 @@ api.define("query.new", {
           name = "default_names_of",
           type = "function",
           optional = true,
-          description = "The same names before a language file is loaded.",
+          description = "The names the engine was built with. The query tries "
+            .. "these when `names_of` finds no match. <!--noref: names_of-->",
         },
       },
     },
