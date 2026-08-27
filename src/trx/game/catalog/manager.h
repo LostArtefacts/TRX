@@ -22,6 +22,16 @@ typedef int32_t CATALOG_ID;
 // initialisation; the next call overwrites the result.
 const char *Catalog_KeyForEnum(CATALOG_CONTEXT context, const char *enum_name);
 
+// Report whether a name is one an identity may take: letters, digits, and any
+// of ":_-".
+bool Catalog_IsValidKey(const char *key);
+
+// Take an id for something nothing names. The engine builds it, uses it and
+// drops it: a level's own sound slot is one, carrying no name for a mod or a
+// savegame to say. It answers to no key, so nothing outside the run can ask
+// for it.
+CATALOG_ID Catalog_MintAnonymous(CATALOG_CONTEXT context);
+
 // Declare an identity and return its ID. Fails if the context already holds
 // the key. The context is the namespace, so the same key in two contexts is
 // two identities.

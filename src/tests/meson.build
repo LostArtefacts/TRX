@@ -330,6 +330,7 @@ unit_tests += {
 unit_tests += {
   'name': 'trx/game/items/actions',
   'engine': ['core/memory.c', 'game/catalog/table.c', 'game/items/actions/common.c'],
+  'src': ['harness/stubs_catalog.c'],
 }
 
 unit_tests += {
@@ -341,6 +342,7 @@ unit_tests += {
 unit_tests += {
   'name': 'trx/game/game_flow/inventory',
   'engine': ['core/memory.c', 'game/catalog/table.c', 'game/game_flow/inventory.c'],
+  'src': ['harness/stubs_catalog.c'],
 }
 
 unit_tests += {
@@ -1221,6 +1223,7 @@ unit_tests += {
 unit_tests += {
   'name': 'trx/game/ui',
   'src': [
+    'harness/stubs_catalog.c',
     'harness/stubs_result.c',
     'fakes/settings.c',
     'fakes/ui.c',

@@ -94,8 +94,9 @@ OBJECT *Object_Get(const OBJECT_ID object_id)
 
 OBJECT_ID Object_Mint(void)
 {
-    CatalogTable_Append(&m_Objects);
-    return O_NUMBER_OF + m_Objects.tail_count - 1;
+    // Register the object so the object tables recognise its id. It takes no
+    // name, which keeps it out of savegames.
+    return Catalog_MintAnonymous(CATALOG_OBJECTS);
 }
 
 OBJECT *Object_GetByGameID(const int32_t game_id)
