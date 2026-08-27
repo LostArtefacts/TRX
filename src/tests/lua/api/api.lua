@@ -18,6 +18,9 @@ local function test(name, fn)
   end
 end
 
+-- The context the catalog fake answers for.
+local FAKE_CONTEXT = 3
+
 -- Records what api.type() asked the C binder to expose, so the tests can assert
 -- on the declaration rather than on a real metatable.
 local function fresh_env()
@@ -73,6 +76,28 @@ local function fresh_env()
           { name = "OFF", value = 0 },
           { name = "ON", value = 1 },
         }
+      end,
+    },
+    -- Stands in for a catalog. It reports what it holds rather than what the
+    -- exe was built with, so a name minted while the game runs is reachable
+    -- without appearing in the constant list.
+    catalog = {
+      values = function(context)
+        assert(
+          context == FAKE_CONTEXT,
+          "unknown context: " .. tostring(context)
+        )
+        return {
+          { name = "off", value = 0 },
+          { name = "on", value = 1 },
+        }
+      end,
+      from_key = function(context, key)
+        assert(
+          context == FAKE_CONTEXT,
+          "unknown context: " .. tostring(context)
+        )
+        return key == "oil_drum" and 9 or nil
       end,
     },
     -- Where the registry hands C the entrypoints it keeps after the seal.
@@ -649,6 +674,40 @@ test(
     assert(e.ON == 1, "and the write must not have landed")
   end
 )
+
+-- A catalog reports what it holds, so its constants are whatever it names when
+-- the enum is declared, and a name minted after that still resolves.
+test("a catalog enum reads its constants from the catalog", function()
+  local api = fresh_env()
+  api.module("things", {})
+
+  local e = api.enum("things.Kind", {
+    backing = "WIDGET_STATE",
+    context = FAKE_CONTEXT,
+    bulk = true,
+  })
+
+  assert(e.OFF == 0, "a catalog name reads as a constant")
+  assert(e.ON == 1)
+  assert(e.on == 1, "in any case")
+
+  local names = {}
+  for name in pairs(e) do
+    names[#names + 1] = name
+  end
+  table.sort(names)
+  assert(
+    table.concat(names, ",") == "OFF,ON",
+    "and the constant list is what the catalog held"
+  )
+
+  assert(
+    e["oil_drum"] == 9,
+    "a name minted after the enum was declared must resolve"
+  )
+  assert(e["OIL_DRUM"] == 9, "in any case")
+  assert(e.WOMBAT == nil, "and a name nothing holds is still nil")
+end)
 
 test(
   "a bulk enum is described as a whole, not a constant at a time",
