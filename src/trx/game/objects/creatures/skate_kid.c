@@ -249,5 +249,5 @@ static void M_SetupSkateboard(OBJECT *const obj)
     obj->control_func = nullptr;
 }
 
-REGISTER_OBJECT(O_SKATEKID, M_Setup)
+REGISTER_OBJECT(O_SKATE_KID, M_Setup)
 REGISTER_OBJECT(O_SKATEBOARD, M_SetupSkateboard)

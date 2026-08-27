@@ -19,8 +19,8 @@
 static int16_t m_AnimatingCount = 0;
 
 static const GAME_OBJECT_PAIR m_LegacyMap[] = {
-    { O_PIERRE, O_SCION_ITEM_2 }, { O_COWBOY, O_MAGNUM_ITEM },
-    { O_SKATEKID, O_UZI_ITEM },   { O_BALDY, O_SHOTGUN_ITEM },
+    { O_PIERRE, O_SCION_ITEM_2 }, { O_COWBOY, O_MAGNUMS_ITEM },
+    { O_SKATE_KID, O_UZIS_ITEM }, { O_BALDY, O_SHOTGUN_ITEM },
     { NO_OBJECT, NO_OBJECT },
 };
 
@@ -44,7 +44,7 @@ static void M_Drop(ITEM *const pickup)
 static OBJECT_ID M_ConvertDroppedGun(const OBJECT_ID obj_id)
 {
     if (g_GameFlow.convert_dropped_guns && Object_IsType(obj_id, g_GunObjects)
-        && Inv_HasItem(obj_id) && obj_id != O_PISTOL_ITEM) {
+        && Inv_HasItem(obj_id) && obj_id != O_PISTOLS_ITEM) {
         return Object_GetCognate(obj_id, g_GunAmmoObjectMap);
     }
     return obj_id;

@@ -203,13 +203,13 @@ static void M_RingNotActive(
     }
 
     switch (inv_item->object_id) {
-    case O_PISTOL_AMMO_OPTION:
+    case O_PISTOLS_AMMO_OPTION:
     case O_SHOTGUN_AMMO_OPTION:
-    case O_MAGNUM_AMMO_OPTION:
+    case O_MAGNUMS_AMMO_OPTION:
     case O_AUTOS_AMMO_OPTION:
     case O_DESERT_EAGLE_AMMO_OPTION:
-    case O_UZI_AMMO_OPTION:
-    case O_HARPOON_AMMO_OPTION:
+    case O_UZIS_AMMO_OPTION:
+    case O_HARPOON_GUN_AMMO_OPTION:
     case O_M16_AMMO_OPTION:
     case O_MP5_AMMO_OPTION:
     case O_GRENADE_AMMO_OPTION:
@@ -223,7 +223,7 @@ static void M_RingNotActive(
         break;
     }
 
-    case O_FLAREBOX_OPTION:
+    case O_FLARES_BOX_OPTION:
         M_ShowAmmoQuantity(Gun_GetFlareType(), "%d", qty);
         break;
 
@@ -674,19 +674,19 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 Sound_Effect(SFX_MENU_LARA_HOME, nullptr, SPM_ALWAYS);
                 break;
 
-            case O_CONTROL_OPTION:
+            case O_CONTROLS_OPTION:
                 Sound_Effect(
                     g_TRVersion == 1 ? SFX_MENU_GAMEBOY : SFX_MENU_CHOOSE,
                     nullptr, SPM_ALWAYS);
                 break;
 
-            case O_PISTOL_OPTION:
+            case O_PISTOLS_OPTION:
             case O_SHOTGUN_OPTION:
-            case O_MAGNUM_OPTION:
+            case O_MAGNUMS_OPTION:
             case O_AUTOS_OPTION:
             case O_DESERT_EAGLE_OPTION:
-            case O_UZI_OPTION:
-            case O_HARPOON_OPTION:
+            case O_UZIS_OPTION:
+            case O_HARPOON_GUN_OPTION:
             case O_M16_OPTION:
             case O_MP5_OPTION:
             case O_GRENADE_GUN_OPTION:
@@ -790,11 +790,11 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 }
 
                 if (ring->mode == INV_TITLE_MODE
-                    && (inv_item->object_id == O_DETAIL_OPTION
+                    && (inv_item->object_id == O_GRAPHICS_OPTION
                         || inv_item->object_id == O_SOUND_OPTION
                         || inv_item->object_id == O_PDA_OPTION
-                        || inv_item->object_id == O_CONTROL_OPTION
-                        || inv_item->object_id == O_GLOBE_SELECT_OPTION)) {
+                        || inv_item->object_id == O_CONTROLS_OPTION
+                        || inv_item->object_id == O_GLOBE_OPTION)) {
                     InvRing_SetStatusTransition(
                         ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
                 } else {
@@ -925,12 +925,12 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
                 ? InvRing_GetByObjectID(O_PASSPORT_CLOSED)
                 : InvRing_GetByObjectID(O_PASSPORT_OPTION));
         if (g_TRVersion == 1) {
-            InvRing_InsertItem(InvRing_GetByObjectID(O_CONTROL_OPTION));
+            InvRing_InsertItem(InvRing_GetByObjectID(O_CONTROLS_OPTION));
             InvRing_InsertItem(InvRing_GetByObjectID(O_SOUND_OPTION));
-            InvRing_InsertItem(InvRing_GetByObjectID(O_DETAIL_OPTION));
+            InvRing_InsertItem(InvRing_GetByObjectID(O_GRAPHICS_OPTION));
         } else {
-            InvRing_InsertItem(InvRing_GetByObjectID(O_DETAIL_OPTION));
-            InvRing_InsertItem(InvRing_GetByObjectID(O_CONTROL_OPTION));
+            InvRing_InsertItem(InvRing_GetByObjectID(O_GRAPHICS_OPTION));
+            InvRing_InsertItem(InvRing_GetByObjectID(O_CONTROLS_OPTION));
             InvRing_InsertItem(InvRing_GetByObjectID(O_SOUND_OPTION));
         }
         InvRing_InsertItem(InvRing_GetByObjectID(O_PDA_OPTION));
@@ -938,8 +938,7 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
             InvRing_InsertItem(InvRing_GetByObjectID(O_PHOTO_OPTION));
         }
     } else if (g_InvRing_Source[RT_GLOBE_SELECT].count == 0) {
-        INVENTORY_ITEM *const globe =
-            InvRing_GetByObjectID(O_GLOBE_SELECT_OPTION);
+        INVENTORY_ITEM *const globe = InvRing_GetByObjectID(O_GLOBE_OPTION);
         if (globe != nullptr) {
             InvRing_InsertItem(globe);
         }

@@ -253,7 +253,7 @@ static void M_Control(const int16_t item_num)
     const ITEM *const lara_item = Lara_GetItem();
 
     int32_t piranha_attack = 0;
-    if (item->object_id == O_PIRAHNAS && lara_item != nullptr) {
+    if (item->object_id == O_PIRANHAS && lara_item != nullptr) {
         if (p->carcass_item_num == NO_ITEM) {
             M_FindCarcass(item);
         }
@@ -410,7 +410,7 @@ static void M_Control(const int16_t item_num)
     for (int32_t i = 0; i < M_FISH_PER_SHOAL; i++) {
         M_FISH *const fish = &p->fish[i + 1];
 
-        if (item->object_id == O_PIRAHNAS) {
+        if (item->object_id == O_PIRANHAS) {
             const XYZ_32 fish_pos = {
                 .x = p->anchor.x + fish->pos.x,
                 .y = p->anchor.y + fish->pos.y,
@@ -531,7 +531,7 @@ static bool M_Draw(const ITEM *const item)
     }
 
     const OBJECT *const sprite_obj = Object_Get(
-        item->object_id == O_PIRAHNAS ? O_PIRAHNA_GFX : O_TROPICAL_FISH_GFX);
+        item->object_id == O_PIRANHAS ? O_PIRANHA_GFX : O_TROPICAL_FISH_GFX);
     if (sprite_obj == nullptr || !sprite_obj->loaded
         || sprite_obj->mesh_count == 0) {
         return false;
@@ -751,4 +751,4 @@ void Shoal_TriggerDeactivate(const ITEM *const item)
 }
 
 REGISTER_OBJECT(O_TROPICAL_FISH, M_SetupTropicalFish)
-REGISTER_OBJECT(O_PIRAHNAS, M_SetupPiranhas)
+REGISTER_OBJECT(O_PIRANHAS, M_SetupPiranhas)

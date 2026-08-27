@@ -352,7 +352,7 @@ void Gun_Flare_Draw(void)
     } else if (frame_num == LF_FL_DRAW_GOT_IT) {
         Gun_Flare_DrawMeshes();
         if (!Gun_HasInfiniteAmmo(LGT_FLARE)) {
-            Inv_RemoveItem(O_FLAREBOX_ITEM);
+            Inv_RemoveItem(O_FLARES_BOX_ITEM);
         }
     } else if (frame_num >= LF_FL_IGNITE && frame_num <= LF_FL_2_HOLD - 2) {
         if (frame_num == LF_FL_IGNITE) {

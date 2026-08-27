@@ -46,29 +46,29 @@ void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
     case O_PDA_OPTION:
         Option_Gameplay_Control(inv_item, is_busy);
         break;
-    case O_DETAIL_OPTION:
+    case O_GRAPHICS_OPTION:
         Option_Graphics_Control(inv_item, is_busy);
         break;
     case O_SOUND_OPTION:
         Option_Sound_Control(inv_item, is_busy);
         break;
-    case O_CONTROL_OPTION:
+    case O_CONTROLS_OPTION:
         Option_Controls_Control(inv_item, is_busy);
         break;
-    case O_GLOBE_SELECT_OPTION:
+    case O_GLOBE_OPTION:
         Option_GlobeSelect_Control(inv_item, is_busy);
         break;
     case O_SAVE_CRYSTAL_OPTION:
         Option_SaveCrystal_Control(inv_item, is_busy);
         break;
 
-    case O_PISTOL_OPTION:
+    case O_PISTOLS_OPTION:
     case O_SHOTGUN_OPTION:
-    case O_MAGNUM_OPTION:
+    case O_MAGNUMS_OPTION:
     case O_AUTOS_OPTION:
     case O_DESERT_EAGLE_OPTION:
-    case O_UZI_OPTION:
-    case O_HARPOON_OPTION:
+    case O_UZIS_OPTION:
+    case O_HARPOON_GUN_OPTION:
     case O_M16_OPTION:
     case O_MP5_OPTION:
     case O_GRENADE_GUN_OPTION:
@@ -80,13 +80,13 @@ void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
         }
         break;
 
-    case O_PISTOL_AMMO_OPTION:
+    case O_PISTOLS_AMMO_OPTION:
     case O_SHOTGUN_AMMO_OPTION:
-    case O_MAGNUM_AMMO_OPTION:
+    case O_MAGNUMS_AMMO_OPTION:
     case O_AUTOS_AMMO_OPTION:
     case O_DESERT_EAGLE_AMMO_OPTION:
-    case O_UZI_AMMO_OPTION:
-    case O_HARPOON_AMMO_OPTION:
+    case O_UZIS_AMMO_OPTION:
+    case O_HARPOON_GUN_AMMO_OPTION:
     case O_M16_AMMO_OPTION:
     case O_MP5_AMMO_OPTION:
     case O_GRENADE_AMMO_OPTION:
@@ -126,16 +126,16 @@ void Option_Draw(INVENTORY_ITEM *const inv_item)
     case O_PDA_OPTION:
         Option_Gameplay_Draw(inv_item);
         break;
-    case O_DETAIL_OPTION:
+    case O_GRAPHICS_OPTION:
         Option_Graphics_Draw(inv_item);
         break;
     case O_SOUND_OPTION:
         Option_Sound_Draw(inv_item);
         break;
-    case O_CONTROL_OPTION:
+    case O_CONTROLS_OPTION:
         Option_Controls_Draw(inv_item);
         break;
-    case O_GLOBE_SELECT_OPTION:
+    case O_GLOBE_OPTION:
         Option_GlobeSelect_Draw(inv_item);
         break;
     case O_SAVE_CRYSTAL_OPTION:
@@ -159,16 +159,16 @@ void Option_Close(const INVENTORY_ITEM *const inv_item)
     case O_PDA_OPTION:
         Option_Gameplay_Close();
         break;
-    case O_DETAIL_OPTION:
+    case O_GRAPHICS_OPTION:
         Option_Graphics_Close();
         break;
     case O_SOUND_OPTION:
         Option_Sound_Close();
         break;
-    case O_CONTROL_OPTION:
+    case O_CONTROLS_OPTION:
         Option_Controls_Close();
         break;
-    case O_GLOBE_SELECT_OPTION:
+    case O_GLOBE_OPTION:
         Option_GlobeSelect_Close();
         break;
     case O_SAVE_CRYSTAL_OPTION:

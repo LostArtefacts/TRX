@@ -602,7 +602,7 @@ void InvRing_SelectMeshes(INVENTORY_ITEM *const inv_item)
 void InvRing_ShowItemName(const INVENTORY_ITEM *const inv_item)
 {
     if (inv_item->object_id == O_PASSPORT_OPTION
-        || inv_item->object_id == O_GLOBE_SELECT_OPTION) {
+        || inv_item->object_id == O_GLOBE_OPTION) {
         return;
     }
 

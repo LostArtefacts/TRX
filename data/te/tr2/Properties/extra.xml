@@ -119,7 +119,7 @@
         <property category="TRX" defaultValue="50" description="Damage dealt on hit." displayName="Damage" internalName="damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="false" description="Apply poison buildup in addition to hit damage." displayName="Poison" internalName="poison" type="Bool" />
     </moveable>
-    <!--placeholder for O_DINO_WARRIOR-->
+    <!--placeholder for O_DINO_MUTANT-->
     <moveable id="-1">
         <property category="TRX" defaultValue="100" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="1" description="Damage dealt by body contact." displayName="Touch Damage" internalName="touch_damage" minValue="0" type="Int" />
@@ -130,7 +130,7 @@
     <moveable id="-1">
         <property category="TRX" defaultValue="300" description="Damage dealt while Lara is touching the falling ceiling." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
-    <!--placeholder for O_FISH-->
+    <!--placeholder for O_FISH_MUTANT-->
     <moveable id="-1">
         <property category="TRX" defaultValue="12" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="100" description="Damage dealt by the barracuda bite." displayName="Damage" internalName="damage" minValue="0" type="Int" />
@@ -233,7 +233,7 @@
         <property category="TRX" defaultValue="70" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="50" description="Damage dealt by shots." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
-    <!--placeholder for O_PIRAHNAS-->
+    <!--placeholder for O_PIRANHAS-->
     <moveable id="-1">
         <property category="TRX" defaultValue="TEN.Vec3(1, 1, 1)" description="Swim range, in quarter tiles. Value range: minimum 1 on each axis." displayName="Range" internalName="range" type="Vec3" />
         <property category="TRX" defaultValue="true" description="Whether the shoal uses the surrounding room lighting." displayName="Use Room Lighting" internalName="use_room_lighting" type="Bool" />
@@ -353,7 +353,7 @@
         <property category="TRX" defaultValue="150" description="Damage dealt by the pincer attack." displayName="Pincer Damage" internalName="pincer_damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="180" description="Damage dealt by the chopper attack." displayName="Chopper Damage" internalName="chopper_damage" minValue="0" type="Int" />
     </moveable>
-    <!--placeholder for O_SKATEKID-->
+    <!--placeholder for O_SKATE_KID-->
     <moveable id="-1">
         <property category="TRX" defaultValue="125" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="50" description="Damage dealt by shots while stopped." displayName="Stop Shot Damage" internalName="stop_shot_damage" minValue="0" type="Int" />

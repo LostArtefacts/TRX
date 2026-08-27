@@ -5,7 +5,7 @@ const GAME_OBJECT_PAIR g_KeyItemToReceptacleMap[] = {
 #include <trx/game/objects/pickups.def>
 #undef X_RECEPTACLE
     // clang-format off
-    { O_LEADBAR_OPTION, O_MIDAS_TOUCH },
+    { O_LEAD_BAR_OPTION, O_MIDAS_TOUCH },
     { O_KEY_OPTION_2, O_GONG },
     { O_KEY_OPTION_2, O_DETONATOR_BOX },
     { NO_OBJECT, NO_OBJECT },
@@ -68,14 +68,14 @@ const OBJECT_ID g_CreatureObjects[] = {
     O_CULT_1B,
     O_CULT_2,
     O_CULT_3,
-    O_DINO_WARRIOR,
+    O_DINO_MUTANT,
     O_DIVER,
     O_DOG,
     O_DOLPHIN,
     O_DRAGON_FRONT,
     O_EAGLE,
     O_EEL,
-    O_FISH,
+    O_FISH_MUTANT,
     O_HUSKIE,
     O_HYBRID_MUTANT,
     O_JELLY,
@@ -108,7 +108,7 @@ const OBJECT_ID g_CreatureObjects[] = {
     O_SENTRY_GUN,
     O_SHARK,
     O_SHIVA,
-    O_SKATEKID,
+    O_SKATE_KID,
     O_SKIDOO_DRIVER,
     O_SOPHIA,
     O_SPIDER,
@@ -160,7 +160,7 @@ const OBJECT_ID g_WaterObjects[] = {
     O_DIVER,
     O_DOLPHIN,
     O_EEL,
-    O_FISH,
+    O_FISH_MUTANT,
     O_GENERAL,
     O_JELLY,
     O_PROPELLER_2,
@@ -193,7 +193,7 @@ const OBJECT_ID g_BossObjects[] = {
     O_TREX_ALPHA,
     O_LARSON,
     O_PIERRE,
-    O_SKATEKID,
+    O_SKATE_KID,
     O_COWBOY,
     O_BALDY,
     O_NATLA,
@@ -293,23 +293,23 @@ const OBJECT_ID g_GunAmmoObjects[] = {
 
 const OBJECT_ID g_DoorObjects[] = {
     // clang-format off
-    O_DOOR_TYPE_1,
-    O_DOOR_TYPE_2,
-    O_DOOR_TYPE_3,
-    O_DOOR_TYPE_4,
-    O_DOOR_TYPE_5,
-    O_DOOR_TYPE_6,
-    O_DOOR_TYPE_7,
-    O_DOOR_TYPE_8,
+    O_DOOR_1,
+    O_DOOR_2,
+    O_DOOR_3,
+    O_DOOR_4,
+    O_DOOR_5,
+    O_DOOR_6,
+    O_DOOR_7,
+    O_DOOR_8,
     NO_OBJECT,
     // clang-format on
 };
 
 const OBJECT_ID g_TrapdoorObjects[] = {
     // clang-format off
-    O_TRAPDOOR_TYPE_1,
-    O_TRAPDOOR_TYPE_2,
-    O_TRAPDOOR_TYPE_3,
+    O_TRAPDOOR_1,
+    O_TRAPDOOR_2,
+    O_TRAPDOOR_3,
     O_DRAWBRIDGE,
     NO_OBJECT,
     // clang-format on
@@ -414,7 +414,7 @@ const OBJECT_ID g_NullObjects[] = {
     O_MISSILE_POISON,
     O_NATLA_GUN,
     O_PICKUP_AID,
-    O_PIRAHNA_GFX,
+    O_PIRANHA_GFX,
     O_POISON_DART,
     O_RICOCHET,
     O_ROCKET,
@@ -453,10 +453,10 @@ const OBJECT_ID g_InvObjects[] = {
     // clang-format off
     O_COMPASS_OPTION,
     O_STOPWATCH_OPTION,
-    O_CONTROL_OPTION,
-    O_DETAIL_OPTION,
+    O_CONTROLS_OPTION,
+    O_GRAPHICS_OPTION,
     O_GAMMA_OPTION,
-    O_GLOBE_SELECT_OPTION,
+    O_GLOBE_OPTION,
     O_PASSPORT_OPTION,
     O_PHOTO_OPTION,
     O_SOUND_OPTION,
@@ -518,7 +518,7 @@ const OBJECT_ID g_GameSpriteObjects[] = {
     O_SPARKS_GFX,
     O_GLOW_RESERVED,
     O_FX_RESERVED,
-    O_PIRAHNA_GFX,
+    O_PIRANHA_GFX,
     O_TROPICAL_FISH_GFX,
     O_BAT_GFX,
     O_ALPHABET,
@@ -548,16 +548,16 @@ const GAME_OBJECT_PAIR g_ItemToInvObjectMap[] = {
 
 const OBJECT_ID g_ShatterableObjects[] = {
     // clang-format off
-    O_SMASH_OBJECT_1,
-    O_SMASH_OBJECT_4,
+    O_SMASHABLE_1,
+    O_SMASHABLE_4,
     NO_OBJECT,
     // clang-format on
 };
 
 const OBJECT_ID g_HeavyShatterableObjects[] = {
     // clang-format off
-    O_SMASH_OBJECT_2,
-    O_SMASH_OBJECT_3,
+    O_SMASHABLE_2,
+    O_SMASHABLE_3,
     NO_OBJECT,
     // clang-format on
 };
@@ -582,7 +582,7 @@ const OBJECT_ID g_SmashableObjects[] = {
 const OBJECT_ID g_ShoalObjects[] = {
     // clang-format off
     O_TROPICAL_FISH,
-    O_PIRAHNAS,
+    O_PIRANHAS,
     NO_OBJECT,
     // clang-format on
 };

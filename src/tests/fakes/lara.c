@@ -148,13 +148,13 @@ OBJECT_ID Inv_GetItemOption(const OBJECT_ID object_id)
 OBJECT_ID FakeLara_GunObject(const LARA_GUN_TYPE gun_type)
 {
     switch (gun_type) {
-    case LGT_PISTOLS:      return O_PISTOL_ITEM;
-    case LGT_MAGNUMS:      return O_MAGNUM_ITEM;
+    case LGT_PISTOLS:      return O_PISTOLS_ITEM;
+    case LGT_MAGNUMS:      return O_MAGNUMS_ITEM;
     case LGT_AUTOS:        return O_AUTOS_ITEM;
     case LGT_DESERT_EAGLE: return O_DESERT_EAGLE_ITEM;
-    case LGT_UZIS:         return O_UZI_ITEM;
+    case LGT_UZIS:         return O_UZIS_ITEM;
     case LGT_SHOTGUN:      return O_SHOTGUN_ITEM;
-    case LGT_HARPOON:      return O_HARPOON_ITEM;
+    case LGT_HARPOON:      return O_HARPOON_GUN_ITEM;
     case LGT_M16:          return O_M16_ITEM;
     case LGT_MP5:          return O_MP5_ITEM;
     case LGT_GRENADE:      return O_GRENADE_GUN_ITEM;
@@ -168,13 +168,13 @@ OBJECT_ID FakeLara_GunObject(const LARA_GUN_TYPE gun_type)
 OBJECT_ID FakeLara_AmmoObject(const LARA_GUN_TYPE gun_type)
 {
     switch (gun_type) {
-    case LGT_PISTOLS:      return O_PISTOL_AMMO_ITEM;
-    case LGT_MAGNUMS:      return O_MAGNUM_AMMO_ITEM;
+    case LGT_PISTOLS:      return O_PISTOLS_AMMO_ITEM;
+    case LGT_MAGNUMS:      return O_MAGNUMS_AMMO_ITEM;
     case LGT_AUTOS:        return O_AUTOS_AMMO_ITEM;
     case LGT_DESERT_EAGLE: return O_DESERT_EAGLE_AMMO_ITEM;
-    case LGT_UZIS:         return O_UZI_AMMO_ITEM;
+    case LGT_UZIS:         return O_UZIS_AMMO_ITEM;
     case LGT_SHOTGUN:      return O_SHOTGUN_AMMO_ITEM;
-    case LGT_HARPOON:      return O_HARPOON_AMMO_ITEM;
+    case LGT_HARPOON:      return O_HARPOON_GUN_AMMO_ITEM;
     case LGT_M16:          return O_M16_AMMO_ITEM;
     case LGT_MP5:          return O_MP5_AMMO_ITEM;
     case LGT_GRENADE:      return O_GRENADE_AMMO_ITEM;

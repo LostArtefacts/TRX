@@ -296,8 +296,8 @@ void Lara_UseItem(const OBJECT_ID obj_id)
         Gun_GetTypeForObject(Object_ResolveAlias(obj_id));
 
     switch (obj_id) {
-    case O_FLAREBOX_ITEM:
-    case O_FLAREBOX_OPTION:
+    case O_FLARES_BOX_ITEM:
+    case O_FLARES_BOX_OPTION:
         lara_info->request_gun_type = Gun_GetFlareType();
         break;
 

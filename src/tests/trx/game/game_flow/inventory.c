@@ -84,7 +84,7 @@ static void M_SetUp(void)
 // object ids - the reward asks whether Lara has a thing, never how many.
 
 const OBJECT_ID g_GunObjects[] = {
-    O_PISTOL_ITEM,
+    O_PISTOLS_ITEM,
     O_GRENADE_GUN_ITEM,
     NO_OBJECT,
 };
@@ -118,7 +118,7 @@ OBJECT_ID Gun_GetGunObject(const LARA_GUN_TYPE gun_type)
 {
     switch (gun_type) {
     case LGT_PISTOLS:
-        return O_PISTOL_ITEM;
+        return O_PISTOLS_ITEM;
     case LGT_GRENADE:
         return O_GRENADE_GUN_ITEM;
     default:
@@ -130,7 +130,7 @@ OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
 {
     switch (gun_type) {
     case LGT_PISTOLS:
-        return O_PISTOL_AMMO_ITEM;
+        return O_PISTOLS_AMMO_ITEM;
     case LGT_GRENADE:
         return O_GRENADE_AMMO_ITEM;
     default:

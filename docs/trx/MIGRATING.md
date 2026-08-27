@@ -90,6 +90,59 @@ order: 3
      `trx.catalog.objects.EXPLOSIVE_OPTION` no longer exist
    - the slots are free for an object of your own to take
 
+9. **Some objects were renamed**
+   The catalog takes an object's name from its C spelling, so the spellings
+   that read badly have been fixed. The old name no longer resolves: a
+   script, a catalog CSV or a strings file naming one of these needs
+   updating, and `trx.catalog.objects.PISTOL_ITEM` is now
+   `trx.catalog.objects.PISTOLS_ITEM`.
+
+   | Was                     | Is now                      |
+   | ---                     | ---                         |
+   | `O_PISTOL_ITEM`         | `O_PISTOLS_ITEM`            |
+   | `O_PISTOL_OPTION`       | `O_PISTOLS_OPTION`          |
+   | `O_PISTOL_AMMO_ITEM`    | `O_PISTOLS_AMMO_ITEM`       |
+   | `O_PISTOL_AMMO_OPTION`  | `O_PISTOLS_AMMO_OPTION`     |
+   | `O_MAGNUM_ITEM`         | `O_MAGNUMS_ITEM`            |
+   | `O_MAGNUM_OPTION`       | `O_MAGNUMS_OPTION`          |
+   | `O_MAGNUM_AMMO_ITEM`    | `O_MAGNUMS_AMMO_ITEM`       |
+   | `O_MAGNUM_AMMO_OPTION`  | `O_MAGNUMS_AMMO_OPTION`     |
+   | `O_UZI_ITEM`            | `O_UZIS_ITEM`               |
+   | `O_UZI_OPTION`          | `O_UZIS_OPTION`             |
+   | `O_UZI_AMMO_ITEM`       | `O_UZIS_AMMO_ITEM`          |
+   | `O_UZI_AMMO_OPTION`     | `O_UZIS_AMMO_OPTION`        |
+   | `O_HARPOON_ITEM`        | `O_HARPOON_GUN_ITEM`        |
+   | `O_HARPOON_OPTION`      | `O_HARPOON_GUN_OPTION`      |
+   | `O_HARPOON_AMMO_ITEM`   | `O_HARPOON_GUN_AMMO_ITEM`   |
+   | `O_HARPOON_AMMO_OPTION` | `O_HARPOON_GUN_AMMO_OPTION` |
+   | `O_LEADBAR_ITEM`        | `O_LEAD_BAR_ITEM`           |
+   | `O_LEADBAR_OPTION`      | `O_LEAD_BAR_OPTION`         |
+   | `O_FLAREBOX_ITEM`       | `O_FLARES_BOX_ITEM`         |
+   | `O_FLAREBOX_OPTION`     | `O_FLARES_BOX_OPTION`       |
+   | `O_DINO_WARRIOR`        | `O_DINO_MUTANT`             |
+   | `O_FISH`                | `O_FISH_MUTANT`             |
+   | `O_DETAIL_OPTION`       | `O_GRAPHICS_OPTION`         |
+   | `O_CONTROL_OPTION`      | `O_CONTROLS_OPTION`         |
+   | `O_GLOBE_SELECT_OPTION` | `O_GLOBE_OPTION`            |
+   | `O_PIRAHNAS`            | `O_PIRANHAS`                |
+   | `O_PIRAHNA_GFX`         | `O_PIRANHA_GFX`             |
+   | `O_SKATEKID`            | `O_SKATE_KID`               |
+   | `O_DOOR_TYPE_1`         | `O_DOOR_1`                  |
+   | `O_DOOR_TYPE_2`         | `O_DOOR_2`                  |
+   | `O_DOOR_TYPE_3`         | `O_DOOR_3`                  |
+   | `O_DOOR_TYPE_4`         | `O_DOOR_4`                  |
+   | `O_DOOR_TYPE_5`         | `O_DOOR_5`                  |
+   | `O_DOOR_TYPE_6`         | `O_DOOR_6`                  |
+   | `O_DOOR_TYPE_7`         | `O_DOOR_7`                  |
+   | `O_DOOR_TYPE_8`         | `O_DOOR_8`                  |
+   | `O_TRAPDOOR_TYPE_1`     | `O_TRAPDOOR_1`              |
+   | `O_TRAPDOOR_TYPE_2`     | `O_TRAPDOOR_2`              |
+   | `O_TRAPDOOR_TYPE_3`     | `O_TRAPDOOR_3`              |
+   | `O_SMASH_OBJECT_1`      | `O_SMASHABLE_1`             |
+   | `O_SMASH_OBJECT_2`      | `O_SMASHABLE_2`             |
+   | `O_SMASH_OBJECT_3`      | `O_SMASHABLE_3`             |
+   | `O_SMASH_OBJECT_4`      | `O_SMASHABLE_4`             |
+
 ### Version 1.9 to 1.10
 
 The Lua API was rewritten, and most of what it breaks is a rename. Run your

@@ -41,7 +41,7 @@ static int8_t *M_Add2InvItem(const OBJECT_ID object_id)
 
 static bool M_CanHaveItem(const OBJECT_ID object_id)
 {
-    if (Object_IsType(object_id, g_GunObjects) && object_id != O_PISTOL_ITEM
+    if (Object_IsType(object_id, g_GunObjects) && object_id != O_PISTOLS_ITEM
         && g_Config.gameplay.disable_extra_guns) {
         return false;
     }

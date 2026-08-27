@@ -24,7 +24,7 @@ const SAVEGAME_INVENTORY_ENTRY g_Savegame_InventoryItems[] = {
 #undef X_PICKUP_PICKUP
 #undef X_PICKUP_PUZZLE
 #undef X_PICKUP_KEY
-    { O_LEADBAR_ITEM, "leadbar" },
+    { O_LEAD_BAR_ITEM, "leadbar" },
     { O_LASERSIGHT_ITEM, "lasersight" },
     { O_BINOCULARS_ITEM, "binoculars" },
     { O_CROWBAR_ITEM, "crowbar" },
