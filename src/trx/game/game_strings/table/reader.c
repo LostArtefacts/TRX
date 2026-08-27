@@ -112,6 +112,15 @@ static void M_LoadTableFromJSON(
                 continue;
             }
 
+            GS_OBJECT_ENTRY *const object_entry = &out_table->objects[i];
+            const char *const ref =
+                JSON_ValueGetString(jobj_elem->value, JSON_INVALID_STRING);
+            if (ref != JSON_INVALID_STRING) {
+                object_entry->key = Memory_DupStr(key);
+                object_entry->ref = Memory_DupStr(ref);
+                continue;
+            }
+
             const char *const single_name =
                 JSON_ObjectGetString(jobj_obj, "name", JSON_INVALID_STRING);
             JSON_ARRAY *jnames_arr = JSON_ObjectGetArray(jobj_obj, "name");
@@ -126,7 +135,6 @@ static void M_LoadTableFromJSON(
                 continue;
             }
 
-            GS_OBJECT_ENTRY *const object_entry = &out_table->objects[i];
             object_entry->key = Memory_DupStr(key);
             if (jnames_arr != nullptr) {
                 object_entry->names = Memory_Alloc(

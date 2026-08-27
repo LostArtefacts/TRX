@@ -14,11 +14,6 @@
 #include <string.h>
 
 typedef struct {
-    OBJECT_ID target_object_id;
-    OBJECT_ID source_object_id;
-} M_ALIAS;
-
-typedef struct {
     OBJECT_ID object_id;
     const char **default_names;
 } M_DEFAULT;
@@ -35,33 +30,16 @@ typedef struct {
 } M_NAME_ENTRY;
 
 CATALOG_TABLE_DEFINE(m_NamesTable, CATALOG_OBJECTS, M_NAME_ENTRY, O_NUMBER_OF);
-CATALOG_TABLE_DEFINE(m_AliasResolver, CATALOG_OBJECTS, OBJECT_ID, O_NUMBER_OF);
 
 // Compile-time default names (ignoring key aliases)
 static const M_DEFAULT m_Defaults[] = {
 #define X_OBJ_NAMES(...) ((const char *[]) { __VA_ARGS__, nullptr })
 #define X_OBJ_NAME_DEFINE(object_id_, names_array_)                            \
     { .object_id = object_id_, .default_names = names_array_ },
-#define X_OBJ_ALIAS_DEFINE(target_object_id, source_object_id)
 #include <trx/game/objects/names.def>
-#undef X_OBJ_ALIAS_DEFINE
 #undef X_OBJ_NAME_DEFINE
 #undef X_OBJ_NAMES
     { .object_id = NO_OBJECT, .default_names = nullptr },
-};
-
-// Compile-time aliases (ignoring key strings and names)
-static M_ALIAS m_ObjectAliases[] = {
-#define X_OBJ_NAMES(...)
-#define X_OBJ_NAME_DEFINE(object_id_, default_name)
-#define X_OBJ_ALIAS_DEFINE(target_object_id_, source_object_id_)               \
-    { .target_object_id = target_object_id_,                                   \
-      .source_object_id = source_object_id_ },
-#include <trx/game/objects/names.def>
-#undef X_OBJ_ALIAS_DEFINE
-#undef X_OBJ_NAME_DEFINE
-#undef X_OBJ_NAMES
-    { .target_object_id = NO_OBJECT },
 };
 
 // List every object with the C spelling its key comes from.
@@ -85,15 +63,8 @@ static bool M_KeyMatches(const char *const enum_name, const char *const key)
     return name[i] == '\0' && key[i] == '\0';
 }
 
-static OBJECT_ID M_ResolveAlias(const OBJECT_ID obj_id)
-{
-    const OBJECT_ID *const alias = CatalogTable_Get(&m_AliasResolver, obj_id);
-    return alias != nullptr ? *alias : obj_id;
-}
-
 static const M_DEFAULT *M_ResolveDefault(OBJECT_ID obj_id)
 {
-    obj_id = M_ResolveAlias(obj_id);
     for (int32_t i = 0; m_Defaults[i].object_id != NO_OBJECT; i++) {
         if (m_Defaults[i].object_id == obj_id) {
             return &m_Defaults[i];
@@ -104,7 +75,7 @@ static const M_DEFAULT *M_ResolveDefault(OBJECT_ID obj_id)
 
 static M_NAME_ENTRY *M_ResolveNameEntry(const OBJECT_ID obj_id)
 {
-    return CatalogTable_Get(&m_NamesTable, M_ResolveAlias(obj_id));
+    return CatalogTable_Get(&m_NamesTable, obj_id);
 }
 
 static void M_ClearAllNames(void)
@@ -128,15 +99,6 @@ static void M_Shutdown(void)
 {
     M_ClearAllNames();
     CatalogTable_Free(&m_NamesTable);
-    CatalogTable_Free(&m_AliasResolver);
-}
-
-OBJECT_ID Object_ResolveAlias(const OBJECT_ID obj_id)
-{
-    if (obj_id < O_FIRST || obj_id >= O_NUMBER_OF) {
-        return obj_id;
-    }
-    return M_ResolveAlias(obj_id);
 }
 
 void Object_ClearNames(const OBJECT_ID obj_id)
@@ -200,17 +162,6 @@ const char *Object_GetDescription(OBJECT_ID obj_id)
 void Object_ResetAllNames(void)
 {
     M_ClearAllNames();
-
-    // Install compile-time aliases
-    for (OBJECT_ID obj_id = O_FIRST; obj_id < O_NUMBER_OF; obj_id++) {
-        *(OBJECT_ID *)CatalogTable_Get(&m_AliasResolver, obj_id) = obj_id;
-    }
-    for (int32_t i = 0; m_ObjectAliases[i].target_object_id != NO_OBJECT; i++) {
-        const OBJECT_ID target_object_id = m_ObjectAliases[i].target_object_id;
-        const OBJECT_ID source_object_id = m_ObjectAliases[i].source_object_id;
-        *(OBJECT_ID *)CatalogTable_Get(&m_AliasResolver, target_object_id) =
-            source_object_id;
-    }
 
     // Now apply default names
     for (size_t i = 0; m_Defaults[i].object_id != NO_OBJECT; i++) {
