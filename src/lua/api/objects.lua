@@ -106,6 +106,15 @@ local Object = api.type("objects.Object", {
   },
 
   extensions = {
+    name = {
+      type = "string",
+      nullable = true,
+      description = "The name the game shows for the object. It is the first value in "
+        .. "`trx.objects.Object.names`, or `nil` where the object has no name.",
+      impl = function(object)
+        return object:get_names()[1]
+      end,
+    },
     names = {
       type = "table",
       description = "Every name the object answers to, in the player's language. An object has "
