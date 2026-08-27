@@ -369,13 +369,6 @@ RESULT GameStringManager_ReloadLanguage(const char *const lang)
     return OK;
 }
 
-CATALOG_ID Catalog_FromKey(
-    const CATALOG_CONTEXT context, const char *const key,
-    const CATALOG_ID fallback)
-{
-    return fallback;
-}
-
 void Music_SetVolume(const float volume)
 {
 }

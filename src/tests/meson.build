@@ -1221,7 +1221,7 @@ unit_tests += {
 unit_tests += {
   'name': 'trx/game/ui',
   'src': [
-    'harness/stubs_catalog.c',
+    'fakes/catalog.c',
     'harness/stubs_result.c',
     'fakes/settings.c',
     'fakes/ui.c',
