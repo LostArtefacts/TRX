@@ -12,6 +12,7 @@
 #include <trx/game/cutseq/pak.h>
 #include <trx/game/fader.h>
 #include <trx/game/flyby_mode.h>
+#include <trx/game/game/state.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
@@ -365,11 +366,20 @@ static void M_Finish(void)
 
     m_State.phase = M_PHASE_INACTIVE;
     m_State.num = M_NO_CUTSCENE;
-    Fader_InitTo(&m_State.fader, 1.0f, 0.0f, M_FADE_DURATION);
+    Fader_InitTo(&m_State.fader, 1.0f, 1.0f, 0.0f);
 
     // Fired last, so a handler that starts the next thing - the title hands
     // over to a flyby here - sees the cutscene fully torn down.
     LUA_FireEventInt32(LUA_EVENT_CUTSCENE_END, num);
+
+    // The screen stays black where the handler took it over, with another
+    // scene, with the end of the level, or with any other place to go. The
+    // level is only faded back in where the player returns to it.
+    const bool is_taken_over = m_State.phase != M_PHASE_INACTIVE
+        || Game_IsLevelComplete() || GF_GetOverrideCommand().action != GF_NOOP;
+    if (!is_taken_over) {
+        Fader_InitTo(&m_State.fader, 1.0f, 0.0f, M_FADE_DURATION);
+    }
 }
 
 // One frame of the scene: decodes every track, poses the actors and Lara, and
