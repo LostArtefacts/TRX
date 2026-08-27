@@ -1,3 +1,4 @@
+#include <trx/game/catalog/manager.h>
 #include <trx/game/lua/field.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
@@ -172,7 +173,9 @@ static const char *M_GetPropertyName(const void *const self, const int32_t idx)
 static int M_L_ObjectsGet(lua_State *const L)
 {
     int32_t object_id;
-    if (!LUA_CheckBoundedInt(L, 1, O_FIRST, O_NUMBER_OF - 1, &object_id)) {
+    if (!LUA_CheckBoundedInt(
+            L, 1, O_FIRST, Catalog_GetCount(CATALOG_OBJECTS) - 1, &object_id)
+        || Catalog_GetKey(CATALOG_OBJECTS, object_id) == nullptr) {
         lua_pushnil(L);
         return 1;
     }

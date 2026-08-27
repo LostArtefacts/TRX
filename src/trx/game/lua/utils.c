@@ -1,5 +1,6 @@
 #include <trx/game/lua/utils.h>
 
+#include <trx/game/catalog/manager.h>
 #include <trx/game/objects/ids.h>
 
 #include <stdint.h>
@@ -143,7 +144,14 @@ int32_t LUA_CheckRange(
 
 OBJECT_ID LUA_CheckObjectID(lua_State *const L, const int arg)
 {
-    return (OBJECT_ID)LUA_CheckRange(L, arg, O_NUMBER_OF, "unknown object id");
+    const OBJECT_ID object_id = (OBJECT_ID)LUA_CheckRange(
+        L, arg, Catalog_GetCount(CATALOG_OBJECTS), "unknown object id");
+    // An anonymous identity answers to no key, so a script has no way to name
+    // one and no business holding one.
+    luaL_argcheck(
+        L, Catalog_GetKey(CATALOG_OBJECTS, object_id) != nullptr, arg,
+        "unknown object id");
+    return object_id;
 }
 
 bool LUA_CheckBoundedInt(
