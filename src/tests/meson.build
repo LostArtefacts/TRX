@@ -1259,6 +1259,7 @@ unit_tests += {
     'game/enum.c',
     'game/game_strings/entries.c',
     'game/gun/registry.c',
+    'game/catalog/keys.c',
     'game/objects/names.c',
     'game/objects/vars.c',
     'game/rules.c',

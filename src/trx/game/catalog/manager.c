@@ -114,10 +114,13 @@ __attribute__((constructor)) static void M_MintBuiltIns(void)
     for (size_t idx = 0; idx < m_CatalogEntryCount; idx++) {
         const CATALOG_CONTEXT ctx = m_CatalogEntryDefs[idx].context;
         CATALOG_ID id;
+        const char *const enum_name = m_CatalogEntryDefs[idx].name_str;
         EXIT_ON_FAIL(
-            Catalog_Mint(ctx, m_CatalogEntryDefs[idx].name_str, &id),
+            Catalog_Mint(ctx, Catalog_KeyForEnum(ctx, enum_name), &id),
             "cannot seed the catalog");
         ASSERT(id == m_CatalogEntryDefs[idx].id);
+        // Bind catalogue CSV entries that use the C spelling.
+        IGNORE(Catalog_AddAlias(ctx, id, enum_name));
     }
     for (size_t ctx = 0; ctx < CATALOG_CONTEXT_MAX; ctx++) {
         m_BuiltInCounts[ctx] = m_Counts[ctx];
