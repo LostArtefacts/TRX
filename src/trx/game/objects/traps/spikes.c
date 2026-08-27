@@ -2,6 +2,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects/property.h>
 #include <trx/game/random.h>
+#include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 #include <trx/version.h>
@@ -12,6 +13,24 @@
 typedef struct {
     int32_t damage;
 } M_PRIV;
+
+static bool M_ShouldImpaleLara(
+    const ITEM *const item, const ITEM *const lara_item)
+{
+    if (lara_item->hit_points > 0) {
+        return false;
+    }
+
+    int16_t room_num = lara_item->room_num;
+    const SECTOR *sector = Room_GetSector(lara_item->pos, &room_num);
+    const int32_t height_at_lara = Room_GetHeight(sector, lara_item->pos);
+
+    room_num = item->room_num;
+    sector = Room_GetSector(item->pos, &room_num);
+    const int32_t height_at_item = Room_GetHeight(sector, item->pos);
+
+    return ABS(height_at_lara - height_at_item) <= WALL_L;
+}
 
 static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
@@ -51,7 +70,7 @@ static void M_Collision(
             pos.x, pos.y, pos.z, 20, Random_GetControl(), item->room_num);
     }
 
-    if (lara_item->hit_points <= 0) {
+    if (M_ShouldImpaleLara(item, lara_item)) {
         Item_SwitchToAnim(lara_item, LA(LA_SPIKE_DEATH), 0);
         lara_item->current_anim_state = LS(LS_DEATH);
         lara_item->goal_anim_state = LS(LS_DEATH);
