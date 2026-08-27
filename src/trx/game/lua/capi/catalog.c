@@ -20,6 +20,24 @@ static CATALOG_CONTEXT M_CheckContext(lua_State *const L, const int arg)
         L, arg, CATALOG_CONTEXT_MAX, "unknown catalog context");
 }
 
+// trxc.catalog.key(context, id) -> string or nil
+static int M_L_CatalogKey(lua_State *const L)
+{
+    const CATALOG_CONTEXT context = M_CheckContext(L, 1);
+    CATALOG_ID id;
+    if (!LUA_CheckBoundedInt(L, 2, INT32_MIN, INT32_MAX, &id)) {
+        lua_pushnil(L);
+        return 1;
+    }
+    const char *const key = Catalog_GetKey(context, id);
+    if (key == nullptr) {
+        lua_pushnil(L);
+    } else {
+        lua_pushstring(L, key);
+    }
+    return 1;
+}
+
 // trxc.catalog.to_slot(context, id) -> int or nil
 static int M_L_CatalogToSlot(lua_State *const L)
 {
@@ -98,6 +116,7 @@ static int M_L_CatalogFromKey(lua_State *const L)
 }
 
 static const luaL_Reg m_Module[] = {
+    { "key", M_L_CatalogKey },
     { "values", M_L_CatalogValues },
     { "from_key", M_L_CatalogFromKey },
     { "to_slot", M_L_CatalogToSlot },

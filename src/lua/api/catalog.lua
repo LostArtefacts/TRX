@@ -98,6 +98,29 @@ api.enum("catalog.weapons", {
   },
 })
 
+api.define("catalog.key", {
+  description = "Gives back the name an id answers to, which is the name a savegame stores "
+    .. "and the name a mod writes. An id a script read out of the engine is a number, and this "
+    .. "is what says which thing it names.",
+  params = {
+    {
+      name = "context",
+      type = "catalog.Context",
+      description = "Which catalog.",
+    },
+    { name = "id", type = "catalog.Id" },
+  },
+  returns = {
+    type = "string",
+    nullable = true,
+    description = "`nil` if the catalog holds no such id.",
+  },
+  examples = {
+    [[local name = trx.catalog.key(trx.catalog.Context.OBJECTS, item.object_id)]],
+  },
+  impl = raw.key,
+})
+
 api.define("catalog.to_slot", {
   description = "Converts a `trx.catalog.Id` into the `trx.catalog.Slot` this game's own files "
     .. "use for it.",

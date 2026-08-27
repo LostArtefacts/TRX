@@ -3362,6 +3362,29 @@
       "path": "camera.cancel_flyby"
     },
     {
+      "description": "Gives back the name an id answers to, which is the name a savegame stores and the name a mod writes. An id a script read out of the engine is a number, and this is what says which thing it names.",
+      "examples": [
+        "local name = trx.catalog.key(trx.catalog.Context.OBJECTS, item.object_id)"
+      ],
+      "params": [
+        {
+          "description": "Which catalog.",
+          "name": "context",
+          "type": "catalog.Context"
+        },
+        {
+          "name": "id",
+          "type": "catalog.Id"
+        }
+      ],
+      "path": "catalog.key",
+      "returns": {
+        "description": "`nil` if the catalog holds no such id.",
+        "nullable": true,
+        "type": "string"
+      }
+    },
+    {
       "description": "Converts a `trx.catalog.Id` into the `trx.catalog.Slot` this game's own files use for it.",
       "examples": [
         "local slot = trx.catalog.to_slot(trx.catalog.Context.OBJECTS, trx.catalog.objects.WOLF)"

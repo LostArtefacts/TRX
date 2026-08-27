@@ -215,6 +215,7 @@
 - Added `trx.mod.Mod.can_switch`, which says whether `trx.mod.switch` accepts the mod, so a single level loaded on its own is told apart from a mod a player picks
 - Added `trx.strings.dash_case()`, which spells a name the way the console shows one
 - Added `trx.game.fmvs` and `trx.game.play_fmv()`, so a script can read the movies the game flow declares and play one where the player stands
+- Added `trx.catalog.key()`, which gives back the name an id answers to, and made a catalog report the names a mod minted beside the ones the engine carries
 - Changed the in-game overlay to be drawn by a script rather than by the engine, so what it shows and where it sits can be changed without a build
 - Changed `trx.cutscenes` to hand over the cutscene itself, so `trx.cutscenes[30]` says whether it has played, plays it, and narrows the cutscene events to it; the cutscene events hand one over too, and the functions that take a number are deprecated (TRX1199)
 - Changed `trx.cutscenes.play()` to take whether to fade out first, so a scene that opens a level begins on the black screen the level loaded behind (TRX1063)
