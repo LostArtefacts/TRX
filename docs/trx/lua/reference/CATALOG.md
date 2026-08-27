@@ -635,6 +635,20 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
 
 ### Functions
 
+- <a id="catalog.key" name="catalog.key"></a>[lua]`trx.catalog.key(context, id)`  
+  Gives back the name an id answers to, which is the name a savegame stores and the name a mod writes. An id a script read out of the engine is a number, and this is what says which thing it names.
+
+  Parameters:
+  - <a id="catalog.key.context" name="catalog.key.context"></a>**`context`** ([trx.catalog.Context](#catalog.Context)). Which catalog.
+  - <a id="catalog.key.id" name="catalog.key.id"></a>**`id`** ([trx.catalog.Id](#catalog.Id)).
+
+  Returns: string or `nil`. `nil` if the catalog holds no such id.
+
+  Example:
+  ```lua
+  local name = trx.catalog.key(trx.catalog.Context.OBJECTS, item.object_id)
+  ```
+
 - <a id="catalog.to_slot" name="catalog.to_slot"></a>[lua]`trx.catalog.to_slot(context, id)`  
   Converts a [`trx.catalog.Id`](#catalog.Id) into the [`trx.catalog.Slot`](#catalog.Slot) this game's own files use for it.
 
