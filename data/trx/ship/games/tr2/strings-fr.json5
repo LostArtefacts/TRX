@@ -10,10 +10,10 @@
         }
     },
     "objects": {
-        "large_medipack": {
+        "large_medipack_item": {
             "name": "\\{review}Grande trousse de soins",
         },
-        "small_medipack": {
+        "small_medipack_item": {
             "name": "\\{review}Petite trousse de soins",
         }
     },
@@ -38,10 +38,10 @@
         {
             "title": "\\{review}La grande muraille",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "\\{review}Clé des gardes",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "\\{review}Clé rouillée",
                 }
             }
@@ -49,13 +49,13 @@
         {
             "title": "\\{review}Venise",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "\\{review}Clé du hangar à bateaux",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "\\{review}Clé d'acier",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "\\{review}Clé de fer",
                 }
             }
@@ -63,10 +63,10 @@
         {
             "title": "\\{review}La cache de Bartoli",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "\\{review}Clé de la bibliothèque",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "\\{review}Clé du détonateur",
                 }
             }
@@ -74,13 +74,13 @@
         {
             "title": "\\{review}L’opéra",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "\\{review}Clé ornementée",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "\\{review}Boîte de relais",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "\\{review}Carte de circuits",
                 }
             }
@@ -88,13 +88,13 @@
         {
             "title": "\\{review}La plate-forme pétrolière",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "\\{review}Carte d'accès rouge",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "\\{review}Carte d'accès jaune",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "\\{review}Carte d'accès verte",
                 }
             }
@@ -102,13 +102,13 @@
         {
             "title": "\\{review}L'aire de plongeon",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "\\{review}Carte d'accès rouge",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "\\{review}Carte d'accès bleue",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "\\{review}Pièce de machine",
                 }
             }
@@ -119,16 +119,16 @@
         {
             "title": "\\{review}L'épave du Maria Doria",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "\\{review}Clé de la salle de repos",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "\\{review}Clé rouillée",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "\\{review}Clé de la cabine",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "\\{review}Coupe-circuit",
                 }
             }
@@ -136,10 +136,10 @@
         {
             "title": "\\{review}Les quartiers d'équipage",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "\\{review}Clé du théâtre",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "\\{review}Clé rouillée",
                 }
             }
@@ -147,16 +147,16 @@
         {
             "title": "\\{review}Le pont",
             "objects": {
-                "key_2": {
+                "key_item_2": {
                     "name": "\\{review}Clé d'arrière",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "\\{review}Clé de l'entrepôt",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "\\{review}Clé de la cabine",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "\\{review}Le Séraph",
                 }
             }
@@ -167,13 +167,13 @@
                 "tiger": {
                     "name": "\\{review}Léopard des neiges",
                 },
-                "key_1": {
+                "key_item_1": {
                     "name": "\\{review}Clé du pont-levis",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "\\{review}Clé de la cabane",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "\\{review}Le Séraph",
                 }
             }
@@ -181,25 +181,25 @@
         {
             "title": "\\{review}Le monastère de Barkhang",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "\\{review}Clé de chambre forte",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "\\{review}Clé de la trappe",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "\\{review}Clé des toits",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "\\{review}Clé du hall principal",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "\\{review}Roue des prieurs",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "\\{review}Pierres précieuses",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "\\{review}Le Séraph",
                 }
             }
@@ -210,10 +210,10 @@
                 "tiger": {
                     "name": "\\{review}Léopard des neiges",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "\\{review}Marteau du gong",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "\\{review}Masque tibétain",
                 }
             }
@@ -224,13 +224,13 @@
                 "tiger": {
                     "name": "\\{review}Tigre blanc",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "\\{review}Marteau du gong",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "\\{review}Talion",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "\\{review}Masque tibétain",
                 }
             }
@@ -238,16 +238,16 @@
         {
             "title": "\\{review}Le temple de Xian",
             "objects": {
-                "key_2": {
+                "key_item_2": {
                     "name": "\\{review}Clé en or",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "\\{review}Clé d'argent",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "\\{review}Clé de la chambre principale",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "\\{review}Le sceau du dragon",
                 }
             }
@@ -255,10 +255,10 @@
         {
             "title": "\\{review}Les îles du ciel",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "\\{review}Plaque mystique",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "\\{review}Plaque mystique",
                 }
             }
@@ -266,10 +266,10 @@
         {
             "title": "\\{review}L’antre du dragon",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "\\{review}Plaque mystique",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "\\{review}La dague de Xian",
                 }
             }
@@ -277,10 +277,10 @@
         {
             "title": "\\{review}Home Sweet Home",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "\\{review}Clé du râtelier d'armes",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "\\{review}La dague de Xian",
                 }
             }
@@ -290,13 +290,13 @@
         {
             "title": "\\{review}Venise",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "\\{review}Clé du bateau",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "\\{review}Clé d'acier",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "\\{review}Clé de fer",
                 }
             }
@@ -304,16 +304,16 @@
         {
             "title": "\\{review}L'épave du Maria Doria",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "\\{review}Clé de la salle de repos",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "\\{review}Clé rouillée",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "\\{review}Clé de la cabane",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "\\{review}Coupe-circuit",
                 }
             }
@@ -324,13 +324,13 @@
                 "tiger": {
                     "name": "\\{review}Léopard des neiges",
                 },
-                "key_1": {
+                "key_item_1": {
                     "name": "\\{review}Clé du pont-levis",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "\\{review}Clé de la cabane",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "\\{review}Le Séraph",
                 }
             }

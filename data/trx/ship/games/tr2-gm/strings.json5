@@ -11,10 +11,10 @@
                 "tiger": {
                     "name": "Snow Leopard",
                 },
-                "key_1": {
+                "key_item_1": {
                     "name": "Guardroom Key",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Shaft 'B' Key",
                 }
             }
@@ -22,13 +22,13 @@
         {
             "title": "Fool's Gold",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "CardKey 1",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "CardKey 2",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Circuit Board",
                 }
             }
@@ -42,10 +42,10 @@
                 "spider": {
                     "name": "Wolf",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Mask of Tornarsuk",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Gold Nugget",
                 }
             }
@@ -56,7 +56,7 @@
                 "tiger": {
                     "name": "Snow Leopard",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Mask of Tornarsuk",
                 }
             }
@@ -64,13 +64,13 @@
         {
             "title": "Nightmare in Vegas",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Hotel Key",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Elevator Junction",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Door Circuit",
                 }
             }

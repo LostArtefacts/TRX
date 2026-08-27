@@ -2109,11 +2109,11 @@
         "atlantean_winged": {
             "name": "\\{review}Крылатый Атлант",
         },
-        "autos": {
-            "name": "\\{review}Автоматические пистолеты",
-        },
-        "autos_ammo": {
+        "autos_ammo_item": {
             "name": "\\{review}Обоймы для автоматических пистолетов",
+        },
+        "autos_item": {
+            "name": "\\{review}Автоматические пистолеты",
         },
         "bacon_lara": {
             "name": "Двойник Лары",
@@ -2172,7 +2172,7 @@
         "big_spider": {
             "name": "\\{review}Гигантский паук",
         },
-        "binoculars": {
+        "binoculars_item": {
             "name": "\\{review}Бинокль",
         },
         "bird_guardian": {
@@ -2259,6 +2259,9 @@
         "clock_chimes": {
             "name": "\\{review}Часы убежища Бартоли",
         },
+        "cobra": {
+            "name": "\\{review}Змей",
+        },
         "cog_1": {
             "name": "Шестерёнка 1",
         },
@@ -2274,13 +2277,13 @@
         "combat_end": {
             "name": "\\{review}Конец боя",
         },
-        "compass": {
+        "compass_option": {
             "name": "Компас",
         },
         "compy": {
             "name": "\\{review}Компсогнат",
         },
-        "controls": {
+        "controls_option": {
             "name": "Управление",
         },
         "copter": {
@@ -2295,29 +2298,23 @@
         "crocodile": {
             "name": "Крокодил",
         },
-        "crossbow": {
-            "name": "\\{review}Арбалет",
-        },
-        "crossbow_ammo": {
+        "crossbow_ammo_1_item": {
             "name": "\\{review}Стрелы для арбалета",
         },
         "crossbow_bolt": {
             "name": "\\{review}Стрела для арбалета",
         },
+        "crossbow_item": {
+            "name": "\\{review}Арбалет",
+        },
         "crow": {
             "name": "\\{review}Ворон",
-        },
-        "crowbar": {
-            "name": "\\{review}Лом",
         },
         "crowbar_anim": {
             "name": "\\{review}Анимация ломика",
         },
-        "crystal": {
-            "name": [
-                "\\{review}Кристалл",
-                "Кристалл сохранения",
-            ]
+        "crowbar_item": {
+            "name": "\\{review}Лом",
         },
         "cult_1": {
             "name": "\\{review}Бандит в маске 1",
@@ -2349,11 +2346,11 @@
         "dart_emitter": {
             "name": "Дротикомёт",
         },
-        "desert_eagle": {
-            "name": "\\{review}Дезерт Игл",
-        },
-        "desert_eagle_ammo": {
+        "desert_eagle_ammo_item": {
             "name": "\\{review}Магазины Дезерт Игл",
+        },
+        "desert_eagle_item": {
+            "name": "\\{review}Дезерт Игл",
         },
         "detonator_box": {
             "name": "\\{review}Коробка детонатора",
@@ -2460,13 +2457,13 @@
         "ember_emitter": {
             "name": "Источник углей",
         },
-        "examine_1": {
+        "examine_item_1": {
             "name": "\\{review}Осмотреть предмет 1",
         },
-        "examine_2": {
+        "examine_item_2": {
             "name": "\\{review}Осмотреть предмет 2",
         },
-        "examine_3": {
+        "examine_item_3": {
             "name": "\\{review}Осмотреть предмет 3",
         },
         "explosion_1": {
@@ -2538,13 +2535,13 @@
         "flame_emitter_tr4_wall": {
             "name": "\\{review}Источник пламени (TR4, настенный)",
         },
-        "flare": {
-            "name": "\\{review}Вспышка",
-        },
         "flare_fire": {
             "name": "\\{review}Огонь фальшфейера",
         },
-        "flares_box": {
+        "flare_item": {
+            "name": "\\{review}Вспышка",
+        },
+        "flares_box_item": {
             "name": "\\{review}Коробка вспышки",
         },
         "flickering_light": {
@@ -2562,7 +2559,7 @@
         "fx_reserved": {
             "name": "\\{review}Серый диск",
         },
-        "gamma": {
+        "gamma_option": {
             "name": "Гамма",
         },
         "gas_emitter_green": {
@@ -2571,7 +2568,7 @@
         "general": {
             "name": "\\{review}Миниподводная лодка",
         },
-        "globe": {
+        "globe_option": {
             "name": "\\{review}Глобус",
         },
         "glow": {
@@ -2589,7 +2586,7 @@
         "gong_bonger": {
             "name": "\\{review}Палка для гонга",
         },
-        "graphics": {
+        "graphics_option": {
             "name": "Изображение",
         },
         "green_light": {
@@ -2598,11 +2595,11 @@
         "grenade": {
             "name": "Граната",
         },
-        "grenade_launcher": {
-            "name": "\\{review}Гранатомёт",
-        },
-        "grenade_launcher_ammo": {
+        "grenade_ammo_item": {
             "name": "\\{review}Гранаты",
+        },
+        "grenade_gun_item": {
+            "name": "\\{review}Гранатомёт",
         },
         "gun_flash": {
             "name": "Вспышка выстрела",
@@ -2613,11 +2610,11 @@
         "harpoon_bolt": {
             "name": "\\{review}Гарпунный болт",
         },
-        "harpoon_gun": {
-            "name": "\\{review}Гарпунное ружьё",
-        },
-        "harpoon_gun_ammo": {
+        "harpoon_gun_ammo_item": {
             "name": "\\{review}Гарпуны",
+        },
+        "harpoon_gun_item": {
+            "name": "\\{review}Гарпунное ружьё",
         },
         "hook": {
             "name": "\\{review}Крюк",
@@ -2642,90 +2639,6 @@
         },
         "kayak": {
             "name": "\\{review}Каяк",
-        },
-        "key_1": {
-            "name": "Ключ 1",
-        },
-        "key_10": {
-            "name": "\\{review}Ключ 10",
-        },
-        "key_11": {
-            "name": "\\{review}Ключ 11",
-        },
-        "key_12": {
-            "name": "\\{review}Ключ 12",
-        },
-        "key_1_combo_1": {
-            "name": "\\{review}Ключ 1 (Комбо 1)",
-        },
-        "key_1_combo_2": {
-            "name": "\\{review}Ключ 1 (Комбо 2)",
-        },
-        "key_2": {
-            "name": "Ключ 2",
-        },
-        "key_2_combo_1": {
-            "name": "\\{review}Ключ 2 (Комбо 1)",
-        },
-        "key_2_combo_2": {
-            "name": "\\{review}Ключ 2 (Комбо 2)",
-        },
-        "key_3": {
-            "name": "Ключ 3",
-        },
-        "key_3_combo_1": {
-            "name": "\\{review}Ключ 3 (Комбо 1)",
-        },
-        "key_3_combo_2": {
-            "name": "\\{review}Ключ 3 (Комбо 2)",
-        },
-        "key_4": {
-            "name": "Ключ 4",
-        },
-        "key_4_combo_1": {
-            "name": "\\{review}Ключ 4 (Комбо 1)",
-        },
-        "key_4_combo_2": {
-            "name": "\\{review}Ключ 4 (Комбо 2)",
-        },
-        "key_5": {
-            "name": "\\{review}Ключ 5",
-        },
-        "key_5_combo_1": {
-            "name": "\\{review}Ключ 5 (Комбо 1)",
-        },
-        "key_5_combo_2": {
-            "name": "\\{review}Ключ 5 (Комбо 2)",
-        },
-        "key_6": {
-            "name": "\\{review}Ключ 6",
-        },
-        "key_6_combo_1": {
-            "name": "\\{review}Ключ 6 (Комбо 1)",
-        },
-        "key_6_combo_2": {
-            "name": "\\{review}Ключ 6 (Комбо 2)",
-        },
-        "key_7": {
-            "name": "\\{review}Ключ 7",
-        },
-        "key_7_combo_1": {
-            "name": "\\{review}Ключ 7 (Комбо 1)",
-        },
-        "key_7_combo_2": {
-            "name": "\\{review}Ключ 7 (Комбо 2)",
-        },
-        "key_8": {
-            "name": "\\{review}Ключ 8",
-        },
-        "key_8_combo_1": {
-            "name": "\\{review}Ключ 8 (Комбо 1)",
-        },
-        "key_8_combo_2": {
-            "name": "\\{review}Ключ 8 (Комбо 2)",
-        },
-        "key_9": {
-            "name": "\\{review}Ключ 9",
         },
         "key_hole_1": {
             "name": "Замочная скважина 1",
@@ -2763,6 +2676,90 @@
         "key_hole_9": {
             "name": "\\{review}Замочная скважина 9",
         },
+        "key_item_1": {
+            "name": "Ключ 1",
+        },
+        "key_item_10": {
+            "name": "\\{review}Ключ 10",
+        },
+        "key_item_11": {
+            "name": "\\{review}Ключ 11",
+        },
+        "key_item_12": {
+            "name": "\\{review}Ключ 12",
+        },
+        "key_item_1_combo_1": {
+            "name": "\\{review}Ключ 1 (Комбо 1)",
+        },
+        "key_item_1_combo_2": {
+            "name": "\\{review}Ключ 1 (Комбо 2)",
+        },
+        "key_item_2": {
+            "name": "Ключ 2",
+        },
+        "key_item_2_combo_1": {
+            "name": "\\{review}Ключ 2 (Комбо 1)",
+        },
+        "key_item_2_combo_2": {
+            "name": "\\{review}Ключ 2 (Комбо 2)",
+        },
+        "key_item_3": {
+            "name": "Ключ 3",
+        },
+        "key_item_3_combo_1": {
+            "name": "\\{review}Ключ 3 (Комбо 1)",
+        },
+        "key_item_3_combo_2": {
+            "name": "\\{review}Ключ 3 (Комбо 2)",
+        },
+        "key_item_4": {
+            "name": "Ключ 4",
+        },
+        "key_item_4_combo_1": {
+            "name": "\\{review}Ключ 4 (Комбо 1)",
+        },
+        "key_item_4_combo_2": {
+            "name": "\\{review}Ключ 4 (Комбо 2)",
+        },
+        "key_item_5": {
+            "name": "\\{review}Ключ 5",
+        },
+        "key_item_5_combo_1": {
+            "name": "\\{review}Ключ 5 (Комбо 1)",
+        },
+        "key_item_5_combo_2": {
+            "name": "\\{review}Ключ 5 (Комбо 2)",
+        },
+        "key_item_6": {
+            "name": "\\{review}Ключ 6",
+        },
+        "key_item_6_combo_1": {
+            "name": "\\{review}Ключ 6 (Комбо 1)",
+        },
+        "key_item_6_combo_2": {
+            "name": "\\{review}Ключ 6 (Комбо 2)",
+        },
+        "key_item_7": {
+            "name": "\\{review}Ключ 7",
+        },
+        "key_item_7_combo_1": {
+            "name": "\\{review}Ключ 7 (Комбо 1)",
+        },
+        "key_item_7_combo_2": {
+            "name": "\\{review}Ключ 7 (Комбо 2)",
+        },
+        "key_item_8": {
+            "name": "\\{review}Ключ 8",
+        },
+        "key_item_8_combo_1": {
+            "name": "\\{review}Ключ 8 (Комбо 1)",
+        },
+        "key_item_8_combo_2": {
+            "name": "\\{review}Ключ 8 (Комбо 2)",
+        },
+        "key_item_9": {
+            "name": "\\{review}Ключ 9",
+        },
         "kick_door_1": {
             "name": "\\{review}Выбиваемая дверь 1",
         },
@@ -2799,13 +2796,13 @@
         "lara_flare": {
             "name": "\\{review}Анимация фальшфейера",
         },
-        "lara_grenade": {
+        "lara_grenade_gun": {
             "name": "\\{review}Анимация гранатомёта",
         },
         "lara_hair": {
             "name": "Коса Лары",
         },
-        "lara_harpoon": {
+        "lara_harpoon_gun": {
             "name": "\\{review}Анимация гарпуна",
         },
         "lara_kayak": {
@@ -2838,7 +2835,7 @@
         "lara_rib": {
             "name": "\\{review}Анимация RIB",
         },
-        "lara_rocket": {
+        "lara_rocket_gun": {
             "name": "\\{review}Анимация ракетной установки",
         },
         "lara_shotgun": {
@@ -2856,13 +2853,13 @@
         "larson": {
             "name": "Ларсон",
         },
-        "lasersight": {
+        "lasersight_item": {
             "name": "\\{review}Лазерный прицел",
         },
         "lava_wedge": {
             "name": "Лава",
         },
-        "lead_bar": {
+        "lead_bar_item": {
             "description": "",
             "name": "Свинцовый слиток",
         },
@@ -2887,20 +2884,20 @@
         "lizard": {
             "name": "\\{review}Ящерица",
         },
-        "m16": {
-            "name": "\\{review}M16",
-        },
-        "m16_ammo": {
+        "m16_ammo_item": {
             "name": "\\{review}Магазины для M16",
         },
         "m16_flash": {
             "name": "\\{review}Вспышка M16",
         },
-        "magnums": {
-            "name": "Магнумы",
+        "m16_item": {
+            "name": "\\{review}M16",
         },
-        "magnums_ammo": {
+        "magnums_ammo_item": {
             "name": "Обоймы для магнума",
+        },
+        "magnums_item": {
+            "name": "Магнумы",
         },
         "mesh_swap_1": {
             "name": "\\{review}Замена модели 1",
@@ -2986,11 +2983,11 @@
         "moving_bar": {
             "name": "Движущаяся планка",
         },
-        "mp5": {
-            "name": "\\{review}MP5",
-        },
-        "mp5_ammo": {
+        "mp5_ammo_item": {
             "name": "\\{review}Магазины для MP5",
+        },
+        "mp5_item": {
+            "name": "\\{review}MP5",
         },
         "mp_1": {
             "name": "\\{review}МП 1",
@@ -3013,13 +3010,13 @@
         "orca": {
             "name": "\\{review}Косатка",
         },
-        "passport": {
+        "passport_option": {
             "name": "Игра",
         },
         "patrol_dog": {
             "name": "\\{review}Собака",
         },
-        "pda": {
+        "pda_option": {
             "name": "Игровой процесс",
         },
         "pendulum_1": {
@@ -3033,59 +3030,59 @@
                 "\\{review}Качающийся ящик",
             ]
         },
-        "photo": {
+        "photo_option": {
             "name": "Дом Лары",
-        },
-        "pickup_1": {
-            "name": "Предмет 1",
-        },
-        "pickup_1_combo_1": {
-            "name": "\\{review}Подобранный предмет 1 (Комбо 1)",
-        },
-        "pickup_1_combo_2": {
-            "name": "\\{review}Подобранный предмет 1 (Комбо 2)",
-        },
-        "pickup_2": {
-            "name": "Предмет 2",
-        },
-        "pickup_2_combo_1": {
-            "name": "\\{review}Подобранный предмет 2 (Комбо 1)",
-        },
-        "pickup_2_combo_2": {
-            "name": "\\{review}Подобранный предмет 2 (Комбо 2)",
-        },
-        "pickup_3": {
-            "name": "\\{review}Подбираемый предмет 3",
-        },
-        "pickup_3_combo_1": {
-            "name": "\\{review}Подобранный предмет 3 (Комбо 1)",
-        },
-        "pickup_3_combo_2": {
-            "name": "\\{review}Подобранный предмет 3 (Комбо 2)",
-        },
-        "pickup_4": {
-            "name": "\\{review}Подбираемый предмет 4",
-        },
-        "pickup_4_combo_1": {
-            "name": "\\{review}Подобранный предмет 4 (Комбо 1)",
-        },
-        "pickup_4_combo_2": {
-            "name": "\\{review}Подобранный предмет 4 (Комбо 2)",
         },
         "pickup_aid": {
             "name": "Первая помощь",
         },
+        "pickup_item_1": {
+            "name": "Предмет 1",
+        },
+        "pickup_item_1_combo_1": {
+            "name": "\\{review}Подобранный предмет 1 (Комбо 1)",
+        },
+        "pickup_item_1_combo_2": {
+            "name": "\\{review}Подобранный предмет 1 (Комбо 2)",
+        },
+        "pickup_item_2": {
+            "name": "Предмет 2",
+        },
+        "pickup_item_2_combo_1": {
+            "name": "\\{review}Подобранный предмет 2 (Комбо 1)",
+        },
+        "pickup_item_2_combo_2": {
+            "name": "\\{review}Подобранный предмет 2 (Комбо 2)",
+        },
+        "pickup_item_3": {
+            "name": "\\{review}Подбираемый предмет 3",
+        },
+        "pickup_item_3_combo_1": {
+            "name": "\\{review}Подобранный предмет 3 (Комбо 1)",
+        },
+        "pickup_item_3_combo_2": {
+            "name": "\\{review}Подобранный предмет 3 (Комбо 2)",
+        },
+        "pickup_item_4": {
+            "name": "\\{review}Подбираемый предмет 4",
+        },
+        "pickup_item_4_combo_1": {
+            "name": "\\{review}Подобранный предмет 4 (Комбо 1)",
+        },
+        "pickup_item_4_combo_2": {
+            "name": "\\{review}Подобранный предмет 4 (Комбо 2)",
+        },
         "pierre": {
             "name": "Пьер",
         },
-        "pirahnas": {
+        "piranhas": {
             "name": "\\{review}Пираньи",
         },
-        "pistols": {
-            "name": "Пистолеты",
-        },
-        "pistols_ammo": {
+        "pistols_ammo_item": {
             "name": "\\{review}Магазины для пистолета",
+        },
+        "pistols_item": {
+            "name": "Пистолеты",
         },
         "player_1": {
             "name": "Актёр заставки 1",
@@ -3162,90 +3159,6 @@
         "pushpull_door_2": {
             "name": "\\{review}Дверь тяни-толкай 2",
         },
-        "puzzle_1": {
-            "name": "Элемент головоломки 1",
-        },
-        "puzzle_10": {
-            "name": "\\{review}Предмет головоломки 10",
-        },
-        "puzzle_11": {
-            "name": "\\{review}Предмет головоломки 11",
-        },
-        "puzzle_12": {
-            "name": "\\{review}Предмет головоломки 12",
-        },
-        "puzzle_1_combo_1": {
-            "name": "\\{review}Предмет головоломки 1 (Комбо 1)",
-        },
-        "puzzle_1_combo_2": {
-            "name": "\\{review}Предмет головоломки 1 (Комбо 2)",
-        },
-        "puzzle_2": {
-            "name": "Элемент головоломки 2",
-        },
-        "puzzle_2_combo_1": {
-            "name": "\\{review}Предмет головоломки 2 (Комбо 1)",
-        },
-        "puzzle_2_combo_2": {
-            "name": "\\{review}Предмет головоломки 2 (Комбо 2)",
-        },
-        "puzzle_3": {
-            "name": "Элемент головоломки 3",
-        },
-        "puzzle_3_combo_1": {
-            "name": "\\{review}Предмет головоломки 3 (Комбо 1)",
-        },
-        "puzzle_3_combo_2": {
-            "name": "\\{review}Предмет головоломки 3 (Комбо 2)",
-        },
-        "puzzle_4": {
-            "name": "Элемент головоломки 4",
-        },
-        "puzzle_4_combo_1": {
-            "name": "\\{review}Предмет головоломки 4 (Комбо 1)",
-        },
-        "puzzle_4_combo_2": {
-            "name": "\\{review}Предмет головоломки 4 (Комбо 2)",
-        },
-        "puzzle_5": {
-            "name": "\\{review}Предмет головоломки 5",
-        },
-        "puzzle_5_combo_1": {
-            "name": "\\{review}Предмет головоломки 5 (Комбо 1)",
-        },
-        "puzzle_5_combo_2": {
-            "name": "\\{review}Предмет головоломки 5 (Комбо 2)",
-        },
-        "puzzle_6": {
-            "name": "\\{review}Предмет головоломки 6",
-        },
-        "puzzle_6_combo_1": {
-            "name": "\\{review}Предмет головоломки 6 (Комбо 1)",
-        },
-        "puzzle_6_combo_2": {
-            "name": "\\{review}Предмет головоломки 6 (Комбо 2)",
-        },
-        "puzzle_7": {
-            "name": "\\{review}Предмет головоломки 7",
-        },
-        "puzzle_7_combo_1": {
-            "name": "\\{review}Предмет головоломки 7 (Комбо 1)",
-        },
-        "puzzle_7_combo_2": {
-            "name": "\\{review}Предмет головоломки 7 (Комбо 2)",
-        },
-        "puzzle_8": {
-            "name": "\\{review}Предмет головоломки 8",
-        },
-        "puzzle_8_combo_1": {
-            "name": "\\{review}Предмет головоломки 8 (Комбо 1)",
-        },
-        "puzzle_8_combo_2": {
-            "name": "\\{review}Предмет головоломки 8 (Комбо 2)",
-        },
-        "puzzle_9": {
-            "name": "\\{review}Предмет головоломки 9",
-        },
         "puzzle_done_1": {
             "name": "Головоломка 1 (готово)",
         },
@@ -3318,25 +3231,109 @@
         "puzzle_hole_9": {
             "name": "\\{review}Отверстие головоломки 9 (Пусто)",
         },
+        "puzzle_item_1": {
+            "name": "Элемент головоломки 1",
+        },
+        "puzzle_item_10": {
+            "name": "\\{review}Предмет головоломки 10",
+        },
+        "puzzle_item_11": {
+            "name": "\\{review}Предмет головоломки 11",
+        },
+        "puzzle_item_12": {
+            "name": "\\{review}Предмет головоломки 12",
+        },
+        "puzzle_item_1_combo_1": {
+            "name": "\\{review}Предмет головоломки 1 (Комбо 1)",
+        },
+        "puzzle_item_1_combo_2": {
+            "name": "\\{review}Предмет головоломки 1 (Комбо 2)",
+        },
+        "puzzle_item_2": {
+            "name": "Элемент головоломки 2",
+        },
+        "puzzle_item_2_combo_1": {
+            "name": "\\{review}Предмет головоломки 2 (Комбо 1)",
+        },
+        "puzzle_item_2_combo_2": {
+            "name": "\\{review}Предмет головоломки 2 (Комбо 2)",
+        },
+        "puzzle_item_3": {
+            "name": "Элемент головоломки 3",
+        },
+        "puzzle_item_3_combo_1": {
+            "name": "\\{review}Предмет головоломки 3 (Комбо 1)",
+        },
+        "puzzle_item_3_combo_2": {
+            "name": "\\{review}Предмет головоломки 3 (Комбо 2)",
+        },
+        "puzzle_item_4": {
+            "name": "Элемент головоломки 4",
+        },
+        "puzzle_item_4_combo_1": {
+            "name": "\\{review}Предмет головоломки 4 (Комбо 1)",
+        },
+        "puzzle_item_4_combo_2": {
+            "name": "\\{review}Предмет головоломки 4 (Комбо 2)",
+        },
+        "puzzle_item_5": {
+            "name": "\\{review}Предмет головоломки 5",
+        },
+        "puzzle_item_5_combo_1": {
+            "name": "\\{review}Предмет головоломки 5 (Комбо 1)",
+        },
+        "puzzle_item_5_combo_2": {
+            "name": "\\{review}Предмет головоломки 5 (Комбо 2)",
+        },
+        "puzzle_item_6": {
+            "name": "\\{review}Предмет головоломки 6",
+        },
+        "puzzle_item_6_combo_1": {
+            "name": "\\{review}Предмет головоломки 6 (Комбо 1)",
+        },
+        "puzzle_item_6_combo_2": {
+            "name": "\\{review}Предмет головоломки 6 (Комбо 2)",
+        },
+        "puzzle_item_7": {
+            "name": "\\{review}Предмет головоломки 7",
+        },
+        "puzzle_item_7_combo_1": {
+            "name": "\\{review}Предмет головоломки 7 (Комбо 1)",
+        },
+        "puzzle_item_7_combo_2": {
+            "name": "\\{review}Предмет головоломки 7 (Комбо 2)",
+        },
+        "puzzle_item_8": {
+            "name": "\\{review}Предмет головоломки 8",
+        },
+        "puzzle_item_8_combo_1": {
+            "name": "\\{review}Предмет головоломки 8 (Комбо 1)",
+        },
+        "puzzle_item_8_combo_2": {
+            "name": "\\{review}Предмет головоломки 8 (Комбо 2)",
+        },
+        "puzzle_item_9": {
+            "name": "\\{review}Предмет головоломки 9",
+        },
         "quad_bike": {
             "name": "\\{review}Квадроцикл",
         },
-        "quest_1": {
+        "quest_item_1": {
             "name": "\\{review}Предмет задания 1",
         },
-        "quest_2": {
+        "quest_item_2": {
             "name": "\\{review}Предмет задания 2",
         },
-        "quest_3": {
+        "quest_item_3": {
             "name": "\\{review}Предмет задания 3",
         },
-        "quest_4": {
+        "quest_item_4": {
             "name": "\\{review}Предмет задания 4",
         },
-        "quest_5": {
+        "quest_item_5": {
             "name": "\\{review}Предмет задания 5",
         },
-        "quest_6": {
+        "quest_item_6": {
             "name": "\\{review}Предмет задания 6",
         },
         "raptor": {
@@ -3354,11 +3351,11 @@
         "red_light": {
             "name": "\\{review}Красный свет",
         },
-        "revolver": {
-            "name": "\\{review}Револьвер",
-        },
-        "revolver_ammo": {
+        "revolver_ammo_item": {
             "name": "\\{review}Патроны для револьвера",
+        },
+        "revolver_item": {
+            "name": "\\{review}Револьвер",
         },
         "rib": {
             "name": "\\{review}RIB",
@@ -3369,11 +3366,11 @@
         "rocket": {
             "name": "\\{review}Ракета",
         },
-        "rocket_launcher": {
-            "name": "\\{review}Ракетная установка",
-        },
-        "rocket_launcher_ammo": {
+        "rocket_ammo_item": {
             "name": "\\{review}Ракеты",
+        },
+        "rocket_gun_item": {
+            "name": "\\{review}Ракетная установка",
         },
         "rolling_ball_1": {
             "name": [
@@ -3417,17 +3414,23 @@
         "sarcophagus": {
             "name": "\\{review}Саркофаг",
         },
-        "save_crystal": {
+        "save_crystal_item": {
             "name": "Кристалл сохранения",
+        },
+        "save_crystal_option": {
+            "name": [
+                "\\{review}Кристалл",
+                "Кристалл сохранения",
+            ]
         },
         "scaled_spikes": {
             "name": "\\{review}Масштабированные шипы",
         },
-        "scion": {
-            "name": "Наследие",
-        },
         "scion_holder": {
             "name": "Постамент Наследия",
+        },
+        "scion_item_1": {
+            "name": "Наследие",
         },
         "secret_1": {
             "name": "\\{review}Секрет 1",
@@ -3462,11 +3465,11 @@
         "shiva": {
             "name": "\\{review}Шива",
         },
-        "shotgun": {
-            "name": "Дробовик",
-        },
-        "shotgun_ammo": {
+        "shotgun_ammo_item": {
             "name": "Патроны для дробовика",
+        },
+        "shotgun_item": {
+            "name": "Дробовик",
         },
         "shotgun_shell": {
             "name": "\\{review}Патрон для дробовика",
@@ -3513,16 +3516,13 @@
         "smoke_emitter_white": {
             "name": "\\{review}Дымовой излучатель (белый)",
         },
-        "snake": {
-            "name": "\\{review}Змей",
-        },
         "snow_sprite": {
             "name": "\\{review}След снегохода",
         },
         "sophia": {
             "name": "\\{review}София",
         },
-        "sound": {
+        "sound_option": {
             "name": "Звук",
         },
         "sphere_of_doom_1": {
@@ -3561,7 +3561,7 @@
         "sthpac_mercenary": {
             "name": "\\{review}Наёмник из южной части Тихого океана",
         },
-        "stopwatch": {
+        "stopwatch_option": {
             "name": "\\{review}Статистика",
         },
         "strobe_light": {
@@ -3710,11 +3710,11 @@
         "upv": {
             "name": "\\{review}Минисуб",
         },
-        "uzis": {
-            "name": "Узи",
-        },
-        "uzis_ammo": {
+        "uzis_ammo_item": {
             "name": "Обоймы для узи",
+        },
+        "uzis_item": {
+            "name": "Узи",
         },
         "vole": {
             "name": [
@@ -3746,10 +3746,10 @@
         "waterfall_mist": {
             "name": "Водопадный туман",
         },
-        "waterskin_1": {
+        "waterskin_1_empty": {
             "name": "\\{review}Маленькая фляга",
         },
-        "waterskin_2": {
+        "waterskin_2_empty": {
             "name": "\\{review}Большая фляга",
         },
         "white_light": {

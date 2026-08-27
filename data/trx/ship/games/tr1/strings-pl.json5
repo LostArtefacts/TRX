@@ -18,10 +18,10 @@
         }
     },
     "objects": {
-        "large_medipack": {
+        "large_medipack_item": {
             "name": "Duża apteczka",
         },
-        "small_medipack": {
+        "small_medipack_item": {
             "name": "Mała apteczka",
         }
     },
@@ -49,10 +49,10 @@
         {
             "title": "Miasto Vilcabamba",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Srebrny klucz",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Złoty posążek",
                 }
             }
@@ -60,7 +60,7 @@
         {
             "title": "Zaginiona Dolina",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Zębatka",
                 }
             }
@@ -71,16 +71,16 @@
         {
             "title": "Kompleks św. Franciszka",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz Neptuna",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Klucz Atlasa",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Klucz Damoklesa",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Klucz Thora",
                 }
             }
@@ -88,7 +88,7 @@
         {
             "title": "Koloseum",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Zardzewiały klucz",
                 }
             }
@@ -96,7 +96,7 @@
         {
             "title": "Pałac Midasa",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Sztabka złota",
                 }
             }
@@ -104,13 +104,13 @@
         {
             "title": "Rezerwuar",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Złoty klucz",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Srebrny klucz",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Zardzewiały klucz",
                 }
             }
@@ -118,13 +118,13 @@
         {
             "title": "Grobowiec Tihocana",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Złoty klucz",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Zardzewiały klucz",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Zardzewiały klucz",
                 }
             }
@@ -132,7 +132,7 @@
         {
             "title": "Miasto Khamoona",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Szafirowy klucz",
                 }
             }
@@ -140,19 +140,19 @@
         {
             "title": "Obelisk Khamoona",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Szafirowy klucz",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Oko Horusa",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Skarabeusz",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Pieczęć Anubisa",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Ankh",
                 }
             }
@@ -160,13 +160,13 @@
         {
             "title": "Sanktuarium Scion",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Złoty klucz",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Ankh",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Skarabeusz",
                 }
             }
@@ -174,10 +174,10 @@
         {
             "title": "Kopalnie Natli",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Bezpiecznik",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Klucz do piramidy",
                 }
             }
@@ -211,10 +211,10 @@
         {
             "title": "Miasto Vilcabamba",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Srebrny klucz",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Złoty posążek",
                 }
             }
@@ -222,7 +222,7 @@
         {
             "title": "Zaginiona Dolina",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Zębatka",
                 }
             }

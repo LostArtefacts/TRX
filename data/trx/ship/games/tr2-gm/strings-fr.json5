@@ -11,10 +11,10 @@
                 "tiger": {
                     "name": "\\{review}Léopard des neiges",
                 },
-                "key_1": {
+                "key_item_1": {
                     "name": "\\{review}Clé du corps de garde",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "\\{review}Clé du puits B",
                 }
             }
@@ -22,13 +22,13 @@
         {
             "title": "\\{review}L'or du fou",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "\\{review}Clé d'accès 1",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "\\{review}Clé d'accès 2",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "\\{review}Carte de circuits",
                 }
             }
@@ -42,10 +42,10 @@
                 "spider": {
                     "name": "\\{review}Loup",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "\\{review}Le Masque de Tornarsuk",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "\\{review}Pépite d'or",
                 }
             }
@@ -56,7 +56,7 @@
                 "tiger": {
                     "name": "\\{review}Léopard des neiges",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "\\{review}Le Masque de Tornarsuk",
                 }
             }
@@ -64,13 +64,13 @@
         {
             "title": "\\{review}Cauchemar à Vegas",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "\\{review}Clé de l'hôtel",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "\\{review}Boitier pour ascenseur",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "\\{review}Circuit de la porte",
                 }
             }

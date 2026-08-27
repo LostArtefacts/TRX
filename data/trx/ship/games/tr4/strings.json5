@@ -2,10 +2,10 @@
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
     "objects": {
-        "flare": {
+        "flare_item": {
             "name": "Flares",
         },
-        "grenade_launcher": {
+        "grenade_gun_item": {
             "name": "Grenade Gun",
         }
     },
@@ -15,7 +15,7 @@
             "title": "Angkor Wat",
             "legend": "Cambodia, 1984",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Golden Skull",
                 }
             }
@@ -23,7 +23,7 @@
         {
             "title": "Race for the Iris",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Golden Skull",
                 }
             }
@@ -32,16 +32,16 @@
             "title": "The Tomb of Seth",
             "legend": "Egypt, present day",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Eye of Horus",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "The Timeless Sands",
                 },
-                "puzzle_1_combo_1": {
+                "puzzle_item_1_combo_1": {
                     "name": "Eye Piece",
                 },
-                "puzzle_1_combo_2": {
+                "puzzle_item_1_combo_2": {
                     "name": "Eye Piece",
                 }
             }
@@ -49,16 +49,16 @@
         {
             "title": "Burial Chambers",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "The Hand of Orion",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "The Hand of Sirius",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Scarab Talisman",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "The Golden Serpent",
                 }
             }
@@ -66,7 +66,7 @@
         {
             "title": "Valley of the Kings",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Ignition Key",
                 }
             }
@@ -74,7 +74,7 @@
         {
             "title": "KV5",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Ignition Key",
                 }
             }
@@ -82,22 +82,22 @@
         {
             "title": "Temple of Karnak",
             "objects": {
-                "key_2": {
+                "key_item_2": {
                     "name": "Hypostyle Key",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Sun Talisman",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Canopic Jar 1",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Canopic Jar 2",
                 },
-                "puzzle_1_combo_1": {
+                "puzzle_item_1_combo_1": {
                     "name": "Sun Disk",
                 },
-                "puzzle_1_combo_2": {
+                "puzzle_item_1_combo_2": {
                     "name": "Sun Goddess",
                 }
             }
@@ -105,25 +105,25 @@
         {
             "title": "The Great Hypostyle Hall",
             "objects": {
-                "key_2": {
+                "key_item_2": {
                     "name": "Hypostyle Key",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Temple Key",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Sun Talisman",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Canopic Jar 1",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Canopic Jar 2",
                 },
-                "puzzle_1_combo_1": {
+                "puzzle_item_1_combo_1": {
                     "name": "Sun Disk",
                 },
-                "puzzle_1_combo_2": {
+                "puzzle_item_1_combo_2": {
                     "name": "Sun Goddess",
                 }
             }
@@ -131,25 +131,25 @@
         {
             "title": "Sacred Lake",
             "objects": {
-                "key_2": {
+                "key_item_2": {
                     "name": "Hypostyle Key",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Temple Key",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Sun Talisman",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Canopic Jar 1",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Canopic Jar 2",
                 },
-                "puzzle_1_combo_1": {
+                "puzzle_item_1_combo_1": {
                     "name": "Sun Disk",
                 },
-                "puzzle_1_combo_2": {
+                "puzzle_item_1_combo_2": {
                     "name": "Sun Goddess",
                 }
             }
@@ -160,19 +160,19 @@
         {
             "title": "Tomb of Semerkhet",
             "objects": {
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Ba Cartouche",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Ra Cartouche",
                 },
-                "puzzle_4_combo_1": {
+                "puzzle_item_4_combo_1": {
                     "name": "Cartouche Piece 1",
                 },
-                "puzzle_4_combo_2": {
+                "puzzle_item_4_combo_2": {
                     "name": "Cartouche Piece 2",
                 },
-                "examine_2": {
+                "examine_item_2": {
                     "name": "The Rules of Senet",
                     "description": "\\{color grey}To win the game, get all your pieces off the board by landing them on the final ankh square. On your turn spin the sticks. Your throw is the number of white sides showing.\n\nIf no white sides show, your throw is a six. If you throw a six or land on an ankh square you get an extra turn. If you land on an opponent's piece, it is returned to the start.",
                 }
@@ -181,10 +181,10 @@
         {
             "title": "Guardian of Semerkhet",
             "objects": {
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Golden Vraeus",
                 },
-                "puzzle_7": {
+                "puzzle_item_7": {
                     "name": "Guardian Key",
                 }
             }
@@ -195,55 +195,55 @@
         {
             "title": "Alexandria",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Token",
                 },
-                "key_10": {
+                "key_item_10": {
                     "name": "Gate Key",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Trident",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Music Scroll",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Golden Star",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Hook and Pole",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Portal Guardian",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Horseman's Gem",
                 },
-                "puzzle_10": {
+                "puzzle_item_10": {
                     "name": "Pharos Knot",
                 },
-                "puzzle_11": {
+                "puzzle_item_11": {
                     "name": "Pharos Pillar",
                 },
-                "puzzle_12": {
+                "puzzle_item_12": {
                     "name": "Black Beetle",
                 },
-                "puzzle_4_combo_1": {
+                "puzzle_item_4_combo_1": {
                     "name": "Wall Hook",
                 },
-                "puzzle_4_combo_2": {
+                "puzzle_item_4_combo_2": {
                     "name": "Broken Handle",
                 },
-                "puzzle_5_combo_1": {
+                "puzzle_item_5_combo_1": {
                     "name": "Ornate Handle",
                 },
-                "puzzle_5_combo_2": {
+                "puzzle_item_5_combo_2": {
                     "name": "Hathor Effigy",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Broken Beetle",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "Broken Glasses",
                 }
             }
@@ -251,55 +251,55 @@
         {
             "title": "Coastal Ruins",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Token",
                 },
-                "key_10": {
+                "key_item_10": {
                     "name": "Gate Key",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Trident",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Music Scroll",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Golden Star",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Hook and Pole",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Portal Guardian",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Horseman's Gem",
                 },
-                "puzzle_10": {
+                "puzzle_item_10": {
                     "name": "Pharos Knot",
                 },
-                "puzzle_11": {
+                "puzzle_item_11": {
                     "name": "Pharos Pillar",
                 },
-                "puzzle_12": {
+                "puzzle_item_12": {
                     "name": "Black Beetle",
                 },
-                "puzzle_4_combo_1": {
+                "puzzle_item_4_combo_1": {
                     "name": "Wall Hook",
                 },
-                "puzzle_4_combo_2": {
+                "puzzle_item_4_combo_2": {
                     "name": "Broken Handle",
                 },
-                "puzzle_5_combo_1": {
+                "puzzle_item_5_combo_1": {
                     "name": "Ornate Handle",
                 },
-                "puzzle_5_combo_2": {
+                "puzzle_item_5_combo_2": {
                     "name": "Hathor Effigy",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Broken Beetle",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "Broken Glasses",
                 }
             }
@@ -307,52 +307,52 @@
         {
             "title": "Pharos, Temple of Isis",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Token",
                 },
-                "key_10": {
+                "key_item_10": {
                     "name": "Gate Key",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Trident",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Music Scroll",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Golden Star",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Hook and Pole",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Portal Guardian",
                 },
-                "puzzle_10": {
+                "puzzle_item_10": {
                     "name": "Pharos Knot",
                 },
-                "puzzle_11": {
+                "puzzle_item_11": {
                     "name": "Pharos Pillar",
                 },
-                "puzzle_12": {
+                "puzzle_item_12": {
                     "name": "Black Beetle",
                 },
-                "puzzle_4_combo_1": {
+                "puzzle_item_4_combo_1": {
                     "name": "Wall Hook",
                 },
-                "puzzle_4_combo_2": {
+                "puzzle_item_4_combo_2": {
                     "name": "Broken Handle",
                 },
-                "puzzle_5_combo_1": {
+                "puzzle_item_5_combo_1": {
                     "name": "Ornate Handle",
                 },
-                "puzzle_5_combo_2": {
+                "puzzle_item_5_combo_2": {
                     "name": "Hathor Effigy",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Broken Beetle",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "Broken Glasses",
                 }
             }
@@ -360,25 +360,25 @@
         {
             "title": "Cleopatra's Palaces",
             "objects": {
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Portal Guardian",
                 },
-                "puzzle_10": {
+                "puzzle_item_10": {
                     "name": "Pharos Knot",
                 },
-                "puzzle_12": {
+                "puzzle_item_12": {
                     "name": "Black Beetle",
                 },
-                "puzzle_5_combo_1": {
+                "puzzle_item_5_combo_1": {
                     "name": "Ornate Handle",
                 },
-                "puzzle_5_combo_2": {
+                "puzzle_item_5_combo_2": {
                     "name": "Hathor Effigy",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Broken Beetle",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "Broken Glasses",
                 }
             }
@@ -386,46 +386,46 @@
         {
             "title": "Catacombs",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Token",
                 },
-                "key_10": {
+                "key_item_10": {
                     "name": "Gate Key",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Trident",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Music Scroll",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Golden Star",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Portal Guardian",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Horseman's Gem",
                 },
-                "puzzle_10": {
+                "puzzle_item_10": {
                     "name": "Pharos Knot",
                 },
-                "puzzle_11": {
+                "puzzle_item_11": {
                     "name": "Pharos Pillar",
                 },
-                "puzzle_12": {
+                "puzzle_item_12": {
                     "name": "Black Beetle",
                 },
-                "puzzle_5_combo_1": {
+                "puzzle_item_5_combo_1": {
                     "name": "Ornate Handle",
                 },
-                "puzzle_5_combo_2": {
+                "puzzle_item_5_combo_2": {
                     "name": "Hathor Effigy",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Broken Beetle",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "Broken Glasses",
                 }
             }
@@ -433,40 +433,40 @@
         {
             "title": "Temple of Poseidon",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Trident",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Music Scroll",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Golden Star",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Portal Guardian",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Horseman's Gem",
                 },
-                "puzzle_10": {
+                "puzzle_item_10": {
                     "name": "Pharos Knot",
                 },
-                "puzzle_11": {
+                "puzzle_item_11": {
                     "name": "Pharos Pillar",
                 },
-                "puzzle_12": {
+                "puzzle_item_12": {
                     "name": "Black Beetle",
                 },
-                "puzzle_5_combo_1": {
+                "puzzle_item_5_combo_1": {
                     "name": "Ornate Handle",
                 },
-                "puzzle_5_combo_2": {
+                "puzzle_item_5_combo_2": {
                     "name": "Hathor Effigy",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Broken Beetle",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "Broken Glasses",
                 }
             }
@@ -474,40 +474,40 @@
         {
             "title": "The Lost Library",
             "objects": {
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Music Scroll",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Golden Star",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Portal Guardian",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Horseman's Gem",
                 },
-                "puzzle_10": {
+                "puzzle_item_10": {
                     "name": "Pharos Knot",
                 },
-                "puzzle_11": {
+                "puzzle_item_11": {
                     "name": "Pharos Pillar",
                 },
-                "puzzle_12": {
+                "puzzle_item_12": {
                     "name": "Black Beetle",
                 },
-                "puzzle_5_combo_1": {
+                "puzzle_item_5_combo_1": {
                     "name": "Ornate Handle",
                 },
-                "puzzle_5_combo_2": {
+                "puzzle_item_5_combo_2": {
                     "name": "Hathor Effigy",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Broken Beetle",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "Broken Glasses",
                 },
-                "examine_3": {
+                "examine_item_3": {
                     "name": "Fire Circle Scroll",
                     "description": "\\{color yellow}For the serpents to live, all must first be stilled. Provoke each in turn, and the circle will burn complete.",
                 }
@@ -516,28 +516,28 @@
         {
             "title": "Hall of Demetrius",
             "objects": {
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Portal Guardian",
                 },
-                "puzzle_10": {
+                "puzzle_item_10": {
                     "name": "Pharos Knot",
                 },
-                "puzzle_11": {
+                "puzzle_item_11": {
                     "name": "Pharos Pillar",
                 },
-                "puzzle_12": {
+                "puzzle_item_12": {
                     "name": "Black Beetle",
                 },
-                "puzzle_5_combo_1": {
+                "puzzle_item_5_combo_1": {
                     "name": "Ornate Handle",
                 },
-                "puzzle_5_combo_2": {
+                "puzzle_item_5_combo_2": {
                     "name": "Hathor Effigy",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Broken Beetle",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "Broken Glasses",
                 }
             }
@@ -545,37 +545,37 @@
         {
             "title": "City of the Dead",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Nitrous Oxide Feeder",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Car-Jack",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Roof Key",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Weapon Code Key",
                 },
-                "puzzle_8": {
+                "puzzle_item_8": {
                     "name": "Mine Detonator",
                 },
-                "puzzle_1_combo_1": {
+                "puzzle_item_1_combo_1": {
                     "name": "Valve Pipe",
                 },
-                "puzzle_1_combo_2": {
+                "puzzle_item_1_combo_2": {
                     "name": "Nitrous Oxide Cannister",
                 },
-                "puzzle_2_combo_1": {
+                "puzzle_item_2_combo_1": {
                     "name": "Car-Jack Body",
                 },
-                "puzzle_2_combo_2": {
+                "puzzle_item_2_combo_2": {
                     "name": "Handle",
                 },
-                "puzzle_8_combo_1": {
+                "puzzle_item_8_combo_1": {
                     "name": "Mine Detonator Body",
                 },
-                "puzzle_8_combo_2": {
+                "puzzle_item_8_combo_2": {
                     "name": "Mine Position Data",
                 }
             }
@@ -583,37 +583,37 @@
         {
             "title": "Trenches",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Nitrous Oxide Feeder",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Car-Jack",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Roof Key",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Weapon Code Key",
                 },
-                "puzzle_8": {
+                "puzzle_item_8": {
                     "name": "Mine Detonator",
                 },
-                "puzzle_1_combo_1": {
+                "puzzle_item_1_combo_1": {
                     "name": "Valve Pipe",
                 },
-                "puzzle_1_combo_2": {
+                "puzzle_item_1_combo_2": {
                     "name": "Nitrous Oxide Cannister",
                 },
-                "puzzle_2_combo_1": {
+                "puzzle_item_2_combo_1": {
                     "name": "Car-Jack Body",
                 },
-                "puzzle_2_combo_2": {
+                "puzzle_item_2_combo_2": {
                     "name": "Handle",
                 },
-                "puzzle_8_combo_1": {
+                "puzzle_item_8_combo_1": {
                     "name": "Mine Detonator Body",
                 },
-                "puzzle_8_combo_2": {
+                "puzzle_item_8_combo_2": {
                     "name": "Mine Position Data",
                 }
             }
@@ -621,37 +621,37 @@
         {
             "title": "Chambers of Tulun",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Nitrous Oxide Feeder",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Car-Jack",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Roof Key",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Weapon Code Key",
                 },
-                "puzzle_8": {
+                "puzzle_item_8": {
                     "name": "Mine Detonator",
                 },
-                "puzzle_1_combo_1": {
+                "puzzle_item_1_combo_1": {
                     "name": "Valve Pipe",
                 },
-                "puzzle_1_combo_2": {
+                "puzzle_item_1_combo_2": {
                     "name": "Nitrous Oxide Cannister",
                 },
-                "puzzle_2_combo_1": {
+                "puzzle_item_2_combo_1": {
                     "name": "Car-Jack Body",
                 },
-                "puzzle_2_combo_2": {
+                "puzzle_item_2_combo_2": {
                     "name": "Handle",
                 },
-                "puzzle_8_combo_1": {
+                "puzzle_item_8_combo_1": {
                     "name": "Mine Detonator Body",
                 },
-                "puzzle_8_combo_2": {
+                "puzzle_item_8_combo_2": {
                     "name": "Mine Position Data",
                 }
             }
@@ -659,37 +659,37 @@
         {
             "title": "Street Bazaar",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Nitrous Oxide Feeder",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Car-Jack",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Roof Key",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Weapon Code Key",
                 },
-                "puzzle_8": {
+                "puzzle_item_8": {
                     "name": "Mine Detonator",
                 },
-                "puzzle_1_combo_1": {
+                "puzzle_item_1_combo_1": {
                     "name": "Valve Pipe",
                 },
-                "puzzle_1_combo_2": {
+                "puzzle_item_1_combo_2": {
                     "name": "Nitrous Oxide Cannister",
                 },
-                "puzzle_2_combo_1": {
+                "puzzle_item_2_combo_1": {
                     "name": "Car-Jack Body",
                 },
-                "puzzle_2_combo_2": {
+                "puzzle_item_2_combo_2": {
                     "name": "Handle",
                 },
-                "puzzle_8_combo_1": {
+                "puzzle_item_8_combo_1": {
                     "name": "Mine Detonator Body",
                 },
-                "puzzle_8_combo_2": {
+                "puzzle_item_8_combo_2": {
                     "name": "Mine Position Data",
                 }
             }
@@ -697,37 +697,37 @@
         {
             "title": "Citadel Gate",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Nitrous Oxide Feeder",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Car-Jack",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Roof Key",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Weapon Code Key",
                 },
-                "puzzle_8": {
+                "puzzle_item_8": {
                     "name": "Mine Detonator",
                 },
-                "puzzle_1_combo_1": {
+                "puzzle_item_1_combo_1": {
                     "name": "Valve Pipe",
                 },
-                "puzzle_1_combo_2": {
+                "puzzle_item_1_combo_2": {
                     "name": "Nitrous Oxide Cannister",
                 },
-                "puzzle_2_combo_1": {
+                "puzzle_item_2_combo_1": {
                     "name": "Car-Jack Body",
                 },
-                "puzzle_2_combo_2": {
+                "puzzle_item_2_combo_2": {
                     "name": "Handle",
                 },
-                "puzzle_8_combo_1": {
+                "puzzle_item_8_combo_1": {
                     "name": "Mine Detonator Body",
                 },
-                "puzzle_8_combo_2": {
+                "puzzle_item_8_combo_2": {
                     "name": "Mine Position Data",
                 }
             }
@@ -738,28 +738,28 @@
         {
             "title": "The Sphinx Complex",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Silver Key",
                 },
-                "key_11": {
+                "key_item_11": {
                     "name": "Armoury Key",
                 },
-                "key_12": {
+                "key_item_12": {
                     "name": "The Guards Keys",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Shovel",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Holy Scripture",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Western Shaft Key",
                 },
-                "puzzle_1_combo_1": {
+                "puzzle_item_1_combo_1": {
                     "name": "Metal Blade",
                 },
-                "puzzle_1_combo_2": {
+                "puzzle_item_1_combo_2": {
                     "name": "Wooden Handle",
                 }
             }
@@ -770,31 +770,31 @@
         {
             "title": "Underneath the Sphinx",
             "objects": {
-                "key_11": {
+                "key_item_11": {
                     "name": "Armoury Key",
                 },
-                "key_12": {
+                "key_item_12": {
                     "name": "The Guards Keys",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Stone of Maat",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Stone of Khepri",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Stone of Atum",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Stone of Re",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Holy Scripture",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Western Shaft Key",
                 },
-                "examine_1": {
+                "examine_item_1": {
                     "name": "Scrap of Paper",
                     "description": "",
                 }
@@ -803,16 +803,16 @@
         {
             "title": "Menkaure's Pyramid",
             "objects": {
-                "key_11": {
+                "key_item_11": {
                     "name": "Armoury Key",
                 },
-                "key_12": {
+                "key_item_12": {
                     "name": "The Guards Keys",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Holy Scripture",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Western Shaft Key",
                 }
             }
@@ -820,16 +820,16 @@
         {
             "title": "Inside Menkaure's Pyramid",
             "objects": {
-                "key_11": {
+                "key_item_11": {
                     "name": "Armoury Key",
                 },
-                "key_12": {
+                "key_item_12": {
                     "name": "The Guards Keys",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Holy Scripture",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Western Shaft Key",
                 }
             }
@@ -837,28 +837,28 @@
         {
             "title": "The Mastabas",
             "objects": {
-                "key_11": {
+                "key_item_11": {
                     "name": "Armoury Key",
                 },
-                "key_12": {
+                "key_item_12": {
                     "name": "The Guards Keys",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Holy Scripture",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Western Shaft Key",
                 },
-                "puzzle_7": {
+                "puzzle_item_7": {
                     "name": "Northern Shaft Key",
                 },
-                "puzzle_8": {
+                "puzzle_item_8": {
                     "name": "Southern Shaft Key",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Bag of Sand",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "Jerrycan",
                 }
             }
@@ -866,22 +866,22 @@
         {
             "title": "The Great Pyramid",
             "objects": {
-                "key_11": {
+                "key_item_11": {
                     "name": "Armoury Key",
                 },
-                "key_12": {
+                "key_item_12": {
                     "name": "The Guards Keys",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Holy Scripture",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Western Shaft Key",
                 },
-                "puzzle_7": {
+                "puzzle_item_7": {
                     "name": "Northern Shaft Key",
                 },
-                "puzzle_8": {
+                "puzzle_item_8": {
                     "name": "Southern Shaft Key",
                 }
             }
@@ -889,25 +889,25 @@
         {
             "title": "Khufu's Queens Pyramids",
             "objects": {
-                "key_11": {
+                "key_item_11": {
                     "name": "Armoury Key",
                 },
-                "key_12": {
+                "key_item_12": {
                     "name": "The Guards Keys",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Holy Scripture",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Western Shaft Key",
                 },
-                "puzzle_7": {
+                "puzzle_item_7": {
                     "name": "Northern Shaft Key",
                 },
-                "puzzle_8": {
+                "puzzle_item_8": {
                     "name": "Southern Shaft Key",
                 },
-                "puzzle_9": {
+                "puzzle_item_9": {
                     "name": "Eastern Shaft Key",
                 }
             }
@@ -915,25 +915,25 @@
         {
             "title": "Inside the Great Pyramid",
             "objects": {
-                "key_11": {
+                "key_item_11": {
                     "name": "Armoury Key",
                 },
-                "key_12": {
+                "key_item_12": {
                     "name": "The Guards Keys",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Holy Scripture",
                 },
-                "puzzle_6": {
+                "puzzle_item_6": {
                     "name": "Western Shaft Key",
                 },
-                "puzzle_7": {
+                "puzzle_item_7": {
                     "name": "Northern Shaft Key",
                 },
-                "puzzle_8": {
+                "puzzle_item_8": {
                     "name": "Southern Shaft Key",
                 },
-                "puzzle_9": {
+                "puzzle_item_9": {
                     "name": "Eastern Shaft Key",
                 }
             }
@@ -941,13 +941,13 @@
         {
             "title": "Temple of Horus",
             "objects": {
-                "key_11": {
+                "key_item_11": {
                     "name": "Armoury Key",
                 },
-                "key_12": {
+                "key_item_12": {
                     "name": "The Guards Keys",
                 },
-                "puzzle_5": {
+                "puzzle_item_5": {
                     "name": "Holy Scripture",
                 }
             }
@@ -955,10 +955,10 @@
         {
             "title": "Temple of Horus",
             "objects": {
-                "key_11": {
+                "key_item_11": {
                     "name": "Armoury Key",
                 },
-                "key_12": {
+                "key_item_12": {
                     "name": "The Guards Keys",
                 }
             }

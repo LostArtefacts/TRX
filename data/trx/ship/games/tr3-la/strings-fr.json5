@@ -2,7 +2,7 @@
     // For usage, refer to the documentation here:
     // https://lostartefacts.dev/trx/docs/stable/game_strings
     "objects": {
-        "quest_1": {
+        "quest_item_1": {
             "description": "",
             "name": "Main de Rathmore",
         }
@@ -11,7 +11,7 @@
         {
             "title": "La demeure de Lara",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé de la piste de course",
                 }
             }
@@ -19,10 +19,10 @@
         {
             "title": "La gigue des Highlands",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Pied-de-biche",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Pierre de chardon",
                 }
             }
@@ -30,10 +30,10 @@
         {
             "title": "Le repaire de Willard",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé du tumulus",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Pied-de-biche",
                 }
             }
@@ -41,10 +41,10 @@
         {
             "title": "La falaise de Shakespeare",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Carte d'activation de la foreuse",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Disque d'accès à la pompe",
                 }
             }
@@ -55,16 +55,16 @@
                 "orca": {
                     "name": "\\{review}Dauphin",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Ampoule témoin",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Échantillon de mutant",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Échantillon de mutant",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Ampoule témoin",
                 }
             }
@@ -72,13 +72,13 @@
         {
             "title": "C'est une maison de fous !",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé du zoo",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Clé de la volière",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Main de Rathmore",
                 }
             }
@@ -86,7 +86,7 @@
         {
             "title": "La réunion",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Main de Rathmore",
                 }
             }

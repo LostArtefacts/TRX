@@ -5,7 +5,7 @@
         {
             "title": "Retour en Égypte",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé en or",
                 }
             }
@@ -13,7 +13,7 @@
         {
             "title": "Le temple du chat",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé ornementée",
                 }
             }

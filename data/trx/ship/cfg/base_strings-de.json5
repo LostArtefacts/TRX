@@ -2109,11 +2109,11 @@
         "atlantean_winged": {
             "name": "\\{review}Geflügelter Atlanter",
         },
-        "autos": {
-            "name": "Automatik",
-        },
-        "autos_ammo": {
+        "autos_ammo_item": {
             "name": "Automatik-Munition",
+        },
+        "autos_item": {
+            "name": "Automatik",
         },
         "bacon_lara": {
             "name": "Schinken Lara",
@@ -2172,7 +2172,7 @@
         "big_spider": {
             "name": "Riesen-Spider",
         },
-        "binoculars": {
+        "binoculars_item": {
             "name": "\\{review}Fernglas",
         },
         "bird_guardian": {
@@ -2259,6 +2259,9 @@
         "clock_chimes": {
             "name": "Bartoli Hideout clock",
         },
+        "cobra": {
+            "name": "\\{review}Schlange",
+        },
         "cog_1": {
             "name": "Zahnrad 1",
         },
@@ -2274,13 +2277,13 @@
         "combat_end": {
             "name": "Kampf Ende",
         },
-        "compass": {
+        "compass_option": {
             "name": "Statistiken",
         },
         "compy": {
             "name": "\\{review}Compsognathus",
         },
-        "controls": {
+        "controls_option": {
             "name": "Steuerung",
         },
         "copter": {
@@ -2295,29 +2298,23 @@
         "crocodile": {
             "name": "Krokodil",
         },
-        "crossbow": {
-            "name": "\\{review}Armbrust",
-        },
-        "crossbow_ammo": {
+        "crossbow_ammo_1_item": {
             "name": "\\{review}Armbrustbolzen",
         },
         "crossbow_bolt": {
             "name": "\\{review}Armbrustbolzen",
         },
+        "crossbow_item": {
+            "name": "\\{review}Armbrust",
+        },
         "crow": {
             "name": "Krähe",
-        },
-        "crowbar": {
-            "name": "\\{review}Brechstange",
         },
         "crowbar_anim": {
             "name": "\\{review}Brechstangen-Animation",
         },
-        "crystal": {
-            "name": [
-                "\\{review}Kristall",
-                "Speicherkristall",
-            ]
+        "crowbar_item": {
+            "name": "\\{review}Brechstange",
         },
         "cult_1": {
             "name": "Maskierter Schläger 1",
@@ -2349,11 +2346,11 @@
         "dart_emitter": {
             "name": "Pfeilerzeuger",
         },
-        "desert_eagle": {
-            "name": "\\{review}Desert Eagle",
-        },
-        "desert_eagle_ammo": {
+        "desert_eagle_ammo_item": {
             "name": "\\{review}Magazine der Desert Eagle",
+        },
+        "desert_eagle_item": {
+            "name": "\\{review}Desert Eagle",
         },
         "detonator_box": {
             "name": "Zünder",
@@ -2460,13 +2457,13 @@
         "ember_emitter": {
             "name": "Gluterzeuger",
         },
-        "examine_1": {
+        "examine_item_1": {
             "name": "\\{review}Gegenstand 1 untersuchen",
         },
-        "examine_2": {
+        "examine_item_2": {
             "name": "\\{review}Gegenstand 2 untersuchen",
         },
-        "examine_3": {
+        "examine_item_3": {
             "name": "\\{review}Gegenstand 3 untersuchen",
         },
         "explosion_1": {
@@ -2539,13 +2536,13 @@
         "flame_emitter_tr4_wall": {
             "name": "\\{review}Flamenerzeuger (TR4, Wand)",
         },
-        "flare": {
-            "name": "Fackel",
-        },
         "flare_fire": {
             "name": "Fackel-Funken",
         },
-        "flares_box": {
+        "flare_item": {
+            "name": "Fackel",
+        },
+        "flares_box_item": {
             "name": "Flares Box",
         },
         "flickering_light": {
@@ -2563,7 +2560,7 @@
         "fx_reserved": {
             "name": "Gray disk",
         },
-        "gamma": {
+        "gamma_option": {
             "name": "\\{review}Gamma",
         },
         "gas_emitter_green": {
@@ -2572,7 +2569,7 @@
         "general": {
             "name": "Mini U-Boot",
         },
-        "globe": {
+        "globe_option": {
             "name": "\\{review}Globus",
         },
         "glow": {
@@ -2590,7 +2587,7 @@
         "gong_bonger": {
             "name": "Gong Schlegel",
         },
-        "graphics": {
+        "graphics_option": {
             "name": "Grafikeinstellungen",
         },
         "green_light": {
@@ -2599,11 +2596,11 @@
         "grenade": {
             "name": "Granate",
         },
-        "grenade_launcher": {
-            "name": "Granatenwerfer",
-        },
-        "grenade_launcher_ammo": {
+        "grenade_ammo_item": {
             "name": "Granaten",
+        },
+        "grenade_gun_item": {
+            "name": "Granatenwerfer",
         },
         "gun_flash": {
             "name": "Waffen Blitz",
@@ -2614,11 +2611,11 @@
         "harpoon_bolt": {
             "name": "Harpunen Pfeil",
         },
-        "harpoon_gun": {
-            "name": "Harpune",
-        },
-        "harpoon_gun_ammo": {
+        "harpoon_gun_ammo_item": {
             "name": "Pfeile",
+        },
+        "harpoon_gun_item": {
+            "name": "Harpune",
         },
         "hook": {
             "name": "Hook",
@@ -2643,90 +2640,6 @@
         },
         "kayak": {
             "name": "\\{review}Kajak",
-        },
-        "key_1": {
-            "name": "Key 1",
-        },
-        "key_10": {
-            "name": "\\{review}Schlüssel 10",
-        },
-        "key_11": {
-            "name": "\\{review}Schlüssel 11",
-        },
-        "key_12": {
-            "name": "\\{review}Schlüssel 12",
-        },
-        "key_1_combo_1": {
-            "name": "\\{review}Schlüssel 1 (Kombination 1)",
-        },
-        "key_1_combo_2": {
-            "name": "\\{review}Schlüssel 1 (Kombination 2)",
-        },
-        "key_2": {
-            "name": "Key 2",
-        },
-        "key_2_combo_1": {
-            "name": "\\{review}Schlüssel 2 (Kombination 1)",
-        },
-        "key_2_combo_2": {
-            "name": "\\{review}Schlüssel 2 (Kombination 2)",
-        },
-        "key_3": {
-            "name": "Key 3",
-        },
-        "key_3_combo_1": {
-            "name": "\\{review}Schlüssel 3 (Kombination 1)",
-        },
-        "key_3_combo_2": {
-            "name": "\\{review}Schlüssel 3 (Kombination 2)",
-        },
-        "key_4": {
-            "name": "Key 4",
-        },
-        "key_4_combo_1": {
-            "name": "\\{review}Schlüssel 4 (Kombination 1)",
-        },
-        "key_4_combo_2": {
-            "name": "\\{review}Schlüssel 4 (Kombination 2)",
-        },
-        "key_5": {
-            "name": "\\{review}Schlüssel 5",
-        },
-        "key_5_combo_1": {
-            "name": "\\{review}Schlüssel 5 (Kombination 1)",
-        },
-        "key_5_combo_2": {
-            "name": "\\{review}Schlüssel 5 (Kombination 2)",
-        },
-        "key_6": {
-            "name": "\\{review}Schlüssel 6",
-        },
-        "key_6_combo_1": {
-            "name": "\\{review}Schlüssel 6 (Kombination 1)",
-        },
-        "key_6_combo_2": {
-            "name": "\\{review}Schlüssel 6 (Kombination 2)",
-        },
-        "key_7": {
-            "name": "\\{review}Schlüssel 7",
-        },
-        "key_7_combo_1": {
-            "name": "\\{review}Schlüssel 7 (Kombination 1)",
-        },
-        "key_7_combo_2": {
-            "name": "\\{review}Schlüssel 7 (Kombination 2)",
-        },
-        "key_8": {
-            "name": "\\{review}Schlüssel 8",
-        },
-        "key_8_combo_1": {
-            "name": "\\{review}Schlüssel 8 (Kombination 1)",
-        },
-        "key_8_combo_2": {
-            "name": "\\{review}Schlüssel 8 (Kombination 2)",
-        },
-        "key_9": {
-            "name": "\\{review}Schlüssel 9",
         },
         "key_hole_1": {
             "name": "Keyhole 1",
@@ -2764,6 +2677,90 @@
         "key_hole_9": {
             "name": "\\{review}Schlüsselloch 9",
         },
+        "key_item_1": {
+            "name": "Key 1",
+        },
+        "key_item_10": {
+            "name": "\\{review}Schlüssel 10",
+        },
+        "key_item_11": {
+            "name": "\\{review}Schlüssel 11",
+        },
+        "key_item_12": {
+            "name": "\\{review}Schlüssel 12",
+        },
+        "key_item_1_combo_1": {
+            "name": "\\{review}Schlüssel 1 (Kombination 1)",
+        },
+        "key_item_1_combo_2": {
+            "name": "\\{review}Schlüssel 1 (Kombination 2)",
+        },
+        "key_item_2": {
+            "name": "Key 2",
+        },
+        "key_item_2_combo_1": {
+            "name": "\\{review}Schlüssel 2 (Kombination 1)",
+        },
+        "key_item_2_combo_2": {
+            "name": "\\{review}Schlüssel 2 (Kombination 2)",
+        },
+        "key_item_3": {
+            "name": "Key 3",
+        },
+        "key_item_3_combo_1": {
+            "name": "\\{review}Schlüssel 3 (Kombination 1)",
+        },
+        "key_item_3_combo_2": {
+            "name": "\\{review}Schlüssel 3 (Kombination 2)",
+        },
+        "key_item_4": {
+            "name": "Key 4",
+        },
+        "key_item_4_combo_1": {
+            "name": "\\{review}Schlüssel 4 (Kombination 1)",
+        },
+        "key_item_4_combo_2": {
+            "name": "\\{review}Schlüssel 4 (Kombination 2)",
+        },
+        "key_item_5": {
+            "name": "\\{review}Schlüssel 5",
+        },
+        "key_item_5_combo_1": {
+            "name": "\\{review}Schlüssel 5 (Kombination 1)",
+        },
+        "key_item_5_combo_2": {
+            "name": "\\{review}Schlüssel 5 (Kombination 2)",
+        },
+        "key_item_6": {
+            "name": "\\{review}Schlüssel 6",
+        },
+        "key_item_6_combo_1": {
+            "name": "\\{review}Schlüssel 6 (Kombination 1)",
+        },
+        "key_item_6_combo_2": {
+            "name": "\\{review}Schlüssel 6 (Kombination 2)",
+        },
+        "key_item_7": {
+            "name": "\\{review}Schlüssel 7",
+        },
+        "key_item_7_combo_1": {
+            "name": "\\{review}Schlüssel 7 (Kombination 1)",
+        },
+        "key_item_7_combo_2": {
+            "name": "\\{review}Schlüssel 7 (Kombination 2)",
+        },
+        "key_item_8": {
+            "name": "\\{review}Schlüssel 8",
+        },
+        "key_item_8_combo_1": {
+            "name": "\\{review}Schlüssel 8 (Kombination 1)",
+        },
+        "key_item_8_combo_2": {
+            "name": "\\{review}Schlüssel 8 (Kombination 2)",
+        },
+        "key_item_9": {
+            "name": "\\{review}Schlüssel 9",
+        },
         "kick_door_1": {
             "name": "\\{review}Tritt-Tür 1",
         },
@@ -2800,13 +2797,13 @@
         "lara_flare": {
             "name": "Fackel-Animation",
         },
-        "lara_grenade": {
+        "lara_grenade_gun": {
             "name": "Grantenwerfer-Animation",
         },
         "lara_hair": {
             "name": "Laras Zopf",
         },
-        "lara_harpoon": {
+        "lara_harpoon_gun": {
             "name": "Harpunen-Animation",
         },
         "lara_kayak": {
@@ -2839,7 +2836,7 @@
         "lara_rib": {
             "name": "\\{review}RIB-Animation",
         },
-        "lara_rocket": {
+        "lara_rocket_gun": {
             "name": "\\{review}Animation des Raketenwerfers",
         },
         "lara_shotgun": {
@@ -2857,13 +2854,13 @@
         "larson": {
             "name": "Larson",
         },
-        "lasersight": {
+        "lasersight_item": {
             "name": "\\{review}Laserzielvorrichtung",
         },
         "lava_wedge": {
             "name": "Lava-Keil",
         },
-        "lead_bar": {
+        "lead_bar_item": {
             "description": "",
             "name": "Bleibarren",
         },
@@ -2888,20 +2885,20 @@
         "lizard": {
             "name": "\\{review}Echse",
         },
-        "m16": {
-            "name": "M16",
-        },
-        "m16_ammo": {
+        "m16_ammo_item": {
             "name": "M16-Munition",
         },
         "m16_flash": {
             "name": "M16 Blitz",
         },
-        "magnums": {
-            "name": "Magnums",
+        "m16_item": {
+            "name": "M16",
         },
-        "magnums_ammo": {
+        "magnums_ammo_item": {
             "name": "Magnum Munition",
+        },
+        "magnums_item": {
+            "name": "Magnums",
         },
         "mesh_swap_1": {
             "name": "Mesh Swap 1",
@@ -2987,11 +2984,11 @@
         "moving_bar": {
             "name": "Moving Bar",
         },
-        "mp5": {
-            "name": "\\{review}MP5",
-        },
-        "mp5_ammo": {
+        "mp5_ammo_item": {
             "name": "\\{review}MP5-Munition",
+        },
+        "mp5_item": {
+            "name": "\\{review}MP5",
         },
         "mp_1": {
             "name": "\\{review}MP 1",
@@ -3014,13 +3011,13 @@
         "orca": {
             "name": "\\{review}Orca",
         },
-        "passport": {
+        "passport_option": {
             "name": "Spiel",
         },
         "patrol_dog": {
             "name": "\\{review}Hund",
         },
-        "pda": {
+        "pda_option": {
             "name": "Gameplay",
         },
         "pendulum_1": {
@@ -3029,59 +3026,59 @@
         "pendulum_2": {
             "name": "Swinging Box",
         },
-        "photo": {
+        "photo_option": {
             "name": "Laras Haus",
-        },
-        "pickup_1": {
-            "name": "Pickup Item 1",
-        },
-        "pickup_1_combo_1": {
-            "name": "\\{review}Aufnahmegegenstand 1 (Kombination 1)",
-        },
-        "pickup_1_combo_2": {
-            "name": "\\{review}Aufnahmegegenstand 1 (Kombination 2)",
-        },
-        "pickup_2": {
-            "name": "Pickup Item 2",
-        },
-        "pickup_2_combo_1": {
-            "name": "\\{review}Aufnahmegegenstand 2 (Kombination 1)",
-        },
-        "pickup_2_combo_2": {
-            "name": "\\{review}Aufnahmegegenstand 2 (Kombination 2)",
-        },
-        "pickup_3": {
-            "name": "\\{review}Aufnahmegegenstand 3",
-        },
-        "pickup_3_combo_1": {
-            "name": "\\{review}Aufnahmegegenstand 3 (Kombination 1)",
-        },
-        "pickup_3_combo_2": {
-            "name": "\\{review}Aufnahmegegenstand 3 (Kombination 2)",
-        },
-        "pickup_4": {
-            "name": "\\{review}Aufnahmegegenstand 4",
-        },
-        "pickup_4_combo_1": {
-            "name": "\\{review}Aufnahmegegenstand 4 (Kombination 1)",
-        },
-        "pickup_4_combo_2": {
-            "name": "\\{review}Aufnahmegegenstand 4 (Kombination 2)",
         },
         "pickup_aid": {
             "name": "Pickup-Hilfe",
         },
+        "pickup_item_1": {
+            "name": "Pickup Item 1",
+        },
+        "pickup_item_1_combo_1": {
+            "name": "\\{review}Aufnahmegegenstand 1 (Kombination 1)",
+        },
+        "pickup_item_1_combo_2": {
+            "name": "\\{review}Aufnahmegegenstand 1 (Kombination 2)",
+        },
+        "pickup_item_2": {
+            "name": "Pickup Item 2",
+        },
+        "pickup_item_2_combo_1": {
+            "name": "\\{review}Aufnahmegegenstand 2 (Kombination 1)",
+        },
+        "pickup_item_2_combo_2": {
+            "name": "\\{review}Aufnahmegegenstand 2 (Kombination 2)",
+        },
+        "pickup_item_3": {
+            "name": "\\{review}Aufnahmegegenstand 3",
+        },
+        "pickup_item_3_combo_1": {
+            "name": "\\{review}Aufnahmegegenstand 3 (Kombination 1)",
+        },
+        "pickup_item_3_combo_2": {
+            "name": "\\{review}Aufnahmegegenstand 3 (Kombination 2)",
+        },
+        "pickup_item_4": {
+            "name": "\\{review}Aufnahmegegenstand 4",
+        },
+        "pickup_item_4_combo_1": {
+            "name": "\\{review}Aufnahmegegenstand 4 (Kombination 1)",
+        },
+        "pickup_item_4_combo_2": {
+            "name": "\\{review}Aufnahmegegenstand 4 (Kombination 2)",
+        },
         "pierre": {
             "name": "Pierre",
         },
-        "pirahnas": {
+        "piranhas": {
             "name": "\\{review}Piranhas",
         },
-        "pistols": {
-            "name": "Pistolen",
-        },
-        "pistols_ammo": {
+        "pistols_ammo_item": {
             "name": "Pistolen Munition",
+        },
+        "pistols_item": {
+            "name": "Pistolen",
         },
         "player_1": {
             "name": "Zwischensequenz-Schauspieler 1",
@@ -3158,90 +3155,6 @@
         "pushpull_door_2": {
             "name": "\\{review}Schwingtür 2",
         },
-        "puzzle_1": {
-            "name": "Puzzle Item 1",
-        },
-        "puzzle_10": {
-            "name": "\\{review}Rätselgegenstand 10",
-        },
-        "puzzle_11": {
-            "name": "\\{review}Rätselgegenstand 11",
-        },
-        "puzzle_12": {
-            "name": "\\{review}Rätselgegenstand 12",
-        },
-        "puzzle_1_combo_1": {
-            "name": "\\{review}Rätselgegenstand 1 (Kombination 1)",
-        },
-        "puzzle_1_combo_2": {
-            "name": "\\{review}Rätselgegenstand 1 (Kombination 2)",
-        },
-        "puzzle_2": {
-            "name": "Puzzle Item 2",
-        },
-        "puzzle_2_combo_1": {
-            "name": "\\{review}Rätselgegenstand 2 (Kombination 1)",
-        },
-        "puzzle_2_combo_2": {
-            "name": "\\{review}Rätselgegenstand 2 (Kombination 2)",
-        },
-        "puzzle_3": {
-            "name": "Puzzle Item 3",
-        },
-        "puzzle_3_combo_1": {
-            "name": "\\{review}Rätselgegenstand 3 (Kombination 1)",
-        },
-        "puzzle_3_combo_2": {
-            "name": "\\{review}Rätselgegenstand 3 (Kombination 2)",
-        },
-        "puzzle_4": {
-            "name": "Puzzle Item 4",
-        },
-        "puzzle_4_combo_1": {
-            "name": "\\{review}Rätselgegenstand 4 (Kombination 1)",
-        },
-        "puzzle_4_combo_2": {
-            "name": "\\{review}Rätselgegenstand 4 (Kombination 2)",
-        },
-        "puzzle_5": {
-            "name": "\\{review}Rätselgegenstand 5",
-        },
-        "puzzle_5_combo_1": {
-            "name": "\\{review}Rätselgegenstand 5 (Kombination 1)",
-        },
-        "puzzle_5_combo_2": {
-            "name": "\\{review}Rätselgegenstand 5 (Kombination 2)",
-        },
-        "puzzle_6": {
-            "name": "\\{review}Rätselgegenstand 6",
-        },
-        "puzzle_6_combo_1": {
-            "name": "\\{review}Rätselgegenstand 6 (Kombination 1)",
-        },
-        "puzzle_6_combo_2": {
-            "name": "\\{review}Rätselgegenstand 6 (Kombination 2)",
-        },
-        "puzzle_7": {
-            "name": "\\{review}Rätselgegenstand 7",
-        },
-        "puzzle_7_combo_1": {
-            "name": "\\{review}Rätselgegenstand 7 (Kombination 1)",
-        },
-        "puzzle_7_combo_2": {
-            "name": "\\{review}Rätselgegenstand 7 (Kombination 2)",
-        },
-        "puzzle_8": {
-            "name": "\\{review}Rätselgegenstand 8",
-        },
-        "puzzle_8_combo_1": {
-            "name": "\\{review}Rätselgegenstand 8 (Kombination 1)",
-        },
-        "puzzle_8_combo_2": {
-            "name": "\\{review}Rätselgegenstand 8 (Kombination 2)",
-        },
-        "puzzle_9": {
-            "name": "\\{review}Rätselgegenstand 9",
-        },
         "puzzle_done_1": {
             "name": "Puzzle Hole 1 (Done)",
         },
@@ -3314,25 +3227,109 @@
         "puzzle_hole_9": {
             "name": "\\{review}Rätselloch 9 (Leer)",
         },
+        "puzzle_item_1": {
+            "name": "Puzzle Item 1",
+        },
+        "puzzle_item_10": {
+            "name": "\\{review}Rätselgegenstand 10",
+        },
+        "puzzle_item_11": {
+            "name": "\\{review}Rätselgegenstand 11",
+        },
+        "puzzle_item_12": {
+            "name": "\\{review}Rätselgegenstand 12",
+        },
+        "puzzle_item_1_combo_1": {
+            "name": "\\{review}Rätselgegenstand 1 (Kombination 1)",
+        },
+        "puzzle_item_1_combo_2": {
+            "name": "\\{review}Rätselgegenstand 1 (Kombination 2)",
+        },
+        "puzzle_item_2": {
+            "name": "Puzzle Item 2",
+        },
+        "puzzle_item_2_combo_1": {
+            "name": "\\{review}Rätselgegenstand 2 (Kombination 1)",
+        },
+        "puzzle_item_2_combo_2": {
+            "name": "\\{review}Rätselgegenstand 2 (Kombination 2)",
+        },
+        "puzzle_item_3": {
+            "name": "Puzzle Item 3",
+        },
+        "puzzle_item_3_combo_1": {
+            "name": "\\{review}Rätselgegenstand 3 (Kombination 1)",
+        },
+        "puzzle_item_3_combo_2": {
+            "name": "\\{review}Rätselgegenstand 3 (Kombination 2)",
+        },
+        "puzzle_item_4": {
+            "name": "Puzzle Item 4",
+        },
+        "puzzle_item_4_combo_1": {
+            "name": "\\{review}Rätselgegenstand 4 (Kombination 1)",
+        },
+        "puzzle_item_4_combo_2": {
+            "name": "\\{review}Rätselgegenstand 4 (Kombination 2)",
+        },
+        "puzzle_item_5": {
+            "name": "\\{review}Rätselgegenstand 5",
+        },
+        "puzzle_item_5_combo_1": {
+            "name": "\\{review}Rätselgegenstand 5 (Kombination 1)",
+        },
+        "puzzle_item_5_combo_2": {
+            "name": "\\{review}Rätselgegenstand 5 (Kombination 2)",
+        },
+        "puzzle_item_6": {
+            "name": "\\{review}Rätselgegenstand 6",
+        },
+        "puzzle_item_6_combo_1": {
+            "name": "\\{review}Rätselgegenstand 6 (Kombination 1)",
+        },
+        "puzzle_item_6_combo_2": {
+            "name": "\\{review}Rätselgegenstand 6 (Kombination 2)",
+        },
+        "puzzle_item_7": {
+            "name": "\\{review}Rätselgegenstand 7",
+        },
+        "puzzle_item_7_combo_1": {
+            "name": "\\{review}Rätselgegenstand 7 (Kombination 1)",
+        },
+        "puzzle_item_7_combo_2": {
+            "name": "\\{review}Rätselgegenstand 7 (Kombination 2)",
+        },
+        "puzzle_item_8": {
+            "name": "\\{review}Rätselgegenstand 8",
+        },
+        "puzzle_item_8_combo_1": {
+            "name": "\\{review}Rätselgegenstand 8 (Kombination 1)",
+        },
+        "puzzle_item_8_combo_2": {
+            "name": "\\{review}Rätselgegenstand 8 (Kombination 2)",
+        },
+        "puzzle_item_9": {
+            "name": "\\{review}Rätselgegenstand 9",
+        },
         "quad_bike": {
             "name": "\\{review}Quad",
         },
-        "quest_1": {
+        "quest_item_1": {
             "name": "\\{review}Quest-Gegenstand 1",
         },
-        "quest_2": {
+        "quest_item_2": {
             "name": "\\{review}Quest-Gegenstand 2",
         },
-        "quest_3": {
+        "quest_item_3": {
             "name": "\\{review}Quest-Gegenstand 3",
         },
-        "quest_4": {
+        "quest_item_4": {
             "name": "\\{review}Quest-Gegenstand 4",
         },
-        "quest_5": {
+        "quest_item_5": {
             "name": "\\{review}Questgegenstand 5",
         },
-        "quest_6": {
+        "quest_item_6": {
             "name": "\\{review}Questgegenstand 6",
         },
         "raptor": {
@@ -3350,11 +3347,11 @@
         "red_light": {
             "name": "\\{review}Rotes Licht",
         },
-        "revolver": {
-            "name": "\\{review}Revolver",
-        },
-        "revolver_ammo": {
+        "revolver_ammo_item": {
             "name": "\\{review}Revolvermunition",
+        },
+        "revolver_item": {
+            "name": "\\{review}Revolver",
         },
         "rib": {
             "name": "\\{review}RIB",
@@ -3365,11 +3362,11 @@
         "rocket": {
             "name": "\\{review}Rakete",
         },
-        "rocket_launcher": {
-            "name": "\\{review}Raketenwerfer",
-        },
-        "rocket_launcher_ammo": {
+        "rocket_ammo_item": {
             "name": "\\{review}Raketen",
+        },
+        "rocket_gun_item": {
+            "name": "\\{review}Raketenwerfer",
         },
         "rolling_ball_1": {
             "name": [
@@ -3413,17 +3410,23 @@
         "sarcophagus": {
             "name": "\\{review}Sarkophag",
         },
-        "save_crystal": {
+        "save_crystal_item": {
             "name": "Speicherkristall",
+        },
+        "save_crystal_option": {
+            "name": [
+                "\\{review}Kristall",
+                "Speicherkristall",
+            ]
         },
         "scaled_spikes": {
             "name": "\\{review}Skalierte Stacheln",
         },
-        "scion": {
-            "name": "Scion",
-        },
         "scion_holder": {
             "name": "Scion-Halter",
+        },
+        "scion_item_1": {
+            "name": "Scion",
         },
         "secret_1": {
             "name": "Geheimnis 1",
@@ -3458,11 +3461,11 @@
         "shiva": {
             "name": "\\{review}Shiva",
         },
-        "shotgun": {
-            "name": "Schrotflinte",
-        },
-        "shotgun_ammo": {
+        "shotgun_ammo_item": {
             "name": "Schrot-Munition",
+        },
+        "shotgun_item": {
+            "name": "Schrotflinte",
         },
         "shotgun_shell": {
             "name": "\\{review}Schrotpatrone",
@@ -3509,16 +3512,13 @@
         "smoke_emitter_white": {
             "name": "\\{review}Rauchgenerator (Weiß)",
         },
-        "snake": {
-            "name": "\\{review}Schlange",
-        },
         "snow_sprite": {
             "name": "Snowmobile Wake",
         },
         "sophia": {
             "name": "\\{review}Sophia",
         },
-        "sound": {
+        "sound_option": {
             "name": "Sound",
         },
         "sphere_of_doom_1": {
@@ -3557,7 +3557,7 @@
         "sthpac_mercenary": {
             "name": "\\{review}Südsee-Söldner",
         },
-        "stopwatch": {
+        "stopwatch_option": {
             "name": "\\{review}Statistiken",
         },
         "strobe_light": {
@@ -3703,11 +3703,11 @@
         "upv": {
             "name": "\\{review}Mini-U-Boot",
         },
-        "uzis": {
-            "name": "Uzis",
-        },
-        "uzis_ammo": {
+        "uzis_ammo_item": {
             "name": "Uzi-Munition",
+        },
+        "uzis_item": {
+            "name": "Uzis",
         },
         "vole": {
             "name": [
@@ -3739,10 +3739,10 @@
         "waterfall_mist": {
             "name": "Wasserfall Nebel",
         },
-        "waterskin_1": {
+        "waterskin_1_empty": {
             "name": "\\{review}Kleine Wasserflasche",
         },
-        "waterskin_2": {
+        "waterskin_2_empty": {
             "name": "\\{review}Große Wasserflasche",
         },
         "white_light": {

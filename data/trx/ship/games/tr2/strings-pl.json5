@@ -10,10 +10,10 @@
         }
     },
     "objects": {
-        "large_medipack": {
+        "large_medipack_item": {
             "name": "Duża apteczka",
         },
-        "small_medipack": {
+        "small_medipack_item": {
             "name": "Mała apteczka",
         }
     },
@@ -38,10 +38,10 @@
         {
             "title": "Wielki Mur",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz do strażnicy",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Zardzewiały klucz",
                 }
             }
@@ -49,13 +49,13 @@
         {
             "title": "Wenecja",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz do hangaru łodzi",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Stalowy klucz",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Żelazny klucz",
                 }
             }
@@ -63,10 +63,10 @@
         {
             "title": "Kryjówka Bartoliego",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz do biblioteki",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Klucz do detonatora",
                 }
             }
@@ -74,13 +74,13 @@
         {
             "title": "Opera",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Ozdobny klucz",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Skrzynka przekaźnikowa",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Układ elektroniczny",
                 }
             }
@@ -88,13 +88,13 @@
         {
             "title": "Platforma wiertnicza",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Czerwona karta dostępu",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Żółta karta dostępu",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Zielona karta dostępu",
                 }
             }
@@ -102,13 +102,13 @@
         {
             "title": "Strefa nurkowania",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Czerwona karta dostępu",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Niebieska karta dostępu",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Chip maszynowy",
                 }
             }
@@ -119,16 +119,16 @@
         {
             "title": "Wrak statku Maria Doria",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz do łazienki",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Zardzewiały klucz",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Klucz do kajuty",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Wyłącznik obwodu",
                 }
             }
@@ -136,10 +136,10 @@
         {
             "title": "Strefa pasażerska",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz do teatru",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Zardzewiały klucz",
                 }
             }
@@ -147,16 +147,16 @@
         {
             "title": "Pokład",
             "objects": {
-                "key_2": {
+                "key_item_2": {
                     "name": "Klucz do zamka rufowego",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Klucz do magazynu",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Klucz do kajuty",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Seraf",
                 }
             }
@@ -167,13 +167,13 @@
                 "tiger": {
                     "name": "Lampart śnieżny",
                 },
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz do zwodzonego mostu",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Klucz do chaty",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Seraf",
                 }
             }
@@ -181,25 +181,25 @@
         {
             "title": "Klasztor Barkhang",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz do skarbca",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Klucz do zapadni",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Klucz do wyjścia na dach",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Klucz do głównej sali",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Młynek modlitewny",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Kamień szlachetny",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Seraf",
                 }
             }
@@ -210,10 +210,10 @@
                 "tiger": {
                     "name": "Śnieżny lampart",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Pałka do gongu",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Tybetańska maska",
                 }
             }
@@ -224,13 +224,13 @@
                 "tiger": {
                     "name": "Biały tygrys",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Pałka do gongu",
                 },
-                "pickup_2": {
+                "pickup_item_2": {
                     "name": "Talion",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Tybetańska maska",
                 }
             }
@@ -238,16 +238,16 @@
         {
             "title": "Świątynia Xian",
             "objects": {
-                "key_2": {
+                "key_item_2": {
                     "name": "Złoty klucz",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Srebrny klucz",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Klucz do głównej komnaty",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Smocza pieczęć",
                 }
             }
@@ -255,10 +255,10 @@
         {
             "title": "Podniebne wyspy",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Mistyczna tabliczka",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Mistyczna tabliczka",
                 }
             }
@@ -266,10 +266,10 @@
         {
             "title": "Legowisko smoka",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Mistyczna tabliczka",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Sztylet Xian",
                 }
             }
@@ -277,10 +277,10 @@
         {
             "title": "Dom, słodki dom",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz do szafki na broń",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Sztylet Xian",
                 }
             }
@@ -290,13 +290,13 @@
         {
             "title": "Wenecja",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz do hangaru łodzi",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Stalowy klucz",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Żelazny klucz",
                 }
             }
@@ -304,16 +304,16 @@
         {
             "title": "Wrak statku Maria Doria",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz do łazienki",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Zardzewiały klucz",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Klucz do kajuty",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Wyłącznik obwodu",
                 }
             }
@@ -324,13 +324,13 @@
                 "tiger": {
                     "name": "Lampart śnieżny",
                 },
-                "key_1": {
+                "key_item_1": {
                     "name": "Klucz do zwodzonego mostu",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Klucz do chaty",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Seraf",
                 }
             }

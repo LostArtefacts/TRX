@@ -32,26 +32,26 @@
         }
     },
     "objects": {
-        "large_medipack": {
+        "large_medipack_item": {
             "name": "Grande trousse de soins",
         },
-        "quest_1": {
+        "quest_item_1": {
             "description": "",
             "name": "Pierre Infada",
         },
-        "quest_2": {
+        "quest_item_2": {
             "description": "",
             "name": "Objet 115",
         },
-        "quest_3": {
+        "quest_item_3": {
             "description": "",
             "name": "L'Œil d'Isis",
         },
-        "quest_4": {
+        "quest_item_4": {
             "description": "",
             "name": "Dague d'Ora",
         },
-        "small_medipack": {
+        "small_medipack_item": {
             "name": "Petite trousse de soins",
         }
     },
@@ -94,7 +94,7 @@
         {
             "title": "La demeure de Lara",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé de la piste de course",
                 }
             }
@@ -102,7 +102,7 @@
         {
             "title": "La jungle",
             "objects": {
-                "key_4": {
+                "key_item_4": {
                     "name": "Clé d'Indra",
                 }
             }
@@ -110,13 +110,13 @@
         {
             "title": "Les ruines du temple",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé de Ganesha",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Cimeterre",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Cimeterre",
                 }
             }
@@ -124,7 +124,7 @@
         {
             "title": "Le Gange",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé du portail",
                 }
             }
@@ -135,10 +135,10 @@
         {
             "title": "Le village côtier",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé du contrebandier",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Pierre du serpent",
                 }
             }
@@ -146,13 +146,13 @@
         {
             "title": "Le lieu du crash",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé du commandant Bishop",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Clé du Lt. Tuckerman",
                 },
-                "pickup_1": {
+                "pickup_item_1": {
                     "name": "Carte du marais",
                     "description": "",
                 }
@@ -167,10 +167,10 @@
         {
             "title": "Les quais de la Tamise",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé de la salle du conduit",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Clé de la cathédrale",
                 }
             }
@@ -178,25 +178,25 @@
         {
             "title": "Aldwych",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé de la maintenance",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Clé de Salomon",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Clé de Salomon",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Vieux penny",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Ticket",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Maillet maçonnique",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Étoile décorée",
                 }
             }
@@ -204,10 +204,10 @@
         {
             "title": "Le portail du Lude",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé de la chaufferie",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Fluide d'embaumement",
                 }
             }
@@ -218,10 +218,10 @@
         {
             "title": "Le désert du Nevada",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Passe du générateur",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Interrupteur du détonateur",
                 }
             }
@@ -229,16 +229,16 @@
         {
             "title": "Le Quartier Haute Sécurité",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Carte de sécurité A",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Carte de sécurité B",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Passe de sécurité bleu",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Passe de sécurité jaune",
                 }
             }
@@ -246,19 +246,19 @@
         {
             "title": "La Zone 51",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Passe pour mise à feu",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Clé d'accès à la tour",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Disque du code d'accès",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Disque du code d'accès",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Clé du hangar",
                 }
             }
@@ -266,13 +266,13 @@
         {
             "title": "L'Antarctique",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé de la hutte",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Pied-de-biche",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Clé du portail",
                 }
             }
@@ -280,13 +280,13 @@
         {
             "title": "Les mines de RX-Tech",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Pied-de-biche",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Acide de batterie",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Démarreur du treuil",
                 }
             }
@@ -294,10 +294,10 @@
         {
             "title": "La cité perdue de Tinos",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé d'Uli",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Masque océanien",
                 }
             }
@@ -308,7 +308,7 @@
         {
             "title": "L'église Hallows",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Clé du caveau",
                 }
             }

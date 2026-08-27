@@ -44,7 +44,6 @@ OBJECT_NAME_MATCH *Object_IdsFromName(
 // an alias, as an inventory option is an alias of the item it shows.
 OBJECT_ID Object_ResolveAlias(OBJECT_ID obj_id);
 
-// Return an unique object id for a given programmatic string.
-// Example:
-//     Given a string "key_1", returns O_KEY_1.
+// Return the object named by a key, or NO_OBJECT where nothing matches. A key
+// is the C spelling without the O_ prefix and in lower case.
 OBJECT_ID Object_IdFromKey(const char *key);

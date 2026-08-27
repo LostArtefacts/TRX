@@ -2109,11 +2109,11 @@
         "atlantean_winged": {
             "name": "Atlantideo Alato",
         },
-        "autos": {
-            "name": "Pistole Automatiche",
-        },
-        "autos_ammo": {
+        "autos_ammo_item": {
             "name": "Caricatori per Pistole Automatiche",
+        },
+        "autos_item": {
+            "name": "Pistole Automatiche",
         },
         "bacon_lara": {
             "name": "Sosia di Lara",
@@ -2172,7 +2172,7 @@
         "big_spider": {
             "name": "Ragno Gigante",
         },
-        "binoculars": {
+        "binoculars_item": {
             "name": "Binocolo",
         },
         "bird_guardian": {
@@ -2259,6 +2259,9 @@
         "clock_chimes": {
             "name": "Orologio Covo di Bartoli",
         },
+        "cobra": {
+            "name": "Serpente",
+        },
         "cog_1": {
             "name": "Ingranaggio 1",
         },
@@ -2274,13 +2277,13 @@
         "combat_end": {
             "name": "Fine Combattimento",
         },
-        "compass": {
+        "compass_option": {
             "name": "Bussola",
         },
         "compy": {
             "name": "Compsognathus",
         },
-        "controls": {
+        "controls_option": {
             "name": "Comandi",
         },
         "copter": {
@@ -2295,29 +2298,23 @@
         "crocodile": {
             "name": "Coccodrillo",
         },
-        "crossbow": {
-            "name": "Balestra",
-        },
-        "crossbow_ammo": {
+        "crossbow_ammo_1_item": {
             "name": "Dardi per Balestra",
         },
         "crossbow_bolt": {
             "name": "Dardo per Balestra",
         },
+        "crossbow_item": {
+            "name": "Balestra",
+        },
         "crow": {
             "name": "Corvo",
-        },
-        "crowbar": {
-            "name": "Piede di Porco",
         },
         "crowbar_anim": {
             "name": "Animazione Piede di Porco",
         },
-        "crystal": {
-            "name": [
-                "Cristallo",
-                "Cristallo di Salvataggio",
-            ]
+        "crowbar_item": {
+            "name": "Piede di Porco",
         },
         "cult_1": {
             "name": "Scagnozzo Mascherato 1",
@@ -2349,11 +2346,11 @@
         "dart_emitter": {
             "name": "Emettitore di Dardi",
         },
-        "desert_eagle": {
-            "name": "Desert Eagle",
-        },
-        "desert_eagle_ammo": {
+        "desert_eagle_ammo_item": {
             "name": "Caricatori per Desert Eagle",
+        },
+        "desert_eagle_item": {
+            "name": "Desert Eagle",
         },
         "detonator_box": {
             "name": "Detonatore",
@@ -2460,13 +2457,13 @@
         "ember_emitter": {
             "name": "Emettitore di Brace",
         },
-        "examine_1": {
+        "examine_item_1": {
             "name": "Oggetto da Esaminare 1",
         },
-        "examine_2": {
+        "examine_item_2": {
             "name": "Oggetto da Esaminare 2",
         },
-        "examine_3": {
+        "examine_item_3": {
             "name": "Oggetto da Esaminare 3",
         },
         "explosion_1": {
@@ -2551,13 +2548,13 @@
         "flame_emitter_tr4_wall": {
             "name": "Emettitore di Fiamme (TR4, Parete)",
         },
-        "flare": {
-            "name": "Razzo di Segnalazione",
-        },
         "flare_fire": {
             "name": "Scintille Fiamma",
         },
-        "flares_box": {
+        "flare_item": {
+            "name": "Razzo di Segnalazione",
+        },
+        "flares_box_item": {
             "name": "Scatola Razzi",
         },
         "flickering_light": {
@@ -2575,7 +2572,7 @@
         "fx_reserved": {
             "name": "Disco Grigio",
         },
-        "gamma": {
+        "gamma_option": {
             "name": "Gamma",
         },
         "gas_emitter_green": {
@@ -2584,7 +2581,7 @@
         "general": {
             "name": "Minisommergibile",
         },
-        "globe": {
+        "globe_option": {
             "name": "Globo",
         },
         "glow": {
@@ -2602,7 +2599,7 @@
         "gong_bonger": {
             "name": "Martello del Gong",
         },
-        "graphics": {
+        "graphics_option": {
             "name": "Grafica",
         },
         "green_light": {
@@ -2611,11 +2608,11 @@
         "grenade": {
             "name": "Granata",
         },
-        "grenade_launcher": {
-            "name": "Lanciagranate",
-        },
-        "grenade_launcher_ammo": {
+        "grenade_ammo_item": {
             "name": "Granate",
+        },
+        "grenade_gun_item": {
+            "name": "Lanciagranate",
         },
         "gun_flash": {
             "name": "Lampo Pistola",
@@ -2626,11 +2623,11 @@
         "harpoon_bolt": {
             "name": "Dardo Arpione",
         },
-        "harpoon_gun": {
-            "name": "Fucile Subacqueo",
-        },
-        "harpoon_gun_ammo": {
+        "harpoon_gun_ammo_item": {
             "name": "Arpioni",
+        },
+        "harpoon_gun_item": {
+            "name": "Fucile Subacqueo",
         },
         "hook": {
             "name": "Gancio",
@@ -2659,90 +2656,6 @@
         },
         "kayak": {
             "name": "Kayak",
-        },
-        "key_1": {
-            "name": "Chiave 1",
-        },
-        "key_10": {
-            "name": "Chiave 10",
-        },
-        "key_11": {
-            "name": "Chiave 11",
-        },
-        "key_12": {
-            "name": "Chiave 12",
-        },
-        "key_1_combo_1": {
-            "name": "Chiave 1 (Combinato 1)",
-        },
-        "key_1_combo_2": {
-            "name": "Chiave 1 (Combinato 2)",
-        },
-        "key_2": {
-            "name": "Chiave 2",
-        },
-        "key_2_combo_1": {
-            "name": "Chiave 2 (Combinato 1)",
-        },
-        "key_2_combo_2": {
-            "name": "Chiave 2 (Combinato 2)",
-        },
-        "key_3": {
-            "name": "Chiave 3",
-        },
-        "key_3_combo_1": {
-            "name": "Chiave 3 (Combinato 1)",
-        },
-        "key_3_combo_2": {
-            "name": "Chiave 3 (Combinato 2)",
-        },
-        "key_4": {
-            "name": "Chiave 4",
-        },
-        "key_4_combo_1": {
-            "name": "Chiave 4 (Combinato 1)",
-        },
-        "key_4_combo_2": {
-            "name": "Chiave 4 (Combinato 2)",
-        },
-        "key_5": {
-            "name": "Chiave 5",
-        },
-        "key_5_combo_1": {
-            "name": "Chiave 5 (Combinato 1)",
-        },
-        "key_5_combo_2": {
-            "name": "Chiave 5 (Combinato 2)",
-        },
-        "key_6": {
-            "name": "Chiave 6",
-        },
-        "key_6_combo_1": {
-            "name": "Chiave 6 (Combinato 1)",
-        },
-        "key_6_combo_2": {
-            "name": "Chiave 6 (Combinato 2)",
-        },
-        "key_7": {
-            "name": "Chiave 7",
-        },
-        "key_7_combo_1": {
-            "name": "Chiave 7 (Combinato 1)",
-        },
-        "key_7_combo_2": {
-            "name": "Chiave 7 (Combinato 2)",
-        },
-        "key_8": {
-            "name": "Chiave 8",
-        },
-        "key_8_combo_1": {
-            "name": "Chiave 8 (Combinato 1)",
-        },
-        "key_8_combo_2": {
-            "name": "Chiave 8 (Combinato 2)",
-        },
-        "key_9": {
-            "name": "Chiave 9",
         },
         "key_hole_1": {
             "name": "Serratura 1",
@@ -2780,6 +2693,90 @@
         "key_hole_9": {
             "name": "Serratura 9",
         },
+        "key_item_1": {
+            "name": "Chiave 1",
+        },
+        "key_item_10": {
+            "name": "Chiave 10",
+        },
+        "key_item_11": {
+            "name": "Chiave 11",
+        },
+        "key_item_12": {
+            "name": "Chiave 12",
+        },
+        "key_item_1_combo_1": {
+            "name": "Chiave 1 (Combinato 1)",
+        },
+        "key_item_1_combo_2": {
+            "name": "Chiave 1 (Combinato 2)",
+        },
+        "key_item_2": {
+            "name": "Chiave 2",
+        },
+        "key_item_2_combo_1": {
+            "name": "Chiave 2 (Combinato 1)",
+        },
+        "key_item_2_combo_2": {
+            "name": "Chiave 2 (Combinato 2)",
+        },
+        "key_item_3": {
+            "name": "Chiave 3",
+        },
+        "key_item_3_combo_1": {
+            "name": "Chiave 3 (Combinato 1)",
+        },
+        "key_item_3_combo_2": {
+            "name": "Chiave 3 (Combinato 2)",
+        },
+        "key_item_4": {
+            "name": "Chiave 4",
+        },
+        "key_item_4_combo_1": {
+            "name": "Chiave 4 (Combinato 1)",
+        },
+        "key_item_4_combo_2": {
+            "name": "Chiave 4 (Combinato 2)",
+        },
+        "key_item_5": {
+            "name": "Chiave 5",
+        },
+        "key_item_5_combo_1": {
+            "name": "Chiave 5 (Combinato 1)",
+        },
+        "key_item_5_combo_2": {
+            "name": "Chiave 5 (Combinato 2)",
+        },
+        "key_item_6": {
+            "name": "Chiave 6",
+        },
+        "key_item_6_combo_1": {
+            "name": "Chiave 6 (Combinato 1)",
+        },
+        "key_item_6_combo_2": {
+            "name": "Chiave 6 (Combinato 2)",
+        },
+        "key_item_7": {
+            "name": "Chiave 7",
+        },
+        "key_item_7_combo_1": {
+            "name": "Chiave 7 (Combinato 1)",
+        },
+        "key_item_7_combo_2": {
+            "name": "Chiave 7 (Combinato 2)",
+        },
+        "key_item_8": {
+            "name": "Chiave 8",
+        },
+        "key_item_8_combo_1": {
+            "name": "Chiave 8 (Combinato 1)",
+        },
+        "key_item_8_combo_2": {
+            "name": "Chiave 8 (Combinato 2)",
+        },
+        "key_item_9": {
+            "name": "Chiave 9",
+        },
         "kick_door_1": {
             "name": "Porta da Sfondare 1",
         },
@@ -2816,13 +2813,13 @@
         "lara_flare": {
             "name": "Animazione Razzo di Segnalazione",
         },
-        "lara_grenade": {
+        "lara_grenade_gun": {
             "name": "Animazione Lanciagranate",
         },
         "lara_hair": {
             "name": "Treccia di Lara",
         },
-        "lara_harpoon": {
+        "lara_harpoon_gun": {
             "name": "Animazione Fucile Subacqueo",
         },
         "lara_kayak": {
@@ -2855,7 +2852,7 @@
         "lara_rib": {
             "name": "Animazione Gommone a Motore",
         },
-        "lara_rocket": {
+        "lara_rocket_gun": {
             "name": "Animazione Lanciarazzi",
         },
         "lara_shotgun": {
@@ -2870,19 +2867,19 @@
         "lara_uzis": {
             "name": "Animazione Uzi",
         },
-        "large_medipack": {
+        "large_medipack_item": {
             "name": "Kit Medico Grande",
         },
         "larson": {
             "name": "Larson",
         },
-        "lasersight": {
+        "lasersight_item": {
             "name": "Mirino Laser",
         },
         "lava_wedge": {
             "name": "Cascata di Lava",
         },
-        "lead_bar": {
+        "lead_bar_item": {
             "description": "",
             "name": "Barra di Piombo",
         },
@@ -2907,20 +2904,20 @@
         "lizard": {
             "name": "Lucertola",
         },
-        "m16": {
-            "name": "M16",
-        },
-        "m16_ammo": {
+        "m16_ammo_item": {
             "name": "Caricatori per M16",
         },
         "m16_flash": {
             "name": "Lampo M16",
         },
-        "magnums": {
-            "name": "Magnum",
+        "m16_item": {
+            "name": "M16",
         },
-        "magnums_ammo": {
+        "magnums_ammo_item": {
             "name": "Caricatori per Magnum",
+        },
+        "magnums_item": {
+            "name": "Magnum",
         },
         "mesh_swap_1": {
             "name": "Cambio Costume 1",
@@ -3006,11 +3003,11 @@
         "moving_bar": {
             "name": "Barra Mobile",
         },
-        "mp5": {
-            "name": "MP5",
-        },
-        "mp5_ammo": {
+        "mp5_ammo_item": {
             "name": "Caricatori per MP5",
+        },
+        "mp5_item": {
+            "name": "MP5",
         },
         "mp_1": {
             "name": "MP 1",
@@ -3033,7 +3030,7 @@
         "orca": {
             "name": "Orca",
         },
-        "passport": {
+        "passport_option": {
             "name": "Partita",
         },
         "patrol_dog": {
@@ -3042,7 +3039,7 @@
                 "Cane da Pattuglia",
             ]
         },
-        "pda": {
+        "pda_option": {
             "name": "Opzioni di Gioco",
         },
         "pendulum_1": {
@@ -3059,59 +3056,59 @@
                 "Scatola Oscillante",
             ]
         },
-        "photo": {
+        "photo_option": {
             "name": "Casa di Lara",
-        },
-        "pickup_1": {
-            "name": "Oggetto Recuperabile 1",
-        },
-        "pickup_1_combo_1": {
-            "name": "Oggetto Recuperabile 1 (Combinato 1)",
-        },
-        "pickup_1_combo_2": {
-            "name": "Oggetto Recuperabile 1 (Combinato 2)",
-        },
-        "pickup_2": {
-            "name": "Oggetto Recuperabile 2",
-        },
-        "pickup_2_combo_1": {
-            "name": "Oggetto Recuperabile 2 (Combinato 1)",
-        },
-        "pickup_2_combo_2": {
-            "name": "Oggetto Recuperabile 2 (Combinato 2)",
-        },
-        "pickup_3": {
-            "name": "Oggetto Recuperabile 3",
-        },
-        "pickup_3_combo_1": {
-            "name": "Oggetto Recuperabile 3 (Combinato 1)",
-        },
-        "pickup_3_combo_2": {
-            "name": "Oggetto Recuperabile 3 (Combinato 2)",
-        },
-        "pickup_4": {
-            "name": "Oggetto Recuperabile 4",
-        },
-        "pickup_4_combo_1": {
-            "name": "Oggetto Recuperabile 4 (Combinato 1)",
-        },
-        "pickup_4_combo_2": {
-            "name": "Oggetto Recuperabile 4 (Combinato 2)",
         },
         "pickup_aid": {
             "name": "Segnalazione Oggetti",
         },
+        "pickup_item_1": {
+            "name": "Oggetto Recuperabile 1",
+        },
+        "pickup_item_1_combo_1": {
+            "name": "Oggetto Recuperabile 1 (Combinato 1)",
+        },
+        "pickup_item_1_combo_2": {
+            "name": "Oggetto Recuperabile 1 (Combinato 2)",
+        },
+        "pickup_item_2": {
+            "name": "Oggetto Recuperabile 2",
+        },
+        "pickup_item_2_combo_1": {
+            "name": "Oggetto Recuperabile 2 (Combinato 1)",
+        },
+        "pickup_item_2_combo_2": {
+            "name": "Oggetto Recuperabile 2 (Combinato 2)",
+        },
+        "pickup_item_3": {
+            "name": "Oggetto Recuperabile 3",
+        },
+        "pickup_item_3_combo_1": {
+            "name": "Oggetto Recuperabile 3 (Combinato 1)",
+        },
+        "pickup_item_3_combo_2": {
+            "name": "Oggetto Recuperabile 3 (Combinato 2)",
+        },
+        "pickup_item_4": {
+            "name": "Oggetto Recuperabile 4",
+        },
+        "pickup_item_4_combo_1": {
+            "name": "Oggetto Recuperabile 4 (Combinato 1)",
+        },
+        "pickup_item_4_combo_2": {
+            "name": "Oggetto Recuperabile 4 (Combinato 2)",
+        },
         "pierre": {
             "name": "Pierre",
         },
-        "pirahnas": {
+        "piranhas": {
             "name": "Piranha",
         },
-        "pistols": {
-            "name": "Pistole",
-        },
-        "pistols_ammo": {
+        "pistols_ammo_item": {
             "name": "Caricatori per Pistole",
+        },
+        "pistols_item": {
+            "name": "Pistole",
         },
         "player_1": {
             "name": "Attore Intermezzo 1",
@@ -3188,90 +3185,6 @@
         "pushpull_door_2": {
             "name": "Porta a Spinta/Da Tirare 2",
         },
-        "puzzle_1": {
-            "name": "Oggetto Enigma 1",
-        },
-        "puzzle_10": {
-            "name": "Oggetto Enigma 10",
-        },
-        "puzzle_11": {
-            "name": "Oggetto Enigma 11",
-        },
-        "puzzle_12": {
-            "name": "Oggetto Enigma 12",
-        },
-        "puzzle_1_combo_1": {
-            "name": "Oggetto Enigma 1 (Combinato 1)",
-        },
-        "puzzle_1_combo_2": {
-            "name": "Oggetto Enigma 1 (Combinato 2)",
-        },
-        "puzzle_2": {
-            "name": "Oggetto Enigma 2",
-        },
-        "puzzle_2_combo_1": {
-            "name": "Oggetto Enigma 2 (Combinato 1)",
-        },
-        "puzzle_2_combo_2": {
-            "name": "Oggetto Enigma 2 (Combinato 2)",
-        },
-        "puzzle_3": {
-            "name": "Oggetto Enigma 3",
-        },
-        "puzzle_3_combo_1": {
-            "name": "Oggetto Enigma 3 (Combinato 1)",
-        },
-        "puzzle_3_combo_2": {
-            "name": "Oggetto Enigma 3 (Combinato 2)",
-        },
-        "puzzle_4": {
-            "name": "Oggetto Enigma 4",
-        },
-        "puzzle_4_combo_1": {
-            "name": "Oggetto Enigma 4 (Combinato 1)",
-        },
-        "puzzle_4_combo_2": {
-            "name": "Oggetto Enigma 4 (Combinato 2)",
-        },
-        "puzzle_5": {
-            "name": "Oggetto Enigma 5",
-        },
-        "puzzle_5_combo_1": {
-            "name": "Oggetto Enigma 5 (Combinato 1)",
-        },
-        "puzzle_5_combo_2": {
-            "name": "Oggetto Enigma 5 (Combinato 2)",
-        },
-        "puzzle_6": {
-            "name": "Oggetto Enigma 6",
-        },
-        "puzzle_6_combo_1": {
-            "name": "Oggetto Enigma 6 (Combinato 1)",
-        },
-        "puzzle_6_combo_2": {
-            "name": "Oggetto Enigma 6 (Combinato 2)",
-        },
-        "puzzle_7": {
-            "name": "Oggetto Enigma 7",
-        },
-        "puzzle_7_combo_1": {
-            "name": "Oggetto Enigma 7 (Combinato 1)",
-        },
-        "puzzle_7_combo_2": {
-            "name": "Oggetto Enigma 7 (Combinato 2)",
-        },
-        "puzzle_8": {
-            "name": "Oggetto Enigma 8",
-        },
-        "puzzle_8_combo_1": {
-            "name": "Oggetto Enigma 8 (Combinato 1)",
-        },
-        "puzzle_8_combo_2": {
-            "name": "Oggetto Enigma 8 (Combinato 2)",
-        },
-        "puzzle_9": {
-            "name": "Oggetto Enigma 9",
-        },
         "puzzle_done_1": {
             "name": "Serratura Enigma 1 (Usata)",
         },
@@ -3344,25 +3257,109 @@
         "puzzle_hole_9": {
             "name": "Serratura Enigma 9 (Vuota)",
         },
+        "puzzle_item_1": {
+            "name": "Oggetto Enigma 1",
+        },
+        "puzzle_item_10": {
+            "name": "Oggetto Enigma 10",
+        },
+        "puzzle_item_11": {
+            "name": "Oggetto Enigma 11",
+        },
+        "puzzle_item_12": {
+            "name": "Oggetto Enigma 12",
+        },
+        "puzzle_item_1_combo_1": {
+            "name": "Oggetto Enigma 1 (Combinato 1)",
+        },
+        "puzzle_item_1_combo_2": {
+            "name": "Oggetto Enigma 1 (Combinato 2)",
+        },
+        "puzzle_item_2": {
+            "name": "Oggetto Enigma 2",
+        },
+        "puzzle_item_2_combo_1": {
+            "name": "Oggetto Enigma 2 (Combinato 1)",
+        },
+        "puzzle_item_2_combo_2": {
+            "name": "Oggetto Enigma 2 (Combinato 2)",
+        },
+        "puzzle_item_3": {
+            "name": "Oggetto Enigma 3",
+        },
+        "puzzle_item_3_combo_1": {
+            "name": "Oggetto Enigma 3 (Combinato 1)",
+        },
+        "puzzle_item_3_combo_2": {
+            "name": "Oggetto Enigma 3 (Combinato 2)",
+        },
+        "puzzle_item_4": {
+            "name": "Oggetto Enigma 4",
+        },
+        "puzzle_item_4_combo_1": {
+            "name": "Oggetto Enigma 4 (Combinato 1)",
+        },
+        "puzzle_item_4_combo_2": {
+            "name": "Oggetto Enigma 4 (Combinato 2)",
+        },
+        "puzzle_item_5": {
+            "name": "Oggetto Enigma 5",
+        },
+        "puzzle_item_5_combo_1": {
+            "name": "Oggetto Enigma 5 (Combinato 1)",
+        },
+        "puzzle_item_5_combo_2": {
+            "name": "Oggetto Enigma 5 (Combinato 2)",
+        },
+        "puzzle_item_6": {
+            "name": "Oggetto Enigma 6",
+        },
+        "puzzle_item_6_combo_1": {
+            "name": "Oggetto Enigma 6 (Combinato 1)",
+        },
+        "puzzle_item_6_combo_2": {
+            "name": "Oggetto Enigma 6 (Combinato 2)",
+        },
+        "puzzle_item_7": {
+            "name": "Oggetto Enigma 7",
+        },
+        "puzzle_item_7_combo_1": {
+            "name": "Oggetto Enigma 7 (Combinato 1)",
+        },
+        "puzzle_item_7_combo_2": {
+            "name": "Oggetto Enigma 7 (Combinato 2)",
+        },
+        "puzzle_item_8": {
+            "name": "Oggetto Enigma 8",
+        },
+        "puzzle_item_8_combo_1": {
+            "name": "Oggetto Enigma 8 (Combinato 1)",
+        },
+        "puzzle_item_8_combo_2": {
+            "name": "Oggetto Enigma 8 (Combinato 2)",
+        },
+        "puzzle_item_9": {
+            "name": "Oggetto Enigma 9",
+        },
         "quad_bike": {
             "name": "Quad",
         },
-        "quest_1": {
+        "quest_item_1": {
             "name": "Oggetto Missione 1",
         },
-        "quest_2": {
+        "quest_item_2": {
             "name": "Oggetto Missione 2",
         },
-        "quest_3": {
+        "quest_item_3": {
             "name": "Oggetto Missione 3",
         },
-        "quest_4": {
+        "quest_item_4": {
             "name": "Oggetto Missione 4",
         },
-        "quest_5": {
+        "quest_item_5": {
             "name": "Oggetto Missione 5",
         },
-        "quest_6": {
+        "quest_item_6": {
             "name": "Oggetto Missione 6",
         },
         "raptor": {
@@ -3380,11 +3377,11 @@
         "red_light": {
             "name": "Luce Rossa",
         },
-        "revolver": {
-            "name": "Revolver",
-        },
-        "revolver_ammo": {
+        "revolver_ammo_item": {
             "name": "Caricatori per Revolver",
+        },
+        "revolver_item": {
+            "name": "Revolver",
         },
         "rib": {
             "name": "Gommone a Motore",
@@ -3395,11 +3392,11 @@
         "rocket": {
             "name": "Razzo",
         },
-        "rocket_launcher": {
-            "name": "Lanciarazzi",
-        },
-        "rocket_launcher_ammo": {
+        "rocket_ammo_item": {
             "name": "Razzi",
+        },
+        "rocket_gun_item": {
+            "name": "Lanciarazzi",
         },
         "rolling_ball_1": {
             "name": [
@@ -3443,17 +3440,23 @@
         "sarcophagus": {
             "name": "Sarcofago",
         },
-        "save_crystal": {
+        "save_crystal_item": {
             "name": "Cristallo di Salvataggio",
+        },
+        "save_crystal_option": {
+            "name": [
+                "Cristallo",
+                "Cristallo di Salvataggio",
+            ]
         },
         "scaled_spikes": {
             "name": "\\{review}Spuntoni ridimensionati",
         },
-        "scion": {
-            "name": "Scion",
-        },
         "scion_holder": {
             "name": "Supporto Scion",
+        },
+        "scion_item_1": {
+            "name": "Scion",
         },
         "secret_1": {
             "name": "Segreto 1",
@@ -3488,11 +3491,11 @@
         "shiva": {
             "name": "Shiva",
         },
-        "shotgun": {
-            "name": "Fucile a Pompa",
-        },
-        "shotgun_ammo": {
+        "shotgun_ammo_item": {
             "name": "Cartucce per Fucile a Pompa",
+        },
+        "shotgun_item": {
+            "name": "Fucile a Pompa",
         },
         "shotgun_shell": {
             "name": "Bossolo di Cartuccia",
@@ -3521,7 +3524,7 @@
         "sliding_pillar": {
             "name": "Pilastro Scorrevole",
         },
-        "small_medipack": {
+        "small_medipack_item": {
             "name": "Kit Medico Piccolo",
         },
         "smashable_1": {
@@ -3542,16 +3545,13 @@
         "smoke_emitter_white": {
             "name": "Emettitore di Fumo (Bianco)",
         },
-        "snake": {
-            "name": "Serpente",
-        },
         "snow_sprite": {
             "name": "Scia Motoslitta",
         },
         "sophia": {
             "name": "Sophia",
         },
-        "sound": {
+        "sound_option": {
             "name": "Suono",
         },
         "sphere_of_doom_1": {
@@ -3590,7 +3590,7 @@
         "sthpac_mercenary": {
             "name": "Mercenario del Sud Pacifico",
         },
-        "stopwatch": {
+        "stopwatch_option": {
             "name": "Statistiche",
         },
         "strobe_light": {
@@ -3778,11 +3778,11 @@
         "upv": {
             "name": "Mini Sottomarino",
         },
-        "uzis": {
-            "name": "Uzi",
-        },
-        "uzis_ammo": {
+        "uzis_ammo_item": {
             "name": "Caricatori per Uzi",
+        },
+        "uzis_item": {
+            "name": "Uzi",
         },
         "vole": {
             "name": [
@@ -3814,10 +3814,10 @@
         "waterfall_mist": {
             "name": "Foschia Cascata",
         },
-        "waterskin_1": {
+        "waterskin_1_empty": {
             "name": "Otre Piccolo",
         },
-        "waterskin_2": {
+        "waterskin_2_empty": {
             "name": "Otre Grande",
         },
         "white_light": {

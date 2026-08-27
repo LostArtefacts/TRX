@@ -11,10 +11,10 @@
                 "tiger": {
                     "name": "Lìopaird-shneachda",
                 },
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair an t-Seòmair-ghàrda",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Iuchair Toll 'B'",
                 }
             }
@@ -22,13 +22,13 @@
         {
             "title": "Òr nan Amadan",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Cairt-iuchrach 1",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Cairt-iuchrach 2",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Bòrd-chuairt",
                 }
             }
@@ -42,10 +42,10 @@
                 "spider": {
                     "name": "Madadh-allaidh",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Masg Thornarsuk",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Bleideag Òir",
                 }
             }
@@ -56,7 +56,7 @@
                 "tiger": {
                     "name": "Lìopaird-shneachda",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Masg Thornarsuk",
                 }
             }
@@ -64,13 +64,13 @@
         {
             "title": "Cuthag ann am Vegas",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Iuchair an Taigh-òsta",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Ceangal an Lioft",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Cuairt na Dorsan",
                 }
             }

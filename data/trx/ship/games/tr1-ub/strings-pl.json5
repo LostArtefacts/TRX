@@ -5,7 +5,7 @@
         {
             "title": "Powrót do Egiptu",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Złoty klucz",
                 }
             }
@@ -13,7 +13,7 @@
         {
             "title": "Świątynia Kota",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Ozdobny klucz",
                 }
             }

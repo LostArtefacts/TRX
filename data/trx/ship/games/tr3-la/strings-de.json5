@@ -5,7 +5,7 @@
         {
             "title": "Laras Anwesen",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Schlüssel zur Rennstrecke",
                 }
             }
@@ -13,10 +13,10 @@
         {
             "title": "Das Hochland",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Brechstange",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Distelstein",
                 }
             }
@@ -24,10 +24,10 @@
         {
             "title": "Willards Unterschlupf",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Steinhaufen-Schlüssel",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Brechstange",
                 }
             }
@@ -35,10 +35,10 @@
         {
             "title": "Shakespeare-Klippe",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Bohrer-Aktivierungs-Karte",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Pumoen-Zugangs-Disk",
                 }
             }
@@ -49,16 +49,16 @@
                 "orca": {
                     "name": "\\{review}Delfin",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Blaue Stromkreis-Glühbirne",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Mutant-Probe",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Mutant-Probe",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Gelbe Stromkreis-Glühbirne",
                 }
             }
@@ -66,13 +66,13 @@
         {
             "title": "Es ist ein Irrenhaus!",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Zoo-Schlüssel",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Vogelhaus-Schlüssel",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Hand von Rathmore",
                 }
             }
@@ -80,7 +80,7 @@
         {
             "title": "Wiedervereinigung",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Hand von Rathmore",
                 }
             }

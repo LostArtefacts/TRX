@@ -18,10 +18,10 @@
         }
     },
     "objects": {
-        "large_medipack": {
+        "large_medipack_item": {
             "name": "Kit Medico Grande",
         },
-        "small_medipack": {
+        "small_medipack_item": {
             "name": "Kit Medico Piccolo",
         }
     },
@@ -49,10 +49,10 @@
         {
             "title": "Città di Vilcabamba",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave d'Argento",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Idolo d'Oro",
                 }
             }
@@ -60,7 +60,7 @@
         {
             "title": "Valle Perduta",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Ruota Dentata",
                 }
             }
@@ -71,16 +71,16 @@
         {
             "title": "Rovine di St. Francis",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave di Nettuno",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Chiave di Atlante",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Chiave di Damocle",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Chiave di Thor",
                 }
             }
@@ -88,7 +88,7 @@
         {
             "title": "Colosseo",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave Arrugginita",
                 }
             }
@@ -96,7 +96,7 @@
         {
             "title": "Palazzo di Mida",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Lingotto d'Oro",
                 }
             }
@@ -104,13 +104,13 @@
         {
             "title": "Cisterna",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave d'Oro",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Chiave d'Argento",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Chiave Arrugginita",
                 }
             }
@@ -118,13 +118,13 @@
         {
             "title": "Tomba di Tihocan",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave d'Oro",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Chiave Arrugginita",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Chiave Arrugginita",
                 }
             }
@@ -132,7 +132,7 @@
         {
             "title": "Città di Khamoon",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave di Zaffiro",
                 }
             }
@@ -140,19 +140,19 @@
         {
             "title": "Obelisco di Khamoon",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave di Zaffiro",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Occhio di Horus",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Scarabeo",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Sigillo di Anubi",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Ankh",
                 }
             }
@@ -160,13 +160,13 @@
         {
             "title": "Santuario dello Scion",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave d'Oro",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Ankh",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Scarabeo",
                 }
             }
@@ -174,10 +174,10 @@
         {
             "title": "Miniere di Natla",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Fusibile",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Chiave della Piramide",
                 }
             }
@@ -211,10 +211,10 @@
         {
             "title": "Città di Vilcabamba",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Chiave d'Argento",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Idolo d'Oro",
                 }
             }
@@ -222,7 +222,7 @@
         {
             "title": "Valle Perduta",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Ruota Dentata",
                 }
             }

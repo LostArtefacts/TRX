@@ -18,10 +18,10 @@
         }
     },
     "objects": {
-        "large_medipack": {
+        "large_medipack_item": {
             "name": "Großes Medi-Pack",
         },
-        "small_medipack": {
+        "small_medipack_item": {
             "name": "Kleines Medi-Pack",
         }
     },
@@ -49,10 +49,10 @@
         {
             "title": " Die Stadt Vilcabamba",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Silberner Schlüssel",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Goldener Götze",
                 }
             }
@@ -60,7 +60,7 @@
         {
             "title": "Das verlorene Tal",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Zahnrad",
                 }
             }
@@ -71,16 +71,16 @@
         {
             "title": "St. Francis' Folly",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Schlüssel des Neptun",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Schlüssel des Atlas",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Schlüssel des Damokles",
                 },
-                "key_4": {
+                "key_item_4": {
                     "name": "Schlüssel des Thor",
                 }
             }
@@ -88,7 +88,7 @@
         {
             "title": "Kolosseum",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Rostiger Schlüssel",
                 }
             }
@@ -96,7 +96,7 @@
         {
             "title": "Der Palast des Midas",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Goldbarren",
                 }
             }
@@ -104,13 +104,13 @@
         {
             "title": "Die Zisterne",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Goldener Schlüssel",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Silberner Schlüssel",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Rostiger Schlüssel",
                 }
             }
@@ -118,13 +118,13 @@
         {
             "title": "Das Grab des Tihocan",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Goldener Schlüssel",
                 },
-                "key_2": {
+                "key_item_2": {
                     "name": "Rostiger Schlüssel",
                 },
-                "key_3": {
+                "key_item_3": {
                     "name": "Rostiger Schlüssel",
                 }
             }
@@ -132,7 +132,7 @@
         {
             "title": "Die Stadt Khamoon",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Saphir Schlüssel",
                 }
             }
@@ -140,19 +140,19 @@
         {
             "title": "Der Obelisk von Khamoon",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Saphir Schlüssel",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Auge des Horus",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Skarabäus",
                 },
-                "puzzle_3": {
+                "puzzle_item_3": {
                     "name": "Siegel des Anubis",
                 },
-                "puzzle_4": {
+                "puzzle_item_4": {
                     "name": "Ankh",
                 }
             }
@@ -160,13 +160,13 @@
         {
             "title": "Das Heiligtum des Scion",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Goldener Schlüssel",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Ankh",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Skarabäus",
                 }
             }
@@ -174,10 +174,10 @@
         {
             "title": "Natlas Katakomben",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Sicherung",
                 },
-                "puzzle_2": {
+                "puzzle_item_2": {
                     "name": "Schlüssel der Pyramide",
                 }
             }
@@ -211,10 +211,10 @@
         {
             "title": "Die Stadt Vilcabamba",
             "objects": {
-                "key_1": {
+                "key_item_1": {
                     "name": "Silberner Schlüssel",
                 },
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Goldener Götze",
                 }
             }
@@ -222,7 +222,7 @@
         {
             "title": "Das verlorene Tal",
             "objects": {
-                "puzzle_1": {
+                "puzzle_item_1": {
                     "name": "Zahnrad",
                 }
             }
