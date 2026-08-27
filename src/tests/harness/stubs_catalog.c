@@ -9,3 +9,9 @@ int32_t Catalog_GetCount(const CATALOG_CONTEXT context)
 {
     return context == CATALOG_OBJECTS ? O_NUMBER_OF : 0;
 }
+
+const char *Catalog_GetKey(const CATALOG_CONTEXT context, const CATALOG_ID id)
+{
+    // Every id the stub reports is one the exe names, so none is anonymous.
+    return id >= 0 && id < Catalog_GetCount(context) ? "" : nullptr;
+}
