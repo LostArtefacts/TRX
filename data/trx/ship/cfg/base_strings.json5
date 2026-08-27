@@ -660,9 +660,9 @@
             "ALLY_HOSTILITY_POLICY_SHARED": "Shared",
         },
         "ASPECT_MODE": {
-            "ASPECT_MODE_16_10": "16:10",
-            "ASPECT_MODE_16_9": "16:9",
             "ASPECT_MODE_4_3": "4:3",
+            "ASPECT_MODE_16_9": "16:9",
+            "ASPECT_MODE_16_10": "16:10",
             "ASPECT_MODE_ANY": "Any",
         },
         "BACKGROUND_TYPE": {
@@ -2019,27 +2019,6 @@
         "animating_1": {
             "name": "Animating Object 1",
         },
-        "animating_10": {
-            "name": "Animating Object 10",
-        },
-        "animating_11": {
-            "name": "Animating Object 11",
-        },
-        "animating_12": {
-            "name": "Animating Object 12",
-        },
-        "animating_13": {
-            "name": "Animating Object 13",
-        },
-        "animating_14": {
-            "name": "Animating Object 14",
-        },
-        "animating_15": {
-            "name": "Animating Object 15",
-        },
-        "animating_16": {
-            "name": "Animating Object 16",
-        },
         "animating_2": {
             "name": "Animating Object 2",
         },
@@ -2064,11 +2043,29 @@
         "animating_9": {
             "name": "Animating Object 9",
         },
+        "animating_10": {
+            "name": "Animating Object 10",
+        },
+        "animating_11": {
+            "name": "Animating Object 11",
+        },
+        "animating_12": {
+            "name": "Animating Object 12",
+        },
+        "animating_13": {
+            "name": "Animating Object 13",
+        },
+        "animating_14": {
+            "name": "Animating Object 14",
+        },
+        "animating_15": {
+            "name": "Animating Object 15",
+        },
+        "animating_16": {
+            "name": "Animating Object 16",
+        },
         "animating_ext_1": {
             "name": "Extended Animating Object 1",
-        },
-        "animating_ext_10": {
-            "name": "Extended Animating Object 10",
         },
         "animating_ext_2": {
             "name": "Extended Animating Object 2",
@@ -2093,6 +2090,9 @@
         },
         "animating_ext_9": {
             "name": "Extended Animating Object 9",
+        },
+        "animating_ext_10": {
+            "name": "Extended Animating Object 10",
         },
         "ape": {
             "name": "Ape",
@@ -2694,15 +2694,6 @@
         "key_hole_1": {
             "name": "Keyhole 1",
         },
-        "key_hole_10": {
-            "name": "Keyhole 10",
-        },
-        "key_hole_11": {
-            "name": "Keyhole 11",
-        },
-        "key_hole_12": {
-            "name": "Keyhole 12",
-        },
         "key_hole_2": {
             "name": "Keyhole 2",
         },
@@ -2727,17 +2718,17 @@
         "key_hole_9": {
             "name": "Keyhole 9",
         },
+        "key_hole_10": {
+            "name": "Keyhole 10",
+        },
+        "key_hole_11": {
+            "name": "Keyhole 11",
+        },
+        "key_hole_12": {
+            "name": "Keyhole 12",
+        },
         "key_item_1": {
             "name": "Key 1",
-        },
-        "key_item_10": {
-            "name": "Key 10",
-        },
-        "key_item_11": {
-            "name": "Key 11",
-        },
-        "key_item_12": {
-            "name": "Key 12",
         },
         "key_item_1_combo_1": {
             "name": "Key 1 (Combo 1)",
@@ -2811,10 +2802,16 @@
         "key_item_9": {
             "name": "Key 9",
         },
+        "key_item_10": {
+            "name": "Key 10",
+        },
+        "key_item_11": {
+            "name": "Key 11",
+        },
+        "key_item_12": {
+            "name": "Key 12",
+        },
         "key_option_1": "$objects/key_item_1",
-        "key_option_10": "$objects/key_item_10",
-        "key_option_11": "$objects/key_item_11",
-        "key_option_12": "$objects/key_item_12",
         "key_option_1_combo_1": "$objects/key_item_1_combo_1",
         "key_option_1_combo_2": "$objects/key_item_1_combo_2",
         "key_option_2": "$objects/key_item_2",
@@ -2839,6 +2836,9 @@
         "key_option_8_combo_1": "$objects/key_item_8_combo_1",
         "key_option_8_combo_2": "$objects/key_item_8_combo_2",
         "key_option_9": "$objects/key_item_9",
+        "key_option_10": "$objects/key_item_10",
+        "key_option_11": "$objects/key_item_11",
+        "key_option_12": "$objects/key_item_12",
         "kick_door_1": {
             "name": "Kick Door 1",
         },
@@ -3214,9 +3214,6 @@
         "player_1": {
             "name": "Cutscene Actor 1",
         },
-        "player_10": {
-            "name": "Cutscene Actor 10",
-        },
         "player_2": {
             "name": "Cutscene Actor 2",
         },
@@ -3240,6 +3237,9 @@
         },
         "player_9": {
             "name": "Cutscene Actor 9",
+        },
+        "player_10": {
+            "name": "Cutscene Actor 10",
         },
         "pods": {
             "name": "Pod",
@@ -3289,15 +3289,6 @@
         "puzzle_done_1": {
             "name": "Puzzle Hole 1 (Done)",
         },
-        "puzzle_done_10": {
-            "name": "Puzzle Hole 10 (Done)",
-        },
-        "puzzle_done_11": {
-            "name": "Puzzle Hole 11 (Done)",
-        },
-        "puzzle_done_12": {
-            "name": "Puzzle Hole 12 (Done)",
-        },
         "puzzle_done_2": {
             "name": "Puzzle Hole 2 (Done)",
         },
@@ -3322,17 +3313,17 @@
         "puzzle_done_9": {
             "name": "Puzzle Hole 9 (Done)",
         },
+        "puzzle_done_10": {
+            "name": "Puzzle Hole 10 (Done)",
+        },
+        "puzzle_done_11": {
+            "name": "Puzzle Hole 11 (Done)",
+        },
+        "puzzle_done_12": {
+            "name": "Puzzle Hole 12 (Done)",
+        },
         "puzzle_hole_1": {
             "name": "Puzzle Hole 1 (Empty)",
-        },
-        "puzzle_hole_10": {
-            "name": "Puzzle Hole 10 (Empty)",
-        },
-        "puzzle_hole_11": {
-            "name": "Puzzle Hole 11 (Empty)",
-        },
-        "puzzle_hole_12": {
-            "name": "Puzzle Hole 12 (Empty)",
         },
         "puzzle_hole_2": {
             "name": "Puzzle Hole 2 (Empty)",
@@ -3358,17 +3349,17 @@
         "puzzle_hole_9": {
             "name": "Puzzle Hole 9 (Empty)",
         },
+        "puzzle_hole_10": {
+            "name": "Puzzle Hole 10 (Empty)",
+        },
+        "puzzle_hole_11": {
+            "name": "Puzzle Hole 11 (Empty)",
+        },
+        "puzzle_hole_12": {
+            "name": "Puzzle Hole 12 (Empty)",
+        },
         "puzzle_item_1": {
             "name": "Puzzle Item 1",
-        },
-        "puzzle_item_10": {
-            "name": "Puzzle Item 10",
-        },
-        "puzzle_item_11": {
-            "name": "Puzzle Item 11",
-        },
-        "puzzle_item_12": {
-            "name": "Puzzle Item 12",
         },
         "puzzle_item_1_combo_1": {
             "name": "Puzzle Item 1 (Combo 1)",
@@ -3442,10 +3433,16 @@
         "puzzle_item_9": {
             "name": "Puzzle Item 9",
         },
+        "puzzle_item_10": {
+            "name": "Puzzle Item 10",
+        },
+        "puzzle_item_11": {
+            "name": "Puzzle Item 11",
+        },
+        "puzzle_item_12": {
+            "name": "Puzzle Item 12",
+        },
         "puzzle_option_1": "$objects/puzzle_item_1",
-        "puzzle_option_10": "$objects/puzzle_item_10",
-        "puzzle_option_11": "$objects/puzzle_item_11",
-        "puzzle_option_12": "$objects/puzzle_item_12",
         "puzzle_option_1_combo_1": "$objects/puzzle_item_1_combo_1",
         "puzzle_option_1_combo_2": "$objects/puzzle_item_1_combo_2",
         "puzzle_option_2": "$objects/puzzle_item_2",
@@ -3470,6 +3467,9 @@
         "puzzle_option_8_combo_1": "$objects/puzzle_item_8_combo_1",
         "puzzle_option_8_combo_2": "$objects/puzzle_item_8_combo_2",
         "puzzle_option_9": "$objects/puzzle_item_9",
+        "puzzle_option_10": "$objects/puzzle_item_10",
+        "puzzle_option_11": "$objects/puzzle_item_11",
+        "puzzle_option_12": "$objects/puzzle_item_12",
         "quad_bike": {
             "name": "Quad Bike",
         },

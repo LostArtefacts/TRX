@@ -660,9 +660,9 @@
             "ALLY_HOSTILITY_POLICY_SHARED": "Współdzielone",
         },
         "ASPECT_MODE": {
-            "ASPECT_MODE_16_10": "16:10",
-            "ASPECT_MODE_16_9": "16:9",
             "ASPECT_MODE_4_3": "4:3",
+            "ASPECT_MODE_16_9": "16:9",
+            "ASPECT_MODE_16_10": "16:10",
             "ASPECT_MODE_ANY": "Dowolne",
         },
         "BACKGROUND_TYPE": {
@@ -2007,27 +2007,6 @@
         "animating_1": {
             "name": "Animowany obiekt 1",
         },
-        "animating_10": {
-            "name": "Animowany obiekt 10",
-        },
-        "animating_11": {
-            "name": "\\{review}Animowany obiekt 11",
-        },
-        "animating_12": {
-            "name": "\\{review}Animowany obiekt 12",
-        },
-        "animating_13": {
-            "name": "\\{review}Animowany obiekt 13",
-        },
-        "animating_14": {
-            "name": "\\{review}Animowany obiekt 14",
-        },
-        "animating_15": {
-            "name": "\\{review}Animowany obiekt 15",
-        },
-        "animating_16": {
-            "name": "\\{review}Animowany obiekt 16",
-        },
         "animating_2": {
             "name": "Animowany obiekt 2",
         },
@@ -2052,11 +2031,29 @@
         "animating_9": {
             "name": "Animowany obiekt 9",
         },
+        "animating_10": {
+            "name": "Animowany obiekt 10",
+        },
+        "animating_11": {
+            "name": "\\{review}Animowany obiekt 11",
+        },
+        "animating_12": {
+            "name": "\\{review}Animowany obiekt 12",
+        },
+        "animating_13": {
+            "name": "\\{review}Animowany obiekt 13",
+        },
+        "animating_14": {
+            "name": "\\{review}Animowany obiekt 14",
+        },
+        "animating_15": {
+            "name": "\\{review}Animowany obiekt 15",
+        },
+        "animating_16": {
+            "name": "\\{review}Animowany obiekt 16",
+        },
         "animating_ext_1": {
             "name": "\\{review}Rozszerzony Obiekt Animowany 1",
-        },
-        "animating_ext_10": {
-            "name": "\\{review}Rozszerzony Obiekt Animowany 10",
         },
         "animating_ext_2": {
             "name": "\\{review}Rozszerzony Obiekt Animowany 2",
@@ -2081,6 +2078,9 @@
         },
         "animating_ext_9": {
             "name": "\\{review}Rozszerzony Obiekt Animowany 9",
+        },
+        "animating_ext_10": {
+            "name": "\\{review}Rozszerzony Obiekt Animowany 10",
         },
         "ape": {
             "name": [
@@ -2643,15 +2643,6 @@
         "key_hole_1": {
             "name": "Zamek 1",
         },
-        "key_hole_10": {
-            "name": "\\{review}Szczelina na klucz 10",
-        },
-        "key_hole_11": {
-            "name": "\\{review}Szczelina na klucz 11",
-        },
-        "key_hole_12": {
-            "name": "\\{review}Szczelina na klucz 12",
-        },
         "key_hole_2": {
             "name": "Zamek 2",
         },
@@ -2676,17 +2667,17 @@
         "key_hole_9": {
             "name": "\\{review}Szczelina na klucz 9",
         },
+        "key_hole_10": {
+            "name": "\\{review}Szczelina na klucz 10",
+        },
+        "key_hole_11": {
+            "name": "\\{review}Szczelina na klucz 11",
+        },
+        "key_hole_12": {
+            "name": "\\{review}Szczelina na klucz 12",
+        },
         "key_item_1": {
             "name": "Klucz 1",
-        },
-        "key_item_10": {
-            "name": "\\{review}Klucz 10",
-        },
-        "key_item_11": {
-            "name": "\\{review}Klucz 11",
-        },
-        "key_item_12": {
-            "name": "\\{review}Klucz 12",
         },
         "key_item_1_combo_1": {
             "name": "\\{review}Klucz 1 (Kombinacja 1)",
@@ -2759,6 +2750,15 @@
         },
         "key_item_9": {
             "name": "\\{review}Klucz 9",
+        },
+        "key_item_10": {
+            "name": "\\{review}Klucz 10",
+        },
+        "key_item_11": {
+            "name": "\\{review}Klucz 11",
+        },
+        "key_item_12": {
+            "name": "\\{review}Klucz 12",
         },
         "kick_door_1": {
             "name": "\\{review}Drzwi do kopnięcia 1",
@@ -3073,9 +3073,6 @@
         "player_1": {
             "name": "Aktor 1",
         },
-        "player_10": {
-            "name": "Aktor 10",
-        },
         "player_2": {
             "name": "Aktor 2",
         },
@@ -3099,6 +3096,9 @@
         },
         "player_9": {
             "name": "Aktor 9",
+        },
+        "player_10": {
+            "name": "Aktor 10",
         },
         "pods": {
             "name": "Kokon",
@@ -3148,15 +3148,6 @@
         "puzzle_done_1": {
             "name": "Miejsce na przedmiot 1 (ukończone)",
         },
-        "puzzle_done_10": {
-            "name": "\\{review}Otwór zagadki 10 (Wykonany)",
-        },
-        "puzzle_done_11": {
-            "name": "\\{review}Otwór zagadki 11 (Wykonany)",
-        },
-        "puzzle_done_12": {
-            "name": "\\{review}Otwór zagadki 12 (Wykonany)",
-        },
         "puzzle_done_2": {
             "name": "Miejsce na przedmiot 2 (ukończone)",
         },
@@ -3181,17 +3172,17 @@
         "puzzle_done_9": {
             "name": "\\{review}Otwór zagadki 9 (Wykonany)",
         },
+        "puzzle_done_10": {
+            "name": "\\{review}Otwór zagadki 10 (Wykonany)",
+        },
+        "puzzle_done_11": {
+            "name": "\\{review}Otwór zagadki 11 (Wykonany)",
+        },
+        "puzzle_done_12": {
+            "name": "\\{review}Otwór zagadki 12 (Wykonany)",
+        },
         "puzzle_hole_1": {
             "name": "Miejsce na przedmiot 1 (puste)",
-        },
-        "puzzle_hole_10": {
-            "name": "\\{review}Otwór zagadki 10 (Pusty)",
-        },
-        "puzzle_hole_11": {
-            "name": "\\{review}Otwór zagadki 11 (Pusty)",
-        },
-        "puzzle_hole_12": {
-            "name": "\\{review}Otwór zagadki 12 (Pusty)",
         },
         "puzzle_hole_2": {
             "name": "Miejsce na przedmiot 2 (puste)",
@@ -3217,17 +3208,17 @@
         "puzzle_hole_9": {
             "name": "\\{review}Otwór zagadki 9 (Pusty)",
         },
+        "puzzle_hole_10": {
+            "name": "\\{review}Otwór zagadki 10 (Pusty)",
+        },
+        "puzzle_hole_11": {
+            "name": "\\{review}Otwór zagadki 11 (Pusty)",
+        },
+        "puzzle_hole_12": {
+            "name": "\\{review}Otwór zagadki 12 (Pusty)",
+        },
         "puzzle_item_1": {
             "name": "Przedmiot 1",
-        },
-        "puzzle_item_10": {
-            "name": "\\{review}Przedmiot zagadki 10",
-        },
-        "puzzle_item_11": {
-            "name": "\\{review}Przedmiot zagadki 11",
-        },
-        "puzzle_item_12": {
-            "name": "\\{review}Przedmiot zagadki 12",
         },
         "puzzle_item_1_combo_1": {
             "name": "\\{review}Przedmiot zagadki 1 (Kombinacja 1)",
@@ -3300,6 +3291,15 @@
         },
         "puzzle_item_9": {
             "name": "\\{review}Przedmiot zagadki 9",
+        },
+        "puzzle_item_10": {
+            "name": "\\{review}Przedmiot zagadki 10",
+        },
+        "puzzle_item_11": {
+            "name": "\\{review}Przedmiot zagadki 11",
+        },
+        "puzzle_item_12": {
+            "name": "\\{review}Przedmiot zagadki 12",
         },
         "quad_bike": {
             "name": "Czterokołowiec",

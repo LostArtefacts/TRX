@@ -660,9 +660,9 @@
             "ALLY_HOSTILITY_POLICY_SHARED": "\\{review}Общее",
         },
         "ASPECT_MODE": {
-            "ASPECT_MODE_16_10": "16:10",
-            "ASPECT_MODE_16_9": "16:9",
             "ASPECT_MODE_4_3": "4:3",
+            "ASPECT_MODE_16_9": "16:9",
+            "ASPECT_MODE_16_10": "16:10",
             "ASPECT_MODE_ANY": "АВТО",
         },
         "BACKGROUND_TYPE": {
@@ -2007,27 +2007,6 @@
         "animating_1": {
             "name": "\\{review}Анимация объекта 1",
         },
-        "animating_10": {
-            "name": "\\{review}Анимация объекта 10",
-        },
-        "animating_11": {
-            "name": "\\{review}Анимация объекта 11",
-        },
-        "animating_12": {
-            "name": "\\{review}Анимация объекта 12",
-        },
-        "animating_13": {
-            "name": "\\{review}Анимация объекта 13",
-        },
-        "animating_14": {
-            "name": "\\{review}Анимация объекта 14",
-        },
-        "animating_15": {
-            "name": "\\{review}Анимация объекта 15",
-        },
-        "animating_16": {
-            "name": "\\{review}Анимация объекта 16",
-        },
         "animating_2": {
             "name": "\\{review}Анимация объекта 2",
         },
@@ -2052,11 +2031,29 @@
         "animating_9": {
             "name": "\\{review}Анимация объекта 9",
         },
+        "animating_10": {
+            "name": "\\{review}Анимация объекта 10",
+        },
+        "animating_11": {
+            "name": "\\{review}Анимация объекта 11",
+        },
+        "animating_12": {
+            "name": "\\{review}Анимация объекта 12",
+        },
+        "animating_13": {
+            "name": "\\{review}Анимация объекта 13",
+        },
+        "animating_14": {
+            "name": "\\{review}Анимация объекта 14",
+        },
+        "animating_15": {
+            "name": "\\{review}Анимация объекта 15",
+        },
+        "animating_16": {
+            "name": "\\{review}Анимация объекта 16",
+        },
         "animating_ext_1": {
             "name": "\\{review}Расширенный анимирующий объект 1",
-        },
-        "animating_ext_10": {
-            "name": "\\{review}Расширенный анимирующий объект 10",
         },
         "animating_ext_2": {
             "name": "\\{review}Расширенный анимирующий объект 2",
@@ -2081,6 +2078,9 @@
         },
         "animating_ext_9": {
             "name": "\\{review}Расширенный анимирующий объект 9",
+        },
+        "animating_ext_10": {
+            "name": "\\{review}Расширенный анимирующий объект 10",
         },
         "ape": {
             "name": "Обезьяна",
@@ -2643,15 +2643,6 @@
         "key_hole_1": {
             "name": "Замочная скважина 1",
         },
-        "key_hole_10": {
-            "name": "\\{review}Замочная скважина 10",
-        },
-        "key_hole_11": {
-            "name": "\\{review}Замочная скважина 11",
-        },
-        "key_hole_12": {
-            "name": "\\{review}Замочная скважина 12",
-        },
         "key_hole_2": {
             "name": "Замочная скважина 2",
         },
@@ -2676,17 +2667,17 @@
         "key_hole_9": {
             "name": "\\{review}Замочная скважина 9",
         },
+        "key_hole_10": {
+            "name": "\\{review}Замочная скважина 10",
+        },
+        "key_hole_11": {
+            "name": "\\{review}Замочная скважина 11",
+        },
+        "key_hole_12": {
+            "name": "\\{review}Замочная скважина 12",
+        },
         "key_item_1": {
             "name": "Ключ 1",
-        },
-        "key_item_10": {
-            "name": "\\{review}Ключ 10",
-        },
-        "key_item_11": {
-            "name": "\\{review}Ключ 11",
-        },
-        "key_item_12": {
-            "name": "\\{review}Ключ 12",
         },
         "key_item_1_combo_1": {
             "name": "\\{review}Ключ 1 (Комбо 1)",
@@ -2759,6 +2750,15 @@
         },
         "key_item_9": {
             "name": "\\{review}Ключ 9",
+        },
+        "key_item_10": {
+            "name": "\\{review}Ключ 10",
+        },
+        "key_item_11": {
+            "name": "\\{review}Ключ 11",
+        },
+        "key_item_12": {
+            "name": "\\{review}Ключ 12",
         },
         "kick_door_1": {
             "name": "\\{review}Выбиваемая дверь 1",
@@ -3087,9 +3087,6 @@
         "player_1": {
             "name": "Актёр заставки 1",
         },
-        "player_10": {
-            "name": "\\{review}Актер катсцены 10",
-        },
         "player_2": {
             "name": "Актёр заставки 2",
         },
@@ -3113,6 +3110,9 @@
         },
         "player_9": {
             "name": "\\{review}Актер катсцены 9",
+        },
+        "player_10": {
+            "name": "\\{review}Актер катсцены 10",
         },
         "pods": {
             "name": "Гнездо",
@@ -3162,15 +3162,6 @@
         "puzzle_done_1": {
             "name": "Головоломка 1 (готово)",
         },
-        "puzzle_done_10": {
-            "name": "\\{review}Отверстие головоломки 10 (Выполнено)",
-        },
-        "puzzle_done_11": {
-            "name": "\\{review}Отверстие головоломки 11 (Выполнено)",
-        },
-        "puzzle_done_12": {
-            "name": "\\{review}Отверстие головоломки 12 (Выполнено)",
-        },
         "puzzle_done_2": {
             "name": "Головоломка 2 (готово)",
         },
@@ -3195,17 +3186,17 @@
         "puzzle_done_9": {
             "name": "\\{review}Отверстие головоломки 9 (Выполнено)",
         },
+        "puzzle_done_10": {
+            "name": "\\{review}Отверстие головоломки 10 (Выполнено)",
+        },
+        "puzzle_done_11": {
+            "name": "\\{review}Отверстие головоломки 11 (Выполнено)",
+        },
+        "puzzle_done_12": {
+            "name": "\\{review}Отверстие головоломки 12 (Выполнено)",
+        },
         "puzzle_hole_1": {
             "name": "Головоломка 1 (пусто)",
-        },
-        "puzzle_hole_10": {
-            "name": "\\{review}Отверстие головоломки 10 (Пусто)",
-        },
-        "puzzle_hole_11": {
-            "name": "\\{review}Отверстие головоломки 11 (Пусто)",
-        },
-        "puzzle_hole_12": {
-            "name": "\\{review}Отверстие головоломки 12 (Пусто)",
         },
         "puzzle_hole_2": {
             "name": "Головоломка 2 (пусто)",
@@ -3231,17 +3222,17 @@
         "puzzle_hole_9": {
             "name": "\\{review}Отверстие головоломки 9 (Пусто)",
         },
+        "puzzle_hole_10": {
+            "name": "\\{review}Отверстие головоломки 10 (Пусто)",
+        },
+        "puzzle_hole_11": {
+            "name": "\\{review}Отверстие головоломки 11 (Пусто)",
+        },
+        "puzzle_hole_12": {
+            "name": "\\{review}Отверстие головоломки 12 (Пусто)",
+        },
         "puzzle_item_1": {
             "name": "Элемент головоломки 1",
-        },
-        "puzzle_item_10": {
-            "name": "\\{review}Предмет головоломки 10",
-        },
-        "puzzle_item_11": {
-            "name": "\\{review}Предмет головоломки 11",
-        },
-        "puzzle_item_12": {
-            "name": "\\{review}Предмет головоломки 12",
         },
         "puzzle_item_1_combo_1": {
             "name": "\\{review}Предмет головоломки 1 (Комбо 1)",
@@ -3314,6 +3305,15 @@
         },
         "puzzle_item_9": {
             "name": "\\{review}Предмет головоломки 9",
+        },
+        "puzzle_item_10": {
+            "name": "\\{review}Предмет головоломки 10",
+        },
+        "puzzle_item_11": {
+            "name": "\\{review}Предмет головоломки 11",
+        },
+        "puzzle_item_12": {
+            "name": "\\{review}Предмет головоломки 12",
         },
         "quad_bike": {
             "name": "\\{review}Квадроцикл",

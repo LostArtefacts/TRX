@@ -94,6 +94,18 @@ def resolve_enum_label_key(
     return enum_label_key(enum_type, enum_value)
 
 
+RE_DIGIT_RUN = re.compile(r"(\d+)")
+
+
+def nat_key(value: str) -> tuple[tuple[int, Any], ...]:
+    """Sort key reading a run of digits as a number, so key_2 precedes key_10."""
+    return tuple(
+        (1, int(part)) if part.isdigit() else (0, part)
+        for part in RE_DIGIT_RUN.split(str(value))
+        if part != ""
+    )
+
+
 def sort_mapping_rec(value: Any) -> Any:
     if isinstance(value, dict):
         if set(value.keys()).issubset({"title", "description"}):
@@ -102,12 +114,13 @@ def sort_mapping_rec(value: Any) -> Any:
                 ordered["title"] = sort_mapping_rec(value["title"])
             if "description" in value:
                 ordered["description"] = sort_mapping_rec(value["description"])
-            for key in sorted(value.keys()):
+            for key in sorted(value.keys(), key=nat_key):
                 if key not in ordered:
                     ordered[key] = sort_mapping_rec(value[key])
             return ordered
         return {
-            key: sort_mapping_rec(value[key]) for key in sorted(value.keys())
+            key: sort_mapping_rec(value[key])
+            for key in sorted(value.keys(), key=nat_key)
         }
     if isinstance(value, list):
         return [sort_mapping_rec(item) for item in value]
@@ -123,7 +136,7 @@ def format_strings_file(source: Any) -> str:
             ordered_source[section] = (
                 sort_mapping_rec(value) if isinstance(value, dict) else value
             )
-    for section in sorted(source.keys()):
+    for section in sorted(source.keys(), key=nat_key):
         if section in ordered_source:
             continue
         value = source[section]
@@ -1024,7 +1037,7 @@ def sync_base_strings(ctx: RunContext) -> None:
                     f"objects/{key} names objects/{target}, which nothing declares"
                 )
             new[key] = value
-    new = dict(sorted(new.items()))
+    new = dict(sorted(new.items(), key=lambda kv: nat_key(kv[0])))
     changed = [
         k for k, v in new.items() if json.dumps(old.get(k)) != json.dumps(v)
     ]
