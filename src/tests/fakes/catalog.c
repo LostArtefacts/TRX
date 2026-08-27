@@ -9,12 +9,19 @@
 
 #include <fakes/sound.h>
 
+#include <trx/core/result.h>
 #include <trx/core/utils.h>
 #include <trx/game/catalog/manager.h>
 
 #include <string.h>
 
 #define FAKE_SLOT_OFFSET 13
+
+// Mint mod IDs after the built-in IDs in each test context to match the real
+// registry.
+#define FAKE_MINTED_MAX 8
+static char m_Minted[CATALOG_CONTEXT_MAX][FAKE_MINTED_MAX][64];
+static int32_t m_MintedCount[CATALOG_CONTEXT_MAX] = {};
 
 // Preserve each identity because its position in the context's numerically
 // ordered .def names is its ID.
@@ -71,15 +78,36 @@ int32_t Catalog_GetCount(const CATALOG_CONTEXT context)
 {
     int32_t count;
     M_Names(context, &count);
-    return count;
+    return count + m_MintedCount[context];
+}
+
+RESULT Catalog_Mint(
+    const CATALOG_CONTEXT context, const char *const key,
+    CATALOG_ID *const out_id)
+{
+    FAIL_IF(
+        !Catalog_IsValidKey(key), "'%s' is not a name an identity may take",
+        key);
+    FAIL_IF(
+        Catalog_FromKey(context, key, -1) >= 0, "'%s' is already held", key);
+    FAIL_IF(m_MintedCount[context] >= FAKE_MINTED_MAX, "no room left to mint");
+    const int32_t idx = m_MintedCount[context]++;
+    strncpy(m_Minted[context][idx], key, sizeof(m_Minted[0][0]) - 1);
+    int32_t builtins;
+    M_Names(context, &builtins);
+    *out_id = builtins + idx;
+    return OK;
 }
 
 const char *Catalog_GetKey(const CATALOG_CONTEXT context, const CATALOG_ID id)
 {
     int32_t count;
     const char *const *const names = M_Names(context, &count);
-    if (names == nullptr || id < 0 || id >= count) {
+    if (id < 0 || id >= count + m_MintedCount[context]) {
         return nullptr;
+    }
+    if (id >= count) {
+        return m_Minted[context][id - count];
     }
     return Catalog_KeyForEnum(context, names[id]);
 }
@@ -93,6 +121,11 @@ CATALOG_ID Catalog_FromKey(
     for (CATALOG_ID id = 0; id < count; id++) {
         if (strcmp(Catalog_KeyForEnum(context, names[id]), key) == 0) {
             return id;
+        }
+    }
+    for (int32_t i = 0; i < m_MintedCount[context]; i++) {
+        if (strcmp(m_Minted[context][i], key) == 0) {
+            return count + i;
         }
     }
     return fallback;

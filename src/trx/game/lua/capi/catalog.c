@@ -1,3 +1,4 @@
+#include <trx/core/result.h>
 #include <trx/game/catalog/manager.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils.h>
@@ -18,6 +19,20 @@ static CATALOG_CONTEXT M_CheckContext(lua_State *const L, const int arg)
 {
     return (CATALOG_CONTEXT)LUA_CheckRange(
         L, arg, CATALOG_CONTEXT_MAX, "unknown catalog context");
+}
+
+// trxc.catalog.mint(context, name) -> int or nil
+static int M_L_CatalogMint(lua_State *const L)
+{
+    const CATALOG_CONTEXT context = M_CheckContext(L, 1);
+    const char *const key = luaL_checkstring(L, 2);
+    CATALOG_ID id;
+    if (!IS_OK(Catalog_Mint(context, key, &id))) {
+        lua_pushnil(L);
+    } else {
+        lua_pushinteger(L, id);
+    }
+    return 1;
 }
 
 // trxc.catalog.key(context, id) -> string or nil
@@ -117,6 +132,7 @@ static int M_L_CatalogFromKey(lua_State *const L)
 
 static const luaL_Reg m_Module[] = {
     { "key", M_L_CatalogKey },
+    { "mint", M_L_CatalogMint },
     { "values", M_L_CatalogValues },
     { "from_key", M_L_CatalogFromKey },
     { "to_slot", M_L_CatalogToSlot },

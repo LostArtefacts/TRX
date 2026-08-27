@@ -3362,6 +3362,30 @@
       "path": "camera.cancel_flyby"
     },
     {
+      "description": "Declares an identity the engine has no constant for, and gives back its id. This is how a mod that ships only a script introduces an object of its own, without touching the catalog the game owns.\n\nThe identity carries no slot, because nothing in the game's own files refers to it. It lasts until the mod is unloaded.\n\nA savegame records an object by the slot this game's files use, so an item of a minted object is not written to one and does not come back on load. Spawn it from a script until savegames record a name.",
+      "examples": [
+        "local drum = trx.catalog.mint(trx.catalog.Context.OBJECTS, \"oil_drum\")"
+      ],
+      "params": [
+        {
+          "description": "Which catalog.",
+          "name": "context",
+          "type": "catalog.Context"
+        },
+        {
+          "description": "The name to declare. Letters, digits and `:_-`, so a mod can put its own prefix in front of what it brings.",
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "path": "catalog.mint",
+      "returns": {
+        "description": "`nil` if the name is not one an identity may take, or the catalog already holds it.",
+        "nullable": true,
+        "type": "catalog.Id"
+      }
+    },
+    {
       "description": "Gives back the name an id answers to, which is the name a savegame stores and the name a mod writes. An id a script read out of the engine is a number, and this is what says which thing it names.",
       "examples": [
         "local name = trx.catalog.key(trx.catalog.Context.OBJECTS, item.object_id)"

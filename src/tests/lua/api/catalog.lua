@@ -92,4 +92,37 @@ test("the contexts are named", function()
   )
 end)
 
+-- A mod that ships only a script has no catalog file of its own, and must not
+-- edit the one the game owns, so it declares what it brings while the game runs.
+test("a script mints an identity of its own", function()
+  local id = trx.catalog.mint(trx.catalog.Context.OBJECTS, "oil_drum")
+  assert(id ~= nil, "minting gives back an id")
+  assert(
+    trx.catalog.objects["oil_drum"] == id,
+    "and the catalog answers to the name from then on"
+  )
+  assert(
+    trx.catalog.key(trx.catalog.Context.OBJECTS, id) == "oil_drum",
+    "and gives the name back for the id"
+  )
+end)
+
+test("a name the catalog already holds is not minted twice", function()
+  local id = trx.catalog.mint(trx.catalog.Context.OBJECTS, "oil_drum_twice")
+  assert(id ~= nil)
+  assert(
+    trx.catalog.mint(trx.catalog.Context.OBJECTS, "oil_drum_twice") == nil,
+    "the second mint says no rather than taking the name again"
+  )
+  assert(
+    trx.catalog.mint(trx.catalog.Context.OBJECTS, "wolf") == nil,
+    "and a name the engine carries is held as well"
+  )
+end)
+
+test("a name an identity may not take is refused", function()
+  assert(trx.catalog.mint(trx.catalog.Context.OBJECTS, "") == nil)
+  assert(trx.catalog.mint(trx.catalog.Context.OBJECTS, "has space") == nil)
+end)
+
 return h.report()

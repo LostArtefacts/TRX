@@ -635,6 +635,24 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
 
 ### Functions
 
+- <a id="catalog.mint" name="catalog.mint"></a>[lua]`trx.catalog.mint(context, name)`  
+  Declares an identity the engine has no constant for, and gives back its id. This is how a mod that ships only a script introduces an object of its own, without touching the catalog the game owns.
+
+  The identity carries no slot, because nothing in the game's own files refers to it. It lasts until the mod is unloaded.
+
+  A savegame records an object by the slot this game's files use, so an item of a minted object is not written to one and does not come back on load. Spawn it from a script until savegames record a name.
+
+  Parameters:
+  - <a id="catalog.mint.context" name="catalog.mint.context"></a>**`context`** ([trx.catalog.Context](#catalog.Context)). Which catalog.
+  - <a id="catalog.mint.name" name="catalog.mint.name"></a>**`name`** (string). The name to declare. Letters, digits and `:_-`, so a mod can put its own prefix in front of what it brings.
+
+  Returns: [trx.catalog.Id](#catalog.Id) or `nil`. `nil` if the name is not one an identity may take, or the catalog already holds it.
+
+  Example:
+  ```lua
+  local drum = trx.catalog.mint(trx.catalog.Context.OBJECTS, "oil_drum")
+  ```
+
 - <a id="catalog.key" name="catalog.key"></a>[lua]`trx.catalog.key(context, id)`  
   Gives back the name an id answers to, which is the name a savegame stores and the name a mod writes. An id a script read out of the engine is a number, and this is what says which thing it names.
 
