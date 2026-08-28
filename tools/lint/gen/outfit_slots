@@ -19,9 +19,9 @@ MARKER_END = "<!-- /gen:outfit-slots -->"
 
 # The objects every outfit draws on, whether or not it names one of its own.
 SHARED_OBJECTS = [
-    ("O_LARA_SKIN_SWAP_EXTRA", "Braids, combat faces and extra animation meshes"),
-    ("O_LARA_SKIN_SWAP_GUNS", "Holsters and the guns themselves"),
-    ("O_LARA_SKIN_SWAP_LEGS", "Legs without holster straps; optional"),
+    ("lara_skin_swap_extra", "Braids, combat faces and extra animation meshes"),
+    ("lara_skin_swap_guns", "Holsters and the guns themselves"),
+    ("lara_skin_swap_legs", "Legs without holster straps; optional"),
 ]
 
 

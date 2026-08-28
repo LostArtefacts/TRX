@@ -3,7 +3,7 @@
         // TR1 Gym
         "tr1_gym" : {
             "name_gs": "dynamic/enums/lara_outfit/tr1_gym",
-            "mesh_object": "O_LARA_SKIN_SWAP_1",
+            "mesh_object": "lara_skin_swap_1",
             "gun_map": 0,
             "is_barefoot": true,
             "combat_face_offset": 1,
@@ -24,7 +24,7 @@
         // TR1 Classic
         "tr1_classic": {
             "name_gs": "dynamic/enums/lara_outfit/tr1_classic",
-            "mesh_object": "O_LARA_SKIN_SWAP_2",
+            "mesh_object": "lara_skin_swap_2",
             "gun_map": 0,
             "combat_face_offset": 1,
             "braid": [
@@ -51,7 +51,7 @@
         // TR1 Mauled
         "tr1_mauled": {
             "name_gs": "dynamic/enums/lara_outfit/tr1_mauled",
-            "mesh_object": "O_LARA_SKIN_SWAP_3",
+            "mesh_object": "lara_skin_swap_3",
             "gun_map": 0,
             "combat_face_offset": 1,
             "braid": [
@@ -75,7 +75,7 @@
         // TR1 Combo
         "tr1_combo": {
             "name_gs": "dynamic/enums/lara_outfit/tr1_combo",
-            "mesh_object": "O_LARA_SKIN_SWAP_4",
+            "mesh_object": "lara_skin_swap_4",
             "gun_map": 0,
             "combat_face_offset": 1,
             "braid": [
@@ -99,7 +99,7 @@
         // TR1 N-Gage
         "tr1_ngage": {
             "name_gs": "dynamic/enums/lara_outfit/tr1_ngage",
-            "mesh_object": "O_LARA_SKIN_SWAP_20",
+            "mesh_object": "lara_skin_swap_20",
             "gun_map": 0,
             "combat_face_offset": 1,
             "braid": [
@@ -123,7 +123,7 @@
         // Bacon Lara
         "tr1_bacon_lara": {
             "name_gs": "dynamic/enums/lara_outfit/tr1_bacon_lara",
-            "mesh_object": "O_LARA_SKIN_SWAP_5",
+            "mesh_object": "lara_skin_swap_5",
             "gun_map": 0,
             "is_barefoot": true,
             "combat_face_offset": -1,
@@ -133,7 +133,7 @@
         // TR2 Gym
         "tr2_gym": {
             "name_gs": "dynamic/enums/lara_outfit/tr2_gym",
-            "mesh_object": "O_LARA_SKIN_SWAP_6",
+            "mesh_object": "lara_skin_swap_6",
             "gun_map": 1,
             "combat_face_offset": 2,
             "braid": [
@@ -155,7 +155,7 @@
         // TR2 Classic
         "tr2_classic": {
             "name_gs": "dynamic/enums/lara_outfit/tr2_classic",
-            "mesh_object": "O_LARA_SKIN_SWAP_7",
+            "mesh_object": "lara_skin_swap_7",
             "gun_map": 1,
             "combat_face_offset": 2,
             "braid": [
@@ -177,7 +177,7 @@
         // Diving Suit
         "tr2_diving_suit": {
             "name_gs": "dynamic/enums/lara_outfit/tr2_diving_suit",
-            "mesh_object": "O_LARA_SKIN_SWAP_8",
+            "mesh_object": "lara_skin_swap_8",
             "gun_map": 1,
             "is_barefoot": true,
             "combat_face_offset": 2,
@@ -196,7 +196,7 @@
         // Diving Suit Alpha
         "tr2_diving_suit_alpha": {
             "name_gs": "dynamic/enums/lara_outfit/tr2_diving_suit_alpha",
-            "mesh_object": "O_LARA_SKIN_SWAP_19",
+            "mesh_object": "lara_skin_swap_19",
             "gun_map": 1,
             "is_barefoot": true,
             "combat_face_offset": 2,
@@ -215,7 +215,7 @@
         // Bomber Jacket
         "tr2_bomber_jacket": {
             "name_gs": "dynamic/enums/lara_outfit/tr2_bomber_jacket",
-            "mesh_object": "O_LARA_SKIN_SWAP_9",
+            "mesh_object": "lara_skin_swap_9",
             "gun_map": 1,
             "combat_face_offset": 2,
             "braid": [
@@ -237,7 +237,7 @@
         // Bomber Jacket Alpha
         "tr2_bomber_jacket_alpha": {
             "name_gs": "dynamic/enums/lara_outfit/tr2_bomber_jacket_alpha",
-            "mesh_object": "O_LARA_SKIN_SWAP_22",
+            "mesh_object": "lara_skin_swap_22",
             "gun_map": 1,
             "combat_face_offset": 2,
             "braid": [
@@ -259,7 +259,7 @@
         // Robe
         "tr2_robe": {
             "name_gs": "dynamic/enums/lara_outfit/tr2_robe",
-            "mesh_object": "O_LARA_SKIN_SWAP_10",
+            "mesh_object": "lara_skin_swap_10",
             "gun_map": 1,
             "is_barefoot": true,
             "combat_face_offset": 2,
@@ -282,7 +282,7 @@
         // Vegas
         "tr2_vegas": {
             "name_gs": "dynamic/enums/lara_outfit/tr2_vegas",
-            "mesh_object": "O_LARA_SKIN_SWAP_11",
+            "mesh_object": "lara_skin_swap_11",
             "gun_map": 1,
             "combat_face_offset": 2,
             "braid": [
@@ -304,7 +304,7 @@
         // TR3 Gym
         "tr3_gym": {
             "name_gs": "dynamic/enums/lara_outfit/tr3_gym",
-            "mesh_object": "O_LARA_SKIN_SWAP_12",
+            "mesh_object": "lara_skin_swap_12",
             "gun_map": 3,
             "combat_face_offset": 3,
             "braid": [
@@ -326,7 +326,7 @@
         // TR3 Classic
         "tr3_classic": {
             "name_gs": "dynamic/enums/lara_outfit/tr3_classic",
-            "mesh_object": "O_LARA_SKIN_SWAP_13",
+            "mesh_object": "lara_skin_swap_13",
             "gun_map": 2,
             "combat_face_offset": 3,
             "braid": [
@@ -348,7 +348,7 @@
         // South Pacific
         "tr3_south_pacific": {
             "name_gs": "dynamic/enums/lara_outfit/tr3_south_pacific",
-            "mesh_object": "O_LARA_SKIN_SWAP_14",
+            "mesh_object": "lara_skin_swap_14",
             "gun_map": 2,
             "combat_face_offset": 3,
             "braid": [
@@ -370,7 +370,7 @@
         // Catsuit
         "tr3_catsuit": {
             "name_gs": "dynamic/enums/lara_outfit/tr3_catsuit",
-            "mesh_object": "O_LARA_SKIN_SWAP_15",
+            "mesh_object": "lara_skin_swap_15",
             "gun_map": 2,
             "combat_face_offset": 3,
             "braid": [
@@ -392,7 +392,7 @@
         // Nevada
         "tr3_nevada": {
             "name_gs": "dynamic/enums/lara_outfit/tr3_nevada",
-            "mesh_object": "O_LARA_SKIN_SWAP_16",
+            "mesh_object": "lara_skin_swap_16",
             "gun_map": 3,
             "combat_face_offset": 3,
             "braid": [
@@ -414,7 +414,7 @@
         // Antarctica
         "tr3_antarctica": {
             "name_gs": "dynamic/enums/lara_outfit/tr3_antarctica",
-            "mesh_object": "O_LARA_SKIN_SWAP_17",
+            "mesh_object": "lara_skin_swap_17",
             "gun_map": 3,
             "combat_face_offset": 3,
             "braid": [
@@ -436,7 +436,7 @@
         // Antarctica Beta
         "tr3_antarctica_beta": {
             "name_gs": "dynamic/enums/lara_outfit/tr3_antarctica_beta",
-            "mesh_object": "O_LARA_SKIN_SWAP_21",
+            "mesh_object": "lara_skin_swap_21",
             "gun_map": 3,
             "combat_face_offset": 3,
             "braid": [
@@ -458,7 +458,7 @@
         // Sophia Leigh
         "sophia": {
             "name_gs": "dynamic/enums/lara_outfit/sophia",
-            "mesh_object": "O_LARA_SKIN_SWAP_18",
+            "mesh_object": "lara_skin_swap_18",
             "gun_map": 2,
             "combat_face_offset": -1,
         },
@@ -466,8 +466,8 @@
         // TR4 Young
         "tr4_young": {
             "name_gs": "dynamic/enums/lara_outfit/tr4_young",
-            "mesh_object": "O_LARA_SKIN_SWAP_23",
-            "joints_object": "O_LARA_SKIN_JOINTS_1",
+            "mesh_object": "lara_skin_swap_23",
+            "joints_object": "lara_skin_joints_1",
             "gun_map": 2,
             "combat_face_offset": -1,
             "speech_face_offset": 47,
@@ -514,8 +514,8 @@
         // TR4 Classic
         "tr4_classic": {
             "name_gs": "dynamic/enums/lara_outfit/tr4_classic",
-            "mesh_object": "O_LARA_SKIN_SWAP_24",
-            "joints_object": "O_LARA_SKIN_JOINTS_2",
+            "mesh_object": "lara_skin_swap_24",
+            "joints_object": "lara_skin_joints_2",
             "gun_map": 2,
             "combat_face_offset": 46,
             "speech_face_offset": 51,
@@ -550,7 +550,7 @@
         // Natla
         "natla": {
             "name_gs": "dynamic/enums/lara_outfit/natla",
-            "mesh_object": "O_LARA_SKIN_SWAP_25",
+            "mesh_object": "lara_skin_swap_25",
             "gun_map": 3,
             "combat_face_offset": -1,
             "supports_sunglasses": false,

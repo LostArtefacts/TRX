@@ -39,7 +39,7 @@ level. Here are the necessary steps to set this up.
 trview. In this case, it's `46`.
 2. Look-up the object name for TR2. To do this, download a copy of TRX with TR2
 assets and open the `cfg/catalog_objects.csv` file. For slot 46, the name is
-`O_BIRD_GUARDIAN`.
+`bird_guardian`.
 3. Choose a slot in your TR1 level that you wish to use for this object. You can
 pick a new slot, or replace an existing one. Add the object to the slot in
 WadTool and keep a note of the number you chose.
@@ -47,7 +47,7 @@ WadTool and keep a note of the number you chose.
 new line with the slot number and the object name, ensuring you have a comma in
 between. For example, if you chose slot `247`, the line would be:
 <br/><br/>
-`247, O_BIRD_GUARDIAN`
+`247, bird_guardian`
 <br/><br/>
 If you chose to replace an existing object, instead of adding a new line, locate
 that slot in the CSV file and just replace the object name.

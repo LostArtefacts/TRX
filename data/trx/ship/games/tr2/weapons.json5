@@ -1,6 +1,6 @@
 {
     "unarmed": {
-        "sample_num": "SFX_LARA_NO",
+        "sample_num": "lara_no",
     },
 
     "flare": {
@@ -60,7 +60,7 @@
         "glow_pos": {},
         "glow_color": [0.247, 0.22, 0.059],
         "glow_scale": 2.0,
-        "sample_num": "SFX_LARA_PISTOLS",
+        "sample_num": "lara_pistols",
     },
 
     "magnums": {
@@ -95,7 +95,7 @@
         "glow_pos": {},
         "glow_color": [0.247, 0.22, 0.059],
         "glow_scale": 2.0,
-        "sample_num": "SFX_LARA_MAGNUMS",
+        "sample_num": "lara_magnums",
         "is_available": false,
     },
 
@@ -131,7 +131,7 @@
         "glow_pos": {},
         "glow_color": [0.247, 0.22, 0.059],
         "glow_scale": 2.0,
-        "sample_num": "SFX_LARA_AUTOS",
+        "sample_num": "lara_autos",
     },
 
     "desert_eagle": {
@@ -165,7 +165,7 @@
         "glow_pos": {},
         "glow_color": [0.247, 0.22, 0.059],
         "glow_scale": 2.0,
-        "sample_num": "SFX_LARA_DESERT_EAGLE",
+        "sample_num": "lara_desert_eagle",
         "is_available": false,
     },
 
@@ -201,7 +201,7 @@
         "glow_pos": {},
         "glow_color": [0.247, 0.22, 0.059],
         "glow_scale": 2.0,
-        "sample_num": "SFX_LARA_UZI_FIRE",
+        "sample_num": "lara_uzi_fire",
     },
 
     "shotgun": {
@@ -246,7 +246,7 @@
         "glow_pos": {},
         "glow_color": [0.247, 0.22, 0.059],
         "glow_scale": 2.0,
-        "sample_num": "SFX_LARA_SHOTGUN",
+        "sample_num": "lara_shotgun",
     },
 
     "m16": {
@@ -446,6 +446,6 @@
         "glow_pos": {},
         "glow_color": [0.247, 0.22, 0.059],
         "glow_scale": 2.0,
-        "sample_num": "SFX_LARA_UZI_FIRE",
+        "sample_num": "lara_uzi_fire",
     },
 }

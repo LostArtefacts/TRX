@@ -68,7 +68,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr1_gym</code></td>
-    <td><code>O_LARA_SKIN_SWAP_1</code></td>
+    <td><code>lara_skin_swap_1</code></td>
     <td>258</td>
     <td>302</td>
     <td>393</td>
@@ -76,7 +76,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr1_classic</code></td>
-    <td><code>O_LARA_SKIN_SWAP_2</code></td>
+    <td><code>lara_skin_swap_2</code></td>
     <td>259</td>
     <td>303</td>
     <td>394</td>
@@ -84,7 +84,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr1_mauled</code></td>
-    <td><code>O_LARA_SKIN_SWAP_3</code></td>
+    <td><code>lara_skin_swap_3</code></td>
     <td>260</td>
     <td>304</td>
     <td>395</td>
@@ -92,7 +92,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr1_combo</code></td>
-    <td><code>O_LARA_SKIN_SWAP_4</code></td>
+    <td><code>lara_skin_swap_4</code></td>
     <td>261</td>
     <td>305</td>
     <td>396</td>
@@ -100,7 +100,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr1_bacon_lara</code></td>
-    <td><code>O_LARA_SKIN_SWAP_5</code></td>
+    <td><code>lara_skin_swap_5</code></td>
     <td>262</td>
     <td>306</td>
     <td>397</td>
@@ -108,7 +108,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr2_gym</code></td>
-    <td><code>O_LARA_SKIN_SWAP_6</code></td>
+    <td><code>lara_skin_swap_6</code></td>
     <td>263</td>
     <td>307</td>
     <td>398</td>
@@ -116,7 +116,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr2_classic</code></td>
-    <td><code>O_LARA_SKIN_SWAP_7</code></td>
+    <td><code>lara_skin_swap_7</code></td>
     <td>264</td>
     <td>308</td>
     <td>399</td>
@@ -124,7 +124,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr2_diving_suit</code></td>
-    <td><code>O_LARA_SKIN_SWAP_8</code></td>
+    <td><code>lara_skin_swap_8</code></td>
     <td>265</td>
     <td>309</td>
     <td>400</td>
@@ -132,7 +132,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr2_bomber_jacket</code></td>
-    <td><code>O_LARA_SKIN_SWAP_9</code></td>
+    <td><code>lara_skin_swap_9</code></td>
     <td>266</td>
     <td>310</td>
     <td>401</td>
@@ -140,7 +140,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr2_robe</code></td>
-    <td><code>O_LARA_SKIN_SWAP_10</code></td>
+    <td><code>lara_skin_swap_10</code></td>
     <td>267</td>
     <td>311</td>
     <td>402</td>
@@ -148,7 +148,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr2_vegas</code></td>
-    <td><code>O_LARA_SKIN_SWAP_11</code></td>
+    <td><code>lara_skin_swap_11</code></td>
     <td>268</td>
     <td>312</td>
     <td>403</td>
@@ -156,7 +156,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr3_gym</code></td>
-    <td><code>O_LARA_SKIN_SWAP_12</code></td>
+    <td><code>lara_skin_swap_12</code></td>
     <td>269</td>
     <td>313</td>
     <td>404</td>
@@ -164,7 +164,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr3_classic</code></td>
-    <td><code>O_LARA_SKIN_SWAP_13</code></td>
+    <td><code>lara_skin_swap_13</code></td>
     <td>270</td>
     <td>314</td>
     <td>405</td>
@@ -172,7 +172,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr3_south_pacific</code></td>
-    <td><code>O_LARA_SKIN_SWAP_14</code></td>
+    <td><code>lara_skin_swap_14</code></td>
     <td>271</td>
     <td>315</td>
     <td>406</td>
@@ -180,7 +180,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr3_catsuit</code></td>
-    <td><code>O_LARA_SKIN_SWAP_15</code></td>
+    <td><code>lara_skin_swap_15</code></td>
     <td>272</td>
     <td>316</td>
     <td>407</td>
@@ -188,7 +188,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr3_nevada</code></td>
-    <td><code>O_LARA_SKIN_SWAP_16</code></td>
+    <td><code>lara_skin_swap_16</code></td>
     <td>273</td>
     <td>317</td>
     <td>408</td>
@@ -196,7 +196,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr3_antarctica</code></td>
-    <td><code>O_LARA_SKIN_SWAP_17</code></td>
+    <td><code>lara_skin_swap_17</code></td>
     <td>274</td>
     <td>318</td>
     <td>409</td>
@@ -204,7 +204,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>sophia</code></td>
-    <td><code>O_LARA_SKIN_SWAP_18</code></td>
+    <td><code>lara_skin_swap_18</code></td>
     <td>275</td>
     <td>319</td>
     <td>410</td>
@@ -212,7 +212,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr2_diving_suit_alpha</code></td>
-    <td><code>O_LARA_SKIN_SWAP_19</code></td>
+    <td><code>lara_skin_swap_19</code></td>
     <td>276</td>
     <td>320</td>
     <td>411</td>
@@ -220,7 +220,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr1_ngage</code></td>
-    <td><code>O_LARA_SKIN_SWAP_20</code></td>
+    <td><code>lara_skin_swap_20</code></td>
     <td>277</td>
     <td>321</td>
     <td>412</td>
@@ -228,7 +228,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr3_antarctica_beta</code></td>
-    <td><code>O_LARA_SKIN_SWAP_21</code></td>
+    <td><code>lara_skin_swap_21</code></td>
     <td>278</td>
     <td>322</td>
     <td>413</td>
@@ -236,7 +236,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr2_bomber_jacket_alpha</code></td>
-    <td><code>O_LARA_SKIN_SWAP_22</code></td>
+    <td><code>lara_skin_swap_22</code></td>
     <td>279</td>
     <td>323</td>
     <td>414</td>
@@ -244,7 +244,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr4_young</code></td>
-    <td><code>O_LARA_SKIN_SWAP_23</code></td>
+    <td><code>lara_skin_swap_23</code></td>
     <td>280</td>
     <td>324</td>
     <td>415</td>
@@ -252,7 +252,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>tr4_classic</code></td>
-    <td><code>O_LARA_SKIN_SWAP_24</code></td>
+    <td><code>lara_skin_swap_24</code></td>
     <td>281</td>
     <td>325</td>
     <td>416</td>
@@ -260,7 +260,7 @@ the slot listed for the game you are building for.
   </tr>
   <tr valign='top'>
     <td><code>natla</code></td>
-    <td><code>O_LARA_SKIN_SWAP_25</code></td>
+    <td><code>lara_skin_swap_25</code></td>
     <td>282</td>
     <td>326</td>
     <td>417</td>
@@ -281,7 +281,7 @@ Only the outfits below have a joints model. The rest need none.
   </tr>
   <tr valign='top'>
     <td><code>tr4_young</code> joints</td>
-    <td><code>O_LARA_SKIN_JOINTS_1</code></td>
+    <td><code>lara_skin_joints_1</code></td>
     <td>296</td>
     <td>340</td>
     <td>433</td>
@@ -289,7 +289,7 @@ Only the outfits below have a joints model. The rest need none.
   </tr>
   <tr valign='top'>
     <td><code>tr4_classic</code> joints</td>
-    <td><code>O_LARA_SKIN_JOINTS_2</code></td>
+    <td><code>lara_skin_joints_2</code></td>
     <td>297</td>
     <td>341</td>
     <td>434</td>
@@ -310,7 +310,7 @@ The objects below are used by all outfits.
   </tr>
   <tr valign='top'>
     <td>Braids, combat faces and extra animation meshes</td>
-    <td><code>O_LARA_SKIN_SWAP_EXTRA</code></td>
+    <td><code>lara_skin_swap_extra</code></td>
     <td>290</td>
     <td>334</td>
     <td>425</td>
@@ -318,7 +318,7 @@ The objects below are used by all outfits.
   </tr>
   <tr valign='top'>
     <td>Holsters and the guns themselves</td>
-    <td><code>O_LARA_SKIN_SWAP_GUNS</code></td>
+    <td><code>lara_skin_swap_guns</code></td>
     <td>291</td>
     <td>335</td>
     <td>426</td>
@@ -326,7 +326,7 @@ The objects below are used by all outfits.
   </tr>
   <tr valign='top'>
     <td>Legs without holster straps; optional</td>
-    <td><code>O_LARA_SKIN_SWAP_LEGS</code></td>
+    <td><code>lara_skin_swap_legs</code></td>
     <td>292</td>
     <td>336</td>
     <td>427</td>

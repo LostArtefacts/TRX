@@ -18,6 +18,8 @@
 #include <string.h>
 #include <uthash.h>
 
+#define M_MAX_REPORTED_ALIASES 10
+
 // Compile-time table of catalog IDs and their name strings
 typedef struct {
     CATALOG_CONTEXT context;
@@ -245,6 +247,8 @@ RESULT Catalog_Load(
     const char *pos = file_data;
     const char *end = file_data + file_size;
     char line[512];
+    int32_t alias_count = 0;
+    char *alias_list = nullptr;
     while (pos < end) {
         size_t len = 0;
         while (pos < end && *pos != '\n' && len + 1 < sizeof(line)) {
@@ -275,6 +279,18 @@ RESULT Catalog_Load(
             }
         }
 
+        const char *const key = Catalog_GetKey(context, id);
+        if (key != nullptr && strcmp(key, name_str) != 0) {
+            alias_count++;
+            if (alias_count <= M_MAX_REPORTED_ALIASES) {
+                char *const grown = String_Format(
+                    "%s%s%s", alias_list != nullptr ? alias_list : "",
+                    alias_count > 1 ? ", " : "", name_str);
+                Memory_FreePointer(&alias_list);
+                alias_list = grown;
+            }
+        }
+
         RESULT result = Catalog_BindSlot(context, id, game_id);
         if (allow_duplicates) {
             IGNORE(result);
@@ -282,6 +298,14 @@ RESULT Catalog_Load(
             SHOULD(result);
         }
     }
+    if (alias_count > 0) {
+        LOG_WARNING(
+            "%s: %d names use the C spelling, which stops loading in 1.15: "
+            "%s%s",
+            csv_path, alias_count, alias_list,
+            alias_count > M_MAX_REPORTED_ALIASES ? ", ..." : "");
+    }
+    Memory_FreePointer(&alias_list);
     Memory_FreePointer(&file_data);
     return OK;
 }

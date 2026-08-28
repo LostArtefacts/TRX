@@ -338,6 +338,21 @@ order: 3
 
    The values a setting lists, and its default, read back the same way.
 
+14. **A catalog file names identities by their key**
+   The catalog CSVs, and the shipped files that name an object, a sample or a
+   music track, now use the key rather than the C spelling: `O_LARA` is
+   `lara`, `SFX_LARA_NO` is `lara_no`, and the same holds for Lara states,
+   Lara animations and item actions.
+
+   ```
+   0,   lara
+   2,   lara_no
+   ```
+
+   A file of your own needs no change. The C spelling still loads, and the
+   game reports each catalog file that uses it in `trx.log`. It stops loading
+   in 1.15, so move your files before then.
+
 ### Version 1.9 to 1.10
 
 The Lua API was rewritten, and most of what it breaks is a rename. Run your

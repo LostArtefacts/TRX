@@ -145,7 +145,7 @@ Following are each of the properties available within a level.
     <td>Boolean</td>
     <td colspan="2">
       Enables PSX-style underwater water particles for this level. These follow
-      the weather effects toggle. Requires `O_SPARKS_GFX`. TR4 shows the
+      the weather effects toggle. Requires `sparks_gfx`. TR4 shows the
       particles in every water room and ignores this property.
     </td>
   </tr>
