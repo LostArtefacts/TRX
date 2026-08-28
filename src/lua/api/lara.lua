@@ -42,7 +42,6 @@ api.enum("lara.Mesh", {
 -- twice.
 api.enum("lara.ExtraMesh", {
   backing = "LARA_SKIN_EXTRA_MESH",
-  strip = "EXTRA_MESH_",
   description = "A mesh Lara can carry on top of one of her own - the dagger in Home Sweet Home, "
     .. "the oar in a boat.",
   values = {

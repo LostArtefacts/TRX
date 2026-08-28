@@ -52,19 +52,11 @@ local function fresh_env()
     -- and with a gap, so the tests pin what api.lua does with what C hands it.
     enum = {
       values = function(backing)
-        if backing == "PREFIXED_STATE" then
-          -- A C enum whose constants all carry the enum's own name, the way
-          -- LARA_SKIN_EXTRA_MESH does because the data files are keyed by it.
-          return {
-            { name = "WIDGET_OFF", value = 0 },
-            { name = "WIDGET_ON", value = 1 },
-          }
-        end
         if backing == "COLLIDING_STATE" then
-          -- Two constants that strip onto the same name.
+          -- Two constants that fold onto the same name.
           return {
-            { name = "WIDGET_ON", value = 1 },
-            { name = "ON", value = 2 },
+            { name = "ON", value = 1 },
+            { name = "on", value = 2 },
           }
         end
         assert(
@@ -597,41 +589,13 @@ test("a path deeper than a namespace is rejected", function()
   )
 end)
 
-test(
-  "strip takes a prefix off a constant's name, by name and not by position",
-  function()
-    local api = fresh_env()
-    api.module("things", {})
-
-    local e = api.enum("things.State", {
-      backing = "PREFIXED_STATE",
-      strip = "WIDGET_",
-      values = { OFF = "off.", ON = "on." },
-    })
-
-    -- The name is derived from the C name; the value is the C value. Nothing
-    -- depends on the order the constants came back in, and `values` is a hash,
-    -- so it has no order to depend on.
-    assert(e.OFF == 0, "OFF did not resolve to WIDGET_OFF's value")
-    assert(e.ON == 1)
-    assert(e.WIDGET_OFF == nil, "the C spelling must not survive the strip")
-
-    local out = api.describe()
-    assert(
-      out.enums[1].values[1].name == "OFF",
-      "describe() must report the stripped name"
-    )
-  end
-)
-
-test("a strip that collides two constants onto one name fails", function()
+test("two constants that fold onto one name fail", function()
   local api = fresh_env()
   api.module("things", {})
 
-  -- WIDGET_ON strips to ON, and ON is already a constant.
+  -- `on` reads as ON, and ON is already a constant.
   local ok, err = pcall(api.enum, "things.State", {
     backing = "COLLIDING_STATE",
-    strip = "WIDGET_",
     values = { ON = "on." },
   })
   assert(not ok, "a collision must not be accepted")
