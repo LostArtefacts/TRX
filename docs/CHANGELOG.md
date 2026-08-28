@@ -74,6 +74,7 @@
 - Added object references in strings files, so inventory entries can use the same name and description as their pickup
 - Changed object keys in strings files, game flows and weapon definitions to use the C object name without `O_`
 - Changed object names in strings files to use `|` between the name the game shows and the names the console accepts
+- Changed weapon, extra mesh, braid mode and extra outfit names in game data to drop their C prefixes, so a weapon is written `shotgun` rather than `LGT_SHOTGUN`
 - Changed weather to follow flyby cameras (TRX1231)
 - Changed a missing or unknown `lara_outfit` in a level to fall back to the default outfit, rather than stopping the game from starting (TRX1087)
 - Removed TR1's grenade pickup, freeing its model and inventory slots for objects of your own
@@ -86,6 +87,7 @@
 
 **Saves and settings**
 - Added smoke, sparks, mist and bubbles to saves (Gameplay → General → Save effects)
+- Changed the names a settings file gives to accept `-` and `_` as the same separator, with scripts always reading them back with `_`
 - Changed the save crystal behavior to give Lara a crystal when starting a game, if the mode is set to Saving (pickups), in line with the TR3 PS1 version (Gameplay → General → Crystal mode) (TRX1101)
 - Changed the option for Lara's braid to introduce an "auto" mode, which will automatically hide the braid for regular TR1 outfits, and show it for TR2+ outfits (Graphic options → General → Lara's braid) (#6446 / TRX1300)
 - Removed support for saves from TRX 1.0, and TR1X/TR2X era

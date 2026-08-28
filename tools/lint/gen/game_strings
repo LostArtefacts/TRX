@@ -38,8 +38,9 @@ RE_ENUM_MAP_USAGE = re.compile(
 RE_ENUM_MAP_DEFINE = re.compile(
     r"ENUM_MAP\(\s*([A-Z0-9_]+)\s*,\s*([A-Z0-9_]+)\s*,"
 )
-RE_ENUM_MAP_SELF_DEFINE = re.compile(
-    r"ENUM_MAP_SELF\(\s*([A-Z0-9_]+)\s*,\s*([A-Z0-9_]+)\s*\)"
+RE_ENUM_MAP_PREFIXED_DEFINE = re.compile(
+    r"ENUM_MAP_PREFIXED\(\s*([A-Z0-9_]+)\s*,\s*([A-Z0-9_]+)\s*,"
+    r"\s*([A-Z0-9_]+)\s*\)"
 )
 RE_INPUT_ROLE_USAGE = re.compile(
     r"X_INPUT_ROLE\(\s*(INPUT_ROLE_[A-Z0-9_]+)\s*,"
@@ -627,8 +628,10 @@ def get_enum_value_types(paths: list[Path]) -> dict[str, str]:
         source = re.sub(r"^\s*#define\s+.*$", "", source, flags=re.M)
         for enum_type, enum_value in RE_ENUM_MAP_DEFINE.findall(source):
             value_types[enum_value] = enum_type
-        for enum_type, enum_value in RE_ENUM_MAP_SELF_DEFINE.findall(source):
-            value_types[enum_value] = enum_type
+        for enum_type, prefix, suffix in RE_ENUM_MAP_PREFIXED_DEFINE.findall(
+            source
+        ):
+            value_types[prefix + suffix] = enum_type
     return value_types
 
 

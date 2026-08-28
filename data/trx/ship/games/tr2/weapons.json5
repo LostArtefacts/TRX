@@ -1,10 +1,10 @@
 {
-    "LGT_UNARMED": {
+    "unarmed": {
         "sample_num": "SFX_LARA_NO",
     },
 
-    "LGT_FLARE": {
-        "type": "WEAPON_TYPE_FLARE",
+    "flare": {
+        "type": "flare",
         "anim_object": "lara_flare",
         "ammo": {
             "initial_shots": 6,
@@ -27,14 +27,14 @@
         "glow_flicker": true,
     },
 
-    "LGT_PISTOLS": {
+    "pistols": {
         "gun_object": "pistols_item",
         "ammo_object": "pistols_ammo_item",
         "anim_object": "lara_pistols",
         "stow_place": "holster",
         "stow_order": 1,
         "equip_input_role": "equip_pistols",
-        "type": "WEAPON_TYPE_DUAL_PISTOLS",
+        "type": "dual_pistols",
         "lock_angles": [-60, +60, -60, +60],
         "left_angles": [-170, +60, -80, +80],
         "right_angles": [-60, +170, -80, +80],
@@ -63,14 +63,14 @@
         "sample_num": "SFX_LARA_PISTOLS",
     },
 
-    "LGT_MAGNUMS": {
+    "magnums": {
         "gun_object": "magnums_item",
         "ammo_object": "magnums_ammo_item",
         "anim_object": "lara_magnums",
         "stow_place": "holster",
         "stow_order": 2,
         "equip_input_role": "equip_magnums",
-        "type": "WEAPON_TYPE_DUAL_PISTOLS",
+        "type": "dual_pistols",
         "lock_angles": [-60, +60, -60, +60],
         "left_angles": [-170, +60, -80, +80],
         "right_angles": [-60, +170, -80, +80],
@@ -99,14 +99,14 @@
         "is_available": false,
     },
 
-    "LGT_AUTOS": {
+    "autos": {
         "gun_object": "autos_item",
         "ammo_object": "autos_ammo_item",
         "anim_object": "lara_autos",
         "stow_place": "holster",
         "stow_order": 3,
         "equip_input_role": "equip_autos",
-        "type": "WEAPON_TYPE_DUAL_PISTOLS",
+        "type": "dual_pistols",
         "lock_angles": [-60, +60, -60, +60],
         "left_angles": [-170, +60, -80, +80],
         "right_angles": [-60, +170, -80, +80],
@@ -134,14 +134,14 @@
         "sample_num": "SFX_LARA_AUTOS",
     },
 
-    "LGT_DESERT_EAGLE": {
+    "desert_eagle": {
         "gun_object": "desert_eagle_item",
         "ammo_object": "desert_eagle_ammo_item",
         "anim_object": "lara_desert_eagle",
         "stow_place": "holster",
         "stow_order": 4,
         "equip_input_role": "equip_desert_eagle",
-        "type": "WEAPON_TYPE_SINGLE_PISTOL",
+        "type": "single_pistol",
         "lock_angles": [-60, +60, -60, +60],
         "left_angles": [-10, +10, -80, +80],
         "right_angles": [0, 0, 0, 0],
@@ -169,14 +169,14 @@
         "is_available": false,
     },
 
-    "LGT_UZIS": {
+    "uzis": {
         "gun_object": "uzis_item",
         "ammo_object": "uzis_ammo_item",
         "anim_object": "lara_uzis",
         "stow_place": "holster",
         "stow_order": 5,
         "equip_input_role": "equip_uzis",
-        "type": "WEAPON_TYPE_DUAL_PISTOLS",
+        "type": "dual_pistols",
         "lock_angles": [-60, +60, -60, +60],
         "left_angles": [-170, +60, -80, +80],
         "right_angles": [-60, +170, -80, +80],
@@ -204,7 +204,7 @@
         "sample_num": "SFX_LARA_UZI_FIRE",
     },
 
-    "LGT_SHOTGUN": {
+    "shotgun": {
         "gun_object": "shotgun_item",
         "ammo_object": "shotgun_ammo_item",
         "anim_object": "lara_shotgun",
@@ -218,7 +218,7 @@
         "shell_throws_forward": true,
         "shell_angle": 10240,
         "shell_object": "shotgun_shell",
-        "type": "WEAPON_TYPE_RIFLE",
+        "type": "rifle",
         "lock_angles": [-60, +60, -55, +55],
         "left_angles": [-80, +80, -65, +65],
         "right_angles": [-80, +80, -65, +65],
@@ -249,7 +249,7 @@
         "sample_num": "SFX_LARA_SHOTGUN",
     },
 
-    "LGT_M16": {
+    "m16": {
         "gun_object": "m16_item",
         "ammo_object": "m16_ammo_item",
         "anim_object": "lara_m16",
@@ -260,7 +260,7 @@
         "shell_throws_forward": true,
         "shell_angle": 18432,
         "shell_min_speed": 24,
-        "type": "WEAPON_TYPE_RIFLE",
+        "type": "rifle",
         "lock_angles": [-60, +60, -55, +55],
         "left_angles": [-80, +80, -65, +65],
         "right_angles": [-80, +80, -65, +65],
@@ -291,7 +291,7 @@
         "sample_num": "",
     },
 
-    "LGT_MP5": {
+    "mp5": {
         "gun_object": "mp5_item",
         "ammo_object": "mp5_ammo_item",
         "anim_object": "lara_mp5",
@@ -302,7 +302,7 @@
         "shell_throws_forward": true,
         "shell_angle": 18432,
         "shell_min_speed": 24,
-        "type": "WEAPON_TYPE_RIFLE",
+        "type": "rifle",
         "lock_angles": [-60, +60, -55, +55],
         "left_angles": [-80, +80, -65, +65],
         "right_angles": [-80, +80, -65, +65],
@@ -334,14 +334,14 @@
         "is_available": false,
     },
 
-    "LGT_GRENADE": {
+    "grenade": {
         "gun_object": "grenade_gun_item",
         "ammo_object": "grenade_ammo_item",
         "anim_object": "lara_grenade_gun",
         "stow_place": "back",
         "stow_order": 4,
         "equip_input_role": "equip_grenade_launcher",
-        "type": "WEAPON_TYPE_RIFLE",
+        "type": "rifle",
         "lock_angles": [-60, +60, -55, +55],
         "left_angles": [-80, +80, -65, +65],
         "right_angles": [-80, +80, -65, +65],
@@ -363,14 +363,14 @@
         "sample_num": "",
     },
 
-    "LGT_ROCKET": {
+    "rocket": {
         "gun_object": "rocket_gun_item",
         "ammo_object": "rocket_ammo_item",
         "anim_object": "lara_rocket_gun",
         "stow_place": "back",
         "stow_order": 5,
         "equip_input_role": "equip_rocket_launcher",
-        "type": "WEAPON_TYPE_RIFLE",
+        "type": "rifle",
         "lock_angles": [-60, +60, -55, +55],
         "left_angles": [-80, +80, -65, +65],
         "right_angles": [-80, +80, -65, +65],
@@ -393,14 +393,14 @@
         "is_available": false,
     },
 
-    "LGT_HARPOON": {
+    "harpoon": {
         "gun_object": "harpoon_gun_item",
         "ammo_object": "harpoon_gun_ammo_item",
         "anim_object": "lara_harpoon_gun",
         "stow_place": "back",
         "stow_order": 6,
         "equip_input_role": "equip_harpoon",
-        "type": "WEAPON_TYPE_RIFLE",
+        "type": "rifle",
         "lock_angles": [-60, +60, -65, +65],
         "left_angles": [-80, +80, -75, +75],
         "right_angles": [-80, +80, -75, +75],
@@ -422,8 +422,8 @@
         "sample_num": "",
     },
 
-    "LGT_SKIDOO": {
-        "type": "WEAPON_TYPE_MOUNTED",
+    "skidoo": {
+        "type": "mounted",
         "lock_angles": [-30, 30, -55, 55],
         "left_angles": [-30, 30, -55, 55],
         "right_angles": [-30, 30, -55, 55],

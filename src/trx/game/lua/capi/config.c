@@ -123,6 +123,13 @@ static const char *M_KindName(const TRX_VALUE_TYPE type)
     return "";
 }
 
+// Pushes the enum name with `_` separators regardless of the separator used in
+// the settings file.
+static void M_PushEnumName(lua_State *const L, const char *const name)
+{
+    lua_pushstring(L, EnumMap_NormalizeName(name));
+}
+
 // The default reads back the way the value does, so what describes a setting
 // is what declares one.
 static void M_PushDefault(lua_State *const L, const CONFIG_OPTION *const option)
@@ -130,10 +137,13 @@ static void M_PushDefault(lua_State *const L, const CONFIG_OPTION *const option)
     const TRX_VALUE *const value = &option->default_value;
     if (value->type == TVT_ENUM || value->type == TVT_STRING
         || value->type == TVT_DYNAMIC_ENUM) {
-        lua_pushstring(
-            L,
-            Value_Format(
-                value->type, Config_Option_GetEnumKey(option), value, false));
+        const char *const text = Value_Format(
+            value->type, Config_Option_GetEnumKey(option), value, false);
+        if (value->type == TVT_ENUM) {
+            M_PushEnumName(L, text);
+        } else {
+            lua_pushstring(L, text);
+        }
         return;
     }
     LUA_PushValue(L, value);
@@ -164,7 +174,7 @@ static int M_L_ConfigDescribe(lua_State *const L)
         lua_createtable(L, values != nullptr ? values->count : 0, 0);
         if (values != nullptr) {
             for (int32_t i = 0; i < values->count; i++) {
-                lua_pushstring(L, *(char **)Vector_Get(values, i));
+                M_PushEnumName(L, *(char **)Vector_Get(values, i));
                 lua_rawseti(L, -2, i + 1);
             }
             Vector_Free(values);
@@ -623,7 +633,11 @@ void LUA_Config_PushOptionValue(
     // Enums, strings and dynamic enums read back as their name or display
     // string, which is also how a script gives them on the way in.
     const TRX_VALUE_TYPE type = option->value.type;
-    if (type == TVT_ENUM || type == TVT_STRING || type == TVT_DYNAMIC_ENUM) {
+    if (type == TVT_ENUM) {
+        M_PushEnumName(L, Config_Option_GetValueAsString(option, false));
+        return;
+    }
+    if (type == TVT_STRING || type == TVT_DYNAMIC_ENUM) {
         lua_pushstring(L, Config_Option_GetValueAsString(option, false));
         return;
     }

@@ -10,7 +10,7 @@
             "braid": [
                 {
                     "auto_enabled": false,
-                    "mode": "BRAID_MODE_TR1_HEAD_ONLY",
+                    "mode": "tr1_head_only",
                     "mesh_offset": 8,
                     "position": {
                         "x": 0,
@@ -30,7 +30,7 @@
             "braid": [
                 {
                     "auto_enabled": false,
-                    "mode": "BRAID_MODE_TR1_FULL",
+                    "mode": "tr1_full",
                     "mesh_offset": 8,
                     "position": {
                         "x": 0,
@@ -44,7 +44,7 @@
                 "thigh_l": 2,
             },
             "extra_outfits": {
-                "LS_EXTRA_TREX_KILL": "tr1_mauled",
+                "trex_kill": "tr1_mauled",
             },
         },
 
@@ -57,7 +57,7 @@
             "braid": [
                 {
                     "auto_enabled": false,
-                    "mode": "BRAID_MODE_TR1_MAULED",
+                    "mode": "tr1_mauled",
                     "mesh_offset": 8,
                     "position": {
                         "x": 0,
@@ -81,7 +81,7 @@
             "braid": [
                 {
                     "auto_enabled": false,
-                    "mode": "BRAID_MODE_TR1_HEAD_ONLY",
+                    "mode": "tr1_head_only",
                     "mesh_offset": 8,
                     "position": {
                         "x": 0,
@@ -105,7 +105,7 @@
             "braid": [
                 {
                     "auto_enabled": false,
-                    "mode": "BRAID_MODE_TR1_HEAD_ONLY",
+                    "mode": "tr1_head_only",
                     "mesh_offset": 8,
                     "position": {
                         "x": 0,
@@ -498,12 +498,12 @@
                 },
             ],
             "extra_mesh_positions": {
-                "EXTRA_MESH_GLASSES_OPAQUE": {
+                "glasses_opaque": {
                     "x": 0,
                     "y": -4,
                     "z": 0,
                 },
-                "EXTRA_MESH_GLASSES_TRANSPARENT": {
+                "glasses_transparent": {
                     "x": 0,
                     "y": -4,
                     "z": 0,
@@ -534,12 +534,12 @@
                 },
             ],
             "extra_mesh_positions": {
-                "EXTRA_MESH_GLASSES_OPAQUE": {
+                "glasses_opaque": {
                     "x": 0,
                     "y": -3,
                     "z": 0,
                 },
-                "EXTRA_MESH_GLASSES_TRANSPARENT": {
+                "glasses_transparent": {
                     "x": 0,
                     "y": -3,
                     "z": 0,
@@ -558,88 +558,88 @@
     },
 
     "extra_meshes": {
-        "EXTRA_MESH_TR1_BRAID_DEFAULT_HEAD": 6,
-        "EXTRA_MESH_TR1_BRAID_COMBAT_HEAD": 7,
-        "EXTRA_MESH_TR1_BRAID_DEFAULT_TORSO": 4,
-        "EXTRA_MESH_TR1_BRAID_MAULED_TORSO": 5,
-        "EXTRA_MESH_DAGGER_HAND": 21,
-        "EXTRA_MESH_DAGGER_HIPS": 20,
-        "EXTRA_MESH_OAR": 22,
-        "EXTRA_MESH_SPANNER": 23,
-        "EXTRA_MESH_DRINK_CAN": 24,
-        "EXTRA_MESH_GLASSES_OPAQUE": 25,
-        "EXTRA_MESH_GLASSES_TRANSPARENT": 26,
-        "EXTRA_MESH_CROWBAR": 27,
-        "EXTRA_MESH_WOODEN_TORCH": 55,
-        "EXTRA_MESH_WATERSKIN": 56,
-        "EXTRA_MESH_HOOK_AND_POLE": 57,
-        "EXTRA_MESH_BINOCULARS": 58,
-        "EXTRA_MESH_DETONATOR": 59,
-        "EXTRA_MESH_SHOVEL": 60,
-        "EXTRA_MESH_JERRYCAN": 61,
-        "EXTRA_MESH_SANDBAG": 62,
+        "tr1_braid_default_head": 6,
+        "tr1_braid_combat_head": 7,
+        "tr1_braid_default_torso": 4,
+        "tr1_braid_mauled_torso": 5,
+        "dagger_hand": 21,
+        "dagger_hips": 20,
+        "oar": 22,
+        "spanner": 23,
+        "drink_can": 24,
+        "glasses_opaque": 25,
+        "glasses_transparent": 26,
+        "crowbar": 27,
+        "wooden_torch": 55,
+        "waterskin": 56,
+        "hook_and_pole": 57,
+        "binoculars": 58,
+        "detonator": 59,
+        "shovel": 60,
+        "jerrycan": 61,
+        "sandbag": 62,
     },
 
     "gun_maps": [
         // 0. TR1 style
         {
-            "LGT_UNARMED": {
+            "unarmed": {
                 "thigh_r": 1,
                 "thigh_l": 2,
             },
-            "LGT_PISTOLS": {
+            "pistols": {
                 "hand_r": 45,
                 "hand_l": 46,
                 "thigh_r": 3,
                 "thigh_l": 4,
             },
-            "LGT_MAGNUMS": {
+            "magnums": {
                 "hand_r": 47,
                 "hand_l": 48,
                 "thigh_r": 5,
                 "thigh_l": 6,
             },
-            "LGT_AUTOS": {
+            "autos": {
                 "hand_r": 49,
                 "hand_l": 50,
                 "thigh_r": 7,
                 "thigh_l": 8,
             },
-            "LGT_DESERT_EAGLE": {
+            "desert_eagle": {
                 "hand_r": 51,
                 "thigh_r": 9,
                 "thigh_l": 2,
             },
-            "LGT_UZIS": {
+            "uzis": {
                 "hand_r": 52,
                 "hand_l": 53,
                 "thigh_r": 10,
                 "thigh_l": 11,
             },
-            "LGT_SHOTGUN": {
+            "shotgun": {
                 "hand_r": 54,
                 "torso": 61,
             },
-            "LGT_FLARE": {
+            "flare": {
                 "hand_l": 55,
             },
-            "LGT_M16": {
+            "m16": {
                 "hand_r": 56,
                 "torso": 62,
             },
-            "LGT_MP5": {
+            "mp5": {
                 "hand_r": 57,
                 "torso": 63,
             },
-            "LGT_GRENADE": {
+            "grenade": {
                 "hand_r": 58,
                 "torso": 64,
             },
-            "LGT_HARPOON": {
+            "harpoon": {
                 "hand_r": 59,
                 "torso": 65,
             },
-            "LGT_ROCKET": {
+            "rocket": {
                 "hand_r": 60,
                 "torso": 66,
             },
@@ -647,63 +647,63 @@
 
         // 1. TR2 style
         {
-            "LGT_UNARMED": {
+            "unarmed": {
                 "thigh_r": 12,
                 "thigh_l": 13,
             },
-            "LGT_PISTOLS": {
+            "pistols": {
                 "hand_r": 45,
                 "hand_l": 46,
                 "thigh_r": 14,
                 "thigh_l": 15,
             },
-            "LGT_MAGNUMS": {
+            "magnums": {
                 "hand_r": 47,
                 "hand_l": 48,
                 "thigh_r": 16,
                 "thigh_l": 17,
             },
-            "LGT_AUTOS": {
+            "autos": {
                 "hand_r": 49,
                 "hand_l": 50,
                 "thigh_r": 18,
                 "thigh_l": 19,
             },
-            "LGT_DESERT_EAGLE": {
+            "desert_eagle": {
                 "hand_r": 51,
                 "thigh_r": 20,
                 "thigh_l": 13,
             },
-            "LGT_UZIS": {
+            "uzis": {
                 "hand_r": 52,
                 "hand_l": 53,
                 "thigh_r": 21,
                 "thigh_l": 22,
             },
-            "LGT_SHOTGUN": {
+            "shotgun": {
                 "hand_r": 54,
                 "torso": 61,
             },
-            "LGT_FLARE": {
+            "flare": {
                 "hand_l": 55,
             },
-            "LGT_M16": {
+            "m16": {
                 "hand_r": 56,
                 "torso": 62,
             },
-            "LGT_MP5": {
+            "mp5": {
                 "hand_r": 57,
                 "torso": 63,
             },
-            "LGT_GRENADE": {
+            "grenade": {
                 "hand_r": 58,
                 "torso": 64,
             },
-            "LGT_HARPOON": {
+            "harpoon": {
                 "hand_r": 59,
                 "torso": 65,
             },
-            "LGT_ROCKET": {
+            "rocket": {
                 "hand_r": 60,
                 "torso": 66,
             },
@@ -711,63 +711,63 @@
 
         // 2. TR3 style
         {
-            "LGT_UNARMED": {
+            "unarmed": {
                 "thigh_r": 23,
                 "thigh_l": 24,
             },
-            "LGT_PISTOLS": {
+            "pistols": {
                 "hand_r": 45,
                 "hand_l": 46,
                 "thigh_r": 25,
                 "thigh_l": 26,
             },
-            "LGT_MAGNUMS": {
+            "magnums": {
                 "hand_r": 47,
                 "hand_l": 48,
                 "thigh_r": 27,
                 "thigh_l": 28,
             },
-            "LGT_AUTOS": {
+            "autos": {
                 "hand_r": 49,
                 "hand_l": 50,
                 "thigh_r": 29,
                 "thigh_l": 30,
             },
-            "LGT_DESERT_EAGLE": {
+            "desert_eagle": {
                 "hand_r": 51,
                 "thigh_r": 31,
                 "thigh_l": 24,
             },
-            "LGT_UZIS": {
+            "uzis": {
                 "hand_r": 52,
                 "hand_l": 53,
                 "thigh_r": 32,
                 "thigh_l": 33,
             },
-            "LGT_SHOTGUN": {
+            "shotgun": {
                 "hand_r": 54,
                 "torso": 61,
             },
-            "LGT_FLARE": {
+            "flare": {
                 "hand_l": 55,
             },
-            "LGT_M16": {
+            "m16": {
                 "hand_r": 56,
                 "torso": 62,
             },
-            "LGT_MP5": {
+            "mp5": {
                 "hand_r": 57,
                 "torso": 63,
             },
-            "LGT_GRENADE": {
+            "grenade": {
                 "hand_r": 58,
                 "torso": 64,
             },
-            "LGT_HARPOON": {
+            "harpoon": {
                 "hand_r": 59,
                 "torso": 65,
             },
-            "LGT_ROCKET": {
+            "rocket": {
                 "hand_r": 60,
                 "torso": 66,
             },
@@ -775,63 +775,63 @@
 
         // 3. TR3 alt style
         {
-            "LGT_UNARMED": {
+            "unarmed": {
                 "thigh_r": 34,
                 "thigh_l": 35,
             },
-            "LGT_PISTOLS": {
+            "pistols": {
                 "hand_r": 45,
                 "hand_l": 46,
                 "thigh_r": 36,
                 "thigh_l": 37,
             },
-            "LGT_MAGNUMS": {
+            "magnums": {
                 "hand_r": 47,
                 "hand_l": 48,
                 "thigh_r": 38,
                 "thigh_l": 39,
             },
-            "LGT_AUTOS": {
+            "autos": {
                 "hand_r": 49,
                 "hand_l": 50,
                 "thigh_r": 40,
                 "thigh_l": 41,
             },
-            "LGT_DESERT_EAGLE": {
+            "desert_eagle": {
                 "hand_r": 51,
                 "thigh_r": 42,
                 "thigh_l": 35,
             },
-            "LGT_UZIS": {
+            "uzis": {
                 "hand_r": 52,
                 "hand_l": 53,
                 "thigh_r": 43,
                 "thigh_l": 44,
             },
-            "LGT_SHOTGUN": {
+            "shotgun": {
                 "hand_r": 54,
                 "torso": 61,
             },
-            "LGT_FLARE": {
+            "flare": {
                 "hand_l": 55,
             },
-            "LGT_M16": {
+            "m16": {
                 "hand_r": 56,
                 "torso": 62,
             },
-            "LGT_MP5": {
+            "mp5": {
                 "hand_r": 57,
                 "torso": 63,
             },
-            "LGT_GRENADE": {
+            "grenade": {
                 "hand_r": 58,
                 "torso": 64,
             },
-            "LGT_HARPOON": {
+            "harpoon": {
                 "hand_r": 59,
                 "torso": 65,
             },
-            "LGT_ROCKET": {
+            "rocket": {
                 "hand_r": 60,
                 "torso": 66,
             },

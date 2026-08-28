@@ -306,6 +306,38 @@ order: 3
    `object.names` still returns a list. Inventory options reference the items
    they show, so `object.default_names` is empty for those options.
 
+12. **Weapon, outfit and mesh names drop their C prefix**
+   The names for weapons, weapon types, extra meshes, braid modes and extra
+   outfit states now come from the C constant without its prefix, in lower
+   case, the same way an object key does. Before this, a builder wrote
+   `LGT_SHOTGUN` in one file and `shotgun_item` in the next. Update
+   `weapons.json5` and `outfits.json5`:
+
+   | Field                            | Was                    | Is now         |
+   | ---                              | ---                    | ---            |
+   | a weapon, and a `gun_maps` entry | `LGT_SHOTGUN`          | `shotgun`      |
+   | `type`                           | `WEAPON_TYPE_RIFLE`    | `rifle`        |
+   | `extra_meshes`                   | `EXTRA_MESH_OAR`       | `oar`          |
+   | a braid `mode`                   | `BRAID_MODE_TR1_FULL`  | `tr1_full`     |
+   | `extra_outfits`                  | `LS_EXTRA_TREX_KILL`   | `trex_kill`    |
+
+   `extra_mesh_positions` takes the same names as `extra_meshes`.
+
+   A name that is not recognized is reported where the file is read, except in
+   `gun_maps`, where an entry the engine does not know is skipped.
+
+13. **`-` and `_` name the same value**
+   Anywhere a name is read, `-` and `_` are the same separator, so
+   `software-renderer` and `software_renderer` name one value. A settings file
+   needs no updating, and still keeps `-` until 1.15.
+
+   A script does. A setting's value now reaches Lua with `_`, so a comparison
+   against the old spelling no longer matches and reports nothing:
+   - `trx.config.get("ui.enemy_healthbar_show_mode") == "boss-only"` becomes
+     `== "boss_only"`
+
+   The values a setting lists, and its default, read back the same way.
+
 ### Version 1.9 to 1.10
 
 The Lua API was rewritten, and most of what it breaks is a rename. Run your

@@ -179,10 +179,10 @@ a script, which is how a level changes one while it runs; see the
     <td>
       The category that determines how the gun is handled. Accepted values are as follows.
       <ul>
-        <li><code>WEAPON_TYPE_DUAL_PISTOLS</code></li>
-        <li><code>WEAPON_TYPE_SINGLE_PISTOL</code></li>
-        <li><code>WEAPON_TYPE_RIFLE</code></li>
-        <li><code>WEAPON_TYPE_MOUNTED</code></li>
+        <li><code>dual_pistols</code></li>
+        <li><code>single_pistol</code></li>
+        <li><code>rifle</code></li>
+        <li><code>mounted</code></li>
       </ul>
     </td>
   </tr>
