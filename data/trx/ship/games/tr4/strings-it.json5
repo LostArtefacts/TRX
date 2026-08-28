@@ -13,7 +13,9 @@
     "levels": [
         {
             "title": "Angkor Wat",
-            "legend": "Cambogia, 1984",
+            "general": {
+                "legend": "Cambogia, 1984",
+            },
             "objects": {
                 "puzzle_item_1": {
                     "name": "Teschio Dorato",
@@ -30,7 +32,9 @@
         },
         {
             "title": "Tomba di Seth",
-            "legend": "Egitto, presente",
+            "general": {
+                "legend": "Egitto, presente",
+            },
             "objects": {
                 "puzzle_item_1": {
                     "name": "Occhio di Horus",

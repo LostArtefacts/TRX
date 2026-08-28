@@ -13,7 +13,9 @@
     "levels": [
         {
             "title": "Angkor Wat",
-            "legend": "Kambodscha, 1984",
+            "general": {
+                "legend": "Kambodscha, 1984",
+            },
             "objects": {
                 "puzzle_item_1": {
                     "name": "Der goldene Totenschädel",
@@ -30,7 +32,9 @@
         },
         {
             "title": "Das Grabmal des Seth",
-            "legend": "Ägypten, heute",
+            "general": {
+                "legend": "Ägypten, heute",
+            },
             "objects": {
                 "puzzle_item_1": {
                     "name": "Auge des Horus",
