@@ -158,6 +158,7 @@
 - Fixed animations that move an item sideways playing with the item standing still, such as TR4's guide shimmy (TRX1062)
 - Fixed creatures walking through squares a pushable block stands on (TRX1060)
 - Fixed Lara flinching when she bumps into Von Croy (TRX1095)
+- Fixed characters not being drawn while an animation carries them into the next room, such as Von Croy climbing down in Race for the Iris (TRX1232)
 - Fixed rooms and their contents sometimes disappearing while an in-game cutscene plays (TRX1052)
 - Fixed parts of the level dropping out of the picture during the cutscene that opens Karnak (TRX1092)
 - Fixed the parked jeep showing in the temple during the cutscene that opens Karnak (TRX1092)

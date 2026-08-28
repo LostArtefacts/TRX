@@ -10,6 +10,7 @@
 #include <trx/game/game_buf.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/items/carrier.h>
+#include <trx/game/items/col.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/objects.h>
@@ -22,6 +23,10 @@
 
 #include <string.h>
 
+// How far to one side a mesh must sit before it is worth asking which room it
+// landed in. A quarter of a tile keeps every upright item out of the search.
+#define M_MESH_OFFSET_MIN (WALL_L / 4)
+
 static int32_t m_LevelItemCount = 0;
 static int16_t m_MaxUsedItemCount = 0;
 static ITEM *m_Items = nullptr;
@@ -32,20 +37,58 @@ static int16_t m_NextItemFree = NO_ITEM;
 static uint32_t m_ItemGens[MAX_ITEMS];
 static HANDLE_REGISTRY m_ItemHandles;
 
-static void M_RemoveFromDrawQueues(
-    const int16_t item_num, const int16_t room_num)
+// Takes the item out of every room. An item is drawn from as many rooms as its
+// bounds reach into, and which those were is not answerable from where the
+// item now stands, so each room is asked rather than worked out. Clearing a
+// room that never held the item costs one masked read.
+static void M_RemoveFromDrawQueues(const int16_t item_num)
 {
-    if (room_num == NO_ROOM) {
+    const int32_t room_count = Room_GetCount();
+    for (int32_t i = 0; i < room_count; i++) {
+        Room_RemoveDrawnItem((int16_t)i, item_num);
+    }
+}
+
+// Draws the item from the room and from every neighbour its bounds reach a
+// portal into.
+static void M_AddToRoomAndNeighbours(
+    const int16_t item_num, const int16_t room_num,
+    const BOUNDS_32 *const bounds)
+{
+    Room_AddDrawnItem(room_num, item_num);
+    const ROOM *const room = Room_Get(room_num);
+    if (room == nullptr || room->portals == nullptr) {
         return;
     }
-    Room_RemoveDrawnItem(room_num, item_num);
-    const ROOM *const room = Room_Get(room_num);
-    if (room != nullptr && room->portals != nullptr) {
-        for (int32_t i = 0; i < room->portals->count; i++) {
-            Room_RemoveDrawnItem(room->portals->portal[i].room_num, item_num);
+    for (int32_t i = 0; i < room->portals->count; i++) {
+        const PORTAL *const portal = &room->portals->portal[i];
+        if (Room_BoundsReachPortal(bounds, portal)) {
+            Room_AddDrawnItem(portal->room_num, item_num);
         }
-        M_RemoveFromDrawQueues(item_num, room->flipped_room);
     }
+}
+
+// Where the item's mesh sits this frame, which an animation can put well away
+// from the item itself: a climb hangs the body a room below the ledge the item
+// stands on, and a rotated offset puts it past the wall beside it.
+static XYZ_32 M_GetMeshCenter(const ITEM *const item)
+{
+    const BOUNDS_16 *const b = Item_GetBoundsAccurate(item);
+    const XYZ_32 offset = {
+        .x = ((int32_t)b->min.x + b->max.x) / 2,
+        .y = ((int32_t)b->min.y + b->max.y) / 2,
+        .z = ((int32_t)b->min.z + b->max.z) / 2,
+    };
+    return XYZ_32_OffsetLocalYaw(item->pos, offset, item->rot.y);
+}
+
+// Whether the mesh is held far enough to one side to land past a wall. An
+// upright mesh always shares the item's room, so it skips the search.
+static bool M_IsMeshHeldAside(const ITEM *const item)
+{
+    const BOUNDS_16 *const b = Item_GetBoundsAccurate(item);
+    return ABS((int32_t)b->min.x + b->max.x) / 2 > M_MESH_OFFSET_MIN
+        || ABS((int32_t)b->min.z + b->max.z) / 2 > M_MESH_OFFSET_MIN;
 }
 
 static BOUNDS_32 M_GetOccupancyBounds(const ITEM *const item)
@@ -73,17 +116,19 @@ static void M_AddToDrawQueues(const int16_t item_num, const int16_t room_num)
     if (room_num == NO_ROOM) {
         return;
     }
-    Room_AddDrawnItem(room_num, item_num);
-    const ROOM *const room = Room_Get(room_num);
-    if (room == nullptr || room->portals == nullptr) {
+    const ITEM *const item = &m_Items[item_num];
+    const BOUNDS_32 bounds = M_GetOccupancyBounds(item);
+    M_AddToRoomAndNeighbours(item_num, room_num, &bounds);
+
+    // An animation can carry the mesh into a room that the item's own room
+    // does not border, which no portal of that room reaches.
+    if (!M_IsMeshHeldAside(item)) {
         return;
     }
-    const BOUNDS_32 bounds = M_GetOccupancyBounds(&m_Items[item_num]);
-    for (int32_t i = 0; i < room->portals->count; i++) {
-        const PORTAL *const portal = &room->portals->portal[i];
-        if (Room_BoundsReachPortal(&bounds, portal)) {
-            Room_AddDrawnItem(portal->room_num, item_num);
-        }
+    int16_t mesh_room_num = room_num;
+    Room_GetSector(M_GetMeshCenter(item), &mesh_room_num);
+    if (mesh_room_num != room_num) {
+        M_AddToRoomAndNeighbours(item_num, mesh_room_num, &bounds);
     }
 }
 
@@ -524,7 +569,7 @@ void Item_DetachFromRoom(const int16_t item_num)
     const bool was_present = item->is_present;
     item->is_present = false;
 
-    M_RemoveFromDrawQueues(item_num, item->room_num);
+    M_RemoveFromDrawQueues(item_num);
     M_UnlinkChain(item_num, item->room_num);
 
     // Only when it was in the world, so an already-detached item does not fire.
@@ -667,7 +712,7 @@ void Item_UpdateRoom(const int16_t item_num, const int16_t room_num)
     ITEM *const item = &m_Items[item_num];
     const int16_t old_room_num = item->room_num;
 
-    M_RemoveFromDrawQueues(item_num, old_room_num);
+    M_RemoveFromDrawQueues(item_num);
     M_AddToDrawQueues(item_num, room_num);
 
     if (old_room_num != room_num) {
