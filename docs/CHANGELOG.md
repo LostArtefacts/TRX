@@ -76,6 +76,7 @@
 - Changed object names in strings files to use `|` between the name the game shows and the names the console accepts
 - Changed weapon, extra mesh, braid mode and extra outfit names in game data to drop their C prefixes, so a weapon is written `shotgun` rather than `LGT_SHOTGUN`
 - Changed the catalog files, and the data naming objects, samples and music, to use the same keys, so an object is written `lara` rather than `O_LARA`; the old spelling still loads and is reported in the log
+- Changed a name a script mints for an object, sample or music track to be refused if it carries capitals, since a name is read in one case
 - Changed weather to follow flyby cameras (TRX1231)
 - Changed a missing or unknown `lara_outfit` in a level to fall back to the default outfit, rather than stopping the game from starting (TRX1087)
 - Removed TR1's grenade pickup, freeing its model and inventory slots for objects of your own

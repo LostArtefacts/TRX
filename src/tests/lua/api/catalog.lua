@@ -123,6 +123,7 @@ end)
 test("a name an identity may not take is refused", function()
   assert(trx.catalog.mint(trx.catalog.Context.OBJECTS, "") == nil)
   assert(trx.catalog.mint(trx.catalog.Context.OBJECTS, "has space") == nil)
+  assert(trx.catalog.mint(trx.catalog.Context.OBJECTS, "OilDrum") == nil)
 end)
 
 return h.report()
