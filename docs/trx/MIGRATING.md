@@ -326,10 +326,11 @@ order: 3
    A name that is not recognized is reported where the file is read, except in
    `gun_maps`, where an entry the engine does not know is skipped.
 
-13. **`-` and `_` name the same value**
-   Anywhere a name is read, `-` and `_` are the same separator, so
-   `software-renderer` and `software_renderer` name one value. A settings file
-   needs no updating, and still keeps `-` until 1.15.
+13. **`-`, `:` and `_` name the same value**
+   Anywhere a name is read, `-`, `:` and `_` are the same separator, so
+   `software-renderer` and `software_renderer` name one value, as do `4:3`
+   and `4_3`. A settings file needs no updating, and still keeps its own
+   spelling until 1.15, so a file written then still loads here.
 
    A script does. A setting's value now reaches Lua with `_`, so a comparison
    against the old spelling no longer matches and reports nothing:

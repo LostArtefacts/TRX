@@ -71,15 +71,9 @@ static void M_DefineEnums(void)
         return;
     }
     defined = true;
-    EnumMap_Define(
-        "FAKE_SHADOW", "SHADOW_CIRCLE", "enums/FAKE_SHADOW/circle", 0,
-        "circle");
-    EnumMap_Define(
-        "FAKE_SHADOW", "SHADOW_SPRITE", "enums/FAKE_SHADOW/sprite", 1,
-        "sprite");
-    EnumMap_Define(
-        "FAKE_SHADOW", "SHADOW_EXTRA_DARK", "enums/FAKE_SHADOW/extra_dark", 2,
-        "extra_dark");
+    EnumMap_Define("FAKE_SHADOW", "SHADOW_CIRCLE", 0, "circle");
+    EnumMap_Define("FAKE_SHADOW", "SHADOW_SPRITE", 1, "sprite");
+    EnumMap_Define("FAKE_SHADOW", "SHADOW_EXTRA_DARK", 2, "extra_dark");
 }
 
 // What the settings file would have taken. A change a hold applies is nobody's

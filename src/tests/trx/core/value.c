@@ -169,8 +169,8 @@ TEST(copy_ptr_moves_scalars_and_owns_strings)
 
 TEST(enum_resolves_end_to_end)
 {
-    EnumMap_Define("TESTCOLOR", "TESTCOLOR_RED", "", 10, "red");
-    EnumMap_Define("TESTCOLOR", "TESTCOLOR_BLUE", "", 20, "blue");
+    EnumMap_Define("TESTCOLOR", "TESTCOLOR_RED", 10, "red");
+    EnumMap_Define("TESTCOLOR", "TESTCOLOR_BLUE", 20, "blue");
 
     TRX_VALUE v;
     CHECK(Value_Parse(TVT_ENUM, "TESTCOLOR", "blue", &v));

@@ -88,7 +88,7 @@
 
 **Saves and settings**
 - Added smoke, sparks, mist and bubbles to saves (Gameplay → General → Save effects)
-- Changed the names a settings file gives to accept `-` and `_` as the same separator, with scripts always reading them back with `_`
+- Changed the names a settings file gives to accept `-`, `:` and `_` as the same separator, with scripts always reading them back with `_`
 - Changed the save crystal behavior to give Lara a crystal when starting a game, if the mode is set to Saving (pickups), in line with the TR3 PS1 version (Gameplay → General → Crystal mode) (TRX1101)
 - Changed the option for Lara's braid to introduce an "auto" mode, which will automatically hide the braid for regular TR1 outfits, and show it for TR2+ outfits (Graphic options → General → Lara's braid) (#6446 / TRX1300)
 - Removed support for saves from TRX 1.0, and TR1X/TR2X era
