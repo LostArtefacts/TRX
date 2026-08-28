@@ -40,6 +40,8 @@ static void M_LoadPostprocess(void)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
+    // The cached mesh positions describe Lara as she stood before the load.
+    lara->mesh_pos_matrices_valid = false;
     if (Game_GetBonusFlag() != GBF_NONE) {
         CONFIG_SET(g_Config.profile.new_game_plus_unlock, true);
         Config_Update();

@@ -20,6 +20,7 @@
 #include <trx/game/output/lights.h>
 #include <trx/game/output/lights/fog_bulbs.h>
 #include <trx/game/output/lights/priv.h>
+#include <trx/game/output/water.h>
 #include <trx/game/random.h>
 #include <trx/gl/utils.h>
 #include <trx/version.h>
@@ -674,8 +675,13 @@ static void M_FillInstanceLight(
         wmatrix->_23 * inv_scale,
     };
 
+    // Selects a Lara mesh's ambient light from the room it sits in. The
+    // original lights all of Lara from one room.
+    const RGB_888 *const mesh_ambient = Output_Water_GetLaraMeshAmbient();
+    const RGB_888 ambient =
+        mesh_ambient != nullptr ? *mesh_ambient : il->ambient;
     M_STAGED_LIST list = {
-        .ambient = { il->ambient.r, il->ambient.g, il->ambient.b },
+        .ambient = { ambient.r, ambient.g, ambient.b },
         .count = 0,
     };
 

@@ -21,8 +21,6 @@ void Output_SetTimeInGame(float time);
 bool Output_IsControlFrame(void);
 void Output_SetControlFrame(bool is_control_frame);
 
-void Output_SetupBelowWater(bool is_underwater);
-void Output_SetupAboveWater(bool is_underwater);
 RGB_F Output_GetWaterColor(void);
 void Output_SetWaterColor(RGB_888 color);
 
@@ -33,16 +31,27 @@ RGBA_F Output_GetTint(void);
 // Returns the tint for room geometry. TR4 tints wet and dry rooms while the
 // camera is below the surface.
 RGBA_F Output_GetRoomTint(void);
+// Describes the water surface cutting the current meshes, and how the part
+// below it is shaded.
+typedef struct {
+    bool is_enabled;
+    float world_y;
+    // Shifts the ambient light below the surface by this much, in place of
+    // tinting that part.
+    bool has_submerged_ambient;
+    RGB_F submerged_ambient_delta;
+} OUTPUT_WATER_LINE;
+
+// Sets the water surface for subsequent meshes so only the submerged part
+// takes the water color; without a surface, the whole mesh takes it.
+void Output_PushWaterLine(OUTPUT_WATER_LINE line);
+void Output_PopWaterLine(void);
+// Reports whether a water surface intersects the current meshes and returns
+// it.
+bool Output_GetWaterLine(OUTPUT_WATER_LINE *out_line);
+
 void Output_PushTintOverride(RGBA_F tint);
 void Output_PopTintOverride(void);
-bool Output_GetWaterEffect(void);
-// Reports whether room geometry distorts. TR1 to TR3 distort water seen from
-// above and dry rooms seen from below the surface. TR4 distorts every room
-// while the camera is below the surface.
-bool Output_GetWibbleEffect(void);
-// Reports whether objects and static meshes distort.
-bool Output_GetObjectWibbleEffect(void);
-
 RGBA_F Output_GetFogColor(void);
 int32_t Output_GetFogStart(void);
 int32_t Output_GetFogEnd(void);
@@ -78,9 +87,6 @@ void Output_EnableScissor(float x, float y, float w, float h);
 void Output_DisableScissor(void);
 
 void Output_AdjustDepth(float factor, float units);
-
-void Output_SetupBelowWater(bool underwater);
-void Output_SetupAboveWater(bool underwater);
 
 void Output_AnimateTextures(int32_t num_frames);
 

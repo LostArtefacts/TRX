@@ -1,6 +1,7 @@
 #include <trx/game/lara/draw.h>
 
 #include <trx/config.h>
+#include <trx/game/camera.h>
 #include <trx/game/gun.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
@@ -13,6 +14,7 @@
 #include <trx/game/output/sources/shadows.h>
 #include <trx/game/output/state.h>
 #include <trx/game/output/vars.h>
+#include <trx/game/output/water.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/version.h>
@@ -88,7 +90,7 @@ static void M_DrawEquipmentMesh(
                 mesh->center.z,
             }),
     };
-    Output_PushTintOverride(Lara_GetMeshTint(pos));
+    Output_Water_PushLaraMesh(WATER_LARA_MESH_OTHER, pos, mesh->radius);
     if (interpolated) {
         Matrix_Push_I();
         Matrix_TranslateRel16_I(equipment->offset);
@@ -100,7 +102,7 @@ static void M_DrawEquipmentMesh(
         Output_DrawObjectMesh(mesh, clip);
         Matrix_Pop();
     }
-    Output_PopTintOverride();
+    Output_Water_PopLaraMesh();
 }
 
 static void M_DrawLaraMesh(
@@ -127,11 +129,30 @@ static void M_DrawLaraMesh(
     default:
         break;
     }
+    // Takes the matrix the mesh is drawn with, which for a blended frame is
+    // the blend rather than either end of it.
+    MATRIX wmatrix = *g_WMatrixPtr;
+    if (interpolated) {
+        Matrix_Push();
+        Matrix_Interpolate();
+        wmatrix = *g_WMatrixPtr;
+        Matrix_Pop();
+    }
+
     const GAME_VECTOR pos = {
         .room_num = item->room_num,
-        .pos = Matrix_MulVec32_M(g_WMatrixPtr, origin),
+        .pos = Matrix_MulVec32_M(&wmatrix, origin),
     };
-    Output_PushTintOverride(Lara_GetMeshTint(pos));
+    // Reads the water state from the joint the mesh hangs off, as the
+    // original does, and for every mesh drawn rather than for the few the
+    // matrix cache covers.
+    Output_Water_ObserveLaraMesh(
+        mesh_num,
+        (GAME_VECTOR) {
+            .room_num = item->room_num,
+            .pos = Matrix_MulVec32_M(&wmatrix, (XYZ_32) {}),
+        });
+    Output_Water_PushLaraMesh(mesh_num, pos, mesh->radius);
     if (m_IsLara) {
         Lara_Joints_StashMatrix(mesh_num, interpolated);
     }
@@ -144,7 +165,7 @@ static void M_DrawLaraMesh(
     if (m_IsLara) {
         Lara_Joints_Draw(mesh_num, clip, interpolated);
     }
-    Output_PopTintOverride();
+    Output_Water_PopLaraMesh();
 }
 
 static void M_DrawBodyPart(
@@ -439,6 +460,9 @@ bool Lara_Draw(const ITEM *const item)
 {
     const ITEM *const lara_item = Lara_GetItem();
     m_IsLara = item == lara_item;
+    if (m_IsLara) {
+        Output_Water_ObserveLaraFrame();
+    }
     if (m_IsLara
         && (!item->is_visible || item->trigger.spent || item->mesh_bits == 0)) {
         return false;

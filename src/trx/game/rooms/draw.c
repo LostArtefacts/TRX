@@ -10,6 +10,7 @@
 #include <trx/game/matrix.h>
 #include <trx/game/output.h>
 #include <trx/game/output/bind.h>
+#include <trx/game/output/water.h>
 #include <trx/game/rooms.h>
 #include <trx/game/rope.h>
 #include <trx/game/sparks.h>
@@ -104,9 +105,9 @@ static void M_EnsureRoomsToDraw(void)
 static inline void M_SetupWaterStatus(const ROOM *const room)
 {
     if (room->flags.underwater) {
-        Output_SetupBelowWater(g_Camera.underwater);
+        Output_Water_SetupBelowWater(g_Camera.underwater);
     } else {
-        Output_SetupAboveWater(g_Camera.underwater);
+        Output_Water_SetupAboveWater(g_Camera.underwater);
     }
 }
 
@@ -573,7 +574,7 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
 
     CutSeq_DrawActors();
 
-    Output_SetupAboveWater(false);
+    Output_Water_SetupAboveWater(false);
     FX_Draw();
     Sparks_Draw();
     Rope_DrawAll();

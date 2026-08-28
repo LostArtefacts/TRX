@@ -16,6 +16,7 @@
 #include <trx/game/objects/common.h>
 #include <trx/game/output/common.h>
 #include <trx/game/output/state.h>
+#include <trx/game/output/water.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
 
@@ -491,7 +492,7 @@ static void M_RestoreMesh(const int32_t mesh_idx)
     M_SeedFromMesh(mesh);
     Output_DispatchObjectMeshGeometry(
         mesh_idx, m_Joints.scratch.pos,
-        mesh->num_lights > 0 ? m_Joints.scratch.normal : nullptr);
+        mesh->num_lights > 0 ? m_Joints.scratch.normal : nullptr, nullptr);
 }
 
 static void M_ResetJoints(void)
@@ -744,7 +745,7 @@ static void M_WeldBridge(
 
     Output_DispatchObjectMeshGeometry(
         mesh_idx, m_Joints.scratch.pos,
-        mesh->num_lights > 0 ? m_Joints.scratch.normal : nullptr);
+        mesh->num_lights > 0 ? m_Joints.scratch.normal : nullptr, nullptr);
 }
 
 // A render roll for every segment. The physics yaws a node from atan2 of its
@@ -945,11 +946,13 @@ void Lara_Hair_Draw(void)
             Matrix_RotZ(rolls[j]);
             anchor_matrices[j] = *g_WMatrixPtr;
 
-            Output_PushTintOverride(Lara_GetMeshTint(
+            Output_Water_PushLaraMesh(
+                LM_HEAD,
                 (GAME_VECTOR) { .pos = s->interp.result.pos,
-                                .room_num = lara_item->room_num }));
+                                .room_num = lara_item->room_num },
+                Object_GetMesh(seg_base + j)->radius);
             Object_DrawMesh(seg_base + j, CLIP_FULLY_VISIBLE, false);
-            Output_PopTintOverride();
+            Output_Water_PopLaraMesh();
             Matrix_Pop();
         }
 
@@ -965,11 +968,13 @@ void Lara_Hair_Draw(void)
                 M_WeldBridge(i, seg_base, j, anchor_matrices);
             }
 
-            Output_PushTintOverride(Lara_GetMeshTint(
+            Output_Water_PushLaraMesh(
+                LM_HEAD,
                 (GAME_VECTOR) { .pos = s->interp.result.pos,
-                                .room_num = lara_item->room_num }));
+                                .room_num = lara_item->room_num },
+                Object_GetMesh(seg_base + j)->radius);
             Object_DrawMesh(seg_base + j, CLIP_FULLY_VISIBLE, false);
-            Output_PopTintOverride();
+            Output_Water_PopLaraMesh();
             Matrix_Pop();
         }
     }

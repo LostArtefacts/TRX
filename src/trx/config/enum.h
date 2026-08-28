@@ -141,6 +141,15 @@ typedef enum {
     LIGHTING_CURVE_NUMBER_OF,
 } LIGHTING_CURVE;
 
+// Selects how Lara receives the water colour while submerged: across the whole
+// model, by mesh origin, or relative to the water surface.
+typedef enum {
+    WATER_TINT_MODE_WHOLE,
+    WATER_TINT_MODE_PER_MESH,
+    WATER_TINT_MODE_RESPONSIVE,
+    WATER_TINT_MODE_NUMBER_OF,
+} WATER_TINT_MODE;
+
 typedef enum {
     LIGHTING_CONTRAST_LOW,
     LIGHTING_CONTRAST_MEDIUM,

@@ -904,6 +904,11 @@
             "fixed": "Corretto",
             "tr1": "TR1",
             "tr2": "TR2",
+        },
+        "water_tint_mode": {
+            "per_mesh": "\\{review}Per mesh",
+            "responsive": "\\{review}Accurata",
+            "whole": "\\{review}Intera",
         }
     },
     "settings": {
@@ -1891,10 +1896,6 @@
             "title": "Riflessi",
             "description": "Abilita i riflessi su alcuni oggetti.",
         },
-        "visuals.enable_responsive_mesh_tint": {
-            "title": "Colorazione accurata mesh",
-            "description": "Consente di renderizzare con la tonalità dell'acqua solo le parti del corpo di Lara che sono immerse (come in TR3). Se disabilitato, quando Lara è in acqua, tutto il suo corpo verra renderizzato con la tonalità dell'acqua (come in TR1/2).",
-        },
         "visuals.enable_shotgun_flash": {
             "title": "Lampo sparo fucile",
             "description": "Mostra il lampo dello sparo quando Lara fa fuoco con il fucile a pompa, come per le altre armi.",
@@ -1987,6 +1988,10 @@
                 "ps1": "PS1",
                 "tombati": "TombATI",
             }
+        },
+        "visuals.water_tint_mode": {
+            "title": "\\{review}Tonalità dell'acqua",
+            "description": "\\{review}Quanta parte di Lara assume il colore dell'acqua mentre è in acqua. Intera colora tutto il suo corpo, come in TR1 e TR2. Per mesh colora ogni mesh in base a dove si trova, come in TR3 e TR4. Accurata la divide alla superficie dell'acqua, così solo ciò che è immerso assume il colore.",
         },
         "window.is_fullscreen": {
             "title": "\\{review}Schermo intero",

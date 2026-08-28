@@ -264,10 +264,10 @@ void Output_DispatchObjectMeshUpdate(const int32_t mesh_idx)
 
 void Output_DispatchObjectMeshGeometry(
     const int32_t mesh_idx, const XYZ_F *const positions,
-    const XYZ_F *const normals)
+    const XYZ_F *const normals, const float *const tint_factors)
 {
     OutputSource_Objects_ObserveObjectMeshGeometry(
-        mesh_idx, positions, normals);
+        mesh_idx, positions, normals, tint_factors);
 }
 
 REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

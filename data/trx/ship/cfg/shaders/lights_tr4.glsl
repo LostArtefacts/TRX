@@ -19,11 +19,11 @@ layout(std140) uniform LightSource {
 
 // Port of the OG ProcessObjectMeshVertices (output.cpp:42). Unclamped;
 // the overbright split downstream handles values above 128/255.
-vec3 lightObjectsTR4(vec3 rawNormal)
+vec3 lightObjectsTR4(vec3 rawNormal, vec3 ambient)
 {
     vec3 N = safeNormalize(mat3(uMatView * uMatModel) * (rawNormal.xyz / float(1 << 14)));
 
-    vec3 acc = uTR4Ambient.rgb;
+    vec3 acc = ambient;
     for (int i = 0; i < uTR4NumLights; i++) {
         float val = dot(uTR4Lights[i].vec.xyz, N);
         if (val > 0.0) {

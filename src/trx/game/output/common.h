@@ -42,5 +42,6 @@ void Output_DispatchObjectMeshUpdate(int32_t mesh_idx);
 // indexed the same way and replaces the baked normals, letting a deformed seam
 // take on the lighting of the meshes it welds to.
 void Output_DispatchObjectMeshGeometry(
-    int32_t mesh_idx, const XYZ_F *positions, const XYZ_F *normals);
+    int32_t mesh_idx, const XYZ_F *positions, const XYZ_F *normals,
+    const float *tint_factors);
 void Output_DispatchObjectMeshSwap(int32_t mesh_idx_0, int32_t mesh_idx_1);

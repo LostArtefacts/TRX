@@ -904,6 +904,11 @@
             "fixed": "Air a chàradh",
             "tr1": "TR1",
             "tr2": "TR2",
+        },
+        "water_tint_mode": {
+            "per_mesh": "\\{review}A rèir mogail",
+            "responsive": "\\{review}Freagarrach",
+            "whole": "\\{review}Slàn",
         }
     },
     "settings": {
@@ -1891,10 +1896,6 @@
             "title": "Meòrachadh",
             "description": "Cuiridh seo meòrachadh air nithean sònraichte an comas.",
         },
-        "visuals.enable_responsive_mesh_tint": {
-            "title": "Dathadh freagairteach lìonra",
-            "description": "Leigidh seo le lìonra Lara fa leth a bhith air an sealltainn le dath uisge ma tha iad fhèin fo uisge (stoidhle TR3). Air neo, ma tha Lara san uisge, thèid gach lìonra aice a shealltainn leis an dath (stoidhle TR1/2).",
-        },
         "visuals.enable_shotgun_flash": {
             "title": "Lasadh gunna-sgaoil",
             "description": "Cuiridh seo lasair an sàs nuair a losgais an gunna-sgaoil, coltach ri armachd eile.",
@@ -1987,6 +1988,10 @@
                 "ps1": "PS1",
                 "tombati": "TombATI",
             }
+        },
+        "visuals.water_tint_mode": {
+            "title": "\\{review}Dath an uisge",
+            "description": "\\{review}Dè uiread de Lara a ghabhas dath an uisge fhad 's a tha i san uisge. Bidh Slàn a' dathadh a h-uile pàirt dhith, mar a nì TR1 is TR2. Bidh A rèir mogail a' dathadh gach mogail a rèir far a bheil e, mar a nì TR3 is TR4. Bidh Freagarrach ga gearradh aig uachdar an uisge, agus mar sin cha ghabh ach na tha fon uisge an dath.",
         },
         "window.is_fullscreen": {
             "title": "\\{review}Làn-sgrìn",

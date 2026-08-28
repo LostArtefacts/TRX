@@ -17,6 +17,18 @@ typedef struct MESH_INSTANCE {
     MATRIX wmatrix;
     const ROOM *room;
     RGBA_F tint;
+    // Sets the water surface height so only the submerged part of the
+    // instance is tinted; without a surface, the whole instance is tinted.
+    bool has_water_line;
+    float water_line;
+    // Shifts the ambient light of the submerged part by this much, in place
+    // of tinting it.
+    bool has_submerged_ambient;
+    RGB_F submerged_ambient_delta;
+    // Sets the ambient light at the far end of an instance spanning two
+    // rooms; without it, the instance uses one ambient light.
+    bool has_ambient_span;
+    RGB_F ambient_span_from;
     bool wibble;
     // Draws the instance a second time without the distortion, under the
     // distorted one and without writing depth. Faces that distort next to

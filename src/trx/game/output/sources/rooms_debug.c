@@ -7,6 +7,7 @@
 #include <trx/game/output/sources/rooms.h>
 #include <trx/game/output/utils.h>
 #include <trx/game/output/vertex_range.h>
+#include <trx/game/output/water.h>
 #include <trx/game/random.h>
 #include <trx/gl/utils.h>
 
@@ -118,7 +119,7 @@ static void M_PrepareRoomTriggers(
 
                 const int32_t height = Room_GetFloorHeightForSector(
                     sector, world_pos.x, world_pos.z, true);
-                vertex_pos.y = height + (Output_GetWaterEffect() ? -16 : -2);
+                vertex_pos.y = height + (Output_Water_IsSubmerged() ? -16 : -2);
 
                 M_VERTEX vertex = {
                     .pos = {

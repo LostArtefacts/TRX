@@ -50,7 +50,8 @@ void OutputSource_Objects_ObserveObjectMeshUpdate(int32_t mesh_idx);
 // is indexed the same way and replaces the baked normals, so a deformed seam
 // can be lit to match the meshes it welds to.
 void OutputSource_Objects_ObserveObjectMeshGeometry(
-    int32_t mesh_idx, const XYZ_F *positions, const XYZ_F *normals);
+    int32_t mesh_idx, const XYZ_F *positions, const XYZ_F *normals,
+    const float *tint_factors);
 
 void OutputSource_Objects_StageObjectMesh(const OBJECT_MESH *mesh);
 

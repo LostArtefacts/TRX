@@ -31,6 +31,12 @@ struct OUTPUT_MESH_SHADER {
     bool is_wibble_effect[M_VARIANT_COUNT];
     bool is_alpha_discard_enabled[M_VARIANT_COUNT];
     RGBA_F tint[M_VARIANT_COUNT];
+    bool is_water_line_enabled[M_VARIANT_COUNT];
+    float water_line[M_VARIANT_COUNT];
+    bool is_submerged_ambient_enabled[M_VARIANT_COUNT];
+    RGB_F submerged_ambient_delta[M_VARIANT_COUNT];
+    bool is_ambient_span_enabled[M_VARIANT_COUNT];
+    RGB_F ambient_span_from[M_VARIANT_COUNT];
     OUTPUT_ATLAS_RECT env_map_rect[M_VARIANT_COUNT];
 };
 
@@ -101,6 +107,12 @@ RESULT Output_MeshShader_Create(OUTPUT_MESH_SHADER **const out_shader)
         shader->is_wibble_effect[i] = false;
         shader->is_alpha_discard_enabled[i] = false;
         shader->tint[i] = (RGBA_F) { 0.0f, 0.0f, 0.0f, 0.0f };
+        shader->is_water_line_enabled[i] = false;
+        shader->water_line[i] = 0.0f;
+        shader->is_submerged_ambient_enabled[i] = false;
+        shader->submerged_ambient_delta[i] = (RGB_F) {};
+        shader->is_ambient_span_enabled[i] = false;
+        shader->ambient_span_from[i] = (RGB_F) {};
         shader->env_map_rect[i] = (OUTPUT_ATLAS_RECT) { .layer = -1 };
 
         const bool subdivides = M_VariantSubdivides(i);
@@ -253,4 +265,73 @@ void Output_MeshShader_UploadTint(OUTPUT_MESH_SHADER *const shader, RGBA_F tint)
         glUniform4f, Output_Shader_LookupUniform(base, "uTint"), tint.r, tint.g,
         tint.b, tint.a);
     shader->tint[variant_idx] = tint;
+}
+
+void Output_MeshShader_UploadWaterLine(
+    OUTPUT_MESH_SHADER *const shader, const bool is_enabled,
+    const float world_y)
+{
+    const int32_t variant_idx = M_GetVariantIndex();
+    OUTPUT_SHADER *const base = M_GetVariantBase(shader, variant_idx);
+    if (is_enabled == shader->is_water_line_enabled[variant_idx]
+        && (!is_enabled || world_y == shader->water_line[variant_idx])) {
+        return;
+    }
+    GLint loc = -1;
+    if (Output_Shader_TryLookupUniform(base, "uWaterLineEnabled", &loc)) {
+        TRX_GL_TRACK_UNIFORM(glUniform1i, loc, is_enabled);
+    }
+    if (Output_Shader_TryLookupUniform(base, "uWaterLine", &loc)) {
+        TRX_GL_TRACK_UNIFORM(glUniform1f, loc, world_y);
+    }
+    shader->is_water_line_enabled[variant_idx] = is_enabled;
+    shader->water_line[variant_idx] = world_y;
+}
+
+void Output_MeshShader_UploadSubmergedAmbient(
+    OUTPUT_MESH_SHADER *const shader, const bool is_enabled, const RGB_F delta)
+{
+    const int32_t variant_idx = M_GetVariantIndex();
+    OUTPUT_SHADER *const base = M_GetVariantBase(shader, variant_idx);
+    if (is_enabled == shader->is_submerged_ambient_enabled[variant_idx]
+        && (!is_enabled
+            || (delta.r == shader->submerged_ambient_delta[variant_idx].r
+                && delta.g == shader->submerged_ambient_delta[variant_idx].g
+                && delta.b
+                    == shader->submerged_ambient_delta[variant_idx].b))) {
+        return;
+    }
+    GLint loc = -1;
+    if (Output_Shader_TryLookupUniform(
+            base, "uSubmergedAmbientEnabled", &loc)) {
+        TRX_GL_TRACK_UNIFORM(glUniform1i, loc, is_enabled);
+    }
+    if (Output_Shader_TryLookupUniform(base, "uSubmergedAmbientDelta", &loc)) {
+        TRX_GL_TRACK_UNIFORM(glUniform4f, loc, delta.r, delta.g, delta.b, 0.0f);
+    }
+    shader->is_submerged_ambient_enabled[variant_idx] = is_enabled;
+    shader->submerged_ambient_delta[variant_idx] = delta;
+}
+
+void Output_MeshShader_UploadAmbientSpan(
+    OUTPUT_MESH_SHADER *const shader, const bool is_enabled, const RGB_F from)
+{
+    const int32_t variant_idx = M_GetVariantIndex();
+    OUTPUT_SHADER *const base = M_GetVariantBase(shader, variant_idx);
+    if (is_enabled == shader->is_ambient_span_enabled[variant_idx]
+        && (!is_enabled
+            || (from.r == shader->ambient_span_from[variant_idx].r
+                && from.g == shader->ambient_span_from[variant_idx].g
+                && from.b == shader->ambient_span_from[variant_idx].b))) {
+        return;
+    }
+    GLint loc = -1;
+    if (Output_Shader_TryLookupUniform(base, "uAmbientSpanEnabled", &loc)) {
+        TRX_GL_TRACK_UNIFORM(glUniform1i, loc, is_enabled);
+    }
+    if (Output_Shader_TryLookupUniform(base, "uAmbientSpanFrom", &loc)) {
+        TRX_GL_TRACK_UNIFORM(glUniform4f, loc, from.r, from.g, from.b, 1.0f);
+    }
+    shader->is_ambient_span_enabled[variant_idx] = is_enabled;
+    shader->ambient_span_from[variant_idx] = from;
 }

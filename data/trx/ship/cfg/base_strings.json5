@@ -904,6 +904,11 @@
             "fixed": "Fixed",
             "tr1": "TR1",
             "tr2": "TR2",
+        },
+        "water_tint_mode": {
+            "per_mesh": "Per mesh",
+            "responsive": "Responsive",
+            "whole": "Whole",
         }
     },
     "settings": {
@@ -1891,10 +1896,6 @@
             "title": "Reflections",
             "description": "Enables reflections on certain objects.",
         },
-        "visuals.enable_responsive_mesh_tint": {
-            "title": "Responsive mesh tint",
-            "description": "Enables Lara's individual meshes to be drawn with a water tint if they are themselves located underwater (TR3 style). Otherwise, if Lara is in water, each of her meshes will be drawn with the tint (TR1/2 style).",
-        },
         "visuals.enable_shotgun_flash": {
             "title": "Shotgun flash",
             "description": "Draws flames when firing the shotgun, like for other guns.",
@@ -1987,6 +1988,10 @@
                 "ps1": "PS1",
                 "tombati": "TombATI",
             }
+        },
+        "visuals.water_tint_mode": {
+            "title": "Water tint",
+            "description": "How much of Lara the water color takes while she is in water. Whole tints all of her, as TR1 and TR2 do. Per mesh tints each of her meshes by where it sits, as TR3 and TR4 do. Responsive cuts her at the water surface, so that only what lies under the water takes the color.",
         },
         "window.is_fullscreen": {
             "title": "Fullscreen",
