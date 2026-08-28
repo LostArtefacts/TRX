@@ -42,6 +42,7 @@
 
 **Camera**
 - Added an option to have the photo mode camera collide with level geometry (Graphic Options → Visuals → Photo mode collision) (#5719 / TRX540)
+- Added cinematic bars to flyby sequences, as the original game does (TRX522)
 - Changed the cinematic bars to move into and out of view, rather than appear and disappear at once (TRX522)
 - Changed moving Lara in photo mode to follow the direction the camera looks, rather than the way she faces (TRX1153)
 - Fixed the Inverted look option not applying to the binoculars (#6431 / TRX1291)
