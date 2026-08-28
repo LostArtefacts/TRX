@@ -7973,7 +7973,7 @@
       "writable": true
     },
     {
-      "description": "Depth of each cinematic bar, as a fraction of the screen height. `0` removes them.",
+      "description": "Depth of each cinematic bar, as a fraction of the screen height. `0` removes\nthem. A change made while a cutscene plays moves the bars to the new depth.",
       "path": "cutscenes.letterbox",
       "type": "number",
       "writable": true

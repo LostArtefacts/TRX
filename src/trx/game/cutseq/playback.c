@@ -322,8 +322,8 @@ static bool M_Begin(const int32_t num)
         Music_Play_Direct((MUSIC_ID)info->audio_track, MPM_ONCE);
     }
 
-    Output_Overlay_SetLetterbox(0.0f);
     Output_Overlay_SetFade(0.0f);
+    Output_Overlay_SlideLetterbox(m_State.letterbox);
 
     Fader_InitTo(&m_State.fader, 1.0f, 0.0f, M_FADE_DURATION);
     m_State.phase = M_PHASE_PLAYING;
@@ -338,6 +338,7 @@ static void M_Abort(void)
     m_State.pending_num = M_NO_CUTSCENE;
     m_State.lara_return.is_present = false;
     m_State.lara_shadow_bounds.is_present = false;
+    Output_Overlay_SlideLetterbox(0.0f);
     Fader_InitFromCurrent(&m_State.fader, 0.0f, M_FADE_DURATION);
 }
 
@@ -366,6 +367,7 @@ static void M_Finish(void)
 
     m_State.phase = M_PHASE_INACTIVE;
     m_State.num = M_NO_CUTSCENE;
+    Output_Overlay_SlideLetterbox(0.0f);
     Fader_InitTo(&m_State.fader, 1.0f, 1.0f, 0.0f);
 
     // Fired last, so a handler that starts the next thing - the title hands
@@ -660,6 +662,9 @@ float CutSeq_GetLetterbox(void)
 void CutSeq_SetLetterbox(const float ratio)
 {
     m_State.letterbox = ratio;
+    if (CutSeq_IsPlaying()) {
+        Output_Overlay_SlideLetterbox(ratio);
+    }
 }
 
 void CutSeq_Reset(void)
@@ -869,16 +874,6 @@ void CutSeq_DrawActors(void)
 
 void CutSeq_DrawOverlay(void)
 {
-    if (CutSeq_IsPlaying()) {
-        const int32_t height = Viewport_GetHeight(VIEWPORT_UI);
-        const int32_t width = Viewport_GetWidth(VIEWPORT_UI);
-        const int32_t bar_height = (int32_t)(height * m_State.letterbox);
-        const RGBA_8888 black = { 0, 0, 0, 255 };
-        Output_DrawScreenFlatQuad(0, 0, 0, width, bar_height, black);
-        Output_DrawScreenFlatQuad(
-            0, height - bar_height, 0, width, bar_height, black);
-    }
-
     const float fade = Fader_GetCurrentValue(&m_State.fader);
     if (fade > 0.0f) {
         Output_Overlay_DrawBlackRectangle(fade, false);

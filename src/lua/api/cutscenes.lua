@@ -536,8 +536,8 @@ api.property("cutscenes.fov", {
 
 api.property("cutscenes.letterbox", {
   type = "number",
-  description = "Depth of each cinematic bar, as a fraction of the screen height. `0` removes "
-    .. "them.",
+  description = [[Depth of each cinematic bar, as a fraction of the screen height. `0` removes
+them. A change made while a cutscene plays moves the bars to the new depth.]],
   get = raw.get_letterbox,
   set = raw.set_letterbox,
 })

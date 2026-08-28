@@ -18,6 +18,10 @@ void Output_Overlay_DrawBlackRectangle(float opacity, bool post_ui);
 // wants the bars says so once and clears them once, rather than asking on
 // every frame; drawing happens as part of the frame's overlay.
 void Output_Overlay_SetLetterbox(float ratio);
+// Names the depth the bars move to, rather than the depth they take at once.
+// Output_Overlay_UpdateLetterbox advances them one step per logic frame.
+void Output_Overlay_SlideLetterbox(float ratio);
+void Output_Overlay_UpdateLetterbox(void);
 float Output_Overlay_GetLetterbox(void);
 void Output_Overlay_DrawLetterbox(void);
 
