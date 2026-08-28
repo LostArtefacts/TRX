@@ -173,11 +173,25 @@ static const VECTOR *M_GetTypeIds(const char *const enum_type_name)
     return entry != nullptr ? entry->values : nullptr;
 }
 
+// Spell an enum type as it appears in a game string path.
+static const char *M_LowerType(const char *const enum_type_name)
+{
+    static char buf[ENUM_MAP_MAX_NAME_SIZE];
+    size_t i = 0;
+    for (; enum_type_name[i] != '\0' && i < sizeof(buf) - 1; i++) {
+        buf[i] = (char)tolower((unsigned char)enum_type_name[i]);
+    }
+    buf[i] = '\0';
+    return buf;
+}
+
 void EnumMap_Define(
     const char *const enum_type_name, const char *const enum_name,
-    const char *const label_key, const int32_t enum_value,
-    const char *const str_value)
+    const int32_t enum_value, const char *const str_value)
 {
+    const char *const label_key = String_FormatStatic(
+        "enums/%s/%s", M_LowerType(enum_type_name),
+        EnumMap_NormalizeName(str_value));
     M_DefineStr2Id(&m_Str2IdMap, enum_type_name, enum_value, str_value);
     if (M_DefineId2Str(&m_Id2StrMap, enum_type_name, enum_value, str_value)) {
         M_DefineTypeId(enum_type_name, enum_value);
@@ -199,14 +213,13 @@ const char *EnumMap_NormalizeName(const char *const name)
 
 void EnumMap_DefinePrefixed(
     const char *const enum_type_name, const char *const enum_name,
-    const char *const label_key, const int32_t enum_value,
-    const char *const suffix)
+    const int32_t enum_value, const char *const suffix)
 {
     char *const str_value = Memory_DupStr(suffix);
     for (char *c = str_value; *c != '\0'; c++) {
         *c = (char)tolower((unsigned char)*c);
     }
-    EnumMap_Define(enum_type_name, enum_name, label_key, enum_value, str_value);
+    EnumMap_Define(enum_type_name, enum_name, enum_value, str_value);
     Memory_Free(str_value);
 }
 

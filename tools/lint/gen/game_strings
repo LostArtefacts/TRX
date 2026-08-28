@@ -36,7 +36,8 @@ RE_ENUM_MAP_USAGE = re.compile(
     r"ENUM_MAP\(\s*[A-Z0-9_]+\s*,\s*([A-Z0-9_]+)\s*,"
 )
 RE_ENUM_MAP_DEFINE = re.compile(
-    r"ENUM_MAP\(\s*([A-Z0-9_]+)\s*,\s*([A-Z0-9_]+)\s*,"
+    r"ENUM_MAP\(\s*([A-Z0-9_]+)\s*,\s*([A-Z0-9_]+)\s*,\s*\"([^\"]*)\"\s*\)",
+    re.S,
 )
 RE_ENUM_MAP_PREFIXED_DEFINE = re.compile(
     r"ENUM_MAP_PREFIXED\(\s*([A-Z0-9_]+)\s*,\s*([A-Z0-9_]+)\s*,"
@@ -44,6 +45,9 @@ RE_ENUM_MAP_PREFIXED_DEFINE = re.compile(
 )
 RE_INPUT_ROLE_USAGE = re.compile(
     r"X_INPUT_ROLE\(\s*(INPUT_ROLE_[A-Z0-9_]+)\s*,"
+)
+RE_INPUT_ROLE_DEFINE = re.compile(
+    r"X_INPUT_ROLE\(\s*(INPUT_ROLE_[A-Z0-9_]+)\s*,\s*([a-z0-9_]+)\s*\)"
 )
 RE_OBJ_NAME_DEFINE = re.compile(
     r'@NAME\(\s*([A-Za-z_][A-Za-z0-9_]*)\s*,\s*"([^"]*)"\s*\)'
@@ -82,17 +86,23 @@ TOP_LEVEL_SECTION_ORDER = (
 )
 
 
-def enum_label_key(enum_type: str, enum_value: str) -> str:
-    return f"enums/{enum_type}/{enum_value}"
+def enum_label_key(enum_type: str, name: str) -> str:
+    """
+    Spell the game string key an enum value carries its label under, the way
+    EnumMap_Define builds it: the type in lower case, and the name with `-`
+    and `:` written as `_`.
+    """
+    separators = str.maketrans({"-": "_", ":": "_"})
+    return f"enums/{enum_type.lower()}/{name.translate(separators)}"
 
 
 def resolve_enum_label_key(
     enum_value: str, enum_value_types: dict[str, str]
 ) -> str:
-    enum_type = enum_value_types.get(enum_value)
-    if enum_type is None:
+    label_key = enum_value_types.get(enum_value)
+    if label_key is None:
         return f"ENUM_{enum_value}"
-    return enum_label_key(enum_type, enum_value)
+    return label_key
 
 
 RE_DIGIT_RUN = re.compile(r"(\d+)")
@@ -384,8 +394,8 @@ def get_used_strings(
         )
     for match in re.finditer(RE_INPUT_ROLE_USAGE, source):
         enum_value = match.group(1)
-        yield source.count("\n", 0, match.start()) + 1, enum_label_key(
-            "INPUT_ROLE", enum_value
+        yield source.count("\n", 0, match.start()) + 1, (
+            resolve_enum_label_key(enum_value, enum_value_types)
         )
 
 
@@ -626,12 +636,18 @@ def get_enum_value_types(paths: list[Path]) -> dict[str, str]:
         source = re.sub("//.*", "", path.read_text(), flags=re.M)
         source = re.sub(r"/\*.*?\*/", "", source, flags=re.S)
         source = re.sub(r"^\s*#define\s+.*$", "", source, flags=re.M)
-        for enum_type, enum_value in RE_ENUM_MAP_DEFINE.findall(source):
-            value_types[enum_value] = enum_type
+        for enum_type, enum_value, name in RE_ENUM_MAP_DEFINE.findall(source):
+            # An alias is a second name for one value, and the first one
+            # registered is the one the label is keyed on.
+            value_types.setdefault(enum_value, enum_label_key(enum_type, name))
         for enum_type, prefix, suffix in RE_ENUM_MAP_PREFIXED_DEFINE.findall(
             source
         ):
-            value_types[prefix + suffix] = enum_type
+            value_types.setdefault(
+                prefix + suffix, enum_label_key(enum_type, suffix.lower())
+            )
+        for role, state in RE_INPUT_ROLE_DEFINE.findall(source):
+            value_types.setdefault(role, enum_label_key("INPUT_ROLE", state))
     return value_types
 
 

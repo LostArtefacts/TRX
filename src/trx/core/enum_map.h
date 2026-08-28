@@ -2,16 +2,14 @@
 
 #define ENUM_MAP(enum_type_name, enum_value, str_value)                        \
     EnumMap_Define(                                                            \
-        ENUM_MAP_NAME(enum_type_name), #enum_value,                            \
-        ENUM_MAP_LABEL_KEY(enum_type_name, enum_value), enum_value, str_value)
+        ENUM_MAP_NAME(enum_type_name), #enum_value, enum_value, str_value)
 
 // Defines a value from its C spelling without the prefix; the prefix includes
 // its trailing underscore, as in
 // ENUM_MAP_PREFIXED(LARA_GUN_TYPE, LGT_, SHOTGUN).
 #define ENUM_MAP_PREFIXED(enum_type_name, prefix, suffix)                      \
     EnumMap_DefinePrefixed(                                                    \
-        ENUM_MAP_NAME(enum_type_name), #prefix #suffix,                        \
-        ENUM_MAP_LABEL_KEY(enum_type_name, prefix##suffix), prefix##suffix,    \
+        ENUM_MAP_NAME(enum_type_name), #prefix #suffix, prefix##suffix,        \
         #suffix)
 
 #define ENUM_MAP_GET(enum_type_name, str_value, default_value)                 \
@@ -22,8 +20,6 @@
 
 #define ENUM_MAP_NAME(enum_type_name) #enum_type_name
 #define ENUM_MAP_MAX_NAME_SIZE 256
-#define ENUM_MAP_LABEL_KEY(enum_type_name, enum_value)                         \
-    "enums/" #enum_type_name "/" #enum_value
 
 // Associate an integer enum value, such as WEATHER_SNOW, with a string
 // representation such as "snow".
@@ -32,19 +28,18 @@
 // @param enum_value        Value of the enum, such as 1.
 // @param str_value         String representation of the enum, such as "snow".
 void EnumMap_Define(
-    const char *enum_type_name, const char *enum_name, const char *label_key,
-    int32_t enum_value, const char *str_value);
+    const char *enum_type_name, const char *enum_name, int32_t enum_value,
+    const char *str_value);
 
 // Associates an integer enum value with its lower-case suffix for use by
 // ENUM_MAP_PREFIXED.
 // @param enum_type_name Specifies the enum type name, such as "LARA_GUN_TYPE".
 // @param enum_name Specifies the enum constant name, such as "LGT_SHOTGUN".
-// @param label_key Specifies the game string key for the localised label.
 // @param enum_value Specifies the enum value, such as 4.
 // @param suffix Specifies the enum name without its prefix, such as "SHOTGUN".
 void EnumMap_DefinePrefixed(
-    const char *enum_type_name, const char *enum_name, const char *label_key,
-    int32_t enum_value, const char *suffix);
+    const char *enum_type_name, const char *enum_name, int32_t enum_value,
+    const char *suffix);
 
 // Converts `-` and `:` to `_`; names of ENUM_MAP_MAX_NAME_SIZE characters or
 // more are truncated.
