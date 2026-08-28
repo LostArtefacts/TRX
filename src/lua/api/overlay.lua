@@ -17,6 +17,26 @@ api.namespace("overlay.signals", {
 })
 
 local held = nil
+local letterbox_held = nil
+
+api.property("overlay.has_letterbox", {
+  type = "boolean",
+  description = [[Whether the cinematic bars take any of the screen. It stays true while they
+move, so a script can hold something back until they have gone.]],
+  get = raw.has_letterbox,
+})
+
+api.property("overlay.signals.letterbox", {
+  type = "signal.Signal",
+  description = [[Says when the cinematic bars take the screen and when they give it back. True
+while they are moving, so a script can hold something back until they have gone.]],
+  get = function()
+    if letterbox_held == nil then
+      letterbox_held = trx.signal.polled(raw.has_letterbox)
+    end
+    return letterbox_held
+  end,
+})
 
 api.property("overlay.signals.health_bar_forced", {
   type = "signal.Signal",

@@ -1083,6 +1083,11 @@ float Output_Overlay_GetLetterbox(void)
     return m_Letterbox;
 }
 
+bool Output_Overlay_HasLetterbox(void)
+{
+    return m_Letterbox > 0.0f;
+}
+
 void Output_Overlay_SetFade(const float opacity)
 {
     m_Fade = opacity;
