@@ -38,10 +38,7 @@
 // The OG fades out over the last 8 frames of the track.
 #define M_END_FADE_FRAMES 8
 #define M_END_FADE_DURATION (M_END_FADE_FRAMES / (float)LOGIC_FPS)
-// The OG cinematic border (SetFadeClip) is 28 lines of a 480-line screen.
 #define M_DEFAULT_LETTERBOX (28.0f / 480.0f)
-// A title level shows none of it: the OG guards both the set and the clear
-// with gfCurrentLevel, which is 0 there.
 #define M_TITLE_LETTERBOX 0.0f
 
 // Distance an actor root can travel in one frame before the move reads as a

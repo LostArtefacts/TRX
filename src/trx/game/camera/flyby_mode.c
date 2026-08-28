@@ -4,10 +4,12 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/lara.h>
 #include <trx/game/lua/events.h>
+#include <trx/game/output/overlay.h>
 #include <trx/game/rooms.h>
 #include <trx/game/viewport.h>
 
 #define M_NO_SEQUENCE (-1)
+#define M_LETTERBOX (16.0f / 480.0f)
 
 static int32_t m_CurrentSequence = M_NO_SEQUENCE;
 static ITEM m_TriggerItem = {
@@ -40,6 +42,14 @@ static int32_t M_GetLastCamera(const FLYBY_SEQUENCE *const sequence)
     return sequence->camera_idx + sequence->num_cameras - 1;
 }
 
+static void M_SlideLetterboxIn(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    if (level != nullptr && level->type != GFL_TITLE) {
+        Output_Overlay_SlideLetterbox(M_LETTERBOX);
+    }
+}
+
 static void M_PrepareSequence(const int32_t sequence_idx)
 {
     m_CurrentSequence = sequence_idx;
@@ -66,6 +76,7 @@ static void M_PrepareSequence(const int32_t sequence_idx)
     m_State.current.spline_pos = 0;
     if (camera->flags.lara_control_off) {
         Lara_SetControllable(false);
+        M_SlideLetterboxIn();
     }
 
     if (camera->flags.track_path) {
@@ -293,7 +304,7 @@ void Camera_FlybyMode_Deactivate(void)
         g_Camera.interp.prev.target = g_Camera.target.pos;
         Camera_Update();
     }
-    // TODO: undo fade clip
+    Output_Overlay_SlideLetterbox(0.0f);
 }
 
 void Camera_FlybyMode_Update(void)
@@ -429,7 +440,7 @@ void Camera_FlybyMode_Update(void)
             }
             if (current_camera->flags.lara_control_off) {
                 Lara_SetControllable(false);
-                // TODO: fade clip
+                M_SlideLetterboxIn();
             }
 
             slot = 0;
