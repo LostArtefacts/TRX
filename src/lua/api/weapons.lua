@@ -26,7 +26,6 @@ local weapon_param = {
 
 api.enum("weapons.Kind", {
   backing = "WEAPON_TYPE",
-  strip = "WEAPON_TYPE_",
   description = "How the engine holds and fires a weapon, which decides which arm animations and "
     .. "firing routine it uses.",
   values = {

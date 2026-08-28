@@ -1188,21 +1188,11 @@ end
 --
 -- Unlike a struct, an enum is small and wholly public: there is nothing to
 -- hide, so exposure is not opt-in. Every constant must be documented, and
--- documenting one that does not exist is an error. The name a constant goes by
--- in Lua. `strip` takes a prefix off the reflected name: the C spelling is what
--- the data files are keyed by and cannot move, but
--- trx.lara.ExtraMesh.EXTRA_MESH_OAR only says EXTRA_MESH twice.
+-- documenting one that does not exist is an error.
 function api.enum_name(spec, reflected_name)
-  -- A catalog reports its keys in lower case, and upper case is what a
-  -- constant reads as everywhere else.
-  if spec.context ~= nil then
-    return reflected_name:upper()
-  end
-  local strip = spec.strip
-  if strip ~= nil and reflected_name:sub(1, #strip) == strip then
-    return reflected_name:sub(#strip + 1)
-  end
-  return reflected_name
+  -- Upper case is what a constant reads as, and C already spells the name
+  -- without its prefix.
+  return reflected_name:upper()
 end
 
 api.enum = declarator("enum", "enums", {

@@ -25,7 +25,6 @@ api.number("catalog.Slot", {
 
 local Context = api.enum("catalog.Context", {
   backing = "CATALOG_CONTEXT",
-  strip = "CATALOG_",
   description = "Which catalog a slot belongs to.",
   values = {
     OBJECTS = "Objects.",
@@ -90,7 +89,6 @@ api.enum("catalog.flip_effects", {
 
 api.enum("catalog.weapons", {
   backing = "LARA_GUN_TYPE",
-  strip = "LGT_",
   bulk = true,
   description = "Every weapon Lara can hold.",
   examples = {
