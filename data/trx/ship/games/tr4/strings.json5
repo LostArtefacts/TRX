@@ -13,7 +13,9 @@
     "levels": [
         {
             "title": "Angkor Wat",
-            "legend": "Cambodia, 1984",
+            "general": {
+                "legend": "Cambodia, 1984",
+            },
             "objects": {
                 "puzzle_item_1": {
                     "name": "Golden Skull",
@@ -30,7 +32,9 @@
         },
         {
             "title": "The Tomb of Seth",
-            "legend": "Egypt, present day",
+            "general": {
+                "legend": "Egypt, present day",
+            },
             "objects": {
                 "puzzle_item_1": {
                     "name": "Eye of Horus",

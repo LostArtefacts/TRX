@@ -11,3 +11,8 @@ trx.events.on_game_start(function()
   trx.objects.waterfall_2.properties.loop_sound = trx.items.WaterfallSound.SAND
   trx.objects.waterfall_2.properties.hide_when_inactive = true
 end)
+
+-- The caption the level opens with, which the level's strings carry.
+require("common.legend").setup(function()
+  return trx.locale.get("general/legend")
+end)

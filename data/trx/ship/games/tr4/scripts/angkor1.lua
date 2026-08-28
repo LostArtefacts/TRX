@@ -101,3 +101,8 @@ cutscenes.register(ENTRANCE_CUTSCENE, {
     },
   },
 })
+
+-- The caption the level opens with, which the level's strings carry.
+require("common.legend").setup(function()
+  return trx.locale.get("general/legend")
+end)
