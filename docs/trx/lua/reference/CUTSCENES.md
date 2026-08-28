@@ -44,7 +44,8 @@ end)
 - <a id="cutscenes.count" name="cutscenes.count"></a>**`trx.cutscenes.count`** (integer). How many cutscenes this game can play. `0` where it has none, which is every game but TR4 and a TR4 install with no `cutseq.pak` beside its levels. *(read-only)*
 - <a id="cutscenes.actor_count" name="cutscenes.actor_count"></a>**`trx.cutscenes.actor_count`** (integer). How many actors the running cutscene has, or `0` if none is running. *(read-only)*
 - <a id="cutscenes.fov" name="cutscenes.fov"></a>**`trx.cutscenes.fov`** ([trx.math.Angle](MATH.md#math.Angle)). Field of view a cutscene plays at. TR4 uses 11488, against 14560 for ordinary play.
-- <a id="cutscenes.letterbox" name="cutscenes.letterbox"></a>**`trx.cutscenes.letterbox`** (number). Depth of each cinematic bar, as a fraction of the screen height. `0` removes them.
+- <a id="cutscenes.letterbox" name="cutscenes.letterbox"></a>**`trx.cutscenes.letterbox`** (number). Depth of each cinematic bar, as a fraction of the screen height. `0` removes
+  them. A change made while a cutscene plays moves the bars to the new depth.
 
 ### Structures
 

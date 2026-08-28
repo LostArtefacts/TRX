@@ -110,4 +110,4 @@ void CutSeq_PostControl(void); // reasserts the cinematic camera
 void CutSeq_UpdateCamera(void); // places the camera (Camera_Update)
 void CutSeq_PreDraw(void); // interpolates poses for rendering (Game_Draw)
 void CutSeq_DrawActors(void); // draws actors 1..N (Room_DrawAllRooms)
-void CutSeq_DrawOverlay(void); // fade + letterbox bars (Game_Draw)
+void CutSeq_DrawOverlay(void); // fade to and from black (Game_Draw)

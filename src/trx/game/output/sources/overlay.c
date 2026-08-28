@@ -41,6 +41,8 @@
 
 #define M_IMAGE_CACHE_CAPACITY 5
 #define M_RELATIVE_ERROR(a, b) ABS((a) - (b)) / (b)
+// The OG moves the cinematic bars one line of a 480-line screen per frame.
+#define M_LETTERBOX_SPEED (1.0f / 480.0f)
 
 struct M_DRAW_OP;
 typedef void (*M_DRAW_OP_FUNC)(const struct M_DRAW_OP *);
@@ -145,6 +147,7 @@ static M_PRIV m_Priv = {
 };
 
 static float m_Letterbox = 0.0f;
+static float m_LetterboxTarget = 0.0f;
 static float m_Fade = 0.0f;
 
 static bool M_CreateTextureRGB8(
@@ -1058,6 +1061,21 @@ void Output_Overlay_DrawBlackRectangle(const float opacity, const bool post_ui)
 void Output_Overlay_SetLetterbox(const float ratio)
 {
     m_Letterbox = ratio;
+    m_LetterboxTarget = ratio;
+}
+
+void Output_Overlay_SlideLetterbox(const float ratio)
+{
+    m_LetterboxTarget = ratio;
+}
+
+void Output_Overlay_UpdateLetterbox(void)
+{
+    if (m_Letterbox < m_LetterboxTarget) {
+        m_Letterbox = MIN(m_Letterbox + M_LETTERBOX_SPEED, m_LetterboxTarget);
+    } else if (m_Letterbox > m_LetterboxTarget) {
+        m_Letterbox = MAX(m_Letterbox - M_LETTERBOX_SPEED, m_LetterboxTarget);
+    }
 }
 
 float Output_Overlay_GetLetterbox(void)

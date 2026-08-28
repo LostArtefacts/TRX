@@ -431,7 +431,7 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
 
     switch (p->cut_phase) {
     case 0:
-        Output_Overlay_SetLetterbox(24.0f / 480.0f);
+        Output_Overlay_SlideLetterbox(24.0f / 480.0f);
         Fader_InitTo(&m_Fader, 1.0f, 1.0f, 0.0f);
         Lara_SetControllable(false);
         p->cut_phase++;
@@ -536,7 +536,7 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
         break;
 
     case 3:
-        Output_Overlay_SetLetterbox(0.0f);
+        Output_Overlay_SlideLetterbox(0.0f);
         m_Fader = (FADER) {};
         M_ClearCutCamera();
         const MUSIC_ID ambient = Music_GetCurrentLoopedTrack();
