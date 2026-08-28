@@ -231,3 +231,9 @@ typedef enum {
     BREEZE_MODE_TR2,
     BREEZE_MODE_TR3,
 } BREEZE_MODE;
+
+typedef enum {
+    BRAID_STATUS_OFF,
+    BRAID_STATUS_ON,
+    BRAID_STATUS_AUTO,
+} BRAID_STATUS;

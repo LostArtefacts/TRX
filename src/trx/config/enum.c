@@ -160,4 +160,8 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(BREEZE_MODE, BREEZE_MODE_OFF, "off");
     ENUM_MAP(BREEZE_MODE, BREEZE_MODE_TR2, "tr2");
     ENUM_MAP(BREEZE_MODE, BREEZE_MODE_TR3, "tr3");
+
+    ENUM_MAP(BRAID_STATUS, BRAID_STATUS_OFF, "off");
+    ENUM_MAP(BRAID_STATUS, BRAID_STATUS_ON, "on");
+    ENUM_MAP(BRAID_STATUS, BRAID_STATUS_AUTO, "auto");
 }

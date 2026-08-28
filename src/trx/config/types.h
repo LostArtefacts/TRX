@@ -73,7 +73,7 @@ typedef struct {
 
         bool enable_reflections;
         bool enable_3d_pickups;
-        bool enable_braid;
+        BRAID_STATUS braid_status;
         bool golden_lara;
         BREEZE_MODE breeze_mode;
         bool enable_gun_lighting;

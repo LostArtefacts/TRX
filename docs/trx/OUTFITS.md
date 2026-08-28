@@ -589,6 +589,15 @@ behave. The structure of this file is described below.
     </td>
   </tr>
   <tr valign="top">
+    <td><code>auto_enabled</code></td>
+    <td>Boolean</td>
+    <td colspan="2">
+      Whether or not the braid is enabled by default when the player chooses
+      <code>Auto</code> for Lara's braid status. Defaults to <code>true</code>;
+      typically set to <code>false</code> for TR1 outfits.
+    </td>
+  </tr>
+  <tr valign="top">
     <td><code>mesh_offset</code></td>
     <td>Integer</td>
     <td colspan="2">

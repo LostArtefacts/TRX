@@ -19,7 +19,7 @@ trx.locale.declare({
 local COMMANDS = {
   {
     name = "braid",
-    key = "visuals.enable_braid",
+    key = "visuals.braid_status",
     help = "console/cmd/braid/help",
   },
   {

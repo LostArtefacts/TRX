@@ -141,6 +141,7 @@ whichever key you have bound, and not include it as part of the command itself.
 
 - `/braid on`  
   `/braid off`  
+  `/braid auto`  
   Toggle Lara's braid like it's a fashion accessory. Hair today, gone tomorrow.
 
 - `/outfit`  

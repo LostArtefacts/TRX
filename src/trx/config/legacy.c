@@ -102,6 +102,13 @@ static void M_ApplyLightingCurve(const JSON_VALUE *const value)
     CONFIG_SET(g_Config.rendering.lighting_curve, LIGHTING_CURVE_SATURATE);
 }
 
+static void M_ApplyBraidStatus(const JSON_VALUE *const value)
+{
+    if (JSON_ValueIsFalse(value)) {
+        CONFIG_SET(g_Config.visuals.braid_status, BRAID_STATUS_OFF);
+    }
+}
+
 // Every key no build writes any more, and what became of it.
 static const M_MIGRATION m_Migrations[] = {
     // TRX ..1.9: game modes changed to policy.
@@ -122,6 +129,8 @@ static const M_MIGRATION m_Migrations[] = {
       M_ApplyVertexSnapAtUpscale },
     // TRX 1.11: brightness and gamma stood in for the lighting curve.
     { "game_brightness", "lighting_curve", M_ApplyLightingCurve },
+    // TRX 1.11: braid on/off changed to mode.
+    { "enable_braid", "braid_status", M_ApplyBraidStatus },
     {}, // sentinel
 };
 

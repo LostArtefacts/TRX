@@ -171,7 +171,7 @@ static inline const LARA_SKIN_OUTFIT *M_GetBraidOutfit(void)
 static inline int32_t M_GetRelativeBraidOffset(const int32_t braid_idx)
 {
     const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
-    if (!outfit->braid.enabled) {
+    if (outfit->braid.count == 0) {
         return M_NO_MESH;
     }
 
@@ -182,13 +182,24 @@ static inline int32_t M_GetRelativeBraidOffset(const int32_t braid_idx)
     return outfit->braid.setup[braid_idx].mesh_offset;
 }
 
+static bool M_IsBraidEnabled(const LARA_SKIN_OUTFIT *const outfit)
+{
+    if (outfit->braid.count == 0
+        || g_Config.visuals.braid_status == BRAID_STATUS_OFF) {
+        return false;
+    }
+
+    return g_Config.visuals.braid_status == BRAID_STATUS_ON
+        || outfit->braid.auto_enabled;
+}
+
 static inline int32_t M_GetMeshIdx(
     const LARA_MESH mesh, const LARA_SKIN_OUTFIT *const outfit)
 {
     const OBJECT *const skin_obj = Object_Get(outfit->mesh_obj_id);
     int32_t offset = M_NO_MESH;
 
-    if (g_Config.visuals.enable_braid) {
+    if (M_IsBraidEnabled(outfit)) {
         offset = M_GetBraidDependentMeshIdx(mesh, outfit);
     }
     if (offset == M_NO_MESH) {
@@ -226,7 +237,7 @@ static int32_t M_GetCombatFaceMeshIdx(const LARA_SKIN_OUTFIT *const outfit)
         return M_NO_MESH;
     }
 
-    if (g_Config.visuals.enable_braid) {
+    if (M_IsBraidEnabled(outfit)) {
         switch (outfit->braid.mode) {
         case BRAID_MODE_TR1_HEAD_ONLY:
         case BRAID_MODE_TR1_FULL:
@@ -692,7 +703,9 @@ const ANIM_BONE *Lara_Skin_GetBoneBase(void)
 
 bool Lara_Skin_IsBraidSupported(void)
 {
-    return Lara_Skin_GetBraidMeshIdx(0) != M_NO_MESH;
+    const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
+    return M_IsBraidEnabled(outfit)
+        && Lara_Skin_GetBraidMeshIdx(0) != M_NO_MESH;
 }
 
 const LARA_SKIN_BRAID *Lara_Skin_GetBraid(void)

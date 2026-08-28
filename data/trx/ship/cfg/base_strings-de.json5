@@ -693,6 +693,11 @@
             "BLOOD_EFFECTS_PINK": "\\{review}Pink",
             "BLOOD_EFFECTS_RED": "\\{review}Rot",
         },
+        "BRAID_STATUS": {
+            "BRAID_STATUS_AUTO": "\\{review}Automatisch",
+            "BRAID_STATUS_OFF": "\\{review}Aus",
+            "BRAID_STATUS_ON": "\\{review}Ein",
+        },
         "BREEZE_MODE": {
             "BREEZE_MODE_OFF": "\\{review}Aus",
             "BREEZE_MODE_TR2": "\\{review}TR2",
@@ -1814,6 +1819,10 @@
             "title": "\\{review}Bluteffekte",
             "description": "\\{review}Steuert die Farben der Blutspritzer.\n\n- Deaktiviert: Es werden keine Blutspritzer angezeigt.\n- Pink: Standard in den deutschen PC-Versionen von TR3.\n- Rot: Standard in allen anderen Einzelhandelsversionen.",
         },
+        "visuals.braid_status": {
+            "title": "Laras Zopf",
+            "description": "\\{review}Legt fest, wie Laras Zopf angezeigt wird.\n\n- Aus: Laras Zopf wird nie angezeigt.\n- Ein: Laras Zopf wird für alle Outfits angezeigt, die ihn unterstützen.\n- Automatisch: Laras Zopf ist bei regulären TR1-Outfits deaktiviert und bei allen anderen Outfits aktiviert, die ihn unterstützen.",
+        },
         "visuals.breeze_mode": {
             "title": "Brise",
             "description": "\\{review}Ändert, wie die Brise Laras Zopf, die von Lara herabtropfenden Wassertropfen sowie Regen/Schnee in entsprechenden Räumen beeinflusst.\n\n- Aus: Briseneffekt deaktivieren.\n- TR2: Die Brise weht immer in dieselbe Richtung.\n- TR3/4: Die Brise ändert ihre Richtung mit der Zeit.",
@@ -1825,10 +1834,6 @@
         "visuals.enable_3d_pickups": {
             "title": "3D-Pickups",
             "description": "Aktiviert die Darstellung von 3D-Modellen für Pickups anstatt der üblichen Sprites.",
-        },
-        "visuals.enable_braid": {
-            "title": "Laras Zopf",
-            "description": "Aktiviert Laras Zopf.",
         },
         "visuals.enable_droplets": {
             "title": "\\{review}Wassertropfen",
