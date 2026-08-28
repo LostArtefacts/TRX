@@ -8296,6 +8296,18 @@
       "writable": false
     },
     {
+      "description": "Whether the cinematic bars take any of the screen. It stays true while they\nmove, so a script can hold something back until they have gone.",
+      "path": "overlay.has_letterbox",
+      "type": "boolean",
+      "writable": false
+    },
+    {
+      "description": "Says when the cinematic bars take the screen and when they give it back. True\nwhile they are moving, so a script can hold something back until they have gone.",
+      "path": "overlay.signals.letterbox",
+      "type": "signal.Signal",
+      "writable": false
+    },
+    {
       "description": "Says when something asks for Lara's health bar whatever else is on screen, which the inventory ring does while it shows a medipack.",
       "path": "overlay.signals.health_bar_forced",
       "type": "signal.Signal",
