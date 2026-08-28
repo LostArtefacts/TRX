@@ -104,6 +104,8 @@
 - Added PlayStation RGB555 dithering and changed Dithering to offer Disabled, Software Renderer and PS1 (Graphic Options → Rendering → Dithering)
 - Added the PlayStation depth cue (Graphic Options → Rendering → PlayStation fog)
 - Added the PlayStation lighting model, which deepens bright surfaces into their own color rather than white (Graphic Options → Rendering → Lighting model)
+- Added a water tint that cuts Lara at the water surface (Graphic Options → Visuals → Water tint)
+- Changed Responsive mesh tint to Water tint, which offers Whole, Per mesh and Responsive (Graphic Options → Visuals → Water tint)
 - Changed the lighting contrast option to appear in TR1 and TR2 only, as the other games light dynamic sources their own way (Graphic Options → Rendering → Lighting contrast)
 - Changed TR3 to light geometry on the brighter curve its hardware renderer used (Graphic Options → Rendering → Lighting model)
 - Changed the game to run on the dedicated graphics card on laptops that have two
@@ -166,6 +168,7 @@
 - Fixed creatures walking through squares a pushable block stands on (TRX1060)
 - Fixed Lara flinching when she bumps into Von Croy (TRX1095)
 - Fixed characters not being drawn while an animation carries them into the next room, such as Von Croy climbing down in Race for the Iris (TRX1232)
+- Fixed all of Lara turning the color of the water while she wades (TRX589)
 - Fixed rooms and their contents sometimes disappearing while an in-game cutscene plays (TRX1052)
 - Fixed parts of the level dropping out of the picture during the cutscene that opens Karnak (TRX1092)
 - Fixed the parked jeep showing in the temple during the cutscene that opens Karnak (TRX1092)

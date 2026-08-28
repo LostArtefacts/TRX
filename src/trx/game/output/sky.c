@@ -9,6 +9,7 @@
 #include <trx/game/output.h>
 #include <trx/game/output/sources/sky.h>
 #include <trx/game/output/state.h>
+#include <trx/game/output/water.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
@@ -343,7 +344,7 @@ bool Output_Sky_Draw(void)
         return false;
     }
 
-    Output_SetupAboveWater(g_Camera.underwater);
+    Output_Water_SetupAboveWater(g_Camera.underwater);
     if (g_TRVersion == 4) {
         M_StageLayers();
     }

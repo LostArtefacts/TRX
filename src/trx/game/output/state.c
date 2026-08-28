@@ -14,6 +14,7 @@
 #include <trx/game/output/sources/rooms.h>
 #include <trx/game/output/textures.h>
 #include <trx/game/output/uniforms.h>
+#include <trx/game/output/water.h>
 #include <trx/game/viewport.h>
 #include <trx/version.h>
 
@@ -49,10 +50,8 @@ static RGB_F m_TR3Ambient = { 1.0f, 1.0f, 1.0f };
 static RGB_F m_TR3LightColor[3] = {};
 static XYZ_32 m_TR3LightDirView[3] = {};
 
-static bool m_IsWibbleEffect = false;
-static bool m_IsWaterEffect = false;
-static bool m_IsShadeEffect = false;
-static bool m_IsRoomShadeEffect = false;
+static OUTPUT_WATER_LINE m_WaterLineStack[16] = {};
+static int32_t m_WaterLineDepth = 0;
 static bool m_IsSkyboxEnabled = false;
 
 static int32_t m_TintOverrideDepth = 0;
@@ -138,37 +137,6 @@ void Output_SetFogEnd(const int32_t dist)
     }
 }
 
-void Output_SetupBelowWater(const bool underwater)
-{
-    m_IsWaterEffect = true;
-    m_IsWibbleEffect = g_TRVersion == 4 ? underwater : !underwater;
-    m_IsShadeEffect = g_TRVersion != 4;
-    m_IsRoomShadeEffect = g_TRVersion == 4 ? underwater : true;
-}
-
-void Output_SetupAboveWater(const bool underwater)
-{
-    m_IsWaterEffect = false;
-    m_IsWibbleEffect = underwater;
-    m_IsShadeEffect = underwater;
-    m_IsRoomShadeEffect = underwater;
-}
-
-bool Output_GetWaterEffect(void)
-{
-    return m_IsWaterEffect;
-}
-
-bool Output_GetWibbleEffect(void)
-{
-    return m_IsWibbleEffect;
-}
-
-bool Output_GetObjectWibbleEffect(void)
-{
-    return g_TRVersion == 4 && m_IsWibbleEffect;
-}
-
 void Output_SetFogColor(const RGBA_8888 color)
 {
     m_FogColor.r = color.r / 255.0f;
@@ -194,7 +162,7 @@ RGBA_F Output_GetTint(void)
     if (m_TintOverrideDepth != 0) {
         return m_TintOverrideStack[m_TintOverrideDepth - 1];
     }
-    if (m_IsShadeEffect) {
+    if (Output_Water_IsShadeEnabled()) {
         return Color_RGBToRGBA(m_WaterColor);
     }
     return COLOR_RGBA_F_WHITE;
@@ -205,10 +173,35 @@ RGBA_F Output_GetRoomTint(void)
     if (m_TintOverrideDepth != 0) {
         return m_TintOverrideStack[m_TintOverrideDepth - 1];
     }
-    if (m_IsRoomShadeEffect) {
+    if (Output_Water_IsRoomShadeEnabled()) {
         return Color_RGBToRGBA(m_WaterColor);
     }
     return COLOR_RGBA_F_WHITE;
+}
+
+void Output_PushWaterLine(const OUTPUT_WATER_LINE line)
+{
+    ASSERT(m_WaterLineDepth < (int32_t)ARRAY_SIZE(m_WaterLineStack));
+    m_WaterLineStack[m_WaterLineDepth++] = line;
+}
+
+void Output_PopWaterLine(void)
+{
+    ASSERT(m_WaterLineDepth > 0);
+    m_WaterLineDepth--;
+}
+
+bool Output_GetWaterLine(OUTPUT_WATER_LINE *const out_line)
+{
+    if (m_WaterLineDepth == 0) {
+        return false;
+    }
+    const OUTPUT_WATER_LINE *const line =
+        &m_WaterLineStack[m_WaterLineDepth - 1];
+    if (out_line != nullptr) {
+        *out_line = *line;
+    }
+    return line->is_enabled;
 }
 
 void Output_PushTintOverride(const RGBA_F tint)

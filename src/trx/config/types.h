@@ -81,7 +81,6 @@ typedef struct {
         bool enable_fire_lighting;
         bool enable_static_lighting;
         bool enable_shotgun_flash;
-        bool enable_responsive_mesh_tint;
         char *lara_outfit;
         SUNGLASSES_MODE sunglasses_mode;
         SHADOW_TYPE shadow_type;
@@ -98,6 +97,7 @@ typedef struct {
         bool fix_animated_sprites;
         bool fix_texture_issues;
 
+        WATER_TINT_MODE water_tint_mode;
         RGB_888 water_color;
         bool fog_transparency;
         RGB_888 fog_color;

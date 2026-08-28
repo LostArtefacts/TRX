@@ -904,6 +904,11 @@
             "fixed": "\\{review}Réparé",
             "tr1": "TR1",
             "tr2": "TR2",
+        },
+        "water_tint_mode": {
+            "per_mesh": "\\{review}Par maillage",
+            "responsive": "\\{review}Adaptative",
+            "whole": "\\{review}Entière",
         }
     },
     "settings": {
@@ -1891,10 +1896,6 @@
             "title": "Reflets",
             "description": "Active les reflets sur certains objets.",
         },
-        "visuals.enable_responsive_mesh_tint": {
-            "title": "\\{review}Teinte réactive des meshes",
-            "description": "\\{review}Permet d’afficher les meshes individuelles de Lara avec une teinte aquatique lorsqu’elles se trouvent elles-mêmes sous l’eau (style TR3). Sinon, si Lara est dans l’eau, toutes ses meshes seront affichées avec la teinte (style TR1/2).",
-        },
         "visuals.enable_shotgun_flash": {
             "title": "Flash du fusil",
             "description": "Génère un flash lorsque Lara tire avec le fusil à pompe, comme pour les autres armes.",
@@ -1987,6 +1988,10 @@
                 "ps1": "\\{review}PS1",
                 "tombati": "\\{review}TombATI",
             }
+        },
+        "visuals.water_tint_mode": {
+            "title": "\\{review}Teinte de l'eau",
+            "description": "\\{review}Quelle partie de Lara prend la couleur de l'eau lorsqu'elle est dans l'eau. Entière la teinte en totalité, comme dans TR1 et TR2. Par maillage teinte chaque maillage selon sa position, comme dans TR3 et TR4. Adaptative la coupe à la surface de l'eau, de sorte que seule la partie immergée prend la couleur.",
         },
         "window.is_fullscreen": {
             "title": "\\{review}Plein écran",

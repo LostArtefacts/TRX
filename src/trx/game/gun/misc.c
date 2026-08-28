@@ -16,6 +16,7 @@
 #include <trx/game/los.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output.h>
+#include <trx/game/output/water.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
@@ -361,7 +362,7 @@ void Gun_DrawFlash(
         .room_num = Lara_GetItem()->room_num,
         .pos = Matrix_MulVec32_M(g_WMatrixPtr, (XYZ_32) {}),
     };
-    Output_PushTintOverride(Lara_GetMeshTint(pos));
+    Output_Water_PushLaraMesh(WATER_LARA_MESH_OTHER, pos, 0);
 
     if (g_TRVersion < 3) {
         Output_CalculateStaticLight(weapon.flash.shade);
@@ -374,7 +375,7 @@ void Gun_DrawFlash(
     }
 
     M_DrawGunGlow(&weapon, interpolated);
-    Output_PopTintOverride();
+    Output_Water_PopLaraMesh();
 }
 
 void Gun_UpdateLaraMeshes(const OBJECT_ID obj_id)

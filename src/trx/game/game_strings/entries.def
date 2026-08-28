@@ -206,6 +206,9 @@ GS_DEFINE(enums/save_crystal_mode/pickup,                    "Pickups")
 GS_DEFINE(enums/wall_glitch_mode/fixed,                      "Fixed")
 GS_DEFINE(enums/wall_glitch_mode/tr1,                        "TR1")
 GS_DEFINE(enums/wall_glitch_mode/tr2,                        "TR2")
+GS_DEFINE(enums/water_tint_mode/whole,                       "Whole")
+GS_DEFINE(enums/water_tint_mode/per_mesh,                    "Per mesh")
+GS_DEFINE(enums/water_tint_mode/responsive,                  "Responsive")
 
 // Setting names
 GS_DEFINE(settings/audio.ambient_volume/title,                    "Ambient volume")
@@ -453,7 +456,6 @@ GS_DEFINE(settings/visuals.enable_gun_lighting/title,             "Gun lighting"
 GS_DEFINE(settings/visuals.enable_ps1_crystals/title,             "PS1 crystal tint")
 GS_DEFINE(settings/visuals.enable_ps1_rain/title,                 "PS1 raindrops")
 GS_DEFINE(settings/visuals.enable_reflections/title,              "Reflections")
-GS_DEFINE(settings/visuals.enable_responsive_mesh_tint/title,     "Responsive mesh tint")
 GS_DEFINE(settings/visuals.enable_shotgun_flash/title,            "Shotgun flash")
 GS_DEFINE(settings/visuals.enable_skybox/title,                   "Skyboxes")
 GS_DEFINE(settings/visuals.enable_static_lighting/title,          "Static mesh lighting")
@@ -475,6 +477,7 @@ GS_DEFINE(settings/visuals.shadow_type/title,                     "Shadows shape
 GS_DEFINE(settings/visuals.sunglasses_mode/title,                 "Lara's sunglasses")
 GS_DEFINE(settings/visuals.ui_brightness/title,                   "UI brightness")
 GS_DEFINE(settings/visuals.water_color/title,                     "Water color")
+GS_DEFINE(settings/visuals.water_tint_mode/title,                 "Water tint")
 GS_DEFINE(settings/window.is_fullscreen/title,                    "Fullscreen")
 
 // Setting descriptions
@@ -723,7 +726,6 @@ GS_DEFINE(settings/visuals.enable_gun_lighting/description,             "Enables
 GS_DEFINE(settings/visuals.enable_ps1_crystals/description,             "Save crystals will be drawn with a purple tint, more similar to the PS1 type.")
 GS_DEFINE(settings/visuals.enable_ps1_rain/description,                 "Raindrops will be added to the scene rather than blended into it, so they appear pale as on the PS1.")
 GS_DEFINE(settings/visuals.enable_reflections/description,              "Enables reflections on certain objects.")
-GS_DEFINE(settings/visuals.enable_responsive_mesh_tint/description,     "Enables Lara's individual meshes to be drawn with a water tint if they are themselves located underwater (TR3 style). Otherwise, if Lara is in water, each of her meshes will be drawn with the tint (TR1/2 style).")
 GS_DEFINE(settings/visuals.enable_shotgun_flash/description,            "Draws flames when firing the shotgun, like for other guns.")
 GS_DEFINE(settings/visuals.enable_skybox/description,                   "Enables the skybox in supported levels.")
 GS_DEFINE(settings/visuals.enable_static_lighting/description,          "Lets flames and other dynamic lights illuminate static meshes. The original TR4 lights only room geometry.")
@@ -745,6 +747,7 @@ GS_DEFINE(settings/visuals.shadow_type/description,                     "Selects
 GS_DEFINE(settings/visuals.sunglasses_mode/description,                 "Changes the style of Lara's sunglasses. Note that lenses will be reflective if the relevant option is enabled.\n\n- Off: Lara will not wear sunglasses.\n- Opaque: Lara's sunglasses will have opaque lenses.\n- Transparent: Lara's sunglasses will have semi-transparent lenses.")
 GS_DEFINE(settings/visuals.ui_brightness/description,                   "Changes UI brightness.")
 GS_DEFINE(settings/visuals.water_color/description,                     "Color of the water.")
+GS_DEFINE(settings/visuals.water_tint_mode/description,                 "How much of Lara the water color takes while she is in water. Whole tints all of her, as TR1 and TR2 do. Per mesh tints each of her meshes by where it sits, as TR3 and TR4 do. Responsive cuts her at the water surface, so that only what lies under the water takes the color.")
 GS_DEFINE(settings/window.is_fullscreen/description,                    "Fills the screen, or runs in a window.")
 
 GS_DEFINE(general/stats/basic_fmt,               "%d")

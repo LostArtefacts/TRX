@@ -7,6 +7,7 @@
 #include <trx/game/output.h>
 #include <trx/game/output/bind.h>
 #include <trx/game/output/mesh_batcher/mesh_builder.h>
+#include <trx/game/output/water.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/version.h>
@@ -173,7 +174,7 @@ static int32_t M_GetWaterEffect(const ROOM *const room)
     if (g_TRVersion >= 3) {
         return 2 + (int32_t)room->water_scheme;
     }
-    return Output_GetWaterEffect() ? 1 : 0;
+    return Output_Water_IsSubmerged() ? 1 : 0;
 }
 
 static void M_PrepareMeshes(M_PRIV *const p)
@@ -277,7 +278,7 @@ void OutputSource_Rooms_StageRoom(const ROOM *const room)
         .cwmatrix = *g_MatrixPtr,
         .wmatrix = *g_WMatrixPtr,
         .tint = Output_GetRoomTint(),
-        .wibble = Output_GetWibbleEffect(),
+        .wibble = Output_Water_IsWibbleEnabled(),
         .wibble_fill = g_TRVersion != 4,
         .water_effect = M_GetWaterEffect(room),
         .enable_scissor = Room_IsOverlapping(Room_GetIndex(room)),

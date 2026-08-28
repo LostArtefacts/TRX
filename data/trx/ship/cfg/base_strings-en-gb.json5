@@ -140,6 +140,9 @@
         "visuals.water_color_mode": {
             "title": "Water colour preset",
             "description": "Which release's underwater tint to use. While a preset is picked it holds the water colour below; Custom leaves that colour to you.",
+        },
+        "visuals.water_tint_mode": {
+            "description": "How much of Lara the water colour takes while she is in water. Whole tints all of her, as TR1 and TR2 do. Per mesh tints each of her meshes by where it sits, as TR3 and TR4 do. Responsive cuts her at the water surface, so that only what lies under the water takes the colour.",
         }
     }
 }

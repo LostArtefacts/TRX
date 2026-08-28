@@ -35,6 +35,7 @@ typedef enum {
     OUTPUT_MESH_ATTR_SHADE           = 7,
     OUTPUT_MESH_ATTR_REFLECTIVITY    = 8,
     OUTPUT_MESH_ATTR_UV_SCROLL       = 9,
+    OUTPUT_MESH_ATTR_TINT_FACTOR     = 10,
     // clang-format on
 } OUTPUT_MESH_ATTRIBUTE;
 
@@ -58,5 +59,20 @@ void Output_MeshShader_UploadWaterEffect(
 void Output_MeshShader_UploadWibbleEffect(
     OUTPUT_MESH_SHADER *shader, bool is_enabled);
 void Output_MeshShader_UploadTint(OUTPUT_MESH_SHADER *shader, RGBA_F tint);
+
+// Sets the world-space water surface height for subsequent instances;
+// without a surface, the whole mesh is tinted.
+void Output_MeshShader_UploadWaterLine(
+    OUTPUT_MESH_SHADER *shader, bool is_enabled, float world_y);
+
+// Sets how far the ambient light of the submerged part of subsequent
+// instances shifts; without it, that part takes the tint instead.
+void Output_MeshShader_UploadSubmergedAmbient(
+    OUTPUT_MESH_SHADER *shader, bool is_enabled, RGB_F delta);
+
+// Sets the ambient light at the far end of a mesh spanning two rooms; without
+// it, the mesh uses one ambient light.
+void Output_MeshShader_UploadAmbientSpan(
+    OUTPUT_MESH_SHADER *shader, bool is_enabled, RGB_F from);
 void Output_MeshShader_UploadAlphaDiscard(
     OUTPUT_MESH_SHADER *shader, bool is_enabled);

@@ -1,14 +1,10 @@
 #include <trx/game/lara/mesh.h>
 
-#include <trx/config.h>
-#include <trx/game/camera.h>
 #include <trx/game/gun.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
-#include <trx/game/output.h>
-#include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 
 static OBJECT_MESH *m_Meshes[LM_NUMBER_OF] = {};
@@ -127,27 +123,6 @@ void Lara_Mesh_Set(const LARA_MESH mesh, OBJECT_MESH *const mesh_ptr)
 OBJECT_MESH *Lara_Mesh_Get(const LARA_MESH mesh)
 {
     return m_Meshes[mesh];
-}
-
-RGBA_F Lara_GetMeshTint(const GAME_VECTOR pos)
-{
-    if (!g_Config.visuals.enable_responsive_mesh_tint || g_Camera.underwater) {
-        return Output_GetTint();
-    }
-
-    int16_t room_num = pos.room_num;
-    Room_GetSector(pos.pos, &room_num);
-    const int32_t water_height = Room_GetWaterHeight(pos.pos, room_num);
-
-    if (!Room_Get(room_num)->flags.underwater) {
-        return COLOR_RGBA_F_WHITE;
-    } else if (water_height == NO_HEIGHT) {
-        return Color_RGBToRGBA(Output_GetWaterColor());
-    } else if (pos.y > water_height) {
-        return Color_RGBToRGBA(Output_GetWaterColor());
-    } else {
-        return COLOR_RGBA_F_WHITE;
-    }
 }
 
 int32_t Lara_GetMeshIndex(const ITEM *const item, const int32_t mesh_idx)

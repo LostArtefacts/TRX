@@ -8,6 +8,9 @@
 #include <trx/game/lara/skin/seam.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output.h>
+#include <trx/game/output/water.h>
+
+#include <math.h>
 
 #define M_STACK_SIZE LM_NUMBER_OF
 
@@ -23,6 +26,10 @@ typedef struct {
     // ring vertex pinned across bone frames rarely lands on the int16 grid,
     // and the leftover quantization reads as a visible crack up close.
     int32_t vertex_count;
+    // Stores each joint vertex's position towards the connected mesh, from 0
+    // to 1, to blend the two rooms' ambient light by distance from each welded
+    // end.
+    float *blend;
     XYZ_F *positions;
     // Per-frame vertex normals, welded the same way as the positions: a ring
     // vertex takes the normal of the limb vertex it sits on so object lighting
@@ -46,6 +53,52 @@ typedef struct {
 } M_STATE;
 
 static M_STATE m_State = {};
+
+// Stores each joint vertex's position towards the connected mesh, from 0 to 1,
+// to blend the two rooms' ambient light by distance from each welded end.
+static void M_CalculateBlend(
+    M_JOINT *const joint, const OBJECT_MESH *const mesh)
+{
+    const struct {
+        int32_t count;
+        const SEAM_VERTEX_PAIR *pairs;
+    } sides[2] = {
+        { joint->parent.count, joint->parent.pairs },
+        { joint->child.count, joint->child.pairs },
+    };
+
+    for (int32_t i = 0; i < joint->vertex_count; i++) {
+        joint->blend[i] = 1.0f;
+    }
+    if (sides[0].count == 0 || sides[1].count == 0) {
+        return;
+    }
+
+    for (int32_t i = 0; i < joint->vertex_count; i++) {
+        float nearest[2] = { -1.0f, -1.0f };
+        for (int32_t side = 0; side < 2; side++) {
+            for (int32_t j = 0; j < sides[side].count; j++) {
+                const uint16_t other = sides[side].pairs[j].vertex_b;
+                if (other >= mesh->num_vertices) {
+                    continue;
+                }
+                const float dx = mesh->vertices[i].x - mesh->vertices[other].x;
+                const float dy = mesh->vertices[i].y - mesh->vertices[other].y;
+                const float dz = mesh->vertices[i].z - mesh->vertices[other].z;
+                const float dist = sqrtf(dx * dx + dy * dy + dz * dz);
+                if (nearest[side] < 0.0f || dist < nearest[side]) {
+                    nearest[side] = dist;
+                }
+            }
+        }
+        if (nearest[0] < 0.0f || nearest[1] < 0.0f) {
+            continue;
+        }
+        const float total = nearest[0] + nearest[1];
+        const float blend = total > 0.0f ? nearest[0] / total : 1.0f;
+        joint->blend[i] = blend;
+    }
+}
 
 static void M_CalculateBindPose(
     const OBJECT *const obj, XYZ_32 positions[LM_NUMBER_OF])
@@ -121,6 +174,8 @@ static void M_CalculateJointInfo(
             &bind_pose->joint_pos[mesh]);
 
         joint->vertex_count = joint_mesh->num_vertices;
+        joint->blend = Memory_Alloc(sizeof(float) * joint->vertex_count);
+        M_CalculateBlend(joint, joint_mesh);
         joint->positions = Memory_Alloc(sizeof(XYZ_F) * joint->vertex_count);
         joint->normals = Memory_Alloc(sizeof(XYZ_F) * joint->vertex_count);
 
@@ -131,6 +186,7 @@ static void M_CalculateJointInfo(
 static void M_Reset(void)
 {
     for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
+        Memory_FreePointer(&m_State.joints[i].blend);
         Memory_FreePointer(&m_State.joints[i].positions);
         Memory_FreePointer(&m_State.joints[i].normals);
     }
@@ -302,13 +358,26 @@ void Lara_Joints_Draw(
     const XYZ_F *const normals =
         mesh->num_lights > 0 ? joint->normals : nullptr;
     Output_DispatchObjectMeshGeometry(
-        joint->joint_mesh_idx, joint->positions, normals);
+        joint->joint_mesh_idx, joint->positions, normals, joint->blend);
 
+    // Colours each joint according to the water states of the two meshes it
+    // bridges, matching the original joint lighting.
+    const GAME_VECTOR pos = {
+        .room_num = lara_item->room_num,
+        .pos = {
+            child->_03 >> W2V_SHIFT,
+            child->_13 >> W2V_SHIFT,
+            child->_23 >> W2V_SHIFT,
+        },
+    };
+    Output_Water_PushLaraJoint(
+        joint->parent_mesh, joint->child_mesh, pos, mesh->radius);
     if (interpolated) {
         Output_DrawObjectMesh_I(mesh, clip);
     } else {
         Output_DrawObjectMesh(mesh, clip);
     }
+    Output_Water_PopLaraMesh();
 }
 
 REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)

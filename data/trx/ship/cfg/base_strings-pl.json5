@@ -904,6 +904,11 @@
             "fixed": "Naprawione",
             "tr1": "TR1",
             "tr2": "TR2",
+        },
+        "water_tint_mode": {
+            "per_mesh": "\\{review}Na siatkę",
+            "responsive": "\\{review}Reaktywna",
+            "whole": "\\{review}Cała",
         }
     },
     "settings": {
@@ -1891,10 +1896,6 @@
             "title": "Odbicia",
             "description": "Włącza efekt lustrzanych odbić na niektórych obiektach.",
         },
-        "visuals.enable_responsive_mesh_tint": {
-            "title": "Reaktywne barwienie wody",
-            "description": "Nadaje częściom ciała Lary wodne zabarwienie tylko wtedy, gdy znajdują się pod wodą (styl TR3). Przy wyłączonej opcji, zabarwienie jest nadawane całemu ciału Lary (styl TR1/2).",
-        },
         "visuals.enable_shotgun_flash": {
             "title": "Rozbłyski ze strzelby",
             "description": "Rysuje płomienie podczas strzelania ze strzelby, jak w przypadku innych broni.",
@@ -1987,6 +1988,10 @@
                 "ps1": "\\{review}PS1",
                 "tombati": "\\{review}TombATI",
             }
+        },
+        "visuals.water_tint_mode": {
+            "title": "\\{review}Zabarwienie wodą",
+            "description": "\\{review}Jak duża część Lary przyjmuje kolor wody, gdy jest ona w wodzie. Cała barwi ją w całości, jak w TR1 i TR2. Na siatkę barwi każdą siatkę wedle jej położenia, jak w TR3 i TR4. Reaktywna tnie ją na powierzchni wody, więc kolor przyjmuje tylko to, co jest pod wodą.",
         },
         "window.is_fullscreen": {
             "title": "\\{review}Pełny ekran",

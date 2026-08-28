@@ -904,6 +904,11 @@
             "fixed": "Gefixt",
             "tr1": "TR1",
             "tr2": "TR2",
+        },
+        "water_tint_mode": {
+            "per_mesh": "\\{review}Pro Mesh",
+            "responsive": "\\{review}Reaktiv",
+            "whole": "\\{review}Ganz",
         }
     },
     "settings": {
@@ -1891,10 +1896,6 @@
             "title": "Reflektionen",
             "description": "Aktiviert Reflektionen auf bestimmten Objekten.",
         },
-        "visuals.enable_responsive_mesh_tint": {
-            "title": "\\{review}Reaktionsfähige Mesh-Tönung",
-            "description": "\\{review}Ermöglicht es, Laras einzelne Meshes mit einer Wasserfärbung darzustellen, wenn sie sich selbst unter Wasser befinden (TR3-Stil). Andernfalls werden, wenn Lara im Wasser ist, alle ihre Meshes mit der Tönung dargestellt (TR1/2-Stil).",
-        },
         "visuals.enable_shotgun_flash": {
             "title": "Schrotflinten-Mündungsfeuer",
             "description": "Zeigt Mündungsfeuer an, wenn man mit der Schrotflinte schießt, wie bei anderen Waffen.",
@@ -1987,6 +1988,10 @@
                 "ps1": "\\{review}PS1",
                 "tombati": "\\{review}TombATI",
             }
+        },
+        "visuals.water_tint_mode": {
+            "title": "\\{review}Wasserfärbung",
+            "description": "\\{review}Wie viel von Lara die Wasserfarbe annimmt, während sie im Wasser ist. Ganz färbt sie vollständig, wie in TR1 und TR2. Pro Mesh färbt jedes Mesh danach, wo es sitzt, wie in TR3 und TR4. Reaktiv schneidet sie an der Wasseroberfläche, sodass nur der Teil unter Wasser die Farbe annimmt.",
         },
         "window.is_fullscreen": {
             "title": "\\{review}Vollbild",

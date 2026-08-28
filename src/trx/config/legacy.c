@@ -89,6 +89,17 @@ static void M_ApplyVertexSnapAtUpscale(const JSON_VALUE *const value)
     }
 }
 
+static void M_ApplyWaterTint(const JSON_VALUE *const value)
+{
+    if (value == nullptr) {
+        return;
+    }
+    CONFIG_SET(
+        g_Config.visuals.water_tint_mode,
+        JSON_ValueIsTrue(value) ? WATER_TINT_MODE_RESPONSIVE
+                                : WATER_TINT_MODE_WHOLE);
+}
+
 static void M_ApplyLightingCurve(const JSON_VALUE *const value)
 {
     if (value == nullptr
@@ -127,6 +138,9 @@ static const M_MIGRATION m_Migrations[] = {
     { "enable_vertex_snap", "vertex_snap_mode", M_ApplyVertexSnap },
     { "enable_vertex_snap_at_upscale", "vertex_snap_mode",
       M_ApplyVertexSnapAtUpscale },
+    // Records the TRX 1.11 replacement of the responsive-mesh-tint switch with
+    // a tint mode.
+    { "enable_responsive_mesh_tint", "water_tint_mode", M_ApplyWaterTint },
     // TRX 1.11: brightness and gamma stood in for the lighting curve.
     { "game_brightness", "lighting_curve", M_ApplyLightingCurve },
     // TRX 1.11: braid on/off changed to mode.

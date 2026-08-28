@@ -24,6 +24,7 @@ typedef struct {
     XYZW_F normal;
     OUTPUT_USHORT flags;
     RGBA_8888 color;
+    float tint_factor;
 } M_MESH_GEOM;
 
 typedef struct {
@@ -167,6 +168,7 @@ static void M_FillGeometry(
     geom->normal.z = vertex->normal.z;
     geom->normal.w = vertex->light_table_idx;
     geom->color = vertex->color;
+    geom->tint_factor = vertex->tint_factor;
     geom->flags = vertex->flags;
 }
 
@@ -342,6 +344,13 @@ static void M_DrawOpaqueInstance(
     }
     Output_MeshShader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
     Output_MeshShader_UploadTint(batcher->shader, inst->tint);
+    Output_MeshShader_UploadWaterLine(
+        batcher->shader, inst->has_water_line, inst->water_line);
+    Output_MeshShader_UploadSubmergedAmbient(
+        batcher->shader, inst->has_submerged_ambient,
+        inst->submerged_ambient_delta);
+    Output_MeshShader_UploadAmbientSpan(
+        batcher->shader, inst->has_ambient_span, inst->ambient_span_from);
 
     if (inst->enable_scissor) {
         Output_EnableScissor(
@@ -378,6 +387,13 @@ static void M_DrawBlendAddInstance(
     }
     Output_MeshShader_UploadModelMatrix(batcher->shader, &inst->wmatrix);
     Output_MeshShader_UploadTint(batcher->shader, inst->tint);
+    Output_MeshShader_UploadWaterLine(
+        batcher->shader, inst->has_water_line, inst->water_line);
+    Output_MeshShader_UploadSubmergedAmbient(
+        batcher->shader, inst->has_submerged_ambient,
+        inst->submerged_ambient_delta);
+    Output_MeshShader_UploadAmbientSpan(
+        batcher->shader, inst->has_ambient_span, inst->ambient_span_from);
     Output_MeshShader_UploadWaterEffect(batcher->shader, inst->water_effect);
     Output_MeshShader_UploadWibbleEffect(batcher->shader, false);
 
@@ -607,6 +623,13 @@ static void M_ApplyBakedState(
     }
     Output_MeshShader_UploadModelMatrix(batcher->shader, &g_IDMatrix);
     Output_MeshShader_UploadTint(batcher->shader, inst->tint);
+    Output_MeshShader_UploadWaterLine(
+        batcher->shader, inst->has_water_line, inst->water_line);
+    Output_MeshShader_UploadSubmergedAmbient(
+        batcher->shader, inst->has_submerged_ambient,
+        inst->submerged_ambient_delta);
+    Output_MeshShader_UploadAmbientSpan(
+        batcher->shader, inst->has_ambient_span, inst->ambient_span_from);
     Output_MeshShader_UploadWaterEffect(batcher->shader, inst->water_effect);
     Output_MeshShader_UploadWibbleEffect(batcher->shader, inst->wibble);
     Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
@@ -761,6 +784,14 @@ static void M_TransparentPass(MESH_BATCHER *const batcher)
                 batcher->shader,
                 sort_ptr->baked ? &g_IDMatrix : &inst->wmatrix);
             Output_MeshShader_UploadTint(batcher->shader, inst->tint);
+            Output_MeshShader_UploadWaterLine(
+                batcher->shader, inst->has_water_line, inst->water_line);
+            Output_MeshShader_UploadSubmergedAmbient(
+                batcher->shader, inst->has_submerged_ambient,
+                inst->submerged_ambient_delta);
+            Output_MeshShader_UploadAmbientSpan(
+                batcher->shader, inst->has_ambient_span,
+                inst->ambient_span_from);
             Output_MeshShader_UploadWaterEffect(
                 batcher->shader, inst->water_effect);
             Output_MeshShader_UploadWibbleEffect(batcher->shader, inst->wibble);
@@ -879,6 +910,11 @@ static void M_SetupVertexArray(
     glVertexAttribPointer(
         OUTPUT_MESH_ATTR_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE,
         sizeof(M_MESH_GEOM), (void *)(intptr_t)offsetof(M_MESH_GEOM, color));
+    glEnableVertexAttribArray(OUTPUT_MESH_ATTR_TINT_FACTOR);
+    glVertexAttribPointer(
+        OUTPUT_MESH_ATTR_TINT_FACTOR, 1, GL_FLOAT, GL_FALSE,
+        sizeof(M_MESH_GEOM),
+        (void *)(intptr_t)offsetof(M_MESH_GEOM, tint_factor));
 
     glBindBuffer(GL_ARRAY_BUFFER, tex);
     glEnableVertexAttribArray(OUTPUT_MESH_ATTR_UVW);

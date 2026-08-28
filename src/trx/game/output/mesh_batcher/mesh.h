@@ -25,6 +25,10 @@ typedef struct {
     float trapezoid_ratio[2];
     float reflectivity;
     int16_t shade;
+    // Stores each joint vertex's position towards the connected mesh, from 0
+    // at the parent end to 1 at the child end, to mix the two rooms' ambient
+    // light.
+    float tint_factor;
     RGBA_8888 color;
     uint8_t light_table_idx;
 } OUTPUT_MESH_VERTEX;

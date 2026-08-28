@@ -2,6 +2,30 @@
 
 uniform vec4 uTint;
 
+// How deep a band TR4 takes the water's color up over, in world units.
+#define WATER_LINE_FEATHER 16.0
+
+// World height of the water surface cutting the instance, and whether one
+// cuts it at all. A fragment below the line takes the tint; one above it
+// does not, so a mesh that straddles the surface is split where the water is
+// rather than taken whole.
+uniform bool uWaterLineEnabled;
+uniform float uWaterLine;
+
+// How far the ambient light below the water line shifts, and whether it
+// shifts at all. A water room and a dry room differ in their ambient light
+// alone, so the shift relights the submerged part and leaves the point lights
+// and the texture as they are.
+uniform bool uSubmergedAmbientEnabled;
+uniform vec4 uSubmergedAmbientDelta;
+
+// The ambient at the far end of a mesh that spans two rooms, and whether one
+// spans them at all. A joint's vertices carry how far they sit towards the
+// mesh they reach for, so the light runs across the joint rather than
+// stepping at the seam.
+uniform bool uAmbientSpanEnabled;
+uniform vec4 uAmbientSpanFrom;
+
 // One definition of what the mesh stages hand each other. The geometry stage
 // is optional, so the vertex stage names its block after whichever stage reads
 // it: a block is matched across stages by its name, and a stage cannot declare
@@ -17,6 +41,9 @@ uniform vec4 uTint;
     vec4 color;                   \
     vec3 add;                     \
     float tintWeight;             \
+    float worldY;                 \
+    vec3 colorSub;                \
+    vec3 addSub;                  \
     flat float reflectivity;      \
     noperspective vec4 affineUV;
 
@@ -44,6 +71,7 @@ layout(location = 6) in vec4 inColor;
 layout(location = 7) in float inShade;
 layout(location = 8) in float inReflectivity;
 layout(location = 9) in vec2 inUVScroll; // x = V per game frame, y = wrap
+layout(location = 10) in float inTintFactor;
 
 out MESH_VS_BLOCK {
     MESH_VARYINGS
@@ -53,6 +81,35 @@ vec3 gammaCurve(vec3 rgb, float gamma_exp)
 {
     return pow(clamp(rgb, 0.0, 1.0), vec3(gamma_exp));
 }
+
+#if TR_VERSION >= 4
+// Splits the light into the part the texture modulates and the overbright
+// excess added after texturing, as the OG CalcColorSplit does. The OG engine
+// lights everything in the "128 = neutral" scale: the lit value is doubled
+// and the excess above 1.0 becomes the additive term.
+vec3 shadeTR4(
+    vec3 lightIn, vec3 modulate, vec3 lightAdd, vec3 tintReg, float gamma_exp,
+    uint flags, out vec3 addOut)
+{
+    bool overbright = uLightingCurve == LIGHTING_CURVE_OVERBRIGHT;
+    bool saturate = uLightingCurve == LIGHTING_CURVE_SATURATE;
+    vec3 L =
+        lightIn * (overbright || saturate ? 255.0 / 128.0 : 1.0) + lightAdd;
+    addOut = overbright ? max(L - vec3(1.0), vec3(0.0)) * (64.0 / 255.0)
+                        : vec3(0.0);
+    // The OG draws additive polys with specular disabled (HWR_DrawSortList
+    // drawtype 2). An unlit poly carries a color rather than a light value,
+    // so it has no excess to split off either.
+    if ((flags & (VERT_ADDITIVE | VERT_NO_LIGHTING)) != 0u) {
+        addOut = vec3(0.0);
+    }
+    // Keeps the saturating excess past the gamma curve so texture modulation
+    // clips each color channel separately, as the PlayStation does.
+    L = min(L * tintReg, vec3(255.0 / 128.0));
+    vec3 over = saturate ? max(L - vec3(1.0), vec3(0.0)) : vec3(0.0);
+    return (gammaCurve(L, gamma_exp) + over) * modulate;
+}
+#endif
 
 // Grows the distortion with the display, so that it stays visible where the
 // original left it at the two pixels a 640x480 screen was given. A sharp
@@ -123,6 +180,10 @@ void main(void) {
     vec4 worldPos = uMatModel * vec4(inPosition.xyz, 1.0);
     vec4 lightWorldPos = worldPos;
 
+    // Read before the choppy displacement below, so that a vertex the water
+    // moves is still cut where it rests.
+    gOut.worldY = worldPos.y;
+
     if ((inFlags & VERT_MOVE) != 0u) {
         float waterMul = (uWaterEffect != 0) ? 1.0 : 0.0;
         worldPos.y += effectChoppy(worldPos.xyz) * waterMul;
@@ -190,7 +251,8 @@ void main(void) {
 
     // Applies PlayStation water tint before the gamma curve and texture
     // modulation, where the GTE combines it with the light register.
-    vec3 tintReg = uLightingCurve == LIGHTING_CURVE_SATURATE
+    vec3 tintReg =
+        uLightingCurve == LIGHTING_CURVE_SATURATE && !uWaterLineEnabled
         ? mix(vec3(1.0), uTint.rgb, tintWeight)
         : vec3(1.0);
 
@@ -208,7 +270,12 @@ void main(void) {
         modulate = vec3(1);
     } else {
         if ((gOut.flags & VERT_USE_OBJECT_LIGHT) != 0u) {
-            lightIn = lightObjectsTR4(inNormal.xyz);
+            lightIn = lightObjectsTR4(
+                inNormal.xyz,
+                uAmbientSpanEnabled
+                    ? mix(uAmbientSpanFrom.rgb, uTR4Ambient.rgb,
+                          clamp(inTintFactor, 0.0, 1.0))
+                    : uTR4Ambient.rgb);
             // White for regular meshes; mesh policies may recolor vertices
             // (e.g. the skybox fog gradient faces are painted black).
             modulate = inColor.rgb;
@@ -221,23 +288,24 @@ void main(void) {
         }
     }
 
-    bool overbright = uLightingCurve == LIGHTING_CURVE_OVERBRIGHT;
-    bool saturate = uLightingCurve == LIGHTING_CURVE_SATURATE;
-    vec3 L = lightIn * (overbright || saturate ? 255.0 / 128.0 : 1.0) + lr.add;
-    gOut.add = overbright ? max(L - vec3(1.0), vec3(0.0)) * (64.0 / 255.0)
-                      : vec3(0.0);
-    // The OG draws additive polys with specular disabled (HWR_DrawSortList
-    // drawtype 2). An unlit poly carries a color rather than a light value,
-    // so it has no excess to split off either.
-    if ((gOut.flags & (VERT_ADDITIVE | VERT_NO_LIGHTING)) != 0u) {
-        gOut.add = vec3(0.0);
+    vec3 add;
+    vec3 lit = shadeTR4(
+        lightIn, modulate, lr.add, tintReg, gamma_exp, gOut.flags, add);
+    gOut.color = vec4(lit, inColor.a);
+    gOut.add = add;
+
+    // Lights the mesh a second time towards the water room, for the fragment
+    // stage to take the submerged part from.
+    gOut.colorSub = lit;
+    gOut.addSub = add;
+    if (uSubmergedAmbientEnabled
+        && (gOut.flags & VERT_USE_OBJECT_LIGHT) != 0u) {
+        gOut.colorSub = shadeTR4(
+            lightObjectsTR4(
+                inNormal.xyz, uTR4Ambient.rgb + uSubmergedAmbientDelta.rgb), modulate,
+            lr.add, tintReg, gamma_exp, gOut.flags, add);
+        gOut.addSub = add;
     }
-    // Keeps the saturating excess past the gamma curve so texture modulation
-    // clips each color channel separately, as the PlayStation does.
-    L = min(L * tintReg, vec3(255.0 / 128.0));
-    vec3 over = saturate ? max(L - vec3(1.0), vec3(0.0)) : vec3(0.0);
-    vec3 lit = gammaCurve(L, gamma_exp) + over;
-    gOut.color = vec4(lit * modulate, inColor.a);
 #elif TR_VERSION >= 3
     vec3 lightIn;
     vec3 modulate;
@@ -316,6 +384,9 @@ void main(void) {
     // Preserve the >1.0 lighting range until after texturing so TR1/TR2
     // high contrast can still brighten textured geometry.
     gOut.color.rgb += lr.add;
+    // Only TR4 lights the submerged part of a mesh separately.
+    gOut.colorSub = gOut.color.rgb;
+    gOut.addSub = gOut.add;
 #endif
 
     // Applies PlayStation depth cue before texture modulation, as tomb3's
@@ -409,6 +480,12 @@ void emitAt(vec3 w)
     gOut.add = gIn[0].add * w.x + gIn[1].add * w.y + gIn[2].add * w.z;
     gOut.tintWeight = gIn[0].tintWeight * w.x + gIn[1].tintWeight * w.y
         + gIn[2].tintWeight * w.z;
+    gOut.colorSub =
+        gIn[0].colorSub * w.x + gIn[1].colorSub * w.y + gIn[2].colorSub * w.z;
+    gOut.addSub =
+        gIn[0].addSub * w.x + gIn[1].addSub * w.y + gIn[2].addSub * w.z;
+    gOut.worldY =
+        gIn[0].worldY * w.x + gIn[1].worldY * w.y + gIn[2].worldY * w.z;
     gOut.affineUV =
         gIn[0].affineUV * w.x + gIn[1].affineUV * w.y + gIn[2].affineUV * w.z;
 
@@ -545,7 +622,31 @@ vec4 applyFogBulbs(vec4 color)
 }
 
 void main(void) {
+    // How much of the fragment lies under the water surface, from 0 above it
+    // to 1 below it. Y grows downwards, so a fragment past the line is the
+    // one under the water. Without a surface to cut it, the whole fragment
+    // counts as under the water.
+    float submerged = gIn.tintWeight;
+    if (uWaterLineEnabled) {
+#if TR_VERSION >= 4
+        // TR4 takes the color up over a band about the surface rather than at
+        // it, because a hard line reads as a seam against the water's own
+        // movement.
+        submerged = smoothstep(
+            uWaterLine - WATER_LINE_FEATHER * 0.5,
+            uWaterLine + WATER_LINE_FEATHER * 0.5, gIn.worldY);
+#else
+        submerged = step(uWaterLine, gIn.worldY);
+#endif
+        submerged *= gIn.tintWeight;
+    }
+
     vec4 texColor = gIn.color;
+    vec3 lightAdd = gIn.add;
+    if (uSubmergedAmbientEnabled) {
+        texColor.rgb = mix(texColor.rgb, gIn.colorSub, submerged);
+        lightAdd = mix(lightAdd, gIn.addSub, submerged);
+    }
 
     // Texturing and base color
     if (gIn.texLayer >= 0) {
@@ -567,7 +668,7 @@ void main(void) {
     }
 
     // Overbright lighting excess, added after texturing (OG specular).
-    texColor.rgb += gIn.add;
+    texColor.rgb += lightAdd;
 
     // Clips saturating light before fog and bulb blending.
     if (uLightingCurve == LIGHTING_CURVE_SATURATE) {
@@ -619,7 +720,10 @@ void main(void) {
     // The framebuffer blend is premultiplied alpha, so the color carries the
     // coverage: fading a fragment out scales both, and the color a second time
     // by the alpha it is premultiplied against.
-    if (uLightingCurve == LIGHTING_CURVE_SATURATE) {
+    if (uWaterLineEnabled) {
+        texColor.rgb *= mix(vec3(1.0), uTint.rgb, submerged);
+        texColor.a *= uTint.a;
+    } else if (uLightingCurve == LIGHTING_CURVE_SATURATE) {
         texColor.a *= uTint.a;
     } else {
         texColor.rgb *= mix(vec3(1.0), uTint.rgb, gIn.tintWeight);

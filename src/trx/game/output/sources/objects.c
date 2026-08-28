@@ -10,6 +10,7 @@
 #include <trx/game/output/lights/priv.h>
 #include <trx/game/output/mesh_batcher/mesh_builder.h>
 #include <trx/game/output/state.h>
+#include <trx/game/output/water.h>
 #include <trx/version.h>
 
 typedef struct {
@@ -35,6 +36,7 @@ typedef void (*M_FACE_VERTEX_FUNC)(
 typedef struct {
     const XYZ_F *positions;
     const XYZ_F *normals;
+    const float *tint_factors;
 } M_GEOMETRY_UPDATE;
 
 static M_PRIV m_Priv = {};
@@ -323,6 +325,9 @@ static void M_ResyncVertexGeometry(
     if (update->normals != nullptr) {
         vertex->normal = update->normals[idx];
     }
+    if (update->tint_factors != nullptr) {
+        vertex->tint_factor = update->tint_factors[idx];
+    }
 }
 
 static void M_UpdateFlags(const OBJECT_MESH *const mesh, M_MESH *const batch)
@@ -332,11 +337,13 @@ static void M_UpdateFlags(const OBJECT_MESH *const mesh, M_MESH *const batch)
 
 static void M_ResyncGeometry(
     const OBJECT_MESH *const mesh, M_MESH *const batch,
-    const XYZ_F *const positions, const XYZ_F *const normals)
+    const XYZ_F *const positions, const XYZ_F *const normals,
+    const float *const tint_factors)
 {
     const M_GEOMETRY_UPDATE update = {
         .positions = positions,
         .normals = normals,
+        .tint_factors = tint_factors,
     };
     M_ForEachFaceVertex(mesh, batch, M_ResyncVertexGeometry, &update);
 }
@@ -361,14 +368,29 @@ static void M_Stage(const OBJECT_MESH *const mesh)
     Output_Lights_FillInstanceLight(&light_info, g_WMatrixPtr);
 
     const VIEWPORT_RECT *const scissor = Output_GetObjectScissor();
+    OUTPUT_WATER_LINE water_line = {};
+    const bool has_water_line = Output_GetWaterLine(&water_line);
+    RGB_888 span_from = {};
+    const bool has_ambient_span = Output_Water_GetLaraAmbientSpan(&span_from);
+    const RGB_F ambient_span_from = {
+        span_from.r / 255.0f,
+        span_from.g / 255.0f,
+        span_from.b / 255.0f,
+    };
     const MESH_INSTANCE inst = {
         .mesh = batch->mesh_batch,
         .cwmatrix = *g_MatrixPtr,
         .wmatrix = *g_WMatrixPtr,
         .tint = Output_GetTint(),
-        .wibble = Output_GetObjectWibbleEffect(),
+        .has_water_line = has_water_line,
+        .water_line = water_line.world_y,
+        .has_submerged_ambient = water_line.has_submerged_ambient,
+        .submerged_ambient_delta = water_line.submerged_ambient_delta,
+        .has_ambient_span = has_ambient_span,
+        .ambient_span_from = ambient_span_from,
+        .wibble = Output_Water_IsObjectWibbleEnabled(),
         .water_effect =
-            (mesh->enable_caustics && Output_GetWaterEffect()) ? 1 : 0,
+            (mesh->enable_caustics && Output_Water_IsSubmerged()) ? 1 : 0,
         .light_info = light_info,
         .room = Output_GetCurrentRoom(),
         .enable_scissor = scissor != nullptr,
@@ -480,7 +502,7 @@ void OutputSource_Objects_ObserveObjectMeshUpdate(const int32_t mesh_idx)
 
 void OutputSource_Objects_ObserveObjectMeshGeometry(
     const int32_t mesh_idx, const XYZ_F *const positions,
-    const XYZ_F *const normals)
+    const XYZ_F *const normals, const float *const tint_factors)
 {
     M_PRIV *const p = &m_Priv;
     if (p->meshes == nullptr) {
@@ -490,7 +512,8 @@ void OutputSource_Objects_ObserveObjectMeshGeometry(
     if (batch->mesh_batch == nullptr) {
         return;
     }
-    M_ResyncGeometry(Object_GetMesh(mesh_idx), batch, positions, normals);
+    M_ResyncGeometry(
+        Object_GetMesh(mesh_idx), batch, positions, normals, tint_factors);
     MeshBatcher_UpdateMeshGeometry(p->batcher, batch->mesh_batch);
 }
 
