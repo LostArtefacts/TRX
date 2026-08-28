@@ -42,7 +42,7 @@ static void M_Control_TR12(const int16_t effect_num)
     const int32_t ceiling = Room_GetCeiling(sector, effect->pos);
     if (effect->pos.y < ceiling) {
         effect->pos.y = ceiling;
-        effect->fall_speed = -effect->fall_speed;
+        effect->fall_speed = MAX(1, -effect->fall_speed);
     }
 
     const int32_t height = Room_GetHeight(sector, effect->pos);
