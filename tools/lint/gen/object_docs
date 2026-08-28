@@ -120,6 +120,17 @@ GAMES = [
 ]
 
 
+def catalog_key(symbol: str) -> str:
+    """
+    Spell a C symbol the way a catalog names it: the prefix comes off and the
+    rest is lower case, matching Catalog_KeyForEnum.
+    """
+    for prefix in ("O_", "MX_"):
+        if symbol.startswith(prefix):
+            return symbol[len(prefix) :].lower()
+    return symbol.lower()
+
+
 @dataclass(slots=True)
 class PropertyInfo:
     internal_name: str
@@ -236,7 +247,7 @@ class GameCatalog:
         return f"TR{self.config.version}"
 
     def moveable_id(self, object_id: str) -> str | None:
-        return self.object_ids.get(object_id)
+        return self.object_ids.get(catalog_key(object_id))
 
     @classmethod
     def from_config(cls, config: GameConfig) -> GameCatalog:
@@ -803,7 +814,7 @@ class MusicToGameIDTransformer(ast.NodeTransformer):
         if music_symbol is None:
             return node
 
-        mapped_id = self.music_catalog.get(music_symbol)
+        mapped_id = self.music_catalog.get(catalog_key(music_symbol))
         value = int(mapped_id) if mapped_id is not None else -1
         return ast.copy_location(ast.Constant(value=value), node)
 
@@ -964,7 +975,7 @@ class MarkdownExporter:
                 table_rows = self._format_object_table(object_id, props)
                 if not table_rows:
                     continue
-                lines.extend(["", f"#### {object_id}", *table_rows])
+                lines.extend(["", f"#### {catalog_key(object_id)}", *table_rows])
 
         output.write_text("\n".join(lines) + "\n")
 
@@ -1124,19 +1135,21 @@ class XmlExporter:
         return grouped_moveables
 
     def _iter_objects(self, include_extras: bool) -> list[tuple[str, str]]:
+        object_ids = self.property_catalog.iter_object_ids()
         if include_extras:
             return [
                 (object_id, "-1")
-                for object_id in sorted(
-                    self.property_catalog.iter_object_ids()
-                )
-                if object_id not in self.game.object_ids
+                for object_id in sorted(object_ids)
+                if self.game.moveable_id(object_id) is None
             ]
 
-        return sorted(
-            self.game.object_ids.items(),
-            key=lambda item: int(item[1]),
-        )
+        placed = [
+            (object_id, moveable_id)
+            for object_id in object_ids
+            for moveable_id in [self.game.moveable_id(object_id)]
+            if moveable_id is not None
+        ]
+        return sorted(placed, key=lambda item: int(item[1]))
 
     def _build_property_dict(
         self,

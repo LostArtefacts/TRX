@@ -412,6 +412,14 @@ def build_catalog_rows() -> tuple[list[tuple[int, str]], list[tuple[int, str]]]:
     return rows, skipped
 
 
+def catalog_key(symbol: str) -> str:
+    """
+    Spell a symbol the way the catalog names it: the O_ prefix comes off and
+    the rest is lower case, matching Catalog_KeyForEnum.
+    """
+    return symbol.removeprefix("O_").lower()
+
+
 def write_catalog() -> None:
     rows, skipped = build_catalog_rows()
     row_map = {game_id: symbol for game_id, symbol in rows}
@@ -428,7 +436,7 @@ def write_catalog() -> None:
         f"# Mapped {len(rows)} of {len(rows) + len(visible_skipped)} TOMB4 object slots.",
         "# Unmapped slots are intentionally omitted until TRX has a stable object equivalent.",
     ]
-    lines.extend(f"{game_id}, {symbol}" for game_id, symbol in rows)
+    lines.extend(f"{game_id}, {catalog_key(symbol)}" for game_id, symbol in rows)
     lines.append("")
     lines.append("# Unmapped TOMB4 slots:")
     lines.extend(f"# {game_id}: {name}" for game_id, name in visible_skipped)

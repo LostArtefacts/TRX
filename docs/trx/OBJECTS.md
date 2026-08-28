@@ -9,7 +9,7 @@ This page lists documented moveable object properties.
 
 ## Enemies
 
-#### O_ALLIGATOR
+#### alligator
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (11)</th><th align="center">TR2</th><th align="center">TR3 (32)</th><th>Description</th></tr></thead>
 <tbody>
@@ -18,7 +18,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_APE
+#### ape
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (15)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -27,7 +27,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ATLANTEAN_GROUND
+#### atlantean_ground
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (22)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -39,7 +39,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ATLANTEAN_SHOOTER
+#### atlantean_shooter
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (21)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -51,7 +51,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ATLANTEAN_WINGED
+#### atlantean_winged
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (20)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -63,7 +63,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_BACON_LARA
+#### bacon_lara
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (6)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -72,7 +72,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_BALDY
+#### baldy
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (32)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -81,7 +81,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_BANDIT_1
+#### bandit_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (48)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -90,7 +90,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_BANDIT_2
+#### bandit_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (49)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -99,7 +99,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_BANDIT_2B
+#### bandit_2b
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (50)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -108,7 +108,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_BARRACUDA
+#### barracuda
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (28)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -117,7 +117,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_BAT
+#### bat
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (9)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -126,7 +126,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_BEAR
+#### bear
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (8)</th><th align="center">TR2 (265)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -138,7 +138,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_BIG_EEL
+#### big_eel
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (27)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -147,7 +147,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_BIG_SPIDER
+#### big_spider
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (37)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -156,7 +156,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_BIRD_GUARDIAN
+#### bird_guardian
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (46)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -165,7 +165,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_BOAR
+#### boar
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -174,7 +174,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_CENTAUR
+#### centaur
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (23)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -184,7 +184,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_CIVILIAN
+#### civilian
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (65)</th><th>Description</th></tr></thead>
 <tbody>
@@ -195,7 +195,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_CLAW_MUTANT
+#### claw_mutant
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (45)</th><th>Description</th></tr></thead>
 <tbody>
@@ -205,7 +205,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_COBRA
+#### cobra
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (69)</th><th>Description</th></tr></thead>
 <tbody>
@@ -217,7 +217,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_COMPY
+#### compy
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (34)</th><th>Description</th></tr></thead>
 <tbody>
@@ -226,7 +226,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_COWBOY
+#### cowboy
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (31)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -235,7 +235,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_CRAWLER_MUTANT
+#### crawler_mutant
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (42)</th><th>Description</th></tr></thead>
 <tbody>
@@ -243,7 +243,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_CROCODILE
+#### crocodile
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (10)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -252,7 +252,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_CROW
+#### crow
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (38)</th><th align="center">TR3 (27)</th><th>Description</th></tr></thead>
 <tbody>
@@ -261,7 +261,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_CULT_1
+#### cult_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (16)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -270,7 +270,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_CULT_1A
+#### cult_1a
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (17)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -279,7 +279,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_CULT_1B
+#### cult_1b
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (18)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -288,7 +288,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_CULT_2
+#### cult_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (19)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -296,7 +296,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_CULT_3
+#### cult_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (20)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -305,7 +305,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DINO_MUTANT
+#### dino_mutant
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (25)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -316,7 +316,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DIVER
+#### diver
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (29)</th><th align="center">TR3 (26)</th><th>Description</th></tr></thead>
 <tbody>
@@ -324,7 +324,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DOG
+#### dog
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (15)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -334,7 +334,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DRAGON_FRONT
+#### dragon_front
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (22)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -344,7 +344,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_EAGLE
+#### eagle
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (47)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -353,7 +353,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_EEL
+#### eel
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (26)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -362,7 +362,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_FISH_MUTANT
+#### fish_mutant
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (26)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -371,7 +371,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_HUSKIE
+#### huskie
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (41)</th><th>Description</th></tr></thead>
 <tbody>
@@ -381,7 +381,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_HYBRID_MUTANT
+#### hybrid_mutant
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (46)</th><th>Description</th></tr></thead>
 <tbody>
@@ -392,7 +392,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_JELLY
+#### jelly
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (35)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -401,7 +401,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_LARSON
+#### larson
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (27)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -410,7 +410,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_LION
+#### lion
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (12)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -420,7 +420,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_LIONESS
+#### lioness
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (13)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -430,7 +430,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_LIZARD
+#### lizard
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (35)</th><th>Description</th></tr></thead>
 <tbody>
@@ -440,7 +440,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_MONKEY
+#### monkey
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (71)</th><th>Description</th></tr></thead>
 <tbody>
@@ -450,7 +450,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_MONK_1
+#### monk_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (53)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -460,7 +460,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_MONK_2
+#### monk_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (54)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -470,7 +470,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_MONK_3
+#### monk_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (267)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -480,7 +480,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_MOUSE
+#### mouse
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (21)</th><th align="center">TR3 (23)</th><th>Description</th></tr></thead>
 <tbody>
@@ -489,7 +489,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_MP_1
+#### mp_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (60)</th><th>Description</th></tr></thead>
 <tbody>
@@ -501,7 +501,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_MP_2
+#### mp_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (61)</th><th>Description</th></tr></thead>
 <tbody>
@@ -510,7 +510,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_MUMMY
+#### mummy
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (24)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -518,7 +518,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_NATLA
+#### natla
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (33)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -526,7 +526,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PATROL_DOG
+#### patrol_dog
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (22)</th><th>Description</th></tr></thead>
 <tbody>
@@ -536,7 +536,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PIERRE
+#### pierre
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (28)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -545,7 +545,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PRISONER
+#### prisoner
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (62)</th><th>Description</th></tr></thead>
 <tbody>
@@ -556,7 +556,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUMA
+#### puma
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (14)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -566,7 +566,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUNK_1
+#### punk_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (53)</th><th>Description</th></tr></thead>
 <tbody>
@@ -576,7 +576,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUNK_2
+#### punk_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (54)</th><th>Description</th></tr></thead>
 <tbody>
@@ -586,7 +586,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_RAPTOR
+#### raptor
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (19)</th><th align="center">TR2</th><th align="center">TR3 (288)</th><th>Description</th></tr></thead>
 <tbody>
@@ -597,7 +597,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_RAT
+#### rat
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (16)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -607,7 +607,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_RX_WORKER_1
+#### rx_worker_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (39)</th><th>Description</th></tr></thead>
 <tbody>
@@ -616,7 +616,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_RX_WORKER_2
+#### rx_worker_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (40)</th><th>Description</th></tr></thead>
 <tbody>
@@ -625,7 +625,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_RX_WORKER_3
+#### rx_worker_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (50)</th><th>Description</th></tr></thead>
 <tbody>
@@ -633,7 +633,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SECURITY_GUARD
+#### security_guard
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (56)</th><th>Description</th></tr></thead>
 <tbody>
@@ -643,7 +643,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SHARK
+#### shark
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (25)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -652,7 +652,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SHIVA
+#### shiva
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (70)</th><th>Description</th></tr></thead>
 <tbody>
@@ -662,7 +662,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SKATE_KID
+#### skate_kid
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (30)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -672,7 +672,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SKIDOO_DRIVER
+#### skidoo_driver
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (52)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -682,7 +682,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SOPHIA
+#### sophia
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (57)</th><th>Description</th></tr></thead>
 <tbody>
@@ -696,7 +696,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SPIDER
+#### spider
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (36)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -705,7 +705,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_STHPAC_MERCENARY
+#### sthpac_mercenary
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (37)</th><th>Description</th></tr></thead>
 <tbody>
@@ -714,7 +714,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SWAT_1
+#### swat_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (51)</th><th>Description</th></tr></thead>
 <tbody>
@@ -724,7 +724,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SWAT_2
+#### swat_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (52)</th><th>Description</th></tr></thead>
 <tbody>
@@ -734,7 +734,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SWAT_3
+#### swat_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (63)</th><th>Description</th></tr></thead>
 <tbody>
@@ -744,7 +744,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_TIGER
+#### tiger
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (39)</th><th align="center">TR3 (28)</th><th>Description</th></tr></thead>
 <tbody>
@@ -753,7 +753,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_TONY
+#### tony
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (73)</th><th>Description</th></tr></thead>
 <tbody>
@@ -762,7 +762,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_TORSO
+#### torso
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (34)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -773,7 +773,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_TREX
+#### trex
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (18)</th><th align="center">TR2 (214)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -784,7 +784,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_TREX_ALPHA
+#### trex_alpha
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (287)</th><th>Description</th></tr></thead>
 <tbody>
@@ -796,7 +796,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_TRIBE_AXEMAN
+#### tribe_axeman
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (20)</th><th>Description</th></tr></thead>
 <tbody>
@@ -810,7 +810,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_TRIBE_BOSS
+#### tribe_boss
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (36)</th><th>Description</th></tr></thead>
 <tbody>
@@ -819,7 +819,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_TRIBE_PIPEMAN
+#### tribe_pipeman
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (21)</th><th>Description</th></tr></thead>
 <tbody>
@@ -829,7 +829,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_VOLE
+#### vole
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (17)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -839,7 +839,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_VON_CROY
+#### von_croy
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -848,7 +848,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_VULTURE
+#### vulture
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (29)</th><th>Description</th></tr></thead>
 <tbody>
@@ -857,7 +857,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WASP_MUTANT
+#### wasp_mutant
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (44)</th><th>Description</th></tr></thead>
 <tbody>
@@ -866,7 +866,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WILLARD
+#### willard
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (49)</th><th>Description</th></tr></thead>
 <tbody>
@@ -878,7 +878,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WINSTON
+#### winston
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (191)</th><th align="center">TR2 (260)</th><th align="center">TR3 (360)</th><th>Description</th></tr></thead>
 <tbody>
@@ -886,7 +886,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WINSTON_ARMY
+#### winston_army
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (361)</th><th>Description</th></tr></thead>
 <tbody>
@@ -894,7 +894,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WOLF
+#### wolf
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (7)</th><th align="center">TR2 (266)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -904,7 +904,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WORKER_1
+#### worker_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (30)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -913,7 +913,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WORKER_2
+#### worker_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (31)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -922,7 +922,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WORKER_3
+#### worker_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (32)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -932,7 +932,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WORKER_4
+#### worker_4
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (33)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -942,7 +942,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WORKER_5
+#### worker_5
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (34)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -951,7 +951,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_XIAN_KNIGHT
+#### xian_knight
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (43)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -960,7 +960,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_XIAN_SPEARMAN
+#### xian_spearman
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (41)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -972,7 +972,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_YETI
+#### yeti
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (45)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -985,7 +985,7 @@ This page lists documented moveable object properties.
 
 ## Traps
 
-#### O_BLADE
+#### blade
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (81)</th><th align="center">TR3 (111)</th><th>Description</th></tr></thead>
 <tbody>
@@ -993,7 +993,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_CEILING_SPIKES
+#### ceiling_spikes
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (87)</th><th align="center">TR3 (116)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1002,7 +1002,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DAMOCLES_SWORD
+#### damocles_sword
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (43)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1010,7 +1010,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DART
+#### dart
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (39)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1019,7 +1019,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DISC
+#### disc
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (61)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1028,7 +1028,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_FALLING_BLOCK_1
+#### falling_block_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (35)</th><th align="center">TR2 (55)</th><th align="center">TR3 (83)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1036,7 +1036,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_FALLING_BLOCK_2
+#### falling_block_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (56)</th><th align="center">TR3 (84)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1044,7 +1044,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_FALLING_BLOCK_3
+#### falling_block_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (57)</th><th align="center">TR3 (85)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1052,7 +1052,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_FALLING_CEILING_1
+#### falling_ceiling_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (53)</th><th align="center">TR2 (79)</th><th align="center">TR3 (107)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1060,7 +1060,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_FALLING_CEILING_2
+#### falling_ceiling_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (54)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1068,7 +1068,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_FLAME_EMITTER_SIDE
+#### flame_emitter_side
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (333)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1076,7 +1076,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_GENERIC_TRAP_1
+#### generic_trap_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1087,7 +1087,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_GENERIC_TRAP_2
+#### generic_trap_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1098,7 +1098,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_GENERIC_TRAP_3
+#### generic_trap_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1109,7 +1109,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_GENERIC_TRAP_4
+#### generic_trap_4
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1120,7 +1120,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_GENERIC_TRAP_5
+#### generic_trap_5
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1131,7 +1131,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_GENERIC_TRAP_6
+#### generic_trap_6
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1142,7 +1142,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_GENERIC_TRAP_7
+#### generic_trap_7
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1153,7 +1153,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_GENERIC_TRAP_8
+#### generic_trap_8
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1164,7 +1164,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_GENERIC_TRAP_9
+#### generic_trap_9
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1175,7 +1175,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_GENERIC_TRAP_10
+#### generic_trap_10
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1186,7 +1186,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_HOOK
+#### hook
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (78)</th><th align="center">TR3 (106)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1194,7 +1194,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ICICLE
+#### icicle
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (84)</th><th align="center">TR3 (113)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1202,7 +1202,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KILLER_STATUE
+#### killer_statue
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (82)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1210,7 +1210,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_LAVA_WEDGE
+#### lava_wedge
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (180)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1218,7 +1218,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_LIGHTNING_EMITTER
+#### lightning_emitter
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (46)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1226,7 +1226,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PENDULUM_1
+#### pendulum_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (58)</th><th align="center">TR3 (86)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1234,7 +1234,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PENDULUM_2
+#### pendulum_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (96)</th><th align="center">TR3 (121)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1242,7 +1242,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_POISON_DART
+#### poison_dart
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (90)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1251,7 +1251,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_POWER_SAW
+#### power_saw
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (77)</th><th align="center">TR3 (105)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1259,7 +1259,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PROPELLER_1
+#### propeller_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (76)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1267,7 +1267,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PROPELLER_2
+#### propeller_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (94)</th><th align="center">TR3 (119)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1275,7 +1275,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PROPELLER_3
+#### propeller_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (95)</th><th align="center">TR3 (120)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1283,7 +1283,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ROLLING_BALL_1
+#### rolling_ball_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (38)</th><th align="center">TR2 (60)</th><th align="center">TR3 (88)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1291,7 +1291,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ROLLING_BALL_2
+#### rolling_ball_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (83)</th><th align="center">TR3 (112)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1299,7 +1299,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ROLLING_BALL_3
+#### rolling_ball_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (101)</th><th align="center">TR3 (126)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1307,7 +1307,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ROLLING_BALL_4
+#### rolling_ball_4
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (89)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1315,7 +1315,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ROTATING_LASER
+#### rotating_laser
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (291)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1323,7 +1323,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SCALED_SPIKES
+#### scaled_spikes
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1331,7 +1331,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SECURITY_LASER_ALARM
+#### security_laser_alarm
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (66)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1339,7 +1339,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SECURITY_LASER_DEADLY
+#### security_laser_deadly
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (67)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1348,7 +1348,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SECURITY_LASER_KILLER
+#### security_laser_killer
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (68)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1356,7 +1356,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SENTRY_GUN
+#### sentry_gun
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (64)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1366,7 +1366,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SPIKES
+#### spikes
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (37)</th><th align="center">TR2 (59)</th><th align="center">TR3 (87)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1374,7 +1374,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SPIKE_WALL
+#### spike_wall
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (85)</th><th align="center">TR3 (114)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1383,7 +1383,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SPINNING_BLADE
+#### spinning_blade
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (80)</th><th align="center">TR3 (108)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1391,7 +1391,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SWINGING_AXE
+#### swinging_axe
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (36)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1399,7 +1399,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_TEETH_TRAP
+#### teeth_trap
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (42)</th><th align="center">TR2 (64)</th><th align="center">TR3 (94)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1409,7 +1409,7 @@ This page lists documented moveable object properties.
 
 ## General
 
-#### O_AI_AMBUSH
+#### ai_ambush
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (75)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1417,7 +1417,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_AI_FOLLOW
+#### ai_follow
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (78)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1425,7 +1425,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_AI_GUARD
+#### ai_guard
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (74)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1433,7 +1433,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_AI_MODIFY
+#### ai_modify
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (77)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1441,7 +1441,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_AI_PATROL_1
+#### ai_patrol_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (76)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1449,7 +1449,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_AI_PATROL_2
+#### ai_patrol_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (79)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1457,7 +1457,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_AI_X1
+#### ai_x1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (80)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1465,7 +1465,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_AI_X2
+#### ai_x2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (81)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1473,7 +1473,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_AI_X3
+#### ai_x3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (82)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1481,7 +1481,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_1
+#### animating_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (349)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1489,7 +1489,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_2
+#### animating_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (350)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1497,7 +1497,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_3
+#### animating_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (351)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1505,7 +1505,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_4
+#### animating_4
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (352)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1513,7 +1513,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_5
+#### animating_5
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (353)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1521,7 +1521,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_6
+#### animating_6
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (354)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1529,7 +1529,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_7
+#### animating_7
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1537,7 +1537,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_8
+#### animating_8
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1545,7 +1545,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_9
+#### animating_9
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1553,7 +1553,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_10
+#### animating_10
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1561,7 +1561,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_11
+#### animating_11
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1569,7 +1569,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_12
+#### animating_12
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1577,7 +1577,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_13
+#### animating_13
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1585,7 +1585,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_14
+#### animating_14
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1593,7 +1593,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_15
+#### animating_15
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1601,7 +1601,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_16
+#### animating_16
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1609,7 +1609,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_EXT_1
+#### animating_ext_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (370)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1617,7 +1617,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_EXT_2
+#### animating_ext_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1625,7 +1625,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_EXT_3
+#### animating_ext_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1633,7 +1633,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_EXT_4
+#### animating_ext_4
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1641,7 +1641,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_EXT_5
+#### animating_ext_5
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1649,7 +1649,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_EXT_6
+#### animating_ext_6
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1657,7 +1657,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_EXT_7
+#### animating_ext_7
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1665,7 +1665,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_EXT_8
+#### animating_ext_8
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1673,7 +1673,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_EXT_9
+#### animating_ext_9
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1681,7 +1681,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ANIMATING_EXT_10
+#### animating_ext_10
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1689,7 +1689,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ASSAULT_TARGET
+#### assault_target
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (30)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1697,7 +1697,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_AUTOS_AMMO_ITEM
+#### autos_ammo_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (249)</th><th align="center">TR2 (144)</th><th align="center">TR3 (387)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1708,7 +1708,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_AUTOS_ITEM
+#### autos_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (248)</th><th align="center">TR2 (137)</th><th align="center">TR3 (386)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1719,7 +1719,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_BIG_BOWL
+#### big_bowl
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (71)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1728,7 +1728,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_BINOCULARS_ITEM
+#### binoculars_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1739,7 +1739,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_BOAT
+#### boat
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (14)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1747,7 +1747,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_CEILING_TRAPDOOR_1
+#### ceiling_trapdoor_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1755,7 +1755,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_CEILING_TRAPDOOR_2
+#### ceiling_trapdoor_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1763,7 +1763,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_CROSSBOW_AMMO_1_ITEM
+#### crossbow_ammo_1_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1774,7 +1774,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_CROSSBOW_AMMO_2_ITEM
+#### crossbow_ammo_2_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1785,7 +1785,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_CROSSBOW_AMMO_3_ITEM
+#### crossbow_ammo_3_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1796,7 +1796,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_CROSSBOW_ITEM
+#### crossbow_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1807,7 +1807,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_CROWBAR_ITEM
+#### crowbar_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1818,7 +1818,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DESERT_EAGLE_AMMO_ITEM
+#### desert_eagle_ammo_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (252)</th><th align="center">TR2 (289)</th><th align="center">TR3 (170)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1829,7 +1829,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DESERT_EAGLE_ITEM
+#### desert_eagle_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (251)</th><th align="center">TR2 (288)</th><th align="center">TR3 (162)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1840,7 +1840,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DOOR_1
+#### door_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (57)</th><th align="center">TR2 (106)</th><th align="center">TR3 (131)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1849,7 +1849,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DOOR_2
+#### door_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (58)</th><th align="center">TR2 (107)</th><th align="center">TR3 (132)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1858,7 +1858,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DOOR_3
+#### door_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (59)</th><th align="center">TR2 (108)</th><th align="center">TR3 (133)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1867,7 +1867,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DOOR_4
+#### door_4
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (60)</th><th align="center">TR2 (109)</th><th align="center">TR3 (134)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1876,7 +1876,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DOOR_5
+#### door_5
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (61)</th><th align="center">TR2 (110)</th><th align="center">TR3 (135)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1885,7 +1885,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DOOR_6
+#### door_6
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (62)</th><th align="center">TR2 (111)</th><th align="center">TR3 (136)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1894,7 +1894,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DOOR_7
+#### door_7
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (63)</th><th align="center">TR2 (112)</th><th align="center">TR3 (137)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1903,7 +1903,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_DOOR_8
+#### door_8
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (64)</th><th align="center">TR2 (113)</th><th align="center">TR3 (138)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1912,7 +1912,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_EXAMINE_ITEM_1
+#### examine_item_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1923,7 +1923,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_EXAMINE_ITEM_2
+#### examine_item_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1934,7 +1934,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_EXAMINE_ITEM_3
+#### examine_item_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1945,7 +1945,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_FLARES_BOX_ITEM
+#### flares_box_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (187)</th><th align="center">TR2 (151)</th><th align="center">TR3 (178)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1956,7 +1956,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_FLARE_ITEM
+#### flare_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (193)</th><th align="center">TR2 (152)</th><th align="center">TR3 (179)</th><th>Description</th></tr></thead>
 <tbody>
@@ -1964,7 +1964,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_FLOOR_TRAPDOOR_1
+#### floor_trapdoor_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1972,7 +1972,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_FLOOR_TRAPDOOR_2
+#### floor_trapdoor_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1980,7 +1980,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_GRENADE_AMMO_2_ITEM
+#### grenade_ammo_2_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -1991,7 +1991,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_GRENADE_AMMO_3_ITEM
+#### grenade_ammo_3_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2002,7 +2002,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_GRENADE_AMMO_ITEM
+#### grenade_ammo_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (245)</th><th align="center">TR2 (148)</th><th align="center">TR3 (175)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2013,7 +2013,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_GRENADE_GUN_ITEM
+#### grenade_gun_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (242)</th><th align="center">TR2 (141)</th><th align="center">TR3 (167)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2024,7 +2024,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_HARPOON_GUN_AMMO_ITEM
+#### harpoon_gun_ammo_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (246)</th><th align="center">TR2 (146)</th><th align="center">TR3 (172)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2035,7 +2035,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_HARPOON_GUN_ITEM
+#### harpoon_gun_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (243)</th><th align="center">TR2 (139)</th><th align="center">TR3 (164)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2046,7 +2046,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KAYAK
+#### kayak
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (14)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2054,7 +2054,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_1
+#### key_item_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (129)</th><th align="center">TR2 (193)</th><th align="center">TR3 (224)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2065,7 +2065,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_1_COMBO_1
+#### key_item_1_combo_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2076,7 +2076,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_1_COMBO_2
+#### key_item_1_combo_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2087,7 +2087,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_2
+#### key_item_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (130)</th><th align="center">TR2 (194)</th><th align="center">TR3 (225)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2098,7 +2098,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_2_COMBO_1
+#### key_item_2_combo_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2109,7 +2109,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_2_COMBO_2
+#### key_item_2_combo_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2120,7 +2120,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_3
+#### key_item_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (131)</th><th align="center">TR2 (195)</th><th align="center">TR3 (226)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2131,7 +2131,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_3_COMBO_1
+#### key_item_3_combo_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2142,7 +2142,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_3_COMBO_2
+#### key_item_3_combo_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2153,7 +2153,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_4
+#### key_item_4
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (132)</th><th align="center">TR2 (196)</th><th align="center">TR3 (227)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2164,7 +2164,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_4_COMBO_1
+#### key_item_4_combo_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2175,7 +2175,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_4_COMBO_2
+#### key_item_4_combo_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2186,7 +2186,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_5
+#### key_item_5
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2197,7 +2197,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_5_COMBO_1
+#### key_item_5_combo_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2208,7 +2208,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_5_COMBO_2
+#### key_item_5_combo_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2219,7 +2219,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_6
+#### key_item_6
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2230,7 +2230,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_6_COMBO_1
+#### key_item_6_combo_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2241,7 +2241,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_6_COMBO_2
+#### key_item_6_combo_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2252,7 +2252,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_7
+#### key_item_7
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2263,7 +2263,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_7_COMBO_1
+#### key_item_7_combo_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2274,7 +2274,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_7_COMBO_2
+#### key_item_7_combo_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2285,7 +2285,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_8
+#### key_item_8
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2296,7 +2296,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_8_COMBO_1
+#### key_item_8_combo_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2307,7 +2307,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_8_COMBO_2
+#### key_item_8_combo_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2318,7 +2318,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_9
+#### key_item_9
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2329,7 +2329,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_10
+#### key_item_10
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2340,7 +2340,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_11
+#### key_item_11
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2351,7 +2351,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_KEY_ITEM_12
+#### key_item_12
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2362,7 +2362,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_LARA
+#### lara
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (0)</th><th align="center">TR2 (0)</th><th align="center">TR3 (0)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2370,7 +2370,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_LARGE_MEDIPACK_ITEM
+#### large_medipack_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (94)</th><th align="center">TR2 (150)</th><th align="center">TR3 (177)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2381,7 +2381,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_LASERSIGHT_ITEM
+#### lasersight_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2392,7 +2392,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_LEAD_BAR_ITEM
+#### lead_bar_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (126)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2403,7 +2403,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_LIFT
+#### lift
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (65)</th><th align="center">TR3 (95)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2413,7 +2413,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_M16_AMMO_ITEM
+#### m16_ammo_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (244)</th><th align="center">TR2 (147)</th><th align="center">TR3 (392)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2424,7 +2424,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_M16_ITEM
+#### m16_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (241)</th><th align="center">TR2 (140)</th><th align="center">TR3 (391)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2435,7 +2435,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_MAGNUMS_AMMO_ITEM
+#### magnums_ammo_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (90)</th><th align="center">TR2 (283)</th><th align="center">TR3 (382)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2446,7 +2446,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_MAGNUMS_ITEM
+#### magnums_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (86)</th><th align="center">TR2 (282)</th><th align="center">TR3 (381)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2457,7 +2457,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_MINE_CART
+#### mine_cart
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (17)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2468,7 +2468,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_MP5_AMMO_ITEM
+#### mp5_ammo_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (254)</th><th align="center">TR2 (294)</th><th align="center">TR3 (173)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2479,7 +2479,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_MP5_ITEM
+#### mp5_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (253)</th><th align="center">TR2 (293)</th><th align="center">TR3 (165)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2490,7 +2490,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PICKUP_ITEM_1
+#### pickup_item_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (141)</th><th align="center">TR2 (205)</th><th align="center">TR3 (236)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2501,7 +2501,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PICKUP_ITEM_1_COMBO_1
+#### pickup_item_1_combo_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2512,7 +2512,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PICKUP_ITEM_1_COMBO_2
+#### pickup_item_1_combo_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2523,7 +2523,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PICKUP_ITEM_2
+#### pickup_item_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (142)</th><th align="center">TR2 (206)</th><th align="center">TR3 (237)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2534,7 +2534,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PICKUP_ITEM_2_COMBO_1
+#### pickup_item_2_combo_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2545,7 +2545,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PICKUP_ITEM_2_COMBO_2
+#### pickup_item_2_combo_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2556,7 +2556,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PICKUP_ITEM_3
+#### pickup_item_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2567,7 +2567,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PICKUP_ITEM_3_COMBO_1
+#### pickup_item_3_combo_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2578,7 +2578,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PICKUP_ITEM_3_COMBO_2
+#### pickup_item_3_combo_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2589,7 +2589,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PICKUP_ITEM_4
+#### pickup_item_4
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2600,7 +2600,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PICKUP_ITEM_4_COMBO_1
+#### pickup_item_4_combo_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2611,7 +2611,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PICKUP_ITEM_4_COMBO_2
+#### pickup_item_4_combo_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2622,7 +2622,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PIRANHAS
+#### piranhas
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (338)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2631,7 +2631,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PISTOLS_AMMO_ITEM
+#### pistols_ammo_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (88)</th><th align="center">TR2 (142)</th><th align="center">TR3 (168)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2642,7 +2642,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PISTOLS_ITEM
+#### pistols_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (84)</th><th align="center">TR2 (135)</th><th align="center">TR3 (160)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2653,7 +2653,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PLAYER_1
+#### player_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (77)</th><th align="center">TR2 (123)</th><th align="center">TR3 (148)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2661,7 +2661,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PLAYER_2
+#### player_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (78)</th><th align="center">TR2 (124)</th><th align="center">TR3 (149)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2669,7 +2669,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PLAYER_3
+#### player_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (79)</th><th align="center">TR2 (125)</th><th align="center">TR3 (150)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2677,7 +2677,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PLAYER_4
+#### player_4
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (80)</th><th align="center">TR2 (126)</th><th align="center">TR3 (151)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2685,7 +2685,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PLAYER_5
+#### player_5
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (127)</th><th align="center">TR3 (152)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2693,7 +2693,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PLAYER_6
+#### player_6
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (128)</th><th align="center">TR3 (153)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2701,7 +2701,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PLAYER_7
+#### player_7
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (129)</th><th align="center">TR3 (154)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2709,7 +2709,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PLAYER_8
+#### player_8
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (130)</th><th align="center">TR3 (155)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2717,7 +2717,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PLAYER_9
+#### player_9
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (131)</th><th align="center">TR3 (156)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2725,7 +2725,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PLAYER_10
+#### player_10
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (132)</th><th align="center">TR3 (157)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2733,7 +2733,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PORTACABIN
+#### portacabin
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (162)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2741,7 +2741,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_1
+#### puzzle_item_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (110)</th><th align="center">TR2 (174)</th><th align="center">TR3 (205)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2752,7 +2752,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_1_COMBO_1
+#### puzzle_item_1_combo_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2763,7 +2763,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_1_COMBO_2
+#### puzzle_item_1_combo_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2774,7 +2774,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_2
+#### puzzle_item_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (111)</th><th align="center">TR2 (175)</th><th align="center">TR3 (206)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2785,7 +2785,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_2_COMBO_1
+#### puzzle_item_2_combo_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2796,7 +2796,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_2_COMBO_2
+#### puzzle_item_2_combo_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2807,7 +2807,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_3
+#### puzzle_item_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (112)</th><th align="center">TR2 (176)</th><th align="center">TR3 (207)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2818,7 +2818,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_3_COMBO_1
+#### puzzle_item_3_combo_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2829,7 +2829,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_3_COMBO_2
+#### puzzle_item_3_combo_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2840,7 +2840,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_4
+#### puzzle_item_4
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (113)</th><th align="center">TR2 (177)</th><th align="center">TR3 (208)</th><th>Description</th></tr></thead>
 <tbody>
@@ -2851,7 +2851,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_4_COMBO_1
+#### puzzle_item_4_combo_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2862,7 +2862,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_4_COMBO_2
+#### puzzle_item_4_combo_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2873,7 +2873,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_5
+#### puzzle_item_5
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2884,7 +2884,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_5_COMBO_1
+#### puzzle_item_5_combo_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2895,7 +2895,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_5_COMBO_2
+#### puzzle_item_5_combo_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2906,7 +2906,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_6
+#### puzzle_item_6
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2917,7 +2917,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_6_COMBO_1
+#### puzzle_item_6_combo_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2928,7 +2928,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_6_COMBO_2
+#### puzzle_item_6_combo_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2939,7 +2939,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_7
+#### puzzle_item_7
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2950,7 +2950,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_7_COMBO_1
+#### puzzle_item_7_combo_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2961,7 +2961,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_7_COMBO_2
+#### puzzle_item_7_combo_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2972,7 +2972,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_8
+#### puzzle_item_8
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2983,7 +2983,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_8_COMBO_1
+#### puzzle_item_8_combo_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -2994,7 +2994,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_8_COMBO_2
+#### puzzle_item_8_combo_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3005,7 +3005,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_9
+#### puzzle_item_9
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3016,7 +3016,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_10
+#### puzzle_item_10
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3027,7 +3027,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_11
+#### puzzle_item_11
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3038,7 +3038,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_PUZZLE_ITEM_12
+#### puzzle_item_12
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3049,7 +3049,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_QUAD_BIKE
+#### quad_bike
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (16)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3062,7 +3062,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_QUEST_ITEM_1
+#### quest_item_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (240)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3073,7 +3073,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_QUEST_ITEM_2
+#### quest_item_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (241)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3084,7 +3084,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_QUEST_ITEM_3
+#### quest_item_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (242)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3095,7 +3095,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_QUEST_ITEM_4
+#### quest_item_4
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (243)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3106,7 +3106,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_QUEST_ITEM_5
+#### quest_item_5
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3117,7 +3117,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_QUEST_ITEM_6
+#### quest_item_6
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3128,7 +3128,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_REVOLVER_AMMO_ITEM
+#### revolver_ammo_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3139,7 +3139,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_REVOLVER_ITEM
+#### revolver_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3150,7 +3150,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_RIB
+#### rib
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (15)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3162,7 +3162,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ROCKET_AMMO_ITEM
+#### rocket_ammo_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (256)</th><th align="center">TR2 (300)</th><th align="center">TR3 (174)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3173,7 +3173,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_ROCKET_GUN_ITEM
+#### rocket_gun_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (255)</th><th align="center">TR2 (299)</th><th align="center">TR3 (166)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3184,7 +3184,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SAVE_CRYSTAL_ITEM
+#### save_crystal_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (83)</th><th align="center">TR2 (269)</th><th align="center">TR3 (180)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3195,7 +3195,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SCION_ITEM_1
+#### scion_item_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (143)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3206,7 +3206,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SCION_ITEM_2
+#### scion_item_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (144)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3217,7 +3217,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SCION_ITEM_3
+#### scion_item_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (145)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3225,7 +3225,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SECRET_1
+#### secret_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (190)</th><th align="center">TR3 (221)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3236,7 +3236,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SECRET_2
+#### secret_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (191)</th><th align="center">TR3 (222)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3247,7 +3247,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SECRET_3
+#### secret_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (192)</th><th align="center">TR3 (223)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3258,7 +3258,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SHOTGUN_AMMO_2_ITEM
+#### shotgun_ammo_2_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3269,7 +3269,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SHOTGUN_AMMO_ITEM
+#### shotgun_ammo_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (89)</th><th align="center">TR2 (143)</th><th align="center">TR3 (169)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3280,7 +3280,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SHOTGUN_ITEM
+#### shotgun_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (85)</th><th align="center">TR2 (136)</th><th align="center">TR3 (161)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3291,7 +3291,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SKIDOO_ARMED
+#### skidoo_armed
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (51)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3299,7 +3299,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SKIDOO_FAST
+#### skidoo_fast
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (13)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3316,7 +3316,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SMALL_MEDIPACK_ITEM
+#### small_medipack_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (93)</th><th align="center">TR2 (149)</th><th align="center">TR3 (176)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3327,7 +3327,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_STROBE_LIGHT
+#### strobe_light
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (318)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3335,7 +3335,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SWITCH_TYPE_GENERIC_1
+#### switch_type_generic_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3343,7 +3343,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SWITCH_TYPE_GENERIC_2
+#### switch_type_generic_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3351,7 +3351,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SWITCH_TYPE_GENERIC_3
+#### switch_type_generic_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3359,7 +3359,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SWITCH_TYPE_GENERIC_4
+#### switch_type_generic_4
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3367,7 +3367,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SWITCH_TYPE_GENERIC_5
+#### switch_type_generic_5
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3375,7 +3375,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SWITCH_TYPE_GENERIC_6
+#### switch_type_generic_6
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3383,7 +3383,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_SWITCH_TYPE_PULLEY
+#### switch_type_pulley
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3392,7 +3392,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_TRAPDOOR_1
+#### trapdoor_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (65)</th><th align="center">TR2 (114)</th><th align="center">TR3 (139)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3400,7 +3400,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_TRAPDOOR_2
+#### trapdoor_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (66)</th><th align="center">TR2 (115)</th><th align="center">TR3 (140)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3408,7 +3408,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_TRAPDOOR_3
+#### trapdoor_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (67)</th><th align="center">TR2 (116)</th><th align="center">TR3 (141)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3416,7 +3416,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_TROPICAL_FISH
+#### tropical_fish
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (339)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3426,7 +3426,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_UPV
+#### upv
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (19)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3434,7 +3434,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_UZIS_AMMO_ITEM
+#### uzis_ammo_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (91)</th><th align="center">TR2 (145)</th><th align="center">TR3 (171)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3445,7 +3445,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_UZIS_ITEM
+#### uzis_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (87)</th><th align="center">TR2 (138)</th><th align="center">TR3 (163)</th><th>Description</th></tr></thead>
 <tbody>
@@ -3456,7 +3456,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WATERFALL_1
+#### waterfall_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3465,7 +3465,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WATERFALL_2
+#### waterfall_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3474,7 +3474,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WATERFALL_3
+#### waterfall_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3483,7 +3483,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WATERSKIN_1_1
+#### waterskin_1_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3494,7 +3494,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WATERSKIN_1_2
+#### waterskin_1_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3505,7 +3505,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WATERSKIN_1_3
+#### waterskin_1_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3516,7 +3516,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WATERSKIN_1_EMPTY
+#### waterskin_1_empty
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3527,7 +3527,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WATERSKIN_2_1
+#### waterskin_2_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3538,7 +3538,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WATERSKIN_2_2
+#### waterskin_2_2
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3549,7 +3549,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WATERSKIN_2_3
+#### waterskin_2_3
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3560,7 +3560,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WATERSKIN_2_4
+#### waterskin_2_4
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3571,7 +3571,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WATERSKIN_2_5
+#### waterskin_2_5
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
@@ -3582,7 +3582,7 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### O_WATERSKIN_2_EMPTY
+#### waterskin_2_empty
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>

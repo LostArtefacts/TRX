@@ -1,6 +1,6 @@
 {
     "unarmed": {
-        "sample_num": "SFX_LARA_NO",
+        "sample_num": "lara_no",
     },
 
     "flare": {
@@ -52,8 +52,8 @@
         "shell_pos": {"x": 8, "y": 48, "z": 40},
         "shell_pos_alt": {"x": -12, "y": 48, "z": 40},
         "smoke_count": 28,
-        "sample_num": "SFX_LARA_PISTOLS",
-        "sample_overlay_num": "SFX_GUN_FIRE_EXPLOSION",
+        "sample_num": "lara_pistols",
+        "sample_overlay_num": "gun_fire_explosion",
         "sample_overlay_pitch": 131072,
     },
 
@@ -90,7 +90,7 @@
         "shell_pos": {"x": 8, "y": 48, "z": 40},
         "shell_pos_alt": {"x": -12, "y": 48, "z": 40},
         "smoke_count": 28,
-        "sample_num": "SFX_LARA_MAGNUMS",
+        "sample_num": "lara_magnums",
         "is_available": false,
     },
 
@@ -127,7 +127,7 @@
         "shell_pos": {"x": 8, "y": 48, "z": 40},
         "shell_pos_alt": {"x": -12, "y": 48, "z": 40},
         "smoke_count": 28,
-        "sample_num": "SFX_LARA_AUTOS",
+        "sample_num": "lara_autos",
         "is_available": false,
     },
 
@@ -164,8 +164,8 @@
         "shell_pos": {"x": 16, "y": 40, "z": 56},
         "shell_pos_alt": {"x": -16, "y": 40, "z": 56},
         "smoke_count": 28,
-        "sample_num": "SFX_LARA_DESERT_EAGLE",
-        "sample_overlay_num": "SFX_GUN_FIRE_EXPLOSION",
+        "sample_num": "lara_desert_eagle",
+        "sample_overlay_num": "gun_fire_explosion",
         "sample_overlay_pitch": 131072,
     },
 
@@ -202,8 +202,8 @@
         "shell_pos": {"x": 8, "y": 35, "z": 48},
         "shell_pos_alt": {"x": -16, "y": 35, "z": 48},
         "smoke_count": 28,
-        "sample_num": "SFX_LARA_UZI_FIRE",
-        "sample_overlay_num": "SFX_GUN_FIRE_EXPLOSION",
+        "sample_num": "lara_uzi_fire",
+        "sample_overlay_num": "gun_fire_explosion",
         "sample_overlay_pitch": 131072,
     },
 
@@ -259,8 +259,8 @@
         "muzzle_pos": {"x": -16, "y": 228, "z": 96},
         "shell_pos": {"x": 16, "y": 114, "z": 32},
         "smoke_count": 32,
-        "sample_num": "SFX_LARA_SHOTGUN",
-        "sample_overlay_num": "SFX_GUN_FIRE_EXPLOSION",
+        "sample_num": "lara_shotgun",
+        "sample_overlay_num": "gun_fire_explosion",
         "sample_overlay_pitch": 81920,
     },
 
@@ -345,7 +345,7 @@
         "shell_pos": {"x": 16, "y": 2, "z": 64},
         "smoke_count": 24,
         "sample_num": "",
-        "sample_overlay_num": "SFX_GUN_FIRE_EXPLOSION",
+        "sample_overlay_num": "gun_fire_explosion",
         "sample_overlay_pitch": 327680,
     },
 
@@ -409,7 +409,7 @@
         "muzzle_pos": {"x": 0, "y": 84, "z": 72},
         "smoke_count": 32,
         "sample_num": "",
-        "sample_overlay_num": "SFX_GUN_FIRE_EXPLOSION",
+        "sample_overlay_num": "gun_fire_explosion",
         "sample_overlay_pitch": 327680,
     },
 
@@ -462,6 +462,6 @@
         "flash_color": [0.75, 0.56, 0.0],
         "glow_pos": {},
         "glow_color": [1, 0.75, 0.125],
-        "sample_num": "SFX_LARA_UZI_FIRE",
+        "sample_num": "lara_uzi_fire",
     },
 }

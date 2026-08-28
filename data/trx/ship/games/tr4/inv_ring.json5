@@ -1,6 +1,6 @@
 [
     {
-        "object_id": "O_SMALL_MEDIPACK_OPTION",
+        "object_id": "small_medipack_option",
         "frames_total": 26,
         "open_frame": 25,
         "anim_direction": 1,
@@ -15,7 +15,7 @@
     },
 
     {
-        "object_id": "O_LARGE_MEDIPACK_OPTION",
+        "object_id": "large_medipack_option",
         "frames_total": 20,
         "open_frame": 19,
         "anim_direction": 1,
@@ -30,7 +30,7 @@
     },
 
     {
-        "object_id": "O_FLARES_BOX_OPTION",
+        "object_id": "flares_box_option",
         "frames_total": 31,
         "open_frame": 30,
         "anim_direction": 1,
@@ -44,7 +44,7 @@
     },
 
     {
-        "object_id": "O_PISTOLS_OPTION",
+        "object_id": "pistols_option",
         "frames_total": 12,
         "open_frame": 11,
         "anim_direction": 1,
@@ -60,7 +60,7 @@
     },
 
     {
-        "object_id": "O_SHOTGUN_OPTION",
+        "object_id": "shotgun_option",
         "frames_total": 13,
         "open_frame": 12,
         "anim_direction": 1,
@@ -75,7 +75,7 @@
     },
 
     {
-        "object_id": "O_MAGNUMS_OPTION",
+        "object_id": "magnums_option",
         "frames_total": 12,
         "open_frame": 11,
         "anim_direction": 1,
@@ -90,7 +90,7 @@
     },
 
     {
-        "object_id": "O_AUTOS_OPTION",
+        "object_id": "autos_option",
         "frames_total": 12,
         "open_frame": 11,
         "anim_direction": 1,
@@ -105,7 +105,7 @@
     },
 
     {
-        "object_id": "O_DESERT_EAGLE_OPTION",
+        "object_id": "desert_eagle_option",
         "frames_total": 12,
         "open_frame": 11,
         "anim_direction": 1,
@@ -120,7 +120,7 @@
     },
 
     {
-        "object_id": "O_UZIS_OPTION",
+        "object_id": "uzis_option",
         "frames_total": 13,
         "open_frame": 12,
         "anim_direction": 1,
@@ -136,7 +136,7 @@
     },
 
     {
-        "object_id": "O_HARPOON_GUN_OPTION",
+        "object_id": "harpoon_gun_option",
         "frames_total": 12,
         "open_frame": 11,
         "anim_direction": 1,
@@ -152,7 +152,7 @@
     },
 
     {
-        "object_id": "O_M16_OPTION",
+        "object_id": "m16_option",
         "frames_total": 12,
         "open_frame": 11,
         "anim_direction": 1,
@@ -168,7 +168,7 @@
     },
 
     {
-        "object_id": "O_MP5_OPTION",
+        "object_id": "mp5_option",
         "frames_total": 12,
         "open_frame": 11,
         "anim_direction": 1,
@@ -184,7 +184,7 @@
     },
 
     {
-        "object_id": "O_ROCKET_GUN_OPTION",
+        "object_id": "rocket_gun_option",
         "frames_total": 12,
         "open_frame": 11,
         "anim_direction": 1,
@@ -200,7 +200,7 @@
     },
 
     {
-        "object_id": "O_GRENADE_GUN_OPTION",
+        "object_id": "grenade_gun_option",
         "frames_total": 12,
         "open_frame": 11,
         "anim_direction": 1,
@@ -216,7 +216,7 @@
     },
 
     {
-        "object_id": "O_PISTOLS_AMMO_OPTION",
+        "object_id": "pistols_ammo_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -229,7 +229,7 @@
     },
 
     {
-        "object_id": "O_SHOTGUN_AMMO_OPTION",
+        "object_id": "shotgun_ammo_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -242,7 +242,7 @@
     },
 
     {
-        "object_id": "O_MAGNUMS_AMMO_OPTION",
+        "object_id": "magnums_ammo_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -255,7 +255,7 @@
     },
 
     {
-        "object_id": "O_AUTOS_AMMO_OPTION",
+        "object_id": "autos_ammo_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -268,7 +268,7 @@
     },
 
     {
-        "object_id": "O_DESERT_EAGLE_AMMO_OPTION",
+        "object_id": "desert_eagle_ammo_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -281,7 +281,7 @@
     },
 
     {
-        "object_id": "O_UZIS_AMMO_OPTION",
+        "object_id": "uzis_ammo_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -294,7 +294,7 @@
     },
 
     {
-        "object_id": "O_HARPOON_GUN_AMMO_OPTION",
+        "object_id": "harpoon_gun_ammo_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -307,7 +307,7 @@
     },
 
     {
-        "object_id": "O_M16_AMMO_OPTION",
+        "object_id": "m16_ammo_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -320,7 +320,7 @@
     },
 
     {
-        "object_id": "O_MP5_AMMO_OPTION",
+        "object_id": "mp5_ammo_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -333,7 +333,7 @@
     },
 
     {
-        "object_id": "O_ROCKET_AMMO_OPTION",
+        "object_id": "rocket_ammo_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -346,7 +346,7 @@
     },
 
     {
-        "object_id": "O_GRENADE_AMMO_OPTION",
+        "object_id": "grenade_ammo_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -359,7 +359,7 @@
     },
 
     {
-        "object_id": "O_SCION_OPTION",
+        "object_id": "scion_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -372,7 +372,7 @@
     },
 
     {
-        "object_id": "O_LEAD_BAR_OPTION",
+        "object_id": "lead_bar_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -386,7 +386,7 @@
     },
 
     {
-        "object_id": "O_PICKUP_OPTION_1",
+        "object_id": "pickup_option_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -399,7 +399,7 @@
     },
 
     {
-        "object_id": "O_PICKUP_OPTION_2",
+        "object_id": "pickup_option_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -412,7 +412,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_1",
+        "object_id": "puzzle_option_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -425,7 +425,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_2",
+        "object_id": "puzzle_option_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -438,7 +438,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_3",
+        "object_id": "puzzle_option_3",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -451,7 +451,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_4",
+        "object_id": "puzzle_option_4",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -464,7 +464,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_1",
+        "object_id": "key_option_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -477,7 +477,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_2",
+        "object_id": "key_option_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -490,7 +490,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_3",
+        "object_id": "key_option_3",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -503,7 +503,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_4",
+        "object_id": "key_option_4",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -516,7 +516,7 @@
     },
 
     {
-        "object_id": "O_STOPWATCH_OPTION",
+        "object_id": "stopwatch_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -528,7 +528,7 @@
     },
 
     {
-        "object_id": "O_COMPASS_OPTION",
+        "object_id": "compass_option",
         "frames_total": 25,
         "open_frame": 10,
         "anim_direction": 1,
@@ -541,7 +541,7 @@
     },
 
     {
-        "object_id": "O_GLOBE_OPTION",
+        "object_id": "globe_option",
         "frames_total": 160,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -555,7 +555,7 @@
     },
 
     {
-        "object_id": "O_PASSPORT_OPTION",
+        "object_id": "passport_option",
         "frames_total": 30,
         "open_frame": 14,
         "anim_direction": 1,
@@ -569,7 +569,7 @@
     },
 
     {
-        "object_id": "O_GRAPHICS_OPTION",
+        "object_id": "graphics_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -583,7 +583,7 @@
     },
 
     {
-        "object_id": "O_SOUND_OPTION",
+        "object_id": "sound_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -598,7 +598,7 @@
     },
 
     {
-        "object_id": "O_CONTROLS_OPTION",
+        "object_id": "controls_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -614,7 +614,7 @@
     },
 
     {
-        "object_id": "O_PHOTO_OPTION",
+        "object_id": "photo_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -627,7 +627,7 @@
     },
 
     {
-        "object_id": "O_PDA_OPTION",
+        "object_id": "pda_option",
         "frames_total": 39,
         "open_frame": 19,
         "anim_direction": 1,
@@ -639,7 +639,7 @@
     },
 
     {
-        "object_id": "O_QUEST_OPTION_1",
+        "object_id": "quest_option_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -652,7 +652,7 @@
     },
 
     {
-        "object_id": "O_QUEST_OPTION_2",
+        "object_id": "quest_option_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -665,7 +665,7 @@
     },
 
     {
-        "object_id": "O_QUEST_OPTION_3",
+        "object_id": "quest_option_3",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -678,7 +678,7 @@
     },
 
     {
-        "object_id": "O_QUEST_OPTION_4",
+        "object_id": "quest_option_4",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -691,7 +691,7 @@
     },
 
     {
-        "object_id": "O_CROSSBOW_OPTION",
+        "object_id": "crossbow_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -704,7 +704,7 @@
     },
 
     {
-        "object_id": "O_CROSSBOW_AMMO_OPTION",
+        "object_id": "crossbow_ammo_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -717,7 +717,7 @@
     },
 
     {
-        "object_id": "O_REVOLVER_OPTION",
+        "object_id": "revolver_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -730,7 +730,7 @@
     },
 
     {
-        "object_id": "O_REVOLVER_AMMO_OPTION",
+        "object_id": "revolver_ammo_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -743,7 +743,7 @@
     },
 
     {
-        "object_id": "O_LASERSIGHT_OPTION",
+        "object_id": "lasersight_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -756,7 +756,7 @@
     },
 
     {
-        "object_id": "O_BINOCULARS_OPTION",
+        "object_id": "binoculars_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -769,7 +769,7 @@
     },
 
     {
-        "object_id": "O_WATERSKIN_1_OPTION",
+        "object_id": "waterskin_1_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -782,7 +782,7 @@
     },
 
     {
-        "object_id": "O_WATERSKIN_2_OPTION",
+        "object_id": "waterskin_2_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -795,7 +795,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_5",
+        "object_id": "key_option_5",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -808,7 +808,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_6",
+        "object_id": "key_option_6",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -821,7 +821,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_7",
+        "object_id": "key_option_7",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -834,7 +834,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_8",
+        "object_id": "key_option_8",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -847,7 +847,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_9",
+        "object_id": "key_option_9",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -860,7 +860,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_10",
+        "object_id": "key_option_10",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -873,7 +873,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_11",
+        "object_id": "key_option_11",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -886,7 +886,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_12",
+        "object_id": "key_option_12",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -899,7 +899,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_5",
+        "object_id": "puzzle_option_5",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -912,7 +912,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_6",
+        "object_id": "puzzle_option_6",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -925,7 +925,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_7",
+        "object_id": "puzzle_option_7",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -938,7 +938,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_8",
+        "object_id": "puzzle_option_8",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -951,7 +951,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_9",
+        "object_id": "puzzle_option_9",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -964,7 +964,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_10",
+        "object_id": "puzzle_option_10",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -977,7 +977,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_11",
+        "object_id": "puzzle_option_11",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -990,7 +990,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_12",
+        "object_id": "puzzle_option_12",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1003,7 +1003,7 @@
     },
 
     {
-        "object_id": "O_PICKUP_OPTION_3",
+        "object_id": "pickup_option_3",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1016,7 +1016,7 @@
     },
 
     {
-        "object_id": "O_PICKUP_OPTION_4",
+        "object_id": "pickup_option_4",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1029,7 +1029,7 @@
     },
 
     {
-        "object_id": "O_QUEST_OPTION_5",
+        "object_id": "quest_option_5",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1042,7 +1042,7 @@
     },
 
     {
-        "object_id": "O_QUEST_OPTION_6",
+        "object_id": "quest_option_6",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1055,7 +1055,7 @@
     },
 
     {
-        "object_id": "O_EXAMINE_OPTION_1",
+        "object_id": "examine_option_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1068,7 +1068,7 @@
     },
 
     {
-        "object_id": "O_EXAMINE_OPTION_2",
+        "object_id": "examine_option_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1081,7 +1081,7 @@
     },
 
     {
-        "object_id": "O_EXAMINE_OPTION_3",
+        "object_id": "examine_option_3",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1094,7 +1094,7 @@
     },
 
     {
-        "object_id": "O_CROWBAR_OPTION",
+        "object_id": "crowbar_option",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1107,7 +1107,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_1_COMBO_1",
+        "object_id": "puzzle_option_1_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1120,7 +1120,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_1_COMBO_2",
+        "object_id": "puzzle_option_1_combo_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1133,7 +1133,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_2_COMBO_1",
+        "object_id": "puzzle_option_2_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1146,7 +1146,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_2_COMBO_2",
+        "object_id": "puzzle_option_2_combo_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1159,7 +1159,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_3_COMBO_1",
+        "object_id": "puzzle_option_3_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1172,7 +1172,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_3_COMBO_2",
+        "object_id": "puzzle_option_3_combo_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1185,7 +1185,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_4_COMBO_1",
+        "object_id": "puzzle_option_4_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1198,7 +1198,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_4_COMBO_2",
+        "object_id": "puzzle_option_4_combo_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1211,7 +1211,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_5_COMBO_1",
+        "object_id": "puzzle_option_5_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1224,7 +1224,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_5_COMBO_2",
+        "object_id": "puzzle_option_5_combo_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1237,7 +1237,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_6_COMBO_1",
+        "object_id": "puzzle_option_6_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1250,7 +1250,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_6_COMBO_2",
+        "object_id": "puzzle_option_6_combo_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1263,7 +1263,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_7_COMBO_1",
+        "object_id": "puzzle_option_7_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1276,7 +1276,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_7_COMBO_2",
+        "object_id": "puzzle_option_7_combo_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1289,7 +1289,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_8_COMBO_1",
+        "object_id": "puzzle_option_8_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1302,7 +1302,7 @@
     },
 
     {
-        "object_id": "O_PUZZLE_OPTION_8_COMBO_2",
+        "object_id": "puzzle_option_8_combo_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1315,7 +1315,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_1_COMBO_1",
+        "object_id": "key_option_1_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1328,7 +1328,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_1_COMBO_2",
+        "object_id": "key_option_1_combo_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1341,7 +1341,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_2_COMBO_1",
+        "object_id": "key_option_2_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1354,7 +1354,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_2_COMBO_2",
+        "object_id": "key_option_2_combo_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1367,7 +1367,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_3_COMBO_1",
+        "object_id": "key_option_3_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1380,7 +1380,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_3_COMBO_2",
+        "object_id": "key_option_3_combo_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1393,7 +1393,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_4_COMBO_1",
+        "object_id": "key_option_4_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1406,7 +1406,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_4_COMBO_2",
+        "object_id": "key_option_4_combo_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1419,7 +1419,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_5_COMBO_1",
+        "object_id": "key_option_5_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1432,7 +1432,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_5_COMBO_2",
+        "object_id": "key_option_5_combo_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1445,7 +1445,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_6_COMBO_1",
+        "object_id": "key_option_6_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1458,7 +1458,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_6_COMBO_2",
+        "object_id": "key_option_6_combo_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1471,7 +1471,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_7_COMBO_1",
+        "object_id": "key_option_7_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1484,7 +1484,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_7_COMBO_2",
+        "object_id": "key_option_7_combo_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1497,7 +1497,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_8_COMBO_1",
+        "object_id": "key_option_8_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1510,7 +1510,7 @@
     },
 
     {
-        "object_id": "O_KEY_OPTION_8_COMBO_2",
+        "object_id": "key_option_8_combo_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1523,7 +1523,7 @@
     },
 
     {
-        "object_id": "O_PICKUP_OPTION_1_COMBO_1",
+        "object_id": "pickup_option_1_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1536,7 +1536,7 @@
     },
 
     {
-        "object_id": "O_PICKUP_OPTION_1_COMBO_2",
+        "object_id": "pickup_option_1_combo_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1549,7 +1549,7 @@
     },
 
     {
-        "object_id": "O_PICKUP_OPTION_2_COMBO_1",
+        "object_id": "pickup_option_2_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1562,7 +1562,7 @@
     },
 
     {
-        "object_id": "O_PICKUP_OPTION_2_COMBO_2",
+        "object_id": "pickup_option_2_combo_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1575,7 +1575,7 @@
     },
 
     {
-        "object_id": "O_PICKUP_OPTION_3_COMBO_1",
+        "object_id": "pickup_option_3_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1588,7 +1588,7 @@
     },
 
     {
-        "object_id": "O_PICKUP_OPTION_3_COMBO_2",
+        "object_id": "pickup_option_3_combo_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1601,7 +1601,7 @@
     },
 
     {
-        "object_id": "O_PICKUP_OPTION_4_COMBO_1",
+        "object_id": "pickup_option_4_combo_1",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
@@ -1614,7 +1614,7 @@
     },
 
     {
-        "object_id": "O_PICKUP_OPTION_4_COMBO_2",
+        "object_id": "pickup_option_4_combo_2",
         "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
