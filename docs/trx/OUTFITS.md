@@ -388,7 +388,7 @@ behave. The structure of this file is described below.
   "supports_sunglasses": true,
   "braid": [
     {
-      "mode": "BRAID_MODE_TR1_FULL",
+      "mode": "tr1_full",
       "mesh_offset": 10,
       "position": {
         "x": 0,
@@ -402,7 +402,7 @@ behave. The structure of this file is described below.
     "thigh_l": 2,
   },
   "extra_outfits": {
-    "LS_EXTRA_TREX_KILL": "tr1_mauled",
+    "trex_kill": "tr1_mauled",
   },
 },
 ```
@@ -533,7 +533,7 @@ behave. The structure of this file is described below.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>LS_EXTRA_TREX_KILL</code></td>
+    <td><code>trex_kill</code></td>
     <td>When Lara is killed by the T-rex - instant full outfit swap.</td>
   </tr>
   <tr valign="top">
@@ -561,31 +561,31 @@ behave. The structure of this file is described below.
     <td colspan="2">Indicates special handling when the braid is active.</td>
   </tr>
   <tr valign="top">
-    <td><code>BRAID_MODE_NONE</code></td>
+    <td><code>none</code></td>
     <td>
       No special treatment (this mode is implied if <code>mode</code> is not
       specified).
     </td>
   </tr>
   <tr valign="top">
-    <td><code>BRAID_MODE_TR1_HEAD_ONLY</code></td>
+    <td><code>tr1_head_only</code></td>
     <td>
-      Replaces Lara's head with <code>EXTRA_MESH_TR1_BRAID_DEFAULT_HEAD</code>
+      Replaces Lara's head with <code>tr1_braid_default_head</code>
       defined in the <code>O_LARA_SKIN_SWAP_EXTRA</code> object.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>BRAID_MODE_TR1_FULL</code></td>
+    <td><code>tr1_full</code></td>
     <td>
-      As per <code>BRAID_MODE_TR1_HEAD_ONLY</code>, plus Lara's torso will be
-      replaced with <code>EXTRA_MESH_TR1_BRAID_DEFAULT_TORSO</code>.
+      As per <code>tr1_head_only</code>, plus Lara's torso will be
+      replaced with <code>tr1_braid_default_torso</code>.
     </td>
   </tr>
   <tr valign="top">
-    <td><code>BRAID_MODE_TR1_MAULED</code></td>
+    <td><code>tr1_mauled</code></td>
     <td>
-      As per <code>BRAID_MODE_TR1_FULL</code>, but the torso swap mesh used here
-      is <code>EXTRA_MESH_TR1_BRAID_MAULED_TORSO</code>.
+      As per <code>tr1_full</code>, but the torso swap mesh used here
+      is <code>tr1_braid_mauled_torso</code>.
     </td>
   </tr>
   <tr valign="top">
@@ -629,17 +629,17 @@ behave. The structure of this file is described below.
 
 ```json
 {
-  "LGT_DESERT_EAGLE": {
+  "desert_eagle": {
     "hand_r": 62,
     "thigh_r": 9,
   },
-  "LGT_UZIS": {
+  "uzis": {
     "hand_r": 63,
     "hand_l": 64,
     "thigh_r": 10,
     "thigh_l": 11,
   },
-  "LGT_SHOTGUN": {
+  "shotgun": {
     "hand_r": 65,
     "torso": 72,
   },
@@ -650,7 +650,7 @@ behave. The structure of this file is described below.
 The map keys must match known engine weapons. See [weapons](WEAPONS.md) and
 `cfg/weapons.json5` for reference. Any entry may omit hand, thigh or torso, and
 note that specific gun types will only look for particular entries. For example,
-defining a `thigh_l` property for `LGT_SHOTGUN` is meaningless and will be
+defining a `thigh_l` property for `shotgun` is meaningless and will be
 ignored. Any missing fields imply that no mesh is drawn for that slot.
 
 <table>

@@ -225,12 +225,12 @@ local function polled_while(shown, read, idle)
 end
 
 local REGION_OF = {
-  ["top-left"] = ui.Region.TOP_LEFT,
-  ["top-center"] = ui.Region.TOP_CENTER,
-  ["top-right"] = ui.Region.TOP_RIGHT,
-  ["bottom-left"] = ui.Region.BOTTOM_LEFT,
-  ["bottom-center"] = ui.Region.BOTTOM_CENTER,
-  ["bottom-right"] = ui.Region.BOTTOM_RIGHT,
+  top_left = ui.Region.TOP_LEFT,
+  top_center = ui.Region.TOP_CENTER,
+  top_right = ui.Region.TOP_RIGHT,
+  bottom_left = ui.Region.BOTTOM_LEFT,
+  bottom_center = ui.Region.BOTTOM_CENTER,
+  bottom_right = ui.Region.BOTTOM_RIGHT,
 }
 
 -- A bar follows the setting that says where it goes, so moving it in the
@@ -438,7 +438,7 @@ do
       if target == nil or mode == "never" then
         return false
       end
-      return mode ~= "boss-only" or is_boss(target.object_id)
+      return mode ~= "boss_only" or is_boss(target.object_id)
     end
   )
 

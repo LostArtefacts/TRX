@@ -2,8 +2,10 @@
 
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/debug.h>
 #include <trx/game/game_strings/entries.h>
 
+#include <ctype.h>
 #include <uthash.h>
 
 typedef struct {
@@ -81,8 +83,18 @@ static void M_DefineStr2Id(
     M_STR_TO_ID_ENTRY **map, const char *const enum_type_name,
     const int32_t enum_value, const char *const str_value)
 {
-    const char *const key =
-        String_FormatStatic("%s|%s", enum_type_name, str_value);
+    ASSERT(strlen(str_value) < ENUM_MAP_MAX_NAME_SIZE);
+    const char *const key = String_FormatStatic(
+        "%s|%s", enum_type_name, EnumMap_NormalizeName(str_value));
+    M_STR_TO_ID_ENTRY *existing;
+    HASH_FIND_STR(*map, key, existing);
+    if (existing != nullptr) {
+        if (existing->value != enum_value) {
+            ASSERT_FAIL_FMT(
+                "%s names both %d and %d", key, existing->value, enum_value);
+        }
+        return;
+    }
     M_STR_TO_ID_ENTRY *const entry = Memory_Alloc(sizeof(M_STR_TO_ID_ENTRY));
     entry->key = Memory_DupStr(key);
     entry->value = enum_value;
@@ -133,8 +145,8 @@ static int32_t M_Str2Id(
     M_STR_TO_ID_ENTRY *const *map, const char *const enum_type_name,
     const char *const str_value, int32_t default_value)
 {
-    const char *const key =
-        String_FormatStatic("%s|%s", enum_type_name, str_value);
+    const char *const key = String_FormatStatic(
+        "%s|%s", enum_type_name, EnumMap_NormalizeName(str_value));
     M_STR_TO_ID_ENTRY *entry;
     HASH_FIND_STR(*map, key, entry);
     return entry != nullptr ? entry->value : default_value;
@@ -172,6 +184,30 @@ void EnumMap_Define(
     }
     M_DefineId2Str(&m_Id2NameMap, enum_type_name, enum_value, enum_name);
     M_DefineId2Str(&m_Id2LabelKeyMap, enum_type_name, enum_value, label_key);
+}
+
+const char *EnumMap_NormalizeName(const char *const name)
+{
+    static char buf[ENUM_MAP_MAX_NAME_SIZE];
+    size_t i = 0;
+    for (; name[i] != '\0' && i < sizeof(buf) - 1; i++) {
+        buf[i] = (name[i] == '-' || name[i] == ':') ? '_' : name[i];
+    }
+    buf[i] = '\0';
+    return buf;
+}
+
+void EnumMap_DefinePrefixed(
+    const char *const enum_type_name, const char *const enum_name,
+    const char *const label_key, const int32_t enum_value,
+    const char *const suffix)
+{
+    char *const str_value = Memory_DupStr(suffix);
+    for (char *c = str_value; *c != '\0'; c++) {
+        *c = (char)tolower((unsigned char)*c);
+    }
+    EnumMap_Define(enum_type_name, enum_name, label_key, enum_value, str_value);
+    Memory_Free(str_value);
 }
 
 int32_t EnumMap_Get(
