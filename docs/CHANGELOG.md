@@ -82,10 +82,12 @@
 - Fixed Lara's arms leaving their intended positions when looking around in the crouched stance (OG bug) (#6402)
 - Fixed Lara clipping into or underneath lifts if she tries to step on top of or into one from an exterior floor whose height matches the lift ceiling or floor (OG bug) (#3905 / TRX1014)
 - Fixed Lara's braid not colliding properly with her selected outfit, instead referencing the level's OG outfit (TRX1277, regression from 1.2)
+- Fixed being able to push pushblocks onto floors with triangular geometry (TRX1228, regression from 1.0)
 
 **Saves and settings**
 - Added smoke, sparks, mist and bubbles to saves (Gameplay → General → Save effects)
 - Changed the save crystal behavior to give Lara a crystal when starting a game, if the mode is set to Saving (pickups), in line with the TR3 PS1 version (Gameplay → General → Crystal mode) (TRX1101)
+- Changed the option for Lara's braid to introduce an "auto" mode, which will automatically hide the braid for regular TR1 outfits, and show it for TR2+ outfits (Graphic options → General → Lara's braid) (#6446 / TRX1300)
 - Removed support for saves from TRX 1.0, and TR1X/TR2X era
 
 **Music and sound**
@@ -109,7 +111,6 @@
 - Fixed sprite shadows breaking apart on uneven ground (Graphic Options → Visuals → Shadows shape) (#6388 / TRX1244)
 - Fixed static objects that reach through a doorway taking the water tint and the light of the room next door
 - Fixed the underwater view wobbling less at higher supersampling values (TRX1207)
-- Fixed being able to push pushblocks onto floors with triangular geometry (TRX1228, regression from 1.0)
 - Fixed the debug portal and bounding box lines becoming thinner at higher supersampling values (TRX1251)
 
 **TR1**

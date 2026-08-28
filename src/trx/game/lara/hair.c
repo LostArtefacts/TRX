@@ -977,8 +977,7 @@ void Lara_Hair_Draw(void)
 
 bool Lara_Hair_IsActive(void)
 {
-    return g_Config.visuals.enable_braid && Object_Get(O_LARA)->loaded
-        && Lara_Skin_IsBraidSupported();
+    return Object_Get(O_LARA)->loaded && Lara_Skin_IsBraidSupported();
 }
 
 int32_t Lara_Hair_GetBraidCount(void)

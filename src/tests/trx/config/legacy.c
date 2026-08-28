@@ -226,3 +226,10 @@ TEST(an_option_a_game_still_writes_is_not_a_legacy_key)
     CHECK(!ConfigLegacy_IsKey("bar_look"));
     CHECK(!ConfigLegacy_IsKey(nullptr));
 }
+
+TEST(braid_booleans_migrate_to_mode)
+{
+    g_ConfigStorage.visuals.braid_status = BRAID_STATUS_ON;
+    M_Load("{\"enable_braid\":false}");
+    CHECK_EQ_INT(g_Config.visuals.braid_status, BRAID_STATUS_OFF);
+}

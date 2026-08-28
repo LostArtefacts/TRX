@@ -33,7 +33,7 @@ typedef struct {
 
 typedef struct {
     LARA_SKIN_BRAID_MODE mode;
-    bool enabled;
+    bool auto_enabled;
     struct {
         int32_t mesh_offset;
         XYZ_32 position;

@@ -184,15 +184,16 @@ static RESULT M_LoadBraidHeadSeam(
 static RESULT M_LoadBraid(
     JSON_READ_IO *const io, LARA_SKIN_OUTFIT *const outfit)
 {
+    outfit->braid.count = 0;
+    outfit->braid.auto_enabled = false;
+
     if (!JSON_ReadIO_HasKey(io, "braid")) {
-        outfit->braid.enabled = false;
         return OK;
     }
     MUST(JSON_PUSH(io, "braid"));
 
     const int32_t count = JSON_ARRAY_LEN(io);
     if (count == 0) {
-        outfit->braid.enabled = false;
         return OK;
     }
 
@@ -213,6 +214,8 @@ static RESULT M_LoadBraid(
             outfit->braid.mode = mode;
         }
 
+        MUST(
+            JSON_READ_D(io, "auto_enabled", &outfit->braid.auto_enabled, true));
         MUST(JSON_READ_D(
             io, "mesh_offset", &outfit->braid.setup[i].mesh_offset, 0));
         MUST(JSON_READ_D(
@@ -222,7 +225,6 @@ static RESULT M_LoadBraid(
         MUST(JSON_POP(io));
     }
 
-    outfit->braid.enabled = true;
     MUST(JSON_POP(io));
 
     return OK;

@@ -9,6 +9,7 @@
             "combat_face_offset": 1,
             "braid": [
                 {
+                    "auto_enabled": false,
                     "mode": "BRAID_MODE_TR1_HEAD_ONLY",
                     "mesh_offset": 8,
                     "position": {
@@ -28,6 +29,7 @@
             "combat_face_offset": 1,
             "braid": [
                 {
+                    "auto_enabled": false,
                     "mode": "BRAID_MODE_TR1_FULL",
                     "mesh_offset": 8,
                     "position": {
@@ -54,6 +56,7 @@
             "combat_face_offset": 1,
             "braid": [
                 {
+                    "auto_enabled": false,
                     "mode": "BRAID_MODE_TR1_MAULED",
                     "mesh_offset": 8,
                     "position": {
@@ -77,6 +80,7 @@
             "combat_face_offset": 1,
             "braid": [
                 {
+                    "auto_enabled": false,
                     "mode": "BRAID_MODE_TR1_HEAD_ONLY",
                     "mesh_offset": 8,
                     "position": {
@@ -100,6 +104,7 @@
             "combat_face_offset": 1,
             "braid": [
                 {
+                    "auto_enabled": false,
                     "mode": "BRAID_MODE_TR1_HEAD_ONLY",
                     "mesh_offset": 8,
                     "position": {

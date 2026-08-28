@@ -693,6 +693,11 @@
             "BLOOD_EFFECTS_PINK": "Pinc",
             "BLOOD_EFFECTS_RED": "Dearg",
         },
+        "BRAID_STATUS": {
+            "BRAID_STATUS_AUTO": "Fèin-obrachail",
+            "BRAID_STATUS_OFF": "Dheth",
+            "BRAID_STATUS_ON": "Air",
+        },
         "BREEZE_MODE": {
             "BREEZE_MODE_OFF": "Dheth",
             "BREEZE_MODE_TR2": "TR2",
@@ -1814,6 +1819,10 @@
             "title": "Buaidhean fuil",
             "description": "Smachd air dathan spàirn fola.\n\n- Ciorramh: chan eilear a’ sealltainn spàirn fola sam bith.\n- Pinc: an àbhaist ann an sgaoilidhean PC Gearmailteach de TR3.\n- Dearg: an àbhaist anns a h-uile sgaoileadh reic eile.",
         },
+        "visuals.braid_status": {
+            "title": "Feaman-fuilt Lara",
+            "description": "An doiugh anns a bhitheas feaman-fuilt Lara air an sealltainn.\n\n- Dheth: cha tèid feaman-fuilt Lara a shealltainn idir.\n- Air: thèid feaman-fuilt Lara a shealltainn leis na h-aodach uile a tha a' cur taic riutha.\n- Fèin-obrachail: tha feaman-fuilt Lara dheth leis na h-aodach àbhaisteach TR1 agus air leis na h-aodach eile uile a tha a' cur taic riutha.",
+        },
         "visuals.breeze_mode": {
             "title": "Gaoth",
             "description": "Cuiridh seo buaidh na gaoithe air feaman-fuilt Lara, boinneagan uisge a' thuiteas far Lara, agus an t-uisge/sneachd ann an seòmraichean freagarrach.\n\n- Dheth: cuir à comas buaidh na gaoithe.\n- TR2: bidh a' ghaoth an-còmhnaidh a' sèideadh air aon taobh.\n- TR3/4: bidh taobh na gaoithe ag atharrachadh thar ùine.",
@@ -1825,10 +1834,6 @@
         "visuals.enable_3d_pickups": {
             "title": "Togail 3D",
             "description": "Cuiridh seo modailean 3D an àite spraidean airson nithean togail.",
-        },
-        "visuals.enable_braid": {
-            "title": "Feaman-fuilt Lara",
-            "description": "Cuiridh seo feaman-fuilt Lara an comas.",
         },
         "visuals.enable_droplets": {
             "title": "Boinnean uisge",

@@ -693,6 +693,11 @@
             "BLOOD_EFFECTS_PINK": "Rosa",
             "BLOOD_EFFECTS_RED": "Rosso",
         },
+        "BRAID_STATUS": {
+            "BRAID_STATUS_AUTO": "\\{review}Automatico",
+            "BRAID_STATUS_OFF": "\\{review}Disattivato",
+            "BRAID_STATUS_ON": "\\{review}Attivato",
+        },
         "BREEZE_MODE": {
             "BREEZE_MODE_OFF": "Disattivato",
             "BREEZE_MODE_TR2": "TR2",
@@ -1814,6 +1819,10 @@
             "title": "Effetti sangue",
             "description": "Permette di modificare il colore degli schizzi di sangue o di disattivarli.\n\n- Disattivato: gli schizzi di sangue non vengono mostrati.\n- Rosa: impostazione predefinita nelle versioni tedesche per PC di TR3.\n- Rosso: impostazione predefinita in tutte le altre versioni per la vendita al dettaglio.",
         },
+        "visuals.braid_status": {
+            "title": "Treccia di Lara",
+            "description": "\\{review}Controlla come viene mostrata la treccia di Lara.\n\n- Disattivato: la treccia di Lara non viene mai mostrata.\n- Attivato: la treccia di Lara viene mostrata con tutti gli abiti che la supportano.\n- Automatico: la treccia di Lara è disattivata con gli abiti standard di TR1 e attivata con tutti gli altri abiti che la supportano.",
+        },
         "visuals.breeze_mode": {
             "title": "Effetto brezza",
             "description": "Modifica il modo in cui l'effetto brezza influisce sulla treccia di Lara, sulle gocce d'acqua che cadono da Lara e sulla pioggia/neve nelle stanze appropriate.\n\n- Disattivato: disabilita l'effetto brezza.\n- TR2: l'effetto brezza soffia sempre nella stessa direzione.\n- TR3/4: la direzione dell'effetto brezza cambia nel tempo.",
@@ -1825,10 +1834,6 @@
         "visuals.enable_3d_pickups": {
             "title": "Oggetti 3D",
             "description": "Sostituisce gli oggetti recuperabili 2D con i rispettivi modelli 3D.",
-        },
-        "visuals.enable_braid": {
-            "title": "Treccia di Lara",
-            "description": "Abilita la treccia di Lara.",
         },
         "visuals.enable_droplets": {
             "title": "Gocce d'acqua",

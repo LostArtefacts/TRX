@@ -693,6 +693,11 @@
             "BLOOD_EFFECTS_PINK": "Różowe",
             "BLOOD_EFFECTS_RED": "Czerwone",
         },
+        "BRAID_STATUS": {
+            "BRAID_STATUS_AUTO": "\\{review}Automatycznie",
+            "BRAID_STATUS_OFF": "\\{review}Wyłączone",
+            "BRAID_STATUS_ON": "\\{review}Włączone",
+        },
         "BREEZE_MODE": {
             "BREEZE_MODE_OFF": "\\{review}Wyłączone",
             "BREEZE_MODE_TR2": "\\{review}TR2",
@@ -1814,6 +1819,10 @@
             "title": "Efekty krwi",
             "description": "Zmienia kolor efektów krwi.\n\n- Wyłączone: nie pokazuje krwi.\n- Różowe: domyślny kolor w niemieckiej wersji PC TR3.\n- Czerwone: domyślne we wszystkich innych wersjach.",
         },
+        "visuals.braid_status": {
+            "title": "Warkocz Lary",
+            "description": "\\{review}Określa sposób wyświetlania warkocza Lary.\n\n- Wyłączone: warkocz Lary nigdy nie jest wyświetlany.\n- Włączone: warkocz Lary jest wyświetlany dla wszystkich strojów, które go obsługują.\n- Automatycznie: warkocz Lary jest wyłączony dla standardowych strojów z TR1 i włączony dla wszystkich pozostałych strojów, które go obsługują.",
+        },
         "visuals.breeze_mode": {
             "title": "Wiatr",
             "description": "\\{review}Zmienia sposób, w jaki bryza wpływa na warkocz Lary, krople wody spadające z Lary oraz deszcz/śnieg w odpowiednich pomieszczeniach.\n\n- Wyłączone: wyłącza efekt bryzy.\n- TR2: bryza zawsze wieje w tym samym kierunku.\n- TR3/4: kierunek bryzy zmienia się z upływem czasu.",
@@ -1825,10 +1834,6 @@
         "visuals.enable_3d_pickups": {
             "title": "Znajdźki 3D",
             "description": "Rysuje przedmioty do podniesienia jako trójwymiarowe modele zamiast płaskich grafik.",
-        },
-        "visuals.enable_braid": {
-            "title": "Warkocz Lary",
-            "description": "Włącza warkocz Lary.",
         },
         "visuals.enable_droplets": {
             "title": "\\{review}Krople wody",

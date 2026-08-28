@@ -693,6 +693,11 @@
             "BLOOD_EFFECTS_PINK": "Pink",
             "BLOOD_EFFECTS_RED": "Red",
         },
+        "BRAID_STATUS": {
+            "BRAID_STATUS_AUTO": "Auto",
+            "BRAID_STATUS_OFF": "Off",
+            "BRAID_STATUS_ON": "On",
+        },
         "BREEZE_MODE": {
             "BREEZE_MODE_OFF": "Off",
             "BREEZE_MODE_TR2": "TR2",
@@ -1814,6 +1819,10 @@
             "title": "Blood effects",
             "description": "Controls blood spark colors.\n\n- Disabled: no blood sparks are shown.\n- Pink: the default in German PC releases of TR3.\n- Red: the default in all other retail releases.",
         },
+        "visuals.braid_status": {
+            "title": "Lara's braid",
+            "description": "Controls how Lara's braid is shown.\n\n- Off: Lara's braid is never shown.\n- On: Lara's braid is shown for all outfits that support it.\n- Auto: Lara's braid is off for regular TR1 outfits and on for all others that support it.",
+        },
         "visuals.breeze_mode": {
             "title": "Breeze",
             "description": "Changes the way the breeze affects Lara's braid, water droplets falling off Lara, and rain/snow in appropriate rooms.\n\n- Off: disable the breeze effect.\n- TR2: breeze always blows in the same direction.\n- TR3/4: breeze changes direction over time.",
@@ -1825,10 +1834,6 @@
         "visuals.enable_3d_pickups": {
             "title": "3D pickups",
             "description": "Enables 3D models to be rendered in place of the sprites for pickup items.",
-        },
-        "visuals.enable_braid": {
-            "title": "Lara's braid",
-            "description": "Enables Lara's braid.",
         },
         "visuals.enable_droplets": {
             "title": "Water droplets",

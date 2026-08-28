@@ -693,6 +693,11 @@
             "BLOOD_EFFECTS_PINK": "\\{review}Rose",
             "BLOOD_EFFECTS_RED": "\\{review}Rouge",
         },
+        "BRAID_STATUS": {
+            "BRAID_STATUS_AUTO": "\\{review}Automatique",
+            "BRAID_STATUS_OFF": "\\{review}Désactivé",
+            "BRAID_STATUS_ON": "\\{review}Activé",
+        },
         "BREEZE_MODE": {
             "BREEZE_MODE_OFF": "\\{review}Désactivé",
             "BREEZE_MODE_TR2": "\\{review}TR2",
@@ -1814,6 +1819,10 @@
             "title": "\\{review}Effets de sang",
             "description": "\\{review}Contrôle les couleurs des étincelles de sang.\n\n- Désactivé : aucune étincelle de sang n'est affichée.\n- Rose : la valeur par défaut dans les versions PC allemandes de TR3.\n- Rouge : la valeur par défaut dans toutes les autres versions commerciales.",
         },
+        "visuals.braid_status": {
+            "title": "Tresse de Lara",
+            "description": "\\{review}Contrôle l'affichage de la tresse de Lara.\n\n- Désactivé : la tresse de Lara n'est jamais affichée.\n- Activé : la tresse de Lara est affichée avec toutes les tenues qui la prennent en charge.\n- Automatique : la tresse de Lara est désactivée avec les tenues classiques de TR1 et activée avec toutes les autres tenues qui la prennent en charge.",
+        },
         "visuals.breeze_mode": {
             "title": "Vent",
             "description": "\\{review}Modifie la façon dont la brise affecte la tresse de Lara, les gouttes d'eau tombant de Lara, ainsi que la pluie/neige dans les pièces appropriées.\n\n- Désactivé : désactive l'effet de brise.\n- TR2 : la brise souffle toujours dans la même direction.\n- TR3/4 : la direction de la brise change au fil du temps.",
@@ -1825,10 +1834,6 @@
         "visuals.enable_3d_pickups": {
             "title": "Objets à ramasser 3D",
             "description": "Affiche les objets à ramasser en 3D au lieu de les afficher en sprites.",
-        },
-        "visuals.enable_braid": {
-            "title": "Tresse de Lara",
-            "description": "Active la tresse de Lara.",
         },
         "visuals.enable_droplets": {
             "title": "\\{review}Gouttes d'eau",

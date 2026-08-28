@@ -128,8 +128,8 @@ static bool M_Multisampling_IsAvailable(
 static bool M_EnableBreeze_IsAvailable(
     const CONFIG_OPTION *const option, void *const user_data)
 {
-    return g_Config.visuals.enable_braid || g_Config.visuals.enable_weather
-        || g_Config.visuals.enable_droplets;
+    return g_Config.visuals.braid_status != BRAID_STATUS_OFF
+        || g_Config.visuals.enable_weather || g_Config.visuals.enable_droplets;
 }
 
 static bool M_ResponsiveJumping_IsAvailable(
