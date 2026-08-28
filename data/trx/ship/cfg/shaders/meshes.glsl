@@ -226,9 +226,10 @@ void main(void) {
     vec3 L = lightIn * (overbright || saturate ? 255.0 / 128.0 : 1.0) + lr.add;
     gOut.add = overbright ? max(L - vec3(1.0), vec3(0.0)) * (64.0 / 255.0)
                       : vec3(0.0);
-    if ((gOut.flags & VERT_ADDITIVE) != 0u) {
-        // The OG draws additive polys with specular disabled
-        // (HWR_DrawSortList drawtype 2), so no overbright excess.
+    // The OG draws additive polys with specular disabled (HWR_DrawSortList
+    // drawtype 2). An unlit poly carries a color rather than a light value,
+    // so it has no excess to split off either.
+    if ((gOut.flags & (VERT_ADDITIVE | VERT_NO_LIGHTING)) != 0u) {
         gOut.add = vec3(0.0);
     }
     // Keeps the saturating excess past the gamma curve so texture modulation
@@ -281,7 +282,9 @@ void main(void) {
             lit *= 255.0 / 128.0;
         } else if (uLightingCurve == LIGHTING_CURVE_OVERBRIGHT) {
             vec3 L = lit * (255.0 / 128.0);
-            gOut.add += max(L - vec3(1.0), vec3(0.0)) * (64.0 / 255.0);
+            if ((gOut.flags & VERT_NO_LIGHTING) == 0u) {
+                gOut.add += max(L - vec3(1.0), vec3(0.0)) * (64.0 / 255.0);
+            }
             lit = clamp(L, 0.0, 1.0);
         }
     }
