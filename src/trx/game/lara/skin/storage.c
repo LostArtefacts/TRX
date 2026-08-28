@@ -100,18 +100,22 @@ static RESULT M_ReadGunMaps(JSON_READ_IO *const io)
             return JSON_ReadIO_Fail(io, "gun map %d must be an object", i);
         }
         LARA_SKIN_GUN_MAP map = {};
-
         for (int32_t j = 0; j < NUM_WEAPONS; j++) {
-            LARA_SKIN_MESH_MAP *const mesh_map = &map.mesh_offsets[j];
-            memset(mesh_map, -1, sizeof(LARA_SKIN_MESH_MAP));
+            memset(&map.mesh_offsets[j], -1, sizeof(LARA_SKIN_MESH_MAP));
+        }
 
-            const char *const gun_name =
-                EnumMap_ToString(ENUM_MAP_NAME(LARA_GUN_TYPE), j);
-            if (!JSON_ReadIO_HasKey(io, gun_name)) {
-                continue;
+        JSON_OBJECT *const map_obj = JSON_ReadIO_GetCurrentObject(io);
+        for (JSON_OBJECT_ELEMENT *elem = map_obj->start; elem != nullptr;
+             elem = elem->next) {
+            const char *const name = elem->name->string;
+            const int32_t type = ENUM_MAP_GET(LARA_GUN_TYPE, name, -1);
+            if (type < 0 || type >= NUM_WEAPONS) {
+                return JSON_ReadIO_Fail(
+                    io, "gun map %d names an unknown weapon '%s'", i, name);
             }
-            MUST(JSON_PUSH(io, gun_name));
 
+            LARA_SKIN_MESH_MAP *const mesh_map = &map.mesh_offsets[type];
+            MUST(JSON_PUSH(io, name));
             MUST(JSON_READ_OPT(io, "hand_r", &mesh_map->hand.right));
             MUST(JSON_READ_OPT(io, "hand_l", &mesh_map->hand.left));
             MUST(JSON_READ_OPT(io, "thigh_r", &mesh_map->thigh.right));
