@@ -4,15 +4,18 @@
 #include <trx/core/filesystem.h>
 #include <trx/core/json/util/file.h>
 #include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/value.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/game_flow/common.h>
 #include <trx/game/game_flow/types.h>
 #include <trx/game/game_flow/vars.h>
 #include <trx/game/inventory_ring/types.h>
 #include <trx/game/lara/skin/storage.h>
+#include <trx/game/level/settings.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/output/sky.h>
 #include <trx/game/shell.h>
@@ -41,6 +44,13 @@ typedef struct {
     M_SEQUENCE_EVENT_HANDLER_FUNC handler_func;
     void *handler_func_arg;
 } M_SEQUENCE_EVENT_HANDLER;
+
+typedef struct {
+    const char *key;
+    LEVEL_SETTING setting;
+    TRX_VALUE_TYPE json_type;
+    const void *json_param;
+} M_SETTING_KEY;
 
 typedef RESULT (*M_LOAD_ARRAY_FUNC)(
     const M_CONTEXT *ctx, void *target_elem, size_t target_elem_idx,
@@ -92,6 +102,23 @@ static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     { (GF_SEQUENCE_EVENT_TYPE)-1, nullptr, nullptr },
     // clang-format on
 };
+
+// clang-format off
+static const M_SETTING_KEY m_SettingKeys[] = {
+#define X_SETTING(name_, field_, type_, config_)                               \
+    { .key = #field_,                                                          \
+      .setting = LEVEL_SETTING_##name_,                                        \
+      .json_type = Value_TypeOf(((GF_LEVEL_SETTINGS *)nullptr)->field_.value) },
+#define X_SETTING_ENUM(name_, field_, enum_, fallback_)                        \
+    { .key = #field_,                                                          \
+      .setting = LEVEL_SETTING_##name_,                                        \
+      .json_type = TVT_ENUM,                                                   \
+      .json_param = ENUM_MAP_NAME(enum_) },
+#include <trx/game/level/settings.def>
+#undef X_SETTING
+#undef X_SETTING_ENUM
+};
+// clang-format on
 
 static RESULT M_ReadObjectID(
     const M_CONTEXT *const ctx, OBJECT_ID *const object_id_out)
@@ -208,49 +235,25 @@ static RESULT M_LoadSettings(
 {
     JSON_READ_IO *const io = ctx->io;
 
-    if (JSON_ReadIO_HasKey(io, "fog_start")) {
-        MUST(JSON_READ(io, "fog_start", &settings->fog_start.value));
-        settings->fog_start.is_present = true;
-    }
-
-    if (JSON_ReadIO_HasKey(io, "fog_end")) {
-        MUST(JSON_READ(io, "fog_end", &settings->fog_end.value));
-        settings->fog_end.is_present = true;
-    }
-
-    if (JSON_ReadIO_HasKey(io, "fog_transparency")) {
-        MUST(JSON_READ(
-            io, "fog_transparency", &settings->fog_transparency.value));
-        settings->fog_transparency.is_present = true;
-    }
-
-    if (JSON_ReadIO_HasKey(io, "fog_color")) {
-        MUST(JSON_READ(io, "fog_color", &settings->fog_color.value));
-        settings->fog_color.is_present = true;
-    }
-
-    if (JSON_ReadIO_HasKey(io, "fog_bulbs")) {
-        MUST(JSON_READ(io, "fog_bulbs", &settings->fog_bulbs.value));
-        settings->fog_bulbs.is_present = true;
-    }
-
-    if (JSON_ReadIO_HasKey(io, "water_color")) {
-        MUST(JSON_READ(io, "water_color", &settings->water_color.value));
-        settings->water_color.is_present = true;
-    }
-
-    if (JSON_ReadIO_HasKey(io, "death_tile")) {
-        MUST(JSON_PUSH(io, "death_tile"));
-        const char *tmp_s = nullptr;
-        MUST(JSON_READ_CURRENT(io, &tmp_s));
-        const int32_t value =
-            EnumMap_Get(ENUM_MAP_NAME(GF_DEATH_TILE), tmp_s, -1);
-        if (value < 0) {
-            JSON_ReadIO_SetError(io, "Invalid death_tile value '%s'", tmp_s);
+    for (size_t i = 0; i < ARRAY_SIZE(m_SettingKeys); i++) {
+        const M_SETTING_KEY *const key = &m_SettingKeys[i];
+        if (!JSON_ReadIO_HasKey(io, key->key)) {
+            continue;
         }
-        settings->death_tile.is_present = true;
-        settings->death_tile.value = value;
-        MUST(JSON_POP(io));
+        TRX_VALUE value;
+        RESULT result = JSONValue_Read(
+            JSON_ReadIO_GetCurrentObject(io), key->key, key->json_type,
+            key->json_param, &value);
+        if (IS_OK(result) && key->json_type == TVT_ENUM) {
+            value.type = TVT_S32;
+        }
+        if (IS_OK(result)) {
+            result = Level_SetDeclaredSetting(settings, key->setting, &value);
+        }
+        if (!IS_OK(result)) {
+            JSON_ReadIO_SetError(io, "Invalid %s value", key->key);
+            return result;
+        }
     }
 
     if (JSON_ReadIO_HasKey(io, "sfx_path")) {
@@ -317,10 +320,11 @@ static RESULT M_LoadLevelItemDrops(
     return OK;
 }
 
-static void M_CopyRootSettingsIntoLevel(
+// Copies only the root sound path into the level settings. Other root settings
+// remain fallback values.
+static void M_InheritRootSfxPath(
     GF_LEVEL_SETTINGS *const dst, const GF_LEVEL_SETTINGS *const src)
 {
-    *dst = *src;
     dst->sfx_path =
         src->sfx_path != nullptr ? Memory_DupStr(src->sfx_path) : nullptr;
 }
@@ -914,7 +918,7 @@ static RESULT M_LoadLevel(
     MUST(JSON_READ_D(
         io, "unobtainable_secrets", &level->unobtainable.secrets, 0));
 
-    M_CopyRootSettingsIntoLevel(&level->settings, &ctx->gf->settings);
+    M_InheritRootSfxPath(&level->settings, &ctx->gf->settings);
 
     MUST(M_LoadSettings(ctx, &level->settings));
     MUST(M_LoadLevelItemDrops(ctx, level));
