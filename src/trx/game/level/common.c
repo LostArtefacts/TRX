@@ -133,7 +133,7 @@ RESULT Level_Initialise(
     LOT_InitialiseArray();
     FX_Reset();
     FX_Weather_SetWeather(level->weather_type);
-    Level_ResetFogColorOverride();
+    Level_ResetSettingOverrides();
     Sparks_Reset();
 
     Option_Reset();
