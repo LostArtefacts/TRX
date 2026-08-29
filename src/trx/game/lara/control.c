@@ -537,7 +537,7 @@ static void M_UpdateEnvironment(void)
             lara_info->water_status = LWS_SURFACE;
             item->pos.y += 1 - water_height_diff;
 
-            LARA_ANIMATION anim_idx;
+            LARA_ANIMATION_SLOT anim_idx;
             switch (LS_U(item->current_anim_state)) {
             case LS_WALK_BACK:
                 item->goal_anim_state = LS(LS_SURF_BACK);

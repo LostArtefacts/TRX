@@ -16,7 +16,7 @@
 #define M_LF_SWING_NEUTRAL 32
 #define M_LF_KICK_PUSH 15
 
-static const ANIM *M_GetLaraAnim(const LARA_TRX_ANIMATION anim)
+static const ANIM *M_GetLaraAnim(const LARA_ANIMATION_ID anim)
 {
     return Anim_GetAnim(Object_Get(O_LARA)->anim_idx + LA(anim));
 }

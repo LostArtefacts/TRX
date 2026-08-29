@@ -1,28 +1,40 @@
 #pragma once
 
-typedef enum {
-    LS_INVALID = -1,
-} LARA_STATE;
+#include <trx/game/catalog/manager.h>
 
-typedef enum {
-    LS_TRX_INVALID = -1,
+// Identify a Lara state by its number in a game's files.
+typedef int32_t LARA_STATE_SLOT;
+
+enum {
+    LS_INVALID = -1,
+};
+
+// Identify the same Lara state across all four games.
+typedef CATALOG_ID LARA_STATE_ID;
+
+enum {
 #define X_CATALOG_ID(enum_value) enum_value,
 #include <trx/game/catalog/lara_states.def>
 #undef X_CATALOG_ID
     LS_NUMBER_OF,
-} LARA_TRX_STATE;
+};
 
-typedef enum {
+// Identify a Lara animation by its number in a game's files.
+typedef int32_t LARA_ANIMATION_SLOT;
+
+enum {
     LA_INVALID = -1,
-} LARA_ANIMATION;
+};
 
-typedef enum {
-    LA_TRX_INVALID = -1,
+// Identify the same Lara animation across all four games.
+typedef CATALOG_ID LARA_ANIMATION_ID;
+
+enum {
 #define X_CATALOG_ID(enum_value) enum_value,
 #include <trx/game/catalog/lara_anims.def>
 #undef X_CATALOG_ID
     LA_NUMBER_OF,
-} LARA_TRX_ANIMATION;
+};
 
 // clang-format off
 typedef enum {

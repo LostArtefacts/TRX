@@ -31,7 +31,7 @@ static const char *M_CheckSwitchMode(const TRX_VALUE *const in)
 static void M_TurnSwitchOn(ITEM *const switch_item, ITEM *const lara_item)
 {
     const M_PRIV *const p = switch_item->priv;
-    LARA_TRX_ANIMATION anim;
+    LARA_ANIMATION_ID anim;
     switch (p->switch_mode) {
     case SWITCH_MODE_NORMAL:
         anim = LA_WALL_SWITCH_UP;
@@ -58,7 +58,7 @@ static void M_TurnSwitchOn(ITEM *const switch_item, ITEM *const lara_item)
 static void M_TurnSwitchOff(ITEM *const switch_item, ITEM *const lara_item)
 {
     const M_PRIV *const p = switch_item->priv;
-    LARA_TRX_ANIMATION anim;
+    LARA_ANIMATION_ID anim;
     switch (p->switch_mode) {
     case SWITCH_MODE_NORMAL:
         anim = LA_WALL_SWITCH_DOWN;

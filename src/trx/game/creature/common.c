@@ -49,7 +49,7 @@ typedef struct {
     bool is_stopper;
 } M_FEELER;
 
-static const LARA_TRX_STATE m_CrouchShiftStates[] = {
+static const LARA_STATE_ID m_CrouchShiftStates[] = {
     // clang-format off
     LS_CROUCH_IDLE,
     LS_CROUCH_ROLL,
@@ -59,7 +59,7 @@ static const LARA_TRX_STATE m_CrouchShiftStates[] = {
     LS_CRAWL_FORWARD,
     LS_CRAWL_TURN_LEFT,
     LS_CRAWL_TURN_RIGHT,
-    LS_TRX_INVALID, // sentinel
+    NO_CATALOG_ID,
     // clang-format on
 };
 

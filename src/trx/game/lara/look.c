@@ -6,14 +6,14 @@
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 
-static const LARA_TRX_STATE m_StopStates[] = {
+static const LARA_STATE_ID m_StopStates[] = {
     LS_STOP,
     LS_SURF_TREAD,
     LS_POSE,
-    LS_TRX_INVALID,
+    NO_CATALOG_ID,
 };
 
-static const LARA_TRX_STATE m_BlockingStates[] = {
+static const LARA_STATE_ID m_BlockingStates[] = {
     // clang-format off
     LS_JUMP_RIGHT,
     LS_JUMP_LEFT,
@@ -29,7 +29,7 @@ static const LARA_TRX_STATE m_BlockingStates[] = {
     LS_USE_KEY,
     LS_USE_PUZZLE,
     LS_NEUTRAL_ROLL,
-    LS_TRX_INVALID,
+    NO_CATALOG_ID,
     // clang-format on
 };
 

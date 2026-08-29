@@ -39,8 +39,8 @@ bool Lara_Interact_HasActiveType(const LARA_INTERACT_MODE mode)
 bool Lara_Interact_CanBegin(const LARA_INTERACT_MODE mode)
 {
     const ITEM *const lara_item = Lara_GetItem();
-    const LARA_TRX_ANIMATION anim = LA_U(Item_GetRelativeAnim(lara_item));
-    const LARA_TRX_STATE state = LS_U(lara_item->current_anim_state);
+    const LARA_ANIMATION_ID anim = LA_U(Item_GetRelativeAnim(lara_item));
+    const LARA_STATE_ID state = LS_U(lara_item->current_anim_state);
     if (g_Config.gameplay.enable_snap_interactions) {
         if (anim == LA_SPRINT_SLIDE_STAND_RIGHT
             || anim == LA_SPRINT_SLIDE_STAND_LEFT) {

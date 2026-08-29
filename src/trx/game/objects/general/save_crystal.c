@@ -61,12 +61,12 @@ static const OBJECT_BOUNDS m_UW_Bounds = {
     },
 };
 
-static const LARA_TRX_STATE m_StopStates[] = {
+static const LARA_STATE_ID m_StopStates[] = {
     // clang-format off
     LS_STOP,
     LS_TREAD,
     LS_SURF_TREAD,
-    LS_TRX_INVALID, // sentinel
+    NO_CATALOG_ID,
     // clang-format on
 };
 

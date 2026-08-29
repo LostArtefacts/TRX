@@ -6,14 +6,14 @@
 
 typedef void (*M_STATE_ROUTINE)(ITEM *item, COLL_INFO *coll);
 
-static const LARA_TRX_ANIMATION m_TestResponsiveAnims[] = {
+static const LARA_ANIMATION_ID m_TestResponsiveAnims[] = {
     // clang-format off
     LA_RUN,
     LA_UNDERWATER_SWIM_FORWARD,
     LA_SLIDE_FORWARD,
     LA_STAND_TO_JUMP,
     LA_REACH_TO_HANG,
-    LA_TRX_INVALID,
+    NO_CATALOG_ID,
     // clang-format on
 };
 
@@ -23,7 +23,7 @@ CATALOG_TABLE_DEFINE(
 static void (*m_ExtraRoutines[LS_EXTRA_NUMBER_OF])(
     ITEM *item, COLL_INFO *coll) = {};
 
-static bool M_HasResponsiveState(const LARA_TRX_ANIMATION anim_idx)
+static bool M_HasResponsiveState(const LARA_ANIMATION_ID anim_idx)
 {
     const OBJECT *const obj = Object_Get(O_LARA);
     if (!obj->loaded) {
@@ -42,7 +42,7 @@ static bool M_HasResponsiveState(const LARA_TRX_ANIMATION anim_idx)
 }
 
 void Lara_State_Register(
-    const LARA_TRX_STATE state,
+    const LARA_STATE_ID state,
     void (*const handle_func)(ITEM *item, COLL_INFO *coll))
 {
     *(M_STATE_ROUTINE *)CatalogTable_Get(&m_StateRoutines, state) = handle_func;
@@ -58,14 +58,14 @@ void Lara_State_RegisterExtra(
 
 void Lara_State_Initialise(void)
 {
-    for (int32_t i = 0; m_TestResponsiveAnims[i] != LA_TRX_INVALID; i++) {
-        const LARA_TRX_ANIMATION anim = m_TestResponsiveAnims[i];
+    for (int32_t i = 0; m_TestResponsiveAnims[i] != NO_CATALOG_ID; i++) {
+        const LARA_ANIMATION_ID anim = m_TestResponsiveAnims[i];
         *(bool *)CatalogTable_Get(&m_ResponsiveAnims, anim) =
             M_HasResponsiveState(anim);
     }
 }
 
-bool Lara_State_IsResponsive(const LARA_TRX_ANIMATION anim_idx)
+bool Lara_State_IsResponsive(const LARA_ANIMATION_ID anim_idx)
 {
     const bool *const responsive =
         CatalogTable_Get(&m_ResponsiveAnims, anim_idx);
@@ -82,7 +82,7 @@ void Lara_State_Update(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    const LARA_TRX_STATE state = LS_U(item->current_anim_state);
+    const LARA_STATE_ID state = LS_U(item->current_anim_state);
     const M_STATE_ROUTINE *const routine =
         CatalogTable_Get(&m_StateRoutines, state);
     if (routine != nullptr && *routine != nullptr) {

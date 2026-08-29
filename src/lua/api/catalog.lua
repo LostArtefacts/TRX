@@ -61,7 +61,7 @@ api.enum("catalog.music", {
 })
 
 api.enum("catalog.lara_states", {
-  backing = "LARA_TRX_STATE",
+  backing = "LARA_STATE_ID",
   context = Context.LARA_STATES,
   bulk = true,
   description = "Every state Lara can be in.",
@@ -71,7 +71,7 @@ api.enum("catalog.lara_states", {
 })
 
 api.enum("catalog.lara_anims", {
-  backing = "LARA_TRX_ANIMATION",
+  backing = "LARA_ANIMATION_ID",
   context = Context.LARA_ANIMS,
   bulk = true,
   description = "Every animation Lara has.",

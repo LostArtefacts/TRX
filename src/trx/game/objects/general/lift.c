@@ -49,7 +49,7 @@ typedef struct {
     BOUNDS_16 wall_bounds;
 } M_PRIV;
 
-static const LARA_TRX_STATE m_ClimbingStates[] = {
+static const LARA_STATE_ID m_ClimbingStates[] = {
     // clang-format off
     LS_CLIMB_STANCE,
     LS_CLIMBING,
@@ -64,7 +64,7 @@ static const LARA_TRX_STATE m_ClimbingStates[] = {
     LS_SHIMMY_OUTER_RIGHT,
     LS_SHIMMY_INNER_LEFT,
     LS_SHIMMY_INNER_RIGHT,
-    LS_TRX_INVALID, // sentinel
+    NO_CATALOG_ID,
     // clang-format on
 };
 
