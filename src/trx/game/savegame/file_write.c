@@ -705,9 +705,10 @@ void SG_File_DumpMisc(JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "rng_control_seed", Random_GetControlSeed());
     JSONW_WRITE(io, "rng_draw_seed", Random_GetDrawSeed());
     JSONW_WRITE(io, "weather_type", FX_Weather_GetWeather());
-    const RGB_888 *const fog_color = Level_GetFogColorOverride();
+    const TRX_VALUE *const fog_color =
+        Level_GetSettingOverride(LEVEL_SETTING_FOG_COLOR);
     if (fog_color != nullptr) {
-        JSONW_WRITE(io, "fog_color", *fog_color);
+        JSONW_WRITE(io, "fog_color", fog_color->as_rgb);
     }
     JSONW_WRITE(io, "cutscenes_played", CutSeq_GetPlayedMask());
     JSONW_WRITE(io, "waypoint", Waypoint_Get());

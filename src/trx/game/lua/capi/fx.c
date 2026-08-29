@@ -192,12 +192,13 @@ static int M_L_GetFogBulbRoom(lua_State *const L)
 // trxc.fx.get_fog_color() -> color or nil
 static int M_L_GetFogColor(lua_State *const L)
 {
-    const RGB_888 *const color = Level_GetFogColorOverride();
+    const TRX_VALUE *const color =
+        Level_GetSettingOverride(LEVEL_SETTING_FOG_COLOR);
     if (color == nullptr) {
         lua_pushnil(L);
         return 1;
     }
-    LUA_PushValue(L, &(TRX_VALUE) { .type = TVT_RGB_888, .as_rgb = *color });
+    LUA_PushValue(L, color);
     return 1;
 }
 
@@ -205,11 +206,11 @@ static int M_L_GetFogColor(lua_State *const L)
 static int M_L_SetFogColor(lua_State *const L)
 {
     if (lua_isnoneornil(L, 1)) {
-        Level_ResetFogColorOverride();
+        Level_ResetSettingOverride(LEVEL_SETTING_FOG_COLOR);
         return 0;
     }
     const TRX_VALUE value = LUA_CheckValue(L, 1, TVT_RGB_888);
-    Level_SetFogColorOverride(&value.as_rgb);
+    SHOULD(Level_SetSettingOverride(LEVEL_SETTING_FOG_COLOR, &value));
     return 0;
 }
 

@@ -1347,11 +1347,13 @@ RESULT SG_File_LoadMisc(JSON_READ_IO *const io)
     }
 
     {
-        Level_ResetFogColorOverride();
+        Level_ResetSettingOverride(LEVEL_SETTING_FOG_COLOR);
         if (JSON_ReadIO_HasKey(io, "fog_color")) {
             RGB_888 fog_color;
             MUST(JSON_READ(io, "fog_color", &fog_color));
-            Level_SetFogColorOverride(&fog_color);
+            SHOULD(Level_SetSettingOverride(
+                LEVEL_SETTING_FOG_COLOR,
+                &(TRX_VALUE) { .type = TVT_RGB_888, .as_rgb = fog_color }));
         }
     }
 
