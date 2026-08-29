@@ -1,0 +1,16 @@
+// Declares each level setting in resolver order. Game flow storage, game flow
+// reading, and level/settings.c resolution all use these rows. Player-facing
+// behavior is documented in docs/gameflow.schema.json.
+//
+// Names the game flow key, the game flow storage type, and the matching config
+// option. Use X_SETTING_ENUM for settings without a config source, with the
+// final argument as the fallback.
+
+X_SETTING(FOG_START,        fog_start,        float,   visuals.fog_start)
+X_SETTING(FOG_END,          fog_end,          float,   visuals.fog_end)
+X_SETTING(FOG_TRANSPARENCY, fog_transparency, bool,    visuals.fog_transparency)
+X_SETTING(FOG_COLOR,        fog_color,        RGB_888, visuals.fog_color)
+X_SETTING(FOG_BULBS,        fog_bulbs,        bool,    visuals.enable_fog_bulbs)
+X_SETTING(WATER_COLOR,      water_color,      RGB_888, visuals.water_color)
+
+X_SETTING_ENUM(DEATH_TILE,  death_tile,       GF_DEATH_TILE, GF_DEATH_TILE_LAVA)

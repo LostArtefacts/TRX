@@ -8,16 +8,21 @@
 // Lists settings a level can declare, a player can choose, and a script can
 // override. Each setting resolves from script override, level, game flow root,
 // config, then built-in default.
+// clang-format off
 typedef enum {
-    LEVEL_SETTING_FOG_START,
-    LEVEL_SETTING_FOG_END,
-    LEVEL_SETTING_FOG_TRANSPARENCY,
-    LEVEL_SETTING_FOG_COLOR,
-    LEVEL_SETTING_FOG_BULBS,
-    LEVEL_SETTING_WATER_COLOR,
-    LEVEL_SETTING_DEATH_TILE,
+#define X_SETTING(name_, field_, type_, config_) LEVEL_SETTING_##name_,
+#define X_SETTING_ENUM(name_, field_, enum_, fallback_) LEVEL_SETTING_##name_,
+#include <trx/game/level/settings.def>
+#undef X_SETTING
+#undef X_SETTING_ENUM
     LEVEL_SETTING_NUMBER_OF,
 } LEVEL_SETTING;
+// clang-format on
+
+// Writes a declared value into `settings`. Values are coerced to the setting
+// type and refused when they do not fit.
+RESULT Level_SetDeclaredSetting(
+    GF_LEVEL_SETTINGS *settings, LEVEL_SETTING setting, const TRX_VALUE *value);
 
 // Returns the effective value resolved through the setting stack. The returned
 // type is the setting type, whichever source supplies the value.

@@ -87,33 +87,25 @@ typedef struct {
     MUSIC_SLOT *ids;
 } GF_AMBIENT_DATA;
 
+// Stores declared level settings. Each field generated from level/settings.def
+// has a presence flag and the declared value.
+
+// clang-format off
 typedef struct {
-    struct {
-        bool is_present;
-        float value;
-    } fog_start, fog_end;
-    struct {
-        bool is_present;
-        bool value;
-    } fog_transparency;
-    struct {
-        bool is_present;
-        RGB_888 value;
-    } fog_color;
-    struct {
-        bool is_present;
-        bool value;
-    } fog_bulbs;
-    struct {
-        bool is_present;
-        RGB_888 value;
-    } water_color;
+#define M_SETTING(field_, type_)                                               \
+    struct {                                                                   \
+        bool is_present;                                                       \
+        type_ value;                                                           \
+    } field_;
+#define X_SETTING(name_, field_, type_, config_) M_SETTING(field_, type_)
+#define X_SETTING_ENUM(name_, field_, enum_, fallback_) M_SETTING(field_, int32_t)
+#include <trx/game/level/settings.def>
+#undef X_SETTING
+#undef X_SETTING_ENUM
+#undef M_SETTING
     char *sfx_path;
-    struct {
-        bool is_present;
-        int32_t value;
-    } death_tile;
 } GF_LEVEL_SETTINGS;
+// clang-format on
 
 typedef struct {
     int32_t enemy_num;
