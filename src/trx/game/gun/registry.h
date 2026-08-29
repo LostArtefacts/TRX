@@ -30,8 +30,8 @@ const WEAPON_INFO *Gun_Registry_GetByIndex(int32_t idx);
 // types it knows.
 int32_t Gun_Registry_GetCount(void);
 
-// Whether the engine knows the gun type. A legacy save can hold one it no
-// longer knows.
+// Return whether the catalogue contains the gun type because legacy saves
+// may contain unsupported types.
 bool Gun_Registry_IsValidType(LARA_GUN_TYPE gun_type);
 
 // A field that stands for nothing at zero takes that value before the
