@@ -101,7 +101,7 @@ static void M_FireFinalShot(
     *head = info.angle;
     *torso_y = info.angle;
     Creature_Shoot(item, &info, &m_SwatGun, info.angle, p->final_shot_damage);
-    const SAMPLE_TRX_ID fire_sfx = item->object_id == O_SWAT_3
+    const SAMPLE_ID fire_sfx = item->object_id == O_SWAT_3
         ? SFX_AMERICAN_SWAT_FIRE
         : SFX_LONDON_SWAT_FIRE;
     Sound_Effect(fire_sfx, &item->pos, SPM_NORMAL);
@@ -168,7 +168,7 @@ static void M_Control(const int16_t item_num)
              || Creature_CanSeeEnemy(item, &lara_info))
             && ABS(lara_item->pos.y - item->pos.y) < M_ALERT_HEIGHT)) {
         if (!creature->alerted) {
-            const SAMPLE_TRX_ID alert_sfx = item->object_id == O_SWAT_3
+            const SAMPLE_ID alert_sfx = item->object_id == O_SWAT_3
                 ? SFX_AMERICAN_HOY
                 : SFX_ENGLISH_HOY;
             Sound_Effect(alert_sfx, &item->pos, SPM_NORMAL);

@@ -796,7 +796,7 @@ const LARA_SKIN_EQUIPMENT *Lara_Skin_GetEquipment(const LARA_MESH mesh)
     return &m_Equipment[mesh];
 }
 
-SAMPLE_ID Lara_Skin_GetAnimSFX(const SAMPLE_ID sample_id)
+SAMPLE_SLOT Lara_Skin_GetAnimSFX(const SAMPLE_SLOT sample_id)
 {
     if (g_TRVersion == 2 && !g_Config.audio.enable_ps1_sfx) {
         return sample_id;
@@ -807,12 +807,12 @@ SAMPLE_ID Lara_Skin_GetAnimSFX(const SAMPLE_ID sample_id)
         return sample_id;
     }
 
-    const SAMPLE_TRX_ID trx_id = Sound_FromGameID(sample_id);
+    const SAMPLE_ID trx_id = Sound_SlotToID(sample_id);
     switch (trx_id) {
     case SFX_LARA_FOOTSTEP:
-        return Sound_ToGameID(SFX_LARA_BAREFOOT);
+        return Sound_IDToSlot(SFX_LARA_BAREFOOT);
     case SFX_LARA_LAND:
-        return Sound_ToGameID(SFX_LARA_BAREFOOT_LAND);
+        return Sound_IDToSlot(SFX_LARA_BAREFOOT_LAND);
     default:
         return sample_id;
     }

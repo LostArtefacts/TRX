@@ -45,7 +45,7 @@ api.enum("catalog.objects", {
 })
 
 api.enum("catalog.samples", {
-  backing = "SAMPLE_TRX_ID",
+  backing = "SAMPLE_ID",
   context = Context.SAMPLES,
   bulk = true,
   description = "Every sound sample TRX has a name for.",

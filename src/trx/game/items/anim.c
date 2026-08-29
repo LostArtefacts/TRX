@@ -383,7 +383,7 @@ void Item_PlayAnimSFX(
         play_mode = SPM_UNDERWATER;
     }
 
-    const SAMPLE_ID sfx_num =
+    const SAMPLE_SLOT sfx_num =
         is_lara ? Lara_Skin_GetAnimSFX(data->effect_num) : data->effect_num;
-    Sound_Effect_Direct(sfx_num, &item->pos, play_mode);
+    Sound_EffectBySlot(sfx_num, &item->pos, play_mode);
 }

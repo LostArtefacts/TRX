@@ -49,10 +49,10 @@ TYPE_DEFINE(SOUND_STREAM_VIEW, m_StreamFields)
 static void *M_ResolveSample(const LUA_STRUCT_REF *const ref)
 {
     const int32_t id = ref->handle.id;
-    if (id < 0 || !Sound_IsAvailable_Direct((SAMPLE_ID)id)) {
+    if (id < 0 || !Sound_IsAvailableBySlot((SAMPLE_SLOT)id)) {
         return nullptr;
     }
-    const SAMPLE_INFO *const sample = Sound_GetSample((SAMPLE_ID)id);
+    const SAMPLE_INFO *const sample = Sound_GetSample((SAMPLE_SLOT)id);
     if (sample == nullptr) {
         return nullptr;
     }
@@ -68,7 +68,7 @@ static void *M_ResolveSample(const LUA_STRUCT_REF *const ref)
 
 static void *M_ResolveStream(const LUA_STRUCT_REF *const ref)
 {
-    SAMPLE_ID sample_id;
+    SAMPLE_SLOT sample_id;
     if (!Sound_ResolveActiveSlot(ref->handle, &sample_id)) {
         return nullptr;
     }
@@ -113,8 +113,8 @@ static int M_L_SoundSamplePlay(lua_State *const L)
     const XYZ_32 *const pos_ptr = M_ReadPlayPos(L, &pos);
     M_PushPlayedStream(
         L,
-        Sound_Effect_Direct(
-            (SAMPLE_ID)ref->handle.id, pos_ptr, SPM_ALWAYS | SPM_STATIC_POS));
+        Sound_EffectBySlot(
+            (SAMPLE_SLOT)ref->handle.id, pos_ptr, SPM_ALWAYS | SPM_STATIC_POS));
     return 1;
 }
 
@@ -124,7 +124,7 @@ static int M_L_SoundSampleStop(lua_State *const L)
     LUA_STRUCT_REF *const ref =
         LUA_Struct_CheckRef(L, 1, &TYPE_SOUND_SAMPLE_VIEW);
     LUA_Struct_Deref(L, ref);
-    Sound_StopEffect_Direct((SAMPLE_ID)ref->handle.id);
+    Sound_StopEffectBySlot((SAMPLE_SLOT)ref->handle.id);
     return 0;
 }
 
@@ -175,7 +175,7 @@ static const luaL_Reg m_StreamMethods[] = {
 static int M_L_SoundSampleGet(lua_State *const L)
 {
     const int32_t id = (int32_t)luaL_checkinteger(L, 1);
-    if (id < 0 || !Sound_IsAvailable_Direct((SAMPLE_ID)id)) {
+    if (id < 0 || !Sound_IsAvailableBySlot((SAMPLE_SLOT)id)) {
         lua_pushnil(L);
         return 1;
     }
@@ -187,7 +187,7 @@ static int M_L_SoundSampleGet(lua_State *const L)
 // trxc.sound.sample_limit()
 static int M_L_SoundSampleLimit(lua_State *const L)
 {
-    lua_pushinteger(L, Sound_GetMaxDirectSampleID() + 1);
+    lua_pushinteger(L, Sound_GetMaxSlot() + 1);
     return 1;
 }
 
@@ -195,9 +195,9 @@ static int M_L_SoundSampleLimit(lua_State *const L)
 static int M_L_SoundSampleAvailableCount(lua_State *const L)
 {
     int32_t count = 0;
-    const int32_t limit = Sound_GetMaxDirectSampleID() + 1;
+    const int32_t limit = Sound_GetMaxSlot() + 1;
     for (int32_t id = 0; id < limit; id++) {
-        if (Sound_IsAvailable_Direct((SAMPLE_ID)id)) {
+        if (Sound_IsAvailableBySlot((SAMPLE_SLOT)id)) {
             count++;
         }
     }

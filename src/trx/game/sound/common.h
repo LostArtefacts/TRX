@@ -35,20 +35,19 @@ void Sound_ResetSources(void);
 // Returns the starting sample_data_id for the reserved block of size how_many.
 int32_t Sound_ReserveSampleData(int32_t index, int32_t how_many);
 
-// Look up an existing SAMPLE_INFO by SAMPLE_ID. Returns nullptr if not found.
-SAMPLE_INFO *Sound_GetSample(SAMPLE_ID sample_id);
+// Return the SAMPLE_INFO for the given SAMPLE_SLOT, or nullptr if none exists.
+SAMPLE_INFO *Sound_GetSample(SAMPLE_SLOT slot);
 
-// Get or create a SAMPLE_INFO for the given SAMPLE_ID.
-// If no sample is found, a new sample slot is created.
-SAMPLE_INFO *Sound_GetOrCreateSample(SAMPLE_ID sample_id);
+// Return or create the SAMPLE_INFO for the given SAMPLE_SLOT.
+SAMPLE_INFO *Sound_GetOrCreateSample(SAMPLE_SLOT slot);
 
-// Returns true if a SAMPLE_INFO exists for the given SAMPLE_ID.
-bool Sound_IsAvailable_Direct(SAMPLE_ID sample_id);
-bool Sound_IsAvailable(SAMPLE_TRX_ID sample_id);
+// Return true if a SAMPLE_INFO exists for the given SAMPLE_SLOT.
+bool Sound_IsAvailableBySlot(SAMPLE_SLOT slot);
+bool Sound_IsAvailable(SAMPLE_ID id);
 
-// Get the maximum direct SAMPLE_ID loaded for playback.
+// Return the highest direct SAMPLE_SLOT loaded for playback.
 // Returns SFX_INVALID if no samples are available.
-SAMPLE_ID Sound_GetMaxDirectSampleID(void);
+SAMPLE_SLOT Sound_GetMaxSlot(void);
 
 // Reports each sample that the level declares without audio. Such samples
 // play silently, and the play call cannot report them because it runs every
@@ -58,12 +57,11 @@ RESULT Sound_CheckSamples(void);
 // Play a sample with the given number. pos is an optional world position to
 // play the sound at, and can be nullptr. Returns the active-sound slot the
 // sample plays in, or -1 when it does not play.
-int32_t Sound_Effect_Direct(
-    SAMPLE_ID sfx_num, const XYZ_32 *pos, uint32_t flags);
-int32_t Sound_Effect(SAMPLE_TRX_ID sfx_num, const XYZ_32 *pos, uint32_t flags);
+int32_t Sound_EffectBySlot(SAMPLE_SLOT slot, const XYZ_32 *pos, uint32_t flags);
+int32_t Sound_Effect(SAMPLE_ID id, const XYZ_32 *pos, uint32_t flags);
 
-void Sound_StopEffect_Direct(SAMPLE_ID sfx_num);
-void Sound_StopEffect(SAMPLE_TRX_ID sfx_num);
+void Sound_StopEffectBySlot(SAMPLE_SLOT slot);
+void Sound_StopEffect(SAMPLE_ID id);
 
 void Sound_ResetAmbient(void);
 void Sound_UpdateEffects(void);
@@ -77,13 +75,13 @@ void Sound_StopAll(void);
 int32_t Sound_GetActiveSlotCount(void);
 
 // Fills the sample id the slot is playing. Returns false when the slot is idle.
-bool Sound_GetActiveSlot(int32_t slot, SAMPLE_ID *out_sample_id);
+bool Sound_GetActiveSlot(int32_t slot, SAMPLE_SLOT *out_sample_id);
 
 // A handle to the voice currently in the slot, and the sample a handle still
 // names or false. Each play hands the slot to a new voice; the generation is
 // what keeps a handle from addressing the voice that later took its slot.
 TRX_HANDLE Sound_GetActiveSlotHandle(int32_t slot);
-bool Sound_ResolveActiveSlot(TRX_HANDLE handle, SAMPLE_ID *out_sample_id);
+bool Sound_ResolveActiveSlot(TRX_HANDLE handle, SAMPLE_SLOT *out_sample_id);
 
 // Stops, pauses or resumes the voice in a slot.
 void Sound_StopActiveSlot(int32_t slot);

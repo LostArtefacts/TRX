@@ -98,7 +98,7 @@ static void M_ReadAmmoInfo(JSON_OBJECT *const obj, const int32_t type)
     ammo->infinite = JSON_ObjectGetBool(ammo_obj, "infinite", ammo->infinite);
 }
 
-static SAMPLE_TRX_ID M_ReadSample(
+static SAMPLE_ID M_ReadSample(
     JSON_OBJECT *const obj, const char *const key, const char *const name,
     const char *const path)
 {
@@ -114,7 +114,7 @@ static SAMPLE_TRX_ID M_ReadSample(
             return sample_id;
         }
     }
-    return SFX_TRX_INVALID;
+    return NO_CATALOG_ID;
 }
 
 static RESULT M_ReadWeapons(JSON_OBJECT *const root_obj, const char *const path)

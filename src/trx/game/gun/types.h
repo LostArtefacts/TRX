@@ -106,8 +106,8 @@ typedef struct {
     int32_t target_dist;
     WEAPON_ANIM_INFO anim;
     WEAPON_FLASH_INFO flash;
-    SAMPLE_TRX_ID sample_num;
-    SAMPLE_TRX_ID sample_overlay_num;
+    SAMPLE_ID sample_num;
+    SAMPLE_ID sample_overlay_num;
     int32_t sample_overlay_pitch;
     WEAPON_GLOW_INFO glow;
     WEAPON_HAND_POS muzzle_pos;

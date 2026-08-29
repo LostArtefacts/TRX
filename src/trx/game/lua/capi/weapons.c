@@ -157,7 +157,7 @@ static const char *M_SetSample(void *const self, const TRX_VALUE *const in)
     if (in->as_int < 0) {
         return "not a sample";
     }
-    ((WEAPON_INFO *)self)->sample_num = (SAMPLE_TRX_ID)in->as_int;
+    ((WEAPON_INFO *)self)->sample_num = (SAMPLE_ID)in->as_int;
     return nullptr;
 }
 
@@ -167,7 +167,7 @@ static const char *M_SetOverlaySample(
     if (in->as_int < 0) {
         return "not a sample";
     }
-    ((WEAPON_INFO *)self)->sample_overlay_num = (SAMPLE_TRX_ID)in->as_int;
+    ((WEAPON_INFO *)self)->sample_overlay_num = (SAMPLE_ID)in->as_int;
     return nullptr;
 }
 

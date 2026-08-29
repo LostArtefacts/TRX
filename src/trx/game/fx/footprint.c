@@ -34,19 +34,19 @@ typedef struct {
 } M_PRIV;
 
 static M_PRIV m_Priv;
-static const SAMPLE_TRX_ID m_StepSounds[14] = {
+static const SAMPLE_ID m_StepSounds[14] = {
     SFX_FOOTSTEPS_MUD,
     SFX_FOOTSTEPS_SNOW,
     SFX_FOOTSTEPS_SAND_OR_GRASS,
     SFX_FOOTSTEPS_GRAVEL,
     SFX_FOOTSTEPS_ICE,
-    SFX_TRX_INVALID,
-    SFX_TRX_INVALID,
+    NO_CATALOG_ID,
+    NO_CATALOG_ID,
     SFX_FOOTSTEPS_WOOD,
     SFX_FOOTSTEPS_METAL,
-    SFX_TRX_INVALID,
+    NO_CATALOG_ID,
     SFX_FOOTSTEPS_SAND_OR_GRASS,
-    SFX_TRX_INVALID,
+    NO_CATALOG_ID,
     SFX_FOOTSTEPS_WOOD,
     SFX_FOOTSTEPS_METAL,
 };
@@ -209,7 +209,7 @@ void FX_Footprint_Add(const ITEM *const lara_item, const bool is_left_foot)
     }
 
     if (sector->fx < ARRAY_SIZE(m_StepSounds)
-        && m_StepSounds[sector->fx] != SFX_TRX_INVALID) {
+        && m_StepSounds[sector->fx] != NO_CATALOG_ID) {
         Sound_Effect(m_StepSounds[sector->fx], &lara_item->pos, SPM_NORMAL);
     }
 
