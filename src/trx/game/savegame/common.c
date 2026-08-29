@@ -10,6 +10,7 @@
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 #include <trx/game/savegame/file.h>
+#include <trx/game/savegame/identity.h>
 #include <trx/version.h>
 
 static SAVEGAME_VERSION m_InitialVersion = SG_VERSION_LEGACY;
@@ -123,6 +124,7 @@ RESULT Savegame_Load(const SAVEGAME_SLOT_REF slot)
     ASSERT(savegame_info->full_path != nullptr);
 
     M_LoadPreprocess();
+    SaveGame_ResetDropped();
 
     TRX_FILE *fp = nullptr;
     RESULT result =
@@ -133,6 +135,12 @@ RESULT Savegame_Load(const SAVEGAME_SLOT_REF slot)
     }
 
     M_LoadPostprocess();
+    const int32_t dropped = SaveGame_GetDroppedCount();
+    if (dropped > 0) {
+        LOG_WARNING(
+            "%d records in this save name something the game no longer holds",
+            dropped);
+    }
     m_InitialVersion = savegame_info->initial_version;
     return result;
 }

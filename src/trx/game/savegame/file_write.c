@@ -24,6 +24,7 @@
 #include <trx/game/rules.h>
 #include <trx/game/savegame.h>
 #include <trx/game/savegame/file.h>
+#include <trx/game/savegame/identity.h>
 #include <trx/game/waypoint.h>
 #include <trx/version.h>
 
@@ -153,7 +154,8 @@ static void M_WriteItem(JSON_WRITE_IO *const io, const ITEM *const item)
     }
 
     const OBJECT *const obj = Object_Get(item->object_id);
-    JSONW_WRITE(io, "object_id", Object_IDToSlot(item->object_id));
+    SaveGame_WriteIdentity(
+        io, "object_id", "object_key", CATALOG_OBJECTS, item->object_id);
     JSONW_WRITE(io, "mesh_bits", item->mesh_bits);
 
     if (obj->save_position) {
@@ -245,7 +247,9 @@ static void M_WriteItem(JSON_WRITE_IO *const io, const ITEM *const item)
         }
 
         JSONW_PUSH_OBJECT(io);
-        JSONW_WRITE(io, "object_id", Object_IDToSlot(drop_item->object_id));
+        SaveGame_WriteIdentity(
+            io, "object_id", "object_key", CATALOG_OBJECTS,
+            drop_item->object_id);
         M_WriteXYZ32(io, "pos", drop_pos);
         JSONW_WRITE(io, "y_rot", drop_rot_y);
         JSONW_WRITE(io, "room_num", drop_room_num);
@@ -405,7 +409,8 @@ void SG_File_DumpEffects(JSON_WRITE_IO *const io)
         M_WriteXYZ32(io, "pos", effect->pos);
         M_WriteXYZ16(io, "rot", effect->rot);
         JSONW_WRITE(io, "room_num", effect->room_num);
-        JSONW_WRITE(io, "object_id", Object_IDToSlot(effect->object_id));
+        SaveGame_WriteIdentity(
+            io, "object_id", "object_key", CATALOG_OBJECTS, effect->object_id);
         JSONW_WRITE(io, "speed", effect->speed);
         JSONW_WRITE(io, "fall_speed", effect->fall_speed);
         // Introduced in TRX 1.2
@@ -490,6 +495,22 @@ void SG_File_DumpMusic(JSON_WRITE_IO *const io)
         JSONW_POP_AND_APPEND(io);
     }
     JSONW_POP_AND_SET(io, "flags");
+
+    // Write both music flag layouts. Positional flags keep older readers
+    // working; named flags keep the data tied to catalog identities.
+    JSONW_PUSH_ARRAY(io);
+    for (int32_t i = 0; i < track_flag_count; i++) {
+        const uint16_t flags = M_PackMusicTrackFlags(i);
+        if (flags == 0) {
+            continue;
+        }
+        const CATALOG_ID id = Music_SlotToID(i);
+        JSONW_PUSH_OBJECT(io);
+        SaveGame_WriteIdentity(io, "slot", "key", CATALOG_MUSIC, id);
+        JSONW_WRITE(io, "flags", flags);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET(io, "track_flags");
 
     const MUSIC_SLOT current_ambient = Music_GetCurrentLoopedTrack();
     JSONW_PUSH_OBJECT(io);
@@ -624,7 +645,9 @@ void SG_File_DumpLara(JSON_WRITE_IO *const io)
     if (lara->gun_item_num != NO_ITEM) {
         JSONW_PUSH_OBJECT(io);
         const ITEM *const weapon_item = Item_Get(lara->gun_item_num);
-        JSONW_WRITE(io, "object_id", Object_IDToSlot(weapon_item->object_id));
+        SaveGame_WriteIdentity(
+            io, "object_id", "object_key", CATALOG_OBJECTS,
+            weapon_item->object_id);
         M_WriteAnimNum(io, weapon_item->anim_num);
         JSONW_WRITE(io, "frame_num", weapon_item->frame_num);
         JSONW_WRITE(io, "current_anim_state", weapon_item->current_anim_state);
