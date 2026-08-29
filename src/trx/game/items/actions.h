@@ -6,11 +6,11 @@
 #include <stdint.h>
 
 void ItemAction_Register(
-    ITEM_TRX_ACTION action, void (*action_func)(ITEM *item));
-void ItemAction_Run(ITEM_TRX_ACTION action_id, ITEM *item);
-void ItemAction_RunDirect(ITEM_ACTION action_id, ITEM *item);
+    ITEM_ACTION_ID action, void (*action_func)(ITEM *item));
+void ItemAction_Run(ITEM_ACTION_ID action_id, ITEM *item);
+void ItemAction_RunDirect(ITEM_ACTION_SLOT action_id, ITEM *item);
 void ItemAction_RunDirectWithFX(
-    ITEM_ACTION action_id, ITEM *item, int16_t fx_type);
+    ITEM_ACTION_SLOT action_id, ITEM *item, int16_t fx_type);
 void ItemAction_RunActive(void);
 int16_t ItemAction_GetFXType(void);
 

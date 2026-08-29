@@ -86,7 +86,8 @@ static bool M_CanExplodeTarget(const ITEM *const item)
     // TODO: as some creatures have more than one death animation, have a
     // way to expose those specific ones for checking, or delegate
     // responsibility directly to the objects.
-    const ITEM_ACTION action = ItemAction_ToGameID(ITEM_ACTION_FINISH_LEVEL);
+    const ITEM_ACTION_SLOT action =
+        ItemAction_IDToSlot(ITEM_ACTION_FINISH_LEVEL);
     for (int32_t i = 0; i < object->anim_count; i++) {
         const ANIM *const anim = Object_GetAnim(object, i);
         if (Anim_HasFXCommand(anim, action)) {

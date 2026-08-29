@@ -78,7 +78,7 @@ api.enum("catalog.lara_anims", {
 })
 
 api.enum("catalog.flip_effects", {
-  backing = "ITEM_TRX_ACTION",
+  backing = "ITEM_ACTION_ID",
   context = Context.ITEM_ACTIONS,
   bulk = true,
   description = "Every item action a flip effect can trigger.",

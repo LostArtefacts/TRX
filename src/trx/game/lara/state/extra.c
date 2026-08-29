@@ -77,7 +77,8 @@ static void M_ScionPedestal(ITEM *const item, COLL_INFO *const coll)
     }
 
     ITEM *const scion = Item_Get(lara->interact_target.item_num);
-    const ITEM_ACTION action = ItemAction_ToGameID(ITEM_ACTION_FINISH_LEVEL);
+    const ITEM_ACTION_SLOT action =
+        ItemAction_IDToSlot(ITEM_ACTION_FINISH_LEVEL);
     if (!Anim_HasFXCommand(Item_GetAnim(item), action)) {
         Overlay_AddDisplayPickup(scion->object_id);
     }

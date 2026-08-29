@@ -12,7 +12,7 @@ static int16_t m_FXType = 0;
 static ITEM_ACTION_INTERCEPTOR m_Interceptor = nullptr;
 
 static void M_RunWithFX(
-    const ITEM_TRX_ACTION action_id, ITEM *const item, const int16_t fx_type)
+    const ITEM_ACTION_ID action_id, ITEM *const item, const int16_t fx_type)
 {
     m_FXType = fx_type;
     ItemAction_Run(action_id, item);
@@ -22,7 +22,8 @@ static void M_RunWithFX(
 // An animation command carries no trigger field, so the timer is 0. The stored
 // floor effect reaches here through RunActive with a null item, but a claimed
 // number is never stored, so that path never intercepts.
-static bool M_InterceptDirect(const ITEM_ACTION action_id, ITEM *const item)
+static bool M_InterceptDirect(
+    const ITEM_ACTION_SLOT action_id, ITEM *const item)
 {
     const int16_t item_num = item != nullptr ? Item_GetIndex(item) : NO_ITEM;
     return ItemAction_Intercept(action_id, 0, item_num);
@@ -34,12 +35,12 @@ int16_t ItemAction_GetFXType(void)
 }
 
 void ItemAction_Register(
-    const ITEM_TRX_ACTION action, void (*const action_func)(ITEM *item))
+    const ITEM_ACTION_ID action, void (*const action_func)(ITEM *item))
 {
     *(M_ACTION_ROUTINE *)CatalogTable_Get(&m_Routines, action) = action_func;
 }
 
-void ItemAction_Run(const ITEM_TRX_ACTION action_id, ITEM *const item)
+void ItemAction_Run(const ITEM_ACTION_ID action_id, ITEM *const item)
 {
     const M_ACTION_ROUTINE *const routine =
         CatalogTable_Get(&m_Routines, action_id);
@@ -60,22 +61,22 @@ bool ItemAction_Intercept(
         && m_Interceptor(effect_num, timer, item_num);
 }
 
-void ItemAction_RunDirect(const ITEM_ACTION action_id, ITEM *const item)
+void ItemAction_RunDirect(const ITEM_ACTION_SLOT action_id, ITEM *const item)
 {
     if (M_InterceptDirect(action_id, item)) {
         return;
     }
-    const ITEM_TRX_ACTION trx_id = ItemAction_FromGameID(action_id);
+    const ITEM_ACTION_ID trx_id = ItemAction_SlotToID(action_id);
     ItemAction_Run(trx_id, item);
 }
 
 void ItemAction_RunDirectWithFX(
-    const ITEM_ACTION action_id, ITEM *const item, const int16_t fx_type)
+    const ITEM_ACTION_SLOT action_id, ITEM *const item, const int16_t fx_type)
 {
     if (M_InterceptDirect(action_id, item)) {
         return;
     }
-    const ITEM_TRX_ACTION trx_id = ItemAction_FromGameID(action_id);
+    const ITEM_ACTION_ID trx_id = ItemAction_SlotToID(action_id);
     M_RunWithFX(trx_id, item, fx_type);
 }
 
