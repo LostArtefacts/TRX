@@ -33,6 +33,7 @@ local Context = api.enum("catalog.Context", {
     LARA_STATES = "Lara's states.",
     LARA_ANIMS = "Lara's animations.",
     ITEM_ACTIONS = "Item actions, which the flip effects trigger.",
+    WEAPONS = "Weapons Lara can hold.",
   },
 })
 
@@ -89,6 +90,7 @@ api.enum("catalog.flip_effects", {
 
 api.enum("catalog.weapons", {
   backing = "LARA_GUN_TYPE",
+  context = Context.WEAPONS,
   bulk = true,
   description = "Every weapon Lara can hold.",
   examples = {
