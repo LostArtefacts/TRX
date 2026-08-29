@@ -97,7 +97,7 @@ static RESULT M_AddName(
     const CATALOG_CONTEXT context, const CATALOG_ID id, const char *const name)
 {
     FAIL_IF(
-        Catalog_FromKey(context, name, -1) >= 0,
+        Catalog_KeyToID(context, name, -1) >= 0,
         "context %d already holds the name '%s'", context, name);
 
     M_NAME_ENTRY *const entry = Memory_Alloc(sizeof(*entry));
@@ -120,7 +120,7 @@ __attribute__((constructor)) static void M_MintBuiltIns(void)
         CATALOG_ID id;
         const char *const enum_name = m_CatalogEntryDefs[idx].name_str;
         EXIT_ON_FAIL(
-            Catalog_Mint(ctx, Catalog_KeyForEnum(ctx, enum_name), &id),
+            Catalog_CreateKey(ctx, Catalog_KeyForEnum(ctx, enum_name), &id),
             "cannot seed the catalog");
         ASSERT(id == m_CatalogEntryDefs[idx].id);
         // Bind catalogue CSV entries that use the C spelling.
@@ -173,12 +173,12 @@ static CATALOG_ID M_Add(const CATALOG_CONTEXT context, const char *const key)
     return id;
 }
 
-CATALOG_ID Catalog_MintAnonymous(const CATALOG_CONTEXT context)
+CATALOG_ID Catalog_CreateAnonymous(const CATALOG_CONTEXT context)
 {
     return M_Add(context, nullptr);
 }
 
-RESULT Catalog_Mint(
+RESULT Catalog_CreateKey(
     const CATALOG_CONTEXT context, const char *const key,
     CATALOG_ID *const out_id)
 {
@@ -199,12 +199,39 @@ RESULT Catalog_AddAlias(
     return M_AddName(context, id, alias);
 }
 
-const char *Catalog_GetKey(const CATALOG_CONTEXT context, const CATALOG_ID id)
+const char *Catalog_IDToKey(const CATALOG_CONTEXT context, const CATALOG_ID id)
 {
     if (id < 0 || id >= m_Counts[context]) {
         return nullptr;
     }
     return m_Keys[context][id];
+}
+
+RESULT Catalog_CreateSlot(
+    const CATALOG_CONTEXT context, const int32_t slot, CATALOG_ID *const out_id)
+{
+    FAIL_IF(slot < 0, "a slot is never negative");
+    const CATALOG_ID held = Catalog_SlotToID(context, slot, NO_CATALOG_ID);
+    if (held >= 0) {
+        *out_id = held;
+        return OK;
+    }
+    const CATALOG_ID id = M_Add(context, nullptr);
+    MUST(Catalog_BindSlot(context, id, slot));
+    *out_id = id;
+    return OK;
+}
+
+RESULT Catalog_BindFreeSlot(
+    const CATALOG_CONTEXT context, const CATALOG_ID id, int32_t *const out_slot)
+{
+    int32_t slot = 0;
+    for (CATALOG_ID other = 0; other < m_Counts[context]; other++) {
+        slot = MAX(slot, m_GameIDs[context][other] + 1);
+    }
+    MUST(Catalog_BindSlot(context, id, slot));
+    *out_slot = slot;
+    return OK;
 }
 
 int32_t Catalog_GetCount(const CATALOG_CONTEXT context)
@@ -270,16 +297,16 @@ RESULT Catalog_Load(
         char *const name_str = CSV_Trim(name_buf);
         const int32_t game_id = (int32_t)strtol(id_str, nullptr, 10);
 
-        CATALOG_ID id = Catalog_FromKey(context, name_str, -1);
+        CATALOG_ID id = Catalog_KeyToID(context, name_str, -1);
         if (id < 0) {
             // A row naming something the exe has no constant for declares the
             // identity it names.
-            if (!SHOULD(Catalog_Mint(context, name_str, &id), csv_path)) {
+            if (!SHOULD(Catalog_CreateKey(context, name_str, &id), csv_path)) {
                 continue;
             }
         }
 
-        const char *const key = Catalog_GetKey(context, id);
+        const char *const key = Catalog_IDToKey(context, id);
         if (key != nullptr && strcmp(key, name_str) != 0) {
             alias_count++;
             if (alias_count <= M_MAX_REPORTED_ALIASES) {
@@ -310,7 +337,7 @@ RESULT Catalog_Load(
     return OK;
 }
 
-CATALOG_ID Catalog_FromKey(
+CATALOG_ID Catalog_KeyToID(
     const CATALOG_CONTEXT context, const char *const key,
     const CATALOG_ID fallback)
 {
@@ -319,7 +346,7 @@ CATALOG_ID Catalog_FromKey(
     return entry != nullptr ? (CATALOG_ID)entry->enum_value : fallback;
 }
 
-int32_t Catalog_ToSlot(
+int32_t Catalog_IDToSlot(
     const CATALOG_CONTEXT context, const CATALOG_ID id, const int32_t fallback)
 {
     if (id < 0 || id >= m_Counts[context] || m_GameIDs[context][id] < 0) {
@@ -328,7 +355,7 @@ int32_t Catalog_ToSlot(
     return m_GameIDs[context][id];
 }
 
-CATALOG_ID Catalog_FromSlot(
+CATALOG_ID Catalog_SlotToID(
     const CATALOG_CONTEXT context, const int32_t slot,
     const CATALOG_ID fallback)
 {

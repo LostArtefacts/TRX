@@ -21,6 +21,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(M_WIDGET_STATE, M_WIDGET_OFF, "off");
     ENUM_MAP(M_WIDGET_STATE, M_WIDGET_ON, "on");
     ENUM_MAP(M_WIDGET_STATE, M_WIDGET_BROKEN, "broken");
+    ENUM_MAP(M_WIDGET_STATE, M_WIDGET_BROKEN, "bust");
 }
 
 TEST(get_maps_string_to_value)
@@ -41,6 +42,22 @@ TEST(to_string_maps_value_to_string)
 {
     CHECK_EQ_STR(ENUM_MAP_TO_STRING(M_WIDGET_STATE, M_WIDGET_BROKEN), "broken");
     CHECK_NULL(EnumMap_ToString("M_WIDGET_STATE", 999));
+}
+
+// Resolve duplicate values under either name and serialise them using the
+// first name, so reordering definitions changes persisted files.
+TEST(to_string_answers_with_the_first_name_defined)
+{
+    CHECK_EQ_INT(ENUM_MAP_GET(M_WIDGET_STATE, "bust", -1), M_WIDGET_BROKEN);
+    CHECK_EQ_STR(ENUM_MAP_TO_STRING(M_WIDGET_STATE, M_WIDGET_BROKEN), "broken");
+}
+
+// Treat `-`, `:` and `_` as the same separator, so alternate spellings
+// identify the same name.
+TEST(separators_are_interchangeable)
+{
+    CHECK_EQ_INT(ENUM_MAP_GET(M_WIDGET_STATE, "off", -1), M_WIDGET_OFF);
+    CHECK_EQ_STR(EnumMap_NormalizeName("half-lit:up"), "half_lit_up");
 }
 
 TEST(get_name_reports_the_c_identifier)

@@ -149,7 +149,7 @@ OBJECT_ID LUA_CheckObjectID(lua_State *const L, const int arg)
     // An anonymous identity answers to no key, so a script has no way to name
     // one and no business holding one.
     luaL_argcheck(
-        L, Catalog_GetKey(CATALOG_OBJECTS, object_id) != nullptr, arg,
+        L, Catalog_IDToKey(CATALOG_OBJECTS, object_id) != nullptr, arg,
         "unknown object id");
     return object_id;
 }
