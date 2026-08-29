@@ -184,18 +184,13 @@ static void M_BakeRoomLights(void)
             }
 
             if (light->type == LIGHT_TYPE_FOG_BULB) {
-                // The OG PC renderer reads the red channel as the density
-                // and discards the bulb color (blending toward the script
-                // fog color instead); the data carries a real per-bulb RGB
-                // which the PSX renderer used — keep it (e.g. the cyan
-                // waterfall mist in Angkor Wat).
+                // A fog bulb carries no color of its own: the level data
+                // holds its density in the red channel and leaves the other
+                // two alone. The OG draws the bulb in the fog color, which a
+                // bulb follows until a script gives it a color.
                 Output_FogBulbs_AddStatic(
-                    (XYZ_F) {
-                        (float)light->pos.x,
-                        (float)light->pos.y,
-                        (float)light->pos.z,
-                    },
-                    light->u.tr4.outer_radius, light->color, light->color.r);
+                    light->pos, light->u.tr4.outer_radius, light->color.r,
+                    (int16_t)room_num);
                 continue;
             }
 

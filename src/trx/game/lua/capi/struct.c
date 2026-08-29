@@ -86,8 +86,14 @@ static int M_NewIndex(lua_State *const L)
             L, "unknown %s field '%s'", ref->type->name, lua_tostring(L, 2));
     }
 
-    const TRX_VALUE value = LUA_CheckValue(L, 3, field->type);
-    const char *const err = Field_Set(field, LUA_Struct_Deref(L, ref), &value);
+    const bool is_null =
+        (field->flags & FF_NULLABLE) != 0 && lua_isnoneornil(L, 3);
+    TRX_VALUE value;
+    if (!is_null) {
+        value = LUA_CheckValue(L, 3, field->type);
+    }
+    const char *const err =
+        Field_Set(field, LUA_Struct_Deref(L, ref), is_null ? nullptr : &value);
     if (err != nullptr) {
         return luaL_error(
             L, "cannot set %s.%s: %s", ref->type->name, lua_tostring(L, 2),

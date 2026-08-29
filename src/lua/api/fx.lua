@@ -2,6 +2,7 @@ local raw = trxc.fx
 local api = trx.api
 
 require("trx.math")
+require("trx.rooms")
 
 api.module("fx", {
   order = 17,
@@ -140,6 +141,95 @@ end)]],
       opts.density or 128
     )
   end,
+})
+
+api.type("fx.FogBulb", {
+  backing = "FOG_BULB",
+  description = [[A level fog bulb is a ball of fog drawn inside a room.
+
+TR4 stores fog bulbs as room lights. A script can change their color and density.
+The level sets their position and radius. A bulb follows the fog color until a script
+gives it a color of its own.]],
+  fields = {
+    color = {
+      type = "math.Color",
+      nullable = true,
+      description = [[The color a script gave the bulb.
+
+`nil` means none was given, and the bulb is drawn in the fog color in force. Write `nil` to hand
+a bulb back to that color.]],
+    },
+    density = {
+      from = "density",
+      type = "integer",
+      description = "Fog density, from `0` for none to `255`. A value outside this "
+        .. "range raises an error.",
+    },
+    pos = {
+      from = "pos",
+      type = "math.Vec3",
+      writable = false,
+      description = "Center of the fog bulb.",
+    },
+    radius = {
+      from = "radius",
+      type = "math.Distance",
+      writable = false,
+      description = "How far the fog reaches from that position.",
+    },
+  },
+
+  extensions = {
+    room = {
+      type = "rooms.Room",
+      description = "The room the bulb sits in.",
+      impl = function(bulb)
+        local num = raw.get_fog_bulb_room(bulb)
+        return num and trx.rooms[num] or nil
+      end,
+    },
+  },
+
+  methods = {
+    is_valid = {
+      returns = {
+        type = "boolean",
+        description = "False after the level that held the bulb is left.",
+      },
+      description = [[Reports whether the handle still names a bulb in the loaded level.
+
+A level change replaces all bulbs. A handle held across one becomes stale, and field access
+raises an error.]],
+    },
+  },
+})
+
+api.container("fx.fog_bulbs", {
+  description = [[The level fog bulbs, counted from 1. `#trx.fx.fog_bulbs` is the count.
+`pairs()` walks them in order. A level shows at most twenty. The player can turn them off.]],
+  key = { type = "integer" },
+  value = { type = "fx.FogBulb", nullable = true },
+  examples = {
+    [[for _, bulb in pairs(trx.fx.fog_bulbs) do
+  bulb.color = trx.math.color(245, 200, 60)
+end]],
+  },
+  get = function(idx)
+    return raw.get_fog_bulb(idx - 1)
+  end,
+  count = raw.fog_bulb_count,
+})
+
+api.property("fx.fog_color", {
+  type = "math.Color",
+  nullable = true,
+  description = [[The color override for distance fog.
+
+`nil` means no override. Write `nil` to restore the level fog color. A level change clears the
+override. Savegames keep it. This controls distance fog only. Fog bulbs have their own colors
+in `trx.fx.fog_bulbs`.]],
+  get = raw.get_fog_color,
+  set = raw.set_fog_color,
 })
 
 local blood_pos_field = {

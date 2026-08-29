@@ -1285,6 +1285,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   └── sparks_gfx.bin
 │   │   ├── modules
 │   │   │   ├── cutscenes.lua
+│   │   │   ├── fog.lua
 │   │   │   └── race_timer.lua
 │   │   ├── scripts
 │   │   │   ├── _game.lua
@@ -2662,6 +2663,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   └── sparks_gfx.bin
     │   │   │   ├── modules
     │   │   │   │   ├── cutscenes.lua
+    │   │   │   │   ├── fog.lua
     │   │   │   │   └── race_timer.lua
     │   │   │   ├── scripts
     │   │   │   │   ├── _game.lua

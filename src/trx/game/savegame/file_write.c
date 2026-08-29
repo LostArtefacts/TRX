@@ -14,6 +14,7 @@
 #include <trx/game/items.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
+#include <trx/game/level/settings.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/general/flare_item.h>
@@ -704,6 +705,10 @@ void SG_File_DumpMisc(JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "rng_control_seed", Random_GetControlSeed());
     JSONW_WRITE(io, "rng_draw_seed", Random_GetDrawSeed());
     JSONW_WRITE(io, "weather_type", FX_Weather_GetWeather());
+    const RGB_888 *const fog_color = Level_GetFogColorOverride();
+    if (fog_color != nullptr) {
+        JSONW_WRITE(io, "fog_color", *fog_color);
+    }
     JSONW_WRITE(io, "cutscenes_played", CutSeq_GetPlayedMask());
     JSONW_WRITE(io, "waypoint", Waypoint_Get());
     JSONW_WRITE(io, "waypoint_highest", Waypoint_GetHighest());

@@ -16,6 +16,7 @@
 #include <trx/game/inventory.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/lara.h>
+#include <trx/game/level/settings.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/general/flare_item.h>
@@ -1342,6 +1343,15 @@ RESULT SG_File_LoadMisc(JSON_READ_IO *const io)
             } else {
                 FX_Weather_SetWeather(WEATHER_NONE);
             }
+        }
+    }
+
+    {
+        Level_ResetFogColorOverride();
+        if (JSON_ReadIO_HasKey(io, "fog_color")) {
+            RGB_888 fog_color;
+            MUST(JSON_READ(io, "fog_color", &fog_color));
+            Level_SetFogColorOverride(&fog_color);
         }
     }
 
