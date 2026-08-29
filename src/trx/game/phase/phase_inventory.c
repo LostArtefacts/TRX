@@ -24,7 +24,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
         Music_Stop();
         const GF_LEVEL *const level = GF_GetTitleLevel();
         if (g_Config.audio.enable_music_in_menu && level->music_track >= 0) {
-            Music_Play_Direct(level->music_track, MPM_LOOP);
+            Music_PlayBySlot(level->music_track, MPM_LOOP);
         }
     }
 

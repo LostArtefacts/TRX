@@ -30,7 +30,7 @@ static void M_Reset(void)
     }
 }
 
-int32_t Music_Play_Direct(const MUSIC_SLOT track, const MUSIC_PLAY_MODE mode)
+int32_t Music_PlayBySlot(const MUSIC_SLOT track, const MUSIC_PLAY_MODE mode)
 {
     FAKE_RECORD("play", FV(track), FV(mode));
     if (track != FAKE_MUSIC_TRACK) {
@@ -59,7 +59,7 @@ MUSIC_SLOT Music_GetCurrentLoopedTrack(void)
     return m_Looped;
 }
 
-bool Music_IsTrackAvailable_Direct(const MUSIC_SLOT track)
+bool Music_IsTrackAvailableBySlot(const MUSIC_SLOT track)
 {
     return track == FAKE_MUSIC_TRACK;
 }

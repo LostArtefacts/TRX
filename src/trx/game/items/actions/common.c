@@ -21,7 +21,7 @@ static void M_RunWithFX(
 // An animation command carries no trigger field, so the timer is 0. The stored
 // floor effect reaches here through RunActive with a null item, but a claimed
 // number is never stored, so that path never intercepts.
-static bool M_InterceptDirect(
+static bool M_InterceptBySlot(
     const ITEM_ACTION_SLOT action_id, ITEM *const item)
 {
     const int16_t item_num = item != nullptr ? Item_GetIndex(item) : NO_ITEM;
@@ -60,19 +60,19 @@ bool ItemAction_Intercept(
         && m_Interceptor(effect_num, timer, item_num);
 }
 
-void ItemAction_RunDirect(const ITEM_ACTION_SLOT action_id, ITEM *const item)
+void ItemAction_RunBySlot(const ITEM_ACTION_SLOT action_id, ITEM *const item)
 {
-    if (M_InterceptDirect(action_id, item)) {
+    if (M_InterceptBySlot(action_id, item)) {
         return;
     }
     const ITEM_ACTION_ID trx_id = ItemAction_SlotToID(action_id);
     ItemAction_Run(trx_id, item);
 }
 
-void ItemAction_RunDirectWithFX(
+void ItemAction_RunWithFXBySlot(
     const ITEM_ACTION_SLOT action_id, ITEM *const item, const int16_t fx_type)
 {
-    if (M_InterceptDirect(action_id, item)) {
+    if (M_InterceptBySlot(action_id, item)) {
         return;
     }
     const ITEM_ACTION_ID trx_id = ItemAction_SlotToID(action_id);
@@ -83,6 +83,6 @@ void ItemAction_RunActive(void)
 {
     const int32_t flip_effect = Room_GetFlipEffect();
     if (flip_effect != -1) {
-        ItemAction_RunDirect(flip_effect, nullptr);
+        ItemAction_RunBySlot(flip_effect, nullptr);
     }
 }

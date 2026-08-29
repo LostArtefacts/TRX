@@ -316,7 +316,7 @@ static bool M_Begin(const int32_t num)
     Lara_Hair_Initialise();
 
     if (info->audio_track != -1) {
-        Music_Play_Direct((MUSIC_SLOT)info->audio_track, MPM_ONCE);
+        Music_PlayBySlot((MUSIC_SLOT)info->audio_track, MPM_ONCE);
     }
 
     Output_Overlay_SetFade(0.0f);
@@ -344,7 +344,7 @@ static void M_Finish(void)
     const int32_t num = m_State.num;
     const CUTSEQ_INFO *const info = &m_State.info;
     if (info->audio_track != -1) {
-        Music_StopTrack_Direct((MUSIC_SLOT)info->audio_track);
+        Music_StopTrackBySlot((MUSIC_SLOT)info->audio_track);
     }
 
     M_ReleaseNodes();
@@ -668,7 +668,7 @@ void CutSeq_Reset(void)
 {
     const int32_t num = m_State.num;
     if (num != M_NO_CUTSCENE && m_State.info.audio_track != -1) {
-        Music_StopTrack_Direct((MUSIC_SLOT)m_State.info.audio_track);
+        Music_StopTrackBySlot((MUSIC_SLOT)m_State.info.audio_track);
     }
 
     M_ReleaseNodes();

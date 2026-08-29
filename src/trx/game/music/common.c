@@ -181,7 +181,7 @@ static void M_StreamFinished(const int32_t stream_id, void *const user_data)
         m_TrackCurrent = MX_INACTIVE;
         M_StreamReset(stream);
         if (m_TrackLooped >= 0) {
-            Music_Play_Direct(m_TrackLooped, MPM_LOOP);
+            Music_PlayBySlot(m_TrackLooped, MPM_LOOP);
         }
     } else {
         M_StreamReset(stream);
@@ -506,12 +506,12 @@ finish:
     return Audio_Init();
 }
 
-int32_t Music_Play_Direct(const MUSIC_SLOT track_id, const MUSIC_PLAY_MODE mode)
+int32_t Music_PlayBySlot(const MUSIC_SLOT track_id, const MUSIC_PLAY_MODE mode)
 {
     return M_Play(track_id, mode, -1.0);
 }
 
-int32_t Music_Play_DirectAt(
+int32_t Music_PlayAtBySlot(
     const MUSIC_SLOT track_id, const MUSIC_PLAY_MODE mode,
     const double timestamp)
 {
@@ -520,10 +520,10 @@ int32_t Music_Play_DirectAt(
 
 int32_t Music_Play(const MUSIC_ID track, const MUSIC_PLAY_MODE mode)
 {
-    return Music_Play_Direct(Music_IDToSlot(track), mode);
+    return Music_PlayBySlot(Music_IDToSlot(track), mode);
 }
 
-bool Music_IsTrackAvailable_Direct(const MUSIC_SLOT track)
+bool Music_IsTrackAvailableBySlot(const MUSIC_SLOT track)
 {
     if (!m_Initialised || m_Backend == nullptr
         || m_Backend->is_track_available == nullptr) {
@@ -586,7 +586,7 @@ void Music_Stop(void)
     M_ResetStreamState();
 }
 
-void Music_StopTrack_Direct(const MUSIC_SLOT track)
+void Music_StopTrackBySlot(const MUSIC_SLOT track)
 {
     if (track != m_TrackCurrent || M_IsBrokenTrack(track)) {
         return;
@@ -595,7 +595,7 @@ void Music_StopTrack_Direct(const MUSIC_SLOT track)
     M_StopMainStream();
     m_TrackCurrent = MX_INACTIVE;
     if (m_TrackLooped >= 0) {
-        Music_Play_Direct(m_TrackLooped, MPM_LOOP);
+        Music_PlayBySlot(m_TrackLooped, MPM_LOOP);
     }
 }
 
@@ -733,7 +733,7 @@ void Music_StopStream(const int32_t slot)
         M_StopMainStream();
         m_TrackCurrent = MX_INACTIVE;
         if (had_current && looped >= 0) {
-            Music_Play_Direct(looped, MPM_LOOP);
+            Music_PlayBySlot(looped, MPM_LOOP);
         } else {
             m_TrackLooped = MX_INACTIVE;
         }
@@ -844,7 +844,7 @@ void Music_Trigger(MUSIC_SLOT track_id, const MUSIC_TRIGGER *const trigger)
     }
 
     if (M_IsAmbientTrack(track_id)) {
-        Music_Play_Direct(track_id, MPM_LOOP);
+        Music_PlayBySlot(track_id, MPM_LOOP);
         return;
     }
 
@@ -873,9 +873,9 @@ void Music_Trigger(MUSIC_SLOT track_id, const MUSIC_TRIGGER *const trigger)
             if (trigger->one_shot) {
                 track->is_one_shot = true;
             }
-            Music_Play_Direct(track_id, play_mode);
+            Music_PlayBySlot(track_id, play_mode);
         } else {
-            Music_StopTrack_Direct(track_id);
+            Music_StopTrackBySlot(track_id);
         }
         return;
     }
@@ -890,12 +890,12 @@ void Music_Trigger(MUSIC_SLOT track_id, const MUSIC_TRIGGER *const trigger)
         }
 
         if (trigger->timer == 0) {
-            Music_Play_Direct(track_id, play_mode);
+            Music_PlayBySlot(track_id, play_mode);
             return;
         }
 
         if (track_id != Music_GetDelayedTrack()) {
-            Music_Play_Direct(track_id, MPM_DELAY);
+            Music_PlayBySlot(track_id, MPM_DELAY);
             track->delay = LOGIC_FPS * trigger->timer;
             return;
         }
@@ -906,7 +906,7 @@ void Music_Trigger(MUSIC_SLOT track_id, const MUSIC_TRIGGER *const trigger)
 
         track->delay--;
         if (track->delay == 0) {
-            Music_Play_Direct(track_id, play_mode);
+            Music_PlayBySlot(track_id, play_mode);
         }
 
         return;
@@ -936,7 +936,7 @@ void Music_Trigger(MUSIC_SLOT track_id, const MUSIC_TRIGGER *const trigger)
             track->is_one_shot |= trigger->one_shot;
         }
 
-        Music_Play_Direct(track_id, play_mode);
+        Music_PlayBySlot(track_id, play_mode);
     }
 }
 

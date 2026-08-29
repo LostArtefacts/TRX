@@ -261,7 +261,7 @@ M_GF_HANDLER(M_HandlePlayMusic)
     if (seq_ctx != GFSC_STORY) {
         const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
         Music_SetVolume(g_Config.audio.music_volume);
-        Music_Play_Direct((int32_t)(intptr_t)event->data, MPM_ONCE);
+        Music_PlayBySlot((int32_t)(intptr_t)event->data, MPM_ONCE);
     }
     *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
     return OK;

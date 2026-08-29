@@ -825,7 +825,7 @@ static RESULT M_ReadMusicTracks(JSON_READ_IO *const io)
     if (ambient_track != MX_INACTIVE) {
         // Always restart the ambient as it may have changed based on the
         // current position in the level.
-        Music_Play_Direct(ambient_track, MPM_LOOP);
+        Music_PlayBySlot(ambient_track, MPM_LOOP);
     }
 
     if (g_Config.audio.music_load_condition == MUSIC_LOAD_CONDITION_NEVER) {
@@ -851,7 +851,7 @@ static RESULT M_ReadMusicTracks(JSON_READ_IO *const io)
             }
             const double seek_to = M_GetMusicSeekTimestamp(
                 track_id, mode, ambient_track, timestamp);
-            if (Music_Play_DirectAt(track_id, mode, seek_to) < 0) {
+            if (Music_PlayAtBySlot(track_id, mode, seek_to) < 0) {
                 LOG_WARNING(
                     "Could not load stream track %d at timestamp %lf.",
                     track_id, timestamp);
@@ -869,7 +869,7 @@ static RESULT M_ReadMusicTracks(JSON_READ_IO *const io)
         const double seek_to = M_GetMusicSeekTimestamp(
             current_track, mode, ambient_track, timestamp);
         if (current_track != MX_INACTIVE
-            && Music_Play_DirectAt(current_track, mode, seek_to) < 0) {
+            && Music_PlayAtBySlot(current_track, mode, seek_to) < 0) {
             LOG_WARNING(
                 "Could not load current track %d at timestamp %lf.",
                 current_track, timestamp);

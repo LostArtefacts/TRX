@@ -54,8 +54,7 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
     const bool is_cutscene = level->type == GFL_CUTSCENE;
     if (level->music_track != MX_INACTIVE
         && (is_cutscene || Music_GetCurrentLoopedTrack() == MX_INACTIVE)) {
-        Music_Play_Direct(
-            level->music_track, is_cutscene ? MPM_ONCE : MPM_LOOP);
+        Music_PlayBySlot(level->music_track, is_cutscene ? MPM_ONCE : MPM_LOOP);
     }
 
     // Which level this is, and what kind, is trx.game.current_level's to

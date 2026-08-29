@@ -366,7 +366,7 @@ bool Cutscene_Start(const int32_t level_num)
     Camera_GetCineData()->frame_idx = 0;
 
     if (level->music_track != MX_INACTIVE) {
-        Music_Play_Direct(level->music_track, MPM_ONCE);
+        Music_PlayBySlot(level->music_track, MPM_ONCE);
     }
 
     return true;
