@@ -490,6 +490,17 @@ RESULT Music_Init(void)
     LOG_INFO("Chosen music backend: %s", m_Backend->describe(m_Backend));
     Music_SetVolume(g_Config.audio.music_volume);
 
+    // Give every track the backend carries an identity, so that a save or an
+    // injection naming one finds it whether or not the catalog names it.
+    const int32_t track_limit = Music_GetTrackLimit();
+    for (MUSIC_SLOT slot = 0; slot < track_limit; slot++) {
+        if (!Music_IsTrackAvailableBySlot(slot)) {
+            continue;
+        }
+        CATALOG_ID id = NO_CATALOG_ID;
+        SHOULD(Catalog_CreateSlot(CATALOG_MUSIC, slot, &id));
+    }
+
 finish:
     m_TrackCurrent = MX_INACTIVE;
     m_TrackLastPlayed = MX_INACTIVE;
