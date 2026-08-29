@@ -17,9 +17,8 @@ static const LARA_ANIMATION_ID m_TestResponsiveAnims[] = {
     // clang-format on
 };
 
-CATALOG_TABLE_DEFINE(m_ResponsiveAnims, CATALOG_LARA_ANIMS, bool, LA_NUMBER_OF);
-CATALOG_TABLE_DEFINE(
-    m_StateRoutines, CATALOG_LARA_STATES, M_STATE_ROUTINE, LS_NUMBER_OF);
+CATALOG_TABLE_DEFINE(m_ResponsiveAnims, CATALOG_LARA_ANIMS, bool);
+CATALOG_TABLE_DEFINE(m_StateRoutines, CATALOG_LARA_STATES, M_STATE_ROUTINE);
 static void (*m_ExtraRoutines[LS_EXTRA_NUMBER_OF])(
     ITEM *item, COLL_INFO *coll) = {};
 

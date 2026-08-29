@@ -1,44 +1,45 @@
 #include <trx/game/catalog/table.h>
 
 #include <trx/core/memory.h>
+#include <trx/core/utils.h>
 
-// The tables that hold a tail. A minted identity is dropped when the session
-// ends, so the rows keyed by one are dropped with it, and the next session
-// does not read what the last one wrote.
+#include <string.h>
+
 static CATALOG_TABLE *m_Tables = nullptr;
+
+static void *M_At(CATALOG_TABLE *const table, const CATALOG_ID id)
+{
+    const int32_t chunk_idx = id / CATALOG_TABLE_CHUNK;
+    if (chunk_idx >= table->chunk_count) {
+        if (!table->linked) {
+            table->linked = true;
+            table->next = m_Tables;
+            m_Tables = table;
+        }
+        table->chunks =
+            Memory_Realloc(table->chunks, sizeof(void *) * (chunk_idx + 1));
+        for (int32_t i = table->chunk_count; i <= chunk_idx; i++) {
+            table->chunks[i] =
+                Memory_Alloc(table->elem_size * CATALOG_TABLE_CHUNK);
+        }
+        table->chunk_count = chunk_idx + 1;
+    }
+    return (char *)table->chunks[chunk_idx]
+        + (size_t)(id % CATALOG_TABLE_CHUNK) * table->elem_size;
+}
 
 void *CatalogTable_Get(CATALOG_TABLE *const table, const CATALOG_ID id)
 {
     if (id < 0) {
         return nullptr;
     }
-    if (id < table->builtin_count) {
-        return (char *)table->builtin + (size_t)id * table->elem_size;
-    }
-    if (id >= Catalog_GetCount(table->context)) {
+    // Allocate a built-in identity record before catalogue initialisation when
+    // a constructor registers its routine.
+    const int32_t count = Catalog_GetCount(table->context);
+    if (count > 0 && id >= count) {
         return nullptr;
     }
-    // Add rows for minted identities on demand, because most tables hold data
-    // for few of them.
-    while (id - table->builtin_count >= table->tail_count) {
-        CatalogTable_Append(table);
-    }
-    return table->tail[id - table->builtin_count];
-}
-
-void *CatalogTable_Append(CATALOG_TABLE *const table)
-{
-    if (!table->linked) {
-        table->linked = true;
-        table->next = m_Tables;
-        m_Tables = table;
-    }
-    table->tail_count++;
-    table->tail =
-        Memory_Realloc(table->tail, sizeof(void *) * table->tail_count);
-    void *const record = Memory_Alloc(table->elem_size);
-    table->tail[table->tail_count - 1] = record;
-    return record;
+    return M_At(table, id);
 }
 
 void CatalogTable_FreeAll(void)
@@ -51,9 +52,24 @@ void CatalogTable_FreeAll(void)
 
 void CatalogTable_Free(CATALOG_TABLE *const table)
 {
-    for (int32_t i = 0; i < table->tail_count; i++) {
-        Memory_FreePointer(&table->tail[i]);
+    const int32_t keep = Catalog_GetBuiltInCount(table->context);
+    while (table->chunk_count > 0
+           && (table->chunk_count - 1) * CATALOG_TABLE_CHUNK >= keep) {
+        Memory_FreePointer(&table->chunks[table->chunk_count - 1]);
+        table->chunk_count--;
     }
-    Memory_FreePointer(&table->tail);
-    table->tail_count = 0;
+    if (table->chunk_count == 0) {
+        Memory_FreePointer(&table->chunks);
+        return;
+    }
+    // Drop only records after the built-in identities because the final chunk
+    // may contain both built-in and minted records.
+    const int32_t first = (table->chunk_count - 1) * CATALOG_TABLE_CHUNK;
+    for (int32_t id = MAX(first, keep); id < first + CATALOG_TABLE_CHUNK;
+         id++) {
+        memset(
+            (char *)table->chunks[table->chunk_count - 1]
+                + (size_t)(id - first) * table->elem_size,
+            0, table->elem_size);
+    }
 }

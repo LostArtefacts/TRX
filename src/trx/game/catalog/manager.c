@@ -239,6 +239,11 @@ int32_t Catalog_GetCount(const CATALOG_CONTEXT context)
     return m_Counts[context];
 }
 
+int32_t Catalog_GetBuiltInCount(const CATALOG_CONTEXT context)
+{
+    return m_BuiltInCounts[context];
+}
+
 RESULT Catalog_BindSlot(
     const CATALOG_CONTEXT context, const CATALOG_ID id, const int32_t game_id)
 {

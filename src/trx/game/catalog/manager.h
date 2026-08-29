@@ -83,6 +83,10 @@ CATALOG_ID Catalog_SlotToID(
 // Return the number of identities in the context.
 int32_t Catalog_GetCount(CATALOG_CONTEXT context);
 
+// Return the number of built-in identities, which is the first position
+// available for minted identities.
+int32_t Catalog_GetBuiltInCount(CATALOG_CONTEXT context);
+
 // Loading -------------------------------------------------------------------
 
 // Load mappings for a context from a CSV file:

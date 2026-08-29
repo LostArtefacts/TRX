@@ -17,7 +17,7 @@ typedef struct {
     OBJECT obj;
 } M_UNCATALOGED_SLOT;
 
-CATALOG_TABLE_DEFINE(m_Objects, CATALOG_OBJECTS, OBJECT, O_NUMBER_OF);
+CATALOG_TABLE_DEFINE(m_Objects, CATALOG_OBJECTS, OBJECT);
 static STATIC_OBJECT_3D *m_StaticObjects3D = nullptr;
 static STATIC_OBJECT_2D *m_StaticObjects2D = nullptr;
 static int32_t m_StaticObjects3DCount = 0;

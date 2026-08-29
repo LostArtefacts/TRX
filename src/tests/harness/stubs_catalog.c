@@ -10,6 +10,13 @@ int32_t Catalog_GetCount(const CATALOG_CONTEXT context)
     return context == CATALOG_OBJECTS ? O_NUMBER_OF : 0;
 }
 
+int32_t Catalog_GetBuiltInCount(const CATALOG_CONTEXT context)
+{
+    // Report only built-in identities because the stub creates no minted
+    // identities.
+    return Catalog_GetCount(context);
+}
+
 const char *Catalog_IDToKey(const CATALOG_CONTEXT context, const CATALOG_ID id)
 {
     // Every id the stub reports is one the exe names, so none is anonymous.

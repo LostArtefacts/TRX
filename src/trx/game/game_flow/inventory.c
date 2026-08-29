@@ -13,8 +13,8 @@
 
 #include <string.h>
 
-CATALOG_TABLE_DEFINE(m_SecretInvItems, CATALOG_OBJECTS, int8_t, O_NUMBER_OF);
-CATALOG_TABLE_DEFINE(m_Add2InvItems, CATALOG_OBJECTS, int8_t, O_NUMBER_OF);
+CATALOG_TABLE_DEFINE(m_SecretInvItems, CATALOG_OBJECTS, int8_t);
+CATALOG_TABLE_DEFINE(m_Add2InvItems, CATALOG_OBJECTS, int8_t);
 static bool m_RemoveWeapons = false;
 static bool m_RemoveAmmo = false;
 static bool m_RemoveFlares = false;
