@@ -13,7 +13,7 @@
 #include <trx/game/output/common.h>
 
 typedef struct {
-    int32_t game_id;
+    OBJECT_SLOT slot_num;
     OBJECT obj;
 } M_UNCATALOGED_SLOT;
 
@@ -99,25 +99,26 @@ OBJECT_ID Object_Mint(void)
     return Catalog_CreateAnonymous(CATALOG_OBJECTS);
 }
 
-OBJECT *Object_GetByGameID(const int32_t game_id)
+OBJECT *Object_GetBySlot(const OBJECT_SLOT slot)
 {
-    OBJECT_ID object_id = Object_FromGameID(game_id);
+    OBJECT_ID object_id = Object_SlotToID(slot);
     if (object_id == NO_OBJECT) {
         return nullptr;
     }
     return Object_TryGet(object_id);
 }
 
-void Object_StoreUncatalogedSlot(const int32_t game_id, const OBJECT *const obj)
+void Object_StoreUncatalogedSlot(
+    const OBJECT_SLOT slot_num, const OBJECT *const obj)
 {
     if (m_UncatalogedSlots == nullptr) {
         m_UncatalogedSlots = Vector_Create(sizeof(M_UNCATALOGED_SLOT));
     }
-    const M_UNCATALOGED_SLOT slot = { .game_id = game_id, .obj = *obj };
+    const M_UNCATALOGED_SLOT slot = { .slot_num = slot_num, .obj = *obj };
     Vector_Add(m_UncatalogedSlots, &slot);
 }
 
-const OBJECT *Object_GetUncatalogedSlot(const int32_t game_id)
+const OBJECT *Object_GetUncatalogedSlot(const OBJECT_SLOT slot_num)
 {
     if (m_UncatalogedSlots == nullptr) {
         return nullptr;
@@ -125,7 +126,7 @@ const OBJECT *Object_GetUncatalogedSlot(const int32_t game_id)
     for (int32_t i = 0; i < m_UncatalogedSlots->count; i++) {
         const M_UNCATALOGED_SLOT *const slot =
             Vector_Get(m_UncatalogedSlots, i);
-        if (slot->game_id == game_id) {
+        if (slot->slot_num == slot_num) {
             return &slot->obj;
         }
     }
@@ -153,14 +154,14 @@ STATIC_OBJECT_2D *Object_Get2DStatic(const int32_t static_id)
     return &m_StaticObjects2D[static_id];
 }
 
-OBJECT_ID Object_FromGameID(const int32_t game_id)
+OBJECT_ID Object_SlotToID(const OBJECT_SLOT slot)
 {
-    return Catalog_SlotToID(CATALOG_OBJECTS, game_id, NO_OBJECT);
+    return Catalog_SlotToID(CATALOG_OBJECTS, slot, NO_OBJECT);
 }
 
-int32_t Object_ToGameID(const OBJECT_ID object_id)
+OBJECT_SLOT Object_IDToSlot(const OBJECT_ID id)
 {
-    return Catalog_IDToSlot(CATALOG_OBJECTS, object_id, -1);
+    return Catalog_IDToSlot(CATALOG_OBJECTS, id, -1);
 }
 
 bool Object_IsType(const OBJECT_ID object_id, const OBJECT_ID *test_arr)

@@ -190,7 +190,7 @@ bool CutSeq_Pak_GetCutscene(const int32_t num, CUTSEQ_INFO *const info)
         actor->data_offset = M_ReadS32(actor_desc);
         actor->game_obj_slot = M_ReadS16(actor_desc + 4);
         actor->node_count = M_ReadS16(actor_desc + 6);
-        actor->obj_id = Object_FromGameID(actor->game_obj_slot);
+        actor->obj_id = Object_SlotToID(actor->game_obj_slot);
         if (actor->data_offset >= length || actor->node_count < 1) {
             LOG_ERROR("Malformed cutscene %d actor %d", num, i);
             return false;

@@ -175,7 +175,7 @@ void Sparks_SaveSpark(JSON_WRITE_IO *const io, const SPARK *const spark)
 
     if ((spark->flags & SPARK_F_SPRITE) != 0U) {
         const OBJECT *const obj = Object_Get(spark->sprite_obj_id);
-        JSONW_WRITE(io, "sprite_obj_id", Object_ToGameID(spark->sprite_obj_id));
+        JSONW_WRITE(io, "sprite_obj_id", Object_IDToSlot(spark->sprite_obj_id));
         JSONW_WRITE(io, "sprite_offset", spark->sprite_idx - obj->mesh_idx);
     }
 
@@ -226,7 +226,7 @@ RESULT Sparks_LoadSpark(JSON_READ_IO *const io, SPARK *const spark)
         int32_t sprite_offset = 0;
         MUST(JSON_READ(io, "sprite_obj_id", &game_id));
         MUST(JSON_READ(io, "sprite_offset", &sprite_offset));
-        spark->sprite_obj_id = Object_FromGameID(game_id);
+        spark->sprite_obj_id = Object_SlotToID(game_id);
         if (spark->sprite_obj_id == NO_OBJECT) {
             return JSON_ReadIO_Fail(io, "unsupported object #%d", game_id);
         }

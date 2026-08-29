@@ -102,7 +102,7 @@ static void M_WriteAnimNum(JSON_WRITE_IO *const io, const int16_t anim_num)
             || anim_num >= obj->anim_idx + obj->anim_count) {
             continue;
         }
-        const int32_t game_id = Object_ToGameID(id);
+        const int32_t game_id = Object_IDToSlot(id);
         if (game_id != -1) {
             JSONW_WRITE(io, "anim_obj", game_id);
             JSONW_WRITE(io, "anim_rel", anim_num - obj->anim_idx);
@@ -152,7 +152,7 @@ static void M_WriteItem(JSON_WRITE_IO *const io, const ITEM *const item)
     }
 
     const OBJECT *const obj = Object_Get(item->object_id);
-    JSONW_WRITE(io, "object_id", Object_ToGameID(item->object_id));
+    JSONW_WRITE(io, "object_id", Object_IDToSlot(item->object_id));
     JSONW_WRITE(io, "mesh_bits", item->mesh_bits);
 
     if (obj->save_position) {
@@ -244,7 +244,7 @@ static void M_WriteItem(JSON_WRITE_IO *const io, const ITEM *const item)
         }
 
         JSONW_PUSH_OBJECT(io);
-        JSONW_WRITE(io, "object_id", Object_ToGameID(drop_item->object_id));
+        JSONW_WRITE(io, "object_id", Object_IDToSlot(drop_item->object_id));
         M_WriteXYZ32(io, "pos", drop_pos);
         JSONW_WRITE(io, "y_rot", drop_rot_y);
         JSONW_WRITE(io, "room_num", drop_room_num);
@@ -397,14 +397,14 @@ void SG_File_DumpEffects(JSON_WRITE_IO *const io)
     for (int16_t link_num = Effect_GetActiveNum(); link_num != NO_ITEM;
          link_num = Effect_Get(link_num)->next_active) {
         EFFECT *const effect = Effect_Get(link_num);
-        if (Object_ToGameID(effect->object_id) == -1) {
+        if (Object_IDToSlot(effect->object_id) == -1) {
             continue;
         }
         JSONW_PUSH_OBJECT(io);
         M_WriteXYZ32(io, "pos", effect->pos);
         M_WriteXYZ16(io, "rot", effect->rot);
         JSONW_WRITE(io, "room_num", effect->room_num);
-        JSONW_WRITE(io, "object_id", Object_ToGameID(effect->object_id));
+        JSONW_WRITE(io, "object_id", Object_IDToSlot(effect->object_id));
         JSONW_WRITE(io, "speed", effect->speed);
         JSONW_WRITE(io, "fall_speed", effect->fall_speed);
         // Introduced in TRX 1.2
@@ -623,7 +623,7 @@ void SG_File_DumpLara(JSON_WRITE_IO *const io)
     if (lara->gun_item_num != NO_ITEM) {
         JSONW_PUSH_OBJECT(io);
         const ITEM *const weapon_item = Item_Get(lara->gun_item_num);
-        JSONW_WRITE(io, "object_id", Object_ToGameID(weapon_item->object_id));
+        JSONW_WRITE(io, "object_id", Object_IDToSlot(weapon_item->object_id));
         M_WriteAnimNum(io, weapon_item->anim_num);
         JSONW_WRITE(io, "frame_num", weapon_item->frame_num);
         JSONW_WRITE(io, "current_anim_state", weapon_item->current_anim_state);

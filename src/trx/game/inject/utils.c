@@ -11,7 +11,7 @@ INJECTION_OBJECT_INFO Inject_ReadObjectPtr(const INJECTION *const injection)
     };
 
     if (obj_info.type == OBJ_TYPE_OBJECT) {
-        obj_info.id = Object_FromGameID(obj_info.id);
+        obj_info.id = Object_SlotToID(obj_info.id);
         if (injection->version < INJ_VERSION_5) {
             File_Skip(injection->fp, 16);
         }

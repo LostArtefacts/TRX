@@ -39,7 +39,7 @@ static RESULT M_ReadObjectID(
 {
     int32_t game_id = 0;
     MUST(JSON_READ(io, key, &game_id));
-    *target = Object_FromGameID(game_id);
+    *target = Object_SlotToID(game_id);
     if (*target == NO_OBJECT) {
         return JSON_ReadIO_Fail(io, "unsupported object #%d", game_id);
     }
@@ -57,7 +57,7 @@ static RESULT M_ReadAnimNum(JSON_READ_IO *const io, int16_t *const anim_num)
     MUST(JSON_READ_OPT(io, "anim_obj", &game_id));
     MUST(JSON_READ_OPT(io, "anim_rel", &anim_rel));
     if (game_id >= 0 && anim_rel >= 0) {
-        const OBJECT *const obj = Object_GetByGameID(game_id);
+        const OBJECT *const obj = Object_GetBySlot(game_id);
         if (obj != nullptr && obj->loaded && obj->anim_idx != NO_ANIM) {
             *anim_num = obj->anim_idx + anim_rel;
         }
