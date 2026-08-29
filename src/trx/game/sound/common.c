@@ -34,7 +34,7 @@ typedef enum {
 } SOUND_SOURCE_FLAG;
 
 typedef struct {
-    SAMPLE_ID sample_id;
+    SAMPLE_SLOT sample_id;
     const SAMPLE_INFO *sample;
     int32_t handle;
     int32_t volume;
@@ -52,7 +52,7 @@ typedef struct {
 } M_SAMPLE_DATA_ENTRY;
 
 typedef struct M_SAMPLE_ENTRY {
-    SAMPLE_ID sample_id;
+    SAMPLE_SLOT sample_id;
     SAMPLE_INFO sample;
     UT_hash_handle hh;
 } M_SAMPLE_ENTRY;
@@ -195,7 +195,7 @@ static M_ACTIVE_SOUND *M_SelectUnusedSound(void)
     return best_sound;
 }
 
-static M_ACTIVE_SOUND *M_SelectUsedSound(const SAMPLE_ID sample_id)
+static M_ACTIVE_SOUND *M_SelectUsedSound(const SAMPLE_SLOT sample_id)
 {
     for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
         M_ACTIVE_SOUND *const result = &m_ActiveSounds[i];
@@ -207,7 +207,7 @@ static M_ACTIVE_SOUND *M_SelectUsedSound(const SAMPLE_ID sample_id)
 }
 
 static M_ACTIVE_SOUND *M_SelectUsedSoundWithPos(
-    const SAMPLE_ID sample_id, const XYZ_32 *const pos)
+    const SAMPLE_SLOT sample_id, const XYZ_32 *const pos)
 {
     for (int32_t i = 0; i < M_MAX_ACTIVE_SOUNDS; i++) {
         M_ACTIVE_SOUND *const result = &m_ActiveSounds[i];
@@ -427,7 +427,7 @@ int32_t Sound_ReserveSampleData(int32_t index, const int32_t how_many)
     return index;
 }
 
-SAMPLE_INFO *Sound_GetSample(const SAMPLE_ID sample_id)
+SAMPLE_INFO *Sound_GetSample(const SAMPLE_SLOT sample_id)
 {
     M_SAMPLE_ENTRY *entry = nullptr;
     if (sample_id == SFX_INVALID) {
@@ -437,7 +437,7 @@ SAMPLE_INFO *Sound_GetSample(const SAMPLE_ID sample_id)
     return entry != nullptr ? &entry->sample : nullptr;
 }
 
-SAMPLE_INFO *Sound_GetOrCreateSample(const SAMPLE_ID sample_id)
+SAMPLE_INFO *Sound_GetOrCreateSample(const SAMPLE_SLOT sample_id)
 {
     SAMPLE_INFO *const sample = Sound_GetSample(sample_id);
     if (sample != nullptr) {
@@ -449,23 +449,23 @@ SAMPLE_INFO *Sound_GetOrCreateSample(const SAMPLE_ID sample_id)
     return &entry->sample;
 }
 
-bool Sound_IsAvailable_Direct(const SAMPLE_ID sample_id)
+bool Sound_IsAvailableBySlot(const SAMPLE_SLOT sample_id)
 {
     return Sound_GetSample(sample_id) != nullptr;
 }
 
-bool Sound_IsAvailable(const SAMPLE_TRX_ID sample_id)
+bool Sound_IsAvailable(const SAMPLE_ID sample_id)
 {
-    return Sound_IsAvailable_Direct(Sound_ToGameID(sample_id));
+    return Sound_IsAvailableBySlot(Sound_IDToSlot(sample_id));
 }
 
-// Get the maximum direct SAMPLE_ID loaded for playback.
+// Get the maximum direct SAMPLE_SLOT loaded for playback.
 // Returns SFX_INVALID if no samples are available.
 RESULT Sound_CheckSamples(void)
 {
     RESULT result = OK;
-    const SAMPLE_ID max_id = Sound_GetMaxDirectSampleID();
-    for (SAMPLE_ID sample_id = 0; sample_id <= max_id; sample_id++) {
+    const SAMPLE_SLOT max_id = Sound_GetMaxSlot();
+    for (SAMPLE_SLOT sample_id = 0; sample_id <= max_id; sample_id++) {
         const SAMPLE_INFO *const sample = Sound_GetSample(sample_id);
         if (sample == nullptr) {
             continue;
@@ -489,10 +489,10 @@ RESULT Sound_CheckSamples(void)
     return result;
 }
 
-SAMPLE_ID Sound_GetMaxDirectSampleID(void)
+SAMPLE_SLOT Sound_GetMaxSlot(void)
 {
     M_SAMPLE_ENTRY *entry, *tmp;
-    SAMPLE_ID max_id = SFX_INVALID;
+    SAMPLE_SLOT max_id = SFX_INVALID;
     HASH_ITER(hh, m_SampleMap, entry, tmp)
     {
         if (entry->sample_id > max_id) {
@@ -531,7 +531,7 @@ void Sound_ResetSources(void)
         OBJECT_VECTOR *const source = &m_Sources[i];
         if ((flip_status && (source->flags & SF_FLIP))
             || (!flip_status && (source->flags & SF_UNFLIP))) {
-            Sound_Effect_Direct(source->data, &source->pos, SPM_NORMAL);
+            Sound_EffectBySlot(source->data, &source->pos, SPM_NORMAL);
         }
     }
 }
@@ -539,8 +539,8 @@ void Sound_ResetSources(void)
 // Returns the active-sound slot the sample plays in, or -1 when it does not
 // play. The slot is the one Sound_GetActiveSlot and the Lua Stream handle
 // address.
-int32_t Sound_Effect_Direct(
-    const SAMPLE_ID sample_id, const XYZ_32 *const pos, const uint32_t flags)
+int32_t Sound_EffectBySlot(
+    const SAMPLE_SLOT sample_id, const XYZ_32 *const pos, const uint32_t flags)
 {
     if (!Sound_IsInitialised()) {
         return -1;
@@ -662,13 +662,12 @@ int32_t Sound_Effect_Direct(
 }
 
 int32_t Sound_Effect(
-    const SAMPLE_TRX_ID sample_id, const XYZ_32 *const pos,
-    const uint32_t flags)
+    const SAMPLE_ID sample_id, const XYZ_32 *const pos, const uint32_t flags)
 {
-    return Sound_Effect_Direct(Sound_ToGameID(sample_id), pos, flags);
+    return Sound_EffectBySlot(Sound_IDToSlot(sample_id), pos, flags);
 }
 
-void Sound_StopEffect_Direct(const SAMPLE_ID sample_id)
+void Sound_StopEffectBySlot(const SAMPLE_SLOT sample_id)
 {
     if (!Sound_IsInitialised()) {
         return;
@@ -681,9 +680,9 @@ void Sound_StopEffect_Direct(const SAMPLE_ID sample_id)
     }
 }
 
-void Sound_StopEffect(const SAMPLE_TRX_ID sample_id)
+void Sound_StopEffect(const SAMPLE_ID sample_id)
 {
-    Sound_StopEffect_Direct(Sound_ToGameID(sample_id));
+    Sound_StopEffectBySlot(Sound_IDToSlot(sample_id));
 }
 
 void Sound_ResetAmbient(void)
@@ -749,7 +748,7 @@ int32_t Sound_GetActiveSlotCount(void)
     return M_MAX_ACTIVE_SOUNDS;
 }
 
-bool Sound_GetActiveSlot(const int32_t slot, SAMPLE_ID *const out_sample_id)
+bool Sound_GetActiveSlot(const int32_t slot, SAMPLE_SLOT *const out_sample_id)
 {
     const M_ACTIVE_SOUND *const sound = M_GetActiveSlot(slot);
     if (sound == nullptr) {
@@ -767,7 +766,7 @@ TRX_HANDLE Sound_GetActiveSlotHandle(const int32_t slot)
 }
 
 bool Sound_ResolveActiveSlot(
-    const TRX_HANDLE handle, SAMPLE_ID *const out_sample_id)
+    const TRX_HANDLE handle, SAMPLE_SLOT *const out_sample_id)
 {
     if (!Handle_RegistryIsLive(&m_SlotHandles, handle)) {
         return false;

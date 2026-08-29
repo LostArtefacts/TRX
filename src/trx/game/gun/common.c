@@ -70,7 +70,7 @@ void Gun_AddDynamicLight(void)
 
 void Gun_FireOverlaySound(const WEAPON_INFO *const weapon)
 {
-    if (weapon->sample_overlay_num == SFX_TRX_INVALID) {
+    if (weapon->sample_overlay_num == NO_CATALOG_ID) {
         return;
     }
     const uint32_t pitch = weapon->sample_overlay_pitch << 8;

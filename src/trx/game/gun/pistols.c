@@ -80,14 +80,14 @@ static void M_FireSound(
     if (sound_type == M_SOUND_OVERLAY) {
         Gun_FireOverlaySound(weapon);
     }
-    SAMPLE_ID sample_id = Sound_ToGameID(weapon->sample_num);
+    SAMPLE_SLOT sample_id = Sound_IDToSlot(weapon->sample_num);
     if (sample_id == SFX_INVALID) {
         return;
     }
     if (sound_type == M_SOUND_ALTERNATE) {
         sample_id += 1;
     }
-    Sound_Effect_Direct(sample_id, &Lara_GetItem()->pos, SPM_NORMAL);
+    Sound_EffectBySlot(sample_id, &Lara_GetItem()->pos, SPM_NORMAL);
 }
 
 static const M_FRAME_SETUP *M_GetSetup(const LARA_GUN_TYPE weapon_type)

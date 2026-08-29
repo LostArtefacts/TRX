@@ -31,17 +31,17 @@ static void M_Reset(void)
     }
 }
 
-bool Sound_IsAvailable_Direct(const SAMPLE_ID sample_id)
+bool Sound_IsAvailableBySlot(const SAMPLE_SLOT sample_id)
 {
     return sample_id == FAKE_SAMPLE;
 }
 
-SAMPLE_ID Sound_GetMaxDirectSampleID(void)
+SAMPLE_SLOT Sound_GetMaxSlot(void)
 {
     return FAKE_SAMPLE;
 }
 
-SAMPLE_INFO *Sound_GetSample(const SAMPLE_ID sample_id)
+SAMPLE_INFO *Sound_GetSample(const SAMPLE_SLOT sample_id)
 {
     static SAMPLE_INFO sample;
     if (sample_id != FAKE_SAMPLE) {
@@ -61,7 +61,7 @@ int32_t Sound_GetActiveSlotCount(void)
     return FAKE_SOUND_SLOT_COUNT;
 }
 
-bool Sound_GetActiveSlot(const int32_t slot, SAMPLE_ID *const out_sample_id)
+bool Sound_GetActiveSlot(const int32_t slot, SAMPLE_SLOT *const out_sample_id)
 {
     if (slot < 0 || slot >= FAKE_SOUND_SLOT_COUNT || !m_Slots[slot].active) {
         return false;
@@ -78,7 +78,7 @@ TRX_HANDLE Sound_GetActiveSlotHandle(const int32_t slot)
 }
 
 bool Sound_ResolveActiveSlot(
-    const TRX_HANDLE handle, SAMPLE_ID *const out_sample_id)
+    const TRX_HANDLE handle, SAMPLE_SLOT *const out_sample_id)
 {
     if (!Handle_RegistryIsLive(&m_Handles, handle)) {
         return false;
@@ -104,8 +104,8 @@ void Sound_UnpauseActiveSlot(const int32_t slot)
     FAKE_RECORD("slot_unpause", FV(slot));
 }
 
-int32_t Sound_Effect_Direct(
-    const SAMPLE_ID sfx_num, const XYZ_32 *const pos, const uint32_t flags)
+int32_t Sound_EffectBySlot(
+    const SAMPLE_SLOT sfx_num, const XYZ_32 *const pos, const uint32_t flags)
 {
     const bool had_pos = pos != nullptr;
     const int32_t x = had_pos ? pos->x : 0;
@@ -127,7 +127,7 @@ int32_t Sound_Effect_Direct(
     return -1;
 }
 
-void Sound_StopEffect_Direct(const SAMPLE_ID sfx_num)
+void Sound_StopEffectBySlot(const SAMPLE_SLOT sfx_num)
 {
     FAKE_RECORD("stop", FV(sfx_num));
 }

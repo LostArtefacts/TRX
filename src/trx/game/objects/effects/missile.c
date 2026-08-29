@@ -41,8 +41,7 @@ static bool M_HitFloorOrCeiling(EFFECT *const effect)
     return false;
 }
 
-static void M_ConvertToRicochet(
-    EFFECT *const effect, const SAMPLE_TRX_ID sample_id)
+static void M_ConvertToRicochet(EFFECT *const effect, const SAMPLE_ID sample_id)
 {
     effect->object_id = O_RICOCHET;
     effect->frame_num = -Random_GetControl() / 11000;
@@ -51,8 +50,7 @@ static void M_ConvertToRicochet(
     Sound_Effect(sample_id, &effect->pos, SPM_NORMAL);
 }
 
-static void M_ConvertToBlood(
-    EFFECT *const effect, const SAMPLE_TRX_ID sample_id)
+static void M_ConvertToBlood(EFFECT *const effect, const SAMPLE_ID sample_id)
 {
     ITEM *const lara_item = Lara_GetItem();
     Spawn_Blood(

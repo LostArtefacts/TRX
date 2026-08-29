@@ -1,15 +1,24 @@
 #pragma once
 
-typedef enum {
-    SFX_INVALID = -1,
-} SAMPLE_ID;
+#include <trx/game/catalog/manager.h>
 
-typedef enum {
-    SFX_TRX_INVALID = -1,
+#include <stdint.h>
+
+// Identify a sample by the number stored in the game's files.
+typedef int32_t SAMPLE_SLOT;
+
+enum {
+    SFX_INVALID = -1,
+};
+
+// Identify the same sample across all four games.
+typedef CATALOG_ID SAMPLE_ID;
+
+enum {
 #define X_CATALOG_ID(enum_value) enum_value,
 #include <trx/game/catalog/samples.def>
 #undef X_CATALOG_ID
-} SAMPLE_TRX_ID;
+};
 
-SAMPLE_ID Sound_ToGameID(SAMPLE_TRX_ID sample_id);
-SAMPLE_TRX_ID Sound_FromGameID(SAMPLE_ID sample_id);
+SAMPLE_SLOT Sound_IDToSlot(SAMPLE_ID id);
+SAMPLE_ID Sound_SlotToID(SAMPLE_SLOT slot);

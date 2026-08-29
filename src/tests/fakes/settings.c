@@ -378,7 +378,7 @@ void Sound_SetMasterVolume(const float volume)
 }
 
 int32_t Sound_Effect(
-    const SAMPLE_TRX_ID sfx_num, const XYZ_32 *const pos, const uint32_t flags)
+    const SAMPLE_ID sfx_num, const XYZ_32 *const pos, const uint32_t flags)
 {
     return 0;
 }

@@ -16,7 +16,7 @@ static void M_HandleSFXData(
     File_Skip(chunk.injection->fp, sizeof(int32_t));
 
     for (int32_t i = 0; i < data_count; i++) {
-        const SAMPLE_ID sfx_id = File_ReadS16(chunk.injection->fp);
+        const SAMPLE_SLOT sfx_id = File_ReadS16(chunk.injection->fp);
 
         SAMPLE_INFO *const sample_info = Sound_GetOrCreateSample(sfx_id);
         sample_info->volume = File_ReadS16(chunk.injection->fp);

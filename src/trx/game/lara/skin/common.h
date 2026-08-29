@@ -48,4 +48,4 @@ void Lara_Skin_SetExtraEquipment(
     LARA_MESH mesh, LARA_SKIN_EXTRA_MESH extra_mesh);
 const LARA_SKIN_EQUIPMENT *Lara_Skin_GetEquipment(LARA_MESH mesh);
 
-SAMPLE_ID Lara_Skin_GetAnimSFX(SAMPLE_ID sample_id);
+SAMPLE_SLOT Lara_Skin_GetAnimSFX(SAMPLE_SLOT sample_id);
