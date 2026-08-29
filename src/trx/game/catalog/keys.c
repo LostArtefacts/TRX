@@ -9,6 +9,7 @@ static const char *const m_ContextPrefixes[CATALOG_CONTEXT_MAX] = {
     [CATALOG_OBJECTS] = "O_",     [CATALOG_MUSIC] = "MX_",
     [CATALOG_SAMPLES] = "SFX_",   [CATALOG_LARA_STATES] = "LS_",
     [CATALOG_LARA_ANIMS] = "LA_", [CATALOG_ITEM_ACTIONS] = "ITEM_ACTION_",
+    [CATALOG_WEAPONS] = "LGT_",
 };
 
 const char *Catalog_KeyForEnum(

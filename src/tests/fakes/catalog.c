@@ -44,6 +44,9 @@ static const char *const m_LaraAnims[] = {
 static const char *const m_ItemActions[] = {
 #include <trx/game/catalog/item_actions.def>
 };
+static const char *const m_Weapons[] = {
+#include <trx/game/catalog/weapons.def>
+};
 #undef X_CATALOG_ID
 
 static const char *const *M_Names(
@@ -68,6 +71,9 @@ static const char *const *M_Names(
     case CATALOG_ITEM_ACTIONS:
         *out_count = ARRAY_SIZE(m_ItemActions);
         return m_ItemActions;
+    case CATALOG_WEAPONS:
+        *out_count = ARRAY_SIZE(m_Weapons);
+        return m_Weapons;
     default:
         *out_count = 0;
         return nullptr;

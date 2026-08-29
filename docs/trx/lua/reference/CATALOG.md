@@ -36,6 +36,8 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
         Lara's animations.
     - `trx.catalog.Context.ITEM_ACTIONS` = `5`  
         Item actions, which the flip effects trigger.
+    - `trx.catalog.Context.WEAPONS` = `6`  
+        Weapons Lara can hold.
 
 - <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 821 names
 

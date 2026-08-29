@@ -64,6 +64,9 @@ static const M_ENTRY m_CatalogEntryDefs[] = {
     { CATALOG_ITEM_ACTIONS, enum_value, #enum_value },
 #include <trx/game/catalog/item_actions.def>
 #undef X_CATALOG_ID
+#define X_CATALOG_ID(enum_value) { CATALOG_WEAPONS, enum_value, #enum_value },
+#include <trx/game/catalog/weapons.def>
+#undef X_CATALOG_ID
 };
 
 // Number of catalog entries

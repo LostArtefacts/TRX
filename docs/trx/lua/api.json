@@ -272,7 +272,7 @@
     },
     {
       "bulk": false,
-      "count": 6,
+      "count": 7,
       "description": "Which catalog a slot belongs to.",
       "path": "catalog.Context",
       "values": [
@@ -305,6 +305,11 @@
           "description": "Item actions, which the flip effects trigger.",
           "name": "ITEM_ACTIONS",
           "value": 5
+        },
+        {
+          "description": "Weapons Lara can hold.",
+          "name": "WEAPONS",
+          "value": 6
         }
       ]
     },
