@@ -151,6 +151,40 @@ int32_t Inv_State_GetCount(
     return 0;
 }
 
+// Store rounds under the weapon that carries them, matching the engine's
+// ammunition model.
+void Inv_State_SetAmmo(
+    INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type,
+    const int32_t rounds)
+{
+    for (int32_t i = 0; i < state->ammo_count; i++) {
+        if (state->ammo[i].gun_type == gun_type) {
+            state->ammo[i].rounds = rounds;
+            return;
+        }
+    }
+    state->ammo[state->ammo_count++] =
+        (INVENTORY_AMMO) { .gun_type = gun_type, .rounds = rounds };
+}
+
+int32_t Inv_State_GetAmmo(
+    const INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type)
+{
+    for (int32_t i = 0; i < state->ammo_count; i++) {
+        if (state->ammo[i].gun_type == gun_type) {
+            return state->ammo[i].rounds;
+        }
+    }
+    return 0;
+}
+
+void Inv_State_CopyAmmo(
+    INVENTORY_STATE *const dst, const INVENTORY_STATE *const src)
+{
+    memcpy(dst->ammo, src->ammo, sizeof(dst->ammo));
+    dst->ammo_count = src->ammo_count;
+}
+
 int32_t Inv_GetItemCount(const OBJECT_ID object_id)
 {
     return Inv_State_GetCount(&m_LiveInv, object_id);
@@ -258,7 +292,7 @@ TEST(a_demo_arrives_armed_however_the_playthrough_stands)
     const RESUME_INFO *const demo = SG_Resume_GetEntry(&m_DemoLevels[0]);
     CHECK(demo->flags.available);
     CHECK_EQ_INT(Inv_State_GetCount(&demo->inv, O_PISTOLS_ITEM), 1);
-    CHECK_EQ_INT(demo->inv.ammo[LGT_PISTOLS], M_PISTOL_ROUNDS);
+    CHECK_EQ_INT(Inv_State_GetAmmo(&demo->inv, LGT_PISTOLS), M_PISTOL_ROUNDS);
     CHECK_EQ_INT(demo->prev_level, -1);
 }
 
@@ -333,7 +367,7 @@ TEST(the_first_level_starts_with_her_pistols_and_nothing_else)
     SG_Resume_ApplyRulesToEntry(&m_MainLevels[M_FIRST]);
 
     CHECK_EQ_INT(Inv_State_GetCount(&entry->inv, O_PISTOLS_ITEM), 1);
-    CHECK_EQ_INT(entry->inv.ammo[LGT_PISTOLS], M_PISTOL_ROUNDS);
+    CHECK_EQ_INT(Inv_State_GetAmmo(&entry->inv, LGT_PISTOLS), M_PISTOL_ROUNDS);
     CHECK_EQ_INT(Inv_State_GetCount(&entry->inv, O_SHOTGUN_ITEM), 0);
     CHECK_EQ_INT(entry->equipped_gun_type, LGT_PISTOLS);
     CHECK_EQ_INT(entry->lara_hitpoints, 1000);
@@ -379,7 +413,7 @@ TEST(storing_the_game_takes_what_lara_is_carrying_into_the_entry)
     m_Lara.gun_status = LGS_READY;
     Inv_State_SetCount(&m_LiveInv, O_UZIS_ITEM, 1);
     Inv_State_SetCount(&m_LiveInv, O_SMALL_MEDIPACK_ITEM, 3);
-    m_LiveInv.ammo[LGT_UZIS] = 150;
+    Inv_State_SetAmmo(&m_LiveInv, LGT_UZIS, 150);
 
     SG_Resume_StoreGameToEntry(&m_MainLevels[M_SECOND]);
 
@@ -391,7 +425,7 @@ TEST(storing_the_game_takes_what_lara_is_carrying_into_the_entry)
     CHECK_EQ_INT(entry->gun_status, LGS_READY);
     CHECK_EQ_INT(Inv_State_GetCount(&entry->inv, O_UZIS_ITEM), 1);
     CHECK_EQ_INT(Inv_State_GetCount(&entry->inv, O_SMALL_MEDIPACK_ITEM), 3);
-    CHECK_EQ_INT(entry->inv.ammo[LGT_UZIS], 150);
+    CHECK_EQ_INT(Inv_State_GetAmmo(&entry->inv, LGT_UZIS), 150);
 }
 
 TEST(mirroring_puts_the_level_into_the_entry_a_save_writes_from)

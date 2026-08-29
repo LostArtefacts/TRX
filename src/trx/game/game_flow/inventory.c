@@ -278,7 +278,7 @@ void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)
     }
 
     if (m_RemoveAmmo) {
-        memset(resume->inv.ammo, 0, sizeof(resume->inv.ammo));
+        Inv_State_ClearAmmo(&resume->inv);
     }
 
     // The game flow always uses the loaded gun, even if the level took the

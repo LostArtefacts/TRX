@@ -194,7 +194,19 @@ void Inv_State_AddAmmo(
     INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type,
     const int32_t rounds)
 {
-    state->ammo[gun_type] += rounds;
+    for (int32_t i = 0; i < state->ammo_count; i++) {
+        if (state->ammo[i].gun_type == gun_type) {
+            state->ammo[i].rounds += rounds;
+            return;
+        }
+    }
+    state->ammo[state->ammo_count++] =
+        (INVENTORY_AMMO) { .gun_type = gun_type, .rounds = rounds };
+}
+
+void Inv_State_ClearAmmo(INVENTORY_STATE *const state)
+{
+    state->ammo_count = 0;
 }
 
 bool Inv_HasItem(const OBJECT_ID object_id)

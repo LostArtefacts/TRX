@@ -18,14 +18,20 @@ typedef struct {
     int32_t qty;
 } INVENTORY_ENTRY;
 
+typedef struct {
+    LARA_GUN_TYPE gun_type;
+    int32_t rounds;
+} INVENTORY_AMMO;
+
 // What Lara is carrying. Holding no pointers, it is copied by assignment,
 // which is how a level hands what she has to the next one.
 typedef struct {
     INVENTORY_ENTRY entries[INV_MAX_ENTRIES];
     int32_t count;
-    // Rounds for each weapon, addressed by LARA_GUN_TYPE. Ammunition is
-    // carried whether or not she has the gun to spend it from.
-    int32_t ammo[MAX_WEAPONS];
+    // Store rounds by weapon identity so catalog-created weapons can have
+    // ammunition even when Lara does not carry the corresponding weapon.
+    INVENTORY_AMMO ammo[MAX_WEAPONS];
+    int32_t ammo_count;
 } INVENTORY_STATE;
 
 // What Lara is carrying, which the rings are drawn from. Writing it puts her
@@ -44,6 +50,10 @@ void Inv_State_AddAmmo(
 int32_t Inv_State_GetAmmo(const INVENTORY_STATE *state, LARA_GUN_TYPE gun_type);
 void Inv_State_SetAmmo(
     INVENTORY_STATE *state, LARA_GUN_TYPE gun_type, int32_t rounds);
+// Remove all rounds from the inventory when a level supplies Lara's
+// ammunition itself.
+void Inv_State_ClearAmmo(INVENTORY_STATE *state);
+void Inv_State_CopyAmmo(INVENTORY_STATE *dst, const INVENTORY_STATE *src);
 int32_t Inv_State_GetDrawnEntries(
     const INVENTORY_STATE *state, INVENTORY_ENTRY *entries, int32_t max_count);
 

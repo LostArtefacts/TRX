@@ -961,7 +961,7 @@ static RESULT M_ReadResumeInfo(
             SHOULD(JSON_READ_OPT(io, info->save_resume_ammo_key, &ammo));
             SHOULD(JSON_READ_OPT(io, info->save_resume_has_key, &has_weapon));
         }
-        resume->inv.ammo[info->gun_type] = ammo;
+        Inv_State_SetAmmo(&resume->inv, info->gun_type, ammo);
         Inv_State_SetCount(
             &resume->inv, Gun_GetGunObject(info->gun_type), has_weapon ? 1 : 0);
     }

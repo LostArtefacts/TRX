@@ -1,6 +1,7 @@
 #include <trx/game/inventory.h>
 
 #include <trx/core/log.h>
+#include <trx/core/utils.h>
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
 #include <trx/game/gun/common.h>
@@ -8,6 +9,8 @@
 #include <trx/game/inventory_ring.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/vars.h>
+
+#include <string.h>
 
 static INVENTORY_STATE m_State = {};
 
@@ -112,32 +115,47 @@ static int32_t M_GetAmmoBoxCount(
     return Inv_State_GetAmmo(state, gun_type) / Gun_GetRoundsPerBox(gun_type);
 }
 
-// Where a weapon's rounds are kept, or nullptr for one that spends none. A
-// weapon fixed to a vehicle shoots from the default weapon's endless supply.
-static int32_t *M_GetAmmoSlot(
-    INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type)
+// Identify the weapon whose rounds are spent, or LGT_UNARMED if none are
+// spent; vehicle-mounted weapons use the default weapon's unlimited supply.
+static LARA_GUN_TYPE M_GetAmmoOwner(const LARA_GUN_TYPE gun_type)
 {
     if (Gun_Registry_IsValidType(gun_type)
         && Gun_Registry_Get(gun_type)->type == WEAPON_TYPE_MOUNTED) {
-        return &state->ammo[Gun_GetDefaultType()];
+        return Gun_GetDefaultType();
     }
     if (gun_type <= LGT_UNARMED || !Gun_Registry_IsValidType(gun_type)
         || Gun_IsFlareType(gun_type)) {
-        return nullptr;
+        return LGT_UNARMED;
     }
-    return &state->ammo[gun_type];
+    return gun_type;
+}
+
+// Return the stored rounds for a weapon, or nullptr if the inventory has no
+// entry for it.
+static int32_t *M_FindAmmoSlot(
+    INVENTORY_STATE *const state, const LARA_GUN_TYPE owner)
+{
+    for (int32_t i = 0; i < state->ammo_count; i++) {
+        if (state->ammo[i].gun_type == owner) {
+            return &state->ammo[i].rounds;
+        }
+    }
+    return nullptr;
 }
 
 bool Inv_HasAmmoSlot(const LARA_GUN_TYPE gun_type)
 {
-    return M_GetAmmoSlot(&m_State, gun_type) != nullptr;
+    return M_GetAmmoOwner(gun_type) != LGT_UNARMED;
 }
 
 int32_t Inv_State_GetAmmo(
     const INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type)
 {
-    const int32_t *const slot =
-        M_GetAmmoSlot((INVENTORY_STATE *)state, gun_type);
+    const LARA_GUN_TYPE owner = M_GetAmmoOwner(gun_type);
+    if (owner == LGT_UNARMED) {
+        return 0;
+    }
+    const int32_t *const slot = M_FindAmmoSlot((INVENTORY_STATE *)state, owner);
     return slot == nullptr ? 0 : *slot;
 }
 
@@ -145,10 +163,34 @@ void Inv_State_SetAmmo(
     INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type,
     const int32_t rounds)
 {
-    int32_t *const slot = M_GetAmmoSlot(state, gun_type);
-    if (slot != nullptr) {
-        *slot = MAX(0, MIN(rounds, MAX_QTY));
+    const LARA_GUN_TYPE owner = M_GetAmmoOwner(gun_type);
+    if (owner == LGT_UNARMED) {
+        return;
     }
+    int32_t *slot = M_FindAmmoSlot(state, owner);
+    if (slot == nullptr) {
+        if (state->ammo_count >= (int32_t)ARRAY_SIZE(state->ammo)) {
+            LOG_WARNING(
+                "no room left to carry rounds for weapon %d", (int32_t)owner);
+            return;
+        }
+        state->ammo[state->ammo_count].gun_type = owner;
+        slot = &state->ammo[state->ammo_count].rounds;
+        state->ammo_count++;
+    }
+    *slot = MAX(0, MIN(rounds, MAX_QTY));
+}
+
+void Inv_State_ClearAmmo(INVENTORY_STATE *const state)
+{
+    state->ammo_count = 0;
+}
+
+void Inv_State_CopyAmmo(
+    INVENTORY_STATE *const dst, const INVENTORY_STATE *const src)
+{
+    memcpy(dst->ammo, src->ammo, sizeof(dst->ammo));
+    dst->ammo_count = src->ammo_count;
 }
 
 int32_t Inv_GetAmmo(const LARA_GUN_TYPE gun_type)
@@ -206,11 +248,8 @@ void Inv_State_AddAmmo(
     INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type,
     const int32_t rounds)
 {
-    int32_t *const slot = M_GetAmmoSlot(state, gun_type);
-    if (slot != nullptr) {
-        *slot += rounds;
-        CLAMPG(*slot, MAX_QTY);
-    }
+    Inv_State_SetAmmo(
+        state, gun_type, Inv_State_GetAmmo(state, gun_type) + rounds);
 }
 
 void Inv_State_AddCount(
