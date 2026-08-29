@@ -36,7 +36,7 @@ static void M_PersistInventory(RESUME_INFO *const resume)
 {
     const INVENTORY_STATE *const live = Inv_GetState();
     resume->inv = (INVENTORY_STATE) {};
-    memcpy(resume->inv.ammo, live->ammo, sizeof(resume->inv.ammo));
+    Inv_State_CopyAmmo(&resume->inv, live);
 
     for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
         const WEAPON_INFO *const info = Gun_Registry_GetByIndex(i);
@@ -72,7 +72,8 @@ void SG_Resume_Init(void)
         resume_info->flags.available = true;
         const LARA_GUN_TYPE default_gun = Gun_GetDefaultType();
         Inv_State_SetCount(&resume_info->inv, Gun_GetGunObject(default_gun), 1);
-        resume_info->inv.ammo[default_gun] = Gun_GetInitialRounds(default_gun);
+        Inv_State_SetAmmo(
+            &resume_info->inv, default_gun, Gun_GetInitialRounds(default_gun));
         resume_info->gun_status = LGS_ARMLESS;
         resume_info->equipped_gun_type = default_gun;
         resume_info->holsters_gun_type = default_gun;
@@ -244,7 +245,8 @@ void SG_Resume_ApplyRulesToEntry(const GF_LEVEL *const level)
         const LARA_GUN_TYPE default_gun = Gun_GetDefaultType();
         resume->inv = (INVENTORY_STATE) {};
         Inv_State_SetCount(&resume->inv, Gun_GetGunObject(default_gun), 1);
-        resume->inv.ammo[default_gun] = Gun_GetInitialRounds(default_gun);
+        Inv_State_SetAmmo(
+            &resume->inv, default_gun, Gun_GetInitialRounds(default_gun));
 
         resume->equipped_gun_type = default_gun;
         resume->holsters_gun_type = default_gun;
@@ -262,9 +264,11 @@ void SG_Resume_ApplyRulesToEntry(const GF_LEVEL *const level)
                 continue;
             }
             Inv_State_SetCount(&resume->inv, gun_object, 1);
-            resume->inv.ammo[gun_type] = Gun_GetDefaultType() == gun_type
-                ? Gun_GetInitialRounds(gun_type)
-                : 10000;
+            Inv_State_SetAmmo(
+                &resume->inv, gun_type,
+                Gun_GetDefaultType() == gun_type
+                    ? Gun_GetInitialRounds(gun_type)
+                    : 10000);
         }
         if (g_TRVersion > 1) {
             Inv_State_SetCount(&resume->inv, O_FLARE_ITEM, MAX_QTY);

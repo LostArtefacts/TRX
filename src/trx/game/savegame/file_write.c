@@ -333,7 +333,8 @@ static void M_WriteResumeInfo(
             io, info->save_resume_has_key,
             Inv_State_Has(&resume->inv, Gun_GetGunObject(info->gun_type)));
         JSONW_WRITE(
-            io, info->save_resume_ammo_key, resume->inv.ammo[info->gun_type]);
+            io, info->save_resume_ammo_key,
+            Inv_State_GetAmmo(&resume->inv, info->gun_type));
     }
     JSONW_WRITE(
         io, "has_binoculars", Inv_State_Has(&resume->inv, O_BINOCULARS_ITEM));

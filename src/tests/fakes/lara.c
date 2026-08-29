@@ -295,16 +295,41 @@ OBJECT_ID Inv_GetItemPickup(const OBJECT_ID object_id)
 int32_t Inv_State_GetAmmo(
     const INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type)
 {
-    return gun_type == LGT_UNARMED ? 0 : state->ammo[gun_type];
+    for (int32_t i = 0; i < state->ammo_count; i++) {
+        if (state->ammo[i].gun_type == gun_type) {
+            return state->ammo[i].rounds;
+        }
+    }
+    return 0;
 }
 
 void Inv_State_SetAmmo(
     INVENTORY_STATE *const state, const LARA_GUN_TYPE gun_type,
     const int32_t rounds)
 {
-    if (gun_type != LGT_UNARMED) {
-        state->ammo[gun_type] = rounds;
+    if (gun_type == LGT_UNARMED) {
+        return;
     }
+    for (int32_t i = 0; i < state->ammo_count; i++) {
+        if (state->ammo[i].gun_type == gun_type) {
+            state->ammo[i].rounds = rounds;
+            return;
+        }
+    }
+    state->ammo[state->ammo_count++] =
+        (INVENTORY_AMMO) { .gun_type = gun_type, .rounds = rounds };
+}
+
+void Inv_State_ClearAmmo(INVENTORY_STATE *const state)
+{
+    state->ammo_count = 0;
+}
+
+void Inv_State_CopyAmmo(
+    INVENTORY_STATE *const dst, const INVENTORY_STATE *const src)
+{
+    memcpy(dst->ammo, src->ammo, sizeof(dst->ammo));
+    dst->ammo_count = src->ammo_count;
 }
 
 // Every slot holding something, in the order it was taken: the fake derives no
