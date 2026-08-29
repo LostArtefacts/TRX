@@ -15,7 +15,7 @@ typedef struct {
     OBJECT_BOUNDS bounds;
     XYZ_32 position;
     M_STATE item_goal_state;
-    LARA_TRX_ANIMATION lara_animation;
+    LARA_ANIMATION_ID lara_animation;
     int16_t lara_y_rot;
     bool requires_crowbar;
 } M_INTERACTION;

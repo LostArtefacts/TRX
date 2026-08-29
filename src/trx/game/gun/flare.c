@@ -46,7 +46,7 @@ typedef enum {
     // clang-format on
 } M_LARA_FLARE_FRAME;
 
-static const LARA_TRX_STATE m_HoldStates[] = {
+static const LARA_STATE_ID m_HoldStates[] = {
     // clang-format off
     LS_WALK,
     LS_STOP,
@@ -62,27 +62,27 @@ static const LARA_TRX_STATE m_HoldStates[] = {
     LS_SWITCH_ON,
     LS_SWITCH_OFF,
     LS_QUICK_TURN,
-    LS_TRX_INVALID, // sentinel
+    NO_CATALOG_ID,
     // clang-format on
 };
 
 // TR4 also keeps the arm on the flare while running and crouching.
-static const LARA_TRX_STATE m_HoldStatesTR4[] = {
+static const LARA_STATE_ID m_HoldStatesTR4[] = {
     // clang-format off
     LS_RUN,
     LS_CROUCH_IDLE,
     LS_CROUCH_TURN_LEFT,
     LS_CROUCH_TURN_RIGHT,
-    LS_TRX_INVALID, // sentinel
+    NO_CATALOG_ID,
     // clang-format on
 };
 
-static const LARA_TRX_STATE m_ThrowStates[] = {
+static const LARA_STATE_ID m_ThrowStates[] = {
     // clang-format off
     LS_FAST_FALL,
     LS_SWAN_DIVE,
     LS_FAST_DIVE,
-    LS_TRX_INVALID, // sentinel
+    NO_CATALOG_ID,
     // clang-format on
 };
 
@@ -235,7 +235,7 @@ static bool M_CanUseFlareControl(void)
 {
     const ITEM *const lara_item = Lara_GetItem();
     if (lara_item->current_anim_state == LS(LS_PICKUP)) {
-        const LARA_TRX_ANIMATION anim = LA_U(Item_GetRelativeAnim(lara_item));
+        const LARA_ANIMATION_ID anim = LA_U(Item_GetRelativeAnim(lara_item));
         return anim != LA_CROUCH_PICKUP && anim != LA_CRAWL_PICKUP
             && anim != LA_FAST_PICKUP;
     }

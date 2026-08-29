@@ -103,7 +103,7 @@ void Lara_Col_Push(
 }
 
 void Lara_Col_Register(
-    const LARA_TRX_STATE state,
+    const LARA_STATE_ID state,
     void (*const handle_func)(ITEM *item, COLL_INFO *coll))
 {
     ASSERT(state >= 0 && state < LS_NUMBER_OF);
@@ -113,7 +113,7 @@ void Lara_Col_Register(
 
 void Lara_Col_Update(ITEM *const item, COLL_INFO *const coll)
 {
-    const LARA_TRX_STATE state = LS_U(item->current_anim_state);
+    const LARA_STATE_ID state = LS_U(item->current_anim_state);
     const M_COLLISION_ROUTINE *const routine =
         CatalogTable_Get(&m_CollisionRoutines, state);
     if (routine != nullptr && *routine != nullptr) {

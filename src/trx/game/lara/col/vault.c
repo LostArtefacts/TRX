@@ -181,7 +181,7 @@ static bool M_IsLadderClimbOn(const M_COLL *const coll, const int32_t clicks)
 static void M_DoLowVault(ITEM *const item, const M_CANDIDATE candidate)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    const LARA_TRX_ANIMATION anim =
+    const LARA_ANIMATION_ID anim =
         candidate.clicks == 2 ? LA_CLIMB_2CLICK : LA_CLIMB_3CLICK;
     item->goal_anim_state = LS(LS_STOP);
     item->current_anim_state = LS(LS_PULL_UP);

@@ -122,7 +122,7 @@ static void M_Walk(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
-static LARA_STATE M_GetRunToCrouchState(void)
+static LARA_STATE_SLOT M_GetRunToCrouchState(void)
 {
     return LS(
         g_Config.gameplay.enable_responsive_crawl ? LS_CROUCH_IDLE : LS_STOP);

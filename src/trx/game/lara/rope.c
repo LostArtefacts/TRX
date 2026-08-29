@@ -120,7 +120,7 @@ void Lara_Rope_JumpOff(ITEM *const item)
 
     const int32_t rel_frame =
         item->frame_num - Lara_Rope_GetSwingAnim()->frame_base;
-    LARA_TRX_ANIMATION anim;
+    LARA_ANIMATION_ID anim;
     if (rel_frame <= 21) {
         anim = LA_ROPE_SWING_TO_REACH;
     } else if (rel_frame <= 42) {

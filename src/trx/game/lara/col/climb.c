@@ -1444,7 +1444,7 @@ bool Lara_Col_TestClimbStance(ITEM *const item, const COLL_INFO *const coll)
     return true;
 }
 
-int16_t Lara_Col_GetShimmyState(const LARA_TRX_STATE state)
+int16_t Lara_Col_GetShimmyState(const LARA_STATE_ID state)
 {
     if (!g_Config.gameplay.enable_fast_shimmying) {
         return LS(state);

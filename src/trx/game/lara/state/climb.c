@@ -54,8 +54,8 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
 
 static void M_SetCornerAnim(
     ITEM *const item, COLL_INFO *const coll, const int16_t rot,
-    const LARA_TRX_ANIMATION hang_end_anim,
-    const LARA_TRX_ANIMATION ladder_end_anim)
+    const LARA_ANIMATION_ID hang_end_anim,
+    const LARA_ANIMATION_ID ladder_end_anim)
 {
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;

@@ -352,7 +352,7 @@ static void M_Control(const int16_t item_num)
 
 static bool M_IsPickupEraseFrame(const ITEM *const lara_item)
 {
-    const LARA_TRX_ANIMATION anim = LA_U(Item_GetRelativeAnim(lara_item));
+    const LARA_ANIMATION_ID anim = LA_U(Item_GetRelativeAnim(lara_item));
     const int16_t frame = Item_GetRelativeFrame(lara_item);
     switch (anim) {
     case LA_PICKUP:
@@ -523,8 +523,8 @@ static void M_BeginScionAnimation(const ITEM *const item, ITEM *const lara_item)
 
 static void M_BeginPickupAnimation(const ITEM *const item, const bool is_ducked)
 {
-    LARA_TRX_STATE goal_state;
-    LARA_TRX_STATE required_state = LS_PICKUP;
+    LARA_STATE_ID goal_state;
+    LARA_STATE_ID required_state = LS_PICKUP;
     ITEM *const lara_item = Lara_GetItem();
 
     if (item->object_id == O_FLARE_ITEM) {
@@ -816,7 +816,7 @@ cleanup:
 static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
 {
     ITEM *const item = Item_Get(item_num);
-    const LARA_TRX_ANIMATION anim = LA_U(Item_GetRelativeAnim(lara_item));
+    const LARA_ANIMATION_ID anim = LA_U(Item_GetRelativeAnim(lara_item));
 
     // clang-format off
     const bool is_ducked = (

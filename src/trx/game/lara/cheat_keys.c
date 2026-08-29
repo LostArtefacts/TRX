@@ -76,7 +76,7 @@ static bool M_ProcessOutcome(
         return false;
     }
 
-    const LARA_STATE state = lara_item->current_anim_state;
+    const LARA_STATE_SLOT state = lara_item->current_anim_state;
 
     switch (g_TRVersion) {
     case 1:
@@ -121,7 +121,7 @@ static bool M_ProcessOutcome(
     return true;
 }
 
-static LARA_STATE M_GetBackstepState(void)
+static LARA_STATE_SLOT M_GetBackstepState(void)
 {
     return g_TRVersion == 3 ? LS(LS_CROUCH_IDLE) : LS(LS_WALK_BACK);
 }
@@ -134,8 +134,8 @@ void Lara_Cheat_CheckKeys(void)
 
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
     const ITEM *const lara_item = Lara_GetItem();
-    const LARA_STATE ls = lara_item->current_anim_state;
-    const LARA_STATE backstep_state = M_GetBackstepState();
+    const LARA_STATE_SLOT ls = lara_item->current_anim_state;
+    const LARA_STATE_SLOT backstep_state = M_GetBackstepState();
 
     switch (m_CheatState) {
     case CHEAT_INITIAL:

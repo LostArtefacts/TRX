@@ -35,18 +35,18 @@
 #define M_MOVE_SPEED 16
 #define M_MOVE_ANGLE (2 * DEG_1) // = 364
 
-static const LARA_TRX_ANIMATION m_InvalidInterpAnims[] = {
+static const LARA_ANIMATION_ID m_InvalidInterpAnims[] = {
     // clang-format off
     LA_JUMP_NEUTRAL_ROLL,
     LA_JUMP_BACK_ROLL_START,
     LA_JUMP_BACK_ROLL_END,
     LA_CONTROLLED_DROP_CONTINUE,
     LA_HANG_TO_JUMP_BACK,
-    LA_TRX_INVALID, // sentinel
+    NO_CATALOG_ID,
     // clang-format on
 };
 
-static const LARA_TRX_ANIMATION m_InteractionAnims[4] = {
+static const LARA_ANIMATION_ID m_InteractionAnims[4] = {
     // clang-format off
     LA_SIDE_STEP_LEFT,
     LA_WALK_FORWARD,
@@ -68,9 +68,9 @@ static bool m_Controllable = false;
 static int16_t m_DeathCameraTarget = NO_ITEM;
 static LARA_EXTRA_STATE m_StartAnimState = LS_EXTRA_BREATH;
 
-static bool M_IsInvalidInterpAnim(const LARA_TRX_ANIMATION anim_idx)
+static bool M_IsInvalidInterpAnim(const LARA_ANIMATION_ID anim_idx)
 {
-    for (int32_t i = 0; m_InvalidInterpAnims[i] != LA_TRX_INVALID; i++) {
+    for (int32_t i = 0; m_InvalidInterpAnims[i] != NO_CATALOG_ID; i++) {
         if (m_InvalidInterpAnims[i] == anim_idx) {
             return true;
         }
@@ -401,7 +401,7 @@ bool Lara_CanInterpolate(
         return false;
     }
 
-    const LARA_ANIMATION anim_idx = Item_GetRelativeAnim(item);
+    const LARA_ANIMATION_SLOT anim_idx = Item_GetRelativeAnim(item);
     if (!M_IsInvalidInterpAnim(LA_U(anim_idx))) {
         return true;
     }
@@ -593,7 +593,7 @@ const ANIM_FRAME *Lara_GetHitFrame(const ITEM *const item)
     }
 
     // clang-format off
-    LARA_ANIMATION anim_idx;
+    LARA_ANIMATION_SLOT anim_idx;
     if (lara->is_crouched) {
         switch (lara->hit_direction) {
         case DIR_EAST:  anim_idx = LA(LA_CROUCH_HIT_RIGHT); break;
@@ -871,22 +871,22 @@ bool Lara_MovePositionEx(
         && XYZ_16_AreEquivalent(lara_item->rot, new_rot);
 }
 
-LARA_ANIMATION Lara_AnimToGameID(const LARA_TRX_ANIMATION anim)
+LARA_ANIMATION_SLOT Lara_AnimIDToSlot(const LARA_ANIMATION_ID anim)
 {
     return Catalog_IDToSlot(CATALOG_LARA_ANIMS, anim, -1);
 }
 
-LARA_STATE Lara_StateToGameID(const LARA_TRX_STATE state)
+LARA_STATE_SLOT Lara_StateIDToSlot(const LARA_STATE_ID state)
 {
     return Catalog_IDToSlot(CATALOG_LARA_STATES, state, -1);
 }
 
-LARA_TRX_ANIMATION Lara_AnimFromGameID(const LARA_ANIMATION anim)
+LARA_ANIMATION_ID Lara_AnimSlotToID(const LARA_ANIMATION_SLOT anim)
 {
     return Catalog_SlotToID(CATALOG_LARA_ANIMS, anim, -1);
 }
 
-LARA_TRX_STATE Lara_StateFromGameID(const LARA_STATE state)
+LARA_STATE_ID Lara_StateSlotToID(const LARA_STATE_SLOT state)
 {
     return Catalog_SlotToID(CATALOG_LARA_STATES, state, -1);
 }

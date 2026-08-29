@@ -804,7 +804,7 @@ static void M_SnapToLara(
 static void M_AnimatePushPull(ITEM *const item)
 {
     ITEM *const lara_item = Lara_GetItem();
-    const LARA_TRX_ANIMATION lara_anim = LA_U(Item_GetRelativeAnim(lara_item));
+    const LARA_ANIMATION_ID lara_anim = LA_U(Item_GetRelativeAnim(lara_item));
 
     switch (lara_anim) {
     case LA_FAST_PUSHABLE_PULL:

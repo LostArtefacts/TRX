@@ -48,7 +48,7 @@ static void M_Control(const int16_t item_num)
 
 static bool M_Open(
     ITEM *const lara_item, const int16_t item_num,
-    const LARA_TRX_ANIMATION lara_anim, const M_STATE door_goal_state)
+    const LARA_ANIMATION_ID lara_anim, const M_STATE door_goal_state)
 {
     ITEM *const item = Item_Get(item_num);
     LARA_INFO *const lara = Lara_GetLaraInfo();

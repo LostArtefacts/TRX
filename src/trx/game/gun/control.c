@@ -25,7 +25,7 @@
 #include <trx/game/stats.h>
 #include <trx/version.h>
 
-static const LARA_TRX_STATE m_CrawlStates[] = {
+static const LARA_STATE_ID m_CrawlStates[] = {
     // clang-format off
     LS_CRAWL_IDLE,
     LS_CRAWL_FORWARD,
@@ -33,7 +33,7 @@ static const LARA_TRX_STATE m_CrawlStates[] = {
     LS_CRAWL_TURN_LEFT,
     LS_CRAWL_TURN_RIGHT,
     LS_CRAWL_TO_CLIMB,
-    LS_TRX_INVALID, // sentinel
+    NO_CATALOG_ID,
     // clang-format on
 };
 

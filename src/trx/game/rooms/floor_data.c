@@ -26,7 +26,7 @@
 #define M_TRIG_CAM_GLIDE(t) ((t & 0x3E00) >> 6)
 #define M_LADDER_TYPE(t) ((t & 0x7F00) >> 8)
 
-static const LARA_TRX_STATE m_MonkeyStates[] = {
+static const LARA_STATE_ID m_MonkeyStates[] = {
     // clang-format off
     LS_MONKEY_IDLE,
     LS_MONKEY_FORWARD,
@@ -35,11 +35,11 @@ static const LARA_TRX_STATE m_MonkeyStates[] = {
     LS_MONKEY_ROLL,
     LS_MONKEY_TURN_LEFT,
     LS_MONKEY_TURN_RIGHT,
-    LS_TRX_INVALID, // sentinel
+    NO_CATALOG_ID,
     // clang-format on
 };
 
-static const LARA_TRX_STATE m_CrouchStates[] = {
+static const LARA_STATE_ID m_CrouchStates[] = {
     // clang-format off
     LS_CROUCH_IDLE,
     LS_CROUCH_ROLL,
@@ -49,11 +49,11 @@ static const LARA_TRX_STATE m_CrouchStates[] = {
     LS_CRAWL_FORWARD,
     LS_CRAWL_TURN_LEFT,
     LS_CRAWL_TURN_RIGHT,
-    LS_TRX_INVALID, // sentinel
+    NO_CATALOG_ID,
     // clang-format on
 };
 
-static const LARA_TRX_STATE m_ClimbStates[] = {
+static const LARA_STATE_ID m_ClimbStates[] = {
     // clang-format off
     LS_HANG,
     LS_CLIMB_STANCE,
@@ -63,7 +63,7 @@ static const LARA_TRX_STATE m_ClimbStates[] = {
     LS_CLIMB_RIGHT,
     LS_CLIMB_DOWN,
     LS_MONKEY_IDLE,
-    LS_TRX_INVALID, // sentinel
+    NO_CATALOG_ID,
     // clang-format on
 };
 

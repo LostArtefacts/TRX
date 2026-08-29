@@ -6,10 +6,10 @@
 #include <trx/game/lara/enum.h>
 #include <trx/game/lara/types.h>
 
-#define LA(anim) Lara_AnimToGameID(anim)
-#define LA_U(anim) Lara_AnimFromGameID(anim)
-#define LS(state) Lara_StateToGameID(state)
-#define LS_U(state) Lara_StateFromGameID(state)
+#define LA(anim) Lara_AnimIDToSlot(anim)
+#define LA_U(anim) Lara_AnimSlotToID(anim)
+#define LS(state) Lara_StateIDToSlot(state)
+#define LS_U(state) Lara_StateSlotToID(state)
 
 LARA_INFO *Lara_GetLaraInfo(void);
 ITEM *Lara_GetItem(void);
@@ -40,7 +40,7 @@ bool Lara_MovePositionEx(
     const ITEM *item, const XYZ_32 *vec, int16_t extra_y_rot);
 bool Lara_IsNearItem(const XYZ_32 *pos, int32_t distance);
 
-LARA_ANIMATION Lara_AnimToGameID(LARA_TRX_ANIMATION anim);
-LARA_STATE Lara_StateToGameID(LARA_TRX_STATE state);
-LARA_TRX_ANIMATION Lara_AnimFromGameID(LARA_ANIMATION anim);
-LARA_TRX_STATE Lara_StateFromGameID(LARA_STATE state);
+LARA_ANIMATION_SLOT Lara_AnimIDToSlot(LARA_ANIMATION_ID anim);
+LARA_STATE_SLOT Lara_StateIDToSlot(LARA_STATE_ID state);
+LARA_ANIMATION_ID Lara_AnimSlotToID(LARA_ANIMATION_SLOT anim);
+LARA_STATE_ID Lara_StateSlotToID(LARA_STATE_SLOT state);

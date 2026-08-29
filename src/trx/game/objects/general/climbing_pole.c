@@ -109,7 +109,7 @@ static void M_Collision(
             || lara_item->current_anim_state == LS(LS_JUMP_UP))) {
         M_CollisionAirborne(item_num, lara_item, coll);
     } else {
-        const LARA_TRX_STATE state = LS_U(lara_item->current_anim_state);
+        const LARA_STATE_ID state = LS_U(lara_item->current_anim_state);
         if ((state < LS_POLE_IDLE || state > LS_POLE_RIGHT)
             && state != LS_JUMP_BACK) {
             Object_Collision(item_num, lara_item, coll);
