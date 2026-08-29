@@ -96,7 +96,8 @@ static void M_WriteRopeState(JSON_WRITE_IO *const io)
 static void M_WriteAnimNum(JSON_WRITE_IO *const io, const int16_t anim_num)
 {
     JSONW_WRITE(io, "anim_num", anim_num);
-    for (OBJECT_ID id = O_FIRST; id < Object_GetCount(); id++) {
+    CATALOG_FOR_EACH(CATALOG_OBJECTS, id)
+    {
         const OBJECT *const obj = Object_Get(id);
         if (!obj->loaded || obj->anim_idx == NO_ANIM || anim_num < obj->anim_idx
             || anim_num >= obj->anim_idx + obj->anim_count) {

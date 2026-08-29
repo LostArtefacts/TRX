@@ -88,6 +88,11 @@ int32_t Catalog_GetBuiltInCount(const CATALOG_CONTEXT context)
     return count;
 }
 
+bool Catalog_IsValidID(const CATALOG_CONTEXT context, const CATALOG_ID id)
+{
+    return id >= 0 && id < Catalog_GetCount(context);
+}
+
 RESULT Catalog_CreateKey(
     const CATALOG_CONTEXT context, const char *const key,
     CATALOG_ID *const out_id)

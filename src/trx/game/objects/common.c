@@ -28,7 +28,8 @@ static VECTOR *m_UncatalogedSlots = nullptr;
 
 void Object_Reset(void)
 {
-    for (int32_t i = O_FIRST; i < Object_GetCount(); i++) {
+    CATALOG_FOR_EACH(CATALOG_OBJECTS, i)
+    {
         OBJECT *const obj = Object_TryGet(i);
         ObjectProperty_ResetObject(obj);
         obj->loaded = false;
@@ -79,9 +80,6 @@ int32_t Object_GetStaticObjects2DCount(void)
 
 OBJECT *Object_TryGet(const OBJECT_ID object_id)
 {
-    if (object_id < O_FIRST) {
-        return nullptr;
-    }
     return CatalogTable_Get(&m_Objects, object_id);
 }
 

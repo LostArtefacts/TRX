@@ -17,6 +17,11 @@ int32_t Catalog_GetBuiltInCount(const CATALOG_CONTEXT context)
     return Catalog_GetCount(context);
 }
 
+bool Catalog_IsValidID(const CATALOG_CONTEXT context, const CATALOG_ID id)
+{
+    return id >= 0 && id < Catalog_GetCount(context);
+}
+
 const char *Catalog_IDToKey(const CATALOG_CONTEXT context, const CATALOG_ID id)
 {
     // Every id the stub reports is one the exe names, so none is anonymous.
