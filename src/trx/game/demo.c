@@ -184,7 +184,7 @@ bool Demo_Start(const int32_t level_num)
     }
 
     if (p->level->music_track != MX_INACTIVE) {
-        Music_Play_Direct(p->level->music_track, MPM_LOOP);
+        Music_PlayBySlot(p->level->music_track, MPM_LOOP);
     }
 
     p->demo_ptr = p->data;

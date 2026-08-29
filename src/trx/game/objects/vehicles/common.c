@@ -175,7 +175,7 @@ void Vehicle_PlayTrackPool(
     if (track_count <= 0) {
         return;
     }
-    Music_Play_Direct(tracks[Random_GetControl() % track_count], mode);
+    Music_PlayBySlot(tracks[Random_GetControl() % track_count], mode);
 }
 
 void Vehicle_PlayOneShotTrackPool(
@@ -195,7 +195,7 @@ void Vehicle_PlayOneShotTrackPool(
     }
 
     const MUSIC_SLOT track = tracks[Random_GetControl() % track_count];
-    Music_Play_Direct(track, MPM_ONCE);
+    Music_PlayBySlot(track, MPM_ONCE);
     Music_GetTrackState(track)->is_one_shot = true;
 }
 

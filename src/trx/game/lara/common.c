@@ -515,7 +515,7 @@ void Lara_Animate(ITEM *const item)
             }
 
             if (g_TRVersion >= 3) {
-                ItemAction_RunDirectWithFX(
+                ItemAction_RunWithFXBySlot(
                     data->effect_num, item, data->fx_type);
                 break;
             }
@@ -528,7 +528,7 @@ void Lara_Animate(ITEM *const item)
                 break;
             }
 
-            ItemAction_RunDirect(data->effect_num, item);
+            ItemAction_RunBySlot(data->effect_num, item);
             break;
         }
 

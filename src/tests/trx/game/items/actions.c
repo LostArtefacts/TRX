@@ -64,7 +64,7 @@ TEST(run_direct_hands_a_claimed_number_to_the_interceptor)
 {
     M_Reset((int32_t)ITEM_ACTION_LARA_NORMAL);
 
-    ItemAction_RunDirect((ITEM_ACTION_SLOT)ITEM_ACTION_LARA_NORMAL, &m_Item);
+    ItemAction_RunBySlot((ITEM_ACTION_SLOT)ITEM_ACTION_LARA_NORMAL, &m_Item);
 
     CHECK_EQ_INT(m_SeenEffect, (int32_t)ITEM_ACTION_LARA_NORMAL);
     CHECK_EQ_INT(m_SeenTimer, 0);
@@ -76,7 +76,7 @@ TEST(run_direct_with_fx_hands_a_claimed_number_to_the_interceptor)
 {
     M_Reset((int32_t)ITEM_ACTION_LARA_NORMAL);
 
-    ItemAction_RunDirectWithFX(
+    ItemAction_RunWithFXBySlot(
         (ITEM_ACTION_SLOT)ITEM_ACTION_LARA_NORMAL, &m_Item, 3);
 
     CHECK_EQ_INT(m_SeenEffect, (int32_t)ITEM_ACTION_LARA_NORMAL);
@@ -89,7 +89,7 @@ TEST(an_unclaimed_number_runs_its_stock_routine)
     // Claim a different number, so this one falls through to the routine.
     M_Reset((int32_t)ITEM_ACTION_TURN_180);
 
-    ItemAction_RunDirect((ITEM_ACTION_SLOT)ITEM_ACTION_LARA_NORMAL, &m_Item);
+    ItemAction_RunBySlot((ITEM_ACTION_SLOT)ITEM_ACTION_LARA_NORMAL, &m_Item);
 
     CHECK_EQ_INT(m_SeenEffect, -1);
     CHECK(m_RoutineRan);

@@ -285,7 +285,7 @@ void Item_Animate(ITEM *const item)
             const ANIM_COMMAND_EFFECT_DATA *const data =
                 (ANIM_COMMAND_EFFECT_DATA *)command->data;
             if (item->frame_num == data->frame_num) {
-                ItemAction_RunDirectWithFX(
+                ItemAction_RunWithFXBySlot(
                     data->effect_num, item, data->fx_type);
             }
             break;

@@ -36,25 +36,25 @@ RESULT Music_Init(void);
 // Returns the stream slot the track plays in - the main stream is slot 0, the
 // overlays slots 1.. - or -1 when it does not play, which includes a track
 // marked for later (delay) or a deferred ambient.
-int32_t Music_Play_Direct(MUSIC_SLOT track, MUSIC_PLAY_MODE mode);
+int32_t Music_PlayBySlot(MUSIC_SLOT track, MUSIC_PLAY_MODE mode);
 
-// Plays a track from the given timestamp in seconds, as Music_Play_Direct does
+// Plays a track from the given timestamp in seconds, as Music_PlayBySlot does
 // otherwise. The track is seeked before it becomes audible, so its beginning is
 // never heard. A negative timestamp plays the track from where it would
 // normally start.
-int32_t Music_Play_DirectAt(
+int32_t Music_PlayAtBySlot(
     MUSIC_SLOT track, MUSIC_PLAY_MODE mode, double timestamp);
 
 // Stops the provided single track and restarts the looped track if applicable.
-void Music_StopTrack_Direct(MUSIC_SLOT track);
+void Music_StopTrackBySlot(MUSIC_SLOT track);
 
 // Play a music track with a semantical ID that will get mapped to a specific
 // music track slot depending on the game. Returns the stream slot, as
-// Music_Play_Direct does, or -1.
+// Music_PlayBySlot does, or -1.
 int32_t Music_Play(MUSIC_ID track, MUSIC_PLAY_MODE mode);
 
 // Returns true when the active backend can play the given direct track ID.
-bool Music_IsTrackAvailable_Direct(MUSIC_SLOT track);
+bool Music_IsTrackAvailableBySlot(MUSIC_SLOT track);
 
 // Returns one past the largest direct track ID worth probing on the active
 // backend, or 0 if no backend is available.
@@ -109,7 +109,7 @@ int32_t Music_GetStreamSlotCount(void);
 bool Music_GetStreamSlotState(int32_t slot, MUSIC_STREAM_STATE *state);
 
 // Stops the stream in a slot. The main slot resumes the deferred ambient loop,
-// as Music_StopTrack_Direct does; an overlay slot just closes.
+// as Music_StopTrackBySlot does; an overlay slot just closes.
 void Music_StopStream(int32_t slot);
 
 // Pauses or resumes the stream in a slot.

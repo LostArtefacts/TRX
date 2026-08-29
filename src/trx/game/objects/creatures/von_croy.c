@@ -419,7 +419,7 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
         if (lara->current_anim_state == LS(LS_HANG)
             || lara->current_anim_state == LS(LS_SHIMMY_LEFT)
             || lara->current_anim_state == LS(LS_SHIMMY_RIGHT)) {
-            Music_Play_Direct((MUSIC_SLOT)(M_GetTrack(p->waypoint)), MPM_ONCE);
+            Music_PlayBySlot((MUSIC_SLOT)(M_GetTrack(p->waypoint)), MPM_ONCE);
             M_SetCutPlayed(p, p->waypoint);
             p->hold = 2;
         }
@@ -495,7 +495,7 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
             Fader_InitTo(&m_Fader, 1.0f, 0.0f, 16.0f / (float)LOGIC_FPS);
             p->cut_phase++;
             const MUSIC_SLOT track = (MUSIC_SLOT)M_GetTrack(p->waypoint);
-            Music_Play_Direct(track, MPM_ONCE);
+            Music_PlayBySlot(track, MPM_ONCE);
             const double length = Music_GetTrackDuration(track);
             p->cut_length = length > 0.0 ? (int32_t)(length * LOGIC_FPS) : 0;
             p->cut_timer = 0;
@@ -541,7 +541,7 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
         M_ClearCutCamera();
         const MUSIC_SLOT ambient = Music_GetCurrentLoopedTrack();
         Music_Stop();
-        Music_Play_Direct(ambient, MPM_LOOP);
+        Music_PlayBySlot(ambient, MPM_LOOP);
         Lara_SetControllable(true);
         p->swap_bits &= ~M_SWAP_BOOK;
         p->cut_phase = 0;
