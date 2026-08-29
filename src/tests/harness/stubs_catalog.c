@@ -3,11 +3,11 @@
 // engine-free, the same reason the other stubs here exist.
 
 #include <trx/game/catalog/manager.h>
-#include <trx/game/objects/ids.h>
+#include <harness/fake_objects.h>
 
 int32_t Catalog_GetCount(const CATALOG_CONTEXT context)
 {
-    return context == CATALOG_OBJECTS ? O_NUMBER_OF : 0;
+    return context == CATALOG_OBJECTS ? FAKE_OBJ_COUNT : 0;
 }
 
 int32_t Catalog_GetBuiltInCount(const CATALOG_CONTEXT context)

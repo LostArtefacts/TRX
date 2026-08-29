@@ -17,5 +17,4 @@ enum {
 #define X_CATALOG_ID(enum_value) enum_value,
 #include <trx/game/catalog/objects.def>
 #undef X_CATALOG_ID
-    O_NUMBER_OF,
 };
