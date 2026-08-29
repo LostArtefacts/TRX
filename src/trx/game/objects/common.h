@@ -26,6 +26,8 @@ OBJECT *Object_TryGet(OBJECT_ID object_id);
 // savegame has to be able to read back. It lasts until the level is unloaded.
 OBJECT_ID Object_Mint(void);
 
+int32_t Object_GetCount(void);
+
 // Retrieve an object by its slot. Returns nullptr if not found.
 OBJECT *Object_GetBySlot(OBJECT_SLOT slot);
 
