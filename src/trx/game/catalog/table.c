@@ -2,44 +2,83 @@
 
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
+#include <trx/debug.h>
 
 #include <string.h>
 
 static CATALOG_TABLE *m_Tables = nullptr;
 
-static void *M_At(CATALOG_TABLE *const table, const CATALOG_ID id)
+static void M_Grow(CATALOG_TABLE *const table, const int32_t count)
+{
+    const int32_t chunk_count =
+        (count + CATALOG_TABLE_CHUNK - 1) / CATALOG_TABLE_CHUNK;
+    if (chunk_count <= table->chunk_count) {
+        return;
+    }
+    table->chunks = Memory_Realloc(table->chunks, sizeof(void *) * chunk_count);
+    for (int32_t i = table->chunk_count; i < chunk_count; i++) {
+        table->chunks[i] = Memory_Alloc(table->elem_size * CATALOG_TABLE_CHUNK);
+    }
+    table->chunk_count = chunk_count;
+}
+
+static void *M_Peek(const CATALOG_TABLE *const table, const CATALOG_ID id)
 {
     const int32_t chunk_idx = id / CATALOG_TABLE_CHUNK;
     if (chunk_idx >= table->chunk_count) {
-        if (!table->linked) {
-            table->linked = true;
-            table->next = m_Tables;
-            m_Tables = table;
-        }
-        table->chunks =
-            Memory_Realloc(table->chunks, sizeof(void *) * (chunk_idx + 1));
-        for (int32_t i = table->chunk_count; i <= chunk_idx; i++) {
-            table->chunks[i] =
-                Memory_Alloc(table->elem_size * CATALOG_TABLE_CHUNK);
-        }
-        table->chunk_count = chunk_idx + 1;
+        return nullptr;
     }
     return (char *)table->chunks[chunk_idx]
         + (size_t)(id % CATALOG_TABLE_CHUNK) * table->elem_size;
 }
 
+static void *M_Claim(CATALOG_TABLE *const table, const CATALOG_ID id)
+{
+    ASSERT(id >= 0);
+    M_Grow(table, id + 1);
+    return M_Peek(table, id);
+}
+
+void CatalogTable_Link(CATALOG_TABLE *const table)
+{
+    table->next = m_Tables;
+    m_Tables = table;
+    M_Grow(table, Catalog_GetCount(table->context));
+}
+
+void CatalogTable_Reserve(const CATALOG_CONTEXT context, const int32_t count)
+{
+    for (CATALOG_TABLE *table = m_Tables; table != nullptr;
+         table = table->next) {
+        if (table->context == context) {
+            M_Grow(table, count);
+        }
+    }
+}
+
 void *CatalogTable_Get(CATALOG_TABLE *const table, const CATALOG_ID id)
 {
-    if (id < 0) {
+    ASSERT(Catalog_IsValidID(table->context, id));
+    return M_Claim(table, id);
+}
+
+void *CatalogTable_TryGet(CATALOG_TABLE *const table, const CATALOG_ID id)
+{
+    if (!Catalog_IsValidID(table->context, id)) {
         return nullptr;
     }
-    // Allocate a built-in identity record before catalogue initialisation when
-    // a constructor registers its routine.
-    const int32_t count = Catalog_GetCount(table->context);
-    if (count > 0 && id >= count) {
-        return nullptr;
-    }
-    return M_At(table, id);
+    return M_Peek(table, id);
+}
+
+void *CatalogTable_Claim(CATALOG_TABLE *const table, const CATALOG_ID id)
+{
+    return M_Claim(table, id);
+}
+
+void CatalogTable_Add(
+    CATALOG_TABLE *const table, const CATALOG_ID id, const void *const record)
+{
+    memcpy(M_Claim(table, id), record, table->elem_size);
 }
 
 void CatalogTable_FreeAll(void)

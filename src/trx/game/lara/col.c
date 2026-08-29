@@ -105,17 +105,14 @@ void Lara_Col_Register(
     const LARA_STATE_ID state,
     void (*const handle_func)(ITEM *item, COLL_INFO *coll))
 {
-    M_COLLISION_ROUTINE *const routine =
-        CatalogTable_Get(&m_CollisionRoutines, state);
-    ASSERT(routine != nullptr);
-    *routine = handle_func;
+    CatalogTable_Add(&m_CollisionRoutines, state, &handle_func);
 }
 
 void Lara_Col_Update(ITEM *const item, COLL_INFO *const coll)
 {
     const LARA_STATE_ID state = LS_U(item->current_anim_state);
     const M_COLLISION_ROUTINE *const routine =
-        CatalogTable_Get(&m_CollisionRoutines, state);
+        CatalogTable_TryGet(&m_CollisionRoutines, state);
     if (routine != nullptr && *routine != nullptr) {
         (*routine)(item, coll);
     }

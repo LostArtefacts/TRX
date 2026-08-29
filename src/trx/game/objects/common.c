@@ -78,9 +78,16 @@ int32_t Object_GetStaticObjects2DCount(void)
     return m_StaticObjects2DCount;
 }
 
+void Object_Register(
+    const OBJECT_ID object_id, void (*const setup_func)(OBJECT *obj))
+{
+    OBJECT *const obj = CatalogTable_Claim(&m_Objects, object_id);
+    obj->setup_func = setup_func;
+}
+
 OBJECT *Object_TryGet(const OBJECT_ID object_id)
 {
-    return CatalogTable_Get(&m_Objects, object_id);
+    return CatalogTable_TryGet(&m_Objects, object_id);
 }
 
 OBJECT *Object_Get(const OBJECT_ID object_id)

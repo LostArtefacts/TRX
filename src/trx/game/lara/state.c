@@ -44,7 +44,7 @@ void Lara_State_Register(
     const LARA_STATE_ID state,
     void (*const handle_func)(ITEM *item, COLL_INFO *coll))
 {
-    *(M_STATE_ROUTINE *)CatalogTable_Get(&m_StateRoutines, state) = handle_func;
+    CatalogTable_Add(&m_StateRoutines, state, &handle_func);
 }
 
 void Lara_State_RegisterExtra(
@@ -59,15 +59,15 @@ void Lara_State_Initialise(void)
 {
     for (int32_t i = 0; m_TestResponsiveAnims[i] != NO_CATALOG_ID; i++) {
         const LARA_ANIMATION_ID anim = m_TestResponsiveAnims[i];
-        *(bool *)CatalogTable_Get(&m_ResponsiveAnims, anim) =
-            M_HasResponsiveState(anim);
+        const bool responsive = M_HasResponsiveState(anim);
+        CatalogTable_Add(&m_ResponsiveAnims, anim, &responsive);
     }
 }
 
 bool Lara_State_IsResponsive(const LARA_ANIMATION_ID anim_idx)
 {
     const bool *const responsive =
-        CatalogTable_Get(&m_ResponsiveAnims, anim_idx);
+        CatalogTable_TryGet(&m_ResponsiveAnims, anim_idx);
     return responsive != nullptr && *responsive;
 }
 
@@ -83,7 +83,7 @@ void Lara_State_Update(ITEM *const item, COLL_INFO *const coll)
 
     const LARA_STATE_ID state = LS_U(item->current_anim_state);
     const M_STATE_ROUTINE *const routine =
-        CatalogTable_Get(&m_StateRoutines, state);
+        CatalogTable_TryGet(&m_StateRoutines, state);
     if (routine != nullptr && *routine != nullptr) {
         (*routine)(item, coll);
     }

@@ -170,6 +170,7 @@ static CATALOG_ID M_Add(const CATALOG_CONTEXT context, const char *const key)
         Memory_Realloc(m_GameIDs[context], sizeof(int32_t) * m_Counts[context]);
     m_Keys[context][id] = key != nullptr ? Memory_DupStr(key) : nullptr;
     m_GameIDs[context][id] = -1;
+    CatalogTable_Reserve(context, m_Counts[context]);
     return id;
 }
 
