@@ -6,6 +6,7 @@
 // handle to a recycled slot goes stale; and Item_SetName refuses a duplicate,
 // which is what makes assigning a name already in use raise.
 
+#include <harness/fake_objects.h>
 #include <fakes/items.h>
 
 #include <harness/fake_calls.h>
@@ -26,7 +27,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define FAKE_OBJ_COUNT O_NUMBER_OF // reaches the real ids a family names
 #define FAKE_ANIM_COUNT 2
 #define FAKE_FRAME_COUNT 64
 #define FAKE_PROP_SLOTS 4
@@ -538,7 +538,7 @@ int32_t Anim_GetTotalCount(void)
 
 OBJECT *Object_Get(const OBJECT_ID object_id)
 {
-    if (object_id < 0 || object_id >= O_NUMBER_OF) {
+    if (object_id < 0 || object_id >= FAKE_OBJ_COUNT) {
         return nullptr;
     }
     // Every id the engine knows resolves to a definition, loaded or not - a

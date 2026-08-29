@@ -1,3 +1,4 @@
+#include <harness/fake_objects.h>
 #include <fakes/ui.h>
 
 #include <harness/font_bin.h>
@@ -16,7 +17,7 @@
 
 static FONT_BIN m_Fonts[TR_VERSION_COUNT];
 static FONT_BIN *m_Font = nullptr;
-static OBJECT m_Objects[O_NUMBER_OF];
+static OBJECT m_Objects[FAKE_OBJ_COUNT];
 static int32_t m_ViewportWidth = 640;
 static int32_t m_ViewportHeight = 480;
 static const char *m_KeyName = M_DEFAULT_KEY_NAME;
