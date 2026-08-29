@@ -15,6 +15,28 @@ order: 17
 What a script puts in front of the player: things seen rather than things the
 game holds.
 
+### Indexing
+
+The level fog bulbs, counted from 1. `#trx.fx.fog_bulbs` is the count.
+`pairs()` walks them in order. A level shows at most twenty. The player can turn them off.
+
+- <a id="fx.fog_bulbs[]" name="fx.fog_bulbs[]"></a>**`trx.fx.fog_bulbs[key]`** (key: integer, value: [trx.fx.FogBulb](#fx.FogBulb) or `nil`).
+- **`#trx.fx.fog_bulbs`** (integer). How many there are.
+
+Example:
+```lua
+for _, bulb in pairs(trx.fx.fog_bulbs) do
+  bulb.color = trx.math.color(245, 200, 60)
+end
+```
+
+### Properties
+
+- <a id="fx.fog_color" name="fx.fog_color"></a>**`trx.fx.fog_color`** ([trx.math.Color](MATH.md#math.Color)). The color override for distance fog.
+  `nil` means no override. Write `nil` to restore the level fog color. A level change clears the
+  override. Savegames keep it. This controls distance fog only. Fog bulbs have their own colors
+  in [`trx.fx.fog_bulbs`](#fx.fog_bulbs).
+
 ### Constants
 
 - <a id="fx.MAX_LIGHTS" name="fx.MAX_LIGHTS"></a>[lua]`trx.fx.MAX_LIGHTS` = `64` (integer)  
@@ -22,6 +44,41 @@ game holds.
 
 - <a id="fx.MAX_FOG" name="fx.MAX_FOG"></a>[lua]`trx.fx.MAX_FOG` = `10` (integer)  
   How many balls of fog can be seen at once. TR4 levels carry fog of their own, which takes its slots first, so fewer than this reach the screen where a level is already using them.
+
+### Structures
+
+- <a id="fx.FogBulb" name="fx.FogBulb"></a>[lua]`trx.fx.FogBulb`
+
+    A level fog bulb is a ball of fog drawn inside a room.
+
+    TR4 stores fog bulbs as room lights. A script can change their color and density.
+    The level sets their position and radius. A bulb follows the fog color until a script
+    gives it a color of its own.
+
+    Handles are live references: if the underlying object is destroyed,
+    using the handle raises an error rather than silently reading an
+    unrelated one.
+
+    Properties:
+    - <a id="fx.FogBulb.color" name="fx.FogBulb.color"></a>**`color`**: [trx.math.Color](MATH.md#math.Color). The color a script gave the bulb.
+      `nil` means none was given, and the bulb is drawn in the fog color in force. Write `nil` to hand
+      a bulb back to that color.
+    - <a id="fx.FogBulb.density" name="fx.FogBulb.density"></a>**`density`**: integer. Fog density, from `0` for none to `255`. A value outside this range raises an error.
+    - <a id="fx.FogBulb.pos" name="fx.FogBulb.pos"></a>**`pos`**: [trx.math.Vec3](MATH.md#math.Vec3). Center of the fog bulb. *(read-only)*
+    - <a id="fx.FogBulb.radius" name="fx.FogBulb.radius"></a>**`radius`**: [trx.math.Distance](MATH.md#math.Distance). How far the fog reaches from that position. *(read-only)*
+
+    Computed properties (derived, not stored on the object):
+    - <a id="fx.FogBulb.room" name="fx.FogBulb.room"></a>**`room`**: [trx.rooms.Room](ROOMS.md#rooms.Room). The room the bulb sits in.
+
+    Methods:
+
+    - <a id="fx.FogBulb.is_valid" name="fx.FogBulb.is_valid"></a>[lua]`fogbulb:is_valid()`  
+      Reports whether the handle still names a bulb in the loaded level.
+
+      A level change replaces all bulbs. A handle held across one becomes stale, and field access
+      raises an error.
+
+      Returns: boolean. False after the level that held the bulb is left.
 
 ### Functions
 

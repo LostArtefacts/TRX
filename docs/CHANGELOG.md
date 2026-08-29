@@ -161,6 +161,7 @@
 - Added the timer Race for the Iris runs between its cutscenes (TRX1109)
 - Added the captions that open Angkor Wat and The Tomb of Seth (TRX487)
 - Added the sprite shadow, so the shadow shape setting offers it as in the other games (Graphic Options → Visuals → Shadows shape) (TRX1290)
+- Added the TR4 fog color changes that happen as Lara reaches certain points (TRX658)
 - Added the wobble effect the original shows while the camera is under water (TRX523)
 - Added the drifting specks the original shows in water rooms (TRX553)
 - Added the water ripples the original shows, in their size, their color and the speed they spread at (TRX590)
@@ -234,6 +235,7 @@
 - Added `trx.game.fmvs` and `trx.game.play_fmv()`, so a script can read the movies the game flow declares and play one where the player stands
 - Added `trx.catalog.mint()`, so a mod that ships only a script can declare an object of its own
 - Added `trx.catalog.key()`, which gives back the name an id answers to
+- Added `trx.fx.fog_bulbs` and `trx.fx.fog_color`, so a script can read level fog bulbs and set the distance fog color (TRX658)
 - Changed the in-game overlay to be drawn by a script rather than by the engine, so what it shows and where it sits can be changed without a build
 - Changed `trx.cutscenes` to hand over the cutscene itself, so `trx.cutscenes[30]` says whether it has played, plays it, and narrows the cutscene events to it; the cutscene events hand one over too, and the functions that take a number are deprecated (TRX1199)
 - Changed `trx.cutscenes.play()` to take whether to fade out first, so a scene that opens a level begins on the black screen the level loaded behind (TRX1063)

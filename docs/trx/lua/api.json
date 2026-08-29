@@ -78,6 +78,22 @@
     },
     {
       "countable": true,
+      "description": "The level fog bulbs, counted from 1. `#trx.fx.fog_bulbs` is the count.\n`pairs()` walks them in order. A level shows at most twenty. The player can turn them off.",
+      "examples": [
+        "for _, bulb in pairs(trx.fx.fog_bulbs) do\n  bulb.color = trx.math.color(245, 200, 60)\nend"
+      ],
+      "key": {
+        "type": "integer"
+      },
+      "member": "fog_bulbs",
+      "module": "fx",
+      "value": {
+        "nullable": true,
+        "type": "fx.FogBulb"
+      }
+    },
+    {
+      "countable": true,
       "description": "Indexing the module reaches an entry of Lara's inventory, and `#trx.inventory` is how many kinds of thing she carries. Entries are keyed by the order they are drawn in, and are built one at a time as they are asked for. `pairs()` walks them.",
       "examples": [
         "for _, entry in pairs(trx.inventory) do\n  trx.log.info((\"%d x %s\"):format(entry.count, trx.catalog.objects[entry.object]))\nend"
@@ -7979,6 +7995,12 @@
       "writable": true
     },
     {
+      "description": "The color override for distance fog.\n\n`nil` means no override. Write `nil` to restore the level fog color. A level change clears the\noverride. Savegames keep it. This controls distance fog only. Fog bulbs have their own colors\nin `trx.fx.fog_bulbs`.",
+      "path": "fx.fog_color",
+      "type": "math.Color",
+      "writable": true
+    },
+    {
       "description": "The levels of the game, in order, counted from one.",
       "list": true,
       "path": "game.levels",
@@ -9159,6 +9181,55 @@
       ],
       "operators": [],
       "path": "events.Listener"
+    },
+    {
+      "description": "A level fog bulb is a ball of fog drawn inside a room.\n\nTR4 stores fog bulbs as room lights. A script can change their color and density.\nThe level sets their position and radius. A bulb follows the fog color until a script\ngives it a color of its own.",
+      "extensions": [
+        {
+          "description": "The room the bulb sits in.",
+          "name": "room",
+          "type": "rooms.Room"
+        }
+      ],
+      "fields": [
+        {
+          "description": "The color a script gave the bulb.\n\n`nil` means none was given, and the bulb is drawn in the fog color in force. Write `nil` to hand\na bulb back to that color.",
+          "name": "color",
+          "type": "math.Color",
+          "writable": true
+        },
+        {
+          "description": "Fog density, from `0` for none to `255`. A value outside this range raises an error.",
+          "name": "density",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "Center of the fog bulb.",
+          "name": "pos",
+          "type": "math.Vec3",
+          "writable": false
+        },
+        {
+          "description": "How far the fog reaches from that position.",
+          "name": "radius",
+          "type": "math.Distance",
+          "writable": false
+        }
+      ],
+      "handle": true,
+      "methods": [
+        {
+          "description": "Reports whether the handle still names a bulb in the loaded level.\n\nA level change replaces all bulbs. A handle held across one becomes stale, and field access\nraises an error.",
+          "name": "is_valid",
+          "returns": {
+            "description": "False after the level that held the bulb is left.",
+            "type": "boolean"
+          }
+        }
+      ],
+      "operators": [],
+      "path": "fx.FogBulb"
     },
     {
       "description": "A level, as the game flow file declares it. Everything on it is read-only: a level is what the game flow says it is.",

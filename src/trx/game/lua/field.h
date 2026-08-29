@@ -16,6 +16,10 @@ typedef enum {
     // value outside its width names a value inside it, and wraps instead of
     // being rejected.
     FF_MODULAR = 1 << 1,
+    // The member has a state that no value names, so nil reaches its setter as
+    // a null value rather than being turned away as the wrong type. Only a
+    // member with a setter can carry this.
+    FF_NULLABLE = 1 << 2,
 } FIELD_FLAGS;
 
 typedef struct {
@@ -73,6 +77,17 @@ typedef struct {
         .get = get_,                                                           \
         .set = set_,                                                           \
         .flags = (set_) == nullptr ? FF_READONLY : FF_NONE,                    \
+    }
+
+// Computed member whose setter also takes nil, for a member with a state that
+// no value names. The setter is handed a null value where nil is written.
+#define FIELD_FN_NULLABLE(name_, type_, get_, set_)                            \
+    {                                                                          \
+        .name = name_,                                                         \
+        .type = type_,                                                         \
+        .get = get_,                                                           \
+        .set = set_,                                                           \
+        .flags = FF_NULLABLE,                                                  \
     }
 
 // Defines a TYPE_DESC and adds it to the global type registry, so consumers
