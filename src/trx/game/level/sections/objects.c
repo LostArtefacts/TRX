@@ -49,7 +49,7 @@ RESULT Level_Section_ReadObjects(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
     for (int32_t i = 0; i < num_objects; i++) {
         OBJECT spare_obj = {};
         const int32_t game_obj_id = File_ReadS32(file);
-        OBJECT *obj = Object_GetByGameID(game_obj_id);
+        OBJECT *obj = Object_GetBySlot(game_obj_id);
         const bool is_cataloged = obj != nullptr;
         if (!is_cataloged) {
             if (loader->game_version == 3 || loader->game_version == 4) {
@@ -164,7 +164,7 @@ RESULT Level_Section_ReadSpriteSequences(
         // In OG, a sprite was determined as either a game or static type based
         // on the original total game object count. As IDs are freely assignable
         // in TRX, a defined list of game sprites must instead be referred to.
-        const OBJECT_ID object_id = Object_FromGameID(id);
+        const OBJECT_ID object_id = Object_SlotToID(id);
         if (object_id != NO_OBJECT
             && Object_IsType(object_id, g_GameSpriteObjects)) {
             OBJECT *const obj = Object_Get(object_id);
@@ -207,7 +207,7 @@ RESULT Level_Section_ReadItems(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
     for (int32_t i = 0; i < num_items; i++) {
         ITEM *const item = Item_Get(i);
         const int16_t obj_id = File_ReadS16(file);
-        item->object_id = Object_FromGameID(obj_id);
+        item->object_id = Object_SlotToID(obj_id);
         if (item->object_id == NO_OBJECT) {
             result = FAIL("item %d names no object: %d", i, obj_id);
             goto finish;

@@ -140,7 +140,7 @@ static void M_ApplyMeshEdit(const M_MESH_EDIT *const edit)
         if (vertex_edit->index < 0
             || vertex_edit->index >= mesh->num_vertices) {
             const int32_t object_id = edit->obj_info.type == OBJ_TYPE_OBJECT
-                ? Object_ToGameID(edit->obj_info.id)
+                ? Object_IDToSlot(edit->obj_info.id)
                 : edit->obj_info.id;
             LOG_ERROR(
                 "Invalid mesh vertex edit: obj_type=%d obj_id=%d mesh_idx=%d "

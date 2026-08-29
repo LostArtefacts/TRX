@@ -65,7 +65,7 @@ static void M_MaterialiseTR4AIObjects(LEVEL_CONTEXT *const ctx)
 
         // A slot TRX has no catalog entry for is one nothing can be made of,
         // and an item pointing at it is an item nothing can initialise.
-        const OBJECT_ID object_id = Object_FromGameID(ai_item->object_id);
+        const OBJECT_ID object_id = Object_SlotToID(ai_item->object_id);
         if (object_id == NO_OBJECT) {
             LOG_WARNING(
                 "Skipping AI object with unknown slot: %d", ai_item->object_id);

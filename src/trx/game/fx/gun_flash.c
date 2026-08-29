@@ -197,7 +197,7 @@ static void M_Save(JSON_WRITE_IO *const io)
         JSONW_WRITE(io, "bite_mesh_num", flash->bite.mesh_num);
         JSONW_WRITE(io, "light_pos", flash->light_pos);
         JSONW_WRITE(
-            io, "flash_object_id", Object_ToGameID(flash->flash_object_id));
+            io, "flash_object_id", Object_IDToSlot(flash->flash_object_id));
         JSONW_POP_AND_APPEND(io);
     }
     JSONW_POP_AND_SET_NZ(io, "flashes");
@@ -232,7 +232,7 @@ static RESULT M_Load(JSON_READ_IO *const io)
         MUST(JSON_READ(io, "light_pos", &flash->light_pos));
         int32_t game_id = 0;
         MUST(JSON_READ(io, "flash_object_id", &game_id));
-        flash->flash_object_id = Object_FromGameID(game_id);
+        flash->flash_object_id = Object_SlotToID(game_id);
         if (flash->flash_object_id == NO_OBJECT) {
             return JSON_ReadIO_Fail(io, "unsupported object #%d", game_id);
         }

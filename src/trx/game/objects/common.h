@@ -26,24 +26,24 @@ OBJECT *Object_TryGet(OBJECT_ID object_id);
 // savegame has to be able to read back. It lasts until the level is unloaded.
 OBJECT_ID Object_Mint(void);
 
-// Retrieve an object by its game ID. Returns nullptr if not found.
-OBJECT *Object_GetByGameID(int32_t game_id);
+// Retrieve an object by its slot. Returns nullptr if not found.
+OBJECT *Object_GetBySlot(OBJECT_SLOT slot);
 
 // Keep an object slot the catalog has no entry for, under the number the level
 // gives it. TR4 wads park geometry that only a cutscene ever draws in whichever
 // slots they left free, so the meshes have to survive a load that nothing in
 // the catalog names. Dropped with the level.
-void Object_StoreUncatalogedSlot(int32_t game_id, const OBJECT *obj);
+void Object_StoreUncatalogedSlot(OBJECT_SLOT slot, const OBJECT *obj);
 
 // Retrieve a slot kept that way, or nullptr when the level carries none under
 // that number.
-const OBJECT *Object_GetUncatalogedSlot(int32_t game_id);
+const OBJECT *Object_GetUncatalogedSlot(OBJECT_SLOT slot);
 
-// Convert a game ID to OBJECT_ID.
-OBJECT_ID Object_FromGameID(int32_t game_id);
+// Convert a slot to the identity holding it.
+OBJECT_ID Object_SlotToID(OBJECT_SLOT slot);
 
-// Convert a OBJECT_ID to a game ID (opposite of Object_FromGameID).
-int32_t Object_ToGameID(OBJECT_ID object_id);
+// Convert an identity to the slot it is bound to.
+OBJECT_SLOT Object_IDToSlot(OBJECT_ID id);
 
 // Other functions ============================================================
 

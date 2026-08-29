@@ -98,7 +98,7 @@ static RESULT M_ReadObjectID(
 {
     int32_t game_id;
     if (Result_Absorb(JSON_READ_CURRENT(ctx->io, &game_id))) {
-        *object_id_out = Object_FromGameID(game_id);
+        *object_id_out = Object_SlotToID(game_id);
     } else {
         const char *object_key;
         MUST(JSON_READ_CURRENT(ctx->io, &object_key));

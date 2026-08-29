@@ -319,7 +319,7 @@ RESULT FS_Load(
     return OK;
 }
 
-OBJECT_ID Object_FromGameID(const int32_t game_id)
+OBJECT_ID Object_SlotToID(const int32_t game_id)
 {
     return NO_OBJECT;
 }

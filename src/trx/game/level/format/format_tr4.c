@@ -236,7 +236,7 @@ static RESULT M_ReadItemsTR4(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
         LEVEL_TR4_ITEM_INFO *const tr4_item = &info->tr4.items[i];
         const int16_t obj_id = File_ReadS16(file);
         tr4_item->object_id = obj_id;
-        item->object_id = Object_FromGameID(obj_id);
+        item->object_id = Object_SlotToID(obj_id);
         tr4_item->room_num = File_ReadS16(file);
         item->room_num = tr4_item->room_num;
         tr4_item->pos.x = File_ReadS32(file);
