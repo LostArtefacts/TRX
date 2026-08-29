@@ -378,7 +378,7 @@ static RESULT M_LoadRoot(const M_CONTEXT *const ctx)
             ctx->gf->ambient_tracks.is_present = true;
             ctx->gf->ambient_tracks.count = count;
             ctx->gf->ambient_tracks.ids =
-                Memory_Alloc(sizeof(MUSIC_ID) * (size_t)count);
+                Memory_Alloc(sizeof(MUSIC_SLOT) * (size_t)count);
             for (int32_t i = 0; i < count; i++) {
                 int32_t track = MX_INACTIVE;
                 SHOULD(JSON_READ_A(io, i, &track));

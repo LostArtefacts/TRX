@@ -1,12 +1,12 @@
 #include <trx/game/catalog/manager.h>
 #include <trx/game/music.h>
 
-MUSIC_ID Music_ToGameID(const MUSIC_TRX_ID music_track)
+MUSIC_SLOT Music_IDToSlot(const MUSIC_ID id)
 {
-    return Catalog_IDToSlot(CATALOG_MUSIC, music_track, MX_INACTIVE);
+    return Catalog_IDToSlot(CATALOG_MUSIC, id, MX_INACTIVE);
 }
 
-MUSIC_TRX_ID Music_FromGameID(const MUSIC_ID track_id)
+MUSIC_ID Music_SlotToID(const MUSIC_SLOT slot)
 {
-    return Catalog_SlotToID(CATALOG_MUSIC, track_id, MX_TRX_INVALID);
+    return Catalog_SlotToID(CATALOG_MUSIC, slot, NO_CATALOG_ID);
 }

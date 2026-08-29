@@ -16,8 +16,8 @@ typedef struct {
     double timestamp;
 } FAKE_SLOT;
 
-static MUSIC_ID m_Playing = MX_INACTIVE;
-static MUSIC_ID m_Looped = MX_INACTIVE;
+static MUSIC_SLOT m_Playing = MX_INACTIVE;
+static MUSIC_SLOT m_Looped = MX_INACTIVE;
 
 static FAKE_SLOT m_Slots[FAKE_MUSIC_SLOT_COUNT];
 
@@ -30,7 +30,7 @@ static void M_Reset(void)
     }
 }
 
-int32_t Music_Play_Direct(const MUSIC_ID track, const MUSIC_PLAY_MODE mode)
+int32_t Music_Play_Direct(const MUSIC_SLOT track, const MUSIC_PLAY_MODE mode)
 {
     FAKE_RECORD("play", FV(track), FV(mode));
     if (track != FAKE_MUSIC_TRACK) {
@@ -49,17 +49,17 @@ int32_t Music_Play_Direct(const MUSIC_ID track, const MUSIC_PLAY_MODE mode)
     return slot;
 }
 
-MUSIC_ID Music_GetCurrentPlayingTrack(void)
+MUSIC_SLOT Music_GetCurrentPlayingTrack(void)
 {
     return m_Playing;
 }
 
-MUSIC_ID Music_GetCurrentLoopedTrack(void)
+MUSIC_SLOT Music_GetCurrentLoopedTrack(void)
 {
     return m_Looped;
 }
 
-bool Music_IsTrackAvailable_Direct(const MUSIC_ID track)
+bool Music_IsTrackAvailable_Direct(const MUSIC_SLOT track)
 {
     return track == FAKE_MUSIC_TRACK;
 }
@@ -69,7 +69,7 @@ int32_t Music_GetTrackLimit(void)
     return FAKE_MUSIC_TRACK + 1;
 }
 
-char *Music_GetTrackPath(const MUSIC_ID track)
+char *Music_GetTrackPath(const MUSIC_SLOT track)
 {
     if (track != FAKE_MUSIC_TRACK) {
         return nullptr;
@@ -156,10 +156,10 @@ void FakeMusic_SetStream(
 
 void FakeMusic_SetPlaying(const int32_t track)
 {
-    m_Playing = (MUSIC_ID)track;
+    m_Playing = (MUSIC_SLOT)track;
 }
 
 void FakeMusic_SetLooped(const int32_t track)
 {
-    m_Looped = (MUSIC_ID)track;
+    m_Looped = (MUSIC_SLOT)track;
 }

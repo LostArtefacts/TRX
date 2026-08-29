@@ -84,7 +84,7 @@ typedef struct {
 typedef struct {
     bool is_present;
     int32_t count;
-    MUSIC_ID *ids;
+    MUSIC_SLOT *ids;
 } GF_AMBIENT_DATA;
 
 typedef struct {
@@ -132,7 +132,7 @@ typedef struct {
     // where the game ships one, nullptr where it does not.
     char *script_path;
 
-    MUSIC_ID music_track;
+    MUSIC_SLOT music_track;
     char *lara_outfit;
     GF_SEQUENCE sequence;
     INJECTION_DATA injections;

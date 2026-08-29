@@ -28,7 +28,7 @@ typedef enum {
 
 static int32_t M_LoadTrackPool(
     const ITEM *const item, const char *const key_prefix,
-    MUSIC_ID *const out_tracks, const int32_t max_tracks)
+    MUSIC_SLOT *const out_tracks, const int32_t max_tracks)
 {
     if (item == nullptr || key_prefix == nullptr || out_tracks == nullptr
         || max_tracks <= 0) {
@@ -169,7 +169,7 @@ void Vehicle_PlayTrackPool(
     const ITEM *const item, const char *const key_prefix,
     const MUSIC_PLAY_MODE mode)
 {
-    MUSIC_ID tracks[VEHICLE_TRACK_POOL_SIZE];
+    MUSIC_SLOT tracks[VEHICLE_TRACK_POOL_SIZE];
     const int32_t track_count =
         M_LoadTrackPool(item, key_prefix, tracks, ARRAY_SIZE(tracks));
     if (track_count <= 0) {
@@ -181,7 +181,7 @@ void Vehicle_PlayTrackPool(
 void Vehicle_PlayOneShotTrackPool(
     const ITEM *const item, const char *const key_prefix)
 {
-    MUSIC_ID tracks[VEHICLE_TRACK_POOL_SIZE];
+    MUSIC_SLOT tracks[VEHICLE_TRACK_POOL_SIZE];
     const int32_t track_count =
         M_LoadTrackPool(item, key_prefix, tracks, ARRAY_SIZE(tracks));
     if (track_count <= 0) {
@@ -194,7 +194,7 @@ void Vehicle_PlayOneShotTrackPool(
         }
     }
 
-    const MUSIC_ID track = tracks[Random_GetControl() % track_count];
+    const MUSIC_SLOT track = tracks[Random_GetControl() % track_count];
     Music_Play_Direct(track, MPM_ONCE);
     Music_GetTrackState(track)->is_one_shot = true;
 }

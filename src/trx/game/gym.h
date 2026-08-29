@@ -51,4 +51,4 @@ void Gym_Control(void);
 
 // Potentially converts the requested track id based on Lara's state. Returns
 // true if the track should be played.
-bool Gym_CanPlayMusicTrack(MUSIC_ID *track_id);
+bool Gym_CanPlayMusicTrack(MUSIC_SLOT *track_id);
