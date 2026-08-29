@@ -41,7 +41,7 @@ static void M_FreeSet(OBJECT_PROPERTY_SET *const set)
 
 static void M_Shutdown(void)
 {
-    for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
+    for (int32_t i = O_FIRST; i < Object_GetCount(); i++) {
         ObjectProperty_ResetObject(Object_Get(i));
     }
 }

@@ -28,7 +28,7 @@ static VECTOR *m_UncatalogedSlots = nullptr;
 
 void Object_Reset(void)
 {
-    for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
+    for (int32_t i = O_FIRST; i < Object_GetCount(); i++) {
         OBJECT *const obj = Object_TryGet(i);
         ObjectProperty_ResetObject(obj);
         obj->loaded = false;
@@ -97,6 +97,11 @@ OBJECT_ID Object_Mint(void)
     // Register the object so the object tables recognise its id. It takes no
     // name, which keeps it out of savegames.
     return Catalog_CreateAnonymous(CATALOG_OBJECTS);
+}
+
+int32_t Object_GetCount(void)
+{
+    return Catalog_GetCount(CATALOG_OBJECTS);
 }
 
 OBJECT *Object_GetBySlot(const OBJECT_SLOT slot)

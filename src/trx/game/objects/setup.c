@@ -35,7 +35,7 @@ static void M_SetupLaraStartPos(OBJECT *const obj)
 
 void Object_SetupAllObjects(void)
 {
-    for (int32_t i = O_FIRST; i < O_NUMBER_OF; i++) {
+    for (int32_t i = O_FIRST; i < Object_GetCount(); i++) {
         OBJECT *const obj = Object_Get(i);
         obj->initialise_func = nullptr;
         obj->control_func = nullptr;

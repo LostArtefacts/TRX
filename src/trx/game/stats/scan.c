@@ -214,7 +214,7 @@ static void M_CalculateStats(LEVEL_MAX_STATS *const stats)
 
     for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
         ITEM *const item = Item_Get(i);
-        if (item->object_id < O_FIRST || item->object_id >= O_NUMBER_OF) {
+        if (item->object_id < O_FIRST || item->object_id >= Object_GetCount()) {
             LOG_ERROR("Bad Object number (%d) on Item %d", item->object_id, i);
             continue;
         }
