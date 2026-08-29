@@ -360,7 +360,7 @@ static void M_GetAIEnemy(CREATURE *info, int32_t ocb)
 // replay running ahead of the sound card would otherwise hold him far longer.
 static bool M_HasSpeechEnded(M_PRIV *const p)
 {
-    const MUSIC_ID track = (MUSIC_ID)M_GetTrack(p->waypoint);
+    const MUSIC_SLOT track = (MUSIC_SLOT)M_GetTrack(p->waypoint);
     if (Music_GetCurrentPlayingTrack() == track) {
         p->cut_heard = true;
         IGNORE(Music_SetSpeed(Clock_GetSpeedMultiplier()));
@@ -419,7 +419,7 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
         if (lara->current_anim_state == LS(LS_HANG)
             || lara->current_anim_state == LS(LS_SHIMMY_LEFT)
             || lara->current_anim_state == LS(LS_SHIMMY_RIGHT)) {
-            Music_Play_Direct((MUSIC_ID)(M_GetTrack(p->waypoint)), MPM_ONCE);
+            Music_Play_Direct((MUSIC_SLOT)(M_GetTrack(p->waypoint)), MPM_ONCE);
             M_SetCutPlayed(p, p->waypoint);
             p->hold = 2;
         }
@@ -494,7 +494,7 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
             M_SetCutCamera(item);
             Fader_InitTo(&m_Fader, 1.0f, 0.0f, 16.0f / (float)LOGIC_FPS);
             p->cut_phase++;
-            const MUSIC_ID track = (MUSIC_ID)M_GetTrack(p->waypoint);
+            const MUSIC_SLOT track = (MUSIC_SLOT)M_GetTrack(p->waypoint);
             Music_Play_Direct(track, MPM_ONCE);
             const double length = Music_GetTrackDuration(track);
             p->cut_length = length > 0.0 ? (int32_t)(length * LOGIC_FPS) : 0;
@@ -539,7 +539,7 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
         Output_Overlay_SlideLetterbox(0.0f);
         m_Fader = (FADER) {};
         M_ClearCutCamera();
-        const MUSIC_ID ambient = Music_GetCurrentLoopedTrack();
+        const MUSIC_SLOT ambient = Music_GetCurrentLoopedTrack();
         Music_Stop();
         Music_Play_Direct(ambient, MPM_LOOP);
         Lara_SetControllable(true);

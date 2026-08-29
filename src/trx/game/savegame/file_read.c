@@ -805,8 +805,8 @@ static RESULT M_ReadFlare(JSON_READ_IO *const io)
 // Returns the timestamp to resume the track at, or -1.0 to play it from the
 // start.
 static double M_GetMusicSeekTimestamp(
-    const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode,
-    const MUSIC_ID ambient_track, const double timestamp)
+    const MUSIC_SLOT track_id, const MUSIC_PLAY_MODE mode,
+    const MUSIC_SLOT ambient_track, const double timestamp)
 {
     const bool is_ambient = mode == MPM_LOOP && track_id == ambient_track;
     if (is_ambient
@@ -818,7 +818,7 @@ static double M_GetMusicSeekTimestamp(
 
 static RESULT M_ReadMusicTracks(JSON_READ_IO *const io)
 {
-    MUSIC_ID ambient_track = MX_INACTIVE;
+    MUSIC_SLOT ambient_track = MX_INACTIVE;
     MUST(JSON_READ(io, "current_ambient", &ambient_track));
 
     Music_Stop();
@@ -837,7 +837,7 @@ static RESULT M_ReadMusicTracks(JSON_READ_IO *const io)
         // TRX 1.2
         const int32_t stream_count = JSON_ARRAY_LEN(io);
         for (int32_t i = 0; i < stream_count; i++) {
-            MUSIC_ID track_id = MX_INACTIVE;
+            MUSIC_SLOT track_id = MX_INACTIVE;
             MUSIC_PLAY_MODE mode = MPM_ONCE;
             double timestamp = -1.0;
             MUST(JSON_PUSH_INDEX(io, i));
@@ -859,7 +859,7 @@ static RESULT M_ReadMusicTracks(JSON_READ_IO *const io)
         }
         MUST(JSON_POP(io));
     } else {
-        MUSIC_ID current_track = MX_INACTIVE;
+        MUSIC_SLOT current_track = MX_INACTIVE;
         double timestamp = -1.0;
         MUST(JSON_READ(io, "current_track", &current_track));
         MUST(JSON_READ(io, "timestamp", &timestamp));

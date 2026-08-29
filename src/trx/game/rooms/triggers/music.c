@@ -7,7 +7,7 @@ static void M_Handle(
     const TRIGGER *const trigger, const TRIGGER_CMD *const cmd,
     TRIGGER_STATUS *const status)
 {
-    const MUSIC_ID track_id = (MUSIC_ID)(intptr_t)cmd->parameter;
+    const MUSIC_SLOT track_id = (MUSIC_SLOT)(intptr_t)cmd->parameter;
 
     MUSIC_TRIGGER_KIND kind = MUSIC_TRIGGER_NORMAL;
     if (trigger->type == TT_SWITCH) {

@@ -856,7 +856,7 @@ static void M_Setup(OBJECT *const obj)
     OBJECT_PROPERTIES(
         obj,
         OBJECT_PROPERTY_STORED(
-            "track_1", Music_ToGameID(MX_MINE_CART_THEME),
+            "track_1", Music_IDToSlot(MX_MINE_CART_THEME),
             "Random music track pool, slot 1. -1 = disabled."),
         OBJECT_PROPERTY_STORED(
             "track_2", -1, "Random music track pool, slot 2. -1 = disabled."),

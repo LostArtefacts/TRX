@@ -270,7 +270,7 @@ static void M_EndHouse(ITEM *const item, COLL_INFO *const coll)
         Game_SetIsLevelComplete(true);
     }
 
-    if (Music_GetCurrentPlayingTrack() == Music_ToGameID(MX_CUTSCENE_BATH)) {
+    if (Music_GetCurrentPlayingTrack() == Music_IDToSlot(MX_CUTSCENE_BATH)) {
         const int32_t frame_num = Item_GetRelativeFrame(item);
         const double ts = (frame_num - M_LF_SHOWER_START) / (double)LOGIC_FPS;
         IGNORE(Music_SetSpeed(Clock_GetSpeedMultiplier()));

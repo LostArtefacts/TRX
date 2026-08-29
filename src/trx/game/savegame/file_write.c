@@ -351,7 +351,7 @@ static void M_WriteResumeInfo(
     JSONW_WRITE(io, "death_count", resume->stats.death_count);
 }
 
-static uint16_t M_PackMusicTrackFlags(const MUSIC_ID track_id)
+static uint16_t M_PackMusicTrackFlags(const MUSIC_SLOT track_id)
 {
     const MUSIC_TRACK_STATE *const track = Music_GetTrackState(track_id);
     return (track->mask << TRIGGER_MASK_SHIFT)
@@ -490,7 +490,7 @@ void SG_File_DumpMusic(JSON_WRITE_IO *const io)
     }
     JSONW_POP_AND_SET(io, "flags");
 
-    const MUSIC_ID current_ambient = Music_GetCurrentLoopedTrack();
+    const MUSIC_SLOT current_ambient = Music_GetCurrentLoopedTrack();
     JSONW_PUSH_OBJECT(io);
     JSONW_WRITE(io, "current_ambient", current_ambient);
     JSONW_PUSH_ARRAY(io);

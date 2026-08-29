@@ -53,7 +53,7 @@ api.enum("catalog.samples", {
 })
 
 api.enum("catalog.music", {
-  backing = "MUSIC_TRX_ID",
+  backing = "MUSIC_ID",
   context = Context.MUSIC,
   bulk = true,
   description = "Every music track TRX has a name for.",

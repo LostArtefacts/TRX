@@ -25,20 +25,20 @@
 
 typedef struct {
     int32_t audio_stream_id;
-    MUSIC_ID track_id;
+    MUSIC_SLOT track_id;
     MUSIC_PLAY_MODE mode;
     bool active;
 } M_MUSIC_STREAM;
 
 static bool m_Initialised = false;
 static MUSIC_TRACK_STATE m_TrackStates[MAX_MUSIC_TRACKS] = {};
-static MUSIC_ID m_TrackCurrent = MX_INACTIVE;
-static MUSIC_ID m_TrackDelayed = MX_INACTIVE;
-static MUSIC_ID m_TrackLooped = MX_INACTIVE;
+static MUSIC_SLOT m_TrackCurrent = MX_INACTIVE;
+static MUSIC_SLOT m_TrackDelayed = MX_INACTIVE;
+static MUSIC_SLOT m_TrackLooped = MX_INACTIVE;
 // Remember the last played track, whether normal or looped, to prevent
 // immediately restarting it if Lara remains on the same trigger.
-static MUSIC_ID m_TrackLastPlayed = MX_INACTIVE;
-static MUSIC_ID m_TrackLastLooped = MX_INACTIVE;
+static MUSIC_SLOT m_TrackLastPlayed = MX_INACTIVE;
+static MUSIC_SLOT m_TrackLastLooped = MX_INACTIVE;
 
 // How long each track runs, in seconds, as its file says. Zero where nothing
 // has asked yet, and a negative value where the answer was that nothing knows.
@@ -188,7 +188,7 @@ static void M_StreamFinished(const int32_t stream_id, void *const user_data)
     }
 }
 
-static bool M_IsBrokenTrack(const MUSIC_ID track_id)
+static bool M_IsBrokenTrack(const MUSIC_SLOT track_id)
 {
     if (track_id < 0) {
         return true;
@@ -196,11 +196,11 @@ static bool M_IsBrokenTrack(const MUSIC_ID track_id)
     if (g_TRVersion > 1) {
         return false;
     }
-    const MUSIC_TRX_ID track = Music_FromGameID(track_id);
+    const MUSIC_ID track = Music_SlotToID(track_id);
     return track == MX_UNUSED_0 || track == MX_UNUSED_1 || track == MX_UNUSED_2;
 }
 
-static bool M_IsAmbientTrack(const MUSIC_ID track_id)
+static bool M_IsAmbientTrack(const MUSIC_SLOT track_id)
 {
     const GF_LEVEL *const level = GF_GetCurrentLevel();
     if (level != nullptr && level->music_track == track_id) {
@@ -251,7 +251,7 @@ static int32_t M_GetFreeOverlaySlot(void)
 // Returns the stream slot the overlay plays in - an overlay is slots 1.. - or
 // -1 when it does not play.
 static int32_t M_PlayOverlayTrack(
-    const MUSIC_ID track_id, const double timestamp)
+    const MUSIC_SLOT track_id, const double timestamp)
 {
     if (Shell_GetArgs()->headless) {
         LOG_INFO("Not playing overlay track %d out loud", track_id);
@@ -344,9 +344,9 @@ static M_MUSIC_STREAM *M_GetStreamBySlot(const int32_t slot)
     return nullptr;
 }
 
-static bool M_IsSpeechTrack(const MUSIC_ID track_id)
+static bool M_IsSpeechTrack(const MUSIC_SLOT track_id)
 {
-    switch (Music_FromGameID(track_id)) {
+    switch (Music_SlotToID(track_id)) {
     case MX_BALDY_SPEECH:
     case MX_COWBOY_SPEECH:
     case MX_LARSON_SPEECH:
@@ -383,7 +383,8 @@ static void M_ApplyConfig(void)
 // overlays are slots 1.. - or -1 when the track does not play, which includes a
 // track marked for later (delay) or a deferred ambient.
 static int32_t M_Play(
-    const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode, const double timestamp)
+    const MUSIC_SLOT track_id, const MUSIC_PLAY_MODE mode,
+    const double timestamp)
 {
     if (!m_Initialised) {
         return -1;
@@ -505,23 +506,24 @@ finish:
     return Audio_Init();
 }
 
-int32_t Music_Play_Direct(const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode)
+int32_t Music_Play_Direct(const MUSIC_SLOT track_id, const MUSIC_PLAY_MODE mode)
 {
     return M_Play(track_id, mode, -1.0);
 }
 
 int32_t Music_Play_DirectAt(
-    const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode, const double timestamp)
+    const MUSIC_SLOT track_id, const MUSIC_PLAY_MODE mode,
+    const double timestamp)
 {
     return M_Play(track_id, mode, timestamp);
 }
 
-int32_t Music_Play(const MUSIC_TRX_ID track, const MUSIC_PLAY_MODE mode)
+int32_t Music_Play(const MUSIC_ID track, const MUSIC_PLAY_MODE mode)
 {
-    return Music_Play_Direct(Music_ToGameID(track), mode);
+    return Music_Play_Direct(Music_IDToSlot(track), mode);
 }
 
-bool Music_IsTrackAvailable_Direct(const MUSIC_ID track)
+bool Music_IsTrackAvailable_Direct(const MUSIC_SLOT track)
 {
     if (!m_Initialised || m_Backend == nullptr
         || m_Backend->is_track_available == nullptr) {
@@ -539,7 +541,7 @@ int32_t Music_GetTrackLimit(void)
     return m_Backend->get_track_limit(m_Backend);
 }
 
-char *Music_GetTrackPath(const MUSIC_ID track)
+char *Music_GetTrackPath(const MUSIC_SLOT track)
 {
     if (!m_Initialised || m_Backend == nullptr
         || m_Backend->get_track_path == nullptr) {
@@ -548,7 +550,7 @@ char *Music_GetTrackPath(const MUSIC_ID track)
     return m_Backend->get_track_path(m_Backend, track);
 }
 
-double Music_GetTrackDuration(const MUSIC_ID track)
+double Music_GetTrackDuration(const MUSIC_SLOT track)
 {
     if (track < 0 || track >= MAX_MUSIC_TRACKS) {
         return -1.0;
@@ -584,7 +586,7 @@ void Music_Stop(void)
     M_ResetStreamState();
 }
 
-void Music_StopTrack_Direct(const MUSIC_ID track)
+void Music_StopTrack_Direct(const MUSIC_SLOT track)
 {
     if (track != m_TrackCurrent || M_IsBrokenTrack(track)) {
         return;
@@ -727,7 +729,7 @@ void Music_StopStream(const int32_t slot)
         // when the ambient loop is what plays, there is nothing to resume, so
         // it ends.
         const bool had_current = m_TrackCurrent != MX_INACTIVE;
-        const MUSIC_ID looped = m_TrackLooped;
+        const MUSIC_SLOT looped = m_TrackLooped;
         M_StopMainStream();
         m_TrackCurrent = MX_INACTIVE;
         if (had_current && looped >= 0) {
@@ -769,7 +771,8 @@ RESULT Music_SeekStream(const int32_t slot, const double timestamp)
 }
 
 RESULT Music_SeekTrackTimestamp(
-    const MUSIC_ID track_id, const MUSIC_PLAY_MODE mode, const double timestamp)
+    const MUSIC_SLOT track_id, const MUSIC_PLAY_MODE mode,
+    const double timestamp)
 {
     if (mode == MPM_OVERLAY) {
         for (int32_t i = MUSIC_MAX_OVERLAY_TRACKS - 1; i >= 0; i--) {
@@ -791,17 +794,17 @@ RESULT Music_SeekTrackTimestamp(
     return Audio_Stream_SeekTimestamp(m_MainStream.audio_stream_id, timestamp);
 }
 
-MUSIC_ID Music_GetDelayedTrack(void)
+MUSIC_SLOT Music_GetDelayedTrack(void)
 {
     return m_TrackDelayed;
 }
 
-MUSIC_ID Music_GetCurrentPlayingTrack(void)
+MUSIC_SLOT Music_GetCurrentPlayingTrack(void)
 {
     return m_TrackCurrent == MX_INACTIVE ? m_TrackLooped : m_TrackCurrent;
 }
 
-MUSIC_ID Music_GetCurrentLoopedTrack(void)
+MUSIC_SLOT Music_GetCurrentLoopedTrack(void)
 {
     return m_TrackLooped;
 }
@@ -822,20 +825,20 @@ void Music_ResetTrackStates(void)
     }
 }
 
-MUSIC_TRACK_STATE *Music_GetTrackState(const MUSIC_ID track_id)
+MUSIC_TRACK_STATE *Music_GetTrackState(const MUSIC_SLOT track_id)
 {
     return &m_TrackStates[track_id];
 }
 
-void Music_Trigger(MUSIC_ID track_id, const MUSIC_TRIGGER *const trigger)
+void Music_Trigger(MUSIC_SLOT track_id, const MUSIC_TRIGGER *const trigger)
 {
     // An antitrigger aimed at track 0 silences the track that is playing.
-    if (track_id == (MUSIC_ID)0 && trigger->kind == MUSIC_TRIGGER_ANTI) {
+    if (track_id == (MUSIC_SLOT)0 && trigger->kind == MUSIC_TRIGGER_ANTI) {
         Music_Stop();
         return;
     }
 
-    if (track_id <= Music_ToGameID(MX_UNUSED_1) || track_id >= MAX_MUSIC_TRACKS
+    if (track_id <= Music_IDToSlot(MX_UNUSED_1) || track_id >= MAX_MUSIC_TRACKS
         || (Game_IsInGym() && !Gym_CanPlayMusicTrack(&track_id))) {
         return;
     }

@@ -663,15 +663,15 @@ int32_t Gym_TrackManager_GetLapTime(const GYM_TRACK_TYPE track)
     return p->quad_course.lap_time;
 }
 
-bool Gym_CanPlayMusicTrack(MUSIC_ID *const track_id)
+bool Gym_CanPlayMusicTrack(MUSIC_SLOT *const track_id)
 {
     const MUSIC_TRACK_STATE *const track_state = Music_GetTrackState(*track_id);
     const ITEM *const lara = Lara_GetItem();
-    switch (Music_FromGameID(*track_id)) {
+    switch (Music_SlotToID(*track_id)) {
     case MX_TR1_GYM_HINT_03:
         if (track_state->is_one_shot
             && lara->current_anim_state == LS(LS_JUMP_UP)) {
-            *track_id = Music_ToGameID(MX_TR1_GYM_HINT_04);
+            *track_id = Music_IDToSlot(MX_TR1_GYM_HINT_04);
         }
         break;
 
@@ -690,7 +690,7 @@ bool Gym_CanPlayMusicTrack(MUSIC_ID *const track_id)
     case MX_TR1_GYM_HINT_17:
         if (track_state->is_one_shot
             && lara->current_anim_state == LS(LS_HANG)) {
-            *track_id = Music_ToGameID(MX_TR1_GYM_HINT_18);
+            *track_id = Music_IDToSlot(MX_TR1_GYM_HINT_18);
         }
         break;
 

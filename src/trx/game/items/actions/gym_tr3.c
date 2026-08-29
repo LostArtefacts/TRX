@@ -7,7 +7,7 @@
 static int32_t m_ExerciseNumber = 0;
 
 static void M_PlayExerciseTrack(
-    const int32_t expected_num, const MUSIC_TRX_ID track)
+    const int32_t expected_num, const MUSIC_ID track)
 {
     if (!Game_IsInGym()) {
         m_ExerciseNumber = 0;

@@ -797,7 +797,7 @@ class MusicToGameIDTransformer(ast.NodeTransformer):
             return None
         if (
             not isinstance(node.func, ast.Name)
-            or node.func.id != "Music_ToGameID"
+            or node.func.id != "Music_IDToSlot"
         ):
             return None
         if len(node.args) != 1 or node.keywords:

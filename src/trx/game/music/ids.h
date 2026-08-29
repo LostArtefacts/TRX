@@ -1,18 +1,25 @@
 #pragma once
 
+#include <trx/game/catalog/manager.h>
+
 #include <stdint.h>
 
-typedef enum {
-    MX_INACTIVE = -1,
-} MUSIC_ID;
+// Identify a music track by the number stored in a game's files.
+typedef int32_t MUSIC_SLOT;
 
-typedef enum {
-    MX_TRX_INVALID = -1,
+enum {
+    MX_INACTIVE = -1,
+};
+
+// Identify the same music track across all four games.
+typedef CATALOG_ID MUSIC_ID;
+
+enum {
 #define X_CATALOG_ID(enum_value) enum_value,
 #include <trx/game/catalog/music.def>
 #undef X_CATALOG_ID
     MX_NUMBER_OF,
-} MUSIC_TRX_ID;
+};
 
-MUSIC_ID Music_ToGameID(MUSIC_TRX_ID music_track);
-MUSIC_TRX_ID Music_FromGameID(MUSIC_ID track_id);
+MUSIC_SLOT Music_IDToSlot(MUSIC_ID id);
+MUSIC_ID Music_SlotToID(MUSIC_SLOT slot);

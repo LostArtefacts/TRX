@@ -143,7 +143,7 @@ static int M_L_MusicStreamGet(lua_State *const L)
 // trxc.music.get_track()
 static int M_L_MusicGetTrack(lua_State *const L)
 {
-    const MUSIC_ID track = Music_GetCurrentPlayingTrack();
+    const MUSIC_SLOT track = Music_GetCurrentPlayingTrack();
     if (track < 0) {
         lua_pushnil(L);
     } else {
@@ -155,7 +155,7 @@ static int M_L_MusicGetTrack(lua_State *const L)
 // trxc.music.get_looped_track()
 static int M_L_MusicGetLoopedTrack(lua_State *const L)
 {
-    const MUSIC_ID track = Music_GetCurrentLoopedTrack();
+    const MUSIC_SLOT track = Music_GetCurrentLoopedTrack();
     if (track < 0) {
         lua_pushnil(L);
     } else {
@@ -169,7 +169,7 @@ TYPE_DEFINE(MUSIC_TRACK_VIEW, m_TrackFields)
 static void *M_ResolveTrack(const LUA_STRUCT_REF *const ref)
 {
     const int32_t id = ref->handle.id;
-    if (id < 0 || !Music_IsTrackAvailable_Direct((MUSIC_ID)id)) {
+    if (id < 0 || !Music_IsTrackAvailable_Direct((MUSIC_SLOT)id)) {
         return nullptr;
     }
     m_TrackView.id = id;
@@ -191,7 +191,7 @@ static int M_L_MusicTrackPlay(lua_State *const L)
         }
         lua_pop(L, 1);
     }
-    M_PushPlayedStream(L, Music_Play_Direct((MUSIC_ID)ref->handle.id, mode));
+    M_PushPlayedStream(L, Music_Play_Direct((MUSIC_SLOT)ref->handle.id, mode));
     return 1;
 }
 
@@ -201,7 +201,7 @@ static int M_L_MusicTrackPath(lua_State *const L)
     LUA_STRUCT_REF *const ref =
         LUA_Struct_CheckRef(L, 1, &TYPE_MUSIC_TRACK_VIEW);
     LUA_Struct_Deref(L, ref);
-    char *path = Music_GetTrackPath((MUSIC_ID)ref->handle.id);
+    char *path = Music_GetTrackPath((MUSIC_SLOT)ref->handle.id);
     if (path == nullptr) {
         lua_pushnil(L);
     } else {
@@ -221,7 +221,7 @@ static const luaL_Reg m_TrackMethods[] = {
 static int M_L_MusicTrackGet(lua_State *const L)
 {
     const int32_t id = (int32_t)luaL_checkinteger(L, 1);
-    if (id < 0 || !Music_IsTrackAvailable_Direct((MUSIC_ID)id)) {
+    if (id < 0 || !Music_IsTrackAvailable_Direct((MUSIC_SLOT)id)) {
         lua_pushnil(L);
         return 1;
     }
@@ -243,7 +243,7 @@ static int M_L_MusicTrackAvailableCount(lua_State *const L)
     int32_t count = 0;
     const int32_t limit = Music_GetTrackLimit();
     for (int32_t id = 0; id < limit; id++) {
-        if (Music_IsTrackAvailable_Direct((MUSIC_ID)id)) {
+        if (Music_IsTrackAvailable_Direct((MUSIC_SLOT)id)) {
             count++;
         }
     }
