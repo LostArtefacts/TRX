@@ -18,7 +18,6 @@ enum {
 #define X_CATALOG_ID(enum_value) enum_value,
 #include <trx/game/catalog/music.def>
 #undef X_CATALOG_ID
-    MX_NUMBER_OF,
 };
 
 MUSIC_SLOT Music_IDToSlot(MUSIC_ID id);
