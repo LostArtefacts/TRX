@@ -65,6 +65,9 @@ typedef enum {
     // Animations are persisted as an object and an index relative to it.
     SG_VERSION_19 = 19,
 
+    // Persists identities and music track flags by key.
+    SG_VERSION_20 = 20,
+
     SG_MIN_SUPPORTED_VERSION = SG_VERSION_13,
-    SG_CURRENT_VERSION = SG_VERSION_19,
+    SG_CURRENT_VERSION = SG_VERSION_20,
 } SAVEGAME_VERSION;

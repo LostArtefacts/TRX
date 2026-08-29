@@ -28,6 +28,7 @@
 #include <trx/game/rules.h>
 #include <trx/game/savegame.h>
 #include <trx/game/savegame/file.h>
+#include <trx/game/savegame/identity.h>
 #include <trx/game/stats.h>
 #include <trx/game/waypoint.h>
 #include <trx/version.h>
@@ -37,12 +38,9 @@
 static RESULT M_ReadObjectID(
     JSON_READ_IO *const io, const char *const key, OBJECT_ID *const target)
 {
-    int32_t game_id = 0;
-    MUST(JSON_READ(io, key, &game_id));
-    *target = Object_SlotToID(game_id);
-    if (*target == NO_OBJECT) {
-        return JSON_ReadIO_Fail(io, "unsupported object #%d", game_id);
-    }
+    CATALOG_ID id = NO_OBJECT;
+    MUST(SaveGame_ReadIdentity(io, key, "object_key", CATALOG_OBJECTS, &id));
+    *target = id;
     return OK;
 }
 
@@ -496,7 +494,10 @@ static RESULT M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
     ITEM *const item = Item_Get(item_num);
 
     OBJECT_ID object_id = NO_OBJECT;
-    MUST(M_ReadObjectID(io, "object_id", &object_id));
+    if (!SHOULD(M_ReadObjectID(io, "object_id", &object_id))) {
+        SaveGame_NoteDropped("an item");
+        return OK;
+    }
 
     const OBJECT *const obj = Object_Get(object_id);
     item->object_id = object_id;
@@ -879,6 +880,36 @@ static RESULT M_ReadMusicTracks(JSON_READ_IO *const io)
     return OK;
 }
 
+static void M_ApplyMusicTrackFlags(const MUSIC_SLOT slot, const uint32_t flags)
+{
+    MUSIC_TRACK_STATE *const track = Music_GetTrackState(slot);
+    track->mask = (flags & MTF_CODE_BITS) >> TRIGGER_MASK_SHIFT;
+    track->is_one_shot = (flags & MTF_ONE_SHOT) != 0;
+    track->delay = flags & 0xFF;
+}
+
+static RESULT M_ReadMusicTrackFlagsByTrack(JSON_READ_IO *const io)
+{
+    if (!g_Config.audio.load_music_triggers) {
+        return OK;
+    }
+
+    const int32_t count = JSON_ARRAY_LEN(io);
+    for (int32_t i = 0; i < count; i++) {
+        MUST(JSON_PUSH_INDEX(io, i));
+        CATALOG_ID id = NO_CATALOG_ID;
+        MUST(SaveGame_ReadIdentity(io, "slot", "key", CATALOG_MUSIC, &id));
+        const MUSIC_SLOT slot = Catalog_IDToSlot(CATALOG_MUSIC, id, -1);
+        uint32_t flags = 0;
+        MUST(JSON_READ(io, "flags", &flags));
+        if (slot >= 0 && slot < MAX_MUSIC_TRACKS) {
+            M_ApplyMusicTrackFlags(slot, flags);
+        }
+        MUST(JSON_POP(io));
+    }
+    return OK;
+}
+
 static RESULT M_ReadMusicTrackFlags(JSON_READ_IO *const io)
 {
     if (!g_Config.audio.load_music_triggers) {
@@ -895,10 +926,7 @@ static RESULT M_ReadMusicTrackFlags(JSON_READ_IO *const io)
     for (int32_t i = 0; i < count; i++) {
         uint32_t flags;
         MUST(JSON_READ_A(io, i, &flags));
-        MUSIC_TRACK_STATE *const track = Music_GetTrackState(i);
-        track->mask = (flags & MTF_CODE_BITS) >> TRIGGER_MASK_SHIFT;
-        track->is_one_shot = (flags & MTF_ONE_SHOT) != 0;
-        track->delay = flags & 0xFF;
+        M_ApplyMusicTrackFlags(i, flags);
     }
 
     return OK;
@@ -1179,9 +1207,17 @@ RESULT SG_File_LoadMusic(JSON_READ_IO *const io)
     MUST(JSON_PUSH(io, "current"));
     MUST(M_ReadMusicTracks(io));
     MUST(JSON_POP(io));
-    MUST(JSON_PUSH(io, "flags"));
-    MUST(M_ReadMusicTrackFlags(io));
-    MUST(JSON_POP(io));
+    // Prefer named music flags when present. Positional flags remain for saves
+    // that do not carry names.
+    if (JSON_ReadIO_HasKey(io, "track_flags")) {
+        MUST(JSON_PUSH(io, "track_flags"));
+        MUST(M_ReadMusicTrackFlagsByTrack(io));
+        MUST(JSON_POP(io));
+    } else {
+        MUST(JSON_PUSH(io, "flags"));
+        MUST(M_ReadMusicTrackFlags(io));
+        MUST(JSON_POP(io));
+    }
     MUST(JSON_POP(io));
     return OK;
 }

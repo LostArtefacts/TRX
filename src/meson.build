@@ -880,6 +880,7 @@ common_sources = [
   'trx/game/savegame/file.c',
   'trx/game/savegame/file_read.c',
   'trx/game/savegame/file_write.c',
+  'trx/game/savegame/identity.c',
   'trx/game/savegame/manager.c',
   'trx/game/savegame/resume.c',
   'trx/game/savegame/vars.c',
