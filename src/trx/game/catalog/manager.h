@@ -83,6 +83,15 @@ CATALOG_ID Catalog_SlotToID(
 // Return the number of identities in the context.
 int32_t Catalog_GetCount(CATALOG_CONTEXT context);
 
+// Return whether the context holds this identity.
+bool Catalog_IsValidID(CATALOG_CONTEXT context, CATALOG_ID id);
+
+// Walk every identity the context holds when the walk starts. One minted
+// while it runs is not visited, because it was not there to be walked.
+#define CATALOG_FOR_EACH(context, var)                                         \
+    for (CATALOG_ID var = 0, var##__end = Catalog_GetCount(context);           \
+         var < var##__end; var++)
+
 // Return the number of built-in identities, which is the first position
 // available for minted identities.
 int32_t Catalog_GetBuiltInCount(CATALOG_CONTEXT context);

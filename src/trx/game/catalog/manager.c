@@ -239,6 +239,11 @@ int32_t Catalog_GetCount(const CATALOG_CONTEXT context)
     return m_Counts[context];
 }
 
+bool Catalog_IsValidID(const CATALOG_CONTEXT context, const CATALOG_ID id)
+{
+    return id >= 0 && id < m_Counts[context];
+}
+
 int32_t Catalog_GetBuiltInCount(const CATALOG_CONTEXT context)
 {
     return m_BuiltInCounts[context];

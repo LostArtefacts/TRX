@@ -193,7 +193,8 @@ static void M_PrepareTR4Items(LEVEL_CONTEXT *const ctx)
 
 static void M_ComputeAnimBounds(void)
 {
-    for (int32_t i = O_FIRST; i < Object_GetCount(); i++) {
+    CATALOG_FOR_EACH(CATALOG_OBJECTS, i)
+    {
         OBJECT *const obj = Object_Get(i);
         BOUNDS_16 bounds = {
             .min = { INT16_MAX, INT16_MAX, INT16_MAX },

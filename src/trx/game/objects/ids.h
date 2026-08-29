@@ -4,8 +4,6 @@
 
 #include <stdint.h>
 
-#define O_FIRST 0
-
 // Identify an object by its number in a game's files.
 typedef int32_t OBJECT_SLOT;
 

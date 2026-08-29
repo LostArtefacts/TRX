@@ -83,7 +83,8 @@ static void M_CaptureObjectMeshesState(void)
         m_CapturedObjectMeshOwners[i] = NO_OBJECT;
     }
 
-    for (OBJECT_ID obj_id = O_FIRST; obj_id < Object_GetCount(); obj_id++) {
+    CATALOG_FOR_EACH(CATALOG_OBJECTS, obj_id)
+    {
         const OBJECT *const obj = Object_Get(obj_id);
         if (!obj->loaded || obj->mesh_count <= 0 || obj->mesh_idx < 0) {
             continue;
