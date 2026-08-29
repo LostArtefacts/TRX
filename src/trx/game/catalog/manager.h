@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 
-// Context discriminator for separate catalog namespaces
+// Separate namespace for each kind of catalog identity.
 typedef enum CATALOG_CONTEXT {
     CATALOG_OBJECTS,
     CATALOG_MUSIC,
@@ -17,61 +17,76 @@ typedef enum CATALOG_CONTEXT {
 
 typedef int32_t CATALOG_ID;
 
+#define CATALOG_MAX_KEY_SIZE 256
+#define NO_CATALOG_ID (-1)
+
+// Built-ins -----------------------------------------------------------------
+
 // Return the executable built-in key: the lower-case C spelling without the
-// context prefix. Use only compile-time data, so this works before registry
-// initialisation; the next call overwrites the result.
+// context prefix. Uses only compile-time data, so it works before catalog
+// initialisation. The next call overwrites the result.
 const char *Catalog_KeyForEnum(CATALOG_CONTEXT context, const char *enum_name);
 
-// Report whether a name is one an identity may take: letters, digits, and any
-// of ":_-".
-bool Catalog_IsValidKey(const char *key);
+// Creation ------------------------------------------------------------------
 
-// Take an id for something nothing names. The engine builds it, uses it and
-// drops it: a level's own sound slot is one, carrying no name for a mod or a
-// savegame to say. It answers to no key, so nothing outside the run can ask
-// for it.
-CATALOG_ID Catalog_MintAnonymous(CATALOG_CONTEXT context);
+// Create an identity with no key or slot.
+CATALOG_ID Catalog_CreateAnonymous(CATALOG_CONTEXT context);
 
-// Declare an identity and return its ID. Fails if the context already holds
-// the key. The context is the namespace, so the same key in two contexts is
-// two identities.
-RESULT Catalog_Mint(
+// Create an identity with a canonical key. Fails if the key is already held.
+RESULT Catalog_CreateKey(
     CATALOG_CONTEXT context, const char *key, CATALOG_ID *out_id);
 
-// Give an identity another name to answer to. Fails where the context already
-// holds the name. An alias resolves like the canonical key, and is never
-// written back out.
+// Create or retrieve the identity for a slot. If the slot is already held,
+// returns the identity holding it.
+RESULT Catalog_CreateSlot(
+    CATALOG_CONTEXT context, int32_t slot, CATALOG_ID *out_id);
+
+// Keys ----------------------------------------------------------------------
+
+// Whether a key is valid: letters, digits, and any of ":_-".
+bool Catalog_IsValidKey(const char *key);
+
+// Add an alias for an identity. Fails if the alias is already held.
 RESULT Catalog_AddAlias(
     CATALOG_CONTEXT context, CATALOG_ID id, const char *alias);
 
-// The canonical key an ID answers to, which is what a savegame stores. Null
-// when the context holds no such ID.
-const char *Catalog_GetKey(CATALOG_CONTEXT context, CATALOG_ID id);
+// Return an identity's canonical key, or NULL if it has none.
+const char *Catalog_IDToKey(CATALOG_CONTEXT context, CATALOG_ID id);
 
-// How many identities the context holds, built-in and minted together.
-int32_t Catalog_GetCount(CATALOG_CONTEXT context);
-
-// Bind an identity to the slot this game's files use for it. Reports failure
-// when another identity already holds that slot; the binding is made either
-// way, because a context such as the samples shares a slot on purpose.
-RESULT Catalog_BindSlot(CATALOG_CONTEXT context, CATALOG_ID id, int32_t slot);
-
-// Load mappings for a specific context from a CSV file of the form:
-// game_id,name[,comment]
-// A game_id of -1 indicates no mapping for that entry.
-// Returns true on success.
-RESULT Catalog_Load(
-    CATALOG_CONTEXT context, const char *csv_path, bool allow_duplicates);
-
-// The identity a key names, or fallback when the context holds no such key.
-CATALOG_ID Catalog_FromKey(
+// Resolve a canonical key or alias to an identity.
+CATALOG_ID Catalog_KeyToID(
     CATALOG_CONTEXT context, const char *key, CATALOG_ID fallback);
 
-// The slot an identity is bound to here, or fallback when it has none.
-int32_t Catalog_ToSlot(
+// Slots ---------------------------------------------------------------------
+
+// Bind an identity to a slot. Reports failure if another identity already
+// holds the slot; the binding is made either way because some contexts
+// intentionally share slots.
+RESULT Catalog_BindSlot(CATALOG_CONTEXT context, CATALOG_ID id, int32_t slot);
+
+// Bind an identity to the first free slot after all slots currently held by
+// the context.
+RESULT Catalog_BindFreeSlot(
+    CATALOG_CONTEXT context, CATALOG_ID id, int32_t *out_slot);
+
+// Return the slot an identity is bound to, or fallback if it has none.
+int32_t Catalog_IDToSlot(
     CATALOG_CONTEXT context, CATALOG_ID id, int32_t fallback);
 
-// The identity a slot names here, or fallback when none holds it. A slot that
-// two identities share answers with the first of them.
-CATALOG_ID Catalog_FromSlot(
+// Return the identity holding a slot, or fallback if none does. If multiple
+// identities share the slot, returns the first.
+CATALOG_ID Catalog_SlotToID(
     CATALOG_CONTEXT context, int32_t slot, CATALOG_ID fallback);
+
+// Queries -------------------------------------------------------------------
+
+// Return the number of identities in the context.
+int32_t Catalog_GetCount(CATALOG_CONTEXT context);
+
+// Loading -------------------------------------------------------------------
+
+// Load mappings for a context from a CSV file:
+// game_id,name[,comment]
+// A game_id of -1 indicates no slot mapping for that entry.
+RESULT Catalog_Load(
+    CATALOG_CONTEXT context, const char *csv_path, bool allow_duplicates);

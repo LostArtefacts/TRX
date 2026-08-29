@@ -34,7 +34,7 @@ static const M_DEFAULT *M_GetDefault(const OBJECT_ID obj_id)
 // call overwrites the result.
 static const char *M_StringPath(const OBJECT_ID obj_id, const char *const what)
 {
-    const char *const key = Catalog_GetKey(CATALOG_OBJECTS, obj_id);
+    const char *const key = Catalog_IDToKey(CATALOG_OBJECTS, obj_id);
     if (key == nullptr) {
         return nullptr;
     }
@@ -107,5 +107,5 @@ void Object_ResetAllNames(void)
 
 OBJECT_ID Object_IdFromKey(const char *const key)
 {
-    return Catalog_FromKey(CATALOG_OBJECTS, key, NO_OBJECT);
+    return Catalog_KeyToID(CATALOG_OBJECTS, key, NO_OBJECT);
 }

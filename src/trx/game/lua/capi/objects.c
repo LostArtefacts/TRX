@@ -175,7 +175,7 @@ static int M_L_ObjectsGet(lua_State *const L)
     int32_t object_id;
     if (!LUA_CheckBoundedInt(
             L, 1, O_FIRST, Catalog_GetCount(CATALOG_OBJECTS) - 1, &object_id)
-        || Catalog_GetKey(CATALOG_OBJECTS, object_id) == nullptr) {
+        || Catalog_IDToKey(CATALOG_OBJECTS, object_id) == nullptr) {
         lua_pushnil(L);
         return 1;
     }

@@ -96,7 +96,7 @@ OBJECT_ID Object_Mint(void)
 {
     // Register the object so the object tables recognise its id. It takes no
     // name, which keeps it out of savegames.
-    return Catalog_MintAnonymous(CATALOG_OBJECTS);
+    return Catalog_CreateAnonymous(CATALOG_OBJECTS);
 }
 
 OBJECT *Object_GetByGameID(const int32_t game_id)
@@ -155,12 +155,12 @@ STATIC_OBJECT_2D *Object_Get2DStatic(const int32_t static_id)
 
 OBJECT_ID Object_FromGameID(const int32_t game_id)
 {
-    return Catalog_FromSlot(CATALOG_OBJECTS, game_id, NO_OBJECT);
+    return Catalog_SlotToID(CATALOG_OBJECTS, game_id, NO_OBJECT);
 }
 
 int32_t Object_ToGameID(const OBJECT_ID object_id)
 {
-    return Catalog_ToSlot(CATALOG_OBJECTS, object_id, -1);
+    return Catalog_IDToSlot(CATALOG_OBJECTS, object_id, -1);
 }
 
 bool Object_IsType(const OBJECT_ID object_id, const OBJECT_ID *test_arr)

@@ -81,7 +81,7 @@ int32_t Catalog_GetCount(const CATALOG_CONTEXT context)
     return count + m_MintedCount[context];
 }
 
-RESULT Catalog_Mint(
+RESULT Catalog_CreateKey(
     const CATALOG_CONTEXT context, const char *const key,
     CATALOG_ID *const out_id)
 {
@@ -89,7 +89,7 @@ RESULT Catalog_Mint(
         !Catalog_IsValidKey(key), "'%s' is not a name an identity may take",
         key);
     FAIL_IF(
-        Catalog_FromKey(context, key, -1) >= 0, "'%s' is already held", key);
+        Catalog_KeyToID(context, key, -1) >= 0, "'%s' is already held", key);
     FAIL_IF(m_MintedCount[context] >= FAKE_MINTED_MAX, "no room left to mint");
     const int32_t idx = m_MintedCount[context]++;
     strncpy(m_Minted[context][idx], key, sizeof(m_Minted[0][0]) - 1);
@@ -99,7 +99,7 @@ RESULT Catalog_Mint(
     return OK;
 }
 
-const char *Catalog_GetKey(const CATALOG_CONTEXT context, const CATALOG_ID id)
+const char *Catalog_IDToKey(const CATALOG_CONTEXT context, const CATALOG_ID id)
 {
     int32_t count;
     const char *const *const names = M_Names(context, &count);
@@ -112,7 +112,7 @@ const char *Catalog_GetKey(const CATALOG_CONTEXT context, const CATALOG_ID id)
     return Catalog_KeyForEnum(context, names[id]);
 }
 
-CATALOG_ID Catalog_FromKey(
+CATALOG_ID Catalog_KeyToID(
     const CATALOG_CONTEXT context, const char *const key,
     const CATALOG_ID fallback)
 {
@@ -131,7 +131,7 @@ CATALOG_ID Catalog_FromKey(
     return fallback;
 }
 
-int32_t Catalog_ToSlot(
+int32_t Catalog_IDToSlot(
     const CATALOG_CONTEXT context, const CATALOG_ID id, const int32_t fallback)
 {
     if (context == CATALOG_SAMPLES) {
@@ -143,7 +143,7 @@ int32_t Catalog_ToSlot(
     return id + FAKE_SLOT_OFFSET;
 }
 
-CATALOG_ID Catalog_FromSlot(
+CATALOG_ID Catalog_SlotToID(
     const CATALOG_CONTEXT context, const int32_t slot,
     const CATALOG_ID fallback)
 {

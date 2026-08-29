@@ -335,7 +335,7 @@ static RESULT M_LoadObjectID(
     MUST(JSON_READ(io, key, &obj_name));
 
     const CATALOG_ID object_id =
-        Catalog_FromKey(CATALOG_OBJECTS, obj_name, NO_OBJECT);
+        Catalog_KeyToID(CATALOG_OBJECTS, obj_name, NO_OBJECT);
     if (object_id == NO_OBJECT) {
         MUST(JSON_POP(io));
         return JSON_ReadIO_Fail(io, "unknown outfit object_id '%s'", obj_name);

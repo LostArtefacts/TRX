@@ -3,10 +3,10 @@
 
 MUSIC_ID Music_ToGameID(const MUSIC_TRX_ID music_track)
 {
-    return Catalog_ToSlot(CATALOG_MUSIC, music_track, MX_INACTIVE);
+    return Catalog_IDToSlot(CATALOG_MUSIC, music_track, MX_INACTIVE);
 }
 
 MUSIC_TRX_ID Music_FromGameID(const MUSIC_ID track_id)
 {
-    return Catalog_FromSlot(CATALOG_MUSIC, track_id, MX_TRX_INVALID);
+    return Catalog_SlotToID(CATALOG_MUSIC, track_id, MX_TRX_INVALID);
 }
