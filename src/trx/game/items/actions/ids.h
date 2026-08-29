@@ -1,18 +1,25 @@
 #pragma once
 
+#include <trx/game/catalog/manager.h>
+
 #include <stdint.h>
 
-typedef enum {
-    ITEM_ACTION_INVALID = -1,
-} ITEM_ACTION;
+// Identify an item action by its number in a game's files.
+typedef int32_t ITEM_ACTION_SLOT;
 
-typedef enum {
-    ITEM_TRX_ACTION_INVALID = -1,
+enum {
+    ITEM_ACTION_INVALID = -1,
+};
+
+// Identify the same item action across all four games.
+typedef CATALOG_ID ITEM_ACTION_ID;
+
+enum {
 #define X_CATALOG_ID(enum_value) enum_value,
 #include <trx/game/catalog/item_actions.def>
 #undef X_CATALOG_ID
     ITEM_ACTION_NUMBER_OF,
-} ITEM_TRX_ACTION;
+};
 
-ITEM_ACTION ItemAction_ToGameID(ITEM_TRX_ACTION action);
-ITEM_TRX_ACTION ItemAction_FromGameID(ITEM_ACTION action);
+ITEM_ACTION_SLOT ItemAction_IDToSlot(ITEM_ACTION_ID id);
+ITEM_ACTION_ID ItemAction_SlotToID(ITEM_ACTION_SLOT slot);

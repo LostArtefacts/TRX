@@ -165,7 +165,7 @@ bool Room_FindValidPos(XYZ_32 *const out_pos, int16_t *const out_room_num)
     return true;
 }
 
-ITEM_ACTION ItemAction_ToGameID(const ITEM_TRX_ACTION action)
+ITEM_ACTION_SLOT ItemAction_IDToSlot(const ITEM_ACTION_ID action)
 {
-    return (ITEM_ACTION)action;
+    return (ITEM_ACTION_SLOT)action;
 }

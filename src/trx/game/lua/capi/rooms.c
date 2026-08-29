@@ -177,7 +177,7 @@ static int M_L_RoomsFlipEffect(lua_State *const L)
     if (trx_effect_id == -1) {
         Room_SetFlipEffect(-1);
     } else {
-        const ITEM_ACTION game_id = ItemAction_ToGameID(trx_effect_id);
+        const ITEM_ACTION_SLOT game_id = ItemAction_IDToSlot(trx_effect_id);
         if (game_id == ITEM_ACTION_INVALID) {
             return luaL_error(L, "invalid flip effect id");
         }
