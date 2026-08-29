@@ -14,8 +14,7 @@
 typedef void (*M_COLLISION_ROUTINE)(ITEM *item, COLL_INFO *coll);
 
 CATALOG_TABLE_DEFINE(
-    m_CollisionRoutines, CATALOG_LARA_STATES, M_COLLISION_ROUTINE,
-    LS_NUMBER_OF);
+    m_CollisionRoutines, CATALOG_LARA_STATES, M_COLLISION_ROUTINE);
 
 void Lara_Col_Push(
     const COLL_ITEM *const item, COLL_INFO *const coll, const bool hit_on,

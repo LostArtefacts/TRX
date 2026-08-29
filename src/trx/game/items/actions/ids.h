@@ -18,7 +18,6 @@ enum {
 #define X_CATALOG_ID(enum_value) enum_value,
 #include <trx/game/catalog/item_actions.def>
 #undef X_CATALOG_ID
-    ITEM_ACTION_NUMBER_OF,
 };
 
 ITEM_ACTION_SLOT ItemAction_IDToSlot(ITEM_ACTION_ID id);

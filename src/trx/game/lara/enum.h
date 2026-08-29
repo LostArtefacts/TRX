@@ -16,7 +16,6 @@ enum {
 #define X_CATALOG_ID(enum_value) enum_value,
 #include <trx/game/catalog/lara_states.def>
 #undef X_CATALOG_ID
-    LS_NUMBER_OF,
 };
 
 // Identify a Lara animation by its number in a game's files.
@@ -33,7 +32,6 @@ enum {
 #define X_CATALOG_ID(enum_value) enum_value,
 #include <trx/game/catalog/lara_anims.def>
 #undef X_CATALOG_ID
-    LA_NUMBER_OF,
 };
 
 // clang-format off

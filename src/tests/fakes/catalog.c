@@ -81,6 +81,13 @@ int32_t Catalog_GetCount(const CATALOG_CONTEXT context)
     return count + m_MintedCount[context];
 }
 
+int32_t Catalog_GetBuiltInCount(const CATALOG_CONTEXT context)
+{
+    int32_t count;
+    M_Names(context, &count);
+    return count;
+}
+
 RESULT Catalog_CreateKey(
     const CATALOG_CONTEXT context, const char *const key,
     CATALOG_ID *const out_id)
