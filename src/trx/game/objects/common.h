@@ -106,8 +106,11 @@ void Object_SetSemiTransparent(OBJECT_ID obj_id, bool enabled);
 
 bool Object_CanInterpolate(const ITEM *item, int32_t frame_a, int32_t frame_b);
 
+// Bind the setup routine of an object before catalogue setup.
+void Object_Register(OBJECT_ID object_id, void (*setup_func)(OBJECT *obj));
+
 #define REGISTER_OBJECT(object_id, setup_func_)                                \
     __attribute__((constructor)) static void M_RegisterObject##object_id(void) \
     {                                                                          \
-        Object_Get(object_id)->setup_func = setup_func_;                       \
+        Object_Register(object_id, setup_func_);                               \
     }

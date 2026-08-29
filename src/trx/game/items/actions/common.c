@@ -36,13 +36,13 @@ int16_t ItemAction_GetFXType(void)
 void ItemAction_Register(
     const ITEM_ACTION_ID action, void (*const action_func)(ITEM *item))
 {
-    *(M_ACTION_ROUTINE *)CatalogTable_Get(&m_Routines, action) = action_func;
+    CatalogTable_Add(&m_Routines, action, &action_func);
 }
 
 void ItemAction_Run(const ITEM_ACTION_ID action_id, ITEM *const item)
 {
     const M_ACTION_ROUTINE *const routine =
-        CatalogTable_Get(&m_Routines, action_id);
+        CatalogTable_TryGet(&m_Routines, action_id);
     if (routine != nullptr && *routine != nullptr) {
         (*routine)(item);
     }

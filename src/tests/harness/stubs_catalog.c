@@ -7,7 +7,7 @@
 
 int32_t Catalog_GetCount(const CATALOG_CONTEXT context)
 {
-    return context == CATALOG_OBJECTS ? FAKE_OBJ_COUNT : 0;
+    return FAKE_OBJ_COUNT;
 }
 
 int32_t Catalog_GetBuiltInCount(const CATALOG_CONTEXT context)
