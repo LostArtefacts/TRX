@@ -378,6 +378,18 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'trx/core/strings/fuzzy_match',
+  'engine': [
+    'core/memory.c',
+    'core/strings/common.c',
+    'core/strings/fuzzy_match.c',
+    'core/vector.c',
+  ],
+  'deps': [dep_pcre2],
+  'args': ['-DPCRE2_CODE_UNIT_WIDTH=8'],
+}
+
+unit_tests += {
   'name': 'trx/game/lua/field',
   'bundles': [b_value],
   'engine': ['game/lua/field.c'],
