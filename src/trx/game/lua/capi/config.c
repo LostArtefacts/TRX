@@ -530,8 +530,9 @@ static void M_HandleChange(const EVENT *const event, void *const user_data)
     }
 }
 
-// trxc.config.on_change(key, fn) -> id
-static int M_L_ConfigOnChange(lua_State *const L)
+// Attaches a watcher for a setting, level-scoped where a level script asks for
+// one and the caller does not say otherwise.
+static int M_AttachWatcher(lua_State *const L, const bool allow_level_scope)
 {
     const CONFIG_OPTION *const option = M_GetOption(L, 1);
     luaL_checktype(L, 2, LUA_TFUNCTION);
@@ -542,7 +543,8 @@ static int M_L_ConfigOnChange(lua_State *const L)
     // Taken before the call below, which may attach a watcher of its own and
     // leave the counter naming that one instead.
     const int32_t id = m_NextWatcherId++;
-    const bool level_scoped = LUA_GetScriptContext() == LUA_CONTEXT_LEVEL;
+    const bool level_scoped =
+        allow_level_scope && LUA_GetScriptContext() == LUA_CONTEXT_LEVEL;
     const bool wait_for_world = level_scoped && !Level_IsWorldLoaded();
     Vector_Add(
         m_Watchers,
@@ -560,6 +562,23 @@ static int M_L_ConfigOnChange(lua_State *const L)
     }
     lua_pushinteger(L, id);
     return 1;
+}
+
+// trxc.config.on_change(key, fn) -> id
+static int M_L_ConfigOnChange(lua_State *const L)
+{
+    return M_AttachWatcher(L, true);
+}
+
+// trxc.config.on_change_lasting(key, fn) -> id
+//
+// The watcher lives as long as the game runs, whichever script attaches it.
+// This is for what outlives a level and reads the setting afterwards, such as
+// the signal a setting is given: one dropped with the level would leave that
+// signal holding a value that never moves again.
+static int M_L_ConfigOnChangeLasting(lua_State *const L)
+{
+    return M_AttachWatcher(L, false);
 }
 
 // trxc.config.off_change(id) -> bool
@@ -593,6 +612,7 @@ static const luaL_Reg m_Module[] = {
     { "list", M_L_ConfigList },
     { "declare", M_L_ConfigDeclare },
     { "on_change", M_L_ConfigOnChange },
+    { "on_change_lasting", M_L_ConfigOnChangeLasting },
     { "off_change", M_L_ConfigOffChange },
     { nullptr, nullptr },
 };

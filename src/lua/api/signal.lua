@@ -1,4 +1,5 @@
 local raw = trxc.events
+local raw_config = trxc.config
 local api = trx.api
 
 require("trx.events")
@@ -362,11 +363,13 @@ a script changes it. Asking for the same setting twice returns the same signal.]
     if existing ~= nil then
       return existing
     end
-    -- trx.config.on_change calls back once when attached, initializing the
-    -- signal with the setting's current value.
+    -- The signal is kept for as long as the game runs, so the watcher behind it
+    -- has to be too: one scoped to the level that first asked would leave every
+    -- later reader holding a signal that never moves again. The call back as it
+    -- attaches is what gives the signal the setting's current value.
     local created = new_signal(nil)
     settings[key] = created
-    trx.config.on_change(key, function(value)
+    raw_config.on_change_lasting(key, function(value)
       created:set(value)
     end)
     return created
