@@ -1960,6 +1960,16 @@
             "title": "Aodach Lara",
             "description": "Atharraicheas seo coltas Lara. Ma thèid Bunaiteach a thaghadh, thèid atharrachaidhean aodaich àbhaisteach eadar ìrean a chumail; airson dad sam bith eile, mairidh an t-aodach a chaidh a thaghadh gus an tèid atharrachadh le làimh.",
         },
+        "visuals.logo_locale": {
+            "description": "\\{review}Dè an suaicheantas a sheallas sgrìn an tiotail. Tha fear ann sa gheama thùsail airson gach cànan anns an deach fhoillseachadh.",
+            "title": "\\{review}Suaicheantas an tiotail",
+            "values": {
+                "de": "\\{review}Gearmailtis",
+                "en-gb": "\\{review}Beurla (RA)",
+                "en-us": "\\{review}Beurla (SA)",
+                "fr": "\\{review}Fraingis",
+            }
+        },
         "visuals.shadow_type": {
             "title": "Cruth nan faileasan",
             "description": "Tagh mar a thèid faileasan nithean air an sealltainn.\n\n- Ochd-cheàrnach: faileas seann TR1 agus TR2\n- Cearcall: faileas cruinn\n- Spraide: faileas stèidhichte air teacsa TR3",

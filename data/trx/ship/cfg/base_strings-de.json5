@@ -1960,6 +1960,16 @@
             "title": "\\{review}Laras Outfit",
             "description": "\\{review}Ändert Laras Aussehen. Bei Auswahl von Standard werden die regulären Outfit-Wechsel zwischen den Levels beibehalten, andernfalls bleibt das gewählte Outfit aktiv, bis es manuell geändert wird.",
         },
+        "visuals.logo_locale": {
+            "description": "\\{review}Welches Logo der Titelbildschirm zeigt. Das Original bringt für jede Sprache, in der es erschienen ist, ein eigenes mit.",
+            "title": "\\{review}Titel-Logo",
+            "values": {
+                "de": "\\{review}Deutsch",
+                "en-gb": "\\{review}Englisch (UK)",
+                "en-us": "\\{review}Englisch (USA)",
+                "fr": "\\{review}Französisch",
+            }
+        },
         "visuals.shadow_type": {
             "title": "\\{review}Schattenform",
             "description": "\\{review}Wählt aus, wie die Schatten von Entitäten dargestellt werden.\n\n- Achteck: alte TR1- und TR2-Schatten\n- Kreis: runde Schatten\n- Sprite: TR3 texturbasierte Schatten",

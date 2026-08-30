@@ -1,5 +1,7 @@
 require("common.overlay")
 require("tr4.fog")
+require("tr4.logo")
+
 -- How far along a level Lara has got, which its guides follow. TR4 marks the
 -- points with two flip effects and carries the number in the trigger's timer.
 local LOCATION_EFFECT = 30

@@ -1,3 +1,19 @@
+local logo = require("tr4.logo")
+
+-- The logo sits across the top of the menu at the size the original engine
+-- gives it.
+local LOGO_WIDTH = 512
+local LOGO_HEIGHT = 256
+
+trx.ui.regions.place(
+  trx.ui.Region.TOP_CENTER,
+  trx.ui.widgets.Image({
+    path = logo.path,
+    w = LOGO_WIDTH,
+    h = LOGO_HEIGHT,
+  })
+)
+
 -- The title screen alternates flyby sequences with cutscenes: a trigger along
 -- a flyby's path starts one, and the cutscene hands over to the next sequence
 -- when it ends. The last one wraps to the first and lets every scene in the
