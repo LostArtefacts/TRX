@@ -391,7 +391,8 @@ void main(void) {
 
     // Applies PlayStation depth cue before texture modulation, as tomb3's
     // transform.cpp does, so fog keeps the surface texture.
-    if (uPS1FogEnabled != 0 && (gOut.flags & VERT_NO_LIGHTING) == 0u
+    if (uPS1FogEnabled != 0
+        && (gOut.flags & (VERT_NO_FOG | VERT_NO_LIGHTING)) == 0u
         && uLightingEnabled != 0) {
         gOut.color.rgb = mix(gOut.color.rgb, uFogColor.rgb, fogFactor);
         gOut.add *= 1.0 - fogFactor;

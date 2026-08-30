@@ -153,8 +153,10 @@ static void M_RenderPass(
     glVertexAttrib1f(OUTPUT_MESH_ATTR_SHADE, SHADE_NEUTRAL);
 
     // With a sky image, tint it with the layer color; without one, fall
-    // back to flat-shaded colored quads.
-    uint32_t flags = VERT_NO_LIGHTING | VERT_NO_WIBBLE | VERT_NO_ALPHA_DISCARD;
+    // back to flat-shaded colored quads. The layer color is a light value, so
+    // the quads suppress fog without suppressing the overbright lighting that
+    // carries most of the sky hue.
+    uint32_t flags = VERT_NO_FOG | VERT_NO_WIBBLE | VERT_NO_ALPHA_DISCARD;
     if (texture_page >= 0) {
         glEnableVertexAttribArray(OUTPUT_MESH_ATTR_UVW);
         // Layer colors are in the OG 128-neutral scale; the shader doubles
