@@ -18,7 +18,13 @@ typedef struct {
 } LARA_SKIN_MESH_MAP;
 
 typedef struct {
-    LARA_SKIN_MESH_MAP mesh_offsets[MAX_WEAPONS];
+    LARA_GUN_TYPE gun_type;
+    LARA_SKIN_MESH_MAP mesh_map;
+} LARA_SKIN_GUN_ENTRY;
+
+typedef struct {
+    LARA_SKIN_GUN_ENTRY entries[MAX_WEAPONS];
+    int32_t count;
 } LARA_SKIN_GUN_MAP;
 
 // The braid top ring welds onto these head vertices so it meets the scalp
