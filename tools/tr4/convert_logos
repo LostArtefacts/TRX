@@ -1,0 +1,121 @@
+#!/usr/bin/env python3
+
+"""Convert the TR4 title logos to PNG.
+
+The retail game keeps each logo in data/<language>logo.pak: a raw 512x256 RGB
+image behind a zlib stream, headed by the size it inflates to. Black is the
+transparent color, which the PNG carries as an alpha channel.
+
+The original engine draws the image as two 256x256 halves, and samples each one
+a whole texel inside its every edge, so the outermost row and column of both
+halves never reach the screen. The output holds what is left, 508x254, which
+the title screen stretches over the same box the original gives it. This is
+what drops the dark grey column the art ends in.
+"""
+
+from __future__ import annotations
+
+import argparse
+import sys
+import zlib
+from pathlib import Path
+
+from PIL import Image, ImageChops
+
+WIDTH = 512
+HEIGHT = 256
+DATA_SIZE = WIDTH * HEIGHT * 3
+HALF_WIDTH = WIDTH // 2
+# How much of every half's edge the original engine samples past.
+INSET = 1
+
+# The name each language's logo takes in the images directory.
+LOGO_NAMES = {
+    "uklogo.pak": "logo.png",
+    "uslogo.pak": "logo-en-us.png",
+    "grlogo.pak": "logo-de.png",
+    "frlogo.pak": "logo-fr.png",
+}
+
+
+def convert(source: Path) -> Image.Image:
+    blob = source.read_bytes()
+    declared_size = int.from_bytes(blob[:4], "little")
+    if declared_size != DATA_SIZE:
+        raise ValueError(
+            f"{source}: declares {declared_size} bytes rather than {DATA_SIZE}"
+        )
+
+    pixels = zlib.decompress(blob[4:])
+    if len(pixels) != DATA_SIZE:
+        raise ValueError(f"{source}: inflates to {len(pixels)} bytes")
+
+    image = Image.frombytes("RGB", (WIDTH, HEIGHT), pixels).convert("RGBA")
+    brightest = image.convert("RGB").split()
+    mask = brightest[0]
+    for channel in brightest[1:]:
+        mask = ImageChops.lighter(mask, channel)
+    image.putalpha(mask.point(lambda value: 0 if value == 0 else 255))
+
+    half_size = (HALF_WIDTH - 2 * INSET, HEIGHT - 2 * INSET)
+    result = Image.new("RGBA", (2 * half_size[0], half_size[1]))
+    for half in range(2):
+        left = half * HALF_WIDTH
+        result.paste(
+            image.crop(
+                (
+                    left + INSET,
+                    INSET,
+                    left + HALF_WIDTH - INSET,
+                    HEIGHT - INSET,
+                )
+            ),
+            (half * half_size[0], 0),
+        )
+    return result
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Convert TR4's logo paks to PNG. For example, uklogo.pak becomes "
+            "logo.png, which TRX draws on the title screen."
+        )
+    )
+    parser.add_argument(
+        "source_dir",
+        type=Path,
+        help="Directory holding the original *logo.pak files.",
+    )
+    parser.add_argument(
+        "-o",
+        "--output-dir",
+        type=Path,
+        required=True,
+        help="Directory to write the PNG files into.",
+    )
+    return parser.parse_args()
+
+
+def main() -> int:
+    args = parse_args()
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+
+    converted = 0
+    for source_name, target_name in LOGO_NAMES.items():
+        source = args.source_dir / source_name
+        if not source.is_file():
+            continue
+        target = args.output_dir / target_name
+        convert(source).save(target)
+        print(f"{source} -> {target}")
+        converted += 1
+
+    if converted == 0:
+        print(f"error: no logo paks in {args.source_dir}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
