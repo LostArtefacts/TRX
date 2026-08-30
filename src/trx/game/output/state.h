@@ -44,6 +44,10 @@ bool Output_GetWibbleEffect(void);
 bool Output_GetObjectWibbleEffect(void);
 
 RGBA_F Output_GetFogColor(void);
+
+// The color the game view is cleared to, behind everything the world draws.
+RGBA_F Output_GetBackgroundColor(void);
+void Output_SetBackgroundColor(RGB_888 color);
 int32_t Output_GetFogStart(void);
 int32_t Output_GetFogEnd(void);
 
