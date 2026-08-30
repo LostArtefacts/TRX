@@ -265,6 +265,12 @@
             "clear": {
                 "help": "Czyści logi konsoli.",
             },
+            "copy": {
+                "copied": "\\{review}Skopiowano do schowka.",
+                "failed": "\\{review}%s nie została wykonana.",
+                "help": "\\{review}Kopiuje wynik polecenia do schowka.",
+                "no_output": "\\{review}%s nie wypisała nic do skopiowania.",
+            },
             "debug": {
                 "help": "Włącza lub wyłącza różne informacje diagnostyczne.",
                 "option_get": "%s jest obecnie ustawione na %s",

@@ -86,6 +86,7 @@ trx_lua_api_sources = files(
 trx_lua_script_sources = files(
   'lua/commands/clear.lua',
   'lua/commands/burn.lua',
+  'lua/commands/copy.lua',
   'lua/commands/debug.lua',
   'lua/commands/die.lua',
   'lua/commands/disco.lua',

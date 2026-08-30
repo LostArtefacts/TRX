@@ -265,6 +265,12 @@
             "clear": {
                 "help": "\\{review}Efface les journaux de la console visibles.",
             },
+            "copy": {
+                "copied": "\\{review}Copié dans le presse-papiers.",
+                "failed": "\\{review}%s n'a pas été exécutée.",
+                "help": "\\{review}Copie la sortie d'une commande dans le presse-papiers.",
+                "no_output": "\\{review}%s n'a rien affiché à copier.",
+            },
             "debug": {
                 "help": "Affiche les informations de débogage visuel.",
                 "option_get": "%s est actuellement réglé sur %s",

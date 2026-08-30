@@ -279,6 +279,9 @@ whichever key you have bound, and not include it as part of the command itself.
   `/clear`
   Wipes the console logs, quickly erasing all traces of your cheat spree (or that ugly pile of debug misery).
 
+- `/copy {command}`  
+  Runs another command and copies its output to the clipboard. Bug reports without accidentally reporting the Backtombs.
+
 - `/strings`  
   Reloads the current language files on the fly. Très utile for translators.
 
