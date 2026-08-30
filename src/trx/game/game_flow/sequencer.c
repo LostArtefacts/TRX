@@ -275,15 +275,8 @@ RESULT GF_InterpretSequence(
         }
     }
     if (seq_ctx != GFSC_STORY || level->type == GFL_CUTSCENE) {
-        if (!Result_Absorb(Level_Initialise(level, seq_ctx))) {
-            Game_SetCurrentLevel(nullptr);
-            GF_SetCurrentLevel(nullptr);
-            if (level->type == GFL_TITLE) {
-                gf_cmd = (GF_COMMAND) { .action = GF_EXIT_GAME };
-            } else {
-                gf_cmd = (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
-            }
-        }
+        EXIT_ON_FAIL(
+            Level_Initialise(level, seq_ctx), "TRX cannot load the level");
     }
 
     for (int32_t i = 0; i < sequence->length; i++) {
