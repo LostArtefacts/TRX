@@ -440,6 +440,9 @@ bool File_TryReadData(TRX_FILE *const file, void *const data, size_t size)
 
 void File_ReadData(TRX_FILE *const file, void *const data, const size_t size)
 {
+    if (size == 0) {
+        return;
+    }
     if (file->failed) {
         memset(data, 0, size);
         return;

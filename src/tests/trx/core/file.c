@@ -130,6 +130,17 @@ TEST(a_count_that_cannot_fit_is_refused)
     File_Close(file);
 }
 
+TEST(a_read_of_nothing_leaves_the_buffer_alone)
+{
+    // A count the reader refuses reads no records, and the buffer that would
+    // hold them is a null pointer.
+    TRX_FILE *const file = M_Buffer();
+    File_ReadData(file, nullptr, 0);
+    CHECK(!File_HasFailed(file));
+    CHECK_EQ_INT((int32_t)File_Pos(file), 0);
+    File_Close(file);
+}
+
 TEST(a_count_that_fits_is_given_back)
 {
     const char bytes[] = { 0x02, 0x00, 0x00, 0x00, 0x01, 0x02 };
