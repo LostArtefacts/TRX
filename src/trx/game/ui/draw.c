@@ -353,8 +353,9 @@ static inline void *M_ArenaAlloc(const size_t sz)
     return p;
 }
 
-static void M_DrawOp_Image(const M_DRAW_OP_IMAGE *const op)
+static void M_DrawOp_Image(const M_DRAW_OP *const base)
 {
+    const M_DRAW_OP_IMAGE *const op = (const M_DRAW_OP_IMAGE *)base;
     const VIEWPORT_RECT viewport = Viewport_GetRect(VIEWPORT_UI);
     if (viewport.w <= 0 || viewport.h <= 0) {
         return;
