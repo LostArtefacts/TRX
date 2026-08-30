@@ -5,6 +5,7 @@
 #include <trx/game/objects/common.h>
 #include <trx/game/output/const.h>
 #include <trx/game/output/textures.h>
+#include <trx/game/paths.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/elements.h>
@@ -287,6 +288,29 @@ static int M_L_UIGradientQuad(lua_State *const L)
     return 0;
 }
 
+// trxc.ui.image(path, x, y, w, h, opacity) -> boolean
+static int M_L_UIImage(lua_State *const L)
+{
+    M_CheckPainting(L);
+    const char *const path = GamePath_PeekResolve(
+        GAME_DYNAMIC_PATH_IMAGE_FILE, luaL_checkstring(L, 1));
+    if (path == nullptr) {
+        lua_pushboolean(L, false);
+        return 1;
+    }
+
+    const float x = (float)luaL_checknumber(L, 2);
+    const float y = (float)luaL_checknumber(L, 3);
+    const float w = (float)luaL_checknumber(L, 4);
+    const float h = (float)luaL_checknumber(L, 5);
+    UI_ScheduleDrawImage(
+        path, lroundf(UI_ScaleX(x)), lroundf(UI_ScaleY(y)),
+        lroundf(UI_ScaleX(x + w)), lroundf(UI_ScaleY(y + h)),
+        (float)luaL_optnumber(L, 6, 1.0));
+    lua_pushboolean(L, true);
+    return 1;
+}
+
 // trxc.ui.to_screen(canvas) -> number
 static int M_L_UIToScreen(lua_State *const L)
 {
@@ -396,6 +420,7 @@ static const luaL_Reg m_Module[] = {
     { "draw_text", M_L_UIDrawText },
     { "flat_quad", M_L_UIFlatQuad },
     { "gradient_quad", M_L_UIGradientQuad },
+    { "image", M_L_UIImage },
     { "sprite", M_L_UISprite },
     { "sprite_bounds", M_L_UISpriteBounds },
     { "sprite_count", M_L_UISpriteCount },

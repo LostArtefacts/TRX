@@ -6714,6 +6714,50 @@
       "path": "ui.primitive.gradient_quad"
     },
     {
+      "description": "Draws an image file in a box on the canvas.\n\nThe image is looked for where the game keeps its images, and stretches to fill\nthe box, so a box of the image's own shape keeps that shape. The image draws\nunder everything else the canvas holds, whatever order the calls come in.\n\nReturns whether the game has such an image, so a script can leave the space\nalone where it does not.",
+      "examples": [
+        "trx.ui.primitive.image(\"uklogo.pak\", 64, 0, 512, 256)"
+      ],
+      "params": [
+        {
+          "description": "The image file, named from the images directory.",
+          "name": "path",
+          "type": "string"
+        },
+        {
+          "description": "The left edge.",
+          "name": "x",
+          "type": "number"
+        },
+        {
+          "description": "The top edge.",
+          "name": "y",
+          "type": "number"
+        },
+        {
+          "description": "The width.",
+          "name": "w",
+          "type": "number"
+        },
+        {
+          "description": "The height.",
+          "name": "h",
+          "type": "number"
+        },
+        {
+          "description": "How solid the image is, from 0 to 1. `1` by default.",
+          "name": "opacity",
+          "optional": true,
+          "type": "number"
+        }
+      ],
+      "path": "ui.primitive.image",
+      "returns": {
+        "description": "Whether the image was there to draw.",
+        "type": "boolean"
+      }
+    },
+    {
       "description": "Reports how many sprites an object has.\n\nAn object the level did not load has none, so this answers whether there is\nanything to draw before `trx.ui.primitive.sprite` is asked to draw it.",
       "params": [
         {
@@ -6893,6 +6937,50 @@
       "path": "ui.widgets.Label",
       "returns": {
         "description": "The label.",
+        "type": "ui.Widget"
+      }
+    },
+    {
+      "description": "A picture from an image file, at a size the script gives.\n\nThe widget keeps its room even where the game ships no such image, so a screen\nbuilt around it does not move when the image is missing.",
+      "params": [
+        {
+          "description": "The image settings.",
+          "fields": [
+            {
+              "description": "The image file, named from the images directory, or a signal carrying it.",
+              "name": "path",
+              "type": "any"
+            },
+            {
+              "description": "The width, in canvas units.",
+              "name": "w",
+              "type": "number"
+            },
+            {
+              "description": "The height, in canvas units.",
+              "name": "h",
+              "type": "number"
+            },
+            {
+              "description": "How solid the image is, from 0 to 1, or a signal that holds that value. `1` by default.",
+              "name": "opacity",
+              "optional": true,
+              "type": "any"
+            },
+            {
+              "description": "Whether the image is shown, or a signal that holds that value.",
+              "name": "shown",
+              "optional": true,
+              "type": "any"
+            }
+          ],
+          "name": "settings",
+          "type": "table"
+        }
+      ],
+      "path": "ui.widgets.Image",
+      "returns": {
+        "description": "The image.",
         "type": "ui.Widget"
       }
     },

@@ -14,6 +14,11 @@ void UI_ScheduleDrawTextOutline(
 void UI_ScheduleDrawScreenSprite(
     int32_t sx, int32_t sy, int32_t z, int32_t scale_h, int32_t scale_v,
     int32_t sprite_idx, const RGBA_F colors[4]);
+// Draw an already resolved image file in a screen box beneath all other canvas
+// content.
+void UI_ScheduleDrawImage(
+    const char *path, int32_t x0, int32_t y0, int32_t x1, int32_t y1,
+    float opacity);
 void UI_ScheduleDrawScreenFlatQuad(
     int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h, RGBA_8888 color);
 void UI_ScheduleDrawScreenGradientQuad(

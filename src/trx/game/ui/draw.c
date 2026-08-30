@@ -4,10 +4,12 @@
 #include <trx/core/vector.h>
 #include <trx/game/objects.h>
 #include <trx/game/output/common.h>
+#include <trx/game/output/overlay.h>
 #include <trx/game/output/sources/ui.h>
 #include <trx/game/output/state.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/ui/settings.h>
+#include <trx/game/viewport.h>
 #include <trx/version.h>
 
 #include <string.h>
@@ -55,6 +57,13 @@ typedef struct {
     int32_t cx, cy, r_inner, r_outer, z;
     RGBA_8888 color;
 } M_DRAW_OP_CIRCLE;
+
+typedef struct {
+    M_DRAW_OP base;
+    const char *path;
+    int32_t x0, y0, x1, y1;
+    float opacity;
+} M_DRAW_OP_IMAGE;
 
 typedef struct {
     MEMORY_ARENA_ALLOCATOR alloc;
@@ -339,6 +348,23 @@ static inline void *M_ArenaAlloc(const size_t sz)
     return p;
 }
 
+static void M_DrawOp_Image(const M_DRAW_OP_IMAGE *const op)
+{
+    const VIEWPORT_RECT viewport = Viewport_GetRect(VIEWPORT_UI);
+    if (viewport.w <= 0 || viewport.h <= 0) {
+        return;
+    }
+    Output_Overlay_DrawImageInBox(
+        op->path,
+        (OUTPUT_OVERLAY_BOX) {
+            .x0 = op->x0 / (float)viewport.w,
+            .y0 = op->y0 / (float)viewport.h,
+            .x1 = op->x1 / (float)viewport.w,
+            .y1 = op->y1 / (float)viewport.h,
+        },
+        op->opacity);
+}
+
 static inline void M_ScheduleOp(M_DRAW_OP *const op)
 {
     M_PRIV *const p = &m_Priv;
@@ -410,6 +436,27 @@ void UI_ScheduleDrawScreenSprite(
                 [2] = colors_[2],
                 [3] = colors_[3],
             },
+        }));
+}
+
+void UI_ScheduleDrawImage(
+    const char *const path, const int32_t x0, const int32_t y0,
+    const int32_t x1, const int32_t y1, const float opacity)
+{
+    // The op outlives the call, so it carries the path rather than pointing at
+    // what the caller holds.
+    const size_t size = strlen(path) + 1;
+    char *const owned_path = M_ArenaAlloc(size);
+    memcpy(owned_path, path, size);
+    M_SCHEDULE_OP(
+        M_DrawOp_Image,
+        ((M_DRAW_OP_IMAGE) {
+            .path = owned_path,
+            .x0 = x0,
+            .y0 = y0,
+            .x1 = x1,
+            .y1 = y1,
+            .opacity = opacity,
         }));
 }
 

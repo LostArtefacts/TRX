@@ -75,6 +75,15 @@ void UI_ScheduleDrawScreenSprite(
         M_COLOR_F(colors[1]), M_COLOR_F(colors[2]), M_COLOR_F(colors[3])));
 }
 
+void UI_ScheduleDrawImage(
+    const char *const path, const int32_t x0, const int32_t y0,
+    const int32_t x1, const int32_t y1, const float opacity)
+{
+    M_Record(String_FormatStatic(
+        "image path=%s x0=%d y0=%d x1=%d y1=%d opacity=%.2f", path, x0, y0, x1,
+        y1, opacity));
+}
+
 void UI_ScheduleDrawTextBackground(
     const UI_STYLE ui_style, const int32_t sx, const int32_t sy,
     const int32_t z, const int32_t w, const int32_t h,
