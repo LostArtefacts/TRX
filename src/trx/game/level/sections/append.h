@@ -1,10 +1,11 @@
 #pragma once
 
 #include <trx/core/file.h>
+#include <trx/core/result.h>
 
 #include <stdint.h>
 
-void Level_Section_AppendObjectMeshes(
+RESULT Level_Section_AppendObjectMeshes(
     int32_t num_offsets, const int32_t *offsets, TRX_FILE *file);
 void Level_Section_AppendAnims(
     int32_t base_idx, int32_t num_anims, TRX_FILE *file);

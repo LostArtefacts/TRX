@@ -19,13 +19,17 @@ static void M_ReadVertex(XYZ_16 *const vertex, TRX_FILE *const file)
     vertex->z = File_ReadS16(file);
 }
 
-static void M_ReadFace(
+static RESULT M_ReadFace(
     const LEVEL_FORMAT_LOADER *const loader, FACE *const face,
-    const size_t vertex_count, TRX_FILE *const file)
+    const size_t vertex_count, const int32_t num_vertices, TRX_FILE *const file)
 {
     face->vertex_count = vertex_count;
     for (size_t i = 0; i < vertex_count; i++) {
         face->vertices[i] = File_ReadU16(file);
+        FAIL_IF(
+            face->vertices[i] >= num_vertices,
+            "face names vertex %d of the %d the mesh holds", face->vertices[i],
+            num_vertices);
         face->texture_zw[i].z = 1.0f;
         face->texture_zw[i].w = 1.0f;
     }
@@ -38,9 +42,10 @@ static void M_ReadFace(
     if (loader->game_version == 4) {
         face->effects = File_ReadU16(file);
     }
+    return OK;
 }
 
-static void M_ReadObjectMesh(OBJECT_MESH *const mesh, TRX_FILE *const file)
+static RESULT M_ReadObjectMesh(OBJECT_MESH *const mesh, TRX_FILE *const file)
 {
     const LEVEL_FORMAT_LOADER *const loader = Level_Context_Get()->loader;
     M_ReadVertex(&mesh->center, file);
@@ -110,13 +115,13 @@ static void M_ReadObjectMesh(OBJECT_MESH *const mesh, TRX_FILE *const file)
         mesh->tex_faces.data = face_ptr;
         mesh->tex_face4s.data = face_ptr;
         for (int32_t i = 0; i < mesh->tex_face4s.count; i++) {
-            M_ReadFace(loader, face_ptr++, 4, file);
+            MUST(M_ReadFace(loader, face_ptr++, 4, mesh->num_vertices, file));
         }
         File_Skip(file, 2);
 
         mesh->tex_face3s.data = face_ptr;
         for (int32_t i = 0; i < mesh->tex_face3s.count; i++) {
-            M_ReadFace(loader, face_ptr++, 3, file);
+            MUST(M_ReadFace(loader, face_ptr++, 3, mesh->num_vertices, file));
         }
         if (loader->layout != LEVEL_FORMAT_LAYOUT_TR4) {
             File_Skip(file, 2);
@@ -124,19 +129,22 @@ static void M_ReadObjectMesh(OBJECT_MESH *const mesh, TRX_FILE *const file)
             mesh->flat_faces.data = face_ptr;
             mesh->flat_face4s.data = face_ptr;
             for (int32_t i = 0; i < mesh->flat_face4s.count; i++) {
-                M_ReadFace(loader, face_ptr++, 4, file);
+                MUST(M_ReadFace(
+                    loader, face_ptr++, 4, mesh->num_vertices, file));
             }
             File_Skip(file, 2);
 
             mesh->flat_face3s.data = face_ptr;
             for (int32_t i = 0; i < mesh->flat_face3s.count; i++) {
-                M_ReadFace(loader, face_ptr++, 3, file);
+                MUST(M_ReadFace(
+                    loader, face_ptr++, 3, mesh->num_vertices, file));
             }
             File_Skip(file, 2);
         } else if (File_Pos(file) % 4 != 0) {
             File_Skip(file, 2);
         }
     }
+    return OK;
 }
 
 RESULT Level_Section_ReadObjectMeshes(
@@ -161,7 +169,12 @@ RESULT Level_Section_ReadObjectMeshes(
 
     Object_InitialiseMeshes(
         info->mesh_ptr_count + Inject_GetDataCount(IDT_MESH_POINTERS));
-    Level_Section_AppendObjectMeshes(info->mesh_ptr_count, mesh_offsets, file);
+    const RESULT mesh_result = Level_Section_AppendObjectMeshes(
+        info->mesh_ptr_count, mesh_offsets, file);
+    if (!IS_OK(mesh_result)) {
+        Memory_FreePointer(&mesh_offsets);
+        return mesh_result;
+    }
 
     File_Seek(file, end_pos, FILE_SEEK_SET);
     Memory_FreePointer(&mesh_offsets);
@@ -170,7 +183,7 @@ RESULT Level_Section_ReadObjectMeshes(
     return OK;
 }
 
-void Level_Section_AppendObjectMeshes(
+RESULT Level_Section_AppendObjectMeshes(
     const int32_t num_offsets, const int32_t *const offsets,
     TRX_FILE *const file)
 {
@@ -226,7 +239,7 @@ void Level_Section_AppendObjectMeshes(
     for (int32_t i = 0; i < unique_offsets->count; i++) {
         const int32_t pointer = *(const int32_t *)Vector_Get(unique_offsets, i);
         File_Seek(file, start_pos + pointer - base_index, FILE_SEEK_SET);
-        M_ReadObjectMesh(&meshes[i], file);
+        MUST(M_ReadObjectMesh(&meshes[i], file), "mesh %d", i);
 
         // The original data position is required for backward compatibility
         // with savegame files, specifically for Lara's mesh pointers.
@@ -241,4 +254,5 @@ void Level_Section_AppendObjectMeshes(
     LOG_INFO("%d unique meshes constructed", unique_offsets->count);
 
     Vector_Free(unique_offsets);
+    return OK;
 }
