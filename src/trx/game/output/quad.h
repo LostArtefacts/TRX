@@ -86,6 +86,13 @@ void Output_Quad_SetDesaturation(OUTPUT_QUAD *renderer, float desaturation);
 // Set output color tint multiplier (COLOR_RGB_F_WHITE = no tint).
 void Output_Quad_SetGlobalTint(OUTPUT_QUAD *renderer, RGB_F tint);
 
+// Set the part of the screen the quad covers, as fractions of its width and
+// height measured from the top left corner. The whole screen is 0,0 to 1,1,
+// which is where a quad draws until it is told otherwise.
+void Output_Quad_SetDestRect(
+    OUTPUT_QUAD *renderer, float x0, float y0, float x1, float y1);
+void Output_Quad_ClearDestRect(OUTPUT_QUAD *renderer);
+
 // Configure fitting mode and source aspect ratio handling.
 void Output_Quad_SetFit(
     OUTPUT_QUAD *renderer, OUTPUT_QUAD_FIT_MODE fit_mode, float src_w,

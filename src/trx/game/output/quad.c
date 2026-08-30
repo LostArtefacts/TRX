@@ -19,6 +19,7 @@ typedef enum {
     M_UNIFORM_SRC_ASPECT,
     M_UNIFORM_DESATURATION,
     M_UNIFORM_GLOBAL_TINT,
+    M_UNIFORM_DEST_RECT,
     M_UNIFORM_NUMBER_OF,
 } M_UNIFORM;
 
@@ -57,6 +58,13 @@ struct OUTPUT_QUAD {
 
     OUTPUT_QUAD_FIT_MODE fit_mode;
     float src_aspect;
+
+    struct {
+        float x0;
+        float y0;
+        float x1;
+        float y1;
+    } dest_rect;
 
     float desaturation;
     RGB_F global_tint;
@@ -159,6 +167,7 @@ RESULT Output_Quad_Create(OUTPUT_QUAD **const out_quad)
 
     r->fit_mode = OUTPUT_QUAD_FIT_STRETCH;
     r->src_aspect = 1.0f;
+    r->dest_rect = (typeof(r->dest_rect)) { 0.0f, 0.0f, 1.0f, 1.0f };
 
     r->desaturation = 0.0f;
     r->global_tint = COLOR_RGB_F_WHITE;
@@ -209,6 +218,8 @@ RESULT Output_Quad_Create(OUTPUT_QUAD **const out_quad)
         Output_Shader_LookupUniform(r->shader, "uDesaturation");
     r->loc[M_UNIFORM_GLOBAL_TINT] =
         Output_Shader_LookupUniform(r->shader, "uGlobalTint");
+    r->loc[M_UNIFORM_DEST_RECT] =
+        Output_Shader_LookupUniform(r->shader, "uDestRect");
 
     M_BindProgram(r);
     glUniform1i(r->loc[M_UNIFORM_TEXTURE_MAIN], 0);
@@ -222,6 +233,9 @@ RESULT Output_Quad_Create(OUTPUT_QUAD **const out_quad)
     glUniform3f(
         r->loc[M_UNIFORM_GLOBAL_TINT], r->global_tint.r, r->global_tint.g,
         r->global_tint.b);
+    glUniform4f(
+        r->loc[M_UNIFORM_DEST_RECT], r->dest_rect.x0, r->dest_rect.y0,
+        r->dest_rect.x1, r->dest_rect.y1);
     TRX_GL_CheckError();
 
     *out_quad = r;
@@ -439,6 +453,29 @@ void Output_Quad_SetGlobalTint(OUTPUT_QUAD *const r, const RGB_F tint)
         TRX_GL_CheckError();
         r->global_tint = tint;
     }
+}
+
+void Output_Quad_SetDestRect(
+    OUTPUT_QUAD *const r, const float x0, const float y0, const float x1,
+    const float y1)
+{
+    ASSERT(r != nullptr);
+    if (r->dest_rect.x0 == x0 && r->dest_rect.y0 == y0 && r->dest_rect.x1 == x1
+        && r->dest_rect.y1 == y1) {
+        return;
+    }
+    r->dest_rect.x0 = x0;
+    r->dest_rect.y0 = y0;
+    r->dest_rect.x1 = x1;
+    r->dest_rect.y1 = y1;
+    M_BindProgram(r);
+    glUniform4f(r->loc[M_UNIFORM_DEST_RECT], x0, y0, x1, y1);
+    TRX_GL_CheckError();
+}
+
+void Output_Quad_ClearDestRect(OUTPUT_QUAD *const r)
+{
+    Output_Quad_SetDestRect(r, 0.0f, 0.0f, 1.0f, 1.0f);
 }
 
 void Output_Quad_SetFit(
