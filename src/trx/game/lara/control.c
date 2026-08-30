@@ -972,23 +972,47 @@ void Lara_Control_Initialise(
 {
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    lara_info->water_status = LWS_ABOVE_WATER;
 
     if ((level_type == GFL_NORMAL || level_type == GFL_BONUS)
         && start_state != LS_EXTRA_BREATH) {
-        lara_info->water_status = LWS_ABOVE_WATER;
         M_HandleStartState(start_state);
-    } else if (Room_Get(lara_item->room_num)->flags.underwater) {
-        lara_info->water_status = LWS_UNDERWATER;
-        lara_item->fall_speed = 0;
-        lara_item->goal_anim_state = LS(LS_TREAD);
-        lara_item->current_anim_state = LS(LS_TREAD);
-        Item_SwitchToAnim(lara_item, LA(LA_UNDERWATER_IDLE), 0);
-    } else {
-        lara_info->water_status = LWS_ABOVE_WATER;
-        lara_item->goal_anim_state = LS(LS_STOP);
-        lara_item->current_anim_state = LS(LS_STOP);
-        Item_SwitchToAnim(lara_item, LA(LA_STAND_STILL), 0);
+        return;
     }
+
+    if (Room_Get(lara_item->room_num)->flags.underwater) {
+        const int32_t water_depth = Lara_GetWaterDepth(
+            lara_item->pos.x, lara_item->pos.y, lara_item->pos.z,
+            lara_item->room_num);
+        const int32_t water_height =
+            Room_GetWaterHeight(lara_item->pos, lara_item->room_num);
+        const int32_t water_height_diff = water_height == NO_HEIGHT
+            ? NO_HEIGHT
+            : lara_item->pos.y - water_height;
+        if (water_depth > LARA_SWIM_DEPTH || !g_Config.gameplay.enable_wading) {
+            if (water_height_diff > LARA_SWIM_DEPTH) {
+                lara_info->water_status = LWS_UNDERWATER;
+                lara_item->goal_anim_state = LS(LS_TREAD);
+                lara_item->current_anim_state = LS(LS_TREAD);
+                Item_SwitchToAnim(lara_item, LA(LA_UNDERWATER_IDLE), 0);
+            } else {
+                lara_info->water_status = LWS_SURFACE;
+                lara_item->pos.y = 1 + water_height;
+                lara_item->goal_anim_state = LS(LS_SURF_TREAD);
+                lara_item->current_anim_state = LS(LS_SURF_TREAD);
+                Item_SwitchToAnim(lara_item, LA(LA_ONWATER_IDLE), 0);
+            }
+            return;
+        } else if (
+            g_Config.gameplay.enable_wading
+            && water_height_diff > M_WADE_DEPTH) {
+            lara_info->water_status = LWS_WADE;
+        }
+    }
+
+    lara_item->goal_anim_state = LS(LS_STOP);
+    lara_item->current_anim_state = LS(LS_STOP);
+    Item_SwitchToAnim(lara_item, LA(LA_STAND_STILL), 0);
 }
 
 void Lara_Control(void)
