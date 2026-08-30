@@ -3,7 +3,6 @@
 #include <trx/core/filesystem.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
-#include <trx/core/utils.h>
 #include <trx/game/clock.h>
 #include <trx/game/events.h>
 #include <trx/game/game.h>
@@ -14,50 +13,6 @@
 #include <stdio.h>
 #include <string.h>
 
-static char *M_CleanScreenshotTitle(const char *const source)
-{
-    // Sanitize screenshot title.
-    // - Remove filesystem-sensitive characters
-    // - Replace spaces with underscores
-    // - Merge consecutive underscores together
-    // - Remove leading underscores
-    // - Remove trailing underscores
-    const size_t source_len = strlen(source);
-    char *result = Memory_Alloc(source_len + 1);
-    const char *const sensitive_characters = "/\\:*?\"<>|";
-
-    bool last_was_underscore = false;
-    char *out = result;
-    for (size_t i = 0; i < source_len; i++) {
-        if (source[i] == ' ' || source[i] == '_') {
-            if (!last_was_underscore && out > result) {
-                *out++ = '_';
-                last_was_underscore = true;
-            }
-            continue;
-        }
-
-        // Report a title ending mid-sequence as longer than its stored
-        // byte count.
-        const size_t char_size =
-            MIN(String_GetCharByteSize(source + i), source_len - i);
-        if (char_size != 1
-            || strchr(sensitive_characters, source[i]) == nullptr) {
-            memcpy(out, source + i, char_size);
-            out += char_size;
-            i += char_size - 1;
-            last_was_underscore = false;
-        }
-    }
-    // Strip trailing underscores
-    while (out > result && out[-1] == '_') {
-        out--;
-    }
-    *out = '\0';
-
-    return result;
-}
-
 static char *M_GetScreenshotTitle(void)
 {
     const GF_LEVEL *const level = GF_GetCurrentLevel();
@@ -66,7 +21,7 @@ static char *M_GetScreenshotTitle(void)
     }
 
     if (level->title != nullptr && strlen(level->title) > 0) {
-        char *clean_level_title = M_CleanScreenshotTitle(level->title);
+        char *clean_level_title = String_ToFileName(level->title);
         if (clean_level_title != nullptr && strlen(clean_level_title) > 0) {
             return clean_level_title;
         }

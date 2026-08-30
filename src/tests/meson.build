@@ -306,6 +306,7 @@ unit_tests += {
     'core/file.c',
     'core/filesystem.c',
     'core/memory.c',
+    'core/strings/case_funcs.c',
     'core/strings/common.c',
     'core/vector.c',
   ],
@@ -321,6 +322,7 @@ unit_tests += {
     'core/file.c',
     'core/filesystem.c',
     'core/memory.c',
+    'core/strings/case_funcs.c',
     'core/strings/common.c',
     'core/vector.c',
   ],
@@ -378,9 +380,22 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'trx/core/strings/common',
+  'engine': [
+    'core/memory.c',
+    'core/strings/case_funcs.c',
+    'core/strings/common.c',
+    'core/vector.c',
+  ],
+  'deps': [dep_pcre2],
+  'args': ['-DPCRE2_CODE_UNIT_WIDTH=8'],
+}
+
+unit_tests += {
   'name': 'trx/core/strings/fuzzy_match',
   'engine': [
     'core/memory.c',
+    'core/strings/case_funcs.c',
     'core/strings/common.c',
     'core/strings/fuzzy_match.c',
     'core/vector.c',

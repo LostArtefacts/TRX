@@ -296,6 +296,44 @@ char *String_FormatRanges(
     return result;
 }
 
+char *String_ToFileName(const char *const source)
+{
+    const size_t source_len = strlen(source);
+    char *result = Memory_Alloc(source_len + 1);
+    const char *const sensitive_characters = "/\\:*?\"<>|";
+
+    bool last_was_underscore = false;
+    char *out = result;
+    for (size_t i = 0; i < source_len; i++) {
+        if (source[i] == ' ' || source[i] == '_') {
+            if (!last_was_underscore && out > result) {
+                *out++ = '_';
+                last_was_underscore = true;
+            }
+            continue;
+        }
+
+        // Report text ending mid-sequence as longer than its stored
+        // byte count.
+        const size_t char_size =
+            MIN(String_GetCharByteSize(source + i), source_len - i);
+        if (char_size != 1
+            || strchr(sensitive_characters, source[i]) == nullptr) {
+            memcpy(out, source + i, char_size);
+            out += char_size;
+            i += char_size - 1;
+            last_was_underscore = false;
+        }
+    }
+    // Strip trailing underscores
+    while (out > result && out[-1] == '_') {
+        out--;
+    }
+    *out = '\0';
+
+    return result;
+}
+
 char *String_Format(const char *const fmt, ...)
 {
     va_list args;
