@@ -180,6 +180,14 @@ static float M_GetDefaultLetterbox(void)
                                                         : M_DEFAULT_LETTERBOX;
 }
 
+// Reports whether a scene may be cut short. The title plays its scenes as
+// scenery behind the menu, where there is nothing for the player to get past.
+static bool M_IsSkippable(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    return level == nullptr || level->type != GFL_TITLE;
+}
+
 static void M_ReleaseNodes(void)
 {
     for (int32_t i = 0; i < CUTSEQ_MAX_ACTORS; i++) {
@@ -709,7 +717,7 @@ void CutSeq_Control(void)
 {
     // As a cutscene level answers them, and for the same reason: a scene the
     // player has seen before is a scene to get past.
-    if (g_InputDB.menu_skip || g_InputDB.look) {
+    if (M_IsSkippable() && (g_InputDB.menu_skip || g_InputDB.look)) {
         CutSeq_Skip();
         Input_HoldOffSkip();
     }
