@@ -783,7 +783,7 @@ static void M_CalculateRenderRolls(
 
         const double roll =
             atan2(rx * bx + ry * by + rz * bz, rx * ax + ry * ay + rz * az);
-        rolls[j] = (int16_t)(roll * 32768.0 / M_PI);
+        rolls[j] = (int16_t)(int32_t)(roll * (DEG_180 / M_PI));
         const double rc = cos(roll);
         const double rs = sin(roll);
         rx = ax * rc + bx * rs;
