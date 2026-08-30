@@ -68,3 +68,11 @@ void UI_HandlePaste(void)
     UI_HandleTextEdit(text);
     SDL_free(text);
 }
+
+RESULT UI_SetClipboardText(const char *const text)
+{
+    if (SDL_SetClipboardText(text) != 0) {
+        return FAIL("failed to set the clipboard: %s", SDL_GetError());
+    }
+    return OK;
+}

@@ -30,6 +30,13 @@ void Console_ShowImpl(
     LOG_LEVEL level, const char *file, int line, const char *func,
     const char *fmt, ...);
 void Console_Clear(void);
+
+// Starts collecting console log text. Only one capture can be active.
+void Console_BeginCapture(void);
+
+// Stops collection and returns the text, one line per message. The caller frees
+// it.
+char *Console_EndCapture(void);
 COMMAND_RESULT Console_Eval(const char *cmdline);
 
 // Controls whether console commands emit log events to the UI console
