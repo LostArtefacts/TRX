@@ -265,6 +265,12 @@
             "clear": {
                 "help": "Cancella la cronologia dei messaggi della console.",
             },
+            "copy": {
+                "copied": "\\{review}Copiato negli appunti.",
+                "failed": "\\{review}%s non è stato eseguito.",
+                "help": "\\{review}Copia l'output di un comando negli appunti.",
+                "no_output": "\\{review}%s non ha stampato nulla da copiare.",
+            },
             "debug": {
                 "help": "Attiva o disattiva le informazioni di debug.",
                 "option_get": "%s è attualmente impostato su %s",

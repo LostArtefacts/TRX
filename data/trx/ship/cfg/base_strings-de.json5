@@ -265,6 +265,12 @@
             "clear": {
                 "help": "\\{review}Löscht sichtbare Konsolenprotokolle.",
             },
+            "copy": {
+                "copied": "\\{review}In die Zwischenablage kopiert.",
+                "failed": "\\{review}%s wurde nicht ausgeführt.",
+                "help": "\\{review}Kopiert die Ausgabe eines Befehls in die Zwischenablage.",
+                "no_output": "\\{review}%s hat nichts zum Kopieren ausgegeben.",
+            },
             "debug": {
                 "help": "Aktiviert und deaktiviert visuele Debuginformationen.",
                 "option_get": "%s ist momentan eingestellt auf %s",

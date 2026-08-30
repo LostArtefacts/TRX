@@ -265,6 +265,12 @@
             "clear": {
                 "help": "Clears visible console logs.",
             },
+            "copy": {
+                "copied": "Copied to the clipboard.",
+                "failed": "%s did not run.",
+                "help": "Copies a command's output to the clipboard.",
+                "no_output": "%s printed nothing to copy.",
+            },
             "debug": {
                 "help": "Toggles visual debug information.",
                 "option_get": "%s is currently set to %s",

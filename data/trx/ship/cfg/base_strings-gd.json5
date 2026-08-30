@@ -265,6 +265,12 @@
             "clear": {
                 "help": "Glanas logaichean consol follaiseach.",
             },
+            "copy": {
+                "copied": "\\{review}Air a chopaigeadh dhan stòr-bhòrd.",
+                "failed": "\\{review}Cha do ruith %s.",
+                "help": "\\{review}Copaigidh e às-chur àithne dhan stòr-bhòrd.",
+                "no_output": "\\{review}Cha do chlò-bhuail %s dad ri chopaigeadh.",
+            },
             "debug": {
                 "help": "Tionndaidheas fiosrachadh deasbug.",
                 "option_get": "Tha %s air a rèiteachadh gu %s",

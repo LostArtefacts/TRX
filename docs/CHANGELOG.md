@@ -56,6 +56,7 @@
 - Added the `/outfit` console command, which shows or changes what Lara is wearing (TRX1070)
 - Added the `/golden` console command, which casts Lara in gold (TRX1070)
 - Added the `/fmv` console command, which plays one of the game's movies
+- Added the `/copy` console command, which copies another command's output to the clipboard (#6372 / TRX1226)
 - Changed the `/flip` console command to take a flip group, so `/flip 3` moves that group alone while `/flip` on its own moves them all (TRX173)
 - Changed the `/mod` console command to complete the names of the mods it can switch to
 - Changed the `/set` console command to complete the values a setting accepts, such as its enum values or on and off (TRX1174)

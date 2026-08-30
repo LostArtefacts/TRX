@@ -859,6 +859,13 @@ unit_tests += {
   'bundles': [b_lua_surface, b_console, b_lua_strings],
 }
 
+# The copy command, which runs another command and copies what it prints. It
+# needs nothing the console itself does not.
+unit_tests += {
+  'name': 'lua/commands/copy',
+  'bundles': [b_lua_surface, b_console, b_lua_strings],
+}
+
 # A console command written in Lua, exercised through the console that
 # dispatches it. Everything the command touches is a real bridge, so the test
 # says whether the command works, not whether it was written the way we
