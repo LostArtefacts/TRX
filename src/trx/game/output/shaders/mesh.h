@@ -20,6 +20,7 @@
 #define VERT_OVERBRIGHT      0b1'0000'0000'0000 // = 0x1000
 #define VERT_TEX_WRAP       0b10'0000'0000'0000 // = 0x2000
 #define VERT_ADDITIVE      0b100'0000'0000'0000 // = 0x4000
+#define VERT_NO_FOG       0b1000'0000'0000'0000 // = 0x8000
 // clang-format on
 
 // GL attribute mapping in the shader

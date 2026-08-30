@@ -232,11 +232,9 @@ static void M_UploadFogGradient(
             const int32_t k = OUTPUT_QUAD_TO_FAN(j);
             const XYZ_16 pos = mesh->vertices[face->vertices[k]];
             // OG paints half fog on each quad's first two vertices and full
-            // fog on the last two (the mesh's bottom edge). OG's values
-            // *replace* the mesh's distance fog, but this overlay composites
-            // on top of it - the shader fog stays active on the skybox mesh
-            // and already contributes about that much at the top edge - so
-            // start from zero to avoid a visible half-fogged seam.
+            // fog on the last two, at the mesh's bottom edge. The overlay
+            // starts from zero instead, so the gradient fades in rather than
+            // meeting the unfogged sky above it at a seam.
             const float fog = k < 2 ? 0.0f : 1.0f;
             vertices[v++] = (M_GRADIENT_VERTEX) {
                 .pos = {
