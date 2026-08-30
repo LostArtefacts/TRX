@@ -23,7 +23,7 @@ void Lara_CatchFireEx(FLAME_TYPE type);
 void Lara_CatchFire(void);
 
 void Lara_UpdateRoomToHeight(int32_t height);
-int32_t Lara_GetWaterDepth(int32_t x, int32_t y, int32_t z, int16_t room_num);
+int32_t Lara_GetWaterDepth(XYZ_32 pos, int16_t room_num);
 
 // Whether Lara holds a machine gun and is in either anim state: 0 (start
 // aim); 2 (firing); or 4 (stopping firing).
