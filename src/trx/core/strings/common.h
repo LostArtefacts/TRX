@@ -23,6 +23,11 @@ size_t String_GetCharByteSize(const char *ptr);
 char *String_ToUpper(const char *text);
 char *String_ToUpperPattern(const char *text);
 
+// Rewrites text so that it can name a file: drops the characters a file system
+// reserves, turns spaces into underscores, merges runs of them, and trims them
+// from both ends. Returns an allocated string the caller frees.
+char *String_ToFileName(const char *text);
+
 VECTOR *String_Paginate(const char *text, int32_t max_lines);
 
 typedef bool STRING_RANGE_FUNC(int32_t value, void *user_data);
