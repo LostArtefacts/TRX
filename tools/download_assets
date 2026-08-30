@@ -20,7 +20,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "game_version",
-        choices=["1", "2", "3", "all"],
+        choices=["1", "2", "3", "4", "all"],
         default="all",
         nargs="?",
     )
@@ -74,9 +74,12 @@ def main() -> None:
             "https://lostartefacts.dev/aux/trx/tr3.zip",
             "https://lostartefacts.dev/aux/trx/tr3-la.zip",
         ],
+        4: [
+            "https://lostartefacts.dev/aux/trx/tr4.zip",
+        ],
     }
 
-    versions = {"1": [1], "2": [2], "3": [3], "all": [1, 2, 3]}[
+    versions = {"1": [1], "2": [2], "3": [3], "4": [4], "all": [1, 2, 3, 4]}[
         args.game_version
     ]
     for version in versions:
