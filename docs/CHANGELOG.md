@@ -120,6 +120,7 @@
 - Fixed the underwater view wobbling less at higher supersampling values (TRX1207)
 - Fixed sprite shadows breaking apart on uneven ground (Graphic Options → Visuals → Shadows shape) (#6388 / TRX1244)
 - Fixed static objects that reach through a doorway taking the water tint and the light of the room next door
+- Fixed static objects disappearing depending on the camera angle (OG bug) (TRX1211)
 - Fixed the underwater view wobbling less at higher supersampling values (TRX1207)
 - Fixed the debug portal and bounding box lines becoming thinner at higher supersampling values (TRX1251)
 
