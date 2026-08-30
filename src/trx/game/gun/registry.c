@@ -13,6 +13,33 @@ static VECTOR *m_Declared = nullptr;
 
 CATALOG_TABLE_DEFINE(m_Weapons, CATALOG_WEAPONS, WEAPON_INFO);
 
+// How many identities have their empty weapon, and how many weapons are
+// declared.
+static CATALOG_ID m_SeededCount = 0;
+static int32_t m_DeclaredCount = 0;
+
+// Give every identity minted since the last call the weapon that stands for
+// none. A catalog table record starts as zero, and zero is a real object and
+// a real key.
+static void M_SeedNew(void)
+{
+    const CATALOG_ID count = Catalog_GetCount(CATALOG_WEAPONS);
+    for (CATALOG_ID i = m_SeededCount; i < count; i++) {
+        WEAPON_INFO *const weapon = CatalogTable_Get(&m_Weapons, i);
+        *weapon = (WEAPON_INFO) {
+            .gun_type = (LARA_GUN_TYPE)i,
+            .equip_input_role = (INPUT_ROLE)-1,
+            .glow.scale = 1.0f,
+            .gun_object_id = NO_OBJECT,
+            .ammo_object_id = NO_OBJECT,
+            .anim_object_id = NO_OBJECT,
+            .shell_object_id = NO_OBJECT,
+            .projectile_object_id = NO_OBJECT,
+        };
+    }
+    m_SeededCount = count;
+}
+
 __attribute__((destructor)) static void M_Shutdown(void)
 {
     if (m_Declared != nullptr) {
@@ -34,20 +61,9 @@ void Gun_Registry_Register(const WEAPON_INFO *const info)
 
 void Gun_Registry_Seed(void)
 {
-    CATALOG_FOR_EACH(CATALOG_WEAPONS, i)
-    {
-        WEAPON_INFO *const weapon = CatalogTable_Get(&m_Weapons, i);
-        *weapon = (WEAPON_INFO) {
-            .gun_type = (LARA_GUN_TYPE)i,
-            .equip_input_role = (INPUT_ROLE)-1,
-            .glow.scale = 1.0f,
-            .gun_object_id = NO_OBJECT,
-            .ammo_object_id = NO_OBJECT,
-            .anim_object_id = NO_OBJECT,
-            .shell_object_id = NO_OBJECT,
-            .projectile_object_id = NO_OBJECT,
-        };
-    }
+    m_SeededCount = 0;
+    m_DeclaredCount = 0;
+    M_SeedNew();
 
     for (CATALOG_ID i = 0; i < Catalog_GetBuiltInCount(CATALOG_WEAPONS); i++) {
         IGNORE(Catalog_BindSlot(CATALOG_WEAPONS, i, i));
@@ -62,16 +78,18 @@ void Gun_Registry_Seed(void)
         ASSERT(!weapon->is_declared);
         *weapon = *info;
         weapon->is_declared = true;
+        m_DeclaredCount++;
     }
 }
 
 int32_t Gun_Registry_GetCount(void)
 {
-    return m_Declared == nullptr ? 0 : m_Declared->count;
+    return m_DeclaredCount;
 }
 
 const WEAPON_INFO *Gun_Registry_GetByIndex(const int32_t idx)
 {
+    M_SeedNew();
     int32_t count = 0;
     CATALOG_FOR_EACH(CATALOG_WEAPONS, i)
     {
@@ -113,6 +131,7 @@ void Gun_Registry_SetInputRole(
 WEAPON_INFO *Gun_Registry_Get(const LARA_GUN_TYPE gun_type)
 {
     ASSERT(Gun_Registry_IsValidType(gun_type));
+    M_SeedNew();
     return CatalogTable_Get(&m_Weapons, gun_type);
 }
 
