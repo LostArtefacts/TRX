@@ -33,8 +33,8 @@ static void M_HandleMeshData(
 
         case IDT_OBJECT_MESHES: {
             ASSERT(mesh_indices != nullptr);
-            Level_Section_AppendObjectMeshes(
-                mesh_ptr_count, mesh_indices, chunk.injection->fp);
+            SHOULD(Level_Section_AppendObjectMeshes(
+                mesh_ptr_count, mesh_indices, chunk.injection->fp));
             LEVEL_CONTEXT_INFO *const info = Level_Context_GetInfo();
             info->mesh_ptr_count += mesh_ptr_count;
             break;
