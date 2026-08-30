@@ -17,6 +17,26 @@ static void M_ReadPosition(XYZ_32 *const pos, TRX_FILE *const file)
     pos->z = File_ReadS32(file);
 }
 
+// The anims are read before the frames they point into, so the offsets they
+// hold are checked once the frame data is in.
+static RESULT M_CheckAnimFrameOffsets(const int32_t raw_data_count)
+{
+    const uint32_t data_bytes = (uint32_t)raw_data_count * sizeof(int16_t);
+    const int32_t anim_count = Anim_GetTotalCount();
+    for (int32_t i = 0; i < anim_count; i++) {
+        const ANIM *const anim = Anim_GetAnim(i);
+        FAIL_IF(
+            anim->frame_ofs % sizeof(int16_t) != 0,
+            "anim %d starts at byte %u, which is no frame boundary", i,
+            anim->frame_ofs);
+        FAIL_IF(
+            anim->frame_ofs > data_bytes,
+            "anim %d starts at byte %u of the %u the frames hold", i,
+            anim->frame_ofs, data_bytes);
+    }
+    return OK;
+}
+
 RESULT Level_Section_ReadAnims(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
     BENCHMARK benchmark = Benchmark_Start();
@@ -179,6 +199,7 @@ RESULT Level_Section_ReadAnimFrames(
         sizeof(int16_t)
         * (raw_data_count + Inject_GetDataCount(IDT_ANIM_FRAMES)));
     Level_Section_AppendAnimFrames(0, raw_data_count, file);
+    MUST(M_CheckAnimFrameOffsets(raw_data_count));
     Benchmark_End(&benchmark, nullptr);
     return OK;
 }
