@@ -362,6 +362,30 @@ static bool M_CanSideStep(const ITEM *const item, const int16_t angle)
     return ABS(height) < STEP_L / 2 && Room_GetHeightType() != HT_BIG_SLOPE;
 }
 
+static void M_HandleWadeStopToForward(ITEM *const item, COLL_INFO *const coll)
+{
+    const DIRECTION dir = Math_GetDirection(item->rot.y);
+    const int32_t fheight =
+        Lara_FloorFront(item, Math_DirectionToAngle(dir), M_WALK_DIST);
+    if (fheight <= (-STEPUP_HEIGHT + 1)) {
+        Lara_GetLaraInfo()->move_angle = item->rot.y;
+        coll->bad_pos = NO_BAD_POS;
+        coll->bad_neg = -STEPUP_HEIGHT;
+        coll->bad_ceiling = 0;
+        coll->radius = LARA_RADIUS + 2;
+        coll->slopes_are_walls = 1;
+        Lara_Col_GetInfo(item, coll);
+
+        if (!Lara_Col_TestVault(item, coll)) {
+            coll->radius = LARA_RADIUS;
+        }
+    } else if (Room_Get(item->room_num)->flags.swamp || g_Input.slow) {
+        M_Wade(item, coll);
+    } else {
+        M_Walk(item, coll);
+    }
+}
+
 static void M_Stop(ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -453,12 +477,8 @@ static void M_Stop(ITEM *const item, COLL_INFO *const coll)
         }
 
         if (g_Input.forward) {
-            if (room->flags.swamp || g_Input.slow) {
-                M_Wade(item, coll);
-            } else {
-                M_Walk(item, coll);
-            }
-        } else if (g_Input.back) {
+            M_HandleWadeStopToForward(item, coll);
+        } else if (g_Input.back && ABS(rheight) < (STEPUP_HEIGHT - 1)) {
             M_WalkBack(item, coll);
         }
     } else if (g_Input.jump) {

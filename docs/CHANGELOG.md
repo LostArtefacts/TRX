@@ -14,6 +14,7 @@
 - Fixed Lara sliding on walkable items (trapdoors, bridges etc) when there is a steep slope directly below and touching the item (OG bug)
 - Fixed Lara teleporting to the floor when killed by spikes that are to her side rather than directly below her (OG bug) (#6351 / TRX1204)
 - Fixed Lara briefly teleporting above the water line if she is stepping backwards from 2-click to 3-click wading depth (TRX1309, regression from 1.0)
+- Fixed Lara's arms twitching when stopped against walls in shallow water with either forward or backward input pressed against the wall (OG bug) (#6254 / TRX1121)
 
 **UI**
 - Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187 / TRX1036)
