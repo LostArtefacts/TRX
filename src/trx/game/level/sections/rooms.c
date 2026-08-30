@@ -54,12 +54,17 @@ static LIGHT *M_InitialiseLegacyLight(LIGHT *const light)
     return light;
 }
 
-static void M_ReadFace(
-    FACE *const face, const size_t vertex_count, TRX_FILE *const file)
+static RESULT M_ReadFace(
+    FACE *const face, const size_t vertex_count, const int32_t num_vertices,
+    TRX_FILE *const file)
 {
     face->vertex_count = vertex_count;
     for (size_t i = 0; i < vertex_count; i++) {
         face->vertices[i] = File_ReadU16(file);
+        FAIL_IF(
+            face->vertices[i] >= num_vertices,
+            "face names vertex %d of the %d the room holds", face->vertices[i],
+            num_vertices);
         face->texture_zw[i].z = 1.0f;
         face->texture_zw[i].w = 1.0f;
     }
@@ -69,6 +74,7 @@ static void M_ReadFace(
     face->effects = 0;
     face->enable_reflections = false;
     face->semi_transparent = false;
+    return OK;
 }
 
 static void M_ReadRoomLightTR4(LIGHT *const light, TRX_FILE *const file)
@@ -104,7 +110,7 @@ static RGBA_8888 M_ExpandTR4RoomVertexColor(const uint16_t color)
     };
 }
 
-static void M_ReadRoomMesh(
+static RESULT M_ReadRoomMesh(
     const LEVEL_FORMAT_LOADER *const loader, const int32_t room_num,
     TRX_FILE *const file, const INJECTION_ROOM_META inj_data)
 {
@@ -168,7 +174,7 @@ static void M_ReadRoomMesh(
         room->mesh.all_faces.data = face_ptr;
         room->mesh.face4s.data = face_ptr;
         for (int32_t i = 0; i < room->mesh.face4s.count; i++) {
-            M_ReadFace(face_ptr++, 4, file);
+            MUST(M_ReadFace(face_ptr++, 4, room->mesh.num_vertices, file));
         }
         for (int32_t i = 0; i < inj_data.num_quads; i++) {
             face_ptr->vertex_count = 4;
@@ -179,7 +185,7 @@ static void M_ReadRoomMesh(
 
         room->mesh.face3s.data = face_ptr;
         for (int32_t i = 0; i < room->mesh.face3s.count; i++) {
-            M_ReadFace(face_ptr++, 3, file);
+            MUST(M_ReadFace(face_ptr++, 3, room->mesh.num_vertices, file));
         }
         for (int32_t i = 0; i < inj_data.num_triangles; i++) {
             face_ptr->vertex_count = 3;
@@ -196,6 +202,10 @@ static void M_ReadRoomMesh(
         for (int32_t i = 0; i < room->mesh.sprites.count; i++) {
             ROOM_SPRITE *const sprite = &room->mesh.sprites.data[i];
             sprite->vertex = File_ReadU16(file);
+            FAIL_IF(
+                sprite->vertex >= room->mesh.num_vertices,
+                "sprite names vertex %d of the %d the room holds",
+                sprite->vertex, room->mesh.num_vertices);
             sprite->texture = File_ReadU16(file);
         }
     } else {
@@ -204,7 +214,11 @@ static void M_ReadRoomMesh(
     }
 
     const size_t total_read = (File_Pos(file) - start_pos) / sizeof(int16_t);
-    ASSERT(total_read == mesh_length);
+    FAIL_IF(
+        total_read != mesh_length,
+        "room mesh reads %zu words of the %u it declares", total_read,
+        mesh_length);
+    return OK;
 }
 
 static XYZ_16 M_ComputePortalNormal(PORTAL *const p)
@@ -294,7 +308,11 @@ RESULT Level_Section_ReadRooms(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
         room->max_ceiling = File_ReadS32(file);
 
         const INJECTION_ROOM_META inj_data = Inject_GetRoomMeta(i);
-        M_ReadRoomMesh(loader, i, file, inj_data);
+        result = M_ReadRoomMesh(loader, i, file, inj_data);
+        if (!IS_OK(result)) {
+            result = Result_Prefix(result, "room %d", i);
+            goto finish;
+        }
 
         const int16_t num_portals = File_ReadCountS16(file);
         if (num_portals <= 0) {
