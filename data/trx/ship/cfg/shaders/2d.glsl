@@ -20,6 +20,7 @@ uniform int uFitMode;      // 0=stretch,1=letterbox,2=crop,3=smart
 uniform float uSrcAspect;  // src_w/src_h
 uniform float uDesaturation; // 0 = original, 1 = monochrome
 uniform vec3 uGlobalTint;    // (1,1,1) = no tint
+uniform vec4 uDestRect;      // x0,y0,x1,y1 of the screen the quad covers
 
 #ifdef VERTEX
 
@@ -50,7 +51,8 @@ void main() {
 
         gl_Position  = vec4(baseNDC + vertexOffset, 0.0, 1.0);
     } else {
-        vec2 baseNDC = inPosition * vec2(2.0, -2.0) + vec2(-1.0, 1.0);
+        vec2 dest = uDestRect.xy + inPosition * (uDestRect.zw - uDestRect.xy);
+        vec2 baseNDC = dest * vec2(2.0, -2.0) + vec2(-1.0, 1.0);
         gl_Position = vec4(baseNDC, 0.0, 1.0);
     }
 
