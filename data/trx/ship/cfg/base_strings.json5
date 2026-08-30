@@ -1960,6 +1960,16 @@
             "title": "Lara's outfit",
             "description": "Changes Lara's appearance. Choosing Default will respect any regular outfit changes between levels, otherwise the chosen value will persist until changed manually.",
         },
+        "visuals.logo_locale": {
+            "description": "Which of the game's logos the title screen shows. The original ships one for each language it was published in.",
+            "title": "Title logo",
+            "values": {
+                "de": "German",
+                "en-gb": "English (UK)",
+                "en-us": "English (US)",
+                "fr": "French",
+            }
+        },
         "visuals.shadow_type": {
             "title": "Shadows shape",
             "description": "Selects how entity shadows are rendered.\n\n- Octagon: old TR1 and TR2 shadows\n- Circle: round shadows\n- Sprite: TR3 texture-based shadows",

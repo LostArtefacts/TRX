@@ -1960,6 +1960,16 @@
             "title": "\\{review}Tenue de Lara",
             "description": "\\{review}Modifie l’apparence de Lara. Le choix Par défaut respecte les changements de tenue normaux entre les niveaux ; sinon, la tenue sélectionnée restera active jusqu’à modification manuelle.",
         },
+        "visuals.logo_locale": {
+            "description": "\\{review}Le logo qu'affiche l'écran-titre. Le jeu d'origine en fournit un pour chaque langue dans laquelle il est sorti.",
+            "title": "\\{review}Logo du titre",
+            "values": {
+                "de": "\\{review}Allemand",
+                "en-gb": "\\{review}Anglais (GB)",
+                "en-us": "\\{review}Anglais (US)",
+                "fr": "\\{review}Français",
+            }
+        },
         "visuals.shadow_type": {
             "title": "\\{review}Forme des ombres",
             "description": "\\{review}Sélectionne la manière dont les ombres des entités sont rendues.\n\n- Octogone : ombres des anciens TR1 et TR2\n- Cercle : ombres rondes\n- Sprite : ombres basées sur des textures TR3",

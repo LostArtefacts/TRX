@@ -1960,6 +1960,16 @@
             "title": "Costume di Lara",
             "description": "Modifica l’aspetto di Lara. Se si seleziona \"Predefinito\", verranno rispettati i normali cambi di costume tra i livelli; in caso contrario, il costume scelto resterà attivo finché non verrà modificato manualmente.",
         },
+        "visuals.logo_locale": {
+            "description": "\\{review}Quale logo mostra la schermata del titolo. L'originale ne include uno per ogni lingua in cui è stato pubblicato.",
+            "title": "\\{review}Logo del titolo",
+            "values": {
+                "de": "\\{review}Tedesco",
+                "en-gb": "\\{review}Inglese (GB)",
+                "en-us": "\\{review}Inglese (USA)",
+                "fr": "\\{review}Francese",
+            }
+        },
         "visuals.shadow_type": {
             "title": "Forma delle ombre",
             "description": "Seleziona la modalità di renderizzazione delle ombre dei personaggi.\n\n- Ottagono: ombre in stile TR1 e TR2\n- Cerchio: ombre rotonde\n- Sprite: ombre basate su texture come in TR3",

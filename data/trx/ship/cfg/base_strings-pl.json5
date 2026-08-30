@@ -1960,6 +1960,16 @@
             "title": "Strój Lary",
             "description": "Zmienia strój Lary. Opcja domyślna zachowuje standardowe zmiany między poziomami; w przeciwnym razie wybrany strój pozostaje aktywny, dopóki nie zostanie zmieniony ręcznie.",
         },
+        "visuals.logo_locale": {
+            "description": "\\{review}Które logo pokazuje ekran tytułowy. Oryginał zawiera po jednym dla każdego języka, w którym został wydany.",
+            "title": "\\{review}Logo tytułowe",
+            "values": {
+                "de": "\\{review}Niemiecki",
+                "en-gb": "\\{review}Angielski (GB)",
+                "en-us": "\\{review}Angielski (USA)",
+                "fr": "\\{review}Francuski",
+            }
+        },
         "visuals.shadow_type": {
             "title": "Kształt cieni",
             "description": "Wybiera sposób rysowania cieni obiektów.\n\n- Ośmiokąt: stare cienie z TR1 i TR2\n- Elipsa: zaokrąglone cienie\n- Sprite: cienie oparte na teksturach z TR3",
