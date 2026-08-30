@@ -6,6 +6,7 @@
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
+#include <trx/game/const.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/items.h>
 #include <trx/game/level/finalize.h>
@@ -13,6 +14,11 @@
 #include <trx/game/rooms.h>
 
 #include <string.h>
+
+// How far a static must reach into the room next door before that room draws
+// it. The bounds are turned corner by corner and carry a few units of slop,
+// which any test on a bare touch would read as a reach.
+#define M_MIN_REACH (WALL_L / 16)
 
 // One placed static reaching one room. The placement is what bleeds, and what
 // the level author has to move; the static it is placed from only says what
@@ -59,6 +65,17 @@ static inline BOUNDS_32 M_GetStaticBounds(const STATIC_MESH *const mesh)
     }
 
     return bounds;
+}
+
+// Reports how deep two boxes reach into one another, measured along the axis
+// they share least. A box that only touches another reaches no depth at all.
+static int32_t M_GetOverlapDepth(
+    const BOUNDS_32 *const a, const BOUNDS_32 *const b)
+{
+    const int32_t x = MIN(a->max.x, b->max.x) - MAX(a->min.x, b->min.x);
+    const int32_t y = MIN(a->max.y, b->max.y) - MAX(a->min.y, b->min.y);
+    const int32_t z = MIN(a->max.z, b->max.z) - MAX(a->min.z, b->min.z);
+    return MIN(MIN(x, y), z);
 }
 
 static void M_ComputePortalBounds(void)
@@ -204,11 +221,15 @@ static void M_FixStaticsVisibility(void)
             if (room->flip_status != dest_room->flip_status) {
                 continue;
             }
+            const BOUNDS_32 dest_bounds = Room_GetRoomBounds(dest_room);
             for (int32_t m = 0; m < own_counts[i]; m++) {
                 const STATIC_MESH *const mesh =
                     Vector_Get(room_stat_vecs[i], m);
                 const BOUNDS_32 bounds = M_GetStaticBounds(mesh);
-                if (!Room_BoundsReachPortal(&bounds, portal)) {
+                // A static standing wholly past the wall reaches no portal,
+                // so the room it reaches into answers for it instead.
+                if (!Room_BoundsReachPortal(&bounds, portal)
+                    && M_GetOverlapDepth(&bounds, &dest_bounds) < M_MIN_REACH) {
                     continue;
                 }
                 if (Vector_Contains(room_stat_vecs[portal->room_num], mesh)) {
