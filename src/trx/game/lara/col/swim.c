@@ -124,8 +124,7 @@ static void M_TestWaterDepth(ITEM *const item, const COLL_INFO *const coll)
 {
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
-    const int32_t water_depth =
-        Lara_GetWaterDepth(item->pos.x, item->pos.y, item->pos.z, room_num);
+    const int32_t water_depth = Lara_GetWaterDepth(item->pos, room_num);
 
     if (g_Config.gameplay.fix_water_exit && water_depth == NO_HEIGHT) {
         item->pos = coll->old_pos;

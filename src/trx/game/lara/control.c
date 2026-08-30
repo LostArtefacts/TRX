@@ -370,8 +370,7 @@ static void M_UpdateEnvironment(void)
     }
 
     const ROOM *const room = Room_Get(item->room_num);
-    const int32_t water_depth = Lara_GetWaterDepth(
-        item->pos.x, item->pos.y, item->pos.z, item->room_num);
+    const int32_t water_depth = Lara_GetWaterDepth(item->pos, item->room_num);
     const int32_t water_height = Room_GetWaterHeight(item->pos, item->room_num);
     const int32_t water_height_diff =
         water_height == NO_HEIGHT ? NO_HEIGHT : item->pos.y - water_height;
@@ -981,9 +980,8 @@ void Lara_Control_Initialise(
     }
 
     if (Room_Get(lara_item->room_num)->flags.underwater) {
-        const int32_t water_depth = Lara_GetWaterDepth(
-            lara_item->pos.x, lara_item->pos.y, lara_item->pos.z,
-            lara_item->room_num);
+        const int32_t water_depth =
+            Lara_GetWaterDepth(lara_item->pos, lara_item->room_num);
         const int32_t water_height =
             Room_GetWaterHeight(lara_item->pos, lara_item->room_num);
         const int32_t water_height_diff = water_height == NO_HEIGHT

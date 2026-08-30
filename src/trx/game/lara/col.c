@@ -176,8 +176,7 @@ void Lara_Col_WadeSplash(ITEM *const item)
         return;
     }
 
-    const int32_t water_depth = Lara_GetWaterDepth(
-        item->pos.x, item->pos.y, item->pos.z, item->room_num);
+    const int32_t water_depth = Lara_GetWaterDepth(item->pos, item->room_num);
     const int32_t water_height = Room_GetWaterHeight(item->pos, item->room_num);
     const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
     if (water_height != NO_HEIGHT && water_depth != NO_HEIGHT

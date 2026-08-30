@@ -345,15 +345,14 @@ void Lara_UpdateRoomToHeight(const int32_t height)
     Item_UpdateRoom(item_num, room_num);
 }
 
-int32_t Lara_GetWaterDepth(
-    const int32_t x, const int32_t y, const int32_t z, int16_t room_num)
+int32_t Lara_GetWaterDepth(const XYZ_32 pos, int16_t room_num)
 {
     const ROOM *room = Room_Get(room_num);
     const SECTOR *sector;
 
     while (true) {
-        int32_t z_sector = (z - room->pos.z) >> WALL_SHIFT;
-        int32_t x_sector = (x - room->pos.x) >> WALL_SHIFT;
+        int32_t z_sector = (pos.z - room->pos.z) >> WALL_SHIFT;
+        int32_t x_sector = (pos.x - room->pos.x) >> WALL_SHIFT;
 
         if (z_sector <= 0) {
             z_sector = 0;
@@ -387,12 +386,11 @@ int32_t Lara_GetWaterDepth(
         while (sector->portal_room.sky != NO_ROOM) {
             room = Room_Get(sector->portal_room.sky);
             if (!room->flags.underwater && !room->flags.swamp) {
-                const XYZ_32 pos = { x, y, z };
                 const int32_t water_height = Room_GetWaterHeight(pos, room_num);
                 sector = Room_GetSector(pos, &room_num);
                 return Room_GetHeight(sector, pos) - water_height;
             }
-            sector = Room_GetWorldSector(room, x, z);
+            sector = Room_GetWorldSector(room, pos.x, pos.z);
         }
         return 0x7FFF;
     }
@@ -400,12 +398,11 @@ int32_t Lara_GetWaterDepth(
     while (sector->portal_room.pit != NO_ROOM) {
         room = Room_Get(sector->portal_room.pit);
         if (room->flags.underwater || room->flags.swamp) {
-            const XYZ_32 pos = { x, y, z };
             const int32_t water_height = Room_GetWaterHeight(pos, room_num);
             sector = Room_GetSector(pos, &room_num);
             return Room_GetHeight(sector, pos) - water_height;
         }
-        sector = Room_GetWorldSector(room, x, z);
+        sector = Room_GetWorldSector(room, pos.x, pos.z);
     }
     return NO_HEIGHT;
 }
