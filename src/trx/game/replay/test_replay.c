@@ -285,6 +285,17 @@ static SHELL_ARGS *M_BuildArgsFromStartupSnapshot(M_PARSE_CTX *const ctx)
     ctx->startup.settings.level_request.path = nullptr;
     ctx->startup.settings.level_request.query = nullptr;
 
+    // A level named by path plays through the direct level mod, the same as
+    // --level does, so a recording that names a game as well still plays the
+    // file it names rather than that game's first level.
+    if (args->startup.level_request.path != nullptr) {
+        const SHELL_MOD *const direct_mod =
+            Shell_GetModByType(MOD_DIRECT_LEVEL, args->startup.engine_version);
+        if (direct_mod != nullptr) {
+            args->startup.mod = direct_mod;
+        }
+    }
+
     if (args->startup.mod == nullptr) {
         if (args->startup.level_request.path != nullptr) {
             args->startup.mod = Shell_GetModByType(
