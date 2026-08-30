@@ -226,6 +226,7 @@
 - Added a new Lua module, `trx.store`, for what a script remembers across a save: one table for the level and one for the playthrough (TRX87)
 - Added a new Lua module, `trx.ui`, for drawing over the game from a script: widgets that are built once and follow the signals they are given, put in one of the nine places the interface is laid out in, through the new `trx.events.on_ui_draw` and `trx.events.on_ui_paint` events and a small set of drawing calls the engine offers (#5351 / TRX185)
 - Added `trx.ui.primitive.sprite()` and the calls beside it, so a script can draw an object's own sprites
+- Added `trx.ui.primitive.image()` and the `trx.ui.widgets.Image` widget, so a script can draw a picture from the game's images
 - Added the `trx.ui.widgets.Digits` widget, which lays a line of text out as an object's sprites
 - Added a new Lua module, `trx.waypoints`, for how far along a level's own progression Lara has got, which TR4 marks out and its guides follow; it is saved with the game and reports the furthest she has ever reached as well as where she is now
 - Added `trx.lara.speech_face`, for the face Lara talks with, which follows the outfit she is wearing rather than the one a level carries

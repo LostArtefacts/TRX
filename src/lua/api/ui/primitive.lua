@@ -236,6 +236,43 @@ local function sprite_params(...)
   return params
 end
 
+api.define("ui.primitive.image", {
+  description = [[
+Draws an image file in a box on the canvas.
+
+The image is looked for where the game keeps its images, and stretches to fill
+the box, so a box of the image's own shape keeps that shape. The image draws
+under everything else the canvas holds, whatever order the calls come in.
+
+Returns whether the game has such an image, so a script can leave the space
+alone where it does not.]],
+  params = {
+    {
+      name = "path",
+      type = "string",
+      description = "The image file, named from the images directory.",
+    },
+    { name = "x", type = "number", description = "The left edge." },
+    { name = "y", type = "number", description = "The top edge." },
+    { name = "w", type = "number", description = "The width." },
+    { name = "h", type = "number", description = "The height." },
+    {
+      name = "opacity",
+      type = "number",
+      optional = true,
+      description = "How solid the image is, from 0 to 1. `1` by default.",
+    },
+  },
+  returns = {
+    type = "boolean",
+    description = "Whether the image was there to draw.",
+  },
+  examples = {
+    [[trx.ui.primitive.image("uklogo.pak", 64, 0, 512, 256)]],
+  },
+  impl = raw.image,
+})
+
 api.define("ui.primitive.sprite_count", {
   description = [[
 Reports how many sprites an object has.

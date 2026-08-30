@@ -607,6 +607,7 @@ unit_tests += {
     'lua/api/ui.c',
     'fakes/objects.c',
     'fakes/sprites.c',
+    'fakes/paths.c',
     'fakes/ui_draw.c',
     'fakes/locale.c',
     'fakes/rooms.c',
@@ -955,6 +956,7 @@ unit_tests += {
     'fakes/objects.c',
     'fakes/rooms.c',
     'fakes/sprites.c',
+    'fakes/paths.c',
     'fakes/ui_draw.c',
   ],
   'engine': [
@@ -1020,6 +1022,7 @@ unit_tests += {
     'fakes/overlay.c',
     'fakes/rooms.c',
     'fakes/sprites.c',
+    'fakes/paths.c',
     'fakes/ui_draw.c',
   ],
   'engine': [
@@ -1163,6 +1166,7 @@ unit_tests += {
   'name': 'trx/game/ui/text',
   'src': [
     'fakes/ui.c',
+    'fakes/paths.c',
     'fakes/ui_draw.c',
     'harness/font_bin.c',
     'harness/stubs_result.c',
@@ -1225,6 +1229,7 @@ unit_tests += {
     'harness/stubs_result.c',
     'fakes/settings.c',
     'fakes/ui.c',
+    'fakes/paths.c',
     'fakes/ui_draw.c',
     'harness/font_bin.c',
   ],
