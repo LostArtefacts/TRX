@@ -41,24 +41,41 @@ def expand_pickup_includes(source: str) -> str:
     C preprocessor over pickups.def with the consumer's macro bodies and
     splice the expansion back into the source in place of the block.
     """
-    while (include_match := PICKUPS_DEF_INCLUDE_RE.search(source)) is not None:
-        # Walk backward over contiguous #define lines immediately preceding
-        # the #include (allowing blank lines between them).
+    lines = source.splitlines(keepends=True)
+    logical_lines: list[tuple[int, int, str]] = []
+    start = 0
+    i = 0
+
+    while i < len(lines):
+        end = i + 1
+        while lines[end - 1].rstrip("\r\n").endswith("\\") and end < len(lines):
+            end += 1
+
+        text = "".join(lines[i:end])
+        logical_lines.append((start, start + len(text), text))
+        start += len(text)
+        i = end
+
+    for index in range(len(logical_lines) - 1, -1, -1):
+        start, end, line = logical_lines[index]
+        if not PICKUPS_DEF_INCLUDE_RE.fullmatch(line):
+            continue
+
         defines: list[re.Match[str]] = []
-        block_start = include_match.start()
-        pos = block_start
-        while True:
-            line_start = source.rfind("\n", 0, pos - 1) + 1 if pos > 0 else 0
-            line = source[line_start:pos]
-            if line.strip() == "":
-                pos = line_start
+        block_start = start
+        j = index - 1
+        while j >= 0:
+            define_match = DEFINE_RE.fullmatch(logical_lines[j][2])
+            if define_match is None:
+                if logical_lines[j][2].strip():
+                    break
+                j -= 1
                 continue
-            if (define_match := DEFINE_RE.match(source, line_start)) is not None:
-                defines.append(define_match)
-                block_start = line_start
-                pos = line_start
-                continue
-            break
+
+            defines.append(define_match)
+            block_start = logical_lines[j][0]
+            j -= 1
+
         defines.reverse()
 
         macro_defs: dict[str, str] = {}
@@ -69,8 +86,11 @@ def expand_pickup_includes(source: str) -> str:
             body = define_match.group("body").replace("\\\n", "\n").strip()
             macro_defs[signature] = body
 
-        pos = include_match.end()
-        while (undef_match := UNDEF_RE.match(source, pos)) is not None:
+        pos = end
+        while pos < len(source):
+            undef_match = UNDEF_RE.match(source, pos)
+            if undef_match is None:
+                break
             pos = undef_match.end()
 
         expansion = expand_def_file(PICKUPS_DEF, macro_defs) if macro_defs else ""
@@ -308,6 +328,9 @@ class RegisteredPropertyCatalog:
                 if len(parts) != 2:
                     continue
                 object_id, func_name = parts[0].strip(), parts[1].strip()
+                # Ignore unexpanded macro arguments such as O_FOO_##n.
+                if not re.fullmatch(r"O_[A-Za-z0-9_]+", object_id):
+                    continue
                 func_to_objects.setdefault(func_name, []).append(object_id)
 
             for func_name, object_ids in func_to_objects.items():

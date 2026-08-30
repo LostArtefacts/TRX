@@ -219,6 +219,9 @@
     <moveable id="152">
         <property category="TRX" defaultValue="60" description="How long the flare burns for, in seconds." displayName="Burn Time" internalName="burn_time" minValue="0" type="Float" />
     </moveable>
+    <moveable id="182-189">
+        <property category="TRX" defaultValue="true" description="Whether or not Lara can collide with the slot after using it." displayName="Collidable When Done" internalName="collidable_when_done" type="Bool" />
+    </moveable>
     <moveable id="214">
         <property category="TRX" defaultValue="100" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="1" description="Damage dealt by body contact." displayName="Touch Damage" internalName="touch_damage" minValue="0" type="Int" />

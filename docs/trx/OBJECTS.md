@@ -2741,6 +2741,198 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### puzzle_done_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (122)</th><th align="center">TR2 (186)</th><th align="center">TR3 (217)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_done_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (123)</th><th align="center">TR2 (187)</th><th align="center">TR3 (218)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_done_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (124)</th><th align="center">TR2 (188)</th><th align="center">TR3 (219)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_done_4
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (125)</th><th align="center">TR2 (189)</th><th align="center">TR3 (220)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_done_5
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_done_6
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_done_7
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_done_8
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_done_9
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_done_10
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_done_11
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_done_12
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_hole_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (118)</th><th align="center">TR2 (182)</th><th align="center">TR3 (213)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_hole_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (119)</th><th align="center">TR2 (183)</th><th align="center">TR3 (214)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_hole_3
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (120)</th><th align="center">TR2 (184)</th><th align="center">TR3 (215)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_hole_4
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (121)</th><th align="center">TR2 (185)</th><th align="center">TR3 (216)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_hole_5
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_hole_6
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_hole_7
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_hole_8
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_hole_9
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_hole_10
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_hole_11
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
+#### puzzle_hole_12
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>collidable_when_done</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara can collide with the slot after using it.</td></tr>
+</tbody>
+</table>
+
 #### puzzle_item_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (110)</th><th align="center">TR2 (174)</th><th align="center">TR3 (205)</th><th>Description</th></tr></thead>

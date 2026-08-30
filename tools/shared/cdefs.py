@@ -42,9 +42,12 @@ def _expand_def_file(
     if cpp is None:
         raise RuntimeError("cpp (the C preprocessor) is required but missing")
 
-    stub = "".join(
-        f"#define {signature} {body}\n" for signature, body in macro_defs
-    )
+    stub = ""
+    for signature, body in macro_defs:
+        # A body that spans lines keeps its continuations. Without them the
+        # first newline ends the #define and the rest becomes stray text.
+        body = body.replace("\n", " \\\n")
+        stub += f"#define {signature} {body}\n"
     stub += f'#include "{def_path}"\n'
 
     with tempfile.NamedTemporaryFile("w", suffix=".c") as tmp:

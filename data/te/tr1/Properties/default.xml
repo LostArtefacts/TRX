@@ -164,6 +164,9 @@
         <property category="TRX" defaultValue="true" description="Show a twinkle effect above the item." displayName="Show Pickup Aid" internalName="show_pickup_aid" type="Bool" />
         <property category="TRX" defaultValue="0" description="How much to rotate the item by each frame while it's active, in engine angle units." displayName="Rotation" internalName="rotation" maxValue="16384" minValue="-16384" type="Int" />
     </moveable>
+    <moveable id="118-125">
+        <property category="TRX" defaultValue="true" description="Whether or not Lara can collide with the slot after using it." displayName="Collidable When Done" internalName="collidable_when_done" type="Bool" />
+    </moveable>
     <moveable id="145">
         <property category="TRX" defaultValue="5" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
     </moveable>
