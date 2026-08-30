@@ -303,7 +303,8 @@ static void M_SetGunEquipment(
     const LARA_MESH mesh, const LARA_GUN_TYPE gun_type,
     const LARA_SKIN_OUTFIT *const outfit)
 {
-    const LARA_SKIN_MESH_MAP map = outfit->gun_map->mesh_offsets[gun_type];
+    const LARA_SKIN_MESH_MAP map =
+        Lara_Skin_GetGunMeshMap(outfit->gun_map, gun_type);
 
     int32_t offset = M_NO_MESH;
     switch (mesh) {

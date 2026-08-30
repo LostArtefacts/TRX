@@ -15,3 +15,8 @@ const char *Lara_Skin_GetOutfitName(LARA_SKIN_TYPE skin_type);
 LARA_SKIN_TYPE Lara_Skin_FindOutfitByName(const char *name);
 LARA_SKIN_TYPE Lara_Skin_GetDefaultType(void);
 int32_t Lara_Skin_GetExtraMeshOffset(LARA_SKIN_EXTRA_MESH mesh);
+
+// Return the meshes used when an outfit carries a weapon, or an empty map
+// when the outfit specifies none.
+LARA_SKIN_MESH_MAP Lara_Skin_GetGunMeshMap(
+    const LARA_SKIN_GUN_MAP *gun_map, LARA_GUN_TYPE gun_type);

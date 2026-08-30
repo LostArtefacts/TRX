@@ -100,21 +100,26 @@ static RESULT M_ReadGunMaps(JSON_READ_IO *const io)
             return JSON_ReadIO_Fail(io, "gun map %d must be an object", i);
         }
         LARA_SKIN_GUN_MAP map = {};
-        for (int32_t j = 0; j < NUM_WEAPONS; j++) {
-            memset(&map.mesh_offsets[j], -1, sizeof(LARA_SKIN_MESH_MAP));
-        }
 
         JSON_OBJECT *const map_obj = JSON_ReadIO_GetCurrentObject(io);
         for (JSON_OBJECT_ELEMENT *elem = map_obj->start; elem != nullptr;
              elem = elem->next) {
             const char *const name = elem->name->string;
-            const int32_t type = ENUM_MAP_GET(LARA_GUN_TYPE, name, -1);
-            if (type < 0 || type >= NUM_WEAPONS) {
+            const CATALOG_ID type =
+                Catalog_KeyToID(CATALOG_WEAPONS, name, NO_CATALOG_ID);
+            if (type == NO_CATALOG_ID) {
                 return JSON_ReadIO_Fail(
                     io, "gun map %d names an unknown weapon '%s'", i, name);
             }
+            if (map.count >= (int32_t)ARRAY_SIZE(map.entries)) {
+                return JSON_ReadIO_Fail(
+                    io, "gun map %d names more weapons than fit", i);
+            }
 
-            LARA_SKIN_MESH_MAP *const mesh_map = &map.mesh_offsets[type];
+            LARA_SKIN_GUN_ENTRY *const entry = &map.entries[map.count++];
+            entry->gun_type = (LARA_GUN_TYPE)type;
+            LARA_SKIN_MESH_MAP *const mesh_map = &entry->mesh_map;
+            memset(mesh_map, -1, sizeof(*mesh_map));
             MUST(JSON_PUSH(io, name));
             MUST(JSON_READ_OPT(io, "hand_r", &mesh_map->hand.right));
             MUST(JSON_READ_OPT(io, "hand_l", &mesh_map->hand.left));
@@ -585,3 +590,16 @@ int32_t Lara_Skin_GetExtraMeshOffset(const LARA_SKIN_EXTRA_MESH mesh)
 }
 
 REGISTER_SUBSYSTEM(.load = M_Load, .shutdown = M_Shutdown)
+
+LARA_SKIN_MESH_MAP Lara_Skin_GetGunMeshMap(
+    const LARA_SKIN_GUN_MAP *const gun_map, const LARA_GUN_TYPE gun_type)
+{
+    for (int32_t i = 0; i < gun_map->count; i++) {
+        if (gun_map->entries[i].gun_type == gun_type) {
+            return gun_map->entries[i].mesh_map;
+        }
+    }
+    LARA_SKIN_MESH_MAP map;
+    memset(&map, -1, sizeof(map));
+    return map;
+}
