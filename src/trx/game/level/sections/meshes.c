@@ -104,6 +104,15 @@ static RESULT M_ReadObjectMesh(OBJECT_MESH *const mesh, TRX_FILE *const file)
         }
         File_Seek(file, pos, FILE_SEEK_SET);
 
+        const int32_t total_faces = mesh->tex_face4s.count
+            + mesh->tex_face3s.count + mesh->flat_face4s.count
+            + mesh->flat_face3s.count;
+        FAIL_IF(
+            total_faces > INT16_MAX,
+            "mesh holds %d faces, more than the %d "
+            "one may",
+            total_faces, INT16_MAX);
+
         mesh->tex_faces.count = mesh->tex_face4s.count + mesh->tex_face3s.count;
         mesh->flat_faces.count =
             mesh->flat_face4s.count + mesh->flat_face3s.count;
