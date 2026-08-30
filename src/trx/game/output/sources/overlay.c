@@ -150,9 +150,11 @@ static float m_Letterbox = 0.0f;
 static float m_LetterboxTarget = 0.0f;
 static float m_Fade = 0.0f;
 
-static bool M_CreateTextureRGB8(
+// Creates an 8-bit-per-channel texture, with an alpha channel where the
+// pixels carry one.
+static bool M_CreateTexture(
     TRX_GL_TEXTURE *const texture, const int32_t width, const int32_t height,
-    const void *const data)
+    const void *const data, const bool with_alpha)
 {
     if (texture == nullptr || width <= 0 || height <= 0) {
         return false;
@@ -175,8 +177,8 @@ static bool M_CreateTextureRGB8(
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     TRX_GL_CheckError();
     glTexImage2D(
-        GL_TEXTURE_2D, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE,
-        data);
+        GL_TEXTURE_2D, 0, with_alpha ? GL_RGBA8 : GL_RGB8, width, height, 0,
+        with_alpha ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, data);
     glPixelStorei(GL_UNPACK_ALIGNMENT, prev_unpack_alignment);
     TRX_GL_CheckError();
     return true;
@@ -257,7 +259,7 @@ static void M_EnsureSolidBlackTexture(void)
         return;
     }
     const uint8_t pixel[3] = { 0, 0, 0 };
-    M_CreateTextureRGB8(&m_Priv.solid_black_texture, 1, 1, &pixel[0]);
+    M_CreateTexture(&m_Priv.solid_black_texture, 1, 1, &pixel[0], false);
 }
 
 static void M_ImageCandidates_Free(M_IMAGE_CACHE_ENTRY *const e)
@@ -381,7 +383,8 @@ static bool M_Image_LoadIntoTexture(
         return false;
     }
 
-    const bool ok = M_CreateTextureRGB8(&e->texture, width, height, img->data);
+    const bool ok =
+        M_CreateTexture(&e->texture, width, height, img->data, true);
     Image_Free(img);
     if (!ok) {
         return false;
@@ -748,7 +751,7 @@ static void M_EnsureSnapshotTexture(
 
     s->width = w;
     s->height = h;
-    M_CreateTextureRGB8(&s->texture, s->width, s->height, nullptr);
+    M_CreateTexture(&s->texture, s->width, s->height, nullptr, false);
     Output_Quad_ClearFit(p->snapshot.renderer);
 }
 

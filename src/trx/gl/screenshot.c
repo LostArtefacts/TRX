@@ -12,13 +12,13 @@ RESULT TRX_GL_Screenshot_CaptureToFile(const char *path)
     GLint width;
     GLint height;
     TRX_GL_Screenshot_CaptureToBuffer(
-        nullptr, &width, &height, 3, GL_RGB, GL_UNSIGNED_BYTE, true);
+        nullptr, &width, &height, 4, GL_RGBA, GL_UNSIGNED_BYTE, true);
 
     IMAGE *image = Image_Create(width, height);
     ASSERT(image != nullptr);
 
     TRX_GL_Screenshot_CaptureToBuffer(
-        (uint8_t *)image->data, &width, &height, 3, GL_RGB, GL_UNSIGNED_BYTE,
+        (uint8_t *)image->data, &width, &height, 4, GL_RGBA, GL_UNSIGNED_BYTE,
         true);
 
     const RESULT result = Image_SaveToFile(image, path);
