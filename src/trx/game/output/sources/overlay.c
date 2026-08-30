@@ -36,8 +36,7 @@
 
 #define M_SCHEDULE_OP(queue_id, draw_func, inst)                               \
     M_ScheduleOpHelper(                                                        \
-        &m_Priv, queue_id, (M_DRAW_OP_FUNC)draw_func, sizeof(inst),            \
-        (const M_DRAW_OP *)&inst);
+        &m_Priv, queue_id, draw_func, sizeof(inst), (const M_DRAW_OP *)&inst);
 
 #define M_IMAGE_CACHE_CAPACITY 5
 #define M_RELATIVE_ERROR(a, b) ABS((a) - (b)) / (b)
@@ -525,8 +524,10 @@ static void M_ScheduleOpHelper(
     M_ScheduleOp(p, queue_id, op);
 }
 
-static void M_DrawOp_BlackRectangle(const M_DRAW_OP_BLACK_RECTANGLE *const op)
+static void M_DrawOp_BlackRectangle(const M_DRAW_OP *const base)
 {
+    const M_DRAW_OP_BLACK_RECTANGLE *const op =
+        (const M_DRAW_OP_BLACK_RECTANGLE *)base;
     const M_PRIV *const p = &m_Priv;
     if (op->opacity <= 0.0f) {
         return;
@@ -541,8 +542,9 @@ static void M_DrawOp_BlackRectangle(const M_DRAW_OP_BLACK_RECTANGLE *const op)
     Output_Quad_RenderWithBlend(p->renderer);
 }
 
-static void M_DrawOp_Image(const M_DRAW_OP_IMAGE *const op)
+static void M_DrawOp_Image(const M_DRAW_OP *const base)
 {
+    const M_DRAW_OP_IMAGE *const op = (const M_DRAW_OP_IMAGE *)base;
     const M_PRIV *const p = &m_Priv;
     if (op->texture_id == 0 || op->width <= 0 || op->height <= 0) {
         return;
@@ -607,8 +609,9 @@ static void M_DrawImageImpl(
 
 // A snapshot holds the pixels as they were presented, brightness included, so
 // it is drawn without a scale of its own.
-static void M_DrawOp_Snapshot(const M_DRAW_OP_SNAPSHOT *const op)
+static void M_DrawOp_Snapshot(const M_DRAW_OP *const base)
 {
+    const M_DRAW_OP_SNAPSHOT *const op = (const M_DRAW_OP_SNAPSHOT *)base;
     const M_PRIV *const p = &m_Priv;
     if (op->opacity <= 0.0f) {
         return;
@@ -700,8 +703,9 @@ static bool M_EnsurePatternUploaded(M_PRIV *const p)
     return true;
 }
 
-static void M_DrawOp_Pattern(const M_DRAW_OP_PATTERN *const op)
+static void M_DrawOp_Pattern(const M_DRAW_OP *const base)
 {
+    const M_DRAW_OP_PATTERN *const op = (const M_DRAW_OP_PATTERN *)base;
     M_PRIV *const p = &m_Priv;
     if (!M_EnsurePatternUploaded(p)) {
         return;
@@ -794,7 +798,8 @@ static void M_DrawTransitionSnapshot(M_PRIV *const p)
         .height = p->snapshot.state.height,
         .opacity = opacity,
         .tint = COLOR_RGB_F_WHITE,
-    });
+    }
+                           .base);
     p->snapshot.transition_drawn = true;
 
     if (!Fader_IsActive(&p->snapshot.transition_fader)) {
