@@ -60,6 +60,7 @@
 - Changed the `/mod` console command to complete the names of the mods it can switch to
 - Changed the `/set` console command to complete the values a setting accepts, such as its enum values or on and off (TRX1174)
 - Changed the developer console to sort completions alphabetically, prioritizing those that start with the text typed (TRX1175)
+- Fixed a command failing to find a name that holds punctuation, and filling the console with errors when the text typed held a bracket
 - Fixed TR1's moored boat sharing its name with TR2's speedboat, so a command that took `boat` could act on either
 - Fixed the TR3 SWAT 2 and SWAT 3 enemies being named as SWAT 1, so a command that took either of them acted on the wrong enemy
 

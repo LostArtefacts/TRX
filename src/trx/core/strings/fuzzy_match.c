@@ -3,7 +3,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/strings/common.h>
 
-#include <stdio.h>
+#include <ctype.h>
 #include <string.h>
 
 #define FULL_MATCH_SCORE_BONUS 100
@@ -11,18 +11,39 @@
 #define PERCENT_MATCH_SCORE 50
 #define LETTER_MATCH_SCORE_BONUS 1
 
+// Quotes the regular expression syntax in the input, so that a name holding a
+// metacharacter is searched for rather than compiled. Bytes outside ASCII are
+// left alone, because a backslash before a UTF-8 continuation byte does not
+// compile.
+static char *M_QuoteRegex(const char *const input)
+{
+    char *const result = Memory_Alloc(strlen(input) * 2 + 1);
+    char *out = result;
+    for (const char *p = input; *p != '\0'; p++) {
+        const unsigned char ch = (unsigned char)*p;
+        if (ch < 0x80 && isalnum(ch) == 0 && ch != '_') {
+            *out++ = '\\';
+        }
+        *out++ = *p;
+    }
+    *out = '\0';
+    return result;
+}
+
 static STRING_FUZZY_SCORE M_GetScore(
     const char *const user_input, const char *const reference,
     const int32_t weight)
 {
-    const int32_t percent_score =
-        PERCENT_MATCH_SCORE * strlen(user_input) / strlen(reference);
+    const size_t reference_len = strlen(reference);
+    const int32_t percent_score = reference_len == 0
+        ? 0
+        : PERCENT_MATCH_SCORE * strlen(user_input) / reference_len;
     const int32_t letter_score = LETTER_MATCH_SCORE_BONUS * strlen(user_input);
 
-    char *word_regex = Memory_Alloc(strlen(user_input) + 20);
-    char *full_regex = Memory_Alloc(strlen(user_input) + 20);
-    sprintf(word_regex, "\\b%s\\b", user_input);
-    sprintf(full_regex, "^\\s*%s\\s*$", user_input);
+    char *quoted = M_QuoteRegex(user_input);
+    char *word_regex = String_Format("\\b%s\\b", quoted);
+    char *full_regex = String_Format("^\\s*%s\\s*$", quoted);
+    Memory_FreePointer(&quoted);
 
     // Assume a partial match
     bool is_full = false;
