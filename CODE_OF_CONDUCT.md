@@ -36,7 +36,23 @@ proposals, or patches does not guarantee they will be merged in their current
 form, or at all. Maintainers may modify, defer, or decline contributions to
 keep the project aligned with its goals and plans.
 
-## 3. What we will not engage with
+## 3. Where to bring things
+
+Keep project talk in public project spaces: the issue tracker, pull requests,
+GitHub discussions, and public Discord channels (#help or #trx-bugs). That lets
+anyone with time answer, and keeps the answer where the next person can find
+it.
+
+- Do not send proposals, bug reports, or work-in-progress to maintainers in DMs.
+- Do not ping maintainers directly to get attention on a post. Post it once and wait.
+- Do not repost the same thing in more channels, or ask again just because nobody answered yet.
+
+A private message or direct ping puts the work on one person. That person is
+a volunteer, and there is no one to share the load with. Use private messages
+only when asked for level files you'd rather not share publicly, and genuinely
+personal matters.
+
+## 4. What we will not engage with
 
 These are exhaustion-generators. They will be moderated quickly.
 
@@ -47,9 +63,10 @@ These are exhaustion-generators. They will be moderated quickly.
 - "Truth voice" posting: presenting personal preference as objective fact
 - Purity tests and vision wars ("real TR is X", "this feels like it drifts from the original vision", etc.)
 - Mislabeling TRX as “just a mod” or otherwise misrepresenting what the project is (TRX is a standalone, reverse engineered, build-from-source engine project).
+- Private messages and direct pings that ask a maintainer to look at something
 - Pressure tactics: guilt, demands, timelines, "you must", "you owe", "everyone agrees", "I think it is very important"
 
-## 4. Governance
+## 5. Governance
 
 TRX is maintainer-led. Maintainers have final say on:
 
@@ -60,18 +77,19 @@ TRX is maintainer-led. Maintainers have final say on:
 
 You're welcome to suggest. Maintainers decide. If a decision is made, continuing to argue it is not "discussion", it's drain.
 
-## 5. Moderation
+## 6. Moderation
 
 To protect the project, maintainers may:
 
 - Ask for a proposal format
+- Move a private message back to a public channel, or leave it unanswered
 - Close issues that aren't actionable
 - Lock threads that turn circular or hostile
 - Remove disruptive participants from project spaces
 
 We don't want to do this. We will do this.
 
-## 6. Basic respect
+## 7. Basic respect
 
 Instant hard no:
 
@@ -79,7 +97,7 @@ Instant hard no:
 - Discrimination
 - Threats or intimidation
 
-## 7. If you disagree
+## 8. If you disagree
 
 Totally fine. Choose a productive path:
 
