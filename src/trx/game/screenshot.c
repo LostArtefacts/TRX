@@ -3,6 +3,7 @@
 #include <trx/core/filesystem.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/core/utils.h>
 #include <trx/game/clock.h>
 #include <trx/game/events.h>
 #include <trx/game/game.h>
@@ -21,12 +22,13 @@ static char *M_CleanScreenshotTitle(const char *const source)
     // - Merge consecutive underscores together
     // - Remove leading underscores
     // - Remove trailing underscores
-    char *result = Memory_Alloc(strlen(source) + 1);
+    const size_t source_len = strlen(source);
+    char *result = Memory_Alloc(source_len + 1);
     const char *const sensitive_characters = "/\\:*?\"<>|";
 
     bool last_was_underscore = false;
     char *out = result;
-    for (size_t i = 0; i < strlen(source); i++) {
+    for (size_t i = 0; i < source_len; i++) {
         if (source[i] == ' ' || source[i] == '_') {
             if (!last_was_underscore && out > result) {
                 *out++ = '_';
@@ -35,7 +37,10 @@ static char *M_CleanScreenshotTitle(const char *const source)
             continue;
         }
 
-        const size_t char_size = String_GetCharByteSize(out);
+        // Report a title ending mid-sequence as longer than its stored
+        // byte count.
+        const size_t char_size =
+            MIN(String_GetCharByteSize(source + i), source_len - i);
         if (char_size != 1
             || strchr(sensitive_characters, source[i]) == nullptr) {
             memcpy(out, source + i, char_size);
@@ -44,8 +49,6 @@ static char *M_CleanScreenshotTitle(const char *const source)
             last_was_underscore = false;
         }
     }
-    *out++ = '\0';
-
     // Strip trailing underscores
     while (out > result && out[-1] == '_') {
         out--;
