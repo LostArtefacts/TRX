@@ -1039,7 +1039,8 @@ int32_t Output_GetSpriteTextureCount(void)
 
 OBJECT_TEXTURE *Output_GetObjectTexture(const int32_t texture_idx)
 {
-    if (m_ObjectTextures == nullptr) {
+    if (m_ObjectTextures == nullptr || texture_idx < 0
+        || texture_idx >= m_ObjectTextureCount) {
         return nullptr;
     }
     return &m_ObjectTextures[texture_idx];
@@ -1047,7 +1048,8 @@ OBJECT_TEXTURE *Output_GetObjectTexture(const int32_t texture_idx)
 
 SPRITE_TEXTURE *Output_GetSpriteTexture(const int32_t texture_idx)
 {
-    if (m_SpriteTextures == nullptr) {
+    if (m_SpriteTextures == nullptr || texture_idx < 0
+        || texture_idx >= m_SpriteTextureCount) {
         return nullptr;
     }
     return &m_SpriteTextures[texture_idx];
