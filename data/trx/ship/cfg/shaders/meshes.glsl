@@ -606,7 +606,8 @@ void main(void) {
     }
 
     // Fog
-    if ((gIn.flags & VERT_NO_LIGHTING) == 0u && uLightingEnabled != 0) {
+    if ((gIn.flags & (VERT_NO_FOG | VERT_NO_LIGHTING)) == 0u
+        && uLightingEnabled != 0) {
         texColor = applyFog(texColor, length(gIn.eyePos.xyz));
         // The OG skips fog bulbs on additive polys (AddTriClippedSorted
         // excludes drawtypes 2 and 5 from OmniFog).

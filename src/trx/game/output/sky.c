@@ -324,7 +324,11 @@ void Output_Sky_ObserveLevelLoad(void)
     // adder, whichever way the level's mesh data is lit. TR3/TR4 must keep the
     // path their mesh data selects: forcing own light there makes the horizon
     // eligible for the dynamic point-light term (the binoculars lighting it).
-    m_SkyboxMeshPolicy.vertex_flags = g_TRVersion < 3 ? VERT_USE_OWN_LIGHT : 0;
+    // The OG leaves the horizon unfogged: every sky vertex carries a full fog
+    // factor (output.cpp ProcessObjectMeshVertices), and the levels that want
+    // a fogged horizon paint the gradient on themselves.
+    m_SkyboxMeshPolicy.vertex_flags =
+        VERT_NO_FOG | (g_TRVersion < 3 ? VERT_USE_OWN_LIGHT : 0);
     for (int32_t i = 0; i < skybox->mesh_count; i++) {
         OutputSource_Objects_AddMeshPolicy(
             skybox->mesh_idx + i, &m_SkyboxMeshPolicy);

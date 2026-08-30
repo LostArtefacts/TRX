@@ -23,6 +23,7 @@
 #define VERT_OVERBRIGHT        0x1000u
 #define VERT_TEX_WRAP          0x2000u
 #define VERT_ADDITIVE          0x4000u
+#define VERT_NO_FOG            0x8000u
 
 #define LIGHTING_CURVE_FLAT       0
 #define LIGHTING_CURVE_OVERBRIGHT 1
