@@ -17,6 +17,7 @@
 #include <libavutil/frame.h>
 #include <libavutil/imgutils.h>
 #include <libavutil/mem.h>
+#include <libavutil/pixdesc.h>
 #include <libavutil/pixfmt.h>
 #include <libavutil/rational.h>
 #include <libswscale/swscale.h>
@@ -244,6 +245,21 @@ static IMAGE_BLIT M_GetBlit(
     return blit;
 }
 
+// Forces the alpha of the area a blit wrote to opaque, for a source format
+// that carries no alpha of its own. The area outside it keeps the opaque black
+// Image_Create leaves behind.
+static void M_MakeOpaque(IMAGE *const image, const IMAGE_BLIT *const blit)
+{
+    for (int32_t y = 0; y < blit->dst.height; y++) {
+        RGBA_8888 *pixel =
+            &image->data[(blit->dst.y + y) * image->width + blit->dst.x];
+        for (int32_t x = 0; x < blit->dst.width; x++) {
+            pixel->a = 255;
+            pixel++;
+        }
+    }
+}
+
 static IMAGE *M_ConstructImage(
     IMAGE_READER_CONTEXT *const ctx, const int32_t target_width,
     const int32_t target_height, IMAGE_FIT_MODE fit_mode)
@@ -264,7 +280,7 @@ static IMAGE *M_ConstructImage(
 
     struct SwsContext *const sws_ctx = sws_getContext(
         blit.src.width, blit.src.height, ctx->frame->format, blit.dst.width,
-        blit.dst.height, AV_PIX_FMT_RGB24, SWS_BILINEAR, nullptr, nullptr,
+        blit.dst.height, AV_PIX_FMT_RGBA, SWS_BILINEAR, nullptr, nullptr,
         nullptr);
     if (sws_ctx == nullptr) {
         LOG_ERROR("Failed to get SWS context");
@@ -276,16 +292,23 @@ static IMAGE *M_ConstructImage(
     uint8_t *dst_planes[4] = { (uint8_t *)target_image->data
                                    + (blit.dst.y * target_image->width
                                       + blit.dst.x)
-                                       * sizeof(IMAGE_PIXEL),
+                                       * sizeof(RGBA_8888),
                                nullptr, nullptr, nullptr };
-    int dst_linesize[4] = { target_image->width * sizeof(IMAGE_PIXEL), 0, 0,
-                            0 };
+    int dst_linesize[4] = { target_image->width * sizeof(RGBA_8888), 0, 0, 0 };
 
     sws_scale(
         sws_ctx, (const uint8_t *const *)ctx->frame->data, ctx->frame->linesize,
         0, blit.src.height, dst_planes, dst_linesize);
 
     sws_freeContext(sws_ctx);
+
+    const AVPixFmtDescriptor *const desc =
+        av_pix_fmt_desc_get(ctx->frame->format);
+    target_image->has_alpha =
+        desc != nullptr && (desc->flags & AV_PIX_FMT_FLAG_ALPHA) != 0;
+    if (!target_image->has_alpha) {
+        M_MakeOpaque(target_image, &blit);
+    }
     return target_image;
 }
 
@@ -294,7 +317,10 @@ IMAGE *Image_Create(const int width, const int height)
     IMAGE *image = Memory_Alloc(sizeof(IMAGE));
     image->width = width;
     image->height = height;
-    image->data = Memory_Alloc(width * height * sizeof(IMAGE_PIXEL));
+    image->data = Memory_Alloc(width * height * sizeof(RGBA_8888));
+    for (int32_t i = 0; i < width * height; i++) {
+        image->data[i].a = 255;
+    }
     return image;
 }
 
@@ -345,7 +371,7 @@ RESULT Image_SaveToFile(const IMAGE *const image, const char *const path)
     struct SwsContext *sws_ctx = nullptr;
     TRX_FILE *fp = nullptr;
 
-    enum AVPixelFormat src_pix_fmt = AV_PIX_FMT_RGB24;
+    enum AVPixelFormat src_pix_fmt = AV_PIX_FMT_RGBA;
     enum AVPixelFormat dst_pix_fmt;
     enum AVCodecID codec_id;
 
@@ -497,8 +523,8 @@ IMAGE *Image_Scale(
         fit_mode);
 
     struct SwsContext *const sws_ctx = sws_getContext(
-        blit.src.width, blit.src.height, AV_PIX_FMT_RGB24, blit.dst.width,
-        blit.dst.height, AV_PIX_FMT_RGB24, SWS_BILINEAR, nullptr, nullptr,
+        blit.src.width, blit.src.height, AV_PIX_FMT_RGBA, blit.dst.width,
+        blit.dst.height, AV_PIX_FMT_RGBA, SWS_BILINEAR, nullptr, nullptr,
         nullptr);
     if (sws_ctx == nullptr) {
         LOG_ERROR("Failed to get SWS context");
@@ -510,24 +536,23 @@ IMAGE *Image_Scale(
     uint8_t *src_planes[4] = { (uint8_t *)source_image->data
                                    + (blit.src.y * source_image->width
                                       + blit.src.x)
-                                       * sizeof(IMAGE_PIXEL),
+                                       * sizeof(RGBA_8888),
                                nullptr, nullptr, nullptr };
-    int src_linesize[4] = { source_image->width * sizeof(IMAGE_PIXEL), 0, 0,
-                            0 };
+    int src_linesize[4] = { source_image->width * sizeof(RGBA_8888), 0, 0, 0 };
 
     uint8_t *dst_planes[4] = { (uint8_t *)target_image->data
                                    + (blit.dst.y * target_image->width
                                       + blit.dst.x)
-                                       * sizeof(IMAGE_PIXEL),
+                                       * sizeof(RGBA_8888),
                                nullptr, nullptr, nullptr };
-    int dst_linesize[4] = { target_image->width * sizeof(IMAGE_PIXEL), 0, 0,
-                            0 };
+    int dst_linesize[4] = { target_image->width * sizeof(RGBA_8888), 0, 0, 0 };
 
     sws_scale(
         sws_ctx, (const uint8_t *const *)src_planes, src_linesize, 0,
         blit.src.height, (uint8_t *const *)dst_planes, dst_linesize);
 
     sws_freeContext(sws_ctx);
+    target_image->has_alpha = source_image->has_alpha;
     return target_image;
 }
 

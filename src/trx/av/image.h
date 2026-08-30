@@ -1,20 +1,19 @@
 #pragma once
 
+#include <trx/core/colors.h>
 #include <trx/core/result.h>
 
 #include <stddef.h>
 #include <stdint.h>
 
 typedef struct {
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
-} IMAGE_PIXEL;
-
-typedef struct {
     int32_t width;
     int32_t height;
-    IMAGE_PIXEL *data;
+    // Whether the pixels the image was made from carried an alpha channel.
+    // Alpha is 255 throughout where they did not. Whether a drawer blends is
+    // its own decision; this only says where the alpha came from.
+    bool has_alpha;
+    RGBA_8888 *data;
 } IMAGE;
 
 typedef enum {
@@ -24,6 +23,7 @@ typedef enum {
     IMAGE_FIT_SMART,
 } IMAGE_FIT_MODE;
 
+// Creates an opaque black image.
 IMAGE *Image_Create(int width, int height);
 
 // Reads an image from disk, reporting a file that does not exist and one the
