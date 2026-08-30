@@ -15,8 +15,7 @@
 #define M_WHITE ((RGBA_F) { 1.0f, 1.0f, 1.0f, 1.0f })
 #define M_OUTLINE_THICKNESS 0.75f
 #define M_SCHEDULE_OP(draw_func, inst)                                         \
-    M_ScheduleOpHelper(                                                        \
-        (M_DRAW_OP_FUNC)draw_func, sizeof(inst), (const M_DRAW_OP *)&inst);
+    M_ScheduleOpHelper(draw_func, sizeof(inst), (const M_DRAW_OP *)&inst);
 
 struct M_DRAW_OP;
 typedef void (*M_DRAW_OP_FUNC)(const struct M_DRAW_OP *);
@@ -128,8 +127,9 @@ static void M_DrawScreenCentreGradientBox(
     // clang-format on
 }
 
-static void M_DrawOp_HorizontalLine(const M_DRAW_OP_HORZ_LINE *const op)
+static void M_DrawOp_HorizontalLine(const M_DRAW_OP *const base)
 {
+    const M_DRAW_OP_HORZ_LINE *const op = (const M_DRAW_OP_HORZ_LINE *)base;
     if (g_TRVersion == 1 && op->ui_style == UI_STYLE_PC) {
         const float e =
             UI_Scaler_Calc(M_OUTLINE_THICKNESS, UI_SCALER_TARGET_TEXT);
@@ -165,8 +165,9 @@ static void M_DrawOp_HorizontalLine(const M_DRAW_OP_HORZ_LINE *const op)
     }
 }
 
-static void M_DrawOp_TextBackground(const M_DRAW_OP_TEXT_RECT *const op)
+static void M_DrawOp_TextBackground(const M_DRAW_OP *const base)
 {
+    const M_DRAW_OP_TEXT_RECT *const op = (const M_DRAW_OP_TEXT_RECT *)base;
     switch (op->ui_style) {
     case UI_STYLE_PC: {
         const UI_MENU_COLORS_PC *const c = UI_Settings_GetMenuColorsPC();
@@ -217,8 +218,9 @@ static void M_DrawOp_TextBackground(const M_DRAW_OP_TEXT_RECT *const op)
     }
 }
 
-static void M_DrawOp_TextOutline(const M_DRAW_OP_TEXT_RECT *const op)
+static void M_DrawOp_TextOutline(const M_DRAW_OP *const base)
 {
+    const M_DRAW_OP_TEXT_RECT *const op = (const M_DRAW_OP_TEXT_RECT *)base;
     int32_t x0 = op->x0;
     int32_t x1 = op->x1;
     int32_t y0 = op->y0;
@@ -306,21 +308,24 @@ static void M_DrawOp_TextOutline(const M_DRAW_OP_TEXT_RECT *const op)
     }
 }
 
-static void M_DrawOp_Sprite(const M_DRAW_OP_SPRITE *const op)
+static void M_DrawOp_Sprite(const M_DRAW_OP *const base)
 {
+    const M_DRAW_OP_SPRITE *const op = (const M_DRAW_OP_SPRITE *)base;
     Output_DrawScreenSprite(
         op->sx, op->sy, op->z, op->scale_h, op->scale_v, op->sprite_idx,
         op->colors);
 }
 
-static void M_DrawOp_Quad(const M_DRAW_OP_QUAD *const op)
+static void M_DrawOp_Quad(const M_DRAW_OP *const base)
 {
+    const M_DRAW_OP_QUAD *const op = (const M_DRAW_OP_QUAD *)base;
     M_DrawScreenQuad(
         op->x0, op->y0, op->x1, op->y1, op->z, op->tl, op->tr, op->bl, op->br);
 }
 
-static void M_DrawOp_Circle(const M_DRAW_OP_CIRCLE *const op)
+static void M_DrawOp_Circle(const M_DRAW_OP *const base)
 {
+    const M_DRAW_OP_CIRCLE *const op = (const M_DRAW_OP_CIRCLE *)base;
     OutputSource_UI_StageCircle((OUTPUT_UI_CIRCLE) {
         .cx = op->cx,
         .cy = op->cy,
