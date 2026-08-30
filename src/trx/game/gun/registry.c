@@ -1,5 +1,7 @@
 #include <trx/game/gun/registry.h>
 
+#include <trx/core/enum_map.h>
+#include <trx/core/log.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/catalog/manager.h>
@@ -79,6 +81,29 @@ const WEAPON_INFO *Gun_Registry_GetByIndex(const int32_t idx)
         count++;
     }
     return nullptr;
+}
+
+void Gun_Registry_SetInputRole(
+    const LARA_GUN_TYPE gun_type, const INPUT_ROLE role)
+{
+    WEAPON_INFO *const weapon = Gun_Registry_Get(gun_type);
+    if ((int32_t)role >= 0) {
+        CATALOG_FOR_EACH(CATALOG_WEAPONS, i)
+        {
+            WEAPON_INFO *const other = CatalogTable_TryGet(&m_Weapons, i);
+            if (other == nullptr || other == weapon
+                || other->equip_input_role != role) {
+                continue;
+            }
+            LOG_INFO(
+                "%s takes the %s key from %s",
+                Catalog_IDToKey(CATALOG_WEAPONS, gun_type),
+                ENUM_MAP_TO_STRING(INPUT_ROLE, role),
+                Catalog_IDToKey(CATALOG_WEAPONS, other->gun_type));
+            other->equip_input_role = (INPUT_ROLE)-1;
+        }
+    }
+    weapon->equip_input_role = role;
 }
 
 WEAPON_INFO *Gun_Registry_Get(const LARA_GUN_TYPE gun_type)

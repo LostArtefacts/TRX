@@ -139,7 +139,8 @@ static RESULT M_ReadWeapons(JSON_OBJECT *const root_obj, const char *const path)
     for (JSON_OBJECT_ELEMENT *elem = root_obj->start; elem != nullptr;
          elem = elem->next) {
         const char *const name = elem->name->string;
-        const int32_t type = ENUM_MAP_GET(LARA_GUN_TYPE, name, -1);
+        const CATALOG_ID type =
+            Catalog_KeyToID(CATALOG_WEAPONS, name, NO_CATALOG_ID);
         FAIL_IF(
             !Gun_Registry_IsValidType(type), "%s: unknown weapon '%s'", path,
             name);
@@ -239,7 +240,7 @@ static RESULT M_ReadWeapons(JSON_OBJECT *const root_obj, const char *const path)
             FAIL_IF(
                 role < 0, "%s: unknown input role '%s' for '%s'", path,
                 equip_role, name);
-            weapon->equip_input_role = role;
+            Gun_Registry_SetInputRole(weapon->gun_type, role);
         }
 
         weapon->unaims_on_release = JSON_ObjectGetBool(
