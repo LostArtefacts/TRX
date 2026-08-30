@@ -10,6 +10,7 @@ trx.events.on_game_start(function()
   trx.objects.waterfall_1.properties.hide_when_inactive = true
   trx.objects.waterfall_2.properties.loop_sound = trx.items.WaterfallSound.SAND
   trx.objects.waterfall_2.properties.hide_when_inactive = true
+  trx.items[0].properties.collidable_when_done = false
 end)
 
 -- The caption the level opens with, which the level's strings carry.

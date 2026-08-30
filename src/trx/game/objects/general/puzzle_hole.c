@@ -10,6 +10,10 @@
 
 #define M_LF_USE_PUZZLE 80
 
+typedef struct {
+    bool collidable_when_done;
+} M_PRIV;
+
 static XYZ_32 m_DefaultPosition = {
     .x = 0,
     .y = 0,
@@ -210,7 +214,8 @@ static void M_CollisionDone(
     const OBJECT *const obj = Object_Get(item->object_id);
     const LARA_INFO *const lara = Lara_GetLaraInfo();
 
-    if (g_Config.gameplay.enable_walk_to_items) {
+    const M_PRIV *const p = item->priv;
+    if (g_Config.gameplay.enable_walk_to_items && p->collidable_when_done) {
         Object_Collision(item_num, lara_item, coll);
     }
 
@@ -224,6 +229,16 @@ static void M_CollisionDone(
     Lara_RefuseInteraction();
 }
 
+static void M_DeclareProperties(OBJECT *const obj)
+{
+    obj->priv_size = sizeof(M_PRIV);
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY(
+            M_PRIV, collidable_when_done, true,
+            "Whether or not Lara can collide with the slot after using it."));
+}
+
 static void M_SetupEmpty(OBJECT *const obj)
 {
     obj->control_func = M_Control;
@@ -233,6 +248,7 @@ static void M_SetupEmpty(OBJECT *const obj)
     obj->bounds_func = M_Bounds;
     obj->save_flags = true;
     obj->save_anim = true;
+    M_DeclareProperties(obj);
 }
 
 static void M_SetupDone(OBJECT *const obj)
@@ -242,6 +258,7 @@ static void M_SetupDone(OBJECT *const obj)
     obj->bounds_func = M_Bounds;
     obj->save_flags = true;
     obj->save_anim = true;
+    M_DeclareProperties(obj);
 }
 
 #define X_PICKUP_PUZZLE(n)                                                     \

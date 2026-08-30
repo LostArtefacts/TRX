@@ -292,6 +292,10 @@
         <property category="TRX" defaultValue="80" description="Damage dealt by punches 1 and 2." displayName="Hit Damage" internalName="hit_damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="100" description="Damage dealt by punch 3." displayName="Swipe Damage" internalName="swipe_damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_PUZZLE_DONE_5..O_PUZZLE_HOLE_12-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="true" description="Whether or not Lara can collide with the slot after using it." displayName="Collidable When Done" internalName="collidable_when_done" type="Bool" />
+    </moveable>
     <!--placeholder for O_QUAD_BIKE-->
     <moveable id="-1">
         <property category="TRX" defaultValue="-1" description="Random music track pool, slot 1. -1 = disabled." displayName="Track 1" internalName="track_1" minValue="-1" type="Int" />

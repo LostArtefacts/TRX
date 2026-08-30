@@ -75,6 +75,7 @@
 - Added Natla as an outfit for Lara, selectable in every game (Graphic Options → Visuals → Lara's outfit) (TRX1050)
 - Added injection support for putting a room in a flip group, which only TR4 levels carry themselves (#5336 / TRX173)
 - Added a `requires_alert` property to the sentry gun, which lets a plain trigger set it firing where it would otherwise wait for a security laser (TRX1141)
+- Added a `collidable_when_done` property to puzzle slots, which applies to animated interactions only (TRX1046)
 - Added object references in strings files, so inventory entries can use the same name and description as their pickup
 - Changed object keys in strings files, game flows and weapon definitions to use the C object name without `O_`
 - Changed object names in strings files to use `|` between the name the game shows and the names the console accepts
