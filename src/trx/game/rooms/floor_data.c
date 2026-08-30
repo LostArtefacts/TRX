@@ -174,7 +174,7 @@ static int32_t M_DecodeSplit(int32_t height)
     if ((height & 0x10) != 0) {
         height |= 0xFFFFFFF0;
     }
-    return height << 8;
+    return (int32_t)((uint32_t)height << 8);
 }
 
 // Anything other than the player trips triggers as a heavy object.
