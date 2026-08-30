@@ -10,6 +10,7 @@
 #include <trx/game/level/format/format.h>
 #include <trx/game/level/sections/append.h>
 #include <trx/game/level/sections/read.h>
+#include <trx/game/objects.h>
 #include <trx/game/output.h>
 
 typedef struct {
@@ -69,6 +70,41 @@ static void M_Decode16BitTexturePage(void *const userdata)
     for (int32_t i = 0; i < TEXTURE_PAGE_SIZE; i++) {
         *output++ = Color_ARGB1555ToRGBA8888(*input++);
     }
+}
+
+// Rooms and object meshes are read before the textures they name, so the
+// numbers they hold are checked once the textures are in.
+static RESULT M_CheckFaces(
+    const char *const owner, const int32_t owner_idx, const FACE *const faces,
+    const int32_t count, const int32_t num_textures)
+{
+    for (int32_t i = 0; i < count; i++) {
+        FAIL_IF(
+            faces[i].texture_idx >= num_textures,
+            "%s %d: face names texture %d of the %d the level holds", owner,
+            owner_idx, faces[i].texture_idx, num_textures);
+    }
+    return OK;
+}
+
+static RESULT M_CheckFaceTextures(const int32_t num_textures)
+{
+    for (int32_t i = 0; i < Room_GetCount(); i++) {
+        const ROOM *const room = Room_Get(i);
+        MUST(M_CheckFaces(
+            "room", i, room->mesh.all_faces.data, room->mesh.all_faces.count,
+            num_textures));
+    }
+    for (int32_t i = 0; i < Object_GetMeshCount(); i++) {
+        const OBJECT_MESH *const mesh = Object_GetMesh(i);
+        MUST(M_CheckFaces(
+            "mesh", i, mesh->tex_face4s.data, mesh->tex_face4s.count,
+            num_textures));
+        MUST(M_CheckFaces(
+            "mesh", i, mesh->tex_face3s.data, mesh->tex_face3s.count,
+            num_textures));
+    }
+    return OK;
 }
 
 RESULT Level_Section_ReadPalettes(
@@ -179,6 +215,7 @@ RESULT Level_Section_ReadObjectTextures(
     Output_InitialiseObjectTextures(
         num_textures + Inject_GetDataCount(IDT_OBJECT_TEXTURES));
     Level_Section_AppendObjectTextures(0, 0, num_textures, file);
+    MUST(M_CheckFaceTextures(num_textures));
     Benchmark_End(&benchmark, nullptr);
     return OK;
 }
