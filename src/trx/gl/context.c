@@ -29,7 +29,7 @@ typedef struct {
     TRX_GL_RENDERER *renderer;
 } TRX_GL_CONTEXT;
 
-extern RGBA_F Output_GetFogColor(void);
+extern RGBA_F Output_GetBackgroundColor(void);
 
 static TRX_GL_CONTEXT m_Context = {};
 
@@ -272,12 +272,12 @@ void *TRX_GL_Context_GetWindowHandle(void)
 void TRX_GL_Context_Clear(void)
 {
     const RGBA_F white = { 1.0f, 1.0f, 1.0f, 0.0f };
-    const RGBA_F fog = Output_GetFogColor();
+    const RGBA_F background = Output_GetBackgroundColor();
     const RGBA_F black = { 0.0f, 0.0f, 0.0f, 0.0f };
     const RGBA_F color =
         m_Context.space == VIEWPORT_GAME && m_Context.config.enable_wireframe
         ? white
-        : m_Context.space == VIEWPORT_GAME ? fog
+        : m_Context.space == VIEWPORT_GAME ? background
                                            : black;
     glClearBufferfv(GL_COLOR, 0, &color.r);
 }

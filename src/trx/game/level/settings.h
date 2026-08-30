@@ -39,6 +39,10 @@ void Level_ResetSettingOverride(LEVEL_SETTING setting);
 void Level_ResetSettingOverrides(void);
 
 RGB_888 Level_GetWaterColor(void);
+
+// The color behind everything the world draws: the fog color the level or the
+// player chose, and black where the fog is transparent.
+RGB_888 Level_GetBackgroundColor(void);
 RGBA_8888 Level_GetFogColor(void);
 
 // Returns the fog draw color, regardless of source and transparency. Fog bulbs

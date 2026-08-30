@@ -35,6 +35,7 @@ static int32_t m_UVRotateSpeed = 0;
 static int32_t m_FogStart = 0;
 static int32_t m_FogEnd = 0;
 static RGBA_F m_FogColor = {};
+static RGBA_F m_BackgroundColor = {};
 static RGB_F m_WaterColor = {};
 
 static float m_DepthFactor = 0.0f;
@@ -105,6 +106,21 @@ bool Output_IsSkyboxEnabled(void)
 RGBA_F Output_GetFogColor(void)
 {
     return m_FogColor;
+}
+
+RGBA_F Output_GetBackgroundColor(void)
+{
+    return m_BackgroundColor;
+}
+
+void Output_SetBackgroundColor(const RGB_888 color)
+{
+    m_BackgroundColor = (RGBA_F) {
+        .r = color.r / 255.0f,
+        .g = color.g / 255.0f,
+        .b = color.b / 255.0f,
+        .a = 0.0f,
+    };
 }
 
 int32_t Output_GetFogStart(void)

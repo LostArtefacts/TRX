@@ -99,6 +99,29 @@ static bool M_ReadDeclared(
     return true;
 }
 
+static TRX_VALUE M_Resolve(const LEVEL_SETTING setting, const bool held)
+{
+    ASSERT(setting >= 0 && setting < LEVEL_SETTING_NUMBER_OF);
+    const M_SETTING_INFO *const info = &m_Settings[setting];
+    if (held && m_Overrides[setting].is_present) {
+        return m_Overrides[setting].value;
+    }
+
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    TRX_VALUE value;
+    if (level != nullptr && M_ReadDeclared(info, &level->settings, &value)) {
+        return value;
+    }
+    if (M_ReadDeclared(info, &g_GameFlow.settings, &value)) {
+        return value;
+    }
+
+    if (info->config_ptr != nullptr) {
+        return M_Read(info, info->config_type, info->config_ptr);
+    }
+    return info->fallback;
+}
+
 RESULT Level_SetDeclaredSetting(
     GF_LEVEL_SETTINGS *const settings, const LEVEL_SETTING setting,
     const TRX_VALUE *const value)
@@ -121,25 +144,12 @@ RESULT Level_SetDeclaredSetting(
 
 TRX_VALUE Level_GetEffectiveSetting(const LEVEL_SETTING setting)
 {
-    ASSERT(setting >= 0 && setting < LEVEL_SETTING_NUMBER_OF);
-    const M_SETTING_INFO *const info = &m_Settings[setting];
-    if (m_Overrides[setting].is_present) {
-        return m_Overrides[setting].value;
-    }
+    return M_Resolve(setting, true);
+}
 
-    const GF_LEVEL *const level = GF_GetCurrentLevel();
-    TRX_VALUE value;
-    if (level != nullptr && M_ReadDeclared(info, &level->settings, &value)) {
-        return value;
-    }
-    if (M_ReadDeclared(info, &g_GameFlow.settings, &value)) {
-        return value;
-    }
-
-    if (info->config_ptr != nullptr) {
-        return M_Read(info, info->config_type, info->config_ptr);
-    }
-    return info->fallback;
+TRX_VALUE Level_GetDeclaredSetting(const LEVEL_SETTING setting)
+{
+    return M_Resolve(setting, false);
 }
 
 const TRX_VALUE *Level_GetSettingOverride(const LEVEL_SETTING setting)
@@ -197,6 +207,14 @@ RGB_888 Level_GetWaterColor(void)
 RGB_888 Level_GetFogTint(void)
 {
     return Level_GetEffectiveSetting(LEVEL_SETTING_FOG_COLOR).as_rgb;
+}
+
+RGB_888 Level_GetBackgroundColor(void)
+{
+    if (Level_GetEffectiveSetting(LEVEL_SETTING_FOG_TRANSPARENCY).as_bool) {
+        return (RGB_888) { 0, 0, 0 };
+    }
+    return Level_GetDeclaredSetting(LEVEL_SETTING_FOG_COLOR).as_rgb;
 }
 
 RGBA_8888 Level_GetFogColor(void)
