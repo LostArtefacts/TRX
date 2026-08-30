@@ -9,6 +9,10 @@ bool SaveGame_WriteIdentity(
     const char *const key_field, const CATALOG_CONTEXT context,
     const CATALOG_ID id)
 {
+    if (id == NO_CATALOG_ID) {
+        JSONW_WRITE(io, slot_field, NO_CATALOG_ID);
+        return true;
+    }
     const int32_t slot = Catalog_IDToSlot(context, id, -1);
     const char *const key = Catalog_IDToKey(context, id);
     if (slot < 0 && key == nullptr) {
@@ -40,6 +44,10 @@ RESULT SaveGame_ReadIdentity(
 
     int32_t slot = -1;
     MUST(JSON_READ_OPT(io, slot_field, &slot));
+    if (slot == NO_CATALOG_ID) {
+        *out_id = NO_CATALOG_ID;
+        return OK;
+    }
     const CATALOG_ID id = Catalog_SlotToID(context, slot, NO_CATALOG_ID);
     if (id < 0) {
         return JSON_ReadIO_Fail(

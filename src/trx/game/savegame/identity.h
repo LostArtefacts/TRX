@@ -5,13 +5,14 @@
 #include <trx/core/result.h>
 #include <trx/game/catalog/manager.h>
 
-// Write an identity as its slot and key. Return false if neither form exists.
+// Write a catalog identity as its number and key, preserving numbers absent
+// from the catalog.
 bool SaveGame_WriteIdentity(
     JSON_WRITE_IO *io, const char *slot_field, const char *key_field,
     CATALOG_CONTEXT context, CATALOG_ID id);
 
-// Read an identity by key when present, otherwise by slot. Report failure when
-// neither form resolves.
+// Read an identity by key when present, otherwise by its accompanying
+// number.
 RESULT SaveGame_ReadIdentity(
     JSON_READ_IO *io, const char *slot_field, const char *key_field,
     CATALOG_CONTEXT context, CATALOG_ID *out_id);
