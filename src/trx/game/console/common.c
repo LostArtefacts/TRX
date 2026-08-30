@@ -19,6 +19,10 @@ static UI_CONSOLE_STATE m_UIState = {};
 // Controls whether console commands emit log events to the UI console
 static bool m_Verbose = true;
 
+// Collected console text while capture is active.
+static char *m_Capture = nullptr;
+static bool m_IsCapturing = false;
+
 static void M_Shutdown(void)
 {
     UI_Console_Free(&m_UIState);
@@ -36,6 +40,15 @@ static RESULT M_Load(void)
     return OK;
 }
 
+static void M_Capture(const char *const text)
+{
+    char *const merged = m_Capture == nullptr
+        ? Memory_DupStr(text)
+        : String_Format("%s\n%s", m_Capture, text);
+    Memory_FreePointer(&m_Capture);
+    m_Capture = merged;
+}
+
 static void M_Emit(
     const LOG_LEVEL level, const char *const file, const int line,
     const char *const func, const bool show, const char *const fmt, va_list va)
@@ -50,6 +63,10 @@ static void M_Emit(
     va_end(va_copy);
 
     Log_Message(level, file, line, func, "%s", text);
+
+    if (m_IsCapturing) {
+        M_Capture(text);
+    }
 
     if (show) {
         UI_FireEvent((EVENT) {
@@ -119,6 +136,21 @@ void Console_SetVerbose(const bool verbose)
 bool Console_IsVerbose(void)
 {
     return m_Verbose;
+}
+
+void Console_BeginCapture(void)
+{
+    ASSERT(!m_IsCapturing);
+    Memory_FreePointer(&m_Capture);
+    m_IsCapturing = true;
+}
+
+char *Console_EndCapture(void)
+{
+    m_IsCapturing = false;
+    char *const text = m_Capture != nullptr ? m_Capture : Memory_DupStr("");
+    m_Capture = nullptr;
+    return text;
 }
 
 void Console_Clear(void)

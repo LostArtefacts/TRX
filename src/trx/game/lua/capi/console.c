@@ -1,12 +1,15 @@
+#include <trx/core/completion.h>
 #include <trx/core/enum_map.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/game/console/common.h>
+#include <trx/game/console/completion.h>
 #include <trx/game/console/registry.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils.h>
+#include <trx/game/ui/keys.h>
 
 #include <ctype.h>
 #include <lauxlib.h>
@@ -36,20 +39,27 @@ static int M_L_ConsoleClear(lua_State *const L)
     return 0;
 }
 
-// trxc.console.eval(cmd, { verbose = bool })
+// trxc.console.eval(cmd, { verbose = bool, capture = bool })
 static int M_L_ConsoleEval(lua_State *const L)
 {
     const char *cmd = luaL_checkstring(L, 1);
     bool verbose = false;
+    bool capture = false;
     if (lua_gettop(L) >= 2 && lua_istable(L, 2)) {
         lua_getfield(L, 2, "verbose");
         verbose = lua_toboolean(L, -1);
-        lua_pop(L, 1);
+        lua_getfield(L, 2, "capture");
+        capture = lua_toboolean(L, -1);
+        lua_pop(L, 2);
     }
     const bool old_verbose = Console_IsVerbose();
     Console_SetVerbose(verbose);
+    if (capture) {
+        Console_BeginCapture();
+    }
     COMMAND_RESULT res = Console_Eval(cmd);
     Console_SetVerbose(old_verbose);
+    char *const text = capture ? Console_EndCapture() : nullptr;
     const char *err = "unknown error";
     switch (res) {
     case CR_BAD_INVOCATION:
@@ -62,9 +72,54 @@ static int M_L_ConsoleEval(lua_State *const L)
         err = "failure";
         break;
     case CR_SUCCESS:
-        return 0;
+        if (text == nullptr) {
+            return 0;
+        }
+        lua_pushstring(L, text);
+        Memory_Free(text);
+        return 1;
     }
+    Memory_Free(text);
     return luaL_error(L, "console.eval %s: %s", err, cmd);
+}
+
+// trxc.console.copy(text)
+static int M_L_ConsoleCopy(lua_State *const L)
+{
+    const char *const text = luaL_checkstring(L, 1);
+    RESULT result = UI_SetClipboardText(text);
+    if (!IS_OK(result)) {
+        lua_pushstring(
+            L, result.msg != nullptr ? result.msg : "the clipboard refused it");
+        IGNORE(result);
+        return lua_error(L);
+    }
+    return 0;
+}
+
+// trxc.console.complete(line, caret) -> suggestions, start, end
+static int M_L_ConsoleComplete(lua_State *const L)
+{
+    const char *const line = luaL_checkstring(L, 1);
+    const int32_t caret = (int32_t)luaL_checkinteger(L, 2);
+
+    COMPLETION completion;
+    Completion_Init(&completion);
+    const COMPLETER completer = Console_GetCompleter(line, caret);
+    if (completer.fn != nullptr) {
+        completer.fn(completer.ctx, line, caret, &completion);
+    }
+
+    lua_newtable(L);
+    for (int32_t i = 0; i < completion.suggestions->count; i++) {
+        const SUGGESTION *const s = Vector_Get(completion.suggestions, i);
+        lua_pushstring(L, s->text);
+        lua_rawseti(L, -2, i + 1);
+    }
+    lua_pushinteger(L, (lua_Integer)completion.start);
+    lua_pushinteger(L, (lua_Integer)completion.end);
+    Completion_Free(&completion);
+    return 3;
 }
 
 static COMMAND_RESULT M_LuaCommandProc(const COMMAND_CONTEXT *const ctx)
@@ -325,6 +380,8 @@ static int M_L_ConsoleCommand(lua_State *const L)
 static const luaL_Reg m_Module[] = {
     { "log", M_L_ConsoleLog },
     { "eval", M_L_ConsoleEval },
+    { "copy", M_L_ConsoleCopy },
+    { "complete", M_L_ConsoleComplete },
     { "clear", M_L_ConsoleClear },
     { "register", M_L_ConsoleRegister },
     { "commands", M_L_ConsoleCommands },

@@ -6,8 +6,10 @@
 #include <harness/fake_calls.h>
 
 #include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/core/vector.h>
 #include <trx/game/console/common.h>
+#include <trx/game/console/completion.h>
 #include <trx/game/console/registry.h>
 #include <trx/game/console/types.h>
 #include <trx/game/lua/common.h>
@@ -26,6 +28,10 @@ static int32_t m_CommandCount;
 
 static bool m_Verbose;
 static COMMAND_RESULT m_EvalResult;
+// Text that Console_Eval logs, and text collected during capture.
+static char *m_EvalOutput;
+static bool m_IsCapturing;
+static char *m_Capture;
 // The aliases arrive comma-joined ("secondary, third"); each spelling
 // dispatches.
 static bool M_FakeAliasMatch(const char *const aliases, const char *const word)
@@ -55,10 +61,28 @@ static bool M_FakeAliasMatch(const char *const aliases, const char *const word)
     return false;
 }
 
+// Completes command names from the fake registry.
+static void M_FakeCompleteNames(
+    void *const ctx, const char *const line, const int32_t caret,
+    COMPLETION *const out)
+{
+    out->start = 0;
+    out->end = strlen(line);
+    for (int32_t i = 0; i < m_CommandCount; i++) {
+        if (strncasecmp(m_Commands[i].prefix, line, strlen(line)) == 0) {
+            Completion_Add(out, m_Commands[i].prefix);
+        }
+    }
+}
+
 static void M_Reset(void)
 {
     m_Verbose = false;
     m_EvalResult = CR_SUCCESS;
+    free(m_EvalOutput);
+    m_EvalOutput = nullptr;
+    Memory_FreePointer(&m_Capture);
+    m_IsCapturing = false;
     LUA_SetScriptContext(LUA_CONTEXT_GLOBAL);
     // The commands stay: a command is registered once, at load time.
 }
@@ -67,6 +91,13 @@ static void M_Reset(void)
 static int M_L_SetEvalResult(lua_State *const L)
 {
     FakeConsole_SetEvalResult((COMMAND_RESULT)luaL_checkinteger(L, 1));
+    return 0;
+}
+
+// fake.set_eval_output(text) - what the next Console_Eval prints.
+static int M_L_SetEvalOutput(lua_State *const L)
+{
+    FakeConsole_SetEvalOutput(luaL_checkstring(L, 1));
     return 0;
 }
 
@@ -163,6 +194,13 @@ void Console_LogImpl(
     va_start(args, fmt);
     vsnprintf(message, sizeof(message), fmt, args);
     va_end(args);
+    if (m_IsCapturing) {
+        char *const merged = m_Capture == nullptr
+            ? Memory_DupStr(message)
+            : String_Format("%s\n%s", m_Capture, message);
+        Memory_FreePointer(&m_Capture);
+        m_Capture = merged;
+    }
     FAKE_RECORD("log", FV(level), FV_STR(message));
 }
 
@@ -189,7 +227,36 @@ COMMAND_RESULT Console_Eval(const char *const cmdline)
     // the value that matters is the one visible from in here.
     const bool verbose = m_Verbose;
     FAKE_RECORD("eval", FV_STR(cmdline), FV(verbose));
+    if (m_EvalOutput != nullptr) {
+        Console_LogImpl(
+            LOG_LEVEL_INFO, __FILE__, __LINE__, __func__, "%s", m_EvalOutput);
+    }
     return m_EvalResult;
+}
+
+void Console_BeginCapture(void)
+{
+    Memory_FreePointer(&m_Capture);
+    m_IsCapturing = true;
+}
+
+char *Console_EndCapture(void)
+{
+    m_IsCapturing = false;
+    char *const text = m_Capture != nullptr ? m_Capture : Memory_DupStr("");
+    m_Capture = nullptr;
+    return text;
+}
+
+COMPLETER Console_GetCompleter(const char *const line, const int32_t caret)
+{
+    return (COMPLETER) { .fn = M_FakeCompleteNames };
+}
+
+RESULT UI_SetClipboardText(const char *const text)
+{
+    FAKE_RECORD("clipboard", FV_STR(text));
+    return OK;
 }
 
 void Console_SetVerbose(const bool verbose)
@@ -283,10 +350,18 @@ void FakeConsole_SetEvalResult(const COMMAND_RESULT result)
     m_EvalResult = result;
 }
 
+void FakeConsole_SetEvalOutput(const char *const text)
+{
+    free(m_EvalOutput);
+    m_EvalOutput = strdup(text);
+}
+
 void FakeConsole_PushLua(lua_State *const L)
 {
     lua_pushcfunction(L, M_L_SetEvalResult);
     lua_setfield(L, -2, "set_eval_result");
+    lua_pushcfunction(L, M_L_SetEvalOutput);
+    lua_setfield(L, -2, "set_eval_output");
     lua_pushcfunction(L, M_L_Run);
     lua_setfield(L, -2, "run");
     lua_pushcfunction(L, M_L_HelpId);

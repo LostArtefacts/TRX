@@ -3751,7 +3751,7 @@
       "path": "console.log.debug"
     },
     {
-      "description": "Runs a string as a developer console command. Raises if the command fails.\n\nOutput is silenced by default and appears only in the terminal and the log file. Pass `{ verbose = true }` to show it in the console as a command typed by the player would.",
+      "description": "Runs a developer console command. Raises if the command fails.\n\nOutput appears only in the terminal and the log file by default. Pass `{ verbose = true }` to show it in the console, or `{ capture = true }` to return the logged text.",
       "examples": [
         "trx.console.eval(\"play 1\", { verbose = true })"
       ],
@@ -3769,6 +3769,12 @@
               "name": "verbose",
               "optional": true,
               "type": "boolean"
+            },
+            {
+              "description": "Return the command's output.",
+              "name": "capture",
+              "optional": true,
+              "type": "boolean"
             }
           ],
           "name": "opts",
@@ -3776,10 +3782,60 @@
           "type": "table"
         }
       ],
-      "path": "console.eval"
+      "path": "console.eval",
+      "returns": {
+        "description": "What the command logged, one line per message. `nil` unless `trx.console.eval.opts.capture` is true.",
+        "nullable": true,
+        "type": "string"
+      }
     },
     {
-      "description": "Registers a console command written in Lua.\n\nEvery command has a `trx.argparse` parser. `trx.console.register.spec.args` is an optional function that shapes it - it receives the parser and declares the arguments the command takes. A command that omits `trx.console.register.spec.args` takes none, and reports so when handed one. The console completes the arguments from the parser, and answers `-h`/`--help` from it.\n\n`trx.console.register.spec.run` receives the parsed values, a table keyed by argument name. What it gives back is a `trx.console.Result`, and returning nothing means `OK`. It may return a message after that, which is logged to the console - as an error, for any result but `OK`. A line the parser rejects is reported with what it expected, without reaching `trx.console.register.spec.run`.\n\nA command lives for the whole run, so it can only be registered from a global script. A level script raises if it calls this: it runs again every time its level is loaded.",
+      "description": "Puts text in the system clipboard. Raises if the platform refuses it.",
+      "examples": [
+        "trx.console.copy(trx.game.TRX_VERSION)"
+      ],
+      "params": [
+        {
+          "description": "What to put in the clipboard.",
+          "name": "text",
+          "type": "string"
+        }
+      ],
+      "path": "console.copy"
+    },
+    {
+      "description": "Completes a console line with the same suggestions as the prompt. Use it when a Lua command wraps another console command.",
+      "params": [
+        {
+          "description": "The line so far, without the key that opens the console.",
+          "name": "line",
+          "type": "string"
+        },
+        {
+          "description": "Where the caret sits, as a byte offset.",
+          "name": "caret",
+          "type": "integer"
+        }
+      ],
+      "path": "console.complete",
+      "returns": [
+        {
+          "description": "The best match comes first.",
+          "list": true,
+          "type": "string"
+        },
+        {
+          "description": "Where the run they replace starts.",
+          "type": "integer"
+        },
+        {
+          "description": "Where that run ends.",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "description": "Registers a console command written in Lua.\n\nEvery command has a `trx.argparse` parser. `trx.console.register.spec.args` is an optional function that shapes it - it receives the parser and declares the arguments the command takes. A command that omits `trx.console.register.spec.args` takes none, and reports so when handed one. The console completes the arguments from the parser, and answers `-h`/`--help` from it.\n\n`trx.console.register.spec.run` receives the parsed values, a table keyed by argument name. What it gives back is a `trx.console.Result`, and returning nothing means `OK`. It may return a message after that, which is logged to the console - as an error, for any result but `OK`. A line the parser rejects is reported with what it expected, without reaching `trx.console.register.spec.run`.\n\nThe console completes arguments from the parser by default. `trx.console.register.spec.complete` replaces that behavior, so a command that wraps `trx.console.eval` can answer from `trx.console.complete`.\n\nA command lives for the whole run, so it can only be registered from a global script. A level script raises if it calls this: it runs again every time its level is loaded.",
       "examples": [
         "trx.console.register({\n  name = \"greet\",\n  aliases = { \"hello\", \"hi\" },\n  args = function(parser)\n    parser:positional(\"who\", { help = \"who to greet\" })\n  end,\n  run = function(args)\n    trx.console.log(\"hello \" .. args.who)\n  end,\n})"
       ],
@@ -3807,6 +3863,12 @@
             {
               "description": "Called with the parsed arguments.",
               "name": "run",
+              "type": "function"
+            },
+            {
+              "description": "Completes arguments instead of the parser. Called with the text past the command word and the caret byte offset in it, and gives back what `trx.argparse.Parser:complete` does.",
+              "name": "complete",
+              "optional": true,
               "type": "function"
             },
             {

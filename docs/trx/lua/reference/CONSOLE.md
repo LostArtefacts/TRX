@@ -93,9 +93,9 @@ Module for interacting with the developer console.
   - <a id="console.log.debug.message" name="console.log.debug.message"></a>**`message`** (any). Any value; a table is pretty-printed.
 
 - <a id="console.eval" name="console.eval"></a>[lua]`trx.console.eval(command, [opts])`  
-  Runs a string as a developer console command. Raises if the command fails.
+  Runs a developer console command. Raises if the command fails.
 
-  Output is silenced by default and appears only in the terminal and the log file. Pass `{ verbose = true }` to show it in the console as a command typed by the player would.
+  Output appears only in the terminal and the log file by default. Pass `{ verbose = true }` to show it in the console, or `{ capture = true }` to return the logged text.
 
   Parameters:
   - <a id="console.eval.command" name="console.eval.command"></a>**`command`** (string). Command to run, as the player would type it.
@@ -103,11 +103,37 @@ Module for interacting with the developer console.
 
     Keys:
     - <a id="console.eval.opts.verbose" name="console.eval.opts.verbose"></a>**`verbose`** (boolean, optional). Show the command's output.
+    - <a id="console.eval.opts.capture" name="console.eval.opts.capture"></a>**`capture`** (boolean, optional). Return the command's output.
+
+  Returns: string or `nil`. What the command logged, one line per message. `nil` unless [`opts.capture`](#console.eval.opts.capture) is true.
 
   Example:
   ```lua
   trx.console.eval("play 1", { verbose = true })
   ```
+
+- <a id="console.copy" name="console.copy"></a>[lua]`trx.console.copy(text)`  
+  Puts text in the system clipboard. Raises if the platform refuses it.
+
+  Parameters:
+  - <a id="console.copy.text" name="console.copy.text"></a>**`text`** (string). What to put in the clipboard.
+
+  Example:
+  ```lua
+  trx.console.copy(trx.game.TRX_VERSION)
+  ```
+
+- <a id="console.complete" name="console.complete"></a>[lua]`trx.console.complete(line, caret)`  
+  Completes a console line with the same suggestions as the prompt. Use it when a Lua command wraps another console command.
+
+  Parameters:
+  - <a id="console.complete.line" name="console.complete.line"></a>**`line`** (string). The line so far, without the key that opens the console.
+  - <a id="console.complete.caret" name="console.complete.caret"></a>**`caret`** (integer). Where the caret sits, as a byte offset.
+
+  Returns:
+  - a list of string. The best match comes first.
+  - integer. Where the run they replace starts.
+  - integer. Where that run ends.
 
 - <a id="console.register" name="console.register"></a>[lua]`trx.console.register(spec)`  
   Registers a console command written in Lua.
@@ -115,6 +141,8 @@ Module for interacting with the developer console.
   Every command has a [`trx.argparse`](ARGPARSE.md#argparse) parser. [`spec.args`](#console.register.spec.args) is an optional function that shapes it - it receives the parser and declares the arguments the command takes. A command that omits [`spec.args`](#console.register.spec.args) takes none, and reports so when handed one. The console completes the arguments from the parser, and answers `-h`/`--help` from it.
 
   [`spec.run`](#console.register.spec.run) receives the parsed values, a table keyed by argument name. What it gives back is a [`trx.console.Result`](#console.Result), and returning nothing means `OK`. It may return a message after that, which is logged to the console - as an error, for any result but `OK`. A line the parser rejects is reported with what it expected, without reaching [`spec.run`](#console.register.spec.run).
+
+  The console completes arguments from the parser by default. [`spec.complete`](#console.register.spec.complete) replaces that behavior, so a command that wraps [`trx.console.eval`](#console.eval) can answer from [`trx.console.complete`](#console.complete).
 
   A command lives for the whole run, so it can only be registered from a global script. A level script raises if it calls this: it runs again every time its level is loaded.
 
@@ -126,6 +154,7 @@ Module for interacting with the developer console.
     - <a id="console.register.spec.help" name="console.register.spec.help"></a>**`help`** (string, optional). A game string key for the help text.
     - <a id="console.register.spec.args" name="console.register.spec.args"></a>**`args`** (function, optional). Shapes the parser.
     - <a id="console.register.spec.run" name="console.register.spec.run"></a>**`run`** (function). Called with the parsed arguments.
+    - <a id="console.register.spec.complete" name="console.register.spec.complete"></a>**`complete`** (function, optional). Completes arguments instead of the parser. Called with the text past the command word and the caret byte offset in it, and gives back what [`trx.argparse.Parser:complete`](ARGPARSE.md#argparse.Parser.complete) does.
     - <a id="console.register.spec.aliases" name="console.register.spec.aliases"></a>**`aliases`** (a list of string, optional). Other words that reach the same command. They dispatch but stay out of the command listing, and the help for the command shows them.
 
   Example:

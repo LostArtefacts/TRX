@@ -199,9 +199,10 @@ api.define("console.log.debug", {
 })
 
 api.define("console.eval", {
-  description = "Runs a string as a developer console command. Raises if the command fails.\n\n"
-    .. "Output is silenced by default and appears only in the terminal and the log file. Pass "
-    .. "`{ verbose = true }` to show it in the console as a command typed by the player would.",
+  description = "Runs a developer console command. Raises if the command fails.\n\n"
+    .. "Output appears only in the terminal and the log file by default. Pass "
+    .. "`{ verbose = true }` to show it in the console, or `{ capture = true }` "
+    .. "to return the logged text.",
   params = {
     {
       name = "command",
@@ -220,11 +221,63 @@ api.define("console.eval", {
           optional = true,
           description = "Show the command's output.",
         },
+        {
+          name = "capture",
+          type = "boolean",
+          optional = true,
+          description = "Return the command's output.",
+        },
       },
     },
   },
+  returns = {
+    type = "string",
+    nullable = true,
+    description = "What the command logged, one line per message. `nil` unless "
+      .. "`trx.console.eval.opts.capture` is true.",
+  },
   examples = { [[trx.console.eval("play 1", { verbose = true })]] },
   impl = raw.eval,
+})
+
+api.define("console.copy", {
+  description = "Puts text in the system clipboard. Raises if the platform refuses it.",
+  params = {
+    {
+      name = "text",
+      type = "string",
+      description = "What to put in the clipboard.",
+    },
+  },
+  examples = { [[trx.console.copy(trx.game.TRX_VERSION)]] },
+  impl = raw.copy,
+})
+
+api.define("console.complete", {
+  description = "Completes a console line with the same suggestions as the prompt. "
+    .. "Use it when a Lua command wraps another console command.",
+  params = {
+    {
+      name = "line",
+      type = "string",
+      description = "The line so far, without the key that opens the console.",
+    },
+    {
+      name = "caret",
+      type = "integer",
+      description = "Where the caret sits, as a byte offset.",
+    },
+  },
+  returns = {
+    {
+      type = "string",
+      list = true,
+      description = "The best match comes first.",
+    },
+    { type = "integer", description = "Where the run they replace starts." },
+    { type = "integer", description = "Where that run ends." },
+  },
+  impl = raw.complete,
 })
 
 api.define("console.register", {
@@ -238,6 +291,9 @@ api.define("console.register", {
     .. "`trx.console.Result`, and returning nothing means `OK`. It may return a message after that, "
     .. "which is logged to the console - as an error, for any result but `OK`. A line the parser "
     .. "rejects is reported with what it expected, without reaching `trx.console.register.spec.run`.\n\n"
+    .. "The console completes arguments from the parser by default. "
+    .. "`trx.console.register.spec.complete` replaces that behavior, so a command that wraps "
+    .. "`trx.console.eval` can answer from `trx.console.complete`.\n\n"
     .. "A command lives for the whole run, so it can only be registered from a global script. A "
     .. "level script raises if it calls this: it runs again every time its level is loaded.",
   params = {
@@ -267,6 +323,14 @@ api.define("console.register", {
           name = "run",
           type = "function",
           description = "Called with the parsed arguments.",
+        },
+        {
+          name = "complete",
+          type = "function",
+          optional = true,
+          description = "Completes arguments instead of the parser. Called with the text "
+            .. "past the command word and the caret byte offset in it, and gives back "
+            .. "what `trx.argparse.Parser:complete` does.",
         },
         {
           name = "aliases",
@@ -313,6 +377,10 @@ api.define("console.register", {
       spec.args == nil or type(spec.args) == "function",
       "trx.console.register: args must be a function"
     )
+    assert(
+      spec.complete == nil or type(spec.complete) == "function",
+      "trx.console.register: complete must be a function"
+    )
 
     local parser = trx.argparse.new({ prog = spec.name })
     if spec.args ~= nil then
@@ -326,45 +394,39 @@ api.define("console.register", {
     commands[spec.name] =
       { help = spec.help, parser = parser, aliases = aliases }
 
-    raw.register(
-      spec.name,
-      spec.help,
-      function(args)
-        local parsed, err = parser:parse((args or ""):match("^%s*(.-)%s*$"))
-        if parsed == nil then
-          -- A parse error names what it expected, so it stands in for the console's
-          -- generic one; FAILURE keeps that generic line from also being logged.
-          trx.console.log.error(parser:format_error(err))
-          return Result.FAILURE
-        end
-        if parsed.help then
-          trx.console.log(help_text(spec.help, parser, aliases))
-          return Result.OK
-        end
-
-        local result, message = spec.run(parsed)
-        -- Only returning nothing means OK; `or` would take a `false` for it too.
-        if result == nil then
-          result = Result.OK
-        end
-        assert(
-          is_result[result],
-          spec.name .. ": run must give back a trx.console.Result"
-        )
-        if message ~= nil then
-          if result == Result.OK then
-            trx.console.log.info(message)
-          else
-            trx.console.log.error(message)
-          end
-        end
-        return result
-      end,
-      spec.aliases,
-      function(text, caret)
-        return parser:complete(text or "", caret)
+    raw.register(spec.name, spec.help, function(args)
+      local parsed, err = parser:parse((args or ""):match("^%s*(.-)%s*$"))
+      if parsed == nil then
+        -- A parse error names what it expected, so it stands in for the console's
+        -- generic one; FAILURE keeps that generic line from also being logged.
+        trx.console.log.error(parser:format_error(err))
+        return Result.FAILURE
       end
-    )
+      if parsed.help then
+        trx.console.log(help_text(spec.help, parser, aliases))
+        return Result.OK
+      end
+
+      local result, message = spec.run(parsed)
+      -- Only returning nothing means OK; `or` would take a `false` for it too.
+      if result == nil then
+        result = Result.OK
+      end
+      assert(
+        is_result[result],
+        spec.name .. ": run must give back a trx.console.Result"
+      )
+      if message ~= nil then
+        if result == Result.OK then
+          trx.console.log.info(message)
+        else
+          trx.console.log.error(message)
+        end
+      end
+      return result
+    end, spec.aliases, spec.complete or function(text, caret)
+      return parser:complete(text or "", caret)
+    end)
   end,
 })
 

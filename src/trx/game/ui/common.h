@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trx/core/result.h>
+
 #include <stddef.h>
 #include <stdint.h>
 
@@ -140,3 +142,7 @@ void UI_HandleTextEdit(const char *text);
 // Inserts the current clipboard contents (if any) into the currently
 // focused text field, as if it had been typed.
 void UI_HandlePaste(void);
+
+// Puts text in the system clipboard and reports failure if the platform refuses
+// it.
+RESULT UI_SetClipboardText(const char *text);
