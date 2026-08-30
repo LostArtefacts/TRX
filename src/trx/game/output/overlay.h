@@ -3,6 +3,15 @@
 #include <trx/config/enum.h>
 #include <trx/core/colors.h>
 
+// A box on the screen, as fractions of the screen width and height measured
+// from the top left corner. The whole screen is 0,0 to 1,1.
+typedef struct {
+    float x0;
+    float y0;
+    float x1;
+    float y1;
+} OUTPUT_OVERLAY_BOX;
+
 typedef struct {
     float opacity;
     float desaturation; // 0 = off
@@ -35,6 +44,11 @@ bool Output_Overlay_LoadImage(const char *file_name);
 void Output_Overlay_DrawImage(const char *file_name);
 void Output_Overlay_DrawImageBilinear(const char *file_name);
 void Output_Overlay_DrawImageMono(const char *file_name, float intensity);
+// Draws an image inside a box rather than over the whole screen, blending it
+// with what is already there. The image stretches to the box, so a caller
+// that wants the image's own shape gives the box that shape.
+void Output_Overlay_DrawImageInBox(
+    const char *file_name, OUTPUT_OVERLAY_BOX box, float opacity);
 // Marks the start of a new frame, so that a transition captured before it is
 // drawn once no matter how many times the frame is flushed.
 void Output_Overlay_BeginFrame(void);

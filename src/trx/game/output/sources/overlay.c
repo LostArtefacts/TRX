@@ -65,6 +65,8 @@ typedef struct {
     float desaturation;
     bool flip_y;
     bool use_fit;
+    bool use_box;
+    OUTPUT_OVERLAY_BOX box;
     TEXTURE_FILTER texture_filter;
 } M_DRAW_OP_IMAGE;
 
@@ -546,6 +548,13 @@ static void M_DrawOp_Image(const M_DRAW_OP_IMAGE *const op)
         return;
     }
 
+    if (op->use_box) {
+        Output_Quad_SetDestRect(
+            p->image.renderer, op->box.x0, op->box.y0, op->box.x1, op->box.y1);
+    } else {
+        Output_Quad_ClearDestRect(p->image.renderer);
+    }
+
     Output_Quad_SetExternalTexture(
         p->image.renderer, op->texture_id, op->width, op->height, op->flip_y);
     Output_Quad_SetEffect(p->image.renderer, OUTPUT_QUAD_EFFECT_NONE);
@@ -563,7 +572,7 @@ static void M_DrawOp_Image(const M_DRAW_OP_IMAGE *const op)
         Output_Quad_ClearFit(p->image.renderer);
     }
     Output_Quad_SetOpacity(p->image.renderer, op->opacity);
-    if (op->opacity >= 1.0f) {
+    if (op->opacity >= 1.0f && !op->use_box) {
         Output_Quad_Render(p->image.renderer);
     } else {
         Output_Quad_RenderWithBlend(p->image.renderer);
@@ -572,7 +581,7 @@ static void M_DrawOp_Image(const M_DRAW_OP_IMAGE *const op)
 
 static void M_DrawImageImpl(
     const char *const file_name, const float intensity,
-    const TEXTURE_FILTER texture_filter)
+    const TEXTURE_FILTER texture_filter, const M_DRAW_OP_IMAGE *const settings)
 {
     if (!Output_Overlay_LoadImage(file_name)) {
         return;
@@ -584,18 +593,13 @@ static void M_DrawImageImpl(
         if (e->in_use && e->file_name != nullptr
             && String_Equivalent(e->file_name, file_name)
             && e->texture.initialized) {
-            M_SCHEDULE_OP(
-                false, M_DrawOp_Image,
-                ((M_DRAW_OP_IMAGE) {
-                    .texture_id = e->texture.id,
-                    .width = e->texture_width,
-                    .height = e->texture_height,
-                    .opacity = 1.0f,
-                    .desaturation = intensity,
-                    .flip_y = false,
-                    .use_fit = true,
-                    .texture_filter = texture_filter,
-                }));
+            M_DRAW_OP_IMAGE op = *settings;
+            op.texture_id = e->texture.id;
+            op.width = e->texture_width;
+            op.height = e->texture_height;
+            op.desaturation = intensity;
+            op.texture_filter = texture_filter;
+            M_SCHEDULE_OP(false, M_DrawOp_Image, op);
             return;
         }
     }
@@ -847,18 +851,51 @@ bool Output_Overlay_LoadImage(const char *const file_name)
 
 void Output_Overlay_DrawImage(const char *const file_name)
 {
-    M_DrawImageImpl(file_name, 0.0f, g_Config.rendering.upscaling_filter);
+    M_DrawImageImpl(
+        file_name, 0.0f, g_Config.rendering.upscaling_filter,
+        &(M_DRAW_OP_IMAGE) {
+            .opacity = 1.0f,
+            .flip_y = false,
+            .use_fit = true,
+        });
 }
 
 void Output_Overlay_DrawImageBilinear(const char *const file_name)
 {
-    M_DrawImageImpl(file_name, 0.0f, TEXTURE_FILTER_BILINEAR);
+    M_DrawImageImpl(
+        file_name, 0.0f, TEXTURE_FILTER_BILINEAR,
+        &(M_DRAW_OP_IMAGE) {
+            .opacity = 1.0f,
+            .flip_y = false,
+            .use_fit = true,
+        });
 }
 
 void Output_Overlay_DrawImageMono(
     const char *const file_name, const float intensity)
 {
-    M_DrawImageImpl(file_name, intensity, g_Config.rendering.upscaling_filter);
+    M_DrawImageImpl(
+        file_name, intensity, g_Config.rendering.upscaling_filter,
+        &(M_DRAW_OP_IMAGE) {
+            .opacity = 1.0f,
+            .flip_y = false,
+            .use_fit = true,
+        });
+}
+
+void Output_Overlay_DrawImageInBox(
+    const char *const file_name, const OUTPUT_OVERLAY_BOX box,
+    const float opacity)
+{
+    M_DrawImageImpl(
+        file_name, 0.0f, g_Config.rendering.ui_filter,
+        &(M_DRAW_OP_IMAGE) {
+            .opacity = opacity,
+            .flip_y = false,
+            .use_fit = false,
+            .use_box = true,
+            .box = box,
+        });
 }
 
 void Output_Overlay_CaptureSnapshot(void)
