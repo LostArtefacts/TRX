@@ -149,6 +149,12 @@ CATALOG_ID Catalog_KeyToID(
     return fallback;
 }
 
+RESULT Catalog_BindSlot(
+    const CATALOG_CONTEXT context, const CATALOG_ID id, const int32_t slot)
+{
+    return OK;
+}
+
 int32_t Catalog_IDToSlot(
     const CATALOG_CONTEXT context, const CATALOG_ID id, const int32_t fallback)
 {

@@ -320,9 +320,14 @@ static void M_WriteResumeInfo(
 
     JSONW_WRITE(io, "lara_hitpoints", resume->lara_hitpoints);
     JSONW_WRITE(io, "gun_status", resume->gun_status);
-    JSONW_WRITE(io, "gun_type", resume->equipped_gun_type);
-    JSONW_WRITE(io, "holsters_gun_type", resume->holsters_gun_type);
-    JSONW_WRITE(io, "back_gun_type", resume->back_gun_type);
+    SaveGame_WriteIdentity(
+        io, "gun_type", "gun_key", CATALOG_WEAPONS, resume->equipped_gun_type);
+    SaveGame_WriteIdentity(
+        io, "holsters_gun_type", "holsters_gun_key", CATALOG_WEAPONS,
+        resume->holsters_gun_type);
+    SaveGame_WriteIdentity(
+        io, "back_gun_type", "back_gun_key", CATALOG_WEAPONS,
+        resume->back_gun_type);
 
     for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
         const WEAPON_INFO *const info = Gun_Registry_GetByIndex(i);
@@ -560,9 +565,14 @@ void SG_File_DumpLara(JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "item_num", lara->item_num);
     JSONW_WRITE(io, "item_number", lara->item_num);
     JSONW_WRITE(io, "gun_status", lara->gun_status);
-    JSONW_WRITE(io, "gun_type", lara->gun_type);
-    JSONW_WRITE(io, "request_gun_type", lara->request_gun_type);
-    JSONW_WRITE(io, "last_gun_type", lara->last_gun_type);
+    SaveGame_WriteIdentity(
+        io, "gun_type", "gun_key", CATALOG_WEAPONS, lara->gun_type);
+    SaveGame_WriteIdentity(
+        io, "request_gun_type", "request_gun_key", CATALOG_WEAPONS,
+        lara->request_gun_type);
+    SaveGame_WriteIdentity(
+        io, "last_gun_type", "last_gun_key", CATALOG_WEAPONS,
+        lara->last_gun_type);
 
     JSONW_WRITE(io, "calc_fall_speed", lara->calc_fall_speed);
     JSONW_WRITE(io, "water_status", lara->water_status);

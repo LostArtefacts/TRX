@@ -41,6 +41,9 @@ static RESULT M_ReadObjectID(
 {
     CATALOG_ID id = NO_OBJECT;
     MUST(SaveGame_ReadIdentity(io, key, "object_key", CATALOG_OBJECTS, &id));
+    if (id == NO_CATALOG_ID) {
+        return JSON_ReadIO_Fail(io, "'%s' names no object", key);
+    }
     *target = id;
     return OK;
 }
@@ -213,10 +216,15 @@ static RESULT M_ReadLara(JSON_READ_IO *const io)
         MUST(JSON_READ(io, "item_num", &lara->item_num));
     }
     MUST(JSON_READ(io, "gun_status", &lara->gun_status));
-    MUST(JSON_READ(io, "gun_type", &lara->gun_type));
-    MUST(JSON_READ(io, "request_gun_type", &lara->request_gun_type));
+    MUST(SaveGame_ReadIdentity(
+        io, "gun_type", "gun_key", CATALOG_WEAPONS, &lara->gun_type));
+    MUST(SaveGame_ReadIdentity(
+        io, "request_gun_type", "request_gun_key", CATALOG_WEAPONS,
+        &lara->request_gun_type));
 
-    MUST(JSON_READ(io, "last_gun_type", &lara->last_gun_type));
+    MUST(SaveGame_ReadIdentity(
+        io, "last_gun_type", "last_gun_key", CATALOG_WEAPONS,
+        &lara->last_gun_type));
     MUST(JSON_READ(io, "calc_fall_speed", &lara->calc_fall_speed));
     MUST(JSON_READ(io, "water_status", &lara->water_status));
     MUST(JSON_READ(io, "climb_status", &lara->climb_status));
@@ -939,12 +947,16 @@ static RESULT M_ReadResumeInfo(
     resume->lara_hitpoints = g_Config.gameplay.start_lara_hitpoints;
     MUST(JSON_READ(io, "lara_hitpoints", &resume->lara_hitpoints));
     MUST(JSON_READ(io, "gun_status", &resume->gun_status)); // LGS_ARMLESS
-    MUST(JSON_READ(io, "gun_type", &resume->equipped_gun_type)); // LGT_UNARMED
-    MUST(JSON_READ(
-        io, "holsters_gun_type",
+    MUST(SaveGame_ReadIdentity(
+        io, "gun_type", "gun_key", CATALOG_WEAPONS,
+        &resume->equipped_gun_type)); // LGT_UNARMED
+    MUST(SaveGame_ReadIdentity(
+        io, "holsters_gun_type", "holsters_gun_key", CATALOG_WEAPONS,
         &resume->holsters_gun_type)); // LGT_UNKNOWN
 
-    MUST(JSON_READ(io, "back_gun_type", &resume->back_gun_type)); // LGT_UNKNOWN
+    MUST(SaveGame_ReadIdentity(
+        io, "back_gun_type", "back_gun_key", CATALOG_WEAPONS,
+        &resume->back_gun_type)); // LGT_UNKNOWN
     MUST(JSON_READ(io, "costume", &resume->flags.costume));
 
     for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {

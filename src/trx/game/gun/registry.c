@@ -49,6 +49,10 @@ void Gun_Registry_Seed(void)
         };
     }
 
+    for (CATALOG_ID i = 0; i < Catalog_GetBuiltInCount(CATALOG_WEAPONS); i++) {
+        IGNORE(Catalog_BindSlot(CATALOG_WEAPONS, i, i));
+    }
+
     for (int32_t i = 0; m_Declared != nullptr && i < m_Declared->count; i++) {
         const WEAPON_INFO *const info =
             *(const WEAPON_INFO **)Vector_Get(m_Declared, i);
