@@ -400,34 +400,44 @@ static void M_UpdateEnvironment(void)
 
         if (water_depth > LARA_SWIM_DEPTH - STEP_L && !room->flags.swamp) {
             if (room->flags.underwater) {
-                lara_info->air = LARA_MAX_AIR;
-                lara_info->water_status = LWS_UNDERWATER;
-                item->gravity = false;
-                item->pos.y += 100;
-                Lara_UpdateRoomToHeight(0);
-                Sound_StopEffect(SFX_LARA_FALL);
-                if (item->current_anim_state == LS(LS_SWAN_DIVE)) {
-                    item->rot.x = -M_DIVE_TILT_MED;
-                    item->goal_anim_state = LS(LS_DIVE);
-                    Lara_Animate(item);
-                    item->fall_speed *= 2;
-                } else if (item->current_anim_state == LS(LS_FAST_DIVE)) {
-                    item->rot.x = -M_DIVE_TILT_MAX;
-                    item->goal_anim_state = LS(LS_DIVE);
-                    Lara_Animate(item);
-                    item->fall_speed *= 2;
+                if (g_Config.gameplay.enable_wading
+                    && (item->current_anim_state == LS_U(LS_WALK_BACK)
+                        || item->current_anim_state == LS_U(LS_WALK))) {
+                    // Previous collision tests will have deemed the walking
+                    // state to be valid, so Lara can safely continue the linked
+                    // animation into wading depth.
+                    lara_info->water_status = LWS_WADE;
                 } else {
-                    item->rot.x = -M_DIVE_TILT_MED;
-                    Item_SwitchToAnim(item, LA(LA_FREEFALL_TO_UNDERWATER), 0);
-                    item->current_anim_state = LS(LS_DIVE);
-                    item->goal_anim_state = LS(LS_SWIM);
-                    item->fall_speed = (item->fall_speed * 3) / 2;
+                    lara_info->air = LARA_MAX_AIR;
+                    lara_info->water_status = LWS_UNDERWATER;
+                    item->gravity = false;
+                    item->pos.y += 100;
+                    Lara_UpdateRoomToHeight(0);
+                    Sound_StopEffect(SFX_LARA_FALL);
+                    if (item->current_anim_state == LS(LS_SWAN_DIVE)) {
+                        item->rot.x = -M_DIVE_TILT_MED;
+                        item->goal_anim_state = LS(LS_DIVE);
+                        Lara_Animate(item);
+                        item->fall_speed *= 2;
+                    } else if (item->current_anim_state == LS(LS_FAST_DIVE)) {
+                        item->rot.x = -M_DIVE_TILT_MAX;
+                        item->goal_anim_state = LS(LS_DIVE);
+                        Lara_Animate(item);
+                        item->fall_speed *= 2;
+                    } else {
+                        item->rot.x = -M_DIVE_TILT_MED;
+                        Item_SwitchToAnim(
+                            item, LA(LA_FREEFALL_TO_UNDERWATER), 0);
+                        item->current_anim_state = LS(LS_DIVE);
+                        item->goal_anim_state = LS(LS_SWIM);
+                        item->fall_speed = (item->fall_speed * 3) / 2;
+                    }
+                    lara_info->head_rot.x = 0;
+                    lara_info->head_rot.y = 0;
+                    lara_info->torso_rot.x = 0;
+                    lara_info->torso_rot.y = 0;
+                    Spawn_Splash(item);
                 }
-                lara_info->head_rot.x = 0;
-                lara_info->head_rot.y = 0;
-                lara_info->torso_rot.x = 0;
-                lara_info->torso_rot.y = 0;
-                Spawn_Splash(item);
             }
         } else if (
             g_Config.gameplay.enable_wading
