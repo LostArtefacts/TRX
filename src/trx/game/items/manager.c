@@ -530,7 +530,10 @@ void Item_Destroy(const int16_t item_num)
         m_NextItemFree = item_num;
     }
 
-    while (m_MaxUsedItemCount > 0
+    // The count stops at the level items, whose slots are never handed out
+    // again however many of them are destroyed. A count below them hides
+    // live slots from every caller that reads it.
+    while (m_MaxUsedItemCount > m_LevelItemCount
            && m_Items[m_MaxUsedItemCount - 1].is_destroyed) {
         m_MaxUsedItemCount--;
     }
