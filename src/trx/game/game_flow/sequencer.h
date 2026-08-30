@@ -33,6 +33,10 @@ RESULT GF_DoDemoSequence(int32_t demo_num, GF_COMMAND *out_cmd);
 RESULT GF_DoCutsceneSequence(
     int32_t cutscene_num, bool cross_fade_in, GF_COMMAND *out_cmd);
 
+// Puts back what a level's sequence sets up, so that nothing one level asks
+// for is carried into the next one.
+void GF_ResetLevelSetup(GF_SEQUENCE_CONTEXT seq_ctx);
+
 RESULT GF_InterpretSequence(
     const GF_LEVEL *level, GF_SEQUENCE_CONTEXT seq_ctx, void *seq_ctx_arg,
     GF_COMMAND *out_cmd);

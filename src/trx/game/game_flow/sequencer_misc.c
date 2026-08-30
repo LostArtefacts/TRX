@@ -36,6 +36,7 @@ RESULT GF_RunTitle(GF_COMMAND *const out_cmd)
 {
     SG_Manager_UnbindSlot();
     GameStringTable_Apply(nullptr);
+    GF_ResetLevelSetup(GFSC_NORMAL);
     const GF_LEVEL *const title_level = GF_GetTitleLevel();
     MUST(Level_Initialise(title_level, GFSC_NORMAL), "the title level");
     *out_cmd = GF_ShowInventory(INV_TITLE_MODE);

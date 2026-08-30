@@ -51,21 +51,6 @@ static bool M_IsPreLoadEvent(const GF_SEQUENCE_EVENT_TYPE type)
     return type == GFS_SETUP_HORIZON || type == GFS_SETUP_UV_ROTATE;
 }
 
-static void M_PreSequenceHook(
-    const GF_SEQUENCE_CONTEXT seq_ctx, void *const seq_ctx_arg)
-{
-    Room_SetAbyssHeight(0);
-    Output_SetSunsetEnabled(false);
-    Output_Sky_Reset();
-    Output_LensFlares_Reset();
-    Output_SetUVRotateSpeed(0);
-    Lara_SetControllable(false);
-    Lara_SetStartAnimState(LS_EXTRA_BREATH);
-    if (seq_ctx == GFSC_SAVED) {
-        Game_SetBonusFlag(GBF_NONE);
-    }
-}
-
 static GF_SEQUENCE_CONTEXT M_SwitchSequenceContext(
     const GF_SEQUENCE_EVENT *const event, const GF_SEQUENCE_CONTEXT seq_ctx)
 {
@@ -128,6 +113,20 @@ static bool M_IsLevelDescendantOf(
     return false;
 }
 
+void GF_ResetLevelSetup(const GF_SEQUENCE_CONTEXT seq_ctx)
+{
+    Room_SetAbyssHeight(0);
+    Output_SetSunsetEnabled(false);
+    Output_Sky_Reset();
+    Output_LensFlares_Reset();
+    Output_SetUVRotateSpeed(0);
+    Lara_SetControllable(false);
+    Lara_SetStartAnimState(LS_EXTRA_BREATH);
+    if (seq_ctx == GFSC_SAVED) {
+        Game_SetBonusFlag(GBF_NONE);
+    }
+}
+
 RESULT GF_InterpretSequence(
     const GF_LEVEL *const level, GF_SEQUENCE_CONTEXT seq_ctx,
     void *const seq_ctx_arg, GF_COMMAND *const out_cmd)
@@ -142,7 +141,7 @@ RESULT GF_InterpretSequence(
         return OK;
     }
 
-    M_PreSequenceHook(seq_ctx, seq_ctx_arg);
+    GF_ResetLevelSetup(seq_ctx);
 
     GF_COMMAND gf_cmd = { .action = GF_EXIT_TO_TITLE };
 
