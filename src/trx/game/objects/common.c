@@ -9,7 +9,7 @@
 #include <trx/game/const.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/lara/common.h>
-#include <trx/game/objects/vars.h>
+#include <trx/game/objects/links.h>
 #include <trx/game/output/common.h>
 
 typedef struct {
@@ -174,33 +174,6 @@ OBJECT_SLOT Object_IDToSlot(const OBJECT_ID id)
     return Catalog_IDToSlot(CATALOG_OBJECTS, id, -1);
 }
 
-OBJECT_ID Object_GetCognate(OBJECT_ID key_id, const GAME_OBJECT_PAIR *test_map)
-{
-    const GAME_OBJECT_PAIR *pair = &test_map[0];
-    while (pair->key_id != NO_OBJECT) {
-        if (pair->key_id == key_id) {
-            return pair->value_id;
-        }
-        pair++;
-    }
-
-    return NO_OBJECT;
-}
-
-OBJECT_ID Object_GetCognateInverse(
-    OBJECT_ID value_id, const GAME_OBJECT_PAIR *test_map)
-{
-    const GAME_OBJECT_PAIR *pair = &test_map[0];
-    while (pair->key_id != NO_OBJECT) {
-        if (pair->value_id == value_id) {
-            return pair->key_id;
-        }
-        pair++;
-    }
-
-    return NO_OBJECT;
-}
-
 void Object_InitialiseMeshes(const int32_t mesh_count)
 {
     if (m_MeshPointers != nullptr) {
@@ -346,21 +319,18 @@ ANIM_BONE *Object_TryGetBone(const OBJECT *const obj, const int32_t bone_idx)
 
 OBJECT_ID Object_FindReceptacleKey(const OBJECT_ID receptacle_obj_id)
 {
-    return Object_GetCognateInverse(
-        receptacle_obj_id, g_KeyItemToReceptacleMap);
+    return ObjectLink_GetInverse(receptacle_obj_id, OBJ_LINK_KEY_TO_RECEPTACLE);
 }
 
 int16_t Object_FindReceptacle(const OBJECT_ID object_id)
 {
     // Iterate through all matching receptacles
-    const GAME_OBJECT_PAIR *const map = g_KeyItemToReceptacleMap;
-    for (int32_t i = 0; map[i].key_id != NO_OBJECT; i++) {
-        if (map[i].key_id != object_id) {
-            continue;
-        }
-
+    const int32_t count =
+        ObjectLink_GetCount(object_id, OBJ_LINK_KEY_TO_RECEPTACLE);
+    for (int32_t i = 0; i < count; i++) {
         // Iterate through all level items that match this receptacle
-        const OBJECT_ID receptacle_to_check = map[i].value_id;
+        const OBJECT_ID receptacle_to_check =
+            ObjectLink_GetAt(object_id, OBJ_LINK_KEY_TO_RECEPTACLE, i);
         for (int16_t item_num = 0; item_num < Item_GetLevelCount();
              item_num++) {
             const ITEM *const item = Item_Get(item_num);

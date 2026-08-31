@@ -5,7 +5,7 @@
 #include <trx/game/inventory.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
-#include <trx/game/objects/vars.h>
+#include <trx/game/objects/links.h>
 #include <trx/game/sound.h>
 
 #define M_LF_USE_PUZZLE 80
@@ -83,8 +83,8 @@ static void M_ConsumeKeyItem(ITEM *const receptacle_item)
 
 static void M_MarkDone(ITEM *const receptacle_item)
 {
-    const OBJECT_ID done_obj_id = Object_GetCognate(
-        receptacle_item->object_id, g_ReceptacleToReceptacleDoneMap);
+    const OBJECT_ID done_obj_id =
+        ObjectLink_Get(receptacle_item->object_id, OBJ_LINK_RECEPTACLE_TO_DONE);
     if (done_obj_id != NO_OBJECT) {
         receptacle_item->object_id = done_obj_id;
     }

@@ -9,7 +9,6 @@
 #include <trx/game/game_buf.h>
 #include <trx/game/level.h>
 #include <trx/game/objects/common.h>
-#include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound/common.h>

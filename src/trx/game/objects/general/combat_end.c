@@ -8,7 +8,6 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/vehicle.h>
 #include <trx/game/objects/common.h>
-#include <trx/game/objects/vars.h>
 
 #define M_CUTSCENE_DELAY (5 * LOGIC_FPS) // = 150
 #define M_BOSS_TYPE O_CULT_3

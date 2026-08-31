@@ -1,0 +1,7 @@
+// clang-format off
+X_OBJECT_LINK(OBJ_LINK_ITEM_TO_OPTION,     "item_to_option")
+X_OBJECT_LINK(OBJ_LINK_GUN_TO_AMMO,        "gun_to_ammo")
+X_OBJECT_LINK(OBJ_LINK_KEY_TO_RECEPTACLE,  "key_to_receptacle")
+X_OBJECT_LINK(OBJ_LINK_RECEPTACLE_TO_DONE, "receptacle_to_done")
+X_OBJECT_LINK(OBJ_LINK_VEHICLE_TO_ANIM,    "vehicle_to_anim")
+// clang-format on

@@ -13,7 +13,7 @@
 #include <trx/game/inventory.h>
 #include <trx/game/inventory_ring/control.h>
 #include <trx/game/level.h>
-#include <trx/game/objects/vars.h>
+#include <trx/game/objects/links.h>
 #include <trx/game/phase.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell/common.h>
@@ -79,8 +79,8 @@ bool GF_ShowInventoryKeys(const OBJECT_ID receptacle_type_id)
         return false;
     }
     if (g_Config.gameplay.enable_auto_item_selection) {
-        const OBJECT_ID obj_id = Object_GetCognateInverse(
-            receptacle_type_id, g_KeyItemToReceptacleMap);
+        const OBJECT_ID obj_id = ObjectLink_GetInverse(
+            receptacle_type_id, OBJ_LINK_KEY_TO_RECEPTACLE);
         InvRing_SetRequestedObjectID(obj_id);
     } else {
         InvRing_ClearSelection();

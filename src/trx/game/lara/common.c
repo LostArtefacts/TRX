@@ -20,6 +20,7 @@
 #include <trx/game/objects/general/door.h>
 #include <trx/game/objects/general/pickup.h>
 #include <trx/game/objects/general/switch.h>
+#include <trx/game/objects/links.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>
@@ -351,7 +352,7 @@ void Lara_UseItem(const OBJECT_ID obj_id)
     default: {
         const OBJECT_ID option_id = Inv_GetItemOption(obj_id);
         if (option_id != O_SCION_OPTION
-            && Object_GetCognate(option_id, g_KeyItemToReceptacleMap)
+            && ObjectLink_Get(option_id, OBJ_LINK_KEY_TO_RECEPTACLE)
                 == NO_OBJECT) {
             break;
         }

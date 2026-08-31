@@ -9,7 +9,6 @@
 #include <trx/game/lua/struct.h>
 #include <trx/game/lua/utils.h>
 #include <trx/game/objects.h>
-#include <trx/game/objects/vars.h>
 #include <trx/game/pathing/lot.h>
 #include <trx/game/rooms.h>
 

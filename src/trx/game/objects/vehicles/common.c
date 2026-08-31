@@ -12,7 +12,6 @@
 #include <trx/game/lara.h>
 #include <trx/game/level.h>
 #include <trx/game/music.h>
-#include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/viewport.h>

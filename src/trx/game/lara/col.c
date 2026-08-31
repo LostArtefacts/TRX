@@ -5,7 +5,6 @@
 #include <trx/game/catalog/table.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/families.h>
-#include <trx/game/objects/vars.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
 

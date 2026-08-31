@@ -5,7 +5,7 @@
 #include <trx/debug.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/items.h>
-#include <trx/game/objects/vars.h>
+#include <trx/game/objects/common.h>
 #include <trx/game/rooms.h>
 
 #include <stdlib.h>
