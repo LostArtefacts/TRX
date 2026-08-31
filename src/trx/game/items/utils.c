@@ -12,7 +12,6 @@
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/families.h>
-#include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/sparks/spawners.h>

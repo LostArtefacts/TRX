@@ -9,7 +9,7 @@
 #include <trx/game/inventory_ring.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/families.h>
-#include <trx/game/objects/vars.h>
+#include <trx/game/objects/links.h>
 
 #include <string.h>
 
@@ -105,7 +105,7 @@ static LARA_GUN_TYPE M_GetAmmoGunType(const OBJECT_ID object_id)
     if (!ObjectFamily_Has(pickup_id, OBJ_FAMILY_AMMO)) {
         return LGT_UNARMED;
     }
-    return Gun_GetType(Object_GetCognateInverse(pickup_id, g_GunAmmoObjectMap));
+    return Gun_GetType(ObjectLink_GetInverse(pickup_id, OBJ_LINK_GUN_TO_AMMO));
 }
 
 // How many boxes the rounds come to, which is what a box entry counts. Nothing
@@ -296,13 +296,13 @@ OBJECT_ID Inv_GetItemOption(const OBJECT_ID object_id)
     if (ObjectFamily_Has(object_id, OBJ_FAMILY_INVENTORY)) {
         return object_id;
     }
-    return Object_GetCognate(object_id, g_ItemToInvObjectMap);
+    return ObjectLink_Get(object_id, OBJ_LINK_ITEM_TO_OPTION);
 }
 
 OBJECT_ID Inv_GetItemPickup(const OBJECT_ID object_id)
 {
     if (ObjectFamily_Has(object_id, OBJ_FAMILY_INVENTORY)) {
-        return Object_GetCognateInverse(object_id, g_ItemToInvObjectMap);
+        return ObjectLink_GetInverse(object_id, OBJ_LINK_ITEM_TO_OPTION);
     }
     return object_id;
 }

@@ -25,6 +25,7 @@
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/families.h>
+#include <trx/game/objects/links.h>
 #include <trx/game/option.h>
 #include <trx/game/option/examine.h>
 #include <trx/game/option/globe_select.h>
@@ -217,7 +218,7 @@ static void M_RingNotActive(
     case O_ROCKET_AMMO_OPTION: {
         const OBJECT_ID ammo_object_id = Inv_GetItemPickup(inv_item->object_id);
         const LARA_GUN_TYPE ammo_gun_type = Gun_GetType(
-            Object_GetCognateInverse(ammo_object_id, g_GunAmmoObjectMap));
+            ObjectLink_GetInverse(ammo_object_id, OBJ_LINK_GUN_TO_AMMO));
         M_ShowAmmoQuantity(
             ammo_gun_type, "%d",
             qty * Gun_GetAmmoInventoryQuantity(ammo_gun_type));

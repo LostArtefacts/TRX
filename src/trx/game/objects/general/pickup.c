@@ -14,6 +14,7 @@
 #include <trx/game/lua.h>
 #include <trx/game/objects/families.h>
 #include <trx/game/objects/general/flare_item.h>
+#include <trx/game/objects/links.h>
 #include <trx/game/output.h>
 #include <trx/game/overlay.h>
 #include <trx/game/random.h>
@@ -220,7 +221,7 @@ static bool M_Trigger(ITEM *const item, const ITEM_TRIGGER *const trigger)
 static void M_SpawnPickupAid(const ITEM *const item)
 {
     const OBJECT_ID obj_id =
-        Object_GetCognate(item->object_id, g_ItemToInvObjectMap);
+        ObjectLink_Get(item->object_id, OBJ_LINK_ITEM_TO_OPTION);
     if (obj_id == NO_OBJECT) {
         return;
     }

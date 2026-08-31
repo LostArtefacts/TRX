@@ -14,6 +14,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/objects/families.h>
 #include <trx/game/objects/general/save_crystal.h>
+#include <trx/game/objects/links.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/output/state.h>
 #include <trx/game/overlay.h>
@@ -647,7 +648,7 @@ void InvRing_ShowExamine(const OBJECT_ID object_id, const bool show)
     if (show) {
         const OBJECT_ID option_id = Inv_GetItemOption(object_id);
         if (ObjectFamily_Has(option_id, OBJ_FAMILY_GENERIC_INV_OPTION)
-            && Object_GetCognate(option_id, g_KeyItemToReceptacleMap)
+            && ObjectLink_Get(option_id, OBJ_LINK_KEY_TO_RECEPTACLE)
                 == NO_OBJECT) {
             // Items that cannot be used anywhere offer no Use action.
             m_ShowUseItemButton = false;

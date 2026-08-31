@@ -6,7 +6,6 @@
 #include <trx/game/objects/families.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/objects/types.h>
-#include <trx/game/objects/vars.h>
 
 #include <string.h>
 

@@ -21,7 +21,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/objects/families.h>
 #include <trx/game/objects/general/flare_item.h>
-#include <trx/game/objects/vars.h>
+#include <trx/game/objects/links.h>
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
@@ -421,12 +421,12 @@ static bool M_IsValidItemObject(
     }
 
     // used receptacles
-    if (Object_GetCognate(initial_obj_id, g_ReceptacleToReceptacleDoneMap)
+    if (ObjectLink_Get(initial_obj_id, OBJ_LINK_RECEPTACLE_TO_DONE)
         == saved_obj_id) {
         return true;
     }
     // ammo left behind by an already collected gun
-    if (Object_GetCognateInverse(saved_obj_id, g_GunAmmoObjectMap)
+    if (ObjectLink_GetInverse(saved_obj_id, OBJ_LINK_GUN_TO_AMMO)
         == initial_obj_id) {
         return true;
     }

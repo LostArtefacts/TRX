@@ -3,18 +3,7 @@
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/skin/common.h>
-
-static const GAME_OBJECT_PAIR m_AnimMap[] = {
-    { O_BOAT, O_LARA_BOAT },
-    { O_SKIDOO_FAST, O_LARA_SKIDOO },
-    { O_QUAD_BIKE, O_LARA_QUAD_BIKE },
-    { O_MOUNTED_GUN, O_LARA_MOUNTED_GUN },
-    { O_KAYAK, O_LARA_KAYAK },
-    { O_UPV, O_LARA_UPV },
-    { O_RIB, O_LARA_RIB },
-    { O_MINE_CART, O_LARA_MINE_CART },
-    { NO_OBJECT, NO_OBJECT },
-};
+#include <trx/game/objects/links.h>
 
 // The weapon a vehicle shoots with. Lara's own is put away while she rides,
 // so what her ammunition counter shows comes from here.
@@ -37,7 +26,8 @@ static void M_UpdateAnimationObject(void)
     }
 
     const ITEM *const vehicle = Lara_Vehicle_GetItem();
-    const OBJECT_ID obj_id = Object_GetCognate(vehicle->object_id, m_AnimMap);
+    const OBJECT_ID obj_id =
+        ObjectLink_Get(vehicle->object_id, OBJ_LINK_VEHICLE_TO_ANIM);
     m_AnimationObject = obj_id != NO_OBJECT && Object_Get(obj_id)->loaded
         ? obj_id
         : O_LARA_VEHICLE_ANIM;

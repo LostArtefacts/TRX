@@ -11,8 +11,8 @@
 #include <trx/game/level/format/format.h>
 #include <trx/game/lua.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/links.h>
 #include <trx/game/objects/property.h>
-#include <trx/game/objects/vars.h>
 #include <trx/game/rooms.h>
 #include <trx/game/rope.h>
 #include <trx/version.h>
@@ -146,10 +146,13 @@ static void M_CloneTR4InvOptionObjects(void)
 {
     // TR4 level files have no separate inventory display slots, so let each
     // unloaded *_OPTION object borrow the model of its pickup counterpart.
-    for (const GAME_OBJECT_PAIR *pair = g_ItemToInvObjectMap;
-         pair->key_id != NO_OBJECT; pair++) {
-        OBJECT *const option_obj = Object_Get(pair->value_id);
-        const OBJECT *const item_obj = Object_Get(pair->key_id);
+    const int32_t count = ObjectLink_GetPairCount(OBJ_LINK_ITEM_TO_OPTION);
+    for (int32_t i = 0; i < count; i++) {
+        OBJECT_ID item_id;
+        OBJECT_ID option_id;
+        ObjectLink_GetPairAt(OBJ_LINK_ITEM_TO_OPTION, i, &item_id, &option_id);
+        OBJECT *const option_obj = Object_Get(option_id);
+        const OBJECT *const item_obj = Object_Get(item_id);
         if (option_obj->loaded || !item_obj->loaded) {
             continue;
         }

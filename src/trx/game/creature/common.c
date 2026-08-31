@@ -14,7 +14,6 @@
 #include <trx/game/objects/creatures/tribe_boss.h>
 #include <trx/game/objects/families.h>
 #include <trx/game/objects/property.h>
-#include <trx/game/objects/vars.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>

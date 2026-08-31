@@ -1215,7 +1215,6 @@ unit_tests += {
     'core/vector.c',
     'game/enum.c',
     'game/game_strings/entries.c',
-    'game/objects/vars.c',
     'game/ui/scaler.c',
     'game/ui/text.c',
     'version.c',
@@ -1301,7 +1300,6 @@ unit_tests += {
     'game/gun/registry.c',
     'game/catalog/keys.c',
     'game/objects/names.c',
-    'game/objects/vars.c',
     'game/rules.c',
     'game/ui/common.c',
     'game/ui/regions.c',
@@ -1428,7 +1426,7 @@ endif
 # engine code, so they mirror nothing under trx/.
 python_exe = find_program('python3', required: false)
 if python_exe.found()
-  foreach name : ['lua_sources', 'update_lua_docs', 'game_strings', 'cfuncs', 'cdecls']
+  foreach name : ['lua_sources', 'update_lua_docs', 'game_strings', 'cfuncs', 'cdecls', 'object_taxonomy']
     test(
       'tools.' + name,
       python_exe,

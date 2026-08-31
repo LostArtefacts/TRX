@@ -16,7 +16,6 @@
 #include <trx/game/level/settings.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/families.h>
-#include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
 #include <trx/game/output/lights.h>
 #include <trx/game/output/lights/fog_bulbs.h>

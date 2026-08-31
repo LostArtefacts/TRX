@@ -4,6 +4,7 @@
 #include <trx/game/items.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/families.h>
+#include <trx/game/objects/links.h>
 #include <trx/game/savegame.h>
 
 static void M_DisableObject(const OBJECT_ID object_id)
@@ -52,7 +53,7 @@ void GF_DisableObjectsIfNeeded(void)
             } else {
                 M_ReplaceObject(gun_id, O_PISTOLS_ITEM);
             }
-            M_DisableObject(Object_GetCognate(gun_id, g_GunAmmoObjectMap));
+            M_DisableObject(ObjectLink_Get(gun_id, OBJ_LINK_GUN_TO_AMMO));
         }
     }
 }

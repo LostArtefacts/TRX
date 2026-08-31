@@ -3,7 +3,6 @@
 #include <trx/game/collision/los.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/objects/families.h>
-#include <trx/game/objects/vars.h>
 
 // TODO: meh
 extern void Smashable_Smash(int16_t item_num);

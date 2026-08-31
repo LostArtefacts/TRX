@@ -8,6 +8,7 @@
 #include <trx/game/inventory.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/families.h>
+#include <trx/game/objects/links.h>
 #include <trx/game/rooms.h>
 #include <trx/game/rooms/utils.h>
 #include <trx/game/rules.h>
@@ -54,7 +55,7 @@ static OBJECT_ID M_ConvertDroppedGun(const OBJECT_ID obj_id)
     if (g_GameFlow.convert_dropped_guns
         && ObjectFamily_Has(obj_id, OBJ_FAMILY_GUN) && Inv_HasItem(obj_id)
         && obj_id != O_PISTOLS_ITEM) {
-        return Object_GetCognate(obj_id, g_GunAmmoObjectMap);
+        return ObjectLink_Get(obj_id, OBJ_LINK_GUN_TO_AMMO);
     }
     return obj_id;
 }

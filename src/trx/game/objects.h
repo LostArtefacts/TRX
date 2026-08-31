@@ -8,4 +8,3 @@
 #include <trx/game/objects/property.h>
 #include <trx/game/objects/setup.h>
 #include <trx/game/objects/types.h>
-#include <trx/game/objects/vars.h>

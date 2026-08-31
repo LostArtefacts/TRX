@@ -6,7 +6,6 @@
 #include <trx/game/gun/smashing.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
-#include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
