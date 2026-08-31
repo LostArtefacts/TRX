@@ -92,6 +92,7 @@
 - Fixed a crash when switching mods (TRX1239)
 - Fixed the game crashing on a damaged level file, which is now refused with a message naming what is wrong with it
 - Fixed Lara's arms leaving their intended positions when looking around in the crouched stance (OG bug) (#6402)
+- Fixed Lara being killed by electric fences while immune (#6475)
 - Fixed Lara clipping into or underneath lifts if she tries to step on top of or into one from an exterior floor whose height matches the lift ceiling or floor (OG bug) (#3905 / TRX1014)
 - Fixed Lara's braid not colliding properly with her selected outfit, instead referencing the level's OG outfit (TRX1277, regression from 1.2)
 - Fixed being able to push pushblocks onto floors with triangular geometry (TRX1228, regression from 1.0)
