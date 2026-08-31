@@ -9,6 +9,7 @@
 #include <trx/debug.h>
 #include <trx/game/input/common.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/output/textures.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/draw.h>
@@ -591,7 +592,9 @@ static void M_Process(
 
         if (glyph->role == GLYPH_SECRET) {
             const int16_t sprite_idx =
-                Object_Get(g_SecretObjects[glyph->mesh_idx])->mesh_idx;
+                Object_Get(
+                    ObjectFamily_GetMember(OBJ_FAMILY_SECRET, glyph->mesh_idx))
+                    ->mesh_idx;
             const SPRITE_TEXTURE *const sprite =
                 Output_GetSpriteTexture(sprite_idx);
             const float input_scale_h =

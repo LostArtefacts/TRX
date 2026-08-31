@@ -3,6 +3,7 @@
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
 #include <trx/game/lua/utils.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/objects/types.h>
 #include <trx/game/objects/vars.h>
@@ -34,107 +35,6 @@ static const FIELD_DESC m_Fields[] = {
 // clang-format on
 
 TYPE_DEFINE(OBJECT, m_Fields)
-
-// What a pickup is, as pickups.def already divides them. These are a scripting
-// concept and nothing in the engine asks for them, so they stay here rather
-// than joining the global object arrays.
-//
-// The engine's own g_QuestObjects is left alone: the carrier and the pickup
-// routine read it, and the scion is not theirs to gain.
-static const OBJECT_ID m_SupplyObjects[] = {
-#define X_PICKUP_SUPPLY(item, option) item,
-#define X_PICKUP_SUPPLY_VARIANT(item, option) item,
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_SUPPLY_VARIANT
-#undef X_PICKUP_SUPPLY
-    NO_OBJECT,
-};
-
-// What Lara carries and uses: the crowbar, the lasersight, the binoculars, the
-// waterskins and the leadbar. A level's story may turn on one of them and one
-// may serve across a whole game; what they share is being named for themselves
-// rather than filling a numbered slot.
-static const OBJECT_ID m_ToolObjects[] = {
-#define X_PICKUP_MISC(item, option) item,
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_MISC
-    NO_OBJECT,
-};
-
-static const OBJECT_ID m_KeyObjects[] = {
-#define X_PICKUP_KEY(n) O_KEY_ITEM_##n,
-#define X_PICKUP_KEY_COMBO(n, c) O_KEY_ITEM_##n##_COMBO_##c,
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_KEY_COMBO
-#undef X_PICKUP_KEY
-    NO_OBJECT,
-};
-
-static const OBJECT_ID m_PuzzleObjects[] = {
-#define X_PICKUP_PUZZLE(n) O_PUZZLE_ITEM_##n,
-#define X_PICKUP_PUZZLE_COMBO(n, c) O_PUZZLE_ITEM_##n##_COMBO_##c,
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_PUZZLE_COMBO
-#undef X_PICKUP_PUZZLE
-    NO_OBJECT,
-};
-
-// The scion is here rather than in a family of its own: it is what TR1 sends
-// Lara to fetch, which is what a quest item is.
-static const OBJECT_ID m_QuestObjects[] = {
-#define X_PICKUP_QUEST(n) O_QUEST_ITEM_##n,
-#define X_PICKUP_SPECIAL(item, option) item,
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_SPECIAL
-#undef X_PICKUP_QUEST
-    NO_OBJECT,
-};
-
-static const OBJECT_ID m_ExamineObjects[] = {
-#define X_PICKUP_EXAMINE(n) O_EXAMINE_ITEM_##n,
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_EXAMINE
-    NO_OBJECT,
-};
-
-static const OBJECT_ID m_CollectibleObjects[] = {
-#define X_PICKUP_PICKUP(n) O_PICKUP_ITEM_##n,
-#define X_PICKUP_PICKUP_COMBO(n, c) O_PICKUP_ITEM_##n##_COMBO_##c,
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_PICKUP_COMBO
-#undef X_PICKUP_PICKUP
-    NO_OBJECT,
-};
-
-// The families an object can belong to. A script names one; C knows which array
-// it is in.
-static const struct {
-    const char *name;
-    const OBJECT_ID *objects;
-} m_Families[] = {
-    { "creature", g_CreatureObjects },
-    { "boss", g_BossObjects },
-    { "loyal", g_LoyalObjects },
-    { "pickup", g_PickupObjects },
-    { "gun", g_GunObjects },
-    { "ammo", g_GunAmmoObjects },
-    { "supply", m_SupplyObjects },
-    { "tool", m_ToolObjects },
-    { "key", m_KeyObjects },
-    { "puzzle", m_PuzzleObjects },
-    { "quest", m_QuestObjects },
-    { "examine", m_ExamineObjects },
-    { "collectible", m_CollectibleObjects },
-    { "secret", g_SecretObjects },
-    { "switch", g_SwitchObjects },
-    { "receptacle", g_ReceptacleObjects },
-    { "pushable", g_MovableBlockObjects },
-    { "door", g_DoorObjects },
-    { "null", g_NullObjects },
-    { "anim", g_AnimObjects },
-    { "inventory", g_InvObjects },
-    { nullptr, nullptr },
-};
 
 // An object is addressed by its id, and an id is valid for the whole session -
 // there is no pool to recycle and nothing to go stale. An object the level did
@@ -242,13 +142,13 @@ static int M_L_ObjectsIsType(lua_State *const L)
 {
     const OBJECT_ID object_id = luaL_checkinteger(L, 1);
     const char *const kind = luaL_checkstring(L, 2);
-    for (int32_t i = 0; m_Families[i].name != nullptr; i++) {
-        if (strcmp(kind, m_Families[i].name) == 0) {
-            lua_pushboolean(L, Object_IsType(object_id, m_Families[i].objects));
-            return 1;
-        }
+    const CATALOG_ID family =
+        Catalog_KeyToID(CATALOG_FAMILIES, kind, NO_CATALOG_ID);
+    if (family == NO_CATALOG_ID) {
+        return luaL_error(L, "unknown object kind '%s'", kind);
     }
-    return luaL_error(L, "unknown object kind '%s'", kind);
+    lua_pushboolean(L, ObjectFamily_Has(object_id, family));
+    return 1;
 }
 
 // Push the primary name followed by aliases.

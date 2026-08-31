@@ -174,16 +174,6 @@ OBJECT_SLOT Object_IDToSlot(const OBJECT_ID id)
     return Catalog_IDToSlot(CATALOG_OBJECTS, id, -1);
 }
 
-bool Object_IsType(const OBJECT_ID object_id, const OBJECT_ID *test_arr)
-{
-    for (int32_t i = 0; test_arr[i] != NO_OBJECT; i++) {
-        if (test_arr[i] == object_id) {
-            return true;
-        }
-    }
-    return false;
-}
-
 OBJECT_ID Object_GetCognate(OBJECT_ID key_id, const GAME_OBJECT_PAIR *test_map)
 {
     const GAME_OBJECT_PAIR *pair = &test_map[0];

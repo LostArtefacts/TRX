@@ -9,6 +9,8 @@
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input/common.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/families.h>
+#include <trx/game/objects/vars.h>
 #include <trx/game/output/textures.h>
 #include <trx/game/viewport.h>
 #include <trx/version.h>
@@ -173,4 +175,11 @@ void TouchOverlay_EnterSelectionMode(void)
 
 void TouchOverlay_ExitSelectionMode(void)
 {
+}
+
+// Include only the secret glyph family because the shipped game text defines
+// names only for those glyphs.
+OBJECT_ID ObjectFamily_GetMember(const OBJECT_FAMILY family, const int32_t idx)
+{
+    return g_SecretObjects[idx];
 }

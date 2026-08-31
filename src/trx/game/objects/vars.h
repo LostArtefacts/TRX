@@ -22,7 +22,6 @@ extern const OBJECT_ID g_InvObjects[];
 extern const OBJECT_ID g_WaterSpriteObjects[];
 extern const OBJECT_ID g_BossObjects[];
 extern const OBJECT_ID g_SecretObjects[];
-extern const OBJECT_ID g_QuestObjects[];
 extern const OBJECT_ID g_MovableBlockObjects[];
 extern const OBJECT_ID g_GameSpriteObjects[];
 extern const OBJECT_ID g_GenericInvOptions[];

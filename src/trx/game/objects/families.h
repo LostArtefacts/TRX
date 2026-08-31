@@ -22,6 +22,11 @@ bool ObjectFamily_Has(OBJECT_ID object_id, OBJECT_FAMILY family);
 void ObjectFamily_Add(OBJECT_ID object_id, OBJECT_FAMILY family);
 void ObjectFamily_Remove(OBJECT_ID object_id, OBJECT_FAMILY family);
 
+// Return the object at a zero-based position in catalogue order, or NO_OBJECT
+// past the end; return an object's position, or -1 if absent.
+OBJECT_ID ObjectFamily_GetMember(OBJECT_FAMILY family, int32_t idx);
+int32_t ObjectFamily_GetIndex(OBJECT_ID object_id, OBJECT_FAMILY family);
+
 // Iterate over a family's objects in catalogue order.
 #define OBJECT_FAMILY_FOR_EACH(family, var)                                    \
     CATALOG_FOR_EACH(CATALOG_OBJECTS, var)                                     \
