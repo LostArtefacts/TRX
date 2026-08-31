@@ -92,13 +92,11 @@ X_CATALOG_ID(O_SAVE_CRYSTAL_OPTION)
     X_CATALOG_ID(option)
 // Variants share their option with a base item, so emit the item only.
 #define X_PICKUP_VARIANT(item, option) X_CATALOG_ID(item)
-#define X_PICKUP_GUN_AMMO_VARIANT(item, option) X_CATALOG_ID(item)
 #define X_RECEPTACLE(option, receptacle) X_CATALOG_ID(receptacle)
 #define X_RECEPTACLE_DONE(receptacle, done) X_CATALOG_ID(done)
 #include <trx/game/objects/pickups.def>
 #undef X_RECEPTACLE_DONE
 #undef X_RECEPTACLE
-#undef X_PICKUP_GUN_AMMO_VARIANT
 #undef X_PICKUP_VARIANT
 #undef X_PICKUP
 X_CATALOG_ID(O_GRAPHICS_OPTION)
