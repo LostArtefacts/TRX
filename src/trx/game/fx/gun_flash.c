@@ -53,6 +53,12 @@ static bool M_GetOwnerItem(
     return *out_item != nullptr;
 }
 
+// Converts a joint axis offset into a world-to-view matrix component.
+static int32_t M_GetAxisScale(const int32_t delta)
+{
+    return ((int64_t)delta * (1 << W2V_SHIFT)) / M_AXIS_UNIT;
+}
+
 static void M_GetJointPose(
     const ITEM *const item, const BITE bite, XYZ_32 *const out_pos,
     MATRIX *const out_rot)
@@ -75,17 +81,17 @@ static void M_GetJointPose(
     *out_pos = pos;
     *out_rot = g_IDMatrix;
 
-    out_rot->_00 = ((int64_t)(axis_x.x - pos.x) << W2V_SHIFT) / M_AXIS_UNIT;
-    out_rot->_10 = ((int64_t)(axis_x.y - pos.y) << W2V_SHIFT) / M_AXIS_UNIT;
-    out_rot->_20 = ((int64_t)(axis_x.z - pos.z) << W2V_SHIFT) / M_AXIS_UNIT;
+    out_rot->_00 = M_GetAxisScale(axis_x.x - pos.x);
+    out_rot->_10 = M_GetAxisScale(axis_x.y - pos.y);
+    out_rot->_20 = M_GetAxisScale(axis_x.z - pos.z);
 
-    out_rot->_01 = ((int64_t)(axis_y.x - pos.x) << W2V_SHIFT) / M_AXIS_UNIT;
-    out_rot->_11 = ((int64_t)(axis_y.y - pos.y) << W2V_SHIFT) / M_AXIS_UNIT;
-    out_rot->_21 = ((int64_t)(axis_y.z - pos.z) << W2V_SHIFT) / M_AXIS_UNIT;
+    out_rot->_01 = M_GetAxisScale(axis_y.x - pos.x);
+    out_rot->_11 = M_GetAxisScale(axis_y.y - pos.y);
+    out_rot->_21 = M_GetAxisScale(axis_y.z - pos.z);
 
-    out_rot->_02 = ((int64_t)(axis_z.x - pos.x) << W2V_SHIFT) / M_AXIS_UNIT;
-    out_rot->_12 = ((int64_t)(axis_z.y - pos.y) << W2V_SHIFT) / M_AXIS_UNIT;
-    out_rot->_22 = ((int64_t)(axis_z.z - pos.z) << W2V_SHIFT) / M_AXIS_UNIT;
+    out_rot->_02 = M_GetAxisScale(axis_z.x - pos.x);
+    out_rot->_12 = M_GetAxisScale(axis_z.y - pos.y);
+    out_rot->_22 = M_GetAxisScale(axis_z.z - pos.z);
 
     out_rot->_03 = 0;
     out_rot->_13 = 0;

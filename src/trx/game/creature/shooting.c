@@ -85,6 +85,13 @@ static void M_TriggerTR3GunSmoke(
     Sparks_TriggerGunSmoke(smoke_pos, true, Gun_GetDefaultType(), 32);
 }
 
+// Truncates to 32 bits. The original game overflows while it decides whether
+// a creature's shot hits, and the wrapped values are part of that decision.
+static int32_t M_Wrap(const int64_t value)
+{
+    return (int32_t)(uint32_t)(uint64_t)value;
+}
+
 bool Creature_Shoot(
     ITEM *const item, const AI_INFO *const info, const CREATURE_GUN *const gun,
     const int16_t extra_rotation, const int32_t damage)
@@ -124,12 +131,13 @@ bool Creature_Shoot(
             is_targetable = false;
             is_hit = false;
         } else {
-            int32_t distance =
-                (((target_item->speed * Math_Sin(info->enemy_facing))
-                  >> W2V_SHIFT)
-                 * CREATURE_SHOOT_RANGE)
+            const int32_t lead =
+                (target_item->speed * Math_Sin(info->enemy_facing))
+                >> W2V_SHIFT;
+            int32_t distance = M_Wrap((int64_t)lead * CREATURE_SHOOT_RANGE)
                 / M_SHOOT_TARGETING_SPEED;
-            distance = info->distance + SQUARE(distance);
+            distance = M_Wrap(
+                (int64_t)info->distance + M_Wrap((int64_t)distance * distance));
             if (distance > CREATURE_SHOOT_RANGE) {
                 is_hit = false;
             } else {
