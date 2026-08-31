@@ -10,6 +10,7 @@
 #include <trx/game/level.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/creatures/pod.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
@@ -196,7 +197,7 @@ static void M_CalculateStats(LEVEL_MAX_STATS *const stats)
 
     for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
         const ITEM *const item = Item_Get(i);
-        if (Object_IsType(item->object_id, g_PickupObjects)
+        if (ObjectFamily_Has(item->object_id, OBJ_FAMILY_PICKUP)
             && !Carrier_IsItemCarried(i)) {
             LOG_TRACE(
                 "+1 pickup from pickup item %d in room %d", i, item->room_num);
@@ -223,7 +224,7 @@ static void M_CalculateStats(LEVEL_MAX_STATS *const stats)
             M_IncludeKillableItem(stats, i);
         }
 
-        if (Object_IsType(item->object_id, g_SecretObjects)) {
+        if (ObjectFamily_Has(item->object_id, OBJ_FAMILY_SECRET)) {
             int32_t position = -1;
             for (int32_t j = 0; j < STATS_MAX_SECRETS; j++) {
                 if (!stats->secret_objects[j].taken) {

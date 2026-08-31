@@ -7,6 +7,7 @@
 #include <trx/game/game_flow/vars.h>
 #include <trx/game/inventory.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/rooms.h>
 #include <trx/game/rooms/utils.h>
 #include <trx/game/rules.h>
@@ -26,7 +27,7 @@ static const GAME_OBJECT_PAIR m_LegacyMap[] = {
 
 static bool M_ShouldSnapDrop(const OBJECT_ID obj_id)
 {
-    if (Object_IsType(obj_id, g_QuestObjects)) {
+    if (ObjectFamily_Has(obj_id, OBJ_FAMILY_QUEST)) {
         return false;
     }
 
@@ -36,15 +37,16 @@ static bool M_ShouldSnapDrop(const OBJECT_ID obj_id)
 static void M_Drop(ITEM *const pickup)
 {
     Item_SetVisible(pickup, true);
-    if (Object_IsType(pickup->object_id, g_QuestObjects)) {
+    if (ObjectFamily_Has(pickup->object_id, OBJ_FAMILY_QUEST)) {
         Item_AddSimulated(Item_GetIndex(pickup));
     }
 }
 
 static OBJECT_ID M_ConvertDroppedGun(const OBJECT_ID obj_id)
 {
-    if (g_GameFlow.convert_dropped_guns && Object_IsType(obj_id, g_GunObjects)
-        && Inv_HasItem(obj_id) && obj_id != O_PISTOLS_ITEM) {
+    if (g_GameFlow.convert_dropped_guns
+        && ObjectFamily_Has(obj_id, OBJ_FAMILY_GUN) && Inv_HasItem(obj_id)
+        && obj_id != O_PISTOLS_ITEM) {
         return Object_GetCognate(obj_id, g_GunAmmoObjectMap);
     }
     return obj_id;
@@ -100,7 +102,7 @@ static ITEM *M_EnsureCarriedPickupItem(
 
 static bool M_IsCarrierType(const OBJECT_ID obj_id)
 {
-    bool is_enemy = Object_IsType(obj_id, g_CreatureObjects);
+    bool is_enemy = ObjectFamily_Has(obj_id, OBJ_FAMILY_CREATURE);
     // Eels are hostile but cannot be killed, so must be excluded. Monks may be
     // allocated drop items whether or not they are hostile. Drop items must be
     // assigned to the skidoo and not the rider to avoid issues with /kill, and
@@ -182,7 +184,7 @@ static void M_InitialiseDataDrops(void)
         int16_t pickup_num = room->item_num;
         while (pickup_num != NO_ITEM) {
             ITEM *const pickup = Item_Get(pickup_num);
-            if (Object_IsType(pickup->object_id, g_PickupObjects)
+            if (ObjectFamily_Has(pickup->object_id, OBJ_FAMILY_PICKUP)
                 && XYZ_32_AreEquivalent(pickup->pos, carrier->pos)) {
                 Vector_Add(pickups, (void *)&pickup_num);
                 Item_DetachFromRoom(pickup_num);
@@ -265,7 +267,7 @@ static void M_InitialiseGameFlowDrops(const GF_LEVEL *const level)
             drop->room_num = NO_ROOM;
             drop->fall_speed = 0;
 
-            if (Object_IsType(drop->object_id, g_PickupObjects)) {
+            if (ObjectFamily_Has(drop->object_id, OBJ_FAMILY_PICKUP)) {
                 drop->status = DS_CARRIED;
                 total_item_count++;
             } else {

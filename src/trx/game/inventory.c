@@ -8,6 +8,7 @@
 #include <trx/game/gun/registry.h>
 #include <trx/game/inventory_ring.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/objects/vars.h>
 
 #include <string.h>
@@ -101,7 +102,7 @@ static void M_AddGun(const LARA_GUN_TYPE gun_type)
 static LARA_GUN_TYPE M_GetAmmoGunType(const OBJECT_ID object_id)
 {
     const OBJECT_ID pickup_id = Inv_GetItemPickup(object_id);
-    if (!Object_IsType(pickup_id, g_GunAmmoObjects)) {
+    if (!ObjectFamily_Has(pickup_id, OBJ_FAMILY_AMMO)) {
         return LGT_UNARMED;
     }
     return Gun_GetType(Object_GetCognateInverse(pickup_id, g_GunAmmoObjectMap));
@@ -292,7 +293,7 @@ void Inv_SetState(const INVENTORY_STATE *const state)
 
 OBJECT_ID Inv_GetItemOption(const OBJECT_ID object_id)
 {
-    if (Object_IsType(object_id, g_InvObjects)) {
+    if (ObjectFamily_Has(object_id, OBJ_FAMILY_INVENTORY)) {
         return object_id;
     }
     return Object_GetCognate(object_id, g_ItemToInvObjectMap);
@@ -300,7 +301,7 @@ OBJECT_ID Inv_GetItemOption(const OBJECT_ID object_id)
 
 OBJECT_ID Inv_GetItemPickup(const OBJECT_ID object_id)
 {
-    if (Object_IsType(object_id, g_InvObjects)) {
+    if (ObjectFamily_Has(object_id, OBJ_FAMILY_INVENTORY)) {
         return Object_GetCognateInverse(object_id, g_ItemToInvObjectMap);
     }
     return object_id;
@@ -425,7 +426,7 @@ bool Inv_AddItem(const OBJECT_ID object_id)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (Object_IsType(pickup_object_id, g_GunObjects)) {
+    if (ObjectFamily_Has(pickup_object_id, OBJ_FAMILY_GUN)) {
         Gun_UpdateLaraMeshes(pickup_object_id);
         if (lara->gun_type == LGT_UNARMED) {
             lara->gun_type = Gun_GetType(pickup_object_id);
@@ -475,7 +476,7 @@ bool Inv_AddItem(const OBJECT_ID object_id)
     }
 
     // Other guns
-    if (Object_IsType(pickup_object_id, g_GunObjects)) {
+    if (ObjectFamily_Has(pickup_object_id, OBJ_FAMILY_GUN)) {
         M_AddGun(Gun_GetType(pickup_object_id));
         InvRing_Rebuild();
         return true;

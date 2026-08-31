@@ -4,6 +4,7 @@
 #include <trx/game/effects/manager.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/output.h>
 #include <trx/version.h>
 
@@ -37,7 +38,7 @@ void Effect_Draw(const int16_t effect_num)
 
     if (obj->mesh_count < 0) {
         const RGBA_F tint =
-            Object_IsType(effect->object_id, g_WaterSpriteObjects)
+            ObjectFamily_Has(effect->object_id, OBJ_FAMILY_WATER_SPRITE)
             ? COLOR_RGBA_F_WHITE
             : Output_GetTint();
         int16_t shade = effect->shade;

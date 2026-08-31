@@ -10,6 +10,7 @@
 #include <trx/game/gun/smashing.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/output/lights.h>
 #include <trx/game/output/state.h>
 #include <trx/game/random.h>
@@ -154,7 +155,8 @@ static bool M_TryExplodeItem(
     Stats_AddAmmoHits();
 
     if (Gun_GetSmashPolicy(target_item) == GUN_SMASH_POLICY_HEAVY) {
-        if (Object_IsType(projectile_item->object_id, g_HeavyMissileObjects)) {
+        if (ObjectFamily_Has(
+                projectile_item->object_id, OBJ_FAMILY_HEAVY_MISSILE)) {
             Gun_SmashItem(target_item_num);
         }
     } else if (Gun_GetSmashPolicy(target_item) != GUN_SMASH_POLICY_NONE) {

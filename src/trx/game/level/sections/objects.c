@@ -8,6 +8,7 @@
 #include <trx/game/level/format/format.h>
 #include <trx/game/level/sections/read.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/shell.h>
 
 static void M_ReadPosition(XYZ_32 *const pos, TRX_FILE *const file)
@@ -166,7 +167,7 @@ RESULT Level_Section_ReadSpriteSequences(
         // in TRX, a defined list of game sprites must instead be referred to.
         const OBJECT_ID object_id = Object_SlotToID(id);
         if (object_id != NO_OBJECT
-            && Object_IsType(object_id, g_GameSpriteObjects)) {
+            && ObjectFamily_Has(object_id, OBJ_FAMILY_GAME_SPRITE)) {
             OBJECT *const obj = Object_Get(object_id);
             obj->mesh_count = num_meshes;
             obj->mesh_idx = mesh_idx;

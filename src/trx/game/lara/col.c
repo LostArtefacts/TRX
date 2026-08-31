@@ -4,6 +4,7 @@
 #include <trx/debug.h>
 #include <trx/game/catalog/table.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
@@ -151,7 +152,8 @@ void Lara_Col_ItemPush(
     };
     Lara_Col_Push(
         &src_item, coll,
-        hit_on && !Object_IsType(item->object_id, g_NoHitReactionObjects),
+        hit_on
+            && !ObjectFamily_Has(item->object_id, OBJ_FAMILY_NO_HIT_REACTION),
         big_push);
 }
 

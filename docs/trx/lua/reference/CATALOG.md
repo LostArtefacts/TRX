@@ -38,6 +38,8 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
         Item actions, which the flip effects trigger.
     - `trx.catalog.Context.WEAPONS` = `6`  
         Weapons Lara can hold.
+    - `trx.catalog.Context.FAMILIES` = `7`  
+        The families an object can belong to.
 
 - <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 821 names
 

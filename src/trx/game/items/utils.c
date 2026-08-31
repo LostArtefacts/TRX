@@ -11,6 +11,7 @@
 #include <trx/game/lua/events.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
@@ -26,13 +27,13 @@ static bool M_UseTR3ExplodingEffects(const ITEM *const item)
 
     // TODO: potentially add a flag/function ptr to OBJECT
     return item->object_id != O_CLAW_MUTANT
-        && !Object_IsType(item->object_id, g_ShatterableObjects)
-        && !Object_IsType(item->object_id, g_HeavyShatterableObjects);
+        && !ObjectFamily_Has(item->object_id, OBJ_FAMILY_SHATTERABLE)
+        && !ObjectFamily_Has(item->object_id, OBJ_FAMILY_HEAVY_SHATTERABLE);
 }
 
 static bool M_IsFloating(const ITEM *const item)
 {
-    return Object_IsType(item->object_id, g_WaterObjects)
+    return ObjectFamily_Has(item->object_id, OBJ_FAMILY_WATER)
         && Object_Get(item->object_id)->intelligent && item->hit_points <= 0;
 }
 
@@ -87,7 +88,8 @@ bool Item_IsAlive(const ITEM *const item)
         return obj->is_alive_func(item);
     }
 
-    if (obj->intelligent && Object_IsType(item->object_id, g_WaterObjects)) {
+    if (obj->intelligent
+        && ObjectFamily_Has(item->object_id, OBJ_FAMILY_WATER)) {
         return item->hit_points > 0;
     }
     return (item->hit_points > 0) || (item->is_simulated);
@@ -96,7 +98,7 @@ bool Item_IsAlive(const ITEM *const item)
 bool Item_IsTargetable(const ITEM *const item)
 {
     const OBJECT *const obj = Object_Get(item->object_id);
-    if (Object_IsType(item->object_id, g_ProjectileObjects)) {
+    if (ObjectFamily_Has(item->object_id, OBJ_FAMILY_PROJECTILE)) {
         return false;
     }
 
@@ -121,7 +123,7 @@ bool Item_CanTakeDamage(const ITEM *const item)
 
 bool Item_CanBeProjectileTarget(const ITEM *const item)
 {
-    if (Object_IsType(item->object_id, g_ProjectileObjects)) {
+    if (ObjectFamily_Has(item->object_id, OBJ_FAMILY_PROJECTILE)) {
         return false;
     }
 
@@ -130,8 +132,8 @@ bool Item_CanBeProjectileTarget(const ITEM *const item)
         return obj->can_be_projectile_target_func(item);
     }
 
-    if (Object_IsType(item->object_id, g_ShatterableObjects)
-        || Object_IsType(item->object_id, g_SmashableObjects)) {
+    if (ObjectFamily_Has(item->object_id, OBJ_FAMILY_SHATTERABLE)
+        || ObjectFamily_Has(item->object_id, OBJ_FAMILY_SMASHABLE)) {
         return true;
     }
 

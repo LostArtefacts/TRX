@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/families.h>
 
 bool Lara_Interact_HasActiveTarget(const int16_t item_num)
 {
@@ -23,14 +24,14 @@ bool Lara_Interact_HasActiveType(const LARA_INTERACT_MODE mode)
     switch (mode) {
     case LARA_INTERACT_PICKUP:
         return item->object_id == O_FLARE_ITEM
-            || Object_IsType(item->object_id, g_PickupObjects);
+            || ObjectFamily_Has(item->object_id, OBJ_FAMILY_PICKUP);
     case LARA_INTERACT_RECEPTACLE:
-        return Object_IsType(item->object_id, g_ReceptacleObjects);
+        return ObjectFamily_Has(item->object_id, OBJ_FAMILY_RECEPTACLE);
     case LARA_INTERACT_SWITCH:
     case LARA_INTERACT_FLOOR_SWITCH:
-        return Object_IsType(item->object_id, g_SwitchObjects);
+        return ObjectFamily_Has(item->object_id, OBJ_FAMILY_SWITCH);
     case LARA_INTERACT_DOOR:
-        return Object_IsType(item->object_id, g_DoorObjects);
+        return ObjectFamily_Has(item->object_id, OBJ_FAMILY_DOOR);
     default:
         return false;
     }

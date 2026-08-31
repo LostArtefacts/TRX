@@ -24,6 +24,7 @@
 #include <trx/game/lua/events.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/option.h>
 #include <trx/game/option/examine.h>
 #include <trx/game/option/globe_select.h>
@@ -243,7 +244,8 @@ static void M_RingNotActive(
 
     default:
         if (inv_item->object_id == O_SCION_OPTION
-            || Object_IsType(inv_item->object_id, g_GenericInvOptions)) {
+            || ObjectFamily_Has(
+                inv_item->object_id, OBJ_FAMILY_GENERIC_INV_OPTION)) {
             if (qty > 1) {
                 InvRing_ShowItemQuantity("%d", qty);
             }

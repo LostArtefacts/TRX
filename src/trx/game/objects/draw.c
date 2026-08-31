@@ -7,6 +7,7 @@
 #include <trx/game/items/col.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/output.h>
 #include <trx/game/output/sources/shadows.h>
 #include <trx/game/output/vars.h>
@@ -335,7 +336,7 @@ bool Object_DrawPickupItem(const ITEM *const item)
         const ANIM_FRAME *const frame = obj->frame_base;
         mesh_rots = frame->mesh_rots;
         offset = frame->offset;
-        if (Object_IsType(item->object_id, g_ElevatedPickupObjects)) {
+        if (ObjectFamily_Has(item->object_id, OBJ_FAMILY_ELEVATED_PICKUP)) {
             offset.y = (frame->bounds.min.y - frame->offset.y) / 2;
         } else {
             offset.y -= frame->bounds.max.y;

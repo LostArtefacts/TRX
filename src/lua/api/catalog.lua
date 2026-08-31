@@ -34,6 +34,7 @@ local Context = api.enum("catalog.Context", {
     LARA_ANIMS = "Lara's animations.",
     ITEM_ACTIONS = "Item actions, which the flip effects trigger.",
     WEAPONS = "Weapons Lara can hold.",
+    FAMILIES = "The families an object can belong to.",
   },
 })
 

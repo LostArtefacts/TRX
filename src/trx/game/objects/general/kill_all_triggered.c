@@ -1,6 +1,7 @@
 #include <trx/game/effects.h>
 #include <trx/game/items.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/objects/general/shoal.h>
 #include <trx/game/pathing/lot.h>
 
@@ -17,12 +18,12 @@ static void M_DestroyAllSimulatedItems(void)
         if (item->is_simulated && !item->trigger.reversed
             && item->object_id != O_LARA
             && item->object_id != O_SAVE_CRYSTAL_ITEM
-            && !Object_IsType(item->object_id, g_PickupObjects)
-            && !Object_IsType(item->object_id, g_DoorObjects)
-            && !Object_IsType(item->object_id, g_ReceptacleObjects)) {
+            && !ObjectFamily_Has(item->object_id, OBJ_FAMILY_PICKUP)
+            && !ObjectFamily_Has(item->object_id, OBJ_FAMILY_DOOR)
+            && !ObjectFamily_Has(item->object_id, OBJ_FAMILY_RECEPTACLE)) {
             Item_Destroy(item_num);
 
-            if (Object_IsType(item->object_id, g_ShoalObjects)) {
+            if (ObjectFamily_Has(item->object_id, OBJ_FAMILY_SHOAL)) {
                 Shoal_TriggerDeactivate(item);
             } else {
                 const OBJECT *const obj = Object_Get(item->object_id);

@@ -7,6 +7,7 @@
 #include <trx/game/gun/registry.h>
 #include <trx/game/inventory.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/overlay.h>
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
@@ -41,7 +42,8 @@ static int8_t *M_Add2InvItem(const OBJECT_ID object_id)
 
 static bool M_CanHaveItem(const OBJECT_ID object_id)
 {
-    if (Object_IsType(object_id, g_GunObjects) && object_id != O_PISTOLS_ITEM
+    if (ObjectFamily_Has(object_id, OBJ_FAMILY_GUN)
+        && object_id != O_PISTOLS_ITEM
         && g_Config.gameplay.disable_extra_guns) {
         return false;
     }

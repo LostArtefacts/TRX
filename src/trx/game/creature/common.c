@@ -12,6 +12,7 @@
 #include <trx/game/lara/common.h>
 #include <trx/game/objects/creatures/skidoo_driver.h>
 #include <trx/game/objects/creatures/tribe_boss.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/objects/property.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/pathing.h>
@@ -1052,7 +1053,7 @@ bool Creature_Animate(
     const int16_t *const zone = Box_GetLotZone(lot);
 
     if (g_TRVersion >= 2 && g_TRVersion < 4
-        && !Object_IsType(item->object_id, g_WaterObjects)) {
+        && !ObjectFamily_Has(item->object_id, OBJ_FAMILY_WATER)) {
         int16_t room_num = item->room_num;
         Room_GetSector(item->pos, &room_num);
         Item_UpdateRoom(item_num, room_num);
@@ -1278,7 +1279,8 @@ bool Creature_Animate(
                 item->pos.z = old.z;
             }
         } else {
-            if (!fly_check && !Object_IsType(item->object_id, g_WaterObjects)
+            if (!fly_check
+                && !ObjectFamily_Has(item->object_id, OBJ_FAMILY_WATER)
                 && M_TestWaterBelow(item, y)) {
                 dy = -lot->setup.fly;
             }
@@ -1377,7 +1379,8 @@ bool Creature_Animate(
         item->rot.x = 0;
     }
 
-    if (g_TRVersion <= 3 && !Object_IsType(item->object_id, g_WaterObjects)) {
+    if (g_TRVersion <= 3
+        && !ObjectFamily_Has(item->object_id, OBJ_FAMILY_WATER)) {
         // Get the room just above the enemy so that if it is in one-click high
         // water, its effects behave still as though in a dry room.
         Room_GetSector(

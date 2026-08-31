@@ -6,6 +6,7 @@
 #include <trx/game/items/actions.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
 #include <trx/version.h>
@@ -378,7 +379,7 @@ void Item_PlayAnimSFX(
     if (play_always) {
         play_mode = SPM_ALWAYS;
     } else if (
-        Object_IsType(item->object_id, g_WaterObjects)
+        ObjectFamily_Has(item->object_id, OBJ_FAMILY_WATER)
         || (g_Config.audio.enable_underwater_anim_sfx && item_underwater)) {
         play_mode = SPM_UNDERWATER;
     }

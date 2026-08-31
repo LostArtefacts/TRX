@@ -3,6 +3,7 @@
 #include <trx/core/subsystem.h>
 #include <trx/game/input.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/option/controls.h>
 #include <trx/game/option/examine.h>
 #include <trx/game/option/gameplay.h>
@@ -95,7 +96,8 @@ void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 
     default:
         if (inv_item->object_id == O_SCION_OPTION
-            || Object_IsType(inv_item->object_id, g_GenericInvOptions)) {
+            || ObjectFamily_Has(
+                inv_item->object_id, OBJ_FAMILY_GENERIC_INV_OPTION)) {
             if (!is_busy) {
                 g_InputDB.menu_confirm = 1;
             }

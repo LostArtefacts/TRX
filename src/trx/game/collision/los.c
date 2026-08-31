@@ -4,6 +4,7 @@
 #include <trx/game/items.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/rooms.h>
 
 #include <math.h>
@@ -483,9 +484,10 @@ int32_t LOS_CheckSmashable(
         if (item->is_finished) {
             continue;
         }
-        if (!Object_IsType(item->object_id, g_SmashableObjects)
-            && !Object_IsType(item->object_id, g_ShatterableObjects)
-            && !Object_IsType(item->object_id, g_HeavyShatterableObjects)) {
+        if (!ObjectFamily_Has(item->object_id, OBJ_FAMILY_SMASHABLE)
+            && !ObjectFamily_Has(item->object_id, OBJ_FAMILY_SHATTERABLE)
+            && !ObjectFamily_Has(
+                item->object_id, OBJ_FAMILY_HEAVY_SHATTERABLE)) {
             continue;
         }
 

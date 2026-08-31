@@ -12,6 +12,7 @@
 #include <trx/game/inventory_ring/control.h>
 #include <trx/game/lara.h>
 #include <trx/game/lua.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/objects/general/flare_item.h>
 #include <trx/game/output.h>
 #include <trx/game/overlay.h>
@@ -164,7 +165,7 @@ static void M_Initialise(const int16_t item_num)
     p->aid_timer = -1;
     p->secret_mask = 0;
 
-    if (Object_IsType(item->object_id, g_SecretObjects)) {
+    if (ObjectFamily_Has(item->object_id, OBJ_FAMILY_SECRET)) {
         const GF_LEVEL *const level = Game_GetCurrentLevel();
         p->secret_mask = Stats_GetSecretMaskForItem(level, item_num);
     }
@@ -205,7 +206,8 @@ static bool M_Trigger(ITEM *const item, const ITEM_TRIGGER *const trigger)
         Item_SetVisible(item, false);
         item->is_destroyed = true;
     } else if (
-        !item->is_visible || Object_IsType(item->object_id, g_QuestObjects)) {
+        !item->is_visible
+        || ObjectFamily_Has(item->object_id, OBJ_FAMILY_QUEST)) {
         item->touch_bits = 0;
         Item_SetVisible(item, true);
         Item_AddSimulated(Item_GetIndex(item));
@@ -392,7 +394,7 @@ static void M_DoPickup(const int16_t item_num)
     }
 
     Overlay_AddDisplayPickup(item->object_id);
-    if (Object_IsType(item->object_id, g_SecretObjects)) {
+    if (ObjectFamily_Has(item->object_id, OBJ_FAMILY_SECRET)) {
         Stats_MarkSecretCollected(item);
         if (Stats_CheckAllLevelSecretsCollected()) {
             GF_InventoryModifier_Apply(Game_GetCurrentLevel(), GF_INV_SECRET);
