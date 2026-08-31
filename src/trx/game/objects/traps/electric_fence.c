@@ -1,3 +1,4 @@
+#include <trx/config.h>
 #include <trx/core/log.h>
 #include <trx/game/effects.h>
 #include <trx/game/lara.h>
@@ -63,6 +64,12 @@ static void M_TriggerFenceSparks(const XYZ_32 pos, const bool kill)
 
 static void M_TouchFence(const XZ_32 spark_axis, XYZ_32 spark_pos)
 {
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (g_Config.debug.enable_invulnerability || lara->electric != 0
+        || lara->water_status == LWS_CHEAT) {
+        return;
+    }
+
     ITEM *const lara_item = Lara_GetItem();
     const XYZ_32 old_spark_pos = spark_pos;
     const int32_t iterations = (Random_GetControl() & 0xF) + 3;
@@ -92,7 +99,6 @@ static void M_TouchFence(const XZ_32 spark_axis, XYZ_32 spark_pos)
         spark_pos = old_spark_pos;
     }
 
-    LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->electric = 1;
     Lara_Kill();
 }
