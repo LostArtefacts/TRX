@@ -158,6 +158,32 @@ local Object = api.type("objects.Object", {
       description = "The compile-time English names. A lookup tries these when the "
         .. "player's language has no matching name. Prefer `trx.objects.Object.default_names`.",
     },
+    add_family = {
+      params = {
+        {
+          name = "family",
+          type = "string",
+          description = "Which family, by the name it answers to.",
+        },
+      },
+      description = "Puts the object in a family, so a query narrowed to that family finds "
+        .. "it. A family a script mints is reached the same way as one the game ships.",
+      examples = {
+        [[local family = trx.catalog.mint(trx.catalog.Context.FAMILIES, "mymod:explosive")
+trx.objects.barrel:add_family("mymod:explosive")
+for _, id in ipairs(trx.objects.query:family("mymod:explosive"):ids()) do ... end]],
+      },
+    },
+    remove_family = {
+      params = {
+        {
+          name = "family",
+          type = "string",
+          description = "Which family, by the name it answers to.",
+        },
+      },
+      description = "Takes the object out of a family.",
+    },
     get_property = {
       params = {
         {
@@ -336,6 +362,27 @@ local methods = {
       end
     end),
   },
+  family = {
+    description = "Narrows to a family by name, which is how a query reaches a family a "
+      .. "script mints. The families the game ships have a narrowing of their own.",
+    params = {
+      {
+        name = "family",
+        type = "string",
+        description = "Which family, by the name it answers to.",
+      },
+    },
+    returns = QUERY,
+    examples = {
+      [[trx.objects.query:family("mymod:explosive"):ids()]],
+    },
+    impl = trx.query.narrowing(function(name)
+      return function(id)
+        return raw.is_type(id, name)
+      end
+    end),
+  },
+
   -- A creature that fights Lara rather than for her. The one family that is not
   -- the engine's own, so it is spelled out here.
   enemy = {

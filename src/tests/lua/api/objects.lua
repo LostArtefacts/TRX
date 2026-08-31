@@ -435,4 +435,26 @@ test("an object id outside the table is refused", function()
   end)
 end)
 
+test("a script mints a family and puts an object in it", function()
+  local name = "mymod:explosive"
+  assert(trx.catalog.mint(trx.catalog.Context.FAMILIES, name) ~= nil)
+  assert(
+    trx.objects.query:family(name):count() == 0,
+    "a family starts with nobody in it"
+  )
+
+  trx.objects[fake.VASE]:add_family(name)
+  local ids = trx.objects.query:family(name):ids()
+  assert(#ids == 1 and ids[1] == fake.VASE)
+
+  trx.objects[fake.VASE]:remove_family(name)
+  assert(trx.objects.query:family(name):count() == 0)
+end)
+
+test("a family no name answers to is refused", function()
+  raises(function()
+    trx.objects.query:family("mymod:nothing"):ids()
+  end)
+end)
+
 return h.report()
