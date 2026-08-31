@@ -79,6 +79,7 @@
 - Added a `collidable_when_done` property to puzzle slots, which applies to animated interactions only (TRX1046)
 - Added `snap_to_sector` and `keep_simulated` properties to pickups, which say whether a carrier's drop slides to the middle of its sector and whether the item goes on rotating and glowing once it lands
 - Added object references in strings files, so inventory entries can use the same name and description as their pickup
+- Added an object families file, so a mod can say which objects count as pickups, doors, creatures and the rest without a new build
 - Changed object keys in strings files, game flows and weapon definitions to use the C object name without `O_`
 - Changed object names in strings files to use `|` between the name the game shows and the names the console accepts
 - Changed weapon, extra mesh, braid mode and extra outfit names in game data to drop their C prefixes, so a weapon is written `shotgun` rather than `LGT_SHOTGUN`
