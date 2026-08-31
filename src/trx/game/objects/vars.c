@@ -231,15 +231,6 @@ const OBJECT_ID g_SecretObjects[] = {
     // clang-format on
 };
 
-const OBJECT_ID g_QuestObjects[] = {
-#define X_PICKUP_QUEST(n) O_QUEST_ITEM_##n,
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_QUEST
-    // clang-format off
-    NO_OBJECT,
-    // clang-format on
-};
-
 const OBJECT_ID g_PickupObjects[] = {
 #define X_PICKUP(item, option) item,
 #include <trx/game/objects/pickups.def>

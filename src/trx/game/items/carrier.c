@@ -112,9 +112,9 @@ static bool M_IsCarrierType(const OBJECT_ID obj_id)
     bool is_enemy = ObjectFamily_Has(obj_id, OBJ_FAMILY_CREATURE);
     // Eels are hostile but cannot be killed, so must be excluded. Monks may be
     // allocated drop items whether or not they are hostile. Drop items must be
-    // assigned to the skidoo and not the rider to avoid issues with /kill, and
-    // O_DRAGON_BACK is the active dragon, but having this in g_CreatureObjects
-    // also creates issues with /kill, hence a separate check is required here.
+    // assigned to the skidoo and not the rider to avoid issues with /kill.
+    // Check O_DRAGON_BACK separately because including the active dragon in
+    // the creature family causes problems with /kill.
     is_enemy &= obj_id != O_EEL && obj_id != O_BIG_EEL;
     is_enemy &= obj_id != O_SKIDOO_DRIVER;
     is_enemy |= obj_id == O_DRAGON_BACK || obj_id == O_SKIDOO_ARMED;

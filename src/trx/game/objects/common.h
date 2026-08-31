@@ -58,8 +58,6 @@ bool Object_IsValidStatid3D(int32_t static_id);
 STATIC_OBJECT_3D *Object_Get3DStatic(int32_t static_id);
 STATIC_OBJECT_2D *Object_Get2DStatic(int32_t static_id);
 
-bool Object_IsType(OBJECT_ID object_id, const OBJECT_ID *test_arr);
-
 OBJECT_ID Object_GetCognate(OBJECT_ID key_id, const GAME_OBJECT_PAIR *test_map);
 
 OBJECT_ID Object_GetCognateInverse(

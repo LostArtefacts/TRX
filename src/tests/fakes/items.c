@@ -74,6 +74,95 @@ static const struct {
     { FAKE_OBJ_CRYSTAL, "crystal" },
     { NO_OBJECT, nullptr },
 };
+// Match the pickup families defined in pickups.def to those populated by the
+// engine.
+static const OBJECT_ID m_SupplyObjects[] = {
+#define X_PICKUP_SUPPLY(item, option) item,
+#define X_PICKUP_SUPPLY_VARIANT(item, option) item,
+#include <trx/game/objects/pickups.def>
+#undef X_PICKUP_SUPPLY_VARIANT
+#undef X_PICKUP_SUPPLY
+    NO_OBJECT,
+};
+
+static const OBJECT_ID m_ToolObjects[] = {
+#define X_PICKUP_MISC(item, option) item,
+#include <trx/game/objects/pickups.def>
+#undef X_PICKUP_MISC
+    NO_OBJECT,
+};
+
+static const OBJECT_ID m_KeyObjects[] = {
+#define X_PICKUP_KEY(n) O_KEY_ITEM_##n,
+#define X_PICKUP_KEY_COMBO(n, c) O_KEY_ITEM_##n##_COMBO_##c,
+#include <trx/game/objects/pickups.def>
+#undef X_PICKUP_KEY_COMBO
+#undef X_PICKUP_KEY
+    NO_OBJECT,
+};
+
+static const OBJECT_ID m_PuzzleObjects[] = {
+#define X_PICKUP_PUZZLE(n) O_PUZZLE_ITEM_##n,
+#define X_PICKUP_PUZZLE_COMBO(n, c) O_PUZZLE_ITEM_##n##_COMBO_##c,
+#include <trx/game/objects/pickups.def>
+#undef X_PICKUP_PUZZLE_COMBO
+#undef X_PICKUP_PUZZLE
+    NO_OBJECT,
+};
+
+static const OBJECT_ID m_QuestObjects[] = {
+#define X_PICKUP_QUEST(n) O_QUEST_ITEM_##n,
+#define X_PICKUP_SPECIAL(item, option) item,
+#include <trx/game/objects/pickups.def>
+#undef X_PICKUP_SPECIAL
+#undef X_PICKUP_QUEST
+    NO_OBJECT,
+};
+
+static const OBJECT_ID m_ExamineObjects[] = {
+#define X_PICKUP_EXAMINE(n) O_EXAMINE_ITEM_##n,
+#include <trx/game/objects/pickups.def>
+#undef X_PICKUP_EXAMINE
+    NO_OBJECT,
+};
+
+static const OBJECT_ID m_CollectibleObjects[] = {
+#define X_PICKUP_PICKUP(n) O_PICKUP_ITEM_##n,
+#define X_PICKUP_PICKUP_COMBO(n, c) O_PICKUP_ITEM_##n##_COMBO_##c,
+#include <trx/game/objects/pickups.def>
+#undef X_PICKUP_PICKUP_COMBO
+#undef X_PICKUP_PICKUP
+    NO_OBJECT,
+};
+
+static const struct {
+    OBJECT_FAMILY family;
+    const OBJECT_ID *objects;
+} m_Families[] = {
+    // clang-format off
+    { OBJ_FAMILY_ANIM,        g_AnimObjects },
+    { OBJ_FAMILY_AMMO,        g_GunAmmoObjects },
+    { OBJ_FAMILY_BOSS,        g_BossObjects },
+    { OBJ_FAMILY_COLLECTIBLE, m_CollectibleObjects },
+    { OBJ_FAMILY_CREATURE,    g_CreatureObjects },
+    { OBJ_FAMILY_DOOR,        g_DoorObjects },
+    { OBJ_FAMILY_EXAMINE,     m_ExamineObjects },
+    { OBJ_FAMILY_GUN,         g_GunObjects },
+    { OBJ_FAMILY_INVENTORY,   g_InvObjects },
+    { OBJ_FAMILY_KEY,         m_KeyObjects },
+    { OBJ_FAMILY_LOYAL,       g_LoyalObjects },
+    { OBJ_FAMILY_NULL,        g_NullObjects },
+    { OBJ_FAMILY_PICKUP,      g_PickupObjects },
+    { OBJ_FAMILY_PUSHABLE,    g_MovableBlockObjects },
+    { OBJ_FAMILY_PUZZLE,      m_PuzzleObjects },
+    { OBJ_FAMILY_QUEST,       m_QuestObjects },
+    { OBJ_FAMILY_RECEPTACLE,  g_ReceptacleObjects },
+    { OBJ_FAMILY_SECRET,      g_SecretObjects },
+    { OBJ_FAMILY_SUPPLY,      m_SupplyObjects },
+    { OBJ_FAMILY_SWITCH,      g_SwitchObjects },
+    { OBJ_FAMILY_TOOL,        m_ToolObjects },
+    // clang-format on
+};
 
 static int32_t M_FindObjectName(const OBJECT_ID obj_id)
 {
@@ -94,19 +183,11 @@ static const char *M_ObjectNames(const OBJECT_ID obj_id)
 const OBJECT_ID g_CreatureObjects[] = { FAKE_OBJ_WOLF, NO_OBJECT };
 const OBJECT_ID g_BossObjects[] = { NO_OBJECT };
 const OBJECT_ID g_LoyalObjects[] = { NO_OBJECT };
-// The fake's own two, and then the real ones a pickup family names, so a
-// command that selects on a family has something here to select. The crystal is
-// not among them: it has an inventory icon and nothing else in common with a
-// pickup.
 const OBJECT_ID g_PickupObjects[] = {
     FAKE_OBJ_VASE,  FAKE_OBJ_KEY,     FAKE_OBJ_REAL_KEY,  FAKE_OBJ_PUZZLE,
     FAKE_OBJ_TOOL,  FAKE_OBJ_LEADBAR, FAKE_OBJ_MEDIPACK,  FAKE_OBJ_TRINKET,
     FAKE_OBJ_SCION, FAKE_OBJ_SCION_2, FAKE_OBJ_WATERSKIN, NO_OBJECT,
 };
-// Built from pickups.def as the engine builds them: the pickup families are
-// read straight off it now, so a test of them sees the real taxonomy. The
-// umbrella above stays the fake's own two, which is what the rest of the suite
-// counts.
 const OBJECT_ID g_GunObjects[] = {
 #define X_PICKUP_GUN(item, option) item,
 #include <trx/game/objects/pickups.def>
@@ -650,14 +731,14 @@ const char *ObjectProperty_GetObjectName(
 
 bool ObjectFamily_Has(const OBJECT_ID object_id, const OBJECT_FAMILY family)
 {
-    return false;
-}
-
-bool Object_IsType(const OBJECT_ID object_id, const OBJECT_ID *const test_arr)
-{
-    for (int32_t i = 0; test_arr[i] != NO_OBJECT; i++) {
-        if (test_arr[i] == object_id) {
-            return true;
+    for (size_t i = 0; i < ARRAY_SIZE(m_Families); i++) {
+        if (m_Families[i].family != family) {
+            continue;
+        }
+        for (int32_t j = 0; m_Families[i].objects[j] != NO_OBJECT; j++) {
+            if (m_Families[i].objects[j] == object_id) {
+                return true;
+            }
         }
     }
     return false;

@@ -3,6 +3,7 @@
 #include <trx/game/game.h>
 #include <trx/game/items.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/savegame.h>
 
 static void M_DisableObject(const OBJECT_ID object_id)
@@ -44,14 +45,14 @@ void GF_DisableObjectsIfNeeded(void)
     if (g_Config.gameplay.disable_extra_guns) {
         const RESUME_INFO *const resume = SG_Resume_GetEntry(level);
         ASSERT(resume != nullptr);
-        for (int32_t i = 0; g_GunObjects[i] != NO_OBJECT; i++) {
+        OBJECT_FAMILY_FOR_EACH(OBJ_FAMILY_GUN, gun_id)
+        {
             if (Inv_State_Has(&resume->inv, O_PISTOLS_ITEM)) {
-                M_DisableObject(g_GunObjects[i]);
+                M_DisableObject(gun_id);
             } else {
-                M_ReplaceObject(g_GunObjects[i], O_PISTOLS_ITEM);
+                M_ReplaceObject(gun_id, O_PISTOLS_ITEM);
             }
-            M_DisableObject(
-                Object_GetCognate(g_GunObjects[i], g_GunAmmoObjectMap));
+            M_DisableObject(Object_GetCognate(gun_id, g_GunAmmoObjectMap));
         }
     }
 }

@@ -8,6 +8,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/gym.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
 #include <trx/game/ui.h>
@@ -223,13 +224,8 @@ static void M_FormatIconSecrets(char *const out, const GF_LEVEL *const level)
         }
         const OBJECT_ID obj_id = Stats_GetSecretObject(level, i);
         if (obj_id != NO_OBJECT) {
-            int32_t secret_num = 0;
-            for (int32_t j = 0; g_SecretObjects[j] != NO_OBJECT; j++) {
-                if (g_SecretObjects[j] == obj_id) {
-                    secret_num = j + 1;
-                    break;
-                }
-            }
+            const int32_t secret_num =
+                ObjectFamily_GetIndex(obj_id, OBJ_FAMILY_SECRET) + 1;
             ptr += sprintf(
                 ptr, has_secret ? "\\{secret %d}" : "\\{i}\\{secret %d}\\{/i}",
                 secret_num);

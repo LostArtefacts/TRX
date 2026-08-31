@@ -306,11 +306,6 @@ bool ObjectFamily_Has(const OBJECT_ID obj_id, const OBJECT_FAMILY family)
     return false;
 }
 
-bool Object_IsType(const OBJECT_ID obj_id, const OBJECT_ID *const test_arr)
-{
-    return false;
-}
-
 ROOM *Room_Get(const int32_t room_num)
 {
     return nullptr;
