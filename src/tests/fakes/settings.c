@@ -20,6 +20,7 @@
 #include <trx/game/lara/common.h>
 #include <trx/game/lara/vehicle.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/output/draw.h>
 #include <trx/game/music/common.h>
 #include <trx/game/rooms/common.h>
@@ -296,6 +297,11 @@ LARA_GUN_TYPE Lara_Vehicle_GetGunType(void)
 }
 
 bool Lara_Vehicle_IsOnType(const OBJECT_ID obj_id)
+{
+    return false;
+}
+
+bool ObjectFamily_Has(const OBJECT_ID obj_id, const OBJECT_FAMILY family)
 {
     return false;
 }

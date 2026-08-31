@@ -18,6 +18,7 @@
 #include <trx/game/creature.h>
 #include <trx/game/items.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/objects/property.h>
 #include <trx/game/objects/vars.h>
@@ -645,6 +646,11 @@ const char *ObjectProperty_GetObjectName(
     const OBJECT *const obj, const int32_t i)
 {
     return i == 0 ? "max_hit_points" : nullptr;
+}
+
+bool ObjectFamily_Has(const OBJECT_ID object_id, const OBJECT_FAMILY family)
+{
+    return false;
 }
 
 bool Object_IsType(const OBJECT_ID object_id, const OBJECT_ID *const test_arr)

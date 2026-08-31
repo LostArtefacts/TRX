@@ -47,6 +47,9 @@ static const char *const m_ItemActions[] = {
 static const char *const m_Weapons[] = {
 #include <trx/game/catalog/weapons.def>
 };
+static const char *const m_Families[] = {
+#include <trx/game/catalog/families.def>
+};
 #undef X_CATALOG_ID
 
 static const char *const *M_Names(
@@ -74,6 +77,9 @@ static const char *const *M_Names(
     case CATALOG_WEAPONS:
         *out_count = ARRAY_SIZE(m_Weapons);
         return m_Weapons;
+    case CATALOG_FAMILIES:
+        *out_count = ARRAY_SIZE(m_Families);
+        return m_Families;
     default:
         *out_count = 0;
         return nullptr;

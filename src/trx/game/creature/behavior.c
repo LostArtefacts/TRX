@@ -2,6 +2,7 @@
 #include <trx/core/subsystem.h>
 #include <trx/core/vector.h>
 #include <trx/game/creature.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/stats.h>
 
@@ -93,7 +94,7 @@ void Creature_Hurt(ITEM *const item, const int32_t damage)
 bool Creature_IsHostile(const ITEM *const item)
 {
     if (item->object_id != O_SKIDOO_ARMED
-        && !Object_IsType(item->object_id, g_CreatureObjects)) {
+        && !ObjectFamily_Has(item->object_id, OBJ_FAMILY_CREATURE)) {
         return false;
     }
 

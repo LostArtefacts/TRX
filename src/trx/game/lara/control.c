@@ -13,6 +13,7 @@
 #include <trx/game/lara/electric.h>
 #include <trx/game/lara/poison.h>
 #include <trx/game/music.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/output.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
@@ -319,8 +320,8 @@ static void M_ObjectCollision(COLL_INFO *const coll)
             const int16_t next_item_num = item->next_item;
 
             if (lara_info->water_status == LWS_CHEAT
-                && !Object_IsType(item->object_id, g_PickupObjects)
-                && !Object_IsType(item->object_id, g_SwitchObjects)) {
+                && !ObjectFamily_Has(item->object_id, OBJ_FAMILY_PICKUP)
+                && !ObjectFamily_Has(item->object_id, OBJ_FAMILY_SWITCH)) {
                 goto loop_end;
             }
             if (!item->is_collidable || !item->is_visible) {

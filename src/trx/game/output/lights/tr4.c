@@ -15,6 +15,7 @@
 #include <trx/game/items/manager.h>
 #include <trx/game/level/settings.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
 #include <trx/game/output/lights.h>
@@ -628,7 +629,7 @@ static void M_CalculateObjectLightingAt(
 
     m_CurrentItemLight = il;
     m_CurrentIsPickup =
-        item != nullptr && Object_IsType(item->object_id, g_PickupObjects);
+        item != nullptr && ObjectFamily_Has(item->object_id, OBJ_FAMILY_PICKUP);
     m_CurrentHasList = true;
 
     M_SetScalarFallback(il->ambient);

@@ -12,6 +12,7 @@
 #include <trx/game/matrix.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/objects/general/save_crystal.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/output/state.h>
@@ -645,7 +646,7 @@ void InvRing_ShowExamine(const OBJECT_ID object_id, const bool show)
     m_ShowUseItemButton = show;
     if (show) {
         const OBJECT_ID option_id = Inv_GetItemOption(object_id);
-        if (Object_IsType(option_id, g_GenericInvOptions)
+        if (ObjectFamily_Has(option_id, OBJ_FAMILY_GENERIC_INV_OPTION)
             && Object_GetCognate(option_id, g_KeyItemToReceptacleMap)
                 == NO_OBJECT) {
             // Items that cannot be used anywhere offer no Use action.

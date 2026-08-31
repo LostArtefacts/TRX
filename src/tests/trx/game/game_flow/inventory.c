@@ -19,6 +19,7 @@
 #include <trx/game/gun/registry.h>
 #include <trx/game/inventory.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/overlay.h>
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
@@ -83,20 +84,11 @@ static void M_SetUp(void)
 // Everything the module reaches for outside itself. The inventory is a set of
 // object ids - the reward asks whether Lara has a thing, never how many.
 
-const OBJECT_ID g_GunObjects[] = {
-    O_PISTOLS_ITEM,
-    O_GRENADE_GUN_ITEM,
-    NO_OBJECT,
-};
-
-bool Object_IsType(const OBJECT_ID object_id, const OBJECT_ID *const test_arr)
+// Define the gun family to contain only these two weapons.
+bool ObjectFamily_Has(const OBJECT_ID object_id, const OBJECT_FAMILY family)
 {
-    for (int32_t i = 0; test_arr[i] != NO_OBJECT; i++) {
-        if (test_arr[i] == object_id) {
-            return true;
-        }
-    }
-    return false;
+    return family == OBJ_FAMILY_GUN
+        && (object_id == O_PISTOLS_ITEM || object_id == O_GRENADE_GUN_ITEM);
 }
 
 int32_t Gun_Registry_GetCount(void)

@@ -49,6 +49,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(CATALOG_CONTEXT, CATALOG_LARA_ANIMS, "lara_anims");
     ENUM_MAP(CATALOG_CONTEXT, CATALOG_ITEM_ACTIONS, "item_actions");
     ENUM_MAP(CATALOG_CONTEXT, CATALOG_WEAPONS, "weapons");
+    ENUM_MAP(CATALOG_CONTEXT, CATALOG_FAMILIES, "families");
 
     ENUM_MAP(GAME_BUFFER, GBUF_TEXTURE_PAGES, "Texture pages");
     ENUM_MAP(GAME_BUFFER, GBUF_PALETTES, "Color palettes");

@@ -2,6 +2,7 @@
 
 #include <trx/game/collision/los.h>
 #include <trx/game/gun/misc.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/objects/vars.h>
 
 // TODO: meh
@@ -9,13 +10,13 @@ extern void Smashable_Smash(int16_t item_num);
 
 GUN_SMASH_POLICY Gun_GetSmashPolicy(const ITEM *const item)
 {
-    if (Object_IsType(item->object_id, g_ShatterableObjects)) {
+    if (ObjectFamily_Has(item->object_id, OBJ_FAMILY_SHATTERABLE)) {
         return GUN_SMASH_POLICY_CONTINUE;
     }
-    if (Object_IsType(item->object_id, g_SmashableObjects)) {
+    if (ObjectFamily_Has(item->object_id, OBJ_FAMILY_SMASHABLE)) {
         return GUN_SMASH_POLICY_STOP;
     }
-    if (Object_IsType(item->object_id, g_HeavyShatterableObjects)) {
+    if (ObjectFamily_Has(item->object_id, OBJ_FAMILY_HEAVY_SHATTERABLE)) {
         return GUN_SMASH_POLICY_HEAVY;
     }
     return GUN_SMASH_POLICY_NONE;
@@ -57,7 +58,7 @@ PROJECTILE_HIT Gun_SmashItems(
     int32_t hits = 0;
     int16_t last_item_num = NO_ITEM;
     const bool is_heavy_missile =
-        Object_IsType(missile_obj_id, g_HeavyMissileObjects);
+        ObjectFamily_Has(missile_obj_id, OBJ_FAMILY_HEAVY_MISSILE);
     while (true) {
         const int16_t item_num = LOS_CheckSmashable(start, target, out_hit_pos);
         if (item_num == NO_ITEM || item_num == last_item_num) {

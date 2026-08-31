@@ -11,6 +11,7 @@
 #include <trx/game/items/actions/ids.h>
 #include <trx/game/lara/enum.h>
 #include <trx/game/music/ids.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/objects/ids.h>
 #include <trx/game/sound/ids.h>
 
@@ -66,6 +67,9 @@ static const M_ENTRY m_CatalogEntryDefs[] = {
 #undef X_CATALOG_ID
 #define X_CATALOG_ID(enum_value) { CATALOG_WEAPONS, enum_value, #enum_value },
 #include <trx/game/catalog/weapons.def>
+#undef X_CATALOG_ID
+#define X_CATALOG_ID(enum_value) { CATALOG_FAMILIES, enum_value, #enum_value },
+#include <trx/game/catalog/families.def>
 #undef X_CATALOG_ID
 };
 

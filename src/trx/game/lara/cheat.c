@@ -15,6 +15,7 @@
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/rooms.h>
 #include <trx/game/rope.h>
 #include <trx/game/viewport.h>
@@ -151,8 +152,8 @@ bool Lara_Cheat_OpenNearestDoor(void)
     const int32_t max_dist = SQUARE((WALL_L * 2) >> shift);
     for (int32_t item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
         ITEM *const item = Item_Get(item_num);
-        if (!Object_IsType(item->object_id, g_DoorObjects)
-            && !Object_IsType(item->object_id, g_TrapdoorObjects)) {
+        if (!ObjectFamily_Has(item->object_id, OBJ_FAMILY_DOOR)
+            && !ObjectFamily_Has(item->object_id, OBJ_FAMILY_TRAPDOOR)) {
             continue;
         }
 

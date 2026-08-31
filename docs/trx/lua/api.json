@@ -272,7 +272,7 @@
     },
     {
       "bulk": false,
-      "count": 7,
+      "count": 8,
       "description": "Which catalog a slot belongs to.",
       "path": "catalog.Context",
       "values": [
@@ -310,6 +310,11 @@
           "description": "Weapons Lara can hold.",
           "name": "WEAPONS",
           "value": 6
+        },
+        {
+          "description": "The families an object can belong to.",
+          "name": "FAMILIES",
+          "value": 7
         }
       ]
     },

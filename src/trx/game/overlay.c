@@ -13,6 +13,7 @@
 #include <trx/game/inventory_ring.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/output.h>
 #include <trx/game/output/sources/ui.h>
@@ -384,7 +385,7 @@ void Overlay_SetBottomText(const OVERLAY_TEXT text)
 
 void Overlay_AddDisplayPickup(const OBJECT_ID obj_id)
 {
-    if (Object_IsType(obj_id, g_SecretObjects)) {
+    if (ObjectFamily_Has(obj_id, OBJ_FAMILY_SECRET)) {
         const MUSIC_PLAY_MODE mode =
             g_Config.audio.fix_secrets_killing_music ? MPM_OVERLAY : MPM_ONCE;
         Music_Play(MX_SECRET, mode);

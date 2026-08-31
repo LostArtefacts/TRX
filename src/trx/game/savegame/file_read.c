@@ -19,6 +19,7 @@
 #include <trx/game/level/settings.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/objects/general/flare_item.h>
 #include <trx/game/objects/vars.h>
 #include <trx/game/output.h>
@@ -414,8 +415,8 @@ static bool M_IsValidItemObject(
     if (saved_obj_id == initial_obj_id) {
         return true;
     }
-    if (Object_IsType(initial_obj_id, g_GunObjects)
-        && Object_IsType(saved_obj_id, g_GunObjects)) {
+    if (ObjectFamily_Has(initial_obj_id, OBJ_FAMILY_GUN)
+        && ObjectFamily_Has(saved_obj_id, OBJ_FAMILY_GUN)) {
         return true;
     }
 
@@ -627,7 +628,7 @@ static RESULT M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
                 item->is_simulated = true;
             } else if (
                 !is_active && saved_status == IS_ACTIVE
-                && Object_IsType(item->object_id, g_ReceptacleObjects)) {
+                && ObjectFamily_Has(item->object_id, OBJ_FAMILY_RECEPTACLE)) {
                 // A released save recorded a receptacle's armed "key inserted"
                 // state as IS_ACTIVE without the active bit - the keyhole was
                 // control-less and never joined the active list. New saves

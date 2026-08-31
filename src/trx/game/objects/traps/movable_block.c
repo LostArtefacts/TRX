@@ -10,6 +10,7 @@
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/pathing.h>
 #include <trx/game/random.h>
 #include <trx/game/sound.h>
@@ -404,7 +405,7 @@ static bool M_TestDoor(ITEM *lara_item, COLL_INFO *coll)
     const int32_t max_dist = SQUARE((WALL_L * 2) >> shift);
     for (int item_num = 0; item_num < Item_GetLevelCount(); item_num++) {
         ITEM *const item = Item_Get(item_num);
-        if (!Object_IsType(item->object_id, g_DoorObjects)) {
+        if (!ObjectFamily_Has(item->object_id, OBJ_FAMILY_DOOR)) {
             continue;
         }
 
@@ -1095,7 +1096,7 @@ static void M_GetStack(
 
     for (WALKABLE *w = sector->walkable; w != nullptr; w = w->next) {
         const ITEM *item = Item_Get(w->item_num);
-        if (!Object_IsType(item->object_id, g_MovableBlockObjects)) {
+        if (!ObjectFamily_Has(item->object_id, OBJ_FAMILY_PUSHABLE)) {
             continue;
         }
         if (w->pos.x == stack_pos.x && w->pos.y == stack_height
@@ -1148,7 +1149,7 @@ bool MovableBlock_TestSquareClaimed(const XYZ_32 pos)
 {
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         const ITEM *const item = Item_Get(i);
-        if (!Object_IsType(item->object_id, g_MovableBlockObjects)
+        if (!ObjectFamily_Has(item->object_id, OBJ_FAMILY_PUSHABLE)
             || !item->is_visible || !M_IsPushPull(item)
             || !M_HasStartedMoving(item)) {
             continue;
