@@ -63,6 +63,17 @@ static XYZ_32 M_GetMidPos(const ITEM *const item)
     return pos;
 }
 
+// Returns how far the line moves along one axis per sector along another.
+static int32_t M_GetSlope(const int32_t delta, const int32_t span)
+{
+    return ((int64_t)delta * WALL_L) / span;
+}
+
+static int32_t M_ApplySlope(const int32_t slope, const int32_t delta)
+{
+    return ((int64_t)slope * delta) >> WALL_SHIFT;
+}
+
 static int32_t M_CheckX(
     const GAME_VECTOR *const start, GAME_VECTOR *const target)
 {
@@ -71,8 +82,8 @@ static int32_t M_CheckX(
         return 1;
     }
 
-    const int32_t dy = ((target->y - start->y) * WALL_L) / dx;
-    const int32_t dz = ((target->z - start->z) * WALL_L) / dx;
+    const int32_t dy = M_GetSlope(target->y - start->y, dx);
+    const int32_t dz = M_GetSlope(target->z - start->z, dx);
 
     int16_t room_num = start->room_num;
     int16_t last_room_num = start->room_num;
@@ -82,8 +93,8 @@ static int32_t M_CheckX(
     if (dx < 0) {
         XYZ_32 cur_pos;
         cur_pos.x = ROUND_TO_SECTOR(start->x);
-        cur_pos.y = start->y + ((dy * (cur_pos.x - start->x)) >> WALL_SHIFT);
-        cur_pos.z = start->z + ((dz * (cur_pos.x - start->x)) >> WALL_SHIFT);
+        cur_pos.y = start->y + M_ApplySlope(dy, cur_pos.x - start->x);
+        cur_pos.z = start->z + M_ApplySlope(dz, cur_pos.x - start->x);
 
         while (cur_pos.x > target->x) {
             XYZ_32 sample_pos = cur_pos;
@@ -126,8 +137,8 @@ static int32_t M_CheckX(
     } else {
         XYZ_32 cur_pos;
         cur_pos.x = ROUND_TO_SECTOR_END(start->x);
-        cur_pos.y = start->y + (((cur_pos.x - start->x) * dy) >> WALL_SHIFT);
-        cur_pos.z = start->z + (((cur_pos.x - start->x) * dz) >> WALL_SHIFT);
+        cur_pos.y = start->y + M_ApplySlope(dy, cur_pos.x - start->x);
+        cur_pos.z = start->z + M_ApplySlope(dz, cur_pos.x - start->x);
 
         while (cur_pos.x < target->x) {
             XYZ_32 sample_pos = cur_pos;
@@ -181,8 +192,8 @@ static int32_t M_CheckZ(
         return 1;
     }
 
-    const int32_t dx = ((target->x - start->x) * WALL_L) / dz;
-    const int32_t dy = ((target->y - start->y) * WALL_L) / dz;
+    const int32_t dx = M_GetSlope(target->x - start->x, dz);
+    const int32_t dy = M_GetSlope(target->y - start->y, dz);
 
     int16_t room_num = start->room_num;
     int16_t last_room_num = start->room_num;
@@ -192,8 +203,8 @@ static int32_t M_CheckZ(
     if (dz < 0) {
         XYZ_32 cur_pos;
         cur_pos.z = ROUND_TO_SECTOR(start->z);
-        cur_pos.x = start->x + ((dx * (cur_pos.z - start->z)) >> WALL_SHIFT);
-        cur_pos.y = start->y + ((dy * (cur_pos.z - start->z)) >> WALL_SHIFT);
+        cur_pos.x = start->x + M_ApplySlope(dx, cur_pos.z - start->z);
+        cur_pos.y = start->y + M_ApplySlope(dy, cur_pos.z - start->z);
 
         while (cur_pos.z > target->z) {
             XYZ_32 sample_pos = cur_pos;
@@ -236,8 +247,8 @@ static int32_t M_CheckZ(
     } else {
         XYZ_32 cur_pos;
         cur_pos.z = ROUND_TO_SECTOR_END(start->z);
-        cur_pos.x = start->x + ((dx * (cur_pos.z - start->z)) >> WALL_SHIFT);
-        cur_pos.y = start->y + ((dy * (cur_pos.z - start->z)) >> WALL_SHIFT);
+        cur_pos.x = start->x + M_ApplySlope(dx, cur_pos.z - start->z);
+        cur_pos.y = start->y + M_ApplySlope(dy, cur_pos.z - start->z);
 
         while (cur_pos.z < target->z) {
             XYZ_32 sample_pos = cur_pos;
