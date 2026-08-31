@@ -175,50 +175,6 @@ test("the families a level's fixtures belong to", function()
   assert(q:door():count() == 1)
 end)
 
--- These come from pickups.def rather than from the fake, so what is asserted is
--- the real taxonomy: which object sits in which family, and that the families
--- do not cover the pickups between them.
-test("the pickup families say what a pickup is", function()
-  local q = trx.objects.query
-  local o = trx.catalog.objects
-  local function has(query, id)
-    return id_set(query:ids())[id]
-  end
-
-  assert(has(q:gun(), o.SHOTGUN_ITEM), "a shotgun is a gun")
-  assert(has(q:ammo(), o.SHOTGUN_AMMO_ITEM), "its shells are ammo")
-  assert(has(q:supply(), o.SMALL_MEDIPACK_ITEM), "a medipack is spent")
-  assert(has(q:tool(), o.CROWBAR_ITEM), "a crowbar is carried and used")
-  assert(has(q:tool(), o.WATERSKIN_1_EMPTY), "so is a waterskin")
-  assert(has(q:key(), o.KEY_ITEM_1))
-  assert(has(q:puzzle(), o.PUZZLE_ITEM_1))
-  assert(has(q:quest(), o.QUEST_ITEM_1))
-  assert(has(q:quest(), o.SCION_ITEM_1), "the scion is what TR1 sends her for")
-  assert(has(q:examine(), o.EXAMINE_ITEM_1))
-  assert(has(q:collectible(), o.PICKUP_ITEM_1))
-  assert(has(q:secret(), o.SECRET_1))
-
-  -- A combo half belongs to the family its whole does.
-  assert(has(q:key(), o.KEY_ITEM_4_COMBO_1), "a key combo is a key")
-
-  -- Not a partition: a second state of something Lara already carries is in
-  -- none of them, only the base it shares a backpack entry with.
-  local families = {
-    q:gun(),
-    q:ammo(),
-    q:supply(),
-    q:tool(),
-    q:key(),
-    q:puzzle(),
-    q:quest(),
-    q:examine(),
-    q:collectible(),
-  }
-  for _, family in ipairs(families) do
-    assert(not has(family, o.WATERSKIN_1_1), "a fill level is in no family")
-  end
-end)
-
 test("where narrows by a test of the caller's own", function()
   local ids = trx.objects.query
     :loaded()

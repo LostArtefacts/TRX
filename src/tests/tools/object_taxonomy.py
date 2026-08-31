@@ -64,6 +64,53 @@ def check_families(objects: set[str], families: set[str]) -> list[str]:
     return failures
 
 
+# What the families are for, stated as the game states it: which object sits in
+# which, that a combination half belongs where its whole does, and that the
+# families do not cover the pickups between them - a second state of something
+# Lara already carries is in none of them.
+MEMBERSHIP = [
+    ("gun", "shotgun_item"),
+    ("ammo", "shotgun_ammo_item"),
+    ("supply", "small_medipack_item"),
+    ("tool", "crowbar_item"),
+    ("tool", "waterskin_1_empty"),
+    ("key", "key_item_1"),
+    ("key", "key_item_4_combo_1"),
+    ("puzzle", "puzzle_item_1"),
+    ("quest", "quest_item_1"),
+    ("quest", "scion_item_1"),
+    ("examine", "examine_item_1"),
+    ("collectible", "pickup_item_1"),
+    ("secret", "secret_1"),
+    ("creature", "wolf"),
+    ("door", "door_1"),
+]
+
+PICKUP_FAMILIES = [
+    "gun",
+    "ammo",
+    "supply",
+    "tool",
+    "key",
+    "puzzle",
+    "quest",
+    "examine",
+    "collectible",
+]
+
+
+def check_membership() -> list[str]:
+    stated = load_json5(SHIP_CFG / "object_families.json5")
+    failures = []
+    for family, key in MEMBERSHIP:
+        if key not in stated.get(family, []):
+            failures.append(f"'{key}' is in no '{family}'")
+    for family in PICKUP_FAMILIES:
+        if "waterskin_1_1" in stated.get(family, []):
+            failures.append(f"a fill level is in '{family}'")
+    return failures
+
+
 def check_links(objects: set[str], links: set[str]) -> list[str]:
     path = SHIP_CFG / "object_links.json5"
     stated = load_json5(path)
@@ -99,7 +146,11 @@ def main() -> int:
         )
     )
 
-    failures = check_families(objects, families) + check_links(objects, links)
+    failures = (
+        check_families(objects, families)
+        + check_membership()
+        + check_links(objects, links)
+    )
     for failure in failures:
         print(f"  FAIL  {failure}", file=sys.stderr)
     if failures:
