@@ -545,7 +545,12 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/rooms',
   'bundles': [b_lua_surface, b_lua_math],
-  'src': ['harness/stubs_console.c', 'fakes/rooms.c', 'fakes/items.c'],
+  'src': [
+    'harness/stubs_console.c',
+    'fakes/level.c',
+    'fakes/rooms.c',
+    'fakes/items.c',
+  ],
   'engine': [
     'game/lua/capi/events.c',
     'game/lua/capi/items.c',
@@ -678,7 +683,9 @@ unit_tests += {
   'name': 'lua/api/camera',
   'bundles': [b_lua_surface, b_lua_math],
   'src': [
+    'harness/stubs_console.c',
     'fakes/camera.c',
+    'fakes/level.c',
     'fakes/rooms.c',
     # for Room_GetIndexFromPos, which rooms.c reaches for
     'fakes/items.c',

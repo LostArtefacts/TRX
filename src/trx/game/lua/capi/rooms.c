@@ -1,5 +1,8 @@
+#include <trx/core/vector.h>
+#include <trx/game/console/common.h>
 #include <trx/game/items/actions/ids.h>
 #include <trx/game/items/const.h>
+#include <trx/game/level/common.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/field.h>
 #include <trx/game/lua/registry.h>
@@ -8,6 +11,13 @@
 #include <trx/game/rooms.h>
 
 #include <lauxlib.h>
+
+typedef struct {
+    int32_t room_num;
+    int32_t group;
+} M_FLIP_GROUP_DECL;
+
+static VECTOR *m_FlipGroupDecls = nullptr;
 
 // Scripts and the engine both count rooms from 0. There is no Room_GetIndex, so
 // derive it the way Item_GetIndex does.
@@ -138,6 +148,38 @@ static int M_L_RoomsFlipGroupCount(lua_State *const L)
     return 1;
 }
 
+// trxc.rooms.declare_flip_group(room_num, group)
+//
+// Stores flip groups until Level_Initialise, when rooms are ready.
+// Keeps declarations level-scoped, like the listeners from the same script.
+static int M_L_RoomsDeclareFlipGroup(lua_State *const L)
+{
+    if (LUA_GetScriptContext() != LUA_CONTEXT_LEVEL) {
+        return luaL_error(
+            L, "a flip group can only be declared by a level script");
+    }
+    if (Level_IsWorldLoaded()) {
+        return luaL_error(
+            L, "a flip group must be declared before the level is read");
+    }
+
+    const lua_Integer room_num = luaL_checkinteger(L, 1);
+    luaL_argcheck(L, room_num >= 0, 1, "unknown room");
+    const lua_Integer group = luaL_checkinteger(L, 2);
+    luaL_argcheck(
+        L, group >= 0 && group < MAX_FLIP_MAPS, 2, "no such flip group");
+
+    if (m_FlipGroupDecls == nullptr) {
+        m_FlipGroupDecls = Vector_Create(sizeof(M_FLIP_GROUP_DECL));
+    }
+    const M_FLIP_GROUP_DECL decl = {
+        .room_num = (int32_t)room_num,
+        .group = (int32_t)group,
+    };
+    Vector_Add(m_FlipGroupDecls, &decl);
+    return 0;
+}
+
 // trxc.rooms.flip([group])
 static int M_L_RoomsFlip(lua_State *const L)
 {
@@ -260,6 +302,7 @@ static const luaL_Reg m_Module[] = {
     { "get", M_L_RoomsGet },
     { "get_bounds", M_L_RoomsGetBounds },
     { "point_inside", M_L_RoomsPointInside },
+    { "declare_flip_group", M_L_RoomsDeclareFlipGroup },
     { "flip", M_L_RoomsFlip },
     { "flip_group_count", M_L_RoomsFlipGroupCount },
     { "get_flipped", M_L_RoomsGetFlipped },
@@ -272,6 +315,35 @@ static void M_Create(lua_State *const L)
 {
     LUA_Struct_Register(L, &TYPE_ROOM, nullptr);
     LUA_RegisterModule(L, "rooms", m_Module);
+}
+
+void LUA_Rooms_ClearFlipGroups(void)
+{
+    if (m_FlipGroupDecls != nullptr) {
+        Vector_Clear(m_FlipGroupDecls);
+    }
+}
+
+void LUA_Rooms_ApplyFlipGroups(void)
+{
+    if (m_FlipGroupDecls == nullptr) {
+        return;
+    }
+    for (int32_t i = 0; i < m_FlipGroupDecls->count; i++) {
+        const M_FLIP_GROUP_DECL *const decl = Vector_Get(m_FlipGroupDecls, i);
+        if (decl->room_num >= Room_GetCount()) {
+            Console_ShowError(
+                "Lua flip group error: unknown room %d", decl->room_num);
+            continue;
+        }
+        if (Room_Get(decl->room_num)->flipped_room == NO_ROOM) {
+            Console_ShowError(
+                "Lua flip group error: room %d has no flip pair",
+                decl->room_num);
+            continue;
+        }
+        Room_SetFlipGroup(decl->room_num, decl->group);
+    }
 }
 
 REGISTER_LUA_CAPI(.create = M_Create)

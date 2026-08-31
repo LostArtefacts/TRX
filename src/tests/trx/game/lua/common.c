@@ -226,6 +226,11 @@ void LUA_Config_ClearLevelWatchers(void)
 {
 }
 
+// Keep flip-group declarations outside the unlinked room bridge.
+void LUA_Rooms_ClearFlipGroups(void)
+{
+}
+
 void LUA_Guard_Install(lua_State *const L, const double budget_sec)
 {
 }

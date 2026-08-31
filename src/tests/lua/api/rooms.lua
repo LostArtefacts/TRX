@@ -119,6 +119,75 @@ test("module functions reach the engine", function()
   assert(fake.calls().set_flip_timer.flip_timer == 10)
 end)
 
+-- A level script names its flip groups before the level's rooms are read, so
+-- the declaration waits and Level_Initialise applies it.
+test("declared flip groups reach the rooms once the level is read", function()
+  fake.clear_flip_groups()
+  fake.set_level_script(true)
+  fake.set_world_loaded(false)
+  trx.rooms.flip_groups({ [0] = 1 })
+  assert(
+    fake.calls().set_flip_group.count == 0,
+    "a declaration must not touch the rooms of the outgoing level"
+  )
+
+  fake.set_world_loaded(true)
+  fake.apply_flip_groups()
+  assert(fake.calls().set_flip_group.room_num == 0)
+  assert(fake.calls().set_flip_group.group == 1)
+end)
+
+test("a flip group must be declared before the level is read", function()
+  fake.clear_flip_groups()
+  fake.set_level_script(true)
+  raises(function()
+    trx.rooms.flip_groups({ [0] = 1 })
+  end, "before the level is read")
+end)
+
+test("a flip group can only be declared by a level script", function()
+  fake.clear_flip_groups()
+  fake.set_level_script(false)
+  fake.set_world_loaded(false)
+  raises(function()
+    trx.rooms.flip_groups({ [0] = 1 })
+  end, "by a level script")
+end)
+
+test("a room that cannot hold a group is passed over", function()
+  fake.clear_flip_groups()
+  fake.set_level_script(true)
+  fake.set_world_loaded(false)
+  -- Room 2 has no flip pair, and the fake level stops at room 3.
+  trx.rooms.flip_groups({ [2] = 1, [9] = 1, [0] = 2 })
+  fake.set_world_loaded(true)
+  fake.apply_flip_groups()
+
+  assert(
+    fake.calls().set_flip_group.count == 1,
+    "only the room with a flip pair may be grouped"
+  )
+  assert(fake.calls().set_flip_group.room_num == 0)
+end)
+
+test("a flip group is named by number, on both sides", function()
+  fake.clear_flip_groups()
+  fake.set_level_script(true)
+  fake.set_world_loaded(false)
+  raises(function()
+    trx.rooms.flip_groups({ ["0"] = 1 })
+  end, "named by number")
+  raises(function()
+    trx.rooms.flip_groups({ [0] = "1" })
+  end, "named by number")
+  raises(function()
+    trx.rooms.flip_groups({ [0] = trx.rooms.flip_group_count })
+  end, "no such flip group")
+
+  -- The rest of the file is the surface as a game script sees it.
+  fake.set_level_script(false)
+end)
+
 test("find_valid_pos nudges a position, or gives nil", function()
   local pos, num = trx.rooms.find_valid_pos({ x = 0, y = 0, z = 0 }, 0)
   assert(pos ~= nil and num == 0, "expected a valid position")

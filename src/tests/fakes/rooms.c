@@ -107,6 +107,11 @@ void Room_FlipMap(const int32_t group)
     m_FlipStatus = !m_FlipStatus;
 }
 
+void Room_SetFlipGroup(const int32_t room_num, const int32_t group)
+{
+    FAKE_RECORD("set_flip_group", FV(room_num), FV(group));
+}
+
 bool Room_GetFlipStatus(void)
 {
     return m_FlipStatus;

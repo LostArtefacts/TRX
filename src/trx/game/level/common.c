@@ -122,6 +122,9 @@ RESULT Level_Initialise(
     // The level script ran before any of this was here, so the watchers it
     // attached are still owed the call for the value in force.
     LUA_Config_FlushPendingWatchers();
+    // Resolve script-declared flip groups before savegame loading replays
+    // their moved state.
+    LUA_Rooms_ApplyFlipGroups();
 
     UI_LoadText();
     Output_SetSkyboxEnabled(Object_Get(O_SKYBOX)->loaded);

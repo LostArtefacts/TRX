@@ -211,6 +211,25 @@ end
 
   Returns: integer. How many rooms the loaded level holds.
 
+- <a id="rooms.flip_groups" name="rooms.flip_groups"></a>[lua]`trx.rooms.flip_groups(groups)`  
+  Puts rooms in flip groups. A level script can then move some flip pairs while the
+  rest stay where they are. Each entry names one room and the group it belongs to. Its flip pair
+  joins the same group.
+
+  Call this only from the top level of a level script. Rooms must be grouped before the level
+  starts, so the game can restore flipped groups correctly when it loads a save.
+
+  A level with no groups moves all flip pairs together. After a script names any group, each flip
+  trigger moves only the group with the same number.
+
+  Parameters:
+  - <a id="rooms.flip_groups.groups" name="rooms.flip_groups.groups"></a>**`groups`** (table). Flip groups, keyed by [`trx.rooms.Num`](#rooms.Num).
+
+  Example:
+  ```lua
+  trx.rooms.flip_groups({ [33] = 1, [37] = 2 })
+  ```
+
 - <a id="rooms.flip" name="rooms.flip"></a>[lua]`trx.rooms.flip([group])`  
   Flips rooms, swapping each with its flip pair. With no group given, every group
   moves.

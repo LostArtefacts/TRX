@@ -74,6 +74,12 @@ void LUA_Config_ClearLevelWatchers(void);
 // has its objects. Level_Initialise does this once the level is read.
 void LUA_Config_FlushPendingWatchers(void);
 
+// Clears flip groups declared by a level script.
+void LUA_Rooms_ClearFlipGroups(void);
+
+// Applies level-script flip groups after rooms are read.
+void LUA_Rooms_ApplyFlipGroups(void);
+
 // Let go of the outgoing level's script: what it set up hears about it, and
 // then its listeners go. Level_Unload does this for a level change; a path that
 // re-runs a script without unloading the level does it for itself. The event

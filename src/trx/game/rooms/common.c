@@ -522,6 +522,16 @@ void Room_SetFlipStatus(const bool status)
     m_FlipStatus = status;
 }
 
+void Room_SetFlipGroup(const int32_t room_num, const int32_t group)
+{
+    ROOM *const room = Room_Get(room_num);
+    ASSERT(room != nullptr);
+    room->alternate_group = group;
+    if (room->flipped_room != NO_ROOM) {
+        Room_Get(room->flipped_room)->alternate_group = group;
+    }
+}
+
 int32_t Room_GetFlipGroup(const int32_t flip_slot)
 {
     for (int32_t i = 0; i < m_RoomCount; i++) {
