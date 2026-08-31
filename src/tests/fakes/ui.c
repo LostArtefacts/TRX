@@ -10,7 +10,6 @@
 #include <trx/game/input/common.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/families.h>
-#include <trx/game/objects/vars.h>
 #include <trx/game/output/textures.h>
 #include <trx/game/viewport.h>
 #include <trx/version.h>
@@ -181,5 +180,11 @@ void TouchOverlay_ExitSelectionMode(void)
 // names only for those glyphs.
 OBJECT_ID ObjectFamily_GetMember(const OBJECT_FAMILY family, const int32_t idx)
 {
-    return g_SecretObjects[idx];
+    static const OBJECT_ID secrets[] = {
+        O_SECRET_1,
+        O_SECRET_2,
+        O_SECRET_3,
+    };
+    return idx >= 0 && idx < (int32_t)ARRAY_SIZE(secrets) ? secrets[idx]
+                                                          : NO_OBJECT;
 }

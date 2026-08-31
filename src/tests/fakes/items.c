@@ -135,31 +135,67 @@ static const OBJECT_ID m_CollectibleObjects[] = {
     NO_OBJECT,
 };
 
+static const OBJECT_ID m_CreatureObjects[] = { FAKE_OBJ_WOLF, NO_OBJECT };
+static const OBJECT_ID m_BossObjects[] = { NO_OBJECT };
+static const OBJECT_ID m_LoyalObjects[] = { NO_OBJECT };
+static const OBJECT_ID m_PickupObjects[] = {
+    FAKE_OBJ_VASE,  FAKE_OBJ_KEY,     FAKE_OBJ_REAL_KEY,  FAKE_OBJ_PUZZLE,
+    FAKE_OBJ_TOOL,  FAKE_OBJ_LEADBAR, FAKE_OBJ_MEDIPACK,  FAKE_OBJ_TRINKET,
+    FAKE_OBJ_SCION, FAKE_OBJ_SCION_2, FAKE_OBJ_WATERSKIN, NO_OBJECT,
+};
+static const OBJECT_ID m_GunObjects[] = {
+#define X_PICKUP_GUN(item, option) item,
+#include <trx/game/objects/pickups.def>
+#undef X_PICKUP_GUN
+    NO_OBJECT,
+};
+static const OBJECT_ID m_GunAmmoObjects[] = {
+#define X_PICKUP_GUN_AMMO(gun_item, item, option) item,
+#include <trx/game/objects/pickups.def>
+#undef X_PICKUP_GUN_AMMO
+    NO_OBJECT,
+};
+static const OBJECT_ID m_SecretObjects[] = {
+    O_SECRET_1,
+    O_SECRET_2,
+    O_SECRET_3,
+    NO_OBJECT,
+};
+
+static const OBJECT_ID m_SwitchObjects[] = { FAKE_OBJ_SWITCH, NO_OBJECT };
+static const OBJECT_ID m_ReceptacleObjects[] = { FAKE_OBJ_RECEPTACLE,
+                                                 NO_OBJECT };
+static const OBJECT_ID m_MovableBlockObjects[] = { NO_OBJECT };
+static const OBJECT_ID m_DoorObjects[] = { FAKE_OBJ_DOOR, NO_OBJECT };
+static const OBJECT_ID m_NullObjects[] = { NO_OBJECT };
+static const OBJECT_ID m_AnimObjects[] = { NO_OBJECT };
+static const OBJECT_ID m_InvObjects[] = { NO_OBJECT };
+
 static const struct {
     OBJECT_FAMILY family;
     const OBJECT_ID *objects;
 } m_Families[] = {
     // clang-format off
-    { OBJ_FAMILY_ANIM,        g_AnimObjects },
-    { OBJ_FAMILY_AMMO,        g_GunAmmoObjects },
-    { OBJ_FAMILY_BOSS,        g_BossObjects },
+    { OBJ_FAMILY_ANIM,        m_AnimObjects },
+    { OBJ_FAMILY_AMMO,        m_GunAmmoObjects },
+    { OBJ_FAMILY_BOSS,        m_BossObjects },
     { OBJ_FAMILY_COLLECTIBLE, m_CollectibleObjects },
-    { OBJ_FAMILY_CREATURE,    g_CreatureObjects },
-    { OBJ_FAMILY_DOOR,        g_DoorObjects },
+    { OBJ_FAMILY_CREATURE,    m_CreatureObjects },
+    { OBJ_FAMILY_DOOR,        m_DoorObjects },
     { OBJ_FAMILY_EXAMINE,     m_ExamineObjects },
-    { OBJ_FAMILY_GUN,         g_GunObjects },
-    { OBJ_FAMILY_INVENTORY,   g_InvObjects },
+    { OBJ_FAMILY_GUN,         m_GunObjects },
+    { OBJ_FAMILY_INVENTORY,   m_InvObjects },
     { OBJ_FAMILY_KEY,         m_KeyObjects },
-    { OBJ_FAMILY_LOYAL,       g_LoyalObjects },
-    { OBJ_FAMILY_NULL,        g_NullObjects },
-    { OBJ_FAMILY_PICKUP,      g_PickupObjects },
-    { OBJ_FAMILY_PUSHABLE,    g_MovableBlockObjects },
+    { OBJ_FAMILY_LOYAL,       m_LoyalObjects },
+    { OBJ_FAMILY_NULL,        m_NullObjects },
+    { OBJ_FAMILY_PICKUP,      m_PickupObjects },
+    { OBJ_FAMILY_PUSHABLE,    m_MovableBlockObjects },
     { OBJ_FAMILY_PUZZLE,      m_PuzzleObjects },
     { OBJ_FAMILY_QUEST,       m_QuestObjects },
-    { OBJ_FAMILY_RECEPTACLE,  g_ReceptacleObjects },
-    { OBJ_FAMILY_SECRET,      g_SecretObjects },
+    { OBJ_FAMILY_RECEPTACLE,  m_ReceptacleObjects },
+    { OBJ_FAMILY_SECRET,      m_SecretObjects },
     { OBJ_FAMILY_SUPPLY,      m_SupplyObjects },
-    { OBJ_FAMILY_SWITCH,      g_SwitchObjects },
+    { OBJ_FAMILY_SWITCH,      m_SwitchObjects },
     { OBJ_FAMILY_TOOL,        m_ToolObjects },
     // clang-format on
 };
@@ -179,41 +215,6 @@ static const char *M_ObjectNames(const OBJECT_ID obj_id)
     const int32_t idx = M_FindObjectName(obj_id);
     return idx >= 0 ? m_ObjectNames[idx].names : nullptr;
 }
-
-const OBJECT_ID g_CreatureObjects[] = { FAKE_OBJ_WOLF, NO_OBJECT };
-const OBJECT_ID g_BossObjects[] = { NO_OBJECT };
-const OBJECT_ID g_LoyalObjects[] = { NO_OBJECT };
-const OBJECT_ID g_PickupObjects[] = {
-    FAKE_OBJ_VASE,  FAKE_OBJ_KEY,     FAKE_OBJ_REAL_KEY,  FAKE_OBJ_PUZZLE,
-    FAKE_OBJ_TOOL,  FAKE_OBJ_LEADBAR, FAKE_OBJ_MEDIPACK,  FAKE_OBJ_TRINKET,
-    FAKE_OBJ_SCION, FAKE_OBJ_SCION_2, FAKE_OBJ_WATERSKIN, NO_OBJECT,
-};
-const OBJECT_ID g_GunObjects[] = {
-#define X_PICKUP_GUN(item, option) item,
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_GUN
-    NO_OBJECT,
-};
-const OBJECT_ID g_GunAmmoObjects[] = {
-#define X_PICKUP_GUN_AMMO(gun_item, item, option) item,
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_GUN_AMMO
-    NO_OBJECT,
-};
-const OBJECT_ID g_SecretObjects[] = {
-    O_SECRET_1,
-    O_SECRET_2,
-    O_SECRET_3,
-    NO_OBJECT,
-};
-
-const OBJECT_ID g_SwitchObjects[] = { FAKE_OBJ_SWITCH, NO_OBJECT };
-const OBJECT_ID g_ReceptacleObjects[] = { FAKE_OBJ_RECEPTACLE, NO_OBJECT };
-const OBJECT_ID g_MovableBlockObjects[] = { NO_OBJECT };
-const OBJECT_ID g_DoorObjects[] = { FAKE_OBJ_DOOR, NO_OBJECT };
-const OBJECT_ID g_NullObjects[] = { NO_OBJECT };
-const OBJECT_ID g_AnimObjects[] = { NO_OBJECT };
-const OBJECT_ID g_InvObjects[] = { NO_OBJECT };
 
 static void M_Reset(void)
 {
