@@ -36,6 +36,10 @@ bool Room_GetFlipStatus(void);
 // Whether the given group is showing its pairs.
 bool Room_GetFlipGroupStatus(int32_t group);
 
+// Puts a room and its flip pair in a flip group. A room without a flip pair
+// keeps the group it has.
+void Room_SetFlipGroup(int32_t room_num, int32_t group);
+
 // The group a flip slot moves. A TR4 trigger names the group in the same
 // number it uses for the slot, where a TR1-3 trigger means the slot alone and
 // moves every pair in the level. A level that puts no room in a group is read

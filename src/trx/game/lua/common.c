@@ -501,6 +501,7 @@ void LUA_DropLevelScript(void)
 
     LUA_ClearLevelListeners();
     LUA_Config_ClearLevelWatchers();
+    LUA_Rooms_ClearFlipGroups();
     LUA_DropLevelModules(p->state);
 }
 

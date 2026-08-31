@@ -6018,6 +6018,20 @@
       }
     },
     {
+      "description": "Puts rooms in flip groups. A level script can then move some flip pairs while the\nrest stay where they are. Each entry names one room and the group it belongs to. Its flip pair\njoins the same group.\n\nCall this only from the top level of a level script. Rooms must be grouped before the level\nstarts, so the game can restore flipped groups correctly when it loads a save.\n\nA level with no groups moves all flip pairs together. After a script names any group, each flip\ntrigger moves only the group with the same number.",
+      "examples": [
+        "trx.rooms.flip_groups({ [33] = 1, [37] = 2 })"
+      ],
+      "params": [
+        {
+          "description": "Flip groups, keyed by `trx.rooms.Num`.",
+          "name": "groups",
+          "type": "table"
+        }
+      ],
+      "path": "rooms.flip_groups"
+    },
+    {
       "description": "Flips rooms, swapping each with its flip pair. With no group given, every group\nmoves.",
       "examples": [
         "trx.rooms.flip()",
