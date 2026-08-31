@@ -1,7 +1,9 @@
 #include <trx/game/objects.h>
 #include <trx/game/savegame.h>
 
-// Inventory items persisted in savegames, keyed by their legacy JSON names.
+// Define savegame inventory items by names accepted by released builds, and
+// store catalogue-minted objects separately by key.
+// TODO: remove after 1.15.
 const SAVEGAME_INVENTORY_ENTRY g_Savegame_InventoryItems[] = {
 // clang-format off
 #define X_PICKUP_KEY(n) { O_KEY_ITEM_##n, "key" #n },

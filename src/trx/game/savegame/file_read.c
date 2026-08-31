@@ -1025,21 +1025,51 @@ static RESULT M_ReadResumeInfo(
     return OK;
 }
 
+static void M_SetInventoryCount(const OBJECT_ID object_id, const int32_t qty)
+{
+    while (Inv_GetItemCount(object_id) != 0) {
+        Inv_RemoveItem(object_id);
+    }
+    Inv_AddItemNTimes(object_id, qty);
+}
+
 RESULT SG_File_LoadInventory(JSON_READ_IO *const io)
 {
     MUST(JSON_PUSH(io, "inventory"));
     const GF_LEVEL *const current_level = Game_GetCurrentLevel();
 
     Lara_InitialiseInventory(current_level);
+    if (JSON_ReadIO_HasKey(io, "items")) {
+        MUST(JSON_PUSH(io, "items"));
+        const int32_t count = JSON_ARRAY_LEN(io);
+        for (int32_t i = 0; i < count; i++) {
+            MUST(JSON_PUSH_INDEX(io, i));
+            CATALOG_ID object_id = NO_OBJECT;
+            int32_t qty = 0;
+            if (SHOULD(
+                    SaveGame_ReadIdentity(
+                        io, "object_id", "object_key", CATALOG_OBJECTS,
+                        &object_id),
+                    "that pickup is left behind")
+                && object_id != NO_CATALOG_ID) {
+                MUST(JSON_READ(io, "qty", &qty));
+                M_SetInventoryCount(object_id, qty);
+            }
+            MUST(JSON_POP(io));
+        }
+        MUST(JSON_POP(io));
+        MUST(JSON_POP(io));
+        return OK;
+    }
+
+    // Store released-build pickups by name because this save format has no
+    // names for catalogue-minted objects.
+    // TODO: remove after 1.15.
     for (int32_t i = 0; g_Savegame_InventoryItems[i].key != nullptr; i++) {
         int16_t qty;
         if (Result_Absorb(
                 JSON_READ(io, g_Savegame_InventoryItems[i].key, &qty))) {
-            while (Inv_GetItemCount(g_Savegame_InventoryItems[i].object_id)
-                   != 0) {
-                Inv_RemoveItem(g_Savegame_InventoryItems[i].object_id);
-            }
-            Inv_AddItemNTimes(g_Savegame_InventoryItems[i].object_id, qty);
+            M_SetInventoryCount(g_Savegame_InventoryItems[i].object_id, qty);
         }
     }
 
