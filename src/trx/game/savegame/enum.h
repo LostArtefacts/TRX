@@ -68,6 +68,10 @@ typedef enum {
     // Persists identities and music track flags by key.
     SG_VERSION_20 = 20,
 
+    // Persist Lara's inventory by key because catalogue-minted objects must
+    // survive saves.
+    SG_VERSION_21 = 21,
+
     SG_MIN_SUPPORTED_VERSION = SG_VERSION_13,
-    SG_CURRENT_VERSION = SG_VERSION_20,
+    SG_CURRENT_VERSION = SG_VERSION_21,
 } SAVEGAME_VERSION;

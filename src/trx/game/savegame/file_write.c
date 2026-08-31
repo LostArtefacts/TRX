@@ -442,10 +442,26 @@ void SG_File_DumpFX(JSON_WRITE_IO *const io)
 void SG_File_DumpInventory(JSON_WRITE_IO *const io)
 {
     JSONW_PUSH_OBJECT(io);
+    // Define names accepted by released builds, and store catalogue-minted
+    // objects separately because they have no such names.
+    // TODO: remove after 1.15.
     for (const SAVEGAME_INVENTORY_ENTRY *entry = g_Savegame_InventoryItems;
          entry->object_id != NO_OBJECT; entry++) {
         JSONW_WRITE(io, entry->key, Inv_GetItemCount(entry->object_id));
     }
+
+    JSONW_PUSH_ARRAY(io);
+    const INVENTORY_STATE *const state = Inv_GetState();
+    for (int32_t i = 0; i < state->count; i++) {
+        JSONW_PUSH_OBJECT(io);
+        SaveGame_WriteIdentity(
+            io, "object_id", "object_key", CATALOG_OBJECTS,
+            state->entries[i].object_id);
+        JSONW_WRITE(io, "qty", state->entries[i].qty);
+        JSONW_POP_AND_APPEND(io);
+    }
+    JSONW_POP_AND_SET(io, "items");
+
     JSONW_POP_AND_SET(io, "inventory");
 }
 
