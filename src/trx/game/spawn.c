@@ -320,9 +320,9 @@ int16_t Spawn_GunHit(
 {
     const ITEM *const lara_item = Lara_GetItem();
     XYZ_32 vec = {
-        .x = -((Random_GetDraw() - 0x4000) << 7) / 0x7FFF,
-        .y = -((Random_GetDraw() - 0x4000) << 7) / 0x7FFF,
-        .z = -((Random_GetDraw() - 0x4000) << 7) / 0x7FFF,
+        .x = -((Random_GetDraw() - 0x4000) * 128) / 0x7FFF,
+        .y = -((Random_GetDraw() - 0x4000) * 128) / 0x7FFF,
+        .z = -((Random_GetDraw() - 0x4000) * 128) / 0x7FFF,
     };
     Collide_GetJointAbsPosition(
         lara_item, &vec, Random_GetControl() * LM_NUMBER_OF / 0x7FFF);
@@ -340,9 +340,9 @@ int16_t Spawn_GunMiss(
 {
     const ITEM *const lara_item = Lara_GetItem();
     const GAME_VECTOR pos = {
-        .x = lara_item->pos.x + ((Random_GetDraw() - 0x4000) << 9) / 0x7FFF,
+        .x = lara_item->pos.x + ((Random_GetDraw() - 0x4000) * 512) / 0x7FFF,
         .y = lara_item->floor,
-        .z = lara_item->pos.z + ((Random_GetDraw() - 0x4000) << 9) / 0x7FFF,
+        .z = lara_item->pos.z + ((Random_GetDraw() - 0x4000) * 512) / 0x7FFF,
         .room_num = lara_item->room_num,
     };
     Spawn_Ricochet(pos);
