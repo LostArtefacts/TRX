@@ -15,6 +15,8 @@ trx.events.on_game_start(function()
   trx.lara.holsters_visible = trx.lara.has_pistol_weapon
   trx.objects.switch_type_generic_1.properties.switch_mode =
     trx.items.SwitchMode.HIDDEN_REACH
+  trx.objects.scaled_spikes.properties.scaled_spikes_mode =
+    trx.items.ScaledSpikesMode.EXTENDED
 end)
 
 trx.events.on_cutscene_trigger(function(cutscene_num)

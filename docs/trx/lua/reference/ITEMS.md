@@ -53,6 +53,17 @@ end
     - `trx.items.PickupMode.PLINTH_SCION` = `6`  
         Similar to PLINTH_HIGH; invokes Lara's extra animation as in Tomb of Qualopec.
 
+- <a id="items.ScaledSpikesMode" name="items.ScaledSpikesMode"></a>[lua]`trx.items.ScaledSpikesMode`
+
+    The values the `scaled_spikes_mode` item property can take. It determines how spikes behave when triggered.
+
+    - `trx.items.ScaledSpikesMode.LOOPING` = `0`  
+        Spikes will extend, wait a brief period, retract, and then the loop will repeat.
+    - `trx.items.ScaledSpikesMode.EXTENDED` = `1`  
+        Spikes will extend and remain as-is indefinitely.
+    - `trx.items.ScaledSpikesMode.ONE_SHOT` = `2`  
+        Spikes will extend, wait a brief period, retract, and then stop.
+
 - <a id="items.SwitchMode" name="items.SwitchMode"></a>[lua]`trx.items.SwitchMode`
 
     The values the `switch_mode` item property can take. It selects the animation Lara plays when interacting with the item.

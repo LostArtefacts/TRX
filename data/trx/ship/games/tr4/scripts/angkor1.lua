@@ -8,6 +8,10 @@ trx.events.on_game_start(function(is_save)
   trx.objects.animating_15.properties.collidable = false
   trx.objects.animating_16.properties.collidable = false
   trx.lara.holsters_visible = trx.lara.has_pistol_weapon
+  trx.objects.scaled_spikes.properties.scaled_spikes_mode =
+    trx.items.ScaledSpikesMode.ONE_SHOT
+  trx.items[13].properties.scaled_spikes_mode =
+    trx.items.ScaledSpikesMode.EXTENDED
 end)
 
 local BACKPACK_CUTSCENE = 5

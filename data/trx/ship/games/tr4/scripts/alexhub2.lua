@@ -7,4 +7,6 @@ trx.events.on_game_start(function()
   trx.items[82].properties.crowbar = true
   trx.items[83].properties.crowbar = true
   trx.items[36].properties.pickup_mode = trx.items.PickupMode.CROWBAR
+  trx.objects.scaled_spikes.properties.scaled_spikes_mode =
+    trx.items.ScaledSpikesMode.ONE_SHOT
 end)

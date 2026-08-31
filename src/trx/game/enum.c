@@ -20,6 +20,7 @@
 #include <trx/game/objects/general/pickup.h>
 #include <trx/game/objects/general/waterfall.h>
 #include <trx/game/objects/ids.h>
+#include <trx/game/objects/traps/scaled_spikes.h>
 #include <trx/game/rooms/enum.h>
 #include <trx/game/savegame/types.h>
 #include <trx/game/screenshot.h>
@@ -194,6 +195,10 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(ROOM_FLIP_STATUS, RFS_NONE, "none");
     ENUM_MAP(ROOM_FLIP_STATUS, RFS_UNFLIPPED, "unflipped");
     ENUM_MAP(ROOM_FLIP_STATUS, RFS_FLIPPED, "flipped");
+
+    ENUM_MAP(SCALED_SPIKES_MODE, SCALED_SPIKES_MODE_LOOPING, "looping");
+    ENUM_MAP(SCALED_SPIKES_MODE, SCALED_SPIKES_MODE_EXTENDED, "extended");
+    ENUM_MAP(SCALED_SPIKES_MODE, SCALED_SPIKES_MODE_ONE_SHOT, "one_shot");
 
     ENUM_MAP(SWITCH_MODE, SWITCH_MODE_NORMAL, "normal");
     ENUM_MAP(SWITCH_MODE, SWITCH_MODE_HIDDEN_REACH, "hidden_reach");

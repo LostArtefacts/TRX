@@ -1328,6 +1328,8 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>damage</code></td><td colspan="3" align="center">8</td><td>Damage dealt when Lara hits the spikes without dying instantly.</td></tr>
+<tr><td><code>orientation</code></td><td colspan="3" align="center">4</td><td>The orientation configuration of the spikes. Value range: minimum 0; maximum 15.</td></tr>
+<tr><td><code>scaled_spikes_mode</code></td><td colspan="3" align="center">0</td><td>The behavior of the spikes when triggered - 0: looping; 1: permanently extended; 2: one-shot.</td></tr>
 </tbody>
 </table>
 

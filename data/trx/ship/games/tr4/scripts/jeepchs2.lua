@@ -9,4 +9,6 @@ trx.events.on_game_start(function()
   trx.items[91].properties.requires_heavy_trigger = true
   trx.items[93].properties.requires_heavy_trigger = true
   trx.items[95].properties.requires_heavy_trigger = true
+  trx.objects.scaled_spikes.properties.scaled_spikes_mode =
+    trx.items.ScaledSpikesMode.EXTENDED
 end)

@@ -1303,6 +1303,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── csplit1.lua
 │   │   │   ├── csplit2.lua
 │   │   │   ├── highstrt.lua
+│   │   │   ├── jeepchas.lua
 │   │   │   ├── jeepchs2.lua
 │   │   │   ├── joby1a.lua
 │   │   │   ├── joby2.lua
@@ -1312,6 +1313,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── joby4c.lua
 │   │   │   ├── joby5a.lua
 │   │   │   ├── joby5b.lua
+│   │   │   ├── joby5c.lua
 │   │   │   ├── karnak1.lua
 │   │   │   ├── lake.lua
 │   │   │   ├── libend.lua
@@ -2686,6 +2688,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── csplit1.lua
     │   │   │   │   ├── csplit2.lua
     │   │   │   │   ├── highstrt.lua
+    │   │   │   │   ├── jeepchas.lua
     │   │   │   │   ├── jeepchs2.lua
     │   │   │   │   ├── joby1a.lua
     │   │   │   │   ├── joby2.lua
@@ -2695,6 +2698,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── joby4c.lua
     │   │   │   │   ├── joby5a.lua
     │   │   │   │   ├── joby5b.lua
+    │   │   │   │   ├── joby5c.lua
     │   │   │   │   ├── karnak1.lua
     │   │   │   │   ├── lake.lua
     │   │   │   │   ├── libend.lua
