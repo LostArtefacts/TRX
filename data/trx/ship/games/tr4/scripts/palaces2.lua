@@ -24,4 +24,6 @@ trx.events.on_game_start(function()
   trx.items[71].properties.pickup_mode = trx.items.PickupMode.SARCOPHAGUS
   trx.items[118].properties.pickup_mode = trx.items.PickupMode.SARCOPHAGUS
   trx.items[122].properties.pickup_mode = trx.items.PickupMode.SARCOPHAGUS
+  trx.objects.scaled_spikes.properties.scaled_spikes_mode =
+    trx.items.ScaledSpikesMode.ONE_SHOT
 end)

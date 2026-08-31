@@ -47,6 +47,17 @@ api.enum("items.PickupMode", {
   },
 })
 
+api.enum("items.ScaledSpikesMode", {
+  backing = "SCALED_SPIKES_MODE",
+  description = "<!--noref: scaled_spikes_mode--> The values the `scaled_spikes_mode` item property can take. It determines how "
+    .. "spikes behave when triggered.",
+  values = {
+    LOOPING = "Spikes will extend, wait a brief period, retract, and then the loop will repeat.",
+    EXTENDED = "Spikes will extend and remain as-is indefinitely.",
+    ONE_SHOT = "Spikes will extend, wait a brief period, retract, and then stop.",
+  },
+})
+
 api.enum("items.SwitchMode", {
   backing = "SWITCH_MODE",
   description = "<!--noref: switch_mode--> The values the `switch_mode` item property can take. It selects the animation Lara "

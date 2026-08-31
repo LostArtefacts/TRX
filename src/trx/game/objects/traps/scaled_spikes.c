@@ -1,3 +1,5 @@
+#include <trx/game/objects/traps/scaled_spikes.h>
+
 #include <trx/config.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
@@ -9,42 +11,50 @@
 #include <trx/game/sparks.h>
 
 // clang-format off
-#define M_DEFAULT_RADIUS 480
-#define M_TILTED_RADIUS  300
-#define M_DEFAULT_DAMAGE 8
-#define M_COOLDOWN       64
-#define M_MAX_Y_SCALE    5120
-#define M_XZ_SCALE       (1 << W2V_SHIFT) // = 16384
-#define M_ACCELERATION   (STEP_L / 2) // = 128
-#define M_DEFAULT_SPEED  WALL_L
+#define M_DEFAULT_RADIUS      480
+#define M_TILTED_RADIUS       300
+#define M_DEFAULT_DAMAGE      8
+#define M_DEFAULT_ORIENTATION 4
+#define M_COOLDOWN            64
+#define M_MAX_Y_SCALE         5120
+#define M_XZ_SCALE            (1 << W2V_SHIFT) // = 16384
+#define M_ACCELERATION        (STEP_L / 2) // = 128
+#define M_DEFAULT_SPEED       WALL_L
 // clang-format on
 
 typedef struct {
+    struct {
+        XYZ_32 pos;
+        XYZ_16 rot;
+        bool is_set;
+    } base;
     int16_t speed;
     int16_t scale;
     int16_t cooldown;
     int32_t damage;
+    int32_t orientation;
+    SCALED_SPIKES_MODE scaled_spikes_mode;
 } M_PRIV;
 
-// clang-format off
-// TODO: improve OCB/property exposure
-static const int16_t m_XZRots[8] = {
-    -DEG_180, -DEG_135, -DEG_90, -DEG_45,
-    +0,       +DEG_45,  +DEG_90, +DEG_135,
+typedef struct {
+    int16_t xz_rot;
+    int16_t xz_offset;
+    int16_t y_offset;
+    int16_t y_det_offset;
+} M_SETUP;
+
+static const M_SETUP m_Setups[8] = {
+    // clang-format off
+    { -DEG_180,       0,          -WALL_L,     WALL_L },
+    { -DEG_135,       0,           0,          WALL_L / 2 },
+    { -DEG_90,       +WALL_L / 2, -WALL_L / 2, WALL_L / 2 },
+    { -DEG_45,        0,           0,          WALL_L / 2 },
+    { +0,             0,           0,          0 },
+    { +DEG_45,        0,           0,          WALL_L / 2 },
+    { +DEG_90,       -WALL_L / 2, -WALL_L / 2, WALL_L / 2 },
+    { +DEG_135,       0,           0,          WALL_L / 2 },
+    // clang-format on
 };
-static const int16_t m_XZOffsets[8] = {
-    0, 0, +WALL_L / 2, 0,
-    0, 0, -WALL_L / 2, 0,
-};
-static const int16_t m_YOffsets[8] = {
-    -WALL_L, 0, -WALL_L / 2, 0,
-    0,       0, -WALL_L / 2, 0,
-};
-static const int16_t m_YDetOffsets[8] = {
-    WALL_L, WALL_L / 2, WALL_L / 2, WALL_L / 2,
-    0,      WALL_L / 2, WALL_L / 2, WALL_L / 2,
-};
-// clang-format on
 
 static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
@@ -63,13 +73,51 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "cooldown", p->cooldown);
 }
 
-static int32_t M_GetOCB(const ITEM *const item)
+static const char *M_CheckOrientation(const TRX_VALUE *const in)
 {
-    TRX_VALUE value;
-    if (!ObjectProperty_GetItemValue(item, "ocb", &value)) {
-        return 0;
+    if (in->as_int < 0 || in->as_int > 0xF) {
+        return "orientation is beyond known range";
     }
-    return value.as_int;
+    return nullptr;
+}
+
+static const char *M_CheckMode(const TRX_VALUE *const in)
+{
+    return in->as_int < 0 || in->as_int >= SCALED_SPIKES_NUMBER_OF
+        ? "no such scaled spikes mode"
+        : nullptr;
+}
+
+static void M_EnsureBaseTransform(const ITEM *const item)
+{
+    M_PRIV *const p = item->priv;
+    if (p->base.is_set) {
+        return;
+    }
+
+    p->base.pos = item->pos;
+    p->base.rot = item->rot;
+    p->base.is_set = true;
+}
+
+static void M_SetOrientation(ITEM *const item, const TRX_VALUE *const in)
+{
+    M_PRIV *const p = item->priv;
+    p->orientation = in->as_int;
+    M_EnsureBaseTransform(item);
+    item->pos = p->base.pos;
+    item->rot = p->base.rot;
+
+    const M_SETUP *const setup = &m_Setups[p->orientation & 7];
+    if ((p->orientation & 8) != 0) {
+        item->rot.x = setup->xz_rot;
+        item->rot.y = DEG_90;
+        item->pos.z -= setup->xz_offset;
+    } else {
+        item->rot.z = setup->xz_rot;
+        item->pos.x += setup->xz_offset;
+    }
+    item->pos.y += setup->y_offset;
 }
 
 static void M_Initialise(const int16_t item_num)
@@ -77,20 +125,10 @@ static void M_Initialise(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     Item_SetVisible(item, false);
 
-    const int32_t ocb = M_GetOCB(item);
-    if ((ocb & 8) != 0) {
-        item->rot.x = m_XZRots[ocb & 7];
-        item->rot.y = DEG_90;
-        item->pos.z -= m_XZOffsets[ocb & 7];
-    } else {
-        item->rot.z = m_XZRots[ocb & 7];
-        item->pos.x += m_XZOffsets[ocb & 7];
-    }
-
     M_PRIV *const p = item->priv;
     p->speed = M_DEFAULT_SPEED;
     p->cooldown = 0;
-    item->pos.y += m_YOffsets[ocb & 7];
+    M_EnsureBaseTransform(item);
 }
 
 static bool M_TestCollision(const ITEM *const item, const ITEM *const lara_item)
@@ -103,19 +141,21 @@ static bool M_TestCollision(const ITEM *const item, const ITEM *const lara_item)
         return false;
     }
 
-    const int32_t ocb = M_GetOCB(item);
+    const M_PRIV *const p = item->priv;
+    const M_SETUP *const setup = &m_Setups[p->orientation & 7];
     int32_t x;
     int32_t z;
-    if ((ocb & 8) != 0) {
+    if ((p->orientation & 8) != 0) {
         x = ROUND_TO_SECTOR(item->pos.x) + WALL_L / 2;
-        z = ROUND_TO_SECTOR(item->pos.z + m_XZOffsets[ocb & 7]) + WALL_L / 2;
+        z = ROUND_TO_SECTOR(item->pos.z + setup->xz_offset) + WALL_L / 2;
     } else {
-        x = ROUND_TO_SECTOR(item->pos.x + m_XZOffsets[ocb & 7]) + WALL_L / 2;
+        x = ROUND_TO_SECTOR(item->pos.x + setup->xz_offset) + WALL_L / 2;
         z = ROUND_TO_SECTOR(item->pos.z) + WALL_L / 2;
     }
 
-    const int32_t radius = (ocb & 1) != 0 ? M_TILTED_RADIUS : M_DEFAULT_RADIUS;
-    const int32_t y = item->pos.y + m_YDetOffsets[ocb & 7];
+    const int32_t radius =
+        (p->orientation & 1) != 0 ? M_TILTED_RADIUS : M_DEFAULT_RADIUS;
+    const int32_t y = item->pos.y + setup->y_det_offset;
 
     const ANIM_FRAME *const frame = Item_GetBestFrame(lara_item);
     if (lara_item->pos.y + frame->bounds.min.y > y
@@ -137,7 +177,6 @@ static void M_Control(const int16_t item_num)
     M_PRIV *const p = item->priv;
     ITEM *const lara_item = Lara_GetItem();
 
-    const int32_t ocb = M_GetOCB(item);
     if (!Item_IsTriggerActive(item) || p->cooldown != 0) {
         if (Item_IsTriggerActive(item)) {
             p->speed += (p->speed >> 3) + 32;
@@ -149,7 +188,7 @@ static void M_Control(const int16_t item_num)
                 Item_SetVisible(item, false);
             }
 
-            if ((ocb & 32) != 0) {
+            if (p->scaled_spikes_mode == SCALED_SPIKES_MODE_ONE_SHOT) {
                 p->cooldown = 1;
             } else if (p->cooldown != 0) {
                 p->cooldown--;
@@ -173,7 +212,7 @@ static void M_Control(const int16_t item_num)
             int32_t blood_count = 0;
 
             if ((p->speed > M_DEFAULT_SPEED || lara_item->gravity)
-                && (ocb & 7) > 2 && (ocb & 7) < 6) {
+                && (p->orientation & 7) > 2 && (p->orientation & 7) < 6) {
                 if (lara_item->fall_speed > 6 || p->speed > M_DEFAULT_SPEED) {
                     Lara_Kill();
                     blood_count = 20;
@@ -188,7 +227,7 @@ static void M_Control(const int16_t item_num)
 
             int32_t y_bounds_1;
             int32_t y_bounds_2;
-            if ((ocb & 0xF) == 8 || (ocb & 0xF) == 0) {
+            if (p->orientation == 8 || p->orientation == 0) {
                 y_bounds_1 = -item_frame->bounds.max.y;
                 y_bounds_2 = -item_frame->bounds.min.y;
             } else {
@@ -204,7 +243,7 @@ static void M_Control(const int16_t item_num)
                 y_bottom = y_bounds_2 + item->pos.y;
             }
 
-            if ((ocb & 7) == 2 || (ocb & 7) == 6) {
+            if ((p->orientation & 7) == 2 || (p->orientation & 7) == 6) {
                 blood_count >>= 1;
             }
 
@@ -242,7 +281,8 @@ static void M_Control(const int16_t item_num)
             p->scale = M_MAX_Y_SCALE;
             if (p->speed <= M_DEFAULT_SPEED) {
                 p->speed = 0;
-                if ((ocb & 16) == 0 && lara_item->hit_points > 0) {
+                if (p->scaled_spikes_mode != SCALED_SPIKES_MODE_EXTENDED
+                    && lara_item->hit_points > 0) {
                     p->cooldown = M_COOLDOWN;
                 }
             } else {
@@ -307,7 +347,16 @@ static void M_Setup(OBJECT *const obj)
         obj,
         OBJECT_PROPERTY(
             M_PRIV, damage, M_DEFAULT_DAMAGE,
-            "Damage dealt when Lara hits the spikes without dying instantly."));
+            "Damage dealt when Lara hits the spikes without dying instantly."),
+        OBJECT_PROPERTY_SETTER(
+            M_PRIV, orientation, M_DEFAULT_ORIENTATION, M_CheckOrientation,
+            M_SetOrientation,
+            "The orientation configuration of the spikes. Value range: "
+            "minimum 0; maximum 15."),
+        OBJECT_PROPERTY_CHECKED(
+            M_PRIV, scaled_spikes_mode, SCALED_SPIKES_MODE_LOOPING, M_CheckMode,
+            "The behavior of the spikes when triggered - 0: looping; 1: "
+            "permanently extended; 2: one-shot."));
 }
 
 REGISTER_OBJECT(O_SCALED_SPIKES, M_Setup)

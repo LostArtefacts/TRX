@@ -2324,6 +2324,29 @@
     },
     {
       "bulk": false,
+      "count": 3,
+      "description": "<!--noref: scaled_spikes_mode--> The values the `scaled_spikes_mode` item property can take. It determines how spikes behave when triggered.",
+      "path": "items.ScaledSpikesMode",
+      "values": [
+        {
+          "description": "Spikes will extend, wait a brief period, retract, and then the loop will repeat.",
+          "name": "LOOPING",
+          "value": 0
+        },
+        {
+          "description": "Spikes will extend and remain as-is indefinitely.",
+          "name": "EXTENDED",
+          "value": 1
+        },
+        {
+          "description": "Spikes will extend, wait a brief period, retract, and then stop.",
+          "name": "ONE_SHOT",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "bulk": false,
       "count": 4,
       "description": "<!--noref: switch_mode--> The values the `switch_mode` item property can take. It selects the animation Lara plays when interacting with the item.",
       "path": "items.SwitchMode",

@@ -14,4 +14,6 @@ trx.events.on_game_start(function()
   trx.items[130].properties.switch_mode = trx.items.SwitchMode.HIDDEN_REACH
   trx.items[131].properties.switch_mode = trx.items.SwitchMode.HIDDEN_REACH
   trx.items[139].properties.pickup_mode = trx.items.PickupMode.HIDDEN
+  trx.objects.scaled_spikes.properties.scaled_spikes_mode =
+    trx.items.ScaledSpikesMode.EXTENDED
 end)

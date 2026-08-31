@@ -340,6 +340,8 @@
     <!--placeholder for O_SCALED_SPIKES-->
     <moveable id="-1">
         <property category="TRX" defaultValue="8" description="Damage dealt when Lara hits the spikes without dying instantly." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="4" description="The orientation configuration of the spikes." displayName="Orientation" internalName="orientation" maxValue="15" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="Looping" description="The behavior of the spikes when triggered." displayName="Scaled Spikes Mode" entries="Looping, Permanently Extended, One-shot" internalName="scaled_spikes_mode" type="Enum" />
     </moveable>
     <!--placeholder for O_SECURITY_GUARD-->
     <moveable id="-1">
