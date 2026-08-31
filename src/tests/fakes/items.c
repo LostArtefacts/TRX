@@ -11,6 +11,10 @@
 
 #include <harness/fake_calls.h>
 
+#include <trx/core/memory.h>
+#include <trx/core/vector.h>
+#include <trx/debug.h>
+#include <trx/game/catalog/manager.h>
 #include <trx/game/const.h>
 #include <trx/core/handle.h>
 #include <trx/core/strings.h>
@@ -78,134 +82,115 @@ static const struct {
     { FAKE_OBJ_CRYSTAL, "crystal" },
     { NO_OBJECT, nullptr },
 };
-// Match the pickup families defined in pickups.def to those populated by the
-// engine.
-static const OBJECT_ID m_SupplyObjects[] = {
-#define X_PICKUP_SUPPLY(item, option) item,
-#define X_PICKUP_SUPPLY_VARIANT(item, option) item,
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_SUPPLY_VARIANT
-#undef X_PICKUP_SUPPLY
-    NO_OBJECT,
+// Read the shipped family membership and assign it only to the fake objects
+// that represent the corresponding real objects.
+static VECTOR *m_FamilyMembers = nullptr;
+
+// List the real objects represented by the fake objects so shipped family
+// membership can be applied only to those representations.
+static const OBJECT_ID m_RealObjects[] = {
+    FAKE_OBJ_REAL_KEY,  FAKE_OBJ_PUZZLE,  FAKE_OBJ_TOOL,  FAKE_OBJ_LEADBAR,
+    FAKE_OBJ_MEDIPACK,  FAKE_OBJ_TRINKET, FAKE_OBJ_SCION, FAKE_OBJ_SCION_2,
+    FAKE_OBJ_WATERSKIN, FAKE_OBJ_CRYSTAL, NO_OBJECT,
 };
 
-static const OBJECT_ID m_ToolObjects[] = {
-#define X_PICKUP_MISC(item, option) item,
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_MISC
-    NO_OBJECT,
-};
-
-static const OBJECT_ID m_KeyObjects[] = {
-#define X_PICKUP_KEY(n) O_KEY_ITEM_##n,
-#define X_PICKUP_KEY_COMBO(n, c) O_KEY_ITEM_##n##_COMBO_##c,
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_KEY_COMBO
-#undef X_PICKUP_KEY
-    NO_OBJECT,
-};
-
-static const OBJECT_ID m_PuzzleObjects[] = {
-#define X_PICKUP_PUZZLE(n) O_PUZZLE_ITEM_##n,
-#define X_PICKUP_PUZZLE_COMBO(n, c) O_PUZZLE_ITEM_##n##_COMBO_##c,
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_PUZZLE_COMBO
-#undef X_PICKUP_PUZZLE
-    NO_OBJECT,
-};
-
-static const OBJECT_ID m_QuestObjects[] = {
-#define X_PICKUP_QUEST(n) O_QUEST_ITEM_##n,
-#define X_PICKUP_SPECIAL(item, option) item,
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_SPECIAL
-#undef X_PICKUP_QUEST
-    NO_OBJECT,
-};
-
-static const OBJECT_ID m_ExamineObjects[] = {
-#define X_PICKUP_EXAMINE(n) O_EXAMINE_ITEM_##n,
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_EXAMINE
-    NO_OBJECT,
-};
-
-static const OBJECT_ID m_CollectibleObjects[] = {
-#define X_PICKUP_PICKUP(n) O_PICKUP_ITEM_##n,
-#define X_PICKUP_PICKUP_COMBO(n, c) O_PICKUP_ITEM_##n##_COMBO_##c,
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_PICKUP_COMBO
-#undef X_PICKUP_PICKUP
-    NO_OBJECT,
-};
-
-static const OBJECT_ID m_CreatureObjects[] = { FAKE_OBJ_WOLF, NO_OBJECT };
-static const OBJECT_ID m_BossObjects[] = { NO_OBJECT };
-static const OBJECT_ID m_LoyalObjects[] = { NO_OBJECT };
-static const OBJECT_ID m_PickupObjects[] = {
-    FAKE_OBJ_VASE,  FAKE_OBJ_KEY,     FAKE_OBJ_REAL_KEY,  FAKE_OBJ_PUZZLE,
-    FAKE_OBJ_TOOL,  FAKE_OBJ_LEADBAR, FAKE_OBJ_MEDIPACK,  FAKE_OBJ_TRINKET,
-    FAKE_OBJ_SCION, FAKE_OBJ_SCION_2, FAKE_OBJ_WATERSKIN, NO_OBJECT,
-};
-static const OBJECT_ID m_GunObjects[] = {
-#define X_PICKUP_GUN(item, option) item,
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_GUN
-    NO_OBJECT,
-};
-static const OBJECT_ID m_GunAmmoObjects[] = {
-#define X_PICKUP_GUN_AMMO(gun_item, item, option) item,
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_GUN_AMMO
-    NO_OBJECT,
-};
-static const OBJECT_ID m_SecretObjects[] = {
-    O_SECRET_1,
-    O_SECRET_2,
-    O_SECRET_3,
-    NO_OBJECT,
-};
-
-static const OBJECT_ID m_SwitchObjects[] = { FAKE_OBJ_SWITCH, NO_OBJECT };
-static const OBJECT_ID m_ReceptacleObjects[] = { FAKE_OBJ_RECEPTACLE,
-                                                 NO_OBJECT };
-static const OBJECT_ID m_MovableBlockObjects[] = { NO_OBJECT };
-static const OBJECT_ID m_DoorObjects[] = { FAKE_OBJ_DOOR, NO_OBJECT };
-static const OBJECT_ID m_NullObjects[] = { NO_OBJECT };
-static const OBJECT_ID m_AnimObjects[] = { NO_OBJECT };
-static const OBJECT_ID m_InvObjects[] = { NO_OBJECT };
-
+// Define the families containing invented objects, whose IDs do not appear in
+// the engine's shipped membership file.
 static const struct {
-    OBJECT_FAMILY family;
-    const OBJECT_ID *objects;
-} m_Families[] = {
-    // clang-format off
-    { OBJ_FAMILY_ANIM,        m_AnimObjects },
-    { OBJ_FAMILY_AMMO,        m_GunAmmoObjects },
-    { OBJ_FAMILY_BOSS,        m_BossObjects },
-    { OBJ_FAMILY_COLLECTIBLE, m_CollectibleObjects },
-    { OBJ_FAMILY_CREATURE,    m_CreatureObjects },
-    { OBJ_FAMILY_DOOR,        m_DoorObjects },
-    { OBJ_FAMILY_EXAMINE,     m_ExamineObjects },
-    { OBJ_FAMILY_GUN,         m_GunObjects },
-    { OBJ_FAMILY_INVENTORY,   m_InvObjects },
-    { OBJ_FAMILY_KEY,         m_KeyObjects },
-    { OBJ_FAMILY_LOYAL,       m_LoyalObjects },
-    { OBJ_FAMILY_NULL,        m_NullObjects },
-    { OBJ_FAMILY_PICKUP,      m_PickupObjects },
-    { OBJ_FAMILY_PUSHABLE,    m_MovableBlockObjects },
-    { OBJ_FAMILY_PUZZLE,      m_PuzzleObjects },
-    { OBJ_FAMILY_QUEST,       m_QuestObjects },
-    { OBJ_FAMILY_RECEPTACLE,  m_ReceptacleObjects },
-    { OBJ_FAMILY_SECRET,      m_SecretObjects },
-    { OBJ_FAMILY_SUPPLY,      m_SupplyObjects },
-    { OBJ_FAMILY_SWITCH,      m_SwitchObjects },
-    { OBJ_FAMILY_TOOL,        m_ToolObjects },
-    // clang-format on
+    OBJECT_ID object_id;
+    const char *family;
+} m_FakeFamilies[] = {
+    { FAKE_OBJ_WOLF, "creature" },
+    { FAKE_OBJ_VASE, "pickup" },
+    { FAKE_OBJ_KEY, "pickup" },
+    { FAKE_OBJ_SWITCH, "switch" },
+    { FAKE_OBJ_RECEPTACLE, "receptacle" },
+    { FAKE_OBJ_DOOR, "door" },
 };
 
-// A script's own membership, which the shipped families above know nothing of.
-static VECTOR *m_ScriptFamilies = nullptr;
+static void M_AddFamilyByName(
+    const OBJECT_ID object_id, const char *const family_key)
+{
+    const CATALOG_ID family =
+        Catalog_KeyToID(CATALOG_FAMILIES, family_key, NO_CATALOG_ID);
+    ASSERT(family != NO_CATALOG_ID);
+    const M_SCRIPT_MEMBER member = {
+        .object_id = object_id,
+        .family = (OBJECT_FAMILY)family,
+    };
+    Vector_Add(m_FamilyMembers, &member);
+}
+
+// Read the shipped family membership and fail fatally if it names an object
+// absent from the catalogue.
+static void M_ReadShippedFamilies(void)
+{
+    const char *const path =
+        REPO_ROOT "/data/trx/ship/cfg/object_families.json5";
+    FILE *const fp = fopen(path, "rb");
+    ASSERT(fp != nullptr);
+    fseek(fp, 0, SEEK_END);
+    const long size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+    char *const text = Memory_Alloc(size + 1);
+    ASSERT(fread(text, 1, size, fp) == (size_t)size);
+    text[size] = '\0';
+    fclose(fp);
+
+    char family[64] = "";
+    for (const char *c = text; *c != '\0'; c++) {
+        if (*c == '/' && c[1] == '/') {
+            while (*c != '\0' && *c != '\n') {
+                c++;
+            }
+            continue;
+        }
+        if (*c == ']') {
+            family[0] = '\0';
+            continue;
+        }
+        if (*c != '"') {
+            continue;
+        }
+        const char *const start = ++c;
+        while (*c != '\0' && *c != '"') {
+            c++;
+        }
+        const size_t len = c - start;
+        ASSERT(len < sizeof(family));
+        char key[64];
+        memcpy(key, start, len);
+        key[len] = '\0';
+        if (family[0] == '\0') {
+            memcpy(family, key, len + 1);
+            continue;
+        }
+        const CATALOG_ID object_id =
+            Catalog_KeyToID(CATALOG_OBJECTS, key, NO_OBJECT);
+        ASSERT(object_id != NO_OBJECT);
+        for (int32_t i = 0; m_RealObjects[i] != NO_OBJECT; i++) {
+            if (m_RealObjects[i] == object_id) {
+                M_AddFamilyByName(object_id, family);
+                break;
+            }
+        }
+    }
+
+    Memory_Free(text);
+}
+
+static void M_EnsureFamilies(void)
+{
+    if (m_FamilyMembers != nullptr) {
+        return;
+    }
+    m_FamilyMembers = Vector_Create(sizeof(M_SCRIPT_MEMBER));
+    M_ReadShippedFamilies();
+    for (size_t i = 0; i < ARRAY_SIZE(m_FakeFamilies); i++) {
+        M_AddFamilyByName(
+            m_FakeFamilies[i].object_id, m_FakeFamilies[i].family);
+    }
+}
 
 static int32_t M_FindObjectName(const OBJECT_ID obj_id)
 {
@@ -739,44 +724,31 @@ const char *ObjectProperty_GetObjectName(
 
 void ObjectFamily_Add(const OBJECT_ID object_id, const OBJECT_FAMILY family)
 {
-    if (m_ScriptFamilies == nullptr) {
-        m_ScriptFamilies = Vector_Create(sizeof(M_SCRIPT_MEMBER));
-    }
+    M_EnsureFamilies();
     const M_SCRIPT_MEMBER member = {
         .object_id = object_id,
         .family = family,
     };
-    Vector_Add(m_ScriptFamilies, &member);
+    Vector_Add(m_FamilyMembers, &member);
 }
 
 void ObjectFamily_Remove(const OBJECT_ID object_id, const OBJECT_FAMILY family)
 {
+    M_EnsureFamilies();
     const M_SCRIPT_MEMBER member = {
         .object_id = object_id,
         .family = family,
     };
-    if (m_ScriptFamilies != nullptr) {
-        Vector_Remove(m_ScriptFamilies, &member);
-    }
+    Vector_Remove(m_FamilyMembers, &member);
 }
 
 bool ObjectFamily_Has(const OBJECT_ID object_id, const OBJECT_FAMILY family)
 {
-    for (int32_t i = 0;
-         m_ScriptFamilies != nullptr && i < m_ScriptFamilies->count; i++) {
-        const M_SCRIPT_MEMBER *const member = Vector_Get(m_ScriptFamilies, i);
+    M_EnsureFamilies();
+    for (int32_t i = 0; i < m_FamilyMembers->count; i++) {
+        const M_SCRIPT_MEMBER *const member = Vector_Get(m_FamilyMembers, i);
         if (member->object_id == object_id && member->family == family) {
             return true;
-        }
-    }
-    for (size_t i = 0; i < ARRAY_SIZE(m_Families); i++) {
-        if (m_Families[i].family != family) {
-            continue;
-        }
-        for (int32_t j = 0; m_Families[i].objects[j] != NO_OBJECT; j++) {
-            if (m_Families[i].objects[j] == object_id) {
-                return true;
-            }
         }
     }
     return false;
