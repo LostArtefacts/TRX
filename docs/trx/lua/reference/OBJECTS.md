@@ -64,6 +64,19 @@ trx.objects.wolf.properties.max_hit_points = 30
 
     Methods:
 
+    - <a id="objects.Object.add_family" name="objects.Object.add_family"></a>[lua]`object:add_family(family)`  
+      Puts the object in a family, so a query narrowed to that family finds it. A family a script mints is reached the same way as one the game ships.
+
+      Parameters:
+      - <a id="objects.Object.add_family.family" name="objects.Object.add_family.family"></a>**`family`** (string). Which family, by the name it answers to.
+
+      Example:
+      ```lua
+      local family = trx.catalog.mint(trx.catalog.Context.FAMILIES, "mymod:explosive")
+      trx.objects.barrel:add_family("mymod:explosive")
+      for _, id in ipairs(trx.objects.query:family("mymod:explosive"):ids()) do ... end
+      ```
+
     - <a id="objects.Object.get_default_names" name="objects.Object.get_default_names"></a>[lua]`object:get_default_names()`  
       The compile-time English names. A lookup tries these when the player's language has no matching name. Prefer [`default_names`](#objects.Object.default_names).
 
@@ -86,6 +99,12 @@ trx.objects.wolf.properties.max_hit_points = 30
       Names of every property this object declares.
 
       Returns: a list of string.
+
+    - <a id="objects.Object.remove_family" name="objects.Object.remove_family"></a>[lua]`object:remove_family(family)`  
+      Takes the object out of a family.
+
+      Parameters:
+      - <a id="objects.Object.remove_family.family" name="objects.Object.remove_family.family"></a>**`family`** (string). Which family, by the name it answers to.
 
     - <a id="objects.Object.set_property" name="objects.Object.set_property"></a>[lua]`object:set_property(name, value)`  
       Writes one of the object's properties. Prefer `object.properties.<name> = ...`.
@@ -141,6 +160,19 @@ trx.objects.wolf.properties.max_hit_points = 30
       An examine item, by the slot it fills.
 
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+
+    - <a id="objects.ObjectQuery.family" name="objects.ObjectQuery.family"></a>[lua]`objectquery:family(family)`  
+      Narrows to a family by name, which is how a query reaches a family a script mints. The families the game ships have a narrowing of their own.
+
+      Parameters:
+      - <a id="objects.ObjectQuery.family.family" name="objects.ObjectQuery.family.family"></a>**`family`** (string). Which family, by the name it answers to.
+
+      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+
+      Example:
+      ```lua
+      trx.objects.query:family("mymod:explosive"):ids()
+      ```
 
     - <a id="objects.ObjectQuery.gun" name="objects.ObjectQuery.gun"></a>[lua]`objectquery:gun()`  
       A weapon.

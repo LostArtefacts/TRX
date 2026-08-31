@@ -251,6 +251,7 @@
 - Added `trx.catalog.key()`, which gives back the name an id answers to
 - Added `trx.catalog.Context.WEAPONS`, so a script can reach the weapons catalog the same way as the others
 - Added `trx.catalog.Context.FAMILIES`, so a script can reach the object families the same way as the other catalogs
+- Added `trx.objects.Object:add_family()` and `trx.objects.Object:remove_family()`, and `trx.objects.query:family()`, so a script can mint a family of its own and narrow to it
 - Added `trx.console.copy()`, `trx.console.complete()`, and the option to read back console command output, so a script can wrap another command
 - Added `trx.fx.fog_bulbs` and `trx.fx.fog_color`, so a script can read level fog bulbs and set the distance fog color (TRX658)
 - Changed the in-game overlay to be drawn by a script rather than by the engine, so what it shows and where it sits can be changed without a build

@@ -31,6 +31,11 @@
 #define FAKE_FRAME_COUNT 64
 #define FAKE_PROP_SLOTS 4
 
+typedef struct {
+    OBJECT_ID object_id;
+    OBJECT_FAMILY family;
+} M_SCRIPT_MEMBER;
+
 static ITEM m_Items[FAKE_ITEM_POOL];
 static bool m_Used[FAKE_ITEM_POOL];
 static char m_Names[FAKE_ITEM_POOL][32];
@@ -198,6 +203,9 @@ static const struct {
     { OBJ_FAMILY_TOOL,        m_ToolObjects },
     // clang-format on
 };
+
+// A script's own membership, which the shipped families above know nothing of.
+static VECTOR *m_ScriptFamilies = nullptr;
 
 static int32_t M_FindObjectName(const OBJECT_ID obj_id)
 {
@@ -729,8 +737,38 @@ const char *ObjectProperty_GetObjectName(
     return i == 0 ? "max_hit_points" : nullptr;
 }
 
+void ObjectFamily_Add(const OBJECT_ID object_id, const OBJECT_FAMILY family)
+{
+    if (m_ScriptFamilies == nullptr) {
+        m_ScriptFamilies = Vector_Create(sizeof(M_SCRIPT_MEMBER));
+    }
+    const M_SCRIPT_MEMBER member = {
+        .object_id = object_id,
+        .family = family,
+    };
+    Vector_Add(m_ScriptFamilies, &member);
+}
+
+void ObjectFamily_Remove(const OBJECT_ID object_id, const OBJECT_FAMILY family)
+{
+    const M_SCRIPT_MEMBER member = {
+        .object_id = object_id,
+        .family = family,
+    };
+    if (m_ScriptFamilies != nullptr) {
+        Vector_Remove(m_ScriptFamilies, &member);
+    }
+}
+
 bool ObjectFamily_Has(const OBJECT_ID object_id, const OBJECT_FAMILY family)
 {
+    for (int32_t i = 0;
+         m_ScriptFamilies != nullptr && i < m_ScriptFamilies->count; i++) {
+        const M_SCRIPT_MEMBER *const member = Vector_Get(m_ScriptFamilies, i);
+        if (member->object_id == object_id && member->family == family) {
+            return true;
+        }
+    }
     for (size_t i = 0; i < ARRAY_SIZE(m_Families); i++) {
         if (m_Families[i].family != family) {
             continue;

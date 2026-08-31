@@ -11254,6 +11254,20 @@
       "handle": true,
       "methods": [
         {
+          "description": "Puts the object in a family, so a query narrowed to that family finds it. A family a script mints is reached the same way as one the game ships.",
+          "examples": [
+            "local family = trx.catalog.mint(trx.catalog.Context.FAMILIES, \"mymod:explosive\")\ntrx.objects.barrel:add_family(\"mymod:explosive\")\nfor _, id in ipairs(trx.objects.query:family(\"mymod:explosive\"):ids()) do ... end"
+          ],
+          "name": "add_family",
+          "params": [
+            {
+              "description": "Which family, by the name it answers to.",
+              "name": "family",
+              "type": "string"
+            }
+          ]
+        },
+        {
           "description": "The compile-time English names. A lookup tries these when the player's language has no matching name. Prefer `trx.objects.Object.default_names`.",
           "name": "get_default_names",
           "returns": {
@@ -11292,6 +11306,17 @@
             "list": true,
             "type": "string"
           }
+        },
+        {
+          "description": "Takes the object out of a family.",
+          "name": "remove_family",
+          "params": [
+            {
+              "description": "Which family, by the name it answers to.",
+              "name": "family",
+              "type": "string"
+            }
+          ]
         },
         {
           "description": "Writes one of the object's properties. Prefer `object.properties.<name> = ...`.",
@@ -11378,6 +11403,24 @@
         {
           "description": "An examine item, by the slot it fills.",
           "name": "examine",
+          "returns": {
+            "description": "The narrowed query.",
+            "type": "query.Query"
+          }
+        },
+        {
+          "description": "Narrows to a family by name, which is how a query reaches a family a script mints. The families the game ships have a narrowing of their own.",
+          "examples": [
+            "trx.objects.query:family(\"mymod:explosive\"):ids()"
+          ],
+          "name": "family",
+          "params": [
+            {
+              "description": "Which family, by the name it answers to.",
+              "name": "family",
+              "type": "string"
+            }
+          ],
           "returns": {
             "description": "The narrowed query.",
             "type": "query.Query"

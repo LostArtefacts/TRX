@@ -189,9 +189,37 @@ static int M_L_GetDefaultNames(lua_State *const L)
         L, Object_GetDefaultName(obj_id), Object_GetDefaultAliases(obj_id));
 }
 
+// Return the family a name states, and raise where no family answers to it.
+static CATALOG_ID M_CheckFamily(lua_State *const L, const int arg)
+{
+    const char *const name = luaL_checkstring(L, arg);
+    const CATALOG_ID family =
+        Catalog_KeyToID(CATALOG_FAMILIES, name, NO_CATALOG_ID);
+    if (family == NO_CATALOG_ID) {
+        luaL_error(L, "unknown object kind '%s'", name);
+    }
+    return family;
+}
+
+static int M_L_AddFamily(lua_State *const L)
+{
+    const LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_OBJECT);
+    ObjectFamily_Add((OBJECT_ID)ref->handle.id, M_CheckFamily(L, 2));
+    return 0;
+}
+
+static int M_L_RemoveFamily(lua_State *const L)
+{
+    const LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_OBJECT);
+    ObjectFamily_Remove((OBJECT_ID)ref->handle.id, M_CheckFamily(L, 2));
+    return 0;
+}
+
 static const luaL_Reg m_Methods[] = {
     { "get_names", M_L_GetNames },
     { "get_default_names", M_L_GetDefaultNames },
+    { "add_family", M_L_AddFamily },
+    { "remove_family", M_L_RemoveFamily },
     { nullptr, nullptr },
 };
 
