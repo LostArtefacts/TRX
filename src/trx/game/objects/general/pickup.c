@@ -49,6 +49,8 @@ typedef struct {
     PICKUP_MODE pickup_mode;
     bool animate;
     bool show_pickup_aid;
+    bool snap_to_sector;
+    bool keep_simulated;
     int16_t rotation;
     RGB_888 glow_color;
 } M_PRIV;
@@ -194,6 +196,7 @@ static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
 
 static bool M_Trigger(ITEM *const item, const ITEM_TRIGGER *const trigger)
 {
+    const M_PRIV *const p = item->priv;
     if (trigger->kind == ITEM_TRIGGER_SWITCH) {
         item->trigger.mask ^= trigger->mask;
     } else if (trigger->kind == ITEM_TRIGGER_ANTI) {
@@ -205,9 +208,7 @@ static bool M_Trigger(ITEM *const item, const ITEM_TRIGGER *const trigger)
     if (item->trigger.mask != TRIGGER_MASK_ALL) {
         Item_SetVisible(item, false);
         item->is_destroyed = true;
-    } else if (
-        !item->is_visible
-        || ObjectFamily_Has(item->object_id, OBJ_FAMILY_QUEST)) {
+    } else if (!item->is_visible || p->keep_simulated) {
         item->touch_bits = 0;
         Item_SetVisible(item, true);
         Item_AddSimulated(Item_GetIndex(item));
@@ -991,6 +992,15 @@ static void M_Setup(OBJECT *const obj)
         OBJECT_PROPERTY(
             M_PRIV, show_pickup_aid, true,
             "Show a twinkle effect above the item."),
+        OBJECT_PROPERTY(
+            M_PRIV, snap_to_sector, true,
+            "Move the item to the middle of its sector where a carrier drops "
+            "it."),
+        OBJECT_PROPERTY(
+            M_PRIV, keep_simulated, false,
+            "Simulate the item again once it becomes visible, so that it goes "
+            "on rotating, glowing and showing its twinkle after a carrier "
+            "drops it or a trigger brings it back."),
         OBJECT_PROPERTY_CHECKED(
             M_PRIV, rotation, 0, M_CheckRotation,
             "How much to rotate the item by each frame while it's active, in "

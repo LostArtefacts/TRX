@@ -1138,6 +1138,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── tonyboss.tr2
 │   │   │   ├── tower.tr2
 │   │   │   └── triboss.tr2
+│   │   ├── modules
+│   │   │   └── quest_items.lua
 │   │   ├── scripts
 │   │   │   ├── _game.lua
 │   │   │   ├── antarc.lua
@@ -2517,6 +2519,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── tonyboss.tr2
     │   │   │   │   ├── tower.tr2
     │   │   │   │   └── triboss.tr2
+    │   │   │   ├── modules
+    │   │   │   │   └── quest_items.lua
     │   │   │   ├── scripts
     │   │   │   │   ├── _game.lua
     │   │   │   │   ├── antarc.lua

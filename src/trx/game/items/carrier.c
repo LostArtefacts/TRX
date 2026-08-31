@@ -25,19 +25,26 @@ static const GAME_OBJECT_PAIR m_LegacyMap[] = {
     { NO_OBJECT, NO_OBJECT },
 };
 
-static bool M_ShouldSnapDrop(const OBJECT_ID obj_id)
+static bool M_ReadFlag(
+    const ITEM *const item, const char *const name, const bool fallback)
 {
-    if (ObjectFamily_Has(obj_id, OBJ_FAMILY_QUEST)) {
-        return false;
+    TRX_VALUE value;
+    if (!ObjectProperty_GetItemValue(item, name, &value)) {
+        return fallback;
     }
+    return value.as_bool;
+}
 
-    return g_Rules.carrier.snap_to_sector;
+static bool M_ShouldSnapDrop(const ITEM *const pickup)
+{
+    return g_Rules.carrier.snap_to_sector
+        && M_ReadFlag(pickup, "snap_to_sector", true);
 }
 
 static void M_Drop(ITEM *const pickup)
 {
     Item_SetVisible(pickup, true);
-    if (ObjectFamily_Has(pickup->object_id, OBJ_FAMILY_QUEST)) {
+    if (M_ReadFlag(pickup, "keep_simulated", false)) {
         Item_AddSimulated(Item_GetIndex(pickup));
     }
 }
@@ -404,7 +411,7 @@ void Carrier_TestItemDrops(const int16_t item_num)
         }
 
         ITEM *const pickup = Item_Get(item->spawn_num);
-        if (M_ShouldSnapDrop(pickup->object_id)) {
+        if (M_ShouldSnapDrop(pickup)) {
             int16_t room_num = carrier->room_num;
             pickup->pos.x = ROUND_TO_SECTOR(carrier->pos.x) + WALL_L / 2;
             pickup->pos.z = ROUND_TO_SECTOR(carrier->pos.z) + WALL_L / 2;

@@ -1703,6 +1703,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -1714,6 +1716,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -1734,6 +1738,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -1769,6 +1775,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -1780,6 +1788,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -1791,6 +1801,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -1802,6 +1814,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -1813,6 +1827,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -1824,6 +1840,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -1835,6 +1853,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -1918,6 +1938,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -1929,6 +1951,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -1940,6 +1964,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -1951,6 +1977,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -1986,6 +2014,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -1997,6 +2027,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2008,6 +2040,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2019,6 +2053,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2030,6 +2066,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2041,6 +2079,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2060,6 +2100,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2071,6 +2113,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2082,6 +2126,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2093,6 +2139,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2104,6 +2152,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2115,6 +2165,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2126,6 +2178,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2137,6 +2191,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2148,6 +2204,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2159,6 +2217,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2170,6 +2230,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2181,6 +2243,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2192,6 +2256,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2203,6 +2269,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2214,6 +2282,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2225,6 +2295,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2236,6 +2308,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2247,6 +2321,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2258,6 +2334,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2269,6 +2347,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2280,6 +2360,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2291,6 +2373,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2302,6 +2386,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2313,6 +2399,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2324,6 +2412,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2335,6 +2425,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2346,6 +2438,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2357,6 +2451,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2376,6 +2472,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2387,6 +2485,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2398,6 +2498,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2419,6 +2521,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2430,6 +2534,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2441,6 +2547,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2452,6 +2560,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2474,6 +2584,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2485,6 +2597,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2496,6 +2610,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2507,6 +2623,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2518,6 +2636,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2529,6 +2649,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2540,6 +2662,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2551,6 +2675,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2562,6 +2688,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2573,6 +2701,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2584,6 +2714,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2595,6 +2727,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2606,6 +2740,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2617,6 +2753,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2637,6 +2775,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2648,6 +2788,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2939,6 +3081,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2950,6 +3094,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2961,6 +3107,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2972,6 +3120,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2983,6 +3133,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -2994,6 +3146,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3005,6 +3159,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3016,6 +3172,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3027,6 +3185,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3038,6 +3198,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3049,6 +3211,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3060,6 +3224,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3071,6 +3237,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3082,6 +3250,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3093,6 +3263,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3104,6 +3276,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3115,6 +3289,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3126,6 +3302,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3137,6 +3315,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3148,6 +3328,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3159,6 +3341,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3170,6 +3354,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3181,6 +3367,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3192,6 +3380,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3203,6 +3393,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3214,6 +3406,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3225,6 +3419,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3236,6 +3432,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3260,6 +3458,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3271,6 +3471,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3282,6 +3484,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3293,6 +3497,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3304,6 +3510,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3315,6 +3523,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3326,6 +3536,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3337,6 +3549,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3360,6 +3574,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3371,6 +3587,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3393,6 +3611,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3404,6 +3624,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3423,6 +3645,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3434,6 +3658,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3445,6 +3671,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3456,6 +3684,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3467,6 +3697,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3478,6 +3710,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3514,6 +3748,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3632,6 +3868,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3643,6 +3881,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3681,6 +3921,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3692,6 +3934,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3703,6 +3947,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3714,6 +3960,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3725,6 +3973,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3736,6 +3986,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3747,6 +3999,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3758,6 +4012,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3769,6 +4025,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>
@@ -3780,6 +4038,8 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>pickup_mode</code></td><td colspan="3" align="center">0</td><td>Pickup animation mode - 0: normal; 1: low pedestal; 2: high pedestal; 3: hidden reach-in; 4: crowbar; 5: hidden sarcophagus; 6: scion pedestal.</td></tr>
 <tr><td><code>show_pickup_aid</code></td><td colspan="3" align="center">true</td><td>Show a twinkle effect above the item.</td></tr>
+<tr><td><code>snap_to_sector</code></td><td colspan="3" align="center">true</td><td>Move the item to the middle of its sector where a carrier drops it.</td></tr>
+<tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
 </tbody>

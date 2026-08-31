@@ -6,4 +6,5 @@ require("common.water_color").declare({
   },
 })
 
+require("tr3.quest_items").initialise()
 require("common.save_crystal").initialise()
