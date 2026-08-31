@@ -354,15 +354,20 @@ void GF_InventoryModifier_Apply(
         }
     }
 
-#define X_PICKUP_NUMBERED(item, option) M_ModifyInventory_Item(type, item);
-#define X_PICKUP_MISC(item, option) M_ModifyInventory_Item(type, item);
-#define X_PICKUP_VARIANT(item, option) M_ModifyInventory_Item(type, item);
-#define X_PICKUP_SUPPLY_VARIANT(item, option)
-#include <trx/game/objects/pickups.def>
-#undef X_PICKUP_SUPPLY_VARIANT
-#undef X_PICKUP_VARIANT
-#undef X_PICKUP_MISC
-#undef X_PICKUP_NUMBERED
+    // Return every pickup reached by the rules in catalogue order, preserving
+    // the scion's position by handling it after the walk.
+    CATALOG_FOR_EACH(CATALOG_OBJECTS, object_id)
+    {
+        if (object_id == O_SCION_ITEM_1
+            || !ObjectFamily_Has(object_id, OBJ_FAMILY_PICKUP)
+            || ObjectFamily_Has(object_id, OBJ_FAMILY_GUN)
+            || ObjectFamily_Has(object_id, OBJ_FAMILY_AMMO)
+            || ObjectFamily_Has(object_id, OBJ_FAMILY_SUPPLY)
+            || ObjectFamily_Has(object_id, OBJ_FAMILY_SECRET)) {
+            continue;
+        }
+        M_ModifyInventory_Item(type, object_id);
+    }
     M_ModifyInventory_Item(type, O_SCION_ITEM_1);
 
     if (type == GF_INV_SECRET) {

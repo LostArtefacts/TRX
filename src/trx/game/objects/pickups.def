@@ -31,10 +31,6 @@
     #define X_PICKUP_GUN_AMMO_VARIANT(item, option) X_PICKUP(item, option)
     #define X_PICKUP_GUN_AMMO_VARIANT_DEFAULTED
 #endif
-#ifndef X_PICKUP_MISC
-    #define X_PICKUP_MISC(item, option) X_PICKUP(item, option)
-    #define X_PICKUP_MISC_DEFAULTED
-#endif
 #ifndef X_PICKUP_VARIANT
     #define X_PICKUP_VARIANT(item, option) X_PICKUP(item, option)
     #define X_PICKUP_VARIANT_DEFAULTED
@@ -48,55 +44,50 @@
     #define X_PICKUP_SPECIAL_DEFAULTED
 #endif
 
-#ifndef X_PICKUP_NUMBERED
-    #define X_PICKUP_NUMBERED(item, option) X_PICKUP(item, option)
-    #define X_PICKUP_NUMBERED_DEFAULTED
-#endif
-
 #ifndef X_PICKUP_KEY
     #define X_PICKUP_KEY(n)                                                    \
-        X_PICKUP_NUMBERED(O_KEY_ITEM_##n, O_KEY_OPTION_##n)                    \
+        X_PICKUP(O_KEY_ITEM_##n, O_KEY_OPTION_##n)                    \
         X_RECEPTACLE(O_KEY_OPTION_##n, O_KEY_HOLE_##n)
     #define X_PICKUP_KEY_DEFAULTED
 #endif
 #ifndef X_PICKUP_PUZZLE
     #define X_PICKUP_PUZZLE(n)                                                 \
-        X_PICKUP_NUMBERED(O_PUZZLE_ITEM_##n, O_PUZZLE_OPTION_##n)              \
+        X_PICKUP(O_PUZZLE_ITEM_##n, O_PUZZLE_OPTION_##n)              \
         X_RECEPTACLE(O_PUZZLE_OPTION_##n, O_PUZZLE_HOLE_##n)                   \
         X_RECEPTACLE_DONE(O_PUZZLE_HOLE_##n, O_PUZZLE_DONE_##n)
     #define X_PICKUP_PUZZLE_DEFAULTED
 #endif
 #ifndef X_PICKUP_PICKUP
     #define X_PICKUP_PICKUP(n)                                                 \
-        X_PICKUP_NUMBERED(O_PICKUP_ITEM_##n, O_PICKUP_OPTION_##n)
+        X_PICKUP(O_PICKUP_ITEM_##n, O_PICKUP_OPTION_##n)
     #define X_PICKUP_PICKUP_DEFAULTED
 #endif
 #ifndef X_PICKUP_QUEST
     #define X_PICKUP_QUEST(n)                                                  \
-        X_PICKUP_NUMBERED(O_QUEST_ITEM_##n, O_QUEST_OPTION_##n)
+        X_PICKUP(O_QUEST_ITEM_##n, O_QUEST_OPTION_##n)
     #define X_PICKUP_QUEST_DEFAULTED
 #endif
 #ifndef X_PICKUP_KEY_COMBO
     #define X_PICKUP_KEY_COMBO(n, c)                                           \
-        X_PICKUP_NUMBERED(                                                     \
+        X_PICKUP(                                                     \
             O_KEY_ITEM_##n##_COMBO_##c, O_KEY_OPTION_##n##_COMBO_##c)
     #define X_PICKUP_KEY_COMBO_DEFAULTED
 #endif
 #ifndef X_PICKUP_PUZZLE_COMBO
     #define X_PICKUP_PUZZLE_COMBO(n, c)                                        \
-        X_PICKUP_NUMBERED(                                                     \
+        X_PICKUP(                                                     \
             O_PUZZLE_ITEM_##n##_COMBO_##c, O_PUZZLE_OPTION_##n##_COMBO_##c)
     #define X_PICKUP_PUZZLE_COMBO_DEFAULTED
 #endif
 #ifndef X_PICKUP_PICKUP_COMBO
     #define X_PICKUP_PICKUP_COMBO(n, c)                                        \
-        X_PICKUP_NUMBERED(                                                     \
+        X_PICKUP(                                                     \
             O_PICKUP_ITEM_##n##_COMBO_##c, O_PICKUP_OPTION_##n##_COMBO_##c)
     #define X_PICKUP_PICKUP_COMBO_DEFAULTED
 #endif
 #ifndef X_PICKUP_EXAMINE
     #define X_PICKUP_EXAMINE(n)                                                \
-        X_PICKUP_NUMBERED(O_EXAMINE_ITEM_##n, O_EXAMINE_OPTION_##n)
+        X_PICKUP(O_EXAMINE_ITEM_##n, O_EXAMINE_OPTION_##n)
     #define X_PICKUP_EXAMINE_DEFAULTED
 #endif
 
@@ -136,15 +127,15 @@ X_PICKUP(O_SMALL_MEDIPACK_ITEM, O_SMALL_MEDIPACK_OPTION)
 X_PICKUP(O_LARGE_MEDIPACK_ITEM, O_LARGE_MEDIPACK_OPTION)
 X_PICKUP(O_FLARES_BOX_ITEM, O_FLARES_BOX_OPTION)
 X_PICKUP_SUPPLY_VARIANT(O_FLARE_ITEM, O_FLARES_BOX_OPTION)
-X_PICKUP_MISC(O_LEAD_BAR_ITEM, O_LEAD_BAR_OPTION)
-X_PICKUP_MISC(O_LASERSIGHT_ITEM, O_LASERSIGHT_OPTION)
-X_PICKUP_MISC(O_BINOCULARS_ITEM, O_BINOCULARS_OPTION)
-X_PICKUP_MISC(O_CROWBAR_ITEM, O_CROWBAR_OPTION)
-X_PICKUP_MISC(O_WATERSKIN_1_EMPTY, O_WATERSKIN_1_OPTION)
+X_PICKUP(O_LEAD_BAR_ITEM, O_LEAD_BAR_OPTION)
+X_PICKUP(O_LASERSIGHT_ITEM, O_LASERSIGHT_OPTION)
+X_PICKUP(O_BINOCULARS_ITEM, O_BINOCULARS_OPTION)
+X_PICKUP(O_CROWBAR_ITEM, O_CROWBAR_OPTION)
+X_PICKUP(O_WATERSKIN_1_EMPTY, O_WATERSKIN_1_OPTION)
 X_PICKUP_VARIANT(O_WATERSKIN_1_1, O_WATERSKIN_1_OPTION)
 X_PICKUP_VARIANT(O_WATERSKIN_1_2, O_WATERSKIN_1_OPTION)
 X_PICKUP_VARIANT(O_WATERSKIN_1_3, O_WATERSKIN_1_OPTION)
-X_PICKUP_MISC(O_WATERSKIN_2_EMPTY, O_WATERSKIN_2_OPTION)
+X_PICKUP(O_WATERSKIN_2_EMPTY, O_WATERSKIN_2_OPTION)
 X_PICKUP_VARIANT(O_WATERSKIN_2_1, O_WATERSKIN_2_OPTION)
 X_PICKUP_VARIANT(O_WATERSKIN_2_2, O_WATERSKIN_2_OPTION)
 X_PICKUP_VARIANT(O_WATERSKIN_2_3, O_WATERSKIN_2_OPTION)
@@ -253,10 +244,6 @@ X_PICKUP_EXAMINE(3)
     #undef X_PICKUP_VARIANT
     #undef X_PICKUP_VARIANT_DEFAULTED
 #endif
-#ifdef X_PICKUP_MISC_DEFAULTED
-    #undef X_PICKUP_MISC
-    #undef X_PICKUP_MISC_DEFAULTED
-#endif
 #ifdef X_PICKUP_GUN_AMMO_VARIANT_DEFAULTED
     #undef X_PICKUP_GUN_AMMO_VARIANT
     #undef X_PICKUP_GUN_AMMO_VARIANT_DEFAULTED
@@ -292,10 +279,6 @@ X_PICKUP_EXAMINE(3)
 #ifdef X_PICKUP_KEY_DEFAULTED
     #undef X_PICKUP_KEY
     #undef X_PICKUP_KEY_DEFAULTED
-#endif
-#ifdef X_PICKUP_NUMBERED_DEFAULTED
-    #undef X_PICKUP_NUMBERED
-    #undef X_PICKUP_NUMBERED_DEFAULTED
 #endif
 #ifdef X_RECEPTACLE_DONE_DEFAULTED
     #undef X_RECEPTACLE_DONE
