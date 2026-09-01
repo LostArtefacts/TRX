@@ -7,10 +7,11 @@
 #include <trx/game/rooms.h>
 
 // clang-format off
-#define M_MONKEY_RADIUS           100
-#define M_MONKEY_HEIGHT           600
-#define M_MONKEY_CEILING_SHIFT    50
-#define M_MONKEY_FALL_FRAME       9
+#define M_MONKEY_RADIUS          100
+#define M_MONKEY_HEIGHT          600
+#define M_MONKEY_CEILING_SHIFT   50
+#define M_MONKEY_FALL_FRAME      9
+#define M_MONKEY_ROLL_SHIFT      242
 #define M_CAM_MONKEY_ELEVATION   (10 * DEG_1) // = 1820
 #define M_LF_CLIMB_1_START       54
 #define M_LF_CLIMB_1_END         60
@@ -20,11 +21,10 @@
 #define M_LF_CLIMB_3_END         155
 // clang-format on
 
-static bool M_CanMonkeySwing(const ITEM *const item)
+static bool M_CanMonkeySwing(const XYZ_32 pos, int16_t room_num)
 {
-    int16_t room_num = item->room_num;
-    const SECTOR *const sector = Room_GetSector(
-        (XYZ_32) { item->pos.x, MAX_HEIGHT, item->pos.z }, &room_num);
+    const SECTOR *const sector =
+        Room_GetSector((XYZ_32) { pos.x, MAX_HEIGHT, pos.z }, &room_num);
     return (sector->ladder & LADDER_CEILING) != 0;
 }
 
@@ -137,9 +137,26 @@ cleanup:
     return ok;
 }
 
+static bool M_CanMonkeyRoll(ITEM *const item, COLL_INFO *const coll)
+{
+    if (!g_Config.gameplay.enable_alternative_turns) {
+        return false;
+    }
+
+    if (coll->coll_type == COLL_FRONT
+        || ABS(coll->side_mid.ceiling - coll->side_front.ceiling)
+            >= M_MONKEY_CEILING_SHIFT) {
+        return false;
+    }
+
+    const XYZ_32 target_pos =
+        XYZ_32_OffsetYaw(item->pos, item->rot.y, M_MONKEY_ROLL_SHIFT);
+    return M_CanMonkeySwing(target_pos, item->room_num);
+}
+
 static bool M_HandleIdleState(ITEM *const item, COLL_INFO *const coll)
 {
-    if (!M_CanMonkeySwing(item)) {
+    if (!M_CanMonkeySwing(item->pos, item->room_num)) {
         return false;
     }
 
@@ -172,7 +189,7 @@ static bool M_HandleIdleState(ITEM *const item, COLL_INFO *const coll)
         item->goal_anim_state = LS(LS_MONKEY_TURN_LEFT);
     } else if (g_Input.right) {
         item->goal_anim_state = LS(LS_MONKEY_TURN_RIGHT);
-    } else if (g_Input.roll && g_Config.gameplay.enable_alternative_turns) {
+    } else if (g_Input.roll && M_CanMonkeyRoll(item, coll)) {
         item->goal_anim_state = LS(LS_MONKEY_ROLL);
     }
 
@@ -234,7 +251,7 @@ static void M_MonkeyIdle(ITEM *const item, COLL_INFO *const coll)
 static void M_MonkeyForward(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->current_anim_state != LS(LS_MONKEY_ROLL)
-        && (!g_Input.action || !M_CanMonkeySwing(item))) {
+        && (!g_Input.action || !M_CanMonkeySwing(item->pos, item->room_num))) {
         M_MonkeySwingFall(item);
         return;
     }
@@ -260,7 +277,7 @@ static void M_MonkeyForward(ITEM *const item, COLL_INFO *const coll)
 
 static void M_MonkeySide(ITEM *const item, COLL_INFO *const coll)
 {
-    if (!g_Input.action || !M_CanMonkeySwing(item)) {
+    if (!g_Input.action || !M_CanMonkeySwing(item->pos, item->room_num)) {
         M_MonkeySwingFall(item);
         return;
     }
@@ -287,7 +304,7 @@ static void M_MonkeySide(ITEM *const item, COLL_INFO *const coll)
 
 static void M_MonkeyTurn(ITEM *const item, COLL_INFO *const coll)
 {
-    if (!g_Input.action || !M_CanMonkeySwing(item)) {
+    if (!g_Input.action || !M_CanMonkeySwing(item->pos, item->room_num)) {
         M_MonkeySwingFall(item);
         return;
     }

@@ -17,6 +17,8 @@
 - Fixed Lara's arms twitching when stopped against walls in shallow water with either forward or backward input pressed against the wall (OG bug) (#6254 / TRX1121)
 - Fixed Lara assuming a fully underwater animation in custom levels if she begins at wading or water surface depths (OG bug) (TRX1312)
 - Fixed Lara slipping into wading-depth water when walking down steps in a water room (OG bug) (TRX1307)
+- Fixed Lara being able to monkey roll too close to sector edges, resulting in her falling after the animation completes (#6459 / TRX1314, regression from 1.10)
+- Fixed Lara beginning to monkey roll for one frame despite being too close to the edge of a sector (#6459 / TRX1314, regression from 1.10)
 
 **UI**
 - Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187 / TRX1036)
