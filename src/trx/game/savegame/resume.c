@@ -63,23 +63,6 @@ void SG_Resume_Init(void)
         sizeof(RESUME_INFO)
         * (GF_GetLevelTable(GFLT_MAIN)->count
            + GF_GetLevelTable(GFLT_DEMOS)->count));
-
-    const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_DEMOS);
-    for (int32_t i = 0; i < level_table->count; i++) {
-        RESUME_INFO *const resume_info =
-            SG_Resume_GetEntry(&level_table->levels[i]);
-        resume_info->lara_hitpoints = LARA_MAX_HITPOINTS;
-        resume_info->flags.available = true;
-        const LARA_GUN_TYPE default_gun = Gun_GetDefaultType();
-        Inv_State_SetCount(&resume_info->inv, Gun_GetGunObject(default_gun), 1);
-        Inv_State_SetAmmo(
-            &resume_info->inv, default_gun, Gun_GetInitialRounds(default_gun));
-        resume_info->gun_status = LGS_ARMLESS;
-        resume_info->equipped_gun_type = default_gun;
-        resume_info->holsters_gun_type = default_gun;
-        resume_info->back_gun_type = LGT_UNARMED;
-        resume_info->prev_level = -1;
-    }
 }
 
 void SG_Resume_Shutdown(void)
@@ -217,6 +200,23 @@ void SG_Resume_ApplyRulesToEntry(const GF_LEVEL *const level)
     RESUME_INFO *const resume = SG_Resume_GetEntry(level);
     if (resume == nullptr) {
         return;
+    }
+
+    if (level->type == GFL_DEMO) {
+        resume->flags.available = true;
+        resume->lara_hitpoints = LARA_MAX_HITPOINTS;
+
+        // A demo starts with the default weapon and nothing else.
+        const LARA_GUN_TYPE default_gun = Gun_GetDefaultType();
+        resume->inv = (INVENTORY_STATE) {};
+        Inv_State_SetCount(&resume->inv, Gun_GetGunObject(default_gun), 1);
+        Inv_State_SetAmmo(
+            &resume->inv, default_gun, Gun_GetInitialRounds(default_gun));
+
+        resume->equipped_gun_type = default_gun;
+        resume->holsters_gun_type = default_gun;
+        resume->back_gun_type = LGT_UNARMED;
+        resume->gun_status = LGS_ARMLESS;
     }
 
     if (!g_Config.gameplay.disable_healing_between_levels
