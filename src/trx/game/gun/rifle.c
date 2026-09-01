@@ -7,6 +7,7 @@
 #include <trx/game/gun/control.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/registry.h>
+#include <trx/game/gun/routines.h>
 #include <trx/game/gun/smashing.h>
 #include <trx/game/gun/smoke.h>
 #include <trx/game/input.h>
@@ -789,6 +790,24 @@ void Gun_Rifle_EnsureReady(const LARA_GUN_TYPE weapon_type)
         Gun_Rifle_Draw(weapon_type);
     } while (Item_GetRelativeAnim(item) != goal_anim);
 }
+
+REGISTER_GUN_KIND(
+    WEAPON_TYPE_RIFLE, .draw_func = Gun_Rifle_Draw,
+    .undraw_func = Gun_Rifle_Undraw, .draw_meshes_func = Gun_Rifle_DrawMeshes,
+    .control_func = M_Control)
+
+REGISTER_GUN_ROUTINE(Fire, "generic", M_FireGeneric)
+REGISTER_GUN_ROUTINE(Fire, "m16", M_FireM16)
+REGISTER_GUN_ROUTINE(Fire, "grenade", M_FireGrenade)
+REGISTER_GUN_ROUTINE(Fire, "rocket", M_FireRocket)
+REGISTER_GUN_ROUTINE(Fire, "harpoon", M_FireHarpoon)
+REGISTER_GUN_ROUTINE(Flash, "m16", M_GetM16Flash)
+REGISTER_GUN_ROUTINE(Flash, "mp5", M_GetMp5Flash)
+REGISTER_GUN_ROUTINE(Sound, "m16", M_PlayM16Sound)
+REGISTER_GUN_ROUTINE(Sound, "mp5", M_PlayMp5Sound)
+REGISTER_GUN_ROUTINE(ReadyAnim, "grenade", M_GetGrenadeReadyAnim)
+REGISTER_GUN_ROUTINE(ReadyAnim, "harpoon", M_GetHarpoonReadyAnim)
+REGISTER_GUN_ROUTINE(SmokeSize, "launcher", M_GetLauncherSmokeSize)
 
 // clang-format off
 REGISTER_GUN_TYPE(
