@@ -332,6 +332,16 @@ test("best() with no by_name is every match", function()
   assert(#best == #ids, "unranked best is the whole set")
 end)
 
+test("borrow_content dresses an object from another", function()
+  assert(trx.objects.borrow_content(fake.UNLOADED, fake.WOLF))
+  assert(fake.calls().borrow_content.count == 1, "the ask did not land")
+
+  assert(
+    not trx.objects.borrow_content(fake.WOLF, fake.UNLOADED),
+    "there is nothing to take from an object the level left out"
+  )
+end)
+
 test("swap_mesh reaches the engine", function()
   trx.objects.swap_mesh(fake.WOLF, fake.VASE)
   assert(

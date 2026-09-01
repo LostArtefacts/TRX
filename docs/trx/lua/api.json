@@ -5774,6 +5774,29 @@
       }
     },
     {
+      "description": "Copies meshes and animations from another object. Use this when the new object has no models in the level, such as a custom projectile that uses the rocket model.",
+      "examples": [
+        "trx.objects.borrow_content(my_blast, trx.catalog.objects.rocket)"
+      ],
+      "params": [
+        {
+          "description": "The object that receives the meshes and animations.",
+          "name": "object_id",
+          "type": "catalog.objects"
+        },
+        {
+          "description": "The object that gives the meshes and animations.",
+          "name": "source_id",
+          "type": "catalog.objects"
+        }
+      ],
+      "path": "objects.borrow_content",
+      "returns": {
+        "description": "`false` if the level has no content for the source object.",
+        "type": "boolean"
+      }
+    },
+    {
       "description": "Swaps meshes between two objects. With no mesh numbers, swaps all of them; with both, swaps just those two. One without the other raises.",
       "params": [
         {

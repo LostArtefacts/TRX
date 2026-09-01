@@ -28,6 +28,10 @@ OBJECT_ID Object_Mint(void);
 
 int32_t Object_GetCount(void);
 
+// Copies meshes and animations from a source object to another object. Reports
+// failure if the level has no content for the source object.
+RESULT Object_BorrowContent(OBJECT_ID object_id, OBJECT_ID source_id);
+
 // Retrieve an object by its slot. Returns nullptr if not found.
 OBJECT *Object_GetBySlot(OBJECT_SLOT slot);
 

@@ -445,6 +445,32 @@ api.property("objects.query", {
   end,
 })
 
+api.define("objects.borrow_content", {
+  description = "Copies meshes and animations from another object. Use this when the new "
+    .. "object has no models in the level, such as a custom projectile that uses the "
+    .. "rocket model.",
+  params = {
+    {
+      name = "object_id",
+      type = "catalog.objects",
+      description = "The object that receives the meshes and animations.",
+    },
+    {
+      name = "source_id",
+      type = "catalog.objects",
+      description = "The object that gives the meshes and animations.",
+    },
+  },
+  returns = {
+    type = "boolean",
+    description = "`false` if the level has no content for the source object.",
+  },
+  examples = {
+    [[trx.objects.borrow_content(my_blast, trx.catalog.objects.rocket)]],
+  },
+  impl = raw.borrow_content,
+})
+
 api.define("objects.swap_mesh", {
   description = "Swaps meshes between two objects. With no mesh numbers, swaps all of them; with "
     .. "both, swaps just those two. One without the other raises.",

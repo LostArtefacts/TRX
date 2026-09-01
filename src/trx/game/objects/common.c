@@ -10,6 +10,7 @@
 #include <trx/game/game_buf.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/objects/links.h>
+#include <trx/game/objects/names.h>
 #include <trx/game/output/common.h>
 
 typedef struct {
@@ -102,6 +103,28 @@ OBJECT_ID Object_Mint(void)
     // Register the object so the object tables recognise its id. It takes no
     // name, which keeps it out of savegames.
     return Catalog_CreateAnonymous(CATALOG_OBJECTS);
+}
+
+RESULT Object_BorrowContent(
+    const OBJECT_ID object_id, const OBJECT_ID source_id)
+{
+    OBJECT *const obj = Object_TryGet(object_id);
+    const OBJECT *const source = Object_TryGet(source_id);
+    FAIL_IF(obj == nullptr, "there is no object %d", object_id);
+    FAIL_IF(source == nullptr, "there is no object %d", source_id);
+    FAIL_IF(
+        !source->loaded, "the level carries no %s",
+        Object_GetName(source_id) != nullptr ? Object_GetName(source_id) : "");
+
+    obj->frame_base = source->frame_base;
+    obj->frame_ofs = source->frame_ofs;
+    obj->anim_idx = source->anim_idx;
+    obj->anim_count = source->anim_count;
+    obj->bone_idx = source->bone_idx;
+    obj->mesh_idx = source->mesh_idx;
+    obj->mesh_count = source->mesh_count;
+    obj->loaded = true;
+    return OK;
 }
 
 int32_t Object_GetCount(void)

@@ -270,6 +270,20 @@ trx.objects.wolf.properties.max_hit_points = 30
   wolf.properties.max_hit_points = 30
   ```
 
+- <a id="objects.borrow_content" name="objects.borrow_content"></a>[lua]`trx.objects.borrow_content(object_id, source_id)`  
+  Copies meshes and animations from another object. Use this when the new object has no models in the level, such as a custom projectile that uses the rocket model.
+
+  Parameters:
+  - <a id="objects.borrow_content.object_id" name="objects.borrow_content.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The object that receives the meshes and animations.
+  - <a id="objects.borrow_content.source_id" name="objects.borrow_content.source_id"></a>**`source_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The object that gives the meshes and animations.
+
+  Returns: boolean. `false` if the level has no content for the source object.
+
+  Example:
+  ```lua
+  trx.objects.borrow_content(my_blast, trx.catalog.objects.rocket)
+  ```
+
 - <a id="objects.swap_mesh" name="objects.swap_mesh"></a>[lua]`trx.objects.swap_mesh(object_id1, object_id2, [mesh_num1], [mesh_num2])`  
   Swaps meshes between two objects. With no mesh numbers, swaps all of them; with both, swaps just those two. One without the other raises.
 
