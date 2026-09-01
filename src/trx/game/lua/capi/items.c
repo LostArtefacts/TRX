@@ -676,4 +676,9 @@ static void M_Create(lua_State *const L)
     LUA_RegisterModule(L, "items", m_Module);
 }
 
+void LUA_PushItem(lua_State *const L, const int16_t item_num)
+{
+    M_PushItem(L, item_num);
+}
+
 REGISTER_LUA_CAPI(.create = M_Create)

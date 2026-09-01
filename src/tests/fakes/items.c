@@ -744,6 +744,12 @@ void ObjectFamily_Remove(const OBJECT_ID object_id, const OBJECT_FAMILY family)
 
 // Dressing an object from another is the engine's; the fake records the ask so
 // a test can see it, and dresses nothing.
+// The engine runs these at every level load; the fake stands one up so a
+// declaration can be made, and runs none of them.
+void Object_AddSetupHook(void (*const hook)(void))
+{
+}
+
 RESULT Object_BorrowContent(
     const OBJECT_ID object_id, const OBJECT_ID source_id)
 {

@@ -65,6 +65,10 @@ XYZ_32 LUA_CheckXYZAt(lua_State *L, int idx, int arg);
 
 void LUA_PushXYZ(lua_State *L, XYZ_32 value);
 
+// Push an item as the handle trx.items hands out, so that a module other than
+// that one can give a script an item to work with.
+void LUA_PushItem(lua_State *L, int16_t item_num);
+
 // Takes the function that turns three channels into a color value, which is
 // where trx.math declares what a color is. Called once, as the API loads;
 // without it a color is pushed as a plain table of channels.

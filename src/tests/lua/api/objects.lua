@@ -332,6 +332,29 @@ test("best() with no by_name is every match", function()
   assert(#best == #ids, "unranked best is the whole set")
 end)
 
+test("declare states what an object of a script's own does", function()
+  local id = trx.catalog.mint(trx.catalog.Context.OBJECTS, "mymod:blast")
+  assert(id ~= nil)
+  trx.objects.declare(id, {
+    radius = 128,
+    save_position = true,
+    control = function(_item) end,
+  })
+
+  -- An object is declared once, so a second declaration says so rather than
+  -- quietly taking the place of the first.
+  raises(function()
+    trx.objects.declare(id, { control = function(_item) end })
+  end, "already declared")
+end)
+
+test("a declaration takes functions where it says functions", function()
+  local id = trx.catalog.mint(trx.catalog.Context.OBJECTS, "mymod:other")
+  raises(function()
+    trx.objects.declare(id, { control = 5 })
+  end)
+end)
+
 test("borrow_content dresses an object from another", function()
   assert(trx.objects.borrow_content(fake.UNLOADED, fake.WOLF))
   assert(fake.calls().borrow_content.count == 1, "the ask did not land")
