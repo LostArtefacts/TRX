@@ -264,7 +264,7 @@ static void M_CrawlIdle(ITEM *const item, COLL_INFO *const coll)
             item->goal_anim_state = LS(LS_CRAWL_FORWARD);
         }
     } else if (g_Input.back) {
-        int32_t h = Lara_CeilingFront(item, item->rot.y, -300, LARA_HEIGHT);
+        int32_t h = Lara_CeilingFront(item, item->rot.y, -300, STEP_L / 2);
         if (h == NO_HEIGHT || h > 256) {
             return;
         }
