@@ -6,6 +6,7 @@
 #include <trx/game/gun/control.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/registry.h>
+#include <trx/game/gun/routines.h>
 #include <trx/game/gun/smoke.h>
 #include <trx/game/input.h>
 #include <trx/game/lara/common.h>
@@ -458,6 +459,16 @@ void Gun_Pistols_UndrawMeshRight(const LARA_GUN_TYPE weapon_type)
     Gun_SetLaraHolsterRMesh(weapon_type);
     Sound_Effect(SFX_LARA_HOLSTER, &Lara_GetItem()->pos, SPM_NORMAL);
 }
+
+REGISTER_GUN_KIND(
+    WEAPON_TYPE_SINGLE_PISTOL, .draw_func = Gun_Pistols_Draw,
+    .undraw_func = Gun_Pistols_Undraw,
+    .draw_meshes_func = Gun_Pistols_DrawMeshes, .control_func = M_Control)
+
+REGISTER_GUN_KIND(
+    WEAPON_TYPE_DUAL_PISTOLS, .draw_func = Gun_Pistols_Draw,
+    .undraw_func = Gun_Pistols_Undraw,
+    .draw_meshes_func = Gun_Pistols_DrawMeshes, .control_func = M_Control)
 
 // clang-format off
 REGISTER_GUN_TYPE(

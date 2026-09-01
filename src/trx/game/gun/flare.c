@@ -5,6 +5,7 @@
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
 #include <trx/game/gun/registry.h>
+#include <trx/game/gun/routines.h>
 #include <trx/game/input.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
@@ -555,6 +556,15 @@ void Gun_Flare_DrawMeshes(void)
 }
 
 // clang-format off
+REGISTER_GUN_KIND(
+    WEAPON_TYPE_FLARE,
+    .draw_func = M_Draw,
+    .undraw_func = M_Undraw,
+    .draw_meshes_func = M_DrawMeshes,
+    .control_func = M_Control)
+
+REGISTER_GUN_ROUTINE(Flash, "flare", M_GetFlash)
+
 REGISTER_GUN_TYPE(
     .gun_type = LGT_FLARE,
     .flash_func = M_GetFlash,
