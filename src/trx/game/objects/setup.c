@@ -1,10 +1,15 @@
 #include <trx/config.h>
+#include <trx/debug.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 
 #define M_DEFAULT_RADIUS 10
+#define M_MAX_SETUP_HOOKS 4
+
+static void (*m_SetupHooks[M_MAX_SETUP_HOOKS])(void) = {};
+static int32_t m_SetupHookCount = 0;
 
 static void M_SetupLara(OBJECT *const obj)
 {
@@ -31,6 +36,12 @@ static void M_SetupLara(OBJECT *const obj)
 static void M_SetupLaraStartPos(OBJECT *const obj)
 {
     obj->draw_func = nullptr;
+}
+
+void Object_AddSetupHook(void (*const hook)(void))
+{
+    ASSERT(m_SetupHookCount < M_MAX_SETUP_HOOKS);
+    m_SetupHooks[m_SetupHookCount++] = hook;
 }
 
 void Object_SetupAllObjects(void)
@@ -80,6 +91,10 @@ void Object_SetupAllObjects(void)
         OBJECT_PROPERTIES(
             obj,
             OBJECT_PROPERTY_STORED("ocb", 0, "Object configuration value."));
+    }
+
+    for (int32_t i = 0; i < m_SetupHookCount; i++) {
+        m_SetupHooks[i]();
     }
 
     Lara_Hair_Initialise();

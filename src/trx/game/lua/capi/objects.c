@@ -1,16 +1,35 @@
+#include <trx/core/vector.h>
 #include <trx/game/catalog/manager.h>
+#include <trx/game/console.h>
+#include <trx/game/items.h>
 #include <trx/game/lua/field.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
 #include <trx/game/lua/utils.h>
+#include <trx/game/objects/common.h>
 #include <trx/game/objects/families.h>
 #include <trx/game/objects/names.h>
+#include <trx/game/objects/setup.h>
 #include <trx/game/objects/types.h>
 
 #include <string.h>
 
 // An object is the definition every item of that type is cut from - a wolf's
 // radius, not this wolf's. Per-item state lives on the item; see trx.items.
+
+// Defines setup for an object created by a script. The setup is kept across
+// level loads because object records are rebuilt for each level.
+typedef struct {
+    OBJECT_ID object_id;
+    int32_t control_ref;
+    int32_t initialise_ref;
+    int32_t radius;
+    int32_t shadow_size;
+    bool save_position;
+} M_DECLARATION;
+
+static VECTOR *m_Declarations = nullptr;
+static lua_State *m_L = nullptr;
 
 // clang-format off
 static const FIELD_DESC m_Fields[] = {
@@ -38,6 +57,7 @@ TYPE_DEFINE(OBJECT, m_Fields)
 // An object is addressed by its id, and an id is valid for the whole session -
 // there is no pool to recycle and nothing to go stale. An object the level did
 // not load still exists as a definition; `loaded` is how a script tells.
+
 static void *M_Resolve(const LUA_STRUCT_REF *const ref)
 {
     return Object_TryGet((OBJECT_ID)ref->handle.id);
@@ -85,6 +105,134 @@ static int M_L_ObjectsGet(lua_State *const L)
 }
 
 // trxc.objects.swap_mesh(obj1_id, obj2_id, mesh1_num, mesh2_num)
+
+static M_DECLARATION *M_FindDeclaration(const OBJECT_ID object_id)
+{
+    for (int32_t i = 0; m_Declarations != nullptr && i < m_Declarations->count;
+         i++) {
+        M_DECLARATION *const decl = Vector_Get(m_Declarations, i);
+        if (decl->object_id == object_id) {
+            return decl;
+        }
+    }
+    return nullptr;
+}
+
+// Calls a script function for an item. Errors are reported to the console.
+static void M_CallForItem(
+    const int32_t ref, const int16_t item_num, const char *const what)
+{
+    if (m_L == nullptr || ref == LUA_NOREF) {
+        return;
+    }
+    lua_rawgeti(m_L, LUA_REGISTRYINDEX, ref);
+    LUA_PushItem(m_L, item_num);
+    if (lua_pcall(m_L, 1, 0, 0) != LUA_OK) {
+        Console_ShowError("object %s error: %s", what, lua_tostring(m_L, -1));
+        lua_pop(m_L, 1);
+    }
+}
+
+static void M_Control(const int16_t item_num)
+{
+    const ITEM *const item = Item_Get(item_num);
+    const M_DECLARATION *const decl = M_FindDeclaration(item->object_id);
+    if (decl != nullptr) {
+        M_CallForItem(decl->control_ref, item_num, "control");
+    }
+}
+
+static void M_Initialise(const int16_t item_num)
+{
+    const ITEM *const item = Item_Get(item_num);
+    const M_DECLARATION *const decl = M_FindDeclaration(item->object_id);
+    if (decl != nullptr) {
+        M_CallForItem(decl->initialise_ref, item_num, "initialise");
+    }
+}
+
+// Applies script setup after the engine sets up its own objects.
+static void M_ApplyDeclarations(void)
+{
+    for (int32_t i = 0; m_Declarations != nullptr && i < m_Declarations->count;
+         i++) {
+        const M_DECLARATION *const decl = Vector_Get(m_Declarations, i);
+        OBJECT *const obj = Object_TryGet(decl->object_id);
+        if (obj == nullptr) {
+            continue;
+        }
+        if (decl->control_ref != LUA_NOREF) {
+            obj->control_func = M_Control;
+        }
+        if (decl->initialise_ref != LUA_NOREF) {
+            obj->initialise_func = M_Initialise;
+        }
+        if (decl->radius >= 0) {
+            obj->radius = decl->radius;
+        }
+        if (decl->shadow_size >= 0) {
+            obj->shadow_size = decl->shadow_size;
+        }
+        obj->save_position = decl->save_position;
+    }
+}
+
+// Takes an optional function from a declaration table.
+static int32_t M_TakeFunction(
+    lua_State *const L, const int arg, const char *const name)
+{
+    if (lua_getfield(L, arg, name) == LUA_TNIL) {
+        lua_pop(L, 1);
+        return LUA_NOREF;
+    }
+    if (!lua_isfunction(L, -1)) {
+        lua_pop(L, 1);
+        luaL_error(L, "'%s' must be a function", name);
+    }
+    return luaL_ref(L, LUA_REGISTRYINDEX);
+}
+
+static int32_t M_TakeInt(
+    lua_State *const L, const int arg, const char *const name)
+{
+    if (lua_getfield(L, arg, name) == LUA_TNIL) {
+        lua_pop(L, 1);
+        return -1;
+    }
+    const int32_t value = (int32_t)luaL_checkinteger(L, -1);
+    lua_pop(L, 1);
+    return value;
+}
+
+// trxc.objects.declare(object_id, spec)
+static int M_L_ObjectsDeclare(lua_State *const L)
+{
+    const OBJECT_ID object_id = LUA_CheckObjectID(L, 1);
+    luaL_checktype(L, 2, LUA_TTABLE);
+    if (M_FindDeclaration(object_id) != nullptr) {
+        return luaL_error(
+            L, "'%s' is already declared",
+            Catalog_IDToKey(CATALOG_OBJECTS, object_id));
+    }
+
+    M_DECLARATION decl = {
+        .object_id = object_id,
+        .control_ref = M_TakeFunction(L, 2, "control"),
+        .initialise_ref = M_TakeFunction(L, 2, "initialise"),
+        .radius = M_TakeInt(L, 2, "radius"),
+        .shadow_size = M_TakeInt(L, 2, "shadow_size"),
+    };
+    lua_getfield(L, 2, "save_position");
+    decl.save_position = lua_toboolean(L, -1);
+    lua_pop(L, 1);
+
+    if (m_Declarations == nullptr) {
+        m_Declarations = Vector_Create(sizeof(M_DECLARATION));
+    }
+    Vector_Add(m_Declarations, &decl);
+    return 0;
+}
+
 // trxc.objects.borrow_content(object_id, source_id) -> bool
 static int M_L_ObjectsBorrowContent(lua_State *const L)
 {
@@ -245,16 +393,36 @@ static const luaL_Reg m_Module[] = {
     { "get", M_L_ObjectsGet },
     { "is_type", M_L_ObjectsIsType },
     { "borrow_content", M_L_ObjectsBorrowContent },
+    { "declare", M_L_ObjectsDeclare },
     { "swap_mesh", M_L_ObjectsSwapMesh },
     { "swap_sprite", M_L_ObjectsSwapSprite },
     { nullptr, nullptr },
 };
 
+static void M_Shutdown(void)
+{
+    for (int32_t i = 0; m_Declarations != nullptr && i < m_Declarations->count;
+         i++) {
+        const M_DECLARATION *const decl = Vector_Get(m_Declarations, i);
+        if (m_L != nullptr) {
+            luaL_unref(m_L, LUA_REGISTRYINDEX, decl->control_ref);
+            luaL_unref(m_L, LUA_REGISTRYINDEX, decl->initialise_ref);
+        }
+    }
+    if (m_Declarations != nullptr) {
+        Vector_Free(m_Declarations);
+        m_Declarations = nullptr;
+    }
+    m_L = nullptr;
+}
+
 static void M_Create(lua_State *const L)
 {
+    m_L = L;
+    Object_AddSetupHook(M_ApplyDeclarations);
     LUA_Struct_Register(L, &TYPE_OBJECT, m_Methods);
     LUA_Property_Register(L, &m_Properties);
     LUA_RegisterModule(L, "objects", m_Module);
 }
 
-REGISTER_LUA_CAPI(.create = M_Create)
+REGISTER_LUA_CAPI(.create = M_Create, .shutdown = M_Shutdown)

@@ -445,6 +445,39 @@ api.property("objects.query", {
   end,
 })
 
+api.define("objects.declare", {
+  description = "Defines setup for an object created by a script. The setup is applied "
+    .. "at each level load because object records are rebuilt for each level.\n\n"
+    .. "`control` runs once each frame for each active item. `initialise` runs when "
+    .. "an item is created. Both functions receive the item. "
+    .. "<!--noref: control--><!--noref: initialise-->",
+  params = {
+    {
+      name = "object_id",
+      type = "catalog.objects",
+      description = "The object created with `trx.catalog.mint`.",
+    },
+    {
+      name = "spec",
+      type = "table",
+      description = "The object setup: `control`, `initialise`, `radius`, "
+        .. "`shadow_size` and `save_position`. "
+        .. "<!--noref: control--><!--noref: initialise--><!--noref: radius-->"
+        .. "<!--noref: shadow_size--><!--noref: save_position-->",
+    },
+  },
+  examples = {
+    [[local blast = trx.catalog.mint(trx.catalog.Context.OBJECTS, "mymod:blast")
+trx.objects.declare(blast, {
+  radius = 128,
+  save_position = true,
+  initialise = function(item) item.hit_points = 60 end,
+  control = function(item) item.pos.y = item.pos.y - 8 end,
+})]],
+  },
+  impl = raw.declare,
+})
+
 api.define("objects.borrow_content", {
   description = "Copies meshes and animations from another object. Use this when the new "
     .. "object has no models in the level, such as a custom projectile that uses the "

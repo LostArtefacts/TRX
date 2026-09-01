@@ -5774,6 +5774,25 @@
       }
     },
     {
+      "description": "Defines setup for an object created by a script. The setup is applied at each level load because object records are rebuilt for each level.\n\n`control` runs once each frame for each active item. `initialise` runs when an item is created. Both functions receive the item. <!--noref: control--><!--noref: initialise-->",
+      "examples": [
+        "local blast = trx.catalog.mint(trx.catalog.Context.OBJECTS, \"mymod:blast\")\ntrx.objects.declare(blast, {\n  radius = 128,\n  save_position = true,\n  initialise = function(item) item.hit_points = 60 end,\n  control = function(item) item.pos.y = item.pos.y - 8 end,\n})"
+      ],
+      "params": [
+        {
+          "description": "The object created with `trx.catalog.mint`.",
+          "name": "object_id",
+          "type": "catalog.objects"
+        },
+        {
+          "description": "The object setup: `control`, `initialise`, `radius`, `shadow_size` and `save_position`. <!--noref: control--><!--noref: initialise--><!--noref: radius--><!--noref: shadow_size--><!--noref: save_position-->",
+          "name": "spec",
+          "type": "table"
+        }
+      ],
+      "path": "objects.declare"
+    },
+    {
       "description": "Copies meshes and animations from another object. Use this when the new object has no models in the level, such as a custom projectile that uses the rocket model.",
       "examples": [
         "trx.objects.borrow_content(my_blast, trx.catalog.objects.rocket)"

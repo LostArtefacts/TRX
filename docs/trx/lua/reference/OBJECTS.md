@@ -270,6 +270,26 @@ trx.objects.wolf.properties.max_hit_points = 30
   wolf.properties.max_hit_points = 30
   ```
 
+- <a id="objects.declare" name="objects.declare"></a>[lua]`trx.objects.declare(object_id, spec)`  
+  Defines setup for an object created by a script. The setup is applied at each level load because object records are rebuilt for each level.
+
+  `control` runs once each frame for each active item. `initialise` runs when an item is created. Both functions receive the item.
+
+  Parameters:
+  - <a id="objects.declare.object_id" name="objects.declare.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The object created with [`trx.catalog.mint`](CATALOG.md#catalog.mint).
+  - <a id="objects.declare.spec" name="objects.declare.spec"></a>**`spec`** (table). The object setup: `control`, `initialise`, `radius`, `shadow_size` and `save_position`.
+
+  Example:
+  ```lua
+  local blast = trx.catalog.mint(trx.catalog.Context.OBJECTS, "mymod:blast")
+  trx.objects.declare(blast, {
+    radius = 128,
+    save_position = true,
+    initialise = function(item) item.hit_points = 60 end,
+    control = function(item) item.pos.y = item.pos.y - 8 end,
+  })
+  ```
+
 - <a id="objects.borrow_content" name="objects.borrow_content"></a>[lua]`trx.objects.borrow_content(object_id, source_id)`  
   Copies meshes and animations from another object. Use this when the new object has no models in the level, such as a custom projectile that uses the rocket model.
 

@@ -813,8 +813,12 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/objects',
   'bundles': [b_lua_surface, b_lua_strings],
-  'src': ['fakes/items.c'],
-  'engine': ['game/lua/capi/catalog.c', 'game/lua/capi/objects.c'],
+  'src': ['fakes/items.c', 'harness/stubs_console.c'],
+  'engine': [
+    'game/lua/capi/catalog.c',
+    'game/lua/capi/items.c',
+    'game/lua/capi/objects.c',
+  ],
 }
 
 # The catalog rides along: the weapons a script names are its enum.
