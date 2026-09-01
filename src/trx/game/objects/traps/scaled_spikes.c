@@ -149,7 +149,7 @@ static bool M_TestCollision(const ITEM *const item, const ITEM *const lara_item)
         x = ROUND_TO_SECTOR(item->pos.x) + WALL_L / 2;
         z = ROUND_TO_SECTOR(item->pos.z + setup->xz_offset) + WALL_L / 2;
     } else {
-        x = ROUND_TO_SECTOR(item->pos.x + setup->xz_offset) + WALL_L / 2;
+        x = ROUND_TO_SECTOR(item->pos.x - setup->xz_offset) + WALL_L / 2;
         z = ROUND_TO_SECTOR(item->pos.z) + WALL_L / 2;
     }
 
