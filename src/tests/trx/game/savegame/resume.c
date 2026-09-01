@@ -289,6 +289,8 @@ TEST(an_entry_belongs_to_its_level_and_the_demos_share_one)
 TEST(a_demo_arrives_armed_however_the_playthrough_stands)
 {
     M_SetUp();
+    SG_Resume_ResetEntry(&m_DemoLevels[0]);
+    SG_Resume_ApplyRulesToEntry(&m_DemoLevels[0]);
     const RESUME_INFO *const demo = SG_Resume_GetEntry(&m_DemoLevels[0]);
     CHECK(demo->flags.available);
     CHECK_EQ_INT(Inv_State_GetCount(&demo->inv, O_PISTOLS_ITEM), 1);

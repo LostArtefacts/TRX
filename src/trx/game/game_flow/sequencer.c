@@ -252,10 +252,8 @@ RESULT GF_InterpretSequence(
     }
 
     default:
-        if (level->type == GFL_GYM) {
+        if (level->type == GFL_GYM || level->type == GFL_DEMO) {
             SG_Resume_ResetEntry(level);
-            SG_Resume_ApplyRulesToEntry(level);
-        } else if (level->type == GFL_DEMO) {
             SG_Resume_ApplyRulesToEntry(level);
         } else if (level->type == GFL_NORMAL || level->type == GFL_BONUS) {
             SG_Resume_ApplyRulesToEntry(level);
