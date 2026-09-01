@@ -85,6 +85,15 @@ static int M_L_ObjectsGet(lua_State *const L)
 }
 
 // trxc.objects.swap_mesh(obj1_id, obj2_id, mesh1_num, mesh2_num)
+// trxc.objects.borrow_content(object_id, source_id) -> bool
+static int M_L_ObjectsBorrowContent(lua_State *const L)
+{
+    const OBJECT_ID object_id = LUA_CheckObjectID(L, 1);
+    const OBJECT_ID source_id = LUA_CheckObjectID(L, 2);
+    lua_pushboolean(L, IS_OK(Object_BorrowContent(object_id, source_id)));
+    return 1;
+}
+
 static int M_L_ObjectsSwapMesh(lua_State *const L)
 {
     const int32_t arg_count = lua_gettop(L);
@@ -235,6 +244,7 @@ static const LUA_PROPERTY_DESC m_Properties = {
 static const luaL_Reg m_Module[] = {
     { "get", M_L_ObjectsGet },
     { "is_type", M_L_ObjectsIsType },
+    { "borrow_content", M_L_ObjectsBorrowContent },
     { "swap_mesh", M_L_ObjectsSwapMesh },
     { "swap_sprite", M_L_ObjectsSwapSprite },
     { nullptr, nullptr },

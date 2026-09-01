@@ -742,6 +742,15 @@ void ObjectFamily_Remove(const OBJECT_ID object_id, const OBJECT_FAMILY family)
     Vector_Remove(m_FamilyMembers, &member);
 }
 
+// Dressing an object from another is the engine's; the fake records the ask so
+// a test can see it, and dresses nothing.
+RESULT Object_BorrowContent(
+    const OBJECT_ID object_id, const OBJECT_ID source_id)
+{
+    FAKE_RECORD("borrow_content", FV(object_id), FV(source_id));
+    return m_Objects[source_id].loaded ? OK : FAIL("nothing to take");
+}
+
 bool ObjectFamily_Has(const OBJECT_ID object_id, const OBJECT_FAMILY family)
 {
     M_EnsureFamilies();
