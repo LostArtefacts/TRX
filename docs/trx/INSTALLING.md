@@ -999,6 +999,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── bat_sprites.bin
 │   │   │   ├── binoculars.bin
 │   │   │   ├── cavern_door131_frames.bin
+│   │   │   ├── cavern_fd.bin
 │   │   │   ├── cavern_pickup_meshes.bin
 │   │   │   ├── cavern_sky.bin
 │   │   │   ├── cavern_textures.bin
@@ -2385,6 +2386,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── bat_sprites.bin
     │   │   │   │   ├── binoculars.bin
     │   │   │   │   ├── cavern_door131_frames.bin
+    │   │   │   │   ├── cavern_fd.bin
     │   │   │   │   ├── cavern_pickup_meshes.bin
     │   │   │   │   ├── cavern_sky.bin
     │   │   │   │   ├── cavern_textures.bin
