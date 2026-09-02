@@ -441,6 +441,7 @@
                 "compound_textures.bin",
                 "common_pickup_meshes.bin",
                 "compound_patrol.bin",
+                "compound_fd.bin",
             ],
             "unobtainable_kills": 9,
             "unobtainable_ally_kills": 8,
