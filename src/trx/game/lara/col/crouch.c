@@ -79,6 +79,25 @@ static bool M_IsBadDestination(const ITEM *const item, const int16_t angle)
     return room->flags.swamp || room->flags.underwater;
 }
 
+static void M_CrouchShift(ITEM *const item, COLL_INFO *const coll)
+{
+    if (g_Config.gameplay.wall_glitch_mode == WALL_GLITCH_FIXED) {
+        const XYZ_32 pos = XYZ_32_OffsetYaw(
+            item->pos, Lara_GetLaraInfo()->move_angle, STEP_L / 8);
+        int16_t room_num = item->room_num;
+        const SECTOR *const sector = Room_GetSector(pos, &room_num);
+        const int32_t height = Room_GetHeightEx(sector, pos, true, NO_ITEM);
+        const int32_t ceiling = Room_GetCeilingEx(sector, pos, true);
+        if (ABS(height - ceiling) < ABS(M_CROUCH_CEILING_THRESHOLD)) {
+            item->pos = coll->old_pos;
+            return;
+        }
+    }
+
+    Lara_Col_Shift(coll);
+    item->pos.y += coll->side_mid.floor;
+}
+
 static void M_Crouch(ITEM *const item, COLL_INFO *const coll)
 {
     item->gravity = false;
@@ -104,8 +123,7 @@ static void M_Crouch(ITEM *const item, COLL_INFO *const coll)
     }
 
     lara->keep_crouched = coll->side_mid.ceiling >= M_CROUCH_CEILING_THRESHOLD;
-    Lara_Col_Shift(coll);
-    item->pos.y += coll->side_mid.floor;
+    M_CrouchShift(item, coll);
 
     const bool crouch_active = g_Config.gameplay.enable_toggle_crouch
         ? !(lara->crouching && g_InputDB.crouch)
@@ -196,9 +214,7 @@ static void M_CrouchTurn(ITEM *const item, COLL_INFO *const coll)
     }
 
     lara->keep_crouched = coll->side_mid.ceiling >= M_CROUCH_CEILING_THRESHOLD;
-
-    Lara_Col_Shift(coll);
-    item->pos.y += coll->side_mid.floor;
+    M_CrouchShift(item, coll);
 }
 
 static void M_CrawlIdle(ITEM *const item, COLL_INFO *const coll)
@@ -232,9 +248,7 @@ static void M_CrawlIdle(ITEM *const item, COLL_INFO *const coll)
     }
 
     lara->keep_crouched = coll->side_mid.ceiling >= M_CROUCH_CEILING_THRESHOLD;
-
-    Lara_Col_Shift(coll);
-    item->pos.y += coll->side_mid.floor;
+    M_CrouchShift(item, coll);
 
     const bool crouch_active = g_Config.gameplay.enable_toggle_crouch
         ? lara->crouching
@@ -356,8 +370,7 @@ static void M_CrawlForward(ITEM *const item, COLL_INFO *const coll)
     } else if (Lara_Col_Fallen(item, coll)) {
         lara->gun_status = LGS_ARMLESS;
     } else {
-        Lara_Col_Shift(coll);
-        item->pos.y += coll->side_mid.floor;
+        M_CrouchShift(item, coll);
     }
 }
 
