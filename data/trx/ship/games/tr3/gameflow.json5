@@ -584,6 +584,7 @@
                 "menu_artefacts.bin",
                 "cavern_textures.bin",
                 "common_pickup_meshes.bin",
+                "cavern_fd.bin",
             ],
         },
 
