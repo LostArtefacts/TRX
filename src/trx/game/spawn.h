@@ -12,6 +12,11 @@ void Spawn_Ricochet(GAME_VECTOR pos);
 // `count` is the number of streaks to spawn, and only applies to TR4.
 void Spawn_RicochetRay(GAME_VECTOR start, GAME_VECTOR hit_pos, int32_t count);
 
+// The explosion a rocket or a grenade leaves behind, without the damage: the
+// sprite effect in TR1/2, and a spark fireball in TR3/4, which has no
+// explosion sprite. Under water the effect is the drowned one.
+void Spawn_Explosion(XYZ_32 pos, int16_t room_num, bool with_sound);
+
 void Spawn_Bubble(const XYZ_32 *pos, int16_t room_num);
 void Spawn_BubbleEx(
     const XYZ_32 *pos, int16_t room_num, int32_t size, int32_t size_range);

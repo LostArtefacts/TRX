@@ -134,6 +134,42 @@ void Spawn_RicochetRay(
     Spawn_Ricochet(hit_pos);
 }
 
+void Spawn_Explosion(
+    const XYZ_32 pos, const int16_t room_num, const bool with_sound)
+{
+    const bool is_underwater = M_IsUnderwaterAt(pos, room_num);
+
+    if (g_TRVersion >= 3) {
+        if (is_underwater) {
+            Sparks_TriggerUnderwaterExplosionAt(pos, room_num);
+        } else {
+            Sparks_TriggerExplosionSparks(pos, 3, -2, 0, room_num);
+            for (int32_t i = 0; i < 2; i++) {
+                Sparks_TriggerExplosionSparks(pos, 3, -1, 0, room_num);
+            }
+        }
+    } else {
+        const int16_t effect_num = Effect_Create(room_num);
+        if (effect_num != NO_EFFECT) {
+            EFFECT *const effect = Effect_Get(effect_num);
+            effect->pos = pos;
+            effect->speed = 0;
+            effect->frame_num = 0;
+            effect->counter = 0;
+            effect->object_id = O_EXPLOSION_1;
+        }
+    }
+
+    if (!with_sound) {
+        return;
+    }
+    const XYZ_32 *const sfx_pos = g_TRVersion >= 3 ? &pos : nullptr;
+    const uint32_t flags =
+        g_TRVersion >= 3 ? (0x1800000 | SPM_PITCH) : SPM_NORMAL;
+    Sound_Effect(SFX_EXPLOSION_1, sfx_pos, flags);
+    Sound_Effect(SFX_EXPLOSION_2, sfx_pos, SPM_NORMAL);
+}
+
 void Spawn_Bubble(const XYZ_32 *const pos, const int16_t room_num)
 {
     if (g_TRVersion == 3) {

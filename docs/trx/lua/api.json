@@ -13,6 +13,12 @@
       "value": 10
     },
     {
+      "description": "How many sparks the pool holds. A spark spawned after that takes the slot of the one with the least life left.",
+      "path": "fx.sparks.MAX_COUNT",
+      "type": "integer",
+      "value": 400
+    },
+    {
       "description": "What this build reports as its version: `1.9.3` for a release, and the tag with the commits since then for a development build.",
       "path": "game.TRX_VERSION",
       "type": "string",
@@ -90,6 +96,22 @@
       "value": {
         "nullable": true,
         "type": "fx.FogBulb"
+      }
+    },
+    {
+      "countable": true,
+      "description": "The spark pool, counted from 1. `#trx.fx.sparks.pool` is\n`trx.fx.sparks.MAX_COUNT` rather than how many sparks are alive: a slot holding\nno live spark reads as `nil`.",
+      "examples": [
+        "for _, spark in pairs(trx.fx.sparks.pool) do\n  spark.color = trx.math.color(255, 0, 0)\nend"
+      ],
+      "key": {
+        "type": "integer"
+      },
+      "member": "sparks.pool",
+      "module": "fx",
+      "value": {
+        "nullable": true,
+        "type": "fx.Spark"
       }
     },
     {
@@ -2200,6 +2222,107 @@
           "description": "The player typed it wrong.",
           "name": "BAD_INVOCATION",
           "value": 3
+        }
+      ]
+    },
+    {
+      "bulk": false,
+      "count": 11,
+      "description": "Which spark-set sprite a spark is drawn with.",
+      "path": "fx.SparkType",
+      "values": [
+        {
+          "description": "The soft round puff fire, smoke and explosions are drawn with.",
+          "name": "EXPLOSION",
+          "value": 0
+        },
+        {
+          "description": "A single drop of water.",
+          "name": "SMALL_SPLASH",
+          "value": 4
+        },
+        {
+          "description": "A sheet of water.",
+          "name": "BIG_SPLASH",
+          "value": 8
+        },
+        {
+          "description": "A ring on the water surface.",
+          "name": "RIPPLE",
+          "value": 9
+        },
+        {
+          "description": "The plain speck, which is also what a footprint is drawn with.",
+          "name": "PARTICLE",
+          "value": 10
+        },
+        {
+          "description": "The bubble drawn around a shielded target.",
+          "name": "SHIELD",
+          "value": 11
+        },
+        {
+          "description": "A length of rope.",
+          "name": "ROPE",
+          "value": 19
+        },
+        {
+          "description": "The forward gear light of a vehicle.",
+          "name": "DRIVE",
+          "value": 20
+        },
+        {
+          "description": "The reverse gear light of a vehicle.",
+          "name": "REVERSE",
+          "value": 21
+        },
+        {
+          "description": "The spark struck off a wall by a shot.",
+          "name": "RICOCHET",
+          "value": 36
+        },
+        {
+          "description": "A drop of blood.",
+          "name": "BLOOD",
+          "value": 39
+        }
+      ]
+    },
+    {
+      "bulk": false,
+      "count": 6,
+      "description": "How a sprite is laid over what is behind it.",
+      "path": "fx.DrawType",
+      "values": [
+        {
+          "description": "It covers what is behind it.",
+          "name": "OPAQUE",
+          "value": 0
+        },
+        {
+          "description": "It is mixed with what is behind it.",
+          "name": "BLEND",
+          "value": 1
+        },
+        {
+          "description": "It is added to what is behind it, so it lightens.",
+          "name": "BLEND_ADD",
+          "value": 2
+        },
+        {
+          "description": "It is taken from what is behind it, so it darkens.",
+          "name": "BLEND_SUB",
+          "value": 3
+        },
+        {
+          "description": "Opaque, and carrying the room reflection.",
+          "name": "REFLECTIVE_OPAQUE",
+          "value": 8
+        },
+        {
+          "description": "Added, and carrying the room reflection.",
+          "name": "REFLECTIVE_BLEND_ADD",
+          "value": 9
         }
       ]
     },
@@ -5143,6 +5266,1052 @@
       "path": "fx.blood_bath"
     },
     {
+      "description": "Shows the explosion a rocket or a grenade leaves behind, without the damage.\n\nTR1, TR2 and TR4 draw the explosion sprite the level carries. TR3 has none, and\ngets a fireball of sparks instead. Under water the effect uses the drowned\nversion, which throws a burst of bubbles and lifts a splash where the water\nends.",
+      "examples": [
+        "trx.fx.explosion({ pos = trx.lara.item.pos })"
+      ],
+      "params": [
+        {
+          "description": "Where the explosion is and whether it is heard.",
+          "fields": [
+            {
+              "description": "World position.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "default": true,
+              "description": "Whether the explosion sound plays with it.",
+              "name": "sound",
+              "optional": true,
+              "type": "boolean"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.explosion"
+    },
+    {
+      "description": "Burns a fire at a point for this frame. Make the call every frame to keep the\nfire alight.\n\nTR4 only. The other games have no such fire, so the call does nothing there.",
+      "examples": [
+        "trx.events.after_control(function()\n  trx.fx.fire({ pos = trx.lara.item.pos, size = 2 })\nend)"
+      ],
+      "params": [
+        {
+          "description": "Where the fire is and how it burns.",
+          "fields": [
+            {
+              "description": "World position.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "default": 1,
+              "description": "How big it burns: `0` small, `1` medium, `2` big.",
+              "name": "size",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": 0,
+              "description": "How far it is dimmed, `0` being full strength.",
+              "name": "fade",
+              "optional": true,
+              "type": "integer"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.fire"
+    },
+    {
+      "description": "Breaks the water at an item, the way a body falling in does. The item says\nwhere the splash is; the water it lands in says how big.",
+      "examples": [
+        "trx.fx.splash(trx.lara.item)"
+      ],
+      "params": [
+        {
+          "description": "The item the splash rises around.",
+          "name": "item",
+          "type": "items.Item"
+        }
+      ],
+      "path": "fx.splash"
+    },
+    {
+      "description": "Breaks the water around an item wading through it.",
+      "examples": [
+        "trx.fx.wade_splash(trx.lara.item, 512)"
+      ],
+      "params": [
+        {
+          "description": "The item doing the wading.",
+          "name": "item",
+          "type": "items.Item"
+        },
+        {
+          "description": "How deep the water stands about it.",
+          "name": "depth",
+          "type": "math.Distance"
+        }
+      ],
+      "path": "fx.wade_splash"
+    },
+    {
+      "description": "Spreads a ring on the water surface. The ring widens and fades on its own.",
+      "examples": [
+        "trx.fx.ripple({ pos = trx.lara.item.pos, size = 16 })"
+      ],
+      "params": [
+        {
+          "description": "Where the ring is and how it spreads.",
+          "fields": [
+            {
+              "description": "World position.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "default": 8,
+              "description": "How wide it starts, from 1 to 255.",
+              "name": "size",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": false,
+              "description": "Whether it spreads at half speed.",
+              "name": "slow",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "default": false,
+              "description": "Whether it is drawn dark rather than bright.",
+              "name": "dark",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "default": false,
+              "description": "Whether it is drawn in the blood color.",
+              "name": "blood",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "default": false,
+              "description": "Whether the ring wavers as it spreads.",
+              "name": "jitter",
+              "optional": true,
+              "type": "boolean"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.ripple"
+    },
+    {
+      "description": "Throws a handful of drops off the water surface.",
+      "examples": [
+        "trx.fx.small_splash({ pos = trx.lara.item.pos, count = 8 })"
+      ],
+      "params": [
+        {
+          "description": "Where the drops are and how many of them.",
+          "fields": [
+            {
+              "description": "World position.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "default": 1,
+              "description": "How many drops, from 1 to 255.",
+              "name": "count",
+              "optional": true,
+              "type": "integer"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.small_splash"
+    },
+    {
+      "description": "Spreads a cloud of blood under water, the way a hit that lands there does.",
+      "examples": [
+        "trx.fx.underwater_blood({ pos = trx.lara.item.pos, size = 32 })"
+      ],
+      "params": [
+        {
+          "description": "Where the cloud is and how wide it spreads.",
+          "fields": [
+            {
+              "description": "World position.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "default": 8,
+              "description": "How wide it spreads, from 1 to 255.",
+              "name": "size",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": false,
+              "description": "Whether it is drawn in the darker TR3 gold color.",
+              "name": "dark",
+              "optional": true,
+              "type": "boolean"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.underwater_blood"
+    },
+    {
+      "description": "Leaves a footprint under an item, on the floor the item stands on. The floor\nmaterial decides whether one is left at all.",
+      "examples": [
+        "trx.fx.footprint(trx.lara.item, true)"
+      ],
+      "params": [
+        {
+          "description": "The item the print is taken from.",
+          "name": "item",
+          "type": "items.Item"
+        },
+        {
+          "description": "Whether it is the left foot rather than the right.",
+          "name": "left_foot",
+          "type": "boolean"
+        }
+      ],
+      "path": "fx.footprint"
+    },
+    {
+      "description": "Spreads a ring of force out from a point, as a blast does. The ring is drawn\nand widens on its own.",
+      "examples": [
+        "trx.fx.knockback({ pos = trx.lara.item.pos })"
+      ],
+      "params": [
+        {
+          "description": "Where the ring starts.",
+          "fields": [
+            {
+              "description": "World position.",
+              "name": "pos",
+              "type": "math.Vec3"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.knockback"
+    },
+    {
+      "description": "Puts one spark in the world and hands it back, so a script can draw with the\npool the game draws its own smoke and flames with.\n\nThe spark lives for the frames it is given, moving, resizing and fading on its\nown, and then frees its slot. Nothing has to be called each frame to keep it up.\n\nReturns `nil` where the level carries no spark set, which is every TR1 and TR2\nlevel.",
+      "examples": [
+        "trx.fx.sparks.spawn({\n  pos = trx.lara.item.pos,\n  vel = { x = 0, y = -8, z = 0 },\n  sprite_type = trx.fx.SparkType.EXPLOSION,\n  life = 48,\n  color = trx.math.color(255, 200, 64),\n  end_color = trx.math.color(64, 0, 0),\n  width = 16,\n  end_width = 48,\n  scales = true,\n})"
+      ],
+      "params": [
+        {
+          "description": "What the spark is and how it behaves.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "description": "How far it moves each frame. Defaults to standing still.",
+              "name": "vel",
+              "optional": true,
+              "type": "math.Vec3"
+            },
+            {
+              "default": 10,
+              "description": "Which sprite it is drawn with.",
+              "name": "sprite_type",
+              "optional": true,
+              "type": "fx.SparkType"
+            },
+            {
+              "default": 16,
+              "description": "How many frames it lives, from 1 to 255.",
+              "name": "life",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "description": "The color it starts in. Defaults to white.",
+              "name": "color",
+              "optional": true,
+              "type": "math.Color"
+            },
+            {
+              "description": "The color it fades to. Defaults to the color it starts in, so it holds one color.",
+              "name": "end_color",
+              "optional": true,
+              "type": "math.Color"
+            },
+            {
+              "default": 8,
+              "description": "How fast it travels between the two colors.",
+              "name": "fade_speed",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": 8,
+              "description": "How many frames of life are left when it starts to darken toward black.",
+              "name": "fade_to_black",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": 4,
+              "description": "How wide it starts, from 0 to 255.",
+              "name": "width",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": 4,
+              "description": "How tall it starts, from 0 to 255.",
+              "name": "height",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "description": "The width it grows to, for a spark that scales. Defaults to the width it starts at.",
+              "name": "end_width",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "description": "The height it grows to, for a spark that scales. Defaults to the height it starts at.",
+              "name": "end_height",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": false,
+              "description": "Whether it travels from its start size to its end size over its life.",
+              "name": "scales",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "default": 2,
+              "description": "How strongly the size is scaled with distance.",
+              "name": "scalar",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": 0,
+              "description": "How much it is pulled down each frame.",
+              "name": "gravity",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": 0,
+              "description": "As fast as gravity may carry it down.",
+              "name": "max_y_vel",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": 0,
+              "description": "How fast it is slowed each frame.",
+              "name": "friction",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": 0,
+              "description": "How far it starts turned about the view, from 0 to 4095.",
+              "name": "rot_angle",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": 0,
+              "description": "How far it turns each frame, for a spark that turns.",
+              "name": "rot_add",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": false,
+              "description": "Whether it turns as it lives.",
+              "name": "rotates",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "default": 0,
+              "description": "How many further sparks it leaves behind as it ends.",
+              "name": "extras",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": 2,
+              "description": "How it is laid over what is behind it.",
+              "name": "draw_type",
+              "optional": true,
+              "type": "fx.DrawType"
+            },
+            {
+              "default": false,
+              "description": "Whether the wind carries it.",
+              "name": "is_outside",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "default": false,
+              "description": "Whether it drifts like an underwater particle.",
+              "name": "is_underwater",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "default": false,
+              "description": "Whether it is drawn in the green of the poison gas.",
+              "name": "is_green",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "default": false,
+              "description": "Whether it is drawn with the second sprite of its kind.",
+              "name": "uses_alt_sprite",
+              "optional": true,
+              "type": "boolean"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.sparks.spawn",
+      "returns": {
+        "description": "The spark, or `nil` where the level carries no spark set.",
+        "nullable": true,
+        "type": "fx.Spark"
+      }
+    },
+    {
+      "description": "Throws the fireball of sparks an explosion is drawn with.",
+      "examples": [
+        "trx.fx.sparks.explosion({ pos = trx.lara.item.pos })"
+      ],
+      "params": [
+        {
+          "description": "Where the fireball is and how strongly it bursts.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "default": 3,
+              "description": "How many further sparks each one leaves behind as it ends, from 0 to 3.",
+              "name": "extras",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": -2,
+              "description": "How the fireball lights the room around it: `-2` bright, `-1` dim, `0` not at all.",
+              "name": "light",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": false,
+              "description": "Whether it uses the underwater burst.",
+              "name": "underwater",
+              "optional": true,
+              "type": "boolean"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.sparks.explosion"
+    },
+    {
+      "description": "Lifts the smoke an explosion leaves behind.",
+      "examples": [
+        "trx.fx.sparks.explosion_smoke({ pos = trx.lara.item.pos })"
+      ],
+      "params": [
+        {
+          "description": "Where the smoke is and which part of the burst it is.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "default": false,
+              "description": "Whether it lifts as it does under water.",
+              "name": "underwater",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "default": false,
+              "description": "Whether it is the thinner smoke that closes the burst rather than the smoke that opens it.",
+              "name": "ending",
+              "optional": true,
+              "type": "boolean"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.sparks.explosion_smoke"
+    },
+    {
+      "description": "Throws the burst of bubbles an explosion under water makes.",
+      "examples": [
+        "trx.fx.sparks.explosion_bubble({ pos = trx.lara.item.pos })"
+      ],
+      "params": [
+        {
+          "description": "Where the bubbles rise.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.sparks.explosion_bubble"
+    },
+    {
+      "description": "Throws one tongue of flame, the way a burning body does. Make the call every\nframe to keep a fire burning.\n\nNo flame is thrown more than twenty sectors from Lara.",
+      "examples": [
+        "trx.fx.sparks.fire_flame({ pos = trx.lara.item.pos })"
+      ],
+      "params": [
+        {
+          "description": "Where the flame is and what color it burns.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "default": 0,
+              "description": "Which colors it burns in: `0` orange, `2` pale, `254` green.",
+              "name": "variant",
+              "optional": true,
+              "type": "integer"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.sparks.fire_flame"
+    },
+    {
+      "description": "Lifts one puff of the smoke a fire gives off.",
+      "examples": [
+        "trx.fx.sparks.fire_smoke({ pos = trx.lara.item.pos })"
+      ],
+      "params": [
+        {
+          "description": "Where the smoke is and which flame color it follows.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "default": 0,
+              "description": "Which colors it burns in: `0` orange, `2` pale, `254` green.",
+              "name": "variant",
+              "optional": true,
+              "type": "integer"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.sparks.fire_smoke"
+    },
+    {
+      "description": "Throws one tongue of the flame a standing fire burns with.",
+      "examples": [
+        "trx.fx.sparks.static_flame({ pos = trx.lara.item.pos, size = 64 })"
+      ],
+      "params": [
+        {
+          "description": "Where the flame is and how big it burns.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "default": 32,
+              "description": "How big it burns.",
+              "name": "size",
+              "optional": true,
+              "type": "integer"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.sparks.static_flame"
+    },
+    {
+      "description": "Throws a tongue of flame sideways, as a jet does.",
+      "examples": [
+        "trx.fx.sparks.side_flame({\n  pos = trx.lara.item.pos,\n  angle = trx.lara.item.rot.y,\n})"
+      ],
+      "params": [
+        {
+          "description": "Where the jet is and which way it burns.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "description": "The way the flame is thrown.",
+              "name": "angle",
+              "type": "math.Angle"
+            },
+            {
+              "default": 32,
+              "description": "How hard it is thrown.",
+              "name": "speed",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": false,
+              "description": "Whether it is the small pilot flame rather than the jet itself.",
+              "name": "pilot",
+              "optional": true,
+              "type": "boolean"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.sparks.side_flame"
+    },
+    {
+      "description": "Throws the flame a flamethrower leaves where its jet lands.",
+      "examples": [
+        "trx.fx.sparks.flamethrower_flame({ pos = trx.lara.item.pos })"
+      ],
+      "params": [
+        {
+          "description": "Where the flame lands.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.sparks.flamethrower_flame"
+    },
+    {
+      "description": "Lifts the smoke a flamethrower jet leaves behind.",
+      "examples": [
+        "trx.fx.sparks.flamethrower_smoke({ pos = trx.lara.item.pos })"
+      ],
+      "params": [
+        {
+          "description": "Where the smoke is.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "default": false,
+              "description": "Whether it lifts as it does under water.",
+              "name": "underwater",
+              "optional": true,
+              "type": "boolean"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.sparks.flamethrower_smoke"
+    },
+    {
+      "description": "Lifts the smoke a fired weapon leaves at its muzzle.",
+      "examples": [
+        "trx.fx.sparks.gun_smoke({\n  pos = trx.lara.item.pos,\n  weapon = trx.catalog.weapons.pistols,\n  initial = true,\n})"
+      ],
+      "params": [
+        {
+          "description": "Where the smoke is and which weapon left it.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "description": "Which weapon it is drawn for. `UNKNOWN`, `UNARMED`, and out-of-range values raise.",
+              "name": "weapon",
+              "type": "catalog.weapons"
+            },
+            {
+              "default": 64,
+              "description": "How light the smoke is, from 0 to 255.",
+              "name": "shade",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": false,
+              "description": "Whether it is the first puff of a shot, which is denser than the ones that follow.",
+              "name": "initial",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "description": "Which way the smoke is pushed. Left out, it lifts straight up.",
+              "name": "vel",
+              "optional": true,
+              "type": "math.Vec3"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.sparks.gun_smoke"
+    },
+    {
+      "description": "Lifts the trail of smoke a flying dart leaves.",
+      "examples": [
+        "trx.fx.sparks.dart_smoke({ pos = trx.lara.item.pos, hit = true })"
+      ],
+      "params": [
+        {
+          "description": "Where the smoke is and which way the dart flies.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "description": "How far it moves each frame. Defaults to standing still.",
+              "name": "vel",
+              "optional": true,
+              "type": "math.Vec3"
+            },
+            {
+              "default": false,
+              "description": "Whether the dart has landed, which puffs the smoke out rather than trailing it.",
+              "name": "hit",
+              "optional": true,
+              "type": "boolean"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.sparks.dart_smoke"
+    },
+    {
+      "description": "Lifts the trail of smoke a flying rocket leaves.",
+      "examples": [
+        "trx.fx.sparks.rocket_smoke({ pos = trx.lara.item.pos })"
+      ],
+      "params": [
+        {
+          "description": "Where the smoke is and how light it lifts.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "default": 0,
+              "description": "How light the smoke turns as it fades, from 0 to 191.",
+              "name": "shade",
+              "optional": true,
+              "type": "integer"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.sparks.rocket_smoke"
+    },
+    {
+      "description": "Throws the sparks a burning flare gives off.",
+      "examples": [
+        "trx.fx.sparks.flare({ pos = trx.lara.item.pos, smoke = true })"
+      ],
+      "params": [
+        {
+          "description": "Where the sparks are and which way they fly.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "description": "How far it moves each frame. Defaults to standing still.",
+              "name": "vel",
+              "optional": true,
+              "type": "math.Vec3"
+            },
+            {
+              "default": false,
+              "description": "Whether smoke is lifted with them.",
+              "name": "smoke",
+              "optional": true,
+              "type": "boolean"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.sparks.flare"
+    },
+    {
+      "description": "Throws the sparks a shotgun blast strikes off what it hits.",
+      "examples": [
+        "trx.fx.sparks.shotgun({ pos = trx.lara.item.pos })"
+      ],
+      "params": [
+        {
+          "description": "Where the sparks are and which way they fly.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "description": "How far it moves each frame. Defaults to standing still.",
+              "name": "vel",
+              "optional": true,
+              "type": "math.Vec3"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.sparks.shotgun"
+    },
+    {
+      "description": "Strikes the sparks a shot makes where it lands on a wall.\n\nTR4 throws as many streaks as asked for and can lift smoke instead. TR3 throws\none burst, and uses the count as its size.",
+      "examples": [
+        "trx.fx.sparks.ricochet({ pos = trx.lara.item.pos, angle = 0 })"
+      ],
+      "params": [
+        {
+          "description": "Where the shot lands and which way the sparks fly.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "description": "The way the sparks fly.",
+              "name": "angle",
+              "type": "math.Angle"
+            },
+            {
+              "default": 3,
+              "description": "How many streaks, from 1 to 255.",
+              "name": "count",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": false,
+              "description": "Whether smoke is lifted rather than sparks struck. TR4 only.",
+              "name": "smoke_only",
+              "optional": true,
+              "type": "boolean"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.sparks.ricochet"
+    },
+    {
+      "description": "Lifts one bubble through the water.",
+      "examples": [
+        "trx.fx.sparks.bubble({ pos = trx.lara.item.pos })"
+      ],
+      "params": [
+        {
+          "description": "Where the bubble is and how big it is.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "default": 8,
+              "description": "How big it is at its smallest.",
+              "name": "size",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": 8,
+              "description": "How much bigger than that it may be drawn.",
+              "name": "size_range",
+              "optional": true,
+              "type": "integer"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.sparks.bubble"
+    },
+    {
+      "description": "Puffs the cloud of breath a body gives off in the cold.",
+      "examples": [
+        "trx.fx.sparks.breath({ pos = trx.lara.item.pos })"
+      ],
+      "params": [
+        {
+          "description": "Where the breath is and which way it drifts.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "description": "How far it moves each frame. Defaults to standing still.",
+              "name": "vel",
+              "optional": true,
+              "type": "math.Vec3"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.sparks.breath"
+    },
+    {
+      "description": "Throws the twinkle that marks a pickup worth reaching.",
+      "examples": [
+        "trx.fx.sparks.pickup_aid({ pos = trx.lara.item.pos })"
+      ],
+      "params": [
+        {
+          "description": "Where the twinkle is and which way it drifts.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "description": "How far it moves each frame. Defaults to standing still.",
+              "name": "vel",
+              "optional": true,
+              "type": "math.Vec3"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.sparks.pickup_aid"
+    },
+    {
+      "description": "Lifts the mist that stands at the foot of a waterfall.",
+      "examples": [
+        "trx.fx.sparks.waterfall_mist({ pos = trx.lara.item.pos, angle = 0 })"
+      ],
+      "params": [
+        {
+          "description": "Where the mist is and which way it faces.",
+          "fields": [
+            {
+              "description": "World position. Must lie inside the level.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "description": "The way the waterfall faces.",
+              "name": "angle",
+              "type": "math.Angle"
+            }
+          ],
+          "name": "opts",
+          "type": "table"
+        }
+      ],
+      "path": "fx.sparks.waterfall_mist"
+    },
+    {
       "description": "Starts a level from `trx.game.levels`.",
       "examples": [
         "trx.game.play_level(1)"
@@ -7947,6 +9116,11 @@
     },
     {
       "callable": false,
+      "description": "The spark pool: the particles TR3 and TR4 draw their smoke, flames, sparks and\nsplashes with.\n\nTR1 and TR2 carry no spark set. There the pool stays empty, and everything here\nreturns nothing rather than raising.",
+      "path": "fx.sparks"
+    },
+    {
+      "callable": false,
       "description": "The signals the game's own state speaks through, for a script that would rather hear about a change than ask after one. Each is read once a frame, so what listens runs on a change rather than on a frame.",
       "path": "game.signals"
     },
@@ -8237,6 +9411,12 @@
       "description": "The color override for distance fog.\n\n`nil` means no override. Write `nil` to restore the level fog color. A level change clears the\noverride. Savegames keep it. This controls distance fog only. Fog bulbs have their own colors\nin `trx.fx.fog_bulbs`.",
       "path": "fx.fog_color",
       "type": "math.Color",
+      "writable": true
+    },
+    {
+      "description": "The wind that carries the sparks marked `trx.fx.Spark.is_outside`.\n\nThe engine works this out again every frame from the breeze setting, so a value\nwritten here holds for that frame alone.",
+      "path": "fx.sparks.wind",
+      "type": "fx.Wind",
       "writable": true
     },
     {
@@ -9469,6 +10649,257 @@
       ],
       "operators": [],
       "path": "fx.FogBulb"
+    },
+    {
+      "description": "A spark is one particle from the spark pool: a sprite that lives for a set\nnumber of frames, moving, resizing and fading on its own as it does.\n\nTR3 and TR4 only. The earlier games carry no spark set, so nothing spawns one\nand the pool stays empty.\n\nA spark that runs out of life leaves its slot to the next one asked for. A\nhandle held across that becomes stale, and field access raises an error.",
+      "extensions": [
+        {
+          "description": "The item it is attached to, and `nil` where it hangs on nothing.",
+          "name": "item",
+          "type": "items.Item"
+        },
+        {
+          "description": "The room it was spawned in.",
+          "name": "room",
+          "type": "rooms.Room"
+        },
+        {
+          "description": "Where it is drawn, which is where it sits unless it is attached to something that carries it.",
+          "name": "world_pos",
+          "type": "math.Vec3"
+        }
+      ],
+      "fields": [
+        {
+          "description": "The color it is drawn in now.",
+          "name": "color",
+          "type": "math.Color",
+          "writable": true
+        },
+        {
+          "description": "How it is laid over what is behind it.",
+          "name": "draw_type",
+          "type": "fx.DrawType",
+          "writable": false
+        },
+        {
+          "description": "The color it fades to.",
+          "name": "end_color",
+          "type": "math.Color",
+          "writable": true
+        },
+        {
+          "description": "The height it grows to.",
+          "name": "end_height",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "The width it grows to.",
+          "name": "end_width",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "How many further sparks it leaves behind as it ends.",
+          "name": "extras",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "How fast it travels from one color to the other.",
+          "name": "fade_speed",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "How many frames of life are left when it starts to darken toward black.",
+          "name": "fade_to_black",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "How fast it is slowed each frame.",
+          "name": "friction",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "How much it is pulled down each frame.",
+          "name": "gravity",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "How tall it is drawn now.",
+          "name": "height",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "Whether it counts as blood, which the pool sheds first when it runs short of slots.",
+          "name": "is_blood",
+          "type": "boolean",
+          "writable": true
+        },
+        {
+          "description": "Whether it is drawn in the green of the poison gas.",
+          "name": "is_green",
+          "type": "boolean",
+          "writable": true
+        },
+        {
+          "description": "Whether the wind carries it.",
+          "name": "is_outside",
+          "type": "boolean",
+          "writable": true
+        },
+        {
+          "description": "Whether it drifts like an underwater particle.",
+          "name": "is_underwater",
+          "type": "boolean",
+          "writable": true
+        },
+        {
+          "description": "Frames of life left. It reaches zero and the spark ends.",
+          "name": "life",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "Frames of life it started with, which the fades are measured against.",
+          "name": "life_span",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "As fast as gravity may carry it down.",
+          "name": "max_y_vel",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "Which of the sixteen body points it hangs off, where it is attached to one.",
+          "name": "node_num",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "Where it sits, in the world, or from what it is attached to. Read `trx.fx.Spark.world_pos` for the position it is drawn at.",
+          "name": "pos",
+          "type": "math.Vec3",
+          "writable": true
+        },
+        {
+          "description": "The room it was spawned in.",
+          "name": "room_num",
+          "type": "rooms.Num",
+          "writable": false
+        },
+        {
+          "description": "How far it turns each frame.",
+          "name": "rot_add",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "How far it is turned about the view, from 0 to 4095.",
+          "name": "rot_angle",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "Whether it turns as it lives.",
+          "name": "rotates",
+          "type": "boolean",
+          "writable": true
+        },
+        {
+          "description": "How strongly the size is scaled with distance.",
+          "name": "scalar",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "Whether it travels from its start size to its end size.",
+          "name": "scales",
+          "type": "boolean",
+          "writable": true
+        },
+        {
+          "description": "The color it fades from.",
+          "name": "start_color",
+          "type": "math.Color",
+          "writable": true
+        },
+        {
+          "description": "The height it grows from.",
+          "name": "start_height",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "The width it grows from.",
+          "name": "start_width",
+          "type": "integer",
+          "writable": true
+        },
+        {
+          "description": "Whether it is drawn with the second sprite of its kind.",
+          "name": "uses_alt_sprite",
+          "type": "boolean",
+          "writable": true
+        },
+        {
+          "description": "How far it moves each frame.",
+          "name": "vel",
+          "type": "math.Vec3",
+          "writable": true
+        },
+        {
+          "description": "How wide it is drawn now.",
+          "name": "width",
+          "type": "integer",
+          "writable": true
+        }
+      ],
+      "handle": true,
+      "methods": [
+        {
+          "description": "Reports whether the handle still names a live spark.\n\nA spark that runs out of life leaves its slot to the next one asked for.",
+          "name": "is_valid",
+          "returns": {
+            "description": "False once the spark has ended.",
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "Ends the spark now and frees its slot.",
+          "name": "kill"
+        }
+      ],
+      "operators": [],
+      "path": "fx.Spark"
+    },
+    {
+      "description": "How far the wind carries a spark each frame.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "The east-west axis.",
+          "name": "x",
+          "type": "math.Distance"
+        },
+        {
+          "description": "The north-south axis.",
+          "name": "z",
+          "type": "math.Distance"
+        }
+      ],
+      "handle": false,
+      "methods": [],
+      "operators": [],
+      "path": "fx.Wind"
     },
     {
       "description": "A level, as the game flow file declares it. Everything on it is read-only: a level is what the game flow says it is.",

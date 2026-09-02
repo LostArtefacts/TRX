@@ -21,11 +21,13 @@
 #include <trx/game/objects/general/waterfall.h>
 #include <trx/game/objects/ids.h>
 #include <trx/game/objects/traps/scaled_spikes.h>
+#include <trx/game/output/types.h>
 #include <trx/game/rooms/enum.h>
 #include <trx/game/savegame/types.h>
 #include <trx/game/screenshot.h>
 #include <trx/game/shell/mod.h>
 #include <trx/game/sound/ids.h>
+#include <trx/game/sparks/enum.h>
 #include <trx/game/ui/elements/frame.h>
 #include <trx/game/ui/elements/stack.h>
 #include <trx/game/ui/regions.h>
@@ -251,6 +253,25 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(GF_LEVEL_TYPE, GFL_BONUS, "bonus");
     ENUM_MAP(GF_LEVEL_TYPE, GFL_DUMMY, "dummy");
     ENUM_MAP(GF_LEVEL_TYPE, GFL_CURRENT, "current");
+
+    ENUM_MAP(SPARK_SPRITE_TYPE, SPARK_TYPE_EXPLOSION, "explosion");
+    ENUM_MAP(SPARK_SPRITE_TYPE, SPARK_TYPE_SMALL_SPLASH, "small_splash");
+    ENUM_MAP(SPARK_SPRITE_TYPE, SPARK_TYPE_BIG_SPLASH, "big_splash");
+    ENUM_MAP(SPARK_SPRITE_TYPE, SPARK_TYPE_RIPPLE, "ripple");
+    ENUM_MAP(SPARK_SPRITE_TYPE, SPARK_TYPE_PARTICLE, "particle");
+    ENUM_MAP(SPARK_SPRITE_TYPE, SPARK_TYPE_SHIELD, "shield");
+    ENUM_MAP(SPARK_SPRITE_TYPE, SPARK_TYPE_ROPE, "rope");
+    ENUM_MAP(SPARK_SPRITE_TYPE, SPARK_TYPE_DRIVE, "drive");
+    ENUM_MAP(SPARK_SPRITE_TYPE, SPARK_TYPE_REVERSE, "reverse");
+    ENUM_MAP(SPARK_SPRITE_TYPE, SPARK_TYPE_RICOCHET, "ricochet");
+    ENUM_MAP(SPARK_SPRITE_TYPE, SPARK_TYPE_BLOOD, "blood");
+
+    ENUM_MAP(DRAW_TYPE, DRAW_OPAQUE, "opaque");
+    ENUM_MAP(DRAW_TYPE, DRAW_BLEND, "blend");
+    ENUM_MAP(DRAW_TYPE, DRAW_BLEND_ADD, "blend_add");
+    ENUM_MAP(DRAW_TYPE, DRAW_BLEND_SUB, "blend_sub");
+    ENUM_MAP(DRAW_TYPE, DRAW_REFLECTIVE_OPAQUE, "reflective_opaque");
+    ENUM_MAP(DRAW_TYPE, DRAW_REFLECTIVE_BLEND_ADD, "reflective_blend_add");
 
     ENUM_MAP(WEATHER_TYPE, WEATHER_NONE, "none");
     ENUM_MAP(WEATHER_TYPE, WEATHER_RAIN, "rain");

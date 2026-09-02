@@ -1,6 +1,7 @@
 #include <trx/game/sparks/manager.h>
 
 #include <trx/config.h>
+#include <trx/core/handle.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/core/utils.h>
@@ -23,6 +24,11 @@ typedef struct {
 } M_SPARK_DYNAMIC;
 
 static SPARK m_Sparks[M_MAX_SPARKS];
+static uint32_t m_SparkGens[M_MAX_SPARKS];
+static HANDLE_REGISTRY m_SparkHandles = {
+    .gens = m_SparkGens,
+    .capacity = M_MAX_SPARKS,
+};
 static M_SPARK_DYNAMIC m_Dynamics[M_MAX_SPARK_DYNAMICS];
 static int32_t m_NextSpark = 0;
 static XZ_32 m_SmokeWind = {};
@@ -56,6 +62,7 @@ static int32_t M_GetFreeSpark(void)
     for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
         if (!m_Sparks[idx].on) {
             m_NextSpark = (idx + 1) & 0xBF;
+            Handle_RegistryBump(&m_SparkHandles, idx);
             return idx;
         }
         idx = idx == (M_MAX_SPARKS - 1) ? 0 : idx + 1;
@@ -73,6 +80,7 @@ static int32_t M_GetFreeSpark(void)
     }
 
     m_NextSpark = (free + 1) & 0xBF;
+    Handle_RegistryBump(&m_SparkHandles, free);
     return free;
 }
 
@@ -310,6 +318,28 @@ SPARK *Sparks_GetSpark(const int32_t idx)
     return &m_Sparks[idx];
 }
 
+int32_t Sparks_GetMaxCount(void)
+{
+    return M_MAX_SPARKS;
+}
+
+TRX_HANDLE Sparks_GetHandle(const SPARK *const spark)
+{
+    if (spark == nullptr) {
+        return (TRX_HANDLE) { .id = -1 };
+    }
+    return Handle_RegistryMint(&m_SparkHandles, (int32_t)(spark - m_Sparks));
+}
+
+SPARK *Sparks_FromHandle(const TRX_HANDLE handle)
+{
+    if (!Handle_RegistryIsLive(&m_SparkHandles, handle)) {
+        return nullptr;
+    }
+    SPARK *const spark = &m_Sparks[handle.id];
+    return spark->on ? spark : nullptr;
+}
+
 SPARK *Sparks_InitialiseSpriteSpark(const SPARK_SPRITE_TYPE type)
 {
     const int32_t sprite_idx = Sparks_GetSpriteIndex(type);
@@ -446,6 +476,7 @@ void Sparks_Reset(void)
     for (int32_t i = 0; i < M_MAX_SPARK_DYNAMICS; i++) {
         m_Dynamics[i].on = false;
     }
+    Handle_RegistryBumpAll(&m_SparkHandles);
     m_NextSpark = 0;
     m_SmokeWind = (XZ_32) {};
     m_HairWindZ = 0;
