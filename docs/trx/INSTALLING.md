@@ -1018,6 +1018,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── common_pickup_meshes.bin
 │   │   │   ├── compound_animating_bounds.bin
 │   │   │   ├── compound_cine.bin
+│   │   │   ├── compound_fd.bin
 │   │   │   ├── compound_patrol.bin
 │   │   │   ├── compound_textures.bin
 │   │   │   ├── crash_animating_bounds.bin
@@ -2403,6 +2404,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── common_pickup_meshes.bin
     │   │   │   │   ├── compound_animating_bounds.bin
     │   │   │   │   ├── compound_cine.bin
+    │   │   │   │   ├── compound_fd.bin
     │   │   │   │   ├── compound_patrol.bin
     │   │   │   │   ├── compound_textures.bin
     │   │   │   │   ├── crash_animating_bounds.bin
