@@ -771,20 +771,25 @@ void Sparks_TriggerUnderwaterExplosion(const ITEM *item)
     if (item == nullptr) {
         return;
     }
+    Sparks_TriggerUnderwaterExplosionAt(item->pos, item->room_num);
+}
 
-    Sparks_TriggerExplosionBubble(item->pos, item->room_num);
-    Sparks_TriggerExplosionSparks(item->pos, 2, -2, 1, item->room_num);
+void Sparks_TriggerUnderwaterExplosionAt(
+    const XYZ_32 pos, const int16_t room_num)
+{
+    Sparks_TriggerExplosionBubble(pos, room_num);
+    Sparks_TriggerExplosionSparks(pos, 2, -2, 1, room_num);
 
     for (int32_t i = 0; i < 3; i++) {
-        Sparks_TriggerExplosionSparks(item->pos, 2, -1, 1, item->room_num);
+        Sparks_TriggerExplosionSparks(pos, 2, -1, 1, room_num);
     }
 
-    const int32_t water_height = Room_GetWaterHeight(item->pos, item->room_num);
+    const int32_t water_height = Room_GetWaterHeight(pos, room_num);
     if (water_height == NO_HEIGHT) {
         return;
     }
 
-    int32_t y = item->pos.y - water_height;
+    int32_t y = pos.y - water_height;
     if (y >= 2048) {
         return;
     }
@@ -792,9 +797,9 @@ void Sparks_TriggerUnderwaterExplosion(const ITEM *item)
     const int32_t wh = 2048 - y;
     y = wh >> 6;
 
-    const ROOM *const room = Room_Get(item->room_num);
+    const ROOM *const room = Room_Get(room_num);
     FX_Water_SetupSplash(&(FX_WATER_SPLASH_SETUP) {
-        .pos = { .x = item->pos.x, .y = room->max_ceiling, .z = item->pos.z },
+        .pos = { .x = pos.x, .y = room->max_ceiling, .z = pos.z },
         .inner_y_size = -96,
         .inner_xz_vel = 160,
         .inner_gravity = 96,

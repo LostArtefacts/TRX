@@ -15,6 +15,7 @@ void Sparks_TriggerSmallSplash(XYZ_32 pos, int32_t count);
 void Sparks_TriggerBreath(XYZ_32 pos, XYZ_32 vel, int16_t room_num);
 
 void Sparks_TriggerUnderwaterExplosion(const ITEM *item);
+void Sparks_TriggerUnderwaterExplosionAt(XYZ_32 pos, int16_t room_num);
 void Sparks_TriggerExplosionBubble(XYZ_32 pos, int16_t room_num);
 void Sparks_TriggerExplosionSparks(
     XYZ_32 pos, int32_t extras, int32_t dynamic, int32_t uw, int16_t room_num);

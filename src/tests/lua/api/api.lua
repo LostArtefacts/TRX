@@ -1695,19 +1695,50 @@ end)
 test("a collection is declared as a module or a member of one", function()
   local api = fresh_env()
   api.module("things", { description = "..." })
-  local ok, err = pcall(api.container, "things.a.b", {
+  local ok, err = pcall(api.container, "things.a.b.c", {
     description = "Indexing.",
     key = { type = "integer", description = "A key." },
     value = { type = "string" },
     get = function() end,
   })
-  assert(not ok, "three segments deep")
+  assert(not ok, "four segments deep")
   -- The path the message names is the one that was written, not one with a
   -- segment added to borrow another declaration's parser.
   assert(
-    tostring(err):find("got: things.a.b", 1, true),
+    tostring(err):find("got: things.a.b.c", 1, true),
     "the message must name the path as written: " .. tostring(err)
   )
+end)
+
+test("a collection inside a namespace needs the namespace first", function()
+  local api = fresh_env()
+  api.module("things", { description = "..." })
+  local spec = {
+    description = "Indexing.",
+    key = { type = "integer", description = "A key." },
+    value = { type = "string" },
+    get = function(idx)
+      return ("#%d"):format(idx)
+    end,
+    count = function()
+      return 2
+    end,
+  }
+
+  local ok, err = pcall(api.container, "things.group.samples", spec)
+  assert(not ok, "the namespace has to be declared first")
+  assert(
+    tostring(err):find("api.namespace('things.group')", 1, true),
+    "the message must name the namespace: " .. tostring(err)
+  )
+
+  local api2 = fresh_env()
+  api2.module("things", { description = "..." })
+  api2.namespace("things.group", { description = "A group." })
+  api2.container("things.group.samples", spec)
+  assert(trx.things.group.samples[1] == "#1", "the collection is indexed")
+  assert(#trx.things.group.samples == 2, "and counted")
+  api2.seal()
 end)
 
 -- Several collections on one module tie on the module they sit under, and the

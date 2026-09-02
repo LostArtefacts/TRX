@@ -824,16 +824,24 @@ api.container = declarator("container", "containers", {
     end
 
     -- A collection is declared as the module that is indexed, or as the member
-    -- of it the collection is read through: one segment or two, where every
-    -- other declaration names a member and so has one more.
+    -- of it the collection is read through, which may sit inside a namespace:
+    -- one segment, two, or three.
     local parts = segments(name)
     need(
-      #parts == 1 or #parts == 2,
-      "a collection is declared as 'module' or 'module.member', got: %s",
+      #parts >= 1 and #parts <= 3,
+      "a collection is declared as 'module', 'module.member' or "
+        .. "'module.namespace.member', got: %s",
       name
     )
     container.module = parts[1]
-    container.member = parts[2]
+    container.member = #parts > 1 and table.concat(parts, ".", 2) or nil
+    -- The table it hangs off and the name it hangs there under, which is the
+    -- module's own table unless a namespace stands between the two.
+    container.holder = parts[1]
+    container.holder_name = parts[#parts]
+    if #parts == 3 then
+      container.holder = parts[1] .. "." .. parts[2]
+    end
 
     -- The table the collection is indexed on: the module's own where the module
     -- is indexed, and a member of it where the module hands a collection out.
@@ -845,7 +853,18 @@ api.container = declarator("container", "containers", {
       owner.table = module_table(name)
     else
       owner.table = owner.table or {}
-      rawset(module_table(container.module), container.member, owner.table)
+      local holder = module_table(container.module)
+      if #parts == 3 then
+        holder = rawget(holder, parts[2])
+        need(
+          type(holder) == "table",
+          "%s needs api.namespace('%s.%s') declared first",
+          name,
+          parts[1],
+          parts[2]
+        )
+      end
+      rawset(holder, container.holder_name, owner.table)
     end
     owner.container = container
     install_meta(owner)
@@ -1357,10 +1376,10 @@ api.enum = declarator("enum", "enums", {
 api.const = declarator("const", "constants", {
   declare = function(entry, path, spec, need)
     need(spec.value ~= nil, "%s has no value; is it exported from C?", path)
-    local where = placed(path, need)
+    local where = placed(path, need, true)
     entry.where = where
 
-    rawset(module_table(where.module), where.name, spec.value)
+    rawset(table_of(where, need), where.name, spec.value)
     return spec.value
   end,
 
@@ -1530,9 +1549,10 @@ local function audit_reachable()
       declared[owner] = declared[owner] or {}
       declared[owner][entry.where.name] = true
     elseif made_by(entry, api.container) and entry.member ~= nil then
-      -- The table a collection is read through is a member of its module.
-      declared[entry.module] = declared[entry.module] or {}
-      declared[entry.module][entry.member] = true
+      -- The table a collection is read through is a member of the module, or
+      -- of a namespace inside it.
+      declared[entry.holder] = declared[entry.holder] or {}
+      declared[entry.holder][entry.holder_name] = true
     end
   end
 
