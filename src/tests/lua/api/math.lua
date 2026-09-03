@@ -4,6 +4,7 @@
 
 local h = require("harness")
 local test = h.test
+local raises = h.raises
 
 local DEG_90 = trx.math.DEG_90
 
@@ -39,6 +40,20 @@ test("atan takes z before x", function()
     "straight along +x is a quarter turn"
   )
   assert(trx.math.atan(1024, 1024) == trx.math.DEG_45)
+end)
+
+test("a length says itself in sectors and back", function()
+  assert(trx.math.from_sectors(8) == 8 * trx.math.WALL_L)
+  assert(trx.math.from_sectors(0.5) == trx.math.WALL_L // 2)
+  assert(trx.math.from_sectors(-2) == -2 * trx.math.WALL_L)
+  assert(trx.math.to_sectors(trx.math.WALL_L) == 1)
+  assert(trx.math.to_sectors(trx.math.WALL_L // 2) == 0.5)
+  raises(function()
+    trx.math.from_sectors("8")
+  end)
+  raises(function()
+    trx.math.to_sectors({})
+  end)
 end)
 
 test("round_to_sector snaps to the corner west and north", function()

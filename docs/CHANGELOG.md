@@ -89,6 +89,7 @@
 - Added an object families file, so a mod can say which objects count as pickups, doors, creatures and the rest without a new build
 - Added a `trx.path` module, so a script can work with filesystem paths, join one with `/`, inspect its parts, find the game's own files, and read and write under the game's directories
 - Added a `trx.json` module, so a script can read and write JSON as text or files
+- Added `trx.math.from_sectors()` and `trx.math.to_sectors()`, so a script can say a length the way a level is laid out
 - Added an object links file, so a mod can say which pickup an inventory icon stands for, which slot a key goes into, and which box a weapon's rounds come in
 - Added `trx.objects.declare()`, so a script can define how its own object starts, updates, casts a shadow and saves its position
 - Added `trx.objects.borrow_content()`, so an object with no models of its own can use another object's meshes and animations

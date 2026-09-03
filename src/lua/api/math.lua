@@ -310,6 +310,61 @@ trx.zones.box(corner, {
   end,
 })
 
+api.define("math.from_sectors", {
+  description = [[
+    Says a length in sectors, which is how a level is laid out, in the units the
+    engine measures the world in. A part of a sector is a length of its own, so
+    `0.5` is half a sector.
+  ]],
+  params = {
+    {
+      name = "value",
+      type = "number",
+      description = "A length in sectors.",
+    },
+  },
+  returns = {
+    type = "math.Distance",
+    description = "The same length.",
+  },
+  examples = {
+    [[-- how far the uzis reach, eight sectors out
+trx.weapons.get(trx.catalog.weapons.uzis).target_dist =
+  trx.math.from_sectors(8)]],
+  },
+  impl = function(value)
+    if type(value) ~= "number" then
+      error("value must be a number", 3)
+    end
+    return math.floor(value * raw.WALL_L + 0.5)
+  end,
+})
+
+api.define("math.to_sectors", {
+  description = "Says a length in sectors, which is what it reads as on a level's own grid. A "
+    .. "length that is not a whole number of sectors reads as a fraction.",
+  params = {
+    {
+      name = "value",
+      type = "math.Distance",
+      description = "The length to say.",
+    },
+  },
+  returns = {
+    type = "number",
+    description = "The same length in sectors.",
+  },
+  examples = {
+    [[local sectors = trx.math.to_sectors(trx.lara.item.pos.y)]],
+  },
+  impl = function(value)
+    if type(value) ~= "number" then
+      error("value must be a number", 3)
+    end
+    return value / raw.WALL_L
+  end,
+})
+
 api.const("math.DEG_1", {
   value = raw.DEG_1,
   type = "math.Angle",
