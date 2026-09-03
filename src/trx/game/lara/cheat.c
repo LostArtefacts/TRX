@@ -1,5 +1,6 @@
 #include <trx/game/lara/cheat.h>
 
+#include <trx/config.h>
 #include <trx/core/vector.h>
 #include <trx/game/camera.h>
 #include <trx/game/console.h>
@@ -321,32 +322,42 @@ bool Lara_Cheat_Teleport(XYZ_32 pos, int16_t room_num)
 
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
     const int32_t height = Room_GetHeightEx(sector, pos, true, NO_ITEM);
-    if (height == NO_HEIGHT) {
+    const int32_t ceiling = Room_GetCeilingEx(sector, pos, true);
+    if (height == NO_HEIGHT || ceiling == NO_HEIGHT) {
         return false;
     }
 
+    const ROOM *const room = Room_Get(room_num);
+    const int32_t water_height = Room_GetWaterHeight(pos, room_num);
+    const bool pos_submerged = room->flags.underwater
+        || (water_height != NO_HEIGHT && water_height > 0);
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+
+    if (!pos_submerged && lara_info->water_status != LWS_CHEAT) {
+        const int32_t required_space = g_Config.gameplay.enable_crawling
+                && (lara_info->gun_status == LGS_ARMLESS
+                    || !Gun_IsRifleType(lara_info->gun_type))
+            ? STEPUP_HEIGHT
+            : LARA_HEIGHT;
+        if (height - ceiling < required_space) {
+            return false;
+        }
+    }
+
     ITEM *const lara_item = Lara_GetItem();
-    lara_item->pos.x = pos.x;
-    lara_item->pos.y = pos.y;
-    lara_item->pos.z = pos.z;
+    lara_item->pos = pos;
     lara_item->floor = height;
 
     const int16_t item_num = Item_GetIndex(lara_item);
     Item_UpdateRoom(item_num, room_num);
 
-    LARA_INFO *const lara_info = Lara_GetLaraInfo();
     if (lara_info->gun_status == LGS_HANDS_BUSY) {
         lara_info->gun_status = LGS_ARMLESS;
     }
 
     Lara_Vehicle_Dismount();
     if (lara_info->extra_anim) {
-        const ROOM *const room = Room_Get(lara_item->room_num);
-        const bool room_submerged = room->flags.underwater;
-        const int32_t water_height =
-            Room_GetWaterHeight(lara_item->pos, lara_item->room_num);
-
-        if (room_submerged || (water_height != NO_HEIGHT && water_height > 0)) {
+        if (pos_submerged) {
             lara_info->water_status = LWS_UNDERWATER;
             lara_item->current_anim_state = LS(LS_SWIM);
             lara_item->goal_anim_state = LS(LS_SWIM);
@@ -368,6 +379,13 @@ bool Lara_Cheat_Teleport(XYZ_32 pos, int16_t room_num)
         lara_info->extra_anim = false;
         M_ResetGunStatus();
         M_ReinitialiseGunMeshes();
+    }
+
+    if (lara_info->water_status != LWS_UNDERWATER
+        && lara_info->water_status != LWS_CHEAT && !lara_info->is_crouched
+        && height - ceiling < LARA_HEIGHT) {
+        lara_item->goal_anim_state = LS(LS_CROUCH_IDLE);
+        Lara_Animate(lara_item);
     }
 
     lara_info->hit_effect_count = 0;
