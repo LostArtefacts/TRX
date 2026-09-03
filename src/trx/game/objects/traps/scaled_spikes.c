@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
+#include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
@@ -30,6 +31,7 @@ typedef struct {
     } base;
     int16_t speed;
     int16_t scale;
+    int16_t prev_scale;
     int16_t cooldown;
     int32_t damage;
     int32_t orientation;
@@ -62,6 +64,7 @@ static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
     MUST(JSON_READ_OPT(io, "speed", &p->speed));
     MUST(JSON_READ_OPT(io, "scale", &p->scale));
     MUST(JSON_READ_OPT(io, "cooldown", &p->cooldown));
+    p->prev_scale = p->scale;
     return OK;
 }
 
@@ -176,6 +179,7 @@ static void M_Control(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
     ITEM *const lara_item = Lara_GetItem();
+    p->prev_scale = p->scale;
 
     if (!Item_IsTriggerActive(item) || p->cooldown != 0) {
         if (Item_IsTriggerActive(item)) {
@@ -317,8 +321,15 @@ static bool M_Draw(const ITEM *const item)
         return false;
     }
 
+    const double ratio = Interpolation_GetWorldRate();
+    const bool do_interp =
+        Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
+    const int32_t y_scale = do_interp
+        ? LERP(p->prev_scale << 2, p->scale << 2, ratio)
+        : p->scale << 2;
+
     Matrix_ScaleX(M_XZ_SCALE);
-    Matrix_ScaleY(p->scale << 2);
+    Matrix_ScaleY(y_scale);
     Matrix_ScaleZ(M_XZ_SCALE);
 
     Output_CalculateObjectLighting(
