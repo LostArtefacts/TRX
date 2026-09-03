@@ -316,6 +316,39 @@ static void M_Filter(
     }
 }
 
+// Pushes the samples the resampler still holds through to the sink.
+static void M_FlushResampler(AUDIO_DECODER *const decoder)
+{
+    if (decoder->swr_ctx == nullptr) {
+        return;
+    }
+
+    while (true) {
+        const int32_t max_samples = swr_get_out_samples(decoder->swr_ctx, 0);
+        if (max_samples <= 0) {
+            break;
+        }
+
+        const int32_t floats = max_samples * decoder->channels;
+        float *const scratch = Memory_Alloc(floats * sizeof(float));
+        uint8_t *out_buffer = (uint8_t *)scratch;
+        const int32_t converted =
+            swr_convert(decoder->swr_ctx, &out_buffer, max_samples, nullptr, 0);
+        if (converted > 0) {
+            if (decoder->filter_graph != nullptr) {
+                M_Filter(decoder, scratch, converted);
+            } else {
+                M_Append(decoder, scratch, converted);
+            }
+        }
+        Memory_Free(scratch);
+
+        if (converted <= 0) {
+            break;
+        }
+    }
+}
+
 // Pushes the samples the stretcher still holds through to the sink.
 static void M_FlushFilter(AUDIO_DECODER *const decoder)
 {
@@ -598,6 +631,7 @@ int32_t AudioDecoder_Read(AUDIO_DECODER *const decoder, const float **const out)
         // let the codec hand back the frames it was still holding
         avcodec_send_packet(decoder->codec_ctx, nullptr);
         M_Drain(decoder);
+        M_FlushResampler(decoder);
         M_FlushFilter(decoder);
         decoder->is_drained = true;
         *out = decoder->buffer;

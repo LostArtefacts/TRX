@@ -56,6 +56,9 @@ typedef struct {
     bool is_playing;
     float volume_l; // sample gain multiplier
     float volume_r; // sample gain multiplier
+    // Follows `volume_l`/`volume_r` over one callback chunk.
+    float current_volume_l;
+    float current_volume_r;
 
     float pitch;
     // `volume`/`pan` come from the game layer (src/trx/game/sound/common.c).
@@ -116,6 +119,15 @@ static double M_DecibelToMultiplier(double db_gain)
         // DirectSound-style centi-dB domain: gain = 10^(centi_dB/2000).
         return pow(10.0, db_gain / 2000.0);
     }
+}
+
+static float M_ReadMono(const AUDIO_SAMPLE *const sample, const int32_t idx)
+{
+    float result = 0.0f;
+    for (int32_t i = 0; i < sample->channels; i++) {
+        result += sample->sample_data[idx * sample->channels + i];
+    }
+    return result / (float)sample->channels;
 }
 
 static bool M_RecalculateChannelVolumes(int32_t sound_id)
@@ -433,6 +445,8 @@ int32_t Audio_Sample_Play(
         sound->sample = &m_LoadedSamples[sample_id];
 
         M_RecalculateChannelVolumes(sound_id);
+        sound->current_volume_l = sound->volume_l;
+        sound->current_volume_r = sound->volume_r;
 
         result = sound_id;
         break;
@@ -579,8 +593,14 @@ void Audio_Sample_Mix(float *dst_buffer, size_t len)
         int32_t samples_requested =
             len / sizeof(AUDIO_WORKING_FORMAT) / AUDIO_WORKING_CHANNELS;
         float src_sample_idx = sound->current_sample;
-        const float *src_buffer = sample->sample_data;
         float *dst_ptr = dst_buffer;
+
+        float gain_l = sound->current_volume_l;
+        float gain_r = sound->current_volume_r;
+        const float gain_step_l =
+            (sound->volume_l - gain_l) / (float)samples_requested;
+        const float gain_step_r =
+            (sound->volume_r - gain_r) / (float)samples_requested;
 
         while ((dst_ptr - dst_buffer) / AUDIO_WORKING_CHANNELS
                < samples_requested) {
@@ -590,22 +610,30 @@ void Audio_Sample_Mix(float *dst_buffer, size_t len)
                 if (!sample->is_decoded || !sound->is_looped) {
                     break;
                 }
-                src_sample_idx = 0.0f;
+                src_sample_idx -= (float)ready;
+                if ((int32_t)src_sample_idx >= ready) {
+                    src_sample_idx = 0.0f;
+                }
             }
 
-            // because we handle 3d sound ourselves, downmix to mono
-            float src_sample = 0.0f;
-            for (int32_t i = 0; i < sample->channels; i++) {
-                src_sample +=
-                    src_buffer[(int32_t)src_sample_idx * sample->channels + i];
+            const int32_t idx = (int32_t)src_sample_idx;
+            int32_t next_idx = idx + 1;
+            if (next_idx >= ready) {
+                next_idx = sound->is_looped && sample->is_decoded ? 0 : idx;
             }
-            src_sample /= (float)sample->channels;
+            const float frac = src_sample_idx - (float)idx;
+            const float src_sample = M_ReadMono(sample, idx) * (1.0f - frac)
+                + M_ReadMono(sample, next_idx) * frac;
 
-            *dst_ptr++ += src_sample * sound->volume_l;
-            *dst_ptr++ += src_sample * sound->volume_r;
+            *dst_ptr++ += src_sample * gain_l;
+            *dst_ptr++ += src_sample * gain_r;
+            gain_l += gain_step_l;
+            gain_r += gain_step_r;
             src_sample_idx += sound->pitch;
         }
 
+        sound->current_volume_l = gain_l;
+        sound->current_volume_r = gain_r;
         sound->current_sample = src_sample_idx;
         if (sample->is_decoded && !sound->is_looped
             && (int32_t)src_sample_idx >= ready) {
