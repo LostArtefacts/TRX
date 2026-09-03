@@ -5,14 +5,16 @@ local logo = require("tr4.logo")
 local LOGO_WIDTH = 512
 local LOGO_HEIGHT = 256
 
-trx.ui.regions.place(
-  trx.ui.Region.TOP_CENTER,
-  trx.ui.widgets.Image({
-    path = logo.path,
-    w = LOGO_WIDTH,
-    h = LOGO_HEIGHT,
-  })
-)
+local function show_logo()
+  trx.ui.regions.place(
+    trx.ui.Region.TOP_CENTER,
+    trx.ui.widgets.Image({
+      path = logo.path,
+      w = LOGO_WIDTH,
+      h = LOGO_HEIGHT,
+    })
+  )
+end
 
 -- The title screen alternates flyby sequences with cutscenes: a trigger along
 -- a flyby's path starts one, and the cutscene hands over to the next sequence
@@ -101,6 +103,7 @@ local function set_lara_visible(visible)
 end
 
 trx.events.on_title_start(function()
+  show_logo()
   trx.cutscenes.forget_played()
   set_lara_visible(false)
   trx.camera.play_flyby(FIRST_FLYBY_NUM)
