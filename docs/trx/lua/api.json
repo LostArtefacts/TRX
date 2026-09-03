@@ -6964,6 +6964,42 @@
       }
     },
     {
+      "description": "Says a length in sectors, which is how a level is laid out, in the units the\nengine measures the world in. A part of a sector is a length of its own, so\n`0.5` is half a sector.",
+      "examples": [
+        "-- how far the uzis reach, eight sectors out\ntrx.weapons.get(trx.catalog.weapons.uzis).target_dist =\n  trx.math.from_sectors(8)"
+      ],
+      "params": [
+        {
+          "description": "A length in sectors.",
+          "name": "value",
+          "type": "number"
+        }
+      ],
+      "path": "math.from_sectors",
+      "returns": {
+        "description": "The same length.",
+        "type": "math.Distance"
+      }
+    },
+    {
+      "description": "Says a length in sectors, which is what it reads as on a level's own grid. A length that is not a whole number of sectors reads as a fraction.",
+      "examples": [
+        "local sectors = trx.math.to_sectors(trx.lara.item.pos.y)"
+      ],
+      "params": [
+        {
+          "description": "The length to say.",
+          "name": "value",
+          "type": "math.Distance"
+        }
+      ],
+      "path": "math.to_sectors",
+      "returns": {
+        "description": "The same length in sectors.",
+        "type": "number"
+      }
+    },
+    {
       "description": "Restarts the game into another mod. The switch happens once the game flow picks it up, not on the call.",
       "examples": [
         "trx.mod.switch(\"arabian-nights\")"

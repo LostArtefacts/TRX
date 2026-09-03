@@ -171,3 +171,33 @@ Fixed-point trigonometry, matching the engine's own tables. Using these rather t
     z = corner.z + trx.math.WALL_L,
   })
   ```
+
+- <a id="math.from_sectors" name="math.from_sectors"></a>[lua]`trx.math.from_sectors(value)`  
+  Says a length in sectors, which is how a level is laid out, in the units the
+  engine measures the world in. A part of a sector is a length of its own, so
+  `0.5` is half a sector.
+
+  Parameters:
+  - <a id="math.from_sectors.value" name="math.from_sectors.value"></a>**`value`** (number). A length in sectors.
+
+  Returns: [trx.math.Distance](#math.Distance). The same length.
+
+  Example:
+  ```lua
+  -- how far the uzis reach, eight sectors out
+  trx.weapons.get(trx.catalog.weapons.uzis).target_dist =
+    trx.math.from_sectors(8)
+  ```
+
+- <a id="math.to_sectors" name="math.to_sectors"></a>[lua]`trx.math.to_sectors(value)`  
+  Says a length in sectors, which is what it reads as on a level's own grid. A length that is not a whole number of sectors reads as a fraction.
+
+  Parameters:
+  - <a id="math.to_sectors.value" name="math.to_sectors.value"></a>**`value`** ([trx.math.Distance](#math.Distance)). The length to say.
+
+  Returns: number. The same length in sectors.
+
+  Example:
+  ```lua
+  local sectors = trx.math.to_sectors(trx.lara.item.pos.y)
+  ```
