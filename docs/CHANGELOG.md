@@ -99,6 +99,7 @@
 - Changed a name a script mints for an object, sample or music track to be refused if it carries capitals, since a name is read in one case
 - Changed weather to follow flyby cameras (TRX1231)
 - Changed a missing or unknown `lara_outfit` in a level to fall back to the default outfit, rather than stopping the game from starting (TRX1087)
+- Changed pickup aids to not show for hidden reach-in, sarcophagus and crowbar modes (TRX1355)
 - Removed TR1's grenade pickup, freeing its model and inventory slots for objects of your own
 - Removed the golden outfits, which the engine now produces from any outfit, freeing their model slots for outfits of your own (TRX1070)
 - Fixed an outfit file naming a weapon the engine does not know leaving Lara without that weapon's meshes, with nothing said

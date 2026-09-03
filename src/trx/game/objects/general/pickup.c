@@ -244,24 +244,22 @@ static void M_SpawnPickupAid(const ITEM *const item)
         return;
     }
 
-    const GAME_VECTOR pos = {
+    const XYZ_32 pos = {
         .x = item->pos.x + 20 * (Random_GetDraw() - 0x4000) / 0x4000,
         .y = item->pos.y - ABS(frame->bounds.max.y - frame->bounds.min.y)
             - 10 * (1 + (Random_GetDraw() - 0x4000) / 0x4000),
         .z = item->pos.z + 20 * (Random_GetDraw() - 0x4000) / 0x4000,
-        .room_num = item->room_num,
     };
 
     if (g_TRVersion >= 3) {
         for (int32_t i = 0; i < (Random_GetControl() & 3) + 4; i++) {
-            Sparks_TriggerPickupAid(pos.pos, (XZ_32) {});
+            Sparks_TriggerPickupAid(pos, (XZ_32) {});
         }
     } else {
-        const int16_t effect_num = Effect_Create(pos.room_num);
+        const int16_t effect_num = Effect_Create(item->room_num);
         if (effect_num != NO_EFFECT) {
             EFFECT *const effect = Effect_Get(effect_num);
-            effect->room_num = pos.room_num;
-            effect->pos = pos.pos;
+            effect->pos = pos;
             effect->counter = 0;
             effect->object_id = O_PICKUP_AID;
             effect->frame_num = 0;
@@ -322,6 +320,18 @@ static void M_ControlPickupLights(ITEM *const item)
 #undef L_GLOW
 }
 
+static bool M_CanShowPickupAid(const M_PRIV *const p)
+{
+    switch (p->pickup_mode) {
+    case PICKUP_MODE_HIDDEN:
+    case PICKUP_MODE_CROWBAR:
+    case PICKUP_MODE_SARCOPHAGUS:
+        return false;
+    default:
+        return p->show_pickup_aid;
+    }
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -349,7 +359,7 @@ static void M_Control(const int16_t item_num)
         M_ControlPickupLights(item);
     }
 
-    if (p->show_pickup_aid && g_Config.gameplay.enable_pickup_aids) {
+    if (g_Config.gameplay.enable_pickup_aids && M_CanShowPickupAid(p)) {
         M_ControlPickupAids(item);
     }
 }
@@ -992,7 +1002,8 @@ static void M_Setup(OBJECT *const obj)
             "6: scion pedestal."),
         OBJECT_PROPERTY(
             M_PRIV, show_pickup_aid, true,
-            "Show a twinkle effect above the item."),
+            "Show a twinkle effect above the item; applies only to normal and "
+            "pedestal pickup modes."),
         OBJECT_PROPERTY(
             M_PRIV, snap_to_sector, true,
             "Move the item to the middle of its sector where a carrier drops "
