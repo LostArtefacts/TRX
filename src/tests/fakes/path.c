@@ -5,12 +5,20 @@
 // rests on them; the roots and the search order stand for what a game would
 // hold.
 
+#include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/core/vector.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils.h>
 
 #include <lauxlib.h>
 #include <string.h>
+
+// What a file the store holds is.
+typedef struct {
+    char *path;
+    char *text;
+} M_FILE;
 
 static const char *const m_Roots[] = {
     "trx_dir",         "config_dir", "cache_dir",        "games_dir",
@@ -22,6 +30,105 @@ static const char *const m_Kinds[] = {
     "level_file",
     nullptr,
 };
+
+// A file store with no disk behind it, keyed by the path a script names.
+static VECTOR *m_Files = nullptr;
+
+static bool M_HasParentSegment(const char *const raw)
+{
+    for (const char *start = raw; start != nullptr;) {
+        if (start[0] == '.' && start[1] == '.'
+            && (start[2] == '\0' || start[2] == '/' || start[2] == '\\')) {
+            return true;
+        }
+        const char *const sep = strpbrk(start, "/\\");
+        start = sep != nullptr ? sep + 1 : nullptr;
+    }
+    return false;
+}
+
+static bool M_IsUnder(const char *const raw, const char *const dir)
+{
+    size_t len = strlen(dir);
+    while (len > 0 && (dir[len - 1] == '/' || dir[len - 1] == '\\')) {
+        len--;
+    }
+    if (len == 0 || strncmp(raw, dir, len) != 0) {
+        return false;
+    }
+    return raw[len] == '\0' || raw[len] == '/' || raw[len] == '\\';
+}
+
+static bool M_IsAllowed(const char *const raw)
+{
+    if (M_HasParentSegment(raw)) {
+        return false;
+    }
+    for (const char *const *it = m_Roots; *it != nullptr; it++) {
+        if (M_IsUnder(raw, String_FormatStatic("/fake/%s", *it))) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static const char *M_CheckReachable(lua_State *const L, const int arg)
+{
+    const char *const raw = luaL_checkstring(L, arg);
+    if (!M_IsAllowed(raw)) {
+        luaL_argerror(
+            L, arg,
+            String_FormatStatic(
+                "'%s' is outside the places a script may reach", raw));
+    }
+    return raw;
+}
+
+static M_FILE *M_Find(const char *const path)
+{
+    for (int32_t i = 0; m_Files != nullptr && i < m_Files->count; i++) {
+        M_FILE *const held = Vector_Get(m_Files, i);
+        if (strcmp(held->path, path) == 0) {
+            return held;
+        }
+    }
+    return nullptr;
+}
+
+static int M_L_IsReachable(lua_State *const L)
+{
+    lua_pushboolean(L, M_IsAllowed(luaL_checkstring(L, 1)));
+    return 1;
+}
+
+static int M_L_ReadText(lua_State *const L)
+{
+    const M_FILE *const held = M_Find(M_CheckReachable(L, 1));
+    if (held == nullptr) {
+        lua_pushnil(L);
+        return 1;
+    }
+    lua_pushstring(L, held->text);
+    return 1;
+}
+
+static int M_L_WriteText(lua_State *const L)
+{
+    const char *const raw = M_CheckReachable(L, 1);
+    const char *const text = luaL_checkstring(L, 2);
+    M_FILE *held = M_Find(raw);
+    if (held == nullptr) {
+        if (m_Files == nullptr) {
+            m_Files = Vector_Create(sizeof(M_FILE));
+        }
+        const M_FILE added = { .path = Memory_DupStr(raw), .text = nullptr };
+        Vector_Add(m_Files, &added);
+        held = Vector_Get(m_Files, m_Files->count - 1);
+    }
+    Memory_FreePointer(&held->text);
+    held->text = Memory_DupStr(text);
+    return 0;
+}
 
 static int M_L_Root(lua_State *const L)
 {
@@ -104,13 +211,14 @@ static int M_L_Expand(lua_State *const L)
     return 1;
 }
 
-// Nothing is on disk, so only the name the resolver finds is there.
+// What the resolver finds is there, and so is anything a test has written.
 static int M_L_Exists(lua_State *const L)
 {
+    const char *const raw = M_CheckReachable(L, 1);
     lua_pushboolean(
         L,
-        strcmp(luaL_checkstring(L, 1), "/fake/games_dir/mod/weapons.json5")
-            == 0);
+        strcmp(raw, "/fake/games_dir/mod/weapons.json5") == 0
+            || M_Find(raw) != nullptr);
     return 1;
 }
 
@@ -144,11 +252,19 @@ static int M_L_Stem(lua_State *const L)
 }
 
 static const luaL_Reg m_Module[] = {
-    { "root", M_L_Root },     { "roots", M_L_Roots },
-    { "kinds", M_L_Kinds },   { "resolve", M_L_Resolve },
-    { "expand", M_L_Expand }, { "exists", M_L_Exists },
-    { "parent", M_L_Parent }, { "name", M_L_Name },
-    { "stem", M_L_Stem },     { nullptr, nullptr },
+    { "root", M_L_Root },
+    { "roots", M_L_Roots },
+    { "kinds", M_L_Kinds },
+    { "resolve", M_L_Resolve },
+    { "expand", M_L_Expand },
+    { "exists", M_L_Exists },
+    { "is_reachable", M_L_IsReachable },
+    { "read_text", M_L_ReadText },
+    { "write_text", M_L_WriteText },
+    { "parent", M_L_Parent },
+    { "name", M_L_Name },
+    { "stem", M_L_Stem },
+    { nullptr, nullptr },
 };
 
 static void M_Create(lua_State *const L)
@@ -156,4 +272,17 @@ static void M_Create(lua_State *const L)
     LUA_RegisterModule(L, "path", m_Module);
 }
 
-REGISTER_LUA_CAPI(.create = M_Create)
+static void M_Shutdown(void)
+{
+    for (int32_t i = 0; m_Files != nullptr && i < m_Files->count; i++) {
+        M_FILE *const held = Vector_Get(m_Files, i);
+        Memory_FreePointer(&held->path);
+        Memory_FreePointer(&held->text);
+    }
+    if (m_Files != nullptr) {
+        Vector_Free(m_Files);
+        m_Files = nullptr;
+    }
+}
+
+REGISTER_LUA_CAPI(.create = M_Create, .shutdown = M_Shutdown)

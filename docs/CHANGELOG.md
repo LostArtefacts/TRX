@@ -87,7 +87,7 @@
 - Added `snap_to_sector` and `keep_simulated` properties to pickups, which say whether a carrier's drop slides to the middle of its sector and whether the item goes on rotating and glowing once it lands
 - Added object references in strings files, so inventory entries can use the same name and description as their pickup
 - Added an object families file, so a mod can say which objects count as pickups, doors, creatures and the rest without a new build
-- Added a `trx.path` module, so a script can name a place on disk, join one with `/`, read its parts, and ask the engine where it keeps its own files
+- Added a `trx.path` module, so a script can name a place on disk, join one with `/`, read its parts, ask the engine where it keeps its own files, and read and write what is there; a script reaches those places and nothing else
 - Added an object links file, so a mod can say which pickup an inventory icon stands for, which slot a key goes into, and which box a weapon's rounds come in
 - Added `trx.objects.declare()`, so a script can define how its own object starts, updates, casts a shadow and saves its position
 - Added `trx.objects.borrow_content()`, so an object with no models of its own can use another object's meshes and animations

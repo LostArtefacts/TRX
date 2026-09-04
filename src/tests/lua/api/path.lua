@@ -83,4 +83,47 @@ test("a member the type does not declare is not there", function()
   end)
 end)
 
+test("a script reads and writes what it keeps", function()
+  local kept = trx.path.config_dir / "mymod" / "state.json"
+  assert(kept:read_text() == nil, "nothing is there to begin with")
+  kept:write_text("hello")
+  assert(kept:read_text() == "hello")
+  assert(kept:exists())
+  kept:write_text("again")
+  assert(kept:read_text() == "again", "a file that is there is written over")
+end)
+
+test("a script reaches the engine's places and nothing else", function()
+  assert((trx.path.config_dir / "mymod" / "state.json"):is_reachable())
+  assert(not trx.path.new("/etc/passwd"):is_reachable())
+  assert(
+    not trx.path
+      .new(tostring(trx.path.config_dir) .. "_elsewhere/x")
+      :is_reachable(),
+    "a place whose name only starts the same is a place of its own"
+  )
+  assert(
+    not (trx.path.config_dir / "a/../../escape"):is_reachable(),
+    "a path that walks upwards is refused rather than worked out"
+  )
+  raises(function()
+    trx.path.new("/etc/passwd"):read_text()
+  end)
+  raises(function()
+    trx.path.new("/etc/passwd"):write_text("no")
+  end)
+  raises(function()
+    trx.path.new("/etc/passwd"):exists()
+  end)
+end)
+
+test("a name that holds dots is a name like any other", function()
+  local kept = trx.path.config_dir / "state..bak"
+  assert(kept:is_reachable(), "two dots inside a name walk nowhere")
+  kept:write_text("hello")
+  assert(kept:read_text() == "hello")
+  assert(not (trx.path.config_dir / ".." / "escape"):is_reachable())
+  assert(not trx.path.new("/fake/../etc/passwd"):is_reachable())
+end)
+
 return h.report()
