@@ -7048,6 +7048,59 @@
       "path": "objects.swap_sprite"
     },
     {
+      "description": "Creates a path from text, which the engine opens as it stands. Every `%token%` in the text is expanded first, so `\"%config_dir%/mymod\"` says the same thing as `trx.path.config_dir / \"mymod\"`.",
+      "examples": [
+        "local kept = trx.path.new(\"%config_dir%/mymod/state.json\")"
+      ],
+      "params": [
+        {
+          "description": "The path as text.",
+          "name": "text",
+          "type": "string"
+        }
+      ],
+      "path": "path.new",
+      "returns": {
+        "description": "The path.",
+        "type": "path.Path"
+      }
+    },
+    {
+      "description": "Every kind of file `trx.path.resolve` may be asked for.",
+      "examples": [
+        "for _, kind in ipairs(trx.path.kinds()) do\n  trx.log.info(kind)\nend"
+      ],
+      "path": "path.kinds",
+      "returns": {
+        "description": "The file kinds, as a list of strings.",
+        "type": "table"
+      }
+    },
+    {
+      "description": "Works out where the engine would find one of its own files, searching in\nthe order it searches: a mod's own copy first, then the game the mod sits\non, then the configuration directory. If no file is found, this returns\n`nil`.\n\nThis is how a script reads a file the game ships without knowing which of\nthose directories supplies it. `trx.path.kinds` lists what may be asked for.",
+      "examples": [
+        "local weapons = trx.path.resolve(\"common_config\", \"weapons.json5\")\nif weapons ~= nil then\n  trx.log.info(\"weapons come from \" .. tostring(weapons))\nend"
+      ],
+      "params": [
+        {
+          "description": "Which kind of file, such as `common_config` or `level_file`. <!--noref: common_config--><!--noref: level_file-->",
+          "name": "kind",
+          "type": "string"
+        },
+        {
+          "description": "The file to look for, such as `weapons.json5`. <!--noref: weapons.json5-->",
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "path": "path.resolve",
+      "returns": {
+        "description": "The file path, or `nil`.",
+        "nullable": true,
+        "type": "path.Path"
+      }
+    },
+    {
       "description": "Builds a narrowing method for a domain's query type out of a predicate factory. `trx.items` and `trx.objects` declare their own filters with it.",
       "params": [
         {
@@ -8881,7 +8934,7 @@
     {
       "description": "Argument checking for the whole of `trx`.",
       "name": "api",
-      "order": 36,
+      "order": 37,
       "title": "API registry"
     },
     {
@@ -8954,7 +9007,7 @@
     {
       "description": "Writing Lua values out as JSON. The API dump the reference is generated from goes through this, so what a script writes out is encoded the way the engine's own data is.",
       "name": "json",
-      "order": 34,
+      "order": 35,
       "title": "JSON"
     },
     {
@@ -8977,7 +9030,7 @@
     {
       "description": "Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the same state as every other script.",
       "name": "lua",
-      "order": 35
+      "order": 36
     },
     {
       "description": "Fixed-point trigonometry, matching the engine's own tables. Using these rather than Lua's `math` library guarantees a script places things exactly where the engine would. `trx.math.Angle` says what an angle is here.",
@@ -9003,8 +9056,14 @@
     {
       "description": "What the engine draws over the game and no script owns: the pickups that slide in, the assault course digits, and the lines of text the rest of the engine asks for.\n\nOnly what a script has to answer for is here. The lines of text are the engine's own, and a script neither reads nor writes them.",
       "name": "overlay",
-      "order": 39,
+      "order": 40,
       "title": "Overlay"
+    },
+    {
+      "description": "Naming a place on disk. A path is a value rather than text, so joining one is `/` and the parts of it are read off it, and the places the engine keeps its own files are named here. `trx.json` takes one wherever it takes a file.",
+      "name": "path",
+      "order": 34,
+      "title": "Paths"
     },
     {
       "description": "A composable filter over a domain of things - the objects a level is built\nfrom, or the items alive in it. `trx.objects.query` and `trx.items.query` are\neach the identity query, matching everything; narrow one down, then read the\nresult.\n\nA query is immutable. Every method returns a fresh query, so a base can be kept\nand branched from without one narrowing leaking into another.\n\nEach domain adds narrowings of its own on top of the ones below - see\n`trx.items.ItemQuery` and `trx.objects.ObjectQuery` - and chained methods read\nleft to right, combining with AND: `q:spawnable():by_name(\"wolf\")`.",
@@ -9035,7 +9094,7 @@
     {
       "description": "A value that can notify listeners when it changes.\n\nA signal lets a script react to changes without polling every frame. You can\nread the current value, listen for changes, and combine signals with `&`, `|`\nand `~`.\n\nSetting a signal to its current value does nothing: listeners do not run, and\nsignals derived from it do not update. This keeps combined signals cheap to\nlisten to. A combined signal fires only when its own result changes, not every\ntime one of its inputs changes.\n\nA derived signal is read like any other signal, so one expression can provide\nboth the current result and change notifications.\n\nSignals should carry numbers, strings or booleans, not handles. Handles are\ncreated fresh on each read, so two reads of the same handle do not compare\nequal and would make the signal report a change every frame. When a signal\nrepresents an engine-owned object, it carries the object's numeric id; listeners\ncan then read the handle when they need it.\n\nSignals stay idle until something uses them: a polled signal starts reading only\nwhen it is created.",
       "name": "signal",
-      "order": 38,
+      "order": 39,
       "title": "Signals"
     },
     {
@@ -9069,7 +9128,7 @@
     {
       "description": "Module for how far along a level's own progression Lara has got.\n\nTR4 marks the points of a level with flip effects, and its guides read\nthem: Von Croy waits at a waypoint until Lara has reached it, says the\nline that belongs to it, and only then moves on. A level uses the same\nmarks to tell a first visit from a return.\n\nNothing about a waypoint is positional. It counts progress, and it lasts\nas long as the playthrough rather than the level, so it is saved with the\ngame.",
       "name": "waypoints",
-      "order": 37
+      "order": 38
     },
     {
       "description": "What a weapon is, rather than what Lara has of it.\n\nNone of this differs between the inventory she carries and the one a level\nkeeps for her, so it belongs to neither: what she holds and how many shots she\nhas are `trx.inventory`.\n\nA weapon is shared by every copy of it. Changes last for the rest of the\nsession, so levels should restore any values they change when they end.",
@@ -9752,6 +9811,48 @@
       "description": "Says when something asks for Lara's health bar whatever else is on screen, which the inventory ring does while it shows a medipack.",
       "path": "overlay.signals.health_bar_forced",
       "type": "signal.Signal",
+      "writable": false
+    },
+    {
+      "description": "The `%trx_dir%` directory, or `nil` where the game keeps none.",
+      "path": "path.trx_dir",
+      "type": "path.Path",
+      "writable": false
+    },
+    {
+      "description": "The `%config_dir%` directory, or `nil` where the game keeps none.",
+      "path": "path.config_dir",
+      "type": "path.Path",
+      "writable": false
+    },
+    {
+      "description": "The `%cache_dir%` directory, or `nil` where the game keeps none.",
+      "path": "path.cache_dir",
+      "type": "path.Path",
+      "writable": false
+    },
+    {
+      "description": "The `%games_dir%` directory, or `nil` where the game keeps none.",
+      "path": "path.games_dir",
+      "type": "path.Path",
+      "writable": false
+    },
+    {
+      "description": "The `%screenshots_dir%` directory, or `nil` where the game keeps none.",
+      "path": "path.screenshots_dir",
+      "type": "path.Path",
+      "writable": false
+    },
+    {
+      "description": "The `%saves_dir%` directory, or `nil` where the game keeps none.",
+      "path": "path.saves_dir",
+      "type": "path.Path",
+      "writable": false
+    },
+    {
+      "description": "The `%legacy_saves_dir%` directory, or `nil` where the game keeps none.",
+      "path": "path.legacy_saves_dir",
+      "type": "path.Path",
       "writable": false
     },
     {
@@ -13067,6 +13168,66 @@
       ],
       "operators": [],
       "path": "objects.ObjectQuery"
+    },
+    {
+      "description": "A filesystem path. Joining one with `/` appends a child segment, and its\nparts are available as properties.\n\nA path only points to a location. It does not say whether a file is\npresent until `trx.path.Path.exists` checks it.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "The final component of the path, with its extension.",
+          "name": "name",
+          "type": "string",
+          "writable": false
+        },
+        {
+          "description": "The directory the path sits in.",
+          "name": "parent",
+          "type": "path.Path",
+          "writable": false
+        },
+        {
+          "description": "The final component of the path, without its extension.",
+          "name": "stem",
+          "type": "string",
+          "writable": false
+        },
+        {
+          "description": "The extension at the end of the final component, leading `.` and all, or the empty string where there is none.",
+          "name": "suffix",
+          "type": "string",
+          "writable": false
+        }
+      ],
+      "handle": false,
+      "methods": [
+        {
+          "description": "Whether anything is at the path now.",
+          "name": "exists",
+          "returns": {
+            "description": "Whether a file or directory is present.",
+            "type": "boolean"
+          }
+        }
+      ],
+      "operators": [
+        {
+          "description": "A path joins text as itself, whichever side of the `..` it is on.",
+          "name": "concat"
+        },
+        {
+          "description": "Appends a child segment, as `config_dir / \"mymod\" / \"state.json\"`. An absolute path on the right replaces the left side.",
+          "name": "div"
+        },
+        {
+          "description": "Two paths are equal when their filesystem text is equal.",
+          "name": "eq"
+        },
+        {
+          "description": "The path as the text the engine would open.",
+          "name": "tostring"
+        }
+      ],
+      "path": "path.Path"
     },
     {
       "description": "A filter over a domain, read with one of the terminals below once it is narrow enough.",

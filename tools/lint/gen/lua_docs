@@ -40,6 +40,7 @@ OPERATORS = {
     "bor": "{0} | {0}",
     "bnot": "~{0}",
     "concat": "{0} .. {0}",
+    "div": "{0} / {0}",
     "eq": "{0} == {0}",
     "tostring": "tostring({0})",
 }

@@ -708,6 +708,12 @@ unit_tests += {
   'bundles': [b_lua_surface, b_lua_strings],
 }
 
+unit_tests += {
+  'name': 'lua/api/path',
+  'bundles': [b_lua_surface],
+  'src': ['fakes/path.c'],
+}
+
 # Pure Lua, with no bridge under it: the encoder is the whole module.
 unit_tests += {
   'name': 'lua/api/json',
