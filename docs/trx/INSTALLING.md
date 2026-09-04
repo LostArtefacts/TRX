@@ -1284,6 +1284,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── tr4
 │   │   ├── injections
 │   │   │   ├── font.bin
+│   │   │   ├── inventory_models.bin
 │   │   │   ├── karnak_fd.bin
 │   │   │   ├── lara_animations.bin
 │   │   │   ├── lara_outfits.bin
@@ -2672,6 +2673,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   ├── tr4
     │   │   │   ├── injections
     │   │   │   │   ├── font.bin
+    │   │   │   │   ├── inventory_models.bin
     │   │   │   │   ├── karnak_fd.bin
     │   │   │   │   ├── lara_animations.bin
     │   │   │   │   ├── lara_outfits.bin

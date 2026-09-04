@@ -21,6 +21,7 @@
         "sparks_gfx.bin",
         "shadow_sprite.bin",
         "pickup_aid.bin",
+        "inventory_models.bin",
     ],
 
     "title": {
