@@ -284,19 +284,29 @@ static const char *M_ResolveScript(
     // The dots the script wrote are the directories the file sits in.
     const char *const path_stem = luaL_gsub(L, stem, ".", "/");
 
-    const char *rel;
-    GAME_DYNAMIC_PATH source;
-    if (M_HasRoot(name, root_len, M_COMMON_ROOT)) {
-        source = GAME_DYNAMIC_PATH_COMMON_MODULE_FILE;
-        rel = lua_pushfstring(L, "%s.lua", path_stem);
-    } else {
-        source = GAME_DYNAMIC_PATH_GAME_MODULE_FILE;
+    const bool is_common = M_HasRoot(name, root_len, M_COMMON_ROOT);
+    const GAME_DYNAMIC_PATH source = is_common
+        ? GAME_DYNAMIC_PATH_COMMON_MODULE_FILE
+        : GAME_DYNAMIC_PATH_GAME_MODULE_FILE;
+
+    const char *mod = nullptr;
+    if (!is_common) {
         lua_pushlstring(L, name, root_len);
-        const char *const mod = lua_tostring(L, -1);
-        rel = lua_pushfstring(L, "%s/modules/%s.lua", mod, path_stem);
+        mod = lua_tostring(L, -1);
     }
 
-    const char *const path = GamePath_PeekResolve(source, rel);
+    // A name is the file it spells out, or the init.lua of a directory of that
+    // name. A module that grows into several files keeps the name its callers
+    // already write.
+    const char *path = nullptr;
+    for (int32_t i = 0; i < 2 && path == nullptr; i++) {
+        const char *const tail =
+            lua_pushfstring(L, i == 0 ? "%s.lua" : "%s/init.lua", path_stem);
+        const char *const rel =
+            is_common ? tail : lua_pushfstring(L, "%s/modules/%s", mod, tail);
+        path = GamePath_PeekResolve(source, rel);
+    }
+
     lua_settop(L, base);
     return path;
 }

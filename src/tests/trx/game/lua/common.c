@@ -359,6 +359,33 @@ TEST(a_required_script_may_sit_in_a_subdirectory)
     M_Done();
 }
 
+// A directory with an init.lua answers to the name of the directory, so a
+// module that outgrows one file keeps the name its callers write.
+TEST(a_directory_with_an_init_script_answers_to_its_name)
+{
+    M_Booted();
+    M_WriteGameScript("my_group/init", "return { name = 'grouped' }\n");
+    M_WriteCommonScript("their_group/init", "return { name = 'pooled' }\n");
+
+    M_CheckEval("assert(require('tr1.my_group').name == 'grouped')");
+    M_CheckEval("assert(require('common.their_group').name == 'pooled')");
+
+    M_Done();
+}
+
+// The file wins, so a directory beside a script of the same name cannot take
+// the name over.
+TEST(a_script_answers_before_the_directory_beside_it)
+{
+    M_Booted();
+    M_WriteGameScript("my_group", "return { name = 'file' }\n");
+    M_WriteGameScript("my_group/init", "return { name = 'directory' }\n");
+
+    M_CheckEval("assert(require('tr1.my_group').name == 'file')");
+
+    M_Done();
+}
+
 // The name is the whole of what keeps a require inside the directory it names,
 // there being no other check between it and the filesystem.
 TEST(a_name_that_could_reach_outside_is_refused)
