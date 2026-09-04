@@ -454,6 +454,17 @@ void Gun_Flare_Undraw(void)
     M_SetArm(frame_num_1);
 }
 
+void Gun_Flare_Clear(void)
+{
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    if (Gun_Flare_IsMeshActive()) {
+        Gun_SetLaraHandLMesh(LGT_UNARMED);
+    }
+    lara_info->flare.control = false;
+    lara_info->flare.age = M_NO_AGE;
+    lara_info->flare.frame_num = 0;
+}
+
 void Gun_Flare_Dispose(const bool thrown)
 {
     const ITEM *const lara_item = Lara_GetItem();

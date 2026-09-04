@@ -14,6 +14,9 @@
 #include <trx/game/flyby_mode.h>
 #include <trx/game/game/state.h>
 #include <trx/game/game_flow.h>
+#include <trx/game/gun/common.h>
+#include <trx/game/gun/flare.h>
+#include <trx/game/gun/rifle.h>
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/items.h>
@@ -46,6 +49,12 @@
 // place in a single frame, so the pose interpolation must not sweep the actor
 // across the gap.
 #define M_CUT_DISTANCE (WALL_L / 2)
+
+// Ticks the black screen waits for Lara to put away what she holds. The
+// original engine gives her the same count before it starts the scene
+// regardless, so an animation that cannot finish - one she is crawling
+// through, for instance - does not hold the game.
+#define M_HOLSTER_TIMEOUT 50
 
 typedef enum {
     M_PHASE_INACTIVE,
@@ -104,6 +113,9 @@ static struct {
     uint64_t played_mask;
     int32_t fov;
     float letterbox;
+    // Counts down while the black screen waits for Lara to put away what she
+    // holds.
+    int32_t holster_timeout;
     FADER fader;
 } m_State = {
     .num = M_NO_CUTSCENE,
@@ -225,6 +237,53 @@ static void M_TeleportLara(const XYZ_32 pos, const int16_t y_rot)
     Interpolation_CommitLara();
 }
 
+// Puts away what Lara holds, as the original engine does when a cutscene
+// triggers: the weapons go back into their holsters, and a flare is thrown
+// away rather than dropped.
+static void M_RequestHolster(void)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    const bool holds_flare = Gun_IsFlareType(lara->gun_type);
+    if (!holds_flare
+        && (lara->gun_status == LGS_ARMLESS
+            || lara->gun_status == LGS_HANDS_BUSY)) {
+        return;
+    }
+    lara->gun_status = LGS_UNDRAW;
+}
+
+// Reports whether Lara's hands are free, so that the scene can begin.
+static bool M_IsHolsterFinished(void)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    return lara->gun_status == LGS_HANDS_BUSY
+        || (lara->gun_status == LGS_ARMLESS && !lara->flare.control);
+}
+
+// Empties Lara's hands before the scene starts, as the original engine does.
+// Where the wait above timed out, she still holds what the undraw did not
+// finish putting away.
+static void M_ClearLaraHands(void)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    if (Gun_IsRifleType(lara->gun_type)) {
+        while (lara->gun_item_num != NO_ITEM) {
+            Gun_Rifle_Undraw(lara->gun_type);
+        }
+    }
+    Gun_Flare_Clear();
+    Gun_SetLaraHandLMesh(LGT_UNARMED);
+    Gun_SetLaraHandRMesh(LGT_UNARMED);
+    lara->gun_type = LGT_UNARMED;
+    lara->request_gun_type = LGT_UNARMED;
+    lara->gun_status = LGS_ARMLESS;
+    lara->target = nullptr;
+    lara->left_arm.lock = 0;
+    lara->right_arm.lock = 0;
+    lara->left_arm.frame_num = 0;
+    lara->right_arm.frame_num = 0;
+}
+
 static bool M_Begin(const int32_t num)
 {
     // Read into a local, so a descriptor that turns out to be malformed does
@@ -308,6 +367,7 @@ static bool M_Begin(const int32_t num)
     CutSeq_SetPlayed(num, true);
     m_State.lara_shadow_bounds.is_present = false;
 
+    M_ClearLaraHands();
     M_TeleportLara(info->origin, 0);
     M_SetLaraPose(&m_State.actors[0].pose_curr);
 
@@ -531,6 +591,8 @@ void CutSeq_Request(const int32_t num, const bool fade_out)
     }
     m_State.pending_num = num;
     m_State.phase = M_PHASE_FADE_OUT;
+    m_State.holster_timeout = M_HOLSTER_TIMEOUT;
+    M_RequestHolster();
     if (fade_out) {
         Fader_InitFromCurrent(&m_State.fader, 1.0f, M_FADE_DURATION);
     } else {
@@ -725,6 +787,10 @@ void CutSeq_Control(void)
     switch (m_State.phase) {
     case M_PHASE_FADE_OUT:
         if (!Fader_IsActive(&m_State.fader)) {
+            if (m_State.holster_timeout > 0 && !M_IsHolsterFinished()) {
+                m_State.holster_timeout--;
+                return;
+            }
             const int32_t num = m_State.pending_num;
             m_State.pending_num = M_NO_CUTSCENE;
             if (!M_Begin(num)) {
