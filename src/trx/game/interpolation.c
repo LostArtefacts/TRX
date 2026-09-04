@@ -8,6 +8,7 @@
 #include <trx/game/game/state.h>
 #include <trx/game/lara.h>
 #include <trx/game/matrix.h>
+#include <trx/game/photo_mode.h>
 #include <trx/game/rooms.h>
 #include <trx/game/shell.h>
 #include <trx/game/viewport.h>
@@ -438,7 +439,10 @@ bool Interpolation_IsActive(void)
 
 double Interpolation_GetWorldRate(void)
 {
-    if (!Interpolation_IsActive() || !Game_IsPlaying()) {
+    // Photo mode steps the world itself and keeps its own rate, so the frozen
+    // gameplay state must not force the rate back to 1.0.
+    if (!Interpolation_IsActive()
+        || (!Game_IsPlaying() && !PhotoMode_IsActive())) {
         return 1.0;
     }
     return m_WorldRate;

@@ -56,6 +56,7 @@
 - Fixed the Inverted look option not applying to the binoculars (#6431 / TRX1291)
 - Fixed the photo mode camera drifting upwards and overshooting when it is moved while pitched up or down (TRX1142)
 - Fixed the photo mode camera flickering and refusing to turn over when it is pitched past straight up or down, and turning in coarse steps while aimed near vertical (TRX1152)
+- Fixed photo mode showing the same animation frame while advancing the game a quarter of a frame at a time (TRX1353, regression from 1.9)
 
 **Developer console**
 - Added the `/outfit` console command, which shows or changes what Lara is wearing (TRX1070)
