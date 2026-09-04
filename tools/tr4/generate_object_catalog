@@ -88,6 +88,12 @@ FORCED_ROWS: dict[int, str] = {
     533: "O_LARA_SKIN_JOINTS_32",
     534: "O_SHADOW",
     535: "O_PICKUP_AID",
+    536: "O_PASSPORT_OPTION",
+    537: "O_PASSPORT_CLOSED",
+    538: "O_GRAPHICS_OPTION",
+    539: "O_SOUND_OPTION",
+    540: "O_CONTROLS_OPTION",
+    541: "O_PDA_OPTION",
 }
 
 ALIAS_MAP: dict[str, str] = {
