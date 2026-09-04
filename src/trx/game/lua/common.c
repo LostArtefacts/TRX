@@ -5,6 +5,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/shell.h>
 #include <trx/core/strings.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/console/common.h>
 #include <trx/game/game_flow/common.h>
