@@ -275,6 +275,7 @@
 - Added `trx.fx.fog_bulbs` and `trx.fx.fog_color`, so a script can read level fog bulbs and set the distance fog color (TRX658)
 - Added more world effects to `trx.fx`: explosions, fires, splashes, ripples, footprints, underwater blood and blast rings
 - Added `trx.fx.sparks`, so a script can throw the particles the games use for smoke, flames, sparks and splashes, and read or change every live particle
+- Changed `require()` to also look for `<module>/init.lua`, so modules can grow into multiple files without changing how callers require them.
 - Changed the in-game overlay to be drawn by a script rather than by the engine, so what it shows and where it sits can be changed without a build
 - Changed `trx.cutscenes` to hand over the cutscene itself, so `trx.cutscenes[30]` says whether it has played, plays it, and narrows the cutscene events to it; the cutscene events hand one over too, and the functions that take a number are deprecated (TRX1199)
 - Changed `trx.cutscenes.play()` to take whether to fade out first, so a scene that opens a level begins on the black screen the level loaded behind (TRX1063)
