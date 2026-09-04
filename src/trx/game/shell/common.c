@@ -2,6 +2,7 @@
 #include <trx/config.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/debug.h>
 #include <trx/game/replay/test_replay.h>
 #include <trx/game/shell.h>
@@ -16,6 +17,9 @@
 #include <libavcodec/version.h>
 #include <libavutil/log.h>
 #include <stdio.h>
+
+// Limits the fatal error dialog width, in characters.
+#define M_DIALOG_COLUMNS 80
 
 static bool m_IsExiting = false;
 static bool m_IsFocused = true;
@@ -46,8 +50,11 @@ static void M_ShowFatalError(
             && (SDL_GetWindowFlags(window) & SDL_WINDOW_SHOWN) == 0) {
             window = nullptr;
         }
+        char *const wrapped = String_Wrap(dialog_message, M_DIALOG_COLUMNS);
         SDL_ShowSimpleMessageBox(
-            SDL_MESSAGEBOX_ERROR, "Tomb Raider Error", dialog_message, window);
+            SDL_MESSAGEBOX_ERROR, "Tomb Raider Error",
+            wrapped != nullptr ? wrapped : dialog_message, window);
+        Memory_Free(wrapped);
     }
     Shell_Terminate(1);
 }

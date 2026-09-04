@@ -62,3 +62,36 @@ TEST(file_name_takes_empty_text)
 {
     M_CheckFileName("", "");
 }
+
+static void M_CheckWrap(
+    const char *const input, const int32_t columns, const char *const expected)
+{
+    char *const result = String_Wrap(input, columns);
+    CHECK_EQ_STR(result, expected);
+    Memory_Free(result);
+}
+
+TEST(wrap_leaves_text_that_fits)
+{
+    M_CheckWrap("Lara has the shotgun", 40, "Lara has the shotgun");
+}
+
+TEST(wrap_breaks_between_words)
+{
+    M_CheckWrap("Lara has the shotgun", 12, "Lara has the\nshotgun");
+}
+
+TEST(wrap_keeps_a_break_that_is_there)
+{
+    M_CheckWrap("Lara\nhas the shotgun", 40, "Lara\nhas the shotgun");
+}
+
+TEST(wrap_breaks_a_word_longer_than_a_line)
+{
+    M_CheckWrap("/a/very/long/path", 8, "/a/very/\nlong/pat\nh");
+}
+
+TEST(wrap_takes_empty_text)
+{
+    M_CheckWrap("", 40, "");
+}
