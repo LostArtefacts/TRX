@@ -5,7 +5,7 @@ local api = trx.api
 require("trx.events")
 
 api.module("signal", {
-  order = 38,
+  order = 39,
   title = "Signals",
   description = [[
 A value that can notify listeners when it changes.

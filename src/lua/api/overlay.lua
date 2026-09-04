@@ -4,7 +4,7 @@ local raw = trxc.overlay
 local api = trx.api
 
 api.module("overlay", {
-  order = 39,
+  order = 40,
   title = "Overlay",
   description = "What the engine draws over the game and no script owns: the pickups that "
     .. "slide in, the assault course digits, and the lines of text the rest of the engine "
