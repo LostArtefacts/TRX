@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/subsystem.h>
 #include <trx/debug.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
@@ -36,6 +37,14 @@ static void M_SetupLara(OBJECT *const obj)
 static void M_SetupLaraStartPos(OBJECT *const obj)
 {
     obj->draw_func = nullptr;
+}
+
+static void M_Shutdown(void)
+{
+    for (int32_t i = 0; i < m_SetupHookCount; i++) {
+        m_SetupHooks[i] = nullptr;
+    }
+    m_SetupHookCount = 0;
 }
 
 void Object_AddSetupHook(void (*const hook)(void))
@@ -94,7 +103,9 @@ void Object_SetupAllObjects(void)
     }
 
     for (int32_t i = 0; i < m_SetupHookCount; i++) {
-        m_SetupHooks[i]();
+        if (m_SetupHooks[i] != nullptr) {
+            m_SetupHooks[i]();
+        }
     }
 
     Lara_Hair_Initialise();
@@ -102,3 +113,4 @@ void Object_SetupAllObjects(void)
 
 REGISTER_OBJECT(O_LARA, M_SetupLara)
 REGISTER_OBJECT(O_LARA_START_POS, M_SetupLaraStartPos)
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)
