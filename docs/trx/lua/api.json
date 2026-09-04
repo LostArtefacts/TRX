@@ -6481,7 +6481,7 @@
       }
     },
     {
-      "description": "Writes a value out as JSON, on one line. Keys come out in sorted order, so\nthe same value encodes the same way twice and a file that is committed and\ndiffed only moves when what it holds does.\n\nA table is written as a list where it holds entry 1, or holds nothing at\nall, and as an object otherwise. A function, a handle and anything else\nwith no JSON of its own is left out.",
+      "description": "Writes a value out as JSON, on one line. Keys come out in sorted order, so\nthe same value encodes the same way twice and a file that is committed and\ndiffed only moves when its JSON changes.\n\nA table is written as a list when entry 1 is present, or when the table is\nempty, and as an object otherwise. A number an object is keyed by comes out\nas text, and a key of any other kind is left out. A function, a handle and anything else\nwith no JSON form is left out of an object, and stands as `null` in a list,\nwhich keeps the entries after it where they were. A number that is not\nfinite, and a table that contains itself, raise.\n<!--noref: null-->",
       "examples": [
         "trx.json.encode({ name = \"wolf\", ids = { 7, 8 } })\n-- {\"ids\":[7,8],\"name\":\"wolf\"}"
       ],
@@ -6495,6 +6495,88 @@
       "path": "json.encode",
       "returns": {
         "description": "The JSON text.",
+        "type": "string"
+      }
+    },
+    {
+      "description": "Reads a value out of JSON text, as the game reads its own data files: a\ncomment, a trailing comma and an unquoted key are all taken. Text that\ndoes not parse raises with the line and the column.\n\nText nested deeper than 100 levels raises as well.\n\nAn object comes back as a table keyed by name and an array as a table\nkeyed from 1, which is what `trx.json.encode` writes back out. `null`\ncomes back as `nil`, so a key with `null` reads the same as an absent key,\nand an array entry with `null` ends the list there.\n<!--noref: null-->",
+      "examples": [
+        "local held = trx.json.decode('{\"hp\": 6, \"seen\": [\"vilcabamba\"]}')\nprint(held.hp, held.seen[1])"
+      ],
+      "params": [
+        {
+          "description": "The JSON to read.",
+          "name": "text",
+          "type": "string"
+        }
+      ],
+      "path": "json.decode",
+      "returns": {
+        "description": "The decoded value.",
+        "nullable": true,
+        "type": "any"
+      }
+    },
+    {
+      "description": "Reads a file as JSON, which is\n`trx.path.Path.read_text` and `trx.json.decode` in one call. A file that\nis not there answers `nil`, and one that does not parse raises with the\nfile, the line and the column.\n\nEvery table read from a file carries where it was written, which\n`trx.json.where` reads back. A path outside the directories a script may reach\nraises rather than being read.",
+      "examples": [
+        "local found = trx.path.resolve(\"common_config\", \"weapons.json5\")\nlocal weapons = found ~= nil and trx.json.read_file(found) or {}\nfor key, spec in pairs(weapons) do\n  print(key, spec.damage)\nend"
+      ],
+      "params": [
+        {
+          "description": "Which file, as a path or as the text of one. `trx.path.resolve` finds one the game ships, and `trx.path.config_dir` is for a script's own files.",
+          "name": "path",
+          "type": [
+            "path.Path",
+            "string"
+          ]
+        }
+      ],
+      "path": "json.read_file",
+      "returns": {
+        "description": "The decoded value, or `nil` where there is no such file.",
+        "nullable": true,
+        "type": "any"
+      }
+    },
+    {
+      "description": "Writes a value as JSON and saves it to the file, which is\n`trx.json.encode` and `trx.path.Path.write_text` in one call.\n\nA value `trx.json.encode` has no JSON for raises, and nothing is written.\nA path outside the directories a script may reach raises as well, so\n`trx.path.config_dir` is where a script's own file belongs.",
+      "examples": [
+        "local kept = trx.path.config_dir / \"mymod\" / \"state.json\"\ntrx.json.write_file(kept, { seen = { \"vilcabamba\" } })"
+      ],
+      "params": [
+        {
+          "description": "Which file, as a path or as the text of one. `trx.path.resolve` finds one the game ships, and `trx.path.config_dir` is for a script's own files.",
+          "name": "path",
+          "type": [
+            "path.Path",
+            "string"
+          ]
+        },
+        {
+          "description": "What to write out.",
+          "name": "value",
+          "type": "any"
+        }
+      ],
+      "path": "json.write_file"
+    },
+    {
+      "description": "Says where a table read from a file was written: the file, the line and the\ncolumn. Use it when a script must report the source line for bad file\ndata. A table a script built itself, and anything that is not a table,\nanswer `nil`.",
+      "examples": [
+        "local weapons = trx.json.read_file(\"weapons.json5\")\nfor key, spec in pairs(weapons) do\n  if spec.damage == nil then\n    error((\"%s: '%s' says no damage\"):format(trx.json.where(spec), key))\n  end\nend"
+      ],
+      "params": [
+        {
+          "description": "A table `trx.json.read_file` gave back.",
+          "name": "value",
+          "type": "any"
+        }
+      ],
+      "path": "json.where",
+      "returns": {
+        "description": "Where the table was written, or `nil` without file location data.",
+        "nullable": true,
         "type": "string"
       }
     },
@@ -9005,7 +9087,7 @@
       "order": 2
     },
     {
-      "description": "Writing Lua values out as JSON. The API dump the reference is generated from goes through this, so what a script writes out is encoded the way the engine's own data is.",
+      "description": "Reading and writing JSON, both as text and as a file on disk. The API dump the reference is generated from goes through this, so what a script writes out is encoded the way the engine's own data is.",
       "name": "json",
       "order": 35,
       "title": "JSON"
