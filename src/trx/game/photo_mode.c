@@ -27,7 +27,6 @@
 
 typedef struct {
     PHOTO_MODE current_mode;
-    bool show_fps_counter;
     double rate;
     bool lara_pos_touched;
     XYZ_32 orig_lara_pos;
@@ -232,11 +231,12 @@ static void M_HandleCameraMode(M_PRIV *const p)
 void PhotoMode_Start(void)
 {
     M_PRIV *const p = &m_Priv;
-    p->show_fps_counter = g_Config.ui.enable_fps_counter;
     p->rate = 1.0;
     p->current_mode = PHOTO_MODE_CAMERA;
     p->lara_pos_touched = false;
-    CONFIG_SET(g_Config.ui.enable_fps_counter, false);
+    CONFIG_PUSH_HOLD(
+        g_Config.ui.enable_fps_counter, false, CONFIG_HOLD_PHOTO_MODE);
+    Config_Update();
 
     M_RememberLaraPos(p);
     Camera_PhotoMode_Enter();
@@ -251,7 +251,8 @@ void PhotoMode_End(void)
     Camera_PhotoMode_Exit();
     M_RestoreLaraPos(p);
 
-    CONFIG_SET(g_Config.ui.enable_fps_counter, p->show_fps_counter);
+    CONFIG_POP_HOLD(g_Config.ui.enable_fps_counter);
+    Config_Update();
     Music_Unpause();
     Sound_UnpauseAll();
     m_Active = false;
