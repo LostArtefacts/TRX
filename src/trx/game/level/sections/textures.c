@@ -215,6 +215,14 @@ RESULT Level_Section_ReadObjectTextures(
     Output_InitialiseObjectTextures(
         num_textures + Inject_GetDataCount(IDT_OBJECT_TEXTURES));
     Level_Section_AppendObjectTextures(0, 0, num_textures, file);
+
+    if (ctx->loader->game_version == 3) {
+        for (int32_t i = 0; i < num_textures; i++) {
+            OBJECT_TEXTURE *const texture = Output_GetObjectTexture(i);
+            M_DecodeTR3ObjectTextureUVs(texture);
+        }
+    }
+
     MUST(M_CheckFaceTextures(num_textures));
     Benchmark_End(&benchmark, nullptr);
     return OK;
@@ -243,9 +251,6 @@ void Level_Section_AppendObjectTextures(
         }
         if (loader->game_version == 4) {
             File_Skip(file, sizeof(uint32_t) * 4); // x/y offset and dimensions
-        }
-        if (loader->game_version == 3) {
-            M_DecodeTR3ObjectTextureUVs(texture);
         }
     }
 }
