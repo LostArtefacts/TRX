@@ -39,6 +39,8 @@ typedef enum {
     CONFIG_HOLD_SCRIPT,
     // The demo's own settings, put back when it ends.
     CONFIG_HOLD_DEMO,
+    // What photo mode keeps out of the picture, put back when it closes.
+    CONFIG_HOLD_PHOTO_MODE,
     // A key the player is holding, put back when they let go.
     CONFIG_HOLD_INPUT,
 } CONFIG_HOLD_SOURCE;
