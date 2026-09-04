@@ -407,9 +407,12 @@ void Inv_RemoveAllItems(void)
 bool Inv_CanAddItem(const OBJECT_ID object_id)
 {
     const OBJECT_ID inv_object_id = Inv_GetItemOption(object_id);
-    const OBJECT *const object =
-        Object_Get(inv_object_id == NO_OBJECT ? object_id : inv_object_id);
-    return object->loaded;
+    const OBJECT_ID wanted =
+        inv_object_id == NO_OBJECT ? object_id : inv_object_id;
+    if (wanted == NO_OBJECT) {
+        return false;
+    }
+    return Object_Get(wanted)->loaded;
 }
 
 bool Inv_AddItem(const OBJECT_ID object_id)
