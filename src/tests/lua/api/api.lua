@@ -48,6 +48,47 @@ local function fresh_env()
         }
       end,
     },
+    path = {
+      root = function(name)
+        return "/fake/" .. name
+      end,
+      roots = function()
+        return { "config_dir" }
+      end,
+      kinds = function()
+        return { "common_config" }
+      end,
+      resolve = function(kind, name)
+        return nil
+      end,
+      expand = function(text)
+        return text
+      end,
+      exists = function(raw)
+        return false
+      end,
+      parent = function(raw)
+        return raw:match("^(.*)/[^/]*$") or ""
+      end,
+      name = function(raw)
+        return raw:match("[^/]*$")
+      end,
+      stem = function(raw)
+        return (raw:match("[^/]*$"):gsub("%.[^.]*$", ""))
+      end,
+    },
+    json = {
+      decode = function(text)
+        return nil
+      end,
+      read_file = function(name)
+        return nil
+      end,
+      write_file = function(name, text) end,
+      where = function(value)
+        return nil
+      end,
+    },
     -- Stands in for the ENUM_MAP reflection. Deliberately not in numeric order,
     -- and with a gap, so the tests pin what api.lua does with what C hands it.
     enum = {
@@ -119,9 +160,7 @@ local function fresh_env()
 
   dofile(ROOT .. "src/lua/api/api.lua")
 
-  -- What to_json() writes the dump out with. It declares itself through the
-  -- registry like anything else, so it loads after, and it is the real one:
-  -- there is no C behind it, and how the dump comes out is under test here.
+  dofile(ROOT .. "src/lua/api/path.lua")
   dofile(ROOT .. "src/lua/api/json.lua")
 
   return trx.api, exposed
@@ -256,6 +295,27 @@ test(
   end
 )
 
+-- The env stands the real modules up alongside what a test declares, so a
+-- lookup names what it wants rather than counting on where it landed.
+local function type_named(described, path)
+  for _, entry in ipairs(described.types) do
+    if entry.path == path then
+      return entry
+    end
+  end
+  return nil
+end
+
+local function properties_under(described, prefix)
+  local found = {}
+  for _, entry in ipairs(described.properties) do
+    if entry.path:sub(1, #prefix) == prefix then
+      found[#found + 1] = entry
+    end
+  end
+  return found
+end
+
 test("describe() reports fields, methods and extensions", function()
   local api = fresh_env()
   api.module("things", { description = "..." })
@@ -274,8 +334,8 @@ test("describe() reports fields, methods and extensions", function()
   api.define("things.count", { impl = function() end })
 
   local d = api.describe()
-  assert(#d.types == 1, "type missing from describe()")
-  local t = d.types[1]
+  local t = type_named(d, "things.Widget")
+  assert(t ~= nil, "type missing from describe()")
 
   -- The docs are generated from the dump, so methods and extensions have to
   -- reach it.
@@ -515,7 +575,7 @@ test("properties reach describe()", function()
     { type = "table", description = "Where.", get = function() end }
   )
 
-  local out = api.describe()
+  local out = { properties = properties_under(api.describe(), "things.") }
   assert(#out.properties == 2, "properties missing from describe()")
   assert(out.properties[1].path == "things.air")
   assert(
@@ -1117,7 +1177,7 @@ test("a Lua type's fields read and write through its accessors", function()
     widget.colour = "red"
   end))
 
-  local entry = api.describe().types[1]
+  local entry = type_named(api.describe(), "things.Widget")
   local by_name = {}
   for _, field in ipairs(entry.fields) do
     by_name[field.name] = field
@@ -1148,7 +1208,7 @@ test("a Lua type's field with no accessors is an entry it carries", function()
   assert(box.min_x == 1)
   assert(box:width() == 4, "a method must still be reachable")
 
-  local entry = api.describe().types[1]
+  local entry = type_named(api.describe(), "things.Box")
   for _, field in ipairs(entry.fields) do
     assert(
       field.writable == nil,

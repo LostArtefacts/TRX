@@ -519,6 +519,7 @@ common_sources = [
   'trx/game/lua/capi/game.c',
   'trx/game/lua/capi/inventory.c',
   'trx/game/lua/capi/items.c',
+  'trx/game/lua/capi/json.c',
   'trx/game/lua/capi/lara.c',
   'trx/game/lua/capi/locale.c',
   'trx/game/lua/capi/log.c',

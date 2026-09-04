@@ -714,10 +714,17 @@ unit_tests += {
   'src': ['fakes/path.c'],
 }
 
-# Pure Lua, with no bridge under it: the encoder is the whole module.
+# The encoder is pure Lua, but decoding is the engine's own reader, and a file
+# is named with a path, so the two are stood up together.
 unit_tests += {
   'name': 'lua/api/json',
   'bundles': [b_lua_surface],
+  'src': ['fakes/path.c'],
+  'engine': [
+    'core/json/base.c',
+    'core/json/parse.c',
+    'game/lua/capi/json.c',
+  ],
 }
 
 # The parser is pure Lua, but it leans on the real fuzzy matcher out of
