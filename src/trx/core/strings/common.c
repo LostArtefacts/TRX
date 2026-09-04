@@ -223,6 +223,60 @@ bool String_ParseRGBA8888(const char *value, RGBA_8888 *const target)
         == 4;
 }
 
+char *String_Wrap(const char *const text, const int32_t columns)
+{
+    if (text == nullptr || columns <= 0) {
+        return nullptr;
+    }
+
+    const size_t len = strlen(text);
+    char *const out = Memory_Alloc(len + len / (size_t)columns + 2);
+    size_t out_len = 0;
+    int32_t column = 0;
+
+    const char *word = text;
+    while (*word != '\0') {
+        if (*word == '\n') {
+            out[out_len++] = *word++;
+            column = 0;
+            continue;
+        }
+        if (*word == ' ') {
+            if (column > 0 && column < columns) {
+                out[out_len++] = *word;
+                column++;
+            }
+            word++;
+            continue;
+        }
+
+        size_t word_len = 0;
+        while (word[word_len] != '\0' && word[word_len] != ' '
+               && word[word_len] != '\n') {
+            word_len++;
+        }
+        if (column > 0 && column + (int32_t)word_len > columns) {
+            if (out_len > 0 && out[out_len - 1] == ' ') {
+                out_len--;
+            }
+            out[out_len++] = '\n';
+            column = 0;
+        }
+        for (size_t i = 0; i < word_len; i++) {
+            if (column == columns) {
+                out[out_len++] = '\n';
+                column = 0;
+            }
+            out[out_len++] = word[i];
+            column++;
+        }
+        word += word_len;
+    }
+
+    out[out_len] = '\0';
+    return out;
+}
+
 VECTOR *String_Paginate(const char *const text, const int32_t max_lines)
 {
     VECTOR *const pages = Vector_Create(sizeof(char *));

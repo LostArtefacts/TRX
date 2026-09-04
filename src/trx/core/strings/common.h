@@ -28,6 +28,11 @@ char *String_ToUpperPattern(const char *text);
 // from both ends. Returns an allocated string the caller frees.
 char *String_ToFileName(const char *text);
 
+// Wraps text to lines of at most `columns` characters. Existing line breaks
+// stay in place, and words longer than `columns` are split at the limit.
+// Returns an allocated string that the caller has to free.
+char *String_Wrap(const char *text, int32_t columns);
+
 VECTOR *String_Paginate(const char *text, int32_t max_lines);
 
 typedef bool STRING_RANGE_FUNC(int32_t value, void *user_data);
