@@ -182,6 +182,13 @@ static const M_DYNAMIC_PATH_POLICY m_PathPolicies[GAME_DYNAMIC_PATH_NUMBER_OF] =
         },
         .check_exists = true,
     },
+    [GAME_DYNAMIC_PATH_STARTUP_SCRIPT_DIR] = {
+        .patterns = {
+            "%trx_dir%/scripts",
+            nullptr,
+        },
+        .check_exists = true,
+    },
     [GAME_DYNAMIC_PATH_FMV_FILE] = {
         .patterns = {
             "%mod_dir%/fmv/%rel%",

@@ -11,6 +11,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/manager.h>
 #include <trx/game/lua.h>
+#include <trx/game/lua/startup.h>
 #include <trx/game/output.h>
 #include <trx/game/replay/test_recorder.h>
 #include <trx/game/replay/test_replay.h>
@@ -380,6 +381,9 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
         GameStringManager_LoadForMod(s->args->startup.mod),
         "Failed to load the game strings for mod '%s'",
         s->args->startup.mod->name);
+
+    // Load scripts before savegames so saved weapons are already declared.
+    LUA_RunStartupScripts();
 
     Savegame_Init();
     SG_Manager_ScanSavedGames();
