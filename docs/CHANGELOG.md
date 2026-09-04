@@ -200,6 +200,7 @@
 - Fixed a crash while an in-game cutscene poses Lara (TRX1059)
 - Fixed characters sliding across the room, and Lara's braid trailing behind her, when an in-game cutscene moves them to a new place (TRX1270)
 - Fixed the level showing for a moment when an in-game cutscene ends (TRX1252)
+- Fixed Lara keeping her weapons drawn, and her flare in hand, while the screen fades into an in-game cutscene (TRX1349)
 - Fixed Lara's shadow and the flames around her when she burns staying where an in-game cutscene began, rather than following her (TRX911)
 - Fixed the light the flames cast staying where an in-game cutscene began while Lara burns, rather than following her (TRX1197)
 - Fixed Von Croy's shadow floating at the height of his knees during the scenes he plays in Angkor Wat (TRX911)
