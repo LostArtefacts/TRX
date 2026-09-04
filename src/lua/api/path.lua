@@ -4,9 +4,9 @@ local api = trx.api
 api.module("path", {
   order = 34,
   title = "Paths",
-  description = "Naming a place on disk. A path is a value rather than text, so joining one is "
-    .. "`/` and the parts of it are read off it, and the places the engine keeps its own files "
-    .. "are named here. `trx.json` takes one wherever it takes a file.",
+  description = "Filesystem paths for Lua scripts. A path is a value rather than text, so "
+    .. "joining one uses `/` and its parts are properties. Scripts can read and write under "
+    .. "the game's own directories, and nowhere else.",
 })
 
 local Path
@@ -88,8 +88,43 @@ end]],
     },
   },
   methods = {
+    read_text = {
+      description = "Reads the file as text, or returns `nil` where no file is present. "
+        .. "Raises where the path is outside the directories a script may reach.",
+      returns = {
+        type = "string",
+        nullable = true,
+        description = "The text, or `nil` for a file that is not there.",
+      },
+      impl = function(self)
+        return raw.read_text(rawget(self, "_raw"))
+      end,
+    },
+    write_text = {
+      description = "Writes text into the file, making the directories it sits in and writing "
+        .. "over an existing file. Raises where the path is outside the directories a script "
+        .. "may reach.",
+      params = {
+        { name = "text", type = "string", description = "What to write." },
+      },
+      impl = function(self, text)
+        raw.write_text(rawget(self, "_raw"), text)
+      end,
+    },
+    is_reachable = {
+      description = "Whether a script may read or write there. Scripts reach the game's own "
+        .. "directories and nothing else, so the rest of the player's disk is closed to them.",
+      returns = {
+        type = "boolean",
+        description = "Whether reading and writing are allowed.",
+      },
+      impl = function(self)
+        return raw.is_reachable(rawget(self, "_raw"))
+      end,
+    },
     exists = {
-      description = "Whether anything is at the path now.",
+      description = "Whether anything is at the path now. Raises where the path is outside "
+        .. "the directories a script may reach.",
       returns = {
         type = "boolean",
         description = "Whether a file or directory is present.",

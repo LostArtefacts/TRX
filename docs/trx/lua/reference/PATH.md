@@ -12,7 +12,7 @@ order: 34
 
 ## <a id="path" name="path"></a>Paths module
 
-Naming a place on disk. A path is a value rather than text, so joining one is `/` and the parts of it are read off it, and the places the engine keeps its own files are named here. [`trx.json`](JSON.md#json) takes one wherever it takes a file.
+Filesystem paths for Lua scripts. A path is a value rather than text, so joining one uses `/` and its parts are properties. Scripts can read and write under the game's own directories, and nowhere else.
 
 ### Properties
 
@@ -49,9 +49,25 @@ Naming a place on disk. A path is a value rather than text, so joining one is `/
     Methods:
 
     - <a id="path.Path.exists" name="path.Path.exists"></a>[lua]`path:exists()`  
-      Whether anything is at the path now.
+      Whether anything is at the path now. Raises where the path is outside the directories a script may reach.
 
       Returns: boolean. Whether a file or directory is present.
+
+    - <a id="path.Path.is_reachable" name="path.Path.is_reachable"></a>[lua]`path:is_reachable()`  
+      Whether a script may read or write there. Scripts reach the game's own directories and nothing else, so the rest of the player's disk is closed to them.
+
+      Returns: boolean. Whether reading and writing are allowed.
+
+    - <a id="path.Path.read_text" name="path.Path.read_text"></a>[lua]`path:read_text()`  
+      Reads the file as text, or returns `nil` where no file is present. Raises where the path is outside the directories a script may reach.
+
+      Returns: string or `nil`. The text, or `nil` for a file that is not there.
+
+    - <a id="path.Path.write_text" name="path.Path.write_text"></a>[lua]`path:write_text(text)`  
+      Writes text into the file, making the directories it sits in and writing over an existing file. Raises where the path is outside the directories a script may reach.
+
+      Parameters:
+      - <a id="path.Path.write_text.text" name="path.Path.write_text.text"></a>**`text`** (string). What to write.
 
 ### Functions
 
