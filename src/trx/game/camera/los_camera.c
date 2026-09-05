@@ -44,6 +44,14 @@ static M_IDEAL m_LastIdeal = {};
 static M_IDEAL m_LastLookIdeal = {};
 static int32_t m_Snaps = 0;
 
+static const LARA_ANIMATION_ID m_ForceLookAnims[] = {
+    // clang-format off
+    LA_STAND_TO_CROUCH,
+    LA_CROUCH_TO_STAND,
+    NO_CATALOG_ID,
+    // clang-format on
+};
+
 static CAMERA_LOOK_SETTINGS m_LookSettings = {
     // clang-format off
     .head_turn         = +2 * DEG_1,
@@ -260,6 +268,8 @@ static bool M_UpdateLaraState(void)
                 m_LastState.lara.torso_rot, lara->torso_rot);
         same_camera_state &= m_LastState.target_angle == current_angle
             && m_LastState.target_elevation == current_elevation;
+    } else {
+        same_lara_state &= !Lara_HasAnimation(m_ForceLookAnims);
     }
     if (same_lara_state && same_camera_state) {
         return false;

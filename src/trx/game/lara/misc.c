@@ -497,6 +497,27 @@ bool Lara_IsWet(void)
     return false;
 }
 
+bool Lara_HasAnimation(const LARA_ANIMATION_ID *const test_arr)
+{
+    const ITEM *const lara_item = Lara_GetItem();
+    if (lara_item == nullptr) {
+        return false;
+    }
+
+    if (Lara_GetAnimationObject() != O_LARA) {
+        return false;
+    }
+
+    const LARA_ANIMATION_ID current_anim =
+        LA_U(Item_GetRelativeAnim(lara_item));
+    for (int32_t i = 0; test_arr[i] != NO_CATALOG_ID; i++) {
+        if (test_arr[i] == current_anim) {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool Lara_HasState(const LARA_STATE_ID *const test_arr)
 {
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
