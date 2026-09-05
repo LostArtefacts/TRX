@@ -1,8 +1,7 @@
 [
     {
         "object_id": "small_medipack_option",
-        "frames_total": 26,
-        "open_frame": 25,
+        "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
         "x_rot_pt_sel": 4032,
@@ -16,8 +15,7 @@
 
     {
         "object_id": "large_medipack_option",
-        "frames_total": 20,
-        "open_frame": 19,
+        "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
         "x_rot_pt_sel": 3616,
@@ -31,8 +29,7 @@
 
     {
         "object_id": "flares_box_option",
-        "frames_total": 31,
-        "open_frame": 30,
+        "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
         "x_rot_pt_sel": 3200,
@@ -45,8 +42,7 @@
 
     {
         "object_id": "pistols_option",
-        "frames_total": 12,
-        "open_frame": 11,
+        "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
         "x_rot_pt_sel": 3200,
@@ -61,8 +57,7 @@
 
     {
         "object_id": "shotgun_option",
-        "frames_total": 13,
-        "open_frame": 12,
+        "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
         "x_rot_pt_sel": 3200,
@@ -121,8 +116,7 @@
 
     {
         "object_id": "uzis_option",
-        "frames_total": 13,
-        "open_frame": 12,
+        "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
         "x_rot_pt_sel": 3200,
@@ -201,8 +195,7 @@
 
     {
         "object_id": "grenade_gun_option",
-        "frames_total": 12,
-        "open_frame": 11,
+        "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
         "x_rot_pt_sel": 3200,
@@ -529,15 +522,16 @@
 
     {
         "object_id": "compass_option",
-        "frames_total": 25,
-        "open_frame": 10,
+        "frames_total": 1,
         "anim_direction": 1,
         "anim_speed": 1,
         "x_rot_pt_sel": 4352,
-        "x_rot_sel": -8192,
-        "z_trans_sel": 456,
-        "meshes_sel": 0b00000101,
-        "meshes_drawn": 0b00000101,
+        "x_rot_sel": 8192,
+        "y_rot_sel": -32768,
+        "y_trans_sel": -128,
+        "z_trans_sel": 256,
+        "meshes_sel": -1,
+        "meshes_drawn": -1,
     },
 
     {
