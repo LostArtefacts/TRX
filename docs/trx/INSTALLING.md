@@ -1284,14 +1284,18 @@ If you install everything correctly, your game directory should look more or les
 │   │   └── strings.json5
 │   ├── tr4
 │   │   ├── injections
+│   │   │   ├── angkor_fd.bin
+│   │   │   ├── angkor_textures.bin
 │   │   │   ├── font.bin
 │   │   │   ├── inventory_models.bin
 │   │   │   ├── karnak_fd.bin
 │   │   │   ├── lara_animations.bin
 │   │   │   ├── lara_outfits.bin
 │   │   │   ├── pickup_aid.bin
+│   │   │   ├── race_textures.bin
 │   │   │   ├── shadow_sprite.bin
-│   │   │   └── sparks_gfx.bin
+│   │   │   ├── sparks_gfx.bin
+│   │   │   └── title_textures.bin
 │   │   ├── modules
 │   │   │   ├── cutscenes.lua
 │   │   │   ├── fog.lua
@@ -2674,14 +2678,18 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   └── strings.json5
     │   │   ├── tr4
     │   │   │   ├── injections
+    │   │   │   │   ├── angkor_fd.bin
+    │   │   │   │   ├── angkor_textures.bin
     │   │   │   │   ├── font.bin
     │   │   │   │   ├── inventory_models.bin
     │   │   │   │   ├── karnak_fd.bin
     │   │   │   │   ├── lara_animations.bin
     │   │   │   │   ├── lara_outfits.bin
     │   │   │   │   ├── pickup_aid.bin
+    │   │   │   │   ├── race_textures.bin
     │   │   │   │   ├── shadow_sprite.bin
-    │   │   │   │   └── sparks_gfx.bin
+    │   │   │   │   ├── sparks_gfx.bin
+    │   │   │   │   └── title_textures.bin
     │   │   │   ├── modules
     │   │   │   │   ├── cutscenes.lua
     │   │   │   │   ├── fog.lua
