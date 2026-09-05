@@ -96,6 +96,7 @@ typedef struct {
         bool fix_item_rots;
         bool fix_animated_sprites;
         bool fix_texture_issues;
+        bool fix_smoke_emitters;
 
         WATER_TINT_MODE water_tint_mode;
         RGB_888 water_color;

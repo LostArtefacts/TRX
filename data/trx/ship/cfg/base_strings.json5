@@ -1926,6 +1926,10 @@
             "title": "Fix item placement issues",
             "description": "Fixes several original-game issues caused by incorrect item placement or configuration, including rotations, positions, and room assignments.",
         },
+        "visuals.fix_smoke_emitters": {
+            "title": "Fix smoke emitters",
+            "description": "Fixes smoke emitters intended to be black rendering as white.",
+        },
         "visuals.fix_texture_issues": {
             "title": "Fix texture issues",
             "description": "Fixes original issues with missing or incorrect textures/meshes.",

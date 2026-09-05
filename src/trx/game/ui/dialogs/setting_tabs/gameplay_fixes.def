@@ -1,5 +1,6 @@
 X_UI_ROW(gameplay.fix_floor_data_issues)
 X_UI_ROW(visuals.fix_texture_issues)
+X_UI_ROW(visuals.fix_smoke_emitters)
 X_UI_ROW(visuals.fix_item_rots)
 
 X_UI_ROW(visuals.fix_animated_sprites)

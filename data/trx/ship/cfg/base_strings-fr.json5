@@ -1926,6 +1926,10 @@
             "title": "\\{review}Placement des objets",
             "description": "\\{review}Corrige plusieurs problèmes des jeux d'origine causés par des objets mal placés ou mal orientés.",
         },
+        "visuals.fix_smoke_emitters": {
+            "title": "\\{review}Corriger les émetteurs de fumée",
+            "description": "\\{review}Corrige les émetteurs de fumée qui sont censés être noirs mais qui s'affichent en blanc.",
+        },
         "visuals.fix_texture_issues": {
             "title": "Corriger les problèmes de texture",
             "description": "Corrige des problèmes de textures/morceaux d'objets manquants ou incorrects.",

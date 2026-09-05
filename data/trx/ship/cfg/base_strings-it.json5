@@ -1926,6 +1926,10 @@
             "title": "Correggi posizionamento oggetti",
             "description": "Corregge diversi problemi presenti nei giochi originali causati da un posizionamento o una configurazione errati degli oggetti, tra cui rotazioni, posizioni e assegnazioni delle stanze.",
         },
+        "visuals.fix_smoke_emitters": {
+            "title": "\\{review}Correggi gli emettitori di fumo",
+            "description": "\\{review}Corregge gli emettitori di fumo che dovrebbero essere neri ma vengono visualizzati in bianco.",
+        },
         "visuals.fix_texture_issues": {
             "title": "Correggi problemi texture",
             "description": "Risolve i problemi riguardanti texture o maglie poligonali mancanti o errate nei livelli originali.",

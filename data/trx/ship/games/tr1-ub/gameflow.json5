@@ -198,6 +198,7 @@
         "enable_monkey_bar_shimmy_turn",
         "ally_hostility_policy",
         "fix_pipeman_aim",
+        "fix_smoke_emitters",
         "enable_cinematics",
         "enable_cinematic_skips",
         "enable_body_bags",
