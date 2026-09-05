@@ -521,6 +521,7 @@
                 "hiss_sfx.bin",
                 "mines_textures.bin",
                 "common_pickup_meshes.bin",
+                "mines_animating_bounds.bin",
             ],
         },
 

@@ -1071,6 +1071,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── madubu_textures.bin
 │   │   │   ├── menu_artefacts.bin
 │   │   │   ├── menu_artefacts_london.bin
+│   │   │   ├── mines_animating_bounds.bin
 │   │   │   ├── mines_textures.bin
 │   │   │   ├── misc_sprites.bin
 │   │   │   ├── nevada_animating_bounds.bin
@@ -2460,6 +2461,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── madubu_textures.bin
     │   │   │   │   ├── menu_artefacts.bin
     │   │   │   │   ├── menu_artefacts_london.bin
+    │   │   │   │   ├── mines_animating_bounds.bin
     │   │   │   │   ├── mines_textures.bin
     │   │   │   │   ├── misc_sprites.bin
     │   │   │   │   ├── nevada_animating_bounds.bin

@@ -177,6 +177,7 @@
 - Fixed a slope softlock in Meteorite Cavern room 12 (OG bug) (#6483 / TRX1338)
 - Fixed the fans in Thames Wharf room 77 by slowing them down before Lara re-enters the water after having solved the puzzle (#6410 / TRX1268)
 - Fixed incorrect UVs on some injected textures (TRX1366, regression from 1.9)
+- Fixed the grinders in RX-Tech Mines being clipped out of view at certain angles (OG bug) (TRX1347)
 
 **TR4**
 - Added the ability to skip in-game cutscenes (TRX1051)
