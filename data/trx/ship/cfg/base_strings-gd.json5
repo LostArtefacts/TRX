@@ -1926,6 +1926,10 @@
             "title": "Càraich suidheachadh nithean",
             "description": "Ceartaichidh seo grunn dhuilgheadasan anns na geamannan tùsail a tha air an adhbhrachadh le nithean air an cur no air an stiùireadh gu ceàrr.",
         },
+        "visuals.fix_smoke_emitters": {
+            "title": "Ceartaich sgaoiladairean ceò",
+            "description": "Ceartaich sgaoiladairean ceò a bu chòir a bhith air an sealltainn dubh ach a th'air an sealltainn geal.",
+        },
         "visuals.fix_texture_issues": {
             "title": "Càraich duilgheadasan inneach",
             "description": "Càradh bugan tùsail le inneach neo modalan a tha ceàrr neo a dhìth.",

@@ -1,3 +1,4 @@
+#include <trx/config.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
@@ -44,7 +45,8 @@ static void M_Control(const int16_t item_num)
     spark->life = (Random_GetControl() & 0xF) + 96;
     spark->s_life = spark->life;
 
-    if (item->object_id == O_SMOKE_EMITTER_BLACK) {
+    if (item->object_id == O_SMOKE_EMITTER_BLACK
+        && g_Config.visuals.fix_smoke_emitters) {
         spark->draw_type = DRAW_BLEND_SUB;
     } else {
         spark->draw_type = DRAW_BLEND_ADD;

@@ -153,6 +153,7 @@
 
 **TR3**
 - Added crystals to each of the levels in The Lost Artefact, and made the crystal mode option visible (Gameplay → General → Crystal mode) (TRX1111)
+- Added an option to render black smoke emitters as white, as per the PC release (Gameplay → Fixes → Fix smoke emitters) (#6411 / TRX1288)
 - Changed the underwater light patterns to run in broad bands, as the original draws them, rather than fine speckle
 - Changed the underwater picture wobble to grow more gently on large screens, where it was too strong
 - Fixed z-fighting in rooms 21, 67 amd 122 in Jungle, and fixed incorrect lighting in room 87 (OG bugs) (TRX1088)

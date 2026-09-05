@@ -85,6 +85,7 @@
         "ally_hostility_policy",
         "fix_monkey_pickup_priority",
         "fix_pipeman_aim",
+        "fix_smoke_emitters",
         "enable_cinematics",
         "enable_cinematic_skips",
         "enable_body_bags",

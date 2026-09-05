@@ -236,6 +236,7 @@
         "enable_footprints",
         "fix_monkey_pickup_priority",
         "fix_pipeman_aim",
+        "fix_smoke_emitters",
         "enable_cinematics",
         "enable_cinematic_skips",
         "fix_animated_spikes",

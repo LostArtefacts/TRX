@@ -1926,6 +1926,10 @@
             "title": "\\{review}Fix: Objektplatzierung",
             "description": "\\{review}Behebt mehrere Probleme aus den Originalspielen, die durch falsch platzierte oder ausgerichtete Objekte verursacht werden.",
         },
+        "visuals.fix_smoke_emitters": {
+            "title": "\\{review}Rauchemitter korrigieren",
+            "description": "\\{review}Behebt Rauchemitter, die eigentlich schwarz dargestellt werden sollten, aber weiß erscheinen.",
+        },
         "visuals.fix_texture_issues": {
             "title": "Fix: Textur-Fehler",
             "description": "Fixt originale Fehler mit fehlenden oder inkorrekten Texturen/Meshes.",

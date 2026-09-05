@@ -1926,6 +1926,10 @@
             "title": "\\{review}Napraw pozycje obiektów",
             "description": "\\{review}Naprawia kilka błędów z oryginalnych gier spowodowanych nieprawidłowym rozmieszczeniem lub orientacją obiektów.",
         },
+        "visuals.fix_smoke_emitters": {
+            "title": "\\{review}Napraw emitery dymu",
+            "description": "\\{review}Naprawia emitery dymu, które powinny być renderowane na czarno, ale są wyświetlane na biało.",
+        },
         "visuals.fix_texture_issues": {
             "title": "Napraw tekstury",
             "description": "Naprawia błędy oryginalnej gry zw. z brakującymi lub nieprawidłowymi teksturami.",
