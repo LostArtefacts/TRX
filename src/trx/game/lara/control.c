@@ -977,6 +977,20 @@ static void M_HandleStartState(const LARA_EXTRA_STATE start_state)
     lara_item->rot = old_rot;
 }
 
+static void M_CalculateDistanceTravelled(
+    const ITEM *const item, LARA_INFO *const lara)
+{
+    // Performing certain glitches can cause Lara to travel enormous distances
+    // in the Y direction. Thwart this to avoid overflows and inaccurate stats.
+    XYZ_32 pos = item->pos;
+    if (pos.y <= NO_HEIGHT || pos.y > MAX_HEIGHT) {
+        pos.y = lara->last_pos.y;
+    }
+
+    Stats_AddDistanceTravelled(pos, lara->last_pos);
+    lara->last_pos = pos;
+}
+
 void Lara_Control_Initialise(
     const GF_LEVEL_TYPE level_type, const LARA_EXTRA_STATE start_state)
 {
@@ -1089,7 +1103,5 @@ void Lara_Control(void)
     Camera_MoveManual();
     M_HandleEnvironment();
     Lara_Breath_Control(item);
-
-    Stats_AddDistanceTravelled(item->pos, lara_info->last_pos);
-    lara_info->last_pos = item->pos;
+    M_CalculateDistanceTravelled(item, lara_info);
 }

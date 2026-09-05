@@ -142,7 +142,7 @@ static const char *M_FormatTime(
     }
 }
 
-static const char *M_FormatDistance(int32_t distance)
+static const char *M_FormatDistance(uint32_t distance)
 {
     distance /= 445;
     if (distance < 1000) {
