@@ -111,6 +111,7 @@
 - Fixed Lara clipping into or underneath lifts if she tries to step on top of or into one from an exterior floor whose height matches the lift ceiling or floor (OG bug) (#3905 / TRX1014)
 - Fixed Lara's braid not colliding properly with her selected outfit, instead referencing the level's OG outfit (TRX1277, regression from 1.2)
 - Fixed being able to push pushblocks onto floors with triangular geometry (TRX1228, regression from 1.0)
+- Fixed propellers not being collidable if they are deactivated and then later reactivated (OG bug) (#6494 / TRX1351)
 
 **Saves and settings**
 - Added smoke, sparks, mist and bubbles to saves (Gameplay → General → Save effects)
