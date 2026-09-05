@@ -265,7 +265,8 @@ void Stats_AddDistanceTravelled(const XYZ_32 pos, const XYZ_32 last_pos)
 {
     LEVEL_STATS *const stats = Stats_GetLevelStats(Game_GetCurrentLevel());
     if (stats != nullptr) {
-        stats->distance_travelled += XYZ_32_GetDistance(pos, last_pos);
+        stats->distance_travelled +=
+            (uint32_t)XYZ_32_GetDistance(pos, last_pos);
     }
 }
 

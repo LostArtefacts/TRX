@@ -1013,8 +1013,9 @@ static RESULT M_ReadResumeInfo(
     MUST(JSON_READ(io, "ammo_hits", &resume->stats.ammo_hits));
     MUST(JSON_READ(io, "ammo_used", &resume->stats.ammo_used));
     MUST(JSON_READ(io, "medipacks_used", &resume->stats.medipacks_used));
-    MUST(
-        JSON_READ(io, "distance_travelled", &resume->stats.distance_travelled));
+    int32_t distance;
+    MUST(JSON_READ(io, "distance_travelled", &distance));
+    resume->stats.distance_travelled = (uint32_t)distance;
     MUST(JSON_READ(io, "kills", &resume->stats.counts[STATS_CAT_KILLS]));
     SHOULD(
         JSON_READ(io, "crystals", &resume->stats.counts[STATS_CAT_CRYSTALS]));
