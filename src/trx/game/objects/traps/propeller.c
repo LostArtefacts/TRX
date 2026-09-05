@@ -57,6 +57,7 @@ void Propeller_Control(const int16_t item_num)
 
     if (Item_IsTriggerActive(item) && !item->trigger.spent) {
         item->goal_anim_state = M_STATE_ON;
+        item->is_collidable = true;
 
         if ((item->touch_bits & 6) != 0) {
             const ITEM *const lara_item = Lara_GetItem();
