@@ -32,6 +32,9 @@
             {"type": "play_fmv", "fmv_id": 0},
             {"type": "exit_to_title"},
         ],
+        "injections": [
+            "title_textures.bin",
+        ],
     },
 
     "levels": [
@@ -52,6 +55,10 @@
                 {"type": "loop_game"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "angkor_fd.bin",
+                "angkor_textures.bin",
+            ],
         },
 
         // 2. Race for the Iris
@@ -68,6 +75,9 @@
                 {"type": "loop_game"},
                 {"type": "play_fmv", "fmv_id": 1},
                 {"type": "level_complete"},
+            ],
+            "injections": [
+                "race_textures.bin",
             ],
         },
 
