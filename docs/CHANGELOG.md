@@ -59,6 +59,7 @@
 - Fixed the photo mode camera flickering and refusing to turn over when it is pitched past straight up or down, and turning in coarse steps while aimed near vertical (TRX1152)
 - Fixed photo mode showing the same animation frame while advancing the game a quarter of a frame at a time (TRX1353, regression from 1.9)
 - Fixed the TR3 and TR4 look cameras not updating when holding look during the transition from standing to crouching and vice-versa (OG bug) (TRX1325)
+- Fixed the binoculars camera being positioned behind Lara if the look input is held while selecting them (TRX1378, regression from 1.9)
 
 **Developer console**
 - Added the `/outfit` console command, which shows or changes what Lara is wearing (TRX1070)
