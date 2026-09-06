@@ -42,8 +42,8 @@ VECTOR *Output_GetDynamicLights(void);
 // asked for, so that a caller's light does not turn on whether it ran before or
 // after the point the frame's lights are reset.
 void Output_AddDynamicLight(XYZ_32 pos, int32_t intensity, int32_t falloff);
-// The same, in color. TR1 and TR2 shade in brightness alone, so the light
-// stands for its brightest channel there and comes out white.
+// The same, in color. TR1 and TR2 light rooms in color, but shade objects in
+// brightness alone, where the light stands for its brightest channel.
 void Output_AddDynamicLightRGB(XYZ_32 pos, int32_t falloff, RGB_888 color);
 // A volumetric fog bulb for this frame, in any game, on the same terms.
 void Output_AddFogBulb(

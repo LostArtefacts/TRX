@@ -153,6 +153,7 @@
 - Fixed static objects disappearing depending on the camera angle (OG bug) (TRX1211)
 - Fixed the underwater view wobbling less at higher supersampling values (TRX1207)
 - Fixed the debug portal and bounding box lines becoming thinner at higher supersampling values (TRX1251)
+- Fixed TR3 colored light objects appearing white in TR1 and TR2 levels (#6517 / TRX1377, regression from 1.10)
 
 **TR1**
 - Changed Lara to retain her equipment when turning to gold on the Midas Hand, with the equipment also turning to gold (TRX1073)
