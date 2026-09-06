@@ -715,13 +715,15 @@ Widgets that are not shown take no room and leave no gap.]],
           shown = shown + 1
         end
       end
-      along = along + math.max(0, shown - 1) * (w.spacing or 0)
+      along = along
+        + math.max(0, shown - 1) * (w.spacing or 0) * raw.drawn_text_scale()
       if is_horizontal(w) then
         return along, across
       end
       return across, along
     end, function(w, x, y, bw, bh)
       local at = is_horizontal(w) and x or y
+      local spacing = (w.spacing or 0) * raw.drawn_text_scale()
       for _, child in ipairs(w.children) do
         if child:is_shown() then
           local cw, ch = child:measure()
@@ -733,7 +735,7 @@ Widgets that are not shown take no room and leave no gap.]],
               offset = bh - ch
             end
             child:paint(at, y + offset, cw, ch)
-            at = at + cw + (w.spacing or 0)
+            at = at + cw + spacing
           else
             local offset = 0
             if w.align == trx.ui.HAlign.CENTER then
@@ -742,7 +744,7 @@ Widgets that are not shown take no room and leave no gap.]],
               offset = bw - cw
             end
             child:paint(x + offset, at, cw, ch)
-            at = at + ch + (w.spacing or 0)
+            at = at + ch + spacing
           end
         end
       end
