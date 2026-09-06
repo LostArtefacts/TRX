@@ -15,6 +15,7 @@
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/mesh.h>
 #include <trx/game/lara/skin/gold.h>
 #include <trx/version.h>
 
@@ -483,6 +484,8 @@ void Lara_Skin_Initialise(void)
         if (GF_GetCurrentLevel() != nullptr && Object_Get(O_LARA)->loaded) {
             LOG_WARNING("No skin swap objects here; no outfit applied");
         }
+        // Use the Lara meshes from the level when no outfit can be applied.
+        Lara_Mesh_SwapAll(O_LARA);
         return;
     }
 
