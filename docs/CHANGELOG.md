@@ -153,6 +153,7 @@
 - Fixed static objects disappearing depending on the camera angle (OG bug) (TRX1211)
 - Fixed the underwater view wobbling less at higher supersampling values (TRX1207)
 - Fixed the debug portal and bounding box lines becoming thinner at higher supersampling values (TRX1251)
+- Fixed reflections missing from the see-through parts of a surface in TR4, such as the lenses of Werner's glasses (TRX1294)
 - Fixed TR3 colored light objects appearing white in TR1 and TR2 levels (#6517 / TRX1377, regression from 1.10)
 
 **TR1**
