@@ -50,7 +50,7 @@ void Object_Reset(void)
         m_UncatalogedSlots = nullptr;
     }
 
-    CatalogTable_Free(&m_Objects);
+    CatalogTable_Reset(&m_Objects);
 }
 
 void Object_InitialiseStaticObjects3D(const int32_t count)

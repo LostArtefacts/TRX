@@ -20,6 +20,42 @@ typedef struct {
     int32_t shade;
 } M_COMMON_LIGHT;
 
+static int32_t M_Log2(int32_t value)
+{
+    int32_t exponent = 0;
+    while (value > 1) {
+        value >>= 1;
+        exponent++;
+    }
+    return exponent;
+}
+
+// Convert dynamic light to the log2 units used by the TR1/2 shading loop.
+// Colored lights use their brightest channel as the equivalent intensity.
+static void M_GetLightExponents(
+    const OUTPUT_DYNAMIC_LIGHT *const entry, int32_t *const shade_exp,
+    int32_t *const falloff_exp)
+{
+    const LIGHT_LEGACY_DATA *const data =
+        Output_Lights_GetLegacyData(&entry->light);
+    if (entry->kind == OUTPUT_DYNAMIC_LIGHT_LUM) {
+        *shade_exp = data->shade.value_1;
+        *falloff_exp = data->falloff.value_1;
+        return;
+    }
+
+    int32_t radius = data->falloff.value_1 >> OUTPUT_DYNAMIC_FALLOFF_SHIFT;
+    CLAMP(radius, 1, OUTPUT_DYNAMIC_FALLOFF_MAX);
+    radius <<= OUTPUT_DYNAMIC_RADIUS_SHIFT;
+
+    const RGB_888 color = entry->light.color;
+    int32_t shade = MAX3(color.r, color.g, color.b) << 4;
+    CLAMPL(shade, 1);
+
+    *shade_exp = M_Log2(shade);
+    *falloff_exp = MIN(M_Log2(radius), M_MAX_FALLOFF_EXP);
+}
+
 static void M_CalculateBrightestLight(
     const XYZ_32 pos, const ROOM *const room,
     M_COMMON_LIGHT *const brightest_light)
@@ -86,12 +122,13 @@ static int32_t M_CalculateDynamicLight(
     for (int32_t i = 0; i < dynamic_lights->count; i++) {
         const OUTPUT_DYNAMIC_LIGHT *const entry = Vector_Get(dynamic_lights, i);
         const LIGHT *const light = &entry->light;
-        const LIGHT_LEGACY_DATA *const data =
-            Output_Lights_GetLegacyData(light);
+        int32_t shade_exp;
+        int32_t falloff_exp;
+        M_GetLightExponents(entry, &shade_exp, &falloff_exp);
         const int32_t dx = pos.x - light->pos.x;
         const int32_t dy = pos.y - light->pos.y;
         const int32_t dz = pos.z - light->pos.z;
-        const int32_t radius = 1 << data->falloff.value_1;
+        const int32_t radius = 1 << falloff_exp;
         if (dx < -radius || dx > radius || dy < -radius || dy > radius
             || dz < -radius || dz > radius) {
             continue;
@@ -102,8 +139,8 @@ static int32_t M_CalculateDynamicLight(
             continue;
         }
 
-        const int32_t shade = (1 << data->shade.value_1)
-            - (dist >> (2 * data->falloff.value_1 - data->shade.value_1));
+        const int32_t shade =
+            (1 << shade_exp) - (dist >> (2 * falloff_exp - shade_exp));
         if (shade > brightest_light->shade) {
             brightest_light->shade = shade;
             brightest_light->pos = light->pos;
@@ -184,12 +221,13 @@ static void M_CalculateStaticMeshLight(
     for (int32_t i = 0; i < dynamic_lights->count; i++) {
         const OUTPUT_DYNAMIC_LIGHT *const entry = Vector_Get(dynamic_lights, i);
         const LIGHT *const light = &entry->light;
-        const LIGHT_LEGACY_DATA *const data =
-            Output_Lights_GetLegacyData(light);
+        int32_t shade_exp;
+        int32_t falloff_exp;
+        M_GetLightExponents(entry, &shade_exp, &falloff_exp);
         const int32_t dx = pos.x - light->pos.x;
         const int32_t dy = pos.y - light->pos.y;
         const int32_t dz = pos.z - light->pos.z;
-        const int32_t radius = 1 << data->falloff.value_1;
+        const int32_t radius = 1 << falloff_exp;
         if (dx < -radius || dx > radius || dy < -radius || dy > radius
             || dz < -radius || dz > radius) {
             continue;
@@ -200,8 +238,7 @@ static void M_CalculateStaticMeshLight(
             continue;
         }
 
-        adder -= (1 << data->shade.value_1)
-            - (dist >> (2 * data->falloff.value_1 - data->shade.value_1));
+        adder -= (1 << shade_exp) - (dist >> (2 * falloff_exp - shade_exp));
         if (adder < 0) {
             break;
         }
@@ -228,36 +265,6 @@ static void M_AddDynamicLight(
         .kind = OUTPUT_DYNAMIC_LIGHT_LUM,
     };
     Vector_Add(Output_GetDynamicLights(), &light);
-}
-
-static int32_t M_Log2(int32_t value)
-{
-    int32_t exponent = 0;
-    while (value > 1) {
-        value >>= 1;
-        exponent++;
-    }
-    return exponent;
-}
-
-// TR1/2 shade in luminance and measure a light by the exponents the OG shading
-// loop shifts by, where the colored entry point gives a radius and a color.
-// This is the conversion Output_Lights_TR3_AddDynamicLight makes, taken the
-// other way: the brightest channel stands for the light, and its color is lost.
-static void M_AddDynamicLightRGB(
-    const XYZ_32 pos, const int32_t falloff, const RGB_888 color)
-{
-    int32_t safe_falloff = falloff;
-    CLAMP(safe_falloff, 1, OUTPUT_DYNAMIC_FALLOFF_MAX);
-    const int32_t radius = safe_falloff << OUTPUT_DYNAMIC_RADIUS_SHIFT;
-
-    int32_t shade = MAX3(color.r, color.g, color.b) << 4;
-    CLAMPL(shade, 1);
-
-    int32_t falloff_exp = M_Log2(radius);
-    CLAMPG(falloff_exp, M_MAX_FALLOFF_EXP);
-
-    M_AddDynamicLight(pos, M_Log2(shade), falloff_exp);
 }
 
 static void M_UploadCPULight(
@@ -311,7 +318,6 @@ const LIGHTING_MODEL g_LightingModelTR12 = {
     .calculate_static_light = M_CalculateStaticLight,
     .calculate_static_mesh_light = M_CalculateStaticMeshLight,
     .add_dynamic_light = M_AddDynamicLight,
-    .add_dynamic_light_rgb = M_AddDynamicLightRGB,
     .upload_cpu_light = M_UploadCPULight,
     .upload_own_light = M_UploadOwnLight,
     .prepare_scene = Output_FogBulbs_PrepareScene,

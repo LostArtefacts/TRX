@@ -52,8 +52,13 @@ static void M_SpriteEdits(
         int16_t x1 = File_ReadS16(injection->fp);
         int16_t y1 = File_ReadS16(injection->fp);
 
-        const OBJECT *const obj = Object_TryGet(obj_info.id);
-        if (obj == nullptr || !obj->loaded) {
+        OBJECT *obj;
+        if (!SHOULD(
+                Inject_GetObject(obj_info, &obj),
+                "sprite bounds stay unchanged")) {
+            continue;
+        }
+        if (!obj->loaded) {
             continue;
         }
         if (obj->mesh_idx < 0

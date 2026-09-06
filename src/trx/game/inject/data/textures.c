@@ -87,10 +87,10 @@ static void M_HandleSpriteSequences(
         const int16_t mesh_idx = File_ReadS16(injection->fp);
 
         if (obj_info.type == OBJ_TYPE_OBJECT) {
-            OBJECT *const obj = Object_TryGet(obj_info.id);
-            if (obj == nullptr) {
-                LOG_WARNING("Invalid object %d", obj_info.id);
-            } else {
+            OBJECT *obj;
+            if (SHOULD(
+                    Inject_GetObject(obj_info, &obj),
+                    "sprite sequence stays unchanged")) {
                 obj->mesh_count = num_meshes;
                 obj->mesh_idx = mesh_idx + level_info->textures.sprite_count;
                 obj->loaded = true;

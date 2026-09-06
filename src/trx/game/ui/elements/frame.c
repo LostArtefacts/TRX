@@ -29,6 +29,27 @@ static void M_Draw(const UI_NODE *node)
     UI_DrawWrapper(node);
 }
 
+TEXT_STYLE UI_Frame_GetTextStyle(const UI_FRAME_STYLE style)
+{
+    switch (style) {
+    case UI_FRAME_DIALOG_BACKGROUND:
+        return TS_BACKGROUND;
+    case UI_FRAME_DIALOG_BACKGROUND_HEAVY:
+        return TS_BACKGROUND_HEAVY;
+    case UI_FRAME_DIALOG_HEADING:
+        return TS_HEADING;
+    case UI_FRAME_SELECTED_OPTION:
+    case UI_FRAME_OUTLINE_ONLY:
+        return TS_REQUESTED;
+    }
+    return TS_BACKGROUND;
+}
+
+bool UI_Frame_HasBackground(const UI_FRAME_STYLE style)
+{
+    return style != UI_FRAME_OUTLINE_ONLY;
+}
+
 void UI_BeginFrame(UI_FRAME_STYLE style)
 {
     UI_NODE *const node = UI_AllocNode(
@@ -41,34 +62,14 @@ void UI_BeginFrame(UI_FRAME_STYLE style)
     M_DATA *const data = node->data;
 
     data->ui_style = g_Config.ui.menu_style;
+    data->text_style = UI_Frame_GetTextStyle(style);
 
-    switch (style) {
-    case UI_FRAME_DIALOG_BACKGROUND:
-        data->outline_z = 160;
-        data->background_z = 160;
-        data->text_style = TS_BACKGROUND;
-        break;
-    case UI_FRAME_DIALOG_BACKGROUND_HEAVY:
-        data->outline_z = 160;
-        data->background_z = 160;
-        data->text_style = TS_BACKGROUND_HEAVY;
-        break;
-    case UI_FRAME_DIALOG_HEADING:
-        data->outline_z = 80;
-        data->background_z = 80;
-        data->text_style = TS_HEADING;
-        break;
-    case UI_FRAME_SELECTED_OPTION:
-        data->outline_z = 80;
-        data->background_z = 80;
-        data->text_style = TS_REQUESTED;
-        break;
-    case UI_FRAME_OUTLINE_ONLY:
-        data->outline_z = 80;
-        data->background_z = -1;
-        data->text_style = TS_REQUESTED;
-        break;
-    }
+    const int32_t z = style == UI_FRAME_DIALOG_BACKGROUND
+            || style == UI_FRAME_DIALOG_BACKGROUND_HEAVY
+        ? 160
+        : 80;
+    data->outline_z = z;
+    data->background_z = UI_Frame_HasBackground(style) ? z : -1;
 
     UI_AddChild(node);
     UI_PushCurrent(node);
