@@ -417,6 +417,22 @@ api.property("game.is_photo_mode", {
   get = raw.is_photo_mode,
 })
 
+api.enum("game.PhotoModeTarget", {
+  backing = "PHOTO_MODE",
+  description = "What the player's movement keys steer while photo mode is open.",
+  values = {
+    CAMERA = "The camera.",
+    LARA = "Lara herself.",
+  },
+})
+
+api.property("game.photo_mode_target", {
+  type = "game.PhotoModeTarget",
+  description = "What photo mode is steering. Outside photo mode, this is always the camera, "
+    .. "which is where every session starts.",
+  get = raw.photo_mode_target,
+})
+
 api.property("game.is_ngplus", {
   type = "boolean",
   description = "Whether this is a new game plus run, which is what the passport's bonus start "

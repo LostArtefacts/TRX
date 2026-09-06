@@ -35,6 +35,7 @@ Module for the game flow: which levels there are, and which one is being played.
 - <a id="game.tr_version" name="game.tr_version"></a>**`trx.game.tr_version`** (integer). Which Tomb Raider the level being played belongs to: `1` through `4`. The games differ in what they draw and in what the player expects, so a script that dresses more than one reads this to tell them apart. Zero before a level is loaded. *(read-only)*
 - <a id="game.is_suspended" name="game.is_suspended"></a>**`trx.game.is_suspended`** (boolean). Whether a loaded level is held still: the pause screen, photo mode, or the inventory ring. Lara and the creatures do not move while it is true. It is false outside a level, which is what tells it apart from the opposite of [`trx.game.is_playing`](#game.is_playing). *(read-only)*
 - <a id="game.is_photo_mode" name="game.is_photo_mode"></a>**`trx.game.is_photo_mode`** (boolean). Whether the player is in photo mode, where the camera is theirs to move and the game is held still. *(read-only)*
+- <a id="game.photo_mode_target" name="game.photo_mode_target"></a>**`trx.game.photo_mode_target`** ([trx.game.PhotoModeTarget](#game.PhotoModeTarget)). What photo mode is steering. It answers with the camera outside photo mode, which is where every session of it starts. *(read-only)*
 - <a id="game.is_ngplus" name="game.is_ngplus"></a>**`trx.game.is_ngplus`** (boolean). Whether this is a new game plus run, which is what the passport's bonus start sets. Lara keeps her weapons between levels and her ammunition does not run down. *(read-only)*
 
 ### Constants
@@ -80,6 +81,15 @@ Module for the game flow: which levels there are, and which one is being played.
         Not a level. Kept only because old savegames refer to it.
     - `trx.game.LevelType.CURRENT` = `7`  
         Not a level. Kept only because old savegames refer to it.
+
+- <a id="game.PhotoModeTarget" name="game.PhotoModeTarget"></a>[lua]`trx.game.PhotoModeTarget`
+
+    What the player's movement keys steer while photo mode is open.
+
+    - `trx.game.PhotoModeTarget.CAMERA` = `0`  
+        The camera.
+    - `trx.game.PhotoModeTarget.LARA` = `1`  
+        Lara herself.
 
 ### Structures
 

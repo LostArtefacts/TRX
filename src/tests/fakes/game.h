@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/game/game_flow/types.h>
+#include <trx/game/photo_mode.h>
 
 #include <lualib.h>
 #include <stdint.h>
@@ -15,6 +16,9 @@ void FakeGame_SetCurrentLevel(int32_t idx);
 
 // Whether the flow has a gym. A game without one has nothing to play.
 void FakeGame_SetGymPresent(bool present);
+
+// Whether photo mode is open, and what it is steering.
+void FakeGame_SetPhotoMode(bool active, PHOTO_MODE target);
 
 void FakeGame_SetInCutscene(bool in_cutscene);
 
