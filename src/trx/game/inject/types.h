@@ -37,4 +37,6 @@ typedef struct {
 typedef struct {
     INJECT_OBJECT_TYPE type;
     int32_t id;
+    // Stores the slot from the injection for diagnostics.
+    int32_t slot;
 } INJECTION_OBJECT_INFO;
