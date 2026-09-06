@@ -255,6 +255,13 @@ api.type("lara.Lara", {
   },
 })
 
+api.property("lara.can_pose", {
+  type = "boolean",
+  description = "Whether Lara has poses available to cycle through in photo mode. Only some "
+    .. "outfits have them.",
+  get = raw.can_pose,
+})
+
 api.property("lara.animation_object", {
   type = "catalog.objects",
   description = "The object Lara's animations are coming from. It is normally Lara herself, "

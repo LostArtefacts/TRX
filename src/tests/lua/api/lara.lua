@@ -111,6 +111,7 @@ test("properties that are not struct fields still work", function()
 
   assert(trx.lara.outfit == "default")
   assert(trx.lara.has_pistol_weapon == true)
+  assert(trx.lara.can_pose == true)
 end)
 
 test("lara.item is her Item handle", function()
