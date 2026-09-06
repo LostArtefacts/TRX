@@ -125,9 +125,7 @@ static int32_t M_CheckSpriteIdx(lua_State *const L)
     return object->mesh_idx + sprite_num;
 }
 
-// Returns the number of sprites for object_id.
-// Returns 0 when object_id is not loaded, allowing widgets to test for
-// drawable sprites without raising an error.
+// trxc.ui.sprite_count(object_id) -> number
 static int M_L_UISpriteCount(lua_State *const L)
 {
     const OBJECT *const object = Object_Get(LUA_CheckObjectID(L, 1));
@@ -135,9 +133,7 @@ static int M_L_UISpriteCount(lua_State *const L)
     return 1;
 }
 
-// Returns the bounds of sprite_num in object_id as x0, y0, x1, y1.
-// Returns bounds relative to the drawing position, so x0 and y0 are usually
-// negative, in canvas units at scale 1.
+// trxc.ui.sprite_bounds(object_id, sprite_num) -> x0, y0, x1, y1
 static int M_L_UISpriteBounds(lua_State *const L)
 {
     const SPRITE_TEXTURE *const sprite =
@@ -152,8 +148,7 @@ static int M_L_UISpriteBounds(lua_State *const L)
     return 4;
 }
 
-// Draws sprite_num from object_id at the specified position, scale and
-// colour.
+// trxc.ui.sprite(object_id, sprite_num, x, y, z, scale, color)
 static int M_L_UISprite(lua_State *const L)
 {
     M_CheckPainting(L);
@@ -353,8 +348,6 @@ static void M_PushRamp(
 }
 
 // trxc.ui.bar_theme(type) -> table or nil
-//
-// Returns the current bar theme from player settings.
 static int M_L_UIBarTheme(lua_State *const L)
 {
     const lua_Integer type = luaL_checkinteger(L, 1);
@@ -398,7 +391,14 @@ static int M_L_UIBarScale(lua_State *const L)
     return 1;
 }
 
-// Returns the UI text scale.
+// trxc.ui.drawn_text_scale() -> number
+static int M_L_UIDrawnTextScale(lua_State *const L)
+{
+    lua_pushnumber(L, UI_Scaler_GetTextScale());
+    return 1;
+}
+
+// trxc.ui.text_scale() -> number
 static int M_L_UITextScale(lua_State *const L)
 {
     lua_pushnumber(L, UI_Scaler_GetScale(UI_SCALER_TARGET_TEXT));
@@ -414,6 +414,7 @@ static const luaL_Reg m_Module[] = {
     { "bar_theme", M_L_UIBarTheme },
     { "bar_scale", M_L_UIBarScale },
     { "text_scale", M_L_UITextScale },
+    { "drawn_text_scale", M_L_UIDrawnTextScale },
     { "reserve", M_L_UIReserve },
     { "slot_box", M_L_UISlotBox },
     { "measure_text", M_L_UIMeasureText },
