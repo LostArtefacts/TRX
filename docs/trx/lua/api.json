@@ -2403,6 +2403,143 @@
       ]
     },
     {
+      "bulk": true,
+      "count": 77,
+      "description": "A game action the player can bind to a key or button. In text, `\\{input ...}` draws its current binding.",
+      "names": [
+        "ACTION",
+        "BACK",
+        "CAMERA_BACK",
+        "CAMERA_DOWN",
+        "CAMERA_FORWARD",
+        "CAMERA_LEFT",
+        "CAMERA_RESET",
+        "CAMERA_RIGHT",
+        "CAMERA_UP",
+        "CHANGE_OUTFIT",
+        "CHANGE_TARGET",
+        "CROUCH",
+        "CYCLE_LIGHTING_MODEL",
+        "DRAW",
+        "ENTER_CONSOLE",
+        "EQUIP_AUTOS",
+        "EQUIP_DESERT_EAGLE",
+        "EQUIP_GRENADE_LAUNCHER",
+        "EQUIP_HARPOON",
+        "EQUIP_M16",
+        "EQUIP_MAGNUMS",
+        "EQUIP_MP5",
+        "EQUIP_PISTOLS",
+        "EQUIP_ROCKET_LAUNCHER",
+        "EQUIP_SHOTGUN",
+        "EQUIP_UZIS",
+        "FAST_FORWARD_CHEAT",
+        "FLY_CHEAT",
+        "FORWARD",
+        "ITEM_CHEAT",
+        "JUMP",
+        "LEFT",
+        "LEVEL_SKIP_CHEAT",
+        "LOAD",
+        "LOOK",
+        "MENU_BACK",
+        "MENU_COARSE_ADJUST",
+        "MENU_CONFIRM",
+        "MENU_DOWN",
+        "MENU_FINE_ADJUST",
+        "MENU_LEFT",
+        "MENU_RIGHT",
+        "MENU_SHOW_INFO",
+        "MENU_SKIP",
+        "MENU_TAB_LEFT",
+        "MENU_TAB_RIGHT",
+        "MENU_UP",
+        "OPTION",
+        "PAUSE",
+        "QUICK_LOAD",
+        "QUICK_SAVE",
+        "RESET_BINDINGS",
+        "RIGHT",
+        "ROLL",
+        "SAVE",
+        "SCREENSHOT",
+        "SLOW",
+        "SLOW_MOTION_CHEAT",
+        "SPRINT",
+        "STEP_LEFT",
+        "STEP_RIGHT",
+        "SWITCH_BORDERS",
+        "SWITCH_UPSCALING",
+        "TOGGLE_BILINEAR_FILTER",
+        "TOGGLE_FPS_COUNTER",
+        "TOGGLE_FULLSCREEN",
+        "TOGGLE_PHOTO_MODE",
+        "TOGGLE_TEXTURES",
+        "TOGGLE_TRAPEZOID_FILTER",
+        "TOGGLE_UI",
+        "TOGGLE_WIREFRAME",
+        "TURBO_CHEAT",
+        "UNBIND_KEY",
+        "USE_BIG_MEDI",
+        "USE_BINOCULARS",
+        "USE_FLARE",
+        "USE_SMALL_MEDI"
+      ],
+      "path": "input.Role",
+      "values": []
+    },
+    {
+      "bulk": false,
+      "count": 3,
+      "description": "An input source, such as keyboard, controller, or touch.",
+      "path": "input.Backend",
+      "values": [
+        {
+          "description": "The keyboard, with the mouse.",
+          "name": "KEYBOARD",
+          "value": 0
+        },
+        {
+          "description": "A game controller.",
+          "name": "CONTROLLER",
+          "value": 1
+        },
+        {
+          "description": "The on-screen controls.",
+          "name": "TOUCH",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "bulk": false,
+      "count": 4,
+      "description": "A saved set of bindings for one input source. The default layout is read-only;\nthe custom layouts belong to the player.",
+      "path": "input.Layout",
+      "values": [
+        {
+          "description": "The bindings the game ships with.",
+          "name": "DEFAULT",
+          "value": 0
+        },
+        {
+          "description": "The player's first layout.",
+          "name": "CUSTOM_1",
+          "value": 1
+        },
+        {
+          "description": "The player's second layout.",
+          "name": "CUSTOM_2",
+          "value": 2
+        },
+        {
+          "description": "The player's third layout.",
+          "name": "CUSTOM_3",
+          "value": 3
+        }
+      ]
+    },
+    {
       "bulk": false,
       "count": 7,
       "description": "<!--noref: pickup_mode--> The values the `pickup_mode` item property can take. It selects the animation Lara plays when collecting the item.",
@@ -6442,6 +6579,416 @@
       "path": "game.screenshot"
     },
     {
+      "description": "Whether a role is active right now.\n\nThis stays true while the player holds the bound key or button. Use it for\nactions that continue while held.",
+      "params": [
+        {
+          "description": "The role to ask about.",
+          "name": "role",
+          "type": "input.Role"
+        }
+      ],
+      "path": "input.is_held",
+      "returns": {
+        "description": "Whether the role is active.",
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Whether a role became active this frame.\n\nThis is true for one frame only. Use it for actions that happen once per press.",
+      "params": [
+        {
+          "description": "The role to ask about.",
+          "name": "role",
+          "type": "input.Role"
+        }
+      ],
+      "path": "input.is_pressed",
+      "returns": {
+        "description": "Whether the role was pressed.",
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Whether any role is active right now.\n\nUse this to wait for the player to let go before reading input for something\nelse, such as a rebind.",
+      "path": "input.is_anything_held",
+      "returns": {
+        "description": "Whether anything is held.",
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Keeps a handled role inactive until the player releases it.\n\nUse this after a script handles a press, so the same press does not reach other\ninput code or fire again while held.",
+      "params": [
+        {
+          "description": "The role to take.",
+          "name": "role",
+          "type": "input.Role"
+        }
+      ],
+      "path": "input.hold_off"
+    },
+    {
+      "description": "Whether an input source is enabled.\n\nDisabled sources are not read or shown in the controls dialog.",
+      "params": [
+        {
+          "description": "The input source to ask about.",
+          "name": "backend",
+          "type": "input.Backend"
+        }
+      ],
+      "path": "input.is_backend_enabled",
+      "returns": {
+        "description": "Whether the input source is enabled.",
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "The name the game shows for a role, in the player's language.",
+      "params": [
+        {
+          "description": "The role to name.",
+          "name": "role",
+          "type": "input.Role"
+        }
+      ],
+      "path": "input.role_name",
+      "returns": {
+        "description": "The name of the role.",
+        "type": "string"
+      }
+    },
+    {
+      "description": "The name the game shows for a layout, in the player's language.",
+      "params": [
+        {
+          "description": "The layout to name. Defaults to the current one.",
+          "name": "layout",
+          "optional": true,
+          "type": "input.Layout"
+        }
+      ],
+      "path": "input.layout_name",
+      "returns": {
+        "description": "The name of the layout.",
+        "type": "string"
+      }
+    },
+    {
+      "description": "Text for the key or button bound to a role.\n\nThis is the text drawn by `\\{input ...}`: a glyph when one exists, otherwise a\nkey name. Empty bindings return nil.\n\nUse `trx.input.Binding` to choose a slot, input source, or layout without\nplaceholder nils. Positional arguments still work.",
+      "params": [
+        {
+          "description": "The role to ask about.",
+          "name": "role",
+          "type": "input.Role"
+        },
+        {
+          "description": "Binding to read. Defaults to the first slot on the current source and layout.",
+          "name": "opts",
+          "optional": true,
+          "type": [
+            "input.Slot",
+            "input.Binding"
+          ]
+        },
+        {
+          "description": "The input source to read. Defaults to the current one.",
+          "name": "backend",
+          "optional": true,
+          "type": "input.Backend"
+        },
+        {
+          "description": "The layout to read. Defaults to the current one.",
+          "name": "layout",
+          "optional": true,
+          "type": "input.Layout"
+        }
+      ],
+      "path": "input.key_name",
+      "returns": {
+        "description": "The key text, or nil if the binding is empty.",
+        "nullable": true,
+        "type": "string"
+      }
+    },
+    {
+      "description": "Whether `trx.input.key_name` has text to draw for a role binding.\n\nUse this to hide prompts for unbound roles.\n\nUse `trx.input.Binding` to choose a slot, input source, or layout without\nplaceholder nils. Positional arguments still work.",
+      "params": [
+        {
+          "description": "The role to ask about.",
+          "name": "role",
+          "type": "input.Role"
+        },
+        {
+          "description": "Binding to read. Defaults to the first slot on the current source and layout.",
+          "name": "opts",
+          "optional": true,
+          "type": [
+            "input.Slot",
+            "input.Binding"
+          ]
+        },
+        {
+          "description": "The input source to read. Defaults to the current one.",
+          "name": "backend",
+          "optional": true,
+          "type": "input.Backend"
+        },
+        {
+          "description": "The layout to read. Defaults to the current one.",
+          "name": "layout",
+          "optional": true,
+          "type": "input.Layout"
+        }
+      ],
+      "path": "input.has_glyph",
+      "returns": {
+        "description": "Whether the binding has text to draw.",
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Whether the player can change a role's binding.\n\nRoles reserved by the game cannot be rebound and do not count as conflicts.",
+      "params": [
+        {
+          "description": "The role to ask about.",
+          "name": "role",
+          "type": "input.Role"
+        }
+      ],
+      "path": "input.is_rebindable",
+      "returns": {
+        "description": "Whether it can be bound.",
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Whether the player can leave a role without a binding.",
+      "params": [
+        {
+          "description": "The role to ask about.",
+          "name": "role",
+          "type": "input.Role"
+        }
+      ],
+      "path": "input.is_unbindable",
+      "returns": {
+        "description": "Whether it can be left unbound.",
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Whether another role uses the same binding in the same layout.\n\nUse `trx.input.Binding` to choose an input source or layout without placeholder\nnils. Positional arguments still work.",
+      "params": [
+        {
+          "description": "The role to ask about.",
+          "name": "role",
+          "type": "input.Role"
+        },
+        {
+          "description": "Binding to check. Defaults to the current source and layout.",
+          "name": "opts",
+          "optional": true,
+          "type": [
+            "input.Backend",
+            "input.Binding"
+          ]
+        },
+        {
+          "description": "The layout to read. Defaults to the current one.",
+          "name": "layout",
+          "optional": true,
+          "type": "input.Layout"
+        }
+      ],
+      "path": "input.is_conflicted",
+      "returns": {
+        "description": "Whether the binding is used twice.",
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Turns script input capture on or off.\n\nWhile capture is on, scripts can read or bind input without the game acting on\nthe same input. Turn capture off as soon as the input is handled.",
+      "params": [
+        {
+          "description": "Whether script input capture is enabled.",
+          "name": "enabled",
+          "type": "boolean"
+        }
+      ],
+      "path": "input.listen"
+    },
+    {
+      "description": "Runs a function with script input capture on.\n\nRestores the previous capture state after the function returns or raises an\nerror. Returns the function's results.",
+      "params": [
+        {
+          "description": "Function to run while input is captured.",
+          "name": "fn",
+          "type": "function"
+        }
+      ],
+      "path": "input.with_listen",
+      "returns": {
+        "description": "What the function returned.",
+        "type": "any"
+      }
+    },
+    {
+      "description": "Binds a role to the key or button the player is holding.\n\nReturns false if no input is held. Call it each frame while waiting for input,\nwith `trx.input.listen` on or from inside `trx.input.with_listen`. The default\nlayout is read-only.\n\nUse `trx.input.Binding` to choose a slot, input source, or layout without\nplaceholder nils. Positional arguments still work.",
+      "params": [
+        {
+          "description": "The role to bind.",
+          "name": "role",
+          "type": "input.Role"
+        },
+        {
+          "description": "Binding to write. Defaults to the first slot on the current source and layout.",
+          "name": "opts",
+          "optional": true,
+          "type": [
+            "input.Slot",
+            "input.Binding"
+          ]
+        },
+        {
+          "description": "The input source to bind on. Defaults to the current one.",
+          "name": "backend",
+          "optional": true,
+          "type": "input.Backend"
+        },
+        {
+          "description": "The layout to write. Defaults to the current one.",
+          "name": "layout",
+          "optional": true,
+          "type": "input.Layout"
+        }
+      ],
+      "path": "input.bind_pressed",
+      "returns": {
+        "description": "Whether a key was taken.",
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Binds a role to the next key or button the player presses.\n\nThe capture spans frames: it waits for the player to let go of what is already\ndown, turns capture on, and takes the first press after that. The previous\ncapture state is restored when it lands or when the capture is cancelled.\n\nUse this instead of `trx.input.listen` and `trx.input.bind_pressed`, which only\nanswer for the frame they run on. The default layout is read-only.\n\nUse `trx.input.Binding` to choose a slot, input source, or layout without\nplaceholder nils.",
+      "params": [
+        {
+          "description": "The role to bind.",
+          "name": "role",
+          "type": "input.Role"
+        },
+        {
+          "description": "Binding to write. Defaults to the first slot on the current source and layout.",
+          "name": "opts",
+          "optional": true,
+          "type": [
+            "input.Slot",
+            "input.Binding"
+          ]
+        },
+        {
+          "description": "Called when the capture ends.",
+          "name": "done",
+          "optional": true,
+          "params": [
+            {
+              "description": "Whether a key was taken.",
+              "name": "bound",
+              "type": "boolean"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "input.capture",
+      "returns": {
+        "description": "The running capture.",
+        "type": "input.Capture"
+      }
+    },
+    {
+      "description": "Clears one role binding.\n\nThe default layout is read-only, and roles reserved by the game cannot be left\nunbound.\n\nUse `trx.input.Binding` to choose a slot, input source, or layout without\nplaceholder nils. Positional arguments still work.",
+      "params": [
+        {
+          "description": "The role to unbind.",
+          "name": "role",
+          "type": "input.Role"
+        },
+        {
+          "description": "Binding to clear. Defaults to the first slot on the current source and layout.",
+          "name": "opts",
+          "optional": true,
+          "type": [
+            "input.Slot",
+            "input.Binding"
+          ]
+        },
+        {
+          "description": "The input source to write. Defaults to the current one.",
+          "name": "backend",
+          "optional": true,
+          "type": "input.Backend"
+        },
+        {
+          "description": "The layout to write. Defaults to the current one.",
+          "name": "layout",
+          "optional": true,
+          "type": "input.Layout"
+        }
+      ],
+      "path": "input.unbind"
+    },
+    {
+      "description": "Restores a custom layout to the default bindings.\n\nUse `trx.input.Binding` to choose an input source or layout without placeholder\nnils. Positional arguments still work.",
+      "params": [
+        {
+          "description": "Layout to reset. Defaults to the current source and layout.",
+          "name": "opts",
+          "optional": true,
+          "type": [
+            "input.Backend",
+            "input.Binding"
+          ]
+        },
+        {
+          "description": "The layout to write. Defaults to the current one.",
+          "name": "layout",
+          "optional": true,
+          "type": "input.Layout"
+        }
+      ],
+      "path": "input.reset_layout"
+    },
+    {
+      "description": "A signal for whether a role is active.\n\nIt is true while the player holds the bound key or button. It changes when the\nrole becomes active and when it stops.",
+      "params": [
+        {
+          "description": "The role to follow.",
+          "name": "role",
+          "type": "input.Role"
+        }
+      ],
+      "path": "input.signals.held",
+      "returns": {
+        "description": "The role's signal.",
+        "type": "signal.Signal"
+      }
+    },
+    {
+      "description": "A signal for when a role becomes active.\n\nIt is true for one tick only, so listeners run once per press.",
+      "params": [
+        {
+          "description": "The role to follow.",
+          "name": "role",
+          "type": "input.Role"
+        }
+      ],
+      "path": "input.signals.pressed",
+      "returns": {
+        "description": "The role's signal.",
+        "type": "signal.Signal"
+      }
+    },
+    {
       "description": "Retrieves an item by number or by name.",
       "examples": [
         "local item = trx.items[0]\nitem.name = \"lara\"\nlocal lara = trx.items[\"lara\"]"
@@ -9289,6 +9836,12 @@
       "order": 10
     },
     {
+      "description": "Module for reading input and working with player bindings.\n\nScripts ask about roles, not physical keys. A role is a game action such as\njumping, drawing a weapon, or opening a menu. The key or button that triggers it\ndepends on the player's device and layout.\n\nUse `\\{input ...}` in text to draw the binding for a role.",
+      "name": "input",
+      "order": 41,
+      "title": "Input"
+    },
+    {
       "description": "What Lara is carrying, and what goes into it.\n\nThe module is the inventory she holds now, so `trx.inventory:count(object)`\nasks about her. Any level's is reached the same way through\n`trx.game.Level.inventory`, which is what it will hand her when she arrives\nthere rather than what she has this second.\n\nEvery function takes either the pickup lying in the world or the inventory icon\nit goes into. The engine maps one to the other, so a script names whichever it\nhas.",
       "instance_type": "inventory.Inventory",
       "name": "inventory",
@@ -9480,6 +10033,11 @@
     },
     {
       "callable": false,
+      "description": "Input roles as signals.\n\nEach role has one shared signal, so several consumers of the same role use one\nread per tick.",
+      "path": "input.signals"
+    },
+    {
+      "callable": false,
       "description": "The signals Lara's own state speaks through, for a script that would rather hear about a change than ask after one. Each is read once a frame and compared, so a listener runs when the value moved and a value that stood still costs nothing.\n\nWhat names an item is its number rather than the item itself, because a handle is made afresh on every read and a signal holding one would report a change every frame.",
       "path": "lara.signals"
     },
@@ -9587,6 +10145,11 @@
       "base": 1,
       "description": "Where a demo sits in the table of demos.",
       "path": "game.DemoNum"
+    },
+    {
+      "base": 1,
+      "description": "Which of the two bindings a role can use.",
+      "path": "input.Slot"
     },
     {
       "base": 1,
@@ -9894,6 +10457,24 @@
     {
       "description": "Whether this is a new game plus run, which is what the passport's bonus start sets. Lara keeps her weapons between levels and her ammunition does not run down.",
       "path": "game.is_ngplus",
+      "type": "boolean",
+      "writable": false
+    },
+    {
+      "description": "The current input source.",
+      "path": "input.backend",
+      "type": "input.Backend",
+      "writable": false
+    },
+    {
+      "description": "The current layout for the current input source.",
+      "path": "input.layout",
+      "type": "input.Layout",
+      "writable": false
+    },
+    {
+      "description": "Whether script input capture is on.",
+      "path": "input.is_listening",
       "type": "boolean",
       "writable": false
     },
@@ -11433,6 +12014,53 @@
       "methods": [],
       "operators": [],
       "path": "game.FMV"
+    },
+    {
+      "description": "The slot, input source, and layout of a role binding.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "Input source. Defaults to the current one.",
+          "name": "backend",
+          "optional": true,
+          "type": "input.Backend"
+        },
+        {
+          "description": "Layout. Defaults to the current one.",
+          "name": "layout",
+          "optional": true,
+          "type": "input.Layout"
+        },
+        {
+          "default": 1,
+          "description": "Binding slot. Defaults to the first.",
+          "name": "slot",
+          "optional": true,
+          "type": "input.Slot"
+        }
+      ],
+      "handle": false,
+      "methods": [],
+      "operators": [],
+      "path": "input.Binding"
+    },
+    {
+      "description": "A binding capture waiting for the player to press something.",
+      "extensions": [],
+      "fields": [],
+      "handle": false,
+      "methods": [
+        {
+          "description": "Stops the capture and leaves the binding as it was.\n\nTurning capture off is part of this, so a script that gives up does not have to\ndo it itself.",
+          "name": "cancel",
+          "returns": {
+            "description": "Whether the capture was still running.",
+            "type": "boolean"
+          }
+        }
+      ],
+      "operators": [],
+      "path": "input.Capture"
     },
     {
       "description": "One kind of thing an inventory holds, and how many of it.\n\nAn entry stands for the icon rather than for where it sits, so it goes on\nnaming the same thing as what is drawn around it changes. A box of ammunition\nis an entry like any other, counting what its rounds come to.",
