@@ -2403,6 +2403,24 @@
       ]
     },
     {
+      "bulk": false,
+      "count": 2,
+      "description": "What the player's movement keys steer while photo mode is open.",
+      "path": "game.PhotoModeTarget",
+      "values": [
+        {
+          "description": "The camera.",
+          "name": "CAMERA",
+          "value": 0
+        },
+        {
+          "description": "Lara herself.",
+          "name": "LARA",
+          "value": 1
+        }
+      ]
+    },
+    {
       "bulk": true,
       "count": 77,
       "description": "A game action the player can bind to a key or button. In text, `\\{input ...}` draws its current binding.",
@@ -10452,6 +10470,12 @@
       "description": "Whether the player is in photo mode, where the camera is theirs to move and the game is held still.",
       "path": "game.is_photo_mode",
       "type": "boolean",
+      "writable": false
+    },
+    {
+      "description": "What photo mode is steering. It answers with the camera outside photo mode, which is where every session of it starts.",
+      "path": "game.photo_mode_target",
+      "type": "game.PhotoModeTarget",
       "writable": false
     },
     {

@@ -10,6 +10,7 @@
 #include <trx/game/game/enum.h>
 #include <trx/game/game/state.h>
 #include <trx/game/game_flow/common.h>
+#include <trx/game/photo_mode.h>
 #include <trx/game/savegame.h>
 #include <trx/game/screenshot.h>
 
@@ -32,8 +33,13 @@ static bool m_InCutscene;
 static bool m_IsNGPlus;
 static bool m_IsPlaying = true;
 
+static bool m_InPhotoMode;
+static PHOTO_MODE m_PhotoModeTarget;
+
 static void M_Reset(void)
 {
+    m_InPhotoMode = false;
+    m_PhotoModeTarget = PHOTO_MODE_CAMERA;
     memset(m_Levels, 0, sizeof(m_Levels));
     memset(m_Cutscenes, 0, sizeof(m_Cutscenes));
     memset(m_Demos, 0, sizeof(m_Demos));
@@ -117,6 +123,16 @@ static int M_L_SetCurrentTitle(lua_State *const L)
 static int M_L_SetInCutscene(lua_State *const L)
 {
     FakeGame_SetInCutscene(lua_toboolean(L, 1));
+    return 0;
+}
+
+// fake.set_photo_mode(bool, [bool]) - whether photo mode is open, and whether
+// it is steering Lara rather than the camera.
+static int M_L_SetPhotoMode(lua_State *const L)
+{
+    FakeGame_SetPhotoMode(
+        lua_toboolean(L, 1),
+        lua_toboolean(L, 2) ? PHOTO_MODE_LARA_POS : PHOTO_MODE_CAMERA);
     return 0;
 }
 
@@ -368,7 +384,18 @@ double Clock_GetRealTime(void)
 
 bool PhotoMode_IsActive(void)
 {
-    return false;
+    return m_InPhotoMode;
+}
+
+PHOTO_MODE PhotoMode_GetCurrentMode(void)
+{
+    return m_PhotoModeTarget;
+}
+
+void FakeGame_SetPhotoMode(const bool active, const PHOTO_MODE target)
+{
+    m_InPhotoMode = active;
+    m_PhotoModeTarget = target;
 }
 
 void FakeGame_SetInCutscene(const bool in_cutscene)
@@ -400,6 +427,8 @@ void FakeGame_PushLua(lua_State *const L)
     lua_setfield(L, -2, "set_in_cutscene");
     lua_pushcfunction(L, M_L_SetGymPresent);
     lua_setfield(L, -2, "set_gym_present");
+    lua_pushcfunction(L, M_L_SetPhotoMode);
+    lua_setfield(L, -2, "set_photo_mode");
     lua_pushinteger(L, FAKE_LEVEL_COUNT);
     lua_setfield(L, -2, "LEVEL_COUNT");
     // The levels the game numbers: the gym is in the table but is not one.

@@ -258,6 +258,13 @@ static int M_L_GameIsPhotoMode(lua_State *const L)
     return 1;
 }
 
+// trxc.game.photo_mode_target() -> integer
+static int M_L_GamePhotoModeTarget(lua_State *const L)
+{
+    lua_pushinteger(L, PhotoMode_GetCurrentMode());
+    return 1;
+}
+
 // trxc.game.is_ngplus() -> bool
 static int M_L_GameIsNGPlus(lua_State *const L)
 {
@@ -442,6 +449,7 @@ static const luaL_Reg m_Module[] = {
     { "real_time", M_L_GameRealTime },
     { "is_suspended", M_L_GameIsSuspended },
     { "is_photo_mode", M_L_GameIsPhotoMode },
+    { "photo_mode_target", M_L_GamePhotoModeTarget },
     { "is_ngplus", M_L_GameIsNGPlus },
     { "play_level", M_L_GamePlayLevel },
     { "play_cutscene", M_L_GamePlayCutscene },

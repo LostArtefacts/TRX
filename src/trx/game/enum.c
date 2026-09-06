@@ -23,6 +23,7 @@
 #include <trx/game/objects/traps/scaled_spikes.h>
 #include <trx/game/output/types.h>
 #include <trx/game/paths.h>
+#include <trx/game/photo_mode.h>
 #include <trx/game/rooms/enum.h>
 #include <trx/game/savegame/types.h>
 #include <trx/game/screenshot.h>
@@ -110,6 +111,9 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(ITEM_TRIGGER_KIND, ITEM_TRIGGER_SWITCH, "switch");
     ENUM_MAP(ITEM_TRIGGER_KIND, ITEM_TRIGGER_HEAVY_SWITCH, "heavy_switch");
     ENUM_MAP(ITEM_TRIGGER_KIND, ITEM_TRIGGER_ANTI, "antitrigger");
+
+    ENUM_MAP(PHOTO_MODE, PHOTO_MODE_CAMERA, "camera");
+    ENUM_MAP(PHOTO_MODE, PHOTO_MODE_LARA_POS, "lara");
 
     ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_DIALOG_BACKGROUND, "dialog");
     ENUM_MAP(UI_FRAME_STYLE, UI_FRAME_DIALOG_BACKGROUND_HEAVY, "dialog_heavy");
