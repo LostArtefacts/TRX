@@ -40,6 +40,9 @@
         g_TRVersion >= 2 ? WALL_GLITCH_TR2 : WALL_GLITCH_TR1);                 \
     X_PROCESS_CONFIG(input.quick_guns_mode, QUICK_GUNS_MODE_DRAW_ONLY);        \
     X_PROCESS_CONFIG(visuals.enable_fire_lighting, false);                     \
+    X_PROCESS_CONFIG(                                                          \
+        visuals.breeze_mode,                                                   \
+        g_TRVersion < 3 ? BREEZE_MODE_TR2 : BREEZE_MODE_TR3);                  \
     X_PROCESS_CONFIG(debug.enable_invulnerability, false);
 
 typedef struct {
