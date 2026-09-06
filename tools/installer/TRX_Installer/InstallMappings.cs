@@ -82,6 +82,13 @@ public static class InstallMappings
             new(@"data/main_la.sfx", @"games\tr3-la\main.sfx"),
             new(@"pix/*", @"games\tr3-la\images\*"),
         ],
+        ["tr4"] =
+        [
+            new(@"audio/*", @"games\tr4\audio\*"),
+            new(@"data/*.tr4", @"games\tr4\levels\*.tr4"),
+            new(@"data/cutseq.pak", @"games\tr4\levels\cutseq.pak"),
+            new(@"fmv/*", @"games\tr4\fmv\*"),
+        ],
     };
 
     public static string Normalize(string relativePath)
