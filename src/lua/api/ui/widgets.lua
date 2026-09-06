@@ -722,30 +722,73 @@ Widgets that are not shown take no room and leave no gap.]],
       end
       return across, along
     end, function(w, x, y, bw, bh)
-      local at = is_horizontal(w) and x or y
+      local horizontal = is_horizontal(w)
+      local along_align = horizontal and w.align or w.v_align
+      local across_align = horizontal and w.v_align or w.align
+      local span = across_align
+        == (horizontal and trx.ui.VAlign.SPAN or trx.ui.HAlign.SPAN)
+      local center = across_align
+        == (horizontal and trx.ui.VAlign.CENTER or trx.ui.HAlign.CENTER)
+      local far = across_align
+        == (horizontal and trx.ui.VAlign.BOTTOM or trx.ui.HAlign.RIGHT)
+
+      local along, across = w:measure()
+      if not horizontal then
+        along, across = across, along
+      end
+      local box_along = horizontal and bw or bh
+      local box_across = horizontal and bh or bw
       local spacing = (w.spacing or 0) * raw.drawn_text_scale()
+      local shown = 0
+      for _, child in ipairs(w.children) do
+        if child:is_shown() then
+          shown = shown + 1
+        end
+      end
+
+      -- Spare room along the axis goes into the gaps, or in front of the
+      -- children, depending on what the stack asked for.
+      local spare = box_along - along
+      local at = 0
+      if
+        along_align
+        == (
+          horizontal and trx.ui.HAlign.DISTRIBUTE or trx.ui.VAlign.DISTRIBUTE
+        )
+      then
+        spacing = spacing
+          + (shown > 1 and math.max(0, spare) / (shown - 1) or 0)
+      elseif
+        along_align
+        == (horizontal and trx.ui.HAlign.CENTER or trx.ui.VAlign.CENTER)
+      then
+        at = spare / 2
+      elseif
+        along_align
+        == (horizontal and trx.ui.HAlign.RIGHT or trx.ui.VAlign.BOTTOM)
+      then
+        at = spare
+      end
+
       for _, child in ipairs(w.children) do
         if child:is_shown() then
           local cw, ch = child:measure()
-          if is_horizontal(w) then
-            local offset = 0
-            if w.v_align == trx.ui.VAlign.CENTER then
-              offset = (bh - ch) / 2
-            elseif w.v_align == trx.ui.VAlign.BOTTOM then
-              offset = bh - ch
-            end
-            child:paint(at, y + offset, cw, ch)
-            at = at + cw + spacing
-          else
-            local offset = 0
-            if w.align == trx.ui.HAlign.CENTER then
-              offset = (bw - cw) / 2
-            elseif w.align == trx.ui.HAlign.RIGHT then
-              offset = bw - cw
-            end
-            child:paint(x + offset, at, cw, ch)
-            at = at + ch + spacing
+          local size_along = horizontal and cw or ch
+          local size_across = horizontal and ch or cw
+          local offset = 0
+          if span then
+            size_across = box_across
+          elseif center then
+            offset = (box_across - size_across) / 2
+          elseif far then
+            offset = box_across - size_across
           end
+          if horizontal then
+            child:paint(x + at, y + offset, size_along, size_across)
+          else
+            child:paint(x + offset, y + at, size_across, size_along)
+          end
+          at = at + size_along + spacing
         end
       end
     end)
