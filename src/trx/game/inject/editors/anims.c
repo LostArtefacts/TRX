@@ -14,8 +14,16 @@ static void M_FrameEdits(
         const int32_t anim_idx = File_ReadS32(injection->fp);
         const int32_t packed_rot = File_ReadS32(injection->fp);
 
-        const OBJECT *const obj = Object_Get(obj_info.id);
-        if (ctx->mode == INJECTION_MODE_STATS || !obj->loaded) {
+        if (ctx->mode == INJECTION_MODE_STATS) {
+            continue;
+        }
+        OBJECT *obj;
+        if (!SHOULD(
+                Inject_GetObject(obj_info, &obj),
+                "animation frame stays unchanged")) {
+            continue;
+        }
+        if (!obj->loaded) {
             continue;
         }
 
@@ -36,12 +44,15 @@ static void M_FrameReplacements(
         const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);
         const int32_t num_anims = File_ReadS32(injection->fp);
 
-        const OBJECT *const obj = Object_Get(obj_info.id);
+        OBJECT *obj = nullptr;
+        const bool has_obj = ctx->mode == INJECTION_MODE_STATS
+            || SHOULD(Inject_GetObject(obj_info, &obj),
+                      "animation frames stay unchanged");
         for (int32_t j = 0; j < num_anims; j++) {
             const int32_t anim_idx = File_ReadS32(injection->fp);
             const int32_t num_frames = File_ReadS32(injection->fp);
 
-            if (ctx->mode == INJECTION_MODE_STATS) {
+            if (ctx->mode == INJECTION_MODE_STATS || !has_obj) {
                 File_Skip(injection->fp, num_frames * sizeof(int16_t));
             } else {
                 const ANIM *const anim = Object_GetAnim(obj, anim_idx);
@@ -61,10 +72,15 @@ static void M_AnimEdits(
 {
     for (int32_t i = 0; i < data_count; i++) {
         const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);
-        const OBJECT *const obj = Object_Get(obj_info.id);
         const int32_t anim_idx = File_ReadS32(injection->fp);
         const int32_t velocity = File_ReadS32(injection->fp);
         if (ctx->mode == INJECTION_MODE_STATS) {
+            continue;
+        }
+        OBJECT *obj;
+        if (!SHOULD(
+                Inject_GetObject(obj_info, &obj),
+                "animation velocity stays unchanged")) {
             continue;
         }
 
