@@ -258,6 +258,7 @@
 - Added `trx.lara.signals`, `trx.game.signals` and `trx.cutscenes.signals`, so a script hears when Lara's state, the game's or a cutscene's changes rather than asking after it
 - Added `trx.lara.is_controllable`, `trx.lara.vehicle`, `trx.lara.MAX_AIR`, `trx.lara.MAX_SPRINT`, what her arms and the flare in them are doing, and what she is lining herself up with, so a script can report what the overlay reports
 - Added `trx.game.is_playing`, `trx.game.is_suspended`, `trx.game.is_photo_mode`, `trx.game.tr_version`, `trx.game.real_time` and `trx.game.measured_fps`, so a script can tell what the game is doing and how fast it is drawing
+- Added a new Lua module, `trx.input`, for reading and capturing input, naming roles and layouts, and changing custom bindings
 - Added a new Lua module, `trx.overlay`, for the part of the overlay the engine still owns, so a script drawing the rest can follow it
 - Added `trx.overlay.has_letterbox` and `trx.overlay.signals.letterbox`, so a script can hold something back while the cinematic bars have the screen
 - Added `trx.ui.widgets.Pad`, `trx.ui.widgets.Frame` and `trx.ui.widgets.Fit`, so a script can build basic dialogs

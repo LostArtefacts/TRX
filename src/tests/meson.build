@@ -806,6 +806,13 @@ unit_tests += {
   'engine': ['game/lua/capi/savegame.c'],
 }
 
+unit_tests += {
+  'name': 'lua/api/input',
+  'bundles': [b_lua_surface, b_lua_events],
+  'src': ['harness/stubs_console.c'],
+  'engine': ['config/enum.c', 'game/lua/capi/input.c'],
+}
+
 # No stubs: fakes/log.c provides Log_Message itself, because which line
 # the log blames is the thing under test.
 unit_tests += {
