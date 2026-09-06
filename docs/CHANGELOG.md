@@ -115,6 +115,7 @@
 - Fixed Lara's braid not colliding properly with her selected outfit, instead referencing the level's OG outfit (TRX1277, regression from 1.2)
 - Fixed being able to push pushblocks onto floors with triangular geometry (TRX1228, regression from 1.0)
 - Fixed propellers not being collidable if they are deactivated and then later reactivated (OG bug) (#6494 / TRX1351)
+- Fixed the game crashing on a level loaded after one that named objects of its own
 - Fixed the game crashing on a level that does not carry an object an injection names
 
 **Saves and settings**

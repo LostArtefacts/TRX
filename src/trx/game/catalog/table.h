@@ -55,3 +55,7 @@ void CatalogTable_Add(CATALOG_TABLE *table, CATALOG_ID id, const void *record);
 void CatalogTable_FreeAll(void);
 
 void CatalogTable_Free(CATALOG_TABLE *table);
+
+// Clear minted identity records while keeping their storage. Minted identities
+// live until the session ends.
+void CatalogTable_Reset(CATALOG_TABLE *table);
