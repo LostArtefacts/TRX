@@ -81,6 +81,19 @@ api.enum("ui.Region", {
   },
 })
 
+api.enum("ui.FrameStyle", {
+  backing = "UI_FRAME_STYLE",
+  description = "Which of the game's frames to draw. The look of each follows the menu style "
+    .. "the player chose.",
+  values = {
+    DIALOG = "The box a dialog sits in.",
+    DIALOG_HEAVY = "The box a dialog sits in, drawn solid.",
+    HEADING = "The strip a dialog puts its title in.",
+    SELECTED = "The box around the option the player is on.",
+    OUTLINE = "An outline with nothing behind it.",
+  },
+})
+
 api.enum("ui.BarType", {
   backing = "UI_BAR_TYPE",
   description = "Which of the game's bars to draw, which decides its colors.",

@@ -573,6 +573,220 @@ player's bar scale is applied.]],
   end,
 })
 
+api.define("ui.widgets.Pad", {
+  description = [[
+Keeps a margin around a child widget.
+
+The margin is in canvas units at the default text size, and follows the text
+scale the same way the widgets inside it do.]],
+  params = {
+    {
+      name = "settings",
+      type = "table",
+      description = "The padding settings.",
+      fields = {
+        {
+          name = "child",
+          type = "ui.Widget",
+          description = "The child widget.",
+        },
+        {
+          name = "x",
+          type = "number",
+          optional = true,
+          description = "The margin at the left and the right. `0` by default.",
+        },
+        {
+          name = "y",
+          type = "number",
+          optional = true,
+          description = "The margin at the top and the bottom. `0` by default.",
+        },
+        {
+          name = "shown",
+          type = "any",
+          optional = true,
+          description = "Whether the padded widget is shown, or a signal that holds that value.",
+        },
+      },
+    },
+  },
+  returns = { type = "ui.Widget", description = "The padded widget." },
+  impl = function(settings)
+    local self = new_widget(settings, function(w)
+      local cw, ch = w.child:measure()
+      local scale = raw.drawn_text_scale()
+      return cw + 2 * (w.x or 0) * scale, ch + 2 * (w.y or 0) * scale
+    end, function(w, x, y, bw, bh)
+      local scale = raw.drawn_text_scale()
+      local px = (w.x or 0) * scale
+      local py = (w.y or 0) * scale
+      w.child:paint(x + px, y + py, bw - 2 * px, bh - 2 * py)
+    end)
+    self.child._parent = self
+    return self:wakes_on(text_scale())
+  end,
+})
+
+api.define("ui.widgets.Frame", {
+  description = [[
+Draws one of the game's frames behind a child widget.
+
+The frame takes the whole box the child asks for, so pad the child where the
+text would otherwise sit against the edge.]],
+  params = {
+    {
+      name = "settings",
+      type = "table",
+      description = "The frame settings.",
+      fields = {
+        {
+          name = "child",
+          type = "ui.Widget",
+          description = "The child widget.",
+        },
+        {
+          name = "style",
+          type = "ui.FrameStyle",
+          optional = true,
+          description = "Which frame to draw. The dialog box by default.",
+        },
+        {
+          name = "z",
+          type = "integer",
+          optional = true,
+          description = "The draw order. `160` by default, which is behind text.",
+        },
+        {
+          name = "shown",
+          type = "any",
+          optional = true,
+          description = "Whether the framed widget is shown, or a signal that holds that value.",
+        },
+      },
+    },
+  },
+  returns = { type = "ui.Widget", description = "The framed widget." },
+  impl = function(settings)
+    local self = new_widget(settings, function(w)
+      return w.child:measure()
+    end, function(w, x, y, bw, bh)
+      primitive.panel(
+        x,
+        y,
+        w.z or 160,
+        bw,
+        bh,
+        w.style or trx.ui.FrameStyle.DIALOG
+      )
+      w.child:paint(x, y, bw, bh)
+    end)
+    self.child._parent = self
+    return self
+  end,
+})
+
+api.define("ui.widgets.Fit", {
+  description = [[
+Shrinks a child widget until it is within the screen.
+
+Text keeps the size the player chose while it fits, and everything below this
+widget is drawn smaller where it does not. A dialog that has to hold a fixed
+body on a small screen wants this; a line of text that can simply wrap does
+not.]],
+  params = {
+    {
+      name = "settings",
+      type = "table",
+      description = "The fit settings.",
+      fields = {
+        {
+          name = "child",
+          type = "ui.Widget",
+          description = "The child widget.",
+        },
+        {
+          name = "shown",
+          type = "any",
+          optional = true,
+          description = "Whether the fitted widget is shown, or a signal that holds that value.",
+        },
+      },
+    },
+  },
+  returns = { type = "ui.Widget", description = "The fitted widget." },
+  impl = function(settings)
+    -- The size at the player's own text size, which the factor is worked out
+    -- from. Measuring it again under the factor would fold the factor in
+    -- twice, and the widget would shrink further every frame.
+    local function natural(w)
+      if w._natural == nil then
+        local cw, ch = w.child:measure()
+        w._natural = { w = cw, h = ch }
+      end
+      return w._natural.w, w._natural.h
+    end
+
+    -- The factor is the room the screen leaves against what the widget wants,
+    -- both at the size the player chose, so nothing else has to agree on how
+    -- that size is folded in.
+    local function factor_of(w)
+      local nw, nh = natural(w)
+      local canvas = trx.ui.canvas
+      local safe = trx.ui.safe_area
+      -- The margin the screen keeps at its edges, which the safe area is the
+      -- canvas less twice over. What the rest of the interface has taken is
+      -- not part of it: a panel that shrank because something else is on
+      -- screen would change size as that comes and goes.
+      local margin = (canvas.width - safe.width) / 2
+      local room_w = canvas.width - 2 * margin
+      local room_h = canvas.height - 2 * margin
+      local factor = 1.0
+      if nw > 0 and room_w > 0 then
+        factor = math.min(factor, room_w / nw)
+      end
+      if nh > 0 and room_h > 0 then
+        factor = math.min(factor, room_h / nh)
+      end
+      return factor
+    end
+
+    -- The child is measured again under the factor, because text rounds to
+    -- whole pixels: its size at the smaller size is not its size at the
+    -- larger one times the factor.
+    local function under_factor(w, body)
+      local factor = factor_of(w)
+      if factor >= 1.0 then
+        return body()
+      end
+      raw.push_text_scale(factor)
+      w.child._size = nil
+      local a, b = body()
+      raw.pop_text_scale()
+      w.child._size = nil
+      return a, b
+    end
+
+    local self = new_widget(settings, function(w)
+      return under_factor(w, function()
+        return w.child:measure()
+      end)
+    end, function(w, x, y, bw, bh)
+      under_factor(w, function()
+        w.child:paint(x, y, bw, bh)
+      end)
+    end)
+    self.child._parent = self
+    -- A child that changes drops the natural size along with the cached one.
+    local wake = W.wake
+    self.wake = function(me)
+      me._natural = nil
+      return wake(me)
+    end
+    return self:wakes_on(text_scale())
+  end,
+})
+
 api.define("ui.widgets.Row", {
   description = [[
 A widget with a left and right arrow beside a child widget.

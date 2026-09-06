@@ -1,3 +1,4 @@
+#include <trx/config.h>
 #include <trx/core/utils.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/ui.h>
@@ -9,6 +10,7 @@
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/elements.h>
+#include <trx/game/ui/elements/frame.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/ui/settings.h>
@@ -247,6 +249,48 @@ static int M_L_UIDrawText(lua_State *const L)
     return 0;
 }
 
+// trxc.ui.panel(x, y, z, w, h, style)
+static int M_L_UIPanel(lua_State *const L)
+{
+    M_CheckPainting(L);
+    const lua_Integer style = luaL_checkinteger(L, 6);
+    if (style < 0 || style > UI_FRAME_OUTLINE_ONLY) {
+        return luaL_error(L, "unknown frame style");
+    }
+
+    const float x = (float)luaL_checknumber(L, 1);
+    const float y = (float)luaL_checknumber(L, 2);
+    const int32_t z = (int32_t)luaL_optinteger(L, 3, 0);
+    const int32_t x0 = lroundf(UI_ScaleX(x));
+    const int32_t y0 = lroundf(UI_ScaleY(y));
+    const int32_t w =
+        (int32_t)lroundf(UI_ScaleX(x + (float)luaL_checknumber(L, 4))) - x0;
+    const int32_t h =
+        (int32_t)lroundf(UI_ScaleY(y + (float)luaL_checknumber(L, 5))) - y0;
+
+    const UI_STYLE ui_style = g_Config.ui.menu_style;
+    const TEXT_STYLE text_style = UI_Frame_GetTextStyle((UI_FRAME_STYLE)style);
+    if (UI_Frame_HasBackground((UI_FRAME_STYLE)style)) {
+        UI_ScheduleDrawTextBackground(ui_style, x0, y0, z, w, h, text_style);
+    }
+    UI_ScheduleDrawTextOutline(ui_style, x0, y0, z, w, h, text_style);
+    return 0;
+}
+
+// trxc.ui.push_text_scale(factor)
+static int M_L_UIPushTextScale(lua_State *const L)
+{
+    UI_Scaler_PushTextScale((float)luaL_checknumber(L, 1));
+    return 0;
+}
+
+// trxc.ui.pop_text_scale()
+static int M_L_UIPopTextScale(lua_State *const L)
+{
+    UI_Scaler_PopTextScale();
+    return 0;
+}
+
 // trxc.ui.flat_quad(x, y, z, w, h, color)
 static int M_L_UIFlatQuad(lua_State *const L)
 {
@@ -420,6 +464,9 @@ static const luaL_Reg m_Module[] = {
     { "measure_text", M_L_UIMeasureText },
     { "draw_text", M_L_UIDrawText },
     { "flat_quad", M_L_UIFlatQuad },
+    { "panel", M_L_UIPanel },
+    { "push_text_scale", M_L_UIPushTextScale },
+    { "pop_text_scale", M_L_UIPopTextScale },
     { "gradient_quad", M_L_UIGradientQuad },
     { "image", M_L_UIImage },
     { "sprite", M_L_UISprite },

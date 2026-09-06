@@ -104,6 +104,21 @@ and `\{button left}` draws the button the player has bound.
     - `trx.ui.Region.BOTTOM_RIGHT` = `8`  
         The bottom right corner.
 
+- <a id="ui.FrameStyle" name="ui.FrameStyle"></a>[lua]`trx.ui.FrameStyle`
+
+    Which of the game's frames to draw. The look of each follows the menu style the player chose.
+
+    - `trx.ui.FrameStyle.DIALOG` = `0`  
+        The box a dialog sits in.
+    - `trx.ui.FrameStyle.DIALOG_HEAVY` = `1`  
+        The box a dialog sits in, drawn solid.
+    - `trx.ui.FrameStyle.HEADING` = `2`  
+        The strip a dialog puts its title in.
+    - `trx.ui.FrameStyle.SELECTED` = `3`  
+        The box around the option the player is on.
+    - `trx.ui.FrameStyle.OUTLINE` = `4`  
+        An outline with nothing behind it.
+
 - <a id="ui.BarType" name="ui.BarType"></a>[lua]`trx.ui.BarType`
 
     Which of the game's bars to draw, which decides its colors.
@@ -304,6 +319,20 @@ and `\{button left}` draws the button the player has bound.
 
   Returns: number. The same length in canvas units.
 
+- <a id="ui.primitive.panel" name="ui.primitive.panel"></a>[lua]`trx.ui.primitive.panel(x, y, z, w, h, style)`  
+  Draws the box the game draws behind a dialog, in the style the player chose.
+
+  The look follows the menu style setting, so a panel drawn this way matches the
+  game's own dialogs rather than standing apart from them.
+
+  Parameters:
+  - <a id="ui.primitive.panel.x" name="ui.primitive.panel.x"></a>**`x`** (number). The left edge.
+  - <a id="ui.primitive.panel.y" name="ui.primitive.panel.y"></a>**`y`** (number). The top edge.
+  - <a id="ui.primitive.panel.z" name="ui.primitive.panel.z"></a>**`z`** (integer). The draw order.
+  - <a id="ui.primitive.panel.w" name="ui.primitive.panel.w"></a>**`w`** (number). The width.
+  - <a id="ui.primitive.panel.h" name="ui.primitive.panel.h"></a>**`h`** (number). The height.
+  - <a id="ui.primitive.panel.style" name="ui.primitive.panel.style"></a>**`style`** ([trx.ui.FrameStyle](#ui.FrameStyle)). Which of the game's frames to draw.
+
 - <a id="ui.primitive.quad" name="ui.primitive.quad"></a>[lua]`trx.ui.primitive.quad(x, y, z, w, h, color)`  
   Draws a rectangle of one color.
 
@@ -490,6 +519,57 @@ and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.Resize.settings.shown" name="ui.widgets.Resize.settings.shown"></a>**`shown`** (any, optional). Whether the resized widget is shown, or a signal that holds that value.
 
   Returns: [trx.ui.Widget](#ui.Widget). The resized widget.
+
+- <a id="ui.widgets.Pad" name="ui.widgets.Pad"></a>[lua]`trx.ui.widgets.Pad(settings)`  
+  Keeps a margin around a child widget.
+
+  The margin is in canvas units at the default text size, and follows the text
+  scale the same way the widgets inside it do.
+
+  Parameters:
+  - <a id="ui.widgets.Pad.settings" name="ui.widgets.Pad.settings"></a>**`settings`** (table). The padding settings.
+
+    Keys:
+    - <a id="ui.widgets.Pad.settings.child" name="ui.widgets.Pad.settings.child"></a>**`child`** ([trx.ui.Widget](#ui.Widget)). The child widget.
+    - <a id="ui.widgets.Pad.settings.x" name="ui.widgets.Pad.settings.x"></a>**`x`** (number, optional). The margin at the left and the right. `0` by default.
+    - <a id="ui.widgets.Pad.settings.y" name="ui.widgets.Pad.settings.y"></a>**`y`** (number, optional). The margin at the top and the bottom. `0` by default.
+    - <a id="ui.widgets.Pad.settings.shown" name="ui.widgets.Pad.settings.shown"></a>**`shown`** (any, optional). Whether the padded widget is shown, or a signal that holds that value.
+
+  Returns: [trx.ui.Widget](#ui.Widget). The padded widget.
+
+- <a id="ui.widgets.Frame" name="ui.widgets.Frame"></a>[lua]`trx.ui.widgets.Frame(settings)`  
+  Draws one of the game's frames behind a child widget.
+
+  The frame takes the whole box the child asks for, so pad the child where the
+  text would otherwise sit against the edge.
+
+  Parameters:
+  - <a id="ui.widgets.Frame.settings" name="ui.widgets.Frame.settings"></a>**`settings`** (table). The frame settings.
+
+    Keys:
+    - <a id="ui.widgets.Frame.settings.child" name="ui.widgets.Frame.settings.child"></a>**`child`** ([trx.ui.Widget](#ui.Widget)). The child widget.
+    - <a id="ui.widgets.Frame.settings.style" name="ui.widgets.Frame.settings.style"></a>**`style`** ([trx.ui.FrameStyle](#ui.FrameStyle), optional). Which frame to draw. The dialog box by default.
+    - <a id="ui.widgets.Frame.settings.z" name="ui.widgets.Frame.settings.z"></a>**`z`** (integer, optional). The draw order. `160` by default, which is behind text.
+    - <a id="ui.widgets.Frame.settings.shown" name="ui.widgets.Frame.settings.shown"></a>**`shown`** (any, optional). Whether the framed widget is shown, or a signal that holds that value.
+
+  Returns: [trx.ui.Widget](#ui.Widget). The framed widget.
+
+- <a id="ui.widgets.Fit" name="ui.widgets.Fit"></a>[lua]`trx.ui.widgets.Fit(settings)`  
+  Shrinks a child widget until it is within the screen.
+
+  Text keeps the size the player chose while it fits, and everything below this
+  widget is drawn smaller where it does not. A dialog that has to hold a fixed
+  body on a small screen wants this; a line of text that can simply wrap does
+  not.
+
+  Parameters:
+  - <a id="ui.widgets.Fit.settings" name="ui.widgets.Fit.settings"></a>**`settings`** (table). The fit settings.
+
+    Keys:
+    - <a id="ui.widgets.Fit.settings.child" name="ui.widgets.Fit.settings.child"></a>**`child`** ([trx.ui.Widget](#ui.Widget)). The child widget.
+    - <a id="ui.widgets.Fit.settings.shown" name="ui.widgets.Fit.settings.shown"></a>**`shown`** (any, optional). Whether the fitted widget is shown, or a signal that holds that value.
+
+  Returns: [trx.ui.Widget](#ui.Widget). The fitted widget.
 
 - <a id="ui.widgets.Row" name="ui.widgets.Row"></a>[lua]`trx.ui.widgets.Row(settings)`  
   A widget with a left and right arrow beside a child widget.

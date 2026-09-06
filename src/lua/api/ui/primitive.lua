@@ -153,6 +153,27 @@ screen pixels.]],
   impl = raw.to_canvas,
 })
 
+api.define("ui.primitive.panel", {
+  description = [[
+Draws the box the game draws behind a dialog, in the style the player chose.
+
+The look follows the menu style setting, so a panel drawn this way matches the
+game's own dialogs rather than standing apart from them.]],
+  params = {
+    { name = "x", type = "number", description = "The left edge." },
+    { name = "y", type = "number", description = "The top edge." },
+    { name = "z", type = "integer", description = "The draw order." },
+    { name = "w", type = "number", description = "The width." },
+    { name = "h", type = "number", description = "The height." },
+    {
+      name = "style",
+      type = "ui.FrameStyle",
+      description = "Which of the game's frames to draw.",
+    },
+  },
+  impl = raw.panel,
+})
+
 api.define("ui.primitive.quad", {
   description = "Draws a rectangle of one color.",
   params = {
