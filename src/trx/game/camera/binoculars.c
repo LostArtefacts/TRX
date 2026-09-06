@@ -252,6 +252,7 @@ void Camera_Binoculars_Control(void)
         return;
     }
 
+    g_Camera.type = CAM_BINOCULARS;
     M_HandleLookInput();
     M_HandleZoomInput();
     m_TorchActive = g_Input.action;
