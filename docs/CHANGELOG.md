@@ -161,6 +161,9 @@
 - Fixed Lara's arm remaining in the flare pose if holding one on the Midas Hand (TRX1073)
 - Fixed a rare chance of exploded body parts getting stuck indefinitely at ceiling height (OG bug) (TRX1301)
 
+**TR2**
+- Fixed a desync in the Tibetan Foothills demo if breeze mode is set to TR3 (TRX1388, regression from 1.10)
+
 **TR3**
 - Added crystals to each of the levels in The Lost Artefact, and made the crystal mode option visible (Gameplay → General → Crystal mode) (TRX1111)
 - Added an option to render black smoke emitters as white, as per the PC release (Gameplay → Fixes → Fix smoke emitters) (#6411 / TRX1288)
