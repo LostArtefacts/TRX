@@ -39,6 +39,23 @@ static void *M_Claim(CATALOG_TABLE *const table, const CATALOG_ID id)
     return M_Peek(table, id);
 }
 
+// Clears all records from this ID to the end of the table.
+static void M_ClearFrom(CATALOG_TABLE *const table, const int32_t first_id)
+{
+    for (int32_t chunk_idx = 0; chunk_idx < table->chunk_count; chunk_idx++) {
+        const int32_t first = chunk_idx * CATALOG_TABLE_CHUNK;
+        const int32_t last = first + CATALOG_TABLE_CHUNK;
+        if (last <= first_id) {
+            continue;
+        }
+        const int32_t start = MAX(first, first_id);
+        memset(
+            (char *)table->chunks[chunk_idx]
+                + (size_t)(start - first) * table->elem_size,
+            0, (size_t)(last - start) * table->elem_size);
+    }
+}
+
 void CatalogTable_Link(CATALOG_TABLE *const table)
 {
     table->next = m_Tables;
@@ -89,6 +106,11 @@ void CatalogTable_FreeAll(void)
     }
 }
 
+void CatalogTable_Reset(CATALOG_TABLE *const table)
+{
+    M_ClearFrom(table, Catalog_GetBuiltInCount(table->context));
+}
+
 void CatalogTable_Free(CATALOG_TABLE *const table)
 {
     const int32_t keep = Catalog_GetBuiltInCount(table->context);
@@ -101,14 +123,6 @@ void CatalogTable_Free(CATALOG_TABLE *const table)
         Memory_FreePointer(&table->chunks);
         return;
     }
-    // Drop only records after the built-in identities because the final chunk
-    // may contain both built-in and minted records.
-    const int32_t first = (table->chunk_count - 1) * CATALOG_TABLE_CHUNK;
-    for (int32_t id = MAX(first, keep); id < first + CATALOG_TABLE_CHUNK;
-         id++) {
-        memset(
-            (char *)table->chunks[table->chunk_count - 1]
-                + (size_t)(id - first) * table->elem_size,
-            0, table->elem_size);
-    }
+    // Keep the final chunk because it can hold built-in records too.
+    M_ClearFrom(table, keep);
 }
