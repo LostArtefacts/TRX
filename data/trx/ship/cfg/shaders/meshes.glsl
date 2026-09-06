@@ -676,36 +676,61 @@ void main(void) {
         texColor.rgb = min(texColor.rgb, vec3(1.0));
     }
 
+    bool reflective =
+        (gIn.flags & VERT_REFLECTIVE) != 0u && uReflectionsEnabled != 0;
+
+#if TR_VERSION >= 4
+    // The normal maps across the env map window. No y-flip here: view space
+    // is Y-down (the GL/D3D flip lives in the projection) and the atlas is
+    // stored top row first, so this already matches the OG.
+    //
+    // The OG draws the reflection as a second, purely additive pass over the
+    // face (drawtype 2 = ONE/ONE), textured with the env map and modulated by
+    // the lit vertex color scaled by the face's reflectivity. The face's own
+    // texture takes no part in it, so the reflection covers the chroma-keyed
+    // parts of the face as well.
+    vec3 reflection = vec3(0.0);
+    if (reflective && uEnvMapLayer >= 0) {
+        vec2 env_uv = mix(uEnvMapUV0, uEnvMapUV1, gIn.normal.xy * 0.5 + 0.5);
+        vec3 env_color = texture(uTexAtlas, vec3(env_uv, uEnvMapLayer)).rgb;
+        reflection = env_color * gIn.color.rgb * gIn.reflectivity;
+    }
+
+    // A chroma-keyed fragment carrying a reflection survives, except in the
+    // passes that write depth, where it would hide the geometry behind the
+    // face.
+    bool keep_chroma_key = reflection != vec3(0.0) && !uDiscardAlpha;
+#else
+    bool keep_chroma_key = false;
+#endif
+
     // Alpha discard - chroma keying || transparent pixels in the opaque pass
-    if (texColor.a <= 0.0
-        || (uDiscardAlpha && texColor.a < 0.99
-            && (gIn.flags & VERT_NO_ALPHA_DISCARD) == 0u)) {
+    if (!keep_chroma_key
+        && (texColor.a <= 0.0
+            || (uDiscardAlpha && texColor.a < 0.99
+                && (gIn.flags & VERT_NO_ALPHA_DISCARD) == 0u))) {
         discard;
     }
 
     // Reflections
-    if ((gIn.flags & VERT_REFLECTIVE) != 0u && uReflectionsEnabled != 0) {
 #if TR_VERSION >= 4
-        // The normal maps across the env map window. No y-flip here: view
-        // space is Y-down (the GL/D3D flip lives in the projection) and the
-        // atlas is stored top row first, so this already matches the OG.
-        //
-        // The OG draws the reflection as a second, purely additive pass over
-        // the face (drawtype 2 = ONE/ONE), textured with the env map and
-        // modulated by the lit vertex color scaled by the face's reflectivity.
-        if (uEnvMapLayer >= 0) {
-            vec2 env_uv = mix(uEnvMapUV0, uEnvMapUV1, gIn.normal.xy * 0.5 + 0.5);
-            vec3 env_color = texture(uTexAtlas, vec3(env_uv, uEnvMapLayer)).rgb;
-            texColor.rgb += env_color * gIn.color.rgb * gIn.reflectivity * texColor.a;
+    if (reflection != vec3(0.0)) {
+        // The additive blend scales the color by its alpha, while the OG
+        // reflection pass draws at full strength.
+        if ((gIn.flags & VERT_ADDITIVE) != 0u) {
+            texColor.a = 1.0;
         }
+        texColor.rgb += reflection;
+    }
 #else
+    if (reflective) {
         // The env map is a capture of the framebuffer, whose origin is at the
         // bottom left, hence the flip.
         vec2 env_uv = normalize(gIn.normal).xy * 0.5 + 0.5;
         env_uv.y = 1.0 - env_uv.y;
         texColor.rgb *= texture(uTexEnvMap, env_uv).rgb * 2.0;
-#endif
     }
+#endif
 
     // Fog
     if ((gIn.flags & (VERT_NO_FOG | VERT_NO_LIGHTING)) == 0u

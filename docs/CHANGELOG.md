@@ -152,6 +152,7 @@
 - Fixed static objects disappearing depending on the camera angle (OG bug) (TRX1211)
 - Fixed the underwater view wobbling less at higher supersampling values (TRX1207)
 - Fixed the debug portal and bounding box lines becoming thinner at higher supersampling values (TRX1251)
+- Fixed reflections missing from the see-through parts of a surface in TR4, such as the lenses of Werner's glasses (TRX1294)
 
 **TR1**
 - Changed Lara to retain her equipment when turning to gold on the Midas Hand, with the equipment also turning to gold (TRX1073)
