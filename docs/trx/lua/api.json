@@ -3088,6 +3088,39 @@
     },
     {
       "bulk": false,
+      "count": 5,
+      "description": "Which of the game's frames to draw. The look of each follows the menu style the player chose.",
+      "path": "ui.FrameStyle",
+      "values": [
+        {
+          "description": "The box a dialog sits in.",
+          "name": "DIALOG",
+          "value": 0
+        },
+        {
+          "description": "The box a dialog sits in, drawn solid.",
+          "name": "DIALOG_HEAVY",
+          "value": 1
+        },
+        {
+          "description": "The strip a dialog puts its title in.",
+          "name": "HEADING",
+          "value": 2
+        },
+        {
+          "description": "The box around the option the player is on.",
+          "name": "SELECTED",
+          "value": 3
+        },
+        {
+          "description": "An outline with nothing behind it.",
+          "name": "OUTLINE",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "bulk": false,
       "count": 8,
       "description": "Which of the game's bars to draw, which decides its colors.",
       "path": "ui.BarType",
@@ -8118,6 +8151,42 @@
       }
     },
     {
+      "description": "Draws the box the game draws behind a dialog, in the style the player chose.\n\nThe look follows the menu style setting, so a panel drawn this way matches the\ngame's own dialogs rather than standing apart from them.",
+      "params": [
+        {
+          "description": "The left edge.",
+          "name": "x",
+          "type": "number"
+        },
+        {
+          "description": "The top edge.",
+          "name": "y",
+          "type": "number"
+        },
+        {
+          "description": "The draw order.",
+          "name": "z",
+          "type": "integer"
+        },
+        {
+          "description": "The width.",
+          "name": "w",
+          "type": "number"
+        },
+        {
+          "description": "The height.",
+          "name": "h",
+          "type": "number"
+        },
+        {
+          "description": "Which of the game's frames to draw.",
+          "name": "style",
+          "type": "ui.FrameStyle"
+        }
+      ],
+      "path": "ui.primitive.panel"
+    },
+    {
       "description": "Draws a rectangle of one color.",
       "params": [
         {
@@ -8563,6 +8632,114 @@
       "path": "ui.widgets.Resize",
       "returns": {
         "description": "The resized widget.",
+        "type": "ui.Widget"
+      }
+    },
+    {
+      "description": "Keeps a margin around a child widget.\n\nThe margin is in canvas units at the default text size, and follows the text\nscale the same way the widgets inside it do.",
+      "params": [
+        {
+          "description": "The padding settings.",
+          "fields": [
+            {
+              "description": "The child widget.",
+              "name": "child",
+              "type": "ui.Widget"
+            },
+            {
+              "description": "The margin at the left and the right. `0` by default.",
+              "name": "x",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "description": "The margin at the top and the bottom. `0` by default.",
+              "name": "y",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "description": "Whether the padded widget is shown, or a signal that holds that value.",
+              "name": "shown",
+              "optional": true,
+              "type": "any"
+            }
+          ],
+          "name": "settings",
+          "type": "table"
+        }
+      ],
+      "path": "ui.widgets.Pad",
+      "returns": {
+        "description": "The padded widget.",
+        "type": "ui.Widget"
+      }
+    },
+    {
+      "description": "Draws one of the game's frames behind a child widget.\n\nThe frame takes the whole box the child asks for, so pad the child where the\ntext would otherwise sit against the edge.",
+      "params": [
+        {
+          "description": "The frame settings.",
+          "fields": [
+            {
+              "description": "The child widget.",
+              "name": "child",
+              "type": "ui.Widget"
+            },
+            {
+              "description": "Which frame to draw. The dialog box by default.",
+              "name": "style",
+              "optional": true,
+              "type": "ui.FrameStyle"
+            },
+            {
+              "description": "The draw order. `160` by default, which is behind text.",
+              "name": "z",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "description": "Whether the framed widget is shown, or a signal that holds that value.",
+              "name": "shown",
+              "optional": true,
+              "type": "any"
+            }
+          ],
+          "name": "settings",
+          "type": "table"
+        }
+      ],
+      "path": "ui.widgets.Frame",
+      "returns": {
+        "description": "The framed widget.",
+        "type": "ui.Widget"
+      }
+    },
+    {
+      "description": "Shrinks a child widget until it is within the screen.\n\nText keeps the size the player chose while it fits, and everything below this\nwidget is drawn smaller where it does not. A dialog that has to hold a fixed\nbody on a small screen wants this; a line of text that can simply wrap does\nnot.",
+      "params": [
+        {
+          "description": "The fit settings.",
+          "fields": [
+            {
+              "description": "The child widget.",
+              "name": "child",
+              "type": "ui.Widget"
+            },
+            {
+              "description": "Whether the fitted widget is shown, or a signal that holds that value.",
+              "name": "shown",
+              "optional": true,
+              "type": "any"
+            }
+          ],
+          "name": "settings",
+          "type": "table"
+        }
+      ],
+      "path": "ui.widgets.Fit",
+      "returns": {
+        "description": "The fitted widget.",
         "type": "ui.Widget"
       }
     },
