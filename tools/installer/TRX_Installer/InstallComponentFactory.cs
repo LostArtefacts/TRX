@@ -237,6 +237,46 @@ internal static class InstallComponentFactory
                     _existingTRX,
                     sourceDirectory => Directory.Exists(Path.Combine(sourceDirectory, "games", "tr3-la"))),
             ]);
+
+        yield return new InstallComponent(
+            "tr4",
+            "TR4",
+            "Original Tomb Raider IV files from Steam, GOG, disc, or an existing TRX installation.",
+            downloadUrl: $"{ResourceBaseUrl}/tr4.zip",
+            sourceOptions:
+            [
+                new InstallSourceOption(
+                    "Steam",
+                    GetSteamDirectories("Tomb Raider (IV)", "Tomb Raider (IV) The Last Revelation"),
+                    _originalDir,
+                    sourceDirectory =>
+                        File.Exists(Path.Combine(sourceDirectory, "data", "alexhub.tr4"))
+                        && File.Exists(Path.Combine(sourceDirectory, "data", "cutseq.pak"))
+                        && File.Exists(Path.Combine(sourceDirectory, "audio", "001_VonCroy2.wav"))),
+                new InstallSourceOption(
+                    "GOG",
+                    GetGOGDirectories("Tomb Raider 4"),
+                    _originalDir,
+                    sourceDirectory =>
+                        File.Exists(Path.Combine(sourceDirectory, "data", "alexhub.tr4"))
+                        && File.Exists(Path.Combine(sourceDirectory, "data", "cutseq.pak"))
+                        && File.Exists(Path.Combine(sourceDirectory, "audio", "001_VonCroy2.wav"))),
+                new InstallSourceOption(
+                    "Disc",
+                    DriveInfo.GetDrives()
+                        .Where(drive => drive.DriveType == DriveType.CDRom && drive.IsReady)
+                        .Select(drive => drive.RootDirectory.FullName),
+                    _originalDir,
+                    sourceDirectory =>
+                        File.Exists(Path.Combine(sourceDirectory, "data", "alexhub.tr4"))
+                        && File.Exists(Path.Combine(sourceDirectory, "data", "cutseq.pak"))
+                        && File.Exists(Path.Combine(sourceDirectory, "audio", "001_VonCroy2.wav"))),
+                new InstallSourceOption(
+                    "TRX",
+                    GetTRXDirectories(),
+                    _existingTRX,
+                    sourceDirectory => Directory.Exists(Path.Combine(sourceDirectory, "games", "tr4")))
+            ]);
     }
 
     public static string? GetStoredInstallPath()
