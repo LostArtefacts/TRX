@@ -439,6 +439,14 @@ void Lara_Skin_SetType(const LARA_SKIN_TYPE skin_type)
     m_Skin = skin_type;
 }
 
+// Lara always has a pose to strike here. What decides it in the game - the
+// outfit she wears, the kind of level running - is outside what these tests
+// reach.
+bool Lara_Pose_IsAvailable(void)
+{
+    return true;
+}
+
 bool Lara_Skin_AreHolstersVisible(void)
 {
     return m_HolstersVisible;

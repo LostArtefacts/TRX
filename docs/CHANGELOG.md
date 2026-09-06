@@ -269,7 +269,7 @@
 - Added `trx.overlay.has_letterbox` and `trx.overlay.signals.letterbox`, so a script can hold something back while the cinematic bars have the screen
 - Added `trx.ui.widgets.Pad`, `trx.ui.widgets.Frame` and `trx.ui.widgets.Fit`, so a script can build basic dialogs
 - Added `trx.ui.primitive.panel()` and `trx.ui.FrameStyle`, so a widget can draw what the game draws behind its dialogs
-- Added `trx.game.photo_mode_target`, which says what photo mode is steering
+- Added `trx.game.photo_mode_target` and `trx.lara.can_pose`, which say what photo mode is steering and whether Lara has poses to strike
 - Added `trx.objects.Object.name`, for the name the game shows for an object
 - Added `trx.items.Item.is_ally` and a `boss` family to `trx.objects.query`, so a script can tell a creature that fights for Lara from one that fights her, and pick out the ones the game treats as bosses
 - Added `trx.weapons.Weapon.has_infinite_ammo` and `trx.weapons.Weapon.ammo_icon`, so a script can tell a weapon that never runs dry from one whose shots are worth counting, and draw the icon the count is shown with

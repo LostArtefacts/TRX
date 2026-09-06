@@ -9,6 +9,7 @@
 #include <trx/game/lara/const.h>
 #include <trx/game/lara/misc.h>
 #include <trx/game/lara/poison.h>
+#include <trx/game/lara/pose.h>
 #include <trx/game/lara/skin/storage.h>
 #include <trx/game/lara/types.h>
 #include <trx/game/lara/vehicle.h>
@@ -381,7 +382,15 @@ static int M_L_LaraVehicleGun(lua_State *const L)
     return 1;
 }
 
+// trxc.lara.can_pose() -> bool
+static int M_L_LaraCanPose(lua_State *const L)
+{
+    lua_pushboolean(L, Lara_Pose_IsAvailable());
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
+    { "can_pose", M_L_LaraCanPose },
     { "vehicle_gun", M_L_LaraVehicleGun },
     { "get_item", M_L_LaraGetItem },
     { "get_target", M_L_LaraGetTarget },

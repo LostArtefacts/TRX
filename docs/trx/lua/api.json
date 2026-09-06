@@ -10473,7 +10473,7 @@
       "writable": false
     },
     {
-      "description": "What photo mode is steering. It answers with the camera outside photo mode, which is where every session of it starts.",
+      "description": "What photo mode is steering. Outside photo mode, this is always the camera, which is where every session starts.",
       "path": "game.photo_mode_target",
       "type": "game.PhotoModeTarget",
       "writable": false
@@ -10506,6 +10506,12 @@
       "description": "The identity query over every item in the level. Narrow it and read it.",
       "path": "items.query",
       "type": "items.ItemQuery",
+      "writable": false
+    },
+    {
+      "description": "Whether Lara has poses available to cycle through in photo mode. Only some outfits have them.",
+      "path": "lara.can_pose",
+      "type": "boolean",
       "writable": false
     },
     {
