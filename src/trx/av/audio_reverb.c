@@ -767,6 +767,7 @@ void Audio_Reverb_Shutdown(void)
 
     M_DspReverb_Destroy(&m_Reverb);
     m_IsInitialised = false;
+    m_ReverbType = 0;
 }
 
 void Audio_Reverb_SetType(uint8_t reverb_type)

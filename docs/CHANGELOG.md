@@ -129,6 +129,7 @@
 - Added an option to have Lara's sliding SFX stop as soon as she leaves a slope (#6294 / TRX1155)
 - Fixed crystal sound effects not playing if Lara collects one underwater (OG bug) (TRX1111)
 - Fixed looped sound effects, such as rolling boulders and the seaplane, clicking and crackling while they play (#6491 / TRX1348)
+- Fixed sound effects going silent after switching from TR4 to another game (TRX1335)
 
 **Rendering**
 - Added affine texture mapping, the uncorrected texturing of the PlayStation, so textures warp across large surfaces as the camera moves; the PlayStation presets turn it on (Graphic Options → Rendering → Affine texture mapping)
