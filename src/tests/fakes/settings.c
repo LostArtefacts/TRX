@@ -211,7 +211,7 @@ bool ClockTimer_CheckElapsedAndTake(CLOCK_TIMER *const timer, const double sec)
     return false;
 }
 
-bool Input_IsPressedEx(
+bool Input_IsHeldEx(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
     const INPUT_ROLE role)
 {

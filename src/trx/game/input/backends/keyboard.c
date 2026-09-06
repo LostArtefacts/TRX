@@ -657,7 +657,7 @@ static bool M_CustomUpdate(INPUT_STATE *const result, const INPUT_LAYOUT layout)
     return true;
 }
 
-static bool M_IsPressed(const INPUT_LAYOUT layout, const INPUT_ROLE role)
+static bool M_IsHeld(const INPUT_LAYOUT layout, const INPUT_ROLE role)
 {
     return M_Key(layout, role);
 }
@@ -1008,7 +1008,7 @@ INPUT_BACKEND_IMPL g_Input_Keyboard = {
     .discover = nullptr,
     .process_event = M_ProcessEvent,
     .custom_update = M_CustomUpdate,
-    .is_pressed = M_IsPressed,
+    .is_held = M_IsHeld,
     .is_role_conflicted = M_IsRoleConflicted,
     .get_name = M_GetName,
     .unassign_role = M_UnassignRole,

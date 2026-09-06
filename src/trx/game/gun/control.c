@@ -120,8 +120,7 @@ static LARA_GUN_TYPE M_NeedToQuickDraw(void)
         if ((int32_t)role < 0) {
             continue;
         }
-        if (Input_IsPressedDB(role)
-            && Inv_HasItem(Gun_GetGunObject(gun_type))) {
+        if (Input_IsPressed(role) && Inv_HasItem(Gun_GetGunObject(gun_type))) {
             return gun_type;
         }
     }

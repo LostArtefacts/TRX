@@ -123,7 +123,7 @@ static const GAME_STRING_ID m_LayoutMap[INPUT_LAYOUT_NUMBER_OF] = {
         GS_ID("general/settings/controls/layout/custom_3"),
 };
 
-static bool M_IsPressed(const INPUT_STATE input, const INPUT_ROLE role)
+static bool M_GetRole(const INPUT_STATE input, const INPUT_ROLE role)
 {
     switch (role) {
 #define X_INPUT_ROLE(role_name, state_name)                                    \
@@ -137,13 +137,13 @@ static bool M_IsPressed(const INPUT_STATE input, const INPUT_ROLE role)
     return false;
 }
 
-static INPUT_STATE M_SetPressed(
-    INPUT_STATE input, const INPUT_ROLE role, const bool is_pressed)
+static INPUT_STATE M_SetRole(
+    INPUT_STATE input, const INPUT_ROLE role, const bool is_held)
 {
     switch (role) {
 #define X_INPUT_ROLE(role_name, state_name)                                    \
     case role_name:                                                            \
-        input.state_name = is_pressed;                                         \
+        input.state_name = is_held;                                            \
         break;
 #include <trx/game/input/roles.def>
 #undef X_INPUT_ROLE
@@ -366,21 +366,21 @@ bool Input_IsRoleCapturing(const INPUT_ROLE role)
     return m_IsRoleCapturing[role];
 }
 
+bool Input_IsHeld(const INPUT_ROLE role)
+{
+    return M_GetRole(g_Input, role);
+}
+
 bool Input_IsPressed(const INPUT_ROLE role)
 {
-    return M_IsPressed(g_Input, role);
+    return M_GetRole(g_InputDB, role);
 }
 
-bool Input_IsPressedDB(const INPUT_ROLE role)
-{
-    return M_IsPressed(g_InputDB, role);
-}
-
-bool Input_IsPressedEx(
+bool Input_IsHeldEx(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
     const INPUT_ROLE role)
 {
-    return Input_GetBackendImpl(backend)->is_pressed(layout, role);
+    return Input_GetBackendImpl(backend)->is_held(layout, role);
 }
 
 bool Input_IsKeyConflicted(
@@ -401,8 +401,8 @@ bool Input_ReadAndAssignRole(
             || !Input_IsBackendEnabled(other_backend)) {
             continue;
         }
-        if (Input_IsPressedEx(other_backend, layout, INPUT_ROLE_MENU_BACK)
-            || Input_IsPressedEx(other_backend, layout, INPUT_ROLE_INVENTORY)) {
+        if (Input_IsHeldEx(other_backend, layout, INPUT_ROLE_MENU_BACK)
+            || Input_IsHeldEx(other_backend, layout, INPUT_ROLE_INVENTORY)) {
             return true;
         }
     }
@@ -565,7 +565,7 @@ INPUT_STATE Input_GetDebounced(const INPUT_STATE input)
     // Allow holding certain keys
     for (int32_t i = 0; m_HoldChecks[i].role != (INPUT_ROLE)-1; i++) {
         M_HOLD_CHECK *const hold_check = &m_HoldChecks[i];
-        if (!M_IsPressed(input, hold_check->role)) {
+        if (!M_GetRole(input, hold_check->role)) {
             hold_check->state = HOLD_INACTIVE;
         } else if (hold_check->state == HOLD_INACTIVE) {
             hold_check->state = HOLD_DELAY;
@@ -579,7 +579,7 @@ INPUT_STATE Input_GetDebounced(const INPUT_STATE input)
             hold_check->state == HOLD_REPEATING
             && ClockTimer_CheckElapsedAndTake(
                 &hold_check->repeat_timer, hold_check->hold_time)) {
-            result = M_SetPressed(result, hold_check->role, true);
+            result = M_SetRole(result, hold_check->role, true);
         }
     }
 
@@ -673,18 +673,18 @@ bool InputState_IsAnyPressed(const INPUT_STATE state)
 
 bool InputState_GetRole(const INPUT_STATE state, const INPUT_ROLE role)
 {
-    return M_IsPressed(state, role);
+    return M_GetRole(state, role);
 }
 
 void InputState_SetRole(
     INPUT_STATE *const state, const INPUT_ROLE role, const bool value)
 {
-    *state = M_SetPressed(*state, role, value);
+    *state = M_SetRole(*state, role, value);
 }
 
 void InputState_ClearRole(INPUT_STATE *const state, const INPUT_ROLE role)
 {
-    *state = M_SetPressed(*state, role, false);
+    *state = M_SetRole(*state, role, false);
 }
 
 REGISTER_CONFIG_SECTION(

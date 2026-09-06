@@ -26,18 +26,17 @@ extern INPUT_STATE g_OldInputDB;
 
 void Input_Update(void);
 
-// Ignores the given role until the player lets go of it. The caller that acted
-// on the press keeps it: it reads as unpressed everywhere else, and does not
-// debounce again while the key is down.
+// Ignores a role until the player lets go of it. This keeps a handled press
+// from reaching other code or debouncing again while the key is down.
 void Input_HoldOffRole(INPUT_ROLE role);
 
-// Ignores every role a scene can be skipped with until the player lets go, so
-// the press that ended the scene does not open the ring behind it.
+// Ignores each role that can skip a scene until the player lets go, so the
+// press that ended the scene does not open the ring behind it.
 void Input_HoldOffSkip(void);
 
-// Ignores every menu role until the player lets go, so a screen that opens
-// with no animation does not act on keys that were already down. Roles the
-// game itself reads, such as movement, are left alone.
+// Ignores each menu role until the player lets go, so a screen that opens with
+// no animation does not act on keys that were already down. Roles the game
+// itself reads, such as movement, are left alone.
 void Input_HoldOffMenu(void);
 
 // Reconciles the connected devices with the current configuration: enabled
@@ -78,36 +77,36 @@ bool Input_IsRoleCapturing(INPUT_ROLE role);
 bool Input_IsKeyConflicted(
     INPUT_BACKEND backend, INPUT_LAYOUT layout, INPUT_ROLE role);
 
-// Checks if the key is currently pressed. Tied to Input_Update(), so updates
-// at most at the game running FPS.
+// Checks whether the key bound to the given role is down. Tied to
+// Input_Update(), so it updates at most at the game running FPS.
+bool Input_IsHeld(INPUT_ROLE role);
+
+// Checks whether the key bound to the given role went down. This is true only
+// on the game frame where the player starts to hold it.
 bool Input_IsPressed(INPUT_ROLE role);
 
-// Checks if the key is currently pressed with a debounce, e.g. only true
-// for the game frame the player starts to hold the key at.
-bool Input_IsPressedDB(INPUT_ROLE role);
-
-// Given the input layout and input key role, check if the assorted key is
-// pressed, bypassing Input_Update.
-bool Input_IsPressedEx(
+// Checks whether the key bound to the given role is down in the given layout,
+// bypassing Input_Update.
+bool Input_IsHeldEx(
     INPUT_BACKEND backend, INPUT_LAYOUT layout, INPUT_ROLE role);
 
-// If there is anything pressed, assigns the pressed key to the given key role
-// and returns true. If nothing is pressed, immediately returns false.
+// Assigns the pressed key to the given role and returns true. Returns false if
+// no key is pressed.
 bool Input_ReadAndAssignRole(
     INPUT_BACKEND backend, INPUT_LAYOUT layout, INPUT_ROLE role, int32_t slot);
 
-// Remove assigned key from a given key role.
+// Removes the assigned key from the given role.
 void Input_UnassignRole(
     INPUT_BACKEND backend, INPUT_LAYOUT layout, INPUT_ROLE role, int32_t slot);
 
-// Get a stable pointer to the layout human-readable name.
+// Gets a stable pointer to the layout's human-readable name.
 const char *const *Input_GetLayoutNamePtr(const INPUT_LAYOUT layout);
 
-// Given the input layout and input key role, get the assigned key name.
+// Gets the key assigned to the given role in the given layout.
 const char *Input_GetKeyName(
     INPUT_BACKEND backend, INPUT_LAYOUT layout, INPUT_ROLE role, int32_t slot);
 
-// Reset a given layout to the default.
+// Resets a layout to the default bindings.
 void Input_ResetLayout(INPUT_BACKEND backend, INPUT_LAYOUT layout);
 
 // Disables updating g_Input.

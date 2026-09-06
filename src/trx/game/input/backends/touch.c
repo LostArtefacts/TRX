@@ -383,7 +383,7 @@ static void M_ProcessEvent(const SDL_Event *const event)
     TouchOverlay_ProcessEvent(event);
 }
 
-static bool M_IsPressed(const INPUT_LAYOUT layout, const INPUT_ROLE role)
+static bool M_IsHeld(const INPUT_LAYOUT layout, const INPUT_ROLE role)
 {
     for (int32_t s = 0; s < INPUT_BINDING_SLOTS; s++) {
         const M_BINDING *b = M_GetBinding(layout, role, s);
@@ -407,9 +407,9 @@ static bool M_IsPressed(const INPUT_LAYOUT layout, const INPUT_ROLE role)
 static bool M_CustomUpdate(INPUT_STATE *const result, const INPUT_LAYOUT layout)
 {
     result->menu_skip |=
-        result->menu_confirm || M_IsPressed(layout, INPUT_ROLE_ACTION);
-    result->menu_confirm |= M_IsPressed(layout, INPUT_ROLE_ACTION);
-    result->menu_back |= M_IsPressed(layout, INPUT_ROLE_JUMP);
+        result->menu_confirm || M_IsHeld(layout, INPUT_ROLE_ACTION);
+    result->menu_confirm |= M_IsHeld(layout, INPUT_ROLE_ACTION);
+    result->menu_back |= M_IsHeld(layout, INPUT_ROLE_JUMP);
     return true;
 }
 
@@ -719,7 +719,7 @@ INPUT_BACKEND_IMPL g_Input_Touch = {
     .discover = nullptr,
     .custom_update = M_CustomUpdate,
     .process_event = M_ProcessEvent,
-    .is_pressed = M_IsPressed,
+    .is_held = M_IsHeld,
     .is_role_conflicted = M_IsRoleConflicted,
     .get_name = M_GetName,
     .unassign_role = M_UnassignRole,
