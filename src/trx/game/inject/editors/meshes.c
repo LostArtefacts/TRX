@@ -54,7 +54,12 @@ static BOUNDS_16 M_ReadBounds16(TRX_FILE *const file)
 
 static uint16_t *M_GetMeshTexture(const M_FACE_TEXTURE_EDIT *const edit)
 {
-    const OBJECT *const obj = Object_Get(edit->obj_info.id);
+    OBJECT *obj;
+    if (!SHOULD(
+            Inject_GetObject(edit->obj_info, &obj),
+            "face texture stays unchanged")) {
+        return nullptr;
+    }
     if (!obj->loaded) {
         return nullptr;
     }
@@ -109,7 +114,12 @@ static void M_ApplyMeshEdit(const M_MESH_EDIT *const edit)
 {
     OBJECT_MESH *mesh;
     if (edit->obj_info.type == OBJ_TYPE_OBJECT) {
-        const OBJECT *const obj = Object_Get(edit->obj_info.id);
+        OBJECT *obj;
+        if (!SHOULD(
+                Inject_GetObject(edit->obj_info, &obj),
+                "mesh stays unchanged")) {
+            return;
+        }
         if (!obj->loaded) {
             return;
         }

@@ -38,9 +38,8 @@ static void M_ReadObject(const INJECTION_CHUNK chunk)
     const LEVEL_CONTEXT_INFO cached_info = Inject_GetCachedInfo();
     const INJECTION_OBJECT_INFO obj_info =
         Inject_ReadObjectPtr(chunk.injection);
-    OBJECT *const obj = Object_TryGet(obj_info.id);
-    if (obj == nullptr) {
-        LOG_WARNING("Invalid object %d", obj_info.id);
+    OBJECT *obj;
+    if (!SHOULD(Inject_GetObject(obj_info, &obj), "object edit is skipped")) {
         File_Skip(chunk.injection->fp, 14);
         return;
     }

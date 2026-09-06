@@ -110,8 +110,16 @@ static void M_CommandEdits(
         const int32_t num_raw_cmds = File_ReadS32(injection->fp);
         const int32_t num_anim_cmds = File_ReadS32(injection->fp);
 
-        const OBJECT *const obj = Object_Get(obj_info.id);
-        if (ctx->mode == INJECTION_MODE_STATS || !obj->loaded) {
+        if (ctx->mode == INJECTION_MODE_STATS) {
+            continue;
+        }
+        OBJECT *obj;
+        if (!SHOULD(
+                Inject_GetObject(obj_info, &obj),
+                "animation commands stay unchanged")) {
+            continue;
+        }
+        if (!obj->loaded) {
             continue;
         }
 
