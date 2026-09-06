@@ -819,6 +819,23 @@ static bool M_IsDestinationBlocked(
         item->pos, pos, item->room_num, LARA_HEIGHT, LARA_RADIUS);
 }
 
+static bool M_CanHangDownLadder(ITEM *const item, const COLL_INFO *const coll)
+{
+    const XYZ_32 current_pos = item->pos;
+    item->pos.y += STEP_L;
+
+    COLL_INFO dest_coll = *coll;
+    dest_coll.bad_pos = NO_BAD_POS;
+    dest_coll.bad_neg = -STEPUP_HEIGHT;
+    dest_coll.bad_ceiling = 0;
+    Lara_Col_GetInfo(item, &dest_coll);
+
+    const bool result = Lara_Col_TestLadderHang(item, &dest_coll);
+
+    item->pos = current_pos;
+    return result;
+}
+
 static void M_Hang(ITEM *const item, COLL_INFO *const coll)
 {
     if (M_TryCornerShimmy(item, coll)) {
@@ -876,7 +893,8 @@ static void M_Hang(ITEM *const item, COLL_INFO *const coll)
     } else if (
         g_Input.back && lara->climb_status
         && Item_TestAnimEqual(item, LA(LA_REACH_TO_HANG))
-        && Item_TestFrameEqual(item, M_LF_HANG)) {
+        && Item_TestFrameEqual(item, M_LF_HANG)
+        && M_CanHangDownLadder(item, coll)) {
         item->goal_anim_state = LS(LS_HANG);
         item->current_anim_state = LS(LS_HANG);
         Item_SwitchToAnim(item, LA(LA_LADDER_DOWN_HANGING), 0);

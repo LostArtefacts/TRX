@@ -21,6 +21,7 @@
 - Fixed Lara beginning to monkey roll for one frame despite being too close to the edge of a sector (#6459 / TRX1314, regression from 1.10)
 - Fixed Lara not being able to crawl backwards in certain sloped crawlspaces (OG bug) (TRX1322)
 - Fixed Lara being able to crouch/crawl into spaces with very low ceilings where she can become clamped, such as RX-Tech Mines room 159 (OG bug) (#6477 / TRX1331)
+- Fixed Lara attempting to continue to descend a ladder despite being at the bottom of it (OG bug) (#6461 / TRX1315)
 
 **UI**
 - Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187 / TRX1036)
