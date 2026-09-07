@@ -4,6 +4,9 @@
 
 #include <stdint.h>
 
+// Records one line, for a leaf a test draws itself.
+void FakeUIDraw_Record(const char *line);
+
 // Returns the number of recorded draw calls.
 int32_t FakeUIDraw_GetCount(void);
 

@@ -1,9 +1,11 @@
 // Runs the shipped overlay module against a real scene and recorded draw calls.
 
+#include <fakes/game.h>
 #include <fakes/ui_draw.h>
 #include <harness/lua_surface.h>
 
 #include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/lua/ui.h>
@@ -71,6 +73,7 @@ static void M_Setup(lua_State *const L)
 
 static void M_PushFake(lua_State *const L)
 {
+    FakeGame_PushLua(L);
     lua_pushcfunction(L, M_FakeDrawRegions);
     lua_setfield(L, -2, "draw_regions");
     lua_pushcfunction(L, M_FakeErrors);
@@ -108,12 +111,13 @@ int main(void)
 {
     const LUA_SURFACE_TEST test = {
         .module = "ui",
-        .deps = { "config",       "events",     "signal",     "lara",
-                  "items",        "objects",    "weapons",    "camera",
-                  "rooms",        "catalog",    "locale",     "rules",
-                  "inventory",    "game",       "cutscenes",  "overlay",
-                  "ui.primitive", "ui.widgets", "ui.regions", nullptr },
-        .mod_script = "overlay",
+        .deps = { "config",    "events",       "signal",     "lara",
+                  "items",     "objects",      "weapons",    "camera",
+                  "rooms",     "catalog",      "locale",     "rules",
+                  "inventory", "game",         "cutscenes",  "overlay",
+                  "input",     "ui.primitive", "ui.widgets", "ui.regions",
+                  nullptr },
+        .mod_script = "overlay/init",
         // Load the shipped module after sealing, as the engine does.
         .seal = true,
         .setup_extra = M_Setup,
@@ -176,6 +180,8 @@ void UI_Text_Draw(
     const char *const text, const float x, const float y,
     const UI_TEXT_SETTINGS settings)
 {
+    FakeUIDraw_Record(String_FormatStatic(
+        "text x=%d y=%d text=%s", (int32_t)x, (int32_t)y, text));
 }
 
 void UI_Text_Measure(

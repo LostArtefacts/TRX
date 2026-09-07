@@ -1355,9 +1355,11 @@ If you install everything correctly, your game directory should look more or les
 │       ├── strings-it.json5
 │       └── strings.json5
 ├── modules
+│   ├── overlay
+│   │   ├── init.lua
+│   │   └── photo_mode.lua
 │   ├── assault.lua
 │   ├── legend.lua
-│   ├── overlay.lua
 │   ├── save_crystal.lua
 │   └── water_color.lua
 └── TRX.exe</code></pre>
@@ -2749,9 +2751,11 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │       ├── strings-it.json5
     │   │       └── strings.json5
     │   ├── modules
+    │   │   ├── overlay
+    │   │   │   ├── init.lua
+    │   │   │   └── photo_mode.lua
     │   │   ├── assault.lua
     │   │   ├── legend.lua
-    │   │   ├── overlay.lua
     │   │   ├── save_crystal.lua
     │   │   └── water_color.lua
     │   └── icon.icns
