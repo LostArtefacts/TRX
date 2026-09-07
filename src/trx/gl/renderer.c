@@ -41,6 +41,9 @@ typedef struct {
     TRX_GL_PROGRAM program;
     GLint loc_dither_mode;
     GLint loc_supersample;
+    GLint loc_palette_lut_size;
+    TRX_GL_TEXTURE palette_lut;
+    int32_t palette_lut_size;
     GLuint composite_fbo;
 } M_CONTEXT;
 
@@ -125,6 +128,7 @@ static const TRX_GL_FBO *M_ResolveScene(M_CONTEXT *const p)
         TRX_GL_Program_Uniform1i(&p->program, p->loc_supersample, factor);
         TRX_GL_Program_Uniform1i(
             &p->program, p->loc_dither_mode, DITHER_MODE_DISABLED);
+        TRX_GL_Program_Uniform1i(&p->program, p->loc_palette_lut_size, 0);
         M_Blit(p, &p->geometry_fbo);
         TRX_GL_Program_Uniform1i(&p->program, p->loc_supersample, 1);
     }
@@ -162,6 +166,13 @@ static void M_Composite(
 
     TRX_GL_Program_Uniform1i(
         &p->program, p->loc_dither_mode, p->config->dither_mode);
+    TRX_GL_Program_Uniform1i(
+        &p->program, p->loc_palette_lut_size, p->palette_lut_size);
+    if (p->palette_lut_size > 0) {
+        glActiveTexture(GL_TEXTURE1);
+        TRX_GL_Texture_Bind(&p->palette_lut);
+        glActiveTexture(GL_TEXTURE0);
+    }
 
     glViewport(rect.x, rect.y, rect.width, rect.height);
     TRX_GL_CheckError();
@@ -257,6 +268,12 @@ static RESULT M_Init(
     p->loc_supersample =
         TRX_GL_Program_UniformLocation(&p->program, "uSupersample");
     TRX_GL_Program_Uniform1i(&p->program, p->loc_supersample, 1);
+    TRX_GL_Program_Uniform1i(
+        &p->program,
+        TRX_GL_Program_UniformLocation(&p->program, "uTexPaletteLut"), 1);
+    p->loc_palette_lut_size =
+        TRX_GL_Program_UniformLocation(&p->program, "uPaletteLutSize");
+    TRX_GL_Texture_Init(&p->palette_lut, GL_TEXTURE_3D);
 
     VIEWPORT_RECT rect;
     rect = Viewport_GetRect(VIEWPORT_GAME);
@@ -287,6 +304,7 @@ static void M_Shutdown(TRX_GL_RENDERER *renderer)
         glDeleteFramebuffers(1, &p->composite_fbo);
         p->composite_fbo = 0;
     }
+    TRX_GL_Texture_Close(&p->palette_lut);
     TRX_GL_Program_Close(&p->program);
     TRX_GL_Sampler_Close(&p->sampler);
     TRX_GL_Buffer_Close(&p->buffer);
@@ -364,4 +382,16 @@ GLuint TRX_GL_Renderer_ResolveSceneFbo(void)
     const TRX_GL_FBO *const fbo = M_ResolveScene(p);
     glBindFramebuffer(GL_FRAMEBUFFER, (GLuint)prev_fbo);
     return fbo->fbo;
+}
+
+void TRX_GL_Renderer_SetPaletteLut(const void *const rgba, const int32_t size)
+{
+    M_CONTEXT *const p = (M_CONTEXT *)g_TRX_GL_Renderer.priv;
+    if (p == nullptr) {
+        return;
+    }
+    p->palette_lut_size = rgba == nullptr ? 0 : size;
+    if (p->palette_lut_size > 0) {
+        TRX_GL_Texture_Load3D(&p->palette_lut, rgba, size, GL_RGBA8, GL_RGBA);
+    }
 }

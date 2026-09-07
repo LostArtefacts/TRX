@@ -1,5 +1,6 @@
 #include <trx/game/output/textures.h>
 
+#include <trx/config.h>
 #include <trx/core/file.h>
 #include <trx/core/hash.h>
 #include <trx/core/math/func.h>
@@ -22,10 +23,31 @@
 #include <trx/version.h>
 
 #include <SDL2/SDL_mutex.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define M_TRANSPARENCY_CACHE_VERSION 1
 #define M_WATERFALL_FACE_IDX 4
+
+// Use this many texels along each axis of the palette lookup cube. This keeps
+// the lookup close enough to the palette without adding visible banding.
+#define M_PALETTE_LUT_SIZE 32
+
+// Group the texture colors into a cube of this many bins along each axis
+// before deriving a palette, and read every n-th texel.
+#define M_DERIVE_BIN_BITS 5
+#define M_DERIVE_BIN_COUNT (1 << (M_DERIVE_BIN_BITS * 3))
+#define M_DERIVE_SAMPLE_STEP 4
+
+typedef struct {
+    RGB_888 color;
+    int32_t count;
+} M_COLOR_BIN;
+
+typedef struct {
+    int32_t begin;
+    int32_t end;
+} M_COLOR_BOX;
 
 typedef struct {
     OUTPUT_UVW corners[4];
@@ -656,6 +678,279 @@ static void M_UploadAtlas(void)
     TRX_GL_CheckError();
 }
 
+// Builds a cube that maps each rendered color to the nearest palette color.
+// Alpha stores the distance to that color so the shader can measure local
+// palette spacing. Copy the palette to arrays to keep the search compact.
+static void M_BuildPaletteLut(
+    RGBA_8888 *const cube, const RGB_888 *const palette, const int32_t pal_size)
+{
+    int32_t pal_r[256];
+    int32_t pal_g[256];
+    int32_t pal_b[256];
+    for (int32_t i = 0; i < pal_size; i++) {
+        pal_r[i] = palette[i].r;
+        pal_g[i] = palette[i].g;
+        pal_b[i] = palette[i].b;
+    }
+
+    // Store the color represented by the center of each texel.
+    int32_t axis[M_PALETTE_LUT_SIZE];
+    for (int32_t i = 0; i < M_PALETTE_LUT_SIZE; i++) {
+        axis[i] = (i * 2 + 1) * 255 / (M_PALETTE_LUT_SIZE * 2);
+    }
+
+    RGBA_8888 *out = cube;
+    for (int32_t b = 0; b < M_PALETTE_LUT_SIZE; b++) {
+        for (int32_t g = 0; g < M_PALETTE_LUT_SIZE; g++) {
+            for (int32_t r = 0; r < M_PALETTE_LUT_SIZE; r++) {
+                const int32_t ref_r = axis[r];
+                const int32_t ref_g = axis[g];
+                const int32_t ref_b = axis[b];
+                int32_t best_dist = INT32_MAX;
+                int32_t best_idx = 0;
+                for (int32_t i = 0; i < pal_size; i++) {
+                    const int32_t dr = ref_r - pal_r[i];
+                    const int32_t dg = ref_g - pal_g[i];
+                    const int32_t db = ref_b - pal_b[i];
+                    const int32_t dist = dr * dr + dg * dg + db * db;
+                    if (dist < best_dist) {
+                        best_dist = dist;
+                        best_idx = i;
+                    }
+                }
+                const RGB_888 color = palette[best_idx];
+                const uint32_t dist = Math_Sqrt(best_dist);
+                *out++ =
+                    (RGBA_8888) { color.r, color.g, color.b, MIN(dist, 255) };
+            }
+        }
+    }
+}
+
+// Reports whether the palette holds more than one color. TR4 and TR5 levels
+// carry no palette and get a placeholder filled with a single color, which
+// would map the whole image to it.
+static bool M_HasUsablePalette(void)
+{
+    if (m_Palette8 == nullptr || m_PaletteSize < 2) {
+        return false;
+    }
+    for (int32_t i = 1; i < m_PaletteSize; i++) {
+        if (m_Palette8[i].r != m_Palette8[0].r
+            || m_Palette8[i].g != m_Palette8[0].g
+            || m_Palette8[i].b != m_Palette8[0].b) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static int32_t M_CompareBinsR(const void *const a, const void *const b)
+{
+    return (int32_t)((const M_COLOR_BIN *)a)->color.r
+        - (int32_t)((const M_COLOR_BIN *)b)->color.r;
+}
+
+static int32_t M_CompareBinsG(const void *const a, const void *const b)
+{
+    return (int32_t)((const M_COLOR_BIN *)a)->color.g
+        - (int32_t)((const M_COLOR_BIN *)b)->color.g;
+}
+
+static int32_t M_CompareBinsB(const void *const a, const void *const b)
+{
+    return (int32_t)((const M_COLOR_BIN *)a)->color.b
+        - (int32_t)((const M_COLOR_BIN *)b)->color.b;
+}
+
+// Groups the colors of the texture pages into bins and returns how many bins
+// hold at least one texel. Fully transparent texels do not reach the screen
+// and are left out.
+static int32_t M_CollectTextureColors(M_COLOR_BIN *const bins)
+{
+    typedef struct {
+        int32_t r;
+        int32_t g;
+        int32_t b;
+        int32_t count;
+    } SUM;
+
+    SUM *const sums = Memory_Alloc(sizeof(SUM) * M_DERIVE_BIN_COUNT);
+    for (int32_t i = 0; i < m_TexturePageCount; i++) {
+        const RGBA_8888 *const page = Output_GetTexturePage32(i);
+        for (int32_t j = 0; j < TEXTURE_PAGE_SIZE; j += M_DERIVE_SAMPLE_STEP) {
+            const RGBA_8888 texel = page[j];
+            if (texel.a == 0) {
+                continue;
+            }
+            const int32_t shift = 8 - M_DERIVE_BIN_BITS;
+            SUM *const sum =
+                &sums
+                    [((texel.r >> shift) << (M_DERIVE_BIN_BITS * 2))
+                     | ((texel.g >> shift) << M_DERIVE_BIN_BITS)
+                     | (texel.b >> shift)];
+            sum->r += texel.r;
+            sum->g += texel.g;
+            sum->b += texel.b;
+            sum->count++;
+        }
+    }
+
+    int32_t bin_count = 0;
+    for (int32_t i = 0; i < M_DERIVE_BIN_COUNT; i++) {
+        const SUM *const sum = &sums[i];
+        if (sum->count == 0) {
+            continue;
+        }
+        bins[bin_count++] = (M_COLOR_BIN) {
+            .color = { sum->r / sum->count, sum->g / sum->count,
+                       sum->b / sum->count },
+            .count = sum->count,
+        };
+    }
+    Memory_Free(sums);
+    return bin_count;
+}
+
+// Splits the bins into as many boxes as the palette holds, each covering a
+// similar number of texels, and takes the average color of every box. This is
+// the median cut algorithm.
+static int32_t M_MedianCut(
+    M_COLOR_BIN *const bins, const int32_t bin_count, RGB_888 *const palette,
+    const int32_t max_size)
+{
+    M_COLOR_BOX boxes[256];
+    boxes[0] = (M_COLOR_BOX) { 0, bin_count };
+    int32_t box_count = 1;
+
+    while (box_count < max_size) {
+        int32_t best_box = -1;
+        int32_t best_range = 0;
+        int32_t best_axis = 0;
+        for (int32_t i = 0; i < box_count; i++) {
+            const M_COLOR_BOX *const box = &boxes[i];
+            if (box->end - box->begin < 2) {
+                continue;
+            }
+            int32_t min[3] = { 255, 255, 255 };
+            int32_t max[3] = { 0, 0, 0 };
+            for (int32_t j = box->begin; j < box->end; j++) {
+                const RGB_888 color = bins[j].color;
+                const int32_t channel[3] = { color.r, color.g, color.b };
+                for (int32_t k = 0; k < 3; k++) {
+                    min[k] = MIN(min[k], channel[k]);
+                    max[k] = MAX(max[k], channel[k]);
+                }
+            }
+            for (int32_t k = 0; k < 3; k++) {
+                if (max[k] - min[k] > best_range) {
+                    best_range = max[k] - min[k];
+                    best_box = i;
+                    best_axis = k;
+                }
+            }
+        }
+        if (best_box < 0) {
+            break;
+        }
+
+        const M_COLOR_BOX box = boxes[best_box];
+        int (*const compare[3])(const void *, const void *) = {
+            M_CompareBinsR,
+            M_CompareBinsG,
+            M_CompareBinsB,
+        };
+        qsort(
+            &bins[box.begin], box.end - box.begin, sizeof(M_COLOR_BIN),
+            compare[best_axis]);
+
+        int32_t total = 0;
+        for (int32_t i = box.begin; i < box.end; i++) {
+            total += bins[i].count;
+        }
+        int32_t split = box.begin + 1;
+        int32_t running = bins[box.begin].count;
+        while (split < box.end - 1 && running * 2 < total) {
+            running += bins[split].count;
+            split++;
+        }
+
+        boxes[best_box].end = split;
+        boxes[box_count++] = (M_COLOR_BOX) { split, box.end };
+    }
+
+    for (int32_t i = 0; i < box_count; i++) {
+        const M_COLOR_BOX *const box = &boxes[i];
+        int32_t sum_r = 0;
+        int32_t sum_g = 0;
+        int32_t sum_b = 0;
+        int32_t total = 0;
+        for (int32_t j = box->begin; j < box->end; j++) {
+            const M_COLOR_BIN *const bin = &bins[j];
+            sum_r += bin->color.r * bin->count;
+            sum_g += bin->color.g * bin->count;
+            sum_b += bin->color.b * bin->count;
+            total += bin->count;
+        }
+        palette[i] = (RGB_888) { sum_r / total, sum_g / total, sum_b / total };
+    }
+    return box_count;
+}
+
+// Derives a palette from the texture pages and returns its size, or zero when
+// the level holds no textures. Levels from TR4 onward store 32-bit textures
+// and carry no palette, so the colors they use stand in for one.
+static int32_t M_DerivePalette(RGB_888 *const palette, const int32_t max_size)
+{
+    if (m_TexturePages32 == nullptr || m_TexturePageCount == 0) {
+        return 0;
+    }
+
+    M_COLOR_BIN *const bins =
+        Memory_Alloc(sizeof(M_COLOR_BIN) * M_DERIVE_BIN_COUNT);
+    const int32_t bin_count = M_CollectTextureColors(bins);
+    int32_t pal_size = 0;
+    if (bin_count > max_size) {
+        pal_size = M_MedianCut(bins, bin_count, palette, max_size);
+    } else {
+        for (int32_t i = 0; i < bin_count; i++) {
+            palette[i] = bins[i].color;
+        }
+        pal_size = bin_count;
+    }
+    Memory_Free(bins);
+    return pal_size;
+}
+
+// Updates the renderer with the current level palette, or disables the lookup
+// when palette mapping is off or no palette can be found.
+static void M_RefreshPaletteLut(void)
+{
+    if (!g_Config.rendering.enable_palette_quantize) {
+        TRX_GL_Renderer_SetPaletteLut(nullptr, 0);
+        return;
+    }
+
+    RGB_888 derived[256];
+    const RGB_888 *palette = m_Palette8;
+    int32_t pal_size = MIN(m_PaletteSize, 256);
+    if (!M_HasUsablePalette()) {
+        palette = derived;
+        pal_size = M_DerivePalette(derived, 256);
+    }
+    if (pal_size < 2) {
+        TRX_GL_Renderer_SetPaletteLut(nullptr, 0);
+        return;
+    }
+
+    const int32_t count =
+        M_PALETTE_LUT_SIZE * M_PALETTE_LUT_SIZE * M_PALETTE_LUT_SIZE;
+    RGBA_8888 *const cube = Memory_Alloc(sizeof(RGBA_8888) * count);
+    M_BuildPaletteLut(cube, palette, pal_size);
+    TRX_GL_Renderer_SetPaletteLut(cube, M_PALETTE_LUT_SIZE);
+    Memory_Free(cube);
+}
+
 static void M_FreeLevelData(void)
 {
     // destroy per-page locks
@@ -730,6 +1025,7 @@ void Output_Textures_ObserveLevelLoad(void)
     }
     M_PrepareAnimationRanges();
     M_UploadAtlas();
+    M_RefreshPaletteLut();
 }
 
 void Output_Textures_UpdateEnvironmentMap(void)
@@ -885,6 +1181,8 @@ void Output_Textures_ApplyRenderSettings(void)
     if (m_Priv.uvws.count != 0) {
         M_FillObjectUVWs();
     }
+
+    M_RefreshPaletteLut();
 }
 void Output_InitialiseTexturePages(const int32_t num_pages, const bool use_8bit)
 {

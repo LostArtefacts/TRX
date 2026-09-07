@@ -1554,6 +1554,10 @@
             "title": "\\{review}Afiniczne mapowanie tekstur",
             "description": "\\{review}Usuwa korekcję perspektywy przy teksturowaniu, której PlayStation nie miało, więc tekstury falują i pływają po dużych powierzchniach przy ruchu kamery.",
         },
+        "rendering.enable_palette_quantize": {
+            "title": "\\{review}Kwantyzacja palety",
+            "description": "\\{review}Dopasowuje każdy renderowany kolor do najbliższego koloru z palety poziomu. Przy włączonym ditheringu paleta cieniuje między swoimi kolorami.",
+        },
         "rendering.enable_ps1_fog": {
             "title": "\\{review}Mgła z PlayStation",
             "description": "\\{review}Zlewa odległą geometrię z kolorem mgły tak, jak robiło to wygaszanie głębi na PlayStation: wzdłuż 1/odległości zamiast odległości i liczone na wierzchołek, więc przejście pasmuje na dużych powierzchniach.",

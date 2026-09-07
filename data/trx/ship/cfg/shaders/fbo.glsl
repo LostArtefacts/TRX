@@ -12,8 +12,10 @@ void main(void) {
 #elif defined(FRAGMENT)
 
 uniform sampler2D uTex0;
+uniform sampler3D uTexPaletteLut;
 uniform int uDitherMode;
 uniform int uSupersample;
+uniform int uPaletteLutSize;
 
 in vec2 vertTexCoords;
 out vec4 outColor;
@@ -28,6 +30,7 @@ const float BAYER[16] = float[16](
 // channels.
 const vec3 DITHER_STEPS_8_BIT = vec3(7.0, 7.0, 3.0);
 
+#define DITHER_MODE_DISABLED          0
 #define DITHER_MODE_SOFTWARE_RENDERER 1
 #define DITHER_MODE_PS1               2
 
@@ -46,6 +49,32 @@ vec3 ditherPS1(vec3 rgb, vec2 texel)
     float offset = floor(BAYER[pos.y * 4 + pos.x] * 0.5) - 4.0;
     vec3 channel = clamp(rgb * 255.0 + offset, 0.0, 255.0);
     return floor(channel / 8.0) / 31.0;
+}
+
+// Sets how far dithering moves a color from the nearest palette color.
+// At 2.0, the pattern reaches the colors on both sides and mixes them.
+const float PALETTE_DITHER_SPREAD = 2.0;
+
+// Reads the lookup table at the center of the matching texel.
+vec4 samplePalette(vec3 rgb)
+{
+    float size = float(uPaletteLutSize);
+    vec3 coord = (clamp(rgb, 0.0, 1.0) * (size - 1.0) + 0.5) / size;
+    return texture(uTexPaletteLut, coord);
+}
+
+// Maps a rendered color to the palette. Dithering moves neighboring pixels
+// toward colors on both sides, so they appear as an intermediate shade. Alpha
+// stores the local palette spacing and controls the amount of movement.
+vec3 quantizeToPalette(vec3 rgb, vec2 texel, bool dithered)
+{
+    if (!dithered) {
+        return samplePalette(rgb).rgb;
+    }
+    float spread = samplePalette(rgb).a * PALETTE_DITHER_SPREAD;
+    ivec2 pos = ivec2(texel) & 3;
+    float bias = (BAYER[pos.y * 4 + pos.x] + 0.5) / 16.0 - 0.5;
+    return samplePalette(rgb + bias * spread).rgb;
 }
 
 // Average the block of source texels the output pixel covers. The block is
@@ -67,13 +96,20 @@ vec4 resolve(vec2 uv)
 void main(void) {
     outColor = uSupersample > 1 ? resolve(vertTexCoords)
                                 : texture(uTex0, vertTexCoords);
-    if (uDitherMode == DITHER_MODE_SOFTWARE_RENDERER) {
-        outColor.rgb = dither(
-            outColor.rgb, vertTexCoords * vec2(textureSize(uTex0, 0)),
-            DITHER_STEPS_8_BIT);
+    vec2 texel = vertTexCoords * vec2(textureSize(uTex0, 0));
+
+    // Apply palette mapping before the fixed color steps. The PlayStation
+    // used a 15-bit frame buffer, so it still shades between palette colors.
+    if (uPaletteLutSize > 0) {
+        outColor.rgb = quantizeToPalette(
+            outColor.rgb, texel, uDitherMode != DITHER_MODE_DISABLED);
+        if (uDitherMode == DITHER_MODE_PS1) {
+            outColor.rgb = ditherPS1(outColor.rgb, texel);
+        }
+    } else if (uDitherMode == DITHER_MODE_SOFTWARE_RENDERER) {
+        outColor.rgb = dither(outColor.rgb, texel, DITHER_STEPS_8_BIT);
     } else if (uDitherMode == DITHER_MODE_PS1) {
-        outColor.rgb = ditherPS1(
-            outColor.rgb, vertTexCoords * vec2(textureSize(uTex0, 0)));
+        outColor.rgb = ditherPS1(outColor.rgb, texel);
     }
 }
 

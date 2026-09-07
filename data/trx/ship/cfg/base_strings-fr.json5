@@ -1554,6 +1554,10 @@
             "title": "\\{review}Placage de textures affine",
             "description": "\\{review}Supprime la correction de perspective du placage de textures, absente sur PlayStation : les textures se déforment et ondulent sur les grandes surfaces quand la caméra bouge.",
         },
+        "rendering.enable_palette_quantize": {
+            "title": "\\{review}Quantification de la palette",
+            "description": "\\{review}Ramène chaque couleur rendue à la couleur la plus proche de la palette du niveau. Avec le tramage activé, la palette nuance entre ses couleurs.",
+        },
         "rendering.enable_ps1_fog": {
             "title": "\\{review}Brouillard PlayStation",
             "description": "\\{review}Fond la géométrie lointaine vers la couleur du brouillard comme le faisait l'atténuation en profondeur de la PlayStation : selon 1/distance plutôt que la distance, et calculée par sommet, ce qui fait apparaître des bandes sur les grandes surfaces.",
