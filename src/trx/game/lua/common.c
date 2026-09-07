@@ -273,8 +273,8 @@ static bool M_HasRoot(
 // modules/ holds what a script requires; scripts/ holds what the engine runs,
 // and no name reaches it.
 static const char *M_ResolveScript(
-    lua_State *const L, const char *const name, const size_t root_len,
-    const char *const stem)
+    lua_State *const L, const char *const raw, const char *const name,
+    const size_t root_len, const char *const stem)
 {
     // The pieces are spelled into Lua strings rather than buffers of our own:
     // the resolver hands back a pointer into its own storage, and this way
@@ -295,18 +295,33 @@ static const char *M_ResolveScript(
         mod = lua_tostring(L, -1);
     }
 
-    // A name is the file it spells out, or the init.lua of a directory of that
-    // name. A module that grows into several files keeps the name its callers
-    // already write.
-    const char *path = nullptr;
-    for (int32_t i = 0; i < 2 && path == nullptr; i++) {
+    // Check both forms so a module can grow from one file into a directory.
+    const char *rels[2] = { nullptr, nullptr };
+    const char *found[2] = { nullptr, nullptr };
+    for (int32_t i = 0; i < 2; i++) {
         const char *const tail =
             lua_pushfstring(L, i == 0 ? "%s.lua" : "%s/init.lua", path_stem);
-        const char *const rel =
+        rels[i] =
             is_common ? tail : lua_pushfstring(L, "%s/modules/%s", mod, tail);
-        path = GamePath_PeekResolve(source, rel);
+        // Keep the path because the next resolver call may overwrite it.
+        const char *const path = GamePath_PeekResolve(source, rels[i]);
+        found[i] = path != nullptr ? lua_pushstring(L, path) : nullptr;
     }
 
+    // Refuse an ambiguous module instead of choosing one file silently.
+    if (found[0] != nullptr && found[1] != nullptr) {
+        luaL_error(
+            L,
+            "both a file and a directory exist for %s: %s and %s. Remove the "
+            "older one",
+            raw, found[0], found[1]);
+    }
+
+    const char *const rel = found[0] != nullptr ? rels[0]
+        : found[1] != nullptr                   ? rels[1]
+                                                : nullptr;
+    const char *const path =
+        rel != nullptr ? GamePath_PeekResolve(source, rel) : nullptr;
     lua_settop(L, base);
     return path;
 }
@@ -316,7 +331,8 @@ static const char *M_ResolveScript(
 // every later call what it returned.
 static int M_L_Require(lua_State *const L)
 {
-    // Errors name the call site's own spelling, the lookup the lowered one.
+    // Report the spelling used by the script and use the lowered name to look
+    // up the module.
     const char *const raw = luaL_checkstring(L, 1);
     if (!M_IsScriptName(raw)) {
         return luaL_error(L, "not a script name: %s", raw);
@@ -370,7 +386,7 @@ static int M_L_Require(lua_State *const L)
     }
     lua_pop(L, 1);
 
-    const char *const path = M_ResolveScript(L, name, root_len, sep + 1);
+    const char *const path = M_ResolveScript(L, raw, name, root_len, sep + 1);
     if (path == nullptr) {
         return luaL_error(L, "no such script: %s", raw);
     }

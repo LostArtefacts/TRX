@@ -373,15 +373,15 @@ TEST(a_directory_with_an_init_script_answers_to_its_name)
     M_Done();
 }
 
-// The file wins, so a directory beside a script of the same name cannot take
-// the name over.
-TEST(a_script_answers_before_the_directory_beside_it)
+// Refuse a file and directory with the same module name.
+TEST(a_script_beside_a_directory_of_the_same_name_is_refused)
 {
     M_Booted();
     M_WriteGameScript("my_group", "return { name = 'file' }\n");
     M_WriteGameScript("my_group/init", "return { name = 'directory' }\n");
 
-    M_CheckEval("assert(require('tr1.my_group').name == 'file')");
+    M_CheckEvalFails(
+        "require('tr1.my_group')", "both a file and a directory exist");
 
     M_Done();
 }
