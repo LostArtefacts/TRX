@@ -36,6 +36,11 @@ void TRX_GL_Renderer_SyncFboSizes(void);
 // is returned as is. Resolving twice in a frame costs nothing.
 GLuint TRX_GL_Renderer_ResolveSceneFbo(void);
 
+// Uploads a color cube that maps rendered colors to the nearest colors in the
+// level palette. Each texel stores the color in RGB and its distance in alpha.
+// Passing nullptr disables the mapping.
+void TRX_GL_Renderer_SetPaletteLut(const void *rgba, int32_t size);
+
 // Draw the scene and the UI over it into the given texture, the same way the
 // frame is put together for the window. Called between frames, before anything
 // has drawn over the framebuffers, this reproduces the frame the player is

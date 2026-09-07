@@ -138,6 +138,7 @@
 - Added PlayStation RGB555 dithering and changed Dithering to offer Disabled, Software Renderer and PS1 (Graphic Options → Rendering → Dithering)
 - Added the PlayStation depth cue (Graphic Options → Rendering → PlayStation fog)
 - Added the PlayStation lighting model, which deepens bright surfaces into their own color rather than white (Graphic Options → Rendering → Lighting model)
+- Added palette quantization, which matches rendered colors to the level palette and dithers between colors (Graphic Options → Rendering → Palette quantization)
 - Added a water tint that cuts Lara at the water surface (Graphic Options → Visuals → Water tint)
 - Changed Responsive mesh tint to Water tint, which offers Whole, Per mesh and Responsive (Graphic Options → Visuals → Water tint)
 - Changed the lighting contrast option to appear in TR1 and TR2 only, as the other games light dynamic sources their own way (Graphic Options → Rendering → Lighting contrast)

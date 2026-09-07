@@ -1554,6 +1554,10 @@
             "title": "\\{review}Mapadh inneach afaineach",
             "description": "\\{review}Bheir seo air falbh ceartachadh sealladh-doimhneachd bhon inneach, rud nach robh aig a' PlayStation, agus mar sin bidh na h-inneachan a' cur car dhiubh fhèin air uachdaran mòra nuair a ghluaiseas an camara.",
         },
+        "rendering.enable_palette_quantize": {
+            "title": "\\{review}Cainnideachadh a' phaileid",
+            "description": "\\{review}Gluaisidh e gach dath a chaidh a reandaradh chun an datha as fhaisge ann am paileid na h-ìre. Le dithering air, bheir am paileid sgàilean eadar a dhathan.",
+        },
         "rendering.enable_ps1_fog": {
             "title": "\\{review}Ceò PlayStation",
             "description": "\\{review}Measgaichidh seo geoimeatraidh fad às a-steach do dhath a' cheò mar a rinn lasachadh doimhneachd na PlayStation: a rèir 1/astar seach an astar fhèin, agus air a thomhas gach oisean, agus mar sin nochdaidh bannan air uachdaran mòra.",

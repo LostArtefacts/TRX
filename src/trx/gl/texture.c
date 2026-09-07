@@ -67,6 +67,26 @@ void TRX_GL_Texture_Load(
     TRX_GL_CheckError();
 }
 
+void TRX_GL_Texture_Load3D(
+    TRX_GL_TEXTURE *const texture, const void *const data, const int size,
+    const GLint internal_format, const GLint format)
+{
+    ASSERT(texture != nullptr);
+    ASSERT(texture->initialized);
+
+    TRX_GL_Texture_Bind(texture);
+
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexImage3D(
+        GL_TEXTURE_3D, 0, internal_format, size, size, size, 0, format,
+        GL_UNSIGNED_BYTE, data);
+    TRX_GL_CheckError();
+}
+
 void TRX_GL_Texture_LoadFromBackBuffer(TRX_GL_TEXTURE *const texture)
 {
     ASSERT(texture != nullptr);
