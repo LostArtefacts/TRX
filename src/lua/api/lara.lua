@@ -257,8 +257,8 @@ api.type("lara.Lara", {
 
 api.property("lara.can_pose", {
   type = "boolean",
-  description = "Whether Lara has poses available to cycle through in photo mode. Only some "
-    .. "outfits have them.",
+  description = [[Whether poses are available for Lara to cycle through in photo mode.
+This is false when no poses are defined or during cutscenes.]],
   get = raw.can_pose,
 })
 

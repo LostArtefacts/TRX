@@ -18,15 +18,6 @@ typedef struct {
 
 static VECTOR *m_Lines = nullptr;
 
-static void M_Record(const char *const line)
-{
-    if (m_Lines == nullptr) {
-        m_Lines = Vector_Create(sizeof(char *));
-    }
-    char *const copy = Memory_DupStr(line);
-    Vector_Add(m_Lines, &copy);
-}
-
 static M_COLOR_TEXT M_Color(const RGBA_8888 color)
 {
     M_COLOR_TEXT out;
@@ -50,6 +41,15 @@ static M_COLOR_TEXT M_ColorF(const RGBA_F color)
 
 #define M_COLOR_F(color) (M_ColorF(color).text)
 
+void FakeUIDraw_Record(const char *const line)
+{
+    if (m_Lines == nullptr) {
+        m_Lines = Vector_Create(sizeof(char *));
+    }
+    char *const copy = Memory_DupStr(line);
+    Vector_Add(m_Lines, &copy);
+}
+
 void UI_InitDraw(void)
 {
 }
@@ -68,7 +68,7 @@ void UI_ScheduleDrawScreenSprite(
     const int32_t sx, const int32_t sy, const int32_t z, const int32_t scale_h,
     const int32_t scale_v, const int32_t sprite_idx, const RGBA_F colors[4])
 {
-    M_Record(String_FormatStatic(
+    FakeUIDraw_Record(String_FormatStatic(
         "sprite idx=%d x=%d y=%d z=%d scale_h=%d scale_v=%d tl=%s tr=%s bl=%s "
         "br=%s",
         sprite_idx, sx, sy, z, scale_h, scale_v, M_COLOR_F(colors[0]),
@@ -79,7 +79,7 @@ void UI_ScheduleDrawImage(
     const char *const path, const int32_t x0, const int32_t y0,
     const int32_t x1, const int32_t y1, const float opacity)
 {
-    M_Record(String_FormatStatic(
+    FakeUIDraw_Record(String_FormatStatic(
         "image path=%s x0=%d y0=%d x1=%d y1=%d opacity=%.2f", path, x0, y0, x1,
         y1, opacity));
 }
@@ -89,7 +89,7 @@ void UI_ScheduleDrawTextBackground(
     const int32_t z, const int32_t w, const int32_t h,
     const TEXT_STYLE text_style)
 {
-    M_Record(String_FormatStatic(
+    FakeUIDraw_Record(String_FormatStatic(
         "text_background style=%d x=%d y=%d z=%d w=%d h=%d text_style=%d",
         (int32_t)ui_style, sx, sy, z, w, h, (int32_t)text_style));
 }
@@ -99,7 +99,7 @@ void UI_ScheduleDrawTextOutline(
     const int32_t z, const int32_t w, const int32_t h,
     const TEXT_STYLE text_style)
 {
-    M_Record(String_FormatStatic(
+    FakeUIDraw_Record(String_FormatStatic(
         "text_outline style=%d x=%d y=%d z=%d w=%d h=%d text_style=%d",
         (int32_t)ui_style, sx, sy, z, w, h, (int32_t)text_style));
 }
@@ -108,7 +108,7 @@ void UI_ScheduleDrawScreenFlatQuad(
     const int32_t sx, const int32_t sy, const int32_t z, const int32_t w,
     const int32_t h, const RGBA_8888 color)
 {
-    M_Record(String_FormatStatic(
+    FakeUIDraw_Record(String_FormatStatic(
         "quad x=%d y=%d z=%d w=%d h=%d color=%s", sx, sy, z, w, h,
         M_COLOR(color)));
 }
@@ -118,7 +118,7 @@ void UI_ScheduleDrawScreenGradientQuad(
     const int32_t h, const RGBA_8888 tl, const RGBA_8888 tr, const RGBA_8888 bl,
     const RGBA_8888 br)
 {
-    M_Record(String_FormatStatic(
+    FakeUIDraw_Record(String_FormatStatic(
         "gradient x=%d y=%d z=%d w=%d h=%d tl=%s tr=%s bl=%s br=%s", sx, sy, z,
         w, h, M_COLOR(tl), M_COLOR(tr), M_COLOR(bl), M_COLOR(br)));
 }
@@ -127,7 +127,7 @@ void UI_ScheduleDrawHorizontalLine(
     const UI_STYLE ui_style, const int32_t x0, const int32_t x1,
     const int32_t y, const int32_t z)
 {
-    M_Record(String_FormatStatic(
+    FakeUIDraw_Record(String_FormatStatic(
         "line style=%d x0=%d x1=%d y=%d z=%d", (int32_t)ui_style, x0, x1, y,
         z));
 }
@@ -136,7 +136,7 @@ void UI_ScheduleDrawScreenCircle(
     const int32_t cx, const int32_t cy, const int32_t r_inner,
     const int32_t r_outer, const int32_t z, const RGBA_8888 color)
 {
-    M_Record(String_FormatStatic(
+    FakeUIDraw_Record(String_FormatStatic(
         "circle cx=%d cy=%d r_inner=%d r_outer=%d z=%d color=%s", cx, cy,
         r_inner, r_outer, z, M_COLOR(color)));
 }

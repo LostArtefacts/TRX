@@ -255,6 +255,25 @@ int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
             "package.preload['trx.log'] = function() return trx.log end\n"
             "package.path = '" REPO_ROOT
             "/src/tests/lua/?.lua;' .. package.path\n"
+            // A shipped module reaches its neighbours the way it does in the
+            // game, where common.* is the pool beside the engine. Fixtures
+            // under src/tests/lua/common still answer first.
+            "table.insert(package.searchers, function(name)\n"
+            "  local stem = name:match('^common%.(.+)$')\n"
+            "  if stem == nil then return nil end\n"
+            "  local stem_path = '" REPO_ROOT
+            "/data/trx/ship/modules/' .. stem:gsub('%.', '/')\n"
+            // A directory answers to its name through its init.lua, as it does
+            // in the game.
+            "  local path = stem_path .. '.lua'\n"
+            "  local chunk, err = loadfile(path)\n"
+            "  if chunk == nil then\n"
+            "    path = stem_path .. '/init.lua'\n"
+            "    chunk = loadfile(path)\n"
+            "  end\n"
+            "  if chunk == nil then return '\\n\\t' .. err end\n"
+            "  return chunk, path\n"
+            "end)\n"
             // Hardening takes require() away, and a hardened suite still needs
             // the harness.
             "_G.harness = require('harness')\n")

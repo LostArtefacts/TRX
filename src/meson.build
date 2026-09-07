@@ -924,7 +924,6 @@ common_sources = [
   'trx/game/ui/dialogs/graphic_settings.c',
   'trx/game/ui/dialogs/new_game.c',
   'trx/game/ui/dialogs/pause.c',
-  'trx/game/ui/dialogs/photo_mode.c',
   'trx/game/ui/dialogs/play_any_level.c',
   'trx/game/ui/dialogs/save_slot.c',
   'trx/game/ui/dialogs/select_level.c',

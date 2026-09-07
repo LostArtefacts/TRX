@@ -4,12 +4,15 @@
 #include <trx/core/memory.h>
 #include <trx/game/cutscene.h>
 #include <trx/game/game.h>
+#include <trx/game/input.h>
+#include <trx/game/lua/ui.h>
+#include <trx/game/output/draw.h>
 #include <trx/game/phase/executor.h>
 #include <trx/game/photo_mode.h>
 #include <trx/game/screenshot.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
-#include <trx/game/ui.h>
+#include <trx/game/ui/scaler.h>
 
 typedef struct {
     bool in_cutscene;
@@ -65,10 +68,16 @@ static void M_Draw(PHASE *const phase)
         Game_Draw(false);
     }
 
+    // A screenshot is captured from the frame after the one the player asks on,
+    // so the picture holds the level alone: neither the red border nor the
+    // script interface is drawn into it.
     if (p->taking_screenshot) {
         p->taking_screenshot = false;
+        LUA_UI_HideNextFrame();
     } else {
-        UI_PhotoMode(PhotoMode_GetCurrentMode());
+        const int32_t frame_thickness =
+            (int32_t)(UI_Scaler_Calc(4.0f, UI_SCALER_TARGET_TEXT) + 0.5f);
+        Output_DrawPhotoModeFrame(frame_thickness);
     }
 }
 

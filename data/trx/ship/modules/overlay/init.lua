@@ -17,6 +17,10 @@
 -- owns where it goes, so what this places is stacked beside what the
 -- inventory ring and the dialogs place rather than over it.
 
+-- The photo mode panel belongs to the overlay, so every game gets it with the
+-- rest of the overlay.
+require("common.overlay.photo_mode")
+
 local ui = trx.ui
 local signal = trx.signal
 local lara = trx.lara
@@ -565,8 +569,7 @@ do
     })
   end
 
-  -- The key is named where it is read, so what carries it into the shipped
-  -- strings can see it.
+  -- The key is named at the point of use, so the shipped strings can see it.
   local function title(shown, read)
     return ui.widgets.Label({ text = state.language:map(read), shown = shown })
   end

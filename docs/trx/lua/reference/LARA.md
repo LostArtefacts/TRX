@@ -18,7 +18,8 @@ Her position, room and hit points are not here: she is an item like any other an
 
 ### Properties
 
-- <a id="lara.can_pose" name="lara.can_pose"></a>**`trx.lara.can_pose`** (boolean). Whether Lara has poses available to cycle through in photo mode. Only some outfits have them. *(read-only)*
+- <a id="lara.can_pose" name="lara.can_pose"></a>**`trx.lara.can_pose`** (boolean). Whether poses are available for Lara to cycle through in photo mode.
+  This is false when no poses are defined or during cutscenes. *(read-only)*
 - <a id="lara.animation_object" name="lara.animation_object"></a>**`trx.lara.animation_object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The object Lara's animations are coming from. It is normally Lara herself, and something else while a vehicle or a scripted sequence drives her. *(read-only)*
 - <a id="lara.item" name="lara.item"></a>**`trx.lara.item`** ([trx.items.Item](ITEMS.md#items.Item)). Lara's own item, or `nil` outside a level. Her position, room and hit points are read and written there. *(read-only)*
 - <a id="lara.target" name="lara.target"></a>**`trx.lara.target`** ([trx.items.Item](ITEMS.md#items.Item)). The item Lara's guns are locked onto, or `nil` if she has none. *(read-only)*

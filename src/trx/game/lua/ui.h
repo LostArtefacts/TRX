@@ -8,6 +8,10 @@ bool LUA_UI_IsDrawing(void);
 // Opens each region and lets scripts add widgets to it.
 void LUA_UI_DrawRegions(void);
 
+// Hides the script interface from the next drawn frame so a screenshot contains
+// only the picture.
+void LUA_UI_HideNextFrame(void);
+
 // Lets scripts draw into the boxes reserved during scene layout.
 void LUA_UI_PaintRegions(void);
 

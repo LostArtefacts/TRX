@@ -5,6 +5,8 @@
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/regions.h>
 
+static bool m_HideNextFrame = false;
+
 static void M_Init(void)
 {
     UI_SetPaintHook(LUA_UI_PaintRegions);
@@ -17,8 +19,17 @@ void LUA_UI_PaintRegions(void)
     LUA_UI_SetPainting(false);
 }
 
+void LUA_UI_HideNextFrame(void)
+{
+    m_HideNextFrame = true;
+}
+
 void LUA_UI_DrawRegions(void)
 {
+    if (m_HideNextFrame) {
+        m_HideNextFrame = false;
+        return;
+    }
     for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
         UI_BeginRegion((UI_REGION)i);
         LUA_UI_SetDrawing(true);
