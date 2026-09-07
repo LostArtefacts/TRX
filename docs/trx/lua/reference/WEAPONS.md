@@ -151,7 +151,7 @@ trx.weapons.flare.glow.color = "33e5ff"
     unrelated one.
 
     Properties:
-    - <a id="weapons.Weapon.aim_speed" name="weapons.Weapon.aim_speed"></a>**`aim_speed`**: [trx.math.Angle](MATH.md#math.Angle). How far the arms swing towards the target each frame.
+    - <a id="weapons.Weapon.aim_speed" name="weapons.Weapon.aim_speed"></a>**`aim_speed`**: [trx.math.Angle](MATH.md#math.Angle). How far the arms swing towards the target each frame, in engine units. A spec says the same thing in degrees, as `aim.speed`.
     - <a id="weapons.Weapon.damage" name="weapons.Weapon.damage"></a>**`damage`**: integer. Hit points one shot takes off what it hits.
     - <a id="weapons.Weapon.fire_overlay_pitch" name="weapons.Weapon.fire_overlay_pitch"></a>**`fire_overlay_pitch`**: integer. The pitch at which to play the overlay sample.
     - <a id="weapons.Weapon.fire_overlay_sample" name="weapons.Weapon.fire_overlay_sample"></a>**`fire_overlay_sample`**: [trx.catalog.samples](CATALOG.md#catalog.samples). The overlay sample a shot plays. One this game has no sound for is silent.
@@ -160,9 +160,9 @@ trx.weapons.flare.glow.color = "33e5ff"
     - <a id="weapons.Weapon.id" name="weapons.Weapon.id"></a>**`id`**: [trx.catalog.weapons](CATALOG.md#catalog.weapons). Which weapon this is, for the calls that take one: `trx.inventory:set_shots(weapon.id, 100)`. *(read-only)*
     - <a id="weapons.Weapon.is_available" name="weapons.Weapon.is_available"></a>**`is_available`**: boolean. Whether the game allows the weapon at all. Turning one off keeps it out of the cheats and off the controls list, and a save that carries it arrives without it.
     - <a id="weapons.Weapon.kind" name="weapons.Weapon.kind"></a>**`kind`**: [trx.weapons.Kind](#weapons.Kind). How the engine holds and fires it.
-    - <a id="weapons.Weapon.shot_accuracy" name="weapons.Weapon.shot_accuracy"></a>**`shot_accuracy`**: [trx.math.Angle](MATH.md#math.Angle). How wide a cone a shot may stray into. `0` never misses.
+    - <a id="weapons.Weapon.shot_accuracy" name="weapons.Weapon.shot_accuracy"></a>**`shot_accuracy`**: [trx.math.Angle](MATH.md#math.Angle). How wide a cone a shot may stray into, in engine units. `0` never misses. A spec says the same thing in degrees, as `aim.accuracy`.
     - <a id="weapons.Weapon.smoke_count" name="weapons.Weapon.smoke_count"></a>**`smoke_count`**: integer. How many puffs of smoke a shot leaves at the muzzle, in TR3. `0` for none.
-    - <a id="weapons.Weapon.target_dist" name="weapons.Weapon.target_dist"></a>**`target_dist`**: [trx.math.Distance](MATH.md#math.Distance). How far the weapon reaches, both for auto-aim and for the shot itself.
+    - <a id="weapons.Weapon.target_dist" name="weapons.Weapon.target_dist"></a>**`target_dist`**: [trx.math.Distance](MATH.md#math.Distance). How far the weapon reaches, both for auto-aim and for the shot itself, in world units. A spec says the same thing in sectors, as `aim.target_dist`, and [`trx.math.from_sectors`](MATH.md#math.from_sectors) converts.
 
     Computed properties (derived, not stored on the object):
     - <a id="weapons.Weapon.ammo" name="weapons.Weapon.ammo"></a>**`ammo`**: [trx.weapons.Ammo](#weapons.Ammo). What the weapon is fed.
@@ -181,6 +181,74 @@ trx.weapons.flare.glow.color = "33e5ff"
     - <a id="weapons.Weapon.shell_pos" name="weapons.Weapon.shell_pos"></a>**`shell_pos`**: [trx.weapons.HandPos](#weapons.HandPos). Where a spent shell is thrown from. A weapon that leaves no shells has this at the origin.
 
 ### Functions
+
+- <a id="weapons.declare" name="weapons.declare"></a>[lua]`trx.weapons.declare(weapon, spec)`  
+  Adds a weapon of a script's own, under a name the game does not hold yet.
+  A weapon of a kind the engine implements is held, drawn and put away as the
+  weapons of that kind are, and only what it does when it fires is a script's
+  to write. Raises where the spec says neither a kind nor a base, and where
+  the name is taken, so that two mods claiming one weapon are heard;
+  [`trx.weapons.patch`](#weapons.patch) changes a weapon that is there already.
+
+  Parameters:
+  - <a id="weapons.declare.weapon" name="weapons.declare.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons) or string). Which weapon, by id or by name. A name of its own wants a prefix, so that two mods do not claim one weapon.
+  - <a id="weapons.declare.spec" name="weapons.declare.spec"></a>**`spec`** (table). What the weapon is, keyed as an entry of the weapons file is: `kind`, the groups it is built from (`objects`, `ammo`, `aim`, `anim`, `flash`, `glow`, `muzzle`, `smoke`, `shell`, `sound`, `stow`, `save`, `cheat`), and its own numbers beside them. `base` starts the weapon from another one, and `fire` takes either the name of a routine the engine holds or a function of a script's own. A key the table leaves out keeps the value the weapon has, and a key the reader does not know, or a value that is not the shape its name calls for, raises and writes nothing.
+    A spec is written in the units a weapons file is written in: an angle in degrees and a distance in sectors. A weapon field holds the engine's own units, as every other field of the API does, so a spec that says `aim.speed = 10` reads back as `weapon.aim_speed == 1820`.
+
+  Returns: [trx.weapons.Weapon](#weapons.Weapon). The weapon, to read or write the rest of its numbers.
+
+  Example:
+  ```lua
+  trx.weapons.declare("mymod:bigger_gun", {
+    base = "shotgun",
+    kind = "rifle",
+    objects = {
+      pickup = "shotgun_item",
+      ammo = "shotgun_ammo_item",
+      anim = "lara_shotgun",
+    },
+    ammo = { initial_shots = 12, box_shots = 12 },
+    damage = 30,
+    fire = function(weapon, running)
+      trx.sound.play(trx.catalog.samples.explosion)
+    end,
+  })
+  ```
+
+- <a id="weapons.patch" name="weapons.patch"></a>[lua]`trx.weapons.patch(weapon, spec)`  
+  Writes a spec into a weapon the game already holds, and raises where it holds no such weapon. This is [`trx.weapons.declare`](#weapons.declare) for a script that would rather hear about a name it got wrong than mint a weapon nothing draws.
+
+  Parameters:
+  - <a id="weapons.patch.weapon" name="weapons.patch.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons) or string). Which weapon, by id or by name.
+  - <a id="weapons.patch.spec" name="weapons.patch.spec"></a>**`spec`** (table). What the weapon is, keyed as an entry of the weapons file is: `kind`, the groups it is built from (`objects`, `ammo`, `aim`, `anim`, `flash`, `glow`, `muzzle`, `smoke`, `shell`, `sound`, `stow`, `save`, `cheat`), and its own numbers beside them. `base` starts the weapon from another one, and `fire` takes either the name of a routine the engine holds or a function of a script's own. A key the table leaves out keeps the value the weapon has, and a key the reader does not know, or a value that is not the shape its name calls for, raises and writes nothing.
+    A spec is written in the units a weapons file is written in: an angle in degrees and a distance in sectors. A weapon field holds the engine's own units, as every other field of the API does, so a spec that says `aim.speed = 10` reads back as `weapon.aim_speed == 1820`.
+
+  Returns: [trx.weapons.Weapon](#weapons.Weapon). The weapon, to read or write the rest of its numbers.
+
+  Example:
+  ```lua
+  trx.weapons.patch("uzis", {
+    damage = 2,
+    ammo = { box_shots = 80 },
+  })
+  ```
+
+- <a id="weapons.set_fire" name="weapons.set_fire"></a>[lua]`trx.weapons.set_fire(weapon, handler)`  
+  States what a weapon does when it is fired, in place of the routine it fired
+  with before. One weapon holds one handler, so a second call replaces the
+  first rather than adding to it. The handler is given the weapon and whether
+  Lara is running as she fires, and states the same thing as `fire` in a spec.
+
+  Parameters:
+  - <a id="weapons.set_fire.weapon" name="weapons.set_fire.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons) or string). Which weapon, by id or by name.
+  - <a id="weapons.set_fire.handler" name="weapons.set_fire.handler"></a>**`handler`** (function). Called as the weapon fires.
+
+  Example:
+  ```lua
+  trx.weapons.set_fire("mymod:bigger_gun", function(weapon, running)
+    trx.sound.play(trx.catalog.samples.explosion)
+  end)
+  ```
 
 - <a id="weapons.get" name="weapons.get"></a>[lua]`trx.weapons.get(key)`  
   Retrieves a weapon definition by id or by name.

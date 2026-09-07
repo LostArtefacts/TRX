@@ -5,10 +5,10 @@ order: 13
 
 # Weapons
 
-The file `cfg/weapons.json5` says which weapons a game has and how each one is
-configured. A weapon the file does not name is not in the game. The engine
-provides the code for drawing, holding and firing weapons, and the file names
-which routines each weapon uses.
+The file `cfg/weapons.json5` says which weapons a game has, and what each one
+is. A weapon the file does not name is not in the game at all. The engine
+carries the code a weapon is drawn, held and fired by, and the file names which
+of it the weapon uses.
 
 The weapons the games ship with are the pistols, the magnums, the automatic
 pistols, the desert eagle, the revolver, the uzis, the shotgun, the M16, the
@@ -16,8 +16,10 @@ MP5, the grenade launcher, the rocket launcher, the harpoon gun, the crossbow,
 the black skidoo, and the flare, which is not strictly a weapon but is treated
 as one.
 
-Each entry is keyed by the weapon name. Its standalone values sit at the top;
-related values, such as its objects, ammunition and aim, are grouped below.
+An entry is keyed by the weapon and holds what the weapon is. The numbers it
+carries on its own sit at the top, and everything the engine treats as a group
+of its own - the objects it is made of, its ammunition, its aim - is a group
+here as well.
 
 ```json5
 "uzis": {
@@ -51,14 +53,22 @@ related values, such as its objects, ammunition and aim, are grouped below.
 }
 ```
 
-A spec is written in the units a file is written in: an angle is in degrees,
-and a distance in sectors. The engine holds its own units instead, so a spec
-that says `aim.speed = 10` is held as `1820`, and `aim.target_dist = 8.0` as
-`8192`. Write degrees and sectors in the file.
+A script states the same thing in the same words, and may add a weapon of its
+own; see the [Weapon module](lua/reference/WEAPONS.md).
 
-An XYZ value is an array of three numbers, or an object naming all three of
-`x`, `y` and `z`. A weapon that leaves the key out keeps the offset it already
-has.
+```lua
+trx.weapons.patch("uzis", { damage = 2, ammo = { box_shots = 80 } })
+```
+
+A spec is written in the units a file is written in: an angle is in degrees,
+and a distance in sectors. The weapon a script reads back holds the engine's
+own units instead, so a spec that says `aim.speed = 10` reads back as
+`weapon.aim_speed == 1820`, and `aim.target_dist = 8.0` as
+`weapon.target_dist == 8192`. Write degrees and sectors in a spec, and
+`trx.math.Angle` and `trx.math.Distance` everywhere else.
+
+An XYZ value is an array of three numbers, or a group naming all three of
+`x`, `y` and `z`. A weapon that leaves the key out keeps the offset it has.
 
 ## What a weapon holds
 
@@ -98,7 +108,7 @@ The keys a weapon states on its own:
   <tr valign="top">
     <td><code>fire</code></td>
     <td>String</td>
-    <td>What the weapon does when it is fired: <code>generic</code>, <code>m16</code>, <code>grenade</code>, <code>rocket</code> or <code>harpoon</code>. </td>
+    <td>What the weapon does when it is fired: <code>generic</code>, <code>m16</code>, <code>grenade</code>, <code>rocket</code> or <code>harpoon</code>. A script may state a function of its own here instead, or through <code>trx.weapons.on_fire</code>.</td>
   </tr>
   <tr valign="top">
     <td><code>is_available</code></td>
@@ -151,9 +161,9 @@ The keys a weapon states on its own:
     <th>Description</th>
   </tr>
   <tr valign="top">
-    <td><code>pickup</code></td>
+    <td><code>weapon</code></td>
     <td>String</td>
-    <td>The object Lara picks up for the weapon.</td>
+    <td>What Lara picks the weapon up as.</td>
   </tr>
   <tr valign="top">
     <td><code>ammo</code></td>

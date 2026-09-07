@@ -634,6 +634,11 @@ OBJECT_MESH *Object_GetMesh(const int32_t index)
     return &m_Mesh;
 }
 
+OBJECT_ID Object_IdFromKey(const char *const key)
+{
+    return Catalog_KeyToID(CATALOG_OBJECTS, key, NO_OBJECT);
+}
+
 const char *Object_GetName(const OBJECT_ID obj_id)
 {
     // The fake level localizes nothing, so a lookup always takes the

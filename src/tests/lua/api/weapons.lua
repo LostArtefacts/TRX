@@ -209,4 +209,156 @@ test("what a weapon takes and what it is worth", function()
   end)
 end)
 
+test("a script declares a weapon of its own, by name", function()
+  local weapon = trx.weapons.declare("mymod:bigger_gun", {
+    kind = "rifle",
+    damage = 30,
+    gun_height = 650,
+    ammo = { box_shots = 12, infinite = false },
+    aim = { speed = 10, accuracy = 8 },
+  })
+  assert(weapon ~= nil)
+  assert(weapon.id == trx.catalog.weapons["mymod:bigger_gun"])
+  assert(weapon.damage == 30)
+  assert(weapon.gun_height == 650)
+  assert(weapon.ammo.box_shots == 12)
+end)
+
+test("a weapon that is there already is not declared twice", function()
+  trx.weapons.declare("mymod:one_gun", { kind = "rifle", damage = 30 })
+  raises(function()
+    trx.weapons.declare("mymod:one_gun", { damage = 40 })
+  end, "patch it")
+  local weapon = trx.weapons.get(trx.catalog.weapons["mymod:one_gun"])
+  assert(weapon.damage == 30, "what stands is left alone")
+end)
+
+test("a weapon starts from the one it names as its base", function()
+  trx.weapons.patch(WEAPONS.SHOTGUN, { damage = 11, gun_height = 640 })
+  local weapon = trx.weapons.declare("mymod:second_gun", {
+    base = "shotgun",
+    kind = "rifle",
+    damage = 12,
+  })
+  assert(weapon.damage == 12, "what the spec says wins")
+  assert(weapon.gun_height == 640, "the rest comes from the base")
+end)
+
+test("patching leaves what it does not name", function()
+  local weapon = trx.weapons.declare("mymod:kept_gun", {
+    kind = "rifle",
+    is_available = false,
+    damage = 5,
+  })
+  trx.weapons.patch(weapon.id, { damage = 6 })
+  assert(trx.weapons.get(weapon.id).damage == 6)
+  assert(not trx.weapons.get(weapon.id).is_available, "availability stands")
+end)
+
+test("patching states nothing new", function()
+  trx.weapons.patch("uzis", { damage = 2, ammo = { box_shots = 80 } })
+  assert(trx.weapons.get(WEAPONS.UZIS).damage == 2)
+  assert(trx.weapons.get(WEAPONS.UZIS).ammo.box_shots == 80)
+
+  raises(function()
+    trx.weapons.patch("mymod:nothing_at_all", { damage = 1 })
+  end)
+end)
+
+test("a name the spec leaves empty states nothing", function()
+  local weapon = trx.weapons.declare("mymod:quiet_gun", {
+    kind = "rifle",
+    sound = { fire = "" },
+    fire = "",
+  })
+  assert(weapon ~= nil)
+end)
+
+test("a value of the wrong shape is refused, not passed over", function()
+  raises(function()
+    trx.weapons.patch("uzis", { damage = "80" })
+  end)
+  raises(function()
+    trx.weapons.patch("uzis", { ammo = { box_shots = "80" } })
+  end)
+  raises(function()
+    trx.weapons.patch("uzis", { is_remembered = 1 })
+  end)
+  raises(function()
+    trx.weapons.patch("uzis", { anim = { equip = 0.5 } })
+  end)
+  raises(function()
+    trx.weapons.patch("uzis", { aim = { lock = { 1, 2, 3 } } })
+  end)
+  raises(function()
+    trx.weapons.patch("uzis", { aim = { lock = { 1, "bad", 3, 4 } } })
+  end)
+  raises(function()
+    trx.weapons.patch("uzis", { flash = { pos = 7 } })
+  end)
+  raises(function()
+    trx.weapons.patch("uzis", { flash = { pos = { x = "bad" } } })
+  end)
+  raises(function()
+    trx.weapons.patch("uzis", { objects = 7 })
+  end)
+end)
+
+test("a spec that is wrong anywhere leaves the weapon as it stood", function()
+  trx.weapons.patch("uzis", { damage = 3, gun_height = 620 })
+  raises(function()
+    trx.weapons.patch("uzis", { damage = 9, gun_height = "high" })
+  end)
+  assert(trx.weapons.get(WEAPONS.UZIS).damage == 3, "the first key stands")
+  assert(trx.weapons.get(WEAPONS.UZIS).gun_height == 620)
+end)
+
+test("a weapon a spec cannot finish is not left half stated", function()
+  raises(function()
+    trx.weapons.declare("mymod:half_gun", { kind = "rifle", damage = "lots" })
+  end)
+  local weapon = trx.weapons.get(trx.catalog.weapons["mymod:half_gun"])
+  assert(weapon.damage == 0, "nothing the spec named was written")
+  assert(weapon.kind ~= trx.weapons.Kind.RIFLE, "and it was not declared")
+end)
+
+test("a weapon may not name a routine the engine does not have", function()
+  raises(function()
+    trx.weapons.declare(
+      "mymod:noisy_gun",
+      { kind = "rifle", fire = "nothing" }
+    )
+  end)
+end)
+
+test("a weapon kind the engine does not have is refused", function()
+  raises(function()
+    trx.weapons.declare("mymod:other_gun", { kind = "trebuchet" })
+  end)
+end)
+
+test("a script writes what a weapon fires with", function()
+  local weapon = trx.weapons.declare("mymod:own_fire_gun", {
+    kind = "rifle",
+    damage = 4,
+    fire = function(w, running) end,
+  })
+  assert(weapon.damage == 4, "the rest of the spec is read as well")
+  trx.weapons.patch(weapon.id, { fire = function(w, running) end })
+  trx.weapons.set_fire(weapon.id, function(w, running) end)
+end)
+
+test("a weapon of a script's own says what it is", function()
+  raises(function()
+    trx.weapons.declare("mymod:kindless_gun", { damage = 30 })
+  end, "neither a kind nor a base")
+end)
+
+test("a weapon nothing drives is claimed all the same", function()
+  trx.weapons.declare("mymod:mounted_gun", { kind = "mounted", damage = 30 })
+  raises(function()
+    trx.weapons.declare("mymod:mounted_gun", { kind = "mounted" })
+  end, "patch it")
+end)
+
 return h.report()

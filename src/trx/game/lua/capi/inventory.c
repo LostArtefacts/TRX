@@ -1,3 +1,5 @@
+#include <trx/core/strings.h>
+#include <trx/game/catalog/manager.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/gun.h>
 #include <trx/game/gun/common.h>
@@ -103,8 +105,17 @@ static int32_t M_GetCount(lua_State *const L, const int arg)
 static LARA_GUN_TYPE M_GetWeapon(lua_State *const L, const int arg)
 {
     const lua_Integer gun_type = luaL_checkinteger(L, arg);
-    if (gun_type <= LGT_UNARMED || !Gun_Registry_IsValidType(gun_type)) {
-        luaL_argerror(L, arg, "not a weapon");
+    if (!Gun_Registry_IsValidType(gun_type)) {
+        luaL_argerror(
+            L, arg,
+            String_FormatStatic("there is no weapon %d", (int32_t)gun_type));
+    }
+    if (gun_type <= LGT_UNARMED) {
+        luaL_argerror(
+            L, arg,
+            String_FormatStatic(
+                "'%s' is empty hands rather than a weapon",
+                Catalog_IDToKey(CATALOG_WEAPONS, gun_type)));
     }
     return (LARA_GUN_TYPE)gun_type;
 }

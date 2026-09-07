@@ -1,8 +1,3 @@
-// One Lara, standing still. Her state is a real LARA_INFO, reached through the
-// real reflection layer - that is what is under test. The handful of things
-// that are not fields of it (her item, her outfit, her holsters) are faked
-// here.
-
 #include <fakes/lara.h>
 
 #include <harness/fake_calls.h>
@@ -12,6 +7,7 @@
 #include <trx/game/const.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
+#include <trx/game/gun/routines.h>
 #include <trx/game/gun/types.h>
 #include <trx/game/inventory.h>
 #include <trx/game/items/manager.h>
@@ -21,7 +17,6 @@
 #include <lauxlib.h>
 #include <string.h>
 
-// The weapon table the bridge walks to decide whether Lara has a pistol at all.
 static WEAPON_INFO m_Weapons[MAX_WEAPONS] = {
     [LGT_PISTOLS] = { .type = WEAPON_TYPE_DUAL_PISTOLS },
 };
@@ -32,26 +27,18 @@ static int32_t m_SpeechFace;
 static bool m_HasPistols;
 static LARA_SKIN_TYPE m_Skin;
 
-// Which pickups share a backpack entry with another, as the scion's states do.
 static struct {
     OBJECT_ID variant;
     OBJECT_ID base;
 } m_InvShared[FAKE_INV_SHARED];
 
-// The inventory Lara is carrying, which is a state like any other - the same
-// one trx.inventory reaches. The engine maps a pickup to the icon it goes into
-// before it counts; the fake keeps that mapping and nothing else.
 static INVENTORY_STATE m_LiveState;
 static bool m_CanAdd = true;
 
-// The gun types the engine has registered, which the bridges walk instead of
-// counting weapon slots.
 static const WEAPON_INFO m_GunTypes[] = {
     { .gun_type = LGT_PISTOLS },
 };
 
-// A stored inventory is a plain struct, so the fake works it as the engine
-// does rather than standing in for it.
 static INVENTORY_ENTRY *M_StateEntry(
     INVENTORY_STATE *const state, const OBJECT_ID object_id)
 {
@@ -74,7 +61,6 @@ static void M_Reset(void)
     m_Lara.gun_type = LGT_UNARMED;
     m_Lara.request_gun_type = LGT_UNARMED;
     m_Lara.hit_direction = -1;
-    // One damp mesh, so a test can watch is_wet flip when Lara is dried.
     m_Lara.wet[LM_HEAD] = 1;
     m_HolstersVisible = true;
     m_SpeechFace = -1;
@@ -87,10 +73,27 @@ static void M_Reset(void)
     m_LiveState = (INVENTORY_STATE) {};
 }
 
+RESULT Gun_Registry_SetKind(const WEAPON_TYPE type, WEAPON_INFO *const target)
+{
+    target->type = type;
+    return OK;
+}
+
+RESULT Gun_Registry_Declare(
+    const LARA_GUN_TYPE gun_type, const WEAPON_TYPE type,
+    WEAPON_INFO *const target)
+{
+    FAIL_IF(
+        gun_type <= LGT_UNARMED || gun_type >= MAX_WEAPONS,
+        "there is no weapon %d", (int32_t)gun_type);
+    FAIL_IF(target->is_declared, "already declared");
+    target->type = type;
+    target->is_declared = true;
+    return OK;
+}
+
 WEAPON_INFO *Gun_Registry_Get(const LARA_GUN_TYPE gun_type)
 {
-    // The real registry stamps the row with its own type as it seeds the
-    // table, which nothing here does.
     m_Weapons[gun_type].gun_type = gun_type;
     return &m_Weapons[gun_type];
 }
@@ -100,9 +103,6 @@ LARA_INFO *Lara_GetLaraInfo(void)
     return &m_Lara;
 }
 
-// Lara is item 0 in the pool, which a script sees as item 1: Lua indexes items
-// from 1. trx.lara.item is a live Item handle out of the same pool as any
-// other.
 ITEM *Lara_GetItem(void)
 {
     return Item_Get(0);
@@ -128,10 +128,6 @@ int16_t Item_GetRelativeObjAnim(const ITEM *const item, const OBJECT_ID obj_id)
     return -1;
 }
 
-// The engine holds one backpack entry per inventory icon, and several pickups
-// can share one - the scion in each of its states, a waterskin at each fill
-// level. The fake keeps that split, so a test can tell a command that works in
-// the wrong id space from one that does not.
 OBJECT_ID Inv_GetItemOption(const OBJECT_ID object_id)
 {
     for (int32_t i = 0; i < FAKE_INV_SHARED; i++) {
@@ -142,8 +138,6 @@ OBJECT_ID Inv_GetItemOption(const OBJECT_ID object_id)
     return object_id;
 }
 
-// The same pairing gun/common.c makes, which is what keeps a bridge that hands
-// an object id on reachable from a test.
 // clang-format off
 OBJECT_ID FakeLara_GunObject(const LARA_GUN_TYPE gun_type)
 {
@@ -196,8 +190,6 @@ OBJECT_ID Gun_GetAmmoObject(const LARA_GUN_TYPE gun_type)
     return FakeLara_AmmoObject(gun_type);
 }
 
-// The object a rifle's own animations come from. No level is loaded here, so
-// there are no animations to count and the pickup stands in for it.
 OBJECT_ID Gun_GetWeaponAnim(const LARA_GUN_TYPE gun_type)
 {
     return FakeLara_GunObject(gun_type);
@@ -208,8 +200,6 @@ bool Gun_HasInfiniteAmmo(const LARA_GUN_TYPE gun_type)
     return false;
 }
 
-// The shotgun spends six rounds a shot, as the engine's table says, so a test
-// can tell the two units apart.
 int32_t Gun_GetRoundsPerShot(const LARA_GUN_TYPE gun_type)
 {
     return gun_type == LGT_SHOTGUN ? 6 : 1;
@@ -263,8 +253,6 @@ bool Inv_RemoveItem(const OBJECT_ID object_id)
 
 int32_t Inv_GetItemCount(const OBJECT_ID object_id)
 {
-    // Lara's pistols are not in the backpack the fake models; the surface asks
-    // for them by way of has_pistol_weapon, which is what m_HasPistols answers.
     if (object_id == FakeLara_GunObject(LGT_PISTOLS)) {
         return m_HasPistols ? 1 : 0;
     }
@@ -332,8 +320,6 @@ void Inv_State_CopyAmmo(
     dst->ammo_count = src->ammo_count;
 }
 
-// Every slot holding something, in the order it was taken: the fake derives no
-// boxes of ammunition, having no weapons table to derive them from.
 int32_t Inv_State_GetDrawnEntries(
     const INVENTORY_STATE *const state, INVENTORY_ENTRY *const entries,
     const int32_t max_count)
@@ -357,7 +343,7 @@ const WEAPON_INFO *Gun_Registry_GetByIndex(const int32_t idx)
 
 bool Gun_Registry_IsValidType(const LARA_GUN_TYPE gun_type)
 {
-    return gun_type >= LGT_UNARMED && gun_type < NUM_WEAPONS;
+    return gun_type >= LGT_UNARMED && gun_type < MAX_WEAPONS;
 }
 
 LARA_GUN_TYPE Gun_GetType(const OBJECT_ID object_id)
@@ -601,6 +587,60 @@ void FakeLara_ShareInvEntry(const OBJECT_ID variant, const OBJECT_ID base)
             return;
         }
     }
+}
+
+const GUN_KIND_ROUTINES *Gun_Routines_GetKind(const WEAPON_TYPE type)
+{
+    static const GUN_KIND_ROUTINES routines = {};
+    switch (type) {
+    case WEAPON_TYPE_SINGLE_PISTOL:
+    case WEAPON_TYPE_DUAL_PISTOLS:
+    case WEAPON_TYPE_RIFLE:
+    case WEAPON_TYPE_FLARE:
+        return &routines;
+    default:
+        return nullptr;
+    }
+}
+
+void Gun_Registry_AddSetupHook(void (*const hook)(void))
+{
+}
+
+const char *Gun_Registry_KeepString(const char *const str)
+{
+    return str;
+}
+
+void Gun_Registry_SetInputRole(
+    const LARA_GUN_TYPE gun_type, const INPUT_ROLE role)
+{
+    Gun_Registry_Get(gun_type)->equip_input_role = role;
+}
+
+void (*Gun_Routines_GetFire(const char *const name))(LARA_GUN_TYPE, bool)
+{
+    return nullptr;
+}
+
+GUN_FLASH (*Gun_Routines_GetFlash(const char *const name))(void)
+{
+    return nullptr;
+}
+
+void (*Gun_Routines_GetSound(const char *const name))(bool)
+{
+    return nullptr;
+}
+
+int16_t (*Gun_Routines_GetReadyAnim(const char *const name))(void)
+{
+    return nullptr;
+}
+
+uint8_t (*Gun_Routines_GetSmokeSize(const char *const name))(void)
+{
+    return nullptr;
 }
 
 LARA_GUN_TYPE Lara_Vehicle_GetGunType(void)

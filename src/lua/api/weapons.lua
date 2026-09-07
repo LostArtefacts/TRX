@@ -227,12 +227,14 @@ api.type("weapons.Weapon", {
     aim_speed = {
       from = "aim_speed",
       type = "math.Angle",
-      description = "How far the arms swing towards the target each frame.",
+      description = "How far the arms swing towards the target each frame, in engine "
+        .. "units. A spec says the same thing in degrees, as `aim.speed`. <!--noref: aim.speed-->",
     },
     shot_accuracy = {
       from = "shot_accuracy",
       type = "math.Angle",
-      description = "How wide a cone a shot may stray into. `0` never misses.",
+      description = "How wide a cone a shot may stray into, in engine units. `0` never "
+        .. "misses. A spec says the same thing in degrees, as `aim.accuracy`. <!--noref: aim.accuracy-->",
     },
     gun_height = {
       from = "gun_height",
@@ -248,7 +250,10 @@ api.type("weapons.Weapon", {
     target_dist = {
       from = "target_dist",
       type = "math.Distance",
-      description = "How far the weapon reaches, both for auto-aim and for the shot itself.",
+      description = "How far the weapon reaches, both for auto-aim and for the shot "
+        .. "itself, in world units. A spec says the same thing in sectors, as "
+        .. "`aim.target_dist`, and `trx.math.from_sectors` converts. "
+        .. "<!--noref: aim.target_dist-->",
     },
     smoke_count = {
       from = "smoke_count",
@@ -393,6 +398,124 @@ local function weapon_id(key)
   end
   return nil
 end
+
+local SPEC_PARAM = {
+  name = "spec",
+  type = "table",
+  description = "What the weapon is, keyed as an entry of the weapons file is: `kind`, the "
+    .. "groups it is built from (`objects`, `ammo`, `aim`, `anim`, `flash`, `glow`, `muzzle`, "
+    .. "`smoke`, `shell`, `sound`, `stow`, `save`, `cheat`), and its own numbers beside them. "
+    .. "`base` starts the weapon from another one, and `fire` takes either the name of a "
+    .. "routine the engine holds or a function of a script's own. A key the table leaves out "
+    .. "keeps the value the weapon has, and a key the reader does not know, or a value that "
+    .. "is not the shape its name calls for, raises and writes nothing.\n\n"
+    .. "A spec is written in the units a weapons file is written in: an angle in degrees and "
+    .. "a distance in sectors. A weapon field holds the engine's own units, as every other "
+    .. "field of the API does, so a spec that says `aim.speed = 10` reads back as "
+    .. "`weapon.aim_speed == 1820`. "
+    .. "<!--noref: kind--><!--noref: objects--><!--noref: ammo--><!--noref: aim-->"
+    .. "<!--noref: anim--><!--noref: flash--><!--noref: glow--><!--noref: muzzle-->"
+    .. "<!--noref: smoke--><!--noref: shell--><!--noref: sound--><!--noref: stow-->"
+    .. "<!--noref: save--><!--noref: cheat--><!--noref: base--><!--noref: fire-->",
+}
+
+local WEAPON_TARGET_PARAM = {
+  name = "weapon",
+  type = { "catalog.weapons", "string" },
+  description = "Which weapon, by id or by name.",
+}
+
+api.define("weapons.declare", {
+  description = [[
+    Adds a weapon of a script's own, under a name the game does not hold yet.
+    A weapon of a kind the engine implements is held, drawn and put away as the
+    weapons of that kind are, and only what it does when it fires is a script's
+    to write. Raises where the spec says neither a kind nor a base, and where
+    the name is taken, so that two mods claiming one weapon are heard;
+    `trx.weapons.patch` changes a weapon that is there already.
+  ]],
+  params = {
+    {
+      name = "weapon",
+      type = { "catalog.weapons", "string" },
+      description = "Which weapon, by id or by name. A name of its own wants a prefix, so "
+        .. "that two mods do not claim one weapon.",
+    },
+    SPEC_PARAM,
+  },
+  returns = {
+    type = "weapons.Weapon",
+    description = "The weapon, to read or write the rest of its numbers.",
+  },
+  examples = {
+    [[trx.weapons.declare("mymod:bigger_gun", {
+  base = "shotgun",
+  kind = "rifle",
+  objects = {
+    pickup = "shotgun_item",
+    ammo = "shotgun_ammo_item",
+    anim = "lara_shotgun",
+  },
+  ammo = { initial_shots = 12, box_shots = 12 },
+  damage = 30,
+  fire = function(weapon, running)
+    trx.sound.play(trx.catalog.samples.explosion)
+  end,
+})]],
+  },
+  impl = function(weapon, spec)
+    assert(type(spec) == "table", "trx.weapons.declare expects a table")
+    return raw.declare(weapon, spec)
+  end,
+})
+
+api.define("weapons.patch", {
+  description = "Writes a spec into a weapon the game already holds, and raises where it "
+    .. "holds no such weapon. This is `trx.weapons.declare` for a script that would rather "
+    .. "hear about a name it got wrong than mint a weapon nothing draws.",
+  params = {
+    WEAPON_TARGET_PARAM,
+    SPEC_PARAM,
+  },
+  returns = {
+    type = "weapons.Weapon",
+    description = "The weapon, to read or write the rest of its numbers.",
+  },
+  examples = {
+    [[trx.weapons.patch("uzis", {
+  damage = 2,
+  ammo = { box_shots = 80 },
+})]],
+  },
+  impl = function(weapon, spec)
+    assert(type(spec) == "table", "trx.weapons.patch expects a table")
+    return raw.patch(weapon, spec)
+  end,
+})
+
+api.define("weapons.set_fire", {
+  description = [[
+    States what a weapon does when it is fired, in place of the routine it fired
+    with before. One weapon holds one handler, so a second call replaces the
+    first rather than adding to it. The handler is given the weapon and whether
+    Lara is running as she fires, and states the same thing as `fire` in a spec.
+    <!--noref: fire-->
+  ]],
+  params = {
+    WEAPON_TARGET_PARAM,
+    {
+      name = "handler",
+      type = "function",
+      description = "Called as the weapon fires.",
+    },
+  },
+  examples = {
+    [[trx.weapons.set_fire("mymod:bigger_gun", function(weapon, running)
+  trx.sound.play(trx.catalog.samples.explosion)
+end)]],
+  },
+  impl = raw.set_fire,
+})
 
 local get = api.define("weapons.get", {
   description = "Retrieves a weapon definition by id or by name.",

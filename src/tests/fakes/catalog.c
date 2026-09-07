@@ -19,7 +19,7 @@
 
 // Mint mod IDs after the built-in IDs in each test context to match the real
 // registry.
-#define FAKE_MINTED_MAX 8
+#define FAKE_MINTED_MAX 32
 static char m_Minted[CATALOG_CONTEXT_MAX][FAKE_MINTED_MAX][64];
 static int32_t m_MintedCount[CATALOG_CONTEXT_MAX] = {};
 
