@@ -42,6 +42,7 @@
 - Changed the save, load, level select and mod dialogs to show scroll arrows in every game, as TR1 does (TRX547)
 - Changed vertex snapping to offer Disabled, 320x240, and Upscale Res modes (#6278 / TRX1137)
 - Changed screenshots taken inside photo mode to not include debug overlay elements
+- Changed the pause behavior to be consistent between FMVs and in-game cutscenes (#6537)
 - Fixed a setting description showing a question mark in place of a key that is bound to a combination, such as Alt+Enter (TRX1136)
 - Fixed ability to open the inventory ring while a flyby sequence has Lara's control (TRX1057)
 - Fixed several dialogs running past the screen edges or overlapping headings at large text sizes (#6293 / TRX1154)
