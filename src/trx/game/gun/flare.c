@@ -565,11 +565,4 @@ REGISTER_GUN_KIND(
 
 REGISTER_GUN_ROUTINE(Flash, "flare", M_GetFlash)
 
-REGISTER_GUN_TYPE(
-    .gun_type = LGT_FLARE,
-    .flash_func = M_GetFlash,
-    .draw_func = M_Draw,
-    .undraw_func = M_Undraw,
-    .draw_meshes_func = M_DrawMeshes,
-    .control_func = M_Control)
 // clang-format on

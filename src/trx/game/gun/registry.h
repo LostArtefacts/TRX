@@ -1,21 +1,24 @@
 #pragma once
 
+#include <trx/core/result.h>
 #include <trx/core/utils.h>
 #include <trx/game/gun/types.h>
 #include <trx/game/lara/enum.h>
 
 #include <stdint.h>
 
-// Declares what a weapon does, where the weapon is implemented. A
-// declaration applies before the weapon data does, so a field may move
-// between the two without moving where it is read from.
-void Gun_Registry_Register(const WEAPON_INFO *info);
-
-// Returns every weapon to what its declaration says, discarding what the
-// weapon data set the time before. This runs as the session starts, so that
-// the table is whole before anything reads it, and a weapon file that cannot
-// be read leaves the declarations behind rather than an empty table.
+// Clear the weapon table before reading the weapon file.
 void Gun_Registry_Seed(void);
+
+// Apply the routines for an implemented weapon kind.
+// Report failure if the kind has no implementation.
+RESULT Gun_Registry_SetKind(WEAPON_TYPE type, WEAPON_INFO *target);
+
+// Declare a weapon with the routines and save keys for an implemented kind.
+// Report failure if the kind has no implementation or the weapon is already
+// declared.
+RESULT Gun_Registry_Declare(
+    LARA_GUN_TYPE gun_type, WEAPON_TYPE type, WEAPON_INFO *target);
 
 // Returns the weapon a gun type stands for. Every valid type has one, and a
 // type nothing implements reads as empty, which is the case for empty hands
@@ -35,41 +38,9 @@ int32_t Gun_Registry_GetCount(void);
 // shotgun's key draws its own weapon with it.
 void Gun_Registry_SetInputRole(LARA_GUN_TYPE gun_type, INPUT_ROLE role);
 
+// Keep a string for the rest of the process and return the stored copy.
+const char *Gun_Registry_KeepString(const char *str);
+
 // Return whether the catalog contains the gun type. Legacy saves may contain
 // unsupported types.
 bool Gun_Registry_IsValidType(LARA_GUN_TYPE gun_type);
-
-// A field that stands for nothing at zero takes that value before the
-// declaration names its own, which the compilers report as an override.
-#ifdef __clang__
-    #define M_GUN_TYPE_SEED_DIAGNOSTIC                                         \
-        _Pragma("GCC diagnostic ignored \"-Winitializer-overrides\"")
-#else
-    #define M_GUN_TYPE_SEED_DIAGNOSTIC                                         \
-        _Pragma("GCC diagnostic ignored \"-Woverride-init\"")
-#endif
-
-// Declares a weapon as the file is linked, so nothing has to drive a list and
-// the order modules initialize in does not matter. A declaration that leaves
-// out a field which stands for nothing at zero still reads as empty.
-// clang-format off
-#define REGISTER_GUN_TYPE(...)                                                 \
-    __attribute__((__constructor__)) static void CONCAT(                       \
-        M_RegisterGunType_, __LINE__)(void)                                    \
-    {                                                                          \
-        _Pragma("GCC diagnostic push")                                         \
-        M_GUN_TYPE_SEED_DIAGNOSTIC                                             \
-        static const WEAPON_INFO m_GunType = {                                 \
-            .projectile_object_id = NO_OBJECT,                                 \
-            .equip_input_role = (INPUT_ROLE)-1,                                \
-            .glow.scale = 1.0f,                                                \
-            .gun_object_id = NO_OBJECT,                                        \
-            .ammo_object_id = NO_OBJECT,                                       \
-            .anim_object_id = NO_OBJECT,                                       \
-            .shell_object_id = NO_OBJECT,                                      \
-            __VA_ARGS__,                                                       \
-        };                                                                     \
-        _Pragma("GCC diagnostic pop")                                          \
-        Gun_Registry_Register(&m_GunType);                                     \
-    }
-// clang-format on

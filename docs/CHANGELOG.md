@@ -96,6 +96,7 @@
 - Added an object links file, so a mod can say which pickup an inventory icon stands for, which slot a key goes into, and which box a weapon's rounds come in
 - Added `trx.objects.declare()`, so a script can define how its own object starts, updates, casts a shadow and saves its position
 - Added `trx.objects.borrow_content()`, so an object with no models of its own can use another object's meshes and animations
+- Changed the weapons file to define each game's weapons, so a mod can add or remove a weapon and change what it fires without a new build
 - Changed object keys in strings files, game flows and weapon definitions to use the C object name without `O_`
 - Changed object names in strings files to use `|` between the name the game shows and the names the console accepts
 - Changed weapon, extra mesh, braid mode and extra outfit names in game data to drop their C prefixes, so a weapon is written `shotgun` rather than `LGT_SHOTGUN`

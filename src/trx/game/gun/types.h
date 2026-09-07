@@ -158,6 +158,10 @@ typedef struct {
     // a gun type the engine carries but nothing drives, such as empty hands
     // or a gun fixed to a vehicle.
     bool is_declared;
+    // Whether a spec has claimed this weapon. Claims remain tracked even when
+    // the engine does not implement the weapon kind, so duplicate claims are
+    // still reported.
+    bool is_claimed;
 
     // Whether Lara starts the game with it, and reaches for it when what
     // she holds runs dry.

@@ -32,6 +32,7 @@ typedef struct {
     X(XZ32, XZ_32)                                                             \
     X(RGB888, RGB_888)                                                         \
     X(RGBA8888, RGBA_8888)                                                     \
+    X(RGBF, RGB_F)                                                             \
     X(String, const char *)
 #define JSON_READ_IO_TYPE_LIST JSON_READ_IO_TYPE_LIST_BASE
 
@@ -63,6 +64,12 @@ RESULT JSON_ReadIO_PushArrayElem(JSON_READ_IO *io, size_t index);
 RESULT JSON_ReadIO_Pop(JSON_READ_IO *io);
 int32_t JSON_ReadIO_GetArrayLength(JSON_READ_IO *io);
 bool JSON_ReadIO_HasKey(JSON_READ_IO *io, const char *key);
+
+// Name the members of the object the stack is on, so a reader that must check
+// what an object holds asks rather than walking the object itself.
+int32_t JSON_ReadIO_GetKeyCount(JSON_READ_IO *io);
+const char *JSON_ReadIO_GetKeyAt(JSON_READ_IO *io, int32_t idx);
+
 JSON_OBJECT *JSON_ReadIO_GetCurrentObject(JSON_READ_IO *io);
 JSON_VALUE *JSON_ReadIO_GetCurrentValue(JSON_READ_IO *io);
 

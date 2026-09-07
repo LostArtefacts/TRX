@@ -391,6 +391,7 @@ common_sources = [
   'trx/game/gun/routines.c',
   'trx/game/gun/smashing.c',
   'trx/game/gun/smoke.c',
+  'trx/game/gun/spec.c',
   'trx/game/gym.c',
   'trx/game/hub.c',
   'trx/game/inject/common.c',
