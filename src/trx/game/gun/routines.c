@@ -6,9 +6,11 @@
 
 #include <string.h>
 
+typedef void (*M_FUNC)(void);
+
 typedef struct {
     const char *name;
-    void *func;
+    M_FUNC func;
 } M_NAMED;
 
 typedef enum {
@@ -35,7 +37,7 @@ __attribute__((destructor)) static void M_Shutdown(void)
 }
 
 static void M_Add(
-    const M_ROUTINE_KIND kind, const char *const name, void *const func)
+    const M_ROUTINE_KIND kind, const char *const name, const M_FUNC func)
 {
     ASSERT(name != nullptr && func != nullptr);
     if (m_Named[kind] == nullptr) {
@@ -45,7 +47,7 @@ static void M_Add(
     Vector_Add(m_Named[kind], &named);
 }
 
-static void *M_Get(const M_ROUTINE_KIND kind, const char *const name)
+static M_FUNC M_Get(const M_ROUTINE_KIND kind, const char *const name)
 {
     if (name == nullptr) {
         return nullptr;
@@ -81,30 +83,30 @@ void Gun_Routines_AddFire(
     const char *const name,
     void (*const func)(LARA_GUN_TYPE gun_type, bool running))
 {
-    M_Add(M_FIRE, name, (void *)func);
+    M_Add(M_FIRE, name, (M_FUNC)func);
 }
 
 void Gun_Routines_AddFlash(
     const char *const name, GUN_FLASH (*const func)(void))
 {
-    M_Add(M_FLASH, name, (void *)func);
+    M_Add(M_FLASH, name, (M_FUNC)func);
 }
 
 void Gun_Routines_AddSound(const char *const name, void (*const func)(bool))
 {
-    M_Add(M_SOUND, name, (void *)func);
+    M_Add(M_SOUND, name, (M_FUNC)func);
 }
 
 void Gun_Routines_AddReadyAnim(
     const char *const name, int16_t (*const func)(void))
 {
-    M_Add(M_READY_ANIM, name, (void *)func);
+    M_Add(M_READY_ANIM, name, (M_FUNC)func);
 }
 
 void Gun_Routines_AddSmokeSize(
     const char *const name, uint8_t (*const func)(void))
 {
-    M_Add(M_SMOKE_SIZE, name, (void *)func);
+    M_Add(M_SMOKE_SIZE, name, (M_FUNC)func);
 }
 
 void (*Gun_Routines_GetFire(const char *const name))(LARA_GUN_TYPE, bool)
