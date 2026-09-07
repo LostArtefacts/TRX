@@ -255,6 +255,7 @@ static RESULT M_Play(const char *const file_name)
     const int32_t audio_id = M_OpenAudioStream(file_name);
     bool input_paused = false;
     bool paused = false;
+    bool resume_pending = false;
 
     g_OldInputDB = g_Input;
     Fader_InitTo(&render_ctx.pause_fader, 0.0f, 0.0f, 0.0f);
@@ -271,17 +272,41 @@ static RESULT M_Play(const char *const file_name)
         Input_Update();
         Shell_ProcessInput();
 
-        render_ctx.show_pause_overlay = input_paused;
-        M_SetPauseText(M_ShouldShowPauseText(&render_ctx));
-        Overlay_Control();
-        LUA_FireEvent(LUA_EVENT_TICK);
+        if ((!paused
+             && (g_InputDB.menu_skip || TouchOverlay_HasAnyFingerDown()))
+            || GF_GetOverrideCommand().action != GF_NOOP || Shell_IsExiting()) {
+            Video_Stop(video);
+            break;
+        } else if (
+            (g_InputDB.pause || (input_paused && g_InputDB.menu_back))
+            && !focus_paused) {
+            input_paused = !input_paused;
+            if (g_Config.ui.pause_fade_effects) {
+                Fader_InitFromCurrent(
+                    &render_ctx.pause_fader, input_paused ? 1.0f : 0.0f,
+                    M_FADE_TIME);
+                if (!input_paused) {
+                    resume_pending = true;
+                }
+            }
+        }
 
-        const bool should_pause = focus_paused || input_paused;
+        if (resume_pending && !Fader_IsActive(&render_ctx.pause_fader)) {
+            resume_pending = false;
+        }
+
+        const bool should_pause =
+            focus_paused || input_paused || resume_pending;
         if (should_pause != paused) {
             Video_SetPaused(video, should_pause);
             IGNORE(Audio_Stream_SetPaused(audio_id, should_pause));
             paused = should_pause;
         }
+
+        render_ctx.show_pause_overlay = input_paused;
+        M_SetPauseText(M_ShouldShowPauseText(&render_ctx));
+        Overlay_Control();
+        LUA_FireEvent(LUA_EVENT_TICK);
 
         IGNORE(Audio_Stream_SetVolume(audio_id, M_GetAudioVolume()));
         const double audio_ts = Audio_Stream_GetTimestamp(audio_id);
@@ -293,22 +318,6 @@ static RESULT M_Play(const char *const file_name)
 
         if (paused) {
             M_RedrawFrame(&render_ctx);
-        }
-
-        if ((g_InputDB.pause || (input_paused && g_InputDB.menu_back))
-            && !focus_paused) {
-            input_paused = !input_paused;
-            if (g_Config.ui.pause_fade_effects) {
-                Fader_InitFromCurrent(
-                    &render_ctx.pause_fader, input_paused ? 1.0f : 0.0f,
-                    M_FADE_TIME);
-            }
-        } else if (
-            (!paused
-             && (g_InputDB.menu_skip || TouchOverlay_HasAnyFingerDown()))
-            || GF_GetOverrideCommand().action != GF_NOOP || Shell_IsExiting()) {
-            Video_Stop(video);
-            break;
         }
     }
 

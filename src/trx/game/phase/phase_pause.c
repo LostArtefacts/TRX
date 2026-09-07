@@ -4,6 +4,7 @@
 #include <trx/core/memory.h>
 #include <trx/game/const.h>
 #include <trx/game/fader.h>
+#include <trx/game/game/state.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
 #include <trx/game/music.h>
@@ -134,11 +135,18 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         break;
 
     case STATE_WAIT:
-        if (g_InputDB.pause) {
-            M_ReturnToGame(p);
-            return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-        } else if (g_InputDB.option) {
-            p->state = STATE_ASK;
+        if (Game_IsPlayable()) {
+            if (g_InputDB.pause) {
+                M_ReturnToGame(p);
+                return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
+            } else if (g_InputDB.option) {
+                p->state = STATE_ASK;
+            }
+        } else {
+            if (g_InputDB.pause || g_InputDB.option) {
+                M_ReturnToGame(p);
+                return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
+            }
         }
         break;
 
