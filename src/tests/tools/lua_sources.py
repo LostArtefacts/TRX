@@ -33,13 +33,14 @@ def listed(variable: str, prefix: str) -> set[str]:
 def main() -> int:
     failures = []
 
-    for variable, directory, prefix in (
-        ("trx_lua_api_sources", ROOT / "src/lua/api", "lua/api"),
-        ("trx_lua_script_sources", ROOT / "src/lua/commands", "lua/commands"),
+    for variable, directory, prefix, skip in (
+        ("trx_lua_api_sources", ROOT / "src/lua/api", "lua/api", None),
+        ("trx_lua_script_sources", ROOT / "src/lua", "lua", "api"),
     ):
         on_disk = {
             path.relative_to(directory).as_posix()
             for path in directory.rglob("*.lua")
+            if skip is None or path.relative_to(directory).parts[0] != skip
         }
         in_meson = listed(variable, prefix)
 

@@ -1362,6 +1362,8 @@ If you install everything correctly, your game directory should look more or les
 │   ├── legend.lua
 │   ├── save_crystal.lua
 │   └── water_color.lua
+├── scripts
+│   └── weapons.lua
 └── TRX.exe</code></pre>
 </details>
 
@@ -2758,6 +2760,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   ├── legend.lua
     │   │   ├── save_crystal.lua
     │   │   └── water_color.lua
+    │   ├── scripts
+    │   │   └── weapons.lua
     │   └── icon.icns
     ├── _CodeSignature
     ├── Frameworks

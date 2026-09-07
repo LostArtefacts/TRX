@@ -1,28 +1,28 @@
+#include <trx/core/enum_map.h>
+#include <trx/core/log.h>
+#include <trx/core/math/const.h>
+#include <trx/core/strings.h>
+#include <trx/core/utils.h>
+#include <trx/core/vector.h>
+#include <trx/game/catalog/manager.h>
+#include <trx/game/console.h>
+#include <trx/game/const.h>
 #include <trx/game/gun.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
+#include <trx/game/gun/routines.h>
+#include <trx/game/lua/capi/weapons_spec.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/field.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
 #include <trx/game/lua/utils.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/ids.h>
+#include <trx/game/objects/names.h>
 
 #include <lauxlib.h>
-
-// What a weapon is, rather than what anyone has of it. None of this differs
-// between the inventory Lara carries and the one a level keeps for her, which
-// is why it belongs to neither.
-//
-// A weapon is addressed by its LARA_GUN_TYPE, which is valid for the whole
-// session: the table is read once, when the mod's weapons.json5 is, so a handle
-// never goes stale and what a script writes lasts until the game restarts.
-//
-// The groups a weapon is made of - its aim limits, its ammunition, its flash -
-// are structs, and a struct is not a value a field can hold. Each is registered
-// as a type of its own and reached through a handle that names the weapon it
-// belongs to, with the generation saying which of the group it is where a
-// weapon has several.
+#include <string.h>
 
 typedef enum {
     M_LIMITS_LOCK,
@@ -35,6 +35,14 @@ typedef enum {
     M_HAND_POS_SHELL,
     M_HAND_POS_FLASH,
 } M_HAND_POS_KIND;
+
+typedef struct {
+    LARA_GUN_TYPE gun_type;
+    int32_t fire_ref;
+} M_SCRIPT_WEAPON;
+
+static VECTOR *m_ScriptWeapons = nullptr;
+static lua_State *m_L = nullptr;
 
 static const WEAPON_INFO *M_WeaponOfAnim(const void *anim);
 static bool M_GetID(const void *self, TRX_VALUE *out);
@@ -88,7 +96,6 @@ static const FIELD_DESC m_WeaponFields[] = {
     FIELD_SET(WEAPON_INFO, type, M_SetKind),
     FIELD(WEAPON_INFO, is_available),
 
-    // how it aims and what it does when it hits
     FIELD(WEAPON_INFO, aim_speed),
     FIELD(WEAPON_INFO, shot_accuracy),
     FIELD(WEAPON_INFO, gun_height),
@@ -99,9 +106,6 @@ static const FIELD_DESC m_WeaponFields[] = {
     FIELD_SET(WEAPON_INFO, sample_overlay_num, M_SetOverlaySample),
     FIELD(WEAPON_INFO, sample_overlay_pitch),
 
-    // Deliberately absent: the groups. lock, left_arm, right_arm, ammo, anim,
-    // flash, glow, muzzle_pos and shell_pos are structs, and each is reached as
-    // a handle of its own type.
 };
 // clang-format on
 
@@ -116,22 +120,27 @@ TYPE_DEFINE(WEAPON_INFO, m_WeaponFields)
 static LARA_GUN_TYPE M_GetWeapon(lua_State *const L, const int arg)
 {
     const lua_Integer gun_type = luaL_checkinteger(L, arg);
-    if (gun_type <= LGT_UNARMED || !Gun_Registry_IsValidType(gun_type)) {
-        luaL_argerror(L, arg, "not a weapon");
+    if (!Gun_Registry_IsValidType(gun_type)) {
+        luaL_argerror(
+            L, arg,
+            String_FormatStatic("there is no weapon %d", (int32_t)gun_type));
+    }
+    if (gun_type <= LGT_UNARMED) {
+        luaL_argerror(
+            L, arg,
+            String_FormatStatic(
+                "'%s' is empty hands rather than a weapon",
+                Catalog_IDToKey(CATALOG_WEAPONS, gun_type)));
     }
     return (LARA_GUN_TYPE)gun_type;
 }
 
-// The weapon an animation group belongs to. The group has no way back to it of
-// its own, and validating an animation number needs the weapon's own object.
 static const WEAPON_INFO *M_WeaponOfAnim(const void *const anim)
 {
     return (const WEAPON_INFO *)((const char *)anim
                                  - offsetof(WEAPON_INFO, anim));
 }
 
-// Which weapon this is, which is what lets a script go from a weapon back to
-// everything that takes one.
 static bool M_GetID(const void *const self, TRX_VALUE *const out)
 {
     *out = (TRX_VALUE) {
@@ -146,12 +155,12 @@ static const char *M_SetKind(void *const self, const TRX_VALUE *const in)
     if (in->as_int < 0 || in->as_int >= NUM_WEAPON_TYPES) {
         return "unknown weapon kind";
     }
-    ((WEAPON_INFO *)self)->type = (WEAPON_TYPE)in->as_int;
+    if (!IGNORE(Gun_Registry_SetKind((WEAPON_TYPE)in->as_int, self))) {
+        return "the engine holds no weapon of that kind";
+    }
     return nullptr;
 }
 
-// A sample the catalog does not map in this game plays nothing rather than
-// misfiring, so anything but a negative id is taken.
 static const char *M_SetSample(void *const self, const TRX_VALUE *const in)
 {
     if (in->as_int < 0) {
@@ -171,9 +180,6 @@ static const char *M_SetOverlaySample(
     return nullptr;
 }
 
-// The number counts the animations of the object the weapon is drawn from, and
-// the engine switches an item to it without checking. A level that never loaded
-// the object has no count to measure against, and nothing to draw either.
 static const char *M_SetEquipAnim(void *const self, const TRX_VALUE *const in)
 {
     if (in->as_int < 0) {
@@ -258,7 +264,6 @@ static void *M_ResolveAnim(const LUA_STRUCT_REF *const ref)
     return weapon != nullptr ? &weapon->anim : nullptr;
 }
 
-// Which weapon the handle on the stack names, for a group reached off it.
 static int32_t M_CheckWeaponID(lua_State *const L, const int arg)
 {
     return LUA_Struct_CheckRef(L, arg, &TYPE_WEAPON_INFO)->handle.id;
@@ -280,6 +285,146 @@ static int M_L_WeaponGet(lua_State *const L)
         L, &TYPE_WEAPON_INFO, M_ResolveWeapon,
         (TRX_HANDLE) { .id = M_GetWeapon(L, 1) });
     return 1;
+}
+
+static M_SCRIPT_WEAPON *M_FindScriptWeapon(const LARA_GUN_TYPE gun_type)
+{
+    for (int32_t i = 0;
+         m_ScriptWeapons != nullptr && i < m_ScriptWeapons->count; i++) {
+        M_SCRIPT_WEAPON *const entry = Vector_Get(m_ScriptWeapons, i);
+        if (entry->gun_type == gun_type) {
+            return entry;
+        }
+    }
+    return nullptr;
+}
+
+static void M_Fire(const LARA_GUN_TYPE gun_type, const bool running)
+{
+    const M_SCRIPT_WEAPON *const entry = M_FindScriptWeapon(gun_type);
+    if (entry == nullptr || m_L == nullptr) {
+        return;
+    }
+    lua_rawgeti(m_L, LUA_REGISTRYINDEX, entry->fire_ref);
+    LUA_Struct_Push(
+        m_L, &TYPE_WEAPON_INFO, M_ResolveWeapon,
+        (TRX_HANDLE) { .id = gun_type });
+    lua_pushboolean(m_L, running);
+    if (lua_pcall(m_L, 2, 0, 0) != LUA_OK) {
+        Console_ShowError("weapon fire error: %s", lua_tostring(m_L, -1));
+        lua_pop(m_L, 1);
+    }
+}
+
+static void M_ReadSpec(
+    lua_State *const L, const int idx, const LARA_GUN_TYPE gun_type)
+{
+    RESULT result = LUA_Weapons_ReadSpec(L, idx, Gun_Registry_Get(gun_type));
+    if (!IS_OK(result)) {
+        lua_pushstring(L, result.msg != nullptr ? result.msg : "bad spec");
+        IGNORE(result);
+        lua_error(L);
+    }
+}
+
+// The weapon the argument names, or NO_CATALOG_ID for a name the catalog does
+// not hold yet. A name nothing holds is refused unless the caller mints it.
+static LARA_GUN_TYPE M_ResolveTarget(
+    lua_State *const L, const int arg, const bool may_mint)
+{
+    if (lua_type(L, arg) == LUA_TSTRING) {
+        const char *const key = lua_tostring(L, arg);
+        const CATALOG_ID found =
+            Catalog_KeyToID(CATALOG_WEAPONS, key, NO_CATALOG_ID);
+        if (found == NO_CATALOG_ID && !may_mint) {
+            luaL_error(L, "there is no weapon '%s'", key);
+        }
+        return (LARA_GUN_TYPE)found;
+    }
+
+    const LARA_GUN_TYPE gun_type = luaL_checkinteger(L, arg);
+    if (!Gun_Registry_IsValidType(gun_type)) {
+        luaL_argerror(
+            L, arg,
+            String_FormatStatic("there is no weapon %d", (int32_t)gun_type));
+    }
+    if (gun_type <= LGT_UNARMED) {
+        luaL_argerror(
+            L, arg,
+            String_FormatStatic(
+                "'%s' is empty hands rather than a weapon",
+                Catalog_IDToKey(CATALOG_WEAPONS, gun_type)));
+    }
+    return gun_type;
+}
+
+// Whether a spec says what the weapon is, which a weapon of its own needs
+// before anything else the spec holds means something.
+static bool M_SpecNamesKind(lua_State *const L, const int idx)
+{
+    static const char *const keys[] = { "kind", "base" };
+    bool named = false;
+    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(keys); i++) {
+        lua_getfield(L, idx, keys[i]);
+        named = named || !lua_isnoneornil(L, -1);
+        lua_pop(L, 1);
+    }
+    return named;
+}
+
+// trxc.weapons.declare(name or id, spec) -> weapon
+static int M_L_WeaponDeclare(lua_State *const L)
+{
+    LARA_GUN_TYPE gun_type = M_ResolveTarget(L, 1, true);
+    const char *const key =
+        gun_type == NO_CATALOG_ID ? lua_tostring(L, 1) : nullptr;
+    luaL_checktype(L, 2, LUA_TTABLE);
+    if (gun_type != NO_CATALOG_ID && Gun_Registry_Get(gun_type)->is_claimed) {
+        luaL_error(
+            L, "'%s' is a weapon already; patch it to change it",
+            Catalog_IDToKey(CATALOG_WEAPONS, gun_type));
+    }
+    if (!M_SpecNamesKind(L, 2)) {
+        luaL_error(
+            L, "'%s' says neither a kind nor a base, so it is no weapon yet",
+            key != nullptr ? key : Catalog_IDToKey(CATALOG_WEAPONS, gun_type));
+    }
+
+    if (gun_type == NO_CATALOG_ID) {
+        CATALOG_ID minted = NO_CATALOG_ID;
+        RESULT result = Catalog_CreateKey(CATALOG_WEAPONS, key, &minted);
+        if (!IS_OK(result)) {
+            lua_pushstring(
+                L, result.msg != nullptr ? result.msg : "cannot be minted");
+            IGNORE(result);
+            lua_error(L);
+        }
+        gun_type = (LARA_GUN_TYPE)minted;
+    }
+    M_ReadSpec(L, 2, gun_type);
+    LUA_Struct_Push(
+        L, &TYPE_WEAPON_INFO, M_ResolveWeapon, (TRX_HANDLE) { .id = gun_type });
+    return 1;
+}
+
+// trxc.weapons.patch(name or id, spec) -> weapon
+static int M_L_WeaponPatch(lua_State *const L)
+{
+    const LARA_GUN_TYPE gun_type = M_ResolveTarget(L, 1, false);
+    luaL_checktype(L, 2, LUA_TTABLE);
+    M_ReadSpec(L, 2, gun_type);
+    LUA_Struct_Push(
+        L, &TYPE_WEAPON_INFO, M_ResolveWeapon, (TRX_HANDLE) { .id = gun_type });
+    return 1;
+}
+
+// trxc.weapons.set_fire(gun_type, handler)
+static int M_L_WeaponSetFire(lua_State *const L)
+{
+    const LARA_GUN_TYPE gun_type = M_ResolveTarget(L, 1, false);
+    luaL_checktype(L, 2, LUA_TFUNCTION);
+    LUA_Weapons_SetFireHandler(L, gun_type, 2);
+    return 0;
 }
 
 // trxc.weapons.is_available(weapon) -> bool
@@ -445,6 +590,9 @@ static int M_L_WeaponGetFlashPos(lua_State *const L)
 
 static const luaL_Reg m_Module[] = {
     { "get", M_L_WeaponGet },
+    { "declare", M_L_WeaponDeclare },
+    { "patch", M_L_WeaponPatch },
+    { "set_fire", M_L_WeaponSetFire },
     { "is_available", M_L_WeaponIsAvailable },
     { "get_object", M_L_WeaponGetObject },
     { "get_ammo_object", M_L_WeaponGetAmmoObject },
@@ -465,8 +613,25 @@ static const luaL_Reg m_Module[] = {
     { nullptr, nullptr },
 };
 
+static void M_Shutdown(void)
+{
+    for (int32_t i = 0;
+         m_ScriptWeapons != nullptr && i < m_ScriptWeapons->count; i++) {
+        const M_SCRIPT_WEAPON *const entry = Vector_Get(m_ScriptWeapons, i);
+        if (m_L != nullptr) {
+            luaL_unref(m_L, LUA_REGISTRYINDEX, entry->fire_ref);
+        }
+    }
+    if (m_ScriptWeapons != nullptr) {
+        Vector_Free(m_ScriptWeapons);
+        m_ScriptWeapons = nullptr;
+    }
+    m_L = nullptr;
+}
+
 static void M_Create(lua_State *const L)
 {
+    m_L = L;
     LUA_Struct_Register(L, &TYPE_WEAPON_INFO, nullptr);
     LUA_Struct_Register(L, &TYPE_WEAPON_AIM_LIMITS, nullptr);
     LUA_Struct_Register(L, &TYPE_WEAPON_HAND_POS, nullptr);
@@ -477,4 +642,28 @@ static void M_Create(lua_State *const L)
     LUA_RegisterModule(L, "weapons", m_Module);
 }
 
-REGISTER_LUA_CAPI(.create = M_Create)
+void LUA_Weapons_SetFireHandler(
+    lua_State *const L, const LARA_GUN_TYPE gun_type, const int idx)
+{
+    M_SCRIPT_WEAPON *entry = M_FindScriptWeapon(gun_type);
+    if (entry != nullptr) {
+        luaL_unref(L, LUA_REGISTRYINDEX, entry->fire_ref);
+    }
+    lua_pushvalue(L, idx);
+    const int32_t ref = luaL_ref(L, LUA_REGISTRYINDEX);
+    if (entry == nullptr) {
+        if (m_ScriptWeapons == nullptr) {
+            m_ScriptWeapons = Vector_Create(sizeof(M_SCRIPT_WEAPON));
+        }
+        const M_SCRIPT_WEAPON added = {
+            .gun_type = gun_type,
+            .fire_ref = ref,
+        };
+        Vector_Add(m_ScriptWeapons, &added);
+    } else {
+        entry->fire_ref = ref;
+    }
+    Gun_Registry_Get(gun_type)->fire_func = M_Fire;
+}
+
+REGISTER_LUA_CAPI(.create = M_Create, .shutdown = M_Shutdown)

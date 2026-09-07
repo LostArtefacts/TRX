@@ -1,6 +1,3 @@
--- Unit tests for src/lua/api/api.lua, run under a plain Lua interpreter with a
--- stubbed C bridge. No engine, no binary, no level.
-
 local ROOT = (arg[1] or ".") .. "/"
 
 local failures = 0
@@ -18,11 +15,8 @@ local function test(name, fn)
   end
 end
 
--- The context the catalog fake answers for.
 local FAKE_CONTEXT = 3
 
--- Records what api.type() asked the C binder to expose, so the tests can assert
--- on the declaration rather than on a real metatable.
 local function fresh_env()
   local exposed = { fields = {}, methods = {}, computed = {} }
   _G.trxc = {
@@ -37,7 +31,6 @@ local function fresh_env()
       expose_computed = function(t, public, fn)
         exposed.computed[public] = fn
       end,
-      -- What strict mode wraps: the C function behind a method.
       method = function(t, from)
         return function() end
       end,
@@ -89,12 +82,9 @@ local function fresh_env()
         return nil
       end,
     },
-    -- Stands in for the ENUM_MAP reflection. Deliberately not in numeric order,
-    -- and with a gap, so the tests pin what api.lua does with what C hands it.
     enum = {
       values = function(backing)
         if backing == "COLLIDING_STATE" then
-          -- Two constants that fold onto the same name.
           return {
             { name = "ON", value = 1 },
             { name = "on", value = 2 },
@@ -111,9 +101,6 @@ local function fresh_env()
         }
       end,
     },
-    -- Stands in for a catalog. It reports what it holds rather than what the
-    -- exe was built with, so a name minted while the game runs is reachable
-    -- without appearing in the constant list.
     catalog = {
       values = function(context)
         assert(
@@ -133,14 +120,10 @@ local function fresh_env()
         return key == "oil_drum" and 9 or nil
       end,
     },
-    -- Where the registry hands C the entrypoints it keeps after the seal.
     api = {
       set_entrypoint = function() end,
     },
   }
-  -- What describe() runs a description through. The real one is declared as
-  -- trx.strings.dedent and tested where it is written, so this stands in as
-  -- the identity; the test that cares which keys reach it swaps in its own.
   _G.trx = {
     log = { debug = function() end, warn = function() end },
     strings = {
@@ -149,9 +132,6 @@ local function fresh_env()
       end,
     },
   }
-  -- The registry requires the checking layer and the logger. This runs the
-  -- real checker, because what a declaration accepts is half of what is under
-  -- test; the logger declares an enum out of C and is left stubbed.
   _G.require = function(name)
     if name == "trx.check" then
       return dofile(ROOT .. "src/lua/api/check.lua")

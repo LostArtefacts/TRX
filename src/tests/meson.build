@@ -845,12 +845,13 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/inventory',
   'bundles': [b_lua_surface, b_lua_math],
-  'src': ['fakes/game.c', 'fakes/lara.c', 'fakes/items.c'],
+  'src': ['harness/stubs_console.c', 'fakes/game.c', 'fakes/lara.c', 'fakes/items.c'],
   'engine': [
     'game/lua/capi/catalog.c',
     'game/lua/capi/inventory.c',
     'game/lua/capi/items.c',
     'game/lua/capi/weapons.c',
+    'game/lua/capi/weapons_spec.c',
   ],
 }
 
@@ -859,11 +860,12 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/weapons',
   'bundles': [b_lua_surface, b_lua_math],
-  'src': ['fakes/lara.c', 'fakes/items.c'],
+  'src': ['harness/stubs_console.c', 'fakes/lara.c', 'fakes/items.c'],
   'engine': [
     'game/lua/capi/catalog.c',
     'game/lua/capi/items.c',
     'game/lua/capi/weapons.c',
+    'game/lua/capi/weapons_spec.c',
   ],
 }
 
@@ -1005,6 +1007,7 @@ unit_tests += {
     'game/lua/capi/objects.c',
     'game/lua/capi/sound.c',
     'game/lua/capi/weapons.c',
+    'game/lua/capi/weapons_spec.c',
   ],
 }
 
@@ -1127,6 +1130,7 @@ unit_tests += {
     'game/lua/capi/rules.c',
     'game/lua/capi/ui.c',
     'game/lua/capi/weapons.c',
+    'game/lua/capi/weapons_spec.c',
     'game/lua/ui.c',
     'game/rules.c',
     'game/ui/common.c',
