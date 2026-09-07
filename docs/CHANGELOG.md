@@ -242,6 +242,7 @@
 - Added an option to cast Lara in gold whatever she is wearing (Graphic Options → Visuals → Golden Lara) (TRX1070)
 - Added a `/version` command, which shows the version this build reports
 - Added support for negative timers in triggers
+- Changed the game to fade to black when it is closed from the passport or the main menu (Graphic Options → Visuals → Fade on game exit) (TRX1376)
 - Changed the look input to skip cutscenes and flyby sequences (TRX1093)
 - Changed the message shown when there is nothing to play to name each game it passed over and say what is wrong with it, rather than leaving the reason in the log (TRX1083)
 - Changed a game named with `--mod` to say why it cannot be played, rather than quietly starting a different one (TRX1083)

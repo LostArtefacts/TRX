@@ -67,6 +67,18 @@ static GF_COMMAND M_HandleOverride(void)
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
+static bool M_BeginExit(void)
+{
+    if (m_Exiting) {
+        return false;
+    }
+    m_Exiting = true;
+    if (g_Config.visuals.enable_exit_fade_effects) {
+        Fader_InitFromCurrentHold(&m_ExitFader, 1.0f, 0.333f, 0.1f);
+    }
+    return true;
+}
+
 static void M_DrawFadeToBlackTransition(const float opacity)
 {
     Output_BeginScene();
@@ -113,16 +125,16 @@ static GF_COMMAND M_RunFadeToBlackTransition(const FADER_ARGS args)
         Overlay_Control();
 
         const GF_COMMAND gf_cmd = M_HandleOverride();
-        if (gf_cmd.action != GF_NOOP) {
+        if (gf_cmd.action == GF_EXIT_GAME) {
+            M_BeginExit();
+        } else if (gf_cmd.action != GF_NOOP) {
             return gf_cmd;
         }
 
-        if (Shell_IsExiting() && !m_Exiting) {
-            m_Exiting = true;
-            if (g_Config.visuals.enable_exit_fade_effects) {
-                Fader_InitFromCurrentHold(&m_ExitFader, 1.0f, 0.333f, 0.1f);
-            }
-        } else if (m_Exiting && !Fader_IsActive(&m_ExitFader)) {
+        if (Shell_IsExiting()) {
+            M_BeginExit();
+        }
+        if (m_Exiting && !Fader_IsActive(&m_ExitFader)) {
             return (GF_COMMAND) { .action = GF_EXIT_GAME };
         }
 
@@ -144,26 +156,25 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     Overlay_Control();
 
     const GF_COMMAND gf_cmd = M_HandleOverride();
-    if (gf_cmd.action != GF_NOOP) {
+    if (gf_cmd.action == GF_EXIT_GAME) {
+        M_BeginExit();
+    } else if (gf_cmd.action != GF_NOOP) {
         return (PHASE_CONTROL) {
             .action = PHASE_ACTION_END_FAST,
             .gf_cmd = gf_cmd,
         };
     }
 
-    if (Shell_IsExiting() && !m_Exiting) {
-        m_Exiting = true;
-        if (g_Config.visuals.enable_exit_fade_effects) {
-            Fader_InitFromCurrentHold(&m_ExitFader, 1.0f, 0.333f, 0.1f);
-        }
-    } else if (m_Exiting && !Fader_IsActive(&m_ExitFader)) {
-        return (PHASE_CONTROL) {
-            .action = PHASE_ACTION_END,
-            .gf_cmd = { .action = GF_EXIT_GAME },
-        };
+    if (Shell_IsExiting()) {
+        M_BeginExit();
     }
-
     if (m_Exiting) {
+        if (!Fader_IsActive(&m_ExitFader)) {
+            return (PHASE_CONTROL) {
+                .action = PHASE_ACTION_END,
+                .gf_cmd = { .action = GF_EXIT_GAME },
+            };
+        }
         return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
     }
 
@@ -282,21 +293,17 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
         int32_t frame = 0;
         while (true) {
             const PHASE_CONTROL control = M_Control(phase);
-            if (control.action == PHASE_ACTION_END) {
+            if (control.action == PHASE_ACTION_END
+                || control.action == PHASE_ACTION_END_FAST) {
                 if (Shell_IsExiting()) {
                     gf_cmd = (GF_COMMAND) { .action = GF_EXIT_GAME };
                 } else {
+                    skip_fade_out = control.action == PHASE_ACTION_END_FAST;
                     gf_cmd = control.gf_cmd;
                 }
-                goto finish;
-            } else if (control.action == PHASE_ACTION_END_FAST) {
-                if (Shell_IsExiting()) {
-                    gf_cmd = (GF_COMMAND) { .action = GF_EXIT_GAME };
-                } else {
-                    skip_fade_out = true;
-                    gf_cmd = control.gf_cmd;
+                if (gf_cmd.action != GF_EXIT_GAME || !M_BeginExit()) {
+                    goto finish;
                 }
-                goto finish;
             } else if (control.action == PHASE_ACTION_NO_WAIT) {
                 continue;
             }
