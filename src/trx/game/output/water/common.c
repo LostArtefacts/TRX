@@ -1,7 +1,9 @@
 #include <trx/debug.h>
+#include <trx/game/camera.h>
 #include <trx/game/output/state.h>
 #include <trx/game/output/water.h>
 #include <trx/game/output/water/priv.h>
+#include <trx/game/rooms.h>
 #include <trx/version.h>
 
 typedef struct {
@@ -64,6 +66,11 @@ void Output_Water_SetupAboveWater(const bool is_camera_underwater)
 void Output_Water_SetupBelowWater(const bool is_camera_underwater)
 {
     M_Setup(true, is_camera_underwater);
+}
+
+void Output_Water_SetupFromRoom(const ROOM *const room)
+{
+    M_Setup(room->flags.underwater, g_Camera.underwater);
 }
 
 bool Output_Water_IsShadeEnabled(void)

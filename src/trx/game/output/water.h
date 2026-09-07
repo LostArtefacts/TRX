@@ -32,6 +32,8 @@ typedef struct {
 // water states of the room and camera.
 void Output_Water_SetupAboveWater(bool is_camera_underwater);
 void Output_Water_SetupBelowWater(bool is_camera_underwater);
+// Sets the water effects for a room and the current camera state.
+void Output_Water_SetupFromRoom(const ROOM *room);
 
 // Reports whether objects receive the water colour.
 bool Output_Water_IsShadeEnabled(void);
