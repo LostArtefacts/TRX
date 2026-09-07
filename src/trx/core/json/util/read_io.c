@@ -336,6 +336,24 @@ static RESULT M_ReadRGBA8888Current(
     return OK;
 }
 
+static RESULT M_ReadRGBFCurrent(JSON_READ_IO *const io, RGB_F *const target)
+{
+    JSON_ARRAY *const tuple = JSON_ValueAsArray(io->current);
+    if (tuple != nullptr) {
+        if (tuple->length != 3) {
+            return M_Fail(io, "RGB tuple must have exactly 3 values");
+        }
+        MUST(JSON_READ_A(io, 0, &target->r));
+        MUST(JSON_READ_A(io, 1, &target->g));
+        MUST(JSON_READ_A(io, 2, &target->b));
+    } else {
+        MUST(JSON_READ(io, "r", &target->r));
+        MUST(JSON_READ(io, "g", &target->g));
+        MUST(JSON_READ(io, "b", &target->b));
+    }
+    return OK;
+}
+
 RESULT JSON_ReadIO_ReadXYZ32Current(
     JSON_READ_IO *const io, void *const target_void)
 {
@@ -412,6 +430,7 @@ L_DEFINE_JSON_READ_IO_TYPE(Double, double, M_ReadNumCurrent_Double)
 L_DEFINE_JSON_READ_IO_TYPE(String, const char *, M_ReadStringCurrent)
 L_DEFINE_JSON_READ_IO_TYPE(RGB888, RGB_888, M_ReadRGB888Current)
 L_DEFINE_JSON_READ_IO_TYPE(RGBA8888, RGBA_8888, M_ReadRGBA8888Current)
+L_DEFINE_JSON_READ_IO_TYPE(RGBF, RGB_F, M_ReadRGBFCurrent)
 #undef L_DEFINE_JSON_READ_IO_TYPE
 
 const char *JSON_ReadIO_GetError(const JSON_READ_IO *const io)
@@ -573,6 +592,33 @@ bool JSON_ReadIO_HasKey(JSON_READ_IO *const io, const char *const key)
         return false;
     }
     return JSON_ObjectContainsKey(obj, key);
+}
+
+int32_t JSON_ReadIO_GetKeyCount(JSON_READ_IO *const io)
+{
+    const JSON_OBJECT *const obj = JSON_ValueAsObject(io->current);
+    if (obj == nullptr) {
+        M_SetError(io, "not an object");
+        return -1;
+    }
+    return obj->length;
+}
+
+const char *JSON_ReadIO_GetKeyAt(JSON_READ_IO *const io, const int32_t idx)
+{
+    const JSON_OBJECT *const obj = JSON_ValueAsObject(io->current);
+    if (obj == nullptr) {
+        M_SetError(io, "not an object");
+        return nullptr;
+    }
+    int32_t at = 0;
+    for (const JSON_OBJECT_ELEMENT *elem = obj->start; elem != nullptr;
+         elem = elem->next, at++) {
+        if (at == idx) {
+            return elem->name->string;
+        }
+    }
+    return nullptr;
 }
 
 JSON_OBJECT *JSON_ReadIO_GetCurrentObject(JSON_READ_IO *const io)

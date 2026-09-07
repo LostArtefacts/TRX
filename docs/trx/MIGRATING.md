@@ -354,6 +354,31 @@ order: 3
    game reports each catalog file that uses it in `trx.log`. It stops loading
    in 1.15, so move your files before then.
 
+15. **The weapons file defines each game's weapons**
+   The file now says which weapons the game has and which engine routines each
+   weapon uses. A weapon the file does not name is not in the game.
+
+   A file of your own that was written for an earlier version keeps its
+   numbers. What the weapons in it lose is what the engine used to carry for
+   them: what they fire with, what the cheats hand over, whether Lara starts
+   with them, and the names their rounds are saved under. Copy those keys from
+   the shipped `weapons.json5` of the game you are building on.
+
+   The file also groups related values, and the old spelling no longer loads.
+   See [Weapons](WEAPONS.md) for the new layout:
+   - `gun_object`, `ammo_object` and `anim_object` are `objects.pickup`,
+     `objects.ammo` and `objects.anim`
+   - `aim_speed`, `shot_accuracy` and the three sets of angles are `aim.speed`,
+     `aim.accuracy`, `aim.lock`, `aim.left` and `aim.right`
+   - `flash_*`, `glow_*`, `muzzle_*`, `smoke_*`, `shell_*`, `stow_*`, `save_*`
+     and `cheat_*` are the `flash`, `glow`, `muzzle`, `smoke`, `shell`, `stow`,
+     `save` and `cheat` groups
+   - `sample_num` is `sound.fire`, `equip_anim_idx` is `anim.equip`, and `type`
+     is `kind`
+
+   A value that is not the kind its key calls for is reported, and the game
+   stops rather than reading the rest of the file.
+
 ### Version 1.9 to 1.10
 
 The Lua API was rewritten, and most of what it breaks is a rename. Run your
