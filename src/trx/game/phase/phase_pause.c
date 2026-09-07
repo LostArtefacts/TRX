@@ -32,6 +32,7 @@ typedef struct {
     } ui;
     GF_ACTION action;
     FADER fader;
+    bool resume_pending;
 } M_PRIV;
 
 static void M_RemoveText(M_PRIV *const p)
@@ -69,8 +70,13 @@ static void M_PauseGame(M_PRIV *const p)
 
 static void M_ReturnToGame(M_PRIV *const p)
 {
-    Music_Unpause();
-    Sound_UnpauseAll();
+    if (g_Config.ui.pause_fade_effects) {
+        p->resume_pending = true;
+    } else {
+        Music_Unpause();
+        Sound_UnpauseAll();
+        p->resume_pending = false;
+    }
     M_FadeOut(p);
 }
 
@@ -93,6 +99,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     M_PRIV *const p = phase->priv;
 
     p->ui.is_ready = false;
+    p->resume_pending = false;
     UI_Pause_Init(&p->ui.state);
     M_PauseGame(p);
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
@@ -162,6 +169,11 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
 
     case STATE_FADE_OUT:
         if (!M_IsFadeActive(p)) {
+            if (p->resume_pending) {
+                Music_Unpause();
+                Sound_UnpauseAll();
+                p->resume_pending = false;
+            }
             return (PHASE_CONTROL) {
                 .action = PHASE_ACTION_END,
                 .gf_cmd = { .action = p->action },
