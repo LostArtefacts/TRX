@@ -177,6 +177,7 @@
 - Fixed underwater blood clouds appearing in the air when the security lasers hurt Lara at the water surface (OG bug) (#6323 / TRX1180)
 - Fixed the ceiling spikes not stopping on a pushable block until Lara finishes pushing it (OG bug) (#6308 / TRX1169)
 - Fixed the piranhas in It's a Madhouse! being invisible if attacking Lara while she collects the Aviary Key (#6345 / TRX1200)
+- Fixed fish losing their water color (TRX1385, regression from 1.8)
 - Fixed the specks drifting in water being too small and all one size
 - Fixed crystal 206 in Thames Wharf not being triggered if the alternative route is used to reach it (#6349 / TRX1202)
 - Fixed Lara being embedded in the floor at the beginning of Temple Ruins, which causes the camera to pop after the first frame (TRX1028)

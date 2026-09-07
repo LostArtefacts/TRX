@@ -102,15 +102,6 @@ static void M_EnsureRoomsToDraw(void)
     m_RoomsToDraw = Vector_CreateAtCapacity(sizeof(int16_t), 100);
 }
 
-static inline void M_SetupWaterStatus(const ROOM *const room)
-{
-    if (room->flags.underwater) {
-        Output_Water_SetupBelowWater(g_Camera.underwater);
-    } else {
-        Output_Water_SetupAboveWater(g_Camera.underwater);
-    }
-}
-
 static void M_SetBounds(
     const PORTAL *const portal, int32_t room_num, const ROOM *parent);
 
@@ -366,7 +357,7 @@ static void M_DrawRoomItem(const int16_t item_num, void *const ud)
         });
     }
 
-    M_SetupWaterStatus(Room_Get(item->room_num));
+    Output_Water_SetupFromRoom(Room_Get(item->room_num));
 
     // A fading body scales down the tint already in force rather than
     // replacing it, so it keeps the water color it is lying in.
@@ -395,7 +386,7 @@ static void M_DrawRoomItem(const int16_t item_num, void *const ud)
 static void M_DrawSingleRoom(const ROOM *const room)
 {
     Output_SetCurrentRoom(room);
-    M_SetupWaterStatus(room);
+    Output_Water_SetupFromRoom(room);
 
     OUTPUT_ROOM_BIND *const bind = Output_Bind_GetRoom(room);
     g_PhdLeft = bind->bound_left;
@@ -418,7 +409,7 @@ static void M_DrawSingleRoom(const ROOM *const room)
     Matrix_TranslateAbs32(room->pos);
     Output_DrawRoom(room, false);
 
-    M_SetupWaterStatus(room);
+    Output_Water_SetupFromRoom(room);
 
     Matrix_Push();
     Matrix_TranslateAbs32(room->pos);
@@ -446,10 +437,10 @@ static void M_DrawSingleRoom(const ROOM *const room)
         if (clip != CLIP_NOT_VISIBLE) {
             const ROOM *const owner = Room_Get(mesh->room_num);
             M_DrawSet_Add(&m_DrawnStatics, mesh->draw_num);
-            M_SetupWaterStatus(owner);
+            Output_Water_SetupFromRoom(owner);
             Output_CalculateStaticMeshLight(mesh->pos, mesh->shade, owner);
             Object_DrawMesh(obj->mesh_idx, clip, false);
-            M_SetupWaterStatus(room);
+            Output_Water_SetupFromRoom(room);
             if (g_Config.debug.enable_debug_bounding_boxes) {
                 Output_DrawCuboid(&obj->draw_bounds);
             }
@@ -458,7 +449,7 @@ static void M_DrawSingleRoom(const ROOM *const room)
     }
 
     M_DrawSet_ForEach(&room->drawn_items, M_DrawRoomItem, nullptr);
-    M_SetupWaterStatus(room);
+    Output_Water_SetupFromRoom(room);
 
     g_PhdLeft = Viewport_GetMinX(VIEWPORT_GAME);
     g_PhdTop = Viewport_GetMinY(VIEWPORT_GAME);
@@ -567,7 +558,7 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
     const ITEM *const lara_item = Lara_GetItem();
     if (lara_item != nullptr && Object_Get(O_LARA)->loaded) {
         const ROOM *const lara_room = Room_Get(lara_item->room_num);
-        M_SetupWaterStatus(lara_room);
+        Output_Water_SetupFromRoom(lara_room);
         Output_SetCurrentRoom(lara_room);
         Lara_Draw(lara_item);
     }

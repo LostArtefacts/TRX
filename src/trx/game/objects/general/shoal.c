@@ -10,6 +10,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/output/sources/poly_fx.h>
+#include <trx/game/output/water.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
@@ -537,6 +538,9 @@ static bool M_Draw(const ITEM *const item)
         return false;
     }
 
+    // Use the anchor room because the item can leave the shoal's water.
+    Output_Water_SetupFromRoom(Room_Get(p->anchor.room_num));
+
     const XYZ_32 base_pos = p->anchor.pos;
     const double ratio = Interpolation_GetWorldRate();
     const bool do_interp =
@@ -656,6 +660,8 @@ static bool M_Draw(const ITEM *const item)
                 sprite_idx, tri_world, tri_color, DRAW_BLEND);
         }
     }
+
+    Output_Water_SetupFromRoom(Room_Get(item->room_num));
 
     if (Interpolation_IsActive() && ratio >= 1.0) {
         for (int32_t i = 0; i < M_FISH_PER_SHOAL + 1; i++) {
