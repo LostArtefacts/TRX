@@ -45,6 +45,7 @@
 - Changed the pause behavior to be consistent between FMVs and in-game cutscenes (#6537)
 - Fixed a setting description showing a question mark in place of a key that is bound to a combination, such as Alt+Enter (TRX1136)
 - Fixed ability to open the inventory ring while a flyby sequence has Lara's control (TRX1057)
+- Fixed the game audio resuming before the fadeout effect has ended when unpausing (#6536)
 - Fixed several dialogs running past the screen edges or overlapping headings at large text sizes (#6293 / TRX1154)
 - Fixed the save and load dialogs covering the inventory headings at large text sizes
 - Fixed the game flashing over the black bars beside the picture when a frame is advanced in photo mode (regression from 1.10) (TRX1068)
