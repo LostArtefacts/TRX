@@ -272,20 +272,8 @@ bool Lara_Cheat_ExitFlyMode(void)
         return false;
     }
 
-    const ROOM *const room = Room_Get(lara_item->room_num);
-    const int32_t water_height =
-        Room_GetWaterHeight(lara_item->pos, lara_item->room_num);
-
-    if (room->flags.underwater
-        || (water_height != NO_HEIGHT && water_height > 0
-            && !room->flags.swamp)) {
-        lara_info->water_status = LWS_UNDERWATER;
-    } else {
-        lara_info->water_status =
-            room->flags.swamp ? LWS_WADE : LWS_ABOVE_WATER;
-        Item_SwitchToAnim(lara_item, LA(LA_STAND_STILL), 0);
-        lara_item->goal_anim_state = LS(LS_STOP);
-        lara_item->current_anim_state = LS(LS_STOP);
+    Lara_Control_SelectEnvironment();
+    if (lara_info->water_status != LWS_UNDERWATER) {
         lara_item->rot.x = 0;
         lara_item->rot.z = 0;
         lara_info->head_rot.x = 0;

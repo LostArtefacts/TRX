@@ -16,6 +16,8 @@
 - Fixed Lara briefly teleporting above the water line if she is stepping backwards from 2-click to 3-click wading depth (TRX1309, regression from 1.0)
 - Fixed Lara's arms twitching when stopped against walls in shallow water with either forward or backward input pressed against the wall (OG bug) (#6254 / TRX1121)
 - Fixed Lara assuming a fully underwater animation in custom levels if she begins at wading or water surface depths (OG bug) (TRX1312)
+- Fixed Lara embedding in the ceiling in custom levels if she begins at crawlspace height (OG bug) (#6547 / TRX1401)
+- Fixed exiting the fly cheat not always putting Lara into the correct animation for her environment (#6547 / TRX1401)
 - Fixed Lara slipping into wading-depth water when walking down steps in a water room (OG bug) (TRX1307)
 - Fixed Lara being able to monkey roll too close to sector edges, resulting in her falling after the animation completes (#6459 / TRX1314, regression from 1.10)
 - Fixed Lara beginning to monkey roll for one frame despite being too close to the edge of a sector (#6459 / TRX1314, regression from 1.10)
