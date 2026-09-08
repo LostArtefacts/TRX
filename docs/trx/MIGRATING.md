@@ -355,13 +355,13 @@ order: 3
    in 1.15, so move your files before then.
 
 15. **The weapons file defines each game's weapons**
-   The file now says which weapons the game has and which engine routines each
-   weapon uses. A weapon the file does not name is not in the game.
+   The file now lists the weapons in the game and the routines each weapon
+   uses. A weapon not listed in the file is not in the game.
 
-   A file of your own that was written for an earlier version keeps its
-   numbers. What the weapons in it lose is what the engine used to carry for
-   them: what they fire with, what the cheats hand over, whether Lara starts
-   with them, and the names their rounds are saved under. Copy those keys from
+   A file written for an earlier version keeps its numbers. It no longer gets
+   these values from the engine: what each weapon fires, what cheats give it,
+   whether Lara starts with it, and the names used to save its ammunition. Copy
+   those keys from
    the shipped `weapons.json5` of the game you are building on.
 
    The file also groups related values, and the old spelling no longer loads.
@@ -376,8 +376,7 @@ order: 3
    - `sample_num` is `sound.fire`, `equip_anim_idx` is `anim.equip`, and `type`
      is `kind`
 
-   A value that is not the kind its key calls for is reported, and the game
-   stops rather than reading the rest of the file.
+   The game reports a value with the wrong type and stops reading the file.
 
 ### Version 1.9 to 1.10
 
