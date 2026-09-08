@@ -246,7 +246,13 @@ void Lara_TouchLava(void)
 
     ITEM *const lara_item = Lara_GetItem();
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    if (lara_info->burn || lara_info->water_status != LWS_ABOVE_WATER) {
+    if (lara_info->burn) {
+        return;
+    }
+
+    if (lara_info->water_status != LWS_ABOVE_WATER
+        && (lara_info->water_status != LWS_WADE
+            || !Room_Get(lara_item->room_num)->flags.swamp)) {
         return;
     }
 
