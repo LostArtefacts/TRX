@@ -75,6 +75,7 @@
 - Fixed not being able to trigger enemies 193 and 194 if Lara survives room 95 in Temple of the Cat (OG bug) (TRX1694)
 
 **TR2**
+- Added the ability to embed into walls when collecting underwater flares, similar to the PS1 release (Gameplay → Fixes → Fix pickup embed glitch)
 - Fixed missing gun flashes in the Diving Area cutscene (OG bug) (TRX89)
 - Fixed Lara not colliding with the submarine in Diving Area room 70 when soft static collision is enabled (TRX1703, regression from 1.1)
 
@@ -137,6 +138,7 @@
 - Fixed kills made by Von Croy not registering in the statistics (TRX1689, regression from 1.10)
 - Fixed the total kills showing as 3 in Race for the Iris, rather than 0 (TRX1689, regression from 1.10)
 - Fixed two Von Croy voice lines staying silent with early Italian CDs, which ship them misnamed (TRX659)
+- Fixed Lara embedding into walls when crouched and picking up flares (Gameplay → Fixes → Fix pickup embed glitch)
 
 **Lua**
 - Added `trx.game.set_bonus_check`, which lets a script decide whether a bonus level opens before it starts to load (#6811 / TRX1704)

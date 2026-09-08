@@ -1389,7 +1389,7 @@
         },
         "gameplay.fix_lara_pickup_embed": {
             "title": "Càraich cath-thogail",
-            "description": "Càradh far am bi Lara uaireannan a' gluasad a-steach gu ballachan nuair a tha i a' togail rudeigin fon uisge, agus os cionn uisge fo mhullaichean cas leathann.",
+            "description": "Ceartaichidh seo nuair a thèid Lara a-steach do gheoimeatraidh fhad 's a tha i a' togail nithean an àrd. Ma chuireas tu an roghainn seo an comas, cha leig e le Lara:\n\n- a bhith glaiste fo mhullaichean le leathad cas (mar anns an TR1 thùsail);\n- sleamhnachadh dhan ùrlar no na ballachan nuair a thogas i nithean fon uisge (gach geama);\n- a dhol a-steach do bhallachan nuair a thogas i lasraichean fon uisge (TR2 PS1);\n- a dhol a-steach do bhallachan nuair a tha i air a cromadh agus a' togail lasair (TR4+).",
         },
         "gameplay.fix_lift_collision": {
             "title": "Ceartaich bualadh lioftan",
