@@ -1389,7 +1389,7 @@
         },
         "gameplay.fix_lara_pickup_embed": {
             "title": "Correggi errore di raccolta",
-            "description": "Risolve i problemi per cui Lara a volte scivola contro le pareti quando raccoglie oggetti sott’acqua, e per cui si incastra sotto i soffitti fortemente inclinati quando raccoglie gli oggetti sopra l'acqua.",
+            "description": "\\{review}Corregge il problema per cui Lara si incastra nella geometria quando raccoglie oggetti. Abilitando questa opzione, Lara non potrà:\n\n- rimanere incastrata sotto soffitti fortemente inclinati (come nell’TR1 originale);\n- scivolare nel pavimento o nelle pareti quando raccoglie oggetti sott’acqua (tutti i giochi);\n- entrare nelle pareti quando raccoglie bengala sott’acqua (TR2 PS1);\n- entrare nelle pareti quando è accovacciata e raccoglie un bengala (TR4+).",
         },
         "gameplay.fix_lift_collision": {
             "title": "Correggi collisione ascensori",

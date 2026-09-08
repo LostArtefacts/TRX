@@ -873,7 +873,8 @@ bool Lara_MovePositionEx(
         .z = ref_item->pos.z + shift.z,
     };
 
-    if (ref_item->object_id == O_FLARE_ITEM) {
+    if (ref_item->object_id == O_FLARE_ITEM
+        && (lara_on_land || g_Config.gameplay.fix_lara_pickup_embed)) {
         int16_t room_num = lara_item->room_num;
         const SECTOR *const sector = Room_GetSector(new_pos, &room_num);
         const int32_t height = Room_GetHeight(sector, new_pos);

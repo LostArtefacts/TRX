@@ -1389,7 +1389,7 @@
         },
         "gameplay.fix_lara_pickup_embed": {
             "title": "\\{review}Bug de ramassage corrigé",
-            "description": "\\{review}Corrige un problème où Lara dérivait parfois dans les murs en ramassant des objets sous l’eau, ainsi qu’en ramassant des objets au-dessus de l’eau sous des plafonds fortement inclinés.",
+            "description": "\\{review}Corrige le fait que Lara s’enfonce dans la géométrie lorsqu’elle ramasse des objets. Activer cette option empêchera Lara de :\n\n- se retrouver coincée sous des plafonds fortement inclinés (comme dans le TR1 original) ;\n- glisser dans le sol ou les murs lorsqu’elle ramasse des objets sous l’eau (tous les jeux) ;\n- s’enfoncer dans les murs lorsqu’elle ramasse des torches sous l’eau (TR2 PS1) ;\n- s’enfoncer dans les murs lorsqu’elle ramasse une torche accroupie (TR4+).",
         },
         "gameplay.fix_lift_collision": {
             "title": "Corriger les collisions des plateformes",

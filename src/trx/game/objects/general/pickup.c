@@ -891,7 +891,7 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
         && (lara->gun_status == LGS_ARMLESS || anim == LA_CRAWL_IDLE)
         && Lara_Interact_CanBegin(LARA_INTERACT_PICKUP)) {
         if (is_flare_item) {
-            if (g_TRVersion >= 4) {
+            if (is_ducked && !g_Config.gameplay.fix_lara_pickup_embed) {
                 const XYZ_32 pos = M_GetAlignmentPosition(item, false);
                 Lara_AlignPosition(item, &pos);
             }
