@@ -217,6 +217,7 @@
 - Added inventory option models (TRX1357)
 - Added TR4 support to the Windows installer (TRX1333)
 - Changed a flip to move the group of rooms the trigger names, rather than every flip room in the level (TRX173)
+- Changed the inventory item lighting to match the original game (TRX1371)
 - Fixed animations that move an item sideways playing with the item standing still, such as TR4's guide shimmy (TRX1062)
 - Fixed creatures walking through squares a pushable block stands on (TRX1060)
 - Fixed Lara flinching when she bumps into Von Croy (TRX1095)

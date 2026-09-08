@@ -16,6 +16,7 @@
 #include <trx/game/objects/general/save_crystal.h>
 #include <trx/game/objects/links.h>
 #include <trx/game/objects/names.h>
+#include <trx/game/output/lights.h>
 #include <trx/game/output/state.h>
 #include <trx/game/overlay.h>
 #include <trx/game/sound.h>
@@ -337,7 +338,12 @@ void InvRing_Light(const INV_RING *const ring)
     Output_SetLightDivider(0x6000);
     Output_RotateLight(angles[1], angles[0]);
 
-    if (g_TRVersion >= 3) {
+    if (g_TRVersion == 4) {
+        // The OG lights an inventory item by a flat brightness alone, with no
+        // room lights (newinv.cpp phd_PutPolygonsPickup). InvRing_Draw sets
+        // the per-item level; this leaves a neutral one behind for the rest.
+        Output_CalculateStaticLightRGB_F((RGB_F) { 1.0f, 1.0f, 1.0f });
+    } else if (g_TRVersion == 3) {
         // OG Inv_RingLight() LightCol columns are (sun, spot, dynamic):
         // sun = (3312, 1664, 0);
         // spot = (3312, 3312, 3312);
