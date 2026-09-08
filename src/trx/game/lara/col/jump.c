@@ -307,7 +307,16 @@ static void M_UpJump(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    M_SlideEdgeJump(item, coll);
+    if (g_Config.gameplay.wall_glitch_mode == WALL_GLITCH_FIXED) {
+        Lara_Col_Shift(coll);
+        if (coll->coll_type == COLL_CLAMP || coll->coll_type == COLL_TOP
+            || coll->coll_type == COLL_TOP_FRONT) {
+            item->fall_speed = 1;
+        }
+    } else {
+        M_SlideEdgeJump(item, coll);
+    }
+
     if (g_Config.gameplay.enable_lean_jumping) {
         if (coll->coll_type != COLL_NONE) {
             item->speed = item->speed > 0 ? 2 : -2;
