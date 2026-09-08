@@ -101,7 +101,7 @@
 - Added an object links file, so a mod can say which pickup an inventory icon stands for, which slot a key goes into, and which box a weapon's rounds come in
 - Added `trx.objects.declare()`, so a script can define how its own object starts, updates, casts a shadow and saves its position
 - Added `trx.objects.borrow_content()`, so an object with no models of its own can use another object's meshes and animations
-- Changed the weapons file to define each game's weapons, so a mod can add or remove a weapon and change what it fires without a new build
+- Changed the weapons file to define each game's weapons, so a mod can add or remove weapons and change what they fire without a new build
 - Changed object keys in strings files, game flows and weapon definitions to use the C object name without `O_`
 - Changed object names in strings files to use `|` between the name the game shows and the names the console accepts
 - Changed weapon, extra mesh, braid mode and extra outfit names in game data to drop their C prefixes, so a weapon is written `shotgun` rather than `LGT_SHOTGUN`
@@ -160,7 +160,7 @@
 - Fixed static objects disappearing depending on the camera angle (OG bug) (TRX1211)
 - Fixed the underwater view wobbling less at higher supersampling values (TRX1207)
 - Fixed the debug portal and bounding box lines becoming thinner at higher supersampling values (TRX1251)
-- Fixed reflections missing from see-through surfaces in TR4, such as Werner's glasses (TRX1294)
+- Fixed missing reflections on transparent TR4 surfaces, such as Werner's glasses (TRX1294)
 - Fixed TR3 colored light objects appearing white in TR1 and TR2 levels (#6517 / TRX1377, regression from 1.10)
 
 **TR1**
@@ -171,7 +171,7 @@
 
 **TR2**
 - Added the ability for Lara to burn in swamp rooms marked with death sectors (#6539 / TRX1395)
-- Fixed a desync in the Tibetan Foothills demo if breeze mode is set to TR3 (TRX1388, regression from 1.10)
+- Fixed the Tibetan Foothills demo becoming out of sync when breeze mode is set to TR3 (TRX1388, regression from 1.10)
 
 **TR3**
 - Added crystals to each of the levels in The Lost Artefact, and made the crystal mode option visible (Gameplay → General → Crystal mode) (TRX1111)
@@ -186,7 +186,7 @@
 - Fixed underwater blood clouds appearing in the air when the security lasers hurt Lara at the water surface (OG bug) (#6323 / TRX1180)
 - Fixed the ceiling spikes not stopping on a pushable block until Lara finishes pushing it (OG bug) (#6308 / TRX1169)
 - Fixed the piranhas in It's a Madhouse! being invisible if attacking Lara while she collects the Aviary Key (#6345 / TRX1200)
-- Fixed fish losing their water color (TRX1385, regression from 1.8)
+- Fixed fish losing their underwater color (TRX1385, regression from 1.8)
 - Fixed the specks drifting in water being too small and all one size
 - Fixed crystal 206 in Thames Wharf not being triggered if the alternative route is used to reach it (#6349 / TRX1202)
 - Fixed Lara being embedded in the floor at the beginning of Temple Ruins, which causes the camera to pop after the first frame (TRX1028)
@@ -253,7 +253,7 @@
 - Added an option to cast Lara in gold whatever she is wearing (Graphic Options → Visuals → Golden Lara) (TRX1070)
 - Added a `/version` command, which shows the version this build reports
 - Added support for negative timers in triggers
-- Changed the game to fade to black when it is closed from the passport or the main menu (Graphic Options → Visuals → Fade on game exit) (TRX1376)
+- Changed the game to fade to black when it closes from the passport or main menu (Graphic Options → Visuals → Fade on game exit) (TRX1376)
 - Changed the look input to skip cutscenes and flyby sequences (TRX1093)
 - Changed the message shown when there is nothing to play to name each game it passed over and say what is wrong with it, rather than leaving the reason in the log (TRX1083)
 - Changed a game named with `--mod` to say why it cannot be played, rather than quietly starting a different one (TRX1083)
