@@ -27,6 +27,12 @@
 #define M_SHADE_NORMAL SHADE_LOW
 #define M_SHADE_SELECTED SHADE_NEUTRAL
 
+// The TR4 brightness an inventory item ramps between as the selection moves,
+// and the level that leaves the item at its plain color.
+#define M_TR4_BRIGHT_NORMAL 32.0f
+#define M_TR4_BRIGHT_SELECTED 160.0f
+#define M_TR4_BRIGHT_NEUTRAL 128.0f
+
 static XYZ_32 M_VectorViewFromWorld(const XYZ_32 v_world)
 {
     return Matrix_MulVec32_M(&g_ViewMatrix, v_world);
@@ -166,7 +172,8 @@ static void M_DrawItem(
     MATRIX draw_manual_rot = inv_item->prev_manual_rot;
     Matrix_Slerp3x3_M(&draw_manual_rot, &inv_item->manual_rot, interp_rate);
 
-    int32_t shade = M_SHADE_NORMAL;
+    // 0 when the item is the selected one, 1 when it is not.
+    float unselected = 1.0f;
     if (ring->status != RNG_FADING_OUT && ring->status != RNG_DONE) {
         if (ring->rotating) {
             float t = (ring->rot_count / (float)INV_RING_ROTATE_DURATION);
@@ -176,12 +183,20 @@ static void M_DrawItem(
             } else if (inv_item != ring->list[ring->rotate_to_object]) {
                 t = 1.0f;
             }
-            shade = LERP((float)M_SHADE_SELECTED, (float)M_SHADE_NORMAL, t);
+            unselected = t;
         } else if (inv_item == ring->list[ring->current_object]) {
-            shade = M_SHADE_SELECTED;
+            unselected = 0.0f;
         }
     }
+    const int32_t shade =
+        LERP((float)M_SHADE_SELECTED, (float)M_SHADE_NORMAL, unselected);
     Output_SetLightAdder(shade);
+    if (g_TRVersion == 4) {
+        const float bright =
+            LERP(M_TR4_BRIGHT_SELECTED, M_TR4_BRIGHT_NORMAL, unselected)
+            / M_TR4_BRIGHT_NEUTRAL;
+        Output_CalculateStaticLightRGB_F((RGB_F) { bright, bright, bright });
+    }
 
     Matrix_TranslateRel(0, draw_y_trans, draw_z_trans);
 
