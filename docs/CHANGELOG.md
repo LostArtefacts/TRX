@@ -158,11 +158,13 @@
 - Fixed TR3 colored light objects appearing white in TR1 and TR2 levels (#6517 / TRX1377, regression from 1.10)
 
 **TR1**
+- Added the ability for Lara to burn in swamp rooms marked with death sectors (#6539 / TRX1395)
 - Changed Lara to retain her equipment when turning to gold on the Midas Hand, with the equipment also turning to gold (TRX1073)
 - Fixed Lara's arm remaining in the flare pose if holding one on the Midas Hand (TRX1073)
 - Fixed a rare chance of exploded body parts getting stuck indefinitely at ceiling height (OG bug) (TRX1301)
 
 **TR2**
+- Added the ability for Lara to burn in swamp rooms marked with death sectors (#6539 / TRX1395)
 - Fixed a desync in the Tibetan Foothills demo if breeze mode is set to TR3 (TRX1388, regression from 1.10)
 
 **TR3**

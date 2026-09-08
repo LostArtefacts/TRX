@@ -449,7 +449,8 @@ static void M_TR12_Control(const int16_t effect_num)
 
         const int32_t water_height =
             Room_GetWaterHeight(effect->pos, effect->room_num);
-        if ((water_height != NO_HEIGHT && effect->pos.y > water_height)
+        if ((water_height != NO_HEIGHT && effect->pos.y > water_height
+             && !M_IsLavaSwamp(effect->pos, effect->room_num))
             || lara_info->water_status == LWS_CHEAT) {
             effect->counter = 0;
             Effect_Destroy(Effect_GetIndex(effect));
