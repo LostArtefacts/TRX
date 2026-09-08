@@ -638,6 +638,8 @@ read per tick.]],
 -- about is a role the next level can ask about too.
 local held = {}
 local pressed = {}
+local followed = {}
+local ticking = false
 
 local function shared(cache, role, read)
   local existing = cache[role]
@@ -647,12 +649,20 @@ local function shared(cache, role, read)
   -- The signal is kept for as long as the game runs, so the read behind it has
   -- to be too: `trx.signal.polled` scopes its read to the level that first
   -- asked, and would leave every later reader holding a signal that never moves
-  -- again.
+  -- again. One listener drives every role, so following one more role costs one
+  -- more read rather than one more listener.
   local created = trx.signal.new(read(role))
   cache[role] = created
-  trx.signal.tick:on(function()
-    created:set(read(role))
-  end)
+  followed[#followed + 1] = { signal = created, role = role, read = read }
+  if not ticking then
+    ticking = true
+    trx.signal.tick:on(function()
+      for i = 1, #followed do
+        local entry = followed[i]
+        entry.signal:set(entry.read(entry.role))
+      end
+    end)
+  end
   return created
 end
 
