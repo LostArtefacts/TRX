@@ -67,16 +67,16 @@ static GF_COMMAND M_HandleOverride(void)
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
+// Starts the exit and reports whether a fade must finish before the phase ends.
 static bool M_BeginExit(void)
 {
-    if (m_Exiting) {
-        return false;
+    if (!m_Exiting) {
+        m_Exiting = true;
+        if (g_Config.visuals.enable_exit_fade_effects) {
+            Fader_InitFromCurrentHold(&m_ExitFader, 1.0f, 0.333f, 0.1f);
+        }
     }
-    m_Exiting = true;
-    if (g_Config.visuals.enable_exit_fade_effects) {
-        Fader_InitFromCurrentHold(&m_ExitFader, 1.0f, 0.333f, 0.1f);
-    }
-    return true;
+    return Fader_IsActive(&m_ExitFader);
 }
 
 static void M_DrawFadeToBlackTransition(const float opacity)
