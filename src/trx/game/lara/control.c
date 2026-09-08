@@ -42,6 +42,16 @@
 #define M_LEAN_MAX_UW       (LARA_LEAN_MAX * 2)  // = 4004
 // clang-format on
 
+static const LARA_STATE_ID m_StartSwimStates[] = {
+    // clang-format off
+    LS_SWIM,
+    LS_GLIDE,
+    LS_TREAD,
+    LS_WATER_ROLL,
+    NO_CATALOG_ID,
+    // clang-format on
+};
+
 static int32_t m_OpenDoorsCheatCooldown = 0;
 
 extern bool Skidoo_Control(void);
@@ -958,9 +968,10 @@ static void M_HandleEnvironment(void)
 static void M_HandleStartState(const LARA_EXTRA_STATE start_state)
 {
     ITEM *const lara_item = Lara_GetItem();
-    const LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
     const XYZ_16 old_rot = lara_item->rot;
 
+    lara_info->water_status = LWS_ABOVE_WATER;
     Lara_SwitchToExtraState(start_state);
     if (g_Config.gameplay.enable_cinematics) {
         Camera_InvokeCinematic(lara_item, 0, 0);
@@ -994,38 +1005,49 @@ static void M_CalculateDistanceTravelled(
 void Lara_Control_Initialise(
     const GF_LEVEL_TYPE level_type, const LARA_EXTRA_STATE start_state)
 {
-    ITEM *const lara_item = Lara_GetItem();
-    LARA_INFO *const lara_info = Lara_GetLaraInfo();
-    lara_info->water_status = LWS_ABOVE_WATER;
-
     if ((level_type == GFL_NORMAL || level_type == GFL_BONUS)
         && start_state != LS_EXTRA_BREATH) {
         M_HandleStartState(start_state);
         return;
     }
+    Lara_Control_SelectEnvironment();
+}
 
-    if (Room_Get(lara_item->room_num)->flags.underwater) {
+void Lara_Control_SelectEnvironment(void)
+{
+    ITEM *const lara_item = Lara_GetItem();
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+
+    lara_info->water_status = LWS_ABOVE_WATER;
+    LARA_ANIMATION_ID goal_anim = LA_STAND_STILL;
+
+    const ROOM *const room = Room_Get(lara_item->room_num);
+    if (room->flags.underwater) {
         const int32_t water_depth =
             Lara_GetWaterDepth(lara_item->pos, lara_item->room_num);
-        const int32_t water_height =
-            Room_GetWaterHeight(lara_item->pos, lara_item->room_num);
+        const int32_t water_height = Room_GetWaterHeightEx(
+            lara_item->pos, lara_item->room_num,
+            (ROOM_WATER_HEIGHT_ARGS) {
+                .fix_tilts = true,
+                .require_air_above = true,
+            });
         const int32_t water_height_diff = water_height == NO_HEIGHT
             ? NO_HEIGHT
             : lara_item->pos.y - water_height;
-        if (water_depth > LARA_SWIM_DEPTH || !g_Config.gameplay.enable_wading) {
-            if (water_height_diff > LARA_SWIM_DEPTH) {
+        if (water_height == NO_HEIGHT || water_depth > LARA_SWIM_DEPTH
+            || !g_Config.gameplay.enable_wading) {
+            if (water_height == NO_HEIGHT || water_height_diff >= STEP_L) {
                 lara_info->water_status = LWS_UNDERWATER;
-                lara_item->goal_anim_state = LS(LS_TREAD);
-                lara_item->current_anim_state = LS(LS_TREAD);
-                Item_SwitchToAnim(lara_item, LA(LA_UNDERWATER_IDLE), 0);
+                if (Lara_HasState(m_StartSwimStates)) {
+                    return;
+                }
+                goal_anim = LA_UNDERWATER_IDLE;
             } else {
                 lara_info->water_status = LWS_SURFACE;
                 lara_item->pos.y = 1 + water_height;
-                lara_item->goal_anim_state = LS(LS_SURF_TREAD);
-                lara_item->current_anim_state = LS(LS_SURF_TREAD);
-                Item_SwitchToAnim(lara_item, LA(LA_ONWATER_IDLE), 0);
+                goal_anim = LA_ONWATER_IDLE;
             }
-            return;
+            goto finish;
         } else if (
             g_Config.gameplay.enable_wading
             && water_height_diff > M_WADE_DEPTH) {
@@ -1033,9 +1055,26 @@ void Lara_Control_Initialise(
         }
     }
 
-    lara_item->goal_anim_state = LS(LS_STOP);
-    lara_item->current_anim_state = LS(LS_STOP);
-    Item_SwitchToAnim(lara_item, LA(LA_STAND_STILL), 0);
+    if (room->flags.swamp) {
+        lara_info->water_status = LWS_WADE;
+    } else if (g_Config.gameplay.enable_crawling) {
+        int16_t room_num = lara_item->room_num;
+        const SECTOR *const sector = Room_GetSector(lara_item->pos, &room_num);
+        const int32_t height = Room_GetHeight(sector, lara_item->pos);
+        const int32_t ceiling = Room_GetCeiling(sector, lara_item->pos);
+        if (height != NO_HEIGHT && height - ceiling < LARA_HEIGHT) {
+            goal_anim = LA_CROUCH_IDLE;
+            lara_item->pos.y = height;
+        }
+    }
+
+finish:
+    if (goal_anim != LA_U(Item_GetRelativeAnim(lara_item))) {
+        Item_SwitchToAnim(lara_item, LA(goal_anim), 0);
+        const ANIM *const anim = Item_GetAnim(lara_item);
+        lara_item->current_anim_state = anim->current_anim_state;
+        lara_item->goal_anim_state = anim->current_anim_state;
+    }
 }
 
 void Lara_Control(void)
