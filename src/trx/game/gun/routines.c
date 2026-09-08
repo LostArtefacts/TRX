@@ -36,17 +36,6 @@ __attribute__((destructor)) static void M_Shutdown(void)
     }
 }
 
-static void M_Add(
-    const M_ROUTINE_KIND kind, const char *const name, const M_FUNC func)
-{
-    ASSERT(name != nullptr && func != nullptr);
-    if (m_Named[kind] == nullptr) {
-        m_Named[kind] = Vector_Create(sizeof(M_NAMED));
-    }
-    const M_NAMED named = { .name = name, .func = func };
-    Vector_Add(m_Named[kind], &named);
-}
-
 static M_FUNC M_Get(const M_ROUTINE_KIND kind, const char *const name)
 {
     if (name == nullptr) {
@@ -60,6 +49,18 @@ static M_FUNC M_Get(const M_ROUTINE_KIND kind, const char *const name)
         }
     }
     return nullptr;
+}
+
+static void M_Add(
+    const M_ROUTINE_KIND kind, const char *const name, const M_FUNC func)
+{
+    ASSERT(name != nullptr && func != nullptr);
+    ASSERT(M_Get(kind, name) == nullptr);
+    if (m_Named[kind] == nullptr) {
+        m_Named[kind] = Vector_Create(sizeof(M_NAMED));
+    }
+    const M_NAMED named = { .name = name, .func = func };
+    Vector_Add(m_Named[kind], &named);
 }
 
 void Gun_Routines_AddKind(
