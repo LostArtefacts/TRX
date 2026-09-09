@@ -86,7 +86,8 @@ static void M_HandleSpriteSequences(
         const int16_t num_meshes = File_ReadS16(injection->fp);
         const int16_t mesh_idx = File_ReadS16(injection->fp);
 
-        if (obj_info.type == OBJ_TYPE_OBJECT) {
+        if (obj_info.type == OBJ_TYPE_OBJECT
+            || obj_info.type == OBJ_TYPE_SYMBOL) {
             OBJECT *obj;
             if (SHOULD(
                     Inject_GetObject(obj_info, &obj),
