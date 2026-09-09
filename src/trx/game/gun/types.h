@@ -169,6 +169,9 @@ typedef struct {
 
     // Select the mesh source when the weapon brings its own model.
     WEAPON_MESH_INFO meshes;
+    // The weapon whose meshes this weapon uses when it has none of its own.
+    // NO_CATALOG_ID for a weapon that stands alone.
+    LARA_GUN_TYPE skin_source;
     // Whether a module implements this weapon. A row that none declares is
     // a gun type the engine carries but nothing drives, such as empty hands
     // or a gun fixed to a vehicle.

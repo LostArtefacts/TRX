@@ -515,8 +515,8 @@ static RESULT M_ReadGroup(
     return OK;
 }
 
-// Takes the weapon another weapon is built on as it stands, keeping what the
-// engine gave this one where the two disagree.
+// Reads the weapon this weapon is based on and keeps its own settings where
+// they differ.
 static RESULT M_ReadBase(
     lua_State *const L, const int idx, WEAPON_INFO *const w)
 {
@@ -538,6 +538,7 @@ static RESULT M_ReadBase(
     const WEAPON_INFO own = *w;
     *w = *Gun_Registry_Get(base_id);
     w->gun_type = gun_type;
+    w->skin_source = base_id;
     w->is_declared = was_declared;
     w->equip_input_role = was_declared ? own.equip_input_role : (INPUT_ROLE)-1;
     w->save_ammo_key = was_declared ? own.save_ammo_key : nullptr;
