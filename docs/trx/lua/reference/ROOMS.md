@@ -79,15 +79,27 @@ end
 
     Methods:
 
+    - <a id="rooms.Room.ceiling_height" name="rooms.Room.ceiling_height"></a>[lua]`room:ceiling_height(pos, [opts])`  
+      Returns the ceiling height, using this room as the starting room.
+
+      Parameters:
+      - <a id="rooms.Room.ceiling_height.pos" name="rooms.Room.ceiling_height.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position.
+      - <a id="rooms.Room.ceiling_height.opts" name="rooms.Room.ceiling_height.opts"></a>**`opts`** (table, optional). How to read the height.
+
+        Keys:
+        - <a id="rooms.Room.ceiling_height.opts.fix_tilts" name="rooms.Room.ceiling_height.opts.fix_tilts"></a>**`fix_tilts`** (boolean, optional, default `true`). Whether a floor tilt that lies inside a wall is taken into account. `false` gives the flat height read by the original games. Vanilla level geometry can depend on this behaviour.
+
+      Returns: [trx.math.Distance](MATH.md#math.Distance) or `nil`. The height, with `nil` where there is no ceiling.
+
     - <a id="rooms.Room.floor_height" name="rooms.Room.floor_height"></a>[lua]`room:floor_height(pos, [opts])`  
       As [`trx.rooms.floor_height`](#rooms.floor_height), looking from this room.
 
       Parameters:
       - <a id="rooms.Room.floor_height.pos" name="rooms.Room.floor_height.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position.
-      - <a id="rooms.Room.floor_height.opts" name="rooms.Room.floor_height.opts"></a>**`opts`** (table, optional). How to read the floor.
+      - <a id="rooms.Room.floor_height.opts" name="rooms.Room.floor_height.opts"></a>**`opts`** (table, optional). How to read the height.
 
         Keys:
-        - <a id="rooms.Room.floor_height.opts.fix_tilts" name="rooms.Room.floor_height.opts.fix_tilts"></a>**`fix_tilts`** (boolean, optional, default `true`). Whether a floor tilt that lies inside a wall is taken into account. `false` gives the flat height the original games read there, which is what the geometry glitches of the vanilla levels rest on.
+        - <a id="rooms.Room.floor_height.opts.fix_tilts" name="rooms.Room.floor_height.opts.fix_tilts"></a>**`fix_tilts`** (boolean, optional, default `true`). Whether a floor tilt that lies inside a wall is taken into account. `false` gives the flat height read by the original games. Vanilla level geometry can depend on this behaviour.
 
       Returns: [trx.math.Distance](MATH.md#math.Distance) or `nil`. The height, with `nil` where there is no floor.
 
@@ -279,16 +291,34 @@ end
   Parameters:
   - <a id="rooms.floor_height.pos" name="rooms.floor_height.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position.
   - <a id="rooms.floor_height.room_num" name="rooms.floor_height.room_num"></a>**`room_num`** ([trx.rooms.Num](#rooms.Num), optional). The search crosses portals, so a neighbouring room's floor is found too. Without it, the room is looked up from the position, which takes the first room that contains it and passes over the flipped-away ones. Where rooms overlap, name the room, or ask the room itself with [`trx.rooms.Room:floor_height`](#rooms.Room.floor_height).
-  - <a id="rooms.floor_height.opts" name="rooms.floor_height.opts"></a>**`opts`** (table, optional). How to read the floor.
+  - <a id="rooms.floor_height.opts" name="rooms.floor_height.opts"></a>**`opts`** (table, optional). How to read the height.
 
     Keys:
-    - <a id="rooms.floor_height.opts.fix_tilts" name="rooms.floor_height.opts.fix_tilts"></a>**`fix_tilts`** (boolean, optional, default `true`). Whether a floor tilt that lies inside a wall is taken into account. `false` gives the flat height the original games read there, which is what the geometry glitches of the vanilla levels rest on.
+    - <a id="rooms.floor_height.opts.fix_tilts" name="rooms.floor_height.opts.fix_tilts"></a>**`fix_tilts`** (boolean, optional, default `true`). Whether a floor tilt that lies inside a wall is taken into account. `false` gives the flat height read by the original games. Vanilla level geometry can depend on this behaviour.
 
   Returns: [trx.math.Distance](MATH.md#math.Distance) or `nil`. The height, with `nil` where there is no floor.
 
   Example:
   ```lua
   local floor = trx.lara.item.room:floor_height(trx.lara.item.pos)
+  ```
+
+- <a id="rooms.ceiling_height" name="rooms.ceiling_height"></a>[lua]`trx.rooms.ceiling_height(pos, [room_num], [opts])`  
+  The height of the ceiling over a world position. Returns `nil` inside solid geometry or outside the level.
+
+  Parameters:
+  - <a id="rooms.ceiling_height.pos" name="rooms.ceiling_height.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position.
+  - <a id="rooms.ceiling_height.room_num" name="rooms.ceiling_height.room_num"></a>**`room_num`** ([trx.rooms.Num](#rooms.Num), optional). The search crosses portals, so a neighbouring room's floor is found too. Without it, the room is looked up from the position, which takes the first room that contains it and passes over the flipped-away ones. Where rooms overlap, name the room, or ask the room itself with [`trx.rooms.Room:floor_height`](#rooms.Room.floor_height).
+  - <a id="rooms.ceiling_height.opts" name="rooms.ceiling_height.opts"></a>**`opts`** (table, optional). How to read the height.
+
+    Keys:
+    - <a id="rooms.ceiling_height.opts.fix_tilts" name="rooms.ceiling_height.opts.fix_tilts"></a>**`fix_tilts`** (boolean, optional, default `true`). Whether a floor tilt that lies inside a wall is taken into account. `false` gives the flat height read by the original games. Vanilla level geometry can depend on this behaviour.
+
+  Returns: [trx.math.Distance](MATH.md#math.Distance) or `nil`. The height, with `nil` where there is no ceiling.
+
+  Example:
+  ```lua
+  local ceiling = trx.lara.item.room:ceiling_height(trx.lara.item.pos)
   ```
 
 - <a id="rooms.find_valid_pos" name="rooms.find_valid_pos"></a>[lua]`trx.rooms.find_valid_pos(pos, room_num)`  

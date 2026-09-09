@@ -253,29 +253,29 @@ static int M_L_RoomsFindValidPos(lua_State *const L)
     return 2;
 }
 
-// trxc.rooms.get_height({x,y,z}, room_num, opts) -> floor height, or nil where
-// there is no floor
-static int M_L_RoomsGetHeight(lua_State *const L)
+// Resolve the room where a height query starts.
+static bool M_ResolveHeightRoom(
+    lua_State *const L, const XYZ_32 pos, int16_t *const out_room_num)
 {
-    const XYZ_32 pos = LUA_CheckXYZ(L, 1);
-
-    int16_t room_num;
     if (lua_isnoneornil(L, 2)) {
-        room_num = Room_GetIndexFromPos(pos);
+        const int16_t room_num = Room_GetIndexFromPos(pos);
         if (room_num == NO_ROOM) {
-            lua_pushnil(L);
-            return 1;
+            return false;
         }
-    } else {
-        // Room_GetSector walks from the room it is given, and Room_Get gives
-        // back nullptr for a room outside the level.
-        const lua_Integer room_arg = luaL_checkinteger(L, 2);
-        luaL_argcheck(
-            L, room_arg >= 0 && room_arg <= Room_GetCount() - 1, 2,
-            "unknown room");
-        room_num = (int16_t)room_arg;
+        *out_room_num = room_num;
+        return true;
     }
+    // Room_GetSector walks from the room it is given, and Room_Get gives
+    // back nullptr for a room outside the level.
+    const lua_Integer room_arg = luaL_checkinteger(L, 2);
+    luaL_argcheck(
+        L, room_arg >= 0 && room_arg <= Room_GetCount() - 1, 2, "unknown room");
+    *out_room_num = (int16_t)room_arg;
+    return true;
+}
 
+static bool M_ReadFixTilts(lua_State *const L)
+{
     bool fix_tilts = true;
     if (lua_istable(L, 3)) {
         lua_getfield(L, 3, "fix_tilts");
@@ -284,6 +284,20 @@ static int M_L_RoomsGetHeight(lua_State *const L)
         }
         lua_pop(L, 1);
     }
+    return fix_tilts;
+}
+
+// Get the floor height, or nil when the position has no floor.
+static int M_L_RoomsGetHeight(lua_State *const L)
+{
+    const XYZ_32 pos = LUA_CheckXYZ(L, 1);
+
+    int16_t room_num;
+    if (!M_ResolveHeightRoom(L, pos, &room_num)) {
+        lua_pushnil(L);
+        return 1;
+    }
+    const bool fix_tilts = M_ReadFixTilts(L);
 
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
     const int32_t height = Room_GetHeightEx(sector, pos, fix_tilts, NO_ITEM);
@@ -295,9 +309,32 @@ static int M_L_RoomsGetHeight(lua_State *const L)
     return 1;
 }
 
+// Get the ceiling height, or nil when the position has no ceiling.
+static int M_L_RoomsGetCeiling(lua_State *const L)
+{
+    const XYZ_32 pos = LUA_CheckXYZ(L, 1);
+
+    int16_t room_num;
+    if (!M_ResolveHeightRoom(L, pos, &room_num)) {
+        lua_pushnil(L);
+        return 1;
+    }
+    const bool fix_tilts = M_ReadFixTilts(L);
+
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    const int32_t height = Room_GetCeilingEx(sector, pos, fix_tilts);
+    if (height == NO_HEIGHT) {
+        lua_pushnil(L);
+    } else {
+        lua_pushinteger(L, height);
+    }
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
     { "get_flipped_room", M_L_RoomsGetFlippedRoom },
     { "get_height", M_L_RoomsGetHeight },
+    { "get_ceiling", M_L_RoomsGetCeiling },
     { "count", M_L_RoomsCount },
     { "get", M_L_RoomsGet },
     { "get_bounds", M_L_RoomsGetBounds },
