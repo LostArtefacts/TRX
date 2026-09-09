@@ -6597,6 +6597,20 @@
       "path": "game.screenshot"
     },
     {
+      "description": "Adds injections to every level, in addition to those named by its game flow.\n\nThe function runs before each level loads its content. It can read the current\nsettings and return a different list for each level.\n\nReturn file names, not paths. The game searches for them in the same order as\ngame-flow injections: in the mod first, then in the base game. Use\n`trx.path.resolve` to check whether a file exists first.",
+      "examples": [
+        "trx.inject.declare(function()\n  local files = { \"mymod_models.bin\" }\n  if trx.config.get(\"visuals.enable_ps1_crystals\") then\n    files[#files + 1] = \"wall_crystals.bin\"\n  end\n  return files\nend)"
+      ],
+      "params": [
+        {
+          "description": "Called before each level loads and returns a list of file names.",
+          "name": "declaration",
+          "type": "function"
+        }
+      ],
+      "path": "inject.declare"
+    },
+    {
       "description": "Whether a role is active right now.\n\nThis stays true while the player holds the bound key or button. Use it for\nactions that continue while held.",
       "params": [
         {
@@ -9926,6 +9940,12 @@
       "description": "Module for the game flow: which levels there are, and which one is being played.",
       "name": "game",
       "order": 10
+    },
+    {
+      "description": "The content a mod brings with it: meshes, animations, sounds and other data.\n\nA game flow names the injections its levels load. A script can name additional\ninjections, so a mod can ship its content without changing a game flow.",
+      "name": "inject",
+      "order": 42,
+      "title": "Injection"
     },
     {
       "description": "Module for reading input and working with player bindings.\n\nScripts ask about roles, not physical keys. A role is a game action such as\njumping, drawing a weapon, or opening a menu. The key or button that triggers it\ndepends on the player's device and layout.\n\nUse `\\{input ...}` in text to draw the binding for a role.",

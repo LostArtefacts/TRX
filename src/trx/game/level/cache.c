@@ -6,6 +6,7 @@
 #include <trx/core/json/util/file.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/game/inject.h>
 #include <trx/game/shell.h>
 
 #include <inttypes.h>
@@ -69,8 +70,10 @@ static uint64_t M_ComputeLevelHash(const GF_LEVEL *const level)
     checksum = Hash_FNV1a64_UpdateU32(checksum, (uint32_t)level->num);
     checksum = Hash_FNV1a64_UpdateU32(checksum, (uint32_t)level->type);
     checksum = Hash_FNV1a64_UpdateString(checksum, level->path);
-    checksum =
-        Hash_FNV1a64_UpdateU32(checksum, (uint32_t)level->injections.count);
+    Inject_CollectDeclarations();
+    const int32_t declared_count = Inject_GetDeclaredCount();
+    checksum = Hash_FNV1a64_UpdateU32(
+        checksum, (uint32_t)(level->injections.count + declared_count));
 
     if (level->path != nullptr) {
         uint64_t file_size = 0;
@@ -92,6 +95,14 @@ static uint64_t M_ComputeLevelHash(const GF_LEVEL *const level)
         }
     }
 
+    // What a script declares is named but not weighed. A mod's blob is
+    // rewritten every time it is built, and weighing it would throw away what
+    // every level was counted for whenever a mod author changed anything.
+    for (int32_t i = 0; i < declared_count; i++) {
+        checksum =
+            Hash_FNV1a64_UpdateString(checksum, Inject_GetDeclaredPath(i));
+    }
+
     return checksum;
 }
 
@@ -103,9 +114,10 @@ static uint64_t M_GetLevelHash(const GF_LEVEL *const level)
         return entry->hash;
     }
 
+    const uint64_t hash = M_ComputeLevelHash(level);
     entry = Memory_Alloc(sizeof(*entry));
     entry->level = level;
-    entry->hash = M_ComputeLevelHash(level);
+    entry->hash = hash;
     HASH_ADD_PTR(m_LevelHashMap, level, entry);
     return entry->hash;
 }

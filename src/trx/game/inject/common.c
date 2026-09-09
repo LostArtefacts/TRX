@@ -7,8 +7,10 @@
 #include <trx/core/thread_pool.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
+#include <trx/game/catalog/manager.h>
 #include <trx/game/items.h>
 #include <trx/game/level.h>
+#include <trx/game/paths.h>
 #include <trx/game/rooms.h>
 #include <trx/game/savegame.h>
 #include <trx/version.h>
@@ -18,6 +20,7 @@
 #include <zlib.h>
 
 #define M_VIRTUAL_NAME "virtual_injection"
+#define M_MAX_SYMBOL_NAME 256
 
 typedef struct {
     INJECTION *injection;
@@ -42,6 +45,10 @@ static void (*m_Handlers[ICT_NUMBER_OF])(
 static INJECTION_CONTEXT m_Context = {};
 static int32_t m_NumInjections = 0;
 static INJECTION *m_Injections = nullptr;
+
+// Store the injections declared by scripts for the current level.
+static VECTOR *m_DeclaredPaths = nullptr;
+static void (*m_CollectDeclared)(void) = nullptr;
 
 static int32_t m_DataCounts[IDT_NUMBER_OF] = {};
 static int32_t m_MaxStaticObject3DId = -1;
@@ -122,8 +129,78 @@ static INJECTION_CHUNK M_ReadChunk(const INJECTION *const injection)
     };
 }
 
+static bool M_SymbolContextToCatalog(
+    const INJECTION_SYMBOL_CONTEXT context, CATALOG_CONTEXT *const out_context)
+{
+    switch (context) {
+    case ISC_OBJECTS:
+        *out_context = CATALOG_OBJECTS;
+        return true;
+    case ISC_MUSIC:
+        *out_context = CATALOG_MUSIC;
+        return true;
+    case ISC_SAMPLES:
+        *out_context = CATALOG_SAMPLES;
+        return true;
+    case ISC_LARA_STATES:
+        *out_context = CATALOG_LARA_STATES;
+        return true;
+    case ISC_LARA_ANIMS:
+        *out_context = CATALOG_LARA_ANIMS;
+        return true;
+    case ISC_ITEM_ACTIONS:
+        *out_context = CATALOG_ITEM_ACTIONS;
+        return true;
+    default:
+        return false;
+    }
+}
+
+// Read a symbol and mint its catalog key when it does not exist.
+static INJECTION_SYMBOL M_ReadSymbol(TRX_FILE *const file)
+{
+    INJECTION_SYMBOL symbol = { .id = NO_CATALOG_ID };
+    const INJECTION_SYMBOL_CONTEXT file_context = File_ReadS32(file);
+    const int32_t name_length = File_ReadS32(file);
+
+    char name[M_MAX_SYMBOL_NAME] = {};
+    if (name_length <= 0 || name_length >= M_MAX_SYMBOL_NAME) {
+        LOG_WARNING("symbol name length %d is out of range", name_length);
+        File_Skip(file, MAX(name_length, 0) + sizeof(int32_t));
+        return symbol;
+    }
+    File_ReadData(file, name, name_length);
+    // Reserved for per-symbol flags.
+    File_Skip(file, sizeof(int32_t));
+
+    if (!M_SymbolContextToCatalog(file_context, &symbol.context)) {
+        LOG_WARNING("symbol '%s' has unknown context %d", name, file_context);
+        return symbol;
+    }
+
+    symbol.id = Catalog_KeyToID(symbol.context, name, NO_CATALOG_ID);
+    if (symbol.id == NO_CATALOG_ID) {
+        SHOULD(
+            Catalog_CreateKey(symbol.context, name, &symbol.id),
+            "the symbol is left out");
+    }
+    return symbol;
+}
+
+static void M_ReadSymbols(INJECTION *const injection, const int32_t data_count)
+{
+    Memory_FreePointer(&injection->symbols);
+    injection->num_symbols = data_count;
+    injection->symbols =
+        Memory_Alloc(sizeof(INJECTION_SYMBOL) * MAX(data_count, 1));
+    for (int32_t i = 0; i < data_count; i++) {
+        injection->symbols[i] = M_ReadSymbol(injection->fp);
+    }
+}
+
 static void M_InitialiseBlock(
-    TRX_FILE *const file, const INJECTION_VERSION version)
+    INJECTION *const injection, TRX_FILE *const file,
+    const INJECTION_VERSION version)
 {
     const INJECTION_DATA_TYPE data_type = File_ReadS32(file);
     const int32_t data_count = File_ReadS32(file);
@@ -183,6 +260,10 @@ static void M_InitialiseBlock(
 
         return;
     }
+
+    case IDT_SYMBOLS:
+        M_ReadSymbols(injection, data_count);
+        return;
 
     case IDT_SAMPLE_INFOS: {
         for (int32_t i = 0; i < data_count; i++) {
@@ -383,7 +464,7 @@ static void M_InitialiseInjection(INJECTION *const injection)
     for (int32_t i = 0; i < num_chunks; i++) {
         const INJECTION_CHUNK chunk = M_ReadChunk(injection);
         for (int32_t j = 0; j < chunk.num_blocks; j++) {
-            M_InitialiseBlock(injection->fp, injection->version);
+            M_InitialiseBlock(injection, injection->fp, injection->version);
         }
     }
 
@@ -433,6 +514,29 @@ static bool M_IsApplicable(const INJECTION *const injection)
     return applicable;
 }
 
+static void M_ClearDeclared(void)
+{
+    if (m_DeclaredPaths == nullptr) {
+        return;
+    }
+    for (int32_t i = 0; i < m_DeclaredPaths->count; i++) {
+        char *path = *(char **)Vector_Get(m_DeclaredPaths, i);
+        Memory_Free(path);
+    }
+    Vector_Free(m_DeclaredPaths);
+    m_DeclaredPaths = nullptr;
+}
+
+// Return the path of an injection loaded by a level.
+static const char *M_GetInjectionPath(
+    const GF_LEVEL *const level, const int32_t idx)
+{
+    if (idx < level->injections.count) {
+        return level->injections.data_paths[idx];
+    }
+    return Inject_GetDeclaredPath(idx - level->injections.count);
+}
+
 void Inject_RegisterTester(
     const INJECTION_TEST_TYPE type,
     bool (*test_func)(const INJECTION_CONTEXT *, const INJECTION *injection))
@@ -461,10 +565,50 @@ uint16_t Inject_GetPaletteIndex(const uint16_t index)
     return m_PaletteMap == nullptr ? 0 : m_PaletteMap[index];
 }
 
+void Inject_SetDeclarationCollector(void (*const collect)(void))
+{
+    m_CollectDeclared = collect;
+}
+
+void Inject_AddDeclaredInjection(const char *const name)
+{
+    const char *const path =
+        GamePath_TryResolve(GAME_DYNAMIC_PATH_INJECTION_FILE, name);
+    if (path == nullptr) {
+        LOG_WARNING("no injection named '%s' was found", name);
+        return;
+    }
+    if (m_DeclaredPaths == nullptr) {
+        m_DeclaredPaths = Vector_Create(sizeof(char *));
+    }
+    char *const own = Memory_DupStr(path);
+    Vector_Add(m_DeclaredPaths, &own);
+}
+
+void Inject_CollectDeclarations(void)
+{
+    M_ClearDeclared();
+    if (m_CollectDeclared != nullptr) {
+        m_CollectDeclared();
+    }
+}
+
+int32_t Inject_GetDeclaredCount(void)
+{
+    return m_DeclaredPaths == nullptr ? 0 : m_DeclaredPaths->count;
+}
+
+const char *Inject_GetDeclaredPath(const int32_t idx)
+{
+    ASSERT(m_DeclaredPaths != nullptr && idx < m_DeclaredPaths->count);
+    return *(char **)Vector_Get(m_DeclaredPaths, idx);
+}
+
 void Inject_InitLevel(const GF_LEVEL *const level, const INJECTION_MODE mode)
 {
     m_Context.mode = mode;
-    m_NumInjections = level->injections.count;
+    Inject_CollectDeclarations();
+    m_NumInjections = level->injections.count + Inject_GetDeclaredCount();
     if (m_NumInjections == 0) {
         M_PrunePayloadCache();
         return;
@@ -486,7 +630,7 @@ void Inject_InitLevel(const GF_LEVEL *const level, const INJECTION_MODE mode)
         for (int32_t i = 0; i < m_NumInjections; i++) {
             jobs[i] = (M_LOAD_JOB) {
                 .injection = &m_Injections[i],
-                .path = level->injections.data_paths[i],
+                .path = M_GetInjectionPath(level, i),
             };
             ThreadPool_AddJob(pool, M_LoadInjectionJob, &jobs[i]);
         }
@@ -495,7 +639,7 @@ void Inject_InitLevel(const GF_LEVEL *const level, const INJECTION_MODE mode)
 
         Memory_Free(jobs);
     } else {
-        M_LoadFromFile(&m_Injections[0], level->injections.data_paths[0]);
+        M_LoadFromFile(&m_Injections[0], M_GetInjectionPath(level, 0));
     }
 
     for (int32_t i = 0; i < m_NumInjections; i++) {
@@ -583,6 +727,8 @@ void Inject_Cleanup(void)
             File_Close(injection->fp);
         }
         Memory_FreePointer(&injection->path);
+        Memory_FreePointer(&injection->symbols);
+        injection->num_symbols = 0;
     }
 
     for (int32_t i = 0; i < IDT_NUMBER_OF; i++) {
