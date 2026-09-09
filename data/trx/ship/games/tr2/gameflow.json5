@@ -32,6 +32,7 @@
 
     "sfx_path": "main.sfx",
     "injections": [
+        "sparks_gfx.bin",
         "font.bin",
         "lara_animations.bin",
         "pda_model.bin",

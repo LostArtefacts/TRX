@@ -246,6 +246,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── scion_collision.bin
 │   │   │   ├── shimmy_sfx.bin
 │   │   │   ├── skate_kid_sfx.bin
+│   │   │   ├── sparks_gfx.bin
 │   │   │   ├── sprite_alignment.bin
 │   │   │   ├── stronghold_crystals.bin
 │   │   │   ├── stronghold_fd.bin
@@ -651,6 +652,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── secret_models_gm.bin
 │   │   │   ├── secret_models_og.bin
 │   │   │   ├── shark_sfx.bin
+│   │   │   ├── sparks_gfx.bin
 │   │   │   ├── tibet_crystals.bin
 │   │   │   ├── tibet_fd.bin
 │   │   │   ├── tibet_itemrots.bin
@@ -1647,6 +1649,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── scion_collision.bin
     │   │   │   │   ├── shimmy_sfx.bin
     │   │   │   │   ├── skate_kid_sfx.bin
+    │   │   │   │   ├── sparks_gfx.bin
     │   │   │   │   ├── sprite_alignment.bin
     │   │   │   │   ├── stronghold_crystals.bin
     │   │   │   │   ├── stronghold_fd.bin
@@ -2052,6 +2055,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── secret_models_gm.bin
     │   │   │   │   ├── secret_models_og.bin
     │   │   │   │   ├── shark_sfx.bin
+    │   │   │   │   ├── sparks_gfx.bin
     │   │   │   │   ├── tibet_crystals.bin
     │   │   │   │   ├── tibet_fd.bin
     │   │   │   │   ├── tibet_itemrots.bin
