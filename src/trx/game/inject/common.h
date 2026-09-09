@@ -7,6 +7,14 @@
 #define INJECTION_MAGIC MKTAG('T', 'R', 'X', 'J')
 
 void Inject_InitLevel(const GF_LEVEL *level, INJECTION_MODE mode);
+
+// Manage the injections declared by scripts. They load after the injections
+// named by the level's game flow and are collected for each level.
+void Inject_SetDeclarationCollector(void (*collect)(void));
+void Inject_CollectDeclarations(void);
+void Inject_AddDeclaredInjection(const char *name);
+int32_t Inject_GetDeclaredCount(void);
+const char *Inject_GetDeclaredPath(int32_t idx);
 void Inject_AppendInjection(TRX_FILE *file);
 void Inject_AllInjections(void);
 void Inject_Cleanup(void);

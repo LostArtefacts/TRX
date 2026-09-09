@@ -66,6 +66,9 @@ static void M_ReadObject(const INJECTION_CHUNK chunk)
         obj->anim_idx = anim_idx;
         if (obj->anim_idx != -1) {
             obj->anim_idx += cached_info.anims.anim_count;
+        } else if (chunk.injection->version >= INJ_VERSION_12) {
+            // Match borrowed frames to an injected animation by frame offset.
+            obj->frame_ofs += cached_info.anims.frame_count * 2;
         }
         obj->loaded = true;
     }

@@ -2,6 +2,7 @@
 
 #include <trx/core/file.h>
 #include <trx/core/math.h>
+#include <trx/game/catalog/manager.h>
 #include <trx/game/inject/enum.h>
 #include <trx/game/objects/ids.h>
 
@@ -10,11 +11,20 @@ typedef struct {
 } INJECTION_CONTEXT;
 
 typedef struct {
+    CATALOG_CONTEXT context;
+    CATALOG_ID id;
+} INJECTION_SYMBOL;
+
+typedef struct {
     char *path;
     TRX_FILE *fp;
     INJECTION_VERSION version;
     INJECTION_FILE_TYPE type;
     bool relevant;
+    // Identities from the file's symbol table, in table order. References with
+    // type OBJ_TYPE_SYMBOL use this array.
+    INJECTION_SYMBOL *symbols;
+    int32_t num_symbols;
 } INJECTION;
 
 typedef struct {

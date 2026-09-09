@@ -18,7 +18,8 @@ typedef enum {
     INJ_VERSION_9 = 9,
     INJ_VERSION_10 = 10,
     INJ_VERSION_11 = 11,
-    INJ_CURRENT_VERSION = INJ_VERSION_11,
+    INJ_VERSION_12 = 12,
+    INJ_CURRENT_VERSION = INJ_VERSION_12,
 } INJECTION_VERSION;
 
 typedef enum {
@@ -53,7 +54,8 @@ typedef enum {
     ICT_SFX_DATA       = 5,
     ICT_DATA_EDITS     = 6,
     ICT_CAMERA_DATA    = 7,
-    ICT_NUMBER_OF      = 8,
+    ICT_SYMBOLS        = 8,
+    ICT_NUMBER_OF      = 9,
 } INJECTION_CHUNK_TYPE;
 
 typedef enum {
@@ -97,7 +99,8 @@ typedef enum {
     IDT_ITEM_NAME_EDITS  = 37,
     IDT_FLYBY_CAMERAS    = 38,
     IDT_PROPERTY_EDITS   = 39,
-    IDT_NUMBER_OF        = 40,
+    IDT_SYMBOLS          = 40,
+    IDT_NUMBER_OF        = 41,
 } INJECTION_DATA_TYPE;
 
 typedef enum {
@@ -146,4 +149,16 @@ typedef enum {
     OBJ_TYPE_OBJECT = 0,
     OBJ_TYPE_STATIC2D = 1,
     OBJ_TYPE_STATIC3D = 2,
+    OBJ_TYPE_SYMBOL = 3,
 } INJECT_OBJECT_TYPE;
+
+// Which catalog a symbol names an identity in.
+typedef enum {
+    ISC_OBJECTS = 0,
+    ISC_MUSIC = 1,
+    ISC_SAMPLES = 2,
+    ISC_LARA_STATES = 3,
+    ISC_LARA_ANIMS = 4,
+    ISC_ITEM_ACTIONS = 5,
+    ISC_NUMBER_OF = 6,
+} INJECTION_SYMBOL_CONTEXT;
