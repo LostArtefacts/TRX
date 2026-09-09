@@ -22,7 +22,9 @@
 #include <string.h>
 #include <uthash.h>
 
-// The color the shipped golden models are textured in, to the texel.
+// Limit how far a weapon can search through its base weapons.
+#define M_MAX_SKIN_STEPS 8
+// The color of the shipped golden models, down to the texel.
 #define M_DEFAULT_GOLD_COLOR ((RGB_888) { 0xFF, 0xEE, 0x8B })
 
 typedef struct {
@@ -594,10 +596,23 @@ REGISTER_SUBSYSTEM(.load = M_Load, .shutdown = M_Shutdown)
 LARA_SKIN_MESH_MAP Lara_Skin_GetGunMeshMap(
     const LARA_SKIN_GUN_MAP *const gun_map, const LARA_GUN_TYPE gun_type)
 {
-    for (int32_t i = 0; i < gun_map->count; i++) {
-        if (gun_map->entries[i].gun_type == gun_type) {
-            return gun_map->entries[i].mesh_map;
+    // Use the weapon's meshes, then try each base weapon. Stop after a fixed
+    // number of steps so a chain of bases cannot loop forever.
+    LARA_GUN_TYPE wanted = gun_type;
+    for (int32_t step = 0; step < M_MAX_SKIN_STEPS; step++) {
+        for (int32_t i = 0; i < gun_map->count; i++) {
+            if (gun_map->entries[i].gun_type == wanted) {
+                return gun_map->entries[i].mesh_map;
+            }
         }
+        if (!Gun_Registry_IsValidType(wanted)) {
+            break;
+        }
+        const LARA_GUN_TYPE source = Gun_Registry_Get(wanted)->skin_source;
+        if (source <= LGT_UNARMED || source == wanted) {
+            break;
+        }
+        wanted = source;
     }
     LARA_SKIN_MESH_MAP map;
     memset(&map, -1, sizeof(map));
