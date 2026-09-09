@@ -106,6 +106,14 @@ static OBJECT_TEXTURE *m_ObjectTextures = nullptr;
 static SPRITE_TEXTURE *m_SpriteTextures = nullptr;
 static ANIMATED_TEXTURE_RANGE *m_AnimTextureRanges = nullptr;
 
+// Caches the last color cube so an unchanged palette skips the nearest-color
+// search.
+static struct {
+    RGBA_8888 *cube;
+    RGB_888 src[256];
+    int32_t src_size;
+} m_PaletteLut = {};
+
 // TR4 UV rotate: the first N animated texture ranges scroll their V linearly
 // instead of frame-swapping (see docs on the TR4 UVRotate gameflow command).
 static int32_t m_UVRotateRangeCount = 0;
@@ -945,10 +953,16 @@ static void M_RefreshPaletteLut(void)
 
     const int32_t count =
         M_PALETTE_LUT_SIZE * M_PALETTE_LUT_SIZE * M_PALETTE_LUT_SIZE;
-    RGBA_8888 *const cube = Memory_Alloc(sizeof(RGBA_8888) * count);
-    M_BuildPaletteLut(cube, palette, pal_size);
-    TRX_GL_Renderer_SetPaletteLut(cube, M_PALETTE_LUT_SIZE);
-    Memory_Free(cube);
+    if (m_PaletteLut.cube == nullptr) {
+        m_PaletteLut.cube = Memory_Alloc(sizeof(RGBA_8888) * count);
+    }
+    if (m_PaletteLut.src_size != pal_size
+        || memcmp(m_PaletteLut.src, palette, sizeof(RGB_888) * pal_size) != 0) {
+        M_BuildPaletteLut(m_PaletteLut.cube, palette, pal_size);
+        memcpy(m_PaletteLut.src, palette, sizeof(RGB_888) * pal_size);
+        m_PaletteLut.src_size = pal_size;
+    }
+    TRX_GL_Renderer_SetPaletteLut(m_PaletteLut.cube, M_PALETTE_LUT_SIZE);
 }
 
 static void M_FreeLevelData(void)
@@ -994,6 +1008,8 @@ void Output_Textures_Shutdown(void)
         m_AnimationRanges.sprites = nullptr;
     }
     M_FreeLevelData();
+    Memory_FreePointer(&m_PaletteLut.cube);
+    m_PaletteLut.src_size = 0;
 
     if (m_Priv.tex_env_map != 0) {
         glDeleteTextures(1, &m_Priv.tex_env_map);
