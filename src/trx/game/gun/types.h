@@ -91,6 +91,19 @@ typedef struct {
     XYZ_16 rot;
 } GUN_FLASH;
 
+// Select the meshes Lara uses while holding a weapon. Offsets refer to the
+// weapon's object. A value of -1 draws no mesh. An undeclared set uses the
+// outfit's gun-swap object.
+typedef struct {
+    bool is_declared;
+    OBJECT_ID object_id;
+    int16_t hand_r;
+    int16_t hand_l;
+    int16_t torso;
+    int16_t thigh_r;
+    int16_t thigh_l;
+} WEAPON_MESH_INFO;
+
 typedef struct {
     LARA_GUN_TYPE gun_type;
     WEAPON_TYPE type;
@@ -151,9 +164,11 @@ typedef struct {
     INPUT_ROLE equip_input_role;
     bool is_available;
 
-    // What the weapon does. A weapon declares these where it is
-    // implemented, and the weapon data does not carry them.
+    // Define what the weapon does. The weapon implementation declares these
+    // values instead of storing them in the weapon data.
 
+    // Select the mesh source when the weapon brings its own model.
+    WEAPON_MESH_INFO meshes;
     // Whether a module implements this weapon. A row that none declares is
     // a gun type the engine carries but nothing drives, such as empty hands
     // or a gun fixed to a vehicle.

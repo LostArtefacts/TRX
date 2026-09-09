@@ -300,6 +300,34 @@ static RESULT M_ReadKeptString(
     return OK;
 }
 
+// Set the mesh source for Lara while she holds this weapon. An undeclared
+// source uses the outfit's gun-swap object.
+static RESULT M_ReadMeshes(
+    lua_State *const L, const int idx, WEAPON_INFO *const w)
+{
+    OBJECT_ID object_id = NO_OBJECT;
+    MUST(M_ReadObjectId(L, idx, "object", &object_id));
+    if (object_id == NO_OBJECT) {
+        return OK;
+    }
+
+    w->meshes = (WEAPON_MESH_INFO) {
+        .is_declared = true,
+        .object_id = object_id,
+        .hand_r = -1,
+        .hand_l = -1,
+        .torso = -1,
+        .thigh_r = -1,
+        .thigh_l = -1,
+    };
+    M_INT(L, idx, "hand_r", w->meshes.hand_r);
+    M_INT(L, idx, "hand_l", w->meshes.hand_l);
+    M_INT(L, idx, "torso", w->meshes.torso);
+    M_INT(L, idx, "thigh_r", w->meshes.thigh_r);
+    M_INT(L, idx, "thigh_l", w->meshes.thigh_l);
+    return OK;
+}
+
 static RESULT M_ReadObjects(
     lua_State *const L, const int idx, WEAPON_INFO *const w)
 {
@@ -451,6 +479,7 @@ static RESULT M_ReadCheat(
 // clang-format off
 static const M_GROUP m_Groups[] = {
     { "objects", M_ReadObjects },
+    { "meshes",  M_ReadMeshes },
     { "ammo",    M_ReadAmmo },
     { "aim",     M_ReadAim },
     { "anim",    M_ReadAnim },

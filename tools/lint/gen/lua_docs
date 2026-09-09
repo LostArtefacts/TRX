@@ -1050,9 +1050,8 @@ LUA_NAMES = {
 # A description says this where a backticked name is not an API path but a
 # literal a player or a file carries: a config key, a file name, a value a
 # setting takes. The marker names them, so what is waived is on the page it is
-# waived from, and it comes off before the text is rendered. One marker takes
-# a comma-separated list and may run across lines, so a long one wraps with
-# the text around it.
+# waived from, and it comes off before the text is rendered. A marker takes a
+# comma-separated list and may span lines.
 NOREF_RE = re.compile(r"<!--\s*noref:?\s*(.*?)\s*-->", re.DOTALL)
 
 # Identifier-shaped, which is what a reference looks like. A number, a quoted
