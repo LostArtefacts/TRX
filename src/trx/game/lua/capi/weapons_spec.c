@@ -578,6 +578,7 @@ static RESULT M_ReadFlat(
     INPUT_ROLE *const out_role, int *const out_fire_idx)
 {
     M_INT(L, idx, "damage", w->damage);
+    M_INT(L, idx, "fire_delay", w->fire_delay);
     M_INT(L, idx, "gun_height", w->gun_height);
     MUST(M_ReadBool(L, idx, "is_available", &w->is_available));
     MUST(M_ReadBool(L, idx, "is_default", &w->is_default));

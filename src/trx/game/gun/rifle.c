@@ -41,6 +41,7 @@ typedef enum {
 
 static bool m_M16Firing = false;
 static bool m_ReloadHarpoon = false;
+static int16_t m_FireDelay = 0;
 static int32_t m_HarpoonShots = 0;
 
 static void M_SetTR3ProjectileShade(ITEM *const item)
@@ -506,6 +507,12 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
     ITEM *const item = Item_Get(lara->gun_item_num);
     const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
 
+    // Apply the delay only while the trigger remains held. Releasing and
+    // pressing the trigger again fires at once.
+    if (!g_Input.action) {
+        m_FireDelay = 0;
+    }
+
     switch (item->current_anim_state) {
     case LA_G_AIM:
         m_M16Firing = false;
@@ -547,7 +554,11 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
             if (lara->water_status != LWS_UNDERWATER && !running
                 && !m_ReloadHarpoon) {
                 if (g_Input.action) {
-                    if (lara->target == nullptr || lara->left_arm.lock) {
+                    if (m_FireDelay > 0) {
+                        m_FireDelay--;
+                        item->goal_anim_state = LA_G_AIM;
+                    } else if (lara->target == nullptr || lara->left_arm.lock) {
+                        m_FireDelay = weapon->fire_delay;
                         M_Fire(weapon_type, false);
                         if (is_machine_gun) {
                             M_PlayMachineGunSound(weapon_type, false);
