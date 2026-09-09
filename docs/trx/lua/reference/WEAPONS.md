@@ -192,8 +192,24 @@ trx.weapons.flare.glow.color = "33e5ff"
 
   Parameters:
   - <a id="weapons.declare.weapon" name="weapons.declare.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons) or string). Which weapon, by id or by name. A name of its own wants a prefix, so that two mods do not claim one weapon.
-  - <a id="weapons.declare.spec" name="weapons.declare.spec"></a>**`spec`** (table). What the weapon is, keyed as an entry of the weapons file is: `kind`, the groups it is built from (`objects`, `ammo`, `aim`, `anim`, `flash`, `glow`, `muzzle`, `smoke`, `shell`, `sound`, `stow`, `save`, `cheat`), and its own numbers beside them. `base` starts the weapon from another one, and `fire` takes either the name of a routine the engine holds or a function of a script's own. A key the table leaves out keeps the value the weapon has, and a key the reader does not know, or a value that is not the shape its name calls for, raises and writes nothing.
-    A spec is written in the units a weapons file is written in: an angle in degrees and a distance in sectors. A weapon field holds the engine's own units, as every other field of the API does, so a spec that says `aim.speed = 10` reads back as `weapon.aim_speed == 1820`.
+  - <a id="weapons.declare.spec" name="weapons.declare.spec"></a>**`spec`** (table). Describes the weapon with the same groups as its weapons file entry:
+    `kind`, (`objects`, `meshes`, `ammo`, `aim`, `anim`, `flash`, `glow`,
+    `muzzle`, `smoke`, `shell`, `sound`, `stow`, `save`, `cheat`), and its own
+    numbers beside them. `base` starts the weapon from another one, and `fire`
+    accepts an engine routine name or a function. An omitted key keeps the
+    weapon's current value. An unknown key or an invalid value raises an error
+    and writes nothing.
+
+    `meshes` states where Lara is drawn from while she holds the weapon. It
+    names an `object` and the offsets `hand_r`, `hand_l`, `torso`, `thigh_r`
+    and `thigh_l` into it. An offset of `-1` draws nothing in that place. A
+    weapon with no `meshes` is drawn from the outfit, like every weapon the
+    game ships.
+
+    A spec uses the units of a weapons file: angles in degrees and distances
+    in sectors. Weapon fields use the engine's units, as other API fields do,
+    so a spec that says
+    `aim.speed = 10` reads back as `weapon.aim_speed == 1820`.
 
   Returns: [trx.weapons.Weapon](#weapons.Weapon). The weapon, to read or write the rest of its numbers.
 
@@ -220,8 +236,24 @@ trx.weapons.flare.glow.color = "33e5ff"
 
   Parameters:
   - <a id="weapons.patch.weapon" name="weapons.patch.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons) or string). Which weapon, by id or by name.
-  - <a id="weapons.patch.spec" name="weapons.patch.spec"></a>**`spec`** (table). What the weapon is, keyed as an entry of the weapons file is: `kind`, the groups it is built from (`objects`, `ammo`, `aim`, `anim`, `flash`, `glow`, `muzzle`, `smoke`, `shell`, `sound`, `stow`, `save`, `cheat`), and its own numbers beside them. `base` starts the weapon from another one, and `fire` takes either the name of a routine the engine holds or a function of a script's own. A key the table leaves out keeps the value the weapon has, and a key the reader does not know, or a value that is not the shape its name calls for, raises and writes nothing.
-    A spec is written in the units a weapons file is written in: an angle in degrees and a distance in sectors. A weapon field holds the engine's own units, as every other field of the API does, so a spec that says `aim.speed = 10` reads back as `weapon.aim_speed == 1820`.
+  - <a id="weapons.patch.spec" name="weapons.patch.spec"></a>**`spec`** (table). Describes the weapon with the same groups as its weapons file entry:
+    `kind`, (`objects`, `meshes`, `ammo`, `aim`, `anim`, `flash`, `glow`,
+    `muzzle`, `smoke`, `shell`, `sound`, `stow`, `save`, `cheat`), and its own
+    numbers beside them. `base` starts the weapon from another one, and `fire`
+    accepts an engine routine name or a function. An omitted key keeps the
+    weapon's current value. An unknown key or an invalid value raises an error
+    and writes nothing.
+
+    `meshes` states where Lara is drawn from while she holds the weapon. It
+    names an `object` and the offsets `hand_r`, `hand_l`, `torso`, `thigh_r`
+    and `thigh_l` into it. An offset of `-1` draws nothing in that place. A
+    weapon with no `meshes` is drawn from the outfit, like every weapon the
+    game ships.
+
+    A spec uses the units of a weapons file: angles in degrees and distances
+    in sectors. Weapon fields use the engine's units, as other API fields do,
+    so a spec that says
+    `aim.speed = 10` reads back as `weapon.aim_speed == 1820`.
 
   Returns: [trx.weapons.Weapon](#weapons.Weapon). The weapon, to read or write the rest of its numbers.
 

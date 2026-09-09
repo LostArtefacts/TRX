@@ -402,21 +402,29 @@ end
 local SPEC_PARAM = {
   name = "spec",
   type = "table",
-  description = "What the weapon is, keyed as an entry of the weapons file is: `kind`, the "
-    .. "groups it is built from (`objects`, `ammo`, `aim`, `anim`, `flash`, `glow`, `muzzle`, "
-    .. "`smoke`, `shell`, `sound`, `stow`, `save`, `cheat`), and its own numbers beside them. "
-    .. "`base` starts the weapon from another one, and `fire` takes either the name of a "
-    .. "routine the engine holds or a function of a script's own. A key the table leaves out "
-    .. "keeps the value the weapon has, and a key the reader does not know, or a value that "
-    .. "is not the shape its name calls for, raises and writes nothing.\n\n"
-    .. "A spec is written in the units a weapons file is written in: an angle in degrees and "
-    .. "a distance in sectors. A weapon field holds the engine's own units, as every other "
-    .. "field of the API does, so a spec that says `aim.speed = 10` reads back as "
-    .. "`weapon.aim_speed == 1820`. "
-    .. "<!--noref: kind--><!--noref: objects--><!--noref: ammo--><!--noref: aim-->"
-    .. "<!--noref: anim--><!--noref: flash--><!--noref: glow--><!--noref: muzzle-->"
-    .. "<!--noref: smoke--><!--noref: shell--><!--noref: sound--><!--noref: stow-->"
-    .. "<!--noref: save--><!--noref: cheat--><!--noref: base--><!--noref: fire-->",
+  description = [[
+    Describes the weapon with the same groups as its weapons file entry:
+    `kind`, (`objects`, `meshes`, `ammo`, `aim`, `anim`, `flash`, `glow`,
+    `muzzle`, `smoke`, `shell`, `sound`, `stow`, `save`, `cheat`), and its own
+    numbers beside them. `base` starts the weapon from another one, and `fire`
+    accepts an engine routine name or a function. An omitted key keeps the
+    weapon's current value. An unknown key or an invalid value raises an error
+    and writes nothing.
+
+    `meshes` states where Lara is drawn from while she holds the weapon. It
+    names an `object` and the offsets `hand_r`, `hand_l`, `torso`, `thigh_r`
+    and `thigh_l` into it. An offset of `-1` draws nothing in that place. A
+    weapon with no `meshes` is drawn from the outfit, like every weapon the
+    game ships.
+
+    A spec uses the units of a weapons file: angles in degrees and distances
+    in sectors. Weapon fields use the engine's units, as other API fields do,
+    so a spec that says
+    `aim.speed = 10` reads back as `weapon.aim_speed == 1820`.
+    <!--noref: kind, objects, meshes, ammo, aim, anim, flash, glow, muzzle,
+    smoke, shell, sound, stow, save, cheat, base, fire, object, hand_r,
+    hand_l, torso, thigh_r, thigh_l-->
+  ]],
 }
 
 local WEAPON_TARGET_PARAM = {

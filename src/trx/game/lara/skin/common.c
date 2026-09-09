@@ -283,11 +283,19 @@ static void M_SetEquipment(
     equipment->type = type;
     equipment->data = data;
     switch (type) {
-    case EQUIPMENT_TYPE_WEAPON:
-        const OBJECT *const gun_swap_obj = Object_Get(outfit->guns_obj_id);
+    case EQUIPMENT_TYPE_WEAPON: {
+        // Use the weapon's object when it provides one. This keeps its model
+        // the same under every outfit.
+        const WEAPON_INFO *const weapon = Gun_Registry_Get(data);
+        const OBJECT_ID source_id =
+            weapon != nullptr && weapon->meshes.is_declared
+            ? weapon->meshes.object_id
+            : outfit->guns_obj_id;
+        const OBJECT *const gun_swap_obj = Object_Get(source_id);
         equipment->mesh = Object_GetMesh(gun_swap_obj->mesh_idx + offset);
         equipment->offset = (XYZ_16) {};
         break;
+    }
     case EQUIPMENT_TYPE_EXTRA:
         const OBJECT *const extra_obj = Object_Get(outfit->extra_obj_id);
         equipment->mesh = Object_GetMesh(extra_obj->mesh_idx + offset);
@@ -300,12 +308,32 @@ static void M_SetEquipment(
     }
 }
 
+// Return the mesh sources Lara uses while holding a weapon.
+static LARA_SKIN_MESH_MAP M_GetGunMeshMap(
+    const LARA_GUN_TYPE gun_type, const LARA_SKIN_OUTFIT *const outfit)
+{
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(gun_type);
+    if (weapon == nullptr || !weapon->meshes.is_declared) {
+        return Lara_Skin_GetGunMeshMap(outfit->gun_map, gun_type);
+    }
+    return (LARA_SKIN_MESH_MAP) {
+        .hand = {
+            .right = weapon->meshes.hand_r,
+            .left = weapon->meshes.hand_l,
+        },
+        .thigh = {
+            .right = weapon->meshes.thigh_r,
+            .left = weapon->meshes.thigh_l,
+        },
+        .torso = weapon->meshes.torso,
+    };
+}
+
 static void M_SetGunEquipment(
     const LARA_MESH mesh, const LARA_GUN_TYPE gun_type,
     const LARA_SKIN_OUTFIT *const outfit)
 {
-    const LARA_SKIN_MESH_MAP map =
-        Lara_Skin_GetGunMeshMap(outfit->gun_map, gun_type);
+    const LARA_SKIN_MESH_MAP map = M_GetGunMeshMap(gun_type, outfit);
 
     int32_t offset = M_NO_MESH;
     switch (mesh) {
