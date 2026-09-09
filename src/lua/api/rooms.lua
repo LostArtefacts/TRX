@@ -72,7 +72,7 @@ local FLOOR_HEIGHT_OPTS = {
   name = "opts",
   type = "table",
   optional = true,
-  description = "How to read the floor.",
+  description = "How to read the height.",
   fields = {
     {
       name = "fix_tilts",
@@ -80,8 +80,8 @@ local FLOOR_HEIGHT_OPTS = {
       optional = true,
       default = true,
       description = "Whether a floor tilt that lies inside a wall is taken into account. "
-        .. "`false` gives the flat height the original games read there, which is what the "
-        .. "geometry glitches of the vanilla levels rest on.",
+        .. "`false` gives the flat height read by the original games. Vanilla level geometry "
+        .. "can depend on this behaviour.",
     },
   },
 }
@@ -217,6 +217,18 @@ end)]],
       description = "As `trx.rooms.floor_height`, looking from this room.",
       impl = function(room, pos, opts)
         return raw.get_height(pos, room.num, opts)
+      end,
+    },
+    ceiling_height = {
+      params = { FLOOR_HEIGHT_POS, FLOOR_HEIGHT_OPTS },
+      returns = {
+        type = "math.Distance",
+        nullable = true,
+        description = "The height, with `nil` where there is no ceiling.",
+      },
+      description = "Returns the ceiling height, using this room as the starting room.",
+      impl = function(room, pos, opts)
+        return raw.get_ceiling(pos, room.num, opts)
       end,
     },
   },
@@ -400,6 +412,21 @@ api.define("rooms.floor_height", {
     [[local floor = trx.lara.item.room:floor_height(trx.lara.item.pos)]],
   },
   impl = raw.get_height,
+})
+
+api.define("rooms.ceiling_height", {
+  description = "The height of the ceiling over a world position. Returns `nil` inside solid "
+    .. "geometry or outside the level.",
+  params = FLOOR_HEIGHT_PARAMS,
+  returns = {
+    type = "math.Distance",
+    nullable = true,
+    description = "The height, with `nil` where there is no ceiling.",
+  },
+  examples = {
+    [[local ceiling = trx.lara.item.room:ceiling_height(trx.lara.item.pos)]],
+  },
+  impl = raw.get_ceiling,
 })
 
 api.define("rooms.find_valid_pos", {

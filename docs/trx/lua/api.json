@@ -8106,11 +8106,11 @@
           "type": "rooms.Num"
         },
         {
-          "description": "How to read the floor.",
+          "description": "How to read the height.",
           "fields": [
             {
               "default": true,
-              "description": "Whether a floor tilt that lies inside a wall is taken into account. `false` gives the flat height the original games read there, which is what the geometry glitches of the vanilla levels rest on.",
+              "description": "Whether a floor tilt that lies inside a wall is taken into account. `false` gives the flat height read by the original games. Vanilla level geometry can depend on this behaviour.",
               "name": "fix_tilts",
               "optional": true,
               "type": "boolean"
@@ -8124,6 +8124,46 @@
       "path": "rooms.floor_height",
       "returns": {
         "description": "The height, with `nil` where there is no floor.",
+        "nullable": true,
+        "type": "math.Distance"
+      }
+    },
+    {
+      "description": "The height of the ceiling over a world position. Returns `nil` inside solid geometry or outside the level.",
+      "examples": [
+        "local ceiling = trx.lara.item.room:ceiling_height(trx.lara.item.pos)"
+      ],
+      "params": [
+        {
+          "description": "World position.",
+          "name": "pos",
+          "type": "math.Vec3"
+        },
+        {
+          "description": "The search crosses portals, so a neighbouring room's floor is found too. Without it, the room is looked up from the position, which takes the first room that contains it and passes over the flipped-away ones. Where rooms overlap, name the room, or ask the room itself with `trx.rooms.Room:floor_height`.",
+          "name": "room_num",
+          "optional": true,
+          "type": "rooms.Num"
+        },
+        {
+          "description": "How to read the height.",
+          "fields": [
+            {
+              "default": true,
+              "description": "Whether a floor tilt that lies inside a wall is taken into account. `false` gives the flat height read by the original games. Vanilla level geometry can depend on this behaviour.",
+              "name": "fix_tilts",
+              "optional": true,
+              "type": "boolean"
+            }
+          ],
+          "name": "opts",
+          "optional": true,
+          "type": "table"
+        }
+      ],
+      "path": "rooms.ceiling_height",
+      "returns": {
+        "description": "The height, with `nil` where there is no ceiling.",
         "nullable": true,
         "type": "math.Distance"
       }
@@ -14606,6 +14646,37 @@
       "handle": true,
       "methods": [
         {
+          "description": "Returns the ceiling height, using this room as the starting room.",
+          "name": "ceiling_height",
+          "params": [
+            {
+              "description": "World position.",
+              "name": "pos",
+              "type": "math.Vec3"
+            },
+            {
+              "description": "How to read the height.",
+              "fields": [
+                {
+                  "default": true,
+                  "description": "Whether a floor tilt that lies inside a wall is taken into account. `false` gives the flat height read by the original games. Vanilla level geometry can depend on this behaviour.",
+                  "name": "fix_tilts",
+                  "optional": true,
+                  "type": "boolean"
+                }
+              ],
+              "name": "opts",
+              "optional": true,
+              "type": "table"
+            }
+          ],
+          "returns": {
+            "description": "The height, with `nil` where there is no ceiling.",
+            "nullable": true,
+            "type": "math.Distance"
+          }
+        },
+        {
           "description": "As `trx.rooms.floor_height`, looking from this room.",
           "name": "floor_height",
           "params": [
@@ -14615,11 +14686,11 @@
               "type": "math.Vec3"
             },
             {
-              "description": "How to read the floor.",
+              "description": "How to read the height.",
               "fields": [
                 {
                   "default": true,
-                  "description": "Whether a floor tilt that lies inside a wall is taken into account. `false` gives the flat height the original games read there, which is what the geometry glitches of the vanilla levels rest on.",
+                  "description": "Whether a floor tilt that lies inside a wall is taken into account. `false` gives the flat height read by the original games. Vanilla level geometry can depend on this behaviour.",
                   "name": "fix_tilts",
                   "optional": true,
                   "type": "boolean"
