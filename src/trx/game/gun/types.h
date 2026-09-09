@@ -191,6 +191,9 @@ typedef struct {
     // Whether it keeps firing while the trigger is held, which also lets
     // Lara fire it on the move.
     bool is_machine_gun;
+    // The number of frames between shots while the trigger is held. Zero uses
+    // the recoil animation to set the firing rate.
+    int16_t fire_delay;
     // Whether Lara may bring it out under water.
     bool is_usable_underwater;
     // Whether it throws an explosive that flies on its own, rather than

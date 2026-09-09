@@ -68,6 +68,9 @@ static const M_FRAME_SETUP m_DesertEagleSetup = {
 
 static bool m_SoundRight = false;
 static bool m_SoundLeft = false;
+// Track the frames before each hand may fire again.
+static int16_t m_FireDelayRight = 0;
+static int16_t m_FireDelayLeft = 0;
 
 static bool M_EnableFastSound(const LARA_GUN_TYPE weapon_type)
 {
@@ -136,6 +139,13 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
     bool sound_already = false;
     int16_t angles[2];
 
+    // Reset the delays when the trigger is released so the next shot fires
+    // immediately. Each hand has its own delay.
+    if (!g_Input.action) {
+        m_FireDelayRight = 0;
+        m_FireDelayLeft = 0;
+    }
+
     int32_t frame_r = lara->right_arm.frame_num;
     if (!lara->right_arm.lock && (!g_Input.action || lara->target != nullptr)) {
         if (Anim_TestAbsFrameRange(
@@ -154,7 +164,10 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
                 frame_r, setup->aim.start, setup->aim.extend)) {
             frame_r++;
         } else if (frame_r == setup->aim.end) {
-            if (g_Input.action) {
+            if (g_Input.action && m_FireDelayRight > 0) {
+                m_FireDelayRight--;
+            } else if (g_Input.action) {
+                m_FireDelayRight = weapon->fire_delay;
                 angles[0] = lara->right_arm.rot.y + lara_item->rot.y;
                 angles[1] = lara->right_arm.rot.x;
                 if (!Gun_IsSinglePistolType(weapon_type)
@@ -208,7 +221,10 @@ static void M_Animate(const LARA_GUN_TYPE weapon_type)
         Anim_TestAbsFrameRange(frame_l, setup->aim.start, setup->aim.extend)) {
         frame_l++;
     } else if (frame_l == setup->aim.end) {
-        if (g_Input.action) {
+        if (g_Input.action && m_FireDelayLeft > 0) {
+            m_FireDelayLeft--;
+        } else if (g_Input.action) {
+            m_FireDelayLeft = weapon->fire_delay;
             angles[0] = lara->left_arm.rot.y + lara_item->rot.y;
             angles[1] = lara->left_arm.rot.x;
             if (Gun_FireWeapon(weapon_type, lara->target, lara_item, angles)) {
