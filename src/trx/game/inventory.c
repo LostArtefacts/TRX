@@ -302,7 +302,10 @@ OBJECT_ID Inv_GetItemOption(const OBJECT_ID object_id)
 OBJECT_ID Inv_GetItemPickup(const OBJECT_ID object_id)
 {
     if (ObjectFamily_Has(object_id, OBJ_FAMILY_INVENTORY)) {
-        return ObjectLink_GetInverse(object_id, OBJ_LINK_ITEM_TO_OPTION);
+        const OBJECT_ID pickup_id =
+            ObjectLink_GetInverse(object_id, OBJ_LINK_ITEM_TO_OPTION);
+        // Use the ring object itself when it has no separate pickup.
+        return pickup_id == NO_OBJECT ? object_id : pickup_id;
     }
     return object_id;
 }
