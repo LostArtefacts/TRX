@@ -1,0 +1,1 @@
+../../../../trx/ship/scripts/inv_ring.lua
