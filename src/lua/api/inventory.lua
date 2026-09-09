@@ -248,3 +248,40 @@ end]],
     return raw.get_current():entry_count()
   end,
 })
+
+api.define("inventory.declare_ring_item", {
+  description = [[
+Adds an object to the inventory ring and sets how it is drawn and rotated.
+
+The ring declares every item, including the shipped items. A script can add a
+minted object or change a shipped item without changing a game file. Declaring
+the same object again changes its existing entry. The ring draws the object in
+the declaration; use the pickup for an object that represents itself.]],
+  params = {
+    {
+      name = "spec",
+      type = "table",
+      description = [[The entry's `object_id`, frame counts, rotations and offsets.
+An omitted value keeps the ring's default.
+<!--noref: object_id-->]],
+    },
+  },
+  examples = {
+    [[trx.inventory.declare_ring_item({
+  object_id = "mymod:lantern_item",
+  frames_total = 1,
+  anim_direction = 1,
+  anim_speed = 1,
+  meshes_sel = -1,
+  meshes_drawn = -1,
+  inv_pos = 20,
+})]],
+  },
+  impl = function(spec)
+    assert(
+      type(spec) == "table",
+      "trx.inventory.declare_ring_item expects a table"
+    )
+    return raw.declare_ring_item(spec)
+  end,
+})

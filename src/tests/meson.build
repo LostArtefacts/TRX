@@ -848,6 +848,7 @@ unit_tests += {
   'src': ['harness/stubs_console.c', 'fakes/game.c', 'fakes/lara.c', 'fakes/items.c'],
   'engine': [
     'game/lua/capi/catalog.c',
+    'game/inventory_ring/vars.c',
     'game/lua/capi/inventory.c',
     'game/lua/capi/items.c',
     'game/lua/capi/weapons.c',
@@ -1001,6 +1002,7 @@ unit_tests += {
   'engine': [
     'game/lua/capi/catalog.c',
     'game/lua/capi/game.c',
+    'game/inventory_ring/vars.c',
     'game/lua/capi/inventory.c',
     'game/lua/capi/items.c',
     'game/lua/capi/lara.c',
@@ -1120,6 +1122,7 @@ unit_tests += {
     'game/lua/capi/events.c',
     'game/lua/capi/game.c',
     'game/lua/capi/input.c',
+    'game/inventory_ring/vars.c',
     'game/lua/capi/inventory.c',
     'game/lua/capi/items.c',
     'game/lua/capi/lara.c',

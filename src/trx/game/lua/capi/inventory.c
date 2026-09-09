@@ -1,4 +1,6 @@
+#include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/core/vector.h>
 #include <trx/game/catalog/manager.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/gun.h>
@@ -6,11 +8,13 @@
 #include <trx/game/gun/registry.h>
 #include <trx/game/inventory.h>
 #include <trx/game/inventory_ring/types.h>
+#include <trx/game/inventory_ring/vars.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/field.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
 #include <trx/game/lua/utils.h>
+#include <trx/game/objects/common.h>
 #include <trx/game/savegame.h>
 
 #include <lauxlib.h>
@@ -379,9 +383,82 @@ static const luaL_Reg m_InventoryMethods[] = {
     { nullptr, nullptr },
 };
 
+static int32_t M_ReadRingInt(
+    lua_State *const L, const int idx, const char *const key,
+    const int32_t fallback)
+{
+    lua_getfield(L, idx, key);
+    const int32_t value =
+        lua_isnil(L, -1) ? fallback : (int32_t)luaL_checkinteger(L, -1);
+    lua_pop(L, 1);
+    return value;
+}
+
+static INVENTORY_ITEM *M_FindRingItem(const OBJECT_ID object_id)
+{
+    for (int32_t i = 0; i < g_InvRing_Items->count; i++) {
+        INVENTORY_ITEM *const item =
+            *(INVENTORY_ITEM **)Vector_Get(g_InvRing_Items, i);
+        if (item->object_id == object_id) {
+            return item;
+        }
+    }
+    return nullptr;
+}
+
+// trxc.inventory.declare_ring_item(spec)
+static int M_L_InvDeclareRingItem(lua_State *const L)
+{
+    luaL_checktype(L, 1, LUA_TTABLE);
+    lua_getfield(L, 1, "object_id");
+    const char *const name = luaL_checkstring(L, -1);
+    const OBJECT_ID object_id = Object_IdFromKey(name);
+    if (object_id == NO_OBJECT) {
+        luaL_error(L, "unknown object '%s'", name);
+    }
+    lua_pop(L, 1);
+
+    INVENTORY_ITEM *item = M_FindRingItem(object_id);
+    const bool is_new = item == nullptr;
+    if (is_new) {
+        item = Memory_Alloc(sizeof(*item));
+        item->object_id = object_id;
+    }
+
+#define M_READ(key, field) item->field = M_ReadRingInt(L, 1, key, item->field)
+    M_READ("frames_total", frames_total);
+    M_READ("current_frame", current_frame);
+    M_READ("goal_frame", goal_frame);
+    M_READ("open_frame", open_frame);
+    M_READ("anim_direction", anim_direction);
+    M_READ("anim_speed", anim_speed);
+    M_READ("anim_count", anim_count);
+    M_READ("x_rot_pt_sel", x_rot_pt_sel);
+    M_READ("x_rot_pt", x_rot_pt);
+    M_READ("x_rot_sel", x_rot_sel);
+    M_READ("x_rot_nosel", x_rot_nosel);
+    M_READ("x_rot", x_rot);
+    M_READ("y_rot_sel", y_rot_sel);
+    M_READ("y_rot", y_rot);
+    M_READ("y_trans_sel", y_trans_sel);
+    M_READ("y_trans", y_trans);
+    M_READ("z_trans_sel", z_trans_sel);
+    M_READ("z_trans", z_trans);
+    M_READ("meshes_sel", meshes_sel);
+    M_READ("meshes_drawn", meshes_drawn);
+    M_READ("inv_pos", inv_pos);
+#undef M_READ
+
+    if (is_new) {
+        Vector_Add(g_InvRing_Items, &item);
+    }
+    return 0;
+}
+
 static const luaL_Reg m_Module[] = {
     { "get_current", M_L_InvGetCurrent },
     { "get", M_L_InvGetLevel },
+    { "declare_ring_item", M_L_InvDeclareRingItem },
     { nullptr, nullptr },
 };
 

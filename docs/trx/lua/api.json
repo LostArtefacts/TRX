@@ -7014,6 +7014,20 @@
       }
     },
     {
+      "description": "Adds an object to the inventory ring and sets how it is drawn and rotated.\n\nThe ring declares every item, including the shipped items. A script can add a\nminted object or change a shipped item without changing a game file. Declaring\nthe same object again changes its existing entry. The ring draws the object in\nthe declaration; use the pickup for an object that represents itself.",
+      "examples": [
+        "trx.inventory.declare_ring_item({\n  object_id = \"mymod:lantern_item\",\n  frames_total = 1,\n  anim_direction = 1,\n  anim_speed = 1,\n  meshes_sel = -1,\n  meshes_drawn = -1,\n  inv_pos = 20,\n})"
+      ],
+      "params": [
+        {
+          "description": "The entry's `object_id`, frame counts, rotations and offsets.\nAn omitted value keeps the ring's default.\n<!--noref: object_id-->",
+          "name": "spec",
+          "type": "table"
+        }
+      ],
+      "path": "inventory.declare_ring_item"
+    },
+    {
       "description": "Retrieves an item by number or by name.",
       "examples": [
         "local item = trx.items[0]\nitem.name = \"lara\"\nlocal lara = trx.items[\"lara\"]"

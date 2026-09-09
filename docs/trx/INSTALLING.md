@@ -1359,10 +1359,13 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── init.lua
 │   │   └── photo_mode.lua
 │   ├── assault.lua
+│   ├── inv_ring.lua
 │   ├── legend.lua
 │   ├── save_crystal.lua
-│   └── water_color.lua
+│   ├── water_color.lua
+│   └── weapons.lua
 ├── scripts
+│   ├── inv_ring.lua
 │   └── weapons.lua
 └── TRX.exe</code></pre>
 </details>
@@ -2757,10 +2760,13 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── init.lua
     │   │   │   └── photo_mode.lua
     │   │   ├── assault.lua
+    │   │   ├── inv_ring.lua
     │   │   ├── legend.lua
     │   │   ├── save_crystal.lua
-    │   │   └── water_color.lua
+    │   │   ├── water_color.lua
+    │   │   └── weapons.lua
     │   ├── scripts
+    │   │   ├── inv_ring.lua
     │   │   └── weapons.lua
     │   └── icon.icns
     ├── _CodeSignature
