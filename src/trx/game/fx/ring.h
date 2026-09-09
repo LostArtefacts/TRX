@@ -31,7 +31,10 @@ typedef enum {
 } FX_RING_TYPE;
 
 void FX_Ring_Draw(void);
-void FX_Ring_SpawnKnockBack(XYZ_32 pos);
+
+// Spawn rings pushed out by a blast, with an optional tilt in either direction.
+void FX_Ring_SpawnKnockBack(XYZ_32 pos, int16_t tilt);
+
 void FX_Ring_BounceKnockBack(void);
 
 void FX_Ring_Sync(FX_RING *ring);

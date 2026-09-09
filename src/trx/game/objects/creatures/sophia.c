@@ -812,7 +812,7 @@ static void M_Control(const int16_t item_num)
         };
         if (XYZ_32_GetLength(delta) < 2816) {
             p->knockback_active = true;
-            FX_Ring_SpawnKnockBack(item->pos);
+            FX_Ring_SpawnKnockBack(item->pos, 0);
         }
     } else if (p->knockback_active) {
         const FX_RING *const ring = FX_Ring_PeekRing(FX_RING_TYPE_KNOCKBACK, 1);
