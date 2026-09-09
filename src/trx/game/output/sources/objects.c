@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/core/memory.h>
+#include <trx/core/thread_pool.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
@@ -16,9 +17,19 @@
 // Maximum number of policies stored for one mesh. Extra policies are ignored.
 #define M_MAX_MESH_POLICIES 16
 
+// Group meshes into jobs to keep job overhead low.
+#define M_MESHES_PER_JOB 32
+
 typedef struct {
     OUTPUT_MESH *mesh_batch;
 } M_MESH;
+
+// A range of meshes to build in one job.
+typedef struct {
+    int32_t first;
+    int32_t last;
+    OUTPUT_MESH **results;
+} M_MESH_JOB;
 
 typedef struct {
     MEMORY_ARENA_ALLOCATOR alloc;
@@ -244,43 +255,91 @@ static void M_AddObjectFace(
         !face->semi_transparent);
 }
 
+// Build one mesh and store the result.
+static void M_BuildMesh(
+    MESH_BUILDER *const builder, const int32_t mesh_idx,
+    OUTPUT_MESH **const out)
+{
+    const OBJECT_MESH *const obj_mesh = Object_GetMesh(mesh_idx);
+
+    uint16_t flags = 0;
+    if (obj_mesh->enable_reflections) {
+        flags |= VERT_REFLECTIVE;
+    }
+
+    M_POLICY_SET policies;
+    M_GatherMeshPolicies(mesh_idx, &policies);
+    flags |= M_GetPolicyVertexFlags(&policies);
+    for (int32_t j = 0; j < obj_mesh->tex_faces.count; j++) {
+        M_AddObjectFace(
+            builder, obj_mesh, &obj_mesh->tex_faces.data[j], flags, &policies);
+    }
+    for (int32_t j = 0; j < obj_mesh->flat_faces.count; j++) {
+        M_AddObjectFace(
+            builder, obj_mesh, &obj_mesh->flat_faces.data[j],
+            flags | VERT_FLAT_SHADED, &policies);
+    }
+
+    MeshBuilder_AdjustDepth(builder, obj_mesh->depth_adjustment);
+    *out = MeshBuilder_Seal(builder);
+}
+
+static void M_BuildMeshRange(void *const user_data)
+{
+    const M_MESH_JOB *const job = user_data;
+    MESH_BUILDER *const builder = MeshBuilder_Create();
+    for (int32_t i = job->first; i < job->last; i++) {
+        M_BuildMesh(builder, i, &job->results[i]);
+    }
+    MeshBuilder_Destroy(builder);
+}
+
 static void M_PrepareMeshes(M_PRIV *const p)
 {
     p->mesh_count = Object_GetMeshCount();
     p->meshes = Memory_ArenaAlloc(&p->alloc, sizeof(M_MESH) * p->mesh_count);
 
-    MESH_BUILDER *const builder = MeshBuilder_Create();
-    for (int32_t i = 0; i < Object_GetMeshCount(); i++) {
-        const OBJECT_MESH *const obj_mesh = Object_GetMesh(i);
-        M_MESH *const new_batch = &p->meshes[i];
+    const int32_t mesh_count = Object_GetMeshCount();
+    if (mesh_count == 0) {
+        return;
+    }
 
-        uint16_t flags = 0;
-        if (obj_mesh->enable_reflections) {
-            flags |= VERT_REFLECTIVE;
-        }
+    // Add meshes in index order so parallel build completion cannot change the
+    // drawing order.
+    OUTPUT_MESH **const results =
+        Memory_Alloc(sizeof(OUTPUT_MESH *) * mesh_count);
+    const int32_t job_count =
+        (mesh_count + M_MESHES_PER_JOB - 1) / M_MESHES_PER_JOB;
 
-        M_POLICY_SET policies;
-        M_GatherMeshPolicies(i, &policies);
-        flags |= M_GetPolicyVertexFlags(&policies);
-        for (int32_t j = 0; j < obj_mesh->tex_faces.count; j++) {
-            M_AddObjectFace(
-                builder, obj_mesh, &obj_mesh->tex_faces.data[j], flags,
-                &policies);
+    if (job_count > 1) {
+        M_MESH_JOB *const jobs = Memory_Alloc(sizeof(M_MESH_JOB) * job_count);
+        THREAD_POOL *const pool = ThreadPool_GetShared();
+        for (int32_t i = 0; i < job_count; i++) {
+            jobs[i] = (M_MESH_JOB) {
+                .first = i * M_MESHES_PER_JOB,
+                .last = MIN((i + 1) * M_MESHES_PER_JOB, mesh_count),
+                .results = results,
+            };
+            ThreadPool_AddJob(pool, M_BuildMeshRange, &jobs[i]);
         }
-        for (int32_t j = 0; j < obj_mesh->flat_faces.count; j++) {
-            M_AddObjectFace(
-                builder, obj_mesh, &obj_mesh->flat_faces.data[j],
-                flags | VERT_FLAT_SHADED, &policies);
-        }
+        ThreadPool_Wait(pool);
+        Memory_Free(jobs);
+    } else {
+        M_MESH_JOB job = {
+            .first = 0,
+            .last = mesh_count,
+            .results = results,
+        };
+        M_BuildMeshRange(&job);
+    }
 
-        MeshBuilder_AdjustDepth(builder, obj_mesh->depth_adjustment);
-        OUTPUT_MESH *const mesh = MeshBuilder_Seal(builder);
-        if (mesh != nullptr) {
-            MeshBatcher_AddMesh(p->batcher, mesh);
-            new_batch->mesh_batch = mesh;
+    for (int32_t i = 0; i < mesh_count; i++) {
+        if (results[i] != nullptr) {
+            MeshBatcher_AddMesh(p->batcher, results[i]);
+            p->meshes[i].mesh_batch = results[i];
         }
     }
-    MeshBuilder_Destroy(builder);
+    Memory_Free(results);
 }
 
 static void M_FreeMeshes(M_PRIV *const p)
