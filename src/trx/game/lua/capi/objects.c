@@ -8,6 +8,7 @@
 #include <trx/game/lua/utils.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/families.h>
+#include <trx/game/objects/links.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/objects/setup.h>
 #include <trx/game/objects/types.h>
@@ -365,6 +366,22 @@ static int M_L_AddFamily(lua_State *const L)
     return 0;
 }
 
+// obj:link(name, other)
+static int M_L_AddLink(lua_State *const L)
+{
+    const LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_OBJECT);
+    const char *const name = luaL_checkstring(L, 2);
+    const OBJECT_LINK link = ObjectLink_FromName(name);
+    if (link == OBJ_LINK_NUMBER_OF) {
+        return luaL_error(L, "unknown object link '%s'", name);
+    }
+    const OBJECT_ID to = LUA_CheckObjectID(L, 3);
+    if (!IS_OK(ObjectLink_Add((OBJECT_ID)ref->handle.id, link, to))) {
+        return luaL_error(L, "could not link the objects");
+    }
+    return 0;
+}
+
 static int M_L_RemoveFamily(lua_State *const L)
 {
     const LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_OBJECT);
@@ -376,6 +393,7 @@ static const luaL_Reg m_Methods[] = {
     { "get_names", M_L_GetNames },
     { "get_default_names", M_L_GetDefaultNames },
     { "add_family", M_L_AddFamily },
+    { "link", M_L_AddLink },
     { "remove_family", M_L_RemoveFamily },
     { nullptr, nullptr },
 };
