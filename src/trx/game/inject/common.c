@@ -265,6 +265,7 @@ static void M_InitialiseBlock(
         M_ReadSymbols(injection, data_count);
         return;
 
+    case IDT_NAMED_SAMPLE_INFOS:
     case IDT_SAMPLE_INFOS: {
         for (int32_t i = 0; i < data_count; i++) {
             // Skip ID, volume and chance
