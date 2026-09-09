@@ -13,6 +13,9 @@
 #include <trx/game/output/water.h>
 #include <trx/version.h>
 
+// Maximum number of policies stored for one mesh. Extra policies are ignored.
+#define M_MAX_MESH_POLICIES 16
+
 typedef struct {
     OUTPUT_MESH *mesh_batch;
 } M_MESH;
@@ -28,6 +31,11 @@ typedef struct {
     int32_t mesh_idx;
     const OUTPUT_OBJECT_MESH_POLICY *policy;
 } M_POLICY_ENTRY;
+
+typedef struct {
+    const OUTPUT_OBJECT_MESH_POLICY *entries[M_MAX_MESH_POLICIES];
+    int32_t count;
+} M_POLICY_SET;
 
 typedef void (*M_FACE_VERTEX_FUNC)(
     OUTPUT_MESH_VERTEX *vertex, const FACE *face, int32_t vertex_idx,
@@ -60,19 +68,35 @@ static const OUTPUT_OBJECT_MESH_POLICY *M_GetMeshPolicy(
     return nullptr;
 }
 
-static uint16_t M_GetPolicyVertexFlags(const int32_t mesh_idx)
+// Collects a mesh's policies once, so face building need not search them for
+// every vertex.
+static void M_GatherMeshPolicies(
+    const int32_t mesh_idx, M_POLICY_SET *const set)
+{
+    set->count = 0;
+    if (m_MeshPolicies == nullptr) {
+        return;
+    }
+    for (int32_t i = 0; i < m_MeshPolicies->count; i++) {
+        const M_POLICY_ENTRY *const entry = Vector_Get(m_MeshPolicies, i);
+        if (entry->mesh_idx == mesh_idx && set->count < M_MAX_MESH_POLICIES) {
+            set->entries[set->count++] = entry->policy;
+        }
+    }
+}
+
+static uint16_t M_GetPolicyVertexFlags(const M_POLICY_SET *const set)
 {
     uint16_t flags = 0;
-    const OUTPUT_OBJECT_MESH_POLICY *policy;
-    for (int32_t i = 0; (policy = M_GetMeshPolicy(mesh_idx, i)) != nullptr;
-         i++) {
-        flags |= policy->vertex_flags;
+    for (int32_t i = 0; i < set->count; i++) {
+        flags |= set->entries[i]->vertex_flags;
     }
     return flags;
 }
 
 static SCENE_PASS M_GetScenePass(
-    const FACE *const face, const uint16_t flags, const int32_t mesh_idx)
+    const FACE *const face, const uint16_t flags,
+    const M_POLICY_SET *const policies)
 {
     // Half-opacity faces draw depth-sorted, like the PSX half blend mode.
     if (face->semi_transparent) {
@@ -83,9 +107,9 @@ static SCENE_PASS M_GetScenePass(
     }
     if ((face->effects & 0x1u) != 0u) {
         SCENE_PASS pass = SCENE_PASS_BLEND_ADD;
-        const OUTPUT_OBJECT_MESH_POLICY *policy;
-        for (int32_t i = 0; (policy = M_GetMeshPolicy(mesh_idx, i)) != nullptr;
-             i++) {
+        for (int32_t i = 0; i < policies->count; i++) {
+            const OUTPUT_OBJECT_MESH_POLICY *const policy =
+                policies->entries[i];
             if (policy->get_face_pass != nullptr
                 && policy->get_face_pass(face, &pass)) {
                 break;
@@ -115,7 +139,7 @@ static bool M_IsReflectiveFace(
 
 static void M_AddObjectFace(
     MESH_BUILDER *const builder, const OBJECT_MESH *const obj_mesh,
-    const FACE *const face, uint16_t flags, const int32_t mesh_idx)
+    const FACE *const face, uint16_t flags, const M_POLICY_SET *const policies)
 {
     RGBA_8888 color = COLOR_RGBA_8888_WHITE;
     OUTPUT_MESH_VERTEX vertices[4];
@@ -168,9 +192,9 @@ static void M_AddObjectFace(
 
     for (int32_t i = 0; i < face->vertex_count; i++) {
         if (may_recolor) {
-            const OUTPUT_OBJECT_MESH_POLICY *policy;
-            for (int32_t j = 0;
-                 (policy = M_GetMeshPolicy(mesh_idx, j)) != nullptr; j++) {
+            for (int32_t j = 0; j < policies->count; j++) {
+                const OUTPUT_OBJECT_MESH_POLICY *const policy =
+                    policies->entries[j];
                 if (policy->get_vertex_color != nullptr
                     && policy->get_vertex_color(face, i, &color)) {
                     break;
@@ -181,14 +205,12 @@ static void M_AddObjectFace(
                 && face->vertices[i] < -obj_mesh->num_lights
             ? obj_mesh->lighting.lights[face->vertices[i]]
             : SHADE_NEUTRAL;
-        {
-            const OUTPUT_OBJECT_MESH_POLICY *policy;
-            for (int32_t j = 0;
-                 (policy = M_GetMeshPolicy(mesh_idx, j)) != nullptr; j++) {
-                if (policy->get_vertex_shade != nullptr
-                    && policy->get_vertex_shade(face, i, &shade)) {
-                    break;
-                }
+        for (int32_t j = 0; j < policies->count; j++) {
+            const OUTPUT_OBJECT_MESH_POLICY *const policy =
+                policies->entries[j];
+            if (policy->get_vertex_shade != nullptr
+                && policy->get_vertex_shade(face, i, &shade)) {
+                break;
             }
         }
         const XYZ_16 normal = face->vertices[i] < obj_mesh->num_lights
@@ -218,7 +240,7 @@ static void M_AddObjectFace(
     // Half-opacity faces skip the depth prepass, so they cannot clip other
     // effects drawn at the same spot (e.g. the gun flash glow).
     MeshBuilder_AddFan(
-        builder, M_GetScenePass(face, flags, mesh_idx), face->double_sided,
+        builder, M_GetScenePass(face, flags, policies), face->double_sided,
         !face->semi_transparent);
 }
 
@@ -237,15 +259,18 @@ static void M_PrepareMeshes(M_PRIV *const p)
             flags |= VERT_REFLECTIVE;
         }
 
-        flags |= M_GetPolicyVertexFlags(i);
+        M_POLICY_SET policies;
+        M_GatherMeshPolicies(i, &policies);
+        flags |= M_GetPolicyVertexFlags(&policies);
         for (int32_t j = 0; j < obj_mesh->tex_faces.count; j++) {
             M_AddObjectFace(
-                builder, obj_mesh, &obj_mesh->tex_faces.data[j], flags, i);
+                builder, obj_mesh, &obj_mesh->tex_faces.data[j], flags,
+                &policies);
         }
         for (int32_t j = 0; j < obj_mesh->flat_faces.count; j++) {
             M_AddObjectFace(
                 builder, obj_mesh, &obj_mesh->flat_faces.data[j],
-                flags | VERT_FLAT_SHADED, i);
+                flags | VERT_FLAT_SHADED, &policies);
         }
 
         MeshBuilder_AdjustDepth(builder, obj_mesh->depth_adjustment);
