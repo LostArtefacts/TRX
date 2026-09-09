@@ -112,6 +112,24 @@ static void M_Shutdown(void)
     }
 }
 
+RESULT ObjectLink_Add(
+    const OBJECT_ID from, const OBJECT_LINK link, const OBJECT_ID to)
+{
+    FAIL_IF(link >= OBJ_LINK_NUMBER_OF, "there is no link %d", link);
+    FAIL_IF(from == NO_OBJECT || to == NO_OBJECT, "a link needs two objects");
+    if (m_Links[link] == nullptr) {
+        m_Links[link] = Vector_Create(sizeof(M_PAIR));
+    }
+    const M_PAIR pair = { .from = from, .to = to };
+    Vector_Add(m_Links[link], (void *)&pair);
+    return OK;
+}
+
+OBJECT_LINK ObjectLink_FromName(const char *const name)
+{
+    return M_FromName(name);
+}
+
 OBJECT_ID ObjectLink_Get(const OBJECT_ID from, const OBJECT_LINK link)
 {
     return ObjectLink_GetAt(from, link, 0);

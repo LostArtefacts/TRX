@@ -174,6 +174,28 @@ trx.objects.barrel:add_family("mymod:explosive")
 for _, id in ipairs(trx.objects.query:family("mymod:explosive"):ids()) do ... end]],
       },
     },
+    link = {
+      params = {
+        {
+          name = "link",
+          type = "string",
+          description = "The relation to add, such as `gun_to_ammo`. "
+            .. "<!--noref: gun_to_ammo-->",
+        },
+        {
+          name = "other",
+          type = "catalog.objects",
+          description = "The object to link.",
+        },
+      },
+      description = [[Links this object to another object. Use the relation name that
+the game uses, such as `gun_to_ammo`. <!--noref: gun_to_ammo--> This lets the game use
+relations between objects created by a script.]],
+      examples = {
+        [[trx.objects[gun]:link("gun_to_ammo", ammo)]],
+      },
+    },
+
     remove_family = {
       params = {
         {

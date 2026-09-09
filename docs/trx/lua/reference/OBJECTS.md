@@ -100,6 +100,20 @@ trx.objects.wolf.properties.max_hit_points = 30
 
       Returns: a list of string.
 
+    - <a id="objects.Object.link" name="objects.Object.link"></a>[lua]`object:link(link, other)`  
+      Links this object to another object. Use the relation name that
+      the game uses, such as `gun_to_ammo`. This lets the game use
+      relations between objects created by a script.
+
+      Parameters:
+      - <a id="objects.Object.link.link" name="objects.Object.link.link"></a>**`link`** (string). The relation to add, such as `gun_to_ammo`.
+      - <a id="objects.Object.link.other" name="objects.Object.link.other"></a>**`other`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The object to link.
+
+      Example:
+      ```lua
+      trx.objects[gun]:link("gun_to_ammo", ammo)
+      ```
+
     - <a id="objects.Object.remove_family" name="objects.Object.remove_family"></a>[lua]`object:remove_family(family)`  
       Takes the object out of a family.
 

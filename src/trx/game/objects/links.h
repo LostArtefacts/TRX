@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/result.h>
 #include <trx/game/objects/ids.h>
 
 // Define engine-wide links from one object identity to multiple objects.
@@ -9,6 +10,12 @@ typedef enum {
 #undef X_OBJECT_LINK
     OBJ_LINK_NUMBER_OF,
 } OBJECT_LINK;
+
+// Link one object to another.
+RESULT ObjectLink_Add(OBJECT_ID from, OBJECT_LINK link, OBJECT_ID to);
+
+// Return the link with the given name, or OBJ_LINK_NUMBER_OF if none exists.
+OBJECT_LINK ObjectLink_FromName(const char *name);
 
 // Return the first linked object, or NO_OBJECT if no link exists.
 OBJECT_ID ObjectLink_Get(OBJECT_ID from, OBJECT_LINK link);

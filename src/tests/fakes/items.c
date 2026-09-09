@@ -23,6 +23,7 @@
 #include <trx/game/items.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/families.h>
+#include <trx/game/objects/links.h>
 #include <trx/game/objects/names.h>
 #include <trx/game/objects/property.h>
 #include <trx/game/pathing/lot.h>
@@ -725,6 +726,20 @@ const char *ObjectProperty_GetObjectName(
     const OBJECT *const obj, const int32_t i)
 {
     return i == 0 ? "max_hit_points" : nullptr;
+}
+
+OBJECT_LINK ObjectLink_FromName(const char *const name)
+{
+    FAKE_RECORD("link_from_name", FV(name));
+    return strcmp(name, "gun_to_ammo") == 0 ? OBJ_LINK_GUN_TO_AMMO
+                                            : OBJ_LINK_NUMBER_OF;
+}
+
+RESULT ObjectLink_Add(
+    const OBJECT_ID from, const OBJECT_LINK link, const OBJECT_ID to)
+{
+    FAKE_RECORD("link_add", FV(from), FV(link), FV(to));
+    return OK;
 }
 
 void ObjectFamily_Add(const OBJECT_ID object_id, const OBJECT_FAMILY family)

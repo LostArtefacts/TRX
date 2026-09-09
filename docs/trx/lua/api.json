@@ -14019,6 +14019,25 @@
           }
         },
         {
+          "description": "Links this object to another object. Use the relation name that\nthe game uses, such as `gun_to_ammo`. <!--noref: gun_to_ammo--> This lets the game use\nrelations between objects created by a script.",
+          "examples": [
+            "trx.objects[gun]:link(\"gun_to_ammo\", ammo)"
+          ],
+          "name": "link",
+          "params": [
+            {
+              "description": "The relation to add, such as `gun_to_ammo`. <!--noref: gun_to_ammo-->",
+              "name": "link",
+              "type": "string"
+            },
+            {
+              "description": "The object to link.",
+              "name": "other",
+              "type": "catalog.objects"
+            }
+          ]
+        },
+        {
           "description": "Takes the object out of a family.",
           "name": "remove_family",
           "params": [
