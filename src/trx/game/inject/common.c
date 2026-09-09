@@ -13,6 +13,7 @@
 #include <trx/game/savegame.h>
 #include <trx/version.h>
 
+#include <SDL2/SDL_mutex.h>
 #include <string.h>
 #include <zlib.h>
 
@@ -22,6 +23,16 @@ typedef struct {
     INJECTION *injection;
     const char *path;
 } M_LOAD_JOB;
+
+// Holds one injection file's decompressed payload, keyed by path.
+typedef struct {
+    char *path;
+    char *payload;
+    int32_t size;
+    INJECTION_VERSION version;
+    INJECTION_FILE_TYPE type;
+    bool used;
+} M_PAYLOAD_ENTRY;
 
 static bool (*m_Testers[ITT_NUMBER_OF])(
     const INJECTION_CONTEXT *, const INJECTION *injection) = {};
@@ -38,6 +49,11 @@ static int32_t m_MaxStaticObject2DId = -1;
 static VECTOR *m_RoomMeta = nullptr;
 static LEVEL_CONTEXT_INFO m_CachedInfo = {};
 static uint16_t *m_PaletteMap = nullptr;
+
+// Caches decompressed payloads for the current level. Unused entries are
+// dropped after each load.
+static VECTOR *m_PayloadCache = nullptr;
+static SDL_mutex *m_PayloadCacheMutex = nullptr;
 static size_t m_PaletteMapSize = 0;
 
 static bool M_IsRelevant(
@@ -200,6 +216,88 @@ static void M_InitialiseBlock(
     File_Skip(file, data_size);
 }
 
+// Returns the cached entry for a path, or nullptr if there is none. The caller
+// must hold the cache lock.
+static M_PAYLOAD_ENTRY *M_GetCachedPayload(const char *const path)
+{
+    if (m_PayloadCache == nullptr || path == nullptr) {
+        return nullptr;
+    }
+    for (int32_t i = 0; i < m_PayloadCache->count; i++) {
+        M_PAYLOAD_ENTRY *const entry = Vector_Get(m_PayloadCache, i);
+        if (strcmp(entry->path, path) == 0) {
+            return entry;
+        }
+    }
+    return nullptr;
+}
+
+static void M_StorePayload(
+    const char *const path, const char *const payload, const int32_t size,
+    const INJECTION_VERSION version, const INJECTION_FILE_TYPE type)
+{
+    if (path == nullptr) {
+        return;
+    }
+    SDL_LockMutex(m_PayloadCacheMutex);
+    if (M_GetCachedPayload(path) == nullptr) {
+        if (m_PayloadCache == nullptr) {
+            m_PayloadCache = Vector_Create(sizeof(M_PAYLOAD_ENTRY));
+        }
+        const M_PAYLOAD_ENTRY entry = {
+            .path = Memory_DupStr(path),
+            .payload = Memory_Dup(payload, size),
+            .size = size,
+            .version = version,
+            .type = type,
+            .used = true,
+        };
+        Vector_Add(m_PayloadCache, &entry);
+    }
+    SDL_UnlockMutex(m_PayloadCacheMutex);
+}
+
+// Sets up an injection from the cache and reports whether it was found.
+static bool M_LoadFromCache(
+    INJECTION *const injection, const char *const file_name)
+{
+    SDL_LockMutex(m_PayloadCacheMutex);
+    M_PAYLOAD_ENTRY *const entry = M_GetCachedPayload(file_name);
+    if (entry == nullptr) {
+        SDL_UnlockMutex(m_PayloadCacheMutex);
+        return false;
+    }
+    entry->used = true;
+    injection->path = Memory_DupStr(file_name);
+    injection->version = entry->version;
+    injection->type = entry->type;
+    injection->relevant = M_IsRelevant(&m_Context, entry->type);
+    if (injection->relevant) {
+        injection->fp = File_OpenBuffer(entry->payload, entry->size);
+        File_SetSoftFailure(injection->fp, true);
+    }
+    SDL_UnlockMutex(m_PayloadCacheMutex);
+    return true;
+}
+
+// Drops entries unused by this load, keeping only the current level's data.
+static void M_PrunePayloadCache(void)
+{
+    if (m_PayloadCache == nullptr) {
+        return;
+    }
+    for (int32_t i = m_PayloadCache->count - 1; i >= 0; i--) {
+        M_PAYLOAD_ENTRY *const entry = Vector_Get(m_PayloadCache, i);
+        if (entry->used) {
+            entry->used = false;
+            continue;
+        }
+        Memory_FreePointer(&entry->path);
+        Memory_FreePointer(&entry->payload);
+        Vector_RemoveAt(m_PayloadCache, i);
+    }
+}
+
 static void M_ReadFile(
     INJECTION *const injection, TRX_FILE *const file,
     const char *const file_name)
@@ -252,6 +350,9 @@ static void M_ReadFile(
         goto cleanup;
     }
 
+    M_StorePayload(
+        file_name, payload, uncompressed_size, injection->version,
+        injection->type);
     injection->fp = File_OpenBuffer(payload, uncompressed_size);
     File_SetSoftFailure(injection->fp, true);
     if (m_Context.mode != INJECTION_MODE_STATS) {
@@ -292,6 +393,10 @@ static void M_InitialiseInjection(INJECTION *const injection)
 static void M_LoadFromFile(
     INJECTION *const injection, const char *const file_name)
 {
+    if (M_LoadFromCache(injection, file_name)) {
+        return;
+    }
+
     TRX_FILE *file = nullptr;
     if (!SHOULD(
             File_OpenPathInMemory(file_name, &file),
@@ -361,7 +466,12 @@ void Inject_InitLevel(const GF_LEVEL *const level, const INJECTION_MODE mode)
     m_Context.mode = mode;
     m_NumInjections = level->injections.count;
     if (m_NumInjections == 0) {
+        M_PrunePayloadCache();
         return;
+    }
+
+    if (m_PayloadCacheMutex == nullptr) {
+        m_PayloadCacheMutex = SDL_CreateMutex();
     }
 
     BENCHMARK benchmark = Benchmark_Start();
@@ -392,6 +502,7 @@ void Inject_InitLevel(const GF_LEVEL *const level, const INJECTION_MODE mode)
     for (int32_t i = 0; i < m_NumInjections; i++) {
         M_InitialiseInjection(&m_Injections[i]);
     }
+    M_PrunePayloadCache();
 
     if (m_Context.mode != INJECTION_MODE_STATS) {
         Benchmark_End(&benchmark, nullptr);
