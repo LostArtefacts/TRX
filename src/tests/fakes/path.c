@@ -12,6 +12,7 @@
 #include <trx/game/lua/utils.h>
 
 #include <lauxlib.h>
+#include <ctype.h>
 #include <string.h>
 
 // What a file the store holds is.
@@ -47,14 +48,29 @@ static bool M_HasParentSegment(const char *const raw)
     return false;
 }
 
+static bool M_SamePathChar(const char a, const char b)
+{
+    const bool a_sep = a == '/' || a == '\\';
+    const bool b_sep = b == '/' || b == '\\';
+    if (a_sep || b_sep) {
+        return a_sep && b_sep;
+    }
+    return tolower((unsigned char)a) == tolower((unsigned char)b);
+}
+
 static bool M_IsUnder(const char *const raw, const char *const dir)
 {
     size_t len = strlen(dir);
     while (len > 0 && (dir[len - 1] == '/' || dir[len - 1] == '\\')) {
         len--;
     }
-    if (len == 0 || strncmp(raw, dir, len) != 0) {
+    if (len == 0) {
         return false;
+    }
+    for (size_t i = 0; i < len; i++) {
+        if (raw[i] == '\0' || !M_SamePathChar(raw[i], dir[i])) {
+            return false;
+        }
     }
     return raw[len] == '\0' || raw[len] == '/' || raw[len] == '\\';
 }

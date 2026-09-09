@@ -117,6 +117,14 @@ test("a script reaches the engine's places and nothing else", function()
   end)
 end)
 
+test("a place is the same place however its name is spelled", function()
+  local root = tostring(trx.path.config_dir)
+  assert(
+    trx.path.new(root:gsub("/", "\\") .. "\\mymod\\state.json"):is_reachable()
+  )
+  assert(trx.path.new(root:upper() .. "/mymod/state.json"):is_reachable())
+end)
+
 test("a name that holds dots is a name like any other", function()
   local kept = trx.path.config_dir / "state..bak"
   assert(kept:is_reachable(), "two dots inside a name walk nowhere")
