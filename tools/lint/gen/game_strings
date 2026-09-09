@@ -71,6 +71,10 @@ RE_LUA_DECLARE_KEY = re.compile(
     r"""\[\s*(?:"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)')\s*\]\s*="""
 )
 ROOT_SECTIONS = ("general", "console", "enums", "dynamic", "settings")
+
+# Lists the sections where Lua declarations may put keys. Scripts name minted
+# objects under their own keys, so allow the generated "objects" section.
+LUA_ROOT_SECTIONS = ROOT_SECTIONS + ("objects",)
 TOP_LEVEL_SECTION_ORDER = (
     "extends",
     "language_name",
@@ -615,14 +619,17 @@ def merge_lua_declarations(
                 )
             elif key in game_strings:
                 errors.append(f"{origin}: {key} is already a GS_DEFINE()")
-            elif not any(key.startswith(f"{s}/") for s in ROOT_SECTIONS):
+            elif not any(key.startswith(f"{s}/") for s in LUA_ROOT_SECTIONS):
                 errors.append(
                     f"{origin}: {key} must start with one of: "
-                    + ", ".join(ROOT_SECTIONS)
+                    + ", ".join(LUA_ROOT_SECTIONS)
                 )
             else:
                 seen[key] = origin
-                game_strings[key] = value
+                # Keep names for minted objects with their scripts instead of
+                # adding them to the game's own strings.
+                if not key.startswith("objects/"):
+                    game_strings[key] = value
     if errors:
         sys.exit(
             "Error: bad trx.locale.declare() entries:\n"
