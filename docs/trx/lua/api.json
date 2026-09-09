@@ -5694,12 +5694,19 @@
       ],
       "params": [
         {
-          "description": "Where the ring starts.",
+          "description": "Where the ring starts and how far it may lean.",
           "fields": [
             {
               "description": "World position.",
               "name": "pos",
               "type": "math.Vec3"
+            },
+            {
+              "default": 0,
+              "description": "Maximum tilt for each ring in either direction. `0` keeps them level.",
+              "name": "tilt",
+              "optional": true,
+              "type": "math.Angle"
             }
           ],
           "name": "opts",
