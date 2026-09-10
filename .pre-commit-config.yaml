@@ -191,7 +191,7 @@ repos:
     entry: tools/lint/gen/te_symlinks
     language: python
     pass_filenames: false
-    files: ^(data/trx/ship/cfg/|tools/lint/gen/te_symlinks$)
+    files: ^(data/trx/ship/(cfg|modules|scripts|games)/|tools/lint/gen/te_symlinks$)
 
 - repo: https://github.com/JohnnyMorganz/StyLua
   rev: v2.3.0
