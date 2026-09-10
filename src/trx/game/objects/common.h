@@ -63,6 +63,7 @@ STATIC_OBJECT_3D *Object_Get3DStatic(int32_t static_id);
 STATIC_OBJECT_2D *Object_Get2DStatic(int32_t static_id);
 
 void Object_InitialiseMeshes(int32_t mesh_count);
+void Object_InitialiseMesh(OBJECT_MESH *mesh);
 void Object_StoreMesh(OBJECT_MESH *mesh);
 
 int32_t Object_GetMeshCount(void);

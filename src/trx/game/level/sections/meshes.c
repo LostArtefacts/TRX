@@ -248,6 +248,7 @@ RESULT Level_Section_AppendObjectMeshes(
     for (int32_t i = 0; i < unique_offsets->count; i++) {
         const int32_t pointer = *(const int32_t *)Vector_Get(unique_offsets, i);
         File_Seek(file, start_pos + pointer - base_index, FILE_SEEK_SET);
+        Object_InitialiseMesh(&meshes[i]);
         MUST(M_ReadObjectMesh(&meshes[i], file), "mesh %d", i);
 
         // The original data position is required for backward compatibility

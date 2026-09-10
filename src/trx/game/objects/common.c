@@ -18,6 +18,11 @@ typedef struct {
     OBJECT obj;
 } M_UNCATALOGED_SLOT;
 
+typedef struct {
+    int32_t data_offset;
+    int32_t registry_idx;
+} M_MESH_PRIV;
+
 CATALOG_TABLE_DEFINE(m_Objects, CATALOG_OBJECTS, OBJECT);
 static STATIC_OBJECT_3D *m_StaticObjects3D = nullptr;
 static STATIC_OBJECT_2D *m_StaticObjects2D = nullptr;
@@ -26,6 +31,23 @@ static int32_t m_StaticObjects2DCount = 0;
 static VECTOR *m_MeshPointers = nullptr;
 
 static VECTOR *m_UncatalogedSlots = nullptr;
+
+static M_MESH_PRIV *M_GetPriv(const OBJECT_MESH *const mesh)
+{
+    return (M_MESH_PRIV *)mesh->priv;
+}
+
+static void M_RefreshRegistryIndex(OBJECT_MESH *const mesh)
+{
+    M_MESH_PRIV *const priv = M_GetPriv(mesh);
+    priv->registry_idx = -1;
+    for (int32_t i = 0; i < Object_GetMeshCount(); i++) {
+        if (mesh == Object_GetMesh(i)) {
+            priv->registry_idx = i;
+            return;
+        }
+    }
+}
 
 void Object_Reset(void)
 {
@@ -197,6 +219,14 @@ OBJECT_SLOT Object_IDToSlot(const OBJECT_ID id)
     return Catalog_IDToSlot(CATALOG_OBJECTS, id, -1);
 }
 
+void Object_InitialiseMesh(OBJECT_MESH *const mesh)
+{
+    M_MESH_PRIV *const priv = GameBuf_Alloc(sizeof(M_MESH_PRIV), GBUF_MESHES);
+    priv->data_offset = 0;
+    priv->registry_idx = -1;
+    mesh->priv = priv;
+}
+
 void Object_InitialiseMeshes(const int32_t mesh_count)
 {
     if (m_MeshPointers != nullptr) {
@@ -207,6 +237,10 @@ void Object_InitialiseMeshes(const int32_t mesh_count)
 
 void Object_StoreMesh(OBJECT_MESH *const mesh)
 {
+    M_MESH_PRIV *const priv = M_GetPriv(mesh);
+    if (priv->registry_idx < 0) {
+        priv->registry_idx = m_MeshPointers->count;
+    }
     Vector_Add(m_MeshPointers, (void *)&mesh);
 }
 
@@ -234,12 +268,7 @@ int32_t Object_GetItemMeshIndex(const ITEM *const item, const int32_t mesh_idx)
 
 int32_t Object_GetMeshIndex(const OBJECT_MESH *const mesh)
 {
-    for (int32_t i = 0; i < Object_GetMeshCount(); i++) {
-        if (mesh == Object_GetMesh(i)) {
-            return i;
-        }
-    }
-    return -1;
+    return M_GetPriv(mesh)->registry_idx;
 }
 
 int32_t Object_GetMeshCount(void)
@@ -261,12 +290,12 @@ OBJECT_MESH *Object_FindMesh(const int32_t data_offset)
 
 int32_t Object_GetMeshOffset(const OBJECT_MESH *const mesh)
 {
-    return (int32_t)(intptr_t)mesh->priv;
+    return M_GetPriv(mesh)->data_offset;
 }
 
 void Object_SetMeshOffset(OBJECT_MESH *const mesh, const int32_t data_offset)
 {
-    mesh->priv = (void *)(intptr_t)data_offset;
+    M_GetPriv(mesh)->data_offset = data_offset;
 }
 
 void Object_SwapMesh(
@@ -306,6 +335,8 @@ void Object_SwapMeshEx(
     OBJECT_MESH **const slot_1 = Vector_Get(m_MeshPointers, mesh_idx1);
     OBJECT_MESH **const slot_2 = Vector_Get(m_MeshPointers, mesh_idx2);
     SWAP(*slot_1, *slot_2);
+    M_RefreshRegistryIndex(*slot_1);
+    M_RefreshRegistryIndex(*slot_2);
 
     Output_DispatchObjectMeshSwap(mesh_idx1, mesh_idx2);
 }
