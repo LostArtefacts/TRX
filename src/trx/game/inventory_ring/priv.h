@@ -12,6 +12,7 @@
 #define INV_RING_CAMERA_HEIGHT (-0x100) // = -256
 #define INV_RING_CAMERA_START_HEIGHT (-0x600) // = -1536
 #define INV_RING_RADIUS 688
+#define INV_RING_CAMERA_2_RING 598
 
 typedef enum {
     INV_RING_ARROW_TL,

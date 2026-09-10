@@ -58,6 +58,49 @@ static bool m_IsSkyboxEnabled = false;
 static int32_t m_TintOverrideDepth = 0;
 static RGBA_F m_TintOverrideStack[8] = {};
 
+static void M_GetFocalLengths(
+    const int16_t fov_angle, const FOV_MODE fov_mode, const float aspect,
+    float *const out_f_x, float *const out_f_y)
+{
+    const float fov = fov_angle * M_PI / (float)DEG_180;
+
+    float f_x, f_y;
+    switch (fov_mode) {
+    case FOV_MODE_HORIZONTAL:
+        f_x = 1.0f / tanf(fov * 0.5f);
+        f_y = f_x * aspect;
+        break;
+    case FOV_MODE_VERTICAL:
+        f_y = 1.0f / tanf(fov * 0.5f);
+        f_x = f_y / aspect;
+        break;
+    case FOV_MODE_PC: {
+        const float persp = ((4.0f / 3.0f) / aspect);
+        f_x = persp / tanf(fov * 0.5f);
+        f_y = f_x * aspect;
+        break;
+    }
+    case FOV_MODE_PS1: {
+        const float persp = ((4.0f / 3.0f) / aspect) * (240.0f / 200.0f);
+        f_x = persp / tanf(fov * 0.5f);
+        f_y = f_x * aspect;
+        break;
+    }
+    case FOV_MODE_PS1_FIT: {
+        const float persp =
+            ((4.0f / 3.0f) / MAX(aspect, 16.0f / 10.0f)) * (240.0f / 200.0f);
+        f_x = persp / tanf(fov * 0.5f);
+        f_y = f_x * aspect;
+        break;
+    }
+    default:
+        ASSERT_FAIL();
+    }
+
+    *out_f_x = f_x;
+    *out_f_y = f_y;
+}
+
 float Output_GetTime(void)
 {
     return m_Time;
@@ -232,6 +275,16 @@ void Output_PopTintOverride(void)
     m_TintOverrideDepth--;
 }
 
+int16_t Output_GetVerticalHalfFOV(
+    const int16_t fov_angle, const FOV_MODE fov_mode)
+{
+    const float aspect = (float)Viewport_GetWidth(VIEWPORT_GAME)
+        / (float)Viewport_GetHeight(VIEWPORT_GAME);
+    float f_x, f_y;
+    M_GetFocalLengths(fov_angle, fov_mode, aspect, &f_x, &f_y);
+    return atanf(1.0f / f_y) * DEG_180 / M_PI;
+}
+
 void Output_GetPerspProjectionMatrix(GLfloat output[][4])
 {
     const float left = Viewport_GetMinX(VIEWPORT_GAME);
@@ -241,40 +294,10 @@ void Output_GetPerspProjectionMatrix(GLfloat output[][4])
     const float near = Output_GetNearZ() / (float)(1 << W2V_SHIFT);
     const float far = Output_GetFarZ() / (float)(1 << W2V_SHIFT);
     const float aspect = (float)(right - left) / (float)(bottom - top);
-    const float fov = Camera_GetInterpolatedFOV() * M_PI / (float)DEG_180;
 
     float f_x, f_y;
-    switch (Viewport_GetFOVMode()) {
-    case FOV_MODE_HORIZONTAL:
-        f_x = 1.0f / tanf(fov * 0.5f);
-        f_y = f_x * aspect;
-        break;
-    case FOV_MODE_VERTICAL:
-        f_y = 1.0f / tanf(fov * 0.5f);
-        f_x = f_y / aspect;
-        break;
-    case FOV_MODE_PC: {
-        const float persp = ((4.0f / 3.0f) / aspect);
-        f_x = persp / tanf(fov * 0.5f);
-        f_y = f_x * aspect;
-        break;
-    }
-    case FOV_MODE_PS1: {
-        const float persp = ((4.0f / 3.0f) / aspect) * (240.0f / 200.0f);
-        f_x = persp / tanf(fov * 0.5f);
-        f_y = f_x * aspect;
-        break;
-    }
-    case FOV_MODE_PS1_FIT: {
-        const float persp =
-            ((4.0f / 3.0f) / MAX(aspect, 16.0f / 10.0f)) * (240.0f / 200.0f);
-        f_x = persp / tanf(fov * 0.5f);
-        f_y = f_x * aspect;
-        break;
-    }
-    default:
-        ASSERT_FAIL();
-    }
+    M_GetFocalLengths(
+        Camera_GetInterpolatedFOV(), Viewport_GetFOVMode(), aspect, &f_x, &f_y);
 
     const float near_z = Output_GetNearZ();
     const float far_z = Output_GetFarZ();
