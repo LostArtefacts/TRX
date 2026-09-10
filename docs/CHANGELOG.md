@@ -303,6 +303,7 @@
 - Added the `trx.ui.widgets.Digits` widget, which lays a line of text out as an object's sprites
 - Added a new Lua module, `trx.waypoints`, for how far along a level's own progression Lara has got, which TR4 marks out and its guides follow; it is saved with the game and reports the furthest she has ever reached as well as where she is now
 - Added `trx.lara.speech_face`, for the face Lara talks with, which follows the outfit she is wearing rather than the one a level carries
+- Added `trx.cutscenes.is_active`, which says when a cutscene has the screen, including during its fades (TRX1414)
 - Added `trx.cutscenes.set_lara_shadow_bounds()`, for the box a cutscene gives Lara's shadow, so a scene can make it read as something she rides in (TRX911)
 - Added `trx.mod.Mod.can_switch`, which says whether `trx.mod.switch` accepts the mod, so a single level loaded on its own is told apart from a mod a player picks
 - Added `trx.strings.dash_case()`, which spells a name the way the console shows one
