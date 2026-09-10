@@ -33,6 +33,8 @@ static OBJECT_MESH *M_CloneMesh(
 {
     OBJECT_MESH *const mesh = GameBuf_Alloc(sizeof(OBJECT_MESH), GBUF_MESHES);
     *mesh = *src;
+    Object_InitialiseMesh(mesh);
+    Object_SetMeshOffset(mesh, Object_GetMeshOffset(src));
     mesh->enable_solid_color = true;
     mesh->solid_color = color;
     mesh->enable_reflections = true;
