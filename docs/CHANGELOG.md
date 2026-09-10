@@ -164,6 +164,7 @@
 - Fixed the debug portal and bounding box lines becoming thinner at higher supersampling values (TRX1251)
 - Fixed missing reflections on transparent TR4 surfaces, such as Werner's glasses (TRX1294)
 - Fixed TR3 colored light objects appearing white in TR1 and TR2 levels (#6517 / TRX1377, regression from 1.10)
+- Fixed the picture jittering between two frames while the game fades out to quit (TRX1405)
 
 **TR1**
 - Added the ability for Lara to burn in swamp rooms marked with death sectors (#6539 / TRX1395)
