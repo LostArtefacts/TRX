@@ -11,6 +11,12 @@
 void Output_SetSkyboxEnabled(bool enabled);
 bool Output_IsSkyboxEnabled(void);
 
+// Returns half the angle the game viewport spans vertically, for the given
+// field of view and formula. The angle depends on the viewport shape, so a
+// narrow window sees more of the scene above and below the center than a wide
+// one does.
+int16_t Output_GetVerticalHalfFOV(int16_t fov_angle, FOV_MODE fov_mode);
+
 void Output_GetPerspProjectionMatrix(GLfloat output[][4]);
 void Output_GetOrthoProjectionMatrix(GLfloat output[][4]);
 

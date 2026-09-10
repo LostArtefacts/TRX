@@ -52,6 +52,7 @@
 - Fixed the game flashing over the black bars beside the picture when a frame is advanced in photo mode (regression from 1.10) (TRX1068)
 - Fixed dialogs sitting against a band of screen that no longer matched what the overlay was drawing there, which could leave them overlapping the heading or the item name
 - Fixed the inventory ring's button hints and item count overlapping the line of text the game puts at the foot of the screen
+- Fixed an item hanging at the edge of the screen while the inventory changes from one ring to another (TRX1404)
 - Fixed the icons beside the volume settings, which now show a note for the music and a speaker for the sound effects (TRX1040)
 - Fixed the statistics overlapping inventory text at large text sizes (#6295 / TRX1156)
 

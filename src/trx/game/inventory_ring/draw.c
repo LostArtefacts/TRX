@@ -23,7 +23,6 @@
 
 #include <math.h>
 
-#define M_CAMERA_2_RING 598
 #define M_SHADE_NORMAL SHADE_LOW
 #define M_SHADE_SELECTED SHADE_NEUTRAL
 
@@ -311,7 +310,7 @@ void InvRing_Draw(INV_RING *const ring)
     draw_ring.camera.pos.y = draw_camera_y;
     draw_ring.camera_pitch = draw_camera_pitch;
     draw_ring.ring_pos.rot.y = draw_ring_rot_y;
-    draw_ring.camera.pos.z = draw_radius + M_CAMERA_2_RING;
+    draw_ring.camera.pos.z = draw_radius + INV_RING_CAMERA_2_RING;
 
     if (ring->mode == INV_TITLE_MODE) {
         if (ring->live_scene) {
