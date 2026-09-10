@@ -24,6 +24,7 @@
 - Fixed Lara not being able to crawl backwards in certain sloped crawlspaces (OG bug) (TRX1322)
 - Fixed Lara being able to crouch/crawl into spaces with very low ceilings where she can become clamped, such as RX-Tech Mines room 159 (OG bug) (#6477 / TRX1331)
 - Fixed Lara attempting to continue to descend a ladder despite being at the bottom of it (OG bug) (#6461 / TRX1315)
+- Fixed Lara sliding instead of collapsing when a fall kills her on a slope (TRX1408, regression from T1M 2.15.2 / TR2X 0.10 / TRX 1.1)
 
 **UI**
 - Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187 / TRX1036)

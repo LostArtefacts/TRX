@@ -731,15 +731,19 @@ LANDED_STATE Lara_Col_LandedBad(ITEM *const item)
     if (g_Config.debug.enable_invulnerability) {
         return LANDED_OK;
     } else if (land_speed <= DAMAGE_LENGTH) {
-        Lara_TakeDamage(
-            LARA_MAX_HITPOINTS * SQUARE(land_speed) / SQUARE(DAMAGE_LENGTH),
-            false);
-    } else {
-        Lara_Kill();
+        const bool alive = item->hit_points > 0;
+        const int16_t damage =
+            LARA_MAX_HITPOINTS * SQUARE(land_speed) / SQUARE(DAMAGE_LENGTH);
+        // Item_TakeDamage clamps at zero, while the test below needs the
+        // negative value that the plain subtraction leaves behind.
+        const int16_t hit_points = item->hit_points - damage;
+        Lara_TakeDamage(damage, false);
+        // #675: Original bug to keep. Correct operator would be <=
+        return alive && hit_points < 0 ? LANDED_BAD : LANDED_OK;
     }
 
-    // #675: Original bug to keep. Correct operator would be <=
-    return item->hit_points < 0 ? LANDED_BAD : LANDED_OK;
+    Lara_Kill();
+    return LANDED_BAD;
 }
 
 // clang-format off
