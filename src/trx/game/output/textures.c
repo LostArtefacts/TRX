@@ -1369,6 +1369,34 @@ SPRITE_TEXTURE *Output_GetSpriteTexture(const int32_t texture_idx)
     return &m_SpriteTextures[texture_idx];
 }
 
+void Output_AddAnimatedTextureRange(
+    const int16_t num_textures, const int16_t *const textures)
+{
+    if (num_textures <= 0) {
+        return;
+    }
+
+    ANIMATED_TEXTURE_RANGE *const range = GameBuf_Alloc(
+        sizeof(ANIMATED_TEXTURE_RANGE), GBUF_ANIMATED_TEXTURE_RANGES);
+    range->num_textures = num_textures;
+    range->textures = GameBuf_Alloc(
+        sizeof(int16_t) * num_textures, GBUF_ANIMATED_TEXTURE_RANGES);
+    memcpy(range->textures, textures, sizeof(int16_t) * num_textures);
+    range->next_range = nullptr;
+
+    if (m_AnimTextureRanges == nullptr) {
+        m_AnimTextureRanges = range;
+        return;
+    }
+
+    // Append the range because callers walk the ranges in insertion order.
+    ANIMATED_TEXTURE_RANGE *tail = m_AnimTextureRanges;
+    while (tail->next_range != nullptr) {
+        tail = tail->next_range;
+    }
+    tail->next_range = range;
+}
+
 ANIMATED_TEXTURE_RANGE *Output_GetAnimatedTextureRange(const int32_t range_idx)
 {
     if (m_AnimTextureRanges == nullptr) {
