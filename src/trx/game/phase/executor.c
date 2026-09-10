@@ -314,7 +314,8 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
             }
         }
 
-        if (!Shell_ShouldPauseForFocusLoss() && Interpolation_IsActive()) {
+        if (!Shell_ShouldPauseForFocusLoss() && !m_Exiting
+            && Interpolation_IsActive()) {
             Interpolation_SetRate(0.5);
             Output_SetTime(m_CurrentFrame - 0.5f);
             M_Draw(phase);
