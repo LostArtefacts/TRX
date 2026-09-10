@@ -458,7 +458,7 @@ void Value_CopyPtr(
         Memory_Free(old);
         return;
     }
-    TRX_VALUE v;
+    TRX_VALUE v = {};
     Value_ReadPtr(type, src, &v);
     Value_WritePtr(type, dst, &v);
 }
