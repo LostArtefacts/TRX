@@ -232,7 +232,7 @@ void Level_Finalize_LoadTexturePages(LEVEL_CONTEXT *const ctx)
 
     {
         int32_t *pages = Memory_Alloc(num_pages * sizeof(int32_t));
-        THREAD_POOL *const pool = ThreadPool_Create(-1);
+        THREAD_POOL *const pool = ThreadPool_GetShared();
         for (int32_t i = 0; i < num_pages; i++) {
             pages[i] = i;
         }
@@ -240,7 +240,6 @@ void Level_Finalize_LoadTexturePages(LEVEL_CONTEXT *const ctx)
             ThreadPool_AddJob(pool, M_PremultiplyTexturePage, &pages[i]);
         }
         ThreadPool_Wait(pool);
-        ThreadPool_Destroy(pool);
         Memory_Free(pages);
     }
     Benchmark_End(&benchmark, "premultiplied alpha");

@@ -18,3 +18,7 @@ void ThreadPool_AddJob(THREAD_POOL *pool, THREAD_FUNC func, void *user_data);
 
 // Wait for all submitted jobs to complete.
 void ThreadPool_Wait(THREAD_POOL *pool);
+
+// Returns the session-wide pool, with one thread per CPU. Callers submit jobs,
+// wait for them, and do not destroy the pool.
+THREAD_POOL *ThreadPool_GetShared(void);
