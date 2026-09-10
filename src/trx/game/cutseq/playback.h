@@ -24,15 +24,19 @@
 void CutSeq_Load(void);
 
 bool CutSeq_IsAvailable(void);
+
 // How many cutscenes this game can play; 0 when it has none. Every number a
 // caller passes below is a valid one only while it is under this.
 int32_t CutSeq_GetCount(void);
+
+// Whether a cutscene has the screen, fades included. It holds through the fade
+// into a scene, through the scene, and through the black that follows it, and
+// ends once the level is back in view or the next scene, the end of the level
+// or another place to go has taken the screen.
 bool CutSeq_IsActive(void);
 bool CutSeq_IsPlaying(void);
-// Whether the cutscene's own fade is still on screen. It runs on past the
-// scene, bringing the level back into view once the scene has been torn down.
-bool CutSeq_IsFading(void);
 int32_t CutSeq_GetCurrent(void);
+
 // Which frame of the running scene is on screen, or -1 when none is. A scene
 // has no other clock: its actors are pose tracks rather than items, so a
 // script with something to do part-way through has only the frame to name it
@@ -48,6 +52,7 @@ void CutSeq_Request(int32_t num, bool fade_out);
 // The number need not be one the pak can play; see CUTSEQ_MAX_TRIGGERS.
 bool CutSeq_IsPlayed(int32_t num);
 void CutSeq_SetPlayed(int32_t num, bool played);
+
 // The whole played-once bitmask, for the paths that carry it as one value:
 // the savegame, and the start of a playthrough.
 uint64_t CutSeq_GetPlayedMask(void);

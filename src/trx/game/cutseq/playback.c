@@ -192,12 +192,15 @@ static float M_GetDefaultLetterbox(void)
                                                         : M_DEFAULT_LETTERBOX;
 }
 
-// Reports whether a scene may be cut short. The title plays its scenes as
-// scenery behind the menu, where there is nothing for the player to get past.
 static bool M_IsSkippable(void)
 {
     const GF_LEVEL *const level = GF_GetCurrentLevel();
     return level == nullptr || level->type != GFL_TITLE;
+}
+
+static bool M_IsBusy(void)
+{
+    return m_State.phase != M_PHASE_INACTIVE;
 }
 
 static void M_ReleaseNodes(void)
@@ -550,18 +553,13 @@ int32_t CutSeq_GetCount(void)
 
 bool CutSeq_IsActive(void)
 {
-    return m_State.phase != M_PHASE_INACTIVE;
+    return M_IsBusy() || Fader_GetCurrentValue(&m_State.fader) > 0.0f;
 }
 
 bool CutSeq_IsPlaying(void)
 {
     return m_State.phase == M_PHASE_PLAYING
         || m_State.phase == M_PHASE_FADE_END;
-}
-
-bool CutSeq_IsFading(void)
-{
-    return Fader_IsActive(&m_State.fader);
 }
 
 int32_t CutSeq_GetCurrent(void)
@@ -578,7 +576,7 @@ void CutSeq_Request(const int32_t num, const bool fade_out)
 {
     // Lara is a cutscene's first actor, so a level that never placed her - a
     // title that only shows scenery - has nothing to play.
-    if (CutSeq_IsActive() || num < 0 || num >= CutSeq_GetCount()
+    if (M_IsBusy() || num < 0 || num >= CutSeq_GetCount()
         || Lara_GetItem() == nullptr) {
         return;
     }
@@ -616,7 +614,7 @@ void CutSeq_HandleTrigger(const int32_t num)
     // A pad answers every frame Lara stands on it, so the once-only rule comes
     // first - it decides whether there is a trigger to answer at all, and a
     // script that wants a scene again clears its played mark.
-    if (CutSeq_IsActive() || CutSeq_IsPlayed(num)) {
+    if (M_IsBusy() || CutSeq_IsPlayed(num)) {
         return;
     }
 
