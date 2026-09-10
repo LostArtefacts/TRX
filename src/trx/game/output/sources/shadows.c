@@ -452,7 +452,7 @@ static void M_GetFaceCorners(
 static bool M_GetFaceCells(
     const ROOM *const room, const FACE *const face, int32_t cells[4])
 {
-    XYZ_32 corners[4];
+    XYZ_32 corners[4] = {};
     M_GetFaceCorners(room, face, corners);
 
     int32_t min_x = corners[0].x;
@@ -733,7 +733,7 @@ static int32_t M_CollectMeshFacets(
                     index->face_stamp[f] = stamp;
 
                     const FACE *const face = &index->faces[f];
-                    XYZ_32 corners[4];
+                    XYZ_32 corners[4] = {};
                     M_GetFaceCorners(room, face, corners);
 
                     int32_t face_min_x = corners[0].x;

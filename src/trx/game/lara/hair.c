@@ -648,7 +648,7 @@ static int32_t M_PickShift(
         spread += rx * rx + ry * ry;
     }
 
-    float costs[SEAM_MAX_VERTEX_PAIRS];
+    float costs[SEAM_MAX_VERTEX_PAIRS] = {};
     for (int32_t shift = 0; shift < n; shift++) {
         float cost = 0.0f;
         for (int32_t k = 0; k < n; k++) {

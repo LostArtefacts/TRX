@@ -397,7 +397,7 @@ RESULT JSON_ReadIO_ReadXZ32Current(
 RESULT JSON_ReadIO_ReadXYZ16Current(
     JSON_READ_IO *const io, void *const target_void)
 {
-    XYZ_32 tmp;
+    XYZ_32 tmp = {};
     MUST(JSON_ReadIO_ReadXYZ32Current(io, &tmp));
     if (tmp.x < INT16_MIN || tmp.x > INT16_MAX || tmp.y < INT16_MIN
         || tmp.y > INT16_MAX || tmp.z < INT16_MIN || tmp.z > INT16_MAX) {
