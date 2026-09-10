@@ -72,11 +72,11 @@ local state = {
   opening = signal.new(false),
 }
 
--- Lara's own bars are hers to show, so they go while she is not in charge of
--- herself and while a cutscene has the screen.
+-- Show Lara's bars only when she controls herself and the cutscene is not
+-- active. A cutscene keeps the screen through its fades.
 state.lara_bars = state.ui_enabled
   & lara.signals.is_controllable
-  & ~trx.cutscenes.signals.is_playing
+  & ~trx.cutscenes.signals.is_active
 
 -- How low a bar has to be before it flashes, which TR1 puts lower than the
 -- rest. It is read as a bar asks, because which game is running is not settled
