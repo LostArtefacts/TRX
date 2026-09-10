@@ -102,6 +102,32 @@ static void M_AnimTextureEdits(
     }
 }
 
+// Add a range of textures for a face to cycle through. Move each texture into
+// the space reserved for level textures.
+static void M_AnimTextureAdds(
+    const INJECTION_CONTEXT *const ctx, const INJECTION *const injection,
+    const int32_t data_count)
+{
+    const LEVEL_CONTEXT_INFO cached_info = Inject_GetCachedInfo();
+    for (int32_t i = 0; i < data_count; i++) {
+        const int32_t num_textures = File_ReadS32(injection->fp);
+        if (num_textures <= 0) {
+            continue;
+        }
+
+        int16_t *const textures = Memory_Alloc(sizeof(int16_t) * num_textures);
+        for (int32_t j = 0; j < num_textures; j++) {
+            textures[j] =
+                File_ReadS16(injection->fp) + cached_info.textures.object_count;
+        }
+        if (ctx->mode != INJECTION_MODE_STATS) {
+            Output_AddAnimatedTextureRange((int16_t)num_textures, textures);
+        }
+        Memory_Free(textures);
+    }
+}
+
 REGISTER_INJECT_EDITOR(IDT_TEXTURE_EDITS, M_TextureEdits)
 REGISTER_INJECT_EDITOR(IDT_SPRITE_EDITS, M_SpriteEdits)
 REGISTER_INJECT_EDITOR(IDT_ANIM_TEXTURES, M_AnimTextureEdits)
+REGISTER_INJECT_EDITOR(IDT_ANIM_TEXTURE_ADDS, M_AnimTextureAdds)
