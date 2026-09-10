@@ -98,21 +98,44 @@ def create_symlink(path: Path, target: str) -> None:
     path.symlink_to(target)
 
 
+def mirror_links(source_dir: Path, target_dir: Path) -> None:
+    for source_path in sorted(source_dir.rglob("*")):
+        if source_path.is_dir():
+            continue
+        if source_path.parent.name == 'presets':
+            continue
+        rel_path = source_path.relative_to(source_dir)
+        target_path = target_dir / rel_path
+        target_rel = source_path.relative_to(target_path.parent, walk_up=True)
+        create_symlink(target_path, str(target_rel))
+
+
 def create_cfg_links() -> None:
     source_dir = ROOT / "data" / "trx" / "ship" / "cfg"
     for game in TE_GAMES:
         target_dir = ROOT / "data" / "te" / game / "Engine" / "cfg"
-        for source_path in sorted(source_dir.rglob("*")):
-            if source_path.is_dir():
-                continue
-            if source_path.parent.name == 'presets':
-                continue
-            rel_path = source_path.relative_to(source_dir)
-            target_path = target_dir / rel_path
-            target_rel = source_path.relative_to(
-                target_path.parent, walk_up=True
-            )
-            create_symlink(target_path, str(target_rel))
+        mirror_links(source_dir, target_dir)
+
+
+def create_engine_script_links() -> None:
+    ship_dir = ROOT / "data" / "trx" / "ship"
+    for game in TE_GAMES:
+        engine_dir = ROOT / "data" / "te" / game / "Engine"
+        mirror_links(ship_dir / "modules", engine_dir / "modules")
+        mirror_links(ship_dir / "scripts", engine_dir / "scripts")
+
+
+def create_game_script_links() -> None:
+    games_dir = ROOT / "data" / "trx" / "ship" / "games"
+    for game, custom in GAME_LINKS:
+        base_dir = ROOT / "data" / "te" / game / "Engine" / "games"
+        source_path = games_dir / game / "scripts" / "_game.lua"
+        target_path = base_dir / custom / "scripts" / "_game.lua"
+        target_rel = source_path.relative_to(target_path.parent, walk_up=True)
+        create_symlink(target_path, str(target_rel))
+        # The game script names its own game's modules, so those keep the
+        # directory the name points at.
+        mirror_links(games_dir / game / "modules", base_dir / game / "modules")
 
 
 def create_game_links() -> None:
@@ -136,6 +159,8 @@ def create_injection_links() -> None:
 def main() -> None:
     remove_te_symlinks()
     create_cfg_links()
+    create_engine_script_links()
+    create_game_script_links()
     create_game_links()
     create_injection_links()
 

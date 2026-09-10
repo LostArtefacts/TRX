@@ -757,11 +757,14 @@ class RunContext:
         ]
         # The test fixtures name keys that exist to be looked up in a test, and
         # keys that exist to be missing. Neither says anything about what the
-        # game ships.
+        # game ships. The TombEditor tree links to the files the game ships, so
+        # it declares nothing of its own.
         lua_files = [
             path
             for path in versioned_files
-            if path.suffix == ".lua" and SRC_DIR / "tests" not in path.parents
+            if path.suffix == ".lua"
+            and SRC_DIR / "tests" not in path.parents
+            and DATA_DIR / "te" not in path.parents
         ]
         self.enum_value_types = get_enum_value_types(source_files)
         self.config_aliases = get_config_aliases(CommonPaths.src_dir / "config/map.def")
