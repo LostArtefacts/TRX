@@ -1,5 +1,6 @@
 #include <trx/core/benchmark.h>
 #include <trx/core/log.h>
+#include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/anims.h>
@@ -40,17 +41,21 @@ static int32_t M_GetAnimFrameCount(
     }
 }
 
-static OBJECT *M_GetAnimObject(const int32_t anim_idx)
+// Maps each animation to its first object, avoiding a search for every
+// animation.
+static OBJECT **M_BuildAnimObjects(const int32_t anim_count)
 {
+    OBJECT **const anim_objects = Memory_Alloc(sizeof(OBJECT *) * anim_count);
     CATALOG_FOR_EACH(CATALOG_OBJECTS, i)
     {
         OBJECT *const obj = Object_Get(i);
-        if (obj->loaded && obj->mesh_count >= 0 && obj->anim_idx == anim_idx) {
-            return obj;
+        if (obj->loaded && obj->mesh_count >= 0 && obj->anim_idx >= 0
+            && obj->anim_idx < anim_count
+            && anim_objects[obj->anim_idx] == nullptr) {
+            anim_objects[obj->anim_idx] = obj;
         }
     }
-
-    return nullptr;
+    return anim_objects;
 }
 
 static ANIM_FRAME *M_FindFrameBase(const uint32_t frame_ofs)
@@ -169,11 +174,12 @@ void Anim_LoadFrames(
     BENCHMARK benchmark = Benchmark_Start();
 
     const int32_t anim_count = Anim_GetTotalCount();
+    OBJECT **const anim_objects = M_BuildAnimObjects(anim_count);
     OBJECT *cur_obj = nullptr;
     int32_t frame_idx = 0;
 
     for (int32_t i = 0; i < anim_count; i++) {
-        OBJECT *const next_obj = M_GetAnimObject(i);
+        OBJECT *const next_obj = anim_objects[i];
         const bool obj_changed = next_obj != nullptr;
         if (obj_changed) {
             cur_obj = next_obj;
@@ -213,5 +219,6 @@ void Anim_LoadFrames(
         }
     }
 
+    Memory_Free(anim_objects);
     Benchmark_End(&benchmark, nullptr);
 }
