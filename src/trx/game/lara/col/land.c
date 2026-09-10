@@ -859,14 +859,20 @@ static void M_SprintRoll(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (coll->side_mid.floor <= 0 && item->fall_speed > 0) {
-        if (Lara_Col_LandedBad(item)) {
+        switch (Lara_Col_LandedBad(item)) {
+        case LANDED_OK:
+            if (lara->water_status == LWS_WADE || !g_Input.forward
+                || g_Input.slow) {
+                item->goal_anim_state = LS(LS_STOP);
+            } else {
+                item->goal_anim_state = LS(LS_RUN);
+            }
+            break;
+        case LANDED_BAD:
             item->goal_anim_state = LS(LS_DEATH);
-        } else if (
-            lara->water_status == LWS_WADE || !g_Input.forward
-            || g_Input.slow) {
-            item->goal_anim_state = LS(LS_STOP);
-        } else {
-            item->goal_anim_state = LS(LS_RUN);
+            break;
+        case LANDED_HANDLED:
+            break;
         }
 
         item->fall_speed = 0;
