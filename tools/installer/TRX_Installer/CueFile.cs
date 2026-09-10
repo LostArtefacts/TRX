@@ -7,6 +7,22 @@ public class CueFile
 {
     public readonly List<CueTrack> TrackList = new();
 
+    // Reads a cue sheet, or returns null when the file is not a usable cue
+    // sheet. Use this to probe a file whose format is not known in advance;
+    // the constructor reports the reason with an exception instead.
+    public static CueFile? TryLoad(string cueFilePath)
+    {
+        try
+        {
+            CueFile cueFile = new(cueFilePath);
+            return cueFile.TrackList.Count > 0 ? cueFile : null;
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+
     public CueFile(string cueFilePath)
     {
         _cueFilePath = cueFilePath;

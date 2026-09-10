@@ -26,16 +26,12 @@ internal static class InstallComponentFactory
                     "Steam",
                     GetSteamDirectories("Tomb Raider (I)"),
                     _discImage,
-                    sourceDirectory =>
-                        File.Exists(Path.Combine(sourceDirectory, "GAME.GOG"))
-                        || File.Exists(Path.Combine(sourceDirectory, "game.dat"))),
+                    DiscImageInstallSource.CanInstallFrom),
                 new InstallSourceOption(
                     "GOG",
                     GetGOGDirectories("Tomb Raider 1"),
                     _discImage,
-                    sourceDirectory =>
-                        File.Exists(Path.Combine(sourceDirectory, "GAME.GOG"))
-                        || File.Exists(Path.Combine(sourceDirectory, "game.dat"))),
+                    DiscImageInstallSource.CanInstallFrom),
                 new InstallSourceOption(
                     "Disc",
                     DriveInfo.GetDrives()
