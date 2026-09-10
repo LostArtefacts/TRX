@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/game/anims/common.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/util.h>
@@ -21,6 +22,14 @@ static bool M_IsAbyssLanding(
     const ITEM *const item, const COLL_INFO *const coll)
 {
     return Room_IsAbyssHeight(item->pos.y + coll->side_mid.floor);
+}
+
+static int16_t M_GetLandedBadState(const ITEM *const item)
+{
+    // Some landing animations have no change to the death state, in which
+    // case Lara stands up instead of staying stuck in the landing.
+    return Anim_HasChange(Item_GetAnim(item), LS(LS_DEATH)) ? LS(LS_DEATH)
+                                                            : LS(LS_STOP);
 }
 
 static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
@@ -366,7 +375,7 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
         }
         break;
     case LANDED_BAD:
-        item->goal_anim_state = LS(LS_DEATH);
+        item->goal_anim_state = M_GetLandedBadState(item);
         break;
     case LANDED_HANDLED:
         break;
@@ -421,7 +430,7 @@ static void M_SideBackJump(ITEM *const item, COLL_INFO *const coll)
         item->goal_anim_state = LS(LS_STOP);
         break;
     case LANDED_BAD:
-        item->goal_anim_state = LS(LS_DEATH);
+        item->goal_anim_state = M_GetLandedBadState(item);
         break;
     case LANDED_HANDLED:
         break;
@@ -452,7 +461,7 @@ static void M_FallBack(ITEM *const item, COLL_INFO *const coll)
         item->goal_anim_state = LS(LS_STOP);
         break;
     case LANDED_BAD:
-        item->goal_anim_state = LS(LS_DEATH);
+        item->goal_anim_state = M_GetLandedBadState(item);
         break;
     case LANDED_HANDLED:
         break;
