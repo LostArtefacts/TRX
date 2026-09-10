@@ -84,6 +84,13 @@ static int M_L_CutscenesIsPlaying(lua_State *const L)
     return 1;
 }
 
+// trxc.cutscenes.is_active() → bool
+static int M_L_CutscenesIsActive(lua_State *const L)
+{
+    lua_pushboolean(L, CutSeq_IsActive());
+    return 1;
+}
+
 // trxc.cutscenes.is_played(num) → bool
 static int M_L_CutscenesIsPlayed(lua_State *const L)
 {
@@ -231,6 +238,7 @@ static const luaL_Reg m_Module[] = {
     { "get_current", M_L_CutscenesGetCurrent },
     { "get_frame_num", M_L_CutscenesGetFrameNum },
     { "is_playing", M_L_CutscenesIsPlaying },
+    { "is_active", M_L_CutscenesIsActive },
     { "get_count", M_L_CutscenesGetCount },
     { "get_actor_count", M_L_CutscenesGetActorCount },
     { "set_actor_visible", M_L_CutscenesSetActorVisible },

@@ -10387,8 +10387,20 @@
       "writable": false
     },
     {
+      "description": "Signals when a cutscene has the screen, including during its fades.",
+      "path": "cutscenes.signals.is_active",
+      "type": "signal.Signal",
+      "writable": false
+    },
+    {
       "description": "Whether a cutscene is on screen.",
       "path": "cutscenes.is_playing",
+      "type": "boolean",
+      "writable": false
+    },
+    {
+      "description": "Whether a cutscene has the screen, including during its fades. Use this\nto keep an interface off while the cutscene is active.",
+      "path": "cutscenes.is_active",
       "type": "boolean",
       "writable": false
     },

@@ -24,6 +24,12 @@ bool CutSeq_IsPlaying(void)
     return m_IsPlaying;
 }
 
+// The fake scene has no fades.
+bool CutSeq_IsActive(void)
+{
+    return m_IsPlaying;
+}
+
 int32_t CutSeq_GetCurrent(void)
 {
     return -1;
