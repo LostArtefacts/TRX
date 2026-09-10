@@ -1,6 +1,7 @@
 #include <trx/core/thread_pool.h>
 
 #include <trx/core/memory.h>
+#include <trx/core/subsystem.h>
 
 #include <SDL2/SDL_cpuinfo.h>
 #include <SDL2/SDL_thread.h>
@@ -22,6 +23,14 @@ struct THREAD_POOL {
     size_t working_count;
     SDL_cond *working_cond;
 };
+
+static THREAD_POOL *m_Shared = nullptr;
+
+static void M_Shutdown(void)
+{
+    ThreadPool_Destroy(m_Shared);
+    m_Shared = nullptr;
+}
 
 static int32_t M_WorkerThread(void *const arg)
 {
@@ -129,3 +138,13 @@ void ThreadPool_Wait(THREAD_POOL *pool)
     }
     SDL_UnlockMutex(pool->queue_mutex);
 }
+
+THREAD_POOL *ThreadPool_GetShared(void)
+{
+    if (m_Shared == nullptr) {
+        m_Shared = ThreadPool_Create(-1);
+    }
+    return m_Shared;
+}
+
+REGISTER_BASE_SUBSYSTEM(.shutdown = M_Shutdown)

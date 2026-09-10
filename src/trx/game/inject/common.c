@@ -481,7 +481,7 @@ void Inject_InitLevel(const GF_LEVEL *const level, const INJECTION_MODE mode)
         M_LOAD_JOB *const jobs =
             Memory_Alloc(sizeof(M_LOAD_JOB) * m_NumInjections);
 
-        THREAD_POOL *const pool = ThreadPool_Create(-1);
+        THREAD_POOL *const pool = ThreadPool_GetShared();
         ASSERT(pool != nullptr);
         for (int32_t i = 0; i < m_NumInjections; i++) {
             jobs[i] = (M_LOAD_JOB) {
@@ -492,7 +492,6 @@ void Inject_InitLevel(const GF_LEVEL *const level, const INJECTION_MODE mode)
         }
 
         ThreadPool_Wait(pool);
-        ThreadPool_Destroy(pool);
 
         Memory_Free(jobs);
     } else {

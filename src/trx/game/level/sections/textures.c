@@ -168,7 +168,7 @@ RESULT Level_Section_ReadTexturePages(
 
     info->textures.pages_32 = Memory_Alloc(texture_size_32_bit);
 
-    THREAD_POOL *const pool = ThreadPool_Create(-1);
+    THREAD_POOL *const pool = ThreadPool_GetShared();
     M_TEXTURE_PAGE_DECODE_JOB *const jobs =
         Memory_Alloc(sizeof(*jobs) * num_pages);
     uint16_t *input_16 = nullptr;
@@ -198,7 +198,6 @@ RESULT Level_Section_ReadTexturePages(
     ThreadPool_Wait(pool);
     Memory_FreePointer(&input_16);
     Memory_Free(jobs);
-    ThreadPool_Destroy(pool);
 
     Benchmark_End(&benchmark, nullptr);
     return OK;
