@@ -223,7 +223,7 @@ static void M_GetPlacement(
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(*anchor_pos, &room_num);
     const int32_t height = Room_GetHeight(sector, *anchor_pos);
-    if (height != NO_HEIGHT) {
+    if (height != NO_HEIGHT && height >= *floor - STEP_L) {
         *floor = height;
     }
 }
