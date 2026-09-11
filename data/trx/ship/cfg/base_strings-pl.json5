@@ -2117,10 +2117,7 @@
             "name": "\\{review}Rozszerzony Obiekt Animowany 10",
         },
         "ape": {
-            "name": [
-                "Małpa",
-                "Goryl",
-            ]
+            "name": "Małpa|Goryl",
         },
         "area_51_rocket": {
             "name": "Rakieta Strefy 51",
@@ -2159,22 +2156,13 @@
             "name": "Łysy",
         },
         "bandit_1": {
-            "name": [
-                "Najemnik 1",
-                "Zamaskowany oprych 1",
-            ]
+            "name": "Najemnik 1|Zamaskowany oprych 1",
         },
         "bandit_2": {
-            "name": [
-                "Najemnik 2",
-                "Zamaskowany oprych 2",
-            ]
+            "name": "Najemnik 2|Zamaskowany oprych 2",
         },
         "bandit_2b": {
-            "name": [
-                "Najemnik 3",
-                "Zamaskowany oprych 3",
-            ]
+            "name": "Najemnik 3|Zamaskowany oprych 3",
         },
         "barracuda": {
             "name": "Barakuda",
@@ -2396,10 +2384,7 @@
             "name": "Dzwonek do drzwi",
         },
         "dino_mutant": {
-            "name": [
-                "Dino mutant",
-                "Zmutowany dinozaur",
-            ]
+            "name": "Dino mutant|Zmutowany dinozaur",
         },
         "disc": {
             "name": "Dysk",
@@ -2411,10 +2396,7 @@
             "name": "Nurek",
         },
         "dog": {
-            "name": [
-                "Pies",
-                "Doberman",
-            ]
+            "name": "Pies|Doberman",
         },
         "dolphin": {
             "name": "\\{review}Delfin",
@@ -2531,22 +2513,13 @@
             "name": "Ognista głowa",
         },
         "fish_mutant": {
-            "name": [
-                "Ryba mutant",
-                "Zmutowana ryba",
-            ]
+            "name": "Ryba mutant|Zmutowana ryba",
         },
         "flame": {
-            "name": [
-                "Płomień",
-                "Ogień",
-            ]
+            "name": "Płomień|Ogień",
         },
         "flame_emitter": {
-            "name": [
-                "Emiter płomieni",
-                "Emiter ognia",
-            ]
+            "name": "Emiter płomieni|Emiter ognia",
         },
         "flame_emitter_big": {
             "name": "Emiter płomieni (duży)",
@@ -2654,10 +2627,7 @@
             "name": "Gorąca ciecz",
         },
         "huskie": {
-            "name": [
-                "Pies",
-                "Huskie",
-            ]
+            "name": "Pies|Huskie",
         },
         "hybrid_mutant": {
             "name": "Hybrydowy mutant",
@@ -2910,10 +2880,7 @@
             "name": "Lew",
         },
         "lioness": {
-            "name": [
-                "Lwica",
-                "Lew",
-            ]
+            "name": "Lwica|Lew",
         },
         "lizard": {
             "name": "Jaszczur",
@@ -3036,10 +3003,7 @@
             "name": "Gra",
         },
         "patrol_dog": {
-            "name": [
-                "Pies",
-                "Pies patrolowy",
-            ]
+            "name": "Pies|Pies patrolowy",
         },
         "pda_option": {
             "name": "Rozgrywka",
@@ -3357,19 +3321,13 @@
             "name": "\\{review}Przedmiot zadania 6",
         },
         "raptor": {
-            "name": [
-                "Raptor",
-                "Welociraptor",
-            ]
+            "name": "Raptor|Welociraptor",
         },
         "raptor_emitter": {
             "name": "Emiter raptorów",
         },
         "rat": {
-            "name": [
-                "Szczur",
-                "Szczur lądowy",
-            ]
+            "name": "Szczur|Szczur lądowy",
         },
         "red_light": {
             "name": "Czerwone światło",
@@ -3429,10 +3387,7 @@
             "name": "Kryształ do zapisu",
         },
         "save_crystal_option": {
-            "name": [
-                "\\{review}Kryształ",
-                "Kryształ do zapisu",
-            ]
+            "name": "\\{review}Kryształ|Kryształ do zapisu",
         },
         "scaled_spikes": {
             "name": "\\{review}Przeskalowane kolce",
@@ -3486,10 +3441,7 @@
             "name": "Łuska do strzelby",
         },
         "skate_kid": {
-            "name": [
-                "Kid",
-                "Dzieciak na deskorolce",
-            ]
+            "name": "Kid|Dzieciak na deskorolce",
         },
         "skateboard": {
             "name": "Deskorolka",
@@ -3597,10 +3549,7 @@
             "name": "Pokretło",
         },
         "switch_type_button": {
-            "name": [
-                "Przycisk",
-                "Przełącznik",
-            ]
+            "name": "Przycisk|Przełącznik",
         },
         "switch_type_crowbar": {
             "name": "\\{review}Przełącznik na łom",
@@ -3630,11 +3579,7 @@
             "name": "\\{review}Przełącznik skokowy",
         },
         "switch_type_normal": {
-            "name": [
-                "Dźwignia",
-                "Wajcha",
-                "Przełącznik",
-            ]
+            "name": "Dźwignia|Wajcha|Przełącznik",
         },
         "switch_type_pulley": {
             "name": "\\{review}Przełącznik pociągany",
@@ -3643,11 +3588,7 @@
             "name": "Mały przełącznik",
         },
         "switch_type_uw": {
-            "name": [
-                "Podwodna dźwignia",
-                "Podwodna wajcha",
-                "Podwodny przełącznik",
-            ]
+            "name": "Podwodna dźwignia|Podwodna wajcha|Podwodny przełącznik",
         },
         "switch_type_uw_ceiling": {
             "name": "\\{review}Podwodna dźwignia sufitowa",
@@ -3692,10 +3633,7 @@
             "name": "Zapadnia 3",
         },
         "trex": {
-            "name": [
-                "T-Rex",
-                "Tyranozaur",
-            ]
+            "name": "T-Rex|Tyranozaur",
         },
         "trex_alpha": {
             "name": "T-Rex alfa",
@@ -3728,10 +3666,7 @@
             "name": "Uzi",
         },
         "vole": {
-            "name": [
-                "Nornik",
-                "Szczur wodny",
-            ]
+            "name": "Nornik|Szczur wodny",
         },
         "vulture": {
             "name": "Sęp",

@@ -2156,22 +2156,13 @@
             "name": "Glatzkopf",
         },
         "bandit_1": {
-            "name": [
-                "Söldner 1",
-                "Masked Goon 1",
-            ]
+            "name": "Söldner 1|Maskierter Schläger 1",
         },
         "bandit_2": {
-            "name": [
-                "Söldner 2",
-                "Maskierter Schläger 2",
-            ]
+            "name": "Söldner 2|Maskierter Schläger 2",
         },
         "bandit_2b": {
-            "name": [
-                "Söldner 3",
-                "Maskierter Schläger 3",
-            ]
+            "name": "Söldner 3|Maskierter Schläger 3",
         },
         "barracuda": {
             "name": "Barrakuda",
@@ -2405,10 +2396,7 @@
             "name": "Taucher",
         },
         "dog": {
-            "name": [
-                "Hund",
-                "Dobermann",
-            ]
+            "name": "Hund|Dobermann",
         },
         "dolphin": {
             "name": "\\{review}Delfin",
@@ -2507,26 +2495,13 @@
             "name": "Explosion 2",
         },
         "falling_block_1": {
-            "name": [
-                "Fallender Block 1",
-                "Zerbrechbarer Boden 1",
-                "Zerbrechbare Kacheln 1",
-            ]
+            "name": "Fallender Block 1|Zerbrechbarer Boden 1|Zerbrechbare Kacheln 1",
         },
         "falling_block_2": {
-            "name": [
-                "Fallender Block 2",
-                "Zerbrechbarer Boden 2",
-                "Zerbrechbare Kacheln 2",
-            ]
+            "name": "Fallender Block 2|Zerbrechbarer Boden 2|Zerbrechbare Kacheln 2",
         },
         "falling_block_3": {
-            "name": [
-                "Fallender Block 3",
-                "Zerbrechbarer Boden 3",
-                "Zerbrechbare Kacheln 3",
-                "Lose Bretter",
-            ]
+            "name": "Fallender Block 3|Zerbrechbarer Boden 3|Zerbrechbare Kacheln 3|Lose Bretter",
         },
         "falling_ceiling_1": {
             "name": "Falling Ceiling 1",
@@ -2541,16 +2516,10 @@
             "name": "Fisch Mutant",
         },
         "flame": {
-            "name": [
-                "Flamme",
-                "Feuer",
-            ]
+            "name": "Flamme|Feuer",
         },
         "flame_emitter": {
-            "name": [
-                "Flamenerzeuger",
-                "Feuererzeuger",
-            ]
+            "name": "Flamenerzeuger|Feuererzeuger",
         },
         "flame_emitter_big": {
             "name": "\\{review}Flammenwerfer (Groß)",
@@ -2911,10 +2880,7 @@
             "name": "Löwe",
         },
         "lioness": {
-            "name": [
-                "Löwin",
-                "Löwe",
-            ]
+            "name": "Löwin|Löwe",
         },
         "lizard": {
             "name": "\\{review}Echse",
@@ -2992,28 +2958,16 @@
             "name": "Ratte",
         },
         "movable_block_1": {
-            "name": [
-                "Drückbarer Block 1",
-                "Bewegbarer Block 1",
-            ]
+            "name": "Drückbarer Block 1|Bewegbarer Block 1",
         },
         "movable_block_2": {
-            "name": [
-                "Drückbarer Block 2",
-                "Bewegbarer Block 2",
-            ]
+            "name": "Drückbarer Block 2|Bewegbarer Block 2",
         },
         "movable_block_3": {
-            "name": [
-                "Drückbarer Block 3",
-                "Bewegbarer Block 3",
-            ]
+            "name": "Drückbarer Block 3|Bewegbarer Block 3",
         },
         "movable_block_4": {
-            "name": [
-                "Drückbarer Block 4",
-                "Bewegbarer Block 4",
-            ]
+            "name": "Drückbarer Block 4|Bewegbarer Block 4",
         },
         "moving_bar": {
             "name": "Moving Bar",
@@ -3373,10 +3327,7 @@
             "name": "\\{review}Raptor-Emitter",
         },
         "rat": {
-            "name": [
-                "Ratte",
-                "Landratte",
-            ]
+            "name": "Ratte|Landratte",
         },
         "red_light": {
             "name": "\\{review}Rotes Licht",
@@ -3403,28 +3354,16 @@
             "name": "\\{review}Raketenwerfer",
         },
         "rolling_ball_1": {
-            "name": [
-                "Fels 1",
-                "Rollender Ball",
-            ]
+            "name": "Fels 1|Rollender Ball",
         },
         "rolling_ball_2": {
-            "name": [
-                "Boulder 2",
-                "Rolling Ball 2",
-            ]
+            "name": "Boulder 2|Rolling Ball 2",
         },
         "rolling_ball_3": {
-            "name": [
-                "Boulder 3",
-                "Rolling Ball 3",
-            ]
+            "name": "Boulder 3|Rolling Ball 3",
         },
         "rolling_ball_4": {
-            "name": [
-                "Boulder 4",
-                "Rolling Ball 4",
-            ]
+            "name": "Boulder 4|Rolling Ball 4",
         },
         "rope": {
             "name": "\\{review}Seil",
@@ -3448,10 +3387,7 @@
             "name": "Speicherkristall",
         },
         "save_crystal_option": {
-            "name": [
-                "\\{review}Kristall",
-                "Speicherkristall",
-            ]
+            "name": "\\{review}Kristall|Speicherkristall",
         },
         "scaled_spikes": {
             "name": "\\{review}Skalierte Stacheln",
@@ -3613,11 +3549,7 @@
             "name": "Airlock Switch",
         },
         "switch_type_button": {
-            "name": [
-                "Button",
-                "Push Button",
-                "Switch",
-            ]
+            "name": "Button|Push Button|Switch",
         },
         "switch_type_crowbar": {
             "name": "\\{review}Brecheisen-Schalter",
@@ -3647,10 +3579,7 @@
             "name": "\\{review}Sprungschalter",
         },
         "switch_type_normal": {
-            "name": [
-                "Lever",
-                "Switch",
-            ]
+            "name": "Lever|Switch",
         },
         "switch_type_pulley": {
             "name": "\\{review}Zugschalter",
@@ -3659,10 +3588,7 @@
             "name": "Small Switch",
         },
         "switch_type_uw": {
-            "name": [
-                "Underwater Lever",
-                "Underwater Switch",
-            ]
+            "name": "Underwater Lever|Underwater Switch",
         },
         "switch_type_uw_ceiling": {
             "name": "\\{review}Unterwasser-Deckenhebel",
@@ -3692,11 +3618,7 @@
             "name": "\\{review}Tony",
         },
         "torso": {
-            "name": [
-                "Torso",
-                "Adam",
-                "Riesenmutant",
-            ]
+            "name": "Torso|Adam|Riesenmutant",
         },
         "train": {
             "name": "\\{review}Zug",
@@ -3744,10 +3666,7 @@
             "name": "Uzis",
         },
         "vole": {
-            "name": [
-                "Wühlmaus",
-                "Wasserratte",
-            ]
+            "name": "Wühlmaus|Wasserratte",
         },
         "vulture": {
             "name": "\\{review}Geier",
