@@ -2156,22 +2156,13 @@
             "name": "Il Calvo",
         },
         "bandit_1": {
-            "name": [
-                "Mercenario 1",
-                "Scagnozzo Mascherato 1",
-            ]
+            "name": "Mercenario 1|Scagnozzo Mascherato 1",
         },
         "bandit_2": {
-            "name": [
-                "Mercenario 2",
-                "Scagnozzo Mascherato 2",
-            ]
+            "name": "Mercenario 2|Scagnozzo Mascherato 2",
         },
         "bandit_2b": {
-            "name": [
-                "Mercenario 3",
-                "Scagnozzo Mascherato 3",
-            ]
+            "name": "Mercenario 3|Scagnozzo Mascherato 3",
         },
         "barracuda": {
             "name": "Barracuda",
@@ -2405,10 +2396,7 @@
             "name": "Subacqueo",
         },
         "dog": {
-            "name": [
-                "Cane",
-                "Dobermann",
-            ]
+            "name": "Cane|Dobermann",
         },
         "dolphin": {
             "name": "Delfino",
@@ -2507,26 +2495,13 @@
             "name": "Esplosione 2",
         },
         "falling_block_1": {
-            "name": [
-                "Blocco Cedevole 1",
-                "Pavimento Fragile 1",
-                "Piastrelle Fragili 1",
-            ]
+            "name": "Blocco Cedevole 1|Pavimento Fragile 1|Piastrelle Fragili 1",
         },
         "falling_block_2": {
-            "name": [
-                "Blocco Cedevole 2",
-                "Pavimento Fragile 2",
-                "Piastrelle Fragili 2",
-            ]
+            "name": "Blocco Cedevole 2|Pavimento Fragile 2|Piastrelle Fragili 2",
         },
         "falling_block_3": {
-            "name": [
-                "Blocco Cedevole 3",
-                "Pavimento Fragile 3",
-                "Piastrelle Fragili 3",
-                "Tavole Allentate",
-            ]
+            "name": "Blocco Cedevole 3|Pavimento Fragile 3|Piastrelle Fragili 3|Tavole Allentate",
         },
         "falling_ceiling_1": {
             "name": "Soffitto Cedevole 1",
@@ -2541,40 +2516,22 @@
             "name": "Pesce Mutante",
         },
         "flame": {
-            "name": [
-                "Fiamma",
-                "Fuoco",
-            ]
+            "name": "Fiamma|Fuoco",
         },
         "flame_emitter": {
-            "name": [
-                "Emettitore di Fiamme",
-                "Emettitore di Fuoco",
-            ]
+            "name": "Emettitore di Fiamme|Emettitore di Fuoco",
         },
         "flame_emitter_big": {
-            "name": [
-                "Emettitore di Fiamme (Grande)",
-                "Emettitore di Fuoco (Grande)",
-            ]
+            "name": "Emettitore di Fiamme (Grande)|Emettitore di Fuoco (Grande)",
         },
         "flame_emitter_jet": {
-            "name": [
-                "Emettitore di Fiamme (Getto)",
-                "Emettitore di Fuoco (Getto)",
-            ]
+            "name": "Emettitore di Fiamme (Getto)|Emettitore di Fuoco (Getto)",
         },
         "flame_emitter_side": {
-            "name": [
-                "Emettitore di Fiamme (Laterale)",
-                "Emettitore di Fuoco (Laterale)",
-            ]
+            "name": "Emettitore di Fiamme (Laterale)|Emettitore di Fuoco (Laterale)",
         },
         "flame_emitter_small": {
-            "name": [
-                "Emettitore di Fiamme (Piccolo)",
-                "Emettitore di Fuoco (Piccolo)",
-            ]
+            "name": "Emettitore di Fiamme (Piccolo)|Emettitore di Fuoco (Piccolo)",
         },
         "flame_emitter_tr4_ground": {
             "name": "Emettitore di Fiamme (TR4, Terra)",
@@ -2670,11 +2627,7 @@
             "name": "Fuoco Extra",
         },
         "huskie": {
-            "name": [
-                "Cane",
-                "Cane da Pattuglia",
-                "Husky",
-            ]
+            "name": "Cane|Cane da Pattuglia|Husky",
         },
         "hybrid_mutant": {
             "name": "Mutante Ibrido",
@@ -2930,10 +2883,7 @@
             "name": "Leone",
         },
         "lioness": {
-            "name": [
-                "Leonessa",
-                "Leone",
-            ]
+            "name": "Leonessa|Leone",
         },
         "lizard": {
             "name": "Lucertola",
@@ -3011,28 +2961,16 @@
             "name": "Ratto",
         },
         "movable_block_1": {
-            "name": [
-                "Blocco Spostabile 1",
-                "Blocco Movibile 1",
-            ]
+            "name": "Blocco Spostabile 1|Blocco Movibile 1",
         },
         "movable_block_2": {
-            "name": [
-                "Blocco Spostabile 2",
-                "Blocco Movibile 2",
-            ]
+            "name": "Blocco Spostabile 2|Blocco Movibile 2",
         },
         "movable_block_3": {
-            "name": [
-                "Blocco Spostabile 3",
-                "Blocco Movibile 3",
-            ]
+            "name": "Blocco Spostabile 3|Blocco Movibile 3",
         },
         "movable_block_4": {
-            "name": [
-                "Blocco Spostabile 4",
-                "Blocco Movibile 4",
-            ]
+            "name": "Blocco Spostabile 4|Blocco Movibile 4",
         },
         "moving_bar": {
             "name": "Barra Mobile",
@@ -3068,27 +3006,16 @@
             "name": "Partita",
         },
         "patrol_dog": {
-            "name": [
-                "Cane",
-                "Cane da Pattuglia",
-            ]
+            "name": "Cane|Cane da Pattuglia",
         },
         "pda_option": {
             "name": "Opzioni di Gioco",
         },
         "pendulum_1": {
-            "name": [
-                "Pendolo",
-                "Sacco di Sabbia",
-                "Scatola Oscillante",
-            ]
+            "name": "Pendolo|Sacco di Sabbia|Scatola Oscillante",
         },
         "pendulum_2": {
-            "name": [
-                "Pendolo",
-                "Sacco di Sabbia",
-                "Scatola Oscillante",
-            ]
+            "name": "Pendolo|Sacco di Sabbia|Scatola Oscillante",
         },
         "photo_option": {
             "name": "Casa di Lara",
@@ -3403,10 +3330,7 @@
             "name": "Emettitore di Velociraptor",
         },
         "rat": {
-            "name": [
-                "Ratto",
-                "Ratto Terrestre",
-            ]
+            "name": "Ratto|Ratto Terrestre",
         },
         "red_light": {
             "name": "Luce Rossa",
@@ -3433,28 +3357,16 @@
             "name": "Lanciarazzi",
         },
         "rolling_ball_1": {
-            "name": [
-                "Masso 1",
-                "Masso Rotolante 1",
-            ]
+            "name": "Masso 1|Masso Rotolante 1",
         },
         "rolling_ball_2": {
-            "name": [
-                "Masso 2",
-                "Masso Rotolante 2",
-            ]
+            "name": "Masso 2|Masso Rotolante 2",
         },
         "rolling_ball_3": {
-            "name": [
-                "Masso 3",
-                "Masso Rotolante 3",
-            ]
+            "name": "Masso 3|Masso Rotolante 3",
         },
         "rolling_ball_4": {
-            "name": [
-                "Masso 4",
-                "Masso Rotolante 4",
-            ]
+            "name": "Masso 4|Masso Rotolante 4",
         },
         "rope": {
             "name": "Corda",
@@ -3478,10 +3390,7 @@
             "name": "Cristallo di Salvataggio",
         },
         "save_crystal_option": {
-            "name": [
-                "Cristallo",
-                "Cristallo di Salvataggio",
-            ]
+            "name": "Cristallo|Cristallo di Salvataggio",
         },
         "scaled_spikes": {
             "name": "\\{review}Spuntoni ridimensionati",
@@ -3646,76 +3555,37 @@
             "name": "Interruttore Camera Stagna",
         },
         "switch_type_button": {
-            "name": [
-                "Pulsante",
-                "Pulsante a Pressione",
-                "Interruttore",
-            ]
+            "name": "Pulsante|Pulsante a Pressione|Interruttore",
         },
         "switch_type_crowbar": {
-            "name": [
-                "Leva",
-                "Interruttore",
-                "Interruttore con Piede di Porco",
-            ]
+            "name": "Leva|Interruttore|Interruttore con Piede di Porco",
         },
         "switch_type_floor": {
-            "name": [
-                "Leva",
-                "Interruttore",
-                "Interruttore a Pavimento",
-            ]
+            "name": "Leva|Interruttore|Interruttore a Pavimento",
         },
         "switch_type_generic_1": {
-            "name": [
-                "Interruttore Generico 1",
-                "Leva",
-                "Interruttore",
-            ]
+            "name": "Interruttore Generico 1|Leva|Interruttore",
         },
         "switch_type_generic_2": {
-            "name": [
-                "Interruttore Generico 2",
-                "Leva",
-                "Interruttore",
-            ]
+            "name": "Interruttore Generico 2|Leva|Interruttore",
         },
         "switch_type_generic_3": {
-            "name": [
-                "Interruttore Generico 3",
-                "Leva",
-                "Interruttore",
-            ]
+            "name": "Interruttore Generico 3|Leva|Interruttore",
         },
         "switch_type_generic_4": {
-            "name": [
-                "Interruttore Generico 4",
-                "Leva",
-                "Interruttore",
-            ]
+            "name": "Interruttore Generico 4|Leva|Interruttore",
         },
         "switch_type_generic_5": {
-            "name": [
-                "Interruttore Generico 5",
-                "Leva",
-                "Interruttore",
-            ]
+            "name": "Interruttore Generico 5|Leva|Interruttore",
         },
         "switch_type_generic_6": {
-            "name": [
-                "Interruttore Generico 6",
-                "Leva",
-                "Interruttore",
-            ]
+            "name": "Interruttore Generico 6|Leva|Interruttore",
         },
         "switch_type_jump": {
             "name": "Interruttore a Salto",
         },
         "switch_type_normal": {
-            "name": [
-                "Leva",
-                "Interruttore",
-            ]
+            "name": "Leva|Interruttore",
         },
         "switch_type_pulley": {
             "name": "Interruttore a Puleggia",
@@ -3724,29 +3594,16 @@
             "name": "Interruttore Piccolo",
         },
         "switch_type_uw": {
-            "name": [
-                "Leva Subacquea",
-                "Interruttore Subacqueo",
-            ]
+            "name": "Leva Subacquea|Interruttore Subacqueo",
         },
         "switch_type_uw_ceiling": {
-            "name": [
-                "Leva a Soffitto Subacquea",
-                "Interruttore a Soffitto Subacqueo",
-            ]
+            "name": "Leva a Soffitto Subacquea|Interruttore a Soffitto Subacqueo",
         },
         "switch_type_wheel": {
-            "name": [
-                "Interruttore Rotante",
-                "Interruttore a Puleggia",
-                "Interruttore a Valvola",
-            ]
+            "name": "Interruttore Rotante|Interruttore a Puleggia|Interruttore a Valvola",
         },
         "teeth_trap": {
-            "name": [
-                "Trappola con Spuntoni",
-                "Porta che sbatte",
-            ]
+            "name": "Trappola con Spuntoni|Porta che sbatte",
         },
         "teleporter": {
             "name": "\\{review}Teletrasporto",
@@ -3767,11 +3624,7 @@
             "name": "Tony",
         },
         "torso": {
-            "name": [
-                "Torso",
-                "Adam",
-                "Mutante Gigante",
-            ]
+            "name": "Torso|Adam|Mutante Gigante",
         },
         "train": {
             "name": "Treno",
@@ -3819,10 +3672,7 @@
             "name": "Uzi",
         },
         "vole": {
-            "name": [
-                "Arvicola",
-                "Ratto Acquatico",
-            ]
+            "name": "Arvicola|Ratto Acquatico",
         },
         "vulture": {
             "name": "Avvoltoio",

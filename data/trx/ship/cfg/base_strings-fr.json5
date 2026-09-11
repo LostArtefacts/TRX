@@ -2156,22 +2156,13 @@
             "name": "Le Grand Chauve",
         },
         "bandit_1": {
-            "name": [
-                "\\{review}Mercenaire 1",
-                "\\{review}Goon masqué 1",
-            ]
+            "name": "\\{review}Mercenaire 1|\\{review}Goon masqué 1",
         },
         "bandit_2": {
-            "name": [
-                "\\{review}Mercenaire 2",
-                "\\{review}Goon masqué 2",
-            ]
+            "name": "\\{review}Mercenaire 2|\\{review}Goon masqué 2",
         },
         "bandit_2b": {
-            "name": [
-                "\\{review}Mercenaire 3",
-                "\\{review}Goon masqué 3",
-            ]
+            "name": "\\{review}Mercenaire 3|\\{review}Goon masqué 3",
         },
         "barracuda": {
             "name": "\\{review}Barracuda",
@@ -2405,10 +2396,7 @@
             "name": "\\{review}Plongeur",
         },
         "dog": {
-            "name": [
-                "\\{review}Chien",
-                "\\{review}Doberman",
-            ]
+            "name": "\\{review}Chien|\\{review}Doberman",
         },
         "dolphin": {
             "name": "\\{review}Dauphin",
@@ -2507,26 +2495,13 @@
             "name": "Explosion 2",
         },
         "falling_block_1": {
-            "name": [
-                "\\{review}Bloc tombant 1",
-                "\\{review}Sol rétractable 1",
-                "\\{review}Tuiles rétractables 1",
-            ]
+            "name": "\\{review}Bloc tombant 1|\\{review}Sol rétractable 1|\\{review}Tuiles rétractables 1",
         },
         "falling_block_2": {
-            "name": [
-                "\\{review}Bloc tombant 2",
-                "\\{review}Sol rétractable 2",
-                "\\{review}Tuiles rétractables 2",
-            ]
+            "name": "\\{review}Bloc tombant 2|\\{review}Sol rétractable 2|\\{review}Tuiles rétractables 2",
         },
         "falling_block_3": {
-            "name": [
-                "\\{review}Bloc tombant 3",
-                "\\{review}Sol rétractable 3",
-                "\\{review}Tuiles rétractables 3",
-                "\\{review}Planches lâches",
-            ]
+            "name": "\\{review}Bloc tombant 3|\\{review}Sol rétractable 3|\\{review}Tuiles rétractables 3|\\{review}Planches lâches",
         },
         "falling_ceiling_1": {
             "name": "\\{review}Plafond Tombant 1",
@@ -2541,16 +2516,10 @@
             "name": "Poisson-mutant",
         },
         "flame": {
-            "name": [
-                "\\{review}Flamme",
-                "\\{review}Feu",
-            ]
+            "name": "\\{review}Flamme|\\{review}Feu",
         },
         "flame_emitter": {
-            "name": [
-                "\\{review}Émetteur de flamme",
-                "\\{review}Émetteur de feu",
-            ]
+            "name": "\\{review}Émetteur de flamme|\\{review}Émetteur de feu",
         },
         "flame_emitter_big": {
             "name": "\\{review}Émetteur de flammes (Grand)",
@@ -2989,28 +2958,16 @@
             "name": "\\{review}Rat",
         },
         "movable_block_1": {
-            "name": [
-                "\\{review}Bloc Poussé 1",
-                "\\{review}Bloc Mobile 1",
-            ]
+            "name": "\\{review}Bloc Poussé 1|\\{review}Bloc Mobile 1",
         },
         "movable_block_2": {
-            "name": [
-                "\\{review}Bloc Poussé 2",
-                "\\{review}Bloc Mobile 2",
-            ]
+            "name": "\\{review}Bloc Poussé 2|\\{review}Bloc Mobile 2",
         },
         "movable_block_3": {
-            "name": [
-                "\\{review}Bloc Poussé 3",
-                "\\{review}Bloc Mobile 3",
-            ]
+            "name": "\\{review}Bloc Poussé 3|\\{review}Bloc Mobile 3",
         },
         "movable_block_4": {
-            "name": [
-                "\\{review}Bloc Poussé 4",
-                "\\{review}Bloc Mobile 4",
-            ]
+            "name": "\\{review}Bloc Poussé 4|\\{review}Bloc Mobile 4",
         },
         "moving_bar": {
             "name": "Barre mobile",
@@ -3397,28 +3354,16 @@
             "name": "\\{review}Lance-roquettes",
         },
         "rolling_ball_1": {
-            "name": [
-                "\\{review}Rocher 1",
-                "\\{review}Boule Roulante",
-            ]
+            "name": "\\{review}Rocher 1|\\{review}Boule Roulante",
         },
         "rolling_ball_2": {
-            "name": [
-                "\\{review}Rocher 2",
-                "\\{review}Boule Roulante 2",
-            ]
+            "name": "\\{review}Rocher 2|\\{review}Boule Roulante 2",
         },
         "rolling_ball_3": {
-            "name": [
-                "\\{review}Rocher 3",
-                "\\{review}Boule Roulante 3",
-            ]
+            "name": "\\{review}Rocher 3|\\{review}Boule Roulante 3",
         },
         "rolling_ball_4": {
-            "name": [
-                "\\{review}Rocher 4",
-                "\\{review}Boule Roulante 4",
-            ]
+            "name": "\\{review}Rocher 4|\\{review}Boule Roulante 4",
         },
         "rope": {
             "name": "\\{review}Corde",
@@ -3442,10 +3387,7 @@
             "name": "Cristal de Sauvegarde",
         },
         "save_crystal_option": {
-            "name": [
-                "\\{review}Cristal",
-                "Cristal de Sauvegarde",
-            ]
+            "name": "\\{review}Cristal|Cristal de Sauvegarde",
         },
         "scaled_spikes": {
             "name": "\\{review}Pointes redimensionnées",
@@ -3607,11 +3549,7 @@
             "name": "\\{review}Interrupteur de Sas",
         },
         "switch_type_button": {
-            "name": [
-                "\\{review}Bouton",
-                "\\{review}Bouton poussoir",
-                "\\{review}Interrupteur",
-            ]
+            "name": "\\{review}Bouton|\\{review}Bouton poussoir|\\{review}Interrupteur",
         },
         "switch_type_crowbar": {
             "name": "\\{review}Interrupteur à pied-de-biche",
@@ -3641,10 +3579,7 @@
             "name": "\\{review}Interrupteur en hauteur",
         },
         "switch_type_normal": {
-            "name": [
-                "\\{review}Levier",
-                "\\{review}Interrupteur",
-            ]
+            "name": "\\{review}Levier|\\{review}Interrupteur",
         },
         "switch_type_pulley": {
             "name": "\\{review}Interrupteur à tirer",
@@ -3653,10 +3588,7 @@
             "name": "\\{review}Petit Interrupteur",
         },
         "switch_type_uw": {
-            "name": [
-                "\\{review}Levier sous-marin",
-                "\\{review}Interrupteur sous-marin",
-            ]
+            "name": "\\{review}Levier sous-marin|\\{review}Interrupteur sous-marin",
         },
         "switch_type_uw_ceiling": {
             "name": "\\{review}Levier de plafond sous-marin",

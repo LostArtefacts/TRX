@@ -2156,22 +2156,13 @@
             "name": "Baldaidh",
         },
         "bandit_1": {
-            "name": [
-                "Saighdear-duais 1",
-                "Ruspal le Masg 1",
-            ]
+            "name": "Saighdear-duais 1|Ruspal le Masg 1",
         },
         "bandit_2": {
-            "name": [
-                "Saighdear-duais 2",
-                "Ruspal le Masg 2",
-            ]
+            "name": "Saighdear-duais 2|Ruspal le Masg 2",
         },
         "bandit_2b": {
-            "name": [
-                "Saighdear-duais 3",
-                "Ruspal le Masg 3",
-            ]
+            "name": "Saighdear-duais 3|Ruspal le Masg 3",
         },
         "barracuda": {
             "name": "Barracuda",
@@ -2330,10 +2321,7 @@
             "name": "Mùtant Snàigeach",
         },
         "crocodile": {
-            "name": [
-                "Crocadal",
-                "Crogall",
-            ]
+            "name": "Crocadal|Crogall",
         },
         "crossbow_ammo_1_item": {
             "name": "Boltaichean Cros-bhogha",
@@ -2408,10 +2396,7 @@
             "name": "Sgùba-dhaibhear",
         },
         "dog": {
-            "name": [
-                "Cù",
-                "Doberman",
-            ]
+            "name": "Cù|Doberman",
         },
         "dolphin": {
             "name": "Leumadair",
@@ -2510,26 +2495,13 @@
             "name": "Spreadhadh 2",
         },
         "falling_block_1": {
-            "name": [
-                "Bloc Tuiteamach 1",
-                "Làr Bristeach 1",
-                "Leacan Bristeach 1",
-            ]
+            "name": "Bloc Tuiteamach 1|Làr Bristeach 1|Leacan Bristeach 1",
         },
         "falling_block_2": {
-            "name": [
-                "Bloc Tuiteamach 2",
-                "Làr Bristeach 2",
-                "Leacan Bristeach 2",
-            ]
+            "name": "Bloc Tuiteamach 2|Làr Bristeach 2|Leacan Bristeach 2",
         },
         "falling_block_3": {
-            "name": [
-                "Bloc Tuiteamach 3",
-                "Làr Bristeach 3",
-                "Leacan Bristeach 3",
-                "Bùird Cugalach",
-            ]
+            "name": "Bloc Tuiteamach 3|Làr Bristeach 3|Leacan Bristeach 3|Bùird Cugalach",
         },
         "falling_ceiling_1": {
             "name": "Mullach Tuiteamach 1",
@@ -2544,16 +2516,10 @@
             "name": "Iasg-mùthaidh",
         },
         "flame": {
-            "name": [
-                "Lasair",
-                "Teine",
-            ]
+            "name": "Lasair|Teine",
         },
         "flame_emitter": {
-            "name": [
-                "Sgaoiladair Lasair",
-                "Sgaoiladair Teine",
-            ]
+            "name": "Sgaoiladair Lasair|Sgaoiladair Teine",
         },
         "flame_emitter_big": {
             "name": "Sgaoileadair Teine (Mòr)",
@@ -2914,10 +2880,7 @@
             "name": "Leòmhann",
         },
         "lioness": {
-            "name": [
-                "Leòmhann-Boireann",
-                "Leòmhann",
-            ]
+            "name": "Leòmhann-Boireann|Leòmhann",
         },
         "lizard": {
             "name": "Laghairt",
@@ -2995,28 +2958,16 @@
             "name": "Radan",
         },
         "movable_block_1": {
-            "name": [
-                "Bloc Putaidh 1",
-                "Bloc Gluasadach 1",
-            ]
+            "name": "Bloc Putaidh 1|Bloc Gluasadach 1",
         },
         "movable_block_2": {
-            "name": [
-                "Bloc Putaidh 2",
-                "Bloc Gluasadach 2",
-            ]
+            "name": "Bloc Putaidh 2|Bloc Gluasadach 2",
         },
         "movable_block_3": {
-            "name": [
-                "Bloc Putaidh 3",
-                "Bloc Gluasadach 3",
-            ]
+            "name": "Bloc Putaidh 3|Bloc Gluasadach 3",
         },
         "movable_block_4": {
-            "name": [
-                "Bloc Putaidh 4",
-                "Bloc Gluasadach 4",
-            ]
+            "name": "Bloc Putaidh 4|Bloc Gluasadach 4",
         },
         "moving_bar": {
             "name": "Bàr Gluasadach",
@@ -3370,19 +3321,13 @@
             "name": "Nì Tòir 6",
         },
         "raptor": {
-            "name": [
-                "Raptor",
-                "Dìneasair-beag",
-            ]
+            "name": "Raptor|Dìneasair-beag",
         },
         "raptor_emitter": {
             "name": "Sgaoiladair Raptor",
         },
         "rat": {
-            "name": [
-                "Radan",
-                "Radan-tìre",
-            ]
+            "name": "Radan|Radan-tìre",
         },
         "red_light": {
             "name": "Solas Dearg",
@@ -3409,28 +3354,16 @@
             "name": "Lannsair Rocaid",
         },
         "rolling_ball_1": {
-            "name": [
-                "Ulbhag 1",
-                "Ball-rollaidh 1",
-            ]
+            "name": "Ulbhag 1|Ball-rollaidh 1",
         },
         "rolling_ball_2": {
-            "name": [
-                "Ulbhag 2",
-                "Ball-rollaidh 2",
-            ]
+            "name": "Ulbhag 2|Ball-rollaidh 2",
         },
         "rolling_ball_3": {
-            "name": [
-                "Ulbhag 3",
-                "Ball-rollaidh 3",
-            ]
+            "name": "Ulbhag 3|Ball-rollaidh 3",
         },
         "rolling_ball_4": {
-            "name": [
-                "Ulbhag 4",
-                "Ball-rollaidh 4",
-            ]
+            "name": "Ulbhag 4|Ball-rollaidh 4",
         },
         "rope": {
             "name": "Ròpa",
@@ -3454,10 +3387,7 @@
             "name": "Criostal Geama Sàbhalaidh",
         },
         "save_crystal_option": {
-            "name": [
-                "Criostal",
-                "Criostal Geama Sàbhalaidh",
-            ]
+            "name": "Criostal|Criostal Geama Sàbhalaidh",
         },
         "scaled_spikes": {
             "name": "Geugan Sgèileachaidh",
@@ -3619,10 +3549,7 @@
             "name": "Suids Stopadh-adhair",
         },
         "switch_type_button": {
-            "name": [
-                "Putan",
-                "Suids",
-            ]
+            "name": "Putan|Suids",
         },
         "switch_type_crowbar": {
             "name": "Suids Bàr-craobh",
@@ -3652,10 +3579,7 @@
             "name": "Suids Àrd",
         },
         "switch_type_normal": {
-            "name": [
-                "Luaidhe",
-                "Suids",
-            ]
+            "name": "Luaidhe|Suids",
         },
         "switch_type_pulley": {
             "name": "Suids Tarraing",
@@ -3664,10 +3588,7 @@
             "name": "Suids Beag",
         },
         "switch_type_uw": {
-            "name": [
-                "Luaidhe fon-Uisge",
-                "Suids fon-Uisge",
-            ]
+            "name": "Luaidhe fon-Uisge|Suids fon-Uisge",
         },
         "switch_type_uw_ceiling": {
             "name": "Suids Mullaich fon-Uisge",
@@ -3676,10 +3597,7 @@
             "name": "Suids Cuidhle",
         },
         "teeth_trap": {
-            "name": [
-                "Ribe Fiaclan",
-                "Doras 'Clang-Clang'",
-            ]
+            "name": "Ribe Fiaclan|Doras 'Clang-Clang'",
         },
         "teleporter": {
             "name": "Cian-ghiùlanair",
@@ -3700,11 +3618,7 @@
             "name": "Tònaidh",
         },
         "torso": {
-            "name": [
-                "Torsachan",
-                "Adhamh",
-                "Mùthaidh Mòr",
-            ]
+            "name": "Torsachan|Adhamh|Mùthaidh Mòr",
         },
         "train": {
             "name": "Trèan",
@@ -3719,10 +3633,7 @@
             "name": "Làr-lùbte 3",
         },
         "trex": {
-            "name": [
-                "T-Rex",
-                "Dìneasair-mòr",
-            ]
+            "name": "T-Rex|Dìneasair-mòr",
         },
         "trex_alpha": {
             "name": "T-Rex Priomh",
@@ -3755,10 +3666,7 @@
             "name": "Uzis",
         },
         "vole": {
-            "name": [
-                "Luch-uisge",
-                "Radan-uisge",
-            ]
+            "name": "Luch-uisge|Radan-uisge",
         },
         "vulture": {
             "name": "Fitheach",
