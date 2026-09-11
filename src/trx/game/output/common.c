@@ -105,7 +105,7 @@ RESULT Output_Init(void)
 
 bool Output_IsHeadless(void)
 {
-    return Shell_GetArgs()->headless;
+    return Shell_GetArgs()->headless || Shell_IsDrawingSkipped();
 }
 
 const OUTPUT_UNIFORMS *Output_GetUniforms(void)

@@ -9,6 +9,10 @@ void Clock_DisableWait(void);
 // Restores the waiting Clock_DisableWait turned off.
 void Clock_EnableWait(void);
 
+// Reports whether frames are paced to real time. Frames run as fast as possible
+// when pacing is disabled.
+bool Clock_IsRealTime(void);
+
 // Counts time in frames: every Clock_WaitTick moves the clock on by 1/fps. Zero
 // goes back to real time, carrying on from where the frame count reached.
 void Clock_EnableFixedFPS(int32_t fps);

@@ -87,7 +87,8 @@ double Music_GetTimestamp(void);
 // music plays.
 RESULT Music_SeekTimestamp(double timestamp);
 
-// Seeks to the given timestamp if the drift is too big.
+// Seeks to the given timestamp when the drift is too large. Does nothing while
+// frames run as fast as possible because the track cannot keep up.
 RESULT Music_SyncTimestamp(double timestamp);
 
 // Play the current track at the given rate, so a sped-up cutscene carries its

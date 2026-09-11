@@ -35,6 +35,9 @@ static char *m_PendingMod = nullptr;
 static bool m_PrevHeadless = false;
 static bool m_PrevQuiet = false;
 
+// Set while a replay runs a stretch with the drawing off.
+static bool m_DrawingSkipped = false;
+
 // Given back before the config module goes down, so a mod switch does not
 // leave a copy behind.
 static int32_t m_ConfigListener = -1;
@@ -323,22 +326,25 @@ const SHELL_ARGS *Shell_GetArgs(void)
     return m_Session != nullptr ? m_Session->args : nullptr;
 }
 
-void Shell_SetHeadless(const bool headless)
+void Shell_SetDrawingSkipped(const bool skipped)
 {
-    ASSERT(m_Session != nullptr);
-    SHELL_ARGS *const args = (SHELL_ARGS *)m_Session->args;
-    if (args->headless == headless) {
+    if (m_DrawingSkipped == skipped) {
         return;
     }
 
-    args->headless = headless;
+    m_DrawingSkipped = skipped;
     // The clock counts frames either way; only the pacing changes here.
-    if (headless) {
+    if (skipped) {
         Clock_DisableWait();
     } else {
         Clock_EnableWait();
         Clock_SyncTick();
     }
+}
+
+bool Shell_IsDrawingSkipped(void)
+{
+    return m_DrawingSkipped;
 }
 
 SDL_Window *Shell_GetWindow(void)
