@@ -16,6 +16,7 @@
 
 #define M_MAX_FLASHES 32
 #define M_LIFETIME 3
+#define M_FLASH_SHADE 5120
 #define M_AXIS_UNIT 1024
 
 typedef struct {
@@ -140,6 +141,7 @@ static void M_Control(void)
 static void M_Draw(void)
 {
     const OBJECT *const glow_obj = Object_Get(O_GLOW);
+    const bool draw_glow = g_TRVersion >= 3 || g_Config.visuals.enable_gun_glow;
 
     for (int32_t i = 0; i < M_MAX_FLASHES; i++) {
         const M_GUN_FLASH *const flash = &m_Priv.flashes[i];
@@ -161,7 +163,7 @@ static void M_Draw(void)
         MATRIX flash_rot = {};
         M_GetJointPose(owner_item, flash->bite, &flash_pos, &flash_rot);
 
-        if (glow_obj->loaded) {
+        if (glow_obj->loaded && draw_glow) {
             Output_DrawSprite(
                 flash_pos.x, flash_pos.y, flash_pos.z, glow_obj->mesh_idx,
                 SHADE_NEUTRAL, (RGBA_F) { 1.0f, 0.89f, 0.13f, 1.0f },
@@ -175,7 +177,11 @@ static void M_Draw(void)
         Matrix_Mul3x3(&flash_rot);
         Matrix_RotX(flash->rot.x);
         Matrix_RotZ(flash->rot.z);
-        Output_CalculateStaticLightRGB_F((RGB_F) { 1.0f, 0.89f, 0.13f });
+        if (g_TRVersion < 3) {
+            Output_CalculateStaticLight(M_FLASH_SHADE);
+        } else {
+            Output_CalculateStaticLightRGB_F((RGB_F) { 1.0f, 0.89f, 0.13f });
+        }
         Object_DrawMesh(flash_obj->mesh_idx, -1, false);
         Matrix_Pop();
     }
@@ -251,10 +257,11 @@ static RESULT M_Load(JSON_READ_IO *const io)
     return OK;
 }
 
-bool FX_GunFlash_Spawn(
-    const ITEM *const owner_item, const CREATURE_GUN *const gun)
+bool FX_GunFlash_SpawnAt(
+    const ITEM *const owner_item, const BITE bite, const OBJECT_ID flash_obj_id,
+    const int16_t rot_x)
 {
-    if (owner_item == nullptr || gun == nullptr || !gun->tr3_enemy_flash) {
+    if (owner_item == nullptr) {
         return false;
     }
 
@@ -263,14 +270,25 @@ bool FX_GunFlash_Spawn(
     flash->owner_item_num = Item_GetIndex(owner_item);
     flash->room_num = owner_item->room_num;
     flash->lifetime = M_LIFETIME;
-    flash->rot = (XZ_16) { .x = gun->tr3_flash_rot_x, .z = M_GetRandomRoll() };
-    flash->bite = gun->tr3_flash;
-    flash->flash_object_id =
-        (gun->tr3_enemy_weapon_flags & 1) != 0 ? O_M16_FLASH : O_GUN_FLASH;
+    flash->rot = (XZ_16) { .x = rot_x, .z = M_GetRandomRoll() };
+    flash->bite = bite;
+    flash->flash_object_id = flash_obj_id;
     flash->light_pos = owner_item->pos;
 
     m_Priv.next_idx = (m_Priv.next_idx + 1) % M_MAX_FLASHES;
     return true;
+}
+
+bool FX_GunFlash_Spawn(
+    const ITEM *const owner_item, const CREATURE_GUN *const gun)
+{
+    if (gun == nullptr || !gun->tr3_enemy_flash) {
+        return false;
+    }
+    const OBJECT_ID flash_obj_id =
+        (gun->tr3_enemy_weapon_flags & 1) != 0 ? O_M16_FLASH : O_GUN_FLASH;
+    return FX_GunFlash_SpawnAt(
+        owner_item, gun->tr3_flash, flash_obj_id, gun->tr3_flash_rot_x);
 }
 
 static const FX_MODULE m_Module = {

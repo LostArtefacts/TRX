@@ -629,6 +629,78 @@ material decides whether one is left at all.]],
   end,
 })
 
+api.define("fx.gun_flash", {
+  description = [[
+Draws a muzzle flash at one of an item's joints for a few frames, and lights
+the area around it where gun lighting is on. This is the flash an enemy firing
+throws, put where a script asks for it, so that an actor who fires in a
+cutscene has one as well.
+
+Raises if this level does not carry the flash object.]],
+  params = {
+    {
+      name = "item",
+      type = "items.Item",
+      description = "The item the flash is drawn on.",
+    },
+    {
+      name = "opts",
+      type = "table",
+      description = "Where the flash sits and what it is drawn from.",
+      fields = {
+        {
+          name = "mesh",
+          type = "integer",
+          description = "Which of the item's joints the flash hangs off.",
+        },
+        {
+          name = "pos",
+          type = "math.Vec3",
+          optional = true,
+          description = "Offset from that joint, in the joint's own axes. "
+            .. "Defaults to the joint itself.",
+        },
+        {
+          name = "rot_x",
+          type = "math.Angle",
+          optional = true,
+          description = "Pitch of the flash about the offset point. Defaults "
+            .. "to `-trx.math.DEG_90`, which is the way the flash meshes are "
+            .. "modelled and what the engine draws Lara's own flash with.",
+        },
+        {
+          name = "object",
+          type = "catalog.objects",
+          optional = true,
+          description = "The object the flash mesh is taken from. Defaults to "
+            .. "`trx.catalog.objects.gun_flash`; "
+            .. "`trx.catalog.objects.m16_flash` is the longer one a rifle "
+            .. "throws.",
+        },
+      },
+    },
+  },
+  returns = {
+    type = "boolean",
+    description = "Whether a flash was drawn.",
+  },
+  examples = {
+    [[trx.fx.gun_flash(actor, { mesh = 10, pos = { x = 0, y = 180, z = 55 } })]],
+  },
+  impl = function(item, opts)
+    local pos = opts.pos or { x = 0, y = 0, z = 0 }
+    return raw.gun_flash(
+      item.num,
+      opts.mesh,
+      pos.x,
+      pos.y,
+      pos.z,
+      opts.rot_x or -trx.math.DEG_90,
+      opts.object or trx.catalog.objects.gun_flash
+    )
+  end,
+})
+
 api.define("fx.knockback", {
   description = [[
 Spreads a ring of force out from a point, as a blast does. The ring is drawn
