@@ -1,5 +1,6 @@
 #include <trx/core/utils.h>
 #include <trx/game/anims.h>
+#include <trx/game/collision.h>
 #include <trx/game/const.h>
 #include <trx/game/creature.h>
 #include <trx/game/items.h>
@@ -619,6 +620,36 @@ static int M_L_ItemsGetBounds(lua_State *const L)
     return 1;
 }
 
+// trxc.items.joint_count(item) -> int
+static int M_L_ItemsJointCount(lua_State *const L)
+{
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
+    const ITEM *const item = LUA_Struct_Deref(L, ref);
+    lua_pushinteger(L, Object_Get(item->object_id)->mesh_count);
+    return 1;
+}
+
+// trxc.items.joint_pos(item, joint, x, y, z) -> x, y, z
+static int M_L_ItemsJointPos(lua_State *const L)
+{
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
+    const ITEM *const item = LUA_Struct_Deref(L, ref);
+    const int32_t joint_count = Object_Get(item->object_id)->mesh_count;
+    const lua_Integer joint = luaL_checkinteger(L, 2);
+    luaL_argcheck(L, joint >= 0 && joint < joint_count, 2, "unknown joint");
+
+    XYZ_32 pos = {
+        .x = (int32_t)luaL_optinteger(L, 3, 0),
+        .y = (int32_t)luaL_optinteger(L, 4, 0),
+        .z = (int32_t)luaL_optinteger(L, 5, 0),
+    };
+    Collide_GetJointAbsPosition(item, &pos, (int32_t)joint);
+    lua_pushinteger(L, pos.x);
+    lua_pushinteger(L, pos.y);
+    lua_pushinteger(L, pos.z);
+    return 3;
+}
+
 // Returns the item credited with a death or a blow, or nullptr when none is
 // set.
 static const ITEM *M_GetOptSender(lua_State *const L, const int32_t idx)
@@ -689,6 +720,8 @@ static const luaL_Reg m_Module[] = {
     { "count", M_L_ItemsCount },
     { "get", M_L_ItemsGet },
     { "get_bounds", M_L_ItemsGetBounds },
+    { "joint_count", M_L_ItemsJointCount },
+    { "joint_pos", M_L_ItemsJointPos },
     { "in_box", M_L_ItemsInBox },
     { "in_sphere", M_L_ItemsInSphere },
     { "spawn", M_L_ItemsSpawn },
