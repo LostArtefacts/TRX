@@ -15,6 +15,7 @@
 #include <trx/game/interpolation.h>
 #include <trx/game/inventory.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/hair.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/music.h>
 #include <trx/game/option/passport.h>
@@ -45,13 +46,15 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 {
     Game_SetCurrentLevel(level);
 
+    const bool is_cutscene = level->type == GFL_CUTSCENE;
+
     g_OverlayFlag = 1;
     Camera_Initialise();
+    Lara_Hair_Control(is_cutscene);
     Interpolation_Remember();
     Interpolation_Interpolate();
 
     Sound_StopAll();
-    const bool is_cutscene = level->type == GFL_CUTSCENE;
     if (level->music_track != MX_INACTIVE
         && (is_cutscene || Music_GetCurrentLoopedTrack() == MX_INACTIVE)) {
         Music_PlayBySlot(level->music_track, is_cutscene ? MPM_ONCE : MPM_LOOP);

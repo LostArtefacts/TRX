@@ -328,6 +328,7 @@ static void M_Control(
         // pose to blend from; without this the first frames drawn after a
         // level load stretch the braid between the two.
         Interpolation_RememberBraid();
+        Interpolation_CommitBraid();
         return;
     }
 
