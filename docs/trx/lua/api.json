@@ -12686,6 +12686,13 @@
               "name": "explode",
               "optional": true,
               "type": "boolean"
+            },
+            {
+              "default": 0,
+              "description": "Flame color for flying body parts, as\n`trx.fx.sparks.fire_flame` defines it: `0` orange, `2` pale, and\n`254` green.",
+              "name": "flame_variant",
+              "optional": true,
+              "type": "integer"
             }
           ]
         },
@@ -13098,6 +13105,13 @@
               "default": 0,
               "description": "Splash damage dealt to nearby items.",
               "name": "damage",
+              "optional": true,
+              "type": "integer"
+            },
+            {
+              "default": 0,
+              "description": "Flame color for flying body parts, as\n`trx.fx.sparks.fire_flame` defines it.",
+              "name": "flame_variant",
               "optional": true,
               "type": "integer"
             }

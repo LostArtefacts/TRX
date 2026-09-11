@@ -791,6 +791,7 @@ static RESULT M_ReadEffect(JSON_READ_IO *const io)
     MUST(JSON_READ(io, "shade", &effect->shade));
     SHOULD(JSON_READ_OPT(io, "flag1", &effect->flag1));
     SHOULD(JSON_READ_OPT(io, "flag2", &effect->flag2));
+    SHOULD(JSON_READ_OPT(io, "flame_variant", &effect->flame_variant));
     return OK;
 }
 

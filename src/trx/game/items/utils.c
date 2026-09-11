@@ -307,6 +307,7 @@ int32_t Item_Shatter(const int16_t item_num, const ITEM_SHATTER_ARGS args)
 
             effect->counter =
                 is_tr3 ? ((damage << 2) | (Random_GetControl() & 3)) : damage;
+            effect->flame_variant = args.flame_variant;
             effect->object_id = O_BODY_PART;
             effect->frame_num = Object_GetItemMeshIndex(item, walk.joint);
             effect->shade = Output_GetLightAdder() - 0x300;

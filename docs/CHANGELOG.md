@@ -324,6 +324,7 @@
 - Changed `trx.cutscenes.play()` to take whether to fade out first, so a scene that opens a level begins on the black screen the level loaded behind (TRX1063)
 - Changed `trx.game.trx_version` to `trx.game.TRX_VERSION`
 - Changed `trx.game.end_level()` to end the level silently, leaving the "Level complete!" message to the `/endlevel` console command
+- Changed `trx.items.Item:die()` and `trx.items.Item:shatter()` to let scripts choose the flame color for flying body parts
 - Changed a color setting to read as a `trx.math.Color` rather than as hex text, and to be written with either (TRX1091)
 - Changed the `trx.weapons` functions that take a weapon id to be deprecated, the weapon itself now answering what it is available as, what it is carried as, and what it is fed (TRX1091)
 - Fixed creatures taking wrong routes where crossing to the next square needs a jump or a monkey swing (TRX1061)

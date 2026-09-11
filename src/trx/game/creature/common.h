@@ -50,6 +50,9 @@ typedef struct {
     // Burst the creature's meshes into flying body parts. Without this, the
     // corpse stays.
     bool explode;
+
+    // Set the flame variant for flying body parts. Zero is ordinary fire.
+    int16_t flame_variant;
 } CREATURE_DIE_ARGS;
 
 // Kills the creature and removes it from play.

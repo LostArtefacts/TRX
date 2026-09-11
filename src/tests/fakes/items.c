@@ -846,7 +846,8 @@ bool Creature_IsAlly(const ITEM *const item)
 void Creature_Die(const int16_t item_num, const CREATURE_DIE_ARGS args)
 {
     const bool explode = args.explode;
-    FAKE_RECORD("creature_die", FV(explode));
+    const int16_t flame_variant = args.flame_variant;
+    FAKE_RECORD("creature_die", FV(explode), FV(flame_variant));
     m_Items[item_num].hit_points = 0;
 }
 
@@ -866,7 +867,8 @@ void Item_TakeDamage(
 int32_t Item_Shatter(const int16_t item_num, const ITEM_SHATTER_ARGS args)
 {
     const int16_t damage = args.damage;
-    FAKE_RECORD("shatter", FV(damage));
+    const int16_t flame_variant = args.flame_variant;
+    FAKE_RECORD("shatter", FV(damage), FV(flame_variant));
     return 0;
 }
 
