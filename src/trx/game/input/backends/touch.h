@@ -22,5 +22,6 @@ void Touch_SetPositionState(int32_t position, bool pressed);
 // Get the role currently bound to a touch position in the active layout.
 INPUT_ROLE Touch_GetPositionRole(int32_t position);
 
-// Whether the running platform exposes any touch input devices.
+// Whether the running platform has a touchscreen. SDL also reports trackpads
+// as touch devices.
 bool Touch_HasHardwareSupport(void);
