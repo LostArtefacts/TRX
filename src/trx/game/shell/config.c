@@ -24,14 +24,14 @@ static SHELL_SIZE m_ViewportSize = { .w = -1, .h = -1 };
 
 static bool M_MustUpdateRendererViewport(void)
 {
-    const SHELL_SIZE size = Shell_GetCurrentSize();
+    const SHELL_SIZE size = Shell_GetWindowSize();
     return m_ViewportSize.w != size.w || m_ViewportSize.h != size.h;
 }
 
 void Shell_RefreshRendererViewport(void)
 {
     Viewport_Reset();
-    m_ViewportSize = Shell_GetCurrentSize();
+    m_ViewportSize = Shell_GetWindowSize();
 }
 
 void Shell_SyncToWindow(void)

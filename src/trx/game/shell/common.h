@@ -41,5 +41,3 @@ void Shell_SetHeadless(bool headless);
 bool Shell_IsFullscreen(void);
 SHELL_SIZE Shell_GetDefaultSize(void);
 SHELL_SIZE Shell_GetWindowSize(void);
-SHELL_SIZE Shell_GetCurrentSize(void);
-SHELL_SIZE Shell_GetCurrentDisplaySize(void);

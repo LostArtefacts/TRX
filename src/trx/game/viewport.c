@@ -157,7 +157,7 @@ VIEWPORT_RECT Viewport_GetRect(const VIEWPORT_SPACE space)
 
 void Viewport_Reset(void)
 {
-    const SHELL_SIZE size = Shell_GetCurrentSize();
+    const SHELL_SIZE size = Shell_GetWindowSize();
     VIEWPORT_RECT *const window = &m_Rects[VIEWPORT_WINDOW];
     VIEWPORT_RECT *const target = &m_Rects[VIEWPORT_TARGET];
 
