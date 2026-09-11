@@ -12689,7 +12689,7 @@
             },
             {
               "default": 0,
-              "description": "Flame color for flying body parts, as\n`trx.fx.sparks.fire_flame` defines it: `0` orange, `2` pale, and\n`254` green.",
+              "description": "Flame color for flying body parts, as\n`trx.fx.sparks.fire_flame` defines it: `0` orange, `2` pale, and\n`254` green. Only TR3 and TR4 body parts burn; TR1 and TR2 ignore\nthis.",
               "name": "flame_variant",
               "optional": true,
               "type": "integer"
@@ -13110,7 +13110,7 @@
             },
             {
               "default": 0,
-              "description": "Flame color for flying body parts, as\n`trx.fx.sparks.fire_flame` defines it.",
+              "description": "Flame color for flying body parts, as\n`trx.fx.sparks.fire_flame` defines it. Only TR3 and TR4 body parts\nburn; TR1 and TR2 ignore this.",
               "name": "flame_variant",
               "optional": true,
               "type": "integer"

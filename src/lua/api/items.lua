@@ -738,7 +738,8 @@ end)]],
           description = [[
             Flame color for flying body parts, as
             `trx.fx.sparks.fire_flame` defines it: `0` orange, `2` pale, and
-            `254` green.
+            `254` green. Only TR3 and TR4 body parts burn; TR1 and TR2 ignore
+            this.
           ]],
         },
       },
@@ -783,7 +784,8 @@ lara:take_damage(lara.hit_points)]],
           default = 0,
           description = [[
             Flame color for flying body parts, as
-            `trx.fx.sparks.fire_flame` defines it.
+            `trx.fx.sparks.fire_flame` defines it. Only TR3 and TR4 body parts
+            burn; TR1 and TR2 ignore this.
           ]],
         },
       },

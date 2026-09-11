@@ -204,7 +204,8 @@ end
       - <a id="items.Item.die.explode" name="items.Item.die.explode"></a>**`explode`** (boolean, optional, default `false`). Whether to burst the meshes as it dies.
       - <a id="items.Item.die.flame_variant" name="items.Item.die.flame_variant"></a>**`flame_variant`** (integer, optional, default `0`). Flame color for flying body parts, as
         [`trx.fx.sparks.fire_flame`](FX.md#fx.sparks.fire_flame) defines it: `0` orange, `2` pale, and
-        `254` green.
+        `254` green. Only TR3 and TR4 body parts burn; TR1 and TR2 ignore
+        this.
 
     - <a id="items.Item.distance_to" name="items.Item.distance_to"></a>[lua]`item:distance_to(pos)`  
       Distance from this item to a world position.
@@ -478,7 +479,8 @@ end
       Parameters:
       - <a id="items.Item.shatter.damage" name="items.Item.shatter.damage"></a>**`damage`** (integer, optional, default `0`). Splash damage dealt to nearby items.
       - <a id="items.Item.shatter.flame_variant" name="items.Item.shatter.flame_variant"></a>**`flame_variant`** (integer, optional, default `0`). Flame color for flying body parts, as
-        [`trx.fx.sparks.fire_flame`](FX.md#fx.sparks.fire_flame) defines it.
+        [`trx.fx.sparks.fire_flame`](FX.md#fx.sparks.fire_flame) defines it. Only TR3 and TR4 body parts
+        burn; TR1 and TR2 ignore this.
 
     - <a id="items.Item.take_damage" name="items.Item.take_damage"></a>[lua]`item:take_damage(damage)`  
       Hurts the item the way a weapon does, and reports through
