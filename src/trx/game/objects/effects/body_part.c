@@ -106,7 +106,8 @@ static void M_Control_TR3(const int16_t effect_num)
     const int32_t time4 = (int32_t)Output_GetTimeInGame() * 4;
     if (!(time4 & 0xC)) {
         if (effect->counter & 1) {
-            Sparks_TriggerFireFlame(effect->pos, effect_num, 0);
+            Sparks_TriggerFireFlame(
+                effect->pos, effect_num, effect->flame_variant);
         }
 
         if (effect->counter & 2) {
@@ -130,7 +131,8 @@ static void M_Control_TR3(const int16_t effect_num)
             for (int32_t i = 0; i < 3; i++) {
                 if (effect->counter & 1) {
                     Sparks_TriggerFireFlame(
-                        (XYZ_32) { effect->pos.x, h, effect->pos.z }, -1, 0);
+                        (XYZ_32) { effect->pos.x, h, effect->pos.z }, -1,
+                        effect->flame_variant);
                 }
                 if (effect->counter & 2) {
                     Sparks_TriggerFireSmoke(
@@ -151,7 +153,8 @@ static void M_Control_TR3(const int16_t effect_num)
             for (int32_t i = 0; i < 3; i++) {
                 if (effect->counter & 1) {
                     Sparks_TriggerFireFlame(
-                        (XYZ_32) { effect->pos.x, h, effect->pos.z }, -1, 0);
+                        (XYZ_32) { effect->pos.x, h, effect->pos.z }, -1,
+                        effect->flame_variant);
                 }
                 if (effect->counter & 2) {
                     Sparks_TriggerFireSmoke(
@@ -213,7 +216,7 @@ static void M_Control_TR4(const int16_t effect_num)
 
     const int32_t time4 = (int32_t)Output_GetTimeInGame() * 4;
     if ((time4 & 0xC) == 0 && (effect->counter & 3) != 0 && do_burn_effects) {
-        Sparks_TriggerFireFlame(effect->pos, effect_num, 0);
+        Sparks_TriggerFireFlame(effect->pos, effect_num, effect->flame_variant);
     }
 
     int16_t room_num = effect->room_num;

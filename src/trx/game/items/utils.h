@@ -67,6 +67,9 @@ typedef struct {
     // values deal damage and disable them. Zero deals no damage and disables
     // them.
     int16_t damage;
+
+    // Set the flame variant for flying body parts. Zero is ordinary fire.
+    int16_t flame_variant;
 } ITEM_SHATTER_ARGS;
 
 int32_t Item_Shatter(int16_t item_num, ITEM_SHATTER_ARGS args);

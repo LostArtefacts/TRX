@@ -730,6 +730,17 @@ end)]],
           default = false,
           description = "Whether to burst the meshes as it dies.",
         },
+        {
+          name = "flame_variant",
+          type = "integer",
+          optional = true,
+          default = 0,
+          description = [[
+            Flame color for flying body parts, as
+            `trx.fx.sparks.fire_flame` defines it: `0` orange, `2` pale, and
+            `254` green.
+          ]],
+        },
       },
       description = "Runs the object's creature death handling: the corpse stays, and `trx.items.Item.die.explode` "
         .. "bursts its meshes as a rocket or grenade would. For creatures; `trx.items.Item:destroy` simply removes "
@@ -764,6 +775,16 @@ lara:take_damage(lara.hit_points)]],
           optional = true,
           default = 0,
           description = "Splash damage dealt to nearby items.",
+        },
+        {
+          name = "flame_variant",
+          type = "integer",
+          optional = true,
+          default = 0,
+          description = [[
+            Flame color for flying body parts, as
+            `trx.fx.sparks.fire_flame` defines it.
+          ]],
         },
       },
       description = "Bursts the item's meshes into flying debris, the visual `trx.items.Item:die` produces with "
