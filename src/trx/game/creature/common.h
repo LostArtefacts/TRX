@@ -45,7 +45,16 @@ bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt);
 void Creature_SpecialKill(
     ITEM *item, int32_t kill_anim, int32_t kill_state, int32_t lara_kill_state);
 void Creature_TestBoxDamage(int16_t item_num);
-void Creature_Die(int16_t item_num, bool explode);
+
+typedef struct {
+    // Burst the creature's meshes into flying body parts. Without this, the
+    // corpse stays.
+    bool explode;
+} CREATURE_DIE_ARGS;
+
+// Kills the creature and removes it from play.
+void Creature_Die(int16_t item_num, CREATURE_DIE_ARGS args);
+
 int32_t Creature_Vault(
     int16_t item_num, int16_t angle, int32_t vault, int32_t shift);
 

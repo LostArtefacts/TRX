@@ -621,7 +621,8 @@ static int M_L_ItemsDie(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
     LUA_Struct_Deref(L, ref);
-    Creature_Die(ref->handle.id, lua_toboolean(L, 2));
+    Creature_Die(
+        ref->handle.id, (CREATURE_DIE_ARGS) { .explode = lua_toboolean(L, 2) });
     return 0;
 }
 
@@ -642,7 +643,12 @@ static int M_L_ItemsShatter(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
     LUA_Struct_Deref(L, ref);
-    Item_Shatter(ref->handle.id, -1, (int16_t)luaL_optinteger(L, 2, 0));
+    Item_Shatter(
+        ref->handle.id,
+        (ITEM_SHATTER_ARGS) {
+            .mesh_bits = -1,
+            .damage = (int16_t)luaL_optinteger(L, 2, 0),
+        });
     return 0;
 }
 

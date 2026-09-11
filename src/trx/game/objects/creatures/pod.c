@@ -83,7 +83,9 @@ static void M_Control(const int16_t item_num)
             item->goal_anim_state = M_STATE_EXPLODE;
             item->mesh_bits = 0xFFFFFF;
             item->is_collidable = false;
-            Item_Shatter(item_num, 0xFFFE00, 0);
+            Item_Shatter(
+                item_num,
+                (ITEM_SHATTER_ARGS) { .mesh_bits = ~ITEM_MESH_RANGE(0, 8) });
 
             const M_PRIV *const p = item->priv;
             if (p->bug_item_num != NO_ITEM) {

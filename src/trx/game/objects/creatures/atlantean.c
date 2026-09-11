@@ -88,8 +88,11 @@ static void M_Control(const int16_t item_num)
 
     if (item->hit_points <= 0) {
         Item_Shatter(
-            item_num, -1,
-            m_EnableExplosions ? p->part_damage : -p->part_damage);
+            item_num,
+            (ITEM_SHATTER_ARGS) {
+                .mesh_bits = -1,
+                .damage = m_EnableExplosions ? p->part_damage : -p->part_damage,
+            });
         Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
         LOT_DisableBaddieAI(item_num);
         Item_Destroy(item_num);

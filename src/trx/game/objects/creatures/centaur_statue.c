@@ -59,7 +59,7 @@ static void M_Control(const int16_t item_num)
 
     if (y > -WALL_L && y < WALL_L
         && SQUARE(x) + SQUARE(z) < SQUARE(STATUE_EXPLODE_DIST)) {
-        Item_Shatter(item_num, -1, 0);
+        Item_Shatter(item_num, (ITEM_SHATTER_ARGS) { .mesh_bits = -1 });
         Item_Destroy(item_num);
         Item_SetFinished(item, true);
 

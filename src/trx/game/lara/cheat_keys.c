@@ -61,7 +61,9 @@ static void M_ExplodeLara(void)
 {
     const LARA_INFO *const lara_info = Lara_GetLaraInfo();
     ITEM *const lara_item = Lara_GetItem();
-    Item_Shatter(lara_info->item_num, -1, 1);
+    Item_Shatter(
+        lara_info->item_num,
+        (ITEM_SHATTER_ARGS) { .mesh_bits = -1, .damage = 1 });
     Sound_Effect(SFX_EXPLOSION_1, &lara_item->pos, SPM_NORMAL);
     Lara_Kill();
     Item_SetVisible(lara_item, false);

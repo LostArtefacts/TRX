@@ -701,7 +701,9 @@ void Skidoo_Explode(const ITEM *const skidoo)
         effect->object_id = O_EXPLOSION_1;
     }
 
-    Item_Shatter(Item_GetIndex(skidoo), ~(SKIDOO_GUN_MESH - 1), 0);
+    Item_Shatter(
+        Item_GetIndex(skidoo),
+        (ITEM_SHATTER_ARGS) { .mesh_bits = ~ITEM_MESH_RANGE(0, 1) });
     Sound_Effect(SFX_EXPLOSION_1, nullptr, SPM_NORMAL);
     Lara_Vehicle_SetIndex(NO_ITEM);
 }
