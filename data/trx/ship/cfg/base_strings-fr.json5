@@ -249,6 +249,15 @@
             "usage": "\\{review}Utilisation : %s",
         },
         "cmd": {
+            "bignasty": {
+                "failure": "\\{review}Il n'y a pas de place pour cela dans ce niveau.",
+                "got": "\\{review}Vous avez obtenu le BFG9000.",
+                "greedy": "\\{review}Vous l'avez déjà.",
+                "help": "\\{review}Commande une livraison spéciale.",
+                "success_1": "\\{review}Livraison spéciale !",
+                "success_2": "\\{review}Regardez en l'air !",
+                "success_3": "\\{review}Les cellules bourdonnent…",
+            },
             "braid": {
                 "help": "Active la tresse de Lara.",
             },

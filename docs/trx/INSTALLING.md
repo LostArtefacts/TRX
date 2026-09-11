@@ -1368,6 +1368,9 @@ If you install everything correctly, your game directory should look more or les
 │   ├── water_color.lua
 │   └── weapons.lua
 ├── scripts
+│   ├── bignasty
+│   │   ├── bfg.bin
+│   │   └── init.lua
 │   ├── inv_ring.lua
 │   └── weapons.lua
 └── TRX.exe</code></pre>
@@ -2772,6 +2775,9 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   ├── water_color.lua
     │   │   └── weapons.lua
     │   ├── scripts
+    │   │   ├── bignasty
+    │   │   │   ├── bfg.bin
+    │   │   │   └── init.lua
     │   │   ├── inv_ring.lua
     │   │   └── weapons.lua
     │   └── icon.icns

@@ -249,6 +249,15 @@
             "usage": "Usage: %s",
         },
         "cmd": {
+            "bignasty": {
+                "failure": "There is no room for it in this level.",
+                "got": "You got the BFG9000.",
+                "greedy": "You already have it.",
+                "help": "Calls in a special delivery.",
+                "success_1": "Special delivery!",
+                "success_2": "Look up!",
+                "success_3": "The cells hum…",
+            },
             "braid": {
                 "help": "Toggles Lara's braid.",
             },
