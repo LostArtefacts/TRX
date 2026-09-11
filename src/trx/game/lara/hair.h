@@ -7,6 +7,7 @@
 typedef struct {
     XYZ_32 pos;
     XYZ_16 rot;
+    XYZ_32 vel;
     struct {
         struct {
             XYZ_32 pos;

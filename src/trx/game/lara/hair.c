@@ -38,7 +38,6 @@ typedef struct {
 
 static bool m_IsFirstHair[M_MAX_BRAIDS];
 static SPHERE m_HairSpheres[M_HAIR_SPHERES];
-static XYZ_32 m_HairVelocity[M_MAX_BRAIDS][M_HAIR_SEGMENTS + 1];
 static HAIR_SEGMENT m_HairSegments[M_MAX_BRAIDS][M_HAIR_SEGMENTS + 1];
 
 // The braid weld state, kept between outfit applies.
@@ -352,16 +351,15 @@ static void M_Control(
     const XZ_32 smoke_wind = Sparks_GetSmokeWind();
     const int32_t hair_wind_z = Sparks_GetHairWindZ();
 
-    XYZ_32 *const velocity = m_HairVelocity[braid_idx];
     for (int32_t i = 1; i <= M_HAIR_SEGMENTS; i++) {
         HAIR_SEGMENT *const ps = &m_HairSegments[braid_idx][i - 1];
         HAIR_SEGMENT *const s = &m_HairSegments[braid_idx][i];
 
-        velocity[0] = s->pos;
+        const XYZ_32 old_pos = s->pos;
 
-        s->pos.x += velocity[i].x * 3 / 4;
-        s->pos.y += velocity[i].y * 3 / 4;
-        s->pos.z += velocity[i].z * 3 / 4;
+        s->pos.x += s->vel.x * 3 / 4;
+        s->pos.y += s->vel.y * 3 / 4;
+        s->pos.z += s->vel.z * 3 / 4;
 
         if (g_Config.visuals.breeze_mode == BREEZE_MODE_TR3) {
             if (lara_info->water_status == LWS_ABOVE_WATER
@@ -378,11 +376,11 @@ static void M_Control(
             }
 
             if (s->pos.y > height) {
-                s->pos.x = velocity[0].x;
+                s->pos.x = old_pos.x;
                 if (s->pos.y - height <= STEP_L) {
                     s->pos.y = height;
                 }
-                s->pos.z = velocity[0].z;
+                s->pos.z = old_pos.z;
             }
         } else {
             LARA_WATER_STATE water_status = lara_info->water_status;
@@ -446,9 +444,9 @@ static void M_Control(
         s->pos.y = g_MatrixPtr->_13 >> W2V_SHIFT;
         s->pos.z = g_MatrixPtr->_23 >> W2V_SHIFT;
 
-        velocity[i].x = s->pos.x - velocity[0].x;
-        velocity[i].y = s->pos.y - velocity[0].y;
-        velocity[i].z = s->pos.z - velocity[0].z;
+        s->vel.x = s->pos.x - old_pos.x;
+        s->vel.y = s->pos.y - old_pos.y;
+        s->vel.z = s->pos.z - old_pos.z;
 
         Matrix_Pop();
     }
@@ -810,7 +808,7 @@ void Lara_Hair_Initialise(void)
             m_HairSegments[i][j].rot.x = -DEG_90;
             m_HairSegments[i][j].rot.y = 0;
             m_HairSegments[i][j].rot.z = 0;
-            m_HairVelocity[i][j - 1] = (XYZ_32) {};
+            m_HairSegments[i][j].vel = (XYZ_32) {};
         }
     }
 }
