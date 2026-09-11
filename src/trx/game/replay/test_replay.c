@@ -548,7 +548,7 @@ static void M_StopSkipping(void)
         return;
     }
     p->skipping = false;
-    Shell_SetHeadless(false);
+    Shell_SetDrawingSkipped(false);
 }
 
 static bool M_ParseSkipStartEvent(const char *const event_str)
@@ -557,10 +557,9 @@ static bool M_ParseSkipStartEvent(const char *const event_str)
         return false;
     }
     M_PRIV *const p = &m_Priv;
-    // A run already told to draw nothing must not start drawing at skip end.
-    if (!p->skipping && !Shell_GetArgs()->headless) {
+    if (!p->skipping) {
         p->skipping = true;
-        Shell_SetHeadless(true);
+        Shell_SetDrawingSkipped(true);
     }
     return true;
 }
