@@ -139,7 +139,7 @@ static void M_Control(const int16_t item_num)
             Sound_Effect(SFX_EXPLOSION_1, nullptr, SPM_NORMAL);
             item->mesh_bits = -1;
             item->object_id = O_XIAN_SPEARMAN_STATUE;
-            Item_Shatter(item_num, -1, 0);
+            Item_Shatter(item_num, (ITEM_SHATTER_ARGS) { .mesh_bits = -1 });
             item->object_id = O_XIAN_SPEARMAN;
             LOT_DisableBaddieAI(item_num);
             Item_Destroy(item_num);

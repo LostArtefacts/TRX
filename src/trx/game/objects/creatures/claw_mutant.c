@@ -189,7 +189,7 @@ static void M_Control(const int16_t item_num)
             Item_SwitchToAnim(item, M_ANIM_DEATH, 0);
             item->current_anim_state = M_STATE_DEATH;
         } else if (Item_TestFrameEqual(item, -1)) {
-            Creature_Die(item_num, true);
+            Creature_Die(item_num, (CREATURE_DIE_ARGS) { .explode = true });
             for (int32_t i = 0; i < 3; i++) {
                 const int32_t dynamic = i == 0 ? -2 : -1;
                 Sparks_TriggerExplosionSparks(item->pos, 3, dynamic, 2, 0);

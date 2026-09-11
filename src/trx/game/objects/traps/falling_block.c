@@ -224,7 +224,8 @@ static void M_ControlSimulated(ITEM *const item)
         item->current_anim_state = TRAP_FINISHED;
 
         const int32_t item_num = Item_GetIndex(item);
-        Item_Shatter(item_num, -1, 2465);
+        Item_Shatter(
+            item_num, (ITEM_SHATTER_ARGS) { .mesh_bits = -1, .damage = 2465 });
         Item_Destroy(item_num);
     } else {
         item->rot.x = (Random_GetControl() & 0x3FF) - 0x200;
