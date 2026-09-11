@@ -466,6 +466,31 @@ end
   trx.fx.footprint(trx.lara.item, true)
   ```
 
+- <a id="fx.gun_flash" name="fx.gun_flash"></a>[lua]`trx.fx.gun_flash(item, opts)`  
+  Draws a muzzle flash at one of an item's joints for a few frames, and lights
+  the area around it where gun lighting is on. This is the flash an enemy firing
+  throws, put where a script asks for it, so that an actor who fires in a
+  cutscene has one as well.
+
+  Raises if this level does not carry the flash object.
+
+  Parameters:
+  - <a id="fx.gun_flash.item" name="fx.gun_flash.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)). The item the flash is drawn on.
+  - <a id="fx.gun_flash.opts" name="fx.gun_flash.opts"></a>**`opts`** (table). Where the flash sits and what it is drawn from.
+
+    Keys:
+    - <a id="fx.gun_flash.opts.mesh" name="fx.gun_flash.opts.mesh"></a>**`mesh`** (integer). Which of the item's joints the flash hangs off.
+    - <a id="fx.gun_flash.opts.pos" name="fx.gun_flash.opts.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3), optional). Offset from that joint, in the joint's own axes. Defaults to the joint itself.
+    - <a id="fx.gun_flash.opts.rot_x" name="fx.gun_flash.opts.rot_x"></a>**`rot_x`** ([trx.math.Angle](MATH.md#math.Angle), optional). Pitch of the flash about the offset point. Defaults to `-trx.math.DEG_90`, which is the way the flash meshes are modelled and what the engine draws Lara's own flash with.
+    - <a id="fx.gun_flash.opts.object" name="fx.gun_flash.opts.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects), optional). The object the flash mesh is taken from. Defaults to [`trx.catalog.objects.gun_flash`](CATALOG.md#catalog.objects); [`trx.catalog.objects.m16_flash`](CATALOG.md#catalog.objects) is the longer one a rifle throws.
+
+  Returns: boolean. Whether a flash was drawn.
+
+  Example:
+  ```lua
+  trx.fx.gun_flash(actor, { mesh = 10, pos = { x = 0, y = 180, z = 55 } })
+  ```
+
 - <a id="fx.knockback" name="fx.knockback"></a>[lua]`trx.fx.knockback(opts)`  
   Spreads a ring of force out from a point, as a blast does. The ring is drawn
   and widens on its own.

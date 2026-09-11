@@ -309,6 +309,24 @@ static int M_L_Footprint(lua_State *const L)
     return 0;
 }
 
+// trxc.fx.gun_flash(item_num, mesh_num, x, y, z, rot_x, object_id)
+static int M_L_GunFlash(lua_State *const L)
+{
+    const ITEM *const item = M_CheckItem(L, 1);
+    const BITE bite = {
+        .mesh_num = (int16_t)luaL_checkinteger(L, 2),
+        .pos = {
+            .x = (int32_t)luaL_checkinteger(L, 3),
+            .y = (int32_t)luaL_checkinteger(L, 4),
+            .z = (int32_t)luaL_checkinteger(L, 5),
+        },
+    };
+    const int16_t rot_x = (int16_t)luaL_checkinteger(L, 6);
+    const OBJECT_ID object_id = LUA_CheckObjectID(L, 7);
+    lua_pushboolean(L, FX_GunFlash_SpawnAt(item, bite, object_id, rot_x));
+    return 1;
+}
+
 // trxc.fx.knockback(x, y, z)
 static int M_L_Knockback(lua_State *const L)
 {
@@ -859,6 +877,7 @@ static const luaL_Reg m_Module[] = {
     { "explosion", M_L_Explosion },
     { "fire", M_L_Fire },
     { "footprint", M_L_Footprint },
+    { "gun_flash", M_L_GunFlash },
     { "knockback", M_L_Knockback },
     { "ripple", M_L_Ripple },
     { "small_splash", M_L_SmallSplash },

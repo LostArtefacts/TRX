@@ -11,6 +11,9 @@
 - Added Jackal control (TRX1553)
 - Added level views before play starts, with a progress bar (TRX493)
 
+**Lua**
+- Added `trx.fx.gun_flash()`, so a script can draw a muzzle flash on any item (TRX89)
+
 
 ## [1.11.1](https://github.com/LostArtefacts/TRX/compare/trx-1.11...trx-1.11.1) - 2026-09-22
 **Lara's movement**
