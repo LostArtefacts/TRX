@@ -155,8 +155,22 @@ static void M_RestoreLaraCutsceneState(void)
 
 static bool M_IsCutsceneActor(const ITEM *const item)
 {
-    return (item->object_id >= O_PLAYER_1 && item->object_id <= O_PLAYER_10)
-        || item->object_id == O_LARA;
+    switch (item->object_id) {
+    case O_LARA:
+    case O_PLAYER_1:
+    case O_PLAYER_2:
+    case O_PLAYER_3:
+    case O_PLAYER_4:
+    case O_PLAYER_5:
+    case O_PLAYER_6:
+    case O_PLAYER_7:
+    case O_PLAYER_8:
+    case O_PLAYER_9:
+    case O_PLAYER_10:
+        return true;
+    default:
+        return false;
+    }
 }
 
 static void M_ResetActorAnimation(ITEM *const item)
