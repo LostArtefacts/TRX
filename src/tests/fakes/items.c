@@ -600,6 +600,14 @@ const BOUNDS_16 *Item_GetBoundsAccurate(const ITEM *const item)
     return &m_Frames[item->frame_num % FAKE_FRAME_COUNT].bounds;
 }
 
+void Collide_GetJointAbsPosition(
+    const ITEM *const item, XYZ_32 *const pos, const int32_t joint)
+{
+    pos->x += item->pos.x;
+    pos->y += item->pos.y;
+    pos->z += item->pos.z;
+}
+
 ANIM *Anim_GetAnim(const int32_t anim_idx)
 {
     return &m_Anims[anim_idx];

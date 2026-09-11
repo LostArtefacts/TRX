@@ -12619,6 +12619,11 @@
           "type": "math.Box"
         },
         {
+          "description": "How many joints the item's model is built from. A joint number runs from `0` up to one less than this.",
+          "name": "joint_count",
+          "type": "integer"
+        },
+        {
           "description": "Typed, object-specific item properties. Writing here overrides the object's default for this item only; reads fall back to the object. Iterable with `pairs()`. See [Objects](docs/trx/OBJECTS.md).",
           "name": "properties",
           "type": "table"
@@ -12922,6 +12927,30 @@
           "returns": {
             "description": "False once the item it named is gone.",
             "type": "boolean"
+          }
+        },
+        {
+          "description": "Where one of the item's joints has reached, for the frame it is on. The\nposition follows the item as it moves and animates, so a script can hang\nsomething off a hand or a muzzle without naming a place in the world.\n\nRaises if the model has no such joint.",
+          "examples": [
+            "local muzzle = actor:joint_pos(12, { x = 0, y = 0, z = 180 })"
+          ],
+          "name": "joint_pos",
+          "params": [
+            {
+              "description": "Which joint, from `0` to `trx.items.Item.joint_count` less one.",
+              "name": "joint",
+              "type": "integer"
+            },
+            {
+              "description": "Offset from the joint, in the joint's own axes. Defaults to the joint itself.",
+              "name": "offset",
+              "optional": true,
+              "type": "math.Vec3"
+            }
+          ],
+          "returns": {
+            "description": "World position.",
+            "type": "math.Vec3"
           }
         },
         {

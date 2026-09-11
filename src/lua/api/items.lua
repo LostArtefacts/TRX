@@ -423,6 +423,13 @@ api.type("items.Item", {
       end,
     },
 
+    joint_count = {
+      type = "integer",
+      description = "How many joints the item's model is built from. A joint "
+        .. "number runs from `0` up to one less than this.",
+      impl = raw.joint_count,
+    },
+
     properties = {
       type = "table",
       description = "Typed, object-specific item properties. Writing here overrides the object's "
@@ -812,6 +819,40 @@ lara:take_damage(lara.hit_points)]],
       description = "Bursts the item's meshes into flying debris, the visual `trx.items.Item:die` produces with "
         .. "`trx.items.Item.die.explode`, "
         .. "on its own. It does not kill or remove the item.",
+    },
+
+    joint_pos = {
+      description = [[
+Where one of the item's joints has reached, for the frame it is on. The
+position follows the item as it moves and animates, so a script can hang
+something off a hand or a muzzle without naming a place in the world.
+
+Raises if the model has no such joint.]],
+      params = {
+        {
+          name = "joint",
+          type = "integer",
+          description = "Which joint, from `0` to "
+            .. "`trx.items.Item.joint_count` less one.",
+        },
+        {
+          name = "offset",
+          type = "math.Vec3",
+          optional = true,
+          description = "Offset from the joint, in the joint's own axes. "
+            .. "Defaults to the joint itself.",
+        },
+      },
+      returns = { type = "math.Vec3", description = "World position." },
+      examples = {
+        [[local muzzle = actor:joint_pos(12, { x = 0, y = 0, z = 180 })]],
+      },
+      impl = function(self, joint, offset)
+        offset = offset or { x = 0, y = 0, z = 0 }
+        local x, y, z =
+          raw.joint_pos(self, joint, offset.x, offset.y, offset.z)
+        return { x = x, y = y, z = z }
+      end,
     },
 
     distance_to = {
