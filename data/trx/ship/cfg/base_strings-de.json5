@@ -249,6 +249,15 @@
             "usage": "\\{review}Verwendung: %s",
         },
         "cmd": {
+            "bignasty": {
+                "failure": "\\{review}In diesem Level ist kein Platz dafür.",
+                "got": "\\{review}Du hast die BFG9000 erhalten.",
+                "greedy": "\\{review}Du hast es bereits.",
+                "help": "\\{review}Ruft eine Sonderlieferung herbei.",
+                "success_1": "\\{review}Sonderlieferung!",
+                "success_2": "\\{review}Schau nach oben!",
+                "success_3": "\\{review}Die Zellen summen…",
+            },
             "braid": {
                 "help": "Aktiviert und deaktiviert Laras Zopf.",
             },

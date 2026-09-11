@@ -249,6 +249,15 @@
             "usage": "Cleachdadh: %s",
         },
         "cmd": {
+            "bignasty": {
+                "failure": "\\{review}Chan eil àite ann airson seo anns an ìre seo.",
+                "got": "\\{review}Fhuair thu am BFG9000.",
+                "greedy": "\\{review}Tha e agad mu thràth.",
+                "help": "\\{review}Cuiridh e fios air lìbhrigeadh sònraichte.",
+                "success_1": "\\{review}Lìbhrigeadh sònraichte!",
+                "success_2": "\\{review}Seall suas!",
+                "success_3": "\\{review}Tha na ceallan a' dranndan…",
+            },
             "braid": {
                 "help": "Tionndaidheas feaman-fuilt Lara.",
             },
