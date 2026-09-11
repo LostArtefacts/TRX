@@ -7,6 +7,7 @@
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/game.h>
+#include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/mesh.h>
 #include <trx/game/lara/pose.h>
@@ -322,6 +323,11 @@ static void M_Control(
 
             Matrix_Pop();
         }
+
+        // The chain has just been built from scratch, so there is no earlier
+        // pose to blend from; without this the first frames drawn after a
+        // level load stretch the braid between the two.
+        Interpolation_RememberBraid();
         return;
     }
 
