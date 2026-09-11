@@ -15,6 +15,7 @@ void Interpolation_SetRate(double rate);
 void Interpolation_Interpolate(void);
 void Interpolation_Remember(void);
 void Interpolation_RememberItem(ITEM *item);
+void Interpolation_RememberBraid(void);
 
 // Instantly discard interpolation data
 void Interpolation_CommitLara(void);

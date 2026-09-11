@@ -577,3 +577,8 @@ void Interpolation_CommitBraid(void)
 {
     M_CommitBraid();
 }
+
+void Interpolation_RememberBraid(void)
+{
+    M_RememberBraid();
+}
