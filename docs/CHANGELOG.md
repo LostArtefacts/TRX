@@ -266,6 +266,7 @@
 - Changed a game named with `--mod` to say why it cannot be played, rather than quietly starting a different one (TRX1083)
 - Changed a broken settings, strings or game data file to say what is wrong with it and where (TRX1112)
 - Changed Lara turning to gold on the Midas hand to gild the outfit she has on, rather than swap her for a golden model (TRX1070)
+- Fixed touch controls turning on and showing the on-screen overlay on machines with a trackpad but no touchscreen (TRX1417)
 - Fixed the game crashing when a language with a broken strings file is picked (TRX1112)
 - Fixed the game crashing when another game is switched to while Lara is riding a vehicle (TRX1148)
 - Fixed the game crashing when a screenshot is taken in certain levels (TRX1305)
