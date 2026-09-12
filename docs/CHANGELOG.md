@@ -82,6 +82,9 @@
 - Fixed TR1's moored boat sharing its name with TR2's speedboat, so a command that took `boat` could act on either
 - Fixed the TR3 SWAT 2 and SWAT 3 enemies being named as SWAT 1, so a command that took either of them acted on the wrong enemy
 
+**Recordings**
+- Fixed recordings losing music after `skip start` (TRX1429)
+
 **Weapons and ammunition**
 - Added an option to keep Lara firing the M16/MP5 from her hip while the action key is held, rather than shouldering the gun the moment she stops moving (Gameplay → Controls → M16/MP5 aiming variants) (#3861 / TRX1048)
 - Fixed Lara taking out a two-handed weapon in wading-depth water only to put it away at once (OG bug) (#6253 / TRX1120)

@@ -7,6 +7,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/subsystem.h>
 #include <trx/core/vector.h>
+#include <trx/game/clock.h>
 #include <trx/game/const.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
@@ -659,6 +660,11 @@ RESULT Music_SetSpeed(const double speed)
 RESULT Music_SyncTimestamp(const double timestamp)
 {
     MUST(M_CheckMainStream());
+    // Do not seek while frames run as fast as possible. The track cannot keep
+    // up, so syncing it would seek every few frames.
+    if (!Clock_IsRealTime()) {
+        return OK;
+    }
     return Audio_Stream_SyncTimestamp(m_MainStream.audio_stream_id, timestamp);
 }
 

@@ -89,6 +89,11 @@ void Clock_EnableWait(void)
     m_Disabled = false;
 }
 
+bool Clock_IsRealTime(void)
+{
+    return !m_Disabled;
+}
+
 void Clock_EnableFixedFPS(const int32_t fps)
 {
     if (fps <= 0) {
