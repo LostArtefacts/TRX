@@ -123,6 +123,7 @@
 - Fixed Lara's braid not colliding properly with her selected outfit, instead referencing the level's OG outfit (TRX1277, regression from 1.2)
 - Fixed the tip of Lara's braid dropping away from the rest of it for a moment after a level or a save is loaded (TRX1304)
 - Fixed Lara's braid not being drawn on the first frame of a level (TRX1304)
+- Fixed Lara's braid hanging away from her head or keeping the previous outfit's shape after an outfit change (TRX1437)
 - Fixed being able to push pushblocks onto floors with triangular geometry (TRX1228, regression from 1.0)
 - Fixed propellers not being collidable if they are deactivated and then later reactivated (OG bug) (#6494 / TRX1351)
 - Fixed crashes in custom levels with incomplete object sets

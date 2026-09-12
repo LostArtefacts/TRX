@@ -633,6 +633,7 @@ void Lara_Skin_ApplyOutfit(void)
     M_UpdateSunglasses();
     Lara_Joints_Initialise(outfit);
     Lara_Hair_InitJoints(outfit);
+    Lara_Hair_Rebuild();
 }
 
 void Lara_Skin_SetMeshOverride(
