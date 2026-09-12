@@ -364,6 +364,10 @@ void main(void) {
 
     // Apply flat shading AFTER modulation
     gOut.color = vec4(lit * modulate, inColor.a);
+
+    // Only TR4 lights the submerged part of a mesh separately.
+    gOut.colorSub = gOut.color.rgb;
+    gOut.addSub = gOut.add;
 #else
     gOut.add = vec3(0.0);
     float shade_mul = 1.0;
