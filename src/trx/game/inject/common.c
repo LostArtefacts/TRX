@@ -4,6 +4,7 @@
 #include <trx/core/benchmark.h>
 #include <trx/core/file.h>
 #include <trx/core/memory.h>
+#include <trx/core/strings.h>
 #include <trx/core/thread_pool.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
@@ -571,18 +572,26 @@ void Inject_SetDeclarationCollector(void (*const collect)(void))
     m_CollectDeclared = collect;
 }
 
-void Inject_AddDeclaredInjection(const char *const name)
+void Inject_AddDeclaredInjection(const char *const name, const char *const dir)
 {
-    const char *const path =
-        GamePath_TryResolve(GAME_DYNAMIC_PATH_INJECTION_FILE, name);
-    if (path == nullptr) {
-        LOG_WARNING("no injection named '%s' was found", name);
-        return;
+    char *own = nullptr;
+    if (dir != nullptr && strpbrk(name, "/\\") == nullptr) {
+        char *beside = String_Format("%s/%s", dir, name);
+        own = GamePath_ResolveCase(beside);
+        Memory_FreePointer(&beside);
+    }
+    if (own == nullptr) {
+        const char *const path =
+            GamePath_TryResolve(GAME_DYNAMIC_PATH_INJECTION_FILE, name);
+        if (path == nullptr) {
+            LOG_WARNING("no injection named '%s' was found", name);
+            return;
+        }
+        own = Memory_DupStr(path);
     }
     if (m_DeclaredPaths == nullptr) {
         m_DeclaredPaths = Vector_Create(sizeof(char *));
     }
-    char *const own = Memory_DupStr(path);
     Vector_Add(m_DeclaredPaths, &own);
 }
 

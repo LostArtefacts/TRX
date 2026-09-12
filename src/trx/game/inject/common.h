@@ -12,9 +12,13 @@ void Inject_InitLevel(const GF_LEVEL *level, INJECTION_MODE mode);
 // named by the level's game flow and are collected for each level.
 void Inject_SetDeclarationCollector(void (*collect)(void));
 void Inject_CollectDeclarations(void);
-void Inject_AddDeclaredInjection(const char *name);
+
+// Add one declared injection. Search dir first for a plain file name. Use null
+// when the declaration comes from a loose script.
+void Inject_AddDeclaredInjection(const char *name, const char *dir);
 int32_t Inject_GetDeclaredCount(void);
 const char *Inject_GetDeclaredPath(int32_t idx);
+
 void Inject_AppendInjection(TRX_FILE *file);
 void Inject_AllInjections(void);
 void Inject_Cleanup(void);
