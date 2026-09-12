@@ -1050,8 +1050,10 @@ LUA_NAMES = {
 # A description says this where a backticked name is not an API path but a
 # literal a player or a file carries: a config key, a file name, a value a
 # setting takes. The marker names them, so what is waived is on the page it is
-# waived from, and it comes off before the text is rendered.
-NOREF_RE = re.compile(r"<!--\s*noref:?\s*(.*?)\s*-->")
+# waived from, and it comes off before the text is rendered. One marker takes
+# a comma-separated list and may run across lines, so a long one wraps with
+# the text around it.
+NOREF_RE = re.compile(r"<!--\s*noref:?\s*(.*?)\s*-->", re.DOTALL)
 
 # Identifier-shaped, which is what a reference looks like. A number, a quoted
 # string, a flag spelling or anything with a space in it is not one, and an
@@ -1075,7 +1077,10 @@ def waived(text: str) -> set[str]:
     """The names a description marks as literals, and not references."""
     out: set[str] = set()
     for marker in NOREF_RE.findall(text):
-        out.update(name.strip(" `") for name in marker.split(",") if name.strip())
+        for name in marker.split(","):
+            name = name.strip().strip("`").strip()
+            if name:
+                out.add(name)
     return out
 
 
