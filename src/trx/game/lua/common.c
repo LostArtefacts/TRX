@@ -15,6 +15,7 @@
 #include <trx/game/lua/guard.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/sandbox.h>
+#include <trx/game/lua/startup.h>
 #include <trx/game/lua/utils.h>
 #include <trx/game/paths.h>
 
@@ -216,7 +217,8 @@ static RESULT M_RunTRXRuntimeScripts(lua_State *const L)
 // One or more segments joined by '.', as Lua names any other module:
 // "my_module", "my_group.my_module". The shape is what keeps a require inside
 // the directory it names - no empty segment to start, end or double a
-// separator with, so no "..", and no '/' at all to climb out with.
+// separator with, so no "..", and no '/' at all to climb out with. Check a
+// relative name without its leading dot, so "." and ".." are also refused.
 static bool M_IsScriptName(const char *const name)
 {
     size_t segment_len = 0;
@@ -272,10 +274,11 @@ static bool M_HasRoot(
 // directory, named as the game sits in games/, so a script says which game it
 // is reaching into and the answer does not depend on which game is running.
 // modules/ holds what a script requires; scripts/ holds what the engine runs,
-// and no name reaches it.
+// and no name reaches it. The returned path is temporary. Load the file before
+// formatting another path.
 static const char *M_ResolveScript(
     lua_State *const L, const char *const raw, const char *const name,
-    const size_t root_len, const char *const stem)
+    const size_t root_len, const char *const stem, const char *const own_dir)
 {
     // The pieces are spelled into Lua strings rather than buffers of our own:
     // the resolver hands back a pointer into its own storage, and this way
@@ -284,6 +287,30 @@ static const char *M_ResolveScript(
 
     // The dots the script wrote are the directories the file sits in.
     const char *const path_stem = luaL_gsub(L, stem, ".", "/");
+
+    if (own_dir != nullptr) {
+        const char *found[2] = { nullptr, nullptr };
+        for (int32_t i = 0; i < 2; i++) {
+            const char *const candidate = lua_pushfstring(
+                L, i == 0 ? "%s/%s.lua" : "%s/%s/init.lua", own_dir, path_stem);
+            char *resolved = GamePath_ResolveCase(candidate);
+            found[i] =
+                resolved != nullptr ? lua_pushstring(L, resolved) : nullptr;
+            Memory_FreePointer(&resolved);
+        }
+        if (found[0] != nullptr && found[1] != nullptr) {
+            luaL_error(
+                L,
+                "both a file and a directory exist for %s: %s and %s. Remove "
+                "one of them",
+                raw, found[0], found[1]);
+        }
+        const char *const own = found[0] != nullptr ? found[0] : found[1];
+        const char *const path =
+            own != nullptr ? String_FormatStatic("%s", own) : nullptr;
+        lua_settop(L, base);
+        return path;
+    }
 
     const bool is_common = M_HasRoot(name, root_len, M_COMMON_ROOT);
     const GAME_DYNAMIC_PATH source = is_common
@@ -321,41 +348,62 @@ static const char *M_ResolveScript(
     const char *const rel = found[0] != nullptr ? rels[0]
         : found[1] != nullptr                   ? rels[1]
                                                 : nullptr;
-    const char *const path =
+    const char *const resolved =
         rel != nullptr ? GamePath_PeekResolve(source, rel) : nullptr;
+    const char *const path =
+        resolved != nullptr ? String_FormatStatic("%s", resolved) : nullptr;
     lua_settop(L, base);
     return path;
 }
 
-// require(name): "tr3-la.acme" is games/tr3-la/modules/acme.lua, and
-// "common.acme" is the pool beside the engine. Runs the script once and hands
-// every later call what it returned.
+// Require a module by game name, common name or relative name. Run each module
+// once and return its result for later calls.
 static int M_L_Require(lua_State *const L)
 {
     // Report the spelling used by the script and use the lowered name to look
     // up the module.
     const char *const raw = luaL_checkstring(L, 1);
-    if (!M_IsScriptName(raw)) {
+    const bool is_own = raw[0] == '.';
+    if (!M_IsScriptName(is_own ? raw + 1 : raw)) {
         return luaL_error(L, "not a script name: %s", raw);
     }
 
     lua_settop(L, 1);
-    const char *const name = M_PushLowerName(L, raw);
+    const char *name = M_PushLowerName(L, is_own ? raw + 1 : raw);
 
-    const char *const sep = strchr(name, '.');
-    if (sep == nullptr) {
-        return luaL_error(
-            L, "a script name carries the directory it lives in: <game>.%s",
-            raw);
-    }
-    const size_t root_len = (size_t)(sep - name);
-    if (M_HasRoot(name, root_len, M_ENGINE_ROOT)) {
-        return luaL_error(
-            L,
-            "%s: " M_ENGINE_ROOT
-            ".* is the engine's own, reached as a "
-            "global rather than required",
-            raw);
+    const char *own_dir = nullptr;
+    const char *stem = nullptr;
+    size_t root_len = 0;
+    if (is_own) {
+        own_dir = LUA_GetStartupScriptDir();
+        if (own_dir == nullptr) {
+            return luaL_error(
+                L,
+                "%s: relative names work only while a directory script loads",
+                raw);
+        }
+        // Include the directory in the cache key so each of them gets its own
+        // copy of a module such as .utils.
+        name = lua_pushfstring(L, "%s/%s", own_dir, name);
+        lua_replace(L, 2);
+        stem = name + strlen(own_dir) + 1;
+    } else {
+        const char *const sep = strchr(name, '.');
+        if (sep == nullptr) {
+            return luaL_error(
+                L, "a script name carries the directory it lives in: <game>.%s",
+                raw);
+        }
+        root_len = (size_t)(sep - name);
+        if (M_HasRoot(name, root_len, M_ENGINE_ROOT)) {
+            return luaL_error(
+                L,
+                "%s: " M_ENGINE_ROOT
+                ".* is the engine's own, reached as a "
+                "global rather than required",
+                raw);
+        }
+        stem = sep + 1;
     }
 
     const LUA_CONTEXT context = LUA_GetScriptContext();
@@ -387,7 +435,8 @@ static int M_L_Require(lua_State *const L)
     }
     lua_pop(L, 1);
 
-    const char *const path = M_ResolveScript(L, raw, name, root_len, sep + 1);
+    const char *const path =
+        M_ResolveScript(L, raw, name, root_len, stem, own_dir);
     if (path == nullptr) {
         return luaL_error(L, "no such script: %s", raw);
     }

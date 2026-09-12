@@ -1,18 +1,25 @@
+#include <trx/core/memory.h>
 #include <trx/core/vector.h>
 #include <trx/game/console/common.h>
 #include <trx/game/inject.h>
 #include <trx/game/lua/registry.h>
+#include <trx/game/lua/startup.h>
 #include <trx/game/lua/utils.h>
 
 #include <lauxlib.h>
+
+typedef struct {
+    int32_t ref;
+    char *dir;
+} M_DECLARATION;
 
 static lua_State *m_L = nullptr;
 static VECTOR *m_Declarations = nullptr;
 
 // Read the injection names returned by a declaration.
-static void M_ReadList(const int32_t ref)
+static void M_ReadList(const M_DECLARATION *const decl)
 {
-    lua_rawgeti(m_L, LUA_REGISTRYINDEX, ref);
+    lua_rawgeti(m_L, LUA_REGISTRYINDEX, decl->ref);
     if (lua_pcall(m_L, 0, 1, 0) != LUA_OK) {
         Console_ShowError(
             "injection declaration error: %s", lua_tostring(m_L, -1));
@@ -33,7 +40,7 @@ static void M_ReadList(const int32_t ref)
         lua_rawgeti(m_L, -1, i);
         const char *const name = lua_tostring(m_L, -1);
         if (name != nullptr) {
-            Inject_AddDeclaredInjection(name);
+            Inject_AddDeclaredInjection(name, decl->dir);
         } else {
             Console_ShowError("an injection declaration must name files");
         }
@@ -46,7 +53,7 @@ static void M_Collect(void)
 {
     for (int32_t i = 0; m_Declarations != nullptr && i < m_Declarations->count;
          i++) {
-        M_ReadList(*(int32_t *)Vector_Get(m_Declarations, i));
+        M_ReadList(Vector_Get(m_Declarations, i));
     }
 }
 
@@ -55,11 +62,14 @@ static int M_L_Declare(lua_State *const L)
 {
     luaL_checktype(L, 1, LUA_TFUNCTION);
     if (m_Declarations == nullptr) {
-        m_Declarations = Vector_Create(sizeof(int32_t));
+        m_Declarations = Vector_Create(sizeof(M_DECLARATION));
     }
     lua_pushvalue(L, 1);
-    const int32_t ref = luaL_ref(L, LUA_REGISTRYINDEX);
-    Vector_Add(m_Declarations, (void *)&ref);
+    const M_DECLARATION decl = {
+        .ref = luaL_ref(L, LUA_REGISTRYINDEX),
+        .dir = Memory_DupStr(LUA_GetStartupScriptDir()),
+    };
+    Vector_Add(m_Declarations, (void *)&decl);
     return 0;
 }
 
@@ -79,6 +89,10 @@ static void M_Shutdown(void)
 {
     Inject_SetDeclarationCollector(nullptr);
     if (m_Declarations != nullptr) {
+        for (int32_t i = 0; i < m_Declarations->count; i++) {
+            M_DECLARATION *const decl = Vector_Get(m_Declarations, i);
+            Memory_FreePointer(&decl->dir);
+        }
         Vector_Free(m_Declarations);
         m_Declarations = nullptr;
     }

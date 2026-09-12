@@ -45,6 +45,24 @@ An expansion that has nothing of its own to set up needs no file: the script of
 the game it extends runs instead. Shipping one replaces that script rather than
 adding to it, so anything worth keeping goes in a module both require.
 
+### Scripts in a directory of their own
+
+A script that belongs to no single game goes in the `scripts/` directory beside
+the engine. It runs when a game starts. A script made of several files goes in
+its own directory, with `init.lua` as its entry point:
+
+```text
+scripts/my_scripts/init.lua
+```
+
+The engine runs each `init.lua` it finds. A script takes effect when it is
+present. A directory without one does nothing. The scripts that ship with the
+engine run first, so a directory script can use what they have declared.
+
+The engine looks for a file beside the script first. For example,
+`trx.inject.declare` naming `my.bin` finds `scripts/my_scripts/my.bin` before
+the game's own injections. The script does not need to name its directory.
+
 ### Sharing code between scripts
 
 A script can put what it has in common with another in a file of its own and
@@ -56,6 +74,7 @@ local mine = require("tr1.my_module")            -- games/tr1/modules/my_module.
 local nested = require("tr1.my_group.my_module") -- games/tr1/modules/my_group/my_module.lua
 local other = require("tr1-ub.my_module")        -- any installed game, by its directory name
 local pooled = require("common.my_module")       -- modules/my_module.lua, beside the engine
+local own = require(".my_module")                -- the directory it runs from
 ```
 
 A module lives in `modules/`, alongside the `scripts/` the engine runs, and a
@@ -66,6 +85,10 @@ is named the way it appears in `games/`, so a script says which game it is
 reaching into and gets the same file whichever game is running. `trx` is
 reserved for the engine's own modules, which are the global `trx` table rather
 than something to require.
+
+A name that starts with `.` refers to the directory of the entry point.
+Renaming the directory does not change its `require` calls. Use this form only
+while `init.lua` is loading.
 
 A required script runs once, and every later call is handed what the first one
 returned:
@@ -85,9 +108,9 @@ required by `_game.lua` runs once for the game. The first require of a name
 decides which of the two it is, and every require after it is handed that
 module, so the game and a level never hold two copies of one name.
 
-Names hold letters, digits, `_`, `-` and the `.` that separates directories.
-Case does not count, so a name spelled two ways is one module. There is no way
-to name a file outside the directory the form points at.
+Names can contain letters, digits, `_`, `-` and `.` between directories. A
+relative name has one leading `.`. Case does not count, so two spellings name
+the same module. A name cannot reach outside its directory: `..` is not valid.
 
 ### Interactive commands
 
