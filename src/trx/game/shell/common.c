@@ -127,12 +127,6 @@ bool Shell_IsFullscreen(void)
     return (flags & SDL_WINDOW_FULLSCREEN_DESKTOP) != 0;
 }
 
-SHELL_SIZE Shell_GetCurrentSize(void)
-{
-    return Shell_IsFullscreen() ? Shell_GetCurrentDisplaySize()
-                                : Shell_GetWindowSize();
-}
-
 SHELL_SIZE Shell_GetDefaultSize(void)
 {
     return (SHELL_SIZE) { SHELL_HEADLESS_WIDTH, SHELL_HEADLESS_HEIGHT };
@@ -149,23 +143,6 @@ SHELL_SIZE Shell_GetWindowSize(void)
         SDL_GetWindowSize(window, &result.w, &result.h);
     }
     return result;
-}
-
-SHELL_SIZE Shell_GetCurrentDisplaySize(void)
-{
-    if (Shell_GetArgs()->headless) {
-        return Shell_GetDefaultSize();
-    }
-    int32_t display_idx = 0;
-    SDL_Window *const window = Shell_GetWindow();
-    if (window != nullptr) {
-        display_idx = SDL_GetWindowDisplayIndex(window);
-    }
-    SDL_DisplayMode dm;
-    if (SDL_GetCurrentDisplayMode(display_idx, &dm) == 0) {
-        return (SHELL_SIZE) { .w = dm.w, .h = dm.h };
-    }
-    return (SHELL_SIZE) { .w = -1, .h = -1 };
 }
 
 void Shell_ScheduleExit(void)
