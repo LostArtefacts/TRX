@@ -38,6 +38,15 @@ typedef struct {
 } M_SEGMENT_SEAM;
 
 static bool m_IsFirstHair[M_MAX_BRAIDS];
+
+// The braid currently represented by the segment chain. Each outfit brings its
+// own pigtail count, segment meshes, and bone lengths, so changing any of them
+// leaves the chain describing a braid Lara no longer wears.
+static struct {
+    int32_t count;
+    const ANIM_BONE *bones[M_MAX_BRAIDS];
+    int32_t mesh_idx[M_MAX_BRAIDS];
+} m_Seated = {};
 static SPHERE m_HairSpheres[M_HAIR_SPHERES];
 static HAIR_SEGMENT m_HairSegments[M_MAX_BRAIDS][M_HAIR_SEGMENTS + 1];
 
@@ -797,15 +806,33 @@ static void M_CalculateRenderRolls(
     }
 }
 
+static bool M_HasBraidChanged(void)
+{
+    const LARA_SKIN_BRAID *const braid = Lara_Skin_GetBraid();
+    bool changed = braid->count != m_Seated.count;
+    m_Seated.count = braid->count;
+
+    for (int32_t i = 0; i < M_MAX_BRAIDS; i++) {
+        const ANIM_BONE *const bones = Lara_Skin_GetBraidBoneBase(i);
+        const int32_t mesh_idx = Lara_Skin_GetBraidMeshIdx(i);
+        changed |= bones != m_Seated.bones[i];
+        changed |= mesh_idx != m_Seated.mesh_idx[i];
+        m_Seated.bones[i] = bones;
+        m_Seated.mesh_idx[i] = mesh_idx;
+    }
+    return changed;
+}
+
 void Lara_Hair_Initialise(void)
 {
     for (int32_t i = 0; i < M_MAX_BRAIDS; i++) {
+        m_IsFirstHair[i] = true;
+
         const ANIM_BONE *const bones = Lara_Skin_GetBraidBoneBase(i);
         if (bones == nullptr) {
             continue;
         }
 
-        m_IsFirstHair[i] = true;
         m_HairSegments[i][0].rot.x = -DEG_90;
         m_HairSegments[i][0].rot.y = 0;
 
@@ -818,6 +845,15 @@ void Lara_Hair_Initialise(void)
             m_HairSegments[i][j].vel = (XYZ_32) {};
         }
     }
+}
+
+void Lara_Hair_Rebuild(void)
+{
+    if (!M_HasBraidChanged()) {
+        return;
+    }
+    Lara_Hair_Initialise();
+    Lara_Hair_Control(true);
 }
 
 void Lara_Hair_Control(const bool in_cutscene)
