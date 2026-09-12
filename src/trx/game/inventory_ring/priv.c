@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/core/math.h>
 #include <trx/core/strings.h>
+#include <trx/core/utils.h>
 #include <trx/game/const.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
@@ -138,6 +139,66 @@ static void M_MotionCameraPitch(INV_RING *const ring, const int16_t target)
     motion->camera_pitch_target = target;
     motion->camera_pitch_rate = target / ring->status_frames;
     motion->misc = target;
+}
+
+// Returns how high above the camera an item reaches once the ring has
+// collapsed onto its center, over every item in the ring and over every angle
+// the item can be turned to. The item turns about the vertical axis, which
+// leaves its height alone but carries its width and its depth toward the
+// camera or away from it, and an item nearer the camera stands higher in the
+// view. The corners of the bounding box give the reach, and the tilt the ring
+// holds the item at applies to each of them.
+static int16_t M_GetRingItemElevation(
+    const INV_RING *const ring, const int32_t cam_dist_y,
+    const int32_t cam_dist_z)
+{
+    int16_t result = 0;
+    for (int32_t i = 0; i < ring->number_of_objects; i++) {
+        const INVENTORY_ITEM *const inv_item = ring->list[i];
+        const OBJECT *const obj = Object_Get(inv_item->object_id);
+        if (!obj->loaded || obj->mesh_count < 0) {
+            continue;
+        }
+
+        const BOUNDS_16 *const bounds =
+            &obj->frame_base[inv_item->current_frame].bounds;
+        const XYZ_16 ends[2] = { bounds->min, bounds->max };
+
+        for (int32_t corner = 0; corner < 8; corner++) {
+            const XYZ_32 pos = XYZ_32_Rotate(
+                (XYZ_32) {
+                    .x = ends[corner & 1].x,
+                    .y = ends[(corner >> 1) & 1].y,
+                    .z = ends[(corner >> 2) & 1].z,
+                },
+                (XYZ_16) { .x = inv_item->x_rot });
+            const int32_t reach =
+                XYZ_32_GetLength((XYZ_32) { .x = pos.x, .z = pos.z });
+            const int32_t dist_z =
+                MAX(cam_dist_z - inv_item->z_trans - reach, 1);
+            const int16_t elevation =
+                Math_Atan(dist_z, cam_dist_y + inv_item->y_trans + pos.y);
+            result = MAX(result, elevation);
+        }
+    }
+    return result;
+}
+
+// Returns the pitch that takes a ring out of view before the switch hands over
+// to the next one. The ring collapses onto its center as it goes, so the pitch
+// has to lift the highest point any item reaches there past the edge of the
+// screen. The camera already looks below the ring center, which costs the
+// pitch that much before the ring starts to move off screen.
+static int16_t M_GetRingSwitchPitch(const INV_RING *const ring)
+{
+    const int32_t cam_dist_y = ring->ring_pos.pos.y - ring->camera.pos.y;
+    const int32_t cam_dist_z = INV_RING_CAMERA_2_RING;
+    const int16_t aim = Math_Atan(cam_dist_z, cam_dist_y + M_CAMERA_Y_OFFSET);
+    const int16_t half_fov = Output_GetVerticalHalfFOV(
+        FOV_VALUE_PASSPORT * DEG_1, FOV_MODE_PASSPORT);
+    const int16_t elevation =
+        M_GetRingItemElevation(ring, cam_dist_y, cam_dist_z);
+    return half_fov + elevation - aim;
 }
 
 static void M_MotionRotation(
@@ -526,11 +587,11 @@ void InvRing_SetStatusTransition(
             break;
         case RNG_MAIN2KEYS:
         case RNG_OPTION2MAIN:
-            M_MotionCameraPitch(ring, DEG_45);
+            M_MotionCameraPitch(ring, M_GetRingSwitchPitch(ring));
             break;
         case RNG_MAIN2OPTION:
         case RNG_KEYS2MAIN:
-            M_MotionCameraPitch(ring, -DEG_45);
+            M_MotionCameraPitch(ring, -M_GetRingSwitchPitch(ring));
             break;
         default:
             break;

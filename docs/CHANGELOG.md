@@ -24,6 +24,7 @@
 - Fixed Lara not being able to crawl backwards in certain sloped crawlspaces (OG bug) (TRX1322)
 - Fixed Lara being able to crouch/crawl into spaces with very low ceilings where she can become clamped, such as RX-Tech Mines room 159 (OG bug) (#6477 / TRX1331)
 - Fixed Lara attempting to continue to descend a ladder despite being at the bottom of it (OG bug) (#6461 / TRX1315)
+- Fixed Lara sliding instead of collapsing when a fall kills her on a slope (TRX1408, regression from T1M 2.15.2 / TR2X 0.10 / TRX 1.1)
 
 **UI**
 - Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187 / TRX1036)
@@ -51,6 +52,7 @@
 - Fixed the game flashing over the black bars beside the picture when a frame is advanced in photo mode (regression from 1.10) (TRX1068)
 - Fixed dialogs sitting against a band of screen that no longer matched what the overlay was drawing there, which could leave them overlapping the heading or the item name
 - Fixed the inventory ring's button hints and item count overlapping the line of text the game puts at the foot of the screen
+- Fixed an item hanging at the edge of the screen while the inventory changes from one ring to another (TRX1404)
 - Fixed the icons beside the volume settings, which now show a note for the music and a speaker for the sound effects (TRX1040)
 - Fixed the statistics overlapping inventory text at large text sizes (#6295 / TRX1156)
 
@@ -165,6 +167,7 @@
 - Fixed missing reflections on transparent TR4 surfaces, such as Werner's glasses (TRX1294)
 - Fixed TR3 colored light objects appearing white in TR1 and TR2 levels (#6517 / TRX1377, regression from 1.10)
 - Fixed TR3 levels refusing to start with a message that TRX cannot draw the game
+- Fixed the picture jittering between two frames while the game fades out to quit (TRX1405)
 
 **TR1**
 - Added the ability for Lara to burn in swamp rooms marked with death sectors (#6539 / TRX1395)
@@ -304,6 +307,7 @@
 - Added the `trx.ui.widgets.Digits` widget, which lays a line of text out as an object's sprites
 - Added a new Lua module, `trx.waypoints`, for how far along a level's own progression Lara has got, which TR4 marks out and its guides follow; it is saved with the game and reports the furthest she has ever reached as well as where she is now
 - Added `trx.lara.speech_face`, for the face Lara talks with, which follows the outfit she is wearing rather than the one a level carries
+- Added `trx.cutscenes.is_active`, which says when a cutscene has the screen, including during its fades (TRX1414)
 - Added `trx.cutscenes.set_lara_shadow_bounds()`, for the box a cutscene gives Lara's shadow, so a scene can make it read as something she rides in (TRX911)
 - Added `trx.mod.Mod.can_switch`, which says whether `trx.mod.switch` accepts the mod, so a single level loaded on its own is told apart from a mod a player picks
 - Added `trx.strings.dash_case()`, which spells a name the way the console shows one
