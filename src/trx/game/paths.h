@@ -109,6 +109,10 @@ bool GamePath_Exists(GAME_DYNAMIC_PATH path, const char *rel);
 // must free.
 char *GamePath_GuessExtension(const char *path, const char **extensions);
 
+// Resolve every path component without regard to case. Return an owning path,
+// or nullptr if the path does not exist. The caller must free the result.
+char *GamePath_ResolveCase(const char *path);
+
 // Resolve a user-supplied path by trying:
 // 1. absolute path as-is
 // 2. current working directory for relative paths

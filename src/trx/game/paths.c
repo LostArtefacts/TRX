@@ -1303,6 +1303,14 @@ char *GamePath_GuessExtension(const char *const path, const char **extensions)
     return M_GuessExtensionCached(path, extensions);
 }
 
+char *GamePath_ResolveCase(const char *const path)
+{
+    if (!m_Context.inited) {
+        GamePath_Init(m_Context.args);
+    }
+    return M_ResolveCasePathCached(path);
+}
+
 const char *GamePath_PeekResolveUserPath(
     const GAME_DYNAMIC_PATH path, const char *const input_path)
 {
