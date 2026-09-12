@@ -541,6 +541,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── crystal.bin
 │   │   │   ├── cut2_setup.bin
 │   │   │   ├── cut2_textures.bin
+│   │   │   ├── cut3_gunflash.bin
 │   │   │   ├── cut3_setup.bin
 │   │   │   ├── cut3_textures.bin
 │   │   │   ├── cut4_setup.bin
@@ -1951,6 +1952,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── crystal.bin
     │   │   │   │   ├── cut2_setup.bin
     │   │   │   │   ├── cut2_textures.bin
+    │   │   │   │   ├── cut3_gunflash.bin
     │   │   │   │   ├── cut3_setup.bin
     │   │   │   │   ├── cut3_textures.bin
     │   │   │   │   ├── cut4_setup.bin
