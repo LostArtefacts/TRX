@@ -197,11 +197,15 @@ end
     - <a id="items.Item.destroy" name="items.Item.destroy"></a>[lua]`item:destroy()`  
       Removes the item from the game. Any other handle to it becomes stale.
 
-    - <a id="items.Item.die" name="items.Item.die"></a>[lua]`item:die([explode])`  
+    - <a id="items.Item.die" name="items.Item.die"></a>[lua]`item:die([explode], [flame_variant])`  
       Runs the object's creature death handling: the corpse stays, and [`explode`](#items.Item.die.explode) bursts its meshes as a rocket or grenade would. For creatures; [`destroy`](#items.Item.destroy) simply removes any item from the game.
 
       Parameters:
       - <a id="items.Item.die.explode" name="items.Item.die.explode"></a>**`explode`** (boolean, optional, default `false`). Whether to burst the meshes as it dies.
+      - <a id="items.Item.die.flame_variant" name="items.Item.die.flame_variant"></a>**`flame_variant`** (integer, optional, default `0`). Flame color for flying body parts, as
+        [`trx.fx.sparks.fire_flame`](FX.md#fx.sparks.fire_flame) defines it: `0` orange, `2` pale, and
+        `254` green. Only TR3 and TR4 body parts burn; TR1 and TR2 ignore
+        this.
 
     - <a id="items.Item.distance_to" name="items.Item.distance_to"></a>[lua]`item:distance_to(pos)`  
       Distance from this item to a world position.
@@ -469,11 +473,14 @@ end
       - <a id="items.Item.set_property.name" name="items.Item.set_property.name"></a>**`name`** (string). Which property, as the object declares it.
       - <a id="items.Item.set_property.value" name="items.Item.set_property.value"></a>**`value`** (any). What to write, of the type the property is declared with.
 
-    - <a id="items.Item.shatter" name="items.Item.shatter"></a>[lua]`item:shatter([damage])`  
+    - <a id="items.Item.shatter" name="items.Item.shatter"></a>[lua]`item:shatter([damage], [flame_variant])`  
       Bursts the item's meshes into flying debris, the visual [`die`](#items.Item.die) produces with [`die.explode`](#items.Item.die.explode), on its own. It does not kill or remove the item.
 
       Parameters:
       - <a id="items.Item.shatter.damage" name="items.Item.shatter.damage"></a>**`damage`** (integer, optional, default `0`). Splash damage dealt to nearby items.
+      - <a id="items.Item.shatter.flame_variant" name="items.Item.shatter.flame_variant"></a>**`flame_variant`** (integer, optional, default `0`). Flame color for flying body parts, as
+        [`trx.fx.sparks.fire_flame`](FX.md#fx.sparks.fire_flame) defines it. Only TR3 and TR4 body parts
+        burn; TR1 and TR2 ignore this.
 
     - <a id="items.Item.take_damage" name="items.Item.take_damage"></a>[lua]`item:take_damage(damage)`  
       Hurts the item the way a weapon does, and reports through

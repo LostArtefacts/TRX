@@ -6,6 +6,7 @@
 #include <harness/fake_calls.h>
 
 #include <trx/core/handle.h>
+#include <trx/game/const.h>
 #include <trx/game/items/actions.h>
 #include <trx/game/rooms.h>
 
@@ -158,6 +159,15 @@ int32_t Room_GetHeightEx(
 {
     FAKE_RECORD("get_height", FV(fix_tilts));
     return pos.x < 0 ? NO_HEIGHT : 0;
+}
+
+// Return a ceiling one sector above the flat floor, or no ceiling outside the
+// fake level.
+int32_t Room_GetCeilingEx(
+    const SECTOR *const sector, const XYZ_32 pos, const bool fix_tilts)
+{
+    FAKE_RECORD("get_ceiling", FV(fix_tilts));
+    return pos.x < 0 ? NO_HEIGHT : -WALL_L;
 }
 
 bool Room_FindValidPos(XYZ_32 *const out_pos, int16_t *const out_room_num)

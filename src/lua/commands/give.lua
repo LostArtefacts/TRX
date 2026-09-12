@@ -69,7 +69,7 @@ local LEADBAR = trx.catalog.objects.LEAD_BAR_ITEM
 -- How many went in, so a cheat that found nothing to hand over can say so
 -- rather than announcing a backpack that never got heavier.
 local function add_once(seen, id, count)
-  local icon = trx.inventory:icon_of(id)
+  local icon = trx.inventory:icon_of(id) or id
   if seen[icon] then
     return 0
   end

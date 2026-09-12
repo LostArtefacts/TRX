@@ -34,6 +34,7 @@
 #include <trx/game/option/stats.h>
 #include <trx/game/output/overlay.h>
 #include <trx/game/overlay.h>
+#include <trx/game/random.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
@@ -995,6 +996,12 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     // instead. What plays there is the title script's business.
     ring->live_scene =
         mode == INV_TITLE_MODE && g_GameFlow.main_menu_use_live_scene;
+    // The draw random number generator stands still outside live play, which
+    // holds every effect the scene draws on one value. A live scene runs, so
+    // it advances again for as long as the menu is up.
+    if (ring->live_scene) {
+        Random_FreezeDraw(false);
+    }
     ring->background_style = mode != INV_TITLE_MODE
         ? g_Config.ui.inventory_background_style
         : (ring->live_scene ? BK_NONE : BK_IMAGE);
@@ -1104,6 +1111,7 @@ void InvRing_Close(INV_RING *const ring)
         if (FlybyMode_IsActive()) {
             FlybyMode_Deactivate();
         }
+        Random_FreezeDraw(true);
     }
 
     if (g_Config.input.enable_buffering_inventory) {

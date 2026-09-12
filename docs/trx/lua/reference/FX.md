@@ -471,10 +471,11 @@ end
   and widens on its own.
 
   Parameters:
-  - <a id="fx.knockback.opts" name="fx.knockback.opts"></a>**`opts`** (table). Where the ring starts.
+  - <a id="fx.knockback.opts" name="fx.knockback.opts"></a>**`opts`** (table). Where the ring starts and how far it may lean.
 
     Keys:
     - <a id="fx.knockback.opts.pos" name="fx.knockback.opts.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position.
+    - <a id="fx.knockback.opts.tilt" name="fx.knockback.opts.tilt"></a>**`tilt`** ([trx.math.Angle](MATH.md#math.Angle), optional, default `0`). Maximum tilt for each ring in either direction. `0` keeps them level.
 
   Example:
   ```lua

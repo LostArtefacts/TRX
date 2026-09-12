@@ -354,7 +354,8 @@ static void M_Explode(ITEM *const item)
     }
 
     const int16_t vehicle_item_num = Lara_Vehicle_GetIndex();
-    Item_Shatter(vehicle_item_num, -2, 0);
+    Item_Shatter(
+        vehicle_item_num, (ITEM_SHATTER_ARGS) { .mesh_bits = ~ITEM_MESH(0) });
     Item_Destroy(vehicle_item_num);
     Item_SetFinished(item, true);
     Sound_Effect(SFX_EXPLOSION_1, nullptr, SPM_NORMAL);
@@ -1505,7 +1506,8 @@ bool QuadBike_Control(void)
                 lara_item->current_anim_state = LS(LS_STOP);
                 Item_SwitchToAnim(lara_item, LA(LA_FREEFALL_LAND), 0);
             } else {
-                Item_Shatter(lara->item_num, -1, 0);
+                Item_Shatter(
+                    lara->item_num, (ITEM_SHATTER_ARGS) { .mesh_bits = -1 });
                 Lara_Kill();
                 lara_item->trigger.spent = true;
             }

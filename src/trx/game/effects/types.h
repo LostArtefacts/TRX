@@ -16,6 +16,8 @@ typedef struct {
     int16_t frame_num;
     int16_t counter;
     int16_t shade;
+    // Store the flame variant for a flying body part. Zero is ordinary fire.
+    int16_t flame_variant;
 
     int32_t flag1, flag2;
 

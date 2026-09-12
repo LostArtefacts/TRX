@@ -507,7 +507,7 @@ FX_RING *FX_Ring_PeekRing(const FX_RING_TYPE type, const int32_t idx)
     return &m_Rings[type][idx];
 }
 
-void FX_Ring_SpawnKnockBack(const XYZ_32 pos)
+void FX_Ring_SpawnKnockBack(const XYZ_32 pos, const int16_t tilt)
 {
     for (int32_t i = 0; i < M_MAX_RINGS; i++) {
         FX_RING *const ring = &m_Rings[FX_RING_TYPE_KNOCKBACK][i];
@@ -517,8 +517,11 @@ void FX_Ring_SpawnKnockBack(const XYZ_32 pos)
         ring->pos.x = pos.x;
         ring->pos.y = pos.y - 512 + (i << 7);
         ring->pos.z = pos.z;
-        ring->rot.x = 0;
-        ring->rot.z = 0;
+        // Give each ring a random tilt up to the requested angle.
+        ring->rot.x =
+            tilt == 0 ? 0 : (int16_t)(Random_GetDraw() % (tilt * 2)) - tilt;
+        ring->rot.z =
+            tilt == 0 ? 0 : (int16_t)(Random_GetDraw() % (tilt * 2)) - tilt;
         ring->radius = ((i == 1) + 2) << 8;
         FX_Ring_Sync(ring);
     }

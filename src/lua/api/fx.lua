@@ -637,13 +637,23 @@ and widens on its own.]],
     {
       name = "opts",
       type = "table",
-      description = "Where the ring starts.",
-      fields = { pos_field },
+      description = "Where the ring starts and how far it may lean.",
+      fields = {
+        pos_field,
+        {
+          name = "tilt",
+          type = "math.Angle",
+          optional = true,
+          default = 0,
+          description = "Maximum tilt for each ring in either direction. `0` "
+            .. "keeps them level.",
+        },
+      },
     },
   },
   examples = { [[trx.fx.knockback({ pos = trx.lara.item.pos })]] },
   impl = function(opts)
-    raw.knockback(opts.pos.x, opts.pos.y, opts.pos.z)
+    raw.knockback(opts.pos.x, opts.pos.y, opts.pos.z, opts.tilt or 0)
   end,
 })
 

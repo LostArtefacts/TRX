@@ -1308,11 +1308,21 @@ api.enum = declarator("enum", "enums", {
       -- pairs() hands the caller every value __pairs returns, so returning
       -- `next, public` would hand out the very table the face is there to keep
       -- behind __newindex. The iterator closes over it instead.
+      --
+      -- Read the catalog each time, since a script can add identities after
+      -- the enum is declared.
       __pairs = function(self)
+        local held = public
+        if from_catalog then
+          held = {}
+          for _, constant in ipairs(catalog.values(spec.context)) do
+            held[api.enum_name(spec, constant.name)] = constant.value
+          end
+        end
         local key
         return function()
           local value
-          key, value = next(public, key)
+          key, value = next(held, key)
           return key, value
         end,
           self,

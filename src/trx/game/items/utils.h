@@ -46,17 +46,33 @@ void Item_TakeDamage(
 // decides rather than a weapon. Does nothing to an item already at zero.
 void Item_TakeFatalDamage(ITEM *item, const ITEM *sender);
 
+// One bit per mesh index, for an ITEM mesh_bits mask.
+#define ITEM_MESH(idx_) ((int32_t)(1u << (idx_)))
+
+// Every mesh from lo_ to hi_, both included.
+#define ITEM_MESH_RANGE(lo_, hi_)                                              \
+    ((int32_t)((~0u >> (31 - ((hi_) - (lo_)))) << (lo_)))
+
 bool Item_IsMeshVisible(const ITEM *item, int32_t mesh_num);
 void Item_SetMeshVisible(ITEM *item, int32_t mesh_num, bool visible);
 void Item_SetMeshVisibleMask(ITEM *item, uint32_t mesh_mask, bool visible);
 void Item_ResetMeshBits(ITEM *item);
 
-// Mesh_bits: which meshes to affect.
-// Damage:
-// * Positive values - deal damage, enable body part explosions.
-// * Negative values - deal damage, disable body part explosions.
-// * Zero - don't deal any damage, disable body part explosions.
-int32_t Item_Shatter(int16_t item_num, int32_t mesh_bits, int16_t damage);
+typedef struct {
+    // Set the meshes to burst. -1 bursts every mesh. Use the complement of
+    // the meshes to spare for a narrower set.
+    int32_t mesh_bits;
+
+    // Positive values deal damage and enable body part explosions. Negative
+    // values deal damage and disable them. Zero deals no damage and disables
+    // them.
+    int16_t damage;
+
+    // Set the flame variant for flying body parts. Zero is ordinary fire.
+    int16_t flame_variant;
+} ITEM_SHATTER_ARGS;
+
+int32_t Item_Shatter(int16_t item_num, ITEM_SHATTER_ARGS args);
 
 bool Item_ShouldSpawnBlood(const ITEM *item);
 

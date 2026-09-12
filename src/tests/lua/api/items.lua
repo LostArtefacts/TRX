@@ -641,6 +641,13 @@ test("die runs the object's death handling; destroy does not", function()
   )
 
   fake.reset()
+  trx.items[0]:die(true, 254)
+  assert(
+    fake.calls().creature_die.flame_variant == 254,
+    "die() should pass the flame variant"
+  )
+
+  fake.reset()
   trx.items[0]:destroy()
   assert(
     fake.calls().creature_die.count == 0,
@@ -680,6 +687,12 @@ test("shatter bursts the meshes on their own", function()
 
   trx.items[0]:shatter(5)
   assert(fake.calls().shatter.damage == 5, "the damage should pass through")
+
+  trx.items[0]:shatter(0, 254)
+  assert(
+    fake.calls().shatter.flame_variant == 254,
+    "shatter() should pass the flame variant"
+  )
 end)
 
 test("is_one_shot reads and sets the trigger flag", function()

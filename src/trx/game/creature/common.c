@@ -1060,7 +1060,7 @@ bool Creature_Animate(
 
     Item_Animate(item);
     if (item->is_finished) {
-        Creature_Die(item_num, false);
+        Creature_Die(item_num, (CREATURE_DIE_ARGS) {});
         return false;
     }
 
@@ -1451,8 +1451,10 @@ void Creature_TestBoxDamage(const int16_t item_num)
     Item_TakeDamage(item, M_BOX_DAMAGE, IDF_NO_HIT_STATUS, nullptr);
 }
 
-void Creature_Die(const int16_t item_num, const bool explode)
+void Creature_Die(const int16_t item_num, const CREATURE_DIE_ARGS args)
 {
+    const bool explode = args.explode;
+    const int16_t flame_variant = args.flame_variant;
     ITEM *const item = Item_Get(item_num);
 
     switch (item->object_id) {
@@ -1467,7 +1469,10 @@ void Creature_Die(const int16_t item_num, const bool explode)
 
     case O_SKIDOO_ARMED:
         if (explode) {
-            Item_Shatter(item_num, -1, 0);
+            Item_Shatter(
+                item_num,
+                (ITEM_SHATTER_ARGS) { .mesh_bits = -1,
+                                      .flame_variant = flame_variant });
             ITEM *const vehicle_item = Item_Get(item_num);
             M_Kill(vehicle_item);
             Item_SetVisible(vehicle_item, false);
@@ -1477,7 +1482,10 @@ void Creature_Die(const int16_t item_num, const bool explode)
 
     case O_SKIDOO_DRIVER:
         if (explode) {
-            Item_Shatter(item_num, -1, 0);
+            Item_Shatter(
+                item_num,
+                (ITEM_SHATTER_ARGS) { .mesh_bits = -1,
+                                      .flame_variant = flame_variant });
         }
         M_Kill(item);
         const int16_t vehicle_item_num = SkidooDriver_GetSkidooItemNum(item);
@@ -1496,7 +1504,10 @@ void Creature_Die(const int16_t item_num, const bool explode)
     item->is_collidable = false;
     M_Kill(item);
     if (explode) {
-        Item_Shatter(item_num, -1, 0);
+        Item_Shatter(
+            item_num,
+            (ITEM_SHATTER_ARGS) { .mesh_bits = -1,
+                                  .flame_variant = flame_variant });
         Item_Destroy(item_num);
     } else {
         Item_RemoveSimulated(item_num);

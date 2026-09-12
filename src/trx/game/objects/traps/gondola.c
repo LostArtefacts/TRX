@@ -14,7 +14,9 @@ static void M_Control(const int16_t item_num)
     case GONDOLA_STATE_FLOATING:
         if (item->goal_anim_state == GONDOLA_STATE_CRASH) {
             item->mesh_bits = 0xFF;
-            Item_Shatter(item_num, 240, 0);
+            Item_Shatter(
+                item_num,
+                (ITEM_SHATTER_ARGS) { .mesh_bits = ~ITEM_MESH_RANGE(0, 3) });
         }
         break;
 

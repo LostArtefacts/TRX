@@ -367,6 +367,11 @@ static void M_Init(void)
     M_InitDefaultBindings();
 }
 
+static bool M_IsDirectDevice(const SDL_TouchID touch_id)
+{
+    return SDL_GetTouchDeviceType(touch_id) == SDL_TOUCH_DEVICE_DIRECT;
+}
+
 static void M_Shutdown(void)
 {
     TouchOverlay_Shutdown();
@@ -374,8 +379,8 @@ static void M_Shutdown(void)
 
 static void M_ProcessEvent(const SDL_Event *const event)
 {
-    if (event->type == SDL_FINGERDOWN
-        && !g_Config.input.enable_touch_controls) {
+    if (event->type == SDL_FINGERDOWN && !g_Config.input.enable_touch_controls
+        && M_IsDirectDevice(event->tfinger.touchId)) {
         CONFIG_SET(g_Config.input.enable_touch_controls, true);
         TouchOverlay_SetVisible(true);
         SHOULD(Config_Write());
@@ -710,7 +715,15 @@ INPUT_ROLE Touch_GetPositionRole(const int32_t position)
 
 bool Touch_HasHardwareSupport(void)
 {
-    return SDL_GetNumTouchDevices() > 0;
+    // SDL counts trackpads as touch devices. Only a direct device, where the
+    // player touches the display, is a touchscreen.
+    const int32_t device_count = SDL_GetNumTouchDevices();
+    for (int32_t i = 0; i < device_count; i++) {
+        if (M_IsDirectDevice(SDL_GetTouchDevice(i))) {
+            return true;
+        }
+    }
+    return false;
 }
 
 INPUT_BACKEND_IMPL g_Input_Touch = {

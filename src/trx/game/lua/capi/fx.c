@@ -312,7 +312,8 @@ static int M_L_Footprint(lua_State *const L)
 // trxc.fx.knockback(x, y, z)
 static int M_L_Knockback(lua_State *const L)
 {
-    FX_Ring_SpawnKnockBack(M_ReadPos(L));
+    const XYZ_32 pos = M_ReadPos(L);
+    FX_Ring_SpawnKnockBack(pos, (int16_t)luaL_optinteger(L, 4, 0));
     return 0;
 }
 

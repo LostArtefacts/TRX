@@ -294,7 +294,17 @@ int JSON_ValueGetInt(const JSON_VALUE *const value, const int d)
 int64_t JSON_ValueGetInt64(const JSON_VALUE *const value, const int64_t d)
 {
     const JSON_NUMBER *const num = JSON_ValueGetNumber(value);
-    return num != nullptr ? strtoll(num->number, nullptr, 10) : d;
+    if (num == nullptr) {
+        return d;
+    }
+    const char *const s = num->number;
+    if (strncmp(s, "0x", 2) == 0 || strncmp(s, "0X", 2) == 0) {
+        return strtoll(s, nullptr, 16);
+    }
+    if (strncmp(s, "0b", 2) == 0 || strncmp(s, "0B", 2) == 0) {
+        return strtoll(s + 2, nullptr, 2);
+    }
+    return strtoll(s, nullptr, 10);
 }
 
 double JSON_ValueGetDouble(const JSON_VALUE *const value, const double d)

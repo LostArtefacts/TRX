@@ -155,7 +155,11 @@ static void M_Draw3DPickups(const M_PRIV *const p)
         Matrix_Scale((1 << W2V_SHIFT) * scale);
 
         // Set up lighting for the pickup mesh.
-        if (g_TRVersion >= 3) {
+        if (g_TRVersion == 4) {
+            // The OG lights a HUD pickup by a flat brightness alone, with no
+            // room lights (output.cpp S_DrawPickup).
+            Output_CalculateStaticLightRGB_F((RGB_F) { 1.0f, 1.0f, 1.0f });
+        } else if (g_TRVersion == 3) {
             // Port of OG TR3's SetPickupLight().
             // ambient = (64, 64, 64)
             // sun     = (3072, 1680, 640)

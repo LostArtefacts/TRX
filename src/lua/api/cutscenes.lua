@@ -325,10 +325,34 @@ api.property("cutscenes.signals.is_playing", {
   end,
 })
 
+local cutscene_active = nil
+
+api.property("cutscenes.signals.is_active", {
+  type = "signal.Signal",
+  description = "Signals when a cutscene has the screen, including during its fades.",
+  get = function()
+    if cutscene_active == nil then
+      cutscene_active = trx.signal.polled(function()
+        return trx.cutscenes.is_active
+      end)
+    end
+    return cutscene_active
+  end,
+})
+
 api.property("cutscenes.is_playing", {
   type = "boolean",
   description = "Whether a cutscene is on screen.",
   get = raw.is_playing,
+})
+
+api.property("cutscenes.is_active", {
+  type = "boolean",
+  description = [[
+    Whether a cutscene has the screen, including during its fades. Use this
+    to keep an interface off while the cutscene is active.
+  ]],
+  get = raw.is_active,
 })
 
 api.property("cutscenes.count", {
