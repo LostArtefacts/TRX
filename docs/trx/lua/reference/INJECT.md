@@ -25,9 +25,9 @@ injections, so a mod can ship its content without changing a game flow.
   The function runs before each level loads its content. It can read the current
   settings and return a different list for each level.
 
-  Return file names, not paths. The game searches for them in the same order as
-  game-flow injections: in the mod first, then in the base game. Use
-  [`trx.path.resolve`](PATH.md#path.resolve) to check whether a file exists first.
+  Return file names, not paths. A file beside the script is searched first. Other
+  files are searched in the same order as game-flow injections: in the mod first,
+  then in the base game. Use [`trx.path.resolve`](PATH.md#path.resolve) to check whether a file exists.
 
   Parameters:
   - <a id="inject.declare.declaration" name="inject.declare.declaration"></a>**`declaration`** (function). Called before each level loads and returns a list of file names.

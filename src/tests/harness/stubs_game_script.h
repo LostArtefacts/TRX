@@ -6,3 +6,6 @@
 // require() real files. A source with no directory set resolves nothing, which
 // is what a test running no scripts wants.
 void FakeGameScript_SetScriptDir(GAME_DYNAMIC_PATH path, const char *dir);
+
+// Set the directory for relative names. Pass nullptr for a loose script.
+void FakeGameScript_SetOwnDir(const char *dir);

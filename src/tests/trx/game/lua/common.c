@@ -31,6 +31,8 @@
 #define M_GAMES_DIR "lua_scripts_games"
 #define M_COMMON_DIR "lua_scripts_common"
 #define M_SCRIPTS_DIR "lua_scripts_engine"
+#define M_OWN_DIR "lua_scripts_own"
+#define M_OTHER_OWN_DIR "lua_scripts_own_other"
 
 typedef struct {
     char path[256];
@@ -86,13 +88,13 @@ static void M_ClearScripts(void)
     FakeGameScript_SetScriptDir(GAME_DYNAMIC_PATH_GAME_MODULE_FILE, nullptr);
     FakeGameScript_SetScriptDir(GAME_DYNAMIC_PATH_COMMON_MODULE_FILE, nullptr);
     FakeGameScript_SetScriptDir(GAME_DYNAMIC_PATH_GAME_SCRIPT_FILE, nullptr);
+    FakeGameScript_SetOwnDir(nullptr);
 }
 
 // A name carries directories of its own, so each of them is made in turn
 // before the file lands.
-static char *M_WriteScriptIn(
-    const GAME_DYNAMIC_PATH source, const char *const dir,
-    const char *const name, const char *const body)
+static char *M_WriteFileIn(
+    const char *const dir, const char *const name, const char *const body)
 {
     M_MakeDir(dir);
 
@@ -110,7 +112,14 @@ static char *M_WriteScriptIn(
     fputs(body, fp);
     fclose(fp);
 
-    char *const kept = M_Remember(path, false);
+    return M_Remember(path, false);
+}
+
+static char *M_WriteScriptIn(
+    const GAME_DYNAMIC_PATH source, const char *const dir,
+    const char *const name, const char *const body)
+{
+    char *const kept = M_WriteFileIn(dir, name, body);
     FakeGameScript_SetScriptDir(source, dir);
     return kept;
 }
@@ -126,6 +135,14 @@ static void M_WriteCommonScript(const char *const name, const char *const body)
 {
     M_WriteScriptIn(
         GAME_DYNAMIC_PATH_COMMON_MODULE_FILE, M_COMMON_DIR, name, body);
+}
+
+// Write a file beside the script that is running.
+static void M_WriteOwnScript(
+    const char *const dir, const char *const name, const char *const body)
+{
+    M_WriteFileIn(dir, name, body);
+    FakeGameScript_SetOwnDir(dir);
 }
 
 // What the engine runs rather than a script requires: _game.lua, and the level
@@ -373,6 +390,43 @@ TEST(a_directory_with_an_init_script_answers_to_its_name)
     M_Done();
 }
 
+// Resolve files beside a script with a relative name.
+TEST(a_relative_name_reaches_a_file_beside_it)
+{
+    M_Booted();
+    M_WriteOwnScript(M_OWN_DIR, "utils", "return { name = 'mine' }\n");
+    M_WriteOwnScript(
+        M_OWN_DIR, "net/http/init", "return { name = 'nested' }\n");
+
+    M_CheckEval("assert(require('.utils').name == 'mine')");
+    M_CheckEval("assert(require('.net.http').name == 'nested')");
+
+    M_Done();
+}
+
+// Keep relative modules separate when scripts use the same name.
+TEST(two_directories_requiring_one_name_are_handed_their_own_file)
+{
+    M_Booted();
+    M_WriteOwnScript(M_OWN_DIR, "utils", "return 'first'\n");
+    M_CheckEval("assert(require('.utils') == 'first')");
+
+    M_WriteOwnScript(M_OTHER_OWN_DIR, "utils", "return 'second'\n");
+    M_CheckEval("assert(require('.utils') == 'second')");
+
+    M_Done();
+}
+
+// Reject relative names from loose scripts.
+TEST(a_relative_name_is_refused_outside_a_directory)
+{
+    M_Booted();
+
+    M_CheckEvalFails("require('.utils')", "relative names work only");
+
+    M_Done();
+}
+
 // Refuse a file and directory with the same module name.
 TEST(a_script_beside_a_directory_of_the_same_name_is_refused)
 {
@@ -394,7 +448,8 @@ TEST(a_name_that_could_reach_outside_is_refused)
 
     M_CheckEval(
         "for _, name in ipairs({'../secret', 'tr1/my_module', '/etc/passwd',\n"
-        "    '..', 'tr1..a', '.my_module', 'tr1.', '', 'tr1\\\\a'}) do\n"
+        "    '..', '.', 'tr1..a', '.tr1..a', './my_module', 'tr1.', '',\n"
+        "    'tr1\\\\a'}) do\n"
         "  local ok, err = pcall(require, name)\n"
         "  assert(not ok, 'require accepted ' .. name)\n"
         "  assert(err:find('not a script name', 1, true), name)\n"

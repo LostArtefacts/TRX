@@ -18,9 +18,9 @@ Adds injections to every level, in addition to those named by its game flow.
 The function runs before each level loads its content. It can read the current
 settings and return a different list for each level.
 
-Return file names, not paths. The game searches for them in the same order as
-game-flow injections: in the mod first, then in the base game. Use
-`trx.path.resolve` to check whether a file exists first.]],
+Return file names, not paths. A file beside the script is searched first. Other
+files are searched in the same order as game-flow injections: in the mod first,
+then in the base game. Use `trx.path.resolve` to check whether a file exists.]],
   params = {
     {
       name = "declaration",

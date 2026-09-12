@@ -6604,7 +6604,7 @@
       "path": "game.screenshot"
     },
     {
-      "description": "Adds injections to every level, in addition to those named by its game flow.\n\nThe function runs before each level loads its content. It can read the current\nsettings and return a different list for each level.\n\nReturn file names, not paths. The game searches for them in the same order as\ngame-flow injections: in the mod first, then in the base game. Use\n`trx.path.resolve` to check whether a file exists first.",
+      "description": "Adds injections to every level, in addition to those named by its game flow.\n\nThe function runs before each level loads its content. It can read the current\nsettings and return a different list for each level.\n\nReturn file names, not paths. A file beside the script is searched first. Other\nfiles are searched in the same order as game-flow injections: in the mod first,\nthen in the base game. Use `trx.path.resolve` to check whether a file exists.",
       "examples": [
         "trx.inject.declare(function()\n  local files = { \"mymod_models.bin\" }\n  if trx.config.get(\"visuals.enable_ps1_crystals\") then\n    files[#files + 1] = \"wall_crystals.bin\"\n  end\n  return files\nend)"
       ],
