@@ -232,7 +232,7 @@ int32_t Item_Shatter(const int16_t item_num, const ITEM_SHATTER_ARGS args)
     const int16_t damage = args.damage;
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
-    if (!obj->loaded) {
+    if (!obj->loaded || item->room_num == NO_ROOM) {
         return 0;
     }
 
