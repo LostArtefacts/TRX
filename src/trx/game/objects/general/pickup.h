@@ -15,6 +15,8 @@ typedef enum {
     PICKUP_MODE_NUMBER_OF,
 } PICKUP_MODE;
 
+// Set up an object with pickup behaviour.
+void Pickup_Setup(OBJECT *obj);
 bool Pickup_Trigger(int16_t item_num);
 const OBJECT_BOUNDS *Pickup_Bounds(void);
 void Pickup_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);

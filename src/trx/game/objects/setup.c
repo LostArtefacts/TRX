@@ -3,6 +3,8 @@
 #include <trx/debug.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/families.h>
+#include <trx/game/objects/general/pickup.h>
 #include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
 
@@ -93,6 +95,8 @@ void Object_SetupAllObjects(void)
         ObjectProperty_ResetObject(obj);
         if (obj->setup_func != nullptr) {
             obj->setup_func(obj);
+        } else if (ObjectFamily_Has(i, OBJ_FAMILY_PICKUP)) {
+            Pickup_Setup(obj);
         }
         obj->leaves_corpse |= obj->intelligent;
 

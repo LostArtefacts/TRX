@@ -977,7 +977,7 @@ static bool M_Draw(const ITEM *const item)
     return Object_DrawPickupItem(item);
 }
 
-static void M_Setup(OBJECT *const obj)
+void Pickup_Setup(OBJECT *const obj)
 {
     obj->trigger_func = M_Trigger;
     obj->control_func = M_Control;
@@ -1099,8 +1099,8 @@ void Pickup_Collect(const GAME_VECTOR pos, const PICKUP_MODE mode)
 }
 
 // O_FLARE_ITEM registers its own specialized setup.
-#define X_PICKUP(item, option) REGISTER_OBJECT(item, M_Setup)
-#define X_PICKUP_SPECIAL(item, option) REGISTER_OBJECT(item, M_Setup)
+#define X_PICKUP(item, option) REGISTER_OBJECT(item, Pickup_Setup)
+#define X_PICKUP_SPECIAL(item, option) REGISTER_OBJECT(item, Pickup_Setup)
 #define X_PICKUP_SUPPLY_VARIANT(item, option)
 #include <trx/game/objects/pickups.def>
 #undef X_PICKUP_SUPPLY_VARIANT
