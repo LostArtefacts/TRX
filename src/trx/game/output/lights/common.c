@@ -212,6 +212,10 @@ void Output_Lights_SetScalarStaticLight(const int16_t adder)
 
 void Output_CalculateLight(const XYZ_32 pos, const int16_t room_num)
 {
+    if (Room_Get(room_num) == nullptr) {
+        Output_CalculateStaticLight(SHADE_NEUTRAL);
+        return;
+    }
     Output_Lights_GetModel()->calculate_light(pos, room_num);
 }
 
