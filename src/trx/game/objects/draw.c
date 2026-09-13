@@ -311,8 +311,11 @@ bool Object_DrawPickupItem(const ITEM *const item)
         return false;
     }
 
-    if (!g_Config.visuals.enable_3d_pickups
-        && Object_Get(item->object_id)->loaded) {
+    // An object without sprites, such as one an injection brings, stays a
+    // mesh even with 3D pickups disabled.
+    const OBJECT *const sprite_obj = Object_Get(item->object_id);
+    if (!g_Config.visuals.enable_3d_pickups && sprite_obj->loaded
+        && sprite_obj->mesh_count < 0) {
         return Object_DrawSpriteItem(item);
     }
 
