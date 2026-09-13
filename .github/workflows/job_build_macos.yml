@@ -21,6 +21,7 @@ env:
   CACHE_TMP_DIR: /tmp/opt_local/
   CACHE_DST_DIR: /opt/local/
   C_INCLUDE_PATH: /opt/local/include/uthash/:/opt/local/include/
+  MACOS_DEPLOYMENT_TARGET: "11.0"
 
 jobs:
   build:
@@ -107,6 +108,8 @@ jobs:
       - name: Build arm64 and create app bundle
         env:
           CC: clang
+          CFLAGS: "-mmacosx-version-min=11.0"
+          LDFLAGS: "-mmacosx-version-min=11.0"
         run: |
           BUILD_DIR=build-arm64
           BUILD_OPTIONS="src --prefix=/tmp/${{ steps.vars.outputs.name }}.app --bindir=Contents/MacOS --buildtype ${{ inputs.target }} -Dlua_dep=lua5.4"
@@ -116,6 +119,8 @@ jobs:
       - name: Build x86-64
         env:
           CC: clang
+          CFLAGS: "-mmacosx-version-min=11.0"
+          LDFLAGS: "-mmacosx-version-min=11.0"
         run: |
           BUILD_DIR=build-x86-64
           BUILD_OPTIONS="src --prefix=/tmp/${{ steps.vars.outputs.name }}.app --bindir=Contents/MacOS --cross-file tools/shared/mac/x86-64_cross_file.txt --buildtype ${{ inputs.target }} -Dlua_dep=lua5.4"
