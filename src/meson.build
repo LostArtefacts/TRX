@@ -414,6 +414,7 @@ common_sources = [
   'trx/game/inject/testers/items.c',
   'trx/game/inject/testers/rooms.c',
   'trx/game/inject/testers/textures.c',
+  'trx/game/inject/testers/version.c',
   'trx/game/inject/utils.c',
   'trx/game/input/backends/controller.c',
   'trx/game/input/backends/internal.c',
