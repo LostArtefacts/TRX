@@ -247,7 +247,7 @@
         },
         "death_tile": {
           "type": "string",
-          "description": "Defines death-tile behavior (for TR3 only).",
+          "description": "Defines death-tile behavior.",
           "enum": [
             "lava",
             "rapids",
