@@ -42,7 +42,8 @@ typedef enum {
     ITT_ROOM_COUNT     = 1,
     ITT_ROOM_META      = 2,
     ITT_TEXTURE_SAMPLE = 3,
-    ITT_NUMBER_OF      = 4,
+    ITT_GAME_VERSION   = 4,
+    ITT_NUMBER_OF      = 5,
 } INJECTION_TEST_TYPE;
 
 typedef enum {
