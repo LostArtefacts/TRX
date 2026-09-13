@@ -667,6 +667,7 @@ void Inject_AppendInjection(TRX_FILE *const file)
     m_Injections =
         Memory_Realloc(m_Injections, sizeof(INJECTION) * (m_NumInjections + 1));
     INJECTION *const injection = &m_Injections[m_NumInjections++];
+    memset(injection, 0, sizeof(INJECTION));
     M_ReadFile(injection, file, nullptr);
     M_InitialiseInjection(injection);
 }
