@@ -263,6 +263,8 @@
 - Fixed a missing texture in room 30 in the title level (TRX1372)
 - Fixed faulty portals between rooms 60 and 64 in Angkor Wat, and a missing texture in room 64 (TRX698 / TRX1372)
 - Fixed missing and incorrect textures in Race for the Iris rooms 4, 31, 99 and 103 (TRX1372)
+- Fixed a low quality texture on young Lara's head (OG bug) (TRX1452)
+- Fixed texture bleeding on Lara's nose when bilinear filtering is enabled (OG bug) (TRX1453)
 
 **Miscellaneous**
 - Added an option to cast Lara in gold whatever she is wearing (Graphic Options → Visuals → Golden Lara) (TRX1070)
