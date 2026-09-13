@@ -135,7 +135,7 @@ Following are each of the properties available within a level.
     <td><code>weather_type</code></td>
     <td>String</td>
     <td colspan="2">
-      TR3 only. Enables per-level weather.
+      Enables per-level weather.
       Valid values: <code>rain</code>, <code>snow</code>.
       Omit for none.
     </td>
@@ -153,7 +153,7 @@ Following are each of the properties available within a level.
     <td><code>death_tile</code></td>
     <td>String</td>
     <td colspan="2">
-      TR3 only. Controls the per-level death tile behavior.
+      Controls the per-level death tile behavior.
       Valid values: <code>lava</code>, <code>rapids</code>, <code>electric</code>.
       Omit for lava.
     </td>
