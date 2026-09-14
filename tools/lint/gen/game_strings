@@ -639,10 +639,18 @@ def merge_lua_declarations(
 
 def get_enum_value_types(paths: list[Path]) -> dict[str, str]:
     value_types: dict[str, str] = {}
+    sources = []
     for path in paths:
         source = re.sub("//.*", "", path.read_text(), flags=re.M)
         source = re.sub(r"/\*.*?\*/", "", source, flags=re.S)
         source = re.sub(r"^\s*#define\s+.*$", "", source, flags=re.M)
+        sources.append(source)
+    # The game registers roles.def before any explicit ENUM_MAP alias, so
+    # the input role pass runs first to key the labels the same way.
+    for source in sources:
+        for role, state in RE_INPUT_ROLE_DEFINE.findall(source):
+            value_types.setdefault(role, enum_label_key("INPUT_ROLE", state))
+    for source in sources:
         for enum_type, enum_value, name in RE_ENUM_MAP_DEFINE.findall(source):
             # An alias is a second name for one value, and the first one
             # registered is the one the label is keyed on.
@@ -653,8 +661,6 @@ def get_enum_value_types(paths: list[Path]) -> dict[str, str]:
             value_types.setdefault(
                 prefix + suffix, enum_label_key(enum_type, suffix.lower())
             )
-        for role, state in RE_INPUT_ROLE_DEFINE.findall(source):
-            value_types.setdefault(role, enum_label_key("INPUT_ROLE", state))
     return value_types
 
 
