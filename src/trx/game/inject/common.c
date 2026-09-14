@@ -35,6 +35,7 @@ typedef struct {
     int32_t size;
     INJECTION_VERSION version;
     INJECTION_FILE_TYPE type;
+    bool trxi;
     bool used;
 } M_PAYLOAD_ENTRY;
 
@@ -122,12 +123,17 @@ static bool M_IsRelevant(
 
 static INJECTION_CHUNK M_ReadChunk(const INJECTION *const injection)
 {
-    return (INJECTION_CHUNK) {
+    INJECTION_CHUNK chunk = {
         .injection = injection,
         .type = File_ReadS32(injection->fp),
-        .num_blocks = File_ReadS32(injection->fp),
-        .total_size = File_ReadS32(injection->fp),
+        .version = 1,
     };
+    if (injection->trxi) {
+        chunk.version = File_ReadS32(injection->fp);
+    }
+    chunk.num_blocks = File_ReadS32(injection->fp);
+    chunk.total_size = File_ReadS32(injection->fp);
+    return chunk;
 }
 
 static bool M_SymbolContextToCatalog(
@@ -207,8 +213,40 @@ static void M_InitialiseBlock(
     const INJECTION_DATA_TYPE data_type = File_ReadS32(file);
     const int32_t data_count = File_ReadS32(file);
     const int32_t data_size = File_ReadS32(file);
+
+    if (injection->trxi && data_type == IDT_OBJECT_MESHES) {
+        // TRXI counts meshes; the level loader sizes its arena in legacy
+        // 16-bit words, so take the safe upper bound from the byte size.
+        m_DataCounts[data_type] += data_size / 2;
+        File_Skip(file, data_size);
+        return;
+    }
+
     if (data_type >= 0 && data_type < IDT_NUMBER_OF) {
         m_DataCounts[data_type] += data_count;
+    }
+
+    if (injection->trxi
+        && (data_type == IDT_SAMPLE_INFOS
+            || data_type == IDT_NAMED_SAMPLE_INFOS)) {
+        for (int32_t i = 0; i < data_count; i++) {
+            // Skip ID, volume and chance, then pitch and range.
+            File_Skip(file, 3 * sizeof(int16_t) + 2 * sizeof(int8_t));
+            File_Skip(file, sizeof(uint16_t));
+            const uint8_t num_samples = File_ReadU8(file);
+            m_DataCounts[IDT_SAMPLE_INDICES] += num_samples;
+            for (int32_t j = 0; j < num_samples; j++) {
+                const uint8_t mode = File_ReadU8(file);
+                if (mode == 0) {
+                    const int32_t sample_length = File_ReadS32(file);
+                    m_DataCounts[IDT_SAMPLE_DATA] += sample_length;
+                    File_Skip(file, sample_length);
+                } else {
+                    File_Skip(file, sizeof(uint32_t));
+                }
+            }
+        }
+        return;
     }
 
     switch (data_type) {
@@ -318,7 +356,8 @@ static M_PAYLOAD_ENTRY *M_GetCachedPayload(const char *const path)
 
 static void M_StorePayload(
     const char *const path, const char *const payload, const int32_t size,
-    const INJECTION_VERSION version, const INJECTION_FILE_TYPE type)
+    const INJECTION_VERSION version, const INJECTION_FILE_TYPE type,
+    const bool trxi)
 {
     if (path == nullptr) {
         return;
@@ -334,6 +373,7 @@ static void M_StorePayload(
             .size = size,
             .version = version,
             .type = type,
+            .trxi = trxi,
             .used = true,
         };
         Vector_Add(m_PayloadCache, &entry);
@@ -355,6 +395,7 @@ static bool M_LoadFromCache(
     injection->path = Memory_DupStr(file_name);
     injection->version = entry->version;
     injection->type = entry->type;
+    injection->trxi = entry->trxi;
     injection->relevant = M_IsRelevant(&m_Context, entry->type);
     if (injection->relevant) {
         injection->fp = File_OpenBuffer(entry->payload, entry->size);
@@ -393,17 +434,32 @@ static void M_ReadFile(
     File_SetSoftFailure(file, true);
 
     const uint32_t magic = File_ReadU32(file);
-    if (File_HasFailed(file) || magic != INJECTION_MAGIC) {
+    if (File_HasFailed(file)
+        || (magic != INJECTION_MAGIC && magic != INJECTION_MAGIC_TRXI)) {
         LOG_WARNING("Invalid injection magic in %s", inj_name);
         goto cleanup;
     }
 
-    injection->version = File_ReadS32(file);
-    if (injection->version < INJ_VERSION_2
-        || injection->version > INJ_CURRENT_VERSION) {
-        LOG_WARNING(
-            "%s uses unsupported version %d", inj_name, injection->version);
-        goto cleanup;
+    injection->trxi = magic == INJECTION_MAGIC_TRXI;
+    if (injection->trxi) {
+        const int32_t format_major = File_ReadS32(file);
+        if (format_major > INJECTION_TRXI_FORMAT_MAJOR) {
+            LOG_WARNING(
+                "%s uses format major %d, this build reads up to %d", inj_name,
+                format_major, INJECTION_TRXI_FORMAT_MAJOR);
+            goto cleanup;
+        }
+        // Layouts shared with the legacy reader sit at their newest
+        // revision, so shared code takes its current paths.
+        injection->version = INJ_CURRENT_VERSION;
+    } else {
+        injection->version = File_ReadS32(file);
+        if (injection->version < INJ_VERSION_2
+            || injection->version > INJ_CURRENT_VERSION) {
+            LOG_WARNING(
+                "%s uses unsupported version %d", inj_name, injection->version);
+            goto cleanup;
+        }
     }
 
     injection->type = File_ReadS32(file);
@@ -436,7 +492,7 @@ static void M_ReadFile(
 
     M_StorePayload(
         file_name, payload, uncompressed_size, injection->version,
-        injection->type);
+        injection->type, injection->trxi);
     injection->fp = File_OpenBuffer(payload, uncompressed_size);
     File_SetSoftFailure(injection->fp, true);
     if (m_Context.mode != INJECTION_MODE_STATS) {
@@ -456,7 +512,15 @@ static void M_InitialiseInjection(INJECTION *const injection)
 
     File_Seek(injection->fp, 0, FILE_SEEK_SET);
 
-    {
+    if (injection->trxi) {
+        // Tests are executed after the main level data is loaded.
+        const int32_t test_count = File_ReadS32(injection->fp);
+        for (int32_t i = 0; i < test_count; i++) {
+            File_Skip(injection->fp, 2 * sizeof(int32_t));
+            const int32_t test_size = File_ReadS32(injection->fp);
+            File_Skip(injection->fp, test_size);
+        }
+    } else {
         // Tests are executed after the main level data is loaded.
         File_Skip(injection->fp, sizeof(int32_t));
         const int32_t test_size = File_ReadS32(injection->fp);
@@ -500,12 +564,29 @@ static void M_LoadInjectionJob(void *const user_data)
 static bool M_IsApplicable(const INJECTION *const injection)
 {
     const int32_t test_count = File_ReadS32(injection->fp);
-    File_Skip(injection->fp, sizeof(int32_t));
+    if (!injection->trxi) {
+        File_Skip(injection->fp, sizeof(int32_t));
+    }
 
     bool applicable = true;
     for (int32_t i = 0; i < test_count; i++) {
         const INJECTION_TEST_TYPE type = File_ReadS32(injection->fp);
-        if (m_Testers[type] == nullptr) {
+        if (injection->trxi) {
+            const int32_t version = File_ReadS32(injection->fp);
+            const int32_t size = File_ReadS32(injection->fp);
+            const size_t test_end = File_Pos(injection->fp) + size;
+            if (type < 0 || type >= ITT_NUMBER_OF || m_Testers[type] == nullptr
+                || version > 1) {
+                // An unknown condition cannot be assumed to hold.
+                LOG_WARNING(
+                    "Unknown injection test type %d version %d", type, version);
+                applicable = false;
+            } else {
+                applicable &= m_Testers[type](&m_Context, injection);
+            }
+            File_Seek(injection->fp, test_end, FILE_SEEK_SET);
+        } else if (
+            type < 0 || type >= ITT_NUMBER_OF || m_Testers[type] == nullptr) {
             LOG_WARNING("Unknown injection test type %d", type);
             applicable = false;
             break;
@@ -708,8 +789,10 @@ void Inject_AllInjections(void)
         for (int32_t j = 0; j < num_chunks; j++) {
             const INJECTION_CHUNK chunk = M_ReadChunk(injection);
             if (chunk.type < 0 || chunk.type >= ICT_NUMBER_OF
-                || m_Handlers[chunk.type] == nullptr) {
-                LOG_WARNING("Unrecognised chunk type %d", chunk.type);
+                || m_Handlers[chunk.type] == nullptr || chunk.version > 1) {
+                LOG_WARNING(
+                    "Unrecognised chunk type %d version %d", chunk.type,
+                    chunk.version);
                 File_Skip(injection->fp, chunk.total_size);
                 continue;
             }

@@ -299,6 +299,26 @@ unit_tests += {
 
 # core/filesystem formats paths with core/strings, so PCRE2 comes along, and it
 # stats open files through POSIX, which -std=c2x alone hides.
+# The TRXI canonical transcoders parse the game-neutral records and rebuild
+# them per game; they lean on core/file for the parse and core/vector for the
+# mesh pointer remap, and on nothing of the engine.
+unit_tests += {
+  'name': 'trx/game/inject/canonical',
+  'engine': [
+    'core/result.c',
+    'core/file.c',
+    'core/filesystem.c',
+    'core/memory.c',
+    'core/strings/case_funcs.c',
+    'core/strings/common.c',
+    'core/vector.c',
+    'game/inject/canonical.c',
+  ],
+  'src': ['harness/stubs_result.c'],
+  'deps': [dep_pcre2],
+  'args': ['-DPCRE2_CODE_UNIT_WIDTH=8', '-D_DEFAULT_SOURCE'],
+}
+
 unit_tests += {
   'name': 'trx/core/file',
   'engine': [

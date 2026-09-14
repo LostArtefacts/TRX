@@ -3,6 +3,7 @@
 #include <trx/debug.h>
 #include <trx/game/anims.h>
 #include <trx/game/inject.h>
+#include <trx/game/inject/canonical.h>
 #include <trx/game/inject/utils.h>
 #include <trx/game/level/context.h>
 #include <trx/game/level/sections/append.h>
@@ -26,8 +27,14 @@ static void M_HandleAnimData(
 
         switch (data_type) {
         case IDT_ANIMS: {
-            Level_Section_AppendAnims(
-                level_info->anims.anim_count, data_count, chunk.injection->fp);
+            if (chunk.injection->trxi) {
+                InjectCanonical_AppendAnims(
+                    chunk.injection, level_info->anims.anim_count, data_count);
+            } else {
+                Level_Section_AppendAnims(
+                    level_info->anims.anim_count, data_count,
+                    chunk.injection->fp);
+            }
             level_info->anims.anim_count += data_count;
 
             for (int32_t j = 0; j < data_count; j++) {

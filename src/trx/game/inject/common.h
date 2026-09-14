@@ -5,6 +5,8 @@
 #include <trx/game/level.h>
 
 #define INJECTION_MAGIC MKTAG('T', 'R', 'X', 'J')
+#define INJECTION_MAGIC_TRXI MKTAG('T', 'R', 'X', 'I')
+#define INJECTION_TRXI_FORMAT_MAJOR 1
 
 void Inject_InitLevel(const GF_LEVEL *level, INJECTION_MODE mode);
 

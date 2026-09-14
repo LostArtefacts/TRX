@@ -4,6 +4,7 @@
 #include <trx/core/utils.h>
 #include <trx/game/const.h>
 #include <trx/game/inject.h>
+#include <trx/game/inject/canonical.h>
 #include <trx/game/level/context.h>
 #include <trx/game/level/sections/append.h>
 #include <trx/game/objects/common.h>
@@ -33,12 +34,14 @@ static uint16_t M_RemapRGB8(const RGB_888 rgb)
 static void M_HandlePalette(
     const INJECTION *const injection, const int32_t data_count)
 {
+    // TRXI palettes carry full 8-bit channels; legacy ones are 6-bit.
+    const int32_t scale = injection->trxi ? 1 : 4;
     uint16_t palette_map[data_count];
     for (int32_t i = 0; i < data_count; i++) {
         const RGB_888 rgb = {
-            .r = File_ReadU8(injection->fp) * 4,
-            .g = File_ReadU8(injection->fp) * 4,
-            .b = File_ReadU8(injection->fp) * 4,
+            .r = File_ReadU8(injection->fp) * scale,
+            .g = File_ReadU8(injection->fp) * scale,
+            .b = File_ReadU8(injection->fp) * scale,
         };
         palette_map[i] = i == 0 ? 0 : M_RemapRGB8(rgb);
     }
@@ -159,9 +162,15 @@ static void M_HandleTextureInfo(
 
         switch (data_type) {
         case IDT_OBJECT_TEXTURES:
-            Level_Section_AppendObjectTextures(
-                level_info->textures.object_count, page_base, data_count,
-                chunk.injection->fp);
+            if (chunk.injection->trxi) {
+                InjectCanonical_AppendObjectTextures(
+                    chunk.injection, level_info->textures.object_count,
+                    page_base, data_count);
+            } else {
+                Level_Section_AppendObjectTextures(
+                    level_info->textures.object_count, page_base, data_count,
+                    chunk.injection->fp);
+            }
             level_info->textures.object_count += data_count;
             break;
         case IDT_SPRITE_TEXTURES:

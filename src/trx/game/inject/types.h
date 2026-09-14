@@ -22,6 +22,9 @@ typedef struct {
     TRX_FILE *fp;
     INJECTION_VERSION version;
     INJECTION_FILE_TYPE type;
+    // The file uses the TRXI container; version then holds the newest legacy
+    // value so shared readers take their current-layout paths.
+    bool trxi;
     bool relevant;
     // Identities from the file's symbol table. OBJ_TYPE_SYMBOL references
     // state a local slot, which this table maps to a name.
@@ -32,6 +35,8 @@ typedef struct {
 typedef struct {
     const INJECTION *injection;
     INJECTION_CHUNK_TYPE type;
+    // TRXI chunks carry their own layout version; legacy chunks read as 1.
+    int32_t version;
     int32_t num_blocks;
     int32_t total_size;
 } INJECTION_CHUNK;
