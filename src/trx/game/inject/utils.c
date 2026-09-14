@@ -19,14 +19,10 @@ INJECTION_OBJECT_INFO Inject_ReadObjectPtr(const INJECTION *const injection)
             File_Skip(injection->fp, 16);
         }
     } else if (obj_info.type == OBJ_TYPE_SYMBOL) {
-        const int32_t symbol_idx = obj_info.id;
-        obj_info.id = NO_CATALOG_ID;
-        if (symbol_idx < 0 || symbol_idx >= injection->num_symbols) {
-            LOG_WARNING("Symbol %d is out of table range", symbol_idx);
-        } else if (injection->symbols[symbol_idx].context != CATALOG_OBJECTS) {
-            LOG_WARNING("Symbol %d names no object", symbol_idx);
-        } else {
-            obj_info.id = injection->symbols[symbol_idx].id;
+        obj_info.id =
+            Inject_ResolveSymbol(injection, CATALOG_OBJECTS, obj_info.slot);
+        if (obj_info.id == NO_CATALOG_ID) {
+            LOG_WARNING("Slot %d names no object symbol", obj_info.slot);
         }
     }
 
@@ -46,4 +42,17 @@ RESULT Inject_GetObject(
     }
     *out_obj = obj;
     return OK;
+}
+
+CATALOG_ID Inject_ResolveSymbol(
+    const INJECTION *const injection, const CATALOG_CONTEXT context,
+    const int32_t slot)
+{
+    for (int32_t i = 0; i < injection->num_symbols; i++) {
+        const INJECTION_SYMBOL *const symbol = &injection->symbols[i];
+        if (symbol->context == context && symbol->slot == slot) {
+            return symbol->id;
+        }
+    }
+    return NO_CATALOG_ID;
 }
