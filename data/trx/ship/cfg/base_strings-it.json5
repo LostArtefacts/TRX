@@ -790,7 +790,7 @@
             "toggle_fullscreen": "Attiva/Disattiva Schermo Intero",
             "toggle_photo_mode": "Attiva/Disattiva Modalità Foto",
             "toggle_textures": "Attiva/Disattiva Texture",
-            "toggle_trapezoid_filter": "Attiva/Disattiva Filtro Trapezoidale",
+            "toggle_trapezoid_filter": "Filtro Trapezoidale",
             "toggle_ui": "Attiva/Disattiva Interfaccia",
             "toggle_wireframe": "Attiva/Disattiva Modalità Reticolo",
             "turbo_cheat": "Velocità Turbo",
@@ -1635,7 +1635,7 @@
             "description": "Posizione in cui viene visualizzata la barra dell'ossigeno.",
         },
         "ui.ammo_counter_location": {
-            "title": "Posizione indicatore munizioni",
+            "title": "Indicatore munizioni",
             "description": "Posizione in cui viene visualizzato l'indicatore delle munizioni.",
         },
         "ui.bar_look": {
