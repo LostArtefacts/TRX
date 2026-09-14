@@ -271,6 +271,9 @@ static void M_InitialiseBlock(
                 && obj_id > m_MaxStaticObject2DId) {
                 m_MaxStaticObject2DId = obj_id;
             }
+            if (obj_type == OBJ_TYPE_OBJECT && version < INJ_VERSION_5) {
+                File_Skip(file, 16);
+            }
             File_Skip(file, sizeof(int16_t) * 2);
         }
         return;
@@ -287,9 +290,13 @@ static void M_InitialiseBlock(
                 .num_quads = File_ReadS16(file),
                 .num_triangles = File_ReadS16(file),
                 .num_static_2ds = File_ReadS16(file),
-                .num_static_3ds = File_ReadS16(file),
-                .num_sectors = File_ReadS16(file),
             };
+            if (version >= INJ_VERSION_3) {
+                meta.num_static_3ds = File_ReadS16(file);
+            }
+            if (version >= INJ_VERSION_11) {
+                meta.num_sectors = File_ReadS16(file);
+            }
             Vector_Add(m_RoomMeta, &meta);
         }
 
@@ -306,14 +313,20 @@ static void M_InitialiseBlock(
             // Skip ID, volume and chance
             File_Skip(file, 3 * sizeof(int16_t));
             const int16_t flags = File_ReadS16(file);
-            // Skip range and pitch
-            File_Skip(file, sizeof(int32_t) + sizeof(int8_t));
+            if (version >= INJ_VERSION_6) {
+                // Skip range and pitch
+                File_Skip(file, sizeof(int32_t) + sizeof(int8_t));
+            }
             const int16_t num_samples = (flags >> 2) & 0xF;
             m_DataCounts[IDT_SAMPLE_INDICES] += num_samples;
-            for (int32_t j = 0; j < num_samples; j++) {
-                const int32_t sample_length = File_ReadS32(file);
-                m_DataCounts[IDT_SAMPLE_DATA] += sample_length;
-                File_Skip(file, sizeof(char) * sample_length);
+            if (g_TRVersion == 1 || version >= INJ_VERSION_4) {
+                for (int32_t j = 0; j < num_samples; j++) {
+                    const int32_t sample_length = File_ReadS32(file);
+                    m_DataCounts[IDT_SAMPLE_DATA] += sample_length;
+                    File_Skip(file, sizeof(char) * sample_length);
+                }
+            } else if (g_TRVersion >= 2) {
+                File_Skip(file, sizeof(uint32_t));
             }
         }
 
@@ -443,7 +456,7 @@ static void M_ReadFile(
         injection->version = INJ_CURRENT_VERSION;
     } else {
         injection->version = File_ReadS32(file);
-        if (injection->version < INJ_VERSION_6
+        if (injection->version < INJ_VERSION_2
             || injection->version > INJ_CURRENT_VERSION) {
             LOG_WARNING(
                 "%s uses unsupported version %d", inj_name, injection->version);
@@ -519,12 +532,6 @@ static void M_InitialiseInjection(INJECTION *const injection)
     const int32_t num_chunks = File_ReadS32(injection->fp);
     for (int32_t i = 0; i < num_chunks; i++) {
         const INJECTION_CHUNK chunk = M_ReadChunk(injection);
-        if (!injection->trxi && chunk.type != ICT_SFX_DATA
-            && chunk.type != ICT_DATA_EDITS) {
-            // Legacy TRXJ support covers level-editor output only.
-            File_Skip(injection->fp, chunk.total_size);
-            continue;
-        }
         for (int32_t j = 0; j < chunk.num_blocks; j++) {
             M_InitialiseBlock(injection, injection->fp, injection->version);
         }
@@ -788,15 +795,6 @@ void Inject_AllInjections(void)
                 LOG_WARNING(
                     "Unrecognised chunk type %d version %d", chunk.type,
                     chunk.version);
-                File_Skip(injection->fp, chunk.total_size);
-                continue;
-            }
-            if (!injection->trxi && chunk.type != ICT_SFX_DATA
-                && chunk.type != ICT_DATA_EDITS) {
-                // Legacy TRXJ support covers level-editor output only.
-                LOG_WARNING(
-                    "Legacy injection carries chunk type %d, skipping",
-                    chunk.type);
                 File_Skip(injection->fp, chunk.total_size);
                 continue;
             }
