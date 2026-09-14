@@ -214,9 +214,11 @@ static void M_InitialiseBlock(
     const int32_t data_count = File_ReadS32(file);
     const int32_t data_size = File_ReadS32(file);
 
-    if (injection->trxi && data_type == IDT_OBJECT_MESHES) {
-        // TRXI counts meshes; the level loader sizes its arena in legacy
-        // 16-bit words, so take the safe upper bound from the byte size.
+    if (injection->trxi
+        && (data_type == IDT_OBJECT_MESHES || data_type == IDT_ANIM_FRAMES)) {
+        // TRXI counts records; the level loader sizes these arenas in
+        // legacy 16-bit words, and the native form never exceeds the
+        // canonical one, so the byte size gives a safe upper bound.
         m_DataCounts[data_type] += data_size / 2;
         File_Skip(file, data_size);
         return;

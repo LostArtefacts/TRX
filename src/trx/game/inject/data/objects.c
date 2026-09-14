@@ -2,6 +2,7 @@
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/inject.h>
+#include <trx/game/inject/canonical.h>
 #include <trx/game/objects/common.h>
 
 static VECTOR *m_ProcessedMeshes = nullptr;
@@ -58,9 +59,13 @@ static void M_ReadObject(const INJECTION_CHUNK chunk)
 
     // Ommitted animation data marks that existing related object data should be
     // retained i.e. mesh replacement only.
-    const uint32_t frame_ofs = File_ReadU32(chunk.injection->fp);
+    uint32_t frame_ofs = File_ReadU32(chunk.injection->fp);
     const int16_t anim_idx = File_ReadS16(chunk.injection->fp);
     if ((int32_t)frame_ofs != -1) {
+        if (chunk.injection->trxi) {
+            // TRXI object records name a frame ordinal.
+            frame_ofs = InjectCanonical_FrameOffset(frame_ofs);
+        }
         obj->frame_ofs = frame_ofs;
         obj->frame_base = nullptr;
         obj->anim_idx = anim_idx;

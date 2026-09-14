@@ -78,9 +78,17 @@ static void M_HandleAnimData(
         }
 
         case IDT_ANIM_FRAMES: {
-            Level_Section_AppendAnimFrames(
-                level_info->anims.frame_count, data_count, chunk.injection->fp);
-            level_info->anims.frame_count += data_count;
+            if (chunk.injection->trxi) {
+                level_info->anims.frame_count +=
+                    InjectCanonical_AppendAnimFrames(
+                        chunk.injection, level_info->anims.frame_count,
+                        data_count, data_size);
+            } else {
+                Level_Section_AppendAnimFrames(
+                    level_info->anims.frame_count, data_count,
+                    chunk.injection->fp);
+                level_info->anims.frame_count += data_count;
+            }
             break;
         }
 

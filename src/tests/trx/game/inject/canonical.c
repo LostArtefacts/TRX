@@ -2,6 +2,7 @@
 
 #include <trx/core/file.h>
 #include <trx/core/memory.h>
+#include <trx/core/vector.h>
 #include <trx/game/inject/canonical.h>
 
 // The TRXI canonical records have one layout for every game; these are the
@@ -89,14 +90,90 @@ TEST(object_textures_keep_every_field_for_tr4)
     File_Close(src);
 }
 
-// One canonical animation, 40 bytes, with distinct values in the lateral
-// fields so their fate is visible.
+// One canonical frame - bounds 1..6, offset 7..9, two mesh rotations with
+// angles that survive the native packing (multiples of 64) - followed by a
+// canonical animation naming it by ordinal.
+static int32_t M_CanonicalFrame(char *const out)
+{
+    char *at = out;
+    for (int32_t i = 1; i <= 9; i++) {
+        M_Put16(&at, i); // bounds and offset
+    }
+    M_Put16(&at, 2); // rotation count
+    M_Put16(&at, 0x1000); // rot 0 x
+    M_Put16(&at, 0x2000);
+    M_Put16(&at, 0x3000);
+    M_Put16(&at, 64); // rot 1: the smallest angles the packing keeps
+    M_Put16(&at, 128);
+    M_Put16(&at, 192);
+    return at - out;
+}
+
+TEST(frames_pack_the_rotations_for_tr2)
+{
+    char canonical[64];
+    const int32_t size_in = M_CanonicalFrame(canonical);
+    TRX_FILE *const src = File_OpenBuffer(canonical, size_in);
+
+    VECTOR *const offsets = Vector_Create(sizeof(int32_t));
+    VECTOR *const rots = Vector_Create(sizeof(int32_t));
+    char *native = nullptr;
+    const int32_t size =
+        InjectCanonical_TranscodeAnimFrames(src, 1, 2, &native, offsets, rots);
+
+    // Header 18 bytes, then two two-word rotations - no count word.
+    CHECK_EQ_INT(size, 18 + 2 * 4);
+    CHECK_EQ_INT(M_Get16(native, 0), 1); // bounds arrive untouched
+    CHECK_EQ_INT(M_Get16(native, 16), 9);
+    // rot 0: x=0x1000 y=0x2000 z=0x3000 in the two-word form.
+    CHECK_EQ_INT(
+        M_Get16(native, 18), ((0x1000 >> 2) & 0x3FF0) | (0x2000 >> 12));
+    CHECK_EQ_INT(
+        M_Get16(native, 20), (((0x2000 >> 6) & 0x3F) << 10) | (0x3000 >> 6));
+    CHECK_EQ_INT(offsets->count, 1);
+    CHECK_EQ_INT(*(int32_t *)Vector_Get(offsets, 0), 0);
+    CHECK_EQ_INT(*(int32_t *)Vector_Get(rots, 0), 2);
+
+    Vector_Free(offsets);
+    Vector_Free(rots);
+    Memory_FreePointer(&native);
+    File_Close(src);
+}
+
+TEST(frames_keep_the_count_word_and_swap_the_pair_for_tr1)
+{
+    char canonical[64];
+    const int32_t size_in = M_CanonicalFrame(canonical);
+    TRX_FILE *const src = File_OpenBuffer(canonical, size_in);
+
+    VECTOR *const offsets = Vector_Create(sizeof(int32_t));
+    VECTOR *const rots = Vector_Create(sizeof(int32_t));
+    char *native = nullptr;
+    const int32_t size =
+        InjectCanonical_TranscodeAnimFrames(src, 1, 1, &native, offsets, rots);
+
+    // Header 18 bytes, the rotation count, then two two-word rotations.
+    CHECK_EQ_INT(size, 18 + 2 + 2 * 4);
+    CHECK_EQ_INT(M_Get16(native, 18), 2); // rotation count
+    // TR1 stores the pair the other way round.
+    CHECK_EQ_INT(
+        M_Get16(native, 20), (((0x2000 >> 6) & 0x3F) << 10) | (0x3000 >> 6));
+    CHECK_EQ_INT(
+        M_Get16(native, 22), ((0x1000 >> 2) & 0x3FF0) | (0x2000 >> 12));
+
+    Vector_Free(offsets);
+    Vector_Free(rots);
+    Memory_FreePointer(&native);
+    File_Close(src);
+}
+
+// One canonical animation, 40 bytes, naming frame ordinal 0.
 static void M_CanonicalAnim(char *const out)
 {
     char *at = out;
-    M_Put32(&at, 0x11111111); // frameOffset
+    M_Put32(&at, 0); // frame ordinal
     *at++ = 2; // frameRate
-    *at++ = 3; // frameSize
+    *at++ = 0; // frameSize, derived by the reader
     M_Put16(&at, 4); // stateID
     M_Put32(&at, 0x55555555); // speed
     M_Put32(&at, 0x66666666); // accel
@@ -107,18 +184,37 @@ static void M_CanonicalAnim(char *const out)
     }
 }
 
-TEST(anims_drop_the_lateral_motion_for_earlier_games)
+// Frame maps as the frames transcoder would leave them: one frame at native
+// offset 36 with three rotations.
+static void M_FrameMaps(VECTOR **offsets, VECTOR **rots)
+{
+    *offsets = Vector_Create(sizeof(int32_t));
+    *rots = Vector_Create(sizeof(int32_t));
+    const int32_t offset = 36;
+    const int32_t rot_count = 3;
+    Vector_Add(*offsets, (void *)&offset);
+    Vector_Add(*rots, (void *)&rot_count);
+}
+
+TEST(anims_resolve_the_ordinal_and_drop_the_lateral_motion)
 {
     char canonical[40];
     M_CanonicalAnim(canonical);
     TRX_FILE *const src = File_OpenBuffer(canonical, sizeof(canonical));
 
+    VECTOR *offsets, *rots;
+    M_FrameMaps(&offsets, &rots);
     char *native = nullptr;
-    const int32_t size = InjectCanonical_TranscodeAnims(src, 1, 2, &native);
+    const int32_t size =
+        InjectCanonical_TranscodeAnims(src, 1, 2, offsets, rots, &native);
     CHECK_EQ_INT(size, 32);
+    CHECK_EQ_INT((int32_t)M_Get32(native, 0), 36); // native byte offset
+    CHECK_EQ_INT((uint8_t)native[5], 9 + 2 * 3); // derived frame size
     CHECK_EQ_INT((int32_t)M_Get32(native, 12), 0x66666666); // accel
     CHECK_EQ_INT(M_Get16(native, 16), 0x100); // frameStart follows accel
 
+    Vector_Free(offsets);
+    Vector_Free(rots);
     Memory_FreePointer(&native);
     File_Close(src);
 }
@@ -129,12 +225,17 @@ TEST(anims_keep_the_lateral_motion_for_tr4)
     M_CanonicalAnim(canonical);
     TRX_FILE *const src = File_OpenBuffer(canonical, sizeof(canonical));
 
+    VECTOR *offsets, *rots;
+    M_FrameMaps(&offsets, &rots);
     char *native = nullptr;
-    const int32_t size = InjectCanonical_TranscodeAnims(src, 1, 4, &native);
+    const int32_t size =
+        InjectCanonical_TranscodeAnims(src, 1, 4, offsets, rots, &native);
     CHECK_EQ_INT(size, 40);
     CHECK_EQ_INT((int32_t)M_Get32(native, 16), 0x77777777); // lateralSpeed
     CHECK_EQ_INT(M_Get16(native, 24), 0x100); // frameStart after laterals
 
+    Vector_Free(offsets);
+    Vector_Free(rots);
     Memory_FreePointer(&native);
     File_Close(src);
 }

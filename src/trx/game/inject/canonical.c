@@ -74,6 +74,25 @@ static void M_TranscodeMeshFaces(
     }
 }
 
+// Packs one rotation the way M_ParseMeshRotation unpacks it: the two-word
+// form for every game, with TR1 storing the pair the other way round.
+static void M_PackRotation(
+    M_BUFFER *const buf, const int32_t game_version, const int16_t x,
+    const int16_t y, const int16_t z)
+{
+    const uint16_t v1 =
+        (((uint16_t)x >> 2) & 0x3FF0) | (((uint16_t)y >> 12) & 0xF);
+    const uint16_t v2 =
+        ((((uint16_t)y >> 6) & 0x3F) << 10) | (((uint16_t)z >> 6) & 0x3FF);
+    if (game_version == 1) {
+        M_Put16(buf, v2);
+        M_Put16(buf, v1);
+    } else {
+        M_Put16(buf, v1);
+        M_Put16(buf, v2);
+    }
+}
+
 int32_t InjectCanonical_TranscodeObjectTextures(
     TRX_FILE *const src, const int32_t data_count, const int32_t game_version,
     char **const out_data)
@@ -99,15 +118,69 @@ int32_t InjectCanonical_TranscodeObjectTextures(
     return (int32_t)buf.size;
 }
 
+int32_t InjectCanonical_TranscodeAnimFrames(
+    TRX_FILE *const src, const int32_t data_count, const int32_t game_version,
+    char **const out_data, VECTOR *const out_offsets,
+    VECTOR *const out_rot_counts)
+{
+    // Native frames never exceed the canonical ones: a canonical rotation is
+    // six bytes against four packed, and the headers match.
+    M_BUFFER buf = M_BufferCreate(
+        (size_t)data_count * (9 + 1) * sizeof(int16_t)
+        + (size_t)data_count * 123 * 4);
+
+    for (int32_t i = 0; i < data_count; i++) {
+        const int32_t offset = (int32_t)buf.size;
+        Vector_Add(out_offsets, (void *)&offset);
+
+        M_PutData(&buf, src, 18); // bounds and offset
+        const uint16_t rot_count = File_ReadU16(src);
+        const int32_t rots = rot_count;
+        Vector_Add(out_rot_counts, (void *)&rots);
+        if (game_version == 1) {
+            M_Put16(&buf, rot_count);
+        }
+        for (int32_t r = 0; r < rot_count; r++) {
+            const int16_t x = File_ReadS16(src);
+            const int16_t y = File_ReadS16(src);
+            const int16_t z = File_ReadS16(src);
+            M_PackRotation(&buf, game_version, x, y, z);
+        }
+    }
+
+    *out_data = buf.data;
+    return (int32_t)buf.size;
+}
+
 int32_t InjectCanonical_TranscodeAnims(
     TRX_FILE *const src, const int32_t data_count, const int32_t game_version,
+    const VECTOR *const frame_offsets, const VECTOR *const frame_rot_counts,
     char **const out_data)
 {
     const bool tr4 = game_version == 4;
     M_BUFFER buf = M_BufferCreate((size_t)data_count * (tr4 ? 40 : 32));
 
     for (int32_t i = 0; i < data_count; i++) {
-        M_PutData(&buf, src, 16); // frameOffset..accel
+        const uint32_t ordinal = File_ReadU32(src);
+        const uint8_t frame_rate = File_ReadU8(src);
+        File_Skip(src, 1); // canonical frame size is derived below
+
+        uint32_t frame_ofs = 0;
+        uint8_t frame_size = 0;
+        if (ordinal < (uint32_t)frame_offsets->count) {
+            frame_ofs =
+                *(const int32_t *)Vector_Get((VECTOR *)frame_offsets, ordinal);
+            const int32_t rots = *(const int32_t *)Vector_Get(
+                (VECTOR *)frame_rot_counts, ordinal);
+            frame_size = (uint8_t)(9 + 2 * rots);
+        } else if (frame_offsets->count > 0 || ordinal > 0) {
+            LOG_WARNING("animation %d names no frame %u", i, ordinal);
+        }
+
+        M_Put32(&buf, frame_ofs);
+        M_Put8(&buf, frame_rate);
+        M_Put8(&buf, frame_size);
+        M_PutData(&buf, src, 10); // stateID, speed, accel
         if (tr4) {
             M_PutData(&buf, src, 8); // lateral speed and accel
         } else {
