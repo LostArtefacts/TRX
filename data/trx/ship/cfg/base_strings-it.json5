@@ -13,10 +13,10 @@
         },
         "config_presets": {
             "applied": "Profilo applicato.",
-            "confirm_apply": "\\{review}Applica",
-            "confirm_back": "\\{review}Indietro",
+            "confirm_apply": "Applica",
+            "confirm_back": "Annulla",
             "confirm_description": "Verranno modificate le seguenti impostazioni:",
-            "confirm_restart_note": "Nota: per avere effetto, alcune impostazioni\n         potrebbero richiedere il riavvio del gioco.",
+            "confirm_restart_note": "Nota: per avere effetto, alcune impostazioni potrebbero richiedere il riavvio del gioco.",
             "empty": "Nessun profilo trovato.",
             "no_changes": "Nessuna modifica da applicare.",
             "title_fmt": "Applicare il profilo %s?",
@@ -43,14 +43,14 @@
             "demo_mode": "Modalità Demo",
             "empty_slot_fmt": "- SLOT VUOTO -",
             "exit": "Esci",
-            "hold_fmt": "\\{review}Tieni %s",
-            "off": "\\{review}No",
-            "on": "\\{review}Sì",
+            "hold_fmt": "Tieni premuto %s",
+            "off": "Disabilitato",
+            "on": "Abilitato",
             "pagination_nav": "%d / %d",
         },
         "osd": {
-            "bilinear_filter_off": "Filtro bilineare: disattivato",
-            "bilinear_filter_on": "Filtro bilineare: attivato",
+            "bilinear_filter_off": "Filtro bilineare disabilitato",
+            "bilinear_filter_on": "Filtro bilineare abilitato",
             "command_bad_invocation": "Invocazione non valida: %s",
             "command_unavailable": "Questo comando non è attualmente disponibile",
             "complete_level": "Livello completato!",
@@ -61,8 +61,8 @@
             "fly_mode_on": "Modalità volo abilitata",
             "fps_counter_off": "Contatore FPS disabilitato",
             "fps_counter_on": "Contatore FPS abilitato",
-            "lighting_contrast_fmt": "Contrasto: %s",
-            "lighting_curve_fmt": "\\{review}Modello di illuminazione: %s",
+            "lighting_contrast_fmt": "Contrasto illuminazione: %s",
+            "lighting_curve_fmt": "Modello illuminazione: %s",
             "load_game": "Partita caricata dallo slot di salvataggio %d",
             "quick_load": "Caricamento rapido dallo slot %d",
             "quick_load_fail_no_bound_slot": "Nessuno slot di salvataggio attualmente assegnato",
@@ -70,16 +70,16 @@
             "quick_save": "Salvataggio rapido",
             "quick_save_fail_no_slots": "Nessuno slot di salvataggio rapido configurato",
             "speed_set": "Velocità impostata su %d",
-            "textures_off": "Texture: disattivate",
-            "textures_on": "Texture: attivate",
-            "trapezoid_filter_off": "Filtro trapezoidale: disattivato",
-            "trapezoid_filter_on": "Filtro trapezoidale: attivato",
-            "ui_off": "Interfaccia utente: disattivata",
-            "ui_on": "Interfaccia utente: attivata",
+            "textures_off": "Texture disabilitate",
+            "textures_on": "Texture abilitate",
+            "trapezoid_filter_off": "Filtro trapezoidale disabilitato",
+            "trapezoid_filter_on": "Filtro trapezoidale abilitato",
+            "ui_off": "Interfaccia utente disabilitata",
+            "ui_on": "Interfaccia utente abilitata",
             "unknown_command": "Comando sconosciuto: %s",
             "upscaling_factor": "Fattore di scala: x%d",
-            "wireframe_mode_off": "Modalità reticolo: disattivato",
-            "wireframe_mode_on": "Modalità reticolo: attivato",
+            "wireframe_mode_off": "Modalità reticolo disabilitato",
+            "wireframe_mode_on": "Modalità reticolo abilitato",
         },
         "overlay": {
             "debug_animation": "Animazione: ",
@@ -151,12 +151,12 @@
             "common": {
                 "all_hidden_disclaimer": "Le impostazioni sono disabilitate per questo gruppo di livelli.",
                 "chroma": "Chroma",
-                "edit_value": "\\{review}Modifica",
+                "edit_value": "Modifica",
                 "frozen_option_disclaimer": "Questa impostazione è applicata dal generatore di livelli e non può essere modificata.",
                 "hue": "Tonalità",
                 "lightness": "Luminosità",
                 "restore_default": "Ripristina predefiniti",
-                "toggle_help": "\\{review}Guida",
+                "toggle_help": "Guida",
             },
             "controls": {
                 "backend": {
@@ -266,10 +266,10 @@
                 "help": "Cancella la cronologia dei messaggi della console.",
             },
             "copy": {
-                "copied": "\\{review}Copiato negli appunti.",
-                "failed": "\\{review}%s non è stato eseguito.",
-                "help": "\\{review}Copia l'output di un comando negli appunti.",
-                "no_output": "\\{review}%s non ha stampato nulla da copiare.",
+                "copied": "Copiato negli appunti.",
+                "failed": "%s non è stato eseguito.",
+                "help": "Copia l'output di un comando negli appunti.",
+                "no_output": "%s non ha stampato nulla che possa essere copiato.",
             },
             "debug": {
                 "help": "Attiva o disattiva le informazioni di debug.",
@@ -291,8 +291,8 @@
             },
             "dry": {
                 "already_dry": "Lara è già completamente asciutta",
-                "help": "Asciuga Lara in modo che, dopo una nuotata, non cadano più gocce d'acqua sul suolo.",
-                "success": "Lara è ora asciutta - niente più gocce d'acqua a terra",
+                "help": "Asciuga instantaneamente Lara dopo una nuotata.",
+                "success": "Lara è ora asciutta - niente più gocciolamenti",
                 "underwater": "In questo momento Lara è sott'acqua.",
             },
             "end_level": {
@@ -302,17 +302,17 @@
                 "help": "Termina il gioco.",
             },
             "flipmap": {
-                "all_already_off": "\\{review}Tutte le mappe capovolte sono già disattivate",
-                "all_already_on": "\\{review}Tutte le mappe capovolte sono già attivate",
-                "all_off": "\\{review}Mappe capovolte disattivate",
-                "all_on": "\\{review}Mappe capovolte attivate",
-                "all_toggled": "\\{review}Mappe capovolte invertite",
-                "already_off": "Mappa capovolta %d già disattivata",
-                "already_on": "Mappa capovolta %d già attivata",
-                "help": "\\{review}Attiva o disattiva le stanze capovolte.",
-                "no_group": "\\{review}Gruppo di mappe capovolte inesistente: %d",
-                "off": "Mappa capovolta %d disattivata",
-                "on": "Mappa capovolta %d attivata",
+                "all_already_off": "Tutte le mappe speculari sono già disabilitate",
+                "all_already_on": "Tutte le mappe speculari sono già abilitate",
+                "all_off": "Mappe speculari disabilitate",
+                "all_on": "Mappe speculari abilitate",
+                "all_toggled": "Mappe speculari invertite",
+                "already_off": "Mappa speculare %d già disabilitata",
+                "already_on": "Mappa speculare %d già abilitata",
+                "help": "Attiva o disattiva le mappe speculari.",
+                "no_group": "Gruppo di mappe speculari inesistente: %d",
+                "off": "Mappa speculare %d disabilitata",
+                "on": "Mappa speculare %d abilitata",
             },
             "flood": {
                 "already": "La stanza %d è già allagata",
@@ -342,9 +342,9 @@
                 "what_help": "valori validi: all, keys, guns, moreguns, o il nome di un oggetto",
             },
             "golden": {
-                "help": "\\{review}Trasforma Lara in oro, qualunque sia il completo che indossa.",
-                "off": "\\{review}Lara è di nuovo in carne e ossa",
-                "on": "\\{review}Lara è fusa nell'oro",
+                "help": "Trasforma Lara in oro, qualunque sia il costume che indossa.",
+                "off": "Lara è di nuovo in carne e ossa",
+                "on": "Lara si è trasformata in oro",
             },
             "heal": {
                 "already_full_hp": "Lara è già in piena salute",
@@ -416,12 +416,12 @@
                 "track": "Riproduzione traccia musicale %d",
             },
             "outfit": {
-                "current": "\\{review}Lara indossa %s",
-                "default": "\\{review}Lara indossa ciò che il livello le mette addosso",
-                "help": "\\{review}Mostra o cambia il completo di Lara.",
-                "outfit_help": "\\{review}quale completo, o - per quello del livello",
-                "unknown": "\\{review}Completo sconosciuto: %s",
-                "worn": "\\{review}Lara ha indossato %s",
+                "current": "Lara sta indossando %s",
+                "default": "Lara sta indossando il costume predefinito del livello",
+                "help": "Mostra o cambia il costume di Lara.",
+                "outfit_help": "costume alternativo o specifico del livello",
+                "unknown": "Costume sconosciuto: %s",
+                "worn": "Lara si è cambiata in %s",
             },
             "play_cutscene": {
                 "help": "Riproduce la scena di intermezzo con il numero specificato.",
@@ -436,11 +436,11 @@
                 "none": "Questo gioco non ha demo",
             },
             "play_fmv": {
-                "disabled": "\\{review}I filmati sono disattivati",
-                "help": "\\{review}Riproduce il filmato con il numero indicato.",
-                "invalid": "\\{review}Filmato non valido",
-                "loading": "\\{review}Riproduzione filmato %d",
-                "none": "\\{review}Questo gioco non ha filmati",
+                "disabled": "I filmati sono disabilitati",
+                "help": "Riproduce il filmato con il numero specificato.",
+                "invalid": "Filmato non valido",
+                "loading": "Riproduzione filmato %d",
+                "none": "Questo gioco non ha filmati",
             },
             "play_gym": {
                 "help": "Gioca al livello di addestramento.",
@@ -559,7 +559,7 @@
                 "untriggered": "Oggetto(i) non attivato(i): %s",
             },
             "version": {
-                "help": "\\{review}Mostra la versione riportata da questa build.",
+                "help": "Mostra la versione di questa build.",
             },
             "vsync": {
                 "help": "Attiva o disattiva la sincronizzazione verticale.",
@@ -609,7 +609,7 @@
             },
             "lara_outfit": {
                 "default": "Predefinito",
-                "natla": "\\{review}Natla",
+                "natla": "Natla",
                 "sophia": "Sophia",
                 "tr1_bacon_lara": "Sosia di Lara",
                 "tr1_classic": "Classico TR1",
@@ -695,17 +695,17 @@
             "roll_pitch": "Rotaz. e inclinaz.",
         },
         "blood_effects": {
-            "disabled": "Disattivato",
+            "disabled": "Disabilitato",
             "pink": "Rosa",
             "red": "Rosso",
         },
         "braid_status": {
-            "auto": "\\{review}Automatico",
-            "off": "\\{review}Disattivato",
-            "on": "\\{review}Attivato",
+            "auto": "Automatico",
+            "off": "Disabilitato",
+            "on": "Abilitato",
         },
         "breeze_mode": {
-            "off": "Disattivato",
+            "off": "Disabilitato",
             "tr2": "TR2",
             "tr3": "TR3/4",
         },
@@ -721,9 +721,9 @@
             "never": "Mai",
         },
         "dither_mode": {
-            "disabled": "\\{review}Disattivato",
-            "ps1": "\\{review}PS1",
-            "software_renderer": "\\{review}Renderer software",
+            "disabled": "Disabilitato",
+            "ps1": "PS1",
+            "software_renderer": "Software",
         },
         "game_modes_policy": {
             "always": "Sempre",
@@ -747,7 +747,7 @@
             "change_outfit": "Cambia Costume",
             "change_target": "Cambia Bersaglio",
             "crouch": "Accovacciati",
-            "cycle_lighting_contrast": "\\{review}Cambia modello di illuminazione",
+            "cycle_lighting_contrast": "Cambia Modello Illuminazione",
             "draw": "Estrai Arma",
             "enter_console": "Apri Console",
             "equip_autos": "Equipaggia Pistole Automatiche",
@@ -790,7 +790,7 @@
             "toggle_fullscreen": "Attiva/Disattiva Schermo Intero",
             "toggle_photo_mode": "Attiva/Disattiva Modalità Foto",
             "toggle_textures": "Attiva/Disattiva Texture",
-            "toggle_trapezoid_filter": "\\{review}Filtro Trapezoidale",
+            "toggle_trapezoid_filter": "Attiva/Disattiva Filtro Trapezoidale",
             "toggle_ui": "Attiva/Disattiva Interfaccia",
             "toggle_wireframe": "Attiva/Disattiva Modalità Reticolo",
             "turbo_cheat": "Velocità Turbo",
@@ -804,7 +804,7 @@
             "new_game": "Nuova partita",
         },
         "jump_lock_mode": {
-            "disabled": "Disattivato",
+            "disabled": "Disabilitato",
             "legacy": "Originale",
             "tuned": "Modificato",
         },
@@ -814,13 +814,13 @@
             "medium": "Medio",
         },
         "lighting_curve": {
-            "flat": "\\{review}Piatto",
-            "overbright": "\\{review}Overbright",
-            "saturate": "\\{review}Saturazione",
+            "flat": "Piatto",
+            "overbright": "Sovraesposto",
+            "saturate": "Saturo",
         },
         "loading_screens_mode": {
             "always": "Sempre",
-            "disabled": "Disattivato",
+            "disabled": "Disabilitato",
             "new_games": "Nuovo livello",
         },
         "look_mode": {
@@ -829,8 +829,8 @@
             "unrestricted": "Illimitato",
         },
         "m16_aim_mode": {
-            "enhanced": "\\{review}Avanzato",
-            "original": "\\{review}Originale",
+            "enhanced": "Avanzato",
+            "original": "Originale",
         },
         "music_load_condition": {
             "always": "Sempre",
@@ -848,11 +848,11 @@
         "ring_memory_mode": {
             "all_rings": "Oggetti e chiavi",
             "main_ring": "Solo oggetti",
-            "off": "Spento",
+            "off": "Disabilitato",
         },
         "save_crystal_mode": {
             "heal": "Curativi",
-            "off": "Disattivato",
+            "off": "Disabilitato",
             "pickup": "Oggetti",
             "save": "Salvataggio",
             "save_pickup": "Salvataggio (oggetti)",
@@ -871,13 +871,13 @@
             "bordered": "Con bordi",
         },
         "sunglasses_mode": {
-            "off": "Disattivato",
+            "off": "Disabilitato",
             "opaque": "Opaco",
             "transparent": "Trasparente",
         },
         "target_change_mode": {
             "enhanced": "Avanzato",
-            "off": "Disattivato",
+            "off": "Disabilitato",
             "tr4": "TR4",
         },
         "target_lock_mode": {
@@ -902,9 +902,9 @@
             "ps1": "PS1",
         },
         "vertex_snap_mode": {
-            "disabled": "\\{review}Disattivato",
-            "upscale_res": "\\{review}Risoluzione ingrandita",
-            "320x240": "\\{review}320x240",
+            "disabled": "Disabilitato",
+            "upscale_res": "Ridimensionato",
+            "320x240": "320x240",
         },
         "wall_glitch_mode": {
             "fixed": "Corretto",
@@ -912,9 +912,9 @@
             "tr2": "TR2",
         },
         "water_tint_mode": {
-            "per_mesh": "\\{review}Per mesh",
-            "responsive": "\\{review}Accurata",
-            "whole": "\\{review}Intera",
+            "per_mesh": "Per mesh",
+            "responsive": "Accurata",
+            "whole": "Intera",
         }
     },
     "settings": {
@@ -963,8 +963,8 @@
             "description": "Risolve il problema per cui il suono riprodotto dalla scoperta di un segreto interrompe la traccia musicale attiva.",
         },
         "audio.fix_sliding_sfx": {
-            "title": "\\{review}Correggi gli SFX dello scivolamento",
-            "description": "\\{review}Corregge la riproduzione continua degli SFX dello scivolamento di Lara quando non si trova più in uno stato di scivolamento valido (stile TR3+). Disattivando questa opzione, gli SFX termineranno normalmente la riproduzione, indipendentemente dallo stato di Lara (stile TR1/2).",
+            "title": "Correggi suono scivolamento",
+            "description": "Risolve il problema per cui l'effetto sonoro di scivolamento continua ad essere riprodotto anche quando Lara non si trova più su una pendenza (come in TR3+). Disattivando questa opzione, l'effetto sonoro terminerà normalmente, indipendentemente dalla posizione di Lara (come in TR1/2).",
         },
         "audio.fix_speeches_killing_music": {
             "title": "Dialoghi nemici in polifonia",
@@ -1088,7 +1088,7 @@
         },
         "gameplay.enable_bouncy_grenades": {
             "title": "Collisione granate",
-            "description": "Abilita il comportamento delle granate in stile TR3: rimbalzano sui muri e sulle pendenze e producono un raggio d'esplosione più ampio, a scapito di una velocità ridotta.",
+            "description": "Abilita il comportamento delle granate in stile TR3: rimbalzano sulle pareti e sulle pendenze e producono un raggio d'esplosione più ampio, a scapito di una velocità ridotta.",
         },
         "gameplay.enable_cheats": {
             "title": "Trucchi",
@@ -1096,7 +1096,7 @@
         },
         "gameplay.enable_cinematic_skips": {
             "title": "Salta sequenze",
-            "description": "\\{review}Consente di saltare le sequenze panoramiche con Inventario, Indietro, Conferma o Azione, e con Guarda, anche quando il livello contrassegna la sequenza come non interrompibile.",
+            "description": "Consente di saltare le sequenze panoramiche con i tasti Inventario, Indietro, Conferma o Azione e Guarda, anche quando il livello contrassegna la sequenza come non saltabile.",
         },
         "gameplay.enable_cinematics": {
             "title": "Scene iniziali",
@@ -1215,8 +1215,8 @@
             "description": "Usa i tasti della telecamera (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}) utilizzati nella Modalità Foto, anche per ruotare la telecamera di gioco.",
         },
         "gameplay.enable_monkey_bar_shimmy_turn": {
-            "title": "\\{review}Rotazione sulle sbarre",
-            "description": "\\{review}Consente a Lara di girarsi mentre si sposta lateralmente sulle sbarre, analogamente a quanto può fare quando si muove lateralmente o nuota di lato sulla superficie dell'acqua.",
+            "title": "Rotazione su scale orizzontali",
+            "description": "Permette a Lara di girarsi mentre si sposta lateralmente sulle scale orizzontali, in modo simile a quando si muove di lato o nuota di lato nell'acqua.",
         },
         "gameplay.enable_multiple_pickups": {
             "title": "Raccolta multipla",
@@ -1247,8 +1247,8 @@
             "description": "Permette a Lara di oscillare lentamente quando è aggrappata ad una sporgenza molto sottile (come in TR3). Se disabilitato, Lara oscillerà solo nel momento in cui si aggrappa alla sporgenza (come in TR1/2).",
         },
         "gameplay.enable_smooth_wall_deflect": {
-            "title": "Deflessione rapida da muro",
-            "description": "Permette a Lara di riprendersi più velocemente dopo aver urtato un muro, in modo tale che non resti bloccata quando si preme il tasto Corri insieme ad un tasto direzionale (come in TR2+). Se disabilitata, si riprenderà lentamente come nella versione originale di TR1.",
+            "title": "Deflessione rapida da parete",
+            "description": "Permette a Lara di riprendersi più velocemente dopo aver urtato una parete, in modo tale che non resti bloccata quando si preme il tasto Corri insieme ad un tasto direzionale (come in TR2+). Se disabilitata, si riprenderà lentamente come nella versione originale di TR1.",
         },
         "gameplay.enable_snap_interactions": {
             "title": "Interazioni rapide",
@@ -1267,8 +1267,8 @@
             "description": "Fa in modo che Lara sia spinta giù da un gradino se si preme il tasto Capriola vicino al bordo. Questo è il comportamento della versione originale di TR1; non avviene in TR2+.",
         },
         "gameplay.enable_swamp_sidestepping": {
-            "title": "\\{review}Passi laterali nelle paludi",
-            "description": "\\{review}Permette a Lara di fare passi laterali nelle stanze paludose.",
+            "title": "Passi laterali nelle paludi",
+            "description": "Permette a Lara di effettuare passi laterali nelle stanze paludose.",
         },
         "gameplay.enable_swing_cancel": {
             "title": "Annulla oscillazione",
@@ -1312,7 +1312,7 @@
         },
         "gameplay.enable_wading": {
             "title": "Guadare",
-            "description": "\\{review}Permette a Lara di guadare acque poco profonde, anziché rimanere bloccata sulla superficie dell'acqua (come in TR2+). Non è disponibile nella versione originale di TR1.",
+            "description": "Permette a Lara di guadare acque poco profonde, anziché rimanere bloccata sulla superficie dell'acqua (come in TR2+). Non è disponibile nella versione originale di TR1.",
         },
         "gameplay.enable_walk_to_items": {
             "title": "Interazioni animate",
@@ -1331,12 +1331,12 @@
             "description": "Risolve il problema per cui gli attacchi con la zampa degli orsi non colpiscono Lara.",
         },
         "gameplay.fix_breakable_wall_clip": {
-            "title": "\\{review}Correggi muri fragili",
-            "description": "\\{review}Risolve il problema per cui Lara riesce ad arrampicarsi o a strisciare attraverso i muri fragili posti sul bordo di un settore. Se attivo, Lara si ferma davanti al muro finché non viene distrutto.",
+            "title": "Correggi pareti distruttibili",
+            "description": "Risolve il problema che permetteva a Lara di oltrepassare (scavalcando o strisciando) le pareti distruttibili situate al confine di un settore. Se l'opzione è attiva, Lara si ferma davanti alla parete finché questa non viene distrutta.",
         },
         "gameplay.fix_bridge_collision": {
             "title": "Correggi collisione ponti",
-            "description": "Risolve il problema per cui Lara non è in grado di afferrare parti di alcuni ponti e muri invisibili ai bordi. Corregge anche i problemi di collisione con ponti levatoi, botole e ponti quando sono impilati l'uno sull'altro, su pendii o vicino al suolo.",
+            "description": "Risolve il problema per cui Lara non è in grado di afferrare parti di alcuni ponti e pareti invisibili ai bordi. Corregge anche i problemi di collisione con ponti levatoi, botole e ponti quando sono impilati l'uno sull'altro, su pendii o vicino al suolo.",
         },
         "gameplay.fix_descending_glitch": {
             "title": "Correggi cadute da pavimenti",
@@ -1360,7 +1360,7 @@
         },
         "gameplay.fix_lara_pickup_embed": {
             "title": "Correggi errore di raccolta",
-            "description": "Risolve i problemi per cui Lara a volte scivola contro i muri quando raccoglie oggetti sott’acqua, e per cui si incastra sotto i soffitti fortemente inclinati quando raccoglie gli oggetti sopra l'acqua.",
+            "description": "Risolve i problemi per cui Lara a volte scivola contro le pareti quando raccoglie oggetti sott’acqua, e per cui si incastra sotto i soffitti fortemente inclinati quando raccoglie gli oggetti sopra l'acqua.",
         },
         "gameplay.fix_lift_collision": {
             "title": "Correggi collisione ascensori",
@@ -1384,23 +1384,23 @@
         },
         "gameplay.fix_step_glitch": {
             "title": "Correggi errore gradini",
-            "description": "Risolve il problema per cui a volte Lara viene spinta contro i muri adiacenti ai gradini quando corre su di loro in un certo modo. Questo problema è presente nelle versioni originali di TR2 e TR3; TR1 non ne è affetto.",
+            "description": "Risolve il problema per cui a volte Lara viene spinta contro le pareti adiacenti ai gradini quando corre su di loro in un certo modo. Questo problema è presente nelle versioni originali di TR2 e TR3; TR1 non ne è affetto.",
         },
         "gameplay.fix_underwater_crawl": {
             "title": "Correggi strisciare sott’acqua",
             "description": "Risolve il problema che permette a Lara di gattonare dalla terraferma in acque di qualsiasi profondità. Se abilitato, Lara potrà gattonare solo fino ad una determinata profondità dell'acqua.",
         },
         "gameplay.fix_wade_wall_hit": {
-            "title": "Correggi impatto muro",
-            "description": "Risolve il problema per cui Lara non reagisce quando urta un muro mentre guada.",
+            "title": "Correggi impatto pareti",
+            "description": "Risolve il problema per cui Lara non reagisce quando urta una parete mentre guada.",
         },
         "gameplay.fix_walk_run_jump": {
             "title": "Correggi cammina-corsa-salto",
             "description": "Risolve il problema per cui a volte Lara non riesce a saltare immediatamente dopo essere passata dall'animazione di camminata a quella di corsa.",
         },
         "gameplay.fix_wall_geometry": {
-            "title": "Correggi geometria muri",
-            "description": "Risolve il problema per cui, nei livelli originali, le inclinazioni all'interno dei muri possono portare a calcoli di altezza imprecisi. Questo problema è presente nelle versioni originali di TR1 e TR2; TR3+ non ne è affetto.",
+            "title": "Correggi geometria pareti",
+            "description": "Risolve il problema per cui, nei livelli originali, le inclinazioni all'interno delle pareti possono portare a calcoli di altezza imprecisi. Questo problema è presente nelle versioni originali di TR1 e TR2; TR3+ non ne è affetto.",
         },
         "gameplay.fix_water_exit": {
             "title": "Correggi uscita dall'acqua",
@@ -1424,19 +1424,19 @@
         },
         "gameplay.jump_lock_mode": {
             "title": "Modalità blocco salto",
-            "description": "Per salti più reattivi, consente di modificare quanto tempo deve attendere Lara per poter saltare dopo aver iniziato a correre.\n\n- Originale: corrisponde alla durata di tempo in TR2.\n- Modificato: è possibile effettuare il salto 2 fotogrammi prima.\n- Disattivato: è possibile effettuare il salto subito dopo l'inizio della corsa.",
+            "description": "Per salti più reattivi, consente di modificare quanto tempo deve attendere Lara per poter saltare dopo aver iniziato a correre.\n\n- Originale: corrisponde alla durata di tempo in TR2.\n- Modificato: è possibile effettuare il salto 2 fotogrammi prima.\n- Disabilitato: è possibile effettuare il salto subito dopo l'inizio della corsa.",
         },
         "gameplay.loading_screens": {
             "title": "Schermate di caricamento",
-            "description": "Controlla il comportamento delle schermate di caricamento dei livelli.\n\n- Disattivato: non mostra mai le schermate di caricamento.\n- Sempre: mostra le schermate di caricamento ogni volta che si avvia o carica un livello.\n- Nuovo livello: mostra le schermate di caricamento solo al primo avvio di un livello.",
+            "description": "Controlla il comportamento delle schermate di caricamento dei livelli.\n\n- Disabilitato: non mostra mai le schermate di caricamento.\n- Sempre: mostra le schermate di caricamento ogni volta che si avvia o carica un livello.\n- Nuovo livello: mostra le schermate di caricamento solo al primo avvio di un livello.",
         },
         "gameplay.look_mode": {
             "title": "Modalità osservazione",
             "description": "Permette di gestire in quali situazioni Lara può guardarsi attorno (tasto 'Guarda').\n\n- Limitato: è consentito esaminare l'ambiente solo quando Lara è ferma e mai quando è sott'acqua, come nella versione originale di TR1.\n- Avanzato: è consentito esaminare l'ambiente durante la maggior parte delle situazioni, tranne in alcune come quando si spingono i blocchi, come nella veriosne originale di TR2+.\n- Illimitato: è sempre consentito esaminare l'ambiente durante il normale controllo di Lara.",
         },
         "gameplay.m16_aim_mode": {
-            "title": "\\{review}Varianti di mira dell'M16/MP5",
-            "description": "\\{review}Controlla quando Lara punta l'M16/MP5 dalla spalla anziché dal fianco.\n\n- Originale: Lara solleva l'arma alla spalla ogni volta che smette di muoversi.\n- Avanzato: Lara continua a sparare dal fianco finché il tasto Azione è premuto e solleva l'arma alla spalla solo se inizia a sparare da ferma. Con la correzione della precisione attiva, sparare dal fianco è meno preciso e infligge meno danni per colpo.",
+            "title": "Varianti mira M16/MP5",
+            "description": "Controlla quando Lara punta l'M16/MP5 dalla spalla anziché dal fianco.\n\n- Originale: Lara solleva l'arma alla spalla ogni volta che smette di muoversi.\n- Avanzato: Lara continua a sparare dal fianco finché viene premuto il tasto Azione e solleva l'arma alla spalla solo se inizia a sparare da ferma. Con la correzione della precisione attiva, sparare dal fianco comporta meno precisione e danni.",
         },
         "gameplay.maximum_quick_save_slots": {
             "title": "Slot di salvataggio rapido",
@@ -1464,11 +1464,11 @@
         },
         "gameplay.ring_memory_mode": {
             "title": "Ricorda posizione inventario",
-            "description": "Apre il menu dell'inventario sull'oggetto selezionato in precedenza, invece che sul primo.\n\n- Spento: apre il menu sul primo oggetto, come nel gioco originale.\n- Solo oggetti: viene salvata solo la posizione del menu degli oggetti.\n- Oggetti e chiavi: vengono salvate sia la posizione del menu degli oggetti che quella del menu delle chiavi.\n\nNei casi in cui Lara non possieda più l'oggetto selezionato nel menu oppure si inizi un nuovo livello, l'inventario tornerà al primo oggetto del menu.",
+            "description": "Apre il menu dell'inventario sull'oggetto selezionato in precedenza, invece che sul primo.\n\n- Disabilitato: apre il menu sul primo oggetto, come nel gioco originale.\n- Solo oggetti: viene salvata solo la posizione del menu degli oggetti.\n- Oggetti e chiavi: vengono salvate sia la posizione del menu degli oggetti che quella del menu delle chiavi.\n\nNei casi in cui Lara non possieda più l'oggetto selezionato nel menu oppure si inizi un nuovo livello, l'inventario tornerà al primo oggetto del menu.",
         },
         "gameplay.save_crystal_mode": {
             "title": "Modalità cristalli",
-            "description": "Determina il comportamento dei cristalli sparsi nei livelli.\n\n- Disattivato: nessun cristallo presente nei livelli.\n- Salvataggio: i cristalli sono monouso e permettono a Lara di salvare la partita sul posto, come nella versione PS1 di TR1. Altrimenti è possibile salvare solo all'inizio dei livelli.\n- Salvataggio (oggetti): i cristalli possono essere raccolti e permettono a Lara di salvare la partita ovunque si trovi, come nella versione PS1 di TR3. Altrimenti è possibile salvare solo all'inizio dei livelli.\n- Curativi: i cristalli ripristinano metà della salute di Lara e curano l'avvelenamento quando li tocca, come nella versione PC di TR3.\n- Oggetti: i cristalli sono oggetti collezionabili che vengono conteggiati nelle statistiche di livello e non hanno altre funzioni.\n\nLa modifica di questa opzione richiederà il riavvio del livello.",
+            "description": "Determina il comportamento dei cristalli sparsi nei livelli.\n\n- Disabilitato: nessun cristallo presente nei livelli.\n- Salvataggio: i cristalli sono monouso e permettono a Lara di salvare la partita sul posto, come nella versione PS1 di TR1. Altrimenti è possibile salvare solo all'inizio dei livelli.\n- Salvataggio (oggetti): i cristalli possono essere raccolti e permettono a Lara di salvare la partita ovunque si trovi, come nella versione PS1 di TR3. Altrimenti è possibile salvare solo all'inizio dei livelli.\n- Curativi: i cristalli ripristinano metà della salute di Lara e curano l'avvelenamento quando li tocca, come nella versione PC di TR3.\n- Oggetti: i cristalli sono oggetti collezionabili che vengono conteggiati nelle statistiche di livello e non hanno altre funzioni.\n\nLa modifica di questa opzione richiederà il riavvio del livello.",
         },
         "gameplay.start_lara_hitpoints": {
             "title": "Salute iniziale di Lara",
@@ -1476,15 +1476,15 @@
         },
         "gameplay.target_change_mode": {
             "title": "Cambio bersaglio",
-            "description": "Modifica il modo in cui Lara passa da un bersaglio all'altro mentre mira con un'arma.\n\n- Disattivato: Lara mantiene il bersaglio corrente.\n- Avanzato: premi il tasto Cambia Bersaglio per passare ad un altro bersaglio.\n- TR4: premi il tasto Guarda per passare ad un altro bersaglio; tenendolo premuto Lara può guardarsi attorno, dopo un breve ritardo.",
+            "description": "Modifica il modo in cui Lara passa da un bersaglio all'altro mentre mira con un'arma.\n\n- Disabilitato: Lara mantiene il bersaglio corrente.\n- Avanzato: premi il tasto Cambia Bersaglio per passare ad un altro bersaglio.\n- TR4: premi il tasto Guarda per passare ad un altro bersaglio; tenendolo premuto Lara può guardarsi attorno, dopo un breve ritardo.",
         },
         "gameplay.target_mode": {
             "title": "Modalità aggancio bersaglio",
             "description": "Modifica il comportamento di aggancio dei bersagli.\n\n- Completo: mantieni sempre il bersaglio agganciato anche se il nemico esce dal campo visivo o muore (TR1-3).\n- Parziale: mantieni il bersaglio agganciato anche se il nemico esce dal campo visivo, ma lo perdi se muore.\n- Nessuno: perdi il bersaglio agganciato se il nemico esce dal campo visivo o muore (TR4+).",
         },
         "gameplay.wall_glitch_mode": {
-            "title": "Modalità errore muro",
-            "description": "Sceglie quali errori dei muri Lara può sfruttare.\n\n- TR1: saltare in avanti contro un muro teletrasporta Lara in cima ad esso, come nella versione originale di TR1.\n- TR2: l'errore del salto non è più presente, ma Lara può ancora teletrasportarsi colpendo, in certe geometrie, il pavimento e il muro nello stesso momento, come nelle versioni originali di TR2 e TR3.\n- Corretto: entrambi gli errori sono stati corretti; Lara non può più oltrepassare i settori bloccati da porte.",
+            "title": "Modalità errore pareti",
+            "description": "Sceglie quali errori delle pareti Lara può sfruttare.\n\n- TR1: saltare in avanti contro una parete, teletrasporta Lara in cima ad essa, come nella versione originale di TR1.\n- TR2: l'errore del salto non è più presente, ma Lara può ancora teletrasportarsi colpendo, in certe geometrie, il pavimento e la parete nello stesso momento, come nelle versioni originali di TR2 e TR3.\n- Corretto: entrambi gli errori sono stati corretti; Lara non può più oltrepassare i settori bloccati da porte.",
         },
         "input.enable_buffering_func_keys": {
             "title": "Buffering (tasti funzione)",
@@ -1511,7 +1511,7 @@
             "description": "Abilita i passi laterali in stile TR3+, ad es. MAIUSC+frecce direzionali. I pulsanti dedicati per i passi laterali continueranno a funzionare.",
         },
         "input.quick_guns_mode": {
-            "title": "\\{review}Armi rapide",
+            "title": "Scorciatoie armi",
             "description": "Controlla il comportamento dei tasti per l'equipaggiamento rapido delle armi.\n\n- Solo equipaggia: premendo il tasto, Lara equipaggerà l'arma assegnata.\n- Equipaggia o riponi: premendo il tasto, Lara equipaggerà l'arma assegnata. In aggiunta, con lo stesso tasto, la riporrà se la sta attualmente tenendo in mano.",
         },
         "input.touch_button_scale": {
@@ -1548,19 +1548,19 @@
         },
         "rendering.dither_mode": {
             "title": "Retinatura",
-            "description": "\\{review}Seleziona l'ombreggiatura della tavolozza del renderer software originale per PC o il dithering RGB555 di PlayStation.",
+            "description": "Seleziona la tavolozza dei colori della versione originale per PC con renderizzazione software (senza accelerazione 3D) o quella RGB555 della versione PlayStation.",
         },
         "rendering.enable_affine_mapping": {
-            "title": "\\{review}Mappatura texture affine",
-            "description": "\\{review}Rimuove la correzione prospettica dalla texturizzazione, che la PlayStation non aveva, così le texture si deformano e ondeggiano sulle superfici ampie quando la telecamera si muove.",
+            "title": "Mappatura texture affine",
+            "description": "Elimina la correzione prospettica delle texture (caratteristica assente su PlayStation) facendo sì che le texture si deformino e ondeggino sulle superfici quando la telecamera si muove.",
         },
         "rendering.enable_palette_quantize": {
-            "title": "\\{review}Quantizzazione della tavolozza",
-            "description": "\\{review}Adatta ogni colore renderizzato al colore più vicino della tavolozza del livello. Con il dithering attivo, la tavolozza sfuma tra i suoi colori.",
+            "title": "Quantizzazione tavolozza",
+            "description": "Adatta ogni colore renderizzato al colore più vicino della tavolozza del livello. Con la retinatura abilitata, i colori vengono adattati in base alla tavolozza disponibile.",
         },
         "rendering.enable_ps1_fog": {
-            "title": "\\{review}Nebbia PlayStation",
-            "description": "\\{review}Sfuma la geometria lontana verso il colore della nebbia come faceva l'attenuazione in profondità della PlayStation: lungo 1/distanza anziché la distanza, e calcolata per vertice, così la sfumatura mostra bande sulle superfici ampie.",
+            "title": "Nebbia PlayStation",
+            "description": "Fonde la geometria distante con il colore della nebbia seguendo la stessa logica degli indici di profondità della versione PlayStation: basandosi sul reciproco della distanza (1/distanza) anziché sulla distanza stessa, con il calcolo eseguito per singolo vertice, il che genera bande di sfumatura sulle superfici estese.",
         },
         "rendering.enable_trapezoid_filter": {
             "title": "Filtro trapezoidale",
@@ -1579,16 +1579,16 @@
             "description": "Imposta i fotogrammi al secondo.",
         },
         "rendering.lighting_contrast": {
-            "title": "Contrasto",
+            "title": "Contrasto illuminazione",
             "description": "Aumenta il contrasto per fonti di luce dinamiche come razzi di segnalazione e lampi di armi da fuoco.",
         },
         "rendering.lighting_curve": {
-            "title": "\\{review}Modello di illuminazione",
-            "description": "\\{review}Sceglie quanto l'illuminazione per vertice scala la texture.\n\n- Piatto si ferma alla luminosità della texture, quindi più scuro (TR3 PC).\n- Overbright è ciò che facevano i renderer per PC: un vertice pienamente illuminato porta il texel al doppio della luminosità, con l'eccesso aggiunto dopo (TR4 PC).\n- Saturazione è quella della PlayStation: raddoppia anch'essa il texel, ma lascia che ogni colore si tronchi dove arriva, così le superfici luminose restano nel proprio colore invece di sbiadire verso il bianco (TR3/TR4 PS1).",
+            "title": "Modello illuminazione",
+            "description": "Determina in che misura l'illuminazione dei vertici influisce sulla luminosità della texture.\n\n- Piatto: si ferma alla luminosità intrinseca della texture, risultando più scuro (TR3 PC).\n- Sovraesposto: riproduce il comportamento delle versioni PC; un vertice completamente illuminato raddoppia la luminosità del texel, aggiungendo l'eccedenza in una fase successiva (TR4 PC).\n- Saturo: riproduce il comportamento della versione PlayStation; raddoppia anch'esso la luminosità del texel, ma lascia che ogni componente di colore venga troncata al valore massimo raggiunto, preservando così il colore originale delle superfici luminose invece di renderle sbiadite (TR3/TR4 PS1).",
         },
         "rendering.multisampling_factor": {
             "title": "Multicampionamento (MSAA)",
-            "description": "Smussa i bordi di muri e oggetti campionando più volte ciascun pixel lungo di essi. Impatta meno sulle prestazioni rispetto al supercampionamento, ma lascia intatti i bordi degli sprite come vegetazione e fuoco.",
+            "description": "Smussa i bordi di pareti e oggetti campionando più volte ciascun pixel lungo di essi. Impatta meno sulle prestazioni rispetto al supercampionamento, ma lascia intatti i bordi degli sprite come vegetazione e fuoco.",
         },
         "rendering.screenshot_format": {
             "title": "Formato cattura schermo",
@@ -1619,8 +1619,8 @@
             "description": "Alterna l'aspetto smussato o pixelato per l'intero schermo.",
         },
         "rendering.vertex_snap_mode": {
-            "title": "Vertici tremolanti",
-            "description": "\\{review}Controlla la griglia di snap dei vertici per la geometria tremolante delle versioni PlayStation.\n\n- Disattivato: disattiva lo snap dei vertici.\n- 320x240: utilizza la griglia originale 320x240.\n- Risoluzione ingrandita: utilizza la risoluzione ingrandita.",
+            "title": "Aggancio Vertici",
+            "description": "Controlla la griglia di aggancio dei vertici per emulare la geometria tremolante delle versioni PlayStation.\n\n- Disabilitato: disattiva l'aggancio dei vertici.\n- 320x240: utilizza la griglia originale 320x240.\n- Ridimensionato: utilizza la risoluzione ridimensionata.",
         },
         "ui.airbar_color": {
             "title": "Colore barra ossigeno",
@@ -1635,7 +1635,7 @@
             "description": "Posizione in cui viene visualizzata la barra dell'ossigeno.",
         },
         "ui.ammo_counter_location": {
-            "title": "\\{review}Indicatore munizioni",
+            "title": "Posizione indicatore munizioni",
             "description": "Posizione in cui viene visualizzato l'indicatore delle munizioni.",
         },
         "ui.bar_look": {
@@ -1715,8 +1715,8 @@
             "description": "Colore utilizzato per la barra della salute quando Lara è avvelenata.",
         },
         "ui.instant_save_load_screen": {
-            "title": "\\{review}Salva/carica istantaneo",
-            "description": "\\{review}Mostra gli slot di salvataggio in una schermata dedicata, senza anello dell'inventario, animazione, dissolvenza o suono, così appaiono subito.",
+            "title": "Salva/carica istantaneo",
+            "description": "Visualizza la schermata di salvataggio/caricamento senza mostrare l'inventario, le animazioni, le dissolvenze o gli effetti sonori, in modo che appaia istantaneamente.",
         },
         "ui.inventory_background_style": {
             "title": "Sfondo inventario",
@@ -1832,15 +1832,15 @@
         },
         "visuals.blood_effects": {
             "title": "Effetti sangue",
-            "description": "Permette di modificare il colore degli schizzi di sangue o di disattivarli.\n\n- Disattivato: gli schizzi di sangue non vengono mostrati.\n- Rosa: impostazione predefinita nelle versioni tedesche per PC di TR3.\n- Rosso: impostazione predefinita in tutte le altre versioni per la vendita al dettaglio.",
+            "description": "Permette di modificare il colore degli schizzi di sangue o di disattivarli.\n\n- Disabilitato: gli schizzi di sangue non vengono mostrati.\n- Rosa: impostazione predefinita nelle versioni tedesche per PC di TR3.\n- Rosso: impostazione predefinita in tutte le altre versioni per la vendita al dettaglio.",
         },
         "visuals.braid_status": {
             "title": "Treccia di Lara",
-            "description": "\\{review}Controlla come viene mostrata la treccia di Lara.\n\n- Disattivato: la treccia di Lara non viene mai mostrata.\n- Attivato: la treccia di Lara viene mostrata con tutti gli abiti che la supportano.\n- Automatico: la treccia di Lara è disattivata con gli abiti standard di TR1 e attivata con tutti gli altri abiti che la supportano.",
+            "description": "Determina come viene visualizzata la treccia di Lara.\n\n- Disabilitato: la treccia di Lara non viene mai visualizzata.\n- Abilitato: la treccia di Lara viene visualizzata per tutti i costumi che la prevedono.\n- Automatico: la treccia di Lara è disattivata con i costumi classici di TR1 e attivata con tutti gli altri la prevedono.",
         },
         "visuals.breeze_mode": {
             "title": "Effetto brezza",
-            "description": "Modifica il modo in cui l'effetto brezza influisce sulla treccia di Lara, sulle gocce d'acqua che cadono da Lara e sulla pioggia/neve nelle stanze appropriate.\n\n- Disattivato: disabilita l'effetto brezza.\n- TR2: l'effetto brezza soffia sempre nella stessa direzione.\n- TR3/4: la direzione dell'effetto brezza cambia nel tempo.",
+            "description": "Modifica il modo in cui l'effetto brezza influisce sulla treccia di Lara, sulle gocce d'acqua che cadono da Lara e sulla pioggia/neve nelle stanze appropriate.\n\n- Disabilitato: disabilita l'effetto brezza.\n- TR2: l'effetto brezza soffia sempre nella stessa direzione.\n- TR3/4: la direzione dell'effetto brezza cambia nel tempo.",
         },
         "visuals.camera_mode": {
             "title": "Modalità telecamera",
@@ -1887,8 +1887,8 @@
             "description": "Abilita l'illuminazione dinamica per spari ed esplosioni.",
         },
         "visuals.enable_photo_mode_collision": {
-            "title": "\\{review}Collisione in modalità foto",
-            "description": "\\{review}Impedisce alla telecamera di attraversare la geometria durante gli spostamenti in un livello in modalità foto. Se disabilitata, la telecamera può attraversare liberamente pareti, soffitti e pavimenti.",
+            "title": "Collisioni in modalità foto",
+            "description": "Impedisce alla telecamera di attraversare le geometrie durante la navigazione di un livello in modalità foto. Se disabilitata, la telecamera può attraversare liberamente pareti, soffitti e pavimenti.",
         },
         "visuals.enable_poison_vision": {
             "title": "Visione da avvelenamento",
@@ -1931,8 +1931,8 @@
             "description": "Corregge diversi problemi presenti nei giochi originali causati da un posizionamento o una configurazione errati degli oggetti, tra cui rotazioni, posizioni e assegnazioni delle stanze.",
         },
         "visuals.fix_smoke_emitters": {
-            "title": "\\{review}Correggi gli emettitori di fumo",
-            "description": "\\{review}Corregge gli emettitori di fumo che dovrebbero essere neri ma vengono visualizzati in bianco.",
+            "title": "Correggi emettitori di fumo",
+            "description": "Corregge gli emettitori di fumo che dovrebbero essere neri ma vengono visualizzati in bianco.",
         },
         "visuals.fix_texture_issues": {
             "title": "Correggi problemi texture",
@@ -1967,30 +1967,30 @@
             "description": "Regola la curva gamma. Valori più alti restituiscono una luminosità maggiore. Il valore 2,5 equivale al livello dei colori predefinito.",
         },
         "visuals.golden_lara": {
-            "title": "\\{review}Lara d'oro",
-            "description": "\\{review}Trasforma Lara in oro, qualunque sia il completo che indossa, come fa la mano di Mida.",
+            "title": "Lara d'oro",
+            "description": "Trasforma Lara in oro, qualunque sia il costume che indossa, proprio come fa la Mano di Mida.",
         },
         "visuals.lara_outfit": {
             "title": "Costume di Lara",
             "description": "Modifica l’aspetto di Lara. Se si seleziona \"Predefinito\", verranno rispettati i normali cambi di costume tra i livelli; in caso contrario, il costume scelto resterà attivo finché non verrà modificato manualmente.",
         },
         "visuals.logo_locale": {
-            "description": "\\{review}Quale logo mostra la schermata del titolo. L'originale ne include uno per ogni lingua in cui è stato pubblicato.",
-            "title": "\\{review}Logo del titolo",
+            "description": "Determina quale dei loghi del gioco viene visualizzato nella schermata del titolo. La versione originale ne includeva uno per ciascuna lingua in cui il gioco è stato pubblicato.",
+            "title": "Logo del titolo",
             "values": {
-                "de": "\\{review}Tedesco",
-                "en-gb": "\\{review}Inglese (GB)",
-                "en-us": "\\{review}Inglese (USA)",
-                "fr": "\\{review}Francese",
+                "de": "Tedesco",
+                "en-gb": "Inglese (GB)",
+                "en-us": "Inglese (USA)",
+                "fr": "Francese",
             }
         },
         "visuals.shadow_type": {
-            "title": "Forma delle ombre",
+            "title": "Forma ombre",
             "description": "Seleziona la modalità di renderizzazione delle ombre dei personaggi.\n\n- Ottagono: ombre in stile TR1 e TR2\n- Cerchio: ombre rotonde\n- Sprite: ombre basate su texture come in TR3",
         },
         "visuals.sunglasses_mode": {
             "title": "Occhiali di Lara",
-            "description": "Modifica lo stile degli occhiali da sole di Lara. Nota: le lenti saranno riflettenti se l’opzione corrispondente è abilitata.\n\n- Disattivato: Lara non indosserà gli occhiali da sole.\n- Opaco: Gli occhiali da sole di Lara avranno lenti opache.\n- Trasparente: Gli occhiali da sole di Lara avranno lenti semi-trasparenti.",
+            "description": "Modifica lo stile degli occhiali da sole di Lara. Nota: le lenti saranno riflettenti se l’opzione corrispondente è abilitata.\n\n- Disabilitato: Lara non indosserà gli occhiali da sole.\n- Opaco: Gli occhiali da sole di Lara avranno lenti opache.\n- Trasparente: Gli occhiali da sole di Lara avranno lenti semi-trasparenti.",
         },
         "visuals.ui_brightness": {
             "title": "Luminosità interfaccia",
@@ -3510,7 +3510,7 @@
             "name": "Ragno",
         },
         "spike_wall": {
-            "name": "Muro con Spuntoni",
+            "name": "Parete con Spuntoni",
         },
         "spikes": {
             "name": "Spuntoni",
