@@ -14,7 +14,11 @@ static void M_HandleDataEdits(
         const int32_t data_count = File_ReadS32(chunk.injection->fp);
         const int32_t data_size = File_ReadS32(chunk.injection->fp);
 
-        if (m_Handlers[data_type] == nullptr) {
+        if (!chunk.injection->trxi && data_type != IDT_FLOOR_EDITS
+            && data_type != IDT_TEXTURE_EDITS) {
+            // Legacy TRXJ support covers level-editor output only.
+            File_Skip(chunk.injection->fp, data_size);
+        } else if (m_Handlers[data_type] == nullptr) {
             if (data_type != IDT_ROOM_EDIT_META) {
                 LOG_WARNING("Unknown data type: %d", data_type);
             }
