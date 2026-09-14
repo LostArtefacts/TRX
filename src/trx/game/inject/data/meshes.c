@@ -2,6 +2,7 @@
 #include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/inject.h>
+#include <trx/game/inject/canonical.h>
 #include <trx/game/level/context.h>
 #include <trx/game/level/sections/append.h>
 
@@ -33,8 +34,13 @@ static void M_HandleMeshData(
 
         case IDT_OBJECT_MESHES: {
             ASSERT(mesh_indices != nullptr);
-            SHOULD(Level_Section_AppendObjectMeshes(
-                mesh_ptr_count, mesh_indices, chunk.injection->fp));
+            if (chunk.injection->trxi) {
+                InjectCanonical_AppendObjectMeshes(
+                    chunk.injection, mesh_ptr_count, mesh_indices, data_size);
+            } else {
+                SHOULD(Level_Section_AppendObjectMeshes(
+                    mesh_ptr_count, mesh_indices, chunk.injection->fp));
+            }
             LEVEL_CONTEXT_INFO *const info = Level_Context_GetInfo();
             info->mesh_ptr_count += mesh_ptr_count;
             break;
