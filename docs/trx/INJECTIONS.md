@@ -10,6 +10,12 @@ to level data at load time. Injections are used to fix or extend base game data
 in a way that stays compatible with custom levels (unless you intentionally
 replace the same data in your own WAD).
 
+Injections use the TRXI binary format, written by
+[TRXInjectionTool](https://github.com/LostArtefacts/TRXInjectionTool) and
+specified in that repository's generated `docs/FORMAT.md`. The engine also
+reads the legacy TRXJ container for the subset TombEditor emits, since its
+compiled levels carry embedded injections that cannot be regenerated here.
+
 Most builders only need injections for the "default TRX assets" (extra Lara
 animations, extended fonts, PDA model, etc).
 
