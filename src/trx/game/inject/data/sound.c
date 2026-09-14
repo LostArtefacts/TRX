@@ -9,22 +9,19 @@
 
 // Return the slot for a named sample, binding a free slot when needed.
 static SAMPLE_SLOT M_SlotForSymbol(
-    const INJECTION *const injection, const int32_t symbol_idx)
+    const INJECTION *const injection, const int32_t stated_slot)
 {
-    if (symbol_idx < 0 || symbol_idx >= injection->num_symbols) {
-        LOG_WARNING("Symbol %d is out of table range", symbol_idx);
-        return -1;
-    }
-    const INJECTION_SYMBOL symbol = injection->symbols[symbol_idx];
-    if (symbol.context != CATALOG_SAMPLES || symbol.id == NO_CATALOG_ID) {
-        LOG_WARNING("Symbol %d names no sound", symbol_idx);
+    const CATALOG_ID id =
+        Inject_ResolveSymbol(injection, CATALOG_SAMPLES, stated_slot);
+    if (id == NO_CATALOG_ID) {
+        LOG_WARNING("Slot %d names no sound symbol", stated_slot);
         return -1;
     }
 
-    int32_t slot = Catalog_IDToSlot(CATALOG_SAMPLES, symbol.id, -1);
+    int32_t slot = Catalog_IDToSlot(CATALOG_SAMPLES, id, -1);
     if (slot < 0
         && !SHOULD(
-            Catalog_BindFreeSlot(CATALOG_SAMPLES, symbol.id, &slot),
+            Catalog_BindFreeSlot(CATALOG_SAMPLES, id, &slot),
             "the sound is left out")) {
         return -1;
     }

@@ -12,6 +12,8 @@ typedef struct {
 
 typedef struct {
     CATALOG_CONTEXT context;
+    // The local slot that the symbol names.
+    int32_t slot;
     CATALOG_ID id;
 } INJECTION_SYMBOL;
 
@@ -21,8 +23,8 @@ typedef struct {
     INJECTION_VERSION version;
     INJECTION_FILE_TYPE type;
     bool relevant;
-    // Identities from the file's symbol table, in table order. References with
-    // type OBJ_TYPE_SYMBOL use this array.
+    // Identities from the file's symbol table. OBJ_TYPE_SYMBOL references
+    // state a local slot, which this table maps to a name.
     INJECTION_SYMBOL *symbols;
     int32_t num_symbols;
 } INJECTION;

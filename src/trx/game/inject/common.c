@@ -162,6 +162,7 @@ static INJECTION_SYMBOL M_ReadSymbol(TRX_FILE *const file)
 {
     INJECTION_SYMBOL symbol = { .id = NO_CATALOG_ID };
     const INJECTION_SYMBOL_CONTEXT file_context = File_ReadS32(file);
+    symbol.slot = File_ReadS32(file);
     const int32_t name_length = File_ReadS32(file);
 
     char name[M_MAX_SYMBOL_NAME] = {};
