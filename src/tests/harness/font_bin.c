@@ -1,10 +1,11 @@
-// The injection container, far enough to reach the font's sprite textures.
+// The TRXI injection container, far enough to reach the font's sprite
+// textures.
 //
 // Reading the shipped font.bin rather than a table generated alongside it means
 // the tests measure text with the same metrics the game does, and that there is
 // nothing to keep in step when the font changes.
 //
-// Layout: the "TRXJ" header, then a zlib payload holding the level tests, then
+// Layout: the "TRXI" header, then a zlib payload holding the level tests, then
 // the chunks. Each chunk is a type, a block count and a total size; each block
 // a data type, an item count and a payload size. The sprite textures and the
 // sprite sequences naming the fonts both live in the texture chunks.
@@ -19,7 +20,7 @@
 #include <string.h>
 #include <zlib.h>
 
-#define M_MAGIC 0x4A585254 // "TRXJ"
+#define M_MAGIC 0x49585254 // "TRXI"
 #define M_SPRITE_RECORD_SIZE 16
 
 typedef struct {
@@ -75,7 +76,7 @@ static char *M_LoadPayload(const char *const path, size_t *const out_size)
     if (read_size < 20 || (uint32_t)M_ReadS32(&header) != M_MAGIC) {
         goto cleanup;
     }
-    M_ReadS32(&header); // version
+    M_ReadS32(&header); // format major
     M_ReadS32(&header); // injection type
     const int32_t uncompressed_size = M_ReadS32(&header);
     const int32_t compressed_size = M_ReadS32(&header);
@@ -164,12 +165,17 @@ bool FontBin_Load(const char *const path, FONT_BIN *const out)
         Memory_Free(payload);
         return false;
     }
-    M_ReadS32(&cursor); // level test count
-    cursor.pos += M_ReadS32(&cursor); // level test payload
+    const int32_t test_count = M_ReadS32(&cursor);
+    for (int32_t i = 0; i < test_count && M_CanRead(&cursor, 12); i++) {
+        M_ReadS32(&cursor); // test type
+        M_ReadS32(&cursor); // test version
+        cursor.pos += M_ReadS32(&cursor); // test payload
+    }
     const int32_t chunk_count = M_ReadS32(&cursor);
 
-    for (int32_t i = 0; i < chunk_count && M_CanRead(&cursor, 12); i++) {
+    for (int32_t i = 0; i < chunk_count && M_CanRead(&cursor, 16); i++) {
         const int32_t chunk_type = M_ReadS32(&cursor);
+        M_ReadS32(&cursor); // chunk layout version
         const int32_t block_count = M_ReadS32(&cursor);
         const int32_t chunk_size = M_ReadS32(&cursor);
         if (chunk_type != ICT_TEXTURE_DATA && chunk_type != ICT_TEXTURE_INFO) {
