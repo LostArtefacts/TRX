@@ -53,6 +53,9 @@ typedef struct {
 
     // Set the flame variant for flying body parts. Zero is ordinary fire.
     int16_t flame_variant;
+
+    // Credits the death to an item for the kill statistics.
+    const ITEM *sender;
 } CREATURE_DIE_ARGS;
 
 // Kills the creature and removes it from play.

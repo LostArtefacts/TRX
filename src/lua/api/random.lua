@@ -83,6 +83,13 @@ local function randint_impl(self, a, b)
   return a + below(self, b - a + 1)
 end
 
+local function randrange_impl(self, n)
+  if n < 1 then
+    error("n must be 1 or more", 2)
+  end
+  return below(self, n)
+end
+
 local function choice_impl(self, seq)
   local count = #seq
   if count == 0 then
@@ -164,6 +171,19 @@ local RANDINT = {
     },
   },
   returns = { type = "integer", description = "A value in [a, b]." },
+}
+
+local RANDRANGE = {
+  description = "A whole number below a bound, counted from zero. The bound itself never "
+    .. "comes up.",
+  params = {
+    {
+      name = "n",
+      type = "integer",
+      description = "How many values there are. Below 1 raises.",
+    },
+  },
+  returns = { type = "integer", description = "A value in [0, n)." },
 }
 
 local CHOICE = {
@@ -259,6 +279,7 @@ Stream = api.type("random.Stream", {
       impl = randint_impl,
     }),
 
+    randrange = spec(RANDRANGE, { impl = randrange_impl }),
     choice = spec(CHOICE, { impl = choice_impl }),
     choices = spec(CHOICES, { impl = choices_impl }),
     angle = spec(ANGLE, { impl = angle_impl }),
@@ -307,6 +328,16 @@ api.define(
     examples = { [[local pips = trx.random.randint(1, 6)]] },
     impl = function(a, b)
       return randint_impl(control, a, b)
+    end,
+  })
+)
+
+api.define(
+  "random.randrange",
+  spec(RANDRANGE, {
+    examples = { [[local side = trx.random.randrange(6) + 1]] },
+    impl = function(n)
+      return randrange_impl(control, n)
     end,
   })
 )

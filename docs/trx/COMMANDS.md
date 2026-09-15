@@ -98,6 +98,9 @@ whichever key you have bound, and not include it as part of the command itself.
 - `/teatime`  
   Calls your loyal butler to any end of the world you're exploring right now. Effective immediately.
 
+- `/bignasty`  
+  Special delivery! The BFG9000 comes down through the ceiling with its cells humming, and one shot turns a whole room green. Ask for seconds and it helps itself to half of Lara's health instead. TR4 misses out entirely - nothing in there to hang it off.
+
 - `/spawn {object}`  
   Spawn an object of your choice. Not guaranteed to behave, but good for testing and oddly therapeutic for goofing off.
 

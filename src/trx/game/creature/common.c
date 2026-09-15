@@ -254,12 +254,13 @@ static bool M_TestDrowned(
     }
 }
 
-// The kill total is Lara's tally, and this function is reached by removing an
-// item rather than by earning it.
-static void M_Kill(ITEM *const item)
+// Credits a kill when the item is removed rather than damaged.
+static void M_Kill(ITEM *const item, const ITEM *const sender)
 {
-    Item_TakeDamage(
-        item, item->hit_points, IDF_NO_HIT_STATUS | IDF_NO_KILL_STATS, nullptr);
+    const ITEM_DAMAGE_FLAGS flags = sender != nullptr
+        ? IDF_NO_HIT_STATUS
+        : (IDF_NO_HIT_STATUS | IDF_NO_KILL_STATS);
+    Item_TakeDamage(item, item->hit_points, flags, sender);
 }
 
 // Whether an object is one of the markers a level places to steer its
@@ -1464,7 +1465,7 @@ void Creature_Die(const int16_t item_num, const CREATURE_DIE_ARGS args)
 
     case O_DRAGON_FRONT:
     case O_TORSO:
-        M_Kill(item);
+        M_Kill(item, args.sender);
         return;
 
     case O_SKIDOO_ARMED:
@@ -1474,7 +1475,7 @@ void Creature_Die(const int16_t item_num, const CREATURE_DIE_ARGS args)
                 (ITEM_SHATTER_ARGS) { .mesh_bits = -1,
                                       .flame_variant = flame_variant });
             ITEM *const vehicle_item = Item_Get(item_num);
-            M_Kill(vehicle_item);
+            M_Kill(vehicle_item, args.sender);
             Item_SetVisible(vehicle_item, false);
             return;
         }
@@ -1487,13 +1488,13 @@ void Creature_Die(const int16_t item_num, const CREATURE_DIE_ARGS args)
                 (ITEM_SHATTER_ARGS) { .mesh_bits = -1,
                                       .flame_variant = flame_variant });
         }
-        M_Kill(item);
+        M_Kill(item, args.sender);
         const int16_t vehicle_item_num = SkidooDriver_GetSkidooItemNum(item);
         if (vehicle_item_num == NO_ITEM) {
             return;
         }
         ITEM *const vehicle_item = Item_Get(vehicle_item_num);
-        M_Kill(vehicle_item);
+        M_Kill(vehicle_item, nullptr);
         Item_SetVisible(vehicle_item, false);
         return;
 
@@ -1502,7 +1503,7 @@ void Creature_Die(const int16_t item_num, const CREATURE_DIE_ARGS args)
     }
 
     item->is_collidable = false;
-    M_Kill(item);
+    M_Kill(item, args.sender);
     if (explode) {
         Item_Shatter(
             item_num,

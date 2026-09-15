@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from harness import LintWarning, file_check
+from shared.luadecls import late_functions
+from shared.paths import REPO_DIR
+
+# What each file held when the check arrived. A file may hold fewer than its
+# allowance and never more, so the count falls as files are tidied and the
+# entry goes once it reaches zero. Nothing may be added here.
+ALLOWANCE = {
+    "data/trx/ship/games/tr4/modules/fog.lua": 1,
+    "data/trx/ship/games/tr4/scripts/ang_race.lua": 3,
+    "data/trx/ship/games/tr4/scripts/angkor1.lua": 2,
+    "data/trx/ship/games/tr4/scripts/title.lua": 1,
+    "src/lua/api/api.lua": 34,
+    "src/lua/api/events.lua": 2,
+    "src/lua/api/items.lua": 4,
+    "src/lua/api/rooms.lua": 2,
+    "src/lua/api/ui/regions.lua": 1,
+    "src/lua/api/zones.lua": 8,
+    "src/lua/commands/winston.lua": 2,
+}
+
+
+def check(path, text):
+    found = list(late_functions(text))
+    key = Path(path).resolve().relative_to(REPO_DIR).as_posix()
+    allowed = ALLOWANCE.get(key, 0)
+    if len(found) <= allowed:
+        return
+    for line, name, above_line, above in found[allowed:]:
+        yield LintWarning(
+            path,
+            f"{name} belongs above the callback registered on line "
+            f"{above_line}, {above}",
+            line=line,
+        )
+    if allowed != 0:
+        yield LintWarning(
+            path,
+            f"holds {len(found)} of these where {allowed} are allowed; "
+            "the allowance in tools/lint/checks/lua_decl_order only falls",
+        )
+
+
+file_check(check)

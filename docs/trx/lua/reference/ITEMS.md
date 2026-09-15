@@ -197,7 +197,7 @@ end
     - <a id="items.Item.destroy" name="items.Item.destroy"></a>[lua]`item:destroy()`  
       Removes the item from the game. Any other handle to it becomes stale.
 
-    - <a id="items.Item.die" name="items.Item.die"></a>[lua]`item:die([explode], [flame_variant])`  
+    - <a id="items.Item.die" name="items.Item.die"></a>[lua]`item:die([explode], [flame_variant], [sender])`  
       Runs the object's creature death handling: the corpse stays, and [`explode`](#items.Item.die.explode) bursts its meshes as a rocket or grenade would. For creatures; [`destroy`](#items.Item.destroy) simply removes any item from the game.
 
       Parameters:
@@ -206,6 +206,9 @@ end
         [`trx.fx.sparks.fire_flame`](FX.md#fx.sparks.fire_flame) defines it: `0` orange, `2` pale, and
         `254` green. Only TR3 and TR4 body parts burn; TR1 and TR2 ignore
         this.
+      - <a id="items.Item.die.sender" name="items.Item.die.sender"></a>**`sender`** ([trx.items.Item](#items.Item), optional). Item to credit the death to. Pass [`trx.lara.item`](LARA.md#lara.item) to include the
+        kill in Lara's level statistics. Without it, the kill counts for
+        nobody.
 
     - <a id="items.Item.distance_to" name="items.Item.distance_to"></a>[lua]`item:distance_to(pos)`  
       Distance from this item to a world position.
@@ -482,14 +485,16 @@ end
         [`trx.fx.sparks.fire_flame`](FX.md#fx.sparks.fire_flame) defines it. Only TR3 and TR4 body parts
         burn; TR1 and TR2 ignore this.
 
-    - <a id="items.Item.take_damage" name="items.Item.take_damage"></a>[lua]`item:take_damage(damage)`  
+    - <a id="items.Item.take_damage" name="items.Item.take_damage"></a>[lua]`item:take_damage(damage, [sender])`  
       Hurts the item the way a weapon does, and reports through
       [`trx.events.on_hit`](EVENTS.md#events.on_hit), and [`trx.events.on_kill`](EVENTS.md#events.on_kill) where the blow takes the
       last hit point. Writing [`hit_points`](#items.Item.hit_points) reports neither.
-      The kill counts as the environment's rather than Lara's.
+      Without `sender`, the kill counts for the environment rather than Lara.
 
       Parameters:
       - <a id="items.Item.take_damage.damage" name="items.Item.take_damage.damage"></a>**`damage`** (integer). Hit points to take.
+      - <a id="items.Item.take_damage.sender" name="items.Item.take_damage.sender"></a>**`sender`** ([trx.items.Item](#items.Item), optional). Item to credit the blow to. Pass [`trx.lara.item`](LARA.md#lara.item) to include the
+        kill in Lara's level statistics.
 
       Example:
       ```lua

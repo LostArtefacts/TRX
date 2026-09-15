@@ -249,6 +249,15 @@
             "usage": "Utilizzo: %s",
         },
         "cmd": {
+            "bignasty": {
+                "failure": "\\{review}Non c'è spazio per questo in questo livello.",
+                "got": "\\{review}Hai ottenuto il BFG9000.",
+                "greedy": "\\{review}Lo possiedi già.",
+                "help": "\\{review}Ordina una consegna speciale.",
+                "success_1": "\\{review}Consegna speciale!",
+                "success_2": "\\{review}Guarda in alto!",
+                "success_3": "\\{review}Le celle ronzano…",
+            },
             "braid": {
                 "help": "Attiva o disattiva la treccia di Lara.",
             },

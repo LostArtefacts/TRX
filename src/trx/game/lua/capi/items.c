@@ -616,7 +616,18 @@ static int M_L_ItemsGetBounds(lua_State *const L)
     return 1;
 }
 
-// item:die([explode])
+// Returns the item credited with a death or a blow, or nullptr when none is
+// set.
+static const ITEM *M_GetOptSender(lua_State *const L, const int32_t idx)
+{
+    if (lua_isnoneornil(L, idx)) {
+        return nullptr;
+    }
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, idx, &TYPE_ITEM);
+    return LUA_Struct_Deref(L, ref);
+}
+
+// item:die([explode], [flame_variant], [sender])
 static int M_L_ItemsDie(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
@@ -626,11 +637,12 @@ static int M_L_ItemsDie(lua_State *const L)
         (CREATURE_DIE_ARGS) {
             .explode = lua_toboolean(L, 2),
             .flame_variant = (int16_t)luaL_optinteger(L, 3, 0),
+            .sender = M_GetOptSender(L, 4),
         });
     return 0;
 }
 
-// item:take_damage(damage)
+// item:take_damage(damage, [sender])
 static int M_L_ItemsTakeDamage(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
@@ -638,7 +650,8 @@ static int M_L_ItemsTakeDamage(lua_State *const L)
     const lua_Integer damage = luaL_checkinteger(L, 2);
     luaL_argcheck(
         L, damage >= 0 && damage <= INT16_MAX, 2, "damage out of range");
-    Item_TakeDamage(item, (int16_t)damage, IDF_NONE, nullptr);
+    const ITEM *const sender = M_GetOptSender(L, 3);
+    Item_TakeDamage(item, (int16_t)damage, IDF_NONE, sender);
     return 0;
 }
 

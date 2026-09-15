@@ -7947,6 +7947,24 @@
       }
     },
     {
+      "description": "A whole number below a bound, counted from zero. The bound itself never comes up.",
+      "examples": [
+        "local side = trx.random.randrange(6) + 1"
+      ],
+      "params": [
+        {
+          "description": "How many values there are. Below 1 raises.",
+          "name": "n",
+          "type": "integer"
+        }
+      ],
+      "path": "random.randrange",
+      "returns": {
+        "description": "A value in [0, n).",
+        "type": "integer"
+      }
+    },
+    {
       "description": "One item out of a list, each as likely as the next.",
       "examples": [
         "local sample = trx.random.choice({\n  trx.catalog.samples.LARA_NO,\n  trx.catalog.samples.LARA_YES,\n})"
@@ -12797,6 +12815,12 @@
               "name": "flame_variant",
               "optional": true,
               "type": "integer"
+            },
+            {
+              "description": "Item to credit the death to. Pass `trx.lara.item` to include the\nkill in Lara's level statistics. Without it, the kill counts for\nnobody.",
+              "name": "sender",
+              "optional": true,
+              "type": "items.Item"
             }
           ]
         },
@@ -13222,7 +13246,7 @@
           ]
         },
         {
-          "description": "Hurts the item the way a weapon does, and reports through\n`trx.events.on_hit`, and `trx.events.on_kill` where the blow takes the\nlast hit point. Writing `trx.items.Item.hit_points` reports neither.\nThe kill counts as the environment's rather than Lara's.",
+          "description": "Hurts the item the way a weapon does, and reports through\n`trx.events.on_hit`, and `trx.events.on_kill` where the blow takes the\nlast hit point. Writing `trx.items.Item.hit_points` reports neither.\nWithout `sender`, the kill counts for the environment rather than Lara.\n<!--noref: sender-->",
           "examples": [
             "local lara = trx.lara.item\nlara:take_damage(lara.hit_points)"
           ],
@@ -13232,6 +13256,12 @@
               "description": "Hit points to take.",
               "name": "damage",
               "type": "integer"
+            },
+            {
+              "description": "Item to credit the blow to. Pass `trx.lara.item` to include the\nkill in Lara's level statistics.",
+              "name": "sender",
+              "optional": true,
+              "type": "items.Item"
             }
           ]
         },
@@ -14660,6 +14690,21 @@
           "returns": {
             "description": "A value in [0, 1).",
             "type": "number"
+          }
+        },
+        {
+          "description": "A whole number below a bound, counted from zero. The bound itself never comes up.",
+          "name": "randrange",
+          "params": [
+            {
+              "description": "How many values there are. Below 1 raises.",
+              "name": "n",
+              "type": "integer"
+            }
+          ],
+          "returns": {
+            "description": "A value in [0, n).",
+            "type": "integer"
           }
         }
       ],

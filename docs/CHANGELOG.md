@@ -88,6 +88,7 @@
 
 **Weapons and ammunition**
 - Added an option to keep Lara firing the M16/MP5 from her hip while the action key is held, rather than shouldering the gun the moment she stops moving (Gameplay → Controls → M16/MP5 aiming variants) (#3861 / TRX1048)
+- Added the BFG9000, a joke weapon shipped as an example addon, called in with the `/bignasty` console command (TR1, TR2 and TR3)
 - Fixed Lara taking out a two-handed weapon in wading-depth water only to put it away at once (OG bug) (#6253 / TRX1120)
 - Fixed Lara taking out a weapon while she is fully submerged in a swamp (#6255 / TRX1122)
 - Fixed Lara's back staying empty in a level that takes her weapons away and gives her a rocket launcher
@@ -313,6 +314,7 @@
 - Added `trx.assault.get_time()`, `trx.assault.get_best_time()`, and the penalty and lap timings beside them, so a script can draw the assault course clock the game keeps
 - Added `trx.game.LOGIC_FPS`, the rate the game runs its logic at
 - Added `trx.random.Stream`, `trx.random.control` and `trx.random.draw`, so a script can draw randomness without changing what the creatures decide next (TRX1199)
+- Added `trx.random.randrange()`, a whole number below a bound, so a script that counts from zero does not have to say the bound twice
 - Added a new Lua module, `trx.store`, for what a script remembers across a save: one table for the level and one for the playthrough (TRX87)
 - Added a new Lua module, `trx.ui`, for drawing over the game from a script: widgets that are built once and follow the signals they are given, put in one of the nine places the interface is laid out in, through the new `trx.events.on_ui_draw` and `trx.events.on_ui_paint` events and a small set of drawing calls the engine offers (#5351 / TRX185)
 - Added `trx.ui.primitive.sprite()` and the calls beside it, so a script can draw an object's own sprites
