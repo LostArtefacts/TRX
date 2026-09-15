@@ -211,6 +211,17 @@ end
 
 ### Functions
 
+- <a id="inventory.ring_item" name="inventory.ring_item"></a>[lua]`trx.inventory.ring_item(object)`  
+  Reports how the ring draws an object, as the same table
+  [`trx.inventory.declare_ring_item`](#inventory.declare_ring_item) takes.
+
+  Returns nothing where no entry names the object.
+
+  Parameters:
+  - <a id="inventory.ring_item.object" name="inventory.ring_item.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The inventory icon to read.
+
+  Returns: table. The entry's frame counts, rotations and offsets, or `nil`.
+
 - <a id="inventory.declare_ring_item" name="inventory.declare_ring_item"></a>[lua]`trx.inventory.declare_ring_item(spec)`  
   Adds an object to the inventory ring and sets how it is drawn and rotated.
 

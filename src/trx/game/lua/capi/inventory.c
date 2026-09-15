@@ -455,10 +455,50 @@ static int M_L_InvDeclareRingItem(lua_State *const L)
     return 0;
 }
 
+// trxc.inventory.ring_item(object_id) -> table or nil
+static int M_L_InvRingItem(lua_State *const L)
+{
+    const INVENTORY_ITEM *const item = M_FindRingItem(LUA_CheckObjectID(L, 1));
+    if (item == nullptr) {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    lua_createtable(L, 0, 20);
+#define M_WRITE(key, field)                                                    \
+    lua_pushinteger(L, item->field);                                           \
+    lua_setfield(L, -2, key)
+    M_WRITE("frames_total", frames_total);
+    M_WRITE("current_frame", current_frame);
+    M_WRITE("goal_frame", goal_frame);
+    M_WRITE("open_frame", open_frame);
+    M_WRITE("anim_direction", anim_direction);
+    M_WRITE("anim_speed", anim_speed);
+    M_WRITE("anim_count", anim_count);
+    M_WRITE("x_rot_pt_sel", x_rot_pt_sel);
+    M_WRITE("x_rot_pt", x_rot_pt);
+    M_WRITE("x_rot_sel", x_rot_sel);
+    M_WRITE("x_rot_nosel", x_rot_nosel);
+    M_WRITE("x_rot", x_rot);
+    M_WRITE("y_rot_sel", y_rot_sel);
+    M_WRITE("y_rot", y_rot);
+    M_WRITE("y_trans_sel", y_trans_sel);
+    M_WRITE("y_trans", y_trans);
+    M_WRITE("z_trans_sel", z_trans_sel);
+    M_WRITE("z_trans", z_trans);
+    M_WRITE("meshes_sel", meshes_sel);
+    M_WRITE("meshes_drawn", meshes_drawn);
+    M_WRITE("inv_pos", inv_pos);
+#undef M_WRITE
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
     { "get_current", M_L_InvGetCurrent },
     { "get", M_L_InvGetLevel },
     { "declare_ring_item", M_L_InvDeclareRingItem },
+    { "icon_of", M_L_InvIconOf },
+    { "ring_item", M_L_InvRingItem },
     { nullptr, nullptr },
 };
 
