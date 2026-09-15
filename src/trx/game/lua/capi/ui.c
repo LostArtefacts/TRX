@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/core/utils.h>
+#include <trx/game/anims/types.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/ui.h>
 #include <trx/game/lua/utils.h>
@@ -126,6 +127,28 @@ static int32_t M_CheckSpriteIdx(lua_State *const L)
         luaL_error(L, "sprite %d is out of range", sprite_num);
     }
     return object->mesh_idx + sprite_num;
+}
+
+// trxc.ui.mesh_bounds(object_id) -> min_x, min_y, min_z, max_x, max_y, max_z
+static int M_L_UIMeshBounds(lua_State *const L)
+{
+    const OBJECT_ID object_id = LUA_CheckObjectID(L, 1);
+    const OBJECT *const object = Object_Get(object_id);
+    if (!object->loaded) {
+        return luaL_error(L, "object %d is not loaded", (int32_t)object_id);
+    }
+    const ANIM *const anim = Object_GetAnim(object, 0);
+    if (anim == nullptr || anim->frame_ptr == nullptr) {
+        return luaL_error(L, "the object has no frame to measure");
+    }
+    const BOUNDS_16 bounds = anim->frame_ptr->bounds;
+    lua_pushinteger(L, bounds.min.x);
+    lua_pushinteger(L, bounds.min.y);
+    lua_pushinteger(L, bounds.min.z);
+    lua_pushinteger(L, bounds.max.x);
+    lua_pushinteger(L, bounds.max.y);
+    lua_pushinteger(L, bounds.max.z);
+    return 6;
 }
 
 // trxc.ui.sprite_count(object_id) -> number
@@ -496,6 +519,7 @@ static const luaL_Reg m_Module[] = {
     { "sprite", M_L_UISprite },
     { "sprite_bounds", M_L_UISpriteBounds },
     { "sprite_count", M_L_UISpriteCount },
+    { "mesh_bounds", M_L_UIMeshBounds },
     { "gradient_sprite", M_L_UIGradientSprite },
     { "to_screen", M_L_UIToScreen },
     { "to_canvas", M_L_UIToCanvas },
