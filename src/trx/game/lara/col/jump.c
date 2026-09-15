@@ -32,29 +32,46 @@ static int16_t M_GetLandedBadState(const ITEM *const item)
                                                             : LS(LS_STOP);
 }
 
-static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
+static bool M_CanGrab(const COLL_INFO *const coll)
 {
-    LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (!g_Input.action || lara->gun_status != LGS_ARMLESS
-        || coll->hit_static) {
+    return g_Input.action && Lara_GetLaraInfo()->gun_status == LGS_ARMLESS
+        && !coll->hit_static;
+}
+
+static bool M_TryMonkeyGrab(
+    ITEM *const item, const COLL_INFO *const coll,
+    const LARA_ANIMATION_ID anim_id)
+{
+    if (coll->coll_type != COLL_TOP && coll->coll_type != COLL_TOP_FRONT) {
         return false;
     }
 
-    if (coll->coll_type == COLL_TOP || coll->coll_type == COLL_TOP_FRONT) {
-        int16_t room_num = item->room_num;
-        const SECTOR *const sector = Room_GetSector(
-            (XYZ_32) { item->pos.x, MAX_HEIGHT, item->pos.z }, &room_num);
-        if ((sector->ladder & LADDER_CEILING) != 0) {
-            Item_SwitchToAnim(item, LA(LA_SWING_IN_SLOW), 0);
-            item->current_anim_state = LS(LS_MONKEY_IDLE);
-            item->goal_anim_state = LS(LS_MONKEY_IDLE);
-            item->gravity = false;
-            item->speed = 0;
-            item->fall_speed = 0;
-            lara->gun_status = LGS_HANDS_BUSY;
-            Lara_Col_MonkeySwingSnap(item);
-            return true;
-        }
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector = Room_GetSector(
+        (XYZ_32) { item->pos.x, MAX_HEIGHT, item->pos.z }, &room_num);
+    if ((sector->ladder & LADDER_CEILING) == 0) {
+        return false;
+    }
+
+    Item_SwitchToAnim(item, LA(anim_id), 0);
+    item->current_anim_state = LS(LS_MONKEY_IDLE);
+    item->goal_anim_state = LS(LS_MONKEY_IDLE);
+    item->gravity = false;
+    item->speed = 0;
+    item->fall_speed = 0;
+    Lara_GetLaraInfo()->gun_status = LGS_HANDS_BUSY;
+    Lara_Col_MonkeySwingSnap(item);
+    return true;
+}
+
+static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
+{
+    if (!M_CanGrab(coll)) {
+        return false;
+    }
+
+    if (M_TryMonkeyGrab(item, coll, LA_SWING_IN_SLOW)) {
+        return true;
     }
 
     if (coll->coll_type != COLL_FRONT || coll->side_mid.ceiling > -STEPUP_HEIGHT
@@ -128,34 +145,19 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
     item->speed = 2;
     item->gravity = true;
     item->fall_speed = 1;
-    lara->gun_status = LGS_HANDS_BUSY;
+    Lara_GetLaraInfo()->gun_status = LGS_HANDS_BUSY;
     return true;
 }
 
 static bool M_TestHangJumpUp(ITEM *const item, COLL_INFO *const coll)
 {
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (!g_Input.action || lara->gun_status != LGS_ARMLESS
-        || coll->hit_static) {
+    if (!M_CanGrab(coll)) {
         return false;
     }
 
-    if (coll->coll_type == COLL_TOP || coll->coll_type == COLL_TOP_FRONT) {
-        int16_t room_num = item->room_num;
-        const SECTOR *const sector = Room_GetSector(
-            (XYZ_32) { item->pos.x, MAX_HEIGHT, item->pos.z }, &room_num);
-        if ((sector->ladder & LADDER_CEILING) != 0) {
-            Item_SwitchToAnim(item, LA(LA_MONKEY_GRAB), 0);
-            item->current_anim_state = LS(LS_MONKEY_IDLE);
-            item->goal_anim_state = LS(LS_MONKEY_IDLE);
-            item->gravity = false;
-            item->speed = 0;
-            item->fall_speed = 0;
-            lara->gun_status = LGS_HANDS_BUSY;
-
-            Lara_Col_MonkeySwingSnap(item);
-            return true;
-        }
+    if (M_TryMonkeyGrab(item, coll, LA_MONKEY_GRAB)) {
+        return true;
     }
 
     if (coll->coll_type != COLL_FRONT
