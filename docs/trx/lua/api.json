@@ -7947,6 +7947,24 @@
       }
     },
     {
+      "description": "A whole number below a bound, counted from zero. The bound itself never comes up.",
+      "examples": [
+        "local side = trx.random.randrange(6) + 1"
+      ],
+      "params": [
+        {
+          "description": "How many values there are. Below 1 raises.",
+          "name": "n",
+          "type": "integer"
+        }
+      ],
+      "path": "random.randrange",
+      "returns": {
+        "description": "A value in [0, n).",
+        "type": "integer"
+      }
+    },
+    {
       "description": "One item out of a list, each as likely as the next.",
       "examples": [
         "local sample = trx.random.choice({\n  trx.catalog.samples.LARA_NO,\n  trx.catalog.samples.LARA_YES,\n})"
@@ -14672,6 +14690,21 @@
           "returns": {
             "description": "A value in [0, 1).",
             "type": "number"
+          }
+        },
+        {
+          "description": "A whole number below a bound, counted from zero. The bound itself never comes up.",
+          "name": "randrange",
+          "params": [
+            {
+              "description": "How many values there are. Below 1 raises.",
+              "name": "n",
+              "type": "integer"
+            }
+          ],
+          "returns": {
+            "description": "A value in [0, n).",
+            "type": "integer"
           }
         }
       ],
