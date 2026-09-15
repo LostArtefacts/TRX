@@ -5,6 +5,7 @@
 
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/game/ui/mesh_slots.h>
 #include <trx/core/vector.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/keys.h>
@@ -22,6 +23,7 @@ typedef struct {
 static char m_Clipboard[1024] = "";
 
 static VECTOR *m_Lines = nullptr;
+static double m_InterpolationRate = 0.0;
 
 static M_COLOR_TEXT M_Color(const RGBA_8888 color)
 {
@@ -146,8 +148,30 @@ void UI_ScheduleDrawScreenCircle(
         r_inner, r_outer, z, M_COLOR(color)));
 }
 
+// How far a drawn frame sits between two ticks. A test sets it to see what the
+// blend gives part way through.
+void FakeUIDraw_SetInterpolationRate(const double rate)
+{
+    m_InterpolationRate = rate;
+}
+
+double Interpolation_GetRate(void)
+{
+    return m_InterpolationRate;
+}
+
+// Records each slot the way the engine would draw it, so a test sees the pose
+// a tick produced and the blend between two ticks.
 void UI_Draw(void)
 {
+    UI_MESH_DRAW slots[UI_MESH_SLOT_MAX];
+    const int32_t count = UI_MeshSlots_Collect(slots, UI_MESH_SLOT_MAX);
+    for (int32_t i = 0; i < count; i++) {
+        FakeUIDraw_Record(String_FormatStatic(
+            "mesh_slot obj=%d x=%.1f y=%.1f w=%.1f h=%.1f rot_y=%d",
+            (int32_t)slots[i].object_id, slots[i].pose.x, slots[i].pose.y,
+            slots[i].pose.w, slots[i].pose.h, slots[i].pose.rot_y));
+    }
 }
 
 int32_t FakeUIDraw_GetCount(void)

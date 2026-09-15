@@ -4,6 +4,10 @@
 
 #include <stdint.h>
 
+// Sets how far a drawn frame sits between two ticks, which is what a model
+// kept in a slot is blended by. Zero is the tick it starts from.
+void FakeUIDraw_SetInterpolationRate(double rate);
+
 // Records one line, for a leaf a test draws itself.
 void FakeUIDraw_Record(const char *line);
 

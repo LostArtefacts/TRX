@@ -174,3 +174,100 @@ api.property("ui.safe_area", {
     }
   end,
 })
+
+api.type("ui.MeshSlot", {
+  backing = "UI_MESH_SLOT",
+  description = [[
+A model the interface keeps on screen across ticks.
+
+A script moves the slot once a game tick, to the pose the model reaches by the
+end of that tick. The engine keeps the pose the model started from and blends
+the two on every drawn frame, so the model moves smoothly while the script
+moving it runs only once a tick.
+
+The fields report the pose of the tick, not the blended one the frame is
+drawing.]],
+
+  fields = {
+    object = {
+      from = "object_id",
+      type = "catalog.objects",
+      writable = false,
+      description = "The object drawn in the slot.",
+    },
+    visible = {
+      from = "visible",
+      type = "boolean",
+      writable = false,
+      description = "Whether the model is drawn.",
+    },
+    x = {
+      type = "number",
+      writable = false,
+      description = "The left edge of the box, in canvas units.",
+    },
+    y = {
+      type = "number",
+      writable = false,
+      description = "The top edge of the box, in canvas units.",
+    },
+    w = {
+      type = "number",
+      writable = false,
+      description = "How wide the box is, in canvas units.",
+    },
+    h = {
+      type = "number",
+      writable = false,
+      description = "How tall the box is, in canvas units.",
+    },
+    rot_y = {
+      type = "math.Angle",
+      writable = false,
+      description = "How far the model is turned.",
+    },
+  },
+
+  methods = {
+    move = {
+      description = [[
+Puts the model where it should be at the end of this tick, and shows it.
+
+Takes a table of `object` <!--noref: object-->, `x` <!--noref: x-->,
+`y` <!--noref: y-->, `w` <!--noref: w-->, `h` <!--noref: h--> and
+`rot_y` <!--noref: rot_y-->. The box is in canvas units and an omitted value
+counts as zero. The turn takes the short way around,
+so a model crossing the wrap does not spin back through every angle between.
+
+Call this once a tick. The pose given last tick is what the model travels from,
+so a slot moved twice in one tick blends from the wrong place. A slot that was
+hidden, or that names a different object than it did, starts where it is put
+rather than travelling there.]],
+    },
+
+    hide = {
+      description = "Stops drawing the model. Moving the slot again shows it.",
+    },
+
+    release = {
+      description = [[
+Gives the slot back. The handle is spent afterwards, and moving or hiding a
+spent handle raises rather than reaching whichever slot came next. Releasing
+one again does nothing.]],
+    },
+  },
+})
+
+api.define("ui.mesh_slot", {
+  description = [[
+Takes a slot for a model the interface keeps on screen across ticks.
+
+Take a slot once, when a script loads, and give it back with
+`trx.ui.MeshSlot:release` when nothing needs it. Returns nothing where every
+slot is taken.]],
+  returns = {
+    type = "ui.MeshSlot",
+    description = "The slot, or `nil` where none is free.",
+  },
+  impl = raw.mesh_slot,
+})

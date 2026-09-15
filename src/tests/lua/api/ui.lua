@@ -40,6 +40,88 @@ test("measuring a model the level did not load raises", function()
   end, "not loaded")
 end)
 
+local function slot_line(lines)
+  for _, op in ipairs(lines) do
+    if op:match("^mesh_slot ") then
+      return op
+    end
+  end
+end
+
+test("a model in a slot draws where it was moved", function()
+  local slot = trx.ui.mesh_slot()
+  slot:move({ object = 5, x = 10, y = 20, w = 30, h = 40, rot_y = 512 })
+  assert(
+    slot_line(fake.render(0))
+      == "mesh_slot obj=5 x=10.0 y=20.0 w=30.0 h=40.0 rot_y=512"
+  )
+  slot:release()
+end)
+
+test("a model in a slot is blended between its two ticks", function()
+  local slot = trx.ui.mesh_slot()
+  slot:move({ object = 5, x = 0, y = 0, w = 10, h = 10, rot_y = 0 })
+  slot:move({ object = 5, x = 100, y = 40, w = 10, h = 10, rot_y = 1000 })
+  -- Half way between the two ticks, half way between the two poses.
+  assert(
+    slot_line(fake.render(0.5))
+      == "mesh_slot obj=5 x=50.0 y=20.0 w=10.0 h=10.0 rot_y=500"
+  )
+  -- The fields report the tick, not the frame.
+  assert(slot.x == 100, slot.x)
+  slot:release()
+end)
+
+test("a model put down for the first time does not travel to it", function()
+  local slot = trx.ui.mesh_slot()
+  slot:move({ object = 5, x = 80, y = 0, w = 10, h = 10 })
+  assert(
+    slot_line(fake.render(0.5))
+      == "mesh_slot obj=5 x=80.0 y=0.0 w=10.0 h=10.0 rot_y=0"
+  )
+  slot:release()
+end)
+
+test("a turn takes the short way around", function()
+  local slot = trx.ui.mesh_slot()
+  slot:move({ object = 5, x = 0, y = 0, w = 10, h = 10, rot_y = 0 })
+  slot:move({ object = 5, x = 0, y = 0, w = 10, h = 10, rot_y = 65024 })
+  -- 65024 is -512 the short way, so half way is -256, not 32512.
+  local line = slot_line(fake.render(0.5))
+  assert(line:match("rot_y=%-256$"), line)
+  slot:release()
+end)
+
+test("a released slot's handle does not reach the next taker", function()
+  local first = trx.ui.mesh_slot()
+  first:release()
+  local second = trx.ui.mesh_slot()
+  second:move({ object = 5, x = 1, y = 2, w = 3, h = 4 })
+  raises(function()
+    first:move({ object = 5, x = 90, y = 90, w = 3, h = 4 })
+  end, "stale")
+  assert(
+    slot_line(fake.render(0))
+      == "mesh_slot obj=5 x=1.0 y=2.0 w=3.0 h=4.0 rot_y=0"
+  )
+  second:release()
+end)
+
+test("releasing a spent handle does nothing", function()
+  local slot = trx.ui.mesh_slot()
+  slot:release()
+  slot:release()
+end)
+
+test("a hidden model draws nothing", function()
+  local slot = trx.ui.mesh_slot()
+  slot:move({ object = 5, x = 0, y = 0, w = 10, h = 10 })
+  slot:hide()
+  assert(slot_line(fake.render(0)) == nil)
+  assert(not slot.visible)
+  slot:release()
+end)
+
 test("nothing draws outside a painted scene", function()
   raises(function()
     primitive.text("iris", 0, 0)

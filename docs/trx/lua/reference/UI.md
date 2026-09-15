@@ -168,6 +168,55 @@ and `\{button left}` draws the button the player has bound.
     - <a id="ui.Area.x" name="ui.Area.x"></a>**`x`**: number. The left edge.
     - <a id="ui.Area.y" name="ui.Area.y"></a>**`y`**: number. The top edge.
 
+- <a id="ui.MeshSlot" name="ui.MeshSlot"></a>[lua]`trx.ui.MeshSlot`
+
+    A model the interface keeps on screen across ticks.
+
+    A script moves the slot once a game tick, to the pose the model reaches by the
+    end of that tick. The engine keeps the pose the model started from and blends
+    the two on every drawn frame, so the model moves smoothly while the script
+    moving it runs only once a tick.
+
+    The fields report the pose of the tick, not the blended one the frame is
+    drawing.
+
+    Handles are live references: if the underlying object is destroyed,
+    using the handle raises an error rather than silently reading an
+    unrelated one.
+
+    Properties:
+    - <a id="ui.MeshSlot.h" name="ui.MeshSlot.h"></a>**`h`**: number. How tall the box is, in canvas units. *(read-only)*
+    - <a id="ui.MeshSlot.object" name="ui.MeshSlot.object"></a>**`object`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The object drawn in the slot. *(read-only)*
+    - <a id="ui.MeshSlot.rot_y" name="ui.MeshSlot.rot_y"></a>**`rot_y`**: [trx.math.Angle](MATH.md#math.Angle). How far the model is turned. *(read-only)*
+    - <a id="ui.MeshSlot.visible" name="ui.MeshSlot.visible"></a>**`visible`**: boolean. Whether the model is drawn. *(read-only)*
+    - <a id="ui.MeshSlot.w" name="ui.MeshSlot.w"></a>**`w`**: number. How wide the box is, in canvas units. *(read-only)*
+    - <a id="ui.MeshSlot.x" name="ui.MeshSlot.x"></a>**`x`**: number. The left edge of the box, in canvas units. *(read-only)*
+    - <a id="ui.MeshSlot.y" name="ui.MeshSlot.y"></a>**`y`**: number. The top edge of the box, in canvas units. *(read-only)*
+
+    Methods:
+
+    - <a id="ui.MeshSlot.hide" name="ui.MeshSlot.hide"></a>[lua]`meshslot:hide()`  
+      Stops drawing the model. Moving the slot again shows it.
+
+    - <a id="ui.MeshSlot.move" name="ui.MeshSlot.move"></a>[lua]`meshslot:move()`  
+      Puts the model where it should be at the end of this tick, and shows it.
+
+      Takes a table of `object` , `x` ,
+      `y` , `w` , `h` and
+      `rot_y` . The box is in canvas units and an omitted value
+      counts as zero. The turn takes the short way around,
+      so a model crossing the wrap does not spin back through every angle between.
+
+      Call this once a tick. The pose given last tick is what the model travels from,
+      so a slot moved twice in one tick blends from the wrong place. A slot that was
+      hidden, or that names a different object than it did, starts where it is put
+      rather than travelling there.
+
+    - <a id="ui.MeshSlot.release" name="ui.MeshSlot.release"></a>[lua]`meshslot:release()`  
+      Gives the slot back. The handle is spent afterwards, and moving or hiding a
+      spent handle raises rather than reaching whichever slot came next. Releasing
+      one again does nothing.
+
 - <a id="ui.Widget" name="ui.Widget"></a>[lua]`trx.ui.Widget`
 
     A reusable UI element drawn over the game.
@@ -262,6 +311,15 @@ and `\{button left}` draws the button the player has bound.
 
   Place a widget once when the script loads. Use signals when the widget must
   change later.
+
+- <a id="ui.mesh_slot" name="ui.mesh_slot"></a>[lua]`trx.ui.mesh_slot()`  
+  Takes a slot for a model the interface keeps on screen across ticks.
+
+  Take a slot once, when a script loads, and give it back with
+  [`trx.ui.MeshSlot:release`](#ui.MeshSlot.release) when nothing needs it. Returns nothing where every
+  slot is taken.
+
+  Returns: [trx.ui.MeshSlot](#ui.MeshSlot). The slot, or `nil` where none is free.
 
 - <a id="ui.primitive.reserve" name="ui.primitive.reserve"></a>[lua]`trx.ui.primitive.reserve(region, w, h)`  
   Reserves space in a region and returns a slot for it.

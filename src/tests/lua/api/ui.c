@@ -8,6 +8,7 @@
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/lua/ui.h>
+#include <trx/game/ui/draw.h>
 #include <trx/game/lua/utils.h>
 #include <trx/config/option.h>
 #include <trx/game/console/common.h>
@@ -158,6 +159,24 @@ static int M_FakeSetViewport(lua_State *const L)
     return 0;
 }
 
+// fake.render(rate) -> lines
+//
+// What the engine draws part way between two ticks, which is where a model
+// kept in a slot is blended.
+static int M_FakeRender(lua_State *const L)
+{
+    FakeUIDraw_SetInterpolationRate(luaL_optnumber(L, 1, 0.0));
+    FakeUIDraw_Forget();
+    UI_Draw();
+    const int32_t count = FakeUIDraw_GetCount();
+    lua_createtable(L, count, 0);
+    for (int32_t i = 0; i < count; i++) {
+        lua_pushstring(L, FakeUIDraw_GetLine(i));
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
 // fake.set_mesh_bounds(object, min_x, min_y, min_z, max_x, max_y, max_z)
 static int M_FakeSetMeshBounds(lua_State *const L)
 {
@@ -212,6 +231,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "set_viewport");
     lua_pushcfunction(L, M_FakeSetMeshBounds);
     lua_setfield(L, -2, "set_mesh_bounds");
+    lua_pushcfunction(L, M_FakeRender);
+    lua_setfield(L, -2, "render");
     lua_pushcfunction(L, M_FakePaint);
     lua_setfield(L, -2, "paint");
     lua_pushcfunction(L, M_FakeScene);
