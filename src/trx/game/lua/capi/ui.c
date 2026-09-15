@@ -155,7 +155,8 @@ static int M_L_UIMeshBounds(lua_State *const L)
     }
     const ANIM *const anim = Object_GetAnim(object, 0);
     if (anim == nullptr || anim->frame_ptr == nullptr) {
-        return luaL_error(L, "the object has no frame to measure");
+        lua_pushnil(L);
+        return 1;
     }
     const BOUNDS_16 bounds = anim->frame_ptr->bounds;
     lua_pushinteger(L, bounds.min.x);

@@ -4481,7 +4481,7 @@
       ],
       "params": [
         {
-          "description": "What to run when it happens.",
+          "description": "The function to run.",
           "name": "callback",
           "params": [
             {
@@ -4506,7 +4506,7 @@
       ],
       "params": [
         {
-          "description": "What to run when it happens.",
+          "description": "The function to run.",
           "name": "callback",
           "type": "function"
         }
@@ -4777,6 +4777,28 @@
         }
       ],
       "path": "events.on_pickup",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
+      }
+    },
+    {
+      "description": "Happens when the game asks the interface to announce an object.\n\nThis is not the same as Lara picking something up: the gameflow handing her an\nitem, and the scion and the puzzle items she assembles, all announce themselves\nthe same way. A script drawing the announcement listens for this rather than\nfor `trx.events.on_pickup`, so that nothing it should show goes unannounced.",
+      "params": [
+        {
+          "description": "What to run when it happens.",
+          "name": "callback",
+          "params": [
+            {
+              "description": "The object to announce.",
+              "name": "object",
+              "type": "catalog.objects"
+            }
+          ],
+          "type": "function"
+        }
+      ],
+      "path": "events.on_show_pickup",
       "returns": {
         "description": "The attached handler.",
         "type": "events.Listener"
@@ -7491,17 +7513,17 @@
       }
     },
     {
-      "description": "Reports how the ring draws an object, as the same table\n`trx.inventory.declare_ring_item` takes.\n\nReturns nothing where no entry names the object.",
+      "description": "Returns the ring entry for an object. The result is a copy of the table accepted\nby `trx.inventory.declare_ring_item`, or `nil` when no entry names the object.",
       "params": [
         {
-          "description": "The inventory icon to read.",
+          "description": "The inventory icon to look up.",
           "name": "object",
           "type": "catalog.objects"
         }
       ],
       "path": "inventory.ring_item",
       "returns": {
-        "description": "The entry's frame counts, rotations and offsets, or `nil`.",
+        "description": "The entry's `object_id`, frame counts, rotations and\noffsets, or `nil`.\n<!--noref: object_id-->",
         "type": "table"
       }
     },
@@ -9511,7 +9533,7 @@
       ]
     },
     {
-      "description": "Reports the box a model occupies, from the first frame of its first animation.\n\nThe box sits around the point the model is drawn at, so the low edges are\nusually negative. A script fits a model into a box of its own by comparing the\ntwo.\n\nRaises where the level did not load the object, so check\n`trx.objects.get(object).loaded` first.",
+      "description": "Reports the box a model occupies, from the first frame of its first animation.\n\nThe box sits around the point the model is drawn at, so the low edges are\nusually negative. A script fits a model into a box of its own by comparing the\ntwo.\n\nReturns nothing where the object carries no model, which is how a script tells\nwhether it can draw one at all. Raises where the level did not load the object,\nso check `trx.objects.get(object).loaded` first.",
       "params": [
         {
           "description": "The model object to measure.",
@@ -9522,7 +9544,7 @@
       "path": "ui.primitive.mesh_bounds",
       "returns": [
         {
-          "description": "The low edge across.",
+          "description": "The low edge across, or `nil` where the object carries no model.",
           "type": "math.Distance"
         },
         {
@@ -16229,7 +16251,7 @@
       "path": "ui.Area"
     },
     {
-      "description": "A model the interface keeps on screen across ticks.\n\nA script moves the slot once a game tick, to the pose the model reaches by the\nend of that tick. The engine keeps the pose the model started from and blends\nthe two on every drawn frame, so the model moves smoothly while the script\nmoving it runs only once a tick.\n\nThe fields report the pose of the tick, not the blended one the frame is\ndrawing.",
+      "description": "A model the interface keeps on screen across ticks. Move it once per tick; the\nengine blends between its current and previous poses when it draws each frame.\nThe fields report the current tick's pose.",
       "extensions": [],
       "fields": [
         {
@@ -16282,7 +16304,7 @@
           "name": "hide"
         },
         {
-          "description": "Puts the model where it should be at the end of this tick, and shows it.\n\nTakes a table of `object` <!--noref: object-->, `x` <!--noref: x-->,\n`y` <!--noref: y-->, `w` <!--noref: w-->, `h` <!--noref: h--> and\n`rot_y` <!--noref: rot_y-->. The box is in canvas units and an omitted value\ncounts as zero. The turn takes the short way around,\nso a model crossing the wrap does not spin back through every angle between.\n\nCall this once a tick. The pose given last tick is what the model travels from,\nso a slot moved twice in one tick blends from the wrong place. A slot that was\nhidden, or that names a different object than it did, starts where it is put\nrather than travelling there.",
+          "description": "Puts the model where it should be at the end of this tick, and shows it.\n\nTakes a table of `object` <!--noref: object-->, `x` <!--noref: x-->,\n`y` <!--noref: y-->, `w` <!--noref: w-->, `h` <!--noref: h--> and\n`rot_y` <!--noref: rot_y-->. The box is in canvas units and an omitted value\ncounts as zero. The turn takes the short way around,\nso a model crossing the wrap does not spin back through every angle between.\n\nCall this once per tick. Calling it twice in one tick replaces the pose used for\ninterpolation. A hidden slot, or one given a new object, starts at the new pose.",
           "name": "move"
         },
         {

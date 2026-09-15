@@ -106,7 +106,7 @@ api.define("events.on_game_start", {
     {
       name = "callback",
       type = "function",
-      description = "What to run when it happens.",
+      description = "The function to run.",
       params = {
         {
           name = "is_save",
@@ -141,7 +141,7 @@ api.define("events.on_title_start", {
     {
       name = "callback",
       type = "function",
-      description = "What to run when it happens.",
+      description = "The function to run.",
     },
   },
   returns = LISTENER,
@@ -559,6 +559,32 @@ api.define("events.on_pickup", {
 end)]],
   },
   impl = hook(types.PICKUP),
+})
+
+api.define("events.on_show_pickup", {
+  description = [[
+Happens when the game asks the interface to announce an object.
+
+This is not the same as Lara picking something up: the gameflow handing her an
+item, and the scion and the puzzle items she assembles, all announce themselves
+the same way. A script drawing the announcement listens for this rather than
+for `trx.events.on_pickup`, so that nothing it should show goes unannounced.]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      description = "What to run when it happens.",
+      params = {
+        {
+          name = "object",
+          type = "catalog.objects",
+          description = "The object to announce.",
+        },
+      },
+    },
+  },
+  returns = LISTENER,
+  impl = hook(types.SHOW_PICKUP),
 })
 
 api.define("events.before_control", {

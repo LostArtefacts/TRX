@@ -13,6 +13,7 @@
 #include <trx/config/types.h>
 #include <trx/core/log.h>
 #include <trx/game/ui/common.h>
+#include <trx/game/ui/draw.h>
 #include <trx/game/ui/settings.h>
 #include <trx/game/ui/text.h>
 #include <trx/game/ui/elements/bar.h>
@@ -42,6 +43,48 @@ static int M_FakeTick(lua_State *const L)
 {
     LUA_FireEvent(LUA_EVENT_TICK);
     return 0;
+}
+
+// fake.show_pickup(object_id)
+//
+// What the engine does as it asks the interface to announce something.
+static int M_FakeShowPickup(lua_State *const L)
+{
+    LUA_FireEventInt32(LUA_EVENT_SHOW_PICKUP, (int32_t)luaL_checkinteger(L, 1));
+    return 0;
+}
+
+// fake.render(rate) -> description
+//
+// What the engine draws part way between two ticks, which is where a model
+// kept in a slot is blended.
+static int M_FakeRender(lua_State *const L)
+{
+    FakeUIDraw_SetInterpolationRate(luaL_optnumber(L, 1, 0.0));
+    FakeUIDraw_Forget();
+    UI_Draw();
+    char *description = FakeUIDraw_Describe();
+    lua_pushstring(L, description);
+    Memory_FreePointer(&description);
+    return 1;
+}
+
+// fake.paint() -> description
+//
+// What the interface paints outside the region tree, which is where a pickup
+// drawn as a sprite goes.
+static int M_FakePaint(lua_State *const L)
+{
+    UI_BeginScene();
+    FakeUIDraw_Forget();
+    LUA_UI_SetPainting(true);
+    LUA_FireEvent(LUA_EVENT_UI_PAINT);
+    LUA_UI_SetPainting(false);
+    char *description = FakeUIDraw_Describe();
+    UI_EndScene();
+    lua_pushstring(L, description);
+    Memory_FreePointer(&description);
+    return 1;
 }
 
 // fake.draw_regions() -> description, balanced
@@ -80,6 +123,12 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "errors");
     lua_pushcfunction(L, M_FakeTick);
     lua_setfield(L, -2, "tick");
+    lua_pushcfunction(L, M_FakeShowPickup);
+    lua_setfield(L, -2, "show_pickup");
+    lua_pushcfunction(L, M_FakeRender);
+    lua_setfield(L, -2, "render");
+    lua_pushcfunction(L, M_FakePaint);
+    lua_setfield(L, -2, "paint");
 }
 
 CONFIG g_ConfigStorage = {};

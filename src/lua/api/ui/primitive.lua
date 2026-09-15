@@ -349,8 +349,9 @@ The box sits around the point the model is drawn at, so the low edges are
 usually negative. A script fits a model into a box of its own by comparing the
 two.
 
-Raises where the level did not load the object, so check
-`trx.objects.get(object).loaded` first.]],
+Returns nothing where the object carries no model, which is how a script tells
+whether it can draw one at all. Raises where the level did not load the object,
+so check `trx.objects.get(object).loaded` first.]],
   params = {
     {
       name = "object",
@@ -359,7 +360,10 @@ Raises where the level did not load the object, so check
     },
   },
   returns = {
-    { type = "math.Distance", description = "The low edge across." },
+    {
+      type = "math.Distance",
+      description = "The low edge across, or `nil` where the object carries no model.",
+    },
     { type = "math.Distance", description = "The low edge down." },
     { type = "math.Distance", description = "The low edge into the screen." },
     { type = "math.Distance", description = "The high edge across." },

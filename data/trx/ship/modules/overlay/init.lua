@@ -21,6 +21,9 @@
 -- rest of the overlay.
 require("common.overlay.photo_mode")
 
+-- The announcements that slide in as Lara collects something.
+require("common.overlay.pickups")
+
 local ui = trx.ui
 local signal = trx.signal
 local lara = trx.lara

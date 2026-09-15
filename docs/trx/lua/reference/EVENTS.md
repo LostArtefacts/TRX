@@ -53,7 +53,7 @@ An event that carries a default the script may take over says so in its descript
   which is why the handler is not handed them.
 
   Parameters:
-  - <a id="events.on_game_start.callback" name="events.on_game_start.callback"></a>**`callback`** (function). What to run when it happens.
+  - <a id="events.on_game_start.callback" name="events.on_game_start.callback"></a>**`callback`** (function). The function to run.
     Called with:
     - <a id="events.on_game_start.is_save" name="events.on_game_start.is_save"></a>**`is_save`** (boolean). Whether the level is being resumed from a savegame rather than started fresh. A cutscene and a demo are never resumed, and always report false.
 
@@ -77,7 +77,7 @@ An event that carries a default the script may take over says so in its descript
   says the menu is up; it does not promise a scene playing behind it.
 
   Parameters:
-  - <a id="events.on_title_start.callback" name="events.on_title_start.callback"></a>**`callback`** (function). What to run when it happens.
+  - <a id="events.on_title_start.callback" name="events.on_title_start.callback"></a>**`callback`** (function). The function to run.
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
@@ -392,6 +392,21 @@ An event that carries a default the script may take over says so in its descript
     trx.log.info(trx.items[item_num].object_id)
   end)
   ```
+
+- <a id="events.on_show_pickup" name="events.on_show_pickup"></a>[lua]`trx.events.on_show_pickup(callback)`  
+  Happens when the game asks the interface to announce an object.
+
+  This is not the same as Lara picking something up: the gameflow handing her an
+  item, and the scion and the puzzle items she assembles, all announce themselves
+  the same way. A script drawing the announcement listens for this rather than
+  for [`trx.events.on_pickup`](#events.on_pickup), so that nothing it should show goes unannounced.
+
+  Parameters:
+  - <a id="events.on_show_pickup.callback" name="events.on_show_pickup.callback"></a>**`callback`** (function). What to run when it happens.
+    Called with:
+    - <a id="events.on_show_pickup.object" name="events.on_show_pickup.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The object to announce.
+
+  Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
 - <a id="events.before_control" name="events.before_control"></a>[lua]`trx.events.before_control(callback)`  
   Happens on every logical game frame, before the main game logic runs. The handler takes no arguments.

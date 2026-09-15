@@ -1216,7 +1216,6 @@ GF_COMMAND InvRing_Control(INV_RING *const ring)
     }
 
     m_ActiveRing = nullptr;
-    Overlay_Animate(1);
     return gf_cmd;
 }
 
