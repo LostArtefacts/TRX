@@ -20,6 +20,7 @@
 #include <trx/game/output.h>
 #include <trx/game/output/sources/ui.h>
 #include <trx/game/ui.h>
+#include <trx/game/ui/draw.h>
 #include <trx/game/ui/elements/flash.h>
 #include <trx/game/ui/elements/label.h>
 #include <trx/game/ui/elements/resize.h>
@@ -111,6 +112,11 @@ void Overlay_DrawGameInfo(void)
     if (Camera_Binoculars_IsActive()) {
         OutputSource_UI_StageBinocularMask();
     }
+
+    // The models the interface holds are drawn here, with the rest of the 3D
+    // scene, rather than with the flat content later on: a model is 3D and
+    // wants the view and the depth buffer that the scene set up.
+    UI_DrawMeshes();
 }
 
 void Overlay_DrawUI(void)
