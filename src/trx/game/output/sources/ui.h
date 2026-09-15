@@ -5,18 +5,14 @@
 #include <trx/game/output/utils.h>
 #include <trx/game/viewport.h>
 
-#define OUTPUT_UI_MAX_PICKUP_ROWS 3
-#define OUTPUT_UI_MAX_PICKUP_COLUMNS 4
-#define OUTPUT_UI_MAX_PICKUPS                                                  \
-    (OUTPUT_UI_MAX_PICKUP_COLUMNS * OUTPUT_UI_MAX_PICKUP_ROWS)
-
+// An object drawn as a model in a box on the canvas. The box says where it
+// goes and how large it is; the model is fitted into it and lit as the game
+// lights a model held up to the camera.
 typedef struct {
     const OBJECT *object;
-    int32_t grid_x;
-    int32_t grid_y;
+    VIEWPORT_RECT rect;
     int32_t rot_y;
-    float ease;
-} OUTPUT_UI_PICKUP;
+} OUTPUT_UI_MESH;
 
 typedef struct {
     int32_t sprite_idx;
@@ -44,12 +40,10 @@ typedef struct {
 void OutputSource_UI_Init(void);
 void OutputSource_UI_Shutdown(void);
 
-void OutputSource_UI_StagePickup(OUTPUT_UI_PICKUP pickup);
+void OutputSource_UI_StageMesh(OUTPUT_UI_MESH mesh);
 void OutputSource_UI_StageBinocularMask(void);
 void OutputSource_UI_StageSprite(OUTPUT_UI_SPRITE sprite);
 void OutputSource_UI_StageQuad(OUTPUT_UI_QUAD quad);
 void OutputSource_UI_StageCircle(OUTPUT_UI_CIRCLE circle);
 void OutputSource_UI_StagePhotoModeFrame(
     VIEWPORT_RECT rect, RGBA_8888 color, int32_t thickness);
-
-VIEWPORT_RECT OutputSource_UI_GetPickupRect(const OUTPUT_UI_PICKUP *pickup);
