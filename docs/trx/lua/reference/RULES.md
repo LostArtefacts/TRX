@@ -39,6 +39,11 @@ that wants the defaults back asks for them.
   did, rather than keeping the rotation the level gave it. This only reaches
   drops the level data places on the enemy; a drop the gameflow names always
   takes the enemy's facing.
+- <a id="rules.inventory.keep_plot_items" name="rules.inventory.keep_plot_items"></a>**`trx.rules.inventory.keep_plot_items`** (boolean). Whether the items a level owns - keys, puzzle items, pickup items and what
+  Lara examines - travel with her to the next level, rather than being left
+  behind at the end of the one she found them in. TR4 keeps them and clears
+  them where its game flow declares a `reset_hub` ;
+  the other games leave them behind every time.
 - <a id="rules.fx.rotate_debris" name="rules.fx.rotate_debris"></a>**`trx.rules.fx.rotate_debris`** (boolean). Whether debris pieces generated from shattered meshes should rotate in yaw
   and pitch while they are active. The original TR4 did not apply rotation.
 

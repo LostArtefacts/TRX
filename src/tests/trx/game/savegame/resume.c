@@ -68,6 +68,7 @@ static void M_SetUp(void)
     g_ConfigStorage = (CONFIG) {};
     g_ConfigStorage.gameplay.start_lara_hitpoints = 1000;
     g_TRVersion = 1;
+    g_Rules = (RULES) {};
     m_BonusFlag = false;
     m_LiveInv = (INVENTORY_STATE) {};
     m_Lara = (LARA_INFO) {};
@@ -254,6 +255,8 @@ LARA_GUN_TYPE Gun_GetBackChoice(const INVENTORY_STATE *const inv)
     return LGT_UNARMED;
 }
 
+RULES g_Rules;
+
 void Rules_Reset(void)
 {
 }
@@ -428,6 +431,41 @@ TEST(storing_the_game_takes_what_lara_is_carrying_into_the_entry)
     CHECK_EQ_INT(Inv_State_GetCount(&entry->inv, O_UZIS_ITEM), 1);
     CHECK_EQ_INT(Inv_State_GetCount(&entry->inv, O_SMALL_MEDIPACK_ITEM), 3);
     CHECK_EQ_INT(Inv_State_GetAmmo(&entry->inv, LGT_UZIS), 150);
+}
+
+// The items a level owns stay behind with it, so the next level's entry has
+// none of them.
+TEST(storing_the_game_leaves_the_levels_own_items_behind)
+{
+    M_SetUp();
+    Inv_State_SetCount(&m_LiveInv, O_KEY_ITEM_1, 1);
+    Inv_State_SetCount(&m_LiveInv, O_SMALL_MEDIPACK_ITEM, 2);
+
+    SG_Resume_StoreGameToEntry(&m_MainLevels[M_SECOND]);
+
+    const RESUME_INFO *const entry =
+        SG_Resume_GetEntry(&m_MainLevels[M_SECOND]);
+    CHECK_EQ_INT(Inv_State_GetCount(&entry->inv, O_KEY_ITEM_1), 0);
+    CHECK_EQ_INT(Inv_State_GetCount(&entry->inv, O_SMALL_MEDIPACK_ITEM), 2);
+}
+
+// Where the rule says the items travel, as it does in TR4, the whole inventory
+// is handed on and the game flow is what takes anything away.
+TEST(keeping_plot_items_hands_the_whole_inventory_on)
+{
+    M_SetUp();
+    g_Rules.inventory.keep_plot_items = true;
+    Inv_State_SetCount(&m_LiveInv, O_KEY_ITEM_1, 1);
+    Inv_State_SetCount(&m_LiveInv, O_SMALL_MEDIPACK_ITEM, 2);
+    Inv_State_SetAmmo(&m_LiveInv, LGT_UZIS, 30);
+
+    SG_Resume_StoreGameToEntry(&m_MainLevels[M_SECOND]);
+
+    const RESUME_INFO *const entry =
+        SG_Resume_GetEntry(&m_MainLevels[M_SECOND]);
+    CHECK_EQ_INT(Inv_State_GetCount(&entry->inv, O_KEY_ITEM_1), 1);
+    CHECK_EQ_INT(Inv_State_GetCount(&entry->inv, O_SMALL_MEDIPACK_ITEM), 2);
+    CHECK_EQ_INT(Inv_State_GetAmmo(&entry->inv, LGT_UZIS), 30);
 }
 
 TEST(mirroring_puts_the_level_into_the_entry_a_save_writes_from)

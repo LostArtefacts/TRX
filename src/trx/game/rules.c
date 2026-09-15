@@ -45,6 +45,7 @@ static void M_ApplyGameDefaults(void)
     m_Defaults.corpse.fade_speed = g_TRVersion >= 4 ? 2 : 0;
     m_Defaults.carrier.snap_to_sector = g_TRVersion >= 3;
     m_Defaults.carrier.inherit_facing = g_TRVersion < 3;
+    m_Defaults.inventory.keep_plot_items = g_TRVersion >= 4;
 }
 
 const RULE *Rules_GetMap(void)

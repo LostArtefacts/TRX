@@ -242,6 +242,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_REMOVE_SCIONS, "remove_scions");
     ENUM_MAP(
         GF_SEQUENCE_EVENT_TYPE, GFS_REMOVE_BINOCULARS, "remove_binoculars");
+    ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_RESET_HUB, "reset_hub");
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_ENABLE_SUNSET, "enable_sunset");
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_SETUP_HORIZON, "setup_horizon");
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_SETUP_UV_ROTATE, "setup_uv_rotate");

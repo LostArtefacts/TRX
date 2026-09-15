@@ -1,7 +1,9 @@
 #include <trx/game/game_flow/inventory.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/game/catalog/table.h>
+#include <trx/game/game_flow/common.h>
 #include <trx/game/gun.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
@@ -22,6 +24,15 @@ static bool m_RemoveFlares = false;
 static bool m_RemoveMedipacks = false;
 static bool m_RemoveScions = false;
 static bool m_RemoveBinoculars = false;
+
+// What a hub reset takes away: the items a level owns rather than Lara. These
+// are the families TR4 clears when it ends a chapter of the game.
+static const OBJECT_FAMILY m_PlotItemFamilies[] = {
+    OBJ_FAMILY_KEY,
+    OBJ_FAMILY_PUZZLE,
+    OBJ_FAMILY_COLLECTIBLE,
+    OBJ_FAMILY_EXAMINE,
+};
 
 // What the scion modifier takes away. The object ids are not consecutive, so
 // they are named one by one.
@@ -250,6 +261,41 @@ int32_t GF_GetSecretRewardCount(const GF_LEVEL *const level)
         }
     }
     return sum;
+}
+
+void GF_InventoryModifier_ApplyHubReset(
+    const GF_LEVEL *const level, const GF_LEVEL *const next_level)
+{
+    if (level == nullptr || next_level == nullptr) {
+        return;
+    }
+    RESUME_INFO *const resume = SG_Resume_GetEntry(next_level);
+    if (resume == nullptr) {
+        return;
+    }
+
+    bool resets = false;
+    for (int32_t i = 0; i < level->sequence.length; i++) {
+        const GF_SEQUENCE_EVENT *const event = &level->sequence.events[i];
+        if (event->type != GFS_RESET_HUB) {
+            continue;
+        }
+        const int32_t level_idx = (int32_t)(intptr_t)event->data;
+        if (GF_GetLevel(GFLT_MAIN, level_idx - 1) == next_level) {
+            resets = true;
+            break;
+        }
+    }
+    if (!resets) {
+        return;
+    }
+
+    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_PlotItemFamilies); i++) {
+        OBJECT_FAMILY_FOR_EACH(m_PlotItemFamilies[i], object_id)
+        {
+            Inv_State_SetCount(&resume->inv, object_id, 0);
+        }
+    }
 }
 
 void GF_InventoryModifier_ApplyToResumeInfo(const GF_LEVEL *const level)

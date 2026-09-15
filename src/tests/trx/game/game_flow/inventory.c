@@ -10,6 +10,9 @@
 // same declaration, so a reward is only correct when they agree - and they have
 // to agree whether or not Lara already carries the gun, which is what a bonus
 // game makes the ordinary case.
+//
+// The hub reset is pinned here as well: which items it takes away, and that it
+// only reaches the transition the level names.
 
 #include <harness/harness.h>
 
@@ -71,6 +74,17 @@ static GF_LEVEL m_Level = {
     .sequence = { .length = 3, .events = m_Events },
 };
 
+// The level the hub reset is declared against, which is the one after it in
+// the main table. A reset names its destination counted from one.
+static GF_SEQUENCE_EVENT m_HubEvents[] = {
+    { .type = GFS_RESET_HUB, .data = (void *)(intptr_t)2 },
+};
+
+static GF_LEVEL m_NextLevel = {
+    .num = 1,
+    .type = GFL_NORMAL,
+};
+
 static void M_SetUp(void)
 {
     g_ConfigStorage = (CONFIG) {};
@@ -79,16 +93,42 @@ static void M_SetUp(void)
     m_PickupCount = 0;
     memset(m_Ammo, 0, sizeof(m_Ammo));
     m_Level.sequence.length = 3;
+    m_Level.sequence.events = m_Events;
 }
 
 // Everything the module reaches for outside itself. The inventory is a set of
 // object ids - the reward asks whether Lara has a thing, never how many.
 
-// Define the gun family to contain only these two weapons.
+// Define the gun family to contain only these two weapons, and hand the hub
+// reset one plot item of each kind it takes away.
 bool ObjectFamily_Has(const OBJECT_ID object_id, const OBJECT_FAMILY family)
 {
-    return family == OBJ_FAMILY_GUN
-        && (object_id == O_PISTOLS_ITEM || object_id == O_GRENADE_GUN_ITEM);
+    switch (family) {
+    case OBJ_FAMILY_GUN:
+        return object_id == O_PISTOLS_ITEM || object_id == O_GRENADE_GUN_ITEM;
+    case OBJ_FAMILY_KEY:
+        return object_id == O_KEY_ITEM_1;
+    case OBJ_FAMILY_PUZZLE:
+        return object_id == O_PUZZLE_ITEM_1;
+    default:
+        return false;
+    }
+}
+
+const GF_LEVEL *GF_GetLevel(
+    const GF_LEVEL_TABLE_TYPE level_table_type, const int32_t num)
+{
+    if (level_table_type != GFLT_MAIN) {
+        return nullptr;
+    }
+    switch (num) {
+    case 0:
+        return &m_Level;
+    case 1:
+        return &m_NextLevel;
+    default:
+        return nullptr;
+    }
 }
 
 int32_t Gun_Registry_GetCount(void)
@@ -309,4 +349,47 @@ TEST(secret_reward_skips_guns_the_player_disabled)
 
     CHECK_EQ_INT(m_PickupCount, 1);
     CHECK(!Inv_HasItem(O_GRENADE_GUN_ITEM));
+}
+
+// A hub reset takes the plot items away from what the level it names keeps.
+// Lara's own supplies are not the level's to take.
+TEST(hub_reset_clears_the_plot_items_of_the_level_it_names)
+{
+    M_SetUp();
+    m_Level.sequence.length = 1;
+    m_Level.sequence.events = m_HubEvents;
+    Inv_State_SetCount(&m_Resume.inv, O_KEY_ITEM_1, 1);
+    Inv_State_SetCount(&m_Resume.inv, O_PUZZLE_ITEM_1, 2);
+    Inv_State_SetCount(&m_Resume.inv, O_SMALL_MEDIPACK_ITEM, 3);
+
+    GF_InventoryModifier_ApplyHubReset(&m_Level, &m_NextLevel);
+
+    CHECK(!Inv_State_Has(&m_Resume.inv, O_KEY_ITEM_1));
+    CHECK(!Inv_State_Has(&m_Resume.inv, O_PUZZLE_ITEM_1));
+    CHECK(Inv_State_Has(&m_Resume.inv, O_SMALL_MEDIPACK_ITEM));
+}
+
+// It only reaches the transition it names, so a level reached any other way
+// keeps what Lara is carrying.
+TEST(hub_reset_leaves_every_other_transition_alone)
+{
+    M_SetUp();
+    m_Level.sequence.length = 1;
+    m_Level.sequence.events = m_HubEvents;
+    Inv_State_SetCount(&m_Resume.inv, O_KEY_ITEM_1, 1);
+
+    GF_InventoryModifier_ApplyHubReset(&m_Level, &m_Level);
+
+    CHECK(Inv_State_Has(&m_Resume.inv, O_KEY_ITEM_1));
+}
+
+// A level that declares no reset takes nothing away.
+TEST(a_level_without_a_hub_reset_takes_nothing_away)
+{
+    M_SetUp();
+    Inv_State_SetCount(&m_Resume.inv, O_KEY_ITEM_1, 1);
+
+    GF_InventoryModifier_ApplyHubReset(&m_Level, &m_NextLevel);
+
+    CHECK(Inv_State_Has(&m_Resume.inv, O_KEY_ITEM_1));
 }

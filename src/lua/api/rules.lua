@@ -86,6 +86,17 @@ rule("carrier.inherit_facing", {
   ]],
 })
 
+rule("inventory.keep_plot_items", {
+  type = "boolean",
+  description = [[
+    Whether the items a level owns - keys, puzzle items, pickup items and what
+    Lara examines - travel with her to the next level, rather than being left
+    behind at the end of the one she found them in. TR4 keeps them and clears
+    them where its game flow declares a `reset_hub` <!--noref: reset_hub-->;
+    the other games leave them behind every time.
+  ]],
+})
+
 rule("fx.rotate_debris", {
   type = "boolean",
   description = [[
