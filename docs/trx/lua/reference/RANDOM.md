@@ -97,6 +97,14 @@ place in anything the simulation reads.
 
       Returns: number. A value in [0, 1).
 
+    - <a id="random.Stream.randrange" name="random.Stream.randrange"></a>[lua]`stream:randrange(n)`  
+      A whole number below a bound, counted from zero. The bound itself never comes up.
+
+      Parameters:
+      - <a id="random.Stream.randrange.n" name="random.Stream.randrange.n"></a>**`n`** (integer). How many values there are. Below 1 raises.
+
+      Returns: integer. A value in [0, n).
+
 ### Functions
 
 - <a id="random.random" name="random.random"></a>[lua]`trx.random.random()`  
@@ -116,6 +124,19 @@ place in anything the simulation reads.
   Example:
   ```lua
   local pips = trx.random.randint(1, 6)
+  ```
+
+- <a id="random.randrange" name="random.randrange"></a>[lua]`trx.random.randrange(n)`  
+  A whole number below a bound, counted from zero. The bound itself never comes up.
+
+  Parameters:
+  - <a id="random.randrange.n" name="random.randrange.n"></a>**`n`** (integer). How many values there are. Below 1 raises.
+
+  Returns: integer. A value in [0, n).
+
+  Example:
+  ```lua
+  local side = trx.random.randrange(6) + 1
   ```
 
 - <a id="random.choice" name="random.choice"></a>[lua]`trx.random.choice(seq)`  
