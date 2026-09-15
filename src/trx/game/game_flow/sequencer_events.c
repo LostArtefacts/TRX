@@ -43,6 +43,7 @@
     X(GFS_ADD_SECRET_REWARD, M_HandleInventoryModifier)                        \
     X(GFS_REMOVE_FLARES,     M_HandleInventoryModifier)                        \
     X(GFS_REMOVE_BINOCULARS, M_HandleInventoryModifier)                        \
+    X(GFS_RESET_HUB,         M_HandleInventoryModifier)                        \
     X(GFS_LOADING_SCREEN,    M_HandlePicture)                                  \
     X(GFS_DISPLAY_PICTURE,   M_HandlePicture)                                  \
     X(GFS_LEVEL_STATS,       M_HandleLevelStats)                               \
@@ -115,6 +116,7 @@ M_GF_HANDLER(M_HandleLevelComplete)
         return OK;
     }
     SG_Resume_StoreGameToEntry(next_level);
+    GF_InventoryModifier_ApplyHubReset(current_level, next_level);
     RESUME_INFO *const next_resume = SG_Resume_GetEntry(next_level);
     if (next_resume != nullptr) {
         next_resume->prev_level = current_level->num;
@@ -325,7 +327,7 @@ M_GF_HANDLER(M_HandlePicture)
 
 M_GF_HANDLER(M_HandleInventoryModifier)
 {
-    // handled in GF_InventoryModifier_Apply
+    // handled in the GF_InventoryModifier functions
     *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
     return OK;
 }

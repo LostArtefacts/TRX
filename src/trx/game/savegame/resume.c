@@ -31,10 +31,17 @@ static void M_CopyResumeInfo(
 // What a level keeps for Lara's return is what the savegame names: her
 // weapons and their ammunition, her supplies and her plot items. A key, a
 // puzzle piece or a waterskin belongs to the level she found it in, and is
-// left behind at its end.
+// left behind at its end. Where the inventory.keep_plot_items rule is set, as
+// it is in TR4, the whole inventory travels instead, and a reset_hub event is
+// what takes those items away.
 static void M_PersistInventory(RESUME_INFO *const resume)
 {
     const INVENTORY_STATE *const live = Inv_GetState();
+    if (g_Rules.inventory.keep_plot_items) {
+        resume->inv = *live;
+        return;
+    }
+
     resume->inv = (INVENTORY_STATE) {};
     Inv_State_CopyAmmo(&resume->inv, live);
 

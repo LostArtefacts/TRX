@@ -34,6 +34,14 @@ X_RULE(bool, carrier, snap_to_sector, false)
 X_RULE(bool, carrier, inherit_facing, true)
 X_GROUP_END(carrier)
 
+// Whether the items a level owns travel with Lara to the next one. TR4 hands
+// her whole inventory on and clears it where the game flow says so; the other
+// games leave these items behind at the end of every level, so the shipped
+// false is replaced with the game's own default in Rules_Reset.
+X_GROUP_BEGIN(inventory)
+X_RULE(bool, inventory, keep_plot_items, false)
+X_GROUP_END(inventory)
+
 X_GROUP_BEGIN(fx)
 X_RULE(bool, fx, rotate_debris, true)
 X_GROUP_END(fx)

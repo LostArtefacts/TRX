@@ -223,6 +223,18 @@ default game flow for examples.
     <td colspan="2" align="center">N/A</td>
   </tr>
   <tr valign="top">
+    <td><code>reset_hub</code></td>
+    <td><code>level_idx</code></td>
+    <td>Integer</td>
+    <td>
+      Takes Lara's keys, puzzle items, pickup items and examine items away as
+      she leaves this level for the one named by <code>level_idx</code>. This
+      only applies where the <code>inventory.keep_plot_items</code> rule is on,
+      as it is in TR4; elsewhere such items are left behind at the end of every
+      level.
+    </td>
+  </tr>
+  <tr valign="top">
     <td><code>enable_sunset</code><strong>²</strong></td>
     <td colspan="2" align="center">N/A</td>
     <td>

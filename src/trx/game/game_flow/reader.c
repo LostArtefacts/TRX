@@ -88,6 +88,7 @@ static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     { GFS_PLAY_MUSIC,        M_HandleIntEvent, "music_track" },
     { GFS_DISABLE_FLOOR,     M_HandleIntEvent, "height" },
     { GFS_SETUP_UV_ROTATE,   M_HandleIntEvent, "speed" },
+    { GFS_RESET_HUB,         M_HandleIntEvent, "level_idx" },
 
     // Special cases with custom handlers
     { GFS_LOADING_SCREEN,    M_HandlePictureEvent, nullptr },

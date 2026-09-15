@@ -265,6 +265,7 @@
 - Fixed missing and incorrect textures in Race for the Iris rooms 4, 31, 99 and 103 (TRX1372)
 - Fixed a low quality texture on young Lara's head (OG bug) (TRX1452)
 - Fixed texture bleeding on Lara's nose when bilinear filtering is enabled (OG bug) (TRX1453)
+- Fixed keys and puzzle items disappearing from Lara's inventory at the end of every level (TRX1477)
 
 **Miscellaneous**
 - Added an option to cast Lara in gold whatever she is wearing (Graphic Options → Visuals → Golden Lara) (TRX1070)

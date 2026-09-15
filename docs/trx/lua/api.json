@@ -10237,6 +10237,11 @@
     {
       "callable": false,
       "implicit": true,
+      "path": "rules.inventory"
+    },
+    {
+      "callable": false,
+      "implicit": true,
       "path": "rules.fx"
     },
     {
@@ -11003,6 +11008,12 @@
     {
       "description": "Whether an item a defeated enemy carried turns to face the way the enemy\ndid, rather than keeping the rotation the level gave it. This only reaches\ndrops the level data places on the enemy; a drop the gameflow names always\ntakes the enemy's facing.",
       "path": "rules.carrier.inherit_facing",
+      "type": "boolean",
+      "writable": true
+    },
+    {
+      "description": "Whether the items a level owns - keys, puzzle items, pickup items and what\nLara examines - travel with her to the next level, rather than being left\nbehind at the end of the one she found them in. TR4 keeps them and clears\nthem where its game flow declares a `reset_hub` <!--noref: reset_hub-->;\nthe other games leave them behind every time.",
+      "path": "rules.inventory.keep_plot_items",
       "type": "boolean",
       "writable": true
     },
