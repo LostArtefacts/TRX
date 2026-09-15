@@ -341,6 +341,34 @@ Raises where the level did not load the object, so check
   impl = raw.sprite_bounds,
 })
 
+api.define("ui.primitive.mesh_bounds", {
+  description = [[
+Reports the box a model occupies, from the first frame of its first animation.
+
+The box sits around the point the model is drawn at, so the low edges are
+usually negative. A script fits a model into a box of its own by comparing the
+two.
+
+Raises where the level did not load the object, so check
+`trx.objects.get(object).loaded` first.]],
+  params = {
+    {
+      name = "object",
+      type = "catalog.objects",
+      description = "The model object to measure.",
+    },
+  },
+  returns = {
+    { type = "math.Distance", description = "The low edge across." },
+    { type = "math.Distance", description = "The low edge down." },
+    { type = "math.Distance", description = "The low edge into the screen." },
+    { type = "math.Distance", description = "The high edge across." },
+    { type = "math.Distance", description = "The high edge down." },
+    { type = "math.Distance", description = "The high edge into the screen." },
+  },
+  impl = raw.mesh_bounds,
+})
+
 api.define("ui.primitive.sprite", {
   description = [[
 Draws one sprite of an object on the canvas.

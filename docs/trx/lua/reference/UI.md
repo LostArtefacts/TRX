@@ -429,6 +429,27 @@ and `\{button left}` draws the button the player has bound.
   - number. The right edge.
   - number. The bottom edge.
 
+- <a id="ui.primitive.mesh_bounds" name="ui.primitive.mesh_bounds"></a>[lua]`trx.ui.primitive.mesh_bounds(object)`  
+  Reports the box a model occupies, from the first frame of its first animation.
+
+  The box sits around the point the model is drawn at, so the low edges are
+  usually negative. A script fits a model into a box of its own by comparing the
+  two.
+
+  Raises where the level did not load the object, so check
+  `trx.objects.get(object).loaded` first.
+
+  Parameters:
+  - <a id="ui.primitive.mesh_bounds.object" name="ui.primitive.mesh_bounds.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The model object to measure.
+
+  Returns:
+  - [trx.math.Distance](MATH.md#math.Distance). The low edge across.
+  - [trx.math.Distance](MATH.md#math.Distance). The low edge down.
+  - [trx.math.Distance](MATH.md#math.Distance). The low edge into the screen.
+  - [trx.math.Distance](MATH.md#math.Distance). The high edge across.
+  - [trx.math.Distance](MATH.md#math.Distance). The high edge down.
+  - [trx.math.Distance](MATH.md#math.Distance). The high edge into the screen.
+
 - <a id="ui.primitive.sprite" name="ui.primitive.sprite"></a>[lua]`trx.ui.primitive.sprite(object, sprite_num, x, y, z, scale, color)`  
   Draws one sprite of an object on the canvas.
 

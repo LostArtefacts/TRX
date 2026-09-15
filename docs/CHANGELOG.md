@@ -418,6 +418,7 @@ Showcase: https://youtu.be/dHuBHppj_fo
 - Fixed the game stuttering while it writes its log
 
 **Lua**
+- Added `trx.ui.primitive.mesh_bounds()`, so a script can read the box a model occupies and fit it into one of its own
 - Added `trx.rooms.flip_groups()`, so a level script can move some flip pairs while the rest stay where they are
 - Added `trx.lara.signals`, `trx.game.signals` and `trx.cutscenes.signals`, so a script hears when Lara's state, the game's or a cutscene's changes rather than asking after it
 - Added `trx.lara.is_controllable`, `trx.lara.vehicle`, `trx.lara.MAX_AIR`, `trx.lara.MAX_SPRINT`, what her arms and the flare in them are doing, and what she is lining herself up with, so a script can report what the overlay reports

@@ -618,6 +618,14 @@ int32_t Anim_GetTotalCount(void)
     return FAKE_ANIM_COUNT;
 }
 
+ANIM *Object_GetAnim(const OBJECT *const object, const int32_t anim_idx)
+{
+    if (object == nullptr || anim_idx < 0 || anim_idx >= FAKE_ANIM_COUNT) {
+        return nullptr;
+    }
+    return &m_Anims[anim_idx];
+}
+
 // --- objects ---
 
 OBJECT *Object_Get(const OBJECT_ID object_id)

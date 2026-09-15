@@ -1,12 +1,14 @@
 // The interface surface. The assertions live in ui.lua; this stands up a
 // scene for them to draw into.
 
+#include <fakes/objects.h>
 #include <fakes/ui_draw.h>
 #include <harness/lua_surface.h>
 
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/lua/ui.h>
+#include <trx/game/lua/utils.h>
 #include <trx/config/option.h>
 #include <trx/game/console/common.h>
 #include <trx/game/ui/common.h>
@@ -156,6 +158,27 @@ static int M_FakeSetViewport(lua_State *const L)
     return 0;
 }
 
+// fake.set_mesh_bounds(object, min_x, min_y, min_z, max_x, max_y, max_z)
+static int M_FakeSetMeshBounds(lua_State *const L)
+{
+    const OBJECT_ID object_id = LUA_CheckObjectID(L, 1);
+    FakeObjects_SetMeshBounds(
+        object_id,
+        (BOUNDS_16) {
+            .min = {
+                .x = (int16_t)luaL_checkinteger(L, 2),
+                .y = (int16_t)luaL_checkinteger(L, 3),
+                .z = (int16_t)luaL_checkinteger(L, 4),
+            },
+            .max = {
+                .x = (int16_t)luaL_checkinteger(L, 5),
+                .y = (int16_t)luaL_checkinteger(L, 6),
+                .z = (int16_t)luaL_checkinteger(L, 7),
+            },
+        });
+    return 0;
+}
+
 // fake.as_level_script(fn) - run fn as a level script rather than a global one,
 // so the widgets it places are the level's.
 static int M_FakeAsLevelScript(lua_State *const L)
@@ -187,6 +210,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "end_level");
     lua_pushcfunction(L, M_FakeSetViewport);
     lua_setfield(L, -2, "set_viewport");
+    lua_pushcfunction(L, M_FakeSetMeshBounds);
+    lua_setfield(L, -2, "set_mesh_bounds");
     lua_pushcfunction(L, M_FakePaint);
     lua_setfield(L, -2, "paint");
     lua_pushcfunction(L, M_FakeScene);

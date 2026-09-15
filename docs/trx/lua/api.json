@@ -9472,6 +9472,43 @@
       ]
     },
     {
+      "description": "Reports the box a model occupies, from the first frame of its first animation.\n\nThe box sits around the point the model is drawn at, so the low edges are\nusually negative. A script fits a model into a box of its own by comparing the\ntwo.\n\nRaises where the level did not load the object, so check\n`trx.objects.get(object).loaded` first.",
+      "params": [
+        {
+          "description": "The model object to measure.",
+          "name": "object",
+          "type": "catalog.objects"
+        }
+      ],
+      "path": "ui.primitive.mesh_bounds",
+      "returns": [
+        {
+          "description": "The low edge across.",
+          "type": "math.Distance"
+        },
+        {
+          "description": "The low edge down.",
+          "type": "math.Distance"
+        },
+        {
+          "description": "The low edge into the screen.",
+          "type": "math.Distance"
+        },
+        {
+          "description": "The high edge across.",
+          "type": "math.Distance"
+        },
+        {
+          "description": "The high edge down.",
+          "type": "math.Distance"
+        },
+        {
+          "description": "The high edge into the screen.",
+          "type": "math.Distance"
+        }
+      ]
+    },
+    {
       "description": "Draws one sprite of an object on the canvas.\n\nRaises where the level did not load the object, so check\n`trx.objects.get(object).loaded` first.",
       "examples": [
         "trx.ui.primitive.sprite(\n  trx.catalog.objects.assault_digits, 3, 100, 20, 0, 1,\n  trx.math.color(\"ffffff\"))"

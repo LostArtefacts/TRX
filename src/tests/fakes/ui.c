@@ -6,6 +6,7 @@
 #include <trx/core/enum_map.h>
 #include <trx/core/strings.h>
 #include <trx/debug.h>
+#include <trx/game/anims/types.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input/common.h>
 #include <trx/game/objects/common.h>
@@ -19,6 +20,8 @@
 static FONT_BIN m_Fonts[TR_VERSION_COUNT];
 static FONT_BIN *m_Font = nullptr;
 static OBJECT m_Objects[FAKE_OBJ_COUNT];
+static ANIM_FRAME m_Frames[FAKE_OBJ_COUNT];
+static ANIM m_Anims[FAKE_OBJ_COUNT];
 static int32_t m_ViewportWidth = 640;
 static int32_t m_ViewportHeight = 480;
 static const char *m_KeyName = M_DEFAULT_KEY_NAME;
@@ -67,6 +70,15 @@ void FakeUI_Shutdown(void)
 OBJECT *Object_Get(const OBJECT_ID object_id)
 {
     return &m_Objects[object_id];
+}
+
+ANIM *Object_GetAnim(const OBJECT *const object, const int32_t anim_idx)
+{
+    const int32_t object_id = object - m_Objects;
+    if (object_id < 0 || object_id >= FAKE_OBJ_COUNT) {
+        return nullptr;
+    }
+    return &m_Anims[object_id];
 }
 
 SPRITE_TEXTURE *Output_GetSpriteTexture(const int32_t texture_idx)
