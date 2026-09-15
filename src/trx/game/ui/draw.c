@@ -383,42 +383,6 @@ static inline void M_ScheduleOp(M_DRAW_OP *const op)
     Vector_Add(p->ops, &op);
 }
 
-// Stages every model a slot holds in one batch, held apart from the scene
-// around it so that the models are lit by their own fog rather than the room's.
-static void M_DrawMeshes(void)
-{
-    if (!UI_MeshSlots_AnyShown()) {
-        return;
-    }
-
-    SceneCompositor_Flush();
-    const int32_t old_fog_start = Output_GetFogStart();
-    const int32_t old_fog_end = Output_GetFogEnd();
-    Output_SetFogStart(20 * WALL_L);
-    Output_SetFogEnd(100 * WALL_L);
-    UI_MESH_DRAW slots[UI_MESH_SLOT_MAX];
-    const int32_t slot_count = UI_MeshSlots_Collect(slots, UI_MESH_SLOT_MAX);
-    for (int32_t i = 0; i < slot_count; i++) {
-        const OBJECT *const object = Object_Get(slots[i].object_id);
-        if (object == nullptr || !object->loaded) {
-            continue;
-        }
-        OutputSource_UI_StageMesh((OUTPUT_UI_MESH) {
-            .object = object,
-            .rect = {
-                .x = lroundf(UI_ScaleX(slots[i].pose.x)),
-                .y = lroundf(UI_ScaleY(slots[i].pose.y)),
-                .w = lroundf(UI_ScaleX(slots[i].pose.w)),
-                .h = lroundf(UI_ScaleY(slots[i].pose.h)),
-            },
-            .rot_y = slots[i].pose.rot_y,
-        });
-    }
-    SceneCompositor_Flush();
-    Output_SetFogStart(old_fog_start);
-    Output_SetFogEnd(old_fog_end);
-}
-
 static void M_ScheduleOpHelper(
     const M_DRAW_OP_FUNC draw_func, const size_t size,
     const M_DRAW_OP *const op_src)
@@ -609,5 +573,46 @@ void UI_Draw(void)
         const M_DRAW_OP *const op = *(M_DRAW_OP **)Vector_Get(m_Priv.ops, i);
         op->draw(op);
     }
-    M_DrawMeshes();
+}
+
+// Stages every model a slot holds in one batch, held apart from the scene
+// around it so that the models are lit by their own fog rather than the room's.
+void UI_DrawMeshes(void)
+{
+    if (!UI_MeshSlots_AnyShown()) {
+        return;
+    }
+
+    SceneCompositor_Flush();
+    const int32_t old_fog_start = Output_GetFogStart();
+    const int32_t old_fog_end = Output_GetFogEnd();
+    Output_SetFogStart(20 * WALL_L);
+    Output_SetFogEnd(100 * WALL_L);
+    UI_MESH_DRAW slots[UI_MESH_SLOT_MAX];
+    const int32_t slot_count = UI_MeshSlots_Collect(slots, UI_MESH_SLOT_MAX);
+    for (int32_t i = 0; i < slot_count; i++) {
+        const OBJECT *const object = Object_Get(slots[i].object_id);
+        if (object == nullptr || !object->loaded) {
+            continue;
+        }
+        // An object with no model of its own draws nothing, so it is never
+        // staged: a script is free to name one.
+        const ANIM *const anim = Object_GetAnim(object, 0);
+        if (anim == nullptr || anim->frame_ptr == nullptr) {
+            continue;
+        }
+        OutputSource_UI_StageMesh((OUTPUT_UI_MESH) {
+            .object = object,
+            .rect = {
+                .x = lroundf(UI_ScaleX(slots[i].pose.x)),
+                .y = lroundf(UI_ScaleY(slots[i].pose.y)),
+                .w = lroundf(UI_ScaleX(slots[i].pose.w)),
+                .h = lroundf(UI_ScaleY(slots[i].pose.h)),
+            },
+            .rot_y = slots[i].pose.rot_y,
+        });
+    }
+    SceneCompositor_Flush();
+    Output_SetFogStart(old_fog_start);
+    Output_SetFogEnd(old_fog_end);
 }

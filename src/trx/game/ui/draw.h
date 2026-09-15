@@ -30,6 +30,11 @@ void UI_ScheduleDrawScreenCircle(
     int32_t cx, int32_t cy, int32_t r_inner, int32_t r_outer, int32_t z,
     RGBA_8888 color);
 
+// Stages every model a slot holds, in its own batch and under its own fog.
+// Called from the point in the frame the 3D scene is drawn at, because a model
+// is 3D and wants the view and the depth buffer that the scene set up.
+void UI_DrawMeshes(void);
+
 void UI_InitDraw(void);
 void UI_ShutdownDraw(void);
 
