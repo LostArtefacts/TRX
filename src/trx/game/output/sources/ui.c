@@ -37,7 +37,7 @@ typedef struct {
 typedef struct {
     SCENE_SOURCE source;
     const SCENE_SOURCE *objects_source;
-    VECTOR *scheduled_pickups;
+    VECTOR *scheduled_meshes;
     VECTOR *vertices;
     bool binocular_mask;
     GLuint vao;
@@ -56,8 +56,8 @@ static RGBA_F M_ToRGBA_F(const RGBA_8888 color)
     };
 }
 
-static float M_Get3DPickupScale(
-    const VIEWPORT_RECT pickup_rect, const ANIM_FRAME *const frame)
+static float M_GetMeshScale(
+    const VIEWPORT_RECT rect, const ANIM_FRAME *const frame)
 {
     const XYZ_F obj_size = {
         .x = MAX(1, frame->bounds.max.x - frame->bounds.min.x),
@@ -66,20 +66,20 @@ static float M_Get3DPickupScale(
     };
 
     // Reference scale that seems to works OK based on the following data:
-    // pickup_rect: 480×360 (changes with window resizes)
+    // rect: 480×360 (changes with window resizes)
     // key:         81  182 11
     // scion:       184 190 54
     // pistols:     215 57  146
     // shotgun:     365 123 147
-    const float ref_scale = pickup_rect.w / 200.0f;
+    const float ref_scale = rect.w / 200.0f;
 
-    // A scale factor to fit the mesh within pickup_rect,
+    // A scale factor to fit the mesh within the box,
     // ensuring it touches either side and is entirely contained.
     // clang-format off
     const float perfect_fit_scale = MIN3(
-        pickup_rect.w / obj_size.x,
-        pickup_rect.h / obj_size.y,
-        pickup_rect.w / obj_size.z);
+        rect.w / obj_size.x,
+        rect.h / obj_size.y,
+        rect.w / obj_size.z);
     // clang-format on
 
     // Some items are too big or too small – try to find a middle ground.
@@ -102,36 +102,37 @@ static XYZ_32 M_VectorViewFromWorld(
     };
 }
 
-static void M_Draw3DPickups(const M_PRIV *const p)
+static void M_DrawMeshes(const M_PRIV *const p)
 {
     SceneCompositor_SetSamplerFilter(g_Config.rendering.texture_filter);
     Output_MeshShader_Bind(Output_GetMeshShader());
 
-    for (int32_t i = 0; i < p->scheduled_pickups->count; i++) {
-        if (p->objects_source->render_begin != nullptr) {
-            p->objects_source->render_begin(p->objects_source);
-        }
-
-        const OUTPUT_UI_PICKUP *const pickup =
-            Vector_Get(p->scheduled_pickups, i);
+    for (int32_t i = 0; i < p->scheduled_meshes->count; i++) {
+        const OUTPUT_UI_MESH *const mesh = Vector_Get(p->scheduled_meshes, i);
         const ANIM_FRAME *const frame =
-            Object_GetAnim(pickup->object, 0)->frame_ptr;
+            Object_GetAnim(mesh->object, 0)->frame_ptr;
+        // Tested before the batch opens, because the batch below is closed by
+        // the flush at the end of the loop body.
         if (frame == nullptr) {
             continue;
         }
 
-        const VIEWPORT_RECT pickup_rect = OutputSource_UI_GetPickupRect(pickup);
+        if (p->objects_source->render_begin != nullptr) {
+            p->objects_source->render_begin(p->objects_source);
+        }
+
+        const VIEWPORT_RECT rect = mesh->rect;
         const XYZ_32 origin = {
-            .x = pickup_rect.x + pickup_rect.w / 2,
-            .y = pickup_rect.y + pickup_rect.h / 2,
+            .x = rect.x + rect.w / 2,
+            .y = rect.y + rect.h / 2,
             .z = (Output_GetNearZ_UI() + Output_GetFarZ_UI()) / 2,
         };
 
-        const float scale = M_Get3DPickupScale(pickup_rect, frame);
+        const float scale = M_GetMeshScale(rect, frame);
 
         // Lighting routines needs a W2V matrix to work; set up something for
         // it.
-        MATRIX pickup_view_matrix = {};
+        MATRIX mesh_view_matrix = {};
         XYZ_32 camera = g_TRVersion >= 3 ?
              (XYZ_32) {
                 .x = origin.x,
@@ -145,16 +146,16 @@ static void M_Draw3DPickups(const M_PRIV *const p)
             };
         Matrix_LookAt(
             camera.x, camera.y, camera.z, origin.x, origin.y, origin.z, 0);
-        pickup_view_matrix = g_ViewMatrix;
+        mesh_view_matrix = g_ViewMatrix;
 
         Matrix_PushUnit();
         Matrix_TranslateSet32(origin);
         Matrix_RotX(DEG_1 * 15);
         Matrix_RotY(-DEG_180);
-        Matrix_RotY(pickup->rot_y);
+        Matrix_RotY(mesh->rot_y);
         Matrix_Scale((1 << W2V_SHIFT) * scale);
 
-        // Set up lighting for the pickup mesh.
+        // Set up lighting for the mesh.
         if (g_TRVersion == 4) {
             // The OG lights a HUD pickup by a flat brightness alone, with no
             // room lights (output.cpp S_DrawPickup).
@@ -187,13 +188,13 @@ static void M_Draw3DPickups(const M_PRIV *const p)
 
             const XYZ_32 dirs_view[3] = {
                 M_VectorViewFromWorld(
-                    &pickup_view_matrix,
+                    &mesh_view_matrix,
                     (XYZ_32) { .x = 0x2000, .y = -0x2000, .z = 0x1800 }),
                 M_VectorViewFromWorld(
-                    &pickup_view_matrix,
+                    &mesh_view_matrix,
                     (XYZ_32) { .x = -0x2000, .y = -0x4000, .z = 0x3000 }),
                 M_VectorViewFromWorld(
-                    &pickup_view_matrix,
+                    &mesh_view_matrix,
                     (XYZ_32) { .x = 0, .y = 0x2000, .z = 0x3000 }),
             };
 
@@ -211,7 +212,7 @@ static void M_Draw3DPickups(const M_PRIV *const p)
             .z = -(frame->bounds.min.z + frame->bounds.max.z) / 2,
         });
         Matrix_Rot16(frame->mesh_rots[0]);
-        Object_DrawStaticObject(pickup->object, frame);
+        Object_DrawStaticObject(mesh->object, frame);
         Matrix_Pop();
 
         // Immediately flush scheduled object, so that it gets rendered
@@ -291,7 +292,7 @@ static void M_DrawVertices(const M_PRIV *const p)
 static void M_RenderBegin(const SCENE_SOURCE *const source)
 {
     M_PRIV *const p = &m_Priv;
-    Vector_Clear(p->scheduled_pickups);
+    Vector_Clear(p->scheduled_meshes);
     Vector_Clear(p->vertices);
     p->binocular_mask = false;
 }
@@ -304,7 +305,7 @@ static void M_RenderPass(
         return;
     }
 
-    if (p->scheduled_pickups->count == 0 && p->vertices->count == 0
+    if (p->scheduled_meshes->count == 0 && p->vertices->count == 0
         && !p->binocular_mask) {
         return;
     }
@@ -318,9 +319,9 @@ static void M_RenderPass(
         M_DrawVertices(p);
     }
 
-    if (p->scheduled_pickups->count > 0) {
+    if (p->scheduled_meshes->count > 0) {
         glEnable(GL_CULL_FACE);
-        M_Draw3DPickups(p);
+        M_DrawMeshes(p);
         glDisable(GL_CULL_FACE);
         Output_UIShader_Bind(Output_GetUIShader());
     }
@@ -330,7 +331,7 @@ static bool M_IsDirty(const SCENE_SOURCE *const source, const SCENE_PASS pass)
 {
     const M_PRIV *const p = &m_Priv;
     return pass == SCENE_PASS_UI
-        && (p->scheduled_pickups->count > 0 || p->vertices->count > 0
+        && (p->scheduled_meshes->count > 0 || p->vertices->count > 0
             || p->binocular_mask);
 }
 
@@ -375,40 +376,10 @@ static void M_StageRingBand(
     }
 }
 
-VIEWPORT_RECT OutputSource_UI_GetPickupRect(
-    const OUTPUT_UI_PICKUP *const pickup)
-{
-    const VIEWPORT_RECT viewport = Viewport_GetRect(VIEWPORT_UI);
-
-    const float pickup_h = viewport.h * g_Config.ui.pickup_scale / 6;
-    const float pickup_w = pickup_h * 5 / 4;
-    const float window_padding_y = viewport.h / 16;
-    const float window_padding_x = window_padding_y * 4 / 3;
-    const float grid_padding_x = pickup_w / 8;
-    const float grid_padding_y = pickup_h / 8;
-
-    const float src_x = viewport.w + window_padding_x + pickup_w;
-    const float src_y = viewport.h - window_padding_y - pickup_h / 2;
-
-    const float dst_x = viewport.w - window_padding_x - pickup_w / 2
-        - (pickup_w + grid_padding_x) * pickup->grid_x;
-    const float dst_y = viewport.h - window_padding_y - pickup_h / 2
-        - (pickup_h + grid_padding_y) * pickup->grid_y;
-
-    const float x = src_x + (dst_x - src_x) * pickup->ease;
-    const float y = src_y + (dst_y - src_y) * pickup->ease;
-    return (VIEWPORT_RECT) {
-        .x = x - pickup_w / 2,
-        .y = y - pickup_h / 2,
-        .w = pickup_w,
-        .h = pickup_h,
-    };
-}
-
 void OutputSource_UI_Init(void)
 {
     M_PRIV *const p = &m_Priv;
-    p->scheduled_pickups = Vector_Create(sizeof(OUTPUT_UI_PICKUP));
+    p->scheduled_meshes = Vector_Create(sizeof(OUTPUT_UI_MESH));
     p->vertices = Vector_CreateAtCapacity(sizeof(M_VERTEX), 500);
     p->source.render_begin = M_RenderBegin;
     p->source.render_pass = M_RenderPass;
@@ -447,9 +418,9 @@ void OutputSource_UI_Init(void)
 void OutputSource_UI_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
-    if (p->scheduled_pickups != nullptr) {
-        Vector_Free(p->scheduled_pickups);
-        p->scheduled_pickups = nullptr;
+    if (p->scheduled_meshes != nullptr) {
+        Vector_Free(p->scheduled_meshes);
+        p->scheduled_meshes = nullptr;
     }
     if (p->vertices != nullptr) {
         Vector_Free(p->vertices);
@@ -465,10 +436,10 @@ void OutputSource_UI_Shutdown(void)
     }
 }
 
-void OutputSource_UI_StagePickup(const OUTPUT_UI_PICKUP pickup)
+void OutputSource_UI_StageMesh(const OUTPUT_UI_MESH mesh)
 {
     M_PRIV *const p = &m_Priv;
-    Vector_Add(p->scheduled_pickups, &pickup);
+    Vector_Add(p->scheduled_meshes, &mesh);
 }
 
 void OutputSource_UI_StageBinocularMask(void)

@@ -26,6 +26,10 @@
 #include <trx/game/ui/scaler.h>
 #include <trx/version.h>
 
+#define M_MAX_PICKUP_ROWS 3
+#define M_MAX_PICKUP_COLUMNS 4
+#define M_MAX_PICKUPS (M_MAX_PICKUP_COLUMNS * M_MAX_PICKUP_ROWS)
+
 #define M_MAX_PICKUP_DURATION_DISPLAY (LOGIC_FPS * 2)
 #define M_MAX_PICKUP_DURATION_EASE_IN (LOGIC_FPS / 2)
 #define M_MAX_PICKUP_DURATION_EASE_OUT LOGIC_FPS
@@ -40,7 +44,11 @@ typedef enum {
 typedef struct {
     DISPLAY_PICKUP_PHASE phase;
     OBJECT_ID object_id;
-    OUTPUT_UI_PICKUP display;
+    const OBJECT *object;
+    int32_t grid_x;
+    int32_t grid_y;
+    int32_t rot_y;
+    float ease;
     int16_t start_rot;
     int32_t elapsed;
     int32_t total_elapsed;
@@ -55,7 +63,7 @@ typedef struct {
     bool force_health_bar;
 } M_STATE;
 
-static DISPLAY_PICKUP m_Pickups[OUTPUT_UI_MAX_PICKUPS] = {};
+static DISPLAY_PICKUP m_Pickups[M_MAX_PICKUPS] = {};
 static bool m_PickupsActive;
 
 static M_STATE m_State;
@@ -120,7 +128,7 @@ static bool M_HasSprite(const DISPLAY_PICKUP *const pickup)
 // with no inventory model leaves. An object with neither is drawn as nothing.
 static bool M_IsSprite(const DISPLAY_PICKUP *const pickup)
 {
-    if (pickup->display.object == nullptr) {
+    if (pickup->object == nullptr) {
         return true;
     }
     return !g_Config.visuals.enable_3d_pickups && M_HasSprite(pickup);
@@ -143,10 +151,38 @@ static float M_Ease(float current, const float start, const float goal)
     }
 }
 
+static VIEWPORT_RECT M_GetPickupRect(const DISPLAY_PICKUP *const pickup)
+{
+    const VIEWPORT_RECT viewport = Viewport_GetRect(VIEWPORT_UI);
+
+    const float pickup_h = viewport.h * g_Config.ui.pickup_scale / 6;
+    const float pickup_w = pickup_h * 5 / 4;
+    const float window_padding_y = viewport.h / 16;
+    const float window_padding_x = window_padding_y * 4 / 3;
+    const float grid_padding_x = pickup_w / 8;
+    const float grid_padding_y = pickup_h / 8;
+
+    const float src_x = viewport.w + window_padding_x + pickup_w;
+    const float src_y = viewport.h - window_padding_y - pickup_h / 2;
+
+    const float dst_x = viewport.w - window_padding_x - pickup_w / 2
+        - (pickup_w + grid_padding_x) * pickup->grid_x;
+    const float dst_y = viewport.h - window_padding_y - pickup_h / 2
+        - (pickup_h + grid_padding_y) * pickup->grid_y;
+
+    const float x = src_x + (dst_x - src_x) * pickup->ease;
+    const float y = src_y + (dst_y - src_y) * pickup->ease;
+    return (VIEWPORT_RECT) {
+        .x = x - pickup_w / 2,
+        .y = y - pickup_h / 2,
+        .w = pickup_w,
+        .h = pickup_h,
+    };
+}
+
 static void M_DrawPickup2D(const DISPLAY_PICKUP *const pickup)
 {
-    const VIEWPORT_RECT pickup_rect =
-        OutputSource_UI_GetPickupRect(&pickup->display);
+    const VIEWPORT_RECT pickup_rect = M_GetPickupRect(pickup);
     const int16_t sprite_num = Object_Get(pickup->object_id)->mesh_idx;
     const SPRITE_TEXTURE *const sprite = Output_GetSpriteTexture(sprite_num);
     const float sprite_w = ABS(sprite->x1 - sprite->x0);
@@ -175,12 +211,16 @@ static void M_DrawPickup2D(const DISPLAY_PICKUP *const pickup)
 
 static void M_DrawPickup3D(const DISPLAY_PICKUP *const pickup)
 {
-    OutputSource_UI_StagePickup(pickup->display);
+    OutputSource_UI_StageMesh((OUTPUT_UI_MESH) {
+        .object = pickup->object,
+        .rect = M_GetPickupRect(pickup),
+        .rot_y = pickup->rot_y,
+    });
 }
 
 static void M_DrawPickups(void)
 {
-    for (int32_t i = 0; i < OUTPUT_UI_MAX_PICKUPS; i++) {
+    for (int32_t i = 0; i < M_MAX_PICKUPS; i++) {
         DISPLAY_PICKUP *const pickup = &m_Pickups[i];
 
         int32_t duration = 0;
@@ -207,12 +247,12 @@ static void M_DrawPickups(void)
         }
 
         if (M_IsSprite(pickup)) {
-            pickup->display.ease = 1.0f;
+            pickup->ease = 1.0f;
         } else {
             const float rate = Interpolation_GetRate();
-            pickup->display.rot_y = pickup->start_rot
+            pickup->rot_y = pickup->start_rot
                 + (4 * DEG_1 * (pickup->total_elapsed + rate));
-            pickup->display.ease = M_Ease(
+            pickup->ease = M_Ease(
                 (pickup->elapsed + rate) / (float)duration, slide_start,
                 slide_goal);
         }
@@ -228,7 +268,7 @@ static void M_DrawPickups(void)
 static void M_AnimatePickups(const int32_t frames)
 {
     m_PickupsActive = false;
-    for (int32_t i = 0; i < OUTPUT_UI_MAX_PICKUPS; i++) {
+    for (int32_t i = 0; i < M_MAX_PICKUPS; i++) {
         DISPLAY_PICKUP *const pickup = &m_Pickups[i];
         pickup->elapsed += frames;
         pickup->total_elapsed += frames;
@@ -268,7 +308,7 @@ static void M_Init(void)
 
 void Overlay_Reset(void)
 {
-    for (int32_t i = 0; i < OUTPUT_UI_MAX_PICKUPS; i++) {
+    for (int32_t i = 0; i < M_MAX_PICKUPS; i++) {
         m_Pickups[i].phase = DPP_DEAD;
     }
     m_State = (M_STATE) {};
@@ -406,15 +446,15 @@ void Overlay_AddDisplayPickup(const OBJECT_ID obj_id)
 
     int32_t grid_x = -1;
     int32_t grid_y = -1;
-    for (int32_t i = 0; i < OUTPUT_UI_MAX_PICKUPS; i++) {
-        const int32_t x = i % OUTPUT_UI_MAX_PICKUP_COLUMNS;
-        const int32_t y = i / OUTPUT_UI_MAX_PICKUP_COLUMNS;
+    for (int32_t i = 0; i < M_MAX_PICKUPS; i++) {
+        const int32_t x = i % M_MAX_PICKUP_COLUMNS;
+        const int32_t y = i / M_MAX_PICKUP_COLUMNS;
         bool is_occupied = false;
-        for (int32_t j = 0; j < OUTPUT_UI_MAX_PICKUPS; j++) {
+        for (int32_t j = 0; j < M_MAX_PICKUPS; j++) {
             DISPLAY_PICKUP *const pickup = &m_Pickups[j];
             const bool is_dead_or_dying = pickup->phase == DPP_DEAD
                 || (!M_IsSprite(pickup) && pickup->phase == DPP_EASE_OUT);
-            if (pickup->display.grid_x == x && pickup->display.grid_y == y
+            if (pickup->grid_x == x && pickup->grid_y == y
                 && !is_dead_or_dying) {
                 is_occupied = true;
                 break;
@@ -427,7 +467,7 @@ void Overlay_AddDisplayPickup(const OBJECT_ID obj_id)
         }
     }
 
-    for (int32_t i = 0; i < OUTPUT_UI_MAX_PICKUPS; i++) {
+    for (int32_t i = 0; i < M_MAX_PICKUPS; i++) {
         DISPLAY_PICKUP *const pickup = &m_Pickups[i];
         if (pickup->phase != DPP_DEAD) {
             continue;
@@ -436,15 +476,15 @@ void Overlay_AddDisplayPickup(const OBJECT_ID obj_id)
         const INVENTORY_ITEM *const inv_item = InvRing_GetInvItem(obj_id);
         pickup->phase = DPP_EASE_IN;
         pickup->object_id = obj_id;
-        pickup->display.object = nullptr;
+        pickup->object = nullptr;
         if (inv_object_id != NO_OBJECT) {
             const OBJECT *const obj = Object_Get(inv_object_id);
             if (obj->loaded && obj->anim_idx != NO_ANIM) {
-                pickup->display.object = obj;
+                pickup->object = obj;
             }
         }
-        pickup->display.grid_x = grid_x;
-        pickup->display.grid_y = grid_y;
+        pickup->grid_x = grid_x;
+        pickup->grid_y = grid_y;
         pickup->start_rot = inv_item != nullptr ? inv_item->y_rot_sel : 0;
         pickup->elapsed = 0;
         pickup->total_elapsed = 0;
