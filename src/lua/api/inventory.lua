@@ -249,6 +249,26 @@ end]],
   end,
 })
 
+api.define("inventory.ring_item", {
+  description = [[
+Reports how the ring draws an object, as the same table
+`trx.inventory.declare_ring_item` takes.
+
+Returns nothing where no entry names the object.]],
+  params = {
+    {
+      name = "object",
+      type = "catalog.objects",
+      description = "The inventory icon to read.",
+    },
+  },
+  returns = {
+    type = "table",
+    description = "The entry's frame counts, rotations and offsets, or `nil`.",
+  },
+  impl = raw.ring_item,
+})
+
 api.define("inventory.declare_ring_item", {
   description = [[
 Adds an object to the inventory ring and sets how it is drawn and rotated.
