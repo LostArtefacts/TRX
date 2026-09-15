@@ -1371,7 +1371,8 @@ If you install everything correctly, your game directory should look more or les
 ├── modules
 │   ├── overlay
 │   │   ├── init.lua
-│   │   └── photo_mode.lua
+│   │   ├── photo_mode.lua
+│   │   └── pickups.lua
 │   ├── assault.lua
 │   ├── inv_ring.lua
 │   ├── legend.lua
@@ -2784,7 +2785,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   ├── modules
     │   │   ├── overlay
     │   │   │   ├── init.lua
-    │   │   │   └── photo_mode.lua
+    │   │   │   ├── photo_mode.lua
+    │   │   │   └── pickups.lua
     │   │   ├── assault.lua
     │   │   ├── inv_ring.lua
     │   │   ├── legend.lua

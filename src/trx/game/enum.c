@@ -187,6 +187,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_CONSOLE_OPEN, "console_open");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_CONSOLE_CLOSE, "console_close");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_PAINT_OVER, "ui_paint_over");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_SHOW_PICKUP, "show_pickup");
 
     ENUM_MAP(UI_PAINT_LAYER, UI_PAINT_LAYER_UNDER, "under");
     ENUM_MAP(UI_PAINT_LAYER, UI_PAINT_LAYER_OVER, "over");

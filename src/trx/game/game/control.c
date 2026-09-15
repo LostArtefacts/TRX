@@ -237,7 +237,6 @@ GF_COMMAND Game_Control(const bool demo_mode)
 
     Game_TickPostControl();
     Game_TickEndFrame();
-    Overlay_Animate(1);
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 

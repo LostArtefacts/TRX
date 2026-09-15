@@ -394,6 +394,10 @@ order: 3
 
    The game reports a value with the wrong type and stops reading the file.
 
+16. **`trx.inventory.icon_of()` is a plain function**
+   The result is not tied to an inventory, so the function no longer takes one:
+   - `trx.inventory:icon_of(object)` becomes `trx.inventory.icon_of(object)`
+
 ### Version 1.9 to 1.10
 
 The Lua API was rewritten, and most of what it breaks is a rename. Run your

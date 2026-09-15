@@ -170,15 +170,9 @@ and `\{button left}` draws the button the player has bound.
 
 - <a id="ui.MeshSlot" name="ui.MeshSlot"></a>[lua]`trx.ui.MeshSlot`
 
-    A model the interface keeps on screen across ticks.
-
-    A script moves the slot once a game tick, to the pose the model reaches by the
-    end of that tick. The engine keeps the pose the model started from and blends
-    the two on every drawn frame, so the model moves smoothly while the script
-    moving it runs only once a tick.
-
-    The fields report the pose of the tick, not the blended one the frame is
-    drawing.
+    A model the interface keeps on screen across ticks. Move it once per tick; the
+    engine blends between its current and previous poses when it draws each frame.
+    The fields report the current tick's pose.
 
     Handles are live references: if the underlying object is destroyed,
     using the handle raises an error rather than silently reading an
@@ -207,10 +201,8 @@ and `\{button left}` draws the button the player has bound.
       counts as zero. The turn takes the short way around,
       so a model crossing the wrap does not spin back through every angle between.
 
-      Call this once a tick. The pose given last tick is what the model travels from,
-      so a slot moved twice in one tick blends from the wrong place. A slot that was
-      hidden, or that names a different object than it did, starts where it is put
-      rather than travelling there.
+      Call this once per tick. Calling it twice in one tick replaces the pose used for
+      interpolation. A hidden slot, or one given a new object, starts at the new pose.
 
     - <a id="ui.MeshSlot.release" name="ui.MeshSlot.release"></a>[lua]`meshslot:release()`  
       Gives the slot back. The handle is spent afterwards, and moving or hiding a
@@ -494,14 +486,15 @@ and `\{button left}` draws the button the player has bound.
   usually negative. A script fits a model into a box of its own by comparing the
   two.
 
-  Raises where the level did not load the object, so check
-  `trx.objects.get(object).loaded` first.
+  Returns nothing where the object carries no model, which is how a script tells
+  whether it can draw one at all. Raises where the level did not load the object,
+  so check `trx.objects.get(object).loaded` first.
 
   Parameters:
   - <a id="ui.primitive.mesh_bounds.object" name="ui.primitive.mesh_bounds.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The model object to measure.
 
   Returns:
-  - [trx.math.Distance](MATH.md#math.Distance). The low edge across.
+  - [trx.math.Distance](MATH.md#math.Distance). The low edge across, or `nil` where the object carries no model.
   - [trx.math.Distance](MATH.md#math.Distance). The low edge down.
   - [trx.math.Distance](MATH.md#math.Distance). The low edge into the screen.
   - [trx.math.Distance](MATH.md#math.Distance). The high edge across.
