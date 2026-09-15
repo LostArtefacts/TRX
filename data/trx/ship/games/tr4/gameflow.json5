@@ -78,6 +78,7 @@
             ],
             "injections": [
                 "race_textures.bin",
+                "race_fd.bin",
             ],
         },
 
