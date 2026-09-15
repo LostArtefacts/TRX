@@ -1,6 +1,7 @@
 ## Building on macOS
 
 This guide describes the native macOS build workflow using Meson.
+The minimum supported version is macOS 12.0 Monterey
 
 ## Installing dependencies
 
