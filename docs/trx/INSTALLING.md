@@ -1294,6 +1294,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── lara_animations.bin
 │   │   │   ├── lara_outfits.bin
 │   │   │   ├── pickup_aid.bin
+│   │   │   ├── race_fd.bin
 │   │   │   ├── race_textures.bin
 │   │   │   ├── shadow_sprite.bin
 │   │   │   ├── sparks_gfx.bin
@@ -2697,6 +2698,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── lara_animations.bin
     │   │   │   │   ├── lara_outfits.bin
     │   │   │   │   ├── pickup_aid.bin
+    │   │   │   │   ├── race_fd.bin
     │   │   │   │   ├── race_textures.bin
     │   │   │   │   ├── shadow_sprite.bin
     │   │   │   │   ├── sparks_gfx.bin
