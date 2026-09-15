@@ -12797,6 +12797,12 @@
               "name": "flame_variant",
               "optional": true,
               "type": "integer"
+            },
+            {
+              "description": "Item to credit the death to. Pass `trx.lara.item` to include the\nkill in Lara's level statistics. Without it, the kill counts for\nnobody.",
+              "name": "sender",
+              "optional": true,
+              "type": "items.Item"
             }
           ]
         },
@@ -13222,7 +13228,7 @@
           ]
         },
         {
-          "description": "Hurts the item the way a weapon does, and reports through\n`trx.events.on_hit`, and `trx.events.on_kill` where the blow takes the\nlast hit point. Writing `trx.items.Item.hit_points` reports neither.\nThe kill counts as the environment's rather than Lara's.",
+          "description": "Hurts the item the way a weapon does, and reports through\n`trx.events.on_hit`, and `trx.events.on_kill` where the blow takes the\nlast hit point. Writing `trx.items.Item.hit_points` reports neither.\nWithout `sender`, the kill counts for the environment rather than Lara.\n<!--noref: sender-->",
           "examples": [
             "local lara = trx.lara.item\nlara:take_damage(lara.hit_points)"
           ],
@@ -13232,6 +13238,12 @@
               "description": "Hit points to take.",
               "name": "damage",
               "type": "integer"
+            },
+            {
+              "description": "Item to credit the blow to. Pass `trx.lara.item` to include the\nkill in Lara's level statistics.",
+              "name": "sender",
+              "optional": true,
+              "type": "items.Item"
             }
           ]
         },

@@ -742,6 +742,16 @@ end)]],
             this.
           ]],
         },
+        {
+          name = "sender",
+          type = "items.Item",
+          optional = true,
+          description = [[
+            Item to credit the death to. Pass `trx.lara.item` to include the
+            kill in Lara's level statistics. Without it, the kill counts for
+            nobody.
+          ]],
+        },
       },
       description = "Runs the object's creature death handling: the corpse stays, and `trx.items.Item.die.explode` "
         .. "bursts its meshes as a rocket or grenade would. For creatures; `trx.items.Item:destroy` simply removes "
@@ -755,12 +765,22 @@ end)]],
           type = "integer",
           description = "Hit points to take.",
         },
+        {
+          name = "sender",
+          type = "items.Item",
+          optional = true,
+          description = [[
+            Item to credit the blow to. Pass `trx.lara.item` to include the
+            kill in Lara's level statistics.
+          ]],
+        },
       },
       description = [[
         Hurts the item the way a weapon does, and reports through
         `trx.events.on_hit`, and `trx.events.on_kill` where the blow takes the
         last hit point. Writing `trx.items.Item.hit_points` reports neither.
-        The kill counts as the environment's rather than Lara's.
+        Without `sender`, the kill counts for the environment rather than Lara.
+        <!--noref: sender-->
       ]],
       examples = {
         [[local lara = trx.lara.item
