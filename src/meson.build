@@ -982,6 +982,7 @@ common_sources = [
   'trx/game/ui/events.c',
   'trx/game/ui/helpers.c',
   'trx/game/ui/keys.c',
+  'trx/game/ui/mesh_slots.c',
   'trx/game/ui/regions.c',
   'trx/game/ui/scaler.c',
   'trx/game/ui/scrollable.c',

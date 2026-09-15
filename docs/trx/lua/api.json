@@ -9112,6 +9112,14 @@
       }
     },
     {
+      "description": "Takes a slot for a model the interface keeps on screen across ticks.\n\nTake a slot once, when a script loads, and give it back with\n`trx.ui.MeshSlot:release` when nothing needs it. Returns nothing where every\nslot is taken.",
+      "path": "ui.mesh_slot",
+      "returns": {
+        "description": "The slot, or `nil` where none is free.",
+        "type": "ui.MeshSlot"
+      }
+    },
+    {
       "description": "Reserves space in a region and returns a slot for it.\n\nThe reservation is stacked with the engine UI in that region. Reserve space\nduring `trx.events.on_ui_draw`, then read the assigned box during\n`trx.events.on_ui_paint`.\n\nA slot is valid only for the scene that created it.",
       "params": [
         {
@@ -16204,6 +16212,71 @@
       "methods": [],
       "operators": [],
       "path": "ui.Area"
+    },
+    {
+      "description": "A model the interface keeps on screen across ticks.\n\nA script moves the slot once a game tick, to the pose the model reaches by the\nend of that tick. The engine keeps the pose the model started from and blends\nthe two on every drawn frame, so the model moves smoothly while the script\nmoving it runs only once a tick.\n\nThe fields report the pose of the tick, not the blended one the frame is\ndrawing.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "How tall the box is, in canvas units.",
+          "name": "h",
+          "type": "number",
+          "writable": false
+        },
+        {
+          "description": "The object drawn in the slot.",
+          "name": "object",
+          "type": "catalog.objects",
+          "writable": false
+        },
+        {
+          "description": "How far the model is turned.",
+          "name": "rot_y",
+          "type": "math.Angle",
+          "writable": false
+        },
+        {
+          "description": "Whether the model is drawn.",
+          "name": "visible",
+          "type": "boolean",
+          "writable": false
+        },
+        {
+          "description": "How wide the box is, in canvas units.",
+          "name": "w",
+          "type": "number",
+          "writable": false
+        },
+        {
+          "description": "The left edge of the box, in canvas units.",
+          "name": "x",
+          "type": "number",
+          "writable": false
+        },
+        {
+          "description": "The top edge of the box, in canvas units.",
+          "name": "y",
+          "type": "number",
+          "writable": false
+        }
+      ],
+      "handle": true,
+      "methods": [
+        {
+          "description": "Stops drawing the model. Moving the slot again shows it.",
+          "name": "hide"
+        },
+        {
+          "description": "Puts the model where it should be at the end of this tick, and shows it.\n\nTakes a table of `object` <!--noref: object-->, `x` <!--noref: x-->,\n`y` <!--noref: y-->, `w` <!--noref: w-->, `h` <!--noref: h--> and\n`rot_y` <!--noref: rot_y-->. The box is in canvas units and an omitted value\ncounts as zero. The turn takes the short way around,\nso a model crossing the wrap does not spin back through every angle between.\n\nCall this once a tick. The pose given last tick is what the model travels from,\nso a slot moved twice in one tick blends from the wrong place. A slot that was\nhidden, or that names a different object than it did, starts where it is put\nrather than travelling there.",
+          "name": "move"
+        },
+        {
+          "description": "Gives the slot back. The handle is spent afterwards, and moving or hiding a\nspent handle raises rather than reaching whichever slot came next. Releasing\none again does nothing.",
+          "name": "release"
+        }
+      ],
+      "operators": [],
+      "path": "ui.MeshSlot"
     },
     {
       "description": "A reusable UI element drawn over the game.\n\nA widget holds its own state. Give it signals instead of fixed values, then\nregister those signals with `trx.ui.Widget:wakes_on`. The widget remeasures\nonly when a registered signal changes.\n\nRegister every signal that the widget reads. Otherwise the widget can keep a\nstale cached size.",

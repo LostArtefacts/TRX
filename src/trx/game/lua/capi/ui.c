@@ -1,7 +1,9 @@
 #include <trx/config.h>
 #include <trx/core/utils.h>
 #include <trx/game/anims/types.h>
+#include <trx/game/lua/field.h>
 #include <trx/game/lua/registry.h>
+#include <trx/game/lua/struct.h>
 #include <trx/game/lua/ui.h>
 #include <trx/game/lua/utils.h>
 #include <trx/game/objects/common.h>
@@ -13,6 +15,7 @@
 #include <trx/game/ui/elements.h>
 #include <trx/game/ui/elements/frame.h>
 #include <trx/game/ui/keys.h>
+#include <trx/game/ui/mesh_slots.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/ui/settings.h>
@@ -20,6 +23,19 @@
 
 #include <lauxlib.h>
 #include <math.h>
+
+#define M_SLOT_POSE_GETTER(name_, member_)                                     \
+    static bool M_GetSlot##name_(const void *const self, TRX_VALUE *const out) \
+    {                                                                          \
+        const UI_MESH_SLOT *const slot = self;                                 \
+        *out = (TRX_VALUE) { .type = TVT_FLOAT, .as_num = slot->cur.member_ }; \
+        return true;                                                           \
+    }
+
+M_SLOT_POSE_GETTER(X, x)
+M_SLOT_POSE_GETTER(Y, y)
+M_SLOT_POSE_GETTER(W, w)
+M_SLOT_POSE_GETTER(H, h)
 
 static bool m_Drawing = false;
 static bool m_Painting = false;
@@ -189,6 +205,90 @@ static int M_L_UISprite(lua_State *const L)
     UI_ScheduleDrawScreenSprite(x, y, z, scale, scale, sprite_idx, colors);
     return 0;
 }
+
+static bool M_GetSlotRotY(const void *const self, TRX_VALUE *const out)
+{
+    const UI_MESH_SLOT *const slot = self;
+    *out = (TRX_VALUE) { .type = TVT_S32, .as_int = slot->cur.rot_y };
+    return true;
+}
+
+// clang-format off
+static const FIELD_DESC m_MeshSlotFields[] = {
+    FIELD_RO(UI_MESH_SLOT, object_id),
+    FIELD_RO(UI_MESH_SLOT, visible),
+    FIELD_FN("x", TVT_FLOAT, M_GetSlotX, nullptr),
+    FIELD_FN("y", TVT_FLOAT, M_GetSlotY, nullptr),
+    FIELD_FN("w", TVT_FLOAT, M_GetSlotW, nullptr),
+    FIELD_FN("h", TVT_FLOAT, M_GetSlotH, nullptr),
+    FIELD_FN("rot_y", TVT_S32, M_GetSlotRotY, nullptr),
+};
+// clang-format on
+
+TYPE_DEFINE(UI_MESH_SLOT, m_MeshSlotFields)
+
+static void *M_ResolveMeshSlot(const LUA_STRUCT_REF *const ref)
+{
+    return UI_MeshSlot_Resolve(ref->handle);
+}
+
+// slot:move{ object = ..., x = ..., y = ..., w = ..., h = ..., rot_y = ... }
+static int M_L_UIMeshSlotMove(lua_State *const L)
+{
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_UI_MESH_SLOT);
+    LUA_Struct_Deref(L, ref);
+    luaL_checktype(L, 2, LUA_TTABLE);
+    lua_getfield(L, 2, "object");
+    const OBJECT_ID object_id = LUA_CheckObjectID(L, -1);
+    lua_pop(L, 1);
+    UI_MeshSlot_Move(
+        ref->handle, object_id,
+        (UI_MESH_POSE) {
+            .x = M_OptNumberField(L, 2, "x", 0.0f),
+            .y = M_OptNumberField(L, 2, "y", 0.0f),
+            .w = M_OptNumberField(L, 2, "w", 0.0f),
+            .h = M_OptNumberField(L, 2, "h", 0.0f),
+            .rot_y = (int32_t)M_OptNumberField(L, 2, "rot_y", 0.0f),
+        });
+    return 0;
+}
+
+// slot:hide()
+static int M_L_UIMeshSlotHide(lua_State *const L)
+{
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_UI_MESH_SLOT);
+    LUA_Struct_Deref(L, ref);
+    UI_MeshSlot_Hide(ref->handle);
+    return 0;
+}
+
+// slot:release()
+static int M_L_UIMeshSlotRelease(lua_State *const L)
+{
+    const LUA_STRUCT_REF *const ref =
+        LUA_Struct_CheckRef(L, 1, &TYPE_UI_MESH_SLOT);
+    UI_MeshSlot_Release(ref->handle);
+    return 0;
+}
+
+// trxc.ui.mesh_slot() -> UI_MESH_SLOT handle or nil
+static int M_L_UIMeshSlot(lua_State *const L)
+{
+    const TRX_HANDLE handle = UI_MeshSlot_Acquire();
+    if (UI_MeshSlot_Resolve(handle) == nullptr) {
+        lua_pushnil(L);
+        return 1;
+    }
+    LUA_Struct_Push(L, &TYPE_UI_MESH_SLOT, M_ResolveMeshSlot, handle);
+    return 1;
+}
+
+static const luaL_Reg m_MeshSlotMethods[] = {
+    { "move", M_L_UIMeshSlotMove },
+    { "hide", M_L_UIMeshSlotHide },
+    { "release", M_L_UIMeshSlotRelease },
+    { nullptr, nullptr },
+};
 
 // trxc.ui.gradient_sprite(object_id, sprite_num, x, y, z, scale, tl, tr, bl,
 // br)
@@ -519,6 +619,7 @@ static const luaL_Reg m_Module[] = {
     { "sprite", M_L_UISprite },
     { "sprite_bounds", M_L_UISpriteBounds },
     { "sprite_count", M_L_UISpriteCount },
+    { "mesh_slot", M_L_UIMeshSlot },
     { "mesh_bounds", M_L_UIMeshBounds },
     { "gradient_sprite", M_L_UIGradientSprite },
     { "to_screen", M_L_UIToScreen },
@@ -529,6 +630,7 @@ static const luaL_Reg m_Module[] = {
 static void M_Create(lua_State *const L)
 {
     LUA_RegisterModule(L, "ui", m_Module);
+    LUA_Struct_Register(L, &TYPE_UI_MESH_SLOT, m_MeshSlotMethods);
 }
 
 static void M_Shutdown(void)
