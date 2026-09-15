@@ -69,6 +69,7 @@
                 {"type": "exit_to_title"},
             ],
             "injections": [
+                "sparks_gfx.bin",
                 "lara_gym_guns.bin",
                 "bubbles.bin",
                 "gun_glow.bin",
