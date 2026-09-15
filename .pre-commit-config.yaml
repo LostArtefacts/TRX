@@ -117,6 +117,12 @@ repos:
     pass_filenames: false
     files: (^src/tests/|^src/(trx|lua)/.*\.(c|h|lua)$)
 
+  - id: lint-lua-decl-order
+    name: Lua functions come before the callbacks they are for
+    entry: tools/lint/checks/lua_decl_order
+    language: python
+    files: ^(data|src/lua)/.*\.lua$
+
   - id: lint-lua-module-order
     name: Lua module order numbers are unique
     entry: tools/lint/checks/lua_module_order
