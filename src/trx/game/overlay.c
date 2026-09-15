@@ -4,30 +4,21 @@
 #include <trx/core/strings.h>
 #include <trx/core/subsystem.h>
 #include <trx/game/camera.h>
-#include <trx/game/const.h>
 #include <trx/game/game.h>
-#include <trx/game/game_flow.h>
 #include <trx/game/game_strings/entries.h>
-#include <trx/game/interpolation.h>
-#include <trx/game/inventory.h>
-#include <trx/game/inventory_ring.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/families.h>
 #include <trx/game/objects/names.h>
-#include <trx/game/output.h>
 #include <trx/game/output/sources/ui.h>
 #include <trx/game/ui.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/elements/flash.h>
 #include <trx/game/ui/elements/label.h>
-#include <trx/game/ui/elements/resize.h>
-#include <trx/game/ui/elements/row_arrows.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/scaler.h>
-#include <trx/version.h>
 
 // Last requested overlay state for the current frame.
 typedef struct {
@@ -53,13 +44,6 @@ static const UI_REGION m_ArrowRegions[] = {
     [OVERLAY_ARROW_TR] = UI_REGION_TOP_RIGHT,
     [OVERLAY_ARROW_BL] = UI_REGION_BOTTOM_LEFT,
     [OVERLAY_ARROW_BR] = UI_REGION_BOTTOM_RIGHT,
-};
-
-static const RGBA_F m_WhiteTextColor[4] = {
-    { 1.0f, 1.0f, 1.0f, 1.0f },
-    { 1.0f, 1.0f, 1.0f, 1.0f },
-    { 1.0f, 1.0f, 1.0f, 1.0f },
-    { 1.0f, 1.0f, 1.0f, 1.0f },
 };
 
 static const char *M_ResolveTextRaw(const OVERLAY_TEXT *const text)
