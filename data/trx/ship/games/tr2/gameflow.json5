@@ -62,6 +62,7 @@
             ],
             "inherit_injections": false,
             "injections": [
+                "sparks_gfx.bin",
                 "font.bin",
                 "gym_fd.bin",
                 "gym_sfx.bin",
