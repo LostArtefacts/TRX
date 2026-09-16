@@ -186,6 +186,7 @@
                 "globe_model.bin",
                 "common_pickup_meshes.bin",
                 "caves_textures.bin",
+                "infada_meshes.bin",
             ],
         },
 
@@ -214,6 +215,7 @@
                 "coastal_spike_sfx.bin",
                 "coastal_fd.bin",
                 "pipeman_sfx.bin",
+                "infada_meshes.bin",
             ],
             "unobtainable_pickups": 1,
         },
@@ -239,6 +241,7 @@
                 "crash_animating_bounds.bin",
                 "fish_sprites.bin",
                 "crash_textures.bin",
+                "infada_meshes.bin",
             ],
         },
 
@@ -264,6 +267,7 @@
                 "fish_sprites.bin",
                 "bat_sprites.bin",
                 "madubu_spike_sfx.bin",
+                "infada_meshes.bin",
             ],
         },
 
@@ -286,6 +290,7 @@
                 "puna_textures.bin",
                 "common_pickup_meshes.bin",
                 "pipeman_sfx.bin",
+                "infada_meshes.bin",
             ],
         },
 
@@ -311,6 +316,7 @@
                 "thames_animating_bounds.bin",
                 "common_pickup_meshes.bin",
                 "thames_fd.bin",
+                "infada_meshes.bin",
             ],
         },
 
@@ -336,6 +342,7 @@
                 "menu_artefacts_london.bin",
                 "aldwych_animating_bounds.bin",
                 "bat_sprites.bin",
+                "infada_meshes.bin",
             ],
         },
 
@@ -361,6 +368,7 @@
                 "luds_animating_bounds.bin",
                 "common_pickup_meshes.bin",
                 "luds_fd.bin",
+                "infada_meshes.bin",
             ],
             "unobtainable_pickups": 2,
         },
@@ -386,6 +394,7 @@
                 "city_textures.bin",
                 "menu_artefacts.bin",
                 "common_pickup_meshes.bin",
+                "infada_meshes.bin",
             ],
         },
 
@@ -410,6 +419,7 @@
                 "common_pickup_meshes.bin",
                 "nevada_textures.bin",
                 "nevada_animating_bounds.bin",
+                "infada_meshes.bin",
             ],
             "unobtainable_pickups": 1,
         },
@@ -442,6 +452,7 @@
                 "common_pickup_meshes.bin",
                 "compound_patrol.bin",
                 "compound_fd.bin",
+                "infada_meshes.bin",
             ],
             "unobtainable_kills": 9,
             "unobtainable_ally_kills": 8,
@@ -469,6 +480,7 @@
                 "area51_animating_bounds.bin",
                 "common_pickup_meshes.bin",
                 "area51_patrol.bin",
+                "infada_meshes.bin",
             ],
         },
 
@@ -497,6 +509,7 @@
                 "antarc_textures.bin",
                 "common_pickup_meshes.bin",
                 "antarc_fd.bin",
+                "infada_meshes.bin",
             ],
         },
 
@@ -586,6 +599,7 @@
                 "cavern_textures.bin",
                 "common_pickup_meshes.bin",
                 "cavern_fd.bin",
+                "infada_meshes.bin",
             ],
         },
 
@@ -611,6 +625,7 @@
                 "menu_artefacts.bin",
                 "common_pickup_meshes.bin",
                 "bat_sprites.bin",
+                "infada_meshes.bin",
             ],
             "unobtainable_pickups": 9,
         },
