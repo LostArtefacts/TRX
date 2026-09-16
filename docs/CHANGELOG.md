@@ -26,6 +26,7 @@
 - Fixed Lara attempting to continue to descend a ladder despite being at the bottom of it (OG bug) (#6461 / TRX1315)
 - Fixed Lara sliding instead of collapsing when a fall kills her on a slope (TRX1408, regression from T1M 2.15.2 / TR2X 0.10 / TRX 1.1)
 - Fixed Lara not grabbing certain ledges properly when crawling backwards off them (#6601 / TRX1471, regression from 1.1)
+- Fixed Lara not stopping at the right time when she touches the floor during early and late reach animations (TRX1487; regression in TR1/2 from 1.3, OG bug in TR3+)
 
 **UI**
 - Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187 / TRX1036)
