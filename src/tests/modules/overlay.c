@@ -1,6 +1,7 @@
 // Runs the shipped overlay module against a real scene and recorded draw calls.
 
 #include <fakes/game.h>
+#include <fakes/sprites.h>
 #include <fakes/ui_draw.h>
 #include <harness/lua_surface.h>
 
@@ -51,6 +52,18 @@ static int M_FakeTick(lua_State *const L)
 static int M_FakeShowPickup(lua_State *const L)
 {
     LUA_FireEventInt32(LUA_EVENT_SHOW_PICKUP, (int32_t)luaL_checkinteger(L, 1));
+    return 0;
+}
+
+// fake.define_sprite(object_id, count, width, height)
+//
+// Gives an object sprites, which is what an announcement falls back to where
+// there is no model to draw.
+static int M_FakeDefineSprite(lua_State *const L)
+{
+    FakeSprites_Define(
+        (OBJECT_ID)luaL_checkinteger(L, 1), (int32_t)luaL_checkinteger(L, 2),
+        (int32_t)luaL_checkinteger(L, 3), (int32_t)luaL_checkinteger(L, 4));
     return 0;
 }
 
@@ -125,6 +138,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "tick");
     lua_pushcfunction(L, M_FakeShowPickup);
     lua_setfield(L, -2, "show_pickup");
+    lua_pushcfunction(L, M_FakeDefineSprite);
+    lua_setfield(L, -2, "define_sprite");
     lua_pushcfunction(L, M_FakeRender);
     lua_setfield(L, -2, "render");
     lua_pushcfunction(L, M_FakePaint);
