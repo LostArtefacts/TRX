@@ -22,6 +22,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/game/anims/walk.h>
+#include <trx/game/collision/common.h>
 #include <trx/game/cutseq/playback.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/lara/common.h>
@@ -203,19 +204,41 @@ static bool M_GetLaraBounds(const ITEM *const item, BOUNDS_16 *const out)
     return true;
 }
 
+// Uses Lara's hips as the shadow anchor, except while crawling.
+static bool M_UsesHipAnchor(const ITEM *const item)
+{
+    if (g_TRVersion != 4 || item != Lara_GetItem()) {
+        return false;
+    }
+    const int16_t anim_state = item->current_anim_state;
+    return anim_state != LS(LS_CRAWL_IDLE) && anim_state != LS(LS_CRAWL_FORWARD)
+        && anim_state != LS(LS_CRAWL_BACK)
+        && anim_state != LS(LS_CRAWL_TURN_LEFT)
+        && anim_state != LS(LS_CRAWL_TURN_RIGHT);
+}
+
 // Computes the shared anchor used by both shadow styles. Lara uses the floor
 // under that anchor because animation can move her away from the item origin.
 static void M_GetPlacement(
     const ITEM *const item, const BOUNDS_16 *const bounds,
     XYZ_32 *const anchor_pos, int32_t *const floor)
 {
-    const XYZ_32 offset = {
-        .x = (bounds->min.x + bounds->max.x) / 2,
-        .z = (bounds->min.z + bounds->max.z) / 2,
-    };
-    *anchor_pos = XYZ_32_OffsetLocalYaw(
-        item->interp.result.pos, offset, item->interp.result.rot.y);
     *floor = item->interp.result.floor;
+    if (M_UsesHipAnchor(item)) {
+        *anchor_pos = (XYZ_32) {};
+        Collide_GetJointAbsPosition(item, anchor_pos, LM_HIPS);
+    } else if (g_TRVersion == 4) {
+        // Uses Lara's item origin for other TR4 shadows.
+        *anchor_pos = item->interp.result.pos;
+    } else {
+        const XYZ_32 offset = {
+            .x = (bounds->min.x + bounds->max.x) / 2,
+            .z = (bounds->min.z + bounds->max.z) / 2,
+        };
+        *anchor_pos = XYZ_32_OffsetLocalYaw(
+            item->interp.result.pos, offset, item->interp.result.rot.y);
+    }
+
     if (item != Lara_GetItem()) {
         return;
     }

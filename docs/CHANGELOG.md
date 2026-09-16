@@ -273,6 +273,7 @@
 - Fixed a low quality texture on young Lara's head (OG bug) (TRX1452)
 - Fixed texture bleeding on Lara's nose when bilinear filtering is enabled (OG bug) (TRX1453)
 - Fixed keys and puzzle items disappearing from Lara's inventory at the end of every level (TRX1477)
+- Fixed minor shadow placement discrepancies compared to the OG
 
 **Miscellaneous**
 - Added an option to cast Lara in gold whatever she is wearing (Graphic Options → Visuals → Golden Lara) (TRX1070)
