@@ -644,6 +644,16 @@ void OutputSource_PolyFX_StageTriExtUV(
     const OUTPUT_TEXTURE_SIZE texture_size[3], const float disp[3][2],
     const RGBA_8888 color[3], const uint16_t flags, const DRAW_TYPE draw_type)
 {
+    OutputSource_PolyFX_StageTriExtUVDepth(
+        world_pos, uvw, texture_size, disp, color, flags, 0.0f, draw_type);
+}
+
+void OutputSource_PolyFX_StageTriExtUVDepth(
+    const XYZ_32 world_pos[3], const OUTPUT_UVW uvw[3],
+    const OUTPUT_TEXTURE_SIZE texture_size[3], const float disp[3][2],
+    const RGBA_8888 color[3], const uint16_t flags, const float z_depth_adjust,
+    const DRAW_TYPE draw_type)
+{
     M_PRIV *const p = &m_Priv;
     VECTOR *const target = M_GetScheduledVectorForDrawType(p, draw_type);
 
@@ -652,7 +662,7 @@ void OutputSource_PolyFX_StageTriExtUV(
     prim.use_custom_uv = true;
     prim.use_own_light = false;
     prim.corner_count = 3;
-    prim.z_depth_adjust = 0.0f;
+    prim.z_depth_adjust = z_depth_adjust;
     prim.shade = (float)SHADE_NEUTRAL;
     prim.tint = Output_GetTint();
     memset(prim.world_pos, 0, sizeof(prim.world_pos));

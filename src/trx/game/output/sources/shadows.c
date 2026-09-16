@@ -61,6 +61,12 @@
 // floor instead.
 #define M_SHADOW_FACET_INSET 0.15f
 
+// Clip-space depth bias that holds the shadow in front of the floor. The floor
+// gap cannot do it alone: vertex snapping moves the shadow and the floor onto
+// different screen pixels, and the floor then wins the depth test in places.
+// Footprints lie on the floor the same way and take the same bias.
+#define M_SHADOW_Z_DEPTH_ADJUST -0.5f
+
 typedef struct {
     float x;
     float z;
@@ -453,9 +459,10 @@ static void M_StageFacet(
             facet_uvw[i],
             facet_uvw[i + 1],
         };
-        OutputSource_PolyFX_StageTriExtUV(
+        OutputSource_PolyFX_StageTriExtUVDepth(
             tri_pos, tri_uvw, atlas_size, nullptr, color,
-            VERT_NO_LIGHTING | VERT_NO_WIBBLE, DRAW_BLEND_SUB);
+            VERT_NO_LIGHTING | VERT_NO_WIBBLE, M_SHADOW_Z_DEPTH_ADJUST,
+            DRAW_BLEND_SUB);
     }
 }
 
