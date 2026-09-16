@@ -178,6 +178,15 @@ local function burn_blast(pos, ring)
 end
 
 local function burst(item, own, from)
+  -- A ball that reaches a wall stops with its centre in the wall, and the
+  -- blast needs a point a room holds, so it is nudged back into the room.
+  local centre = inside(item.pos)
+    or inside(from)
+    or trx.rooms.find_valid_pos(item.pos, item.room_num)
+  if centre == nil then
+    drop(item)
+    return
+  end
   local count = trx.random.randrange(SPLASH_COUNT_SPAN + 1) + SPLASH_COUNT_MIN
   for _ = 1, count do
     throw(
@@ -191,27 +200,25 @@ local function burst(item, own, from)
   for _ = 1, 48 do
     trx.fx.sparks.fire_flame({
       pos = {
-        x = floor(item.pos.x + shown(BLAST_RADIUS) - BLAST_RADIUS // 2),
-        y = floor(item.pos.y + shown(BLAST_RADIUS) - BLAST_RADIUS // 2),
-        z = floor(item.pos.z + shown(BLAST_RADIUS) - BLAST_RADIUS // 2),
+        x = floor(centre.x + shown(BLAST_RADIUS) - BLAST_RADIUS // 2),
+        y = floor(centre.y + shown(BLAST_RADIUS) - BLAST_RADIUS // 2),
+        z = floor(centre.z + shown(BLAST_RADIUS) - BLAST_RADIUS // 2),
       },
       variant = GREEN_FLAME,
     })
   end
   for ring = 1, 4 do
-    burn_blast(item.pos, ring)
+    burn_blast(centre, ring)
   end
-  trx.fx.sparks.explosion_smoke({ pos = item.pos })
+  trx.fx.sparks.explosion_smoke({ pos = centre })
   -- The rings lean at random, so the blast throws a tangle rather than a
   -- stack of level rings.
-  trx.fx.knockback({ pos = item.pos, tilt = 4096 })
-  trx.sound.play(trx.catalog.samples.explosion_1, { pos = item.pos })
-  trx.sound.play(trx.catalog.samples.explosion_2, { pos = item.pos })
+  trx.fx.knockback({ pos = centre, tilt = 4096 })
+  trx.sound.play(trx.catalog.samples.explosion_1, { pos = centre })
+  trx.sound.play(trx.catalog.samples.explosion_2, { pos = centre })
   local lara = trx.lara.item
   for _, target in
-    ipairs(
-      trx.items.query:in_sphere(item.pos, BLAST_RADIUS):in_play():matches()
-    )
+    ipairs(trx.items.query:in_sphere(centre, BLAST_RADIUS):in_play():matches())
   do
     if target.is_alive and target.num ~= item.num then
       burn_green(target)
@@ -258,20 +265,23 @@ local function tracer(item, target)
   local steps = 8
   for i = 1, steps do
     local t = i / steps
-    trx.fx.sparks.spawn({
-      pos = {
-        x = floor(item.pos.x + (target.pos.x - item.pos.x) * t),
-        y = floor(item.pos.y + (target.pos.y - 256 - item.pos.y) * t),
-        z = floor(item.pos.z + (target.pos.z - item.pos.z) * t),
-      },
-      sprite_type = Spark.PARTICLE,
-      draw_type = Draw.BLEND_ADD,
-      color = trx.math.color(48, 255, 128),
-      end_color = trx.math.color(32, 192, 96),
-      life = 6,
-      width = 8,
-      height = 8,
+    local at = inside({
+      x = floor(item.pos.x + (target.pos.x - item.pos.x) * t),
+      y = floor(item.pos.y + (target.pos.y - 256 - item.pos.y) * t),
+      z = floor(item.pos.z + (target.pos.z - item.pos.z) * t),
     })
+    if at ~= nil then
+      trx.fx.sparks.spawn({
+        pos = at,
+        sprite_type = Spark.PARTICLE,
+        draw_type = Draw.BLEND_ADD,
+        color = trx.math.color(48, 255, 128),
+        end_color = trx.math.color(32, 192, 96),
+        life = 6,
+        width = 8,
+        height = 8,
+      })
+    end
   end
 end
 
