@@ -67,3 +67,8 @@ bool UI_MeshSlots_AnyShown(void);
 // Fills out with each shown slot, blended between its two poses by how far the
 // frame sits between the ticks, and returns how many were written.
 int32_t UI_MeshSlots_Collect(UI_MESH_DRAW *out, int32_t max);
+
+// Frees every slot and retires every handle, which is what the Lua runtime
+// going down does: a handle does not outlive the state that holds it, and the
+// slot it named would stay taken for good.
+void UI_MeshSlots_Reset(void);
