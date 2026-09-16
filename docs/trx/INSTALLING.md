@@ -1055,6 +1055,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── gym_textures.bin
 │   │   │   ├── hiss_sfx.bin
 │   │   │   ├── india_sky.bin
+│   │   │   ├── infada_meshes.bin
 │   │   │   ├── inv_background.bin
 │   │   │   ├── jungle_fd.bin
 │   │   │   ├── jungle_textures.bin
@@ -2462,6 +2463,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── gym_textures.bin
     │   │   │   │   ├── hiss_sfx.bin
     │   │   │   │   ├── india_sky.bin
+    │   │   │   │   ├── infada_meshes.bin
     │   │   │   │   ├── inv_background.bin
     │   │   │   │   ├── jungle_fd.bin
     │   │   │   │   ├── jungle_textures.bin
