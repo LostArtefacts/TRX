@@ -50,6 +50,7 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 
     g_OverlayFlag = 1;
     Camera_Initialise();
+    Lara_Hair_Initialise();
     Lara_Hair_Control(is_cutscene);
     Interpolation_Remember();
     Interpolation_Interpolate();

@@ -13,6 +13,7 @@
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/hair.h>
 #include <trx/game/music.h>
 #include <trx/game/overlay.h>
 #include <trx/game/random.h>
@@ -221,6 +222,8 @@ bool Demo_Start(const int32_t level_num)
         Gun_SetLaraHolsterLMesh(lara->last_gun_type);
         Gun_SetLaraHolsterRMesh(lara->last_gun_type);
     }
+
+    Lara_Hair_Initialise();
 
     Camera_Initialise();
     Random_SeedDraw(0xD371F947);
