@@ -97,7 +97,8 @@ static RESULT M_Probe(
     if (loader->layout == LEVEL_FORMAT_LAYOUT_TR2X) {
         uint32_t inj_magic;
         LEVEL_FORMAT_TRY_OR_FAIL(File_TryReadU32(file, &inj_magic));
-        LEVEL_FORMAT_TRY_OR_FAIL(inj_magic == INJECTION_MAGIC);
+        LEVEL_FORMAT_TRY_OR_FAIL(
+            inj_magic == INJECTION_MAGIC || inj_magic == INJECTION_MAGIC_TRXI);
     }
 
     return OK;
