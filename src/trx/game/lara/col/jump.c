@@ -13,6 +13,8 @@
 // clang-format off
 #define M_LF_START_HANG    12
 #define M_LF_FAST_FALL     1
+#define M_LF_MONKEY_START  0
+#define M_LF_MONKEY_EARLY  2
 #define M_BAD_JUMP_CEILING ((STEP_L * 3) / 4) // = 192
 #define M_HEAD_CLEARANCE   (-STEP_L / 8) // = -32
 #define M_LADDER_CLEARANCE (-STEPUP_HEIGHT) // = -384
@@ -40,7 +42,7 @@ static bool M_CanGrab(const COLL_INFO *const coll)
 
 static bool M_TryMonkeyGrab(
     ITEM *const item, const COLL_INFO *const coll,
-    const LARA_ANIMATION_ID anim_id)
+    const LARA_ANIMATION_ID anim_id, const int16_t link_frame_num)
 {
     if (coll->coll_type != COLL_TOP && coll->coll_type != COLL_TOP_FRONT) {
         return false;
@@ -53,7 +55,7 @@ static bool M_TryMonkeyGrab(
         return false;
     }
 
-    Item_SwitchToAnim(item, LA(anim_id), 0);
+    Item_SwitchToAnim(item, LA(anim_id), link_frame_num);
     item->current_anim_state = LS(LS_MONKEY_IDLE);
     item->goal_anim_state = LS(LS_MONKEY_IDLE);
     item->gravity = false;
@@ -70,7 +72,7 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
         return false;
     }
 
-    if (M_TryMonkeyGrab(item, coll, LA_SWING_IN_SLOW)) {
+    if (M_TryMonkeyGrab(item, coll, LA_SWING_IN_SLOW, M_LF_MONKEY_START)) {
         return true;
     }
 
@@ -156,7 +158,7 @@ static bool M_TestHangJumpUp(ITEM *const item, COLL_INFO *const coll)
         return false;
     }
 
-    if (M_TryMonkeyGrab(item, coll, LA_MONKEY_GRAB)) {
+    if (M_TryMonkeyGrab(item, coll, LA_MONKEY_GRAB, M_LF_MONKEY_START)) {
         return true;
     }
 
@@ -353,6 +355,10 @@ static void M_ForwardJump(ITEM *const item, COLL_INFO *const coll)
     coll->bad_ceiling = M_BAD_JUMP_CEILING;
 
     Lara_Col_GetInfo(item, coll);
+    if (M_CanGrab(coll)
+        && M_TryMonkeyGrab(item, coll, LA_SWING_IN_SLOW, M_LF_MONKEY_EARLY)) {
+        return;
+    }
     if (!Item_TestAnimEqual(item, LA(LA_HANG_TO_JUMP_BACK_CONTINUE))) {
         Lara_Col_DeflectEdgeJump(item, coll);
     }
