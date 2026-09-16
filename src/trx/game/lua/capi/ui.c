@@ -638,6 +638,7 @@ static void M_Shutdown(void)
 {
     m_Drawing = false;
     m_Painting = false;
+    UI_MeshSlots_Reset();
 }
 
 bool LUA_UI_IsPainting(void)

@@ -115,3 +115,11 @@ int32_t UI_MeshSlots_Collect(UI_MESH_DRAW *const out, const int32_t max)
     }
     return count;
 }
+
+void UI_MeshSlots_Reset(void)
+{
+    Handle_RegistryBumpAll(&m_SlotHandles);
+    for (int32_t i = 0; i < UI_MESH_SLOT_MAX; i++) {
+        m_Slots[i] = (UI_MESH_SLOT) {};
+    }
+}
