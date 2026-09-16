@@ -145,4 +145,41 @@ test("the setting takes the announcements off the screen", function()
   assert(drawn() == nil, drawn())
   trx.config.set("ui.show_pickups_overlay", true)
 end)
+-- Runs out whatever an earlier test left on the screen.
+local function drain()
+  for _ = 1, trx.game.LOGIC_FPS * 4 do
+    fake.tick()
+  end
+  assert(drawn() == nil, "an announcement outlived its time")
+end
+
+test("a second announcement takes the next cell", function()
+  drain()
+  announce(trx.catalog.objects.KEY_ITEM_1)
+  announce(trx.catalog.objects.PUZZLE_ITEM_1)
+  for _ = 1, trx.game.LOGIC_FPS do
+    fake.tick()
+  end
+  local cells = {}
+  for line in fake.render(0):gmatch("[^\n]+") do
+    if line:match("^mesh_slot ") then
+      cells[#cells + 1] = line:match("x=[%d%.]+")
+    end
+  end
+  assert(#cells == 2, ("%d announcement(s) drew"):format(#cells))
+  assert(cells[1] ~= cells[2], "both announcements settled in one cell")
+end)
+
+test("an announcement is a sprite with the models turned off", function()
+  drain()
+  fake.define_sprite(trx.catalog.objects.KEY_ITEM_1, 1, 32, 32)
+  trx.config.set("ui.show_pickups_overlay", true)
+  trx.config.set("visuals.enable_3d_pickups", false)
+  fake.show_pickup(trx.catalog.objects.KEY_ITEM_1)
+  fake.tick()
+  local line = drawn()
+  assert(line ~= nil, "nothing was announced")
+  assert(line:match("^sprite "), line)
+end)
+
 return h.report()
