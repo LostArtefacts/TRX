@@ -7565,6 +7565,22 @@
       }
     },
     {
+      "description": "Which inventory icon a pickup is drawn as, whether or not there is any of it.\n\nSeveral pickups share one icon - the scion whether or not Lara holds it, a\nwaterskin at each fill level - so this is what tells two spellings of one thing\nfrom two things. It answers with an object id rather than an entry;\n`trx.inventory.Inventory:entry` is what hands back the entry itself.",
+      "params": [
+        {
+          "description": "The pickup to check.",
+          "name": "object",
+          "type": "catalog.objects"
+        }
+      ],
+      "path": "inventory.icon_of",
+      "returns": {
+        "description": "The icon's object id, or `nil` for a pickup that has none.",
+        "nullable": true,
+        "type": "catalog.objects"
+      }
+    },
+    {
       "description": "Reports how the ring draws an object, as the same table\n`trx.inventory.declare_ring_item` takes.\n\nReturns nothing where no entry names the object.",
       "params": [
         {
@@ -13101,22 +13117,6 @@
           "returns": {
             "description": "True where the weapon itself is in it.",
             "type": "boolean"
-          }
-        },
-        {
-          "description": "Which inventory icon a pickup is drawn as, whether or not there is any of it.\n\nSeveral pickups share one icon - the scion whether or not Lara holds it, a\nwaterskin at each fill level - so this is what tells two spellings of one thing\nfrom two things. It answers with an object id rather than an entry; `trx.inventory.Inventory:entry` is\nwhat hands back the entry itself.",
-          "name": "icon_of",
-          "params": [
-            {
-              "description": "The pickup, or the inventory icon it goes into.",
-              "name": "object_id",
-              "type": "catalog.objects"
-            }
-          ],
-          "returns": {
-            "description": "The icon's object id, or `nil` for a pickup that has none.",
-            "nullable": true,
-            "type": "catalog.objects"
           }
         },
         {

@@ -302,11 +302,10 @@ static int M_L_InvEntryCount(lua_State *const L)
     return 1;
 }
 
-// inventory:icon_of(object) -> object id or nil
+// trxc.inventory.icon_of(object) -> object id or nil
 static int M_L_InvIconOf(lua_State *const L)
 {
-    M_CheckInventory(L, 1);
-    const OBJECT_ID icon_id = Inv_GetItemOption(LUA_CheckObjectID(L, 2));
+    const OBJECT_ID icon_id = Inv_GetItemOption(LUA_CheckObjectID(L, 1));
     if (icon_id == NO_OBJECT) {
         lua_pushnil(L);
     } else {
@@ -378,7 +377,6 @@ static const luaL_Reg m_InventoryMethods[] = {
     { "entry", M_L_InvEntry },
     { "entry_at", M_L_InvEntryAt },
     { "entry_count", M_L_InvEntryCount },
-    { "icon_of", M_L_InvIconOf },
     { "can_add", M_L_InvCanAdd },
     { nullptr, nullptr },
 };
