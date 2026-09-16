@@ -259,13 +259,16 @@ from two things. It answers with an object id rather than an entry;
 
 api.define("inventory.ring_item", {
   description = [[
-Returns the ring entry for an object. The result is a copy of the table accepted
-by `trx.inventory.declare_ring_item`, or `nil` when no entry names the object.]],
+Reports how the ring draws an object, as the table
+`trx.inventory.declare_ring_item` takes: reading an entry, changing a value and
+declaring it again leaves the rest of the entry as it was.
+
+Returns nothing where no entry names the object.]],
   params = {
     {
       name = "object",
       type = "catalog.objects",
-      description = "The inventory icon to look up.",
+      description = "The inventory icon to read.",
     },
   },
   returns = {

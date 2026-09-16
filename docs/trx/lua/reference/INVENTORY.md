@@ -212,11 +212,14 @@ end
   Returns: [trx.catalog.objects](CATALOG.md#catalog.objects) or `nil`. The icon's object id, or `nil` for a pickup that has none.
 
 - <a id="inventory.ring_item" name="inventory.ring_item"></a>[lua]`trx.inventory.ring_item(object)`  
-  Returns the ring entry for an object. The result is a copy of the table accepted
-  by [`trx.inventory.declare_ring_item`](#inventory.declare_ring_item), or `nil` when no entry names the object.
+  Reports how the ring draws an object, as the table
+  [`trx.inventory.declare_ring_item`](#inventory.declare_ring_item) takes: reading an entry, changing a value and
+  declaring it again leaves the rest of the entry as it was.
+
+  Returns nothing where no entry names the object.
 
   Parameters:
-  - <a id="inventory.ring_item.object" name="inventory.ring_item.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The inventory icon to look up.
+  - <a id="inventory.ring_item.object" name="inventory.ring_item.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The inventory icon to read.
 
   Returns: table. The entry's `object_id`, frame counts, rotations and
     offsets, or `nil`.
