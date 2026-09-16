@@ -462,7 +462,9 @@ static int M_L_InvRingItem(lua_State *const L)
         return 1;
     }
 
-    lua_createtable(L, 0, 20);
+    lua_createtable(L, 0, 22);
+    lua_pushstring(L, Catalog_IDToKey(CATALOG_OBJECTS, item->object_id));
+    lua_setfield(L, -2, "object_id");
 #define M_WRITE(key, field)                                                    \
     lua_pushinteger(L, item->field);                                           \
     lua_setfield(L, -2, key)

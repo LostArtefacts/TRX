@@ -7513,10 +7513,10 @@
       }
     },
     {
-      "description": "Returns the ring entry for an object. The result is a copy of the table accepted\nby `trx.inventory.declare_ring_item`, or `nil` when no entry names the object.",
+      "description": "Reports how the ring draws an object, as the table\n`trx.inventory.declare_ring_item` takes: reading an entry, changing a value and\ndeclaring it again leaves the rest of the entry as it was.\n\nReturns nothing where no entry names the object.",
       "params": [
         {
-          "description": "The inventory icon to look up.",
+          "description": "The inventory icon to read.",
           "name": "object",
           "type": "catalog.objects"
         }
