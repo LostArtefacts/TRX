@@ -43,11 +43,14 @@ end)
 -- Inv_AddItem reaches the object table with what it is handed, so the
 -- bridge turns an id the engine does not know into a raise of its own.
 test("an object the engine does not know is refused", function()
-  for _, name in ipairs({ "give", "take", "count", "icon_of", "can_add" }) do
+  for _, name in ipairs({ "give", "take", "count", "can_add" }) do
     raises(function()
       trx.inventory[name](trx.inventory, 999999)
     end)
   end
+  raises(function()
+    trx.inventory.icon_of(999999)
+  end)
 end)
 
 test("a level that does not carry the icon takes nothing", function()
@@ -116,10 +119,10 @@ test("anything that is not a weapon is refused", function()
 end)
 
 test("icon_of names the icon, not the entry", function()
-  local icon = trx.inventory:icon_of(KEY)
+  local icon = trx.inventory.icon_of(KEY)
   assert(icon == KEY, "a pickup with an icon of its own stands for itself")
   assert(
-    trx.inventory:icon_of(KEY) == icon,
+    trx.inventory.icon_of(KEY) == icon,
     "and answers whether or not she is carrying any"
   )
 end)

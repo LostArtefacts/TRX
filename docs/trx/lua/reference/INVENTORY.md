@@ -157,19 +157,6 @@ end
 
       Returns: boolean. True where the weapon itself is in it.
 
-    - <a id="inventory.Inventory.icon_of" name="inventory.Inventory.icon_of"></a>[lua]`inventory:icon_of(object_id)`  
-      Which inventory icon a pickup is drawn as, whether or not there is any of it.
-
-      Several pickups share one icon - the scion whether or not Lara holds it, a
-      waterskin at each fill level - so this is what tells two spellings of one thing
-      from two things. It answers with an object id rather than an entry; [`entry`](#inventory.Inventory.entry) is
-      what hands back the entry itself.
-
-      Parameters:
-      - <a id="inventory.Inventory.icon_of.object_id" name="inventory.Inventory.icon_of.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The pickup, or the inventory icon it goes into.
-
-      Returns: [trx.catalog.objects](CATALOG.md#catalog.objects) or `nil`. The icon's object id, or `nil` for a pickup that has none.
-
     - <a id="inventory.Inventory.set_count" name="inventory.Inventory.set_count"></a>[lua]`inventory:set_count(object_id, count)`  
       Sets how many of it there are. Zero takes it away.
 
@@ -210,6 +197,19 @@ end
       Returns: integer. How many came out.
 
 ### Functions
+
+- <a id="inventory.icon_of" name="inventory.icon_of"></a>[lua]`trx.inventory.icon_of(object)`  
+  Which inventory icon a pickup is drawn as, whether or not there is any of it.
+
+  Several pickups share one icon - the scion whether or not Lara holds it, a
+  waterskin at each fill level - so this is what tells two spellings of one thing
+  from two things. It answers with an object id rather than an entry;
+  [`trx.inventory.Inventory:entry`](#inventory.Inventory.entry) is what hands back the entry itself.
+
+  Parameters:
+  - <a id="inventory.icon_of.object" name="inventory.icon_of.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The pickup to check.
+
+  Returns: [trx.catalog.objects](CATALOG.md#catalog.objects) or `nil`. The icon's object id, or `nil` for a pickup that has none.
 
 - <a id="inventory.ring_item" name="inventory.ring_item"></a>[lua]`trx.inventory.ring_item(object)`  
   Reports how the ring draws an object, as the same table

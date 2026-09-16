@@ -198,21 +198,6 @@ drawn as.]],
         description = "Kinds of thing, not counts.",
       },
     },
-    icon_of = {
-      description = [[
-Which inventory icon a pickup is drawn as, whether or not there is any of it.
-
-Several pickups share one icon - the scion whether or not Lara holds it, a
-waterskin at each fill level - so this is what tells two spellings of one thing
-from two things. It answers with an object id rather than an entry; `trx.inventory.Inventory:entry` is
-what hands back the entry itself.]],
-      params = { object_param },
-      returns = {
-        type = "catalog.objects",
-        nullable = true,
-        description = "The icon's object id, or `nil` for a pickup that has none.",
-      },
-    },
     can_add = {
       description = [[
 Whether `trx.inventory.Inventory:give` would do anything in the level being played. The level has to
@@ -247,6 +232,29 @@ end]],
   count = function()
     return raw.get_current():entry_count()
   end,
+})
+
+api.define("inventory.icon_of", {
+  description = [[
+Which inventory icon a pickup is drawn as, whether or not there is any of it.
+
+Several pickups share one icon - the scion whether or not Lara holds it, a
+waterskin at each fill level - so this is what tells two spellings of one thing
+from two things. It answers with an object id rather than an entry;
+`trx.inventory.Inventory:entry` is what hands back the entry itself.]],
+  params = {
+    {
+      name = "object",
+      type = "catalog.objects",
+      description = "The pickup to check.",
+    },
+  },
+  returns = {
+    type = "catalog.objects",
+    nullable = true,
+    description = "The icon's object id, or `nil` for a pickup that has none.",
+  },
+  impl = raw.icon_of,
 })
 
 api.define("inventory.ring_item", {
