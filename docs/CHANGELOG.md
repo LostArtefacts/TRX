@@ -171,6 +171,7 @@
 - Fixed the inventory background showing black, and objects around it going missing, in a headless run
 - Fixed the underwater view wobbling less at higher supersampling values (TRX1207)
 - Fixed sprite shadows breaking apart on uneven ground (Graphic Options → Visuals → Shadows shape) (#6388 / TRX1244)
+- Fixed sprite shadows sinking into the floor when vertex snapping is on (Graphic Options → Visuals → Shadows shape)
 - Fixed static objects that reach through a doorway taking the water tint and the light of the room next door
 - Fixed static objects disappearing depending on the camera angle (OG bug) (TRX1211)
 - Fixed the underwater view wobbling less at higher supersampling values (TRX1207)

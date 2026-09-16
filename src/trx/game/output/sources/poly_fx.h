@@ -52,6 +52,12 @@ void OutputSource_PolyFX_StageTriExtUV(
     const OUTPUT_TEXTURE_SIZE texture_size[3], const float disp[3][2],
     const RGBA_8888 color[3], uint16_t flags, DRAW_TYPE draw_type);
 
+void OutputSource_PolyFX_StageTriExtUVDepth(
+    const XYZ_32 world_pos[3], const OUTPUT_UVW uvw[3],
+    const OUTPUT_TEXTURE_SIZE texture_size[3], const float disp[3][2],
+    const RGBA_8888 color[3], uint16_t flags, float z_depth_adjust,
+    DRAW_TYPE draw_type);
+
 void OutputSource_PolyFX_StageLineSegment(
     XYZ_32 from, RGBA_8888 from_color, XYZ_32 to, RGBA_8888 to_color,
     float half_width, DRAW_TYPE draw_type);
