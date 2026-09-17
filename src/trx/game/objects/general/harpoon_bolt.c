@@ -1,5 +1,4 @@
 #include <trx/core/math.h>
-#include <trx/game/game_buf.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/gun/registry.h>
@@ -35,13 +34,9 @@ static void M_SetTR3ProjectileShade(ITEM *const item)
     item->shade.value_2 = -1;
 }
 
-static void M_Initialise_TR3(const int16_t item_num)
+static void M_Initialise(const int16_t item_num)
 {
-    ITEM *const item = Item_Get(item_num);
-    if (item->priv == nullptr) {
-        item->priv = GameBuf_Alloc(sizeof(M_PRIV), GBUF_ITEM_DATA);
-    }
-    M_PRIV *const p = item->priv;
+    M_PRIV *const p = Item_Get(item_num)->priv;
     p->base_x_rot = 0;
     p->base_x_rot_valid = false;
 }
@@ -311,8 +306,9 @@ static void M_Control_TR12(const int16_t item_num)
 
 static void M_Setup(OBJECT *const obj)
 {
-    obj->initialise_func = g_TRVersion == 3 ? M_Initialise_TR3 : nullptr;
+    obj->initialise_func = M_Initialise;
     obj->control_func = g_TRVersion == 3 ? M_Control_TR3 : M_Control_TR12;
+    obj->priv_size = sizeof(M_PRIV);
     obj->save_position = true;
 }
 
