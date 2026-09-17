@@ -23,6 +23,10 @@ void TRX_GL_Renderer_BindGeometryFbo(void);
 // Bind the UI framebuffer for rendering the UI overlay.
 void TRX_GL_Renderer_BindUiFbo(void);
 
+// Returns the GL object id of the geometry framebuffer, for use as a blit
+// source.
+GLuint TRX_GL_Renderer_GetGeometryFboId(void);
+
 // Resize the framebuffers to the current viewport sizes. The renderer does
 // this itself once the frame has been presented; call it when the viewports
 // change between frames, so the next frame is not drawn into framebuffers of

@@ -1,5 +1,6 @@
 #include <trx/game/output/sources/poly_fx.h>
 
+#include <trx/config.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
@@ -15,6 +16,8 @@
 #include <trx/game/output/textures.h>
 #include <trx/game/output/utils.h>
 #include <trx/game/sparks.h>
+#include <trx/gl/fbo.h>
+#include <trx/gl/renderer.h>
 #include <trx/gl/utils.h>
 #include <trx/version.h>
 
@@ -70,6 +73,13 @@ typedef struct {
     VECTOR *vertices; // M_VERTEX
     GLuint vao;
     GLuint vbo;
+    // Scene-resolution buffer the blend passes accumulate in while the scene
+    // is supersampled, so a prim close to the camera does not cover the
+    // supersampled pixel count many times over.
+    TRX_GL_FBO fx_fbo;
+    OUTPUT_SHADER *fx_blit_shader;
+    GLuint fx_blit_vao;
+    bool fx_depth_stale;
 } M_PRIV;
 
 static M_PRIV m_Priv;
@@ -324,9 +334,92 @@ static void M_DrawVertices(M_PRIV *const p, const M_PRIM *const prim)
     TRX_GL_CheckError();
 }
 
+static bool M_UsesFxBuffer(const M_PRIV *const p)
+{
+    return p->fx_blit_shader != nullptr && Viewport_GetSupersamplingFactor() > 1
+        && !g_Config.rendering.enable_wireframe;
+}
+
+// Redirects rendering into the FX buffer, with the geometry depth brought
+// down to its resolution so occlusion still applies. The buffer starts white
+// for the subtractive pass and black for the additive one: with the pass
+// blend functions left in place, it accumulates the product of the
+// subtractive prims or the sum of the additive ones, which is what the pass
+// would have multiplied into or added onto the scene.
+static void M_BeginFxBuffer(M_PRIV *const p, const SCENE_PASS pass)
+{
+    const VIEWPORT_RECT scene = Viewport_GetRect(VIEWPORT_SCENE);
+    if (p->fx_fbo.fbo == 0) {
+        TRX_GL_FBO_Init(
+            &p->fx_fbo, scene.width, scene.height, 1, GL_RGBA8, GL_RGBA, true);
+    } else {
+        TRX_GL_FBO_ResizeIfNeeded(&p->fx_fbo, scene.width, scene.height, 1);
+    }
+
+    if (p->fx_depth_stale) {
+        const VIEWPORT_RECT game = Viewport_GetRect(VIEWPORT_GAME);
+        glBindFramebuffer(
+            GL_READ_FRAMEBUFFER, TRX_GL_Renderer_GetGeometryFboId());
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, p->fx_fbo.fbo);
+        glBlitFramebuffer(
+            0, 0, game.width, game.height, 0, 0, scene.width, scene.height,
+            GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+        p->fx_depth_stale = false;
+    }
+
+    TRX_GL_FBO_Bind(&p->fx_fbo);
+    glViewport(0, 0, scene.width, scene.height);
+    if (pass == SCENE_PASS_BLEND_SUB) {
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    } else {
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    }
+    glClear(GL_COLOR_BUFFER_BIT);
+    TRX_GL_CheckError();
+}
+
+// Folds the FX buffer back onto the scene as one full-screen quad, then
+// restores the pass state for the sources that render after this one.
+static void M_EndFxBuffer(M_PRIV *const p, const SCENE_PASS pass)
+{
+    TRX_GL_Renderer_BindGeometryFbo();
+    TRX_GL_Context_SwitchToViewport(VIEWPORT_GAME);
+
+    GLint prev_active_texture = GL_TEXTURE0;
+    glGetIntegerv(GL_ACTIVE_TEXTURE, &prev_active_texture);
+    glActiveTexture(GL_TEXTURE0);
+    GLint prev_sampler = 0;
+    glGetIntegerv(GL_SAMPLER_BINDING, &prev_sampler);
+    glBindSampler(0, 0);
+    glBindTexture(GL_TEXTURE_2D, p->fx_fbo.texture.id);
+
+    Output_Shader_Bind(p->fx_blit_shader);
+    glBindVertexArray(p->fx_blit_vao);
+    glDisable(GL_DEPTH_TEST);
+    if (pass == SCENE_PASS_BLEND_SUB) {
+        glBlendFunc(GL_ZERO, GL_SRC_COLOR);
+    } else {
+        glBlendFunc(GL_ONE, GL_ONE);
+    }
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    if (pass == SCENE_PASS_BLEND_SUB) {
+        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+    } else {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    }
+    glEnable(GL_DEPTH_TEST);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindSampler(0, (GLuint)prev_sampler);
+    glActiveTexture((GLenum)prev_active_texture);
+    Output_MeshShader_Bind(p->shader);
+    TRX_GL_CheckError();
+}
+
 static void M_RenderBegin(const SCENE_SOURCE *const source)
 {
     M_PRIV *const p = &m_Priv;
+    p->fx_depth_stale = true;
     Vector_Clear(p->scheduled_transparent);
     Vector_Clear(p->scheduled_blend_add);
     Vector_Clear(p->scheduled_blend_sub);
@@ -350,6 +443,14 @@ static void M_RenderPass(const SCENE_SOURCE *const source, SCENE_PASS pass)
     }
 
     M_SortPrims(p, pass);
+
+    const bool use_fx_buffer =
+        (pass == SCENE_PASS_BLEND_SUB || pass == SCENE_PASS_BLEND_ADD)
+        && p->sorted->count > 0 && M_UsesFxBuffer(p);
+    if (use_fx_buffer) {
+        M_BeginFxBuffer(p, pass);
+    }
+
     const M_PRIM *batch_prim = nullptr;
     for (int32_t i = 0; i < p->sorted->count; i++) {
         const M_PRIM_SORT *const sort = Vector_Get(p->sorted, i);
@@ -369,6 +470,10 @@ static void M_RenderPass(const SCENE_SOURCE *const source, SCENE_PASS pass)
 
     if (batch_prim != nullptr) {
         M_DrawVertices(p, batch_prim);
+    }
+
+    if (use_fx_buffer) {
+        M_EndFxBuffer(p, pass);
     }
 }
 
@@ -455,6 +560,15 @@ void OutputSource_PolyFX_Init(void)
     p->source.is_dirty = M_IsDirty;
     SceneCompositor_AddSource(&p->source);
 
+    SHOULD(Output_Shader_Create("fx_blit.glsl", &p->fx_blit_shader));
+    if (p->fx_blit_shader != nullptr) {
+        Output_Shader_Bind(p->fx_blit_shader);
+        TRX_GL_TRACK_UNIFORM(
+            glUniform1i,
+            Output_Shader_LookupUniform(p->fx_blit_shader, "uTex0"), 0);
+        glGenVertexArrays(1, &p->fx_blit_vao);
+    }
+
     glGenVertexArrays(1, &p->vao);
     glBindVertexArray(p->vao);
 
@@ -529,6 +643,17 @@ void OutputSource_PolyFX_Shutdown(void)
     if (p->vbo != 0) {
         glDeleteBuffers(1, &p->vbo);
         p->vbo = 0;
+    }
+    if (p->fx_fbo.fbo != 0) {
+        TRX_GL_FBO_Close(&p->fx_fbo);
+    }
+    if (p->fx_blit_shader != nullptr) {
+        Output_Shader_Free(p->fx_blit_shader);
+        p->fx_blit_shader = nullptr;
+    }
+    if (p->fx_blit_vao != 0) {
+        glDeleteVertexArrays(1, &p->fx_blit_vao);
+        p->fx_blit_vao = 0;
     }
 }
 

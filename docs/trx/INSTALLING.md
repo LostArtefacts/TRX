@@ -85,6 +85,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── billboard.glsl
 │   │   ├── common.glsl
 │   │   ├── fbo.glsl
+│   │   ├── fx_blit.glsl
 │   │   ├── lights.glsl
 │   │   ├── lights_common.glsl
 │   │   ├── lights_tr3.glsl
@@ -1493,6 +1494,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── billboard.glsl
     │   │   │   ├── common.glsl
     │   │   │   ├── fbo.glsl
+    │   │   │   ├── fx_blit.glsl
     │   │   │   ├── lights.glsl
     │   │   │   ├── lights_common.glsl
     │   │   │   ├── lights_tr3.glsl

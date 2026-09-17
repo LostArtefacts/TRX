@@ -184,6 +184,7 @@
 - Fixed the top of the picture being cut off in fullscreen on macOS (#6551 / TRX1407)
 - Fixed TR3 levels refusing to start with a message that TRX cannot draw the game
 - Fixed the picture jittering between two frames while the game fades out to quit (TRX1405)
+- Fixed the frame rate dropping when large effects, such as explosions, fill the screen at high supersampling values (TRX1506)
 
 **TR1**
 - Added the ability for Lara to burn in swamp rooms marked with death sectors (#6539 / TRX1395)
