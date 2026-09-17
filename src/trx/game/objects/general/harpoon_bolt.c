@@ -20,6 +20,8 @@
 typedef struct {
     int16_t base_x_rot;
     bool base_x_rot_valid;
+    // Caches what the object lookup answers, which no savegame carries.
+    LARA_GUN_TYPE gun_type;
 } M_PRIV;
 
 static void M_SetTR3ProjectileShade(ITEM *const item)
@@ -39,6 +41,16 @@ static void M_Initialise(const int16_t item_num)
     M_PRIV *const p = Item_Get(item_num)->priv;
     p->base_x_rot = 0;
     p->base_x_rot_valid = false;
+    p->gun_type = LGT_UNKNOWN;
+}
+
+static LARA_GUN_TYPE M_GetGunType(ITEM *const item)
+{
+    M_PRIV *const p = item->priv;
+    if (p->gun_type == LGT_UNKNOWN) {
+        p->gun_type = Gun_GetTypeForProjectile(item->object_id);
+    }
+    return p->gun_type;
 }
 
 static void M_Control_TR3(const int16_t item_num)
@@ -122,8 +134,7 @@ static void M_Control_TR3(const int16_t item_num)
                                           .room_num = item->room_num };
             Gun_HitTarget(
                 target_item, &old_pos, &hit_pos,
-                Gun_Registry_Get(Gun_GetTypeForProjectile(item->object_id))
-                    ->damage);
+                Gun_Registry_Get(M_GetGunType(item))->damage);
             Stats_AddAmmoHits();
         }
 
@@ -282,8 +293,7 @@ static void M_Control_TR12(const int16_t item_num)
             };
             Gun_HitTarget(
                 target_item, &old_pos, &hit_pos,
-                Gun_Registry_Get(Gun_GetTypeForProjectile(item->object_id))
-                    ->damage);
+                Gun_Registry_Get(M_GetGunType(item))->damage);
             Stats_AddAmmoHits();
         }
         hit = true;
