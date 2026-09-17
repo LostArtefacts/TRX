@@ -17,9 +17,7 @@ static void M_Control(const int16_t item_num)
     const int32_t height = Room_GetHeight(sector, item->pos);
 
     ITEM *const lara_item = Lara_GetItem();
-    lara_item->pos.x = item->pos.x;
-    lara_item->pos.y = height;
-    lara_item->pos.z = item->pos.z;
+    lara_item->pos = item->pos;
     lara_item->rot.y = item->rot.y + DEG_180;
     lara_item->floor = height;
     Item_UpdateRoom(Item_GetIndex(lara_item), room_num);
