@@ -32,15 +32,14 @@ VECTOR *Output_GetDynamicLights(void);
 // the timed ones the game triggers and the ones asked for on the fly. The
 // shader's MAX_FOG_BULBS matches this.
 #define OUTPUT_MAX_FOG_BULBS 10
-// How many lights can wait for the draw at once. Past this, the ones nearest
-// the camera are the ones kept; fog is held OUTPUT_MAX_FOG_BULBS deep, since
-// the buffer it fills shows no more than that.
-#define OUTPUT_MAX_PENDING_LIGHTS 64
+// How many lights one frame can hold. Past this, the ones nearest the camera
+// are the ones kept; fog is held OUTPUT_MAX_FOG_BULBS deep, since the buffer
+// it fills shows no more than that.
+#define OUTPUT_MAX_DYNAMIC_LIGHTS 64
 
 // A light for this frame, asked for again every frame for as long as it should
-// be seen. It reaches the renderer as the scene is drawn rather than as it is
-// asked for, so that a caller's light does not turn on whether it ran before or
-// after the point the frame's lights are reset.
+// be seen. It lights the scene from the moment it is asked for, so the control
+// frame that spawns an effect shades it by the light it spawns with.
 void Output_AddDynamicLight(XYZ_32 pos, int32_t intensity, int32_t falloff);
 // The same, in color. TR1 and TR2 light rooms in color, but shade objects in
 // brightness alone, where the light stands for its brightest channel.
@@ -49,10 +48,10 @@ void Output_AddDynamicLightRGB(XYZ_32 pos, int32_t falloff, RGB_888 color);
 void Output_AddFogBulb(
     XYZ_32 pos, int32_t radius, int32_t density, RGB_888 color);
 
-// Lets go of what was asked for, so that a control frame the game had no time
+// Lets go of the fog asked for, so that a control frame the game had no time
 // to draw leaves nothing behind for the one that is drawn.
-void Output_DropPendingLights(void);
-void Output_FlushPendingLights(void);
+void Output_DropPendingFog(void);
+void Output_FlushPendingFog(void);
 
 // TR4 volumetric FX fog bulb (e.g. underwater flares); no-op otherwise.
 void Output_TriggerFXFogBulb(
