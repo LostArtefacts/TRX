@@ -930,28 +930,26 @@ void Music_Trigger(MUSIC_SLOT track_id, const MUSIC_TRIGGER *const trigger)
     }
 
     {
-        if (!Game_IsInGym()) {
-            // TR3+ used one-shot as an extra bit together with the other five
-            // usual trigger bits. This is used to allow triggering the same
-            // track multiple times in a level, but keeping one-shot to mean per
-            // unique trigger setup.
-            uint8_t trigger_mask = trigger->mask;
-            if (trigger->one_shot) {
-                trigger_mask |= 1 << 6;
-            }
-
-            uint8_t track_mask = track->mask;
-            if (track->is_one_shot) {
-                track_mask |= 1 << 6;
-            }
-
-            if ((track_mask & trigger_mask) == trigger_mask) {
-                return;
-            }
-
-            track->mask |= trigger->mask;
-            track->is_one_shot |= trigger->one_shot;
+        // TR3+ used one-shot as an extra bit together with the other five
+        // usual trigger bits. This is used to allow triggering the same
+        // track multiple times in a level, but keeping one-shot to mean per
+        // unique trigger setup.
+        uint8_t trigger_mask = trigger->mask;
+        if (trigger->one_shot) {
+            trigger_mask |= 1 << 6;
         }
+
+        uint8_t track_mask = track->mask;
+        if (track->is_one_shot) {
+            track_mask |= 1 << 6;
+        }
+
+        if ((track_mask & trigger_mask) == trigger_mask) {
+            return;
+        }
+
+        track->mask |= trigger->mask;
+        track->is_one_shot |= trigger->one_shot;
 
         Music_PlayBySlot(track_id, play_mode);
     }

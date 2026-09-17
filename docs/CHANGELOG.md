@@ -200,6 +200,7 @@
 - Added an option to render black smoke emitters as white, as per the PC release (Gameplay → Fixes → Fix smoke emitters) (#6411 / TRX1288)
 - Changed the underwater light patterns to run in broad bands, as the original draws them, rather than fine speckle
 - Changed the underwater picture wobble to grow more gently on large screens, where it was too strong
+- Changed the Puzzle Element music in Lara's Home to play as an overlay track, so that Lara doesn't interrupt it while navigating the level (TRX1503)
 - Fixed z-fighting in rooms 21, 67 amd 122 in Jungle, and fixed incorrect lighting in room 87 (OG bugs) (TRX1088)
 - Fixed Vultures in The River Ganges and Nevada Desert having incorrect animation bounds (OG bug) (#6303 / TRX1163)
 - Fixed missing alpha blending on the MP5 and M16 gun flare in the gym (regression from 1.7) (TRX1066)
@@ -224,6 +225,7 @@
 - Fixed incorrect UVs on some injected textures (TRX1366, regression from 1.9)
 - Fixed the grinders in RX-Tech Mines being clipped out of view at certain angles (OG bug) (TRX1347)
 - Fixed two black patches on the Infada Stone (OG bug)
+- Fixed one-shot music in Lara's Home repeating (TRX1503, regression from 1.10)
 
 **TR4**
 - Added the ability to skip in-game cutscenes (TRX1051)

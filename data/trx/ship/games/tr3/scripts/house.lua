@@ -12,3 +12,8 @@ trx.events.on_game_start(function()
   trx.items[57].properties.sprite_offset = 1
   trx.items[59].properties.sprite_offset = 1
 end)
+
+trx.events.on_flip_effect(200, function(item, timer)
+  -- Track 2 bypasses the regular one-shot setup and always plays in the gym.
+  trx.music.tracks[2]:play({ mode = trx.music.PlayMode.OVERLAY })
+end)
