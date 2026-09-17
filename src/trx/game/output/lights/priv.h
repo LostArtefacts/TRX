@@ -30,6 +30,9 @@ typedef enum {
 typedef struct {
     LIGHT light;
     OUTPUT_DYNAMIC_LIGHT_KIND kind;
+    // How far the light is from the camera. A frame holding more lights than
+    // it can show drops the furthest ones by this.
+    int32_t cam_dist;
 } OUTPUT_DYNAMIC_LIGHT;
 
 // Per-lighting-family strategy. Three families exist: TR1/2 (scalar shade),

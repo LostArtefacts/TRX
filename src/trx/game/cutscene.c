@@ -445,7 +445,7 @@ void Cutscene_Draw(void)
 {
     Interpolation_Interpolate();
     Camera_Apply();
-    Output_FlushPendingLights();
+    Output_FlushPendingFog();
     Room_DrawAllRooms(g_Camera.interp.room_num, g_Camera.target.room_num);
     if (m_DrawLeftGunFlash) {
         M_DrawGunFlash(LM_HAND_L);

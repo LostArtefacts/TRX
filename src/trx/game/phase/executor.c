@@ -184,7 +184,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
 
     // Publish signals after phase control updates the frame state.
     if (phase != nullptr && phase->control != nullptr) {
-        Output_DropPendingLights();
+        Output_DropPendingFog();
         const PHASE_CONTROL control = phase->control(phase);
         LUA_FireEvent(LUA_EVENT_TICK);
         return control;

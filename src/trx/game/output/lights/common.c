@@ -23,15 +23,6 @@ typedef struct {
 typedef struct {
     XYZ_32 pos;
     RGB_888 color;
-    int32_t intensity;
-    int32_t falloff;
-    int32_t cam_dist;
-    bool is_rgb;
-} M_PENDING_LIGHT;
-
-typedef struct {
-    XYZ_32 pos;
-    RGB_888 color;
     int32_t radius;
     int32_t density;
     int32_t cam_dist;
@@ -42,11 +33,6 @@ static int32_t m_RoomLightShades[RLM_NUMBER_OF] = {};
 static M_ROOM_LIGHT_TABLE m_RoomLightTables[OUTPUT_LIGHT_CYCLE] = {};
 static VECTOR *m_DynamicLights = nullptr;
 static OUTPUT_LS_CACHE m_LSCache = {};
-
-static struct {
-    int32_t count;
-    M_PENDING_LIGHT list[OUTPUT_MAX_PENDING_LIGHTS];
-} m_PendingLights = {};
 
 static struct {
     int32_t count;
@@ -94,26 +80,28 @@ static void M_AddDynamicLightRGB(
     Vector_Add(m_DynamicLights, &light);
 }
 
-static void M_AddPendingLight(M_PENDING_LIGHT light)
+// Notes how far the light a model has just added stands from the camera, and
+// drops the furthest one where the frame now holds more than it can show.
+static void M_CommitLight(const XYZ_32 pos)
 {
-    light.cam_dist = XYZ_32_GetDistance(light.pos, g_Camera.pos.pos);
-
-    if (m_PendingLights.count < OUTPUT_MAX_PENDING_LIGHTS) {
-        m_PendingLights.list[m_PendingLights.count++] = light;
+    OUTPUT_DYNAMIC_LIGHT *const added =
+        Vector_Get(m_DynamicLights, m_DynamicLights->count - 1);
+    added->cam_dist = XYZ_32_GetDistance(pos, g_Camera.pos.pos);
+    if (m_DynamicLights->count <= OUTPUT_MAX_DYNAMIC_LIGHTS) {
         return;
     }
 
-    int32_t furthest_idx = -1;
-    int32_t furthest_dist = light.cam_dist;
-    for (int32_t i = 0; i < m_PendingLights.count; i++) {
-        if (m_PendingLights.list[i].cam_dist > furthest_dist) {
-            furthest_dist = m_PendingLights.list[i].cam_dist;
+    int32_t furthest_idx = 0;
+    for (int32_t i = 1; i < m_DynamicLights->count; i++) {
+        const OUTPUT_DYNAMIC_LIGHT *const light =
+            Vector_Get(m_DynamicLights, i);
+        const OUTPUT_DYNAMIC_LIGHT *const furthest =
+            Vector_Get(m_DynamicLights, furthest_idx);
+        if (light->cam_dist > furthest->cam_dist) {
             furthest_idx = i;
         }
     }
-    if (furthest_idx >= 0) {
-        m_PendingLights.list[furthest_idx] = light;
-    }
+    Vector_RemoveAt(m_DynamicLights, furthest_idx);
 }
 
 const LIGHTING_MODEL *Output_Lights_GetModel(void)
@@ -385,22 +373,15 @@ void Output_ResetDynamicLights(void)
 void Output_AddDynamicLight(
     const XYZ_32 pos, const int32_t intensity, const int32_t falloff)
 {
-    M_AddPendingLight((M_PENDING_LIGHT) {
-        .pos = pos,
-        .intensity = intensity,
-        .falloff = falloff,
-    });
+    M_AddDynamicLight(pos, intensity, falloff);
+    M_CommitLight(pos);
 }
 
 void Output_AddDynamicLightRGB(
     const XYZ_32 pos, const int32_t falloff, const RGB_888 color)
 {
-    M_AddPendingLight((M_PENDING_LIGHT) {
-        .pos = pos,
-        .color = color,
-        .falloff = falloff,
-        .is_rgb = true,
-    });
+    M_AddDynamicLightRGB(pos, falloff, color);
+    M_CommitLight(pos);
 }
 
 void Output_AddFogBulb(
@@ -421,7 +402,7 @@ void Output_AddFogBulb(
     }
 
     // The buffer keeps the nearest bulbs rather than the first ones asked for,
-    // as in M_AddPendingLight.
+    // as in M_CommitLight.
     int32_t furthest_idx = -1;
     int32_t furthest_dist = fog.cam_dist;
     for (int32_t i = 0; i < m_PendingFog.count; i++) {
@@ -435,24 +416,13 @@ void Output_AddFogBulb(
     }
 }
 
-void Output_DropPendingLights(void)
+void Output_DropPendingFog(void)
 {
-    m_PendingLights.count = 0;
     m_PendingFog.count = 0;
 }
 
-void Output_FlushPendingLights(void)
+void Output_FlushPendingFog(void)
 {
-    for (int32_t i = 0; i < m_PendingLights.count; i++) {
-        const M_PENDING_LIGHT *const queued = &m_PendingLights.list[i];
-        if (queued->is_rgb) {
-            M_AddDynamicLightRGB(queued->pos, queued->falloff, queued->color);
-        } else {
-            M_AddDynamicLight(queued->pos, queued->intensity, queued->falloff);
-        }
-    }
-    m_PendingLights.count = 0;
-
     for (int32_t i = 0; i < m_PendingFog.count; i++) {
         const M_PENDING_FOG *const queued = &m_PendingFog.list[i];
         Output_FogBulbs_AddFrame(
