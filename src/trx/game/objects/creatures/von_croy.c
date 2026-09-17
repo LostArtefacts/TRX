@@ -484,6 +484,8 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
             lara->speed = 0;
             lara->fall_speed = 0;
             lara->gravity = 0;
+            lara->rot.x = 0;
+            lara->rot.z = 0;
             Lara_GetLaraInfo()->gun_status = LGS_ARMLESS;
         }
 
