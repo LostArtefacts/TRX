@@ -18,6 +18,10 @@
 #include <SDL2/SDL_video.h>
 #include <stdint.h>
 
+// How many buffers the driver may be rotating through. Three covers the
+// deepest chain a driver puts behind a window.
+#define M_SWAPCHAIN_DEPTH 3
+
 typedef struct {
     const TRX_GL_CONFIG *config;
 
@@ -193,6 +197,11 @@ static void M_Render(TRX_GL_RENDERER *renderer)
     M_CONTEXT *const p = renderer->priv;
     ASSERT(p != nullptr);
 
+    // Clear every frame because resizing may give us dirty buffers.
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    TRX_GL_Context_SwitchToViewport(VIEWPORT_WINDOW);
+    TRX_GL_Context_Clear();
+
     M_Composite(p, 0, Viewport_GetRect(VIEWPORT_TARGET));
 
     if (TRX_GL_Context_GetScheduledScreenshotPath() != nullptr) {
@@ -213,9 +222,6 @@ static void M_SwapBuffers(TRX_GL_RENDERER *const renderer)
     M_Render(renderer);
     SDL_GL_SwapWindow(TRX_GL_Context_GetWindowHandle());
     M_UpdateFBOSizes(renderer);
-
-    TRX_GL_Context_SwitchToViewport(VIEWPORT_WINDOW);
-    TRX_GL_Context_Clear();
 
     TRX_GL_FBO_Bind(&p->geometry_fbo);
     TRX_GL_Context_SwitchToViewport(VIEWPORT_GAME);
@@ -337,6 +343,28 @@ void TRX_GL_Renderer_BindUiFbo(void)
 void TRX_GL_Renderer_SyncFboSizes(void)
 {
     M_UpdateFBOSizes(&g_TRX_GL_Renderer);
+}
+
+void TRX_GL_Renderer_BlankWindow(void)
+{
+    M_CONTEXT *const p = (M_CONTEXT *)g_TRX_GL_Renderer.priv;
+    SDL_Window *const window = TRX_GL_Context_GetWindowHandle();
+    if (p == nullptr || window == nullptr) {
+        return;
+    }
+
+    const int32_t swap_interval = SDL_GL_GetSwapInterval();
+    SDL_GL_SetSwapInterval(0);
+    for (int32_t i = 0; i < M_SWAPCHAIN_DEPTH; i++) {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        TRX_GL_Context_SwitchToViewport(VIEWPORT_WINDOW);
+        TRX_GL_Context_Clear();
+        SDL_GL_SwapWindow(window);
+    }
+    SDL_GL_SetSwapInterval(swap_interval);
+
+    TRX_GL_FBO_Bind(&p->geometry_fbo);
+    TRX_GL_Context_SwitchToViewport(VIEWPORT_GAME);
 }
 
 void TRX_GL_Renderer_CompositeToTexture(

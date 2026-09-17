@@ -29,6 +29,12 @@ void TRX_GL_Renderer_BindUiFbo(void);
 // the old size.
 void TRX_GL_Renderer_SyncFboSizes(void);
 
+// Paints every buffer the window rotates through black. A window that
+// changes size gets fresh buffers from the driver, and those hold the pixels
+// the memory carried before; whichever of them the driver presents next then
+// shows an older frame.
+void TRX_GL_Renderer_BlankWindow(void);
+
 // Resolve the geometry framebuffer down to VIEWPORT_SCENE and return the GL
 // object id holding the result (3D scene only, no UI). Multisampling and
 // supersampling both need this before the scene can be sampled or read back;

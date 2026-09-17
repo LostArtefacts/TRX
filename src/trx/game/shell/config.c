@@ -15,6 +15,7 @@
 #include <trx/game/sound.h>
 #include <trx/game/ui/touch_overlay.h>
 #include <trx/game/viewport.h>
+#include <trx/gl/renderer.h>
 
 #include <SDL2/SDL_timer.h>
 
@@ -30,8 +31,12 @@ static bool M_MustUpdateRendererViewport(void)
 
 void Shell_RefreshRendererViewport(void)
 {
+    const bool size_changed = M_MustUpdateRendererViewport();
     Viewport_Reset();
     m_ViewportSize = Shell_GetWindowSize();
+    if (size_changed && !Output_IsHeadless()) {
+        TRX_GL_Renderer_BlankWindow();
+    }
 }
 
 void Shell_SyncToWindow(void)
