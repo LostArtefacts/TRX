@@ -223,6 +223,16 @@ static void M_MonkeyIdle(ITEM *const item, COLL_INFO *const coll)
                 LS(g_Config.gameplay.enable_fast_pull_up ? LS_FAST_PULL_UP
                                                          : LS_PULL_UP);
         }
+
+        // Setting Lara's goal state to pull up too early means that collision
+        // tests are not performed again during the frames in which she is
+        // settling (see condition above after Lara_Col_HangTest).
+        const ANIM *const anim = Item_GetAnim(item);
+        const int16_t min_change_frame =
+            Anim_GetMinimumChangeFrame(anim, item->goal_anim_state);
+        if (min_change_frame < 0 || item->frame_num < min_change_frame) {
+            item->goal_anim_state = LS(LS_MONKEY_IDLE);
+        }
         return;
     }
 

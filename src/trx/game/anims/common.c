@@ -113,6 +113,22 @@ bool Anim_HasChange(const ANIM *const anim, const int16_t goal_state_id)
     return false;
 }
 
+int16_t Anim_GetMinimumChangeFrame(
+    const ANIM *const anim, const int16_t goal_state_id)
+{
+    int16_t frame = INT16_MAX;
+    for (int32_t i = 0; i < anim->num_changes; i++) {
+        const ANIM_CHANGE *const change = Anim_GetChange(anim->change_idx + i);
+        if (change->goal_anim_state != goal_state_id) {
+            continue;
+        }
+        const ANIM_RANGE *const range = Anim_GetRange(change->range_idx);
+        frame = MIN(frame, range->start_frame);
+    }
+
+    return frame == INT16_MAX ? -1 : frame;
+}
+
 bool Anim_HasFXCommand(const ANIM *const anim, const int16_t fx_num)
 {
     return Anim_HasFXCommandBetween(
