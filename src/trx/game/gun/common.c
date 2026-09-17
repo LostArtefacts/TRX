@@ -6,6 +6,7 @@
 #include <trx/game/gun.h>
 #include <trx/game/gun/registry.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/sound.h>
 #include <trx/version.h>
@@ -256,13 +257,28 @@ LARA_GUN_TYPE Gun_GetTypeForProjectile(const OBJECT_ID obj_id)
     if (obj_id == NO_OBJECT) {
         return LGT_UNARMED;
     }
+
+    // Some projectiles aren't directly associated with a weapon. When that
+    // happens, use the weapon whose projectile shares the same meshes and
+    // animations as the visual reference.
+    const OBJECT *const obj = Object_Get(obj_id);
+    LARA_GUN_TYPE dressed_as = LGT_UNARMED;
     for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
         const WEAPON_INFO *const info = Gun_Registry_GetByIndex(i);
         if (info->projectile_object_id == obj_id) {
             return info->gun_type;
         }
+        if (info->projectile_object_id == NO_OBJECT
+            || dressed_as != LGT_UNARMED) {
+            continue;
+        }
+        const OBJECT *const other = Object_Get(info->projectile_object_id);
+        if (obj->loaded && other->loaded && obj->mesh_idx == other->mesh_idx
+            && obj->anim_idx == other->anim_idx) {
+            dressed_as = info->gun_type;
+        }
     }
-    return LGT_UNARMED;
+    return dressed_as;
 }
 
 bool Gun_IsLauncherType(const LARA_GUN_TYPE gun_type)

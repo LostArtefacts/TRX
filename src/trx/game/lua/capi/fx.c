@@ -908,7 +908,7 @@ static void M_Create(lua_State *const L)
     LUA_Struct_Register(L, &TYPE_SPARK, m_SparkMethods);
 
     LUA_GetModule(L, "fx");
-    lua_pushinteger(L, OUTPUT_MAX_PENDING_LIGHTS);
+    lua_pushinteger(L, OUTPUT_MAX_DYNAMIC_LIGHTS);
     lua_setfield(L, -2, "MAX_LIGHTS");
     lua_pushinteger(L, OUTPUT_MAX_FOG_BULBS);
     lua_setfield(L, -2, "MAX_FOG");

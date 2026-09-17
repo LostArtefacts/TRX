@@ -25,6 +25,26 @@
 #define M_SPEED (WALL_L / 2) // = 512
 #define M_SPEED_UW (STEP_L / 2) // = 128
 
+// Caches what the object lookup answers, which no savegame carries.
+typedef struct {
+    LARA_GUN_TYPE gun_type;
+} M_PRIV;
+
+static void M_Initialise(const int16_t item_num)
+{
+    M_PRIV *const p = Item_Get(item_num)->priv;
+    p->gun_type = LGT_UNKNOWN;
+}
+
+static LARA_GUN_TYPE M_GetGunType(ITEM *const item)
+{
+    M_PRIV *const p = item->priv;
+    if (p->gun_type == LGT_UNKNOWN) {
+        p->gun_type = Gun_GetTypeForProjectile(item->object_id);
+    }
+    return p->gun_type;
+}
+
 static void M_SetTR3ProjectileShade(ITEM *const item)
 {
     if (item == nullptr) {
@@ -96,7 +116,7 @@ static bool M_CanExplodeTarget(const ITEM *const item)
 }
 
 static bool M_TryExplodeItem(
-    const ITEM *const projectile_item, const GAME_VECTOR old_pos,
+    ITEM *const projectile_item, const GAME_VECTOR old_pos,
     const int16_t target_item_num, const int32_t radius)
 {
     ITEM *const target_item = Item_Get(target_item_num);
@@ -150,8 +170,7 @@ static bool M_TryExplodeItem(
     };
     Gun_HitTarget(
         target_item, &old_pos, &hit_pos,
-        Gun_Registry_Get(Gun_GetTypeForProjectile(projectile_item->object_id))
-            ->damage);
+        Gun_Registry_Get(M_GetGunType(projectile_item))->damage);
     Stats_AddAmmoHits();
 
     if (Gun_GetSmashPolicy(target_item) == GUN_SMASH_POLICY_HEAVY) {
@@ -340,7 +359,9 @@ static void M_Control(const int16_t item_num)
 
 static void M_SetupCommon(OBJECT *const obj)
 {
+    obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
+    obj->priv_size = sizeof(M_PRIV);
     obj->save_position = true;
 }
 
