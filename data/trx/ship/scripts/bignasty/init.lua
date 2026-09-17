@@ -220,7 +220,7 @@ local function burst(item, own, from)
   for _, target in
     ipairs(trx.items.query:in_sphere(centre, BLAST_RADIUS):in_play():matches())
   do
-    if target.is_alive and target.num ~= item.num then
+    if target.is_hostile and target.is_alive and target.num ~= item.num then
       burn_green(target)
       if target.hit_points <= BLAST_DAMAGE then
         target:die(true, GREEN_FLAME, lara)
