@@ -957,6 +957,7 @@ common_sources = [
   'trx/game/ui/elements/hide.c',
   'trx/game/ui/elements/horizontal_line.c',
   'trx/game/ui/elements/label.c',
+  'trx/game/ui/elements/loading_bar.c',
   'trx/game/ui/elements/modal.c',
   'trx/game/ui/elements/offset.c',
   'trx/game/ui/elements/pad.c',
