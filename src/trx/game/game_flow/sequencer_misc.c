@@ -33,21 +33,6 @@ static void M_PlayIntroFMVs(void)
     }
 }
 
-static void M_RunTitleLoadingCamera(const GF_LEVEL *const level)
-{
-    const GF_SEQUENCE *const sequence = &level->sequence;
-    for (int32_t i = 0; i < sequence->length; i++) {
-        if (sequence->events[i].type != GFS_LOADING_CAMERA) {
-            continue;
-        }
-        const GF_SEQUENCE_EVENT_HANDLER handler =
-            GF_GetSequenceEventHandler(GFS_LOADING_CAMERA);
-        GF_COMMAND gf_cmd;
-        SHOULD(handler(level, sequence, i, GFSC_NORMAL, nullptr, &gf_cmd));
-        return;
-    }
-}
-
 RESULT GF_RunTitle(GF_COMMAND *const out_cmd)
 {
     SG_Manager_UnbindSlot();
@@ -55,7 +40,7 @@ RESULT GF_RunTitle(GF_COMMAND *const out_cmd)
     GF_ResetLevelSetup(GFSC_NORMAL);
     const GF_LEVEL *const title_level = GF_GetTitleLevel();
     MUST(Level_Initialise(title_level, GFSC_NORMAL), "the title level");
-    M_RunTitleLoadingCamera(title_level);
+    GF_ShowTitleLoadingCamera(title_level);
     *out_cmd = GF_ShowInventory(INV_TITLE_MODE);
     return OK;
 }

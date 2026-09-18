@@ -29,6 +29,7 @@ typedef struct {
     CLOCK_TIMER timer;
     PHASE_LOADING_CAMERA_ARGS args;
     float progress;
+    CAMERA_INFO old_camera;
 } M_PRIV;
 
 static void M_PlaceCamera(const M_PRIV *const p)
@@ -53,10 +54,19 @@ static void M_PlaceCamera(const M_PRIV *const p)
 static PHASE_CONTROL M_Start(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
+    p->old_camera = g_Camera;
     M_PlaceCamera(p);
     Fader_InitTo(&p->fader, 1.0f, 0.0f, p->args.fade_in_time);
     ClockTimer_Sync(&p->timer);
     return (PHASE_CONTROL) {};
+}
+
+// Restores the camera after the view ends.
+static void M_End(PHASE *const phase)
+{
+    const M_PRIV *const p = phase->priv;
+    g_Camera = p->old_camera;
+    Interpolation_Remember();
 }
 
 static PHASE_CONTROL M_Control(PHASE *const phase)
@@ -124,7 +134,7 @@ PHASE *Phase_LoadingCamera_Create(const PHASE_LOADING_CAMERA_ARGS args)
     p->state = STATE_FADE_IN;
     phase->priv = p;
     phase->start = M_Start;
-    phase->end = nullptr;
+    phase->end = M_End;
     phase->control = M_Control;
     phase->draw = M_Draw;
     phase->request_fade_to_black = nullptr;
