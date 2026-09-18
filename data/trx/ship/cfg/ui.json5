@@ -191,6 +191,32 @@
         "outline_br":               "#000000FF",
         "heading_outline":          "#000000FF",
       }
+    },
+    "tr4": {
+      "pc": {
+        "background":       ["#00000080", "#00000080"],
+        "background_heavy": ["#000000E0", "#000000E0"],
+        "outline_light":    "#E8C070FF",
+        "outline_dark":     "#8C7038FF"
+      },
+      "ps1": {
+        "background_edge":          "#00000080",
+        "background_center":        "#20100080",
+        "background_heavy_edge":    "#000000E0",
+        "background_heavy_center":  "#100800E0",
+        "heading_edge":             "#00000080",
+        "heading_center":           "#80581080",
+        "requested_edge":           "#00000080",
+        "requested_center":         "#E8C07080",
+        "requested_outline_ch":     "#FFFFFFFF",
+        "requested_outline_cv":     "#E8C070FF",
+        "requested_outline_edge":   "#282828FF",
+        "outline_tl":               "#606060FF",
+        "outline_tr":               "#202020FF",
+        "outline_bl":               "#404040FF",
+        "outline_br":               "#000000FF",
+        "heading_outline":          "#000000FF",
+      }
     }
   }
 }

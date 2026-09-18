@@ -154,7 +154,7 @@ static void M_DrawOp_HorizontalLine(const M_DRAW_OP *const base)
         M_DrawScreenSprite(
             op->x0, op->y, op->z, (op->x1 - op->x0) * PHD_ONE / 8, PHD_ONE,
             mesh_idx + 4, (RGBA_F[4]) { M_WHITE, M_WHITE, M_WHITE, M_WHITE });
-    } else if (g_TRVersion == 3 && op->ui_style == UI_STYLE_PC) {
+    } else if (g_TRVersion >= 3 && op->ui_style == UI_STYLE_PC) {
         const float e1 = UI_Scaler_Calc(1.0f, UI_SCALER_TARGET_TEXT);
         const float e2 = e1 / 3.0f;
         const UI_MENU_COLORS_PC *const c = UI_Settings_GetMenuColorsPC();
@@ -278,7 +278,7 @@ static void M_DrawOp_TextOutline(const M_DRAW_OP *const base)
                 x0, y1, op->z, w, scale_v, mesh_idx + 6, neutral);
             M_DrawScreenSprite(
                 x0, y0, op->z, scale_h, h, mesh_idx + 7, neutral);
-        } else if (g_TRVersion == 3) {
+        } else if (g_TRVersion >= 3) {
             const UI_MENU_COLORS_PC *const c = UI_Settings_GetMenuColorsPC();
             const float thickness = UI_Scaler_Calc(1.0f, UI_SCALER_TARGET_TEXT);
             Output_DrawScreenFrame(
