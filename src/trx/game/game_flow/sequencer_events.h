@@ -9,3 +9,9 @@ typedef RESULT (*GF_SEQUENCE_EVENT_HANDLER)(
 
 GF_SEQUENCE_EVENT_HANDLER GF_GetSequenceEventHandler(
     GF_SEQUENCE_EVENT_TYPE event_type);
+
+// Shows the pending level view after the level is ready.
+void GF_ShowPendingLoadingCamera(void);
+
+// Shows the title level view from its sequence.
+void GF_ShowTitleLoadingCamera(const GF_LEVEL *level);

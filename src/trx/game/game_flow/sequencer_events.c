@@ -64,6 +64,8 @@
 X_EVENT_HANDLER_LIST
 #undef X
 
+static const GF_LOADING_CAMERA_DATA *m_PendingLoadingCamera = nullptr;
+
 static GF_SEQUENCE_EVENT_HANDLER m_EventHandlers[GFS_NUMBER_OF] = {
 #define X(id, name) [id] = name,
     X_EVENT_HANDLER_LIST
@@ -337,18 +339,9 @@ static bool M_AreLoadingScreensWanted(const GF_SEQUENCE_CONTEXT seq_ctx)
         || seq_ctx == GFSC_NORMAL || seq_ctx == GFSC_SELECT;
 }
 
-M_GF_HANDLER(M_HandleLoadingCamera)
+static void M_ShowLoadingCamera(const GF_LOADING_CAMERA_DATA *const data)
 {
-    GF_COMMAND gf_cmd = { .action = GF_NOOP };
-    if (!M_AreLoadingScreensWanted(seq_ctx)) {
-        *out_cmd = gf_cmd;
-        return OK;
-    }
-
-    const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
-    const GF_LOADING_CAMERA_DATA *const data = event->data;
     Music_Stop();
-
     PHASE *const phase =
         Phase_LoadingCamera_Create((PHASE_LOADING_CAMERA_ARGS) {
             .source = data->source,
@@ -358,10 +351,44 @@ M_GF_HANDLER(M_HandleLoadingCamera)
             .fade_in_time = data->fade_in_time,
             .fade_out_time = data->fade_out_time,
         });
-    gf_cmd = PhaseExecutor_Run(phase);
+    PhaseExecutor_Run(phase);
     Phase_LoadingCamera_Destroy(phase);
-    *out_cmd = gf_cmd;
+}
+
+M_GF_HANDLER(M_HandleLoadingCamera)
+{
+    *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
+    m_PendingLoadingCamera = nullptr;
+    if (level == GF_GetTitleLevel() || !M_AreLoadingScreensWanted(seq_ctx)) {
+        return OK;
+    }
+    m_PendingLoadingCamera =
+        (const GF_LOADING_CAMERA_DATA *)sequence->events[event_idx].data;
     return OK;
+}
+
+void GF_ShowPendingLoadingCamera(void)
+{
+    const GF_LOADING_CAMERA_DATA *const data = m_PendingLoadingCamera;
+    m_PendingLoadingCamera = nullptr;
+    if (data != nullptr) {
+        M_ShowLoadingCamera(data);
+    }
+}
+
+void GF_ShowTitleLoadingCamera(const GF_LEVEL *const level)
+{
+    if (!M_AreLoadingScreensWanted(GFSC_NORMAL)) {
+        return;
+    }
+    const GF_SEQUENCE *const sequence = &level->sequence;
+    for (int32_t i = 0; i < sequence->length; i++) {
+        if (sequence->events[i].type == GFS_LOADING_CAMERA) {
+            M_ShowLoadingCamera(
+                (const GF_LOADING_CAMERA_DATA *)sequence->events[i].data);
+            return;
+        }
+    }
 }
 
 M_GF_HANDLER(M_HandleInventoryModifier)
