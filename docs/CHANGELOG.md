@@ -59,6 +59,7 @@
 - Fixed an item hanging at the edge of the screen while the inventory changes from one ring to another (TRX1404)
 - Fixed the icons beside the volume settings, which now show a note for the music and a speaker for the sound effects (TRX1040)
 - Fixed the statistics overlapping inventory text at large text sizes (#6295 / TRX1156)
+- Fixed the instant save and load screens sitting too low (TRX1515)
 
 **Camera**
 - Added an option to have the photo mode camera collide with level geometry (Graphic Options → Visuals → Photo mode collision) (#5719 / TRX540)
