@@ -131,6 +131,52 @@ default game flow for examples.
     <td>Double</td>
   </tr>
   <tr valign="top">
+    <td rowspan="10"><code>loading_camera</code></td>
+    <td><code>source_x</code></td>
+    <td>Integer</td>
+    <td rowspan="10">
+      Shows a fixed view of the level before play starts instead of a loading
+      picture. The loading screen option enables or disables this view. This
+      sequence matches the TR4 <code>LoadCamera</code> command.
+    </td>
+  </tr>
+  <tr valign="top">
+    <td><code>source_y</code></td>
+    <td>Integer</td>
+  </tr>
+  <tr valign="top">
+    <td><code>source_z</code></td>
+    <td>Integer</td>
+  </tr>
+  <tr valign="top">
+    <td><code>target_x</code></td>
+    <td>Integer</td>
+  </tr>
+  <tr valign="top">
+    <td><code>target_y</code></td>
+    <td>Integer</td>
+  </tr>
+  <tr valign="top">
+    <td><code>target_z</code></td>
+    <td>Integer</td>
+  </tr>
+  <tr valign="top">
+    <td><code>room</code></td>
+    <td>Integer</td>
+  </tr>
+  <tr valign="top">
+    <td><code>display_time</code></td>
+    <td>Double</td>
+  </tr>
+  <tr valign="top">
+    <td><code>fade_in_time</code></td>
+    <td>Double</td>
+  </tr>
+  <tr valign="top">
+    <td><code>fade_out_time</code></td>
+    <td>Double</td>
+  </tr>
+  <tr valign="top">
     <td><code>play_cutscene</code></td>
     <td><code>cutscene_id</code></td>
     <td>Integer</td>

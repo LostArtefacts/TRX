@@ -29,6 +29,7 @@ X_CFG_ENUM(ui.pause_background_style,                BK_MONOCHROME, BACKGROUND_T
 X_CFG_ENUM(ui.stats_background_style,                BK_MONOCHROME, BACKGROUND_TYPE)
 X_CFG_ENUM(visuals.breeze_mode,                      BREEZE_MODE_TR3, BREEZE_MODE)
 X_CFG_ENUM(visuals.camera_mode,                      CAMERA_MODE_TR4, CAMERA_MODE)
+X_CFG_ENUM_RANGE(gameplay.loading_screens,           LOADING_SCREENS_ALWAYS, LOADING_SCREENS_MODE, 0, LOADING_SCREENS_NEW_GAMES)
 X_CFG_ENUM_RANGE(visuals.shadow_type,                SHADOW_TYPE_SPRITE, SHADOW_TYPE, 0, SHADOW_TYPE_NUMBER_OF - 1)
 X_CFG_FLOAT(flow.demo_delay,                         30.0f)
 X_CFG_INT32_RANGE(gameplay.maximum_quick_save_slots, 1, 0, 1000)

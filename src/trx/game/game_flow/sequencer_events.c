@@ -17,6 +17,7 @@
 #include <trx/game/output.h>
 #include <trx/game/paths.h>
 #include <trx/game/phase.h>
+#include <trx/game/phase/phase_loading_camera.h>
 #include <trx/game/savegame.h>
 #include <trx/game/stats.h>
 #include <trx/version.h>
@@ -45,6 +46,7 @@
     X(GFS_REMOVE_BINOCULARS, M_HandleInventoryModifier)                        \
     X(GFS_RESET_HUB,         M_HandleInventoryModifier)                        \
     X(GFS_LOADING_SCREEN,    M_HandlePicture)                                  \
+    X(GFS_LOADING_CAMERA,    M_HandleLoadingCamera)                            \
     X(GFS_DISPLAY_PICTURE,   M_HandlePicture)                                  \
     X(GFS_LEVEL_STATS,       M_HandleLevelStats)                               \
     X(GFS_TOTAL_STATS,       M_HandleTotalStats)                               \
@@ -321,6 +323,43 @@ M_GF_HANDLER(M_HandlePicture)
     });
     gf_cmd = PhaseExecutor_Run(phase);
     Phase_Picture_Destroy(phase);
+    *out_cmd = gf_cmd;
+    return OK;
+}
+
+static bool M_AreLoadingScreensWanted(const GF_SEQUENCE_CONTEXT seq_ctx)
+{
+    if (g_Config.gameplay.loading_screens == LOADING_SCREENS_DISABLED
+        || seq_ctx == GFSC_STORY) {
+        return false;
+    }
+    return g_Config.gameplay.loading_screens != LOADING_SCREENS_NEW_GAMES
+        || seq_ctx == GFSC_NORMAL || seq_ctx == GFSC_SELECT;
+}
+
+M_GF_HANDLER(M_HandleLoadingCamera)
+{
+    GF_COMMAND gf_cmd = { .action = GF_NOOP };
+    if (!M_AreLoadingScreensWanted(seq_ctx)) {
+        *out_cmd = gf_cmd;
+        return OK;
+    }
+
+    const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
+    const GF_LOADING_CAMERA_DATA *const data = event->data;
+    Music_Stop();
+
+    PHASE *const phase =
+        Phase_LoadingCamera_Create((PHASE_LOADING_CAMERA_ARGS) {
+            .source = data->source,
+            .target = data->target,
+            .room_num = data->room_num,
+            .display_time = data->display_time,
+            .fade_in_time = data->fade_in_time,
+            .fade_out_time = data->fade_out_time,
+        });
+    gf_cmd = PhaseExecutor_Run(phase);
+    Phase_LoadingCamera_Destroy(phase);
     *out_cmd = gf_cmd;
     return OK;
 }

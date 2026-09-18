@@ -9,5 +9,11 @@ void Lara_Mesh_Initialise(const GF_LEVEL *level);
 void Lara_Mesh_SwapSingle(LARA_MESH mesh, OBJECT_ID obj_id);
 void Lara_Mesh_SwapAll(OBJECT_ID obj_id);
 void Lara_Mesh_Set(LARA_MESH mesh, OBJECT_MESH *mesh_ptr);
+
+// Unbinds all Lara meshes.
+void Lara_Mesh_Reset(void);
+
+// Reports whether all Lara meshes are bound.
+bool Lara_Mesh_IsReady(void);
 OBJECT_MESH *Lara_Mesh_Get(LARA_MESH mesh);
 int32_t Lara_GetMeshIndex(const ITEM *item, int32_t mesh_idx);

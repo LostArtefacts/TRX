@@ -220,7 +220,6 @@ X_CFG_ENUM_EX("ui.enemy_healthbar_show_mode",                ui.enemy_health_bar
 X_CFG_ENUM_EX("ui.exposurebar_location",                     ui.lara_exposure_bar.location, UI_ELEMENT_LOCATION_TOP_RIGHT, UI_ELEMENT_LOCATION)
 X_CFG_ENUM_EX("ui.healthbar_location",                       ui.lara_health_bar.location, UI_ELEMENT_LOCATION_TOP_LEFT, UI_ELEMENT_LOCATION)
 X_CFG_ENUM_EX("ui.sprintbar_location",                       ui.lara_sprint_bar.location, UI_ELEMENT_LOCATION_TOP_RIGHT, UI_ELEMENT_LOCATION)
-X_CFG_ENUM_RANGE(gameplay.loading_screens,                   LOADING_SCREENS_DISABLED, LOADING_SCREENS_MODE, 0, LOADING_SCREENS_NEW_GAMES)
 X_CFG_ENUM_RANGE(visuals.blood_effects,                      BLOOD_EFFECTS_RED, BLOOD_EFFECTS, 0, BLOOD_EFFECTS_NUMBER_OF - 1)
 X_CFG_FLOAT_PERCENT(audio.ambient_volume,                    1.0f)
 X_CFG_FLOAT_PERCENT(audio.cutscene_volume,                   1.0f)
