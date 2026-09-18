@@ -9,7 +9,13 @@
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
 #include <trx/game/shell.h>
+#include <trx/game/ui.h>
+#include <trx/game/ui/elements/loading_bar.h>
+#include <trx/game/ui/elements/modal.h>
 #include <trx/game/viewport.h>
+
+#define M_BAR_WIDTH 0.94f
+#define M_BAR_Y 0.953f
 
 typedef enum {
     STATE_FADE_IN,
@@ -22,6 +28,7 @@ typedef struct {
     FADER fader;
     CLOCK_TIMER timer;
     PHASE_LOADING_CAMERA_ARGS args;
+    float progress;
 } M_PRIV;
 
 static void M_PlaceCamera(const M_PRIV *const p)
@@ -71,6 +78,9 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         break;
 
     case STATE_DISPLAY:
+        p->progress = p->args.display_time <= 0.0
+            ? 1.0f
+            : ClockTimer_PeekElapsed(&p->timer) / p->args.display_time;
         if (g_InputDB.menu_skip
             || ClockTimer_CheckElapsed(&p->timer, p->args.display_time)) {
             p->state = STATE_FADE_OUT;
@@ -97,7 +107,13 @@ static void M_Draw(PHASE *const phase)
     M_PRIV *const p = phase->priv;
     M_PlaceCamera(p);
     Game_Draw(false);
-    Output_Overlay_DrawBlackRectangle(Fader_GetCurrentValue(&p->fader), false);
+    UI_BeginScreenModal(0.5f, M_BAR_Y);
+    UI_LoadingBar(
+        UI_GetCanvasWidth() * M_BAR_WIDTH,
+        p->state == STATE_FADE_OUT ? 1.0f : p->progress);
+    UI_EndModal();
+
+    Output_Overlay_DrawBlackRectangle(Fader_GetCurrentValue(&p->fader), true);
 }
 
 PHASE *Phase_LoadingCamera_Create(const PHASE_LOADING_CAMERA_ARGS args)
