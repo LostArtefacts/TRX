@@ -3,10 +3,10 @@
     // https://lostartefacts.dev/trx/docs/stable/game_strings
     "objects": {
         "flare_item": {
-            "name": "Flares",
+            "name": "Fackeln",
         },
         "grenade_gun_item": {
-            "name": "Grenade Gun",
+            "name": "Granatenwerfer",
         }
     },
     "cutscenes": [],
