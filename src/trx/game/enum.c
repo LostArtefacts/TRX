@@ -227,6 +227,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_PLAY_CUTSCENE, "play_cutscene");
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_PLAY_MUSIC, "play_music");
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_LOADING_SCREEN, "loading_screen");
+    ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_LOADING_CAMERA, "loading_camera");
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_DISPLAY_PICTURE, "display_picture");
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_LEVEL_STATS, "level_stats");
     ENUM_MAP(GF_SEQUENCE_EVENT_TYPE, GFS_TOTAL_STATS, "total_stats");

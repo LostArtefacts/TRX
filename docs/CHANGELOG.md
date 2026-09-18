@@ -3,6 +3,7 @@
 **TR4**
 - Added Small Scorpion control (TRX1562)
 - Added Jackal control (TRX1553)
+- Added the views of the level that the original game shows before it is played, in place of a loading picture (TRX493)
 
 
 ## [1.11.1](https://github.com/LostArtefacts/TRX/compare/trx-1.11...trx-1.11.1) - 2026-09-22

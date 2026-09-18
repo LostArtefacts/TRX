@@ -7,6 +7,7 @@
 #include <trx/game/effects.h>
 #include <trx/game/fx.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/mesh.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output.h>
 #include <trx/game/output/bind.h>
@@ -38,6 +39,13 @@ static int32_t m_OutsideBottom;
 static int32_t m_BoundStart;
 static int32_t m_BoundEnd;
 static int32_t m_BoundRooms[M_MAX_BOUND_ROOMS] = {};
+
+// Reports whether the draw leaves out Lara, the creatures and the effects,
+// which is how the level view a loading screen shows draws.
+static bool M_IsSceneryOnly(void)
+{
+    return g_Camera.type == CAM_LOADING_SCREEN;
+}
 
 static inline void M_DrawSet_Init(ROOM_DRAWSET *const s)
 {
@@ -317,7 +325,8 @@ static void M_DrawRoomItem(const int16_t item_num, void *const ud)
     ITEM *const item = Item_Get(item_num);
     const OBJECT *const obj = Object_Get(item->object_id);
     OUTPUT_ITEM_BIND *const bind = Output_Bind_GetItem(item);
-    if (bind->drawn || !item->is_visible || obj->draw_func == nullptr) {
+    if (bind->drawn || !item->is_visible || obj->draw_func == nullptr
+        || (M_IsSceneryOnly() && obj->intelligent)) {
         return;
     }
 
@@ -553,10 +562,9 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
         M_DrawSingleRoom(Room_Get(draw_room_num));
     }
 
-    // A title level running behind the menu may hold her object without ever
-    // placing her.
     const ITEM *const lara_item = Lara_GetItem();
-    if (lara_item != nullptr && Object_Get(O_LARA)->loaded) {
+    if (!M_IsSceneryOnly() && lara_item != nullptr && Object_Get(O_LARA)->loaded
+        && Lara_Mesh_IsReady()) {
         const ROOM *const lara_room = Room_Get(lara_item->room_num);
         Output_Water_SetupFromRoom(lara_room);
         Output_SetCurrentRoom(lara_room);
@@ -566,8 +574,10 @@ void Room_DrawAllRooms(const int16_t current_room, const int16_t target_room)
     CutSeq_DrawActors();
 
     Output_Water_SetupAboveWater(false);
-    FX_Draw();
-    Sparks_Draw();
+    if (!M_IsSceneryOnly()) {
+        FX_Draw();
+        Sparks_Draw();
+    }
     Rope_DrawAll();
     Output_LensFlares_Draw();
 }

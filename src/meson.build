@@ -871,6 +871,7 @@ common_sources = [
   'trx/game/phase/phase_game.c',
   'trx/game/phase/phase_globe_select.c',
   'trx/game/phase/phase_inventory.c',
+  'trx/game/phase/phase_loading_camera.c',
   'trx/game/phase/phase_pause.c',
   'trx/game/phase/phase_photo_mode.c',
   'trx/game/phase/phase_picture.c',

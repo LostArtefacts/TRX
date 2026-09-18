@@ -125,6 +125,23 @@ OBJECT_MESH *Lara_Mesh_Get(const LARA_MESH mesh)
     return m_Meshes[mesh];
 }
 
+void Lara_Mesh_Reset(void)
+{
+    for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
+        m_Meshes[mesh] = nullptr;
+    }
+}
+
+bool Lara_Mesh_IsReady(void)
+{
+    for (LARA_MESH mesh = LM_FIRST; mesh < LM_NUMBER_OF; mesh++) {
+        if (m_Meshes[mesh] == nullptr) {
+            return false;
+        }
+    }
+    return true;
+}
+
 int32_t Lara_GetMeshIndex(const ITEM *const item, const int32_t mesh_idx)
 {
     const OBJECT *const obj = Object_Get(item->object_id);

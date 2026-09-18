@@ -23,6 +23,9 @@
 
 #include <string.h>
 
+#define M_LOADING_CAMERA_DISPLAY_TIME 2.0
+#define M_LOADING_CAMERA_FADE_TIME 0.5
+
 #define M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(name)                            \
     int32_t name(                                                              \
         const M_CONTEXT *ctx, GF_SEQUENCE_EVENT *event, void *extra_data,      \
@@ -63,6 +66,7 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleAddItemEvent);
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleGlobeSelectEvent);
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupHorizonEvent);
 static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupLensFlareEvent);
+static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleLoadingCameraEvent);
 
 static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     // clang-format off
@@ -98,6 +102,7 @@ static M_SEQUENCE_EVENT_HANDLER m_SequenceEventHandlers[] = {
     { GFS_ADD_SECRET_REWARD, M_HandleAddItemEvent, nullptr },
     { GFS_SETUP_HORIZON,     M_HandleSetupHorizonEvent, nullptr },
     { GFS_SETUP_LENS_FLARE,  M_HandleSetupLensFlareEvent, nullptr },
+    { GFS_LOADING_CAMERA,    M_HandleLoadingCameraEvent, nullptr },
 
     // Sentinel to mark the end of the table
     { (GF_SEQUENCE_EVENT_TYPE)-1, nullptr, nullptr },
@@ -590,6 +595,42 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleSetupLensFlareEvent)
         event->data = event_data;
     }
     return sizeof(GF_SETUP_LENS_FLARE_DATA);
+fail:
+    return -1;
+}
+
+static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandleLoadingCameraEvent)
+{
+    JSON_READ_IO *const io = ctx->io;
+    XYZ_32 source = {};
+    XYZ_32 target = {};
+    int32_t room_num = 0;
+    if (!Result_Absorb(JSON_READ(io, "source_x", &source.x))
+        || !Result_Absorb(JSON_READ(io, "source_y", &source.y))
+        || !Result_Absorb(JSON_READ(io, "source_z", &source.z))
+        || !Result_Absorb(JSON_READ(io, "target_x", &target.x))
+        || !Result_Absorb(JSON_READ(io, "target_y", &target.y))
+        || !Result_Absorb(JSON_READ(io, "target_z", &target.z))
+        || !Result_Absorb(JSON_READ(io, "room", &room_num))) {
+        return -1;
+    }
+    double display_time = M_LOADING_CAMERA_DISPLAY_TIME;
+    double fade_in_time = M_LOADING_CAMERA_FADE_TIME;
+    double fade_out_time = M_LOADING_CAMERA_FADE_TIME;
+    Result_Absorb(JSON_READ(io, "display_time", &display_time));
+    Result_Absorb(JSON_READ(io, "fade_in_time", &fade_in_time));
+    Result_Absorb(JSON_READ(io, "fade_out_time", &fade_out_time));
+    if (event != nullptr) {
+        GF_LOADING_CAMERA_DATA *const event_data = extra_data;
+        event_data->source = source;
+        event_data->target = target;
+        event_data->room_num = room_num;
+        event_data->display_time = display_time;
+        event_data->fade_in_time = fade_in_time;
+        event_data->fade_out_time = fade_out_time;
+        event->data = event_data;
+    }
+    return sizeof(GF_LOADING_CAMERA_DATA);
 fail:
     return -1;
 }

@@ -10,6 +10,7 @@ typedef enum {
     CAM_PHOTO_MODE = 6,
     CAM_FLYBY_MODE = 7,
     CAM_BINOCULARS = 8,
+    CAM_LOADING_SCREEN = 9,
 } CAMERA_TYPE;
 
 typedef enum {

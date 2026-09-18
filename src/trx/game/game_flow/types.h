@@ -65,6 +65,15 @@ typedef struct {
     RGB_888 color;
 } GF_SETUP_LENS_FLARE_DATA;
 
+typedef struct {
+    XYZ_32 source;
+    XYZ_32 target;
+    int16_t room_num;
+    double display_time;
+    double fade_in_time;
+    double fade_out_time;
+} GF_LOADING_CAMERA_DATA;
+
 // ----------------------------------------------------------------------------
 // Game flow level structures
 // ----------------------------------------------------------------------------

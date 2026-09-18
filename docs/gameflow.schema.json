@@ -440,6 +440,9 @@
           "$ref": "#/definitions/seq_loading_screen"
         },
         {
+          "$ref": "#/definitions/seq_loading_camera"
+        },
+        {
           "$ref": "#/definitions/seq_play_fmv"
         },
         {
@@ -625,6 +628,60 @@
       "required": [
         "type",
         "path"
+      ],
+      "additionalProperties": false
+    },
+    "seq_loading_camera": {
+      "type": "object",
+      "description": "Shows a fixed view of the level before play starts instead of a loading picture. The loading screen option enables or disables this view. This sequence is equivalent to the TR4 LoadCamera command.",
+      "properties": {
+        "type": {
+          "const": "loading_camera"
+        },
+        "source_x": {
+          "type": "integer"
+        },
+        "source_y": {
+          "type": "integer"
+        },
+        "source_z": {
+          "type": "integer"
+        },
+        "target_x": {
+          "type": "integer"
+        },
+        "target_y": {
+          "type": "integer"
+        },
+        "target_z": {
+          "type": "integer"
+        },
+        "room": {
+          "type": "integer",
+          "description": "The room the viewpoint stands in."
+        },
+        "display_time": {
+          "type": "number",
+          "description": "Seconds the view holds (default: 2)."
+        },
+        "fade_in_time": {
+          "type": "number",
+          "description": "Seconds the view takes to appear (default: 0.5)."
+        },
+        "fade_out_time": {
+          "type": "number",
+          "description": "Seconds the view takes to leave (default: 0.5)."
+        }
+      },
+      "required": [
+        "type",
+        "source_x",
+        "source_y",
+        "source_z",
+        "target_x",
+        "target_y",
+        "target_z",
+        "room"
       ],
       "additionalProperties": false
     },
