@@ -5,6 +5,12 @@ local logo = require("tr4.logo")
 local LOGO_WIDTH = 512
 local LOGO_HEIGHT = 256
 
+local LOGO_HOLD_TICKS = 16
+local LOGO_FADE_TICKS = 24
+
+local logo_opacity = trx.signal.new(0.0)
+local logo_ticks = 0
+
 local function show_logo()
   trx.ui.regions.place(
     trx.ui.Region.TOP_CENTER,
@@ -12,6 +18,7 @@ local function show_logo()
       path = logo.path,
       w = LOGO_WIDTH,
       h = LOGO_HEIGHT,
+      opacity = logo_opacity,
     })
   )
 end
@@ -102,7 +109,18 @@ local function set_lara_visible(visible)
   end
 end
 
+trx.events.on_tick(function()
+  if logo_ticks > LOGO_HOLD_TICKS + LOGO_FADE_TICKS then
+    return
+  end
+  logo_ticks = logo_ticks + 1
+  local faded = (logo_ticks - LOGO_HOLD_TICKS) / LOGO_FADE_TICKS
+  logo_opacity:set(math.max(0.0, math.min(1.0, faded)))
+end)
+
 trx.events.on_title_start(function()
+  logo_ticks = 0
+  logo_opacity:set(0.0)
   show_logo()
   trx.cutscenes.forget_played()
   set_lara_visible(false)
