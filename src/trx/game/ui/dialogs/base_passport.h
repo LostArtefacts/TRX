@@ -9,6 +9,10 @@
 
 // state functions
 
+// Tells whether the dialogs sit over the title screen, which places them lower
+// than a level does.
+bool UI_BasePassportDialog_IsOnTitleScreen(void);
+
 // Sets the requester up for the passport, sizing its list to the room the
 // screen leaves. footer_height is what the dialog draws under the list, if
 // anything, so that the rows make way for it.

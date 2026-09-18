@@ -1,8 +1,7 @@
 #include <trx/game/ui/dialogs/base_passport.h>
 
 #include <trx/core/utils.h>
-#include <trx/game/inventory.h>
-#include <trx/game/inventory_ring/vars.h>
+#include <trx/game/game_flow.h>
 #include <trx/game/ui/elements/modal.h>
 #include <trx/game/ui/elements/requester.h>
 #include <trx/game/ui/elements/resize.h>
@@ -40,6 +39,12 @@ static float M_GetFitScale(const UI_REQUESTER_STATE *const req)
     return available / natural_height;
 }
 
+bool UI_BasePassportDialog_IsOnTitleScreen(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    return level == nullptr || level->type == GFL_TITLE;
+}
+
 void UI_BasePassportDialog_Init(
     UI_REQUESTER_STATE *const req, const size_t max_rows,
     const float footer_height)
@@ -60,7 +65,8 @@ void UI_BasePassportDialog_Control(UI_REQUESTER_STATE *const req)
 
 void UI_BeginBasePassportDialog(const UI_REQUESTER_STATE *const req)
 {
-    const float modal_y = g_InvRing_Mode == INV_TITLE_MODE ? 0.98f : 0.67f;
+    const float modal_y =
+        UI_BasePassportDialog_IsOnTitleScreen() ? 0.98f : 0.67f;
     UI_BeginModal(0.5f, modal_y);
     UI_Scaler_PushTextScale(M_GetFitScale(req));
     UI_BeginResizeEx((UI_RESIZE_SETTINGS) {
