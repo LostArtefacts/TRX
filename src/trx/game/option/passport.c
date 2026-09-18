@@ -14,6 +14,7 @@
 #include <trx/game/shell/common.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui.h>
+#include <trx/game/ui/regions.h>
 #include <trx/version.h>
 
 #define M_IMMEDIATE (g_TRVersion >= 2)
@@ -87,6 +88,7 @@ static struct {
     M_PAGE_NUMBER current_page;
     M_PAGE_NUMBER active_page;
     GAME_STRING_ID error_msg;
+    const char *page_text;
 } m_Priv = {
     .active_page = PAGE_UNDETERMINED,
 };
@@ -190,6 +192,7 @@ static void M_SyncArrowsVisibility(void)
 static void M_ChangePageTextContent(const char *const content)
 {
     InvRing_RemoveAllText();
+    m_Priv.page_text = content;
     Overlay_SetBottomText((OVERLAY_TEXT) {
         .kind = OVERLAY_TEXT_LITERAL,
         .literal = content,
@@ -228,6 +231,7 @@ static void M_Close(INVENTORY_ITEM *const inv_item)
 {
     m_Priv.active_page = PAGE_UNDETERMINED;
     M_RemoveAllText();
+    m_Priv.page_text = nullptr;
     M_FreeAllDialogs();
     if (m_Priv.current_page == PAGE_3) {
         inv_item->anim_direction = 1;
@@ -886,6 +890,21 @@ static void M_HandleFlipInputs(void)
     }
 }
 
+// Reserves space for the page caption while the page turns. Dialog size uses
+// the available space from the previous frame, so this space must stay fixed
+// during the turn.
+static void M_ReserveCaptionSpace(void)
+{
+    if (m_Priv.page_text == nullptr || M_TryGetActivePage() == nullptr) {
+        return;
+    }
+    float height = 0.0f;
+    UI_BeginMeasure();
+    UI_Label(m_Priv.page_text);
+    UI_EndMeasure(nullptr, &height);
+    UI_Region_Reserve(UI_REGION_BOTTOM_CENTER, 0.0f, height);
+}
+
 void Option_Passport_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 {
     if (m_Priv.active_page == PAGE_UNDETERMINED) {
@@ -937,8 +956,11 @@ void Option_Passport_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 
 void Option_Passport_Draw(INVENTORY_ITEM *const inv_item)
 {
-    if (m_Priv.mode == M_MODE_BROWSE || M_IsFlipping(inv_item)
-        || m_Priv.active_page != m_Priv.current_page) {
+    if (M_IsFlipping(inv_item) || m_Priv.active_page != m_Priv.current_page) {
+        M_ReserveCaptionSpace();
+        return;
+    }
+    if (m_Priv.mode == M_MODE_BROWSE) {
         return;
     }
 
@@ -977,6 +999,7 @@ void Option_Passport_Draw(INVENTORY_ITEM *const inv_item)
 void Option_Passport_Close(void)
 {
     M_RemoveAllText();
+    m_Priv.page_text = nullptr;
     M_FreeAllDialogs();
     m_Priv.active_page = PAGE_UNDETERMINED;
 }
