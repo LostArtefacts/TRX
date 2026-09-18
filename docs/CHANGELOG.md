@@ -1,34 +1,34 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.10.2...develop) - ××××-××-××
 
 **Lara's movement**
-- Added an option to allow Lara to sidestep in swamps (Gameplay → Controls → Swamp sidesteps) (#6250 / TRX1117)
-- Added an option to allow Lara to turn while shimmying along monkey bars, similarly to how she can while sidestepping or swimming sideways on water surfaces (#6386)
-- Added the ability for Lara to grab monkeybars when jumping forward under low ceilings, in line with being able to catch the bars by jumping directly up (#6603 / TRX1473)
-- Fixed Lara entering the step down animation when walking backwards in a swamp room (OG bug) (#6251 / TRX1118)
-- Fixed certain SFX, such as Lara's footsteps, playing in swamp rooms (#6248 / TRX1115, regression from 1.0)
-- Fixed Lara being able to turn too quickly in swamp rooms (regression from 1.0) (TRX1129)
+- Added an option for Lara to sidestep in swamps (Gameplay → Controls → Swamp sidesteps) (#6250 / TRX1117)
+- Added the ability for Lara to turn while shimmying along monkey bars, as she can while sidestepping and swimming sideways (#6386)
+- Added the ability for Lara to grab monkey bars when jumping forward under low ceilings (#6603 / TRX1473)
+- Fixed Lara stepping down when walking backwards in swamps (OG bug) (#6251 / TRX1118)
+- Fixed Lara's movement sound effects playing in swamps (#6248 / TRX1115, regression from 1.0)
+- Fixed Lara turning too quickly in swamps (TRX1129, regression from 1.0)
 - Fixed Lara being able to vault or crawl through breakable walls that stand on the edge of a tile (Gameplay → Fixes → Fix breakable wall clipping) (OG bug) (TRX1024)
 - Fixed Lara's rope-grab reach being shorter from certain directions (OG bug) (TRX1143)
 - Fixed Lara being thrown across the room when she shimmies to the end of a ladder (Gameplay → Controls → Corner shimmying) (TRX1203)
 - Fixed Lara getting pushed by enemies while climbing into or out of crawlspaces (OG bug) (TRX1182)
 - Fixed static meshes affecting ledge jumps when soft static collision is not enabled (#6366 / TRX1218)
-- Fixed Lara sliding on walkable items (trapdoors, bridges etc) when there is a steep slope directly below and touching the item (OG bug)
-- Fixed Lara teleporting to the floor when killed by spikes that are to her side rather than directly below her (OG bug) (#6351 / TRX1204)
-- Fixed Lara briefly teleporting above the water line if she is stepping backwards from 2-click to 3-click wading depth (TRX1309, regression from 1.0)
-- Fixed Lara's arms twitching when stopped against walls in shallow water with either forward or backward input pressed against the wall (OG bug) (#6254 / TRX1121)
-- Fixed Lara assuming a fully underwater animation in custom levels if she begins at wading or water surface depths (OG bug) (TRX1312)
-- Fixed Lara embedding in the ceiling in custom levels if she begins at crawlspace height (OG bug) (#6547 / TRX1401)
-- Fixed exiting the fly cheat not always putting Lara into the correct animation for her environment (#6547 / TRX1401)
+- Fixed Lara sliding on trapdoors, bridges and other walkable items over steep slopes (OG bug)
+- Fixed Lara teleporting to the floor when spikes kill her from the side (OG bug) (#6351 / TRX1204)
+- Fixed Lara briefly teleporting above the water when stepping backwards into deeper wading water (TRX1309, regression from 1.0)
+- Fixed Lara's arms twitching when pressing against walls in shallow water (OG bug) (#6254 / TRX1121)
+- Fixed Lara using an underwater animation when custom levels start her wading or at the water surface (OG bug) (TRX1312)
+- Fixed Lara becoming embedded in the ceiling when custom levels start her in a crawlspace (OG bug) (#6547 / TRX1401)
+- Fixed Lara sometimes using the wrong animation after exiting the fly cheat (#6547 / TRX1401)
 - Fixed Lara slipping into wading-depth water when walking down steps in a water room (OG bug) (TRX1307)
-- Fixed Lara being able to monkey roll too close to sector edges, resulting in her falling after the animation completes (#6459 / TRX1314, regression from 1.10)
-- Fixed Lara beginning to monkey roll for one frame despite being too close to the edge of a sector (#6459 / TRX1314, regression from 1.10)
-- Fixed Lara not being able to crawl backwards in certain sloped crawlspaces (OG bug) (TRX1322)
-- Fixed Lara being able to crouch/crawl into spaces with very low ceilings where she can become clamped, such as RX-Tech Mines room 159 (OG bug) (#6477 / TRX1331)
-- Fixed Lara attempting to continue to descend a ladder despite being at the bottom of it (OG bug) (#6461 / TRX1315)
+- Fixed Lara falling after monkey rolling too close to sector edges (#6459 / TRX1314, regression from 1.10)
+- Fixed Lara starting a monkey roll for one frame when too close to a sector edge (#6459 / TRX1314, regression from 1.10)
+- Fixed Lara being unable to crawl backwards in some sloped crawlspaces (OG bug) (TRX1322)
+- Fixed Lara becoming clamped after crouching or crawling into spaces with very low ceilings (OG bug) (#6477 / TRX1331)
+- Fixed Lara continuing to descend at the bottom of ladders (OG bug) (#6461 / TRX1315)
 - Fixed Lara sliding instead of collapsing when a fall kills her on a slope (TRX1408, regression from T1M 2.15.2 / TR2X 0.10 / TRX 1.1)
 - Fixed Lara not grabbing certain ledges properly when crawling backwards off them (#6601 / TRX1471, regression from 1.1)
-- Fixed Lara not stopping at the right time when she touches the floor during early and late reach animations (TRX1487; regression in TR1/2 from 1.3, OG bug in TR3+)
-- Fixed Lara being able to pull up from the slow swing-in animation in specific cases where she could not in OG TR3+ (TRX1497, regression from 1.3)
+- Fixed Lara stopping at the wrong time when landing during early and late reach animations (TRX1487; regression in TR1/2 from 1.3, OG bug in TR3+)
+- Fixed Lara being able to pull up from a slow swing in places where the original TR3+ games do not allow it (TRX1497, regression from 1.3)
 
 **UI**
 - Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187 / TRX1036)
@@ -46,16 +46,15 @@
 - Changed the F9 key to cycle the lighting model in TR3 and TR4, and the lighting contrast in TR1 and TR2
 - Changed the save, load, level select and mod dialogs to show scroll arrows in every game, as TR1 does (TRX547)
 - Changed vertex snapping to offer Disabled, 320x240, and Upscale Res modes (#6278 / TRX1137)
-- Changed screenshots taken inside photo mode to not include debug overlay elements
 - Changed the pause behavior to be consistent between FMVs and in-game cutscenes (#6537)
-- Fixed a setting description showing a question mark in place of a key that is bound to a combination, such as Alt+Enter (TRX1136)
-- Fixed ability to open the inventory ring while a flyby sequence has Lara's control (TRX1057)
-- Fixed the game audio resuming before the fadeout effect has ended when unpausing (#6536)
+- Fixed setting descriptions showing a question mark for key combinations such as Alt+Enter (TRX1136)
+- Fixed the inventory ring opening while a flyby sequence has control of Lara (TRX1057)
+- Fixed game audio resuming before the fade finishes when unpausing (#6536)
 - Fixed several dialogs running past the screen edges or overlapping headings at large text sizes (#6293 / TRX1154)
 - Fixed the save and load dialogs covering the inventory headings at large text sizes
 - Fixed the game flashing over the black bars beside the picture when a frame is advanced in photo mode (regression from 1.10) (TRX1068)
-- Fixed dialogs sitting against a band of screen that no longer matched what the overlay was drawing there, which could leave them overlapping the heading or the item name
-- Fixed the inventory ring's button hints and item count overlapping the line of text the game puts at the foot of the screen
+- Fixed dialogs overlapping inventory headings and item names
+- Fixed the inventory ring's button hints and item count overlapping text at the bottom of the screen
 - Fixed an item hanging at the edge of the screen while the inventory changes from one ring to another (TRX1404)
 - Fixed the icons beside the volume settings, which now show a note for the music and a speaker for the sound effects (TRX1040)
 - Fixed the statistics overlapping inventory text at large text sizes (#6295 / TRX1156)
@@ -66,8 +65,9 @@
 - Changed the cinematic bars to move into and out of view, rather than appear and disappear at once (TRX522)
 - Changed moving Lara in photo mode to follow the direction the camera looks, rather than the way she faces (TRX1153)
 - Fixed the Inverted look option not applying to the binoculars (#6431 / TRX1291)
-- Fixed the photo mode camera drifting upwards and overshooting when it is moved while pitched up or down (TRX1142)
-- Fixed the photo mode camera flickering and refusing to turn over when it is pitched past straight up or down, and turning in coarse steps while aimed near vertical (TRX1152)
+- Fixed the binoculars camera clipping into the ceiling if the ceiling around Lara is very low (#6352 / TRX1205)
+- Fixed the photo mode camera drifting upwards and overshooting while pitched up or down (TRX1142)
+- Fixed the photo mode camera flickering, refusing to turn over and turning in coarse steps near vertical angles (TRX1152)
 - Fixed photo mode showing the same animation frame while advancing the game a quarter of a frame at a time (TRX1353, regression from 1.9)
 - Fixed the TR3 and TR4 look cameras not updating when holding look during the transition from standing to crouching and vice-versa (OG bug) (TRX1325)
 - Fixed the binoculars camera being positioned behind Lara if the look input is held while selecting them (TRX1378, regression from 1.9)
@@ -77,14 +77,15 @@
 - Added the `/golden` console command, which casts Lara in gold (TRX1070)
 - Added the `/fmv` console command, which plays one of the game's movies
 - Added the `/copy` console command, which copies another command's output to the clipboard (#6372 / TRX1226)
+- Added a `/version` command, which shows the version this build reports
 - Improved the `/teleport` console command to avoid Lara ending up in a clamped position under low ceilings (TRX1346)
 - Changed the `/flip` console command to take a flip group, so `/flip 3` moves that group alone while `/flip` on its own moves them all (TRX173)
 - Changed the `/mod` console command to complete the names of the mods it can switch to
 - Changed the `/set` console command to complete the values a setting accepts, such as its enum values or on and off (TRX1174)
 - Changed the developer console to sort completions alphabetically, prioritizing those that start with the text typed (TRX1175)
-- Fixed a command failing to find a name that holds punctuation, and filling the console with errors when the text typed held a bracket
-- Fixed TR1's moored boat sharing its name with TR2's speedboat, so a command that took `boat` could act on either
-- Fixed the TR3 SWAT 2 and SWAT 3 enemies being named as SWAT 1, so a command that took either of them acted on the wrong enemy
+- Fixed console commands failing to find names with punctuation, or producing repeated errors for brackets
+- Fixed console commands confusing TR1's moored boat with TR2's speedboat
+- Fixed console commands confusing the TR3 SWAT 2 and SWAT 3 enemies with SWAT 1
 
 **Recordings**
 - Fixed recordings losing music after `skip start` (TRX1429)
@@ -92,10 +93,10 @@
 **Weapons and ammunition**
 - Added an option to keep Lara firing the M16/MP5 from her hip while the action key is held, rather than shouldering the gun the moment she stops moving (Gameplay → Controls → M16/MP5 aiming variants) (#3861 / TRX1048)
 - Added the BFG9000, a joke weapon shipped as an example addon, called in with the `/bignasty` console command (TR1, TR2 and TR3)
-- Fixed Lara taking out a two-handed weapon in wading-depth water only to put it away at once (OG bug) (#6253 / TRX1120)
-- Fixed Lara taking out a weapon while she is fully submerged in a swamp (#6255 / TRX1122)
-- Fixed Lara's back staying empty in a level that takes her weapons away and gives her a rocket launcher
-- Fixed the automatic pistols smoking undimmed, unlike the magnums and the uzis
+- Fixed Lara immediately putting away two-handed weapons drawn while wading (OG bug) (#6253 / TRX1120)
+- Fixed Lara being able to draw weapons while fully submerged in a swamp (#6255 / TRX1122)
+- Fixed the rocket launcher not appearing on Lara's back when a level replaces her weapons with it
+- Fixed smoke from the automatic pistols being too bright
 
 **Level and game data**
 - Added Natla as an outfit for Lara, selectable in every game (Graphic Options → Visuals → Lara's outfit) (TRX1050)
@@ -126,15 +127,15 @@
 - Changed the teleporter object to position Lara at its own position precisely, rather than moving her to the floor below (TRX1502)
 - Removed TR1's grenade pickup, freeing its model and inventory slots for objects of your own
 - Removed the golden outfits, which the engine now produces from any outfit, freeing their model slots for outfits of your own (TRX1070)
-- Fixed an outfit file naming a weapon the engine does not know leaving Lara without that weapon's meshes, with nothing said
+- Fixed unknown weapons in outfit files leaving Lara without weapon meshes and no error message
 - Fixed a crash when switching mods (TRX1239)
-- Fixed the game crashing on a damaged level file, which is now refused with a message naming what is wrong with it
+- Fixed damaged level files crashing the game instead of showing an error message
 - Fixed Lara's arms leaving their intended positions when looking around in the crouched stance (OG bug) (#6402)
 - Fixed Lara being killed by electric fences while immune (#6475)
 - Fixed Lara clipping into or underneath lifts if she tries to step on top of or into one from an exterior floor whose height matches the lift ceiling or floor (OG bug) (#3905 / TRX1014)
 - Fixed Lara's braid not colliding properly with her selected outfit, instead referencing the level's OG outfit (TRX1277, regression from 1.2)
-- Fixed the tip of Lara's braid dropping away from the rest of it for a moment after a level or a save is loaded (TRX1304)
-- Fixed Lara's braid not being drawn on the first frame of a level (TRX1304)
+- Fixed the tip of Lara's braid briefly separating after loading a level or save (TRX1304)
+- Fixed Lara's braid being missing on the first frame of a level (TRX1304)
 - Fixed Lara's braid hanging away from her head or keeping the previous outfit's shape after an outfit change (TRX1437)
 - Fixed Lara's braid sweeping across the level when a demo or the next level starts (TRX1494)
 - Fixed being able to push pushblocks onto floors with triangular geometry (TRX1228, regression from 1.0)
@@ -147,8 +148,9 @@
 - Changed the save crystal behavior to give Lara a crystal when starting a game, if the mode is set to Saving (pickups), in line with the TR3 PS1 version (Gameplay → General → Crystal mode) (TRX1101)
 - Changed the option for Lara's braid to introduce an "auto" mode, which will automatically hide the braid for regular TR1 outfits, and show it for TR2+ outfits (Graphic options → General → Lara's braid) (#6446 / TRX1300)
 - Removed support for saves from TRX 1.0, and TR1X/TR2X era
-- Fixed not being able to load saves with overflowed values for Lara's distance travelled (TRX1368)
-- Fixed the distance travelled statistic to ignore when Lara is out of bounds to avoid skewing the value (OG bug) (TRX1368)
+- Fixed saves with overflowed distance travelled values failing to load (TRX1368)
+- Fixed out-of-bounds movement skewing the distance travelled statistic (OG bug) (TRX1368)
+- Fixed a false warning that the settings could not be saved (TRX1112)
 
 **Music and sound**
 - Added an option to have Lara's sliding SFX stop as soon as she leaves a slope (#6294 / TRX1155)
@@ -167,8 +169,9 @@
 - Changed the lighting contrast option to appear in TR1 and TR2 only, as the other games light dynamic sources their own way (Graphic Options → Rendering → Lighting contrast)
 - Changed TR3 to light geometry on the brighter curve its hardware renderer used (Graphic Options → Rendering → Lighting model)
 - Changed the game to run on the dedicated graphics card on laptops that have two
-- Fixed a headless run drawing none of the title screen's objects, such as the passport
-- Fixed the first frame of a level being drawn small and in the corner of the screen when the game renders below the window size
+- Changed screenshots taken inside photo mode to not include debug overlay elements
+- Fixed title screen objects, such as the passport, disappearing in headless runs
+- Fixed the first frame of a level appearing small and in the corner when rendering below the window size
 - Fixed a visible seam across the sky in TR4 levels (TRX563, regression from 1.9)
 - Fixed the debug room clip frames being drawn in the wrong place and size when the upscaling factor is raised
 - Fixed the inventory background showing black, and objects around it going missing, in a headless run
@@ -177,18 +180,19 @@
 - Fixed sprite shadows sinking into the floor when vertex snapping is on (Graphic Options → Visuals → Shadows shape)
 - Fixed static objects that reach through a doorway taking the water tint and the light of the room next door
 - Fixed static objects disappearing depending on the camera angle (OG bug) (TRX1211)
-- Fixed the underwater view wobbling less at higher supersampling values (TRX1207)
 - Fixed the debug portal and bounding box lines becoming thinner at higher supersampling values (TRX1251)
 - Fixed missing reflections on transparent TR4 surfaces, such as Werner's glasses (TRX1294)
 - Fixed TR3 colored light objects appearing white in TR1 and TR2 levels (#6517 / TRX1377, regression from 1.10)
 - Fixed the top of the picture being cut off in fullscreen on macOS (#6551 / TRX1407)
-- Fixed TR3 levels refusing to start with a message that TRX cannot draw the game
+- Fixed TR3 levels sometimes refusing to start because the game could not be drawn
 - Fixed the picture jittering between two frames while the game fades out to quit (TRX1405)
 - Fixed the frame rate dropping when large effects, such as explosions, fill the screen at high supersampling values (TRX1506)
 - Fixed muzzle flashes, explosions and flares not lighting the effects they spawn, such as the snowmobile's snow trail (TRX1507, regression from 1.10)
 
 **TR1**
 - Added the ability for Lara to burn in swamp rooms marked with death sectors (#6539 / TRX1395)
+- Added an option to cast Lara in gold whatever she is wearing (Graphic Options → Visuals → Golden Lara) (TRX1070)
+- Changed Lara turning to gold on the Midas Hand to gild the outfit she has on, rather than swap her for a golden model (TRX1070)
 - Changed Lara to retain her equipment when turning to gold on the Midas Hand, with the equipment also turning to gold (TRX1073)
 - Fixed Lara's arm remaining in the flare pose if holding one on the Midas Hand (TRX1073)
 - Fixed a rare chance of exploded body parts getting stuck indefinitely at ceiling height (OG bug) (TRX1301)
@@ -203,7 +207,7 @@
 - Changed the underwater light patterns to run in broad bands, as the original draws them, rather than fine speckle
 - Changed the underwater picture wobble to grow more gently on large screens, where it was too strong
 - Changed the Puzzle Element music in Lara's Home to play as an overlay track, so that Lara doesn't interrupt it while navigating the level (TRX1503)
-- Fixed z-fighting in rooms 21, 67 amd 122 in Jungle, and fixed incorrect lighting in room 87 (OG bugs) (TRX1088)
+- Fixed z-fighting in Jungle rooms 21, 67 and 122, and incorrect lighting in room 87 (OG bugs) (TRX1088)
 - Fixed Vultures in The River Ganges and Nevada Desert having incorrect animation bounds (OG bug) (#6303 / TRX1163)
 - Fixed missing alpha blending on the MP5 and M16 gun flare in the gym (regression from 1.7) (TRX1066)
 - Fixed Lara being able to turn too quickly when wading (regression from 1.0) (TRX1129)
@@ -215,15 +219,15 @@
 - Fixed the specks drifting in water being too small and all one size
 - Fixed crystal 206 in Thames Wharf not being triggered if the alternative route is used to reach it (#6349 / TRX1202)
 - Fixed Lara being embedded in the floor at the beginning of Temple Ruins, which causes the camera to pop after the first frame (TRX1028)
-- Fixed being able to see the zipline in Lara's Home reset if certain paths are taken (#5367 / TRX1134)
-- Fixed the wrong SFX playing when Lara draws a rifle type weapon, and missing SFX when drawing/holstering the harpoon when underwater (#5367 / TRX1134)
+- Fixed the zipline in Lara's Home visibly resetting on some routes (#5367 / TRX1134)
+- Fixed incorrect rifle draw sounds and missing underwater harpoon draw and holster sounds (#5367 / TRX1134)
 - Fixed z-fighting on the passport in each level (#5367 / TRX1134)
 - Fixed a faulty portal in Antarctica room 20 (TRX1246)
 - Fixed the explosion overlay sample not playing when firing weapons (TRX1255, regression from 1.0)
 - Fixed missing sound effects when Lara is killed by the T-Rex (#6414 / TRX1273, regression from 1.0)
 - Fixed Lara not behaving consistently on the ladder in High Security Compound room 93 (OG bug) (TRX1324)
 - Fixed a slope softlock in Meteorite Cavern room 12 (OG bug) (#6483 / TRX1338)
-- Fixed the fans in Thames Wharf room 77 by slowing them down before Lara re-enters the water after having solved the puzzle (#6410 / TRX1268)
+- Fixed the fans in Thames Wharf room 77 spinning too quickly after the puzzle is solved (#6410 / TRX1268)
 - Fixed incorrect UVs on some injected textures (TRX1366, regression from 1.9)
 - Fixed the grinders in RX-Tech Mines being clipped out of view at certain angles (OG bug) (TRX1347)
 - Fixed two black patches on the Infada Stone (OG bug)
@@ -254,11 +258,11 @@
 - Changed the inventory item lighting to match the original game (TRX1371)
 - Changed the lighting of the rotating pickups in the interface to match the original game (TRX1402)
 - Fixed a bug where the menu dialogs had no background or frame (TRX1509)
-- Fixed animations that move an item sideways playing with the item standing still, such as TR4's guide shimmy (TRX1062)
+- Fixed items standing still during animations that move them sideways, such as the TR4 guide shimmy (TRX1062)
 - Fixed creatures walking through squares a pushable block stands on (TRX1060)
 - Fixed Lara flinching when she bumps into Von Croy (TRX1095)
 - Fixed characters not being drawn while an animation carries them into the next room, such as Von Croy climbing down in Race for the Iris (TRX1232)
-- Fixed all of Lara turning the color of the water while she wades (TRX589)
+- Fixed Lara's whole body taking the water tint while wading (TRX589)
 - Fixed rooms and their contents sometimes disappearing while an in-game cutscene plays (TRX1052)
 - Fixed parts of the level dropping out of the picture during the cutscene that opens Karnak (TRX1092)
 - Fixed the parked jeep showing in the temple during the cutscene that opens Karnak (TRX1092)
@@ -270,7 +274,7 @@
 - Fixed the light the flames cast staying where an in-game cutscene began while Lara burns, rather than following her (TRX1197)
 - Fixed Von Croy's shadow floating at the height of his knees during the scenes he plays in Angkor Wat (TRX911)
 - Fixed Lara's shadow being too small to read as the jeep's during the cutscene that opens Karnak (TRX911)
-- Fixed the geometry in Karnak causing the opening cutscene camera to be in the void, and some rooms not rendering fully as a result (TRX1184)
+- Fixed missing scenery during the opening cutscene in Karnak (TRX1184)
 - Fixed a dropped flare turning black after a save is loaded (TRX904)
 - Fixed the camera getting stuck during a Von Croy tutorial at the end of Angkor Wat, Route of the Virtuous (TRX1213)
 - Fixed blood shrinking to specks as it falls, rather than staying in drops (TRX1199)
@@ -283,26 +287,22 @@
 - Fixed a low quality texture on young Lara's head (OG bug) (TRX1452)
 - Fixed texture bleeding on Lara's nose when bilinear filtering is enabled (OG bug) (TRX1453)
 - Fixed keys and puzzle items disappearing from Lara's inventory at the end of every level (TRX1477)
-- Fixed minor shadow placement discrepancies compared to the OG
+- Fixed minor differences in shadow placement from the original game
 - Fixed Lara being able to lean and tilt at the start of Von Croy tutorials (OG bug) (TRX1501)
 
-**Miscellaneous**
-- Added an option to cast Lara in gold whatever she is wearing (Graphic Options → Visuals → Golden Lara) (TRX1070)
-- Added a `/version` command, which shows the version this build reports
-- Added support for negative timers in triggers
-- Changed the game to fade to black when it closes from the passport or main menu (Graphic Options → Visuals → Fade on game exit) (TRX1376)
+**Controls**
 - Changed the look input to skip cutscenes and flyby sequences (TRX1093)
-- Changed the message shown when there is nothing to play to name each game it passed over and say what is wrong with it, rather than leaving the reason in the log (TRX1083)
-- Changed a game named with `--mod` to say why it cannot be played, rather than quietly starting a different one (TRX1083)
-- Changed a broken settings, strings or game data file to say what is wrong with it and where (TRX1112)
-- Changed Lara turning to gold on the Midas hand to gild the outfit she has on, rather than swap her for a golden model (TRX1070)
 - Fixed touch controls turning on and showing the on-screen overlay on machines with a trackpad but no touchscreen (TRX1417)
-- Fixed the game crashing when a language with a broken strings file is picked (TRX1112)
-- Fixed the game crashing when another game is switched to while Lara is riding a vehicle (TRX1148)
-- Fixed the game crashing when a screenshot is taken in certain levels (TRX1305)
-- Fixed a false warning that the settings could not be saved (TRX1112)
 - Fixed flyby sequences not skipping with the action and confirm inputs (TRX1262)
-- Fixed the camera when using binoculars clipping into the ceiling if the ceiling around Lara is very low (#6352 / TRX1205)
+
+**Game and mods**
+- Added support for negative timers in triggers
+- Changed the no-games-available message to name each unavailable game and the reason it cannot be played (TRX1083)
+- Changed `--mod` to report why a requested game cannot be played instead of starting another game (TRX1083)
+- Changed errors in settings, strings and game data files to report the problem and its location (TRX1112)
+- Fixed the game crashing when selecting a language with a broken strings file (TRX1112)
+- Fixed the game crashing when switching games while Lara is riding a vehicle (TRX1148)
+- Fixed screenshots crashing the game in some levels (TRX1305)
 - Fixed the rocket launcher's animation object having no name
 - Fixed the game stuttering while it writes its log
 
