@@ -4,6 +4,8 @@
     "language_name": "Gàidhlig",
     "general": {
         "actions": {
+            "cancel": "\\{review}Sguir dheth",
+            "combine_item": "\\{review}Co-cheangail",
             "examine_item": "Sgrùd",
             "hide_dialog": "Falaich an còmhradh",
             "reset_defaults": "Ath-shuidhich",

@@ -4,6 +4,8 @@
     "language_name": "Polski",
     "general": {
         "actions": {
+            "cancel": "\\{review}Anuluj",
+            "combine_item": "\\{review}Połącz",
             "examine_item": "Zbadaj",
             "hide_dialog": "Ukryj dialog",
             "reset_defaults": "Zresetuj układ",

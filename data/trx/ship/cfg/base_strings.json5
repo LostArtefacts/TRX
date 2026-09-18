@@ -4,6 +4,8 @@
     "language_name": "English",
     "general": {
         "actions": {
+            "cancel": "Cancel",
+            "combine_item": "Combine",
             "examine_item": "Examine",
             "hide_dialog": "Hide dialog",
             "reset_defaults": "Reset All",

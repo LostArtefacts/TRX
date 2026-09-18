@@ -47,23 +47,30 @@ typedef enum {
     // clang-format on
 } PASS_MESH;
 
-static bool m_ShowExamine = false;
-static bool m_ShowUseItemButton = false;
+static INV_ITEM_ACTIONS m_ItemActions = {};
 static void (*m_ButtonHintDrawFunc)(void *) = nullptr;
 static void *m_ButtonHintUserData = nullptr;
 static char *m_CountText = nullptr;
 static size_t m_CountTextCap = 0;
 static OBJECT_ID m_RequestedObjectID = NO_OBJECT;
 
-static void M_DrawExamineHint(void *const user_data)
+static void M_DrawItemActionHint(void *const user_data)
 {
+    bool is_first = true;
     UI_BeginStack(UI_STACK_HORIZONTAL);
-    UI_LabelFmt(
-        "\\{input menu_show_info} %s", GS("general/actions/examine_item"));
-    if (m_ShowUseItemButton) {
-        UI_Spacer(60.0f, 0.0f);
+    if (m_ItemActions.can_examine) {
         UI_LabelFmt(
-            "\\{input menu_confirm} %s", GS("general/actions/use_item"));
+            "\\{input menu_show_info} %s", GS("general/actions/examine_item"));
+        is_first = false;
+    }
+    if (m_ItemActions.can_use || m_ItemActions.can_combine) {
+        if (!is_first) {
+            UI_Spacer(60.0f, 0.0f);
+        }
+        UI_LabelFmt(
+            "\\{input menu_confirm} %s",
+            m_ItemActions.can_combine ? GS("general/actions/combine_item")
+                                      : GS("general/actions/use_item"));
     }
     UI_EndStack();
 }
@@ -84,23 +91,6 @@ static void M_AdjustRot(int16_t *const rot, const int16_t dest_rot)
 static XYZ_32 M_VectorViewFromWorld(const XYZ_32 v_world)
 {
     return Matrix_MulVec32_M(&g_ViewMatrix, v_world);
-}
-
-static void M_HandleRequestedObject(INV_RING *const ring)
-{
-    if (m_RequestedObjectID == NO_OBJECT) {
-        return;
-    }
-
-    for (int32_t i = 0; i < ring->number_of_objects; i++) {
-        const OBJECT_ID object_id = ring->list[i]->object_id;
-        if (object_id == m_RequestedObjectID && Inv_HasItem(object_id)) {
-            ring->current_object = i;
-            break;
-        }
-    }
-
-    m_RequestedObjectID = NO_OBJECT;
 }
 
 static void M_MotionInit(INV_RING *const ring)
@@ -283,6 +273,23 @@ void InvRing_SetRequestedObjectID(const OBJECT_ID obj_id)
     m_RequestedObjectID = obj_id;
 }
 
+void InvRing_ApplyRequestedObject(INV_RING *const ring)
+{
+    if (m_RequestedObjectID == NO_OBJECT) {
+        return;
+    }
+
+    for (int32_t i = 0; i < ring->number_of_objects; i++) {
+        const OBJECT_ID object_id = ring->list[i]->object_id;
+        if (object_id == m_RequestedObjectID && Inv_HasItem(object_id)) {
+            ring->current_object = i;
+            break;
+        }
+    }
+
+    m_RequestedObjectID = NO_OBJECT;
+}
+
 void InvRing_InitRing(
     INV_RING *const ring, const RING_TYPE type,
     const INV_RING_VISIBLE *const visible, const int16_t current)
@@ -291,6 +298,7 @@ void InvRing_InitRing(
     ring->list = visible->items;
     ring->radius = 0;
     ring->prev_radius = 0;
+    ring->camera_distance = INV_RING_CAMERA_2_RING;
     ring->number_of_objects = visible->count;
     ring->current_object = current;
     ring->angle_adder = DEG_360 / visible->count;
@@ -299,7 +307,7 @@ void InvRing_InitRing(
     ring->is_demo_needed = false;
     ring->has_spun_out = false;
 
-    M_HandleRequestedObject(ring);
+    InvRing_ApplyRequestedObject(ring);
 
     if (ring->mode == INV_TITLE_MODE) {
         ring->camera_pitch = 1024;
@@ -348,8 +356,7 @@ void InvRing_InitRing(
 
     ring->prev_camera_y = ring->camera.pos.y;
 
-    m_ShowExamine = false;
-    m_ShowUseItemButton = false;
+    m_ItemActions = (INV_ITEM_ACTIONS) {};
     m_ButtonHintDrawFunc = nullptr;
     m_ButtonHintUserData = nullptr;
 }
@@ -605,12 +612,20 @@ void InvRing_SetStatusTransition(
     case RNG_SELECTING:
         M_MotionRotation(
             ring, 0, -DEG_90 - ring->angle_adder * ring->current_object);
-        M_MotionItemSelect(ring, inv_item);
+        // An object that opens a ring of its own stays where it is, so that
+        // the ring keeps its shape behind that one.
+        if (inv_item->action != ACTION_COMBINE) {
+            M_MotionItemSelect(ring, inv_item);
+        }
         break;
 
     case RNG_DESELECT:
     case RNG_EXITING_INVENTORY:
-        M_MotionItemDeselect(ring, inv_item);
+        // An object that opened a ring of its own never left its place, so
+        // there is nothing to bring back.
+        if (inv_item->action != ACTION_COMBINE) {
+            M_MotionItemDeselect(ring, inv_item);
+        }
         break;
 
     case RNG_DESELECTING:
@@ -708,20 +723,12 @@ void InvRing_ClearButtonHint(void)
     InvRing_SetButtonHintDrawer(nullptr, nullptr);
 }
 
-void InvRing_ShowExamine(const OBJECT_ID object_id, const bool show)
+void InvRing_ShowItemActions(const INV_ITEM_ACTIONS actions)
 {
-    m_ShowExamine = show;
-    m_ShowUseItemButton = show;
-    if (show) {
-        const OBJECT_ID option_id = Inv_GetItemOption(object_id);
-        if (ObjectFamily_Has(option_id, OBJ_FAMILY_GENERIC_INV_OPTION)
-            && ObjectLink_Get(option_id, OBJ_LINK_KEY_TO_RECEPTACLE)
-                == NO_OBJECT) {
-            // Items that cannot be used anywhere offer no Use action.
-            m_ShowUseItemButton = false;
-        }
-        InvRing_SetButtonHintDrawer(M_DrawExamineHint, nullptr);
-    } else if (m_ButtonHintDrawFunc == M_DrawExamineHint) {
+    m_ItemActions = actions;
+    if (actions.can_examine || actions.can_combine) {
+        InvRing_SetButtonHintDrawer(M_DrawItemActionHint, nullptr);
+    } else if (m_ButtonHintDrawFunc == M_DrawItemActionHint) {
         InvRing_ClearButtonHint();
     }
 }
@@ -818,7 +825,8 @@ void InvRing_ShowHeader(INV_RING *const ring)
     }
 
     const bool show_up_arrow = ring->type == RT_OPTION
-        || (ring->type == RT_MAIN && InvRing_IsRingAvailable(RT_KEYS));
+        || (ring->type == RT_MAIN
+            && InvRing_IsRingAvailable(RT_KEYS, ring->mode));
     const bool show_bottom_arrow = ring->type == RT_KEYS
         || (ring->type == RT_MAIN && !InvRing_IsOptionLockedOut());
 
@@ -840,7 +848,7 @@ void InvRing_RemoveHeader(void)
 
 bool InvRing_CanExamine(void)
 {
-    return g_Config.gameplay.enable_item_examining && m_ShowExamine;
+    return m_ItemActions.can_examine;
 }
 
 void InvRing_ShowVersionText(void)

@@ -4,6 +4,8 @@
     "language_name": "Italiano",
     "general": {
         "actions": {
+            "cancel": "\\{review}Annulla",
+            "combine_item": "\\{review}Combina",
             "examine_item": "Esamina",
             "hide_dialog": "Nascondi dialogo",
             "reset_defaults": "Ripristina",

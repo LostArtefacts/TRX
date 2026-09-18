@@ -4,6 +4,8 @@
     "language_name": "Deutsch",
     "general": {
         "actions": {
+            "cancel": "\\{review}Abbrechen",
+            "combine_item": "\\{review}Kombinieren",
             "examine_item": "Untersuchen",
             "hide_dialog": "Dialog ausblenden",
             "reset_defaults": "\\{review}Zurücksetzen",

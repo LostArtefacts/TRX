@@ -57,6 +57,21 @@ void Inv_State_CopyAmmo(INVENTORY_STATE *dst, const INVENTORY_STATE *src);
 int32_t Inv_State_GetDrawnEntries(
     const INVENTORY_STATE *state, INVENTORY_ENTRY *entries, int32_t max_count);
 
+typedef struct {
+    bool can_use;
+    bool can_examine;
+    bool can_combine;
+    bool can_separate;
+} INV_ITEM_ACTIONS;
+
+// Return the actions available for an inventory item.
+INV_ITEM_ACTIONS Inv_GetItemActions(OBJECT_ID obj_id);
+
+// Return the inventory items that combine with an item. Return the number
+// written to partners.
+int32_t Inv_GetCombinePartners(
+    OBJECT_ID obj_id, OBJECT_ID *partners, int32_t max_count);
+
 OBJECT_ID Inv_GetItemOption(OBJECT_ID obj_id);
 OBJECT_ID Inv_GetItemPickup(OBJECT_ID obj_id);
 

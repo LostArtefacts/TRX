@@ -292,9 +292,11 @@ const INVENTORY_ITEM *InvRing_GetInvItem(const OBJECT_ID obj_id)
     return nullptr;
 }
 
-void InvRing_Draw(INV_RING *const ring)
+// Draws the items around a ring, in their own field of view and lighting.
+// Leaves the view exactly as it found it, so that one ring can be drawn over
+// another.
+void InvRing_DrawItems(INV_RING *const ring)
 {
-    InvRing_DrawUI(ring);
     const double interp_rate = Interpolation_GetRate();
     const int16_t draw_radius =
         M_LerpI16(ring->prev_radius, ring->radius, interp_rate);
@@ -310,33 +312,7 @@ void InvRing_Draw(INV_RING *const ring)
     draw_ring.camera.pos.y = draw_camera_y;
     draw_ring.camera_pitch = draw_camera_pitch;
     draw_ring.ring_pos.rot.y = draw_ring_rot_y;
-    draw_ring.camera.pos.z = draw_radius + INV_RING_CAMERA_2_RING;
-
-    if (ring->mode == INV_TITLE_MODE) {
-        if (ring->live_scene) {
-            // The inventory lighting mode is meant for the ring items; the
-            // level behind them renders with its own in-game lighting.
-            Output_SetInventoryLightingMode(false);
-            Game_Draw(false);
-            Output_SetInventoryLightingMode(true);
-        } else {
-            if (ring->background_path != nullptr) {
-                Output_Overlay_DrawImageBilinear(ring->background_path);
-            }
-            Interpolation_Interpolate();
-        }
-    } else {
-        const float opacity = g_Config.ui.inventory_fade_effects
-            ? Fader_GetCurrentValue(&ring->back_fader)
-            : ring->back_fader.args.target;
-
-        if (ring->background_style != BK_NONE
-            || ring->mode != INV_GLOBE_SELECT_MODE) {
-            Output_Overlay_DrawBackground(
-                ring->background_style, opacity, ring->background_path);
-        }
-    }
-    Output_Flush();
+    draw_ring.camera.pos.z = draw_radius + ring->camera_distance;
 
     const int16_t old_fov = Viewport_GetSystemFOV();
     const FOV_MODE old_fov_mode = Viewport_GetFOVMode();
@@ -383,6 +359,38 @@ void InvRing_Draw(INV_RING *const ring)
     Output_SetFogStart(old_fog_start);
     Output_SetFogEnd(old_fog_end);
     Viewport_AlterFOV(old_fov, old_fov_mode);
+}
+
+void InvRing_Draw(INV_RING *const ring)
+{
+    InvRing_DrawUI(ring);
+    if (ring->mode == INV_TITLE_MODE) {
+        if (ring->live_scene) {
+            // The inventory lighting mode is meant for the ring items; the
+            // level behind them renders with its own in-game lighting.
+            Output_SetInventoryLightingMode(false);
+            Game_Draw(false);
+            Output_SetInventoryLightingMode(true);
+        } else {
+            if (ring->background_path != nullptr) {
+                Output_Overlay_DrawImageBilinear(ring->background_path);
+            }
+            Interpolation_Interpolate();
+        }
+    } else {
+        const float opacity = g_Config.ui.inventory_fade_effects
+            ? Fader_GetCurrentValue(&ring->back_fader)
+            : ring->back_fader.args.target;
+
+        if (ring->background_style != BK_NONE
+            || ring->mode != INV_GLOBE_SELECT_MODE) {
+            Output_Overlay_DrawBackground(
+                ring->background_style, opacity, ring->background_path);
+        }
+    }
+    Output_Flush();
+
+    InvRing_DrawItems(ring);
 
     if (ring->status == RNG_SELECTED) {
         INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
