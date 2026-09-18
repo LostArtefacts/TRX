@@ -4,4 +4,8 @@
 
 void InvRing_Draw(INV_RING *ring);
 
+// Draws the items around a ring and nothing else, leaving the view as it was.
+// A ring drawn over another one is drawn with this.
+void InvRing_DrawItems(INV_RING *ring);
+
 const INVENTORY_ITEM *InvRing_GetInvItem(OBJECT_ID obj_id);

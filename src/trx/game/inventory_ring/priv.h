@@ -34,6 +34,10 @@ void InvRing_InitRing(
     int16_t current);
 void InvRing_InitInvItem(INVENTORY_ITEM *inv_item);
 
+// Moves the ring on to the object that was asked for, where it holds one, and
+// forgets the request.
+void InvRing_ApplyRequestedObject(INV_RING *ring);
+
 void InvRing_GetView(const INV_RING *ring, XYZ_32 *out_pos, XYZ_16 *out_rot);
 void InvRing_Light(const INV_RING *ring);
 void InvRing_CalcAdders(INV_RING *ring, int16_t rotation_duration);
@@ -53,7 +57,9 @@ void InvRing_ShowHeader(INV_RING *ring);
 void InvRing_RemoveHeader(void);
 void InvRing_SetButtonHintDrawer(void (*draw_func)(void *), void *user_data);
 void InvRing_ClearButtonHint(void);
-void InvRing_ShowExamine(OBJECT_ID object_id, bool show);
+// What the ring offers for the item it rests on, which the button hints are
+// drawn from. Pass no action at all where the ring rests on nothing.
+void InvRing_ShowItemActions(INV_ITEM_ACTIONS actions);
 bool InvRing_CanExamine(void);
 void InvRing_ShowVersionText(void);
 void InvRing_RemoveVersionText(void);

@@ -3,6 +3,9 @@
 **Rendering**
 - Improved the frame rate, as the game now draws solid surfaces faster
 
+**Gameplay**
+- Added the ability to combine the two halves of an item in the inventory, such as the eye pieces in Tomb of Seth (TRX482)
+
 **TR4**
 - Added Small Scorpion control (TRX1562)
 - Added Jackal control (TRX1553)

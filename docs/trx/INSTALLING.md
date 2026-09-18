@@ -109,6 +109,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── base_strings-pl.json5
 │   ├── base_strings-ru.json5
 │   ├── base_strings.json5
+│   ├── object_combos.json5
 │   ├── object_families.json5
 │   ├── object_links.json5
 │   ├── outfits.json5
@@ -1518,6 +1519,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   ├── base_strings-pl.json5
     │   │   ├── base_strings-ru.json5
     │   │   ├── base_strings.json5
+    │   │   ├── object_combos.json5
     │   │   ├── object_families.json5
     │   │   ├── object_links.json5
     │   │   ├── outfits.json5

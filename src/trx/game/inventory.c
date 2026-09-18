@@ -1,5 +1,6 @@
 #include <trx/game/inventory.h>
 
+#include <trx/config.h>
 #include <trx/core/log.h>
 #include <trx/core/utils.h>
 #include <trx/game/game.h>
@@ -8,8 +9,10 @@
 #include <trx/game/gun/registry.h>
 #include <trx/game/inventory_ring.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/combos.h>
 #include <trx/game/objects/families.h>
 #include <trx/game/objects/links.h>
+#include <trx/game/objects/names.h>
 
 #include <string.h>
 
@@ -321,6 +324,39 @@ OBJECT_ID Inv_GetItemPickup(const OBJECT_ID object_id)
 int32_t Inv_GetItemCount(const OBJECT_ID object_id)
 {
     return Inv_State_GetCount(&m_State, object_id);
+}
+
+int32_t Inv_GetCombinePartners(
+    const OBJECT_ID object_id, OBJECT_ID *const partners,
+    const int32_t max_count)
+{
+    const OBJECT_ID entry_id = M_GetEntryID(object_id);
+    const int32_t total = ObjectCombo_GetPartnerCount(entry_id);
+    int32_t count = 0;
+    for (int32_t i = 0; i < total && count < max_count; i++) {
+        const OBJECT_ID partner = ObjectCombo_GetPartnerAt(entry_id, i);
+        if (Inv_HasItem(partner)) {
+            partners[count++] = partner;
+        }
+    }
+    return count;
+}
+
+INV_ITEM_ACTIONS Inv_GetItemActions(const OBJECT_ID object_id)
+{
+    const OBJECT_ID entry_id = M_GetEntryID(object_id);
+    OBJECT_ID partner;
+    const bool can_combine = Inv_GetCombinePartners(entry_id, &partner, 1) > 0;
+    const bool leads_nowhere =
+        ObjectFamily_Has(entry_id, OBJ_FAMILY_GENERIC_INV_OPTION)
+        && ObjectLink_Get(entry_id, OBJ_LINK_KEY_TO_RECEPTACLE) == NO_OBJECT;
+    return (INV_ITEM_ACTIONS) {
+        .can_use = !leads_nowhere && !can_combine,
+        .can_examine = g_Config.gameplay.enable_item_examining
+            && Object_GetDescription(entry_id) != nullptr,
+        .can_combine = can_combine,
+        .can_separate = false,
+    };
 }
 
 int32_t Inv_State_GetDrawnEntries(

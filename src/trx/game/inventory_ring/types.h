@@ -2,6 +2,7 @@
 
 #include <trx/config/enum.h>
 #include <trx/game/fader.h>
+#include <trx/game/inventory.h>
 #include <trx/game/inventory_ring/enum.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects/types.h>
@@ -22,6 +23,7 @@ typedef struct {
 typedef enum {
     ACTION_USE = 0,
     ACTION_EXAMINE = 1,
+    ACTION_COMBINE = 2,
 } INVENTORY_ITEM_ACTION;
 
 typedef struct {
@@ -56,6 +58,8 @@ typedef struct {
     uint32_t meshes_drawn;
     int16_t inv_pos;
     INVENTORY_ITEM_ACTION action;
+    // What the ring offers for it, held from one rebuild to the next.
+    INV_ITEM_ACTIONS actions;
 } INVENTORY_ITEM;
 
 typedef struct {
@@ -93,6 +97,9 @@ typedef struct {
     RING_TYPE type;
     int16_t radius;
     int16_t prev_radius;
+    // How far the camera stands back from the ring. A ring drawn small keeps
+    // its objects further away rather than closer together.
+    int16_t camera_distance;
     int16_t camera_pitch;
     int16_t prev_camera_pitch;
     bool rotating;

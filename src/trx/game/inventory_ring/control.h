@@ -10,7 +10,7 @@ INV_RING *InvRing_Open(INVENTORY_MODE mode);
 void InvRing_Close(INV_RING *ring);
 
 GF_COMMAND InvRing_Control(INV_RING *ring);
-bool InvRing_IsRingAvailable(RING_TYPE ring_type);
+bool InvRing_IsRingAvailable(RING_TYPE ring_type, INVENTORY_MODE mode);
 INV_RING *InvRing_GetActiveRing(void);
 
 void InvRing_AdjustMusicVolume(const INV_RING *ring);

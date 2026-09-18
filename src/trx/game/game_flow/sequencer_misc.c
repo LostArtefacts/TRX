@@ -78,7 +78,7 @@ GF_COMMAND GF_ShowInventory(const INVENTORY_MODE mode)
 
 bool GF_ShowInventoryKeys(const OBJECT_ID receptacle_type_id)
 {
-    if (!InvRing_IsRingAvailable(RT_KEYS)) {
+    if (!InvRing_IsRingAvailable(RT_KEYS, INV_KEYS_MODE)) {
         return false;
     }
     if (g_Config.gameplay.enable_auto_item_selection) {

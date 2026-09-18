@@ -4,6 +4,7 @@
 #include <trx/game/input.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/families.h>
+#include <trx/game/option/combine.h>
 #include <trx/game/option/controls.h>
 #include <trx/game/option/examine.h>
 #include <trx/game/option/gameplay.h>
@@ -33,6 +34,10 @@ void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 {
     if (inv_item->action == ACTION_EXAMINE) {
         Option_Examine_Control(inv_item, is_busy);
+        return;
+    }
+    if (inv_item->action == ACTION_COMBINE) {
+        Option_Combine_Control(inv_item, is_busy);
         return;
     }
 
@@ -116,6 +121,10 @@ void Option_Draw(INVENTORY_ITEM *const inv_item)
         Option_Examine_Draw();
         return;
     }
+    if (inv_item->action == ACTION_COMBINE) {
+        Option_Combine_Draw();
+        return;
+    }
 
     switch (inv_item->object_id) {
     case O_PASSPORT_OPTION:
@@ -150,6 +159,11 @@ void Option_Draw(INVENTORY_ITEM *const inv_item)
 
 void Option_Close(const INVENTORY_ITEM *const inv_item)
 {
+    if (inv_item->action == ACTION_COMBINE) {
+        Option_Combine_Close();
+        return;
+    }
+
     switch (inv_item->object_id) {
     case O_PASSPORT_OPTION:
         Option_Passport_Close();

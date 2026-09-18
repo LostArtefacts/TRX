@@ -4,6 +4,8 @@
     "language_name": "Français",
     "general": {
         "actions": {
+            "cancel": "\\{review}Annuler",
+            "combine_item": "\\{review}Combiner",
             "examine_item": "Examiner",
             "hide_dialog": "Masquer le dialogue",
             "reset_defaults": "\\{review}Réinitialiser",

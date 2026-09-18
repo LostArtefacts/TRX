@@ -4,6 +4,8 @@
     "language_name": "Русский",
     "general": {
         "actions": {
+            "cancel": "\\{review}Отмена",
+            "combine_item": "\\{review}Соединить",
             "examine_item": "Осмотреть",
             "hide_dialog": "Скрыть диалог",
             "reset_defaults": "Сброс",
