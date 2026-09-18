@@ -253,6 +253,7 @@
 - Changed a flip to move the group of rooms the trigger names, rather than every flip room in the level (TRX173)
 - Changed the inventory item lighting to match the original game (TRX1371)
 - Changed the lighting of the rotating pickups in the interface to match the original game (TRX1402)
+- Fixed a bug where the menu dialogs had no background or frame (TRX1509)
 - Fixed animations that move an item sideways playing with the item standing still, such as TR4's guide shimmy (TRX1062)
 - Fixed creatures walking through squares a pushable block stands on (TRX1060)
 - Fixed Lara flinching when she bumps into Von Croy (TRX1095)

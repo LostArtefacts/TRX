@@ -88,8 +88,9 @@ static const M_BAR_COLOR_SELECT m_BarColorSelect[UI_BAR_NUMBER_OF] = {
 
 static M_SETTINGS m_Settings;
 
-static UI_MENU_COLORS_PC m_MenuColorsPC[3]; // indexed [g_TRVersion - 1]
-static UI_MENU_COLORS_PS1 m_MenuColorsPS1[3]; // indexed [g_TRVersion - 1]
+// Indexed [g_TRVersion - 1].
+static UI_MENU_COLORS_PC m_MenuColorsPC[TR_VERSION_COUNT];
+static UI_MENU_COLORS_PS1 m_MenuColorsPS1[TR_VERSION_COUNT];
 
 static void M_FreeThemeGroup(M_THEME_GROUP *const group)
 {
@@ -579,9 +580,9 @@ static RESULT M_LoadMenuColorsPS1(
 
 static RESULT M_LoadMenuColors(JSON_READ_IO *const io)
 {
-    static const char *const tr_keys[] = { "tr1", "tr2", "tr3" };
+    static const char *const tr_keys[] = { "tr1", "tr2", "tr3", "tr4" };
 
-    for (int32_t i = 0; i < 3; i++) {
+    for (int32_t i = 0; i < TR_VERSION_COUNT; i++) {
         MUST(JSON_PUSH(io, tr_keys[i]));
 
         MUST(JSON_PUSH(io, "pc"));
