@@ -329,8 +329,8 @@
                 "help": "Überflutet den Raum, in dem sie sich im Moment befinden, mit Wasser.",
             },
             "fly": {
-                "already_off": "\\{review}Lara is not flying",
-                "already_on": "\\{review}Lara is already flying",
+                "already_off": "\\{review}Lara fliegt nicht mehr",
+                "already_on": "\\{review}Lara fliegt bereits",
                 "help": "Aktiviert und deaktiviert den Flug-Modus-Cheat.",
             },
             "fps": {
@@ -2267,7 +2267,7 @@
             "name": "\\{review}Kadaver",
         },
         "ceiling_spikes": {
-            "name": "Spiky Ceiling",
+            "name": "Stachel bewährte Decke",
         },
         "ceiling_trapdoor_1": {
             "name": "\\{review}Deckenfalltür 1",
@@ -2513,7 +2513,7 @@
             "name": "Fallender Block 3|Zerbrechbarer Boden 3|Zerbrechbare Kacheln 3|Lose Bretter",
         },
         "falling_ceiling_1": {
-            "name": "Falling Ceiling 1",
+            "name": "Fallende Decke 1",
         },
         "falling_ceiling_2": {
             "name": "Fallende Decke 2",
@@ -2555,7 +2555,7 @@
             "name": "Fackel",
         },
         "flares_box_item": {
-            "name": "Flares Box",
+            "name": "Fackel-Box",
         },
         "flickering_light": {
             "name": "\\{review}Flackerndes Licht",
@@ -2576,7 +2576,7 @@
             "name": "\\{review}Gamma",
         },
         "gas_emitter_green": {
-            "name": "\\{review}Gasemitter (Grün)",
+            "name": "\\{review}Gaserzeuger (Grün)",
         },
         "general": {
             "name": "Mini U-Boot",
@@ -2615,7 +2615,7 @@
             "name": "Granatenwerfer",
         },
         "gun_flash": {
-            "name": "Waffen Blitz",
+            "name": "Mündungsfeuer",
         },
         "gun_shell": {
             "name": "\\{review}Gewehrpatrone",
@@ -2642,7 +2642,7 @@
             "name": "\\{review}Hybridmutant",
         },
         "icicle": {
-            "name": "Icicles",
+            "name": "Eiszapfen",
         },
         "inv_background": {
             "name": "Menü Hintergrund",
@@ -2654,16 +2654,16 @@
             "name": "\\{review}Kajak",
         },
         "key_hole_1": {
-            "name": "Keyhole 1",
+            "name": "Schlüsselloch 1",
         },
         "key_hole_2": {
-            "name": "Keyhole 2",
+            "name": "Schlüsselloch 2",
         },
         "key_hole_3": {
-            "name": "Keyhole 3",
+            "name": "Schlüsselloch 3",
         },
         "key_hole_4": {
-            "name": "Keyhole 4",
+            "name": "Schlüsselloch 4",
         },
         "key_hole_5": {
             "name": "\\{review}Schlüsselloch 5",
@@ -2783,7 +2783,7 @@
             "name": "\\{review}Alle töten (ausgelöst)",
         },
         "killer_statue": {
-            "name": "Statue with Sword",
+            "name": "Statue mit Schwert",
         },
         "lara": {
             "name": "Lara",
@@ -3021,7 +3021,7 @@
             "name": "Sandsack",
         },
         "pendulum_2": {
-            "name": "Swinging Box",
+            "name": "Schwingende Kiste",
         },
         "photo_option": {
             "name": "Laras Haus",
@@ -3126,13 +3126,13 @@
             "name": "\\{review}Gefangener",
         },
         "propeller_1": {
-            "name": "Airplane Propeller",
+            "name": "Flugzeugpropeller",
         },
         "propeller_2": {
-            "name": "Underwater Propeller",
+            "name": "Unterwasser-Propeller",
         },
         "propeller_3": {
-            "name": "Air Fan",
+            "name": "Belüftungsventilator",
         },
         "pulse_light": {
             "name": "\\{review}Pulsierendes Licht",
@@ -3153,16 +3153,16 @@
             "name": "\\{review}Schwingtür 2",
         },
         "puzzle_done_1": {
-            "name": "Puzzle Hole 1 (Done)",
+            "name": "Rätselloch 1 (Erledigt)",
         },
         "puzzle_done_2": {
-            "name": "Puzzle Hole 2 (Done)",
+            "name": "Rätselloch (Erledigt)",
         },
         "puzzle_done_3": {
-            "name": "Puzzle Hole 3 (Done)",
+            "name": "Rätselloch 3 (Erledigt)",
         },
         "puzzle_done_4": {
-            "name": "Puzzle Hole 4 (Done)",
+            "name": "Rätselloch 4 (Erledigt)",
         },
         "puzzle_done_5": {
             "name": "\\{review}Rätselloch 5 (Erledigt)",
@@ -3189,16 +3189,16 @@
             "name": "\\{review}Rätselloch 12 (Erledigt)",
         },
         "puzzle_hole_1": {
-            "name": "Puzzle Hole 1 (Empty)",
+            "name": "Rätselloch (Leer)",
         },
         "puzzle_hole_2": {
-            "name": "Puzzle Hole 2 (Empty)",
+            "name": "Rätselloch 2 (Leer)",
         },
         "puzzle_hole_3": {
-            "name": "Puzzle Hole 3 (Empty)",
+            "name": "Rätselloch 3 (Leer)",
         },
         "puzzle_hole_4": {
-            "name": "Puzzle Hole 4 (Empty)",
+            "name": "Rätselloch 4 (Leer)",
         },
         "puzzle_hole_5": {
             "name": "\\{review}Rätselloch 5 (Leer)",
@@ -3225,7 +3225,7 @@
             "name": "\\{review}Rätselloch 12 (Leer)",
         },
         "puzzle_item_1": {
-            "name": "Puzzle Item 1",
+            "name": "Rätselgegenstand 1",
         },
         "puzzle_item_1_combo_1": {
             "name": "\\{review}Rätselgegenstand 1 (Kombination 1)",
@@ -3465,7 +3465,7 @@
             "name": "Rotes Schneemobil",
         },
         "skidoo_track": {
-            "name": "Snowmobile Track",
+            "name": "Spur eines Schneemobils",
         },
         "skybox": {
             "name": "Skybox",
@@ -3474,16 +3474,16 @@
             "name": "Sliding Pillar",
         },
         "smashable_1": {
-            "name": "Breakable Window 1",
+            "name": "Zerstörbares Fenster 1",
         },
         "smashable_2": {
-            "name": "Breakable Window 2",
+            "name": "Zerstörbares Fenster 2",
         },
         "smashable_3": {
-            "name": "Breakable Window 3",
+            "name": "Zerstörbares Fenster 3",
         },
         "smashable_4": {
-            "name": "Breakable Window 4",
+            "name": "Zerstörbares Fenster 4",
         },
         "smoke_emitter_black": {
             "name": "\\{review}Rauchgenerator (Schwarz)",
@@ -3513,7 +3513,7 @@
             "name": "Spinne",
         },
         "spike_wall": {
-            "name": "Spike Wall",
+            "name": "Stachel-Wand",
         },
         "spikes": {
             "name": "Stacheln",
@@ -3555,10 +3555,10 @@
             "name": "\\{review}Schwingende Axt",
         },
         "switch_type_airlock": {
-            "name": "Airlock Switch",
+            "name": "Luftschleusenschalter",
         },
         "switch_type_button": {
-            "name": "Button|Push Button|Switch",
+            "name": "Knopf|Druck-Knopf|Schalter",
         },
         "switch_type_crowbar": {
             "name": "\\{review}Brecheisen-Schalter",
@@ -3588,7 +3588,7 @@
             "name": "\\{review}Sprungschalter",
         },
         "switch_type_normal": {
-            "name": "Lever|Switch",
+            "name": "Hebel|Schalter",
         },
         "switch_type_pulley": {
             "name": "\\{review}Zugschalter",
@@ -3597,7 +3597,7 @@
             "name": "Small Switch",
         },
         "switch_type_uw": {
-            "name": "Underwater Lever|Underwater Switch",
+            "name": "Underwater Lever|Unterwasser Schalter",
         },
         "switch_type_uw_ceiling": {
             "name": "\\{review}Unterwasser-Deckenhebel",
@@ -3753,7 +3753,7 @@
             "name": "Yeti",
         },
         "zipline_handle": {
-            "name": "Zipline Handle",
+            "name": "Seilrutschengriff",
         }
     }
 }
