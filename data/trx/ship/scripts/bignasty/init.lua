@@ -478,6 +478,10 @@ trx.objects.declare(ball, {
   control = control,
 })
 
+if trx.weapons.get("mp5") == nil then
+  return
+end
+
 trx.inject.declare(function()
   return { "bfg.bin" }
 end)
@@ -515,10 +519,6 @@ trx.events.on_game_start(function()
   landed = nil
   state = {}
 end)
-
-if trx.weapons.get("mp5") == nil then
-  return
-end
 
 trx.weapons.declare(WEAPON_KEY, {
   base = "mp5",
