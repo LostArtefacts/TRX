@@ -192,6 +192,7 @@
 - Fixed the picture jittering between two frames while the game fades out to quit (TRX1405)
 - Fixed the frame rate dropping when large effects, such as explosions, fill the screen at high supersampling values (TRX1506)
 - Fixed muzzle flashes, explosions and flares not lighting the effects they spawn, such as the snowmobile's snow trail (TRX1507, regression from 1.10)
+- Fixed the main menu objects disappearing at supersampling values above 1 in TR4 (TRX1521)
 
 **TR1**
 - Added the ability for Lara to burn in swamp rooms marked with death sectors (#6539 / TRX1395)

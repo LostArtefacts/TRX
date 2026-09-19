@@ -13,6 +13,7 @@
 #include <trx/game/shell.h>
 #include <trx/game/viewport.h>
 #include <trx/gl/context.h>
+#include <trx/gl/renderer.h>
 #include <trx/gl/utils.h>
 
 #define M_PROCESS_SOURCES(p, func, ...)                                        \
@@ -45,6 +46,7 @@ static void M_SetSamplerFilter(
 
 static void M_BindTextures(const M_PRIV *const p)
 {
+    glBindSampler(0, p->sampler_id);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D_ARRAY, Output_Textures_GetAtlasTexture());
     glActiveTexture(GL_TEXTURE1);
@@ -117,7 +119,6 @@ static void M_PrepareScene(const M_PRIV *const p)
     TRX_GL_CheckError();
 #endif
 
-    glBindSampler(0, p->sampler_id);
     glSamplerParameterf(
         p->sampler_id, GL_TEXTURE_MAX_ANISOTROPY_EXT,
         g_Config.rendering.anisotropy_filter);
@@ -133,6 +134,7 @@ static void M_RenderScenePasses(const M_PRIV *const p)
         return;
     }
 
+    TRX_GL_Renderer_InvalidateScene();
     M_BindTextures(p);
     M_SetupScene(p);
 
