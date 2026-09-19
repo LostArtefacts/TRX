@@ -644,6 +644,10 @@ void Lara_Skin_SetType(const LARA_SKIN_TYPE skin_type)
 
 void Lara_Skin_ApplyOutfit(void)
 {
+    if (!M_CanDress()) {
+        return;
+    }
+
     const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
     for (int32_t i = 0; i < LM_NUMBER_OF; i++) {
         M_ApplyMeshIfValid(i, outfit);
