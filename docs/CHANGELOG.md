@@ -1,5 +1,8 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.11...develop) - ××××-××-××
 
+**Gameplay**
+- Fixed a green glow under Lara in New Game+ (#6644 / TRX1523)
+
 **Lua**
 - Added `given_in_ngplus` to weapon specs and `trx.weapons.Weapon`.
 

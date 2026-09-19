@@ -262,12 +262,13 @@ void SG_Resume_ApplyRulesToEntry(const GF_LEVEL *const level)
     }
 
     if (Game_IsBonusFlagSet(GBF_NGPLUS) && level != GF_GetGymLevel()) {
-        // A bonus game hands her every weapon the game has, loaded.
+        // A bonus game hands her every weapon that says it is given, loaded.
         for (int32_t i = 0; i < Gun_Registry_GetCount(); i++) {
             const WEAPON_INFO *const weapon = Gun_Registry_GetByIndex(i);
             const LARA_GUN_TYPE gun_type = weapon->gun_type;
             const OBJECT_ID gun_object = Gun_GetGunObject(gun_type);
-            if (gun_object == NO_OBJECT || !weapon->is_available) {
+            if (gun_object == NO_OBJECT || !weapon->is_available
+                || !weapon->given_in_ngplus) {
                 continue;
             }
             Inv_State_SetCount(&resume->inv, gun_object, 1);

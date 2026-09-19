@@ -31,6 +31,13 @@
 #define M_SECOND 2
 #define M_CURRENT 3
 #define M_PISTOL_ROUNDS 50
+#define M_GUN_TYPES                                                            \
+    {                                                                          \
+        { .gun_type = LGT_PISTOLS, .save_resume_has_key = "has_pistols" },     \
+        { .gun_type = LGT_UZIS, .save_resume_has_key = "has_uzis" },           \
+        { .gun_type = LGT_SHOTGUN, .save_resume_has_key = "has_shotgun" },     \
+    }
+#define M_GUN_TYPE_COUNT 3
 
 static WEAPON_INFO m_Weapons[MAX_WEAPONS] = {};
 
@@ -57,11 +64,7 @@ static bool m_BonusFlag;
 
 // The code counts only the gun types registered in the engine, not the number
 // of weapon slots.
-static const WEAPON_INFO m_GunTypes[] = {
-    { .gun_type = LGT_PISTOLS, .save_resume_has_key = "has_pistols" },
-    { .gun_type = LGT_UZIS, .save_resume_has_key = "has_uzis" },
-    { .gun_type = LGT_SHOTGUN, .save_resume_has_key = "has_shotgun" },
-};
+static WEAPON_INFO m_GunTypes[] = M_GUN_TYPES;
 
 static void M_SetUp(void)
 {
@@ -70,6 +73,7 @@ static void M_SetUp(void)
     g_TRVersion = 1;
     g_Rules = (RULES) {};
     m_BonusFlag = false;
+    memcpy(m_GunTypes, (WEAPON_INFO[])M_GUN_TYPES, sizeof(m_GunTypes));
     m_LiveInv = (INVENTORY_STATE) {};
     m_Lara = (LARA_INFO) {};
     m_LaraItem = (ITEM) {};
@@ -208,7 +212,7 @@ ITEM *Lara_GetItem(void)
 
 int32_t Gun_Registry_GetCount(void)
 {
-    return sizeof(m_GunTypes) / sizeof(m_GunTypes[0]);
+    return M_GUN_TYPE_COUNT;
 }
 
 const WEAPON_INFO *Gun_Registry_GetByIndex(const int32_t idx)
@@ -376,6 +380,23 @@ TEST(the_first_level_starts_with_her_pistols_and_nothing_else)
     CHECK_EQ_INT(Inv_State_GetCount(&entry->inv, O_SHOTGUN_ITEM), 0);
     CHECK_EQ_INT(entry->equipped_gun_type, LGT_PISTOLS);
     CHECK_EQ_INT(entry->lara_hitpoints, 1000);
+}
+
+TEST(a_bonus_game_passes_over_a_weapon_it_is_not_given)
+{
+    M_SetUp();
+    m_BonusFlag = true;
+    for (int32_t i = 0; i < M_GUN_TYPE_COUNT; i++) {
+        m_GunTypes[i].is_available = true;
+        m_GunTypes[i].given_in_ngplus = true;
+    }
+    m_GunTypes[2].given_in_ngplus = false;
+    RESUME_INFO *const entry = SG_Resume_GetEntry(&m_MainLevels[M_FIRST]);
+
+    SG_Resume_ApplyRulesToEntry(&m_MainLevels[M_FIRST]);
+
+    CHECK_EQ_INT(Inv_State_GetCount(&entry->inv, O_UZIS_ITEM), 1);
+    CHECK_EQ_INT(Inv_State_GetCount(&entry->inv, O_SHOTGUN_ITEM), 0);
 }
 
 TEST(the_gym_is_a_house_tour_so_she_arrives_with_nothing)
