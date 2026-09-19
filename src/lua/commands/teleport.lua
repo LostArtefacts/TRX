@@ -214,9 +214,9 @@ local function teleport_to_room(room_num)
     return trx.console.Result.FAILURE
   end
 
-  -- A room only a sector across has no room left once the walls are taken off.
+  -- A room only a sector across has no space left once the walls are taken off.
   local function between(low, high)
-    return low < high and math.random(low, high) or low
+    return low < high and trx.random.randint(low, high) or low
   end
 
   local bounds = room.bounds
