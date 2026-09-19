@@ -107,10 +107,23 @@ static const char *M_ResolveText(const OVERLAY_TEXT *const text)
     return String_FormatStatic(GameString_Get(text->fmt_gs_key), raw);
 }
 
+// Whether the pickup has a sprite to draw. An object a script adds carries a
+// model and no sprite, and its mesh index names no sprite texture.
+static bool M_HasSprite(const DISPLAY_PICKUP *const pickup)
+{
+    const OBJECT *const obj = Object_Get(pickup->object_id);
+    return obj->loaded && obj->mesh_count < 0;
+}
+
+// Whether the pickup is drawn from its sprite rather than its model. The
+// sprite is what the 3D pickups setting turns back to, and what an object
+// with no inventory model leaves. An object with neither is drawn as nothing.
 static bool M_IsSprite(const DISPLAY_PICKUP *const pickup)
 {
-    return !g_Config.visuals.enable_3d_pickups
-        || pickup->display.object == nullptr;
+    if (pickup->display.object == nullptr) {
+        return true;
+    }
+    return !g_Config.visuals.enable_3d_pickups && M_HasSprite(pickup);
 }
 
 static float M_Ease(float current, const float start, const float goal)
@@ -204,10 +217,10 @@ static void M_DrawPickups(void)
                 slide_goal);
         }
 
-        if (M_IsSprite(pickup)) {
-            M_DrawPickup2D(pickup);
-        } else {
+        if (!M_IsSprite(pickup)) {
             M_DrawPickup3D(pickup);
+        } else if (M_HasSprite(pickup)) {
+            M_DrawPickup2D(pickup);
         }
     }
 }
