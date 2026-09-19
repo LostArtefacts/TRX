@@ -13465,6 +13465,12 @@
           "writable": true
         },
         {
+          "description": "The weapon drawn on Lara's back.",
+          "name": "back_gun",
+          "type": "catalog.weapons",
+          "writable": false
+        },
+        {
           "description": "How long Lara has been dead.",
           "name": "death_timer",
           "type": "game.Frames",
@@ -13516,6 +13522,12 @@
           "description": "Which way the last hit came from, or -1 if she has not been hit.",
           "name": "hit_direction",
           "type": "integer",
+          "writable": false
+        },
+        {
+          "description": "The weapon drawn in Lara's holsters.",
+          "name": "holsters_gun",
+          "type": "catalog.weapons",
           "writable": false
         },
         {

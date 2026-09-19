@@ -61,6 +61,8 @@ static const FIELD_DESC m_Fields[] = {
     FIELD_RO(LARA_INFO, gun_status),
     FIELD_RO(LARA_INFO, gun_type),
     FIELD_RO(LARA_INFO, request_gun_type),
+    FIELD_RO(LARA_INFO, back_gun_type),
+    FIELD_RO(LARA_INFO, holsters_gun_type),
     FIELD_RO(LARA_INFO, is_crouched),
     FIELD_RO(LARA_INFO, climb_status),
     FIELD_RO(LARA_INFO, extra_anim),
