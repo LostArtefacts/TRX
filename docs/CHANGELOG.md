@@ -5,6 +5,7 @@
 
 **Lua**
 - Added `given_in_ngplus` to weapon specs and `trx.weapons.Weapon`.
+- Added `trx.lara.back_gun` and `trx.lara.holsters_gun`.
 
 ## [1.11](https://github.com/LostArtefacts/TRX/compare/trx-1.10.2...trx-1.11) - 2026-09-19
 Showcase: https://youtu.be/dHuBHppj_fo

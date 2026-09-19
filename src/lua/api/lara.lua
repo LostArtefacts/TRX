@@ -167,6 +167,18 @@ api.type("lara.Lara", {
       writable = false,
       description = "The weapon Lara is drawing, while she is drawing it.",
     },
+    back_gun = {
+      from = "back_gun_type",
+      type = "catalog.weapons",
+      writable = false,
+      description = "The weapon drawn on Lara's back.",
+    },
+    holsters_gun = {
+      from = "holsters_gun_type",
+      type = "catalog.weapons",
+      writable = false,
+      description = "The weapon drawn in Lara's holsters.",
+    },
     extra_anim = {
       from = "extra_anim",
       type = "boolean",

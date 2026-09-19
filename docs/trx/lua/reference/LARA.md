@@ -182,6 +182,7 @@ Her position, room and hit points are not here: she is an item like any other an
 
     Properties:
     - <a id="lara.Lara.air_bar" name="lara.Lara.air_bar"></a>**`air_bar`**: integer. Air remaining underwater, out of 1800. Runs down while she is under.
+    - <a id="lara.Lara.back_gun" name="lara.Lara.back_gun"></a>**`back_gun`**: [trx.catalog.weapons](CATALOG.md#catalog.weapons). The weapon drawn on Lara's back. *(read-only)*
     - <a id="lara.Lara.death_timer" name="lara.Lara.death_timer"></a>**`death_timer`**: [trx.game.Frames](GAME.md#game.Frames). How long Lara has been dead. *(read-only)*
     - <a id="lara.Lara.dive_timer" name="lara.Lara.dive_timer"></a>**`dive_timer`**: [trx.game.Frames](GAME.md#game.Frames). How long Lara has been diving. *(read-only)*
     - <a id="lara.Lara.electric" name="lara.Lara.electric"></a>**`electric`**: integer. How badly Lara is being electrocuted, and 0 when she is not.
@@ -191,6 +192,7 @@ Her position, room and hit points are not here: she is an item like any other an
     - <a id="lara.Lara.flare_control" name="lara.Lara.flare_control"></a>**`flare_control`**: boolean. Whether the flare Lara holds is driving her arm. *(read-only)*
     - <a id="lara.Lara.gun_status" name="lara.Lara.gun_status"></a>**`gun_status`**: [trx.lara.GunState](#lara.GunState). What Lara's hands are doing. *(read-only)*
     - <a id="lara.Lara.hit_direction" name="lara.Lara.hit_direction"></a>**`hit_direction`**: integer. Which way the last hit came from, or -1 if she has not been hit. *(read-only)*
+    - <a id="lara.Lara.holsters_gun" name="lara.Lara.holsters_gun"></a>**`holsters_gun`**: [trx.catalog.weapons](CATALOG.md#catalog.weapons). The weapon drawn in Lara's holsters. *(read-only)*
     - <a id="lara.Lara.interact_item_num" name="lara.Lara.interact_item_num"></a>**`interact_item_num`**: integer. The item Lara is lining herself up with, by number, or -1 for none. *(read-only)*
     - <a id="lara.Lara.interact_move_count" name="lara.Lara.interact_move_count"></a>**`interact_move_count`**: integer. How many frames she has spent moving into place for it. *(read-only)*
     - <a id="lara.Lara.is_burning" name="lara.Lara.is_burning"></a>**`is_burning`**: boolean. Whether Lara is on fire. Setting it lights her or puts her out.
