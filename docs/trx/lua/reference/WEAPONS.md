@@ -156,6 +156,8 @@ trx.weapons.flare.glow.color = "33e5ff"
     - <a id="weapons.Weapon.fire_overlay_pitch" name="weapons.Weapon.fire_overlay_pitch"></a>**`fire_overlay_pitch`**: integer. The pitch at which to play the overlay sample.
     - <a id="weapons.Weapon.fire_overlay_sample" name="weapons.Weapon.fire_overlay_sample"></a>**`fire_overlay_sample`**: [trx.catalog.samples](CATALOG.md#catalog.samples). The overlay sample a shot plays. One this game has no sound for is silent.
     - <a id="weapons.Weapon.fire_sample" name="weapons.Weapon.fire_sample"></a>**`fire_sample`**: [trx.catalog.samples](CATALOG.md#catalog.samples). The sample a shot plays. One this game has no sound for is silent.
+    - <a id="weapons.Weapon.given_in_ngplus" name="weapons.Weapon.given_in_ngplus"></a>**`given_in_ngplus`**: boolean. Whether a bonus game gives Lara the weapon, loaded, at level start.
+      A weapon added by a script is not given unless this is true.
     - <a id="weapons.Weapon.gun_height" name="weapons.Weapon.gun_height"></a>**`gun_height`**: [trx.math.Distance](MATH.md#math.Distance). How far above Lara's feet the shot leaves the barrel. It also decides how deep she can wade and still fire.
     - <a id="weapons.Weapon.id" name="weapons.Weapon.id"></a>**`id`**: [trx.catalog.weapons](CATALOG.md#catalog.weapons). Which weapon this is, for the calls that take one: `trx.inventory:set_shots(weapon.id, 100)`. *(read-only)*
     - <a id="weapons.Weapon.is_available" name="weapons.Weapon.is_available"></a>**`is_available`**: boolean. Whether the game allows the weapon at all. Turning one off keeps it out of the cheats and off the controls list, and a save that carries it arrives without it.

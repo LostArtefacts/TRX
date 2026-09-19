@@ -244,6 +244,21 @@ test("a weapon starts from the one it names as its base", function()
   assert(weapon.gun_height == 640, "the rest comes from the base")
 end)
 
+test("a bonus game passes over a weapon a script adds", function()
+  trx.weapons.patch(WEAPONS.SHOTGUN, { given_in_ngplus = true })
+  local weapon = trx.weapons.declare("mymod:bonus_gun", {
+    base = "shotgun",
+    kind = "rifle",
+  })
+  assert(not weapon.given_in_ngplus, "a base does not hand this on")
+  local asked = trx.weapons.declare("mymod:asking_gun", {
+    base = "shotgun",
+    kind = "rifle",
+    given_in_ngplus = true,
+  })
+  assert(asked.given_in_ngplus, "a spec that asks for it gets it")
+end)
+
 test("patching leaves what it does not name", function()
   local weapon = trx.weapons.declare("mymod:kept_gun", {
     kind = "rifle",

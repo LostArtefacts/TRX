@@ -163,6 +163,11 @@ typedef struct {
     // it. A weapon that names no key is reached through the inventory only.
     INPUT_ROLE equip_input_role;
     bool is_available;
+    // Whether a bonus game hands Lara the weapon, loaded, at the start of a
+    // level. It starts true for the weapons the executable declares and
+    // false for a weapon a script mints, which the script hands over on its
+    // own terms.
+    bool given_in_ngplus;
 
     // Define what the weapon does. The weapon implementation declares these
     // values instead of storing them in the weapon data.

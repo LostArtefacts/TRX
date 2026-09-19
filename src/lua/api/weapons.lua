@@ -224,6 +224,13 @@ api.type("weapons.Weapon", {
       description = "Whether the game allows the weapon at all. Turning one off keeps it out of "
         .. "the cheats and off the controls list, and a save that carries it arrives without it.",
     },
+    given_in_ngplus = {
+      from = "given_in_ngplus",
+      type = "boolean",
+      description = [[
+Whether a bonus game gives Lara the weapon, loaded, at level start.
+A weapon added by a script is not given unless this is true.]],
+    },
     aim_speed = {
       from = "aim_speed",
       type = "math.Angle",

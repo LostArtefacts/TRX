@@ -95,6 +95,7 @@ static const FIELD_DESC m_WeaponFields[] = {
     FIELD_FN("id", TVT_S32, M_GetID, nullptr),
     FIELD_SET(WEAPON_INFO, type, M_SetKind),
     FIELD(WEAPON_INFO, is_available),
+    FIELD(WEAPON_INFO, given_in_ngplus),
 
     FIELD(WEAPON_INFO, aim_speed),
     FIELD(WEAPON_INFO, shot_accuracy),

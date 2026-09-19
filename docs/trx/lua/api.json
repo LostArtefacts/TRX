@@ -15885,6 +15885,12 @@
           "writable": true
         },
         {
+          "description": "Whether a bonus game gives Lara the weapon, loaded, at level start.\nA weapon added by a script is not given unless this is true.",
+          "name": "given_in_ngplus",
+          "type": "boolean",
+          "writable": true
+        },
+        {
           "description": "How far above Lara's feet the shot leaves the barrel. It also decides how deep she can wade and still fire.",
           "name": "gun_height",
           "type": "math.Distance",
