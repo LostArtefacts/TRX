@@ -20,6 +20,11 @@ extern TRX_GL_RENDERER g_TRX_GL_Renderer;
 // Bind the geometry framebuffer for rendering the 3D scene.
 void TRX_GL_Renderer_BindGeometryFbo(void);
 
+// Marks what was resolved from the scene stale, so that the next resolve
+// reads the geometry framebuffer again. Anything that draws into the scene
+// after a resolve has to call this.
+void TRX_GL_Renderer_InvalidateScene(void);
+
 // Bind the UI framebuffer for rendering the UI overlay.
 void TRX_GL_Renderer_BindUiFbo(void);
 

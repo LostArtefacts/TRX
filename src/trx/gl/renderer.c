@@ -330,8 +330,14 @@ void TRX_GL_Renderer_BindGeometryFbo(void)
     M_CONTEXT *const p = (M_CONTEXT *)g_TRX_GL_Renderer.priv;
     // Anything about to draw the scene again invalidates what was resolved
     // from it.
-    p->scene_resolved = false;
+    TRX_GL_Renderer_InvalidateScene();
     TRX_GL_FBO_Bind(&p->geometry_fbo);
+}
+
+void TRX_GL_Renderer_InvalidateScene(void)
+{
+    M_CONTEXT *const p = (M_CONTEXT *)g_TRX_GL_Renderer.priv;
+    p->scene_resolved = false;
 }
 
 void TRX_GL_Renderer_BindUiFbo(void)
@@ -415,6 +421,7 @@ GLuint TRX_GL_Renderer_ResolveSceneFbo(void)
     glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &prev_fbo);
     const TRX_GL_FBO *const fbo = M_ResolveScene(p);
     glBindFramebuffer(GL_FRAMEBUFFER, (GLuint)prev_fbo);
+    TRX_GL_Context_SwitchToViewport(TRX_GL_Context_GetViewport());
     return fbo->fbo;
 }
 
