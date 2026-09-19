@@ -29,6 +29,7 @@
 - Fixed Lara not grabbing certain ledges properly when crawling backwards off them (#6601 / TRX1471, regression from 1.1)
 - Fixed Lara stopping at the wrong time when landing during early and late reach animations (TRX1487; regression in TR1/2 from 1.3, OG bug in TR3+)
 - Fixed Lara being able to pull up from a slow swing in places where the original TR3+ games do not allow it (TRX1497, regression from 1.3)
+- Fixed Lara getting pushed by enemies when mounted on a climbing pole (TRX1520, regression from 1.9)
 
 **UI**
 - Added a fullscreen setting, so the window mode can be switched from the menu rather than only with Alt+Enter (Graphic Options → Rendering) (#6187 / TRX1036)
