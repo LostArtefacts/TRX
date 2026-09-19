@@ -462,6 +462,22 @@ local function punish(lara)
   trx.sound.play(trx.catalog.samples.lara_injury, { pos = lara.pos })
 end
 
+local GunState = trx.lara.GunState
+
+local function in_hand()
+  local status = trx.lara.gun_status
+  return trx.lara.equipped_gun == weapon_id
+    and (
+      status == GunState.READY
+      or status == GunState.DRAW
+      or status == GunState.UNDRAW
+    )
+end
+
+local function is_gun_shown()
+  return in_hand() or trx.lara.back_gun == weapon_id
+end
+
 trx.objects.declare(ball, {
   radius = 128,
   shadow_size = 0,
@@ -587,7 +603,7 @@ trx.events.after_control(function()
       })
     end
   end
-  if not trx.inventory:has_weapon(weapon_id) then
+  if not is_gun_shown() then
     return
   end
   trx.fx.emit_light({
