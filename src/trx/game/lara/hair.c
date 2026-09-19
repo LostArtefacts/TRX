@@ -853,7 +853,9 @@ void Lara_Hair_Rebuild(void)
         return;
     }
     Lara_Hair_Initialise();
-    Lara_Hair_Control(true);
+    if (Lara_GetItem() != nullptr) {
+        Lara_Hair_Control(true);
+    }
 }
 
 void Lara_Hair_Control(const bool in_cutscene)
