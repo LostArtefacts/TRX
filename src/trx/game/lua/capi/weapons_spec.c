@@ -539,6 +539,7 @@ static RESULT M_ReadBase(
     *w = *Gun_Registry_Get(base_id);
     w->gun_type = gun_type;
     w->skin_source = base_id;
+    w->given_in_ngplus = own.given_in_ngplus;
     w->is_declared = was_declared;
     w->equip_input_role = was_declared ? own.equip_input_role : (INPUT_ROLE)-1;
     w->save_ammo_key = was_declared ? own.save_ammo_key : nullptr;
@@ -581,6 +582,7 @@ static RESULT M_ReadFlat(
     M_INT(L, idx, "fire_delay", w->fire_delay);
     M_INT(L, idx, "gun_height", w->gun_height);
     MUST(M_ReadBool(L, idx, "is_available", &w->is_available));
+    MUST(M_ReadBool(L, idx, "given_in_ngplus", &w->given_in_ngplus));
     MUST(M_ReadBool(L, idx, "is_default", &w->is_default));
     MUST(M_ReadBool(L, idx, "is_remembered", &w->is_remembered));
     MUST(M_ReadBool(L, idx, "is_launcher", &w->is_launcher));

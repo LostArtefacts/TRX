@@ -29,6 +29,7 @@ static void M_SeedNew(void)
         *weapon = (WEAPON_INFO) {
             .gun_type = (LARA_GUN_TYPE)i,
             .is_available = true,
+            .given_in_ngplus = i < Catalog_GetBuiltInCount(CATALOG_WEAPONS),
             .equip_input_role = (INPUT_ROLE)-1,
             .glow.scale = 1.0f,
             .gun_object_id = NO_OBJECT,
