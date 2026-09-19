@@ -4,10 +4,15 @@
 
 #define M_TURN_RATE 256
 
-static void M_PoleSpin(ITEM *const item, COLL_INFO *const coll)
+static void M_Default(ITEM *const item, COLL_INFO *const coll)
 {
     coll->enable_hit = 0;
     coll->enable_baddie_push = 0;
+}
+
+static void M_PoleSpin(ITEM *const item, COLL_INFO *const coll)
+{
+    M_Default(item, coll);
 
     const bool turning = item->current_anim_state == LS(LS_POLE_LEFT)
         ? g_Input.left
@@ -22,5 +27,8 @@ static void M_PoleSpin(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+REGISTER_LARA_STATE(LS_POLE_IDLE, M_Default)
+REGISTER_LARA_STATE(LS_POLE_UP, M_Default)
+REGISTER_LARA_STATE(LS_POLE_DOWN, M_Default)
 REGISTER_LARA_STATE(LS_POLE_LEFT, M_PoleSpin)
 REGISTER_LARA_STATE(LS_POLE_RIGHT, M_PoleSpin)
