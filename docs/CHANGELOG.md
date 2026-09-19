@@ -1,5 +1,7 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.10.2...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.11...develop) - ××××-××-××
 
+## [1.11](https://github.com/LostArtefacts/TRX/compare/trx-1.10.2...trx-1.11) - 2026-09-19
+Showcase: https://youtu.be/dHuBHppj_fo
 **Lara's movement**
 - Added an option for Lara to sidestep in swamps (Gameplay → Controls → Swamp sidesteps) (#6250 / TRX1117)
 - Added the ability for Lara to turn while shimmying along monkey bars, as she can while sidestepping and swimming sideways (#6386)
