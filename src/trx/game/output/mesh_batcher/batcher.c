@@ -298,6 +298,7 @@ static void M_SortTransparentFaces(const MESH_BATCHER *const batcher)
         bptr++;
     }
     qsort(buf, n, sizeof(*buf), M_CompareFaceDepth);
+    g_TRX_GL_Metrics.trans_sort_count += n;
 }
 
 static void M_DrawOpaqueVertices(
@@ -313,6 +314,7 @@ static void M_DrawOpaqueVertices(
     );
     TRX_GL_CheckError();
     g_TRX_GL_Metrics.opaque_vert_count += bind->opaque_index_count;
+    g_TRX_GL_Metrics.opaque_draw_count++;
 }
 
 static void M_DrawBlendAddVertices(
@@ -328,6 +330,7 @@ static void M_DrawBlendAddVertices(
     );
     TRX_GL_CheckError();
     g_TRX_GL_Metrics.blend_add_vert_count += bind->blend_add_index_count;
+    g_TRX_GL_Metrics.blend_add_draw_count++;
 }
 
 static void M_DrawOpaqueInstance(
@@ -651,6 +654,7 @@ static void M_DrawBakedGroupRanges(
             GL_TRIANGLES, range->index_count, GL_UNSIGNED_INT,
             (void *)(intptr_t)(range->index_start * sizeof(uint32_t)));
         g_TRX_GL_Metrics.trans_vert_count += range->index_count;
+        g_TRX_GL_Metrics.trans_draw_count++;
     }
 }
 
@@ -805,6 +809,7 @@ static void M_TransparentPass(MESH_BATCHER *const batcher)
             (void *)(intptr_t)(sort_ptr->index_start * sizeof(uint32_t)));
 
         g_TRX_GL_Metrics.trans_vert_count += sort_ptr->index_count;
+        g_TRX_GL_Metrics.trans_draw_count++;
     }
 
     Output_AdjustDepth(0.0f, 0.0f);
@@ -1267,6 +1272,7 @@ void MeshBatcher_Stage(
         return;
     }
     Vector_Add(batcher->staged[pass], inst);
+    g_TRX_GL_Metrics.staged_count++;
 }
 
 const SCENE_SOURCE *MeshBatcher_AsSource(const MESH_BATCHER *const batcher)
