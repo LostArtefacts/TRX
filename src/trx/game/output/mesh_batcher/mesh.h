@@ -49,6 +49,8 @@ typedef struct {
     VECTOR *animated_vertices; // OUTPUT_VERTEX_RANGE
     VECTOR *transparent_faces; // OUTPUT_MESH_FACE
     VECTOR *opaque_vertex_indices; // uint32_t
+    int32_t opaque_nodiscard_count;
+    VECTOR *opaque_discard_indices; // uint32_t
     VECTOR *blend_add_vertex_indices; // uint32_t
 } OUTPUT_MESH;
 

@@ -708,13 +708,15 @@ void main(void) {
     bool keep_chroma_key = false;
 #endif
 
-    // Alpha discard - chroma keying || transparent pixels in the opaque pass
+    // Discard chroma-keyed texels, and transparent ones in the opaque pass.
+#ifndef NO_ALPHA_DISCARD
     if (!keep_chroma_key
         && (texColor.a <= 0.0
             || (uDiscardAlpha && texColor.a < 0.99
                 && (gIn.flags & VERT_NO_ALPHA_DISCARD) == 0u))) {
         discard;
     }
+#endif
 
     // Reflections
 #if TR_VERSION >= 4

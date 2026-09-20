@@ -1,5 +1,8 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.11.1...develop) - ××××-××-××
 
+**Rendering**
+- Improved the frame rate, as the game now draws solid surfaces faster
+
 **TR4**
 - Added Small Scorpion control (TRX1562)
 - Added Jackal control (TRX1553)
