@@ -211,7 +211,7 @@ void Lara_Initialise(const GF_LEVEL *const level)
 
 void Lara_InitialiseInventory(const GF_LEVEL *const level)
 {
-    Inv_RemoveAllItems();
+    Inv_Clear();
 
     LARA_INFO *const lara_info = Lara_GetLaraInfo();
     RESUME_INFO *const resume = SG_Resume_GetEntry(level);

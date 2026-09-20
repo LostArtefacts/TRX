@@ -73,7 +73,11 @@ bool Inv_AddItem(OBJECT_ID obj_id);
 void Inv_EnsureItem(OBJECT_ID obj_id);
 bool Inv_AddItemNTimes(OBJECT_ID obj_id, int32_t qty);
 bool Inv_RemoveItem(OBJECT_ID obj_id);
-void Inv_RemoveAllItems(void);
+// Removes every one of a thing at once. Rounds that do not fill a whole box
+// are left behind, because a box is the most one remove takes.
+void Inv_ClearItem(OBJECT_ID obj_id);
+// Empties the inventory of everything Lara carries.
+void Inv_Clear(void);
 
 // Whether the weapon spends rounds at all, which the flare and the unarmed
 // hand do not.

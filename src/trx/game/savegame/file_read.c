@@ -1029,9 +1029,7 @@ static RESULT M_ReadResumeInfo(
 
 static void M_SetInventoryCount(const OBJECT_ID object_id, const int32_t qty)
 {
-    while (Inv_GetItemCount(object_id) != 0) {
-        Inv_RemoveItem(object_id);
-    }
+    Inv_ClearItem(object_id);
     Inv_AddItemNTimes(object_id, qty);
 }
 
