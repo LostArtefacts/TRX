@@ -2,10 +2,11 @@
 -- such as those fixed to vehicles, keep their settings but are not handled.
 
 local found = trx.path.resolve("common_config", "weapons.json5")
-local specs = found ~= nil and trx.json.read_file(found) or nil
-if specs == nil then
-  return
+if found == nil then
+  error("weapons.json5 is missing; the game directory is incomplete")
 end
+
+local specs = trx.json.read_file(found)
 
 for key, spec in pairs(specs) do
   local weapon = trx.catalog.weapons[key]
