@@ -394,7 +394,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
     Savegame_Init();
     SG_Manager_ScanSavedGames();
 
-    LUA_RunGameScript();
+    EXIT_ON_FAIL(LUA_RunGameScript(), "The game's Lua script failed");
 
     // The settings a recording carries are the ones that exist by now, the
     // game's own among them.

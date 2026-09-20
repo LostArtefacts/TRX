@@ -597,7 +597,7 @@ TEST(the_game_script_runs_as_the_game_starts)
     M_Booted();
     M_WriteEngineScript("_game", "game_runs = (game_runs or 0) + 1\n");
 
-    LUA_RunGameScript();
+    CHECK(IS_OK(LUA_RunGameScript()));
     M_CheckEval("assert(game_runs == 1)");
 
     M_Done();
@@ -610,7 +610,7 @@ TEST(a_game_shipping_no_script_of_its_own_runs_none)
     M_Booted();
     M_WriteEngineScript("gym", "game_runs = 1\n");
 
-    LUA_RunGameScript();
+    CHECK(IS_OK(LUA_RunGameScript()));
     M_CheckEval("assert(game_runs == nil)");
 
     M_Done();
@@ -643,7 +643,7 @@ TEST(what_the_game_script_required_outlives_a_level)
     const GF_LEVEL level = { .script_path = M_WriteEngineScript(
                                  "gym", "require('tr1.counted')\n") };
 
-    LUA_RunGameScript();
+    CHECK(IS_OK(LUA_RunGameScript()));
     M_CheckEval("assert(runs == 1)");
 
     LUA_RunLevelScript(&level);
