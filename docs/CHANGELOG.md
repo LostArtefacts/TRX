@@ -5,6 +5,7 @@
 **Gameplay**
 - Fixed a green glow under Lara in New Game+ (#6644 / TRX1523)
 - Fixed a garbled icon when Lara picks up an item added by a mod (#6644 / TRX1523)
+- Fixed the game freezing when loading a New Game+ save (TRX1529)
 
 **Installer**
 - Fixed performance issues when using the Windows installer with a detected disc image source (TRX1531, regression from 1.11)

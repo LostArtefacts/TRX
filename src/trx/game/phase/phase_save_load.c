@@ -107,7 +107,7 @@ static PHASE_CONTROL M_Confirm(M_PRIV *const p, const SAVEGAME_SLOT_REF slot)
         return M_Leave(p, (GF_COMMAND) { .action = GF_NOOP });
     }
 
-    Inv_RemoveAllItems();
+    Inv_Clear();
     return M_Leave(
         p,
         (GF_COMMAND) {

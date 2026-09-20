@@ -108,6 +108,14 @@ static LARA_GUN_TYPE M_GetAmmoGunType(const OBJECT_ID object_id)
     return Gun_GetType(ObjectLink_GetInverse(pickup_id, OBJ_LINK_GUN_TO_AMMO));
 }
 
+// How much one add is worth, which for a box of flares is the shots in it.
+static int32_t M_GetAddQty(const OBJECT_ID object_id)
+{
+    return object_id == O_FLARES_BOX_ITEM
+        ? Gun_Registry_Get(Gun_GetFlareType())->ammo.box_shots
+        : 1;
+}
+
 // How many boxes the rounds come to, which is what a box entry counts. Nothing
 // stores that count: the rounds are the whole of it.
 static int32_t M_GetAmmoBoxCount(
@@ -362,11 +370,50 @@ void Inv_SetItemCount(const OBJECT_ID object_id, const int32_t qty)
 
 bool Inv_AddItemNTimes(const OBJECT_ID object_id, const int32_t qty)
 {
-    bool result = false;
-    for (int32_t i = 0; i < qty; i++) {
-        result |= Inv_AddItem(object_id);
+    if (qty <= 0 || !Inv_AddItem(object_id)) {
+        return false;
     }
-    return result;
+
+    // The first one carried every effect an add has, and the rest only raise
+    // the number, so they are applied together rather than one at a time.
+    const int32_t rest = MIN(qty, MAX_QTY) - 1;
+    if (rest == 0 || Inv_GetItemOption(object_id) == O_BINOCULARS_OPTION) {
+        return true;
+    }
+
+    const OBJECT_ID entry_id = M_GetEntryID(object_id);
+    const LARA_GUN_TYPE ammo_gun_type = M_GetAmmoGunType(entry_id);
+    if (ammo_gun_type != LGT_UNARMED) {
+        Inv_AddAmmo(
+            ammo_gun_type,
+            Gun_GetRoundsPerBox(ammo_gun_type) * M_GetAddQty(object_id) * rest);
+        return true;
+    }
+
+    const INVENTORY_ENTRY *const entry = M_FindEntry(&m_State, entry_id);
+    if (entry != nullptr) {
+        M_SetCount(
+            &m_State, entry_id, entry->qty + M_GetAddQty(object_id) * rest);
+        InvRing_Rebuild();
+    }
+    return true;
+}
+
+void Inv_ClearItem(const OBJECT_ID object_id)
+{
+    if (!Inv_RemoveItem(object_id)) {
+        return;
+    }
+
+    const OBJECT_ID entry_id = M_GetEntryID(object_id);
+    const LARA_GUN_TYPE gun_type = M_GetAmmoGunType(entry_id);
+    if (gun_type != LGT_UNARMED) {
+        const int32_t per_box = Gun_GetRoundsPerBox(gun_type);
+        Inv_SetAmmo(gun_type, Inv_GetAmmo(gun_type) % per_box);
+        return;
+    }
+    M_SetCount(&m_State, entry_id, 0);
+    InvRing_Rebuild();
 }
 
 bool Inv_RemoveItem(const OBJECT_ID object_id)
@@ -397,7 +444,7 @@ bool Inv_RemoveItem(const OBJECT_ID object_id)
     return true;
 }
 
-void Inv_RemoveAllItems(void)
+void Inv_Clear(void)
 {
     Inv_SetState(&(INVENTORY_STATE) {});
     InvRing_ClearSelection();
@@ -445,9 +492,7 @@ bool Inv_AddItem(const OBJECT_ID object_id)
         }
     }
 
-    const int32_t qty = object_id == O_FLARES_BOX_ITEM
-        ? Gun_Registry_Get(Gun_GetFlareType())->ammo.box_shots
-        : 1;
+    const int32_t qty = M_GetAddQty(object_id);
     const OBJECT_ID entry_id = M_GetEntryID(object_id);
 
     // Every spelling of a box of ammunition goes the same way, including the

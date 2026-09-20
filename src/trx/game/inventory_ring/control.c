@@ -331,7 +331,7 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
         switch (g_Passport.select_action) {
         case PASSPORT_ACTION_LOAD_GAME: {
             if (apply_changes) {
-                Inv_RemoveAllItems();
+                Inv_Clear();
             }
             return (GF_COMMAND) {
                 .action = GF_START_SAVED_GAME,

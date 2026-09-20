@@ -223,7 +223,7 @@ RESULT GF_InterpretSequence(
             }
         } else {
             // console /play level feature
-            Inv_RemoveAllItems();
+            Inv_Clear();
             SG_Resume_ResetAllEntries();
             if (level == GF_GetGymLevel()) {
                 GF_InventoryModifier_Scan(level);
