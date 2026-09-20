@@ -5,6 +5,8 @@ namespace TRX_Installer;
 
 public class CueFile
 {
+    private static readonly Dictionary<string, CueFile?> _cache = [];
+
     public readonly List<CueTrack> TrackList = new();
 
     // Reads a cue sheet, or returns null when the file is not a usable cue
@@ -12,15 +14,40 @@ public class CueFile
     // the constructor reports the reason with an exception instead.
     public static CueFile? TryLoad(string cueFilePath)
     {
+        if (!File.Exists(cueFilePath))
+        {
+            return null;
+        }
+
+        // Avoid scanning unchanged files more than once per session.
+        var cueKey = GenerateCueKey(cueFilePath);
+        if (!_cache.TryGetValue(cueKey, out CueFile? cue))
+        {
+            cue = TryLoadCue(cueFilePath);
+            _cache[cueKey] = cue;
+        }
+
+        return cue;
+    }
+
+    private static CueFile? TryLoadCue(string cueFilePath)
+    {
         try
         {
             CueFile cueFile = new(cueFilePath);
             return cueFile.TrackList.Count > 0 ? cueFile : null;
         }
-        catch (Exception)
+        catch
         {
             return null;
         }
+    }
+
+    private static string GenerateCueKey(string cueFilePath)
+    {
+        // Less expensive than performing checksums on large files repeatedly.
+        return cueFilePath.ToLowerInvariant()
+            + File.GetLastWriteTime(cueFilePath);
     }
 
     public CueFile(string cueFilePath)

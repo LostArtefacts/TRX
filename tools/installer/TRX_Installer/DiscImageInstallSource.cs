@@ -77,7 +77,7 @@ internal class DiscImageInstallSource : IInstallSource
         RawMode2,
     }
 
-    private static readonly string[] ImageFileNames = ["GAME.GOG", "game.dat"];
+    private static readonly string[] ImageFileNames = ["game.dat", "GAME.GOG"];
     private static readonly string[] ImageFilePatterns = ["*.iso", "*.bin", "*.gog", "*.dat", "*.img"];
 
     // Returns the path to an image that CDReader can read, and whether that
