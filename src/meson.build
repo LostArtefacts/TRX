@@ -990,6 +990,7 @@ common_sources = [
   'trx/gl/context.c',
   'trx/gl/enum.c',
   'trx/gl/fbo.c',
+  'trx/gl/gpu_timer.c',
   'trx/gl/program.c',
   'trx/gl/renderer.c',
   'trx/gl/sampler.c',

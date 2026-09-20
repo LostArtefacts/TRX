@@ -13,6 +13,7 @@
 #include <trx/game/shell.h>
 #include <trx/game/viewport.h>
 #include <trx/gl/context.h>
+#include <trx/gl/gpu_timer.h>
 #include <trx/gl/renderer.h>
 #include <trx/gl/utils.h>
 
@@ -34,6 +35,10 @@ typedef struct {
 } M_PRIV;
 
 static M_PRIV m_Priv = {};
+
+_Static_assert(
+    SCENE_PASS_COUNT <= TRX_GL_GPU_TIMER_SLOTS,
+    "The GPU timer has no slot for every scene pass");
 
 static void M_SetSamplerFilter(
     const GLuint sampler, const TEXTURE_FILTER filter)
@@ -77,6 +82,7 @@ static void M_SetupUI(const M_PRIV *const p)
 
 static void M_RenderSourcePass(const M_PRIV *const p, const SCENE_PASS pass)
 {
+    TRX_GL_GpuTimer_Begin(pass);
     for (int32_t i = 0; i < p->sources->count; i++) {
         const SCENE_SOURCE *const source =
             *(SCENE_SOURCE **)Vector_Get(p->sources, i);
@@ -85,6 +91,7 @@ static void M_RenderSourcePass(const M_PRIV *const p, const SCENE_PASS pass)
             source->render_pass(source, pass);
         }
     }
+    TRX_GL_GpuTimer_End();
 }
 
 static bool M_IsSourceDirty(const M_PRIV *const p, const SCENE_PASS pass)
@@ -209,6 +216,7 @@ void SceneCompositor_EndCapture(void)
 void SceneCompositor_Init(void)
 {
     M_PRIV *const p = &m_Priv;
+    TRX_GL_GpuTimer_Init(Shell_GetArgs()->debug_render_performance);
     p->sources = Vector_Create(sizeof(SCENE_SOURCE *));
     glGenSamplers(1, &p->sampler_id);
     glSamplerParameteri(p->sampler_id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -229,6 +237,7 @@ void SceneCompositor_Shutdown(void)
         glDeleteSamplers(1, &p->sampler_id);
         p->sampler_id = 0;
     }
+    TRX_GL_GpuTimer_Shutdown();
 }
 
 void SceneCompositor_BeginScene(void)

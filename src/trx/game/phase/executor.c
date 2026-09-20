@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/core/benchmark.h>
+#include <trx/core/strings.h>
 #include <trx/game/clock.h>
 #include <trx/game/console/common.h>
 #include <trx/game/fader.h>
@@ -21,9 +22,10 @@
 #include <trx/game/ui.h>
 #include <trx/game/ui/touch_overlay.h>
 #include <trx/gl/context.h>
+#include <trx/gl/gpu_timer.h>
 #include <trx/gl/track.h>
 
-#include <stdio.h>
+#include <SDL2/SDL_timer.h>
 
 #define M_MAX_PHASES 10
 
@@ -34,6 +36,8 @@ static int32_t m_PhaseStackSize = 0;
 static PHASE *m_PhaseStack[M_MAX_PHASES] = {};
 static bool m_PendingFadeToBlack = false;
 static FADER_ARGS m_PendingFadeToBlackArgs;
+
+static double m_LastFlipMs = 0.0;
 
 static GF_COMMAND M_HandleOverride(void)
 {
@@ -222,21 +226,37 @@ static void M_Draw(PHASE *const phase)
         Fader_GetCurrentValue(&m_ExitFader), true);
     Output_EndScene();
 
+    TRX_GL_GpuTimer_Collect();
     if (Shell_GetArgs()->debug_render_performance) {
-        char buffer[80];
         const TRX_GL_METRICS metrics = TRX_GL_Track_GetMetrics();
-        sprintf(
-            buffer, "%.03f KB T:%d U:%d Vo:%d Vt:%d Vb:%d",
-            metrics.buffer_total_bytes / 1024.0f, metrics.buffer_transfer_count,
-            metrics.uniform_changes, metrics.opaque_vert_count,
-            metrics.trans_vert_count, metrics.blend_add_vert_count);
-        Benchmark_End(&benchmark, buffer);
+        Benchmark_End(
+            &benchmark,
+            String_FormatStatic(
+                "%.03f KB T:%d U:%d Vo:%d Vt:%d Vb:%d Do:%d Dt:%d Db:%d S:%d "
+                "I:%d F:%.03f | gpu bg:%.02f op:%.02f tr:%.02f sub:%.02f "
+                "add:%.02f ui:%.02f",
+                metrics.buffer_total_bytes / 1024.0f,
+                metrics.buffer_transfer_count, metrics.uniform_changes,
+                metrics.opaque_vert_count, metrics.trans_vert_count,
+                metrics.blend_add_vert_count, metrics.opaque_draw_count,
+                metrics.trans_draw_count, metrics.blend_add_draw_count,
+                metrics.trans_sort_count, metrics.staged_count, m_LastFlipMs,
+                TRX_GL_GpuTimer_GetMs(SCENE_PASS_BACKGROUND),
+                TRX_GL_GpuTimer_GetMs(SCENE_PASS_OPAQUE),
+                TRX_GL_GpuTimer_GetMs(SCENE_PASS_TRANSPARENT),
+                TRX_GL_GpuTimer_GetMs(SCENE_PASS_BLEND_SUB),
+                TRX_GL_GpuTimer_GetMs(SCENE_PASS_BLEND_ADD),
+                TRX_GL_GpuTimer_GetMs(SCENE_PASS_UI)));
     }
 
     if (!Output_IsHeadless()
         || TRX_GL_Context_GetScheduledScreenshotPath() != nullptr) {
+        const Uint64 flip_start = SDL_GetPerformanceCounter();
         Output_FlipScreen();
+        m_LastFlipMs = (double)(SDL_GetPerformanceCounter() - flip_start)
+            * 1000.0 / (double)SDL_GetPerformanceFrequency();
     } else {
+        m_LastFlipMs = 0.0;
         TRX_GL_Track_Reset();
     }
 }

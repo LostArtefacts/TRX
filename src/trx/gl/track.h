@@ -9,6 +9,11 @@ typedef struct {
     int32_t opaque_vert_count;
     int32_t trans_vert_count;
     int32_t blend_add_vert_count;
+    int32_t opaque_draw_count;
+    int32_t trans_draw_count;
+    int32_t blend_add_draw_count;
+    int32_t trans_sort_count;
+    int32_t staged_count;
 } TRX_GL_METRICS;
 
 extern TRX_GL_METRICS g_TRX_GL_Metrics;
