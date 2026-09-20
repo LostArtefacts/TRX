@@ -89,6 +89,17 @@ void Shell_Terminate(int32_t exit_code)
     exit(exit_code);
 }
 
+char *Shell_GetBasePath(void)
+{
+    const char *const base = SDL_GetBasePath();
+    if (base == nullptr) {
+        return nullptr;
+    }
+    char *const result = Memory_DupStr(base);
+    SDL_free((void *)base);
+    return result;
+}
+
 void Shell_ExitSystem(const char *message)
 {
     M_ShowFatalError(message, message);

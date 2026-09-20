@@ -4,6 +4,7 @@
 #include <trx/core/filesystem.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/shell.h>
 #include <trx/core/strings.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
@@ -12,7 +13,6 @@
 #include <trx/game/shell/mod.h>
 #include <trx/version.h>
 
-#include <SDL2/SDL_filesystem.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1137,12 +1137,14 @@ void GamePath_Init(const SHELL_ARGS *const args)
     m_ResolveCacheGeneration++;
 
     if (m_Context.trx_dir == nullptr) {
-        const char *const base = SDL_GetBasePath();
-        if (base != nullptr) {
-            m_Context.trx_dir = Memory_DupStr(base);
-            SDL_free((void *)base);
+        const char *const env = getenv("TRX_DIR");
+        if (env != nullptr && !String_IsEmpty(env)) {
+            m_Context.trx_dir = Memory_DupStr(env);
         } else {
-            m_Context.trx_dir = Memory_DupStr(".");
+            m_Context.trx_dir = Shell_GetBasePath();
+            if (m_Context.trx_dir == nullptr) {
+                m_Context.trx_dir = Memory_DupStr(".");
+            }
         }
         M_TrimTrailingSeparators(m_Context.trx_dir);
     }

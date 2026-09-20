@@ -1242,6 +1242,30 @@ unit_tests += {
   'engine': ['game/lua/capi/items.c'],
 }
 
+# Where the game reads and writes, over the shipped tree. The executable's own
+# directory is stubbed, so a test says which paths follow the install root and
+# which one a variable of its own moves.
+unit_tests += {
+  'name': 'trx/game/paths',
+  'src': ['harness/stubs_paths.c', 'harness/stubs_result.c'],
+  'engine': [
+    'core/file.c',
+    'core/filesystem.c',
+    'core/memory.c',
+    'core/result.c',
+    'core/strings/case_funcs.c',
+    'core/strings/common.c',
+    'core/vector.c',
+    'game/paths.c',
+  ],
+  'deps': [dep_pcre2],
+  'args': [
+    '-DPCRE2_CODE_UNIT_WIDTH=8',
+    '-D_DEFAULT_SOURCE',
+    '-DTEST_SHIP_DIR="' + repo_root / 'data/trx/ship' + '"',
+  ],
+}
+
 # The text a binding reads as. It knows nothing of SDL, so no backend comes
 # along.
 unit_tests += {

@@ -37,6 +37,10 @@ the `cfg/` and `games/` directories. If you want to keep the executable in a
 different location, such as `/usr/local/bin`, you can override the runtime
 paths with environment variables:
 
+- `TRX_DIR`  
+  Defaults to the directory that contains the executable. The directories below
+  default to locations inside it. Set this variable to move the installation
+  tree, including `modules/` and `scripts/`.
 - `TRX_CONFIG_DIR`  
   Defaults to `<trx_dir>/cfg`.
 - `TRX_CACHE_DIR`  
@@ -53,6 +57,7 @@ pointing TRX at a separate game-data directory:
 
 ```sh
 #!/bin/sh
+export TRX_DIR="/usr/local/share/TRX"
 export TRX_GAMES_DIR="$HOME/Work/TRX/games"
 export TRX_CONFIG_DIR="$HOME/Work/TRX/cfg"
 export TRX_SAVES_DIR="$HOME/Work/TRX/saves"
