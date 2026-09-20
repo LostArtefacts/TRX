@@ -19,6 +19,10 @@
 
 #include <string.h>
 
+// Names the source language for the string files. Other languages use it as
+// a fallback when they do not define a key.
+#define M_BASE_LANG "en"
+
 typedef struct {
     char *path;
     bool load_levels;
@@ -181,6 +185,21 @@ static void M_ReorderLanguages(void)
     }
 }
 
+// Returns the parent language, or nullptr when the language has no parent.
+// The 'extends' field names the parent. A language with no field uses the
+// base language.
+static const char *M_GetParentLang(const M_LANG_ENTRY *const entry)
+{
+    if (entry->extends != nullptr) {
+        return entry->extends;
+    }
+    if (String_Equivalent(entry->lang, M_BASE_LANG)
+        || M_FindLangEntry(M_BASE_LANG) == nullptr) {
+        return nullptr;
+    }
+    return M_BASE_LANG;
+}
+
 // Recursive load of language chain (handles 'extends' fallback between
 // dialects)
 static RESULT M_ReloadLangRec(const char *const lang, VECTOR *const visited)
@@ -194,9 +213,9 @@ static RESULT M_ReloadLangRec(const char *const lang, VECTOR *const visited)
     Vector_Add(visited, &lang);
     M_LANG_ENTRY *const entry = M_FindLangEntry(lang);
     FAIL_IF(entry == nullptr, "unknown language: %s", lang);
-    if (entry->extends) {
-        MUST(
-            M_ReloadLangRec(entry->extends, visited), "extended by '%s'", lang);
+    const char *const parent = M_GetParentLang(entry);
+    if (parent != nullptr) {
+        MUST(M_ReloadLangRec(parent, visited), "extended by '%s'", lang);
     }
     for (int32_t i = 0; i < entry->files->count; i++) {
         const M_FILE_ENTRY *const fe = Vector_Get(entry->files, i);
@@ -383,7 +402,7 @@ RESULT GameStringManager_ReloadLanguage(const char *lang)
         m_LangEntries ? M_FindLangEntry(lang) : nullptr;
     if (base_entry == nullptr) {
         LOG_WARNING("language '%s' not found, defaulting to base", lang);
-        lang = "en";
+        lang = M_BASE_LANG;
     }
     GameStringTable_Shutdown();
     GameStringTable_Init();

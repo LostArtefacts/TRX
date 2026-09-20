@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.11...develop) - ××××-××-××
+**UI**
+- Fixed missing item names and menu text in non-English languages (#6645 / TRX1524, #6649 / TRX1528)
 
 **Gameplay**
 - Fixed a green glow under Lara in New Game+ (#6644 / TRX1523)
