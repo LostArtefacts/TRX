@@ -389,7 +389,7 @@ int32_t Shell_Main(const SHELL_ARGS *const args)
         s->args->startup.mod->name);
 
     // Load scripts before savegames so saved weapons are already declared.
-    LUA_RunStartupScripts();
+    EXIT_ON_FAIL(LUA_RunStartupScripts(), "A Lua startup script failed");
 
     Savegame_Init();
     SG_Manager_ScanSavedGames();
