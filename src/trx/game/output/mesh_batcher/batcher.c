@@ -49,6 +49,7 @@ typedef struct M_MESH_BUF_BINDING {
 
     int32_t opaque_index_start;
     int32_t opaque_index_count;
+    int32_t opaque_nodiscard_count;
     int32_t blend_add_index_start;
     int32_t blend_add_index_count;
     int32_t transparent_index_start;
@@ -301,20 +302,34 @@ static void M_SortTransparentFaces(const MESH_BATCHER *const batcher)
     g_TRX_GL_Metrics.trans_sort_count += n;
 }
 
+static void M_DrawOpaqueRun(
+    const M_MESH_BUF_BINDING *const bind, const int32_t index_start,
+    const int32_t index_count)
+{
+    if (index_count <= 0) {
+        return;
+    }
+    glDrawElementsBaseVertex(
+        GL_TRIANGLES, index_count, GL_UNSIGNED_INT,
+        (void *)(intptr_t)(index_start * sizeof(uint32_t)), bind->vertex_start);
+    TRX_GL_CheckError();
+    g_TRX_GL_Metrics.opaque_vert_count += index_count;
+    g_TRX_GL_Metrics.opaque_draw_count++;
+}
+
 static void M_DrawOpaqueVertices(
-    const MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst)
+    const MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst,
+    const bool no_discard)
 {
     M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
-    const void *indices_offset =
-        (void *)(intptr_t)(bind->opaque_index_start * sizeof(uint32_t));
-    glDrawElementsBaseVertex(
-        GL_TRIANGLES, bind->opaque_index_count, GL_UNSIGNED_INT,
-        indices_offset, // Offset in EBO
-        bind->vertex_start // Offset in VBO (baseVertex)
-    );
-    TRX_GL_CheckError();
-    g_TRX_GL_Metrics.opaque_vert_count += bind->opaque_index_count;
-    g_TRX_GL_Metrics.opaque_draw_count++;
+    const int32_t clean = bind->opaque_nodiscard_count;
+    if (no_discard) {
+        M_DrawOpaqueRun(bind, bind->opaque_index_start, clean);
+    } else {
+        M_DrawOpaqueRun(
+            bind, bind->opaque_index_start + clean,
+            bind->opaque_index_count - clean);
+    }
 }
 
 static void M_DrawBlendAddVertices(
@@ -334,11 +349,13 @@ static void M_DrawBlendAddVertices(
 }
 
 static void M_DrawOpaqueInstance(
-    MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst)
+    MESH_BATCHER *const batcher, const MESH_INSTANCE *const inst,
+    const bool no_discard)
 {
     M_MESH_BUF_BINDING *const bind = M_GetBinding(batcher, inst->mesh);
     ASSERT(bind != nullptr);
 
+    Output_MeshShader_SetNoAlphaDiscard(batcher->shader, no_discard);
     M_SyncRoom(batcher, bind, inst->room);
     if (bind->needs_object_light) {
         Output_Lights_UploadCPULight(&inst->light_info);
@@ -365,11 +382,11 @@ static void M_DrawOpaqueInstance(
     if (inst->wibble && inst->wibble_fill) {
         Output_MeshShader_UploadWibbleEffect(batcher->shader, false);
         glDepthMask(GL_FALSE);
-        M_DrawOpaqueVertices(batcher, inst);
+        M_DrawOpaqueVertices(batcher, inst, no_discard);
         glDepthMask(GL_TRUE);
     }
     Output_MeshShader_UploadWibbleEffect(batcher->shader, inst->wibble);
-    M_DrawOpaqueVertices(batcher, inst);
+    M_DrawOpaqueVertices(batcher, inst, no_discard);
 
     if (inst->enable_scissor) {
         Output_DisableScissor();
@@ -581,9 +598,9 @@ static void M_OpaquePass(MESH_BATCHER *const batcher)
             continue;
         }
 
-        if (inst->mesh->opaque_vertex_indices->count != 0) {
+        if (bind->opaque_nodiscard_count != 0) {
             Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
-            M_DrawOpaqueInstance(batcher, inst);
+            M_DrawOpaqueInstance(batcher, inst, true);
         }
 
         // Accumulate transparent polygons and faces.
@@ -600,6 +617,21 @@ static void M_OpaquePass(MESH_BATCHER *const batcher)
         }
     }
 
+    for (int32_t i = 0; i < staged->count; i++) {
+        MESH_INSTANCE *const inst = Vector_Get(staged, i);
+        if (inst->tint.a < 1.0f) {
+            continue;
+        }
+        const M_MESH_BUF_BINDING *const bind =
+            M_GetBinding(batcher, inst->mesh);
+        if (bind->opaque_index_count - bind->opaque_nodiscard_count <= 0) {
+            continue;
+        }
+        Output_AdjustDepth(0.0f, inst->depth_adjust * 2.0f / 0.005f);
+        M_DrawOpaqueInstance(batcher, inst, false);
+    }
+
+    Output_MeshShader_SetNoAlphaDiscard(batcher->shader, false);
     Output_AdjustDepth(0.0f, 0.0f);
 }
 
@@ -1111,6 +1143,7 @@ void MeshBatcher_AddMesh(MESH_BATCHER *const batcher, OUTPUT_MESH *const mesh)
     // 2. Prepare index counts
     // Opaque
     bind->opaque_index_count = mesh->opaque_vertex_indices->count;
+    bind->opaque_nodiscard_count = mesh->opaque_nodiscard_count;
     // Blend/Add
     bind->blend_add_index_count = mesh->blend_add_vertex_indices->count;
 

@@ -12,14 +12,9 @@
 
 #include <string.h>
 
-#define M_VARIANT_COUNT 6
-
-// The lighting family picks the file; affine mapping picks whether the file
-// gets its geometry stage, which splits near faces so the mapping has a
-// smaller depth range to go wrong over. A game that maps textures with
-// perspective needs no such split, so it binds a program with no geometry
-// stage at all and pays nothing for the feature.
-#define M_LIGHTING_VARIANT_COUNT 3
+#define M_VARIANT_COUNT 4
+#define M_VARIANT_SUBDIVIDE 2
+#define M_VARIANT_NO_DISCARD 1
 
 struct OUTPUT_MESH_SHADER {
     OUTPUT_SHADER *base[M_VARIANT_COUNT];
@@ -40,27 +35,55 @@ struct OUTPUT_MESH_SHADER {
     OUTPUT_ATLAS_RECT env_map_rect[M_VARIANT_COUNT];
 };
 
-static const char *const m_VariantPaths[M_VARIANT_COUNT] = {
-    "meshes_tr12.glsl", "meshes_tr3.glsl", "meshes_tr4.glsl",
-    "meshes_tr12.glsl", "meshes_tr3.glsl", "meshes_tr4.glsl",
-};
-
-// Suspends the geometry stage for the pass that asked for it. The subdividing
-// variant takes triangles, so a pass that draws lines cannot use it, and a
-// pass that draws flat debug geometry gains nothing from the split.
 static bool m_SubdivisionSuspended;
+static bool m_NoAlphaDiscard;
+
+static const char *M_GetVariantPath(void)
+{
+    switch (Output_Lights_GetModel()->shader_variant) {
+    case 1:
+        return "meshes_tr3.glsl";
+    case 2:
+        return "meshes_tr4.glsl";
+    default:
+        return "meshes_tr12.glsl";
+    }
+}
 
 static bool M_VariantSubdivides(const int32_t variant_idx)
 {
-    return variant_idx >= M_LIGHTING_VARIANT_COUNT;
+    return (variant_idx & M_VARIANT_SUBDIVIDE) != 0;
+}
+
+static bool M_VariantOmitsDiscard(const int32_t variant_idx)
+{
+    return (variant_idx & M_VARIANT_NO_DISCARD) != 0;
+}
+
+static const char *M_GetVariantDefines(const int32_t variant_idx)
+{
+    switch (variant_idx) {
+    case M_VARIANT_SUBDIVIDE | M_VARIANT_NO_DISCARD:
+        return "#define SUBDIVIDE\n#define NO_ALPHA_DISCARD\n";
+    case M_VARIANT_SUBDIVIDE:
+        return "#define SUBDIVIDE\n";
+    case M_VARIANT_NO_DISCARD:
+        return "#define NO_ALPHA_DISCARD\n";
+    default:
+        return nullptr;
+    }
 }
 
 static int32_t M_GetVariantIndex(void)
 {
-    const int32_t lighting = Output_Lights_GetModel()->shader_variant;
-    return g_Config.rendering.enable_affine_mapping && !m_SubdivisionSuspended
-        ? lighting + M_LIGHTING_VARIANT_COUNT
-        : lighting;
+    int32_t idx = 0;
+    if (g_Config.rendering.enable_affine_mapping && !m_SubdivisionSuspended) {
+        idx |= M_VARIANT_SUBDIVIDE;
+    }
+    if (m_NoAlphaDiscard) {
+        idx |= M_VARIANT_NO_DISCARD;
+    }
+    return idx;
 }
 
 static OUTPUT_SHADER *M_GetVariantBase(
@@ -117,8 +140,8 @@ RESULT Output_MeshShader_Create(OUTPUT_MESH_SHADER **const out_shader)
 
         const bool subdivides = M_VariantSubdivides(i);
         MUST(Output_Shader_CreateEx(
-            m_VariantPaths[i], subdivides ? "#define SUBDIVIDE\n" : nullptr,
-            subdivides, &shader->base[i]));
+            M_GetVariantPath(), M_GetVariantDefines(i), subdivides,
+            &shader->base[i]));
         Output_Shader_Bind(shader->base[i]);
         TRX_GL_TRACK_UNIFORM(
             glUniform1i,
@@ -178,12 +201,23 @@ void Output_MeshShader_UploadModelMatrix(
         GL_FALSE, &m[0][0]);
 }
 
+void Output_MeshShader_SetNoAlphaDiscard(
+    OUTPUT_MESH_SHADER *const shader, const bool is_omitted)
+{
+    if (is_omitted == m_NoAlphaDiscard) {
+        return;
+    }
+    m_NoAlphaDiscard = is_omitted;
+    Output_MeshShader_Bind(shader);
+}
+
 void Output_MeshShader_UploadAlphaDiscard(
     OUTPUT_MESH_SHADER *const shader, const bool is_enabled)
 {
     const int32_t variant_idx = M_GetVariantIndex();
     OUTPUT_SHADER *const base = M_GetVariantBase(shader, variant_idx);
-    if (is_enabled == shader->is_alpha_discard_enabled[variant_idx]) {
+    if (M_VariantOmitsDiscard(variant_idx)
+        || is_enabled == shader->is_alpha_discard_enabled[variant_idx]) {
         return;
     }
     TRX_GL_TRACK_UNIFORM(

@@ -75,5 +75,8 @@ void Output_MeshShader_UploadSubmergedAmbient(
 // it, the mesh uses one ambient light.
 void Output_MeshShader_UploadAmbientSpan(
     OUTPUT_MESH_SHADER *shader, bool is_enabled, RGB_F from);
+void Output_MeshShader_SetNoAlphaDiscard(
+    OUTPUT_MESH_SHADER *shader, bool is_omitted);
+
 void Output_MeshShader_UploadAlphaDiscard(
     OUTPUT_MESH_SHADER *shader, bool is_enabled);

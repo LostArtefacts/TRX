@@ -92,6 +92,24 @@ static void M_FillFanIndices(
     }
 }
 
+static bool M_FaceCanDiscard(
+    const OUTPUT_MESH_VERTEX *const vertices, const size_t start,
+    const size_t count)
+{
+    for (size_t i = 0; i < count; i++) {
+        const int32_t uvw_idx = vertices[start + i].uvw_idx;
+        if (uvw_idx < 0) {
+            return true;
+        }
+        const int32_t texture_idx = uvw_idx / 4;
+        if (Output_Textures_ObjectTextureHasTransparency(texture_idx)
+            || Output_Textures_IsObjectTextureAnimated(texture_idx)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 MESH_BUILDER *MeshBuilder_Create(void)
 {
     MESH_BUILDER *const builder = Memory_Alloc(sizeof(*builder));
@@ -184,9 +202,14 @@ void MeshBuilder_AddFace(
     // No-depth faces draw only in the sorted transparent pass; keeping them
     // out of the opaque bucket keeps them out of the depth buffer.
     if (depth_write) {
-        VECTOR *const target = pass == SCENE_PASS_BLEND_ADD
-            ? builder->mesh->blend_add_vertex_indices
-            : builder->mesh->opaque_vertex_indices;
+        VECTOR *target = nullptr;
+        if (pass == SCENE_PASS_BLEND_ADD) {
+            target = builder->mesh->blend_add_vertex_indices;
+        } else if (M_FaceCanDiscard(vbuf, start, vtx_count)) {
+            target = builder->mesh->opaque_discard_indices;
+        } else {
+            target = builder->mesh->opaque_vertex_indices;
+        }
         uint32_t *const out = Vector_Expand(target, idx_count);
         for (size_t i = 0; i < idx_count; i++) {
             out[i] = start + indices[i];
@@ -263,6 +286,16 @@ OUTPUT_MESH *MeshBuilder_Seal(MESH_BUILDER *const builder)
         return nullptr;
     }
     OUTPUT_MESH *const mesh = builder->mesh;
+    mesh->opaque_nodiscard_count = mesh->opaque_vertex_indices->count;
+    if (mesh->opaque_discard_indices->count > 0) {
+        const size_t extra = (size_t)mesh->opaque_discard_indices->count;
+        memcpy(
+            Vector_Expand(mesh->opaque_vertex_indices, extra),
+            Vector_GetData(mesh->opaque_discard_indices),
+            sizeof(uint32_t) * extra);
+    }
+    Vector_Free(mesh->opaque_discard_indices);
+    mesh->opaque_discard_indices = nullptr;
     Output_GlueVertexRanges(mesh->animated_vertices);
     mesh->sealed = 1;
     builder->mesh = nullptr;

@@ -1140,6 +1140,15 @@ OUTPUT_TEXTURE_SIZE Output_Textures_GetAtlasSize(const int32_t uvw_idx)
     return m_Priv.atlas_sizes.data[uvw_idx];
 }
 
+bool Output_Textures_ObjectTextureHasTransparency(const int32_t texture_idx)
+{
+    if (m_Priv.uvws.has_transparency_objects == nullptr || texture_idx < 0
+        || texture_idx >= Output_GetObjectTextureCount()) {
+        return true;
+    }
+    return m_Priv.uvws.has_transparency_objects[texture_idx];
+}
+
 bool Output_Textures_IsObjectTextureAnimated(const int32_t texture_idx)
 {
     return m_Priv.uvws.animated_objects[texture_idx];
