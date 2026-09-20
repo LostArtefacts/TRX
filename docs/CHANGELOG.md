@@ -3,6 +3,8 @@
 - Fixed Lara not rotating her torso to lock onto targets while crouched (regression from 1.11)
 
 **UI**
+- Changed the default pause screen background in TR3 and TR4 to monochrome (TRX1534)
+- Changed the default bars in TR1 to no longer use smooth colors (TRX1534)
 - Fixed missing item names and menu text in non-English languages (#6645 / TRX1524, #6649 / TRX1528)
 
 **Gameplay**
