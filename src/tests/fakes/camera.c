@@ -12,6 +12,7 @@
 
 CAMERA_INFO g_Camera;
 static bool m_FlybyActive;
+static CINE_DATA m_CineData;
 
 static void M_Reset(void)
 {
@@ -26,6 +27,7 @@ static void M_Reset(void)
     g_Camera.target.z = 6144;
     g_Camera.target.room_num = FAKE_CAMERA_TARGET_ROOM;
     m_FlybyActive = false;
+    m_CineData = (CINE_DATA) {};
 }
 
 void Camera_ResetPosition(void)
@@ -66,4 +68,9 @@ void FakeCamera_SetNoRoom(void)
 {
     g_Camera.pos.room_num = NO_ROOM;
     g_Camera.target.room_num = NO_ROOM;
+}
+
+CINE_DATA *Camera_GetCineData(void)
+{
+    return &m_CineData;
 }

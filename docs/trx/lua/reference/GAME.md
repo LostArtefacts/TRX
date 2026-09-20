@@ -31,6 +31,13 @@ Module for the game flow: which levels there are, and which one is being played.
 - <a id="game.signals.is_suspended" name="game.signals.is_suspended"></a>**`trx.game.signals.is_suspended`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when the game is held still, and when it runs on again. *(read-only)*
 - <a id="game.signals.is_photo_mode" name="game.signals.is_photo_mode"></a>**`trx.game.signals.is_photo_mode`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when photo mode opens and closes. *(read-only)*
 - <a id="game.signals.is_playable" name="game.signals.is_playable"></a>**`trx.game.signals.is_playable`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when the kind of level running changes. *(read-only)*
+- <a id="game.cutscene_frame" name="game.cutscene_frame"></a>**`trx.game.cutscene_frame`** (integer). Which frame of the cutscene level on screen is being played, or `nil` unless
+  one is. The scene's actors are items animating against this clock, so it is
+  what a script names a moment of the scene by, rather than an actor's own
+  animation frame.
+
+  This is the cutscene a level plays as a level of its own, as TR1 to TR3 do.
+  [`trx.cutscenes.Cutscene.frame_num`](CUTSCENES.md#cutscenes.Cutscene.frame_num) reports the TR4 kind. *(read-only)*
 - <a id="game.real_time" name="game.real_time"></a>**`trx.game.real_time`** (number). Seconds of wall-clock time since the game started, which keeps running while the game is held still. Use it to time something against the player's clock rather than against the frames the game has run. *(read-only)*
 - <a id="game.tr_version" name="game.tr_version"></a>**`trx.game.tr_version`** (integer). Which Tomb Raider the level being played belongs to: `1` through `4`. The games differ in what they draw and in what the player expects, so a script that dresses more than one reads this to tell them apart. Zero before a level is loaded. *(read-only)*
 - <a id="game.is_suspended" name="game.is_suspended"></a>**`trx.game.is_suspended`** (boolean). Whether a loaded level is held still: the pause screen, photo mode, or the inventory ring. Lara and the creatures do not move while it is true. It is false outside a level, which is what tells it apart from the opposite of [`trx.game.is_playing`](#game.is_playing). *(read-only)*

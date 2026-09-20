@@ -14,6 +14,7 @@
 **Lua**
 - Added `trx.fx.gun_flash()`, so a script can draw a muzzle flash on any item (TRX89)
 - Added `trx.items.Item.joint_count` and `trx.items.Item:joint_pos()` (TRX89)
+- Added `trx.game.cutscene_frame`, which reports the frame a cutscene level is playing (TRX89)
 
 
 ## [1.11.1](https://github.com/LostArtefacts/TRX/compare/trx-1.11...trx-1.11.1) - 2026-09-22

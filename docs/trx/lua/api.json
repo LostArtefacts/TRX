@@ -10689,6 +10689,12 @@
       "writable": false
     },
     {
+      "description": "Which frame of the cutscene level on screen is being played, or `nil` unless\none is. The scene's actors are items animating against this clock, so it is\nwhat a script names a moment of the scene by, rather than an actor's own\nanimation frame.\n\nThis is the cutscene a level plays as a level of its own, as TR1 to TR3 do.\n`trx.cutscenes.Cutscene.frame_num` reports the TR4 kind.",
+      "path": "game.cutscene_frame",
+      "type": "integer",
+      "writable": false
+    },
+    {
       "description": "Seconds of wall-clock time since the game started, which keeps running while the game is held still. Use it to time something against the player's clock rather than against the frames the game has run.",
       "path": "game.real_time",
       "type": "number",

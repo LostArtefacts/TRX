@@ -766,7 +766,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/stats',
   'bundles': [b_lua_surface, b_lua_events],
-  'src': ['harness/stubs_console.c', 'fakes/game.c', 'fakes/stats.c'],
+  'src': ['harness/stubs_console.c', 'fakes/camera.c', 'fakes/game.c', 'fakes/stats.c'],
   'engine': ['game/lua/capi/game.c', 'game/lua/capi/stats.c'],
 }
 
@@ -846,7 +846,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/game',
   'bundles': [b_lua_surface, b_lua_events],
-  'src': ['harness/stubs_console.c', 'fakes/game.c'],
+  'src': ['harness/stubs_console.c', 'fakes/camera.c', 'fakes/game.c'],
   'engine': ['game/lua/capi/game.c'],
 }
 
@@ -956,14 +956,14 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/commands/version',
   'bundles': [b_lua_surface, b_console, b_lua_events],
-  'src': ['fakes/game.c'],
+  'src': ['fakes/camera.c', 'fakes/game.c'],
   'engine': ['game/lua/capi/game.c'],
 }
 
 unit_tests += {
   'name': 'lua/commands/heal',
   'bundles': [b_lua_surface, b_console, b_lua_math, b_lua_events],
-  'src': ['fakes/level.c', 'fakes/game.c', 'fakes/items.c', 'fakes/lara.c'],
+  'src': ['fakes/level.c', 'fakes/camera.c', 'fakes/game.c', 'fakes/items.c', 'fakes/lara.c'],
   'engine': [
     'game/lua/capi/game.c',
     'game/lua/capi/items.c',
@@ -977,7 +977,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/commands/play_level',
   'bundles': [b_lua_surface, b_console, b_lua_events],
-  'src': ['fakes/game.c', 'fakes/strings.c'],
+  'src': ['fakes/camera.c', 'fakes/game.c', 'fakes/strings.c'],
   'engine': ['game/lua/capi/game.c'],
 }
 
@@ -1003,7 +1003,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/commands/secret',
   'bundles': [b_lua_surface, b_console, b_lua_strings, b_lua_events],
-  'src': ['fakes/game.c', 'fakes/stats.c'],
+  'src': ['fakes/camera.c', 'fakes/game.c', 'fakes/stats.c'],
   'engine': ['game/lua/capi/game.c', 'game/lua/capi/stats.c'],
 }
 
@@ -1014,6 +1014,7 @@ unit_tests += {
   ],
   'src': [
     'fakes/level.c',
+    'fakes/camera.c',
     'fakes/game.c',
     'fakes/items.c',
     'fakes/lara.c',
@@ -1040,6 +1041,7 @@ unit_tests += {
     'harness/stubs_config_file.c',
     'harness/stubs_console.c',
     'fakes/assault.c',
+    'fakes/camera.c',
     'fakes/game.c',
     'fakes/level.c',
     'fakes/locale.c',
@@ -1203,14 +1205,14 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/commands/save_game',
   'bundles': [b_lua_surface, b_console, b_lua_events],
-  'src': ['fakes/game.c', 'fakes/savegame.c'],
+  'src': ['fakes/camera.c', 'fakes/game.c', 'fakes/savegame.c'],
   'engine': ['game/lua/capi/game.c'],
 }
 
 unit_tests += {
   'name': 'lua/commands/weather',
   'bundles': [b_lua_surface, b_console, b_lua_events],
-  'src': ['fakes/game.c', 'fakes/strings.c', 'fakes/weather.c'],
+  'src': ['fakes/camera.c', 'fakes/game.c', 'fakes/strings.c', 'fakes/weather.c'],
   'engine': ['game/lua/capi/game.c', 'game/lua/capi/weather.c'],
 }
 
