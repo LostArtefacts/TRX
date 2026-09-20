@@ -106,21 +106,21 @@ static void M_AddDirScripts(VECTOR *const paths, const char *const root)
 }
 
 // List loose scripts before directory scripts.
-static VECTOR *M_ListStartupScripts(void)
+static VECTOR *M_ListStartupScripts(const char *const root)
 {
     VECTOR *const paths = Vector_Create(sizeof(M_SCRIPT));
-    char *root = Memory_DupStr(
-        GamePath_PeekResolve(GAME_DYNAMIC_PATH_STARTUP_SCRIPT_DIR, ""));
     M_AddScriptsFrom(paths, root);
     M_AddDirScripts(paths, root);
-    Memory_FreePointer(&root);
     return paths;
 }
 
 RESULT LUA_RunStartupScripts(void)
 {
+    const char *root;
+    MUST(GamePath_Resolve(GAME_DYNAMIC_PATH_STARTUP_SCRIPT_DIR, "", &root));
+
     RESULT result = OK;
-    VECTOR *const paths = M_ListStartupScripts();
+    VECTOR *const paths = M_ListStartupScripts(root);
     for (int32_t i = 0; i < paths->count; i++) {
         M_SCRIPT *const script = Vector_Get(paths, i);
         if (IS_OK(result)) {

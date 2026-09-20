@@ -544,7 +544,7 @@ void LUA_DropLevelModules(lua_State *const L)
     M_ClearRequired(L, LUA_CONTEXT_LEVEL);
 }
 
-void LUA_RunGameScript(void)
+RESULT LUA_RunGameScript(void)
 {
     // An expansion with nothing of its own to set up runs the script of the
     // game it extends, so it ships a file only to replace one. What it wants
@@ -552,15 +552,17 @@ void LUA_RunGameScript(void)
     const char *const path =
         GamePath_PeekResolve(GAME_DYNAMIC_PATH_GAME_SCRIPT_FILE, "_game.lua");
     if (path == nullptr) {
-        return;
+        return OK;
     }
 
     LOG_INFO("Loading game script: %s", path);
+    RESULT result = OK;
     LUA_RESULT res = LUA_EvalFile(path);
     if (res.code != LUA_OK) {
-        Console_ShowError("Lua game script error: %s", res.message);
+        result = FAIL("%s", res.message);
     }
     LUA_FreeResult(&res);
+    return result;
 }
 
 void LUA_DropLevelScript(void)

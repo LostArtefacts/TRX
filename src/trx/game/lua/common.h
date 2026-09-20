@@ -59,8 +59,9 @@ void LUA_InstallModRequire(lua_State *L);
 // those go with the level; the module has to run for them to come back.
 void LUA_DropLevelModules(lua_State *L);
 
-// Runs the per-game script (scripts/_game.lua), if the game ships one.
-void LUA_RunGameScript(void);
+// Runs the per-game script (scripts/_game.lua), if the game ships one, and
+// reports script failure.
+RESULT LUA_RunGameScript(void);
 
 // Pushes what a setting holds, in the shape a script reads it as: a bool as a
 // bool, a number as a number, and a color, an enum or a string as text.
