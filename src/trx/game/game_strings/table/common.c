@@ -75,6 +75,7 @@ static void M_ApplyLayer(
 
 void GameStringTable_Apply(const GF_LEVEL *const level)
 {
+    GameString_RestoreDefaults();
     Object_ResetAllNames();
     ASSERT(m_GST_Layers != nullptr);
     for (int32_t i = 0; i < m_GST_Layers->count; i++) {

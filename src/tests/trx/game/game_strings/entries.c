@@ -73,3 +73,22 @@ TEST(a_loop_of_references_holds_no_words)
     CHECK_NULL(GameString_Get("objects/a/name"));
     GameString_Clear();
 }
+
+TEST(restores_the_build_strings)
+{
+    GameString_Reset();
+    GameString_Define("general/passport/new_game", "Nuova Partita");
+    GameString_RestoreDefaults();
+    CHECK_EQ_STR(GameString_Get("general/passport/new_game"), "New Game");
+    GameString_Clear();
+}
+
+TEST(preserves_strings_not_in_the_build)
+{
+    GameString_Reset();
+    GameString_Define("objects/lead_bar_item/name", "Barra di Piombo");
+    GameString_RestoreDefaults();
+    CHECK_EQ_STR(
+        GameString_Get("objects/lead_bar_item/name"), "Barra di Piombo");
+    GameString_Clear();
+}
