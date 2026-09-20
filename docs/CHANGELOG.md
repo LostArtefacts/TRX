@@ -9,6 +9,9 @@
 **Installer**
 - Fixed performance issues when using the Windows installer with a detected disc image source (TRX1531, regression from 1.11)
 
+**Game and mods**
+- Added the `TRX_DIR` environment variable to move the whole installation tree at once
+
 **Lua**
 - Added `given_in_ngplus` to weapon specs and `trx.weapons.Weapon`.
 - Added `trx.lara.back_gun` and `trx.lara.holsters_gun`.
