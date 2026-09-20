@@ -1,4 +1,6 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.11...develop) - ××××-××-××
+**UI**
+- Fixed missing item names and menu text in non-English languages (#6645 / TRX1524, #6649 / TRX1528)
 
 ## [1.11](https://github.com/LostArtefacts/TRX/compare/trx-1.10.2...trx-1.11) - 2026-09-19
 Showcase: https://youtu.be/dHuBHppj_fo

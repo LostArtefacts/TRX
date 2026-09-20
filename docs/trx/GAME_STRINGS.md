@@ -152,6 +152,7 @@ The document is organized as follows:
     <td>
       Fallback to another language code for missing entries. For dialects (e.g., "fr-ca"),
       specify <code>"extends": "fr"</code> to inherit missing layers from the parent language.
+      A language with no parent falls back to English.
     </td>
   </tr>
 
