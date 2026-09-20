@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/game/camera.h>
 #include <trx/game/clock/common.h>
 #include <trx/game/const.h>
 #include <trx/game/demo.h>
@@ -237,6 +238,18 @@ static int M_L_GameRealTime(lua_State *const L)
     return 1;
 }
 
+// trxc.game.cutscene_frame() -> integer or nil
+static int M_L_GameCutsceneFrame(lua_State *const L)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    if (level == nullptr || level->type != GFL_CUTSCENE) {
+        lua_pushnil(L);
+        return 1;
+    }
+    lua_pushinteger(L, Camera_GetCineData()->frame_idx);
+    return 1;
+}
+
 // trxc.game.tr_version() -> integer
 static int M_L_GameTRVersion(lua_State *const L)
 {
@@ -446,6 +459,7 @@ static const luaL_Reg m_Module[] = {
     { "is_playing", M_L_GameIsPlaying },
     { "is_playable", M_L_GameIsPlayable },
     { "tr_version", M_L_GameTRVersion },
+    { "cutscene_frame", M_L_GameCutsceneFrame },
     { "real_time", M_L_GameRealTime },
     { "is_suspended", M_L_GameIsSuspended },
     { "is_photo_mode", M_L_GameIsPhotoMode },

@@ -385,6 +385,20 @@ for _, entry in ipairs(GAME_SIGNALS) do
   })
 end
 
+api.property("game.cutscene_frame", {
+  type = "integer",
+  nullable = true,
+  description = [[
+Which frame of the cutscene level on screen is being played, or `nil` unless
+one is. The scene's actors are items animating against this clock, so it is
+what a script names a moment of the scene by, rather than an actor's own
+animation frame.
+
+This is the cutscene a level plays as a level of its own, as TR1 to TR3 do.
+`trx.cutscenes.Cutscene.frame_num` reports the TR4 kind.]],
+  get = raw.cutscene_frame,
+})
+
 api.property("game.real_time", {
   type = "number",
   description = "Seconds of wall-clock time since the game started, which keeps running while "
