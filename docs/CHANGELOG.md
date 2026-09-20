@@ -1,4 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.11...develop) - ××××-××-××
+**Lara's movement**
+- Fixed Lara not rotating her torso to lock onto targets while crouched (regression from 1.11)
+
 **UI**
 - Fixed missing item names and menu text in non-English languages (#6645 / TRX1524, #6649 / TRX1528)
 
