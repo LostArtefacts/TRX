@@ -5,7 +5,6 @@
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/vector.h>
-#include <trx/game/console/common.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/paths.h>
 
@@ -118,23 +117,27 @@ static VECTOR *M_ListStartupScripts(void)
     return paths;
 }
 
-void LUA_RunStartupScripts(void)
+RESULT LUA_RunStartupScripts(void)
 {
+    RESULT result = OK;
     VECTOR *const paths = M_ListStartupScripts();
     for (int32_t i = 0; i < paths->count; i++) {
         M_SCRIPT *const script = Vector_Get(paths, i);
-        LOG_INFO("Running Lua startup script: %s", script->path);
-        m_ScriptDir = script->dir;
-        LUA_RESULT res = LUA_EvalFile(script->path);
-        m_ScriptDir = nullptr;
-        if (res.code != LUA_OK) {
-            Console_ShowError("Lua startup script error: %s", res.message);
+        if (IS_OK(result)) {
+            LOG_INFO("Running Lua startup script: %s", script->path);
+            m_ScriptDir = script->dir;
+            LUA_RESULT res = LUA_EvalFile(script->path);
+            m_ScriptDir = nullptr;
+            if (res.code != LUA_OK) {
+                result = FAIL("%s", res.message);
+            }
+            LUA_FreeResult(&res);
         }
-        LUA_FreeResult(&res);
         Memory_FreePointer(&script->path);
         Memory_FreePointer(&script->dir);
     }
     Vector_Free(paths);
+    return result;
 }
 
 const char *LUA_GetStartupScriptDir(void)
