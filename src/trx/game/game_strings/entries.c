@@ -78,10 +78,15 @@ static bool M_FollowParentRef(const char *const key, char *const out)
     return false;
 }
 
+void GameString_RestoreDefaults(void)
+{
+#include <trx/game/game_strings/entries.def>
+}
+
 void GameString_Reset(void)
 {
     GameString_Clear();
-#include <trx/game/game_strings/entries.def>
+    GameString_RestoreDefaults();
 }
 
 void GameString_Define(const char *const key, const char *value)

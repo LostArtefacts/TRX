@@ -20,6 +20,11 @@ typedef const char *GAME_STRING_ID;
 // over them.
 void GameString_Reset(void);
 
+// Restores the strings defined by the build and leaves other mappings in
+// place. Use this before applying a language so that missing keys use the
+// build's text.
+void GameString_RestoreDefaults(void);
+
 // Define a new game string mapping.
 // @param key   Identifier for the string (e.g. "GAME_OVER").
 // @param value Text to associate with the identifier.
