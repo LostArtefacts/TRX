@@ -22,6 +22,8 @@
 **Lua**
 - Added `given_in_ngplus` to weapon specs and `trx.weapons.Weapon`.
 - Added `trx.lara.back_gun` and `trx.lara.holsters_gun`.
+- Added `trx.lara.head_rot`, `trx.lara.torso_rot`, `trx.lara.left_arm_rot`, and `trx.lara.right_arm_rot`.
+- Added `trx.lara.move_angle` and `trx.lara.turn_rate`.
 
 ## [1.11](https://github.com/LostArtefacts/TRX/compare/trx-1.10.2...trx-1.11) - 2026-09-19
 Showcase: https://youtu.be/dHuBHppj_fo

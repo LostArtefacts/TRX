@@ -13519,6 +13519,12 @@
           "writable": false
         },
         {
+          "description": "The direction in which Lara's head points, relative to her torso. The engine sets it in each frame from where she looks and aims.",
+          "name": "head_rot",
+          "type": "math.Rot",
+          "writable": false
+        },
+        {
           "description": "Which way the last hit came from, or -1 if she has not been hit.",
           "name": "hit_direction",
           "type": "integer",
@@ -13579,6 +13585,18 @@
           "writable": false
         },
         {
+          "description": "The direction in which Lara's left arm aims, relative to her torso.",
+          "name": "left_arm_rot",
+          "type": "math.Rot",
+          "writable": false
+        },
+        {
+          "description": "The direction Lara moves in. It leaves `trx.lara.item` facing elsewhere while she sidesteps, backflips or swims sideways.",
+          "name": "move_angle",
+          "type": "math.Angle",
+          "writable": false
+        },
+        {
           "description": "How poisoned Lara is, and 0 when she is not.",
           "name": "poison",
           "type": "integer",
@@ -13615,10 +13633,28 @@
           "writable": false
         },
         {
+          "description": "The direction in which Lara's right arm aims, relative to her torso.",
+          "name": "right_arm_rot",
+          "type": "math.Rot",
+          "writable": false
+        },
+        {
           "description": "Sprint left in her legs.",
           "name": "sprint_timer",
           "type": "integer",
           "writable": true
+        },
+        {
+          "description": "The direction in which Lara's torso points, relative to `trx.lara.item`. The engine sets it in each frame from where she looks and aims.",
+          "name": "torso_rot",
+          "type": "math.Rot",
+          "writable": false
+        },
+        {
+          "description": "The angle by which Lara turns in each frame. It is 0 when she is not turning.",
+          "name": "turn_rate",
+          "type": "math.Angle",
+          "writable": false
         },
         {
           "description": "Where Lara is with respect to water.",

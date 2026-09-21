@@ -131,6 +131,33 @@ api.type("lara.Lara", {
       type = "boolean",
       description = "Whether Lara is on fire. Setting it lights her or puts her out.",
     },
+    move_angle = {
+      from = "move_angle",
+      type = "math.Angle",
+      writable = false,
+      description = "The direction Lara moves in. It leaves `trx.lara.item` facing elsewhere "
+        .. "while she sidesteps, backflips or swims sideways.",
+    },
+    turn_rate = {
+      from = "turn_rate",
+      type = "math.Angle",
+      writable = false,
+      description = "The angle by which Lara turns in each frame. It is 0 when she is not turning.",
+    },
+    head_rot = {
+      from = "head_rot",
+      type = "math.Rot",
+      writable = false,
+      description = "The direction in which Lara's head points, relative to her torso. The engine sets "
+        .. "it in each frame from where she looks and aims.",
+    },
+    torso_rot = {
+      from = "torso_rot",
+      type = "math.Rot",
+      writable = false,
+      description = "The direction in which Lara's torso points, relative to `trx.lara.item`. The engine "
+        .. "sets it in each frame from where she looks and aims.",
+    },
     is_crouched = {
       from = "is_crouched",
       type = "boolean",
@@ -228,6 +255,12 @@ api.type("lara.Lara", {
       writable = false,
       description = "The frame that animation is on.",
     },
+    left_arm_rot = {
+      from = "left_arm.rot",
+      type = "math.Rot",
+      writable = false,
+      description = "The direction in which Lara's left arm aims, relative to her torso.",
+    },
     right_arm_anim_num = {
       from = "right_arm.anim_num",
       type = "integer",
@@ -239,6 +272,12 @@ api.type("lara.Lara", {
       type = "integer",
       writable = false,
       description = "The frame that animation is on.",
+    },
+    right_arm_rot = {
+      from = "right_arm.rot",
+      type = "math.Rot",
+      writable = false,
+      description = "The direction in which Lara's right arm aims, relative to her torso.",
     },
     flare_control = {
       from = "flare.control",

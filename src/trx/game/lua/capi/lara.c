@@ -63,6 +63,10 @@ static const FIELD_DESC m_Fields[] = {
     FIELD_RO(LARA_INFO, request_gun_type),
     FIELD_RO(LARA_INFO, back_gun_type),
     FIELD_RO(LARA_INFO, holsters_gun_type),
+    FIELD_RO(LARA_INFO, move_angle),
+    FIELD_RO(LARA_INFO, turn_rate),
+    FIELD_RO(LARA_INFO, head_rot),
+    FIELD_RO(LARA_INFO, torso_rot),
     FIELD_RO(LARA_INFO, is_crouched),
     FIELD_RO(LARA_INFO, climb_status),
     FIELD_RO(LARA_INFO, extra_anim),
@@ -75,11 +79,12 @@ static const FIELD_DESC m_Fields[] = {
     FIELD_RO(LARA_INFO, hit_frame),
     FIELD_RO(LARA_INFO, pose_count),
 
-    // arm and flare state
     FIELD_RO(LARA_INFO, left_arm.anim_num),
     FIELD_RO(LARA_INFO, left_arm.frame_num),
+    FIELD_RO(LARA_INFO, left_arm.rot),
     FIELD_RO(LARA_INFO, right_arm.anim_num),
     FIELD_RO(LARA_INFO, right_arm.frame_num),
+    FIELD_RO(LARA_INFO, right_arm.rot),
     FIELD_RO(LARA_INFO, flare.control),
 
     // interaction target
