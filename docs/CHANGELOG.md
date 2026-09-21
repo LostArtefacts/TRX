@@ -18,6 +18,7 @@
 **Game and mods**
 - Added the `TRX_DIR` environment variable to move the whole installation tree at once
 - Fixed a bug where the game crashed when its own scripts or modules were missing
+- Fixed unreliable water current behavior in TR1 and TR2 when Lara is using a UPV (TRX1542)
 
 **Lua**
 - Added `given_in_ngplus` to weapon specs and `trx.weapons.Weapon`.
