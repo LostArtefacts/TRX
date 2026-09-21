@@ -22,16 +22,11 @@ static void M_HandleQuit(void)
     Shell_ScheduleExit();
 }
 
-// Hands a key to the scripts as hardware. The console takes the keyboard while
-// it is open and so does a rebind, and neither is the player working the world.
-static void M_FireLuaKeyEvent(
-    const SDL_Event *const event, const LUA_EVENT_TYPE type)
+// Send hardware input to scripts when gameplay receives the input.
+static void M_FireLuaInputEvent(
+    const LUA_EVENT_TYPE type, const char *const name)
 {
-    if (Console_IsOpened() || Input_IsInListenMode()) {
-        return;
-    }
-    const char *const name = InputRaw_EventKeyName(event);
-    if (name == nullptr) {
+    if (name == nullptr || Console_IsOpened() || Input_IsInListenMode()) {
         return;
     }
     const LUA_EVENT_ARG args[] = {
@@ -43,7 +38,7 @@ static void M_FireLuaKeyEvent(
 static void M_HandleKeyDown(const SDL_Event *const event)
 {
     if (!event->key.repeat) {
-        M_FireLuaKeyEvent(event, LUA_EVENT_KEY_DOWN);
+        M_FireLuaInputEvent(LUA_EVENT_KEY_DOWN, InputRaw_EventKeyName(event));
     }
 
     // NOTE: Opening the console normally would get handled by Input_Update, but
@@ -71,7 +66,7 @@ static void M_HandleKeyDown(const SDL_Event *const event)
 
 static void M_HandleKeyUp(const SDL_Event *const event)
 {
-    M_FireLuaKeyEvent(event, LUA_EVENT_KEY_UP);
+    M_FireLuaInputEvent(LUA_EVENT_KEY_UP, InputRaw_EventKeyName(event));
 
     // NOTE: needs special handling on Windows -
     // SDL_SCANCODE_PRINTSCREEN is not sufficient to react to this.
@@ -160,6 +155,16 @@ bool Shell_ProcessEvent(const SDL_Event *const event)
         } else {
             UI_HandleTextEdit(event->text.text);
         }
+        return true;
+
+    case SDL_CONTROLLERBUTTONDOWN:
+        M_FireLuaInputEvent(
+            LUA_EVENT_BUTTON_DOWN, InputRaw_EventButtonName(event));
+        return true;
+
+    case SDL_CONTROLLERBUTTONUP:
+        M_FireLuaInputEvent(
+            LUA_EVENT_BUTTON_UP, InputRaw_EventButtonName(event));
         return true;
 
     case SDL_CONTROLLERDEVICEADDED:

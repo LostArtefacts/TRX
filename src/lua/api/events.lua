@@ -262,6 +262,51 @@ api.define("events.on_key_up", {
   impl = hook(types.KEY_UP),
 })
 
+api.define("events.on_button_down", {
+  description = [[
+    Happens as a controller button goes down, before the game reads it as an
+    action. The handler takes the name of the button.
+
+    A button keeps the name SDL gives it, such as `"a"`, `"dpup"` and
+    `"leftshoulder"`, because a pad prints a different label on the same button
+    depending on who made it. `trx.input.is_button_held` lists them.
+
+    Use `trx.input.signals.pressed` for a game action, which respects what the
+    player bound it to and answers for the keyboard as well.
+
+    It stays quiet while the console is open and while a rebind is reading the
+    pad.
+  ]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      description = "Called with the name of the button.",
+    },
+  },
+  returns = LISTENER,
+  impl = hook(types.BUTTON_DOWN),
+})
+
+api.define("events.on_button_up", {
+  description = [[
+    Happens as a controller button comes up. The handler takes the name of the
+    button, named as `trx.events.on_button_down` names it.
+
+    It stays quiet while the console is open and while a rebind is reading the
+    pad, so a button held across either can come up unreported.
+  ]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      description = "Called with the name of the button.",
+    },
+  },
+  returns = LISTENER,
+  impl = hook(types.BUTTON_UP),
+})
+
 api.define("events.on_ui_draw", {
   description = [[
     Fires once for each of the nine on-screen UI regions on every drawn frame.

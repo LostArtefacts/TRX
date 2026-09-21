@@ -4541,6 +4541,36 @@
       }
     },
     {
+      "description": "Happens as a controller button goes down, before the game reads it as an\naction. The handler takes the name of the button.\n\nA button keeps the name SDL gives it, such as `\"a\"`, `\"dpup\"` and\n`\"leftshoulder\"`, because a pad prints a different label on the same button\ndepending on who made it. `trx.input.is_button_held` lists them.\n\nUse `trx.input.signals.pressed` for a game action, which respects what the\nplayer bound it to and answers for the keyboard as well.\n\nIt stays quiet while the console is open and while a rebind is reading the\npad.",
+      "params": [
+        {
+          "description": "Called with the name of the button.",
+          "name": "callback",
+          "type": "function"
+        }
+      ],
+      "path": "events.on_button_down",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
+      }
+    },
+    {
+      "description": "Happens as a controller button comes up. The handler takes the name of the\nbutton, named as `trx.events.on_button_down` names it.\n\nIt stays quiet while the console is open and while a rebind is reading the\npad, so a button held across either can come up unreported.",
+      "params": [
+        {
+          "description": "Called with the name of the button.",
+          "name": "callback",
+          "type": "function"
+        }
+      ],
+      "path": "events.on_button_up",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
+      }
+    },
+    {
       "description": "Fires once for each of the nine on-screen UI regions on every drawn frame.\nThe callback receives the current `trx.ui.Region`.\n\nUse this event to reserve layout space, not to draw. Call\n`trx.ui.primitive.reserve` during this event, then draw into the assigned\nbox later during `trx.events.on_ui_paint`. `trx.ui.regions.place` handles\nboth steps for widgets.\n\nThis event fires anywhere the game draws UI, including fades, FMVs, and\nnormal gameplay. It follows the frame rate, not the game clock.",
       "examples": [
         "local slot = nil\n\ntrx.events.on_ui_draw(function(region)\n  if region == trx.ui.Region.TOP_CENTER then\n    local w, h = trx.ui.primitive.measure_text(\"hello\")\n    slot = trx.ui.primitive.reserve(region, w, h)\n  end\nend)\n\ntrx.events.on_ui_paint(function()\n  local x, y = trx.ui.primitive.slot_box(slot)\n  if x ~= nil then\n    trx.ui.primitive.text(\"hello\", x, y)\n  end\nend)"
@@ -6791,6 +6821,81 @@
       "path": "input.is_key_known",
       "returns": {
         "description": "Whether a key carries it.",
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Whether a controller button is down right now.\n\nThis reads the pad rather than the player's bindings, so it answers for the\nbutton itself. Prefer `trx.input.is_held` for a game action: it follows what the\nplayer bound and works on every device.\n\nA name SDL does not know raises.",
+      "params": [
+        {
+          "description": "The button to ask about.",
+          "name": "button",
+          "type": "string"
+        }
+      ],
+      "path": "input.is_button_held",
+      "returns": {
+        "description": "Whether the button is down.",
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Whether a controller button went down in this frame.\n\nThis is true for one frame only. `trx.events.on_button_down` reports the same\npresses without a script naming the buttons it cares about in advance.\n\nA name SDL does not know raises.",
+      "params": [
+        {
+          "description": "The button to ask about.",
+          "name": "button",
+          "type": "string"
+        }
+      ],
+      "path": "input.is_button_pressed",
+      "returns": {
+        "description": "Whether the button went down.",
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Whether a controller button carries that name.",
+      "params": [
+        {
+          "description": "The name to check.",
+          "name": "button",
+          "type": "string"
+        }
+      ],
+      "path": "input.is_button_known",
+      "returns": {
+        "description": "Whether a button carries it.",
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Where a controller axis stands, from -1 to 1.\n\nA stick reaches -1 left or up and 1 right or down. A trigger runs from 0 at rest\nto 1 held down. An axis on a pad that is not attached reads 0.\n\nA name SDL does not know raises.",
+      "params": [
+        {
+          "description": "The axis to read.",
+          "name": "axis",
+          "type": "string"
+        }
+      ],
+      "path": "input.axis",
+      "returns": {
+        "description": "Where the axis stands.",
+        "type": "number"
+      }
+    },
+    {
+      "description": "Whether a controller axis carries that name.",
+      "params": [
+        {
+          "description": "The name to check.",
+          "name": "axis",
+          "type": "string"
+        }
+      ],
+      "path": "input.is_axis_known",
+      "returns": {
+        "description": "Whether an axis carries it.",
         "type": "boolean"
       }
     },
@@ -10188,7 +10293,7 @@
       "title": "Injection"
     },
     {
-      "description": "Module for reading input and working with player bindings.\n\nScripts ask about roles, not physical keys. A role is a game action such as\njumping, drawing a weapon, or opening a menu. The key or button that triggers it\ndepends on the player's device and layout.\n\nUse `\\{input ...}` in text to draw the binding for a role.\n\nA few functions read the keyboard itself, for a script that needs the key rather\nthan the action, such as one reading a passcode. They name a key that prints a\ncharacter by the character the player's layout prints, so the key labelled 5 is\n`\"5\"` on every layout, and a key with a label rather than a character by the\nspelling the window system gives it in lower case: `\"escape\"`, `\"return\"`,\n`\"left shift\"`, `\"f5\"`, `\"keypad 5\"`.",
+      "description": "Module for reading input and working with player bindings.\n\nScripts ask about roles, not physical keys. A role is a game action such as\njumping, drawing a weapon, or opening a menu. The key or button that triggers it\ndepends on the player's device and layout.\n\nUse `\\{input ...}` in text to draw the binding for a role.\n\nA few functions read the keyboard and the controller themselves, for a script\nthat needs the key rather than the action, such as one reading a passcode.\n\nA key that prints a character is named by the character the player's layout\nprints, so the key labelled 5 is `\"5\"` on every layout. A key with a label rather\nthan a character keeps the spelling the window system gives it, in lower case:\n`\"escape\"`, `\"return\"`, `\"left shift\"`, `\"f5\"`, `\"keypad 5\"`.\n\nA controller button or axis keeps the name SDL gives it, because a pad prints a\ndifferent label on the same button depending on who made it. The buttons are\n`\"a\"`, `\"b\"`, `\"x\"`, `\"y\"`, `\"back\"`, `\"guide\"`, `\"start\"`, `\"leftstick\"`,\n`\"rightstick\"`, `\"leftshoulder\"`, `\"rightshoulder\"`, `\"dpup\"`, `\"dpdown\"`,\n`\"dpleft\"`, `\"dpright\"`, `\"misc1\"`, `\"paddle1\"` to `\"paddle4\"` and `\"touchpad\"`.\nThe axes are `\"leftx\"`, `\"lefty\"`, `\"rightx\"`, `\"righty\"`, `\"lefttrigger\"` and\n`\"righttrigger\"`.",
       "name": "input",
       "order": 41,
       "title": "Input"

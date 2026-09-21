@@ -33,6 +33,25 @@ static struct {
     { .name = "return" }, { .name = "left shift" },
 };
 
+// The pad the raw reads see, named as SDL names buttons and axes.
+static struct {
+    const char *name;
+    bool held;
+    bool pressed;
+} m_Buttons[] = {
+    { .name = "a" },
+    { .name = "dpup" },
+    { .name = "leftshoulder" },
+};
+
+static struct {
+    const char *name;
+    float value;
+} m_Axes[] = {
+    { .name = "leftx" },
+    { .name = "lefttrigger" },
+};
+
 // Every test starts from a bound, quiet device.
 static void M_Reset(void)
 {
@@ -49,6 +68,13 @@ static void M_Reset(void)
     for (size_t i = 0; i < sizeof m_Keys / sizeof m_Keys[0]; i++) {
         m_Keys[i].held = false;
         m_Keys[i].pressed = false;
+    }
+    for (size_t i = 0; i < sizeof m_Buttons / sizeof m_Buttons[0]; i++) {
+        m_Buttons[i].held = false;
+        m_Buttons[i].pressed = false;
+    }
+    for (size_t i = 0; i < sizeof m_Axes / sizeof m_Axes[0]; i++) {
+        m_Axes[i].value = 0.0f;
     }
 }
 
@@ -124,8 +150,47 @@ static int M_FakeSetKeyPressed(lua_State *const L)
     return 0;
 }
 
+static int M_FakeSetButtonHeld(lua_State *const L)
+{
+    const char *const name = luaL_checkstring(L, 1);
+    for (size_t i = 0; i < sizeof m_Buttons / sizeof m_Buttons[0]; i++) {
+        if (strcmp(m_Buttons[i].name, name) == 0) {
+            m_Buttons[i].held = lua_toboolean(L, 2);
+        }
+    }
+    return 0;
+}
+
+static int M_FakeSetButtonPressed(lua_State *const L)
+{
+    const char *const name = luaL_checkstring(L, 1);
+    for (size_t i = 0; i < sizeof m_Buttons / sizeof m_Buttons[0]; i++) {
+        if (strcmp(m_Buttons[i].name, name) == 0) {
+            m_Buttons[i].pressed = lua_toboolean(L, 2);
+        }
+    }
+    return 0;
+}
+
+static int M_FakeSetAxis(lua_State *const L)
+{
+    const char *const name = luaL_checkstring(L, 1);
+    for (size_t i = 0; i < sizeof m_Axes / sizeof m_Axes[0]; i++) {
+        if (strcmp(m_Axes[i].name, name) == 0) {
+            m_Axes[i].value = (float)luaL_checknumber(L, 2);
+        }
+    }
+    return 0;
+}
+
 static void M_PushFake(lua_State *const L)
 {
+    lua_pushcfunction(L, M_FakeSetButtonHeld);
+    lua_setfield(L, -2, "set_button_held");
+    lua_pushcfunction(L, M_FakeSetButtonPressed);
+    lua_setfield(L, -2, "set_button_pressed");
+    lua_pushcfunction(L, M_FakeSetAxis);
+    lua_setfield(L, -2, "set_axis");
     lua_pushcfunction(L, M_FakeSetKeyHeld);
     lua_setfield(L, -2, "set_key_held");
     lua_pushcfunction(L, M_FakeSetKeyPressed);
@@ -211,6 +276,56 @@ bool InputRaw_IsKeyKnown(const char *const key)
 {
     for (size_t i = 0; i < sizeof m_Keys / sizeof m_Keys[0]; i++) {
         if (strcmp(m_Keys[i].name, key) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool InputRaw_IsButtonHeld(const char *const button)
+{
+    for (size_t i = 0; i < sizeof m_Buttons / sizeof m_Buttons[0]; i++) {
+        if (strcmp(m_Buttons[i].name, button) == 0) {
+            return m_Buttons[i].held;
+        }
+    }
+    return false;
+}
+
+bool InputRaw_IsButtonPressed(const char *const button)
+{
+    for (size_t i = 0; i < sizeof m_Buttons / sizeof m_Buttons[0]; i++) {
+        if (strcmp(m_Buttons[i].name, button) == 0) {
+            return m_Buttons[i].pressed;
+        }
+    }
+    return false;
+}
+
+bool InputRaw_IsButtonKnown(const char *const button)
+{
+    for (size_t i = 0; i < sizeof m_Buttons / sizeof m_Buttons[0]; i++) {
+        if (strcmp(m_Buttons[i].name, button) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+float InputRaw_GetAxis(const char *const axis)
+{
+    for (size_t i = 0; i < sizeof m_Axes / sizeof m_Axes[0]; i++) {
+        if (strcmp(m_Axes[i].name, axis) == 0) {
+            return m_Axes[i].value;
+        }
+    }
+    return 0.0f;
+}
+
+bool InputRaw_IsAxisKnown(const char *const axis)
+{
+    for (size_t i = 0; i < sizeof m_Axes / sizeof m_Axes[0]; i++) {
+        if (strcmp(m_Axes[i].name, axis) == 0) {
             return true;
         }
     }

@@ -1,16 +1,10 @@
 #pragma once
 
-// Reading the keyboard as hardware rather than as game actions. A role answers
-// what the player wants to do, and is what game code and most scripts want;
-// this answers which key is down, for a script that needs the key itself, such
-// as one reading a passcode off a keypad.
-//
-// Keys are named by the character the player's layout prints, so the key
-// labelled 5 is "5" on every layout, and named keys keep the spelling SDL gives
-// them in lower case, such as "escape" and "left shift".
-//
-// State is held per scancode and fed from the event stream rather than read
-// from the window system, so a recording drives it exactly as a player does.
+// Read keyboard and controller state as hardware input. Use this interface
+// when a script needs a physical key, button, or axis instead of a game action.
+// Name keys by the character that the current layout prints. Keep named keys
+// in lower case. Use SDL names for buttons and axes. Read state from events so
+// replay input follows live input.
 
 #include <stdint.h>
 
@@ -20,7 +14,8 @@ typedef union SDL_Event SDL_Event;
 // Clear press and release state from the previous frame.
 void InputRaw_BeginFrame(void);
 
-// Tracks a key going down or coming up.
+// Tracks a key, a button or an axis from an event, and forgets what a
+// controller held once it goes away.
 void InputRaw_ProcessEvent(const SDL_Event *event);
 
 // Checks whether the named key is down. An unknown name reports false.
@@ -36,3 +31,26 @@ bool InputRaw_IsKeyKnown(const char *key);
 // Names the key a keyboard event carries, or returns nullptr for an event that
 // carries none. The name holds until the next call.
 const char *InputRaw_EventKeyName(const SDL_Event *event);
+
+// Checks whether the named controller button is down. An unknown name reports
+// false.
+bool InputRaw_IsButtonHeld(const char *button);
+
+// Checks whether the named controller button went down in this frame. An
+// unknown name reports false.
+bool InputRaw_IsButtonPressed(const char *button);
+
+// Checks whether a controller button name is one SDL knows.
+bool InputRaw_IsButtonKnown(const char *button);
+
+// Position of the named axis, from -1 to 1, or 0 for a trigger at rest, for an
+// unknown name and for a controller that is not attached. A trigger runs from
+// 0 to 1.
+float InputRaw_GetAxis(const char *axis);
+
+// Checks whether a controller axis name is one SDL knows.
+bool InputRaw_IsAxisKnown(const char *axis);
+
+// Names the button a controller event carries, or returns nullptr for an event
+// that carries none.
+const char *InputRaw_EventButtonName(const SDL_Event *event);
