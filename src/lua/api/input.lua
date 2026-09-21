@@ -14,7 +14,14 @@ Scripts ask about roles, not physical keys. A role is a game action such as
 jumping, drawing a weapon, or opening a menu. The key or button that triggers it
 depends on the player's device and layout.
 
-Use `\{input ...}` in text to draw the binding for a role.]],
+Use `\{input ...}` in text to draw the binding for a role.
+
+A few functions read the keyboard itself, for a script that needs the key rather
+than the action, such as one reading a passcode. They name a key that prints a
+character by the character the player's layout prints, so the key labelled 5 is
+`"5"` on every layout, and a key with a label rather than a character by the
+spelling the window system gives it in lower case: `"escape"`, `"return"`,
+`"left shift"`, `"f5"`, `"keypad 5"`.]],
 })
 
 api.enum("input.Role", {
@@ -146,6 +153,66 @@ input code or fire again while held.]],
     { name = "role", type = "input.Role", description = "The role to take." },
   },
   impl = raw.hold_off,
+})
+
+-------------------------------------------------------------------------------
+-- Read the keyboard as hardware.
+-------------------------------------------------------------------------------
+
+api.define("input.is_key_held", {
+  description = [[
+Whether a key is down right now.
+
+This reads the keyboard rather than the player's bindings, so it answers for the
+key itself and says nothing about a controller. Prefer `trx.input.is_held` for a
+game action: it follows what the player bound and works on every device.
+
+A name no key on the player's layout carries raises.]],
+  params = {
+    {
+      name = "key",
+      type = "string",
+      description = "The key to ask about.",
+    },
+  },
+  returns = { type = "boolean", description = "Whether the key is down." },
+  impl = raw.is_key_held,
+})
+
+api.define("input.is_key_pressed", {
+  description = [[
+Whether a key went down in this frame.
+
+This is true for one frame only. `trx.events.on_key_down` reports the same
+presses without a script naming the keys it cares about in advance.
+
+A name no key on the player's layout carries raises.]],
+  params = {
+    {
+      name = "key",
+      type = "string",
+      description = "The key to ask about.",
+    },
+  },
+  returns = { type = "boolean", description = "Whether the key went down." },
+  impl = raw.is_key_pressed,
+})
+
+api.define("input.is_key_known", {
+  description = [[
+Whether the player's layout has a key of that name.
+
+Use this to check a name a mod's own settings supplied, rather than letting
+`trx.input.is_key_held` raise on it.]],
+  params = {
+    {
+      name = "key",
+      type = "string",
+      description = "The name to check.",
+    },
+  },
+  returns = { type = "boolean", description = "Whether a key carries it." },
+  impl = raw.is_key_known,
 })
 
 -------------------------------------------------------------------------------

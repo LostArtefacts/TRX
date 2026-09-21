@@ -203,6 +203,65 @@ api.define("events.on_tick", {
   impl = hook(types.TICK),
 })
 
+api.define("events.on_key_down", {
+  description = [[
+    Happens as a key goes down, before the game reads it as an action. The
+    handler takes the name of the key.
+
+    A key is named by the character the player's layout prints, so the key
+    labelled 5 arrives as `"5"` on every layout, and a key with a label
+    rather than a character keeps the spelling the window system gives it in
+    lower case, such as `"escape"` and `"left shift"`.
+
+    Use this where a script needs the key itself, such as one reading a
+    passcode. Use `trx.input.signals.pressed` for a game action, which respects
+    what the player bound it to and answers for a controller as well.
+
+    Holding a key down fires it once. It stays quiet while the console is open
+    and while a rebind is reading the keyboard.
+  ]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      description = "Called with the name of the key.",
+    },
+  },
+  returns = LISTENER,
+  examples = {
+    [[local typed = ""
+
+trx.events.on_key_down(function(key)
+  if key:match("^%d$") then
+    typed = typed .. key
+  elseif key == "return" then
+    trx.log.info("entered " .. typed)
+    typed = ""
+  end
+end)]],
+  },
+  impl = hook(types.KEY_DOWN),
+})
+
+api.define("events.on_key_up", {
+  description = [[
+    Happens as a key comes up. The handler takes the name of the key, named as
+    `trx.events.on_key_down` names it.
+
+    It stays quiet while the console is open and while a rebind is reading the
+    keyboard, so a key held across either can come up unreported.
+  ]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      description = "Called with the name of the key.",
+    },
+  },
+  returns = LISTENER,
+  impl = hook(types.KEY_UP),
+})
+
 api.define("events.on_ui_draw", {
   description = [[
     Fires once for each of the nine on-screen UI regions on every drawn frame.
