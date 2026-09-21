@@ -134,6 +134,17 @@ api.property("ui.canvas", {
   end,
 })
 
+api.property("ui.clipboard", {
+  type = "string",
+  description = [[
+What the system clipboard holds. Reads as an empty string where it holds
+nothing, and raises on assignment where the platform refuses the text.
+
+A script-drawn text field uses this value to paste and copy text.]],
+  get = raw.get_clipboard,
+  set = raw.set_clipboard,
+})
+
 api.property("ui.safe_area", {
   type = "ui.Area",
   description = "The part of the canvas that is free to draw in: the canvas, less the margin "

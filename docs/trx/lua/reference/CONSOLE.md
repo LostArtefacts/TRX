@@ -115,6 +115,8 @@ Module for interacting with the developer console.
 - <a id="console.copy" name="console.copy"></a>[lua]`trx.console.copy(text)`  
   Puts text in the system clipboard. Raises if the platform refuses it.
 
+  Assigning [`trx.ui.clipboard`](UI.md#ui.clipboard) does the same thing.
+
   Parameters:
   - <a id="console.copy.text" name="console.copy.text"></a>**`text`** (string). What to put in the clipboard.
 

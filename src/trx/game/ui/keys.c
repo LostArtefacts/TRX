@@ -4,6 +4,7 @@
 
 #include <trx/game/ui/keys.h>
 
+#include <trx/core/strings.h>
 #include <trx/game/ui/events.h>
 
 #include <SDL2/SDL.h>
@@ -67,6 +68,21 @@ void UI_HandlePaste(void)
 
     UI_HandleTextEdit(text);
     SDL_free(text);
+}
+
+const char *UI_GetClipboardText(void)
+{
+    if (!SDL_HasClipboardText()) {
+        return "";
+    }
+
+    char *const text = SDL_GetClipboardText();
+    if (text == nullptr) {
+        return "";
+    }
+    const char *const result = String_FormatStatic("%s", text);
+    SDL_free(text);
+    return result;
 }
 
 RESULT UI_SetClipboardText(const char *const text)

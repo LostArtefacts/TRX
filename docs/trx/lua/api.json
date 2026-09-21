@@ -4141,7 +4141,7 @@
       }
     },
     {
-      "description": "Puts text in the system clipboard. Raises if the platform refuses it.",
+      "description": "Puts text in the system clipboard. Raises if the platform refuses it.\n\nAssigning `trx.ui.clipboard` does the same thing.",
       "examples": [
         "trx.console.copy(trx.game.TRX_VERSION)"
       ],
@@ -4540,6 +4540,24 @@
         }
       ],
       "path": "events.on_key_up",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
+      }
+    },
+    {
+      "description": "Happens as the player composes text, and carries the characters composed.\nThe handler takes a string.\n\nUse this for text fields instead of `trx.events.on_key_down`. It carries\ncharacters with the player's modifiers and keyboard layout. It also carries\ntext composed by an input method. One event can carry several characters.\n\nEditing keys carry no character and arrive through\n`trx.events.on_key_down`. Pasting goes through `trx.ui.clipboard`.\n\nIt stays quiet while the console is open, which reads the same characters.",
+      "examples": [
+        "trx.events.on_text_input(function(text)\n  trx.log.info(\"composed \" .. text)\nend)"
+      ],
+      "params": [
+        {
+          "description": "Called with the characters composed.",
+          "name": "callback",
+          "type": "function"
+        }
+      ],
+      "path": "events.on_text_input",
       "returns": {
         "description": "The attached handler.",
         "type": "events.Listener"
@@ -11341,6 +11359,12 @@
       "path": "ui.canvas",
       "type": "ui.Area",
       "writable": false
+    },
+    {
+      "description": "What the system clipboard holds. Reads as an empty string where it holds\nnothing, and raises on assignment where the platform refuses the text.\n\nA script-drawn text field uses this value to paste and copy text.",
+      "path": "ui.clipboard",
+      "type": "string",
+      "writable": true
     },
     {
       "description": "The part of the canvas that is free to draw in: the canvas, less the margin kept at the edges, less what the game reserves at the top and the bottom for the bars and the text it puts there.",

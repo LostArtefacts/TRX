@@ -7,6 +7,7 @@
 #include <trx/core/strings.h>
 #include <trx/core/vector.h>
 #include <trx/game/ui/draw.h>
+#include <trx/game/ui/keys.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -15,6 +16,10 @@
 typedef struct {
     char text[9];
 } M_COLOR_TEXT;
+
+// The system clipboard, reduced to a string a test reads back by reading the
+// clipboard again. The real one talks to the window system.
+static char m_Clipboard[1024] = "";
 
 static VECTOR *m_Lines = nullptr;
 
@@ -190,4 +195,16 @@ void FakeUIDraw_Forget(void)
     }
     Vector_Free(m_Lines);
     m_Lines = nullptr;
+}
+
+const char *UI_GetClipboardText(void)
+{
+    return m_Clipboard;
+}
+
+RESULT UI_SetClipboardText(const char *const text)
+{
+    strncpy(m_Clipboard, text, sizeof m_Clipboard - 1);
+    m_Clipboard[sizeof m_Clipboard - 1] = '\0';
+    return OK;
 }

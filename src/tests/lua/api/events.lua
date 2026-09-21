@@ -399,4 +399,21 @@ test("a handler that raises is reported through the console", function()
   assert(fake.console_shows() > before, "the console was told nothing")
 end)
 
+test("composed text reaches a handler as a string", function()
+  local seen = {}
+  trx.events.on_text_input(function(text)
+    seen[#seen + 1] = text
+  end)
+
+  fake.fire("on_text_input", "a")
+  fake.fire("on_text_input", "\u{3042}\u{3044}")
+
+  assert(#seen == 2, "the handler did not fire for every event")
+  assert(seen[1] == "a")
+  assert(
+    seen[2] == "\u{3042}\u{3044}",
+    "an event carrying several characters lost some"
+  )
+end)
+
 return h.report()

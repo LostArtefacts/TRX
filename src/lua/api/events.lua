@@ -262,6 +262,36 @@ api.define("events.on_key_up", {
   impl = hook(types.KEY_UP),
 })
 
+api.define("events.on_text_input", {
+  description = [[
+    Happens as the player composes text, and carries the characters composed.
+    The handler takes a string.
+
+    Use this for text fields instead of `trx.events.on_key_down`. It carries
+    characters with the player's modifiers and keyboard layout. It also carries
+    text composed by an input method. One event can carry several characters.
+
+    Editing keys carry no character and arrive through
+    `trx.events.on_key_down`. Pasting goes through `trx.ui.clipboard`.
+
+    It stays quiet while the console is open, which reads the same characters.
+  ]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      description = "Called with the characters composed.",
+    },
+  },
+  returns = LISTENER,
+  examples = {
+    [[trx.events.on_text_input(function(text)
+  trx.log.info("composed " .. text)
+end)]],
+  },
+  impl = hook(types.TEXT_INPUT),
+})
+
 api.define("events.on_button_down", {
   description = [[
     Happens as a controller button goes down, before the game reads it as an

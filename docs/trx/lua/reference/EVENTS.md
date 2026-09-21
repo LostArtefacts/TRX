@@ -173,6 +173,31 @@ An event that carries a default the script may take over says so in its descript
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
+- <a id="events.on_text_input" name="events.on_text_input"></a>[lua]`trx.events.on_text_input(callback)`  
+  Happens as the player composes text, and carries the characters composed.
+  The handler takes a string.
+
+  Use this for text fields instead of [`trx.events.on_key_down`](#events.on_key_down). It carries
+  characters with the player's modifiers and keyboard layout. It also carries
+  text composed by an input method. One event can carry several characters.
+
+  Editing keys carry no character and arrive through
+  [`trx.events.on_key_down`](#events.on_key_down). Pasting goes through [`trx.ui.clipboard`](UI.md#ui.clipboard).
+
+  It stays quiet while the console is open, which reads the same characters.
+
+  Parameters:
+  - <a id="events.on_text_input.callback" name="events.on_text_input.callback"></a>**`callback`** (function). Called with the characters composed.
+
+  Returns: [trx.events.Listener](#events.Listener). The attached handler.
+
+  Example:
+  ```lua
+  trx.events.on_text_input(function(text)
+    trx.log.info("composed " .. text)
+  end)
+  ```
+
 - <a id="events.on_button_down" name="events.on_button_down"></a>[lua]`trx.events.on_button_down(callback)`  
   Happens as a controller button goes down, before the game reads it as an
   action. The handler takes the name of the button.

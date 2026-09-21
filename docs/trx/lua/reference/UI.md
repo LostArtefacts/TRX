@@ -36,6 +36,10 @@ and `\{button left}` draws the button the player has bound.
 ### Properties
 
 - <a id="ui.canvas" name="ui.canvas"></a>**`trx.ui.canvas`** ([trx.ui.Area](#ui.Area)). The whole canvas. Widget sizes are in these units rather than in screen pixels, and the canvas is 640 by 480 for a 4:3 screen at the default text size. *(read-only)*
+- <a id="ui.clipboard" name="ui.clipboard"></a>**`trx.ui.clipboard`** (string). What the system clipboard holds. Reads as an empty string where it holds
+  nothing, and raises on assignment where the platform refuses the text.
+
+  A script-drawn text field uses this value to paste and copy text.
 - <a id="ui.safe_area" name="ui.safe_area"></a>**`trx.ui.safe_area`** ([trx.ui.Area](#ui.Area)). The part of the canvas that is free to draw in: the canvas, less the margin kept at the edges, less what the game reserves at the top and the bottom for the bars and the text it puts there. *(read-only)*
 
 ### Enums

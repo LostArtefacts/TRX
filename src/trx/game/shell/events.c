@@ -153,6 +153,7 @@ bool Shell_ProcessEvent(const SDL_Event *const event)
         if (m_ConsoleJustOpened) {
             m_ConsoleJustOpened = false;
         } else {
+            M_FireLuaInputEvent(LUA_EVENT_TEXT_INPUT, event->text.text);
             UI_HandleTextEdit(event->text.text);
         }
         return true;

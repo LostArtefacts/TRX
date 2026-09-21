@@ -29,3 +29,7 @@ void UI_HandlePaste(void);
 // Puts text in the system clipboard and reports failure if the platform refuses
 // it.
 RESULT UI_SetClipboardText(const char *text);
+
+// Text in the system clipboard, or an empty string where it holds none. The
+// returned string must not be held onto.
+const char *UI_GetClipboardText(void);

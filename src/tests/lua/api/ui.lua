@@ -230,4 +230,12 @@ end)
 
 fake.set_viewport(640, 480)
 
+test("the clipboard holds what a script puts there", function()
+  trx.ui.clipboard = "3571"
+  assert(trx.ui.clipboard == "3571")
+
+  trx.ui.clipboard = ""
+  assert(trx.ui.clipboard == "", "an empty clipboard reads as an empty string")
+end)
+
 return h.report()
