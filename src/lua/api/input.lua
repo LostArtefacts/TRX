@@ -1,6 +1,7 @@
 local raw = trxc.input
 local api = trx.api
 
+require("trx.events")
 require("trx.signal")
 
 api.module("input", {
@@ -145,6 +146,111 @@ input code or fire again while held.]],
     { name = "role", type = "input.Role", description = "The role to take." },
   },
   impl = raw.hold_off,
+})
+
+-------------------------------------------------------------------------------
+local suppressed = {}
+local epoch = 0
+
+local Suppression = api.type("input.Suppression", {
+  description = "A set of roles a script holds inactive.",
+  methods = {
+    release = {
+      description = [[
+Gives the roles back to the player.
+
+A role stays inactive while any other suppression still names it.]],
+      returns = {
+        type = "boolean",
+        description = "Whether the suppression was still holding anything.",
+      },
+      impl = function(self)
+        return rawget(self, "_release")()
+      end,
+    },
+  },
+})
+
+api.define("input.suppress", {
+  description = [[
+Holds roles inactive until the returned suppression is released.
+
+The player can press the key, and `trx.input.is_held` still reports it, but the
+game does not act on it. Use this to take an action away for as long as a script
+needs it gone, such as while the player works a puzzle.
+
+Only the roles named are affected. A suppressed movement role still moves the
+menu cursor, so a script that wants both suppresses both.
+
+Suppressions are released when the level unloads.]],
+  params = {
+    {
+      name = "...",
+      type = "input.Role",
+      description = "The roles to hold inactive.",
+    },
+  },
+  returns = {
+    type = "input.Suppression",
+    description = "The running suppression.",
+  },
+  examples = {
+    [[local held = trx.input.suppress(
+  trx.input.Role.JUMP,
+  trx.input.Role.ROLL
+)
+
+local function on_puzzle_solved()
+  held:release()
+end]],
+  },
+  impl = function(...)
+    local roles = table.pack(...)
+    if roles.n == 0 then
+      error("at least one role is required", 2)
+    end
+
+    local handle = setmetatable({}, Suppression)
+    local own_epoch = epoch
+    for i = 1, roles.n do
+      local role = roles[i]
+      local count = (suppressed[role] or 0) + 1
+      suppressed[role] = count
+      if count == 1 then
+        raw.suppress(role, true)
+      end
+    end
+
+    rawset(handle, "_release", function()
+      if own_epoch ~= epoch then
+        return false
+      end
+      own_epoch = -1
+      for i = 1, roles.n do
+        local role = roles[i]
+        local count = suppressed[role] - 1
+        suppressed[role] = count > 0 and count or nil
+        if count == 0 then
+          raw.suppress(role, false)
+        end
+      end
+      return true
+    end)
+    return handle
+  end,
+})
+
+api.define("input.is_suppressed", {
+  description = "Whether a role is held inactive by any suppression.",
+  params = {
+    {
+      name = "role",
+      type = "input.Role",
+      description = "The role to ask about.",
+    },
+  },
+  returns = { type = "boolean", description = "Whether the role is held." },
+  impl = raw.is_suppressed,
 })
 
 -------------------------------------------------------------------------------
@@ -702,3 +808,9 @@ It is true for one tick only, so listeners run once per press.]],
     return shared(pressed, role, raw.is_pressed)
   end,
 })
+
+trx.events.on_level_unload(function()
+  suppressed = {}
+  epoch = epoch + 1
+  raw.clear_suppressed()
+end)

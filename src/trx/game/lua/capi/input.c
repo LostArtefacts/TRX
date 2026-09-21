@@ -125,6 +125,29 @@ static int M_L_InputHoldOff(lua_State *const L)
     return 0;
 }
 
+// trxc.input.suppress(role, enabled)
+static int M_L_InputSuppress(lua_State *const L)
+{
+    const INPUT_ROLE role = M_CheckRole(L, 1);
+    luaL_checktype(L, 2, LUA_TBOOLEAN);
+    Input_SuppressRole(role, lua_toboolean(L, 2));
+    return 0;
+}
+
+// trxc.input.is_suppressed(role) -> bool
+static int M_L_InputIsSuppressed(lua_State *const L)
+{
+    lua_pushboolean(L, Input_IsRoleSuppressed(M_CheckRole(L, 1)));
+    return 1;
+}
+
+// trxc.input.clear_suppressed()
+static int M_L_InputClearSuppressed(lua_State *const L)
+{
+    Input_ClearSuppressedRoles();
+    return 0;
+}
+
 // trxc.input.role_name(role) -> string
 static int M_L_InputRoleName(lua_State *const L)
 {
@@ -233,6 +256,7 @@ static int M_L_InputIsListening(lua_State *const L)
 static const luaL_Reg m_Module[] = {
     { "backend", M_L_InputBackend },
     { "bind_pressed", M_L_InputBindPressed },
+    { "clear_suppressed", M_L_InputClearSuppressed },
     { "hold_off", M_L_InputHoldOff },
     { "is_anything_held", M_L_InputIsAnythingHeld },
     { "is_backend_enabled", M_L_InputIsBackendEnabled },
@@ -241,6 +265,7 @@ static const luaL_Reg m_Module[] = {
     { "is_listening", M_L_InputIsListening },
     { "is_pressed", M_L_InputIsPressed },
     { "is_rebindable", M_L_InputIsRebindable },
+    { "is_suppressed", M_L_InputIsSuppressed },
     { "is_unbindable", M_L_InputIsUnbindable },
     { "key_name", M_L_InputKeyName },
     { "layout", M_L_InputLayout },
@@ -248,6 +273,7 @@ static const luaL_Reg m_Module[] = {
     { "listen", M_L_InputListen },
     { "reset_layout", M_L_InputResetLayout },
     { "role_name", M_L_InputRoleName },
+    { "suppress", M_L_InputSuppress },
     { "unbind", M_L_InputUnbind },
     { nullptr, nullptr },
 };

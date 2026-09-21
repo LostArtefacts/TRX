@@ -18,6 +18,7 @@
 - Added `trx.fx.gun_flash()`, so a script can draw a muzzle flash on any item (TRX89)
 - Added `trx.items.Item.joint_count` and `trx.items.Item:joint_pos()` (TRX89)
 - Added `trx.game.cutscene_frame`, which reports the frame a cutscene level is playing (TRX89)
+- Added `trx.input.suppress` and `trx.input.is_suppressed` to hold a player action inactive while a script needs it gone
 
 
 ## [1.11.1](https://github.com/LostArtefacts/TRX/compare/trx-1.11...trx-1.11.1) - 2026-09-22
@@ -48,10 +49,10 @@
 - Fixed unreliable water current behavior in TR1 and TR2 when Lara is using a UPV (TRX1542)
 
 **Lua**
-- Added `given_in_ngplus` to weapon specs and `trx.weapons.Weapon`.
-- Added `trx.lara.back_gun` and `trx.lara.holsters_gun`.
-- Added `trx.lara.head_rot`, `trx.lara.torso_rot`, `trx.lara.left_arm_rot`, and `trx.lara.right_arm_rot`.
-- Added `trx.lara.move_angle` and `trx.lara.turn_rate`.
+- Added `given_in_ngplus` to weapon specs and `trx.weapons.Weapon`
+- Added `trx.lara.back_gun` and `trx.lara.holsters_gun`
+- Added `trx.lara.head_rot`, `trx.lara.torso_rot`, `trx.lara.left_arm_rot`, and `trx.lara.right_arm_rot`
+- Added `trx.lara.move_angle` and `trx.lara.turn_rate`
 - Fixed potential crashes when setting out-of-bounds positions on items
 
 **TR4**
@@ -421,7 +422,7 @@ Showcase: https://youtu.be/dHuBHppj_fo
 - Added more world effects to `trx.fx`: explosions, fires, splashes, ripples, footprints, underwater blood and blast rings
 - Added `trx.fx.sparks`, so a script can throw the particles the games use for smoke, flames, sparks and splashes, and read or change every live particle
 - Added `trx.inventory.declare_ring_item()`, so a script can add a custom object to the inventory ring
-- Changed `require()` to also look for `<module>/init.lua`, so modules can grow into multiple files without changing how callers require them.
+- Changed `require()` to also look for `<module>/init.lua`, so modules can grow into multiple files without changing how callers require them
 - Changed the in-game overlay to be drawn by a script rather than by the engine, so what it shows and where it sits can be changed without a build
 - Changed the inventory ring to be declared by a script, so its contents can be changed without a build
 - Changed `trx.cutscenes` to hand over the cutscene itself, so `trx.cutscenes[30]` says whether it has played, plays it, and narrows the cutscene events to it; the cutscene events hand one over too, and the functions that take a number are deprecated (TRX1199)
@@ -1094,8 +1095,8 @@ Showcase: https://youtu.be/dwb3eT2zRHU
 - changed hard-coded music tracks from Snowmobiles, mine carts, and RIBs to be configurable via Lua
 - changed hard-coded fish and piranha setup to be configurable via Lua
 - changed hard-coded small Cobra radius setup to be configurable via Lua
-- changed the hard-coded creature melee and hitscanner damage values to be configurable via Lua. Exemption: visible projectiles.
-- changed the hard-coded traps damage to be configurable via Lua. Exemption: one-shot traps such as crushing boulders.
+- changed the hard-coded creature melee and hitscanner damage values to be configurable via Lua. Exemption: visible projectiles
+- changed the hard-coded traps damage to be configurable via Lua. Exemption: one-shot traps such as crushing boulders
 - removed the hard-coded movement speed and moved it to Lua instead for the following objects:
     - `O_CEILING_SPIKES`
     - `O_LAVA_WEDGE`
@@ -1826,7 +1827,7 @@ Showcase: https://www.youtube.com/watch?v=jeq8rQONaic
 - improved the ability to seek through cutscenes to support even faster seeks (Slow = ±1 s, default = ±5 s, new: Draw = ±15 s)
 - improved `/tp` to accept `room`/`item` prefixes and `rN`/`iN` shortcuts
 - improved inventory ring active item highlight for smoother appearance
-- improved savegame file size by reducing it about 20–30%.
+- improved savegame file size by reducing it about 20–30%
 - improved indentation for nested bullets in the UIs
 - changed `debug.debug_cuboids` option name from "debug cuboids" to "debug bounding boxes" (`/debug bounding-boxes` or `/set debug-bounding-boxes 1`)
 - changed `debug.enable_debug_pos` option to split into `enable_debug_pos` and `enable_debug_anim`
@@ -1834,7 +1835,7 @@ Showcase: https://www.youtube.com/watch?v=jeq8rQONaic
 - changed `audio.load_music_triggers` (Gameplay → Fixes → Fix one-shot music triggers) to be enabled by default
 - changed photo mode to no longer show "Entering photo mode" in the console
 - changed photo mode to always display a red frame around the game view when active (not visible in screenshots)
-- changed stats dialog to include allies in kill count if they turn hostile. This applies to all levels that follow, and the final stats screen.
+- changed stats dialog to include allies in kill count if they turn hostile. This applies to all levels that follow, and the final stats screen
 - changed rooms-to-draw tracking to no longer stop at the 100-room limit
 - changed boulders to stop if the ceiling height is lower than their height
 - changed all UI bar colors from hardcoded to configurable via `cfg/ui.json5`, enabling some customization for PS1 bars

@@ -6717,6 +6717,39 @@
       "path": "input.hold_off"
     },
     {
+      "description": "Holds roles inactive until the returned suppression is released.\n\nThe player can press the key, and `trx.input.is_held` still reports it, but the\ngame does not act on it. Use this to take an action away for as long as a script\nneeds it gone, such as while the player works a puzzle.\n\nOnly the roles named are affected. A suppressed movement role still moves the\nmenu cursor, so a script that wants both suppresses both.\n\nSuppressions are released when the level unloads.",
+      "examples": [
+        "local held = trx.input.suppress(\n  trx.input.Role.JUMP,\n  trx.input.Role.ROLL\n)\n\nlocal function on_puzzle_solved()\n  held:release()\nend"
+      ],
+      "params": [
+        {
+          "description": "The roles to hold inactive.",
+          "name": "...",
+          "type": "input.Role"
+        }
+      ],
+      "path": "input.suppress",
+      "returns": {
+        "description": "The running suppression.",
+        "type": "input.Suppression"
+      }
+    },
+    {
+      "description": "Whether a role is held inactive by any suppression.",
+      "params": [
+        {
+          "description": "The role to ask about.",
+          "name": "role",
+          "type": "input.Role"
+        }
+      ],
+      "path": "input.is_suppressed",
+      "returns": {
+        "description": "Whether the role is held.",
+        "type": "boolean"
+      }
+    },
+    {
       "description": "Whether an input source is enabled.\n\nDisabled sources are not read or shown in the controls dialog.",
       "params": [
         {
@@ -12325,6 +12358,24 @@
       "methods": [],
       "operators": [],
       "path": "input.Binding"
+    },
+    {
+      "description": "A set of roles a script holds inactive.",
+      "extensions": [],
+      "fields": [],
+      "handle": false,
+      "methods": [
+        {
+          "description": "Gives the roles back to the player.\n\nA role stays inactive while any other suppression still names it.",
+          "name": "release",
+          "returns": {
+            "description": "Whether the suppression was still holding anything.",
+            "type": "boolean"
+          }
+        }
+      ],
+      "operators": [],
+      "path": "input.Suppression"
     },
     {
       "description": "A binding capture waiting for the player to press something.",
