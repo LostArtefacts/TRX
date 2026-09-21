@@ -95,6 +95,19 @@ Use `\{input ...}` in text to draw the binding for a role.
     - <a id="input.Binding.layout" name="input.Binding.layout"></a>**`layout`**: [trx.input.Layout](#input.Layout), optional. Layout. Defaults to the current one.
     - <a id="input.Binding.slot" name="input.Binding.slot"></a>**`slot`**: [trx.input.Slot](#input.Slot), optional, default `1`. Binding slot. Defaults to the first.
 
+- <a id="input.Suppression" name="input.Suppression"></a>[lua]`trx.input.Suppression`
+
+    A set of roles a script holds inactive.
+
+    Methods:
+
+    - <a id="input.Suppression.release" name="input.Suppression.release"></a>[lua]`suppression:release()`  
+      Gives the roles back to the player.
+
+      A role stays inactive while any other suppression still names it.
+
+      Returns: boolean. Whether the suppression was still holding anything.
+
 - <a id="input.Capture" name="input.Capture"></a>[lua]`trx.input.Capture`
 
     A binding capture waiting for the player to press something.
@@ -154,6 +167,43 @@ Use `\{input ...}` in text to draw the binding for a role.
 
   Parameters:
   - <a id="input.hold_off.role" name="input.hold_off.role"></a>**`role`** ([trx.input.Role](#input.Role)). The role to take.
+
+- <a id="input.suppress" name="input.suppress"></a>[lua]`trx.input.suppress(...)`  
+  Holds roles inactive until the returned suppression is released.
+
+  The player can press the key, and [`trx.input.is_held`](#input.is_held) still reports it, but the
+  game does not act on it. Use this to take an action away for as long as a script
+  needs it gone, such as while the player works a puzzle.
+
+  Only the roles named are affected. A suppressed movement role still moves the
+  menu cursor, so a script that wants both suppresses both.
+
+  Suppressions are released when the level unloads.
+
+  Parameters:
+  - <a id="input.suppress...." name="input.suppress...."></a>**`...`** ([trx.input.Role](#input.Role)). The roles to hold inactive.
+
+  Returns: [trx.input.Suppression](#input.Suppression). The running suppression.
+
+  Example:
+  ```lua
+  local held = trx.input.suppress(
+    trx.input.Role.JUMP,
+    trx.input.Role.ROLL
+  )
+  
+  local function on_puzzle_solved()
+    held:release()
+  end
+  ```
+
+- <a id="input.is_suppressed" name="input.is_suppressed"></a>[lua]`trx.input.is_suppressed(role)`  
+  Whether a role is held inactive by any suppression.
+
+  Parameters:
+  - <a id="input.is_suppressed.role" name="input.is_suppressed.role"></a>**`role`** ([trx.input.Role](#input.Role)). The role to ask about.
+
+  Returns: boolean. Whether the role is held.
 
 - <a id="input.is_backend_enabled" name="input.is_backend_enabled"></a>[lua]`trx.input.is_backend_enabled(backend)`  
   Whether an input source is enabled.

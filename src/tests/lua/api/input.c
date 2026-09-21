@@ -6,6 +6,7 @@
 #include <trx/game/input.h>
 
 #include <lauxlib.h>
+#include <string.h>
 
 // Sets the faked device state. Every role is bound to one key in one slot
 // unless a test says otherwise.
@@ -18,6 +19,7 @@ static bool m_Conflicted = false;
 static bool m_Listening = false;
 static bool m_AnythingDown = true;
 static bool m_AnythingHeld = false;
+static bool m_Suppressed[INPUT_ROLE_NUMBER_OF] = {};
 
 // Every test starts from a bound, quiet device.
 static void M_Reset(void)
@@ -31,6 +33,7 @@ static void M_Reset(void)
     m_Listening = false;
     m_AnythingDown = true;
     m_AnythingHeld = false;
+    memset(m_Suppressed, 0, sizeof m_Suppressed);
 }
 
 FAKE_ON_RESET(M_Reset)
@@ -123,6 +126,23 @@ bool Input_IsPressed(const INPUT_ROLE role)
 void Input_HoldOffRole(const INPUT_ROLE role)
 {
     FAKE_RECORD("hold_off", FV(role));
+}
+
+void Input_SuppressRole(const INPUT_ROLE role, const bool enabled)
+{
+    m_Suppressed[role] = enabled;
+    FAKE_RECORD("suppress", FV(role), FV(enabled));
+}
+
+bool Input_IsRoleSuppressed(const INPUT_ROLE role)
+{
+    return m_Suppressed[role];
+}
+
+void Input_ClearSuppressedRoles(void)
+{
+    memset(m_Suppressed, 0, sizeof m_Suppressed);
+    FAKE_RECORD("clear_suppressed");
 }
 
 bool Input_IsBackendEnabled(const INPUT_BACKEND backend)

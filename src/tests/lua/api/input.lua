@@ -339,4 +339,61 @@ test("a pressed signal moves for one tick", function()
   assert(count == 1, "one press, one listener run")
 end)
 
+test("a suppressed role is given back on release", function()
+  assert(input.is_suppressed(Role.JUMP) == false)
+
+  local held = input.suppress(Role.JUMP)
+  assert(input.is_suppressed(Role.JUMP) == true)
+
+  assert(held:release() == true)
+  assert(input.is_suppressed(Role.JUMP) == false)
+end)
+
+test("one suppression covers several roles", function()
+  local held = input.suppress(Role.JUMP, Role.ROLL)
+  assert(input.is_suppressed(Role.JUMP) == true)
+  assert(input.is_suppressed(Role.ROLL) == true)
+  assert(input.is_suppressed(Role.LOOK) == false)
+
+  held:release()
+  assert(input.is_suppressed(Role.JUMP) == false)
+  assert(input.is_suppressed(Role.ROLL) == false)
+end)
+
+test("a role stays held while another suppression wants it", function()
+  local first = input.suppress(Role.JUMP)
+  local second = input.suppress(Role.JUMP)
+
+  first:release()
+  assert(input.is_suppressed(Role.JUMP) == true, "the second still holds it")
+
+  second:release()
+  assert(input.is_suppressed(Role.JUMP) == false)
+end)
+
+test("releasing twice holds nothing the second time", function()
+  local held = input.suppress(Role.JUMP)
+  assert(held:release() == true)
+  assert(held:release() == false)
+end)
+
+test("suppressing does not hide the role from a script", function()
+  fake.set_held(true)
+  local held = input.suppress(Role.JUMP)
+  assert(input.is_held(Role.JUMP) == true, "the key is still down")
+  held:release()
+end)
+
+test("suppressing no role raises", function()
+  raises(function()
+    input.suppress()
+  end, "at least one role")
+end)
+
+test("suppressing a role that is not one raises", function()
+  raises(function()
+    input.suppress(9999)
+  end, "unknown input role")
+end)
+
 return h.report()

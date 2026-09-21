@@ -18,6 +18,7 @@ static int32_t m_LookFrames = 0;
 static bool m_IsLookHeld = false;
 static INPUT_STATE m_HoldOff = {};
 static INPUT_STATE m_HoldOffLinger = {};
+static INPUT_STATE m_Suppressed = {};
 
 static void M_UpdateFromBackend(
     INPUT_STATE *const s, const INPUT_BACKEND_IMPL *const backend,
@@ -80,6 +81,21 @@ void Input_HoldOffMenu(void)
     for (size_t i = 0; i < sizeof roles / sizeof roles[0]; i++) {
         Input_HoldOffRole(roles[i]);
     }
+}
+
+void Input_SuppressRole(const INPUT_ROLE role, const bool enabled)
+{
+    InputState_SetRole(&m_Suppressed, role, enabled);
+}
+
+bool Input_IsRoleSuppressed(const INPUT_ROLE role)
+{
+    return InputState_GetRole(m_Suppressed, role);
+}
+
+void Input_ClearSuppressedRoles(void)
+{
+    InputState_Clear(&m_Suppressed);
 }
 
 void Input_HoldOffSkip(void)
@@ -157,7 +173,8 @@ void Input_Update(void)
         // option role while it plays. The grace update covers the keyboard
         // firing a deferred combination key once it comes up.
         const uint64_t held = m_HoldOff.any[i] & raw.any[i];
-        g_Input.any[i] &= ~(m_HoldOff.any[i] | m_HoldOffLinger.any[i]);
+        g_Input.any[i] &=
+            ~(m_HoldOff.any[i] | m_HoldOffLinger.any[i] | m_Suppressed.any[i]);
         m_HoldOffLinger.any[i] = m_HoldOff.any[i] & ~held;
         m_HoldOff.any[i] = held;
     }

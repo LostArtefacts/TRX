@@ -66,6 +66,19 @@ void Input_HoldOffRole(const INPUT_ROLE role)
 {
 }
 
+void Input_SuppressRole(const INPUT_ROLE role, const bool enabled)
+{
+}
+
+bool Input_IsRoleSuppressed(const INPUT_ROLE role)
+{
+    return false;
+}
+
+void Input_ClearSuppressedRoles(void)
+{
+}
+
 bool Input_ReadAndAssignRole(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
     const INPUT_ROLE role, const int32_t slot)

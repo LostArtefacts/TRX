@@ -39,6 +39,17 @@ void Input_HoldOffSkip(void);
 // itself reads, such as movement, are left alone.
 void Input_HoldOffMenu(void);
 
+// Hold a role inactive until suppression ends. Suppression remains after the
+// player releases the role. A suppressed movement role still drives the menu
+// role that it feeds.
+void Input_SuppressRole(INPUT_ROLE role, bool enabled);
+
+// Return whether a role is inactive because of suppression.
+bool Input_IsRoleSuppressed(INPUT_ROLE role);
+
+// Release all suppressed roles.
+void Input_ClearSuppressedRoles(void);
+
 // Reconciles the connected devices with the current configuration: enabled
 // backends acquire the hardware that is present, disabled ones release it.
 void Input_Discover(void);
