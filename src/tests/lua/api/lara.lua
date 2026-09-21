@@ -76,14 +76,13 @@ test("teleport moves Lara, and says when it could not", function()
 end)
 
 test("a member of LARA_INFO nobody declared is not reachable", function()
-  -- The C struct has turn_rate, move_angle, the LOT and both arms. None of them
-  -- is declared, so none of them exists as far as a script is concerned.
-  assert(trx.lara.turn_rate == nil)
-  assert(trx.lara.move_angle == nil)
+  -- Keep internal LARA_INFO fields unavailable when the API does not declare them.
+  assert(trx.lara.calc_fall_speed == nil)
+  assert(trx.lara.idle_timer == nil)
   assert(trx.lara.lot == nil)
 
   raises(function()
-    trx.lara.turn_rate = 100
+    trx.lara.calc_fall_speed = 100
   end)
 end)
 

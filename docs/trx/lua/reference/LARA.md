@@ -191,6 +191,7 @@ Her position, room and hit points are not here: she is an item like any other an
     - <a id="lara.Lara.extra_anim" name="lara.Lara.extra_anim"></a>**`extra_anim`**: boolean. Whether a scripted animation is driving Lara rather than her own state machine. *(read-only)*
     - <a id="lara.Lara.flare_control" name="lara.Lara.flare_control"></a>**`flare_control`**: boolean. Whether the flare Lara holds is driving her arm. *(read-only)*
     - <a id="lara.Lara.gun_status" name="lara.Lara.gun_status"></a>**`gun_status`**: [trx.lara.GunState](#lara.GunState). What Lara's hands are doing. *(read-only)*
+    - <a id="lara.Lara.head_rot" name="lara.Lara.head_rot"></a>**`head_rot`**: [trx.math.Rot](MATH.md#math.Rot). The direction in which Lara's head points, relative to her torso. The engine sets it in each frame from where she looks and aims. *(read-only)*
     - <a id="lara.Lara.hit_direction" name="lara.Lara.hit_direction"></a>**`hit_direction`**: integer. Which way the last hit came from, or -1 if she has not been hit. *(read-only)*
     - <a id="lara.Lara.holsters_gun" name="lara.Lara.holsters_gun"></a>**`holsters_gun`**: [trx.catalog.weapons](CATALOG.md#catalog.weapons). The weapon drawn in Lara's holsters. *(read-only)*
     - <a id="lara.Lara.interact_item_num" name="lara.Lara.interact_item_num"></a>**`interact_item_num`**: integer. The item Lara is lining herself up with, by number, or -1 for none. *(read-only)*
@@ -201,13 +202,18 @@ Her position, room and hit points are not here: she is an item like any other an
     - <a id="lara.Lara.is_interact_moving" name="lara.Lara.is_interact_moving"></a>**`is_interact_moving`**: boolean. Whether Lara is still moving towards her interaction target. *(read-only)*
     - <a id="lara.Lara.left_arm_anim_num" name="lara.Lara.left_arm_anim_num"></a>**`left_arm_anim_num`**: integer. The animation Lara's left arm is playing, which follows the weapon in it rather than the rest of her. *(read-only)*
     - <a id="lara.Lara.left_arm_frame_num" name="lara.Lara.left_arm_frame_num"></a>**`left_arm_frame_num`**: integer. The frame that animation is on. *(read-only)*
+    - <a id="lara.Lara.left_arm_rot" name="lara.Lara.left_arm_rot"></a>**`left_arm_rot`**: [trx.math.Rot](MATH.md#math.Rot). The direction in which Lara's left arm aims, relative to her torso. *(read-only)*
+    - <a id="lara.Lara.move_angle" name="lara.Lara.move_angle"></a>**`move_angle`**: [trx.math.Angle](MATH.md#math.Angle). The direction Lara moves in. It leaves [`trx.lara.item`](#lara.item) facing elsewhere while she sidesteps, backflips or swims sideways. *(read-only)*
     - <a id="lara.Lara.poison" name="lara.Lara.poison"></a>**`poison`**: integer. How poisoned Lara is, and 0 when she is not.
     - <a id="lara.Lara.poison_target" name="lara.Lara.poison_target"></a>**`poison_target`**: integer. The poison reservoir that drains into [`trx.lara.poison`](#lara.Lara.poison) over time. TR4 only.
     - <a id="lara.Lara.pose_count" name="lara.Lara.pose_count"></a>**`pose_count`**: [trx.game.Frames](GAME.md#game.Frames). How long Lara has stood still, which is what starts an idle animation. *(read-only)*
     - <a id="lara.Lara.requested_gun" name="lara.Lara.requested_gun"></a>**`requested_gun`**: [trx.catalog.weapons](CATALOG.md#catalog.weapons). The weapon Lara is drawing, while she is drawing it. *(read-only)*
     - <a id="lara.Lara.right_arm_anim_num" name="lara.Lara.right_arm_anim_num"></a>**`right_arm_anim_num`**: integer. The animation Lara's right arm is playing. *(read-only)*
     - <a id="lara.Lara.right_arm_frame_num" name="lara.Lara.right_arm_frame_num"></a>**`right_arm_frame_num`**: integer. The frame that animation is on. *(read-only)*
+    - <a id="lara.Lara.right_arm_rot" name="lara.Lara.right_arm_rot"></a>**`right_arm_rot`**: [trx.math.Rot](MATH.md#math.Rot). The direction in which Lara's right arm aims, relative to her torso. *(read-only)*
     - <a id="lara.Lara.sprint_timer" name="lara.Lara.sprint_timer"></a>**`sprint_timer`**: integer. Sprint left in her legs.
+    - <a id="lara.Lara.torso_rot" name="lara.Lara.torso_rot"></a>**`torso_rot`**: [trx.math.Rot](MATH.md#math.Rot). The direction in which Lara's torso points, relative to [`trx.lara.item`](#lara.item). The engine sets it in each frame from where she looks and aims. *(read-only)*
+    - <a id="lara.Lara.turn_rate" name="lara.Lara.turn_rate"></a>**`turn_rate`**: [trx.math.Angle](MATH.md#math.Angle). The angle by which Lara turns in each frame. It is 0 when she is not turning. *(read-only)*
     - <a id="lara.Lara.water_status" name="lara.Lara.water_status"></a>**`water_status`**: [trx.lara.WaterState](#lara.WaterState). Where Lara is with respect to water. *(read-only)*
 
 ### Functions
