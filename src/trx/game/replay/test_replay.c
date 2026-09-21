@@ -20,6 +20,7 @@
 #include <trx/game/shell.h>
 #include <trx/game/shell/events.h>
 
+#include <SDL2/SDL_gamecontroller.h>
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -101,6 +102,9 @@ static bool M_ParseQuitEvent(const char *event_str);
 static bool M_ParseKeyDownEvent(const char *event_str);
 static bool M_ParseKeyUpEvent(const char *event_str);
 static bool M_ParseTextInputEvent(const char *event_str);
+static bool M_ParsePadDownEvent(const char *event_str);
+static bool M_ParsePadUpEvent(const char *event_str);
+static bool M_ParsePadAxisEvent(const char *event_str);
 static bool M_ParseCommandEvent(const char *event_str);
 static bool M_ParseNoopEvent(const char *event_str);
 static bool M_ParseLuaEvent(const char *event_str);
@@ -128,6 +132,7 @@ static const M_HEADER_HANDLER m_HeaderHandlers[] = {
 static const M_EVENT_HANDLER m_EventHandlers[] = {
     M_ParseQuitEvent,      M_ParseTestCaseEvent, M_ParseExpectEvent,
     M_ParseKeyDownEvent,   M_ParseKeyUpEvent,    M_ParseTextInputEvent,
+    M_ParsePadDownEvent,   M_ParsePadUpEvent,    M_ParsePadAxisEvent,
     M_ParseNoopEvent,      M_ParseCommandEvent,  M_ParseLuaEvent,
     M_ParseSkipStartEvent, M_ParseSkipEndEvent,  nullptr,
 };
@@ -528,6 +533,84 @@ static bool M_ParseTextInputEvent(const char *const event_str)
     if (sscanf(event_str, fmt, &event.text.text) != 1) {
         return false;
     }
+    Shell_ProcessEvent(&event);
+    return true;
+}
+
+// Returns the quoted name in an instruction.
+static const char *M_ParseQuotedName(
+    const char *const event_str, const char *const prefix)
+{
+    if (strncmp(event_str, prefix, strlen(prefix)) != 0) {
+        return nullptr;
+    }
+    const char *const start = strchr(event_str + strlen(prefix), '"');
+    const char *const end = start != nullptr ? strchr(start + 1, '"') : nullptr;
+    if (start == nullptr || end == nullptr || end <= start + 1) {
+        LOG_WARNING("Malformed %s instruction: %s", prefix, event_str);
+        return nullptr;
+    }
+    return String_FormatStatic("%.*s", (int)(end - (start + 1)), start + 1);
+}
+
+static bool M_ParsePadButtonEvent(
+    const char *const event_str, const SDL_EventType type,
+    const char *const prefix)
+{
+    const char *const name = M_ParseQuotedName(event_str, prefix);
+    if (name == nullptr) {
+        return false;
+    }
+    const SDL_GameControllerButton button =
+        SDL_GameControllerGetButtonFromString(name);
+    if (button == SDL_CONTROLLER_BUTTON_INVALID) {
+        LOG_WARNING("Unknown controller button: %s", name);
+        return false;
+    }
+
+    SDL_Event event = { .type = type };
+    event.cbutton.button = (Uint8)button;
+    event.cbutton.state =
+        type == SDL_CONTROLLERBUTTONDOWN ? SDL_PRESSED : SDL_RELEASED;
+    Shell_ProcessEvent(&event);
+    return true;
+}
+
+static bool M_ParsePadDownEvent(const char *const event_str)
+{
+    return M_ParsePadButtonEvent(
+        event_str, SDL_CONTROLLERBUTTONDOWN, "pad-down");
+}
+
+static bool M_ParsePadUpEvent(const char *const event_str)
+{
+    return M_ParsePadButtonEvent(event_str, SDL_CONTROLLERBUTTONUP, "pad-up");
+}
+
+static bool M_ParsePadAxisEvent(const char *const event_str)
+{
+    const char *const prefix = "pad-axis";
+    const char *const name = M_ParseQuotedName(event_str, prefix);
+    if (name == nullptr) {
+        return false;
+    }
+    const SDL_GameControllerAxis axis =
+        SDL_GameControllerGetAxisFromString(name);
+    if (axis == SDL_CONTROLLER_AXIS_INVALID) {
+        LOG_WARNING("Unknown controller axis: %s", name);
+        return false;
+    }
+
+    const char *const value_str = strchr(strchr(event_str, '"') + 1, '"') + 1;
+    int32_t value;
+    if (sscanf(value_str, "%d", &value) != 1) {
+        LOG_WARNING("Malformed %s instruction: %s", prefix, event_str);
+        return false;
+    }
+
+    SDL_Event event = { .type = SDL_CONTROLLERAXISMOTION };
+    event.caxis.axis = (Uint8)axis;
+    event.caxis.value = (Sint16)value;
     Shell_ProcessEvent(&event);
     return true;
 }
@@ -1204,6 +1287,8 @@ void TestReplay_Start(void)
             LOG_WARNING("Unknown line: %s", ln);
         }
     }
+    // Use recorded controller input even when no controller is attached.
+    Input_Controller_SetAssumeAttached(true);
     // The settings the recording asked for are where this replay starts, not
     // something that moved while it ran.
     Config_DiscardPendingChanges();
@@ -1216,6 +1301,7 @@ void TestReplay_Close(void)
     M_PRIV *const p = &m_Priv;
     M_TestReportSummary();
     M_StopSkipping();
+    Input_Controller_SetAssumeAttached(false);
 
     if (p->test_mode.quiet_applied) {
         Log_SetMinLevel(p->test_mode.log_level_before_quiet);

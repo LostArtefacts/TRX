@@ -18,6 +18,7 @@
 #include <trx/game/random.h>
 #include <trx/game/shell/common.h>
 
+#include <SDL2/SDL_gamecontroller.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -87,6 +88,22 @@ static const char *M_DumpEvent(const SDL_Event *const event)
     case SDL_KEYUP:
         return String_FormatStatic(
             "○ \"%s\"", Input_KeyDescFromSDL(event->key.keysym.scancode, 0));
+
+    case SDL_CONTROLLERBUTTONDOWN:
+        return String_FormatStatic(
+            "pad-down \"%s\"",
+            SDL_GameControllerGetStringForButton(event->cbutton.button));
+
+    case SDL_CONTROLLERBUTTONUP:
+        return String_FormatStatic(
+            "pad-up \"%s\"",
+            SDL_GameControllerGetStringForButton(event->cbutton.button));
+
+    case SDL_CONTROLLERAXISMOTION:
+        return String_FormatStatic(
+            "pad-axis \"%s\" %d",
+            SDL_GameControllerGetStringForAxis(event->caxis.axis),
+            event->caxis.value);
 
     case SDL_TEXTINPUT:
         return String_FormatStatic("text-input \"%s\"", event->text.text);
@@ -389,7 +406,10 @@ void TestRecorder_RecordEvent(const SDL_Event *const event)
     // Only record eligible events
     if (event->type != SDL_KEYDOWN && event->type != SDL_KEYUP
         && event->type != SDL_QUIT && event->type != SDL_TEXTINPUT
-        && event->type != SDL_USEREVENT) {
+        && event->type != SDL_USEREVENT
+        && event->type != SDL_CONTROLLERBUTTONDOWN
+        && event->type != SDL_CONTROLLERBUTTONUP
+        && event->type != SDL_CONTROLLERAXISMOTION) {
         return;
     }
     if (event->type == SDL_KEYDOWN && event->key.repeat) {
@@ -397,6 +417,17 @@ void TestRecorder_RecordEvent(const SDL_Event *const event)
     }
     if (event->type == SDL_TEXTINPUT && !Console_IsOpened()) {
         return;
+    }
+
+    // Keep the final position read for each axis during a frame.
+    if (event->type == SDL_CONTROLLERAXISMOTION) {
+        for (int32_t i = 0; i < p->queue_size; i++) {
+            if (p->queue[i].type == SDL_CONTROLLERAXISMOTION
+                && p->queue[i].caxis.axis == event->caxis.axis) {
+                p->queue[i] = *event;
+                return;
+            }
+        }
     }
 
     if (p->queue_size < M_MAX_EVENTS) {
