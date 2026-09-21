@@ -4508,6 +4508,39 @@
       }
     },
     {
+      "description": "Happens as a key goes down, before the game reads it as an action. The\nhandler takes the name of the key.\n\nA key is named by the character the player's layout prints, so the key\nlabelled 5 arrives as `\"5\"` on every layout, and a key with a label\nrather than a character keeps the spelling the window system gives it in\nlower case, such as `\"escape\"` and `\"left shift\"`.\n\nUse this where a script needs the key itself, such as one reading a\npasscode. Use `trx.input.signals.pressed` for a game action, which respects\nwhat the player bound it to and answers for a controller as well.\n\nHolding a key down fires it once. It stays quiet while the console is open\nand while a rebind is reading the keyboard.",
+      "examples": [
+        "local typed = \"\"\n\ntrx.events.on_key_down(function(key)\n  if key:match(\"^%d$\") then\n    typed = typed .. key\n  elseif key == \"return\" then\n    trx.log.info(\"entered \" .. typed)\n    typed = \"\"\n  end\nend)"
+      ],
+      "params": [
+        {
+          "description": "Called with the name of the key.",
+          "name": "callback",
+          "type": "function"
+        }
+      ],
+      "path": "events.on_key_down",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
+      }
+    },
+    {
+      "description": "Happens as a key comes up. The handler takes the name of the key, named as\n`trx.events.on_key_down` names it.\n\nIt stays quiet while the console is open and while a rebind is reading the\nkeyboard, so a key held across either can come up unreported.",
+      "params": [
+        {
+          "description": "Called with the name of the key.",
+          "name": "callback",
+          "type": "function"
+        }
+      ],
+      "path": "events.on_key_up",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
+      }
+    },
+    {
       "description": "Fires once for each of the nine on-screen UI regions on every drawn frame.\nThe callback receives the current `trx.ui.Region`.\n\nUse this event to reserve layout space, not to draw. Call\n`trx.ui.primitive.reserve` during this event, then draw into the assigned\nbox later during `trx.events.on_ui_paint`. `trx.ui.regions.place` handles\nboth steps for widgets.\n\nThis event fires anywhere the game draws UI, including fades, FMVs, and\nnormal gameplay. It follows the frame rate, not the game clock.",
       "examples": [
         "local slot = nil\n\ntrx.events.on_ui_draw(function(region)\n  if region == trx.ui.Region.TOP_CENTER then\n    local w, h = trx.ui.primitive.measure_text(\"hello\")\n    slot = trx.ui.primitive.reserve(region, w, h)\n  end\nend)\n\ntrx.events.on_ui_paint(function()\n  local x, y = trx.ui.primitive.slot_box(slot)\n  if x ~= nil then\n    trx.ui.primitive.text(\"hello\", x, y)\n  end\nend)"
@@ -6715,6 +6748,51 @@
         }
       ],
       "path": "input.hold_off"
+    },
+    {
+      "description": "Whether a key is down right now.\n\nThis reads the keyboard rather than the player's bindings, so it answers for the\nkey itself and says nothing about a controller. Prefer `trx.input.is_held` for a\ngame action: it follows what the player bound and works on every device.\n\nA name no key on the player's layout carries raises.",
+      "params": [
+        {
+          "description": "The key to ask about.",
+          "name": "key",
+          "type": "string"
+        }
+      ],
+      "path": "input.is_key_held",
+      "returns": {
+        "description": "Whether the key is down.",
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Whether a key went down in this frame.\n\nThis is true for one frame only. `trx.events.on_key_down` reports the same\npresses without a script naming the keys it cares about in advance.\n\nA name no key on the player's layout carries raises.",
+      "params": [
+        {
+          "description": "The key to ask about.",
+          "name": "key",
+          "type": "string"
+        }
+      ],
+      "path": "input.is_key_pressed",
+      "returns": {
+        "description": "Whether the key went down.",
+        "type": "boolean"
+      }
+    },
+    {
+      "description": "Whether the player's layout has a key of that name.\n\nUse this to check a name a mod's own settings supplied, rather than letting\n`trx.input.is_key_held` raise on it.",
+      "params": [
+        {
+          "description": "The name to check.",
+          "name": "key",
+          "type": "string"
+        }
+      ],
+      "path": "input.is_key_known",
+      "returns": {
+        "description": "Whether a key carries it.",
+        "type": "boolean"
+      }
     },
     {
       "description": "Holds roles inactive until the returned suppression is released.\n\nThe game does not act on the role, and `trx.input.is_held` and\n`trx.input.signals` report it inactive as well. Use this to take an action away\nfor as long as a script needs it gone, such as while the player works a puzzle.\n\nOnly the roles named are affected. A suppressed movement role still moves the\nmenu cursor, so a script that wants both suppresses both.\n\nSuppressions are released when the level unloads.",
@@ -10110,7 +10188,7 @@
       "title": "Injection"
     },
     {
-      "description": "Module for reading input and working with player bindings.\n\nScripts ask about roles, not physical keys. A role is a game action such as\njumping, drawing a weapon, or opening a menu. The key or button that triggers it\ndepends on the player's device and layout.\n\nUse `\\{input ...}` in text to draw the binding for a role.",
+      "description": "Module for reading input and working with player bindings.\n\nScripts ask about roles, not physical keys. A role is a game action such as\njumping, drawing a weapon, or opening a menu. The key or button that triggers it\ndepends on the player's device and layout.\n\nUse `\\{input ...}` in text to draw the binding for a role.\n\nA few functions read the keyboard itself, for a script that needs the key rather\nthan the action, such as one reading a passcode. They name a key that prints a\ncharacter by the character the player's layout prints, so the key labelled 5 is\n`\"5\"` on every layout, and a key with a label rather than a character by the\nspelling the window system gives it in lower case: `\"escape\"`, `\"return\"`,\n`\"left shift\"`, `\"f5\"`, `\"keypad 5\"`.",
       "name": "input",
       "order": 41,
       "title": "Input"

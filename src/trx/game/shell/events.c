@@ -3,7 +3,9 @@
 #include <trx/debug.h>
 #include <trx/game/console/common.h>
 #include <trx/game/input/common.h>
+#include <trx/game/input/raw.h>
 #include <trx/game/input/sdl.h>
+#include <trx/game/lua/events.h>
 #include <trx/game/lua/guard.h>
 #include <trx/game/replay/test_recorder.h>
 #include <trx/game/replay/test_replay.h>
@@ -20,8 +22,30 @@ static void M_HandleQuit(void)
     Shell_ScheduleExit();
 }
 
+// Hands a key to the scripts as hardware. The console takes the keyboard while
+// it is open and so does a rebind, and neither is the player working the world.
+static void M_FireLuaKeyEvent(
+    const SDL_Event *const event, const LUA_EVENT_TYPE type)
+{
+    if (Console_IsOpened() || Input_IsInListenMode()) {
+        return;
+    }
+    const char *const name = InputRaw_EventKeyName(event);
+    if (name == nullptr) {
+        return;
+    }
+    const LUA_EVENT_ARG args[] = {
+        { .type = LUA_EVENT_ARG_STRING, .value.str = name },
+    };
+    LUA_FireEventEx(type, args, 1);
+}
+
 static void M_HandleKeyDown(const SDL_Event *const event)
 {
+    if (!event->key.repeat) {
+        M_FireLuaKeyEvent(event, LUA_EVENT_KEY_DOWN);
+    }
+
     // NOTE: Opening the console normally would get handled by Input_Update, but
     // by the time Input_Update gets ran, we may already have lost some
     // keypresses if the player types fast, so we need to react sooner.
@@ -47,6 +71,8 @@ static void M_HandleKeyDown(const SDL_Event *const event)
 
 static void M_HandleKeyUp(const SDL_Event *const event)
 {
+    M_FireLuaKeyEvent(event, LUA_EVENT_KEY_UP);
+
     // NOTE: needs special handling on Windows -
     // SDL_SCANCODE_PRINTSCREEN is not sufficient to react to this.
     if (event->key.keysym.sym == SDLK_PRINTSCREEN) {
@@ -113,6 +139,7 @@ static bool M_ProcessReplayEvent(const SDL_Event *const event)
 bool Shell_ProcessEvent(const SDL_Event *const event)
 {
     Input_ProcessEvent(event);
+    InputRaw_ProcessEvent(event);
 
     switch (event->type) {
     case SDL_QUIT:
@@ -185,6 +212,7 @@ bool Shell_ProcessEvent(const SDL_Event *const event)
 void Shell_ProcessEvents(void)
 {
     LUA_Guard_Heartbeat();
+    InputRaw_BeginFrame();
 
     SDL_Event event;
     if (TestReplay_IsOpened()) {

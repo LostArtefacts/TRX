@@ -425,6 +425,8 @@ common_sources = [
   'trx/game/input/combo.c',
   'trx/game/input/common.c',
   'trx/game/input/names.c',
+  'trx/game/input/raw.c',
+  'trx/game/input/raw_state.c',
   'trx/game/input/update.c',
   'trx/game/interpolation.c',
   'trx/game/inventory.c',

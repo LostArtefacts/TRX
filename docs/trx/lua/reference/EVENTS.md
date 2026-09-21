@@ -126,6 +126,53 @@ An event that carries a default the script may take over says so in its descript
 
   Returns: integer. The listener id.
 
+- <a id="events.on_key_down" name="events.on_key_down"></a>[lua]`trx.events.on_key_down(callback)`  
+  Happens as a key goes down, before the game reads it as an action. The
+  handler takes the name of the key.
+
+  A key is named by the character the player's layout prints, so the key
+  labelled 5 arrives as `"5"` on every layout, and a key with a label
+  rather than a character keeps the spelling the window system gives it in
+  lower case, such as `"escape"` and `"left shift"`.
+
+  Use this where a script needs the key itself, such as one reading a
+  passcode. Use [`trx.input.signals.pressed`](INPUT.md#input.signals.pressed) for a game action, which respects
+  what the player bound it to and answers for a controller as well.
+
+  Holding a key down fires it once. It stays quiet while the console is open
+  and while a rebind is reading the keyboard.
+
+  Parameters:
+  - <a id="events.on_key_down.callback" name="events.on_key_down.callback"></a>**`callback`** (function). Called with the name of the key.
+
+  Returns: [trx.events.Listener](#events.Listener). The attached handler.
+
+  Example:
+  ```lua
+  local typed = ""
+  
+  trx.events.on_key_down(function(key)
+    if key:match("^%d$") then
+      typed = typed .. key
+    elseif key == "return" then
+      trx.log.info("entered " .. typed)
+      typed = ""
+    end
+  end)
+  ```
+
+- <a id="events.on_key_up" name="events.on_key_up"></a>[lua]`trx.events.on_key_up(callback)`  
+  Happens as a key comes up. The handler takes the name of the key, named as
+  [`trx.events.on_key_down`](#events.on_key_down) names it.
+
+  It stays quiet while the console is open and while a rebind is reading the
+  keyboard, so a key held across either can come up unreported.
+
+  Parameters:
+  - <a id="events.on_key_up.callback" name="events.on_key_up.callback"></a>**`callback`** (function). Called with the name of the key.
+
+  Returns: [trx.events.Listener](#events.Listener). The attached handler.
+
 - <a id="events.on_ui_draw" name="events.on_ui_draw"></a>[lua]`trx.events.on_ui_draw(callback)`  
   Fires once for each of the nine on-screen UI regions on every drawn frame.
   The callback receives the current [`trx.ui.Region`](UI.md#ui.Region).

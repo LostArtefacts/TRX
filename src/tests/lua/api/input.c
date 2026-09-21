@@ -4,6 +4,7 @@
 #include <harness/lua_surface.h>
 
 #include <trx/game/input.h>
+#include <trx/game/input/raw.h>
 
 #include <lauxlib.h>
 #include <string.h>
@@ -21,6 +22,17 @@ static bool m_AnythingDown = true;
 static bool m_AnythingHeld = false;
 static bool m_Suppressed[INPUT_ROLE_NUMBER_OF] = {};
 
+// The keyboard the raw reads see. Only these names are keys at all, so that a
+// test can name one the layout does not carry.
+static struct {
+    const char *name;
+    bool held;
+    bool pressed;
+} m_Keys[] = {
+    { .name = "5" },      { .name = "a" },          { .name = "escape" },
+    { .name = "return" }, { .name = "left shift" },
+};
+
 // Every test starts from a bound, quiet device.
 static void M_Reset(void)
 {
@@ -34,6 +46,10 @@ static void M_Reset(void)
     m_AnythingDown = true;
     m_AnythingHeld = false;
     memset(m_Suppressed, 0, sizeof m_Suppressed);
+    for (size_t i = 0; i < sizeof m_Keys / sizeof m_Keys[0]; i++) {
+        m_Keys[i].held = false;
+        m_Keys[i].pressed = false;
+    }
 }
 
 FAKE_ON_RESET(M_Reset)
@@ -86,8 +102,34 @@ static int M_FakeSetAnythingHeld(lua_State *const L)
     return 0;
 }
 
+static int M_FakeSetKeyHeld(lua_State *const L)
+{
+    const char *const name = luaL_checkstring(L, 1);
+    for (size_t i = 0; i < sizeof m_Keys / sizeof m_Keys[0]; i++) {
+        if (strcmp(m_Keys[i].name, name) == 0) {
+            m_Keys[i].held = lua_toboolean(L, 2);
+        }
+    }
+    return 0;
+}
+
+static int M_FakeSetKeyPressed(lua_State *const L)
+{
+    const char *const name = luaL_checkstring(L, 1);
+    for (size_t i = 0; i < sizeof m_Keys / sizeof m_Keys[0]; i++) {
+        if (strcmp(m_Keys[i].name, name) == 0) {
+            m_Keys[i].pressed = lua_toboolean(L, 2);
+        }
+    }
+    return 0;
+}
+
 static void M_PushFake(lua_State *const L)
 {
+    lua_pushcfunction(L, M_FakeSetKeyHeld);
+    lua_setfield(L, -2, "set_key_held");
+    lua_pushcfunction(L, M_FakeSetKeyPressed);
+    lua_setfield(L, -2, "set_key_pressed");
     lua_pushcfunction(L, M_FakeSetBound);
     lua_setfield(L, -2, "set_bound");
     lua_pushcfunction(L, M_FakeSetHeld);
@@ -143,6 +185,36 @@ void Input_ClearSuppressedRoles(void)
 {
     memset(m_Suppressed, 0, sizeof m_Suppressed);
     FAKE_RECORD("clear_suppressed");
+}
+
+bool InputRaw_IsKeyHeld(const char *const key)
+{
+    for (size_t i = 0; i < sizeof m_Keys / sizeof m_Keys[0]; i++) {
+        if (strcmp(m_Keys[i].name, key) == 0) {
+            return m_Keys[i].held;
+        }
+    }
+    return false;
+}
+
+bool InputRaw_IsKeyPressed(const char *const key)
+{
+    for (size_t i = 0; i < sizeof m_Keys / sizeof m_Keys[0]; i++) {
+        if (strcmp(m_Keys[i].name, key) == 0) {
+            return m_Keys[i].pressed;
+        }
+    }
+    return false;
+}
+
+bool InputRaw_IsKeyKnown(const char *const key)
+{
+    for (size_t i = 0; i < sizeof m_Keys / sizeof m_Keys[0]; i++) {
+        if (strcmp(m_Keys[i].name, key) == 0) {
+            return true;
+        }
+    }
+    return false;
 }
 
 bool Input_IsBackendEnabled(const INPUT_BACKEND backend)

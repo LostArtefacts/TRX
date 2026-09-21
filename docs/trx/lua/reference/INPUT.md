@@ -20,6 +20,13 @@ depends on the player's device and layout.
 
 Use `\{input ...}` in text to draw the binding for a role.
 
+A few functions read the keyboard itself, for a script that needs the key rather
+than the action, such as one reading a passcode. They name a key that prints a
+character by the character the player's layout prints, so the key labelled 5 is
+`"5"` on every layout, and a key with a label rather than a character by the
+spelling the window system gives it in lower case: `"escape"`, `"return"`,
+`"left shift"`, `"f5"`, `"keypad 5"`.
+
 ### Properties
 
 - <a id="input.backend" name="input.backend"></a>**`trx.input.backend`** ([trx.input.Backend](#input.Backend)). The current input source. *(read-only)*
@@ -167,6 +174,44 @@ Use `\{input ...}` in text to draw the binding for a role.
 
   Parameters:
   - <a id="input.hold_off.role" name="input.hold_off.role"></a>**`role`** ([trx.input.Role](#input.Role)). The role to take.
+
+- <a id="input.is_key_held" name="input.is_key_held"></a>[lua]`trx.input.is_key_held(key)`  
+  Whether a key is down right now.
+
+  This reads the keyboard rather than the player's bindings, so it answers for the
+  key itself and says nothing about a controller. Prefer [`trx.input.is_held`](#input.is_held) for a
+  game action: it follows what the player bound and works on every device.
+
+  A name no key on the player's layout carries raises.
+
+  Parameters:
+  - <a id="input.is_key_held.key" name="input.is_key_held.key"></a>**`key`** (string). The key to ask about.
+
+  Returns: boolean. Whether the key is down.
+
+- <a id="input.is_key_pressed" name="input.is_key_pressed"></a>[lua]`trx.input.is_key_pressed(key)`  
+  Whether a key went down in this frame.
+
+  This is true for one frame only. [`trx.events.on_key_down`](EVENTS.md#events.on_key_down) reports the same
+  presses without a script naming the keys it cares about in advance.
+
+  A name no key on the player's layout carries raises.
+
+  Parameters:
+  - <a id="input.is_key_pressed.key" name="input.is_key_pressed.key"></a>**`key`** (string). The key to ask about.
+
+  Returns: boolean. Whether the key went down.
+
+- <a id="input.is_key_known" name="input.is_key_known"></a>[lua]`trx.input.is_key_known(key)`  
+  Whether the player's layout has a key of that name.
+
+  Use this to check a name a mod's own settings supplied, rather than letting
+  [`trx.input.is_key_held`](#input.is_key_held) raise on it.
+
+  Parameters:
+  - <a id="input.is_key_known.key" name="input.is_key_known.key"></a>**`key`** (string). The name to check.
+
+  Returns: boolean. Whether a key carries it.
 
 - <a id="input.suppress" name="input.suppress"></a>[lua]`trx.input.suppress(...)`  
   Holds roles inactive until the returned suppression is released.

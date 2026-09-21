@@ -1275,6 +1275,14 @@ unit_tests += {
   'engine': ['game/input/names.c'],
 }
 
+# What a key or a button is doing, apart from the device that says so. Naming
+# a key is SDL's business and stays in game/input/raw.c, which is why the
+# bookkeeping sits in a module of its own and can be tested here at all.
+unit_tests += {
+  'name': 'trx/game/input/raw_state',
+  'engine': ['game/input/raw_state.c'],
+}
+
 unit_tests += {
   'name': 'trx/game/ui/scrollable',
   'engine': ['game/ui/scrollable.c'],

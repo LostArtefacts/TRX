@@ -398,4 +398,41 @@ test("suppressing a role that is not one raises", function()
   end, "unknown input role")
 end)
 
+test("a key is read as hardware, not as a binding", function()
+  assert(input.is_key_held("5") == false)
+  assert(input.is_key_pressed("5") == false)
+
+  fake.set_key_held("5", true)
+  assert(input.is_key_held("5") == true)
+  assert(input.is_key_pressed("5") == false, "holding is not pressing")
+
+  fake.set_key_pressed("5", true)
+  assert(input.is_key_pressed("5") == true)
+end)
+
+test("keys are read one at a time", function()
+  fake.set_key_held("5", true)
+  assert(input.is_key_held("5") == true)
+  assert(input.is_key_held("a") == false)
+end)
+
+test("a labelled key keeps its own name", function()
+  fake.set_key_held("left shift", true)
+  assert(input.is_key_held("left shift") == true)
+end)
+
+test("a key the layout does not carry is reported", function()
+  assert(input.is_key_known("5") == true)
+  assert(input.is_key_known("hyperspace") == false)
+end)
+
+test("reading a key the layout does not carry raises", function()
+  for _, fn in ipairs({ input.is_key_held, input.is_key_pressed }) do
+    raises(function()
+      fn("hyperspace")
+    end, "unknown key")
+  end
+  assert(input.is_key_known("hyperspace") == false, "and is not a key")
+end)
+
 return h.report()

@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/game/input.h>
+#include <trx/game/input/raw.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils.h>
 
@@ -148,6 +149,37 @@ static int M_L_InputClearSuppressed(lua_State *const L)
     return 0;
 }
 
+// Validate a key name before reading its state.
+static const char *M_CheckKey(lua_State *const L, const int arg)
+{
+    const char *const key = luaL_checkstring(L, arg);
+    if (!InputRaw_IsKeyKnown(key)) {
+        luaL_error(L, "unknown key '%s'", key);
+    }
+    return key;
+}
+
+// trxc.input.is_key_held(key) -> bool
+static int M_L_InputIsKeyHeld(lua_State *const L)
+{
+    lua_pushboolean(L, InputRaw_IsKeyHeld(M_CheckKey(L, 1)));
+    return 1;
+}
+
+// trxc.input.is_key_pressed(key) -> bool
+static int M_L_InputIsKeyPressed(lua_State *const L)
+{
+    lua_pushboolean(L, InputRaw_IsKeyPressed(M_CheckKey(L, 1)));
+    return 1;
+}
+
+// trxc.input.is_key_known(key) -> bool
+static int M_L_InputIsKeyKnown(lua_State *const L)
+{
+    lua_pushboolean(L, InputRaw_IsKeyKnown(luaL_checkstring(L, 1)));
+    return 1;
+}
+
 // trxc.input.role_name(role) -> string
 static int M_L_InputRoleName(lua_State *const L)
 {
@@ -262,6 +294,9 @@ static const luaL_Reg m_Module[] = {
     { "is_backend_enabled", M_L_InputIsBackendEnabled },
     { "is_conflicted", M_L_InputIsConflicted },
     { "is_held", M_L_InputIsHeld },
+    { "is_key_held", M_L_InputIsKeyHeld },
+    { "is_key_known", M_L_InputIsKeyKnown },
+    { "is_key_pressed", M_L_InputIsKeyPressed },
     { "is_listening", M_L_InputIsListening },
     { "is_pressed", M_L_InputIsPressed },
     { "is_rebindable", M_L_InputIsRebindable },

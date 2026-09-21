@@ -3,6 +3,7 @@
 // The real one reads devices and keeps the player's layouts.
 
 #include <trx/game/input.h>
+#include <trx/game/input/raw.h>
 
 INPUT_STATE g_Input = {};
 INPUT_STATE g_InputDB = {};
@@ -77,6 +78,21 @@ bool Input_IsRoleSuppressed(const INPUT_ROLE role)
 
 void Input_ClearSuppressedRoles(void)
 {
+}
+
+bool InputRaw_IsKeyHeld(const char *const key)
+{
+    return false;
+}
+
+bool InputRaw_IsKeyPressed(const char *const key)
+{
+    return false;
+}
+
+bool InputRaw_IsKeyKnown(const char *const key)
+{
+    return false;
 }
 
 bool Input_ReadAndAssignRole(

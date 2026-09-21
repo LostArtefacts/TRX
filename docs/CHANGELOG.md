@@ -18,7 +18,16 @@
 - Added `trx.fx.gun_flash()`, so a script can draw a muzzle flash on any item (TRX89)
 - Added `trx.items.Item.joint_count` and `trx.items.Item:joint_pos()` (TRX89)
 - Added `trx.game.cutscene_frame`, which reports the frame a cutscene level is playing (TRX89)
-- Added `trx.input.suppress` and `trx.input.is_suppressed` to hold a player action inactive while a script needs it gone
+- Added the ability for a script to hold a player action inactive
+    - `trx.input.suppress`
+    - `trx.input.Suppression:release`
+    - `trx.input.is_suppressed`
+- Added the ability for a script to read the keyboard itself, rather than the action a key stands for
+    - `trx.events.on_key_down`
+    - `trx.events.on_key_up`
+    - `trx.input.is_key_held`
+    - `trx.input.is_key_pressed`
+    - `trx.input.is_key_known`
 
 
 ## [1.11.1](https://github.com/LostArtefacts/TRX/compare/trx-1.11...trx-1.11.1) - 2026-09-22
