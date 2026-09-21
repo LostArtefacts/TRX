@@ -180,6 +180,55 @@ static int M_L_InputIsKeyKnown(lua_State *const L)
     return 1;
 }
 
+// Checks a controller button name against SDL's own names.
+static const char *M_CheckButton(lua_State *const L, const int arg)
+{
+    const char *const button = luaL_checkstring(L, arg);
+    if (!InputRaw_IsButtonKnown(button)) {
+        luaL_error(L, "unknown controller button '%s'", button);
+    }
+    return button;
+}
+
+// trxc.input.is_button_held(button) -> bool
+static int M_L_InputIsButtonHeld(lua_State *const L)
+{
+    lua_pushboolean(L, InputRaw_IsButtonHeld(M_CheckButton(L, 1)));
+    return 1;
+}
+
+// trxc.input.is_button_pressed(button) -> bool
+static int M_L_InputIsButtonPressed(lua_State *const L)
+{
+    lua_pushboolean(L, InputRaw_IsButtonPressed(M_CheckButton(L, 1)));
+    return 1;
+}
+
+// trxc.input.is_button_known(button) -> bool
+static int M_L_InputIsButtonKnown(lua_State *const L)
+{
+    lua_pushboolean(L, InputRaw_IsButtonKnown(luaL_checkstring(L, 1)));
+    return 1;
+}
+
+// trxc.input.axis(axis) -> number
+static int M_L_InputAxis(lua_State *const L)
+{
+    const char *const axis = luaL_checkstring(L, 1);
+    if (!InputRaw_IsAxisKnown(axis)) {
+        return luaL_error(L, "unknown controller axis '%s'", axis);
+    }
+    lua_pushnumber(L, InputRaw_GetAxis(axis));
+    return 1;
+}
+
+// trxc.input.is_axis_known(axis) -> bool
+static int M_L_InputIsAxisKnown(lua_State *const L)
+{
+    lua_pushboolean(L, InputRaw_IsAxisKnown(luaL_checkstring(L, 1)));
+    return 1;
+}
+
 // trxc.input.role_name(role) -> string
 static int M_L_InputRoleName(lua_State *const L)
 {
@@ -286,12 +335,17 @@ static int M_L_InputIsListening(lua_State *const L)
 }
 
 static const luaL_Reg m_Module[] = {
+    { "axis", M_L_InputAxis },
     { "backend", M_L_InputBackend },
     { "bind_pressed", M_L_InputBindPressed },
     { "clear_suppressed", M_L_InputClearSuppressed },
     { "hold_off", M_L_InputHoldOff },
     { "is_anything_held", M_L_InputIsAnythingHeld },
+    { "is_axis_known", M_L_InputIsAxisKnown },
     { "is_backend_enabled", M_L_InputIsBackendEnabled },
+    { "is_button_held", M_L_InputIsButtonHeld },
+    { "is_button_known", M_L_InputIsButtonKnown },
+    { "is_button_pressed", M_L_InputIsButtonPressed },
     { "is_conflicted", M_L_InputIsConflicted },
     { "is_held", M_L_InputIsHeld },
     { "is_key_held", M_L_InputIsKeyHeld },

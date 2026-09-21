@@ -435,4 +435,63 @@ test("reading a key the layout does not carry raises", function()
   assert(input.is_key_known("hyperspace") == false, "and is not a key")
 end)
 
+test("a controller button is read as hardware", function()
+  assert(input.is_button_held("a") == false)
+  assert(input.is_button_pressed("a") == false)
+
+  fake.set_button_held("a", true)
+  assert(input.is_button_held("a") == true)
+  assert(input.is_button_pressed("a") == false, "holding is not pressing")
+
+  fake.set_button_pressed("a", true)
+  assert(input.is_button_pressed("a") == true)
+end)
+
+test("a button carries its own name, not the key of the same name", function()
+  fake.set_key_held("a", true)
+  assert(input.is_key_held("a") == true)
+  assert(input.is_button_held("a") == false, "the pad is a device of its own")
+end)
+
+test("buttons are read one at a time", function()
+  fake.set_button_held("dpup", true)
+  assert(input.is_button_held("dpup") == true)
+  assert(input.is_button_held("leftshoulder") == false)
+end)
+
+test("a button SDL does not know is reported", function()
+  assert(input.is_button_known("a") == true)
+  assert(input.is_button_known("bigred") == false)
+end)
+
+test("reading a button SDL does not know raises", function()
+  for _, fn in ipairs({ input.is_button_held, input.is_button_pressed }) do
+    raises(function()
+      fn("bigred")
+    end, "unknown controller button")
+  end
+end)
+
+test("an axis stands where the pad puts it", function()
+  assert(input.axis("leftx") == 0)
+
+  fake.set_axis("leftx", -1)
+  assert(input.axis("leftx") == -1)
+
+  fake.set_axis("lefttrigger", 0.5)
+  assert(input.axis("lefttrigger") == 0.5)
+  assert(input.axis("leftx") == -1, "one axis does not move another")
+end)
+
+test("an axis SDL does not know is reported", function()
+  assert(input.is_axis_known("leftx") == true)
+  assert(input.is_axis_known("updown") == false)
+end)
+
+test("reading an axis SDL does not know raises", function()
+  raises(function()
+    input.axis("updown")
+  end, "unknown controller axis")
+end)
+
 return h.report()

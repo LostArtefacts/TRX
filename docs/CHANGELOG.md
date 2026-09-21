@@ -29,6 +29,14 @@
     - `trx.input.is_key_held`
     - `trx.input.is_key_pressed`
     - `trx.input.is_key_known`
+- Added the ability for a script to read the controller itself, sticks and triggers included
+    - `trx.events.on_button_down`
+    - `trx.events.on_button_up`
+    - `trx.input.is_button_held`
+    - `trx.input.is_button_pressed`
+    - `trx.input.is_button_known`
+    - `trx.input.axis`
+    - `trx.input.is_axis_known`
 
 
 ## [1.11.1](https://github.com/LostArtefacts/TRX/compare/trx-1.11...trx-1.11.1) - 2026-09-22

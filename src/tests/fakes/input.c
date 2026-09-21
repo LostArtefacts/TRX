@@ -95,6 +95,31 @@ bool InputRaw_IsKeyKnown(const char *const key)
     return false;
 }
 
+bool InputRaw_IsButtonHeld(const char *const button)
+{
+    return false;
+}
+
+bool InputRaw_IsButtonPressed(const char *const button)
+{
+    return false;
+}
+
+bool InputRaw_IsButtonKnown(const char *const button)
+{
+    return false;
+}
+
+float InputRaw_GetAxis(const char *const axis)
+{
+    return 0.0f;
+}
+
+bool InputRaw_IsAxisKnown(const char *const axis)
+{
+    return false;
+}
+
 bool Input_ReadAndAssignRole(
     const INPUT_BACKEND backend, const INPUT_LAYOUT layout,
     const INPUT_ROLE role, const int32_t slot)

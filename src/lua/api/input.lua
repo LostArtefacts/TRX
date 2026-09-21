@@ -16,12 +16,21 @@ depends on the player's device and layout.
 
 Use `\{input ...}` in text to draw the binding for a role.
 
-A few functions read the keyboard itself, for a script that needs the key rather
-than the action, such as one reading a passcode. They name a key that prints a
-character by the character the player's layout prints, so the key labelled 5 is
-`"5"` on every layout, and a key with a label rather than a character by the
-spelling the window system gives it in lower case: `"escape"`, `"return"`,
-`"left shift"`, `"f5"`, `"keypad 5"`.]],
+A few functions read the keyboard and the controller themselves, for a script
+that needs the key rather than the action, such as one reading a passcode.
+
+A key that prints a character is named by the character the player's layout
+prints, so the key labelled 5 is `"5"` on every layout. A key with a label rather
+than a character keeps the spelling the window system gives it, in lower case:
+`"escape"`, `"return"`, `"left shift"`, `"f5"`, `"keypad 5"`.
+
+A controller button or axis keeps the name SDL gives it, because a pad prints a
+different label on the same button depending on who made it. The buttons are
+`"a"`, `"b"`, `"x"`, `"y"`, `"back"`, `"guide"`, `"start"`, `"leftstick"`,
+`"rightstick"`, `"leftshoulder"`, `"rightshoulder"`, `"dpup"`, `"dpdown"`,
+`"dpleft"`, `"dpright"`, `"misc1"`, `"paddle1"` to `"paddle4"` and `"touchpad"`.
+The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
+`"righttrigger"`.]],
 })
 
 api.enum("input.Role", {
@@ -216,6 +225,89 @@ Use this to check a name a mod's own settings supplied, rather than letting
 })
 
 -------------------------------------------------------------------------------
+-- Read the controller as hardware.
+-------------------------------------------------------------------------------
+
+api.define("input.is_button_held", {
+  description = [[
+Whether a controller button is down right now.
+
+This reads the pad rather than the player's bindings, so it answers for the
+button itself. Prefer `trx.input.is_held` for a game action: it follows what the
+player bound and works on every device.
+
+A name SDL does not know raises.]],
+  params = {
+    {
+      name = "button",
+      type = "string",
+      description = "The button to ask about.",
+    },
+  },
+  returns = { type = "boolean", description = "Whether the button is down." },
+  impl = raw.is_button_held,
+})
+
+api.define("input.is_button_pressed", {
+  description = [[
+Whether a controller button went down in this frame.
+
+This is true for one frame only. `trx.events.on_button_down` reports the same
+presses without a script naming the buttons it cares about in advance.
+
+A name SDL does not know raises.]],
+  params = {
+    {
+      name = "button",
+      type = "string",
+      description = "The button to ask about.",
+    },
+  },
+  returns = { type = "boolean", description = "Whether the button went down." },
+  impl = raw.is_button_pressed,
+})
+
+api.define("input.is_button_known", {
+  description = "Whether a controller button carries that name.",
+  params = {
+    { name = "button", type = "string", description = "The name to check." },
+  },
+  returns = { type = "boolean", description = "Whether a button carries it." },
+  impl = raw.is_button_known,
+})
+
+api.define("input.axis", {
+  description = [[
+Where a controller axis stands, from -1 to 1.
+
+A stick reaches -1 left or up and 1 right or down. A trigger runs from 0 at rest
+to 1 held down. An axis on a pad that is not attached reads 0.
+
+A name SDL does not know raises.]],
+  params = {
+    {
+      name = "axis",
+      type = "string",
+      description = "The axis to read.",
+    },
+  },
+  returns = { type = "number", description = "Where the axis stands." },
+  impl = raw.axis,
+})
+
+api.define("input.is_axis_known", {
+  description = "Whether a controller axis carries that name.",
+  params = {
+    { name = "axis", type = "string", description = "The name to check." },
+  },
+  returns = { type = "boolean", description = "Whether an axis carries it." },
+  impl = raw.is_axis_known,
+})
+
+-------------------------------------------------------------------------------
+-- Hold roles inactive.
+-------------------------------------------------------------------------------
+
 local suppressed = {}
 local epoch = 0
 

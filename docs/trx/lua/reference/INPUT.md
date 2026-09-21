@@ -20,12 +20,21 @@ depends on the player's device and layout.
 
 Use `\{input ...}` in text to draw the binding for a role.
 
-A few functions read the keyboard itself, for a script that needs the key rather
-than the action, such as one reading a passcode. They name a key that prints a
-character by the character the player's layout prints, so the key labelled 5 is
-`"5"` on every layout, and a key with a label rather than a character by the
-spelling the window system gives it in lower case: `"escape"`, `"return"`,
-`"left shift"`, `"f5"`, `"keypad 5"`.
+A few functions read the keyboard and the controller themselves, for a script
+that needs the key rather than the action, such as one reading a passcode.
+
+A key that prints a character is named by the character the player's layout
+prints, so the key labelled 5 is `"5"` on every layout. A key with a label rather
+than a character keeps the spelling the window system gives it, in lower case:
+`"escape"`, `"return"`, `"left shift"`, `"f5"`, `"keypad 5"`.
+
+A controller button or axis keeps the name SDL gives it, because a pad prints a
+different label on the same button depending on who made it. The buttons are
+`"a"`, `"b"`, `"x"`, `"y"`, `"back"`, `"guide"`, `"start"`, `"leftstick"`,
+`"rightstick"`, `"leftshoulder"`, `"rightshoulder"`, `"dpup"`, `"dpdown"`,
+`"dpleft"`, `"dpright"`, `"misc1"`, `"paddle1"` to `"paddle4"` and `"touchpad"`.
+The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
+`"righttrigger"`.
 
 ### Properties
 
@@ -212,6 +221,62 @@ spelling the window system gives it in lower case: `"escape"`, `"return"`,
   - <a id="input.is_key_known.key" name="input.is_key_known.key"></a>**`key`** (string). The name to check.
 
   Returns: boolean. Whether a key carries it.
+
+- <a id="input.is_button_held" name="input.is_button_held"></a>[lua]`trx.input.is_button_held(button)`  
+  Whether a controller button is down right now.
+
+  This reads the pad rather than the player's bindings, so it answers for the
+  button itself. Prefer [`trx.input.is_held`](#input.is_held) for a game action: it follows what the
+  player bound and works on every device.
+
+  A name SDL does not know raises.
+
+  Parameters:
+  - <a id="input.is_button_held.button" name="input.is_button_held.button"></a>**`button`** (string). The button to ask about.
+
+  Returns: boolean. Whether the button is down.
+
+- <a id="input.is_button_pressed" name="input.is_button_pressed"></a>[lua]`trx.input.is_button_pressed(button)`  
+  Whether a controller button went down in this frame.
+
+  This is true for one frame only. [`trx.events.on_button_down`](EVENTS.md#events.on_button_down) reports the same
+  presses without a script naming the buttons it cares about in advance.
+
+  A name SDL does not know raises.
+
+  Parameters:
+  - <a id="input.is_button_pressed.button" name="input.is_button_pressed.button"></a>**`button`** (string). The button to ask about.
+
+  Returns: boolean. Whether the button went down.
+
+- <a id="input.is_button_known" name="input.is_button_known"></a>[lua]`trx.input.is_button_known(button)`  
+  Whether a controller button carries that name.
+
+  Parameters:
+  - <a id="input.is_button_known.button" name="input.is_button_known.button"></a>**`button`** (string). The name to check.
+
+  Returns: boolean. Whether a button carries it.
+
+- <a id="input.axis" name="input.axis"></a>[lua]`trx.input.axis(axis)`  
+  Where a controller axis stands, from -1 to 1.
+
+  A stick reaches -1 left or up and 1 right or down. A trigger runs from 0 at rest
+  to 1 held down. An axis on a pad that is not attached reads 0.
+
+  A name SDL does not know raises.
+
+  Parameters:
+  - <a id="input.axis.axis" name="input.axis.axis"></a>**`axis`** (string). The axis to read.
+
+  Returns: number. Where the axis stands.
+
+- <a id="input.is_axis_known" name="input.is_axis_known"></a>[lua]`trx.input.is_axis_known(axis)`  
+  Whether a controller axis carries that name.
+
+  Parameters:
+  - <a id="input.is_axis_known.axis" name="input.is_axis_known.axis"></a>**`axis`** (string). The name to check.
+
+  Returns: boolean. Whether an axis carries it.
 
 - <a id="input.suppress" name="input.suppress"></a>[lua]`trx.input.suppress(...)`  
   Holds roles inactive until the returned suppression is released.

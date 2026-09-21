@@ -173,6 +173,37 @@ An event that carries a default the script may take over says so in its descript
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
+- <a id="events.on_button_down" name="events.on_button_down"></a>[lua]`trx.events.on_button_down(callback)`  
+  Happens as a controller button goes down, before the game reads it as an
+  action. The handler takes the name of the button.
+
+  A button keeps the name SDL gives it, such as `"a"`, `"dpup"` and
+  `"leftshoulder"`, because a pad prints a different label on the same button
+  depending on who made it. [`trx.input.is_button_held`](INPUT.md#input.is_button_held) lists them.
+
+  Use [`trx.input.signals.pressed`](INPUT.md#input.signals.pressed) for a game action, which respects what the
+  player bound it to and answers for the keyboard as well.
+
+  It stays quiet while the console is open and while a rebind is reading the
+  pad.
+
+  Parameters:
+  - <a id="events.on_button_down.callback" name="events.on_button_down.callback"></a>**`callback`** (function). Called with the name of the button.
+
+  Returns: [trx.events.Listener](#events.Listener). The attached handler.
+
+- <a id="events.on_button_up" name="events.on_button_up"></a>[lua]`trx.events.on_button_up(callback)`  
+  Happens as a controller button comes up. The handler takes the name of the
+  button, named as [`trx.events.on_button_down`](#events.on_button_down) names it.
+
+  It stays quiet while the console is open and while a rebind is reading the
+  pad, so a button held across either can come up unreported.
+
+  Parameters:
+  - <a id="events.on_button_up.callback" name="events.on_button_up.callback"></a>**`callback`** (function). Called with the name of the button.
+
+  Returns: [trx.events.Listener](#events.Listener). The attached handler.
+
 - <a id="events.on_ui_draw" name="events.on_ui_draw"></a>[lua]`trx.events.on_ui_draw(callback)`  
   Fires once for each of the nine on-screen UI regions on every drawn frame.
   The callback receives the current [`trx.ui.Region`](UI.md#ui.Region).
