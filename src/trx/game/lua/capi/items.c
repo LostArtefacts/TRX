@@ -210,7 +210,10 @@ static const char *M_SetPos(void *const self, const TRX_VALUE *const in)
 {
     ITEM *const item = self;
     item->pos = in->as_xyz;
-    Item_UpdateRoom(Item_GetIndex(item), Room_GetIndexFromPos(item->pos));
+    const int16_t room_num = Room_GetIndexFromPos(item->pos);
+    if (room_num != NO_ROOM) {
+        Item_UpdateRoom(Item_GetIndex(item), room_num);
+    }
     return nullptr;
 }
 
