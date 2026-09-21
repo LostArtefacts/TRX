@@ -11,6 +11,7 @@
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/elements.h>
 #include <trx/game/ui/elements/frame.h>
+#include <trx/game/ui/keys.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/ui/settings.h>
@@ -449,9 +450,32 @@ static int M_L_UITextScale(lua_State *const L)
     return 1;
 }
 
+// trxc.ui.get_clipboard() -> string
+static int M_L_UIGetClipboard(lua_State *const L)
+{
+    lua_pushstring(L, UI_GetClipboardText());
+    return 1;
+}
+
+// trxc.ui.set_clipboard(text)
+static int M_L_UISetClipboard(lua_State *const L)
+{
+    const char *const text = luaL_checkstring(L, 1);
+    RESULT result = UI_SetClipboardText(text);
+    if (!IS_OK(result)) {
+        lua_pushstring(
+            L, result.msg != nullptr ? result.msg : "the clipboard refused it");
+        IGNORE(result);
+        return lua_error(L);
+    }
+    return 0;
+}
+
 static const luaL_Reg m_Module[] = {
     { "get_canvas_height", M_L_UICanvasHeight },
     { "get_canvas_width", M_L_UICanvasWidth },
+    { "get_clipboard", M_L_UIGetClipboard },
+    { "set_clipboard", M_L_UISetClipboard },
     { "get_safe_bottom", M_L_UISafeBottom },
     { "get_safe_top", M_L_UISafeTop },
     { "get_safe_width", M_L_UISafeWidth },

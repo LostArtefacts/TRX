@@ -241,7 +241,10 @@ api.define("console.eval", {
 })
 
 api.define("console.copy", {
-  description = "Puts text in the system clipboard. Raises if the platform refuses it.",
+  description = [[
+Puts text in the system clipboard. Raises if the platform refuses it.
+
+Assigning `trx.ui.clipboard` does the same thing.]],
   params = {
     {
       name = "text",
