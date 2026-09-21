@@ -138,6 +138,9 @@ static CONTROLLER_BINDING m_CaptureBuffer = { .key_count = 0 };
 
 static bool m_CaptureActive = false;
 
+// Uses recorded input when no controller is attached.
+static bool m_AssumeAttached = false;
+
 static const char *M_GetButtonName(const SDL_GameControllerButton button)
 {
     // First switch: Handle platform-specific deviations from defaults
@@ -255,9 +258,14 @@ static void M_ProcessEvent(const SDL_Event *const event)
     }
 }
 
+static bool M_HasDevice(void)
+{
+    return m_Controller != nullptr || m_AssumeAttached;
+}
+
 static bool M_JoyBtn(const SDL_GameControllerButton button)
 {
-    if (m_Controller == nullptr || button == SDL_CONTROLLER_BUTTON_INVALID) {
+    if (!M_HasDevice() || button == SDL_CONTROLLER_BUTTON_INVALID) {
         return false;
     }
     return m_ButtonState[button];
@@ -265,7 +273,7 @@ static bool M_JoyBtn(const SDL_GameControllerButton button)
 
 static int16_t M_JoyAxis(const SDL_GameControllerAxis axis)
 {
-    if (m_Controller == nullptr || axis == SDL_CONTROLLER_AXIS_INVALID) {
+    if (!M_HasDevice() || axis == SDL_CONTROLLER_AXIS_INVALID) {
         return false;
     }
     return m_AxisState[axis];
@@ -534,7 +542,7 @@ static void M_Shutdown(void)
 
 static bool M_CustomUpdate(INPUT_STATE *const result, const INPUT_LAYOUT layout)
 {
-    if (m_Controller == nullptr) {
+    if (!M_HasDevice()) {
         return false;
     }
     result->menu_back |= M_JoyBtn(SDL_CONTROLLER_BUTTON_Y);
@@ -1025,6 +1033,11 @@ static bool M_ReadAndAssign(
         return true;
     }
     return false;
+}
+
+void Input_Controller_SetAssumeAttached(const bool enabled)
+{
+    m_AssumeAttached = enabled;
 }
 
 INPUT_BACKEND_IMPL g_Input_Controller = {
