@@ -3473,6 +3473,9 @@
         "sliding_pillar": {
             "name": "Pilier coulissant",
         },
+        "small_scorpion": {
+            "name": "\\{review}Petit scorpion",
+        },
         "smashable_1": {
             "name": "\\{review}Fenêtre Brisable 1",
         },

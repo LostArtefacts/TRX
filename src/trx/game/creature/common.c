@@ -1598,9 +1598,19 @@ int16_t Creature_Effect(
         int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,
         int16_t room_num))
 {
+    return Creature_EffectEx(item, bite, item->speed, item->rot.y, spawn);
+}
+
+int16_t Creature_EffectEx(
+    const ITEM *const item, const BITE *const bite, const int16_t speed,
+    const int16_t angle,
+    int16_t (*const spawn)(
+        int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,
+        int16_t room_num))
+{
     XYZ_32 pos = bite->pos;
     Collide_GetJointAbsPosition(item, &pos, bite->mesh_num);
-    return spawn(pos.x, pos.y, pos.z, item->speed, item->rot.y, item->room_num);
+    return spawn(pos.x, pos.y, pos.z, speed, angle, item->room_num);
 }
 
 int16_t Creature_AIGuard(CREATURE *const creature)

@@ -342,7 +342,7 @@
     },
     {
       "bulk": true,
-      "count": 821,
+      "count": 822,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -1054,6 +1054,7 @@
         "SLIDING_PILLAR",
         "SMALL_MEDIPACK_ITEM",
         "SMALL_MEDIPACK_OPTION",
+        "SMALL_SCORPION",
         "SMASHABLE_1",
         "SMASHABLE_2",
         "SMASHABLE_3",

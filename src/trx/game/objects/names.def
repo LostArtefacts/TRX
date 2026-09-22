@@ -243,6 +243,7 @@ X_OBJ_NAME_DEFINE(O_WASP_MUTANT,          "Wasp Mutant")
 X_OBJ_NAME_DEFINE(O_CLAW_MUTANT,          "Claw Mutant")
 X_OBJ_NAME_DEFINE(O_DOLPHIN,              "Dolphin")
 X_OBJ_NAME_DEFINE(O_BOAR,                 "Boar")
+X_OBJ_NAME_DEFINE(O_SMALL_SCORPION,       "Small Scorpion")
 
 // Traps
 X_OBJ_NAME_DEFINE(O_BLADE,                    "Wall-mounted Blade")

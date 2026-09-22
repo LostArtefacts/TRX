@@ -3473,6 +3473,9 @@
         "sliding_pillar": {
             "name": "Przesuwalny filar",
         },
+        "small_scorpion": {
+            "name": "\\{review}Mały skorpion",
+        },
         "smashable_1": {
             "name": "Okno 1",
         },

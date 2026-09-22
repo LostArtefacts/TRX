@@ -3621,6 +3621,9 @@
             "name": "Small Medipack",
         },
         "small_medipack_option": "$objects/small_medipack_item",
+        "small_scorpion": {
+            "name": "Small Scorpion",
+        },
         "smashable_1": {
             "name": "Smashable 1|Breakable Window 1",
         },

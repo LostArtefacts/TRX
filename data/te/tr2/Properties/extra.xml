@@ -367,6 +367,13 @@
         <property category="TRX" defaultValue="50" description="Damage dealt by shots while stopped." displayName="Stop Shot Damage" internalName="stop_shot_damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="40" description="Damage dealt by shots while skating." displayName="Skate Shot Damage" internalName="skate_shot_damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_SMALL_SCORPION-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="8" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="20" description="Damage dealt by the pincer." displayName="Pince Damage" internalName="pince_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="20" description="Damage dealt by the sting." displayName="Sting Damage" internalName="sting_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="true" description="Whether or not the sting poisons Lara." displayName="Is Venomous" internalName="is_venomous" type="Bool" />
+    </moveable>
     <!--placeholder for O_SOPHIA-->
     <moveable id="-1">
         <property category="TRX" defaultValue="300" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />

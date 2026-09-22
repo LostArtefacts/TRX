@@ -3479,6 +3479,9 @@
         "small_medipack_item": {
             "name": "Kit Medico Piccolo",
         },
+        "small_scorpion": {
+            "name": "\\{review}Piccolo Scorpione",
+        },
         "smashable_1": {
             "name": "Finestra Frangibile 1",
         },
