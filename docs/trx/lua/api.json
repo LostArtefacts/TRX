@@ -342,7 +342,7 @@
     },
     {
       "bulk": true,
-      "count": 823,
+      "count": 824,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -586,6 +586,7 @@
         "GRENADE_AMMO_OPTION",
         "GRENADE_GUN_ITEM",
         "GRENADE_GUN_OPTION",
+        "GUIDE",
         "GUN_FLASH",
         "GUN_SHELL",
         "HARPOON_BOLT",
@@ -1177,7 +1178,7 @@
     },
     {
       "bulk": true,
-      "count": 209,
+      "count": 210,
       "description": "Every sound sample TRX has a name for.",
       "examples": [
         "trx.sound.play(trx.catalog.samples.LARA_NO)"
@@ -1245,6 +1246,7 @@
         "FOOTSTEPS_SNOW",
         "FOOTSTEPS_WOOD",
         "GLASS_BREAK",
+        "GUIDE_SCARE",
         "GUN_FIRE_EXPLOSION",
         "HELICOPTER_LOOP",
         "HUGE_ROCKET_LOOP",

@@ -2616,6 +2616,9 @@
         "grenade_gun_item": {
             "name": "\\{review}Гранатомёт",
         },
+        "guide": {
+            "name": "\\{review}Проводник",
+        },
         "gun_flash": {
             "name": "Вспышка выстрела",
         },

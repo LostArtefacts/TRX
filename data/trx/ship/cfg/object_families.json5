@@ -380,6 +380,24 @@
         "text_box",
         "assault_digits",
     ],
+    "generic_animating": [
+        "animating_1",
+        "animating_2",
+        "animating_3",
+        "animating_4",
+        "animating_5",
+        "animating_6",
+        "animating_7",
+        "animating_8",
+        "animating_9",
+        "animating_10",
+        "animating_11",
+        "animating_12",
+        "animating_13",
+        "animating_14",
+        "animating_15",
+        "animating_16",
+    ],
     "generic_inv_option": [
         "lead_bar_option",
         "lasersight_option",
@@ -638,6 +656,7 @@
         "winston_army",
     ],
     "no_hit_reaction": [
+        "guide",
         "von_croy",
     ],
     "null": [

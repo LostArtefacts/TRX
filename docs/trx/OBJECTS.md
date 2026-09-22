@@ -371,6 +371,15 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### guide
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">15</td><td>Maximum hit points.</td></tr>
+<tr><td><code>guides_lara</code></td><td colspan="3" align="center">true</td><td>Whether he guides Lara or navigates the level on his own.</td></tr>
+</tbody>
+</table>
+
 #### huskie
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (41)</th><th>Description</th></tr></thead>

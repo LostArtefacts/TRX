@@ -2616,6 +2616,9 @@
         "grenade_gun_item": {
             "name": "Granatenwerfer",
         },
+        "guide": {
+            "name": "\\{review}Begleiter",
+        },
         "gun_flash": {
             "name": "Mündungsfeuer",
         },

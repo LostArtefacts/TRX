@@ -2616,6 +2616,9 @@
         "grenade_gun_item": {
             "name": "Lannsair Grenèad",
         },
+        "guide": {
+            "name": "Stiùiriche",
+        },
         "gun_flash": {
             "name": "Lasadh Ghunna",
         },

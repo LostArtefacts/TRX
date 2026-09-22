@@ -2616,6 +2616,9 @@
         "grenade_gun_item": {
             "name": "Lanciagranate",
         },
+        "guide": {
+            "name": "\\{review}Guida",
+        },
         "gun_flash": {
             "name": "Lampo Pistola",
         },
