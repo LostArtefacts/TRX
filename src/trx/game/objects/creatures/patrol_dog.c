@@ -7,6 +7,8 @@
 #include <trx/game/spawn.h>
 
 // clang-format off
+#define M_PIVOT                300
+#define M_RADIUS               (WALL_L / 3) // = 341
 #define M_HIT_POINTS           16
 #define M_LUNGE_RANGE          SQUARE(WALL_L)
 #define M_LUNGE_TOUCH_BITS     0x6648
@@ -25,6 +27,7 @@
 #define M_STAT_CHANCE          0x100 // = 256
 #define M_WALK_CHANCE          0x1000 // = 4096
 #define M_AWARE_RANGE          SQUARE(3 * WALL_L) // = 0x900000
+#define M_ANIM_DEATH_COUNT     4
 // clang-format on
 
 typedef struct {
@@ -55,13 +58,12 @@ typedef enum {
     M_ANIM_DEATH_3 = 22,
 } M_ANIM;
 
-static BITE m_DogBite = {
+static const BITE m_DogBite = {
     .pos = { .x = 0, .y = 0, .z = 100 },
     .mesh_num = 3,
 };
 
-static M_ANIM m_DeathAnimCount = 4;
-static M_ANIM m_DeathAnims[4] = {
+static const M_ANIM m_DeathAnims[M_ANIM_DEATH_COUNT] = {
     M_ANIM_DEATH_1,
     M_ANIM_DEATH_2,
     M_ANIM_DEATH_3,
@@ -92,8 +94,8 @@ static void M_Control(const int16_t item_num)
 
     if (item->hit_points <= 0) {
         if (item->current_anim_state != M_STATE_DEATH) {
-            Item_SwitchToAnim(
-                item, m_DeathAnims[Random_GetControl() % m_DeathAnimCount], 0);
+            const int32_t death_anim = Random_GetControl() % M_ANIM_DEATH_COUNT;
+            Item_SwitchToAnim(item, m_DeathAnims[death_anim], 0);
             item->current_anim_state = M_STATE_DEATH;
         }
     } else {
@@ -129,7 +131,7 @@ static void M_Control(const int16_t item_num)
 
         angle = Creature_Turn(item, creature->maximum_turn);
         if (creature->hurt_by_lara
-            || (dist < M_AWARE_RANGE && !(item->ai_bits & AI_MODIFY))) {
+            || (dist < M_AWARE_RANGE && (item->ai_bits & AI_MODIFY) == 0)) {
             Creature_AlertAllGuards(item_num);
             item->ai_bits &= ~AI_MODIFY;
         }
@@ -154,22 +156,20 @@ static void M_Control(const int16_t item_num)
             }
             break;
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
         case M_STATE_CROUCH:
-            if (item->required_anim_state != 0) {
+        case M_STATE_STOP:
+            if (item->current_anim_state == M_STATE_CROUCH
+                && item->required_anim_state != M_STATE_NULL) {
                 item->goal_anim_state = item->required_anim_state;
                 break;
             }
-#pragma GCC diagnostic pop
 
-        case M_STATE_STOP:
             creature->maximum_turn = 0;
 
-            if (item->ai_bits & AI_GUARD) {
+            if ((item->ai_bits & AI_GUARD) != 0) {
                 head = Creature_AIGuard(creature);
 
-                if (!(Random_GetControl() & 0xFF)) {
+                if ((Random_GetControl() & 0xFF) == 0) {
                     if (item->current_anim_state == M_STATE_STOP) {
                         item->goal_anim_state = M_STATE_CROUCH;
                     } else {
@@ -180,7 +180,7 @@ static void M_Control(const int16_t item_num)
                 item->current_anim_state == M_STATE_CROUCH
                 && rnd < M_SLEEP_2_STAND_CHANCE) {
                 item->goal_anim_state = M_STATE_STOP;
-            } else if (item->ai_bits & AI_PATROL_1) {
+            } else if ((item->ai_bits & AI_PATROL_1) != 0) {
                 if (item->current_anim_state == M_STATE_STOP) {
                     item->goal_anim_state = M_STATE_WALK;
                 } else {
@@ -198,7 +198,7 @@ static void M_Control(const int16_t item_num)
                 creature->flags = 0;
                 creature->maximum_turn = M_STAT_TURN;
 
-                if (rnd < M_SLEEP_CHANCE && item->ai_bits & AI_MODIFY
+                if (rnd < M_SLEEP_CHANCE && (item->ai_bits & AI_MODIFY) != 0
                     && item->current_anim_state == M_STATE_STOP) {
                     item->goal_anim_state = M_STATE_SLEEP;
                     creature->flags = 0;
@@ -208,7 +208,7 @@ static void M_Control(const int16_t item_num)
                     } else {
                         item->goal_anim_state = M_STATE_STOP;
                     }
-                } else if (!(rnd & 0x1F)) {
+                } else if ((rnd & 0x1F) == 0) {
                     item->goal_anim_state = M_STATE_HOWL;
                 }
             } else {
@@ -223,7 +223,7 @@ static void M_Control(const int16_t item_num)
 
         case M_STATE_WALK:
             creature->maximum_turn = M_WALK_TURN;
-            if (item->ai_bits & AI_PATROL_1) {
+            if ((item->ai_bits & AI_PATROL_1) != 0) {
                 item->goal_anim_state = M_STATE_WALK;
             } else if (creature->mood == MOOD_BORED && rnd < M_STAT_CHANCE) {
                 item->goal_anim_state = M_STATE_STOP;
@@ -264,8 +264,8 @@ static void M_Control(const int16_t item_num)
             break;
 
         case M_STATE_ATTACK_1:
-            if (info.bite && item->touch_bits & M_LUNGE_TOUCH_BITS && frame >= 4
-                && frame <= 14) {
+            if (info.bite && (item->touch_bits & M_LUNGE_TOUCH_BITS) != 0
+                && frame >= 4 && frame <= 14) {
                 Creature_Effect(item, &m_DogBite, Spawn_Blood);
                 Lara_TakeDamage(p->lunge_damage, true);
             }
@@ -278,7 +278,7 @@ static void M_Control(const int16_t item_num)
             break;
 
         case M_STATE_ATTACK_2:
-            if (info.bite && item->touch_bits & M_BITE_TOUCH_BITS
+            if (info.bite && (item->touch_bits & M_BITE_TOUCH_BITS) != 0
                 && ((frame >= 9 && frame <= 12)
                     || (frame >= 22 && frame <= 25))) {
                 Creature_Effect(item, &m_DogBite, Spawn_Blood);
@@ -305,9 +305,9 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
 
-    obj->shadow_size = 128;
-    obj->pivot_length = 300;
-    obj->radius = 341;
+    obj->shadow_size = UNIT_SHADOW / 2;
+    obj->pivot_length = M_PIVOT;
+    obj->radius = M_RADIUS;
 
     obj->intelligent = true;
     obj->save_position = true;
