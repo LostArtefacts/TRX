@@ -6,6 +6,7 @@
 #include <trx/game/const.h>
 #include <trx/game/fmv.h>
 #include <trx/game/game.h>
+#include <trx/game/game_flow/common.h>
 #include <trx/game/game_flow/sequencer.h>
 #include <trx/game/game_flow/util.h>
 #include <trx/game/game_flow/vars.h>
@@ -341,6 +342,9 @@ static bool M_AreLoadingScreensWanted(const GF_SEQUENCE_CONTEXT seq_ctx)
 
 static void M_ShowLoadingCamera(const GF_LOADING_CAMERA_DATA *const data)
 {
+    const GF_COMMAND stashed_cmd = GF_GetOverrideCommand();
+    GF_OverrideCommand((GF_COMMAND) { .action = GF_NOOP });
+
     Music_Stop();
     PHASE *const phase =
         Phase_LoadingCamera_Create((PHASE_LOADING_CAMERA_ARGS) {
@@ -353,6 +357,12 @@ static void M_ShowLoadingCamera(const GF_LOADING_CAMERA_DATA *const data)
         });
     PhaseExecutor_Run(phase);
     Phase_LoadingCamera_Destroy(phase);
+
+    // A command the camera itself raises, such as an exit, is about what the
+    // player just did and wins over the stashed one.
+    if (GF_GetOverrideCommand().action == GF_NOOP) {
+        GF_OverrideCommand(stashed_cmd);
+    }
 }
 
 M_GF_HANDLER(M_HandleLoadingCamera)
