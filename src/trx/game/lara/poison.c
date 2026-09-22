@@ -98,7 +98,10 @@ void Lara_Poison_Cure(void)
 
 bool Lara_Poison_GetViewScale(XYZ_32 *const scale)
 {
+    // The swaying is what Lara sees as she is poisoned, so the level view a
+    // loading screen shows keeps still.
     if (g_TRVersion != 4 || g_Camera.type == CAM_PHOTO_MODE
+        || g_Camera.type == CAM_LOADING_SCREEN
         || !g_Config.visuals.enable_poison_vision) {
         return false;
     }
