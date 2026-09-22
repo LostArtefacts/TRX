@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.11.1...develop) - ××××-××-××
 
 **Lara's movement**
+- Improved Lara's torso rotation handling when going into a crouch and drawing/holstering guns while crouched (#6700)
 - Fixed Lara being unable to grab zipline handles that are positioned on slopes when animated interactions are enabled (TRX1587, regression from 1.10)
 - Fixed Lara moving while the look button was held and two opposite directions were pressed (OG bug) (#6686 / TRX1585)
 

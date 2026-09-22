@@ -6,6 +6,8 @@
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 
+#define M_RESET_ANIM_SMOOTHING 8
+
 static const LARA_STATE_ID m_StopStates[] = {
     LS_STOP,
     LS_SURF_TREAD,
@@ -48,22 +50,7 @@ static void M_Reset(void)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    const CAMERA_LOOK_SETTINGS *const look = Camera_GetLookSettings(false);
-
-    if (lara->head_rot.x <= -look->head_turn
-        || lara->head_rot.x >= look->head_turn) {
-        lara->head_rot.x -= lara->head_rot.x / 8;
-    } else {
-        lara->head_rot.x = 0;
-    }
-
-    if (lara->head_rot.y <= -look->head_turn
-        || lara->head_rot.y >= look->head_turn) {
-        lara->head_rot.y += lara->head_rot.y / -8;
-    } else {
-        lara->head_rot.y = 0;
-    }
-
+    Lara_SmoothlyRotateMeshTo(&lara->head_rot, 0, 0, M_RESET_ANIM_SMOOTHING);
     lara->torso_rot.x = lara->head_rot.x;
     lara->torso_rot.y = lara->head_rot.y;
 }
@@ -117,7 +104,8 @@ void Lara_Look_LeftRight(void)
         }
     }
 
-    if (lara->gun_status != LGS_HANDS_BUSY && !Lara_Vehicle_IsMounted()) {
+    if (lara->gun_status != LGS_HANDS_BUSY && !Lara_Vehicle_IsMounted()
+        && !lara->is_crouched) {
         lara->torso_rot.y = lara->head_rot.y * look->torso_head_rot_y;
     }
 }
@@ -150,7 +138,7 @@ void Lara_Look_UpDown(void)
         }
     }
 
-    if (lara->gun_status != LGS_HANDS_BUSY) {
+    if (lara->gun_status != LGS_HANDS_BUSY && !lara->is_crouched) {
         lara->torso_rot.x = lara->head_rot.x * look->torso_head_rot_x;
     }
 }

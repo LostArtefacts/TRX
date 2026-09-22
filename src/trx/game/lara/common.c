@@ -119,6 +119,32 @@ static int32_t M_GetStartingHitPoints(void)
     return g_Config.gameplay.start_lara_hitpoints;
 }
 
+void Lara_SmoothlyRotateMeshTo(
+    XYZ_16 *const mesh, const int16_t target_x, const int16_t target_y,
+    const uint8_t smoothing_factor)
+{
+    const CAMERA_LOOK_SETTINGS *const look = Camera_GetLookSettings(false);
+    const int16_t snap_threshold = look->head_turn;
+
+    if (mesh->x != target_x) {
+        if (mesh->x <= target_x - snap_threshold
+            || mesh->x >= target_x + snap_threshold) {
+            mesh->x += (target_x - mesh->x) / smoothing_factor;
+        } else {
+            mesh->x = target_x;
+        }
+    }
+
+    if (mesh->y != target_y) {
+        if (mesh->y <= target_y - snap_threshold
+            || mesh->y >= target_y + snap_threshold) {
+            mesh->y += (target_y - mesh->y) / smoothing_factor;
+        } else {
+            mesh->y = target_y;
+        }
+    }
+}
+
 LARA_INFO *Lara_GetLaraInfo(void)
 {
     return &m_Lara;
