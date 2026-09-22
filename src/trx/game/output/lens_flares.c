@@ -183,18 +183,20 @@ static void M_StageFlare(
     const XYZ_32 flare_pos, const int16_t flare_room, const RGB_888 color,
     const bool is_object)
 {
-    const ITEM *const lara_item = Lara_GetItem();
-    if (lara_item == nullptr) {
-        return;
-    }
+    // The flare anchors to Lara, as the OG places it. The level view a
+    // loading screen shows is not hers, so there it anchors to the camera and
+    // sits where that view sees it.
+    const ITEM *const lara_item =
+        g_Camera.type == CAM_LOADING_SCREEN ? nullptr : Lara_GetItem();
+    const XYZ_32 view_pos =
+        lara_item != nullptr ? lara_item->pos : g_Camera.pos.pos;
 
     XYZ_32 pos = flare_pos;
     int16_t room_num = NO_ROOM;
 
     if (is_object) {
-        if (ABS(pos.x - lara_item->pos.x) > 0x8000
-            || ABS(pos.y - lara_item->pos.y) > 0x8000
-            || ABS(pos.z - lara_item->pos.z) > 0x8000) {
+        if (ABS(pos.x - view_pos.x) > 0x8000 || ABS(pos.y - view_pos.y) > 0x8000
+            || ABS(pos.z - view_pos.z) > 0x8000) {
             return;
         }
         room_num = flare_room;
@@ -254,17 +256,16 @@ static void M_StageFlare(
         return;
     }
 
-    // Project relative to Lara like the OG, halving the sun vector until it
-    // is in representable range.
+    // Halve the sun vector until it is in representable range.
     XYZ_32 vec;
     if (is_object) {
-        vec.x = pos.x - lara_item->pos.x;
-        vec.y = pos.y - lara_item->pos.y;
-        vec.z = pos.z - lara_item->pos.z;
+        vec.x = pos.x - view_pos.x;
+        vec.y = pos.y - view_pos.y;
+        vec.z = pos.z - view_pos.z;
     } else {
-        vec.x = flare_pos.x - lara_item->pos.x;
-        vec.y = flare_pos.y - lara_item->pos.y;
-        vec.z = flare_pos.z - lara_item->pos.z;
+        vec.x = flare_pos.x - view_pos.x;
+        vec.y = flare_pos.y - view_pos.y;
+        vec.z = flare_pos.z - view_pos.z;
         while (ABS(vec.x) > 0x7F00 || ABS(vec.y) > 0x7F00
                || ABS(vec.z) > 0x7F00) {
             vec.x >>= 1;
@@ -274,9 +275,9 @@ static void M_StageFlare(
     }
 
     const XYZ_32 world = {
-        .x = lara_item->pos.x + vec.x,
-        .y = lara_item->pos.y + vec.y,
-        .z = lara_item->pos.z + vec.z,
+        .x = view_pos.x + vec.x,
+        .y = view_pos.y + vec.y,
+        .z = view_pos.z + vec.z,
     };
     float sx, sy;
     if (!M_ProjectToScreen(world, &sx, &sy)) {
