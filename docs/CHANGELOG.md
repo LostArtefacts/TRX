@@ -2,6 +2,7 @@
 
 **TR4**
 - Added Small Scorpion control (TRX1562)
+- Added Jackal control (TRX1553)
 
 
 ## [1.11.1](https://github.com/LostArtefacts/TRX/compare/trx-1.11...trx-1.11.1) - 2026-09-22

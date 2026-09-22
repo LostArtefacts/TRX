@@ -161,6 +161,13 @@
         <property category="TRX" defaultValue="100" description="Damage dealt by the hybrid mutant slash attack." displayName="Slash Damage" internalName="slash_damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="80" description="Damage dealt by the hybrid mutant kick attack." displayName="Kick Damage" internalName="kick_damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_JACKAL-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="16" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="20" description="Damage dealt by the lunge attack." displayName="Lunge Damage" internalName="lunge_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="10" description="Damage dealt by the bite attack." displayName="Bite Damage" internalName="bite_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="false" description="Whether the creature is posed and visible before being activated." displayName="Use Idle Pose" internalName="use_idle_pose" type="Bool" />
+    </moveable>
     <!--placeholder for O_KAYAK..O_UPV-->
     <moveable id="-1">
         <property category="TRX" defaultValue="true" description="Whether or not this vehicle can activate heavy triggers." displayName="Is Heavy" internalName="is_heavy" type="Bool" />

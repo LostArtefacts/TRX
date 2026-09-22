@@ -179,6 +179,13 @@
         <property category="TRX" defaultValue="3" description="The intensity of blood to spawn when Lara is damaged." displayName="Blood Intensity" internalName="blood_intensity" maxValue="10" minValue="0" type="Int" />
         <property category="TRX" defaultValue="true" description="Whether or not Lara should be pushed when colliding with the trap." displayName="Push Lara" internalName="push_lara" type="Bool" />
     </moveable>
+    <!--placeholder for O_JACKAL-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="16" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="20" description="Damage dealt by the lunge attack." displayName="Lunge Damage" internalName="lunge_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="10" description="Damage dealt by the bite attack." displayName="Bite Damage" internalName="bite_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="false" description="Whether the creature is posed and visible before being activated." displayName="Use Idle Pose" internalName="use_idle_pose" type="Bool" />
+    </moveable>
     <!--placeholder for O_JELLY-->
     <moveable id="-1">
         <property category="TRX" defaultValue="10" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />

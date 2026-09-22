@@ -2647,6 +2647,9 @@
         "inv_background": {
             "name": "Tło menu",
         },
+        "jackal": {
+            "name": "\\{review}Pies|\\{review}Szakal",
+        },
         "jelly": {
             "name": "Meduza",
         },

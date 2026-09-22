@@ -2647,6 +2647,9 @@
         "inv_background": {
             "name": "\\{review}Fond de menu",
         },
+        "jackal": {
+            "name": "\\{review}Chien|\\{review}Chacal",
+        },
         "jelly": {
             "name": "\\{review}Méduse",
         },

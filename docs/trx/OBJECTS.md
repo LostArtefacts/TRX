@@ -392,6 +392,17 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### jackal
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">16</td><td>Maximum hit points.</td></tr>
+<tr><td><code>lunge_damage</code></td><td colspan="3" align="center">20</td><td>Damage dealt by the lunge attack.</td></tr>
+<tr><td><code>bite_damage</code></td><td colspan="3" align="center">10</td><td>Damage dealt by the bite attack.</td></tr>
+<tr><td><code>use_idle_pose</code></td><td colspan="3" align="center">false</td><td>Whether the creature is posed and visible before being activated.</td></tr>
+</tbody>
+</table>
+
 #### jelly
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (35)</th><th align="center">TR3</th><th>Description</th></tr></thead>

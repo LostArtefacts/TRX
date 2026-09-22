@@ -123,4 +123,7 @@ trx.events.on_game_start(function()
   trx.items[111].properties.orientation = 4
   trx.items[112].properties.orientation = 4
   trx.items[116].properties.orientation = 4
+
+  trx.items[214].properties.use_idle_pose = true
+  trx.items[215].properties.use_idle_pose = true
 end)
