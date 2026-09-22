@@ -236,6 +236,8 @@ static void M_TeleportLara(const XYZ_32 pos, const int16_t y_rot)
     item->fall_speed = 0;
     item->gravity = false;
     lara->gun_status = LGS_ARMLESS;
+    lara->crouching = false;
+    lara->sprinting = false;
     g_Camera.fixed_camera = true;
     Interpolation_CommitLara();
 }
