@@ -63,6 +63,12 @@ typedef enum {
     M_PHASE_FADE_END, // final frames, fading to black
 } M_PHASE;
 
+typedef enum {
+    M_FADE_OUT_NONE,
+    M_FADE_OUT_PENDING,
+    M_FADE_OUT_PENDING_INSTANT,
+} M_FADE_OUT_STATE;
+
 typedef struct {
     OBJECT_ID obj_id;
     int16_t src_node;
@@ -117,6 +123,7 @@ static struct {
     // holds.
     int32_t holster_timeout;
     FADER fader;
+    M_FADE_OUT_STATE fade_out;
 } m_State = {
     .num = M_NO_CUTSCENE,
     .pending_num = M_NO_CUTSCENE,
@@ -406,6 +413,7 @@ static void M_Abort(void)
     m_State.phase = M_PHASE_INACTIVE;
     m_State.num = M_NO_CUTSCENE;
     m_State.pending_num = M_NO_CUTSCENE;
+    m_State.fade_out = M_FADE_OUT_NONE;
     m_State.lara_return.is_present = false;
     m_State.lara_shadow_bounds.is_present = false;
     Output_Overlay_SlideLetterbox(0.0f);
@@ -593,13 +601,8 @@ void CutSeq_Request(const int32_t num, const bool fade_out)
     m_State.phase = M_PHASE_FADE_OUT;
     m_State.holster_timeout = M_HOLSTER_TIMEOUT;
     M_RequestHolster();
-    if (fade_out) {
-        Fader_InitFromCurrent(&m_State.fader, 1.0f, M_FADE_DURATION);
-    } else {
-        // Black at once rather than over time, so the next tick begins the
-        // scene and M_Begin's own fade brings it in from there.
-        Fader_InitTo(&m_State.fader, 1.0f, 1.0f, 0.0f);
-    }
+    m_State.fade_out =
+        fade_out ? M_FADE_OUT_PENDING : M_FADE_OUT_PENDING_INSTANT;
 }
 
 void CutSeq_Skip(void)
@@ -750,6 +753,7 @@ void CutSeq_Reset(void)
     m_State.phase = M_PHASE_INACTIVE;
     m_State.num = M_NO_CUTSCENE;
     m_State.pending_num = M_NO_CUTSCENE;
+    m_State.fade_out = M_FADE_OUT_NONE;
     m_State.frame = 0;
     m_State.event_frame = -1;
     m_State.decoded_frames = 0;
@@ -772,6 +776,7 @@ void CutSeq_Reset(void)
     // asked for is carried into the next one.
     m_State.phase = M_PHASE_INACTIVE;
     m_State.pending_num = M_NO_CUTSCENE;
+    m_State.fade_out = M_FADE_OUT_NONE;
     m_State.fader = (FADER) {};
 }
 
@@ -786,6 +791,17 @@ void CutSeq_Control(void)
 
     switch (m_State.phase) {
     case M_PHASE_FADE_OUT:
+        if (m_State.fade_out != M_FADE_OUT_NONE) {
+            const bool is_instant =
+                m_State.fade_out == M_FADE_OUT_PENDING_INSTANT;
+            m_State.fade_out = M_FADE_OUT_NONE;
+            if (is_instant) {
+                Fader_InitTo(&m_State.fader, 1.0f, 1.0f, 0.0f);
+            } else {
+                Fader_InitFromCurrent(&m_State.fader, 1.0f, M_FADE_DURATION);
+            }
+            return;
+        }
         if (!Fader_IsActive(&m_State.fader)) {
             if (m_State.holster_timeout > 0 && !M_IsHolsterFinished()) {
                 m_State.holster_timeout--;
