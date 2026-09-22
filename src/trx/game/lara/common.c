@@ -1,6 +1,7 @@
 #include <trx/game/lara/common.h>
 
 #include <trx/config.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/catalog/manager.h>
@@ -73,6 +74,17 @@ static bool M_IsInvalidInterpAnim(const LARA_ANIMATION_ID anim_idx)
 {
     for (int32_t i = 0; m_InvalidInterpAnims[i] != NO_CATALOG_ID; i++) {
         if (m_InvalidInterpAnims[i] == anim_idx) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static bool M_IsInteractionWalk(const ITEM *const lara_item)
+{
+    const LARA_ANIMATION_ID anim = LA_U(Item_GetRelativeAnim(lara_item));
+    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(m_InteractionAnims); i++) {
+        if (anim == m_InteractionAnims[i]) {
             return true;
         }
     }
@@ -842,7 +854,7 @@ bool Lara_MovePositionEx(
         lara_item->pos.z += velocity * dpos.z / length;
     }
 
-    if (walk_to_items && !lara_info->interact_target.is_moving) {
+    if (walk_to_items && !M_IsInteractionWalk(lara_item)) {
         if (lara_on_land) {
             const int32_t dx = lara_item->pos.x - new_pos.x;
             const int32_t dz = lara_item->pos.z - new_pos.z;

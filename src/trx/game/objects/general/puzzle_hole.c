@@ -143,10 +143,6 @@ static void M_CollisionControlled(
                 return;
             }
 
-            if (lara->interact_target.move_count == 0) {
-                lara->interact_target.is_moving = false;
-            }
-
             if (Lara_MovePosition(item, &m_ControlledPosition)) {
                 Item_SwitchToAnim(lara_item, LA(LA_USE_PUZZLE), 0);
                 lara_item->current_anim_state = LS(LS_USE_PUZZLE);

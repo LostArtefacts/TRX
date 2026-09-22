@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.11...develop) - ××××-××-××
 **Lara's movement**
 - Fixed Lara not rotating her torso to lock onto targets while crouched (regression from 1.11)
+- Fixed Lara sliding to keyholes and puzzle holes instead of walking to them (TRX1566)
 
 **UI**
 - Changed the default pause screen background in TR3 and TR4 to monochrome (TRX1534)
