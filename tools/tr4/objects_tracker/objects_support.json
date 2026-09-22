@@ -88,7 +88,7 @@
   "grenade_ammo_item":        { "status": "partially implemented", "todo": "check 100% parity"                 },
   "grenade_gun_item":         { "status": "partially implemented", "todo": "check 100% parity"                 },
   "guardian":                 { "status": "not implemented",       "todo": "port from SPHINX"                  },
-  "guide":                    { "status": "not implemented",       "todo": "port from GUIDE"                   },
+  "guide":                    { "status": "fully implemented" },
   "gun_ninja":                { "status": "not implemented",       "todo": "port from RAGHEAD"                 },
   "hammer":                   { "status": "not implemented",       "todo": "port from HAMMER"                  },
   "harpy":                    { "status": "not implemented",       "todo": "port from HARPY"                   },

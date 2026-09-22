@@ -2616,6 +2616,9 @@
         "grenade_gun_item": {
             "name": "Wyrzutnia granatów",
         },
+        "guide": {
+            "name": "\\{review}Przewodnik",
+        },
         "gun_flash": {
             "name": "Rozbłysk broni",
         },

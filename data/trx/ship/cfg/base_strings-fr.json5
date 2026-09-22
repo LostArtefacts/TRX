@@ -2616,6 +2616,9 @@
         "grenade_gun_item": {
             "name": "\\{review}Lance-grenades",
         },
+        "guide": {
+            "name": "\\{review}Guide",
+        },
         "gun_flash": {
             "name": "\\{review}Éclair de pistolet",
         },

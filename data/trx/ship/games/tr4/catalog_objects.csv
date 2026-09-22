@@ -21,6 +21,7 @@
 28, crowbar_anim
 30, lara_hair
 33, lara_vehicle_anim
+37, guide
 39, von_croy
 47, mummy
 51, crocodile
@@ -392,7 +393,6 @@
 # 34: ENEMY_JEEP
 # 35: SKELETON
 # 36: SKELETON_MIP
-# 37: GUIDE
 # 38: GUIDE_MIP
 # 40: VON_CROY_MIP
 # 41: RAGHEAD

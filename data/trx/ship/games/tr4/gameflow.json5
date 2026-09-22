@@ -141,6 +141,9 @@
                 {"type": "loop_game"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "guide_gun.bin",
+            ],
         },
 
         // 6. KV5

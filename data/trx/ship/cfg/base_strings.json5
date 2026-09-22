@@ -2646,6 +2646,9 @@
             "name": "Grenade Launcher",
         },
         "grenade_gun_option": "$objects/grenade_gun_item",
+        "guide": {
+            "name": "Guide",
+        },
         "gun_flash": {
             "name": "Gun Flash",
         },
