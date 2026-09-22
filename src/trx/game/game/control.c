@@ -9,6 +9,7 @@
 #include <trx/game/flyby_mode.h>
 #include <trx/game/fx.h>
 #include <trx/game/game.h>
+#include <trx/game/game_flow/sequencer_events.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/gym.h>
 #include <trx/game/input.h>
@@ -46,6 +47,9 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
 {
     Game_SetCurrentLevel(level);
 
+    LUA_FireEventBool(LUA_EVENT_GAME_START, seq_ctx == GFSC_SAVED);
+    GF_ShowPendingLoadingCamera();
+
     const bool is_cutscene = level->type == GFL_CUTSCENE;
 
     g_OverlayFlag = 1;
@@ -61,9 +65,6 @@ bool Game_Start(const GF_LEVEL *const level, const GF_SEQUENCE_CONTEXT seq_ctx)
         Music_PlayBySlot(level->music_track, is_cutscene ? MPM_ONCE : MPM_LOOP);
     }
 
-    // Which level this is, and what kind, is trx.game.current_level's to
-    // answer; the event carries only what the level itself cannot say.
-    LUA_FireEventBool(LUA_EVENT_GAME_START, seq_ctx == GFSC_SAVED);
     return true;
 }
 
