@@ -1,4 +1,8 @@
-## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.11...develop) - ××××-××-××
+## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.11.1...develop) - ××××-××-××
+
+
+
+## [1.11.1](https://github.com/LostArtefacts/TRX/compare/trx-1.11...trx-1.11.1) - 2026-09-22
 **Lara's movement**
 - Fixed Lara not rotating her torso to lock onto targets while crouched (regression from 1.11)
 - Fixed Lara crouching or sprinting on her own after a cutscene when toggle controls are enabled (#6666 / TRX1545)
@@ -34,6 +38,8 @@
 
 **TR4**
 - Fixed being able to break out of some locked cameras by using look or drawing weapons (TRX1546)
+
+
 
 ## [1.11](https://github.com/LostArtefacts/TRX/compare/trx-1.10.2...trx-1.11) - 2026-09-19
 Showcase: https://youtu.be/dHuBHppj_fo
