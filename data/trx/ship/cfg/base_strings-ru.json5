@@ -2647,6 +2647,9 @@
         "inv_background": {
             "name": "\\{review}Фон меню",
         },
+        "jackal": {
+            "name": "\\{review}Собака|\\{review}Шакал",
+        },
         "jelly": {
             "name": "\\{review}Медуза",
         },

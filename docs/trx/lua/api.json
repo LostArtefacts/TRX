@@ -342,7 +342,7 @@
     },
     {
       "bulk": true,
-      "count": 822,
+      "count": 823,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -600,6 +600,7 @@
         "HYBRID_MUTANT",
         "ICICLE",
         "INV_BACKGROUND",
+        "JACKAL",
         "JELLY",
         "KAYAK",
         "KEY_HOLE_1",

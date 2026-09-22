@@ -27,4 +27,7 @@ trx.events.on_game_start(function()
 
   trx.objects.waterfall_1.properties.hide_when_inactive = true
   trx.objects.waterfall_2.properties.hide_when_inactive = true
+
+  trx.items[79].properties.use_idle_pose = true
+  trx.items[80].properties.use_idle_pose = true
 end)

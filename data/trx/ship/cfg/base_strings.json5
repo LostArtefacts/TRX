@@ -2679,6 +2679,9 @@
         "inv_background": {
             "name": "Menu Background",
         },
+        "jackal": {
+            "name": "Dog|Jackal",
+        },
         "jelly": {
             "name": "Jellyfish",
         },

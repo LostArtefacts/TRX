@@ -197,6 +197,13 @@
     <moveable id="-1">
         <property category="TRX" defaultValue="200" description="Damage dealt when Lara is struck by the falling icicle." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_JACKAL-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="16" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="20" description="Damage dealt by the lunge attack." displayName="Lunge Damage" internalName="lunge_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="10" description="Damage dealt by the bite attack." displayName="Bite Damage" internalName="bite_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="false" description="Whether the creature is posed and visible before being activated." displayName="Use Idle Pose" internalName="use_idle_pose" type="Bool" />
+    </moveable>
     <!--placeholder for O_JELLY-->
     <moveable id="-1">
         <property category="TRX" defaultValue="10" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
