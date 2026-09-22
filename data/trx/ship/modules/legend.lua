@@ -23,7 +23,7 @@ local FRAMES = 150
 -- the original engine keeps the caption off it.
 local function is_clear()
   return trx.game.is_playing
-    and not trx.cutscenes.is_playing
+    and not trx.cutscenes.is_active
     and not trx.overlay.has_letterbox
     -- A flyby draws no bars of its own yet, so the sequence itself answers for
     -- the ones it will draw.
