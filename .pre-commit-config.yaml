@@ -41,9 +41,9 @@ repos:
     language: python
     files: \.(c|h)$
 
-  - id: lint-no-stdbool
-    name: No stdbool.h
-    entry: tools/lint/checks/no_stdbool
+  - id: lint-banned-syntax
+    name: No banned C syntax
+    entry: tools/lint/checks/banned_syntax
     language: python
     files: \.(c|h|cpp|hpp|cc|cxx)$
 

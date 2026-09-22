@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+import re
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from harness import LintWarning, file_check
+
+INCLUDE_RE = re.compile(r'#\s*include\s*[<"]stdbool\.h[>"]')
+
+
+def _skip_quoted(text, pos):
+    # Returns the offset past the string or character literal that starts at
+    # pos, so that a quoted `/*` is not read as a comment.
+    quote = text[pos]
+    pos += 1
+    while pos < len(text):
+        if text[pos] == "\\":
+            pos += 2
+            continue
+        if text[pos] == quote:
+            return pos + 1
+        pos += 1
+    return pos
+
+
+def _block_comments(text):
+    # Yields the offset of every `/* */` comment, reading the file the way the
+    # compiler does, so that a `/*` inside a literal or a line comment stays
+    # out of the results.
+    pos = 0
+    while pos < len(text):
+        char = text[pos]
+        if char in "\"'":
+            pos = _skip_quoted(text, pos)
+        elif text.startswith("//", pos):
+            end = text.find("\n", pos)
+            pos = len(text) if end < 0 else end
+        elif text.startswith("/*", pos):
+            yield pos
+            end = text.find("*/", pos + 2)
+            pos = len(text) if end < 0 else end + 2
+        else:
+            pos += 1
+
+
+def check(path, text):
+    for match in INCLUDE_RE.finditer(text):
+        yield LintWarning(
+            path,
+            "stdbool.h is redundant: bool, true and false are built in "
+            "under C23",
+            line=text.count("\n", 0, match.start()) + 1,
+        )
+
+    for offset in _block_comments(text):
+        # A file that opens with one carries a licence it was given, so the
+        # text stands as its owner wrote it.
+        if offset == 0:
+            continue
+        yield LintWarning(
+            path,
+            "Block comments are not used: write the comment with //",
+            line=text.count("\n", 0, offset) + 1,
+        )
+
+
+file_check(check)
