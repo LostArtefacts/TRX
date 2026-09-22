@@ -3473,6 +3473,9 @@
         "sliding_pillar": {
             "name": "Скользящая колонна",
         },
+        "small_scorpion": {
+            "name": "\\{review}Маленький скорпион",
+        },
         "smashable_1": {
             "name": "\\{review}Разбиваемое окно 1",
         },

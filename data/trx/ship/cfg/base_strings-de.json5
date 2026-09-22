@@ -3473,6 +3473,9 @@
         "sliding_pillar": {
             "name": "Sliding Pillar",
         },
+        "small_scorpion": {
+            "name": "\\{review}Kleiner Skorpion",
+        },
         "smashable_1": {
             "name": "Zerstörbares Fenster 1",
         },

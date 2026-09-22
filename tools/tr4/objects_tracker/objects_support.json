@@ -207,7 +207,7 @@
   "sliding_block":            { "status": "not implemented",       "todo": "port from SQUISHY_BLOCK1"          },
   "small_beetle":             { "status": "not implemented",       "todo": "port from LITTLE_BEETLE"           },
   "small_medipack_item":      { "status": "fully implemented" },
-  "small_scorpion":           { "status": "not implemented",       "todo": "port from SMALL_SCORPION"          },
+  "small_scorpion":           { "status": "fully implemented" },
   "smashable_bike_floor":     { "status": "not implemented",       "todo": "port from SMASHABLE_BIKE_FLOOR"    },
   "smashable_bike_wall":      { "status": "not implemented",       "todo": "port from SMASHABLE_BIKE_WALL"     },
   "smashable_switch_1":       { "status": "not implemented",       "todo": "port from SWITCH_TYPE7"            },

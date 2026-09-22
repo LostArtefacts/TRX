@@ -13,6 +13,7 @@ trx.events.on_game_start(function()
   trx.items[0].properties.collidable_when_done = false
   trx.objects.scaled_spikes.properties.scaled_spikes_mode =
     trx.items.ScaledSpikesMode.EXTENDED
+  trx.objects.small_scorpion.properties.is_venomous = false
 end)
 
 -- The caption the level opens with, which the level's strings carry.
