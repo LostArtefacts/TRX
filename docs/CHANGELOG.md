@@ -27,6 +27,9 @@
 - Added `trx.lara.move_angle` and `trx.lara.turn_rate`.
 - Fixed potential crashes when setting out-of-bounds positions on items
 
+**TR4**
+- Fixed being able to break out of some locked cameras by using look or drawing weapons (TRX1546)
+
 ## [1.11](https://github.com/LostArtefacts/TRX/compare/trx-1.10.2...trx-1.11) - 2026-09-19
 Showcase: https://youtu.be/dHuBHppj_fo
 **Lara's movement**
