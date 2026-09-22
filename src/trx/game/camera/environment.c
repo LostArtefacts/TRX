@@ -91,14 +91,22 @@ static inline void M_ValidateTriggerTarget(const M_TARGET_STATUS status)
 
 void Camera_RefreshFromTrigger(const TRIGGER *const trigger)
 {
-    M_TARGET_STATUS status = TARGET_UNKNOWN;
+    const TRIGGER_CMD *camera_cmd = nullptr;
+    const TRIGGER_CMD *target_cmd = nullptr;
     for (const TRIGGER_CMD *cmd = trigger->command; cmd != nullptr;
          cmd = cmd->next_cmd) {
         if (cmd->type == TO_CAMERA) {
-            status = M_HandleCameraTrigger(cmd);
+            camera_cmd = cmd;
         } else if (cmd->type == TO_TARGET) {
-            M_HandleTargetTrigger(cmd);
+            target_cmd = cmd;
         }
+    }
+
+    const M_TARGET_STATUS status = camera_cmd == nullptr
+        ? TARGET_UNKNOWN
+        : M_HandleCameraTrigger(camera_cmd);
+    if (target_cmd != nullptr) {
+        M_HandleTargetTrigger(target_cmd);
     }
 
     M_ValidateTriggerTarget(status);

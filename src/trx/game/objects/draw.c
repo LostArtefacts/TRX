@@ -14,16 +14,10 @@
 #include <trx/version.h>
 
 static BOUNDS_16 M_GetBoundingBox(
-    const OBJECT *const obj, const ANIM_FRAME *const frame,
+    const OBJECT *const obj, const XYZ_16 *const mesh_rots,
     const uint32_t mesh_bits)
 {
-    const XYZ_16 *const mesh_rots =
-        frame != nullptr ? frame->mesh_rots : nullptr;
-
     Matrix_PushUnit();
-    if (frame != nullptr) {
-        Matrix_TranslateRel16(frame->offset);
-    }
     if (mesh_rots != nullptr) {
         Matrix_Rot16(mesh_rots[0]);
     }
@@ -331,7 +325,6 @@ bool Object_DrawPickupItem(const ITEM *const item)
 
     // Standardize the bounds and offsets of all pickup items, and handle cases
     // such as the prayer wheels in Barkhang Monastery, which have no frames.
-    const BOUNDS_16 bounds = M_GetBoundingBox(obj, nullptr, item->mesh_bits);
     XYZ_16 offset = {};
 
     const XYZ_16 *mesh_rots = nullptr;
@@ -344,7 +337,10 @@ bool Object_DrawPickupItem(const ITEM *const item)
         } else {
             offset.y -= frame->bounds.max.y;
         }
-    } else {
+    }
+
+    const BOUNDS_16 bounds = M_GetBoundingBox(obj, mesh_rots, item->mesh_bits);
+    if (obj->anim_idx == NO_ANIM) {
         offset.y = (bounds.max.y - bounds.min.y) / -2;
     }
 

@@ -2,6 +2,7 @@
 **Lara's movement**
 - Fixed Lara not rotating her torso to lock onto targets while crouched (regression from 1.11)
 - Fixed Lara crouching or sprinting on her own after a cutscene when toggle controls are enabled (#6666 / TRX1545)
+- Fixed Lara sliding to keyholes and puzzle holes instead of walking to them (TRX1566)
 
 **UI**
 - Changed the default pause screen background in TR3 and TR4 to monochrome (TRX1534)
@@ -12,6 +13,9 @@
 - Fixed a green glow under Lara in New Game+ (#6644 / TRX1523)
 - Fixed a garbled icon when Lara picks up an item added by a mod (#6644 / TRX1523)
 - Fixed the game freezing when loading a New Game+ save (TRX1529)
+
+**Rendering**
+- Fixed rotated pickups such as the TR4 small medipack disappearing at the edge of the screen (TRX1567)
 
 **Installer**
 - Fixed performance issues when using the Windows installer with a detected disc image source (TRX1531, regression from 1.11)
@@ -27,6 +31,9 @@
 - Added `trx.lara.head_rot`, `trx.lara.torso_rot`, `trx.lara.left_arm_rot`, and `trx.lara.right_arm_rot`.
 - Added `trx.lara.move_angle` and `trx.lara.turn_rate`.
 - Fixed potential crashes when setting out-of-bounds positions on items
+
+**TR4**
+- Fixed being able to break out of some locked cameras by using look or drawing weapons (TRX1546)
 
 ## [1.11](https://github.com/LostArtefacts/TRX/compare/trx-1.10.2...trx-1.11) - 2026-09-19
 Showcase: https://youtu.be/dHuBHppj_fo
