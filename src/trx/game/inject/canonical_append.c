@@ -1,6 +1,7 @@
 #include <trx/core/file.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
+#include <trx/core/subsystem.h>
 #include <trx/debug.h>
 #include <trx/game/inject/canonical.h>
 #include <trx/game/level/context.h>
@@ -19,6 +20,16 @@ static VECTOR *m_FrameRotCounts = nullptr;
 static int32_t M_GameVersion(void)
 {
     return Level_Context_Get()->loader->game_version;
+}
+
+static void M_Shutdown(void)
+{
+    if (m_FrameOffsets != nullptr) {
+        Vector_Free(m_FrameOffsets);
+        Vector_Free(m_FrameRotCounts);
+        m_FrameOffsets = nullptr;
+        m_FrameRotCounts = nullptr;
+    }
 }
 
 void InjectCanonical_AppendObjectTextures(
@@ -109,3 +120,5 @@ void InjectCanonical_AppendAnims(
         Vector_Free(rots);
     }
 }
+
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)
