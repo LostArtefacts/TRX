@@ -102,8 +102,17 @@ UI_MEASURE_NOTE UI_Measure_GetWidest(void);
 void UI_BeginScene(void);
 void UI_EndScene(void);
 
-// Runs after layout and before draw, while reservation boxes are known.
-void UI_SetPaintHook(void (*hook)(void));
+// Names when a paint pass runs against the widget tree.
+typedef enum {
+    // Before the tree draws, so the paint sits under the engine UI.
+    UI_PAINT_LAYER_UNDER,
+    // After the tree draws, so the paint sits over the engine UI.
+    UI_PAINT_LAYER_OVER,
+} UI_PAINT_LAYER;
+
+// Runs once per layer, while reservation boxes are known. Both passes run
+// after layout, the under pass before the tree draws and the over pass after.
+void UI_SetPaintHook(void (*hook)(UI_PAINT_LAYER layer));
 
 // Measures widgets built between these calls without drawing them.
 // Measured nodes stay valid until UI_BeginScene resets the arena.

@@ -10,6 +10,7 @@
 #include <trx/config/option.h>
 #include <trx/game/console/common.h>
 #include <trx/game/ui/common.h>
+#include <trx/game/ui/regions.h>
 #include <trx/game/ui/settings.h>
 #include <trx/game/ui/elements/bar.h>
 #include <trx/game/ui/elements/label.h>
@@ -107,6 +108,46 @@ static int M_FakePaint(lua_State *const L)
     return 1;
 }
 
+// Fires the script paint event for the layer the scene is running.
+static void M_PaintLayer(const UI_PAINT_LAYER layer)
+{
+    LUA_UI_SetPainting(true);
+    LUA_FireEvent(
+        layer == UI_PAINT_LAYER_OVER ? LUA_EVENT_UI_PAINT_OVER
+                                     : LUA_EVENT_UI_PAINT);
+    LUA_UI_SetPainting(false);
+}
+
+// fake.scene() -> table of scheduled operations
+//
+// Runs a whole scene the way the engine runs one: every region is opened for
+// the draw event, then the scene is laid out, then each paint layer runs. The
+// operations come back in the order they were scheduled, so a line drawn under
+// the engine interface comes before one drawn over it.
+static int M_FakeScene(lua_State *const L)
+{
+    FakeUIDraw_Forget();
+    UI_SetPaintHook(M_PaintLayer);
+    UI_BeginScene();
+    for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
+        UI_BeginRegion((UI_REGION)i);
+        LUA_UI_SetDrawing(true);
+        LUA_FireEventInt32(LUA_EVENT_UI_DRAW, i);
+        LUA_UI_SetDrawing(false);
+        UI_EndRegion();
+    }
+    UI_EndScene();
+    UI_SetPaintHook(nullptr);
+
+    const int32_t count = FakeUIDraw_GetCount();
+    lua_createtable(L, count, 0);
+    for (int32_t i = 0; i < count; i++) {
+        lua_pushstring(L, FakeUIDraw_GetLine(i));
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
 // fake.set_viewport(w, h)
 static int M_FakeSetViewport(lua_State *const L)
 {
@@ -148,6 +189,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "set_viewport");
     lua_pushcfunction(L, M_FakePaint);
     lua_setfield(L, -2, "paint");
+    lua_pushcfunction(L, M_FakeScene);
+    lua_setfield(L, -2, "scene");
     lua_pushcfunction(L, M_FakeDraw);
     lua_setfield(L, -2, "draw");
     lua_pushcfunction(L, M_FakeLastLabel);

@@ -81,6 +81,19 @@ api.enum("ui.Region", {
   },
 })
 
+api.enum("ui.Layer", {
+  backing = "UI_PAINT_LAYER",
+  description = [[
+Whether a widget is drawn below or above the engine interface.
+
+Widgets use the lower layer by default. Use the upper layer for a console or a
+text field. Each region keeps space for both layers.]],
+  values = {
+    UNDER = "Below the engine interface.",
+    OVER = "Above the engine interface.",
+  },
+})
+
 api.enum("ui.FrameStyle", {
   backing = "UI_FRAME_STYLE",
   description = "Which of the game's frames to draw. The look of each follows the menu style "

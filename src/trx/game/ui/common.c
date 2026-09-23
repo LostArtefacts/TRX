@@ -30,7 +30,7 @@ static struct {
     },
 };
 
-static void (*m_PaintHook)(void);
+static void (*m_PaintHook)(UI_PAINT_LAYER);
 static float m_SmallestFitScale = 1.0f;
 
 #ifdef TESTING
@@ -230,7 +230,7 @@ void UI_BeginScene(void)
     UI_BeginAnchor(0.5f, 0.5f); // Make a root node.
 }
 
-void UI_SetPaintHook(void (*const hook)(void))
+void UI_SetPaintHook(void (*const hook)(UI_PAINT_LAYER))
 {
     m_PaintHook = hook;
 }
@@ -242,9 +242,12 @@ void UI_EndScene(void)
     UI_Region_Layout();
     M_LayoutNode(m_Priv.root, 0, 0, UI_GetCanvasWidth(), UI_GetCanvasHeight());
     if (m_PaintHook != nullptr) {
-        m_PaintHook();
+        m_PaintHook(UI_PAINT_LAYER_UNDER);
     }
     M_DrawNode(m_Priv.root);
+    if (m_PaintHook != nullptr) {
+        m_PaintHook(UI_PAINT_LAYER_OVER);
+    }
     UI_EndAnchor();
     ASSERT(m_Priv.root == nullptr);
 }

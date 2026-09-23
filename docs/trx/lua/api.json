@@ -3250,6 +3250,24 @@
     },
     {
       "bulk": false,
+      "count": 2,
+      "description": "Whether a widget is drawn below or above the engine interface.\n\nWidgets use the lower layer by default. Use the upper layer for a console or a\ntext field. Each region keeps space for both layers.",
+      "path": "ui.Layer",
+      "values": [
+        {
+          "description": "Below the engine interface.",
+          "name": "UNDER",
+          "value": 0
+        },
+        {
+          "description": "Above the engine interface.",
+          "name": "OVER",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "bulk": false,
       "count": 5,
       "description": "Which of the game's frames to draw. The look of each follows the menu style the player chose.",
       "path": "ui.FrameStyle",
@@ -4657,6 +4675,21 @@
       "returns": {
         "description": "The listener id.",
         "type": "integer"
+      }
+    },
+    {
+      "description": "Fires on every drawn frame, after the engine interface has drawn. The\ncallback receives nothing.\n\nThis is `trx.events.on_ui_paint` for the layer above the engine interface.\nA script draws here where its work must cover the interface rather than sit\nunder it, such as a console or a text field. The reservation boxes are the\nsame ones `trx.events.on_ui_draw` asked for.\n\n`trx.ui.regions.place` picks the layer for a widget, so a script building\nwith widgets has no reason to take this.",
+      "params": [
+        {
+          "description": "What to run when it happens.",
+          "name": "callback",
+          "type": "function"
+        }
+      ],
+      "path": "events.on_ui_paint_over",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
       }
     },
     {
@@ -9888,9 +9921,10 @@
       }
     },
     {
-      "description": "Places a widget in a region.\n\nIf the region argument is a signal, the widget moves when the signal changes.",
+      "description": "Places a widget in a region.\n\nThe layer decides whether the widget is covered by the engine interface or\ncovers it. A widget is under it unless the call says otherwise. Each layer\nkeeps room of its own in the region, so widgets on the two layers stack rather\nthan sit on top of each other.\n\nIf the region argument is a signal, the widget moves when the signal changes.",
       "examples": [
-        "trx.ui.regions.place(trx.ui.Region.TOP_LEFT, health_bar)"
+        "trx.ui.regions.place(trx.ui.Region.TOP_LEFT, health_bar)",
+        "trx.ui.regions.place(\n  trx.ui.Region.BOTTOM_LEFT,\n  console,\n  trx.ui.Layer.OVER\n)"
       ],
       "params": [
         {
@@ -9902,6 +9936,12 @@
           "description": "The widget to place.",
           "name": "widget",
           "type": "ui.Widget"
+        },
+        {
+          "description": "Which layer to draw on. Defaults to `trx.ui.Layer.UNDER`.",
+          "name": "layer",
+          "optional": true,
+          "type": "ui.Layer"
         }
       ],
       "path": "ui.regions.place"

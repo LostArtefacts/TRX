@@ -30,6 +30,7 @@
 #include <trx/game/shell/mod.h>
 #include <trx/game/sound/ids.h>
 #include <trx/game/sparks/enum.h>
+#include <trx/game/ui/common.h>
 #include <trx/game/ui/elements/frame.h>
 #include <trx/game/ui/elements/stack.h>
 #include <trx/game/ui/regions.h>
@@ -182,6 +183,10 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_TEXT_INPUT, "text_input");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_CONSOLE_LOG, "console_log");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_CONSOLE_CLEAR, "console_clear");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_PAINT_OVER, "ui_paint_over");
+
+    ENUM_MAP(UI_PAINT_LAYER, UI_PAINT_LAYER_UNDER, "under");
+    ENUM_MAP(UI_PAINT_LAYER, UI_PAINT_LAYER_OVER, "over");
 
     ENUM_MAP(UI_REGION, UI_REGION_TOP_LEFT, "top-left");
     ENUM_MAP(UI_REGION, UI_REGION_TOP_CENTER, "top-center");

@@ -238,4 +238,37 @@ test("the clipboard holds what a script puts there", function()
   assert(trx.ui.clipboard == "", "an empty clipboard reads as an empty string")
 end)
 
+test("the layer over the interface paints after the layer under it", function()
+  local under = trx.events.on_ui_paint(function()
+    trx.ui.primitive.quad(0, 0, 0, 10, 10, trx.math.color("#ff0000"))
+  end)
+  local over = trx.events.on_ui_paint_over(function()
+    trx.ui.primitive.quad(0, 0, 0, 10, 10, trx.math.color("#00ff00"))
+  end)
+
+  local ops = fake.scene()
+  under:detach()
+  over:detach()
+
+  local under_at, over_at
+  for i, op in ipairs(ops) do
+    if op:find("ff0000", 1, true) then
+      under_at = i
+    elseif op:find("00ff00", 1, true) then
+      over_at = i
+    end
+  end
+
+  assert(under_at ~= nil, "the layer under the interface did not paint")
+  assert(over_at ~= nil, "the layer over the interface did not paint")
+  assert(over_at > under_at, "the layers painted in the wrong order")
+end)
+
+test("a layer keeps its own widgets", function()
+  local over = trx.ui.widgets.Label({ text = "only-over" })
+  trx.ui.regions.place(trx.ui.Region.BOTTOM_RIGHT, over, trx.ui.Layer.OVER)
+  assert(trx.ui.regions.remove(over) == true)
+  assert(trx.ui.regions.remove(over) == false, "it was removed twice")
+end)
+
 return h.report()

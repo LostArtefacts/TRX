@@ -1,6 +1,8 @@
 // The scene the trx.ui bindings may build in.
 #pragma once
 
+#include <trx/game/ui/common.h>
+
 // Sets whether trx.ui may add widgets to the current scene.
 void LUA_UI_SetDrawing(bool drawing);
 bool LUA_UI_IsDrawing(void);
@@ -12,8 +14,9 @@ void LUA_UI_DrawRegions(void);
 // only the picture.
 void LUA_UI_HideNextFrame(void);
 
-// Lets scripts draw into the boxes reserved during scene layout.
-void LUA_UI_PaintRegions(void);
+// Lets scripts draw into the boxes reserved during scene layout. Runs once
+// per layer, so that a script can paint under or over the engine UI.
+void LUA_UI_PaintRegions(UI_PAINT_LAYER layer);
 
 // Sets whether trx.ui may schedule draw calls for the current scene.
 void LUA_UI_SetPainting(bool painting);

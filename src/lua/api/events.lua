@@ -448,6 +448,30 @@ api.define("events.on_ui_paint", {
   impl = hook(types.UI_PAINT),
 })
 
+api.define("events.on_ui_paint_over", {
+  description = [[
+    Fires on every drawn frame, after the engine interface has drawn. The
+    callback receives nothing.
+
+    This is `trx.events.on_ui_paint` for the layer above the engine interface.
+    A script draws here where its work must cover the interface rather than sit
+    under it, such as a console or a text field. The reservation boxes are the
+    same ones `trx.events.on_ui_draw` asked for.
+
+    `trx.ui.regions.place` picks the layer for a widget, so a script building
+    with widgets has no reason to take this.
+  ]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      description = "What to run when it happens.",
+    },
+  },
+  returns = LISTENER,
+  impl = hook(types.UI_PAINT_OVER),
+})
+
 api.define("events.on_pickup", {
   description = "Happens just after Lara picks up an item.",
   params = {
