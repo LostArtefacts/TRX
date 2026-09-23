@@ -79,14 +79,14 @@ static void M_Explode(int16_t grenade_item_num, const XYZ_32 pos)
             SFX_EXPLOSION_1, &grenade_item->pos, 0x1800000 | SPM_PITCH);
         Sound_Effect(SFX_EXPLOSION_2, &grenade_item->pos, SPM_NORMAL);
     } else {
-        const int16_t effect_num = Effect_Create(grenade_item->room_num);
+        const int16_t effect_num =
+            Effect_Create(O_EXPLOSION_1, grenade_item->room_num);
         if (effect_num != NO_EFFECT) {
             EFFECT *const effect = Effect_Get(effect_num);
             effect->pos = pos;
             effect->speed = 0;
             effect->frame_num = 0;
             effect->counter = 0;
-            effect->object_id = O_EXPLOSION_1;
         }
 
         Sound_Effect(SFX_EXPLOSION_3, nullptr, SPM_NORMAL);

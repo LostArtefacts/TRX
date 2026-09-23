@@ -256,12 +256,11 @@ static void M_SpawnPickupAid(const ITEM *const item)
             Sparks_TriggerPickupAid(pos, (XZ_32) {});
         }
     } else {
-        const int16_t effect_num = Effect_Create(item->room_num);
+        const int16_t effect_num = Effect_Create(O_PICKUP_AID, item->room_num);
         if (effect_num != NO_EFFECT) {
             EFFECT *const effect = Effect_Get(effect_num);
             effect->pos = pos;
             effect->counter = 0;
-            effect->object_id = O_PICKUP_AID;
             effect->frame_num = 0;
         }
     }

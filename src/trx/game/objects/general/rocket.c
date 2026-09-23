@@ -74,14 +74,14 @@ static void M_Explode(const int16_t rocket_item_num, const XYZ_32 pos)
             }
         }
     } else {
-        const int16_t effect_num = Effect_Create(rocket_item->room_num);
+        const int16_t effect_num =
+            Effect_Create(O_EXPLOSION_1, rocket_item->room_num);
         if (effect_num != NO_EFFECT) {
             EFFECT *const effect = Effect_Get(effect_num);
             effect->pos = pos;
             effect->speed = 0;
             effect->frame_num = 0;
             effect->counter = 0;
-            effect->object_id = O_EXPLOSION_1;
         }
     }
 

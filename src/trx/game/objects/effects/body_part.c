@@ -9,14 +9,13 @@
 
 static void M_SpawnSplash(const GAME_VECTOR pos)
 {
-    const int16_t effect_num = Effect_Create(pos.room_num);
+    const int16_t effect_num = Effect_Create(O_SPLASH_1, pos.room_num);
     if (effect_num != NO_EFFECT) {
         EFFECT *const effect = Effect_Get(effect_num);
         effect->pos = pos.pos;
         effect->rot.y = 0;
         effect->speed = 0;
         effect->frame_num = 0;
-        effect->object_id = O_SPLASH_1;
     }
 }
 

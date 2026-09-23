@@ -71,13 +71,12 @@ void Spawn_Splash(const ITEM *const item)
     Room_GetSector(item->pos, &room_num);
 
     for (int32_t i = 0; i < 10; i++) {
-        const int16_t effect_num = Effect_Create(room_num);
+        const int16_t effect_num = Effect_Create(O_SPLASH_1, room_num);
         if (effect_num == NO_EFFECT) {
             continue;
         }
 
         EFFECT *const effect = Effect_Get(effect_num);
-        effect->object_id = O_SPLASH_1;
         effect->pos.x = item->pos.x;
         effect->pos.y = water_height;
         effect->pos.z = item->pos.z;
@@ -103,10 +102,9 @@ void Spawn_Ricochet(const GAME_VECTOR pos)
         return;
     }
 
-    const int16_t effect_num = Effect_Create(pos.room_num);
+    const int16_t effect_num = Effect_Create(O_RICOCHET, pos.room_num);
     if (effect_num != NO_EFFECT) {
         EFFECT *const effect = Effect_Get(effect_num);
-        effect->object_id = O_RICOCHET;
         effect->pos = pos.pos;
         effect->counter = 4;
         effect->frame_num = -3 * Random_GetDraw() / 0x8000;
@@ -149,14 +147,13 @@ void Spawn_Explosion(
             }
         }
     } else {
-        const int16_t effect_num = Effect_Create(room_num);
+        const int16_t effect_num = Effect_Create(O_EXPLOSION_1, room_num);
         if (effect_num != NO_EFFECT) {
             EFFECT *const effect = Effect_Get(effect_num);
             effect->pos = pos;
             effect->speed = 0;
             effect->frame_num = 0;
             effect->counter = 0;
-            effect->object_id = O_EXPLOSION_1;
         }
     }
 
@@ -177,14 +174,13 @@ void Spawn_Bubble(const XYZ_32 *const pos, const int16_t room_num)
         return;
     }
 
-    const int16_t effect_num = Effect_Create(room_num);
+    const int16_t effect_num = Effect_Create(O_BUBBLE_1, room_num);
     if (effect_num == NO_EFFECT) {
         return;
     }
 
     EFFECT *const effect = Effect_Get(effect_num);
     effect->pos = *pos;
-    effect->object_id = O_BUBBLE_1;
     effect->frame_num = -((Random_GetDraw() * 3) / 0x8000);
     effect->speed = 10 + ((Random_GetDraw() * 6) / 0x8000);
 }
@@ -204,14 +200,13 @@ void Spawn_BubbleEx(
         return;
     }
 
-    const int16_t effect_num = Effect_Create(room_num);
+    const int16_t effect_num = Effect_Create(O_BUBBLE_1, room_num);
     if (effect_num == NO_EFFECT) {
         return;
     }
 
     EFFECT *const effect = Effect_Get(effect_num);
     effect->pos = *pos;
-    effect->object_id = O_BUBBLE_1;
     effect->frame_num = 0;
 
     effect->speed = (Random_GetControl() & 0xFF) + 64;
@@ -262,7 +257,7 @@ int16_t Spawn_Blood(
         return NO_EFFECT;
     }
 
-    const int16_t effect_num = Effect_Create(room_num);
+    const int16_t effect_num = Effect_Create(object_id, room_num);
     if (effect_num != NO_EFFECT) {
         EFFECT *const effect = Effect_Get(effect_num);
         effect->pos.x = x;
@@ -271,7 +266,6 @@ int16_t Spawn_Blood(
         effect->rot.y = y_rot;
         effect->speed = speed;
         effect->frame_num = 0;
-        effect->object_id = object_id;
         effect->counter = 0;
     }
     return effect_num;
@@ -330,7 +324,7 @@ int16_t Spawn_GunShot(
     const int32_t x, const int32_t y, const int32_t z, const int16_t speed,
     const int16_t y_rot, const int16_t room_num)
 {
-    const int16_t effect_num = Effect_Create(room_num);
+    const int16_t effect_num = Effect_Create(O_GUN_FLASH, room_num);
     if (effect_num == NO_EFFECT) {
         return effect_num;
     }
@@ -345,7 +339,6 @@ int16_t Spawn_GunShot(
     effect->rot.y = y_rot;
     effect->counter = 3;
     effect->frame_num = 0;
-    effect->object_id = O_GUN_FLASH;
     effect->shade = SHADE_NEUTRAL;
     return effect_num;
 }
@@ -402,13 +395,15 @@ void Spawn_GunShell(const LARA_GUN_TYPE weapon_type, const bool right)
 
     Lara_GetMeshPos(right ? LM_HAND_R : LM_HAND_L, &offset);
 
-    const int16_t effect_num = Effect_Create(lara_item->room_num);
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
+    const OBJECT_ID shell_object_id = weapon->shell_object_id;
+    const int16_t effect_num = Effect_Create(
+        shell_object_id == NO_OBJECT ? O_GUN_SHELL : shell_object_id,
+        lara_item->room_num);
     if (effect_num == NO_EFFECT) {
         return;
     }
 
-    const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
-    const OBJECT_ID shell_object_id = weapon->shell_object_id;
     EFFECT *const effect = Effect_Get(effect_num);
     effect->pos = offset;
     effect->room_num = lara_item->room_num;
@@ -416,8 +411,6 @@ void Spawn_GunShell(const LARA_GUN_TYPE weapon_type, const bool right)
     effect->rot.y = 0;
     effect->rot.z = (int16_t)Random_GetControl();
     effect->speed = (int16_t)((Random_GetControl() & 0x1F) + 16);
-    effect->object_id =
-        shell_object_id == NO_OBJECT ? O_GUN_SHELL : shell_object_id;
     effect->frame_num = Object_Get(effect->object_id)->mesh_idx;
     effect->fall_speed = (int16_t)(-48 - (Random_GetControl() & 7));
     effect->shade = 0x4210;
@@ -443,7 +436,7 @@ int16_t Spawn_AtlanteanShard(
     int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,
     int16_t room_num)
 {
-    int16_t effect_num = Effect_Create(room_num);
+    int16_t effect_num = Effect_Create(O_MISSILE_ATLANTEAN_SHARD, room_num);
     if (effect_num != NO_EFFECT) {
         EFFECT *effect = Effect_Get(effect_num);
         effect->room_num = room_num;
@@ -453,7 +446,6 @@ int16_t Spawn_AtlanteanShard(
         effect->rot.x = 0;
         effect->rot.y = y_rot;
         effect->rot.z = 0;
-        effect->object_id = O_MISSILE_ATLANTEAN_SHARD;
         effect->frame_num = 0;
         effect->speed = 250;
         effect->shade = 3584;
@@ -466,7 +458,7 @@ int16_t Spawn_AtlanteanBomb(
     int32_t x, int32_t y, int32_t z, int16_t speed, int16_t y_rot,
     int16_t room_num)
 {
-    int16_t effect_num = Effect_Create(room_num);
+    int16_t effect_num = Effect_Create(O_MISSILE_ATLANTEAN_BOMB, room_num);
     if (effect_num != NO_EFFECT) {
         EFFECT *effect = Effect_Get(effect_num);
         effect->room_num = room_num;
@@ -476,7 +468,6 @@ int16_t Spawn_AtlanteanBomb(
         effect->rot.x = 0;
         effect->rot.y = y_rot;
         effect->rot.z = 0;
-        effect->object_id = O_MISSILE_ATLANTEAN_BOMB;
         effect->frame_num = 0;
         effect->speed = 220;
         effect->shade = SHADE_NEUTRAL;
@@ -489,7 +480,7 @@ int16_t Spawn_FireStream(
     const int32_t x, const int32_t y, const int32_t z, int16_t speed,
     const int16_t y_rot, const int16_t room_num)
 {
-    const int16_t effect_num = Effect_Create(room_num);
+    const int16_t effect_num = Effect_Create(O_MISSILE_FLAME, room_num);
     if (effect_num == NO_EFFECT) {
         return effect_num;
     }
@@ -506,7 +497,6 @@ int16_t Spawn_FireStream(
     effect->frame_num =
         ((Object_Get(O_MISSILE_FLAME)->mesh_count + 1) * Random_GetDraw())
         >> 15;
-    effect->object_id = O_MISSILE_FLAME;
     effect->shade = 14 * 256;
 
     M_ShootAtLara(effect);
@@ -524,10 +514,9 @@ void Spawn_MysticLight(const int16_t item_num)
 {
     const ITEM *const item = Item_Get(item_num);
 
-    const int16_t effect_num = Effect_Create(item->room_num);
+    const int16_t effect_num = Effect_Create(O_TWINKLE, item->room_num);
     if (effect_num != NO_EFFECT) {
         EFFECT *const effect = Effect_Get(effect_num);
-        effect->object_id = O_TWINKLE;
 
         effect->rot.y = 2 * Random_GetDraw();
         effect->pos = XYZ_32_OffsetYaw(item->pos, effect->rot.y, 5 * WALL_L);
@@ -549,7 +538,7 @@ int16_t Spawn_Knife(
     const int32_t x, const int32_t y, const int32_t z, const int16_t speed,
     const int16_t y_rot, const int16_t room_num)
 {
-    const int16_t effect_num = Effect_Create(room_num);
+    const int16_t effect_num = Effect_Create(O_MISSILE_KNIFE, room_num);
     if (effect_num == NO_EFFECT) {
         return effect_num;
     }
@@ -564,7 +553,6 @@ int16_t Spawn_Knife(
     effect->rot.z = 0;
     effect->speed = 150;
     effect->frame_num = 0;
-    effect->object_id = O_MISSILE_KNIFE;
     effect->shade = 3584;
     M_ShootAtLara(effect);
     return effect_num;
@@ -574,7 +562,7 @@ int16_t Spawn_Harpoon(
     const int32_t x, const int32_t y, const int32_t z, const int16_t speed,
     const int16_t y_rot, const int16_t room_num)
 {
-    const int16_t effect_num = Effect_Create(room_num);
+    const int16_t effect_num = Effect_Create(O_MISSILE_HARPOON, room_num);
     if (effect_num != NO_EFFECT) {
         EFFECT *const effect = Effect_Get(effect_num);
         effect->pos.x = x;
@@ -587,7 +575,6 @@ int16_t Spawn_Harpoon(
         effect->speed = 150;
         effect->fall_speed = 0;
         effect->frame_num = 0;
-        effect->object_id = O_MISSILE_HARPOON;
         effect->shade = 3584;
         M_ShootAtLara(effect);
     }

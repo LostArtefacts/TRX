@@ -49,7 +49,7 @@ static void M_Control(const int16_t item_num)
     }
 
     if (p->counter % 10 == 0) {
-        int16_t effect_num = Effect_Create(item->room_num);
+        int16_t effect_num = Effect_Create(O_EXPLOSION_1, item->room_num);
         if (effect_num != NO_EFFECT) {
             EFFECT *effect = Effect_Get(effect_num);
             effect->pos.x = item->pos.x + (Random_GetControl() - 0x4000) / 32;
@@ -58,7 +58,6 @@ static void M_Control(const int16_t item_num)
             effect->pos.z = item->pos.z + (Random_GetControl() - 0x4000) / 32;
             effect->speed = 0;
             effect->frame_num = 0;
-            effect->object_id = O_EXPLOSION_1;
             effect->counter = 0;
             Sound_Effect(SFX_EXPLOSION_1, &effect->pos, SPM_NORMAL);
             g_Camera.bounce = -200;

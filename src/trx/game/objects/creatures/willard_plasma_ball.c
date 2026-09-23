@@ -213,7 +213,7 @@ void Willard_TriggerPlasmaBall(
     const XYZ_32 pos, const int16_t room_num, const int16_t angle,
     const int16_t type)
 {
-    const int16_t effect_num = Effect_Create(room_num);
+    const int16_t effect_num = Effect_Create(O_WILLARD_PLASMA_BALL, room_num);
     if (effect_num == NO_ITEM) {
         return;
     }
@@ -222,7 +222,6 @@ void Willard_TriggerPlasmaBall(
     effect->pos = pos;
     effect->rot.x = 0;
     effect->rot.y = angle;
-    effect->object_id = O_WILLARD_PLASMA_BALL;
     effect->speed = type != -16 ? (Random_GetControl() & 0x1F) + 16 : 0;
     effect->fall_speed = -16 * type;
     effect->flag1 = type;

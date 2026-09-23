@@ -60,10 +60,9 @@ static void M_Hit(
     int16_t room_num = item->room_num;
     Room_GetSector(pos, &room_num);
 
-    const int16_t effect_num = Effect_Create(room_num);
+    const int16_t effect_num = Effect_Create(O_RICOCHET, room_num);
     if (effect_num != NO_EFFECT) {
         EFFECT *const effect = Effect_Get(effect_num);
-        effect->object_id = O_RICOCHET;
         effect->pos = pos;
         effect->rot = item->rot;
         effect->counter = 6;

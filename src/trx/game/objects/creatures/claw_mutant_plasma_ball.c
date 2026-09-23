@@ -221,7 +221,8 @@ void ClawMutant_TriggerPlasmaBall(
         speed = (Random_GetControl() & 7) + 8;
     }
 
-    const int16_t effect_num = Effect_Create(room_num);
+    const int16_t effect_num =
+        Effect_Create(O_CLAW_MUTANT_PLASMA_BALL, room_num);
     if (effect_num == NO_ITEM) {
         return;
     }
@@ -230,7 +231,6 @@ void ClawMutant_TriggerPlasmaBall(
     effect->pos = spawn_pos;
     effect->rot.x = angles[1];
     effect->rot.y = angles[0];
-    effect->object_id = O_CLAW_MUTANT_PLASMA_BALL;
     effect->speed = speed;
     effect->fall_speed = 0;
     effect->flag1 = type;

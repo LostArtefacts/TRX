@@ -11,7 +11,7 @@ static void M_Control(const int16_t item_num)
         return;
     }
 
-    const int16_t effect_num = Effect_Create(item->room_num);
+    const int16_t effect_num = Effect_Create(O_EMBER, item->room_num);
     if (effect_num == NO_EFFECT) {
         return;
     }
@@ -22,7 +22,6 @@ static void M_Control(const int16_t item_num)
     effect->speed = Random_GetControl() >> 10;
     effect->fall_speed = Random_GetControl() / -200;
     effect->frame_num = (-4 * Random_GetControl()) / 0x7FFF;
-    effect->object_id = O_EMBER;
     Sound_Effect(SFX_LAVA_FOUNTAIN, &item->pos, SPM_NORMAL);
 }
 

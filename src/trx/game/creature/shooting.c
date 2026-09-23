@@ -40,7 +40,7 @@ static void M_CalcShootVectors(
 static void M_TriggerTR3GunShell(
     const ITEM *const item, const CREATURE_GUN *const gun)
 {
-    const int16_t effect_num = Effect_Create(item->room_num);
+    const int16_t effect_num = Effect_Create(O_GUN_SHELL, item->room_num);
     if (effect_num == NO_EFFECT) {
         return;
     }
@@ -59,7 +59,6 @@ static void M_TriggerTR3GunShell(
     effect->rot.y = 0;
     effect->rot.z = (int16_t)Random_GetControl();
     effect->speed = (int16_t)((Random_GetControl() & 0x1F) + 16);
-    effect->object_id = O_GUN_SHELL;
     effect->fall_speed = (int16_t)(-48 - (Random_GetControl() & 7));
     effect->frame_num = Object_Get(O_GUN_SHELL)->mesh_idx;
     effect->shade = 0x4210;

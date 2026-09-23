@@ -27,7 +27,7 @@ static void M_Control(const int16_t effect_num)
         return;
     }
 
-    const int16_t new_effect_num = Effect_Create(room_num);
+    const int16_t new_effect_num = Effect_Create(O_NATLA_GUN, room_num);
     if (new_effect_num != NO_EFFECT) {
         EFFECT *const new_effect = Effect_Get(new_effect_num);
         new_effect->pos = pos;
@@ -35,7 +35,6 @@ static void M_Control(const int16_t effect_num)
         new_effect->room_num = room_num;
         new_effect->speed = effect->speed;
         new_effect->frame_num = 0;
-        new_effect->object_id = O_NATLA_GUN;
     }
 }
 

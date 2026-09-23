@@ -277,7 +277,7 @@ int32_t Item_Shatter(const int16_t item_num, const ITEM_SHATTER_ARGS args)
             continue;
         }
 
-        const int16_t effect_num = Effect_Create(item->room_num);
+        const int16_t effect_num = Effect_Create(O_BODY_PART, item->room_num);
         if (effect_num != NO_EFFECT) {
             EFFECT *const effect = Effect_Get(effect_num);
             const XYZ_32 local = Anim_Walk_GetPos(&walk, (XYZ_32) {});
@@ -308,7 +308,6 @@ int32_t Item_Shatter(const int16_t item_num, const ITEM_SHATTER_ARGS args)
             effect->counter =
                 is_tr3 ? ((damage << 2) | (Random_GetControl() & 3)) : damage;
             effect->flame_variant = args.flame_variant;
-            effect->object_id = O_BODY_PART;
             effect->frame_num = Object_GetItemMeshIndex(item, walk.joint);
             effect->shade = Output_GetLightAdder() - 0x300;
         }

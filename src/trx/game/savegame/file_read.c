@@ -765,7 +765,15 @@ static RESULT M_ReadEffect(JSON_READ_IO *const io)
         MUST(JSON_READ(io, "room_num", &room_num));
     }
 
-    const int16_t effect_num = Effect_Create(room_num);
+    OBJECT_ID object_id = NO_OBJECT;
+    if (JSON_ReadIO_HasKey(io, "object_number")) {
+        MUST(M_ReadObjectID(io, "object_number", &object_id));
+    } else {
+        // Introduced in TRX 1.2
+        MUST(M_ReadObjectID(io, "object_id", &object_id));
+    }
+
+    const int16_t effect_num = Effect_Create(object_id, room_num);
     if (effect_num == NO_EFFECT) {
         return OK;
     }
@@ -773,12 +781,6 @@ static RESULT M_ReadEffect(JSON_READ_IO *const io)
     EFFECT *const effect = Effect_Get(effect_num);
     MUST(JSON_READ(io, "pos", &effect->pos));
     MUST(JSON_READ(io, "rot", &effect->rot));
-    if (JSON_ReadIO_HasKey(io, "object_number")) {
-        MUST(M_ReadObjectID(io, "object_number", &effect->object_id));
-    } else {
-        // Introduced in TRX 1.2
-        MUST(M_ReadObjectID(io, "object_id", &effect->object_id));
-    }
     MUST(JSON_READ(io, "speed", &effect->speed));
     MUST(JSON_READ(io, "fall_speed", &effect->fall_speed));
     if (JSON_ReadIO_HasKey(io, "frame_number")) {
