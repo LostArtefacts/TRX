@@ -225,7 +225,13 @@ static void M_ControlSimulated(ITEM *const item)
 
         const int32_t item_num = Item_GetIndex(item);
         Item_Shatter(
-            item_num, (ITEM_SHATTER_ARGS) { .mesh_bits = -1, .damage = 2465 });
+            item_num,
+            (ITEM_SHATTER_ARGS) {
+                .mesh_bits = -1,
+                .gib_flags = GIB_DEBRIS,
+                .speed = 8,
+                .fall_speed = 8,
+            });
         Item_Destroy(item_num);
     } else {
         item->rot.x = (Random_GetControl() & 0x3FF) - 0x200;

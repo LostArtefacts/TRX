@@ -137,7 +137,10 @@ static void M_Control(const int16_t item_num)
     }
 
     if (item->hit_points <= 0) {
-        Item_Shatter(item_num, (ITEM_SHATTER_ARGS) { .mesh_bits = -1 });
+        Item_Shatter(
+            item_num,
+            (ITEM_SHATTER_ARGS) { .mesh_bits = -1,
+                                  .gib_flags = GIB_FLAME | GIB_SMOKE });
         LOT_DisableBaddieAI(item_num);
         Item_Destroy(item_num);
         item->trigger.spent = true;

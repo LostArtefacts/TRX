@@ -182,7 +182,12 @@ static bool M_TryExplodeItem(
         Gun_SmashItem(target_item_num);
     } else if (
         target_item->hit_points <= 0 && M_CanExplodeTarget(target_item)) {
-        Creature_Die(target_item_num, (CREATURE_DIE_ARGS) { .explode = true });
+        Creature_Die(
+            target_item_num,
+            (CREATURE_DIE_ARGS) {
+                .explode = true,
+                .gib_flags = GIB_FLAME | GIB_SMOKE,
+            });
     }
     return true;
 }

@@ -245,7 +245,12 @@ static void M_Control(const int16_t item_num)
             item->current_anim_state = M_STATE_DEATH;
         } else if (
             TribeBoss_IsLizardActive() && Item_GetRelativeFrame(item) == 50) {
-            Creature_Die(item_num, (CREATURE_DIE_ARGS) { .explode = true });
+            Creature_Die(
+                item_num,
+                (CREATURE_DIE_ARGS) {
+                    .explode = true,
+                    .gib_flags = GIB_FLAME | GIB_SMOKE,
+                });
         }
     } else {
         AI_INFO info;

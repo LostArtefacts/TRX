@@ -1,5 +1,18 @@
 #pragma once
 
+// Sets the effects for a flying body part. Each game supports a different
+// subset.
+typedef enum {
+    // clang-format off
+    GIB_NONE   = 0,
+    GIB_FLAME  = 1 << 0,
+    GIB_SMOKE  = 1 << 1,
+    GIB_BLAST  = 1 << 2,
+    GIB_BLOOD  = 1 << 3,
+    GIB_DEBRIS = 1 << 4,
+    // clang-format on
+} GIB_FLAGS;
+
 typedef enum {
     // clang-format off
     IDF_NONE          = 0,

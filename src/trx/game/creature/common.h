@@ -2,6 +2,7 @@
 
 #include <trx/game/collision.h>
 #include <trx/game/creature/types.h>
+#include <trx/game/items/enum.h>
 
 #define AI_OBJECT_FLAGS_SPENT 255
 // Marks an AI object that a creature walks to exactly, rather than one click
@@ -66,6 +67,10 @@ typedef struct {
     // Burst the creature's meshes into flying body parts. Without this, the
     // corpse stays.
     bool explode;
+
+    // Set what the flying body parts draw and what they leave where they
+    // land.
+    GIB_FLAGS gib_flags;
 
     // Set the flame variant for flying body parts. Zero is ordinary fire.
     int16_t flame_variant;

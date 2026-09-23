@@ -91,7 +91,8 @@ static void M_Control(const int16_t item_num)
             item_num,
             (ITEM_SHATTER_ARGS) {
                 .mesh_bits = -1,
-                .damage = m_EnableExplosions ? p->part_damage : -p->part_damage,
+                .gib_flags = m_EnableExplosions ? GIB_BLAST : GIB_NONE,
+                .damage = p->part_damage,
             });
         Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
         LOT_DisableBaddieAI(item_num);
