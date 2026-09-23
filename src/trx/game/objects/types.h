@@ -106,6 +106,8 @@ typedef struct OBJECT {
     void (*handle_save_func)(ITEM *item, SAVEGAME_STAGE stage);
     RESULT (*priv_load_func)(ITEM *item, JSON_READ_IO *io);
     void (*priv_save_func)(const ITEM *item, JSON_WRITE_IO *io);
+    RESULT (*effect_priv_load_func)(EFFECT *effect, JSON_READ_IO *io);
+    void (*effect_priv_save_func)(const EFFECT *effect, JSON_WRITE_IO *io);
     const OBJECT_BOUNDS *(*bounds_func)(void);
     bool (*is_usable_func)(int16_t item_num);
     void (*add_walkable_func)(int16_t item_num);
