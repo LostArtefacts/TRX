@@ -420,6 +420,13 @@ void Sparks_TriggerFireFlame(
     } else {
         spark->dst_size.width = size >> 4;
         spark->dst_size.height = size >> 4;
+
+        if (type == 7) {
+            spark->col_fade_speed >>= 2;
+            spark->fade_to_black >>= 2;
+            spark->life >>= 2;
+            spark->s_life >>= 2;
+        }
     }
     Sparks_FinishSetup(spark);
 }
