@@ -78,6 +78,7 @@ typedef struct OBJECT {
     // so neither of these can be the item's: the number a control takes would
     // name another item, and the default draw is Object_DrawAnimatingItem,
     // which takes an ITEM.
+    void (*effect_initialise_func)(int16_t effect_num);
     void (*effect_control_func)(int16_t effect_num);
     bool (*effect_draw_func)(const EFFECT *effect);
 

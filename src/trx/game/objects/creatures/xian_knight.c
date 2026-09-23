@@ -60,10 +60,9 @@ static void M_Initialise(const int16_t item_num)
 
 static void M_SparkleTrail(const ITEM *const item)
 {
-    const int16_t effect_num = Effect_Create(item->room_num);
+    const int16_t effect_num = Effect_Create(O_TWINKLE, item->room_num);
     if (effect_num != NO_EFFECT) {
         EFFECT *const effect = Effect_Get(effect_num);
-        effect->object_id = O_TWINKLE;
         effect->pos.x = item->pos.x + (Random_GetDraw() << 8 >> 15) - 128;
         effect->pos.y = item->pos.y + (Random_GetDraw() << 8 >> 15) - 256;
         effect->pos.z = item->pos.z + (Random_GetDraw() << 8 >> 15) - 128;

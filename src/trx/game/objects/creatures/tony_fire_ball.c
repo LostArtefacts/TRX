@@ -296,7 +296,7 @@ void TonyBoss_TriggerFireBall(
         break;
     }
 
-    const int16_t fx_num = Effect_Create(room_num);
+    const int16_t fx_num = Effect_Create(O_TONY_FIRE_BALL, room_num);
     if (fx_num == NO_EFFECT) {
         return;
     }
@@ -304,7 +304,6 @@ void TonyBoss_TriggerFireBall(
     EFFECT *const effect = Effect_Get(fx_num);
     effect->pos = effect_pos;
     effect->rot.y = angle;
-    effect->object_id = O_TONY_FIRE_BALL;
     effect->speed = speed;
     effect->fall_speed = fall_speed;
     effect->flag1 = type;

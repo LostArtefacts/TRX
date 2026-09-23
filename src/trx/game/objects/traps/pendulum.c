@@ -148,12 +148,11 @@ static void M_TriggerFireEffect(const ITEM *const item)
     M_PRIV *const p = item->priv;
     EFFECT *effect = nullptr;
     if (p->effect_num == NO_EFFECT) {
-        p->effect_num = Effect_Create(item->room_num);
+        p->effect_num = Effect_Create(O_FLAME, item->room_num);
         if (p->effect_num == NO_EFFECT) {
             return;
         }
         effect = Effect_Get(p->effect_num);
-        effect->object_id = O_FLAME;
         effect->counter = 0;
         effect->frame_num = 0;
     } else {

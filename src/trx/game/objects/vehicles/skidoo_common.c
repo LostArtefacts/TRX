@@ -301,7 +301,7 @@ void Skidoo_DoSnowEffect(const ITEM *const skidoo)
         return;
     }
 
-    const int16_t effect_num = Effect_Create(skidoo->room_num);
+    const int16_t effect_num = Effect_Create(O_SNOW_SPRITE, skidoo->room_num);
     if (effect_num == NO_EFFECT) {
         return;
     }
@@ -313,7 +313,6 @@ void Skidoo_DoSnowEffect(const ITEM *const skidoo)
     effect->pos.y =
         skidoo->pos.y + ((Math_Sin(skidoo->rot.x) * M_SNOW) >> W2V_SHIFT);
     effect->room_num = skidoo->room_num;
-    effect->object_id = O_SNOW_SPRITE;
     effect->frame_num = 0;
     effect->speed = 0;
     if (skidoo->speed < 64) {
@@ -689,7 +688,7 @@ void Skidoo_Animation(
 
 void Skidoo_Explode(const ITEM *const skidoo)
 {
-    const int16_t effect_num = Effect_Create(skidoo->room_num);
+    const int16_t effect_num = Effect_Create(O_EXPLOSION_1, skidoo->room_num);
     if (effect_num != NO_EFFECT) {
         EFFECT *const effect = Effect_Get(effect_num);
         effect->pos.x = skidoo->pos.x;
@@ -698,7 +697,6 @@ void Skidoo_Explode(const ITEM *const skidoo)
         effect->speed = 0;
         effect->frame_num = 0;
         effect->counter = 0;
-        effect->object_id = O_EXPLOSION_1;
     }
 
     Item_Shatter(

@@ -52,11 +52,10 @@ static void M_KillIfAlive(const ITEM *const item)
 static int16_t M_Spawn(ITEM *const item, const FLAME_INIT_FUNC init_func)
 {
     M_PRIV *const p = item->priv;
-    const int16_t effect_num = Effect_Create(item->room_num);
+    const int16_t effect_num = Effect_Create(O_FLAME, item->room_num);
     if (effect_num != NO_EFFECT) {
         EFFECT *const effect = Effect_Get(effect_num);
         effect->pos = item->pos;
-        effect->object_id = O_FLAME;
         effect->counter = 0;
         init_func(effect, item);
     }

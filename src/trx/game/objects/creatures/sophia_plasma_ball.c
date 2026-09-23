@@ -154,7 +154,7 @@ void Sophia_TriggerPlasmaBall(
     const int32_t type, const XYZ_32 pos, const int16_t room_num,
     const int16_t angle)
 {
-    const int16_t fx_num = Effect_Create(room_num);
+    const int16_t fx_num = Effect_Create(O_SOPHIA_PLASMA_BALL, room_num);
     if (fx_num == NO_ITEM) {
         return;
     }
@@ -164,7 +164,6 @@ void Sophia_TriggerPlasmaBall(
     effect->pos = pos;
     effect->rot.x = DEG_45;
     effect->rot.y = angle + Random_GetControl() + DEG_90;
-    effect->object_id = O_SOPHIA_PLASMA_BALL;
     effect->fall_speed = 0;
     effect->flag1 = 1;
     effect->flag2 = type == 2;

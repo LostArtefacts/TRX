@@ -119,7 +119,8 @@ static void M_CreateProjectile(const ITEM *const item)
         M_TriggerPoisonDartSmoke(projectile_item, x, z);
         Sound_Effect(SFX_BLOWPIPE_BLOW, &projectile_item->pos, SPM_NORMAL);
     } else if (item->object_id == O_DART_EMITTER) {
-        const int16_t effect_num = Effect_Create(projectile_item->room_num);
+        const int16_t effect_num =
+            Effect_Create(O_DART_EFFECT, projectile_item->room_num);
         if (effect_num != NO_EFFECT) {
             EFFECT *const effect = Effect_Get(effect_num);
             effect->pos = projectile_item->pos;
@@ -127,7 +128,6 @@ static void M_CreateProjectile(const ITEM *const item)
             effect->speed = 0;
             effect->frame_num = 0;
             effect->counter = 0;
-            effect->object_id = O_DART_EFFECT;
         }
         Sound_Effect(SFX_DART, &projectile_item->pos, SPM_NORMAL);
     } else {

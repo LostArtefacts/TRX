@@ -258,10 +258,9 @@ void Lara_TouchLava(void)
 
     const OBJECT *const obj = Object_Get(O_FLAME);
     for (int32_t i = 0; i < 10; i++) {
-        const int16_t effect_num = Effect_Create(lara_item->room_num);
+        const int16_t effect_num = Effect_Create(O_FLAME, lara_item->room_num);
         if (effect_num != NO_EFFECT) {
             EFFECT *const effect = Effect_Get(effect_num);
-            effect->object_id = O_FLAME;
             effect->frame_num = obj->mesh_count * Random_GetControl() / 0x7FFF;
             effect->counter = -1 - 24 * Random_GetControl() / 0x7FFF;
         }
@@ -435,7 +434,7 @@ void Lara_CatchFireEx(const FLAME_TYPE type)
     }
 
     const ITEM *const lara_item = Lara_GetItem();
-    const int16_t effect_num = Effect_Create(lara_item->room_num);
+    const int16_t effect_num = Effect_Create(O_FLAME, lara_item->room_num);
     if (effect_num == NO_EFFECT) {
         return;
     }
@@ -450,7 +449,6 @@ void Lara_CatchFireEx(const FLAME_TYPE type)
         effect->pos = lara_item->pos;
     }
     effect->frame_num = g_TRVersion >= 3 ? type : 0;
-    effect->object_id = O_FLAME;
     effect->counter = -1;
     lara_info->burn = true;
 }

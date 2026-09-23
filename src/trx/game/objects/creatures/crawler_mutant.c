@@ -146,7 +146,7 @@ static void M_TriggerGas(
 static void M_TriggerGasThrower(
     const ITEM *const item, const BITE *const bite, const int16_t speed)
 {
-    const int16_t effect_num = Effect_Create(item->room_num);
+    const int16_t effect_num = Effect_Create(O_MISSILE_POISON, item->room_num);
     if (effect_num == NO_ITEM) {
         return;
     }
@@ -170,7 +170,6 @@ static void M_TriggerGasThrower(
     effect->rot.x = angles[1];
     effect->rot.y = angles[0];
     effect->speed = speed << 2;
-    effect->object_id = O_MISSILE_POISON;
     effect->counter = 20;
     effect->flag1 = 1;
 

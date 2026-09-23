@@ -202,13 +202,13 @@ static void M_DoWakeEffect(const ITEM *const boat_item)
         (Random_GetDraw() * Object_Get(O_WATER_SPRITE)->mesh_count) >> 15;
 
     for (int32_t i = 0; i < 3; i++) {
-        const int16_t effect_num = Effect_Create(boat_item->room_num);
+        const int16_t effect_num =
+            Effect_Create(O_WATER_SPRITE, boat_item->room_num);
         if (effect_num == NO_EFFECT) {
             continue;
         }
 
         EFFECT *const effect = Effect_Get(effect_num);
-        effect->object_id = O_WATER_SPRITE;
         effect->room_num = boat_item->room_num;
         effect->frame_num = frame;
 

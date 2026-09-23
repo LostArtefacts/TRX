@@ -101,7 +101,7 @@ int16_t Effect_GetActiveNum(void)
     return m_NextEffectActive;
 }
 
-int16_t Effect_Create(const int16_t room_num)
+int16_t Effect_Create(const OBJECT_ID object_id, const int16_t room_num)
 {
     const int16_t effect_num = m_NextEffectFree;
     if (effect_num == NO_EFFECT) {
@@ -110,6 +110,7 @@ int16_t Effect_Create(const int16_t room_num)
 
     EFFECT *const effect = Effect_Get(effect_num);
     m_NextEffectFree = effect->next_free;
+    effect->object_id = object_id;
 
     ROOM *const room = Room_Get(room_num);
     effect->room_num = room_num;
@@ -123,6 +124,11 @@ int16_t Effect_Create(const int16_t room_num)
     effect->flag2 = 0;
     effect->flame_variant = 0;
     effect->interp.is_new = true;
+
+    const OBJECT *const obj = Object_Get(object_id);
+    if (obj->effect_initialise_func != nullptr) {
+        obj->effect_initialise_func(effect_num);
+    }
 
     return effect_num;
 }
