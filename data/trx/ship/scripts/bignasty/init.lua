@@ -223,7 +223,12 @@ local function burst(item, own, from)
     if target.is_alive and target.num ~= item.num then
       burn_green(target)
       if target.hit_points <= BLAST_DAMAGE then
-        target:die(true, GREEN_FLAME, lara)
+        target:die({
+          explode = true,
+          gibs = { flame = true, smoke = true },
+          flame_variant = GREEN_FLAME,
+          sender = lara,
+        })
       else
         target:take_damage(BLAST_DAMAGE, lara)
       end

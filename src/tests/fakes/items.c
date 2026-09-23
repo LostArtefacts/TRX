@@ -870,7 +870,8 @@ void Creature_Die(const int16_t item_num, const CREATURE_DIE_ARGS args)
 {
     const bool explode = args.explode;
     const int16_t flame_variant = args.flame_variant;
-    FAKE_RECORD("creature_die", FV(explode), FV(flame_variant));
+    const int32_t gib_flags = args.gib_flags;
+    FAKE_RECORD("creature_die", FV(explode), FV(flame_variant), FV(gib_flags));
     m_Items[item_num].hit_points = 0;
 }
 
@@ -891,7 +892,10 @@ int32_t Item_Shatter(const int16_t item_num, const ITEM_SHATTER_ARGS args)
 {
     const int16_t damage = args.damage;
     const int16_t flame_variant = args.flame_variant;
-    FAKE_RECORD("shatter", FV(damage), FV(flame_variant));
+    const int32_t gib_flags = args.gib_flags;
+    const int32_t mesh_bits = args.mesh_bits;
+    FAKE_RECORD(
+        "shatter", FV(damage), FV(flame_variant), FV(gib_flags), FV(mesh_bits));
     return 0;
 }
 

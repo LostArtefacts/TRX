@@ -661,18 +661,66 @@ static const ITEM *M_GetOptSender(lua_State *const L, const int32_t idx)
     return LUA_Struct_Deref(L, ref);
 }
 
-// item:die([explode], [flame_variant], [sender])
+// The gib flags an options table names, as a set of true fields.
+static GIB_FLAGS M_OptGibFlags(lua_State *const L, const int32_t idx)
+{
+    if (!lua_istable(L, idx)) {
+        return GIB_NONE;
+    }
+
+    lua_getfield(L, idx, "gibs");
+    const int32_t gibs = lua_gettop(L);
+    GIB_FLAGS flags = GIB_NONE;
+    if (M_OptFlag(L, gibs, "flame")) {
+        flags |= GIB_FLAME;
+    }
+    if (M_OptFlag(L, gibs, "smoke")) {
+        flags |= GIB_SMOKE;
+    }
+    if (M_OptFlag(L, gibs, "blast")) {
+        flags |= GIB_BLAST;
+    }
+    if (M_OptFlag(L, gibs, "blood")) {
+        flags |= GIB_BLOOD;
+    }
+    lua_pop(L, 1);
+    return flags;
+}
+
+// An optional item in an optional options table.
+static const ITEM *M_OptItemField(
+    lua_State *const L, const int32_t idx, const char *const key)
+{
+    if (!lua_istable(L, idx)) {
+        return nullptr;
+    }
+
+    lua_getfield(L, idx, key);
+    const ITEM *item = nullptr;
+    if (!lua_isnoneornil(L, -1)) {
+        LUA_STRUCT_REF *const ref =
+            LUA_Struct_CheckRef(L, lua_gettop(L), &TYPE_ITEM);
+        item = LUA_Struct_Deref(L, ref);
+    }
+    lua_pop(L, 1);
+    return item;
+}
+
+// item:die([opts])
 static int M_L_ItemsDie(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
     LUA_Struct_Deref(L, ref);
+    if (!lua_isnoneornil(L, 2)) {
+        luaL_checktype(L, 2, LUA_TTABLE);
+    }
     Creature_Die(
         ref->handle.id,
         (CREATURE_DIE_ARGS) {
-            .explode = lua_toboolean(L, 2),
-            .gib_flags = GIB_FLAME | GIB_SMOKE,
-            .flame_variant = (int16_t)luaL_optinteger(L, 3, 0),
-            .sender = M_GetOptSender(L, 4),
+            .explode = M_OptFlag(L, 2, "explode"),
+            .gib_flags = M_OptGibFlags(L, 2),
+            .flame_variant = (int16_t)M_OptInt(L, 2, "flame_variant", 0),
+            .sender = M_OptItemField(L, 2, "sender"),
         });
     return 0;
 }
@@ -690,20 +738,23 @@ static int M_L_ItemsTakeDamage(lua_State *const L)
     return 0;
 }
 
-// item:shatter([damage])
+// item:shatter([opts])
 static int M_L_ItemsShatter(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
     LUA_Struct_Deref(L, ref);
-    const int16_t damage = (int16_t)luaL_optinteger(L, 2, 0);
+    if (!lua_isnoneornil(L, 2)) {
+        luaL_checktype(L, 2, LUA_TTABLE);
+    }
     Item_Shatter(
         ref->handle.id,
         (ITEM_SHATTER_ARGS) {
-            .mesh_bits = -1,
-            .gib_flags =
-                GIB_FLAME | GIB_SMOKE | (damage > 0 ? GIB_BLAST : GIB_NONE),
-            .damage = damage,
-            .flame_variant = (int16_t)luaL_optinteger(L, 3, 0),
+            .mesh_bits = M_OptInt(L, 2, "mesh_bits", -1),
+            .gib_flags = M_OptGibFlags(L, 2),
+            .speed = (int16_t)M_OptInt(L, 2, "speed", 0),
+            .fall_speed = (int16_t)M_OptInt(L, 2, "fall_speed", 0),
+            .damage = (int16_t)M_OptInt(L, 2, "damage", 0),
+            .flame_variant = (int16_t)M_OptInt(L, 2, "flame_variant", 0),
         });
     return 0;
 }

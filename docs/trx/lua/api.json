@@ -13094,28 +13094,75 @@
           "name": "destroy"
         },
         {
-          "description": "Runs the object's creature death handling: the corpse stays, and `trx.items.Item.die.explode` bursts its meshes as a rocket or grenade would. For creatures; `trx.items.Item:destroy` simply removes any item from the game.",
+          "description": "Runs the object's creature death handling: the corpse stays, and `explode` <!--noref: explode--> bursts its meshes as a rocket or grenade would. For creatures; `trx.items.Item:destroy` simply removes any item from the game.",
+          "examples": [
+            "trx.items[12]:die({\n  explode = true,\n  gibs = { flame = true, smoke = true },\n  sender = trx.lara.item,\n})"
+          ],
           "name": "die",
           "params": [
             {
-              "default": false,
-              "description": "Whether to burst the meshes as it dies.",
-              "name": "explode",
+              "description": "How the creature dies.",
+              "fields": [
+                {
+                  "default": false,
+                  "description": "Whether to burst the meshes as it dies.",
+                  "name": "explode",
+                  "optional": true,
+                  "type": "boolean"
+                },
+                {
+                  "description": "Sets the effects for the flying body parts. TR1 and TR2\nsupport `blast`. TR3 supports `flame` and `smoke`.\n<!--noref: blast--><!--noref: flame--><!--noref: smoke-->",
+                  "fields": [
+                    {
+                      "default": false,
+                      "description": "Trail fire, and burn where the part lands.",
+                      "name": "flame",
+                      "optional": true,
+                      "type": "boolean"
+                    },
+                    {
+                      "default": false,
+                      "description": "Trail smoke, and smoke where the part lands.",
+                      "name": "smoke",
+                      "optional": true,
+                      "type": "boolean"
+                    },
+                    {
+                      "default": false,
+                      "description": "Burst where the part lands, or where it reaches Lara.",
+                      "name": "blast",
+                      "optional": true,
+                      "type": "boolean"
+                    },
+                    {
+                      "default": false,
+                      "description": "Trail blood.",
+                      "name": "blood",
+                      "optional": true,
+                      "type": "boolean"
+                    }
+                  ],
+                  "name": "gibs",
+                  "optional": true,
+                  "type": "table"
+                },
+                {
+                  "default": 0,
+                  "description": "Flame color for body parts that burn, as\n`trx.fx.sparks.fire_flame` defines it: `0` orange, `2` pale,\nand `254` green.",
+                  "name": "flame_variant",
+                  "optional": true,
+                  "type": "integer"
+                },
+                {
+                  "description": "Item to credit the death to. Pass `trx.lara.item` to include\nthe kill in Lara's level statistics. Without it, the kill\ncounts for nobody.",
+                  "name": "sender",
+                  "optional": true,
+                  "type": "items.Item"
+                }
+              ],
+              "name": "opts",
               "optional": true,
-              "type": "boolean"
-            },
-            {
-              "default": 0,
-              "description": "Flame color for flying body parts, as\n`trx.fx.sparks.fire_flame` defines it: `0` orange, `2` pale, and\n`254` green. Only TR3 and TR4 body parts burn; TR1 and TR2 ignore\nthis.",
-              "name": "flame_variant",
-              "optional": true,
-              "type": "integer"
-            },
-            {
-              "description": "Item to credit the death to. Pass `trx.lara.item` to include the\nkill in Lara's level statistics. Without it, the kill counts for\nnobody.",
-              "name": "sender",
-              "optional": true,
-              "type": "items.Item"
+              "type": "table"
             }
           ]
         },
@@ -13545,22 +13592,60 @@
           ]
         },
         {
-          "description": "Bursts the item's meshes into flying debris, the visual `trx.items.Item:die` produces with `trx.items.Item.die.explode`, on its own. It does not kill or remove the item.",
+          "description": "Bursts the item's meshes into flying debris, the visual `trx.items.Item:die` produces with `trx.items.Item.die.opts.explode`, on its own. It does not kill or remove the item.",
+          "examples": [
+            "trx.items[12]:shatter({ gibs = { blast = true }, damage = 5 })"
+          ],
           "name": "shatter",
           "params": [
             {
-              "default": 0,
-              "description": "Splash damage dealt to nearby items.",
-              "name": "damage",
+              "description": "How the meshes come apart.",
+              "fields": [
+                {
+                  "description": "Sets the effects for the flying body parts, as\n`trx.items.Item.die.opts.gibs` takes it.",
+                  "name": "gibs",
+                  "optional": true,
+                  "type": "table"
+                },
+                {
+                  "default": -1,
+                  "description": "Which meshes to burst, a bit to a mesh. `-1` bursts them all.\nUse the complement of the meshes to spare for a narrower set.",
+                  "name": "mesh_bits",
+                  "optional": true,
+                  "type": "integer"
+                },
+                {
+                  "default": 0,
+                  "description": "The fastest a part is thrown out, and `fall_speed` the fastest\nit drops. `0` takes the usual speed.\n<!--noref: fall_speed-->",
+                  "name": "speed",
+                  "optional": true,
+                  "type": "integer"
+                },
+                {
+                  "default": 0,
+                  "description": "The fastest a part drops.",
+                  "name": "fall_speed",
+                  "optional": true,
+                  "type": "integer"
+                },
+                {
+                  "default": 0,
+                  "description": "Damage a flying body part deals to Lara.",
+                  "name": "damage",
+                  "optional": true,
+                  "type": "integer"
+                },
+                {
+                  "default": 0,
+                  "description": "Flame color for body parts that burn, as\n`trx.fx.sparks.fire_flame` defines it.",
+                  "name": "flame_variant",
+                  "optional": true,
+                  "type": "integer"
+                }
+              ],
+              "name": "opts",
               "optional": true,
-              "type": "integer"
-            },
-            {
-              "default": 0,
-              "description": "Flame color for flying body parts, as\n`trx.fx.sparks.fire_flame` defines it. Only TR3 and TR4 body parts\nburn; TR1 and TR2 ignore this.",
-              "name": "flame_variant",
-              "optional": true,
-              "type": "integer"
+              "type": "table"
             }
           ]
         },

@@ -7,6 +7,22 @@ order: 3
 
 ## TRX
 
+### Version 1.11 to 1.12
+
+1. **`trx.items.Item:die` takes a table**
+   The arguments are named rather than positional:
+   - `item:die(true, 254, trx.lara.item)` becomes
+     `item:die({ explode = true, flame_variant = 254, sender = trx.lara.item })`
+   - `gibs` sets the effects for the flying body parts. It supports `flame`,
+     `smoke`, `blast` and `blood`. If it is left out, the parts do not draw
+     these effects.
+
+2. **`trx.items.Item:shatter` takes a table**
+   The table supports `gibs`, `mesh_bits`, `speed`, `fall_speed`, `damage` and
+   `flame_variant`:
+   - `item:shatter(5, 254)` becomes
+     `item:shatter({ damage = 5, flame_variant = 254 })`
+
 ### Version 1.10 to 1.11
 
 1. **The waterfall mist object was renamed**
