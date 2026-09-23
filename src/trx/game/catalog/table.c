@@ -106,6 +106,19 @@ void CatalogTable_FreeAll(void)
     }
 }
 
+void CatalogTable_ReleaseAll(void)
+{
+    for (CATALOG_TABLE *table = m_Tables; table != nullptr;
+         table = table->next) {
+        for (int32_t i = 0; i < table->chunk_count; i++) {
+            Memory_FreePointer(&table->chunks[i]);
+        }
+        Memory_FreePointer(&table->chunks);
+        table->chunk_count = 0;
+    }
+    m_Tables = nullptr;
+}
+
 void CatalogTable_Reset(CATALOG_TABLE *const table)
 {
     M_ClearFrom(table, Catalog_GetBuiltInCount(table->context));
