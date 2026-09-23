@@ -316,6 +316,23 @@ An event that carries a default the script may take over says so in its descript
 
   Returns: integer. The listener id.
 
+- <a id="events.on_ui_paint_over" name="events.on_ui_paint_over"></a>[lua]`trx.events.on_ui_paint_over(callback)`  
+  Fires on every drawn frame, after the engine interface has drawn. The
+  callback receives nothing.
+
+  This is [`trx.events.on_ui_paint`](#events.on_ui_paint) for the layer above the engine interface.
+  A script draws here where its work must cover the interface rather than sit
+  under it, such as a console or a text field. The reservation boxes are the
+  same ones [`trx.events.on_ui_draw`](#events.on_ui_draw) asked for.
+
+  [`trx.ui.regions.place`](UI.md#ui.regions.place) picks the layer for a widget, so a script building
+  with widgets has no reason to take this.
+
+  Parameters:
+  - <a id="events.on_ui_paint_over.callback" name="events.on_ui_paint_over.callback"></a>**`callback`** (function). What to run when it happens.
+
+  Returns: [trx.events.Listener](#events.Listener). The attached handler.
+
 - <a id="events.on_pickup" name="events.on_pickup"></a>[lua]`trx.events.on_pickup(callback)`  
   Happens just after Lara picks up an item.
 

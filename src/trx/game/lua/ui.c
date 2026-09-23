@@ -12,10 +12,12 @@ static void M_Init(void)
     UI_SetPaintHook(LUA_UI_PaintRegions);
 }
 
-void LUA_UI_PaintRegions(void)
+void LUA_UI_PaintRegions(const UI_PAINT_LAYER layer)
 {
     LUA_UI_SetPainting(true);
-    LUA_FireEvent(LUA_EVENT_UI_PAINT);
+    LUA_FireEvent(
+        layer == UI_PAINT_LAYER_OVER ? LUA_EVENT_UI_PAINT_OVER
+                                     : LUA_EVENT_UI_PAINT);
     LUA_UI_SetPainting(false);
 }
 

@@ -108,6 +108,18 @@ and `\{button left}` draws the button the player has bound.
     - `trx.ui.Region.BOTTOM_RIGHT` = `8`  
         The bottom right corner.
 
+- <a id="ui.Layer" name="ui.Layer"></a>[lua]`trx.ui.Layer`
+
+    Whether a widget is drawn below or above the engine interface.
+
+    Widgets use the lower layer by default. Use the upper layer for a console or a
+    text field. Each region keeps space for both layers.
+
+    - `trx.ui.Layer.UNDER` = `0`  
+        Below the engine interface.
+    - `trx.ui.Layer.OVER` = `1`  
+        Above the engine interface.
+
 - <a id="ui.FrameStyle" name="ui.FrameStyle"></a>[lua]`trx.ui.FrameStyle`
 
     Which of the game's frames to draw. The look of each follows the menu style the player chose.
@@ -644,18 +656,33 @@ and `\{button left}` draws the button the player has bound.
   })
   ```
 
-- <a id="ui.regions.place" name="ui.regions.place"></a>[lua]`trx.ui.regions.place(region, widget)`  
+- <a id="ui.regions.place" name="ui.regions.place"></a>[lua]`trx.ui.regions.place(region, widget, [layer])`  
   Places a widget in a region.
+
+  The layer decides whether the widget is covered by the engine interface or
+  covers it. A widget is under it unless the call says otherwise. Each layer
+  keeps room of its own in the region, so widgets on the two layers stack rather
+  than sit on top of each other.
 
   If the region argument is a signal, the widget moves when the signal changes.
 
   Parameters:
   - <a id="ui.regions.place.region" name="ui.regions.place.region"></a>**`region`** (any). The target region, or a signal that holds one.
   - <a id="ui.regions.place.widget" name="ui.regions.place.widget"></a>**`widget`** ([trx.ui.Widget](#ui.Widget)). The widget to place.
+  - <a id="ui.regions.place.layer" name="ui.regions.place.layer"></a>**`layer`** ([trx.ui.Layer](#ui.Layer), optional). Which layer to draw on. Defaults to [`trx.ui.Layer.UNDER`](#ui.Layer).
 
   Example:
   ```lua
   trx.ui.regions.place(trx.ui.Region.TOP_LEFT, health_bar)
+  ```
+
+  Example:
+  ```lua
+  trx.ui.regions.place(
+    trx.ui.Region.BOTTOM_LEFT,
+    console,
+    trx.ui.Layer.OVER
+  )
   ```
 
 - <a id="ui.regions.remove" name="ui.regions.remove"></a>[lua]`trx.ui.regions.remove(widget)`  

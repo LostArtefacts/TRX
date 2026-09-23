@@ -8,8 +8,8 @@ require("trx.events")
 
 local primitive = trx.ui.primitive
 
--- Root widget for each region, plus its reservation for the current scene.
-local roots = {}
+-- Stores a root widget and reservation for each layer and region.
+local roots = { [trx.ui.Layer.UNDER] = {}, [trx.ui.Layer.OVER] = {} }
 
 -- Widget to show when a region's root has no visible size.
 local fallbacks = {}
@@ -49,8 +49,8 @@ Place a widget once when the script loads. Use signals when the widget must
 change later.]],
 })
 
-local function root_of(region)
-  local root = roots[region]
+local function root_of(layer, region)
+  local root = roots[layer][region]
   if root == nil then
     root = trx.ui.widgets.Stack({
       children = {},
@@ -58,15 +58,16 @@ local function root_of(region)
       spacing = 3,
       align = ALIGN_OF[region] or trx.ui.HAlign.LEFT,
     })
-    roots[region] = root
+    roots[layer][region] = root
   end
   return root
 end
 
-local function attach(region, widget)
-  local root = root_of(region)
+local function attach(region, widget, layer)
+  local root = root_of(layer, region)
   table.insert(root.children, widget)
   widget._parent = root
+  widget._layer = layer
   root:wake()
 end
 
@@ -82,6 +83,7 @@ local function unattach(widget)
     end
   end
   widget._parent = nil
+  widget._layer = nil
   root:wake()
 end
 
@@ -115,6 +117,11 @@ api.define("ui.regions.place", {
   description = [[
 Places a widget in a region.
 
+The layer decides whether the widget is covered by the engine interface or
+covers it. A widget is under it unless the call says otherwise. Each layer
+keeps room of its own in the region, so widgets on the two layers stack rather
+than sit on top of each other.
+
 If the region argument is a signal, the widget moves when the signal changes.]],
   params = {
     {
@@ -127,19 +134,31 @@ If the region argument is a signal, the widget moves when the signal changes.]],
       type = "ui.Widget",
       description = "The widget to place.",
     },
+    {
+      name = "layer",
+      type = "ui.Layer",
+      optional = true,
+      description = "Which layer to draw on. Defaults to `trx.ui.Layer.UNDER`.",
+    },
   },
   examples = {
     [[trx.ui.regions.place(trx.ui.Region.TOP_LEFT, health_bar)]],
+    [[trx.ui.regions.place(
+  trx.ui.Region.BOTTOM_LEFT,
+  console,
+  trx.ui.Layer.OVER
+)]],
   },
-  impl = function(region, widget)
+  impl = function(region, widget, layer)
+    layer = layer or trx.ui.Layer.UNDER
     if type(region) == "table" and region.get ~= nil then
-      attach(region:get(), widget)
+      attach(region:get(), widget, layer)
       widget._region_listener = region:on(function(value)
         unattach(widget)
-        attach(value, widget)
+        attach(value, widget, layer)
       end)
     else
-      attach(region, widget)
+      attach(region, widget, layer)
     end
     bind_scope(widget)
   end,
@@ -200,11 +219,10 @@ screen. Each region has at most one fallback.]],
   end,
 })
 
--- Reserve room for each region while the scene is being built. Signal changes
--- have already invalidated any stale widget measurements by this point.
-trx.events.on_ui_draw(function(region)
-  local root = roots[region]
-  local fallback = fallbacks[region]
+-- Reserves room for one layer's root in a region. The fallback belongs to the
+-- region rather than to a layer, so only the under layer offers it.
+local function reserve_root(layer, region, fallback)
+  local root = roots[layer][region]
   local w, h = 0, 0
 
   if root ~= nil then
@@ -231,6 +249,14 @@ trx.events.on_ui_draw(function(region)
   if shown ~= nil and w > 0 and h > 0 then
     shown._slot = primitive.reserve(region, w, h)
   end
+end
+
+-- Reserve room for each region while the scene is being built. Signal changes
+-- have already invalidated any stale widget measurements by this point. Each
+-- layer reserves separately, so the two never land on the same place.
+trx.events.on_ui_draw(function(region)
+  reserve_root(trx.ui.Layer.UNDER, region, fallbacks[region])
+  reserve_root(trx.ui.Layer.OVER, region, nil)
 end)
 
 -- Paint widgets after the engine has assigned boxes to their reservations.
@@ -245,10 +271,16 @@ local function paint_placed(widget)
 end
 
 trx.events.on_ui_paint(function()
-  for _, root in pairs(roots) do
+  for _, root in pairs(roots[trx.ui.Layer.UNDER]) do
     paint_placed(root)
   end
   for _, fallback in pairs(fallbacks) do
     paint_placed(fallback)
+  end
+end)
+
+trx.events.on_ui_paint_over(function()
+  for _, root in pairs(roots[trx.ui.Layer.OVER]) do
+    paint_placed(root)
   end
 end)
