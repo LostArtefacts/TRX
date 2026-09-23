@@ -6,9 +6,15 @@
 #include <trx/game/rooms.h>
 #include <trx/game/sparks.h>
 
+#include <string.h>
+
 static EFFECT *m_Effects = nullptr;
 static int16_t m_NextEffectFree = NO_EFFECT;
 static int16_t m_NextEffectActive = NO_EFFECT;
+
+// Reuses the largest private block for each effect slot. The game buffer has
+// no free operation.
+static size_t m_PrivSizes[MAX_EFFECTS] = {};
 
 static void M_RemoveActive(const int16_t effect_num)
 {
@@ -50,6 +56,8 @@ static void M_RemoveDrawn(const int16_t effect_num)
 void Effect_InitialiseArray(void)
 {
     m_Effects = GameBuf_Alloc(MAX_EFFECTS * sizeof(EFFECT), GBUF_EFFECTS);
+    memset(m_Effects, 0, MAX_EFFECTS * sizeof(EFFECT));
+    memset(m_PrivSizes, 0, sizeof(m_PrivSizes));
     m_NextEffectFree = 0;
     m_NextEffectActive = NO_EFFECT;
     for (int32_t i = 0; i < MAX_EFFECTS - 1; i++) {
@@ -122,7 +130,6 @@ int16_t Effect_Create(const OBJECT_ID object_id, const int16_t room_num)
     effect->shade = SHADE_NEUTRAL;
     effect->flag1 = 0;
     effect->flag2 = 0;
-    effect->flame_variant = 0;
     effect->interp.is_new = true;
 
     const OBJECT *const obj = Object_Get(object_id);
@@ -131,6 +138,18 @@ int16_t Effect_Create(const OBJECT_ID object_id, const int16_t room_num)
     }
 
     return effect_num;
+}
+
+void *Effect_AllocPriv(const int16_t effect_num, const size_t size)
+{
+    EFFECT *const effect = Effect_Get(effect_num);
+    if (m_PrivSizes[effect_num] < size) {
+        effect->priv = GameBuf_Alloc(size, GBUF_EFFECT_DATA);
+        m_PrivSizes[effect_num] = size;
+    }
+
+    memset(effect->priv, 0, size);
+    return effect->priv;
 }
 
 void Effect_Destroy(const int16_t effect_num)

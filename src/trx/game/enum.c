@@ -80,6 +80,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(GAME_BUFFER, GBUF_ITEMS, "Items");
     ENUM_MAP(GAME_BUFFER, GBUF_ITEM_DATA, "Item data");
     ENUM_MAP(GAME_BUFFER, GBUF_EFFECTS, "Effects");
+    ENUM_MAP(GAME_BUFFER, GBUF_EFFECT_DATA, "Effect data");
     ENUM_MAP(GAME_BUFFER, GBUF_CAMERAS, "Cameras");
     ENUM_MAP(GAME_BUFFER, GBUF_SOUND_SOURCES, "Sound sources");
     ENUM_MAP(GAME_BUFFER, GBUF_BOXES, "Boxes");

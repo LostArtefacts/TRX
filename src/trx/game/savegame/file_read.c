@@ -793,7 +793,16 @@ static RESULT M_ReadEffect(JSON_READ_IO *const io)
     MUST(JSON_READ(io, "shade", &effect->shade));
     SHOULD(JSON_READ_OPT(io, "flag1", &effect->flag1));
     SHOULD(JSON_READ_OPT(io, "flag2", &effect->flag2));
-    SHOULD(JSON_READ_OPT(io, "flame_variant", &effect->flame_variant));
+
+    const OBJECT *const obj = Object_Get(object_id);
+    if (obj->effect_priv_load_func != nullptr
+        && JSON_ReadIO_HasKey(io, "priv")) {
+        MUST(JSON_PUSH(io, "priv"));
+        MUST(
+            obj->effect_priv_load_func(effect, io), "%s",
+            Object_GetName(object_id));
+        MUST(JSON_POP(io));
+    }
     return OK;
 }
 

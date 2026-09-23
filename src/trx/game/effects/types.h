@@ -5,6 +5,9 @@
 #include <trx/game/types.h>
 
 typedef struct {
+    // Stores private data for the effect object. Null when no data exists.
+    void *priv;
+
     XYZ_32 pos;
     XYZ_16 rot;
     int16_t room_num;
