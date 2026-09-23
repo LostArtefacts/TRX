@@ -295,6 +295,51 @@ end)]],
   impl = hook(types.TEXT_INPUT),
 })
 
+api.define("events.on_console_log", {
+  description = [[
+    Happens as a line reaches the console, and carries the line. The handler
+    takes a string.
+
+    This is every message the console shows the player, whoever wrote it: a
+    command reporting what it did, the engine reporting a failure, and
+    `trx.console.log.info` and the rest. A message only written to the log file
+    stays quiet here.
+
+    Use this where a script draws a console of its own, or keeps the last few
+    messages on screen.
+  ]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      description = "Called with the line.",
+    },
+  },
+  returns = LISTENER,
+  examples = {
+    [[trx.events.on_console_log(function(line)
+  trx.log.info("the console said " .. line)
+end)]],
+  },
+  impl = hook(types.CONSOLE_LOG),
+})
+
+api.define("events.on_console_clear", {
+  description = [[
+    Happens as the console drops the lines it holds, which `trx.console.clear`
+    does. The handler takes nothing.
+  ]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      description = "What to run when it happens.",
+    },
+  },
+  returns = LISTENER,
+  impl = hook(types.CONSOLE_CLEAR),
+})
+
 api.define("events.on_button_down", {
   description = [[
     Happens as a controller button goes down, before the game reads it as an

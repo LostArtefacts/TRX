@@ -201,6 +201,39 @@ An event that carries a default the script may take over says so in its descript
   end)
   ```
 
+- <a id="events.on_console_log" name="events.on_console_log"></a>[lua]`trx.events.on_console_log(callback)`  
+  Happens as a line reaches the console, and carries the line. The handler
+  takes a string.
+
+  This is every message the console shows the player, whoever wrote it: a
+  command reporting what it did, the engine reporting a failure, and
+  [`trx.console.log.info`](CONSOLE.md#console.log.info) and the rest. A message only written to the log file
+  stays quiet here.
+
+  Use this where a script draws a console of its own, or keeps the last few
+  messages on screen.
+
+  Parameters:
+  - <a id="events.on_console_log.callback" name="events.on_console_log.callback"></a>**`callback`** (function). Called with the line.
+
+  Returns: [trx.events.Listener](#events.Listener). The attached handler.
+
+  Example:
+  ```lua
+  trx.events.on_console_log(function(line)
+    trx.log.info("the console said " .. line)
+  end)
+  ```
+
+- <a id="events.on_console_clear" name="events.on_console_clear"></a>[lua]`trx.events.on_console_clear(callback)`  
+  Happens as the console drops the lines it holds, which [`trx.console.clear`](CONSOLE.md#console.clear)
+  does. The handler takes nothing.
+
+  Parameters:
+  - <a id="events.on_console_clear.callback" name="events.on_console_clear.callback"></a>**`callback`** (function). What to run when it happens.
+
+  Returns: [trx.events.Listener](#events.Listener). The attached handler.
+
 - <a id="events.on_button_down" name="events.on_button_down"></a>[lua]`trx.events.on_button_down(callback)`  
   Happens as a controller button goes down, before the game reads it as an
   action. The handler takes the name of the button.

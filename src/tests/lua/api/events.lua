@@ -416,4 +416,27 @@ test("composed text reaches a handler as a string", function()
   )
 end)
 
+test("a console line reaches a handler as a string", function()
+  local seen = {}
+  trx.events.on_console_log(function(line)
+    seen[#seen + 1] = line
+  end)
+
+  fake.fire("on_console_log", "hello")
+
+  assert(#seen == 1, "the handler did not fire")
+  assert(seen[1] == "hello")
+end)
+
+test("clearing the console reaches a handler", function()
+  local count = 0
+  trx.events.on_console_clear(function()
+    count = count + 1
+  end)
+
+  fake.fire("on_console_clear")
+
+  assert(count == 1, "the handler did not fire")
+end)
+
 return h.report()

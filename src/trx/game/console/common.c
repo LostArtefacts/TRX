@@ -7,6 +7,7 @@
 #include <trx/game/console/internal.h>
 #include <trx/game/console/registry.h>
 #include <trx/game/game_strings/entries.h>
+#include <trx/game/lua/events.h>
 #include <trx/game/ui.h>
 
 #include <stdarg.h>
@@ -74,6 +75,10 @@ static void M_Emit(
             .sender = nullptr,
             .data = text,
         });
+        const LUA_EVENT_ARG args[] = {
+            { .type = LUA_EVENT_ARG_STRING, .value.str = text },
+        };
+        LUA_FireEventEx(LUA_EVENT_CONSOLE_LOG, args, 1);
     }
 
     Memory_FreePointer(&text);
@@ -158,6 +163,7 @@ void Console_Clear(void)
     UI_FireEvent((EVENT) {
         .name = "console_clear",
     });
+    LUA_FireEvent(LUA_EVENT_CONSOLE_CLEAR);
 }
 
 COMMAND_RESULT Console_Eval(const char *const cmdline)
