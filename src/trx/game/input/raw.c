@@ -30,6 +30,9 @@ static INPUT_RAW_TRACKER m_Buttons = {
     .count = SDL_CONTROLLER_BUTTON_MAX,
 };
 
+// Whether a script holds the devices, so that the game stops acting on them.
+static bool m_ScriptHold = false;
+
 // Scancode of the key that prints the named character, or that carries the
 // named label. Taking the character first is what makes "5" the key labelled 5
 // rather than the key that prints 5 on a US keyboard.
@@ -117,6 +120,16 @@ bool InputRaw_IsReserved(void)
 {
     M_SyncReserved();
     return m_Keys.reserved;
+}
+
+void InputRaw_SetScriptHold(const bool held)
+{
+    m_ScriptHold = held;
+}
+
+bool InputRaw_IsHeldByScript(void)
+{
+    return m_ScriptHold;
 }
 
 void InputRaw_ForEachDown(

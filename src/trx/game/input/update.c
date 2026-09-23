@@ -7,6 +7,7 @@
 #include <trx/game/input/backends/keyboard.h>
 #include <trx/game/input/backends/touch.h>
 #include <trx/game/input/common.h>
+#include <trx/game/input/raw.h>
 #include <trx/game/lara.h>
 #include <trx/version.h>
 
@@ -181,7 +182,7 @@ void Input_Update(void)
 
     g_InputDB = Input_GetDebounced(g_Input);
 
-    if (Input_IsInListenMode()) {
+    if (Input_IsInListenMode() || InputRaw_IsHeldByScript()) {
         InputState_Clear(&g_Input);
         InputState_Clear(&g_InputDB);
     }

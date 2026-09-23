@@ -43,6 +43,15 @@ void InputRaw_ProcessEvent(const SDL_Event *event);
 // does while the console is open and while a rebind is reading them.
 bool InputRaw_IsReserved(void);
 
+// Controls whether a script holds the devices. While one does, the game stops
+// acting on them, but the reads above keep answering and the events keep
+// firing, so that the script can drive an interface of its own. The game
+// taking them still wins, and reports nothing to anybody.
+void InputRaw_SetScriptHold(bool held);
+
+// Checks whether a script holds the devices.
+bool InputRaw_IsHeldByScript(void);
+
 // Reports each key and button of the named devices that is physically down,
 // whoever holds them. This is what balances the presses and releases a script
 // was told about when the game takes the devices and gives them back.

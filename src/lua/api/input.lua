@@ -929,6 +929,91 @@ Each role has one shared signal, so several consumers of the same role use one
 read per tick.]],
 })
 
+-------------------------------------------------------------------------------
+-- Take the devices from the game.
+-------------------------------------------------------------------------------
+
+local grabs = 0
+local grab_epoch = 0
+
+local Grab = api.type("input.Grab", {
+  description = "The devices a script holds, taken from the game.",
+  methods = {
+    release = {
+      description = [[
+Gives the devices back to the game.
+
+The game reads them again once every grab is released.]],
+      returns = {
+        type = "boolean",
+        description = "Whether the grab was still holding the devices.",
+      },
+      impl = function(self)
+        return rawget(self, "_release")()
+      end,
+    },
+  },
+})
+
+api.define("input.grab", {
+  description = [[
+Takes the keyboard and the pad from the game until the returned grab is
+released.
+
+The game stops responding to the devices while the script can still read them.
+Use this for text fields, consoles, and passcode boxes. Release the grab when
+the script no longer needs the devices.
+
+`trx.input.suppress` removes one action. A grab takes both devices. The game
+still has priority while `trx.input.is_reserved` is true. Grabs are released
+when the level unloads.]],
+  returns = {
+    type = "input.Grab",
+    description = "The running grab.",
+  },
+  examples = {
+    [[local grab = trx.input.grab()
+
+if typed == passcode then
+  grab:release()
+end]],
+  },
+  impl = function()
+    local handle = setmetatable({}, Grab)
+    local own_epoch = grab_epoch
+    grabs = grabs + 1
+    if grabs == 1 then
+      raw.hold(true)
+    end
+
+    rawset(handle, "_release", function()
+      if own_epoch ~= grab_epoch then
+        return false
+      end
+      own_epoch = -1
+      grabs = grabs - 1
+      if grabs == 0 then
+        raw.hold(false)
+      end
+      return true
+    end)
+    return handle
+  end,
+})
+
+api.define("input.is_grabbed", {
+  description = [[
+Whether a script holds the devices.
+
+This reports what `trx.input.grab` took, and says nothing about
+`trx.input.is_reserved`, which is the game holding them instead.]],
+  returns = {
+    type = "boolean",
+    description = "Whether a script holds the devices.",
+  },
+  impl = raw.is_held_by_script,
+})
+
 -- One signal per role, kept for as long as the game runs: a role a level asked
 -- about is a role the next level can ask about too.
 local held = {}
@@ -1000,6 +1085,9 @@ It is true for one tick only, so listeners run once per press.]],
 
 trx.events.on_level_unload(function()
   suppressed = {}
+  grabs = 0
   epoch = epoch + 1
+  grab_epoch = grab_epoch + 1
   raw.clear_suppressed()
+  raw.hold(false)
 end)

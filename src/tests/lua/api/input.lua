@@ -518,4 +518,41 @@ test("a key is still named while the game holds the keyboard", function()
   input.listen(false)
 end)
 
+test("a script can take the devices and give them back", function()
+  assert(input.is_grabbed() == false)
+
+  local grab = input.grab()
+  assert(input.is_grabbed() == true, "the grab did not take them")
+
+  assert(grab:release() == true)
+  assert(input.is_grabbed() == false, "the grab did not give them back")
+  assert(grab:release() == false, "the grab was released twice")
+end)
+
+test("the devices come back once every grab is released", function()
+  local first = input.grab()
+  local second = input.grab()
+
+  first:release()
+  assert(input.is_grabbed() == true, "one grab still holds them")
+
+  second:release()
+  assert(input.is_grabbed() == false)
+end)
+
+test("a level ending gives the devices back", function()
+  local grab = input.grab()
+  fake.end_level()
+  assert(input.is_grabbed() == false, "the level end did not give them back")
+  assert(grab:release() == false, "the grab outlived the level")
+end)
+
+test("a grab still reads the keyboard", function()
+  fake.set_key_held("5", true)
+  local grab = input.grab()
+  assert(input.is_key_held("5") == true, "the grab cannot read what it took")
+  assert(input.is_reserved() == false, "the game did not take them")
+  grab:release()
+end)
+
 return h.report()

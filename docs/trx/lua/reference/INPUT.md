@@ -144,6 +144,19 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 
       Returns: boolean. Whether the capture was still running.
 
+- <a id="input.Grab" name="input.Grab"></a>[lua]`trx.input.Grab`
+
+    The devices a script holds, taken from the game.
+
+    Methods:
+
+    - <a id="input.Grab.release" name="input.Grab.release"></a>[lua]`grab:release()`  
+      Gives the devices back to the game.
+
+      The game reads them again once every grab is released.
+
+      Returns: boolean. Whether the grab was still holding the devices.
+
 ### Functions
 
 - <a id="input.signals" name="input.signals"></a>[lua]`trx.input.signals`  
@@ -514,6 +527,37 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
   Parameters:
   - <a id="input.reset_layout.opts" name="input.reset_layout.opts"></a>**`opts`** ([trx.input.Backend](#input.Backend) or [trx.input.Binding](#input.Binding), optional). Layout to reset. Defaults to the current source and layout.
   - <a id="input.reset_layout.layout" name="input.reset_layout.layout"></a>**`layout`** ([trx.input.Layout](#input.Layout), optional). The layout to write. Defaults to the current one.
+
+- <a id="input.grab" name="input.grab"></a>[lua]`trx.input.grab()`  
+  Takes the keyboard and the pad from the game until the returned grab is
+  released.
+
+  The game stops responding to the devices while the script can still read them.
+  Use this for text fields, consoles, and passcode boxes. Release the grab when
+  the script no longer needs the devices.
+
+  [`trx.input.suppress`](#input.suppress) removes one action. A grab takes both devices. The game
+  still has priority while [`trx.input.is_reserved`](#input.is_reserved) is true. Grabs are released
+  when the level unloads.
+
+  Returns: [trx.input.Grab](#input.Grab). The running grab.
+
+  Example:
+  ```lua
+  local grab = trx.input.grab()
+  
+  if typed == passcode then
+    grab:release()
+  end
+  ```
+
+- <a id="input.is_grabbed" name="input.is_grabbed"></a>[lua]`trx.input.is_grabbed()`  
+  Whether a script holds the devices.
+
+  This reports what [`trx.input.grab`](#input.grab) took, and says nothing about
+  [`trx.input.is_reserved`](#input.is_reserved), which is the game holding them instead.
+
+  Returns: boolean. Whether a script holds the devices.
 
 - <a id="input.signals.held" name="input.signals.held"></a>[lua]`trx.input.signals.held(role)`  
   A signal for whether a role is active.
