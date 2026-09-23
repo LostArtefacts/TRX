@@ -283,6 +283,36 @@ api.define("console.complete", {
   impl = raw.complete,
 })
 
+api.define("console.history", {
+  description = [[
+The lines the player has entered, oldest first.
+
+The list is a copy, so changing it changes nothing. Use
+`trx.console.remember` to add to it.]],
+  returns = {
+    type = "string",
+    list = true,
+    description = "The lines entered so far.",
+  },
+  impl = raw.history,
+})
+
+api.define("console.remember", {
+  description = [[
+Adds a line to what the player has entered.
+
+The console does this for every line the player runs, so a script needs it only
+where it takes lines of its own.]],
+  params = {
+    {
+      name = "line",
+      type = "string",
+      description = "The line to remember.",
+    },
+  },
+  impl = raw.remember,
+})
+
 api.define("console.register", {
   description = "Registers a console command written in Lua.\n\n"
     .. "Every command has a `trx.argparse` parser. `trx.console.register.spec.args` is an optional "

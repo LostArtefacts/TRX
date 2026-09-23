@@ -137,6 +137,23 @@ Module for interacting with the developer console.
   - integer. Where the run they replace starts.
   - integer. Where that run ends.
 
+- <a id="console.history" name="console.history"></a>[lua]`trx.console.history()`  
+  The lines the player has entered, oldest first.
+
+  The list is a copy, so changing it changes nothing. Use
+  [`trx.console.remember`](#console.remember) to add to it.
+
+  Returns: a list of string. The lines entered so far.
+
+- <a id="console.remember" name="console.remember"></a>[lua]`trx.console.remember(line)`  
+  Adds a line to what the player has entered.
+
+  The console does this for every line the player runs, so a script needs it only
+  where it takes lines of its own.
+
+  Parameters:
+  - <a id="console.remember.line" name="console.remember.line"></a>**`line`** (string). The line to remember.
+
 - <a id="console.register" name="console.register"></a>[lua]`trx.console.register(spec)`  
   Registers a console command written in Lua.
 
