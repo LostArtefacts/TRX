@@ -5,6 +5,7 @@
 #include <trx/core/file.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/thread_pool.h>
 #include <trx/core/vector.h>
 #include <trx/debug.h>
@@ -425,6 +426,20 @@ static void M_PrunePayloadCache(void)
     }
 }
 
+static void M_FreePayloadCache(void)
+{
+    if (m_PayloadCache == nullptr) {
+        return;
+    }
+    for (int32_t i = 0; i < m_PayloadCache->count; i++) {
+        M_PAYLOAD_ENTRY *const entry = Vector_Get(m_PayloadCache, i);
+        Memory_FreePointer(&entry->path);
+        Memory_FreePointer(&entry->payload);
+    }
+    Vector_Free(m_PayloadCache);
+    m_PayloadCache = nullptr;
+}
+
 static void M_ReadFile(
     INJECTION *const injection, TRX_FILE *const file,
     const char *const file_name)
@@ -621,6 +636,17 @@ static const char *M_GetInjectionPath(
         return level->injections.data_paths[idx];
     }
     return Inject_GetDeclaredPath(idx - level->injections.count);
+}
+
+static void M_Shutdown(void)
+{
+    Inject_Cleanup();
+    M_ClearDeclared();
+    M_FreePayloadCache();
+    if (m_PayloadCacheMutex != nullptr) {
+        SDL_DestroyMutex(m_PayloadCacheMutex);
+        m_PayloadCacheMutex = nullptr;
+    }
 }
 
 void Inject_RegisterTester(
@@ -890,3 +916,5 @@ LEVEL_CONTEXT_INFO Inject_GetCachedInfo(void)
 {
     return m_CachedInfo;
 }
+
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)
