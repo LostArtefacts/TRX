@@ -142,16 +142,20 @@ static void M_Control(const int16_t item_num)
         Item_Destroy(item_num);
         item->trigger.spent = true;
         Item_SetFinished(item, true);
+        return;
     }
 
     if (!p->is_alerted) {
         return;
     }
 
+    Creature_ChooseEnemy(item, Creature_HasLineOfFire);
+
     AI_INFO info;
     Creature_AIInfo(item, &info);
 
-    const int16_t tilt = -info.x_angle;
+    const bool has_enemy = creature->enemy != nullptr;
+    const int16_t tilt = has_enemy ? -info.x_angle : 0;
 
     switch (item->current_anim_state) {
     case M_STATE_FIRE:
@@ -189,12 +193,18 @@ static void M_Control(const int16_t item_num)
         break;
     }
 
-    int16_t diff = info.angle - creature->joint_rotation[0];
-    CLAMP(diff, -DEG_1 * 10, DEG_1 * 10);
+    if (has_enemy) {
+        int16_t diff = info.angle - creature->joint_rotation[0];
+        CLAMP(diff, -DEG_1 * 10, DEG_1 * 10);
+        creature->joint_rotation[0] += diff;
+    }
 
-    creature->joint_rotation[0] += diff;
     Creature_Joint(item, 1, tilt);
     Item_Animate(item);
+
+    if (!has_enemy) {
+        return;
+    }
 
     if (info.angle > 0x4000) {
         item->rot.y += 0x8000;

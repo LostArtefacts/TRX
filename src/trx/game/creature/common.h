@@ -37,6 +37,22 @@ void Creature_Joint(ITEM *item, int16_t joint, int16_t required);
 void Creature_Float(int16_t item_num);
 void Creature_Underwater(ITEM *item, int32_t depth);
 
+// Reports whether a candidate is worth attacking. Returning false passes over
+// it, so that a turret can skip an enemy it has no shot at.
+typedef bool (*CREATURE_TARGET_FILTER)(const ITEM *item, const ITEM *target);
+
+// Points the creature's enemy at the nearest item it is willing to attack.
+// An ally looks for the objects marked as ally targets, an ally target looks
+// for the allies, and everything else takes Lara. An ally that finds nothing
+// and holds no grudge against Lara gets no enemy at all. A null filter takes
+// every candidate. TR1 and TR2 call this from Creature_AIInfo; later versions
+// leave the choice to the object.
+void Creature_ChooseEnemy(const ITEM *item, CREATURE_TARGET_FILTER filter);
+
+// Reports whether a shot from the item reaches the target without hitting the
+// geometry. Range and facing are not tested.
+bool Creature_HasLineOfFire(const ITEM *item, const ITEM *target);
+
 bool Creature_CanSeeEnemy(const ITEM *item, const AI_INFO *info);
 bool Creature_CanTargetEnemy(const ITEM *item, const AI_INFO *info);
 void Creature_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
