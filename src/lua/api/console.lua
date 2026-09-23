@@ -283,6 +283,16 @@ api.define("console.complete", {
   impl = raw.complete,
 })
 
+api.property("console.is_open", {
+  type = "boolean",
+  description = [[
+Whether the console is open.
+
+Assigning opens or closes it, as the key the player bound to it does.]],
+  get = raw.is_open,
+  set = raw.set_open,
+})
+
 api.define("console.history", {
   description = [[
 The lines the player has entered, oldest first.

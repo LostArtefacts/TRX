@@ -92,6 +92,7 @@ void Console_Open(void)
     m_IsOpened = true;
     UI_FireEvent(
         (EVENT) { .name = "console_open", .sender = nullptr, .data = nullptr });
+    LUA_FireEvent(LUA_EVENT_CONSOLE_OPEN);
 }
 
 void Console_Close(void)
@@ -102,6 +103,7 @@ void Console_Close(void)
     m_IsOpened = false;
     UI_FireEvent((EVENT) {
         .name = "console_close", .sender = nullptr, .data = nullptr });
+    LUA_FireEvent(LUA_EVENT_CONSOLE_CLOSE);
 }
 
 bool Console_IsOpened(void)

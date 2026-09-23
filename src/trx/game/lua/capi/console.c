@@ -249,7 +249,24 @@ static void M_CheckCommandName(lua_State *const L, const char *const name)
     }
 }
 
-// trxc.console.register(name, help_id, fn, [aliases], [complete_fn])
+// trxc.console.is_open() -> bool
+static int M_L_ConsoleIsOpen(lua_State *const L)
+{
+    lua_pushboolean(L, Console_IsOpened());
+    return 1;
+}
+
+// trxc.console.set_open(open)
+static int M_L_ConsoleSetOpen(lua_State *const L)
+{
+    if (lua_toboolean(L, 1)) {
+        Console_Open();
+    } else {
+        Console_Close();
+    }
+    return 0;
+}
+
 // trxc.console.history() -> table of strings
 static int M_L_ConsoleHistory(lua_State *const L)
 {
@@ -408,7 +425,9 @@ static const luaL_Reg m_Module[] = {
     { "register", M_L_ConsoleRegister },
     { "commands", M_L_ConsoleCommands },
     { "history", M_L_ConsoleHistory },
+    { "is_open", M_L_ConsoleIsOpen },
     { "remember", M_L_ConsoleRemember },
+    { "set_open", M_L_ConsoleSetOpen },
     { "command", M_L_ConsoleCommand },
     { nullptr, nullptr },
 };

@@ -484,4 +484,14 @@ test("the history hands back a copy", function()
   assert(#trx.console.history() == count, "the history took the change")
 end)
 
+test("the console reports and takes whether it is open", function()
+  assert(trx.console.is_open == false)
+
+  trx.console.is_open = true
+  assert(trx.console.is_open == true, "the console did not open")
+
+  trx.console.is_open = false
+  assert(trx.console.is_open == false, "the console did not close")
+end)
+
 return h.report()

@@ -439,4 +439,20 @@ test("clearing the console reaches a handler", function()
   assert(count == 1, "the handler did not fire")
 end)
 
+test("the console opening and closing reaches a handler", function()
+  local seen = {}
+  trx.events.on_console_open(function()
+    seen[#seen + 1] = "open"
+  end)
+  trx.events.on_console_close(function()
+    seen[#seen + 1] = "close"
+  end)
+
+  fake.fire("on_console_open")
+  fake.fire("on_console_close")
+
+  assert(#seen == 2, "the handlers did not both fire")
+  assert(seen[1] == "open" and seen[2] == "close")
+end)
+
 return h.report()
