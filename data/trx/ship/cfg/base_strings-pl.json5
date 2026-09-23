@@ -2499,6 +2499,9 @@
         "examine_item_3": {
             "name": "\\{review}Przedmiot do zbadania 3",
         },
+        "expanding_block": {
+            "name": "\\{review}Rozsuwany blok",
+        },
         "explosion_1": {
             "name": "Eksplozja 1",
         },
@@ -3336,6 +3339,12 @@
         },
         "quest_item_6": {
             "name": "\\{review}Przedmiot zadania 6",
+        },
+        "raising_block_1": {
+            "name": "\\{review}Podnoszony blok 1",
+        },
+        "raising_block_2": {
+            "name": "\\{review}Podnoszony blok 2",
         },
         "raptor": {
             "name": "Raptor|Welociraptor",

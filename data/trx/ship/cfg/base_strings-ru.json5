@@ -2499,6 +2499,9 @@
         "examine_item_3": {
             "name": "\\{review}Осмотреть предмет 3",
         },
+        "expanding_block": {
+            "name": "\\{review}Расширяющийся блок",
+        },
         "explosion_1": {
             "name": "Взрыв 1",
         },
@@ -3336,6 +3339,12 @@
         },
         "quest_item_6": {
             "name": "\\{review}Предмет задания 6",
+        },
+        "raising_block_1": {
+            "name": "\\{review}Поднимающийся блок 1",
+        },
+        "raising_block_2": {
+            "name": "\\{review}Поднимающийся блок 2",
         },
         "raptor": {
             "name": "Раптор",

@@ -1,4 +1,4 @@
-trx.events.on_game_start(function()
+trx.events.on_game_start(function(is_save)
   trx.objects.animating_13.properties.collidable = false
   trx.items[36].properties.switch_mode = trx.items.SwitchMode.HIDDEN_PICKUP
   trx.items[37].properties.switch_mode = trx.items.SwitchMode.HIDDEN_REACH
@@ -22,4 +22,10 @@ trx.events.on_game_start(function()
   trx.items[127].properties.pickup_mode = trx.items.PickupMode.HIDDEN
   trx.items[154].properties.pickup_mode = trx.items.PickupMode.HIDDEN
   trx.items[137].properties.pickup_mode = trx.items.PickupMode.CROWBAR
+
+  require("tr4.expanding_blocks").initialise(
+    trx.objects.raising_block_2,
+    true,
+    not is_save
+  )
 end)

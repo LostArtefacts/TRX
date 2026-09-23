@@ -2499,6 +2499,9 @@
         "examine_item_3": {
             "name": "Oggetto da Esaminare 3",
         },
+        "expanding_block": {
+            "name": "\\{review}Blocco espandibile",
+        },
         "explosion_1": {
             "name": "Esplosione 1",
         },
@@ -3339,6 +3342,12 @@
         },
         "quest_item_6": {
             "name": "Oggetto Missione 6",
+        },
+        "raising_block_1": {
+            "name": "\\{review}Blocco elevatore 1",
+        },
+        "raising_block_2": {
+            "name": "\\{review}Blocco elevatore 2",
         },
         "raptor": {
             "name": "Velociraptor",

@@ -2004,6 +2004,14 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### expanding_block
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>shake_camera</code></td><td colspan="3" align="center">false</td><td>Whether or not the camera should shake when the block is expanding or contracting.</td></tr>
+</tbody>
+</table>
+
 #### flares_box_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (187)</th><th align="center">TR2 (151)</th><th align="center">TR3 (178)</th><th>Description</th></tr></thead>
@@ -3560,6 +3568,22 @@ This page lists documented moveable object properties.
 <tr><td><code>keep_simulated</code></td><td colspan="3" align="center">false</td><td>Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back.</td></tr>
 <tr><td><code>rotation</code></td><td colspan="3" align="center">0</td><td>How much to rotate the item by each frame while it's active, in engine angle units. Value range: minimum -16384; maximum 16384.</td></tr>
 <tr><td><code>glow_color</code></td><td colspan="3" align="center">(0, 0, 0)</td><td>The color of the item's glow while it's active. Black infers no glow.</td></tr>
+</tbody>
+</table>
+
+#### raising_block_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>shake_camera</code></td><td colspan="3" align="center">false</td><td>Whether or not the camera should shake when the block is expanding or contracting.</td></tr>
+</tbody>
+</table>
+
+#### raising_block_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>shake_camera</code></td><td colspan="3" align="center">false</td><td>Whether or not the camera should shake when the block is expanding or contracting.</td></tr>
 </tbody>
 </table>
 

@@ -52,6 +52,7 @@ bool Matrix_PushUnit(void);
 void Matrix_Pop(void);
 
 void Matrix_Scale(int32_t scale);
+void Matrix_ScaleXYZ(XYZ_32 scale);
 void Matrix_ScaleX(int32_t sx);
 void Matrix_ScaleY(int32_t sy);
 void Matrix_ScaleZ(int32_t sz);

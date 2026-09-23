@@ -21,6 +21,7 @@
 - Added Small Scorpion control (TRX1562)
 - Added Jackal control (TRX1553)
 - Added Guide control (TRX1551)
+- Added Raising and Expanding Block control (TRX1558)
 - Added level views before play starts, with a progress bar (TRX493)
 - Fixed the Guide having Lara's right-hand pistol mesh in Valley of the Kings (OG bug) (TRX1551)
 

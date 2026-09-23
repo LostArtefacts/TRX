@@ -26,7 +26,7 @@ cutscenes.register(ARRIVAL, {
   end,
 })
 
-trx.events.on_game_start(function()
+trx.events.on_game_start(function(is_save)
   trx.items[66].properties.pickup_mode = trx.items.PickupMode.PLINTH_LOW
   trx.items[68].properties.pickup_mode = trx.items.PickupMode.PLINTH_LOW
   trx.items[82].properties.pickup_mode = trx.items.PickupMode.PLINTH_LOW
@@ -35,4 +35,10 @@ trx.events.on_game_start(function()
     trx.items.SwitchMode.HIDDEN_REACH
   trx.objects.switch_type_generic_2.properties.switch_mode =
     trx.items.SwitchMode.SHOVE
+
+  require("tr4.expanding_blocks").initialise(
+    trx.objects.raising_block_2,
+    true,
+    not is_save
+  )
 end)
