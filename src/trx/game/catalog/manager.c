@@ -167,6 +167,29 @@ static void M_Shutdown(void)
     }
 }
 
+// Release all catalogue data after all catalogue users stop.
+__attribute__((destructor)) static void M_Release(void)
+{
+    CatalogTable_ReleaseAll();
+
+    for (size_t ctx = 0; ctx < CATALOG_CONTEXT_MAX; ctx++) {
+        M_ClearGameIDMap(&m_GameID2EnumMap[ctx]);
+        M_NAME_ENTRY *cur, *tmp;
+        HASH_ITER(hh, m_Name2EnumMap[ctx], cur, tmp)
+        {
+            HASH_DEL(m_Name2EnumMap[ctx], cur);
+            Memory_FreePointer(&cur->name_str);
+            Memory_Free(cur);
+        }
+        while (m_Counts[ctx] > 0) {
+            Memory_FreePointer(&m_Keys[ctx][--m_Counts[ctx]]);
+        }
+        Memory_FreePointer(&m_Keys[ctx]);
+        Memory_FreePointer(&m_GameIDs[ctx]);
+        m_BuiltInCounts[ctx] = 0;
+    }
+}
+
 static CATALOG_ID M_Add(const CATALOG_CONTEXT context, const char *const key)
 {
     const CATALOG_ID id = m_Counts[context];

@@ -59,3 +59,6 @@ void CatalogTable_Free(CATALOG_TABLE *table);
 // Clear minted identity records while keeping their storage. Minted identities
 // live until the session ends.
 void CatalogTable_Reset(CATALOG_TABLE *table);
+
+// Release every record in every table and unlink all tables.
+void CatalogTable_ReleaseAll(void);
