@@ -5,6 +5,8 @@
 
 #include <trx/game/input.h>
 #include <trx/game/input/raw.h>
+#include <trx/game/lua/common.h>
+#include <trx/game/lua/events.h>
 
 #include <lauxlib.h>
 #include <string.h>
@@ -18,6 +20,7 @@ static bool m_Rebindable = true;
 static bool m_Unbindable = true;
 static bool m_Conflicted = false;
 static bool m_Listening = false;
+static bool m_ScriptHold = false;
 static bool m_AnythingDown = true;
 static bool m_AnythingHeld = false;
 static bool m_Suppressed[INPUT_ROLE_NUMBER_OF] = {};
@@ -183,10 +186,21 @@ static int M_FakeSetAxis(lua_State *const L)
     return 0;
 }
 
+// fake.end_level() - what the engine does when a level ends, in the order it
+// does it: the script hears the unload, and then its listeners go.
+static int M_FakeEndLevel(lua_State *const L)
+{
+    LUA_FireEvent(LUA_EVENT_LEVEL_UNLOAD);
+    LUA_ClearLevelListeners();
+    return 0;
+}
+
 static void M_PushFake(lua_State *const L)
 {
     lua_pushcfunction(L, M_FakeSetButtonHeld);
     lua_setfield(L, -2, "set_button_held");
+    lua_pushcfunction(L, M_FakeEndLevel);
+    lua_setfield(L, -2, "end_level");
     lua_pushcfunction(L, M_FakeSetButtonPressed);
     lua_setfield(L, -2, "set_button_pressed");
     lua_pushcfunction(L, M_FakeSetAxis);
@@ -255,6 +269,16 @@ void Input_ClearSuppressedRoles(void)
 bool InputRaw_IsReserved(void)
 {
     return m_Listening;
+}
+
+void InputRaw_SetScriptHold(const bool held)
+{
+    m_ScriptHold = held;
+}
+
+bool InputRaw_IsHeldByScript(void)
+{
+    return m_ScriptHold;
 }
 
 bool InputRaw_IsKeyHeld(const char *const key)

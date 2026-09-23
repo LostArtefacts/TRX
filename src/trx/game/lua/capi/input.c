@@ -159,6 +159,20 @@ static const char *M_CheckKey(lua_State *const L, const int arg)
     return key;
 }
 
+// trxc.input.hold(held)
+static int M_L_InputHold(lua_State *const L)
+{
+    InputRaw_SetScriptHold(lua_toboolean(L, 1));
+    return 0;
+}
+
+// trxc.input.is_held_by_script() -> bool
+static int M_L_InputIsHeldByScript(lua_State *const L)
+{
+    lua_pushboolean(L, InputRaw_IsHeldByScript());
+    return 1;
+}
+
 // trxc.input.is_reserved() -> bool
 static int M_L_InputIsReserved(lua_State *const L)
 {
@@ -346,6 +360,7 @@ static const luaL_Reg m_Module[] = {
     { "backend", M_L_InputBackend },
     { "bind_pressed", M_L_InputBindPressed },
     { "clear_suppressed", M_L_InputClearSuppressed },
+    { "hold", M_L_InputHold },
     { "hold_off", M_L_InputHoldOff },
     { "is_anything_held", M_L_InputIsAnythingHeld },
     { "is_axis_known", M_L_InputIsAxisKnown },
@@ -355,6 +370,7 @@ static const luaL_Reg m_Module[] = {
     { "is_button_pressed", M_L_InputIsButtonPressed },
     { "is_conflicted", M_L_InputIsConflicted },
     { "is_held", M_L_InputIsHeld },
+    { "is_held_by_script", M_L_InputIsHeldByScript },
     { "is_key_held", M_L_InputIsKeyHeld },
     { "is_key_known", M_L_InputIsKeyKnown },
     { "is_key_pressed", M_L_InputIsKeyPressed },

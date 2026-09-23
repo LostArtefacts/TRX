@@ -47,6 +47,7 @@
     - `trx.input.is_button_known`
     - `trx.input.axis`
     - `trx.input.is_axis_known`
+- Added script text input, clipboard access, and input grabbing
 - Added a UI layer above the game interface
 - Changed `trx.items.Item:die` and `trx.items.Item:shatter` to take an options table, and to let a script say what the flying body parts draw
 

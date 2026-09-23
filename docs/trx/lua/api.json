@@ -7358,6 +7358,25 @@
       "path": "input.reset_layout"
     },
     {
+      "description": "Takes the keyboard and the pad from the game until the returned grab is\nreleased.\n\nThe game stops responding to the devices while the script can still read them.\nUse this for text fields, consoles, and passcode boxes. Release the grab when\nthe script no longer needs the devices.\n\n`trx.input.suppress` removes one action. A grab takes both devices. The game\nstill has priority while `trx.input.is_reserved` is true. Grabs are released\nwhen the level unloads.",
+      "examples": [
+        "local grab = trx.input.grab()\n\nif typed == passcode then\n  grab:release()\nend"
+      ],
+      "path": "input.grab",
+      "returns": {
+        "description": "The running grab.",
+        "type": "input.Grab"
+      }
+    },
+    {
+      "description": "Whether a script holds the devices.\n\nThis reports what `trx.input.grab` took, and says nothing about\n`trx.input.is_reserved`, which is the game holding them instead.",
+      "path": "input.is_grabbed",
+      "returns": {
+        "description": "Whether a script holds the devices.",
+        "type": "boolean"
+      }
+    },
+    {
       "description": "A signal for whether a role is active.\n\nIt is true while the player holds the bound key or button. It changes when the\nrole becomes active and when it stops.",
       "params": [
         {
@@ -12684,6 +12703,24 @@
       ],
       "operators": [],
       "path": "input.Capture"
+    },
+    {
+      "description": "The devices a script holds, taken from the game.",
+      "extensions": [],
+      "fields": [],
+      "handle": false,
+      "methods": [
+        {
+          "description": "Gives the devices back to the game.\n\nThe game reads them again once every grab is released.",
+          "name": "release",
+          "returns": {
+            "description": "Whether the grab was still holding the devices.",
+            "type": "boolean"
+          }
+        }
+      ],
+      "operators": [],
+      "path": "input.Grab"
     },
     {
       "description": "One kind of thing an inventory holds, and how many of it.\n\nAn entry stands for the icon rather than for where it sits, so it goes on\nnaming the same thing as what is drawn around it changes. A box of ammunition\nis an entry like any other, counting what its rounds come to.",

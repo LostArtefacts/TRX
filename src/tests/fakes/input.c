@@ -85,6 +85,15 @@ bool InputRaw_IsReserved(void)
     return false;
 }
 
+void InputRaw_SetScriptHold(const bool held)
+{
+}
+
+bool InputRaw_IsHeldByScript(void)
+{
+    return false;
+}
+
 bool InputRaw_IsKeyHeld(const char *const key)
 {
     return false;
