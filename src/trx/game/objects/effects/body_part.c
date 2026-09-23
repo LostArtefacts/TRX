@@ -19,6 +19,33 @@ static void M_SpawnSplash(const GAME_VECTOR pos)
     }
 }
 
+// Replaces a body part with the explosion it turns into, in the given room.
+// The part is destroyed first, so that the explosion always has a slot to
+// take.
+static EFFECT *M_ExplodePart(const int16_t effect_num, const int16_t room_num)
+{
+    const EFFECT *const part = Effect_Get(effect_num);
+    const XYZ_32 pos = part->pos;
+    const XYZ_16 rot = part->rot;
+    Effect_Destroy(effect_num);
+
+    const int16_t explosion_num = Effect_Create(O_EXPLOSION_1, room_num);
+    if (explosion_num == NO_EFFECT) {
+        return nullptr;
+    }
+
+    EFFECT *const explosion = Effect_Get(explosion_num);
+    explosion->pos = pos;
+    explosion->rot = rot;
+    explosion->speed = 0;
+    explosion->fall_speed = 0;
+    explosion->frame_num = 0;
+    explosion->counter = 0;
+    explosion->shade = SHADE_NEUTRAL;
+    Sound_Effect(SFX_EXPLOSION_1, &explosion->pos, SPM_NORMAL);
+    return explosion;
+}
+
 static void M_Control_TR12(const int16_t effect_num)
 {
     EFFECT *const effect = Effect_Get(effect_num);
@@ -47,12 +74,7 @@ static void M_Control_TR12(const int16_t effect_num)
     const int32_t height = Room_GetHeight(sector, effect->pos);
     if (effect->pos.y >= height) {
         if (effect->counter > 0) {
-            effect->speed = 0;
-            effect->frame_num = 0;
-            effect->counter = 0;
-            effect->object_id = O_EXPLOSION_1;
-            effect->shade = SHADE_NEUTRAL;
-            Sound_Effect(SFX_EXPLOSION_1, &effect->pos, SPM_NORMAL);
+            M_ExplodePart(effect_num, effect->room_num);
         } else {
             Effect_Destroy(effect_num);
         }
@@ -68,19 +90,16 @@ static void M_Control_TR12(const int16_t effect_num)
         Lara_TakeDamage(counter_value, true);
 
         if (trigger_explosion) {
-            effect->speed = 0;
-            effect->frame_num = 0;
-            effect->counter = 0;
-            effect->object_id = O_EXPLOSION_1;
-            effect->shade = SHADE_NEUTRAL;
-            Sound_Effect(SFX_EXPLOSION_1, &effect->pos, SPM_NORMAL);
-
-            LARA_INFO *const lara = Lara_GetLaraInfo();
-            lara->hit_effect_count = 5;
-            lara->hit_effect = effect;
+            EFFECT *const explosion = M_ExplodePart(effect_num, room_num);
+            if (explosion != nullptr) {
+                LARA_INFO *const lara = Lara_GetLaraInfo();
+                lara->hit_effect_count = 5;
+                lara->hit_effect = explosion;
+            }
         } else {
             Effect_Destroy(effect_num);
         }
+        return;
     }
 
     if (room_num != effect->room_num) {
