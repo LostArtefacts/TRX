@@ -21,6 +21,7 @@ bool String_ParseRGBA8888(const char *value, RGBA_8888 *target);
 
 size_t String_GetCharByteSize(const char *ptr);
 char *String_ToUpper(const char *text);
+char *String_ToLower(const char *text);
 char *String_ToUpperPattern(const char *text);
 
 // Rewrites text so that it can name a file: drops the characters a file system

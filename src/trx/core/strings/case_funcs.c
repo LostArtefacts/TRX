@@ -78,6 +78,46 @@ char *String_ToUpper(const char *const text)
     return upper_text;
 }
 
+char *String_ToLower(const char *const text)
+{
+    if (text == nullptr) {
+        return nullptr;
+    }
+
+    const size_t text_len = strlen(text);
+    char *const lower_text = Memory_Alloc(text_len + 1);
+    const char *src = text;
+    char *dest = lower_text;
+
+    while (*src != '\0') {
+        bool mapped = false;
+        for (size_t i = 0; m_CaseMap[i].lower != nullptr; i++) {
+            const char *const lower = m_CaseMap[i].lower;
+            const char *const upper = m_CaseMap[i].upper;
+            const size_t upper_len = strlen(upper);
+            if (strncmp(src, upper, upper_len) == 0) {
+                const size_t lower_len = strlen(lower);
+                memcpy(dest, lower, lower_len);
+                dest += lower_len;
+                src += upper_len;
+                mapped = true;
+                break;
+            }
+        }
+        if (mapped) {
+            continue;
+        }
+
+        const size_t char_len = String_GetCharByteSize(src);
+        memcpy(dest, src, char_len);
+        dest += char_len;
+        src += char_len;
+    }
+
+    *dest = '\0';
+    return lower_text;
+}
+
 char *String_ToUpperPattern(const char *const pattern)
 {
     char *const upper_pattern = Memory_DupStr(pattern);
