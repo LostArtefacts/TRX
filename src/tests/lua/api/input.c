@@ -115,12 +115,12 @@ bool InputState_IsAnyPressed(const INPUT_STATE state)
 
 bool Input_IsHeld(const INPUT_ROLE role)
 {
-    return m_Held;
+    return m_Held && !m_Suppressed[role];
 }
 
 bool Input_IsPressed(const INPUT_ROLE role)
 {
-    return m_Pressed;
+    return m_Pressed && !m_Suppressed[role];
 }
 
 void Input_HoldOffRole(const INPUT_ROLE role)
