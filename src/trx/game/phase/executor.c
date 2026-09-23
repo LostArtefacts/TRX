@@ -95,7 +95,6 @@ static void M_DrawFadeToBlackTransition(const float opacity)
     LUA_UI_DrawRegions();
     Overlay_DrawUI();
     TouchOverlay_Draw();
-    Console_Draw();
     UI_EndScene();
 
     Output_SwitchViewport(VIEWPORT_UI);
@@ -125,7 +124,6 @@ static GF_COMMAND M_RunFadeToBlackTransition(const FADER_ARGS args)
         m_CurrentFrame++;
 
         Shell_ProcessEvents();
-        Console_Control();
         Overlay_Control();
 
         const GF_COMMAND gf_cmd = M_HandleOverride();
@@ -156,7 +154,6 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
 {
     m_CurrentFrame++;
     Shell_ProcessEvents();
-    Console_Control();
     Overlay_Control();
 
     const GF_COMMAND gf_cmd = M_HandleOverride();
@@ -215,7 +212,6 @@ static void M_Draw(PHASE *const phase)
     LUA_UI_DrawRegions();
     Overlay_DrawUI();
     TouchOverlay_Draw();
-    Console_Draw();
     UI_EndScene();
 
     Output_SwitchViewport(VIEWPORT_UI);

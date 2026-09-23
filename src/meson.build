@@ -87,6 +87,7 @@ trx_lua_api_sources = files(
 )
 
 trx_lua_script_sources = files(
+  'lua/ui/console.lua',
   'lua/commands/clear.lua',
   'lua/commands/burn.lua',
   'lua/commands/copy.lua',
@@ -968,7 +969,6 @@ common_sources = [
   'trx/game/ui/elements/offset.c',
   'trx/game/ui/elements/pad.c',
   'trx/game/ui/elements/progress_button.c',
-  'trx/game/ui/elements/prompt.c',
   'trx/game/ui/elements/requester.c',
   'trx/game/ui/elements/resize.c',
   'trx/game/ui/elements/row_arrows.c',
@@ -981,8 +981,6 @@ common_sources = [
   'trx/game/ui/elements/window.c',
   'trx/game/ui/events.c',
   'trx/game/ui/helpers.c',
-  'trx/game/ui/hud/console.c',
-  'trx/game/ui/hud/console_logs.c',
   'trx/game/ui/keys.c',
   'trx/game/ui/regions.c',
   'trx/game/ui/scaler.c',

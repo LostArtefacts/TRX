@@ -12,7 +12,6 @@
 #include <trx/game/ui/elements/modal.h>
 #include <trx/game/ui/elements/offset.h>
 #include <trx/game/ui/elements/pad.h>
-#include <trx/game/ui/elements/prompt.h>
 #include <trx/game/ui/elements/requester.h>
 #include <trx/game/ui/elements/resize.h>
 #include <trx/game/ui/elements/row_arrows.h>

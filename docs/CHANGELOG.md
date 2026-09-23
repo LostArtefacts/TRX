@@ -40,6 +40,7 @@
     - `trx.input.is_key_pressed`
     - `trx.input.is_key_known`
     - `trx.input.is_reserved`
+    - `trx.events.on_key_repeat`
 - Added the ability for a script to read the controller itself, sticks and triggers included
     - `trx.events.on_button_down`
     - `trx.events.on_button_up`

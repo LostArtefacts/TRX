@@ -6,9 +6,10 @@
 // in lower case. Use SDL names for buttons and axes. Read state from events so
 // replay input follows live input.
 //
-// While the console is open or a rebind is reading the devices, the game holds
-// them rather than the player: every read below reports nothing, and the
-// presses that arrive go unrecorded. See InputRaw_IsReserved.
+// While a rebind is reading the devices, the game holds them rather than the
+// player: every read below reports nothing, and the presses that arrive go
+// unrecorded. See InputRaw_IsReserved. A script holding the devices is a
+// separate thing that leaves the reads answering; see InputRaw_IsHeldByScript.
 
 #include <stdint.h>
 
@@ -40,7 +41,7 @@ void InputRaw_BeginFrame(void);
 void InputRaw_ProcessEvent(const SDL_Event *event);
 
 // Checks whether the game holds the devices rather than the player, which it
-// does while the console is open and while a rebind is reading them.
+// does while a rebind is reading them.
 bool InputRaw_IsReserved(void);
 
 // Controls whether a script holds the devices. While one does, the game stops

@@ -178,6 +178,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_TICK, "tick");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_KEY_DOWN, "key_down");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_KEY_UP, "key_up");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_KEY_REPEAT, "key_repeat");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_BUTTON_DOWN, "button_down");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_BUTTON_UP, "button_up");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_TEXT_INPUT, "text_input");

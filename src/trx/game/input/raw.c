@@ -2,7 +2,6 @@
 
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
-#include <trx/game/console/common.h>
 #include <trx/game/input/common.h>
 #include <trx/game/input/raw_state.h>
 
@@ -75,11 +74,10 @@ static void M_ProcessButtonEvent(const SDL_Event *const event)
 
 // Takes up whether the game holds the devices. Every path that records or
 // reads state calls this first, so that the keys, the buttons and the axes
-// answer the same question, from the moment the console opens rather than
-// from the frame after it.
+// answer the same question at the moment it changes rather than a frame later.
 static void M_SyncReserved(void)
 {
-    const bool reserved = Console_IsOpened() || Input_IsInListenMode();
+    const bool reserved = Input_IsInListenMode();
     m_Keys.reserved = reserved;
     m_Buttons.reserved = reserved;
 }
@@ -124,7 +122,15 @@ bool InputRaw_IsReserved(void)
 
 void InputRaw_SetScriptHold(const bool held)
 {
+    if (m_ScriptHold == held) {
+        return;
+    }
     m_ScriptHold = held;
+    if (!held) {
+        // The key that gave the devices back is still down, and would read as
+        // a fresh press the moment the game looks again.
+        Input_Settle();
+    }
 }
 
 bool InputRaw_IsHeldByScript(void)

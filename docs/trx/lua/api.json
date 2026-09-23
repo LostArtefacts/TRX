@@ -4551,7 +4551,7 @@
       }
     },
     {
-      "description": "Happens as a key goes down, before the game reads it as an action. The\nhandler takes the name of the key.\n\nA key is named by the character the player's layout prints, so the key\nlabelled 5 arrives as `\"5\"` on every layout, and a key with a label\nrather than a character keeps the spelling the window system gives it in\nlower case, such as `\"escape\"` and `\"left shift\"`.\n\nUse this where a script needs the key itself, such as one reading a\npasscode. Use `trx.input.signals.pressed` for a game action, which respects\nwhat the player bound it to and answers for a controller as well.\n\nHolding a key down fires it once. It stays quiet while the console is open\nand while a rebind is reading the keyboard. A key still held as the game\ngives the keyboard back fires again then, although\n`trx.input.is_key_pressed` reports nothing for it.",
+      "description": "Happens as a key goes down, before the game reads it as an action. The\nhandler takes the name of the key.\n\nA key is named by the character the player's layout prints, so the key\nlabelled 5 arrives as `\"5\"` on every layout, and a key with a label\nrather than a character keeps the spelling the window system gives it in\nlower case, such as `\"escape\"` and `\"left shift\"`.\n\nUse this where a script needs the key itself, such as one reading a\npasscode. Use `trx.input.signals.pressed` for a game action, which respects\nwhat the player bound it to and answers for a controller as well.\n\nHolding a key down fires it once, and the repeats that follow arrive\nthrough `trx.events.on_key_repeat`.\n\nIt stays quiet while a rebind is reading the keyboard. It fires while the\nconsole is open. Check `trx.console.is_open` where that matters. A key still\nheld as the keyboard comes back fires again then, although\n`trx.input.is_key_pressed` reports nothing for it.",
       "examples": [
         "local typed = \"\"\n\ntrx.events.on_key_down(function(key)\n  if key:match(\"^%d$\") then\n    typed = typed .. key\n  elseif key == \"return\" then\n    trx.log.info(\"entered \" .. typed)\n    typed = \"\"\n  end\nend)"
       ],
@@ -4569,7 +4569,22 @@
       }
     },
     {
-      "description": "Happens as a key comes up. The handler takes the name of the key, named as\n`trx.events.on_key_down` names it.\n\nIt stays quiet while the console is open and while a rebind is reading the\nkeyboard. A key held as the game takes the keyboard comes up at that\nmoment, so every press a script was told about still has its release.",
+      "description": "Happens as the window system repeats a key the player is holding. The\nhandler takes the name of the key, named as `trx.events.on_key_down` names\nit.\n\nThe first press arrives through `trx.events.on_key_down` instead, and the\nrepeats follow at whatever rate the player's system repeats at. A text\nfield takes both, so that a held arrow keeps moving the caret; anything\nacting on a press once takes `trx.events.on_key_down` alone.\n\nIt stays quiet while a rebind is reading the keyboard, and fires while the\nconsole is open as `trx.events.on_key_down` does.",
+      "params": [
+        {
+          "description": "Called with the name of the key.",
+          "name": "callback",
+          "type": "function"
+        }
+      ],
+      "path": "events.on_key_repeat",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
+      }
+    },
+    {
+      "description": "Happens as a key comes up. The handler takes the name of the key, named as\n`trx.events.on_key_down` names it.\n\nIt stays quiet while a rebind is reading the keyboard, and fires while the\nconsole is open as `trx.events.on_key_down` does. A key held as the game\ntakes the keyboard comes up at that moment, so every press a script was\ntold about still has its release.",
       "params": [
         {
           "description": "Called with the name of the key.",
@@ -4584,7 +4599,7 @@
       }
     },
     {
-      "description": "Happens as the player composes text, and carries the characters composed.\nThe handler takes a string.\n\nUse this for text fields instead of `trx.events.on_key_down`. It carries\ncharacters with the player's modifiers and keyboard layout. It also carries\ntext composed by an input method. One event can carry several characters.\n\nEditing keys carry no character and arrive through\n`trx.events.on_key_down`. Pasting goes through `trx.ui.clipboard`.\n\nIt stays quiet while the console is open, which reads the same characters.",
+      "description": "Happens as the player composes text, and carries the characters composed.\nThe handler takes a string.\n\nUse this for text fields instead of `trx.events.on_key_down`. It carries\ncharacters with the player's modifiers and keyboard layout. It also carries\ntext composed by an input method. One event can carry several characters.\n\nEditing keys carry no character and arrive through\n`trx.events.on_key_down`. Pasting goes through `trx.ui.clipboard`.\n\nIt fires while the console is open, and carries what the player types\nthere: the console is a script reading the keyboard rather than the game\ntaking it. Check `trx.console.is_open` where a script must leave that text\nalone.",
       "examples": [
         "trx.events.on_text_input(function(text)\n  trx.log.info(\"composed \" .. text)\nend)"
       ],
@@ -4665,7 +4680,7 @@
       }
     },
     {
-      "description": "Happens as a controller button goes down, before the game reads it as an\naction. The handler takes the name of the button.\n\nA button keeps the name SDL gives it, such as `\"a\"`, `\"dpup\"` and\n`\"leftshoulder\"`, because a pad prints a different label on the same button\ndepending on who made it. The `trx.input` module lists every name.\n\nUse `trx.input.signals.pressed` for a game action, which respects what the\nplayer bound it to and answers for the keyboard as well.\n\nIt stays quiet while the console is open and while a rebind is reading the\npad. A button still held as the game gives the pad back fires again then,\nalthough `trx.input.is_button_pressed` reports nothing for it.",
+      "description": "Happens as a controller button goes down, before the game reads it as an\naction. The handler takes the name of the button.\n\nA button keeps the name SDL gives it, such as `\"a\"`, `\"dpup\"` and\n`\"leftshoulder\"`, because a pad prints a different label on the same button\ndepending on who made it. The `trx.input` module lists every name.\n\nUse `trx.input.signals.pressed` for a game action, which respects what the\nplayer bound it to and answers for the keyboard as well.\n\nIt stays quiet while a rebind is reading the pad, and fires while the\nconsole is open as `trx.events.on_key_down` does. A button still held as\nthe pad comes back fires again then, although\n`trx.input.is_button_pressed` reports nothing for it.",
       "params": [
         {
           "description": "Called with the name of the button.",
@@ -4680,7 +4695,7 @@
       }
     },
     {
-      "description": "Happens as a controller button comes up. The handler takes the name of the\nbutton, named as `trx.events.on_button_down` names it.\n\nIt stays quiet while the console is open and while a rebind is reading the\npad. A button held as the game takes the pad comes up at that moment, so\nevery press a script was told about still has its release.",
+      "description": "Happens as a controller button comes up. The handler takes the name of the\nbutton, named as `trx.events.on_button_down` names it.\n\nIt stays quiet while a rebind is reading the pad, and fires while the\nconsole is open as `trx.events.on_key_down` does. A button held as the game\ntakes the pad comes up at that moment, so every press a script was told\nabout still has its release.",
       "params": [
         {
           "description": "Called with the name of the button.",
@@ -6919,7 +6934,7 @@
       "path": "input.hold_off"
     },
     {
-      "description": "Whether the game has the keyboard and the pad rather than the player.\n\nThis is true while the console is open and while a rebind is reading input.\nEvery hardware read reports nothing then, so a script that would otherwise\nanswer an empty keypad can tell the two apart.",
+      "description": "Whether the game has the keyboard and the pad rather than the player.\n\nThis is true while a rebind is reading input. Every hardware read reports\nnothing then, so a script that would otherwise answer an empty keypad can tell\nthe two apart.\n\nA script holding the devices with `trx.input.grab` is not this, and\n`trx.input.is_grabbed` reports that instead. The console is one such script.",
       "path": "input.is_reserved",
       "returns": {
         "description": "Whether the game has the devices.",
@@ -10466,7 +10481,7 @@
       "title": "Injection"
     },
     {
-      "description": "Module for reading input and working with player bindings.\n\nScripts ask about roles, not physical keys. A role is a game action such as\njumping, drawing a weapon, or opening a menu. The key or button that triggers it\ndepends on the player's device and layout.\n\nUse `\\{input ...}` in text to draw the binding for a role.\n\nA few functions read the keyboard and the controller themselves, for a script\nthat needs the key rather than the action, such as one reading a passcode.\n\nA key that prints a character is named by the character the player's layout\nprints, so the key labelled 5 is `\"5\"` on every layout. A key with a label rather\nthan a character keeps the spelling the window system gives it, in lower case:\n`\"escape\"`, `\"return\"`, `\"left shift\"`, `\"f5\"`, `\"keypad 5\"`.\n\nWhile the console is open or a rebind is reading the device, the game has the\nkeyboard rather than the player: every hardware read reports nothing, and the\npresses that arrive go unrecorded, so a script never takes what the player typed\ninto the console. `trx.input.is_reserved` answers whether that is the case. The\nnames stay readable throughout, so a script can still ask what a key is called.\n\nA controller button or axis keeps the name SDL gives it, because a pad prints a\ndifferent label on the same button depending on who made it. The buttons are\n`\"a\"`, `\"b\"`, `\"x\"`, `\"y\"`, `\"back\"`, `\"guide\"`, `\"start\"`, `\"leftstick\"`,\n`\"rightstick\"`, `\"leftshoulder\"`, `\"rightshoulder\"`, `\"dpup\"`, `\"dpdown\"`,\n`\"dpleft\"`, `\"dpright\"`, `\"misc1\"`, `\"paddle1\"` to `\"paddle4\"` and `\"touchpad\"`.\nThe axes are `\"leftx\"`, `\"lefty\"`, `\"rightx\"`, `\"righty\"`, `\"lefttrigger\"` and\n`\"righttrigger\"`.",
+      "description": "Module for reading input and working with player bindings.\n\nScripts ask about roles, not physical keys. A role is a game action such as\njumping, drawing a weapon, or opening a menu. The key or button that triggers it\ndepends on the player's device and layout.\n\nUse `\\{input ...}` in text to draw the binding for a role.\n\nA few functions read the keyboard and the controller themselves, for a script\nthat needs the key rather than the action, such as one reading a passcode.\n\nA key that prints a character is named by the character the player's layout\nprints, so the key labelled 5 is `\"5\"` on every layout. A key with a label rather\nthan a character keeps the spelling the window system gives it, in lower case:\n`\"escape\"`, `\"return\"`, `\"left shift\"`, `\"f5\"`, `\"keypad 5\"`.\n\nWhile a rebind is reading a device, hardware reads report no input. The\npresses are not saved. `trx.input.is_reserved` reports this state. Key and\nbutton names remain available.\n\n`trx.input.grab` gives a script exclusive input. Use `trx.console.is_open` when\na script must ignore text entered in the console.\n\nA controller button or axis keeps the name SDL gives it, because a pad prints a\ndifferent label on the same button depending on who made it. The buttons are\n`\"a\"`, `\"b\"`, `\"x\"`, `\"y\"`, `\"back\"`, `\"guide\"`, `\"start\"`, `\"leftstick\"`,\n`\"rightstick\"`, `\"leftshoulder\"`, `\"rightshoulder\"`, `\"dpup\"`, `\"dpdown\"`,\n`\"dpleft\"`, `\"dpright\"`, `\"misc1\"`, `\"paddle1\"` to `\"paddle4\"` and `\"touchpad\"`.\nThe axes are `\"leftx\"`, `\"lefty\"`, `\"rightx\"`, `\"righty\"`, `\"lefttrigger\"` and\n`\"righttrigger\"`.",
       "name": "input",
       "order": 41,
       "title": "Input"

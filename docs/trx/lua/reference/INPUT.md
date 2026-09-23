@@ -28,11 +28,12 @@ prints, so the key labelled 5 is `"5"` on every layout. A key with a label rathe
 than a character keeps the spelling the window system gives it, in lower case:
 `"escape"`, `"return"`, `"left shift"`, `"f5"`, `"keypad 5"`.
 
-While the console is open or a rebind is reading the device, the game has the
-keyboard rather than the player: every hardware read reports nothing, and the
-presses that arrive go unrecorded, so a script never takes what the player typed
-into the console. [`trx.input.is_reserved`](#input.is_reserved) answers whether that is the case. The
-names stay readable throughout, so a script can still ask what a key is called.
+While a rebind is reading a device, hardware reads report no input. The
+presses are not saved. [`trx.input.is_reserved`](#input.is_reserved) reports this state. Key and
+button names remain available.
+
+[`trx.input.grab`](#input.grab) gives a script exclusive input. Use [`trx.console.is_open`](CONSOLE.md#console.is_open) when
+a script must ignore text entered in the console.
 
 A controller button or axis keeps the name SDL gives it, because a pad prints a
 different label on the same button depending on who made it. The buttons are
@@ -206,9 +207,12 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 - <a id="input.is_reserved" name="input.is_reserved"></a>[lua]`trx.input.is_reserved()`  
   Whether the game has the keyboard and the pad rather than the player.
 
-  This is true while the console is open and while a rebind is reading input.
-  Every hardware read reports nothing then, so a script that would otherwise
-  answer an empty keypad can tell the two apart.
+  This is true while a rebind is reading input. Every hardware read reports
+  nothing then, so a script that would otherwise answer an empty keypad can tell
+  the two apart.
+
+  A script holding the devices with [`trx.input.grab`](#input.grab) is not this, and
+  [`trx.input.is_grabbed`](#input.is_grabbed) reports that instead. The console is one such script.
 
   Returns: boolean. Whether the game has the devices.
 

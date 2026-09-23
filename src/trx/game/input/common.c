@@ -437,6 +437,11 @@ void Input_EnterListenMode(void)
 void Input_ExitListenMode(void)
 {
     m_ListenMode = false;
+    Input_Settle();
+}
+
+void Input_Settle(void)
+{
     Input_Update();
     InputState_Copy(&g_OldInputDB, g_Input);
     InputState_Copy(&g_InputDB, g_Input);
