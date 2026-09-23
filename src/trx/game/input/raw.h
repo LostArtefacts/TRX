@@ -5,18 +5,55 @@
 // Name keys by the character that the current layout prints. Keep named keys
 // in lower case. Use SDL names for buttons and axes. Read state from events so
 // replay input follows live input.
+//
+// While the console is open or a rebind is reading the devices, the game holds
+// them rather than the player: every read below reports nothing, and the
+// presses that arrive go unrecorded. See InputRaw_IsReserved.
 
 #include <stdint.h>
 
 // Keep SDL_Event opaque because only the event stream reads event fields.
 typedef union SDL_Event SDL_Event;
 
-// Clear press and release state from the previous frame.
+// Names the devices an operation covers.
+typedef enum {
+    // clang-format off
+    INPUT_RAW_DEVICE_KEYBOARD   = 1 << 0,
+    INPUT_RAW_DEVICE_CONTROLLER = 1 << 1,
+    INPUT_RAW_DEVICE_ALL        =
+        INPUT_RAW_DEVICE_KEYBOARD | INPUT_RAW_DEVICE_CONTROLLER,
+    // clang-format on
+} INPUT_RAW_DEVICES;
+
+// Names a key or a button, for walking what is down.
+typedef struct {
+    // True for a controller button, false for a key.
+    bool is_button;
+    const char *name;
+} INPUT_RAW_INPUT;
+
+// Drops the presses of the frame before, and takes up whether the game holds
+// the devices.
 void InputRaw_BeginFrame(void);
 
-// Tracks a key, a button or an axis from an event, and forgets what a
-// controller held once it goes away.
+// Tracks a key, a button or an axis from an event.
 void InputRaw_ProcessEvent(const SDL_Event *event);
+
+// Checks whether the game holds the devices rather than the player, which it
+// does while the console is open and while a rebind is reading them.
+bool InputRaw_IsReserved(void);
+
+// Reports each key and button of the named devices that is physically down,
+// whoever holds them. This is what balances the presses and releases a script
+// was told about when the game takes the devices and gives them back.
+void InputRaw_ForEachDown(
+    INPUT_RAW_DEVICES devices,
+    void (*fn)(INPUT_RAW_INPUT input, void *user_data), void *user_data);
+
+// Lets go of what the named devices held, for devices that stop reporting: the
+// window losing focus, or a pad being unplugged. Clearing the controller brings
+// its axes to rest.
+void InputRaw_ClearDevices(INPUT_RAW_DEVICES devices);
 
 // Checks whether the named key is down. An unknown name reports false.
 bool InputRaw_IsKeyHeld(const char *key);

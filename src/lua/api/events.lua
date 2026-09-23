@@ -218,7 +218,9 @@ api.define("events.on_key_down", {
     what the player bound it to and answers for a controller as well.
 
     Holding a key down fires it once. It stays quiet while the console is open
-    and while a rebind is reading the keyboard.
+    and while a rebind is reading the keyboard. A key still held as the game
+    gives the keyboard back fires again then, although
+    `trx.input.is_key_pressed` reports nothing for it.
   ]],
   params = {
     {
@@ -249,7 +251,8 @@ api.define("events.on_key_up", {
     `trx.events.on_key_down` names it.
 
     It stays quiet while the console is open and while a rebind is reading the
-    keyboard, so a key held across either can come up unreported.
+    keyboard. A key held as the game takes the keyboard comes up at that
+    moment, so every press a script was told about still has its release.
   ]],
   params = {
     {
@@ -299,13 +302,14 @@ api.define("events.on_button_down", {
 
     A button keeps the name SDL gives it, such as `"a"`, `"dpup"` and
     `"leftshoulder"`, because a pad prints a different label on the same button
-    depending on who made it. `trx.input.is_button_held` lists them.
+    depending on who made it. The `trx.input` module lists every name.
 
     Use `trx.input.signals.pressed` for a game action, which respects what the
     player bound it to and answers for the keyboard as well.
 
     It stays quiet while the console is open and while a rebind is reading the
-    pad.
+    pad. A button still held as the game gives the pad back fires again then,
+    although `trx.input.is_button_pressed` reports nothing for it.
   ]],
   params = {
     {
@@ -324,7 +328,8 @@ api.define("events.on_button_up", {
     button, named as `trx.events.on_button_down` names it.
 
     It stays quiet while the console is open and while a rebind is reading the
-    pad, so a button held across either can come up unreported.
+    pad. A button held as the game takes the pad comes up at that moment, so
+    every press a script was told about still has its release.
   ]],
   params = {
     {

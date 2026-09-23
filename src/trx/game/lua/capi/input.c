@@ -159,6 +159,13 @@ static const char *M_CheckKey(lua_State *const L, const int arg)
     return key;
 }
 
+// trxc.input.is_reserved() -> bool
+static int M_L_InputIsReserved(lua_State *const L)
+{
+    lua_pushboolean(L, InputRaw_IsReserved());
+    return 1;
+}
+
 // trxc.input.is_key_held(key) -> bool
 static int M_L_InputIsKeyHeld(lua_State *const L)
 {
@@ -354,6 +361,7 @@ static const luaL_Reg m_Module[] = {
     { "is_listening", M_L_InputIsListening },
     { "is_pressed", M_L_InputIsPressed },
     { "is_rebindable", M_L_InputIsRebindable },
+    { "is_reserved", M_L_InputIsReserved },
     { "is_suppressed", M_L_InputIsSuppressed },
     { "is_unbindable", M_L_InputIsUnbindable },
     { "key_name", M_L_InputKeyName },

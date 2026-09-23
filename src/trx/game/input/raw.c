@@ -2,6 +2,8 @@
 
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/game/console/common.h>
+#include <trx/game/input/common.h>
 #include <trx/game/input/raw_state.h>
 
 #include <SDL2/SDL_events.h>
@@ -68,14 +70,27 @@ static void M_ProcessButtonEvent(const SDL_Event *const event)
         event->type == SDL_CONTROLLERBUTTONDOWN);
 }
 
+// Takes up whether the game holds the devices. Every path that records or
+// reads state calls this first, so that the keys, the buttons and the axes
+// answer the same question, from the moment the console opens rather than
+// from the frame after it.
+static void M_SyncReserved(void)
+{
+    const bool reserved = Console_IsOpened() || Input_IsInListenMode();
+    m_Keys.reserved = reserved;
+    m_Buttons.reserved = reserved;
+}
+
 void InputRaw_BeginFrame(void)
 {
+    M_SyncReserved();
     InputRawState_BeginFrame(&m_Keys);
     InputRawState_BeginFrame(&m_Buttons);
 }
 
 void InputRaw_ProcessEvent(const SDL_Event *const event)
 {
+    M_SyncReserved();
     switch (event->type) {
     case SDL_KEYDOWN:
     case SDL_KEYUP:
@@ -93,20 +108,65 @@ void InputRaw_ProcessEvent(const SDL_Event *const event)
         }
         break;
 
-    case SDL_CONTROLLERDEVICEREMOVED:
-        // A pad that goes away reports nothing more, so a button it held and
-        // a stick it left off centre would read that way for good.
-        InputRawState_Clear(&m_Buttons);
-        memset(m_Axis, 0, sizeof m_Axis);
-        break;
-
     default:
         break;
     }
 }
 
+bool InputRaw_IsReserved(void)
+{
+    M_SyncReserved();
+    return m_Keys.reserved;
+}
+
+void InputRaw_ForEachDown(
+    const INPUT_RAW_DEVICES devices,
+    void (*const fn)(INPUT_RAW_INPUT input, void *user_data),
+    void *const user_data)
+{
+    if ((devices & INPUT_RAW_DEVICE_KEYBOARD) != 0) {
+        for (int32_t i = 0; i < SDL_NUM_SCANCODES; i++) {
+            if (!InputRawState_IsHeldRaw(&m_Keys, i)) {
+                continue;
+            }
+            const char *const name = SDL_GetKeyName(SDL_GetKeyFromScancode(i));
+            if (name == nullptr || name[0] == '\0') {
+                continue;
+            }
+            AUTO_FREE char *lower = String_ToLower(name);
+            fn((INPUT_RAW_INPUT) { .name = lower }, user_data);
+        }
+    }
+
+    if ((devices & INPUT_RAW_DEVICE_CONTROLLER) != 0) {
+        for (int32_t i = 0; i < SDL_CONTROLLER_BUTTON_MAX; i++) {
+            if (!InputRawState_IsHeldRaw(&m_Buttons, i)) {
+                continue;
+            }
+            const char *const name = SDL_GameControllerGetStringForButton(i);
+            if (name == nullptr || name[0] == '\0') {
+                continue;
+            }
+            fn((INPUT_RAW_INPUT) { .is_button = true, .name = name },
+               user_data);
+        }
+    }
+}
+
+void InputRaw_ClearDevices(const INPUT_RAW_DEVICES devices)
+{
+    if ((devices & INPUT_RAW_DEVICE_KEYBOARD) != 0) {
+        InputRawState_Clear(&m_Keys);
+    }
+    if ((devices & INPUT_RAW_DEVICE_CONTROLLER) != 0) {
+        InputRawState_Clear(&m_Buttons);
+        memset(m_Axis, 0, sizeof m_Axis);
+    }
+}
+
 bool InputRaw_IsKeyHeld(const char *const key)
 {
+    M_SyncReserved();
     const SDL_Scancode scancode = M_ScancodeFromName(key);
     return scancode != SDL_SCANCODE_UNKNOWN
         && InputRawState_IsHeld(&m_Keys, scancode);
@@ -114,6 +174,7 @@ bool InputRaw_IsKeyHeld(const char *const key)
 
 bool InputRaw_IsKeyPressed(const char *const key)
 {
+    M_SyncReserved();
     const SDL_Scancode scancode = M_ScancodeFromName(key);
     return scancode != SDL_SCANCODE_UNKNOWN
         && InputRawState_IsPressed(&m_Keys, scancode);
@@ -145,6 +206,7 @@ const char *InputRaw_EventKeyName(const SDL_Event *const event)
 
 bool InputRaw_IsButtonHeld(const char *const button)
 {
+    M_SyncReserved();
     const SDL_GameControllerButton index =
         SDL_GameControllerGetButtonFromString(button);
     return InputRawState_IsHeld(&m_Buttons, index);
@@ -152,6 +214,7 @@ bool InputRaw_IsButtonHeld(const char *const button)
 
 bool InputRaw_IsButtonPressed(const char *const button)
 {
+    M_SyncReserved();
     const SDL_GameControllerButton index =
         SDL_GameControllerGetButtonFromString(button);
     return InputRawState_IsPressed(&m_Buttons, index);
@@ -165,6 +228,9 @@ bool InputRaw_IsButtonKnown(const char *const button)
 
 float InputRaw_GetAxis(const char *const axis)
 {
+    if (InputRaw_IsReserved()) {
+        return 0.0f;
+    }
     const SDL_GameControllerAxis index =
         SDL_GameControllerGetAxisFromString(axis);
     if (index == SDL_CONTROLLER_AXIS_INVALID) {

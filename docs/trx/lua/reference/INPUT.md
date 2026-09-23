@@ -28,6 +28,12 @@ prints, so the key labelled 5 is `"5"` on every layout. A key with a label rathe
 than a character keeps the spelling the window system gives it, in lower case:
 `"escape"`, `"return"`, `"left shift"`, `"f5"`, `"keypad 5"`.
 
+While the console is open or a rebind is reading the device, the game has the
+keyboard rather than the player: every hardware read reports nothing, and the
+presses that arrive go unrecorded, so a script never takes what the player typed
+into the console. [`trx.input.is_reserved`](#input.is_reserved) answers whether that is the case. The
+names stay readable throughout, so a script can still ask what a key is called.
+
 A controller button or axis keeps the name SDL gives it, because a pad prints a
 different label on the same button depending on who made it. The buttons are
 `"a"`, `"b"`, `"x"`, `"y"`, `"back"`, `"guide"`, `"start"`, `"leftstick"`,
@@ -184,6 +190,15 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
   Parameters:
   - <a id="input.hold_off.role" name="input.hold_off.role"></a>**`role`** ([trx.input.Role](#input.Role)). The role to take.
 
+- <a id="input.is_reserved" name="input.is_reserved"></a>[lua]`trx.input.is_reserved()`  
+  Whether the game has the keyboard and the pad rather than the player.
+
+  This is true while the console is open and while a rebind is reading input.
+  Every hardware read reports nothing then, so a script that would otherwise
+  answer an empty keypad can tell the two apart.
+
+  Returns: boolean. Whether the game has the devices.
+
 - <a id="input.is_key_held" name="input.is_key_held"></a>[lua]`trx.input.is_key_held(key)`  
   Whether a key is down right now.
 
@@ -191,7 +206,8 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
   key itself and says nothing about a controller. Prefer [`trx.input.is_held`](#input.is_held) for a
   game action: it follows what the player bound and works on every device.
 
-  A name no key on the player's layout carries raises.
+  Reports false while [`trx.input.is_reserved`](#input.is_reserved) is true. A name no key on the
+  player's layout carries raises.
 
   Parameters:
   - <a id="input.is_key_held.key" name="input.is_key_held.key"></a>**`key`** (string). The key to ask about.
@@ -203,6 +219,10 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 
   This is true for one frame only. [`trx.events.on_key_down`](EVENTS.md#events.on_key_down) reports the same
   presses without a script naming the keys it cares about in advance.
+
+  Reports false while [`trx.input.is_reserved`](#input.is_reserved), and a press that arrived then is not
+  kept for afterwards. A key still held as the game gives the keyboard back fires
+  [`trx.events.on_key_down`](EVENTS.md#events.on_key_down) but reports no press here.
 
   A name no key on the player's layout carries raises.
 
@@ -229,7 +249,7 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
   button itself. Prefer [`trx.input.is_held`](#input.is_held) for a game action: it follows what the
   player bound and works on every device.
 
-  A name SDL does not know raises.
+  Reports false while [`trx.input.is_reserved`](#input.is_reserved). A name SDL does not know raises.
 
   Parameters:
   - <a id="input.is_button_held.button" name="input.is_button_held.button"></a>**`button`** (string). The button to ask about.
@@ -241,6 +261,10 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 
   This is true for one frame only. [`trx.events.on_button_down`](EVENTS.md#events.on_button_down) reports the same
   presses without a script naming the buttons it cares about in advance.
+
+  Reports false while [`trx.input.is_reserved`](#input.is_reserved), and a press that arrived then is not
+  kept for afterwards. A button still held as the game gives the pad back fires
+  [`trx.events.on_button_down`](EVENTS.md#events.on_button_down) but reports no press here.
 
   A name SDL does not know raises.
 
@@ -261,7 +285,8 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
   Where a controller axis stands, from -1 to 1.
 
   A stick reaches -1 left or up and 1 right or down. A trigger runs from 0 at rest
-  to 1 held down. An axis on a pad that is not attached reads 0.
+  to 1 held down. An axis reads 0 while the pad is unplugged and while
+  [`trx.input.is_reserved`](#input.is_reserved).
 
   A name SDL does not know raises.
 

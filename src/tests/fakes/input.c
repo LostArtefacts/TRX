@@ -80,6 +80,11 @@ void Input_ClearSuppressedRoles(void)
 {
 }
 
+bool InputRaw_IsReserved(void)
+{
+    return false;
+}
+
 bool InputRaw_IsKeyHeld(const char *const key)
 {
     return false;

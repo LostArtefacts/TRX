@@ -494,4 +494,28 @@ test("reading an axis SDL does not know raises", function()
   end, "unknown controller axis")
 end)
 
+test("the game holding the keyboard hides it from a script", function()
+  fake.set_key_held("5", true)
+  fake.set_key_pressed("5", true)
+  fake.set_button_held("a", true)
+  fake.set_axis("leftx", -1)
+  assert(input.is_key_held("5") == true)
+
+  input.listen(true)
+  assert(input.is_key_held("5") == false, "a rebind has the keyboard")
+  assert(input.is_key_pressed("5") == false)
+  assert(input.is_button_held("a") == false)
+  assert(input.axis("leftx") == 0)
+
+  input.listen(false)
+  assert(input.is_key_held("5") == true, "and gives it back")
+end)
+
+test("a key is still named while the game holds the keyboard", function()
+  input.listen(true)
+  assert(input.is_key_known("5") == true)
+  assert(input.is_button_known("a") == true)
+  input.listen(false)
+end)
+
 return h.report()
