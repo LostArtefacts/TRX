@@ -55,6 +55,14 @@ static int M_FakeFire(lua_State *const L)
               .value.str = luaL_checkstring(L, 2) },
         };
         LUA_FireEventEx(LUA_EVENT_TEXT_INPUT, args, 1);
+    } else if (strcmp(name, "on_console_log") == 0) {
+        const LUA_EVENT_ARG args[] = {
+            { .type = LUA_EVENT_ARG_STRING,
+              .value.str = luaL_checkstring(L, 2) },
+        };
+        LUA_FireEventEx(LUA_EVENT_CONSOLE_LOG, args, 1);
+    } else if (strcmp(name, "on_console_clear") == 0) {
+        LUA_FireEvent(LUA_EVENT_CONSOLE_CLEAR);
     } else if (strcmp(name, "on_flip_effect") == 0) {
         // The seam floor_data.c and the animation-command paths fire through.
         // The result - whether a script took the effect - is handed back, so

@@ -4564,6 +4564,39 @@
       }
     },
     {
+      "description": "Happens as a line reaches the console, and carries the line. The handler\ntakes a string.\n\nThis is every message the console shows the player, whoever wrote it: a\ncommand reporting what it did, the engine reporting a failure, and\n`trx.console.log.info` and the rest. A message only written to the log file\nstays quiet here.\n\nUse this where a script draws a console of its own, or keeps the last few\nmessages on screen.",
+      "examples": [
+        "trx.events.on_console_log(function(line)\n  trx.log.info(\"the console said \" .. line)\nend)"
+      ],
+      "params": [
+        {
+          "description": "Called with the line.",
+          "name": "callback",
+          "type": "function"
+        }
+      ],
+      "path": "events.on_console_log",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
+      }
+    },
+    {
+      "description": "Happens as the console drops the lines it holds, which `trx.console.clear`\ndoes. The handler takes nothing.",
+      "params": [
+        {
+          "description": "What to run when it happens.",
+          "name": "callback",
+          "type": "function"
+        }
+      ],
+      "path": "events.on_console_clear",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
+      }
+    },
+    {
       "description": "Happens as a controller button goes down, before the game reads it as an\naction. The handler takes the name of the button.\n\nA button keeps the name SDL gives it, such as `\"a\"`, `\"dpup\"` and\n`\"leftshoulder\"`, because a pad prints a different label on the same button\ndepending on who made it. The `trx.input` module lists every name.\n\nUse `trx.input.signals.pressed` for a game action, which respects what the\nplayer bound it to and answers for the keyboard as well.\n\nIt stays quiet while the console is open and while a rebind is reading the\npad. A button still held as the game gives the pad back fires again then,\nalthough `trx.input.is_button_pressed` reports nothing for it.",
       "params": [
         {
