@@ -184,6 +184,7 @@ static void M_Control_TR3(const int16_t effect_num)
         }
 
         Effect_Destroy(effect_num);
+        return;
     }
 
     if (effect->room_num != room_num) {

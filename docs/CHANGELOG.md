@@ -10,6 +10,9 @@
 **TR2**
 - Fixed missing gun flashes in the Diving Area cutscene (OG bug) (TRX89)
 
+**TR3**
+- Fixed effects such as smoke and explosions breaking after an enemy exploded near Lara (TRX1576)
+
 **TR4**
 - Added Small Scorpion control (TRX1562)
 - Added Jackal control (TRX1553)
