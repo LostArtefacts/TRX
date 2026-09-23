@@ -142,7 +142,9 @@ static void M_Control(const int16_t item_num)
         Sound_Effect(SFX_ATLANTEAN_DEATH, &item->pos, SPM_NORMAL);
         Item_Shatter(
             item_num,
-            (ITEM_SHATTER_ARGS) { .mesh_bits = -1, .damage = p->part_damage });
+            (ITEM_SHATTER_ARGS) { .mesh_bits = -1,
+                                  .gib_flags = GIB_BLAST,
+                                  .damage = p->part_damage });
         Item_Destroy(item_num);
         Item_SetFinished(item, true);
     }

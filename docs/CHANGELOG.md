@@ -12,6 +12,7 @@
 
 **TR3**
 - Fixed effects such as smoke and explosions breaking after an enemy exploded near Lara (TRX1576)
+- Fixed TR2 enemies such as spiders bursting into flames and explosions when they die in a TR3 level (TRX1574)
 
 **TR4**
 - Added Small Scorpion control (TRX1562)

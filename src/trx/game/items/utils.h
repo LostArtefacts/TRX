@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/game/items/enum.h>
 #include <trx/game/items/types.h>
 
 #define ITEM_ADJUST_ROT(source, target, rot)                                   \
@@ -63,9 +64,16 @@ typedef struct {
     // the meshes to spare for a narrower set.
     int32_t mesh_bits;
 
-    // Positive values deal damage and enable body part explosions. Negative
-    // values deal damage and disable them. Zero deals no damage and disables
-    // them.
+    // Set what the flying body parts draw and what they leave where they
+    // land.
+    GIB_FLAGS gib_flags;
+
+    // Set the fastest the body parts are thrown out, and the fastest they
+    // drop. Zero takes the usual speed.
+    int16_t speed;
+    int16_t fall_speed;
+
+    // Damage a flying body part deals to Lara. TR4 body parts deal none.
     int16_t damage;
 
     // Set the flame variant for flying body parts. Zero is ordinary fire.

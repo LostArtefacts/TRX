@@ -670,6 +670,7 @@ static int M_L_ItemsDie(lua_State *const L)
         ref->handle.id,
         (CREATURE_DIE_ARGS) {
             .explode = lua_toboolean(L, 2),
+            .gib_flags = GIB_FLAME | GIB_SMOKE,
             .flame_variant = (int16_t)luaL_optinteger(L, 3, 0),
             .sender = M_GetOptSender(L, 4),
         });
@@ -694,11 +695,14 @@ static int M_L_ItemsShatter(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
     LUA_Struct_Deref(L, ref);
+    const int16_t damage = (int16_t)luaL_optinteger(L, 2, 0);
     Item_Shatter(
         ref->handle.id,
         (ITEM_SHATTER_ARGS) {
             .mesh_bits = -1,
-            .damage = (int16_t)luaL_optinteger(L, 2, 0),
+            .gib_flags =
+                GIB_FLAME | GIB_SMOKE | (damage > 0 ? GIB_BLAST : GIB_NONE),
+            .damage = damage,
             .flame_variant = (int16_t)luaL_optinteger(L, 3, 0),
         });
     return 0;

@@ -1486,6 +1486,7 @@ void Creature_TestBoxDamage(const int16_t item_num)
 void Creature_Die(const int16_t item_num, const CREATURE_DIE_ARGS args)
 {
     const bool explode = args.explode;
+    const GIB_FLAGS gib_flags = args.gib_flags;
     const int16_t flame_variant = args.flame_variant;
     ITEM *const item = Item_Get(item_num);
 
@@ -1503,8 +1504,11 @@ void Creature_Die(const int16_t item_num, const CREATURE_DIE_ARGS args)
         if (explode) {
             Item_Shatter(
                 item_num,
-                (ITEM_SHATTER_ARGS) { .mesh_bits = -1,
-                                      .flame_variant = flame_variant });
+                (ITEM_SHATTER_ARGS) {
+                    .mesh_bits = -1,
+                    .gib_flags = gib_flags,
+                    .flame_variant = flame_variant,
+                });
             ITEM *const vehicle_item = Item_Get(item_num);
             M_Kill(vehicle_item, args.sender);
             Item_SetVisible(vehicle_item, false);
@@ -1516,8 +1520,11 @@ void Creature_Die(const int16_t item_num, const CREATURE_DIE_ARGS args)
         if (explode) {
             Item_Shatter(
                 item_num,
-                (ITEM_SHATTER_ARGS) { .mesh_bits = -1,
-                                      .flame_variant = flame_variant });
+                (ITEM_SHATTER_ARGS) {
+                    .mesh_bits = -1,
+                    .gib_flags = gib_flags,
+                    .flame_variant = flame_variant,
+                });
         }
         M_Kill(item, args.sender);
         const int16_t vehicle_item_num = SkidooDriver_GetSkidooItemNum(item);
@@ -1538,8 +1545,11 @@ void Creature_Die(const int16_t item_num, const CREATURE_DIE_ARGS args)
     if (explode) {
         Item_Shatter(
             item_num,
-            (ITEM_SHATTER_ARGS) { .mesh_bits = -1,
-                                  .flame_variant = flame_variant });
+            (ITEM_SHATTER_ARGS) {
+                .mesh_bits = -1,
+                .gib_flags = gib_flags,
+                .flame_variant = flame_variant,
+            });
         Item_Destroy(item_num);
     } else {
         Item_RemoveSimulated(item_num);
