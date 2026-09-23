@@ -175,9 +175,9 @@ api.define("input.suppress", {
   description = [[
 Holds roles inactive until the returned suppression is released.
 
-The player can press the key, and `trx.input.is_held` still reports it, but the
-game does not act on it. Use this to take an action away for as long as a script
-needs it gone, such as while the player works a puzzle.
+The game does not act on the role, and `trx.input.is_held` and
+`trx.input.signals` report it inactive as well. Use this to take an action away
+for as long as a script needs it gone, such as while the player works a puzzle.
 
 Only the roles named are affected. A suppressed movement role still moves the
 menu cursor, so a script that wants both suppresses both.

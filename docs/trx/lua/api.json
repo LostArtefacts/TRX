@@ -6717,7 +6717,7 @@
       "path": "input.hold_off"
     },
     {
-      "description": "Holds roles inactive until the returned suppression is released.\n\nThe player can press the key, and `trx.input.is_held` still reports it, but the\ngame does not act on it. Use this to take an action away for as long as a script\nneeds it gone, such as while the player works a puzzle.\n\nOnly the roles named are affected. A suppressed movement role still moves the\nmenu cursor, so a script that wants both suppresses both.\n\nSuppressions are released when the level unloads.",
+      "description": "Holds roles inactive until the returned suppression is released.\n\nThe game does not act on the role, and `trx.input.is_held` and\n`trx.input.signals` report it inactive as well. Use this to take an action away\nfor as long as a script needs it gone, such as while the player works a puzzle.\n\nOnly the roles named are affected. A suppressed movement role still moves the\nmenu cursor, so a script that wants both suppresses both.\n\nSuppressions are released when the level unloads.",
       "examples": [
         "local held = trx.input.suppress(\n  trx.input.Role.JUMP,\n  trx.input.Role.ROLL\n)\n\nlocal function on_puzzle_solved()\n  held:release()\nend"
       ],
