@@ -2,7 +2,9 @@
 
 #include <trx/config.h>
 #include <trx/core/math.h>
+#include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/core/subsystem.h>
 #include <trx/core/utils.h>
 #include <trx/game/const.h>
 #include <trx/game/game_strings/entries.h>
@@ -245,6 +247,12 @@ static uint32_t M_GetIdleMeshes(const INVENTORY_ITEM *const inv_item)
         return SaveCrystal_GetMeshBits(O_SAVE_CRYSTAL_OPTION, -1);
     }
     return inv_item->meshes_sel;
+}
+
+static void M_Shutdown(void)
+{
+    Memory_FreePointer(&m_CountText);
+    m_CountTextCap = 0;
 }
 
 void InvRing_AdjustMusicVolume(const INV_RING *const ring)
@@ -895,3 +903,5 @@ void InvRing_UpdateInventoryItem(
         inv_item->y_rot += 256;
     }
 }
+
+REGISTER_SUBSYSTEM(.shutdown = M_Shutdown)
