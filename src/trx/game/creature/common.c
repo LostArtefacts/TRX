@@ -82,11 +82,18 @@ static bool M_TestSwitchOrKill(
     return false;
 }
 
-static void M_GetBaddieTarget(const int16_t item_num, const bool goody)
+static void M_GetBaddieTarget(
+    const int16_t item_num, const bool goody,
+    const CREATURE_TARGET_FILTER filter)
 {
     ITEM *const lara_item = Lara_GetItem();
     ITEM *const item = Item_Get(item_num);
     CREATURE *const creature = item->creature_data;
+
+    if (filter != nullptr && creature->enemy != nullptr
+        && !filter(item, creature->enemy)) {
+        creature->enemy = nullptr;
+    }
 
     ITEM *best_item = nullptr;
     int32_t best_distance = INT32_MAX;
@@ -104,6 +111,10 @@ static void M_GetBaddieTarget(const int16_t item_num, const bool goody)
             continue;
         }
 
+        if (filter != nullptr && !filter(item, target)) {
+            continue;
+        }
+
         const int32_t dx = (target->pos.x - item->pos.x) >> 6;
         const int32_t dy = (target->pos.y - item->pos.y) >> 6;
         const int32_t dz = (target->pos.z - item->pos.z) >> 6;
@@ -115,7 +126,8 @@ static void M_GetBaddieTarget(const int16_t item_num, const bool goody)
     }
 
     if (best_item == nullptr) {
-        if (!goody || Creature_IsHostile(item)) {
+        if ((!goody || Creature_IsHostile(item))
+            && (filter == nullptr || filter(item, lara_item))) {
             creature->enemy = lara_item;
         } else {
             creature->enemy = nullptr;
@@ -123,7 +135,8 @@ static void M_GetBaddieTarget(const int16_t item_num, const bool goody)
         return;
     }
 
-    if (!goody || Creature_IsHostile(item)) {
+    if ((!goody || Creature_IsHostile(item))
+        && (filter == nullptr || filter(item, lara_item))) {
         const int32_t dx = (lara_item->pos.x - item->pos.x) >> 6;
         const int32_t dy = (lara_item->pos.y - item->pos.y) >> 6;
         const int32_t dz = (lara_item->pos.z - item->pos.z) >> 6;
@@ -148,13 +161,14 @@ static void M_GetBaddieTarget(const int16_t item_num, const bool goody)
     }
 }
 
-static ITEM *M_ChooseEnemy(const ITEM *const item)
+static ITEM *M_ChooseEnemy(
+    const ITEM *const item, const CREATURE_TARGET_FILTER filter)
 {
     CREATURE *const creature = item->creature_data;
     if (Creature_IsAlly(item)) {
-        M_GetBaddieTarget(creature->item_num, true);
+        M_GetBaddieTarget(creature->item_num, true, filter);
     } else if (Creature_IsAllyTargetingEnemy(item)) {
-        M_GetBaddieTarget(creature->item_num, false);
+        M_GetBaddieTarget(creature->item_num, false, filter);
     } else {
         creature->enemy = Lara_GetItem();
     }
@@ -441,7 +455,8 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
         return;
     }
 
-    ITEM *enemy = g_TRVersion >= 3 ? creature->enemy : M_ChooseEnemy(item);
+    ITEM *enemy =
+        g_TRVersion >= 3 ? creature->enemy : M_ChooseEnemy(item, nullptr);
     if (enemy == nullptr) {
         enemy = Lara_GetItem();
         creature->enemy = enemy;
@@ -926,6 +941,15 @@ void Creature_Underwater(ITEM *const item, const int32_t depth)
     }
 }
 
+void Creature_ChooseEnemy(
+    const ITEM *const item, const CREATURE_TARGET_FILTER filter)
+{
+    if (item->creature_data == nullptr) {
+        return;
+    }
+    M_ChooseEnemy(item, filter);
+}
+
 bool Creature_CanSeeEnemy(const ITEM *const item, const AI_INFO *const info)
 {
     // XXX(Dash): I don't understand the need for this function,
@@ -960,16 +984,9 @@ bool Creature_CanSeeEnemy(const ITEM *const item, const AI_INFO *const info)
     return LOS_Check(&start, &target, true);
 }
 
-bool Creature_CanTargetEnemy(const ITEM *const item, const AI_INFO *const info)
+bool Creature_HasLineOfFire(const ITEM *const item, const ITEM *const enemy)
 {
-    const CREATURE *const creature = item->creature_data;
-    if (creature == nullptr) {
-        return false;
-    }
-
-    const ITEM *const enemy = creature->enemy;
-    if (enemy == nullptr || !info->ahead
-        || info->distance >= CREATURE_SHOOT_RANGE) {
+    if (enemy == nullptr) {
         return false;
     }
 
@@ -993,6 +1010,20 @@ bool Creature_CanTargetEnemy(const ITEM *const item, const AI_INFO *const info)
     }
 
     return LOS_Check(&start, &target, true);
+}
+
+bool Creature_CanTargetEnemy(const ITEM *const item, const AI_INFO *const info)
+{
+    const CREATURE *const creature = item->creature_data;
+    if (creature == nullptr) {
+        return false;
+    }
+
+    if (!info->ahead || info->distance >= CREATURE_SHOOT_RANGE) {
+        return false;
+    }
+
+    return Creature_HasLineOfFire(item, creature->enemy);
 }
 
 void Creature_Collision(
