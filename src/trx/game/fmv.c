@@ -139,9 +139,6 @@ static void M_DrawUI(void)
     UI_BeginScene();
     LUA_UI_DrawRegions();
     Overlay_DrawUI();
-    Console_Draw();
-    Console_Control();
-    Console_Control();
     UI_EndScene();
     UI_Draw();
 }

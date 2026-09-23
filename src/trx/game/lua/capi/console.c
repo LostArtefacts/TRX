@@ -6,6 +6,7 @@
 #include <trx/game/console/completion.h>
 #include <trx/game/console/history.h>
 #include <trx/game/console/registry.h>
+#include <trx/game/events.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
@@ -283,7 +284,12 @@ static int M_L_ConsoleHistory(lua_State *const L)
 // trxc.console.remember(line)
 static int M_L_ConsoleRemember(lua_State *const L)
 {
-    Console_History_Append(luaL_checkstring(L, 1));
+    const char *const line = luaL_checkstring(L, 1);
+    Console_History_Append(line);
+    GameEvent_Fire((EVENT) {
+        .name = GAME_EVENT_COMMAND,
+        .data = (void *)line,
+    });
     return 0;
 }
 

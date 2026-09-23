@@ -8,14 +8,12 @@
 #include <trx/game/console/registry.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/lua/events.h>
-#include <trx/game/ui.h>
 
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 
 static bool m_IsOpened = false;
-static UI_CONSOLE_STATE m_UIState = {};
 
 // Controls whether console commands emit log events to the UI console
 static bool m_Verbose = true;
@@ -26,8 +24,6 @@ static bool m_IsCapturing = false;
 
 static void M_Shutdown(void)
 {
-    UI_Console_Free(&m_UIState);
-
     Console_History_Shutdown();
 
     m_IsOpened = false;
@@ -35,8 +31,6 @@ static void M_Shutdown(void)
 
 static RESULT M_Load(void)
 {
-    UI_Console_Init(&m_UIState);
-
     Console_History_Init();
     return OK;
 }
@@ -70,11 +64,6 @@ static void M_Emit(
     }
 
     if (show) {
-        UI_FireEvent((EVENT) {
-            .name = "console_log",
-            .sender = nullptr,
-            .data = text,
-        });
         const LUA_EVENT_ARG args[] = {
             { .type = LUA_EVENT_ARG_STRING, .value.str = text },
         };
@@ -90,8 +79,6 @@ void Console_Open(void)
         return;
     }
     m_IsOpened = true;
-    UI_FireEvent(
-        (EVENT) { .name = "console_open", .sender = nullptr, .data = nullptr });
     LUA_FireEvent(LUA_EVENT_CONSOLE_OPEN);
 }
 
@@ -101,8 +88,6 @@ void Console_Close(void)
         return;
     }
     m_IsOpened = false;
-    UI_FireEvent((EVENT) {
-        .name = "console_close", .sender = nullptr, .data = nullptr });
     LUA_FireEvent(LUA_EVENT_CONSOLE_CLOSE);
 }
 
@@ -162,9 +147,6 @@ char *Console_EndCapture(void)
 
 void Console_Clear(void)
 {
-    UI_FireEvent((EVENT) {
-        .name = "console_clear",
-    });
     LUA_FireEvent(LUA_EVENT_CONSOLE_CLEAR);
 }
 
@@ -218,16 +200,6 @@ COMMAND_RESULT Console_Eval(const char *const cmdline)
         break;
     }
     return result;
-}
-
-void Console_Control(void)
-{
-    UI_Console_Control(&m_UIState);
-}
-
-void Console_Draw(void)
-{
-    UI_Console(&m_UIState);
 }
 
 REGISTER_SUBSYSTEM(.load = M_Load, .shutdown = M_Shutdown)

@@ -217,9 +217,12 @@ api.define("events.on_key_down", {
     passcode. Use `trx.input.signals.pressed` for a game action, which respects
     what the player bound it to and answers for a controller as well.
 
-    Holding a key down fires it once. It stays quiet while the console is open
-    and while a rebind is reading the keyboard. A key still held as the game
-    gives the keyboard back fires again then, although
+    Holding a key down fires it once, and the repeats that follow arrive
+    through `trx.events.on_key_repeat`.
+
+    It stays quiet while a rebind is reading the keyboard. It fires while the
+    console is open. Check `trx.console.is_open` where that matters. A key still
+    held as the keyboard comes back fires again then, although
     `trx.input.is_key_pressed` reports nothing for it.
   ]],
   params = {
@@ -245,14 +248,40 @@ end)]],
   impl = hook(types.KEY_DOWN),
 })
 
+api.define("events.on_key_repeat", {
+  description = [[
+    Happens as the window system repeats a key the player is holding. The
+    handler takes the name of the key, named as `trx.events.on_key_down` names
+    it.
+
+    The first press arrives through `trx.events.on_key_down` instead, and the
+    repeats follow at whatever rate the player's system repeats at. A text
+    field takes both, so that a held arrow keeps moving the caret; anything
+    acting on a press once takes `trx.events.on_key_down` alone.
+
+    It stays quiet while a rebind is reading the keyboard, and fires while the
+    console is open as `trx.events.on_key_down` does.
+  ]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      description = "Called with the name of the key.",
+    },
+  },
+  returns = LISTENER,
+  impl = hook(types.KEY_REPEAT),
+})
+
 api.define("events.on_key_up", {
   description = [[
     Happens as a key comes up. The handler takes the name of the key, named as
     `trx.events.on_key_down` names it.
 
-    It stays quiet while the console is open and while a rebind is reading the
-    keyboard. A key held as the game takes the keyboard comes up at that
-    moment, so every press a script was told about still has its release.
+    It stays quiet while a rebind is reading the keyboard, and fires while the
+    console is open as `trx.events.on_key_down` does. A key held as the game
+    takes the keyboard comes up at that moment, so every press a script was
+    told about still has its release.
   ]],
   params = {
     {
@@ -277,7 +306,10 @@ api.define("events.on_text_input", {
     Editing keys carry no character and arrive through
     `trx.events.on_key_down`. Pasting goes through `trx.ui.clipboard`.
 
-    It stays quiet while the console is open, which reads the same characters.
+    It fires while the console is open, and carries what the player types
+    there: the console is a script reading the keyboard rather than the game
+    taking it. Check `trx.console.is_open` where a script must leave that text
+    alone.
   ]],
   params = {
     {
@@ -382,9 +414,10 @@ api.define("events.on_button_down", {
     Use `trx.input.signals.pressed` for a game action, which respects what the
     player bound it to and answers for the keyboard as well.
 
-    It stays quiet while the console is open and while a rebind is reading the
-    pad. A button still held as the game gives the pad back fires again then,
-    although `trx.input.is_button_pressed` reports nothing for it.
+    It stays quiet while a rebind is reading the pad, and fires while the
+    console is open as `trx.events.on_key_down` does. A button still held as
+    the pad comes back fires again then, although
+    `trx.input.is_button_pressed` reports nothing for it.
   ]],
   params = {
     {
@@ -402,9 +435,10 @@ api.define("events.on_button_up", {
     Happens as a controller button comes up. The handler takes the name of the
     button, named as `trx.events.on_button_down` names it.
 
-    It stays quiet while the console is open and while a rebind is reading the
-    pad. A button held as the game takes the pad comes up at that moment, so
-    every press a script was told about still has its release.
+    It stays quiet while a rebind is reading the pad, and fires while the
+    console is open as `trx.events.on_key_down` does. A button held as the game
+    takes the pad comes up at that moment, so every press a script was told
+    about still has its release.
   ]],
   params = {
     {

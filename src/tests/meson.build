@@ -152,6 +152,8 @@ b_lua_strings = {
 b_console = {
   'engine': [
     'core/completion.c',
+    'core/event_manager.c',
+    'game/events.c',
     'game/lua/capi/console.c',
     'game/lua/capi/locale.c',
     'game/lua/capi/log.c',
@@ -1434,7 +1436,6 @@ unit_tests += {
     'game/ui/elements/offset.c',
     'game/ui/elements/pad.c',
     'game/ui/elements/progress_button.c',
-    'game/ui/elements/prompt.c',
     'game/ui/elements/requester.c',
     'game/ui/elements/resize.c',
     'game/ui/elements/row_arrows.c',

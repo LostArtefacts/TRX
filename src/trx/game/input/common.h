@@ -129,6 +129,10 @@ void Input_ExitListenMode(void);
 // Checks whether updates are disabled.
 bool Input_IsInListenMode(void);
 
+// Takes up what the player holds right now, so that an input held while the
+// game was not reading does not report a fresh press once it reads again.
+void Input_Settle(void);
+
 // Restores the user configuration by converting the JSON object back into the
 // original input layout.
 bool Input_AssignFromJSONObject(

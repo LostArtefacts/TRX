@@ -89,9 +89,13 @@ static void M_DropRawInput(const INPUT_RAW_DEVICES devices)
 
 static void M_HandleKeyDown(const SDL_Event *const event)
 {
-    if (!event->key.repeat) {
-        M_FireLuaInputEvent(LUA_EVENT_KEY_DOWN, InputRaw_EventKeyName(event));
-    }
+    // Read before the script answers the key: a script that lets the devices
+    // go on this very key still took it, and the engine interface must not act
+    // on it as well.
+    const bool script_held = InputRaw_IsHeldByScript();
+    M_FireLuaInputEvent(
+        event->key.repeat != 0 ? LUA_EVENT_KEY_REPEAT : LUA_EVENT_KEY_DOWN,
+        InputRaw_EventKeyName(event));
 
     // NOTE: Opening the console normally would get handled by Input_Update, but
     // by the time Input_Update gets ran, we may already have lost some
@@ -105,6 +109,9 @@ static void M_HandleKeyDown(const SDL_Event *const event)
         // Zero out the next text event so the console-open glyph never
         // shows up.
         m_ConsoleJustOpened = true;
+    } else if (script_held) {
+        // A script holding the devices answers for them, so the engine
+        // interface must not act on the same key as well.
     } else if (
         event->key.keysym.sym == SDLK_v
         && (event->key.keysym.mod & KMOD_CTRL) != 0) {
@@ -207,7 +214,9 @@ bool Shell_ProcessEvent(const SDL_Event *const event)
             m_ConsoleJustOpened = false;
         } else {
             M_FireLuaInputEvent(LUA_EVENT_TEXT_INPUT, event->text.text);
-            UI_HandleTextEdit(event->text.text);
+            if (!InputRaw_IsHeldByScript()) {
+                UI_HandleTextEdit(event->text.text);
+            }
         }
         return true;
 
