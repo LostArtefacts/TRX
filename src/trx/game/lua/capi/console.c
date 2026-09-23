@@ -4,6 +4,7 @@
 #include <trx/core/memory.h>
 #include <trx/game/console/common.h>
 #include <trx/game/console/completion.h>
+#include <trx/game/console/history.h>
 #include <trx/game/console/registry.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/lua/common.h>
@@ -249,6 +250,27 @@ static void M_CheckCommandName(lua_State *const L, const char *const name)
 }
 
 // trxc.console.register(name, help_id, fn, [aliases], [complete_fn])
+// trxc.console.history() -> table of strings
+static int M_L_ConsoleHistory(lua_State *const L)
+{
+    const int32_t count = Console_History_GetLength();
+    lua_createtable(L, count, 0);
+    for (int32_t i = 0; i < count; i++) {
+        const char *const line = Console_History_Get(i);
+        lua_pushstring(L, line != nullptr ? line : "");
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
+// trxc.console.remember(line)
+static int M_L_ConsoleRemember(lua_State *const L)
+{
+    Console_History_Append(luaL_checkstring(L, 1));
+    return 0;
+}
+
+// trxc.console.register(name, help_id, fn, [aliases], [complete_fn])
 static int M_L_ConsoleRegister(lua_State *const L)
 {
     const char *const name = luaL_checkstring(L, 1);
@@ -385,6 +407,8 @@ static const luaL_Reg m_Module[] = {
     { "clear", M_L_ConsoleClear },
     { "register", M_L_ConsoleRegister },
     { "commands", M_L_ConsoleCommands },
+    { "history", M_L_ConsoleHistory },
+    { "remember", M_L_ConsoleRemember },
     { "command", M_L_ConsoleCommand },
     { nullptr, nullptr },
 };

@@ -4204,6 +4204,26 @@
       ]
     },
     {
+      "description": "The lines the player has entered, oldest first.\n\nThe list is a copy, so changing it changes nothing. Use\n`trx.console.remember` to add to it.",
+      "path": "console.history",
+      "returns": {
+        "description": "The lines entered so far.",
+        "list": true,
+        "type": "string"
+      }
+    },
+    {
+      "description": "Adds a line to what the player has entered.\n\nThe console does this for every line the player runs, so a script needs it only\nwhere it takes lines of its own.",
+      "params": [
+        {
+          "description": "The line to remember.",
+          "name": "line",
+          "type": "string"
+        }
+      ],
+      "path": "console.remember"
+    },
+    {
       "description": "Registers a console command written in Lua.\n\nEvery command has a `trx.argparse` parser. `trx.console.register.spec.args` is an optional function that shapes it - it receives the parser and declares the arguments the command takes. A command that omits `trx.console.register.spec.args` takes none, and reports so when handed one. The console completes the arguments from the parser, and answers `-h`/`--help` from it.\n\n`trx.console.register.spec.run` receives the parsed values, a table keyed by argument name. What it gives back is a `trx.console.Result`, and returning nothing means `OK`. It may return a message after that, which is logged to the console - as an error, for any result but `OK`. A line the parser rejects is reported with what it expected, without reaching `trx.console.register.spec.run`.\n\nThe console completes arguments from the parser by default. `trx.console.register.spec.complete` replaces that behavior, so a command that wraps `trx.console.eval` can answer from `trx.console.complete`.\n\nA command lives for the whole run, so it can only be registered from a global script. A level script raises if it calls this: it runs again every time its level is loaded.",
       "examples": [
         "trx.console.register({\n  name = \"greet\",\n  aliases = { \"hello\", \"hi\" },\n  args = function(parser)\n    parser:positional(\"who\", { help = \"who to greet\" })\n  end,\n  run = function(args)\n    trx.console.log(\"hello \" .. args.who)\n  end,\n})"

@@ -465,4 +465,23 @@ test("commands leaves out what a bare command has none of", function()
   )
 end)
 
+test("the console remembers the lines entered", function()
+  local before = #trx.console.history()
+
+  trx.console.remember("give guns")
+  trx.console.remember("heal")
+
+  local lines = trx.console.history()
+  assert(#lines == before + 2, "the lines were not remembered")
+  assert(lines[#lines - 1] == "give guns", "the older line is not first")
+  assert(lines[#lines] == "heal")
+end)
+
+test("the history hands back a copy", function()
+  local lines = trx.console.history()
+  local count = #lines
+  lines[#lines + 1] = "not a real line"
+  assert(#trx.console.history() == count, "the history took the change")
+end)
+
 return h.report()
