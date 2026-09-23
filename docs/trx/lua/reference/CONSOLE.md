@@ -16,6 +16,11 @@ Module for interacting with the developer console.
 
 [`trx.console.log`](#console.log) writes to the console overlay in-game, where [`trx.log`](LOG.md#log) writes only to the terminal and the log file.
 
+### Properties
+
+- <a id="console.is_open" name="console.is_open"></a>**`trx.console.is_open`** (boolean). Whether the console is open.
+  Assigning opens or closes it, as the key the player bound to it does.
+
 ### Enums
 
 - <a id="console.Result" name="console.Result"></a>[lua]`trx.console.Result`

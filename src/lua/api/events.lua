@@ -324,6 +324,36 @@ end)]],
   impl = hook(types.CONSOLE_LOG),
 })
 
+api.define("events.on_console_open", {
+  description = [[
+    Happens as the console opens. The handler takes nothing.
+  ]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      description = "What to run when it happens.",
+    },
+  },
+  returns = LISTENER,
+  impl = hook(types.CONSOLE_OPEN),
+})
+
+api.define("events.on_console_close", {
+  description = [[
+    Happens as the console closes. The handler takes nothing.
+  ]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      description = "What to run when it happens.",
+    },
+  },
+  returns = LISTENER,
+  impl = hook(types.CONSOLE_CLOSE),
+})
+
 api.define("events.on_console_clear", {
   description = [[
     Happens as the console drops the lines it holds, which `trx.console.clear`

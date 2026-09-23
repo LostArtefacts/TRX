@@ -33,6 +33,9 @@ static char *m_EvalOutput;
 static bool m_IsCapturing;
 static char *m_Capture;
 
+// Whether the console is open, which the real one keeps and fires events for.
+static bool m_IsOpened = false;
+
 // The entered lines, kept as the real history keeps them so that a test can
 // read back what it remembered.
 static char *m_History[16];
@@ -421,4 +424,25 @@ void Console_History_Clear(void)
         Memory_FreePointer(&m_History[i]);
     }
     m_HistoryCount = 0;
+}
+
+bool Console_IsOpened(void)
+{
+    return m_IsOpened;
+}
+
+void Console_Open(void)
+{
+    if (m_IsOpened) {
+        return;
+    }
+    m_IsOpened = true;
+}
+
+void Console_Close(void)
+{
+    if (!m_IsOpened) {
+        return;
+    }
+    m_IsOpened = false;
 }

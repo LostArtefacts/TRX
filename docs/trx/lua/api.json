@@ -4617,6 +4617,36 @@
       }
     },
     {
+      "description": "Happens as the console opens. The handler takes nothing.",
+      "params": [
+        {
+          "description": "What to run when it happens.",
+          "name": "callback",
+          "type": "function"
+        }
+      ],
+      "path": "events.on_console_open",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
+      }
+    },
+    {
+      "description": "Happens as the console closes. The handler takes nothing.",
+      "params": [
+        {
+          "description": "What to run when it happens.",
+          "name": "callback",
+          "type": "function"
+        }
+      ],
+      "path": "events.on_console_close",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
+      }
+    },
+    {
       "description": "Happens as the console drops the lines it holds, which `trx.console.clear`\ndoes. The handler takes nothing.",
       "params": [
         {
@@ -10871,6 +10901,12 @@
       "path": "camera.is_flyby_active",
       "type": "boolean",
       "writable": false
+    },
+    {
+      "description": "Whether the console is open.\n\nAssigning opens or closes it, as the key the player bound to it does.",
+      "path": "console.is_open",
+      "type": "boolean",
+      "writable": true
     },
     {
       "description": "Whether Lara's allies are hostile towards her.",
