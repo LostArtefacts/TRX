@@ -23,7 +23,7 @@ void InputRawState_Set(
     if (!M_IsInRange(tracker, index)) {
         return;
     }
-    if (down) {
+    if (down && !tracker->reserved) {
         tracker->pressed[index] = !tracker->down[index];
     }
     tracker->down[index] = down;
@@ -38,13 +38,20 @@ void InputRawState_Clear(INPUT_RAW_TRACKER *const tracker)
 bool InputRawState_IsHeld(
     const INPUT_RAW_TRACKER *const tracker, const int32_t index)
 {
+    return !tracker->reserved && InputRawState_IsHeldRaw(tracker, index);
+}
+
+bool InputRawState_IsHeldRaw(
+    const INPUT_RAW_TRACKER *const tracker, const int32_t index)
+{
     return M_IsInRange(tracker, index) && tracker->down[index];
 }
 
 bool InputRawState_IsPressed(
     const INPUT_RAW_TRACKER *const tracker, const int32_t index)
 {
-    return M_IsInRange(tracker, index) && tracker->pressed[index];
+    return !tracker->reserved && M_IsInRange(tracker, index)
+        && tracker->pressed[index];
 }
 
 float InputRawState_ScaleAxis(const int16_t value)

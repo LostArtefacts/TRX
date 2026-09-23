@@ -123,3 +123,38 @@ TEST(input_raw_state_scales_an_axis_in_between)
     const float half = InputRawState_ScaleAxis(16384);
     CHECK(half > 0.49f && half < 0.51f);
 }
+
+TEST(input_raw_state_reports_nothing_while_the_game_holds_the_inputs)
+{
+    INPUT_RAW_TRACKER tracker = M_Tracker();
+    InputRawState_Set(&tracker, 1, true);
+
+    tracker.reserved = true;
+    CHECK(!InputRawState_IsHeld(&tracker, 1));
+    CHECK(!InputRawState_IsPressed(&tracker, 1));
+    CHECK(InputRawState_IsHeldRaw(&tracker, 1));
+}
+
+TEST(input_raw_state_drops_a_press_the_game_took)
+{
+    // The console closes, and the key the player typed into it must not arrive
+    // as a press the moment a script can read again.
+    INPUT_RAW_TRACKER tracker = M_Tracker();
+    tracker.reserved = true;
+    InputRawState_Set(&tracker, 1, true);
+
+    tracker.reserved = false;
+    CHECK(!InputRawState_IsPressed(&tracker, 1));
+    CHECK(InputRawState_IsHeld(&tracker, 1));
+}
+
+TEST(input_raw_state_keeps_a_release_the_game_took)
+{
+    INPUT_RAW_TRACKER tracker = M_Tracker();
+    InputRawState_Set(&tracker, 1, true);
+
+    tracker.reserved = true;
+    InputRawState_Set(&tracker, 1, false);
+    tracker.reserved = false;
+    CHECK(!InputRawState_IsHeld(&tracker, 1));
+}

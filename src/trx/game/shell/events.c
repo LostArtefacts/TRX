@@ -17,22 +17,74 @@
 // If true, next SDL_TEXT* event should be zeroed out.
 static bool m_ConsoleJustOpened = false;
 
+// Whether the game had the devices when the pairs were last balanced.
+static bool m_InputWasReserved = false;
+
 static void M_HandleQuit(void)
 {
     Shell_ScheduleExit();
 }
 
-// Send hardware input to scripts when gameplay receives the input.
-static void M_FireLuaInputEvent(
-    const LUA_EVENT_TYPE type, const char *const name)
+static void M_FireRawInput(const LUA_EVENT_TYPE type, const char *const name)
 {
-    if (name == nullptr || Console_IsOpened() || Input_IsInListenMode()) {
+    if (name == nullptr) {
         return;
     }
     const LUA_EVENT_ARG args[] = {
         { .type = LUA_EVENT_ARG_STRING, .value.str = name },
     };
     LUA_FireEventEx(type, args, 1);
+}
+
+// Sends a key or a button to scripts, unless the game holds the devices.
+static void M_FireLuaInputEvent(
+    const LUA_EVENT_TYPE type, const char *const name)
+{
+    if (InputRaw_IsReserved()) {
+        return;
+    }
+    M_FireRawInput(type, name);
+}
+
+static void M_FireDownAsUp(const INPUT_RAW_INPUT input, void *const user_data)
+{
+    M_FireRawInput(
+        input.is_button ? LUA_EVENT_BUTTON_UP : LUA_EVENT_KEY_UP, input.name);
+}
+
+static void M_FireDownAsDown(const INPUT_RAW_INPUT input, void *const user_data)
+{
+    M_FireRawInput(
+        input.is_button ? LUA_EVENT_BUTTON_DOWN : LUA_EVENT_KEY_DOWN,
+        input.name);
+}
+
+// Keeps what a script was told matching what it can read. A script pairs a
+// press with a release, and the game taking the keyboard mid-press would leave
+// it holding a key that never comes up: releases go out as the game takes the
+// devices, and presses as it gives them back with the keys still down.
+static void M_BalanceReservedInput(void)
+{
+    const bool reserved = InputRaw_IsReserved();
+    if (reserved == m_InputWasReserved) {
+        return;
+    }
+    m_InputWasReserved = reserved;
+    InputRaw_ForEachDown(
+        INPUT_RAW_DEVICE_ALL, reserved ? M_FireDownAsUp : M_FireDownAsDown,
+        nullptr);
+}
+
+// Lets go of what the named devices held, once they stop reporting. A key held
+// as the window loses focus comes up nowhere, so a script would read it as held
+// until the player pressed it again. The releases go out before the state goes,
+// so that a script still sees each press paired.
+static void M_DropRawInput(const INPUT_RAW_DEVICES devices)
+{
+    if (!InputRaw_IsReserved()) {
+        InputRaw_ForEachDown(devices, M_FireDownAsUp, nullptr);
+    }
+    InputRaw_ClearDevices(devices);
 }
 
 static void M_HandleKeyDown(const SDL_Event *const event)
@@ -85,6 +137,7 @@ static void M_HandleFocusGained(void)
 
 static void M_HandleFocusLost(void)
 {
+    M_DropRawInput(INPUT_RAW_DEVICE_ALL);
     Shell_SetIsFocused(false);
     if (g_Config.audio.mute_out_of_focus) {
         Audio_Mute();
@@ -170,8 +223,12 @@ bool Shell_ProcessEvent(const SDL_Event *const event)
 
     case SDL_CONTROLLERDEVICEADDED:
     case SDL_JOYDEVICEADDED:
+        Input_Discover();
+        return true;
+
     case SDL_CONTROLLERDEVICEREMOVED:
     case SDL_JOYDEVICEREMOVED:
+        M_DropRawInput(INPUT_RAW_DEVICE_CONTROLLER);
         Input_Discover();
         return true;
 
@@ -219,6 +276,7 @@ void Shell_ProcessEvents(void)
 {
     LUA_Guard_Heartbeat();
     InputRaw_BeginFrame();
+    M_BalanceReservedInput();
 
     SDL_Event event;
     if (TestReplay_IsOpened()) {

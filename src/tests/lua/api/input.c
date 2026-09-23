@@ -252,8 +252,16 @@ void Input_ClearSuppressedRoles(void)
     FAKE_RECORD("clear_suppressed");
 }
 
+bool InputRaw_IsReserved(void)
+{
+    return m_Listening;
+}
+
 bool InputRaw_IsKeyHeld(const char *const key)
 {
+    if (InputRaw_IsReserved()) {
+        return false;
+    }
     for (size_t i = 0; i < sizeof m_Keys / sizeof m_Keys[0]; i++) {
         if (strcmp(m_Keys[i].name, key) == 0) {
             return m_Keys[i].held;
@@ -264,6 +272,9 @@ bool InputRaw_IsKeyHeld(const char *const key)
 
 bool InputRaw_IsKeyPressed(const char *const key)
 {
+    if (InputRaw_IsReserved()) {
+        return false;
+    }
     for (size_t i = 0; i < sizeof m_Keys / sizeof m_Keys[0]; i++) {
         if (strcmp(m_Keys[i].name, key) == 0) {
             return m_Keys[i].pressed;
@@ -284,6 +295,9 @@ bool InputRaw_IsKeyKnown(const char *const key)
 
 bool InputRaw_IsButtonHeld(const char *const button)
 {
+    if (InputRaw_IsReserved()) {
+        return false;
+    }
     for (size_t i = 0; i < sizeof m_Buttons / sizeof m_Buttons[0]; i++) {
         if (strcmp(m_Buttons[i].name, button) == 0) {
             return m_Buttons[i].held;
@@ -294,6 +308,9 @@ bool InputRaw_IsButtonHeld(const char *const button)
 
 bool InputRaw_IsButtonPressed(const char *const button)
 {
+    if (InputRaw_IsReserved()) {
+        return false;
+    }
     for (size_t i = 0; i < sizeof m_Buttons / sizeof m_Buttons[0]; i++) {
         if (strcmp(m_Buttons[i].name, button) == 0) {
             return m_Buttons[i].pressed;
@@ -314,6 +331,9 @@ bool InputRaw_IsButtonKnown(const char *const button)
 
 float InputRaw_GetAxis(const char *const axis)
 {
+    if (InputRaw_IsReserved()) {
+        return 0.0f;
+    }
     for (size_t i = 0; i < sizeof m_Axes / sizeof m_Axes[0]; i++) {
         if (strcmp(m_Axes[i].name, axis) == 0) {
             return m_Axes[i].value;
