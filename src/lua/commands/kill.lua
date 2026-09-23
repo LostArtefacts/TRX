@@ -52,7 +52,7 @@ local function cheat_kill(item)
   end
 
   trx.sound.play(trx.catalog.samples.EXPLOSION_1, { pos = item.pos })
-  item:die(true)
+  item:die({ explode = true })
   return true
 end
 

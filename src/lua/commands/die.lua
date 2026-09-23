@@ -12,7 +12,7 @@ local function run()
 
   trx.sound.play(trx.catalog.samples.LARA_FALL, { pos = lara.pos })
   trx.sound.play(trx.catalog.samples.EXPLOSION_1, { pos = lara.pos })
-  lara:shatter(1)
+  lara:shatter({ damage = 1, gibs = { blast = true } })
   lara:take_damage(lara.hit_points)
   lara.is_one_shot = true
   return trx.console.Result.OK

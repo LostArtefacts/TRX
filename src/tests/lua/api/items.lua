@@ -634,17 +634,28 @@ test("die runs the object's death handling; destroy does not", function()
   )
 
   fake.reset()
-  trx.items[0]:die(true)
-  assert(
-    fake.calls().creature_die.explode,
-    "die(true) should burst the meshes"
-  )
+  trx.items[0]:die({ explode = true })
+  assert(fake.calls().creature_die.explode, "explode should burst the meshes")
 
   fake.reset()
-  trx.items[0]:die(true, 254)
+  trx.items[0]:die({ explode = true, flame_variant = 254 })
   assert(
     fake.calls().creature_die.flame_variant == 254,
     "die() should pass the flame variant"
+  )
+
+  fake.reset()
+  trx.items[0]:die({ explode = true, gibs = { flame = true, blast = true } })
+  assert(
+    fake.calls().creature_die.gib_flags == 5,
+    "die() should pass the gib flags it is given"
+  )
+
+  fake.reset()
+  trx.items[0]:die({ explode = true })
+  assert(
+    fake.calls().creature_die.gib_flags == 0,
+    "gibs left out should draw nothing"
   )
 
   fake.reset()
@@ -685,13 +696,28 @@ test("shatter bursts the meshes on their own", function()
   assert(fake.calls().shatter.damage == 0, "no splash damage by default")
   assert(fake.calls().creature_die.count == 0, "shatter() is not a death")
 
-  trx.items[0]:shatter(5)
+  trx.items[0]:shatter({ damage = 5 })
   assert(fake.calls().shatter.damage == 5, "the damage should pass through")
 
-  trx.items[0]:shatter(0, 254)
+  trx.items[0]:shatter({ flame_variant = 254 })
   assert(
     fake.calls().shatter.flame_variant == 254,
     "shatter() should pass the flame variant"
+  )
+
+  trx.items[0]:shatter({ gibs = { smoke = true, blood = true } })
+  assert(
+    fake.calls().shatter.gib_flags == 10,
+    "shatter() should pass the gib flags it is given"
+  )
+
+  trx.items[0]:shatter()
+  assert(fake.calls().shatter.mesh_bits == -1, "every mesh bursts by default")
+
+  trx.items[0]:shatter({ mesh_bits = 6 })
+  assert(
+    fake.calls().shatter.mesh_bits == 6,
+    "shatter() should burst only the meshes it is given"
   )
 end)
 
