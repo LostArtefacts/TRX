@@ -565,6 +565,13 @@ void Matrix_Scale(const int32_t scale)
     Matrix_ScaleZ(scale);
 }
 
+void Matrix_ScaleXYZ(const XYZ_32 scale)
+{
+    Matrix_ScaleX(scale.x);
+    Matrix_ScaleY(scale.y);
+    Matrix_ScaleZ(scale.z);
+}
+
 void Matrix_ScaleX(const int32_t scale)
 {
     M_ScaleX(g_MatrixPtr, scale);

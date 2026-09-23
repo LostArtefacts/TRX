@@ -2499,6 +2499,9 @@
         "examine_item_3": {
             "name": "\\{review}Examiner l'objet 3",
         },
+        "expanding_block": {
+            "name": "\\{review}Bloc extensible",
+        },
         "explosion_1": {
             "name": "\\{review}Explosion 1",
         },
@@ -3336,6 +3339,12 @@
         },
         "quest_item_6": {
             "name": "\\{review}Objet de quête 6",
+        },
+        "raising_block_1": {
+            "name": "\\{review}Bloc élévateur 1",
+        },
+        "raising_block_2": {
+            "name": "\\{review}Bloc élévateur 2",
         },
         "raptor": {
             "name": "Raptor",

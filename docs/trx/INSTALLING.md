@@ -1311,6 +1311,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   └── title_textures.bin
 │   │   ├── modules
 │   │   │   ├── cutscenes.lua
+│   │   │   ├── expanding_blocks.lua
 │   │   │   ├── fog.lua
 │   │   │   ├── logo.lua
 │   │   │   └── race_timer.lua
@@ -2723,6 +2724,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   └── title_textures.bin
     │   │   │   ├── modules
     │   │   │   │   ├── cutscenes.lua
+    │   │   │   │   ├── expanding_blocks.lua
     │   │   │   │   ├── fog.lua
     │   │   │   │   ├── logo.lua
     │   │   │   │   └── race_timer.lua

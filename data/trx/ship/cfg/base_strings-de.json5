@@ -2499,6 +2499,9 @@
         "examine_item_3": {
             "name": "\\{review}Gegenstand 3 untersuchen",
         },
+        "expanding_block": {
+            "name": "\\{review}Ausfahrender Block",
+        },
         "explosion_1": {
             "name": "Explosion 1",
         },
@@ -3336,6 +3339,12 @@
         },
         "quest_item_6": {
             "name": "\\{review}Questgegenstand 6",
+        },
+        "raising_block_1": {
+            "name": "\\{review}Hebeblock 1",
+        },
+        "raising_block_2": {
+            "name": "\\{review}Hebeblock 2",
         },
         "raptor": {
             "name": "Raptor",

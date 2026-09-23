@@ -2499,6 +2499,9 @@
         "examine_item_3": {
             "name": "Sgrùdadh Nì 3",
         },
+        "expanding_block": {
+            "name": "Bloc Leudachaidh",
+        },
         "explosion_1": {
             "name": "Spreadhadh 1",
         },
@@ -3336,6 +3339,12 @@
         },
         "quest_item_6": {
             "name": "Nì Tòir 6",
+        },
+        "raising_block_1": {
+            "name": "Bloc Togail 1",
+        },
+        "raising_block_2": {
+            "name": "Bloc Togail 2",
         },
         "raptor": {
             "name": "Raptor|Dìneasair-beag",

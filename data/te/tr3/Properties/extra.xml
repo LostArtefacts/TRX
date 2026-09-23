@@ -168,6 +168,10 @@
         <property category="TRX" defaultValue="5" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="50" description="Damage dealt by the eel bite." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_EXPANDING_BLOCK..O_RAISING_BLOCK_2-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="false" description="Whether or not the camera should shake when the block is expanding or contracting." displayName="Shake Camera" internalName="shake_camera" type="Bool" />
+    </moveable>
     <!--placeholder for O_FALLING_CEILING_2-->
     <moveable id="-1">
         <property category="TRX" defaultValue="300" description="Damage dealt while Lara is touching the falling ceiling." displayName="Damage" internalName="damage" minValue="0" type="Int" />

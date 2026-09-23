@@ -1,4 +1,4 @@
-trx.events.on_game_start(function()
+trx.events.on_game_start(function(is_save)
   trx.items[47].properties.pickup_mode = trx.items.PickupMode.PLINTH_LOW
   trx.items[235].properties.pickup_mode = trx.items.PickupMode.PLINTH_LOW
   trx.items[236].properties.pickup_mode = trx.items.PickupMode.PLINTH_LOW
@@ -30,4 +30,10 @@ trx.events.on_game_start(function()
 
   trx.items[79].properties.use_idle_pose = true
   trx.items[80].properties.use_idle_pose = true
+
+  require("tr4.expanding_blocks").initialise(
+    trx.objects.raising_block_1,
+    true,
+    not is_save
+  )
 end)
