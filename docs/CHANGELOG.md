@@ -7,6 +7,9 @@
 - Added the ability to combine the two halves of an item in the inventory, such as the eye pieces in Tomb of Seth (TRX482)
 - Fixed a bug where a friendly sentry gun kept aiming at Lara, and aimed at enemies it had no shot at, instead of the enemies it was set to attack
 
+**Weapons and ammunition**
+- Fixed the BFG9000 blast passing through friendly creatures
+
 **TR2**
 - Fixed missing gun flashes in the Diving Area cutscene (OG bug) (TRX89)
 
