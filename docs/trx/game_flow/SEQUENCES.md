@@ -115,7 +115,7 @@ default game flow for examples.
       Shows a picture prior to loading a level. Functions identically to
       <code>display_picture</code>, except these pictures can be
       enabled/disabled by the user with the loading screen option in the config
-      tool.
+      tool, and <code>display_time</code> defaults to 2 rather than 5.
     </td>
   </tr>
   <tr valign="top">

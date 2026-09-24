@@ -25,6 +25,8 @@
 
 #define M_LOADING_CAMERA_DISPLAY_TIME 2.0
 #define M_LOADING_CAMERA_FADE_TIME 0.5
+#define M_LOADING_SCREEN_DISPLAY_TIME 2.0
+#define M_DISPLAY_PICTURE_DISPLAY_TIME 5.0
 
 #define M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(name)                            \
     int32_t name(                                                              \
@@ -469,8 +471,12 @@ static M_DECLARE_SEQUENCE_EVENT_HANDLER_FUNC(M_HandlePictureEvent)
         GF_DISPLAY_PICTURE_DATA *const event_data = extra_data;
         SHOULD(JSON_READ_D(io, "legal", &event_data->is_legal, false));
         SHOULD(JSON_READ_D(io, "credit", &event_data->is_credit, false));
-        SHOULD(
-            JSON_READ_D(io, "display_time", &event_data->display_time, 5.0f));
+        const double default_display_time = event->type == GFS_LOADING_SCREEN
+            ? M_LOADING_SCREEN_DISPLAY_TIME
+            : M_DISPLAY_PICTURE_DISPLAY_TIME;
+        SHOULD(JSON_READ_D(
+            io, "display_time", &event_data->display_time,
+            default_display_time));
         SHOULD(
             JSON_READ_D(io, "fade_in_time", &event_data->fade_in_time, 1.0f));
         SHOULD(JSON_READ_D(

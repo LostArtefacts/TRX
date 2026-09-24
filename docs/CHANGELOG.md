@@ -12,6 +12,7 @@
 - Added an option to change the loading bar color (Graphics → Bars → Loading bar color) (#6682 / TRX1582)
 - Added a loading bar to the TR1–3 loading screens (Graphics → Bars → Loading bar) (TRX1591)
 - Added an option to change the loading bar appearance (Graphics → Bars → Loading bar appearance) (TRX1591)
+- Changed the loading screens in TR1–3 to stay on screen for two seconds in every game (TRX1591)
 
 **Gameplay**
 - Added the ability to combine the two halves of an item in the inventory, such as the eye pieces in Tomb of Seth (TRX482)

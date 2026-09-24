@@ -9,7 +9,15 @@ order: 3
 
 ### Version 1.11 to 1.12
 
-1. **`trx.items.Item:die` takes a table**
+1. **`display_time` no longer counts the fades**
+   The time a `display_picture` or `loading_screen` event states is the time
+   the picture stays on screen, and the fades run on top of it. TR2, TR3 and
+   TR4 used to take the fades out of that time, so a picture stayed up for
+   less than it asked for. A gameflow that worked around this needs its
+   numbers lowered by `fade_in_time` plus `fade_out_time`. A `loading_screen`
+   that states no `display_time` now takes two seconds rather than five.
+
+2. **`trx.items.Item:die` takes a table**
    The arguments are named rather than positional:
    - `item:die(true, 254, trx.lara.item)` becomes
      `item:die({ explode = true, flame_variant = 254, sender = trx.lara.item })`
@@ -17,7 +25,7 @@ order: 3
      `smoke`, `blast` and `blood`. If it is left out, the parts do not draw
      these effects.
 
-2. **`trx.items.Item:shatter` takes a table**
+3. **`trx.items.Item:shatter` takes a table**
    The table supports `gibs`, `mesh_bits`, `speed`, `fall_speed`, `damage` and
    `flame_variant`:
    - `item:shatter(5, 254)` becomes
