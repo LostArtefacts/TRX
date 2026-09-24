@@ -2,13 +2,11 @@
 
 **Lara's movement**
 - Fixed Lara being unable to grab zipline handles that are positioned on slopes when animated interactions are enabled (TRX1587, regression from 1.10)
+- Fixed Lara moving while the look button was held and two opposite directions were pressed (OG bug) (#6686 / TRX1585)
 
 **Rendering**
 - Added an option to disable reflections on Lara's sunglasses (Graphic Options → Visuals → Reflective sunglasses) (#6665 / TRX1544)
 - Improved the frame rate, as the game now draws solid surfaces faster
-
-**Lara's movement**
-- Fixed Lara moving while the look button was held and two opposite directions were pressed (OG bug) (#6686 / TRX1585)
 
 **UI**
 - Added an option to change the loading bar color (Graphics → Bars → Loading bar color) (#6682 / TRX1582)
