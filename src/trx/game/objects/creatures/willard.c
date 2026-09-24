@@ -278,7 +278,8 @@ static void M_TriggerPlasma(
         return;
     }
 
-    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(
+        SPARK_TYPE_EXPLOSION, SPARK_CONTEXT_PLASMA);
     if (spark == nullptr) {
         return;
     }

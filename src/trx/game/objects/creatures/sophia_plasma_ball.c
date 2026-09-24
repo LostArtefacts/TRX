@@ -34,7 +34,8 @@ static void M_TriggerPlasmaBallFlame(const int16_t effect_num, const XYZ_32 vel)
         return;
     }
 
-    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(
+        SPARK_TYPE_EXPLOSION, SPARK_CONTEXT_PLASMA);
     if (spark == nullptr) {
         return;
     }

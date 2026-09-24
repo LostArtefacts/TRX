@@ -71,7 +71,8 @@ static void M_TriggerParticles(const ITEM *const item)
         return;
     }
 
-    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(
+        SPARK_TYPE_EXPLOSION, SPARK_CONTEXT_PARTICLE);
     if (spark == nullptr) {
         return;
     }

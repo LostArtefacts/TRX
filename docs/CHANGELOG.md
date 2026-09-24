@@ -37,6 +37,7 @@
 
 **Lua**
 - Added `trx.fx.gun_flash()`, so a script can draw a muzzle flash on any item (TRX89)
+- Added `trx.fx.spark.context`, so a script can determine how a spark was spawned before deciding to alter it (TRX1590)
 - Added `trx.items.Item.joint_count` and `trx.items.Item:joint_pos()` (TRX89)
 - Added `trx.game.cutscene_frame`, which reports the frame a cutscene level is playing (TRX89)
 - Added the ability for a script to hold a player action inactive

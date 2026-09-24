@@ -56,4 +56,5 @@ typedef struct SPARK {
     int32_t sprite_idx;
     OBJECT_ID sprite_obj_id;
     DRAW_TYPE draw_type;
+    SPARK_CONTEXT context;
 } SPARK;

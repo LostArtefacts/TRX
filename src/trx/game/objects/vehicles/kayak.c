@@ -1028,7 +1028,8 @@ static void M_DoWake(
 
 static void M_TriggerRapidsMist(const XYZ_32 pos)
 {
-    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(
+        SPARK_TYPE_EXPLOSION, SPARK_CONTEXT_WATER_MIST);
     if (spark == nullptr) {
         return;
     }

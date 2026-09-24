@@ -94,6 +94,41 @@ end
     - `trx.fx.SparkType.BLOOD` = `39`  
         A drop of blood.
 
+- <a id="fx.SparkContext" name="fx.SparkContext"></a>[lua]`trx.fx.SparkContext`
+
+    The context for which a spark is spawned.
+
+    - `trx.fx.SparkContext.DEFAULT` = `0`  
+        No specific context.
+    - `trx.fx.SparkContext.BLOOD` = `1`  
+        Blood on an enemy or Lara.
+    - `trx.fx.SparkContext.BREATH` = `2`  
+        Lara's breath in cold rooms.
+    - `trx.fx.SparkContext.BUBBLE` = `3`  
+        Air bubbles either from Lara or weapons underwater.
+    - `trx.fx.SparkContext.ELECTRICITY` = `4`  
+        Electric sparks from fences or enemies.
+    - `trx.fx.SparkContext.EXPLOSION` = `5`  
+        The result of a grenade, rocket or enemy exploding.
+    - `trx.fx.SparkContext.FIRE` = `6`  
+        Any type of flame.
+    - `trx.fx.SparkContext.GAS` = `7`  
+        Toxic gas from mutants.
+    - `trx.fx.SparkContext.PARTICLE` = `8`  
+        Small particles, such as from flares burning.
+    - `trx.fx.SparkContext.PICKUP_AID` = `9`  
+        The twinkle effect shown above pickup items.
+    - `trx.fx.SparkContext.PLASMA` = `10`  
+        Spawned from enemies such as Sophia Lee.
+    - `trx.fx.SparkContext.RICOCHET` = `11`  
+        Spawned when bullets hit walls.
+    - `trx.fx.SparkContext.SMOKE` = `12`  
+        Any type of smoke.
+    - `trx.fx.SparkContext.SPLASH` = `13`  
+        Spawned when hitting water causes a splash.
+    - `trx.fx.SparkContext.WATER_MIST` = `14`  
+        Mist spawned from waterfalls and water vehicles.
+
 - <a id="fx.DrawType" name="fx.DrawType"></a>[lua]`trx.fx.DrawType`
 
     How a sprite is laid over what is behind it.
@@ -151,9 +186,6 @@ end
     A spark is one particle from the spark pool: a sprite that lives for a set
     number of frames, moving, resizing and fading on its own as it does.
 
-    TR3 and TR4 only. The earlier games carry no spark set, so nothing spawns one
-    and the pool stays empty.
-
     A spark that runs out of life leaves its slot to the next one asked for. A
     handle held across that becomes stale, and field access raises an error.
 
@@ -163,6 +195,7 @@ end
 
     Properties:
     - <a id="fx.Spark.color" name="fx.Spark.color"></a>**`color`**: [trx.math.Color](MATH.md#math.Color). The color it is drawn in now.
+    - <a id="fx.Spark.context" name="fx.Spark.context"></a>**`context`**: [trx.fx.SparkContext](#fx.SparkContext). The context for which the spark is spawned.
     - <a id="fx.Spark.draw_type" name="fx.Spark.draw_type"></a>**`draw_type`**: [trx.fx.DrawType](#fx.DrawType). How it is laid over what is behind it. *(read-only)*
     - <a id="fx.Spark.end_color" name="fx.Spark.end_color"></a>**`end_color`**: [trx.math.Color](MATH.md#math.Color). The color it fades to.
     - <a id="fx.Spark.end_height" name="fx.Spark.end_height"></a>**`end_height`**: integer. The height it grows to.
@@ -524,6 +557,7 @@ end
     - <a id="fx.sparks.spawn.opts.pos" name="fx.sparks.spawn.opts.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position. Must lie inside the level.
     - <a id="fx.sparks.spawn.opts.vel" name="fx.sparks.spawn.opts.vel"></a>**`vel`** ([trx.math.Vec3](MATH.md#math.Vec3), optional). How far it moves each frame. Defaults to standing still.
     - <a id="fx.sparks.spawn.opts.sprite_type" name="fx.sparks.spawn.opts.sprite_type"></a>**`sprite_type`** ([trx.fx.SparkType](#fx.SparkType), optional, default [`trx.fx.SparkType.PARTICLE`](#fx.SparkType)). Which sprite it is drawn with.
+    - <a id="fx.sparks.spawn.opts.spark_context" name="fx.sparks.spawn.opts.spark_context"></a>**`spark_context`** ([trx.fx.SparkContext](#fx.SparkContext), optional, default [`trx.fx.SparkContext.DEFAULT`](#fx.SparkContext)). The context for which a spark is spawned.
     - <a id="fx.sparks.spawn.opts.life" name="fx.sparks.spawn.opts.life"></a>**`life`** (integer, optional, default `16`). How many frames it lives, from 1 to 255.
     - <a id="fx.sparks.spawn.opts.color" name="fx.sparks.spawn.opts.color"></a>**`color`** ([trx.math.Color](MATH.md#math.Color), optional). The color it starts in. Defaults to white.
     - <a id="fx.sparks.spawn.opts.end_color" name="fx.sparks.spawn.opts.end_color"></a>**`end_color`** ([trx.math.Color](MATH.md#math.Color), optional). The color it fades to. Defaults to the color it starts in, so it holds one color.

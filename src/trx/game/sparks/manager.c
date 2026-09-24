@@ -186,6 +186,7 @@ void Sparks_SaveSpark(JSON_WRITE_IO *const io, const SPARK *const spark)
     JSONW_WRITE(io, "rot_angle", spark->rot_angle);
     JSONW_WRITE(io, "rot_add", spark->rot_add);
     JSONW_WRITE(io, "draw_type", (int32_t)spark->draw_type);
+    JSONW_WRITE(io, "context", (int32_t)spark->context);
 
     if ((spark->flags & SPARK_F_SPRITE) != 0U) {
         const OBJECT *const obj = Object_Get(spark->sprite_obj_id);
@@ -228,6 +229,7 @@ RESULT Sparks_LoadSpark(JSON_READ_IO *const io, SPARK *const spark)
     MUST(JSON_READ(io, "dynamic", &spark->dynamic));
     MUST(JSON_READ(io, "rot_angle", &spark->rot_angle));
     MUST(JSON_READ(io, "rot_add", &spark->rot_add));
+    SHOULD(JSON_READ(io, "context", &spark->context));
 
     int32_t draw_type = 0;
     MUST(JSON_READ(io, "draw_type", &draw_type));
@@ -340,21 +342,23 @@ SPARK *Sparks_FromHandle(const TRX_HANDLE handle)
     return spark->on ? spark : nullptr;
 }
 
-SPARK *Sparks_InitialiseSpark(void)
+SPARK *Sparks_InitialiseSpark(const SPARK_CONTEXT context)
 {
     SPARK *const spark = M_GetFreeSpark();
     spark->on = true;
+    spark->context = context;
     return spark;
 }
 
-SPARK *Sparks_InitialiseSpriteSpark(const SPARK_SPRITE_TYPE type)
+SPARK *Sparks_InitialiseSpriteSpark(
+    const SPARK_SPRITE_TYPE type, const SPARK_CONTEXT context)
 {
     const int32_t sprite_idx = Sparks_GetSpriteIndex(type);
     if (sprite_idx == NO_ITEM) {
         return nullptr;
     }
 
-    SPARK *const spark = Sparks_InitialiseSpark();
+    SPARK *const spark = Sparks_InitialiseSpark(context);
     spark->sprite_idx = sprite_idx;
     spark->sprite_obj_id = O_SPARKS_GFX;
     return spark;

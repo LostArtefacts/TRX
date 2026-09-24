@@ -37,8 +37,9 @@ TRX_HANDLE Sparks_GetHandle(const SPARK *spark);
 // Resolves a handle to a live spark, or nullptr where the slot has been taken
 // for another spark, or holds one whose life has run out.
 SPARK *Sparks_FromHandle(TRX_HANDLE handle);
-SPARK *Sparks_InitialiseSpark(void);
-SPARK *Sparks_InitialiseSpriteSpark(SPARK_SPRITE_TYPE type);
+SPARK *Sparks_InitialiseSpark(SPARK_CONTEXT context);
+SPARK *Sparks_InitialiseSpriteSpark(
+    SPARK_SPRITE_TYPE type, SPARK_CONTEXT context);
 int32_t Sparks_GetSpriteIndex(SPARK_SPRITE_TYPE offset);
 void Sparks_Sync(SPARK *spark);
 void Sparks_FinishSetup(SPARK *spark);

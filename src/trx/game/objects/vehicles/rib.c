@@ -651,7 +651,8 @@ static void M_TriggerMist(
     const XYZ_32 pos, const int32_t speed, const int16_t angle,
     const int32_t snow)
 {
-    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(
+        SPARK_TYPE_EXPLOSION, SPARK_CONTEXT_WATER_MIST);
     if (spark == nullptr) {
         return;
     }

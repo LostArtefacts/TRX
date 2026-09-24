@@ -87,7 +87,8 @@ static void M_TriggerPlasmaCharge(const int16_t item_num)
         return;
     }
 
-    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(
+        SPARK_TYPE_EXPLOSION, SPARK_CONTEXT_PLASMA);
     if (spark == nullptr) {
         return;
     }

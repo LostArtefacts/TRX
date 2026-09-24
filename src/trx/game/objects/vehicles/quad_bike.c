@@ -462,7 +462,8 @@ static int32_t M_TestHeight(
 static void M_TriggerExhaustSmoke(
     XYZ_32 pos, int16_t angle, int32_t speed, const bool moving)
 {
-    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    SPARK *const spark =
+        Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION, SPARK_CONTEXT_SMOKE);
     if (spark == nullptr) {
         return;
     }
