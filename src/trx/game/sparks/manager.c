@@ -56,7 +56,7 @@ static const BITE m_NodeOffsets[16] = {
     { .pos = { 0, 0, 0 }, .mesh_num = 0 },
 };
 
-static int32_t M_GetFreeSpark(void)
+static int32_t M_GetFreeSparkIndex(void)
 {
     int32_t idx = m_NextSpark;
     for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
@@ -82,6 +82,12 @@ static int32_t M_GetFreeSpark(void)
     m_NextSpark = (free + 1) & 0xBF;
     Handle_RegistryBump(&m_SparkHandles, free);
     return free;
+}
+
+static SPARK *M_GetFreeSpark(void)
+{
+    const int32_t idx = M_GetFreeSparkIndex();
+    return &m_Sparks[idx];
 }
 
 static void M_UpdateWind(void)
@@ -306,12 +312,6 @@ XYZ_32 Sparks_GetWorldPos(const SPARK *const spark)
     return spark->pos;
 }
 
-SPARK *Sparks_GetFreeSpark(void)
-{
-    const int32_t idx = M_GetFreeSpark();
-    return &m_Sparks[idx];
-}
-
 SPARK *Sparks_GetSpark(const int32_t idx)
 {
     ASSERT(idx >= 0 && idx < M_MAX_SPARKS);
@@ -340,6 +340,13 @@ SPARK *Sparks_FromHandle(const TRX_HANDLE handle)
     return spark->on ? spark : nullptr;
 }
 
+SPARK *Sparks_InitialiseSpark(void)
+{
+    SPARK *const spark = M_GetFreeSpark();
+    spark->on = true;
+    return spark;
+}
+
 SPARK *Sparks_InitialiseSpriteSpark(const SPARK_SPRITE_TYPE type)
 {
     const int32_t sprite_idx = Sparks_GetSpriteIndex(type);
@@ -347,8 +354,7 @@ SPARK *Sparks_InitialiseSpriteSpark(const SPARK_SPRITE_TYPE type)
         return nullptr;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpark();
     spark->sprite_idx = sprite_idx;
     spark->sprite_obj_id = O_SPARKS_GFX;
     return spark;

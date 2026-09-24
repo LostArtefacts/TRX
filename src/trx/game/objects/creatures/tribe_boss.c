@@ -357,8 +357,7 @@ static void M_TriggerElectricSparks(
 
     p->trig_dynamics[1] = pos;
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpark();
     spark->src_color.r = 255;
     spark->src_color.g = 255;
     spark->src_color.b = 255;

@@ -55,7 +55,7 @@ void Sparks_TriggerBubble(
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
+    SPARK *const spark = Sparks_InitialiseSpark();
     *spark = (SPARK) {
         .on = true,
         .src_color = { 0, 0, 0 },
@@ -104,7 +104,7 @@ void Sparks_TriggerWaterfallMist(
     static const int32_t offsets[] = { 576, 203, -203, -576 };
 
     for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(offsets); i++) {
-        SPARK *const spark = Sparks_GetFreeSpark();
+        SPARK *const spark = Sparks_InitialiseSpark();
 
         // the sparks are spread along the line perpendicular to the flow
         const int32_t offset = (Random_GetControl() & 0x1F) + offsets[i] - 16;
@@ -165,8 +165,7 @@ void Sparks_TriggerSmallSplash(const XYZ_32 pos, const int32_t count)
     }
 
     for (int32_t i = 0; i < count; i++) {
-        SPARK *const spark = Sparks_GetFreeSpark();
-        spark->on = true;
+        SPARK *const spark = Sparks_InitialiseSpark();
         spark->src_color.r = 112;
         spark->src_color.g = (Random_GetDraw() & 0x1F) + 128;
         spark->src_color.b = (Random_GetDraw() & 0x1F) + 128;
@@ -214,7 +213,7 @@ void Sparks_TriggerBreath(
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
+    SPARK *const spark = Sparks_InitialiseSpark();
     const int32_t jitter_x = (Random_GetControl() & 0xF) - 8;
     const int32_t jitter_y = (Random_GetControl() & 0xF) - 8;
     const int32_t jitter_z = (Random_GetControl() & 0xF) - 8;
@@ -634,8 +633,7 @@ void Sparks_TriggerBloodTR3(
     }
 
     for (int32_t i = 0; i < count; i++) {
-        SPARK *const spark = Sparks_GetFreeSpark();
-        spark->on = true;
+        SPARK *const spark = Sparks_InitialiseSpark();
         spark->src_color = src_color;
         spark->dst_color = dst_color;
 
@@ -682,8 +680,7 @@ void Sparks_TriggerBloodTR3D(
     }
 
     for (int32_t i = 0; i < count; i++) {
-        SPARK *const spark = Sparks_GetFreeSpark();
-        spark->on = true;
+        SPARK *const spark = Sparks_InitialiseSpark();
         spark->src_color = src_color;
         spark->dst_color = dst_color;
 
@@ -848,7 +845,7 @@ void Sparks_TriggerExplosionSparks(
     CLAMP(safe_extras, 0, 3);
     static const uint8_t extras_table[4] = { 0, 4, 7, 10 };
 
-    SPARK *const spark = Sparks_GetFreeSpark();
+    SPARK *const spark = Sparks_InitialiseSpark();
     *spark = (SPARK) {
         .on = true,
         .src_color = { 255, 0, 0 },
@@ -964,7 +961,7 @@ void Sparks_TriggerExplosionBubble(const XYZ_32 pos, const int16_t room_num)
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
+    SPARK *const spark = Sparks_InitialiseSpark();
     *spark = (SPARK) {
         .on = true,
         .src_color = { 128, 64, 0 },
@@ -1254,8 +1251,7 @@ void Sparks_TriggerPickupAid(const XYZ_32 pos, const XZ_32 vel)
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpark();
     spark->src_color.r = 48;
     spark->src_color.g = 40;
     spark->src_color.b = 36;
@@ -1331,8 +1327,7 @@ void Sparks_TriggerFlareSparks(
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpark();
     spark->src_color.r = 255;
     spark->src_color.g = 255;
     spark->src_color.b = 255;
@@ -1426,8 +1421,7 @@ void Sparks_TriggerFlareSparks(
 void Sparks_TriggerRicochetTR3(
     const GAME_VECTOR pos, const int32_t angle, const int32_t size)
 {
-    SPARK *spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *spark = Sparks_InitialiseSpark();
     spark->src_color.r = 255;
     spark->src_color.g = (Random_GetControl() & 0x1F) + 32;
     spark->src_color.b = 0;
@@ -1463,8 +1457,7 @@ void Sparks_TriggerRicochetTR3(
     spark->max_y_vel = 0;
     Sparks_FinishSetup(spark);
 
-    spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    spark = Sparks_InitialiseSpark();
     uint8_t c = (uint8_t)((Random_GetControl() & 0x3F) + 128);
     spark->src_color.r = c;
     spark->src_color.g = c;
@@ -1509,8 +1502,7 @@ void Sparks_TriggerRicochetTR4(
     if (smoke_only == 0) {
         for (int32_t i = 0; i < count; i++) {
             const int32_t rnd = Random_GetControl();
-            SPARK *const spark = Sparks_GetFreeSpark();
-            spark->on = true;
+            SPARK *const spark = Sparks_InitialiseSpark();
             spark->src_color.r = 128;
             spark->src_color.g = (rnd & 0xF) + 16;
             spark->src_color.b = 0;
@@ -1734,8 +1726,7 @@ void Sparks_TriggerGunSmokeDirected(
 
 void Sparks_TriggerShotgunSparks(const XYZ_32 pos, const XYZ_32 vel)
 {
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpark();
     spark->src_color.r = 255;
     spark->src_color.g = 255;
     spark->src_color.b = 0;
