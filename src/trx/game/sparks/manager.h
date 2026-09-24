@@ -28,7 +28,6 @@ void Sparks_DetachItem(int16_t item_num);
 
 XYZ_32 Sparks_GetWorldPos(const SPARK *spark);
 
-SPARK *Sparks_GetFreeSpark(void);
 SPARK *Sparks_GetSpark(int32_t idx);
 int32_t Sparks_GetMaxCount(void);
 
@@ -38,6 +37,7 @@ TRX_HANDLE Sparks_GetHandle(const SPARK *spark);
 // Resolves a handle to a live spark, or nullptr where the slot has been taken
 // for another spark, or holds one whose life has run out.
 SPARK *Sparks_FromHandle(TRX_HANDLE handle);
+SPARK *Sparks_InitialiseSpark(void);
 SPARK *Sparks_InitialiseSpriteSpark(SPARK_SPRITE_TYPE type);
 int32_t Sparks_GetSpriteIndex(SPARK_SPRITE_TYPE offset);
 void Sparks_Sync(SPARK *spark);

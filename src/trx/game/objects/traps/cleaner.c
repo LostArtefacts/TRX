@@ -76,8 +76,7 @@ static void M_TriggerSparks(
         return;
     }
 
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpark();
     spark->src_color.r = (Random_GetControl() & 0x3F) + 192;
     spark->src_color.g = spark->src_color.r;
     spark->src_color.b = spark->src_color.r;

@@ -24,8 +24,7 @@ static bool M_IsFenceOnDeathSector(const ITEM *const item)
 
 static void M_TriggerFenceSparks(const XYZ_32 pos, const bool kill)
 {
-    SPARK *const spark = Sparks_GetFreeSpark();
-    spark->on = true;
+    SPARK *const spark = Sparks_InitialiseSpark();
     spark->src_color.b = (Random_GetControl() & 63) + 192;
     spark->src_color.r = spark->src_color.b;
     spark->src_color.g = spark->src_color.b;
