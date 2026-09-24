@@ -20,10 +20,9 @@ local OG_FOCAL = (640 / 2) / math.tan(math.rad(80 / 2))
 -- half turn.
 local FACING = 180
 
--- Takes the level's items, keyed by the object each one draws. An item states
--- the distance the OG holds it at, the height it sits at, its rotations in
--- degrees, and whether it is drawn about its pivot. A setup stays in place
--- until another level states its own, as it does in the OG.
+-- Takes the level's items, keyed by the object each item draws. Each item
+-- stores its distance, height, rotations in degrees, pivot setting, and mesh
+-- selection. A setup stays active until another level sets its own setup.
 function M.apply(items)
   for object, item in pairs(items) do
     local icon = trx.inventory.icon_of(trx.catalog.objects[object])
@@ -38,6 +37,8 @@ function M.apply(items)
         base_rot_y = trx.math.degrees((item.rot_y or 0) + FACING),
         base_rot_z = trx.math.degrees(item.rot_z or 0),
         draws_at_pivot = item.draws_at_pivot or false,
+        meshes_sel = item.meshes or -1,
+        meshes_drawn = item.meshes or -1,
       })
     end
   end

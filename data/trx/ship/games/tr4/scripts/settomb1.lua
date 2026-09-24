@@ -35,7 +35,8 @@ require("common.legend").setup(function()
 end)
 
 require("tr4.inv_setup").apply({
-  puzzle_item_1 = { scale = 1280, offset_y = 23 },
+  -- Draw only the model mesh. The ring does not use the collision box.
+  puzzle_item_1 = { scale = 1280, offset_y = 23, meshes = 1 },
   puzzle_item_2 = { scale = 768, offset_y = 24 },
   puzzle_item_1_combo_1 = { scale = 1280, offset_y = 23 },
   puzzle_item_1_combo_2 = { scale = 1280, offset_y = 23 },
