@@ -9,6 +9,7 @@
 
 **Weapons and ammunition**
 - Fixed the BFG9000 blast passing through friendly creatures
+- Fixed level completion after explosive weapon kills (#6685 / TRX1584)
 
 **TR2**
 - Fixed missing gun flashes in the Diving Area cutscene (OG bug) (TRX89)

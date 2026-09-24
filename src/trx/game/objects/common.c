@@ -8,6 +8,7 @@
 #include <trx/game/catalog/table.h>
 #include <trx/game/const.h>
 #include <trx/game/game_buf.h>
+#include <trx/game/items/actions/ids.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/objects/links.h>
 #include <trx/game/objects/names.h>
@@ -414,6 +415,25 @@ bool Object_CanInterpolate(
     const OBJECT *const obj = Object_Get(item->object_id);
     return item->enable_interpolation && obj->enable_interpolation
         && item->prev_frame_num != item->frame_num;
+}
+
+bool Object_CanBeExploded(const ITEM *const item)
+{
+    const OBJECT *const obj = Object_Get(item->object_id);
+    if (obj->can_be_exploded_func != nullptr) {
+        return obj->can_be_exploded_func(item);
+    }
+
+    const ITEM_ACTION_SLOT action =
+        ItemAction_IDToSlot(ITEM_ACTION_FINISH_LEVEL);
+    for (int32_t i = 0; i < obj->anim_count; i++) {
+        const ANIM *const anim = Object_GetAnim(obj, i);
+        if (Anim_HasFXCommand(anim, action)) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 void Object_SetReflective(const OBJECT_ID obj_id, const bool enabled)
