@@ -221,8 +221,8 @@ end
   Parameters:
   - <a id="inventory.ring_item.object" name="inventory.ring_item.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The inventory icon to read.
 
-  Returns: table. The entry's `object_id`, frame counts, rotations and
-    offsets, or `nil`.
+  Returns: table. The entry's `object_id`, frame counts, rotations, offsets,
+    `scale`, and `draws_at_pivot`, or `nil`.
 
 - <a id="inventory.declare_ring_item" name="inventory.declare_ring_item"></a>[lua]`trx.inventory.declare_ring_item(spec)`  
   Adds an object to the inventory ring and sets how it is drawn and rotated.
@@ -233,8 +233,8 @@ end
   the declaration; use the pickup for an object that represents itself.
 
   Parameters:
-  - <a id="inventory.declare_ring_item.spec" name="inventory.declare_ring_item.spec"></a>**`spec`** (table). The entry's `object_id`, frame counts, rotations and offsets.
-    An omitted value keeps the ring's default.
+  - <a id="inventory.declare_ring_item.spec" name="inventory.declare_ring_item.spec"></a>**`spec`** (table). The entry's `object_id`, frame counts, rotations, offsets,
+    `scale`, and `draws_at_pivot`. An omitted value keeps the ring's default.
 
   Example:
   ```lua
@@ -243,6 +243,7 @@ end
     frames_total = 1,
     anim_direction = 1,
     anim_speed = 1,
+    scale = 1.0,
     meshes_sel = -1,
     meshes_drawn = -1,
     inv_pos = 20,

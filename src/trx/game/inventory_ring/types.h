@@ -54,6 +54,15 @@ typedef struct {
     MATRIX manual_rot;
     MATRIX prev_manual_rot;
     bool has_manual_rot;
+    // Multiplies the drawn size of the object, with 1.0 for its own size.
+    float scale;
+    // Turns and lifts the object wherever the ring puts it, on top of the
+    // rotations and offsets above.
+    XYZ_16 base_rot;
+    int32_t y_offset;
+    // Draws the object about its pivot, for a model whose frame offset stands
+    // it far from where the ring puts it.
+    bool draws_at_pivot;
     uint32_t meshes_sel;
     uint32_t meshes_drawn;
     int16_t inv_pos;

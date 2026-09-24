@@ -8,4 +8,4 @@ void InvRing_Draw(INV_RING *ring);
 // A ring drawn over another one is drawn with this.
 void InvRing_DrawItems(INV_RING *ring);
 
-const INVENTORY_ITEM *InvRing_GetInvItem(OBJECT_ID obj_id);
+INVENTORY_ITEM *InvRing_GetInvItem(OBJECT_ID obj_id);

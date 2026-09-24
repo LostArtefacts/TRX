@@ -392,6 +392,17 @@ static int32_t M_ReadRingInt(
     return value;
 }
 
+static float M_ReadRingNum(
+    lua_State *const L, const int idx, const char *const key,
+    const float fallback)
+{
+    lua_getfield(L, idx, key);
+    const float value =
+        lua_isnil(L, -1) ? fallback : (float)luaL_checknumber(L, -1);
+    lua_pop(L, 1);
+    return value;
+}
+
 static INVENTORY_ITEM *M_FindRingItem(const OBJECT_ID object_id)
 {
     for (int32_t i = 0; i < g_InvRing_Items->count; i++) {
@@ -421,6 +432,7 @@ static int M_L_InvDeclareRingItem(lua_State *const L)
     if (is_new) {
         item = Memory_Alloc(sizeof(*item));
         item->object_id = object_id;
+        item->scale = 1.0f;
     }
 
 #define M_READ(key, field) item->field = M_ReadRingInt(L, 1, key, item->field)
@@ -442,6 +454,16 @@ static int M_L_InvDeclareRingItem(lua_State *const L)
     M_READ("y_trans", y_trans);
     M_READ("z_trans_sel", z_trans_sel);
     M_READ("z_trans", z_trans);
+    item->scale = M_ReadRingNum(L, 1, "scale", item->scale);
+    M_READ("y_offset", y_offset);
+    M_READ("base_rot_x", base_rot.x);
+    M_READ("base_rot_y", base_rot.y);
+    M_READ("base_rot_z", base_rot.z);
+    lua_getfield(L, 1, "draws_at_pivot");
+    if (!lua_isnil(L, -1)) {
+        item->draws_at_pivot = lua_toboolean(L, -1);
+    }
+    lua_pop(L, 1);
     M_READ("meshes_sel", meshes_sel);
     M_READ("meshes_drawn", meshes_drawn);
     M_READ("inv_pos", inv_pos);
@@ -462,7 +484,7 @@ static int M_L_InvRingItem(lua_State *const L)
         return 1;
     }
 
-    lua_createtable(L, 0, 22);
+    lua_createtable(L, 0, 28);
     lua_pushstring(L, Catalog_IDToKey(CATALOG_OBJECTS, item->object_id));
     lua_setfield(L, -2, "object_id");
 #define M_WRITE(key, field)                                                    \
@@ -486,6 +508,14 @@ static int M_L_InvRingItem(lua_State *const L)
     M_WRITE("y_trans", y_trans);
     M_WRITE("z_trans_sel", z_trans_sel);
     M_WRITE("z_trans", z_trans);
+    lua_pushnumber(L, item->scale);
+    lua_setfield(L, -2, "scale");
+    M_WRITE("y_offset", y_offset);
+    M_WRITE("base_rot_x", base_rot.x);
+    M_WRITE("base_rot_y", base_rot.y);
+    M_WRITE("base_rot_z", base_rot.z);
+    lua_pushboolean(L, item->draws_at_pivot);
+    lua_setfield(L, -2, "draws_at_pivot");
     M_WRITE("meshes_sel", meshes_sel);
     M_WRITE("meshes_drawn", meshes_drawn);
     M_WRITE("inv_pos", inv_pos);
