@@ -326,7 +326,7 @@ GF_LEVEL *GF_GetLevelByOrdinalNumber(
 
 // The gameflow command the play_* verbs queue, and the savegame bookkeeping
 // they do on the way. Recorded, not performed.
-void GF_OverrideCommand(const GF_COMMAND command)
+void GF_OverrideCommand(const GF_COMMAND command, const bool immediate)
 {
     const int32_t num = command.param;
     switch (command.action) {

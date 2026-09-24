@@ -113,6 +113,7 @@ PHASE *Phase_Inventory_Create(const INVENTORY_MODE mode)
     phase->end = M_End;
     phase->control = M_Control;
     phase->draw = M_Draw;
+    phase->defers_override = true;
     phase->request_fade_to_black =
         mode == INV_TITLE_MODE ? M_RequestFadeToBlack : nullptr;
     return phase;

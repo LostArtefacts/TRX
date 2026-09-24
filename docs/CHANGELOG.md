@@ -113,6 +113,7 @@
     - `trx.input.is_button_known`
     - `trx.input.axis`
     - `trx.input.is_axis_known`
+- Added an `immediate` option to game-flow Lua functions. Scripts can now apply a command at once or wait for the current screen to finish.
 - Added script text input, clipboard access, and input grabbing
 - Added console events, history access, and script-controlled console visibility
 - Added a UI layer above the game interface

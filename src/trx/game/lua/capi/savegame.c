@@ -52,10 +52,12 @@ static int M_L_SavegameLoad(lua_State *const L)
 {
     const int32_t index = luaL_checkinteger(L, 1);
     const SAVEGAME_SLOT_POOL pool = M_CheckPool(L, 2);
-    GF_OverrideCommand((GF_COMMAND) {
-        .action = GF_START_SAVED_GAME,
-        .param = SG_Manager_SlotToParam(M_ResolveSlot(index, pool)),
-    });
+    GF_OverrideCommand(
+        (GF_COMMAND) {
+            .action = GF_START_SAVED_GAME,
+            .param = SG_Manager_SlotToParam(M_ResolveSlot(index, pool)),
+        },
+        true);
     return 0;
 }
 

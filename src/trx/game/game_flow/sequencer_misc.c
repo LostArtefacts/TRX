@@ -90,7 +90,7 @@ bool GF_ShowInventoryKeys(const OBJECT_ID receptacle_type_id)
     }
     const GF_COMMAND gf_cmd = GF_ShowInventory(INV_KEYS_MODE);
     if (gf_cmd.action != GF_NOOP) {
-        GF_OverrideCommand(gf_cmd);
+        GF_OverrideCommand(gf_cmd, true);
     }
     return true;
 }

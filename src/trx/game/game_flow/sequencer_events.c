@@ -342,7 +342,8 @@ static bool M_AreLoadingScreensWanted(const GF_SEQUENCE_CONTEXT seq_ctx)
 static void M_ShowLoadingCamera(const GF_LOADING_CAMERA_DATA *const data)
 {
     const GF_COMMAND stashed_cmd = GF_GetOverrideCommand();
-    GF_OverrideCommand((GF_COMMAND) { .action = GF_NOOP });
+    const bool stashed_immediate = GF_IsOverrideImmediate();
+    GF_OverrideCommand((GF_COMMAND) { .action = GF_NOOP }, true);
 
     Music_Stop();
     PHASE *const phase =
@@ -360,7 +361,7 @@ static void M_ShowLoadingCamera(const GF_LOADING_CAMERA_DATA *const data)
     // A command the camera itself raises, such as an exit, is about what the
     // player just did and wins over the stashed one.
     if (GF_GetOverrideCommand().action == GF_NOOP) {
-        GF_OverrideCommand(stashed_cmd);
+        GF_OverrideCommand(stashed_cmd, stashed_immediate);
     }
 }
 
