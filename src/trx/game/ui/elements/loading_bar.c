@@ -9,12 +9,10 @@ void UI_LoadingBar(const UI_LOADING_BAR_SETTINGS settings)
     UI_Bar((UI_BAR_SETTINGS) {
         .type = UI_BAR_PROGRESS,
         .w = settings.w,
-        .h = settings.h > 0.0f ? settings.h : UI_LOADING_BAR_HEIGHT * scale,
-        .border_width = scale,
+        .h = (settings.h > 0.0f ? settings.h : UI_LOADING_BAR_HEIGHT) * scale,
         .value = settings.progress * 100.0f,
         .max_value = 100,
         .force_smooth = true,
         .absolute_size = true,
-        .border_color = { 0xFF, 0xFF, 0xFF, 0xFF },
     });
 }

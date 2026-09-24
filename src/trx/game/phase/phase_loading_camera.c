@@ -1,5 +1,6 @@
 #include <trx/game/phase/phase_loading_camera.h>
 
+#include <trx/config.h>
 #include <trx/core/memory.h>
 #include <trx/game/camera/vars.h>
 #include <trx/game/fader.h>
@@ -117,12 +118,14 @@ static void M_Draw(PHASE *const phase)
     M_PRIV *const p = phase->priv;
     M_PlaceCamera(p);
     Game_Draw(false);
-    UI_BeginScreenModal(0.5f, M_BAR_Y);
-    UI_LoadingBar((UI_LOADING_BAR_SETTINGS) {
-        .w = UI_GetCanvasWidth() * M_BAR_WIDTH,
-        .progress = p->state == STATE_FADE_OUT ? 1.0f : p->progress,
-    });
-    UI_EndModal();
+    if (g_Config.ui.show_loading_bar) {
+        UI_BeginScreenModal(0.5f, M_BAR_Y);
+        UI_LoadingBar((UI_LOADING_BAR_SETTINGS) {
+            .w = UI_GetCanvasWidth() * M_BAR_WIDTH,
+            .progress = p->state == STATE_FADE_OUT ? 1.0f : p->progress,
+        });
+        UI_EndModal();
+    }
 
     Output_Overlay_DrawBlackRectangle(Fader_GetCurrentValue(&p->fader), true);
 }

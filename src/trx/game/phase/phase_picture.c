@@ -1,10 +1,18 @@
 #include <trx/game/phase/phase_picture.h>
 
+#include <trx/config.h>
 #include <trx/core/memory.h>
+#include <trx/core/utils.h>
 #include <trx/game/fader.h>
 #include <trx/game/input.h>
 #include <trx/game/output.h>
 #include <trx/game/shell.h>
+#include <trx/game/ui.h>
+#include <trx/game/ui/elements/loading_bar.h>
+
+#define M_BAR_WIDTH 0.76f
+#define M_BAR_HEIGHT 12.0f
+#define M_BAR_Y 0.941f
 
 typedef enum {
     STATE_FADE_IN,
@@ -24,6 +32,16 @@ static bool M_UsesCrossFadeIn(PHASE *const phase)
 {
     const M_PRIV *const p = phase->priv;
     return p->args.loading_pic && !p->args.block_cross_fade_in;
+}
+
+// Returns the time that the picture remains visible before it fades out.
+// The loading bar fills during this time.
+static double M_GetDisplayTime(const M_PRIV *const p)
+{
+    return p->args.display_time
+        - (p->args.display_time_includes_fades
+               ? p->args.fade_in_time + p->args.fade_out_time
+               : 0.0);
 }
 
 static void M_FadeOut(M_PRIV *const p)
@@ -73,12 +91,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
 
     case STATE_DISPLAY:
         if (g_InputDB.menu_skip
-            || ClockTimer_CheckElapsed(
-                &p->timer,
-                p->args.display_time
-                    - (p->args.display_time_includes_fades
-                           ? p->args.fade_in_time + p->args.fade_out_time
-                           : 0.0))) {
+            || ClockTimer_CheckElapsed(&p->timer, M_GetDisplayTime(p))) {
             M_FadeOut(p);
         }
         break;
@@ -105,6 +118,22 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     return (PHASE_CONTROL) {};
 }
 
+// Returns the loading picture progress from 0 to 1. The picture remains
+// visible for a set time, so the bar follows that time.
+static float M_GetLoadProgress(const M_PRIV *const p)
+{
+    if (p->state == STATE_FADE_IN) {
+        return 0.0f;
+    }
+    const double display_time = M_GetDisplayTime(p);
+    if (p->state == STATE_FADE_OUT || display_time <= 0.0) {
+        return 1.0f;
+    }
+    float progress = ClockTimer_PeekElapsed(&p->timer) / display_time;
+    CLAMP(progress, 0.0f, 1.0f);
+    return progress;
+}
+
 static void M_Draw(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
@@ -119,6 +148,16 @@ static void M_Draw(PHASE *const phase)
         }
     } else {
         Output_Overlay_DrawBlackRectangle(progress, false);
+    }
+
+    if (p->args.loading_pic && g_Config.ui.show_loading_bar) {
+        UI_BeginScreenModal(0.5f, M_BAR_Y);
+        UI_LoadingBar((UI_LOADING_BAR_SETTINGS) {
+            .w = UI_GetCanvasWidth() * M_BAR_WIDTH,
+            .h = M_BAR_HEIGHT,
+            .progress = M_GetLoadProgress(p),
+        });
+        UI_EndModal();
     }
     p->has_drawn = true;
 }

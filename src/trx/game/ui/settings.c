@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/config/registry.h>
 #include <trx/core/dynamic_enum.h>
+#include <trx/core/enum_map.h>
 #include <trx/core/json/util/file.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/memory.h>
@@ -13,6 +14,10 @@
 #include <trx/version.h>
 
 #include <uthash.h>
+
+// The value that makes a bar follow the look the rest of the bars are drawn
+// with, rather than naming a look of its own.
+#define M_BAR_LOOK_INHERIT "same"
 
 typedef struct {
     char *name;
@@ -55,6 +60,13 @@ typedef struct {
     char *const *const ps1_color;
 } M_BAR_COLOR_SELECT;
 
+// The colors a bar offers, where the data narrows them. An empty entry leaves
+// the bar with every color its look states.
+typedef struct {
+    int32_t count;
+    char **names;
+} M_BAR_COLOR_FILTER;
+
 static const M_BAR_COLOR_SELECT m_BarColorSelect[UI_BAR_NUMBER_OF] = {
     [UI_BAR_LARA_HP] = {
         .pc_color = &g_Config.ui.lara_health_bar.color,
@@ -89,6 +101,15 @@ static const M_BAR_COLOR_SELECT m_BarColorSelect[UI_BAR_NUMBER_OF] = {
         .ps1_color = &g_Config.ui.progress_bar.color_ps1,
     },
 };
+
+// The look a bar is drawn with, where the bar picks one of its own. A null
+// entry, or the inherit value, leaves the bar with the look the rest of them
+// are drawn with.
+static char *const *const m_BarLookSelect[UI_BAR_NUMBER_OF] = {
+    [UI_BAR_PROGRESS] = &g_Config.ui.progress_bar.look,
+};
+
+static M_BAR_COLOR_FILTER m_BarColorFilters[UI_BAR_NUMBER_OF];
 
 static M_SETTINGS m_Settings;
 
@@ -125,6 +146,14 @@ static void M_ResetDynamicEnumValues(void)
     }
 
     for (int32_t i = 0; i < UI_BAR_NUMBER_OF; i++) {
+        if (m_BarLookSelect[i] != nullptr) {
+            const CONFIG_OPTION *const look_option =
+                Config_FindOptionByMirror(m_BarLookSelect[i]);
+            if (look_option != nullptr) {
+                DynamicEnum_ResetValues(Config_Option_GetEnumKey(look_option));
+            }
+        }
+
         const M_BAR_COLOR_SELECT *const select = &m_BarColorSelect[i];
         const CONFIG_OPTION *const pc_option =
             Config_FindOptionByMirror(select->pc_color);
@@ -160,8 +189,27 @@ static bool M_IsBarColorNameEncountered(
     return false;
 }
 
+// Whether a look of this kind states the color, so that a color a bar is
+// offered is one it can be drawn with.
+static bool M_HasBarColor(const UI_BAR_THEME_KIND kind, const char *const name)
+{
+    for (int32_t i = 0; i < m_Settings.bar_theme_count; i++) {
+        const M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[i];
+        if (theme->kind != kind) {
+            continue;
+        }
+        for (int32_t j = 0; j < theme->group.color_count; j++) {
+            if (String_Equivalent(theme->group.colors[j].name, name)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 static void M_SeedDynamicEnumBarColors(
-    const CONFIG_OPTION *const option, const UI_BAR_THEME_KIND kind)
+    const CONFIG_OPTION *const option, const UI_BAR_THEME_KIND kind,
+    const M_BAR_COLOR_FILTER *const filter)
 {
     // The options are registered once the TR version is known, so before that
     // happens during boot the lookup finds nothing and seeding no-ops - as it
@@ -171,6 +219,16 @@ static void M_SeedDynamicEnumBarColors(
     }
     const void *const token = Config_Option_GetEnumKey(option);
     DynamicEnum_ResetValues(token);
+
+    if (filter->count > 0) {
+        for (int32_t i = 0; i < filter->count; i++) {
+            if (M_HasBarColor(kind, filter->names[i])) {
+                DynamicEnum_AddValue(token, filter->names[i], nullptr);
+            }
+        }
+        return;
+    }
+
     for (int32_t i = 0; i < m_Settings.bar_theme_count; i++) {
         const M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[i];
         if (theme->kind != kind) {
@@ -186,26 +244,54 @@ static void M_SeedDynamicEnumBarColors(
     }
 }
 
+static void M_SeedDynamicEnumBarLooks(
+    const CONFIG_OPTION *const option, const bool with_inherit)
+{
+    if (option == nullptr) {
+        return;
+    }
+    const void *const token = Config_Option_GetEnumKey(option);
+    DynamicEnum_ResetValues(token);
+    if (with_inherit) {
+        DynamicEnum_AddValue(
+            token, M_BAR_LOOK_INHERIT, GS_ID("dynamic/enums/bar_look/same"));
+    }
+    for (int32_t i = 0; i < m_Settings.bar_theme_count; i++) {
+        const M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[i];
+        DynamicEnum_AddValue(token, theme->name, theme->name_gs);
+    }
+}
+
 static void M_SeedDynamicEnumValues(void)
 {
-    const CONFIG_OPTION *const bar_look_option =
-        Config_FindOptionByMirror(&g_Config.ui.bar_look);
-    if (bar_look_option != nullptr) {
-        const void *const token = Config_Option_GetEnumKey(bar_look_option);
-        DynamicEnum_ResetValues(token);
-        for (int32_t i = 0; i < m_Settings.bar_theme_count; i++) {
-            const M_BAR_THEME_ENTRY *const theme = &m_Settings.bar_themes[i];
-            DynamicEnum_AddValue(token, theme->name, theme->name_gs);
-        }
-    }
+    M_SeedDynamicEnumBarLooks(
+        Config_FindOptionByMirror(&g_Config.ui.bar_look), false);
 
     for (int32_t i = 0; i < UI_BAR_NUMBER_OF; i++) {
+        if (m_BarLookSelect[i] != nullptr) {
+            M_SeedDynamicEnumBarLooks(
+                Config_FindOptionByMirror(m_BarLookSelect[i]), true);
+        }
+
         const M_BAR_COLOR_SELECT *const select = &m_BarColorSelect[i];
         M_SeedDynamicEnumBarColors(
-            Config_FindOptionByMirror(select->pc_color), UI_BAR_THEME_PC_KIND);
+            Config_FindOptionByMirror(select->pc_color), UI_BAR_THEME_PC_KIND,
+            &m_BarColorFilters[i]);
         M_SeedDynamicEnumBarColors(
-            Config_FindOptionByMirror(select->ps1_color),
-            UI_BAR_THEME_PS1_KIND);
+            Config_FindOptionByMirror(select->ps1_color), UI_BAR_THEME_PS1_KIND,
+            &m_BarColorFilters[i]);
+    }
+}
+
+static void M_FreeBarColorFilters(void)
+{
+    for (int32_t i = 0; i < UI_BAR_NUMBER_OF; i++) {
+        M_BAR_COLOR_FILTER *const filter = &m_BarColorFilters[i];
+        for (int32_t j = 0; j < filter->count; j++) {
+            Memory_FreePointer(&filter->names[j]);
+        }
+        Memory_FreePointer(&filter->names);
+        filter->count = 0;
     }
 }
 
@@ -261,10 +347,12 @@ static RESULT M_ReadColorArray(
 static RESULT M_LoadThemesPC(JSON_READ_IO *const io, M_THEME_GROUP *const group)
 {
     float basic_scale = 1.0f;
+    float padding = 1.0f;
     RGBA_8888 border_light = {};
     RGBA_8888 border_dark = {};
 
     MUST(JSON_READ_D(io, "scale", &basic_scale, 1.0f));
+    MUST(JSON_READ_D(io, "padding", &padding, 1.0f));
 
     RGB_888 border_light_rgb = {};
     MUST(JSON_READ(io, "border_light", &border_light_rgb));
@@ -320,6 +408,7 @@ static RESULT M_LoadThemesPC(JSON_READ_IO *const io, M_THEME_GROUP *const group)
         *theme = (UI_BAR_THEME) {
             .kind = UI_BAR_THEME_PC_KIND,
             .basic_scale = basic_scale,
+            .padding = padding,
             .border_light = border_light,
             .border_dark = border_dark,
         };
@@ -336,8 +425,10 @@ static RESULT M_LoadThemesPS1(
     JSON_READ_IO *const io, M_THEME_GROUP *const group)
 {
     float basic_scale = 1.0f;
+    float padding = 1.0f;
 
     MUST(JSON_READ_D(io, "scale", &basic_scale, 1.0f));
+    MUST(JSON_READ_D(io, "padding", &padding, 1.0f));
 
     RGB_888 border_tl_rgb = {};
     RGB_888 border_tr_rgb = {};
@@ -406,6 +497,7 @@ static RESULT M_LoadThemesPS1(
         *theme = (UI_BAR_THEME) {
             .kind = UI_BAR_THEME_PS1_KIND,
             .basic_scale = basic_scale,
+            .padding = padding,
             .border_tl = border_tl,
             .border_tr = border_tr,
             .border_bl = border_bl,
@@ -531,13 +623,61 @@ static M_BAR_THEME_ENTRY *M_GetCurrentBarTheme(void)
     return &m_Settings.bar_themes[0];
 }
 
-static const M_THEME_GROUP *M_GetCurrentBarGroup(void)
+// Returns the look a bar is drawn with. A bar that names no look of its own
+// takes the one the rest of the bars are drawn with.
+static M_BAR_THEME_ENTRY *M_GetBarLook(const UI_BAR_TYPE type)
 {
-    M_BAR_THEME_ENTRY *const theme = M_GetCurrentBarTheme();
-    if (theme == nullptr) {
-        return nullptr;
+    if (type >= 0 && type < UI_BAR_NUMBER_OF
+        && m_BarLookSelect[type] != nullptr) {
+        const char *const name = *m_BarLookSelect[type];
+        if (name != nullptr && !String_Equivalent(name, M_BAR_LOOK_INHERIT)) {
+            M_BAR_THEME_ENTRY *const look = M_FindBarThemeByName(name);
+            if (look != nullptr) {
+                return look;
+            }
+        }
     }
-    return &theme->group;
+    return M_GetCurrentBarTheme();
+}
+
+static RESULT M_LoadBarColorFilters(JSON_READ_IO *const io)
+{
+    M_FreeBarColorFilters();
+
+    JSON_OBJECT *const obj = JSON_ReadIO_GetCurrentObject(io);
+    if (obj == nullptr) {
+        return JSON_ReadIO_Fail(io, "'bar_colors' must be an object");
+    }
+
+    for (JSON_OBJECT_ELEMENT *elem = obj->start; elem != nullptr;
+         elem = elem->next) {
+        const char *const name = elem->name->string;
+        const int32_t type = ENUM_MAP_GET(UI_BAR_TYPE, name, -1);
+        if (type < 0 || type >= UI_BAR_NUMBER_OF) {
+            return JSON_ReadIO_Fail(io, "unknown bar '%s'", name);
+        }
+
+        MUST(JSON_PUSH(io, name));
+        const int32_t count = JSON_ARRAY_LEN(io);
+        if (count <= 0) {
+            const RESULT result =
+                JSON_ReadIO_Fail(io, "'%s' cannot be empty", name);
+            MUST(JSON_POP(io));
+            return result;
+        }
+
+        M_BAR_COLOR_FILTER *const filter = &m_BarColorFilters[type];
+        filter->names = Memory_Alloc(sizeof(*filter->names) * count);
+        filter->count = count;
+        for (int32_t i = 0; i < count; i++) {
+            const char *color = nullptr;
+            MUST(JSON_READ_A(io, i, &color));
+            filter->names[i] = Memory_DupStr(color);
+        }
+        MUST(JSON_POP(io));
+    }
+
+    return OK;
 }
 
 static RESULT M_LoadMenuColorsPC(
@@ -606,6 +746,7 @@ static RESULT M_LoadMenuColors(JSON_READ_IO *const io)
 static void M_Shutdown(void)
 {
     M_FreeBarThemes();
+    M_FreeBarColorFilters();
 }
 
 static const char *M_GetBarColorName(const UI_BAR_TYPE type)
@@ -614,9 +755,7 @@ static const char *M_GetBarColorName(const UI_BAR_TYPE type)
         return "gold";
     }
 
-    const M_BAR_THEME_ENTRY *const theme = M_GetCurrentBarTheme();
-    const bool use_ps1 =
-        theme != nullptr && theme->kind == UI_BAR_THEME_PS1_KIND;
+    const bool use_ps1 = UI_Settings_IsBarLookPS1(type);
     const M_BAR_COLOR_SELECT *const select = &m_BarColorSelect[type];
     const char *value = nullptr;
 
@@ -663,6 +802,9 @@ static RESULT M_LoadFrom(const char *const path)
     M_FreeBarThemes();
     RESULT result = M_LoadSection(io, "bars", M_LoadBarThemes);
     if (IS_OK(result)) {
+        result = M_LoadSection(io, "bar_colors", M_LoadBarColorFilters);
+    }
+    if (IS_OK(result)) {
         result = M_LoadSection(io, "ui", M_LoadMenuColors);
     }
     if (IS_OK(result)) {
@@ -691,12 +833,19 @@ bool UI_Settings_IsCurrentBarLookPS1(void)
     return theme != nullptr && theme->kind == UI_BAR_THEME_PS1_KIND;
 }
 
+bool UI_Settings_IsBarLookPS1(const UI_BAR_TYPE type)
+{
+    const M_BAR_THEME_ENTRY *const look = M_GetBarLook(type);
+    return look != nullptr && look->kind == UI_BAR_THEME_PS1_KIND;
+}
+
 const UI_BAR_THEME *UI_Settings_GetBarTheme(const UI_BAR_TYPE type)
 {
     if (type < 0 || type >= UI_BAR_NUMBER_OF) {
         return nullptr;
     }
-    const M_THEME_GROUP *const group = M_GetCurrentBarGroup();
+    const M_BAR_THEME_ENTRY *const look = M_GetBarLook(type);
+    const M_THEME_GROUP *const group = look != nullptr ? &look->group : nullptr;
     if (group == nullptr || group->color_count <= 0) {
         return nullptr;
     }

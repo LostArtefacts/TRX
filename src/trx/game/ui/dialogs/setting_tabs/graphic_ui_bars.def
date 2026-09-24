@@ -18,6 +18,8 @@ X_UI_ROW(ui.enemy_healthbar_color)
 X_UI_ROW(ui.enemy_healthbar_color_ps1)
 X_UI_ROW(ui.enemy_healthbar_color_allies)
 X_UI_ROW(ui.enemy_healthbar_color_allies_ps1)
+X_UI_ROW(ui.show_loading_bar)
+X_UI_ROW(ui.progressbar_look)
 X_UI_ROW(ui.progressbar_color)
 X_UI_ROW(ui.progressbar_color_ps1)
 
