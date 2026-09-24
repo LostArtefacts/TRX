@@ -1753,6 +1753,14 @@
             "title": "Dimensione oggetti",
             "description": "Modifica la dimensione degli oggetti animati visualizzati nell'interfaccia utente quando Lara raccoglie qualcosa.",
         },
+        "ui.progressbar_color": {
+            "title": "\\{review}Colore barra di caricamento",
+            "description": "\\{review}Colore utilizzato per la barra di caricamento.",
+        },
+        "ui.progressbar_color_ps1": {
+            "title": "\\{review}Colore barra di caricamento",
+            "description": "\\{review}Colore utilizzato per la barra di caricamento.",
+        },
         "ui.show_bars": {
             "title": "Mostra barre",
             "description": "Mostra le barre di gioco. Disattivandole si nascondono le informazioni sulla salute di Lara e altre risorse (per le sfide).",

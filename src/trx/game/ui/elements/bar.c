@@ -27,6 +27,11 @@ typedef struct {
 static void M_Measure(UI_NODE *const node)
 {
     M_DATA *const data = node->data;
+    if (data->settings.absolute_size) {
+        node->measure_w = data->settings.w;
+        node->measure_h = data->settings.h;
+        return;
+    }
     const float scale = UI_Scaler_GetScale(
                             data->settings.preview ? UI_SCALER_TARGET_TEXT
                                                    : UI_SCALER_TARGET_BAR)
@@ -64,11 +69,18 @@ static void M_DrawBorderPS1(
         theme->border_bl, theme->border_br);
 }
 
+// Reports whether the fill blends between adjacent ramp colors, rather than
+// drawing one flat band per color.
+static bool M_IsSmooth(const UI_BAR_SETTINGS *const settings)
+{
+    return settings->force_smooth || g_Config.ui.enable_smooth_bars;
+}
+
 static void M_DrawFillPC(
     const UI_BAR_THEME *const theme, const UI_BAR_SETTINGS *const settings,
     const M_RECT_32 rect, const float percent)
 {
-    if (g_Config.ui.enable_smooth_bars) {
+    if (M_IsSmooth(settings)) {
         for (int32_t i = 0; i < UI_BAR_COLOR_STEPS - 1; i++) {
             const RGBA_8888 c1 = theme->ramp[i];
             const RGBA_8888 c2 = theme->ramp[i + 1];
@@ -94,7 +106,7 @@ static void M_DrawFillPS1(
     const M_RECT_32 rect, const float percent)
 {
     const UI_BAR_TYPE type = settings->type;
-    if (g_Config.ui.enable_smooth_bars) {
+    if (M_IsSmooth(settings)) {
         for (int32_t i = 0; i < UI_BAR_COLOR_STEPS - 1; i++) {
             const RGBA_8888 ctl = theme->ramp_left[i];
             const RGBA_8888 ctr = theme->ramp_right[i];
@@ -139,8 +151,10 @@ static void M_Draw(const UI_NODE *const node)
     const int32_t y = UI_ScaleY(node->y);
     const int32_t w = UI_ScaleX(node->w);
     const int32_t h = UI_ScaleY(node->h);
-    const int32_t border = h / (float)(UI_BAR_COLOR_STEPS + 4);
-    const int32_t padding = h / (float)(UI_BAR_COLOR_STEPS + 4);
+    const bool plain_border = settings->border_color.a != 0;
+    const int32_t border = plain_border ? MAX(1, UI_ScaleY(node->y + 1.0f) - y)
+                                        : h / (float)(UI_BAR_COLOR_STEPS + 4);
+    const int32_t padding = plain_border ? 0 : border;
     const M_RECT_32 outer_rect = {
         .x = x,
         .y = y,
@@ -158,20 +172,26 @@ static void M_Draw(const UI_NODE *const node)
         .h = inner_rect.h - padding * 2,
     };
 
+    if (plain_border) {
+        UI_ScheduleDrawScreenFlatQuad(
+            outer_rect.x, outer_rect.y, 0, outer_rect.w, outer_rect.h,
+            settings->border_color);
+    } else if (data->theme->kind == UI_BAR_THEME_PS1_KIND) {
+        M_DrawBorderPS1(data->theme, outer_rect, border);
+    } else {
+        M_DrawBorderPC(data->theme, outer_rect, border);
+    }
+    M_DrawBackground(data->theme, inner_rect);
+
+    if (percent <= 0.0f) {
+        return;
+    }
     switch (data->theme->kind) {
     case UI_BAR_THEME_PC_KIND:
-        M_DrawBorderPC(data->theme, outer_rect, border);
-        M_DrawBackground(data->theme, inner_rect);
-        if (percent > 0.0f) {
-            M_DrawFillPC(data->theme, settings, bar_rect, percent);
-        }
+        M_DrawFillPC(data->theme, settings, bar_rect, percent);
         break;
     case UI_BAR_THEME_PS1_KIND:
-        M_DrawBorderPS1(data->theme, outer_rect, border);
-        M_DrawBackground(data->theme, inner_rect);
-        if (percent > 0.0f) {
-            M_DrawFillPS1(data->theme, settings, bar_rect, percent);
-        }
+        M_DrawFillPS1(data->theme, settings, bar_rect, percent);
         break;
     }
 }

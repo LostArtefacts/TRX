@@ -7,6 +7,9 @@
 **Lara's movement**
 - Fixed Lara moving while the look button was held and two opposite directions were pressed (OG bug) (#6686 / TRX1585)
 
+**UI**
+- Added an option to change the loading bar color (Graphics → Bars → Loading bar color) (#6682 / TRX1582)
+
 **Gameplay**
 - Added the ability to combine the two halves of an item in the inventory, such as the eye pieces in Tomb of Seth (TRX482)
 - Fixed a bug where a friendly sentry gun kept aiming at Lara, and aimed at enemies it had no shot at, instead of the enemies it was set to attack

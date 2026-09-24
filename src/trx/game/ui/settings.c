@@ -84,6 +84,10 @@ static const M_BAR_COLOR_SELECT m_BarColorSelect[UI_BAR_NUMBER_OF] = {
         .pc_color = &g_Config.ui.enemy_health_bar.color_allies,
         .ps1_color = &g_Config.ui.enemy_health_bar.color_allies_ps1,
     },
+    [UI_BAR_PROGRESS] = {
+        .pc_color = &g_Config.ui.progress_bar.color,
+        .ps1_color = &g_Config.ui.progress_bar.color_ps1,
+    },
 };
 
 static M_SETTINGS m_Settings;

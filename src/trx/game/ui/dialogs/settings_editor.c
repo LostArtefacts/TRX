@@ -171,6 +171,8 @@ static UI_BAR_TYPE M_GetBarType(const UI_SETTINGS_ROW *const row)
         { &g_Config.ui.enemy_health_bar.color_ps1, UI_BAR_ENEMY_HP },
         { &g_Config.ui.enemy_health_bar.color_allies, UI_BAR_ALLY_HP },
         { &g_Config.ui.enemy_health_bar.color_allies_ps1, UI_BAR_ALLY_HP },
+        { &g_Config.ui.progress_bar.color, UI_BAR_PROGRESS },
+        { &g_Config.ui.progress_bar.color_ps1, UI_BAR_PROGRESS },
     };
 
     if (row == nullptr) {
@@ -955,13 +957,17 @@ void UI_SettingsEditor_Draw(
             UI_ROW_ARROWS_MEDIUM);
         {
             if (M_IsBarColorEnum(row)) {
+                const UI_BAR_TYPE type = M_GetBarType(row);
                 UI_Bar((UI_BAR_SETTINGS) {
                     .w = M_BAR_WIDTH,
                     .h = M_BAR_HEIGHT,
                     .value = 100,
                     .max_value = 100,
-                    .type = M_GetBarType(row),
+                    .type = type,
                     .preview = true,
+                    .border_color = type == UI_BAR_PROGRESS
+                        ? (RGBA_8888) { 0xFF, 0xFF, 0xFF, 0xFF }
+                        : (RGBA_8888) {},
                 });
             } else if (M_IsColorEditorOption(row)) {
                 const char *const value = M_FormatRowValue(s, row_idx);

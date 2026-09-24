@@ -1753,6 +1753,14 @@
             "title": "Pickup scale",
             "description": "Changes size of items animated in the UI when Lara picks something up.",
         },
+        "ui.progressbar_color": {
+            "title": "Loading bar color",
+            "description": "Color of the loading bar.",
+        },
+        "ui.progressbar_color_ps1": {
+            "title": "Loading bar color",
+            "description": "Color of the loading bar.",
+        },
         "ui.show_bars": {
             "title": "Show bars",
             "description": "Shows the ingame bars. Turning them off obscures information on Lara's health and other resources (for challenge runs).",

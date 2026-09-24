@@ -169,6 +169,10 @@ typedef struct {
             char *color_allies_ps1;
         } enemy_health_bar;
         struct {
+            char *color;
+            char *color_ps1;
+        } progress_bar;
+        struct {
             UI_ELEMENT_LOCATION location;
         } ammo_counter;
     } ui;

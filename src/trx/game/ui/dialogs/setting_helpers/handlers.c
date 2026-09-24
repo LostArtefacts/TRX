@@ -609,6 +609,13 @@ REGISTER_UI_SETTING_HANDLER(
         .is_visible = M_BarColorPS1_IsVisible)
 
 REGISTER_UI_SETTING_HANDLER(
+        .key = "ui.progressbar_color", .is_visible = M_BarColorPC_IsVisible)
+
+REGISTER_UI_SETTING_HANDLER(
+        .key = "ui.progressbar_color_ps1",
+        .is_visible = M_BarColorPS1_IsVisible)
+
+REGISTER_UI_SETTING_HANDLER(
         .key = "ui.enemy_healthbar_show_mode",
         .is_available = M_Bar_IsAvailable, .enum_order = m_BarShowModeOrder)
 

@@ -118,9 +118,10 @@ static void M_Draw(PHASE *const phase)
     M_PlaceCamera(p);
     Game_Draw(false);
     UI_BeginScreenModal(0.5f, M_BAR_Y);
-    UI_LoadingBar(
-        UI_GetCanvasWidth() * M_BAR_WIDTH,
-        p->state == STATE_FADE_OUT ? 1.0f : p->progress);
+    UI_LoadingBar((UI_LOADING_BAR_SETTINGS) {
+        .w = UI_GetCanvasWidth() * M_BAR_WIDTH,
+        .progress = p->state == STATE_FADE_OUT ? 1.0f : p->progress,
+    });
     UI_EndModal();
 
     Output_Overlay_DrawBlackRectangle(Fader_GetCurrentValue(&p->fader), true);

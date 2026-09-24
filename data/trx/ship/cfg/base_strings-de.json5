@@ -1753,6 +1753,14 @@
             "title": "Pickup-Skala",
             "description": "\\{review}Ändert die Größe der im UI animierten Gegenstände, wenn Lara etwas aufnimmt.",
         },
+        "ui.progressbar_color": {
+            "title": "\\{review}Ladebalken-Farbe",
+            "description": "\\{review}Farbe des Ladebalkens.",
+        },
+        "ui.progressbar_color_ps1": {
+            "title": "\\{review}Ladebalken-Farbe",
+            "description": "\\{review}Farbe des Ladebalkens.",
+        },
         "ui.show_bars": {
             "title": "\\{review}Leisten anzeigen",
             "description": "\\{review}Zeigt die Ingame-Leisten an. Werden sie ausgeschaltet, bleiben Informationen über Laras Gesundheit und andere Ressourcen verborgen (für Herausforderungsdurchläufe).",
