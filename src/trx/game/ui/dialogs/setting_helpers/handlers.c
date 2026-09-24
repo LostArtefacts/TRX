@@ -196,6 +196,19 @@ static bool M_BarColorPS1_IsVisible(
     return UI_Settings_IsCurrentBarLookPS1();
 }
 
+static bool M_ProgressBarColorPC_IsVisible(
+    const CONFIG_OPTION *const option, void *const user_data)
+{
+    // Only TR4 shows a loading bar.
+    return g_TRVersion == 4 && M_BarColorPC_IsVisible(option, user_data);
+}
+
+static bool M_ProgressBarColorPS1_IsVisible(
+    const CONFIG_OPTION *const option, void *const user_data)
+{
+    return g_TRVersion == 4 && M_BarColorPS1_IsVisible(option, user_data);
+}
+
 static bool M_IdlePose_IsAvailable(
     const CONFIG_OPTION *const option, void *const user_data)
 {
@@ -609,11 +622,12 @@ REGISTER_UI_SETTING_HANDLER(
         .is_visible = M_BarColorPS1_IsVisible)
 
 REGISTER_UI_SETTING_HANDLER(
-        .key = "ui.progressbar_color", .is_visible = M_BarColorPC_IsVisible)
+        .key = "ui.progressbar_color",
+        .is_visible = M_ProgressBarColorPC_IsVisible)
 
 REGISTER_UI_SETTING_HANDLER(
         .key = "ui.progressbar_color_ps1",
-        .is_visible = M_BarColorPS1_IsVisible)
+        .is_visible = M_ProgressBarColorPS1_IsVisible)
 
 REGISTER_UI_SETTING_HANDLER(
         .key = "ui.enemy_healthbar_show_mode",
