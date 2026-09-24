@@ -1753,6 +1753,14 @@
             "title": "\\{review}Échelle de ramassage",
             "description": "\\{review}Modifie la taille des objets animés dans l'interface utilisateur lorsque Lara ramasse quelque chose.",
         },
+        "ui.progressbar_color": {
+            "title": "\\{review}Couleur de la barre de chargement",
+            "description": "\\{review}Couleur de la barre de chargement.",
+        },
+        "ui.progressbar_color_ps1": {
+            "title": "\\{review}Couleur de la barre de chargement",
+            "description": "\\{review}Couleur de la barre de chargement.",
+        },
         "ui.show_bars": {
             "title": "\\{review}Afficher les barres",
             "description": "\\{review}Affiche les barres en jeu. Les désactiver masque les informations sur la santé de Lara et d'autres ressources (pour les défis).",

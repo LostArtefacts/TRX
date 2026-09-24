@@ -14,11 +14,24 @@
 
 typedef struct {
     UI_BAR_TYPE type;
-    int32_t w;
-    int32_t h;
+    float w;
+    float h;
     int32_t value;
     int32_t max_value;
     bool preview;
+
+    // Draws a plain one-unit frame in this color and lets the fill reach it,
+    // instead of the frame and padding the bars appearance gives. A fully
+    // transparent color keeps the appearance frame.
+    RGBA_8888 border_color;
+
+    // Blends between the ramp colors even when the smooth bars setting is
+    // turned off.
+    bool force_smooth;
+
+    // Takes w and h as final canvas units, rather than as sizes the bars scale
+    // and the appearance still have to be applied to.
+    bool absolute_size;
 } UI_BAR_SETTINGS;
 
 // draw functions

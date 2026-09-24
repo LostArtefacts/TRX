@@ -1753,6 +1753,14 @@
             "title": "Skala przedmiotów",
             "description": "Zmienia rozmiar przedmiotów animowanych w rogu ekranu, kiedy Lara coś podnosi.",
         },
+        "ui.progressbar_color": {
+            "title": "\\{review}Kolor paska ładowania",
+            "description": "\\{review}Kolor paska ładowania.",
+        },
+        "ui.progressbar_color_ps1": {
+            "title": "\\{review}Kolor paska ładowania",
+            "description": "\\{review}Kolor paska ładowania.",
+        },
         "ui.show_bars": {
             "title": "Pokaż paski",
             "description": "\\{review}Pokazuje paski w grze. Ich wyłączenie ukrywa informacje o zdrowiu Lary i innych zasobach (dla wyzwań).",
