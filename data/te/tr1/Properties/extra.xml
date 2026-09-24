@@ -258,6 +258,12 @@
         <property category="TRX" defaultValue="4" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="20" description="Damage dealt by the bite attack." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_MOVING_FLOOR-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="false" description="Whether the floor acts as a pressure plate, moving down when Lara is on top and back up when she leaves it." displayName="Is Pressure Plate" internalName="is_pressure_plate" type="Bool" />
+        <property category="TRX" defaultValue="16" description="The vertical distance the floor will travel, in half-clicks." displayName="Travel Distance" internalName="travel_distance" minValue="1" type="Int" />
+        <property category="TRX" defaultValue="4" description="The speed at which the floor moves, in world units." displayName="Speed" internalName="speed" maxValue="64" minValue="1" type="Int" />
+    </moveable>
     <!--placeholder for O_MP_1-->
     <moveable id="-1">
         <property category="TRX" defaultValue="25" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />

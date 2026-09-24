@@ -34,9 +34,11 @@
 - Added Jackal control (TRX1553)
 - Added Guide control (TRX1551)
 - Added Raising and Expanding Block control (TRX1558)
+- Added Moving Floor control (TRX1559)
 - Added level views before play starts, with a progress bar (TRX493)
 - Fixed the Guide having Lara's right-hand pistol mesh in Valley of the Kings (OG bug) (TRX1551)
 - Fixed a bug where sound effects such as footsteps were much too quiet (#6673 / TRX1569)
+- Fixed missing collision on Moving Floors in custom levels when rotated to face East (OG bug) (TRX1559)
 
 **Lua**
 - Added `trx.fx.gun_flash()`, so a script can draw a muzzle flash on any item (TRX89)

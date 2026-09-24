@@ -3014,6 +3014,9 @@
         "moving_bar": {
             "name": "Движущаяся планка",
         },
+        "moving_floor": {
+            "name": "\\{review}Движущийся пол",
+        },
         "mp5_ammo_item": {
             "name": "\\{review}Магазины для MP5",
         },

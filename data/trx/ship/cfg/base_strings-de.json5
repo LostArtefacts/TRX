@@ -3014,6 +3014,9 @@
         "moving_bar": {
             "name": "Moving Bar",
         },
+        "moving_floor": {
+            "name": "\\{review}Beweglicher Boden",
+        },
         "mp5_ammo_item": {
             "name": "\\{review}MP5-Munition",
         },

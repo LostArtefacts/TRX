@@ -3017,6 +3017,9 @@
         "moving_bar": {
             "name": "Barra Mobile",
         },
+        "moving_floor": {
+            "name": "\\{review}Pavimento Mobile",
+        },
         "mp5_ammo_item": {
             "name": "Caricatori per MP5",
         },

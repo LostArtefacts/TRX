@@ -3014,6 +3014,9 @@
         "moving_bar": {
             "name": "Barre mobile",
         },
+        "moving_floor": {
+            "name": "\\{review}Sol mobile",
+        },
         "mp5_ammo_item": {
             "name": "\\{review}Chargeurs pour MP5",
         },

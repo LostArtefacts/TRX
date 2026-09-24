@@ -126,4 +126,13 @@ trx.events.on_game_start(function()
 
   trx.items[214].properties.use_idle_pose = true
   trx.items[215].properties.use_idle_pose = true
+
+  for i = 183, 186 do
+    trx.items[i].properties.speed = 7
+    trx.items[i].properties.travel_distance = 20
+  end
+  for i = 226, 229 do
+    trx.items[i].properties.speed = 3
+    trx.items[i].properties.travel_distance = 32
+  end
 end)
