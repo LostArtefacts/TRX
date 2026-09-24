@@ -25,6 +25,7 @@ bool Object_DrawInterpolatedObjectWithSwap(
     const OBJECT *obj, uint32_t mesh_mask, const int16_t *extra_rotation,
     const ANIM_FRAME *frame1, const ANIM_FRAME *frame2, int32_t frac,
     int32_t rate, const OBJECT *mesh_swap);
+bool Object_DrawScaledItem(const ITEM *item, XYZ_32 scale, XYZ_32 prev_scale);
 
 void Object_ApplyExtraRotation(
     const int16_t **extra_rotation, const XYZ_BOOL rot_flags,

@@ -2,10 +2,8 @@
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/camera.h>
-#include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/traps/movable_block.h>
-#include <trx/game/output.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
@@ -249,53 +247,22 @@ static void M_Control(const int16_t item_num)
     }
 }
 
+static inline XYZ_32 M_GetDrawScale(const OBJECT_ID obj_id, const int32_t value)
+{
+    const bool is_vertical = obj_id != O_EXPANDING_BLOCK;
+    return (XYZ_32) {
+        .x = M_FIXED_SCALE,
+        .y = is_vertical ? (value << 2) : M_FIXED_SCALE,
+        .z = is_vertical ? M_FIXED_SCALE : (value << 2),
+    };
+}
+
 static bool M_Draw(const ITEM *const item)
 {
-    ANIM_FRAME *frames[2];
-    int32_t rate;
-    const int32_t frac = Item_GetFrames(item, frames, &rate);
-    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-    const OBJECT *const obj = Object_Get(item->object_id);
-
-    Matrix_Push();
-    Matrix_TranslateAbs32(item->interp.result.pos);
-    Matrix_RotX(item->interp.result.rot.x);
-    Matrix_RotZ(item->interp.result.rot.z);
-    Matrix_RotY(item->interp.result.rot.y);
-
-    const CLIP clip = Output_CheckBoundsClip(bounds);
-    if (clip == CLIP_NOT_VISIBLE) {
-        Matrix_Pop();
-        return false;
-    }
-
-    const double ratio = Interpolation_GetWorldRate();
-    const bool do_interp =
-        Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
     const M_PRIV *const p = item->priv;
-    const int32_t axis_scale = do_interp
-        ? LERP(p->prev_scale << 2, p->scale << 2, ratio)
-        : p->scale << 2;
-
-    XYZ_32 scale = {
-        .x = M_FIXED_SCALE,
-        .y = axis_scale,
-        .z = M_FIXED_SCALE,
-    };
-    if (item->object_id == O_EXPANDING_BLOCK) {
-        SWAP(scale.y, scale.z);
-    }
-    Matrix_ScaleXYZ(scale);
-
-    Output_CalculateObjectLighting(
-        item, frames[0] != nullptr ? &frames[0]->bounds : bounds);
-    Object_DrawMesh(obj->mesh_idx, clip, false);
-
-    if (g_Config.debug.enable_debug_bounding_boxes) {
-        Output_DrawCuboid(bounds);
-    }
-    Matrix_Pop();
-    return true;
+    const XYZ_32 scale = M_GetDrawScale(item->object_id, p->scale);
+    const XYZ_32 prev_scale = M_GetDrawScale(item->object_id, p->prev_scale);
+    return Object_DrawScaledItem(item, scale, prev_scale);
 }
 
 static void M_Setup(OBJECT *const obj)
