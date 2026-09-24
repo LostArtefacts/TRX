@@ -49,7 +49,10 @@ RESULT Level_Section_ReadSamples(LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
         ASSERT(sample_info != nullptr);
         sample_info->number = File_ReadS16(file);
 
-        if (loader->game_version >= 3) {
+        if (loader->game_version >= 4) {
+            sample_info->volume = File_ReadU8(file) << 6;
+            sample_info->range = (File_ReadU8(file) + 1) * WALL_L;
+        } else if (loader->game_version >= 3) {
             sample_info->volume = File_ReadU8(file) << 7;
             sample_info->range = File_ReadU8(file) * WALL_L;
         } else {

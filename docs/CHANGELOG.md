@@ -25,6 +25,7 @@
 - Added Raising and Expanding Block control (TRX1558)
 - Added level views before play starts, with a progress bar (TRX493)
 - Fixed the Guide having Lara's right-hand pistol mesh in Valley of the Kings (OG bug) (TRX1551)
+- Fixed a bug where sound effects such as footsteps were much too quiet (#6673 / TRX1569)
 
 **Lua**
 - Added `trx.fx.gun_flash()`, so a script can draw a muzzle flash on any item (TRX89)

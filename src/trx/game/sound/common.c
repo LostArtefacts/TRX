@@ -4,6 +4,7 @@
 #include <trx/config.h>
 #include <trx/core/log.h>
 #include <trx/core/math/geom.h>
+#include <trx/core/math/trig.h>
 #include <trx/core/memory.h>
 #include <trx/core/subsystem.h>
 #include <trx/core/utils.h>
@@ -25,6 +26,9 @@
 #define M_MAX_ACTIVE_SOUNDS AUDIO_MAX_ACTIVE_SAMPLES
 #define M_SOUND_RANGE_MULT_CONSTANT 4
 #define M_SOUND_MAX_VOLUME 0x8000
+#define M_SOUND_MIN_DECIBEL (-10000)
+#define M_SOUND_TR4_DECIBEL_HEADROOM 8000
+#define M_SOUND_TR4_DECIBEL_SLOPE 0.30518511f
 #define M_SOUND_MAX_PITCH_CHANGE 6000
 #define M_SOUND_MAX_VOLUME_CHANGE (g_TRVersion >= 3 ? 0x1000 : 0x2000)
 
@@ -79,8 +83,22 @@ static int M_SampleDataEntry_Cmp(
 
 static int32_t M_ConvertVolumeToDecibel(const int32_t volume)
 {
-    int32_t idx = volume * g_Config.audio.master_volume * m_MasterVolume
-        * M_DECIBEL_LUT_SIZE / M_SOUND_MAX_VOLUME;
+    const float master = g_Config.audio.master_volume * m_MasterVolume;
+
+    if (g_TRVersion >= 4) {
+        // TR4 leaves 80 dB of headroom above the loudest sample, so every
+        // sample above a fifth of the maximum plays unattenuated.
+        int32_t centi_db = M_SOUND_TR4_DECIBEL_HEADROOM
+            - (int32_t)((M_SOUND_MAX_VOLUME - 1 - volume)
+                        * M_SOUND_TR4_DECIBEL_SLOPE);
+        CLAMP(centi_db, M_SOUND_MIN_DECIBEL, 0);
+        centi_db += master > 0.0f ? (int32_t)lrint(2000.0 * log10(master))
+                                  : M_SOUND_MIN_DECIBEL;
+        CLAMP(centi_db, M_SOUND_MIN_DECIBEL, 0);
+        return centi_db;
+    }
+
+    int32_t idx = volume * master * M_DECIBEL_LUT_SIZE / M_SOUND_MAX_VOLUME;
     CLAMP(idx, 0, M_DECIBEL_LUT_SIZE - 1);
     return m_DecibelLUT[idx];
 }
@@ -134,6 +152,14 @@ static int32_t M_GetVolume(
 
     if (g_TRVersion == 1) {
         return volume - distance * 3.5f;
+    }
+
+    if (g_TRVersion >= 4) {
+        if (distance == 0) {
+            return volume;
+        }
+        const int32_t angle = ((int64_t)distance << 14) / sample->range;
+        return (volume * (0x1000 - (Math_Sin(angle) >> 2))) / 0x1000;
     }
 
     const int32_t attenuation =
@@ -321,7 +347,7 @@ static void M_ApplyConfig(void)
 RESULT Sound_Init(void)
 {
     m_MasterVolume = g_Config.audio.sound_volume;
-    m_DecibelLUT[0] = -10000;
+    m_DecibelLUT[0] = M_SOUND_MIN_DECIBEL;
 
     for (int32_t i = 1; i < M_DECIBEL_LUT_SIZE; i++) {
         if (g_TRVersion < 3) {
@@ -333,7 +359,7 @@ RESULT Sound_Init(void)
             // Later we apply a linear gain of `10^(centi_dB/2000)`.
             const double gain = (double)i / (double)M_DECIBEL_LUT_SIZE;
             int32_t centi_db = (int32_t)lrint(2000.0 * log10(gain));
-            CLAMP(centi_db, -10000, 0);
+            CLAMP(centi_db, M_SOUND_MIN_DECIBEL, 0);
             m_DecibelLUT[i] = centi_db;
         }
     }
