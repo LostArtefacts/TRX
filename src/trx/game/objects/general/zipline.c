@@ -37,8 +37,8 @@ static const OBJECT_BOUNDS m_DefaultBounds = {
 
 static const OBJECT_BOUNDS m_ControlledBounds = {
     .shift = {
-        .min = { .x = -WALL_L / 4, .y = -100, .z = +0, },
-        .max = { .x = +WALL_L / 4, .y = +100, .z = +WALL_L / 2, },
+        .min = { .x = -WALL_L / 4, .y = -STEP_L, .z = +0, },
+        .max = { .x = +WALL_L / 4, .y = +STEP_L, .z = +WALL_L / 2, },
     },
     .rot = {
         .min = { .x = +0, .y = -25 * DEG_1, .z = +0, },
@@ -149,6 +149,19 @@ static void M_Grab(
     zip_item->trigger.spent = true;
 }
 
+static XYZ_32 M_GetControlledPosition(const ITEM *const item)
+{
+    const XYZ_32 pos = XYZ_32_OffsetYaw(item->pos, item->rot.y, m_Position.z);
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, pos);
+    return (XYZ_32) {
+        .x = m_Position.x,
+        .y = height - item->pos.y,
+        .z = m_Position.z,
+    };
+}
+
 static void M_CollisionControlled(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
@@ -162,7 +175,8 @@ static void M_CollisionControlled(
     const OBJECT *const obj = Object_Get(item->object_id);
 
     if (Lara_TestPosition(item, obj->bounds_func())) {
-        if (Lara_MovePosition(item, &m_Position)) {
+        const XYZ_32 move_pos = M_GetControlledPosition(item);
+        if (Lara_MovePosition(item, &move_pos)) {
             Lara_Interact_FinishControl(LARA_INTERACT_SWITCH);
             M_Grab(item, lara_item, lara);
         } else {
