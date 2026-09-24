@@ -320,7 +320,6 @@ M_GF_HANDLER(M_HandlePicture)
         .display_time = data->display_time,
         .fade_in_time = data->fade_in_time,
         .fade_out_time = data->fade_out_time,
-        .display_time_includes_fades = g_TRVersion >= 2,
         .loading_pic = event->type == GFS_LOADING_SCREEN,
         .block_cross_fade_in = is_after_fmv,
     });

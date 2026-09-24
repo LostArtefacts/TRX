@@ -34,16 +34,6 @@ static bool M_UsesCrossFadeIn(PHASE *const phase)
     return p->args.loading_pic && !p->args.block_cross_fade_in;
 }
 
-// Returns the time that the picture remains visible before it fades out.
-// The loading bar fills during this time.
-static double M_GetDisplayTime(const M_PRIV *const p)
-{
-    return p->args.display_time
-        - (p->args.display_time_includes_fades
-               ? p->args.fade_in_time + p->args.fade_out_time
-               : 0.0);
-}
-
 static void M_FadeOut(M_PRIV *const p)
 {
     p->state = STATE_FADE_OUT;
@@ -91,7 +81,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
 
     case STATE_DISPLAY:
         if (g_InputDB.menu_skip
-            || ClockTimer_CheckElapsed(&p->timer, M_GetDisplayTime(p))) {
+            || ClockTimer_CheckElapsed(&p->timer, p->args.display_time)) {
             M_FadeOut(p);
         }
         break;
@@ -125,7 +115,7 @@ static float M_GetLoadProgress(const M_PRIV *const p)
     if (p->state == STATE_FADE_IN) {
         return 0.0f;
     }
-    const double display_time = M_GetDisplayTime(p);
+    const double display_time = p->args.display_time;
     if (p->state == STATE_FADE_OUT || display_time <= 0.0) {
         return 1.0f;
     }
