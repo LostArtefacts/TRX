@@ -414,6 +414,7 @@ X_OBJ_NAME_DEFINE(O_SENTRY_GUN,             "Sentry Gun")
 X_OBJ_NAME_DEFINE(O_AREA_51_ROCKET,         "Area 51 Rocket")
 X_OBJ_NAME_DEFINE(O_AREA_51_ROCKET_BLAST,   "Area 51 Rocket Blast")
 X_OBJ_NAME_DEFINE(O_AREA_51_ROCKET_SUPPORT, "Area 51 Rocket Support")
+X_OBJ_NAME_DEFINE(O_MOVING_FLOOR,           "Moving Floor")
 
 // Misc
 X_OBJ_NAME_DEFINE(O_ALARM_SOUND,             "Alarm")

@@ -3004,6 +3004,9 @@
         "moving_bar": {
             "name": "Bàr Gluasadach",
         },
+        "moving_floor": {
+            "name": "Làr Gluasadach",
+        },
         "mp5_ammo_item": {
             "name": "Lòin MP5",
         },

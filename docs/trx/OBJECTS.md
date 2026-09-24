@@ -2619,6 +2619,16 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### moving_floor
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>is_pressure_plate</code></td><td colspan="3" align="center">false</td><td>Whether the floor acts as a pressure plate, moving down when Lara is on top and back up when she leaves it.</td></tr>
+<tr><td><code>travel_distance</code></td><td colspan="3" align="center">16</td><td>The vertical distance the floor will travel, in half-clicks. Value range: minimum 1.</td></tr>
+<tr><td><code>speed</code></td><td colspan="3" align="center">4</td><td>The speed at which the floor moves, in world units. Value range: minimum 1; maximum 64.</td></tr>
+</tbody>
+</table>
+
 #### mp5_ammo_item
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (254)</th><th align="center">TR2 (294)</th><th align="center">TR3 (173)</th><th>Description</th></tr></thead>

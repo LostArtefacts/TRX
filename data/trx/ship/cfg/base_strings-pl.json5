@@ -3004,6 +3004,9 @@
         "moving_bar": {
             "name": "Ruchomy pręt",
         },
+        "moving_floor": {
+            "name": "\\{review}Ruchoma podłoga",
+        },
         "mp5_ammo_item": {
             "name": "Amunicja do MP5",
         },

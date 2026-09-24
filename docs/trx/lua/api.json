@@ -342,7 +342,7 @@
     },
     {
       "bulk": true,
-      "count": 827,
+      "count": 828,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -825,6 +825,7 @@
         "MOVABLE_BLOCK_3",
         "MOVABLE_BLOCK_4",
         "MOVING_BAR",
+        "MOVING_FLOOR",
         "MP5_AMMO_ITEM",
         "MP5_AMMO_OPTION",
         "MP5_ITEM",

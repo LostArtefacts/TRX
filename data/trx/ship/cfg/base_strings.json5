@@ -3086,6 +3086,9 @@
         "moving_bar": {
             "name": "Moving Bar",
         },
+        "moving_floor": {
+            "name": "Moving Floor",
+        },
         "mp5_ammo_item": {
             "name": "MP5 Clips",
         },

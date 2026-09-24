@@ -737,6 +737,7 @@ common_sources = [
   'trx/game/objects/general/mini_copter.c',
   'trx/game/objects/general/moored_boat.c',
   'trx/game/objects/general/moving_bar.c',
+  'trx/game/objects/general/moving_floor.c',
   'trx/game/objects/general/pickup.c',
   'trx/game/objects/general/pulley_switch.c',
   'trx/game/objects/general/puzzle_hole.c',
