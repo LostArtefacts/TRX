@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/debug.h>
 #include <trx/game/anims/walk.h>
+#include <trx/game/interpolation.h>
 #include <trx/game/inventory.h>
 #include <trx/game/items/col.h>
 #include <trx/game/matrix.h>
@@ -247,6 +248,51 @@ bool Object_DrawInterpolatedObjectWithSwap(
     }
     Anim_Walk_End(&walk);
 
+    Matrix_Pop();
+    return true;
+}
+
+bool Object_DrawScaledItem(
+    const ITEM *const item, const XYZ_32 scale, const XYZ_32 prev_scale)
+{
+    ANIM_FRAME *frames[2];
+    int32_t rate;
+    const int32_t frac = Item_GetFrames(item, frames, &rate);
+    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
+    const OBJECT *const obj = Object_Get(item->object_id);
+
+    Matrix_Push();
+    Matrix_TranslateAbs32(item->interp.result.pos);
+    Matrix_RotX(item->interp.result.rot.x);
+    Matrix_RotZ(item->interp.result.rot.z);
+    Matrix_RotY(item->interp.result.rot.y);
+
+    const CLIP clip = Output_CheckBoundsClip(bounds);
+    if (clip == CLIP_NOT_VISIBLE) {
+        Matrix_Pop();
+        return false;
+    }
+
+    const double ratio = Interpolation_GetWorldRate();
+    const bool do_interp =
+        Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
+    if (do_interp) {
+        Matrix_ScaleXYZ((XYZ_32) {
+            .x = LERP(prev_scale.x, scale.x, ratio),
+            .y = LERP(prev_scale.y, scale.y, ratio),
+            .z = LERP(prev_scale.z, scale.z, ratio),
+        });
+    } else {
+        Matrix_ScaleXYZ(scale);
+    }
+
+    Output_CalculateObjectLighting(
+        item, frames[0] != nullptr ? &frames[0]->bounds : bounds);
+    Object_DrawMesh(obj->mesh_idx, clip, false);
+
+    if (g_Config.debug.enable_debug_bounding_boxes) {
+        Output_DrawCuboid(bounds);
+    }
     Matrix_Pop();
     return true;
 }

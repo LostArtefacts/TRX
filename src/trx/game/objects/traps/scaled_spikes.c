@@ -3,9 +3,7 @@
 #include <trx/config.h>
 #include <trx/core/json/util/read_io.h>
 #include <trx/core/json/util/write_io.h>
-#include <trx/game/interpolation.h>
 #include <trx/game/lara.h>
-#include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
@@ -296,6 +294,15 @@ static void M_Control(const int16_t item_num)
     }
 }
 
+static inline XYZ_32 M_GetDrawScale(const int32_t value)
+{
+    return (XYZ_32) {
+        .x = M_XZ_SCALE,
+        .y = value << 2,
+        .z = M_XZ_SCALE,
+    };
+}
+
 static bool M_Draw(const ITEM *const item)
 {
     const M_PRIV *const p = item->priv;
@@ -303,44 +310,9 @@ static bool M_Draw(const ITEM *const item)
         return false;
     }
 
-    ANIM_FRAME *frames[2];
-    int32_t rate;
-    const int32_t frac = Item_GetFrames(item, frames, &rate);
-    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-    const OBJECT *const obj = Object_Get(item->object_id);
-
-    Matrix_Push();
-    Matrix_TranslateAbs32(item->interp.result.pos);
-    Matrix_RotX(item->interp.result.rot.x);
-    Matrix_RotZ(item->interp.result.rot.z);
-    Matrix_RotY(item->interp.result.rot.y);
-
-    const CLIP clip = Output_CheckBoundsClip(bounds);
-    if (clip == CLIP_NOT_VISIBLE) {
-        Matrix_Pop();
-        return false;
-    }
-
-    const double ratio = Interpolation_GetWorldRate();
-    const bool do_interp =
-        Interpolation_IsActive() && ratio > 0.0 && ratio < 1.0;
-    const int32_t y_scale = do_interp
-        ? LERP(p->prev_scale << 2, p->scale << 2, ratio)
-        : p->scale << 2;
-
-    Matrix_ScaleX(M_XZ_SCALE);
-    Matrix_ScaleY(y_scale);
-    Matrix_ScaleZ(M_XZ_SCALE);
-
-    Output_CalculateObjectLighting(
-        item, frames[0] != nullptr ? &frames[0]->bounds : bounds);
-    Object_DrawMesh(obj->mesh_idx, clip, false);
-
-    if (g_Config.debug.enable_debug_bounding_boxes) {
-        Output_DrawCuboid(bounds);
-    }
-    Matrix_Pop();
-    return true;
+    const XYZ_32 scale = M_GetDrawScale(p->scale);
+    const XYZ_32 prev_scale = M_GetDrawScale(p->prev_scale);
+    return Object_DrawScaledItem(item, scale, prev_scale);
 }
 
 static void M_Setup(OBJECT *const obj)
