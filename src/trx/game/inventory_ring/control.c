@@ -327,7 +327,11 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
     if (Shell_IsExiting()) {
         return (GF_COMMAND) { .action = GF_EXIT_GAME };
     } else if (GF_GetOverrideCommand().action != GF_NOOP) {
-        return GF_GetOverrideCommand();
+        const GF_COMMAND gf_cmd = GF_GetOverrideCommand();
+        if (apply_changes) {
+            GF_OverrideCommand((GF_COMMAND) { .action = GF_NOOP }, true);
+        }
+        return gf_cmd;
     } else if (ring->is_demo_needed) {
         return (GF_COMMAND) { .action = GF_START_DEMO, .param = -1 };
     }

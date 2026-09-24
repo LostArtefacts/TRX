@@ -6,8 +6,11 @@
 void GF_Init(void);
 void GF_Shutdown(void);
 
-void GF_OverrideCommand(GF_COMMAND action);
+// Override the current game-flow command. Apply immediate overrides on the next
+// frame. Defer other overrides until the current phase finishes.
+void GF_OverrideCommand(GF_COMMAND action, bool immediate);
 GF_COMMAND GF_GetOverrideCommand(void);
+bool GF_IsOverrideImmediate(void);
 
 GF_LEVEL_TABLE_TYPE GF_GetLevelTableType(const GF_LEVEL_TYPE level_type);
 const GF_LEVEL_TABLE *GF_GetLevelTable(GF_LEVEL_TABLE_TYPE level_type);

@@ -111,7 +111,7 @@ static int M_L_ModSwitch(lua_State *const L)
     }
 
     Shell_RequestModSwitch(mod->name);
-    GF_OverrideCommand((GF_COMMAND) { .action = GF_SWITCH_MOD });
+    GF_OverrideCommand((GF_COMMAND) { .action = GF_SWITCH_MOD }, true);
     lua_pushboolean(L, true);
     return 1;
 }

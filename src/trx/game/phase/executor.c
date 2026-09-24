@@ -39,13 +39,17 @@ static FADER_ARGS m_PendingFadeToBlackArgs;
 
 static double m_LastFlipMs = 0.0;
 
-static GF_COMMAND M_HandleOverride(void)
+static GF_COMMAND M_HandleOverride(const PHASE *const phase)
 {
     const GF_COMMAND gf_override_cmd = GF_GetOverrideCommand();
+    if (!GF_IsOverrideImmediate() && phase != nullptr
+        && phase->defers_override) {
+        // Defer the command until the phase finishes.
+        return (GF_COMMAND) { .action = GF_NOOP };
+    }
     if (gf_override_cmd.action == GF_START_FMV) {
-        GF_OverrideCommand((GF_COMMAND) { .action = GF_NOOP });
-        // A movie plays over the phase and hands it back, so the flow is not
-        // derailed and none of the teardown below applies.
+        GF_OverrideCommand((GF_COMMAND) { .action = GF_NOOP }, true);
+        // Let movies return to the current phase.
         const GF_FMV *const fmv = GF_GetFMV(gf_override_cmd.param);
         if (fmv != nullptr) {
             SHOULD(FMV_Play(fmv->path));
@@ -54,16 +58,11 @@ static GF_COMMAND M_HandleOverride(void)
     }
     if (gf_override_cmd.action != GF_NOOP) {
         const GF_COMMAND gf_cmd = gf_override_cmd;
-        GF_OverrideCommand((GF_COMMAND) { .action = GF_NOOP });
+        GF_OverrideCommand((GF_COMMAND) { .action = GF_NOOP }, true);
 
-        // A change in the game flow is not natural. Force features like death
-        // counter to break from the currently active savegame file.
+        // Stop the current save and music before changing game flow.
         SG_Manager_UnbindSlot();
-        // This flag needs to be cleared as well.
         Game_SetIsPlaying(false);
-        // Usually, sequences permit music to flow through - for instance, the
-        // end of level screen in The Great Wall transitioning to Venice.
-        // We must stop it manually here when derailing the sequence (#3469).
         Music_Stop();
 
         return gf_cmd;
@@ -101,7 +100,8 @@ static void M_DrawFadeToBlackTransition(const float opacity)
     }
 }
 
-static GF_COMMAND M_RunFadeToBlackTransition(const FADER_ARGS args)
+static GF_COMMAND M_RunFadeToBlackTransition(
+    const PHASE *const phase, const FADER_ARGS args)
 {
     Output_Overlay_CaptureSnapshot();
 
@@ -114,7 +114,7 @@ static GF_COMMAND M_RunFadeToBlackTransition(const FADER_ARGS args)
         Shell_ProcessEvents();
         Overlay_Control();
 
-        const GF_COMMAND gf_cmd = M_HandleOverride();
+        const GF_COMMAND gf_cmd = M_HandleOverride(phase);
         if (gf_cmd.action == GF_EXIT_GAME) {
             PhaseExecutor_BeginExit();
         } else if (gf_cmd.action != GF_NOOP) {
@@ -144,7 +144,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     Shell_ProcessEvents();
     Overlay_Control();
 
-    const GF_COMMAND gf_cmd = M_HandleOverride();
+    const GF_COMMAND gf_cmd = M_HandleOverride(phase);
     if (gf_cmd.action == GF_EXIT_GAME) {
         PhaseExecutor_BeginExit();
     } else if (gf_cmd.action != GF_NOOP) {
@@ -250,7 +250,7 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
     GF_COMMAND gf_cmd = { .action = GF_NOOP };
     bool skip_fade_out = false;
 
-    gf_cmd = M_HandleOverride();
+    gf_cmd = M_HandleOverride(phase);
     if (gf_cmd.action != GF_NOOP) {
         return gf_cmd;
     }
@@ -267,7 +267,8 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
             && phase->uses_cross_fade_in != nullptr
             && phase->uses_cross_fade_in(phase);
         if (!uses_cross_fade_in) {
-            gf_cmd = M_RunFadeToBlackTransition(m_PendingFadeToBlackArgs);
+            gf_cmd =
+                M_RunFadeToBlackTransition(phase, m_PendingFadeToBlackArgs);
             if (gf_cmd.action != GF_NOOP) {
                 goto finish;
             }

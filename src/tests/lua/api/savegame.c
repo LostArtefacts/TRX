@@ -84,7 +84,7 @@ bool Savegame_Save(const SAVEGAME_SLOT_REF slot)
     return true;
 }
 
-void GF_OverrideCommand(const GF_COMMAND command)
+void GF_OverrideCommand(const GF_COMMAND command, const bool immediate)
 {
     m_LoadedParam = command.param;
 }

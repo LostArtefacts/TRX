@@ -84,7 +84,7 @@ void Shell_RequestModSwitch(const char *const mod_name)
     m_RequestedMod = mod_name;
 }
 
-void GF_OverrideCommand(const GF_COMMAND command)
+void GF_OverrideCommand(const GF_COMMAND command, const bool immediate)
 {
 }
 

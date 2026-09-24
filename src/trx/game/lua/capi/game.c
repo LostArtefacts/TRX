@@ -306,10 +306,12 @@ static int M_L_GamePlayLevel(lua_State *const L)
     }
 
     if (select) {
-        GF_OverrideCommand((GF_COMMAND) {
-            .action = GF_SELECT_GAME,
-            .param = next_level->num,
-        });
+        GF_OverrideCommand(
+            (GF_COMMAND) {
+                .action = GF_SELECT_GAME,
+                .param = next_level->num,
+            },
+            true);
         return 0;
     }
 
@@ -321,10 +323,12 @@ static int M_L_GamePlayLevel(lua_State *const L)
             resume->prev_level = current_level->num;
         }
     }
-    GF_OverrideCommand((GF_COMMAND) {
-        .action = GF_START_GAME,
-        .param = next_level->num,
-    });
+    GF_OverrideCommand(
+        (GF_COMMAND) {
+            .action = GF_START_GAME,
+            .param = next_level->num,
+        },
+        true);
     return 0;
 }
 
@@ -357,10 +361,12 @@ static int M_L_GamePlayFMV(lua_State *const L)
         ? GF_GetFMV(num)
         : nullptr;
     luaL_argcheck(L, fmv != nullptr, 1, "unknown FMV");
-    GF_OverrideCommand((GF_COMMAND) {
-        .action = GF_START_FMV,
-        .param = GF_GetFMVNumber(fmv),
-    });
+    GF_OverrideCommand(
+        (GF_COMMAND) {
+            .action = GF_START_FMV,
+            .param = GF_GetFMVNumber(fmv),
+        },
+        true);
     return 0;
 }
 
@@ -369,10 +375,12 @@ static int M_L_GamePlayCutscene(lua_State *const L)
 {
     const GF_LEVEL *const level =
         M_CheckLevel(L, 1, GFLT_CUTSCENES, "unknown cutscene");
-    GF_OverrideCommand((GF_COMMAND) {
-        .action = GF_START_CINE,
-        .param = level->num,
-    });
+    GF_OverrideCommand(
+        (GF_COMMAND) {
+            .action = GF_START_CINE,
+            .param = level->num,
+        },
+        true);
     return 0;
 }
 
@@ -392,10 +400,12 @@ static int M_L_GamePlayDemo(lua_State *const L)
     } else {
         level = M_CheckLevel(L, 1, GFLT_DEMOS, "unknown demo");
     }
-    GF_OverrideCommand((GF_COMMAND) {
-        .action = GF_START_DEMO,
-        .param = level->num,
-    });
+    GF_OverrideCommand(
+        (GF_COMMAND) {
+            .action = GF_START_DEMO,
+            .param = level->num,
+        },
+        true);
     M_PushLevel(L, GFLT_DEMOS, GF_GetLevelOrdinalNumber(GFLT_DEMOS, level));
     return 1;
 }
@@ -410,10 +420,12 @@ static int M_L_GamePlayGym(lua_State *const L)
     if (gym_level == nullptr) {
         return luaL_error(L, "this game has no gym");
     }
-    GF_OverrideCommand((GF_COMMAND) {
-        .action = GF_SELECT_GAME,
-        .param = gym_level->num,
-    });
+    GF_OverrideCommand(
+        (GF_COMMAND) {
+            .action = GF_SELECT_GAME,
+            .param = gym_level->num,
+        },
+        true);
     return 0;
 }
 
@@ -435,10 +447,12 @@ static int M_L_GameRestartLevel(lua_State *const L)
         && GF_GetLevelTableType(level->type) == GFLT_MAIN
         && Savegame_RestartAvailable(SG_Manager_GetBoundSlot());
     if (can_restart) {
-        GF_OverrideCommand((GF_COMMAND) {
-            .action = GF_RESTART_GAME,
-            .param = level->num,
-        });
+        GF_OverrideCommand(
+            (GF_COMMAND) {
+                .action = GF_RESTART_GAME,
+                .param = level->num,
+            },
+            true);
     }
     lua_pushboolean(L, can_restart);
     return 1;
@@ -447,14 +461,14 @@ static int M_L_GameRestartLevel(lua_State *const L)
 // trxc.game.exit_to_title()
 static int M_L_GameExitToTitle(lua_State *const L)
 {
-    GF_OverrideCommand((GF_COMMAND) { .action = GF_EXIT_TO_TITLE });
+    GF_OverrideCommand((GF_COMMAND) { .action = GF_EXIT_TO_TITLE }, true);
     return 0;
 }
 
 // trxc.game.exit_game()
 static int M_L_GameExitGame(lua_State *const L)
 {
-    GF_OverrideCommand((GF_COMMAND) { .action = GF_EXIT_GAME });
+    GF_OverrideCommand((GF_COMMAND) { .action = GF_EXIT_GAME }, true);
     return 0;
 }
 
