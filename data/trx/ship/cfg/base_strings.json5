@@ -2003,6 +2003,10 @@
             "title": "Lara's sunglasses",
             "description": "Changes the style of Lara's sunglasses. Note that lenses will be reflective if the relevant option is enabled.\n\n- Off: Lara will not wear sunglasses.\n- Opaque: Lara's sunglasses will have opaque lenses.\n- Transparent: Lara's sunglasses will have semi-transparent lenses.",
         },
+        "visuals.sunglasses_reflective": {
+            "title": "Reflective sunglasses",
+            "description": "Enables reflections on the lenses of Lara's sunglasses. Reflections must also be enabled.",
+        },
         "visuals.ui_brightness": {
             "title": "UI brightness",
             "description": "Changes UI brightness.",

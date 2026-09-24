@@ -441,6 +441,23 @@ void Object_SetMeshReflective(
     Output_DispatchObjectMeshUpdate(abs_mesh_idx);
 }
 
+void Object_SetMeshReflectionsSuppressed(
+    const OBJECT_ID obj_id, const int32_t mesh_idx, const bool suppressed)
+{
+    const OBJECT *const obj = Object_Get(obj_id);
+    if (!obj->loaded) {
+        return;
+    }
+
+    const int32_t abs_mesh_idx = obj->mesh_idx + mesh_idx;
+    OBJECT_MESH *const mesh = Object_GetMesh(abs_mesh_idx);
+    if (mesh->suppress_reflections == suppressed) {
+        return;
+    }
+    mesh->suppress_reflections = suppressed;
+    Output_DispatchObjectMeshUpdate(abs_mesh_idx);
+}
+
 void Object_SetSemiTransparent(const OBJECT_ID obj_id, const bool enabled)
 {
     const OBJECT *const obj = Object_Get(obj_id);

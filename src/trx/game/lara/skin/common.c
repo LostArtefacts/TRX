@@ -6,6 +6,7 @@
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/fmv.h>
 #include <trx/game/game.h>
@@ -17,6 +18,7 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/mesh.h>
 #include <trx/game/lara/skin/gold.h>
+#include <trx/game/objects/common.h>
 #include <trx/version.h>
 
 #define M_NO_OUTFIT (-1)
@@ -403,9 +405,19 @@ static void M_SetCombatFace(const bool enabled)
 
 static void M_UpdateSunglasses(void)
 {
+    const LARA_SKIN_OUTFIT *const outfit = M_GetCurrentOutfit();
+    static const LARA_SKIN_EXTRA_MESH lens_meshes[] = {
+        EXTRA_MESH_GLASSES_OPAQUE,
+        EXTRA_MESH_GLASSES_TRANSPARENT,
+    };
+    for (int32_t i = 0; i < (int32_t)ARRAY_SIZE(lens_meshes); i++) {
+        Object_SetMeshReflectionsSuppressed(
+            outfit->extra_obj_id, Lara_Skin_GetExtraMeshOffset(lens_meshes[i]),
+            !g_Config.visuals.sunglasses_reflective);
+    }
+
     const SUNGLASSES_MODE mode = g_Config.visuals.sunglasses_mode;
-    if (mode == SUNGLASSES_MODE_OFF
-        || !M_GetCurrentOutfit()->supports_sunglasses) {
+    if (mode == SUNGLASSES_MODE_OFF || !outfit->supports_sunglasses) {
         Lara_Skin_ClearEquipment(LM_HEAD);
         return;
     }

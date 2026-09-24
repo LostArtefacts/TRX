@@ -2003,6 +2003,10 @@
             "title": "Occhiali di Lara",
             "description": "Modifica lo stile degli occhiali da sole di Lara. Nota: le lenti saranno riflettenti se l’opzione corrispondente è abilitata.\n\n- Disabilitato: Lara non indosserà gli occhiali da sole.\n- Opaco: Gli occhiali da sole di Lara avranno lenti opache.\n- Trasparente: Gli occhiali da sole di Lara avranno lenti semi-trasparenti.",
         },
+        "visuals.sunglasses_reflective": {
+            "title": "\\{review}Occhiali riflettenti",
+            "description": "\\{review}Abilita i riflessi sulle lenti degli occhiali da sole di Lara. Anche i riflessi devono essere abilitati.",
+        },
         "visuals.ui_brightness": {
             "title": "Luminosità interfaccia",
             "description": "Modifica la luminosità dell'interfaccia.",

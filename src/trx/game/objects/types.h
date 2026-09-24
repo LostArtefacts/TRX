@@ -38,6 +38,9 @@ typedef struct {
 
     float depth_adjustment;
     bool enable_reflections;
+    // Excludes the mesh from reflections, even when the mesh or its faces are
+    // reflective.
+    bool suppress_reflections;
     bool enable_caustics;
     // Draws every face in solid_color, texture and all.
     bool enable_solid_color;
