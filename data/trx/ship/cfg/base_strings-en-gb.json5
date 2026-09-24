@@ -112,6 +112,14 @@
             "title": "Poison healthbar colour",
             "description": "Colour of the healthbar when Lara is poisoned.",
         },
+        "ui.progressbar_color": {
+            "title": "Loading bar colour",
+            "description": "Colour of the loading bar.",
+        },
+        "ui.progressbar_color_ps1": {
+            "title": "Loading bar colour",
+            "description": "Colour of the loading bar.",
+        },
         "ui.sprintbar_color": {
             "title": "Sprintbar colour",
             "description": "Colour of the sprintbar.",
