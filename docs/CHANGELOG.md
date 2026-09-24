@@ -4,6 +4,9 @@
 - Added an option to disable reflections on Lara's sunglasses (Graphic Options → Visuals → Reflective sunglasses) (#6665 / TRX1544)
 - Improved the frame rate, as the game now draws solid surfaces faster
 
+**Lara's movement**
+- Fixed Lara moving while the look button was held and two opposite directions were pressed (OG bug) (#6686 / TRX1585)
+
 **Gameplay**
 - Added the ability to combine the two halves of an item in the inventory, such as the eye pieces in Tomb of Seth (TRX482)
 - Fixed a bug where a friendly sentry gun kept aiming at Lara, and aimed at enemies it had no shot at, instead of the enemies it was set to attack

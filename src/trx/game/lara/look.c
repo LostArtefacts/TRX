@@ -102,13 +102,16 @@ void Lara_Look_LeftRight(void)
     const CAMERA_LOOK_SETTINGS *const look =
         Camera_GetLookSettings(lara->water_status == LWS_SURFACE);
 
-    if (g_Input.left) {
-        g_Input.left = 0;
+    const bool turn_left = g_Input.left && !g_Input.right;
+    const bool turn_right = g_Input.right && !g_Input.left;
+    g_Input.left = 0;
+    g_Input.right = 0;
+
+    if (turn_left) {
         if (lara->head_rot.y > look->min_head_rotation) {
             lara->head_rot.y -= look->head_turn;
         }
-    } else if (g_Input.right) {
-        g_Input.right = 0;
+    } else if (turn_right) {
         if (lara->head_rot.y < look->max_head_rotation) {
             lara->head_rot.y += look->head_turn;
         }
@@ -132,13 +135,16 @@ void Lara_Look_UpDown(void)
     const CAMERA_LOOK_SETTINGS *const look =
         Camera_GetLookSettings(lara->water_status == LWS_SURFACE);
 
-    if (g_Input.forward) {
-        g_Input.forward = 0;
+    const bool tilt_up = g_Input.forward && !g_Input.back;
+    const bool tilt_down = g_Input.back && !g_Input.forward;
+    g_Input.forward = 0;
+    g_Input.back = 0;
+
+    if (tilt_up) {
         if (lara->head_rot.x > look->min_head_tilt) {
             lara->head_rot.x -= look->head_turn;
         }
-    } else if (g_Input.back) {
-        g_Input.back = 0;
+    } else if (tilt_down) {
         if (lara->head_rot.x < look->max_head_tilt) {
             lara->head_rot.x += look->head_turn;
         }
