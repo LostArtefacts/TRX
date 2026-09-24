@@ -10,6 +10,7 @@
 #include <trx/game/items/const.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/common.h>
+#include <trx/game/objects/common.h>
 #include <trx/game/objects/creatures/skidoo_driver.h>
 #include <trx/game/objects/creatures/tribe_boss.h>
 #include <trx/game/objects/families.h>
@@ -1489,6 +1490,11 @@ void Creature_Die(const int16_t item_num, const CREATURE_DIE_ARGS args)
     const GIB_FLAGS gib_flags = args.gib_flags;
     const int16_t flame_variant = args.flame_variant;
     ITEM *const item = Item_Get(item_num);
+
+    if (explode && !Object_CanBeExploded(item)) {
+        M_Kill(item, args.sender);
+        return;
+    }
 
     switch (item->object_id) {
     case O_LIZARD:

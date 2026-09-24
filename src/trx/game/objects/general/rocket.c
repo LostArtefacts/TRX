@@ -10,6 +10,7 @@
 #include <trx/game/gun/smashing.h>
 #include <trx/game/items.h>
 #include <trx/game/lara.h>
+#include <trx/game/objects/common.h>
 #include <trx/game/objects/families.h>
 #include <trx/game/output/lights.h>
 #include <trx/game/output/state.h>
@@ -96,25 +97,6 @@ static void M_Explode(const int16_t rocket_item_num, const XYZ_32 pos)
     Creature_AlertNearbyGuards(rocket_item);
 }
 
-static bool M_CanExplodeTarget(const ITEM *const item)
-{
-    const OBJECT *const object = Object_Get(item->object_id);
-    if (object->can_be_exploded_func != nullptr) {
-        return object->can_be_exploded_func(item);
-    }
-
-    const ITEM_ACTION_SLOT action =
-        ItemAction_IDToSlot(ITEM_ACTION_FINISH_LEVEL);
-    for (int32_t i = 0; i < object->anim_count; i++) {
-        const ANIM *const anim = Object_GetAnim(object, i);
-        if (Anim_HasFXCommand(anim, action)) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 static bool M_TryExplodeItem(
     ITEM *const projectile_item, const GAME_VECTOR old_pos,
     const int16_t target_item_num, const int32_t radius)
@@ -181,7 +163,7 @@ static bool M_TryExplodeItem(
     } else if (Gun_GetSmashPolicy(target_item) != GUN_SMASH_POLICY_NONE) {
         Gun_SmashItem(target_item_num);
     } else if (
-        target_item->hit_points <= 0 && M_CanExplodeTarget(target_item)) {
+        target_item->hit_points <= 0 && Object_CanBeExploded(target_item)) {
         Creature_Die(
             target_item_num,
             (CREATURE_DIE_ARGS) {

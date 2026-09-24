@@ -104,6 +104,9 @@ void Object_SetSemiTransparent(OBJECT_ID obj_id, bool enabled);
 
 bool Object_CanInterpolate(const ITEM *item, int32_t frame_a, int32_t frame_b);
 
+// Returns whether the item can be exploded.
+bool Object_CanBeExploded(const ITEM *item);
+
 // Bind the setup routine of an object before catalogue setup.
 void Object_Register(OBJECT_ID object_id, void (*setup_func)(OBJECT *obj));
 
