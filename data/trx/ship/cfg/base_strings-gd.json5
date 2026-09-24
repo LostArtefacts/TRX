@@ -612,6 +612,8 @@
         },
         "enums": {
             "bar_look": {
+                "loading": "\\{review}Luchdadh",
+                "same": "\\{review}Fèin-obrachail",
                 "tr1_pc": "TR1",
                 "tr2_pc": "TR2 PC",
                 "tr2_ps1": "TR2 PS1",
@@ -1761,9 +1763,17 @@
             "title": "\\{review}Dath bàr-luchdaidh",
             "description": "\\{review}Dath a' bhàr-luchdaidh.",
         },
+        "ui.progressbar_look": {
+            "title": "\\{review}Coltas a' bhàir luchdaidh",
+            "description": "\\{review}Taghaidh seo am frèam a thèid a chleachdadh airson a' bhàir luchdaidh. Co-dhùnaidh an taghadh cuideachd dè an roghainn datha gu h-ìosal a bhios an sàs.",
+        },
         "ui.show_bars": {
             "title": "Cleachd bàraichean",
             "description": "Seallaidh seo na bàraichean sa gheama. Ma chuireas tu dheth iad, thèid fiosrachadh mu shlàinte Lara agus goireasan eile fhalach (airson ruith dhùbhlanach).",
+        },
+        "ui.show_loading_bar": {
+            "title": "\\{review}Bàr luchdaidh",
+            "description": "\\{review}Seallaidh seo bàr adhartais air na sgrìnichean luchdaidh.",
         },
         "ui.show_pickups_overlay": {
             "title": "Taisbeanadh thogailtean",

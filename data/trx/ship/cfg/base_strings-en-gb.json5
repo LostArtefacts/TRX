@@ -120,6 +120,9 @@
             "title": "Loading bar colour",
             "description": "Colour of the loading bar.",
         },
+        "ui.progressbar_look": {
+            "description": "Chooses the frame the loading bar is drawn with. The choice also decides which loading bar colour setting below applies.",
+        },
         "ui.sprintbar_color": {
             "title": "Sprintbar colour",
             "description": "Colour of the sprintbar.",

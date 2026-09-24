@@ -151,11 +151,8 @@ static void M_Draw(const UI_NODE *const node)
     const int32_t y = UI_ScaleY(node->y);
     const int32_t w = UI_ScaleX(node->w);
     const int32_t h = UI_ScaleY(node->h);
-    const bool plain_border = settings->border_color.a != 0;
-    const int32_t border = plain_border
-        ? MAX(1, UI_ScaleY(node->y + MAX(1.0f, settings->border_width)) - y)
-        : h / (float)(UI_BAR_COLOR_STEPS + 4);
-    const int32_t padding = plain_border ? 0 : border;
+    const int32_t border = h / (float)(UI_BAR_COLOR_STEPS + 4);
+    const int32_t padding = border * data->theme->padding;
     const M_RECT_32 outer_rect = {
         .x = x,
         .y = y,
@@ -173,11 +170,7 @@ static void M_Draw(const UI_NODE *const node)
         .h = inner_rect.h - padding * 2,
     };
 
-    if (plain_border) {
-        UI_ScheduleDrawScreenFlatQuad(
-            outer_rect.x, outer_rect.y, 0, outer_rect.w, outer_rect.h,
-            settings->border_color);
-    } else if (data->theme->kind == UI_BAR_THEME_PS1_KIND) {
+    if (data->theme->kind == UI_BAR_THEME_PS1_KIND) {
         M_DrawBorderPS1(data->theme, outer_rect, border);
     } else {
         M_DrawBorderPC(data->theme, outer_rect, border);

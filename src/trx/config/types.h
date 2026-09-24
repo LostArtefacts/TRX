@@ -147,6 +147,7 @@ typedef struct {
         bool enable_smooth_bars;
         char *bar_look;
         bool show_bars;
+        bool show_loading_bar;
         bool enable_bar_flashing;
         struct {
             UI_ELEMENT_LOCATION location;
@@ -169,6 +170,7 @@ typedef struct {
             char *color_allies_ps1;
         } enemy_health_bar;
         struct {
+            char *look;
             char *color;
             char *color_ps1;
         } progress_bar;

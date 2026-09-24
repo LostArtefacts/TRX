@@ -196,17 +196,26 @@ static bool M_BarColorPS1_IsVisible(
     return UI_Settings_IsCurrentBarLookPS1();
 }
 
+static bool M_LoadingBar_IsVisible(
+    const CONFIG_OPTION *const option, void *const user_data)
+{
+    return g_Config.ui.show_loading_bar;
+}
+
+// The loading bar picks its own look, so which of its two color settings
+// applies follows that look rather than the one the other bars take.
 static bool M_ProgressBarColorPC_IsVisible(
     const CONFIG_OPTION *const option, void *const user_data)
 {
-    // Only TR4 shows a loading bar.
-    return g_TRVersion == 4 && M_BarColorPC_IsVisible(option, user_data);
+    return g_Config.ui.show_loading_bar
+        && !UI_Settings_IsBarLookPS1(UI_BAR_PROGRESS);
 }
 
 static bool M_ProgressBarColorPS1_IsVisible(
     const CONFIG_OPTION *const option, void *const user_data)
 {
-    return g_TRVersion == 4 && M_BarColorPS1_IsVisible(option, user_data);
+    return g_Config.ui.show_loading_bar
+        && UI_Settings_IsBarLookPS1(UI_BAR_PROGRESS);
 }
 
 static bool M_IdlePose_IsAvailable(
@@ -620,6 +629,9 @@ REGISTER_UI_SETTING_HANDLER(
         .key = "ui.enemy_healthbar_color_allies_ps1",
         .is_available = M_AllyHealthbar_IsAvailable,
         .is_visible = M_BarColorPS1_IsVisible)
+
+REGISTER_UI_SETTING_HANDLER(
+        .key = "ui.progressbar_look", .is_visible = M_LoadingBar_IsVisible)
 
 REGISTER_UI_SETTING_HANDLER(
         .key = "ui.progressbar_color",

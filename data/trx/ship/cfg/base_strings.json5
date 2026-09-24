@@ -612,6 +612,8 @@
         },
         "enums": {
             "bar_look": {
+                "loading": "Loading",
+                "same": "Automatic",
                 "tr1_pc": "TR1",
                 "tr2_pc": "TR2 PC",
                 "tr2_ps1": "TR2 PS1",
@@ -1761,9 +1763,17 @@
             "title": "Loading bar color",
             "description": "Color of the loading bar.",
         },
+        "ui.progressbar_look": {
+            "title": "Loading bar appearance",
+            "description": "Chooses the frame the loading bar is drawn with. The choice also decides which loading bar color setting below applies.",
+        },
         "ui.show_bars": {
             "title": "Show bars",
             "description": "Shows the ingame bars. Turning them off obscures information on Lara's health and other resources (for challenge runs).",
+        },
+        "ui.show_loading_bar": {
+            "title": "Loading bar",
+            "description": "Shows a progress bar on the loading screens.",
         },
         "ui.show_pickups_overlay": {
             "title": "Pickups overlay",

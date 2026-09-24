@@ -957,17 +957,13 @@ void UI_SettingsEditor_Draw(
             UI_ROW_ARROWS_MEDIUM);
         {
             if (M_IsBarColorEnum(row)) {
-                const UI_BAR_TYPE type = M_GetBarType(row);
                 UI_Bar((UI_BAR_SETTINGS) {
                     .w = M_BAR_WIDTH,
                     .h = M_BAR_HEIGHT,
                     .value = 100,
                     .max_value = 100,
-                    .type = type,
+                    .type = M_GetBarType(row),
                     .preview = true,
-                    .border_color = type == UI_BAR_PROGRESS
-                        ? (RGBA_8888) { 0xFF, 0xFF, 0xFF, 0xFF }
-                        : (RGBA_8888) {},
                 });
             } else if (M_IsColorEditorOption(row)) {
                 const char *const value = M_FormatRowValue(s, row_idx);

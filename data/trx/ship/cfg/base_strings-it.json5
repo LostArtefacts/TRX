@@ -612,6 +612,8 @@
         },
         "enums": {
             "bar_look": {
+                "loading": "\\{review}Caricamento",
+                "same": "\\{review}Automatico",
                 "tr1_pc": "TR1",
                 "tr2_pc": "TR2 PC",
                 "tr2_ps1": "TR2 PS1",
@@ -1761,9 +1763,17 @@
             "title": "\\{review}Colore barra di caricamento",
             "description": "\\{review}Colore utilizzato per la barra di caricamento.",
         },
+        "ui.progressbar_look": {
+            "title": "\\{review}Aspetto barra di caricamento",
+            "description": "\\{review}Consente di scegliere la cornice con cui viene disegnata la barra di caricamento. La scelta determina anche quale impostazione di colore, riportata di seguito, verrà applicata.",
+        },
         "ui.show_bars": {
             "title": "Mostra barre",
             "description": "Mostra le barre di gioco. Disattivandole si nascondono le informazioni sulla salute di Lara e altre risorse (per le sfide).",
+        },
+        "ui.show_loading_bar": {
+            "title": "\\{review}Barra di caricamento",
+            "description": "\\{review}Mostra una barra di avanzamento nelle schermate di caricamento.",
         },
         "ui.show_pickups_overlay": {
             "title": "Notifiche raccolta",

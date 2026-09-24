@@ -20,15 +20,6 @@ typedef struct {
     int32_t max_value;
     bool preview;
 
-    // Draws a plain frame in this color and lets the fill reach it, instead
-    // of using the frame and padding from the bar appearance. A fully
-    // transparent color keeps the appearance frame.
-    RGBA_8888 border_color;
-
-    // Thickness of the plain frame, in the same units as w and h. Values below
-    // one unit are raised to it.
-    float border_width;
-
     // Blends between the ramp colors even when the smooth bars setting is
     // turned off.
     bool force_smooth;

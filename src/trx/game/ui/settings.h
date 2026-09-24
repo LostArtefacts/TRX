@@ -33,6 +33,10 @@ typedef struct {
     RGBA_8888 border_tr;
     RGBA_8888 border_bl;
     RGBA_8888 border_br;
+    // Distance between the frame and the fill, in frame widths. Zero lets
+    // the fill reach the frame.
+    float padding;
+
     RGBA_8888 ramp[UI_BAR_COLOR_STEPS];
     RGBA_8888 ramp_left[UI_BAR_COLOR_STEPS];
     RGBA_8888 ramp_right[UI_BAR_COLOR_STEPS];
@@ -66,6 +70,10 @@ typedef struct {
 
 const UI_BAR_THEME *UI_Settings_GetBarTheme(UI_BAR_TYPE type);
 bool UI_Settings_IsCurrentBarLookPS1(void);
+
+// Whether a bar is drawn with a PS1 look, which decides whether its PC or its
+// PS1 color setting applies.
+bool UI_Settings_IsBarLookPS1(UI_BAR_TYPE type);
 
 const UI_MENU_COLORS_PC *UI_Settings_GetMenuColorsPC(void);
 const UI_MENU_COLORS_PS1 *UI_Settings_GetMenuColorsPS1(void);
