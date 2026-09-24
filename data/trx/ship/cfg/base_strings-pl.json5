@@ -2003,6 +2003,10 @@
             "title": "Okulary przeciwsłoneczne",
             "description": "Zmienia styl okularów przeciwsłonecznych Lary. Uwaga: jeśli opcja odbić jest włączona, soczewki będą refleksyjne.\n\n- Wyłączone: Lara nie będzie nosić okularów przeciwsłonecznych.\n- Nieprzezroczyste: okulary będą miały nieprzezroczyste soczewki.\n- Przezroczyste: okulary będą miały półprzezroczyste soczewki.",
         },
+        "visuals.sunglasses_reflective": {
+            "title": "\\{review}Odblaskowe okulary",
+            "description": "\\{review}Włącza odbicia na szkłach okularów przeciwsłonecznych Lary. Odbicia muszą być również włączone.",
+        },
         "visuals.ui_brightness": {
             "title": "Jasność interfejsu",
             "description": "Zmienia jasność interfejsu.",

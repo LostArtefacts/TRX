@@ -145,7 +145,8 @@ static float M_GetReflectivity(const FACE *const face)
 static bool M_IsReflectiveFace(
     const OBJECT_MESH *const obj_mesh, const FACE *const face)
 {
-    return obj_mesh->enable_reflections || face->enable_reflections;
+    return !obj_mesh->suppress_reflections
+        && (obj_mesh->enable_reflections || face->enable_reflections);
 }
 
 static void M_AddObjectFace(
@@ -263,7 +264,7 @@ static void M_BuildMesh(
     const OBJECT_MESH *const obj_mesh = Object_GetMesh(mesh_idx);
 
     uint16_t flags = 0;
-    if (obj_mesh->enable_reflections) {
+    if (obj_mesh->enable_reflections && !obj_mesh->suppress_reflections) {
         flags |= VERT_REFLECTIVE;
     }
 

@@ -97,6 +97,10 @@ OBJECT_ID Object_FindReceptacleKey(const OBJECT_ID receptacle_obj_id);
 void Object_SetReflective(OBJECT_ID obj_id, bool enabled);
 void Object_SetMeshReflective(OBJECT_ID obj_id, int32_t mesh_idx, bool enabled);
 
+// Excludes one mesh from reflections without clearing its reflection flags.
+void Object_SetMeshReflectionsSuppressed(
+    OBJECT_ID obj_id, int32_t mesh_idx, bool suppressed);
+
 // Marks every face of the object's meshes to draw at half opacity, like the
 // PSX half blend mode. Face scene passes are baked at level load; when
 // changing this mid-game, follow up with Output_RefreshObjectMeshes().

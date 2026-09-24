@@ -2003,6 +2003,10 @@
             "title": "Speuclairean-grèine Lara",
             "description": "Atharraichidh seo stoidhle speuclairean-grèine Lara. Nòta: bidh na lionsan meòrachail ma tha an roghainn iomchaidh air a chur an comas.\n\n- Dheth: Cha bhi speuclairean-grèine air Lara.\n- Neo-shoilleir: Bidh lionsan neo-shoilleir air speuclairean-grèine Lara.\n- Follaiseach: Bidh lionsan leth-fhoilleiseach air speuclairean-grèine Lara.",
         },
+        "visuals.sunglasses_reflective": {
+            "title": "\\{review}Speuclairean le faileas",
+            "description": "\\{review}Cuiridh seo faileas air lionsan speuclairean-grèine Lara. Feumaidh faileasan a bhith air cuideachd.",
+        },
         "visuals.ui_brightness": {
             "title": "Soilleireachd EA",
             "description": "Cuiridh seo atharrachadh air soilleireachd na h-eadar-aghaidh.",

@@ -2003,6 +2003,10 @@
             "title": "\\{review}Laras Sonnenbrille",
             "description": "\\{review}Ändert den Stil von Laras Sonnenbrille. Hinweis: Die Gläser sind reflektierend, wenn die entsprechende Option aktiviert ist.\n\n- Aus: Lara trägt keine Sonnenbrille.\n- Undurchsichtig: Laras Sonnenbrille hat undurchsichtige Gläser.\n- Transparent: Laras Sonnenbrille hat halbtransparente Gläser.",
         },
+        "visuals.sunglasses_reflective": {
+            "title": "\\{review}Reflektierende Sonnenbrille",
+            "description": "\\{review}Aktiviert Reflexionen auf den Gläsern von Laras Sonnenbrille. Reflexionen müssen ebenfalls aktiviert sein.",
+        },
         "visuals.ui_brightness": {
             "title": "UI-Helligkeit",
             "description": "Ändert die Helligkeit der Benutzeroberfläche.",

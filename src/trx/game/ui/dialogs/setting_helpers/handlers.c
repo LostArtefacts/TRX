@@ -132,6 +132,12 @@ static bool M_EnableBreeze_IsAvailable(
         || g_Config.visuals.enable_weather || g_Config.visuals.enable_droplets;
 }
 
+static bool M_SunglassesReflective_IsAvailable(
+    const CONFIG_OPTION *const option, void *const user_data)
+{
+    return g_Config.visuals.enable_reflections;
+}
+
 static bool M_ResponsiveJumping_IsAvailable(
     const CONFIG_OPTION *const option, void *const user_data)
 {
@@ -641,6 +647,10 @@ REGISTER_UI_SETTING_HANDLER(
 REGISTER_UI_SETTING_HANDLER(
         .key = "visuals.breeze_mode",
         .is_available = M_EnableBreeze_IsAvailable)
+
+REGISTER_UI_SETTING_HANDLER(
+        .key = "visuals.sunglasses_reflective",
+        .is_available = M_SunglassesReflective_IsAvailable)
 
 REGISTER_UI_SETTING_HANDLER(
         .key = "visuals.enable_ps1_crystals",

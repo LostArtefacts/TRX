@@ -83,6 +83,7 @@ typedef struct {
         bool enable_shotgun_flash;
         char *lara_outfit;
         SUNGLASSES_MODE sunglasses_mode;
+        bool sunglasses_reflective;
         SHADOW_TYPE shadow_type;
         BLOOD_EFFECTS blood_effects;
         bool enable_skybox;

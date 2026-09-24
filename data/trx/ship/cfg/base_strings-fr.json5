@@ -2003,6 +2003,10 @@
             "title": "\\{review}Lunettes de soleil de Lara",
             "description": "\\{review}Modifie le style des lunettes de soleil de Lara. Remarque : les verres seront réfléchissants si l’option correspondante est activée.\n\n- Désactivé : Lara ne portera pas de lunettes de soleil.\n- Opaque : Les lunettes de soleil de Lara auront des verres opaques.\n- Transparent : Les lunettes de soleil de Lara auront des verres semi-transparents.",
         },
+        "visuals.sunglasses_reflective": {
+            "title": "\\{review}Lunettes réfléchissantes",
+            "description": "\\{review}Active les reflets sur les verres des lunettes de soleil de Lara. Les reflets doivent également être activés.",
+        },
         "visuals.ui_brightness": {
             "title": "Luminosité de l'interface",
             "description": "Modifie la luminosité de l'interface.",
