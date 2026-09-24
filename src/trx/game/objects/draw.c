@@ -96,6 +96,59 @@ static BOUNDS_16 M_GetBoundingBox(
     return new_bounds;
 }
 
+static bool M_DrawInterpolatedObject(
+    const OBJECT *const obj, const uint32_t mesh_mask,
+    const int16_t *extra_rotation, const ANIM_FRAME *const frame1,
+    const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate,
+    const OBJECT *const mesh_swap, const bool skips_frame_offset)
+{
+    if (frame1 == nullptr) {
+        return false;
+    }
+    ASSERT(frame1 != nullptr);
+    BOUNDS_16 bounds = frame1->bounds;
+    if (skips_frame_offset) {
+        const XYZ_16 offset = frame1->offset;
+        bounds.min.x -= offset.x;
+        bounds.max.x -= offset.x;
+        bounds.min.y -= offset.y;
+        bounds.max.y -= offset.y;
+        bounds.min.z -= offset.z;
+        bounds.max.z -= offset.z;
+    }
+    const CLIP clip = Output_CheckBoundsClip(&bounds);
+    if (clip == CLIP_NOT_VISIBLE) {
+        return false;
+    }
+
+    ASSERT(rate != 0);
+    Matrix_Push();
+
+    ANIM_WALK walk;
+    Anim_Walk_Begin(
+        &walk,
+        &(ANIM_WALK_DESC) {
+            .obj = obj,
+            .pose = Anim_Pose_FromFrames(frame1, frame2, frac, rate),
+            .extra_rotations = extra_rotation,
+            .applies_base_rot = true,
+            .skips_frame_offset = skips_frame_offset,
+        });
+    while (Anim_Walk_Next(&walk)) {
+        const int32_t mesh_idx = walk.joint;
+        if ((mesh_mask & (1u << mesh_idx)) != 0) {
+            Object_DrawMesh(obj->mesh_idx + mesh_idx, clip, walk.interpolated);
+        } else if (mesh_swap != nullptr) {
+            Object_DrawMesh(
+                mesh_swap->mesh_idx + mesh_idx, clip, walk.interpolated);
+        }
+    }
+    Anim_Walk_End(&walk);
+
+    Matrix_Pop();
+    return true;
+}
+
 bool Object_DrawUnclippedItem(const ITEM *const item)
 {
     const int32_t left = g_PhdLeft;
@@ -206,50 +259,30 @@ bool Object_DrawInterpolatedObject(
     const int16_t *extra_rotation, const ANIM_FRAME *const frame1,
     const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate)
 {
-    return Object_DrawInterpolatedObjectWithSwap(
-        obj, mesh_mask, extra_rotation, frame1, frame2, frac, rate, nullptr);
+    return M_DrawInterpolatedObject(
+        obj, mesh_mask, extra_rotation, frame1, frame2, frac, rate, nullptr,
+        false);
 }
 
 bool Object_DrawInterpolatedObjectWithSwap(
     const OBJECT *const obj, const uint32_t mesh_mask,
-    const int16_t *extra_rotation, const ANIM_FRAME *const frame1,
+    const int16_t *const extra_rotation, const ANIM_FRAME *const frame1,
     const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate,
     const OBJECT *const mesh_swap)
 {
-    if (frame1 == nullptr) {
-        return false;
-    }
-    ASSERT(frame1 != nullptr);
-    const CLIP clip = Output_CheckBoundsClip(&frame1->bounds);
-    if (clip == CLIP_NOT_VISIBLE) {
-        return false;
-    }
+    return M_DrawInterpolatedObject(
+        obj, mesh_mask, extra_rotation, frame1, frame2, frac, rate, mesh_swap,
+        false);
+}
 
-    ASSERT(rate != 0);
-    Matrix_Push();
-
-    ANIM_WALK walk;
-    Anim_Walk_Begin(
-        &walk,
-        &(ANIM_WALK_DESC) {
-            .obj = obj,
-            .pose = Anim_Pose_FromFrames(frame1, frame2, frac, rate),
-            .extra_rotations = extra_rotation,
-            .applies_base_rot = true,
-        });
-    while (Anim_Walk_Next(&walk)) {
-        const int32_t mesh_idx = walk.joint;
-        if ((mesh_mask & (1u << mesh_idx)) != 0) {
-            Object_DrawMesh(obj->mesh_idx + mesh_idx, clip, walk.interpolated);
-        } else if (mesh_swap != nullptr) {
-            Object_DrawMesh(
-                mesh_swap->mesh_idx + mesh_idx, clip, walk.interpolated);
-        }
-    }
-    Anim_Walk_End(&walk);
-
-    Matrix_Pop();
-    return true;
+bool Object_DrawInterpolatedObjectAtPivot(
+    const OBJECT *const obj, const uint32_t mesh_mask,
+    const int16_t *const extra_rotation, const ANIM_FRAME *const frame1,
+    const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate)
+{
+    return M_DrawInterpolatedObject(
+        obj, mesh_mask, extra_rotation, frame1, frame2, frac, rate, nullptr,
+        true);
 }
 
 bool Object_DrawScaledItem(
