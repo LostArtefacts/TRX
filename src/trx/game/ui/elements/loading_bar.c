@@ -19,7 +19,8 @@ static void M_Measure(UI_NODE *const node)
 {
     const M_DATA *const data = node->data;
     node->measure_w = data->width;
-    node->measure_h = UI_LOADING_BAR_HEIGHT * UI_Scaler_GetTextScale();
+    node->measure_h =
+        UI_LOADING_BAR_HEIGHT * UI_Scaler_GetScale(UI_SCALER_TARGET_BAR);
 }
 
 static void M_Draw(const UI_NODE *const node)
