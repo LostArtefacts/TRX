@@ -8119,6 +8119,23 @@
       }
     },
     {
+      "description": "Converts an angle from degrees. A whole degree and a part of one both remain exact. `trx.math.DEG_1` uses the nearest whole unit and falls four units short over a quarter turn.",
+      "examples": [
+        "local half_turn = trx.math.degrees(180)"
+      ],
+      "params": [
+        {
+          "description": "The angle in degrees.",
+          "name": "degrees",
+          "type": "number"
+        }
+      ],
+      "path": "math.degrees",
+      "returns": {
+        "type": "math.Angle"
+      }
+    },
+    {
       "description": "Sine of an angle.",
       "params": [
         {
