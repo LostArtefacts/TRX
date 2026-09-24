@@ -152,8 +152,9 @@ static void M_Draw(const UI_NODE *const node)
     const int32_t w = UI_ScaleX(node->w);
     const int32_t h = UI_ScaleY(node->h);
     const bool plain_border = settings->border_color.a != 0;
-    const int32_t border = plain_border ? MAX(1, UI_ScaleY(node->y + 1.0f) - y)
-                                        : h / (float)(UI_BAR_COLOR_STEPS + 4);
+    const int32_t border = plain_border
+        ? MAX(1, UI_ScaleY(node->y + MAX(1.0f, settings->border_width)) - y)
+        : h / (float)(UI_BAR_COLOR_STEPS + 4);
     const int32_t padding = plain_border ? 0 : border;
     const M_RECT_32 outer_rect = {
         .x = x,
