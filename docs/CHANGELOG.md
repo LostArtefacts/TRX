@@ -1,5 +1,8 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.11.1...develop) - ××××-××-××
 
+**Lara's movement**
+- Fixed Lara being unable to grab zipline handles that are positioned on slopes when animated interactions are enabled (TRX1587, regression from 1.10)
+
 **Rendering**
 - Improved the frame rate, as the game now draws solid surfaces faster
 
