@@ -37,3 +37,11 @@ trx.events.on_game_start(function(is_save)
     not is_save
   )
 end)
+
+require("tr4.inv_setup").apply({
+  puzzle_item_4 = { scale = 1024 },
+  puzzle_item_5 = { scale = 1024 },
+  puzzle_item_4_combo_1 = { scale = 1024 },
+  puzzle_item_4_combo_2 = { scale = 1024 },
+  examine_item_2 = { scale = 1280 },
+})

@@ -40,6 +40,8 @@
 - Added Falling Blade control (TRX1550)
 - Added level views before play starts, with a progress bar (TRX493)
 - Added Seth Sarcophagus and the Burial Chambers cutscene where Lara takes the Amulet (TRX1561)
+- Changed the inventory items to be drawn at their original sizes and angles, which each level sets for its puzzle, key, pickup and examine items
+- Fixed inventory items such as the Broken Beetle being drawn away from their place in the ring, or missing from it
 - Fixed the shotgun, revolver and crossbow showing the laser sight in the inventory (OG bug)
 - Fixed the Guide having Lara's right-hand pistol mesh in Valley of the Kings (OG bug) (TRX1551)
 - Fixed a bug where sound effects such as footsteps were much too quiet (#6673 / TRX1569)

@@ -110,3 +110,7 @@ cutscenes.register(ENTRANCE_CUTSCENE, {
 require("common.legend").setup(function()
   return trx.locale.get("general/legend")
 end)
+
+require("tr4.inv_setup").apply({
+  puzzle_item_1 = { scale = 384, offset_y = 1, rot_y = -157.5 },
+})
