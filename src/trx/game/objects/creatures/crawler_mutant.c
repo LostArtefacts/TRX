@@ -56,7 +56,8 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 static void M_TriggerGas(
     const XYZ_32 pos, const XYZ_32 vel, const int16_t effect_num)
 {
-    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    SPARK *const spark =
+        Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION, SPARK_CONTEXT_GAS);
     if (spark == nullptr) {
         return;
     }

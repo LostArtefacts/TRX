@@ -747,6 +747,28 @@ local SparkType = api.enum("fx.SparkType", {
   },
 })
 
+local SparkContext = api.enum("fx.SparkContext", {
+  backing = "SPARK_CONTEXT",
+  description = "The context for which a spark is spawned.",
+  values = {
+    DEFAULT = "No specific context.",
+    BLOOD = "Blood on an enemy or Lara.",
+    BREATH = "Lara's breath in cold rooms.",
+    BUBBLE = "Air bubbles either from Lara or weapons underwater.",
+    ELECTRICITY = "Electric sparks from fences or enemies.",
+    EXPLOSION = "The result of a grenade, rocket or enemy exploding.",
+    FIRE = "Any type of flame.",
+    GAS = "Toxic gas from mutants.",
+    PARTICLE = "Small particles, such as from flares burning.",
+    PICKUP_AID = "The twinkle effect shown above pickup items.",
+    PLASMA = "Spawned from enemies such as Sophia Lee.",
+    RICOCHET = "Spawned when bullets hit walls.",
+    SMOKE = "Any type of smoke.",
+    SPLASH = "Spawned when hitting water causes a splash.",
+    WATER_MIST = "Mist spawned from waterfalls and water vehicles.",
+  },
+})
+
 local DrawType = api.enum("fx.DrawType", {
   backing = "DRAW_TYPE",
   description = "How a sprite is laid over what is behind it.",
@@ -765,9 +787,6 @@ api.type("fx.Spark", {
   description = [[
 A spark is one particle from the spark pool: a sprite that lives for a set
 number of frames, moving, resizing and fading on its own as it does.
-
-TR3 and TR4 only. The earlier games carry no spark set, so nothing spawns one
-and the pool stays empty.
 
 A spark that runs out of life leaves its slot to the next one asked for. A
 handle held across that becomes stale, and field access raises an error.]],
@@ -902,6 +921,11 @@ handle held across that becomes stale, and field access raises an error.]],
       type = "fx.DrawType",
       writable = false,
       description = "How it is laid over what is behind it.",
+    },
+    context = {
+      from = "context",
+      type = "fx.SparkContext",
+      description = "The context for which the spark is spawned.",
     },
     scales = {
       from = "scales",
@@ -1080,6 +1104,13 @@ level.]],
           optional = true,
           default = SparkType.PARTICLE,
           description = "Which sprite it is drawn with.",
+        },
+        {
+          name = "spark_context",
+          type = "fx.SparkContext",
+          optional = true,
+          default = SparkContext.DEFAULT,
+          description = "The context for which a spark is spawned.",
         },
         {
           name = "life",

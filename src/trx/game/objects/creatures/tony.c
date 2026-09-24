@@ -101,7 +101,8 @@ static void M_TriggerFlame(int16_t item_num, int32_t node)
         return;
     }
 
-    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    SPARK *const spark =
+        Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION, SPARK_CONTEXT_FIRE);
     if (spark == nullptr) {
         return;
     }

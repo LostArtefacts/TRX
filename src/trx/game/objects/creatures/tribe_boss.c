@@ -226,7 +226,8 @@ static bool M_CanBeExploded(const ITEM *const item)
 
 static void M_TriggerSummonSmoke(const XYZ_32 pos)
 {
-    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    SPARK *const spark =
+        Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION, SPARK_CONTEXT_SMOKE);
     if (spark == nullptr) {
         return;
     }
@@ -357,7 +358,7 @@ static void M_TriggerElectricSparks(
 
     p->trig_dynamics[1] = pos;
 
-    SPARK *const spark = Sparks_InitialiseSpark();
+    SPARK *const spark = Sparks_InitialiseSpark(SPARK_CONTEXT_ELECTRICITY);
     spark->src_color.r = 255;
     spark->src_color.g = 255;
     spark->src_color.b = 255;

@@ -89,6 +89,7 @@ static const FIELD_DESC m_SparkFields[] = {
     FIELD(SPARK, node_num),
     FIELD_RO(SPARK, room_num),
     FIELD_RO(SPARK, draw_type),
+    FIELD(SPARK, context),
 
     FIELD_FN("scales", TVT_BOOL, M_GetSparkScales, M_SetSparkScales),
     FIELD_FN("is_blood", TVT_BOOL, M_GetSparkIsBlood, M_SetSparkIsBlood),
@@ -513,11 +514,13 @@ static int M_L_SpawnSpark(lua_State *const L)
     // taken, so a raised error leaves no half-built spark alive in the pool.
     const int32_t sprite_type =
         M_OptField(L, 1, "sprite_type", SPARK_TYPE_PARTICLE, 0, INT8_MAX);
+    const int32_t spark_context =
+        M_OptField(L, 1, "spark_context", SPARK_CONTEXT_DEFAULT, 0, INT8_MAX);
     const XYZ_32 pos = M_OptXYZField(L, 1, "pos");
     const int16_t room_num = M_CheckRoom(L, pos);
 
-    SPARK *const spark =
-        Sparks_InitialiseSpriteSpark((SPARK_SPRITE_TYPE)sprite_type);
+    SPARK *const spark = Sparks_InitialiseSpriteSpark(
+        (SPARK_SPRITE_TYPE)sprite_type, (SPARK_CONTEXT)spark_context);
     if (spark == nullptr) {
         lua_pushnil(L);
         return 1;

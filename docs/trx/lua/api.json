@@ -2297,6 +2297,89 @@
     },
     {
       "bulk": false,
+      "count": 15,
+      "description": "The context for which a spark is spawned.",
+      "path": "fx.SparkContext",
+      "values": [
+        {
+          "description": "No specific context.",
+          "name": "DEFAULT",
+          "value": 0
+        },
+        {
+          "description": "Blood on an enemy or Lara.",
+          "name": "BLOOD",
+          "value": 1
+        },
+        {
+          "description": "Lara's breath in cold rooms.",
+          "name": "BREATH",
+          "value": 2
+        },
+        {
+          "description": "Air bubbles either from Lara or weapons underwater.",
+          "name": "BUBBLE",
+          "value": 3
+        },
+        {
+          "description": "Electric sparks from fences or enemies.",
+          "name": "ELECTRICITY",
+          "value": 4
+        },
+        {
+          "description": "The result of a grenade, rocket or enemy exploding.",
+          "name": "EXPLOSION",
+          "value": 5
+        },
+        {
+          "description": "Any type of flame.",
+          "name": "FIRE",
+          "value": 6
+        },
+        {
+          "description": "Toxic gas from mutants.",
+          "name": "GAS",
+          "value": 7
+        },
+        {
+          "description": "Small particles, such as from flares burning.",
+          "name": "PARTICLE",
+          "value": 8
+        },
+        {
+          "description": "The twinkle effect shown above pickup items.",
+          "name": "PICKUP_AID",
+          "value": 9
+        },
+        {
+          "description": "Spawned from enemies such as Sophia Lee.",
+          "name": "PLASMA",
+          "value": 10
+        },
+        {
+          "description": "Spawned when bullets hit walls.",
+          "name": "RICOCHET",
+          "value": 11
+        },
+        {
+          "description": "Any type of smoke.",
+          "name": "SMOKE",
+          "value": 12
+        },
+        {
+          "description": "Spawned when hitting water causes a splash.",
+          "name": "SPLASH",
+          "value": 13
+        },
+        {
+          "description": "Mist spawned from waterfalls and water vehicles.",
+          "name": "WATER_MIST",
+          "value": 14
+        }
+      ]
+    },
+    {
+      "bulk": false,
       "count": 6,
       "description": "How a sprite is laid over what is behind it.",
       "path": "fx.DrawType",
@@ -6008,6 +6091,13 @@
               "name": "sprite_type",
               "optional": true,
               "type": "fx.SparkType"
+            },
+            {
+              "default": 0,
+              "description": "The context for which a spark is spawned.",
+              "name": "spark_context",
+              "optional": true,
+              "type": "fx.SparkContext"
             },
             {
               "default": 16,
@@ -12326,7 +12416,7 @@
       "path": "fx.FogBulb"
     },
     {
-      "description": "A spark is one particle from the spark pool: a sprite that lives for a set\nnumber of frames, moving, resizing and fading on its own as it does.\n\nTR3 and TR4 only. The earlier games carry no spark set, so nothing spawns one\nand the pool stays empty.\n\nA spark that runs out of life leaves its slot to the next one asked for. A\nhandle held across that becomes stale, and field access raises an error.",
+      "description": "A spark is one particle from the spark pool: a sprite that lives for a set\nnumber of frames, moving, resizing and fading on its own as it does.\n\nA spark that runs out of life leaves its slot to the next one asked for. A\nhandle held across that becomes stale, and field access raises an error.",
       "extensions": [
         {
           "description": "The item it is attached to, and `nil` where it hangs on nothing.",
@@ -12349,6 +12439,12 @@
           "description": "The color it is drawn in now.",
           "name": "color",
           "type": "math.Color",
+          "writable": true
+        },
+        {
+          "description": "The context for which the spark is spawned.",
+          "name": "context",
+          "type": "fx.SparkContext",
           "writable": true
         },
         {

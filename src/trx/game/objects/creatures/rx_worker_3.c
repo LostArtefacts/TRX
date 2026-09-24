@@ -53,7 +53,8 @@ static void M_TriggerPilotFlame(const ITEM *const item)
         return;
     }
 
-    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    SPARK *const spark =
+        Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION, SPARK_CONTEXT_FIRE);
     if (spark == nullptr) {
         return;
     }
@@ -97,7 +98,8 @@ static void M_TriggerPilotFlame(const ITEM *const item)
 static void M_TriggerFlameSparks(
     const XYZ_32 pos, const XYZ_32 vel, const int16_t effect_num)
 {
-    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    SPARK *const spark =
+        Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION, SPARK_CONTEXT_FIRE);
     if (spark == nullptr) {
         return;
     }

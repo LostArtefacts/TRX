@@ -73,7 +73,7 @@ static void M_TriggerBlastFire(
     const XYZ_32 pos, const bool smoke, const int32_t end)
 {
     SPARK *const spark = end < 0
-        ? Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION)
+        ? Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION, SPARK_CONTEXT_FIRE)
         : Sparks_GetSpark(end);
     if (spark == nullptr) {
         return;
@@ -156,7 +156,8 @@ static void M_TriggerBlastFire(
 static void M_TriggerRocketSmoke(
     const XYZ_32 pos, const int32_t yv, const bool fire)
 {
-    SPARK *const spark = Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION);
+    SPARK *const spark =
+        Sparks_InitialiseSpriteSpark(SPARK_TYPE_EXPLOSION, SPARK_CONTEXT_SMOKE);
     if (spark == nullptr) {
         return;
     }
