@@ -1059,6 +1059,16 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### falling_blade
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>delay</code></td><td colspan="3" align="center">0</td><td>Delay before the blades activate.</td></tr>
+<tr><td><code>is_looped</code></td><td colspan="3" align="center">false</td><td>Whether the blades repeat while their trigger remains active.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">1000</td><td>Damage dealt when Lara is struck by the blades.</td></tr>
+</tbody>
+</table>
+
 #### falling_block_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (35)</th><th align="center">TR2 (55)</th><th align="center">TR3 (83)</th><th>Description</th></tr></thead>

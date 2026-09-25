@@ -773,6 +773,7 @@ common_sources = [
   'trx/game/objects/traps/dying_monk.c',
   'trx/game/objects/traps/electric_fence.c',
   'trx/game/objects/traps/ember_emitter.c',
+  'trx/game/objects/traps/falling_blade.c',
   'trx/game/objects/traps/falling_block.c',
   'trx/game/objects/traps/falling_ceiling.c',
   'trx/game/objects/traps/fire_head.c',

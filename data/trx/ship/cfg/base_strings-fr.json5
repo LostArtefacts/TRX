@@ -2530,6 +2530,9 @@
         "explosion_2": {
             "name": "Explosion 2",
         },
+        "falling_blade": {
+            "name": "\\{review}Lame tombante",
+        },
         "falling_block_1": {
             "name": "\\{review}Bloc tombant 1|\\{review}Sol rétractable 1|\\{review}Tuiles rétractables 1",
         },

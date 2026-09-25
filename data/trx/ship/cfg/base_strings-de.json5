@@ -2530,6 +2530,9 @@
         "explosion_2": {
             "name": "Explosion 2",
         },
+        "falling_blade": {
+            "name": "\\{review}Fallende Klinge",
+        },
         "falling_block_1": {
             "name": "Fallender Block 1|Zerbrechbarer Boden 1|Zerbrechbare Kacheln 1",
         },

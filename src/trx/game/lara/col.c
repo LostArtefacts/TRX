@@ -146,8 +146,16 @@ bool Lara_Col_ItemPush(
     const ITEM *const item, COLL_INFO *const coll, const bool hit_on,
     const bool big_push)
 {
+    const BOUNDS_16 bounds = Item_GetBestFrame(item)->bounds;
+    return Lara_Col_ItemPushEx(item, coll, hit_on, big_push, &bounds);
+}
+
+bool Lara_Col_ItemPushEx(
+    const ITEM *const item, COLL_INFO *const coll, const bool hit_on,
+    const bool big_push, const BOUNDS_16 *const bounds)
+{
     const COLL_ITEM src_item = {
-        .bounds = Item_GetBestFrame(item)->bounds,
+        .bounds = *bounds,
         .pos = item->pos,
         .rot = item->rot,
     };

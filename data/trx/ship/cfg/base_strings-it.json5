@@ -2530,6 +2530,9 @@
         "explosion_2": {
             "name": "Esplosione 2",
         },
+        "falling_blade": {
+            "name": "\\{review}Lama Cadente",
+        },
         "falling_block_1": {
             "name": "Blocco Cedevole 1|Pavimento Fragile 1|Piastrelle Fragili 1",
         },
