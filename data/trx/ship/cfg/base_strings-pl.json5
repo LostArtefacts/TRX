@@ -3479,6 +3479,9 @@
         "sentry_gun": {
             "name": "Działko automatyczne",
         },
+        "seth_sarcophagus": {
+            "name": "\\{review}Sarkofag Setha",
+        },
         "shadow": {
             "name": "Cień",
         },

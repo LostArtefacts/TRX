@@ -3479,6 +3479,9 @@
         "sentry_gun": {
             "name": "\\{review}Робот-страж",
         },
+        "seth_sarcophagus": {
+            "name": "\\{review}Саркофаг Сета",
+        },
         "shadow": {
             "name": "\\{review}Тень",
         },

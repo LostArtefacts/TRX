@@ -207,6 +207,11 @@ static void M_CalculateStats(LEVEL_MAX_STATS *const stats)
                 "+1 crystal from save crystal item %d in room %d", i,
                 item->room_num);
             stats->maxes[STATS_CAT_CRYSTALS]++;
+        } else if (
+            item->object_id == O_SETH_SARCOPHAGUS
+            && Object_Get(O_QUEST_ITEM_1)->loaded) {
+            LOG_TRACE("+1 pickup from Seth sarcophagus");
+            stats->maxes[STATS_CAT_PICKUPS]++;
         }
     }
 

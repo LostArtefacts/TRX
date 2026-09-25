@@ -7,6 +7,9 @@
         },
         "grenade_gun_item": {
             "name": "Lanciagranate",
+        },
+        "quest_item_1": {
+            "name": "\\{review}Amuleto di Horus",
         }
     },
     "cutscenes": [],

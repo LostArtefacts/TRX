@@ -3620,6 +3620,9 @@
         "sentry_gun": {
             "name": "Sentry Gun",
         },
+        "seth_sarcophagus": {
+            "name": "Seth Sarcophagus",
+        },
         "shadow": {
             "name": "Shadow",
         },

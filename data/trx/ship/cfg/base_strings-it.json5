@@ -3482,6 +3482,9 @@
         "sentry_gun": {
             "name": "Torretta di Guardia",
         },
+        "seth_sarcophagus": {
+            "name": "\\{review}Sarcofago di Seth",
+        },
         "shadow": {
             "name": "Ombra",
         },

@@ -342,7 +342,7 @@
     },
     {
       "bulk": true,
-      "count": 830,
+      "count": 831,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -1043,6 +1043,7 @@
         "SECURITY_LASER_DEADLY",
         "SECURITY_LASER_KILLER",
         "SENTRY_GUN",
+        "SETH_SARCOPHAGUS",
         "SHADOW",
         "SHARK",
         "SHIVA",
