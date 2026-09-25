@@ -1283,6 +1283,14 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### plough
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>damage</code></td><td colspan="3" align="center">50</td><td>Damage dealt when Lara is struck by the blades.</td></tr>
+</tbody>
+</table>
+
 #### poison_dart
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (90)</th><th>Description</th></tr></thead>

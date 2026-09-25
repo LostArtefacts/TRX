@@ -310,6 +310,7 @@ X_OBJ_NAME_DEFINE(O_WASP_MUTANT_EMITTER,      "Wasp Mutant Emitter")
 X_OBJ_NAME_DEFINE(O_TRAIN,                    "Train")
 X_OBJ_NAME_DEFINE(O_ROLLING_SPIKES,           "Rolling Spikes")
 X_OBJ_NAME_DEFINE(O_FALLING_BLADE,            "Falling Blade")
+X_OBJ_NAME_DEFINE(O_PLOUGH,                   "Plough")
 
 // General objects
 X_OBJ_NAME_DEFINE(O_BAT_EMITTER,            "Bat Emitter")

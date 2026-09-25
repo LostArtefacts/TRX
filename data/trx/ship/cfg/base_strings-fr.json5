@@ -3146,6 +3146,9 @@
         "player_10": {
             "name": "\\{review}Acteur de cinématique 10",
         },
+        "plough": {
+            "name": "\\{review}Charrue",
+        },
         "pods": {
             "name": "Gousse",
         },

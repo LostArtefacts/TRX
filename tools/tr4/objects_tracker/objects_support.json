@@ -135,7 +135,7 @@
   "planet_effect":            { "status": "not implemented",       "todo": "port from PLANET_EFFECT"           },
   "plinth_blade":             { "status": "not implemented",       "todo": "port from PLINTH_BLADE"            },
   "plinth_receptacle":        { "status": "not implemented",       "todo": "port from STATUE_PLINTH"           },
-  "plough":                   { "status": "not implemented",       "todo": "port from PLOUGH"                  },
+  "plough":                   { "status": "fully implemented" },
   "poison_dart":              { "status": "fully implemented" },
   "poison_dart_emitter":      { "status": "fully implemented" },
   "pushpull_door_1":          { "status": "fully implemented" },

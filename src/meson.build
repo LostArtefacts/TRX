@@ -790,6 +790,7 @@ common_sources = [
   'trx/game/objects/traps/mine.c',
   'trx/game/objects/traps/movable_block.c',
   'trx/game/objects/traps/pendulum.c',
+  'trx/game/objects/traps/plough.c',
   'trx/game/objects/traps/power_saw.c',
   'trx/game/objects/traps/propeller.c',
   'trx/game/objects/traps/raptor_emitter.c',
