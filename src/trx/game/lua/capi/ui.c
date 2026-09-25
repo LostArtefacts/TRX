@@ -407,6 +407,19 @@ static int M_L_UIDrawText(lua_State *const L)
     return 0;
 }
 
+// trxc.ui.horizontal_line(x0, x1, y, z)
+static int M_L_UIHorizontalLine(lua_State *const L)
+{
+    M_CheckPainting(L);
+    UI_ScheduleDrawHorizontalLine(
+        g_Config.ui.menu_style,
+        lroundf(UI_ScaleX((float)luaL_checknumber(L, 1))),
+        lroundf(UI_ScaleX((float)luaL_checknumber(L, 2))),
+        lroundf(UI_ScaleY((float)luaL_checknumber(L, 3))),
+        (int32_t)luaL_optinteger(L, 4, 0));
+    return 0;
+}
+
 // trxc.ui.panel(x, y, z, w, h, style)
 static int M_L_UIPanel(lua_State *const L)
 {
@@ -645,6 +658,7 @@ static const luaL_Reg m_Module[] = {
     { "measure_text", M_L_UIMeasureText },
     { "draw_text", M_L_UIDrawText },
     { "flat_quad", M_L_UIFlatQuad },
+    { "horizontal_line", M_L_UIHorizontalLine },
     { "panel", M_L_UIPanel },
     { "push_text_scale", M_L_UIPushTextScale },
     { "pop_text_scale", M_L_UIPopTextScale },

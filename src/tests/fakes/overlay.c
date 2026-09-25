@@ -23,6 +23,19 @@ void FakeOverlay_ForceHealthBar(const bool show)
     m_ForcedHealthBar = show;
 }
 
+// Record interface requests without performing them.
+void Overlay_SetBottomText(const OVERLAY_TEXT text)
+{
+    FAKE_RECORD(
+        "set_caption",
+        FV(text.kind == OVERLAY_TEXT_LITERAL ? text.literal : ""));
+}
+
+void Overlay_ShowArrow(const OVERLAY_ARROW arrow, const bool show)
+{
+    FAKE_RECORD("show_arrow", FV((int32_t)arrow), FV(show));
+}
+
 bool Overlay_IsHealthBarForced(void)
 {
     return m_ForcedHealthBar;

@@ -153,6 +153,22 @@ screen pixels.]],
   impl = raw.to_canvas,
 })
 
+api.define("ui.primitive.horizontal_line", {
+  description = "Draws a horizontal rule in the selected menu style.",
+  params = {
+    { name = "x0", type = "number", description = "The left end." },
+    { name = "x1", type = "number", description = "The right end." },
+    { name = "y", type = "number", description = "The vertical position." },
+    {
+      name = "z",
+      type = "integer",
+      optional = true,
+      description = "The draw order.",
+    },
+  },
+  impl = raw.horizontal_line,
+})
+
 api.define("ui.primitive.panel", {
   description = [[
 Draws the box the game draws behind a dialog, in the style the player chose.
