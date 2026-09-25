@@ -19,7 +19,7 @@
 #include <trx/game/lara/hair.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/music.h>
-#include <trx/game/option/passport.h>
+#include <trx/game/option/save_crystal.h>
 #include <trx/game/output.h>
 #include <trx/game/overlay.h>
 #include <trx/game/savegame.h>
@@ -77,10 +77,10 @@ void Game_End(void)
 GF_COMMAND Game_Control(const bool demo_mode)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
-    if (g_Passport.ask_for_save && !lara->extra_anim) {
+    if (g_SaveCrystal_AskForSave && !lara->extra_anim) {
         // ask for a save at the start of a level for the save crystals mode
         const GF_COMMAND gf_cmd = GF_ShowInventory(INV_SAVE_CRYSTAL_MODE);
-        g_Passport.ask_for_save = false;
+        g_SaveCrystal_AskForSave = false;
         if (gf_cmd.action != GF_NOOP) {
             return gf_cmd;
         }

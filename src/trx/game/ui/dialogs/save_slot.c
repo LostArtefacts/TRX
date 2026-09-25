@@ -4,11 +4,11 @@
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
+#include <trx/game/game_flow.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
 #include <trx/game/savegame.h>
 #include <trx/game/ui/common.h>
-#include <trx/game/ui/dialogs/base_passport.h>
 #include <trx/game/ui/elements/anchor.h>
 #include <trx/game/ui/elements/hide.h>
 #include <trx/game/ui/elements/label.h>
@@ -17,6 +17,7 @@
 #include <trx/game/ui/elements/pad.h>
 #include <trx/game/ui/elements/progress_button.h>
 #include <trx/game/ui/elements/requester.h>
+#include <trx/game/ui/elements/resize.h>
 #include <trx/game/ui/elements/spacer.h>
 #include <trx/game/ui/elements/stack.h>
 #include <trx/game/ui/elements/window.h>
@@ -26,6 +27,13 @@
 
 #define M_IMMEDIATE (g_TRVersion >= 2)
 #define M_FOOTER_SPACING 3.0f
+
+// A list shorter than this is awkward to browse, so a dialog that cannot fit
+// this many rows is drawn smaller instead of losing further rows.
+#define M_MIN_VISIBLE_ROWS 5
+
+// As many rows as the originals show, however much room a large screen leaves.
+#define M_MAX_VISIBLE_ROWS 10
 
 typedef enum {
     M_PHASE_BROWSE,
@@ -48,6 +56,76 @@ static const GAME_STRING_ID m_DeleteConfirmOptions[2] = {
     GS_ID("general/passport/delete_save_yes"),
     GS_ID("general/passport/delete_save_no"),
 };
+
+static float M_GetAvailableHeight(void)
+{
+    return UI_GetSafeCanvasHeight() / UI_Scaler_GetTextScale();
+}
+
+static int32_t M_GetVisibleRows(const UI_REQUESTER_STATE *const req)
+{
+    int32_t rows = UI_Requester_GetRowsForHeight(
+        req, M_GetAvailableHeight() - req->footer_height);
+    CLAMP(rows, M_MIN_VISIBLE_ROWS, M_MAX_VISIBLE_ROWS);
+    return rows;
+}
+
+static float M_GetFitScale(const UI_REQUESTER_STATE *const req)
+{
+    const float natural_height =
+        UI_Requester_GetHeight(req, req->scroll.vis_items) + req->footer_height;
+    const float available = M_GetAvailableHeight();
+    if (natural_height <= available || natural_height <= 0.0f) {
+        return 1.0f;
+    }
+    return available / natural_height;
+}
+
+// Returns whether the dialog sits over the title screen, which places it lower
+// than a level does.
+static bool M_IsOnTitleScreen(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    return level == nullptr || level->type == GFL_TITLE;
+}
+
+static void M_ControlRequester(UI_REQUESTER_STATE *const req)
+{
+    UI_Requester_SetVisibleRows(req, M_GetVisibleRows(req));
+}
+
+// Sets the requester up, sizing its list to the room the screen leaves.
+// footer_height is the height of what the dialog draws under the list.
+static void M_InitRequester(
+    UI_REQUESTER_STATE *const req, const size_t max_rows,
+    const float footer_height)
+{
+    UI_Requester_Init(req, 0, max_rows, true);
+    req->row_pad = 4.0f;
+    req->row_spacing = g_TRVersion == 1 ? 2.0f : 3.0f;
+    req->show_arrows = true;
+    req->reserve_space = true;
+    req->footer_height = footer_height;
+    M_ControlRequester(req);
+}
+
+static void M_BeginPage(const UI_REQUESTER_STATE *const req)
+{
+    UI_BeginModal(0.5f, M_IsOnTitleScreen() ? 0.98f : 0.67f);
+    UI_Scaler_PushTextScale(M_GetFitScale(req));
+    UI_BeginResizeEx((UI_RESIZE_SETTINGS) {
+        .w = 300.0f,
+        .h = -1.0f,
+        .align_h = 0.5f,
+    });
+}
+
+static void M_EndPage(void)
+{
+    UI_EndResize();
+    UI_Scaler_PopTextScale();
+    UI_EndModal();
+}
 
 // The delete button under the list, and the gap above it.
 static float M_GetFooterHeight(UI_SAVE_SLOT_DIALOG_STATE *const s)
@@ -116,8 +194,7 @@ static void M_EmptySlot(
 
 static void M_ConfirmDeleteDialog(const UI_SAVE_SLOT_DIALOG_STATE *const s)
 {
-    UI_BeginModal(
-        0.5f, UI_BasePassportDialog_IsOnTitleScreen() ? 0.69f : 0.55f);
+    UI_BeginModal(0.5f, M_IsOnTitleScreen() ? 0.69f : 0.55f);
     UI_BeginPad(50.0f, 50.0f);
     UI_BeginWindow((UI_WINDOW_SETTINGS) {
         .title = GS("general/passport/delete_save_confirm"),
@@ -186,7 +263,7 @@ static void M_RebuildRows(
     UI_Requester_Free(&s->req);
     Memory_FreePointer(&s->rows);
     M_BuildRows(s);
-    UI_BasePassportDialog_Init(&s->req, s->row_count, M_GetFooterHeight(s));
+    M_InitRequester(&s->req, s->row_count, M_GetFooterHeight(s));
     CLAMP(selected_row, 0, s->row_count - 1);
     UI_Requester_SelectRow(&s->req, selected_row);
 }
@@ -247,7 +324,7 @@ UI_SAVE_SLOT_DIALOG_STATE *UI_SaveSlotDialog_Init(
         }
     }
     M_ResetDeleteButton(s);
-    UI_BasePassportDialog_Init(&s->req, s->row_count, M_GetFooterHeight(s));
+    M_InitRequester(&s->req, s->row_count, M_GetFooterHeight(s));
     UI_Requester_SelectRow(&s->req, initial_row);
     s->last_selected_row = initial_row;
     return s;
@@ -297,7 +374,7 @@ UI_SAVE_SLOT_DIALOG_CHOICE UI_SaveSlotDialog_Control(
         };
     }
 
-    UI_BasePassportDialog_Control(&s->req);
+    M_ControlRequester(&s->req);
     const int32_t sel_row = UI_Requester_GetCurrentRow(&s->req);
     if (sel_row != s->last_selected_row) {
         s->last_selected_row = sel_row;
@@ -325,12 +402,8 @@ UI_SAVE_SLOT_DIALOG_CHOICE UI_SaveSlotDialog_Control(
         const bool is_valid_load_target =
             s->type == UI_SAVE_SLOT_DIALOG_LOAD_GAME
             && !SG_Manager_IsSlotFree(slot);
-        const bool is_valid_generic_target =
-            s->type == UI_SAVE_SLOT_DIALOG_GENERIC
-            && !SG_Manager_IsSlotFree(slot);
 
-        if (is_valid_save_target || is_valid_load_target
-            || is_valid_generic_target) {
+        if (is_valid_save_target || is_valid_load_target) {
             return (UI_SAVE_SLOT_DIALOG_CHOICE) {
                 .action = UI_SAVE_SLOT_DIALOG_CONFIRM,
                 .slot = slot,
@@ -348,7 +421,7 @@ void UI_SaveSlotDialog(const UI_SAVE_SLOT_DIALOG_STATE *const s)
         M_MapRowToSlot(s, UI_Requester_GetCurrentRow(&s->req));
     const bool can_delete = M_IsSlotDeletable(selected_slot);
 
-    UI_BeginBasePassportDialog(&s->req);
+    M_BeginPage(&s->req);
     const char *title = nullptr;
     switch (s->type) {
     case UI_SAVE_SLOT_DIALOG_SAVE_GAME:
@@ -356,9 +429,6 @@ void UI_SaveSlotDialog(const UI_SAVE_SLOT_DIALOG_STATE *const s)
         break;
     case UI_SAVE_SLOT_DIALOG_LOAD_GAME:
         title = GS("general/passport/load_game");
-        break;
-    case UI_SAVE_SLOT_DIALOG_GENERIC:
-        title = GS("general/passport/select_save");
         break;
     }
 
@@ -393,7 +463,7 @@ void UI_SaveSlotDialog(const UI_SAVE_SLOT_DIALOG_STATE *const s)
     UI_EndHide();
     UI_EndStack();
 
-    UI_EndBasePassportDialog();
+    M_EndPage();
 
     if (s->phase == M_PHASE_CONFIRM_DELETE) {
         M_ConfirmDeleteDialog(s);
