@@ -1,3 +1,11 @@
+local function initialise_falling_blades()
+  for i = 1, 5 do
+    local delay = 4 + (i - 1) * 10
+    trx.items[87 + i].properties.delay = delay
+    trx.items[98 - i].properties.delay = delay
+  end
+end
+
 trx.events.on_game_start(function(is_save)
   trx.items[3].properties.pickup_mode = trx.items.PickupMode.PLINTH_LOW
   trx.items[4].properties.pickup_mode = trx.items.PickupMode.PLINTH_LOW
@@ -17,6 +25,8 @@ trx.events.on_game_start(function(is_save)
 
   trx.items[43].properties.use_idle_pose = true
   trx.items[44].properties.use_idle_pose = true
+
+  initialise_falling_blades()
 end)
 
 -- The caption the level opens with, which the level's strings carry.

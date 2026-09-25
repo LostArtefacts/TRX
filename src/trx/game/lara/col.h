@@ -48,6 +48,9 @@ bool Lara_Col_Push(
     const COLL_ITEM *item, COLL_INFO *coll, bool hit_on, bool big_push);
 bool Lara_Col_ItemPush(
     const ITEM *item, COLL_INFO *coll, bool hit_on, bool big_push);
+bool Lara_Col_ItemPushEx(
+    const ITEM *item, COLL_INFO *coll, bool hit_on, bool big_push,
+    const BOUNDS_16 *bounds);
 bool Lara_Col_Static3DPush(const STATIC_MESH *mesh, COLL_INFO *coll);
 void Lara_Col_WadeSplash(ITEM *item);
 void Lara_Col_CrawlTilt(ITEM *item);

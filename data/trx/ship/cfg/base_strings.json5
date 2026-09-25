@@ -2555,6 +2555,9 @@
         "explosion_2": {
             "name": "Explosion 2",
         },
+        "falling_blade": {
+            "name": "Falling Blade",
+        },
         "falling_block_1": {
             "name": "Falling Block 1|Collapsible Floor 1|Collapsible Tiles 1",
         },

@@ -165,6 +165,12 @@
     <moveable id="-1">
         <property category="TRX" defaultValue="false" description="Whether or not the camera should shake when the block is expanding or contracting." displayName="Shake Camera" internalName="shake_camera" type="Bool" />
     </moveable>
+    <!--placeholder for O_FALLING_BLADE-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="0" description="Delay before the blades activate." displayName="Delay" internalName="delay" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="false" description="Whether the blades repeat while their trigger remains active." displayName="Is Looped" internalName="is_looped" type="Bool" />
+        <property category="TRX" defaultValue="1000" description="Damage dealt when Lara is struck by the blades." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
     <!--placeholder for O_FALLING_BLOCK_2..O_FALLING_BLOCK_3-->
     <moveable id="-1">
         <property category="TRX" defaultValue="false" description="Whether the block can only be activated from heavy triggers." displayName="Requires Heavy Trigger" internalName="requires_heavy_trigger" type="Bool" />

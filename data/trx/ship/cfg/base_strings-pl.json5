@@ -2530,6 +2530,9 @@
         "explosion_2": {
             "name": "Eksplozja 2",
         },
+        "falling_blade": {
+            "name": "\\{review}Spadające ostrze",
+        },
         "falling_block_1": {
             "name": "Spadający blok 1",
         },
