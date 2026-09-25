@@ -34,6 +34,7 @@ trx.locale.declare({
   ["general/passport/mode_new_game"] = "New Game",
   ["general/passport/mode_new_game_plus"] = "New Game+",
   ["general/passport/select_mode"] = "Select Mode",
+  ["general/passport/select_save"] = "Select Save",
   ["general/passport/select_level"] = "Select Level",
   ["general/passport/story_so_far"] = "Story so far...",
   ["general/passport/switch_mod"] = "Switch Game",

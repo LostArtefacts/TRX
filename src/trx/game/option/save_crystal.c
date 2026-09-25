@@ -9,6 +9,8 @@
 #include <trx/game/savegame.h>
 #include <trx/game/ui.h>
 
+bool g_SaveCrystal_AskForSave = false;
+
 static struct {
     UI_SAVE_SLOT_DIALOG_STATE *save_slot;
     SAVEGAME_SLOT_REF chosen_slot;

@@ -31,7 +31,6 @@
 #include <trx/game/option/combine.h>
 #include <trx/game/option/examine.h>
 #include <trx/game/option/globe_select.h>
-#include <trx/game/option/passport.h>
 #include <trx/game/option/save_crystal.h>
 #include <trx/game/option/stats.h>
 #include <trx/game/output/overlay.h>
@@ -51,7 +50,6 @@
 #define M_SELECTING_FRAMES (32 / 2)
 
 static CLOCK_TIMER m_DemoTimer = { .type = CLOCK_TIMER_SIM };
-static int32_t m_StartLevel;
 static OBJECT_ID m_InvChosen = NO_OBJECT;
 
 // The entry each ring was left on, so that it can open there again. An object
@@ -318,13 +316,6 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
         return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
     }
 
-    if (m_StartLevel != -1) {
-        return (GF_COMMAND) {
-            .action = GF_SELECT_GAME,
-            .param = m_StartLevel,
-        };
-    }
-
     if (Shell_IsExiting()) {
         return (GF_COMMAND) { .action = GF_EXIT_GAME };
     } else if (GF_GetOverrideCommand().action != GF_NOOP) {
@@ -338,66 +329,6 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
     }
 
     switch (m_InvChosen) {
-    case O_PASSPORT_OPTION:
-        switch (g_Passport.select_action) {
-        case PASSPORT_ACTION_LOAD_GAME: {
-            if (apply_changes) {
-                Inv_Clear();
-            }
-            return (GF_COMMAND) {
-                .action = GF_START_SAVED_GAME,
-                .param = SG_Manager_SlotToParam(g_Passport.select_save_slot),
-            };
-        }
-
-        case PASSPORT_ACTION_NEW_GAME:
-            return (GF_COMMAND) {
-                .action = GF_NEW_GAME,
-                .param = Game_GetBonusFlag(),
-            };
-
-        case PASSPORT_ACTION_SWITCH_MOD:
-            return (GF_COMMAND) { .action = GF_SWITCH_MOD };
-
-        case PASSPORT_ACTION_SAVE_GAME: {
-            if (apply_changes) {
-                Savegame_Save(g_Passport.select_save_slot);
-            }
-            return (GF_COMMAND) { .action = GF_NOOP };
-        }
-
-        case PASSPORT_ACTION_RESTART:
-            return (GF_COMMAND) {
-                .action = GF_RESTART_GAME,
-                .param = Game_GetCurrentLevel()->num,
-            };
-
-        case PASSPORT_ACTION_EXIT_TO_TITLE:
-            return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
-
-        case PASSPORT_ACTION_EXIT_GAME:
-            return (GF_COMMAND) { .action = GF_EXIT_GAME };
-
-        case PASSPORT_ACTION_SELECT_LEVEL:
-            return (GF_COMMAND) {
-                .action = GF_SELECT_GAME,
-                .param = g_Passport.select_level,
-            };
-
-        case PASSPORT_ACTION_GLOBE_SELECT:
-            return (GF_COMMAND) {
-                .action = GF_GLOBE_SELECT,
-                .param = g_Passport.select_level,
-            };
-
-        case PASSPORT_ACTION_STORY_SO_FAR:
-            return (GF_COMMAND) {
-                .action = GF_STORY_SO_FAR,
-                .param = SG_Manager_SlotToParam(g_Passport.select_save_slot),
-            };
-        }
-        break;
-
     case O_SAVE_CRYSTAL_OPTION:
         if (apply_changes) {
             Option_SaveCrystal_CommitSave();
@@ -542,6 +473,20 @@ static void M_ApplyCombineChoice(
     M_SnapshotFrameState(ring);
 }
 
+// Puts the passport back when no script draws it. With Lara dead, the
+// passport is the only way on, so the game returns to the title instead.
+static void M_DeclinePassport(INV_RING *const ring)
+{
+    LOG_ERROR("no script draws the passport");
+    if (ring->mode == INV_DEATH_MODE) {
+        GF_OverrideCommand((GF_COMMAND) { .action = GF_EXIT_TO_TITLE }, false);
+        InvRing_SetStatusTransition(
+            ring, RNG_CLOSING_ITEM, RNG_EXITING_INVENTORY, 0);
+    } else {
+        InvRing_SetStatusTransition(ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
+    }
+}
+
 static GF_COMMAND M_Control(INV_RING *const ring)
 {
     if (ring->status == RNG_OPENING) {
@@ -601,12 +546,6 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     Shell_ProcessInput();
     Game_ProcessInput();
 
-    if (ring->mode == INV_GLOBE_SELECT_MODE) {
-        m_StartLevel = -1;
-    } else {
-        m_StartLevel = Game_IsLevelComplete() ? g_Passport.select_level : -1;
-    }
-
     if (g_Config.gameplay.enable_timer_in_inventory
         && !(Game_IsInGym() && Gym_TrackManager_HasStats(GYM_TRACK_ASSAULT))) {
         Stats_UpdateTimer();
@@ -652,7 +591,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             break;
         }
 
-        if (m_StartLevel != -1 || ring->is_demo_needed
+        if (ring->is_demo_needed
             || (g_InputDB.menu_back && ring->mode != INV_TITLE_MODE
                 && ring->mode != INV_GLOBE_SELECT_MODE)) {
             Sound_Effect(SFX_MENU_SPINOUT, nullptr, SPM_ALWAYS);
@@ -809,7 +748,11 @@ static GF_COMMAND M_Control(INV_RING *const ring)
 
         if (!ring->takeover_offered && inv_item->action == ACTION_USE) {
             ring->takeover_offered = true;
-            UI_Takeover_Offer(UI_TAKEOVER_RING_ENTRY, inv_item->object_id);
+            if (!UI_Takeover_Offer(UI_TAKEOVER_RING_ENTRY, inv_item->object_id)
+                && inv_item->object_id == O_PASSPORT_OPTION) {
+                M_DeclinePassport(ring);
+                break;
+            }
         }
 
         bool busy = false;
@@ -1003,7 +946,6 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     m_InvChosen = NO_OBJECT;
 
     g_InvRing_OldCamera = g_Camera;
-    m_StartLevel = -1;
 
     if (mode == INV_TITLE_MODE) {
         InvRing_ShowVersionText();
