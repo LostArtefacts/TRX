@@ -3479,6 +3479,9 @@
         "sentry_gun": {
             "name": "\\{review}Tourelle robotisée",
         },
+        "seth_sarcophagus": {
+            "name": "\\{review}Sarcophage de Seth",
+        },
         "shadow": {
             "name": "\\{review}Ombre",
         },

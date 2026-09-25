@@ -1,4 +1,55 @@
-trx.events.on_game_start(function()
+local cutscenes = require("tr4.cutscenes")
+
+local AMULET_CUTSCENE = 14
+local AMULET_PULL_FRAME = 393
+local AMULET_STORE_FRAME = 486
+local SETH_IDLE_BITS = 0x5
+local SETH_LIVE_BITS = 0x3
+
+local seth_item = nil
+
+local function initialise_seth(is_save)
+  seth_item =
+    trx.items.query:of_object(trx.catalog.objects.seth_sarcophagus):first()
+  if seth_item:is_valid() and not is_save then
+    seth_item.mesh_bits = SETH_IDLE_BITS
+  end
+end
+
+local function pull_amulet()
+  if seth_item:is_valid() then
+    seth_item.mesh_bits = SETH_LIVE_BITS
+  end
+end
+
+local function store_amulet()
+  if not trx.inventory.has(trx.catalog.objects.quest_item_1) then
+    trx.inventory.give(trx.catalog.objects.quest_item_1)
+    trx.stats.pickups.count = trx.stats.pickups.count + 1
+  end
+end
+
+local function end_amulet_scene()
+  pull_amulet()
+  store_amulet()
+  trx.rooms.flip(1)
+end
+
+cutscenes.register(AMULET_CUTSCENE, {
+  frames = {
+    [AMULET_PULL_FRAME] = pull_amulet,
+    [AMULET_STORE_FRAME] = store_amulet,
+  },
+  on_end = end_amulet_scene,
+})
+
+trx.events.on_cutscene_start(function(cutscene)
+  if cutscene.num == AMULET_CUTSCENE then
+    trx.cutscenes.set_lara_return({ x = 27282, y = 256, z = 65654 }, 0)
+  end
+end)
+
+trx.events.on_game_start(function(is_save)
   trx.items[3].properties.pickup_mode = trx.items.PickupMode.PLINTH_LOW
   trx.items[135].properties.pickup_mode = trx.items.PickupMode.PLINTH_LOW
 
@@ -135,4 +186,6 @@ trx.events.on_game_start(function()
     trx.items[i].properties.speed = 3
     trx.items[i].properties.travel_distance = 32
   end
+
+  initialise_seth(is_save)
 end)

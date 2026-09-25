@@ -39,6 +39,7 @@
 - Added Rolling Spikes control (TRX1564)
 - Added Falling Blade control (TRX1550)
 - Added level views before play starts, with a progress bar (TRX493)
+- Added Seth Sarcophagus and the Burial Chambers cutscene where Lara takes the Amulet (TRX1561)
 - Fixed the Guide having Lara's right-hand pistol mesh in Valley of the Kings (OG bug) (TRX1551)
 - Fixed a bug where sound effects such as footsteps were much too quiet (#6673 / TRX1569)
 - Fixed missing collision on Moving Floors in custom levels when rotated to face East (OG bug) (TRX1559)

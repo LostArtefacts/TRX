@@ -3479,6 +3479,9 @@
         "sentry_gun": {
             "name": "Gun Sentry Robot",
         },
+        "seth_sarcophagus": {
+            "name": "Sarcophagus Seth",
+        },
         "shadow": {
             "name": "Faileas",
         },

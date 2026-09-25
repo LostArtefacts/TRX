@@ -7,6 +7,9 @@
         },
         "grenade_gun_item": {
             "name": "Granatenwerfer",
+        },
+        "quest_item_1": {
+            "name": "\\{review}Amulett des Horus",
         }
     },
     "cutscenes": [],

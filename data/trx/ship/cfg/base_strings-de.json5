@@ -3479,6 +3479,9 @@
         "sentry_gun": {
             "name": "\\{review}Roboter-Wachgeschütz",
         },
+        "seth_sarcophagus": {
+            "name": "\\{review}Seth-Sarkophag",
+        },
         "shadow": {
             "name": "\\{review}Schatten",
         },

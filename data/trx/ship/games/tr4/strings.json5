@@ -7,6 +7,9 @@
         },
         "grenade_gun_item": {
             "name": "Grenade Gun",
+        },
+        "quest_item_1": {
+            "name": "Amulet of Horus",
         }
     },
     "cutscenes": [],

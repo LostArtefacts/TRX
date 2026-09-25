@@ -41,7 +41,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     - `trx.catalog.Context.FAMILIES` = `7`  
         The families an object can belong to.
 
-- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 830 names
+- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 831 names
 
     Every object TRX has a name for.
 
@@ -230,11 +230,11 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     `SCION_ITEM_4`, `SCION_OPTION`, `SECRET_1`, `SECRET_1_OPTION`, `SECRET_2`,
     `SECRET_2_OPTION`, `SECRET_3`, `SECRET_3_OPTION`, `SECURITY_GUARD`,
     `SECURITY_LASER_ALARM`, `SECURITY_LASER_DEADLY`, `SECURITY_LASER_KILLER`,
-    `SENTRY_GUN`, `SHADOW`, `SHARK`, `SHIVA`, `SHOTGUN_AMMO_2_ITEM`,
-    `SHOTGUN_AMMO_ITEM`, `SHOTGUN_AMMO_OPTION`, `SHOTGUN_ITEM`,
-    `SHOTGUN_OPTION`, `SHOTGUN_SHELL`, `SKATEBOARD`, `SKATE_KID`,
-    `SKIDOO_ARMED`, `SKIDOO_DRIVER`, `SKIDOO_FAST`, `SKIDOO_TRACK`, `SKYBOX`,
-    `SLIDING_PILLAR`, `SMALL_MEDIPACK_ITEM`, `SMALL_MEDIPACK_OPTION`,
+    `SENTRY_GUN`, `SETH_SARCOPHAGUS`, `SHADOW`, `SHARK`, `SHIVA`,
+    `SHOTGUN_AMMO_2_ITEM`, `SHOTGUN_AMMO_ITEM`, `SHOTGUN_AMMO_OPTION`,
+    `SHOTGUN_ITEM`, `SHOTGUN_OPTION`, `SHOTGUN_SHELL`, `SKATEBOARD`,
+    `SKATE_KID`, `SKIDOO_ARMED`, `SKIDOO_DRIVER`, `SKIDOO_FAST`, `SKIDOO_TRACK`,
+    `SKYBOX`, `SLIDING_PILLAR`, `SMALL_MEDIPACK_ITEM`, `SMALL_MEDIPACK_OPTION`,
     `SMALL_SCORPION`, `SMASHABLE_1`, `SMASHABLE_2`, `SMASHABLE_3`,
     `SMASHABLE_4`, `SMOKE_EMITTER_BLACK`, `SMOKE_EMITTER_WHITE`, `SNOWFLAKE`,
     `SNOW_SPRITE`, `SOPHIA`, `SOPHIA_LASER_BOLT`, `SOPHIA_PLASMA_BALL`,
