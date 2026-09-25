@@ -40,6 +40,7 @@ and `\{button left}` draws the button the player has bound.
   nothing, and raises on assignment where the platform refuses the text.
 
   A script-drawn text field uses this value to paste and copy text.
+- <a id="ui.text_scale" name="ui.text_scale"></a>**`trx.ui.text_scale`** (number). The scale applied to text and its boxes. The value depends on the player's text size and the screen. It is not the `ui.text_scale` setting alone. *(read-only)*
 - <a id="ui.safe_area" name="ui.safe_area"></a>**`trx.ui.safe_area`** ([trx.ui.Area](#ui.Area)). The part of the canvas that is free to draw in: the canvas, less the margin kept at the edges, less what the game reserves at the top and the bottom for the bars and the text it puts there. *(read-only)*
 
 ### Enums
@@ -386,6 +387,15 @@ and `\{button left}` draws the button the player has bound.
   - <a id="ui.primitive.to_canvas.pixels" name="ui.primitive.to_canvas.pixels"></a>**`pixels`** (number). A length in screen pixels.
 
   Returns: number. The same length in canvas units.
+
+- <a id="ui.primitive.horizontal_line" name="ui.primitive.horizontal_line"></a>[lua]`trx.ui.primitive.horizontal_line(x0, x1, y, [z])`  
+  Draws a horizontal rule in the selected menu style.
+
+  Parameters:
+  - <a id="ui.primitive.horizontal_line.x0" name="ui.primitive.horizontal_line.x0"></a>**`x0`** (number). The left end.
+  - <a id="ui.primitive.horizontal_line.x1" name="ui.primitive.horizontal_line.x1"></a>**`x1`** (number). The right end.
+  - <a id="ui.primitive.horizontal_line.y" name="ui.primitive.horizontal_line.y"></a>**`y`** (number). The vertical position.
+  - <a id="ui.primitive.horizontal_line.z" name="ui.primitive.horizontal_line.z"></a>**`z`** (integer, optional). The draw order.
 
 - <a id="ui.primitive.panel" name="ui.primitive.panel"></a>[lua]`trx.ui.primitive.panel(x, y, z, w, h, style)`  
   Draws the box the game draws behind a dialog, in the style the player chose.

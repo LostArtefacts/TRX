@@ -158,6 +158,14 @@ A script-drawn text field uses this value to paste and copy text.]],
   set = raw.set_clipboard,
 })
 
+api.property("ui.text_scale", {
+  type = "number",
+  description = "The scale applied to text and its boxes. The value depends on the player's text "
+    .. "size and the screen. It is not the `ui.text_scale` setting alone. "
+    .. "<!--noref: ui.text_scale-->",
+  get = raw.text_scale,
+})
+
 api.property("ui.safe_area", {
   type = "ui.Area",
   description = "The part of the canvas that is free to draw in: the canvas, less the margin "

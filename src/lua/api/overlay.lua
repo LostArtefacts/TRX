@@ -19,6 +19,56 @@ api.namespace("overlay.signals", {
 local held = nil
 local letterbox_held = nil
 
+api.enum("overlay.Arrow", {
+  backing = "OVERLAY_ARROW",
+  description = "An arrow the interface can show.",
+  values = {
+    TOP_LEFT = "The top-left screen corner.",
+    TOP_RIGHT = "The top-right screen corner.",
+    BOTTOM_LEFT = "The bottom-left screen corner.",
+    BOTTOM_RIGHT = "The bottom-right screen corner.",
+    CAPTION_LEFT = "To the left of the caption.",
+    CAPTION_RIGHT = "To the right of the caption.",
+  },
+})
+
+api.define("overlay.set_caption", {
+  description = [[
+Sets the caption at the bottom of the screen.
+
+The inventory ring uses it for the selected entry. The passport uses it for the
+current page. The caption reduces the safe area. Passing no value removes it.]],
+  params = {
+    {
+      name = "text",
+      type = "string",
+      optional = true,
+      description = "Text to show. Omit this parameter to remove the caption.",
+    },
+  },
+  impl = raw.set_caption,
+})
+
+api.define("overlay.show_arrow", {
+  description = [[
+Shows or hides an interface arrow.
+
+The passport uses the caption arrows to show which way the book turns.]],
+  params = {
+    {
+      name = "arrow",
+      type = "overlay.Arrow",
+      description = "Which arrow to show.",
+    },
+    {
+      name = "shown",
+      type = "boolean",
+      description = "Whether it is on screen.",
+    },
+  },
+  impl = raw.show_arrow,
+})
+
 api.property("overlay.has_letterbox", {
   type = "boolean",
   description = [[Whether the cinematic bars take any of the screen. It stays true while they

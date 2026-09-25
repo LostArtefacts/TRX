@@ -93,6 +93,10 @@
     - `trx.events.on_scene_paint`
     - `trx.scene.box`
     - `trx.scene.sphere`
+- Added script support for drawing in the engine's menu area:
+    - `trx.overlay.set_caption`, `trx.overlay.show_arrow`, and `trx.overlay.Arrow`
+    - `trx.ui.primitive.horizontal_line`
+    - `trx.ui.text_scale`
 - Added the ability for a script to hold a player action inactive
     - `trx.input.suppress`
     - `trx.input.Suppression:release`

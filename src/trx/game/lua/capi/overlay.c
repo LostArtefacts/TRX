@@ -1,3 +1,5 @@
+#include <trx/core/memory.h>
+#include <trx/game/game_strings/entries.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils.h>
@@ -7,6 +9,9 @@
 #include <lauxlib.h>
 
 // trxc.overlay.is_health_bar_forced() -> bool
+// Keep the caption until the next caption replaces it.
+static char *m_CaptionText = nullptr;
+
 static int M_L_OverlayIsHealthBarForced(lua_State *const L)
 {
     lua_pushboolean(L, Overlay_IsHealthBarForced());
@@ -27,8 +32,42 @@ static int M_L_OverlayShowPickup(lua_State *const L)
     return 0;
 }
 
+// trxc.overlay.set_caption(text)
+//
+// Set the interface caption. Nil removes it.
+static int M_L_OverlaySetCaption(lua_State *const L)
+{
+    if (lua_isnoneornil(L, 1)) {
+        Overlay_SetBottomText((OVERLAY_TEXT) {});
+        Memory_FreePointer(&m_CaptionText);
+        return 0;
+    }
+
+    char *const text = Memory_DupStr(luaL_checkstring(L, 1));
+    Overlay_SetBottomText((OVERLAY_TEXT) {
+        .kind = OVERLAY_TEXT_LITERAL,
+        .literal = text,
+        .fmt_gs_key = GS_ID("general/inventory_ring/object_name_fmt"),
+    });
+    // Replace the old text after the new text is validated.
+    Memory_FreePointer(&m_CaptionText);
+    m_CaptionText = text;
+    return 0;
+}
+
+// trxc.overlay.show_arrow(arrow, shown)
+static int M_L_OverlayShowArrow(lua_State *const L)
+{
+    const OVERLAY_ARROW arrow = (OVERLAY_ARROW)LUA_CheckRange(
+        L, 1, OVERLAY_ARROW_NUMBER_OF, "unknown arrow");
+    Overlay_ShowArrow(arrow, lua_toboolean(L, 2));
+    return 0;
+}
+
 static const luaL_Reg m_Module[] = {
     { "has_letterbox", M_L_OverlayHasLetterbox },
+    { "set_caption", M_L_OverlaySetCaption },
+    { "show_arrow", M_L_OverlayShowArrow },
     { "is_health_bar_forced", M_L_OverlayIsHealthBarForced },
     { "show_pickup", M_L_OverlayShowPickup },
     { nullptr, nullptr },

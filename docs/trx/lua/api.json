@@ -3198,6 +3198,44 @@
     },
     {
       "bulk": false,
+      "count": 6,
+      "description": "An arrow the interface can show.",
+      "path": "overlay.Arrow",
+      "values": [
+        {
+          "description": "The top-left screen corner.",
+          "name": "TOP_LEFT",
+          "value": 0
+        },
+        {
+          "description": "The top-right screen corner.",
+          "name": "TOP_RIGHT",
+          "value": 1
+        },
+        {
+          "description": "The bottom-left screen corner.",
+          "name": "BOTTOM_LEFT",
+          "value": 2
+        },
+        {
+          "description": "The bottom-right screen corner.",
+          "name": "BOTTOM_RIGHT",
+          "value": 3
+        },
+        {
+          "description": "To the left of the caption.",
+          "name": "CAPTION_LEFT",
+          "value": 4
+        },
+        {
+          "description": "To the right of the caption.",
+          "name": "CAPTION_RIGHT",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "bulk": false,
       "count": 3,
       "description": "The values `trx.rooms.Room.flip_status` can take.",
       "path": "rooms.FlipStatus",
@@ -8477,6 +8515,34 @@
       "path": "objects.swap_sprite"
     },
     {
+      "description": "Sets the caption at the bottom of the screen.\n\nThe inventory ring uses it for the selected entry. The passport uses it for the\ncurrent page. The caption reduces the safe area. Passing no value removes it.",
+      "params": [
+        {
+          "description": "Text to show. Omit this parameter to remove the caption.",
+          "name": "text",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "path": "overlay.set_caption"
+    },
+    {
+      "description": "Shows or hides an interface arrow.\n\nThe passport uses the caption arrows to show which way the book turns.",
+      "params": [
+        {
+          "description": "Which arrow to show.",
+          "name": "arrow",
+          "type": "overlay.Arrow"
+        },
+        {
+          "description": "Whether it is on screen.",
+          "name": "shown",
+          "type": "boolean"
+        }
+      ],
+      "path": "overlay.show_arrow"
+    },
+    {
       "description": "Shows an object in the bottom-right corner of the screen, as the game shows a\npickup Lara collects. It fires `trx.events.on_show_pickup`. It also plays secret\nmusic for a secret pickup.\n\nIt does not add the object to Lara's inventory. Use `trx.inventory.Inventory:give`\nfor that.",
       "examples": [
         "trx.overlay.show_pickup(trx.catalog.objects.KEY_ITEM_1)"
@@ -9569,6 +9635,33 @@
         "description": "The same length in canvas units.",
         "type": "number"
       }
+    },
+    {
+      "description": "Draws a horizontal rule in the selected menu style.",
+      "params": [
+        {
+          "description": "The left end.",
+          "name": "x0",
+          "type": "number"
+        },
+        {
+          "description": "The right end.",
+          "name": "x1",
+          "type": "number"
+        },
+        {
+          "description": "The vertical position.",
+          "name": "y",
+          "type": "number"
+        },
+        {
+          "description": "The draw order.",
+          "name": "z",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "ui.primitive.horizontal_line"
     },
     {
       "description": "Draws the box the game draws behind a dialog, in the style the player chose.\n\nThe look follows the menu style setting, so a panel drawn this way matches the\ngame's own dialogs rather than standing apart from them.",
@@ -11893,6 +11986,12 @@
       "path": "ui.clipboard",
       "type": "string",
       "writable": true
+    },
+    {
+      "description": "The scale applied to text and its boxes. The value depends on the player's text size and the screen. It is not the `ui.text_scale` setting alone. <!--noref: ui.text_scale-->",
+      "path": "ui.text_scale",
+      "type": "number",
+      "writable": false
     },
     {
       "description": "The part of the canvas that is free to draw in: the canvas, less the margin kept at the edges, less what the game reserves at the top and the bottom for the bars and the text it puts there.",
