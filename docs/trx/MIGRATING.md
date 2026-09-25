@@ -406,6 +406,14 @@ order: 3
    The result is not tied to an inventory, so the function no longer takes one:
    - `trx.inventory:icon_of(object)` becomes `trx.inventory.icon_of(object)`
 
+17. **End-level trigger parameters now have meaning**
+   In OG TR1-3, assigning a parameter to end-level triggers served no purpose;
+   the gameflow always dictated the level sequencing. 1.11 introduces basic
+   support for hubs, allowing triggers to dictate which level comes next. Legacy
+   levels that use these parameters incorrectly will need to be amended and
+   recompiled; using parameter 0 is recommended to allow the gameflow sequencing
+   to take precedence.
+
 ### Version 1.9 to 1.10
 
 The Lua API was rewritten, and most of what it breaks is a rename. Run your
