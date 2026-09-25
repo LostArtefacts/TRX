@@ -3419,6 +3419,9 @@
         "rolling_ball_4": {
             "name": "Masso 4|Masso Rotolante 4",
         },
+        "rolling_spikes": {
+            "name": "\\{review}Spuntoni Rotolanti",
+        },
         "rope": {
             "name": "Corda",
         },

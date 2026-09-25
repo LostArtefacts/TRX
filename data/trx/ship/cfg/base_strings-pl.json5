@@ -3416,6 +3416,9 @@
         "rolling_ball_4": {
             "name": "Głaz 4",
         },
+        "rolling_spikes": {
+            "name": "\\{review}Toczące się kolce",
+        },
         "rope": {
             "name": "\\{review}Lina",
         },

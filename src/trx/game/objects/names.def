@@ -308,6 +308,7 @@ X_OBJ_NAME_DEFINE(O_ELECTRIC_FENCE,           "Electric Fence")
 X_OBJ_NAME_DEFINE(O_RAPTOR_EMITTER,           "Raptor Emitter")
 X_OBJ_NAME_DEFINE(O_WASP_MUTANT_EMITTER,      "Wasp Mutant Emitter")
 X_OBJ_NAME_DEFINE(O_TRAIN,                    "Train")
+X_OBJ_NAME_DEFINE(O_ROLLING_SPIKES,           "Rolling Spikes")
 
 // General objects
 X_OBJ_NAME_DEFINE(O_BAT_EMITTER,            "Bat Emitter")

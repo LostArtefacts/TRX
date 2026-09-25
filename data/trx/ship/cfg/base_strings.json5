@@ -3553,6 +3553,9 @@
         "rolling_ball_4": {
             "name": "Boulder 4|Rolling Ball 4",
         },
+        "rolling_spikes": {
+            "name": "Rolling Spikes",
+        },
         "rope": {
             "name": "Rope",
         },

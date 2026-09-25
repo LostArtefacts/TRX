@@ -3416,6 +3416,9 @@
         "rolling_ball_4": {
             "name": "\\{review}Rocher 4|\\{review}Boule Roulante 4",
         },
+        "rolling_spikes": {
+            "name": "\\{review}Pointes roulantes",
+        },
         "rope": {
             "name": "\\{review}Corde",
         },

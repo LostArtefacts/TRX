@@ -3416,6 +3416,9 @@
         "rolling_ball_4": {
             "name": "Boulder 4|Rolling Ball 4",
         },
+        "rolling_spikes": {
+            "name": "\\{review}Rollende Stacheln",
+        },
         "rope": {
             "name": "\\{review}Seil",
         },
