@@ -342,7 +342,7 @@
     },
     {
       "bulk": true,
-      "count": 831,
+      "count": 832,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -887,6 +887,7 @@
         "PLAYER_7",
         "PLAYER_8",
         "PLAYER_9",
+        "PLOUGH",
         "PODS",
         "POISON_DART",
         "POISON_DART_EMITTER",

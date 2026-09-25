@@ -3245,6 +3245,9 @@
         "player_10": {
             "name": "Cutscene Actor 10",
         },
+        "plough": {
+            "name": "Plough",
+        },
         "pods": {
             "name": "Pod",
         },

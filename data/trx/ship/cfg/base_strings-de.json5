@@ -3146,6 +3146,9 @@
         "player_10": {
             "name": "Zwischensequenz-Schauspieler 10",
         },
+        "plough": {
+            "name": "\\{review}Pflug",
+        },
         "pods": {
             "name": "Pod",
         },

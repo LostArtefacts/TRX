@@ -260,6 +260,10 @@
         <property category="TRX" defaultValue="70" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="50" description="Damage dealt by shots." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_PLOUGH-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="50" description="Damage dealt when Lara is struck by the blades." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
     <!--placeholder for O_PORTACABIN-->
     <moveable id="-1">
         <property category="TRX" defaultValue="3" description="The flip map slot to alter once the cabin has landed. -1 = no flipmap is performed." displayName="Flip Slot" internalName="flip_slot" maxValue="9" minValue="-1" type="Int" />
