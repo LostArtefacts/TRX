@@ -342,7 +342,7 @@
     },
     {
       "bulk": true,
-      "count": 828,
+      "count": 829,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -1015,6 +1015,7 @@
         "ROLLING_BALL_2",
         "ROLLING_BALL_3",
         "ROLLING_BALL_4",
+        "ROLLING_SPIKES",
         "ROPE",
         "ROTATING_LASER",
         "RX_WORKER_1",
@@ -1182,7 +1183,7 @@
     },
     {
       "bulk": true,
-      "count": 210,
+      "count": 212,
       "description": "Every sound sample TRX has a name for.",
       "examples": [
         "trx.sound.play(trx.catalog.samples.LARA_NO)"
@@ -1314,6 +1315,8 @@
         "MENU_SPININ",
         "MENU_SPINOUT",
         "MENU_STOPWATCH",
+        "METAL_SCRAPE_LOOP_1",
+        "METAL_SCRAPE_LOOP_2",
         "MINE_CART_CLUNK_START",
         "MINE_CART_PULLY_LOOP",
         "MINE_CART_SREECH_BRAKE",

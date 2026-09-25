@@ -3416,6 +3416,9 @@
         "rolling_ball_4": {
             "name": "Ulbhag 4|Ball-rollaidh 4",
         },
+        "rolling_spikes": {
+            "name": "Spìcean-rollaidh",
+        },
         "rope": {
             "name": "Ròpa",
         },

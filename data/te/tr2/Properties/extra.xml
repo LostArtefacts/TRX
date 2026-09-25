@@ -328,6 +328,10 @@
     <moveable id="-1">
         <property category="TRX" defaultValue="100" description="Damage dealt when Lara is clipped by a moving boulder without being crushed." displayName="Air Damage" internalName="air_damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_ROLLING_SPIKES-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="50" description="Damage dealt when Lara is struck by the spikes." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+    </moveable>
     <!--placeholder for O_ROTATING_LASER-->
     <moveable id="-1">
         <property category="TRX" defaultValue="25" description="Damage dealt while Lara is touching the rotating laser." displayName="Damage" internalName="damage" minValue="0" type="Int" />

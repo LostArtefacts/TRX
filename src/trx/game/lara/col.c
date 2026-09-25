@@ -16,7 +16,7 @@ typedef void (*M_COLLISION_ROUTINE)(ITEM *item, COLL_INFO *coll);
 CATALOG_TABLE_DEFINE(
     m_CollisionRoutines, CATALOG_LARA_STATES, M_COLLISION_ROUTINE);
 
-void Lara_Col_Push(
+bool Lara_Col_Push(
     const COLL_ITEM *const item, COLL_INFO *const coll, const bool hit_on,
     const bool big_push)
 {
@@ -40,7 +40,7 @@ void Lara_Col_Push(
     }
 
     if (rx < min_x || rx > max_x || rz < min_z || rz > max_z) {
-        return;
+        return false;
     }
 
     const int32_t l = rx - min_x;
@@ -99,6 +99,8 @@ void Lara_Col_Push(
         lara_info->interact_target.is_moving = false;
         lara_info->gun_status = LGS_ARMLESS;
     }
+
+    return true;
 }
 
 void Lara_Col_Register(
@@ -140,7 +142,7 @@ void Lara_Col_MonkeySwingSnap(ITEM *const item)
     }
 }
 
-void Lara_Col_ItemPush(
+bool Lara_Col_ItemPush(
     const ITEM *const item, COLL_INFO *const coll, const bool hit_on,
     const bool big_push)
 {
@@ -149,21 +151,21 @@ void Lara_Col_ItemPush(
         .pos = item->pos,
         .rot = item->rot,
     };
-    Lara_Col_Push(
+    return Lara_Col_Push(
         &src_item, coll,
         hit_on
             && !ObjectFamily_Has(item->object_id, OBJ_FAMILY_NO_HIT_REACTION),
         big_push);
 }
 
-void Lara_Col_Static3DPush(const STATIC_MESH *const mesh, COLL_INFO *const coll)
+bool Lara_Col_Static3DPush(const STATIC_MESH *const mesh, COLL_INFO *const coll)
 {
     const COLL_ITEM src_item = {
         .bounds = Object_Get3DStatic(mesh->static_num)->collision_bounds,
         .pos = mesh->pos,
         .rot = { .y = mesh->rot.y },
     };
-    Lara_Col_Push(&src_item, coll, false, true);
+    return Lara_Col_Push(&src_item, coll, false, true);
 }
 
 void Lara_Col_WadeSplash(ITEM *const item)

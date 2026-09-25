@@ -3416,6 +3416,9 @@
         "rolling_ball_4": {
             "name": "\\{review}Камень 4|\\{review}Катающийся шар 4",
         },
+        "rolling_spikes": {
+            "name": "\\{review}Катящиеся шипы",
+        },
         "rope": {
             "name": "\\{review}Верёвка",
         },
