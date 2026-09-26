@@ -395,7 +395,12 @@ bool Object_DrawPickupItem(const ITEM *const item)
     Matrix_Rot16(item->interp.result.rot);
     Matrix_TranslateRel16(offset);
 
-    Output_CalculateLight(item->pos, item->room_num);
+    // Use object lighting for TR4 pickups so nearby point lights affect them.
+    if (g_TRVersion >= 4) {
+        Output_CalculateObjectLighting(item, &bounds);
+    } else {
+        Output_CalculateLight(item->pos, item->room_num);
+    }
 
     const CLIP clip = Output_CheckBoundsClip(&bounds);
     if (clip != CLIP_NOT_VISIBLE) {
