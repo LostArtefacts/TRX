@@ -21,6 +21,7 @@
 
 **Weapons and ammunition**
 - Fixed the BFG9000 blast passing through friendly creatures
+- Fixed the BFG9000 filling the log with errors when shot at a creature on the ground (#6703 / TRX1595)
 - Fixed level completion after explosive weapon kills (#6685 / TRX1584)
 
 **TR2**
