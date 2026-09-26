@@ -3191,6 +3191,21 @@
         "punk_2": {
             "name": "\\{review}Punk 2",
         },
+        "pushable_object_1": {
+            "name": "\\{review}Objet poussable 1",
+        },
+        "pushable_object_2": {
+            "name": "\\{review}Objet poussable 2",
+        },
+        "pushable_object_3": {
+            "name": "\\{review}Objet poussable 3",
+        },
+        "pushable_object_4": {
+            "name": "\\{review}Objet poussable 4",
+        },
+        "pushable_object_5": {
+            "name": "\\{review}Objet poussable 5",
+        },
         "pushpull_door_1": {
             "name": "\\{review}Porte à pousser/tirer 1",
         },

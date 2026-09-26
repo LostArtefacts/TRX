@@ -3191,6 +3191,21 @@
         "punk_2": {
             "name": "Punc 2",
         },
+        "pushable_object_1": {
+            "name": "Oibseact Putaidh 1",
+        },
+        "pushable_object_2": {
+            "name": "Oibseact Putaidh 2",
+        },
+        "pushable_object_3": {
+            "name": "Oibseact Putaidh 3",
+        },
+        "pushable_object_4": {
+            "name": "Oibseact Putaidh 4",
+        },
+        "pushable_object_5": {
+            "name": "Oibseact Putaidh 5",
+        },
         "pushpull_door_1": {
             "name": "Doras putaidh/tarraing 1",
         },

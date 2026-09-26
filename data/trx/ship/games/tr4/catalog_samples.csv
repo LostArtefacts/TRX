@@ -7,6 +7,7 @@
 8,   lara_pistols
 9,   lara_reload
 10,  lara_ricochet
+11,  pushable_stop
 12,  metal_scrape_loop_1
 20,  metal_scrape_loop_2
 23,  upv_harpoon
@@ -28,6 +29,7 @@
 53,  lara_fall_death
 56,  lara_flesh_wound
 60,  underwater
+63,  pushable_move
 66,  rock_fall_crumble
 67,  rock_fall_land
 69,  icicle

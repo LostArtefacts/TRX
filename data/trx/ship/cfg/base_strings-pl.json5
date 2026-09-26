@@ -3191,6 +3191,21 @@
         "punk_2": {
             "name": "Punk 2",
         },
+        "pushable_object_1": {
+            "name": "\\{review}Przedmiot do przesuwania 1",
+        },
+        "pushable_object_2": {
+            "name": "\\{review}Przedmiot do przesuwania 2",
+        },
+        "pushable_object_3": {
+            "name": "\\{review}Przedmiot do przesuwania 3",
+        },
+        "pushable_object_4": {
+            "name": "\\{review}Przedmiot do przesuwania 4",
+        },
+        "pushable_object_5": {
+            "name": "\\{review}Przedmiot do przesuwania 5",
+        },
         "pushpull_door_1": {
             "name": "\\{review}Drzwi pchane/ciągnięte 1",
         },

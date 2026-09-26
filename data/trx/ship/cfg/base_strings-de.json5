@@ -3191,6 +3191,21 @@
         "punk_2": {
             "name": "\\{review}Punk 2",
         },
+        "pushable_object_1": {
+            "name": "\\{review}Schiebbares Objekt 1",
+        },
+        "pushable_object_2": {
+            "name": "\\{review}Schiebbares Objekt 2",
+        },
+        "pushable_object_3": {
+            "name": "\\{review}Schiebbares Objekt 3",
+        },
+        "pushable_object_4": {
+            "name": "\\{review}Schiebbares Objekt 4",
+        },
+        "pushable_object_5": {
+            "name": "\\{review}Schiebbares Objekt 5",
+        },
         "pushpull_door_1": {
             "name": "\\{review}Schwingtür 1",
         },

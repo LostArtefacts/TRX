@@ -3290,6 +3290,21 @@
         "punk_2": {
             "name": "Punk 2",
         },
+        "pushable_object_1": {
+            "name": "Pushable Object 1",
+        },
+        "pushable_object_2": {
+            "name": "Pushable Object 2",
+        },
+        "pushable_object_3": {
+            "name": "Pushable Object 3",
+        },
+        "pushable_object_4": {
+            "name": "Pushable Object 4",
+        },
+        "pushable_object_5": {
+            "name": "Pushable Object 5",
+        },
         "pushpull_door_1": {
             "name": "Push/Pull Door 1",
         },
