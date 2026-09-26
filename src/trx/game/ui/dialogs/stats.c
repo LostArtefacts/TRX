@@ -121,9 +121,13 @@ static const char *M_FormatRecordTime(const int32_t total_frames)
     const int32_t total_seconds = total_frames / LOGIC_FPS;
     const int32_t minutes = (total_seconds / 60) % 60;
     const int32_t seconds = total_seconds % 60;
-    const int32_t centiseconds = total_frames % LOGIC_FPS / (LOGIC_FPS / 10);
+    const int32_t frames = total_frames % LOGIC_FPS;
+    if (g_TRVersion >= 3) {
+        return String_FormatStatic(
+            "%d:%02d.%02d", minutes, seconds, frames * 100 / LOGIC_FPS);
+    }
     return String_FormatStatic(
-        "%02d:%02d.%-2d", minutes, seconds, centiseconds);
+        "%02d:%02d.%-2d", minutes, seconds, frames * 10 / LOGIC_FPS);
 }
 
 static const char *M_FormatTime(
