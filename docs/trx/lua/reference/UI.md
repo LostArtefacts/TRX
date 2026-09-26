@@ -181,7 +181,9 @@ and `\{button left}` draws the button the player has bound.
     Properties:
     - <a id="ui.MeshSlot.h" name="ui.MeshSlot.h"></a>**`h`**: number. How tall the box is, in canvas units. *(read-only)*
     - <a id="ui.MeshSlot.object" name="ui.MeshSlot.object"></a>**`object`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The object drawn in the slot. *(read-only)*
+    - <a id="ui.MeshSlot.rot_x" name="ui.MeshSlot.rot_x"></a>**`rot_x`**: [trx.math.Angle](MATH.md#math.Angle). How far the model is tilted. *(read-only)*
     - <a id="ui.MeshSlot.rot_y" name="ui.MeshSlot.rot_y"></a>**`rot_y`**: [trx.math.Angle](MATH.md#math.Angle). How far the model is turned. *(read-only)*
+    - <a id="ui.MeshSlot.rot_z" name="ui.MeshSlot.rot_z"></a>**`rot_z`**: [trx.math.Angle](MATH.md#math.Angle). How far the model is rolled. *(read-only)*
     - <a id="ui.MeshSlot.visible" name="ui.MeshSlot.visible"></a>**`visible`**: boolean. Whether the model is drawn. *(read-only)*
     - <a id="ui.MeshSlot.w" name="ui.MeshSlot.w"></a>**`w`**: number. How wide the box is, in canvas units. *(read-only)*
     - <a id="ui.MeshSlot.x" name="ui.MeshSlot.x"></a>**`x`**: number. The left edge of the box, in canvas units. *(read-only)*
@@ -196,10 +198,10 @@ and `\{button left}` draws the button the player has bound.
       Puts the model where it should be at the end of this tick, and shows it.
 
       Takes a table of `object` , `x` ,
-      `y` , `w` , `h` and
-      `rot_y` . The box is in canvas units and an omitted value
-      counts as zero. The turn takes the short way around,
-      so a model crossing the wrap does not spin back through every angle between.
+      `y` , `w` , `h` ,
+      `rot_x` , `rot_y` and
+      `rot_z` . The box uses canvas units. An omitted value is zero.
+      Each turn takes the short way around the angle wrap.
 
       Call this once per tick. Calling it twice in one tick replaces the pose used for
       interpolation. A hidden slot, or one given a new object, starts at the new pose.

@@ -152,7 +152,7 @@ static void M_DrawMeshes(const M_PRIV *const p)
         Matrix_TranslateSet32(origin);
         Matrix_RotX(DEG_1 * 15);
         Matrix_RotY(-DEG_180);
-        Matrix_RotY(mesh->rot_y);
+        Matrix_Rot16(mesh->rot);
         Matrix_Scale((1 << W2V_SHIFT) * scale);
 
         // Set up lighting for the mesh.
@@ -212,7 +212,7 @@ static void M_DrawMeshes(const M_PRIV *const p)
             .z = -(frame->bounds.min.z + frame->bounds.max.z) / 2,
         });
         Matrix_Rot16(frame->mesh_rots[0]);
-        Object_DrawStaticObject(mesh->object, frame);
+        Object_DrawStaticObject(mesh->object, frame, mesh->mesh_mask);
         Matrix_Pop();
 
         // Immediately flush scheduled object, so that it gets rendered

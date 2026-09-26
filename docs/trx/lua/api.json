@@ -16386,8 +16386,20 @@
           "writable": false
         },
         {
+          "description": "How far the model is tilted.",
+          "name": "rot_x",
+          "type": "math.Angle",
+          "writable": false
+        },
+        {
           "description": "How far the model is turned.",
           "name": "rot_y",
+          "type": "math.Angle",
+          "writable": false
+        },
+        {
+          "description": "How far the model is rolled.",
+          "name": "rot_z",
           "type": "math.Angle",
           "writable": false
         },
@@ -16423,7 +16435,7 @@
           "name": "hide"
         },
         {
-          "description": "Puts the model where it should be at the end of this tick, and shows it.\n\nTakes a table of `object` <!--noref: object-->, `x` <!--noref: x-->,\n`y` <!--noref: y-->, `w` <!--noref: w-->, `h` <!--noref: h--> and\n`rot_y` <!--noref: rot_y-->. The box is in canvas units and an omitted value\ncounts as zero. The turn takes the short way around,\nso a model crossing the wrap does not spin back through every angle between.\n\nCall this once per tick. Calling it twice in one tick replaces the pose used for\ninterpolation. A hidden slot, or one given a new object, starts at the new pose.",
+          "description": "Puts the model where it should be at the end of this tick, and shows it.\n\nTakes a table of `object` <!--noref: object-->, `x` <!--noref: x-->,\n`y` <!--noref: y-->, `w` <!--noref: w-->, `h` <!--noref: h-->,\n`rot_x` <!--noref: rot_x-->, `rot_y` <!--noref: rot_y--> and\n`rot_z` <!--noref: rot_z-->. The box uses canvas units. An omitted value is zero.\nEach turn takes the short way around the angle wrap.\n\nCall this once per tick. Calling it twice in one tick replaces the pose used for\ninterpolation. A hidden slot, or one given a new object, starts at the new pose.",
           "name": "move"
         },
         {

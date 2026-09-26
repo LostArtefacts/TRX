@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/core/math/types.h>
 #include <trx/game/objects/types.h>
 #include <trx/game/output/textures.h>
 #include <trx/game/output/utils.h>
@@ -11,7 +12,8 @@
 typedef struct {
     const OBJECT *object;
     VIEWPORT_RECT rect;
-    int32_t rot_y;
+    uint32_t mesh_mask;
+    XYZ_16 rot;
 } OUTPUT_UI_MESH;
 
 typedef struct {

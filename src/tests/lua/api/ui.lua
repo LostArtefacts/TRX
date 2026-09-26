@@ -53,7 +53,7 @@ test("a model in a slot draws where it was moved", function()
   slot:move({ object = 5, x = 10, y = 20, w = 30, h = 40, rot_y = 512 })
   assert(
     slot_line(fake.render(0))
-      == "mesh_slot obj=5 x=10.0 y=20.0 w=30.0 h=40.0 rot_y=512"
+      == "mesh_slot obj=5 x=10.0 y=20.0 w=30.0 h=40.0 rot_x=0 rot_y=512 rot_z=0 mask=4294967295"
   )
   slot:release()
 end)
@@ -65,7 +65,7 @@ test("a model in a slot is blended between its two ticks", function()
   -- Half way between the two ticks, half way between the two poses.
   assert(
     slot_line(fake.render(0.5))
-      == "mesh_slot obj=5 x=50.0 y=20.0 w=10.0 h=10.0 rot_y=500"
+      == "mesh_slot obj=5 x=50.0 y=20.0 w=10.0 h=10.0 rot_x=0 rot_y=500 rot_z=0 mask=4294967295"
   )
   -- The fields report the tick, not the frame.
   assert(slot.x == 100, slot.x)
@@ -77,7 +77,7 @@ test("a model put down for the first time does not travel to it", function()
   slot:move({ object = 5, x = 80, y = 0, w = 10, h = 10 })
   assert(
     slot_line(fake.render(0.5))
-      == "mesh_slot obj=5 x=80.0 y=0.0 w=10.0 h=10.0 rot_y=0"
+      == "mesh_slot obj=5 x=80.0 y=0.0 w=10.0 h=10.0 rot_x=0 rot_y=0 rot_z=0 mask=4294967295"
   )
   slot:release()
 end)
@@ -88,7 +88,37 @@ test("a turn takes the short way around", function()
   slot:move({ object = 5, x = 0, y = 0, w = 10, h = 10, rot_y = 65024 })
   -- 65024 is -512 the short way, so half way is -256, not 32512.
   local line = slot_line(fake.render(0.5))
-  assert(line:match("rot_y=%-256$"), line)
+  assert(line:match("rot_y=%-256 "), line)
+  slot:release()
+end)
+
+test("a model in a slot holds the tilt and roll it was given", function()
+  local slot = trx.ui.mesh_slot()
+  slot:move({
+    object = 5,
+    x = 0,
+    y = 0,
+    w = 10,
+    h = 10,
+    rot_x = 16384,
+    rot_y = 512,
+    rot_z = -8192,
+  })
+  assert(
+    slot_line(fake.render(0))
+      == "mesh_slot obj=5 x=0.0 y=0.0 w=10.0 h=10.0 rot_x=16384 rot_y=512"
+        .. " rot_z=-8192 mask=4294967295"
+  )
+  assert(slot.rot_x == 16384, slot.rot_x)
+  assert(slot.rot_z == -8192, slot.rot_z)
+  slot:release()
+end)
+
+test("a model in a slot draws only the meshes it was given", function()
+  local slot = trx.ui.mesh_slot()
+  slot:move({ object = 5, x = 0, y = 0, w = 10, h = 10, mesh_mask = 5 })
+  local line = slot_line(fake.render(0))
+  assert(line:match("mask=5$"), line)
   slot:release()
 end)
 
@@ -102,7 +132,7 @@ test("a released slot's handle does not reach the next taker", function()
   end, "stale")
   assert(
     slot_line(fake.render(0))
-      == "mesh_slot obj=5 x=1.0 y=2.0 w=3.0 h=4.0 rot_y=0"
+      == "mesh_slot obj=5 x=1.0 y=2.0 w=3.0 h=4.0 rot_x=0 rot_y=0 rot_z=0 mask=4294967295"
   )
   second:release()
 end)

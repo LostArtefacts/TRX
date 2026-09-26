@@ -17,6 +17,9 @@ local EASE_IN_TICKS = trx.game.LOGIC_FPS // 2
 local DISPLAY_TICKS = trx.game.LOGIC_FPS * 2
 local EASE_OUT_TICKS = trx.game.LOGIC_FPS
 local SPIN_PER_TICK = 4 * trx.math.DEG_1
+
+-- Every mesh of an object, for one the ring states no selection for.
+local ALL_MESHES = 0xFFFFFFFF
 local WHITE = trx.math.color("ffffff")
 
 local shown = {}
@@ -75,10 +78,17 @@ local function model_of(object)
   return icon
 end
 
--- Returns the ring's starting angle for the object.
-local function start_angle(icon)
+-- Return the ring pose: its starting angle, its fixed rotations, and which of
+-- its meshes the ring draws.
+local function ring_pose(icon)
   local entry = trx.inventory.ring_item(icon)
-  return entry ~= nil and entry.y_rot_sel or 0
+  if entry == nil then
+    return 0, 0, 0, ALL_MESHES
+  end
+  return entry.y_rot_sel + entry.base_rot_y,
+    entry.base_rot_x,
+    entry.base_rot_z,
+    entry.meshes_drawn
 end
 
 -- Returns a free cell. Models release their cells when they start leaving;
@@ -136,9 +146,15 @@ local function add(object)
     total = 0,
     -- A sprite does not slide, so it starts where it ends up.
     ease = icon == nil and 1 or 0,
-    angle = icon ~= nil and start_angle(icon) or 0,
+    angle = 0,
+    rot_x = 0,
+    rot_z = 0,
+    mesh_mask = ALL_MESHES,
     slot = slot,
   }
+  if icon ~= nil then
+    entry.angle, entry.rot_x, entry.rot_z, entry.mesh_mask = ring_pose(icon)
+  end
   shown[#shown + 1] = entry
 end
 
@@ -205,7 +221,10 @@ signal.tick:on(function()
           y = y,
           w = width,
           h = height,
+          mesh_mask = entry.mesh_mask,
+          rot_x = entry.rot_x,
           rot_y = entry.angle + SPIN_PER_TICK * entry.total,
+          rot_z = entry.rot_z,
         })
       else
         entry.slot:hide()

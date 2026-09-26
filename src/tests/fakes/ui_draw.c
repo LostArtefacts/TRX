@@ -168,9 +168,11 @@ void UI_Draw(void)
     const int32_t count = UI_MeshSlots_Collect(slots, UI_MESH_SLOT_MAX);
     for (int32_t i = 0; i < count; i++) {
         FakeUIDraw_Record(String_FormatStatic(
-            "mesh_slot obj=%d x=%.1f y=%.1f w=%.1f h=%.1f rot_y=%d",
+            "mesh_slot obj=%d x=%.1f y=%.1f w=%.1f h=%.1f rot_x=%d rot_y=%d "
+            "rot_z=%d mask=%u",
             (int32_t)slots[i].object_id, slots[i].pose.x, slots[i].pose.y,
-            slots[i].pose.w, slots[i].pose.h, slots[i].pose.rot_y));
+            slots[i].pose.w, slots[i].pose.h, slots[i].pose.rot.x,
+            slots[i].pose.rot.y, slots[i].pose.rot.z, slots[i].mesh_mask));
     }
 }
 
