@@ -986,6 +986,13 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'lua/commands/restart_level',
+  'bundles': [b_lua_surface, b_console, b_lua_events],
+  'src': ['fakes/camera.c', 'fakes/game.c'],
+  'engine': ['game/lua/capi/game.c'],
+}
+
+unit_tests += {
   'name': 'lua/commands/music',
   'bundles': [b_lua_surface, b_console],
   'src': ['fakes/music.c', 'fakes/strings.c'],

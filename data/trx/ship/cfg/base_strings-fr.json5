@@ -478,6 +478,9 @@
                 "level_fmt_cutscene": "Cinématique %d",
                 "level_fmt_demo": "Démo %d",
             },
+            "restart_level": {
+                "help": "\\{review}Redémarre le niveau actuel.",
+            },
             "rule": {
                 "ambiguous": "Entrée ambiguë : %s et %s",
                 "bad_invocation": "Invocation invalide : %s",

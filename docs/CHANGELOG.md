@@ -56,7 +56,11 @@
 - Fixed missing collision on Moving Floors in custom levels when rotated to face East (OG bug) (TRX1559)
 - Fixed pickups looking too dark, such as the eye pieces in Tomb of Seth (TRX637)
 
+**Developer console**
+- Added the `/restartlevel` console command, also available as `/restart`, which restarts the current level (#6712 / TRX1599)
+
 **Lua**
+- Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)
 - Added `trx.math.degrees()`, which converts an angle from degrees to the engine's units
 - Added `scale`, `y_offset`, `base_rot_x`, `base_rot_y`, `base_rot_z`, and `draws_at_pivot` to inventory ring entries. Scripts can use these fields to set an object's size and pose.
 - Added `rot_x` and `rot_z` to `trx.ui.MeshSlot` for tilting and rolling models on the canvas

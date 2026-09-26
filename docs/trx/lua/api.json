@@ -6971,6 +6971,16 @@
       "path": "game.end_level"
     },
     {
+      "description": "Restarts the current level from its start, as the passport's restart does.\nReturns `false` and does nothing where the passport offers no restart: outside\na level, in a cutscene or demo, or in a save that does not record how the level\nstarted.",
+      "path": "game.restart_level",
+      "returns": [
+        {
+          "description": "Whether the level restarts.",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
       "description": "Leaves the current game and returns to the title screen.",
       "path": "game.exit_to_title"
     },
