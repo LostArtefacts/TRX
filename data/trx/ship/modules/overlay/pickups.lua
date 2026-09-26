@@ -63,11 +63,12 @@ local function box_of(entry)
   return x - width / 2, y - height / 2, width, height
 end
 
--- Returns the model the ring uses, or nil when a sprite must stand in for it.
+local function has_sprite(object)
+  return primitive.sprite_count(object) > 0
+end
+
+-- Returns the model the ring uses, or nil when the object has none.
 local function model_of(object)
-  if not trx.config.get("visuals.enable_3d_pickups") then
-    return nil
-  end
   local icon = trx.inventory.icon_of(object)
   if icon == nil or not trx.objects.get(icon).loaded then
     return nil
@@ -128,12 +129,19 @@ local function add(object)
     return
   end
 
+  -- Draws an object without a sprite as its model, even with 3D pickups off.
+  local sprite = has_sprite(object)
   local icon = model_of(object)
+  if sprite and not trx.config.get("visuals.enable_3d_pickups") then
+    icon = nil
+  end
   local slot = icon ~= nil and trx.ui.mesh_slot() or nil
-  -- Every slot taken leaves no model to move, so a sprite stands in for it as
-  -- it does for an object that carries no model at all.
+  -- When every slot is taken, a sprite is drawn instead of the model.
   if slot == nil then
     icon = nil
+  end
+  if icon == nil and not sprite then
+    return
   end
 
   local entry = {
@@ -239,7 +247,7 @@ trx.events.on_ui_paint(function()
     return
   end
   for _, entry in ipairs(shown) do
-    if entry.icon == nil and trx.objects.get(entry.object).loaded then
+    if entry.icon == nil then
       local x0, y0, x1, y1 = primitive.sprite_bounds(entry.object, 0)
       local sprite_w = math.abs(x1 - x0)
       local sprite_h = math.abs(y1 - y0)
