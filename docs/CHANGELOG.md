@@ -14,6 +14,7 @@
 - Added a loading bar to the TR1–3 loading screens (Graphics → Bars → Loading bar) (TRX1591)
 - Added an option to change the loading bar appearance (Graphics → Bars → Loading bar appearance) (TRX1591)
 - Changed the loading screens in TR1–3 to stay on screen for two seconds in every game (TRX1591)
+- Fixed items without a sprite, such as the scion, not showing in the pickups overlay when 3D pickups are off
 
 **Developer console**
 - Changed the `/give` console command to show the given items in the corner of the screen, except for `/give all`. Use `-q` to hide them.
