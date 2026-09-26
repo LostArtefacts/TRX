@@ -8,6 +8,7 @@
 // runs only once a tick.
 
 #include <trx/core/handle.h>
+#include <trx/core/math/types.h>
 #include <trx/game/objects/ids.h>
 
 #include <stdint.h>
@@ -21,7 +22,7 @@ typedef struct {
     float y;
     float w;
     float h;
-    int32_t rot_y;
+    XYZ_16 rot;
 } UI_MESH_POSE;
 
 typedef struct {
@@ -30,6 +31,7 @@ typedef struct {
     // False until a second pose arrives, while there is nothing to blend from.
     bool has_prev;
     OBJECT_ID object_id;
+    uint32_t mesh_mask;
     UI_MESH_POSE cur;
     UI_MESH_POSE prev;
 } UI_MESH_SLOT;
@@ -50,13 +52,15 @@ UI_MESH_SLOT *UI_MeshSlot_Resolve(TRX_HANDLE handle);
 // Records the pose the model reaches at the end of this tick, keeping the one
 // it starts from, and shows the model.
 void UI_MeshSlot_Move(
-    TRX_HANDLE handle, OBJECT_ID object_id, UI_MESH_POSE pose);
+    TRX_HANDLE handle, OBJECT_ID object_id, uint32_t mesh_mask,
+    UI_MESH_POSE pose);
 void UI_MeshSlot_Hide(TRX_HANDLE handle);
 
 // One shown slot, blended between its two poses. The box stays in canvas
 // units; whoever draws it scales it.
 typedef struct {
     OBJECT_ID object_id;
+    uint32_t mesh_mask;
     UI_MESH_POSE pose;
 } UI_MESH_DRAW;
 

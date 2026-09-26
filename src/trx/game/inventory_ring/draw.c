@@ -22,6 +22,7 @@
 #include <trx/version.h>
 
 #include <math.h>
+#include <stdlib.h>
 
 #define M_SHADE_NORMAL SHADE_LOW
 #define M_SHADE_SELECTED SHADE_NEUTRAL
@@ -153,6 +154,22 @@ fallback:
     return 0;
 }
 
+static void M_DrawObject(
+    const INVENTORY_ITEM *const inv_item, const OBJECT *const obj,
+    const int16_t *const extra_rotation, const ANIM_FRAME *const frame1,
+    const ANIM_FRAME *const frame2, const int32_t frac, const int32_t rate)
+{
+    if (inv_item->draws_at_pivot) {
+        Object_DrawInterpolatedObjectAtPivot(
+            obj, inv_item->meshes_drawn, extra_rotation, frame1, frame2, frac,
+            rate);
+    } else {
+        Object_DrawInterpolatedObject(
+            obj, inv_item->meshes_drawn, extra_rotation, frame1, frame2, frac,
+            rate);
+    }
+}
+
 static void M_DrawItem(
     const INV_RING *const ring, const INVENTORY_ITEM *const inv_item,
     const int16_t view_rot_y)
@@ -197,7 +214,7 @@ static void M_DrawItem(
         Output_CalculateStaticLightRGB_F((RGB_F) { bright, bright, bright });
     }
 
-    Matrix_TranslateRel(0, draw_y_trans, draw_z_trans);
+    Matrix_TranslateRel(0, draw_y_trans + inv_item->y_offset, draw_z_trans);
 
     Matrix_RotX(-draw_x_rot_pt);
     Matrix_RotY(-view_rot_y);
@@ -205,12 +222,16 @@ static void M_DrawItem(
     Matrix_RotY(view_rot_y);
     Matrix_RotX(draw_x_rot_pt);
 
-    Matrix_RotY(draw_y_rot);
-    Matrix_RotX(draw_x_rot);
+    Matrix_RotY(draw_y_rot + inv_item->base_rot.y);
+    Matrix_RotX(draw_x_rot + inv_item->base_rot.x);
+    Matrix_RotZ(inv_item->base_rot.z);
 
     const OBJECT *const obj = Object_Get(inv_item->object_id);
     if (!obj->loaded || obj->mesh_count < 0) {
         return;
+    }
+    if (inv_item->scale > 0.0f && inv_item->scale != 1.0f) {
+        Matrix_Scale((1 << W2V_SHIFT) * inv_item->scale);
     }
 
     if (inv_item->object_id == O_GLOBE_OPTION) {
@@ -256,9 +277,7 @@ static void M_DrawItem(
             Option_Stats_GetCompassNeedleAngle()
         };
         Object_GetBone(obj, 0)->rot.y = true;
-        Object_DrawInterpolatedObject(
-            obj, inv_item->meshes_drawn, extra_rotation, frame1, frame2, frac,
-            rate);
+        M_DrawObject(inv_item, obj, extra_rotation, frame1, frame2, frac, rate);
     } else if (inv_item->object_id == O_STOPWATCH_OPTION) {
         const RESUME_INFO *const current_info =
             SG_Resume_GetEntry(Game_GetCurrentLevel());
@@ -271,16 +290,13 @@ static void M_DrawItem(
         Object_GetBone(obj, 3)->rot.z = true;
         Object_GetBone(obj, 4)->rot.z = true;
         Object_GetBone(obj, 5)->rot.z = true;
-        Object_DrawInterpolatedObject(
-            obj, inv_item->meshes_drawn, extra_rotation, frame1, frame2, frac,
-            rate);
+        M_DrawObject(inv_item, obj, extra_rotation, frame1, frame2, frac, rate);
     } else {
-        Object_DrawInterpolatedObject(
-            obj, inv_item->meshes_drawn, nullptr, frame1, frame2, frac, rate);
+        M_DrawObject(inv_item, obj, nullptr, frame1, frame2, frac, rate);
     }
 }
 
-const INVENTORY_ITEM *InvRing_GetInvItem(const OBJECT_ID obj_id)
+INVENTORY_ITEM *InvRing_GetInvItem(const OBJECT_ID obj_id)
 {
     for (int32_t i = 0; i < g_InvRing_Items->count; i++) {
         INVENTORY_ITEM *const item =

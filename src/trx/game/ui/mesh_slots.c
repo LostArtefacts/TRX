@@ -57,7 +57,8 @@ UI_MESH_SLOT *UI_MeshSlot_Resolve(const TRX_HANDLE handle)
 }
 
 void UI_MeshSlot_Move(
-    const TRX_HANDLE handle, const OBJECT_ID object_id, const UI_MESH_POSE pose)
+    const TRX_HANDLE handle, const OBJECT_ID object_id,
+    const uint32_t mesh_mask, const UI_MESH_POSE pose)
 {
     UI_MESH_SLOT *const slot = UI_MeshSlot_Resolve(handle);
     if (slot == nullptr) {
@@ -70,6 +71,7 @@ void UI_MeshSlot_Move(
     slot->prev = slot->cur;
     slot->cur = pose;
     slot->object_id = object_id;
+    slot->mesh_mask = mesh_mask;
     slot->visible = true;
 }
 
@@ -104,12 +106,17 @@ int32_t UI_MeshSlots_Collect(UI_MESH_DRAW *const out, const int32_t max)
         const UI_MESH_POSE from = slot->has_prev ? slot->prev : slot->cur;
         out[count++] = (UI_MESH_DRAW) {
             .object_id = slot->object_id,
+            .mesh_mask = slot->mesh_mask,
             .pose = {
                 .x = M_Lerp(from.x, slot->cur.x, rate),
                 .y = M_Lerp(from.y, slot->cur.y, rate),
                 .w = M_Lerp(from.w, slot->cur.w, rate),
                 .h = M_Lerp(from.h, slot->cur.h, rate),
-                .rot_y = M_LerpAngle(from.rot_y, slot->cur.rot_y, rate),
+                .rot = {
+                    .x = (int16_t)M_LerpAngle(from.rot.x, slot->cur.rot.x, rate),
+                    .y = (int16_t)M_LerpAngle(from.rot.y, slot->cur.rot.y, rate),
+                    .z = (int16_t)M_LerpAngle(from.rot.z, slot->cur.rot.z, rate),
+                },
             },
         };
     }

@@ -1,6 +1,9 @@
 local raw = trxc.math
 local api = trx.api
 
+-- One full turn in the engine's angle units.
+local DEG_360 = 4 * raw.DEG_90
+
 api.module("math", {
   order = 31,
   description = "Fixed-point trigonometry, matching the engine's own tables. Using these rather "
@@ -220,6 +223,26 @@ local teal = trx.math.color(51, 229, 255)]],
       error("trx.math.color takes hex text, or all three channels", 2)
     end
     return make_color(value, g, b)
+  end,
+})
+
+api.define("math.degrees", {
+  description = "Converts an angle from degrees. A whole degree and a part of one both remain "
+    .. "exact. `trx.math.DEG_1` uses the nearest whole unit and falls four units short over a "
+    .. "quarter turn.",
+  params = {
+    {
+      name = "degrees",
+      type = "number",
+      description = "The angle in degrees.",
+    },
+  },
+  returns = { type = "math.Angle" },
+  examples = {
+    [[local half_turn = trx.math.degrees(180)]],
+  },
+  impl = function(degrees)
+    return math.floor(degrees * DEG_360 / 360 + 0.5)
   end,
 })
 

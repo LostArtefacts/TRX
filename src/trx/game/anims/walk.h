@@ -29,6 +29,8 @@ typedef struct {
     // Applies the root joint's extra rotation when drawing, but not when
     // sampling.
     bool applies_base_rot;
+    // Draws the object about its pivot, leaving out the frame offset.
+    bool skips_frame_offset;
 } ANIM_WALK_DESC;
 
 typedef struct {

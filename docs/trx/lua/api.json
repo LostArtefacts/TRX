@@ -7621,18 +7621,18 @@
       ],
       "path": "inventory.ring_item",
       "returns": {
-        "description": "The entry's `object_id`, frame counts, rotations and\noffsets, or `nil`.\n<!--noref: object_id-->",
+        "description": "The entry's `object_id`, frame counts, rotations, offsets,\n`scale`, and `draws_at_pivot`, or `nil`.\n<!--noref: object_id-->\n<!--noref: scale, draws_at_pivot-->",
         "type": "table"
       }
     },
     {
       "description": "Adds an object to the inventory ring and sets how it is drawn and rotated.\n\nThe ring declares every item, including the shipped items. A script can add a\nminted object or change a shipped item without changing a game file. Declaring\nthe same object again changes its existing entry. The ring draws the object in\nthe declaration; use the pickup for an object that represents itself.",
       "examples": [
-        "trx.inventory.declare_ring_item({\n  object_id = \"mymod:lantern_item\",\n  frames_total = 1,\n  anim_direction = 1,\n  anim_speed = 1,\n  meshes_sel = -1,\n  meshes_drawn = -1,\n  inv_pos = 20,\n})"
+        "trx.inventory.declare_ring_item({\n  object_id = \"mymod:lantern_item\",\n  frames_total = 1,\n  anim_direction = 1,\n  anim_speed = 1,\n  scale = 1.0,\n  meshes_sel = -1,\n  meshes_drawn = -1,\n  inv_pos = 20,\n})"
       ],
       "params": [
         {
-          "description": "The entry's `object_id`, frame counts, rotations and offsets.\nAn omitted value keeps the ring's default.\n<!--noref: object_id-->",
+          "description": "The entry's `object_id`, frame counts, rotations, offsets,\n`scale`, and `draws_at_pivot`. An omitted value keeps the ring's default.\n<!--noref: object_id-->\n<!--noref: scale, draws_at_pivot-->",
           "name": "spec",
           "type": "table"
         }
@@ -8118,6 +8118,23 @@
       "path": "math.color",
       "returns": {
         "type": "math.Color"
+      }
+    },
+    {
+      "description": "Converts an angle from degrees. A whole degree and a part of one both remain exact. `trx.math.DEG_1` uses the nearest whole unit and falls four units short over a quarter turn.",
+      "examples": [
+        "local half_turn = trx.math.degrees(180)"
+      ],
+      "params": [
+        {
+          "description": "The angle in degrees.",
+          "name": "degrees",
+          "type": "number"
+        }
+      ],
+      "path": "math.degrees",
+      "returns": {
+        "type": "math.Angle"
       }
     },
     {
@@ -16371,8 +16388,20 @@
           "writable": false
         },
         {
+          "description": "How far the model is tilted.",
+          "name": "rot_x",
+          "type": "math.Angle",
+          "writable": false
+        },
+        {
           "description": "How far the model is turned.",
           "name": "rot_y",
+          "type": "math.Angle",
+          "writable": false
+        },
+        {
+          "description": "How far the model is rolled.",
+          "name": "rot_z",
           "type": "math.Angle",
           "writable": false
         },
@@ -16408,7 +16437,7 @@
           "name": "hide"
         },
         {
-          "description": "Puts the model where it should be at the end of this tick, and shows it.\n\nTakes a table of `object` <!--noref: object-->, `x` <!--noref: x-->,\n`y` <!--noref: y-->, `w` <!--noref: w-->, `h` <!--noref: h--> and\n`rot_y` <!--noref: rot_y-->. The box is in canvas units and an omitted value\ncounts as zero. The turn takes the short way around,\nso a model crossing the wrap does not spin back through every angle between.\n\nCall this once per tick. Calling it twice in one tick replaces the pose used for\ninterpolation. A hidden slot, or one given a new object, starts at the new pose.",
+          "description": "Puts the model where it should be at the end of this tick, and shows it.\n\nTakes a table of `object` <!--noref: object-->, `x` <!--noref: x-->,\n`y` <!--noref: y-->, `w` <!--noref: w-->, `h` <!--noref: h-->,\n`rot_x` <!--noref: rot_x-->, `rot_y` <!--noref: rot_y--> and\n`rot_z` <!--noref: rot_z-->. The box uses canvas units. An omitted value is zero.\nEach turn takes the short way around the angle wrap.\n\nCall this once per tick. Calling it twice in one tick replaces the pose used for\ninterpolation. A hidden slot, or one given a new object, starts at the new pose.",
           "name": "move"
         },
         {

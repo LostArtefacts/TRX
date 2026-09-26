@@ -44,11 +44,20 @@
 - Added Undead Mummy control (TRX1555)
 - Added level views before play starts, with a progress bar (TRX493)
 - Added Seth Sarcophagus and the Burial Chambers cutscene where Lara takes the Amulet (TRX1561)
+- Changed inventory items to use the original size and angle for each level's puzzle, key, pickup, and examine items
+- Fixed a box appearing beside the Eye of Horus in the inventory (OG bug)
+- Fixed inventory items such as the Broken Beetle appearing in the wrong place or not appearing in the ring
+- Fixed items appearing at the wrong angle in the pickup display
+- Fixed the shotgun, revolver, and crossbow showing the laser sight in the inventory (OG bug)
+- Fixed the revolver and crossbow showing the laser sight in the pickup display
 - Fixed the Guide having Lara's right-hand pistol mesh in Valley of the Kings (OG bug) (TRX1551)
 - Fixed a bug where sound effects such as footsteps were much too quiet (#6673 / TRX1569)
 - Fixed missing collision on Moving Floors in custom levels when rotated to face East (OG bug) (TRX1559)
 
 **Lua**
+- Added `trx.math.degrees()`, which converts an angle from degrees to the engine's units
+- Added `scale`, `y_offset`, `base_rot_x`, `base_rot_y`, `base_rot_z`, and `draws_at_pivot` to inventory ring entries. Scripts can use these fields to set an object's size and pose.
+- Added `rot_x` and `rot_z` to `trx.ui.MeshSlot` for tilting and rolling models on the canvas
 - Added `trx.fx.gun_flash()`, so a script can draw a muzzle flash on any item (TRX89)
 - Added `trx.fx.spark.context`, so a script can determine how a spark was spawned before deciding to alter it (TRX1590)
 - Added `trx.items.Item.joint_count` and `trx.items.Item:joint_pos()` (TRX89)

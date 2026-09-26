@@ -18,3 +18,8 @@ trx.events.on_game_start(function()
   trx.items[125].properties.pickup_mode = trx.items.PickupMode.HIDDEN
   trx.items[129].properties.pickup_mode = trx.items.PickupMode.HIDDEN
 end)
+
+require("tr4.inv_setup").apply({
+  puzzle_item_6 = { scale = 768, offset_y = 3 },
+  puzzle_item_7 = { scale = 768, offset_y = 9 },
+})

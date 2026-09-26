@@ -215,10 +215,20 @@ The fields report the current tick's pose.]],
       writable = false,
       description = "How tall the box is, in canvas units.",
     },
+    rot_x = {
+      type = "math.Angle",
+      writable = false,
+      description = "How far the model is tilted.",
+    },
     rot_y = {
       type = "math.Angle",
       writable = false,
       description = "How far the model is turned.",
+    },
+    rot_z = {
+      type = "math.Angle",
+      writable = false,
+      description = "How far the model is rolled.",
     },
   },
 
@@ -228,10 +238,10 @@ The fields report the current tick's pose.]],
 Puts the model where it should be at the end of this tick, and shows it.
 
 Takes a table of `object` <!--noref: object-->, `x` <!--noref: x-->,
-`y` <!--noref: y-->, `w` <!--noref: w-->, `h` <!--noref: h--> and
-`rot_y` <!--noref: rot_y-->. The box is in canvas units and an omitted value
-counts as zero. The turn takes the short way around,
-so a model crossing the wrap does not spin back through every angle between.
+`y` <!--noref: y-->, `w` <!--noref: w-->, `h` <!--noref: h-->,
+`rot_x` <!--noref: rot_x-->, `rot_y` <!--noref: rot_y--> and
+`rot_z` <!--noref: rot_z-->. The box uses canvas units. An omitted value is zero.
+Each turn takes the short way around the angle wrap.
 
 Call this once per tick. Calling it twice in one tick replaces the pose used for
 interpolation. A hidden slot, or one given a new object, starts at the new pose.]],

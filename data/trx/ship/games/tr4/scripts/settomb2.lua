@@ -196,3 +196,10 @@ trx.events.on_game_start(function(is_save)
 
   initialise_seth(is_save)
 end)
+
+require("tr4.inv_setup").apply({
+  puzzle_item_1 = { scale = 1024, rot_x = -90, rot_y = 180 },
+  puzzle_item_2 = { scale = 1024, rot_x = -90, rot_y = 180 },
+  puzzle_item_3 = { scale = 1024, rot_y = 180 },
+  puzzle_item_4 = { scale = 1280, offset_y = 5, rot_y = 180 },
+})

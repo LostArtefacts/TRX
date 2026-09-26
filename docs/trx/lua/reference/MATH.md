@@ -114,6 +114,19 @@ Fixed-point trigonometry, matching the engine's own tables. Using these rather t
   local teal = trx.math.color(51, 229, 255)
   ```
 
+- <a id="math.degrees" name="math.degrees"></a>[lua]`trx.math.degrees(degrees)`  
+  Converts an angle from degrees. A whole degree and a part of one both remain exact. [`trx.math.DEG_1`](#math.DEG_1) uses the nearest whole unit and falls four units short over a quarter turn.
+
+  Parameters:
+  - <a id="math.degrees.degrees" name="math.degrees.degrees"></a>**`degrees`** (number). The angle in degrees.
+
+  Returns: [trx.math.Angle](#math.Angle).
+
+  Example:
+  ```lua
+  local half_turn = trx.math.degrees(180)
+  ```
+
 - <a id="math.sin" name="math.sin"></a>[lua]`trx.math.sin(angle)`  
   Sine of an angle.
 

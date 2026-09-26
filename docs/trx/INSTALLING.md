@@ -1314,6 +1314,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── cutscenes.lua
 │   │   │   ├── expanding_blocks.lua
 │   │   │   ├── fog.lua
+│   │   │   ├── inv_setup.lua
 │   │   │   ├── logo.lua
 │   │   │   └── race_timer.lua
 │   │   ├── scripts
@@ -1326,11 +1327,13 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── cortyard.lua
 │   │   │   ├── csplit1.lua
 │   │   │   ├── csplit2.lua
+│   │   │   ├── hall.lua
 │   │   │   ├── highstrt.lua
 │   │   │   ├── jeepchas.lua
 │   │   │   ├── jeepchs2.lua
 │   │   │   ├── joby1a.lua
 │   │   │   ├── joby2.lua
+│   │   │   ├── joby3a.lua
 │   │   │   ├── joby3b.lua
 │   │   │   ├── joby4a.lua
 │   │   │   ├── joby4b.lua
@@ -2729,6 +2732,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── cutscenes.lua
     │   │   │   │   ├── expanding_blocks.lua
     │   │   │   │   ├── fog.lua
+    │   │   │   │   ├── inv_setup.lua
     │   │   │   │   ├── logo.lua
     │   │   │   │   └── race_timer.lua
     │   │   │   ├── scripts
@@ -2741,11 +2745,13 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── cortyard.lua
     │   │   │   │   ├── csplit1.lua
     │   │   │   │   ├── csplit2.lua
+    │   │   │   │   ├── hall.lua
     │   │   │   │   ├── highstrt.lua
     │   │   │   │   ├── jeepchas.lua
     │   │   │   │   ├── jeepchs2.lua
     │   │   │   │   ├── joby1a.lua
     │   │   │   │   ├── joby2.lua
+    │   │   │   │   ├── joby3a.lua
     │   │   │   │   ├── joby3b.lua
     │   │   │   │   ├── joby4a.lua
     │   │   │   │   ├── joby4b.lua

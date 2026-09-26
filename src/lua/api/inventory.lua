@@ -273,9 +273,10 @@ Returns nothing where no entry names the object.]],
   },
   returns = {
     type = "table",
-    description = [[The entry's `object_id`, frame counts, rotations and
-offsets, or `nil`.
-<!--noref: object_id-->]],
+    description = [[The entry's `object_id`, frame counts, rotations, offsets,
+`scale`, and `draws_at_pivot`, or `nil`.
+<!--noref: object_id-->
+<!--noref: scale, draws_at_pivot-->]],
   },
   impl = raw.ring_item,
 })
@@ -292,9 +293,10 @@ the declaration; use the pickup for an object that represents itself.]],
     {
       name = "spec",
       type = "table",
-      description = [[The entry's `object_id`, frame counts, rotations and offsets.
-An omitted value keeps the ring's default.
-<!--noref: object_id-->]],
+      description = [[The entry's `object_id`, frame counts, rotations, offsets,
+`scale`, and `draws_at_pivot`. An omitted value keeps the ring's default.
+<!--noref: object_id-->
+<!--noref: scale, draws_at_pivot-->]],
     },
   },
   examples = {
@@ -303,6 +305,7 @@ An omitted value keeps the ring's default.
   frames_total = 1,
   anim_direction = 1,
   anim_speed = 1,
+  scale = 1.0,
   meshes_sel = -1,
   meshes_drawn = -1,
   inv_pos = 20,

@@ -48,8 +48,10 @@ static void M_EnterRoot(ANIM_WALK *const walk)
     const ANIM_POSE *const pose = &walk->desc.pose;
     if (walk->interpolated) {
         Matrix_InitInterpolate(pose->frac, pose->rate);
-        Matrix_TranslateRel16_ID(pose->offset_a, pose->offset_b);
-    } else {
+        if (!walk->desc.skips_frame_offset) {
+            Matrix_TranslateRel16_ID(pose->offset_a, pose->offset_b);
+        }
+    } else if (!walk->desc.skips_frame_offset) {
         Matrix_TranslateRel16(pose->offset_a);
     }
     if (pose->rots_a != nullptr) {

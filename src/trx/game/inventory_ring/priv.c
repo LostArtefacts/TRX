@@ -681,12 +681,8 @@ void InvRing_SelectMeshes(INVENTORY_ITEM *const inv_item)
         }
         break;
 
-    case O_SAVE_CRYSTAL_OPTION:
-        inv_item->meshes_drawn = M_GetIdleMeshes(inv_item);
-        break;
-
     default:
-        inv_item->meshes_drawn = -1;
+        inv_item->meshes_drawn = M_GetIdleMeshes(inv_item);
         break;
     }
 }
