@@ -1736,7 +1736,7 @@
         },
         "ui.inventory_background_style": {
             "title": "\\{review}Fond de l'inventaire",
-            "description": "\\{review}Modifie la façon dont l'arrière-plan de l'anneau d'inventaire est affiché.\n\n- Sombre : TR1 (PC).\n- Très sombre : TR1 (PS1).\n- Statique : TR2 (PC).\n- Ondulé : TR2 (PS1).\n- Monochrome : TR3.",
+            "description": "\\{review}Modifie la façon dont l'arrière-plan de l'anneau d'inventaire est affiché.\n\n- Sombre : TR1 (PC).\n- Très sombre : TR1 (PS1).\n- Statique : TR2 (PC).\n- Ondulé : TR2 (PS1).\n- Monochrome : TR3/4.",
         },
         "ui.inventory_fade_effects": {
             "title": "\\{review}Effets de fondu de l'inventaire",
@@ -1748,7 +1748,7 @@
         },
         "ui.pause_background_style": {
             "title": "\\{review}Pause en arrière-plan",
-            "description": "\\{review}Modifie la façon dont l'arrière-plan de l'écran de pause est affiché.\n\n- Sombre : TR1 (PC).\n- Très sombre : TR1 (PS1).\n- Statique : TR2 (PC).\n- Ondulé : TR2 (PS1).\n- Monochrome : TR3.",
+            "description": "\\{review}Modifie la façon dont l'arrière-plan de l'écran de pause est affiché.\n\n- Sombre : TR1 (PC).\n- Très sombre : TR1 (PS1).\n- Statique : TR2 (PC).\n- Ondulé : TR2 (PS1).\n- Monochrome : TR3/4.",
         },
         "ui.pause_fade_effects": {
             "title": "\\{review}Effets de fondu de la pause",
@@ -1848,7 +1848,7 @@
         },
         "ui.stats_background_style": {
             "title": "\\{review}Fond des statistiques",
-            "description": "\\{review}Modifie la façon dont l'arrière-plan des statistiques de fin de niveau est affiché.\n\n- Sombre : TR1 (PC).\n- Très sombre : TR1 (PS1).\n- Statique : TR2 (PC).\n- Ondulé : TR2 (PS1).\n- Monochrome : TR3.",
+            "description": "\\{review}Modifie la façon dont l'arrière-plan des statistiques de fin de niveau est affiché.\n\n- Sombre : TR1 (PC).\n- Très sombre : TR1 (PS1), TR2 (PS1).\n- Statique : TR2 (PC).\n- Ondulé.\n- Monochrome : TR3/4.",
         },
         "ui.stats_fade_effects": {
             "title": "\\{review}Effets de fondu des statistiques",

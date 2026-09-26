@@ -1736,7 +1736,7 @@
         },
         "ui.inventory_background_style": {
             "title": "Sfondo inventario",
-            "description": "Modifica il modo in cui viene visualizzato lo sfondo dell'inventario.\n\n- Scuro: TR1 (PC).\n- Molto scuro: TR1 (PS1).\n- Statico: TR2 (PC).\n- Ondeggiante: TR2 (PS1).\n- Monocromatico: TR3.",
+            "description": "Modifica il modo in cui viene visualizzato lo sfondo dell'inventario.\n\n- Scuro: TR1 (PC).\n- Molto scuro: TR1 (PS1).\n- Statico: TR2 (PC).\n- Ondeggiante: TR2 (PS1).\n- Monocromatico: TR3/4.",
         },
         "ui.inventory_fade_effects": {
             "title": "Dissolvenza inventario",
@@ -1748,7 +1748,7 @@
         },
         "ui.pause_background_style": {
             "title": "Sfondo di pausa",
-            "description": "Modifica il modo in cui viene visualizzato lo sfondo della schermata di pausa.\n\n- Scuro: TR1 (PC).\n- Molto scuro: TR1 (PS1).\n- Statico: TR2 (PC).\n- Ondeggiante: TR2 (PS1).\n- Monocromatico: TR3.",
+            "description": "Modifica il modo in cui viene visualizzato lo sfondo della schermata di pausa.\n\n- Scuro: TR1 (PC).\n- Molto scuro: TR1 (PS1).\n- Statico: TR2 (PC).\n- Ondeggiante: TR2 (PS1).\n- Monocromatico: TR3/4.",
         },
         "ui.pause_fade_effects": {
             "title": "Dissolvenza in pausa",
@@ -1848,7 +1848,7 @@
         },
         "ui.stats_background_style": {
             "title": "Sfondo statistiche",
-            "description": "Modifica il modo in cui viene visualizzato lo sfondo delle statistiche di fine livello.\n\n- Scuro: TR1 (PC).\n- Molto scuro: TR1 (PS1).\n- Statico: TR2 (PC).\n- Ondeggiante: TR2 (PS1).\n- Monocromatico: TR3.",
+            "description": "\\{review}Modifica il modo in cui viene visualizzato lo sfondo delle statistiche di fine livello.\n\n- Scuro: TR1 (PC).\n- Molto scuro: TR1 (PS1), TR2 (PS1).\n- Statico: TR2 (PC).\n- Ondeggiante.\n- Monocromatico: TR3/4.",
         },
         "ui.stats_fade_effects": {
             "title": "Dissolvenza statistiche",

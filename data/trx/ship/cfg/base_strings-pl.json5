@@ -1736,7 +1736,7 @@
         },
         "ui.inventory_background_style": {
             "title": "Tło ekwipunku",
-            "description": "Zmienia sposób wyświetlania tła dla pierścienia ekwipunku.\n\n- Ciemne: TR1 (PC).\n- Bardzo ciemne: TR1 (PS1).\n- Stałe: TR2 (PC).\n- Falujące: TR2 (PS1).\n- Czarno-białe: TR3.",
+            "description": "Zmienia sposób wyświetlania tła dla pierścienia ekwipunku.\n\n- Ciemne: TR1 (PC).\n- Bardzo ciemne: TR1 (PS1).\n- Stałe: TR2 (PC).\n- Falujące: TR2 (PS1).\n- Czarno-białe: TR3/4.",
         },
         "ui.inventory_fade_effects": {
             "title": "Efekty przejścia w ekwipunku",
@@ -1748,7 +1748,7 @@
         },
         "ui.pause_background_style": {
             "title": "Tło pauzy",
-            "description": "Zmienia sposób wyświetlania tła dla ekranu pauzy.\n\n- Ciemne: TR1 (PC).\n- Bardzo ciemne: TR1 (PS1).\n- Stałe: TR2 (PC).\n- Falujące: TR2 (PS1).\n- Czarno-białe: TR3.",
+            "description": "Zmienia sposób wyświetlania tła dla ekranu pauzy.\n\n- Ciemne: TR1 (PC).\n- Bardzo ciemne: TR1 (PS1).\n- Stałe: TR2 (PC).\n- Falujące: TR2 (PS1).\n- Czarno-białe: TR3/4.",
         },
         "ui.pause_fade_effects": {
             "title": "Efekty przejścia podczas pauzy",
@@ -1848,7 +1848,7 @@
         },
         "ui.stats_background_style": {
             "title": "Tło statystyk",
-            "description": "Zmienia sposób wyświetlania tła dla statystyk na końcu poziomu.\n\n- Ciemne: TR1 (PC).\n- Bardzo ciemne: TR1 (PS1).\n- Stałe: TR2 (PC).\n- Falujące: TR2 (PS1).\n- Czarno-białe: TR3.",
+            "description": "\\{review}Zmienia sposób wyświetlania tła dla statystyk na końcu poziomu.\n\n- Ciemne: TR1 (PC).\n- Bardzo ciemne: TR1 (PS1), TR2 (PS1).\n- Stałe: TR2 (PC).\n- Falujące.\n- Czarno-białe: TR3/4.",
         },
         "ui.stats_fade_effects": {
             "title": "Efekty przejścia w statystykach",

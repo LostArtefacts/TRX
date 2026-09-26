@@ -1736,7 +1736,7 @@
         },
         "ui.inventory_background_style": {
             "title": "\\{review}Inventar-Hintergrund",
-            "description": "\\{review}Ändert die Art und Weise, wie der Hintergrund für den Inventarring angezeigt wird.\n\n- Dunkel: TR1 (PC).\n- Sehr dunkel: TR1 (PS1).\n- Statisch: TR2 (PC).\n- Welle: TR2 (PS1).\n- Monochrom: TR3.",
+            "description": "\\{review}Ändert die Art und Weise, wie der Hintergrund für den Inventarring angezeigt wird.\n\n- Dunkel: TR1 (PC).\n- Sehr dunkel: TR1 (PS1).\n- Statisch: TR2 (PC).\n- Welle: TR2 (PS1).\n- Monochrom: TR3/4.",
         },
         "ui.inventory_fade_effects": {
             "title": "\\{review}Inventar-Ausblend-Effekte",
@@ -1748,7 +1748,7 @@
         },
         "ui.pause_background_style": {
             "title": "\\{review}Pause-Hintergrund",
-            "description": "\\{review}Ändert die Art und Weise, wie der Hintergrund für den Pausenbildschirm angezeigt wird.\n\n- Dunkel: TR1 (PC).\n- Sehr dunkel: TR1 (PS1).\n- Statisch: TR2 (PC).\n- Welle: TR2 (PS1).\n- Monochrom: TR3.",
+            "description": "\\{review}Ändert die Art und Weise, wie der Hintergrund für den Pausenbildschirm angezeigt wird.\n\n- Dunkel: TR1 (PC).\n- Sehr dunkel: TR1 (PS1).\n- Statisch: TR2 (PC).\n- Welle: TR2 (PS1).\n- Monochrom: TR3/4.",
         },
         "ui.pause_fade_effects": {
             "title": "\\{review}Pause-Ausblend-Effekte",
@@ -1848,7 +1848,7 @@
         },
         "ui.stats_background_style": {
             "title": "\\{review}Statistik-Hintergrund",
-            "description": "\\{review}Ändert die Art und Weise, wie der Hintergrund für die Endlevel-Statistiken angezeigt wird.\n\n- Dunkel: TR1 (PC).\n- Sehr dunkel: TR1 (PS1).\n- Statisch: TR2 (PC).\n- Welle: TR2 (PS1).\n- Monochrom: TR3.",
+            "description": "\\{review}Ändert die Art und Weise, wie der Hintergrund für die Endlevel-Statistiken angezeigt wird.\n\n- Dunkel: TR1 (PC).\n- Sehr dunkel: TR1 (PS1), TR2 (PS1).\n- Statisch: TR2 (PC).\n- Welle.\n- Monochrom: TR3/4.",
         },
         "ui.stats_fade_effects": {
             "title": "\\{review}Statistik-Ausblend-Effekte",
