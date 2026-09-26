@@ -207,6 +207,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── hive_itemrots.bin
 │   │   │   ├── hive_textures.bin
 │   │   │   ├── inv_background.bin
+│   │   │   ├── item_sprites.bin
 │   │   │   ├── khamoon_fd.bin
 │   │   │   ├── khamoon_itemrots.bin
 │   │   │   ├── khamoon_meshfixes.bin
@@ -579,6 +580,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── fathoms_textures.bin
 │   │   │   ├── floating_crystals.bin
 │   │   │   ├── floating_fd.bin
+│   │   │   ├── floating_item_sprites.bin
 │   │   │   ├── floating_itemrots.bin
 │   │   │   ├── floating_music_tracks.bin
 │   │   │   ├── floating_pickup_meshes.bin
@@ -613,6 +615,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── kingdom_textures.bin
 │   │   │   ├── lair_bartolipos.bin
 │   │   │   ├── lair_crystals.bin
+│   │   │   ├── lair_item_sprites.bin
 │   │   │   ├── lair_music_tracks.bin
 │   │   │   ├── lair_textures.bin
 │   │   │   ├── lara_animations.bin
@@ -1625,6 +1628,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── hive_itemrots.bin
     │   │   │   │   ├── hive_textures.bin
     │   │   │   │   ├── inv_background.bin
+    │   │   │   │   ├── item_sprites.bin
     │   │   │   │   ├── khamoon_fd.bin
     │   │   │   │   ├── khamoon_itemrots.bin
     │   │   │   │   ├── khamoon_meshfixes.bin
@@ -1997,6 +2001,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── fathoms_textures.bin
     │   │   │   │   ├── floating_crystals.bin
     │   │   │   │   ├── floating_fd.bin
+    │   │   │   │   ├── floating_item_sprites.bin
     │   │   │   │   ├── floating_itemrots.bin
     │   │   │   │   ├── floating_music_tracks.bin
     │   │   │   │   ├── floating_pickup_meshes.bin
@@ -2031,6 +2036,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── kingdom_textures.bin
     │   │   │   │   ├── lair_bartolipos.bin
     │   │   │   │   ├── lair_crystals.bin
+    │   │   │   │   ├── lair_item_sprites.bin
     │   │   │   │   ├── lair_music_tracks.bin
     │   │   │   │   ├── lair_textures.bin
     │   │   │   │   ├── lara_animations.bin
