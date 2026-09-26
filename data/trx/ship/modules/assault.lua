@@ -40,6 +40,12 @@ end
 -- TR2 draws the digits flat white; TR3 gives them the shaded palette.
 local plain = trx.game.tr_version < 3 and PALETTE.white or PALETTE.neutral
 
+-- TR2 writes the fraction of a second to a tenth, TR3 to a hundredth.
+local is_tr2 = trx.game.tr_version < 3
+local TIME_FORMAT = is_tr2 and "%d:%02d.%d" or "%d:%02d.%02d"
+local TIME_PLACEHOLDER = is_tr2 and "--:--.-" or "--:--.--"
+local FRACTION_SCALE = is_tr2 and 10 or 100
+
 -- Reads a timing once a tick, and only while it is on screen. A readout that
 -- is off costs one signal rather than a poll.
 local function timing(shown, read)
@@ -72,15 +78,17 @@ local function timing(shown, read)
   return held
 end
 
--- The clock as the game writes it: minutes, seconds, and a tenth. A run that
--- has not started yet shows dashes where a lap time is asked for.
+-- The clock as the game writes it: minutes, seconds, and a fraction. A run
+-- that has not started yet shows dashes where a lap time is asked for.
 local function format_time(frames, placeholder)
   if placeholder and frames <= 0 then
-    return "--:--.-"
+    return TIME_PLACEHOLDER
   end
   local seconds = frames // trx.game.LOGIC_FPS
-  local tenths = (frames % trx.game.LOGIC_FPS) * 10 // trx.game.LOGIC_FPS
-  return ("%d:%02d.%d"):format(seconds // 60, seconds % 60, tenths)
+  local fraction = (frames % trx.game.LOGIC_FPS)
+    * FRACTION_SCALE
+    // trx.game.LOGIC_FPS
+  return TIME_FORMAT:format(seconds // 60, seconds % 60, fraction)
 end
 
 -- A penalty is written in whole seconds, and carries the unit after it.
@@ -115,8 +123,10 @@ do
     return track ~= nil and assault.is_visible(track)
   end) & playing & ~lap_up
 
+  -- The first two frames read as zero, as in the original games.
   local time = timing(on_screen, function()
-    return assault.get_time()
+    local frames = assault.get_time()
+    return frames < 2 and 0 or frames
   end)
 
   local clock = ui.widgets.Digits({

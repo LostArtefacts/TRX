@@ -21,6 +21,7 @@
 #include <lauxlib.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 // Counts handler errors because dispatch continues after each error.
@@ -103,8 +104,9 @@ static int M_FakeDrawRegions(lua_State *const L)
 static void M_Setup(lua_State *const L)
 {
     Config_RegisterBuiltInOptions();
-    // TR3 shades the digits, which is the palette with two colors in it.
-    g_TRVersion = 3;
+    // meson.build sets TRX_TEST_TR_VERSION for each game the suite runs as.
+    const char *const version = getenv("TRX_TEST_TR_VERSION");
+    g_TRVersion = version == nullptr ? 3 : atoi(version);
     // Matches the assault course layout of ten digits, a colon, a full stop, a
     // T and an s.
     FakeSprites_Define(O_ASSAULT_DIGITS, 14, 20, 24);
