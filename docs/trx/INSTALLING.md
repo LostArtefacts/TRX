@@ -1297,6 +1297,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── injections
 │   │   │   ├── angkor_fd.bin
 │   │   │   ├── angkor_textures.bin
+│   │   │   ├── burial_animating_bounds.bin
 │   │   │   ├── font.bin
 │   │   │   ├── guide_gun.bin
 │   │   │   ├── inventory_models.bin
@@ -2711,6 +2712,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── injections
     │   │   │   │   ├── angkor_fd.bin
     │   │   │   │   ├── angkor_textures.bin
+    │   │   │   │   ├── burial_animating_bounds.bin
     │   │   │   │   ├── font.bin
     │   │   │   │   ├── guide_gun.bin
     │   │   │   │   ├── inventory_models.bin

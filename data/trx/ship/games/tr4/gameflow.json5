@@ -122,6 +122,9 @@
                 {"type": "play_fmv", "fmv_id": 2},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "burial_animating_bounds.bin",
+            ],
         },
 
         // 5. Valley of the Kings
