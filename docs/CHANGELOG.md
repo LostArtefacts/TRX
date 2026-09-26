@@ -16,6 +16,7 @@
 - Changed the loading screens in TR1–3 to stay on screen for two seconds in every game (TRX1591)
 - Changed the look button to skip loading screens, pictures, FMVs, and stats screens, like it does for cutscenes (TRX1541)
 - Fixed items without a sprite, such as the scion, not showing in the pickups overlay when 3D pickups are off
+- Fixed the stats background help naming the wrong style for TR2 (PS1) (#6711 / TRX1598)
 
 **Developer console**
 - Added the `/restartlevel` console command, also available as `/restart`, which restarts the current level (#6712 / TRX1599)
