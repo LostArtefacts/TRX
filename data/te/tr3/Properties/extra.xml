@@ -368,6 +368,14 @@
         <property category="TRX" defaultValue="500" description="Damage dealt by swipe attacks." displayName="Attack Damage" internalName="attack_damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="250" description="Damage dealt by the death explosion." displayName="Part Damage" internalName="part_damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_UNDEAD_MUMMY-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="15" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="100" description="Damage dealt by the mummy's attack." displayName="Damage" internalName="damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="0" description="Delay before the mummy becomes active." displayName="Delay" internalName="delay" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="false" description="Whether the mummy starts lying down." displayName="Start Lying Down" internalName="start_lying_down" type="Bool" />
+        <property category="TRX" defaultValue="false" description="Whether the mummy initially walks straight ahead." displayName="Walk Straight" internalName="walk_straight" type="Bool" />
+    </moveable>
     <!--placeholder for O_VON_CROY-->
     <moveable id="-1">
         <property category="TRX" defaultValue="15" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />

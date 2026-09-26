@@ -3719,6 +3719,9 @@
         "twinkle": {
             "name": "\\{review}Paillettes",
         },
+        "undead_mummy": {
+            "name": "\\{review}Momie morte-vivante",
+        },
         "underwater_door": {
             "name": "\\{review}Porte sous-marine",
         },

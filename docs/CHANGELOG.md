@@ -41,6 +41,7 @@
 - Added Rolling Spikes control (TRX1564)
 - Added Falling Blade control (TRX1550)
 - Added Plough control (TRX1557)
+- Added Undead Mummy control (TRX1555)
 - Added level views before play starts, with a progress bar (TRX493)
 - Added Seth Sarcophagus and the Burial Chambers cutscene where Lara takes the Amulet (TRX1561)
 - Fixed the Guide having Lara's right-hand pistol mesh in Valley of the Kings (OG bug) (TRX1551)

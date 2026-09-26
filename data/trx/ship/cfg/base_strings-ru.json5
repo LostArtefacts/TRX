@@ -3719,6 +3719,9 @@
         "twinkle": {
             "name": "Искры",
         },
+        "undead_mummy": {
+            "name": "\\{review}Мумия-нежить",
+        },
         "underwater_door": {
             "name": "\\{review}Подводная дверь",
         },
