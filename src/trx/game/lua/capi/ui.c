@@ -182,7 +182,8 @@ static int M_L_UIMeshBounds(lua_State *const L)
 static int M_L_UISpriteCount(lua_State *const L)
 {
     const OBJECT *const object = Object_Get(LUA_CheckObjectID(L, 1));
-    lua_pushinteger(L, object->loaded ? ABS(object->mesh_count) : 0);
+    const bool is_sprite = object->loaded && object->mesh_count < 0;
+    lua_pushinteger(L, is_sprite ? -object->mesh_count : 0);
     return 1;
 }
 

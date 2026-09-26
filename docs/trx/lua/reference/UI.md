@@ -454,8 +454,8 @@ and `\{button left}` draws the button the player has bound.
 - <a id="ui.primitive.sprite_count" name="ui.primitive.sprite_count"></a>[lua]`trx.ui.primitive.sprite_count(object)`  
   Reports how many sprites an object has.
 
-  An object the level did not load has none, so this answers whether there is
-  anything to draw before [`sprite`](#ui.primitive.sprite) is asked to draw it.
+  An object the level did not load has none, and a model has none as well. Use this
+  function to check whether [`sprite`](#ui.primitive.sprite) has anything to draw.
 
   Parameters:
   - <a id="ui.primitive.sprite_count.object" name="ui.primitive.sprite_count.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The sprite object to count.
