@@ -1510,9 +1510,9 @@ void Sparks_TriggerRicochetTR3(
 
 void Sparks_TriggerRicochetTR4(
     const GAME_VECTOR pos, const int32_t angle, const int32_t count,
-    const int32_t smoke_only)
+    const bool smoke_only)
 {
-    if (smoke_only == 0) {
+    if (!smoke_only) {
         for (int32_t i = 0; i < count; i++) {
             const int32_t rnd = Random_GetControl();
             SPARK *const spark = Sparks_InitialiseSpark(SPARK_CONTEXT_RICOCHET);
@@ -1581,7 +1581,8 @@ void Sparks_TriggerRicochetTR4(
 
     // OG passes -5 rather than a flag, which both skips the streaks and turns
     // the single puff into six drifting ones.
-    for (int32_t i = 0; i < 1 - smoke_only; i++) {
+    const int32_t smoke_count = smoke_only ? 6 : 1;
+    for (int32_t i = 0; i < smoke_count; i++) {
         SPARK *const spark = Sparks_InitialiseSpriteSpark(
             SPARK_TYPE_EXPLOSION, SPARK_CONTEXT_SMOKE);
         if (spark == nullptr) {

@@ -8,9 +8,10 @@
 XYZ_32 Spawn_GetRayPos(GAME_VECTOR start, GAME_VECTOR hit_pos, int32_t dist);
 
 void Spawn_Splash(const ITEM *item);
-void Spawn_Ricochet(GAME_VECTOR pos);
+void Spawn_Ricochet(GAME_VECTOR pos, bool smoke_only);
 // `count` is the number of streaks to spawn, and only applies to TR4.
-void Spawn_RicochetRay(GAME_VECTOR start, GAME_VECTOR hit_pos, int32_t count);
+void Spawn_RicochetRay(
+    GAME_VECTOR start, GAME_VECTOR hit_pos, int32_t count, bool smoke_only);
 
 // The explosion a rocket or a grenade leaves behind, without the damage: the
 // sprite effect in TR1/2, and a spark fireball in TR3/4, which has no

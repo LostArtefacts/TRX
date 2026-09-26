@@ -9,9 +9,9 @@ static bool M_CanTakeDamage(const ITEM *const item)
     return Item_TestAnimEqual(item, 0);
 }
 
-static bool M_ShouldSpawnBlood(const ITEM *const item)
+static ITEM_HIT_EFFECT M_GetHitEffect(const ITEM *const item)
 {
-    return false;
+    return ITEM_HIT_RICOCHET;
 }
 
 static void M_Control(const int16_t item_num)
@@ -36,7 +36,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
     obj->can_take_damage_func = M_CanTakeDamage;
-    obj->should_spawn_blood_func = M_ShouldSpawnBlood;
+    obj->get_hit_effect_func = M_GetHitEffect;
 
     obj->save_position = true;
     obj->save_hitpoints = true;

@@ -927,10 +927,10 @@ static bool M_GunHit(
     return true;
 }
 
-static bool M_ShouldSpawnBlood(const ITEM *const item)
+static ITEM_HIT_EFFECT M_GetHitEffect(const ITEM *const item)
 {
     M_PRIV *const p = item->priv;
-    return !p->shield_on;
+    return p->shield_on ? ITEM_HIT_RICOCHET : ITEM_HIT_BLOOD;
 }
 
 static void M_UpdateShield(ITEM *const item)
@@ -1446,7 +1446,7 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Creature_Collision;
     obj->draw_func = M_Draw;
     obj->gun_hit_func = M_GunHit;
-    obj->should_spawn_blood_func = M_ShouldSpawnBlood;
+    obj->get_hit_effect_func = M_GetHitEffect;
     obj->can_drop_items_func = M_CanDropItems;
     obj->can_be_exploded_func = M_CanBeExploded;
 

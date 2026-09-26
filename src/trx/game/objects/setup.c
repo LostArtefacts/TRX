@@ -70,7 +70,7 @@ void Object_SetupAllObjects(void)
         obj->is_usable_func = nullptr;
         obj->can_drop_items_func = nullptr;
         obj->can_interpolate_func = Object_CanInterpolate;
-        obj->should_spawn_blood_func = nullptr;
+        obj->get_hit_effect_func = nullptr;
         obj->is_alive_func = nullptr;
         obj->is_targetable_func = nullptr;
         obj->can_take_damage_func = nullptr;

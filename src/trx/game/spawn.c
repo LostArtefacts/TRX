@@ -86,7 +86,7 @@ void Spawn_Splash(const ITEM *const item)
     }
 }
 
-void Spawn_Ricochet(const GAME_VECTOR pos)
+void Spawn_Ricochet(const GAME_VECTOR pos, const bool smoke_only)
 {
     if (g_TRVersion >= 3) {
         const ITEM *const lara_item = Lara_GetItem();
@@ -94,7 +94,7 @@ void Spawn_Ricochet(const GAME_VECTOR pos)
             lara_item->pos.z - pos.pos.z, lara_item->pos.x - pos.pos.x);
         const int32_t angle12 = ((uint16_t)angle16 >> 4) & 0x0FFF;
         if (g_TRVersion == 4) {
-            Sparks_TriggerRicochetTR4(pos, angle12, 3, 0);
+            Sparks_TriggerRicochetTR4(pos, angle12, 3, smoke_only);
         } else {
             Sparks_TriggerRicochetTR3(pos, angle12, 16);
         }
@@ -113,7 +113,8 @@ void Spawn_Ricochet(const GAME_VECTOR pos)
 }
 
 void Spawn_RicochetRay(
-    const GAME_VECTOR start, GAME_VECTOR hit_pos, const int32_t count)
+    const GAME_VECTOR start, GAME_VECTOR hit_pos, const int32_t count,
+    const bool smoke_only)
 {
     if (g_TRVersion == 4) {
         // TR4 pulls the impact point back along the ray and leaves the shot
@@ -124,12 +125,13 @@ void Spawn_RicochetRay(
         hit_pos.y -= (hit_pos.y - start.y) >> 5;
         hit_pos.z -= (hit_pos.z - start.z) >> 5;
         const ITEM *const lara_item = Lara_GetItem();
-        Sparks_TriggerRicochetTR4(hit_pos, lara_item->rot.y & 0x0FFF, count, 0);
+        Sparks_TriggerRicochetTR4(
+            hit_pos, lara_item->rot.y & 0x0FFF, count, smoke_only);
         return;
     }
 
     hit_pos.pos = Spawn_GetRayPos(start, hit_pos, STEP_L / 12);
-    Spawn_Ricochet(hit_pos);
+    Spawn_Ricochet(hit_pos, smoke_only);
 }
 
 void Spawn_Explosion(
@@ -374,7 +376,7 @@ int16_t Spawn_GunMiss(
         .z = lara_item->pos.z + ((Random_GetDraw() - 0x4000) * 512) / 0x7FFF,
         .room_num = lara_item->room_num,
     };
-    Spawn_Ricochet(pos);
+    Spawn_Ricochet(pos, false);
     return Spawn_GunShot(x, y, z, speed, y_rot, room_num);
 }
 

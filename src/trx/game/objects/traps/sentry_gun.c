@@ -233,9 +233,9 @@ static void M_HandleEvent(
     p->is_alerted = true;
 }
 
-static bool M_ShouldSpawnBlood(const ITEM *const item)
+static ITEM_HIT_EFFECT M_GetHitEffect(const ITEM *const item)
 {
-    return false;
+    return ITEM_HIT_RICOCHET;
 }
 
 static void M_Setup(OBJECT *const obj)
@@ -251,7 +251,7 @@ static void M_Setup(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->collision_func = Creature_Collision;
     obj->event_func = M_HandleEvent;
-    obj->should_spawn_blood_func = M_ShouldSpawnBlood;
+    obj->get_hit_effect_func = M_GetHitEffect;
 
     obj->shadow_size = 0;
 
