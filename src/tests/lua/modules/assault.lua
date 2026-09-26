@@ -10,13 +10,23 @@ local test = h.test
 local QUAD = trx.assault.Track.QUAD
 local COURSE = trx.assault.Track.COURSE
 
--- The palettes the engine draws these in. The fake reports TR3, which shades
--- the digits; TR2 draws the same characters flat white.
+-- The palettes the module draws the readouts in.
 local NEUTRAL = { top = "ffffffff", bottom = "404040ff" }
+local WHITE = { top = "ffffffff", bottom = "ffffffff" }
 local PINK = { top = "ff00ffff", bottom = "400040ff" }
 local GREY = { top = "808080ff", bottom = "1a1a1aff" }
 local GREEN = { top = "59bf33ff", bottom = "1a4000ff" }
 local RED = { top = "e63300ff", bottom = "4d0000ff" }
+
+-- The suite runs once per game, because the module writes the clock and shades
+-- the digits differently in each game. TR3 shades the digits and writes the
+-- fraction of a second to a hundredth; TR2 draws them flat white and writes a
+-- tenth.
+local IS_TR2 = trx.game.tr_version < 3
+local PLAIN = IS_TR2 and WHITE or NEUTRAL
+local CLOCK = IS_TR2 and "0:03.1" or "0:03.16"
+local LAP = IS_TR2 and "0:15.0" or "0:15.00"
+local RECORD = IS_TR2 and "0:20.0" or "0:20.00"
 
 -- The character each sprite of the assault course object stands for.
 local GLYPHS = "0123456789:.Ts"
@@ -136,15 +146,15 @@ test("the run timer spells the clock the level keeps", function()
   local description = draw_after(function()
     fake.set_run(COURSE, 95, 0, 0, 0)
   end)
-  assert_spells(description, "0:03.1")
-  assert_palette(rows(description)[1], NEUTRAL)
+  assert_spells(description, CLOCK)
+  assert_palette(rows(description)[1], PLAIN)
 end)
 
 test("a penalty draws in pink, with the mark in the plain color", function()
   local description = draw_after(function()
     fake.set_run(COURSE, 95, 1800, 900, 90)
   end)
-  assert_spells(description, "1:00s\nT0:30s\n0:03.1")
+  assert_spells(description, "1:00s\nT0:30s\n" .. CLOCK)
 
   -- The mark the target penalty carries is the one character the engine draws
   -- in the timer's own color rather than the penalty's.
@@ -152,8 +162,8 @@ test("a penalty draws in pink, with the mark in the plain color", function()
   assert_palette(target, PINK, "T")
   local mark = color_of(target, "T")
   assert(mark ~= nil, "the target penalty drew no mark")
-  assert(mark.top == NEUTRAL.top, mark.top)
-  assert(mark.bottom == NEUTRAL.bottom, mark.bottom)
+  assert(mark.top == PLAIN.top, mark.top)
+  assert(mark.bottom == PLAIN.bottom, mark.bottom)
 end)
 
 test("the readouts stand down while the level is held still", function()
@@ -207,7 +217,7 @@ test("a lap with no record on file draws the lap alone", function()
     fake.set_run(QUAD, 0, 0, 0, 0)
     fake.set_lap(450, 60)
   end)
-  assert_spells(description, "0:15.0")
+  assert_spells(description, LAP)
   assert_palette(rows(description)[1], NEUTRAL)
   assert_centered(rows(description)[1])
 end)
@@ -218,7 +228,7 @@ test("a lap draws the record beside it once one is on file", function()
     fake.set_run(QUAD, 0, 0, 0, 0)
     fake.set_lap(450, 60)
   end)
-  assert_spells(description, "0:15.00:20.0")
+  assert_spells(description, LAP .. RECORD)
 
   -- A lap short of the record is red against it, and the record stays grey.
   local lap = rows(description)[1]
@@ -232,7 +242,7 @@ test("a lap that matches the record draws both in green", function()
     fake.set_run(QUAD, 0, 0, 0, 0)
     fake.set_lap(450, 60)
   end)
-  assert_spells(description, "0:15.00:15.0")
+  assert_spells(description, LAP .. LAP)
   assert_palette(rows(description)[1], GREEN)
 end)
 

@@ -1041,6 +1041,10 @@ unit_tests += {
 unit_tests += {
   'name': 'modules/assault',
   'bundles': [b_lua_surface, b_lua_math, b_lua_strings],
+  'runs': [
+    {'suffix': '', 'env': []},
+    {'suffix': '.tr2', 'env': ['TRX_TEST_TR_VERSION=2']},
+  ],
   'src': [
     'harness/stubs_config_file.c',
     'harness/stubs_console.c',
@@ -1512,7 +1516,11 @@ foreach spec : unit_tests
     c_args: test_args,
     build_by_default: false,
   )
-  test(test_id, exe, suite: 'unit')
+  # Runs a test once for each entry in `runs`. A module reads the game
+  # version once per process, so each game needs a run of its own.
+  foreach run : spec.get('runs', [{'suffix': '', 'env': []}])
+    test(test_id + run['suffix'], exe, suite: 'unit', env: run['env'])
+  endforeach
 endforeach
 
 # src/lua/api/api.lua under a plain interpreter, with the C bridge stubbed in

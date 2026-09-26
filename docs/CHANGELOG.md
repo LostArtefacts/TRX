@@ -27,6 +27,7 @@
 - Fixed missing gun flashes in the Diving Area cutscene (OG bug) (TRX89)
 
 **TR3**
+- Fixed the assault course and quad bike timers showing tenths of a second instead of hundredths (#6704 / TRX1596)
 - Fixed effects such as smoke and explosions breaking after an enemy exploded near Lara (TRX1576)
 - Fixed TR2 enemies such as spiders bursting into flames and explosions when they die in a TR3 level (TRX1574)
 
