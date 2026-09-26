@@ -478,6 +478,9 @@
                 "level_fmt_cutscene": "Заставка %d",
                 "level_fmt_demo": "Демо %d",
             },
+            "restart_level": {
+                "help": "\\{review}Перезапускает текущий уровень.",
+            },
             "rule": {
                 "ambiguous": "Неоднозначный ввод: %s и %s",
                 "bad_invocation": "Недопустимый вызов: %s",

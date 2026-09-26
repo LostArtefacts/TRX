@@ -119,6 +119,7 @@ trx_lua_script_sources = files(
   'lua/commands/outfit.lua',
   'lua/commands/play_gym.lua',
   'lua/commands/play_level.lua',
+  'lua/commands/restart_level.lua',
   'lua/commands/pos.lua',
   'lua/commands/rule.lua',
   'lua/commands/save_game.lua',

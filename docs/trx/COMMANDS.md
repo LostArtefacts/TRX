@@ -236,6 +236,10 @@ whichever key you have bound, and not include it as part of the command itself.
   `/nextlevel`  
   Too cool to finish puzzles? Smash-cut to the ending! Lara doesn't have time for this nonsense.
 
+- `/restartlevel`  
+  `/restart`  
+  Botched the jump? Rewinds the current level back to its start for another go.
+
 - `/level {num}`  
   `/level {name}`  
   `/play {num}`  

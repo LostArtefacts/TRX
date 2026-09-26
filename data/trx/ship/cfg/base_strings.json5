@@ -478,6 +478,9 @@
                 "level_fmt_cutscene": "Cutscene %d",
                 "level_fmt_demo": "Demo %d",
             },
+            "restart_level": {
+                "help": "Restarts the current level.",
+            },
             "rule": {
                 "ambiguous": "Ambiguous input: %s and %s",
                 "bad_invocation": "Invalid invocation: %s",

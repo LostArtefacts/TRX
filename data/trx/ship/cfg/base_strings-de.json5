@@ -478,6 +478,9 @@
                 "level_fmt_cutscene": "Zwischensequenz %d",
                 "level_fmt_demo": "Demo %d",
             },
+            "restart_level": {
+                "help": "\\{review}Startet das aktuelle Level neu.",
+            },
             "rule": {
                 "ambiguous": "Mehrdeutige Eingabe: %s und %s",
                 "bad_invocation": "Unzulässiger Aufruf: %s",

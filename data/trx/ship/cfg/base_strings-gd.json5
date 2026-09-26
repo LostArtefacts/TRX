@@ -478,6 +478,9 @@
                 "level_fmt_cutscene": "Sealladh-film %d",
                 "level_fmt_demo": "Taisbeanadh %d",
             },
+            "restart_level": {
+                "help": "\\{review}Ath-thòisicheas an ìre làithreach.",
+            },
             "rule": {
                 "ambiguous": "Cur-a-steach neo-shoilleir: %s agus %s",
                 "bad_invocation": "Iarrtas mì-dhligheach: %s",

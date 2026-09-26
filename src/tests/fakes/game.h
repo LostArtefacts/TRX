@@ -33,6 +33,7 @@ void FakeGame_SetNGPlus(bool ngplus);
 void FakeGame_SetRunTime(int32_t frames);
 
 // The game flow as a test script sees it: fake.set_current_level(),
-// fake.set_current_title(), fake.set_in_cutscene(), fake.LEVEL_COUNT and
+// fake.set_current_title(), fake.set_in_cutscene(),
+// fake.set_restart_available(), fake.LEVEL_COUNT and
 // fake.NUMBERED_LEVEL_COUNT.
 void FakeGame_PushLua(lua_State *L);

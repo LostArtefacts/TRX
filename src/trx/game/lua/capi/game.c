@@ -424,6 +424,26 @@ static int M_L_GameEndLevel(lua_State *const L)
     return 0;
 }
 
+// trxc.game.restart_level() -> bool
+// Restarts the current level as the passport does, and reports false where the
+// passport offers no restart: outside a main level, or in a save that lacks
+// the level's starting state.
+static int M_L_GameRestartLevel(lua_State *const L)
+{
+    const GF_LEVEL *const level = Game_GetCurrentLevel();
+    const bool can_restart = level != nullptr
+        && GF_GetLevelTableType(level->type) == GFLT_MAIN
+        && Savegame_RestartAvailable(SG_Manager_GetBoundSlot());
+    if (can_restart) {
+        GF_OverrideCommand((GF_COMMAND) {
+            .action = GF_RESTART_GAME,
+            .param = level->num,
+        });
+    }
+    lua_pushboolean(L, can_restart);
+    return 1;
+}
+
 // trxc.game.exit_to_title()
 static int M_L_GameExitToTitle(lua_State *const L)
 {
@@ -474,6 +494,7 @@ static const luaL_Reg m_Module[] = {
     { "play_gym", M_L_GamePlayGym },
     { "screenshot", M_L_GameScreenshot },
     { "end_level", M_L_GameEndLevel },
+    { "restart_level", M_L_GameRestartLevel },
     { "exit_to_title", M_L_GameExitToTitle },
     { "exit_game", M_L_GameExitGame },
     { nullptr, nullptr },
