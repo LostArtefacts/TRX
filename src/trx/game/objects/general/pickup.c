@@ -173,6 +173,16 @@ static void M_Initialise(const int16_t item_num)
         p->secret_mask = Stats_GetSecretMaskForItem(level, item_num);
     }
 
+    // TR4 draws a weapon lying in a level without the laser sight, which the
+    // model carries for the inventory to show once Lara holds a sight
+    // (tomb4 items.cpp, InitialiseItem).
+    if (g_TRVersion == 4
+        && (item->object_id == O_SHOTGUN_ITEM
+            || item->object_id == O_CROSSBOW_ITEM
+            || item->object_id == O_REVOLVER_ITEM)) {
+        item->mesh_bits = 1;
+    }
+
     if (item->is_visible) {
         Item_AddSimulated(item_num);
     }

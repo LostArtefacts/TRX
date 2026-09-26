@@ -46,6 +46,7 @@
 - Fixed items appearing at the wrong angle in the pickup display
 - Fixed the shotgun, revolver, and crossbow showing the laser sight in the inventory (OG bug)
 - Fixed the revolver and crossbow showing the laser sight in the pickup display
+- Fixed the shotgun, revolver, and crossbow showing the laser sight where they lie in a level
 - Fixed the Guide having Lara's right-hand pistol mesh in Valley of the Kings (OG bug) (TRX1551)
 - Fixed a bug where sound effects such as footsteps were much too quiet (#6673 / TRX1569)
 - Fixed missing collision on Moving Floors in custom levels when rotated to face East (OG bug) (TRX1559)
