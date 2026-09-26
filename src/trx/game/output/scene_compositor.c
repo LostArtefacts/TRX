@@ -126,9 +126,13 @@ static void M_PrepareScene(const M_PRIV *const p)
     TRX_GL_CheckError();
 #endif
 
-    glSamplerParameterf(
-        p->sampler_id, GL_TEXTURE_MAX_ANISOTROPY_EXT,
-        g_Config.rendering.anisotropy_filter);
+    if (GLEW_EXT_texture_filter_anisotropic
+        || GLEW_ARB_texture_filter_anisotropic) {
+        glSamplerParameterf(
+            p->sampler_id, GL_TEXTURE_MAX_ANISOTROPY_EXT,
+            g_Config.rendering.anisotropy_filter);
+        TRX_GL_CheckError();
+    }
 
     Output_Uniforms_UploadGeneral(Output_GetUniforms());
     Output_Uniforms_UploadRoomLights(Output_GetUniforms(), nullptr);
