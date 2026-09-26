@@ -421,8 +421,8 @@ void Gun_HitTarget(
         }
     }
 
-    const bool make_ricochet = !Item_ShouldSpawnBlood(item);
-    if (item->object_id == O_SHIVA && make_ricochet) {
+    const ITEM_HIT_EFFECT hit_effect = Item_GetHitEffect(item);
+    if (item->object_id == O_SHIVA && hit_effect == ITEM_HIT_RICOCHET) {
         damage = 0;
     }
 
@@ -438,16 +438,17 @@ void Gun_HitTarget(
         Creature_Hurt(item, damage);
     }
 
-    if (hit_pos != nullptr) {
-        if (make_ricochet) {
+    if (hit_pos != nullptr && hit_effect != ITEM_HIT_NONE) {
+        if (hit_effect == ITEM_HIT_RICOCHET || hit_effect == ITEM_HIT_SMOKE) {
             const GAME_VECTOR pos = {
                 .pos = hit_pos->pos,
                 .room_num = item->room_num,
             };
+            const bool smoke_only = hit_effect == ITEM_HIT_SMOKE;
             if (start != nullptr) {
-                Spawn_RicochetRay(*start, pos, 3);
+                Spawn_RicochetRay(*start, pos, 3, smoke_only);
             } else {
-                Spawn_Ricochet(pos);
+                Spawn_Ricochet(pos, smoke_only);
             }
         } else {
             Spawn_Blood(

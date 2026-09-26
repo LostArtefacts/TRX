@@ -38,9 +38,9 @@ typedef struct {
     bool spawn_checked;
 } M_PRIV;
 
-static bool M_ShouldSpawnBlood(const ITEM *const item)
+static ITEM_HIT_EFFECT M_GetHitEffect(const ITEM *const item)
 {
-    return false;
+    return ITEM_HIT_RICOCHET;
 }
 
 static bool M_CanBeExploded(const ITEM *const item)
@@ -253,7 +253,7 @@ static void M_Setup(OBJECT *const obj)
     obj->priv_save_func = M_SavePriv;
     obj->control_func = M_Control;
     obj->collision_func = Object_Collision;
-    obj->should_spawn_blood_func = M_ShouldSpawnBlood;
+    obj->get_hit_effect_func = M_GetHitEffect;
     obj->can_be_exploded_func = M_CanBeExploded;
 
     obj->shadow_size = UNIT_SHADOW / 4;

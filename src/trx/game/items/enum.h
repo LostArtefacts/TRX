@@ -22,6 +22,13 @@ typedef enum {
 } ITEM_DAMAGE_FLAGS;
 
 typedef enum {
+    ITEM_HIT_NONE,
+    ITEM_HIT_BLOOD,
+    ITEM_HIT_RICOCHET,
+    ITEM_HIT_SMOKE,
+} ITEM_HIT_EFFECT;
+
+typedef enum {
     // clang-format off
     DS_CARRIED   = 0,
     DS_FALLING   = 1,

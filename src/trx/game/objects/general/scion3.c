@@ -13,9 +13,10 @@ typedef struct {
     int32_t counter;
 } M_PRIV;
 
-static bool M_ShouldSpawnBlood(const ITEM *const item)
+static ITEM_HIT_EFFECT M_GetHitEffect(const ITEM *const item)
 {
-    return !g_Config.visuals.fix_texture_issues;
+    return g_Config.visuals.fix_texture_issues ? ITEM_HIT_RICOCHET
+                                               : ITEM_HIT_BLOOD;
 }
 
 static bool M_CanTakeDamage(const ITEM *const item)
@@ -74,7 +75,7 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->control_func = M_Control;
     obj->can_take_damage_func = M_CanTakeDamage;
-    obj->should_spawn_blood_func = M_ShouldSpawnBlood;
+    obj->get_hit_effect_func = M_GetHitEffect;
 
     obj->priv_size = sizeof(M_PRIV);
     obj->save_flags = true;

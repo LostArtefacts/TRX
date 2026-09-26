@@ -285,18 +285,23 @@ int32_t Item_Shatter(const int16_t item_num, const ITEM_SHATTER_ARGS args)
     return !(item->mesh_bits & (0x7FFFFFFF >> (31 - obj->mesh_count)));
 }
 
-bool Item_ShouldSpawnBlood(const ITEM *const item)
+ITEM_HIT_EFFECT Item_GetHitEffect(const ITEM *const item)
 {
     if (item == nullptr) {
-        return true;
+        return ITEM_HIT_NONE;
     }
 
     const OBJECT *const obj = Object_Get(item->object_id);
-    if (obj->should_spawn_blood_func != nullptr) {
-        return obj->should_spawn_blood_func(item);
+    if (obj->get_hit_effect_func != nullptr) {
+        return obj->get_hit_effect_func(item);
     }
 
-    return true;
+    return ITEM_HIT_BLOOD;
+}
+
+bool Item_ShouldSpawnBlood(const ITEM *const item)
+{
+    return Item_GetHitEffect(item) == ITEM_HIT_BLOOD;
 }
 
 ITEM *Item_Find(const OBJECT_ID obj_id)

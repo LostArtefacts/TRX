@@ -118,7 +118,7 @@ typedef struct OBJECT {
     bool (*can_drop_items_func)(const ITEM *item);
     bool (*can_interpolate_func)(
         const ITEM *item, int32_t frame_a, int32_t frame_b);
-    bool (*should_spawn_blood_func)(const ITEM *item);
+    ITEM_HIT_EFFECT (*get_hit_effect_func)(const ITEM *item);
     bool (*is_alive_func)(const ITEM *item);
     bool (*is_targetable_func)(const ITEM *item);
     bool (*can_take_damage_func)(const ITEM *item);

@@ -82,6 +82,7 @@ typedef struct {
 
 int32_t Item_Shatter(int16_t item_num, ITEM_SHATTER_ARGS args);
 
+ITEM_HIT_EFFECT Item_GetHitEffect(const ITEM *item);
 bool Item_ShouldSpawnBlood(const ITEM *item);
 
 // The first item of the given object type, or nullptr. Item_FindTypeInRoom
