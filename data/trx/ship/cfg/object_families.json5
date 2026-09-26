@@ -886,6 +886,11 @@
         "movable_block_2",
         "movable_block_3",
         "movable_block_4",
+        "pushable_object_1",
+        "pushable_object_2",
+        "pushable_object_3",
+        "pushable_object_4",
+        "pushable_object_5",
     ],
     "puzzle": [
         "puzzle_item_1",

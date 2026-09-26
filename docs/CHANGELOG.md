@@ -52,6 +52,7 @@
 - Added Falling Blade control (TRX1550)
 - Added Plough control (TRX1557)
 - Added Undead Mummy control (TRX1555)
+- Added Pushable Object control (TRX1556)
 - Added level views before play starts, with a progress bar (TRX493)
 - Added Seth Sarcophagus and the Burial Chambers cutscene where Lara takes the Amulet (TRX1561)
 - Changed inventory items to use the original size and angle for each level's puzzle, key, pickup, and examine items
@@ -65,6 +66,7 @@
 - Fixed a bug where sound effects such as footsteps were much too quiet (#6673 / TRX1569)
 - Fixed missing collision on Moving Floors in custom levels when rotated to face East (OG bug) (TRX1559)
 - Fixed pickups looking too dark, such as the eye pieces in Tomb of Seth (TRX637)
+- Fixed Lara being unable to pull some pushable objects against walls (OG bug)
 
 **Lua**
 - Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)

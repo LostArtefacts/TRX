@@ -3191,6 +3191,21 @@
         "punk_2": {
             "name": "\\{review}Панк 2",
         },
+        "pushable_object_1": {
+            "name": "\\{review}Толкаемый объект 1",
+        },
+        "pushable_object_2": {
+            "name": "\\{review}Толкаемый объект 2",
+        },
+        "pushable_object_3": {
+            "name": "\\{review}Толкаемый объект 3",
+        },
+        "pushable_object_4": {
+            "name": "\\{review}Толкаемый объект 4",
+        },
+        "pushable_object_5": {
+            "name": "\\{review}Толкаемый объект 5",
+        },
         "pushpull_door_1": {
             "name": "\\{review}Дверь тяни-толкай 1",
         },

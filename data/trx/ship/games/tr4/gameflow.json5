@@ -626,6 +626,10 @@
         {"path": "fmv12.avi"},
     ],
 
+    "enforced_config": {
+        "enable_continuous_pushblocks": true,
+    },
+
     "hidden_config": [
         "change_pierre_spawn",
         "disable_trex_collision",
@@ -633,6 +637,7 @@
         "enable_body_bags",
         "enable_cinematics",
         "enable_compass_stats",
+        "enable_continuous_pushblocks",
         "enable_crawling",
         "enable_demo",
         "enable_item_examining",

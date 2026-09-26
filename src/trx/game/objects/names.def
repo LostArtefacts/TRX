@@ -419,6 +419,11 @@ X_OBJ_NAME_DEFINE(O_AREA_51_ROCKET,         "Area 51 Rocket")
 X_OBJ_NAME_DEFINE(O_AREA_51_ROCKET_BLAST,   "Area 51 Rocket Blast")
 X_OBJ_NAME_DEFINE(O_AREA_51_ROCKET_SUPPORT, "Area 51 Rocket Support")
 X_OBJ_NAME_DEFINE(O_MOVING_FLOOR,           "Moving Floor")
+X_OBJ_NAME_DEFINE(O_PUSHABLE_OBJECT_1,      "Pushable Object 1")
+X_OBJ_NAME_DEFINE(O_PUSHABLE_OBJECT_2,      "Pushable Object 2")
+X_OBJ_NAME_DEFINE(O_PUSHABLE_OBJECT_3,      "Pushable Object 3")
+X_OBJ_NAME_DEFINE(O_PUSHABLE_OBJECT_4,      "Pushable Object 4")
+X_OBJ_NAME_DEFINE(O_PUSHABLE_OBJECT_5,      "Pushable Object 5")
 
 // Misc
 X_OBJ_NAME_DEFINE(O_ALARM_SOUND,             "Alarm")

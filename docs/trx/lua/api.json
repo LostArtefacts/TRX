@@ -342,7 +342,7 @@
     },
     {
       "bulk": true,
-      "count": 833,
+      "count": 838,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -901,6 +901,11 @@
         "PUMA",
         "PUNK_1",
         "PUNK_2",
+        "PUSHABLE_OBJECT_1",
+        "PUSHABLE_OBJECT_2",
+        "PUSHABLE_OBJECT_3",
+        "PUSHABLE_OBJECT_4",
+        "PUSHABLE_OBJECT_5",
         "PUSHPULL_DOOR_1",
         "PUSHPULL_DOOR_2",
         "PUZZLE_DONE_1",
@@ -1187,7 +1192,7 @@
     },
     {
       "bulk": true,
-      "count": 212,
+      "count": 214,
       "description": "Every sound sample TRX has a name for.",
       "examples": [
         "trx.sound.play(trx.catalog.samples.LARA_NO)"
@@ -1333,6 +1338,8 @@
         "POWERUP_FX",
         "PROJECTILE_HIT",
         "PULLEY_CRANE",
+        "PUSHABLE_MOVE",
+        "PUSHABLE_STOP",
         "PUSHBLOCK_LAND",
         "QUAD_FRONT_IMPACT",
         "QUAD_IDLE",

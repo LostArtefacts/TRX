@@ -127,9 +127,9 @@ bool Item_TestFrameEqual(const ITEM *const item, const int16_t frame)
 bool Item_TestFrameRange(
     const ITEM *const item, const int16_t start, const int16_t end)
 {
+    const int16_t base_frame = Item_GetAnim(item)->frame_base;
     return Anim_TestAbsFrameRange(
-        item->frame_num, Item_GetAnim(item)->frame_base + start,
-        Item_GetAnim(item)->frame_base + end);
+        item->frame_num, base_frame + start, base_frame + end);
 }
 
 ANIM_FRAME *Item_GetBestFrame(const ITEM *const item)

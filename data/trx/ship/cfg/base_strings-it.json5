@@ -3194,6 +3194,21 @@
         "punk_2": {
             "name": "Punk 2",
         },
+        "pushable_object_1": {
+            "name": "\\{review}Oggetto Spingibile 1",
+        },
+        "pushable_object_2": {
+            "name": "\\{review}Oggetto Spingibile 2",
+        },
+        "pushable_object_3": {
+            "name": "\\{review}Oggetto Spingibile 3",
+        },
+        "pushable_object_4": {
+            "name": "\\{review}Oggetto Spingibile 4",
+        },
+        "pushable_object_5": {
+            "name": "\\{review}Oggetto Spingibile 5",
+        },
         "pushpull_door_1": {
             "name": "Porta a Spinta/Da Tirare 1",
         },
