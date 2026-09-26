@@ -1022,6 +1022,7 @@ unit_tests += {
     'fakes/game.c',
     'fakes/items.c',
     'fakes/lara.c',
+    'fakes/overlay.c',
     'fakes/sound.c',
   ],
   'engine': [
@@ -1032,6 +1033,7 @@ unit_tests += {
     'game/lua/capi/items.c',
     'game/lua/capi/lara.c',
     'game/lua/capi/objects.c',
+    'game/lua/capi/overlay.c',
     'game/lua/capi/sound.c',
     'game/lua/capi/weapons.c',
     'game/lua/capi/weapons_spec.c',
