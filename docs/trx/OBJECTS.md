@@ -860,6 +860,18 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### undead_mummy
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">15</td><td>Maximum hit points.</td></tr>
+<tr><td><code>damage</code></td><td colspan="3" align="center">100</td><td>Damage dealt by the mummy's attack.</td></tr>
+<tr><td><code>delay</code></td><td colspan="3" align="center">0</td><td>Delay before the mummy becomes active.</td></tr>
+<tr><td><code>start_lying_down</code></td><td colspan="3" align="center">false</td><td>Whether the mummy starts lying down.</td></tr>
+<tr><td><code>walk_straight</code></td><td colspan="3" align="center">false</td><td>Whether the mummy initially walks straight ahead.</td></tr>
+</tbody>
+</table>
+
 #### vole
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (17)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>

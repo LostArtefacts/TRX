@@ -41,7 +41,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     - `trx.catalog.Context.FAMILIES` = `7`  
         The families an object can belong to.
 
-- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 832 names
+- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 833 names
 
     Every object TRX has a name for.
 
@@ -252,9 +252,9 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     `TIGER`, `TONY`, `TONY_FIRE_BALL`, `TORSO`, `TRAIN`, `TRAPDOOR_1`,
     `TRAPDOOR_2`, `TRAPDOOR_3`, `TREX`, `TREX_ALPHA`, `TRIBE_AXEMAN`,
     `TRIBE_BOSS`, `TRIBE_PIPEMAN`, `TRIGGER_GATE`, `TROPICAL_FISH`,
-    `TROPICAL_FISH_GFX`, `TWINKLE`, `UNDERWATER_DOOR`, `UPV`, `UZIS_AMMO_ITEM`,
-    `UZIS_AMMO_OPTION`, `UZIS_ITEM`, `UZIS_OPTION`, `VOLE`, `VON_CROY`,
-    `VULTURE`, `WASP_MUTANT`, `WASP_MUTANT_EMITTER`, `WATERFALL_1`,
+    `TROPICAL_FISH_GFX`, `TWINKLE`, `UNDEAD_MUMMY`, `UNDERWATER_DOOR`, `UPV`,
+    `UZIS_AMMO_ITEM`, `UZIS_AMMO_OPTION`, `UZIS_ITEM`, `UZIS_OPTION`, `VOLE`,
+    `VON_CROY`, `VULTURE`, `WASP_MUTANT`, `WASP_MUTANT_EMITTER`, `WATERFALL_1`,
     `WATERFALL_2`, `WATERFALL_3`, `WATERFALL_MIST`, `WATERSKIN_1_1`,
     `WATERSKIN_1_2`, `WATERSKIN_1_3`, `WATERSKIN_1_EMPTY`, `WATERSKIN_1_OPTION`,
     `WATERSKIN_2_1`, `WATERSKIN_2_2`, `WATERSKIN_2_3`, `WATERSKIN_2_4`,

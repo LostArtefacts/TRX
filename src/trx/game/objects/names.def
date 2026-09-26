@@ -246,6 +246,7 @@ X_OBJ_NAME_DEFINE(O_DOLPHIN,              "Dolphin")
 X_OBJ_NAME_DEFINE(O_BOAR,                 "Boar")
 X_OBJ_NAME_DEFINE(O_SMALL_SCORPION,       "Small Scorpion")
 X_OBJ_NAME_DEFINE(O_GUIDE,                "Guide")
+X_OBJ_NAME_DEFINE(O_UNDEAD_MUMMY,         "Undead Mummy")
 
 // Traps
 X_OBJ_NAME_DEFINE(O_BLADE,                    "Wall-mounted Blade")

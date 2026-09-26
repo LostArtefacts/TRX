@@ -187,5 +187,12 @@ trx.events.on_game_start(function(is_save)
     trx.items[i].properties.travel_distance = 32
   end
 
+  trx.objects.undead_mummy.properties.start_lying_down = true
+  for _, i in ipairs({ 20, 35 }) do
+    local mummy = trx.items[i]
+    mummy.properties.delay = 60
+    mummy.properties.start_lying_down = false
+  end
+
   initialise_seth(is_save)
 end)

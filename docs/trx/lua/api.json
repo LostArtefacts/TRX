@@ -342,7 +342,7 @@
     },
     {
       "bulk": true,
-      "count": 832,
+      "count": 833,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -1135,6 +1135,7 @@
         "TROPICAL_FISH",
         "TROPICAL_FISH_GFX",
         "TWINKLE",
+        "UNDEAD_MUMMY",
         "UNDERWATER_DOOR",
         "UPV",
         "UZIS_AMMO_ITEM",

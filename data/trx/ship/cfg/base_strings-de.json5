@@ -3719,6 +3719,9 @@
         "twinkle": {
             "name": "Funken",
         },
+        "undead_mummy": {
+            "name": "\\{review}Untote Mumie",
+        },
         "underwater_door": {
             "name": "\\{review}Unterwassertür",
         },

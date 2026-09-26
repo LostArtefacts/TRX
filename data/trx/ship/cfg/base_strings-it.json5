@@ -3725,6 +3725,9 @@
         "twinkle": {
             "name": "Scintille",
         },
+        "undead_mummy": {
+            "name": "\\{review}Mummia non-morta",
+        },
         "underwater_door": {
             "name": "Porta Subacquea",
         },
