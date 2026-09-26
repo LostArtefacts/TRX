@@ -68,6 +68,9 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     M_PRIV *const p = phase->priv;
     Input_Update();
     Shell_ProcessInput();
+    if (g_InputDB.menu_skip) {
+        Input_HoldOffSkip();
+    }
 
     switch (p->state) {
     case STATE_FADE_IN:

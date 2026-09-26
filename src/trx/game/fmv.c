@@ -272,6 +272,7 @@ static RESULT M_Play(const char *const file_name)
         if ((!paused
              && (g_InputDB.menu_skip || TouchOverlay_HasAnyFingerDown()))
             || GF_GetOverrideCommand().action != GF_NOOP || Shell_IsExiting()) {
+            Input_HoldOffSkip();
             Video_Stop(video);
             break;
         } else if (

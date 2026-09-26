@@ -391,7 +391,7 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
     M_PRIV *const p = M_GetPriv(item);
     ITEM *const lara = Lara_GetItem();
 
-    const bool skip_requested = g_InputDB.menu_back || g_InputDB.look;
+    const bool skip_requested = g_InputDB.menu_skip;
 
     if (!Lara_IsControllable()) {
         InputState_Clear(&g_Input);
@@ -400,7 +400,7 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
 
     if (skip_requested && p->cut_phase == 2) {
         p->cut_phase = 3;
-        Input_HoldOffSkip();
+        Input_HoldOffGameSkip();
     }
 
     if (Waypoint_GetPad() != 8 && Waypoint_GetPad() != 15) {

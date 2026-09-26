@@ -405,7 +405,7 @@ GF_COMMAND Cutscene_Control(void)
 
     Input_Update();
     Shell_ProcessInput();
-    if (g_InputDB.menu_skip || g_InputDB.look) {
+    if (g_InputDB.menu_skip) {
         Input_HoldOffSkip();
         return (GF_COMMAND) { .action = GF_LEVEL_COMPLETE };
     } else if (g_InputDB.pause) {

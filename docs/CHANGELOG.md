@@ -14,6 +14,7 @@
 - Added a loading bar to the TR1–3 loading screens (Graphics → Bars → Loading bar) (TRX1591)
 - Added an option to change the loading bar appearance (Graphics → Bars → Loading bar appearance) (TRX1591)
 - Changed the loading screens in TR1–3 to stay on screen for two seconds in every game (TRX1591)
+- Changed the look button to skip loading screens, pictures, FMVs, and stats screens, like it does for cutscenes (TRX1541)
 
 **Gameplay**
 - Added the ability to combine the two halves of an item in the inventory, such as the eye pieces in Tomb of Seth (TRX482)

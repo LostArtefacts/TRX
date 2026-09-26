@@ -70,7 +70,7 @@ void FlybyMode_PreControl(void)
         g_InputDB.look = false;
         g_InputDB.menu_skip = false;
         g_InputDB.option = false;
-        Input_HoldOffSkip();
+        Input_HoldOffGameSkip();
         return;
     }
 

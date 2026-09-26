@@ -31,8 +31,13 @@ void Input_Update(void);
 void Input_HoldOffRole(INPUT_ROLE role);
 
 // Ignores each role that can skip a scene until the player lets go, so the
-// press that ended the scene does not open the ring behind it.
+// press that ended the scene does not open the ring or act in the game behind
+// it.
 void Input_HoldOffSkip(void);
+
+// Works like Input_HoldOffSkip, but leaves look active. Use it for a scene
+// that plays during gameplay.
+void Input_HoldOffGameSkip(void);
 
 // Ignores each menu role until the player lets go, so a screen that opens with
 // no animation does not act on keys that were already down. Roles the game
