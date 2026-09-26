@@ -15,6 +15,9 @@
 - Added an option to change the loading bar appearance (Graphics → Bars → Loading bar appearance) (TRX1591)
 - Changed the loading screens in TR1–3 to stay on screen for two seconds in every game (TRX1591)
 
+**Developer console**
+- Changed the `/give` console command to show the given items in the corner of the screen, except for `/give all`. Use `-q` to hide them.
+
 **Gameplay**
 - Added the ability to combine the two halves of an item in the inventory, such as the eye pieces in Tomb of Seth (TRX482)
 - Fixed a bug where a friendly sentry gun kept aiming at Lara, and aimed at enemies it had no shot at, instead of the enemies it was set to attack

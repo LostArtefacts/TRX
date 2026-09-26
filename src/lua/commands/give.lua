@@ -7,8 +7,10 @@
 --   /give guns       every weapon the level allows, with ammunition
 --   /give moreguns   every weapon, even one the level does not carry
 --   /give all        one of everything, with the counts a cheat gives
+--   /give -q uzi     the same, without showing it on the HUD
 --
--- /keys, /guns and /moreguns reach the last three on their own.
+-- What goes in is shown on the HUD, except for `all`, which gives too much to
+-- show. /keys, /guns and /moreguns reach the last three on their own.
 
 trx.locale.declare({
   ["console/cmd/give/added"] = "Added %s to Lara's inventory",
@@ -66,15 +68,22 @@ local LEADBAR = trx.catalog.objects.LEAD_BAR_ITEM
 -- name through all of them. Whichever a group or a name reaches, she is given
 -- it once.
 
--- How many went in, so a cheat that found nothing to hand over can say so
--- rather than announcing a backpack that never got heavier.
-local function add_once(seen, id, count)
+-- Adds what went in to `got`, so a cheat can show it on the HUD, and one that
+-- found nothing to hand over can say so rather than announcing a backpack that
+-- never got heavier.
+local function add(got, id, count)
+  if trx.inventory:give(id, count or 1) > 0 then
+    got[#got + 1] = id
+  end
+end
+
+local function add_once(seen, got, id, count)
   local icon = trx.inventory.icon_of(id) or id
   if seen[icon] then
-    return 0
+    return
   end
   seen[icon] = true
-  return trx.inventory:give(id, count or 1)
+  add(got, id, count)
 end
 
 local function can_add(id)
@@ -107,35 +116,32 @@ local function plot_items()
     end)
 end
 
-local function give_gun(weapon, ammo, ignore_exclusions)
+local function give_gun(got, weapon, ammo, ignore_exclusions)
   if not ignore_exclusions and not trx.weapons.is_available(weapon) then
-    return 0
+    return
   end
   local object = trx.weapons.object(weapon)
   if object == nil or trx.inventory:give(object) == 0 then
-    return 0
+    return
   end
   trx.inventory:set_shots(weapon, trx.game.is_ngplus and NGPLUS_AMMO or ammo)
-  return 1
+  got[#got + 1] = object
 end
 
-local function give_guns(ignore_exclusions)
-  local given = trx.inventory:give(trx.catalog.objects.PISTOLS_ITEM)
+local function give_guns(got, ignore_exclusions)
+  add(got, trx.catalog.objects.PISTOLS_ITEM)
   for _, entry in ipairs(ARSENAL) do
-    given = given + give_gun(entry[1], entry[2], ignore_exclusions)
+    give_gun(got, entry[1], entry[2], ignore_exclusions)
   end
-  return given
 end
 
-local function give_plot_items(seen)
-  local given = 0
+local function give_plot_items(seen, got)
   for _, id in ipairs((givable() & plot_items()):ids()) do
-    given = given + add_once(seen, id)
+    add_once(seen, got, id)
   end
-  return given
 end
 
-local function give_supplies()
+local function give_supplies(got)
   -- What a cheat hands over rather than one of.
   local SUPPLY_COUNT = 10
   local SUPPLIES = {
@@ -143,16 +149,13 @@ local function give_supplies()
     trx.catalog.objects.LARGE_MEDIPACK_ITEM,
   }
 
-  local given = 0
   for _, object in ipairs(SUPPLIES) do
-    given = given + trx.inventory:give(object, SUPPLY_COUNT)
+    add(got, object, SUPPLY_COUNT)
   end
   -- Flares come only where they are Lara's to carry.
   if trx.weapons.is_available(trx.catalog.weapons.FLARE) then
-    given = given
-      + trx.inventory:give(trx.catalog.objects.FLARES_BOX_ITEM, SUPPLY_COUNT)
+    add(got, trx.catalog.objects.FLARES_BOX_ITEM, SUPPLY_COUNT)
   end
-  return given
 end
 
 -- The tools Lara carries and uses. The weapons and their ammunition are left to the
@@ -162,15 +165,22 @@ end
 -- pickup in none of the families is a second state of something Lara already
 -- has, which is not hers to be given again. The savegame crystal is left out
 -- too, being the one thing a player has to ask for by name.
-local function give_tools(seen)
-  local given = 0
+local function give_tools(seen, got)
   for _, id in ipairs((givable() & trx.objects.query:tool()):ids()) do
-    given = given + add_once(seen, id)
+    add_once(seen, got, id)
   end
-  return given
 end
 
-local function give_named(name, count)
+local function show(got, quiet)
+  if quiet then
+    return
+  end
+  for _, id in ipairs(got) do
+    trx.overlay.show_pickup(id)
+  end
+end
+
+local function give_named(name, count, quiet)
   local ids = givable():by_name(name):best()
   if #ids == 0 then
     return trx.console.Result.FAILURE,
@@ -178,63 +188,75 @@ local function give_named(name, count)
   end
 
   local seen = {}
+  local got = {}
   for _, id in ipairs(ids) do
-    if add_once(seen, id, count) > 0 then
-      trx.console.log(
-        trx.locale.format(
-          "console/cmd/give/added",
-          trx.objects[id].names[1] or name
-        )
-      )
-    end
+    add_once(seen, got, id, count)
   end
+  for _, id in ipairs(got) do
+    trx.console.log(
+      trx.locale.format(
+        "console/cmd/give/added",
+        trx.objects[id].names[1] or name
+      )
+    )
+  end
+  show(got, quiet)
   return trx.console.Result.OK
 end
 
 -- A group hands over what the level carries the inventory models for, and a
 -- level may carry none of them. Saying so beats the sound and the boast over an
 -- unchanged backpack.
-local function announce(given, key, sample)
-  if given == 0 then
+local function announce(got, key, sample, quiet)
+  if #got == 0 then
     return trx.console.Result.FAILURE,
       trx.locale.get("console/cmd/give/nothing")
   end
   trx.sound.play(sample)
+  show(got, quiet)
   return trx.console.Result.OK, trx.locale.get(key)
 end
 
 local function give_all()
-  local given = give_guns(false)
+  local got = {}
+  give_guns(got, false)
   -- One `seen` for the whole cheat: a variant reached by one group and its
   -- base by another are still the one thing.
   local seen = {}
-  given = given + give_plot_items(seen)
-  given = given + give_tools(seen)
-  given = given + give_supplies()
+  give_plot_items(seen, got)
+  give_tools(seen, got)
+  give_supplies(got)
   return announce(
-    given,
+    got,
     "console/cmd/give/all_given",
-    trx.catalog.samples.LARA_HOLSTER
+    trx.catalog.samples.LARA_HOLSTER,
+    true
   )
 end
 
-local function give_keys()
+local function give_keys(quiet)
+  local got = {}
+  give_plot_items({}, got)
   return announce(
-    give_plot_items({}),
+    got,
     "console/cmd/give/keys_given",
-    trx.catalog.samples.LARA_KEY
+    trx.catalog.samples.LARA_KEY,
+    quiet
   )
 end
 
-local function give_all_guns(ignore_exclusions)
+local function give_all_guns(ignore_exclusions, quiet)
+  local got = {}
+  give_guns(got, ignore_exclusions)
   return announce(
-    give_guns(ignore_exclusions),
+    got,
     "console/cmd/give/guns_given",
-    trx.catalog.samples.LARA_RELOAD
+    trx.catalog.samples.LARA_RELOAD,
+    quiet
   )
 end
 
-local function run(what, count)
+local function run(what, count, quiet)
   if not trx.game.is_playable then
     return trx.console.Result.UNAVAILABLE
   end
@@ -250,20 +272,25 @@ local function run(what, count)
   if keyword == "all" then
     return give_all()
   elseif keyword == "keys" then
-    return give_keys()
+    return give_keys(quiet)
   elseif keyword == "guns" then
-    return give_all_guns(false)
+    return give_all_guns(false, quiet)
   elseif keyword == "moreguns" then
-    return give_all_guns(true)
+    return give_all_guns(true, quiet)
   end
 
-  return give_named(what, count)
+  return give_named(what, count, quiet)
+end
+
+local function quiet_flag(parser)
+  parser:flag("quiet", { short = "-q", long = "--quiet" })
 end
 
 trx.console.register({
   name = "give",
   help = "console/cmd/give/help",
   args = function(parser)
+    quiet_flag(parser)
     parser:positional("count", { type = "integer", optional = true })
     parser:rest("what", {
       help = "console/cmd/give/what_help",
@@ -280,7 +307,7 @@ trx.console.register({
     })
   end,
   run = function(args)
-    return run(args.what, args.count or 1)
+    return run(args.what, args.count or 1, args.quiet)
   end,
 })
 
@@ -290,26 +317,27 @@ for _, spec in ipairs({
   {
     name = "guns",
     help = "console/cmd/give/guns_help",
-    give = function()
-      return give_all_guns(false)
+    give = function(quiet)
+      return give_all_guns(false, quiet)
     end,
   },
   {
     name = "moreguns",
     help = "console/cmd/give/moreguns_help",
-    give = function()
-      return give_all_guns(true)
+    give = function(quiet)
+      return give_all_guns(true, quiet)
     end,
   },
 }) do
   trx.console.register({
     name = spec.name,
     help = spec.help,
-    run = function()
+    args = quiet_flag,
+    run = function(args)
       if not trx.game.is_playable then
         return trx.console.Result.UNAVAILABLE
       end
-      return spec.give()
+      return spec.give(args.quiet)
     end,
   })
 end
