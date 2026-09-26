@@ -49,3 +49,24 @@ api.property("overlay.signals.health_bar_forced", {
     return held
   end,
 })
+
+api.define("overlay.show_pickup", {
+  description = [[
+Shows an object in the bottom-right corner of the screen, as the game shows a
+pickup Lara collects. It fires `trx.events.on_show_pickup`. It also plays secret
+music for a secret pickup.
+
+It does not add the object to Lara's inventory. Use `trx.inventory.Inventory:give`
+for that.]],
+  params = {
+    {
+      name = "object",
+      type = "catalog.objects",
+      description = "The object to show.",
+    },
+  },
+  examples = {
+    [[trx.overlay.show_pickup(trx.catalog.objects.KEY_ITEM_1)]],
+  },
+  impl = raw.show_pickup,
+})

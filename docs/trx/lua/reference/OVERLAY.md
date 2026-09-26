@@ -28,3 +28,19 @@ Only what a script has to answer for is here. The lines of text are the engine's
 
 - <a id="overlay.signals" name="overlay.signals"></a>[lua]`trx.overlay.signals`  
   What the overlay tells a script, for the parts of it a script draws.
+
+- <a id="overlay.show_pickup" name="overlay.show_pickup"></a>[lua]`trx.overlay.show_pickup(object)`  
+  Shows an object in the bottom-right corner of the screen, as the game shows a
+  pickup Lara collects. It fires [`trx.events.on_show_pickup`](EVENTS.md#events.on_show_pickup). It also plays secret
+  music for a secret pickup.
+
+  It does not add the object to Lara's inventory. Use [`trx.inventory.Inventory:give`](INVENTORY.md#inventory.Inventory.give)
+  for that.
+
+  Parameters:
+  - <a id="overlay.show_pickup.object" name="overlay.show_pickup.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The object to show.
+
+  Example:
+  ```lua
+  trx.overlay.show_pickup(trx.catalog.objects.KEY_ITEM_1)
+  ```

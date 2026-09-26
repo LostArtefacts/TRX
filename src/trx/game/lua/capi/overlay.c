@@ -20,9 +20,17 @@ static int M_L_OverlayHasLetterbox(lua_State *const L)
     return 1;
 }
 
+// trxc.overlay.show_pickup(object)
+static int M_L_OverlayShowPickup(lua_State *const L)
+{
+    Overlay_AddDisplayPickup(LUA_CheckObjectID(L, 1));
+    return 0;
+}
+
 static const luaL_Reg m_Module[] = {
     { "has_letterbox", M_L_OverlayHasLetterbox },
     { "is_health_bar_forced", M_L_OverlayIsHealthBarForced },
+    { "show_pickup", M_L_OverlayShowPickup },
     { nullptr, nullptr },
 };
 

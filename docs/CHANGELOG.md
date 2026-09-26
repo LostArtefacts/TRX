@@ -64,6 +64,7 @@
 - Added `trx.fx.spark.context`, so a script can determine how a spark was spawned before deciding to alter it (TRX1590)
 - Added `trx.items.Item.joint_count` and `trx.items.Item:joint_pos()` (TRX89)
 - Added `trx.game.cutscene_frame`, which reports the frame a cutscene level is playing (TRX89)
+- Added `trx.overlay.show_pickup()`, which shows an object in the corner of the screen as the game does for a pickup
 - Added the ability for a script to hold a player action inactive
     - `trx.input.suppress`
     - `trx.input.Suppression:release`
