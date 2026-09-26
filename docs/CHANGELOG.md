@@ -40,6 +40,7 @@
 - Fixed the Guide having Lara's right-hand pistol mesh in Valley of the Kings (OG bug) (TRX1551)
 - Fixed a bug where sound effects such as footsteps were much too quiet (#6673 / TRX1569)
 - Fixed missing collision on Moving Floors in custom levels when rotated to face East (OG bug) (TRX1559)
+- Fixed pickups looking too dark, such as the eye pieces in Tomb of Seth (TRX637)
 
 **Lua**
 - Added `trx.fx.gun_flash()`, so a script can draw a muzzle flash on any item (TRX89)
