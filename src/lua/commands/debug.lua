@@ -20,6 +20,7 @@ local KEYS = {
   "debug.enable_debug_portals",
   "debug.enable_debug_room_clip",
   "debug.enable_debug_triggers",
+  "debug.enable_debug_zones",
   "debug.enable_debug_spheres",
   "debug.enable_debug_bounding_boxes",
   "debug.enable_debug_pos",
@@ -27,6 +28,52 @@ local KEYS = {
   "debug.enable_debug_camera",
   "debug.enable_debug_status",
 }
+
+-- The zone overlay the "zones" option draws. The zones are read through the
+-- public module, so the overlay reaches no more of one than a script does.
+local ZONE_COLOR = "00ff00"
+local ZONE_ALPHA = 160
+local ZONE_ALPHA_DISABLED = 48
+
+-- How far above the floor a tile is drawn, so that it does not fight the floor
+-- it lies on.
+local ZONE_TILE_LIFT = 8
+
+-- The corners a zone is outlined between. A tile reaches every height the level
+-- has, which no outline can show, so it is drawn flat on the floor it covers,
+-- the way a floor trigger is. The height is taken from the highest of the four
+-- corners, so a sloped sector is covered rather than cut through.
+local function zone_corners(zone)
+  if zone.room_num == nil then
+    return zone.min, zone.max
+  end
+  local room = trx.rooms[zone.room_num]
+  if room == nil or not room:is_valid() then
+    return nil
+  end
+
+  -- A height is read from inside the room, so that a sector with another room
+  -- stacked over or under it answers for this one.
+  local bounds = room.bounds
+  local y = (bounds.min_y + bounds.max_y) // 2
+  local top = nil
+  for _, x in ipairs({ zone.min.x, zone.max.x }) do
+    for _, z in ipairs({ zone.min.z, zone.max.z }) do
+      local height = room:floor_height({ x = x, y = y, z = z })
+      if height ~= nil and (top == nil or height < top) then
+        top = height
+      end
+    end
+  end
+  if top == nil then
+    return nil
+  end
+
+  local floor = top - ZONE_TILE_LIFT
+  local min = { x = zone.min.x, y = floor, z = zone.min.z }
+  local max = { x = zone.max.x, y = floor, z = zone.max.z }
+  return min, max
+end
 
 local function log_get(key)
   trx.console.log(
@@ -119,3 +166,20 @@ trx.console.register({
     return trx.console.Result.OK
   end,
 })
+
+trx.events.on_scene_paint(function()
+  if #trx.zones == 0 or not trx.config.get("debug.enable_debug_zones") then
+    return
+  end
+  for _, zone in pairs(trx.zones) do
+    local alpha = zone.enabled and ZONE_ALPHA or ZONE_ALPHA_DISABLED
+    if zone.type == "sphere" then
+      trx.scene.sphere(zone.centre, zone.radius, ZONE_COLOR, alpha)
+    else
+      local min, max = zone_corners(zone)
+      if min ~= nil then
+        trx.scene.box(min, max, ZONE_COLOR, alpha)
+      end
+    end
+  end
+end)
