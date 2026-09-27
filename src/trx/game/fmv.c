@@ -323,6 +323,11 @@ static RESULT M_Play(const char *const file_name)
     IGNORE(Audio_Stream_Close(audio_id));
     Video_Close(video);
 
+    render_ctx.show_pause_overlay = false;
+    Fader_InitTo(&render_ctx.pause_fader, 0.0f, 0.0f, 0.0f);
+    Output_SetSupersamplingEnabled(true);
+    M_RedrawFrame(&render_ctx);
+
     Output_Quad_Destroy(render_ctx.renderer_2d);
     Output_ApplyRenderSettings();
     return OK;

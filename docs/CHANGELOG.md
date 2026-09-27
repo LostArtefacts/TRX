@@ -8,6 +8,7 @@
 **Rendering**
 - Added an option to disable reflections on Lara's sunglasses (Graphic Options → Visuals → Reflective sunglasses) (#6665 / TRX1544)
 - Improved the frame rate, as the game now draws solid surfaces faster
+- Fixed the screen not fading to black after a skipped FMV (TRX1613)
 
 **UI**
 - Added an option to change the loading bar color (Graphics → Bars → Loading bar color) (#6682 / TRX1582)
