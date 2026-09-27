@@ -18,6 +18,7 @@
 - Fixed items without a sprite, such as the scion, not showing in the pickups overlay when 3D pickups are off
 
 **Developer console**
+- Added the `/restartlevel` console command, also available as `/restart`, which restarts the current level (#6712 / TRX1599)
 - Changed the `/give` console command to show the given items in the corner of the screen, except for `/give all`. Use `-q` to hide them.
 
 **Gameplay**
@@ -61,9 +62,6 @@
 - Fixed a bug where sound effects such as footsteps were much too quiet (#6673 / TRX1569)
 - Fixed missing collision on Moving Floors in custom levels when rotated to face East (OG bug) (TRX1559)
 - Fixed pickups looking too dark, such as the eye pieces in Tomb of Seth (TRX637)
-
-**Developer console**
-- Added the `/restartlevel` console command, also available as `/restart`, which restarts the current level (#6712 / TRX1599)
 
 **Lua**
 - Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)
