@@ -44,7 +44,7 @@ static bool M_Draw(const ITEM *const item)
 
     Matrix_Push();
     Matrix_TranslateAbs32(item->pos);
-    Output_DrawSphereEx((XYZ_16) { 0, -M_RADIUS, 0 }, M_RADIUS, color);
+    Output_DrawSphereEx((XYZ_32) { 0, -M_RADIUS, 0 }, M_RADIUS, color);
     Matrix_Pop();
 
     return true;

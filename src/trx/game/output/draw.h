@@ -29,7 +29,7 @@ void Output_DrawScreenFrame(
     RGBA_8888 col_light, float thickness);
 void Output_DrawPhotoModeFrame(int32_t thickness);
 
-void Output_DrawSphere(XYZ_16 center, int32_t radius);
-void Output_DrawCuboid(const BOUNDS_16 *bounds);
-void Output_DrawSphereEx(XYZ_16 center, int32_t radius, RGBA_8888 color);
-void Output_DrawCuboidEx(const BOUNDS_16 *bounds, RGBA_8888 color);
+void Output_DrawSphere(XYZ_32 center, int32_t radius);
+void Output_DrawCuboid(const BOUNDS_32 *bounds);
+void Output_DrawSphereEx(XYZ_32 center, int32_t radius, RGBA_8888 color);
+void Output_DrawCuboidEx(const BOUNDS_32 *bounds, RGBA_8888 color);

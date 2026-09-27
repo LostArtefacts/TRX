@@ -1,6 +1,7 @@
 #include <trx/game/objects/draw.h>
 
 #include <trx/config.h>
+#include <trx/core/math/geom.h>
 #include <trx/debug.h>
 #include <trx/game/anims/walk.h>
 #include <trx/game/interpolation.h>
@@ -253,7 +254,8 @@ bool Object_DrawAnimatingItemWithSwap(
         obj, mesh_mask, extra_rotation, frames[0], frames[1], frac, rate,
         swap_obj);
     if (g_Config.debug.enable_debug_bounding_boxes) {
-        Output_DrawCuboid(bounds);
+        const BOUNDS_32 debug_bounds = BOUNDS_32_From16(bounds);
+        Output_DrawCuboid(&debug_bounds);
     }
     Matrix_Pop();
     return result;
@@ -329,7 +331,8 @@ bool Object_DrawScaledItem(
     Object_DrawMesh(obj->mesh_idx, clip, false);
 
     if (g_Config.debug.enable_debug_bounding_boxes) {
-        Output_DrawCuboid(bounds);
+        const BOUNDS_32 debug_bounds = BOUNDS_32_From16(bounds);
+        Output_DrawCuboid(&debug_bounds);
     }
     Matrix_Pop();
     return true;

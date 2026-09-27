@@ -1,6 +1,7 @@
 #include <trx/game/lara/draw.h>
 
 #include <trx/config.h>
+#include <trx/core/math/geom.h>
 #include <trx/game/camera.h>
 #include <trx/game/gun.h>
 #include <trx/game/gun/common.h>
@@ -211,10 +212,10 @@ static bool M_Draw_I(
 {
     const OBJECT *const obj = Object_Get(item->object_id);
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
+    const BOUNDS_16 *const shadow_bounds = Item_GetBoundsAccurate(item);
 
     if (!Lara_Vehicle_IsMounted()) {
-        OutputSource_Shadows_Draw(obj->shadow_size, bounds, item);
+        OutputSource_Shadows_Draw(obj->shadow_size, shadow_bounds, item);
     }
 
     MATRIX saved_matrix = *g_MatrixPtr;
@@ -232,7 +233,8 @@ static bool M_Draw_I(
     }
 
     if (g_Config.debug.enable_debug_bounding_boxes) {
-        Output_DrawCuboid(&frame1->bounds);
+        const BOUNDS_32 bounds = BOUNDS_32_From16(&frame1->bounds);
+        Output_DrawCuboid(&bounds);
     }
 
     m_CacheMatrices = m_IsLara;
@@ -521,7 +523,8 @@ bool Lara_Draw(const ITEM *const item)
     }
 
     if (g_Config.debug.enable_debug_bounding_boxes) {
-        Output_DrawCuboid(&frame->bounds);
+        const BOUNDS_32 bounds = BOUNDS_32_From16(&frame->bounds);
+        Output_DrawCuboid(&bounds);
     }
 
     m_CacheMatrices = m_IsLara;
