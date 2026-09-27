@@ -1077,16 +1077,14 @@ void Output_Overlay_DrawBackground(
 
     case BK_IMAGE:
         if (image_path == nullptr) {
-            // No image configured (e.g. pause screen): behave like
-            // BK_TRANSPARENT_DARK.
+            // Use the dark style when no image is configured.
             Output_Overlay_DrawSnapshot(1.0f);
             Output_Overlay_DrawBlackRectangle(opacity * 0.8f, false);
         } else if (Output_Overlay_LoadImage(image_path)) {
             Output_Overlay_DrawImageBilinear(image_path);
             Output_Overlay_DrawBlackRectangle(opacity, false);
         } else {
-            // Image configured but failed to load: hide the background
-            // entirely rather than show something unintended.
+            // Hide the background when the image fails to load.
             Output_Overlay_DrawBlackRectangle(1.0f, false);
         }
         break;
