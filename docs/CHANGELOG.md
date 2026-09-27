@@ -23,6 +23,7 @@
 
 **Developer console**
 - Added the `/restartlevel` console command, also available as `/restart`, which restarts the current level (#6712 / TRX1599)
+- Added `/debug zones`, which outlines the zones a mod watches (#6726)
 - Changed the `/give` console command to show the given items in the corner of the screen, except for `/give all`. Use `-q` to hide them.
 
 **Gameplay**

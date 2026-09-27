@@ -375,6 +375,7 @@ typedef struct {
         bool enable_debug_anim;
         bool enable_debug_camera;
         bool enable_debug_status;
+        bool enable_debug_zones;
         bool enable_review_markers;
         bool enable_invulnerability;
         bool enable_endless_sprint;

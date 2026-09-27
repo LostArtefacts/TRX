@@ -183,6 +183,7 @@ whichever key you have bound, and not include it as part of the command itself.
   - object mesh spheres - see hitboxes in their natural habitat.
   - Lara's position and animation details - nerdy stats, you've gotta love them.
   - bounding boxes – to marvel at the collision code.
+  - script zones - the boxes, spheres and tiles a mod watches.
 
 - `/speed`  
   `/speed {num}`  
