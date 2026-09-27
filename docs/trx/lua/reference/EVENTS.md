@@ -376,6 +376,25 @@ An event that carries a default the script may take over says so in its descript
 
   Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
+- <a id="events.on_scene_paint" name="events.on_scene_paint"></a>[lua]`trx.events.on_scene_paint(callback)`  
+  Fires on every drawn frame, after the rooms and everything standing in
+  them, and before the interface.
+
+  [`trx.scene`](SCENE.md#scene) draws during this event and raises anywhere else. It follows the
+  frame rate, not the game clock.
+
+  Parameters:
+  - <a id="events.on_scene_paint.callback" name="events.on_scene_paint.callback"></a>**`callback`** (function). Called once per drawn scene.
+
+  Returns: [trx.events.Listener](#events.Listener). The attached handler.
+
+  Example:
+  ```lua
+  trx.events.on_scene_paint(function()
+    trx.scene.sphere(trx.lara.item.pos, 512, "00ff00")
+  end)
+  ```
+
 - <a id="events.on_pickup" name="events.on_pickup"></a>[lua]`trx.events.on_pickup(callback)`  
   Happens just after Lara picks up an item.
 

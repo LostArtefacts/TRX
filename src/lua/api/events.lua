@@ -536,6 +536,30 @@ api.define("events.on_ui_paint_over", {
   impl = hook(types.UI_PAINT_OVER),
 })
 
+api.define("events.on_scene_paint", {
+  description = [[
+    Fires on every drawn frame, after the rooms and everything standing in
+    them, and before the interface.
+
+    `trx.scene` draws during this event and raises anywhere else. It follows the
+    frame rate, not the game clock.
+  ]],
+  params = {
+    {
+      name = "callback",
+      type = "function",
+      description = "Called once per drawn scene.",
+    },
+  },
+  returns = LISTENER,
+  examples = {
+    [[trx.events.on_scene_paint(function()
+  trx.scene.sphere(trx.lara.item.pos, 512, "00ff00")
+end)]],
+  },
+  impl = hook(types.SCENE_PAINT),
+})
+
 api.define("events.on_pickup", {
   description = "Happens just after Lara picks up an item.",
   params = {
