@@ -10,6 +10,7 @@
 #include <trx/debug.h>
 #include <trx/game/clock.h>
 #include <trx/game/console.h>
+#include <trx/game/const.h>
 #include <trx/game/fader.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_strings/entries.h>
@@ -17,6 +18,7 @@
 #include <trx/game/lua/events.h>
 #include <trx/game/lua/ui.h>
 #include <trx/game/music.h>
+#include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/output/overlay.h>
 #include <trx/game/output/quad.h>
@@ -31,7 +33,6 @@
 #include <string.h>
 
 #define M_FADE_TIME 0.4f
-#define M_PAUSE_OVERLAY_OPACITY 0.8f
 
 typedef struct {
     OUTPUT_QUAD_SURFACE_DESC desc;
@@ -145,12 +146,42 @@ static void M_DrawUI(void)
     UI_Draw();
 }
 
-static float M_GetPauseOverlayOpacity(const M_RENDER_CONTEXT *const ctx)
+static float M_GetPauseProgress(const M_RENDER_CONTEXT *const ctx)
 {
     if (!g_Config.ui.pause_fade_effects) {
-        return ctx->show_pause_overlay ? M_PAUSE_OVERLAY_OPACITY : 0.0f;
+        return ctx->show_pause_overlay ? 1.0f : 0.0f;
     }
-    return Fader_GetCurrentValue(&ctx->pause_fader) * M_PAUSE_OVERLAY_OPACITY;
+    return Fader_GetCurrentValue(&ctx->pause_fader);
+}
+
+static BACKGROUND_TYPE M_GetPauseBackgroundStyle(void)
+{
+    const BACKGROUND_TYPE style = g_Config.ui.pause_background_style;
+    const bool is_pattern =
+        style == BK_PATTERN_STATIC || style == BK_PATTERN_WAVE;
+    if (is_pattern && !Object_Get(O_INV_BACKGROUND)->loaded) {
+        return BK_TRANSPARENT_DARK;
+    }
+    return style;
+}
+
+static float M_ApplyPauseBackground(const M_RENDER_CONTEXT *const ctx)
+{
+    Output_SetTime((float)(Clock_GetRealTime() * LOGIC_FPS));
+
+    const BACKGROUND_TYPE style = M_GetPauseBackgroundStyle();
+    const float progress = M_GetPauseProgress(ctx);
+    const bool is_pattern =
+        style == BK_PATTERN_STATIC || style == BK_PATTERN_WAVE;
+
+    const OUTPUT_BACKGROUND_TINT tint = Output_Overlay_GetBackgroundTint(
+        is_pattern ? BK_NONE : style, progress);
+    Output_Quad_SetDesaturation(ctx->renderer_2d, tint.desaturation);
+    Output_Quad_SetGlobalTint(ctx->renderer_2d, tint.tint);
+    if (is_pattern) {
+        Output_Overlay_DrawPatternOpacity(style == BK_PATTERN_WAVE, progress);
+    }
+    return tint.black_opacity;
 }
 
 static bool M_ShouldShowPauseText(const M_RENDER_CONTEXT *const ctx)
@@ -186,7 +217,6 @@ static void M_UploadSurface(void *const surface, void *const user_data)
 {
     M_RENDER_CONTEXT *const ctx = user_data;
     M_SURFACE *const surface_ = surface;
-    const float overlay_opacity = M_GetPauseOverlayOpacity(ctx);
     Output_Quad_Upload(ctx->renderer_2d, &surface_->desc, surface_->buffer);
     Output_Quad_SetFit(
         ctx->renderer_2d, OUTPUT_QUAD_FIT_LETTERBOX, surface_->desc.width,
@@ -194,10 +224,9 @@ static void M_UploadSurface(void *const surface, void *const user_data)
     Output_Quad_SetFilter(ctx->renderer_2d, g_Config.rendering.fmv_filter);
 
     Output_SwitchViewport(VIEWPORT_GAME);
+    const float black_opacity = M_ApplyPauseBackground(ctx);
     Output_Quad_Render(ctx->renderer_2d);
-    if (overlay_opacity > 0.0f) {
-        Output_Overlay_DrawBlackRectangle(overlay_opacity, false);
-    }
+    Output_Overlay_DrawBlackRectangle(black_opacity, false);
 
     Output_SwitchViewport(VIEWPORT_UI);
     M_DrawUI();
@@ -217,13 +246,11 @@ static void M_SetPauseText(const bool show)
 
 static void M_RedrawFrame(M_RENDER_CONTEXT *const ctx)
 {
-    const float overlay_opacity = M_GetPauseOverlayOpacity(ctx);
     Output_BeginScene();
     Output_SwitchViewport(VIEWPORT_GAME);
+    const float black_opacity = M_ApplyPauseBackground(ctx);
     Output_Quad_Render(ctx->renderer_2d);
-    if (overlay_opacity > 0.0f) {
-        Output_Overlay_DrawBlackRectangle(overlay_opacity, false);
-    }
+    Output_Overlay_DrawBlackRectangle(black_opacity, false);
 
     Output_SwitchViewport(VIEWPORT_UI);
     M_DrawUI();
