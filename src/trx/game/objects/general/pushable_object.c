@@ -84,6 +84,11 @@ static bool M_CollideWithItems(const ITEM *const push_item, const XYZ_32 pos)
         Room_GetAdjoiningRooms(push_item->room_num, coll_rooms, M_COLL_ROOMS);
     const ITEM *const lara_item = Lara_GetItem();
 
+    int16_t room_num = push_item->room_num;
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, pos);
+    const int32_t y_radius = height == pos.y ? 0 : M_COLL_RADIUS;
+
     for (int32_t i = 0; i < room_count; i++) {
         const ROOM *const room = Room_Get(coll_rooms[i]);
         int16_t item_num = room->item_num;
@@ -110,8 +115,8 @@ static bool M_CollideWithItems(const ITEM *const push_item, const XYZ_32 pos)
             }
 
             const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
-            if (pos.y + M_COLL_RADIUS < item->pos.y + bounds->min.y
-                || pos.y - M_COLL_RADIUS > item->pos.y + bounds->max.y) {
+            if (pos.y + y_radius < item->pos.y + bounds->min.y
+                || pos.y - y_radius > item->pos.y + bounds->max.y) {
                 continue;
             }
 
