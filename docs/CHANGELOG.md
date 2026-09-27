@@ -16,6 +16,7 @@
 - Changed the loading screens in TR1–3 to stay on screen for two seconds in every game (TRX1591)
 - Changed the look button to skip loading screens, pictures, FMVs, and stats screens, like it does for cutscenes (TRX1541)
 - Fixed items without a sprite, such as the scion, not showing in the pickups overlay when 3D pickups are off
+- Fixed the game not fading to black when it was exited during an FMV (TRX1616)
 - Fixed the stats background help naming the wrong style for TR2 (PS1) (#6711 / TRX1598)
 
 **Developer console**
