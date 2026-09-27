@@ -18,7 +18,7 @@ local MAX_SECONDS = 15.0
 local SPACING = 8.0
 local BACKDROP_ALPHA = 196
 local CARET = "\\{button left}"
-local BLINK_TICKS = 10
+local BLINK_SECONDS = 1 / 3
 
 -- Returns the text scale used by the engine.
 local function text_scale()
@@ -250,7 +250,7 @@ end)()
 -- What the player sees
 -------------------------------------------------------------------------------
 local grab = nil
-local ticks = 0
+local blink_from = 0
 
 local function backdrop(line_height)
   local canvas = trx.ui.canvas
@@ -291,7 +291,8 @@ local function draw()
   local baseline = canvas.height - padding - line_height
   if open then
     primitive.text(line.text, padding, baseline, 1.0, 16)
-    if (ticks % (BLINK_TICKS * 2)) < BLINK_TICKS then
+    local blink = (trx.game.real_time - blink_from) % (BLINK_SECONDS * 2)
+    if blink < BLINK_SECONDS then
       local at = primitive.measure_text(line.before_caret(), 1.0)
       primitive.text(CARET, padding + at, baseline, 1.0, 8)
     end
@@ -376,7 +377,7 @@ end
 trx.events.on_console_open(function()
   line.clear()
   line.forget_recall()
-  ticks = 0
+  blink_from = trx.game.real_time
   if grab == nil then
     grab = trx.input.grab()
   end
@@ -405,10 +406,6 @@ trx.events.on_text_input(function(text)
   if trx.console.is_open then
     line.insert(text)
   end
-end)
-
-trx.events.on_tick(function()
-  ticks = ticks + 1
 end)
 
 trx.events.on_level_unload(function()
