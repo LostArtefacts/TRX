@@ -1017,52 +1017,56 @@ void Output_Overlay_BeginTransitionFadeOut(
     Fader_InitTo(&p->snapshot.transition_fader, start, 0.0f, duration);
 }
 
+OUTPUT_BACKGROUND_TINT Output_Overlay_GetBackgroundTint(
+    const BACKGROUND_TYPE style, const float opacity)
+{
+    OUTPUT_BACKGROUND_TINT tint = {
+        .black_opacity = 0.0f,
+        .desaturation = 0.0f,
+        .tint = COLOR_RGB_F_WHITE,
+    };
+
+    switch (style) {
+    case BK_TRANSPARENT_MEDIUM:
+        tint.black_opacity = opacity * 0.5f;
+        break;
+
+    case BK_BLACK:
+        tint.black_opacity = opacity;
+        break;
+
+    case BK_MONOCHROME:
+        tint.desaturation = opacity;
+        break;
+
+    case BK_MONOCHROME_COOL:
+        tint.desaturation = opacity;
+        tint.tint = Color_Mix(
+            COLOR_RGB_F_WHITE, ((RGB_F) { 0.666f, 0.666f, 1.0f }), opacity);
+        break;
+
+    case BK_MONOCHROME_WARM:
+        tint.desaturation = opacity;
+        tint.tint = Color_Mix(
+            COLOR_RGB_F_WHITE, ((RGB_F) { 1.0f, 0.666f, 0.666f }), opacity);
+        break;
+
+    case BK_NONE:
+        break;
+
+    default:
+        tint.black_opacity = opacity * 0.8f;
+        break;
+    }
+
+    return tint;
+}
+
 void Output_Overlay_DrawBackground(
     const BACKGROUND_TYPE style, const float opacity,
     const char *const image_path)
 {
     switch (style) {
-    case BK_TRANSPARENT_MEDIUM:
-        Output_Overlay_DrawSnapshot(1.0f);
-        Output_Overlay_DrawBlackRectangle(opacity * 0.5f, false);
-        break;
-
-    case BK_TRANSPARENT_DARK:
-        Output_Overlay_DrawSnapshot(1.0f);
-        Output_Overlay_DrawBlackRectangle(opacity * 0.8f, false);
-        break;
-
-    case BK_BLACK:
-        Output_Overlay_DrawSnapshot(1.0f);
-        Output_Overlay_DrawBlackRectangle(opacity, false);
-        break;
-
-    case BK_MONOCHROME:
-        Output_Overlay_DrawSnapshotEx(&(OUTPUT_SNAPSHOT_SETTINGS) {
-            .opacity = 1.0f,
-            .desaturation = opacity,
-            .tint = COLOR_RGB_F_WHITE,
-        });
-        break;
-
-    case BK_MONOCHROME_COOL:
-        Output_Overlay_DrawSnapshotEx(&(OUTPUT_SNAPSHOT_SETTINGS) {
-            .opacity = 1.0f,
-            .desaturation = opacity,
-            .tint = Color_Mix(
-                COLOR_RGB_F_WHITE, ((RGB_F) { 0.666f, 0.666f, 1.0f }), opacity),
-        });
-        break;
-
-    case BK_MONOCHROME_WARM:
-        Output_Overlay_DrawSnapshotEx(&(OUTPUT_SNAPSHOT_SETTINGS) {
-            .opacity = 1.0f,
-            .desaturation = opacity,
-            .tint = Color_Mix(
-                COLOR_RGB_F_WHITE, ((RGB_F) { 1.0f, 0.666f, 0.666f }), opacity),
-        });
-        break;
-
     case BK_PATTERN_STATIC:
     case BK_PATTERN_WAVE:
         if (opacity < 1.0f) {
@@ -1087,10 +1091,17 @@ void Output_Overlay_DrawBackground(
         }
         break;
 
-    case BK_NONE:
-    default:
-        Output_Overlay_DrawSnapshot(1.0f);
+    default: {
+        const OUTPUT_BACKGROUND_TINT tint =
+            Output_Overlay_GetBackgroundTint(style, opacity);
+        Output_Overlay_DrawSnapshotEx(&(OUTPUT_SNAPSHOT_SETTINGS) {
+            .opacity = 1.0f,
+            .desaturation = tint.desaturation,
+            .tint = tint.tint,
+        });
+        Output_Overlay_DrawBlackRectangle(tint.black_opacity, false);
         break;
+    }
     }
 }
 

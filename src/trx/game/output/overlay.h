@@ -18,6 +18,12 @@ typedef struct {
     RGB_F tint; // COLOR_RGB_F_WHITE = no tint
 } OUTPUT_SNAPSHOT_SETTINGS;
 
+typedef struct {
+    float black_opacity;
+    float desaturation;
+    RGB_F tint;
+} OUTPUT_BACKGROUND_TINT;
+
 void Output_Overlay_DrawPattern(bool wave);
 void Output_Overlay_DrawPatternOpacity(bool wave, float opacity);
 void Output_Overlay_DrawBlackRectangle(float opacity, bool post_ui);
@@ -58,4 +64,7 @@ void Output_Overlay_DrawSnapshot(float opacity);
 void Output_Overlay_DrawSnapshotEx(const OUTPUT_SNAPSHOT_SETTINGS *settings);
 void Output_Overlay_DrawBackground(
     BACKGROUND_TYPE style, float opacity, const char *image_path);
+// Report the tint and opacity for a background style.
+OUTPUT_BACKGROUND_TINT Output_Overlay_GetBackgroundTint(
+    BACKGROUND_TYPE style, float opacity);
 void Output_Overlay_BeginTransitionFadeOut(float duration, float start);
