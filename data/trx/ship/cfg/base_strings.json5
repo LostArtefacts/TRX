@@ -1918,6 +1918,10 @@
             "title": "Gun lighting",
             "description": "Enables dynamic lighting to be generated for gunshots and explosions.",
         },
+        "visuals.enable_level_start_fade_effects": {
+            "title": "Fade on level start",
+            "description": "Enables the fade in from black when a level starts or a save is loaded.",
+        },
         "visuals.enable_photo_mode_collision": {
             "title": "Photo mode collision",
             "description": "Enforces the camera to conform to geometry when navigating a level in photo mode. If disabled, the camera can be moved freely through walls, ceilings and floors.",

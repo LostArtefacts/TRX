@@ -54,6 +54,7 @@
 - Added Undead Mummy control (TRX1555)
 - Added Pushable Object control (TRX1556)
 - Added level views before play starts, with a progress bar (TRX493)
+- Added the fade-in from black when a level starts or a save is loaded, with an option to turn it off (Graphics → UI → Fade on level start) (TRX1375)
 - Added Seth Sarcophagus and the Burial Chambers cutscene where Lara takes the Amulet (TRX1561)
 - Changed inventory items to use the original size and angle for each level's puzzle, key, pickup, and examine items
 - Fixed a box appearing beside the Eye of Horus in the inventory (OG bug)

@@ -1,14 +1,21 @@
 #include <trx/game/phase/phase_game.h>
 
+#include <trx/config.h>
 #include <trx/core/memory.h>
+#include <trx/game/const.h>
+#include <trx/game/fader.h>
 #include <trx/game/game.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/output.h>
+#include <trx/game/output/overlay.h>
 #include <trx/game/sound.h>
+
+#define M_FADE_IN_DURATION (16.0f / (float)LOGIC_FPS)
 
 typedef struct {
     const GF_LEVEL *level;
     GF_SEQUENCE_CONTEXT seq_ctx;
+    FADER fade_in;
     struct {
         uint8_t reverb_type;
     } stashed_state;
@@ -24,6 +31,9 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
         };
     }
     Game_SetIsPlaying(true);
+    if (g_Config.visuals.enable_level_start_fade_effects) {
+        Fader_InitTo(&p->fade_in, 1.0f, 0.0f, M_FADE_IN_DURATION);
+    }
     return (PHASE_CONTROL) {
         .action = PHASE_ACTION_CONTINUE,
     };
@@ -67,7 +77,12 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
 
 static void M_Draw(PHASE *const phase)
 {
+    M_PRIV *const p = phase->priv;
     Game_Draw(true);
+    if (Fader_IsActive(&p->fade_in)) {
+        Output_Overlay_DrawBlackRectangle(
+            Fader_GetCurrentValue(&p->fade_in), true);
+    }
 }
 
 PHASE *Phase_Game_Create(

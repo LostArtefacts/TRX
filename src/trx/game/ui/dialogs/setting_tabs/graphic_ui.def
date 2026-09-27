@@ -18,5 +18,6 @@ X_UI_ROW(ui.stats_fade_effects)
 
 X_UI_ROW(visuals.enable_fade_effects)
 X_UI_ROW(visuals.enable_exit_fade_effects)
+X_UI_ROW(visuals.enable_level_start_fade_effects)
 
 X_UI_ROW(ui.ammo_counter_location)
