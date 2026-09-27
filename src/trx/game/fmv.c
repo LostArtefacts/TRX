@@ -8,6 +8,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/debug.h>
+#include <trx/game/clock.h>
 #include <trx/game/console.h>
 #include <trx/game/fader.h>
 #include <trx/game/game_flow.h>
@@ -20,6 +21,7 @@
 #include <trx/game/output/overlay.h>
 #include <trx/game/output/quad.h>
 #include <trx/game/overlay.h>
+#include <trx/game/phase/executor.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui.h>
@@ -226,6 +228,7 @@ static void M_RedrawFrame(M_RENDER_CONTEXT *const ctx)
     Output_SwitchViewport(VIEWPORT_UI);
     M_DrawUI();
 
+    Output_Overlay_DrawBlackRectangle(PhaseExecutor_GetExitFadeOpacity(), true);
     Output_EndScene();
     Output_FlipScreen();
 }
@@ -253,6 +256,7 @@ static RESULT M_Play(const char *const file_name)
     bool input_paused = false;
     bool paused = false;
     bool resume_pending = false;
+    bool exiting = false;
 
     g_OldInputDB = g_Input;
     Fader_InitTo(&render_ctx.pause_fader, 0.0f, 0.0f, 0.0f);
@@ -274,6 +278,8 @@ static RESULT M_Play(const char *const file_name)
             || GF_GetOverrideCommand().action != GF_NOOP || Shell_IsExiting()) {
             Input_HoldOffSkip();
             Video_Stop(video);
+            exiting = GF_GetOverrideCommand().action == GF_EXIT_GAME
+                || Shell_IsExiting();
             break;
         } else if (
             (g_InputDB.pause || (input_paused && g_InputDB.menu_back))
@@ -317,6 +323,15 @@ static RESULT M_Play(const char *const file_name)
         if (paused) {
             M_RedrawFrame(&render_ctx);
         }
+    }
+
+    // The executor draws the exit fade for a phase, and an FMV draws its own
+    // frames, so it runs the fade here rather than leaving the game to close on
+    // the last frame of the video.
+    while (exiting && PhaseExecutor_BeginExit()) {
+        Clock_WaitTick();
+        Shell_ProcessEvents();
+        M_RedrawFrame(&render_ctx);
     }
 
     M_SetPauseText(false);
