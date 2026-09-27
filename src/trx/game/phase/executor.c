@@ -71,18 +71,6 @@ static GF_COMMAND M_HandleOverride(void)
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
-// Starts the exit and reports whether a fade must finish before the phase ends.
-static bool M_BeginExit(void)
-{
-    if (!m_Exiting) {
-        m_Exiting = true;
-        if (g_Config.visuals.enable_exit_fade_effects) {
-            Fader_InitFromCurrentHold(&m_ExitFader, 1.0f, 0.333f, 0.1f);
-        }
-    }
-    return Fader_IsActive(&m_ExitFader);
-}
-
 static void M_DrawFadeToBlackTransition(const float opacity)
 {
     Output_BeginScene();
@@ -128,13 +116,13 @@ static GF_COMMAND M_RunFadeToBlackTransition(const FADER_ARGS args)
 
         const GF_COMMAND gf_cmd = M_HandleOverride();
         if (gf_cmd.action == GF_EXIT_GAME) {
-            M_BeginExit();
+            PhaseExecutor_BeginExit();
         } else if (gf_cmd.action != GF_NOOP) {
             return gf_cmd;
         }
 
         if (Shell_IsExiting()) {
-            M_BeginExit();
+            PhaseExecutor_BeginExit();
         }
         if (m_Exiting && !Fader_IsActive(&m_ExitFader)) {
             return (GF_COMMAND) { .action = GF_EXIT_GAME };
@@ -158,7 +146,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
 
     const GF_COMMAND gf_cmd = M_HandleOverride();
     if (gf_cmd.action == GF_EXIT_GAME) {
-        M_BeginExit();
+        PhaseExecutor_BeginExit();
     } else if (gf_cmd.action != GF_NOOP) {
         return (PHASE_CONTROL) {
             .action = PHASE_ACTION_END_FAST,
@@ -167,7 +155,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     }
 
     if (Shell_IsExiting()) {
-        M_BeginExit();
+        PhaseExecutor_BeginExit();
     }
     if (m_Exiting) {
         if (!Fader_IsActive(&m_ExitFader)) {
@@ -317,7 +305,8 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
                     skip_fade_out = control.action == PHASE_ACTION_END_FAST;
                     gf_cmd = control.gf_cmd;
                 }
-                if (gf_cmd.action != GF_EXIT_GAME || !M_BeginExit()) {
+                if (gf_cmd.action != GF_EXIT_GAME
+                    || !PhaseExecutor_BeginExit()) {
                     goto finish;
                 }
             } else if (control.action == PHASE_ACTION_NO_WAIT) {
@@ -372,4 +361,20 @@ PHASE *PhaseExecutor_GetOuterPhase(void)
         return nullptr;
     }
     return m_PhaseStack[m_PhaseStackSize - 2];
+}
+
+bool PhaseExecutor_BeginExit(void)
+{
+    if (!m_Exiting) {
+        m_Exiting = true;
+        if (g_Config.visuals.enable_exit_fade_effects) {
+            Fader_InitFromCurrentHold(&m_ExitFader, 1.0f, 0.333f, 0.1f);
+        }
+    }
+    return Fader_IsActive(&m_ExitFader);
+}
+
+float PhaseExecutor_GetExitFadeOpacity(void)
+{
+    return Fader_GetCurrentValue(&m_ExitFader);
 }
