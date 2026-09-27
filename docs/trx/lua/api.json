@@ -4884,6 +4884,24 @@
       }
     },
     {
+      "description": "Fires on every drawn frame, after the rooms and everything standing in\nthem, and before the interface.\n\n`trx.scene` draws during this event and raises anywhere else. It follows the\nframe rate, not the game clock.",
+      "examples": [
+        "trx.events.on_scene_paint(function()\n  trx.scene.sphere(trx.lara.item.pos, 512, \"00ff00\")\nend)"
+      ],
+      "params": [
+        {
+          "description": "Called once per drawn scene.",
+          "name": "callback",
+          "type": "function"
+        }
+      ],
+      "path": "events.on_scene_paint",
+      "returns": {
+        "description": "The attached handler.",
+        "type": "events.Listener"
+      }
+    },
+    {
       "description": "Happens just after Lara picks up an item.",
       "examples": [
         "trx.events.on_pickup(function(item_num)\n  trx.log.info(trx.items[item_num].object_id)\nend)"
@@ -9075,6 +9093,68 @@
       ]
     },
     {
+      "description": "Draws the outline of a world-space box. The corners may come in any order.",
+      "examples": [
+        "trx.events.on_scene_paint(function()\n  trx.scene.box(\n    { x = 51200, y = -2048, z = 30720 },\n    { x = 53248, y = 0, z = 32768 },\n    \"00ff00\")\nend)"
+      ],
+      "params": [
+        {
+          "description": "One corner of the box.",
+          "name": "min",
+          "type": "math.Vec3"
+        },
+        {
+          "description": "The opposite corner of the box.",
+          "name": "max",
+          "type": "math.Vec3"
+        },
+        {
+          "description": "The color of the outline.",
+          "name": "color",
+          "type": "math.Color"
+        },
+        {
+          "default": 255,
+          "description": "How solid the outline is, counted 0 to 255.",
+          "name": "alpha",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "scene.box"
+    },
+    {
+      "description": "Draws the outline of a sphere.",
+      "examples": [
+        "trx.events.on_scene_paint(function()\n  trx.scene.sphere(trx.lara.item.pos, 2048, \"00ff00\", 128)\nend)"
+      ],
+      "params": [
+        {
+          "description": "Middle of the sphere.",
+          "name": "centre",
+          "type": "math.Vec3"
+        },
+        {
+          "description": "How far out it reaches.",
+          "name": "radius",
+          "type": "math.Distance"
+        },
+        {
+          "description": "The color of the outline.",
+          "name": "color",
+          "type": "math.Color"
+        },
+        {
+          "default": 255,
+          "description": "How solid the outline is, counted 0 to 255.",
+          "name": "alpha",
+          "optional": true,
+          "type": "integer"
+        }
+      ],
+      "path": "scene.sphere"
+    },
+    {
       "description": "Creates a signal by reading a value once per tick and notifying listeners only\nwhen that value changes.\n\nUse this for state that has no dedicated engine signal. The read function runs\nevery tick, but listeners run only on changes, so several listeners on one\npolled signal share one read.",
       "params": [
         {
@@ -10855,6 +10935,11 @@
       "description": "The save slots, and starting or reading a saved game.",
       "name": "savegame",
       "order": 27
+    },
+    {
+      "description": "Outlines a script draws into the world the camera is looking at, over the level\ngeometry rather than over the interface.\n\nThe calls are available from `trx.events.on_scene_paint` and nowhere else, and\nraise anywhere else. Nothing is remembered between frames: a shape that is to\nstay on screen is drawn again every time the event fires.\n\nA shape is placed the way an item position and a zone are, so it needs no room\nand belongs to none. The outlines are drawn as wireframe, and one reaching\nfurther from its middle than a level is wide draws at that limit instead.",
+      "name": "scene",
+      "order": 43
     },
     {
       "description": "A value that can notify listeners when it changes.\n\nA signal lets a script react to changes without polling every frame. You can\nread the current value, listen for changes, and combine signals with `&`, `|`\nand `~`.\n\nSetting a signal to its current value does nothing: listeners do not run, and\nsignals derived from it do not update. This keeps combined signals cheap to\nlisten to. A combined signal fires only when its own result changes, not every\ntime one of its inputs changes.\n\nA derived signal is read like any other signal, so one expression can provide\nboth the current result and change notifications.\n\nSignals should carry numbers, strings or booleans, not handles. Handles are\ncreated fresh on each read, so two reads of the same handle do not compare\nequal and would make the signal report a change every frame. When a signal\nrepresents an engine-owned object, it carries the object's numeric id; listeners\ncan then read the handle when they need it.\n\nSignals stay idle until something uses them: a polled signal starts reading only\nwhen it is created.",

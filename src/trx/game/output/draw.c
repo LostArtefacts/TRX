@@ -22,6 +22,11 @@
 #include <trx/game/shell.h>
 #include <trx/version.h>
 
+// The largest half-extent a matrix scale holds, the shift into it included.
+// A shape reaching further than this draws at this size rather than wrapping
+// round into a small one or an inside-out one.
+#define M_MAX_SHAPE_EXTENT (INT32_MAX >> W2V_SHIFT)
+
 static void M_DrawScreenQuad(
     const float x0, const float y0, const float x1, const float y1,
     const float z, const RGBA_8888 tl, const RGBA_8888 tr, const RGBA_8888 bl,
@@ -38,6 +43,19 @@ static void M_DrawScreenQuad(
         .br = br,
         .z = Output_GetNearZ_UI() + z,
     });
+}
+
+// The middle and the half-extent of one axis of a shape, computed wide because
+// a span reaching both ends of the coordinate range does not fit 32 bits.
+static int32_t M_ShapeMid(const int32_t lo, const int32_t hi)
+{
+    return (int32_t)(((int64_t)lo + hi) / 2);
+}
+
+static int32_t M_ShapeExtent(const int32_t lo, const int32_t hi)
+{
+    const int64_t extent = ((int64_t)hi - lo) / 2;
+    return (int32_t)MIN(extent, M_MAX_SHAPE_EXTENT);
 }
 
 void Output_DrawRoom(const ROOM *const room, const bool is_outside)
@@ -164,9 +182,11 @@ void Output_DrawSphere(const XYZ_32 center, const int32_t radius)
 void Output_DrawSphereEx(
     const XYZ_32 center, const int32_t radius, const RGBA_8888 color)
 {
+    int32_t extent = radius;
+    CLAMPG(extent, M_MAX_SHAPE_EXTENT);
     Matrix_Push();
     Matrix_TranslateRel32(center);
-    Matrix_Scale(radius << W2V_SHIFT);
+    Matrix_Scale(extent << W2V_SHIFT);
     OutputSource_Misc_StageSphere(color);
     Matrix_Pop();
 }
@@ -178,23 +198,21 @@ void Output_DrawCuboid(const BOUNDS_32 *const bounds)
 
 void Output_DrawCuboidEx(const BOUNDS_32 *const bounds, const RGBA_8888 color)
 {
-    const int32_t x0 = bounds->min.x;
-    const int32_t x1 = bounds->max.x;
-    const int32_t y0 = bounds->min.y;
-    const int32_t y1 = bounds->max.y;
-    const int32_t z0 = bounds->min.z;
-    const int32_t z1 = bounds->max.z;
-    const int32_t x_mid = (x0 + x1) / 2;
-    const int32_t y_mid = (y0 + y1) / 2;
-    const int32_t z_mid = (z0 + z1) / 2;
-    const int32_t x_size = (x1 - x0) / 2;
-    const int32_t y_size = (y1 - y0) / 2;
-    const int32_t z_size = (z1 - z0) / 2;
+    const XYZ_32 mid = {
+        .x = M_ShapeMid(bounds->min.x, bounds->max.x),
+        .y = M_ShapeMid(bounds->min.y, bounds->max.y),
+        .z = M_ShapeMid(bounds->min.z, bounds->max.z),
+    };
+    const XYZ_32 size = {
+        .x = M_ShapeExtent(bounds->min.x, bounds->max.x),
+        .y = M_ShapeExtent(bounds->min.y, bounds->max.y),
+        .z = M_ShapeExtent(bounds->min.z, bounds->max.z),
+    };
     Matrix_Push();
-    Matrix_TranslateRel32((XYZ_32) { x_mid, y_mid, z_mid });
-    Matrix_ScaleX(x_size << W2V_SHIFT);
-    Matrix_ScaleY(y_size << W2V_SHIFT);
-    Matrix_ScaleZ(z_size << W2V_SHIFT);
+    Matrix_TranslateRel32(mid);
+    Matrix_ScaleX(size.x << W2V_SHIFT);
+    Matrix_ScaleY(size.y << W2V_SHIFT);
+    Matrix_ScaleZ(size.z << W2V_SHIFT);
     OutputSource_Misc_StageCuboid(color);
     Matrix_Pop();
 }
