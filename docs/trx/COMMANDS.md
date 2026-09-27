@@ -65,7 +65,8 @@ whichever key you have bound, and not include it as part of the command itself.
   `/give guns` or `/guns`  
   `/give moreguns` or `/moreguns`  
   `/give keys` or `/keys`  
-  Gives Lara an item. Try `/give guns` to arm her to the teeth, and `/give keys` to get her all important puzzle items. Ain't nobody got time for searching! `/give all` hands over one of everything, ammunition and medipacks included.
+  `/give -q {item_name}`  
+  Gives Lara an item. Use `/give guns` for weapons or `/give keys` for puzzle items. `/give all` gives one of each item, including ammunition and medipacks. The given item appears in the corner unless you use `/give all`. Add `-q` to hide the pickup.
 
 - `/secret`  
   `/secret {num}`  
@@ -235,6 +236,10 @@ whichever key you have bound, and not include it as part of the command itself.
 - `/endlevel`  
   `/nextlevel`  
   Too cool to finish puzzles? Smash-cut to the ending! Lara doesn't have time for this nonsense.
+
+- `/restartlevel`  
+  `/restart`  
+  Botched the jump? Rewinds the current level back to its start for another go.
 
 - `/level {num}`  
   `/level {name}`  

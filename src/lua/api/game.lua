@@ -541,6 +541,21 @@ api.define("game.end_level", {
   impl = raw.end_level,
 })
 
+api.define("game.restart_level", {
+  description = [[
+Restarts the current level from its start, as the passport's restart does.
+Returns `false` and does nothing where the passport offers no restart: outside
+a level, in a cutscene or demo, or in a save that does not record how the level
+started.]],
+  returns = {
+    {
+      type = "boolean",
+      description = "Whether the level restarts.",
+    },
+  },
+  impl = raw.restart_level,
+})
+
 api.define("game.exit_to_title", {
   description = "Leaves the current game and returns to the title screen.",
   impl = raw.exit_to_title,

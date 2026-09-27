@@ -221,6 +221,15 @@ Module for the game flow: which levels there are, and which one is being played.
 - <a id="game.end_level" name="game.end_level"></a>[lua]`trx.game.end_level()`  
   Ends the current level, as though Lara had reached its exit.
 
+- <a id="game.restart_level" name="game.restart_level"></a>[lua]`trx.game.restart_level()`  
+  Restarts the current level from its start, as the passport's restart does.
+  Returns `false` and does nothing where the passport offers no restart: outside
+  a level, in a cutscene or demo, or in a save that does not record how the level
+  started.
+
+  Returns:
+  - boolean. Whether the level restarts.
+
 - <a id="game.exit_to_title" name="game.exit_to_title"></a>[lua]`trx.game.exit_to_title()`  
   Leaves the current game and returns to the title screen.
 

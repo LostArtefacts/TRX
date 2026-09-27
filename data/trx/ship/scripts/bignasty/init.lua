@@ -180,9 +180,19 @@ end
 local function burst(item, own, from)
   -- A ball that reaches a wall stops with its centre in the wall, and the
   -- blast needs a point a room holds, so it is nudged back into the room.
-  local centre = inside(item.pos)
-    or inside(from)
-    or trx.rooms.find_valid_pos(item.pos, item.room_num)
+  -- find_valid_pos moves a point sideways only, so a point below the floor
+  -- is also lifted onto the floor.
+  local centre = inside(item.pos) or inside(from)
+  if centre == nil then
+    local valid, room_num = trx.rooms.find_valid_pos(item.pos, item.room_num)
+    if valid ~= nil then
+      local ground = trx.rooms.floor_height(valid, room_num)
+      if ground ~= nil then
+        valid.y = math.min(valid.y, ground)
+      end
+      centre = inside(valid)
+    end
+  end
   if centre == nil then
     drop(item)
     return

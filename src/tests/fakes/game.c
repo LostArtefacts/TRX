@@ -31,6 +31,7 @@ static bool m_InCutscene;
 
 // The bonus start is a passport choice, so a test says whether this run is one.
 static bool m_IsNGPlus;
+static bool m_CanRestart;
 static bool m_IsPlaying = true;
 
 static bool m_InPhotoMode;
@@ -99,6 +100,7 @@ static void M_Reset(void)
 
     m_CurrentLevel = nullptr;
     m_IsNGPlus = false;
+    m_CanRestart = true;
     m_IsPlaying = true;
     m_HasGym = true;
     m_InCutscene = false;
@@ -148,6 +150,24 @@ static int M_L_SetNGPlus(lua_State *const L)
 {
     FakeGame_SetNGPlus(lua_toboolean(L, 1));
     return 0;
+}
+
+// fake.set_restart_available(bool) - whether the bound save can restart its
+// level.
+static int M_L_SetRestartAvailable(lua_State *const L)
+{
+    m_CanRestart = lua_toboolean(L, 1);
+    return 0;
+}
+
+SAVEGAME_SLOT_REF SG_Manager_GetBoundSlot(void)
+{
+    return (SAVEGAME_SLOT_REF) {};
+}
+
+bool Savegame_RestartAvailable(const SAVEGAME_SLOT_REF slot)
+{
+    return m_CanRestart;
 }
 
 void Screenshot_Make(const SCREENSHOT_FORMAT format)
@@ -325,6 +345,9 @@ void GF_OverrideCommand(const GF_COMMAND command)
     case GF_SELECT_GAME:
         FAKE_RECORD("play_gym", FV(num));
         break;
+    case GF_RESTART_GAME:
+        FAKE_RECORD("restart_level", FV(num));
+        break;
     default:
         break;
     }
@@ -429,6 +452,8 @@ void FakeGame_PushLua(lua_State *const L)
     lua_setfield(L, -2, "set_gym_present");
     lua_pushcfunction(L, M_L_SetPhotoMode);
     lua_setfield(L, -2, "set_photo_mode");
+    lua_pushcfunction(L, M_L_SetRestartAvailable);
+    lua_setfield(L, -2, "set_restart_available");
     lua_pushinteger(L, FAKE_LEVEL_COUNT);
     lua_setfield(L, -2, "LEVEL_COUNT");
     // The levels the game numbers: the gym is in the table but is not one.

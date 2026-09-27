@@ -543,6 +543,7 @@
                 "floating_pickup_meshes.bin",
                 "floating_textures.bin",
                 "floating_crystals.bin",
+                "floating_item_sprites.bin",
             ],
         },
 
@@ -568,6 +569,7 @@
                 "lara_guns.bin",
                 "portcullis_sfx.bin",
                 "lair_crystals.bin",
+                "lair_item_sprites.bin",
             ],
         },
 

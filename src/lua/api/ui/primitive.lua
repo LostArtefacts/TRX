@@ -298,8 +298,8 @@ api.define("ui.primitive.sprite_count", {
   description = [[
 Reports how many sprites an object has.
 
-An object the level did not load has none, so this answers whether there is
-anything to draw before `trx.ui.primitive.sprite` is asked to draw it.]],
+An object the level did not load has none, and a model has none as well. Use this
+function to check whether `trx.ui.primitive.sprite` has anything to draw.]],
   params = {
     {
       name = "object",

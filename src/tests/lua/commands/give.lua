@@ -215,6 +215,39 @@ test("the keyword commands reach the same cheats", function()
   assert(fake.run("moreguns", "") == trx.console.Result.OK)
 end)
 
+test("what a name gives is shown on the HUD", function()
+  assert(give("vase") == trx.console.Result.OK)
+  local shown = fake.calls().show_pickup
+  assert(shown.count == 1)
+  assert(shown.obj_id == fake.VASE)
+end)
+
+test("what keys gives is shown on the HUD", function()
+  assert(give("keys") == trx.console.Result.OK)
+  assert(fake.calls().show_pickup.count > 0)
+end)
+
+-- The item cheat key runs `give all`, so it does not fill the HUD.
+test("all shows nothing on the HUD", function()
+  assert(give("all") == trx.console.Result.OK)
+  assert(fake.calls().show_pickup.count == 0)
+end)
+
+test("quiet gives without showing anything", function()
+  for _, args in ipairs({ "-q vase", "--quiet vase", "-q 2 vase", "-q keys" }) do
+    assert(give(args) == trx.console.Result.OK, args .. " should succeed")
+  end
+  assert(count(fake.VASE) == 4)
+  assert(count(fake.STORY_KEY) == 1)
+  assert(fake.calls().show_pickup.count == 0)
+end)
+
+test("the keyword commands take quiet too", function()
+  assert(fake.run("keys", "-q") == trx.console.Result.OK)
+  assert(count(fake.STORY_KEY) == 1)
+  assert(fake.calls().show_pickup.count == 0)
+end)
+
 test("completion offers the keywords and the names together", function()
   local out = fake.complete_args("give", "")
   local seen = {}

@@ -6971,6 +6971,16 @@
       "path": "game.end_level"
     },
     {
+      "description": "Restarts the current level from its start, as the passport's restart does.\nReturns `false` and does nothing where the passport offers no restart: outside\na level, in a cutscene or demo, or in a save that does not record how the level\nstarted.",
+      "path": "game.restart_level",
+      "returns": [
+        {
+          "description": "Whether the level restarts.",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
       "description": "Leaves the current game and returns to the title screen.",
       "path": "game.exit_to_title"
     },
@@ -8414,6 +8424,20 @@
       "path": "objects.swap_sprite"
     },
     {
+      "description": "Shows an object in the bottom-right corner of the screen, as the game shows a\npickup Lara collects. It fires `trx.events.on_show_pickup`. It also plays secret\nmusic for a secret pickup.\n\nIt does not add the object to Lara's inventory. Use `trx.inventory.Inventory:give`\nfor that.",
+      "examples": [
+        "trx.overlay.show_pickup(trx.catalog.objects.KEY_ITEM_1)"
+      ],
+      "params": [
+        {
+          "description": "The object to show.",
+          "name": "object",
+          "type": "catalog.objects"
+        }
+      ],
+      "path": "overlay.show_pickup"
+    },
+    {
       "description": "Creates a path from text, which the engine opens as it stands. Every `%token%` in the text is expanded first, so `\"%config_dir%/mymod\"` says the same thing as `trx.path.config_dir / \"mymod\"`.",
       "examples": [
         "local kept = trx.path.new(\"%config_dir%/mymod/state.json\")"
@@ -9599,7 +9623,7 @@
       }
     },
     {
-      "description": "Reports how many sprites an object has.\n\nAn object the level did not load has none, so this answers whether there is\nanything to draw before `trx.ui.primitive.sprite` is asked to draw it.",
+      "description": "Reports how many sprites an object has.\n\nAn object the level did not load has none, and a model has none as well. Use this\nfunction to check whether `trx.ui.primitive.sprite` has anything to draw.",
       "params": [
         {
           "description": "The sprite object to count.",

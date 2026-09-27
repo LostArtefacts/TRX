@@ -986,6 +986,13 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'lua/commands/restart_level',
+  'bundles': [b_lua_surface, b_console, b_lua_events],
+  'src': ['fakes/camera.c', 'fakes/game.c'],
+  'engine': ['game/lua/capi/game.c'],
+}
+
+unit_tests += {
   'name': 'lua/commands/music',
   'bundles': [b_lua_surface, b_console],
   'src': ['fakes/music.c', 'fakes/strings.c'],
@@ -1022,6 +1029,7 @@ unit_tests += {
     'fakes/game.c',
     'fakes/items.c',
     'fakes/lara.c',
+    'fakes/overlay.c',
     'fakes/sound.c',
   ],
   'engine': [
@@ -1032,6 +1040,7 @@ unit_tests += {
     'game/lua/capi/items.c',
     'game/lua/capi/lara.c',
     'game/lua/capi/objects.c',
+    'game/lua/capi/overlay.c',
     'game/lua/capi/sound.c',
     'game/lua/capi/weapons.c',
     'game/lua/capi/weapons_spec.c',

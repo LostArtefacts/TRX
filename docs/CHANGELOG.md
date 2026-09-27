@@ -15,6 +15,10 @@
 - Added an option to change the loading bar appearance (Graphics → Bars → Loading bar appearance) (TRX1591)
 - Changed the loading screens in TR1–3 to stay on screen for two seconds in every game (TRX1591)
 - Changed the look button to skip loading screens, pictures, FMVs, and stats screens, like it does for cutscenes (TRX1541)
+- Fixed items without a sprite, such as the scion, not showing in the pickups overlay when 3D pickups are off
+
+**Developer console**
+- Changed the `/give` console command to show the given items in the corner of the screen, except for `/give all`. Use `-q` to hide them.
 
 **Gameplay**
 - Added the ability to combine the two halves of an item in the inventory, such as the eye pieces in Tomb of Seth (TRX482)
@@ -22,6 +26,7 @@
 
 **Weapons and ammunition**
 - Fixed the BFG9000 blast passing through friendly creatures
+- Fixed the BFG9000 filling the log with errors when shot at a creature on the ground (#6703 / TRX1595)
 - Fixed level completion after explosive weapon kills (#6685 / TRX1584)
 
 **TR2**
@@ -57,7 +62,11 @@
 - Fixed missing collision on Moving Floors in custom levels when rotated to face East (OG bug) (TRX1559)
 - Fixed pickups looking too dark, such as the eye pieces in Tomb of Seth (TRX637)
 
+**Developer console**
+- Added the `/restartlevel` console command, also available as `/restart`, which restarts the current level (#6712 / TRX1599)
+
 **Lua**
+- Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)
 - Added `trx.math.degrees()`, which converts an angle from degrees to the engine's units
 - Added `scale`, `y_offset`, `base_rot_x`, `base_rot_y`, `base_rot_z`, and `draws_at_pivot` to inventory ring entries. Scripts can use these fields to set an object's size and pose.
 - Added `rot_x` and `rot_z` to `trx.ui.MeshSlot` for tilting and rolling models on the canvas
@@ -65,6 +74,7 @@
 - Added `trx.fx.spark.context`, so a script can determine how a spark was spawned before deciding to alter it (TRX1590)
 - Added `trx.items.Item.joint_count` and `trx.items.Item:joint_pos()` (TRX89)
 - Added `trx.game.cutscene_frame`, which reports the frame a cutscene level is playing (TRX89)
+- Added `trx.overlay.show_pickup()`, which shows an object in the corner of the screen as the game does for a pickup
 - Added the ability for a script to hold a player action inactive
     - `trx.input.suppress`
     - `trx.input.Suppression:release`
@@ -89,6 +99,7 @@
 - Added console events, history access, and script-controlled console visibility
 - Added a UI layer above the game interface
 - Changed `trx.items.Item:die` and `trx.items.Item:shatter` to take an options table, and to let a script say what the flying body parts draw
+- Fixed `trx.ui.primitive.sprite_count()` counting the meshes of a model as sprites
 
 
 ## [1.11.1](https://github.com/LostArtefacts/TRX/compare/trx-1.11...trx-1.11.1) - 2026-09-22

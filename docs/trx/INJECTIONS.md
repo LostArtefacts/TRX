@@ -145,6 +145,7 @@ generally be removed from your custom gameflow unless you know what you're doing
 | `boat_bits.bin`                       | TR2      | Model for `boat_bits` (221) used to show the boat exploding when it crosses mines.                                                                                                                                                                                                                                                              |
 | `explosion.bin`                       | TR1      | Explosion sprites for certain console commands.                                                                                                                                                                                                                                                                                                   |
 | `misc_sprites.bin`                    | TR1, TR2 | Various special-effect sprites such as snowflakes, shadow sprites, and the pink blood sequence used by `blood_2`.                                                                                                                                                                                                                              |
+| `item_sprites.bin`                    | TR1      | Provides pickup sprites for the pistol ammunition and the Scion when 3D pickups are disabled. |
 
 ### Level-specific files 
 
@@ -166,4 +167,5 @@ generally be removed from your custom gameflow unless you know what you're doing
 | `breakable_tile_sfx.bin` | TR2      | Adds missing breakable tiles (collapsing floor) sounds that are otherwise silent in the OG. |
 | `loose_boards_sfx.bin`   | TR2      | Adds missing breakable tiles (collapsing floor) sounds that are otherwise silent in the OG. |
 | `dagger_sprite.bin`      | TR2      | Adds a UI sprite for the Dagger of Xian when 3D pickups are disabled.                       |
+| `*_item_sprites.bin`     | TR2      | Provides weapon sprites for Floating Islands and The Dragon's Lair when 3D pickups are disabled. |
 | `lara_feet_sfx.bin`      | TR1      | Resets Lara's footstep sound effects in the gym level to allow for contextual outfit SFX.   |
