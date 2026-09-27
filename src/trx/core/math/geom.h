@@ -65,6 +65,8 @@ bool XYZ_32_ProjectPointOntoAxis(
 
 bool XYZ_16_AreEquivalent(XYZ_16 rot1, XYZ_16 rot2);
 
+BOUNDS_32 BOUNDS_32_From16(const BOUNDS_16 *src);
+
 float XYZ_F_DotProduct(XYZ_F a, XYZ_F b);
 float XYZ_F_Length2(XYZ_F pos);
 float XYZ_F_Length(XYZ_F pos);

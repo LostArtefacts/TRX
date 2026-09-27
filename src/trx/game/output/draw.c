@@ -1,6 +1,7 @@
 #include <trx/game/output/draw.h>
 
 #include <trx/config.h>
+#include <trx/core/math/geom.h>
 #include <trx/core/utils.h>
 #include <trx/game/creature/const.h>
 #include <trx/game/lara/common.h>
@@ -63,7 +64,7 @@ void Output_DrawObjectMesh(const OBJECT_MESH *const mesh, const CLIP clip)
 {
     OutputSource_Objects_StageObjectMesh(mesh);
     if (g_Config.debug.enable_debug_spheres) {
-        Output_DrawSphere(mesh->center, mesh->radius);
+        Output_DrawSphere(XYZ_32_From16(mesh->center), mesh->radius);
     }
 }
 
@@ -151,7 +152,7 @@ void Output_DrawPhotoModeFrame(const int32_t thickness)
     OutputSource_UI_StagePhotoModeFrame(rect, color, thickness);
 }
 
-void Output_DrawSphere(const XYZ_16 center, const int32_t radius)
+void Output_DrawSphere(const XYZ_32 center, const int32_t radius)
 {
     const bool wireframe_state = g_Config.rendering.enable_wireframe;
     const RGBA_8888 color_black = { 0, 0, 0, 128 };
@@ -161,21 +162,21 @@ void Output_DrawSphere(const XYZ_16 center, const int32_t radius)
 }
 
 void Output_DrawSphereEx(
-    const XYZ_16 center, const int32_t radius, const RGBA_8888 color)
+    const XYZ_32 center, const int32_t radius, const RGBA_8888 color)
 {
     Matrix_Push();
-    Matrix_TranslateRel16(center);
+    Matrix_TranslateRel32(center);
     Matrix_Scale(radius << W2V_SHIFT);
     OutputSource_Misc_StageSphere(color);
     Matrix_Pop();
 }
 
-void Output_DrawCuboid(const BOUNDS_16 *const bounds)
+void Output_DrawCuboid(const BOUNDS_32 *const bounds)
 {
     Output_DrawCuboidEx(bounds, (RGBA_8888) { 255, 0, 0, 255 });
 }
 
-void Output_DrawCuboidEx(const BOUNDS_16 *const bounds, const RGBA_8888 color)
+void Output_DrawCuboidEx(const BOUNDS_32 *const bounds, const RGBA_8888 color)
 {
     const int32_t x0 = bounds->min.x;
     const int32_t x1 = bounds->max.x;

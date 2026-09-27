@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/math/geom.h>
 #include <trx/core/subsystem.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
@@ -451,7 +452,8 @@ static void M_DrawSingleRoom(const ROOM *const room)
             Object_DrawMesh(obj->mesh_idx, clip, false);
             Output_Water_SetupFromRoom(room);
             if (g_Config.debug.enable_debug_bounding_boxes) {
-                Output_DrawCuboid(&obj->draw_bounds);
+                const BOUNDS_32 bounds = BOUNDS_32_From16(&obj->draw_bounds);
+                Output_DrawCuboid(&bounds);
             }
         }
         Matrix_Pop();

@@ -596,7 +596,8 @@ static bool M_Draw(const ITEM *const item)
         Matrix_TranslateRel(WALL_L, 0, 0);
         Matrix_RotY(DEG_90);
         if (i > 0 || p->is_moving) {
-            Output_DrawCuboidEx(&p->wall_bounds, M_WALL_COLOR);
+            const BOUNDS_32 bounds = BOUNDS_32_From16(&p->wall_bounds);
+            Output_DrawCuboidEx(&bounds, M_WALL_COLOR);
         }
     }
 
