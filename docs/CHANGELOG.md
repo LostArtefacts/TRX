@@ -14,6 +14,7 @@
 - Added a loading bar to the TR1–3 loading screens (Graphics → Bars → Loading bar) (TRX1591)
 - Added an option to change the loading bar appearance (Graphics → Bars → Loading bar appearance) (TRX1591)
 - Changed the loading screens in TR1–3 to stay on screen for two seconds in every game (TRX1591)
+- Changed the look button to skip loading screens, pictures, FMVs, and stats screens, like it does for cutscenes (TRX1541)
 - Fixed items without a sprite, such as the scion, not showing in the pickups overlay when 3D pickups are off
 
 **Developer console**

@@ -114,7 +114,8 @@ GF_COMMAND Game_Control(const bool demo_mode)
         return GF_PauseGame();
     }
     if (demo_mode) {
-        if (g_InputDB.menu_confirm || g_InputDB.menu_back) {
+        if (g_InputDB.menu_skip) {
+            Input_HoldOffSkip();
             return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
         }
         if (!Demo_UpdateInput()) {

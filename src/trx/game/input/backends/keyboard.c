@@ -647,9 +647,6 @@ static void M_Init(void)
 static bool M_CustomUpdate(INPUT_STATE *const result, const INPUT_LAYOUT layout)
 {
     // we only do this for keyboard input
-    // Skip reads confirm before the line below folds action into it, so that
-    // skip names the keys it answers to rather than inheriting them.
-    result->menu_skip |= result->action || result->menu_confirm;
     result->menu_confirm |= result->action;
     result->menu_show_info |= result->look;
     result->menu_fine_adjust |= result->slow;

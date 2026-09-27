@@ -101,6 +101,13 @@ void Input_ClearSuppressedRoles(void)
 
 void Input_HoldOffSkip(void)
 {
+    Input_HoldOffGameSkip();
+    Input_HoldOffRole(INPUT_ROLE_LOOK);
+}
+
+void Input_HoldOffGameSkip(void)
+{
+    Input_HoldOffRole(INPUT_ROLE_ACTION);
     Input_HoldOffRole(INPUT_ROLE_INVENTORY);
     Input_HoldOffRole(INPUT_ROLE_MENU_BACK);
     Input_HoldOffRole(INPUT_ROLE_MENU_CONFIRM);
@@ -131,16 +138,18 @@ void Input_Update(void)
             g_Config.input.layout[backend], &g_Input);
     }
 
-    // What the devices say, before the game has its way with it.
-    const INPUT_STATE raw = g_Input;
-
-    g_Input.camera_reset |= g_Input.look;
     g_Input.menu_up |= g_Input.forward;
     g_Input.menu_down |= g_Input.back;
     g_Input.menu_left |= g_Input.left;
     g_Input.menu_right |= g_Input.right;
     g_Input.menu_back |= g_Input.option;
-    g_Input.menu_skip |= g_Input.menu_back;
+    g_Input.menu_skip |= g_Input.menu_back || g_Input.menu_confirm
+        || g_Input.action || g_Input.look;
+
+    // What the devices say, before the game has its way with it.
+    const INPUT_STATE raw = g_Input;
+
+    g_Input.camera_reset |= g_Input.look;
     // A cutscene holds the option ring shut from the moment it is requested,
     // which is before it takes the camera.
     g_Input.option &= g_Camera.type != CAM_CINEMATIC && !CutSeq_IsActive();

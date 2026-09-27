@@ -411,8 +411,6 @@ static bool M_IsHeld(const INPUT_LAYOUT layout, const INPUT_ROLE role)
 
 static bool M_CustomUpdate(INPUT_STATE *const result, const INPUT_LAYOUT layout)
 {
-    result->menu_skip |=
-        result->menu_confirm || M_IsHeld(layout, INPUT_ROLE_ACTION);
     result->menu_confirm |= M_IsHeld(layout, INPUT_ROLE_ACTION);
     result->menu_back |= M_IsHeld(layout, INPUT_ROLE_JUMP);
     return true;
