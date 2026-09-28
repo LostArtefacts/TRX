@@ -1,6 +1,7 @@
 #include <trx/core/file.h>
 #include <trx/debug.h>
 #include <trx/game/camera/cinematic.h>
+#include <trx/game/demo.h>
 #include <trx/game/inject.h>
 
 static void M_ReadVertex(XYZ_16 *const vertex, TRX_FILE *const file)
@@ -31,6 +32,12 @@ static void M_HandleFlybyCameras(
     level_info->cameras.flyby_count += data_count;
 }
 
+static void M_HandleDemoData(
+    const INJECTION *const injection, const int32_t data_count)
+{
+    Demo_LoadData(injection->fp, data_count * sizeof(uint32_t));
+}
+
 static void M_HandleCameraData(
     const INJECTION_CONTEXT *const ctx, const INJECTION_CHUNK chunk)
 {
@@ -50,6 +57,9 @@ static void M_HandleCameraData(
             break;
         case IDT_FLYBY_CAMERAS:
             M_HandleFlybyCameras(chunk.injection, data_count);
+            break;
+        case IDT_DEMO_DATA:
+            M_HandleDemoData(chunk.injection, data_count);
             break;
         default:
             LOG_WARNING("Unknown data type: %d", data_type);
