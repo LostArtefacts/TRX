@@ -2,10 +2,13 @@
 #include <trx/core/colors.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
+#include <trx/game/demo.h>
 #include <trx/game/game.h>
 #include <trx/game/gun.h>
 #include <trx/game/gun/registry.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/common.h>
+#include <trx/game/lara/misc.h>
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/sound.h>
@@ -316,6 +319,14 @@ bool Gun_IsDualPistolType(const LARA_GUN_TYPE gun_type)
 bool Gun_IsSinglePistolType(const LARA_GUN_TYPE gun_type)
 {
     return M_IsGunType(gun_type, WEAPON_TYPE_SINGLE_PISTOL);
+}
+
+void Gun_GetHandPos(const LARA_MESH hand, XYZ_32 *const pos)
+{
+    if (Demo_UsesPS1Rules() && Lara_GetHandPosFromAnim(hand, pos)) {
+        return;
+    }
+    Lara_GetMeshPos(hand, pos);
 }
 
 void Gun_SetLaraHandLMesh(const LARA_GUN_TYPE weapon_type)

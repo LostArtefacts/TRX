@@ -4,6 +4,7 @@
 #include <trx/game/effects.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/lara.h>
+#include <trx/game/lara/skin/common.h>
 #include <trx/game/level/settings.h>
 #include <trx/game/matrix.h>
 #include <trx/game/objects/effects/flame.h>
@@ -12,6 +13,127 @@
 #include <trx/game/rooms/geometry.h>
 #include <trx/game/sound.h>
 #include <trx/version.h>
+
+typedef struct {
+    int32_t rot[3][3];
+    int32_t pos[3];
+    const XYZ_16 *frame_rots;
+} M_PS1_MATRIX;
+
+// Turns columns a and b of a 4.12 fixed-point matrix by an angle. Each
+// product is rounded down before it is stored, as the PS1 geometry
+// coprocessor does.
+static void M_PS1_Rotate(
+    M_PS1_MATRIX *const m, const int32_t a, const int32_t b,
+    const int16_t angle)
+{
+    const int32_t sin = Math_Sin(angle) >> 2;
+    const int32_t cos = Math_Cos(angle) >> 2;
+    for (int32_t row = 0; row < 3; row++) {
+        const int32_t col_a = m->rot[row][a];
+        const int32_t col_b = m->rot[row][b];
+        m->rot[row][a] = (col_a * cos + col_b * sin) >> 12;
+        m->rot[row][b] = (col_b * cos - col_a * sin) >> 12;
+    }
+}
+
+static void M_PS1_RotYXZ(M_PS1_MATRIX *const m, const XYZ_16 rot)
+{
+    M_PS1_Rotate(m, 2, 0, rot.y);
+    M_PS1_Rotate(m, 1, 2, rot.x);
+    M_PS1_Rotate(m, 0, 1, rot.z);
+}
+
+static void M_PS1_TranslateRel(M_PS1_MATRIX *const m, const XYZ_32 offset)
+{
+    for (int32_t row = 0; row < 3; row++) {
+        const int64_t sum = (int64_t)m->rot[row][0] * offset.x
+            + (int64_t)m->rot[row][1] * offset.y
+            + (int64_t)m->rot[row][2] * offset.z;
+        m->pos[row] += (int32_t)(sum >> 12);
+    }
+}
+
+// Blends two positions the way the PS1 release blends Lara's arms between
+// two animation frames: by halves and quarters only.
+static int32_t M_PS1_Blend(
+    const int32_t pos_1, const int32_t pos_2, const int32_t frac,
+    const int32_t rate)
+{
+    if (rate == 2 || (frac == 2 && rate == 4)) {
+        return (pos_1 + pos_2) >> 1;
+    } else if (frac == 1) {
+        return pos_1 + ((pos_2 - pos_1) >> 2);
+    }
+    return pos_2 - ((pos_2 - pos_1) >> 2);
+}
+
+// Picks the two key frames around the current frame the way the PS1 release
+// does, without the smoothing between game ticks.
+static int32_t M_PS1_GetFrames(
+    const ITEM *const item, ANIM_FRAME *frames[2], int32_t *const rate)
+{
+    const ANIM *const anim = Item_GetAnim(item);
+    *rate = anim->interpolation;
+    const int32_t first = (item->frame_num - anim->frame_base) / *rate;
+    const int32_t frac = (item->frame_num - anim->frame_base) % *rate;
+    frames[0] = &anim->frame_ptr[first];
+    frames[1] = &anim->frame_ptr[first + 1];
+    if (frac == 0) {
+        return 0;
+    }
+
+    // The original compares the end frame against a frame counted from the
+    // start of the animation, so this trim rarely applies.
+    const int32_t second = first * *rate + *rate;
+    if (anim->frame_end < second) {
+        *rate = anim->frame_end - first * *rate;
+    }
+    return frac;
+}
+
+// Builds Lara's torso for the two key frames around her current frame, and
+// the heading alone that her arms start from.
+static bool M_PS1_GetTorso(
+    M_PS1_MATRIX *const base, M_PS1_MATRIX body[2], int32_t *const frac,
+    int32_t *const rate)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    const ITEM *const lara_item = Lara_GetItem();
+
+    ANIM_FRAME *frames[2] = { nullptr, nullptr };
+    *rate = 1;
+    *frac = 0;
+    if (lara->hit_direction < 0) {
+        *frac = M_PS1_GetFrames(lara_item, frames, rate);
+    } else {
+        frames[0] = (ANIM_FRAME *)Lara_GetHitFrame(lara_item);
+    }
+    if (frames[0] == nullptr) {
+        return false;
+    }
+    if (*frac == 0) {
+        frames[1] = frames[0];
+    }
+
+    const ANIM_BONE *const bone = Lara_Skin_GetBoneBase();
+    *base = (M_PS1_MATRIX) {
+        .rot = { { 4096, 0, 0 }, { 0, 4096, 0 }, { 0, 0, 4096 } },
+    };
+    M_PS1_RotYXZ(base, lara_item->rot);
+
+    for (int32_t i = 0; i < 2; i++) {
+        const XYZ_16 *const rots = frames[i]->mesh_rots;
+        body[i] = *base;
+        body[i].frame_rots = rots;
+        M_PS1_TranslateRel(&body[i], XYZ_32_From16(frames[i]->offset));
+        M_PS1_RotYXZ(&body[i], rots[LM_HIPS]);
+        M_PS1_TranslateRel(&body[i], bone[LM_TORSO - 1].pos);
+        M_PS1_RotYXZ(&body[i], rots[LM_TORSO]);
+        M_PS1_RotYXZ(&body[i], lara->torso_rot);
+    }
+    return true;
+}
 
 static void M_GetJointAbsPosition_I(
     XYZ_32 *const vec, const ANIM_FRAME *const frame1,
@@ -159,6 +281,64 @@ void Lara_GetJointAbsPosition(XYZ_32 *const vec, const LARA_MESH joint)
     vec->y = lara_item->pos.y + (g_MatrixPtr->_13 >> W2V_SHIFT);
     vec->z = lara_item->pos.z + (g_MatrixPtr->_23 >> W2V_SHIFT);
     Matrix_Pop();
+}
+
+bool Lara_GetHandPosFromAnim(const LARA_MESH hand, XYZ_32 *const vec)
+{
+    const LARA_INFO *const lara = Lara_GetLaraInfo();
+    const ITEM *const lara_item = Lara_GetItem();
+
+    LARA_GUN_TYPE gun_type = LGT_UNARMED;
+    if (lara->gun_status == LGS_READY || lara->gun_status == LGS_SPECIAL
+        || lara->gun_status == LGS_DRAW || lara->gun_status == LGS_UNDRAW) {
+        gun_type = lara->gun_type;
+    }
+    if (!Gun_IsSinglePistolType(gun_type) && !Gun_IsDualPistolType(gun_type)) {
+        return false;
+    }
+
+    M_PS1_MATRIX base;
+    M_PS1_MATRIX body[2];
+    int32_t frac;
+    int32_t rate;
+    if (!M_PS1_GetTorso(&base, body, &frac, &rate)) {
+        return false;
+    }
+
+    const ANIM_BONE *const bone = Lara_Skin_GetBoneBase();
+    const bool is_right = hand == LM_HAND_R;
+    const LARA_ARM *const arm = is_right ? &lara->right_arm : &lara->left_arm;
+    const LARA_MESH upper = is_right ? LM_UARM_R : LM_UARM_L;
+    const LARA_MESH lower = is_right ? LM_LARM_R : LM_LARM_L;
+
+    // The arm starts from the heading alone and from the shoulder between the
+    // two frames.
+    M_PS1_MATRIX m = base;
+    for (int32_t i = 0; i < 2; i++) {
+        M_PS1_TranslateRel(&body[i], bone[upper - 1].pos);
+    }
+    for (int32_t i = 0; i < 3; i++) {
+        m.pos[i] = frac == 0
+            ? body[0].pos[i]
+            : M_PS1_Blend(body[0].pos[i], body[1].pos[i], frac, rate);
+    }
+    M_PS1_RotYXZ(
+        &m, Gun_IsSinglePistolType(gun_type) ? lara->torso_rot : arm->rot);
+
+    const ANIM *const anim = Anim_GetAnim(arm->anim_num);
+    const XYZ_16 *const arm_rots =
+        arm->frame_base[arm->frame_num - anim->frame_base].mesh_rots;
+    M_PS1_RotYXZ(&m, arm_rots[upper]);
+    M_PS1_TranslateRel(&m, bone[lower - 1].pos);
+    M_PS1_RotYXZ(&m, arm_rots[lower]);
+    M_PS1_TranslateRel(&m, bone[hand - 1].pos);
+    M_PS1_RotYXZ(&m, arm_rots[hand]);
+    M_PS1_TranslateRel(&m, *vec);
+
+    vec->x = lara_item->pos.x + m.pos[0];
+    vec->y = lara_item->pos.y + m.pos[1];
+    vec->z = lara_item->pos.z + m.pos[2];
+    return true;
 }
 
 void Lara_RefuseInteraction(void)
