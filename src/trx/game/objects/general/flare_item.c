@@ -128,9 +128,9 @@ static void M_Control(const int16_t item_num)
                 M_TransformLocalOffset(flare_pos, item->rot, tip_local);
 
             const XYZ_32 vel_local = {
-                .x = (Random_GetControl() & 0x7F) - 64,
-                .y = (Random_GetControl() & 0x7F) - 64,
-                .z = (Random_GetControl() & 0x1FF) + 512,
+                .x = (Random_GetDraw() & 0x7F) - 64,
+                .y = (Random_GetDraw() & 0x7F) - 64,
+                .z = (Random_GetDraw() & 0x1FF) + 512,
             };
             const XYZ_32 vel_pos =
                 M_TransformLocalOffset(flare_pos, item->rot, vel_local);
@@ -140,7 +140,7 @@ static void M_Control(const int16_t item_num)
                 .z = vel_pos.z - flare_pos.z,
             };
 
-            for (int32_t i = 0; i < (Random_GetControl() & 3) + 4; i++) {
+            for (int32_t i = 0; i < (Random_GetDraw() & 3) + 4; i++) {
                 const bool smoke = (i >> 2) != 0;
                 Sparks_TriggerFlareSparks(tip_pos, vel, smoke);
             }
