@@ -5,6 +5,7 @@
 #include <trx/core/json/util/write_io.h>
 #include <trx/game/anims.h>
 #include <trx/game/camera.h>
+#include <trx/game/demo.h>
 #include <trx/game/game.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/gun/common.h>
@@ -1289,6 +1290,12 @@ static bool M_UserControl(ITEM *item, int32_t height, int32_t *pitch)
                 }
             } else {
                 quad->velocity = 0xA000;
+            }
+
+            // The PS1 release drags the quad by how far it slides sideways
+            // while accelerating, and its demos depend on it.
+            if (Demo_UsesPS1Rules()) {
+                quad->velocity -= ABS(item->rot.y - quad->momentum_angle) >> 6;
             }
         } else if (quad->velocity > 256) {
             quad->velocity -= 256;
