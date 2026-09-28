@@ -54,6 +54,7 @@
 - Fixed TR2 enemies such as spiders bursting into flames and explosions when they die in a TR3 level (TRX1574)
 - Fixed Earthquakes resetting to their starting shake intensity when loading a save (TRX1622, regression from 1.2)
 - Fixed Lara stopping a turn at once when the look button is held
+- Fixed Lara, enemies and vehicles moving slightly differently from the original game
 
 **TR4**
 - Added Small Scorpion control (TRX1562)

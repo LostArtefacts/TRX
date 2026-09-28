@@ -1,6 +1,7 @@
 #include <trx/config.h>
 #include <trx/config/registry.h>
 #include <trx/core/log.h>
+#include <trx/core/math/trig.h>
 #include <trx/core/memory.h>
 #include <trx/core/result.h>
 #include <trx/core/strings.h>
@@ -218,6 +219,7 @@ static RESULT M_PrepareSystem(void)
     }
 
     g_TRVersion = s->args->startup.engine_version;
+    Math_SetCoarseTrig(g_TRVersion == 3);
     LOG_INFO("Engine version: %d", g_TRVersion);
     LOG_INFO(
         "Mod: %s",
