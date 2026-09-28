@@ -105,6 +105,12 @@ void Demo_LoadData(TRX_FILE *const file, const size_t size)
     }
 }
 
+bool Demo_UsesPS1Rules(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    return g_TRVersion == 3 && level != nullptr && level->type == GFL_DEMO;
+}
+
 bool Demo_UpdateInput(void)
 {
     M_PRIV *const p = &m_Priv;
