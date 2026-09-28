@@ -4,8 +4,10 @@
 #include <trx/game/lara.h>
 #include <trx/game/lara/util.h>
 #include <trx/game/rooms.h>
+#include <trx/version.h>
 
 #define M_HEIGHT_SURF 700
+#define M_DEFLECT_PITCH (g_TRVersion >= 3 ? 45 * DEG_1 : 35 * DEG_1)
 
 static bool M_TestWaterStepOut(ITEM *const item, const COLL_INFO *const coll)
 {
@@ -258,9 +260,9 @@ static void M_Swim(ITEM *const item, COLL_INFO *const coll)
 
     switch (coll->coll_type) {
     case COLL_FRONT:
-        if (item->rot.x > 35 * DEG_1) {
+        if (item->rot.x > M_DEFLECT_PITCH) {
             item->rot.x += LARA_UW_WALL_DEFLECT;
-        } else if (item->rot.x < -35 * DEG_1) {
+        } else if (item->rot.x < -M_DEFLECT_PITCH) {
             item->rot.x -= LARA_UW_WALL_DEFLECT;
         } else {
             item->fall_speed = 0;
