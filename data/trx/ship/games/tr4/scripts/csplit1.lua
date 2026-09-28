@@ -12,6 +12,19 @@ trx.events.on_game_start(function()
   trx.items[65].properties.travel_distance = 24
   trx.items[79].properties.is_pressure_plate = true
   trx.items[79].properties.travel_distance = 1
+
+  trx.objects.earthquake.properties.mode = trx.items.EarthquakeMode.BASIC
+  trx.objects.earthquake.properties.lifetime = 150
+  trx.objects.earthquake.properties.trigger_items = false
+end)
+
+trx.events.on_flip_effect(7, function(item, timer)
+  -- Door type 1 activates the earthquake in room 13 via an animation command
+  -- when anti-triggered.
+  local quake = trx.items[8]
+  if quake.trigger_mask == 0 and not quake.is_killed then
+    quake:trigger()
+  end
 end)
 
 require("tr4.inv_setup").apply({

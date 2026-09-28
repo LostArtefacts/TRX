@@ -179,8 +179,9 @@
         <property category="TRX" defaultValue="25" description="Offset applied each frame while the lava wedge advances." displayName="Speed" internalName="speed" minValue="0" type="Int" />
     </moveable>
     <moveable id="183">
-        <property category="TRX" defaultValue="Random (TR1)" description="Control mode." displayName="Mode" entries="Random (TR1), Random (TR2), Ramped (TR3)" internalName="mode" type="Enum" />
+        <property category="TRX" defaultValue="Random (TR1)" description="Control mode." displayName="Mode" entries="Random (TR1), Random (TR2), Ramped (TR3), Basic (TR4)" internalName="mode" type="Enum" />
         <property category="TRX" defaultValue="true" description="Whether or not the earthquake shakes the camera while it is active." displayName="Shake Camera" internalName="shake_camera" type="Bool" />
+        <property category="TRX" defaultValue="0" description="The lifetime of the earthquake to remain active. Zero implies active until anti-triggered." displayName="Lifetime" internalName="lifetime" minValue="0" type="Int" />
         <property category="TRX" defaultValue="true" description="Whether or not the earthquake triggers falling ceiling and flame emitters placed in the same room at random." displayName="Trigger Items" internalName="trigger_items" type="Bool" />
     </moveable>
     <moveable id="193">
