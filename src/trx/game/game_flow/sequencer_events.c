@@ -355,12 +355,15 @@ static void M_ShowLoadingCamera(const GF_LOADING_CAMERA_DATA *const data)
             .fade_in_time = data->fade_in_time,
             .fade_out_time = data->fade_out_time,
         });
-    PhaseExecutor_Run(phase);
+    const GF_COMMAND gf_cmd = PhaseExecutor_Run(phase);
     Phase_LoadingCamera_Destroy(phase);
 
-    // A command the camera itself raises, such as an exit, is about what the
-    // player just did and wins over the stashed one.
-    if (GF_GetOverrideCommand().action == GF_NOOP) {
+    // A command raised during the camera, such as a console command, is about
+    // what the player just did and wins over the stashed one. The executor
+    // consumes the override when it returns one, so it is reposted here.
+    if (gf_cmd.action != GF_NOOP) {
+        GF_OverrideCommand(gf_cmd, true);
+    } else if (GF_GetOverrideCommand().action == GF_NOOP) {
         GF_OverrideCommand(stashed_cmd, stashed_immediate);
     }
 }
