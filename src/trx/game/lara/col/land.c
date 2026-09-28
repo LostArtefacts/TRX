@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/game/demo.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/util.h>
@@ -241,8 +242,10 @@ static void M_FlarePickup(ITEM *const item, COLL_INFO *const coll)
 static void M_PullUp(ITEM *const item, COLL_INFO *const coll)
 {
     M_Default(item, coll);
+    // The PS1 release has no extra step at the end of the 2-click vault, and
+    // its demos depend on the timing without it.
     if (Item_TestAnimEqual(item, LA(LA_CLIMB_2CLICK))
-        && Item_TestFrameEqual(item, -1)) {
+        && Item_TestFrameEqual(item, -1) && !Demo_UsesPS1Rules()) {
         Lara_UpdateRoomToHeight(-WALL_L);
         Lara_Animate(item);
     }
