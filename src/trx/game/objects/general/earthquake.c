@@ -1,3 +1,5 @@
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/const.h>
@@ -12,6 +14,23 @@ typedef struct {
     int32_t target_intensity;
     int32_t target_timer;
 } M_PRIV;
+
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+{
+    M_PRIV *const p = item->priv;
+    SHOULD(JSON_READ_OPT(io, "shake_intensity", &p->shake_intensity));
+    SHOULD(JSON_READ_OPT(io, "target_intensity", &p->target_intensity));
+    SHOULD(JSON_READ_OPT(io, "target_timer", &p->target_timer));
+    return OK;
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
+{
+    const M_PRIV *const p = item->priv;
+    JSONW_WRITE(io, "shake_intensity", p->shake_intensity);
+    JSONW_WRITE(io, "target_intensity", p->target_intensity);
+    JSONW_WRITE(io, "target_timer", p->target_timer);
+}
 
 static void M_ActivateRelatedItem(ITEM *const earth_item)
 {
@@ -128,6 +147,8 @@ static void M_Setup(OBJECT *const obj)
 {
     obj->priv_size = sizeof(M_PRIV);
     obj->control_func = M_Control;
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
     obj->draw_func = nullptr;
     obj->save_flags = true;
 }
