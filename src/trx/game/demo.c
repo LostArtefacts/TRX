@@ -125,6 +125,9 @@ bool Demo_UpdateInput(void)
             uint32_t menu_back:    1;
             uint32_t save:         1;
             uint32_t load:         1;
+            uint32_t _pad2:        5;
+            uint32_t crouch:       1;
+            uint32_t sprint:       1;
             // clang-format on
         };
     } demo_input = { .any = *p->demo_ptr };
@@ -154,6 +157,8 @@ bool Demo_UpdateInput(void)
         .menu_back    = demo_input.menu_back,
         .save         = demo_input.save,
         .load         = demo_input.load,
+        .crouch       = demo_input.crouch,
+        .sprint       = demo_input.sprint,
         // clang-format on
     };
 
