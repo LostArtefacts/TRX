@@ -234,6 +234,9 @@ GF_COMMAND Game_Control(const bool demo_mode)
     if (!CutSeq_IsPlaying()) {
         Lara_Control();
         Lara_Hair_Control(false);
+        if (g_TRVersion == 3) {
+            Sparks_UpdateWind();
+        }
     }
 
     Game_TickPostControl();
