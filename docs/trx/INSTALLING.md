@@ -996,6 +996,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── injections
 │   │   │   ├── alarm_sfx.bin
 │   │   │   ├── aldwych_animating_bounds.bin
+│   │   │   ├── aldwych_demo.bin
 │   │   │   ├── aldwych_fd.bin
 │   │   │   ├── aldwych_pickup_meshes.bin
 │   │   │   ├── aldwych_textures.bin
@@ -1058,6 +1059,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── flamethrower_sfx.bin
 │   │   │   ├── font.bin
 │   │   │   ├── ganges_animating_bounds.bin
+│   │   │   ├── ganges_demo.bin
 │   │   │   ├── ganges_door131_frames.bin
 │   │   │   ├── ganges_textures.bin
 │   │   │   ├── globe_model.bin
@@ -1089,6 +1091,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── mines_textures.bin
 │   │   │   ├── misc_sprites.bin
 │   │   │   ├── nevada_animating_bounds.bin
+│   │   │   ├── nevada_demo.bin
 │   │   │   ├── nevada_door132_frames.bin
 │   │   │   ├── nevada_sky.bin
 │   │   │   ├── nevada_textures.bin
@@ -2418,6 +2421,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── injections
     │   │   │   │   ├── alarm_sfx.bin
     │   │   │   │   ├── aldwych_animating_bounds.bin
+    │   │   │   │   ├── aldwych_demo.bin
     │   │   │   │   ├── aldwych_fd.bin
     │   │   │   │   ├── aldwych_pickup_meshes.bin
     │   │   │   │   ├── aldwych_textures.bin
@@ -2480,6 +2484,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── flamethrower_sfx.bin
     │   │   │   │   ├── font.bin
     │   │   │   │   ├── ganges_animating_bounds.bin
+    │   │   │   │   ├── ganges_demo.bin
     │   │   │   │   ├── ganges_door131_frames.bin
     │   │   │   │   ├── ganges_textures.bin
     │   │   │   │   ├── globe_model.bin
@@ -2511,6 +2516,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── mines_textures.bin
     │   │   │   │   ├── misc_sprites.bin
     │   │   │   │   ├── nevada_animating_bounds.bin
+    │   │   │   │   ├── nevada_demo.bin
     │   │   │   │   ├── nevada_door132_frames.bin
     │   │   │   │   ├── nevada_sky.bin
     │   │   │   │   ├── nevada_textures.bin

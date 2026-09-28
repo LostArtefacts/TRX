@@ -313,5 +313,52 @@
                 }
             }
         }
+    ],
+    "demos": [
+        {
+            "title": "Aldwych",
+            "objects": {
+                "key_item_1": {
+                    "name": "Maintenance Key",
+                },
+                "key_item_2": {
+                    "name": "Solomon's Key",
+                },
+                "key_item_3": {
+                    "name": "Solomon's Key",
+                },
+                "puzzle_item_1": {
+                    "name": "Old Penny",
+                },
+                "puzzle_item_2": {
+                    "name": "Ticket",
+                },
+                "puzzle_item_3": {
+                    "name": "Masonic Mallet",
+                },
+                "puzzle_item_4": {
+                    "name": "Ornate Star",
+                }
+            }
+        },
+        {
+            "title": "The River Ganges",
+            "objects": {
+                "key_item_1": {
+                    "name": "Gate Key",
+                }
+            }
+        },
+        {
+            "title": "Nevada Desert",
+            "objects": {
+                "key_item_1": {
+                    "name": "Generator Access",
+                },
+                "key_item_2": {
+                    "name": "Detonator Switch",
+                }
+            }
+        }
     ]
 }

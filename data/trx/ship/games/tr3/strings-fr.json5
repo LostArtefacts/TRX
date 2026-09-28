@@ -313,5 +313,52 @@
                 }
             }
         }
+    ],
+    "demos": [
+        {
+            "title": "Aldwych",
+            "objects": {
+                "key_item_1": {
+                    "name": "Clé de la maintenance",
+                },
+                "key_item_2": {
+                    "name": "Clé de Salomon",
+                },
+                "key_item_3": {
+                    "name": "Clé de Salomon",
+                },
+                "puzzle_item_1": {
+                    "name": "Vieux penny",
+                },
+                "puzzle_item_2": {
+                    "name": "Ticket",
+                },
+                "puzzle_item_3": {
+                    "name": "Maillet maçonnique",
+                },
+                "puzzle_item_4": {
+                    "name": "Étoile décorée",
+                }
+            }
+        },
+        {
+            "title": "Le Gange",
+            "objects": {
+                "key_item_1": {
+                    "name": "Clé du portail",
+                }
+            }
+        },
+        {
+            "title": "Le désert du Nevada",
+            "objects": {
+                "key_item_1": {
+                    "name": "Passe du générateur",
+                },
+                "key_item_2": {
+                    "name": "Interrupteur du détonateur",
+                }
+            }
+        }
     ]
 }

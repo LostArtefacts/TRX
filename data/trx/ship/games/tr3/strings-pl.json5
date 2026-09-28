@@ -305,5 +305,52 @@
                 }
             }
         }
+    ],
+    "demos": [
+        {
+            "title": "Aldwych",
+            "objects": {
+                "key_item_1": {
+                    "name": "Klucz konserwacyjny",
+                },
+                "key_item_2": {
+                    "name": "Klucz Salomona",
+                },
+                "key_item_3": {
+                    "name": "Klucz Salomona",
+                },
+                "puzzle_item_1": {
+                    "name": "Stara moneta",
+                },
+                "puzzle_item_2": {
+                    "name": "Bilet",
+                },
+                "puzzle_item_3": {
+                    "name": "Masoński młotek",
+                },
+                "puzzle_item_4": {
+                    "name": "Ozdobna gwiazda",
+                }
+            }
+        },
+        {
+            "title": "Rzeka Ganges",
+            "objects": {
+                "key_item_1": {
+                    "name": "Klucz do bramy",
+                }
+            }
+        },
+        {
+            "title": "Pustynia Nevady",
+            "objects": {
+                "key_item_1": {
+                    "name": "Dostęp do generatora",
+                },
+                "key_item_2": {
+                    "name": "Przełącznik detonatora",
+                }
+            }
+        }
     ]
 }
