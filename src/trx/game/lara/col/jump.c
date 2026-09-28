@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/game/anims/common.h>
+#include <trx/game/demo.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 #include <trx/game/lara/util.h>
@@ -113,7 +114,9 @@ static bool M_TestHangJump(ITEM *const item, COLL_INFO *const coll)
     const BOUNDS_16 *const bounds = Item_GetBoundsAccurate(item);
     if (edge_catch == EDGE_CATCH_POS) {
         item->pos.y += coll->side_front.floor - bounds->min.y;
-        switch (dir) {
+        // The PS1 release moves Lara onto a ledge by the collision shift rather
+        // than against the edge of the sector, and its demos depend on it.
+        switch (Demo_UsesPS1Rules() ? DIR_UNKNOWN : dir) {
         case DIR_NORTH:
             item->pos.z = ROUND_TO_SECTOR_END(item->pos.z) - LARA_RADIUS;
             item->pos.x += coll->shift.x;
