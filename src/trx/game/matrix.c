@@ -522,6 +522,19 @@ void Matrix_ScaleW2V(const XYZ_32 scale)
     m_MatrixStack[0] = g_ViewMatrix;
 }
 
+void Matrix_SquashW2V(void)
+{
+    g_ViewMatrix._10 -= g_ViewMatrix._10 >> 2;
+    g_ViewMatrix._11 -= g_ViewMatrix._11 >> 2;
+    g_ViewMatrix._12 -= g_ViewMatrix._12 >> 2;
+    g_ViewMatrix._03 = 0;
+    g_ViewMatrix._13 = 0;
+    g_ViewMatrix._23 = 0;
+    M_TranslateRel(
+        &g_ViewMatrix, (XYZ_32) { -g_ViewPos.x, -g_ViewPos.y, -g_ViewPos.z });
+    m_MatrixStack[0] = g_ViewMatrix;
+}
+
 bool Matrix_Push(void)
 {
     if (g_MatrixPtr + 1 - m_MatrixStack >= MAX_MATRICES) {
