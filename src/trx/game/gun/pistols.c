@@ -10,6 +10,8 @@
 #include <trx/game/gun/smoke.h>
 #include <trx/game/input.h>
 #include <trx/game/lara/common.h>
+#include <trx/game/output/lights.h>
+#include <trx/game/random.h>
 #include <trx/game/sound.h>
 #include <trx/game/spawn.h>
 #include <trx/version.h>
@@ -273,6 +275,27 @@ static void M_Control(
     }
 }
 
+// TR3 places the flash light at a random point near the gun hand, with a
+// random warm colour. It uses the control random numbers even when gun
+// lighting is off, so that the game plays out the same either way.
+static void M_AddTR3FlashLight(const LARA_INFO *const lara)
+{
+    XYZ_32 pos = {
+        .x = (Random_GetControl() & 0xFF) - 128,
+        .y = (Random_GetControl() & 0x7F) - 63,
+        .z = (Random_GetControl() & 0xFF) - 128,
+    };
+    Lara_GetMeshPos(lara->left_arm.flash_gun ? LM_HAND_L : LM_HAND_R, &pos);
+    const RGB_888 color = {
+        .r = (Random_GetControl() & 0x3F) + 192,
+        .g = (Random_GetControl() & 0x1F) + 128,
+        .b = Random_GetControl() & 0x3F,
+    };
+    if (g_Config.visuals.enable_gun_lighting) {
+        Output_AddDynamicLightRGB(pos, 10, color);
+    }
+}
+
 void Gun_Pistols_Control(const LARA_GUN_TYPE weapon_type)
 {
     const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
@@ -328,7 +351,11 @@ void Gun_Pistols_Control(const LARA_GUN_TYPE weapon_type)
     M_Animate(weapon_type);
 
     if (lara->left_arm.flash_gun || lara->right_arm.flash_gun) {
-        Gun_AddDynamicLight();
+        if (g_TRVersion == 3) {
+            M_AddTR3FlashLight(lara);
+        } else {
+            Gun_AddDynamicLight();
+        }
     }
 }
 
