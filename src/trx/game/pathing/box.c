@@ -265,14 +265,26 @@ void Box_TargetBox(LOT_INFO *const lot, int16_t box_num)
         return;
     }
 
-    // TODO: determine if the shift is essential
-    const int32_t shift = g_TRVersion >= 2 ? 1 : 0;
-    lot->target.z = box->left + WALL_L / 2
-        + (Random_GetControl() * (box->right + shift - box->left - WALL_L)
-           >> 15);
-    lot->target.x = box->top + WALL_L / 2
-        + (Random_GetControl() * (box->bottom + shift - box->top - WALL_L)
-           >> 15);
+    if (g_TRVersion == 3) {
+        // TR3 scales the random offset by the box size in sectors shifted
+        // right by five, so the offset is zero for boxes up to 32 sectors
+        // across and the target stays half a sector in from the near corner.
+        const int32_t width = ((box->right + 1 - box->left) >> WALL_SHIFT) - 1;
+        const int32_t depth = ((box->bottom + 1 - box->top) >> WALL_SHIFT) - 1;
+        lot->target.z =
+            box->left + WALL_L / 2 + (width >> 5) * Random_GetControl();
+        lot->target.x =
+            box->top + WALL_L / 2 + (depth >> 5) * Random_GetControl();
+    } else {
+        // TODO: determine if the shift is essential
+        const int32_t shift = g_TRVersion >= 2 ? 1 : 0;
+        lot->target.z = box->left + WALL_L / 2
+            + (Random_GetControl() * (box->right + shift - box->left - WALL_L)
+               >> 15);
+        lot->target.x = box->top + WALL_L / 2
+            + (Random_GetControl() * (box->bottom + shift - box->top - WALL_L)
+               >> 15);
+    }
     lot->required_box = box_num;
     if (lot->setup.fly != 0) {
         lot->target.y = box->height - STEP_L * 3 / 2;
