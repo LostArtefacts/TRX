@@ -743,9 +743,13 @@ static void M_Slide(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+// The PS1 demos depend on enemies hitting Lara while she rolls, as they do in
+// the original games.
 static void M_Roll(ITEM *const item, COLL_INFO *const coll)
 {
-    coll->enable_hit = 0;
+    if (!Demo_UsesPS1Rules()) {
+        coll->enable_hit = 0;
+    }
 }
 
 static void M_PushBlock(ITEM *const item, COLL_INFO *const coll)
