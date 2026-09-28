@@ -921,6 +921,7 @@ GS_DEFINE(dynamic/mods/tr2/title,         "Tomb Raider II")
 GS_DEFINE(dynamic/mods/tr2-gm/title,      "The Golden Mask")
 GS_DEFINE(dynamic/mods/tr3/title,         "Tomb Raider III")
 GS_DEFINE(dynamic/mods/tr3-la/title,      "The Lost Artifact")
+GS_DEFINE(dynamic/mods/tr4/title,         "Tomb Raider IV")
 
 GS_DEFINE(general/settings/graphic_settings/title,          "Graphic Options")
 GS_DEFINE(general/settings/graphic_settings/tabs/visuals,   "Visuals")
