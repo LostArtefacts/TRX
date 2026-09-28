@@ -12,6 +12,10 @@ void Demo_Pause(void);
 void Demo_Unpause(void);
 void Demo_StopFlashing(void);
 
+// Returns whether the current level is a TR3 demo. These come from the PS1
+// release and stay in sync only where the game follows its rules.
+bool Demo_UsesPS1Rules(void);
+
 bool Demo_UpdateInput(void);
 GF_COMMAND Demo_Control(void);
 int32_t Demo_ChooseLevel(int32_t demo_num);
