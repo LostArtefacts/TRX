@@ -103,7 +103,8 @@ typedef enum {
     IDT_SYMBOLS            = 40,
     IDT_NAMED_SAMPLE_INFOS = 41,
     IDT_ANIM_TEXTURE_ADDS  = 42,
-    IDT_NUMBER_OF          = 43,
+    IDT_DEMO_DATA          = 43,
+    IDT_NUMBER_OF          = 44,
 } INJECTION_DATA_TYPE;
 
 typedef enum {
