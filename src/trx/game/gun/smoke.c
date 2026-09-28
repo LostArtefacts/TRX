@@ -119,6 +119,15 @@ void Gun_Smoke_Control(void)
 
     const LARA_GUN_TYPE weapon_type = lara->tr3_smoke_weapon;
 
+    // TR3 counts the smoke down at the end of the frame with the shot, so the
+    // first trailing puff already has one less.
+    if (lara->tr3_smoke_count_l > 0) {
+        lara->tr3_smoke_count_l--;
+    }
+    if (lara->tr3_smoke_count_r > 0) {
+        lara->tr3_smoke_count_r--;
+    }
+
     if (lara->tr3_smoke_count_l > 0) {
         const XYZ_32 muzzle_pos = M_GetHandAbsPosition(
             LM_HAND_L, M_GetMuzzleOffset(weapon_type, false));
@@ -127,7 +136,6 @@ void Gun_Smoke_Control(void)
         Room_GetSector(pos.pos, &pos.room_num);
         Sparks_TriggerGunSmoke(
             pos, false, weapon_type, lara->tr3_smoke_count_l);
-        lara->tr3_smoke_count_l--;
     }
 
     if (lara->tr3_smoke_count_r > 0) {
@@ -138,6 +146,5 @@ void Gun_Smoke_Control(void)
         Room_GetSector(pos.pos, &pos.room_num);
         Sparks_TriggerGunSmoke(
             pos, false, weapon_type, lara->tr3_smoke_count_r);
-        lara->tr3_smoke_count_r--;
     }
 }
