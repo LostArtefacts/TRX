@@ -281,6 +281,7 @@ static bool M_TestPull(
         return false;
     }
 
+    base_pos.y = lara_item->pos.y;
     coll.quadrant = (quadrant + 2) & 3;
     if (Collide_CollideStaticObjects(&coll, base_pos, room_num, LARA_HEIGHT)) {
         return false;
