@@ -4,6 +4,7 @@
 #include <trx/debug.h>
 #include <trx/game/camera.h>
 #include <trx/game/collision/los.h>
+#include <trx/game/demo.h>
 #include <trx/game/game.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/flare.h>
@@ -501,6 +502,12 @@ int32_t Gun_FireWeapon(
         .z = 0,
     };
     Matrix_GenerateW2V(&view_pos, &view_rot);
+
+    // The PS1 release tests the hit against the target as seen on its
+    // squashed screen, and its demos depend on it.
+    if (Demo_UsesPS1Rules()) {
+        Matrix_SquashW2V();
+    }
 
     SPHERE spheres[33];
     int32_t sphere_count = Collide_GetSpheres(target, spheres, false);
