@@ -741,6 +741,7 @@ static void M_PPReady(ITEM *const item, COLL_INFO *const coll)
     g_Camera.target_angle = M_CAM_PP_READY_ANGLE;
     if (!g_Input.action) {
         item->goal_anim_state = LS(LS_STOP);
+        Lara_GetLaraInfo()->interact_target.item_num = NO_ITEM;
     }
 }
 
