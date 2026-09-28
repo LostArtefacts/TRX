@@ -3,6 +3,7 @@
 #include <trx/config.h>
 #include <trx/core/utils.h>
 #include <trx/game/anims/walk.h>
+#include <trx/game/demo.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/items.h>
 #include <trx/game/items/anim.h>
@@ -13,6 +14,50 @@
 #include <trx/version.h>
 
 #define M_HEADROOM 160 // Additional collision space above Lara's head.
+#define M_CORNER_DISTANCE 250
+#define M_CORNER_TURN DEG_90
+#define M_CORNER_TURN_BACK 0x3000
+
+// Tests a point 250 units away from the item towards one of its sides.
+static bool M_IsCornerBlocked(
+    const COLL_INFO *const coll, const XYZ_32 pos, const int32_t y,
+    const int32_t y_top, const int16_t room_num, const int16_t angle)
+{
+    const XYZ_32 sample_pos = {
+        .x = pos.x + ((M_CORNER_DISTANCE * Math_Sin(angle)) >> W2V_SHIFT),
+        .y = y_top,
+        .z = pos.z + ((M_CORNER_DISTANCE * Math_Cos(angle)) >> W2V_SHIFT),
+    };
+    int16_t sample_room_num = room_num;
+    const SECTOR *const sector = Room_GetSector(sample_pos, &sample_room_num);
+    int32_t height = Room_GetHeight(sector, sample_pos);
+    if (height != NO_HEIGHT) {
+        height -= pos.y;
+    }
+    int32_t ceiling = Room_GetCeiling(sector, sample_pos);
+    if (ceiling != NO_HEIGHT) {
+        ceiling -= y;
+    }
+    return height > coll->bad_pos || height < coll->bad_neg
+        || ceiling > coll->bad_ceiling;
+}
+
+// The PS1 release stops the item where it was when both of its front corners
+// are blocked, and its demos depend on it.
+static bool M_ArePS1CornersBlocked(
+    const COLL_INFO *const coll, const XYZ_32 pos, const int32_t y,
+    const int32_t y_top, const int16_t room_num)
+{
+    if (!Demo_UsesPS1Rules()) {
+        return false;
+    }
+    const int32_t turn = ABS(Lara_GetItem()->rot.y - coll->facing) > 0x7000
+        ? M_CORNER_TURN_BACK
+        : M_CORNER_TURN;
+    return M_IsCornerBlocked(coll, pos, y, y_top, room_num, coll->facing - turn)
+        && M_IsCornerBlocked(
+               coll, pos, y, y_top, room_num, coll->facing + turn);
+}
 
 static bool M_IsOnWalkable(
     const SECTOR *const sector, const XYZ_32 pos, const int32_t room_height)
@@ -421,6 +466,13 @@ void Collide_GetCollisionInfo(
     if (coll->side_mid.ceiling >= 0) {
         coll->shift.y = coll->side_mid.ceiling;
         coll->coll_type = COLL_TOP;
+    }
+
+    if (M_ArePS1CornersBlocked(coll, pos, y, y_top, prev_room_num)) {
+        coll->shift.x = coll->old_pos.x - pos.x;
+        coll->shift.z = coll->old_pos.z - pos.z;
+        coll->coll_type = COLL_FRONT;
+        return;
     }
 
     if (coll->side_front.floor > coll->bad_pos
