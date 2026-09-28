@@ -2003,6 +2003,16 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### earthquake
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1 (183)</th><th align="center">TR2 (264)</th><th align="center">TR3 (365)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>mode</code></td><td align="center">0</td><td align="center">1</td><td align="center">2</td><td>Control mode - 0: random (TR1); 1: random (TR2); 2: ramped (TR3)</td></tr>
+<tr><td><code>shake_camera</code></td><td colspan="3" align="center">true</td><td>Whether or not the earthquake shakes the camera while it is active.</td></tr>
+<tr><td><code>trigger_items</code></td><td colspan="3" align="center">true</td><td>Whether or not the earthquake triggers falling ceiling and flame emitters placed in the same room at random.</td></tr>
+</tbody>
+</table>
+
 #### examine_item_1
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
@@ -2853,7 +2863,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (338)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>range</code></td><td colspan="3" align="center">((XYZ_32) { 1, 1, 1 })</td><td>Swim range, in quarter tiles. Value range: minimum 1 on each axis.</td></tr>
+<tr><td><code>range</code></td><td colspan="3" align="center">(XYZ_32) { 1, 1, 1 }</td><td>Swim range, in quarter tiles. Value range: minimum 1 on each axis.</td></tr>
 <tr><td><code>use_room_lighting</code></td><td colspan="2" align="center">true</td><td align="center">false</td><td>Whether the shoal uses the surrounding room lighting.</td></tr>
 </tbody>
 </table>
@@ -3954,7 +3964,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (339)</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>sprite_offset</code></td><td colspan="3" align="center">0</td><td>Texture offset in `O_TROPICAL_FISH_GFX`.</td></tr>
-<tr><td><code>range</code></td><td colspan="3" align="center">((XYZ_32) { 1, 1, 1 })</td><td>Swim range, in quarter tiles. Value range: minimum 1 on each axis.</td></tr>
+<tr><td><code>range</code></td><td colspan="3" align="center">(XYZ_32) { 1, 1, 1 }</td><td>Swim range, in quarter tiles. Value range: minimum 1 on each axis.</td></tr>
 <tr><td><code>use_room_lighting</code></td><td colspan="2" align="center">true</td><td align="center">false</td><td>Whether the shoal uses the surrounding room lighting.</td></tr>
 </tbody>
 </table>

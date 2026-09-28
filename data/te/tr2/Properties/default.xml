@@ -230,6 +230,11 @@
         <property category="TRX" defaultValue="10" description="Damage dealt while trampling." displayName="Trample Damage" internalName="trample_damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="10000" description="Damage dealt by the bite attack." displayName="Bite Damage" internalName="bite_damage" minValue="0" type="Int" />
     </moveable>
+    <moveable id="264">
+        <property category="TRX" defaultValue="Random (TR2)" description="Control mode." displayName="Mode" entries="Random (TR1), Random (TR2), Ramped (TR3)" internalName="mode" type="Enum" />
+        <property category="TRX" defaultValue="true" description="Whether or not the earthquake shakes the camera while it is active." displayName="Shake Camera" internalName="shake_camera" type="Bool" />
+        <property category="TRX" defaultValue="true" description="Whether or not the earthquake triggers falling ceiling and flame emitters placed in the same room at random." displayName="Trigger Items" internalName="trigger_items" type="Bool" />
+    </moveable>
     <moveable id="265">
         <property category="TRX" defaultValue="30" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="3" description="Damage dealt while the bear charges into Lara." displayName="Charge Damage" internalName="charge_damage" minValue="0" type="Int" />

@@ -2664,6 +2664,29 @@
     },
     {
       "bulk": false,
+      "count": 3,
+      "description": "<!--noref: earthquake_mode--> The values the `earthquake_mode` item property can take. It selects the behavior of the camera shake and sound effects of active earthquakes.",
+      "path": "items.EarthquakeMode",
+      "values": [
+        {
+          "description": "Per TR1 - the camera shakes at random, and sound effects earthquake_1 and earthquake_2 are played at random intervals.",
+          "name": "RANDOM_1",
+          "value": 0
+        },
+        {
+          "description": "Per TR2 - similar to TR1, with less randomness and only the earthquake_1 sound effect is played.",
+          "name": "RANDOM_2",
+          "value": 1
+        },
+        {
+          "description": "Per TR3 - the camera shakes on a ramped scale and the earthquake_loop sound effect plays throughout.",
+          "name": "RAMPED",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "bulk": false,
       "count": 7,
       "description": "<!--noref: pickup_mode--> The values the `pickup_mode` item property can take. It selects the animation Lara plays when collecting the item.",
       "path": "items.PickupMode",

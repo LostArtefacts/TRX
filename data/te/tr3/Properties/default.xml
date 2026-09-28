@@ -320,6 +320,11 @@
     <moveable id="349-354">
         <property category="TRX" defaultValue="true" description="Whether or not Lara can collide with the animating." displayName="Collidable" internalName="collidable" type="Bool" />
     </moveable>
+    <moveable id="365">
+        <property category="TRX" defaultValue="Ramped (TR3)" description="Control mode." displayName="Mode" entries="Random (TR1), Random (TR2), Ramped (TR3)" internalName="mode" type="Enum" />
+        <property category="TRX" defaultValue="true" description="Whether or not the earthquake shakes the camera while it is active." displayName="Shake Camera" internalName="shake_camera" type="Bool" />
+        <property category="TRX" defaultValue="true" description="Whether or not the earthquake triggers falling ceiling and flame emitters placed in the same room at random." displayName="Trigger Items" internalName="trigger_items" type="Bool" />
+    </moveable>
     <moveable id="370">
         <property category="TRX" defaultValue="false" description="Kill the item immediately while its trigger is inactive." displayName="Kill On Trigger" internalName="kill_on_trigger" type="Bool" />
     </moveable>

@@ -16,6 +16,7 @@
 #include <trx/game/lua/events.h>
 #include <trx/game/music/enum.h>
 #include <trx/game/music/ids.h>
+#include <trx/game/objects/general/earthquake.h>
 #include <trx/game/objects/general/generic_switch.h>
 #include <trx/game/objects/general/pickup.h>
 #include <trx/game/objects/general/waterfall.h>
@@ -201,6 +202,10 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(UI_REGION, UI_REGION_BOTTOM_LEFT, "bottom-left");
     ENUM_MAP(UI_REGION, UI_REGION_BOTTOM_CENTER, "bottom-center");
     ENUM_MAP(UI_REGION, UI_REGION_BOTTOM_RIGHT, "bottom-right");
+
+    ENUM_MAP(EARTHQUAKE_MODE, EARTHQUAKE_MODE_RANDOM_1, "random_1");
+    ENUM_MAP(EARTHQUAKE_MODE, EARTHQUAKE_MODE_RANDOM_2, "random_2");
+    ENUM_MAP(EARTHQUAKE_MODE, EARTHQUAKE_MODE_RAMPED, "ramped");
 
     // LOG_LEVEL_MAX is a sentinel, not a level.
     ENUM_MAP(LOG_LEVEL, LOG_LEVEL_DEBUG, "debug");

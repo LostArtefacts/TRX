@@ -251,7 +251,17 @@ def get_enum_info(info: PropertyInfo) -> tuple[str, tuple[str, ...]] | None:
                 f"{info.internal_name}: enum indices must start at 0 and be contiguous."
             )
         words = value.strip().split()
-        entries.append(" ".join(word.capitalize() for word in words))
+        entries.append(
+            " ".join(
+                re.sub(
+                    r"(?<!\w)TR\d+(?!\w)",
+                    lambda m: m.group().upper(),
+                    word.capitalize(),
+                    flags=re.IGNORECASE,
+                )
+                for word in words
+            )
+        )
 
     return description.rstrip() + ".", tuple(entries)
 
@@ -365,11 +375,28 @@ def read_local_constants(source: str) -> dict[str, str]:
     constants: dict[str, str] = {
         "NO_ITEM": "-1",
     }
-    define_pattern = re.compile(r"^\s*#define\s+(\w+)\s+(.+)$", re.MULTILINE)
-    for name, value in define_pattern.findall(source):
-        if "(" in name:
+
+    lines = source.splitlines()
+    i = 0
+
+    while i < len(lines):
+        line = lines[i]
+        match = re.match(r"^\s*#define\s+(\w+)\s+(.*)$", line)
+        if match is None:
+            i += 1
             continue
-        constants[name] = value.strip()
+
+        name = match.group(1)
+        value = match.group(2)
+
+        while value.rstrip().endswith("\\") and i + 1 < len(lines):
+            value = value.rstrip()[:-1] + " " + lines[i + 1].strip()
+            i += 1
+
+        if "(" not in name:
+            constants[name] = value.strip()
+
+        i += 1
 
     const_pattern = re.compile(
         r"^\s*static\s+const\s+\w+(?:_t)?\s+(\w+)\s*=\s*([^;]+);",
@@ -795,19 +822,65 @@ def resolve_identifiers(
 
 
 def convert_ternary(expr: str) -> str:
-    ternary_pattern = re.compile(
-        r"\(([^()?:]+)\?\s*([^():]+)\s*:\s*([^()]+)\)"
-    )
-    while True:
-        match = ternary_pattern.search(expr)
-        if match is None:
-            return expr
-        condition, true_value, false_value = match.groups()
-        expr = (
-            expr[: match.start()]
-            + f"({true_value.strip()} if {condition.strip()} else {false_value.strip()})"
-            + expr[match.end() :]
-        )
+    def strip_outer_parens(value: str) -> str:
+        value = value.strip()
+        while value.startswith("(") and value.endswith(")"):
+            depth = 0
+            enclosed = True
+            for index, char in enumerate(value):
+                if char == "(":
+                    depth += 1
+                elif char == ")":
+                    depth -= 1
+                    if depth == 0 and index != len(value) - 1:
+                        enclosed = False
+                        break
+            if not enclosed:
+                break
+            value = value[1:-1].strip()
+        return value
+
+    def find_ternary(value: str) -> tuple[int, int] | None:
+        # Find the top-level '?' and its matching ':'.
+        depth = 0
+        question = None
+        nested = 0
+
+        for index, char in enumerate(value):
+            if char == "(":
+                depth += 1
+            elif char == ")":
+                depth -= 1
+            elif depth == 0:
+                if char == "?":
+                    if question is None:
+                        question = index
+                    else:
+                        nested += 1
+                elif char == ":" and question is not None:
+                    if nested:
+                        nested -= 1
+                    else:
+                        return question, index
+
+        return None
+
+    def convert(value: str) -> str:
+        value = strip_outer_parens(value)
+
+        ternary = find_ternary(value)
+        if ternary is None:
+            return value
+
+        question, colon = ternary
+
+        condition = convert(value[:question])
+        true_value = convert(value[question + 1 : colon])
+        false_value = convert(value[colon + 1 :])
+
+        return f"({true_value} if {condition} else {false_value})"
+
+    return convert(expr)
 
 
 class MusicToGameIDTransformer(ast.NodeTransformer):
