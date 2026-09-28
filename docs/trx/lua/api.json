@@ -2664,7 +2664,7 @@
     },
     {
       "bulk": false,
-      "count": 3,
+      "count": 4,
       "description": "<!--noref: earthquake_mode--> The values the `earthquake_mode` item property can take. It selects the behavior of the camera shake and sound effects of active earthquakes.",
       "path": "items.EarthquakeMode",
       "values": [
@@ -2682,6 +2682,11 @@
           "description": "Per TR3 - the camera shakes on a ramped scale and the earthquake_loop sound effect plays throughout.",
           "name": "RAMPED",
           "value": 2
+        },
+        {
+          "description": "Per TR4 - the camera shakes and the earthquake_loop sound effect plays on each frame.",
+          "name": "BASIC",
+          "value": 3
         }
       ]
     },

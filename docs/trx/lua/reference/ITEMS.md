@@ -44,6 +44,8 @@ end
         Per TR2 - similar to TR1, with less randomness and only the earthquake_1 sound effect is played.
     - `trx.items.EarthquakeMode.RAMPED` = `2`  
         Per TR3 - the camera shakes on a ramped scale and the earthquake_loop sound effect plays throughout.
+    - `trx.items.EarthquakeMode.BASIC` = `3`  
+        Per TR4 - the camera shakes and the earthquake_loop sound effect plays on each frame.
 
 - <a id="items.PickupMode" name="items.PickupMode"></a>[lua]`trx.items.PickupMode`
 

@@ -40,6 +40,7 @@ api.enum("items.EarthquakeMode", {
     RANDOM_1 = "Per TR1 - the camera shakes at random, and sound effects earthquake_1 and earthquake_2 are played at random intervals.",
     RANDOM_2 = "Per TR2 - similar to TR1, with less randomness and only the earthquake_1 sound effect is played.",
     RAMPED = "Per TR3 - the camera shakes on a ramped scale and the earthquake_loop sound effect plays throughout.",
+    BASIC = "Per TR4 - the camera shakes and the earthquake_loop sound effect plays on each frame.",
   },
 })
 

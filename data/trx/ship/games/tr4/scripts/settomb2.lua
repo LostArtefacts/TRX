@@ -194,6 +194,11 @@ trx.events.on_game_start(function(is_save)
     mummy.properties.start_lying_down = false
   end
 
+  trx.objects.earthquake.properties.mode = trx.items.EarthquakeMode.BASIC
+  trx.objects.earthquake.properties.lifetime = 495
+  trx.objects.earthquake.properties.shake_camera = false
+  trx.objects.earthquake.properties.trigger_items = false
+
   initialise_seth(is_save)
 end)
 

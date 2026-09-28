@@ -20,9 +20,11 @@ typedef struct {
     EARTHQUAKE_MODE mode;
     bool shake_camera;
     bool trigger_items;
+    int32_t lifetime;
     int32_t shake_intensity;
     int32_t target_intensity;
     int32_t target_timer;
+    int32_t active_timer;
 } M_PRIV;
 
 static const char *M_CheckMode(const TRX_VALUE *const in)
@@ -32,12 +34,18 @@ static const char *M_CheckMode(const TRX_VALUE *const in)
         : nullptr;
 }
 
+static const char *M_CheckWhole(const TRX_VALUE *const in)
+{
+    return in->as_int < 0 ? "value is below zero" : nullptr;
+}
+
 static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
     SHOULD(JSON_READ_OPT(io, "shake_intensity", &p->shake_intensity));
     SHOULD(JSON_READ_OPT(io, "target_intensity", &p->target_intensity));
     SHOULD(JSON_READ_OPT(io, "target_timer", &p->target_timer));
+    SHOULD(JSON_READ_OPT(io, "active_timer", &p->active_timer));
     return OK;
 }
 
@@ -47,6 +55,7 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "shake_intensity", p->shake_intensity);
     JSONW_WRITE(io, "target_intensity", p->target_intensity);
     JSONW_WRITE(io, "target_timer", p->target_timer);
+    JSONW_WRITE(io, "active_timer", p->active_timer);
 }
 
 static void M_ActivateRelatedItem(ITEM *const earth_item)
@@ -92,6 +101,7 @@ static void M_Reset(const int16_t item_num)
     p->shake_intensity = 0;
     p->target_intensity = 0;
     p->target_timer = 0;
+    p->active_timer = 0;
     Item_RemoveSimulated(item_num);
 }
 
@@ -154,6 +164,12 @@ static void M_ControlRamped(M_PRIV *const p)
         ((p->shake_intensity << 16) + 0x1000000) | SPM_PITCH);
 }
 
+static void M_ControlBasic(const M_PRIV *const p)
+{
+    M_ShakeCamera(p, -64 - (Random_GetControl() & 0x1F));
+    Sound_Effect(SFX_EARTHQUAKE_LOOP, nullptr, SPM_NORMAL);
+}
+
 static void M_Control(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -174,12 +190,21 @@ static void M_Control(const int16_t item_num)
     case EARTHQUAKE_MODE_RAMPED:
         M_ControlRamped(p);
         break;
+    case EARTHQUAKE_MODE_BASIC:
+        M_ControlBasic(p);
+        break;
     default:
         break;
     }
 
     if (p->trigger_items) {
         M_FindAndActivateRelatedItems(item);
+    }
+
+    p->active_timer++;
+    if (p->lifetime != 0 && p->active_timer > p->lifetime) {
+        Sound_Effect(SFX_EARTHQUAKE_2, nullptr, SPM_NORMAL);
+        Item_Destroy(item_num);
     }
 }
 
@@ -197,11 +222,15 @@ static void M_Setup(OBJECT *const obj)
         OBJECT_PROPERTY_CHECKED(
             M_PRIV, mode, M_DEFAULT_MODE, M_CheckMode,
             "Control mode - 0: random (TR1); 1: random (TR2); 2: "
-            "ramped (TR3)"),
+            "ramped (TR3); 3: basic (TR4)"),
         OBJECT_PROPERTY(
             M_PRIV, shake_camera, true,
             "Whether or not the earthquake shakes the camera while it is "
             "active."),
+        OBJECT_PROPERTY_CHECKED(
+            M_PRIV, lifetime, 0, M_CheckWhole,
+            "The lifetime of the earthquake to remain active. Zero implies "
+            "active until anti-triggered."),
         OBJECT_PROPERTY(
             M_PRIV, trigger_items, true,
             "Whether or not the earthquake triggers falling ceiling and flame "

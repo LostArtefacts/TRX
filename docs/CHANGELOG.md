@@ -33,6 +33,7 @@
 - Added a `mode` property to Earthquakes to select the camera shake intensity and sound effect behavior
 - Added a `shake_camera` property to Earthquakes to control whether or not the camera should shake when active
 - Added a `trigger_items` property to Earthquakes to control whether or not related items are triggered when active
+- Added a `lifetime` property to Earthquakes to control deactivating them automatically after a set number of frames
 
 **Weapons and ammunition**
 - Fixed the BFG9000 blast passing through friendly creatures
@@ -60,6 +61,7 @@
 - Added Plough control (TRX1557)
 - Added Undead Mummy control (TRX1555)
 - Added Pushable Object control (TRX1556)
+- Added Earthquake control (TRX1548)
 - Added level views before play starts, with a progress bar (TRX493)
 - Added Seth Sarcophagus and the Burial Chambers cutscene where Lara takes the Amulet (TRX1561)
 - Changed inventory items to use the original size and angle for each level's puzzle, key, pickup, and examine items
