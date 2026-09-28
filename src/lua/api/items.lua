@@ -32,6 +32,17 @@ api.number("items.Num", {
   description = "Item number, matching the numbers level editors show.",
 })
 
+api.enum("items.EarthquakeMode", {
+  backing = "EARTHQUAKE_MODE",
+  description = "<!--noref: earthquake_mode--> The values the `earthquake_mode` item property can take. "
+    .. "It selects the behavior of the camera shake and sound effects of active earthquakes.",
+  values = {
+    RANDOM_1 = "Per TR1 - the camera shakes at random, and sound effects earthquake_1 and earthquake_2 are played at random intervals.",
+    RANDOM_2 = "Per TR2 - similar to TR1, with less randomness and only the earthquake_1 sound effect is played.",
+    RAMPED = "Per TR3 - the camera shakes on a ramped scale and the earthquake_loop sound effect plays throughout.",
+  },
+})
+
 api.enum("items.PickupMode", {
   backing = "PICKUP_MODE",
   description = "<!--noref: pickup_mode--> The values the `pickup_mode` item property can take. It selects the animation Lara "

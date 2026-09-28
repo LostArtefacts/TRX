@@ -34,6 +34,17 @@ end
 
 ### Enums
 
+- <a id="items.EarthquakeMode" name="items.EarthquakeMode"></a>[lua]`trx.items.EarthquakeMode`
+
+    The values the `earthquake_mode` item property can take. It selects the behavior of the camera shake and sound effects of active earthquakes.
+
+    - `trx.items.EarthquakeMode.RANDOM_1` = `0`  
+        Per TR1 - the camera shakes at random, and sound effects earthquake_1 and earthquake_2 are played at random intervals.
+    - `trx.items.EarthquakeMode.RANDOM_2` = `1`  
+        Per TR2 - similar to TR1, with less randomness and only the earthquake_1 sound effect is played.
+    - `trx.items.EarthquakeMode.RAMPED` = `2`  
+        Per TR3 - the camera shakes on a ramped scale and the earthquake_loop sound effect plays throughout.
+
 - <a id="items.PickupMode" name="items.PickupMode"></a>[lua]`trx.items.PickupMode`
 
     The values the `pickup_mode` item property can take. It selects the animation Lara plays when collecting the item.

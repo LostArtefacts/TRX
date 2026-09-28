@@ -29,6 +29,11 @@
 - Added the ability to combine the two halves of an item in the inventory, such as the eye pieces in Tomb of Seth (TRX482)
 - Fixed a bug where a friendly sentry gun kept aiming at Lara, and aimed at enemies it had no shot at, instead of the enemies it was set to attack
 
+**Level and game data**
+- Added a `mode` property to Earthquakes to select the camera shake intensity and sound effect behavior
+- Added a `shake_camera` property to Earthquakes to control whether or not the camera should shake when active
+- Added a `trigger_items` property to Earthquakes to control whether or not related items are triggered when active
+
 **Weapons and ammunition**
 - Fixed the BFG9000 blast passing through friendly creatures
 - Fixed the BFG9000 filling the log with errors when shot at a creature on the ground (#6703 / TRX1595)
