@@ -2,12 +2,15 @@
 
 #include <trx/config.h>
 #include <trx/game/camera.h>
+#include <trx/game/demo.h>
 #include <trx/game/game.h>
 #include <trx/game/lara.h>
 #include <trx/game/music.h>
 #include <trx/game/output/vars.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
+
+#define M_PS1_PERSPECTIVE 305
 
 typedef enum {
     TARGET_UNKNOWN,
@@ -167,8 +170,12 @@ void Camera_UpdateMicPosition(void)
         g_Camera.actual_angle = Math_Atan(
             g_Camera.target.z - g_Camera.pos.z,
             g_Camera.target.x - g_Camera.pos.x);
-        g_Camera.mic_pos.pos = XYZ_32_OffsetYaw(
-            g_Camera.pos.pos, g_Camera.actual_angle, g_PhdPersp);
+        // The PS1 release places the listener at the distance of its fixed
+        // screen projection, and its demos depend on it.
+        const int32_t distance =
+            Demo_UsesPS1Rules() ? M_PS1_PERSPECTIVE : g_PhdPersp;
+        g_Camera.mic_pos.pos =
+            XYZ_32_OffsetYaw(g_Camera.pos.pos, g_Camera.actual_angle, distance);
         g_Camera.mic_pos.room_num = g_Camera.pos.room_num;
     }
 }
