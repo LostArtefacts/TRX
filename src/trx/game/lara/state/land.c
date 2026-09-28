@@ -1,5 +1,6 @@
 #include <trx/config.h>
 #include <trx/game/camera.h>
+#include <trx/game/demo.h>
 #include <trx/game/gun.h>
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
@@ -86,6 +87,16 @@ static void M_PullUp(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+// The PS1 release lets Lara look up and down while she walks, runs or
+// sprints, which takes away the forward input and stops her. Its demos depend
+// on it.
+static void M_LookWhileMoving(void)
+{
+    if (Demo_UsesPS1Rules() && g_Input.look) {
+        Lara_Look_UpDown();
+    }
+}
+
 static void M_Walk(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
@@ -98,6 +109,7 @@ static void M_Walk(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
+    M_LookWhileMoving();
     if (g_Input.left) {
         lara->turn_rate -= LARA_TURN_RATE;
         CLAMPL(lara->turn_rate, -LARA_SLOW_TURN);
@@ -197,6 +209,7 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
+    M_LookWhileMoving();
     if (g_Input.left) {
         lara->turn_rate -= LARA_TURN_RATE;
         CLAMPL(lara->turn_rate, -M_FAST_TURN);
@@ -847,6 +860,8 @@ static void M_Sprint(ITEM *const item, COLL_INFO *const coll)
         item->goal_anim_state = M_GetRunToCrouchState();
         return;
     }
+
+    M_LookWhileMoving();
     if (g_Input.left) {
         lara->turn_rate -= M_SPRINT_TURN_RATE;
         CLAMPL(lara->turn_rate, -M_SPRINT_TURN_MAX);
