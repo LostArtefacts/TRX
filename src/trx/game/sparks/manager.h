@@ -8,6 +8,12 @@ typedef struct JSON_READ_IO JSON_READ_IO;
 typedef struct JSON_WRITE_IO JSON_WRITE_IO;
 
 void Sparks_Reset(void);
+// Calms the TR3 wind and skips its next update, as resetting Lara's hair does
+// in TR3. The skipped update makes no draws on the control random generator.
+void Sparks_ResetWind(void);
+// Advances the wind. TR3 runs it after Lara's control, as its hair code does;
+// the other games advance it with the rest of the sparks.
+void Sparks_UpdateWind(void);
 void Sparks_Control(void);
 void Sparks_Draw(void);
 

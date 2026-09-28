@@ -6,6 +6,7 @@
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
 #include <trx/game/sound.h>
+#include <trx/game/sparks/manager.h>
 #include <trx/game/spawn.h>
 #include <trx/game/viewport.h>
 #include <trx/version.h>
@@ -83,6 +84,7 @@ static void M_ShootLeftGun(ITEM *const item)
 static void M_ResetHair(ITEM *const item)
 {
     Lara_Hair_Initialise();
+    Sparks_ResetWind();
 }
 
 static void M_Bubbles(ITEM *const item)

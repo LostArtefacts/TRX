@@ -12,9 +12,13 @@
 #include <trx/game/output/lights.h>
 #include <trx/game/output/sources/poly_fx.h>
 #include <trx/game/random.h>
+#include <trx/version.h>
 
 #define M_MAX_SPARKS 400
 #define M_MAX_SPARK_DYNAMICS 32
+
+// Half a turn in the 4096-unit angle space of the TR3 wind.
+#define M_TR3_WIND_START_ANGLE 2048
 
 typedef struct {
     bool on;
@@ -34,8 +38,9 @@ static int32_t m_NextSpark = 0;
 static XZ_32 m_SmokeWind = {};
 static int32_t m_HairWindZ = 0;
 static int32_t m_TR3Wind = 0;
-static int32_t m_TR3WindAngle = DEG_180;
-static int32_t m_TR3DWindAngle = DEG_180;
+static int32_t m_TR3WindAngle = M_TR3_WIND_START_ANGLE;
+static int32_t m_TR3DWindAngle = M_TR3_WIND_START_ANGLE;
+static bool m_TR3WindHeld = false;
 
 static const BITE m_NodeOffsets[16] = {
     { .pos = { 0, 340, 64 }, .mesh_num = 7 },
@@ -124,6 +129,13 @@ static void M_UpdateWind(void)
             .x = 0,
             .z = m_HairWindZ << 1,
         };
+        return;
+    }
+
+    if (m_TR3WindHeld) {
+        m_TR3WindHeld = false;
+        m_SmokeWind = (XZ_32) {};
+        m_HairWindZ = 0;
         return;
     }
 
@@ -490,9 +502,15 @@ void Sparks_Reset(void)
     m_NextSpark = 0;
     m_SmokeWind = (XZ_32) {};
     m_HairWindZ = 0;
+    Sparks_ResetWind();
+}
+
+void Sparks_ResetWind(void)
+{
     m_TR3Wind = 0;
-    m_TR3WindAngle = DEG_180;
-    m_TR3DWindAngle = DEG_180;
+    m_TR3WindAngle = M_TR3_WIND_START_ANGLE;
+    m_TR3DWindAngle = M_TR3_WIND_START_ANGLE;
+    m_TR3WindHeld = true;
 }
 
 XZ_32 Sparks_GetSmokeWind(void)
@@ -510,9 +528,16 @@ int32_t Sparks_GetHairWindZ(void)
     return m_HairWindZ;
 }
 
-void Sparks_Control(void)
+void Sparks_UpdateWind(void)
 {
     M_UpdateWind();
+}
+
+void Sparks_Control(void)
+{
+    if (g_TRVersion != 3) {
+        M_UpdateWind();
+    }
 
     for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
         SPARK *const spark = &m_Sparks[i];
