@@ -239,8 +239,10 @@ bool Demo_Start(const int32_t level_num)
     Lara_Hair_Initialise();
 
     Camera_Initialise();
-    Random_SeedDraw(0xD371F947);
-    Random_SeedControl(0xD371F947);
+    if (g_TRVersion <= 2) {
+        Random_SeedDraw(0xD371F947);
+        Random_SeedControl(0xD371F947);
+    }
     g_OverlayFlag = 1;
 
     Overlay_SetBottomText((OVERLAY_TEXT) {
