@@ -77,6 +77,7 @@ static const BITE m_KickBite = {
 
 static void M_Initialise(const int16_t item_num)
 {
+    Creature_Initialise(item_num);
     ITEM *const item = Item_Get(item_num);
     Item_SwitchToAnim(item, M_ANIM_STOP, 0);
     item->current_anim_state = M_STATE_STOP;
