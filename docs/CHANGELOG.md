@@ -56,6 +56,7 @@
 - Fixed Lara stopping a turn at once when the look button is held
 - Fixed Lara, enemies and vehicles moving slightly differently from the original game
 - Fixed civilians, military police and prisoners not starting slightly turned, as they do in the original game
+- Fixed guns that eject shells puffing smoke at the muzzle rather than at the shell
 
 **TR4**
 - Added Small Scorpion control (TRX1562)

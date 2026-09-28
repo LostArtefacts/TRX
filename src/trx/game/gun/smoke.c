@@ -35,6 +35,16 @@ static XYZ_32 M_GetSmokeOffset(
     return M_IsSet(pos) ? pos : M_GetMuzzleOffset(weapon_type, is_right_hand);
 }
 
+// A weapon that ejects a shell has its first smoke from the shell instead;
+// the rest follows in the next frames.
+static bool M_EjectsShell(
+    const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
+{
+    const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
+    return M_IsSet(
+        is_right_hand ? weapon->shell_pos.right : weapon->shell_pos.left);
+}
+
 static XYZ_32 M_GetSmokeTip(
     const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
 {
@@ -91,7 +101,7 @@ void Gun_Smoke_OnFire(const LARA_GUN_TYPE weapon_type, const bool is_right_hand)
         for (int32_t i = 0; i < 12; i++) {
             Sparks_TriggerShotgunSparks(muzzle_pos, vel_sparks);
         }
-    } else {
+    } else if (!M_EjectsShell(weapon_type, is_right_hand)) {
         Sparks_TriggerGunSmoke(pos, true, weapon_type, count);
     }
 }

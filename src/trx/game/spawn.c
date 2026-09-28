@@ -397,6 +397,15 @@ void Spawn_GunShell(const LARA_GUN_TYPE weapon_type, const bool right)
 
     Lara_GetMeshPos(right ? LM_HAND_R : LM_HAND_L, &offset);
 
+    if (g_TRVersion == 3) {
+        GAME_VECTOR smoke_pos = { .pos = offset,
+                                  .room_num = lara_item->room_num };
+        Room_GetSector(smoke_pos.pos, &smoke_pos.room_num);
+        Sparks_TriggerGunSmoke(
+            smoke_pos, false, weapon_type,
+            weapon_type == LGT_SHOTGUN ? 24 : 16);
+    }
+
     const WEAPON_INFO *const weapon = Gun_Registry_Get(weapon_type);
     const OBJECT_ID shell_object_id = weapon->shell_object_id;
     const int16_t effect_num = Effect_Create(
