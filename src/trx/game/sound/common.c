@@ -10,6 +10,7 @@
 #include <trx/core/utils.h>
 #include <trx/game/camera.h>
 #include <trx/game/game_buf.h>
+#include <trx/game/game_flow.h>
 #include <trx/game/lara.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -121,6 +122,20 @@ static float M_ConvertPitch(const int32_t pitch)
     return pitch / 0x10000.p0;
 }
 
+// Reports whether sound effects draw on the control random number generator.
+// The PS1 release does, and its demos depend on it; the PC release uses the
+// draw generator, which leaves gameplay untouched.
+static bool M_UsesControlRandom(void)
+{
+    const GF_LEVEL *const level = GF_GetCurrentLevel();
+    return g_TRVersion == 3 && level != nullptr && level->type == GFL_DEMO;
+}
+
+static int32_t M_GetRandom(void)
+{
+    return M_UsesControlRandom() ? Random_GetControl() : Random_GetDraw();
+}
+
 static int32_t M_GetDistance(
     const SAMPLE_INFO *const sample, const XYZ_32 *const pos)
 {
@@ -147,7 +162,7 @@ static int32_t M_GetVolume(
 {
     int32_t volume = sample->volume;
     if (random && sample->flags.randomize_volume) {
-        volume -= Random_GetDraw() * M_SOUND_MAX_VOLUME_CHANGE / 0x8000;
+        volume -= M_GetRandom() * M_SOUND_MAX_VOLUME_CHANGE / 0x8000;
     }
 
     if (g_TRVersion == 1) {
@@ -172,14 +187,14 @@ static int32_t M_GetPitch(const SAMPLE_INFO *const sample, const uint32_t flags)
     int32_t pitch = (flags & SPM_PITCH) != 0 ? (flags >> 8) & 0xFFFFFF
                                              : SOUND_DEFAULT_PITCH;
     pitch += sample->pitch * (1 << 9);
-    if (!g_Config.audio.enable_pitched_sounds) {
+    const bool pitched = g_Config.audio.enable_pitched_sounds;
+    if (!sample->flags.randomize_pitch
+        || (!pitched && !M_UsesControlRandom())) {
         return pitch;
     }
-    if (sample->flags.randomize_pitch) {
-        pitch += ((Random_GetDraw() * M_SOUND_MAX_PITCH_CHANGE) / 0x4000)
-            - M_SOUND_MAX_PITCH_CHANGE;
-    }
-    return pitch;
+    const int32_t change = ((M_GetRandom() * M_SOUND_MAX_PITCH_CHANGE) / 0x4000)
+        - M_SOUND_MAX_PITCH_CHANGE;
+    return pitched ? pitch + change : pitch;
 }
 
 static int32_t M_GetPan(
@@ -568,7 +583,10 @@ void Sound_ResetSources(void)
 int32_t Sound_EffectBySlot(
     const SAMPLE_SLOT sample_id, const XYZ_32 *const pos, const uint32_t flags)
 {
-    if (!Sound_IsInitialised()) {
+    // Without audio, a sound on the control generator still makes its draws,
+    // so that the game plays out the same with or without a sound device.
+    const bool is_initialised = Sound_IsInitialised();
+    if (!is_initialised && !M_UsesControlRandom()) {
         return -1;
     }
 
@@ -587,7 +605,7 @@ int32_t Sound_EffectBySlot(
     }
 
     if (sample->randomness) {
-        int32_t r = Random_GetDraw();
+        int32_t r = M_GetRandom();
         if (g_TRVersion >= 3) {
             r &= 0xFF;
         }
@@ -611,7 +629,10 @@ int32_t Sound_EffectBySlot(
     const int32_t num_samples = sample->flags.num_samples;
     const int32_t track_id = num_samples == 1
         ? sample->number
-        : sample->number + ((num_samples * Random_GetDraw()) / 0x8000);
+        : sample->number + ((num_samples * M_GetRandom()) / 0x8000);
+    if (!is_initialised) {
+        return -1;
+    }
 
     M_ACTIVE_SOUND *sound = nullptr;
     switch (sample->mode) {
