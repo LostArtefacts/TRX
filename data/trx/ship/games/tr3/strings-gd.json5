@@ -313,5 +313,52 @@
                 }
             }
         }
+    ],
+    "demos": [
+        {
+            "title": "Aldwych",
+            "objects": {
+                "key_item_1": {
+                    "name": "Iuchair a' Chàraidh",
+                },
+                "key_item_2": {
+                    "name": "Iuchair Sholaimh",
+                },
+                "key_item_3": {
+                    "name": "Iuchair Sholaimh",
+                },
+                "puzzle_item_1": {
+                    "name": "Seann Bhonn-airgid",
+                },
+                "puzzle_item_2": {
+                    "name": "Tiocaid",
+                },
+                "puzzle_item_3": {
+                    "name": "Òrd Clachaireachd",
+                },
+                "puzzle_item_4": {
+                    "name": "Rionnag Sgeadaichte",
+                }
+            }
+        },
+        {
+            "title": "Abhainn nan Ganges",
+            "objects": {
+                "key_item_1": {
+                    "name": "Iuchair a' Gheata",
+                }
+            }
+        },
+        {
+            "title": "Fàsach Nebhada",
+            "objects": {
+                "key_item_1": {
+                    "name": "Cead-inntrigidh a' Ghineadair",
+                },
+                "key_item_2": {
+                    "name": "Suidse an Spreadhaidh",
+                }
+            }
+        }
     ]
 }

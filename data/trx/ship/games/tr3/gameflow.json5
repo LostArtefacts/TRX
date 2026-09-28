@@ -631,6 +631,78 @@
         },
     ],
 
+    "demos": [
+        // Demo 1: Aldwych
+        {
+            "path": "sewer.tr2",
+            "music_track": 74,
+            "water_particles": true,
+            "lara_outfit": "tr3_catsuit",
+            "sequence": [
+                {"type": "loading_screen", "path": "london.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "loop_game"},
+                {"type": "level_complete"},
+            ],
+            "injections": [
+                "lara_guns.bin",
+                "aldwych_fd.bin",
+                "aldwych_pickup_meshes.bin",
+                "aldwych_textures.bin",
+                "menu_artefacts_london.bin",
+                "aldwych_animating_bounds.bin",
+                "bat_sprites.bin",
+                "infada_meshes.bin",
+                "aldwych_demo.bin",
+            ],
+        },
+
+        // Demo 2: The River Ganges
+        {
+            "path": "quadchas.tr2",
+            "music_track": 34,
+            "lara_outfit": "tr3_classic",
+            "weather_type": "rain",
+            "sequence": [
+                {"type": "loading_screen", "path": "india.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "loop_game"},
+                {"type": "level_complete"},
+            ],
+            "injections": [
+                "india_sky.bin",
+                "lara_guns.bin",
+                "ganges_door131_frames.bin",
+                "ganges_textures.bin",
+                "common_pickup_meshes.bin",
+                "fish_sprites.bin",
+                "ganges_animating_bounds.bin",
+                "ganges_demo.bin",
+            ],
+        },
+
+        // Demo 3: Nevada Desert
+        {
+            "path": "nevada.tr2",
+            "music_track": 33,
+            "death_tile": "electric",
+            "lara_outfit": "tr3_nevada",
+            "sequence": [
+                {"type": "loading_screen", "path": "nevada.webp", "fade_in_time": 1.0, "fade_out_time": 1.0},
+                {"type": "loop_game"},
+                {"type": "level_complete"},
+            ],
+            "injections": [
+                "lara_guns.bin",
+                "nevada_sky.bin",
+                "nevada_door132_frames.bin",
+                "common_pickup_meshes.bin",
+                "nevada_textures.bin",
+                "nevada_animating_bounds.bin",
+                "infada_meshes.bin",
+                "nevada_demo.bin",
+            ],
+        },
+    ],
+
     "cutscenes": [
         // Cutscene 1
         {

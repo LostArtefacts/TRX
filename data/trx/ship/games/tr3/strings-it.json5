@@ -313,5 +313,52 @@
                 }
             }
         }
+    ],
+    "demos": [
+        {
+            "title": "Aldwych",
+            "objects": {
+                "key_item_1": {
+                    "name": "Chiave di Manutenzione",
+                },
+                "key_item_2": {
+                    "name": "Chiave di Salomone",
+                },
+                "key_item_3": {
+                    "name": "Chiave di Salomone",
+                },
+                "puzzle_item_1": {
+                    "name": "Vecchio Penny",
+                },
+                "puzzle_item_2": {
+                    "name": "Biglietto",
+                },
+                "puzzle_item_3": {
+                    "name": "Martello Massonico",
+                },
+                "puzzle_item_4": {
+                    "name": "Stella Ornata",
+                }
+            }
+        },
+        {
+            "title": "Il Fiume Gange",
+            "objects": {
+                "key_item_1": {
+                    "name": "Chiave del Cancello",
+                }
+            }
+        },
+        {
+            "title": "Deserto del Nevada",
+            "objects": {
+                "key_item_1": {
+                    "name": "Chiave d'Accesso al Generatore",
+                },
+                "key_item_2": {
+                    "name": "Chiave del Detonatore",
+                }
+            }
+        }
     ]
 }

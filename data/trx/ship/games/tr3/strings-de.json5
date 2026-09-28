@@ -313,5 +313,52 @@
                 }
             }
         }
+    ],
+    "demos": [
+        {
+            "title": "Aldwych",
+            "objects": {
+                "key_item_1": {
+                    "name": "Wartungsraumschlüssel",
+                },
+                "key_item_2": {
+                    "name": "Solomon's Schlüssel",
+                },
+                "key_item_3": {
+                    "name": "Solomon's Schlüssel",
+                },
+                "puzzle_item_1": {
+                    "name": "Alter Penny",
+                },
+                "puzzle_item_2": {
+                    "name": "Ticket",
+                },
+                "puzzle_item_3": {
+                    "name": "Steinmetzhammer",
+                },
+                "puzzle_item_4": {
+                    "name": "Verzierter Stern",
+                }
+            }
+        },
+        {
+            "title": "Der Ganges",
+            "objects": {
+                "key_item_1": {
+                    "name": "Schlüssel zum Tor",
+                }
+            }
+        },
+        {
+            "title": "Wüste von Nevada",
+            "objects": {
+                "key_item_1": {
+                    "name": "Zugangskarte zum Generator",
+                },
+                "key_item_2": {
+                    "name": "Zündschlüssel",
+                }
+            }
+        }
     ]
 }
