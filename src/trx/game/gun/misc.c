@@ -527,13 +527,22 @@ void Gun_GetNewTarget(const WEAPON_INFO *const weapon)
         .old_target_in_list = false,
     };
 
-    // First pass: active creatures
-    for (int32_t i = 0; i < LOT_SLOT_COUNT; i++) {
-        const CREATURE *const creature = LOT_GetBaddieSlot(i);
-        if (creature->item_num == NO_ITEM) {
-            continue;
+    // First pass: simulated items, in the order TR1 and TR3 take them,
+    // because it decides between targets that are equally good. TR2 takes
+    // the creatures in its LOT slots instead.
+    if (g_TRVersion == 2) {
+        for (int32_t i = 0; i < LOT_SLOT_COUNT; i++) {
+            const CREATURE *const creature = LOT_GetBaddieSlot(i);
+            if (creature->item_num == NO_ITEM) {
+                continue;
+            }
+            M_ConsiderTarget(&ctx, Item_Get(creature->item_num));
         }
-        M_ConsiderTarget(&ctx, Item_Get(creature->item_num));
+    } else {
+        for (int16_t item_num = Item_GetNextSimulated(); item_num != NO_ITEM;
+             item_num = Item_Get(item_num)->next_simulated) {
+            M_ConsiderTarget(&ctx, Item_Get(item_num));
+        }
     }
 
     // Second pass: other objects, including skidoo driver, whose targetable

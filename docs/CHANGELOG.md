@@ -43,6 +43,7 @@
 - Fixed the BFG9000 blast passing through friendly creatures
 - Fixed the BFG9000 filling the log with errors when shot at a creature on the ground (#6703 / TRX1595)
 - Fixed level completion after explosive weapon kills (#6685 / TRX1584)
+- Fixed Lara sometimes aiming at a different enemy than in the original games when two were equally good targets
 
 **TR2**
 - Fixed missing gun flashes in the Diving Area cutscene (OG bug) (TRX89)
