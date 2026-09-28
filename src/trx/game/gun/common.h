@@ -74,6 +74,10 @@ LARA_GUN_TYPE Gun_GetFlareType(void);
 bool Gun_IsSinglePistolType(LARA_GUN_TYPE gun_type);
 // Whether Lara holds one of the weapon in each hand.
 bool Gun_IsDualPistolType(LARA_GUN_TYPE gun_type);
+// Moves a point on one of Lara's hands into world space. The TR3 demos take
+// it from her current animation, as the PS1 release does, and everything else
+// takes it from the pose last drawn.
+void Gun_GetHandPos(LARA_MESH hand, XYZ_32 *pos);
 
 void Gun_AddDynamicLight(void);
 void Gun_FireOverlaySound(const WEAPON_INFO *weapon);

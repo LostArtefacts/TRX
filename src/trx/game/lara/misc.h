@@ -6,6 +6,10 @@
 #include <trx/game/objects/effects/flame.h>
 
 void Lara_GetJointAbsPosition(XYZ_32 *vec, LARA_MESH joint);
+// Moves a point on one of Lara's hands into world space, using her current
+// animation rather than the pose last drawn. Returns false when her arms do
+// not hold pistols, and leaves the point unchanged.
+bool Lara_GetHandPosFromAnim(LARA_MESH hand, XYZ_32 *vec);
 void Lara_RefuseInteraction(void);
 void Lara_TakeHit(ITEM *lara_item, int32_t dx, int32_t dz);
 void Lara_Extinguish(void);

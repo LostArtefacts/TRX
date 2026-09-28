@@ -395,7 +395,7 @@ void Spawn_GunShell(const LARA_GUN_TYPE weapon_type, const bool right)
         return;
     }
 
-    Lara_GetMeshPos(right ? LM_HAND_R : LM_HAND_L, &offset);
+    Gun_GetHandPos(right ? LM_HAND_R : LM_HAND_L, &offset);
 
     if (g_TRVersion == 3) {
         GAME_VECTOR smoke_pos = { .pos = offset,
