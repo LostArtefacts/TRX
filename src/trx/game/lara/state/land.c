@@ -585,6 +585,14 @@ static void M_FastBack(ITEM *const item, COLL_INFO *const coll)
     }
 }
 
+// TR3 lets a turn run out while Lara looks around. The turn keeps adding to
+// her turn rate until it stops, which changes the heading she ends up with.
+static bool M_IsLookStoppingTurn(void)
+{
+    return g_TRVersion != 3
+        && g_Config.gameplay.look_mode != LOOK_MODE_RESTRICTED && g_Input.look;
+}
+
 static void M_Turn(ITEM *const item, COLL_INFO *const coll)
 {
     if (item->hit_points <= 0) {
@@ -592,7 +600,7 @@ static void M_Turn(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (g_Config.gameplay.look_mode != LOOK_MODE_RESTRICTED && g_Input.look) {
+    if (M_IsLookStoppingTurn()) {
         item->goal_anim_state = LS(LS_STOP);
         return;
     }
@@ -646,7 +654,7 @@ static void M_FastTurn(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (g_Config.gameplay.look_mode != LOOK_MODE_RESTRICTED && g_Input.look) {
+    if (M_IsLookStoppingTurn()) {
         item->goal_anim_state = LS(LS_STOP);
         return;
     }
