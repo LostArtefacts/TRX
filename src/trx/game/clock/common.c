@@ -58,7 +58,11 @@ static void M_WaitForFrame(const double frames)
 static void M_Init(void)
 {
     m_Frequency = SDL_GetPerformanceFrequency();
-    m_InitCounter = SDL_GetPerformanceCounter();
+    // Keep the real clock monotonic across mod switches. Reinitialising the
+    // counter leaves timers that survive the switch with a future reference.
+    if (m_InitCounter == 0) {
+        m_InitCounter = SDL_GetPerformanceCounter();
+    }
 }
 
 static void M_ApplyConfig(void)

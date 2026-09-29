@@ -18,6 +18,7 @@
 - Changed the look button to skip loading screens, pictures, FMVs, and stats screens, like it does for cutscenes (TRX1541)
 - Changed the pause screen during FMVs to use the chosen pause background style (TRX1617)
 - Fixed items without a sprite, such as the scion, not showing in the pickups overlay when 3D pickups are off
+- Fixed the FPS counter briefly showing an incorrect value after switching mods (TRX1631)
 - Fixed the game not fading to black when it was exited during an FMV (TRX1616)
 - Fixed the stats background help naming the wrong style for TR2 (PS1) (#6711 / TRX1598)
 
