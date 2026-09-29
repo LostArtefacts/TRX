@@ -1775,23 +1775,23 @@ void Creature_GetAITarget(CREATURE *const creature)
     const OBJECT_ID enemy_object_id =
         enemy != nullptr ? enemy->object_id : NO_OBJECT;
 
-    uint8_t ai_bits = item->ai_bits;
+    const uint8_t ai_bits = item->ai_bits;
 
-    if (ai_bits & AI_GUARD) {
+    if ((ai_bits & AI_GUARD) != 0) {
         creature->enemy = lara_item;
 
         if (creature->alerted) {
             item->ai_bits &= ~AI_GUARD;
 
-            if (ai_bits & AI_AMBUSH) {
+            if ((ai_bits & AI_AMBUSH) != 0) {
                 item->ai_bits |= AI_MODIFY;
             }
         }
-    } else if (ai_bits & AI_PATROL_1) {
+    } else if ((ai_bits & AI_PATROL_1) != 0) {
         if (creature->alerted || creature->hurt_by_lara) {
             item->ai_bits &= ~AI_PATROL_1;
 
-            if (ai_bits & AI_AMBUSH) {
+            if ((ai_bits & AI_AMBUSH) != 0) {
                 item->ai_bits |= AI_MODIFY;
             }
         } else if (!creature->patrol_2 && enemy_object_id != O_AI_PATROL_1) {
@@ -1825,8 +1825,8 @@ void Creature_GetAITarget(CREATURE *const creature)
             Room_TestTriggers(enemy);
             creature->patrol_2 = !creature->patrol_2;
         }
-    } else if (ai_bits & AI_AMBUSH) {
-        if (ai_bits & AI_MODIFY || creature->hurt_by_lara) {
+    } else if ((ai_bits & AI_AMBUSH) != 0) {
+        if ((ai_bits & AI_MODIFY) != 0 || creature->hurt_by_lara) {
             if (enemy_object_id != O_AI_AMBUSH) {
                 for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
                     ITEM *const target = Item_Get(i);
@@ -1855,7 +1855,7 @@ void Creature_GetAITarget(CREATURE *const creature)
         } else {
             creature->enemy = lara_item;
         }
-    } else if (ai_bits & AI_FOLLOW) {
+    } else if ((ai_bits & AI_FOLLOW) != 0) {
         if (creature->hurt_by_lara) {
             creature->enemy = lara_item;
             creature->alerted = true;
