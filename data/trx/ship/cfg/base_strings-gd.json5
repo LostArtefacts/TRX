@@ -2668,6 +2668,12 @@
         "harpoon_gun_item": {
             "name": "Harpùn",
         },
+        "henchman_1": {
+            "name": "Fear-leantainn 1",
+        },
+        "henchman_2": {
+            "name": "Fear-leantainn 2",
+        },
         "hook": {
             "name": "Dubhan",
         },

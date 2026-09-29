@@ -342,7 +342,7 @@
     },
     {
       "bulk": true,
-      "count": 838,
+      "count": 840,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -597,6 +597,8 @@
         "HARPOON_GUN_ITEM",
         "HARPOON_GUN_OPTION",
         "HEAVY_ROCKET",
+        "HENCHMAN_1",
+        "HENCHMAN_2",
         "HOOK",
         "HOT_LIQUID",
         "HUSKIE",
@@ -1192,7 +1194,7 @@
     },
     {
       "bulk": true,
-      "count": 214,
+      "count": 215,
       "description": "Every sound sample TRX has a name for.",
       "examples": [
         "trx.sound.play(trx.catalog.samples.LARA_NO)"
@@ -1386,6 +1388,7 @@
         "STAGE_BACKDROP",
         "STAIRS_2_SLOPE_FX",
         "STONE_DOOR_SLIDE",
+        "SWORD_RICOCHET",
         "TARGET_HITS",
         "TARGET_SMASH",
         "THUNDER",

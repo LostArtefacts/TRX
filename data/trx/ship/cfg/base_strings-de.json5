@@ -2668,6 +2668,12 @@
         "harpoon_gun_item": {
             "name": "Harpune",
         },
+        "henchman_1": {
+            "name": "\\{review}Handlanger 1",
+        },
+        "henchman_2": {
+            "name": "\\{review}Handlanger 2",
+        },
         "hook": {
             "name": "Hook",
         },

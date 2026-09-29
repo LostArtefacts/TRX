@@ -194,6 +194,20 @@
         <property category="TRX" defaultValue="15" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
         <property category="TRX" defaultValue="true" description="Whether he guides Lara or navigates the level on his own." displayName="Guides Lara" internalName="guides_lara" type="Bool" />
     </moveable>
+    <!--placeholder for O_HENCHMAN_1-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="25" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="true" description="Whether the henchman will seek small medipack and uzi ammo pickups to replenish his kit." displayName="Seeks Equipment" internalName="seeks_equipment" type="Bool" />
+        <property category="TRX" defaultValue="15" description="Damage dealt by the henchman's gunshot." displayName="Gun Damage" internalName="gun_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="120" description="Damage dealt by the henchman's sword." displayName="Sword Damage" internalName="sword_damage" minValue="0" type="Int" />
+    </moveable>
+    <!--placeholder for O_HENCHMAN_2-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="35" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="true" description="Whether the henchman will seek small medipack and uzi ammo pickups to replenish his kit." displayName="Seeks Equipment" internalName="seeks_equipment" type="Bool" />
+        <property category="TRX" defaultValue="15" description="Damage dealt by the henchman's gunshot." displayName="Gun Damage" internalName="gun_damage" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="120" description="Damage dealt by the henchman's sword." displayName="Sword Damage" internalName="sword_damage" minValue="0" type="Int" />
+    </moveable>
     <!--placeholder for O_JACKAL-->
     <moveable id="-1">
         <property category="TRX" defaultValue="16" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />

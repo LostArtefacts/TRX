@@ -380,6 +380,28 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### henchman_1
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">25</td><td>Maximum hit points.</td></tr>
+<tr><td><code>seeks_equipment</code></td><td colspan="3" align="center">true</td><td>Whether the henchman will seek small medipack and uzi ammo pickups to replenish his kit.</td></tr>
+<tr><td><code>gun_damage</code></td><td colspan="3" align="center">15</td><td>Damage dealt by the henchman's gunshot.</td></tr>
+<tr><td><code>sword_damage</code></td><td colspan="3" align="center">120</td><td>Damage dealt by the henchman's sword.</td></tr>
+</tbody>
+</table>
+
+#### henchman_2
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">35</td><td>Maximum hit points.</td></tr>
+<tr><td><code>seeks_equipment</code></td><td colspan="3" align="center">true</td><td>Whether the henchman will seek small medipack and uzi ammo pickups to replenish his kit.</td></tr>
+<tr><td><code>gun_damage</code></td><td colspan="3" align="center">15</td><td>Damage dealt by the henchman's gunshot.</td></tr>
+<tr><td><code>sword_damage</code></td><td colspan="3" align="center">120</td><td>Damage dealt by the henchman's sword.</td></tr>
+</tbody>
+</table>
+
 #### huskie
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (41)</th><th>Description</th></tr></thead>

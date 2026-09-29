@@ -2700,6 +2700,12 @@
             "name": "Harpoon Gun",
         },
         "harpoon_gun_option": "$objects/harpoon_gun_item",
+        "henchman_1": {
+            "name": "Henchman 1",
+        },
+        "henchman_2": {
+            "name": "Henchman 2",
+        },
         "hook": {
             "name": "Hook",
         },
