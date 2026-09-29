@@ -133,6 +133,10 @@ typedef struct {
     LARA_GUN_TYPE tr3_smoke_weapon;
     bool has_fired;
 
+    // TR4: a countdown timer when using flash grenades, temporarily stunning
+    // certain enemies.
+    uint8_t blind_timer;
+
     // TRR modern controls stuff
     bool crouching;
     bool sprinting;
