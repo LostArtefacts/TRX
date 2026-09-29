@@ -1,8 +1,8 @@
 {
-  "ai_ambush":                { "status": "partially implemented", "todo": "check 100% parity"                 },
+  "ai_ambush":                { "status": "fully implemented" },
   "ai_follow":                { "status": "fully implemented" },
   "ai_guard":                 { "status": "partially implemented", "todo": "check 100% parity"                 },
-  "ai_modify":                { "status": "partially implemented", "todo": "check 100% parity"                 },
+  "ai_modify":                { "status": "fully implemented" },
   "ai_x1":                    { "status": "partially implemented", "todo": "check 100% parity"                 },
   "amber_light":              { "status": "partially implemented", "todo": "check 100% parity"                 },
   "ammit":                    { "status": "not implemented",       "todo": "port from AHMET"                   },

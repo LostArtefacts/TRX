@@ -1664,7 +1664,7 @@ int16_t Creature_EffectEx(
 
 int16_t Creature_AIGuard(CREATURE *const creature)
 {
-    if (Item_Get(creature->item_num)->ai_bits & AI_MODIFY) {
+    if ((Item_Get(creature->item_num)->ai_bits & AI_MODIFY) != 0) {
         return 0;
     }
 
@@ -1826,7 +1826,8 @@ void Creature_GetAITarget(CREATURE *const creature)
             creature->patrol_2 = !creature->patrol_2;
         }
     } else if ((ai_bits & AI_AMBUSH) != 0) {
-        if ((ai_bits & AI_MODIFY) != 0 || creature->hurt_by_lara) {
+        if (g_TRVersion >= 4 || (ai_bits & AI_MODIFY) != 0
+            || creature->hurt_by_lara) {
             if (enemy_object_id != O_AI_AMBUSH) {
                 for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
                     ITEM *const target = Item_Get(i);
@@ -1834,7 +1835,7 @@ void Creature_GetAITarget(CREATURE *const creature)
                     if (target->object_id == O_AI_AMBUSH
                         && target->room_num != NO_ROOM
                         && Creature_SameZone(creature, target)
-                        && (target->rot.y == item->ai_tag
+                        && (g_TRVersion >= 4 || target->rot.y == item->ai_tag
                             || item->object_id == O_MONKEY)) {
                         creature->enemy = target;
                         return;
@@ -1845,11 +1846,19 @@ void Creature_GetAITarget(CREATURE *const creature)
                     && ABS(enemy->pos.y - item->pos.y) < M_MARKER_REACH
                     && ABS(enemy->pos.z - item->pos.z) < M_MARKER_REACH) {
                     Room_TestTriggers(enemy);
-                    creature->reached_goal = 1;
+                    creature->reached_goal = true;
                     creature->enemy = lara_item;
-                    item->ai_bits &= ~(AI_AMBUSH | AI_MODIFY);
-                    item->ai_bits |= AI_GUARD;
-                    creature->alerted = false;
+                    if (g_TRVersion >= 4) {
+                        item->ai_bits &= ~AI_AMBUSH;
+                        if (item->ai_bits != AI_MODIFY) {
+                            item->ai_bits |= AI_GUARD;
+                            creature->alerted = false;
+                        }
+                    } else {
+                        item->ai_bits &= ~(AI_AMBUSH | AI_MODIFY);
+                        item->ai_bits |= AI_GUARD;
+                        creature->alerted = false;
+                    }
                 }
             }
         } else {
