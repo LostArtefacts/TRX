@@ -147,3 +147,9 @@ XYZ_32 Creature_GetAITargetPos(const ITEM *item);
 bool Creature_IsAIObjectSpent(const ITEM *item);
 void Creature_SetAIObjectSpent(const ITEM *item);
 void Creature_ResetAIObjectsSpent(void);
+
+// Samples the path ahead three times, moving the provided distance each time,
+// based on the item's yaw. The provided CREATURE_PROBE has its jump values and
+// encountered heights on each pass determined.
+void Creature_ProbeAhead(
+    const ITEM *item, int32_t distance, CREATURE_PROBE *probe);

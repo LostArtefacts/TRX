@@ -1913,3 +1913,23 @@ void Creature_GetAITarget(CREATURE *const creature)
         }
     }
 }
+
+void Creature_ProbeAhead(
+    const ITEM *const item, const int32_t distance, CREATURE_PROBE *const probe)
+{
+    const int32_t y = item->pos.y;
+    XYZ_32 pos = item->pos;
+    for (int32_t i = 0; i < 3; i++) {
+        pos = XYZ_32_OffsetYaw(pos, item->rot.y, distance);
+        pos.y = y;
+        int16_t room_num = item->room_num;
+        const SECTOR *const sector = Room_GetSector(pos, &room_num);
+        probe->heights[i] = Room_GetHeight(sector, pos);
+    }
+
+    probe->jump_ahead = y < probe->heights[0] - STEPUP_HEIGHT
+        && y < probe->heights[1] + STEP_L && y > probe->heights[1] - STEP_L;
+    probe->long_jump_ahead = y < probe->heights[0] - STEPUP_HEIGHT
+        && y < probe->heights[1] - STEPUP_HEIGHT
+        && y < probe->heights[2] + STEP_L && y > probe->heights[2] - STEP_L;
+}
