@@ -2668,6 +2668,12 @@
         "harpoon_gun_item": {
             "name": "Fucile Subacqueo",
         },
+        "henchman_1": {
+            "name": "\\{review}Scagnozzo 1",
+        },
+        "henchman_2": {
+            "name": "\\{review}Scagnozzo 2",
+        },
         "hook": {
             "name": "Gancio",
         },

@@ -2668,6 +2668,12 @@
         "harpoon_gun_item": {
             "name": "\\{review}Гарпунное ружьё",
         },
+        "henchman_1": {
+            "name": "\\{review}Подручный 1",
+        },
+        "henchman_2": {
+            "name": "\\{review}Подручный 2",
+        },
         "hook": {
             "name": "\\{review}Крюк",
         },

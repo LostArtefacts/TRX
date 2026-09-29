@@ -41,7 +41,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     - `trx.catalog.Context.FAMILIES` = `7`  
         The families an object can belong to.
 
-- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 838 names
+- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 840 names
 
     Every object TRX has a name for.
 
@@ -109,12 +109,12 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     `GRENADE_AMMO_OPTION`, `GRENADE_GUN_ITEM`, `GRENADE_GUN_OPTION`, `GUIDE`,
     `GUN_FLASH`, `GUN_SHELL`, `HARPOON_BOLT`, `HARPOON_GUN_AMMO_ITEM`,
     `HARPOON_GUN_AMMO_OPTION`, `HARPOON_GUN_ITEM`, `HARPOON_GUN_OPTION`,
-    `HEAVY_ROCKET`, `HOOK`, `HOT_LIQUID`, `HUSKIE`, `HYBRID_MUTANT`, `ICICLE`,
-    `INV_BACKGROUND`, `JACKAL`, `JELLY`, `KAYAK`, `KEY_HOLE_1`, `KEY_HOLE_10`,
-    `KEY_HOLE_11`, `KEY_HOLE_12`, `KEY_HOLE_2`, `KEY_HOLE_3`, `KEY_HOLE_4`,
-    `KEY_HOLE_5`, `KEY_HOLE_6`, `KEY_HOLE_7`, `KEY_HOLE_8`, `KEY_HOLE_9`,
-    `KEY_ITEM_1`, `KEY_ITEM_10`, `KEY_ITEM_11`, `KEY_ITEM_12`,
-    `KEY_ITEM_1_COMBO_1`, `KEY_ITEM_1_COMBO_2`, `KEY_ITEM_2`,
+    `HEAVY_ROCKET`, `HENCHMAN_1`, `HENCHMAN_2`, `HOOK`, `HOT_LIQUID`, `HUSKIE`,
+    `HYBRID_MUTANT`, `ICICLE`, `INV_BACKGROUND`, `JACKAL`, `JELLY`, `KAYAK`,
+    `KEY_HOLE_1`, `KEY_HOLE_10`, `KEY_HOLE_11`, `KEY_HOLE_12`, `KEY_HOLE_2`,
+    `KEY_HOLE_3`, `KEY_HOLE_4`, `KEY_HOLE_5`, `KEY_HOLE_6`, `KEY_HOLE_7`,
+    `KEY_HOLE_8`, `KEY_HOLE_9`, `KEY_ITEM_1`, `KEY_ITEM_10`, `KEY_ITEM_11`,
+    `KEY_ITEM_12`, `KEY_ITEM_1_COMBO_1`, `KEY_ITEM_1_COMBO_2`, `KEY_ITEM_2`,
     `KEY_ITEM_2_COMBO_1`, `KEY_ITEM_2_COMBO_2`, `KEY_ITEM_3`,
     `KEY_ITEM_3_COMBO_1`, `KEY_ITEM_3_COMBO_2`, `KEY_ITEM_4`,
     `KEY_ITEM_4_COMBO_1`, `KEY_ITEM_4_COMBO_2`, `KEY_ITEM_5`,
@@ -268,7 +268,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
 
     </details>
 
-- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 214 names
+- <a id="catalog.samples" name="catalog.samples"></a>[lua]`trx.catalog.samples` - 215 names
 
     Every sound sample TRX has a name for.
 
@@ -326,13 +326,13 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     `SKIDOO_IDLE`, `SKIDOO_MOVING`, `SMALL_FAN_ON`, `SOPHIA_SUMMON`,
     `SOPHIA_SUMMON_NOT`, `SOPHIA_TAKE_HIT`, `SPANNER_CLUNK`, `SPIDER_EXPLODE`,
     `SPIKES`, `SPIKE_WALL`, `STAGE_BACKDROP`, `STAIRS_2_SLOPE_FX`,
-    `STONE_DOOR_SLIDE`, `TARGET_HITS`, `TARGET_SMASH`, `THUNDER`, `TORSO_HIT`,
-    `TRAIN_LOOP`, `TRAPDOOR_OPEN`, `TRIBOSS_TAKE_HIT`, `TRIBOSS_TURN_CHAIR`,
-    `UNDERWATER`, `UNDERWATER_FAN_OFF`, `UNDERWATER_FAN_ON`, `UPV_HARPOON`,
-    `UPV_LOOP`, `UPV_START`, `UPV_STOP`, `WARRIOR_HOVER`, `WATERFALL_2`,
-    `WATERFALL_BIG`, `WATERFALL_LOOP`, `WINSTON_CUPS`, `WINSTON_GRUNT_1`,
-    `WINSTON_GRUNT_2`, `WINSTON_GRUNT_3`, `WOLF_HURT`, `ZIPLINE_GO`,
-    `ZIPLINE_STOP`
+    `STONE_DOOR_SLIDE`, `SWORD_RICOCHET`, `TARGET_HITS`, `TARGET_SMASH`,
+    `THUNDER`, `TORSO_HIT`, `TRAIN_LOOP`, `TRAPDOOR_OPEN`, `TRIBOSS_TAKE_HIT`,
+    `TRIBOSS_TURN_CHAIR`, `UNDERWATER`, `UNDERWATER_FAN_OFF`,
+    `UNDERWATER_FAN_ON`, `UPV_HARPOON`, `UPV_LOOP`, `UPV_START`, `UPV_STOP`,
+    `WARRIOR_HOVER`, `WATERFALL_2`, `WATERFALL_BIG`, `WATERFALL_LOOP`,
+    `WINSTON_CUPS`, `WINSTON_GRUNT_1`, `WINSTON_GRUNT_2`, `WINSTON_GRUNT_3`,
+    `WOLF_HURT`, `ZIPLINE_GO`, `ZIPLINE_STOP`
 
     </details>
 
