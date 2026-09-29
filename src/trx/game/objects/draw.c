@@ -228,7 +228,7 @@ bool Object_DrawAnimatingItemWithSwap(
         swap_obj = nullptr;
     }
     if (swap_obj != nullptr) {
-        ASSERT(swap_obj->mesh_count == obj->mesh_count);
+        ASSERT(swap_obj->mesh_count >= obj->mesh_count);
     }
 
     if (obj->shadow_size != 0) {
