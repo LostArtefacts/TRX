@@ -716,6 +716,8 @@ void SG_File_DumpLara(JSON_WRITE_IO *const io)
     JSONW_POP_AND_SET(io, "rope");
     M_WriteRopeState(io);
 
+    JSONW_WRITE(io, "blind_timer", lara->blind_timer);
+
     JSONW_POP_AND_SET(io, "lara");
 }
 

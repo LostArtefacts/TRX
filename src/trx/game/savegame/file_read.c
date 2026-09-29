@@ -406,6 +406,9 @@ static RESULT M_ReadLara(JSON_READ_IO *const io)
         MUST(M_ReadRopeState(io));
     }
 
+    // Introduced with TR4 Henchmen.
+    SHOULD(JSON_READ(io, "blind_timer", &lara->blind_timer));
+
     return OK;
 }
 
