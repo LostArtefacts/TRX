@@ -21,6 +21,7 @@ TARGET_TYPE Box_CalculateTarget(
     XYZ_32 *target, const ITEM *item, LOT_INFO *lot);
 // Checks whether the path out of the given box crosses monkey bars.
 bool Box_IsMonkeyAhead(const LOT_INFO *lot, int16_t box_num);
+bool Box_IsJumpAhead(const LOT_INFO *lot, int16_t box_num);
 
 bool Box_BadFloor(
     int32_t x, int32_t y, int32_t z, int32_t box_height, int32_t next_height,
