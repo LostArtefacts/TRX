@@ -72,3 +72,16 @@ typedef struct {
         int16_t death_state;
     } land, water;
 } HYBRID_INFO;
+
+typedef struct {
+    union {
+        int32_t heights[3];
+        struct {
+            int32_t near_height;
+            int32_t mid_height;
+            int32_t far_height;
+        };
+    };
+    bool jump_ahead;
+    bool long_jump_ahead;
+} CREATURE_PROBE;
