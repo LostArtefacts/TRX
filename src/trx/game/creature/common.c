@@ -772,6 +772,8 @@ void Creature_ApplyMood(
 
     creature->monkey_ahead =
         g_TRVersion >= 4 && Box_IsMonkeyAhead(lot, item->box_num);
+    creature->jump_ahead =
+        g_TRVersion >= 4 && Box_IsJumpAhead(lot, item->box_num);
 }
 
 int16_t Creature_Turn(ITEM *const item, int16_t max_turn)

@@ -24,6 +24,7 @@ typedef struct CREATURE {
     bool reached_goal;
     // Set while the path ahead is monkey bars, which TR4's guides swing along.
     bool monkey_ahead;
+    bool jump_ahead;
     bool hurt_by_lara;
     int32_t damage_from_lara;
     bool patrol_2;

@@ -49,6 +49,32 @@ static int16_t M_GetOverlap(const int32_t overlap_idx)
         : m_Overlaps[overlap_idx];
 }
 
+// How the path leaves the box the creature stands in. TR4 marks the overlaps
+// that take a jump or a swing along the monkey bars to cross.
+static bool M_IsOverlapTypeAhead(
+    const LOT_INFO *const lot, const int16_t box_num, const int32_t type)
+{
+    const BOX_INFO *const box = Box_GetBox(box_num);
+    if (box == nullptr || lot->node[box_num].exit_box == NO_BOX) {
+        return false;
+    }
+
+    const int16_t exit_box = lot->node[box_num].exit_box;
+    int32_t index = box->overlap_index & BOX_OVERLAP_BITS;
+    while (true) {
+        const int16_t overlap = M_GetOverlap(index++);
+        if (overlap == NO_BOX) {
+            return false;
+        }
+        if (M_GetOverlapBoxNum(overlap) == exit_box) {
+            return (overlap & type) != 0;
+        }
+        if ((overlap & BOX_END_BIT) != 0) {
+            return false;
+        }
+    }
+}
+
 void Box_InitialiseBoxes(const int32_t num_boxes)
 {
     m_BoxCount = num_boxes;
@@ -208,29 +234,14 @@ bool Box_SearchLOT(LOT_INFO *const lot, const int32_t expansion)
     return true;
 }
 
-// How the path leaves the box the creature stands in. TR4 marks the overlaps
-// that take a jump or a swing along the monkey bars to cross.
 bool Box_IsMonkeyAhead(const LOT_INFO *const lot, const int16_t box_num)
 {
-    const BOX_INFO *const box = Box_GetBox(box_num);
-    if (box == nullptr || lot->node[box_num].exit_box == NO_BOX) {
-        return false;
-    }
+    return M_IsOverlapTypeAhead(lot, box_num, BOX_OVERLAP_MONKEY);
+}
 
-    const int16_t exit_box = lot->node[box_num].exit_box;
-    int32_t index = box->overlap_index & BOX_OVERLAP_BITS;
-    while (true) {
-        const int16_t overlap = M_GetOverlap(index++);
-        if (overlap == NO_BOX) {
-            return false;
-        }
-        if (M_GetOverlapBoxNum(overlap) == exit_box) {
-            return (overlap & BOX_OVERLAP_MONKEY) != 0;
-        }
-        if ((overlap & BOX_END_BIT) != 0) {
-            return false;
-        }
-    }
+bool Box_IsJumpAhead(const LOT_INFO *const lot, const int16_t box_num)
+{
+    return M_IsOverlapTypeAhead(lot, box_num, BOX_OVERLAP_JUMP);
 }
 
 bool Box_UpdateLOT(LOT_INFO *const lot, const int32_t expansion)
