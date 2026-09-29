@@ -153,3 +153,5 @@ void Creature_ResetAIObjectsSpent(void);
 // encountered heights on each pass determined.
 void Creature_ProbeAhead(
     const ITEM *item, int32_t distance, CREATURE_PROBE *probe);
+
+bool Creature_SameZone(const CREATURE *creature, ITEM *target_item);

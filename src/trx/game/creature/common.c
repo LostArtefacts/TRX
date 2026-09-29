@@ -298,26 +298,6 @@ static bool M_IsAIObject(const OBJECT_ID object_id)
     }
 }
 
-static bool M_SameZone(const CREATURE *const creature, ITEM *const target_item)
-{
-    if (creature->lot.setup.fly != 0) {
-        return true;
-    }
-
-    int16_t *const zone = Box_GetGroundZone(
-        Room_GetFlipStatus(), (creature->lot.setup.step >> 8) - 1);
-    ITEM *const item = Item_Get(creature->item_num);
-
-    const ROOM *room = Room_Get(item->room_num);
-    item->box_num = Room_GetWorldSector(room, item->pos.x, item->pos.z)->box;
-
-    room = Room_Get(target_item->room_num);
-    target_item->box_num =
-        Room_GetWorldSector(room, target_item->pos.x, target_item->pos.z)->box;
-
-    return zone[item->box_num] == zone[target_item->box_num];
-}
-
 static bool M_TestWaterBelow(const ITEM *const item, const int32_t y)
 {
     int16_t room_num = item->room_num;
@@ -410,6 +390,26 @@ static void M_AvoidStoppers(ITEM *const item, CREATURE *const creature)
         creature->target.x = mid.pos.x;
         creature->target.z = mid.pos.z;
     }
+}
+
+bool Creature_SameZone(const CREATURE *const creature, ITEM *const target_item)
+{
+    if (creature->lot.setup.fly != 0) {
+        return true;
+    }
+
+    int16_t *const zone = Box_GetGroundZone(
+        Room_GetFlipStatus(), (creature->lot.setup.step >> 8) - 1);
+    ITEM *const item = Item_Get(creature->item_num);
+
+    const ROOM *room = Room_Get(item->room_num);
+    item->box_num = Room_GetWorldSector(room, item->pos.x, item->pos.z)->box;
+
+    room = Room_Get(target_item->room_num);
+    target_item->box_num =
+        Room_GetWorldSector(room, target_item->pos.x, target_item->pos.z)->box;
+
+    return zone[item->box_num] == zone[target_item->box_num];
 }
 
 XYZ_32 Creature_GetAITargetPos(const ITEM *const item)
@@ -1741,7 +1741,7 @@ ITEM *Creature_FindAITargetObject(
             continue;
         }
         // A marker it cannot walk to is no use to it.
-        if (!M_SameZone(creature, target)) {
+        if (!Creature_SameZone(creature, target)) {
             continue;
         }
         creature->enemy = target;
@@ -1800,7 +1800,7 @@ void Creature_GetAITarget(CREATURE *const creature)
 
                 if (target->object_id == O_AI_PATROL_1
                     && target->room_num != NO_ROOM
-                    && M_SameZone(creature, target)
+                    && Creature_SameZone(creature, target)
                     && target->rot.y == item->ai_tag) {
                     creature->enemy = target;
                     return;
@@ -1812,7 +1812,7 @@ void Creature_GetAITarget(CREATURE *const creature)
 
                 if (target->object_id == O_AI_PATROL_2
                     && target->room_num != NO_ROOM
-                    && M_SameZone(creature, target)
+                    && Creature_SameZone(creature, target)
                     && target->rot.y == item->ai_tag) {
                     creature->enemy = target;
                     return;
@@ -1833,7 +1833,7 @@ void Creature_GetAITarget(CREATURE *const creature)
 
                     if (target->object_id == O_AI_AMBUSH
                         && target->room_num != NO_ROOM
-                        && M_SameZone(creature, target)
+                        && Creature_SameZone(creature, target)
                         && (target->rot.y == item->ai_tag
                             || item->object_id == O_MONKEY)) {
                         creature->enemy = target;
@@ -1868,7 +1868,7 @@ void Creature_GetAITarget(CREATURE *const creature)
 
                 if (target->object_id == O_AI_FOLLOW
                     && target->room_num != NO_ROOM
-                    && M_SameZone(creature, target)
+                    && Creature_SameZone(creature, target)
                     && target->rot.y == item->ai_tag) {
                     creature->enemy = target;
                     return;
@@ -1895,7 +1895,7 @@ void Creature_GetAITarget(CREATURE *const creature)
                     if (target->object_id == O_KEY_ITEM_4
                         && target->room_num != NO_ROOM && !target->ai_bits
                         && target->is_visible && !target->clear_body
-                        && M_SameZone(creature, target)) {
+                        && Creature_SameZone(creature, target)) {
                         creature->enemy = target;
                         return;
                     }
@@ -1907,7 +1907,7 @@ void Creature_GetAITarget(CREATURE *const creature)
                 if (target->object_id == O_SMALL_MEDIPACK_ITEM
                     && target->room_num != NO_ROOM && !target->ai_bits
                     && target->is_visible && !target->clear_body
-                    && M_SameZone(creature, target)) {
+                    && Creature_SameZone(creature, target)) {
                     creature->enemy = target;
                     return;
                 }
