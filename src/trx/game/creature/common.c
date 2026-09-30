@@ -996,7 +996,7 @@ bool Creature_HasLineOfFire(const ITEM *const item, const ITEM *const enemy)
     GAME_VECTOR start = { .pos = item->pos, .room_num = item->room_num };
     GAME_VECTOR target = { .pos = enemy->pos, .room_num = enemy->room_num };
 
-    if (g_TRVersion == 3) {
+    if (g_TRVersion >= 3) {
         if (enemy->hit_points <= 0
             || (enemy != Lara_GetItem() && enemy->creature_data == nullptr)) {
             return false;
