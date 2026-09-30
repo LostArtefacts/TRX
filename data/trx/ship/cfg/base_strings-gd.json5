@@ -2699,6 +2699,9 @@
         "jackal": {
             "name": "Cù|Seacal",
         },
+        "jeep": {
+            "name": "Jeep",
+        },
         "jelly": {
             "name": "Muir-tèachd",
         },
@@ -2869,6 +2872,9 @@
         },
         "lara_harpoon_gun": {
             "name": "Beòthalachd Harpùn",
+        },
+        "lara_jeep": {
+            "name": "Beòthalachd Jeep",
         },
         "lara_kayak": {
             "name": "Beòthalachd Càbaig",
