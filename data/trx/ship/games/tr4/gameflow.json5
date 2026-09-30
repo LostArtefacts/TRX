@@ -135,6 +135,7 @@
             ],
             "injections": [
                 "guide_gun.bin",
+                "valley_fd.bin",
             ],
         },
 
