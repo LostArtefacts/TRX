@@ -1312,7 +1312,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── race_textures.bin
 │   │   │   ├── shadow_sprite.bin
 │   │   │   ├── sparks_gfx.bin
-│   │   │   └── title_textures.bin
+│   │   │   ├── title_textures.bin
+│   │   │   └── valley_fd.bin
 │   │   ├── modules
 │   │   │   ├── cutscenes.lua
 │   │   │   ├── expanding_blocks.lua
@@ -2733,7 +2734,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── race_textures.bin
     │   │   │   │   ├── shadow_sprite.bin
     │   │   │   │   ├── sparks_gfx.bin
-    │   │   │   │   └── title_textures.bin
+    │   │   │   │   ├── title_textures.bin
+    │   │   │   │   └── valley_fd.bin
     │   │   │   ├── modules
     │   │   │   │   ├── cutscenes.lua
     │   │   │   │   ├── expanding_blocks.lua
