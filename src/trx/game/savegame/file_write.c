@@ -217,6 +217,8 @@ static void M_WriteItem(JSON_WRITE_IO *const io, const ITEM *const item)
                 io, "enemy",
                 creature->enemy == nullptr ? NO_ITEM
                                            : Item_GetIndex(creature->enemy));
+            JSONW_WRITE(io, "is_jumping", creature->lot.is_jumping);
+            JSONW_WRITE(io, "is_monkeying", creature->lot.is_monkeying);
             JSONW_PUSH_ARRAY(io);
             for (int32_t i = 0; i < 4; i++) {
                 JSONW_PUSH_VALUE(io, creature->joint_rotation[i]);
