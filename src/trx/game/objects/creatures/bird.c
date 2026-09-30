@@ -1,5 +1,6 @@
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
+#include <trx/game/demo.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
@@ -151,6 +152,11 @@ static void M_Control(const int16_t item_num)
     Creature_Animate(item_num, angle, 0);
 }
 
+static bool M_CanClipVulture()
+{
+    return !Demo_UsesPS1Rules();
+}
+
 static bool M_SetupCommon(OBJECT *const obj)
 {
     if (!obj->loaded) {
@@ -201,6 +207,7 @@ static void M_SetupVulture(OBJECT *const obj)
     if (!M_SetupCommon(obj)) {
         return;
     }
+    obj->can_clip_func = M_CanClipVulture;
     OBJECT_PROPERTIES(obj, ITEM_PROPERTY_MAX_HIT_POINTS(M_VULTURE_HITPOINTS));
 }
 

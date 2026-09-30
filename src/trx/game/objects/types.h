@@ -76,6 +76,7 @@ typedef struct OBJECT {
 
     void (*control_func)(int16_t item_num);
     bool (*draw_func)(const ITEM *item);
+    bool (*can_clip_func)(void);
 
     // Effects are counted in their own pool and drawn from their own struct,
     // so neither of these can be the item's: the number a control takes would
