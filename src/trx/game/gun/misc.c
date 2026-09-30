@@ -187,7 +187,14 @@ void Gun_ApplyFlashSemiTransparency(void)
 
 void Gun_FindTargetPoint(const ITEM *const item, GAME_VECTOR *const target)
 {
-    const BOUNDS_16 *const bounds = &Item_GetBestFrame(item)->bounds;
+    const ANIM_FRAME *const frame = Item_GetBestFrame(item);
+    if (frame == nullptr) {
+        target->pos = item->pos;
+        target->room_num = item->room_num;
+        return;
+    }
+
+    const BOUNDS_16 *const bounds = &frame->bounds;
     const int32_t x = bounds->min.x + (bounds->max.x - bounds->min.x) / 2;
     const int32_t y = bounds->min.y + (bounds->max.y - bounds->min.y) / 3;
     const int32_t z = bounds->min.z + (bounds->max.z - bounds->min.z) / 2;
