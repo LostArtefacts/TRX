@@ -680,6 +680,11 @@ static RESULT M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
                     SHOULD(JSON_READ_OPT(io, "enemy", &enemy_num));
                     creature->enemy =
                         enemy_num == NO_ITEM ? nullptr : Item_Get(enemy_num);
+                    // Introduced in TRX 1.12
+                    SHOULD(JSON_READ_OPT(
+                        io, "is_jumping", &creature->lot.is_jumping));
+                    SHOULD(JSON_READ_OPT(
+                        io, "is_monkeying", &creature->lot.is_monkeying));
                     MUST(JSON_PUSH(io, "joint_rotations"));
                     for (int32_t i = 0; i < 4; i++) {
                         // Introduced in TRX 1.2
