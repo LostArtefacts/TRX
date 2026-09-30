@@ -644,7 +644,8 @@ static RESULT M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
             // Introduced in TRX 1.2
             MUST(JSON_READ_OPT(io, "collidable", &item->is_collidable));
         }
-        // Introduced in TRX 1.2, not written if zero
+        // Introduced in TRX 1.2: ai_tag not written if zero; ai_bits always
+        // written beginning in TRX 1.12
         MUST(JSON_READ_OPT(io, "ai_bits", &item->ai_bits));
         MUST(JSON_READ_OPT(io, "ai_tag", &item->ai_tag));
         // Introduced in TRX 1.10, not written if zero

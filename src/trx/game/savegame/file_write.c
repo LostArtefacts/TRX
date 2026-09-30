@@ -195,7 +195,7 @@ static void M_WriteItem(JSON_WRITE_IO *const io, const ITEM *const item)
             obj->intelligent && item->creature_data != nullptr;
         JSONW_WRITE(io, "intelligent", intelligent);
         JSONW_WRITE(io, "timer", item->timer);
-        JSONW_WRITE_NZ(io, "ai_bits", item->ai_bits);
+        JSONW_WRITE(io, "ai_bits", item->ai_bits);
         JSONW_WRITE_NZ(io, "ai_tag", item->ai_tag);
         JSONW_WRITE_NZ(io, "fade", item->fade);
         if (intelligent) {
