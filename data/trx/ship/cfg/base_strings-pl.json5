@@ -3734,6 +3734,9 @@
         "tribe_pipeman": {
             "name": "Tubylec (dmuchawka)",
         },
+        "trigger_gate": {
+            "name": "\\{review}Blokada wyzwalacza",
+        },
         "tropical_fish": {
             "name": "Rybki",
         },

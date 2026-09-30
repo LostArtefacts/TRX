@@ -3740,6 +3740,9 @@
         "tribe_pipeman": {
             "name": "Indigeno con Cerbottana",
         },
+        "trigger_gate": {
+            "name": "\\{review}Blocco di Attivazione",
+        },
         "tropical_fish": {
             "name": "Pesci Tropicali",
         },

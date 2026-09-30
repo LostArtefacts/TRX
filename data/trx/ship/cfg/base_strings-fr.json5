@@ -3734,6 +3734,9 @@
         "tribe_pipeman": {
             "name": "\\{review}Utilisateur de sarbacane de la tribu",
         },
+        "trigger_gate": {
+            "name": "\\{review}Barrière de déclenchement",
+        },
         "tropical_fish": {
             "name": "\\{review}Poisson tropical",
         },

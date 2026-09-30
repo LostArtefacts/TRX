@@ -39,6 +39,7 @@
 - Added a `trigger_items` property to Earthquakes to control whether or not related items are triggered when active
 - Added a `lifetime` property to Earthquakes to control deactivating them automatically after a set number of frames
 - Fixed a crash if Lara tried to aim at an enemy who had invalid animation data (#6744 / TRX1632)
+- Fixed missing names for the Trigger Gate object, and being unable to activate them via the `/trigger` command
 
 **Weapons and ammunition**
 - Fixed the BFG9000 blast passing through friendly creatures

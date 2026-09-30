@@ -3734,6 +3734,9 @@
         "tribe_pipeman": {
             "name": "Fear-treubh le Dàrt",
         },
+        "trigger_gate": {
+            "name": "Geata Gnìomhachaidh",
+        },
         "tropical_fish": {
             "name": "Iasg Tropaigeach",
         },
