@@ -97,6 +97,13 @@ static BOUNDS_16 M_GetBoundingBox(
     return new_bounds;
 }
 
+static CLIP M_GetClip(const OBJECT *const obj, const BOUNDS_16 *const bounds)
+{
+    return (obj->can_clip_func == nullptr || obj->can_clip_func())
+        ? Output_CheckBoundsClip(bounds)
+        : CLIP_FULLY_VISIBLE;
+}
+
 static bool M_DrawInterpolatedObject(
     const OBJECT *const obj, const uint32_t mesh_mask,
     const int16_t *extra_rotation, const ANIM_FRAME *const frame1,
@@ -117,7 +124,7 @@ static bool M_DrawInterpolatedObject(
         bounds.min.z -= offset.z;
         bounds.max.z -= offset.z;
     }
-    const CLIP clip = Output_CheckBoundsClip(&bounds);
+    const CLIP clip = M_GetClip(obj, &bounds);
     if (clip == CLIP_NOT_VISIBLE) {
         return false;
     }
@@ -239,7 +246,7 @@ bool Object_DrawAnimatingItemWithSwap(
     Matrix_TranslateAbs32(item->interp.result.pos);
     Matrix_Rot16(item->interp.result.rot);
 
-    const CLIP clip = Output_CheckBoundsClip(bounds);
+    const CLIP clip = M_GetClip(obj, bounds);
     if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
         return false;
@@ -307,7 +314,7 @@ bool Object_DrawScaledItem(
     Matrix_RotZ(item->interp.result.rot.z);
     Matrix_RotY(item->interp.result.rot.y);
 
-    const CLIP clip = Output_CheckBoundsClip(bounds);
+    const CLIP clip = M_GetClip(obj, bounds);
     if (clip == CLIP_NOT_VISIBLE) {
         Matrix_Pop();
         return false;
@@ -443,7 +450,7 @@ bool Object_DrawPickupItem(const ITEM *const item)
         Output_CalculateLight(item->pos, item->room_num);
     }
 
-    const CLIP clip = Output_CheckBoundsClip(&bounds);
+    const CLIP clip = M_GetClip(obj, &bounds);
     if (clip != CLIP_NOT_VISIBLE) {
         for (int32_t mesh_idx = 0; mesh_idx < obj->mesh_count; mesh_idx++) {
             if (mesh_idx > 0) {
