@@ -386,13 +386,15 @@ signal for a fill value that changes.]],
     end
 
     -- Split the fill into vertical bands. Smooth bars blend between adjacent
-    -- ramp entries, while flat bars use one ramp entry per band. Each band
-    -- starts exactly where the previous one ends.
-    local function bands(y, h, count)
+    -- ramp entries, while flat bars use one ramp entry per band. The split
+    -- is made in whole screen pixels so that each band starts exactly where
+    -- the previous one ends, with no gap after rounding.
+    local function bands(y_px, h_px, count)
+      local at = primitive.to_canvas
       local out = {}
       for i = 0, count - 1 do
-        local top = y + h * i / count
-        local bottom = y + h * (i + 1) / count
+        local top = at(y_px + h_px * i // count)
+        local bottom = at(y_px + h_px * (i + 1) // count)
         out[#out + 1] = { i + 1, top, bottom - top }
       end
       return out
@@ -430,8 +432,8 @@ signal for a fill value that changes.]],
       local x2, y2 = x1 + edge, y1 + edge
       local ix, iy = at(x1), at(y1)
       local iw, ih = at(x0 + w_px - edge) - ix, at(y0 + h_px - edge) - iy
-      local fx, fy = at(x2), at(y2)
-      local fh = at(y0 + h_px - 2 * edge) - fy
+      local fx = at(x2)
+      local fh_px = h_px - 4 * edge
       local fw = (at(x0 + w_px - 2 * edge) - fx) * fill
 
       local ox, oy = at(x0), at(y0)
@@ -470,7 +472,7 @@ signal for a fill value that changes.]],
 
       local shaded = is_smooth()
       local count = shaded and STEPS - 1 or STEPS
-      for _, band in ipairs(bands(fy, fh, count)) do
+      for _, band in ipairs(bands(y2, fh_px, count)) do
         local step, by, step_h = band[1], band[2], band[3]
         if theme.kind == "ps1" then
           local tl = theme.ramp_left[step]
