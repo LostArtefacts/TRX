@@ -3734,6 +3734,9 @@
         "tribe_pipeman": {
             "name": "\\{review}Stammes-Blasrohrbenutzer",
         },
+        "trigger_gate": {
+            "name": "\\{review}Trigger-Sperre",
+        },
         "tropical_fish": {
             "name": "\\{review}Tropischer Fisch",
         },

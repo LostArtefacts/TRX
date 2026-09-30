@@ -3882,6 +3882,9 @@
         "tribe_pipeman": {
             "name": "Tribe Blowpipe User",
         },
+        "trigger_gate": {
+            "name": "Trigger Gate",
+        },
         "tropical_fish": {
             "name": "Tropical Fish",
         },

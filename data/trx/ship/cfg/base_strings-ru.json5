@@ -3734,6 +3734,9 @@
         "tribe_pipeman": {
             "name": "\\{review}Пользователь духовой трубки племени",
         },
+        "trigger_gate": {
+            "name": "\\{review}Блокиратор триггера",
+        },
         "tropical_fish": {
             "name": "\\{review}Тропическая рыба",
         },
