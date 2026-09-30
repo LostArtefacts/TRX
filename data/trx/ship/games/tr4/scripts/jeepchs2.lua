@@ -1,4 +1,10 @@
-trx.events.on_game_start(function()
+local function start_lara_on_jeep()
+  local jeep = trx.items[0]
+  jeep.pos = trx.lara.item.pos
+  jeep.rot = { x = 0, y = trx.lara.item.rot.y, z = 0 }
+end
+
+trx.events.on_game_start(function(is_save)
   trx.items[6].properties.requires_heavy_trigger = true
   trx.items[8].properties.requires_heavy_trigger = true
   trx.items[9].properties.requires_heavy_trigger = true
@@ -11,6 +17,10 @@ trx.events.on_game_start(function()
   trx.items[95].properties.requires_heavy_trigger = true
   trx.objects.scaled_spikes.properties.scaled_spikes_mode =
     trx.items.ScaledSpikesMode.EXTENDED
+
+  if not is_save then
+    start_lara_on_jeep()
+  end
 end)
 
 require("tr4.inv_setup").apply({

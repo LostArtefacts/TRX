@@ -99,7 +99,7 @@
   "horus_statue":             { "status": "not implemented",       "todo": "port from HORUS_STATUE"            },
   "jackal":                   { "status": "fully implemented" },
   "jean_yves":                { "status": "not implemented",       "todo": "port from JEAN_YVES"               },
-  "jeep":                     { "status": "not implemented",       "todo": "port from JEEP"                    },
+  "jeep":                     { "status": "fully implemented" },
   "key_hole_1":               { "status": "partially implemented", "todo": "check 100% parity"                 },
   "key_hole_2":               { "status": "partially implemented", "todo": "check 100% parity"                 },
   "key_hole_10":              { "status": "partially implemented", "todo": "check 100% parity"                 },

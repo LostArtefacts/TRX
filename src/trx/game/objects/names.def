@@ -122,6 +122,7 @@ X_OBJ_NAME_DEFINE(O_LARA_KAYAK,             "Kayak Animation")
 X_OBJ_NAME_DEFINE(O_LARA_UPV,               "UPV Animation")
 X_OBJ_NAME_DEFINE(O_LARA_RIB,               "RIB Animation")
 X_OBJ_NAME_DEFINE(O_LARA_MINE_CART,         "Mine Cart Animation")
+X_OBJ_NAME_DEFINE(O_LARA_JEEP,              "Jeep Animation")
 
 // Vehicles
 X_OBJ_NAME_DEFINE(O_SKIDOO_FAST, "Red Snowmobile")
@@ -132,6 +133,7 @@ X_OBJ_NAME_DEFINE(O_UPV,         "UPV|Minisub")
 X_OBJ_NAME_DEFINE(O_MOUNTED_GUN, "Mounted Gun")
 X_OBJ_NAME_DEFINE(O_MINE_CART,   "Mine Cart")
 X_OBJ_NAME_DEFINE(O_RIB,         "Rigid Inflatable Boat|RIB")
+X_OBJ_NAME_DEFINE(O_JEEP,        "Jeep")
 
 // Enemies
 X_OBJ_NAME_DEFINE(O_BACON_LARA,           "Bacon Lara")

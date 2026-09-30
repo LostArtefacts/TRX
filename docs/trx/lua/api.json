@@ -342,7 +342,7 @@
     },
     {
       "bulk": true,
-      "count": 840,
+      "count": 842,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -606,6 +606,7 @@
         "ICICLE",
         "INV_BACKGROUND",
         "JACKAL",
+        "JEEP",
         "JELLY",
         "KAYAK",
         "KEY_HOLE_1",
@@ -691,6 +692,7 @@
         "LARA_GRENADE_GUN",
         "LARA_HAIR",
         "LARA_HARPOON_GUN",
+        "LARA_JEEP",
         "LARA_KAYAK",
         "LARA_M16",
         "LARA_MAGNUMS",
@@ -1194,7 +1196,7 @@
     },
     {
       "bulk": true,
-      "count": 215,
+      "count": 218,
       "description": "Every sound sample TRX has a name for.",
       "examples": [
         "trx.sound.play(trx.catalog.samples.LARA_NO)"
@@ -1265,8 +1267,11 @@
         "GUIDE_SCARE",
         "GUN_FIRE_EXPLOSION",
         "HELICOPTER_LOOP",
+        "HIT_ROCK",
         "HUGE_ROCKET_LOOP",
         "ICICLE",
+        "JEEP_IDLE",
+        "JEEP_MOVE",
         "LARA_AUTOS",
         "LARA_BAREFOOT",
         "LARA_BAREFOOT_LAND",
@@ -1421,7 +1426,7 @@
     },
     {
       "bulk": true,
-      "count": 52,
+      "count": 53,
       "description": "Every music track TRX has a name for.",
       "examples": [
         "trx.music.play(trx.catalog.music.SECRET)"
@@ -1432,6 +1437,7 @@
         "COWBOY_SPEECH",
         "CUTSCENE_BATH",
         "DAGGER_PULL",
+        "JEEP_THEME",
         "LARSON_SPEECH",
         "MINE_CART_THEME",
         "NATLA_SPEECH",

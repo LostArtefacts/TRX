@@ -342,4 +342,9 @@ static void M_Setup(OBJECT *const obj)
             "permanently extended; 2: one-shot."));
 }
 
+bool ScaledSpikes_TestCollision(const ITEM *const item)
+{
+    return M_TestCollision(item, Lara_GetItem());
+}
+
 REGISTER_OBJECT(O_SCALED_SPIKES, M_Setup)

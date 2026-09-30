@@ -64,8 +64,8 @@
 148, train_loop
 149, lowering_block
 150, loop_for_small_fires
-153, quad_idle
-155, quad_move
+153, jeep_idle
+155, jeep_move
 157, bats_1
 163, flood
 182, thunder
@@ -113,7 +113,7 @@
 343, spikes
 344, sand_loop
 346, upv_loop
-347, upv_start
+347, hit_rock
 348, upv_stop
 351, lara_rope_creak
 352, sophia_summon

@@ -2699,6 +2699,9 @@
         "jackal": {
             "name": "\\{review}Собака|\\{review}Шакал",
         },
+        "jeep": {
+            "name": "\\{review}Джип",
+        },
         "jelly": {
             "name": "\\{review}Медуза",
         },
@@ -2869,6 +2872,9 @@
         },
         "lara_harpoon_gun": {
             "name": "\\{review}Анимация гарпуна",
+        },
+        "lara_jeep": {
+            "name": "\\{review}Анимация Jeep",
         },
         "lara_kayak": {
             "name": "\\{review}Каяк",

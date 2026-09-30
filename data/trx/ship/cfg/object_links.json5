@@ -185,6 +185,9 @@
         ["key_option_2", "gong"],
         ["key_option_2", "detonator_box"],
     ],
+    "key_to_vehicle": [
+        ["puzzle_option_1", "jeep"],
+    ],
     "receptacle_to_done": [
         ["puzzle_hole_1", "puzzle_done_1"],
         ["puzzle_hole_2", "puzzle_done_2"],
@@ -208,5 +211,6 @@
         ["upv", "lara_upv"],
         ["rib", "lara_rib"],
         ["mine_cart", "lara_mine_cart"],
+        ["jeep", "lara_jeep"],
     ],
 }

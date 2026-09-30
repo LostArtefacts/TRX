@@ -2731,6 +2731,9 @@
         "jackal": {
             "name": "Dog|Jackal",
         },
+        "jeep": {
+            "name": "Jeep",
+        },
         "jelly": {
             "name": "Jellyfish",
         },
@@ -2929,6 +2932,9 @@
         },
         "lara_harpoon_gun": {
             "name": "Harpoon Animation",
+        },
+        "lara_jeep": {
+            "name": "Jeep Animation",
         },
         "lara_kayak": {
             "name": "Kayak Animation",

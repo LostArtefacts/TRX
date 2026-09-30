@@ -60,6 +60,7 @@ extern bool QuadBike_Control(void);
 extern bool Kayak_Control(void);
 extern bool MountedGun_Control(void);
 extern bool MineCart_Control(void);
+extern void Jeep_Control(void);
 
 static SECTOR *M_GetCurrentSector(void)
 {
@@ -679,6 +680,10 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
                 return;
             }
             break;
+
+        case O_JEEP:
+            Jeep_Control();
+            return;
 
         default:
             Gun_Control();

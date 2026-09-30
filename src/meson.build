@@ -834,6 +834,7 @@ common_sources = [
   'trx/game/objects/traps/wasp_emitter.c',
   'trx/game/objects/vehicles/boat.c',
   'trx/game/objects/vehicles/common.c',
+  'trx/game/objects/vehicles/jeep.c',
   'trx/game/objects/vehicles/kayak.c',
   'trx/game/objects/vehicles/mine_cart.c',
   'trx/game/objects/vehicles/mounted_gun.c',

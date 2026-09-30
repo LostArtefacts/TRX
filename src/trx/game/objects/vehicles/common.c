@@ -15,8 +15,11 @@
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/viewport.h>
+#include <trx/version.h>
 
 #include <stdio.h>
+
+#define M_SHIFT (g_TRVersion < 4 ? WALL_L : (WALL_L + 1))
 
 typedef enum {
     LA_VEHICLE_HIT_LEFT = 11,
@@ -68,7 +71,7 @@ int32_t Vehicle_DoShift(
             vehicle->pos.z -= shift_z + 1;
             return pos->x - vehicle->pos.x;
         } else {
-            vehicle->pos.z += WALL_L - shift_z;
+            vehicle->pos.z += M_SHIFT - shift_z;
             return vehicle->pos.x - pos->x;
         }
     } else if (z == old_z) {
@@ -76,7 +79,7 @@ int32_t Vehicle_DoShift(
             vehicle->pos.x -= shift_x + 1;
             return vehicle->pos.z - pos->z;
         } else {
-            vehicle->pos.x += WALL_L - shift_x;
+            vehicle->pos.x += M_SHIFT - shift_x;
             return pos->z - vehicle->pos.z;
         }
     } else {
@@ -95,7 +98,7 @@ int32_t Vehicle_DoShift(
             if (pos->z > old->z) {
                 z = -shift_z - 1;
             } else {
-                z = WALL_L - shift_z;
+                z = M_SHIFT - shift_z;
             }
         }
 
@@ -107,7 +110,7 @@ int32_t Vehicle_DoShift(
             if (pos->x > old->x) {
                 x = -shift_x - 1;
             } else {
-                x = WALL_L - shift_x;
+                x = M_SHIFT - shift_x;
             }
         }
 

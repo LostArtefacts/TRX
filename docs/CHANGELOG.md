@@ -79,9 +79,12 @@
 - Added Pushable Object control (TRX1556)
 - Added Earthquake control (TRX1548)
 - Added Henchman 1 and Henchman 2 control (TRX1552)
+- Added Jeep control (TRX1554)
 - Added level views before play starts, with a progress bar (TRX493)
 - Added Seth Sarcophagus and the Burial Chambers cutscene where Lara takes the Amulet (TRX1561)
 - Changed inventory items to use the original size and angle for each level's puzzle, key, pickup, and examine items
+- Changed Lara to say no when trying to use a Jeep when she doesn't have a key for it
+- Changed Jeeps by adding a `requires_key` property rather being a hard-coded enforcement
 - Fixed a box appearing beside the Eye of Horus in the inventory (OG bug)
 - Fixed inventory items such as the Broken Beetle appearing in the wrong place or not appearing in the ring
 - Fixed items appearing at the wrong angle in the pickup display

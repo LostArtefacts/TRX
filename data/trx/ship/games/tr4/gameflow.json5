@@ -145,7 +145,7 @@
         // 6. KV5
         {
             "path": "jeepchs2.tr4",
-            "music_track": 98,
+            "music_track": 110,
             "lara_outfit": "tr4_classic",
             // OG hardcodes desert fog for this level: FogTableColor[19],
             // starting at 12 tiles and fully saturated at 16.

@@ -2198,6 +2198,19 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### jeep
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>track_1</code></td><td colspan="3" align="center">-1 (MX_JEEP_THEME)</td><td>Random music track pool, slot 1. -1 = disabled.</td></tr>
+<tr><td><code>track_2</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 2. -1 = disabled.</td></tr>
+<tr><td><code>track_3</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 3. -1 = disabled.</td></tr>
+<tr><td><code>track_4</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 4. -1 = disabled.</td></tr>
+<tr><td><code>is_heavy</code></td><td colspan="3" align="center">true</td><td>Whether or not this vehicle can activate heavy triggers.</td></tr>
+<tr><td><code>requires_key</code></td><td colspan="3" align="center">true</td><td>Whether or not Lara needs a key in order to use the jeep.</td></tr>
+</tbody>
+</table>
+
 #### kayak
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (14)</th><th>Description</th></tr></thead>
