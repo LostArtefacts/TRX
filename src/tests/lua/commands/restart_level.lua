@@ -24,6 +24,12 @@ test("is unavailable outside a level", function()
   assert(fake.calls().restart_level.count == 0)
 end)
 
+test("is unavailable in a cutscene", function()
+  fake.set_current_cutscene()
+  assert(fake.run("restartlevel", "") == R.UNAVAILABLE)
+  assert(fake.calls().restart_level.count == 0)
+end)
+
 test("is unavailable when the save cannot restart", function()
   fake.set_current_level(2)
   fake.set_restart_available(false)

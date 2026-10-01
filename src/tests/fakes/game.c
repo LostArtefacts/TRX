@@ -31,7 +31,6 @@ static bool m_InCutscene;
 
 // The bonus start is a passport choice, so a test says whether this run is one.
 static bool m_IsNGPlus;
-static bool m_CanRestart;
 static bool m_IsPlaying = true;
 
 static bool m_InPhotoMode;
@@ -100,7 +99,6 @@ static void M_Reset(void)
 
     m_CurrentLevel = nullptr;
     m_IsNGPlus = false;
-    m_CanRestart = true;
     m_IsPlaying = true;
     m_HasGym = true;
     m_InCutscene = false;
@@ -118,6 +116,13 @@ static int M_L_SetCurrentLevel(lua_State *const L)
 static int M_L_SetCurrentTitle(lua_State *const L)
 {
     m_CurrentLevel = &m_TitleLevel;
+    return 0;
+}
+
+// fake.set_current_cutscene() - the first cutscene level.
+static int M_L_SetCurrentCutscene(lua_State *const L)
+{
+    m_CurrentLevel = &m_Cutscenes[0];
     return 0;
 }
 
@@ -150,24 +155,6 @@ static int M_L_SetNGPlus(lua_State *const L)
 {
     FakeGame_SetNGPlus(lua_toboolean(L, 1));
     return 0;
-}
-
-// fake.set_restart_available(bool) - whether the bound save can restart its
-// level.
-static int M_L_SetRestartAvailable(lua_State *const L)
-{
-    m_CanRestart = lua_toboolean(L, 1);
-    return 0;
-}
-
-SAVEGAME_SLOT_REF SG_Manager_GetBoundSlot(void)
-{
-    return (SAVEGAME_SLOT_REF) {};
-}
-
-bool Savegame_RestartAvailable(const SAVEGAME_SLOT_REF slot)
-{
-    return m_CanRestart;
 }
 
 void Screenshot_Make(const SCREENSHOT_FORMAT format)
@@ -260,6 +247,60 @@ const GF_LEVEL *GF_GetCurrentLevel(void)
     return m_CurrentLevel;
 }
 
+const GF_LEVEL *GF_GetFirstLevel(void)
+{
+    const GF_LEVEL_TABLE *const tbl = GF_GetLevelTable(GFLT_MAIN);
+    for (int32_t i = 0; i < tbl->count; i++) {
+        if (tbl->levels[i].type != GFL_GYM) {
+            return &tbl->levels[i];
+        }
+    }
+    return nullptr;
+}
+
+void Game_SetBonusFlag(const GAME_BONUS_FLAG flag)
+{
+    m_IsNGPlus = flag == GBF_NGPLUS;
+}
+
+void SG_Resume_ResetAllEntries(void)
+{
+    FAKE_RECORD("reset_resume");
+}
+
+void SG_Manager_UnbindSlot(void)
+{
+    FAKE_RECORD("unbind_slot");
+}
+
+void SG_Manager_BindSlot(const SAVEGAME_SLOT_REF slot)
+{
+    const int32_t index = slot.index;
+    FAKE_RECORD("bind_slot", FV(index));
+}
+
+SAVEGAME_SLOT_REF SG_Manager_NormalSlot(const int32_t index)
+{
+    return (SAVEGAME_SLOT_REF) { .pool = SAVEGAME_SLOT_POOL_NORMAL,
+                                 .index = index };
+}
+
+SAVEGAME_SLOT_REF SG_Manager_QuickFromVisualIndex(const int32_t visual_index)
+{
+    return (SAVEGAME_SLOT_REF) { .pool = SAVEGAME_SLOT_POOL_QUICK,
+                                 .index = visual_index };
+}
+
+SAVEGAME_SLOT_REF SG_Manager_InvalidSlot(void)
+{
+    return (SAVEGAME_SLOT_REF) { .index = -1 };
+}
+
+bool SG_Manager_IsValidSlotRef(const SAVEGAME_SLOT_REF slot)
+{
+    return slot.index >= 0;
+}
+
 // The game flow's level and the game's are not the same one. The title screen
 // is a level the flow is on and the game is not, which is where a caller that
 // reads the game's and guards on the flow's comes apart.
@@ -331,7 +372,7 @@ void GF_OverrideCommand(const GF_COMMAND command, const bool immediate)
     const int32_t num = command.param;
     switch (command.action) {
     case GF_START_GAME:
-        FAKE_RECORD("play_level", FV(num));
+        FAKE_RECORD("play_level", FV(num), FV(immediate));
         break;
     case GF_START_CINE:
         FAKE_RECORD("play_cutscene", FV(num));
@@ -343,11 +384,16 @@ void GF_OverrideCommand(const GF_COMMAND command, const bool immediate)
         FAKE_RECORD("play_fmv", FV(num));
         break;
     case GF_SELECT_GAME:
-        FAKE_RECORD("play_gym", FV(num));
+        FAKE_RECORD("play_gym", FV(num), FV(immediate));
         break;
     case GF_RESTART_GAME:
         FAKE_RECORD("restart_level", FV(num));
         break;
+    case GF_NEW_GAME: {
+        const bool ng_plus = command.param == GBF_NGPLUS;
+        FAKE_RECORD("new_game", FV(ng_plus), FV(immediate));
+        break;
+    }
     default:
         break;
     }
@@ -446,14 +492,14 @@ void FakeGame_PushLua(lua_State *const L)
     lua_setfield(L, -2, "set_current_level");
     lua_pushcfunction(L, M_L_SetCurrentTitle);
     lua_setfield(L, -2, "set_current_title");
+    lua_pushcfunction(L, M_L_SetCurrentCutscene);
+    lua_setfield(L, -2, "set_current_cutscene");
     lua_pushcfunction(L, M_L_SetInCutscene);
     lua_setfield(L, -2, "set_in_cutscene");
     lua_pushcfunction(L, M_L_SetGymPresent);
     lua_setfield(L, -2, "set_gym_present");
     lua_pushcfunction(L, M_L_SetPhotoMode);
     lua_setfield(L, -2, "set_photo_mode");
-    lua_pushcfunction(L, M_L_SetRestartAvailable);
-    lua_setfield(L, -2, "set_restart_available");
     lua_pushinteger(L, FAKE_LEVEL_COUNT);
     lua_setfield(L, -2, "LEVEL_COUNT");
     // The levels the game numbers: the gym is in the table but is not one.

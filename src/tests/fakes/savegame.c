@@ -15,10 +15,12 @@
 #define M_MAX_POOLS 4
 
 // The one slot a test has marked free (index -1 means none), whether the next
-// save should report failure, and any per-pool slot counts a test has set.
+// save should report failure, whether the running save allows a restart, and
+// any per-pool slot counts a test has set.
 static int32_t m_FreeIndex = -1;
 static int32_t m_FreePool = -1;
 static bool m_SaveFails;
+static bool m_RestartAvailable = true;
 static int32_t m_PoolIds[M_MAX_POOLS];
 static int32_t m_PoolCounts[M_MAX_POOLS];
 static int32_t m_PoolN;
@@ -38,6 +40,7 @@ static void M_Reset(void)
     m_FreeIndex = -1;
     m_FreePool = -1;
     m_SaveFails = false;
+    m_RestartAvailable = true;
     m_PoolN = 0;
 }
 
@@ -86,6 +89,13 @@ static int M_L_TotalCount(lua_State *const L)
     return 1;
 }
 
+// trxc.savegame.restart_available(index, pool) -> bool
+static int M_L_RestartAvailable(lua_State *const L)
+{
+    lua_pushboolean(L, m_RestartAvailable);
+    return 1;
+}
+
 // trxc.savegame.recent_slot() -> index, pool
 static int M_L_RecentSlot(lua_State *const L)
 {
@@ -106,6 +116,13 @@ static int M_L_SetSlotFree(lua_State *const L)
 {
     m_FreeIndex = (int32_t)luaL_checkinteger(L, 1);
     m_FreePool = (int32_t)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+// fake.set_restart_available(bool)
+static int M_L_SetRestartAvailable(lua_State *const L)
+{
+    m_RestartAvailable = lua_toboolean(L, 1);
     return 0;
 }
 
@@ -139,6 +156,7 @@ static const luaL_Reg m_Module[] = {
     { "slot_count", M_L_SlotCount },
     { "is_free", M_L_IsFree },
     { "total_count", M_L_TotalCount },
+    { "restart_available", M_L_RestartAvailable },
     { "recent_slot", M_L_RecentSlot },
     { "manual_allowed", M_L_ManualAllowed },
     { "load", M_L_Load },
@@ -159,6 +177,8 @@ void FakeSavegame_PushLua(lua_State *const L)
     lua_setfield(L, -2, "set_slot_free");
     lua_pushcfunction(L, M_L_SetSaveFails);
     lua_setfield(L, -2, "set_save_fails");
+    lua_pushcfunction(L, M_L_SetRestartAvailable);
+    lua_setfield(L, -2, "set_restart_available");
     lua_pushcfunction(L, M_L_SetSlotCount);
     lua_setfield(L, -2, "set_slot_count");
 }

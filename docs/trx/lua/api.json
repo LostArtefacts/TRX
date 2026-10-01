@@ -7005,6 +7005,18 @@
               "name": "select",
               "optional": true,
               "type": "boolean"
+            },
+            {
+              "description": "Whether to start the bonus game mode.",
+              "name": "ng_plus",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "description": "The save to take Lara's progress from, as `{ slot_num = 1, pool = trx.savegame.Pool.NORMAL }`.\nRaises without `select`. The death counter and the restart file then use this\nsave. Without it, `select` builds Lara's inventory as if the game had been\nplayed from the first level. <!--noref: select-->",
+              "name": "from_save",
+              "optional": true,
+              "type": "table"
             }
           ],
           "name": "opts",
@@ -7065,11 +7077,38 @@
       "path": "game.end_level"
     },
     {
-      "description": "Restarts the current level from its start, as the passport's restart does.\nReturns `false` and does nothing where the passport offers no restart: outside\na level, in a cutscene or demo, or in a save that does not record how the level\nstarted.",
-      "path": "game.restart_level",
+      "description": "Starts a new game at the first level.\n\nThe new game uses the selected game mode and clears previous progress.",
+      "examples": [
+        "trx.game.start_new_game({ ng_plus = true })"
+      ],
+      "params": [
+        {
+          "description": "The new game settings.",
+          "fields": [
+            {
+              "description": "Whether to start the bonus game mode. `false` by default.",
+              "name": "ng_plus",
+              "optional": true,
+              "type": "boolean"
+            }
+          ],
+          "name": "settings",
+          "optional": true,
+          "type": "table"
+        }
+      ],
+      "path": "game.start_new_game"
+    },
+    {
+      "description": "Starts the level being played again from its beginning.\n\nRaises outside a level, and in a cutscene or a demo.",
+      "path": "game.restart_level"
+    },
+    {
+      "description": "Whether the current level can be restarted. It cannot outside a level, in a\ncutscene or a demo, or where the save the game runs from does not allow a\nrestart.",
+      "path": "game.can_restart_level",
       "returns": [
         {
-          "description": "Whether the level restarts.",
+          "description": "Whether the level can be restarted.",
           "type": "boolean"
         }
       ]
@@ -8350,6 +8389,23 @@
         "description": "The same length in sectors.",
         "type": "number"
       }
+    },
+    {
+      "description": "Whether the game can restart into a mod.\n\nIncompatible and current mods cannot be switched to.",
+      "params": [
+        {
+          "description": "A `trx.mod.Mod` or a mod name.",
+          "name": "mod",
+          "type": "any"
+        }
+      ],
+      "path": "mod.can_switch",
+      "returns": [
+        {
+          "description": "Whether the mod can be switched to.",
+          "type": "boolean"
+        }
+      ]
     },
     {
       "description": "Restarts the game into another mod. The switch happens once the game flow picks it up, not on the call.",

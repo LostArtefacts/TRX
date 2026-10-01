@@ -94,16 +94,26 @@ static int M_L_ModGetCurrent(lua_State *const L)
     return 1;
 }
 
+static const SHELL_MOD *M_CheckMod(lua_State *const L, const int arg)
+{
+    if (lua_type(L, arg) == LUA_TSTRING) {
+        return Shell_GetModByName(lua_tostring(L, arg));
+    }
+    LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, arg, &TYPE_SHELL_MOD);
+    return LUA_Struct_Deref(L, ref);
+}
+
+// trxc.mod.can_switch(mod|name) -> bool
+static int M_L_ModCanSwitch(lua_State *const L)
+{
+    lua_pushboolean(L, Shell_CanSwitchToMod(M_CheckMod(L, 1)));
+    return 1;
+}
+
 // trxc.mod.switch(mod|name) -> bool
 static int M_L_ModSwitch(lua_State *const L)
 {
-    const SHELL_MOD *mod;
-    if (lua_type(L, 1) == LUA_TSTRING) {
-        mod = Shell_GetModByName(lua_tostring(L, 1));
-    } else {
-        LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_SHELL_MOD);
-        mod = LUA_Struct_Deref(L, ref);
-    }
+    const SHELL_MOD *const mod = M_CheckMod(L, 1);
 
     if (!Shell_CanSwitchToMod(mod)) {
         lua_pushboolean(L, false);
@@ -120,6 +130,7 @@ static const luaL_Reg m_Module[] = {
     { "count", M_L_ModCount },
     { "get", M_L_ModGet },
     { "get_current", M_L_ModGetCurrent },
+    { "can_switch", M_L_ModCanSwitch },
     { "switch", M_L_ModSwitch },
     { nullptr, nullptr },
 };

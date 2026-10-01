@@ -350,13 +350,9 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
         }
 
         case PASSPORT_ACTION_NEW_GAME:
-            if (apply_changes) {
-                SG_Resume_ResetAllEntries();
-            }
-            SG_Manager_UnbindSlot();
             return (GF_COMMAND) {
-                .action = GF_START_GAME,
-                .param = g_Passport.select_level,
+                .action = GF_NEW_GAME,
+                .param = Game_GetBonusFlag(),
             };
 
         case PASSPORT_ACTION_SWITCH_MOD:

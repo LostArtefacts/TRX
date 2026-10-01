@@ -47,6 +47,7 @@ typedef enum {
     GF_SELECT_GAME,
     GF_GLOBE_SELECT,
     GF_STORY_SO_FAR,
+    GF_NEW_GAME,
 } GF_ACTION;
 
 typedef enum {

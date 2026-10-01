@@ -9,9 +9,10 @@ trx.locale.declare({
 })
 
 local function run()
-  if not trx.game.restart_level() then
+  if not trx.game.can_restart_level() then
     return trx.console.Result.UNAVAILABLE
   end
+  trx.game.restart_level()
   return trx.console.Result.OK
 end
 

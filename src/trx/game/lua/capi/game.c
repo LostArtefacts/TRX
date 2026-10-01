@@ -3,12 +3,15 @@
 #include <trx/game/clock/common.h>
 #include <trx/game/const.h>
 #include <trx/game/demo.h>
+#include <trx/game/game.h>
 #include <trx/game/game/state.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_flow/types.h>
+#include <trx/game/gym.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/field.h>
 #include <trx/game/lua/registry.h>
+#include <trx/game/lua/savegame.h>
 #include <trx/game/lua/struct.h>
 #include <trx/game/lua/utils.h>
 #include <trx/game/output/func.h>
@@ -298,14 +301,50 @@ static int M_L_GamePlayLevel(lua_State *const L)
     // carrying on reaching it. Without it the level continues from the one in
     // progress, which is recorded as the previous level.
     bool select = false;
+    bool has_ng_plus = false;
+    bool ng_plus = false;
+    SAVEGAME_SLOT_REF from_save = SG_Manager_InvalidSlot();
     if (!lua_isnoneornil(L, 2)) {
         luaL_checktype(L, 2, LUA_TTABLE);
         lua_getfield(L, 2, "select");
         select = lua_toboolean(L, -1);
         lua_pop(L, 1);
+        lua_getfield(L, 2, "ng_plus");
+        has_ng_plus = !lua_isnil(L, -1);
+        ng_plus = lua_toboolean(L, -1);
+        lua_pop(L, 1);
+        lua_getfield(L, 2, "from_save");
+        if (!lua_isnil(L, -1)) {
+            luaL_argcheck(L, select, 2, "from_save needs select");
+            luaL_checktype(L, -1, LUA_TTABLE);
+            const int from_save_idx = lua_gettop(L);
+            lua_getfield(L, from_save_idx, "slot_num");
+            lua_getfield(L, from_save_idx, "pool");
+            from_save = LUA_ResolveSaveSlot(
+                luaL_checkinteger(L, from_save_idx + 1),
+                lua_isnil(L, from_save_idx + 2)
+                    ? SAVEGAME_SLOT_POOL_NORMAL
+                    : LUA_CheckSavePool(L, from_save_idx + 2));
+            luaL_argcheck(
+                L, SG_Manager_IsValidSlotRef(from_save), 2,
+                "no such save slot");
+            lua_pop(L, 2);
+        }
+        lua_pop(L, 1);
+    }
+
+    if (has_ng_plus) {
+        Game_SetBonusFlag(ng_plus ? GBF_NGPLUS : GBF_NONE);
     }
 
     if (select) {
+        // The game flow rebuilds Lara's loadout from the bound save, or as if
+        // the game had been played from the first level when none is bound.
+        if (SG_Manager_IsValidSlotRef(from_save)) {
+            SG_Manager_BindSlot(from_save);
+        } else {
+            SG_Manager_UnbindSlot();
+        }
         GF_OverrideCommand(
             (GF_COMMAND) {
                 .action = GF_SELECT_GAME,
@@ -420,6 +459,7 @@ static int M_L_GamePlayGym(lua_State *const L)
     if (gym_level == nullptr) {
         return luaL_error(L, "this game has no gym");
     }
+    SG_Manager_UnbindSlot();
     GF_OverrideCommand(
         (GF_COMMAND) {
             .action = GF_SELECT_GAME,
@@ -436,26 +476,51 @@ static int M_L_GameEndLevel(lua_State *const L)
     return 0;
 }
 
-// trxc.game.restart_level() -> bool
-// Restarts the current level as the passport does, and reports false where the
-// passport offers no restart: outside a main level, or in a save that lacks
-// the level's starting state.
+// trxc.game.start_new_game(ng_plus) → nil
+static int M_L_GameStartNewGame(lua_State *const L)
+{
+    const bool ng_plus = lua_toboolean(L, 1);
+    const GF_LEVEL *const first_level = GF_GetFirstLevel();
+    if (first_level == nullptr) {
+        return luaL_error(L, "this game has no first level");
+    }
+    GF_OverrideCommand(
+        (GF_COMMAND) {
+            .action = GF_NEW_GAME,
+            .param = ng_plus ? GBF_NGPLUS : GBF_NONE,
+        },
+        true);
+    return 0;
+}
+
+static bool M_IsRestartableLevel(const GF_LEVEL *const level)
+{
+    return level != nullptr
+        && (level->type == GFL_NORMAL || level->type == GFL_GYM
+            || level->type == GFL_BONUS);
+}
+
+// trxc.game.is_restartable_level() -> bool
+static int M_L_GameIsRestartableLevel(lua_State *const L)
+{
+    lua_pushboolean(L, M_IsRestartableLevel(Game_GetCurrentLevel()));
+    return 1;
+}
+
+// trxc.game.restart_level()
 static int M_L_GameRestartLevel(lua_State *const L)
 {
     const GF_LEVEL *const level = Game_GetCurrentLevel();
-    const bool can_restart = level != nullptr
-        && GF_GetLevelTableType(level->type) == GFLT_MAIN
-        && Savegame_RestartAvailable(SG_Manager_GetBoundSlot());
-    if (can_restart) {
-        GF_OverrideCommand(
-            (GF_COMMAND) {
-                .action = GF_RESTART_GAME,
-                .param = level->num,
-            },
-            true);
+    if (!M_IsRestartableLevel(level)) {
+        return luaL_error(L, "this level cannot be restarted");
     }
-    lua_pushboolean(L, can_restart);
-    return 1;
+    GF_OverrideCommand(
+        (GF_COMMAND) {
+            .action = GF_RESTART_GAME,
+            .param = level->num,
+        },
+        true);
+    return 0;
 }
 
 // trxc.game.exit_to_title()
@@ -509,6 +574,8 @@ static const luaL_Reg m_Module[] = {
     { "screenshot", M_L_GameScreenshot },
     { "end_level", M_L_GameEndLevel },
     { "restart_level", M_L_GameRestartLevel },
+    { "is_restartable_level", M_L_GameIsRestartableLevel },
+    { "start_new_game", M_L_GameStartNewGame },
     { "exit_to_title", M_L_GameExitToTitle },
     { "exit_game", M_L_GameExitGame },
     { nullptr, nullptr },
