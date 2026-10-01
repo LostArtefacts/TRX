@@ -123,7 +123,7 @@ void SG_Resume_MirrorCurrentEntry(const GF_LEVEL *const level)
     }
 }
 
-void SG_Resume_ResetAllEntries(void)
+void SG_Resume_ClearEntries(void)
 {
     const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
     for (int32_t i = 0; i < level_table->count; i++) {
@@ -141,6 +141,11 @@ void SG_Resume_ResetAllEntries(void)
     if (GF_GetFirstLevel() != nullptr) {
         SG_Resume_GetEntry(GF_GetFirstLevel())->flags.available = true;
     }
+}
+
+void SG_Resume_ResetAllEntries(void)
+{
+    SG_Resume_ClearEntries();
 
     // Lara's wetness survives level transitions; a fresh playthrough starts
     // dry.

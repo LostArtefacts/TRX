@@ -61,6 +61,8 @@ static INVENTORY_STATE m_LiveInv;
 static LARA_INFO m_Lara;
 static ITEM m_LaraItem;
 static bool m_BonusFlag;
+static int32_t m_RulesResets;
+static int32_t m_CutSeqResets;
 
 // The code counts only the gun types registered in the engine, not the number
 // of weapon slots.
@@ -73,6 +75,8 @@ static void M_SetUp(void)
     g_TRVersion = 1;
     g_Rules = (RULES) {};
     m_BonusFlag = false;
+    m_RulesResets = 0;
+    m_CutSeqResets = 0;
     memcpy(m_GunTypes, (WEAPON_INFO[])M_GUN_TYPES, sizeof(m_GunTypes));
     m_LiveInv = (INVENTORY_STATE) {};
     m_Lara = (LARA_INFO) {};
@@ -263,10 +267,12 @@ RULES g_Rules;
 
 void Rules_Reset(void)
 {
+    m_RulesResets++;
 }
 
 void CutSeq_SetPlayedMask(const uint64_t mask)
 {
+    m_CutSeqResets++;
 }
 
 const char *EnumMap_ToString(const char *const enum_name, const int32_t value)
@@ -365,6 +371,32 @@ TEST(a_fresh_playthrough_offers_the_gym_and_the_first_level_alone)
     CHECK(!SG_Resume_GetEntry(&m_MainLevels[M_SECOND])->flags.available);
     CHECK(!SG_Resume_GetEntry(&m_MainLevels[M_SECOND])->level_completed);
     CHECK_EQ_INT(SG_Resume_CountCompletedLevels(), 0);
+}
+
+TEST(clearing_the_entries_leaves_the_rest_of_the_playthrough)
+{
+    M_SetUp();
+    SG_Resume_GetEntry(&m_MainLevels[M_SECOND])->level_completed = true;
+    m_Lara.wet[0] = 1;
+
+    SG_Resume_ClearEntries();
+
+    CHECK(!SG_Resume_GetEntry(&m_MainLevels[M_SECOND])->level_completed);
+    CHECK_EQ_INT(m_Lara.wet[0], 1);
+    CHECK_EQ_INT(m_RulesResets, 0);
+    CHECK_EQ_INT(m_CutSeqResets, 0);
+}
+
+TEST(a_fresh_playthrough_resets_the_rest_of_it_too)
+{
+    M_SetUp();
+    m_Lara.wet[0] = 1;
+
+    SG_Resume_ResetAllEntries();
+
+    CHECK_EQ_INT(m_Lara.wet[0], 0);
+    CHECK_EQ_INT(m_RulesResets, 1);
+    CHECK_EQ_INT(m_CutSeqResets, 1);
 }
 
 TEST(the_first_level_starts_with_her_pistols_and_nothing_else)

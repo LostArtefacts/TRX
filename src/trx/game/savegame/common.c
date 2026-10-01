@@ -185,7 +185,7 @@ RESULT Savegame_ReadReachedLevels(
 {
     RESUME_INFO *const snapshot = SG_Resume_Snapshot();
     const SAVEGAME_VERSION initial_version = m_InitialVersion;
-    SG_Resume_ResetAllEntries();
+    SG_Resume_ClearEntries();
     const RESULT result = Savegame_LoadOnlyResumeInfo(slot);
     if (IS_OK(result)) {
         const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
