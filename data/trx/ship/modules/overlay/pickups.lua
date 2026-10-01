@@ -69,7 +69,7 @@ end
 
 -- Returns the model the ring uses, or nil when the object has none.
 local function model_of(object)
-  local icon = trx.inventory.icon_of(object)
+  local icon = trx.inventory_ring.icon_of(object)
   if icon == nil or not trx.objects.get(icon).loaded then
     return nil
   end
@@ -82,7 +82,7 @@ end
 -- Return the ring pose: its starting angle, its fixed rotations, and which of
 -- its meshes the ring draws.
 local function ring_pose(icon)
-  local entry = trx.inventory.ring_item(icon)
+  local entry = trx.inventory_ring.item(icon)
   if entry == nil then
     return 0, 0, 0, ALL_MESHES
   end

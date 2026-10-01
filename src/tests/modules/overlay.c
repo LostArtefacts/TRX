@@ -175,12 +175,12 @@ int main(void)
 {
     const LUA_SURFACE_TEST test = {
         .module = "ui",
-        .deps = { "config",    "events",       "signal",     "lara",
-                  "items",     "objects",      "weapons",    "camera",
-                  "rooms",     "catalog",      "locale",     "rules",
-                  "inventory", "game",         "cutscenes",  "overlay",
-                  "input",     "ui.primitive", "ui.widgets", "ui.regions",
-                  nullptr },
+        .deps = { "config",     "events",         "signal",       "lara",
+                  "items",      "objects",        "weapons",      "camera",
+                  "rooms",      "catalog",        "locale",       "rules",
+                  "inventory",  "inventory_ring", "game",         "cutscenes",
+                  "overlay",    "input",          "ui.primitive", "ui.widgets",
+                  "ui.regions", nullptr },
         .mod_script = "overlay/init",
         // Load the shipped module after sealing, as the engine does.
         .seal = true,

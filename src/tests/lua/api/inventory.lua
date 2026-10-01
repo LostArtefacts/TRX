@@ -49,7 +49,7 @@ test("an object the engine does not know is refused", function()
     end)
   end
   raises(function()
-    trx.inventory.icon_of(999999)
+    trx.inventory_ring.icon_of(999999)
   end)
 end)
 
@@ -119,10 +119,10 @@ test("anything that is not a weapon is refused", function()
 end)
 
 test("icon_of names the icon, not the entry", function()
-  local icon = trx.inventory.icon_of(KEY)
+  local icon = trx.inventory_ring.icon_of(KEY)
   assert(icon == KEY, "a pickup with an icon of its own stands for itself")
   assert(
-    trx.inventory.icon_of(KEY) == icon,
+    trx.inventory_ring.icon_of(KEY) == icon,
     "and answers whether or not she is carrying any"
   )
 end)

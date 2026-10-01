@@ -25,9 +25,9 @@ local FACING = 180
 -- selection. A setup stays active until another level sets its own setup.
 function M.apply(items)
   for object, item in pairs(items) do
-    local icon = trx.inventory.icon_of(trx.catalog.objects[object])
+    local icon = trx.inventory_ring.icon_of(trx.catalog.objects[object])
     if icon ~= nil then
-      trx.inventory.declare_ring_item({
+      trx.inventory_ring.declare_item({
         object_id = trx.catalog.key(trx.catalog.Context.OBJECTS, icon),
         scale = REFERENCE_DISTANCE / item.scale,
         y_offset = math.floor(

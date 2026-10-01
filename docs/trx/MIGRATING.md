@@ -31,6 +31,14 @@ order: 3
    - `item:shatter(5, 254)` becomes
      `item:shatter({ damage = 5, flame_variant = 254 })`
 
+4. **The inventory ring has its own module**
+   `trx.inventory` now holds only what Lara carries. Ring data moved to
+   `trx.inventory_ring`:
+   - `trx.inventory.declare_ring_item` becomes
+     `trx.inventory_ring.declare_item`
+   - `trx.inventory.ring_item` becomes `trx.inventory_ring.item`
+   - `trx.inventory.icon_of` becomes `trx.inventory_ring.icon_of`
+
 ### Version 1.10 to 1.11
 
 1. **The waterfall mist object was renamed**

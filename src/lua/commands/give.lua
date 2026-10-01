@@ -78,7 +78,7 @@ local function add(got, id, count)
 end
 
 local function add_once(seen, got, id, count)
-  local icon = trx.inventory.icon_of(id) or id
+  local icon = trx.inventory_ring.icon_of(id) or id
   if seen[icon] then
     return
   end

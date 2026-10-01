@@ -7699,7 +7699,7 @@
       }
     },
     {
-      "description": "Which inventory icon a pickup is drawn as, whether or not there is any of it.\n\nSeveral pickups share one icon - the scion whether or not Lara holds it, a\nwaterskin at each fill level - so this is what tells two spellings of one thing\nfrom two things. It answers with an object id rather than an entry;\n`trx.inventory.Inventory:entry` is what hands back the entry itself.",
+      "description": "Returns the inventory icon for a pickup, whether or not Lara has one.",
       "params": [
         {
           "description": "The pickup to check.",
@@ -7707,7 +7707,7 @@
           "type": "catalog.objects"
         }
       ],
-      "path": "inventory.icon_of",
+      "path": "inventory_ring.icon_of",
       "returns": {
         "description": "The icon's object id, or `nil` for a pickup that has none.",
         "nullable": true,
@@ -7715,7 +7715,7 @@
       }
     },
     {
-      "description": "Reports how the ring draws an object, as the table\n`trx.inventory.declare_ring_item` takes: reading an entry, changing a value and\ndeclaring it again leaves the rest of the entry as it was.\n\nReturns nothing where no entry names the object.",
+      "description": "Returns the ring entry for an object.\n\nReturns `nil` when no entry names the object.",
       "params": [
         {
           "description": "The inventory icon to read.",
@@ -7723,16 +7723,16 @@
           "type": "catalog.objects"
         }
       ],
-      "path": "inventory.ring_item",
+      "path": "inventory_ring.item",
       "returns": {
         "description": "The entry's `object_id`, frame counts, rotations, offsets,\n`scale`, and `draws_at_pivot`, or `nil`.\n<!--noref: object_id-->\n<!--noref: scale, draws_at_pivot-->",
         "type": "table"
       }
     },
     {
-      "description": "Adds an object to the inventory ring and sets how it is drawn and rotated.\n\nThe ring declares every item, including the shipped items. A script can add a\nminted object or change a shipped item without changing a game file. Declaring\nthe same object again changes its existing entry. The ring draws the object in\nthe declaration; use the pickup for an object that represents itself.",
+      "description": "Adds an object to the inventory ring and sets its display properties.\n\nDeclaring an existing object replaces its entry. Use the pickup object for an\nentry that represents itself.",
       "examples": [
-        "trx.inventory.declare_ring_item({\n  object_id = \"mymod:lantern_item\",\n  frames_total = 1,\n  anim_direction = 1,\n  anim_speed = 1,\n  scale = 1.0,\n  meshes_sel = -1,\n  meshes_drawn = -1,\n  inv_pos = 20,\n})"
+        "trx.inventory_ring.declare_item({\n  object_id = \"mymod:lantern_item\",\n  frames_total = 1,\n  anim_direction = 1,\n  anim_speed = 1,\n  scale = 1.0,\n  meshes_sel = -1,\n  meshes_drawn = -1,\n  inv_pos = 20,\n})"
       ],
       "params": [
         {
@@ -7741,7 +7741,7 @@
           "type": "table"
         }
       ],
-      "path": "inventory.declare_ring_item"
+      "path": "inventory_ring.declare_item"
     },
     {
       "description": "Retrieves an item by number or by name.",
@@ -10939,6 +10939,12 @@
       "instance_type": "inventory.Inventory",
       "name": "inventory",
       "order": 4
+    },
+    {
+      "description": "The rings the player browses, and the entries drawn on them.\n\nThis is the front of the inventory: which entries a ring holds, and how each is\ndrawn and turned. What Lara is carrying belongs to `trx.inventory`.",
+      "name": "inventory_ring",
+      "order": 5,
+      "title": "Inventory ring"
     },
     {
       "description": "Module for controlling all moveables.",
