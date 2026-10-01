@@ -39,6 +39,10 @@ order: 3
    - `trx.inventory.ring_item` becomes `trx.inventory_ring.item`
    - `trx.inventory.icon_of` becomes `trx.inventory_ring.icon_of`
 
+5. **`trx.savegame.load` raises an error for an empty slot**
+   A script that can name an empty slot must check it with
+   `trx.savegame.is_free` first.
+
 ### Version 1.10 to 1.11
 
 1. **The waterfall mist object was renamed**

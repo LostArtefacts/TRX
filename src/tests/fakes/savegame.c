@@ -79,6 +79,28 @@ static int M_L_Save(lua_State *const L)
     return 1;
 }
 
+// trxc.savegame.total_count() -> int
+static int M_L_TotalCount(lua_State *const L)
+{
+    lua_pushinteger(L, M_DEFAULT_SLOT_COUNT);
+    return 1;
+}
+
+// trxc.savegame.recent_slot() -> index, pool
+static int M_L_RecentSlot(lua_State *const L)
+{
+    lua_pushinteger(L, 1);
+    lua_pushinteger(L, 0);
+    return 2;
+}
+
+// trxc.savegame.manual_allowed() -> bool
+static int M_L_ManualAllowed(lua_State *const L)
+{
+    lua_pushboolean(L, true);
+    return 1;
+}
+
 // fake.set_slot_free(index, pool)
 static int M_L_SetSlotFree(lua_State *const L)
 {
@@ -116,6 +138,9 @@ static int M_L_SetSlotCount(lua_State *const L)
 static const luaL_Reg m_Module[] = {
     { "slot_count", M_L_SlotCount },
     { "is_free", M_L_IsFree },
+    { "total_count", M_L_TotalCount },
+    { "recent_slot", M_L_RecentSlot },
+    { "manual_allowed", M_L_ManualAllowed },
     { "load", M_L_Load },
     { "save", M_L_Save },
     { nullptr, nullptr },
