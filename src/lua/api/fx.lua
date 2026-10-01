@@ -5,7 +5,7 @@ require("trx.math")
 require("trx.rooms")
 
 api.module("fx", {
-  order = 17,
+  order = 18,
   description = [[
 What a script puts in front of the player: things seen rather than things the
 game holds.]],

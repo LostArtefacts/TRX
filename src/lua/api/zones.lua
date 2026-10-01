@@ -255,7 +255,7 @@ end
 trx.events.on_level_unload(clear)
 
 api.module("zones", {
-  order = 15,
+  order = 16,
   description = [[
 A zone is a piece of the level worth keeping an eye on. Mark out a box or a
 sphere in world space, or a single sector the way a floor trigger covers one,

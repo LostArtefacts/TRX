@@ -2,7 +2,7 @@ local raw = trxc.store
 local api = trx.api
 
 api.module("store", {
-  order = 20,
+  order = 21,
   title = "Persistent storage",
   description = [[
 Module for what a script remembers across a save.

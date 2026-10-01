@@ -106,7 +106,7 @@ local ROOM_LISTENER = {
 }
 
 api.module("rooms", {
-  order = 6,
+  order = 7,
   description = "Module for inspecting and altering the rooms of the current level.",
 })
 

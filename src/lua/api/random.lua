@@ -4,7 +4,7 @@ local api = trx.api
 require("trx.math")
 
 api.module("random", {
-  order = 32,
+  order = 33,
   description = [[
 Random numbers, drawn from one of the two sequences the engine runs on.
 

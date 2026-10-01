@@ -2,7 +2,7 @@ local raw = trxc.json
 local api = trx.api
 
 api.module("json", {
-  order = 35,
+  order = 36,
   title = "JSON",
   description = "Reading and writing JSON, both as text and as a file on disk. The API "
     .. "dump the reference is generated from goes through this, so what a script writes out is "

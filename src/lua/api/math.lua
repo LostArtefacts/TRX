@@ -5,7 +5,7 @@ local api = trx.api
 local DEG_360 = 4 * raw.DEG_90
 
 api.module("math", {
-  order = 31,
+  order = 32,
   description = "Fixed-point trigonometry, matching the engine's own tables. Using these rather "
     .. "than Lua's `math` library guarantees a script places things exactly where the engine "
     .. "would. `trx.math.Angle` says what an angle is here.",

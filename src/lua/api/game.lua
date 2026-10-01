@@ -6,7 +6,7 @@ local raw_stats = trxc.stats
 local api = trx.api
 
 api.module("game", {
-  order = 10,
+  order = 11,
   description = "Module for the game flow: which levels there are, and which one is being played.",
 })
 

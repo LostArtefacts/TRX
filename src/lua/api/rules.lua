@@ -2,7 +2,7 @@ local raw = trxc.rules
 local api = trx.api
 
 api.module("rules", {
-  order = 14,
+  order = 15,
   description = [[
     Module for the numbers the engine plays by.
 
