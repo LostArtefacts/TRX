@@ -572,6 +572,7 @@ unit_tests += {
     'fakes/level.c',
     'fakes/rooms.c',
     'fakes/items.c',
+    'fakes/lara.c',
   ],
   'engine': [
     'game/lua/capi/events.c',
@@ -583,7 +584,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/items',
   'bundles': [b_lua_surface, b_lua_strings, b_lua_math],
-  'src': ['harness/stubs_console.c', 'fakes/items.c'],
+  'src': ['harness/stubs_console.c', 'fakes/items.c', 'fakes/lara.c'],
   'engine': [
     'game/lua/capi/catalog.c',
     'game/lua/capi/events.c',
@@ -597,7 +598,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/boot',
   'bundles': [b_lua_surface, b_lua_math],
-  'src': ['fakes/items.c'],
+  'src': ['fakes/items.c', 'fakes/lara.c'],
   'engine': ['game/lua/capi/items.c'],
 }
 
@@ -857,7 +858,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/api/objects',
   'bundles': [b_lua_surface, b_lua_strings],
-  'src': ['fakes/items.c', 'harness/stubs_console.c'],
+  'src': ['fakes/items.c', 'fakes/lara.c', 'harness/stubs_console.c'],
   'engine': [
     'game/lua/capi/catalog.c',
     'game/lua/capi/items.c',
@@ -1261,7 +1262,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/seal',
   'bundles': [b_lua_surface, b_lua_math],
-  'src': ['fakes/items.c'],
+  'src': ['fakes/items.c', 'fakes/lara.c'],
   'engine': ['game/lua/capi/items.c'],
 }
 

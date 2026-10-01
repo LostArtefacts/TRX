@@ -5,6 +5,7 @@
 #include <trx/game/creature.h>
 #include <trx/game/items.h>
 #include <trx/game/items/utils.h>
+#include <trx/game/lara.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
@@ -25,9 +26,13 @@ typedef struct {
 
 static bool M_GetAnim(const void *const self, TRX_VALUE *const out)
 {
+    const ITEM *const item = self;
+    const int16_t anim_idx = item == Lara_GetItem()
+        ? Item_GetRelativeObjAnim(item, Lara_GetAnimationObject())
+        : Item_GetRelativeAnim(item);
     *out = (TRX_VALUE) {
         .type = TVT_S16,
-        .as_int = Item_GetRelativeAnim(self),
+        .as_int = anim_idx,
     };
     return true;
 }
@@ -35,7 +40,9 @@ static bool M_GetAnim(const void *const self, TRX_VALUE *const out)
 static const char *M_SetAnim(void *const self, const TRX_VALUE *const in)
 {
     ITEM *const item = self;
-    const OBJECT *const obj = Object_Get(item->object_id);
+    const OBJECT *const obj = item == Lara_GetItem()
+        ? Object_Get(Lara_GetAnimationObject())
+        : Object_Get(item->object_id);
     if (obj->anim_idx == NO_ANIM) {
         return "object has no animations";
     }
@@ -64,7 +71,9 @@ static bool M_GetFrame(const void *const self, TRX_VALUE *const out)
 static const char *M_SetFrame(void *const self, const TRX_VALUE *const in)
 {
     ITEM *const item = self;
-    const OBJECT *const obj = Object_Get(item->object_id);
+    const OBJECT *const obj = item == Lara_GetItem()
+        ? Object_Get(Lara_GetAnimationObject())
+        : Object_Get(item->object_id);
     if (obj->anim_idx == NO_ANIM) {
         return "object has no animations";
     }
