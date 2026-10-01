@@ -302,9 +302,11 @@ local function set_caption(key)
 end
 
 -- Shuts the book towards the nearer cover. A confirmed close leaves the ring;
--- otherwise the entry goes back into the ring.
+-- otherwise the entry goes back into the ring. The quick save and load screens
+-- have no book to shut, and take only a cancel.
 local function close(confirmed)
-  local anim = trx.inventory_ring.selection_anim()
+  local anim = not state.standalone and trx.inventory_ring.selection_anim()
+    or nil
   if anim ~= nil then
     if state.index == #state.pages then
       trx.inventory_ring.animate_selection(anim.frame_count - 1, 1)
@@ -312,7 +314,7 @@ local function close(confirmed)
       trx.inventory_ring.animate_selection(0, -1)
     end
   end
-  if confirmed then
+  if confirmed and not state.standalone then
     state.ctx:confirm()
   else
     state.ctx:cancel()
@@ -941,15 +943,33 @@ local function control_delete(keys)
   return false
 end
 
--- Leaves an open page. TR1 goes back to turning the pages; the later games put
--- the passport away, except when Lara is dead.
+-- Leaves an open page. TR1 goes back to turning the pages; the later games and
+-- the quick save and load screens put the passport away, except when Lara is
+-- dead.
 local function back_out()
-  if browses_first(trx.inventory_ring.mode()) then
+  if not state.standalone and browses_first(trx.inventory_ring.mode()) then
     state.browse = true
     clear_page()
   elseif can_back_out() then
     close(false)
   end
+end
+
+-- Reads the list on the page that the book rests on. Returns true when the
+-- list used the press.
+local function control_page(keys)
+  if control_delete(keys) then
+    return true
+  end
+  local picked = state.page.req:control(keys)
+  if picked == "cancel" then
+    back_out()
+    return true
+  elseif picked ~= nil then
+    choose(state.page, state.page.req.rows[picked])
+    return true
+  end
+  return false
 end
 
 local function control_book(keys)
@@ -1040,18 +1060,8 @@ local function control_book(keys)
       back_out()
       return
     end
-  elseif state.page ~= nil then
-    if control_delete(keys) then
-      return
-    end
-    local picked = state.page.req:control(keys)
-    if picked == "cancel" then
-      back_out()
-      return
-    elseif picked ~= nil then
-      choose(state.page, state.page.req.rows[picked])
-      return
-    end
+  elseif state.page ~= nil and control_page(keys) then
+    return
   end
 
   if keys:pressed(trx.input.Role.MENU_BACK) then
@@ -1126,12 +1136,52 @@ local function open(ctx)
   return state.book
 end
 
+-- The quick save and load screens hold one page alone, with no ring and no
+-- book behind it. A page with no list leaves the screen to the engine.
+local function open_save_load(ctx)
+  local pages = determine_pages(ctx.mode)
+  local index = first_available(pages)
+  if index == nil or FLAT[pages[index].role] then
+    return nil
+  end
+
+  state = {
+    ctx = ctx,
+    pages = pages,
+    index = index,
+    standalone = true,
+    lists = {},
+    page_shown = trx.signal.new(true),
+    delete_hold = 0,
+    delete_armed = true,
+  }
+  state.book = ctx:push({
+    root = trx.ui.widgets.Custom({
+      measure = function()
+        return 0, 0
+      end,
+      paint = function() end,
+    }),
+    place = function(w, h)
+      return state.place(w, h)
+    end,
+    on_input = function(_, keys)
+      control_page(keys)
+    end,
+  })
+  if not open_page(pages[index].role) then
+    return nil
+  end
+  return state.book
+end
+
 function M.setup()
   trx.ui.screens.define(
     trx.ui.Screen.RING_ENTRY,
     open,
     { object = trx.catalog.objects.PASSPORT_OPTION }
   )
+  trx.ui.screens.define(trx.ui.Screen.SAVE_LOAD, open_save_load)
 end
 
 return M

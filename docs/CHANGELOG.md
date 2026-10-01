@@ -166,7 +166,7 @@
     - `trx.ui.layers.count`
 - Added `trx.ui.widgets.List`, a column of rows that the player picks one entry from
 - Added `trx.ui.widgets.SleekBar`, the thin progress bar the game draws under a button that the player holds
-- Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine, starting with an entry the player uses in the inventory ring
+- Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, and the quick save and load screens
     - `trx.ui.Screen` and `trx.ui.ScreenContext`
 - Changed script widgets to stay behind the game interface when they overlap
 - Changed game-flow Lua functions to wait while a script draws an engine screen. The inventory ring now closes and fades before the command runs.

@@ -166,6 +166,10 @@ and `\{button left}` draws the button the player has bound.
         entry as [`trx.ui.ScreenContext.object`](#ui.ScreenContext.object). A definition can name the entry it
         draws. A ring opened to save or load leaves when the screen ends, and any ring
         leaves when the screen ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm).
+    - `trx.ui.Screen.SAVE_LOAD` = `1`  
+        The quick save or load screen. The save and load keys open it when the instant
+        screen setting is on. The context reports whether it opened for saving or
+        loading as [`trx.ui.ScreenContext.mode`](#ui.ScreenContext.mode).
 
 ### Structures
 
@@ -406,14 +410,15 @@ and `\{button left}` draws the button the player has bound.
 
     Properties:
     - <a id="ui.ScreenContext.is_held" name="ui.ScreenContext.is_held"></a>**`is_held`**: boolean. Whether the script still holds the screen. *(read-only)*
+    - <a id="ui.ScreenContext.mode" name="ui.ScreenContext.mode"></a>**`mode`**: [trx.inventory_ring.Mode](INVENTORY_RING.md#inventory_ring.Mode). What the quick save or load screen opened for, for [`trx.ui.Screen.SAVE_LOAD`](#ui.Screen). *(read-only)*
     - <a id="ui.ScreenContext.object" name="ui.ScreenContext.object"></a>**`object`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The ring entry that the player uses, for [`trx.ui.Screen.RING_ENTRY`](#ui.Screen). *(read-only)*
     - <a id="ui.ScreenContext.screen" name="ui.ScreenContext.screen"></a>**`screen`**: [trx.ui.Screen](#ui.Screen). The screen. *(read-only)*
 
     Methods:
 
     - <a id="ui.ScreenContext.cancel" name="ui.ScreenContext.cancel"></a>[lua]`screencontext:cancel()`  
-      Ends the screen, and closes its layers. A ring entry is put away. Does nothing
-      if the screen has already ended.
+      Ends the screen, and closes its layers. A ring entry is put away, and the quick
+      save or load screen closes. Does nothing if the screen has already ended.
 
       Returns: boolean. Whether the screen was still held.
 
