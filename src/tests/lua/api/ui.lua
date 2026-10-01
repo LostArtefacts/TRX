@@ -394,6 +394,61 @@ test("the layer over the interface paints after the layer under it", function()
   assert(over_at > under_at, "the layers painted in the wrong order")
 end)
 
+test("the layer under the interface draws behind it", function()
+  local under = trx.events.on_ui_paint(function()
+    trx.ui.primitive.quad(0, 0, 0, 10, 10, trx.math.color("#ff0000"))
+  end)
+  local over = trx.events.on_ui_paint_over(function()
+    trx.ui.primitive.quad(0, 0, 0, 10, 10, trx.math.color("#00ff00"))
+  end)
+
+  local ops = fake.scene()
+  under:detach()
+  over:detach()
+
+  local under_z, over_z
+  for _, op in ipairs(ops) do
+    local z = tonumber(op:match(" z=(%-?%d+)"))
+    if op:find("ff0000", 1, true) then
+      under_z = z
+    elseif op:find("00ff00", 1, true) then
+      over_z = z
+    end
+  end
+  assert(under_z > over_z, "the layer under the interface drew in front")
+end)
+
+local function quad_z(ops)
+  for _, op in ipairs(ops) do
+    local z = op:match(" z=(%-?%d+)")
+    if z ~= nil then
+      return tonumber(z)
+    end
+  end
+end
+
+test("a depth cannot be popped outside a painted scene", function()
+  raises(function()
+    trxc.ui.pop_depth()
+  end, "painted")
+end)
+
+test("a depth pushed past the far plane still draws", function()
+  local ops = fake.paint(function()
+    trxc.ui.push_depth(1000000)
+    trx.ui.primitive.quad(0, 0, 0, 10, 10, trx.math.color("#ff0000"))
+    trxc.ui.pop_depth()
+  end)
+  assert(quad_z(ops) == 10000 - 20 - 1, quad_z(ops))
+end)
+
+test("a depth pushed past the near plane still draws", function()
+  local ops = fake.paint(function()
+    trx.ui.primitive.quad(0, 0, -50, 10, 10, trx.math.color("#ff0000"))
+  end)
+  assert(quad_z(ops) == 0, quad_z(ops))
+end)
+
 test("a layer keeps its own widgets", function()
   local over = trx.ui.widgets.Label({ text = "only-over" })
   trx.ui.regions.place(trx.ui.Region.BOTTOM_RIGHT, over, trx.ui.Layer.OVER)
