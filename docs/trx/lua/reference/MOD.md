@@ -58,6 +58,17 @@ The mods the game was built with, and which one is loaded.
 
 ### Functions
 
+- <a id="mod.can_switch" name="mod.can_switch"></a>[lua]`trx.mod.can_switch(mod)`  
+  Whether the game can restart into a mod.
+
+  Incompatible and current mods cannot be switched to.
+
+  Parameters:
+  - <a id="mod.can_switch.mod" name="mod.can_switch.mod"></a>**`mod`** (any). A [`trx.mod.Mod`](#mod.Mod) or a mod name.
+
+  Returns:
+  - boolean. Whether the mod can be switched to.
+
 - <a id="mod.switch" name="mod.switch"></a>[lua]`trx.mod.switch(mod)`  
   Restarts the game into another mod. The switch happens once the game flow picks it up, not on the call.
 

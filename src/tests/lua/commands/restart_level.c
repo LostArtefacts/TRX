@@ -2,19 +2,21 @@
 
 #include <fakes/console.h>
 #include <fakes/game.h>
+#include <fakes/savegame.h>
 #include <harness/lua_surface.h>
 
 static void M_PushFake(lua_State *const L)
 {
     FakeConsole_PushLua(L);
     FakeGame_PushLua(L);
+    FakeSavegame_PushLua(L);
 }
 
 int main(void)
 {
     const LUA_SURFACE_TEST test = {
         .module = "console",
-        .deps = { "log", "game", "locale", "argparse", nullptr },
+        .deps = { "log", "game", "savegame", "locale", "argparse", nullptr },
         .script = "restart_level",
         .tests = "commands/restart_level",
         .push_fake = M_PushFake,

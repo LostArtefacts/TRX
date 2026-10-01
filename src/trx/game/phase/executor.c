@@ -60,8 +60,12 @@ static GF_COMMAND M_HandleOverride(const PHASE *const phase)
         const GF_COMMAND gf_cmd = gf_override_cmd;
         GF_OverrideCommand((GF_COMMAND) { .action = GF_NOOP }, true);
 
-        // Stop the current save and music before changing game flow.
-        SG_Manager_UnbindSlot();
+        // Stop the current save and music before changing game flow. A level
+        // select keeps the save bound by the code that raised it, because
+        // the save decides what Lara carries into the level.
+        if (gf_cmd.action != GF_SELECT_GAME) {
+            SG_Manager_UnbindSlot();
+        }
         Game_SetIsPlaying(false);
         Music_Stop();
 

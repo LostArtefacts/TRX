@@ -94,6 +94,23 @@ api.property("mod.current", {
   get = raw.get_current,
 })
 
+api.define("mod.can_switch", {
+  description = [[Whether the game can restart into a mod.
+
+Incompatible and current mods cannot be switched to.]],
+  params = {
+    {
+      name = "mod",
+      type = "any",
+      description = "A `trx.mod.Mod` or a mod name.",
+    },
+  },
+  returns = {
+    { type = "boolean", description = "Whether the mod can be switched to." },
+  },
+  impl = raw.can_switch,
+})
+
 api.define("mod.switch", {
   description = "Restarts the game into another mod. The switch happens once the game flow "
     .. "picks it up, not on the call.",

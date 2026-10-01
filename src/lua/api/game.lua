@@ -480,6 +480,22 @@ api.define("game.play_level", {
             .. "inventory to what she would carry on reaching it. Without it the level "
             .. "continues from the one in progress.",
         },
+        {
+          name = "ng_plus",
+          type = "boolean",
+          optional = true,
+          description = "Whether to start the bonus game mode.",
+        },
+        {
+          name = "from_save",
+          type = "table",
+          optional = true,
+          description = [[
+The save to take Lara's progress from, as `{ slot_num = 1, pool = trx.savegame.Pool.NORMAL }`.
+Raises without `select`. The death counter and the restart file then use this
+save. Without it, `select` builds Lara's inventory as if the game had been
+played from the first level. <!--noref: select-->]],
+        },
       },
     },
   },
@@ -541,19 +557,55 @@ api.define("game.end_level", {
   impl = raw.end_level,
 })
 
-api.define("game.restart_level", {
+api.define("game.start_new_game", {
   description = [[
-Restarts the current level from its start, as the passport's restart does.
-Returns `false` and does nothing where the passport offers no restart: outside
-a level, in a cutscene or demo, or in a save that does not record how the level
-started.]],
-  returns = {
+Starts a new game at the first level.
+
+The new game uses the selected game mode and clears previous progress.]],
+  params = {
     {
-      type = "boolean",
-      description = "Whether the level restarts.",
+      name = "settings",
+      type = "table",
+      optional = true,
+      description = "The new game settings.",
+      fields = {
+        {
+          name = "ng_plus",
+          type = "boolean",
+          optional = true,
+          description = "Whether to start the bonus game mode. `false` by default.",
+        },
+      },
     },
   },
+  examples = {
+    [[trx.game.start_new_game({ ng_plus = true })]],
+  },
+  impl = function(settings)
+    settings = settings or {}
+    raw.start_new_game(settings.ng_plus)
+  end,
+})
+
+api.define("game.restart_level", {
+  description = [[
+Starts the level being played again from its beginning.
+
+Raises outside a level, and in a cutscene or a demo.]],
   impl = raw.restart_level,
+})
+
+api.define("game.can_restart_level", {
+  description = [[
+Whether the current level can be restarted. It cannot outside a level, in a
+cutscene or a demo, or where the save the game runs from does not allow a
+restart.]],
+  returns = {
+    { type = "boolean", description = "Whether the level can be restarted." },
+  },
+  impl = function()
+    return raw.is_restartable_level() and trx.savegame.restart_available()
+  end,
 })
 
 api.define("game.exit_to_title", {

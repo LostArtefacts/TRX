@@ -365,6 +365,25 @@ RESULT GF_RunUntilExit(GF_COMMAND gf_cmd)
             gf_cmd = GF_RunGlobeSelect(nullptr);
             break;
 
+        case GF_NEW_GAME: {
+            const GF_LEVEL *const level = GF_GetFirstLevel();
+            if (level == nullptr) {
+                return FAIL("the game flow names no first level");
+            }
+            // Unloads the old level before the reset, so that what its unload
+            // handlers write is cleared with the rest of the old playthrough.
+            if (GF_GetCurrentLevel() != nullptr) {
+                Level_Unload();
+            }
+            Game_SetCurrentLevel(nullptr);
+            GF_SetCurrentLevel(nullptr);
+            Game_SetBonusFlag((GAME_BONUS_FLAG)gf_cmd.param);
+            SG_Resume_ResetAllEntries();
+            SG_Manager_UnbindSlot();
+            MUST(GF_DoLevelSequence(level, GFSC_NORMAL, &gf_cmd));
+            break;
+        }
+
         case GF_START_SAVED_GAME: {
             const SAVEGAME_SLOT_REF slot =
                 SG_Manager_SlotFromParam(gf_cmd.param);

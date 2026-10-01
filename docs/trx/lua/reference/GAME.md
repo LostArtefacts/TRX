@@ -183,6 +183,11 @@ Module for the game flow: which levels there are, and which one is being played.
 
     Keys:
     - <a id="game.play_level.opts.select" name="game.play_level.opts.select"></a>**`select`** (boolean, optional). Start the level as the level-select screen does, rebuilding Lara's inventory to what she would carry on reaching it. Without it the level continues from the one in progress.
+    - <a id="game.play_level.opts.ng_plus" name="game.play_level.opts.ng_plus"></a>**`ng_plus`** (boolean, optional). Whether to start the bonus game mode.
+    - <a id="game.play_level.opts.from_save" name="game.play_level.opts.from_save"></a>**`from_save`** (table, optional). The save to take Lara's progress from, as `{ slot_num = 1, pool = trx.savegame.Pool.NORMAL }`.
+      Raises without `select`. The death counter and the restart file then use this
+      save. Without it, `select` builds Lara's inventory as if the game had been
+      played from the first level.
 
   Example:
   ```lua
@@ -221,14 +226,34 @@ Module for the game flow: which levels there are, and which one is being played.
 - <a id="game.end_level" name="game.end_level"></a>[lua]`trx.game.end_level()`  
   Ends the current level, as though Lara had reached its exit.
 
+- <a id="game.start_new_game" name="game.start_new_game"></a>[lua]`trx.game.start_new_game([settings])`  
+  Starts a new game at the first level.
+
+  The new game uses the selected game mode and clears previous progress.
+
+  Parameters:
+  - <a id="game.start_new_game.settings" name="game.start_new_game.settings"></a>**`settings`** (table, optional). The new game settings.
+
+    Keys:
+    - <a id="game.start_new_game.settings.ng_plus" name="game.start_new_game.settings.ng_plus"></a>**`ng_plus`** (boolean, optional). Whether to start the bonus game mode. `false` by default.
+
+  Example:
+  ```lua
+  trx.game.start_new_game({ ng_plus = true })
+  ```
+
 - <a id="game.restart_level" name="game.restart_level"></a>[lua]`trx.game.restart_level()`  
-  Restarts the current level from its start, as the passport's restart does.
-  Returns `false` and does nothing where the passport offers no restart: outside
-  a level, in a cutscene or demo, or in a save that does not record how the level
-  started.
+  Starts the level being played again from its beginning.
+
+  Raises outside a level, and in a cutscene or a demo.
+
+- <a id="game.can_restart_level" name="game.can_restart_level"></a>[lua]`trx.game.can_restart_level()`  
+  Whether the current level can be restarted. It cannot outside a level, in a
+  cutscene or a demo, or where the save the game runs from does not allow a
+  restart.
 
   Returns:
-  - boolean. Whether the level restarts.
+  - boolean. Whether the level can be restarted.
 
 - <a id="game.exit_to_title" name="game.exit_to_title"></a>[lua]`trx.game.exit_to_title()`  
   Leaves the current game and returns to the title screen.

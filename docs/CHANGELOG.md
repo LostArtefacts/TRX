@@ -112,6 +112,9 @@
     - `trx.ui.primitive.horizontal_line`
     - `trx.ui.text_scale`
 - Added script access to passport data and actions
+    - `trx.game.start_new_game`
+    - `trx.game.can_restart_level`
+    - `from_save` in `trx.game.play_level`
     - `trx.savegame.SlotInfo`
     - `trx.savegame.info`
     - `trx.savegame.delete`
@@ -121,7 +124,9 @@
     - `trx.savegame.reached_levels`
     - `trx.savegame.play_story`
     - `trx.savegame.recent_slot`
+    - `trx.mod.can_switch`
 - Added `trx.inventory_ring`, which holds what the inventory ring draws. `trx.inventory` now holds only what Lara carries.
+- Added `ng_plus` to `trx.game.play_level`, so a script can pick the game mode a level starts in
 - Added the ability for a script to hold a player action inactive
     - `trx.input.suppress`
     - `trx.input.Suppression:release`

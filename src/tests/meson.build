@@ -990,7 +990,7 @@ unit_tests += {
 unit_tests += {
   'name': 'lua/commands/restart_level',
   'bundles': [b_lua_surface, b_console, b_lua_events],
-  'src': ['fakes/camera.c', 'fakes/game.c'],
+  'src': ['fakes/camera.c', 'fakes/game.c', 'fakes/savegame.c'],
   'engine': ['game/lua/capi/game.c'],
 }
 
