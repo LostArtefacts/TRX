@@ -72,8 +72,6 @@ void Output_SetFogEnd(int32_t dist);
 
 int32_t Output_GetNearZ(void);
 int32_t Output_GetFarZ(void);
-int32_t Output_GetNearZ_UI(void);
-int32_t Output_GetFarZ_UI(void);
 
 void Output_SetCurrentRoom(const ROOM *room_num);
 const ROOM *Output_GetCurrentRoom(void);

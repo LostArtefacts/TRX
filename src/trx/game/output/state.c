@@ -8,6 +8,7 @@
 #include <trx/game/game/state.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/output/common.h>
+#include <trx/game/output/const.h>
 #include <trx/game/output/lights.h>
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/sources/objects.h>
@@ -124,16 +125,6 @@ int32_t Output_GetNearZ(void)
 int32_t Output_GetFarZ(void)
 {
     return Output_GetFogEnd() << W2V_SHIFT;
-}
-
-int32_t Output_GetNearZ_UI(void)
-{
-    return 20;
-}
-
-int32_t Output_GetFarZ_UI(void)
-{
-    return 10000;
 }
 
 void Output_SetSkyboxEnabled(const bool enabled)
@@ -330,8 +321,8 @@ void Output_GetOrthoProjectionMatrix(GLfloat output[][4])
     const float top = 0.0f;
     const float right = Viewport_GetWidth(VIEWPORT_UI);
     const float bottom = Viewport_GetHeight(VIEWPORT_UI);
-    const float near = Output_GetNearZ_UI();
-    const float far = Output_GetFarZ_UI();
+    const float near = OUTPUT_UI_NEAR_Z;
+    const float far = OUTPUT_UI_FAR_Z;
 
     output[0][0] = 2.0f / (right - left);
     output[0][1] = 0.0f;

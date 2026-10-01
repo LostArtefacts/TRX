@@ -22,6 +22,10 @@
 // magnified back to the same rectangle at every one of those settings.
 #define REF_PERSP 381
 
+// The near and far planes of the orthographic view that the UI draws in.
+#define OUTPUT_UI_NEAR_Z 20
+#define OUTPUT_UI_FAR_Z 10000
+
 #define WIBBLE_SIZE 32
 
 #define LIGHT_MAP_SIZE 32

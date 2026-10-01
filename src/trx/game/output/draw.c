@@ -8,6 +8,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/output.h>
 #include <trx/game/output/bind.h>
+#include <trx/game/output/const.h>
 #include <trx/game/output/sources/lightnings.h>
 #include <trx/game/output/sources/misc.h>
 #include <trx/game/output/sources/objects.h>
@@ -41,7 +42,7 @@ static void M_DrawScreenQuad(
         .tr = tr,
         .bl = bl,
         .br = br,
-        .z = Output_GetNearZ_UI() + z,
+        .z = OUTPUT_UI_NEAR_Z + z,
     });
 }
 
@@ -114,7 +115,7 @@ void Output_DrawScreenSprite(
         .y0 = y0,
         .x1 = x1,
         .y1 = y1,
-        .z = Output_GetNearZ_UI() + z,
+        .z = OUTPUT_UI_NEAR_Z + z,
         .color = {
             colors[0],
             colors[1],

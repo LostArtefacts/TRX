@@ -6,6 +6,7 @@
 #include <trx/game/const.h>
 #include <trx/game/objects.h>
 #include <trx/game/output/common.h>
+#include <trx/game/output/const.h>
 #include <trx/game/output/overlay.h>
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/sources/ui.h>
@@ -95,7 +96,7 @@ static void M_DrawScreenQuad(
         .tr = tr,
         .bl = bl,
         .br = br,
-        .z = Output_GetNearZ_UI() + z,
+        .z = OUTPUT_UI_NEAR_Z + z,
     });
 }
 
@@ -346,7 +347,7 @@ static void M_DrawOp_Circle(const M_DRAW_OP *const base)
         .cy = op->cy,
         .r_inner = op->r_inner,
         .r_outer = op->r_outer,
-        .z = Output_GetNearZ_UI() + op->z,
+        .z = OUTPUT_UI_NEAR_Z + op->z,
         .color = op->color,
     });
 }
