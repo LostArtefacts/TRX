@@ -146,6 +146,7 @@
 - Added script text input, clipboard access, and input grabbing
 - Added console events, history access, and script-controlled console visibility
 - Added a UI layer above the game interface
+- Added `trx.ui.widgets.Custom`, a widget that measures and draws itself through script functions
 - Changed script widgets to stay behind the game interface when they overlap
 - Changed `trx.items.Item:die` and `trx.items.Item:shatter` to take an options table, and to let a script say what the flying body parts draw
 - Changed `trx.savegame.load` to raise an error for an empty slot

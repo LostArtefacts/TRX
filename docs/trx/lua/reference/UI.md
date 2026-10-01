@@ -740,6 +740,35 @@ and `\{button left}` draws the button the player has bound.
   })
   ```
 
+- <a id="ui.widgets.Custom" name="ui.widgets.Custom"></a>[lua]`trx.ui.widgets.Custom(settings)`  
+  A widget that measures and draws itself through functions the script gives.
+
+  Use it for drawing that the other widgets do not cover. Register the signals
+  that the functions read with [`trx.ui.Widget:wakes_on`](#ui.Widget.wakes_on).
+
+  Parameters:
+  - <a id="ui.widgets.Custom.settings" name="ui.widgets.Custom.settings"></a>**`settings`** (table). The widget settings.
+
+    Keys:
+    - <a id="ui.widgets.Custom.settings.measure" name="ui.widgets.Custom.settings.measure"></a>**`measure`** (function). Returns the width and the height the widget wants, in canvas units.
+    - <a id="ui.widgets.Custom.settings.paint" name="ui.widgets.Custom.settings.paint"></a>**`paint`** (function). Draws the widget with [`trx.ui.primitive`](#ui.primitive). It receives the left edge, the top
+      edge, the width and the height of the box the widget was given.
+    - <a id="ui.widgets.Custom.settings.shown" name="ui.widgets.Custom.settings.shown"></a>**`shown`** (any, optional). Whether the widget is shown, or a signal that holds that value.
+
+  Returns: [trx.ui.Widget](#ui.Widget). The widget.
+
+  Example:
+  ```lua
+  local mark = trx.ui.widgets.Custom({
+    measure = function()
+      return 8, 8
+    end,
+    paint = function(x, y, w, h)
+      trx.ui.primitive.quad(x, y, 0, w, h, trx.math.color("#ffffff"))
+    end,
+  })
+  ```
+
 - <a id="ui.regions.place" name="ui.regions.place"></a>[lua]`trx.ui.regions.place(region, widget, [layer])`  
   Places a widget in a region.
 

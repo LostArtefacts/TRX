@@ -456,4 +456,36 @@ test("a layer keeps its own widgets", function()
   assert(trx.ui.regions.remove(over) == false, "it was removed twice")
 end)
 
+test("a custom widget measures and draws through its functions", function()
+  local painted
+  local custom = widgets.Custom({
+    measure = function()
+      return 30, 20
+    end,
+    paint = function(x, y, w, h_)
+      painted = { x, y, w, h_ }
+    end,
+  })
+  local w, h_ = custom:measure()
+  assert(w == 30 and h_ == 20)
+  custom:paint(5, 6, 30, 20)
+  assert(painted[1] == 5 and painted[2] == 6)
+  assert(painted[3] == 30 and painted[4] == 20)
+end)
+
+test("a custom widget that is not shown draws nothing", function()
+  local painted = false
+  local custom = widgets.Custom({
+    measure = function()
+      return 1, 1
+    end,
+    paint = function()
+      painted = true
+    end,
+    shown = false,
+  })
+  custom:paint(0, 0, 1, 1)
+  assert(not painted)
+end)
+
 return h.report()
