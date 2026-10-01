@@ -10644,6 +10644,42 @@
       }
     },
     {
+      "description": "A widget that measures and draws itself through functions the script gives.\n\nUse it for drawing that the other widgets do not cover. Register the signals\nthat the functions read with `trx.ui.Widget:wakes_on`.",
+      "examples": [
+        "local mark = trx.ui.widgets.Custom({\n  measure = function()\n    return 8, 8\n  end,\n  paint = function(x, y, w, h)\n    trx.ui.primitive.quad(x, y, 0, w, h, trx.math.color(\"#ffffff\"))\n  end,\n})"
+      ],
+      "params": [
+        {
+          "description": "The widget settings.",
+          "fields": [
+            {
+              "description": "Returns the width and the height the widget wants, in canvas units.",
+              "name": "measure",
+              "type": "function"
+            },
+            {
+              "description": "Draws the widget with `trx.ui.primitive`. It receives the left edge, the top\nedge, the width and the height of the box the widget was given.",
+              "name": "paint",
+              "type": "function"
+            },
+            {
+              "description": "Whether the widget is shown, or a signal that holds that value.",
+              "name": "shown",
+              "optional": true,
+              "type": "any"
+            }
+          ],
+          "name": "settings",
+          "type": "table"
+        }
+      ],
+      "path": "ui.widgets.Custom",
+      "returns": {
+        "description": "The widget.",
+        "type": "ui.Widget"
+      }
+    },
+    {
       "description": "Places a widget in a region.\n\nThe layer decides whether the widget is covered by the engine interface or\ncovers it. A widget is under it unless the call says otherwise. Each layer\nkeeps room of its own in the region, so widgets on the two layers stack rather\nthan sit on top of each other.\n\nIf the region argument is a signal, the widget moves when the signal changes.",
       "examples": [
         "trx.ui.regions.place(trx.ui.Region.TOP_LEFT, health_bar)",
