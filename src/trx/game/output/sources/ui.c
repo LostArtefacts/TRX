@@ -7,6 +7,7 @@
 #include <trx/core/vector.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output.h>
+#include <trx/game/output/const.h>
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/sources/objects.h>
 #include <trx/game/viewport.h>
@@ -125,7 +126,7 @@ static void M_DrawMeshes(const M_PRIV *const p)
         const XYZ_32 origin = {
             .x = rect.x + rect.w / 2,
             .y = rect.y + rect.h / 2,
-            .z = (Output_GetNearZ_UI() + Output_GetFarZ_UI()) / 2,
+            .z = (OUTPUT_UI_NEAR_Z + OUTPUT_UI_FAR_Z) / 2,
         };
 
         const float scale = M_GetMeshScale(rect, frame);
@@ -247,7 +248,7 @@ static void M_DrawBinocularMask(const M_PRIV *const p)
     const XYZ_32 origin = {
         .x = viewport.x + viewport.w / 2,
         .y = viewport.y + viewport.h / 2,
-        .z = (Output_GetNearZ_UI() + Output_GetFarZ_UI()) / 2,
+        .z = (OUTPUT_UI_NEAR_Z + OUTPUT_UI_FAR_Z) / 2,
     };
 
     // Lighting routines need a W2V matrix to work; set up something for it.
@@ -567,7 +568,7 @@ void OutputSource_UI_StagePhotoModeFrame(
     const int32_t y0 = rect.y;
     const int32_t x1 = rect.x + rect.w;
     const int32_t y1 = rect.y + rect.h;
-    const int32_t z = Output_GetNearZ_UI();
+    const int32_t z = OUTPUT_UI_NEAR_Z;
 
     OutputSource_UI_StageQuad((OUTPUT_UI_QUAD) {
         .x0 = x0,
