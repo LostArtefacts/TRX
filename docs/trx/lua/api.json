@@ -10737,6 +10737,78 @@
       "path": "ui.regions.fallback"
     },
     {
+      "description": "Puts a layer on top of the stack.\n\nThe layer reads no input on the tick it is pushed, because the press that\nopened it is often still active.",
+      "examples": [
+        "local layer = trx.ui.layers.push({\n  root = trx.ui.widgets.Label({ text = \"Paused\" }),\n  on_input = function(layer, keys)\n    if keys:pressed(trx.input.Role.MENU_BACK) then\n      layer:close()\n    end\n  end,\n})"
+      ],
+      "params": [
+        {
+          "description": "The layer settings.",
+          "fields": [
+            {
+              "description": "The widget tree to draw.",
+              "name": "root",
+              "type": "ui.Widget"
+            },
+            {
+              "description": "The region that the tree takes room in. The tree then stacks with the other\nwidgets in that region. Without a region or a place, the tree is centered in\n`trx.ui.safe_area`.",
+              "name": "region",
+              "optional": true,
+              "type": "ui.Region"
+            },
+            {
+              "description": "Returns the top left corner of the tree, in canvas units. It receives the\nwidth and the height that the tree measures.",
+              "name": "place",
+              "optional": true,
+              "type": "function"
+            },
+            {
+              "description": "Whether the layer reads input. `true` by default.",
+              "name": "modal",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "description": "Runs once a tick while the layer is the top layer that reads input. It\nreceives the layer and a `trx.ui.LayerKeys`. An error closes the layer.",
+              "name": "on_input",
+              "optional": true,
+              "type": "function"
+            },
+            {
+              "description": "Runs once when the layer closes, for any reason. It receives the layer.",
+              "name": "on_close",
+              "optional": true,
+              "type": "function"
+            }
+          ],
+          "name": "settings",
+          "type": "table"
+        }
+      ],
+      "path": "ui.layers.push",
+      "returns": {
+        "description": "The pushed layer.",
+        "type": "ui.StackLayer"
+      }
+    },
+    {
+      "description": "Returns the top layer that reads input.",
+      "path": "ui.layers.top",
+      "returns": {
+        "description": "The layer, or `nil` if no layer reads input.",
+        "nullable": true,
+        "type": "ui.StackLayer"
+      }
+    },
+    {
+      "description": "Returns how many layers are on the stack.",
+      "path": "ui.layers.count",
+      "returns": {
+        "description": "The number of layers.",
+        "type": "integer"
+      }
+    },
+    {
       "description": "Adds a weapon of a script's own, under a name the game does not hold yet.\nA weapon of a kind the engine implements is held, drawn and put away as the\nweapons of that kind are, and only what it does when it fires is a script's\nto write. Raises where the spec says neither a kind nor a base, and where\nthe name is taken, so that two mods claiming one weapon are heard;\n`trx.weapons.patch` changes a weapon that is there already.",
       "examples": [
         "trx.weapons.declare(\"mymod:bigger_gun\", {\n  base = \"shotgun\",\n  kind = \"rifle\",\n  objects = {\n    pickup = \"shotgun_item\",\n    ammo = \"shotgun_ammo_item\",\n    anim = \"lara_shotgun\",\n  },\n  ammo = { initial_shots = 12, box_shots = 12 },\n  damage = 30,\n  fire = function(weapon, running)\n    trx.sound.play(trx.catalog.samples.explosion)\n  end,\n})"
@@ -11416,6 +11488,11 @@
       "callable": false,
       "description": "Places script widgets on the screen.\n\nThe screen has nine regions. Engine UI uses those regions for bars, overlay\ntext, inventory-ring hints, and dialogs. A widget placed in a region stacks\nafter the engine UI in that region.\n\nPlace a widget once when the script loads. Use signals when the widget must\nchange later.",
       "path": "ui.regions"
+    },
+    {
+      "callable": false,
+      "description": "Draws screens of widgets over the rest of the interface.\n\nA layer holds one widget tree, such as a menu or a question. Layers are kept in\na stack. Each layer draws over the layers below it and over the widgets placed\nwith `trx.ui.regions.place`. The engine interface still draws over all of them.\n\nOnly the top layer that takes input reads the player's input. The layers below\nit read nothing until it closes.\n\nA layer that a level script pushes closes when the level ends.",
+      "path": "ui.layers"
     }
   ],
   "numbers": [
@@ -17066,6 +17143,105 @@
       ],
       "operators": [],
       "path": "ui.Widget"
+    },
+    {
+      "description": "The player's input, as the top layer reads it.\n\nA press that a layer reads is used up. It does not reach other code, and it\ndoes not reach the layer below when this one closes.",
+      "extensions": [],
+      "fields": [],
+      "handle": false,
+      "methods": [
+        {
+          "description": "Returns whether a role is active. Does not use it up.",
+          "name": "held",
+          "params": [
+            {
+              "description": "The role.",
+              "name": "role",
+              "type": "input.Role"
+            }
+          ],
+          "returns": {
+            "description": "Whether it is held.",
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "Returns for how many ticks a role has been held. A tick in which the layer did\nnot ask counts as a release.",
+          "name": "held_for",
+          "params": [
+            {
+              "description": "The role.",
+              "name": "role",
+              "type": "input.Role"
+            }
+          ],
+          "returns": {
+            "description": "The number of ticks.",
+            "type": "integer"
+          }
+        },
+        {
+          "description": "Returns whether a role became active this tick, and uses the press up.",
+          "name": "pressed",
+          "params": [
+            {
+              "description": "The role.",
+              "name": "role",
+              "type": "input.Role"
+            }
+          ],
+          "returns": {
+            "description": "Whether it was pressed.",
+            "type": "boolean"
+          }
+        }
+      ],
+      "operators": [],
+      "path": "ui.LayerKeys"
+    },
+    {
+      "description": "One screen of widgets on the stack.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "Whether the layer is still on the stack.",
+          "name": "is_open",
+          "type": "boolean",
+          "writable": false
+        }
+      ],
+      "handle": false,
+      "methods": [
+        {
+          "description": "Removes the layer from the stack, and releases its widgets. Does nothing if the\nlayer is already closed.",
+          "name": "close",
+          "returns": {
+            "description": "Whether the layer was open.",
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "Returns whether the layer is the one that reads input.",
+          "name": "is_top",
+          "returns": {
+            "description": "Whether it is on top.",
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "Replaces the widget tree that the layer draws, and releases the old one.",
+          "name": "set_root",
+          "params": [
+            {
+              "description": "The new tree.",
+              "name": "root",
+              "type": "ui.Widget"
+            }
+          ]
+        }
+      ],
+      "operators": [],
+      "path": "ui.StackLayer"
     },
     {
       "description": "How far off straight ahead an aim may go, as a pair of limits about each axis.",
