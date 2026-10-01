@@ -115,6 +115,7 @@ static int M_FakePaint(lua_State *const L)
 static void M_PaintLayer(const UI_PAINT_LAYER layer)
 {
     LUA_UI_SetPainting(true);
+    LUA_UI_SetPaintDepth(layer == UI_PAINT_LAYER_OVER ? 0 : LUA_UI_UNDER_DEPTH);
     LUA_FireEvent(
         layer == UI_PAINT_LAYER_OVER ? LUA_EVENT_UI_PAINT_OVER
                                      : LUA_EVENT_UI_PAINT);

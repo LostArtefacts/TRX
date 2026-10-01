@@ -18,6 +18,15 @@ void LUA_UI_HideNextFrame(void);
 // per layer, so that a script can paint under or over the engine UI.
 void LUA_UI_PaintRegions(UI_PAINT_LAYER layer);
 
+// The depth that the paint pass under the engine interface draws at. It keeps
+// script drawing behind every engine widget, and leaves room for
+// trxc.ui.push_depth to bring a script's layer nearer.
+#define LUA_UI_UNDER_DEPTH 4096
+
 // Sets whether trx.ui may schedule draw calls for the current scene.
 void LUA_UI_SetPainting(bool painting);
 bool LUA_UI_IsPainting(void);
+
+// Sets the depth added to every z that a script draws with, for one paint pass.
+// A lower depth draws nearer.
+void LUA_UI_SetPaintDepth(int32_t depth);

@@ -37,8 +37,16 @@ M_SLOT_POSE_GETTER(Y, y)
 M_SLOT_POSE_GETTER(W, w)
 M_SLOT_POSE_GETTER(H, h)
 
+#define M_MAX_DEPTH_PUSHES 16
+
 static bool m_Drawing = false;
 static bool m_Painting = false;
+
+// The depth added to every z that a script draws with, and the depths that
+// trxc.ui.pop_depth returns to. A lower depth draws nearer.
+static int32_t m_Depth = 0;
+static int32_t m_DepthStack[M_MAX_DEPTH_PUSHES] = {};
+static int32_t m_DepthCount = 0;
 
 static void M_CheckDrawing(lua_State *const L)
 {
@@ -102,6 +110,19 @@ static void M_CheckPainting(lua_State *const L)
     if (!LUA_UI_IsPainting()) {
         luaL_error(L, "only available while a scene is being painted");
     }
+}
+
+// Keeps a z between the near and far planes of the UI view, so that drawing
+// pushed too far stays visible at the nearest or farthest depth.
+static int32_t M_ClampZ(int64_t z)
+{
+    CLAMP(z, 0, OUTPUT_UI_FAR_Z - OUTPUT_UI_NEAR_Z - 1);
+    return (int32_t)z;
+}
+
+static int32_t M_OptZ(lua_State *const L, const int arg)
+{
+    return M_ClampZ((int64_t)m_Depth + luaL_optinteger(L, arg, 0));
 }
 
 // Accepts any numeric channel and clamps it to uint8_t range.
@@ -209,7 +230,7 @@ static int M_L_UISprite(lua_State *const L)
     const int32_t sprite_idx = M_CheckSpriteIdx(L);
     const int32_t x = lroundf(UI_ScaleX((float)luaL_checknumber(L, 3)));
     const int32_t y = lroundf(UI_ScaleY((float)luaL_checknumber(L, 4)));
-    const int32_t z = (int32_t)luaL_optinteger(L, 5, 0);
+    const int32_t z = M_OptZ(L, 5);
     const int32_t scale =
         lroundf(UI_ScaleX((float)luaL_optnumber(L, 6, 1.0)) * PHD_ONE);
     const RGBA_F color = M_CheckColorF(L, 7);
@@ -332,7 +353,7 @@ static int M_L_UIGradientSprite(lua_State *const L)
     const int32_t sprite_idx = M_CheckSpriteIdx(L);
     const int32_t x = lroundf(UI_ScaleX((float)luaL_checknumber(L, 3)));
     const int32_t y = lroundf(UI_ScaleY((float)luaL_checknumber(L, 4)));
-    const int32_t z = (int32_t)luaL_optinteger(L, 5, 0);
+    const int32_t z = M_OptZ(L, 5);
     const int32_t scale =
         lroundf(UI_ScaleX((float)luaL_optnumber(L, 6, 1.0)) * PHD_ONE);
     const RGBA_F colors[4] = {
@@ -402,7 +423,7 @@ static int M_L_UIDrawText(lua_State *const L)
         (float)luaL_checknumber(L, 3),
         (UI_TEXT_SETTINGS) {
             .scale = (float)luaL_optnumber(L, 4, 1.0),
-            .z = (int32_t)luaL_optinteger(L, 5, 0),
+            .z = M_OptZ(L, 5),
         });
     return 0;
 }
@@ -415,8 +436,7 @@ static int M_L_UIHorizontalLine(lua_State *const L)
         g_Config.ui.menu_style,
         lroundf(UI_ScaleX((float)luaL_checknumber(L, 1))),
         lroundf(UI_ScaleX((float)luaL_checknumber(L, 2))),
-        lroundf(UI_ScaleY((float)luaL_checknumber(L, 3))),
-        (int32_t)luaL_optinteger(L, 4, 0));
+        lroundf(UI_ScaleY((float)luaL_checknumber(L, 3))), M_OptZ(L, 4));
     return 0;
 }
 
@@ -431,7 +451,7 @@ static int M_L_UIPanel(lua_State *const L)
 
     const float x = (float)luaL_checknumber(L, 1);
     const float y = (float)luaL_checknumber(L, 2);
-    const int32_t z = (int32_t)luaL_optinteger(L, 3, 0);
+    const int32_t z = M_OptZ(L, 3);
     const int32_t x0 = lroundf(UI_ScaleX(x));
     const int32_t y0 = lroundf(UI_ScaleY(y));
     const int32_t w =
@@ -445,6 +465,29 @@ static int M_L_UIPanel(lua_State *const L)
         UI_ScheduleDrawTextBackground(ui_style, x0, y0, z, w, h, text_style);
     }
     UI_ScheduleDrawTextOutline(ui_style, x0, y0, z, w, h, text_style);
+    return 0;
+}
+
+// trxc.ui.push_depth(offset)
+static int M_L_UIPushDepth(lua_State *const L)
+{
+    M_CheckPainting(L);
+    if (m_DepthCount >= M_MAX_DEPTH_PUSHES) {
+        return luaL_error(L, "too many depths pushed");
+    }
+    m_DepthStack[m_DepthCount++] = m_Depth;
+    m_Depth = M_ClampZ((int64_t)m_Depth + luaL_checkinteger(L, 1));
+    return 0;
+}
+
+// trxc.ui.pop_depth()
+static int M_L_UIPopDepth(lua_State *const L)
+{
+    M_CheckPainting(L);
+    if (m_DepthCount <= 0) {
+        return luaL_error(L, "no depth to pop");
+    }
+    m_Depth = m_DepthStack[--m_DepthCount];
     return 0;
 }
 
@@ -468,7 +511,7 @@ static int M_L_UIFlatQuad(lua_State *const L)
     M_CheckPainting(L);
     const float x = (float)luaL_checknumber(L, 1);
     const float y = (float)luaL_checknumber(L, 2);
-    const int32_t z = (int32_t)luaL_optinteger(L, 3, 0);
+    const int32_t z = M_OptZ(L, 3);
     const int32_t x0 = lroundf(UI_ScaleX(x));
     const int32_t y0 = lroundf(UI_ScaleY(y));
     const int32_t w =
@@ -485,7 +528,7 @@ static int M_L_UIGradientQuad(lua_State *const L)
     M_CheckPainting(L);
     const float x = (float)luaL_checknumber(L, 1);
     const float y = (float)luaL_checknumber(L, 2);
-    const int32_t z = (int32_t)luaL_optinteger(L, 3, 0);
+    const int32_t z = M_OptZ(L, 3);
     const int32_t x0 = lroundf(UI_ScaleX(x));
     const int32_t y0 = lroundf(UI_ScaleY(y));
     const int32_t w =
@@ -660,6 +703,8 @@ static const luaL_Reg m_Module[] = {
     { "flat_quad", M_L_UIFlatQuad },
     { "horizontal_line", M_L_UIHorizontalLine },
     { "panel", M_L_UIPanel },
+    { "push_depth", M_L_UIPushDepth },
+    { "pop_depth", M_L_UIPopDepth },
     { "push_text_scale", M_L_UIPushTextScale },
     { "pop_text_scale", M_L_UIPopTextScale },
     { "gradient_quad", M_L_UIGradientQuad },
@@ -696,6 +741,13 @@ bool LUA_UI_IsPainting(void)
 void LUA_UI_SetPainting(const bool painting)
 {
     m_Painting = painting;
+    m_DepthCount = 0;
+}
+
+void LUA_UI_SetPaintDepth(const int32_t depth)
+{
+    m_Depth = depth;
+    m_DepthCount = 0;
 }
 
 void LUA_UI_SetDrawing(const bool drawing)
