@@ -552,6 +552,9 @@ REGISTER_UI_SETTING_HANDLER(
         .is_available = M_EnableFadeEffects_IsAvailable)
 
 REGISTER_UI_SETTING_HANDLER(
+        .key = "ui.background_blur", .delta_slow = 5, .delta_fast = 10)
+
+REGISTER_UI_SETTING_HANDLER(
         .key = "visuals.enable_exit_fade_effects",
         .is_available = M_EnableFadeEffects_IsAvailable)
 

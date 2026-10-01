@@ -178,6 +178,7 @@ static float M_ApplyPauseBackground(const M_RENDER_CONTEXT *const ctx)
         is_pattern ? BK_NONE : style, progress);
     Output_Quad_SetDesaturation(ctx->renderer_2d, tint.desaturation);
     Output_Quad_SetGlobalTint(ctx->renderer_2d, tint.tint);
+    Output_Quad_SetBlur(ctx->renderer_2d, tint.blur);
     if (is_pattern) {
         Output_Overlay_DrawPatternOpacity(style == BK_PATTERN_WAVE, progress);
     }

@@ -1657,6 +1657,10 @@
             "title": "\\{review}Munitionszähler-Position",
             "description": "\\{review}Position, an der der Munitionszähler angezeigt wird.",
         },
+        "ui.background_blur": {
+            "title": "\\{review}Hintergrundunschärfe",
+            "description": "\\{review}Zeichnet das Spiel hinter Inventar, Pause und Statistik unscharf. Die Unschärfe wirkt zusätzlich zum gewählten Hintergrundstil.",
+        },
         "ui.bar_look": {
             "title": "\\{review}Aussehen der Balken",
             "description": "\\{review}Wählt Rahmen und Farben, mit denen die UI-Leisten gezeichnet werden, übernommen aus einer der Originalveröffentlichungen. Die Wahl bestimmt außerdem, welcher Satz der Leistenfarben weiter unten gilt.",

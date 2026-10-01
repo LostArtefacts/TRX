@@ -139,6 +139,7 @@ typedef struct {
         BACKGROUND_TYPE inventory_background_style;
         BACKGROUND_TYPE stats_background_style;
         BACKGROUND_TYPE pause_background_style;
+        float background_blur;
         bool inventory_fade_effects;
         bool stats_fade_effects;
         bool pause_fade_effects;

@@ -1657,6 +1657,10 @@
             "title": "Àite cunntair ammo",
             "description": "Àite far am bi an cunntair ammo air a thaisbeanadh.",
         },
+        "ui.background_blur": {
+            "title": "\\{review}Sgleò a' chùlaibh",
+            "description": "\\{review}Cuiridh seo sgleò air a' gheama air cùlaibh an inbhentaraidh, na stad agus nan staitistearachd. Thèid an sgleò a chur ris an stoidhle cùlaibh a thagh thu.",
+        },
         "ui.bar_look": {
             "title": "Coltas nam bàraichean",
             "description": "Taghaidh seo am frèam agus na dathan a thèid a chleachdadh airson bàraichean na h-eadar-aghaidh, air an togail bho aon de na sgaoilidhean tùsail. Co-dhùnaidh an taghadh cuideachd dè an seata de roghainnean datha gu h-ìosal a bhios an sàs.",

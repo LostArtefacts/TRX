@@ -1657,6 +1657,10 @@
             "title": "\\{review}Compteur de munitions",
             "description": "\\{review}Emplacement où le compteur de munitions est affiché.",
         },
+        "ui.background_blur": {
+            "title": "\\{review}Flou de l'arrière-plan",
+            "description": "\\{review}Floute le jeu derrière l'inventaire, la pause et les statistiques. Le flou s'ajoute au style d'arrière-plan choisi.",
+        },
         "ui.bar_look": {
             "title": "\\{review}Apparence des barres",
             "description": "\\{review}Choisit le cadre et les couleurs avec lesquels les barres de l'interface sont dessinées, repris de l'une des versions d'origine. Ce choix détermine aussi quel jeu de réglages de couleur ci-dessous s'applique.",

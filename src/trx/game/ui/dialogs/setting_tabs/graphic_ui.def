@@ -15,6 +15,7 @@ X_UI_ROW(ui.pause_background_style)
 X_UI_ROW(ui.pause_fade_effects)
 X_UI_ROW(ui.stats_background_style)
 X_UI_ROW(ui.stats_fade_effects)
+X_UI_ROW(ui.background_blur)
 
 X_UI_ROW(visuals.enable_fade_effects)
 X_UI_ROW(visuals.enable_exit_fade_effects)

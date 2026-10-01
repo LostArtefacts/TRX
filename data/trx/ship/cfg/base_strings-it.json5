@@ -1657,6 +1657,10 @@
             "title": "Indicatore munizioni",
             "description": "Posizione in cui viene visualizzato l'indicatore delle munizioni.",
         },
+        "ui.background_blur": {
+            "title": "\\{review}Sfocatura dello sfondo",
+            "description": "\\{review}Sfoca il gioco dietro l'inventario, la pausa e le statistiche. La sfocatura si aggiunge allo stile di sfondo scelto.",
+        },
         "ui.bar_look": {
             "title": "Aspetto barre",
             "description": "Consente di scegliere la cornice e i colori con cui vengono disegnate le barre dell'interfaccia utente, prendendo spunto da quelle delle versioni originali. La scelta determina anche quale gruppo di colori, riportato di seguito, verrà applicato.",

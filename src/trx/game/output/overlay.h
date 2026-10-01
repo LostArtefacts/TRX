@@ -16,12 +16,14 @@ typedef struct {
     float opacity;
     float desaturation; // 0 = off
     RGB_F tint; // COLOR_RGB_F_WHITE = no tint
+    float blur; // 0 = sharp, 1 = strongest
 } OUTPUT_SNAPSHOT_SETTINGS;
 
 typedef struct {
     float black_opacity;
     float desaturation;
     RGB_F tint;
+    float blur;
 } OUTPUT_BACKGROUND_TINT;
 
 void Output_Overlay_DrawPattern(bool wave);
