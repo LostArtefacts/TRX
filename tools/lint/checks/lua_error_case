@@ -1,0 +1,128 @@
+#!/usr/bin/env python3
+import re
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from harness import LintWarning, file_check
+
+# The calls that raise a Lua error, each with the position of its message
+# argument. Lua puts the place an error came from in front of its message, so
+# the message continues a sentence: it starts in lowercase and has no full stop
+# at the end.
+C_CALLS = {
+    "luaL_error": 1,
+    "luaL_argerror": 2,
+    "LUA_CheckRange": 3,
+}
+LUA_CALLS = {
+    "error": 0,
+}
+
+CASE_MESSAGE = "`{call}` message starts with `{word}`. Start it in lowercase."
+STOP_MESSAGE = "`{call}` message ends with a full stop. Remove it."
+
+C_CALL_RE = re.compile(r"\b(" + "|".join(C_CALLS) + r")\s*\(")
+LUA_CALL_RE = re.compile(r"(?<![\w.:])(" + "|".join(LUA_CALLS) + r")\s*\(")
+STRING_START_RE = re.compile(r"\"|'|\[=*\[")
+WORD_RE = re.compile(r"[A-Za-z][A-Za-z0-9_]*")
+
+
+def _skip_string(text, pos):
+    # Returns the position after the string literal that starts at `pos`.
+    long_match = re.match(r"\[(=*)\[", text[pos:])
+    if long_match is not None:
+        end = text.find("]" + long_match.group(1) + "]", pos)
+        return len(text) if end == -1 else end + len(long_match.group(0))
+    quote = text[pos]
+    pos += 1
+    while pos < len(text) and text[pos] != quote:
+        pos += 2 if text[pos] == "\\" else 1
+    return pos + 1
+
+
+def _arguments(text, pos):
+    # Yields the start and end positions of each top-level argument of the
+    # call whose opening parenthesis sits just before `pos`.
+    depth = 0
+    start = pos
+    while pos < len(text):
+        if STRING_START_RE.match(text, pos):
+            pos = _skip_string(text, pos)
+            continue
+        char = text[pos]
+        if char in "([{":
+            depth += 1
+        elif char in ")]}":
+            if depth == 0:
+                yield start, pos
+                return
+            depth -= 1
+        elif char == "," and depth == 0:
+            yield start, pos
+            start = pos + 1
+        pos += 1
+
+
+def _literals(text, start, end):
+    # Returns the contents of the string literals that make up the argument
+    # between `start` and `end`, or None when it holds anything else. C joins
+    # adjacent literals, so an argument can hold several.
+    contents = []
+    pos = start
+    while pos < end:
+        if text[pos].isspace():
+            pos += 1
+            continue
+        match = STRING_START_RE.match(text, pos)
+        if match is None:
+            return None
+        literal_end = _skip_string(text, pos)
+        closer = len(match.group(0)) if match.group(0)[0] == "[" else 1
+        contents.append((match.end(), text[match.end() : literal_end - closer]))
+        pos = literal_end
+    return contents or None
+
+
+def _is_capitalized(word):
+    # An acronym such as `ID` or `TR3` keeps its case.
+    return word[0].isupper() and not word.isupper()
+
+
+def _ends_with_full_stop(content):
+    # An ellipsis is not a full stop.
+    return content.endswith(".") and not content.endswith("..")
+
+
+def check(path, text):
+    if path.suffix == ".lua":
+        call_re, calls = LUA_CALL_RE, LUA_CALLS
+    else:
+        call_re, calls = C_CALL_RE, C_CALLS
+    for match in call_re.finditer(text):
+        call = match.group(1)
+        arguments = list(_arguments(text, match.end()))
+        if calls[call] >= len(arguments):
+            continue
+        literals = _literals(text, *arguments[calls[call]])
+        if literals is None:
+            continue
+        first_pos, first = literals[0]
+        word = WORD_RE.match(first)
+        if word is not None and _is_capitalized(word.group(0)):
+            yield LintWarning(
+                path,
+                CASE_MESSAGE.format(call=call, word=word.group(0)),
+                line=text.count("\n", 0, first_pos) + 1,
+            )
+        last_pos, last = literals[-1]
+        if _ends_with_full_stop(last):
+            yield LintWarning(
+                path,
+                STOP_MESSAGE.format(call=call),
+                line=text.count("\n", 0, last_pos) + 1,
+            )
+
+
+file_check(check)
