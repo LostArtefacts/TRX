@@ -135,6 +135,7 @@
 - Added a UI layer above the game interface
 - Changed `trx.items.Item:die` and `trx.items.Item:shatter` to take an options table, and to let a script say what the flying body parts draw
 - Fixed `trx.ui.primitive.sprite_count()` counting the meshes of a model as sprites
+- Fixed `trx.item.anim_num` not being accurate when the item is Lara and she is either on a vehicle or performing an extra animation (TRX1644)
 
 
 ## [1.11.1](https://github.com/LostArtefacts/TRX/compare/trx-1.11...trx-1.11.1) - 2026-09-22
