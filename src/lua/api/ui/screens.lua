@@ -65,6 +65,10 @@ leaves when the screen ends with `trx.ui.ScreenContext:confirm`.]],
     PAUSE = [[
 The question that the pause screen asks when the player presses the inventory
 key: whether to leave for the title screen.]],
+    SAVE_LOAD = [[
+The quick save or load screen. The save and load keys open it when the instant
+screen setting is on. The context reports whether it opened for saving or
+loading as `trx.ui.ScreenContext.mode`.]],
   },
 })
 
@@ -136,6 +140,17 @@ Context = api.type("ui.ScreenContext", {
       description = "The ring entry that the player uses, for `trx.ui.Screen.RING_ENTRY`.",
       get = function(self)
         if rawget(self, "_screen") == trx.ui.Screen.RING_ENTRY then
+          return rawget(self, "_arg")
+        end
+        return nil
+      end,
+    },
+    mode = {
+      type = "inventory_ring.Mode",
+      nullable = true,
+      description = "What the quick save or load screen opened for, for `trx.ui.Screen.SAVE_LOAD`.",
+      get = function(self)
+        if rawget(self, "_screen") == trx.ui.Screen.SAVE_LOAD then
           return rawget(self, "_arg")
         end
         return nil
@@ -215,9 +230,9 @@ fade. Only `trx.ui.Screen.PAUSE` takes this.]],
     },
     cancel = {
       description = [[
-Ends the screen, and closes its layers. A ring entry is put away, and the
-pause screen stays paused and drops its question. Does nothing if the screen
-has already ended.]],
+Ends the screen, and closes its layers. A ring entry is put away, the pause
+screen stays paused and drops its question, and the quick save or load screen
+closes. Does nothing if the screen has already ended.]],
       returns = {
         type = "boolean",
         description = "Whether the screen was still held.",

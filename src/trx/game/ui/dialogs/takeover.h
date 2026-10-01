@@ -10,6 +10,7 @@
 typedef enum {
     UI_TAKEOVER_RING_ENTRY,
     UI_TAKEOVER_PAUSE,
+    UI_TAKEOVER_SAVE_LOAD,
     UI_TAKEOVER_NUMBER_OF,
 } UI_TAKEOVER;
 
@@ -59,7 +60,8 @@ void UI_Takeover_Release(UI_TAKEOVER screen);
 // UI_TAKEOVER_CHOICE_CANCEL, which puts the entry away, and
 // UI_TAKEOVER_CHOICE_CONFIRM, which leaves the ring as a used entry does. The
 // pause question takes UI_TAKEOVER_CHOICE_CANCEL, UI_TAKEOVER_CHOICE_RESUME
-// and UI_TAKEOVER_CHOICE_EXIT_TO_TITLE.
+// and UI_TAKEOVER_CHOICE_EXIT_TO_TITLE. The quick save and load screens take
+// only UI_TAKEOVER_CHOICE_CANCEL.
 bool UI_Takeover_AcceptsChoice(UI_TAKEOVER screen, UI_TAKEOVER_CHOICE choice);
 
 // Closes the screen with a choice. Called by the owner. Does nothing while no
