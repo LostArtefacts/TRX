@@ -20,6 +20,7 @@ typedef enum {
     M_UNIFORM_DESATURATION,
     M_UNIFORM_GLOBAL_TINT,
     M_UNIFORM_DEST_RECT,
+    M_UNIFORM_BLUR,
     M_UNIFORM_NUMBER_OF,
 } M_UNIFORM;
 
@@ -68,6 +69,7 @@ struct OUTPUT_QUAD {
 
     float desaturation;
     RGB_F global_tint;
+    float blur;
 
     bool use_external_texture;
     GLuint external_texture_id;
@@ -114,6 +116,23 @@ static OUTPUT_QUAD_SURFACE_DESC M_NormalizeDesc(
 static void M_BindProgram(const OUTPUT_QUAD *const r)
 {
     Output_Shader_Bind(r->shader);
+}
+
+// Rebuild mipmaps before drawing when the blur is active.
+static void M_ApplyFilter(const OUTPUT_QUAD *const r)
+{
+    if (r->blur > 0.0f) {
+        glGenerateMipmap(GL_TEXTURE_2D);
+        glTexParameteri(
+            GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        return;
+    }
+
+    const GLint gl_filter =
+        r->filter_mode == TEXTURE_FILTER_BILINEAR ? GL_LINEAR : GL_NEAREST;
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter);
 }
 
 static void M_UploadVertices(OUTPUT_QUAD *const r)
@@ -171,6 +190,7 @@ RESULT Output_Quad_Create(OUTPUT_QUAD **const out_quad)
 
     r->desaturation = 0.0f;
     r->global_tint = COLOR_RGB_F_WHITE;
+    r->blur = 0.0f;
 
     r->vertices = nullptr;
     r->vertex_count = 6;
@@ -220,6 +240,7 @@ RESULT Output_Quad_Create(OUTPUT_QUAD **const out_quad)
         Output_Shader_LookupUniform(r->shader, "uGlobalTint");
     r->loc[M_UNIFORM_DEST_RECT] =
         Output_Shader_LookupUniform(r->shader, "uDestRect");
+    r->loc[M_UNIFORM_BLUR] = Output_Shader_LookupUniform(r->shader, "uBlur");
 
     M_BindProgram(r);
     glUniform1i(r->loc[M_UNIFORM_TEXTURE_MAIN], 0);
@@ -236,6 +257,7 @@ RESULT Output_Quad_Create(OUTPUT_QUAD **const out_quad)
     glUniform4f(
         r->loc[M_UNIFORM_DEST_RECT], r->dest_rect.x0, r->dest_rect.y0,
         r->dest_rect.x1, r->dest_rect.y1);
+    glUniform1f(r->loc[M_UNIFORM_BLUR], r->blur);
     TRX_GL_CheckError();
 
     *out_quad = r;
@@ -455,6 +477,18 @@ void Output_Quad_SetGlobalTint(OUTPUT_QUAD *const r, const RGB_F tint)
     }
 }
 
+void Output_Quad_SetBlur(OUTPUT_QUAD *const r, const float blur)
+{
+    ASSERT(r != nullptr);
+
+    if (r->blur != blur) {
+        M_BindProgram(r);
+        glUniform1f(r->loc[M_UNIFORM_BLUR], blur);
+        TRX_GL_CheckError();
+        r->blur = blur;
+    }
+}
+
 void Output_Quad_SetDestRect(
     OUTPUT_QUAD *const r, const float x0, const float y0, const float x1,
     const float y1)
@@ -532,10 +566,7 @@ void Output_Quad_Render(OUTPUT_QUAD *const r)
     } else {
         glBindTexture(GL_TEXTURE_2D, r->texture);
     }
-    const GLint gl_filter =
-        r->filter_mode == TEXTURE_FILTER_BILINEAR ? GL_LINEAR : GL_NEAREST;
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter);
+    M_ApplyFilter(r);
     GLint prev_sampler = 0;
     glGetIntegeri_v(GL_SAMPLER_BINDING, 0, &prev_sampler);
     glBindSampler(0, 0);
@@ -582,10 +613,7 @@ void Output_Quad_RenderWithBlend(OUTPUT_QUAD *const r)
     } else {
         glBindTexture(GL_TEXTURE_2D, r->texture);
     }
-    const GLint gl_filter =
-        r->filter_mode == TEXTURE_FILTER_BILINEAR ? GL_LINEAR : GL_NEAREST;
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter);
+    M_ApplyFilter(r);
     GLint prev_sampler = 0;
     glGetIntegeri_v(GL_SAMPLER_BINDING, 0, &prev_sampler);
     glBindSampler(0, 0);

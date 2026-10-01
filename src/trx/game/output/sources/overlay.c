@@ -77,6 +77,7 @@ typedef struct {
     float opacity;
     float desaturation;
     RGB_F tint;
+    float blur;
 } M_DRAW_OP_SNAPSHOT;
 
 typedef struct {
@@ -631,6 +632,7 @@ static void M_DrawOp_Snapshot(const M_DRAW_OP *const base)
     Output_Quad_SetOpacity(p->snapshot.renderer, op->opacity);
     Output_Quad_SetDesaturation(p->snapshot.renderer, op->desaturation);
     Output_Quad_SetGlobalTint(p->snapshot.renderer, op->tint);
+    Output_Quad_SetBlur(p->snapshot.renderer, op->blur);
     Output_Quad_RenderWithBlend(p->snapshot.renderer);
 }
 
@@ -983,6 +985,7 @@ void Output_Overlay_DrawSnapshotEx(
             .opacity = settings->opacity,
             .desaturation = settings->desaturation,
             .tint = settings->tint,
+            .blur = settings->blur,
         }));
 }
 
@@ -1024,6 +1027,7 @@ OUTPUT_BACKGROUND_TINT Output_Overlay_GetBackgroundTint(
         .black_opacity = 0.0f,
         .desaturation = 0.0f,
         .tint = COLOR_RGB_F_WHITE,
+        .blur = style == BK_NONE ? 0.0f : g_Config.ui.background_blur * opacity,
     };
 
     switch (style) {
@@ -1096,6 +1100,7 @@ void Output_Overlay_DrawBackground(
             .opacity = 1.0f,
             .desaturation = tint.desaturation,
             .tint = tint.tint,
+            .blur = tint.blur,
         });
         Output_Overlay_DrawBlackRectangle(tint.black_opacity, false);
         break;

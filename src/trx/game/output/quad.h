@@ -86,6 +86,9 @@ void Output_Quad_SetDesaturation(OUTPUT_QUAD *renderer, float desaturation);
 // Set output color tint multiplier (COLOR_RGB_F_WHITE = no tint).
 void Output_Quad_SetGlobalTint(OUTPUT_QUAD *renderer, RGB_F tint);
 
+// Set blur strength (0 = sharp, 1 = strongest).
+void Output_Quad_SetBlur(OUTPUT_QUAD *renderer, float blur);
+
 // Set the part of the screen the quad covers, as fractions of its width and
 // height measured from the top left corner. The whole screen is 0,0 to 1,1,
 // which is where a quad draws until it is told otherwise.

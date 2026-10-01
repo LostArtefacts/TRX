@@ -13,6 +13,9 @@
 #define WAVE_ORBIT_RADIUS 0.2
 #define WAVE_FPS_DRIFT 25 / 30
 
+#define BLUR_MAX_RADIUS 0.03 // fraction of the image height
+#define BLUR_TAPS 3          // taps on each side of the centre, per axis
+
 uniform int uEffect;
 uniform float uOpacity;
 uniform float uBrightnessScale;
@@ -21,6 +24,7 @@ uniform float uSrcAspect;  // src_w/src_h
 uniform float uDesaturation; // 0 = original, 1 = monochrome
 uniform vec3 uGlobalTint;    // (1,1,1) = no tint
 uniform vec4 uDestRect;      // x0,y0,x1,y1 of the screen the quad covers
+uniform float uBlur;         // 0 = sharp, 1 = strongest
 
 #ifdef VERTEX
 
@@ -124,6 +128,27 @@ in vec2 vertMappedUv;
 in vec4 vertContentRect;
 out vec4 outColor;
 
+// Sample a Gaussian blur on a grid. Use a mipmap level that matches the tap spacing.
+vec4 sampleBlurred(vec2 uv) {
+    vec2 texSize = vec2(textureSize(uTexMain, 0));
+    float spacing = uBlur * BLUR_MAX_RADIUS * texSize.y / float(BLUR_TAPS);
+    float lod = max(0.0, log2(spacing));
+    vec2 step = spacing / texSize;
+    float sigma = float(BLUR_TAPS) * 0.5;
+
+    vec4 sum = vec4(0.0);
+    float weightSum = 0.0;
+    for (int y = -BLUR_TAPS; y <= BLUR_TAPS; y++) {
+        for (int x = -BLUR_TAPS; x <= BLUR_TAPS; x++) {
+            float weight = exp(-float(x * x + y * y) / (2.0 * sigma * sigma));
+            vec2 tapUv = clampTexAtlas(uv + vec2(x, y) * step, uTexSize);
+            sum += textureLod(uTexMain, tapUv, lod) * weight;
+            weightSum += weight;
+        }
+    }
+    return sum / weightSum;
+}
+
 void main(void) {
     if (vertCoords.x < vertContentRect.x || vertCoords.x > vertContentRect.z
         || vertCoords.y < vertContentRect.y || vertCoords.y > vertContentRect.w) {
@@ -133,7 +158,11 @@ void main(void) {
     }
 
     vec2 uv = clampTexAtlas(vertMappedUv, uTexSize);
-    outColor = texture(uTexMain, uv);
+    if (uBlur > 0.0) {
+        outColor = sampleBlurred(uv);
+    } else {
+        outColor = texture(uTexMain, uv);
+    }
 
     if ((uEffect & EFFECT_WAVE) != 0) {
         outColor.rgb *= vertLight;

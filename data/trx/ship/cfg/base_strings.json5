@@ -1657,6 +1657,10 @@
             "title": "Ammo counter location",
             "description": "Location where the ammo counter is displayed.",
         },
+        "ui.background_blur": {
+            "title": "Background blur",
+            "description": "Blurs the game behind the inventory, pause and statistics screens. The blur adds to the chosen background style.",
+        },
         "ui.bar_look": {
             "title": "Bars appearance",
             "description": "Chooses the frame and colors the UI bars are drawn with, taken from one of the original releases. The choice also decides which set of bar color settings below applies.",

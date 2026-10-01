@@ -1657,6 +1657,10 @@
             "title": "Lokalizacja licznika amunicji",
             "description": "Miejsce, w którym wyświetlany jest licznik amunicji.",
         },
+        "ui.background_blur": {
+            "title": "\\{review}Rozmycie tła",
+            "description": "\\{review}Rozmywa grę za ekwipunkiem, pauzą i statystykami. Rozmycie działa razem z wybranym stylem tła.",
+        },
         "ui.bar_look": {
             "title": "Wygląd pasków",
             "description": "\\{review}Wybiera ramkę i kolory, którymi rysowane są paski interfejsu, zaczerpnięte z jednego z oryginalnych wydań. Wybór decyduje też o tym, który zestaw ustawień kolorów poniżej obowiązuje.",
