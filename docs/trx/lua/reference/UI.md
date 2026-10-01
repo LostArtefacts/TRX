@@ -277,6 +277,57 @@ and `\{button left}` draws the button the player has bound.
 
       Returns: [trx.ui.Widget](#ui.Widget). The same widget, for method chaining.
 
+- <a id="ui.ListRow" name="ui.ListRow"></a>[lua]`trx.ui.ListRow`
+
+    One entry of a [`trx.ui.widgets.List`](#ui.widgets.List).
+
+    Properties:
+    - <a id="ui.ListRow.right" name="ui.ListRow.right"></a>**`right`**: string, optional. Text drawn against the right edge. The main text is then drawn against the left edge.
+    - <a id="ui.ListRow.rule" name="ui.ListRow.rule"></a>**`rule`**: boolean, optional. Whether a line separates the row from the row above it.
+    - <a id="ui.ListRow.text" name="ui.ListRow.text"></a>**`text`**: string. The text. It is centered unless the row has a right part.
+
+- <a id="ui.List" name="ui.List"></a>[lua]`trx.ui.List`
+
+    A column of rows that the player picks one entry from. The row under the cursor
+    is drawn in a frame. Arrows show where the list runs past the rows it shows.
+
+    Methods:
+
+    - <a id="ui.List.control" name="ui.List.control"></a>[lua]`list:control(keys)`  
+      Reads the menu keys for one tick. Up and down move the cursor, and confirm picks
+      the row under it. Uses up only the presses that it reads.
+
+      Parameters:
+      - <a id="ui.List.control.keys" name="ui.List.control.keys"></a>**`keys`** ([trx.ui.LayerKeys](#ui.LayerKeys)). The input of the layer the list is on.
+
+      Returns: integer or `nil`. The picked row, or `nil` where none was picked.
+
+    - <a id="ui.List.move" name="ui.List.move"></a>[lua]`list:move(step)`  
+      Moves the cursor by a number of rows. Past either end, the cursor goes to the
+      other end where the `ui.enable_wraparound` setting is on, and stays otherwise.
+
+      Parameters:
+      - <a id="ui.List.move.step" name="ui.List.move.step"></a>**`step`** (integer). How many rows to move. Negative moves up.
+
+      Returns: boolean. Whether the cursor moved.
+
+    - <a id="ui.List.select" name="ui.List.select"></a>[lua]`list:select(index)`  
+      Moves the cursor to a row. Does nothing for an index out of range.
+
+      Parameters:
+      - <a id="ui.List.select.index" name="ui.List.select.index"></a>**`index`** (integer). The row.
+
+    - <a id="ui.List.selection" name="ui.List.selection"></a>[lua]`list:selection()`  
+      Returns the index of the row under the cursor.
+
+      Returns: integer or `nil`. The index, or `nil` for an empty list.
+
+    - <a id="ui.List.set_rows" name="ui.List.set_rows"></a>[lua]`list:set_rows(rows)`  
+      Replaces the rows. The cursor stays on the same index where it can.
+
+      Parameters:
+      - <a id="ui.List.set_rows.rows" name="ui.List.set_rows.rows"></a>**`rows`** (a list of [trx.ui.ListRow](#ui.ListRow)). The new rows.
+
 - <a id="ui.LayerKeys" name="ui.LayerKeys"></a>[lua]`trx.ui.LayerKeys`
 
     The player's input, as the top layer reads it.
@@ -838,6 +889,37 @@ and `\{button left}` draws the button the player has bound.
     paint = function(x, y, w, h)
       trx.ui.primitive.quad(x, y, 0, w, h, trx.math.color("#ffffff"))
     end,
+  })
+  ```
+
+- <a id="ui.widgets.List" name="ui.widgets.List"></a>[lua]`trx.ui.widgets.List(settings)`  
+  A column of rows that the player picks one entry from.
+
+  The list keeps the cursor and the scroll position. Read the player's input
+  with [`trx.ui.List:control`](#ui.List.control) from the input callback of the layer that holds the
+  list.
+
+  Parameters:
+  - <a id="ui.widgets.List.settings" name="ui.widgets.List.settings"></a>**`settings`** (table). The list settings.
+
+    Keys:
+    - <a id="ui.widgets.List.settings.rows" name="ui.widgets.List.settings.rows"></a>**`rows`** (a list of [trx.ui.ListRow](#ui.ListRow), optional). The rows. None by default.
+    - <a id="ui.widgets.List.settings.visible" name="ui.widgets.List.settings.visible"></a>**`visible`** (any, optional). How many rows to show at once, or a signal that holds that value. Every row by
+      default.
+    - <a id="ui.widgets.List.settings.reserve" name="ui.widgets.List.settings.reserve"></a>**`reserve`** (boolean, optional). Whether to keep room for the visible rows when the list holds fewer.
+      `false` by default.
+    - <a id="ui.widgets.List.settings.width" name="ui.widgets.List.settings.width"></a>**`width`** (number, optional). The least width, in canvas units at the default text size.
+    - <a id="ui.widgets.List.settings.row_pad" name="ui.widgets.List.settings.row_pad"></a>**`row_pad`** (number, optional). The room on each side of a row's text. `4` by default.
+    - <a id="ui.widgets.List.settings.row_spacing" name="ui.widgets.List.settings.row_spacing"></a>**`row_spacing`** (number, optional). The gap between two rows. `3` by default.
+    - <a id="ui.widgets.List.settings.scroll_hints" name="ui.widgets.List.settings.scroll_hints"></a>**`scroll_hints`** (boolean, optional). Whether to show arrows where the list runs past its rows. `true` by default.
+    - <a id="ui.widgets.List.settings.shown" name="ui.widgets.List.settings.shown"></a>**`shown`** (any, optional). Whether the list is shown, or a signal that holds that value.
+
+  Returns: [trx.ui.List](#ui.List). The list.
+
+  Example:
+  ```lua
+  local list = trx.ui.widgets.List({
+    rows = { { text = "Yes" }, { text = "No" } },
   })
   ```
 

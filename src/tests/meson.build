@@ -128,7 +128,6 @@ b_config = {
     'core/event_manager.c',
     'core/json/base.c',
     'core/json/parse.c',
-    'version.c',
   ],
   'src': ['fakes/config.c', 'harness/stubs_config_file.c'],
 }
@@ -658,6 +657,8 @@ unit_tests += {
   'name': 'lua/api/ui',
   'bundles': [b_lua_surface, b_lua_math, b_config],
   'src': [
+    'fakes/camera.c',
+    'fakes/game.c',
     'fakes/level.c',
     'lua/api/ui.c',
     'fakes/objects.c',
@@ -673,6 +674,7 @@ unit_tests += {
     'core/handle.c',
     'game/ui/events.c',
     'game/lua/capi/config.c',
+    'game/lua/capi/game.c',
     'game/lua/capi/events.c',
     'game/lua/capi/locale.c',
     'game/lua/capi/ui.c',
@@ -836,6 +838,8 @@ unit_tests += {
   'bundles': [b_lua_surface, b_lua_math, b_config],
   'src': [
     'fakes/input.c',
+    'fakes/camera.c',
+    'fakes/game.c',
     'fakes/level.c',
     'fakes/objects.c',
     'fakes/sprites.c',
@@ -850,6 +854,7 @@ unit_tests += {
     'core/handle.c',
     'game/ui/events.c',
     'game/lua/capi/config.c',
+    'game/lua/capi/game.c',
     'game/lua/capi/events.c',
     'game/lua/capi/input.c',
     'game/lua/capi/locale.c',
