@@ -277,6 +277,66 @@ and `\{button left}` draws the button the player has bound.
 
       Returns: [trx.ui.Widget](#ui.Widget). The same widget, for method chaining.
 
+- <a id="ui.LayerKeys" name="ui.LayerKeys"></a>[lua]`trx.ui.LayerKeys`
+
+    The player's input, as the top layer reads it.
+
+    A press that a layer reads is used up. It does not reach other code, and it
+    does not reach the layer below when this one closes.
+
+    Methods:
+
+    - <a id="ui.LayerKeys.held" name="ui.LayerKeys.held"></a>[lua]`layerkeys:held(role)`  
+      Returns whether a role is active. Does not use it up.
+
+      Parameters:
+      - <a id="ui.LayerKeys.held.role" name="ui.LayerKeys.held.role"></a>**`role`** ([trx.input.Role](INPUT.md#input.Role)). The role.
+
+      Returns: boolean. Whether it is held.
+
+    - <a id="ui.LayerKeys.held_for" name="ui.LayerKeys.held_for"></a>[lua]`layerkeys:held_for(role)`  
+      Returns for how many ticks a role has been held. A tick in which the layer did
+      not ask counts as a release.
+
+      Parameters:
+      - <a id="ui.LayerKeys.held_for.role" name="ui.LayerKeys.held_for.role"></a>**`role`** ([trx.input.Role](INPUT.md#input.Role)). The role.
+
+      Returns: integer. The number of ticks.
+
+    - <a id="ui.LayerKeys.pressed" name="ui.LayerKeys.pressed"></a>[lua]`layerkeys:pressed(role)`  
+      Returns whether a role became active this tick, and uses the press up.
+
+      Parameters:
+      - <a id="ui.LayerKeys.pressed.role" name="ui.LayerKeys.pressed.role"></a>**`role`** ([trx.input.Role](INPUT.md#input.Role)). The role.
+
+      Returns: boolean. Whether it was pressed.
+
+- <a id="ui.StackLayer" name="ui.StackLayer"></a>[lua]`trx.ui.StackLayer`
+
+    One screen of widgets on the stack.
+
+    Properties:
+    - <a id="ui.StackLayer.is_open" name="ui.StackLayer.is_open"></a>**`is_open`**: boolean. Whether the layer is still on the stack. *(read-only)*
+
+    Methods:
+
+    - <a id="ui.StackLayer.close" name="ui.StackLayer.close"></a>[lua]`stacklayer:close()`  
+      Removes the layer from the stack, and releases its widgets. Does nothing if the
+      layer is already closed.
+
+      Returns: boolean. Whether the layer was open.
+
+    - <a id="ui.StackLayer.is_top" name="ui.StackLayer.is_top"></a>[lua]`stacklayer:is_top()`  
+      Returns whether the layer is the one that reads input.
+
+      Returns: boolean. Whether it is on top.
+
+    - <a id="ui.StackLayer.set_root" name="ui.StackLayer.set_root"></a>[lua]`stacklayer:set_root(root)`  
+      Replaces the widget tree that the layer draws, and releases the old one.
+
+      Parameters:
+      - <a id="ui.StackLayer.set_root.root" name="ui.StackLayer.set_root.root"></a>**`root`** ([trx.ui.Widget](#ui.Widget)). The new tree.
+
 ### Functions
 
 - <a id="ui.primitive" name="ui.primitive"></a>[lua]`trx.ui.primitive`  
@@ -306,6 +366,18 @@ and `\{button left}` draws the button the player has bound.
 
   Place a widget once when the script loads. Use signals when the widget must
   change later.
+
+- <a id="ui.layers" name="ui.layers"></a>[lua]`trx.ui.layers`  
+  Draws screens of widgets over the rest of the interface.
+
+  A layer holds one widget tree, such as a menu or a question. Layers are kept in
+  a stack. Each layer draws over the layers below it and over the widgets placed
+  with [`trx.ui.regions.place`](#ui.regions.place). The engine interface still draws over all of them.
+
+  Only the top layer that takes input reads the player's input. The layers below
+  it read nothing until it closes.
+
+  A layer that a level script pushes closes when the level ends.
 
 - <a id="ui.mesh_slot" name="ui.mesh_slot"></a>[lua]`trx.ui.mesh_slot()`  
   Takes a slot for a model the interface keeps on screen across ticks.
@@ -820,3 +892,48 @@ and `\{button left}` draws the button the player has bound.
   Parameters:
   - <a id="ui.regions.fallback.region" name="ui.regions.fallback.region"></a>**`region`** ([trx.ui.Region](#ui.Region)). The target region.
   - <a id="ui.regions.fallback.widget" name="ui.regions.fallback.widget"></a>**`widget`** ([trx.ui.Widget](#ui.Widget)). The fallback widget.
+
+- <a id="ui.layers.push" name="ui.layers.push"></a>[lua]`trx.ui.layers.push(settings)`  
+  Puts a layer on top of the stack.
+
+  The layer reads no input on the tick it is pushed, because the press that
+  opened it is often still active.
+
+  Parameters:
+  - <a id="ui.layers.push.settings" name="ui.layers.push.settings"></a>**`settings`** (table). The layer settings.
+
+    Keys:
+    - <a id="ui.layers.push.settings.root" name="ui.layers.push.settings.root"></a>**`root`** ([trx.ui.Widget](#ui.Widget)). The widget tree to draw.
+    - <a id="ui.layers.push.settings.region" name="ui.layers.push.settings.region"></a>**`region`** ([trx.ui.Region](#ui.Region), optional). The region that the tree takes room in. The tree then stacks with the other
+      widgets in that region. Without a region or a place, the tree is centered in
+      [`trx.ui.safe_area`](#ui.safe_area).
+    - <a id="ui.layers.push.settings.place" name="ui.layers.push.settings.place"></a>**`place`** (function, optional). Returns the top left corner of the tree, in canvas units. It receives the
+      width and the height that the tree measures.
+    - <a id="ui.layers.push.settings.modal" name="ui.layers.push.settings.modal"></a>**`modal`** (boolean, optional). Whether the layer reads input. `true` by default.
+    - <a id="ui.layers.push.settings.on_input" name="ui.layers.push.settings.on_input"></a>**`on_input`** (function, optional). Runs once a tick while the layer is the top layer that reads input. It
+      receives the layer and a [`trx.ui.LayerKeys`](#ui.LayerKeys). An error closes the layer.
+    - <a id="ui.layers.push.settings.on_close" name="ui.layers.push.settings.on_close"></a>**`on_close`** (function, optional). Runs once when the layer closes, for any reason. It receives the layer.
+
+  Returns: [trx.ui.StackLayer](#ui.StackLayer). The pushed layer.
+
+  Example:
+  ```lua
+  local layer = trx.ui.layers.push({
+    root = trx.ui.widgets.Label({ text = "Paused" }),
+    on_input = function(layer, keys)
+      if keys:pressed(trx.input.Role.MENU_BACK) then
+        layer:close()
+      end
+    end,
+  })
+  ```
+
+- <a id="ui.layers.top" name="ui.layers.top"></a>[lua]`trx.ui.layers.top()`  
+  Returns the top layer that reads input.
+
+  Returns: [trx.ui.StackLayer](#ui.StackLayer) or `nil`. The layer, or `nil` if no layer reads input.
+
+- <a id="ui.layers.count" name="ui.layers.count"></a>[lua]`trx.ui.layers.count()`  
+  Returns how many layers are on the stack.
+
+  Returns: integer. The number of layers.

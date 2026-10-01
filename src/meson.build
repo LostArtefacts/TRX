@@ -79,6 +79,7 @@ trx_lua_api_sources = files(
   'lua/api/store.lua',
   'lua/api/strings.lua',
   'lua/api/ui.lua',
+  'lua/api/ui/layers.lua',
   'lua/api/ui/primitive.lua',
   'lua/api/ui/regions.lua',
   'lua/api/ui/widgets.lua',
