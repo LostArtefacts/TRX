@@ -274,4 +274,23 @@ test("an override answers until its level ends", function()
   finish_case()
 end)
 
+test("only the pause screen resumes the game", function()
+  local held
+  define(
+    RING_ENTRY,
+    simple(function(ctx)
+      held = ctx
+    end)
+  )
+  fake.offer(RING_ENTRY, PASSPORT)
+  h.raises(function()
+    held:resume()
+  end, "only the pause screen resumes the game")
+  h.raises(function()
+    held:exit_to_title()
+  end, "only the pause screen leaves for the title screen")
+  assert(held.is_held)
+  finish_case()
+end)
+
 return h.report()

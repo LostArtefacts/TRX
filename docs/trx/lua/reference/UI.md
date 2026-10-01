@@ -166,6 +166,9 @@ and `\{button left}` draws the button the player has bound.
         entry as [`trx.ui.ScreenContext.object`](#ui.ScreenContext.object). A definition can name the entry it
         draws. A ring opened to save or load leaves when the screen ends, and any ring
         leaves when the screen ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm).
+    - `trx.ui.Screen.PAUSE` = `1`  
+        The question that the pause screen asks when the player presses the inventory
+        key: whether to leave for the title screen.
 
 ### Structures
 
@@ -412,8 +415,9 @@ and `\{button left}` draws the button the player has bound.
     Methods:
 
     - <a id="ui.ScreenContext.cancel" name="ui.ScreenContext.cancel"></a>[lua]`screencontext:cancel()`  
-      Ends the screen, and closes its layers. A ring entry is put away. Does nothing
-      if the screen has already ended.
+      Ends the screen, and closes its layers. A ring entry is put away, and the
+      pause screen stays paused and drops its question. Does nothing if the screen
+      has already ended.
 
       Returns: boolean. Whether the screen was still held.
 
@@ -421,6 +425,12 @@ and `\{button left}` draws the button the player has bound.
       Ends the screen as a choice that the player made, and closes its layers. A ring
       entry leaves the ring, as an entry that the player uses does. Does nothing if
       the screen has already ended.
+
+      Returns: boolean. Whether the screen was still held.
+
+    - <a id="ui.ScreenContext.exit_to_title" name="ui.ScreenContext.exit_to_title"></a>[lua]`screencontext:exit_to_title()`  
+      Ends the pause screen, and leaves for the title screen with the pause screen's
+      fade. Only [`trx.ui.Screen.PAUSE`](#ui.Screen) takes this.
 
       Returns: boolean. Whether the screen was still held.
 
@@ -432,6 +442,12 @@ and `\{button left}` draws the button the player has bound.
       - <a id="ui.ScreenContext.push.settings" name="ui.ScreenContext.push.settings"></a>**`settings`** (table). The layer settings.
 
       Returns: [trx.ui.StackLayer](#ui.StackLayer). The pushed layer.
+
+    - <a id="ui.ScreenContext.resume" name="ui.ScreenContext.resume"></a>[lua]`screencontext:resume()`  
+      Ends the pause screen, and returns to the game. Only [`trx.ui.Screen.PAUSE`](#ui.Screen)
+      takes this.
+
+      Returns: boolean. Whether the screen was still held.
 
 ### Functions
 

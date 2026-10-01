@@ -62,6 +62,9 @@ An entry that the player uses in the inventory ring. The context reports the
 entry as `trx.ui.ScreenContext.object`. A definition can name the entry it
 draws. A ring opened to save or load leaves when the screen ends, and any ring
 leaves when the screen ends with `trx.ui.ScreenContext:confirm`.]],
+    PAUSE = [[
+The question that the pause screen asks when the player presses the inventory
+key: whether to leave for the title screen.]],
   },
 })
 
@@ -180,10 +183,41 @@ Pushes a layer that belongs to the screen, with the settings that
         return layer
       end,
     },
+    resume = {
+      description = [[
+Ends the pause screen, and returns to the game. Only `trx.ui.Screen.PAUSE`
+takes this.]],
+      returns = {
+        type = "boolean",
+        description = "Whether the screen was still held.",
+      },
+      impl = function(self)
+        if rawget(self, "_screen") ~= trx.ui.Screen.PAUSE then
+          error("only the pause screen resumes the game", 2)
+        end
+        return finish(self, choices.RESUME)
+      end,
+    },
+    exit_to_title = {
+      description = [[
+Ends the pause screen, and leaves for the title screen with the pause screen's
+fade. Only `trx.ui.Screen.PAUSE` takes this.]],
+      returns = {
+        type = "boolean",
+        description = "Whether the screen was still held.",
+      },
+      impl = function(self)
+        if rawget(self, "_screen") ~= trx.ui.Screen.PAUSE then
+          error("only the pause screen leaves for the title screen", 2)
+        end
+        return finish(self, choices.EXIT_TO_TITLE)
+      end,
+    },
     cancel = {
       description = [[
-Ends the screen, and closes its layers. A ring entry is put away. Does nothing
-if the screen has already ended.]],
+Ends the screen, and closes its layers. A ring entry is put away, and the
+pause screen stays paused and drops its question. Does nothing if the screen
+has already ended.]],
       returns = {
         type = "boolean",
         description = "Whether the screen was still held.",
