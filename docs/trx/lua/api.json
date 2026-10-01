@@ -3597,7 +3597,7 @@
     },
     {
       "bulk": false,
-      "count": 2,
+      "count": 3,
       "description": "An engine screen that a script can draw.",
       "path": "ui.Screen",
       "values": [
@@ -3610,6 +3610,11 @@
           "description": "The question that the pause screen asks when the player presses the inventory\nkey: whether to leave for the title screen.",
           "name": "PAUSE",
           "value": 1
+        },
+        {
+          "description": "The quick save or load screen. The save and load keys open it when the instant\nscreen setting is on. The context reports whether it opened for saving or\nloading as `trx.ui.ScreenContext.mode`.",
+          "name": "SAVE_LOAD",
+          "value": 2
         }
       ]
     },
@@ -17680,6 +17685,12 @@
           "writable": false
         },
         {
+          "description": "What the quick save or load screen opened for, for `trx.ui.Screen.SAVE_LOAD`.",
+          "name": "mode",
+          "type": "inventory_ring.Mode",
+          "writable": false
+        },
+        {
           "description": "The ring entry that the player uses, for `trx.ui.Screen.RING_ENTRY`.",
           "name": "object",
           "type": "catalog.objects",
@@ -17695,7 +17706,7 @@
       "handle": false,
       "methods": [
         {
-          "description": "Ends the screen, and closes its layers. A ring entry is put away, and the\npause screen stays paused and drops its question. Does nothing if the screen\nhas already ended.",
+          "description": "Ends the screen, and closes its layers. A ring entry is put away, the pause\nscreen stays paused and drops its question, and the quick save or load screen\ncloses. Does nothing if the screen has already ended.",
           "name": "cancel",
           "returns": {
             "description": "Whether the screen was still held.",

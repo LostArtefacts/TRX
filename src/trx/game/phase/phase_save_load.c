@@ -15,6 +15,7 @@
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui.h>
+#include <trx/game/ui/dialogs/takeover.h>
 
 typedef struct {
     INVENTORY_MODE mode;
@@ -74,10 +75,12 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
 
     Output_Overlay_CaptureGameSnapshot();
     M_SetTitle(p);
-    p->dialog = UI_SaveSlotDialog_Init(
-        M_IsLoading(p) ? UI_SAVE_SLOT_DIALOG_LOAD_GAME
-                       : UI_SAVE_SLOT_DIALOG_SAVE_GAME,
-        M_GetInitialSlot());
+    if (!UI_Takeover_Offer(UI_TAKEOVER_SAVE_LOAD, p->mode)) {
+        p->dialog = UI_SaveSlotDialog_Init(
+            M_IsLoading(p) ? UI_SAVE_SLOT_DIALOG_LOAD_GAME
+                           : UI_SAVE_SLOT_DIALOG_SAVE_GAME,
+            M_GetInitialSlot());
+    }
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
 }
 
@@ -85,6 +88,7 @@ static void M_End(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
     Overlay_SetBottomText((OVERLAY_TEXT) { 0 });
+    UI_Takeover_Release(UI_TAKEOVER_SAVE_LOAD);
     if (p->dialog != nullptr) {
         UI_SaveSlotDialog_Free(p->dialog);
         p->dialog = nullptr;
@@ -119,12 +123,20 @@ static PHASE_CONTROL M_Confirm(M_PRIV *const p, const SAVEGAME_SLOT_REF slot)
 static PHASE_CONTROL M_Control(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
-    ASSERT(p->dialog != nullptr);
+    ASSERT(UI_Takeover_IsHeld(UI_TAKEOVER_SAVE_LOAD) || p->dialog != nullptr);
 
     Input_Update();
     Shell_ProcessInput();
     if (Shell_IsExiting()) {
         return M_Leave(p, (GF_COMMAND) { .action = GF_EXIT_GAME });
+    }
+
+    if (UI_Takeover_IsHeld(UI_TAKEOVER_SAVE_LOAD)) {
+        if (UI_Takeover_TakeChoice(UI_TAKEOVER_SAVE_LOAD)
+            != UI_TAKEOVER_CHOICE_NONE) {
+            return M_Leave(p, (GF_COMMAND) { .action = GF_NOOP });
+        }
+        return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
     }
 
     const UI_SAVE_SLOT_DIALOG_CHOICE choice =
@@ -154,7 +166,9 @@ static void M_Draw(PHASE *const phase)
         g_Config.ui.inventory_background_style, 1.0f, nullptr);
     Output_Flush();
 
-    UI_SaveSlotDialog(p->dialog);
+    if (p->dialog != nullptr) {
+        UI_SaveSlotDialog(p->dialog);
+    }
 
     if (p->error_msg != nullptr) {
         UI_BeginModal(0.5f, 0.67f);

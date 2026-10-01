@@ -29,6 +29,7 @@ end
 
 local function finish_case()
   fake.release(RING_ENTRY)
+  fake.release(trx.ui.Screen.SAVE_LOAD)
   fake.end_level()
   assert(trx.ui.layers.count() == 0, "a layer outlived the case")
 end
@@ -290,6 +291,27 @@ test("only the pause screen resumes the game", function()
     held:exit_to_title()
   end, "only the pause screen leaves for the title screen")
   assert(held.is_held)
+  finish_case()
+end)
+
+test("the quick save and load screen reports what it opened for", function()
+  local seen
+  define(
+    trx.ui.Screen.SAVE_LOAD,
+    simple(function(ctx)
+      seen = { mode = ctx.mode, object = ctx.object }
+    end)
+  )
+  assert(fake.offer(trx.ui.Screen.SAVE_LOAD, 3) == true)
+  assert(seen.mode == 3)
+  assert(seen.object == nil)
+  finish_case()
+end)
+
+test("only a ring entry definition names an object", function()
+  h.raises(function()
+    define(trx.ui.Screen.SAVE_LOAD, simple(), { object = COMPASS })
+  end, "only a ring entry screen names an object")
   finish_case()
 end)
 

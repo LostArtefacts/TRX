@@ -9,6 +9,7 @@ local Mode = trx.inventory_ring.Mode
 local Pool = trx.savegame.Pool
 local Role = trx.input.Role
 local RING_ENTRY = trx.ui.Screen.RING_ENTRY
+local SAVE_LOAD = trx.ui.Screen.SAVE_LOAD
 local PASSPORT = trx.catalog.objects.PASSPORT_OPTION
 local CHOICE_CANCEL = 1
 local CHOICE_CONFIRM = 2
@@ -44,6 +45,8 @@ local L = trx.locale.get
 local function clean()
   fake.release(RING_ENTRY)
   fake.take_choice(RING_ENTRY)
+  fake.release(SAVE_LOAD)
+  fake.take_choice(SAVE_LOAD)
   fake.close_ring()
   fake.release_all()
 end
@@ -454,6 +457,43 @@ test("a list opened from a list hides the one under it", function()
   drawn = texts()
   assert(has(drawn, "City of Vilcabamba"), "the save list did not come back")
   assert(not has(drawn, "Caves"))
+  finish()
+end)
+
+test("the quick load screen shows the save list alone", function()
+  clean()
+  fake.set_current_level(2)
+  assert(fake.offer(SAVE_LOAD, Mode.LOAD), "the screen was not taken")
+  tick()
+  local drawn = texts()
+  -- The heading only: the screen's own title is the engine's.
+  assert(count_of(drawn, L("general/passport/load_game")) == 1)
+  assert(not has(drawn, "\\{button right}"), "the screen drew page arrows")
+  press(Role.MENU_CONFIRM)
+  assert(fake.calls().load.count == 1, "nothing was loaded")
+  assert(fake.take_choice(SAVE_LOAD) == CHOICE_CANCEL)
+  finish()
+end)
+
+test("the quick save screen saves to the slot picked", function()
+  clean()
+  fake.set_current_level(2)
+  assert(fake.offer(SAVE_LOAD, Mode.SAVE))
+  tick()
+  assert(has(texts(), L("general/passport/save_game")))
+  press(Role.MENU_CONFIRM)
+  assert(fake.calls().save.count == 1, "nothing was saved")
+  assert(fake.take_choice(SAVE_LOAD) == CHOICE_CANCEL)
+  finish()
+end)
+
+test("backing out of the quick screen closes it", function()
+  clean()
+  fake.set_current_level(2)
+  fake.offer(SAVE_LOAD, Mode.LOAD)
+  tick()
+  press(Role.MENU_BACK)
+  assert(fake.take_choice(SAVE_LOAD) == CHOICE_CANCEL)
   finish()
 end)
 
