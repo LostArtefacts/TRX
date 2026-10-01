@@ -2,7 +2,8 @@
 // savegame.lua.
 //
 // The fake below stands in for the save store: a normal pool of three slots
-// with the first one taken, and two quick saves on disk.
+// with the first one taken and two quick saves on disk. The first quick save
+// is readable.
 
 #include <harness/fake_calls.h>
 #include <harness/lua_surface.h>
@@ -57,10 +58,93 @@ SAVEGAME_SLOT_REF SG_Manager_QuickFromVisualIndex(const int32_t visual_index)
                                  .index = visual_index };
 }
 
-// The first normal slot holds a save; every other slot is empty.
+// The first normal slot and the first quick slot hold saves. Every other slot
+// is empty.
 bool SG_Manager_IsSlotFree(const SAVEGAME_SLOT_REF slot)
 {
-    return !(slot.pool == SAVEGAME_SLOT_POOL_NORMAL && slot.index == 0);
+    return slot.index != 0;
+}
+
+// Return the save in a taken slot.
+const SAVEGAME_INFO *SG_Manager_GetSavegameInfo(const SAVEGAME_SLOT_REF slot)
+{
+    static SAVEGAME_INFO info = {
+        .counter = 7,
+        .level_num = 2,
+        .level_title = "City of Vilcabamba",
+        .features = { .restart = true, .select_level = true },
+    };
+    return &info;
+}
+
+bool SG_Manager_Delete(const SAVEGAME_SLOT_REF slot)
+{
+    FAKE_RECORD("delete_save", FV(slot.pool), FV(slot.index));
+    return true;
+}
+
+// Report whether the slot has an available story.
+bool GF_HasAvailableStory(const SAVEGAME_SLOT_REF slot)
+{
+    return slot.pool == SAVEGAME_SLOT_POOL_NORMAL;
+}
+
+bool Savegame_IsManualSaveAllowed(void)
+{
+    return true;
+}
+
+// Return the second numbered slot as the most recently used slot.
+SAVEGAME_SLOT_REF SG_Manager_GetMostRecentlyUsedSlot(void)
+{
+    return (SAVEGAME_SLOT_REF) { .pool = SAVEGAME_SLOT_POOL_NORMAL,
+                                 .index = 1 };
+}
+
+SAVEGAME_SLOT_REF SG_Manager_GetMostRecentlyCreatedSlot(void)
+{
+    return (SAVEGAME_SLOT_REF) { .pool = SAVEGAME_SLOT_POOL_NORMAL,
+                                 .index = 1 };
+}
+
+int32_t SG_Manager_QuickToVisualIndex(const SAVEGAME_SLOT_REF slot)
+{
+    return slot.index;
+}
+
+int32_t SG_Manager_GetTotalCount(void)
+{
+    return 1;
+}
+
+SAVEGAME_SLOT_REF SG_Manager_GetBoundSlot(void)
+{
+    return (SAVEGAME_SLOT_REF) { .pool = SAVEGAME_SLOT_POOL_NORMAL,
+                                 .index = 0 };
+}
+
+bool Savegame_RestartAvailable(const SAVEGAME_SLOT_REF slot)
+{
+    return true;
+}
+
+// Add the gym and first level to the reached-level list.
+RESULT Savegame_ReadReachedLevels(
+    const SAVEGAME_SLOT_REF slot, VECTOR *const levels)
+{
+    static const GF_LEVEL gym = { .num = 0, .type = GFL_GYM };
+    static const GF_LEVEL first = { .num = 1, .type = GFL_NORMAL };
+    const GF_LEVEL *level = &gym;
+    Vector_Add(levels, &level);
+    level = &first;
+    Vector_Add(levels, &level);
+    return OK;
+}
+
+int32_t GF_GetLevelOrdinalNumber(
+    const GF_LEVEL_TABLE_TYPE level_table_type, const GF_LEVEL *const level)
+{
+    return level->type == GFL_GYM ? 0 : level->num;
 }
 
 int32_t SG_Manager_SlotToParam(const SAVEGAME_SLOT_REF slot)

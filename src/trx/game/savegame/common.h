@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/core/result.h>
+#include <trx/core/vector.h>
 #include <trx/game/savegame/types.h>
 
 // Loading a saved game is divided into two phases. First, the game reads the
@@ -27,3 +28,7 @@ bool Savegame_Save(SAVEGAME_SLOT_REF slot);
 RESULT Savegame_UpdateDeathCounters(
     SAVEGAME_SLOT_REF slot, int32_t death_count);
 RESULT Savegame_LoadOnlyResumeInfo(SAVEGAME_SLOT_REF slot);
+
+// Add each reached main level up to the saved level to `levels`. Preserve the
+// resume entries of the running game.
+RESULT Savegame_ReadReachedLevels(SAVEGAME_SLOT_REF slot, VECTOR *levels);

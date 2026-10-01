@@ -64,17 +64,34 @@ static void M_PersistInventory(RESUME_INFO *const resume)
         Inv_HasItem(O_BINOCULARS_ITEM) ? 1 : 0);
 }
 
+static size_t M_GetSize(void)
+{
+    return sizeof(RESUME_INFO)
+        * (GF_GetLevelTable(GFLT_MAIN)->count
+           + GF_GetLevelTable(GFLT_DEMOS)->count);
+}
+
 void SG_Resume_Init(void)
 {
-    m_ResumeInfo = Memory_Alloc(
-        sizeof(RESUME_INFO)
-        * (GF_GetLevelTable(GFLT_MAIN)->count
-           + GF_GetLevelTable(GFLT_DEMOS)->count));
+    m_ResumeInfo = Memory_Alloc(M_GetSize());
 }
 
 void SG_Resume_Shutdown(void)
 {
     Memory_FreePointer(&m_ResumeInfo);
+}
+
+RESUME_INFO *SG_Resume_Snapshot(void)
+{
+    RESUME_INFO *const snapshot = Memory_Alloc(M_GetSize());
+    memcpy(snapshot, m_ResumeInfo, M_GetSize());
+    return snapshot;
+}
+
+void SG_Resume_Restore(RESUME_INFO *const snapshot)
+{
+    memcpy(m_ResumeInfo, snapshot, M_GetSize());
+    Memory_Free(snapshot);
 }
 
 RESUME_INFO *SG_Resume_GetEntry(const GF_LEVEL *const level)

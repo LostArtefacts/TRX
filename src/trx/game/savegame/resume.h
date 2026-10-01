@@ -13,6 +13,11 @@ void SG_Resume_Init(void);
 void SG_Resume_Shutdown(void);
 
 void SG_Resume_ResetAllEntries(void);
+
+// Copy the resume entries. Restore the copy and free it with
+// SG_Resume_Restore.
+RESUME_INFO *SG_Resume_Snapshot(void);
+void SG_Resume_Restore(RESUME_INFO *snapshot);
 int32_t SG_Resume_CountCompletedLevels(void);
 
 RESUME_INFO *SG_Resume_GetEntry(const GF_LEVEL *level);

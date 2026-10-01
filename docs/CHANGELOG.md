@@ -111,6 +111,16 @@
     - `trx.overlay.set_caption`, `trx.overlay.show_arrow`, and `trx.overlay.Arrow`
     - `trx.ui.primitive.horizontal_line`
     - `trx.ui.text_scale`
+- Added script access to passport data and actions
+    - `trx.savegame.SlotInfo`
+    - `trx.savegame.info`
+    - `trx.savegame.delete`
+    - `trx.savegame.total_count`
+    - `trx.savegame.restart_available`
+    - `trx.savegame.manual_allowed`
+    - `trx.savegame.reached_levels`
+    - `trx.savegame.play_story`
+    - `trx.savegame.recent_slot`
 - Added `trx.inventory_ring`, which holds what the inventory ring draws. `trx.inventory` now holds only what Lara carries.
 - Added the ability for a script to hold a player action inactive
     - `trx.input.suppress`
@@ -137,6 +147,7 @@
 - Added console events, history access, and script-controlled console visibility
 - Added a UI layer above the game interface
 - Changed `trx.items.Item:die` and `trx.items.Item:shatter` to take an options table, and to let a script say what the flying body parts draw
+- Changed `trx.savegame.load` to raise an error for an empty slot
 - Fixed `trx.ui.primitive.sprite_count()` counting the meshes of a model as sprites
 - Fixed `trx.item.anim_num` not being accurate when the item is Lara and she is either on a vehicle or performing an extra animation (TRX1644)
 - Fixed `trx.input.with_listen()` always failing with an error

@@ -180,6 +180,29 @@ RESULT Savegame_LoadOnlyResumeInfo(const SAVEGAME_SLOT_REF slot)
     return result;
 }
 
+RESULT Savegame_ReadReachedLevels(
+    const SAVEGAME_SLOT_REF slot, VECTOR *const levels)
+{
+    RESUME_INFO *const snapshot = SG_Resume_Snapshot();
+    const SAVEGAME_VERSION initial_version = m_InitialVersion;
+    SG_Resume_ResetAllEntries();
+    const RESULT result = Savegame_LoadOnlyResumeInfo(slot);
+    if (IS_OK(result)) {
+        const GF_LEVEL_TABLE *const level_table = GF_GetLevelTable(GFLT_MAIN);
+        const int32_t last_level_num = SG_Manager_GetLevelNumber(slot);
+        for (int32_t i = 0; i <= last_level_num && i < level_table->count;
+             i++) {
+            const GF_LEVEL *const level = &level_table->levels[i];
+            if (SG_Resume_GetEntry(level)->flags.available) {
+                Vector_Add(levels, &level);
+            }
+        }
+    }
+    m_InitialVersion = initial_version;
+    SG_Resume_Restore(snapshot);
+    return result;
+}
+
 bool Savegame_RestartAvailable(const SAVEGAME_SLOT_REF slot)
 {
     if (!SG_Manager_IsValidSlotRef(slot)) {

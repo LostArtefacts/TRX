@@ -9076,7 +9076,7 @@
       }
     },
     {
-      "description": "How many slots a pool has. The quick pool counts only the slots that hold a save, which is how it is shown and addressed.",
+      "description": "Counts the slots in a pool.\n\nThe quick pool counts only slots that hold a save.",
       "params": [
         {
           "description": "Which set of slots to look in. Defaults to `NORMAL`.",
@@ -9116,7 +9116,7 @@
       ]
     },
     {
-      "description": "Starts the saved game in a slot. The load happens once the game flow picks it up, not on the call.",
+      "description": "Starts the saved game in a slot.\n\nThe game flow loads it after this call returns. Raises when the slot holds no\nsave.",
       "examples": [
         "trx.savegame.load(1)"
       ],
@@ -9135,7 +9135,7 @@
       "path": "savegame.load"
     },
     {
-      "description": "Writes a saved game to a slot. A quick save with no slot number goes to the next slot in the rotation; with one, it saves to the slot named.",
+      "description": "Writes a saved game to a slot.\n\nA quick save without a slot number uses the next slot in the rotation. Otherwise,\nit uses the named slot.",
       "examples": [
         "trx.savegame.save(1)"
       ],
@@ -9156,8 +9156,143 @@
       "path": "savegame.save",
       "returns": [
         {
-          "description": "Whether the save was written. `false` means the quick pool had no slot.",
+          "description": "Whether the save was written. `false` means that the quick pool had no slot.",
           "type": "boolean"
+        }
+      ]
+    },
+    {
+      "description": "Returns the slot contents, or `nil` if the slot is empty.",
+      "examples": [
+        "local info = trx.savegame.info(1)\nif info ~= nil then\n  trx.log.info(info.level_title)\nend"
+      ],
+      "params": [
+        {
+          "name": "slot_num",
+          "type": "savegame.SlotNum"
+        },
+        {
+          "description": "Which set of slots to look in. Defaults to `NORMAL`.",
+          "name": "pool",
+          "optional": true,
+          "type": "savegame.Pool"
+        }
+      ],
+      "path": "savegame.info",
+      "returns": {
+        "description": "What the slot holds.",
+        "nullable": true,
+        "type": "savegame.SlotInfo"
+      }
+    },
+    {
+      "description": "Removes the save from a slot and deletes its file.",
+      "params": [
+        {
+          "name": "slot_num",
+          "type": "savegame.SlotNum"
+        },
+        {
+          "description": "Which set of slots to look in. Defaults to `NORMAL`.",
+          "name": "pool",
+          "optional": true,
+          "type": "savegame.Pool"
+        }
+      ],
+      "path": "savegame.delete",
+      "returns": [
+        {
+          "description": "Whether a save was removed.",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "description": "Counts the saves in every pool.",
+      "path": "savegame.total_count",
+      "returns": [
+        {
+          "description": "The number of saves.",
+          "type": "integer"
+        }
+      ]
+    },
+    {
+      "description": "Reports whether the saved level can be restarted.\n\nWith no slot, this uses the save the game is running from. A game that is not\nrunning from a save can always restart.",
+      "params": [
+        {
+          "description": "The slot to ask about. The running save answers when it is omitted.",
+          "name": "slot_num",
+          "optional": true,
+          "type": "savegame.SlotNum"
+        },
+        {
+          "description": "Which set of slots to look in. Defaults to `NORMAL`.",
+          "name": "pool",
+          "optional": true,
+          "type": "savegame.Pool"
+        }
+      ],
+      "path": "savegame.restart_available",
+      "returns": [
+        {
+          "description": "Whether the level can be restarted.",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "description": "Returns the levels up to the saved one without starting it.",
+      "params": [
+        {
+          "name": "slot_num",
+          "type": "savegame.SlotNum"
+        },
+        {
+          "description": "Which set of slots to look in. Defaults to `NORMAL`.",
+          "name": "pool",
+          "optional": true,
+          "type": "savegame.Pool"
+        }
+      ],
+      "path": "savegame.reached_levels",
+      "returns": [
+        {
+          "description": "The levels, or `nil` when the slot holds no save that can be read.",
+          "list": true,
+          "nullable": true,
+          "type": "game.LevelNum"
+        }
+      ]
+    },
+    {
+      "description": "Plays the story content that runs before the saved level.\n\nRaises when the slot holds no save, or when no story runs before it.",
+      "params": [
+        {
+          "name": "slot_num",
+          "type": "savegame.SlotNum"
+        },
+        {
+          "description": "Which set of slots to look in. Defaults to `NORMAL`.",
+          "name": "pool",
+          "optional": true,
+          "type": "savegame.Pool"
+        }
+      ],
+      "path": "savegame.play_story"
+    },
+    {
+      "description": "Returns the slot where a save list should open.\n\nThis is the slot that the game last loaded or saved. If there is no such slot,\nit is the most recently written save, and then the first numbered slot.",
+      "path": "savegame.recent_slot",
+      "returns": [
+        {
+          "description": "The slot number, or `nil` where the game keeps no slots.",
+          "nullable": true,
+          "type": "savegame.SlotNum"
+        },
+        {
+          "description": "Which pool it belongs to.",
+          "type": "savegame.Pool"
         }
       ]
     },
@@ -11034,7 +11169,7 @@
       "order": 15
     },
     {
-      "description": "The save slots, and starting or reading a saved game.",
+      "description": "Manage save slots and saved games.",
       "name": "savegame",
       "order": 28
     },
@@ -11965,6 +12100,12 @@
       "path": "rules.fx.rotate_debris",
       "type": "boolean",
       "writable": true
+    },
+    {
+      "description": "Whether the current level allows manual saving.",
+      "path": "savegame.manual_allowed",
+      "type": "boolean",
+      "writable": false
     },
     {
       "description": "A signal that increments on every engine tick, regardless of what is on screen.\nAnything listening to it runs every tick.\n\nUse this when a script needs to poll state that has no dedicated signal, such as\nLara's current position. A dedicated signal is cheaper when one exists, because\nthis one wakes listeners even when the state they care about has not changed.",
@@ -16124,6 +16265,51 @@
       ],
       "operators": [],
       "path": "rooms.RoomQuery"
+    },
+    {
+      "description": "What a slot holds, as the save list shows it.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "Whether the level can be restarted from the save.",
+          "name": "can_restart",
+          "type": "boolean"
+        },
+        {
+          "description": "Whether the save reaches an earlier level in the game.",
+          "name": "can_select_level",
+          "type": "boolean"
+        },
+        {
+          "description": "The save count when this save was written.",
+          "name": "counter",
+          "type": "integer"
+        },
+        {
+          "description": "Whether story content runs before the saved level.",
+          "name": "has_story",
+          "type": "boolean"
+        },
+        {
+          "description": "Whether the save is a quick save.",
+          "name": "is_quick",
+          "type": "boolean"
+        },
+        {
+          "description": "Where the level sits in the main level table.",
+          "name": "level_num",
+          "type": "integer"
+        },
+        {
+          "description": "The name of the level the save was made in.",
+          "name": "level_title",
+          "type": "string"
+        }
+      ],
+      "handle": false,
+      "methods": [],
+      "operators": [],
+      "path": "savegame.SlotInfo"
     },
     {
       "description": "A value that notifies listeners when it changes.",
