@@ -13,6 +13,7 @@
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/ui.h>
+#include <trx/game/ui/dialogs/takeover.h>
 
 #include <stdint.h>
 
@@ -109,6 +110,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
 static void M_End(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
+    UI_Takeover_Release(UI_TAKEOVER_PAUSE);
     M_RemoveText(p);
     UI_Pause_Free(&p->ui.state);
 }
@@ -148,6 +150,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
                 return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
             } else if (g_InputDB.option) {
                 p->state = STATE_ASK;
+                UI_Takeover_Offer(UI_TAKEOVER_PAUSE, 0);
             }
         } else {
             if (g_InputDB.pause || g_InputDB.option) {
@@ -158,6 +161,22 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         break;
 
     case STATE_ASK: {
+        if (UI_Takeover_IsHeld(UI_TAKEOVER_PAUSE)) {
+            switch (UI_Takeover_TakeChoice(UI_TAKEOVER_PAUSE)) {
+            case UI_TAKEOVER_CHOICE_CANCEL:
+                p->state = STATE_WAIT;
+                return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
+            case UI_TAKEOVER_CHOICE_RESUME:
+                M_ReturnToGame(p);
+                return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
+            case UI_TAKEOVER_CHOICE_EXIT_TO_TITLE:
+                M_ExitToTitle(p);
+                return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
+            default:
+                break;
+            }
+            break;
+        }
         const UI_PAUSE_EXIT_CHOICE choice = UI_Pause_Control(&p->ui.state);
         switch (choice) {
         case UI_PAUSE_RESUME_PAUSE:
@@ -204,7 +223,7 @@ static void M_Draw(PHASE *const phase)
         g_Config.ui.pause_background_style, progress, nullptr);
     Output_Flush();
 
-    if (p->state == STATE_ASK) {
+    if (p->state == STATE_ASK && !UI_Takeover_IsHeld(UI_TAKEOVER_PAUSE)) {
         UI_Pause(&p->ui.state);
     }
 }

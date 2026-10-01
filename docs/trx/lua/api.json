@@ -3593,7 +3593,7 @@
     },
     {
       "bulk": false,
-      "count": 1,
+      "count": 2,
       "description": "An engine screen that a script can draw.",
       "path": "ui.Screen",
       "values": [
@@ -3601,6 +3601,11 @@
           "description": "An entry that the player uses in the inventory ring. The context reports the\nentry as `trx.ui.ScreenContext.object`. A definition can name the entry it\ndraws. A ring opened to save or load leaves when the screen ends, and any ring\nleaves when the screen ends with `trx.ui.ScreenContext:confirm`.",
           "name": "RING_ENTRY",
           "value": 0
+        },
+        {
+          "description": "The question that the pause screen asks when the player presses the inventory\nkey: whether to leave for the title screen.",
+          "name": "PAUSE",
+          "value": 1
         }
       ]
     },
@@ -17686,7 +17691,7 @@
       "handle": false,
       "methods": [
         {
-          "description": "Ends the screen, and closes its layers. A ring entry is put away. Does nothing\nif the screen has already ended.",
+          "description": "Ends the screen, and closes its layers. A ring entry is put away, and the\npause screen stays paused and drops its question. Does nothing if the screen\nhas already ended.",
           "name": "cancel",
           "returns": {
             "description": "Whether the screen was still held.",
@@ -17696,6 +17701,14 @@
         {
           "description": "Ends the screen as a choice that the player made, and closes its layers. A ring\nentry leaves the ring, as an entry that the player uses does. Does nothing if\nthe screen has already ended.",
           "name": "confirm",
+          "returns": {
+            "description": "Whether the screen was still held.",
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "Ends the pause screen, and leaves for the title screen with the pause screen's\nfade. Only `trx.ui.Screen.PAUSE` takes this.",
+          "name": "exit_to_title",
           "returns": {
             "description": "Whether the screen was still held.",
             "type": "boolean"
@@ -17714,6 +17727,14 @@
           "returns": {
             "description": "The pushed layer.",
             "type": "ui.StackLayer"
+          }
+        },
+        {
+          "description": "Ends the pause screen, and returns to the game. Only `trx.ui.Screen.PAUSE`\ntakes this.",
+          "name": "resume",
+          "returns": {
+            "description": "Whether the screen was still held.",
+            "type": "boolean"
           }
         }
       ],

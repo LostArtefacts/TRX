@@ -1392,6 +1392,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── assault.lua
 │   ├── inv_ring.lua
 │   ├── legend.lua
+│   ├── pause.lua
 │   ├── save_crystal.lua
 │   ├── water_color.lua
 │   └── weapons.lua
@@ -1401,6 +1402,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   └── init.lua
 │   ├── inv_ring.lua
 │   ├── passport.lua
+│   ├── pause.lua
 │   └── weapons.lua
 └── TRX.exe</code></pre>
 </details>
@@ -2823,6 +2825,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   ├── assault.lua
     │   │   ├── inv_ring.lua
     │   │   ├── legend.lua
+    │   │   ├── pause.lua
     │   │   ├── save_crystal.lua
     │   │   ├── water_color.lua
     │   │   └── weapons.lua
@@ -2832,6 +2835,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   └── init.lua
     │   │   ├── inv_ring.lua
     │   │   ├── passport.lua
+    │   │   ├── pause.lua
     │   │   └── weapons.lua
     │   └── icon.icns
     ├── _CodeSignature
