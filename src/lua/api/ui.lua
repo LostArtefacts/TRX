@@ -2,7 +2,7 @@ local raw = trxc.ui
 local api = trx.api
 
 api.module("ui", {
-  order = 19,
+  order = 20,
   title = "User interface",
   description = [[
 Module for drawing on top of the game.

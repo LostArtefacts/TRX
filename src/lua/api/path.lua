@@ -2,7 +2,7 @@ local raw = trxc.path
 local api = trx.api
 
 api.module("path", {
-  order = 34,
+  order = 35,
   title = "Paths",
   description = "Filesystem paths for Lua scripts. A path is a value rather than text, so "
     .. "joining one uses `/` and its parts are properties. Scripts can read and write under "

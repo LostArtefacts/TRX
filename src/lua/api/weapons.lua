@@ -5,7 +5,7 @@ require("trx.math")
 require("trx.catalog")
 
 api.module("weapons", {
-  order = 5,
+  order = 6,
   title = "Weapon",
   description = [[
 What a weapon is, rather than what Lara has of it.

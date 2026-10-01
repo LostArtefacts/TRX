@@ -10863,49 +10863,49 @@
     {
       "description": "Argument checking for the whole of `trx`.",
       "name": "api",
-      "order": 37,
+      "order": 38,
       "title": "API registry"
     },
     {
       "description": "A small, declarative argument parser for console commands, in the shape of\nPython's argparse.\n\nA parser both reads a command's arguments and offers completions for them,\nfrom one declaration. Every command written with `trx.console.register` has\none; a command shapes it through the `trx.console.register.spec.args` function\nit hands over, and `trx.console.register.spec.run` then receives a table of\nparsed values. A command that shapes nothing takes no arguments, and is told so\nwhen given one.\n\nEvery parser answers `-h` and `--help` on its own, printing what it accepts.\n\nHow a positional reads a token is its matcher: a type to coerce to, a set of\nchoices, or a function of its own. These do not combine on one positional; a\nvalue that is a number *or* a name is two matchers, declared with\n`trx.argparse.Parser:any_of`.\n\nPositionals are read in order, and an optional one a token does not fit is\npassed over: the token goes to the next positional, and the one skipped stays\nnil. That is what lets a command take a leading argument it can also be used\nwithout - a verb before a value, a count before a name. Completion follows the\nsame path, so a slot offers what every argument reachable from it takes. A\ntoken nothing takes is reported against the first argument that refused it.\n\nA choice is either a bare string, where the key and value are the same, or a\n`{ key, value }` pair, where the key is matched and shown and the value is what\n`trx.argparse.Parser:parse` gives back. Matching is forgiving, through\n`trx.strings.fuzzy_match`.",
       "name": "argparse",
-      "order": 25
+      "order": 26
     },
     {
       "description": "Module for controlling the Assault Course and Quad Bike timers in gym levels.",
       "name": "assault",
-      "order": 18,
+      "order": 19,
       "title": "Assault course"
     },
     {
       "description": "Module for inspecting the active camera state.",
       "name": "camera",
-      "order": 12
+      "order": 13
     },
     {
       "description": "The names TRX knows things by.\n\nEach catalog is an enum of every object, sample, music track, Lara state, Lara animation or item action the engine has a name for. The names are the C ones with their prefix taken off - `O_WOLF` is `trx.catalog.objects.WOLF` - and a catalog answers to a name in any case, so `trx.catalog.objects.wolf` is the same constant.\n\nThe ids in a catalog are TRX's own, and they are the same in all four games. The number a builder reads off Tomb Editor is not: that is the slot the game's own files use. `trx.catalog.to_slot` and `trx.catalog.from_slot` convert between the two.",
       "name": "catalog",
-      "order": 8
+      "order": 9
     },
     {
       "description": "Module for reading, changing and declaring engine settings.\n\nThese are the player's settings, not the level's. `trx.config.set` writes to them and keeps the\nchange: it is remembered across saves and relaunches, exactly as if the player had made it\nthemselves. A level that wants to tint the water or pull the fog in wants `trx.config.override`\ninstead, which lasts as long as the script keeps it and leaves the player's own value untouched\nunderneath.\n\nA game can also add settings of its own with `trx.config.declare`: they are saved and loaded with\nthe player's own, and shown in the settings menu where the declaration asks for. A setting a\ngame's `scripts/_game.lua` declares belongs to that game and goes when it does.",
       "name": "config",
-      "order": 26
+      "order": 27
     },
     {
       "description": "Module for interacting with the developer console.\n\n`trx.console.log` writes to the console overlay in-game, where `trx.log` writes only to the terminal and the log file.",
       "name": "console",
-      "order": 24
+      "order": 25
     },
     {
       "description": "Module for controlling certain creature behavior.",
       "name": "creatures",
-      "order": 11
+      "order": 12
     },
     {
       "description": "Module for TR4's in-game cutscenes, the animated scenes stored in\n`cutseq.pak` <!--noref: cutseq.pak--> and started by a cutscene trigger. A cutscene plays once:\nthe engine remembers which ones have run, and a script may consult or\nrewrite that memory. The cutscene levels of TR1-TR3, which the game flow\nlists and `/cut` plays, are a different thing: see `trx.game.cutscenes`.",
       "name": "cutscenes",
-      "order": 13
+      "order": 14
     },
     {
       "description": "Lua scripts can listen for game events by attaching a handler to one of the hooks below. Attaching returns a listener id, which `trx.events.detach` takes.\n\nA handler attached from a level script is detached automatically when the level ends; one attached from a global script lives for the whole session.\n\nAn event that carries a default the script may take over says so in its description; a handler answers such an event by returning true, and the default then stands down. Every other event ignores what its handlers return.",
@@ -10915,23 +10915,23 @@
     {
       "description": "What a script puts in front of the player: things seen rather than things the\ngame holds.",
       "name": "fx",
-      "order": 17
+      "order": 18
     },
     {
       "description": "Module for the game flow: which levels there are, and which one is being played.",
       "name": "game",
-      "order": 10
+      "order": 11
     },
     {
       "description": "The content a mod brings with it: meshes, animations, sounds and other data.\n\nA game flow names the injections its levels load. A script can name additional\ninjections, so a mod can ship its content without changing a game flow.",
       "name": "inject",
-      "order": 42,
+      "order": 43,
       "title": "Injection"
     },
     {
       "description": "Module for reading input and working with player bindings.\n\nScripts ask about roles, not physical keys. A role is a game action such as\njumping, drawing a weapon, or opening a menu. The key or button that triggers it\ndepends on the player's device and layout.\n\nUse `\\{input ...}` in text to draw the binding for a role.\n\nA few functions read the keyboard and the controller themselves, for a script\nthat needs the key rather than the action, such as one reading a passcode.\n\nA key that prints a character is named by the character the player's layout\nprints, so the key labelled 5 is `\"5\"` on every layout. A key with a label rather\nthan a character keeps the spelling the window system gives it, in lower case:\n`\"escape\"`, `\"return\"`, `\"left shift\"`, `\"f5\"`, `\"keypad 5\"`.\n\nWhile a rebind is reading a device, hardware reads report no input. The\npresses are not saved. `trx.input.is_reserved` reports this state. Key and\nbutton names remain available.\n\n`trx.input.grab` gives a script exclusive input. Use `trx.console.is_open` when\na script must ignore text entered in the console.\n\nA controller button or axis keeps the name SDL gives it, because a pad prints a\ndifferent label on the same button depending on who made it. The buttons are\n`\"a\"`, `\"b\"`, `\"x\"`, `\"y\"`, `\"back\"`, `\"guide\"`, `\"start\"`, `\"leftstick\"`,\n`\"rightstick\"`, `\"leftshoulder\"`, `\"rightshoulder\"`, `\"dpup\"`, `\"dpdown\"`,\n`\"dpleft\"`, `\"dpright\"`, `\"misc1\"`, `\"paddle1\"` to `\"paddle4\"` and `\"touchpad\"`.\nThe axes are `\"leftx\"`, `\"lefty\"`, `\"rightx\"`, `\"righty\"`, `\"lefttrigger\"` and\n`\"righttrigger\"`.",
       "name": "input",
-      "order": 41,
+      "order": 42,
       "title": "Input"
     },
     {
@@ -10948,7 +10948,7 @@
     {
       "description": "Reading and writing JSON, both as text and as a file on disk. The API dump the reference is generated from goes through this, so what a script writes out is encoded the way the engine's own data is.",
       "name": "json",
-      "order": 35,
+      "order": 36,
       "title": "JSON"
     },
     {
@@ -10960,137 +10960,137 @@
     {
       "description": "The text the player reads, in the player's own language.",
       "name": "locale",
-      "order": 23
+      "order": 24
     },
     {
       "description": "Logs a message to the terminal and to `TRX.log` in the installation directory. <!--noref: TRX.log--> Each call records the Lua script's filename, function name and line number.",
       "name": "log",
-      "order": 30,
+      "order": 31,
       "title": "Logging"
     },
     {
       "description": "Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the same state as every other script.",
       "name": "lua",
-      "order": 36
+      "order": 37
     },
     {
       "description": "Fixed-point trigonometry, matching the engine's own tables. Using these rather than Lua's `math` library guarantees a script places things exactly where the engine would. `trx.math.Angle` says what an angle is here.",
       "name": "math",
-      "order": 31
+      "order": 32
     },
     {
       "description": "The mods the game was built with, and which one is loaded.",
       "name": "mod",
-      "order": 29
+      "order": 30
     },
     {
       "description": "Module for playing and controlling the soundtrack.",
       "name": "music",
-      "order": 22
+      "order": 23
     },
     {
       "description": "Module for the object definitions a level is built from.\n\nAn object is the pattern every item of that type is cut from: a wolf's radius, not this wolf's. Per-item state lives on the item - see `trx.items`.",
       "name": "objects",
-      "order": 7,
+      "order": 8,
       "title": "Object"
     },
     {
       "description": "What the engine draws over the game and no script owns: the pickups that slide in, the assault course digits, and the lines of text the rest of the engine asks for.\n\nOnly what a script has to answer for is here. The lines of text are the engine's own, and a script neither reads nor writes them.",
       "name": "overlay",
-      "order": 40,
+      "order": 41,
       "title": "Overlay"
     },
     {
       "description": "Filesystem paths for Lua scripts. A path is a value rather than text, so joining one uses `/` and its parts are properties. Scripts can read and write under the game's own directories, and nowhere else.",
       "name": "path",
-      "order": 34,
+      "order": 35,
       "title": "Paths"
     },
     {
       "description": "A composable filter over a domain of things - the objects a level is built\nfrom, or the items alive in it. `trx.objects.query` and `trx.items.query` are\neach the identity query, matching everything; narrow one down, then read the\nresult.\n\nA query is immutable. Every method returns a fresh query, so a base can be kept\nand branched from without one narrowing leaking into another.\n\nEach domain adds narrowings of its own on top of the ones below - see\n`trx.items.ItemQuery` and `trx.objects.ObjectQuery` - and chained methods read\nleft to right, combining with AND: `q:spawnable():by_name(\"wolf\")`.",
       "name": "query",
-      "order": 9,
+      "order": 10,
       "title": "Query"
     },
     {
       "description": "Random numbers, drawn from one of the two sequences the engine runs on.\n\nThe module's own calls draw from the control stream. This is the sequence the\nsimulation runs on, so a script that draws every frame changes what the\ncreatures decide next. The draw stream, `trx.random.draw`, is the one the\noriginal game keeps for what is only seen. Drawing from it leaves the\nsimulation as it was. Both streams are the same generator and offer the same\ncalls, described in `trx.random.Stream`.\n\nThe savegame carries both sequences. A script's draws come back the same\nafter a reload, and a script needs no seed of its own.\n\nLua's own `math.random` is a separate generator that nothing saves. It has no\nplace in anything the simulation reads. <!--noref: math.random-->",
       "name": "random",
-      "order": 32
+      "order": 33
     },
     {
       "description": "Module for inspecting and altering the rooms of the current level.",
       "name": "rooms",
-      "order": 6
+      "order": 7
     },
     {
       "description": "Module for the numbers the engine plays by.\n\nThese are the game's rules: a mechanic that no single item owns. An\nobject's own numbers live on the object, as\n`trx.objects.<name>.properties`, and the player's own choices live in\n`trx.config`.\n\nA rule lasts as long as the playthrough: it is saved with the game and\nrestored with it, and a new game starts from the defaults. A level script\nstates what its level wants, and states it again on every entry, so a level\nthat wants the defaults back asks for them.",
       "name": "rules",
-      "order": 14
+      "order": 15
     },
     {
       "description": "The save slots, and starting or reading a saved game.",
       "name": "savegame",
-      "order": 27
+      "order": 28
     },
     {
       "description": "Outlines a script draws into the world the camera is looking at, over the level\ngeometry rather than over the interface.\n\nThe calls are available from `trx.events.on_scene_paint` and nowhere else, and\nraise anywhere else. Nothing is remembered between frames: a shape that is to\nstay on screen is drawn again every time the event fires.\n\nA shape is placed the way an item position and a zone are, so it needs no room\nand belongs to none. The outlines are drawn as wireframe, and one reaching\nfurther from its middle than a level is wide draws at that limit instead.",
       "name": "scene",
-      "order": 43
+      "order": 44
     },
     {
       "description": "A value that can notify listeners when it changes.\n\nA signal lets a script react to changes without polling every frame. You can\nread the current value, listen for changes, and combine signals with `&`, `|`\nand `~`.\n\nSetting a signal to its current value does nothing: listeners do not run, and\nsignals derived from it do not update. This keeps combined signals cheap to\nlisten to. A combined signal fires only when its own result changes, not every\ntime one of its inputs changes.\n\nA derived signal is read like any other signal, so one expression can provide\nboth the current result and change notifications.\n\nSignals should carry numbers, strings or booleans, not handles. Handles are\ncreated fresh on each read, so two reads of the same handle do not compare\nequal and would make the signal report a change every frame. When a signal\nrepresents an engine-owned object, it carries the object's numeric id; listeners\ncan then read the handle when they need it.\n\nSignals stay idle until something uses them: a polled signal starts reading only\nwhen it is created.",
       "name": "signal",
-      "order": 39,
+      "order": 40,
       "title": "Signals"
     },
     {
       "description": "Module for playing sound effects.",
       "name": "sound",
-      "order": 21
+      "order": 22
     },
     {
       "description": "Module for what a level keeps count of: what Lara has found in it, and how much\nthere was to find.\n\nThe module is the level being played, so `trx.stats.pickups.count` is what she\nhas picked up in it. Any other level's counters are reached the same way through\n`trx.game.Level.stats`. At the title screen there is no level, and everything\nhere reads `nil`.",
       "instance_type": "stats.Stats",
       "name": "stats",
-      "order": 28
+      "order": 29
     },
     {
       "description": "Module for what a script remembers across a save.\n\nTwo plain tables. What a script writes into either one is written into the\nsavegame and read back on load, so a script keeps its state across a save. The\ntables themselves never change identity, so `local s = trx.store.level` taken\nonce still names the store after a load.\n\nA store holds numbers, strings, booleans and tables of those. A value of any\nother type, a function among them, is dropped when the game is saved and the\nkey it sat at is named in the log. A value is checked as the game is written\nrather than as a script assigns it, so a value a save cannot hold is reported\nlater than the line that stored it.\n\nPut one table in two places and you get one table back, not two copies. Change\nit through the first place and the second place shows the change. A table that\nrefers to itself, directly or through another table, works too.\n\nAn item handle, and any other handle the engine owns, is not a value a store\ntakes. A script that wants to name an item across a save should store something\nthe level carries, such as the item's index.",
       "name": "store",
-      "order": 20,
+      "order": 21,
       "title": "Persistent storage"
     },
     {
       "description": "Utilities for working with strings.\n\nNot to be confused with `trx.locale`, which is the text a player reads: this module is about manipulating strings, that one is about which string the player gets.",
       "name": "strings",
-      "order": 33
+      "order": 34
     },
     {
       "description": "Module for drawing on top of the game.\n\nEvery function here is available only from a `trx.events.on_ui_draw` handler,\nand raises anywhere else: the interface is built afresh each drawn frame, and\nthere is no scene to add to outside one.\n\nA handler adds to the region the game is building, which it is told the name\nof. Widgets land in the same stack as the health bars and the item names, so a\nscript cannot draw over them and the player's choice of where each element sits\nstill holds.\n\nWidgets that hold other widgets take the body as a function rather than opening\nand closing by hand, so a scene stays whole even where the body fails.\n\nSizes are in canvas units, not screen pixels. `trx.ui.canvas` reports the\ncanvas, and `trx.ui.safe_area` the part of it that is free to draw in.\n\nText carries the same markup the rest of the game uses, and it is part of this\nAPI: `\\{small}` draws the rest of the line small, `\\{arrow up}` draws an arrow,\nand `\\{button left}` draws the button the player has bound.",
       "name": "ui",
-      "order": 19,
+      "order": 20,
       "title": "User interface"
     },
     {
       "description": "Module for how far along a level's own progression Lara has got.\n\nTR4 marks the points of a level with flip effects, and its guides read\nthem: Von Croy waits at a waypoint until Lara has reached it, says the\nline that belongs to it, and only then moves on. A level uses the same\nmarks to tell a first visit from a return.\n\nNothing about a waypoint is positional. It counts progress, and it lasts\nas long as the playthrough rather than the level, so it is saved with the\ngame.",
       "name": "waypoints",
-      "order": 38
+      "order": 39
     },
     {
       "description": "What a weapon is, rather than what Lara has of it.\n\nNone of this differs between the inventory she carries and the one a level\nkeeps for her, so it belongs to neither: what she holds and how many shots she\nhas are `trx.inventory`.\n\nA weapon is shared by every copy of it. Changes last for the rest of the\nsession, so levels should restore any values they change when they end.",
       "name": "weapons",
-      "order": 5,
+      "order": 6,
       "title": "Weapon"
     },
     {
       "description": "The runtime weather effect the current level shows.",
       "name": "weather",
-      "order": 16
+      "order": 17
     },
     {
       "description": "A zone is a piece of the level worth keeping an eye on. Mark out a box or a\nsphere in world space, or a single sector the way a floor trigger covers one,\nand the zone reports when something steps into it, when it leaves, and for as\nlong as it stays.\n\nA zone watches Lara and nobody else, unless it is made with `watch = \"items\"`,\nand then it watches everything the level holds - enemies, pickups, anything\nwith a position. Its hooks hand over whatever set it off. To listen in one\nplace rather than zone by zone, `trx.events.on_zone_enter` and its siblings\nhear about all of them.\n\nA flyby camera passing through a zone is its own pair of hooks,\n`trx.zones.Zone:on_flyby_enter` and `trx.zones.Zone:on_flyby_exit`, since a\ncamera is not an item and there is nothing to hand a handler but the zone.\nEvery zone answers for a flyby, whatever it watches, and a tile answers for one\nin the room the tile belongs to. The camera is checked only while a sequence is\nplaying.\n\nEvery frame, each zone settles who is inside before anything goes out, and the\nexits come before the enters - so a script following Lara from one zone into\nthe next hears her leave the first before she enters the second. Something\ndestroyed while it is inside counts as leaving.\n\nA box and a sphere take no notice of rooms, so where two rooms sit one above\nthe other over the same ground, a box tall enough to reach both catches what\nstands in either. Only a tile belongs to a room. A flipmap changes the geometry\nunder a zone but moves nothing and renumbers nothing, so no zone sees anything\ncome or go.\n\nZones belong to the level that made them. A level change clears them, and the\nlevel script makes them again the same way it attaches its handlers. A zone made\noutside a level script - from a global script, or from the console - goes with\nthe next level change as well, and nothing makes it again. A global script that\nwants a zone in every level makes it from a handler that runs once the level has\nloaded. They are not written to savegames either, so Lara standing in a zone when\na game is loaded enters it again.",
       "name": "zones",
-      "order": 15
+      "order": 16
     }
   ],
   "namespaces": [

@@ -1,6 +1,6 @@
 ---
 title: Weapon
-order: 5
+order: 6
 ---
 
 <!--

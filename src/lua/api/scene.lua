@@ -4,7 +4,7 @@ local api = trx.api
 require("trx.math")
 
 api.module("scene", {
-  order = 43,
+  order = 44,
   description = [[
 Outlines a script draws into the world the camera is looking at, over the level
 geometry rather than over the interface.

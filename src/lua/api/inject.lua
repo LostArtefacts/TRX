@@ -2,7 +2,7 @@ local raw = trxc.inject
 local api = trx.api
 
 api.module("inject", {
-  order = 42,
+  order = 43,
   title = "Injection",
   description = [[
 The content a mod brings with it: meshes, animations, sounds and other data.

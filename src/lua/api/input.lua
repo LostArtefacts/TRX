@@ -5,7 +5,7 @@ require("trx.events")
 require("trx.signal")
 
 api.module("input", {
-  order = 41,
+  order = 42,
   title = "Input",
   description = [[
 Module for reading input and working with player bindings.
