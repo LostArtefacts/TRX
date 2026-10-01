@@ -12,6 +12,11 @@
 void SG_Resume_Init(void);
 void SG_Resume_Shutdown(void);
 
+// Resets every entry to the start of a new game. Leaves the rest of the
+// running playthrough as it is.
+void SG_Resume_ClearEntries(void);
+// Resets every entry and the rest of the playthrough: Lara's wetness, the
+// rules, the played cutscenes, the waypoints and the game store.
 void SG_Resume_ResetAllEntries(void);
 
 // Copy the resume entries. Restore the copy and free it with
