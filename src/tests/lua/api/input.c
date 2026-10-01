@@ -229,6 +229,13 @@ static void M_PushFake(lua_State *const L)
 
 INPUT_STATE g_Input;
 
+// The game opens no debug library, so neither does this test.
+static void M_Setup(lua_State *const L)
+{
+    lua_pushnil(L);
+    lua_setglobal(L, "debug");
+}
+
 bool InputState_IsAnyPressed(const INPUT_STATE state)
 {
     return m_AnythingHeld;
@@ -463,6 +470,7 @@ int main(void)
         .module = "input",
         .deps = { "signal", "events", nullptr },
         .tests = "api/input",
+        .setup_extra = M_Setup,
         .push_fake = M_PushFake,
     };
     return LuaSurface_Run(&test);

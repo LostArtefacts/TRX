@@ -698,7 +698,7 @@ error. Returns the function's results.]],
   impl = function(fn)
     local was_listening = raw.is_listening()
     raw.listen(true)
-    local result = table.pack(xpcall(fn, debug.traceback))
+    local result = table.pack(pcall(fn))
     raw.listen(was_listening)
     if not result[1] then
       error(result[2], 0)
