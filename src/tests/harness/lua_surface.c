@@ -129,7 +129,8 @@ static void M_DiscoverRequired(lua_State *const L, const char *const source)
 
         char name[64];
         size_t len = 0;
-        while ((isalnum((unsigned char)*cursor) || *cursor == '_')
+        while ((isalnum((unsigned char)*cursor) || *cursor == '_'
+                || *cursor == '.')
                && len + 1 < sizeof(name)) {
             name[len++] = *cursor++;
         }
@@ -183,6 +184,7 @@ static void M_Discover(
 // Runs a module under the chunk name the engine would give it.
 // LUA_GetCallerInfo tells the engine's own frames from a script's by that name,
 // so loading a module as its path would test a naming the engine never uses.
+// A value the module returns is what require returns for it, as in the engine.
 static void M_RunModule(lua_State *const L, const char *const name)
 {
     char path[512];
@@ -190,7 +192,23 @@ static void M_RunModule(lua_State *const L, const char *const name)
     M_PathFromName(path, sizeof(path), name);
     snprintf(
         chunk_name, sizeof(chunk_name), LUA_API_CHUNK_PREFIX "%s.lua", name);
-    M_RunFileAs(L, path, chunk_name);
+    size_t size;
+    char *const source = M_ReadFile(path, &size);
+    if (luaL_loadbuffer(L, source, size, chunk_name) != LUA_OK
+        || lua_pcall(L, 0, 1, 0) != LUA_OK) {
+        M_Fail(L, path);
+    }
+    free(source);
+    if (lua_isnil(L, -1)) {
+        lua_pop(L, 1);
+        return;
+    }
+    lua_getglobal(L, "package");
+    lua_getfield(L, -1, "loaded");
+    lua_pushfstring(L, "trx.%s", name);
+    lua_pushvalue(L, -4);
+    lua_settable(L, -3);
+    lua_pop(L, 3);
 }
 
 // Every module's preload first, then the bodies in order, as LUA_Init does.
