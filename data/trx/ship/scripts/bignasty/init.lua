@@ -534,7 +534,7 @@ trx.objects[ball]:add_family("projectile")
 trx.objects[gun_item]:link("gun_to_ammo", ammo_item)
 
 for i, key in ipairs({ GUN_KEY, AMMO_KEY }) do
-  trx.inventory.declare_ring_item({
+  trx.inventory_ring.declare_item({
     object_id = key,
     frames_total = 1,
     anim_direction = 1,

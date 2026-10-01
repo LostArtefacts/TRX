@@ -111,6 +111,7 @@
     - `trx.overlay.set_caption`, `trx.overlay.show_arrow`, and `trx.overlay.Arrow`
     - `trx.ui.primitive.horizontal_line`
     - `trx.ui.text_scale`
+- Added `trx.inventory_ring`, which holds what the inventory ring draws. `trx.inventory` now holds only what Lara carries.
 - Added the ability for a script to hold a player action inactive
     - `trx.input.suppress`
     - `trx.input.Suppression:release`

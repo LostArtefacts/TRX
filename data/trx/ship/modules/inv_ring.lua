@@ -6,5 +6,5 @@ if found == nil then
 end
 
 for _, spec in ipairs(trx.json.read_file(found)) do
-  trx.inventory.declare_ring_item(spec)
+  trx.inventory_ring.declare_item(spec)
 end
