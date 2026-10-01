@@ -156,6 +156,7 @@
     - `trx.ui.layers.push`
     - `trx.ui.layers.top`
     - `trx.ui.layers.count`
+- Added `trx.ui.widgets.List`, a column of rows that the player picks one entry from
 - Changed script widgets to stay behind the game interface when they overlap
 - Changed `trx.items.Item:die` and `trx.items.Item:shatter` to take an options table, and to let a script say what the flying body parts draw
 - Changed `trx.savegame.load` to raise an error for an empty slot

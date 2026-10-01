@@ -314,4 +314,99 @@ test("the stack holds a limited number of layers", function()
   end
 end)
 
+-------------------------------------------------------------------------------
+-- The list
+-------------------------------------------------------------------------------
+
+local function list(settings)
+  return trx.ui.widgets.List(settings)
+end
+
+local function rows(...)
+  local result = {}
+  for i, text in ipairs({ ... }) do
+    result[i] = { text = text }
+  end
+  return result
+end
+
+local function texts(ops)
+  local result = {}
+  for _, op in ipairs(ops) do
+    local text = op:match("^text .- text=(.*)$")
+    if text ~= nil then
+      result[#result + 1] = text
+    end
+  end
+  return result
+end
+
+test("a list draws only the rows in view", function()
+  fresh()
+  local l = list({ rows = rows("r1", "r2", "r3", "r4", "r5"), visible = 2 })
+  l:select(4)
+  local layer = push({ root = l })
+  local drawn_texts = texts(fake.scene())
+  layer:close()
+  assert(#drawn_texts == 4, table.concat(drawn_texts, ","))
+  assert(drawn_texts[1] == "\\{arrow up}")
+  assert(drawn_texts[2] == "r3")
+  assert(drawn_texts[3] == "r4")
+  assert(drawn_texts[4] == "\\{arrow down}")
+end)
+
+test("a list keeps the cursor in view when it shows fewer rows", function()
+  fresh()
+  local visible = trx.signal.new(5)
+  local l =
+    list({ rows = rows("r1", "r2", "r3", "r4", "r5"), visible = visible })
+  l:select(5)
+  visible:set(2)
+  local layer = push({ root = l })
+  local drawn_texts = texts(fake.scene())
+  layer:close()
+  assert(#drawn_texts == 3, table.concat(drawn_texts, ","))
+  assert(drawn_texts[1] == "\\{arrow up}")
+  assert(drawn_texts[2] == "r4")
+  assert(drawn_texts[3] == "r5")
+end)
+
+test("a list answers the row the player picks", function()
+  fresh()
+  local l = list({ rows = rows("a", "b", "c") })
+  local picked
+  local layer = push({
+    root = l,
+    on_input = function(_, keys)
+      picked = l:control(keys) or picked
+    end,
+  })
+  fake.tick()
+  fake.press(trx.input.Role.MENU_DOWN)
+  fake.tick()
+  fake.release_all()
+  fake.press(trx.input.Role.MENU_CONFIRM)
+  fake.tick()
+  layer:close()
+  assert(picked == 2, tostring(picked))
+end)
+
+test("a list leaves the back key to its layer", function()
+  fresh()
+  local l = list({ rows = rows("a") })
+  local backed = false
+  local layer = push({
+    root = l,
+    on_input = function(_, keys)
+      l:control(keys)
+      backed = backed or keys:pressed(trx.input.Role.MENU_BACK)
+    end,
+  })
+  fake.tick()
+  fake.press(trx.input.Role.MENU_BACK)
+  fake.tick()
+  layer:close()
+  assert(backed)
+end)
+
 return h.report()

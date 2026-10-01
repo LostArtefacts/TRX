@@ -1,7 +1,5 @@
-// A player's config of a handful of options, one of each shape that behaves
-// differently. The registry and the options are the real ones, holds and all;
-// what is faked is which options exist, how a value reads and writes as a
-// string, and what saving means.
+// Define the options used by the tests. Use the real registry and option types,
+// and fake only value access, available options, and saving.
 
 #include <fakes/config.h>
 
@@ -58,6 +56,10 @@ static const CONFIG_OPTION_DESC m_Descs[] = {
     { .name = "ui.enable_smooth_bars",
       .default_value = { .type = TVT_BOOL, .as_bool = true },
       .mirror = &g_ConfigStorage.ui.enable_smooth_bars },
+    // Lists read this option to decide whether the cursor wraps around.
+    { .name = "ui.enable_wraparound",
+      .default_value = { .type = TVT_BOOL, .as_bool = true },
+      .mirror = &g_ConfigStorage.ui.enable_wraparound },
 };
 
 static int32_t m_Listener = -1;
@@ -76,8 +78,7 @@ static void M_DefineEnums(void)
     EnumMap_Define("FAKE_SHADOW", "SHADOW_EXTRA_DARK", 2, "extra_dark");
 }
 
-// What the settings file would have taken. A change a hold applies is nobody's
-// to save, so only the ones the player made are recorded.
+// Record only changes made by the player, not changes applied by a hold.
 static void M_RecordWrite(const EVENT *const event, void *const user_data)
 {
     if (((const CONFIG_CHANGE *)event->data)->persist) {

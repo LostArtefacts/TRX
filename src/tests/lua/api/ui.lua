@@ -488,4 +488,116 @@ test("a custom widget that is not shown draws nothing", function()
   assert(not painted)
 end)
 
+local function rows(...)
+  local result = {}
+  for i, text in ipairs({ ... }) do
+    result[i] = { text = text }
+  end
+  return result
+end
+
+local function with_wraparound(enabled, fn)
+  trx.config.set("ui.enable_wraparound", enabled)
+  local ok, err = pcall(fn)
+  trx.config.set("ui.enable_wraparound", true)
+  assert(ok, err)
+end
+
+test("a list measures its widest row and every row", function()
+  local w, h_ = widgets.List({ rows = rows("a", "bb", "ccc") }):measure()
+  assert(w == 3 * 8 + 2 * 4, w)
+  assert(h_ == 3 * 15 + 2 * 3, h_)
+end)
+
+test("a list keeps its least width", function()
+  local w = widgets.List({ rows = rows("a"), width = 100 }):measure()
+  assert(w == 100, w)
+end)
+
+test("a list that runs past its rows keeps room for the arrows", function()
+  local list =
+    widgets.List({ rows = rows("a", "b", "c", "d", "e"), visible = 2 })
+  local _, h_ = list:measure()
+  assert(h_ == 2 * 15 + 3 + 2 * 7, h_)
+end)
+
+test("a list that keeps room keeps it for rows it does not hold", function()
+  local list = widgets.List({ rows = rows("a"), visible = 3, reserve = true })
+  local _, h_ = list:measure()
+  assert(h_ == 3 * 15 + 2 * 3, h_)
+end)
+
+test("a rule above a row takes room", function()
+  local list = widgets.List({
+    rows = { { text = "a" }, { text = "b", rule = true } },
+  })
+  local _, h_ = list:measure()
+  assert(h_ == 2 * 15 + 3 + 10, h_)
+end)
+
+test("a list keeps one height while a rule scrolls out of view", function()
+  local list = widgets.List({
+    rows = { { text = "a" }, { text = "b", rule = true }, { text = "c" } },
+    visible = 1,
+  })
+  local _, before = list:measure()
+  list:select(3)
+  local _, after = list:measure()
+  assert(before == after, ("%s ~= %s"):format(before, after))
+end)
+
+test("a list follows the signal that holds its visible rows", function()
+  local visible = trx.signal.new(3)
+  local list = widgets.List({ rows = rows("a", "b", "c"), visible = visible })
+  local _, before = list:measure()
+  visible:set(1)
+  local _, after = list:measure()
+  assert(before == 3 * 15 + 2 * 3, before)
+  assert(after == 15 + 2 * 7, after)
+  list:release()
+end)
+
+test("a list stops at its ends without wraparound", function()
+  with_wraparound(false, function()
+    local list = widgets.List({ rows = rows("a", "b") })
+    assert(list:move(-1) == false)
+    assert(list:selection() == 1)
+    list:select(2)
+    assert(list:move(1) == false)
+    assert(list:selection() == 2)
+  end)
+end)
+
+test("a list wraps around where the setting says so", function()
+  with_wraparound(true, function()
+    local list = widgets.List({ rows = rows("a", "b", "c") })
+    assert(list:move(-1) == true)
+    assert(list:selection() == 3)
+  end)
+end)
+
+test(
+  "a list does not report a move that leaves the cursor in place",
+  function()
+    with_wraparound(true, function()
+      assert(widgets.List({ rows = rows("a") }):move(1) == false)
+      assert(widgets.List({ rows = rows("a", "b") }):move(0) == false)
+    end)
+  end
+)
+
+test("a list keeps the cursor within new rows", function()
+  local list = widgets.List({ rows = rows("a", "b", "c") })
+  list:select(3)
+  list:set_rows(rows("a"))
+  assert(list:selection() == 1)
+end)
+
+test("an empty list has no selection", function()
+  local list = widgets.List({})
+  assert(list:selection() == nil)
+  list:set_rows(rows("a"))
+  assert(list:selection() == 1)
+end)
+
 return h.report()

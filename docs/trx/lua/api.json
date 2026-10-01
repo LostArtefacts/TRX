@@ -10680,6 +10680,75 @@
       }
     },
     {
+      "description": "A column of rows that the player picks one entry from.\n\nThe list keeps the cursor and the scroll position. Read the player's input\nwith `trx.ui.List:control` from the input callback of the layer that holds the\nlist.",
+      "examples": [
+        "local list = trx.ui.widgets.List({\n  rows = { { text = \"Yes\" }, { text = \"No\" } },\n})"
+      ],
+      "params": [
+        {
+          "description": "The list settings.",
+          "fields": [
+            {
+              "description": "The rows. None by default.",
+              "list": true,
+              "name": "rows",
+              "optional": true,
+              "type": "ui.ListRow"
+            },
+            {
+              "description": "How many rows to show at once, or a signal that holds that value. Every row by\ndefault.",
+              "name": "visible",
+              "optional": true,
+              "type": "any"
+            },
+            {
+              "description": "Whether to keep room for the visible rows when the list holds fewer.\n`false` by default.",
+              "name": "reserve",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "description": "The least width, in canvas units at the default text size.",
+              "name": "width",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "description": "The room on each side of a row's text. `4` by default.",
+              "name": "row_pad",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "description": "The gap between two rows. `3` by default.",
+              "name": "row_spacing",
+              "optional": true,
+              "type": "number"
+            },
+            {
+              "description": "Whether to show arrows where the list runs past its rows. `true` by default.",
+              "name": "scroll_hints",
+              "optional": true,
+              "type": "boolean"
+            },
+            {
+              "description": "Whether the list is shown, or a signal that holds that value.",
+              "name": "shown",
+              "optional": true,
+              "type": "any"
+            }
+          ],
+          "name": "settings",
+          "type": "table"
+        }
+      ],
+      "path": "ui.widgets.List",
+      "returns": {
+        "description": "The list.",
+        "type": "ui.List"
+      }
+    },
+    {
       "description": "Places a widget in a region.\n\nThe layer decides whether the widget is covered by the engine interface or\ncovers it. A widget is under it unless the call says otherwise. Each layer\nkeeps room of its own in the region, so widgets on the two layers stack rather\nthan sit on top of each other.\n\nIf the region argument is a signal, the widget moves when the signal changes.",
       "examples": [
         "trx.ui.regions.place(trx.ui.Region.TOP_LEFT, health_bar)",
@@ -17143,6 +17212,106 @@
       ],
       "operators": [],
       "path": "ui.Widget"
+    },
+    {
+      "description": "One entry of a `trx.ui.widgets.List`.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "Text drawn against the right edge. The main text is then drawn against the left edge.",
+          "name": "right",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "description": "Whether a line separates the row from the row above it.",
+          "name": "rule",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "description": "The text. It is centered unless the row has a right part.",
+          "name": "text",
+          "type": "string"
+        }
+      ],
+      "handle": false,
+      "methods": [],
+      "operators": [],
+      "path": "ui.ListRow"
+    },
+    {
+      "description": "A column of rows that the player picks one entry from. The row under the cursor\nis drawn in a frame. Arrows show where the list runs past the rows it shows.",
+      "extensions": [],
+      "fields": [],
+      "handle": false,
+      "methods": [
+        {
+          "description": "Reads the menu keys for one tick. Up and down move the cursor, and confirm picks\nthe row under it. Uses up only the presses that it reads.",
+          "name": "control",
+          "params": [
+            {
+              "description": "The input of the layer the list is on.",
+              "name": "keys",
+              "type": "ui.LayerKeys"
+            }
+          ],
+          "returns": {
+            "description": "The picked row, or `nil` where none was picked.",
+            "nullable": true,
+            "type": "integer"
+          }
+        },
+        {
+          "description": "Moves the cursor by a number of rows. Past either end, the cursor goes to the\nother end where the `ui.enable_wraparound` setting is on, and stays otherwise.\n<!--noref: ui.enable_wraparound-->",
+          "name": "move",
+          "params": [
+            {
+              "description": "How many rows to move. Negative moves up.",
+              "name": "step",
+              "type": "integer"
+            }
+          ],
+          "returns": {
+            "description": "Whether the cursor moved.",
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "Moves the cursor to a row. Does nothing for an index out of range.",
+          "name": "select",
+          "params": [
+            {
+              "description": "The row.",
+              "name": "index",
+              "type": "integer"
+            }
+          ]
+        },
+        {
+          "description": "Returns the index of the row under the cursor.",
+          "name": "selection",
+          "returns": {
+            "description": "The index, or `nil` for an empty list.",
+            "nullable": true,
+            "type": "integer"
+          }
+        },
+        {
+          "description": "Replaces the rows. The cursor stays on the same index where it can.",
+          "name": "set_rows",
+          "params": [
+            {
+              "description": "The new rows.",
+              "list": true,
+              "name": "rows",
+              "type": "ui.ListRow"
+            }
+          ]
+        }
+      ],
+      "operators": [],
+      "path": "ui.List"
     },
     {
       "description": "The player's input, as the top layer reads it.\n\nA press that a layer reads is used up. It does not reach other code, and it\ndoes not reach the layer below when this one closes.",
