@@ -61,6 +61,7 @@
 - Fixed Lara, enemies and vehicles moving slightly differently from the original game
 - Fixed civilians, military police and prisoners not starting slightly turned, as they do in the original game
 - Fixed guns that eject shells puffing smoke at the muzzle rather than at the shell
+- Fixed a misaligned barrier mesh in Aldwych room 57 (TRX1639, regression from 1.5)
 
 **TR4**
 - Added Small Scorpion control (TRX1562)
