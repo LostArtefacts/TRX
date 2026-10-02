@@ -8706,7 +8706,7 @@
       "path": "objects.swap_sprite"
     },
     {
-      "description": "Sets the caption at the bottom of the screen.\n\nThe inventory ring uses it for the selected entry. The passport uses it for the\ncurrent page. The caption reduces the safe area. Passing no value removes it.",
+      "description": "Sets the caption at the bottom of the screen.\n\nThe inventory ring uses it for the selected entry. The caption reduces the safe\narea. Passing no value removes it.",
       "params": [
         {
           "description": "Text to show. Omit this parameter to remove the caption.",
@@ -8718,7 +8718,7 @@
       "path": "overlay.set_caption"
     },
     {
-      "description": "Shows or hides an interface arrow.\n\nThe passport uses the caption arrows to show which way the book turns.",
+      "description": "Shows or hides an interface arrow.\n\nThe caption arrows stand beside the caption that `trx.overlay.set_caption`\nsets.",
       "params": [
         {
           "description": "Which arrow to show.",
@@ -11511,7 +11511,7 @@
       "order": 4
     },
     {
-      "description": "The rings the player browses, and the entries drawn on them.\n\nThis is the front of the inventory: which entries a ring holds, how each is\ndrawn and turned, and what the player has picked. What Lara is carrying belongs\nto `trx.inventory`.",
+      "description": "The rings the player browses, and the entries drawn on them.\n\nThis is the front of the inventory: which entries a ring holds, how each is\ndrawn and turned, and what the player has picked. What Lara is carrying belongs\nto `trx.inventory`.\n\nA script draws what an entry opens by defining the\n`trx.ui.Screen.RING_ENTRY` screen.",
       "name": "inventory_ring",
       "order": 5,
       "title": "Inventory ring"

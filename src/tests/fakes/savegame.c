@@ -111,6 +111,67 @@ static int M_L_ManualAllowed(lua_State *const L)
     return 1;
 }
 
+// trxc.savegame.info(index, pool) -> table or nil
+static int M_L_Info(lua_State *const L)
+{
+    const int32_t index = (int32_t)luaL_checkinteger(L, 1);
+    const int32_t pool = (int32_t)luaL_checkinteger(L, 2);
+    if (index == m_FreeIndex && pool == m_FreePool) {
+        lua_pushnil(L);
+        return 1;
+    }
+    lua_newtable(L);
+    lua_pushstring(L, "City of Vilcabamba");
+    lua_setfield(L, -2, "level_title");
+    lua_pushinteger(L, index);
+    lua_setfield(L, -2, "counter");
+    // A level number below the reached levels, as a game with no gym gives.
+    lua_pushinteger(L, 1);
+    lua_setfield(L, -2, "level_num");
+    lua_pushboolean(L, pool != 0);
+    lua_setfield(L, -2, "is_quick");
+    lua_pushboolean(L, true);
+    lua_setfield(L, -2, "can_restart");
+    lua_pushboolean(L, true);
+    lua_setfield(L, -2, "can_select_level");
+    lua_pushboolean(L, true);
+    lua_setfield(L, -2, "has_story");
+    return 1;
+}
+
+// trxc.savegame.delete(index, pool) -> bool
+static int M_L_Delete(lua_State *const L)
+{
+    FAKE_RECORD(
+        "delete", FV((int32_t)luaL_checkinteger(L, 1)),
+        FV((int32_t)luaL_checkinteger(L, 2)));
+    lua_pushboolean(L, true);
+    return 1;
+}
+
+// trxc.savegame.play_story(index, pool)
+static int M_L_PlayStory(lua_State *const L)
+{
+    FAKE_RECORD(
+        "play_story", FV((int32_t)luaL_checkinteger(L, 1)),
+        FV((int32_t)luaL_checkinteger(L, 2)));
+    return 0;
+}
+
+// trxc.savegame.reached_levels(index, pool) -> {int}. The first two levels.
+static int M_L_ReachedLevels(lua_State *const L)
+{
+    FAKE_RECORD(
+        "reached_levels", FV((int32_t)luaL_checkinteger(L, 1)),
+        FV((int32_t)luaL_checkinteger(L, 2)));
+    lua_createtable(L, 2, 0);
+    for (int32_t i = 1; i <= 2; i++) {
+        lua_pushinteger(L, i);
+        lua_rawseti(L, -2, i);
+    }
+    return 1;
+}
+
 // fake.set_slot_free(index, pool)
 static int M_L_SetSlotFree(lua_State *const L)
 {
@@ -159,6 +220,10 @@ static const luaL_Reg m_Module[] = {
     { "restart_available", M_L_RestartAvailable },
     { "recent_slot", M_L_RecentSlot },
     { "manual_allowed", M_L_ManualAllowed },
+    { "info", M_L_Info },
+    { "delete", M_L_Delete },
+    { "play_story", M_L_PlayStory },
+    { "reached_levels", M_L_ReachedLevels },
     { "load", M_L_Load },
     { "save", M_L_Save },
     { nullptr, nullptr },

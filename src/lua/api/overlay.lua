@@ -36,8 +36,8 @@ api.define("overlay.set_caption", {
   description = [[
 Sets the caption at the bottom of the screen.
 
-The inventory ring uses it for the selected entry. The passport uses it for the
-current page. The caption reduces the safe area. Passing no value removes it.]],
+The inventory ring uses it for the selected entry. The caption reduces the safe
+area. Passing no value removes it.]],
   params = {
     {
       name = "text",
@@ -53,7 +53,8 @@ api.define("overlay.show_arrow", {
   description = [[
 Shows or hides an interface arrow.
 
-The passport uses the caption arrows to show which way the book turns.]],
+The caption arrows stand beside the caption that `trx.overlay.set_caption`
+sets.]],
   params = {
     {
       name = "arrow",

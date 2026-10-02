@@ -77,9 +77,9 @@ TEST(a_loop_of_references_holds_no_words)
 TEST(restores_the_build_strings)
 {
     GameString_Reset();
-    GameString_Define("general/passport/new_game", "Nuova Partita");
+    GameString_Define("general/passport/load_game", "Carica Partita");
     GameString_RestoreDefaults();
-    CHECK_EQ_STR(GameString_Get("general/passport/new_game"), "New Game");
+    CHECK_EQ_STR(GameString_Get("general/passport/load_game"), "Load Game");
     GameString_Clear();
 }
 
