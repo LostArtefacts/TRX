@@ -2276,6 +2276,9 @@
         "body_part": {
             "name": "Parte del Corpo",
         },
+        "bouncing_boulder": {
+            "name": "\\{review}Masso rimbalzante",
+        },
         "bridge_flat": {
             "name": "Ponte Piano",
         },

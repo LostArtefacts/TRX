@@ -80,6 +80,7 @@
 - Added Earthquake control (TRX1548)
 - Added Henchman 1 and Henchman 2 control (TRX1552)
 - Added Jeep control (TRX1554)
+- Added Bouncing Boulder control (TRX1560)
 - Added level views before play starts, with a progress bar (TRX493)
 - Added Seth Sarcophagus and the Burial Chambers cutscene where Lara takes the Amulet (TRX1561)
 - Changed inventory items to use the original size and angle for each level's puzzle, key, pickup, and examine items

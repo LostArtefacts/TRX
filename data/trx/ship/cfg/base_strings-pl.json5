@@ -2276,6 +2276,9 @@
         "body_part": {
             "name": "Część ciała",
         },
+        "bouncing_boulder": {
+            "name": "\\{review}Odbijający się głaz",
+        },
         "bridge_flat": {
             "name": "Most płaski",
         },

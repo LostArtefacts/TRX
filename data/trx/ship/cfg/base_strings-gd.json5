@@ -2276,6 +2276,9 @@
         "body_part": {
             "name": "Pàirt Corp",
         },
+        "bouncing_boulder": {
+            "name": "Ulbhag Leumadach",
+        },
         "bridge_flat": {
             "name": "Drochaid Rèidh",
         },

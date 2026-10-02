@@ -316,6 +316,7 @@ X_OBJ_NAME_DEFINE(O_TRAIN,                    "Train")
 X_OBJ_NAME_DEFINE(O_ROLLING_SPIKES,           "Rolling Spikes")
 X_OBJ_NAME_DEFINE(O_FALLING_BLADE,            "Falling Blade")
 X_OBJ_NAME_DEFINE(O_PLOUGH,                   "Plough")
+X_OBJ_NAME_DEFINE(O_BOUNCING_BOULDER,         "Bouncing Boulder")
 
 // General objects
 X_OBJ_NAME_DEFINE(O_BAT_EMITTER,            "Bat Emitter")
