@@ -22,6 +22,7 @@ static void M_Release(const UI_TAKEOVER screen)
 static void M_Reset(const bool accept)
 {
     UI_Takeover_Release(UI_TAKEOVER_RING_ENTRY);
+    UI_Takeover_Release(UI_TAKEOVER_SAVE_LOAD);
     UI_Takeover_SetHooks((UI_TAKEOVER_HOOKS) {
         .offer = M_Offer,
         .release = M_Release,
@@ -117,4 +118,21 @@ TEST(a_ring_entry_takes_cancel_and_confirm)
         UI_TAKEOVER_RING_ENTRY, UI_TAKEOVER_CHOICE_CONFIRM));
     CHECK(!UI_Takeover_AcceptsChoice(
         UI_TAKEOVER_RING_ENTRY, UI_TAKEOVER_CHOICE_NONE));
+}
+
+TEST(the_quick_save_and_load_screen_takes_only_cancel)
+{
+    CHECK(UI_Takeover_AcceptsChoice(
+        UI_TAKEOVER_SAVE_LOAD, UI_TAKEOVER_CHOICE_CANCEL));
+    CHECK(!UI_Takeover_AcceptsChoice(
+        UI_TAKEOVER_SAVE_LOAD, UI_TAKEOVER_CHOICE_NONE));
+}
+
+TEST(each_screen_is_held_on_its_own)
+{
+    M_Reset(true);
+    UI_Takeover_Offer(UI_TAKEOVER_SAVE_LOAD, 0);
+    CHECK(UI_Takeover_IsHeld(UI_TAKEOVER_SAVE_LOAD));
+    CHECK(!UI_Takeover_IsHeld(UI_TAKEOVER_RING_ENTRY));
+    CHECK(UI_Takeover_IsAnyHeld());
 }

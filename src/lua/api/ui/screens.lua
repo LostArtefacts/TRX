@@ -62,6 +62,10 @@ An entry that the player uses in the inventory ring. The context reports the
 entry as `trx.ui.ScreenContext.object`. A definition can name the entry it
 draws. A ring opened to save or load leaves when the screen ends, and any ring
 leaves when the screen ends with `trx.ui.ScreenContext:confirm`.]],
+    SAVE_LOAD = [[
+The quick save or load screen. The save and load keys open it when the instant
+screen setting is on. The context reports whether it opened for saving or
+loading as `trx.ui.ScreenContext.mode`.]],
   },
 })
 
@@ -138,6 +142,17 @@ Context = api.type("ui.ScreenContext", {
         return nil
       end,
     },
+    mode = {
+      type = "inventory_ring.Mode",
+      nullable = true,
+      description = "What the quick save or load screen opened for, for `trx.ui.Screen.SAVE_LOAD`.",
+      get = function(self)
+        if rawget(self, "_screen") == trx.ui.Screen.SAVE_LOAD then
+          return rawget(self, "_arg")
+        end
+        return nil
+      end,
+    },
     is_held = {
       type = "boolean",
       description = "Whether the script still holds the screen.",
@@ -182,8 +197,8 @@ Pushes a layer that belongs to the screen, with the settings that
     },
     cancel = {
       description = [[
-Ends the screen, and closes its layers. A ring entry is put away. Does nothing
-if the screen has already ended.]],
+Ends the screen, and closes its layers. A ring entry is put away, and the quick
+save or load screen closes. Does nothing if the screen has already ended.]],
       returns = {
         type = "boolean",
         description = "Whether the screen was still held.",

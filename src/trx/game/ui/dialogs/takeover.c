@@ -11,6 +11,7 @@ static const bool
             [UI_TAKEOVER_CHOICE_CANCEL] = true,
             [UI_TAKEOVER_CHOICE_CONFIRM] = true,
         },
+        [UI_TAKEOVER_SAVE_LOAD] = { [UI_TAKEOVER_CHOICE_CANCEL] = true },
     };
 
 static UI_TAKEOVER_HOOKS m_Hooks = {};

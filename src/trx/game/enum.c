@@ -220,6 +220,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(UI_PAINT_LAYER, UI_PAINT_LAYER_OVER, "over");
 
     ENUM_MAP(UI_TAKEOVER, UI_TAKEOVER_RING_ENTRY, "ring_entry");
+    ENUM_MAP(UI_TAKEOVER, UI_TAKEOVER_SAVE_LOAD, "save_load");
 
     ENUM_MAP(UI_TAKEOVER_CHOICE, UI_TAKEOVER_CHOICE_CANCEL, "cancel");
     ENUM_MAP(UI_TAKEOVER_CHOICE, UI_TAKEOVER_CHOICE_CONFIRM, "confirm");

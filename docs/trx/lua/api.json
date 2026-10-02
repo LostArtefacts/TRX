@@ -3593,7 +3593,7 @@
     },
     {
       "bulk": false,
-      "count": 1,
+      "count": 2,
       "description": "An engine screen that a script can draw.",
       "path": "ui.Screen",
       "values": [
@@ -3601,6 +3601,11 @@
           "description": "An entry that the player uses in the inventory ring. The context reports the\nentry as `trx.ui.ScreenContext.object`. A definition can name the entry it\ndraws. A ring opened to save or load leaves when the screen ends, and any ring\nleaves when the screen ends with `trx.ui.ScreenContext:confirm`.",
           "name": "RING_ENTRY",
           "value": 0
+        },
+        {
+          "description": "The quick save or load screen. The save and load keys open it when the instant\nscreen setting is on. The context reports whether it opened for saving or\nloading as `trx.ui.ScreenContext.mode`.",
+          "name": "SAVE_LOAD",
+          "value": 1
         }
       ]
     },
@@ -17671,6 +17676,12 @@
           "writable": false
         },
         {
+          "description": "What the quick save or load screen opened for, for `trx.ui.Screen.SAVE_LOAD`.",
+          "name": "mode",
+          "type": "inventory_ring.Mode",
+          "writable": false
+        },
+        {
           "description": "The ring entry that the player uses, for `trx.ui.Screen.RING_ENTRY`.",
           "name": "object",
           "type": "catalog.objects",
@@ -17686,7 +17697,7 @@
       "handle": false,
       "methods": [
         {
-          "description": "Ends the screen, and closes its layers. A ring entry is put away. Does nothing\nif the screen has already ended.",
+          "description": "Ends the screen, and closes its layers. A ring entry is put away, and the quick\nsave or load screen closes. Does nothing if the screen has already ended.",
           "name": "cancel",
           "returns": {
             "description": "Whether the screen was still held.",
