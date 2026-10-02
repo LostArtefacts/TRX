@@ -26,6 +26,17 @@ test("load starts the saved game in a slot", function()
   assert(fake.calls().loaded_param == 0) -- slot 1 is index 0
 end)
 
+test("load runs at once while no script holds a screen", function()
+  trx.savegame.load(1)
+  assert(fake.calls().loaded_immediate == true)
+end)
+
+test("load waits while a script holds a screen", function()
+  fake.set_screen_held(true)
+  trx.savegame.load(1)
+  assert(fake.calls().loaded_immediate == false)
+end)
+
 test("reached_levels lists the numbered levels a save reaches", function()
   local nums = trx.savegame.reached_levels(1)
   assert(#nums == 1)

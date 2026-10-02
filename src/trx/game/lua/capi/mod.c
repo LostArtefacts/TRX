@@ -2,6 +2,7 @@
 #include <trx/game/game_flow/types.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/field.h>
+#include <trx/game/lua/game_flow.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
 #include <trx/game/lua/utils.h>
@@ -121,7 +122,7 @@ static int M_L_ModSwitch(lua_State *const L)
     }
 
     Shell_RequestModSwitch(mod->name);
-    GF_OverrideCommand((GF_COMMAND) { .action = GF_SWITCH_MOD }, true);
+    LUA_OverrideCommand((GF_COMMAND) { .action = GF_SWITCH_MOD });
     lua_pushboolean(L, true);
     return 1;
 }

@@ -157,6 +157,15 @@ and `\{button left}` draws the button the player has bound.
     - `trx.ui.BarType.PROGRESS` = `7`  
         A general progress bar.
 
+- <a id="ui.Screen" name="ui.Screen"></a>[lua]`trx.ui.Screen`
+
+    An engine screen that a script can draw.
+
+    - `trx.ui.Screen.RING_ENTRY` = `0`  
+        An entry that the player uses in the inventory ring. The context reports the
+        entry as [`trx.ui.ScreenContext.object`](#ui.ScreenContext.object). A definition can name the entry it
+        draws.
+
 ### Structures
 
 - <a id="ui.Area" name="ui.Area"></a>[lua]`trx.ui.Area`
@@ -388,6 +397,32 @@ and `\{button left}` draws the button the player has bound.
       Parameters:
       - <a id="ui.StackLayer.set_root.root" name="ui.StackLayer.set_root.root"></a>**`root`** ([trx.ui.Widget](#ui.Widget)). The new tree.
 
+- <a id="ui.ScreenContext" name="ui.ScreenContext"></a>[lua]`trx.ui.ScreenContext`
+
+    A screen that a script holds, which the definition receives.
+
+    Properties:
+    - <a id="ui.ScreenContext.is_held" name="ui.ScreenContext.is_held"></a>**`is_held`**: boolean. Whether the script still holds the screen. *(read-only)*
+    - <a id="ui.ScreenContext.object" name="ui.ScreenContext.object"></a>**`object`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The ring entry that the player uses, for [`trx.ui.Screen.RING_ENTRY`](#ui.Screen). *(read-only)*
+    - <a id="ui.ScreenContext.screen" name="ui.ScreenContext.screen"></a>**`screen`**: [trx.ui.Screen](#ui.Screen). The screen. *(read-only)*
+
+    Methods:
+
+    - <a id="ui.ScreenContext.cancel" name="ui.ScreenContext.cancel"></a>[lua]`screencontext:cancel()`  
+      Ends the screen, and closes its layers. A ring entry is put away. Does nothing
+      if the screen has already ended.
+
+      Returns: boolean. Whether the screen was still held.
+
+    - <a id="ui.ScreenContext.push" name="ui.ScreenContext.push"></a>[lua]`screencontext:push(settings)`  
+      Pushes a layer that belongs to the screen, with the settings that
+      [`trx.ui.layers.push`](#ui.layers.push) takes. The layer closes when the screen ends.
+
+      Parameters:
+      - <a id="ui.ScreenContext.push.settings" name="ui.ScreenContext.push.settings"></a>**`settings`** (table). The layer settings.
+
+      Returns: [trx.ui.StackLayer](#ui.StackLayer). The pushed layer.
+
 ### Functions
 
 - <a id="ui.primitive" name="ui.primitive"></a>[lua]`trx.ui.primitive`  
@@ -429,6 +464,23 @@ and `\{button left}` draws the button the player has bound.
   it read nothing until it closes.
 
   A layer that a level script pushes closes when the level ends.
+
+- <a id="ui.screens" name="ui.screens"></a>[lua]`trx.ui.screens`  
+  Lets a script draw an engine screen in place of the engine.
+
+  Define a screen with [`define`](#ui.screens.define). When the engine opens the screen,
+  it calls the function that the definition gives. The function pushes layers
+  through the context it receives and returns the first one. The engine then draws
+  nothing for the screen and reads no input for it, until the script ends the
+  screen through the context.
+
+  The screen also ends when the layer that the definition returned closes, for
+  any reason, and the screen's other layers close with it. A layer that raises an
+  error therefore gives the screen back to the engine.
+
+  While a script holds a screen, a game-flow command such as
+  [`trx.savegame.load`](SAVEGAME.md#savegame.load) waits for the screen to end. In the inventory ring, the
+  ring spins out before the command runs.
 
 - <a id="ui.mesh_slot" name="ui.mesh_slot"></a>[lua]`trx.ui.mesh_slot()`  
   Takes a slot for a model the interface keeps on screen across ticks.
@@ -1019,3 +1071,39 @@ and `\{button left}` draws the button the player has bound.
   Returns how many layers are on the stack.
 
   Returns: integer. The number of layers.
+
+- <a id="ui.screens.define" name="ui.screens.define"></a>[lua]`trx.ui.screens.define(screen, open, [options])`  
+  Defines how a script draws a screen.
+
+  The function receives a [`trx.ui.ScreenContext`](#ui.ScreenContext) when the engine opens the
+  screen. It pushes the screen's layers through the context and returns the first
+  one. Returning nothing leaves the screen to the engine.
+
+  A screen has one definition. Defining it again is an error unless the options
+  say `override = true`. The new definition then replaces the old one, which comes
+  back when a level script's definition goes with its level.
+
+  Parameters:
+  - <a id="ui.screens.define.screen" name="ui.screens.define.screen"></a>**`screen`** ([trx.ui.Screen](#ui.Screen)). The screen.
+  - <a id="ui.screens.define.open" name="ui.screens.define.open"></a>**`open`** (function). Runs when the engine opens the screen.
+  - <a id="ui.screens.define.options" name="ui.screens.define.options"></a>**`options`** (table, optional). The definition options.
+
+    Keys:
+    - <a id="ui.screens.define.options.object" name="ui.screens.define.options.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects), optional). The ring entry that the definition draws, for [`trx.ui.Screen.RING_ENTRY`](#ui.Screen).
+      Without it, the definition draws every entry that has no definition of its
+      own.
+    - <a id="ui.screens.define.options.override" name="ui.screens.define.options.override"></a>**`override`** (boolean, optional). Whether to replace a definition that exists. `false` by default.
+
+  Example:
+  ```lua
+  trx.ui.screens.define(trx.ui.Screen.RING_ENTRY, function(ctx)
+    return ctx:push({
+      root = trx.ui.widgets.Label({ text = "North" }),
+      on_input = function(_, keys)
+        if keys:pressed(trx.input.Role.MENU_BACK) then
+          ctx:cancel()
+        end
+      end,
+    })
+  end, { object = trx.catalog.objects.COMPASS_OPTION })
+  ```

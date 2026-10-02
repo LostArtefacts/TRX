@@ -127,6 +127,17 @@ test("play_level queues the level the list named", function()
   assert(calls.play_level.num == 2)
 end)
 
+test("play_level runs at once while no script holds a screen", function()
+  trx.game.play_level(2)
+  assert(fake.calls().play_level.immediate == true)
+end)
+
+test("play_level waits while a script holds a screen", function()
+  fake.set_screen_held(true)
+  trx.game.play_level(2)
+  assert(fake.calls().play_level.immediate == false)
+end)
+
 test("play_level with select and no save unbinds the save", function()
   trx.game.play_level(2, { select = true })
   local calls = fake.calls()

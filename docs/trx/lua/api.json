@@ -3564,6 +3564,19 @@
     },
     {
       "bulk": false,
+      "count": 1,
+      "description": "An engine screen that a script can draw.",
+      "path": "ui.Screen",
+      "values": [
+        {
+          "description": "An entry that the player uses in the inventory ring. The context reports the\nentry as `trx.ui.ScreenContext.object`. A definition can name the entry it\ndraws.",
+          "name": "RING_ENTRY",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "bulk": false,
       "count": 5,
       "description": "How the engine holds and fires a weapon, which decides which arm animations and firing routine it uses.",
       "path": "weapons.Kind",
@@ -10963,6 +10976,45 @@
       }
     },
     {
+      "description": "Defines how a script draws a screen.\n\nThe function receives a `trx.ui.ScreenContext` when the engine opens the\nscreen. It pushes the screen's layers through the context and returns the first\none. Returning nothing leaves the screen to the engine.\n\nA screen has one definition. Defining it again is an error unless the options\nsay `override = true`. The new definition then replaces the old one, which comes\nback when a level script's definition goes with its level.",
+      "examples": [
+        "trx.ui.screens.define(trx.ui.Screen.RING_ENTRY, function(ctx)\n  return ctx:push({\n    root = trx.ui.widgets.Label({ text = \"North\" }),\n    on_input = function(_, keys)\n      if keys:pressed(trx.input.Role.MENU_BACK) then\n        ctx:cancel()\n      end\n    end,\n  })\nend, { object = trx.catalog.objects.COMPASS_OPTION })"
+      ],
+      "params": [
+        {
+          "description": "The screen.",
+          "name": "screen",
+          "type": "ui.Screen"
+        },
+        {
+          "description": "Runs when the engine opens the screen.",
+          "name": "open",
+          "type": "function"
+        },
+        {
+          "description": "The definition options.",
+          "fields": [
+            {
+              "description": "The ring entry that the definition draws, for `trx.ui.Screen.RING_ENTRY`.\nWithout it, the definition draws every entry that has no definition of its\nown.",
+              "name": "object",
+              "optional": true,
+              "type": "catalog.objects"
+            },
+            {
+              "description": "Whether to replace a definition that exists. `false` by default.",
+              "name": "override",
+              "optional": true,
+              "type": "boolean"
+            }
+          ],
+          "name": "options",
+          "optional": true,
+          "type": "table"
+        }
+      ],
+      "path": "ui.screens.define"
+    },
+    {
       "description": "Adds a weapon of a script's own, under a name the game does not hold yet.\nA weapon of a kind the engine implements is held, drawn and put away as the\nweapons of that kind are, and only what it does when it fires is a script's\nto write. Raises where the spec says neither a kind nor a base, and where\nthe name is taken, so that two mods claiming one weapon are heard;\n`trx.weapons.patch` changes a weapon that is there already.",
       "examples": [
         "trx.weapons.declare(\"mymod:bigger_gun\", {\n  base = \"shotgun\",\n  kind = \"rifle\",\n  objects = {\n    pickup = \"shotgun_item\",\n    ammo = \"shotgun_ammo_item\",\n    anim = \"lara_shotgun\",\n  },\n  ammo = { initial_shots = 12, box_shots = 12 },\n  damage = 30,\n  fire = function(weapon, running)\n    trx.sound.play(trx.catalog.samples.explosion)\n  end,\n})"
@@ -11647,6 +11699,11 @@
       "callable": false,
       "description": "Draws screens of widgets over the rest of the interface.\n\nA layer holds one widget tree, such as a menu or a question. Layers are kept in\na stack. Each layer draws over the layers below it and over the widgets placed\nwith `trx.ui.regions.place`. The engine interface still draws over all of them.\n\nOnly the top layer that takes input reads the player's input. The layers below\nit read nothing until it closes.\n\nA layer that a level script pushes closes when the level ends.",
       "path": "ui.layers"
+    },
+    {
+      "callable": false,
+      "description": "Lets a script draw an engine screen in place of the engine.\n\nDefine a screen with `trx.ui.screens.define`. When the engine opens the screen,\nit calls the function that the definition gives. The function pushes layers\nthrough the context it receives and returns the first one. The engine then draws\nnothing for the screen and reads no input for it, until the script ends the\nscreen through the context.\n\nThe screen also ends when the layer that the definition returned closes, for\nany reason, and the screen's other layers close with it. A layer that raises an\nerror therefore gives the screen back to the engine.\n\nWhile a script holds a screen, a game-flow command such as\n`trx.savegame.load` waits for the screen to end. In the inventory ring, the\nring spins out before the command runs.",
+      "path": "ui.screens"
     }
   ],
   "numbers": [
@@ -17531,6 +17588,58 @@
       ],
       "operators": [],
       "path": "ui.StackLayer"
+    },
+    {
+      "description": "A screen that a script holds, which the definition receives.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "Whether the script still holds the screen.",
+          "name": "is_held",
+          "type": "boolean",
+          "writable": false
+        },
+        {
+          "description": "The ring entry that the player uses, for `trx.ui.Screen.RING_ENTRY`.",
+          "name": "object",
+          "type": "catalog.objects",
+          "writable": false
+        },
+        {
+          "description": "The screen.",
+          "name": "screen",
+          "type": "ui.Screen",
+          "writable": false
+        }
+      ],
+      "handle": false,
+      "methods": [
+        {
+          "description": "Ends the screen, and closes its layers. A ring entry is put away. Does nothing\nif the screen has already ended.",
+          "name": "cancel",
+          "returns": {
+            "description": "Whether the screen was still held.",
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "Pushes a layer that belongs to the screen, with the settings that\n`trx.ui.layers.push` takes. The layer closes when the screen ends.",
+          "name": "push",
+          "params": [
+            {
+              "description": "The layer settings.",
+              "name": "settings",
+              "type": "table"
+            }
+          ],
+          "returns": {
+            "description": "The pushed layer.",
+            "type": "ui.StackLayer"
+          }
+        }
+      ],
+      "operators": [],
+      "path": "ui.ScreenContext"
     },
     {
       "description": "How far off straight ahead an aim may go, as a pair of limits about each axis.",

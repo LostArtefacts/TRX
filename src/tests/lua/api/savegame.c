@@ -14,12 +14,16 @@
 static SAVEGAME_SLOT_REF m_SavedSlot = { .index = -1 };
 
 static int32_t m_LoadedParam = -1;
+static bool m_LoadedImmediate;
+static bool m_ScreenHeld;
 
 // The slot the fake ended up holding is state, not a call, so it is read here.
 static int M_FakeReset(lua_State *const L)
 {
     FakeCalls_Reset();
     m_LoadedParam = -1;
+    m_LoadedImmediate = false;
+    m_ScreenHeld = false;
     m_SavedSlot = (SAVEGAME_SLOT_REF) { .index = -1 };
     return 0;
 }
@@ -29,11 +33,26 @@ static int M_FakeCalls(lua_State *const L)
     FakeCalls_Push(L);
     lua_pushinteger(L, m_LoadedParam);
     lua_setfield(L, -2, "loaded_param");
+    lua_pushboolean(L, m_LoadedImmediate);
+    lua_setfield(L, -2, "loaded_immediate");
     lua_pushinteger(L, m_SavedSlot.index);
     lua_setfield(L, -2, "saved_index");
     lua_pushinteger(L, m_SavedSlot.pool);
     lua_setfield(L, -2, "saved_pool");
     return 1;
+}
+
+// fake.set_screen_held(bool) - whether a script holds an engine screen.
+static int M_L_SetScreenHeld(lua_State *const L)
+{
+    m_ScreenHeld = lua_toboolean(L, 1);
+    return 0;
+}
+
+static void M_PushFake(lua_State *const L)
+{
+    lua_pushcfunction(L, M_L_SetScreenHeld);
+    lua_setfield(L, -2, "set_screen_held");
 }
 
 int32_t SG_Manager_GetSlotCount(const SAVEGAME_SLOT_POOL pool)
@@ -171,6 +190,12 @@ bool Savegame_Save(const SAVEGAME_SLOT_REF slot)
 void GF_OverrideCommand(const GF_COMMAND command, const bool immediate)
 {
     m_LoadedParam = command.param;
+    m_LoadedImmediate = immediate;
+}
+
+bool UI_Takeover_IsAnyHeld(void)
+{
+    return m_ScreenHeld;
 }
 
 int main(void)
@@ -181,6 +206,7 @@ int main(void)
         .tests = "api/savegame",
         .seal = true,
         .fake_calls = M_FakeCalls,
+        .push_fake = M_PushFake,
     };
     return LuaSurface_Run(&test);
 }
