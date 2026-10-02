@@ -177,4 +177,54 @@ test("a count cannot be set below zero", function()
   trx.inventory:set_count(KEY, 0)
 end)
 
+-------------------------------------------------------------------------------
+-- The open ring
+-------------------------------------------------------------------------------
+
+local Mode = trx.inventory_ring.Mode
+local PASSPORT = trx.catalog.objects.PASSPORT_OPTION
+
+test("no ring reports no mode and no entry", function()
+  fake.close_ring()
+  assert(trx.inventory_ring.mode() == nil)
+  assert(trx.inventory_ring.selection_anim() == nil)
+end)
+
+test("an open ring reports what it was opened for", function()
+  fake.open_ring(Mode.DEATH, PASSPORT, 10, 30)
+  assert(trx.inventory_ring.mode() == Mode.DEATH)
+  fake.close_ring()
+end)
+
+test("the picked entry reports where its animation is", function()
+  fake.open_ring(Mode.TITLE, PASSPORT, 10, 30)
+  local anim = trx.inventory_ring.selection_anim()
+  assert(anim.frame == 10)
+  assert(anim.goal_frame == 10)
+  assert(anim.open_frame == 10)
+  assert(anim.frame_count == 30)
+  fake.close_ring()
+end)
+
+test("the picked entry runs to the frame a script asks for", function()
+  fake.open_ring(Mode.TITLE, PASSPORT, 10, 30)
+  trx.inventory_ring.animate_selection(15, 1)
+  local anim = trx.inventory_ring.selection_anim()
+  assert(anim.goal_frame == 15)
+  assert(anim.direction == 1)
+  fake.settle_ring()
+  assert(trx.inventory_ring.selection_anim().frame == 15)
+  trx.inventory_ring.animate_selection(0, -5)
+  assert(trx.inventory_ring.selection_anim().direction == -1)
+  fake.close_ring()
+end)
+
+test("the picked entry has only the frames it holds", function()
+  fake.open_ring(Mode.TITLE, PASSPORT, 10, 30)
+  h.raises(function()
+    trx.inventory_ring.animate_selection(30, 1)
+  end, "the entry has no such frame")
+  fake.close_ring()
+end)
+
 return h.report()

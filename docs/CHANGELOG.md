@@ -126,6 +126,8 @@
     - `trx.savegame.recent_slot`
     - `trx.mod.can_switch`
 - Added `trx.inventory_ring`, which holds what the inventory ring draws. `trx.inventory` now holds only what Lara carries.
+    - `trx.inventory_ring.Mode` and `trx.inventory_ring.mode`, which report what the open ring was opened for
+    - `trx.inventory_ring.EntryAnim`, `trx.inventory_ring.selection_anim` and `trx.inventory_ring.animate_selection`, which run the selected entry through its animation
 - Added `ng_plus` to `trx.game.play_level`, so a script can pick the game mode a level starts in
 - Added the ability for a script to hold a player action inactive
     - `trx.input.suppress`
