@@ -50,6 +50,41 @@ static void M_RefreshRegistryIndex(OBJECT_MESH *const mesh)
     }
 }
 
+static int16_t M_FindReceptacle(
+    const OBJECT_ID object_id, const OBJECT_LINK link)
+{
+    // Iterate through all matching receptacles
+    const int32_t count = ObjectLink_GetCount(object_id, link);
+    for (int32_t i = 0; i < count; i++) {
+        // Iterate through all level items that match this receptacle
+        const OBJECT_ID receptacle_to_check =
+            ObjectLink_GetAt(object_id, link, i);
+        for (int16_t item_num = 0; item_num < Item_GetLevelCount();
+             item_num++) {
+            const ITEM *const item = Item_Get(item_num);
+            if (item->object_id != receptacle_to_check) {
+                continue;
+            }
+
+            const OBJECT *const obj = Object_Get(item->object_id);
+            if (obj->is_usable_func != nullptr
+                && !obj->is_usable_func(item_num)) {
+                continue;
+            }
+
+            // If Lara is standing near one, that's our receptacle. If no bounds
+            // are set, this assumes is_usable_func has been implemented for
+            // specific item tests.
+            if (obj->bounds_func == nullptr
+                || Lara_TestPosition(item, obj->bounds_func())) {
+                return item_num;
+            }
+        }
+    }
+
+    return NO_ITEM;
+}
+
 void Object_Reset(void)
 {
     CATALOG_FOR_EACH(CATALOG_OBJECTS, i)
@@ -379,30 +414,15 @@ OBJECT_ID Object_FindReceptacleKey(const OBJECT_ID receptacle_obj_id)
 
 int16_t Object_FindReceptacle(const OBJECT_ID object_id)
 {
-    // Iterate through all matching receptacles
-    const int32_t count =
-        ObjectLink_GetCount(object_id, OBJ_LINK_KEY_TO_RECEPTACLE);
-    for (int32_t i = 0; i < count; i++) {
-        // Iterate through all level items that match this receptacle
-        const OBJECT_ID receptacle_to_check =
-            ObjectLink_GetAt(object_id, OBJ_LINK_KEY_TO_RECEPTACLE, i);
-        for (int16_t item_num = 0; item_num < Item_GetLevelCount();
-             item_num++) {
-            const ITEM *const item = Item_Get(item_num);
-            if (item->object_id != receptacle_to_check) {
-                continue;
-            }
+    const OBJECT_LINK links[2] = {
+        OBJ_LINK_KEY_TO_RECEPTACLE,
+        OBJ_LINK_KEY_TO_VEHICLE,
+    };
 
-            const OBJECT *const obj = Object_Get(item->object_id);
-            if (obj->is_usable_func != nullptr
-                && !obj->is_usable_func(item_num)) {
-                continue;
-            }
-
-            // If Lara is standing near one, that's our keyhole
-            if (Lara_TestPosition(item, obj->bounds_func())) {
-                return item_num;
-            }
+    for (size_t i = 0; i < ARRAY_SIZE(links); i++) {
+        const int16_t item_num = M_FindReceptacle(object_id, links[i]);
+        if (item_num != NO_ITEM) {
+            return item_num;
         }
     }
 
