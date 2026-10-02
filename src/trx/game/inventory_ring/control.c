@@ -827,17 +827,23 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 UI_Takeover_Release(UI_TAKEOVER_RING_ENTRY);
                 InvRing_SetStatusTransition(
                     ring, RNG_CLOSING_ITEM, RNG_EXITING_INVENTORY, 0);
-            } else if (
-                UI_Takeover_TakeChoice(UI_TAKEOVER_RING_ENTRY)
-                != UI_TAKEOVER_CHOICE_NONE) {
+            } else {
+                const UI_TAKEOVER_CHOICE choice =
+                    UI_Takeover_TakeChoice(UI_TAKEOVER_RING_ENTRY);
                 // A ring opened to save or load holds nothing else worth
                 // going back to, so putting the entry away leaves it.
-                const bool leaves_ring = ring->mode == INV_LOAD_MODE
+                const bool leaves_ring = choice == UI_TAKEOVER_CHOICE_CONFIRM
+                    || ring->mode == INV_LOAD_MODE
                     || ring->mode == INV_SAVE_MODE
                     || ring->mode == INV_SAVE_CRYSTAL_MODE;
-                InvRing_SetStatusTransition(
-                    ring, RNG_CLOSING_ITEM,
-                    leaves_ring ? RNG_EXITING_INVENTORY : RNG_DESELECT, 0);
+                if (choice == UI_TAKEOVER_CHOICE_CONFIRM) {
+                    g_InvRing_Source[ring->type].current = ring->current_object;
+                }
+                if (choice != UI_TAKEOVER_CHOICE_NONE) {
+                    InvRing_SetStatusTransition(
+                        ring, RNG_CLOSING_ITEM,
+                        leaves_ring ? RNG_EXITING_INVENTORY : RNG_DESELECT, 0);
+                }
             }
             break;
         }

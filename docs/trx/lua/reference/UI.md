@@ -164,7 +164,8 @@ and `\{button left}` draws the button the player has bound.
     - `trx.ui.Screen.RING_ENTRY` = `0`  
         An entry that the player uses in the inventory ring. The context reports the
         entry as [`trx.ui.ScreenContext.object`](#ui.ScreenContext.object). A definition can name the entry it
-        draws.
+        draws. A ring opened to save or load leaves when the screen ends, and any ring
+        leaves when the screen ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm).
 
 ### Structures
 
@@ -413,6 +414,13 @@ and `\{button left}` draws the button the player has bound.
     - <a id="ui.ScreenContext.cancel" name="ui.ScreenContext.cancel"></a>[lua]`screencontext:cancel()`  
       Ends the screen, and closes its layers. A ring entry is put away. Does nothing
       if the screen has already ended.
+
+      Returns: boolean. Whether the screen was still held.
+
+    - <a id="ui.ScreenContext.confirm" name="ui.ScreenContext.confirm"></a>[lua]`screencontext:confirm()`  
+      Ends the screen as a choice that the player made, and closes its layers. A ring
+      entry leaves the ring, as an entry that the player uses does. Does nothing if
+      the screen has already ended.
 
       Returns: boolean. Whether the screen was still held.
 

@@ -60,7 +60,8 @@ api.enum("ui.Screen", {
     RING_ENTRY = [[
 An entry that the player uses in the inventory ring. The context reports the
 entry as `trx.ui.ScreenContext.object`. A definition can name the entry it
-draws.]],
+draws. A ring opened to save or load leaves when the screen ends, and any ring
+leaves when the screen ends with `trx.ui.ScreenContext:confirm`.]],
   },
 })
 
@@ -189,6 +190,19 @@ if the screen has already ended.]],
       },
       impl = function(self)
         return finish(self, choices.CANCEL)
+      end,
+    },
+    confirm = {
+      description = [[
+Ends the screen as a choice that the player made, and closes its layers. A ring
+entry leaves the ring, as an entry that the player uses does. Does nothing if
+the screen has already ended.]],
+      returns = {
+        type = "boolean",
+        description = "Whether the screen was still held.",
+      },
+      impl = function(self)
+        return finish(self, choices.CONFIRM)
       end,
     },
   },

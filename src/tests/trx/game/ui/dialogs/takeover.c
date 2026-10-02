@@ -109,10 +109,12 @@ TEST(a_release_of_a_screen_nobody_holds_does_nothing)
     CHECK_EQ_INT(m_Releases, 0);
 }
 
-TEST(a_ring_entry_takes_only_cancel)
+TEST(a_ring_entry_takes_cancel_and_confirm)
 {
     CHECK(UI_Takeover_AcceptsChoice(
         UI_TAKEOVER_RING_ENTRY, UI_TAKEOVER_CHOICE_CANCEL));
+    CHECK(UI_Takeover_AcceptsChoice(
+        UI_TAKEOVER_RING_ENTRY, UI_TAKEOVER_CHOICE_CONFIRM));
     CHECK(!UI_Takeover_AcceptsChoice(
         UI_TAKEOVER_RING_ENTRY, UI_TAKEOVER_CHOICE_NONE));
 }

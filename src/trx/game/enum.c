@@ -218,6 +218,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(UI_TAKEOVER, UI_TAKEOVER_RING_ENTRY, "ring_entry");
 
     ENUM_MAP(UI_TAKEOVER_CHOICE, UI_TAKEOVER_CHOICE_CANCEL, "cancel");
+    ENUM_MAP(UI_TAKEOVER_CHOICE, UI_TAKEOVER_CHOICE_CONFIRM, "confirm");
 
     ENUM_MAP(UI_REGION, UI_REGION_TOP_LEFT, "top-left");
     ENUM_MAP(UI_REGION, UI_REGION_TOP_CENTER, "top-center");

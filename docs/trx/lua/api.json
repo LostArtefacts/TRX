@@ -3569,7 +3569,7 @@
       "path": "ui.Screen",
       "values": [
         {
-          "description": "An entry that the player uses in the inventory ring. The context reports the\nentry as `trx.ui.ScreenContext.object`. A definition can name the entry it\ndraws.",
+          "description": "An entry that the player uses in the inventory ring. The context reports the\nentry as `trx.ui.ScreenContext.object`. A definition can name the entry it\ndraws. A ring opened to save or load leaves when the screen ends, and any ring\nleaves when the screen ends with `trx.ui.ScreenContext:confirm`.",
           "name": "RING_ENTRY",
           "value": 0
         }
@@ -17648,6 +17648,14 @@
         {
           "description": "Ends the screen, and closes its layers. A ring entry is put away. Does nothing\nif the screen has already ended.",
           "name": "cancel",
+          "returns": {
+            "description": "Whether the screen was still held.",
+            "type": "boolean"
+          }
+        },
+        {
+          "description": "Ends the screen as a choice that the player made, and closes its layers. A ring\nentry leaves the ring, as an entry that the player uses does. Does nothing if\nthe screen has already ended.",
+          "name": "confirm",
           "returns": {
             "description": "Whether the screen was still held.",
             "type": "boolean"

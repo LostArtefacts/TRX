@@ -7,7 +7,10 @@ typedef struct {
 
 static const bool
     m_Accepts[UI_TAKEOVER_NUMBER_OF][UI_TAKEOVER_CHOICE_NUMBER_OF] = {
-        [UI_TAKEOVER_RING_ENTRY] = { [UI_TAKEOVER_CHOICE_CANCEL] = true },
+        [UI_TAKEOVER_RING_ENTRY] = {
+            [UI_TAKEOVER_CHOICE_CANCEL] = true,
+            [UI_TAKEOVER_CHOICE_CONFIRM] = true,
+        },
     };
 
 static UI_TAKEOVER_HOOKS m_Hooks = {};

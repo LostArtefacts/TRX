@@ -7,6 +7,7 @@ local test = h.test
 local RING_ENTRY = trx.ui.Screen.RING_ENTRY
 local CHOICE_NONE = 0
 local CHOICE_CANCEL = 1
+local CHOICE_CONFIRM = 2
 
 local PASSPORT = trx.catalog.objects.PASSPORT_OPTION
 local COMPASS = trx.catalog.objects.COMPASS_OPTION
@@ -101,6 +102,23 @@ test("cancelling ends the screen and closes its layers", function()
   assert(not held.is_held)
   assert(trx.ui.layers.count() == 0)
   assert(fake.take_choice(RING_ENTRY) == CHOICE_CANCEL)
+  finish_case()
+end)
+
+test("confirming ends the screen as a choice", function()
+  local held
+  define(
+    RING_ENTRY,
+    simple(function(ctx)
+      held = ctx
+    end)
+  )
+  fake.offer(RING_ENTRY, PASSPORT)
+  assert(held:confirm() == true)
+  assert(held:confirm() == false)
+  assert(held:cancel() == false)
+  assert(trx.ui.layers.count() == 0)
+  assert(fake.take_choice(RING_ENTRY) == CHOICE_CONFIRM)
   finish_case()
 end)
 
