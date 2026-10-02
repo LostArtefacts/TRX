@@ -41,6 +41,7 @@
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
 #include <trx/game/stats.h>
+#include <trx/game/ui/dialogs/takeover.h>
 #include <trx/version.h>
 
 #define M_INV_RING_FADE_TIME_FAST                                              \
@@ -705,6 +706,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 inv_item->action = ACTION_USE;
                 inv_item->goal_frame = inv_item->open_frame;
                 inv_item->anim_direction = 1;
+                ring->takeover_offered = false;
             }
             InvRing_SetStatusTransition(
                 ring, RNG_SELECTING, RNG_SELECTED, M_SELECTING_FRAMES);
@@ -805,12 +807,39 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             inv_item->object_id = O_PASSPORT_OPTION;
         }
 
+        if (!ring->takeover_offered && inv_item->action == ACTION_USE) {
+            ring->takeover_offered = true;
+            UI_Takeover_Offer(UI_TAKEOVER_RING_ENTRY, inv_item->object_id);
+        }
+
         bool busy = false;
         for (int32_t frame = 0; frame < INV_RING_FRAMES; frame++) {
             busy = false;
             if (inv_item->y_rot == inv_item->y_rot_sel) {
                 busy = M_AnimateInventoryItem(inv_item);
             }
+        }
+
+        if (UI_Takeover_IsHeld(UI_TAKEOVER_RING_ENTRY)) {
+            if (M_Finish(ring, false).action != GF_NOOP) {
+                m_InvChosen = inv_item->object_id;
+                g_InvRing_Source[ring->type].current = ring->current_object;
+                UI_Takeover_Release(UI_TAKEOVER_RING_ENTRY);
+                InvRing_SetStatusTransition(
+                    ring, RNG_CLOSING_ITEM, RNG_EXITING_INVENTORY, 0);
+            } else if (
+                UI_Takeover_TakeChoice(UI_TAKEOVER_RING_ENTRY)
+                != UI_TAKEOVER_CHOICE_NONE) {
+                // A ring opened to save or load holds nothing else worth
+                // going back to, so putting the entry away leaves it.
+                const bool leaves_ring = ring->mode == INV_LOAD_MODE
+                    || ring->mode == INV_SAVE_MODE
+                    || ring->mode == INV_SAVE_CRYSTAL_MODE;
+                InvRing_SetStatusTransition(
+                    ring, RNG_CLOSING_ITEM,
+                    leaves_ring ? RNG_EXITING_INVENTORY : RNG_DESELECT, 0);
+            }
+            break;
         }
 
         Option_Control(inv_item, busy);
@@ -918,7 +947,13 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         // it, and the ring behind it says nothing.
         const bool is_combining =
             ring->status == RNG_SELECTED && current->action == ACTION_COMBINE;
-        if (!is_combining && !ring->rotating
+        if (UI_Takeover_IsHeld(UI_TAKEOVER_RING_ENTRY)) {
+            // A script answers for the entry, its caption included, so the
+            // name the ring would put up stands down. The ring's own header
+            // stays, as it does behind the engine's own pages.
+            InvRing_RemoveItemTexts();
+        } else if (
+            !is_combining && !ring->rotating
             && ((!g_Input.menu_left && !g_Input.menu_right)
                 || ring->number_of_objects <= 1)) {
             M_RingNotActive(ring, current);
@@ -1146,6 +1181,7 @@ void InvRing_Close(INV_RING *const ring)
     if (ring->list != nullptr) {
         INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
         if (inv_item != nullptr) {
+            UI_Takeover_Release(UI_TAKEOVER_RING_ENTRY);
             Option_Close(inv_item);
             if (ring->type < RT_NUMBER_OF) {
                 m_LastRingObject[ring->type] = inv_item->object_id;

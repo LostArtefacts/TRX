@@ -18,6 +18,7 @@
 #include <trx/game/output.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
+#include <trx/game/ui/dialogs/takeover.h>
 #include <trx/game/viewport.h>
 #include <trx/version.h>
 
@@ -408,7 +409,8 @@ void InvRing_Draw(INV_RING *const ring)
 
     InvRing_DrawItems(ring);
 
-    if (ring->status == RNG_SELECTED) {
+    if (ring->status == RNG_SELECTED
+        && !UI_Takeover_IsHeld(UI_TAKEOVER_RING_ENTRY)) {
         INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
         if (inv_item->object_id == O_PASSPORT_CLOSED) {
             inv_item->object_id = O_PASSPORT_OPTION;
