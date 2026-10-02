@@ -392,6 +392,8 @@ void Lara_UseItem(const OBJECT_ID obj_id)
         const OBJECT_ID option_id = Inv_GetItemOption(obj_id);
         if (option_id != O_SCION_OPTION
             && ObjectLink_Get(option_id, OBJ_LINK_KEY_TO_RECEPTACLE)
+                == NO_OBJECT
+            && ObjectLink_Get(option_id, OBJ_LINK_KEY_TO_VEHICLE)
                 == NO_OBJECT) {
             break;
         }
