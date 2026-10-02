@@ -185,6 +185,28 @@ test("a press is used up by the layer that reads it", function()
   assert(fake.held_off(Role.MENU_CONFIRM))
 end)
 
+test("a held menu key keeps reading while the layer stays open", function()
+  fresh()
+  local reads = 0
+  local layer = push({
+    on_input = function(_, keys)
+      if keys:pressed(Role.MENU_DOWN) then
+        reads = reads + 1
+      end
+    end,
+  })
+  fake.tick()
+  -- The input reports a held menu key as pressed again on each repeat, and the
+  -- fake keeps reporting it pressed.
+  fake.press(Role.MENU_DOWN)
+  fake.tick()
+  fake.tick()
+  fake.tick()
+  assert(not fake.held_off(Role.MENU_DOWN), "reading held the key off")
+  layer:close()
+  assert(reads == 3, reads)
+end)
+
 test("a press that closes a layer does not reach the layer below", function()
   fresh()
   local lower_saw = false
