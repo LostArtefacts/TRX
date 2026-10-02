@@ -17556,7 +17556,7 @@
       "path": "ui.List"
     },
     {
-      "description": "The player's input, as the top layer reads it.\n\nA press that a layer reads is used up. It does not reach other code, and it\ndoes not reach the layer below when this one closes.",
+      "description": "The player's input, as the top layer reads it.\n\nA layer reads each press as pressed once per tick. A menu key that the player\nholds keeps reading as pressed at the rate that the game's own menus repeat\nit. The presses that a layer read on the tick that it closes do not reach the\nlayer below, because they stay inactive until the player releases them.",
       "extensions": [],
       "fields": [],
       "handle": false,

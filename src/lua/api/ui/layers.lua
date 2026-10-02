@@ -43,8 +43,10 @@ local Keys = api.type("ui.LayerKeys", {
   description = [[
 The player's input, as the top layer reads it.
 
-A press that a layer reads is used up. It does not reach other code, and it
-does not reach the layer below when this one closes.]],
+A layer reads each press as pressed once per tick. A menu key that the player
+holds keeps reading as pressed at the rate that the game's own menus repeat
+it. The presses that a layer read on the tick that it closes do not reach the
+layer below, because they stay inactive until the player releases them.]],
   methods = {
     pressed = {
       description = [[
@@ -58,7 +60,6 @@ Returns whether a role became active this tick, and uses the press up.]],
           return false
         end
         self._used[role] = true
-        trx.input.hold_off(role)
         return true
       end,
     },
@@ -127,6 +128,11 @@ local function remove(layer)
   end
   table.remove(stack, i)
   rawset(layer, "_open", false)
+  -- Holds off only the presses that closed the layer. Holding off every
+  -- press would also stop a held menu key from repeating.
+  for role in pairs(layer._keys._used) do
+    trx.input.hold_off(role)
+  end
   if layer._unload ~= nil then
     layer._unload:detach()
     rawset(layer, "_unload", nil)

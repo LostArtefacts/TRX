@@ -341,8 +341,10 @@ and `\{button left}` draws the button the player has bound.
 
     The player's input, as the top layer reads it.
 
-    A press that a layer reads is used up. It does not reach other code, and it
-    does not reach the layer below when this one closes.
+    A layer reads each press as pressed once per tick. A menu key that the player
+    holds keeps reading as pressed at the rate that the game's own menus repeat
+    it. The presses that a layer read on the tick that it closes do not reach the
+    layer below, because they stay inactive until the player releases them.
 
     Methods:
 
