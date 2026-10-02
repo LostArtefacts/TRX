@@ -26,11 +26,17 @@
 // past.
 static int32_t m_ErrorCount = 0;
 
+// The viewport matches the canvas unless a test changes it.
+static int32_t m_ViewportW = 640;
+static int32_t m_ViewportH = 480;
+
 static int M_FakeReset(lua_State *const L)
 {
     FakeCalls_Reset();
     FakeInput_Reset();
     m_ErrorCount = 0;
+    m_ViewportW = 640;
+    m_ViewportH = 480;
     return 0;
 }
 
@@ -107,8 +113,18 @@ static int M_FakeEndLevel(lua_State *const L)
     return 0;
 }
 
+// fake.set_viewport(w, h)
+static int M_FakeSetViewport(lua_State *const L)
+{
+    m_ViewportW = (int32_t)luaL_checkinteger(L, 1);
+    m_ViewportH = (int32_t)luaL_checkinteger(L, 2);
+    return 0;
+}
+
 static void M_PushFake(lua_State *const L)
 {
+    lua_pushcfunction(L, M_FakeSetViewport);
+    lua_setfield(L, -2, "set_viewport");
     FakeInput_PushLua(L);
     lua_pushcfunction(L, M_FakeErrors);
     lua_setfield(L, -2, "errors");
@@ -193,12 +209,12 @@ void Console_ShowImpl(
 
 int32_t Viewport_GetWidth(const VIEWPORT_SPACE space)
 {
-    return 640;
+    return m_ViewportW;
 }
 
 int32_t Viewport_GetHeight(const VIEWPORT_SPACE space)
 {
-    return 480;
+    return m_ViewportH;
 }
 
 void UI_Text_Draw(

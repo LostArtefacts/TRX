@@ -409,4 +409,102 @@ test("a list leaves the back key to its layer", function()
   assert(backed)
 end)
 
+-------------------------------------------------------------------------------
+-- The sleek bar
+-------------------------------------------------------------------------------
+
+local function quads(ops)
+  local result = {}
+  for _, op in ipairs(ops) do
+    local x, y, w, h, color = op:match(
+      "^quad x=(%-?%d+) y=(%-?%d+) z=%-?%d+ w=(%-?%d+) h=(%-?%d+) color=(%x+)$"
+    )
+    if x ~= nil then
+      result[#result + 1] = {
+        x = tonumber(x),
+        y = tonumber(y),
+        w = tonumber(w),
+        h = tonumber(h),
+        color = color,
+      }
+    end
+  end
+  return result
+end
+
+local function bar_scene(progress)
+  local layer = push({
+    root = trx.ui.widgets.Resize({
+      w = 100,
+      child = trx.ui.widgets.SleekBar({ progress = progress }),
+    }),
+    place = function()
+      return 10, 20
+    end,
+  })
+  local drawn = quads(fake.scene())
+  layer:close()
+  return drawn
+end
+
+test("a sleek bar is four units tall and as wide as its box", function()
+  local w, height = trx.ui.widgets.SleekBar({ progress = 0 }):measure()
+  assert(w == 0, w)
+  assert(height == 4, height)
+end)
+
+test("a sleek bar fills inside a dark frame", function()
+  fresh()
+  local drawn = bar_scene(0.5)
+  assert(#drawn == 2, #drawn)
+  assert(drawn[1].color == "060606ff")
+  assert(drawn[1].x == 10 and drawn[1].y == 20)
+  assert(drawn[1].w == 100 and drawn[1].h == 4)
+  assert(drawn[2].x == 11 and drawn[2].y == 21)
+  assert(drawn[2].w == 49 and drawn[2].h == 2)
+end)
+
+test("a sleek bar fills in the game's colour", function()
+  fresh()
+  local drawn = bar_scene(1)
+  assert(drawn[2].color == "a1833cff", drawn[2].color)
+end)
+
+test("a sleek bar's frame is as thick on every side", function()
+  for _, size in ipairs({ { 1000, 750 }, { 1366, 768 }, { 1700, 1275 } }) do
+    fake.set_viewport(size[1], size[2])
+    for _, y in ipairs({ 20, 20.3, 20.6, 21.1 }) do
+      fresh()
+      local layer = push({
+        root = trx.ui.widgets.Resize({
+          w = 100,
+          child = trx.ui.widgets.SleekBar({ progress = 1 }),
+        }),
+        place = function()
+          return 10.4, y
+        end,
+      })
+      local drawn = quads(fake.scene())
+      layer:close()
+      local frame, fill = drawn[1], drawn[2]
+      local top = fill.y - frame.y
+      local bottom = frame.y + frame.h - fill.y - fill.h
+      local left = fill.x - frame.x
+      local right = frame.x + frame.w - fill.x - fill.w
+      local where = ("%dx%d at y=%s"):format(size[1], size[2], y)
+      assert(top >= 1, where)
+      assert(top == bottom, where .. ": top and bottom differ")
+      assert(left == right, where .. ": left and right differ")
+      assert(top == left, where .. ": sides and ends differ")
+    end
+  end
+  fake.set_viewport(640, 480)
+end)
+
+test("a sleek bar keeps its fill within its frame", function()
+  fresh()
+  assert(bar_scene(2)[2].w == 98)
+  assert(#bar_scene(-1) == 1, "an empty bar drew a fill")
+end)
+
 return h.report()

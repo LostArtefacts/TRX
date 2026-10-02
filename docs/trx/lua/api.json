@@ -10847,6 +10847,37 @@
       }
     },
     {
+      "description": "A thin bar that shows progress, as the game draws it under a button that the\nplayer holds.\n\nThe bar is a dark frame with a fill in the game's own colour. It takes the\nwidth of the box that it is given, and its height follows the text size. Use a\nsignal for progress that changes.",
+      "examples": [
+        "local held = trx.signal.new(0)\nlocal bar = trx.ui.widgets.SleekBar({ progress = held })"
+      ],
+      "params": [
+        {
+          "description": "The bar settings.",
+          "fields": [
+            {
+              "description": "How full the bar is, from 0 to 1, or a signal that holds it.",
+              "name": "progress",
+              "type": "any"
+            },
+            {
+              "description": "Whether the bar is shown, or a signal that holds that value.",
+              "name": "shown",
+              "optional": true,
+              "type": "any"
+            }
+          ],
+          "name": "settings",
+          "type": "table"
+        }
+      ],
+      "path": "ui.widgets.SleekBar",
+      "returns": {
+        "description": "The bar.",
+        "type": "ui.Widget"
+      }
+    },
+    {
       "description": "Places a widget in a region.\n\nThe layer decides whether the widget is covered by the engine interface or\ncovers it. A widget is under it unless the call says otherwise. Each layer\nkeeps room of its own in the region, so widgets on the two layers stack rather\nthan sit on top of each other.\n\nIf the region argument is a signal, the widget moves when the signal changes.",
       "examples": [
         "trx.ui.regions.place(trx.ui.Region.TOP_LEFT, health_bar)",
