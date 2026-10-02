@@ -15,6 +15,15 @@ static INPUT_ROLE M_CheckRole(lua_State *const L, const int arg)
     return (INPUT_ROLE)role;
 }
 
+static INPUT_SKIP_CONTEXT M_CheckSkipContext(lua_State *const L, const int arg)
+{
+    const lua_Integer context = luaL_checkinteger(L, arg);
+    if (context < 0 || context >= INPUT_SKIP_NUMBER_OF) {
+        luaL_error(L, "unknown skip context");
+    }
+    return (INPUT_SKIP_CONTEXT)context;
+}
+
 // Converts a Lua slot number to the zero-based slot used by the input code.
 static int32_t M_OptSlot(lua_State *const L, const int arg)
 {
@@ -123,6 +132,13 @@ static int M_L_InputIsPressed(lua_State *const L)
 static int M_L_InputHoldOff(lua_State *const L)
 {
     Input_HoldOffRole(M_CheckRole(L, 1));
+    return 0;
+}
+
+// trxc.input.hold_off_skip(context)
+static int M_L_InputHoldOffSkip(lua_State *const L)
+{
+    Input_HoldOffSkip(M_CheckSkipContext(L, 1));
     return 0;
 }
 
@@ -362,6 +378,7 @@ static const luaL_Reg m_Module[] = {
     { "clear_suppressed", M_L_InputClearSuppressed },
     { "hold", M_L_InputHold },
     { "hold_off", M_L_InputHoldOff },
+    { "hold_off_skip", M_L_InputHoldOffSkip },
     { "is_anything_held", M_L_InputIsAnythingHeld },
     { "is_axis_known", M_L_InputIsAxisKnown },
     { "is_backend_enabled", M_L_InputIsBackendEnabled },
