@@ -1525,10 +1525,8 @@ void Jeep_Control(void)
     item->rot.z += (tilt.z - item->rot.z) >> 2;
 
     if ((p->flags & 0x80) == 0) {
-        if (room_num != item->room_num) {
-            Item_UpdateRoom(Item_GetIndex(item), room_num);
-            Item_UpdateRoom(Item_GetIndex(lara_item), room_num);
-        }
+        Item_UpdateRoom(Item_GetIndex(item), room_num);
+        Item_UpdateRoom(Item_GetIndex(lara_item), room_num);
 
         lara_item->pos = item->pos;
         lara_item->rot = item->rot;
