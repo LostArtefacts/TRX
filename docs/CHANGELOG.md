@@ -93,6 +93,7 @@
 - Fixed pickups looking too dark, such as the eye pieces in Tomb of Seth (TRX637)
 - Fixed Lara being unable to pull some pushable objects against walls (OG bug)
 - Fixed Lara being unable to pull pushable object 80 in Catacombs if pushable object 84 is directly below (OG bug) (TRX1615)
+- Fixed the camera in Tomb of Seth room 1 only showing for one frame after inserting the Eye of Horus (OG bug) (TRX1329)
 
 **Lua**
 - Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)
