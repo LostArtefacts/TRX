@@ -6,3 +6,12 @@ typedef enum {
     INPUT_ROLE_NUMBER_OF,
 #undef X_INPUT_ROLE
 } INPUT_ROLE;
+
+typedef enum {
+    // The skip leads to a menu or another screen; every skip role is held.
+    INPUT_SKIP_TO_SCREEN,
+    // The skip hands over to gameplay; action stays active for Lara.
+    INPUT_SKIP_TO_GAME,
+    // The scene plays during gameplay; look stays active for the camera.
+    INPUT_SKIP_IN_GAME,
+} INPUT_SKIP_CONTEXT;

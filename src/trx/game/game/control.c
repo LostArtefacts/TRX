@@ -115,7 +115,7 @@ GF_COMMAND Game_Control(const bool demo_mode)
     }
     if (demo_mode) {
         if (g_InputDB.menu_skip) {
-            Input_HoldOffSkip();
+            Input_HoldOffSkip(INPUT_SKIP_TO_SCREEN);
             return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
         }
         if (!Demo_UpdateInput()) {

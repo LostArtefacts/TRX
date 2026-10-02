@@ -99,19 +99,18 @@ void Input_ClearSuppressedRoles(void)
     InputState_Clear(&m_Suppressed);
 }
 
-void Input_HoldOffSkip(void)
+void Input_HoldOffSkip(const INPUT_SKIP_CONTEXT context)
 {
-    Input_HoldOffGameSkip();
-    Input_HoldOffRole(INPUT_ROLE_LOOK);
-}
-
-void Input_HoldOffGameSkip(void)
-{
-    Input_HoldOffRole(INPUT_ROLE_ACTION);
     Input_HoldOffRole(INPUT_ROLE_INVENTORY);
     Input_HoldOffRole(INPUT_ROLE_MENU_BACK);
     Input_HoldOffRole(INPUT_ROLE_MENU_CONFIRM);
     Input_HoldOffRole(INPUT_ROLE_MENU_SKIP);
+    if (context != INPUT_SKIP_TO_GAME) {
+        Input_HoldOffRole(INPUT_ROLE_ACTION);
+    }
+    if (context != INPUT_SKIP_IN_GAME) {
+        Input_HoldOffRole(INPUT_ROLE_LOOK);
+    }
 }
 
 void Input_Update(void)

@@ -400,7 +400,7 @@ static void M_DoCutscene(ITEM *const item, CREATURE *const info)
 
     if (skip_requested && p->cut_phase == 2) {
         p->cut_phase = 3;
-        Input_HoldOffGameSkip();
+        Input_HoldOffSkip(INPUT_SKIP_IN_GAME);
     }
 
     if (Waypoint_GetPad() != 8 && Waypoint_GetPad() != 15) {
