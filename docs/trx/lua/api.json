@@ -342,7 +342,7 @@
     },
     {
       "bulk": true,
-      "count": 843,
+      "count": 844,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -1079,6 +1079,7 @@
         "SMASHABLE_2",
         "SMASHABLE_3",
         "SMASHABLE_4",
+        "SMASHABLE_VEHICLE_WALL",
         "SMOKE_EMITTER_BLACK",
         "SMOKE_EMITTER_WHITE",
         "SNOWFLAKE",
@@ -1197,7 +1198,7 @@
     },
     {
       "bulk": true,
-      "count": 219,
+      "count": 220,
       "description": "Every sound sample TRX has a name for.",
       "examples": [
         "trx.sound.play(trx.catalog.samples.LARA_NO)"
@@ -1411,6 +1412,7 @@
         "UPV_LOOP",
         "UPV_START",
         "UPV_STOP",
+        "VEHICLE_HIT_OBJECT",
         "WARRIOR_HOVER",
         "WATERFALL_2",
         "WATERFALL_BIG",

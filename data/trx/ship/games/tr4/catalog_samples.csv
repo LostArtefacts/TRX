@@ -122,5 +122,6 @@
 354, sophia_summon_not
 361, triboss_take_hit
 362, triboss_turn_chair
+366, vehicle_hit_object
 370, lara_barefoot
 371, lara_barefoot_land

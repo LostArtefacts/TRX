@@ -3582,6 +3582,9 @@
         "smashable_4": {
             "name": "Zerstörbares Fenster 4",
         },
+        "smashable_vehicle_wall": {
+            "name": "\\{review}Zerstörbare Fahrzeugwand",
+        },
         "smoke_emitter_black": {
             "name": "\\{review}Rauchgenerator (Schwarz)",
         },
