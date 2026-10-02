@@ -1313,6 +1313,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── pickup_aid.bin
 │   │   │   ├── race_fd.bin
 │   │   │   ├── race_textures.bin
+│   │   │   ├── seth_fd.bin
 │   │   │   ├── shadow_sprite.bin
 │   │   │   ├── sparks_gfx.bin
 │   │   │   ├── title_textures.bin
@@ -2738,6 +2739,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── pickup_aid.bin
     │   │   │   │   ├── race_fd.bin
     │   │   │   │   ├── race_textures.bin
+    │   │   │   │   ├── seth_fd.bin
     │   │   │   │   ├── shadow_sprite.bin
     │   │   │   │   ├── sparks_gfx.bin
     │   │   │   │   ├── title_textures.bin

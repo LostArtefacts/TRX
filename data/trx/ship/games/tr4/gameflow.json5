@@ -95,6 +95,9 @@
                 {"type": "loop_game"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "seth_fd.bin",
+            ],
         },
 
         // 4. Burial Chambers
