@@ -43,6 +43,15 @@ order: 3
    A script that can name an empty slot must check it with
    `trx.savegame.is_free` first.
 
+6. **The passport is a script**
+   The engine no longer draws the passport. The shipped `modules/passport`
+   module does, as the `trx.ui.Screen.RING_ENTRY` screen of the passport
+   entry. A mod that defines that screen with `override = true` replaces the
+   whole menu.
+
+   The module, not the engine, now declares the strings that only the
+   passport uses. The strings files still provide their text and translations.
+
 ### Version 1.10 to 1.11
 
 1. **The waterfall mist object was renamed**

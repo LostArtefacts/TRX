@@ -15,6 +15,7 @@
 #include <trx/game/photo_mode.h>
 #include <trx/game/savegame.h>
 #include <trx/game/screenshot.h>
+#include <trx/version.h>
 
 #include <string.h>
 
@@ -51,6 +52,7 @@ static void M_Reset(void)
 {
     m_RingOpen = false;
     m_ScreenHeld = false;
+    g_TRVersion = 1;
     m_InPhotoMode = false;
     m_PhotoModeTarget = PHOTO_MODE_CAMERA;
     memset(m_Levels, 0, sizeof(m_Levels));
@@ -205,6 +207,13 @@ static int M_L_SettleRing(lua_State *const L)
     m_RingItem.current_frame = m_RingItem.goal_frame;
     lua_pushinteger(L, m_RingItem.current_frame);
     return 1;
+}
+
+// fake.set_tr_version(n) - which game the session plays.
+static int M_L_SetTRVersion(lua_State *const L)
+{
+    g_TRVersion = (int32_t)luaL_checkinteger(L, 1);
+    return 0;
 }
 
 // fake.set_screen_held(bool) - whether a script holds an engine screen.
@@ -566,6 +575,8 @@ void FakeGame_PushLua(lua_State *const L)
     lua_setfield(L, -2, "close_ring");
     lua_pushcfunction(L, M_L_SettleRing);
     lua_setfield(L, -2, "settle_ring");
+    lua_pushcfunction(L, M_L_SetTRVersion);
+    lua_setfield(L, -2, "set_tr_version");
     lua_pushcfunction(L, M_L_SetScreenHeld);
     lua_setfield(L, -2, "set_screen_held");
     lua_pushcfunction(L, M_L_SetNGPlus);

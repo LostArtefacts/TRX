@@ -1384,6 +1384,10 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── init.lua
 │   │   ├── photo_mode.lua
 │   │   └── pickups.lua
+│   ├── passport
+│   │   └── init.lua
+│   ├── ui
+│   │   └── requester.lua
 │   ├── assault.lua
 │   ├── inv_ring.lua
 │   ├── legend.lua
@@ -1395,6 +1399,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── bfg.bin
 │   │   └── init.lua
 │   ├── inv_ring.lua
+│   ├── passport.lua
 │   └── weapons.lua
 └── TRX.exe</code></pre>
 </details>
@@ -2809,6 +2814,10 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── init.lua
     │   │   │   ├── photo_mode.lua
     │   │   │   └── pickups.lua
+    │   │   ├── passport
+    │   │   │   └── init.lua
+    │   │   ├── ui
+    │   │   │   └── requester.lua
     │   │   ├── assault.lua
     │   │   ├── inv_ring.lua
     │   │   ├── legend.lua
@@ -2820,6 +2829,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── bfg.bin
     │   │   │   └── init.lua
     │   │   ├── inv_ring.lua
+    │   │   ├── passport.lua
     │   │   └── weapons.lua
     │   └── icon.icns
     ├── _CodeSignature

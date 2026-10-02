@@ -51,8 +51,8 @@ Only what a script has to answer for is here. The lines of text are the engine's
 - <a id="overlay.set_caption" name="overlay.set_caption"></a>[lua]`trx.overlay.set_caption([text])`  
   Sets the caption at the bottom of the screen.
 
-  The inventory ring uses it for the selected entry. The passport uses it for the
-  current page. The caption reduces the safe area. Passing no value removes it.
+  The inventory ring uses it for the selected entry. The caption reduces the safe
+  area. Passing no value removes it.
 
   Parameters:
   - <a id="overlay.set_caption.text" name="overlay.set_caption.text"></a>**`text`** (string, optional). Text to show. Omit this parameter to remove the caption.
@@ -60,7 +60,8 @@ Only what a script has to answer for is here. The lines of text are the engine's
 - <a id="overlay.show_arrow" name="overlay.show_arrow"></a>[lua]`trx.overlay.show_arrow(arrow, shown)`  
   Shows or hides an interface arrow.
 
-  The passport uses the caption arrows to show which way the book turns.
+  The caption arrows stand beside the caption that [`trx.overlay.set_caption`](#overlay.set_caption)
+  sets.
 
   Parameters:
   - <a id="overlay.show_arrow.arrow" name="overlay.show_arrow.arrow"></a>**`arrow`** ([trx.overlay.Arrow](#overlay.Arrow)). Which arrow to show.

@@ -9,7 +9,10 @@ The rings the player browses, and the entries drawn on them.
 
 This is the front of the inventory: which entries a ring holds, how each is
 drawn and turned, and what the player has picked. What Lara is carrying belongs
-to `trx.inventory`.]],
+to `trx.inventory`.
+
+A script draws what an entry opens by defining the
+`trx.ui.Screen.RING_ENTRY` screen.]],
 })
 
 api.enum("inventory_ring.Mode", {

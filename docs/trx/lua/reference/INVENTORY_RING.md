@@ -18,6 +18,9 @@ This is the front of the inventory: which entries a ring holds, how each is
 drawn and turned, and what the player has picked. What Lara is carrying belongs
 to [`trx.inventory`](INVENTORY.md#inventory).
 
+A script draws what an entry opens by defining the
+[`trx.ui.Screen.RING_ENTRY`](UI.md#ui.Screen) screen.
+
 ### Enums
 
 - <a id="inventory_ring.Mode" name="inventory_ring.Mode"></a>[lua]`trx.inventory_ring.Mode`
