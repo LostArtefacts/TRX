@@ -2639,6 +2639,29 @@
     },
     {
       "bulk": false,
+      "count": 3,
+      "description": "Where the player lands after skipping a scene. It decides which roles a skip\nholds inactive.",
+      "path": "input.SkipContext",
+      "values": [
+        {
+          "description": "A menu or another screen follows. Every skip role is held.",
+          "name": "TO_SCREEN",
+          "value": 0
+        },
+        {
+          "description": "Gameplay follows. Action stays active, so a held action reaches Lara.",
+          "name": "TO_GAME",
+          "value": 1
+        },
+        {
+          "description": "The scene plays during gameplay. Look stays active for the camera.",
+          "name": "IN_GAME",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "bulk": false,
       "count": 4,
       "description": "A saved set of bindings for one input source. The default layout is read-only;\nthe custom layouts belong to the player.",
       "path": "input.Layout",
@@ -7256,6 +7279,17 @@
         }
       ],
       "path": "input.hold_off"
+    },
+    {
+      "description": "Keeps each role that can skip a scene inactive until the player releases it.\n\nUse this after a script ends a scene on a skip press, so the same press does not\nact on what comes after the scene.",
+      "params": [
+        {
+          "description": "Where the player lands after the skip.",
+          "name": "context",
+          "type": "input.SkipContext"
+        }
+      ],
+      "path": "input.hold_off_skip"
     },
     {
       "description": "Whether the game has the keyboard and the pad rather than the player.\n\nThis is true while a rebind is reading input. Every hardware read reports\nnothing then, so a script that would otherwise answer an empty keypad can tell\nthe two apart.\n\nA script holding the devices with `trx.input.grab` is not this, and\n`trx.input.is_grabbed` reports that instead. The console is one such script.",

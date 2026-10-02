@@ -14,4 +14,5 @@ typedef enum {
     INPUT_SKIP_TO_GAME,
     // The scene plays during gameplay; look stays active for the camera.
     INPUT_SKIP_IN_GAME,
+    INPUT_SKIP_NUMBER_OF,
 } INPUT_SKIP_CONTEXT;

@@ -133,6 +133,7 @@
     - `trx.input.suppress`
     - `trx.input.Suppression:release`
     - `trx.input.is_suppressed`
+- Added `trx.input.hold_off_skip` and `trx.input.SkipContext`, so that a script that ends a scene on a skip press can keep the press from reaching what comes after
 - Added the ability for a script to read the keyboard itself, rather than the action a key stands for
     - `trx.events.on_key_down`
     - `trx.events.on_key_up`

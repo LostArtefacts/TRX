@@ -121,6 +121,10 @@ void Input_HoldOffRole(const INPUT_ROLE role)
     m_HeldOff[role] = true;
 }
 
+void Input_HoldOffSkip(const INPUT_SKIP_CONTEXT context)
+{
+}
+
 void Input_SuppressRole(const INPUT_ROLE role, const bool enabled)
 {
 }

@@ -25,6 +25,21 @@ test("taking a press reaches the engine", function()
   assert(calls.hold_off.role == Role.JUMP)
 end)
 
+test("a skip hold-off reaches the engine", function()
+  input.hold_off_skip(input.SkipContext.TO_GAME)
+  local calls = fake.calls()
+  assert(calls.hold_off_skip.count == 1)
+  assert(calls.hold_off_skip.context == input.SkipContext.TO_GAME)
+end)
+
+test("a skip context that is not one raises", function()
+  for _, context in ipairs({ -1, 9999 }) do
+    raises(function()
+      input.hold_off_skip(context)
+    end, "unknown skip context")
+  end
+end)
+
 test("a role that is not one raises", function()
   for _, fn in ipairs({ input.is_held, input.is_pressed, input.hold_off }) do
     raises(function()

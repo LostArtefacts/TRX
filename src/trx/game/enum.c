@@ -52,6 +52,10 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(
         INPUT_ROLE, INPUT_ROLE_CYCLE_LIGHTING_MODEL, "cycle_lighting_contrast");
 
+    ENUM_MAP(INPUT_SKIP_CONTEXT, INPUT_SKIP_TO_SCREEN, "to_screen");
+    ENUM_MAP(INPUT_SKIP_CONTEXT, INPUT_SKIP_TO_GAME, "to_game");
+    ENUM_MAP(INPUT_SKIP_CONTEXT, INPUT_SKIP_IN_GAME, "in_game");
+
     ENUM_MAP(CATALOG_CONTEXT, CATALOG_OBJECTS, "objects");
     ENUM_MAP(CATALOG_CONTEXT, CATALOG_MUSIC, "music");
     ENUM_MAP(CATALOG_CONTEXT, CATALOG_SAMPLES, "samples");

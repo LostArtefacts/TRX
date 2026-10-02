@@ -57,6 +57,18 @@ api.enum("input.Backend", {
   },
 })
 
+api.enum("input.SkipContext", {
+  backing = "INPUT_SKIP_CONTEXT",
+  description = [[
+Where the player lands after skipping a scene. It decides which roles a skip
+holds inactive.]],
+  values = {
+    TO_SCREEN = "A menu or another screen follows. Every skip role is held.",
+    TO_GAME = "Gameplay follows. Action stays active, so a held action reaches Lara.",
+    IN_GAME = "The scene plays during gameplay. Look stays active for the camera.",
+  },
+})
+
 local Layout = api.enum("input.Layout", {
   backing = "INPUT_LAYOUT",
   description = [[
@@ -169,6 +181,22 @@ input code or fire again while held.]],
     { name = "role", type = "input.Role", description = "The role to take." },
   },
   impl = raw.hold_off,
+})
+
+api.define("input.hold_off_skip", {
+  description = [[
+Keeps each role that can skip a scene inactive until the player releases it.
+
+Use this after a script ends a scene on a skip press, so the same press does not
+act on what comes after the scene.]],
+  params = {
+    {
+      name = "context",
+      type = "input.SkipContext",
+      description = "Where the player lands after the skip.",
+    },
+  },
+  impl = raw.hold_off_skip,
 })
 
 -------------------------------------------------------------------------------

@@ -256,6 +256,11 @@ void Input_HoldOffRole(const INPUT_ROLE role)
     FAKE_RECORD("hold_off", FV(role));
 }
 
+void Input_HoldOffSkip(const INPUT_SKIP_CONTEXT context)
+{
+    FAKE_RECORD("hold_off_skip", FV(context));
+}
+
 void Input_SuppressRole(const INPUT_ROLE role, const bool enabled)
 {
     m_Suppressed[role] = enabled;

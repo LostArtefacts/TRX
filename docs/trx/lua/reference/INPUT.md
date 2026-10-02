@@ -89,6 +89,18 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
     - `trx.input.Backend.TOUCH` = `2`  
         The on-screen controls.
 
+- <a id="input.SkipContext" name="input.SkipContext"></a>[lua]`trx.input.SkipContext`
+
+    Where the player lands after skipping a scene. It decides which roles a skip
+    holds inactive.
+
+    - `trx.input.SkipContext.TO_SCREEN` = `0`  
+        A menu or another screen follows. Every skip role is held.
+    - `trx.input.SkipContext.TO_GAME` = `1`  
+        Gameplay follows. Action stays active, so a held action reaches Lara.
+    - `trx.input.SkipContext.IN_GAME` = `2`  
+        The scene plays during gameplay. Look stays active for the camera.
+
 - <a id="input.Layout" name="input.Layout"></a>[lua]`trx.input.Layout`
 
     A saved set of bindings for one input source. The default layout is read-only;
@@ -203,6 +215,15 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 
   Parameters:
   - <a id="input.hold_off.role" name="input.hold_off.role"></a>**`role`** ([trx.input.Role](#input.Role)). The role to take.
+
+- <a id="input.hold_off_skip" name="input.hold_off_skip"></a>[lua]`trx.input.hold_off_skip(context)`  
+  Keeps each role that can skip a scene inactive until the player releases it.
+
+  Use this after a script ends a scene on a skip press, so the same press does not
+  act on what comes after the scene.
+
+  Parameters:
+  - <a id="input.hold_off_skip.context" name="input.hold_off_skip.context"></a>**`context`** ([trx.input.SkipContext](#input.SkipContext)). Where the player lands after the skip.
 
 - <a id="input.is_reserved" name="input.is_reserved"></a>[lua]`trx.input.is_reserved()`  
   Whether the game has the keyboard and the pad rather than the player.
