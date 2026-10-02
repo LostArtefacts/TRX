@@ -57,6 +57,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     M_PRIV *const p = phase->priv;
     p->old_camera = g_Camera;
     M_PlaceCamera(p);
+    Input_HoldOffRole(INPUT_ROLE_MENU_SKIP);
     Fader_InitTo(&p->fader, 1.0f, 0.0f, p->args.fade_in_time);
     ClockTimer_Sync(&p->timer);
     return (PHASE_CONTROL) {};
