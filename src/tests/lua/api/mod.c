@@ -93,6 +93,11 @@ bool UI_Takeover_IsAnyHeld(void)
     return false;
 }
 
+bool LUA_Console_IsRunningCommand(void)
+{
+    return false;
+}
+
 int main(void)
 {
     const LUA_SURFACE_TEST test = {

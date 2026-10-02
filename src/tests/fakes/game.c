@@ -467,6 +467,12 @@ __attribute__((weak)) bool UI_Takeover_IsAnyHeld(void)
     return m_ScreenHeld;
 }
 
+// Weak, so that a test linking the real console reads that instead.
+__attribute__((weak)) bool LUA_Console_IsRunningCommand(void)
+{
+    return false;
+}
+
 void SG_Resume_StoreGameToEntry(const GF_LEVEL *const level)
 {
 }
