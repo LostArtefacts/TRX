@@ -778,6 +778,7 @@ common_sources = [
   'trx/game/objects/general/teleporter.c',
   'trx/game/objects/general/trapdoor.c',
   'trx/game/objects/general/trigger_gate.c',
+  'trx/game/objects/general/vehicle_smashable.c',
   'trx/game/objects/general/waterfall.c',
   'trx/game/objects/general/waterfall_mist.c',
   'trx/game/objects/general/zipline.c',

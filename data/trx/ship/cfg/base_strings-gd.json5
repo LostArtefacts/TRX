@@ -3582,6 +3582,9 @@
         "smashable_4": {
             "name": "Uinneag Bhristeach 4",
         },
+        "smashable_vehicle_wall": {
+            "name": "Balla Bhristeach",
+        },
         "smoke_emitter_black": {
             "name": "Sgaoileadair Smùid (Dubh)",
         },

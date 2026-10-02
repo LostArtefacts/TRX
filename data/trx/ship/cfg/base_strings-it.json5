@@ -3588,6 +3588,9 @@
         "smashable_4": {
             "name": "Finestra Frangibile 4",
         },
+        "smashable_vehicle_wall": {
+            "name": "\\{review}Muro distruttibile con un veicolo",
+        },
         "smoke_emitter_black": {
             "name": "Emettitore di Fumo (Nero)",
         },

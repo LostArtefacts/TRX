@@ -429,6 +429,7 @@ X_OBJ_NAME_DEFINE(O_PUSHABLE_OBJECT_2,      "Pushable Object 2")
 X_OBJ_NAME_DEFINE(O_PUSHABLE_OBJECT_3,      "Pushable Object 3")
 X_OBJ_NAME_DEFINE(O_PUSHABLE_OBJECT_4,      "Pushable Object 4")
 X_OBJ_NAME_DEFINE(O_PUSHABLE_OBJECT_5,      "Pushable Object 5")
+X_OBJ_NAME_DEFINE(O_SMASHABLE_VEHICLE_WALL, "Smashable Vehicle Wall")
 
 // Misc
 X_OBJ_NAME_DEFINE(O_ALARM_SOUND,             "Alarm")
