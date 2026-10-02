@@ -2276,6 +2276,9 @@
         "body_part": {
             "name": "Körperteil",
         },
+        "bouncing_boulder": {
+            "name": "\\{review}Springender Felsbrocken",
+        },
         "bridge_flat": {
             "name": "Brücke Flach",
         },

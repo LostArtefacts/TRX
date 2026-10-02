@@ -342,7 +342,7 @@
     },
     {
       "bulk": true,
-      "count": 842,
+      "count": 843,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -436,6 +436,7 @@
         "BOAT",
         "BOAT_BITS",
         "BODY_PART",
+        "BOUNCING_BOULDER",
         "BRIDGE_FLAT",
         "BRIDGE_TILT_1",
         "BRIDGE_TILT_2",
@@ -1196,7 +1197,7 @@
     },
     {
       "bulk": true,
-      "count": 218,
+      "count": 219,
       "description": "Every sound sample TRX has a name for.",
       "examples": [
         "trx.sound.play(trx.catalog.samples.LARA_NO)"
@@ -1366,6 +1367,7 @@
         "ROLLING_BALL_3_STOP",
         "ROLLING_BALL_4_ROLL",
         "ROLLING_BALL_4_STOP",
+        "ROLLING_BALL_FALL",
         "ROLLING_BLADE",
         "SANDBAG_HIT",
         "SAND_FX",

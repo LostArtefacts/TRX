@@ -2276,6 +2276,9 @@
         "body_part": {
             "name": "Часть тела",
         },
+        "bouncing_boulder": {
+            "name": "\\{review}Прыгающий валун",
+        },
         "bridge_flat": {
             "name": "Плоский мост",
         },

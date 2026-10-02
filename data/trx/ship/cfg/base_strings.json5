@@ -2291,6 +2291,9 @@
         "body_part": {
             "name": "Body Part",
         },
+        "bouncing_boulder": {
+            "name": "Bouncing Boulder",
+        },
         "bridge_flat": {
             "name": "Bridge Flat",
         },

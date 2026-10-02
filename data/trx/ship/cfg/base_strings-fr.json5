@@ -2276,6 +2276,9 @@
         "body_part": {
             "name": "\\{review}Membre",
         },
+        "bouncing_boulder": {
+            "name": "\\{review}Rocher rebondissant",
+        },
         "bridge_flat": {
             "name": "\\{review}Pont plat",
         },
