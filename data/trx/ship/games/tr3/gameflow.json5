@@ -885,7 +885,6 @@
             "injections": [
                 "antarc_sky.bin",
                 "cut3_setup.bin",
-                "cut3_shell.bin",
                 "misc_sprites.bin",
                 "font.bin",
                 "lara_outfits.bin",

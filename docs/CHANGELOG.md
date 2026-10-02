@@ -63,6 +63,7 @@
 - Fixed civilians, military police and prisoners not starting slightly turned, as they do in the original game
 - Fixed guns that eject shells puffing smoke at the muzzle rather than at the shell
 - Fixed a misaligned barrier mesh in Aldwych room 57 (TRX1639, regression from 1.5)
+- Fixed missing gun flashes in the Antarctica cutscene (OG bug) (TRX1540)
 
 **TR4**
 - Added Small Scorpion control (TRX1562)

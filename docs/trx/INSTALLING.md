@@ -1044,7 +1044,6 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── cut1_setup.bin
 │   │   │   ├── cut2_setup.bin
 │   │   │   ├── cut3_setup.bin
-│   │   │   ├── cut3_shell.bin
 │   │   │   ├── cut4_setup.bin
 │   │   │   ├── cut5_setup.bin
 │   │   │   ├── cut5_textures.bin
@@ -1170,6 +1169,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── city.lua
 │   │   │   ├── compound.lua
 │   │   │   ├── crash.lua
+│   │   │   ├── cut3.lua
 │   │   │   ├── cut8.lua
 │   │   │   ├── house.lua
 │   │   │   ├── jungle.lua
@@ -2469,7 +2469,6 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── cut1_setup.bin
     │   │   │   │   ├── cut2_setup.bin
     │   │   │   │   ├── cut3_setup.bin
-    │   │   │   │   ├── cut3_shell.bin
     │   │   │   │   ├── cut4_setup.bin
     │   │   │   │   ├── cut5_setup.bin
     │   │   │   │   ├── cut5_textures.bin
@@ -2595,6 +2594,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── city.lua
     │   │   │   │   ├── compound.lua
     │   │   │   │   ├── crash.lua
+    │   │   │   │   ├── cut3.lua
     │   │   │   │   ├── cut8.lua
     │   │   │   │   ├── house.lua
     │   │   │   │   ├── jungle.lua
