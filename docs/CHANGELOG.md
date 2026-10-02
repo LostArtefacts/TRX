@@ -149,7 +149,6 @@
     - `trx.input.is_button_known`
     - `trx.input.axis`
     - `trx.input.is_axis_known`
-- Added an `immediate` option to game-flow Lua functions. Scripts can now apply a command at once or wait for the current screen to finish.
 - Added script text input, clipboard access, and input grabbing
 - Added console events, history access, and script-controlled console visibility
 - Added a UI layer above the game interface
@@ -159,7 +158,10 @@
     - `trx.ui.layers.top`
     - `trx.ui.layers.count`
 - Added `trx.ui.widgets.List`, a column of rows that the player picks one entry from
+- Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine, starting with an entry the player uses in the inventory ring
+    - `trx.ui.Screen` and `trx.ui.ScreenContext`
 - Changed script widgets to stay behind the game interface when they overlap
+- Changed game-flow Lua functions to wait while a script draws an engine screen. The inventory ring now closes and fades before the command runs.
 - Changed `trx.items.Item:die` and `trx.items.Item:shatter` to take an options table, and to let a script say what the flying body parts draw
 - Changed `trx.savegame.load` to raise an error for an empty slot
 - Fixed `trx.ui.primitive.sprite_count()` counting the meshes of a model as sprites

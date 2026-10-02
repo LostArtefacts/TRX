@@ -44,9 +44,13 @@ static INV_RING m_Ring;
 static INVENTORY_ITEM m_RingItem;
 static INVENTORY_ITEM *m_RingList[1] = { &m_RingItem };
 
+// Whether a script holds an engine screen, which makes the play_* verbs wait.
+static bool m_ScreenHeld;
+
 static void M_Reset(void)
 {
     m_RingOpen = false;
+    m_ScreenHeld = false;
     m_InPhotoMode = false;
     m_PhotoModeTarget = PHOTO_MODE_CAMERA;
     memset(m_Levels, 0, sizeof(m_Levels));
@@ -201,6 +205,13 @@ static int M_L_SettleRing(lua_State *const L)
     m_RingItem.current_frame = m_RingItem.goal_frame;
     lua_pushinteger(L, m_RingItem.current_frame);
     return 1;
+}
+
+// fake.set_screen_held(bool) - whether a script holds an engine screen.
+static int M_L_SetScreenHeld(lua_State *const L)
+{
+    m_ScreenHeld = lua_toboolean(L, 1);
+    return 0;
 }
 
 void Screenshot_Make(const SCREENSHOT_FORMAT format)
@@ -450,6 +461,12 @@ void GF_OverrideCommand(const GF_COMMAND command, const bool immediate)
     }
 }
 
+// Weak, so that a test linking the real takeover state reads that instead.
+__attribute__((weak)) bool UI_Takeover_IsAnyHeld(void)
+{
+    return m_ScreenHeld;
+}
+
 void SG_Resume_StoreGameToEntry(const GF_LEVEL *const level)
 {
 }
@@ -543,6 +560,8 @@ void FakeGame_PushLua(lua_State *const L)
     lua_setfield(L, -2, "close_ring");
     lua_pushcfunction(L, M_L_SettleRing);
     lua_setfield(L, -2, "settle_ring");
+    lua_pushcfunction(L, M_L_SetScreenHeld);
+    lua_setfield(L, -2, "set_screen_held");
     lua_pushcfunction(L, M_L_SetNGPlus);
     lua_setfield(L, -2, "set_ngplus");
     lua_pushcfunction(L, M_L_SetCurrentLevel);

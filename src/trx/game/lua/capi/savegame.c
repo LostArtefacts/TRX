@@ -1,6 +1,7 @@
 #include <trx/core/result.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_flow/types.h>
+#include <trx/game/lua/game_flow.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/savegame.h>
 #include <trx/game/lua/utils.h>
@@ -82,12 +83,10 @@ static int M_L_SavegamePlayStory(lua_State *const L)
     if (!GF_HasAvailableStory(slot)) {
         return luaL_error(L, "no story runs before this save");
     }
-    GF_OverrideCommand(
-        (GF_COMMAND) {
-            .action = GF_STORY_SO_FAR,
-            .param = SG_Manager_SlotToParam(slot),
-        },
-        true);
+    LUA_OverrideCommand((GF_COMMAND) {
+        .action = GF_STORY_SO_FAR,
+        .param = SG_Manager_SlotToParam(slot),
+    });
     return 0;
 }
 
@@ -184,12 +183,10 @@ static int M_L_SavegameLoad(lua_State *const L)
     if (!SG_Manager_IsValidSlotRef(slot) || SG_Manager_IsSlotFree(slot)) {
         return luaL_error(L, "no saved game in this slot");
     }
-    GF_OverrideCommand(
-        (GF_COMMAND) {
-            .action = GF_START_SAVED_GAME,
-            .param = SG_Manager_SlotToParam(slot),
-        },
-        true);
+    LUA_OverrideCommand((GF_COMMAND) {
+        .action = GF_START_SAVED_GAME,
+        .param = SG_Manager_SlotToParam(slot),
+    });
     return 0;
 }
 

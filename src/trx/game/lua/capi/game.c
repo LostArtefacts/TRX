@@ -10,6 +10,7 @@
 #include <trx/game/gym.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/field.h>
+#include <trx/game/lua/game_flow.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/savegame.h>
 #include <trx/game/lua/struct.h>
@@ -345,12 +346,10 @@ static int M_L_GamePlayLevel(lua_State *const L)
         } else {
             SG_Manager_UnbindSlot();
         }
-        GF_OverrideCommand(
-            (GF_COMMAND) {
-                .action = GF_SELECT_GAME,
-                .param = next_level->num,
-            },
-            true);
+        LUA_OverrideCommand((GF_COMMAND) {
+            .action = GF_SELECT_GAME,
+            .param = next_level->num,
+        });
         return 0;
     }
 
@@ -362,12 +361,10 @@ static int M_L_GamePlayLevel(lua_State *const L)
             resume->prev_level = current_level->num;
         }
     }
-    GF_OverrideCommand(
-        (GF_COMMAND) {
-            .action = GF_START_GAME,
-            .param = next_level->num,
-        },
-        true);
+    LUA_OverrideCommand((GF_COMMAND) {
+        .action = GF_START_GAME,
+        .param = next_level->num,
+    });
     return 0;
 }
 
@@ -484,12 +481,10 @@ static int M_L_GameStartNewGame(lua_State *const L)
     if (first_level == nullptr) {
         return luaL_error(L, "this game has no first level");
     }
-    GF_OverrideCommand(
-        (GF_COMMAND) {
-            .action = GF_NEW_GAME,
-            .param = ng_plus ? GBF_NGPLUS : GBF_NONE,
-        },
-        true);
+    LUA_OverrideCommand((GF_COMMAND) {
+        .action = GF_NEW_GAME,
+        .param = ng_plus ? GBF_NGPLUS : GBF_NONE,
+    });
     return 0;
 }
 
@@ -514,26 +509,24 @@ static int M_L_GameRestartLevel(lua_State *const L)
     if (!M_IsRestartableLevel(level)) {
         return luaL_error(L, "this level cannot be restarted");
     }
-    GF_OverrideCommand(
-        (GF_COMMAND) {
-            .action = GF_RESTART_GAME,
-            .param = level->num,
-        },
-        true);
+    LUA_OverrideCommand((GF_COMMAND) {
+        .action = GF_RESTART_GAME,
+        .param = level->num,
+    });
     return 0;
 }
 
 // trxc.game.exit_to_title()
 static int M_L_GameExitToTitle(lua_State *const L)
 {
-    GF_OverrideCommand((GF_COMMAND) { .action = GF_EXIT_TO_TITLE }, true);
+    LUA_OverrideCommand((GF_COMMAND) { .action = GF_EXIT_TO_TITLE });
     return 0;
 }
 
 // trxc.game.exit_game()
 static int M_L_GameExitGame(lua_State *const L)
 {
-    GF_OverrideCommand((GF_COMMAND) { .action = GF_EXIT_GAME }, true);
+    LUA_OverrideCommand((GF_COMMAND) { .action = GF_EXIT_GAME });
     return 0;
 }
 
