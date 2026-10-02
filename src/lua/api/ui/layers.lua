@@ -1,4 +1,5 @@
 local raw = trxc.ui
+local raw_events = trxc.events
 local api = trx.api
 
 require("trx.ui")
@@ -285,7 +286,7 @@ Runs once when the layer closes, for any reason. It receives the layer.]],
       _keys = setmetatable({ _used = {}, _held = {} }, Keys),
     }, Layer)
     stack[#stack + 1] = layer
-    if trxc.events.is_level_script() then
+    if raw_events.is_level_script() then
       rawset(
         layer,
         "_unload",
