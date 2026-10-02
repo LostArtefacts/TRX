@@ -92,6 +92,7 @@ trx_lua_api_sources = files(
   'lua/api/ui/widgets/label.lua',
   'lua/api/ui/widgets/layout.lua',
   'lua/api/ui/widgets/list.lua',
+  'lua/api/ui/widgets/sleek_bar.lua',
   'lua/api/waypoints.lua',
   'lua/api/weapons.lua',
   'lua/api/weather.lua',

@@ -975,6 +975,29 @@ and `\{button left}` draws the button the player has bound.
   })
   ```
 
+- <a id="ui.widgets.SleekBar" name="ui.widgets.SleekBar"></a>[lua]`trx.ui.widgets.SleekBar(settings)`  
+  A thin bar that shows progress, as the game draws it under a button that the
+  player holds.
+
+  The bar is a dark frame with a fill in the game's own colour. It takes the
+  width of the box that it is given, and its height follows the text size. Use a
+  signal for progress that changes.
+
+  Parameters:
+  - <a id="ui.widgets.SleekBar.settings" name="ui.widgets.SleekBar.settings"></a>**`settings`** (table). The bar settings.
+
+    Keys:
+    - <a id="ui.widgets.SleekBar.settings.progress" name="ui.widgets.SleekBar.settings.progress"></a>**`progress`** (any). How full the bar is, from 0 to 1, or a signal that holds it.
+    - <a id="ui.widgets.SleekBar.settings.shown" name="ui.widgets.SleekBar.settings.shown"></a>**`shown`** (any, optional). Whether the bar is shown, or a signal that holds that value.
+
+  Returns: [trx.ui.Widget](#ui.Widget). The bar.
+
+  Example:
+  ```lua
+  local held = trx.signal.new(0)
+  local bar = trx.ui.widgets.SleekBar({ progress = held })
+  ```
+
 - <a id="ui.regions.place" name="ui.regions.place"></a>[lua]`trx.ui.regions.place(region, widget, [layer])`  
   Places a widget in a region.
 
