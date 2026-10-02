@@ -9,6 +9,7 @@
 #include <trx/game/events.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/lua/common.h>
+#include <trx/game/lua/game_flow.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils.h>
 #include <trx/game/ui/keys.h>
@@ -18,6 +19,9 @@
 #include <string.h>
 
 static lua_State *m_L = nullptr;
+
+// Counts the Lua commands that are running, as one command can run another.
+static int32_t m_RunningCommands = 0;
 
 // Command name -> Lua handler.
 static const char m_HandlersKey[] = "trx.console.handlers";
@@ -144,7 +148,10 @@ static COMMAND_RESULT M_LuaCommandProc(const COMMAND_CONTEXT *const ctx)
     }
 
     lua_pushstring(L, ctx->args != nullptr ? ctx->args : "");
-    if (lua_pcall(L, 1, 1, 0) != LUA_OK) {
+    m_RunningCommands++;
+    const int status = lua_pcall(L, 1, 1, 0);
+    m_RunningCommands--;
+    if (status != LUA_OK) {
         Console_Error("%s: %s", ctx->prefix, lua_tostring(L, -1));
         lua_settop(L, base);
         return CR_FAILURE;
@@ -452,6 +459,11 @@ static void M_Shutdown(void)
     // can register them again.
     Console_Registry_Clear();
     m_L = nullptr;
+}
+
+bool LUA_Console_IsRunningCommand(void)
+{
+    return m_RunningCommands > 0;
 }
 
 REGISTER_LUA_CAPI(.create = M_Create, .shutdown = M_Shutdown)
