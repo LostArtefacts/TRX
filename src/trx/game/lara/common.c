@@ -388,6 +388,17 @@ void Lara_UseItem(const OBJECT_ID obj_id)
         break;
     }
 
+    case O_QUEST_OPTION_1:
+    case O_QUEST_OPTION_2:
+    case O_QUEST_OPTION_3:
+    case O_QUEST_OPTION_4:
+    case O_QUEST_OPTION_5:
+    case O_QUEST_OPTION_6:
+        if (g_TRVersion >= 4) {
+            Sound_Effect(SFX_LARA_NO, nullptr, SPM_NORMAL);
+        }
+        break;
+
     default: {
         const OBJECT_ID option_id = Inv_GetItemOption(obj_id);
         if (option_id != O_SCION_OPTION
