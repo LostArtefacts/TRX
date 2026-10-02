@@ -69,7 +69,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     Input_Update();
     Shell_ProcessInput();
     if (g_InputDB.menu_skip) {
-        Input_HoldOffSkip();
+        Input_HoldOffSkip(INPUT_SKIP_TO_SCREEN);
     }
 
     switch (p->state) {
