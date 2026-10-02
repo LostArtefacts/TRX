@@ -1357,6 +1357,11 @@ unit_tests += {
 }
 
 unit_tests += {
+  'name': 'trx/game/ui/dialogs/takeover',
+  'engine': ['game/ui/dialogs/takeover.c'],
+}
+
+unit_tests += {
   'name': 'trx/game/ui/scrollable',
   'engine': ['game/ui/scrollable.c'],
 }
