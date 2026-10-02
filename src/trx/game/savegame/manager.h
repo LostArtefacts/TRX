@@ -17,6 +17,9 @@ void SG_Manager_ResizeSlots(void);
 
 void SG_Manager_ScanSavedGames(void);
 const SAVEGAME_INFO *SG_Manager_GetSavegameInfo(SAVEGAME_SLOT_REF slot);
+
+// Deletes the save in a slot, then reads every save again, so that the slot
+// tables match the files that remain.
 bool SG_Manager_Delete(SAVEGAME_SLOT_REF slot);
 
 // Writes the game the resume info now holds into the slot's file, and takes
