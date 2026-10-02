@@ -290,7 +290,6 @@ UI_SAVE_SLOT_DIALOG_CHOICE UI_SaveSlotDialog_Control(
                     .action = UI_SAVE_SLOT_DIALOG_DELETE_FAILED,
                 };
             }
-            SG_Manager_ScanSavedGames();
             M_RebuildRows(s, focused_row);
         }
         return (UI_SAVE_SLOT_DIALOG_CHOICE) {
