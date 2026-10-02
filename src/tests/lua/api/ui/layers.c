@@ -136,6 +136,7 @@ int main(void)
         .deps = { "signal", "math", "events", "input", "ui.primitive",
                   "ui.widgets", "ui.regions", nullptr },
         .tests = "api/ui/layers",
+        .seal = true,
         .setup_extra = M_Setup,
         .push_fake = M_PushFake,
         .fake_reset = M_FakeReset,
