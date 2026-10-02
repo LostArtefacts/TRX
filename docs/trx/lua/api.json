@@ -2667,6 +2667,54 @@
     },
     {
       "bulk": false,
+      "count": 8,
+      "description": "What the inventory ring was opened for.",
+      "path": "inventory_ring.Mode",
+      "values": [
+        {
+          "description": "Opened during play.",
+          "name": "GAME",
+          "value": 0
+        },
+        {
+          "description": "The title screen's menu.",
+          "name": "TITLE",
+          "value": 1
+        },
+        {
+          "description": "The keys ring, opened against a locked door or receptacle.",
+          "name": "KEYS",
+          "value": 2
+        },
+        {
+          "description": "Opened to save, with the save list already on show.",
+          "name": "SAVE",
+          "value": 3
+        },
+        {
+          "description": "Opened to load, with the save list already on show.",
+          "name": "LOAD",
+          "value": 4
+        },
+        {
+          "description": "Opened because Lara died.",
+          "name": "DEATH",
+          "value": 5
+        },
+        {
+          "description": "Opened by a save crystal.",
+          "name": "SAVE_CRYSTAL",
+          "value": 6
+        },
+        {
+          "description": "The globe the player picks a destination from.",
+          "name": "GLOBE_SELECT",
+          "value": 7
+        }
+      ]
+    },
+    {
+      "bulk": false,
       "count": 4,
       "description": "<!--noref: earthquake_mode--> The values the `earthquake_mode` item property can take. It selects the behavior of the camera shake and sound effects of active earthquakes.",
       "path": "items.EarthquakeMode",
@@ -7738,6 +7786,43 @@
       }
     },
     {
+      "description": "What the open ring was opened for, or `nil` when no ring is open.",
+      "path": "inventory_ring.mode",
+      "returns": {
+        "description": "What the ring was opened for.",
+        "nullable": true,
+        "type": "inventory_ring.Mode"
+      }
+    },
+    {
+      "description": "Where the ring's selected entry is in its animation, or `nil` when no ring is open.",
+      "path": "inventory_ring.selection_anim",
+      "returns": {
+        "description": "The entry's animation state.",
+        "nullable": true,
+        "type": "inventory_ring.EntryAnim"
+      }
+    },
+    {
+      "description": "Runs the ring's selected entry to a frame of its animation.",
+      "examples": [
+        "-- turn the passport to its second page\nlocal anim = trx.inventory_ring.selection_anim()\ntrx.inventory_ring.animate_selection(anim.open_frame + 5, 1)"
+      ],
+      "params": [
+        {
+          "description": "The frame to stop on.",
+          "name": "goal_frame",
+          "type": "integer"
+        },
+        {
+          "description": "Which way to run: `1` forwards, `-1` backwards.",
+          "name": "direction",
+          "type": "integer"
+        }
+      ],
+      "path": "inventory_ring.animate_selection"
+    },
+    {
       "description": "Returns the inventory icon for a pickup, whether or not Lara has one.",
       "params": [
         {
@@ -11309,7 +11394,7 @@
       "order": 4
     },
     {
-      "description": "The rings the player browses, and the entries drawn on them.\n\nThis is the front of the inventory: which entries a ring holds, and how each is\ndrawn and turned. What Lara is carrying belongs to `trx.inventory`.",
+      "description": "The rings the player browses, and the entries drawn on them.\n\nThis is the front of the inventory: which entries a ring holds, how each is\ndrawn and turned, and what the player has picked. What Lara is carrying belongs\nto `trx.inventory`.",
       "name": "inventory_ring",
       "order": 5,
       "title": "Inventory ring"
@@ -13871,6 +13956,41 @@
       ],
       "operators": [],
       "path": "inventory.Inventory"
+    },
+    {
+      "description": "The animation state of the selected entry.",
+      "extensions": [],
+      "fields": [
+        {
+          "description": "Which way the animation runs: `1` forwards, `-1` backwards.",
+          "name": "direction",
+          "type": "integer"
+        },
+        {
+          "description": "The frame on show.",
+          "name": "frame",
+          "type": "integer"
+        },
+        {
+          "description": "How many frames the entry's animation holds.",
+          "name": "frame_count",
+          "type": "integer"
+        },
+        {
+          "description": "The frame the entry is animating towards.",
+          "name": "goal_frame",
+          "type": "integer"
+        },
+        {
+          "description": "The frame the entry rests on once it has opened.",
+          "name": "open_frame",
+          "type": "integer"
+        }
+      ],
+      "handle": false,
+      "methods": [],
+      "operators": [],
+      "path": "inventory_ring.EntryAnim"
     },
     {
       "description": "What a trigger carried when it fired.",

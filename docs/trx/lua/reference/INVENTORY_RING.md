@@ -14,10 +14,71 @@ order: 5
 
 The rings the player browses, and the entries drawn on them.
 
-This is the front of the inventory: which entries a ring holds, and how each is
-drawn and turned. What Lara is carrying belongs to [`trx.inventory`](INVENTORY.md#inventory).
+This is the front of the inventory: which entries a ring holds, how each is
+drawn and turned, and what the player has picked. What Lara is carrying belongs
+to [`trx.inventory`](INVENTORY.md#inventory).
+
+### Enums
+
+- <a id="inventory_ring.Mode" name="inventory_ring.Mode"></a>[lua]`trx.inventory_ring.Mode`
+
+    What the inventory ring was opened for.
+
+    - `trx.inventory_ring.Mode.GAME` = `0`  
+        Opened during play.
+    - `trx.inventory_ring.Mode.TITLE` = `1`  
+        The title screen's menu.
+    - `trx.inventory_ring.Mode.KEYS` = `2`  
+        The keys ring, opened against a locked door or receptacle.
+    - `trx.inventory_ring.Mode.SAVE` = `3`  
+        Opened to save, with the save list already on show.
+    - `trx.inventory_ring.Mode.LOAD` = `4`  
+        Opened to load, with the save list already on show.
+    - `trx.inventory_ring.Mode.DEATH` = `5`  
+        Opened because Lara died.
+    - `trx.inventory_ring.Mode.SAVE_CRYSTAL` = `6`  
+        Opened by a save crystal.
+    - `trx.inventory_ring.Mode.GLOBE_SELECT` = `7`  
+        The globe the player picks a destination from.
+
+### Structures
+
+- <a id="inventory_ring.EntryAnim" name="inventory_ring.EntryAnim"></a>[lua]`trx.inventory_ring.EntryAnim`
+
+    The animation state of the selected entry.
+
+    Properties:
+    - <a id="inventory_ring.EntryAnim.direction" name="inventory_ring.EntryAnim.direction"></a>**`direction`**: integer. Which way the animation runs: `1` forwards, `-1` backwards.
+    - <a id="inventory_ring.EntryAnim.frame" name="inventory_ring.EntryAnim.frame"></a>**`frame`**: integer. The frame on show.
+    - <a id="inventory_ring.EntryAnim.frame_count" name="inventory_ring.EntryAnim.frame_count"></a>**`frame_count`**: integer. How many frames the entry's animation holds.
+    - <a id="inventory_ring.EntryAnim.goal_frame" name="inventory_ring.EntryAnim.goal_frame"></a>**`goal_frame`**: integer. The frame the entry is animating towards.
+    - <a id="inventory_ring.EntryAnim.open_frame" name="inventory_ring.EntryAnim.open_frame"></a>**`open_frame`**: integer. The frame the entry rests on once it has opened.
 
 ### Functions
+
+- <a id="inventory_ring.mode" name="inventory_ring.mode"></a>[lua]`trx.inventory_ring.mode()`  
+  What the open ring was opened for, or `nil` when no ring is open.
+
+  Returns: [trx.inventory_ring.Mode](#inventory_ring.Mode) or `nil`. What the ring was opened for.
+
+- <a id="inventory_ring.selection_anim" name="inventory_ring.selection_anim"></a>[lua]`trx.inventory_ring.selection_anim()`  
+  Where the ring's selected entry is in its animation, or `nil` when no ring is open.
+
+  Returns: [trx.inventory_ring.EntryAnim](#inventory_ring.EntryAnim) or `nil`. The entry's animation state.
+
+- <a id="inventory_ring.animate_selection" name="inventory_ring.animate_selection"></a>[lua]`trx.inventory_ring.animate_selection(goal_frame, direction)`  
+  Runs the ring's selected entry to a frame of its animation.
+
+  Parameters:
+  - <a id="inventory_ring.animate_selection.goal_frame" name="inventory_ring.animate_selection.goal_frame"></a>**`goal_frame`** (integer). The frame to stop on.
+  - <a id="inventory_ring.animate_selection.direction" name="inventory_ring.animate_selection.direction"></a>**`direction`** (integer). Which way to run: `1` forwards, `-1` backwards.
+
+  Example:
+  ```lua
+  -- turn the passport to its second page
+  local anim = trx.inventory_ring.selection_anim()
+  trx.inventory_ring.animate_selection(anim.open_frame + 5, 1)
+  ```
 
 - <a id="inventory_ring.icon_of" name="inventory_ring.icon_of"></a>[lua]`trx.inventory_ring.icon_of(object)`  
   Returns the inventory icon for a pickup, whether or not Lara has one.

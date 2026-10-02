@@ -4,6 +4,7 @@
 // The fake keeps a count per object rather than a ring, which is all the
 // surface asks of it.
 
+#include <fakes/game.h>
 #include <fakes/items.h>
 #include <fakes/lara.h>
 #include <harness/lua_surface.h>
@@ -26,6 +27,7 @@ static int M_FakeSetWeaponAvailable(lua_State *const L)
 
 static void M_PushFake(lua_State *const L)
 {
+    FakeGame_PushLua(L);
     lua_pushcfunction(L, M_FakeSetCanAdd);
     lua_setfield(L, -2, "set_can_add");
     lua_pushcfunction(L, M_FakeSetWeaponAvailable);

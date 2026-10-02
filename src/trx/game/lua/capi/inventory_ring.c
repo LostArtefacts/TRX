@@ -166,10 +166,74 @@ static int M_L_RingItem(lua_State *const L)
     return 1;
 }
 
+// The entry the ring rests on, which is the one a script takes over.
+static INVENTORY_ITEM *M_GetSelectedItem(void)
+{
+    const INV_RING *const ring = InvRing_GetActiveRing();
+    if (ring == nullptr || ring->number_of_objects <= 0) {
+        return nullptr;
+    }
+    return ring->list[ring->current_object];
+}
+
+// trxc.inventory_ring.mode() -> INVENTORY_MODE or nil
+static int M_L_RingMode(lua_State *const L)
+{
+    const INV_RING *const ring = InvRing_GetActiveRing();
+    if (ring == nullptr) {
+        lua_pushnil(L);
+        return 1;
+    }
+    lua_pushinteger(L, ring->mode);
+    return 1;
+}
+
+// trxc.inventory_ring.selection_anim() -> table or nil
+static int M_L_RingSelectionAnim(lua_State *const L)
+{
+    const INVENTORY_ITEM *const inv_item = M_GetSelectedItem();
+    if (inv_item == nullptr) {
+        lua_pushnil(L);
+        return 1;
+    }
+    lua_newtable(L);
+    lua_pushinteger(L, inv_item->current_frame);
+    lua_setfield(L, -2, "frame");
+    lua_pushinteger(L, inv_item->goal_frame);
+    lua_setfield(L, -2, "goal_frame");
+    lua_pushinteger(L, inv_item->open_frame);
+    lua_setfield(L, -2, "open_frame");
+    lua_pushinteger(L, inv_item->frames_total);
+    lua_setfield(L, -2, "frame_count");
+    lua_pushinteger(L, inv_item->anim_direction);
+    lua_setfield(L, -2, "direction");
+    return 1;
+}
+
+// trxc.inventory_ring.animate_selection(goal_frame, direction)
+static int M_L_RingAnimateSelection(lua_State *const L)
+{
+    INVENTORY_ITEM *const inv_item = M_GetSelectedItem();
+    if (inv_item == nullptr) {
+        return 0;
+    }
+    int32_t goal_frame;
+    if (!LUA_CheckBoundedInt(
+            L, 1, 0, inv_item->frames_total - 1, &goal_frame)) {
+        return luaL_error(L, "the entry has no such frame");
+    }
+    inv_item->goal_frame = goal_frame;
+    inv_item->anim_direction = luaL_checkinteger(L, 2) < 0 ? -1 : 1;
+    return 0;
+}
+
 static const luaL_Reg m_Module[] = {
+    { "animate_selection", M_L_RingAnimateSelection },
     { "declare_item", M_L_RingDeclareItem },
     { "icon_of", M_L_RingIconOf },
     { "item", M_L_RingItem },
+    { "mode", M_L_RingMode },
+    { "selection_anim", M_L_RingSelectionAnim },
     { nullptr, nullptr },
 };
 

@@ -1124,6 +1124,8 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
 
     Interpolation_Remember();
 
+    m_ActiveRing = ring;
+
     if (mode == INV_TITLE_MODE) {
         if (ring->background_path != nullptr) {
             Output_Overlay_LoadImage(ring->background_path);
@@ -1171,6 +1173,7 @@ void InvRing_Close(INV_RING *const ring)
     }
 
     m_InvChosen = NO_OBJECT;
+    m_ActiveRing = nullptr;
     Memory_Free(ring);
 }
 
@@ -1180,7 +1183,6 @@ GF_COMMAND InvRing_Control(INV_RING *const ring)
         M_SimTick();
     }
     InvRing_AdjustMusicVolume(ring);
-    m_ActiveRing = ring;
     INVENTORY_ITEM **const prev_list = ring->list;
     M_SnapshotFrameState(ring);
     GF_COMMAND gf_cmd = M_Control(ring);
@@ -1215,7 +1217,6 @@ GF_COMMAND InvRing_Control(INV_RING *const ring)
         gf_cmd = M_Control(ring);
     }
 
-    m_ActiveRing = nullptr;
     return gf_cmd;
 }
 

@@ -10,6 +10,8 @@
 #include <trx/game/game/enum.h>
 #include <trx/game/game/state.h>
 #include <trx/game/game_flow/common.h>
+#include <trx/game/inventory_ring/control.h>
+#include <trx/game/inventory_ring/types.h>
 #include <trx/game/photo_mode.h>
 #include <trx/game/savegame.h>
 #include <trx/game/screenshot.h>
@@ -36,8 +38,15 @@ static bool m_IsPlaying = true;
 static bool m_InPhotoMode;
 static PHOTO_MODE m_PhotoModeTarget;
 
+// The open ring, holding the one entry that the player has picked out of it.
+static bool m_RingOpen;
+static INV_RING m_Ring;
+static INVENTORY_ITEM m_RingItem;
+static INVENTORY_ITEM *m_RingList[1] = { &m_RingItem };
+
 static void M_Reset(void)
 {
+    m_RingOpen = false;
     m_InPhotoMode = false;
     m_PhotoModeTarget = PHOTO_MODE_CAMERA;
     memset(m_Levels, 0, sizeof(m_Levels));
@@ -155,6 +164,43 @@ static int M_L_SetNGPlus(lua_State *const L)
 {
     FakeGame_SetNGPlus(lua_toboolean(L, 1));
     return 0;
+}
+
+// fake.open_ring(mode, object_id, open_frame, frame_count) - a ring opened for
+// the mode, resting on an entry that the player has picked.
+static int M_L_OpenRing(lua_State *const L)
+{
+    m_Ring = (INV_RING) {
+        .mode = (INVENTORY_MODE)luaL_checkinteger(L, 1),
+        .list = m_RingList,
+        .number_of_objects = 1,
+        .current_object = 0,
+    };
+    m_RingItem = (INVENTORY_ITEM) {
+        .object_id = (OBJECT_ID)luaL_checkinteger(L, 2),
+        .open_frame = (int16_t)luaL_checkinteger(L, 3),
+        .frames_total = (int16_t)luaL_checkinteger(L, 4),
+    };
+    m_RingItem.current_frame = m_RingItem.open_frame;
+    m_RingItem.goal_frame = m_RingItem.open_frame;
+    m_RingOpen = true;
+    return 0;
+}
+
+// fake.close_ring()
+static int M_L_CloseRing(lua_State *const L)
+{
+    m_RingOpen = false;
+    return 0;
+}
+
+// fake.settle_ring() -> frame - the picked entry runs to the frame that a
+// script asked for, as the ring animates it over the next few ticks.
+static int M_L_SettleRing(lua_State *const L)
+{
+    m_RingItem.current_frame = m_RingItem.goal_frame;
+    lua_pushinteger(L, m_RingItem.current_frame);
+    return 1;
 }
 
 void Screenshot_Make(const SCREENSHOT_FORMAT format)
@@ -299,6 +345,11 @@ SAVEGAME_SLOT_REF SG_Manager_InvalidSlot(void)
 bool SG_Manager_IsValidSlotRef(const SAVEGAME_SLOT_REF slot)
 {
     return slot.index >= 0;
+}
+
+INV_RING *InvRing_GetActiveRing(void)
+{
+    return m_RingOpen ? &m_Ring : nullptr;
 }
 
 // The game flow's level and the game's are not the same one. The title screen
@@ -486,6 +537,12 @@ void FakeGame_SetCurrentLevel(const int32_t idx)
 
 void FakeGame_PushLua(lua_State *const L)
 {
+    lua_pushcfunction(L, M_L_OpenRing);
+    lua_setfield(L, -2, "open_ring");
+    lua_pushcfunction(L, M_L_CloseRing);
+    lua_setfield(L, -2, "close_ring");
+    lua_pushcfunction(L, M_L_SettleRing);
+    lua_setfield(L, -2, "settle_ring");
     lua_pushcfunction(L, M_L_SetNGPlus);
     lua_setfield(L, -2, "set_ngplus");
     lua_pushcfunction(L, M_L_SetCurrentLevel);

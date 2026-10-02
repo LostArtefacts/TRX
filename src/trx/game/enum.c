@@ -8,6 +8,7 @@
 #include <trx/game/gun/types.h>
 #include <trx/game/gym.h>
 #include <trx/game/input/enum.h>
+#include <trx/game/inventory_ring/enum.h>
 #include <trx/game/items/actions/ids.h>
 #include <trx/game/items/enum.h>
 #include <trx/game/lara/enum.h>
@@ -198,6 +199,15 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(OVERLAY_ARROW, OVERLAY_ARROW_BR, "bottom_right");
     ENUM_MAP(OVERLAY_ARROW, OVERLAY_ARROW_BCL, "caption_left");
     ENUM_MAP(OVERLAY_ARROW, OVERLAY_ARROW_BCR, "caption_right");
+
+    ENUM_MAP(INVENTORY_MODE, INV_GAME_MODE, "game");
+    ENUM_MAP(INVENTORY_MODE, INV_TITLE_MODE, "title");
+    ENUM_MAP(INVENTORY_MODE, INV_KEYS_MODE, "keys");
+    ENUM_MAP(INVENTORY_MODE, INV_SAVE_MODE, "save");
+    ENUM_MAP(INVENTORY_MODE, INV_LOAD_MODE, "load");
+    ENUM_MAP(INVENTORY_MODE, INV_DEATH_MODE, "death");
+    ENUM_MAP(INVENTORY_MODE, INV_SAVE_CRYSTAL_MODE, "save_crystal");
+    ENUM_MAP(INVENTORY_MODE, INV_GLOBE_SELECT_MODE, "globe_select");
 
     ENUM_MAP(UI_PAINT_LAYER, UI_PAINT_LAYER_UNDER, "under");
     ENUM_MAP(UI_PAINT_LAYER, UI_PAINT_LAYER_OVER, "over");
