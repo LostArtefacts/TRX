@@ -64,7 +64,7 @@ static void M_Explode(int16_t grenade_item_num, const XYZ_32 pos)
     const ROOM *const room = Room_Get(grenade_item->room_num);
     const bool is_underwater = room != nullptr && room->flags.underwater;
 
-    if (g_TRVersion == 3) {
+    if (g_TRVersion >= 3) {
         if (is_underwater) {
             Sparks_TriggerUnderwaterExplosion(grenade_item);
         } else {
@@ -206,7 +206,7 @@ static void M_Control(const int16_t item_num)
         }
     }
 
-    if (g_TRVersion == 3) {
+    if (g_TRVersion >= 3) {
         M_SetTR3ProjectileShade(item);
         if (!was_underwater && item->speed != 0) {
             const XYZ_32 back_64 =
@@ -266,7 +266,7 @@ static void M_Control(const int16_t item_num)
         }
     }
 
-    if (g_TRVersion == 3) {
+    if (g_TRVersion >= 3) {
         const ROOM *const new_room = Room_Get(item->room_num);
         const bool is_underwater =
             new_room != nullptr && new_room->flags.underwater;

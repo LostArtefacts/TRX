@@ -251,6 +251,7 @@ X_OBJ_NAME_DEFINE(O_GUIDE,                "Guide")
 X_OBJ_NAME_DEFINE(O_UNDEAD_MUMMY,         "Undead Mummy")
 X_OBJ_NAME_DEFINE(O_HENCHMAN_1,           "Henchman 1")
 X_OBJ_NAME_DEFINE(O_HENCHMAN_2,           "Henchman 2")
+X_OBJ_NAME_DEFINE(O_ENEMY_JEEP,           "Enemy Jeep")
 
 // Traps
 X_OBJ_NAME_DEFINE(O_BLADE,                    "Wall-mounted Blade")

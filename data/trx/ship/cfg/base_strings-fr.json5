@@ -2525,6 +2525,9 @@
         "ember_emitter": {
             "name": "\\{review}Émetteur de braise",
         },
+        "enemy_jeep": {
+            "name": "\\{review}Jeep ennemi",
+        },
         "examine_item_1": {
             "name": "\\{review}Examiner l'objet 1",
         },

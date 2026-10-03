@@ -2547,6 +2547,9 @@
         "ember_emitter": {
             "name": "Ember Emitter",
         },
+        "enemy_jeep": {
+            "name": "Enemy Jeep",
+        },
         "examine_item_1": {
             "name": "Examine Item 1",
         },

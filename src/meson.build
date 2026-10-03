@@ -623,6 +623,7 @@ common_sources = [
   'trx/game/objects/creatures/dog.c',
   'trx/game/objects/creatures/dragon.c',
   'trx/game/objects/creatures/eel.c',
+  'trx/game/objects/creatures/enemy_jeep.c',
   'trx/game/objects/creatures/guide.c',
   'trx/game/objects/creatures/henchman.c',
   'trx/game/objects/creatures/hybrid_mutant.c',

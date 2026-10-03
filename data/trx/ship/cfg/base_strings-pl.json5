@@ -2525,6 +2525,9 @@
         "ember_emitter": {
             "name": "Emiter żaru",
         },
+        "enemy_jeep": {
+            "name": "\\{review}Wrogi jeep",
+        },
         "examine_item_1": {
             "name": "\\{review}Przedmiot do zbadania 1",
         },
@@ -3583,7 +3586,7 @@
             "name": "Okno 4",
         },
         "smashable_vehicle_wall": {
-            "name": "\\{review}",
+            "name": "\\{review}Ściana do rozbicia pojazdem",
         },
         "smoke_emitter_black": {
             "name": "Emiter dymu (czarny)",
