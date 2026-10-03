@@ -1925,6 +1925,10 @@
             "title": "Solais armachd",
             "description": "Cuiridh seo solais beòthail ri losgadh agus spreadhadh.",
         },
+        "visuals.enable_level_start_fade_effects": {
+            "title": "\\{review}Soillseachadh aig toiseach na h-ìre",
+            "description": "\\{review}Cuiridh seo soillseachadh on dubh an comas nuair a thòisicheas ìre no nuair a luchdaicheas tu sàbhaladh.",
+        },
         "visuals.enable_photo_mode_collision": {
             "title": "Bualadh modh dhealbhan",
             "description": "Leanntaidh an camara geoimeatraidh na h-ìre ann am modh dhealbhan. Ma tha seo à comas, faodaidh an camara gluasad gu saor tro bhallachan, mullaichean agus an làir.",

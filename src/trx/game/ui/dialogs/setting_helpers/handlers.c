@@ -559,6 +559,10 @@ REGISTER_UI_SETTING_HANDLER(
         .is_available = M_EnableFadeEffects_IsAvailable)
 
 REGISTER_UI_SETTING_HANDLER(
+        .key = "visuals.enable_level_start_fade_effects",
+        .is_available = M_EnableFadeEffects_IsAvailable)
+
+REGISTER_UI_SETTING_HANDLER(
         .key = "ui.bar_scale", .delta_slow = 1, .delta_fast = 5,
         .is_available = M_Bar_IsAvailable)
 

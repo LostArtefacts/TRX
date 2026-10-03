@@ -60,6 +60,7 @@ typedef struct {
     struct {
         bool enable_fade_effects;
         bool enable_exit_fade_effects;
+        bool enable_level_start_fade_effects;
 
         int32_t fov;
 
