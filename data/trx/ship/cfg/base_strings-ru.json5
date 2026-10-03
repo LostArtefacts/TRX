@@ -2525,6 +2525,9 @@
         "ember_emitter": {
             "name": "Источник углей",
         },
+        "enemy_jeep": {
+            "name": "\\{review}Вражеский джип",
+        },
         "examine_item_1": {
             "name": "\\{review}Осмотреть предмет 1",
         },

@@ -289,9 +289,18 @@ static void M_ShowInventory(void)
     }
 }
 
-static void M_ActivateBaddies(const ITEM *const item)
+static void M_ActivateBaddies(const ITEM *const jeep)
 {
-    // TODO: activate any O_ENEMY_JEEP instances in the same room.
+    const ROOM *const room = Room_Get(jeep->room_num);
+    int16_t item_num = room->item_num;
+    while (item_num != NO_ITEM) {
+        ITEM *const item = Item_Get(item_num);
+        const int16_t next_item_num = item->next_item;
+        if (item->object_id == O_ENEMY_JEEP) {
+            Item_Activate(item_num, true);
+        }
+        item_num = next_item_num;
+    }
 }
 
 static M_MOUNT_TYPE M_GetMountType(
@@ -1036,8 +1045,7 @@ static void M_CheckObjectCollision(ITEM *const item, ITEM *const jeep)
         return;
     }
 
-    const bool is_enemy_jeep = false; // TODO: O_ENEMY_JEEP
-    if (is_enemy_jeep) {
+    if (item->object_id == O_ENEMY_JEEP) {
         COLL_INFO coll = {
             .radius = 400,
             .enable_baddie_push = true,
