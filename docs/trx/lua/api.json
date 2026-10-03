@@ -342,7 +342,7 @@
     },
     {
       "bulk": true,
-      "count": 844,
+      "count": 845,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -527,6 +527,7 @@
         "ELECTRIC_FENCE",
         "EMBER",
         "EMBER_EMITTER",
+        "ENEMY_JEEP",
         "EXAMINE_ITEM_1",
         "EXAMINE_ITEM_2",
         "EXAMINE_ITEM_3",

@@ -2525,6 +2525,9 @@
         "ember_emitter": {
             "name": "Gluterzeuger",
         },
+        "enemy_jeep": {
+            "name": "\\{review}Feindlicher Jeep",
+        },
         "examine_item_1": {
             "name": "\\{review}Gegenstand 1 untersuchen",
         },

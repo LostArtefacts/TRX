@@ -2525,6 +2525,9 @@
         "ember_emitter": {
             "name": "Sgaoiladair Èibhleag",
         },
+        "enemy_jeep": {
+            "name": "Nàmhaid Jeep",
+        },
         "examine_item_1": {
             "name": "Sgrùdadh Nì 1",
         },

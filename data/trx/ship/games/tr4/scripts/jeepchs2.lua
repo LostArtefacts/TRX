@@ -2,6 +2,7 @@ local function start_lara_on_jeep()
   local jeep = trx.items[0]
   jeep.pos = trx.lara.item.pos
   jeep.rot = { x = 0, y = trx.lara.item.rot.y, z = 0 }
+  trx.waypoints.current = 1
 end
 
 trx.events.on_game_start(function(is_save)

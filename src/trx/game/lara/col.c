@@ -20,7 +20,8 @@ bool Lara_Col_Push(
     const COLL_ITEM *const item, COLL_INFO *const coll, const bool hit_on,
     const bool big_push)
 {
-    ITEM *const target_item = Lara_GetItem();
+    ITEM *const target_item =
+        Lara_Vehicle_IsMounted() ? Lara_Vehicle_GetItem() : Lara_GetItem();
     const XYZ_32 delta = XYZ_32_Subtract(target_item->pos, item->pos);
     const XYZ_32 local = XYZ_32_UnrotateYaw(delta, item->rot.y);
     int32_t rx = local.x;
