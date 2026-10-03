@@ -362,6 +362,14 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### enemy_jeep
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">40</td><td>Maximum hit points.</td></tr>
+</tbody>
+</table>
+
 #### fish_mutant
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1 (26)</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>

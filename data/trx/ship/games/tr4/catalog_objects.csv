@@ -22,6 +22,7 @@
 30, lara_hair
 32, jeep
 33, lara_vehicle_anim
+34, enemy_jeep
 37, guide
 39, von_croy
 41, henchman_1
@@ -401,7 +402,6 @@
 # 27: LARA_DIRT_MESH
 # 29: TORCH_ANIM
 # 31: MOTORBIKE
-# 34: ENEMY_JEEP
 # 35: SKELETON
 # 36: SKELETON_MIP
 # 38: GUIDE_MIP

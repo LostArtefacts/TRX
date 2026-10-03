@@ -2525,6 +2525,9 @@
         "ember_emitter": {
             "name": "Emettitore di Brace",
         },
+        "enemy_jeep": {
+            "name": "\\{review}Jeep nemico",
+        },
         "examine_item_1": {
             "name": "Oggetto da Esaminare 1",
         },
