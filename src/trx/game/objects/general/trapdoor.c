@@ -7,6 +7,9 @@
 #include <trx/game/lara.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/traps/movable_block.h>
+#include <trx/version.h>
+
+#define M_DEFAULT_BLOCKS_PORTAL ((bool)(g_TRVersion >= 4))
 
 typedef enum {
     M_STATE_CLOSED,
@@ -19,6 +22,14 @@ typedef enum {
 
 typedef struct {
     bool auto_open;
+    bool blocks_portal;
+    struct {
+        bool initialised;
+        bool on_floor;
+        bool on_ceiling;
+        int16_t sky;
+        int16_t pit;
+    } portal;
 } M_PRIV;
 
 static const OBJECT_BOUNDS m_FloorTrapdoorBounds = {
@@ -95,7 +106,8 @@ static bool M_IsItemOnTop(
 static int32_t M_GetFloorHeight(
     const ITEM *const item, const XYZ_32 pos, const int32_t height)
 {
-    if (!M_IsItemOnTop(item, pos.x, pos.z)) {
+    const M_PRIV *const p = item->priv;
+    if (p->blocks_portal || !M_IsItemOnTop(item, pos.x, pos.z)) {
         return height;
     } else if (item->current_anim_state != M_STATE_CLOSED) {
         return height;
@@ -109,7 +121,8 @@ static int32_t M_GetFloorHeight(
 static int32_t M_GetCeilingHeight(
     const ITEM *const item, const XYZ_32 pos, const int32_t height)
 {
-    if (!M_IsItemOnTop(item, pos.x, pos.z)) {
+    const M_PRIV *const p = item->priv;
+    if (p->blocks_portal || !M_IsItemOnTop(item, pos.x, pos.z)) {
         return height;
     } else if (item->current_anim_state != M_STATE_CLOSED) {
         return height;
@@ -180,15 +193,96 @@ static void M_GetSectorPositions(const ITEM *const item, VECTOR *sector_pos)
     }
 }
 
+static void M_EnsurePortals(const ITEM *const item)
+{
+    M_PRIV *const p = item->priv;
+    if (p->portal.initialised) {
+        return;
+    }
+
+    p->portal.pit = NO_ROOM;
+    p->portal.sky = NO_ROOM;
+
+    const ROOM *room = Room_Get(item->room_num);
+    const SECTOR *sector = Room_GetWorldSector(room, item->pos.x, item->pos.z);
+    if (item->pos.y == room->min_floor && sector->portal_room.pit != NO_ROOM) {
+        p->portal.on_floor = true;
+        p->portal.pit = sector->portal_room.pit;
+        room = Room_Get(p->portal.pit);
+        sector = Room_GetWorldSector(room, item->pos.x, item->pos.z);
+        p->portal.sky = sector->portal_room.sky;
+    } else if (
+        item->pos.y == room->max_ceiling
+        && sector->portal_room.sky != NO_ROOM) {
+        p->portal.on_ceiling = true;
+        p->portal.sky = sector->portal_room.sky;
+        room = Room_Get(p->portal.sky);
+        sector = Room_GetWorldSector(room, item->pos.x, item->pos.z);
+        p->portal.pit = sector->portal_room.pit;
+    }
+
+    p->portal.initialised = true;
+}
+
+static void M_SetPortalsOpen(const ITEM *const item, const bool open)
+{
+    M_EnsurePortals(item);
+
+    const M_PRIV *const p = item->priv;
+    if (!p->blocks_portal) {
+        return;
+    }
+
+    const int16_t pit = open ? p->portal.pit : NO_ROOM;
+    const int16_t sky = open ? p->portal.sky : NO_ROOM;
+
+    const ROOM *room = Room_Get(item->room_num);
+    SECTOR *sector = Room_GetWorldSector(room, item->pos.x, item->pos.z);
+    if (p->portal.on_floor) {
+        sector->portal_room.pit = pit;
+        room = Room_Get(p->portal.pit);
+        sector = Room_GetWorldSector(room, item->pos.x, item->pos.z);
+        sector->portal_room.sky = sky;
+    } else if (p->portal.on_ceiling) {
+        sector->portal_room.sky = sky;
+        room = Room_Get(p->portal.sky);
+        sector = Room_GetWorldSector(room, item->pos.x, item->pos.z);
+        sector->portal_room.pit = pit;
+    }
+}
+
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    M_PRIV *const p = item->priv;
+    M_EnsurePortals(item);
 
     VECTOR *const positions = Vector_Create(sizeof(XYZ_32));
     M_GetSectorPositions(item, positions);
     Walkable_AllocateNodes(item, positions->count);
     Vector_Free(positions);
+}
+
+static void M_SetBlocksPortal(ITEM *const item, const TRX_VALUE *const in)
+{
+    M_PRIV *const p = item->priv;
+    if (p->blocks_portal == in->as_bool) {
+        return;
+    }
+
+    M_SetPortalsOpen(item, true);
+
+    p->blocks_portal = in->as_bool;
+    if (p->blocks_portal && item->current_anim_state == M_STATE_CLOSED) {
+        M_SetPortalsOpen(item, false);
+    }
+}
+
+static void M_HandleSave(ITEM *const item, const SAVEGAME_STAGE stage)
+{
+    if (stage == SAVEGAME_STAGE_AFTER_LOAD
+        && item->current_anim_state == M_STATE_OPEN) {
+        M_SetPortalsOpen(item, true);
+    }
 }
 
 static void M_DropStack(const ITEM *const item)
@@ -221,11 +315,13 @@ static void M_Control(const int16_t item_num)
         if (item->current_anim_state == M_STATE_CLOSED
             && (p->auto_open || item->goal_anim_state == M_STATE_OPEN)) {
             item->goal_anim_state = M_STATE_OPEN;
+            M_SetPortalsOpen(item, true);
             M_DropStack(item);
         }
     } else {
         if (item->current_anim_state == M_STATE_OPEN) {
             item->goal_anim_state = M_STATE_CLOSED;
+            M_SetPortalsOpen(item, false);
         }
     }
     Item_Animate(item);
@@ -238,6 +334,7 @@ static void M_OpenManually(const int16_t item_num)
     Item_AddSimulated(item_num);
     item->trigger.mask = TRIGGER_MASK_ALL;
     item->goal_anim_state = M_STATE_OPEN;
+    M_SetPortalsOpen(item, true);
 }
 
 static void M_AssertCamera(
@@ -314,6 +411,7 @@ static void M_SetupBase(OBJECT *const obj)
     obj->control_func = M_Control;
     obj->floor_height_func = M_GetFloorHeight;
     obj->ceiling_height_func = M_GetCeilingHeight;
+    obj->handle_save_func = M_HandleSave;
     obj->priv_size = sizeof(M_PRIV);
     obj->save_flags = true;
     obj->save_anim = true;
@@ -322,7 +420,11 @@ static void M_SetupBase(OBJECT *const obj)
         obj,
         OBJECT_PROPERTY(
             M_PRIV, auto_open, true,
-            "Whether the trapdoor opens automatically when triggered."));
+            "Whether the trapdoor opens automatically when triggered."),
+        OBJECT_PROPERTY_SETTER(
+            M_PRIV, blocks_portal, M_DEFAULT_BLOCKS_PORTAL, nullptr,
+            M_SetBlocksPortal,
+            "Whether the trapdoor blocks any portals it sits on."));
 }
 
 static void M_SetupFloor(OBJECT *const obj)

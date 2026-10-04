@@ -1859,6 +1859,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+<tr><td><code>blocks_portal</code></td><td colspan="3" align="center">false</td><td>Whether the trapdoor blocks any portals it sits on.</td></tr>
 </tbody>
 </table>
 
@@ -1867,6 +1868,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+<tr><td><code>blocks_portal</code></td><td colspan="3" align="center">false</td><td>Whether the trapdoor blocks any portals it sits on.</td></tr>
 </tbody>
 </table>
 
@@ -2117,6 +2119,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+<tr><td><code>blocks_portal</code></td><td colspan="3" align="center">false</td><td>Whether the trapdoor blocks any portals it sits on.</td></tr>
 </tbody>
 </table>
 
@@ -2125,6 +2128,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+<tr><td><code>blocks_portal</code></td><td colspan="3" align="center">false</td><td>Whether the trapdoor blocks any portals it sits on.</td></tr>
 </tbody>
 </table>
 
@@ -3984,6 +3988,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1 (65)</th><th align="center">TR2 (114)</th><th align="center">TR3 (139)</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+<tr><td><code>blocks_portal</code></td><td colspan="3" align="center">false</td><td>Whether the trapdoor blocks any portals it sits on.</td></tr>
 </tbody>
 </table>
 
@@ -3992,6 +3997,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1 (66)</th><th align="center">TR2 (115)</th><th align="center">TR3 (140)</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+<tr><td><code>blocks_portal</code></td><td colspan="3" align="center">false</td><td>Whether the trapdoor blocks any portals it sits on.</td></tr>
 </tbody>
 </table>
 
@@ -4000,6 +4006,7 @@ This page lists documented moveable object properties.
 <thead><tr><th>Property</th><th align="center">TR1 (67)</th><th align="center">TR2 (116)</th><th align="center">TR3 (141)</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>auto_open</code></td><td colspan="3" align="center">true</td><td>Whether the trapdoor opens automatically when triggered.</td></tr>
+<tr><td><code>blocks_portal</code></td><td colspan="3" align="center">false</td><td>Whether the trapdoor blocks any portals it sits on.</td></tr>
 </tbody>
 </table>
 

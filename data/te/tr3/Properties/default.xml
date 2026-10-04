@@ -267,6 +267,7 @@
     </moveable>
     <moveable id="139-141">
         <property category="TRX" defaultValue="true" description="Whether the trapdoor opens automatically when triggered." displayName="Auto Open" internalName="auto_open" type="Bool" />
+        <property category="TRX" defaultValue="false" description="Whether the trapdoor blocks any portals it sits on." displayName="Blocks Portal" internalName="blocks_portal" type="Bool" />
     </moveable>
     <moveable id="160-178,205-208,221-227,236,237,240-243,381,382,386,387,391,392">
         <property category="TRX" defaultValue="Normal" description="Pickup animation mode." displayName="Pickup Mode" entries="Normal, Low Pedestal, High Pedestal, Hidden Reach-in, Crowbar, Hidden Sarcophagus, Scion Pedestal" internalName="pickup_mode" type="Enum" />

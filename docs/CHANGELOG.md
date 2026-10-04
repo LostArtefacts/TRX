@@ -40,6 +40,7 @@
 - Added a `shake_camera` property to Earthquakes to control whether or not the camera should shake when active
 - Added a `trigger_items` property to Earthquakes to control whether or not related items are triggered when active
 - Added a `lifetime` property to Earthquakes to control deactivating them automatically after a set number of frames
+- Added a `blocks_portal` property to trapdoors to make them behave like in TR4+
 - Fixed a crash if Lara tried to aim at an enemy who had invalid animation data (#6744 / TRX1632)
 - Fixed missing names for the Trigger Gate object, and being unable to activate them via the `/trigger` command
 
@@ -83,6 +84,7 @@
 - Added Bouncing Boulder control (TRX1560)
 - Added Smashable Vehicle Wall control (TRX1563)
 - Added Enemy Jeep control (excluding Desert Railroad) (TRX1549)
+- Added Trapdoor 1-3 control (TRX1565)
 - Added level views before play starts, with a progress bar (TRX493)
 - Added Seth Sarcophagus and the Burial Chambers cutscene where Lara takes the Amulet (TRX1561)
 - Changed inventory items to use the original size and angle for each level's puzzle, key, pickup, and examine items
@@ -103,6 +105,7 @@
 - Fixed Lara being unable to pull pushable object 80 in Catacombs if pushable object 84 is directly below (OG bug) (TRX1615)
 - Fixed the camera in Tomb of Seth room 1 only showing for one frame after inserting the Eye of Horus (OG bug) (TRX1329)
 - Fixed Lara being able to lock the enemy jeep out of most of KV5 if she closes gates 77 and 78 before it reaches them (OG bug)
+- Fixed Lara not being able to grab ceiling trapdoors (TRX599, regression from 1.9)
 
 **Lua**
 - Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)
