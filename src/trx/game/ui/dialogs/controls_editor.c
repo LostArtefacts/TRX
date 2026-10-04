@@ -21,7 +21,6 @@
 #include <trx/game/ui/elements/resize.h>
 #include <trx/game/ui/elements/row_arrows.h>
 #include <trx/game/ui/elements/spacer.h>
-#include <trx/game/ui/elements/span.h>
 #include <trx/game/ui/elements/stack.h>
 #include <trx/game/ui/elements/window.h>
 #include <trx/game/ui/scaler.h>
