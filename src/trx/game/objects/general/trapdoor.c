@@ -9,13 +9,13 @@
 #include <trx/game/objects/traps/movable_block.h>
 
 typedef enum {
-    TRAPDOOR_STATE_CLOSED,
-    TRAPDOOR_STATE_OPEN,
-} TRAPDOOR_STATE;
+    M_STATE_CLOSED,
+    M_STATE_OPEN,
+} M_STATE;
 
 typedef enum {
-    TRAPDOOR_ANIM_CLOSED = 0,
-} TRAPDOOR_ANIM;
+    M_ANIM_CLOSED = 0,
+} M_ANIM;
 
 typedef struct {
     bool auto_open;
@@ -97,7 +97,7 @@ static int32_t M_GetFloorHeight(
 {
     if (!M_IsItemOnTop(item, pos.x, pos.z)) {
         return height;
-    } else if (item->current_anim_state != TRAPDOOR_STATE_CLOSED) {
+    } else if (item->current_anim_state != M_STATE_CLOSED) {
         return height;
     } else if (pos.y > item->pos.y || item->pos.y > height) {
         return height;
@@ -111,7 +111,7 @@ static int32_t M_GetCeilingHeight(
 {
     if (!M_IsItemOnTop(item, pos.x, pos.z)) {
         return height;
-    } else if (item->current_anim_state != TRAPDOOR_STATE_CLOSED) {
+    } else if (item->current_anim_state != M_STATE_CLOSED) {
         return height;
     } else if (pos.y <= item->pos.y || item->pos.y <= height) {
         return height;
@@ -155,7 +155,7 @@ static void M_GetSectorPositions(const ITEM *const item, VECTOR *sector_pos)
 {
     const OBJECT *const obj = Object_Get(item->object_id);
     const ANIM_FRAME *const frame =
-        Object_GetAnim(obj, TRAPDOOR_ANIM_CLOSED)->frame_ptr;
+        Object_GetAnim(obj, M_ANIM_CLOSED)->frame_ptr;
     const BOUNDS_16 rot_bounds = M_RotateBounds(frame->bounds, item->rot.y);
 
     const int32_t x0 = item->pos.x + rot_bounds.min.x;
@@ -218,14 +218,14 @@ static void M_Control(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     const M_PRIV *const p = item->priv;
     if (Item_IsTriggerActive(item)) {
-        if (item->current_anim_state == TRAPDOOR_STATE_CLOSED
-            && (p->auto_open || item->goal_anim_state == TRAPDOOR_STATE_OPEN)) {
-            item->goal_anim_state = TRAPDOOR_STATE_OPEN;
+        if (item->current_anim_state == M_STATE_CLOSED
+            && (p->auto_open || item->goal_anim_state == M_STATE_OPEN)) {
+            item->goal_anim_state = M_STATE_OPEN;
             M_DropStack(item);
         }
     } else {
-        if (item->current_anim_state == TRAPDOOR_STATE_OPEN) {
-            item->goal_anim_state = TRAPDOOR_STATE_CLOSED;
+        if (item->current_anim_state == M_STATE_OPEN) {
+            item->goal_anim_state = M_STATE_CLOSED;
         }
     }
     Item_Animate(item);
@@ -237,7 +237,7 @@ static void M_OpenManually(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     Item_AddSimulated(item_num);
     item->trigger.mask = TRIGGER_MASK_ALL;
-    item->goal_anim_state = TRAPDOOR_STATE_OPEN;
+    item->goal_anim_state = M_STATE_OPEN;
 }
 
 static void M_AssertCamera(
@@ -278,8 +278,7 @@ static void M_FloorCollision(
     }
 
     if (lara_item->current_anim_state == LS(LS_LIFT_TRAPDOOR)
-        && Item_IsInPlay(item)
-        && item->current_anim_state != TRAPDOOR_STATE_OPEN) {
+        && Item_IsInPlay(item) && item->current_anim_state != M_STATE_OPEN) {
         M_AssertCamera(item, WALL_L * 2, -WALL_L * 2, true);
     }
 }
@@ -304,8 +303,7 @@ static void M_CeilingCollision(
     }
 
     if (lara_item->current_anim_state == LS(LS_PULL_TRAPDOOR)
-        && Item_IsInPlay(item)
-        && item->current_anim_state != TRAPDOOR_STATE_OPEN) {
+        && Item_IsInPlay(item) && item->current_anim_state != M_STATE_OPEN) {
         M_AssertCamera(item, WALL_L, WALL_L, false);
     }
 }
