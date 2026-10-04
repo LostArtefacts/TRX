@@ -10,8 +10,19 @@ local requester = require("common.ui.requester")
 
 local M = {}
 
--- The engine's pause dialog sits at the foot of the screen, inside a margin
--- of fifty canvas units.
+-- Fallback text for the pause screen's own strings. The strings files and
+-- their translations take precedence.
+trx.locale.declare({
+  ["general/pause/exit_to_title"] = "Exit to title?",
+  ["general/pause/continue"] = "Continue",
+  ["general/pause/quit"] = "Quit",
+  ["general/pause/are_you_sure"] = "Are you sure?",
+  ["general/pause/yes"] = "Yes",
+  ["general/pause/no"] = "No",
+})
+
+-- The pause question sits at the foot of the screen, inside a margin of fifty
+-- canvas units.
 local MARGIN = 50.0
 
 local function question(title, first, second)

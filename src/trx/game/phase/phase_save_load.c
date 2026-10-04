@@ -2,11 +2,9 @@
 
 #include <trx/config.h>
 #include <trx/core/memory.h>
-#include <trx/debug.h>
 #include <trx/game/game.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/input.h>
-#include <trx/game/inventory.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
 #include <trx/game/output/overlay.h>
@@ -14,13 +12,10 @@
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
-#include <trx/game/ui.h>
 #include <trx/game/ui/dialogs/takeover.h>
 
 typedef struct {
     INVENTORY_MODE mode;
-    UI_SAVE_SLOT_DIALOG_STATE *dialog;
-    GAME_STRING_ID error_msg;
     bool music_paused;
 } M_PRIV;
 
@@ -35,18 +30,6 @@ static INVENTORY_MODE M_ResolveMode(const INVENTORY_MODE mode)
 static bool M_IsLoading(const M_PRIV *const p)
 {
     return p->mode == INV_LOAD_MODE;
-}
-
-static SAVEGAME_SLOT_REF M_GetInitialSlot(void)
-{
-    SAVEGAME_SLOT_REF slot = SG_Manager_GetMostRecentlyUsedSlot();
-    if (!SG_Manager_IsValidSlotRef(slot)) {
-        slot = SG_Manager_GetMostRecentlyCreatedSlot();
-    }
-    if (!SG_Manager_IsValidSlotRef(slot)) {
-        slot = SG_Manager_NormalSlot(0);
-    }
-    return slot;
 }
 
 static void M_SetTitle(const M_PRIV *const p)
@@ -75,24 +58,14 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
 
     Output_Overlay_CaptureGameSnapshot();
     M_SetTitle(p);
-    if (!UI_Takeover_Offer(UI_TAKEOVER_SAVE_LOAD, p->mode)) {
-        p->dialog = UI_SaveSlotDialog_Init(
-            M_IsLoading(p) ? UI_SAVE_SLOT_DIALOG_LOAD_GAME
-                           : UI_SAVE_SLOT_DIALOG_SAVE_GAME,
-            M_GetInitialSlot());
-    }
+    UI_Takeover_Offer(UI_TAKEOVER_SAVE_LOAD, p->mode);
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
 }
 
 static void M_End(PHASE *const phase)
 {
-    M_PRIV *const p = phase->priv;
     Overlay_SetBottomText((OVERLAY_TEXT) { 0 });
     UI_Takeover_Release(UI_TAKEOVER_SAVE_LOAD);
-    if (p->dialog != nullptr) {
-        UI_SaveSlotDialog_Free(p->dialog);
-        p->dialog = nullptr;
-    }
 }
 
 static PHASE_CONTROL M_Leave(M_PRIV *const p, const GF_COMMAND gf_cmd)
@@ -104,26 +77,9 @@ static PHASE_CONTROL M_Leave(M_PRIV *const p, const GF_COMMAND gf_cmd)
     return (PHASE_CONTROL) { .action = PHASE_ACTION_END, .gf_cmd = gf_cmd };
 }
 
-static PHASE_CONTROL M_Confirm(M_PRIV *const p, const SAVEGAME_SLOT_REF slot)
-{
-    if (!M_IsLoading(p)) {
-        Savegame_Save(slot);
-        return M_Leave(p, (GF_COMMAND) { .action = GF_NOOP });
-    }
-
-    Inv_Clear();
-    return M_Leave(
-        p,
-        (GF_COMMAND) {
-            .action = GF_START_SAVED_GAME,
-            .param = SG_Manager_SlotToParam(slot),
-        });
-}
-
 static PHASE_CONTROL M_Control(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
-    ASSERT(UI_Takeover_IsHeld(UI_TAKEOVER_SAVE_LOAD) || p->dialog != nullptr);
 
     Input_Update();
     Shell_ProcessInput();
@@ -131,54 +87,19 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         return M_Leave(p, (GF_COMMAND) { .action = GF_EXIT_GAME });
     }
 
-    if (UI_Takeover_IsHeld(UI_TAKEOVER_SAVE_LOAD)) {
-        if (UI_Takeover_TakeChoice(UI_TAKEOVER_SAVE_LOAD)
+    if (!UI_Takeover_IsHeld(UI_TAKEOVER_SAVE_LOAD)
+        || UI_Takeover_TakeChoice(UI_TAKEOVER_SAVE_LOAD)
             != UI_TAKEOVER_CHOICE_NONE) {
-            return M_Leave(p, (GF_COMMAND) { .action = GF_NOOP });
-        }
-        return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
-    }
-
-    const UI_SAVE_SLOT_DIALOG_CHOICE choice =
-        UI_SaveSlotDialog_Control(p->dialog);
-    switch (choice.action) {
-    case UI_SAVE_SLOT_DIALOG_NO_CHOICE:
-        break;
-
-    case UI_SAVE_SLOT_DIALOG_CANCEL:
         return M_Leave(p, (GF_COMMAND) { .action = GF_NOOP });
-
-    case UI_SAVE_SLOT_DIALOG_CONFIRM:
-        return M_Confirm(p, choice.slot);
-
-    case UI_SAVE_SLOT_DIALOG_DELETE_FAILED:
-        p->error_msg = GS_ID("general/passport/delete_save_failed");
-        break;
     }
-
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
 }
 
 static void M_Draw(PHASE *const phase)
 {
-    M_PRIV *const p = phase->priv;
     Output_Overlay_DrawBackground(
         g_Config.ui.inventory_background_style, 1.0f, nullptr);
     Output_Flush();
-
-    if (p->dialog != nullptr) {
-        UI_SaveSlotDialog(p->dialog);
-    }
-
-    if (p->error_msg != nullptr) {
-        UI_BeginModal(0.5f, 0.67f);
-        UI_BeginFrame(UI_FRAME_DIALOG_BACKGROUND);
-        UI_BeginPad(8.0f, 8.0f);
-        UI_Label(GameString_Get(p->error_msg));
-        UI_EndPad();
-        UI_EndFrame();
-        UI_EndModal();
-    }
 }
 
 bool Phase_SaveLoad_IsAvailable(const INVENTORY_MODE mode)
