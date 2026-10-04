@@ -35,7 +35,7 @@ static void M_FireTriggerEvent(
 static bool M_IsOneShotSpent(
     const ITEM_TRIGGER *const trigger, const ITEM *const item)
 {
-    if (g_TRVersion == 3) {
+    if (g_TRVersion >= 3) {
         switch (trigger->kind) {
         case ITEM_TRIGGER_SWITCH:
             return item->trigger.switch_spent;
@@ -66,7 +66,7 @@ void Item_Trigger(const int16_t item_num, const ITEM_TRIGGER *const trigger)
         case ITEM_TRIGGER_SWITCH:
         case ITEM_TRIGGER_HEAVY_SWITCH:
             item->trigger.mask ^= trigger->mask;
-            if (trigger->one_shot && g_TRVersion == 3) {
+            if (trigger->one_shot && g_TRVersion >= 3) {
                 item->trigger.switch_spent = true;
             }
             break;
@@ -79,7 +79,7 @@ void Item_Trigger(const int16_t item_num, const ITEM_TRIGGER *const trigger)
                 item->trigger.mask &= ~trigger->mask;
             }
             if (trigger->one_shot) {
-                if (g_TRVersion == 3) {
+                if (g_TRVersion >= 3) {
                     item->trigger.anti_spent = true;
                 } else {
                     item->trigger.spent = true;
