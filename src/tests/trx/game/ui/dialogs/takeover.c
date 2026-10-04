@@ -76,6 +76,17 @@ TEST(a_choice_is_taken_once_and_ends_the_hold)
         UI_TAKEOVER_CHOICE_NONE);
 }
 
+TEST(a_closed_screen_counts_until_its_choice_is_taken)
+{
+    M_Reset(true);
+    UI_Takeover_Offer(UI_TAKEOVER_RING_ENTRY, 0);
+    CHECK(!UI_Takeover_IsAnyClosed());
+    UI_Takeover_Close(UI_TAKEOVER_RING_ENTRY, UI_TAKEOVER_CHOICE_CANCEL);
+    CHECK(UI_Takeover_IsAnyClosed());
+    UI_Takeover_TakeChoice(UI_TAKEOVER_RING_ENTRY);
+    CHECK(!UI_Takeover_IsAnyClosed());
+}
+
 TEST(closing_a_screen_nobody_holds_does_nothing)
 {
     M_Reset(false);

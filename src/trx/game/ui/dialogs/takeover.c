@@ -49,6 +49,16 @@ bool UI_Takeover_IsAnyHeld(void)
     return false;
 }
 
+bool UI_Takeover_IsAnyClosed(void)
+{
+    for (int32_t i = 0; i < UI_TAKEOVER_NUMBER_OF; i++) {
+        if (m_State[i].choice != UI_TAKEOVER_CHOICE_NONE) {
+            return true;
+        }
+    }
+    return false;
+}
+
 UI_TAKEOVER_CHOICE UI_Takeover_TakeChoice(const UI_TAKEOVER screen)
 {
     M_STATE *const state = &m_State[screen];
