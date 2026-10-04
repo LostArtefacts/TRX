@@ -35,6 +35,7 @@
 **Gameplay**
 - Added the ability to combine the two halves of an item in the inventory, such as the eye pieces in Tomb of Seth (TRX482)
 - Fixed a bug where a friendly sentry gun kept aiming at Lara, and aimed at enemies it had no shot at, instead of the enemies it was set to attack
+- Fixed Lara not getting a crystal when starting a game with the crystal mode set to Saving (pickups) (Gameplay → General → Crystal mode)
 
 **Level and game data**
 - Added a `mode` property to Earthquakes to select the camera shake intensity and sound effect behavior
