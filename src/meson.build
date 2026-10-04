@@ -968,7 +968,6 @@ common_sources = [
   'trx/game/ui/dialogs/controls_editor.c',
   'trx/game/ui/dialogs/gameplay_settings.c',
   'trx/game/ui/dialogs/graphic_settings.c',
-  'trx/game/ui/dialogs/pause.c',
   'trx/game/ui/dialogs/save_slot.c',
   'trx/game/ui/dialogs/setting_helpers/handlers.c',
   'trx/game/ui/dialogs/setting_helpers/handlers_language.c',

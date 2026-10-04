@@ -12,7 +12,6 @@
 #include <trx/game/overlay.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
-#include <trx/game/ui.h>
 #include <trx/game/ui/dialogs/takeover.h>
 
 #include <stdint.h>
@@ -28,10 +27,6 @@ typedef enum {
 
 typedef struct {
     STATE state;
-    struct {
-        bool is_ready;
-        UI_PAUSE_STATE state;
-    } ui;
     GF_ACTION action;
     FADER fader;
     bool resume_pending;
@@ -51,7 +46,6 @@ static void M_FadeIn(M_PRIV *const p)
 static void M_FadeOut(M_PRIV *const p)
 {
     M_RemoveText(p);
-    p->ui.is_ready = false;
     if (p->action == GF_NOOP) {
         Fader_InitFromCurrent(&p->fader, 0.0f, M_FADE_TIME);
     } else {
@@ -100,9 +94,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
 
-    p->ui.is_ready = false;
     p->resume_pending = false;
-    UI_Pause_Init(&p->ui.state);
     M_PauseGame(p);
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
 }
@@ -112,7 +104,6 @@ static void M_End(PHASE *const phase)
     M_PRIV *const p = phase->priv;
     UI_Takeover_Release(UI_TAKEOVER_PAUSE);
     M_RemoveText(p);
-    UI_Pause_Free(&p->ui.state);
 }
 
 static bool M_IsFadeActive(M_PRIV *const p)
@@ -126,10 +117,6 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     M_PRIV *const p = phase->priv;
     Input_Update();
     Shell_ProcessInput();
-
-    if (p->ui.is_ready) {
-        UI_Pause_Control(&p->ui.state);
-    }
 
     switch (p->state) {
     case STATE_FADE_IN:
@@ -148,9 +135,9 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
             if (g_InputDB.pause) {
                 M_ReturnToGame(p);
                 return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-            } else if (g_InputDB.option) {
+            } else if (
+                g_InputDB.option && UI_Takeover_Offer(UI_TAKEOVER_PAUSE, 0)) {
                 p->state = STATE_ASK;
-                UI_Takeover_Offer(UI_TAKEOVER_PAUSE, 0);
             }
         } else {
             if (g_InputDB.pause || g_InputDB.option) {
@@ -160,39 +147,21 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         }
         break;
 
-    case STATE_ASK: {
-        if (UI_Takeover_IsHeld(UI_TAKEOVER_PAUSE)) {
-            switch (UI_Takeover_TakeChoice(UI_TAKEOVER_PAUSE)) {
-            case UI_TAKEOVER_CHOICE_CANCEL:
-                p->state = STATE_WAIT;
-                return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-            case UI_TAKEOVER_CHOICE_RESUME:
-                M_ReturnToGame(p);
-                return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-            case UI_TAKEOVER_CHOICE_EXIT_TO_TITLE:
-                M_ExitToTitle(p);
-                return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-            default:
-                break;
-            }
-            break;
-        }
-        const UI_PAUSE_EXIT_CHOICE choice = UI_Pause_Control(&p->ui.state);
-        switch (choice) {
-        case UI_PAUSE_RESUME_PAUSE:
+    case STATE_ASK:
+        switch (UI_Takeover_TakeChoice(UI_TAKEOVER_PAUSE)) {
+        case UI_TAKEOVER_CHOICE_CANCEL:
             p->state = STATE_WAIT;
             return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-        case UI_PAUSE_EXIT_TO_GAME:
+        case UI_TAKEOVER_CHOICE_RESUME:
             M_ReturnToGame(p);
             return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
-        case UI_PAUSE_EXIT_TO_TITLE:
+        case UI_TAKEOVER_CHOICE_EXIT_TO_TITLE:
             M_ExitToTitle(p);
             return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
         default:
             break;
         }
         break;
-    }
 
     case STATE_FADE_OUT:
         if (!M_IsFadeActive(p)) {
@@ -222,10 +191,6 @@ static void M_Draw(PHASE *const phase)
     Output_Overlay_DrawBackground(
         g_Config.ui.pause_background_style, progress, nullptr);
     Output_Flush();
-
-    if (p->state == STATE_ASK && !UI_Takeover_IsHeld(UI_TAKEOVER_PAUSE)) {
-        UI_Pause(&p->ui.state);
-    }
 }
 
 PHASE *Phase_Pause_Create(void)

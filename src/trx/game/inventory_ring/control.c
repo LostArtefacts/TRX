@@ -473,20 +473,6 @@ static void M_ApplyCombineChoice(
     M_SnapshotFrameState(ring);
 }
 
-// Puts the passport back when no script draws it. With Lara dead, the
-// passport is the only way on, so the game returns to the title instead.
-static void M_DeclinePassport(INV_RING *const ring)
-{
-    LOG_ERROR("no script draws the passport");
-    if (ring->mode == INV_DEATH_MODE) {
-        GF_OverrideCommand((GF_COMMAND) { .action = GF_EXIT_TO_TITLE }, false);
-        InvRing_SetStatusTransition(
-            ring, RNG_CLOSING_ITEM, RNG_EXITING_INVENTORY, 0);
-    } else {
-        InvRing_SetStatusTransition(ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
-    }
-}
-
 static GF_COMMAND M_Control(INV_RING *const ring)
 {
     if (ring->status == RNG_OPENING) {
@@ -748,11 +734,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
 
         if (!ring->takeover_offered && inv_item->action == ACTION_USE) {
             ring->takeover_offered = true;
-            if (!UI_Takeover_Offer(UI_TAKEOVER_RING_ENTRY, inv_item->object_id)
-                && inv_item->object_id == O_PASSPORT_OPTION) {
-                M_DeclinePassport(ring);
-                break;
-            }
+            UI_Takeover_Offer(UI_TAKEOVER_RING_ENTRY, inv_item->object_id);
         }
 
         bool busy = false;
