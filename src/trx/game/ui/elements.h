@@ -7,7 +7,6 @@
 #include <trx/game/ui/elements/frame.h>
 #include <trx/game/ui/elements/gradient_slider.h>
 #include <trx/game/ui/elements/hide.h>
-#include <trx/game/ui/elements/horizontal_line.h>
 #include <trx/game/ui/elements/label.h>
 #include <trx/game/ui/elements/modal.h>
 #include <trx/game/ui/elements/offset.h>
@@ -17,6 +16,5 @@
 #include <trx/game/ui/elements/row_arrows.h>
 #include <trx/game/ui/elements/scrollable_stack.h>
 #include <trx/game/ui/elements/spacer.h>
-#include <trx/game/ui/elements/span.h>
 #include <trx/game/ui/elements/stack.h>
 #include <trx/game/ui/elements/window.h>
