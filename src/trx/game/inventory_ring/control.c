@@ -31,7 +31,6 @@
 #include <trx/game/option/combine.h>
 #include <trx/game/option/examine.h>
 #include <trx/game/option/globe_select.h>
-#include <trx/game/option/save_crystal.h>
 #include <trx/game/option/stats.h>
 #include <trx/game/output/overlay.h>
 #include <trx/game/overlay.h>
@@ -329,12 +328,6 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
     }
 
     switch (m_InvChosen) {
-    case O_SAVE_CRYSTAL_OPTION:
-        if (apply_changes) {
-            Option_SaveCrystal_CommitSave();
-        }
-        break;
-
     case O_PHOTO_OPTION:
         if (apply_changes) {
             SG_Manager_UnbindSlot();
@@ -765,6 +758,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                     g_InvRing_Source[ring->type].current = ring->current_object;
                 }
                 if (choice != UI_TAKEOVER_CHOICE_NONE) {
+                    ring->takeover_left = leaves_ring;
                     InvRing_SetStatusTransition(
                         ring, RNG_CLOSING_ITEM,
                         leaves_ring ? RNG_EXITING_INVENTORY : RNG_DESELECT, 0);
@@ -878,10 +872,12 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         // it, and the ring behind it says nothing.
         const bool is_combining =
             ring->status == RNG_SELECTED && current->action == ACTION_COMBINE;
-        if (UI_Takeover_IsHeld(UI_TAKEOVER_RING_ENTRY)) {
+        if (UI_Takeover_IsHeld(UI_TAKEOVER_RING_ENTRY) || ring->takeover_left) {
             // A script answers for the entry, its caption included, so the
-            // name the ring would put up stands down. The ring's own header
-            // stays, as it does behind the engine's own pages.
+            // name the ring would put up stands down. The name stays down
+            // when the script leaves the ring, because the script can change
+            // the count that the ring shows with the name. The ring's own
+            // header stays, as it does behind the engine's own pages.
             InvRing_RemoveItemTexts();
         } else if (
             !is_combining && !ring->rotating

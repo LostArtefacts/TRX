@@ -10,7 +10,6 @@
 #include <trx/game/option/gameplay.h>
 #include <trx/game/option/globe_select.h>
 #include <trx/game/option/graphics.h>
-#include <trx/game/option/save_crystal.h>
 #include <trx/game/option/sound.h>
 #include <trx/game/option/stats.h>
 #include <trx/version.h>
@@ -59,9 +58,6 @@ void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
         break;
     case O_GLOBE_OPTION:
         Option_GlobeSelect_Control(inv_item, is_busy);
-        break;
-    case O_SAVE_CRYSTAL_OPTION:
-        Option_SaveCrystal_Control(inv_item, is_busy);
         break;
 
     case O_PISTOLS_OPTION:
@@ -142,9 +138,6 @@ void Option_Draw(INVENTORY_ITEM *const inv_item)
     case O_GLOBE_OPTION:
         Option_GlobeSelect_Draw(inv_item);
         break;
-    case O_SAVE_CRYSTAL_OPTION:
-        Option_SaveCrystal_Draw();
-        break;
     default:
         break;
     }
@@ -176,9 +169,6 @@ void Option_Close(const INVENTORY_ITEM *const inv_item)
         break;
     case O_GLOBE_OPTION:
         Option_GlobeSelect_Close();
-        break;
-    case O_SAVE_CRYSTAL_OPTION:
-        Option_SaveCrystal_Close();
         break;
     default:
         Option_Examine_Close();

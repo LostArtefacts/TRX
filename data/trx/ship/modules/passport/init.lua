@@ -2,6 +2,8 @@
 -- and every list that the pages open. The page that the book rests on is one
 -- layer, and each list opened from it is a layer above it. A choice that
 -- leaves the passport runs as a game flow command once the ring has closed.
+-- The quick save and load screens and the save crystal entry show one page
+-- of the passport alone.
 --
 --   require("common.passport").setup()
 
@@ -77,6 +79,7 @@ local arrow_right = trx.signal.new(false)
 ---@field delete_armed boolean
 ---@field browse? boolean
 ---@field standalone? boolean
+---@field crystal? boolean
 ---@field book? trx.ui.StackLayer
 ---@field page? passport.Sheet
 ---@field place? fun(w: number, h: number): number, number
@@ -326,7 +329,8 @@ end
 
 -- Shuts the book towards the nearer cover. A confirmed close leaves the ring;
 -- otherwise the entry goes back into the ring. The quick save and load screens
--- have no book to shut, and take only a cancel.
+-- have no book to shut, and take only a cancel. The save crystal has no book
+-- either, and leaves the ring once it saves.
 local function close(confirmed)
   local anim = not state.standalone and trx.inventory_ring.selection_anim()
     or nil
@@ -337,7 +341,7 @@ local function close(confirmed)
       trx.inventory_ring.animate_selection(0, -1)
     end
   end
-  if confirmed and not state.standalone then
+  if confirmed and (not state.standalone or state.crystal) then
     state.ctx:confirm()
   else
     state.ctx:cancel()
@@ -815,6 +819,16 @@ end
 -- Choices
 -------------------------------------------------------------------------------
 
+-- Spends a crystal before the save, so that the save does not hold it. A save
+-- that fails gives the crystal back.
+local function save_with_crystal(row)
+  local crystal = trx.catalog.objects.SAVE_CRYSTAL_ITEM
+  trx.inventory.take(crystal)
+  if not trx.savegame.save(row.slot_num, row.pool) then
+    trx.inventory.give(crystal)
+  end
+end
+
 local function choose_new_game(row)
   if row.choice == "new_game" then
     trx.game.start_new_game()
@@ -880,7 +894,11 @@ choose = function(entry, row)
     if row.pool ~= trx.savegame.Pool.NORMAL then
       return
     end
-    trx.savegame.save(row.slot_num, row.pool)
+    if state.crystal then
+      save_with_crystal(row)
+    else
+      trx.savegame.save(row.slot_num, row.pool)
+    end
     close(true)
   elseif role == Page.SELECT_LEVEL then
     if game_modes_available() then
@@ -1177,20 +1195,15 @@ local function open(ctx)
   return state.book
 end
 
--- The quick save and load screens hold one page alone, with no ring and no
--- book behind it. A page with no list leaves the screen to the engine.
-local function open_save_load(ctx)
-  local pages = determine_pages(ctx.mode)
-  local index = first_available(pages)
-  if index == nil or FLAT[pages[index].role] then
-    return nil
-  end
-
+-- Holds one page alone, with no ring and no book behind it. Returns nil when
+-- the page has no list.
+local function open_alone(ctx, pages, index, crystal)
   state = {
     ctx = ctx,
     pages = pages,
     index = index,
     standalone = true,
+    crystal = crystal,
     lists = {},
     page_shown = trx.signal.new(true),
     delete_hold = 0,
@@ -1218,6 +1231,79 @@ local function open_save_load(ctx)
   return state.book
 end
 
+-- Opens the page of the quick save and load screens. A page with no list
+-- leaves the screen closed.
+local function open_save_load(ctx)
+  local pages = determine_pages(ctx.mode)
+  local index = first_available(pages)
+  if index == nil or FLAT[pages[index].role] then
+    return nil
+  end
+  return open_alone(ctx, pages, index, false)
+end
+
+-- Names the crystal at the foot of the screen, as the ring names its entries.
+-- Above two crystals or more, the count sits to the right of the name, as the
+-- ring puts it.
+local function crystal_caption()
+  local crystal = trx.catalog.objects.SAVE_CRYSTAL_ITEM
+  local name = trx.locale.get("objects/save_crystal_item/name"):match("^[^|]*")
+  local count = trx.inventory.count(crystal)
+  return trx.ui.widgets.Stack({
+    spacing = 28.0,
+    align = trx.ui.HAlign.CENTER,
+    children = {
+      trx.ui.widgets.Stack({
+        orientation = trx.ui.Orientation.HORIZONTAL,
+        shown = count > 1,
+        children = {
+          trx.ui.widgets.Custom({
+            measure = function()
+              return 128.0, 0.0
+            end,
+            paint = function() end,
+          }),
+          trx.ui.widgets.Label({
+            text = trx.locale.format(
+              "general/inventory_ring/item_count_fmt",
+              tostring(count)
+            ),
+          }),
+        },
+      }),
+      trx.ui.widgets.Label({
+        text = trx.locale.format(
+          "general/inventory_ring/object_name_fmt",
+          name
+        ),
+      }),
+    },
+  })
+end
+
+-- Opens the save page of the save crystal entry. The crystal saves only in the
+-- save pickup mode, and only from the ring that the player opened. The ring
+-- does not name an entry that a script holds, so the page names the crystal.
+local function open_crystal(ctx)
+  if
+    trx.config.get("gameplay.save_crystal_mode") ~= "save_pickup"
+    or trx.inventory_ring.mode() ~= trx.inventory_ring.Mode.GAME
+  then
+    return nil
+  end
+  local book =
+    open_alone(ctx, { { role = Page.SAVE_GAME, available = true } }, 1, true)
+  if book == nil then
+    return nil
+  end
+  ctx:push({
+    root = crystal_caption(),
+    region = trx.ui.Region.BOTTOM_CENTER,
+    modal = false,
+  })
+  return book
+end
+
 function M.setup()
   trx.ui.screens.define(
     trx.ui.Screen.RING_ENTRY,
@@ -1225,6 +1311,11 @@ function M.setup()
     { object = trx.catalog.objects.PASSPORT_OPTION }
   )
   trx.ui.screens.define(trx.ui.Screen.SAVE_LOAD, open_save_load)
+  trx.ui.screens.define(
+    trx.ui.Screen.RING_ENTRY,
+    open_crystal,
+    { object = trx.catalog.objects.SAVE_CRYSTAL_OPTION }
+  )
 end
 
 return M

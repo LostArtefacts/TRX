@@ -141,6 +141,7 @@ typedef struct {
     bool is_demo_needed;
     bool is_pass_open;
     bool takeover_offered;
+    bool takeover_left;
     bool is_done;
     bool has_spun_out;
     int32_t old_fov;
