@@ -20,6 +20,7 @@
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/ui.h>
+#include <trx/game/ui/dialogs/takeover.h>
 #include <trx/game/ui/touch_overlay.h>
 #include <trx/gl/context.h>
 #include <trx/gl/gpu_timer.h>
@@ -178,8 +179,16 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     // Publish signals after phase control updates the frame state.
     if (phase != nullptr && phase->control != nullptr) {
         Output_DropPendingFog();
+        const bool was_closed = UI_Takeover_IsAnyClosed();
         const PHASE_CONTROL control = phase->control(phase);
         LUA_FireEvent(LUA_EVENT_TICK);
+        // Runs the phase again before the next draw when a script closes a
+        // screen during the tick. Otherwise one frame shows the screen
+        // without the script's layers.
+        if (control.action == PHASE_ACTION_CONTINUE && !was_closed
+            && UI_Takeover_IsAnyClosed()) {
+            return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
+        }
         return control;
     }
 

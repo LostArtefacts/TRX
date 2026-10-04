@@ -41,6 +41,10 @@ bool UI_Takeover_IsHeld(UI_TAKEOVER screen);
 // Returns whether an owner holds any screen.
 bool UI_Takeover_IsAnyHeld(void);
 
+// Returns whether an owner closed any screen with a choice that has not been
+// taken yet.
+bool UI_Takeover_IsAnyClosed(void);
+
 // Returns the choice the owner closed the screen with, or
 // UI_TAKEOVER_CHOICE_NONE while the screen is still open. A returned choice
 // ends the owner's hold on the screen.
