@@ -492,11 +492,11 @@ void Sparks_FreeDynamic(const int8_t idx)
 void Sparks_Reset(void)
 {
     for (int32_t i = 0; i < M_MAX_SPARKS; i++) {
-        m_Sparks[i].on = false;
+        m_Sparks[i] = (SPARK) {};
         m_Sparks[i].dynamic = -1;
     }
     for (int32_t i = 0; i < M_MAX_SPARK_DYNAMICS; i++) {
-        m_Dynamics[i].on = false;
+        m_Dynamics[i] = (M_SPARK_DYNAMIC) {};
     }
     Handle_RegistryBumpAll(&m_SparkHandles);
     m_NextSpark = 0;
