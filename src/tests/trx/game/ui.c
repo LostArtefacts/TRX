@@ -21,6 +21,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/event_manager.h>
+#include <trx/core/filesystem.h>
 #include <trx/core/subsystem.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/ui.h>

@@ -11,6 +11,8 @@ local Role = trx.input.Role
 local RING_ENTRY = trx.ui.Screen.RING_ENTRY
 local SAVE_LOAD = trx.ui.Screen.SAVE_LOAD
 local PASSPORT = trx.catalog.objects.PASSPORT_OPTION
+local CRYSTAL = trx.catalog.objects.SAVE_CRYSTAL_OPTION
+local CRYSTAL_ITEM = trx.catalog.objects.SAVE_CRYSTAL_ITEM
 local CHOICE_CANCEL = 1
 local CHOICE_CONFIRM = 2
 
@@ -18,9 +20,12 @@ local CHOICE_CONFIRM = 2
 local OPEN_FRAME = 10
 local FRAME_COUNT = 30
 
--- The strings files are not loaded, so the caption format falls back to the
--- shipped one.
-trx.locale.declare({ ["general/inventory_ring/object_name_fmt"] = "%s" })
+-- The strings files are not loaded, so the caption and count formats fall
+-- back to the shipped ones.
+trx.locale.declare({
+  ["general/inventory_ring/object_name_fmt"] = "%s",
+  ["general/inventory_ring/item_count_fmt"] = "\\{small}%s",
+})
 
 require("common.passport").setup()
 
@@ -512,6 +517,78 @@ test("backing out of the quick screen closes it", function()
   tick()
   press(Role.MENU_BACK)
   assert(fake.take_choice(SAVE_LOAD) == CHOICE_CANCEL)
+  finish()
+end)
+
+local function open_crystal(crystal_mode, count)
+  clean()
+  fake.set_current_level(2)
+  trx.config.set("gameplay.save_crystal_mode", crystal_mode or "save_pickup")
+  trx.inventory.set_count(CRYSTAL_ITEM, count or 1)
+  fake.open_ring(Mode.GAME, CRYSTAL, OPEN_FRAME, FRAME_COUNT)
+  local taken = fake.offer(RING_ENTRY, CRYSTAL)
+  tick()
+  return taken
+end
+
+test("the save crystal shows the save list and its own name", function()
+  assert(open_crystal(), "the crystal was not taken")
+  local drawn = texts()
+  assert(has(drawn, L("general/passport/save_game")), table.concat(drawn, ","))
+  assert(
+    has(drawn, "objects/save_crystal_item/name"),
+    table.concat(drawn, ",")
+  )
+  assert(not has(drawn, "\\{button right}"), "the crystal drew page arrows")
+  finish()
+end)
+
+test("the save crystal shows the count above one crystal", function()
+  assert(open_crystal("save_pickup", 3))
+  local count = trx.locale.format("general/inventory_ring/item_count_fmt", "3")
+  assert(count:find("3", 1, true) ~= nil, "the count format lost the count")
+  assert(has(texts(), count), table.concat(texts(), ","))
+  finish()
+end)
+
+test("the save crystal shows no count for one crystal", function()
+  assert(open_crystal())
+  local count = trx.locale.format("general/inventory_ring/item_count_fmt", "1")
+  assert(not has(texts(), count), table.concat(texts(), ","))
+  finish()
+end)
+
+test("the save crystal saves, spends a crystal and leaves the ring", function()
+  assert(open_crystal())
+  press(Role.MENU_CONFIRM)
+  local calls = fake.calls()
+  assert(calls.save.count == 1, "nothing was saved")
+  assert(calls.save.pool == Pool.NORMAL, "the save went to a quick slot")
+  assert(trx.inventory.count(CRYSTAL_ITEM) == 0, "no crystal was spent")
+  assert(fake.take_choice(RING_ENTRY) == CHOICE_CONFIRM)
+  finish()
+end)
+
+test("a failed crystal save keeps the crystal", function()
+  assert(open_crystal())
+  fake.set_save_fails(true)
+  press(Role.MENU_CONFIRM)
+  fake.set_save_fails(false)
+  assert(trx.inventory.count(CRYSTAL_ITEM) == 1, "the crystal was lost")
+  finish()
+end)
+
+test("backing out of the crystal spends nothing", function()
+  assert(open_crystal())
+  press(Role.MENU_BACK)
+  assert(fake.calls().save.count == 0, "something was saved")
+  assert(trx.inventory.count(CRYSTAL_ITEM) == 1, "the crystal was spent")
+  assert(fake.take_choice(RING_ENTRY) == CHOICE_CANCEL)
+  finish()
+end)
+
+test("the crystal saves only in the save pickup mode", function()
+  assert(not open_crystal("heal"), "the crystal was taken")
   finish()
 end)
 
