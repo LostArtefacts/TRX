@@ -22,6 +22,14 @@ trx.events.on_game_start(function(is_save)
   if not is_save then
     start_lara_on_jeep()
   end
+
+  trx.events.on_room_change(function(item, old_room_num, new_room_num)
+    -- Prevent Lara's jeep closing gates 77 and 78 ahead of the other jeep.
+    if item.object_id == trx.catalog.objects.jeep then
+      trx.objects.jeep.properties.is_heavy = new_room_num ~= 52
+        and new_room_num ~= 68
+    end
+  end)
 end)
 
 require("tr4.inv_setup").apply({
