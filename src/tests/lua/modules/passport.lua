@@ -487,6 +487,24 @@ test("the quick save screen saves to the slot picked", function()
   finish()
 end)
 
+test(
+  "the quick save screen in the gym is left with one new game choice",
+  function()
+    clean()
+    fake.set_current_level(1)
+    local policy = trx.config.get("gameplay.game_modes_policy")
+    local play_prev = trx.config.get("gameplay.enable_play_previous_levels")
+    trx.config.set("gameplay.game_modes_policy", "never")
+    trx.config.set("gameplay.enable_play_previous_levels", false)
+    local taken = fake.offer(SAVE_LOAD, Mode.SAVE)
+    tick()
+    trx.config.set("gameplay.game_modes_policy", policy)
+    trx.config.set("gameplay.enable_play_previous_levels", play_prev)
+    assert(not taken, "the screen was taken with no list to show")
+    finish()
+  end
+)
+
 test("backing out of the quick screen closes it", function()
   clean()
   fake.set_current_level(2)
