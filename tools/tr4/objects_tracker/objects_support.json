@@ -67,7 +67,7 @@
   "double_doors":             { "status": "fully implemented" },
   "earthquake":               { "status": "fully implemented" },
   "element_puzzle":           { "status": "not implemented",       "todo": "port from ELEMENT_PUZZLE"          },
-  "enemy_jeep":               { "status": "partially implemented", "todo": "Complete Desert Railroad logic"    },
+  "enemy_jeep":               { "status": "fully implemented" },
   "examine_item_1":           { "status": "partially implemented", "todo": "check 100% parity"                 },
   "examine_item_2":           { "status": "partially implemented", "todo": "check 100% parity"                 },
   "examine_item_3":           { "status": "partially implemented", "todo": "check 100% parity"                 },

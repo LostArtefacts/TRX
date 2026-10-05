@@ -342,7 +342,7 @@
     },
     {
       "bulk": true,
-      "count": 845,
+      "count": 846,
       "description": "Every object TRX has a name for.",
       "examples": [
         "if item.object_id == trx.catalog.objects.WOLF then ... end"
@@ -601,6 +601,7 @@
         "HEAVY_ROCKET",
         "HENCHMAN_1",
         "HENCHMAN_2",
+        "HENCHMAN_JEEP",
         "HOOK",
         "HOT_LIQUID",
         "HUSKIE",

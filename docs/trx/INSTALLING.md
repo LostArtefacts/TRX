@@ -1306,6 +1306,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── burial_animating_bounds.bin
 │   │   │   ├── font.bin
 │   │   │   ├── guide_gun.bin
+│   │   │   ├── henchman_jeep.bin
 │   │   │   ├── inventory_models.bin
 │   │   │   ├── karnak_fd.bin
 │   │   │   ├── lara_animations.bin
@@ -2739,6 +2740,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── burial_animating_bounds.bin
     │   │   │   │   ├── font.bin
     │   │   │   │   ├── guide_gun.bin
+    │   │   │   │   ├── henchman_jeep.bin
     │   │   │   │   ├── inventory_models.bin
     │   │   │   │   ├── karnak_fd.bin
     │   │   │   │   ├── lara_animations.bin

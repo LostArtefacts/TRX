@@ -266,6 +266,9 @@
                 {"type": "loop_game"},
                 {"type": "level_complete"},
             ],
+            "injections": [
+                "henchman_jeep.bin",
+            ],
         },
 
         // 14. Alexandria

@@ -2716,6 +2716,9 @@
         "henchman_2": {
             "name": "Henchman 2",
         },
+        "henchman_jeep": {
+            "name": "Henchman Jeep",
+        },
         "hook": {
             "name": "Hook",
         },
