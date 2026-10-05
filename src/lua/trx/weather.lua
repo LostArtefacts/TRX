@@ -17,9 +17,12 @@ local M = h.module("weather")
 ---The kinds of weather a level can show.
 ---@enum trx.weather.Type
 local Type = {
-  NONE = "Clear.",
-  RAIN = "Rain.",
-  SNOW = "Snow.",
+  ---Clear.
+  NONE = h.IntegerConstant,
+  ---Rain.
+  RAIN = h.IntegerConstant,
+  ---Snow.
+  SNOW = h.IntegerConstant,
 }
 M.Type = h.enum("weather.Type", "WEATHER_TYPE", Type)
 

@@ -14,10 +14,14 @@ local M = h.module("log")
 ---Severity of a log message. Pass one to `trx.log.generic`.
 ---@enum trx.log.LogLevel
 local LogLevel = {
-  DEBUG = "Diagnostic detail, of interest while writing a script.",
-  INFO = "Ordinary progress message.",
-  WARNING = "Something is wrong, but the script can carry on.",
-  ERROR = "Something failed.",
+  ---Diagnostic detail, of interest while writing a script.
+  DEBUG = h.IntegerConstant,
+  ---Ordinary progress message.
+  INFO = h.IntegerConstant,
+  ---Something is wrong, but the script can carry on.
+  WARNING = h.IntegerConstant,
+  ---Something failed.
+  ERROR = h.IntegerConstant,
 }
 M.LogLevel = h.enum("log.LogLevel", "LOG_LEVEL", LogLevel)
 

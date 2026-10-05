@@ -25,11 +25,16 @@ local M = h.module("weapons")
 ---and firing routine it uses.
 ---@enum trx.weapons.Kind
 local Kind = {
-  DUAL_PISTOLS = "One in each hand, each arm aiming and firing on its own.",
-  SINGLE_PISTOL = "One in the right hand.",
-  RIFLE = "Held in both hands, drawn from Lara's back.",
-  MOUNTED = "Fixed to a vehicle rather than held.",
-  FLARE = "Held in one hand and burning, rather than fired.",
+  ---One in each hand, each arm aiming and firing on its own.
+  DUAL_PISTOLS = h.IntegerConstant,
+  ---One in the right hand.
+  SINGLE_PISTOL = h.IntegerConstant,
+  ---Held in both hands, drawn from Lara's back.
+  RIFLE = h.IntegerConstant,
+  ---Fixed to a vehicle rather than held.
+  MOUNTED = h.IntegerConstant,
+  ---Held in one hand and burning, rather than fired.
+  FLARE = h.IntegerConstant,
 }
 M.Kind = h.enum("weapons.Kind", "WEAPON_TYPE", Kind)
 

@@ -248,6 +248,11 @@ function M.handle(path, backing, spec)
   })
 end
 
+-- Stands in for the value of an enum constant in its declaration table. C
+-- holds the values, and M.enum reads only the names from the table.
+---@type integer
+M.IntegerConstant = 0
+
 -- The handles declared through M.handle, keyed by path, each with the C type it
 -- stands for and its methods: a C method name, or the Lua function bound in its
 -- place.

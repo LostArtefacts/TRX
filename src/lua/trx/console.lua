@@ -93,10 +93,14 @@ end
 ---gives back.
 ---@enum trx.console.Result
 local Result = {
-  OK = "It worked.",
-  FAILURE = "It ran and could not do what was asked.",
-  UNAVAILABLE = "It cannot run here - no level is loaded, or the game is in a menu.",
-  BAD_INVOCATION = "The player typed it wrong.",
+  ---It worked.
+  OK = h.IntegerConstant,
+  ---It ran and could not do what was asked.
+  FAILURE = h.IntegerConstant,
+  ---It cannot run here - no level is loaded, or the game is in a menu.
+  UNAVAILABLE = h.IntegerConstant,
+  ---The player typed it wrong.
+  BAD_INVOCATION = h.IntegerConstant,
 }
 M.Result = h.enum("console.Result", "COMMAND_RESULT", Result)
 

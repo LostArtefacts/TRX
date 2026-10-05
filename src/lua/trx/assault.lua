@@ -29,8 +29,10 @@ local M = h.module("assault")
 ---A timed gym track.
 ---@enum trx.assault.Track
 local Track = {
-  COURSE = "Lara's assault course.",
-  QUAD = "The quad bike circuit.",
+  ---Lara's assault course.
+  COURSE = h.IntegerConstant,
+  ---The quad bike circuit.
+  QUAD = h.IntegerConstant,
 }
 M.Track = h.enum("assault.Track", "GYM_TRACK_TYPE", Track)
 

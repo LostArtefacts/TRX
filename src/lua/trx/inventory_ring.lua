@@ -19,14 +19,22 @@ local M = h.module("inventory_ring")
 ---What the inventory ring was opened for.
 ---@enum trx.inventory_ring.Mode
 local Mode = {
-  GAME = "Opened during play.",
-  TITLE = "The title screen's menu.",
-  KEYS = "The keys ring, opened against a locked door or receptacle.",
-  SAVE = "Opened to save, with the save list already on show.",
-  LOAD = "Opened to load, with the save list already on show.",
-  DEATH = "Opened because Lara died.",
-  SAVE_CRYSTAL = "Opened by a save crystal.",
-  GLOBE_SELECT = "The globe the player picks a destination from.",
+  ---Opened during play.
+  GAME = h.IntegerConstant,
+  ---The title screen's menu.
+  TITLE = h.IntegerConstant,
+  ---The keys ring, opened against a locked door or receptacle.
+  KEYS = h.IntegerConstant,
+  ---Opened to save, with the save list already on show.
+  SAVE = h.IntegerConstant,
+  ---Opened to load, with the save list already on show.
+  LOAD = h.IntegerConstant,
+  ---Opened because Lara died.
+  DEATH = h.IntegerConstant,
+  ---Opened by a save crystal.
+  SAVE_CRYSTAL = h.IntegerConstant,
+  ---The globe the player picks a destination from.
+  GLOBE_SELECT = h.IntegerConstant,
 }
 M.Mode = h.enum("inventory_ring.Mode", "INVENTORY_MODE", Mode)
 

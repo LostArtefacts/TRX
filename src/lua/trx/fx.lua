@@ -451,50 +451,82 @@ end
 ---Which spark-set sprite a spark is drawn with.
 ---@enum trx.fx.SparkType
 local SparkType = {
-  EXPLOSION = "The soft round puff fire, smoke and explosions are drawn with.",
-  SMALL_SPLASH = "A single drop of water.",
-  BIG_SPLASH = "A sheet of water.",
-  RIPPLE = "A ring on the water surface.",
-  PARTICLE = "The plain speck, which is also what a footprint is drawn with.",
-  SHIELD = "The bubble drawn around a shielded target.",
-  ROPE = "A length of rope.",
-  DRIVE = "The forward gear light of a vehicle.",
-  REVERSE = "The reverse gear light of a vehicle.",
-  RICOCHET = "The spark struck off a wall by a shot.",
-  BLOOD = "A drop of blood.",
+  ---The soft round puff fire, smoke and explosions are drawn with.
+  EXPLOSION = h.IntegerConstant,
+  ---A single drop of water.
+  SMALL_SPLASH = h.IntegerConstant,
+  ---A sheet of water.
+  BIG_SPLASH = h.IntegerConstant,
+  ---A ring on the water surface.
+  RIPPLE = h.IntegerConstant,
+  ---The plain speck, which is also what a footprint is drawn with.
+  PARTICLE = h.IntegerConstant,
+  ---The bubble drawn around a shielded target.
+  SHIELD = h.IntegerConstant,
+  ---A length of rope.
+  ROPE = h.IntegerConstant,
+  ---The forward gear light of a vehicle.
+  DRIVE = h.IntegerConstant,
+  ---The reverse gear light of a vehicle.
+  REVERSE = h.IntegerConstant,
+  ---The spark struck off a wall by a shot.
+  RICOCHET = h.IntegerConstant,
+  ---A drop of blood.
+  BLOOD = h.IntegerConstant,
 }
 M.SparkType = h.enum("fx.SparkType", "SPARK_SPRITE_TYPE", SparkType)
 
 ---The context for which a spark is spawned.
 ---@enum trx.fx.SparkContext
 local SparkContext = {
-  DEFAULT = "No specific context.",
-  BLOOD = "Blood on an enemy or Lara.",
-  BREATH = "Lara's breath in cold rooms.",
-  BUBBLE = "Air bubbles either from Lara or weapons underwater.",
-  ELECTRICITY = "Electric sparks from fences or enemies.",
-  EXPLOSION = "The result of a grenade, rocket or enemy exploding.",
-  FIRE = "Any type of flame.",
-  GAS = "Toxic gas from mutants.",
-  PARTICLE = "Small particles, such as from flares burning.",
-  PICKUP_AID = "The twinkle effect shown above pickup items.",
-  PLASMA = "Spawned from enemies such as Sophia Lee.",
-  RICOCHET = "Spawned when bullets hit walls.",
-  SMOKE = "Any type of smoke.",
-  SPLASH = "Spawned when hitting water causes a splash.",
-  WATER_MIST = "Mist spawned from waterfalls and water vehicles.",
+  ---No specific context.
+  DEFAULT = h.IntegerConstant,
+  ---Blood on an enemy or Lara.
+  BLOOD = h.IntegerConstant,
+  ---Lara's breath in cold rooms.
+  BREATH = h.IntegerConstant,
+  ---Air bubbles either from Lara or weapons underwater.
+  BUBBLE = h.IntegerConstant,
+  ---Electric sparks from fences or enemies.
+  ELECTRICITY = h.IntegerConstant,
+  ---The result of a grenade, rocket or enemy exploding.
+  EXPLOSION = h.IntegerConstant,
+  ---Any type of flame.
+  FIRE = h.IntegerConstant,
+  ---Toxic gas from mutants.
+  GAS = h.IntegerConstant,
+  ---Small particles, such as from flares burning.
+  PARTICLE = h.IntegerConstant,
+  ---The twinkle effect shown above pickup items.
+  PICKUP_AID = h.IntegerConstant,
+  ---Spawned from enemies such as Sophia Lee.
+  PLASMA = h.IntegerConstant,
+  ---Spawned when bullets hit walls.
+  RICOCHET = h.IntegerConstant,
+  ---Any type of smoke.
+  SMOKE = h.IntegerConstant,
+  ---Spawned when hitting water causes a splash.
+  SPLASH = h.IntegerConstant,
+  ---Mist spawned from waterfalls and water vehicles.
+  WATER_MIST = h.IntegerConstant,
 }
 M.SparkContext = h.enum("fx.SparkContext", "SPARK_CONTEXT", SparkContext)
 
 ---How a sprite is laid over what is behind it.
 ---@enum trx.fx.DrawType
 local DrawType = {
-  OPAQUE = "It covers what is behind it.",
-  BLEND = "It is mixed with what is behind it.",
-  BLEND_ADD = "It is added to what is behind it, so it lightens.",
-  BLEND_SUB = "It is taken from what is behind it, so it darkens.",
-  REFLECTIVE_OPAQUE = "Opaque, and carrying the room reflection.",
-  REFLECTIVE_BLEND_ADD = "Added, and carrying the room reflection.",
+  ---It covers what is behind it.
+  OPAQUE = h.IntegerConstant,
+  ---It is mixed with what is behind it.
+  BLEND = h.IntegerConstant,
+  ---It is added to what is behind it, so it lightens.
+  BLEND_ADD = h.IntegerConstant,
+  ---It is taken from what is behind it, so it darkens.
+  BLEND_SUB = h.IntegerConstant,
+  ---Opaque, and carrying the room reflection.
+  REFLECTIVE_OPAQUE = h.IntegerConstant,
+  ---Added, and carrying the room reflection.
+  REFLECTIVE_BLEND_ADD = h.IntegerConstant,
 }
 M.DrawType = h.enum("fx.DrawType", "DRAW_TYPE", DrawType)
 

@@ -14,8 +14,10 @@ local M = h.module("savegame")
 ---Which set of save slots a slot belongs to.
 ---@enum trx.savegame.Pool
 local Pool = {
-  NORMAL = "The numbered save slots.",
-  QUICK = "The quick-save slots, counted and addressed by their on-screen order.",
+  ---The numbered save slots.
+  NORMAL = h.IntegerConstant,
+  ---The quick-save slots, counted and addressed by their on-screen order.
+  QUICK = h.IntegerConstant,
 }
 M.Pool = h.enum("savegame.Pool", "SAVEGAME_SLOT_POOL", Pool)
 

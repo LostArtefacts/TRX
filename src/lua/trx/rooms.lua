@@ -54,9 +54,12 @@ local M = h.module("rooms")
 ---The values `trx.rooms.Room.flip_status` can take.
 ---@enum trx.rooms.FlipStatus
 local FlipStatus = {
-  NONE = "This is a normal room.",
-  UNFLIPPED = "This room is currently reachable by Lara.",
-  FLIPPED = "This room is currently inactive and unreachable by Lara.",
+  ---This is a normal room.
+  NONE = h.IntegerConstant,
+  ---This room is currently reachable by Lara.
+  UNFLIPPED = h.IntegerConstant,
+  ---This room is currently inactive and unreachable by Lara.
+  FLIPPED = h.IntegerConstant,
 }
 M.FlipStatus = h.enum("rooms.FlipStatus", "ROOM_FLIP_STATUS", FlipStatus)
 
