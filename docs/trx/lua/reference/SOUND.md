@@ -16,12 +16,14 @@ Module for playing sound effects.
 
 ### Indexing
 
-The samples the current level carries. A level does not carry every number, so indexing one it lacks is `nil` and iterating passes it by.
+The samples the current level carries. A level does not carry every number,
+so indexing one it lacks is `nil` and iterating passes it by.
 
 - <a id="sound.samples[]" name="sound.samples[]"></a>**`trx.sound.samples[key]`** (key: [trx.sound.SampleNum](#sound.SampleNum), value: [trx.sound.Sample](#sound.Sample) or `nil`).
 - **`#trx.sound.samples`** (integer). How many there are.
 
-The sound effects playing now. A slot that is silent still answers, with a stale handle.
+The sound effects playing now. A slot that is silent still answers, with a
+stale handle.
 
 - <a id="sound.streams[]" name="sound.streams[]"></a>**`trx.sound.streams[key]`** (key: [trx.sound.StreamNum](#sound.StreamNum), value: [trx.sound.Stream](#sound.Stream) or `nil`).
 - **`#trx.sound.streams`** (integer). How many there are.
@@ -30,7 +32,8 @@ The sound effects playing now. A slot that is silent still answers, with a stale
 
 - <a id="sound.SampleNum" name="sound.SampleNum"></a>[lua]`trx.sound.SampleNum`
 
-    Sample number, in the numbering the loaded level carries. Not a [`trx.catalog.samples`](CATALOG.md#catalog.samples) name, which is the sound bank's own. Counted from 0.
+    Sample number, in the numbering the loaded level carries. Not a
+    [`trx.catalog.samples`](CATALOG.md#catalog.samples) name, which is the sound bank's own. Counted from 0.
 
 - <a id="sound.StreamNum" name="sound.StreamNum"></a>[lua]`trx.sound.StreamNum`
 
@@ -38,7 +41,10 @@ The sound effects playing now. A slot that is silent still answers, with a stale
 
 - <a id="sound.Sample" name="sound.Sample"></a>[lua]`trx.sound.Sample`
 
-    A sound sample the current level carries. Reach them through [`trx.sound.samples`](#sound.samples). A handle to a sample the loaded level does not carry goes stale, so [`is_valid`](#sound.Sample.is_valid) answers whether it is still there.
+    A sound sample the current level carries. Reach them through
+    [`trx.sound.samples`](#sound.samples). A handle to a sample the loaded level does not carry
+    goes stale, so [`is_valid`](#sound.Sample.is_valid) answers whether it is still
+    there.
 
     Handles are live references: if the underlying object is destroyed,
     using the handle raises an error rather than silently reading an
@@ -74,7 +80,9 @@ The sound effects playing now. A slot that is silent still answers, with a stale
 
 - <a id="sound.Stream" name="sound.Stream"></a>[lua]`trx.sound.Stream`
 
-    One of the sound effects playing now. Reach them through [`trx.sound.streams`](#sound.streams). A handle to a voice that has fallen silent goes stale, so check [`is_valid`](#sound.Stream.is_valid) first.
+    One of the sound effects playing now. Reach them through
+    [`trx.sound.streams`](#sound.streams). A handle to a voice that has fallen silent goes stale,
+    so check [`is_valid`](#sound.Stream.is_valid) first.
 
     Handles are live references: if the underlying object is destroyed,
     using the handle raises an error rather than silently reading an
@@ -102,7 +110,8 @@ The sound effects playing now. A slot that is silent still answers, with a stale
 ### Functions
 
 - <a id="sound.play" name="sound.play"></a>[lua]`trx.sound.play(id, [opts])`  
-  Plays a sound effect by catalog id, mapping it to the level's own sample. A game that does not carry the sample plays nothing.
+  Plays a sound effect by catalog id, mapping it to the level's own sample. A
+  game that does not carry the sample plays nothing.
 
   Parameters:
   - <a id="sound.play.id" name="sound.play.id"></a>**`id`** ([trx.catalog.samples](CATALOG.md#catalog.samples)). Sample to play. To reach a sample by the level's own slot, play it through a handle: `trx.sound.samples[slot]:play()`.

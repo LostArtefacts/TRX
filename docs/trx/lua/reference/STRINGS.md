@@ -14,7 +14,9 @@ order: 34
 
 Utilities for working with strings.
 
-Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a player reads: this module is about manipulating strings, that one is about which string the player gets.
+Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a player reads: this
+module is about manipulating strings, that one is about which string the
+player gets.
 
 ### Structures
 
@@ -32,9 +34,12 @@ Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a pl
 ### Functions
 
 - <a id="strings.fuzzy_match" name="strings.fuzzy_match"></a>[lua]`trx.strings.fuzzy_match(input, sources)`  
-  Matches what someone typed against a list of candidates, forgivingly: `big medi` finds `large medipack`.
+  Matches what someone typed against a list of candidates, forgivingly: `big
+  medi` finds `large medipack`.
 
-  Candidates are ranked, best first. Each carries a [`sources.value`](#strings.fuzzy_match.sources.value) of the caller's choosing, which comes back untouched on the match - hang an id off it and read it back.
+  Candidates are ranked, best first. Each carries a
+  [`sources.value`](#strings.fuzzy_match.sources.value) of the caller's choosing, which comes
+  back untouched on the match - hang an id off it and read it back.
 
   Parameters:
   - <a id="strings.fuzzy_match.input" name="strings.fuzzy_match.input"></a>**`input`** (string). What the player typed.
@@ -57,7 +62,8 @@ Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a pl
   ```
 
 - <a id="strings.parse_bool" name="strings.parse_bool"></a>[lua]`trx.strings.parse_bool(text)`  
-  Reads a boolean the way the console does: `1`, `true` or `on` for true, `0`, `false` or `off` for false, in any case. Anything else is not a boolean.
+  Reads a boolean the way the console does: `1`, `true` or `on` for true, `0`,
+  `false` or `off` for false, in any case. Anything else is not a boolean.
 
   Parameters:
   - <a id="strings.parse_bool.text" name="strings.parse_bool.text"></a>**`text`** (string). The text to read.
@@ -70,9 +76,11 @@ Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a pl
   ```
 
 - <a id="strings.collapse_ranges" name="strings.collapse_ranges"></a>[lua]`trx.strings.collapse_ranges(numbers, [separator])`  
-  Writes a list of whole numbers as ranges, so that a long run reads as one: `{ 0, 2, 3, 4, 9 }` becomes `0, 2-4, 9`.
+  Writes a list of whole numbers as ranges, so that a long run reads as one:
+  `{ 0, 2, 3, 4, 9 }` becomes `0, 2-4, 9`.
 
-  The list is sorted first, and duplicates survive as they are, so the caller need not tidy up before handing it over.
+  The list is sorted first, and duplicates survive as they are, so the caller
+  need not tidy up before handing it over.
 
   Parameters:
   - <a id="strings.collapse_ranges.numbers" name="strings.collapse_ranges.numbers"></a>**`numbers`** (a list of integer). The numbers to write out.
@@ -100,7 +108,9 @@ Not to be confused with [`trx.locale`](LOCALE.md#locale), which is the text a pl
   ```
 
 - <a id="strings.dash_case" name="strings.dash_case"></a>[lua]`trx.strings.dash_case(text)`  
-  Spells a name the way the console shows one: lower case, with underscores read as dashes. This is how an enum constant is offered for completion, and a catalog name resolves in either spelling.
+  Spells a name the way the console shows one: lower case, with underscores
+  read as dashes. This is how an enum constant is offered for completion, and a
+  catalog name resolves in either spelling.
 
   Parameters:
   - <a id="strings.dash_case.text" name="strings.dash_case.text"></a>**`text`** (string). The name to spell.

@@ -19,13 +19,16 @@ asks about her. Any level's is reached the same way through
 [`trx.game.Level.inventory`](GAME.md#game.Level.inventory), which is what it will hand her when she arrives
 there rather than what she has this second.
 
-Every function takes either the pickup lying in the world or the inventory icon
-it goes into. The engine maps one to the other, so a script names whichever it
-has.
+Every function takes either the pickup lying in the world or the inventory
+icon it goes into. The engine maps one to the other, so a script names
+whichever it has.
 
 ### Indexing
 
-Indexing the module reaches an entry of Lara's inventory, and `#trx.inventory` is how many kinds of thing she carries. Entries are keyed by the order they are drawn in, and are built one at a time as they are asked for. `pairs()` walks them.
+Indexing the module reaches an entry of Lara's inventory, and
+`#trx.inventory` is how many kinds of thing she carries. Entries are keyed
+by the order they are drawn in, and are built one at a time as they are
+asked for. `pairs()` walks them.
 
 - <a id="inventory[]" name="inventory[]"></a>**`trx.inventory[key]`** (key: [trx.inventory.EntryNum](#inventory.EntryNum), value: [trx.inventory.Entry](#inventory.Entry) or `nil`).
 - **`#trx.inventory`** (integer). How many there are.
@@ -48,8 +51,8 @@ end
     One kind of thing an inventory holds, and how many of it.
 
     An entry stands for the icon rather than for where it sits, so it goes on
-    naming the same thing as what is drawn around it changes. A box of ammunition
-    is an entry like any other, counting what its rounds come to.
+    naming the same thing as what is drawn around it changes. A box of
+    ammunition is an entry like any other, counting what its rounds come to.
 
     Handles are live references: if the underlying object is destroyed,
     using the handle raises an error rather than silently reading an
@@ -64,9 +67,9 @@ end
     An inventory: what is in it, and how much ammunition goes with it.
 
     [`trx.inventory`](#inventory) is the one Lara is carrying. A level's, reached as
-    [`trx.game.Level.inventory`](GAME.md#game.Level.inventory), is what she will arrive there with, and holds only
-    what travels between levels - a key or a puzzle piece belongs to the level it
-    was found in.
+    [`trx.game.Level.inventory`](GAME.md#game.Level.inventory), is what she will arrive there with, and holds
+    only what travels between levels - a key or a puzzle piece belongs to the
+    level it was found in.
 
     Giving something to Lara's does what walking over it would: a weapon arrives
     with its rounds, her meshes change, and the level's own guns turn into
@@ -80,10 +83,10 @@ end
     Methods:
 
     - <a id="inventory.Inventory.can_add" name="inventory.Inventory.can_add"></a>[lua]`inventory:can_add(object_id)`  
-      Whether [`give`](#inventory.Inventory.give) would do anything in the level being played. The level has to
-      carry the inventory model, which is not the same as the pickup being in it: a
-      level with no shotgun lying about still draws one in the ring, which is what
-      lets a cheat hand one over.
+      Whether [`give`](#inventory.Inventory.give) would do anything in the level being
+      played. The level has to carry the inventory model, which is not the same as
+      the pickup being in it: a level with no shotgun lying about still draws one
+      in the ring, which is what lets a cheat hand one over.
 
       This asks about the level being played whichever inventory it is called on.
 
@@ -93,7 +96,8 @@ end
       Returns: boolean. True where the level carries the model to draw it with.
 
     - <a id="inventory.Inventory.count" name="inventory.Inventory.count"></a>[lua]`inventory:count(object_id)`  
-      How many of something is in it. A box of ammunition counts what its rounds come to.
+      How many of something is in it. A box of ammunition counts what its rounds
+      come to.
 
       Parameters:
       - <a id="inventory.Inventory.count.object_id" name="inventory.Inventory.count.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The pickup, or the inventory icon it goes into.
@@ -121,7 +125,8 @@ end
       Returns: [trx.inventory.Entry](#inventory.Entry) or `nil`. The entry, or `nil` past the last one.
 
     - <a id="inventory.Inventory.entry_count" name="inventory.Inventory.entry_count"></a>[lua]`inventory:entry_count()`  
-      How many entries there are. `#trx.inventory` is the same number for the one Lara carries.
+      How many entries there are. `#trx.inventory` is the same number for the one
+      Lara carries.
 
       Returns: integer. Kinds of thing, not counts.
 
@@ -150,7 +155,8 @@ end
       Returns: boolean. True for any count above 0.
 
     - <a id="inventory.Inventory.has_weapon" name="inventory.Inventory.has_weapon"></a>[lua]`inventory:has_weapon(weapon)`  
-      Whether the weapon itself is in it, which is not the same as having ammunition for it.
+      Whether the weapon itself is in it, which is not the same as having
+      ammunition for it.
 
       Parameters:
       - <a id="inventory.Inventory.has_weapon.weapon" name="inventory.Inventory.has_weapon.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
@@ -177,7 +183,9 @@ end
       ```
 
     - <a id="inventory.Inventory.shots" name="inventory.Inventory.shots"></a>[lua]`inventory:shots(weapon)`  
-      How many shots there are for the weapon. A shot is one pull of the trigger, which is what the counter shows the player; the shotgun spends six rounds on each.
+      How many shots there are for the weapon. A shot is one pull of the trigger,
+      which is what the counter shows the player; the shotgun spends six rounds on
+      each.
 
       Parameters:
       - <a id="inventory.Inventory.shots.weapon" name="inventory.Inventory.shots.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
@@ -187,8 +195,9 @@ end
     - <a id="inventory.Inventory.take" name="inventory.Inventory.take"></a>[lua]`inventory:take(object_id, [count])`  
       Takes things back out, stopping when there are none left.
 
-      This is not the exact opposite of [`give`](#inventory.Inventory.give): a box of ammunition is rounds rather
-      than an entry of its own, so taking one back takes the rounds a box is worth.
+      This is not the exact opposite of [`give`](#inventory.Inventory.give): a box of
+      ammunition is rounds rather than an entry of its own, so taking one back
+      takes the rounds a box is worth.
 
       Parameters:
       - <a id="inventory.Inventory.take.object_id" name="inventory.Inventory.take.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The pickup, or the inventory icon it goes into.

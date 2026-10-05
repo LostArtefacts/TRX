@@ -1,11 +1,13 @@
 local raw = trxc.screens
 local raw_events = trxc.events
 local raw_enum = trxc.enum
-local api = trx.api
+local h = require("trx.internal.helpers")
 
 require("trx.ui")
 require("trx.ui.layers")
 require("trx.events")
+
+local ui = trx.ui
 
 -- The event types and the choices are the engine's, read back as any other
 -- enum is. Neither is public: a script defines a screen and ends it through
@@ -34,43 +36,41 @@ local definitions = {}
 -- The context of each screen a script holds, by screen.
 local held = {}
 
-api.namespace("ui.screens", {
-  description = [[
-Lets a script draw an engine screen in place of the engine.
+---Lets a script draw an engine screen in place of the engine.
+---
+---Define a screen with `trx.ui.screens.define`. When the engine opens the
+---screen, it calls the function that the definition gives. The function pushes
+---layers through the context it receives and returns the first one. The engine
+---then draws nothing for the screen and reads no input for it, until the
+---script ends the screen through the context.
+---
+---The screen also ends when the layer that the definition returned closes, for
+---any reason, and the screen's other layers close with it. A layer that raises
+---an error therefore gives the screen back to the engine.
+---
+---While a script holds a screen, a game-flow command such as
+---`trx.savegame.load` waits for the screen to end. In the inventory ring, the
+---ring spins out before the command runs.
+---@class (exact) trx.ui.screens
+ui.screens = h.namespace("ui.screens")
 
-Define a screen with `trx.ui.screens.define`. When the engine opens the screen,
-it calls the function that the definition gives. The function pushes layers
-through the context it receives and returns the first one. The engine then draws
-nothing for the screen and reads no input for it, until the script ends the
-screen through the context.
-
-The screen also ends when the layer that the definition returned closes, for
-any reason, and the screen's other layers close with it. A layer that raises an
-error therefore gives the screen back to the engine.
-
-While a script holds a screen, a game-flow command such as
-`trx.savegame.load` waits for the screen to end. In the inventory ring, the
-ring spins out before the command runs.]],
-})
-
-api.enum("ui.Screen", {
-  backing = "UI_TAKEOVER",
-  description = "An engine screen that a script can draw.",
-  values = {
-    RING_ENTRY = [[
+---An engine screen that a script can draw.
+---@enum trx.ui.Screen
+local Screen = {
+  RING_ENTRY = [[
 An entry that the player uses in the inventory ring. The context reports the
 entry as `trx.ui.ScreenContext.object`. A definition can name the entry it
 draws. A ring opened to save or load leaves when the screen ends, and any ring
 leaves when the screen ends with `trx.ui.ScreenContext:confirm`.]],
-    PAUSE = [[
+  PAUSE = [[
 The question that the pause screen asks when the player presses the inventory
 key: whether to leave for the title screen.]],
-    SAVE_LOAD = [[
+  SAVE_LOAD = [[
 The quick save or load screen. The save and load keys open it when the instant
 screen setting is on. The context reports whether it opened for saving or
 loading as `trx.ui.ScreenContext.mode`.]],
-  },
-})
+}
+ui.Screen = h.enum("ui.Screen", "UI_TAKEOVER", Screen)
 
 local function key_of(screen, object)
   if object ~= nil then
@@ -93,8 +93,6 @@ end
 -------------------------------------------------------------------------------
 -- The context
 -------------------------------------------------------------------------------
-
-local Context
 
 -- Ends the screen. The layers close after the context is marked done, so the
 -- close callbacks see a screen that is already over.
@@ -124,20 +122,21 @@ local function on_layer_closed(ctx, layer)
   end
 end
 
-Context = api.type("ui.ScreenContext", {
-  description = "A screen that a script holds, which the definition receives.",
+---A screen that a script holds, which the definition receives.
+---@class (exact) trx.ui.ScreenContext
+---@trx.readonly is_held, mode, object, screen
+---@field screen trx.ui.Screen The screen.
+---@field object trx.catalog.objects? The ring entry that the player uses, for `trx.ui.Screen.RING_ENTRY`.
+---@field mode trx.inventory_ring.Mode? What the quick save or load screen opened for, for `trx.ui.Screen.SAVE_LOAD`.
+---@field is_held boolean Whether the script still holds the screen.
+local Context = h.class("ui.ScreenContext", {
   fields = {
     screen = {
-      type = "ui.Screen",
-      description = "The screen.",
       get = function(self)
         return rawget(self, "_screen")
       end,
     },
     object = {
-      type = "catalog.objects",
-      nullable = true,
-      description = "The ring entry that the player uses, for `trx.ui.Screen.RING_ENTRY`.",
       get = function(self)
         if rawget(self, "_screen") == trx.ui.Screen.RING_ENTRY then
           return rawget(self, "_arg")
@@ -146,9 +145,6 @@ Context = api.type("ui.ScreenContext", {
       end,
     },
     mode = {
-      type = "inventory_ring.Mode",
-      nullable = true,
-      description = "What the quick save or load screen opened for, for `trx.ui.Screen.SAVE_LOAD`.",
       get = function(self)
         if rawget(self, "_screen") == trx.ui.Screen.SAVE_LOAD then
           return rawget(self, "_arg")
@@ -157,105 +153,73 @@ Context = api.type("ui.ScreenContext", {
       end,
     },
     is_held = {
-      type = "boolean",
-      description = "Whether the script still holds the screen.",
       get = function(self)
         return not rawget(self, "_done")
       end,
     },
   },
-  methods = {
-    push = {
-      description = [[
-Pushes a layer that belongs to the screen, with the settings that
-`trx.ui.layers.push` takes. The layer closes when the screen ends.]],
-      params = {
-        {
-          name = "settings",
-          type = "table",
-          description = "The layer settings.",
-        },
-      },
-      returns = { type = "ui.StackLayer", description = "The pushed layer." },
-      impl = function(self, settings)
-        if rawget(self, "_done") then
-          error("the screen has ended", 2)
-        end
-        local on_close = settings.on_close
-        local layer_settings = {}
-        for key, value in pairs(settings) do
-          layer_settings[key] = value
-        end
-        layer_settings.on_close = function(layer)
-          if on_close ~= nil then
-            on_close(layer)
-          end
-          on_layer_closed(self, layer)
-        end
-        local layer = trx.ui.layers.push(layer_settings)
-        local layers = rawget(self, "_layers")
-        layers[#layers + 1] = layer
-        return layer
-      end,
-    },
-    resume = {
-      description = [[
-Ends the pause screen, and returns to the game. Only `trx.ui.Screen.PAUSE`
-takes this.]],
-      returns = {
-        type = "boolean",
-        description = "Whether the screen was still held.",
-      },
-      impl = function(self)
-        if rawget(self, "_screen") ~= trx.ui.Screen.PAUSE then
-          error("only the pause screen resumes the game", 2)
-        end
-        return finish(self, choices.RESUME)
-      end,
-    },
-    exit_to_title = {
-      description = [[
-Ends the pause screen, and leaves for the title screen with the pause screen's
-fade. Only `trx.ui.Screen.PAUSE` takes this.]],
-      returns = {
-        type = "boolean",
-        description = "Whether the screen was still held.",
-      },
-      impl = function(self)
-        if rawget(self, "_screen") ~= trx.ui.Screen.PAUSE then
-          error("only the pause screen leaves for the title screen", 2)
-        end
-        return finish(self, choices.EXIT_TO_TITLE)
-      end,
-    },
-    cancel = {
-      description = [[
-Ends the screen, and closes its layers. A ring entry is put away, the pause
-screen stays paused and drops its question, and the quick save or load screen
-closes. Does nothing if the screen has already ended.]],
-      returns = {
-        type = "boolean",
-        description = "Whether the screen was still held.",
-      },
-      impl = function(self)
-        return finish(self, choices.CANCEL)
-      end,
-    },
-    confirm = {
-      description = [[
-Ends the screen as a choice that the player made, and closes its layers. A ring
-entry leaves the ring, as an entry that the player uses does. Does nothing if
-the screen has already ended.]],
-      returns = {
-        type = "boolean",
-        description = "Whether the screen was still held.",
-      },
-      impl = function(self)
-        return finish(self, choices.CONFIRM)
-      end,
-    },
-  },
 })
+
+---Pushes a layer that belongs to the screen, with the settings that
+---`trx.ui.layers.push` takes. The layer closes when the screen ends.
+---@param settings table The layer settings.
+---@return trx.ui.StackLayer # The pushed layer.
+function Context:push(settings)
+  if rawget(self, "_done") then
+    error("the screen has ended", 2)
+  end
+  local on_close = settings.on_close
+  local layer_settings = {}
+  for key, value in pairs(settings) do
+    layer_settings[key] = value
+  end
+  layer_settings.on_close = function(layer)
+    if on_close ~= nil then
+      on_close(layer)
+    end
+    on_layer_closed(self, layer)
+  end
+  local layer = trx.ui.layers.push(layer_settings)
+  local layers = rawget(self, "_layers")
+  layers[#layers + 1] = layer
+  return layer
+end
+
+---Ends the pause screen, and returns to the game. Only `trx.ui.Screen.PAUSE`
+---takes this.
+---@return boolean # Whether the screen was still held.
+function Context:resume()
+  if rawget(self, "_screen") ~= trx.ui.Screen.PAUSE then
+    error("only the pause screen resumes the game", 2)
+  end
+  return finish(self, choices.RESUME)
+end
+
+---Ends the pause screen, and leaves for the title screen with the pause
+---screen's fade. Only `trx.ui.Screen.PAUSE` takes this.
+---@return boolean # Whether the screen was still held.
+function Context:exit_to_title()
+  if rawget(self, "_screen") ~= trx.ui.Screen.PAUSE then
+    error("only the pause screen leaves for the title screen", 2)
+  end
+  return finish(self, choices.EXIT_TO_TITLE)
+end
+
+---Ends the screen, and closes its layers. A ring entry is put away, the pause
+---screen stays paused and drops its question, and the quick save or load
+---screen closes. Does nothing if the screen has already ended.
+---@return boolean # Whether the screen was still held.
+function Context:cancel()
+  return finish(self, choices.CANCEL)
+end
+
+---Ends the screen as a choice that the player made, and closes its layers. A
+---ring entry leaves the ring, as an entry that the player uses does. Does
+---nothing if the screen has already ended.
+---@return boolean # Whether the screen was still held.
+function Context:confirm()
+  return finish(self, choices.CONFIRM)
+end
 
 local function new_context(screen, arg)
   return setmetatable({
@@ -270,92 +234,62 @@ end
 -- Definitions
 -------------------------------------------------------------------------------
 
-api.define("ui.screens.define", {
-  description = [[
-Defines how a script draws a screen.
+---@class (exact) trx.ui.screens.define.options
+---@field object? trx.catalog.objects The ring entry that the definition draws, for `trx.ui.Screen.RING_ENTRY`. Without it, the definition draws every entry that has no definition of its own.
+---@field override? boolean Whether to replace a definition that exists. `false` by default.
 
-The function receives a `trx.ui.ScreenContext` when the engine opens the
-screen. It pushes the screen's layers through the context and returns the first
-one. Returning nothing leaves the screen to the engine.
-
-A screen has one definition. Defining it again is an error unless the options
-say `override = true`. The new definition then replaces the old one, which comes
-back when a level script's definition goes with its level.]],
-  params = {
-    {
-      name = "screen",
-      type = "ui.Screen",
-      description = "The screen.",
-    },
-    {
-      name = "open",
-      type = "function",
-      description = "Runs when the engine opens the screen.",
-    },
-    {
-      name = "options",
-      type = "table",
-      optional = true,
-      description = "The definition options.",
-      fields = {
-        {
-          name = "object",
-          type = "catalog.objects",
-          optional = true,
-          description = [[
-The ring entry that the definition draws, for `trx.ui.Screen.RING_ENTRY`.
-Without it, the definition draws every entry that has no definition of its
-own.]],
-        },
-        {
-          name = "override",
-          type = "boolean",
-          optional = true,
-          description = "Whether to replace a definition that exists. `false` by default.",
-        },
-      },
-    },
-  },
-  examples = {
-    [[trx.ui.screens.define(trx.ui.Screen.RING_ENTRY, function(ctx)
-  return ctx:push({
-    root = trx.ui.widgets.Label({ text = "North" }),
-    on_input = function(_, keys)
-      if keys:pressed(trx.input.Role.MENU_BACK) then
-        ctx:cancel()
-      end
-    end,
-  })
-end, { object = trx.catalog.objects.COMPASS_OPTION })]],
-  },
-  impl = function(screen, open, options)
-    options = options or {}
-    if options.object ~= nil and screen ~= trx.ui.Screen.RING_ENTRY then
-      error("only a ring entry screen names an object", 2)
-    end
-    local key = key_of(screen, options.object)
-    local stack = definitions[key]
-    if stack == nil then
-      stack = {}
-      definitions[key] = stack
-    end
-    if #stack > 0 and not options.override then
-      error("the screen is already defined; pass override = true", 2)
-    end
-    local definition = { open = open }
-    stack[#stack + 1] = definition
-    if raw_events.is_level_script() then
-      trx.events.on_level_unload(function()
-        for i, other in ipairs(stack) do
-          if other == definition then
-            table.remove(stack, i)
-            break
-          end
+---Defines how a script draws a screen.
+---
+---The function receives a `trx.ui.ScreenContext` when the engine opens the
+---screen. It pushes the screen's layers through the context and returns the
+---first one. Returning nothing leaves the screen to the engine.
+---
+---A screen has one definition. Defining it again is an error unless the
+---options say `override = true`. The new definition then replaces the old one,
+---which comes back when a level script's definition goes with its level.
+---
+---```lua
+---trx.ui.screens.define(trx.ui.Screen.RING_ENTRY, function(ctx)
+---  return ctx:push({
+---    root = trx.ui.widgets.Label({ text = "North" }),
+---    on_input = function(_, keys)
+---      if keys:pressed(trx.input.Role.MENU_BACK) then
+---        ctx:cancel()
+---      end
+---    end,
+---  })
+---end, { object = trx.catalog.objects.COMPASS_OPTION })
+---```
+---@param screen trx.ui.Screen The screen.
+---@param open function Runs when the engine opens the screen.
+---@param options? trx.ui.screens.define.options The definition options.
+function ui.screens.define(screen, open, options)
+  options = options or {}
+  if options.object ~= nil and screen ~= trx.ui.Screen.RING_ENTRY then
+    error("only a ring entry screen names an object", 2)
+  end
+  local key = key_of(screen, options.object)
+  local stack = definitions[key]
+  if stack == nil then
+    stack = {}
+    definitions[key] = stack
+  end
+  if #stack > 0 and not options.override then
+    error("the screen is already defined; pass override = true", 2)
+  end
+  local definition = { open = open }
+  stack[#stack + 1] = definition
+  if raw_events.is_level_script() then
+    trx.events.on_level_unload(function()
+      for i, other in ipairs(stack) do
+        if other == definition then
+          table.remove(stack, i)
+          break
         end
-      end)
-    end
-  end,
-})
+      end
+    end)
+  end
+end
 
 -------------------------------------------------------------------------------
 -- The engine's side

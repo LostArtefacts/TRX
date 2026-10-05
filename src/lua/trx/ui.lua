@@ -1,283 +1,222 @@
 local raw = trxc.ui
-local api = trx.api
+local h = require("trx.internal.helpers")
 
-api.module("ui", {
-  order = 20,
-  title = "User interface",
-  description = [[
-Module for drawing on top of the game.
+---@class trx
+---@field ui trx.ui
 
-Every function here is available only from a `trx.events.on_ui_draw` handler,
-and raises anywhere else: the interface is built afresh each drawn frame, and
-there is no scene to add to outside one.
+---Module for drawing on top of the game.
+---
+---Every function here is available only from a `trx.events.on_ui_draw`
+---handler, and raises anywhere else: the interface is built afresh each drawn
+---frame, and there is no scene to add to outside one.
+---
+---A handler adds to the region the game is building, which it is told the name
+---of. Widgets land in the same stack as the health bars and the item names, so
+---a script cannot draw over them and the player's choice of where each element
+---sits still holds.
+---
+---Widgets that hold other widgets take the body as a function rather than
+---opening and closing by hand, so a scene stays whole even where the body
+---fails.
+---
+---Sizes are in canvas units, not screen pixels. `trx.ui.canvas` reports the
+---canvas, and `trx.ui.safe_area` the part of it that is free to draw in.
+---
+---Text carries the same markup the rest of the game uses, and it is part of
+---this API: `\{small}` draws the rest of the line small, `\{arrow up}` draws an
+---arrow, and `\{button left}` draws the button the player has bound.
+---@trx.module 20 User interface
+---@class (exact) trx.ui
+---@trx.readonly canvas, safe_area, text_scale
+---@field canvas trx.ui.Area The whole canvas. Widget sizes are in these units rather than in screen pixels, and the canvas is 640 by 480 for a 4:3 screen at the default text size.
+---@field clipboard string What the system clipboard holds. Reads as an empty string where it holds nothing, and raises on assignment where the platform refuses the text.
+---
+---  A script-drawn text field uses this value to paste and copy text.
+---@field text_scale number The scale applied to text and its boxes. The value depends on the player's text size and the screen. It is not the `ui.text_scale` setting alone. <!--noref: ui.text_scale-->
+---@field safe_area trx.ui.Area The part of the canvas that is free to draw in: the canvas, less the margin kept at the edges, less what the game reserves at the top and the bottom for the bars and the text it puts there.
+local M = h.module("ui")
 
-A handler adds to the region the game is building, which it is told the name
-of. Widgets land in the same stack as the health bars and the item names, so a
-script cannot draw over them and the player's choice of where each element sits
-still holds.
+---The direction a stack lays its children out in.
+---@enum trx.ui.Orientation
+local Orientation = {
+  VERTICAL = "One below the next.",
+  HORIZONTAL = "One beside the next.",
+}
+M.Orientation = h.enum("ui.Orientation", "UI_STACK_ORIENTATION", Orientation)
 
-Widgets that hold other widgets take the body as a function rather than opening
-and closing by hand, so a scene stays whole even where the body fails.
+---Where a stack puts its children across its width.
+---@enum trx.ui.HAlign
+local HAlign = {
+  LEFT = "Against the left edge.",
+  CENTER = "In the middle.",
+  RIGHT = "Against the right edge.",
+  SPAN = "Stretched to the full width.",
+  DISTRIBUTE = "Spread out, with the gaps taking the spare width.",
+}
+M.HAlign = h.enum("ui.HAlign", "UI_STACK_H_ALIGN", HAlign)
 
-Sizes are in canvas units, not screen pixels. `trx.ui.canvas` reports the
-canvas, and `trx.ui.safe_area` the part of it that is free to draw in.
+---Where a stack puts its children down its height.
+---@enum trx.ui.VAlign
+local VAlign = {
+  TOP = "Against the top edge.",
+  CENTER = "In the middle.",
+  BOTTOM = "Against the bottom edge.",
+  SPAN = "Stretched to the full height.",
+  DISTRIBUTE = "Spread out, with the gaps taking the spare height.",
+}
+M.VAlign = h.enum("ui.VAlign", "UI_STACK_V_ALIGN", VAlign)
 
-Text carries the same markup the rest of the game uses, and it is part of this
-API: `\{small}` draws the rest of the line small, `\{arrow up}` draws an arrow,
-and `\{button left}` draws the button the player has bound.
-]],
-})
+---One of the nine places the interface is built in. A handler is told which
+---one is being built and adds to it, and everything asking for a place is laid
+---out together there rather than over what else asked for it.
+---
+---The eight around the edge stack what they hold away from the edge they sit
+---at. The middle is what the others leave, and is where a dialog goes.
+---@enum trx.ui.Region
+local Region = {
+  TOP_LEFT = "The top left corner.",
+  TOP_CENTER = "The top edge, in the middle.",
+  TOP_RIGHT = "The top right corner.",
+  LEFT = "The left edge, halfway down.",
+  CENTER = "The middle of the screen, inside what the others leave.",
+  RIGHT = "The right edge, halfway down.",
+  BOTTOM_LEFT = "The bottom left corner.",
+  BOTTOM_CENTER = "The bottom edge, in the middle.",
+  BOTTOM_RIGHT = "The bottom right corner.",
+}
+M.Region = h.enum("ui.Region", "UI_REGION", Region)
 
-api.enum("ui.Orientation", {
-  backing = "UI_STACK_ORIENTATION",
-  description = "The direction a stack lays its children out in.",
-  values = {
-    VERTICAL = "One below the next.",
-    HORIZONTAL = "One beside the next.",
+---Whether a widget is drawn below or above the engine interface.
+---
+---Widgets use the lower layer by default. Use the upper layer for a console or
+---a text field. Each region keeps space for both layers.
+---@enum trx.ui.Layer
+local Layer = {
+  UNDER = "Below the engine interface.",
+  OVER = "Above the engine interface.",
+}
+M.Layer = h.enum("ui.Layer", "UI_PAINT_LAYER", Layer)
+
+---Which of the game's frames to draw. The look of each follows the menu style
+---the player chose.
+---@enum trx.ui.FrameStyle
+local FrameStyle = {
+  DIALOG = "The box a dialog sits in.",
+  DIALOG_HEAVY = "The box a dialog sits in, drawn solid.",
+  HEADING = "The strip a dialog puts its title in.",
+  SELECTED = "The box around the option the player is on.",
+  OUTLINE = "An outline with nothing behind it.",
+}
+M.FrameStyle = h.enum("ui.FrameStyle", "UI_FRAME_STYLE", FrameStyle)
+
+---Which of the game's bars to draw, which decides its colors.
+---@enum trx.ui.BarType
+local BarType = {
+  LARA_HP = "Lara's health.",
+  LARA_HP_POISON = "Lara's health while she is poisoned.",
+  LARA_AIR = "Lara's air.",
+  LARA_STAMINA = "Lara's stamina.",
+  LARA_EXPOSURE = "Lara's exposure to the cold.",
+  ENEMY_HP = "An enemy's health.",
+  ALLY_HP = "An ally's health.",
+  PROGRESS = "A general progress bar.",
+}
+M.BarType = h.enum("ui.BarType", "UI_BAR_TYPE", BarType)
+
+---A rectangle on the canvas, in canvas units, counted from the top left.
+---@trx.record
+---@class trx.ui.Area
+---@field x number The left edge.
+---@field y number The top edge.
+---@field width number How wide it is.
+---@field height number How tall it is.
+
+h.properties(M, "ui", {
+  canvas = {
+    get = function()
+      return {
+        x = 0,
+        y = 0,
+        width = raw.get_canvas_width(),
+        height = raw.get_canvas_height(),
+      }
+    end,
+  },
+  clipboard = {
+    get = raw.get_clipboard,
+    set = raw.set_clipboard,
+  },
+  text_scale = {
+    get = raw.text_scale,
+  },
+  safe_area = {
+    get = function()
+      local width = raw.get_safe_width()
+      local top = raw.get_safe_top()
+      return {
+        x = (raw.get_canvas_width() - width) / 2,
+        y = top,
+        width = width,
+        height = raw.get_safe_bottom() - top,
+      }
+    end,
   },
 })
 
-api.enum("ui.HAlign", {
-  backing = "UI_STACK_H_ALIGN",
-  description = "Where a stack puts its children across its width.",
-  values = {
-    LEFT = "Against the left edge.",
-    CENTER = "In the middle.",
-    RIGHT = "Against the right edge.",
-    SPAN = "Stretched to the full width.",
-    DISTRIBUTE = "Spread out, with the gaps taking the spare width.",
-  },
-})
-
-api.enum("ui.VAlign", {
-  backing = "UI_STACK_V_ALIGN",
-  description = "Where a stack puts its children down its height.",
-  values = {
-    TOP = "Against the top edge.",
-    CENTER = "In the middle.",
-    BOTTOM = "Against the bottom edge.",
-    SPAN = "Stretched to the full height.",
-    DISTRIBUTE = "Spread out, with the gaps taking the spare height.",
-  },
-})
-
-api.enum("ui.Region", {
-  backing = "UI_REGION",
-  description = "One of the nine places the interface is built in. A handler is told which one "
-    .. "is being built and adds to it, and everything asking for a place is laid out together "
-    .. "there rather than over what else asked for it.\n\nThe eight around the edge stack what "
-    .. "they hold away from the edge they sit at. The middle is what the others leave, and is "
-    .. "where a dialog goes.",
-  values = {
-    TOP_LEFT = "The top left corner.",
-    TOP_CENTER = "The top edge, in the middle.",
-    TOP_RIGHT = "The top right corner.",
-    LEFT = "The left edge, halfway down.",
-    CENTER = "The middle of the screen, inside what the others leave.",
-    RIGHT = "The right edge, halfway down.",
-    BOTTOM_LEFT = "The bottom left corner.",
-    BOTTOM_CENTER = "The bottom edge, in the middle.",
-    BOTTOM_RIGHT = "The bottom right corner.",
-  },
-})
-
-api.enum("ui.Layer", {
-  backing = "UI_PAINT_LAYER",
-  description = [[
-Whether a widget is drawn below or above the engine interface.
-
-Widgets use the lower layer by default. Use the upper layer for a console or a
-text field. Each region keeps space for both layers.]],
-  values = {
-    UNDER = "Below the engine interface.",
-    OVER = "Above the engine interface.",
-  },
-})
-
-api.enum("ui.FrameStyle", {
-  backing = "UI_FRAME_STYLE",
-  description = "Which of the game's frames to draw. The look of each follows the menu style "
-    .. "the player chose.",
-  values = {
-    DIALOG = "The box a dialog sits in.",
-    DIALOG_HEAVY = "The box a dialog sits in, drawn solid.",
-    HEADING = "The strip a dialog puts its title in.",
-    SELECTED = "The box around the option the player is on.",
-    OUTLINE = "An outline with nothing behind it.",
-  },
-})
-
-api.enum("ui.BarType", {
-  backing = "UI_BAR_TYPE",
-  description = "Which of the game's bars to draw, which decides its colors.",
-  values = {
-    LARA_HP = "Lara's health.",
-    LARA_HP_POISON = "Lara's health while she is poisoned.",
-    LARA_AIR = "Lara's air.",
-    LARA_STAMINA = "Lara's stamina.",
-    LARA_EXPOSURE = "Lara's exposure to the cold.",
-    ENEMY_HP = "An enemy's health.",
-    ALLY_HP = "An ally's health.",
-    PROGRESS = "A general progress bar.",
-  },
-})
-
-api.type("ui.Area", {
-  record = true,
-  description = "A rectangle on the canvas, in canvas units, counted from the top left.",
+---A model the interface keeps on screen across ticks. Move it once per tick;
+---the engine blends between its current and previous poses when it draws each
+---frame. The fields report the current tick's pose.
+---@class (exact) trx.ui.MeshSlot
+---@trx.readonly h, object, rot_x, rot_y, rot_z, visible, w, x, y
+---@field object trx.catalog.objects The object drawn in the slot.
+---@field visible boolean Whether the model is drawn.
+---@field x number The left edge of the box, in canvas units.
+---@field y number The top edge of the box, in canvas units.
+---@field w number How wide the box is, in canvas units.
+---@field h number How tall the box is, in canvas units.
+---@field rot_x trx.math.Angle How far the model is tilted.
+---@field rot_y trx.math.Angle How far the model is turned.
+---@field rot_z trx.math.Angle How far the model is rolled.
+local MeshSlot = h.handle("ui.MeshSlot", "UI_MESH_SLOT", {
   fields = {
-    x = { type = "number", description = "The left edge." },
-    y = { type = "number", description = "The top edge." },
-    width = { type = "number", description = "How wide it is." },
-    height = { type = "number", description = "How tall it is." },
+    object = "object_id",
+    visible = "visible",
+    x = "x",
+    y = "y",
+    w = "w",
+    h = "h",
+    rot_x = "rot_x",
+    rot_y = "rot_y",
+    rot_z = "rot_z",
   },
 })
 
-api.property("ui.canvas", {
-  type = "ui.Area",
-  description = "The whole canvas. Widget sizes are in these units rather than in screen "
-    .. "pixels, and the canvas is 640 by 480 for a 4:3 screen at the default text size.",
-  get = function()
-    return {
-      x = 0,
-      y = 0,
-      width = raw.get_canvas_width(),
-      height = raw.get_canvas_height(),
-    }
-  end,
-})
+---Puts the model where it should be at the end of this tick, and shows it.
+---
+---Takes a table of `object` <!--noref: object-->, `x` <!--noref: x-->,
+---`y` <!--noref: y-->, `w` <!--noref: w-->, `h` <!--noref: h-->,
+---`rot_x` <!--noref: rot_x-->, `rot_y` <!--noref: rot_y--> and
+---`rot_z` <!--noref: rot_z-->. The box uses canvas units. An omitted value is
+---zero. Each turn takes the short way around the angle wrap.
+---
+---Call this once per tick. Calling it twice in one tick replaces the pose used
+---for interpolation. A hidden slot, or one given a new object, starts at the
+---new pose.
+function MeshSlot:move() end
 
-api.property("ui.clipboard", {
-  type = "string",
-  description = [[
-What the system clipboard holds. Reads as an empty string where it holds
-nothing, and raises on assignment where the platform refuses the text.
+---Stops drawing the model. Moving the slot again shows it.
+function MeshSlot:hide() end
 
-A script-drawn text field uses this value to paste and copy text.]],
-  get = raw.get_clipboard,
-  set = raw.set_clipboard,
-})
+---Gives the slot back. The handle is spent afterwards, and moving or hiding a
+---spent handle raises rather than reaching whichever slot came next. Releasing
+---one again does nothing.
+function MeshSlot:release() end
 
-api.property("ui.text_scale", {
-  type = "number",
-  description = "The scale applied to text and its boxes. The value depends on the player's text "
-    .. "size and the screen. It is not the `ui.text_scale` setting alone. "
-    .. "<!--noref: ui.text_scale-->",
-  get = raw.text_scale,
-})
-
-api.property("ui.safe_area", {
-  type = "ui.Area",
-  description = "The part of the canvas that is free to draw in: the canvas, less the margin "
-    .. "kept at the edges, less what the game reserves at the top and the bottom for the bars "
-    .. "and the text it puts there.",
-  get = function()
-    local width = raw.get_safe_width()
-    local top = raw.get_safe_top()
-    return {
-      x = (raw.get_canvas_width() - width) / 2,
-      y = top,
-      width = width,
-      height = raw.get_safe_bottom() - top,
-    }
-  end,
-})
-
-api.type("ui.MeshSlot", {
-  backing = "UI_MESH_SLOT",
-  description = [[
-A model the interface keeps on screen across ticks. Move it once per tick; the
-engine blends between its current and previous poses when it draws each frame.
-The fields report the current tick's pose.]],
-
-  fields = {
-    object = {
-      from = "object_id",
-      type = "catalog.objects",
-      writable = false,
-      description = "The object drawn in the slot.",
-    },
-    visible = {
-      from = "visible",
-      type = "boolean",
-      writable = false,
-      description = "Whether the model is drawn.",
-    },
-    x = {
-      type = "number",
-      writable = false,
-      description = "The left edge of the box, in canvas units.",
-    },
-    y = {
-      type = "number",
-      writable = false,
-      description = "The top edge of the box, in canvas units.",
-    },
-    w = {
-      type = "number",
-      writable = false,
-      description = "How wide the box is, in canvas units.",
-    },
-    h = {
-      type = "number",
-      writable = false,
-      description = "How tall the box is, in canvas units.",
-    },
-    rot_x = {
-      type = "math.Angle",
-      writable = false,
-      description = "How far the model is tilted.",
-    },
-    rot_y = {
-      type = "math.Angle",
-      writable = false,
-      description = "How far the model is turned.",
-    },
-    rot_z = {
-      type = "math.Angle",
-      writable = false,
-      description = "How far the model is rolled.",
-    },
-  },
-
-  methods = {
-    move = {
-      description = [[
-Puts the model where it should be at the end of this tick, and shows it.
-
-Takes a table of `object` <!--noref: object-->, `x` <!--noref: x-->,
-`y` <!--noref: y-->, `w` <!--noref: w-->, `h` <!--noref: h-->,
-`rot_x` <!--noref: rot_x-->, `rot_y` <!--noref: rot_y--> and
-`rot_z` <!--noref: rot_z-->. The box uses canvas units. An omitted value is zero.
-Each turn takes the short way around the angle wrap.
-
-Call this once per tick. Calling it twice in one tick replaces the pose used for
-interpolation. A hidden slot, or one given a new object, starts at the new pose.]],
-    },
-
-    hide = {
-      description = "Stops drawing the model. Moving the slot again shows it.",
-    },
-
-    release = {
-      description = [[
-Gives the slot back. The handle is spent afterwards, and moving or hiding a
-spent handle raises rather than reaching whichever slot came next. Releasing
-one again does nothing.]],
-    },
-  },
-})
-
-api.define("ui.mesh_slot", {
-  description = [[
-Takes a slot for a model the interface keeps on screen across ticks.
-
-Take a slot once, when a script loads, and give it back with
-`trx.ui.MeshSlot:release` when nothing needs it. Returns nothing where every
-slot is taken.]],
-  returns = {
-    type = "ui.MeshSlot",
-    description = "The slot, or `nil` where none is free.",
-  },
-  impl = raw.mesh_slot,
-})
+---Takes a slot for a model the interface keeps on screen across ticks.
+---
+---Take a slot once, when a script loads, and give it back with
+---`trx.ui.MeshSlot:release` when nothing needs it. Returns nothing where every
+---slot is taken.
+---@return trx.ui.MeshSlot # The slot, or `nil` where none is free.
+---@type fun(): trx.ui.MeshSlot
+M.mesh_slot = raw.mesh_slot

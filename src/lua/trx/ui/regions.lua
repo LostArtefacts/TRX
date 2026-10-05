@@ -1,10 +1,12 @@
 local raw = trxc.events
-local api = trx.api
+local h = require("trx.internal.helpers")
 
 require("trx.ui")
 require("trx.ui.primitive")
 require("trx.ui.widgets")
 require("trx.events")
+
+local ui = trx.ui
 
 local primitive = trx.ui.primitive
 
@@ -37,17 +39,16 @@ local ALIGN_OF = {
 -- after the engine's own UI in that region instead of interleaving with it.
 -------------------------------------------------------------------------------
 
-api.namespace("ui.regions", {
-  description = [[
-Places script widgets on the screen.
-
-The screen has nine regions. Engine UI uses those regions for bars, overlay
-text, inventory-ring hints, and dialogs. A widget placed in a region stacks
-after the engine UI in that region.
-
-Place a widget once when the script loads. Use signals when the widget must
-change later.]],
-})
+---Places script widgets on the screen.
+---
+---The screen has nine regions. Engine UI uses those regions for bars, overlay
+---text, inventory-ring hints, and dialogs. A widget placed in a region stacks
+---after the engine UI in that region.
+---
+---Place a widget once when the script loads. Use signals when the widget must
+---change later.
+---@class (exact) trx.ui.regions
+ui.regions = h.namespace("ui.regions")
 
 local function root_of(layer, region)
   local root = roots[layer][region]
@@ -113,111 +114,73 @@ local function bind_scope(widget)
   end)
 end
 
-api.define("ui.regions.place", {
-  description = [[
-Places a widget in a region.
+---Places a widget in a region.
+---
+---The layer decides whether the widget is covered by the engine interface or
+---covers it. A widget is under it unless the call says otherwise. Each layer
+---keeps room of its own in the region, so widgets on the two layers stack
+---rather than sit on top of each other.
+---
+---If the region argument is a signal, the widget moves when the signal
+---changes.
+---
+---```lua
+---trx.ui.regions.place(trx.ui.Region.TOP_LEFT, health_bar)
+---```
+---
+---```lua
+---trx.ui.regions.place(
+---  trx.ui.Region.BOTTOM_LEFT,
+---  console,
+---  trx.ui.Layer.OVER
+---)
+---```
+---@param region any The target region, or a signal that holds one.
+---@param widget trx.ui.Widget The widget to place.
+---@param layer? trx.ui.Layer Which layer to draw on. Defaults to `trx.ui.Layer.UNDER`.
+function ui.regions.place(region, widget, layer)
+  layer = layer or trx.ui.Layer.UNDER
+  if type(region) == "table" and region.get ~= nil then
+    attach(region:get(), widget, layer)
+    widget._region_listener = region:on(function(value)
+      unattach(widget)
+      attach(value, widget, layer)
+    end)
+  else
+    attach(region, widget, layer)
+  end
+  bind_scope(widget)
+end
 
-The layer decides whether the widget is covered by the engine interface or
-covers it. A widget is under it unless the call says otherwise. Each layer
-keeps room of its own in the region, so widgets on the two layers stack rather
-than sit on top of each other.
+---Removes a widget from its region.
+---
+---Use this for temporary widgets. Widgets owned by a level script are removed
+---when the level ends. Call `trx.ui.Widget:release` separately to detach their
+---signal listeners.
+---@param widget trx.ui.Widget The widget to remove.
+---@return boolean # Whether the widget was in a region.
+function ui.regions.remove(widget)
+  return remove(widget)
+end
 
-If the region argument is a signal, the widget moves when the signal changes.]],
-  params = {
-    {
-      name = "region",
-      type = "any",
-      description = "The target region, or a signal that holds one.",
-    },
-    {
-      name = "widget",
-      type = "ui.Widget",
-      description = "The widget to place.",
-    },
-    {
-      name = "layer",
-      type = "ui.Layer",
-      optional = true,
-      description = "Which layer to draw on. Defaults to `trx.ui.Layer.UNDER`.",
-    },
-  },
-  examples = {
-    [[trx.ui.regions.place(trx.ui.Region.TOP_LEFT, health_bar)]],
-    [[trx.ui.regions.place(
-  trx.ui.Region.BOTTOM_LEFT,
-  console,
-  trx.ui.Layer.OVER
-)]],
-  },
-  impl = function(region, widget, layer)
-    layer = layer or trx.ui.Layer.UNDER
-    if type(region) == "table" and region.get ~= nil then
-      attach(region:get(), widget, layer)
-      widget._region_listener = region:on(function(value)
-        unattach(widget)
-        attach(value, widget, layer)
-      end)
-    else
-      attach(region, widget, layer)
-    end
-    bind_scope(widget)
-  end,
-})
-
-api.define("ui.regions.remove", {
-  description = [[
-Removes a widget from its region.
-
-Use this for temporary widgets. Widgets owned by a level script are removed
-when the level ends. Call `trx.ui.Widget:release` separately to detach their
-signal listeners.]],
-  params = {
-    {
-      name = "widget",
-      type = "ui.Widget",
-      description = "The widget to remove.",
-    },
-  },
-  returns = {
-    type = "boolean",
-    description = "Whether the widget was in a region.",
-  },
-  impl = function(widget)
-    return remove(widget)
-  end,
-})
-
-api.define("ui.regions.fallback", {
-  description = [[
-Sets the widget to draw when a region has no visible content.
-
-A region with only non-shown widgets draws nothing. A fallback can reserve that
-empty place instead, for example the corner arrows shown when a bar is off
-screen. Each region has at most one fallback.]],
-  params = {
-    {
-      name = "region",
-      type = "ui.Region",
-      description = "The target region.",
-    },
-    {
-      name = "widget",
-      type = "ui.Widget",
-      description = "The fallback widget.",
-    },
-  },
-  impl = function(region, widget)
-    fallbacks[region] = widget
-    if raw.is_level_script() then
-      trx.events.on_level_unload(function()
-        if fallbacks[region] == widget then
-          fallbacks[region] = nil
-        end
-        widget:release()
-      end)
-    end
-  end,
-})
+---Sets the widget to draw when a region has no visible content.
+---
+---A region with only non-shown widgets draws nothing. A fallback can reserve
+---that empty place instead, for example the corner arrows shown when a bar is
+---off screen. Each region has at most one fallback.
+---@param region trx.ui.Region The target region.
+---@param widget trx.ui.Widget The fallback widget.
+function ui.regions.fallback(region, widget)
+  fallbacks[region] = widget
+  if raw.is_level_script() then
+    trx.events.on_level_unload(function()
+      if fallbacks[region] == widget then
+        fallbacks[region] = nil
+      end
+      widget:release()
+    end)
+  end
+end
 
 -- Reserves room for one layer's root in a region. The fallback belongs to the
 -- region rather than to a layer, so only the under layer offers it.

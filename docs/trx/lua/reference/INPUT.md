@@ -15,33 +15,34 @@ order: 42
 Module for reading input and working with player bindings.
 
 Scripts ask about roles, not physical keys. A role is a game action such as
-jumping, drawing a weapon, or opening a menu. The key or button that triggers it
-depends on the player's device and layout.
+jumping, drawing a weapon, or opening a menu. The key or button that
+triggers it depends on the player's device and layout.
 
 Use `\{input ...}` in text to draw the binding for a role.
 
-A few functions read the keyboard and the controller themselves, for a script
-that needs the key rather than the action, such as one reading a passcode.
+A few functions read the keyboard and the controller themselves, for a
+script that needs the key rather than the action, such as one reading a
+passcode.
 
 A key that prints a character is named by the character the player's layout
-prints, so the key labelled 5 is `"5"` on every layout. A key with a label rather
-than a character keeps the spelling the window system gives it, in lower case:
-`"escape"`, `"return"`, `"left shift"`, `"f5"`, `"keypad 5"`.
+prints, so the key labelled 5 is `"5"` on every layout. A key with a label
+rather than a character keeps the spelling the window system gives it, in
+lower case: `"escape"`, `"return"`, `"left shift"`, `"f5"`, `"keypad 5"`.
 
 While a rebind is reading a device, hardware reads report no input. The
 presses are not saved. [`trx.input.is_reserved`](#input.is_reserved) reports this state. Key and
 button names remain available.
 
-[`trx.input.grab`](#input.grab) gives a script exclusive input. Use [`trx.console.is_open`](CONSOLE.md#console.is_open) when
-a script must ignore text entered in the console.
+[`trx.input.grab`](#input.grab) gives a script exclusive input. Use [`trx.console.is_open`](CONSOLE.md#console.is_open)
+when a script must ignore text entered in the console.
 
-A controller button or axis keeps the name SDL gives it, because a pad prints a
-different label on the same button depending on who made it. The buttons are
-`"a"`, `"b"`, `"x"`, `"y"`, `"back"`, `"guide"`, `"start"`, `"leftstick"`,
-`"rightstick"`, `"leftshoulder"`, `"rightshoulder"`, `"dpup"`, `"dpdown"`,
-`"dpleft"`, `"dpright"`, `"misc1"`, `"paddle1"` to `"paddle4"` and `"touchpad"`.
-The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
-`"righttrigger"`.
+A controller button or axis keeps the name SDL gives it, because a pad
+prints a different label on the same button depending on who made it. The
+buttons are `"a"`, `"b"`, `"x"`, `"y"`, `"back"`, `"guide"`, `"start"`,
+`"leftstick"`, `"rightstick"`, `"leftshoulder"`, `"rightshoulder"`,
+`"dpup"`, `"dpdown"`, `"dpleft"`, `"dpright"`, `"misc1"`, `"paddle1"` to
+`"paddle4"` and `"touchpad"`. The axes are `"leftx"`, `"lefty"`, `"rightx"`,
+`"righty"`, `"lefttrigger"` and `"righttrigger"`.
 
 ### Properties
 
@@ -53,7 +54,8 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 
 - <a id="input.Role" name="input.Role"></a>[lua]`trx.input.Role` - 77 names
 
-    A game action the player can bind to a key or button. In text, `\{input ...}` draws its current binding.
+    A game action the player can bind to a key or button. In text, `\{input
+    ...}` draws its current binding.
 
 
     <details><summary>Click here to see a list of all symbols.</summary>
@@ -82,11 +84,11 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 
     An input source, such as keyboard, controller, or touch.
 
-    - `trx.input.Backend.KEYBOARD` = `0`  
+    - `trx.input.Backend.KEYBOARD`  
         The keyboard, with the mouse.
-    - `trx.input.Backend.CONTROLLER` = `1`  
+    - `trx.input.Backend.CONTROLLER`  
         A game controller.
-    - `trx.input.Backend.TOUCH` = `2`  
+    - `trx.input.Backend.TOUCH`  
         The on-screen controls.
 
 - <a id="input.SkipContext" name="input.SkipContext"></a>[lua]`trx.input.SkipContext`
@@ -94,25 +96,25 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
     Where the player lands after skipping a scene. It decides which roles a skip
     holds inactive.
 
-    - `trx.input.SkipContext.TO_SCREEN` = `0`  
+    - `trx.input.SkipContext.TO_SCREEN`  
         A menu or another screen follows. Every skip role is held.
-    - `trx.input.SkipContext.TO_GAME` = `1`  
+    - `trx.input.SkipContext.TO_GAME`  
         Gameplay follows. Action stays active, so a held action reaches Lara.
-    - `trx.input.SkipContext.IN_GAME` = `2`  
+    - `trx.input.SkipContext.IN_GAME`  
         The scene plays during gameplay. Look stays active for the camera.
 
 - <a id="input.Layout" name="input.Layout"></a>[lua]`trx.input.Layout`
 
-    A saved set of bindings for one input source. The default layout is read-only;
-    the custom layouts belong to the player.
+    A saved set of bindings for one input source. The default layout is
+    read-only; the custom layouts belong to the player.
 
-    - `trx.input.Layout.DEFAULT` = `0`  
+    - `trx.input.Layout.DEFAULT`  
         The bindings the game ships with.
-    - `trx.input.Layout.CUSTOM_1` = `1`  
+    - `trx.input.Layout.CUSTOM_1`  
         The player's first layout.
-    - `trx.input.Layout.CUSTOM_2` = `2`  
+    - `trx.input.Layout.CUSTOM_2`  
         The player's second layout.
-    - `trx.input.Layout.CUSTOM_3` = `3`  
+    - `trx.input.Layout.CUSTOM_3`  
         The player's third layout.
 
 ### Structures
@@ -152,8 +154,8 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
     - <a id="input.Capture.cancel" name="input.Capture.cancel"></a>[lua]`capture:cancel()`  
       Stops the capture and leaves the binding as it was.
 
-      Turning capture off is part of this, so a script that gives up does not have to
-      do it itself.
+      Turning capture off is part of this, so a script that gives up does not have
+      to do it itself.
 
       Returns: boolean. Whether the capture was still running.
 
@@ -175,8 +177,8 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 - <a id="input.signals" name="input.signals"></a>[lua]`trx.input.signals`  
   Input roles as signals.
 
-  Each role has one shared signal, so several consumers of the same role use one
-  read per tick.
+  Each role has one shared signal, so several consumers of the same role use
+  one read per tick.
 
 - <a id="input.is_held" name="input.is_held"></a>[lua]`trx.input.is_held(role)`  
   Whether a role is active right now.
@@ -192,7 +194,8 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 - <a id="input.is_pressed" name="input.is_pressed"></a>[lua]`trx.input.is_pressed(role)`  
   Whether a role became active this frame.
 
-  This is true for one frame only. Use it for actions that happen once per press.
+  This is true for one frame only. Use it for actions that happen once per
+  press.
 
   Parameters:
   - <a id="input.is_pressed.role" name="input.is_pressed.role"></a>**`role`** ([trx.input.Role](#input.Role)). The role to ask about.
@@ -210,8 +213,8 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 - <a id="input.hold_off" name="input.hold_off"></a>[lua]`trx.input.hold_off(role)`  
   Keeps a handled role inactive until the player releases it.
 
-  Use this after a script handles a press, so the same press does not reach other
-  input code or fire again while held.
+  Use this after a script handles a press, so the same press does not reach
+  other input code or fire again while held.
 
   Parameters:
   - <a id="input.hold_off.role" name="input.hold_off.role"></a>**`role`** ([trx.input.Role](#input.Role)). The role to take.
@@ -219,8 +222,8 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 - <a id="input.hold_off_skip" name="input.hold_off_skip"></a>[lua]`trx.input.hold_off_skip(context)`  
   Keeps each role that can skip a scene inactive until the player releases it.
 
-  Use this after a script ends a scene on a skip press, so the same press does not
-  act on what comes after the scene.
+  Use this after a script ends a scene on a skip press, so the same press does
+  not act on what comes after the scene.
 
   Parameters:
   - <a id="input.hold_off_skip.context" name="input.hold_off_skip.context"></a>**`context`** ([trx.input.SkipContext](#input.SkipContext)). Where the player lands after the skip.
@@ -229,8 +232,8 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
   Whether the game has the keyboard and the pad rather than the player.
 
   This is true while a rebind is reading input. Every hardware read reports
-  nothing then, so a script that would otherwise answer an empty keypad can tell
-  the two apart.
+  nothing then, so a script that would otherwise answer an empty keypad can
+  tell the two apart.
 
   A script holding the devices with [`trx.input.grab`](#input.grab) is not this, and
   [`trx.input.is_grabbed`](#input.is_grabbed) reports that instead. The console is one such script.
@@ -240,9 +243,10 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 - <a id="input.is_key_held" name="input.is_key_held"></a>[lua]`trx.input.is_key_held(key)`  
   Whether a key is down right now.
 
-  This reads the keyboard rather than the player's bindings, so it answers for the
-  key itself and says nothing about a controller. Prefer [`trx.input.is_held`](#input.is_held) for a
-  game action: it follows what the player bound and works on every device.
+  This reads the keyboard rather than the player's bindings, so it answers for
+  the key itself and says nothing about a controller. Prefer
+  [`trx.input.is_held`](#input.is_held) for a game action: it follows what the player bound and
+  works on every device.
 
   Reports false while [`trx.input.is_reserved`](#input.is_reserved) is true. A name no key on the
   player's layout carries raises.
@@ -258,9 +262,9 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
   This is true for one frame only. [`trx.events.on_key_down`](EVENTS.md#events.on_key_down) reports the same
   presses without a script naming the keys it cares about in advance.
 
-  Reports false while [`trx.input.is_reserved`](#input.is_reserved), and a press that arrived then is not
-  kept for afterwards. A key still held as the game gives the keyboard back fires
-  [`trx.events.on_key_down`](EVENTS.md#events.on_key_down) but reports no press here.
+  Reports false while [`trx.input.is_reserved`](#input.is_reserved), and a press that arrived then
+  is not kept for afterwards. A key still held as the game gives the keyboard
+  back fires [`trx.events.on_key_down`](EVENTS.md#events.on_key_down) but reports no press here.
 
   A name no key on the player's layout carries raises.
 
@@ -284,10 +288,11 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
   Whether a controller button is down right now.
 
   This reads the pad rather than the player's bindings, so it answers for the
-  button itself. Prefer [`trx.input.is_held`](#input.is_held) for a game action: it follows what the
-  player bound and works on every device.
+  button itself. Prefer [`trx.input.is_held`](#input.is_held) for a game action: it follows what
+  the player bound and works on every device.
 
-  Reports false while [`trx.input.is_reserved`](#input.is_reserved). A name SDL does not know raises.
+  Reports false while [`trx.input.is_reserved`](#input.is_reserved). A name SDL does not know
+  raises.
 
   Parameters:
   - <a id="input.is_button_held.button" name="input.is_button_held.button"></a>**`button`** (string). The button to ask about.
@@ -297,12 +302,12 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 - <a id="input.is_button_pressed" name="input.is_button_pressed"></a>[lua]`trx.input.is_button_pressed(button)`  
   Whether a controller button went down in this frame.
 
-  This is true for one frame only. [`trx.events.on_button_down`](EVENTS.md#events.on_button_down) reports the same
-  presses without a script naming the buttons it cares about in advance.
+  This is true for one frame only. [`trx.events.on_button_down`](EVENTS.md#events.on_button_down) reports the
+  same presses without a script naming the buttons it cares about in advance.
 
-  Reports false while [`trx.input.is_reserved`](#input.is_reserved), and a press that arrived then is not
-  kept for afterwards. A button still held as the game gives the pad back fires
-  [`trx.events.on_button_down`](EVENTS.md#events.on_button_down) but reports no press here.
+  Reports false while [`trx.input.is_reserved`](#input.is_reserved), and a press that arrived then
+  is not kept for afterwards. A button still held as the game gives the pad
+  back fires [`trx.events.on_button_down`](EVENTS.md#events.on_button_down) but reports no press here.
 
   A name SDL does not know raises.
 
@@ -322,8 +327,8 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 - <a id="input.axis" name="input.axis"></a>[lua]`trx.input.axis(axis)`  
   Where a controller axis stands, from -1 to 1.
 
-  A stick reaches -1 left or up and 1 right or down. A trigger runs from 0 at rest
-  to 1 held down. An axis reads 0 while the pad is unplugged and while
+  A stick reaches -1 left or up and 1 right or down. A trigger runs from 0 at
+  rest to 1 held down. An axis reads 0 while the pad is unplugged and while
   [`trx.input.is_reserved`](#input.is_reserved).
 
   A name SDL does not know raises.
@@ -345,11 +350,12 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
   Holds roles inactive until the returned suppression is released.
 
   The game does not act on the role, and [`trx.input.is_held`](#input.is_held) and
-  [`trx.input.signals`](#input.signals) report it inactive as well. Use this to take an action away
-  for as long as a script needs it gone, such as while the player works a puzzle.
+  [`trx.input.signals`](#input.signals) report it inactive as well. Use this to take an action
+  away for as long as a script needs it gone, such as while the player works a
+  puzzle.
 
-  Only the roles named are affected. A suppressed movement role still moves the
-  menu cursor, so a script that wants both suppresses both.
+  Only the roles named are affected. A suppressed movement role still moves
+  the menu cursor, so a script that wants both suppresses both.
 
   Suppressions are released when the level unloads.
 
@@ -407,8 +413,8 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 - <a id="input.key_name" name="input.key_name"></a>[lua]`trx.input.key_name(role, [opts], [backend], [layout])`  
   Text for the key or button bound to a role.
 
-  This is the text drawn by `\{input ...}`: a glyph when one exists, otherwise a
-  key name. Empty bindings return nil.
+  This is the text drawn by `\{input ...}`: a glyph when one exists, otherwise
+  a key name. Empty bindings return nil.
 
   Use [`trx.input.Binding`](#input.Binding) to choose a slot, input source, or layout without
   placeholder nils. Positional arguments still work.
@@ -458,8 +464,8 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 - <a id="input.is_conflicted" name="input.is_conflicted"></a>[lua]`trx.input.is_conflicted(role, [opts], [layout])`  
   Whether another role uses the same binding in the same layout.
 
-  Use [`trx.input.Binding`](#input.Binding) to choose an input source or layout without placeholder
-  nils. Positional arguments still work.
+  Use [`trx.input.Binding`](#input.Binding) to choose an input source or layout without
+  placeholder nils. Positional arguments still work.
 
   Parameters:
   - <a id="input.is_conflicted.role" name="input.is_conflicted.role"></a>**`role`** ([trx.input.Role](#input.Role)). The role to ask about.
@@ -471,8 +477,8 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 - <a id="input.listen" name="input.listen"></a>[lua]`trx.input.listen(enabled)`  
   Turns script input capture on or off.
 
-  While capture is on, scripts can read or bind input without the game acting on
-  the same input. Turn capture off as soon as the input is handled.
+  While capture is on, scripts can read or bind input without the game acting
+  on the same input. Turn capture off as soon as the input is handled.
 
   Parameters:
   - <a id="input.listen.enabled" name="input.listen.enabled"></a>**`enabled`** (boolean). Whether script input capture is enabled.
@@ -491,9 +497,9 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 - <a id="input.bind_pressed" name="input.bind_pressed"></a>[lua]`trx.input.bind_pressed(role, [opts], [backend], [layout])`  
   Binds a role to the key or button the player is holding.
 
-  Returns false if no input is held. Call it each frame while waiting for input,
-  with [`trx.input.listen`](#input.listen) on or from inside [`trx.input.with_listen`](#input.with_listen). The default
-  layout is read-only.
+  Returns false if no input is held. Call it each frame while waiting for
+  input, with [`trx.input.listen`](#input.listen) on or from inside [`trx.input.with_listen`](#input.with_listen).
+  The default layout is read-only.
 
   Use [`trx.input.Binding`](#input.Binding) to choose a slot, input source, or layout without
   placeholder nils. Positional arguments still work.
@@ -509,12 +515,13 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 - <a id="input.capture" name="input.capture"></a>[lua]`trx.input.capture(role, [opts], [done])`  
   Binds a role to the next key or button the player presses.
 
-  The capture spans frames: it waits for the player to let go of what is already
-  down, turns capture on, and takes the first press after that. The previous
-  capture state is restored when it lands or when the capture is cancelled.
+  The capture spans frames: it waits for the player to let go of what is
+  already down, turns capture on, and takes the first press after that. The
+  previous capture state is restored when it lands or when the capture is
+  cancelled.
 
-  Use this instead of [`trx.input.listen`](#input.listen) and [`trx.input.bind_pressed`](#input.bind_pressed), which only
-  answer for the frame they run on. The default layout is read-only.
+  Use this instead of [`trx.input.listen`](#input.listen) and [`trx.input.bind_pressed`](#input.bind_pressed), which
+  only answer for the frame they run on. The default layout is read-only.
 
   Use [`trx.input.Binding`](#input.Binding) to choose a slot, input source, or layout without
   placeholder nils.
@@ -531,8 +538,8 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 - <a id="input.unbind" name="input.unbind"></a>[lua]`trx.input.unbind(role, [opts], [backend], [layout])`  
   Clears one role binding.
 
-  The default layout is read-only, and roles reserved by the game cannot be left
-  unbound.
+  The default layout is read-only, and roles reserved by the game cannot be
+  left unbound.
 
   Use [`trx.input.Binding`](#input.Binding) to choose a slot, input source, or layout without
   placeholder nils. Positional arguments still work.
@@ -546,8 +553,8 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 - <a id="input.reset_layout" name="input.reset_layout"></a>[lua]`trx.input.reset_layout([opts], [layout])`  
   Restores a custom layout to the default bindings.
 
-  Use [`trx.input.Binding`](#input.Binding) to choose an input source or layout without placeholder
-  nils. Positional arguments still work.
+  Use [`trx.input.Binding`](#input.Binding) to choose an input source or layout without
+  placeholder nils. Positional arguments still work.
 
   Parameters:
   - <a id="input.reset_layout.opts" name="input.reset_layout.opts"></a>**`opts`** ([trx.input.Backend](#input.Backend) or [trx.input.Binding](#input.Binding), optional). Layout to reset. Defaults to the current source and layout.
@@ -557,9 +564,9 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
   Takes the keyboard and the pad from the game until the returned grab is
   released.
 
-  The game stops responding to the devices while the script can still read them.
-  Use this for text fields, consoles, and passcode boxes. Release the grab when
-  the script no longer needs the devices.
+  The game stops responding to the devices while the script can still read
+  them. Use this for text fields, consoles, and passcode boxes. Release the
+  grab when the script no longer needs the devices.
 
   [`trx.input.suppress`](#input.suppress) removes one action. A grab takes both devices. The game
   still has priority while [`trx.input.is_reserved`](#input.is_reserved) is true. Grabs are released
@@ -587,8 +594,8 @@ The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
 - <a id="input.signals.held" name="input.signals.held"></a>[lua]`trx.input.signals.held(role)`  
   A signal for whether a role is active.
 
-  It is true while the player holds the bound key or button. It changes when the
-  role becomes active and when it stops.
+  It is true while the player holds the bound key or button. It changes when
+  the role becomes active and when it stops.
 
   Parameters:
   - <a id="input.signals.held.role" name="input.signals.held.role"></a>**`role`** ([trx.input.Role](#input.Role)). The role to follow.

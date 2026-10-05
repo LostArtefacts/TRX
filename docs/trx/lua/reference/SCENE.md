@@ -12,16 +12,17 @@ order: 44
 
 ## <a id="scene" name="scene"></a>Scene module
 
-Outlines a script draws into the world the camera is looking at, over the level
-geometry rather than over the interface.
+Outlines a script draws into the world the camera is looking at, over the
+level geometry rather than over the interface.
 
-The calls are available from [`trx.events.on_scene_paint`](EVENTS.md#events.on_scene_paint) and nowhere else, and
-raise anywhere else. Nothing is remembered between frames: a shape that is to
-stay on screen is drawn again every time the event fires.
+The calls are available from [`trx.events.on_scene_paint`](EVENTS.md#events.on_scene_paint) and nowhere else,
+and raise anywhere else. Nothing is remembered between frames: a shape that
+is to stay on screen is drawn again every time the event fires.
 
-A shape is placed the way an item position and a zone are, so it needs no room
-and belongs to none. The outlines are drawn as wireframe, and one reaching
-further from its middle than a level is wide draws at that limit instead.
+A shape is placed the way an item position and a zone are, so it needs no
+room and belongs to none. The outlines are drawn as wireframe, and one
+reaching further from its middle than a level is wide draws at that limit
+instead.
 
 ### Functions
 

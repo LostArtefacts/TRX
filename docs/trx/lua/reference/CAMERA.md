@@ -32,7 +32,8 @@ Module for inspecting the active camera state.
 ### Functions
 
 - <a id="camera.shake" name="camera.shake"></a>[lua]`trx.camera.shake(intensity)`  
-  Shakes the camera by setting its bounce value. Positive values shake it upward, negative values downward.
+  Shakes the camera by setting its bounce value. Positive values shake it
+  upward, negative values downward.
 
   Parameters:
   - <a id="camera.shake.intensity" name="camera.shake.intensity"></a>**`intensity`** (integer). Bounce value.
@@ -46,7 +47,8 @@ Module for inspecting the active camera state.
   Resets the camera to Lara's current position.
 
 - <a id="camera.play_flyby" name="camera.play_flyby"></a>[lua]`trx.camera.play_flyby(sequence_num)`  
-  Starts a flyby camera sequence. Does nothing if another one is already playing.
+  Starts a flyby camera sequence. Does nothing if another one is already
+  playing.
 
   Parameters:
   - <a id="camera.play_flyby.sequence_num" name="camera.play_flyby.sequence_num"></a>**`sequence_num`** ([trx.camera.SequenceNum](#camera.SequenceNum)).

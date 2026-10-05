@@ -13,14 +13,18 @@ order: 14
 ## <a id="cutscenes" name="cutscenes"></a>Cutscenes module
 
 Module for TR4's in-game cutscenes, the animated scenes stored in
-`cutseq.pak` and started by a cutscene trigger. A cutscene plays once:
-the engine remembers which ones have run, and a script may consult or
-rewrite that memory. The cutscene levels of TR1-TR3, which the game flow
-lists and `/cut` plays, are a different thing: see [`trx.game.cutscenes`](GAME.md#game.cutscenes).
+`cutseq.pak` and started by a cutscene trigger. A
+cutscene plays once: the engine remembers which ones have run, and a script
+may consult or rewrite that memory. The cutscene levels of TR1-TR3, which
+the game flow lists and `/cut` plays, are a different thing: see
+[`trx.game.cutscenes`](GAME.md#game.cutscenes).
 
 ### Indexing
 
-Indexing the module reaches a cutscene by the number a trigger names it with. `#trx.cutscenes` is how many the game can play, and `pairs()` walks those in order; the numbers past them are reachable as well, because the engine remembers any of them as played.
+Indexing the module reaches a cutscene by the number a trigger names it
+with. `#trx.cutscenes` is how many the game can play, and `pairs()` walks
+those in order; the numbers past them are reachable as well, because the
+engine remembers any of them as played.
 
 - <a id="cutscenes[]" name="cutscenes[]"></a>**`trx.cutscenes[key]`** (key: [trx.cutscenes.Num](#cutscenes.Num), value: [trx.cutscenes.Cutscene](#cutscenes.Cutscene) or `nil`). The number a cutscene trigger names.
 - **`#trx.cutscenes`** (integer). How many there are.
@@ -35,20 +39,15 @@ end)
 ### Properties
 
 - <a id="cutscenes.current" name="cutscenes.current"></a>**`trx.cutscenes.current`** ([trx.cutscenes.Cutscene](#cutscenes.Cutscene)). The cutscene playing, or `nil` if none is. *(read-only)*
-- <a id="cutscenes.frame_num" name="cutscenes.frame_num"></a>**`trx.cutscenes.frame_num`** ([trx.cutscenes.FrameNum](#cutscenes.FrameNum)). Which frame of the running cutscene is on screen, or `nil` if none is
-  running. A cutscene's actors are animation tracks rather than items, so
-  nothing in it can be triggered or listened to; naming a frame is how a
-  script acts part-way through one, as the original game does. *(read-only)*
-- <a id="cutscenes.signals.is_playing" name="cutscenes.signals.is_playing"></a>**`trx.cutscenes.signals.is_playing`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when a cutscene takes the screen, and when it gives it back. *(read-only)*
-- <a id="cutscenes.signals.is_active" name="cutscenes.signals.is_active"></a>**`trx.cutscenes.signals.is_active`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Signals when a cutscene has the screen, including during its fades. *(read-only)*
+- <a id="cutscenes.frame_num" name="cutscenes.frame_num"></a>**`trx.cutscenes.frame_num`** ([trx.cutscenes.FrameNum](#cutscenes.FrameNum)). Which frame of the running cutscene is on screen, or `nil` if none is running. A cutscene's actors are animation tracks rather than items, so nothing in it can be triggered or listened to; naming a frame is how a script acts part-way through one, as the original game does. *(read-only)*
 - <a id="cutscenes.is_playing" name="cutscenes.is_playing"></a>**`trx.cutscenes.is_playing`** (boolean). Whether a cutscene is on screen. *(read-only)*
-- <a id="cutscenes.is_active" name="cutscenes.is_active"></a>**`trx.cutscenes.is_active`** (boolean). Whether a cutscene has the screen, including during its fades. Use this
-  to keep an interface off while the cutscene is active. *(read-only)*
+- <a id="cutscenes.is_active" name="cutscenes.is_active"></a>**`trx.cutscenes.is_active`** (boolean). Whether a cutscene has the screen, including during its fades. Use this to keep an interface off while the cutscene is active. *(read-only)*
 - <a id="cutscenes.count" name="cutscenes.count"></a>**`trx.cutscenes.count`** (integer). How many cutscenes this game can play. `0` where it has none, which is every game but TR4 and a TR4 install with no `cutseq.pak` beside its levels. *(read-only)*
 - <a id="cutscenes.actor_count" name="cutscenes.actor_count"></a>**`trx.cutscenes.actor_count`** (integer). How many actors the running cutscene has, or `0` if none is running. *(read-only)*
 - <a id="cutscenes.fov" name="cutscenes.fov"></a>**`trx.cutscenes.fov`** ([trx.math.Angle](MATH.md#math.Angle)). Field of view a cutscene plays at. TR4 uses 11488, against 14560 for ordinary play.
-- <a id="cutscenes.letterbox" name="cutscenes.letterbox"></a>**`trx.cutscenes.letterbox`** (number). Depth of each cinematic bar, as a fraction of the screen height. `0` removes
-  them. A change made while a cutscene plays moves the bars to the new depth.
+- <a id="cutscenes.letterbox" name="cutscenes.letterbox"></a>**`trx.cutscenes.letterbox`** (number). Depth of each cinematic bar, as a fraction of the screen height. `0` removes them. A change made while a cutscene plays moves the bars to the new depth.
+- <a id="cutscenes.signals.is_playing" name="cutscenes.signals.is_playing"></a>**`trx.cutscenes.signals.is_playing`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when a cutscene takes the screen, and when it gives it back. *(read-only)*
+- <a id="cutscenes.signals.is_active" name="cutscenes.signals.is_active"></a>**`trx.cutscenes.signals.is_active`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Signals when a cutscene has the screen, including during its fades. *(read-only)*
 
 ### Structures
 
@@ -85,7 +84,8 @@ end)
     Methods:
 
     - <a id="cutscenes.Cutscene.on_end" name="cutscenes.Cutscene.on_end"></a>[lua]`cutscene:on_end(callback)`  
-      Happens once this scene has finished and what it interrupted is back. [`trx.events.on_cutscene_end`](EVENTS.md#events.on_cutscene_end), narrowed to this cutscene.
+      Happens once this scene has finished and what it interrupted is back.
+      [`trx.events.on_cutscene_end`](EVENTS.md#events.on_cutscene_end), narrowed to this cutscene.
 
       Parameters:
       - <a id="cutscenes.Cutscene.on_end.callback" name="cutscenes.Cutscene.on_end.callback"></a>**`callback`** (function). What to run when it happens.
@@ -120,7 +120,8 @@ end)
       ```
 
     - <a id="cutscenes.Cutscene.on_start" name="cutscenes.Cutscene.on_start"></a>[lua]`cutscene:on_start(callback)`  
-      Happens when this scene's first frame is about to show. [`trx.events.on_cutscene_start`](EVENTS.md#events.on_cutscene_start), narrowed to this cutscene.
+      Happens when this scene's first frame is about to show.
+      [`trx.events.on_cutscene_start`](EVENTS.md#events.on_cutscene_start), narrowed to this cutscene.
 
       Parameters:
       - <a id="cutscenes.Cutscene.on_start.callback" name="cutscenes.Cutscene.on_start.callback"></a>**`callback`** (function). What to run when it happens.
@@ -130,7 +131,8 @@ end)
       Returns: [trx.events.Listener](EVENTS.md#events.Listener). The attached handler.
 
     - <a id="cutscenes.Cutscene.play" name="cutscenes.Cutscene.play"></a>[lua]`cutscene:play([opts])`  
-      Plays this scene. Does nothing if one is already playing or the game holds no scene for this number.
+      Plays this scene. Does nothing if one is already playing or the game holds
+      no scene for this number.
 
       Parameters:
       - <a id="cutscenes.Cutscene.play.opts" name="cutscenes.Cutscene.play.opts"></a>**`opts`** (table, optional). How to play it.
@@ -146,12 +148,14 @@ end)
 ### Functions
 
 - <a id="cutscenes.signals" name="cutscenes.signals"></a>[lua]`trx.cutscenes.signals`  
-  The signals a cutscene speaks through, for a script that would rather hear about a change than ask after one.
+  The signals a cutscene speaks through, for a script that would rather hear
+  about a change than ask after one.
 
 - <a id="cutscenes.play" name="cutscenes.play"></a>[lua]`trx.cutscenes.play(num, [fade])`  
   **Deprecated.** Call [`trx.cutscenes.Cutscene:play`](#cutscenes.Cutscene.play) instead.
 
-  Plays a cutscene, fading the scene out first. Does nothing if one is already playing or the game has no cutscene data.
+  Plays a cutscene, fading the scene out first. Does nothing if one is already
+  playing or the game has no cutscene data.
 
   Parameters:
   - <a id="cutscenes.play.num" name="cutscenes.play.num"></a>**`num`** ([trx.cutscenes.Num](#cutscenes.Num)).
@@ -197,7 +201,8 @@ end)
   ```
 
 - <a id="cutscenes.clear_node_mesh" name="cutscenes.clear_node_mesh"></a>[lua]`trx.cutscenes.clear_node_mesh(actor, node)`  
-  Takes the override back off, leaving the mesh the actor's own object gives that node.
+  Takes the override back off, leaving the mesh the actor's own object gives
+  that node.
 
   Parameters:
   - <a id="cutscenes.clear_node_mesh.actor" name="cutscenes.clear_node_mesh.actor"></a>**`actor`** ([trx.cutscenes.ActorNum](#cutscenes.ActorNum)).
@@ -221,9 +226,9 @@ end)
 
   A trigger may name a number the game has no cutscene for - TR4 uses 32 to
   ask for a full-motion video - and the engine remembers those the same way,
-  so [`trx.events.on_cutscene_trigger`](EVENTS.md#events.on_cutscene_trigger) hears about each of them once. This is what clears
-  that memory, and it takes any number a trigger may carry, not only the ones
-  [`trx.cutscenes.play`](#cutscenes.play) accepts.
+  so [`trx.events.on_cutscene_trigger`](EVENTS.md#events.on_cutscene_trigger) hears about each of them once. This is
+  what clears that memory, and it takes any number a trigger may carry, not
+  only the ones [`trx.cutscenes.play`](#cutscenes.play) accepts.
 
   Parameters:
   - <a id="cutscenes.set_played.num" name="cutscenes.set_played.num"></a>**`num`** ([trx.cutscenes.Num](#cutscenes.Num)).
@@ -238,8 +243,8 @@ end)
   afterwards; this says to put her somewhere else instead, as the original
   game does for the scenes that carry her along.
 
-  It holds for one cutscene, whether named before [`trx.cutscenes.play`](#cutscenes.play) or while the scene
-  runs, and is forgotten once she has been placed.
+  It holds for one cutscene, whether named before [`trx.cutscenes.play`](#cutscenes.play) or
+  while the scene runs, and is forgotten once she has been placed.
 
   Parameters:
   - <a id="cutscenes.set_lara_return.pos" name="cutscenes.set_lara_return.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position.
@@ -258,8 +263,8 @@ end)
   Gives Lara's shadow another box for the running cutscene. A scene holds one
   box for the whole of it, rather than the box her pose would make, so that
   her shadow keeps a steady size while the scene moves her; this names a
-  different one. A wide box is how the original game makes her shadow read as
-  the jeep's when she arrives at Karnak.
+  different one. A wide box is how the original game makes her shadow read
+  as the jeep's when she arrives at Karnak.
 
   It holds for one cutscene, whether named before [`trx.cutscenes.play`](#cutscenes.play) or
   while the scene runs, and the next scene starts from the ordinary box

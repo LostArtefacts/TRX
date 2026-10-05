@@ -1,8 +1,9 @@
 local raw = trxc.ui
-local api = trx.api
+require("trx.internal.helpers")
 local base = require("trx.ui.widgets.base")
 
 local primitive = trx.ui.primitive
+local widgets = trx.ui.widgets
 local value_of = base.value_of
 local new_widget = base.new_widget
 local text_scale = base.text_scale
@@ -58,125 +59,81 @@ local function digits_loaded(widget)
   return primitive.sprite_count(widget.object) > 0
 end
 
-api.define("ui.widgets.Digits", {
-  description = [[
-A line of text drawn from an object's sprites, one sprite per character.
+---@class (exact) trx.ui.widgets.Digits.settings
+---@field object trx.catalog.objects The sprite object to draw the characters from.
+---@field text any The text, or a signal carrying it.
+---@field color any What color to draw the characters in, or a signal carrying one.
+---@field color_bottom? any The color the characters fade to down their height. The main color by default, which draws them flat.
+---@field mark_color? any What color to draw the `T` in. The main color by default.
+---@field mark_color_bottom? any The color the `T` fades to. Its own color by default.
+---@field shown? any Whether the digits are shown, or a signal that holds that value.
 
-The object supplies the ten digits, then a colon, a full stop, a `T` and an
-`s`, in that order, which is how the assault course digits are laid out. A
-space and a dash move the pen without drawing. <!--noref: s-->
-
-The widget measures nothing where the level did not load the object, so a
-script can keep it on screen for a level that has no digits.]],
-  params = {
-    {
-      name = "settings",
-      type = "table",
-      description = "The digit settings.",
-      fields = {
-        {
-          name = "object",
-          type = "catalog.objects",
-          description = "The sprite object to draw the characters from.",
-        },
-        {
-          name = "text",
-          type = "any",
-          description = "The text, or a signal carrying it.",
-        },
-        {
-          name = "color",
-          type = "any",
-          description = "What color to draw the characters in, or a "
-            .. "signal carrying one.",
-        },
-        {
-          name = "color_bottom",
-          type = "any",
-          optional = true,
-          description = "The color the characters fade to down their "
-            .. "height. The main color by default, which draws them flat.",
-        },
-        {
-          name = "mark_color",
-          type = "any",
-          optional = true,
-          description = "What color to draw the `T` in. The main color "
-            .. "by default.",
-        },
-        {
-          name = "mark_color_bottom",
-          type = "any",
-          optional = true,
-          description = "The color the `T` fades to. Its own color by default.",
-        },
-        {
-          name = "shown",
-          type = "any",
-          optional = true,
-          description = "Whether the digits are shown, or a signal that holds "
-            .. "that value.",
-        },
-      },
-    },
-  },
-  returns = { type = "ui.Widget", description = "The digits." },
-  examples = {
-    [[trx.ui.widgets.Digits({
-  object = trx.catalog.objects.assault_digits,
-  text = timer:map(format_time),
-  color = trx.math.color("ffffff"),
-})]],
-  },
-  impl = function(settings)
-    local self = new_widget(settings, function(w)
-      if not digits_loaded(w) then
-        return 0, 0
+---A line of text drawn from an object's sprites, one sprite per character.
+---
+---The object supplies the ten digits, then a colon, a full stop, a `T` and an
+---`s`, in that order, which is how the assault course digits are laid out. A
+---space and a dash move the pen without drawing. <!--noref: s-->
+---
+---The widget measures nothing where the level did not load the object, so a
+---script can keep it on screen for a level that has no digits.
+---
+---```lua
+---trx.ui.widgets.Digits({
+---  object = trx.catalog.objects.assault_digits,
+---  text = timer:map(format_time),
+---  color = trx.math.color("ffffff"),
+---})
+---```
+---@param settings trx.ui.widgets.Digits.settings The digit settings.
+---@return trx.ui.Widget # The digits.
+function widgets.Digits(settings)
+  local self = new_widget(settings, function(w)
+    if not digits_loaded(w) then
+      return 0, 0
+    end
+    local scale = raw.text_scale()
+    local glyphs = digit_glyphs(tostring(value_of(w.text)))
+    local width, bottom = 0, 0
+    for _, glyph in ipairs(glyphs) do
+      width = width + (glyph.offset or 0) + (glyph.advance or DIGIT_ADVANCE)
+      if glyph.sprite ~= nil then
+        local _, _, _, y1 = primitive.sprite_bounds(w.object, glyph.sprite)
+        bottom = math.max(bottom, y1 + (glyph.drop or 0))
       end
-      local scale = raw.text_scale()
-      local glyphs = digit_glyphs(tostring(value_of(w.text)))
-      local width, bottom = 0, 0
-      for _, glyph in ipairs(glyphs) do
-        width = width + (glyph.offset or 0) + (glyph.advance or DIGIT_ADVANCE)
-        if glyph.sprite ~= nil then
-          local _, _, _, y1 = primitive.sprite_bounds(w.object, glyph.sprite)
-          bottom = math.max(bottom, y1 + (glyph.drop or 0))
+    end
+    return width * scale, (bottom - digit_rise(w.object, glyphs)) * scale
+  end, function(w, x, y)
+    if not digits_loaded(w) then
+      return
+    end
+    local scale = raw.text_scale()
+    local glyphs = digit_glyphs(tostring(value_of(w.text)))
+    local top = y - digit_rise(w.object, glyphs) * scale
+    local pen = x
+    for _, glyph in ipairs(glyphs) do
+      pen = pen + (glyph.offset or 0) * scale
+      if glyph.sprite ~= nil then
+        local top_color = value_of(w.color)
+        local bottom_color = value_of(w.color_bottom) or top_color
+        if glyph.mark and w.mark_color ~= nil then
+          top_color = value_of(w.mark_color)
+          bottom_color = value_of(w.mark_color_bottom) or top_color
         end
+        primitive.gradient_sprite(
+          w.object,
+          glyph.sprite,
+          pen + (glyph.nudge or 0) * scale,
+          top + (glyph.drop or 0) * scale,
+          0,
+          scale,
+          top_color,
+          top_color,
+          bottom_color,
+          bottom_color
+        )
       end
-      return width * scale, (bottom - digit_rise(w.object, glyphs)) * scale
-    end, function(w, x, y)
-      if not digits_loaded(w) then
-        return
-      end
-      local scale = raw.text_scale()
-      local glyphs = digit_glyphs(tostring(value_of(w.text)))
-      local top = y - digit_rise(w.object, glyphs) * scale
-      local pen = x
-      for _, glyph in ipairs(glyphs) do
-        pen = pen + (glyph.offset or 0) * scale
-        if glyph.sprite ~= nil then
-          local top_color = value_of(w.color)
-          local bottom_color = value_of(w.color_bottom) or top_color
-          if glyph.mark and w.mark_color ~= nil then
-            top_color = value_of(w.mark_color)
-            bottom_color = value_of(w.mark_color_bottom) or top_color
-          end
-          primitive.gradient_sprite(
-            w.object,
-            glyph.sprite,
-            pen + (glyph.nudge or 0) * scale,
-            top + (glyph.drop or 0) * scale,
-            0,
-            scale,
-            top_color,
-            top_color,
-            bottom_color,
-            bottom_color
-          )
-        end
-        pen = pen + (glyph.advance or DIGIT_ADVANCE) * scale
-      end
-    end)
-    return self:wakes_on(self.text, text_scale())
-  end,
-})
+      pen = pen + (glyph.advance or DIGIT_ADVANCE) * scale
+    end
+  end)
+  return self:wakes_on(self.text, text_scale())
+end

@@ -17,10 +17,10 @@ Python's argparse.
 
 A parser both reads a command's arguments and offers completions for them,
 from one declaration. Every command written with [`trx.console.register`](CONSOLE.md#console.register) has
-one; a command shapes it through the [`trx.console.register.spec.args`](CONSOLE.md#console.register.spec.args) function
-it hands over, and [`trx.console.register.spec.run`](CONSOLE.md#console.register.spec.run) then receives a table of
-parsed values. A command that shapes nothing takes no arguments, and is told so
-when given one.
+one; a command shapes it through the [`trx.console.register.spec.args`](CONSOLE.md#console.register.spec.args)
+function it hands over, and [`trx.console.register.spec.run`](CONSOLE.md#console.register.spec.run) then receives a
+table of parsed values. A command that shapes nothing takes no arguments,
+and is told so when given one.
 
 Every parser answers `-h` and `--help` on its own, printing what it accepts.
 
@@ -30,27 +30,30 @@ value that is a number *or* a name is two matchers, declared with
 [`trx.argparse.Parser:any_of`](#argparse.Parser.any_of).
 
 Positionals are read in order, and an optional one a token does not fit is
-passed over: the token goes to the next positional, and the one skipped stays
-nil. That is what lets a command take a leading argument it can also be used
-without - a verb before a value, a count before a name. Completion follows the
-same path, so a slot offers what every argument reachable from it takes. A
-token nothing takes is reported against the first argument that refused it.
+passed over: the token goes to the next positional, and the one skipped
+stays nil. That is what lets a command take a leading argument it can also
+be used without - a verb before a value, a count before a name. Completion
+follows the same path, so a slot offers what every argument reachable from
+it takes. A token nothing takes is reported against the first argument that
+refused it.
 
 A choice is either a bare string, where the key and value are the same, or a
-`{ key, value }` pair, where the key is matched and shown and the value is what
-[`trx.argparse.Parser:parse`](#argparse.Parser.parse) gives back. Matching is forgiving, through
+`{ key, value }` pair, where the key is matched and shown and the value is
+what [`trx.argparse.Parser:parse`](#argparse.Parser.parse) gives back. Matching is forgiving, through
 [`trx.strings.fuzzy_match`](STRINGS.md#strings.fuzzy_match).
 
 ### Structures
 
 - <a id="argparse.Parser" name="argparse.Parser"></a>[lua]`trx.argparse.Parser`
 
-    An argument parser, built up a call at a time. Every method hands the parser back, so the calls chain.
+    An argument parser, built up a call at a time. Every method hands the parser
+    back, so the calls chain.
 
     Methods:
 
     - <a id="argparse.Parser.any_of" name="argparse.Parser.any_of"></a>[lua]`parser:any_of(name, alternatives, [opts])`  
-      Adds a positional whose value is the first of several matchers to take the token, for an argument that is a number or a name.
+      Adds a positional whose value is the first of several matchers to take the
+      token, for an argument that is a number or a name.
 
       Parameters:
       - <a id="argparse.Parser.any_of.name" name="argparse.Parser.any_of.name"></a>**`name`** (string). What the parsed value is keyed by.
@@ -74,7 +77,8 @@ A choice is either a bare string, where the key and value are the same, or a
       Returns: [trx.argparse.Parser](#argparse.Parser). The same parser, so declarations chain.
 
     - <a id="argparse.Parser.complete" name="argparse.Parser.complete"></a>[lua]`parser:complete([text], [caret])`  
-      The candidate completions for the token the caret sits in. Matching is against the text before the caret.
+      The candidate completions for the token the caret sits in. Matching is
+      against the text before the caret.
 
       Parameters:
       - <a id="argparse.Parser.complete.text" name="argparse.Parser.complete.text"></a>**`text`** (string, optional). The line so far.
@@ -100,7 +104,8 @@ A choice is either a bare string, where the key and value are the same, or a
       Returns: [trx.argparse.Parser](#argparse.Parser). The same parser, so declarations chain.
 
     - <a id="argparse.Parser.format_error" name="argparse.Parser.format_error"></a>[lua]`parser:format_error(err)`  
-      Turns what a refused line reported into a localized line naming what was wrong and what was expected.
+      Turns what a refused line reported into a localized line naming what was
+      wrong and what was expected.
 
       Parameters:
       - <a id="argparse.Parser.format_error.err" name="argparse.Parser.format_error.err"></a>**`err`** (table). What [`parse`](#argparse.Parser.parse) handed back.
@@ -108,7 +113,8 @@ A choice is either a bare string, where the key and value are the same, or a
       Returns: string. The line, ready to print.
 
     - <a id="argparse.Parser.parse" name="argparse.Parser.parse"></a>[lua]`parser:parse([args])`  
-      Reads an argument line. A value carried by a `{ key, value }` choice comes back as its value, and `-h`/`--help` comes back as `{ help = true }`.
+      Reads an argument line. A value carried by a `{ key, value }` choice comes
+      back as its value, and `-h`/`--help` comes back as `{ help = true }`.
 
       Parameters:
       - <a id="argparse.Parser.parse.args" name="argparse.Parser.parse.args"></a>**`args`** (string, optional). The line as the player typed it.
@@ -137,7 +143,8 @@ A choice is either a bare string, where the key and value are the same, or a
       Returns: [trx.argparse.Parser](#argparse.Parser). The same parser, so declarations chain.
 
     - <a id="argparse.Parser.rest" name="argparse.Parser.rest"></a>[lua]`parser:rest(name, [opts])`  
-      Adds an argument taking the rest of the line from here on, verbatim as one string, or `nil` where an optional one is absent. Always the last argument.
+      Adds an argument taking the rest of the line from here on, verbatim as one
+      string, or `nil` where an optional one is absent. Always the last argument.
 
       Parameters:
       - <a id="argparse.Parser.rest.name" name="argparse.Parser.rest.name"></a>**`name`** (string). What the parsed value is keyed by.

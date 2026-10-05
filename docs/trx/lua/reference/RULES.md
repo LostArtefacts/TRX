@@ -32,20 +32,10 @@ that wants the defaults back asks for them.
 - <a id="rules.exposure.recovery" name="rules.exposure.recovery"></a>**`trx.rules.exposure.recovery`** (integer). Warmth regained each frame once out of the cold.
 - <a id="rules.exposure.damage" name="rules.exposure.damage"></a>**`trx.rules.exposure.damage`** (integer). Hit points lost each frame once the warmth has run out.
 - <a id="rules.corpse.fade_speed" name="rules.corpse.fade_speed"></a>**`trx.rules.corpse.fade_speed`** (integer). How much of a body's coverage goes each frame, out of 255. It is taken away once nothing is left. `0` leaves it where it lies.
-- <a id="rules.carrier.snap_to_sector" name="rules.carrier.snap_to_sector"></a>**`trx.rules.carrier.snap_to_sector`** (boolean). Whether an item a defeated enemy carried lands in the middle of the sector
-  the enemy stood on, rather than at its feet. Quest items are left where
-  they fall either way.
-- <a id="rules.carrier.inherit_facing" name="rules.carrier.inherit_facing"></a>**`trx.rules.carrier.inherit_facing`** (boolean). Whether an item a defeated enemy carried turns to face the way the enemy
-  did, rather than keeping the rotation the level gave it. This only reaches
-  drops the level data places on the enemy; a drop the gameflow names always
-  takes the enemy's facing.
-- <a id="rules.inventory.keep_plot_items" name="rules.inventory.keep_plot_items"></a>**`trx.rules.inventory.keep_plot_items`** (boolean). Whether the items a level owns - keys, puzzle items, pickup items and what
-  Lara examines - travel with her to the next level, rather than being left
-  behind at the end of the one she found them in. TR4 keeps them and clears
-  them where its game flow declares a `reset_hub` ;
-  the other games leave them behind every time.
-- <a id="rules.fx.rotate_debris" name="rules.fx.rotate_debris"></a>**`trx.rules.fx.rotate_debris`** (boolean). Whether debris pieces generated from shattered meshes should rotate in yaw
-  and pitch while they are active. The original TR4 did not apply rotation.
+- <a id="rules.carrier.snap_to_sector" name="rules.carrier.snap_to_sector"></a>**`trx.rules.carrier.snap_to_sector`** (boolean). Whether an item a defeated enemy carried lands in the middle of the sector the enemy stood on, rather than at its feet. Quest items are left where they fall either way.
+- <a id="rules.carrier.inherit_facing" name="rules.carrier.inherit_facing"></a>**`trx.rules.carrier.inherit_facing`** (boolean). Whether an item a defeated enemy carried turns to face the way the enemy did, rather than keeping the rotation the level gave it. This only reaches drops the level data places on the enemy; a drop the gameflow names always takes the enemy's facing.
+- <a id="rules.inventory.keep_plot_items" name="rules.inventory.keep_plot_items"></a>**`trx.rules.inventory.keep_plot_items`** (boolean). Whether the items a level owns - keys, puzzle items, pickup items and what Lara examines - travel with her to the next level, rather than being left behind at the end of the one she found them in. TR4 keeps them and clears them where its game flow declares a `reset_hub` ; the other games leave them behind every time.
+- <a id="rules.fx.rotate_debris" name="rules.fx.rotate_debris"></a>**`trx.rules.fx.rotate_debris`** (boolean). Whether debris pieces generated from shattered meshes should rotate in yaw and pitch while they are active. The original TR4 did not apply rotation.
 
 ### Functions
 
@@ -63,14 +53,16 @@ that wants the defaults back asks for them.
   Returns: any. Raises if no rule has that key.
 
 - <a id="rules.set" name="rules.set"></a>[lua]`trx.rules.set(key, value)`  
-  Changes a rule by its key. A string is read as text, the way the console gives it; any other value is taken as the rule's own type.
+  Changes a rule by its key. A string is read as text, the way the console
+  gives it; any other value is taken as the rule's own type.
 
   Parameters:
   - <a id="rules.set.key" name="rules.set.key"></a>**`key`** (string). Dotted path, e.g. `exposure.damage`.
   - <a id="rules.set.value" name="rules.set.value"></a>**`value`** (any). The value to write, of the type the rule declares.
 
 - <a id="rules.reset" name="rules.reset"></a>[lua]`trx.rules.reset([key])`  
-  Puts a rule back to the value the engine ships with, or every rule when given no key. Happens on its own when a new game starts.
+  Puts a rule back to the value the engine ships with, or every rule when
+  given no key. Happens on its own when a new game starts.
 
   Parameters:
   - <a id="rules.reset.key" name="rules.reset.key"></a>**`key`** (string, optional). Dotted path.

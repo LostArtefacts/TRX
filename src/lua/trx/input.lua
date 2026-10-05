@@ -1,114 +1,177 @@
 local raw = trxc.input
-local api = trx.api
+local h = require("trx.internal.helpers")
 
 require("trx.events")
 require("trx.signal")
 
-api.module("input", {
-  order = 42,
-  title = "Input",
-  description = [[
-Module for reading input and working with player bindings.
+---@class trx
+---@field input trx.input
 
-Scripts ask about roles, not physical keys. A role is a game action such as
-jumping, drawing a weapon, or opening a menu. The key or button that triggers it
-depends on the player's device and layout.
+---Module for reading input and working with player bindings.
+---
+---Scripts ask about roles, not physical keys. A role is a game action such as
+---jumping, drawing a weapon, or opening a menu. The key or button that
+---triggers it depends on the player's device and layout.
+---
+---Use `\{input ...}` in text to draw the binding for a role.
+---
+---A few functions read the keyboard and the controller themselves, for a
+---script that needs the key rather than the action, such as one reading a
+---passcode.
+---
+---A key that prints a character is named by the character the player's layout
+---prints, so the key labelled 5 is `"5"` on every layout. A key with a label
+---rather than a character keeps the spelling the window system gives it, in
+---lower case: `"escape"`, `"return"`, `"left shift"`, `"f5"`, `"keypad 5"`.
+---
+---While a rebind is reading a device, hardware reads report no input. The
+---presses are not saved. `trx.input.is_reserved` reports this state. Key and
+---button names remain available.
+---
+---`trx.input.grab` gives a script exclusive input. Use `trx.console.is_open`
+---when a script must ignore text entered in the console.
+---
+---A controller button or axis keeps the name SDL gives it, because a pad
+---prints a different label on the same button depending on who made it. The
+---buttons are `"a"`, `"b"`, `"x"`, `"y"`, `"back"`, `"guide"`, `"start"`,
+---`"leftstick"`, `"rightstick"`, `"leftshoulder"`, `"rightshoulder"`,
+---`"dpup"`, `"dpdown"`, `"dpleft"`, `"dpright"`, `"misc1"`, `"paddle1"` to
+---`"paddle4"` and `"touchpad"`. The axes are `"leftx"`, `"lefty"`, `"rightx"`,
+---`"righty"`, `"lefttrigger"` and `"righttrigger"`.
+---@trx.module 42 Input
+---@class (exact) trx.input
+---@trx.readonly backend, is_listening, layout
+---@field backend trx.input.Backend The current input source.
+---@field layout trx.input.Layout The current layout for the current input source.
+---@field is_listening boolean Whether script input capture is on.
+local M = h.module("input")
 
-Use `\{input ...}` in text to draw the binding for a role.
+---A game action the player can bind to a key or button. In text, `\{input
+---...}` draws its current binding.
+---@trx.bulk
+---@enum trx.input.Role
+local Role = {
+  FORWARD = "",
+  BACK = "",
+  LEFT = "",
+  RIGHT = "",
+  STEP_LEFT = "",
+  STEP_RIGHT = "",
+  SLOW = "",
+  CROUCH = "",
+  JUMP = "",
+  ACTION = "",
+  DRAW = "",
+  LOOK = "",
+  ROLL = "",
+  SPRINT = "",
+  OPTION = "",
+  CHANGE_TARGET = "",
+  ENTER_CONSOLE = "",
+  MENU_CONFIRM = "",
+  MENU_BACK = "",
+  MENU_LEFT = "",
+  MENU_UP = "",
+  MENU_DOWN = "",
+  MENU_RIGHT = "",
+  MENU_SKIP = "",
+  MENU_TAB_LEFT = "",
+  MENU_TAB_RIGHT = "",
+  MENU_SHOW_INFO = "",
+  MENU_FINE_ADJUST = "",
+  MENU_COARSE_ADJUST = "",
+  FLY_CHEAT = "",
+  ITEM_CHEAT = "",
+  LEVEL_SKIP_CHEAT = "",
+  TURBO_CHEAT = "",
+  FAST_FORWARD_CHEAT = "",
+  SLOW_MOTION_CHEAT = "",
+  SAVE = "",
+  LOAD = "",
+  QUICK_SAVE = "",
+  QUICK_LOAD = "",
+  SCREENSHOT = "",
+  TOGGLE_FPS_COUNTER = "",
+  TOGGLE_FULLSCREEN = "",
+  EQUIP_PISTOLS = "",
+  EQUIP_SHOTGUN = "",
+  EQUIP_MAGNUMS = "",
+  EQUIP_AUTOS = "",
+  EQUIP_DESERT_EAGLE = "",
+  EQUIP_UZIS = "",
+  EQUIP_HARPOON = "",
+  EQUIP_M16 = "",
+  EQUIP_MP5 = "",
+  EQUIP_GRENADE_LAUNCHER = "",
+  EQUIP_ROCKET_LAUNCHER = "",
+  USE_SMALL_MEDI = "",
+  USE_BIG_MEDI = "",
+  USE_FLARE = "",
+  USE_BINOCULARS = "",
+  PAUSE = "",
+  TOGGLE_PHOTO_MODE = "",
+  TOGGLE_UI = "",
+  TOGGLE_BILINEAR_FILTER = "",
+  CYCLE_LIGHTING_MODEL = "",
+  CHANGE_OUTFIT = "",
+  TOGGLE_TRAPEZOID_FILTER = "",
+  TOGGLE_WIREFRAME = "",
+  TOGGLE_TEXTURES = "",
+  SWITCH_UPSCALING = "",
+  SWITCH_BORDERS = "",
+  RESET_BINDINGS = "",
+  UNBIND_KEY = "",
+  CAMERA_FORWARD = "",
+  CAMERA_BACK = "",
+  CAMERA_LEFT = "",
+  CAMERA_RIGHT = "",
+  CAMERA_UP = "",
+  CAMERA_DOWN = "",
+  CAMERA_RESET = "",
+}
+M.Role = h.enum("input.Role", "INPUT_ROLE", Role)
 
-A few functions read the keyboard and the controller themselves, for a script
-that needs the key rather than the action, such as one reading a passcode.
+---An input source, such as keyboard, controller, or touch.
+---@enum trx.input.Backend
+local Backend = {
+  KEYBOARD = "The keyboard, with the mouse.",
+  CONTROLLER = "A game controller.",
+  TOUCH = "The on-screen controls.",
+}
+M.Backend = h.enum("input.Backend", "INPUT_BACKEND", Backend)
 
-A key that prints a character is named by the character the player's layout
-prints, so the key labelled 5 is `"5"` on every layout. A key with a label rather
-than a character keeps the spelling the window system gives it, in lower case:
-`"escape"`, `"return"`, `"left shift"`, `"f5"`, `"keypad 5"`.
+---Where the player lands after skipping a scene. It decides which roles a skip
+---holds inactive.
+---@enum trx.input.SkipContext
+local SkipContext = {
+  TO_SCREEN = "A menu or another screen follows. Every skip role is held.",
+  TO_GAME = "Gameplay follows. Action stays active, so a held action reaches Lara.",
+  IN_GAME = "The scene plays during gameplay. Look stays active for the camera.",
+}
+M.SkipContext = h.enum("input.SkipContext", "INPUT_SKIP_CONTEXT", SkipContext)
 
-While a rebind is reading a device, hardware reads report no input. The
-presses are not saved. `trx.input.is_reserved` reports this state. Key and
-button names remain available.
+---A saved set of bindings for one input source. The default layout is
+---read-only; the custom layouts belong to the player.
+---@enum trx.input.Layout
+local Layout = {
+  DEFAULT = "The bindings the game ships with.",
+  CUSTOM_1 = "The player's first layout.",
+  CUSTOM_2 = "The player's second layout.",
+  CUSTOM_3 = "The player's third layout.",
+}
+M.Layout = h.enum("input.Layout", "INPUT_LAYOUT", Layout)
 
-`trx.input.grab` gives a script exclusive input. Use `trx.console.is_open` when
-a script must ignore text entered in the console.
+---Which of the two bindings a role can use.
+---@trx.base 1
+---@alias trx.input.Slot integer
 
-A controller button or axis keeps the name SDL gives it, because a pad prints a
-different label on the same button depending on who made it. The buttons are
-`"a"`, `"b"`, `"x"`, `"y"`, `"back"`, `"guide"`, `"start"`, `"leftstick"`,
-`"rightstick"`, `"leftshoulder"`, `"rightshoulder"`, `"dpup"`, `"dpdown"`,
-`"dpleft"`, `"dpright"`, `"misc1"`, `"paddle1"` to `"paddle4"` and `"touchpad"`.
-The axes are `"leftx"`, `"lefty"`, `"rightx"`, `"righty"`, `"lefttrigger"` and
-`"righttrigger"`.]],
-})
-
-api.enum("input.Role", {
-  backing = "INPUT_ROLE",
-  bulk = true,
-  description = "A game action the player can bind to a key or button. In text, "
-    .. "`\\{input ...}` draws its current binding.",
-})
-
-api.enum("input.Backend", {
-  backing = "INPUT_BACKEND",
-  description = "An input source, such as keyboard, controller, or touch.",
-  values = {
-    KEYBOARD = "The keyboard, with the mouse.",
-    CONTROLLER = "A game controller.",
-    TOUCH = "The on-screen controls.",
-  },
-})
-
-api.enum("input.SkipContext", {
-  backing = "INPUT_SKIP_CONTEXT",
-  description = [[
-Where the player lands after skipping a scene. It decides which roles a skip
-holds inactive.]],
-  values = {
-    TO_SCREEN = "A menu or another screen follows. Every skip role is held.",
-    TO_GAME = "Gameplay follows. Action stays active, so a held action reaches Lara.",
-    IN_GAME = "The scene plays during gameplay. Look stays active for the camera.",
-  },
-})
-
-local Layout = api.enum("input.Layout", {
-  backing = "INPUT_LAYOUT",
-  description = [[
-A saved set of bindings for one input source. The default layout is read-only;
-the custom layouts belong to the player.]],
-  values = {
-    DEFAULT = "The bindings the game ships with.",
-    CUSTOM_1 = "The player's first layout.",
-    CUSTOM_2 = "The player's second layout.",
-    CUSTOM_3 = "The player's third layout.",
-  },
-})
-
-api.number("input.Slot", {
-  base = 1,
-  description = "Which of the two bindings a role can use.",
-})
-
-api.type("input.Binding", {
-  record = true,
-  description = "The slot, input source, and layout of a role binding.",
-  fields = {
-    slot = {
-      type = "input.Slot",
-      optional = true,
-      default = 1,
-      description = "Binding slot. Defaults to the first.",
-    },
-    backend = {
-      type = "input.Backend",
-      optional = true,
-      description = "Input source. Defaults to the current one.",
-    },
-    layout = {
-      type = "input.Layout",
-      optional = true,
-      description = "Layout. Defaults to the current one.",
-    },
-  },
-})
+---The slot, input source, and layout of a role binding.
+---@trx.record
+---@class trx.input.Binding
+---@field slot? trx.input.Slot Binding slot. Defaults to the first.
+---@field backend? trx.input.Backend Input source. Defaults to the current one.
+---@field layout? trx.input.Layout Layout. Defaults to the current one.
+---@trx.default slot 1
 
 local function binding_args(opts_or_slot, backend, layout)
   if type(opts_or_slot) == "table" then
@@ -128,243 +191,157 @@ end
 -- what the player is doing
 -------------------------------------------------------------------------------
 
-api.define("input.is_held", {
-  description = [[
-Whether a role is active right now.
+---Whether a role is active right now.
+---
+---This stays true while the player holds the bound key or button. Use it for
+---actions that continue while held.
+---@param role trx.input.Role The role to ask about.
+---@return boolean # Whether the role is active.
+---@type fun(role: trx.input.Role): boolean
+M.is_held = raw.is_held
 
-This stays true while the player holds the bound key or button. Use it for
-actions that continue while held.]],
-  params = {
-    {
-      name = "role",
-      type = "input.Role",
-      description = "The role to ask about.",
-    },
-  },
-  returns = { type = "boolean", description = "Whether the role is active." },
-  impl = raw.is_held,
-})
+---Whether a role became active this frame.
+---
+---This is true for one frame only. Use it for actions that happen once per
+---press.
+---@param role trx.input.Role The role to ask about.
+---@return boolean # Whether the role was pressed.
+---@type fun(role: trx.input.Role): boolean
+M.is_pressed = raw.is_pressed
 
-api.define("input.is_pressed", {
-  description = [[
-Whether a role became active this frame.
+---Whether any role is active right now.
+---
+---Use this to wait for the player to let go before reading input for something
+---else, such as a rebind.
+---@return boolean # Whether anything is held.
+---@type fun(): boolean
+M.is_anything_held = raw.is_anything_held
 
-This is true for one frame only. Use it for actions that happen once per press.]],
-  params = {
-    {
-      name = "role",
-      type = "input.Role",
-      description = "The role to ask about.",
-    },
-  },
-  returns = { type = "boolean", description = "Whether the role was pressed." },
-  impl = raw.is_pressed,
-})
+---Keeps a handled role inactive until the player releases it.
+---
+---Use this after a script handles a press, so the same press does not reach
+---other input code or fire again while held.
+---@param role trx.input.Role The role to take.
+---@type fun(role: trx.input.Role)
+M.hold_off = raw.hold_off
 
-api.define("input.is_anything_held", {
-  description = [[
-Whether any role is active right now.
-
-Use this to wait for the player to let go before reading input for something
-else, such as a rebind.]],
-  returns = { type = "boolean", description = "Whether anything is held." },
-  impl = raw.is_anything_held,
-})
-
-api.define("input.hold_off", {
-  description = [[
-Keeps a handled role inactive until the player releases it.
-
-Use this after a script handles a press, so the same press does not reach other
-input code or fire again while held.]],
-  params = {
-    { name = "role", type = "input.Role", description = "The role to take." },
-  },
-  impl = raw.hold_off,
-})
-
-api.define("input.hold_off_skip", {
-  description = [[
-Keeps each role that can skip a scene inactive until the player releases it.
-
-Use this after a script ends a scene on a skip press, so the same press does not
-act on what comes after the scene.]],
-  params = {
-    {
-      name = "context",
-      type = "input.SkipContext",
-      description = "Where the player lands after the skip.",
-    },
-  },
-  impl = raw.hold_off_skip,
-})
+---Keeps each role that can skip a scene inactive until the player releases it.
+---
+---Use this after a script ends a scene on a skip press, so the same press does
+---not act on what comes after the scene.
+---@param context trx.input.SkipContext Where the player lands after the skip.
+---@type fun(context: trx.input.SkipContext)
+M.hold_off_skip = raw.hold_off_skip
 
 -------------------------------------------------------------------------------
 -- Read the keyboard as hardware.
 -------------------------------------------------------------------------------
 
-api.define("input.is_reserved", {
-  description = [[
-Whether the game has the keyboard and the pad rather than the player.
+---Whether the game has the keyboard and the pad rather than the player.
+---
+---This is true while a rebind is reading input. Every hardware read reports
+---nothing then, so a script that would otherwise answer an empty keypad can
+---tell the two apart.
+---
+---A script holding the devices with `trx.input.grab` is not this, and
+---`trx.input.is_grabbed` reports that instead. The console is one such script.
+---@return boolean # Whether the game has the devices.
+---@type fun(): boolean
+M.is_reserved = raw.is_reserved
 
-This is true while a rebind is reading input. Every hardware read reports
-nothing then, so a script that would otherwise answer an empty keypad can tell
-the two apart.
+---Whether a key is down right now.
+---
+---This reads the keyboard rather than the player's bindings, so it answers for
+---the key itself and says nothing about a controller. Prefer
+---`trx.input.is_held` for a game action: it follows what the player bound and
+---works on every device.
+---
+---Reports false while `trx.input.is_reserved` is true. A name no key on the
+---player's layout carries raises.
+---@param key string The key to ask about.
+---@return boolean # Whether the key is down.
+---@type fun(key: string): boolean
+M.is_key_held = raw.is_key_held
 
-A script holding the devices with `trx.input.grab` is not this, and
-`trx.input.is_grabbed` reports that instead. The console is one such script.]],
-  returns = {
-    type = "boolean",
-    description = "Whether the game has the devices.",
-  },
-  impl = raw.is_reserved,
-})
+---Whether a key went down in this frame.
+---
+---This is true for one frame only. `trx.events.on_key_down` reports the same
+---presses without a script naming the keys it cares about in advance.
+---
+---Reports false while `trx.input.is_reserved`, and a press that arrived then
+---is not kept for afterwards. A key still held as the game gives the keyboard
+---back fires `trx.events.on_key_down` but reports no press here.
+---
+---A name no key on the player's layout carries raises.
+---@param key string The key to ask about.
+---@return boolean # Whether the key went down.
+---@type fun(key: string): boolean
+M.is_key_pressed = raw.is_key_pressed
 
-api.define("input.is_key_held", {
-  description = [[
-Whether a key is down right now.
-
-This reads the keyboard rather than the player's bindings, so it answers for the
-key itself and says nothing about a controller. Prefer `trx.input.is_held` for a
-game action: it follows what the player bound and works on every device.
-
-Reports false while `trx.input.is_reserved` is true. A name no key on the
-player's layout carries raises.]],
-  params = {
-    {
-      name = "key",
-      type = "string",
-      description = "The key to ask about.",
-    },
-  },
-  returns = { type = "boolean", description = "Whether the key is down." },
-  impl = raw.is_key_held,
-})
-
-api.define("input.is_key_pressed", {
-  description = [[
-Whether a key went down in this frame.
-
-This is true for one frame only. `trx.events.on_key_down` reports the same
-presses without a script naming the keys it cares about in advance.
-
-Reports false while `trx.input.is_reserved`, and a press that arrived then is not
-kept for afterwards. A key still held as the game gives the keyboard back fires
-`trx.events.on_key_down` but reports no press here.
-
-A name no key on the player's layout carries raises.]],
-  params = {
-    {
-      name = "key",
-      type = "string",
-      description = "The key to ask about.",
-    },
-  },
-  returns = { type = "boolean", description = "Whether the key went down." },
-  impl = raw.is_key_pressed,
-})
-
-api.define("input.is_key_known", {
-  description = [[
-Whether the player's layout has a key of that name.
-
-Use this to check a name a mod's own settings supplied, rather than letting
-`trx.input.is_key_held` raise on it.]],
-  params = {
-    {
-      name = "key",
-      type = "string",
-      description = "The name to check.",
-    },
-  },
-  returns = { type = "boolean", description = "Whether a key carries it." },
-  impl = raw.is_key_known,
-})
+---Whether the player's layout has a key of that name.
+---
+---Use this to check a name a mod's own settings supplied, rather than letting
+---`trx.input.is_key_held` raise on it.
+---@param key string The name to check.
+---@return boolean # Whether a key carries it.
+---@type fun(key: string): boolean
+M.is_key_known = raw.is_key_known
 
 -------------------------------------------------------------------------------
 -- Read the controller as hardware.
 -------------------------------------------------------------------------------
 
-api.define("input.is_button_held", {
-  description = [[
-Whether a controller button is down right now.
+---Whether a controller button is down right now.
+---
+---This reads the pad rather than the player's bindings, so it answers for the
+---button itself. Prefer `trx.input.is_held` for a game action: it follows what
+---the player bound and works on every device.
+---
+---Reports false while `trx.input.is_reserved`. A name SDL does not know
+---raises.
+---@param button string The button to ask about.
+---@return boolean # Whether the button is down.
+---@type fun(button: string): boolean
+M.is_button_held = raw.is_button_held
 
-This reads the pad rather than the player's bindings, so it answers for the
-button itself. Prefer `trx.input.is_held` for a game action: it follows what the
-player bound and works on every device.
+---Whether a controller button went down in this frame.
+---
+---This is true for one frame only. `trx.events.on_button_down` reports the
+---same presses without a script naming the buttons it cares about in advance.
+---
+---Reports false while `trx.input.is_reserved`, and a press that arrived then
+---is not kept for afterwards. A button still held as the game gives the pad
+---back fires `trx.events.on_button_down` but reports no press here.
+---
+---A name SDL does not know raises.
+---@param button string The button to ask about.
+---@return boolean # Whether the button went down.
+---@type fun(button: string): boolean
+M.is_button_pressed = raw.is_button_pressed
 
-Reports false while `trx.input.is_reserved`. A name SDL does not know raises.]],
-  params = {
-    {
-      name = "button",
-      type = "string",
-      description = "The button to ask about.",
-    },
-  },
-  returns = { type = "boolean", description = "Whether the button is down." },
-  impl = raw.is_button_held,
-})
+---Whether a controller button carries that name.
+---@param button string The name to check.
+---@return boolean # Whether a button carries it.
+---@type fun(button: string): boolean
+M.is_button_known = raw.is_button_known
 
-api.define("input.is_button_pressed", {
-  description = [[
-Whether a controller button went down in this frame.
+---Where a controller axis stands, from -1 to 1.
+---
+---A stick reaches -1 left or up and 1 right or down. A trigger runs from 0 at
+---rest to 1 held down. An axis reads 0 while the pad is unplugged and while
+---`trx.input.is_reserved`.
+---
+---A name SDL does not know raises.
+---@param axis string The axis to read.
+---@return number # Where the axis stands.
+---@type fun(axis: string): number
+M.axis = raw.axis
 
-This is true for one frame only. `trx.events.on_button_down` reports the same
-presses without a script naming the buttons it cares about in advance.
-
-Reports false while `trx.input.is_reserved`, and a press that arrived then is not
-kept for afterwards. A button still held as the game gives the pad back fires
-`trx.events.on_button_down` but reports no press here.
-
-A name SDL does not know raises.]],
-  params = {
-    {
-      name = "button",
-      type = "string",
-      description = "The button to ask about.",
-    },
-  },
-  returns = { type = "boolean", description = "Whether the button went down." },
-  impl = raw.is_button_pressed,
-})
-
-api.define("input.is_button_known", {
-  description = "Whether a controller button carries that name.",
-  params = {
-    { name = "button", type = "string", description = "The name to check." },
-  },
-  returns = { type = "boolean", description = "Whether a button carries it." },
-  impl = raw.is_button_known,
-})
-
-api.define("input.axis", {
-  description = [[
-Where a controller axis stands, from -1 to 1.
-
-A stick reaches -1 left or up and 1 right or down. A trigger runs from 0 at rest
-to 1 held down. An axis reads 0 while the pad is unplugged and while
-`trx.input.is_reserved`.
-
-A name SDL does not know raises.]],
-  params = {
-    {
-      name = "axis",
-      type = "string",
-      description = "The axis to read.",
-    },
-  },
-  returns = { type = "number", description = "Where the axis stands." },
-  impl = raw.axis,
-})
-
-api.define("input.is_axis_known", {
-  description = "Whether a controller axis carries that name.",
-  params = {
-    { name = "axis", type = "string", description = "The name to check." },
-  },
-  returns = { type = "boolean", description = "Whether an axis carries it." },
-  impl = raw.is_axis_known,
-})
+---Whether a controller axis carries that name.
+---@param axis string The name to check.
+---@return boolean # Whether an axis carries it.
+---@type fun(axis: string): boolean
+M.is_axis_known = raw.is_axis_known
 
 -------------------------------------------------------------------------------
 -- Hold roles inactive.
@@ -373,593 +350,335 @@ api.define("input.is_axis_known", {
 local suppressed = {}
 local epoch = 0
 
-local Suppression = api.type("input.Suppression", {
-  description = "A set of roles a script holds inactive.",
-  methods = {
-    release = {
-      description = [[
-Gives the roles back to the player.
+---A set of roles a script holds inactive.
+---@class (exact) trx.input.Suppression
+local Suppression = h.class("input.Suppression")
 
-A role stays inactive while any other suppression still names it.]],
-      returns = {
-        type = "boolean",
-        description = "Whether the suppression was still holding anything.",
-      },
-      impl = function(self)
-        return rawget(self, "_release")()
-      end,
-    },
-  },
-})
+---Gives the roles back to the player.
+---
+---A role stays inactive while any other suppression still names it.
+---@return boolean # Whether the suppression was still holding anything.
+function Suppression:release()
+  return rawget(self, "_release")()
+end
 
-api.define("input.suppress", {
-  description = [[
-Holds roles inactive until the returned suppression is released.
+---Holds roles inactive until the returned suppression is released.
+---
+---The game does not act on the role, and `trx.input.is_held` and
+---`trx.input.signals` report it inactive as well. Use this to take an action
+---away for as long as a script needs it gone, such as while the player works a
+---puzzle.
+---
+---Only the roles named are affected. A suppressed movement role still moves
+---the menu cursor, so a script that wants both suppresses both.
+---
+---Suppressions are released when the level unloads.
+---
+---```lua
+---local held = trx.input.suppress(
+---  trx.input.Role.JUMP,
+---  trx.input.Role.ROLL
+---)
+---
+---local function on_puzzle_solved()
+---  held:release()
+---end
+---```
+---@param ... trx.input.Role The roles to hold inactive.
+---@return trx.input.Suppression # The running suppression.
+function M.suppress(...)
+  local roles = table.pack(...)
+  if roles.n == 0 then
+    error("at least one role is required", 2)
+  end
 
-The game does not act on the role, and `trx.input.is_held` and
-`trx.input.signals` report it inactive as well. Use this to take an action away
-for as long as a script needs it gone, such as while the player works a puzzle.
-
-Only the roles named are affected. A suppressed movement role still moves the
-menu cursor, so a script that wants both suppresses both.
-
-Suppressions are released when the level unloads.]],
-  params = {
-    {
-      name = "...",
-      type = "input.Role",
-      description = "The roles to hold inactive.",
-    },
-  },
-  returns = {
-    type = "input.Suppression",
-    description = "The running suppression.",
-  },
-  examples = {
-    [[local held = trx.input.suppress(
-  trx.input.Role.JUMP,
-  trx.input.Role.ROLL
-)
-
-local function on_puzzle_solved()
-  held:release()
-end]],
-  },
-  impl = function(...)
-    local roles = table.pack(...)
-    if roles.n == 0 then
-      error("at least one role is required", 2)
+  local handle = setmetatable({}, Suppression)
+  local own_epoch = epoch
+  for i = 1, roles.n do
+    local role = roles[i]
+    local count = (suppressed[role] or 0) + 1
+    suppressed[role] = count
+    if count == 1 then
+      raw.suppress(role, true)
     end
+  end
 
-    local handle = setmetatable({}, Suppression)
-    local own_epoch = epoch
+  rawset(handle, "_release", function()
+    if own_epoch ~= epoch then
+      return false
+    end
+    own_epoch = -1
     for i = 1, roles.n do
       local role = roles[i]
-      local count = (suppressed[role] or 0) + 1
-      suppressed[role] = count
-      if count == 1 then
-        raw.suppress(role, true)
+      local count = suppressed[role] - 1
+      suppressed[role] = count > 0 and count or nil
+      if count == 0 then
+        raw.suppress(role, false)
       end
     end
+    return true
+  end)
+  return handle
+end
 
-    rawset(handle, "_release", function()
-      if own_epoch ~= epoch then
-        return false
-      end
-      own_epoch = -1
-      for i = 1, roles.n do
-        local role = roles[i]
-        local count = suppressed[role] - 1
-        suppressed[role] = count > 0 and count or nil
-        if count == 0 then
-          raw.suppress(role, false)
-        end
-      end
-      return true
-    end)
-    return handle
-  end,
-})
-
-api.define("input.is_suppressed", {
-  description = "Whether a role is held inactive by any suppression.",
-  params = {
-    {
-      name = "role",
-      type = "input.Role",
-      description = "The role to ask about.",
-    },
-  },
-  returns = { type = "boolean", description = "Whether the role is held." },
-  impl = raw.is_suppressed,
-})
+---Whether a role is held inactive by any suppression.
+---@param role trx.input.Role The role to ask about.
+---@return boolean # Whether the role is held.
+---@type fun(role: trx.input.Role): boolean
+M.is_suppressed = raw.is_suppressed
 
 -------------------------------------------------------------------------------
 -- what the player is on
 -------------------------------------------------------------------------------
 
-api.property("input.backend", {
-  type = "input.Backend",
-  description = "The current input source.",
-  get = raw.backend,
+h.properties(M, "input", {
+  backend = { get = raw.backend },
+  layout = { get = raw.layout },
 })
 
-api.property("input.layout", {
-  type = "input.Layout",
-  description = "The current layout for the current input source.",
-  get = raw.layout,
-})
-
-api.define("input.is_backend_enabled", {
-  description = [[
-Whether an input source is enabled.
-
-Disabled sources are not read or shown in the controls dialog.]],
-  params = {
-    {
-      name = "backend",
-      type = "input.Backend",
-      description = "The input source to ask about.",
-    },
-  },
-  returns = {
-    type = "boolean",
-    description = "Whether the input source is enabled.",
-  },
-  impl = raw.is_backend_enabled,
-})
+---Whether an input source is enabled.
+---
+---Disabled sources are not read or shown in the controls dialog.
+---@param backend trx.input.Backend The input source to ask about.
+---@return boolean # Whether the input source is enabled.
+---@type fun(backend: trx.input.Backend): boolean
+M.is_backend_enabled = raw.is_backend_enabled
 
 -------------------------------------------------------------------------------
 -- what a role is called and what it is bound to
 -------------------------------------------------------------------------------
 
-api.define("input.role_name", {
-  description = "The name the game shows for a role, in the player's language.",
-  params = {
-    { name = "role", type = "input.Role", description = "The role to name." },
-  },
-  returns = { type = "string", description = "The name of the role." },
-  impl = raw.role_name,
-})
+---The name the game shows for a role, in the player's language.
+---@param role trx.input.Role The role to name.
+---@return string # The name of the role.
+---@type fun(role: trx.input.Role): string
+M.role_name = raw.role_name
 
-api.define("input.layout_name", {
-  description = "The name the game shows for a layout, in the player's language.",
-  params = {
-    {
-      name = "layout",
-      type = "input.Layout",
-      description = "The layout to name. Defaults to the current one.",
-      optional = true,
-    },
-  },
-  returns = { type = "string", description = "The name of the layout." },
-  impl = raw.layout_name,
-})
+---The name the game shows for a layout, in the player's language.
+---@param layout? trx.input.Layout The layout to name. Defaults to the current one.
+---@return string # The name of the layout.
+---@type fun(layout?: trx.input.Layout): string
+M.layout_name = raw.layout_name
 
-api.define("input.key_name", {
-  description = [[
-Text for the key or button bound to a role.
+---Text for the key or button bound to a role.
+---
+---This is the text drawn by `\{input ...}`: a glyph when one exists, otherwise
+---a key name. Empty bindings return nil.
+---
+---Use `trx.input.Binding` to choose a slot, input source, or layout without
+---placeholder nils. Positional arguments still work.
+---@param role trx.input.Role The role to ask about.
+---@param opts? trx.input.Slot|trx.input.Binding Binding to read. Defaults to the first slot on the current source and layout.
+---@param backend? trx.input.Backend The input source to read. Defaults to the current one.
+---@param layout? trx.input.Layout The layout to read. Defaults to the current one.
+---@return string? # The key text, or nil if the binding is empty.
+function M.key_name(role, opts, backend, layout)
+  return raw.key_name(role, binding_args(opts, backend, layout))
+end
 
-This is the text drawn by `\{input ...}`: a glyph when one exists, otherwise a
-key name. Empty bindings return nil.
-
-Use `trx.input.Binding` to choose a slot, input source, or layout without
-placeholder nils. Positional arguments still work.]],
-  params = {
-    {
-      name = "role",
-      type = "input.Role",
-      description = "The role to ask about.",
-    },
-    {
-      name = "opts",
-      type = { "input.Slot", "input.Binding" },
-      description = "Binding to read. Defaults to the first slot on the current source and layout.",
-      optional = true,
-    },
-    {
-      name = "backend",
-      type = "input.Backend",
-      description = "The input source to read. Defaults to the current one.",
-      optional = true,
-    },
-    {
-      name = "layout",
-      type = "input.Layout",
-      description = "The layout to read. Defaults to the current one.",
-      optional = true,
-    },
-  },
-  returns = {
-    type = "string",
-    nullable = true,
-    description = "The key text, or nil if the binding is empty.",
-  },
-  impl = function(role, opts_or_slot, backend, layout)
-    return raw.key_name(role, binding_args(opts_or_slot, backend, layout))
-  end,
-})
-
-api.define("input.has_glyph", {
-  description = [[
-Whether `trx.input.key_name` has text to draw for a role binding.
-
-Use this to hide prompts for unbound roles.
-
-Use `trx.input.Binding` to choose a slot, input source, or layout without
-placeholder nils. Positional arguments still work.]],
-  params = {
-    {
-      name = "role",
-      type = "input.Role",
-      description = "The role to ask about.",
-    },
-    {
-      name = "opts",
-      type = { "input.Slot", "input.Binding" },
-      description = "Binding to read. Defaults to the first slot on the current source and layout.",
-      optional = true,
-    },
-    {
-      name = "backend",
-      type = "input.Backend",
-      description = "The input source to read. Defaults to the current one.",
-      optional = true,
-    },
-    {
-      name = "layout",
-      type = "input.Layout",
-      description = "The layout to read. Defaults to the current one.",
-      optional = true,
-    },
-  },
-  returns = {
-    type = "boolean",
-    description = "Whether the binding has text to draw.",
-  },
-  impl = function(role, opts_or_slot, backend, layout)
-    return raw.key_name(role, binding_args(opts_or_slot, backend, layout))
-      ~= nil
-  end,
-})
+---Whether `trx.input.key_name` has text to draw for a role binding.
+---
+---Use this to hide prompts for unbound roles.
+---
+---Use `trx.input.Binding` to choose a slot, input source, or layout without
+---placeholder nils. Positional arguments still work.
+---@param role trx.input.Role The role to ask about.
+---@param opts? trx.input.Slot|trx.input.Binding Binding to read. Defaults to the first slot on the current source and layout.
+---@param backend? trx.input.Backend The input source to read. Defaults to the current one.
+---@param layout? trx.input.Layout The layout to read. Defaults to the current one.
+---@return boolean # Whether the binding has text to draw.
+function M.has_glyph(role, opts, backend, layout)
+  return raw.key_name(role, binding_args(opts, backend, layout)) ~= nil
+end
 
 -------------------------------------------------------------------------------
 -- changing what a role is bound to
 -------------------------------------------------------------------------------
 
-api.define("input.is_rebindable", {
-  description = [[
-Whether the player can change a role's binding.
+---Whether the player can change a role's binding.
+---
+---Roles reserved by the game cannot be rebound and do not count as conflicts.
+---@param role trx.input.Role The role to ask about.
+---@return boolean # Whether it can be bound.
+---@type fun(role: trx.input.Role): boolean
+M.is_rebindable = raw.is_rebindable
 
-Roles reserved by the game cannot be rebound and do not count as conflicts.]],
-  params = {
-    {
-      name = "role",
-      type = "input.Role",
-      description = "The role to ask about.",
-    },
-  },
-  returns = { type = "boolean", description = "Whether it can be bound." },
-  impl = raw.is_rebindable,
+---Whether the player can leave a role without a binding.
+---@param role trx.input.Role The role to ask about.
+---@return boolean # Whether it can be left unbound.
+---@type fun(role: trx.input.Role): boolean
+M.is_unbindable = raw.is_unbindable
+
+---Whether another role uses the same binding in the same layout.
+---
+---Use `trx.input.Binding` to choose an input source or layout without
+---placeholder nils. Positional arguments still work.
+---@param role trx.input.Role The role to ask about.
+---@param opts? trx.input.Backend|trx.input.Binding Binding to check. Defaults to the current source and layout.
+---@param layout? trx.input.Layout The layout to read. Defaults to the current one.
+---@return boolean # Whether the binding is used twice.
+function M.is_conflicted(role, opts, layout)
+  return raw.is_conflicted(role, layout_args(opts, layout))
+end
+
+---Turns script input capture on or off.
+---
+---While capture is on, scripts can read or bind input without the game acting
+---on the same input. Turn capture off as soon as the input is handled.
+---@param enabled boolean Whether script input capture is enabled.
+---@type fun(enabled: boolean)
+M.listen = raw.listen
+
+---Runs a function with script input capture on.
+---
+---Restores the previous capture state after the function returns or raises an
+---error. Returns the function's results.
+---@param fn function Function to run while input is captured.
+---@return any # What the function returned.
+function M.with_listen(fn)
+  local was_listening = raw.is_listening()
+  raw.listen(true)
+  local result = table.pack(pcall(fn))
+  raw.listen(was_listening)
+  if not result[1] then
+    error(result[2], 0)
+  end
+  return table.unpack(result, 2, result.n)
+end
+
+h.properties(M, "input", {
+  is_listening = { get = raw.is_listening },
 })
 
-api.define("input.is_unbindable", {
-  description = "Whether the player can leave a role without a binding.",
-  params = {
-    {
-      name = "role",
-      type = "input.Role",
-      description = "The role to ask about.",
-    },
-  },
-  returns = {
-    type = "boolean",
-    description = "Whether it can be left unbound.",
-  },
-  impl = raw.is_unbindable,
-})
+---Binds a role to the key or button the player is holding.
+---
+---Returns false if no input is held. Call it each frame while waiting for
+---input, with `trx.input.listen` on or from inside `trx.input.with_listen`.
+---The default layout is read-only.
+---
+---Use `trx.input.Binding` to choose a slot, input source, or layout without
+---placeholder nils. Positional arguments still work.
+---@param role trx.input.Role The role to bind.
+---@param opts? trx.input.Slot|trx.input.Binding Binding to write. Defaults to the first slot on the current source and layout.
+---@param backend? trx.input.Backend The input source to bind on. Defaults to the current one.
+---@param layout? trx.input.Layout The layout to write. Defaults to the current one.
+---@return boolean # Whether a key was taken.
+function M.bind_pressed(role, opts, backend, layout)
+  return raw.bind_pressed(role, binding_args(opts, backend, layout))
+end
 
-api.define("input.is_conflicted", {
-  description = [[
-Whether another role uses the same binding in the same layout.
+---A binding capture waiting for the player to press something.
+---@class (exact) trx.input.Capture
+local Capture = h.class("input.Capture")
 
-Use `trx.input.Binding` to choose an input source or layout without placeholder
-nils. Positional arguments still work.]],
-  params = {
-    {
-      name = "role",
-      type = "input.Role",
-      description = "The role to ask about.",
-    },
-    {
-      name = "opts",
-      type = { "input.Backend", "input.Binding" },
-      description = "Binding to check. Defaults to the current source and layout.",
-      optional = true,
-    },
-    {
-      name = "layout",
-      type = "input.Layout",
-      description = "The layout to read. Defaults to the current one.",
-      optional = true,
-    },
-  },
-  returns = {
-    type = "boolean",
-    description = "Whether the binding is used twice.",
-  },
-  impl = function(role, opts_or_backend, layout)
-    return raw.is_conflicted(role, layout_args(opts_or_backend, layout))
-  end,
-})
+---Stops the capture and leaves the binding as it was.
+---
+---Turning capture off is part of this, so a script that gives up does not have
+---to do it itself.
+---@return boolean # Whether the capture was still running.
+function Capture:cancel()
+  return rawget(self, "_finish")(false)
+end
 
-api.define("input.listen", {
-  description = [[
-Turns script input capture on or off.
+---Binds a role to the next key or button the player presses.
+---
+---The capture spans frames: it waits for the player to let go of what is
+---already down, turns capture on, and takes the first press after that. The
+---previous capture state is restored when it lands or when the capture is
+---cancelled.
+---
+---Use this instead of `trx.input.listen` and `trx.input.bind_pressed`, which
+---only answer for the frame they run on. The default layout is read-only.
+---
+---Use `trx.input.Binding` to choose a slot, input source, or layout without
+---placeholder nils.
+---@param role trx.input.Role The role to bind.
+---@param opts? trx.input.Slot|trx.input.Binding Binding to write. Defaults to the first slot on the current source and layout.
+---@param done? fun(bound: boolean) Called when the capture ends.
+---@trx.arg done.bound Whether a key was taken.
+---@return trx.input.Capture # The running capture.
+function M.capture(role, opts, done)
+  local slot, backend, layout = binding_args(opts)
+  backend = backend or raw.backend()
+  layout = layout or raw.layout(backend)
+  -- Both raise from bind_pressed too, but a capture reads it a frame later,
+  -- where the error would reach the script from a tick instead of from here.
+  if layout == M.Layout.DEFAULT then
+    error("the default layout cannot be changed", 2)
+  end
+  if not raw.is_rebindable(role) then
+    error("the role cannot be rebound", 2)
+  end
 
-While capture is on, scripts can read or bind input without the game acting on
-the same input. Turn capture off as soon as the input is handled.]],
-  params = {
-    {
-      name = "enabled",
-      type = "boolean",
-      description = "Whether script input capture is enabled.",
-    },
-  },
-  impl = raw.listen,
-})
+  local capture = setmetatable({}, Capture)
+  local was_listening = raw.is_listening()
+  local waiting_for_release = true
+  local listener
 
-api.define("input.with_listen", {
-  description = [[
-Runs a function with script input capture on.
-
-Restores the previous capture state after the function returns or raises an
-error. Returns the function's results.]],
-  params = {
-    {
-      name = "fn",
-      type = "function",
-      description = "Function to run while input is captured.",
-    },
-  },
-  returns = { type = "any", description = "What the function returned." },
-  impl = function(fn)
-    local was_listening = raw.is_listening()
-    raw.listen(true)
-    local result = table.pack(pcall(fn))
+  local function finish(bound)
+    if listener == nil then
+      return false
+    end
+    listener:detach()
+    listener = nil
     raw.listen(was_listening)
-    if not result[1] then
-      error(result[2], 0)
+    if done ~= nil then
+      done(bound)
     end
-    return table.unpack(result, 2, result.n)
-  end,
-})
+    return true
+  end
 
-api.property("input.is_listening", {
-  type = "boolean",
-  description = "Whether script input capture is on.",
-  get = raw.is_listening,
-})
-
-api.define("input.bind_pressed", {
-  description = [[
-Binds a role to the key or button the player is holding.
-
-Returns false if no input is held. Call it each frame while waiting for input,
-with `trx.input.listen` on or from inside `trx.input.with_listen`. The default
-layout is read-only.
-
-Use `trx.input.Binding` to choose a slot, input source, or layout without
-placeholder nils. Positional arguments still work.]],
-  params = {
-    { name = "role", type = "input.Role", description = "The role to bind." },
-    {
-      name = "opts",
-      type = { "input.Slot", "input.Binding" },
-      description = "Binding to write. Defaults to the first slot on the current source and layout.",
-      optional = true,
-    },
-    {
-      name = "backend",
-      type = "input.Backend",
-      description = "The input source to bind on. Defaults to the current one.",
-      optional = true,
-    },
-    {
-      name = "layout",
-      type = "input.Layout",
-      description = "The layout to write. Defaults to the current one.",
-      optional = true,
-    },
-  },
-  returns = { type = "boolean", description = "Whether a key was taken." },
-  impl = function(role, opts_or_slot, backend, layout)
-    return raw.bind_pressed(role, binding_args(opts_or_slot, backend, layout))
-  end,
-})
-
-local Capture = api.type("input.Capture", {
-  description = "A binding capture waiting for the player to press something.",
-  methods = {
-    cancel = {
-      description = [[
-Stops the capture and leaves the binding as it was.
-
-Turning capture off is part of this, so a script that gives up does not have to
-do it itself.]],
-      returns = {
-        type = "boolean",
-        description = "Whether the capture was still running.",
-      },
-      impl = function(self)
-        return rawget(self, "_finish")(false)
-      end,
-    },
-  },
-})
-
-api.define("input.capture", {
-  description = [[
-Binds a role to the next key or button the player presses.
-
-The capture spans frames: it waits for the player to let go of what is already
-down, turns capture on, and takes the first press after that. The previous
-capture state is restored when it lands or when the capture is cancelled.
-
-Use this instead of `trx.input.listen` and `trx.input.bind_pressed`, which only
-answer for the frame they run on. The default layout is read-only.
-
-Use `trx.input.Binding` to choose a slot, input source, or layout without
-placeholder nils.]],
-  params = {
-    { name = "role", type = "input.Role", description = "The role to bind." },
-    {
-      name = "opts",
-      type = { "input.Slot", "input.Binding" },
-      description = "Binding to write. Defaults to the first slot on the current source and layout.",
-      optional = true,
-    },
-    {
-      name = "done",
-      type = "function",
-      optional = true,
-      description = "Called when the capture ends.",
-      params = {
-        {
-          name = "bound",
-          type = "boolean",
-          description = "Whether a key was taken.",
-        },
-      },
-    },
-  },
-  returns = {
-    type = "input.Capture",
-    description = "The running capture.",
-  },
-  impl = function(role, opts_or_slot, done)
-    local slot, backend, layout = binding_args(opts_or_slot)
-    backend = backend or raw.backend()
-    layout = layout or raw.layout(backend)
-    -- Both raise from bind_pressed too, but a capture reads it a frame later,
-    -- where the error would reach the script from a tick instead of from here.
-    if layout == Layout.DEFAULT then
-      error("the default layout cannot be changed", 2)
-    end
-    if not raw.is_rebindable(role) then
-      error("the role cannot be rebound", 2)
-    end
-
-    local capture = setmetatable({}, Capture)
-    local was_listening = raw.is_listening()
-    local waiting_for_release = true
-    local listener
-
-    local function finish(bound)
-      if listener == nil then
-        return false
+  listener = trx.signal.tick:on(function()
+    if waiting_for_release then
+      if raw.is_anything_held() then
+        return
       end
-      listener:detach()
-      listener = nil
-      raw.listen(was_listening)
-      if done ~= nil then
-        done(bound)
-      end
-      return true
+      waiting_for_release = false
+      raw.listen(true)
+    elseif raw.bind_pressed(role, slot, backend, layout) then
+      finish(true)
     end
+  end)
 
-    listener = trx.signal.tick:on(function()
-      if waiting_for_release then
-        if raw.is_anything_held() then
-          return
-        end
-        waiting_for_release = false
-        raw.listen(true)
-      elseif raw.bind_pressed(role, slot, backend, layout) then
-        finish(true)
-      end
-    end)
+  rawset(capture, "_finish", finish)
+  return capture
+end
 
-    rawset(capture, "_finish", finish)
-    return capture
-  end,
-})
+---Clears one role binding.
+---
+---The default layout is read-only, and roles reserved by the game cannot be
+---left unbound.
+---
+---Use `trx.input.Binding` to choose a slot, input source, or layout without
+---placeholder nils. Positional arguments still work.
+---@param role trx.input.Role The role to unbind.
+---@param opts? trx.input.Slot|trx.input.Binding Binding to clear. Defaults to the first slot on the current source and layout.
+---@param backend? trx.input.Backend The input source to write. Defaults to the current one.
+---@param layout? trx.input.Layout The layout to write. Defaults to the current one.
+function M.unbind(role, opts, backend, layout)
+  return raw.unbind(role, binding_args(opts, backend, layout))
+end
 
-api.define("input.unbind", {
-  description = [[
-Clears one role binding.
-
-The default layout is read-only, and roles reserved by the game cannot be left
-unbound.
-
-Use `trx.input.Binding` to choose a slot, input source, or layout without
-placeholder nils. Positional arguments still work.]],
-  params = {
-    {
-      name = "role",
-      type = "input.Role",
-      description = "The role to unbind.",
-    },
-    {
-      name = "opts",
-      type = { "input.Slot", "input.Binding" },
-      description = "Binding to clear. Defaults to the first slot on the current source and layout.",
-      optional = true,
-    },
-    {
-      name = "backend",
-      type = "input.Backend",
-      description = "The input source to write. Defaults to the current one.",
-      optional = true,
-    },
-    {
-      name = "layout",
-      type = "input.Layout",
-      description = "The layout to write. Defaults to the current one.",
-      optional = true,
-    },
-  },
-  impl = function(role, opts_or_slot, backend, layout)
-    return raw.unbind(role, binding_args(opts_or_slot, backend, layout))
-  end,
-})
-
-api.define("input.reset_layout", {
-  description = [[
-Restores a custom layout to the default bindings.
-
-Use `trx.input.Binding` to choose an input source or layout without placeholder
-nils. Positional arguments still work.]],
-  params = {
-    {
-      name = "opts",
-      type = { "input.Backend", "input.Binding" },
-      description = "Layout to reset. Defaults to the current source and layout.",
-      optional = true,
-    },
-    {
-      name = "layout",
-      type = "input.Layout",
-      description = "The layout to write. Defaults to the current one.",
-      optional = true,
-    },
-  },
-  impl = function(opts_or_backend, layout)
-    return raw.reset_layout(layout_args(opts_or_backend, layout))
-  end,
-})
+---Restores a custom layout to the default bindings.
+---
+---Use `trx.input.Binding` to choose an input source or layout without
+---placeholder nils. Positional arguments still work.
+---@param opts? trx.input.Backend|trx.input.Binding Layout to reset. Defaults to the current source and layout.
+---@param layout? trx.input.Layout The layout to write. Defaults to the current one.
+function M.reset_layout(opts, layout)
+  return raw.reset_layout(layout_args(opts, layout))
+end
 
 -------------------------------------------------------------------------------
 -- the same answers as signals
 -------------------------------------------------------------------------------
 
-api.namespace("input.signals", {
-  description = [[
-Input roles as signals.
-
-Each role has one shared signal, so several consumers of the same role use one
-read per tick.]],
-})
+---Input roles as signals.
+---
+---Each role has one shared signal, so several consumers of the same role use
+---one read per tick.
+---@class (exact) trx.input.signals
+M.signals = h.namespace("input.signals")
 
 -------------------------------------------------------------------------------
 -- Take the devices from the game.
@@ -968,83 +687,66 @@ read per tick.]],
 local grabs = 0
 local grab_epoch = 0
 
-local Grab = api.type("input.Grab", {
-  description = "The devices a script holds, taken from the game.",
-  methods = {
-    release = {
-      description = [[
-Gives the devices back to the game.
+---The devices a script holds, taken from the game.
+---@class (exact) trx.input.Grab
+local Grab = h.class("input.Grab")
 
-The game reads them again once every grab is released.]],
-      returns = {
-        type = "boolean",
-        description = "Whether the grab was still holding the devices.",
-      },
-      impl = function(self)
-        return rawget(self, "_release")()
-      end,
-    },
-  },
-})
+---Gives the devices back to the game.
+---
+---The game reads them again once every grab is released.
+---@return boolean # Whether the grab was still holding the devices.
+function Grab:release()
+  return rawget(self, "_release")()
+end
 
-api.define("input.grab", {
-  description = [[
-Takes the keyboard and the pad from the game until the returned grab is
-released.
+---Takes the keyboard and the pad from the game until the returned grab is
+---released.
+---
+---The game stops responding to the devices while the script can still read
+---them. Use this for text fields, consoles, and passcode boxes. Release the
+---grab when the script no longer needs the devices.
+---
+---`trx.input.suppress` removes one action. A grab takes both devices. The game
+---still has priority while `trx.input.is_reserved` is true. Grabs are released
+---when the level unloads.
+---
+---```lua
+---local grab = trx.input.grab()
+---
+---if typed == passcode then
+---  grab:release()
+---end
+---```
+---@return trx.input.Grab # The running grab.
+function M.grab()
+  local handle = setmetatable({}, Grab)
+  local own_epoch = grab_epoch
+  grabs = grabs + 1
+  if grabs == 1 then
+    raw.hold(true)
+  end
 
-The game stops responding to the devices while the script can still read them.
-Use this for text fields, consoles, and passcode boxes. Release the grab when
-the script no longer needs the devices.
-
-`trx.input.suppress` removes one action. A grab takes both devices. The game
-still has priority while `trx.input.is_reserved` is true. Grabs are released
-when the level unloads.]],
-  returns = {
-    type = "input.Grab",
-    description = "The running grab.",
-  },
-  examples = {
-    [[local grab = trx.input.grab()
-
-if typed == passcode then
-  grab:release()
-end]],
-  },
-  impl = function()
-    local handle = setmetatable({}, Grab)
-    local own_epoch = grab_epoch
-    grabs = grabs + 1
-    if grabs == 1 then
-      raw.hold(true)
+  rawset(handle, "_release", function()
+    if own_epoch ~= grab_epoch then
+      return false
     end
+    own_epoch = -1
+    grabs = grabs - 1
+    if grabs == 0 then
+      raw.hold(false)
+    end
+    return true
+  end)
+  return handle
+end
 
-    rawset(handle, "_release", function()
-      if own_epoch ~= grab_epoch then
-        return false
-      end
-      own_epoch = -1
-      grabs = grabs - 1
-      if grabs == 0 then
-        raw.hold(false)
-      end
-      return true
-    end)
-    return handle
-  end,
-})
-
-api.define("input.is_grabbed", {
-  description = [[
-Whether a script holds the devices.
-
-This reports what `trx.input.grab` took, and says nothing about
-`trx.input.is_reserved`, which is the game holding them instead.]],
-  returns = {
-    type = "boolean",
-    description = "Whether a script holds the devices.",
-  },
-  impl = raw.is_held_by_script,
-})
+---Whether a script holds the devices.
+---
+---This reports what `trx.input.grab` took, and says nothing about
+---`trx.input.is_reserved`, which is the game holding them instead.
+---@return boolean # Whether a script holds the devices.
+---@type fun(): boolean
+M.is_grabbed = raw.is_held_by_script
 
 -- One signal per role, kept for as long as the game runs: a role a level asked
 -- about is a role the next level can ask about too.
@@ -1078,42 +780,24 @@ local function shared(cache, role, read)
   return created
 end
 
-api.define("input.signals.held", {
-  description = [[
-A signal for whether a role is active.
+---A signal for whether a role is active.
+---
+---It is true while the player holds the bound key or button. It changes when
+---the role becomes active and when it stops.
+---@param role trx.input.Role The role to follow.
+---@return trx.signal.Signal # The role's signal.
+function M.signals.held(role)
+  return shared(held, role, raw.is_held)
+end
 
-It is true while the player holds the bound key or button. It changes when the
-role becomes active and when it stops.]],
-  params = {
-    {
-      name = "role",
-      type = "input.Role",
-      description = "The role to follow.",
-    },
-  },
-  returns = { type = "signal.Signal", description = "The role's signal." },
-  impl = function(role)
-    return shared(held, role, raw.is_held)
-  end,
-})
-
-api.define("input.signals.pressed", {
-  description = [[
-A signal for when a role becomes active.
-
-It is true for one tick only, so listeners run once per press.]],
-  params = {
-    {
-      name = "role",
-      type = "input.Role",
-      description = "The role to follow.",
-    },
-  },
-  returns = { type = "signal.Signal", description = "The role's signal." },
-  impl = function(role)
-    return shared(pressed, role, raw.is_pressed)
-  end,
-})
+---A signal for when a role becomes active.
+---
+---It is true for one tick only, so listeners run once per press.
+---@param role trx.input.Role The role to follow.
+---@return trx.signal.Signal # The role's signal.
+function M.signals.pressed(role)
+  return shared(pressed, role, raw.is_pressed)
+end
 
 trx.events.on_level_unload(function()
   suppressed = {}

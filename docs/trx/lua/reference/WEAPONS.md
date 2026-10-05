@@ -15,15 +15,16 @@ order: 6
 What a weapon is, rather than what Lara has of it.
 
 None of this differs between the inventory she carries and the one a level
-keeps for her, so it belongs to neither: what she holds and how many shots she
-has are [`trx.inventory`](INVENTORY.md#inventory).
+keeps for her, so it belongs to neither: what she holds and how many shots
+she has are [`trx.inventory`](INVENTORY.md#inventory).
 
 A weapon is shared by every copy of it. Changes last for the rest of the
 session, so levels should restore any values they change when they end.
 
 ### Indexing
 
-Indexing the module reaches a weapon definition, so [`trx.weapons.uzis`](#weapons) is the uzis. Keyed by weapon id or catalog name, not by position.
+Indexing the module reaches a weapon definition, so [`trx.weapons.uzis`](#weapons) is
+the uzis. Keyed by weapon id or catalog name, not by position.
 
 - <a id="weapons[]" name="weapons[]"></a>**`trx.weapons[key]`** (key: [trx.catalog.weapons](CATALOG.md#catalog.weapons) or string, value: [trx.weapons.Weapon](#weapons.Weapon) or `nil`). Weapon id, or its catalog name.
 
@@ -42,24 +43,26 @@ trx.weapons.flare.glow.color = "33e5ff"
 
 - <a id="weapons.Kind" name="weapons.Kind"></a>[lua]`trx.weapons.Kind`
 
-    How the engine holds and fires a weapon, which decides which arm animations and firing routine it uses.
+    How the engine holds and fires a weapon, which decides which arm animations
+    and firing routine it uses.
 
-    - `trx.weapons.Kind.DUAL_PISTOLS` = `0`  
+    - `trx.weapons.Kind.DUAL_PISTOLS`  
         One in each hand, each arm aiming and firing on its own.
-    - `trx.weapons.Kind.SINGLE_PISTOL` = `1`  
+    - `trx.weapons.Kind.SINGLE_PISTOL`  
         One in the right hand.
-    - `trx.weapons.Kind.RIFLE` = `2`  
+    - `trx.weapons.Kind.RIFLE`  
         Held in both hands, drawn from Lara's back.
-    - `trx.weapons.Kind.MOUNTED` = `3`  
+    - `trx.weapons.Kind.MOUNTED`  
         Fixed to a vehicle rather than held.
-    - `trx.weapons.Kind.FLARE` = `4`  
+    - `trx.weapons.Kind.FLARE`  
         Held in one hand and burning, rather than fired.
 
 ### Structures
 
 - <a id="weapons.AimLimits" name="weapons.AimLimits"></a>[lua]`trx.weapons.AimLimits`
 
-    How far off straight ahead an aim may go, as a pair of limits about each axis.
+    How far off straight ahead an aim may go, as a pair of limits about each
+    axis.
 
     Handles are live references: if the underlying object is destroyed,
     using the handle raises an error rather than silently reading an
@@ -73,7 +76,8 @@ trx.weapons.flare.glow.color = "33e5ff"
 
 - <a id="weapons.HandPos" name="weapons.HandPos"></a>[lua]`trx.weapons.HandPos`
 
-    An offset in the frame of the hand that holds the weapon. A weapon held in one hand only uses the right.
+    An offset in the frame of the hand that holds the weapon. A weapon held in
+    one hand only uses the right.
 
     Handles are live references: if the underlying object is destroyed,
     using the handle raises an error rather than silently reading an
@@ -85,8 +89,9 @@ trx.weapons.flare.glow.color = "33e5ff"
 
 - <a id="weapons.Ammo" name="weapons.Ammo"></a>[lua]`trx.weapons.Ammo`
 
-    What the weapon is fed. A shot is one pull of the trigger, which for the shotgun
-    spends six rounds; the flare counts a flare where a weapon counts a shot.
+    What the weapon is fed. A shot is one pull of the trigger, which for the
+    shotgun spends six rounds; the flare counts a flare where a weapon counts a
+    shot.
 
     Handles are live references: if the underlying object is destroyed,
     using the handle raises an error rather than silently reading an
@@ -116,7 +121,8 @@ trx.weapons.flare.glow.color = "33e5ff"
 
 - <a id="weapons.Glow" name="weapons.Glow"></a>[lua]`trx.weapons.Glow`
 
-    The glow sprite drawn where the weapon burns: a gun's muzzle, or a lit flare.
+    The glow sprite drawn where the weapon burns: a gun's muzzle, or a lit
+    flare.
 
     Handles are live references: if the underlying object is destroyed,
     using the handle raises an error rather than silently reading an
@@ -130,7 +136,8 @@ trx.weapons.flare.glow.color = "33e5ff"
 
 - <a id="weapons.Anim" name="weapons.Anim"></a>[lua]`trx.weapons.Anim`
 
-    The animation numbers a rifle is drawn, put away and fired by. They count the animations and frames of the weapon's own object, not Lara's.
+    The animation numbers a rifle is drawn, put away and fired by. They count
+    the animations and frames of the weapon's own object, not Lara's.
 
     Handles are live references: if the underlying object is destroyed,
     using the handle raises an error rather than silently reading an
@@ -156,8 +163,7 @@ trx.weapons.flare.glow.color = "33e5ff"
     - <a id="weapons.Weapon.fire_overlay_pitch" name="weapons.Weapon.fire_overlay_pitch"></a>**`fire_overlay_pitch`**: integer. The pitch at which to play the overlay sample.
     - <a id="weapons.Weapon.fire_overlay_sample" name="weapons.Weapon.fire_overlay_sample"></a>**`fire_overlay_sample`**: [trx.catalog.samples](CATALOG.md#catalog.samples). The overlay sample a shot plays. One this game has no sound for is silent.
     - <a id="weapons.Weapon.fire_sample" name="weapons.Weapon.fire_sample"></a>**`fire_sample`**: [trx.catalog.samples](CATALOG.md#catalog.samples). The sample a shot plays. One this game has no sound for is silent.
-    - <a id="weapons.Weapon.given_in_ngplus" name="weapons.Weapon.given_in_ngplus"></a>**`given_in_ngplus`**: boolean. Whether a bonus game gives Lara the weapon, loaded, at level start.
-      A weapon added by a script is not given unless this is true.
+    - <a id="weapons.Weapon.given_in_ngplus" name="weapons.Weapon.given_in_ngplus"></a>**`given_in_ngplus`**: boolean. Whether a bonus game gives Lara the weapon, loaded, at level start. A weapon added by a script is not given unless this is true.
     - <a id="weapons.Weapon.gun_height" name="weapons.Weapon.gun_height"></a>**`gun_height`**: [trx.math.Distance](MATH.md#math.Distance). How far above Lara's feet the shot leaves the barrel. It also decides how deep she can wade and still fire.
     - <a id="weapons.Weapon.id" name="weapons.Weapon.id"></a>**`id`**: [trx.catalog.weapons](CATALOG.md#catalog.weapons). Which weapon this is, for the calls that take one: `trx.inventory:set_shots(weapon.id, 100)`. *(read-only)*
     - <a id="weapons.Weapon.is_available" name="weapons.Weapon.is_available"></a>**`is_available`**: boolean. Whether the game allows the weapon at all. Turning one off keeps it out of the cheats and off the controls list, and a save that carries it arrives without it.
@@ -194,14 +200,7 @@ trx.weapons.flare.glow.color = "33e5ff"
 
   Parameters:
   - <a id="weapons.declare.weapon" name="weapons.declare.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons) or string). Which weapon, by id or by name. A name of its own wants a prefix, so that two mods do not claim one weapon.
-  - <a id="weapons.declare.spec" name="weapons.declare.spec"></a>**`spec`** (table). Describes the weapon with the same groups as its weapons file entry:
-    `kind`, (`objects`, `meshes`, `ammo`, `aim`, `anim`, `flash`, `glow`,
-    `muzzle`, `smoke`, `shell`, `sound`, `stow`, `save`, `cheat`), and its own
-    numbers beside them. `base` starts the weapon from another one, and `fire`
-    accepts an engine routine name or a function. An omitted key keeps the
-    weapon's current value. An unknown key or an invalid value raises an error
-    and writes nothing.
-
+  - <a id="weapons.declare.spec" name="weapons.declare.spec"></a>**`spec`** (table). Describes the weapon with the same groups as its weapons file entry: `kind`, (`objects`, `meshes`, `ammo`, `aim`, `anim`, `flash`, `glow`, `muzzle`, `smoke`, `shell`, `sound`, `stow`, `save`, `cheat`), and its own numbers beside them. `base` starts the weapon from another one, and `fire` accepts an engine routine name or a function. An omitted key keeps the weapon's current value. An unknown key or an invalid value raises an error and writes nothing.
     `meshes` states where Lara is drawn from while she holds the weapon. It
     names an `object` and the offsets `hand_r`, `hand_l`, `torso`, `thigh_r`
     and `thigh_l` into it. An offset of `-1` draws nothing in that place. A
@@ -210,8 +209,8 @@ trx.weapons.flare.glow.color = "33e5ff"
 
     A spec uses the units of a weapons file: angles in degrees and distances
     in sectors. Weapon fields use the engine's units, as other API fields do,
-    so a spec that says
-    `aim.speed = 10` reads back as `weapon.aim_speed == 1820`.
+    so a spec that says `aim.speed = 10` reads back as `weapon.aim_speed ==
+    1820`.
 
   Returns: [trx.weapons.Weapon](#weapons.Weapon). The weapon, to read or write the rest of its numbers.
 
@@ -234,18 +233,13 @@ trx.weapons.flare.glow.color = "33e5ff"
   ```
 
 - <a id="weapons.patch" name="weapons.patch"></a>[lua]`trx.weapons.patch(weapon, spec)`  
-  Writes a spec into a weapon the game already holds, and raises where it holds no such weapon. This is [`trx.weapons.declare`](#weapons.declare) for a script that would rather hear about a name it got wrong than mint a weapon nothing draws.
+  Writes a spec into a weapon the game already holds, and raises where it
+  holds no such weapon. This is [`trx.weapons.declare`](#weapons.declare) for a script that would
+  rather hear about a name it got wrong than mint a weapon nothing draws.
 
   Parameters:
   - <a id="weapons.patch.weapon" name="weapons.patch.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons) or string). Which weapon, by id or by name.
-  - <a id="weapons.patch.spec" name="weapons.patch.spec"></a>**`spec`** (table). Describes the weapon with the same groups as its weapons file entry:
-    `kind`, (`objects`, `meshes`, `ammo`, `aim`, `anim`, `flash`, `glow`,
-    `muzzle`, `smoke`, `shell`, `sound`, `stow`, `save`, `cheat`), and its own
-    numbers beside them. `base` starts the weapon from another one, and `fire`
-    accepts an engine routine name or a function. An omitted key keeps the
-    weapon's current value. An unknown key or an invalid value raises an error
-    and writes nothing.
-
+  - <a id="weapons.patch.spec" name="weapons.patch.spec"></a>**`spec`** (table). Describes the weapon with the same groups as its weapons file entry: `kind`, (`objects`, `meshes`, `ammo`, `aim`, `anim`, `flash`, `glow`, `muzzle`, `smoke`, `shell`, `sound`, `stow`, `save`, `cheat`), and its own numbers beside them. `base` starts the weapon from another one, and `fire` accepts an engine routine name or a function. An omitted key keeps the weapon's current value. An unknown key or an invalid value raises an error and writes nothing.
     `meshes` states where Lara is drawn from while she holds the weapon. It
     names an `object` and the offsets `hand_r`, `hand_l`, `torso`, `thigh_r`
     and `thigh_l` into it. An offset of `-1` draws nothing in that place. A
@@ -254,8 +248,8 @@ trx.weapons.flare.glow.color = "33e5ff"
 
     A spec uses the units of a weapons file: angles in degrees and distances
     in sectors. Weapon fields use the engine's units, as other API fields do,
-    so a spec that says
-    `aim.speed = 10` reads back as `weapon.aim_speed == 1820`.
+    so a spec that says `aim.speed = 10` reads back as `weapon.aim_speed ==
+    1820`.
 
   Returns: [trx.weapons.Weapon](#weapons.Weapon). The weapon, to read or write the rest of its numbers.
 
@@ -268,10 +262,11 @@ trx.weapons.flare.glow.color = "33e5ff"
   ```
 
 - <a id="weapons.set_fire" name="weapons.set_fire"></a>[lua]`trx.weapons.set_fire(weapon, handler)`  
-  States what a weapon does when it is fired, in place of the routine it fired
-  with before. One weapon holds one handler, so a second call replaces the
-  first rather than adding to it. The handler is given the weapon and whether
-  Lara is running as she fires, and states the same thing as `fire` in a spec.
+  States what a weapon does when it is fired, in place of the routine it
+  fired with before. One weapon holds one handler, so a second call replaces
+  the first rather than adding to it. The handler is given the weapon and
+  whether Lara is running as she fires, and states the same thing as `fire`
+  in a spec.
 
   Parameters:
   - <a id="weapons.set_fire.weapon" name="weapons.set_fire.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons) or string). Which weapon, by id or by name.
@@ -301,9 +296,9 @@ trx.weapons.flare.glow.color = "33e5ff"
 - <a id="weapons.is_available" name="weapons.is_available"></a>[lua]`trx.weapons.is_available(weapon)`  
   **Deprecated.** Read [`trx.weapons.Weapon.is_available`](#weapons.Weapon.is_available) instead.
 
-  Whether the game allows this weapon at all. The game flow can keep one out, and
-  a cheat that hands it over anyway leaves Lara with a gun the level was built
-  without.
+  Whether the game allows this weapon at all. The game flow can keep one out,
+  and a cheat that hands it over anyway leaves Lara with a gun the level was
+  built without.
 
   Parameters:
   - <a id="weapons.is_available.weapon" name="weapons.is_available.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN`, `UNARMED`, and out-of-range values raise.
@@ -338,7 +333,8 @@ trx.weapons.flare.glow.color = "33e5ff"
 - <a id="weapons.rounds_per_shot" name="weapons.rounds_per_shot"></a>[lua]`trx.weapons.rounds_per_shot(weapon)`  
   **Deprecated.** Read [`trx.weapons.Weapon.rounds_per_shot`](#weapons.Weapon.rounds_per_shot) instead.
 
-  How many rounds one pull of the trigger spends. Six for the shotgun, one for everything else.
+  How many rounds one pull of the trigger spends. Six for the shotgun, one
+  for everything else.
 
   Parameters:
   - <a id="weapons.rounds_per_shot.weapon" name="weapons.rounds_per_shot.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN`, `UNARMED`, and out-of-range values raise.

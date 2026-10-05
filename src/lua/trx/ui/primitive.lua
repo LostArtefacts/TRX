@@ -1,7 +1,9 @@
 local raw = trxc.ui
-local api = trx.api
+local h = require("trx.internal.helpers")
 
 require("trx.ui")
+
+local ui = trx.ui
 
 -------------------------------------------------------------------------------
 -- The primitives
@@ -13,408 +15,223 @@ require("trx.ui")
 -- the space they draw into, otherwise regions cannot include it in layout.
 -------------------------------------------------------------------------------
 
-api.namespace("ui.primitive", {
-  description = [[
-Low-level drawing calls and layout reservations.
+---Low-level drawing calls and layout reservations.
+---
+---Use `trx.ui.widgets` for normal UI. Use these primitives only when building
+---a custom widget. Primitive drawing does not affect region layout unless code
+---reserves space first.
+---
+---Drawing calls are available only during `trx.events.on_ui_paint`. They
+---report an error at any other time.
+---@class (exact) trx.ui.primitive
+ui.primitive = h.namespace("ui.primitive")
 
-Use `trx.ui.widgets` for normal UI. Use these primitives only when building a
-custom widget. Primitive drawing does not affect region layout unless code
-reserves space first.
+---Reserves space in a region and returns a slot for it.
+---
+---The reservation is stacked with the engine UI in that region. Reserve space
+---during `trx.events.on_ui_draw`, then read the assigned box during
+---`trx.events.on_ui_paint`.
+---
+---A slot is valid only for the scene that created it.
+---@param region trx.ui.Region Which region to keep room in.
+---@param w number How wide, in canvas units.
+---@param h number How tall, in canvas units.
+---@return integer # The slot.
+---@type fun(region: trx.ui.Region, w: number, h: number): integer
+ui.primitive.reserve = raw.reserve
 
-Drawing calls are available only during `trx.events.on_ui_paint`. They report
-an error at any other time.]],
-})
+---Returns the box assigned to a reservation by the last layout.
+---@param slot integer The reservation slot.
+---@return number # The left edge, or `nil` when the slot is no longer valid.
+---@return number # The top edge.
+---@return number # The width.
+---@return number # The height.
+---@type fun(slot: integer): number, number, number, number
+ui.primitive.slot_box = raw.slot_box
 
-api.define("ui.primitive.reserve", {
-  description = [[
-Reserves space in a region and returns a slot for it.
+---Measures one line of text. Available at any time.
+---@param text string What to measure.
+---@param scale? number Multiplies the text size. `1.0` by default.
+---@return number # The width, in canvas units.
+---@return number # The height, in canvas units.
+---@type fun(text: string, scale?: number): number, number
+ui.primitive.measure_text = raw.measure_text
 
-The reservation is stacked with the engine UI in that region. Reserve space
-during `trx.events.on_ui_draw`, then read the assigned box during
-`trx.events.on_ui_paint`.
+---Draws one line of text on the canvas.
+---@param text string What to draw.
+---@param x number The left edge.
+---@param y number The top edge.
+---@param scale? number Multiplies the text size.
+---@param z? integer The draw order.
+---@type fun(text: string, x: number, y: number, scale?: number, z?: integer)
+ui.primitive.text = raw.draw_text
 
-A slot is valid only for the scene that created it.]],
-  params = {
-    {
-      name = "region",
-      type = "ui.Region",
-      description = "Which region to keep room in.",
-    },
-    {
-      name = "w",
-      type = "number",
-      description = "How wide, in canvas units.",
-    },
-    {
-      name = "h",
-      type = "number",
-      description = "How tall, in canvas units.",
-    },
-  },
-  returns = { type = "integer", description = "The slot." },
-  impl = raw.reserve,
-})
+---Converts a canvas length to screen pixels.
+---
+---The canvas is a fixed 640x480 grid, and the screen size depends on the
+---player settings and window. Use this with `trx.ui.primitive.to_canvas` when
+---geometry must align to whole screen pixels, such as an even border.
+---@param length number A canvas length.
+---@return number # The same length in screen pixels.
+---@type fun(length: number): number
+ui.primitive.to_screen = raw.to_screen
 
-api.define("ui.primitive.slot_box", {
-  description = "Returns the box assigned to a reservation by the last layout.",
-  params = {
-    {
-      name = "slot",
-      type = "integer",
-      description = "The reservation slot.",
-    },
-  },
-  returns = {
-    {
-      type = "number",
-      description = "The left edge, or `nil` when the slot is no longer valid.",
-    },
-    { type = "number", description = "The top edge." },
-    { type = "number", description = "The width." },
-    { type = "number", description = "The height." },
-  },
-  impl = raw.slot_box,
-})
+---Converts a screen-pixel length to canvas units.
+---
+---Use this with `trx.ui.primitive.to_screen` when geometry must align to whole
+---screen pixels.
+---@param pixels number A length in screen pixels.
+---@return number # The same length in canvas units.
+---@type fun(pixels: number): number
+ui.primitive.to_canvas = raw.to_canvas
 
-api.define("ui.primitive.measure_text", {
-  description = "Measures one line of text. Available at any time.",
-  params = {
-    { name = "text", type = "string", description = "What to measure." },
-    {
-      name = "scale",
-      type = "number",
-      optional = true,
-      description = "Multiplies the text size. `1.0` by default.",
-    },
-  },
-  returns = {
-    { type = "number", description = "The width, in canvas units." },
-    { type = "number", description = "The height, in canvas units." },
-  },
-  impl = raw.measure_text,
-})
+---Draws a horizontal rule in the selected menu style.
+---@param x0 number The left end.
+---@param x1 number The right end.
+---@param y number The vertical position.
+---@param z? integer The draw order.
+---@type fun(x0: number, x1: number, y: number, z?: integer)
+ui.primitive.horizontal_line = raw.horizontal_line
 
-api.define("ui.primitive.text", {
-  description = "Draws one line of text on the canvas.",
-  params = {
-    { name = "text", type = "string", description = "What to draw." },
-    { name = "x", type = "number", description = "The left edge." },
-    { name = "y", type = "number", description = "The top edge." },
-    {
-      name = "scale",
-      type = "number",
-      optional = true,
-      description = "Multiplies the text size.",
-    },
-    {
-      name = "z",
-      type = "integer",
-      optional = true,
-      description = "The draw order.",
-    },
-  },
-  impl = raw.draw_text,
-})
+---Draws the box the game draws behind a dialog, in the style the player chose.
+---
+---The look follows the menu style setting, so a panel drawn this way matches
+---the game's own dialogs rather than standing apart from them.
+---@param x number The left edge.
+---@param y number The top edge.
+---@param z integer The draw order.
+---@param w number The width.
+---@param h number The height.
+---@param style trx.ui.FrameStyle Which of the game's frames to draw.
+---@type fun(x: number, y: number, z: integer, w: number, h: number, style: trx.ui.FrameStyle)
+ui.primitive.panel = raw.panel
 
-api.define("ui.primitive.to_screen", {
-  description = [[
-Converts a canvas length to screen pixels.
+---Draws a rectangle of one color.
+---@param x number The left edge.
+---@param y number The top edge.
+---@param z integer The draw order.
+---@param w number The width.
+---@param h number The height.
+---@param color trx.math.Color What color to fill it with.
+---@type fun(x: number, y: number, z: integer, w: number, h: number, color: trx.math.Color)
+ui.primitive.quad = raw.flat_quad
 
-The canvas is a fixed 640x480 grid, and the screen size depends on the player
-settings and window. Use this with `trx.ui.primitive.to_canvas` when geometry
-must align to whole screen pixels, such as an even border.]],
-  params = {
-    { name = "length", type = "number", description = "A canvas length." },
-  },
-  returns = {
-    type = "number",
-    description = "The same length in screen pixels.",
-  },
-  impl = raw.to_screen,
-})
+---Draws a rectangle whose corners each carry a color.
+---@param x number The left edge.
+---@param y number The top edge.
+---@param z integer What to draw in front of.
+---@param w number The width.
+---@param h number The height.
+---@param tl trx.math.Color The top-left color.
+---@param tr trx.math.Color The top-right color.
+---@param bl trx.math.Color The bottom-left color.
+---@param br trx.math.Color The bottom-right color.
+---@type fun(x: number, y: number, z: integer, w: number, h: number, tl: trx.math.Color, tr: trx.math.Color, bl: trx.math.Color, br: trx.math.Color)
+ui.primitive.gradient_quad = raw.gradient_quad
 
-api.define("ui.primitive.to_canvas", {
-  description = [[
-Converts a screen-pixel length to canvas units.
+---Draws an image file in a box on the canvas.
+---
+---The image is looked for where the game keeps its images, and stretches to
+---fill the box, so a box of the image's own shape keeps that shape. The image
+---draws under everything else the canvas holds, whatever order the calls come
+---in.
+---
+---Returns whether the game has such an image, so a script can leave the space
+---alone where it does not.
+---
+---```lua
+---trx.ui.primitive.image("uklogo.pak", 64, 0, 512, 256)
+---```
+---@param path string The image file, named from the images directory.
+---@param x number The left edge.
+---@param y number The top edge.
+---@param w number The width.
+---@param h number The height.
+---@param opacity? number How solid the image is, from 0 to 1. `1` by default.
+---@return boolean # Whether the image was there to draw.
+---@type fun(path: string, x: number, y: number, w: number, h: number, opacity?: number): boolean
+ui.primitive.image = raw.image
 
-Use this with `trx.ui.primitive.to_screen` when geometry must align to whole
-screen pixels.]],
-  params = {
-    {
-      name = "pixels",
-      type = "number",
-      description = "A length in screen pixels.",
-    },
-  },
-  returns = {
-    type = "number",
-    description = "The same length in canvas units.",
-  },
-  impl = raw.to_canvas,
-})
+---Reports how many sprites an object has.
+---
+---An object the level did not load has none, and a model has none as well. Use
+---this function to check whether `trx.ui.primitive.sprite` has anything to
+---draw.
+---@param object trx.catalog.objects The sprite object to count.
+---@return integer # How many sprites it has.
+---@type fun(object: trx.catalog.objects): integer
+ui.primitive.sprite_count = raw.sprite_count
 
-api.define("ui.primitive.horizontal_line", {
-  description = "Draws a horizontal rule in the selected menu style.",
-  params = {
-    { name = "x0", type = "number", description = "The left end." },
-    { name = "x1", type = "number", description = "The right end." },
-    { name = "y", type = "number", description = "The vertical position." },
-    {
-      name = "z",
-      type = "integer",
-      optional = true,
-      description = "The draw order.",
-    },
-  },
-  impl = raw.horizontal_line,
-})
+---Reports the edges of one sprite of an object, in canvas units at a scale of
+---one.
+---
+---The edges sit around the point the sprite is drawn at, so both left and top
+---are usually negative. Multiply them by the scale the sprite is drawn at.
+---
+---Raises where the level did not load the object, so check
+---`trx.objects.get(object).loaded` first.
+---@param object trx.catalog.objects The sprite object to read from.
+---@param sprite_num integer Which sprite of the object to read, counted from 0.
+---@return number # The left edge.
+---@return number # The top edge.
+---@return number # The right edge.
+---@return number # The bottom edge.
+---@type fun(object: trx.catalog.objects, sprite_num: integer): number, number, number, number
+ui.primitive.sprite_bounds = raw.sprite_bounds
 
-api.define("ui.primitive.panel", {
-  description = [[
-Draws the box the game draws behind a dialog, in the style the player chose.
+---Reports the box a model occupies, from the first frame of its first
+---animation.
+---
+---The box sits around the point the model is drawn at, so the low edges are
+---usually negative. A script fits a model into a box of its own by comparing
+---the two.
+---
+---Returns nothing where the object carries no model, which is how a script
+---tells whether it can draw one at all. Raises where the level did not load
+---the object, so check `trx.objects.get(object).loaded` first.
+---@param object trx.catalog.objects The model object to measure.
+---@return trx.math.Distance # The low edge across, or `nil` where the object carries no model.
+---@return trx.math.Distance # The low edge down.
+---@return trx.math.Distance # The low edge into the screen.
+---@return trx.math.Distance # The high edge across.
+---@return trx.math.Distance # The high edge down.
+---@return trx.math.Distance # The high edge into the screen.
+---@type fun(object: trx.catalog.objects): trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance
+ui.primitive.mesh_bounds = raw.mesh_bounds
 
-The look follows the menu style setting, so a panel drawn this way matches the
-game's own dialogs rather than standing apart from them.]],
-  params = {
-    { name = "x", type = "number", description = "The left edge." },
-    { name = "y", type = "number", description = "The top edge." },
-    { name = "z", type = "integer", description = "The draw order." },
-    { name = "w", type = "number", description = "The width." },
-    { name = "h", type = "number", description = "The height." },
-    {
-      name = "style",
-      type = "ui.FrameStyle",
-      description = "Which of the game's frames to draw.",
-    },
-  },
-  impl = raw.panel,
-})
+---Draws one sprite of an object on the canvas.
+---
+---Raises where the level did not load the object, so check
+---`trx.objects.get(object).loaded` first.
+---
+---```lua
+---trx.ui.primitive.sprite(
+---  trx.catalog.objects.assault_digits, 3, 100, 20, 0, 1,
+---  trx.math.color("ffffff"))
+---```
+---@param object trx.catalog.objects The sprite object to draw from.
+---@param sprite_num integer Which sprite of the object to draw, counted from 0.
+---@param x number The left edge.
+---@param y number The top edge.
+---@param z integer The draw order.
+---@param scale number Multiplies the sprite size. At 1 the sprite draws at its own size on the canvas.
+---@param color trx.math.Color What color to tint it with.
+---@type fun(object: trx.catalog.objects, sprite_num: integer, x: number, y: number, z: integer, scale: number, color: trx.math.Color)
+ui.primitive.sprite = raw.sprite
 
-api.define("ui.primitive.quad", {
-  description = "Draws a rectangle of one color.",
-  params = {
-    { name = "x", type = "number", description = "The left edge." },
-    { name = "y", type = "number", description = "The top edge." },
-    {
-      name = "z",
-      type = "integer",
-      description = "The draw order.",
-    },
-    { name = "w", type = "number", description = "The width." },
-    { name = "h", type = "number", description = "The height." },
-    {
-      name = "color",
-      type = "math.Color",
-      description = "What color to fill it with.",
-    },
-  },
-  impl = raw.flat_quad,
-})
-
-api.define("ui.primitive.gradient_quad", {
-  description = "Draws a rectangle whose corners each carry a color.",
-  params = {
-    { name = "x", type = "number", description = "The left edge." },
-    { name = "y", type = "number", description = "The top edge." },
-    {
-      name = "z",
-      type = "integer",
-      description = "What to draw in front of.",
-    },
-    { name = "w", type = "number", description = "The width." },
-    { name = "h", type = "number", description = "The height." },
-    { name = "tl", type = "math.Color", description = "The top-left color." },
-    { name = "tr", type = "math.Color", description = "The top-right color." },
-    {
-      name = "bl",
-      type = "math.Color",
-      description = "The bottom-left color.",
-    },
-    {
-      name = "br",
-      type = "math.Color",
-      description = "The bottom-right color.",
-    },
-  },
-  impl = raw.gradient_quad,
-})
-
--- The sprite primitives share their leading parameters and differ only in how
--- many colors they take.
-local function sprite_params(...)
-  local params = {
-    {
-      name = "object",
-      type = "catalog.objects",
-      description = "The sprite object to draw from.",
-    },
-    {
-      name = "sprite_num",
-      type = "integer",
-      description = "Which sprite of the object to draw, counted from 0.",
-    },
-    { name = "x", type = "number", description = "The left edge." },
-    { name = "y", type = "number", description = "The top edge." },
-    { name = "z", type = "integer", description = "The draw order." },
-    {
-      name = "scale",
-      type = "number",
-      description = "Multiplies the sprite size. At 1 the sprite draws at its "
-        .. "own size on the canvas.",
-    },
-  }
-  for _, color in ipairs({ ... }) do
-    params[#params + 1] = {
-      name = color[1],
-      type = "math.Color",
-      description = color[2],
-    }
-  end
-  return params
-end
-
-api.define("ui.primitive.image", {
-  description = [[
-Draws an image file in a box on the canvas.
-
-The image is looked for where the game keeps its images, and stretches to fill
-the box, so a box of the image's own shape keeps that shape. The image draws
-under everything else the canvas holds, whatever order the calls come in.
-
-Returns whether the game has such an image, so a script can leave the space
-alone where it does not.]],
-  params = {
-    {
-      name = "path",
-      type = "string",
-      description = "The image file, named from the images directory.",
-    },
-    { name = "x", type = "number", description = "The left edge." },
-    { name = "y", type = "number", description = "The top edge." },
-    { name = "w", type = "number", description = "The width." },
-    { name = "h", type = "number", description = "The height." },
-    {
-      name = "opacity",
-      type = "number",
-      optional = true,
-      description = "How solid the image is, from 0 to 1. `1` by default.",
-    },
-  },
-  returns = {
-    type = "boolean",
-    description = "Whether the image was there to draw.",
-  },
-  examples = {
-    [[trx.ui.primitive.image("uklogo.pak", 64, 0, 512, 256)]],
-  },
-  impl = raw.image,
-})
-
-api.define("ui.primitive.sprite_count", {
-  description = [[
-Reports how many sprites an object has.
-
-An object the level did not load has none, and a model has none as well. Use this
-function to check whether `trx.ui.primitive.sprite` has anything to draw.]],
-  params = {
-    {
-      name = "object",
-      type = "catalog.objects",
-      description = "The sprite object to count.",
-    },
-  },
-  returns = { type = "integer", description = "How many sprites it has." },
-  impl = raw.sprite_count,
-})
-
-api.define("ui.primitive.sprite_bounds", {
-  description = [[
-Reports the edges of one sprite of an object, in canvas units at a scale of one.
-
-The edges sit around the point the sprite is drawn at, so both left and top are
-usually negative. Multiply them by the scale the sprite is drawn at.
-
-Raises where the level did not load the object, so check
-`trx.objects.get(object).loaded` first.]],
-  params = {
-    {
-      name = "object",
-      type = "catalog.objects",
-      description = "The sprite object to read from.",
-    },
-    {
-      name = "sprite_num",
-      type = "integer",
-      description = "Which sprite of the object to read, counted from 0.",
-    },
-  },
-  returns = {
-    { type = "number", description = "The left edge." },
-    { type = "number", description = "The top edge." },
-    { type = "number", description = "The right edge." },
-    { type = "number", description = "The bottom edge." },
-  },
-  impl = raw.sprite_bounds,
-})
-
-api.define("ui.primitive.mesh_bounds", {
-  description = [[
-Reports the box a model occupies, from the first frame of its first animation.
-
-The box sits around the point the model is drawn at, so the low edges are
-usually negative. A script fits a model into a box of its own by comparing the
-two.
-
-Returns nothing where the object carries no model, which is how a script tells
-whether it can draw one at all. Raises where the level did not load the object,
-so check `trx.objects.get(object).loaded` first.]],
-  params = {
-    {
-      name = "object",
-      type = "catalog.objects",
-      description = "The model object to measure.",
-    },
-  },
-  returns = {
-    {
-      type = "math.Distance",
-      description = "The low edge across, or `nil` where the object carries no model.",
-    },
-    { type = "math.Distance", description = "The low edge down." },
-    { type = "math.Distance", description = "The low edge into the screen." },
-    { type = "math.Distance", description = "The high edge across." },
-    { type = "math.Distance", description = "The high edge down." },
-    { type = "math.Distance", description = "The high edge into the screen." },
-  },
-  impl = raw.mesh_bounds,
-})
-
-api.define("ui.primitive.sprite", {
-  description = [[
-Draws one sprite of an object on the canvas.
-
-Raises where the level did not load the object, so check
-`trx.objects.get(object).loaded` first.]],
-  params = sprite_params({ "color", "What color to tint it with." }),
-  examples = {
-    [[trx.ui.primitive.sprite(
-  trx.catalog.objects.assault_digits, 3, 100, 20, 0, 1,
-  trx.math.color("ffffff"))]],
-  },
-  impl = raw.sprite,
-})
-
-api.define("ui.primitive.gradient_sprite", {
-  description = [[
-Draws one sprite of an object, with a color at each corner.
-
-Raises where the level did not load the object, so check
-`trx.objects.get(object).loaded` first.]],
-  params = sprite_params(
-    { "tl", "The top-left color." },
-    { "tr", "The top-right color." },
-    { "bl", "The bottom-left color." },
-    { "br", "The bottom-right color." }
-  ),
-  impl = raw.gradient_sprite,
-})
+---Draws one sprite of an object, with a color at each corner.
+---
+---Raises where the level did not load the object, so check
+---`trx.objects.get(object).loaded` first.
+---@param object trx.catalog.objects The sprite object to draw from.
+---@param sprite_num integer Which sprite of the object to draw, counted from 0.
+---@param x number The left edge.
+---@param y number The top edge.
+---@param z integer The draw order.
+---@param scale number Multiplies the sprite size. At 1 the sprite draws at its own size on the canvas.
+---@param tl trx.math.Color The top-left color.
+---@param tr trx.math.Color The top-right color.
+---@param bl trx.math.Color The bottom-left color.
+---@param br trx.math.Color The bottom-right color.
+---@type fun(object: trx.catalog.objects, sprite_num: integer, x: number, y: number, z: integer, scale: number, tl: trx.math.Color, tr: trx.math.Color, bl: trx.math.Color, br: trx.math.Color)
+ui.primitive.gradient_sprite = raw.gradient_sprite

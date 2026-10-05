@@ -15,8 +15,8 @@ order: 5
 The rings the player browses, and the entries drawn on them.
 
 This is the front of the inventory: which entries a ring holds, how each is
-drawn and turned, and what the player has picked. What Lara is carrying belongs
-to [`trx.inventory`](INVENTORY.md#inventory).
+drawn and turned, and what the player has picked. What Lara is carrying
+belongs to [`trx.inventory`](INVENTORY.md#inventory).
 
 A script draws what an entry opens by defining the
 [`trx.ui.Screen.RING_ENTRY`](UI.md#ui.Screen) screen.
@@ -27,21 +27,21 @@ A script draws what an entry opens by defining the
 
     What the inventory ring was opened for.
 
-    - `trx.inventory_ring.Mode.GAME` = `0`  
+    - `trx.inventory_ring.Mode.GAME`  
         Opened during play.
-    - `trx.inventory_ring.Mode.TITLE` = `1`  
+    - `trx.inventory_ring.Mode.TITLE`  
         The title screen's menu.
-    - `trx.inventory_ring.Mode.KEYS` = `2`  
+    - `trx.inventory_ring.Mode.KEYS`  
         The keys ring, opened against a locked door or receptacle.
-    - `trx.inventory_ring.Mode.SAVE` = `3`  
+    - `trx.inventory_ring.Mode.SAVE`  
         Opened to save, with the save list already on show.
-    - `trx.inventory_ring.Mode.LOAD` = `4`  
+    - `trx.inventory_ring.Mode.LOAD`  
         Opened to load, with the save list already on show.
-    - `trx.inventory_ring.Mode.DEATH` = `5`  
+    - `trx.inventory_ring.Mode.DEATH`  
         Opened because Lara died.
-    - `trx.inventory_ring.Mode.SAVE_CRYSTAL` = `6`  
+    - `trx.inventory_ring.Mode.SAVE_CRYSTAL`  
         Opened by a save crystal.
-    - `trx.inventory_ring.Mode.GLOBE_SELECT` = `7`  
+    - `trx.inventory_ring.Mode.GLOBE_SELECT`  
         The globe the player picks a destination from.
 
 ### Structures
@@ -65,7 +65,8 @@ A script draws what an entry opens by defining the
   Returns: [trx.inventory_ring.Mode](#inventory_ring.Mode) or `nil`. What the ring was opened for.
 
 - <a id="inventory_ring.selection_anim" name="inventory_ring.selection_anim"></a>[lua]`trx.inventory_ring.selection_anim()`  
-  Where the ring's selected entry is in its animation, or `nil` when no ring is open.
+  Where the ring's selected entry is in its animation, or `nil` when no ring
+  is open.
 
   Returns: [trx.inventory_ring.EntryAnim](#inventory_ring.EntryAnim) or `nil`. The entry's animation state.
 
@@ -99,18 +100,16 @@ A script draws what an entry opens by defining the
   Parameters:
   - <a id="inventory_ring.item.object" name="inventory_ring.item.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The inventory icon to read.
 
-  Returns: table. The entry's `object_id`, frame counts, rotations, offsets,
-    `scale`, and `draws_at_pivot`, or `nil`.
+  Returns: table. The entry's `object_id`, frame counts, rotations, offsets, `scale`, and `draws_at_pivot`, or `nil`.
 
 - <a id="inventory_ring.declare_item" name="inventory_ring.declare_item"></a>[lua]`trx.inventory_ring.declare_item(spec)`  
   Adds an object to the inventory ring and sets its display properties.
 
-  Declaring an existing object replaces its entry. Use the pickup object for an
-  entry that represents itself.
+  Declaring an existing object replaces its entry. Use the pickup object for
+  an entry that represents itself.
 
   Parameters:
-  - <a id="inventory_ring.declare_item.spec" name="inventory_ring.declare_item.spec"></a>**`spec`** (table). The entry's `object_id`, frame counts, rotations, offsets,
-    `scale`, and `draws_at_pivot`. An omitted value keeps the ring's default.
+  - <a id="inventory_ring.declare_item.spec" name="inventory_ring.declare_item.spec"></a>**`spec`** (table). The entry's `object_id`, frame counts, rotations, offsets, `scale`, and `draws_at_pivot`. An omitted value keeps the ring's default.
 
   Example:
   ```lua

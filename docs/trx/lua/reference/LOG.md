@@ -12,7 +12,9 @@ order: 31
 
 ## <a id="log" name="log"></a>Logging module
 
-Logs a message to the terminal and to `TRX.log` in the installation directory. Each call records the Lua script's filename, function name and line number.
+Logs a message to the terminal and to `TRX.log` in the installation
+directory. Each call records the Lua script's
+filename, function name and line number.
 
 ### Enums
 
@@ -20,19 +22,20 @@ Logs a message to the terminal and to `TRX.log` in the installation directory. E
 
     Severity of a log message. Pass one to [`trx.log.generic`](#log.generic).
 
-    - `trx.log.LogLevel.DEBUG` = `0`  
+    - `trx.log.LogLevel.DEBUG`  
         Diagnostic detail, of interest while writing a script.
-    - `trx.log.LogLevel.INFO` = `1`  
+    - `trx.log.LogLevel.INFO`  
         Ordinary progress message.
-    - `trx.log.LogLevel.WARNING` = `2`  
+    - `trx.log.LogLevel.WARNING`  
         Something is wrong, but the script can carry on.
-    - `trx.log.LogLevel.ERROR` = `3`  
+    - `trx.log.LogLevel.ERROR`  
         Something failed.
 
 ### Functions
 
 - <a id="log.generic" name="log.generic"></a>[lua]`trx.log.generic(level, message)`  
-  Logs a message at a level chosen at runtime, for when the level is computed rather than written literally.
+  Logs a message at a level chosen at runtime, for when the level is computed
+  rather than written literally.
 
   Parameters:
   - <a id="log.generic.level" name="log.generic.level"></a>**`level`** ([trx.log.LogLevel](#log.LogLevel)).

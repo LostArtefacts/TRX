@@ -32,7 +32,8 @@ Module for controlling certain creature behavior.
   ```
 
 - <a id="creatures.add_ally_target" name="creatures.add_ally_target"></a>[lua]`trx.creatures.add_ally_target(object_id)`  
-  Marks an object as one that will fight any of Lara's allies. Every item of that type will target them.
+  Marks an object as one that will fight any of Lara's allies. Every item of
+  that type will target them.
 
   Parameters:
   - <a id="creatures.add_ally_target.object_id" name="creatures.add_ally_target.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)).

@@ -12,7 +12,8 @@ order: 19
 
 ## <a id="assault" name="assault"></a>Assault course module
 
-Module for controlling the Assault Course and Quad Bike timers in gym levels.
+Module for controlling the Assault Course and Quad Bike timers in gym
+levels.
 
 ### Properties
 
@@ -24,10 +25,10 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
 
     A timed gym track.
 
-    - `trx.assault.Track.QUAD` = `0`  
-        The quad bike circuit.
-    - `trx.assault.Track.COURSE` = `1`  
+    - `trx.assault.Track.COURSE`  
         Lara's assault course.
+    - `trx.assault.Track.QUAD`  
+        The quad bike circuit.
 
 ### Structures
 
@@ -50,7 +51,9 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
 ### Functions
 
 - <a id="assault.stats" name="assault.stats"></a>[lua]`trx.assault.stats`  
-  A track's record table, as shown on the stats screen. Each track keeps its own. The records are stored in the player's profile, so writing to them outlives the level, and they can be read outside a gym level.
+  A track's record table, as shown on the stats screen. Each track keeps its
+  own. The records are stored in the player's profile, so writing to them
+  outlives the level, and they can be read outside a gym level.
 
 - <a id="assault.start" name="assault.start"></a>[lua]`trx.assault.start([track])`  
   Starts the timer and clears its state. Raises outside a gym level.
@@ -65,7 +68,8 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
   - <a id="assault.stop.track" name="assault.stop.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
 
 - <a id="assault.finish" name="assault.finish"></a>[lua]`trx.assault.finish([track])`  
-  Stops the timer as completing the track does, rather than as an abort. Raises outside a gym level.
+  Stops the timer as completing the track does, rather than as an abort.
+  Raises outside a gym level.
 
   Parameters:
   - <a id="assault.finish.track" name="assault.finish.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
@@ -85,7 +89,8 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
   Returns: boolean. True from the start of a run until it is finished or stopped.
 
 - <a id="assault.is_visible" name="assault.is_visible"></a>[lua]`trx.assault.is_visible([track])`  
-  Whether the timer is shown on screen. It stays visible after [`trx.assault.stop`](#assault.stop).
+  Whether the timer is shown on screen. It stays visible after
+  [`trx.assault.stop`](#assault.stop).
 
   Parameters:
   - <a id="assault.is_visible.track" name="assault.is_visible.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
@@ -95,8 +100,8 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
 - <a id="assault.get_time" name="assault.get_time"></a>[lua]`trx.assault.get_time()`  
   How long the current run has taken.
 
-  This is the level clock, which is what a gym level times its tracks with, so it
-  takes no track.
+  This is the level clock, which is what a gym level times its tracks with,
+  so it takes no track.
 
   Returns: [trx.game.Frames](GAME.md#game.Frames). The time on the clock, counting up while the timer runs.
 
@@ -149,7 +154,8 @@ Module for controlling the Assault Course and Quad Bike timers in gym levels.
   Returns: [trx.game.Frames](GAME.md#game.Frames). The time left, and 0 where no lap time is shown.
 
 - <a id="assault.stats.add_record" name="assault.stats.add_record"></a>[lua]`trx.assault.stats.add_record(time, [track])`  
-  Files a new record, inserting it in time order and bumping the attempt count.
+  Files a new record, inserting it in time order and bumping the attempt
+  count.
 
   Parameters:
   - <a id="assault.stats.add_record.time" name="assault.stats.add_record.time"></a>**`time`** ([trx.game.Seconds](GAME.md#game.Seconds)). Must be greater than zero.

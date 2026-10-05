@@ -25,15 +25,15 @@ The mods the game was built with, and which one is loaded.
 
     What kind of mod it is.
 
-    - `trx.mod.Type.BASE_GAME` = `0`  
+    - `trx.mod.Type.BASE_GAME`  
         The base game.
-    - `trx.mod.Type.EXPANSION_PACK` = `1`  
+    - `trx.mod.Type.EXPANSION_PACK`  
         An expansion pack.
-    - `trx.mod.Type.MISC` = `2`  
+    - `trx.mod.Type.MISC`  
         A miscellaneous mod.
-    - `trx.mod.Type.DIRECT_LEVEL` = `3`  
+    - `trx.mod.Type.DIRECT_LEVEL`  
         A single level loaded on its own.
-    - `trx.mod.Type.CUSTOM` = `4`  
+    - `trx.mod.Type.CUSTOM`  
         A custom mod.
 
 ### Structures
@@ -66,17 +66,16 @@ The mods the game was built with, and which one is loaded.
   Parameters:
   - <a id="mod.can_switch.mod" name="mod.can_switch.mod"></a>**`mod`** (any). A [`trx.mod.Mod`](#mod.Mod) or a mod name.
 
-  Returns:
-  - boolean. Whether the mod can be switched to.
+  Returns: boolean. Whether the mod can be switched to.
 
 - <a id="mod.switch" name="mod.switch"></a>[lua]`trx.mod.switch(mod)`  
-  Restarts the game into another mod. The switch happens once the game flow picks it up, not on the call.
+  Restarts the game into another mod. The switch happens once the game flow
+  picks it up, not on the call.
 
   Parameters:
   - <a id="mod.switch.mod" name="mod.switch.mod"></a>**`mod`** (any). A [`trx.mod.Mod`](#mod.Mod) or a mod name.
 
-  Returns:
-  - boolean. Whether the mod can be switched to. `false` leaves the game where it is.
+  Returns: boolean. Whether the mod can be switched to. `false` leaves the game where it is.
 
   Example:
   ```lua

@@ -1,171 +1,111 @@
 local raw = trxc.rules
-local api = trx.api
+local h = require("trx.internal.helpers")
 
-api.module("rules", {
-  order = 15,
-  description = [[
-    Module for the numbers the engine plays by.
+---@class trx
+---@field rules trx.rules
 
-    These are the game's rules: a mechanic that no single item owns. An
-    object's own numbers live on the object, as
-    `trx.objects.<name>.properties`, and the player's own choices live in
-    `trx.config`.
-
-    A rule lasts as long as the playthrough: it is saved with the game and
-    restored with it, and a new game starts from the defaults. A level script
-    states what its level wants, and states it again on every entry, so a level
-    that wants the defaults back asks for them.
-  ]],
-})
+---Module for the numbers the engine plays by.
+---
+---These are the game's rules: a mechanic that no single item owns. An
+---object's own numbers live on the object, as
+---`trx.objects.<name>.properties`, and the player's own choices live in
+---`trx.config`.
+---
+---A rule lasts as long as the playthrough: it is saved with the game and
+---restored with it, and a new game starts from the defaults. A level script
+---states what its level wants, and states it again on every entry, so a level
+---that wants the defaults back asks for them.
+---@trx.module 15
+---@class (exact) trx.rules
+local M = h.module("rules")
 
 -- Every rule is reachable two ways: as a member here, and by the dotted key
 -- the console addresses it with. They are the same path, so the member is
 -- spelled from the key rather than named a second time.
 local declared = {}
 
-local function rule(key, spec)
-  spec.get = function()
-    return raw.get(key)
+local function rules(group, names)
+  local props = {}
+  for _, name in ipairs(names) do
+    local key = group .. "." .. name
+    props[name] = {
+      get = function()
+        return raw.get(key)
+      end,
+      set = function(value)
+        raw.set(key, value)
+      end,
+    }
+    declared[key] = true
   end
-  spec.set = function(value)
-    raw.set(key, value)
-  end
-  declared[key] = true
-  api.property("rules." .. key, spec)
+  h.properties(M[group], "rules." .. group, props)
 end
 
-rule("exposure.max", {
-  type = "game.Frames",
-  description = "How much warmth Lara holds, and what `trx.lara.exposure_bar` fills "
-    .. "to. Warmth only moves in a room carrying the `trx.rooms.Room.damaging` flag, such as the cold water of "
-    .. "Antarctica.",
-})
+---@class (exact) trx.rules.exposure
+---@trx.implicit
+---@field max trx.game.Frames How much warmth Lara holds, and what `trx.lara.exposure_bar` fills to. Warmth only moves in a room carrying the `trx.rooms.Room.damaging` flag, such as the cold water of Antarctica.
+---@field drain_land integer Warmth lost each frame in the cold, on land or wading.
+---@field drain_water integer Warmth lost each frame in the cold, underwater or at the surface.
+---@field recovery integer Warmth regained each frame once out of the cold.
+---@field damage integer Hit points lost each frame once the warmth has run out.
+M.exposure = h.namespace("rules.exposure")
+rules("exposure", { "max", "drain_land", "drain_water", "recovery", "damage" })
 
-rule("exposure.drain_land", {
-  type = "integer",
-  description = "Warmth lost each frame in the cold, on land or wading.",
-})
+---@class (exact) trx.rules.corpse
+---@trx.implicit
+---@field fade_speed integer How much of a body's coverage goes each frame, out of 255. It is taken away once nothing is left. `0` leaves it where it lies.
+M.corpse = h.namespace("rules.corpse")
+rules("corpse", { "fade_speed" })
 
-rule("exposure.drain_water", {
-  type = "integer",
-  description = "Warmth lost each frame in the cold, underwater or at the surface.",
-})
+---@class (exact) trx.rules.carrier
+---@trx.implicit
+---@field snap_to_sector boolean Whether an item a defeated enemy carried lands in the middle of the sector the enemy stood on, rather than at its feet. Quest items are left where they fall either way.
+---@field inherit_facing boolean Whether an item a defeated enemy carried turns to face the way the enemy did, rather than keeping the rotation the level gave it. This only reaches drops the level data places on the enemy; a drop the gameflow names always takes the enemy's facing.
+M.carrier = h.namespace("rules.carrier")
+rules("carrier", { "snap_to_sector", "inherit_facing" })
 
-rule("exposure.recovery", {
-  type = "integer",
-  description = "Warmth regained each frame once out of the cold.",
-})
+---@class (exact) trx.rules.inventory
+---@trx.implicit
+---@field keep_plot_items boolean Whether the items a level owns - keys, puzzle items, pickup items and what Lara examines - travel with her to the next level, rather than being left behind at the end of the one she found them in. TR4 keeps them and clears them where its game flow declares a `reset_hub` <!--noref: reset_hub-->; the other games leave them behind every time.
+M.inventory = h.namespace("rules.inventory")
+rules("inventory", { "keep_plot_items" })
 
-rule("exposure.damage", {
-  type = "integer",
-  description = "Hit points lost each frame once the warmth has run out.",
-})
+---@class (exact) trx.rules.fx
+---@trx.implicit
+---@field rotate_debris boolean Whether debris pieces generated from shattered meshes should rotate in yaw and pitch while they are active. The original TR4 did not apply rotation.
+M.fx = h.namespace("rules.fx")
+rules("fx", { "rotate_debris" })
 
-rule("corpse.fade_speed", {
-  type = "integer",
-  description = "How much of a body's coverage goes each frame, out of 255. It is taken "
-    .. "away once nothing is left. `0` leaves it where it lies.",
-})
+---Every rule there is, as dotted `group.field` keys, in no particular order.
+---<!--noref: group.field-->
+---@return string[]
+---@type fun(): string[]
+M.list = raw.list
 
-rule("carrier.snap_to_sector", {
-  type = "boolean",
-  description = [[
-    Whether an item a defeated enemy carried lands in the middle of the sector
-    the enemy stood on, rather than at its feet. Quest items are left where
-    they fall either way.
-  ]],
-})
+---Reads a rule by its key, for code that does not know which one it wants.
+---@param key string Dotted path, e.g. `exposure.damage`. <!--noref: exposure.damage-->
+---@return any # Raises if no rule has that key.
+---@type fun(key: string): any
+M.get = raw.get
 
-rule("carrier.inherit_facing", {
-  type = "boolean",
-  description = [[
-    Whether an item a defeated enemy carried turns to face the way the enemy
-    did, rather than keeping the rotation the level gave it. This only reaches
-    drops the level data places on the enemy; a drop the gameflow names always
-    takes the enemy's facing.
-  ]],
-})
+---Changes a rule by its key. A string is read as text, the way the console
+---gives it; any other value is taken as the rule's own type.
+---@param key string Dotted path, e.g. `exposure.damage`. <!--noref: exposure.damage-->
+---@param value any The value to write, of the type the rule declares.
+---@type fun(key: string, value: any)
+M.set = raw.set
 
-rule("inventory.keep_plot_items", {
-  type = "boolean",
-  description = [[
-    Whether the items a level owns - keys, puzzle items, pickup items and what
-    Lara examines - travel with her to the next level, rather than being left
-    behind at the end of the one she found them in. TR4 keeps them and clears
-    them where its game flow declares a `reset_hub` <!--noref: reset_hub-->;
-    the other games leave them behind every time.
-  ]],
-})
+---Puts a rule back to the value the engine ships with, or every rule when
+---given no key. Happens on its own when a new game starts.
+---@param key? string Dotted path.
+---@type fun(key?: string)
+M.reset = raw.reset
 
-rule("fx.rotate_debris", {
-  type = "boolean",
-  description = [[
-    Whether debris pieces generated from shattered meshes should rotate in yaw
-    and pitch while they are active. The original TR4 did not apply rotation.
-  ]],
-})
-
-api.define("rules.list", {
-  description = "Every rule there is, as dotted `group.field` keys, in no particular order. "
-    .. "<!--noref: group.field-->",
-  params = {},
-  returns = { type = "string", list = true },
-  impl = raw.list,
-})
-
-api.define("rules.get", {
-  description = "Reads a rule by its key, for code that does not know which one it wants.",
-  params = {
-    {
-      name = "key",
-      type = "string",
-      description = "Dotted path, e.g. `exposure.damage`. <!--noref: exposure.damage-->",
-    },
-  },
-  returns = { type = "any", description = "Raises if no rule has that key." },
-  impl = raw.get,
-})
-
-api.define("rules.set", {
-  description = "Changes a rule by its key. A string is read as text, the way the console gives "
-    .. "it; any other value is taken as the rule's own type.",
-  params = {
-    {
-      name = "key",
-      type = "string",
-      description = "Dotted path, e.g. `exposure.damage`. <!--noref: exposure.damage-->",
-    },
-    {
-      name = "value",
-      type = "any",
-      description = "The value to write, of the type the rule declares.",
-    },
-  },
-  impl = raw.set,
-})
-
-api.define("rules.reset", {
-  description = "Puts a rule back to the value the engine ships with, or every rule when given "
-    .. "no key. Happens on its own when a new game starts.",
-  params = {
-    {
-      name = "key",
-      type = "string",
-      optional = true,
-      description = "Dotted path.",
-    },
-  },
-  impl = raw.reset,
-})
-
-api.define("rules.format_value", {
-  description = "How a rule's value reads as text, for showing it to the player.",
-  params = {
-    { name = "key", type = "string", description = "Dotted path." },
-  },
-  returns = { type = "string", description = "The text, ready to print." },
-  impl = raw.format_value,
-})
+---How a rule's value reads as text, for showing it to the player.
+---@param key string Dotted path.
+---@return string # The text, ready to print.
+---@type fun(key: string): string
+M.format_value = raw.format_value
 
 -- A rule added to rules.def with no member here would be reachable by key and
 -- absent from the reference; a member left behind would raise the first time a

@@ -14,11 +14,13 @@ order: 8
 
 Module for the object definitions a level is built from.
 
-An object is the pattern every item of that type is cut from: a wolf's radius, not this wolf's. Per-item state lives on the item - see [`trx.items`](ITEMS.md#items).
+An object is the pattern every item of that type is cut from: a wolf's
+radius, not this wolf's. Per-item state lives on the item - see [`trx.items`](ITEMS.md#items).
 
 ### Indexing
 
-Indexing the module reaches an object definition, so [`trx.objects.wolf`](#objects) is the wolf. Keyed by object id or catalog name, not by position.
+Indexing the module reaches an object definition, so [`trx.objects.wolf`](#objects) is
+the wolf. Keyed by object id or catalog name, not by position.
 
 - <a id="objects[]" name="objects[]"></a>**`trx.objects[key]`** (key: [trx.catalog.objects](CATALOG.md#catalog.objects) or string, value: [trx.objects.Object](#objects.Object) or `nil`). Object id, or its catalog name.
 
@@ -65,7 +67,8 @@ trx.objects.wolf.properties.max_hit_points = 30
     Methods:
 
     - <a id="objects.Object.add_family" name="objects.Object.add_family"></a>[lua]`object:add_family(family)`  
-      Puts the object in a family, so a query narrowed to that family finds it. A family a script mints is reached the same way as one the game ships.
+      Puts the object in a family, so a query narrowed to that family finds it. A
+      family a script mints is reached the same way as one the game ships.
 
       Parameters:
       - <a id="objects.Object.add_family.family" name="objects.Object.add_family.family"></a>**`family`** (string). Which family, by the name it answers to.
@@ -78,12 +81,14 @@ trx.objects.wolf.properties.max_hit_points = 30
       ```
 
     - <a id="objects.Object.get_default_names" name="objects.Object.get_default_names"></a>[lua]`object:get_default_names()`  
-      The compile-time English names. A lookup tries these when the player's language has no matching name. Prefer [`default_names`](#objects.Object.default_names).
+      The compile-time English names. A lookup tries these when the player's
+      language has no matching name. Prefer [`default_names`](#objects.Object.default_names).
 
       Returns: a list of string.
 
     - <a id="objects.Object.get_names" name="objects.Object.get_names"></a>[lua]`object:get_names()`  
-      Every name the object answers to, in the player's language. Prefer [`names`](#objects.Object.names).
+      Every name the object answers to, in the player's language. Prefer
+      [`names`](#objects.Object.names).
 
       Returns: a list of string.
 
@@ -101,9 +106,9 @@ trx.objects.wolf.properties.max_hit_points = 30
       Returns: a list of string.
 
     - <a id="objects.Object.link" name="objects.Object.link"></a>[lua]`object:link(link, other)`  
-      Links this object to another object. Use the relation name that
-      the game uses, such as `gun_to_ammo`. This lets the game use
-      relations between objects created by a script.
+      Links this object to another object. Use the relation name that the game
+      uses, such as `gun_to_ammo`. This lets the game
+      use relations between objects created by a script.
 
       Parameters:
       - <a id="objects.Object.link.link" name="objects.Object.link.link"></a>**`link`** (string). The relation to add, such as `gun_to_ammo`.
@@ -121,7 +126,8 @@ trx.objects.wolf.properties.max_hit_points = 30
       - <a id="objects.Object.remove_family.family" name="objects.Object.remove_family.family"></a>**`family`** (string). Which family, by the name it answers to.
 
     - <a id="objects.Object.set_property" name="objects.Object.set_property"></a>[lua]`object:set_property(name, value)`  
-      Writes one of the object's properties. Prefer `object.properties.<name> = ...`.
+      Writes one of the object's properties. Prefer
+      `object.properties.<name> = ...`.
 
       Parameters:
       - <a id="objects.Object.set_property.name" name="objects.Object.set_property.name"></a>**`name`** (string). Which property, as the object declares it.
@@ -129,9 +135,13 @@ trx.objects.wolf.properties.max_hit_points = 30
 
 - <a id="objects.ObjectQuery" name="objects.ObjectQuery"></a>[lua]`trx.objects.ObjectQuery`
 
-    A [`trx.query.Query`](QUERY.md#query.Query) over every object the engine knows, with the narrowings below on top of the ones every query has. Objects answer to names, so it carries the name layer too - see [`trx.query.NamedQuery`](QUERY.md#query.NamedQuery).
+    A [`trx.query.Query`](QUERY.md#query.Query) over every object the engine knows, with the narrowings
+    below on top of the ones every query has. Objects answer to names, so it
+    carries the name layer too - see [`trx.query.NamedQuery`](QUERY.md#query.NamedQuery).
 
-    The families do not cover [`pickup`](#objects.ObjectQuery.pickup) between them: a second state of something Lara already carries, such as a part-full waterskin, is in none of them.
+    The families do not cover [`pickup`](#objects.ObjectQuery.pickup) between them: a
+    second state of something Lara already carries, such as a part-full
+    waterskin, is in none of them.
 
     Methods:
 
@@ -146,7 +156,8 @@ trx.objects.wolf.properties.max_hit_points = 30
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
     - <a id="objects.ObjectQuery.boss" name="objects.ObjectQuery.boss"></a>[lua]`objectquery:boss()`  
-      A creature the game treats as a boss, which the enemy health bar can be held to.
+      A creature the game treats as a boss, which the enemy health bar can be held
+      to.
 
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
@@ -176,7 +187,8 @@ trx.objects.wolf.properties.max_hit_points = 30
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
     - <a id="objects.ObjectQuery.family" name="objects.ObjectQuery.family"></a>[lua]`objectquery:family(family)`  
-      Narrows to a family by name, which is how a query reaches a family a script mints. The families the game ships have a narrowing of their own.
+      Narrows to a family by name, which is how a query reaches a family a script
+      mints. The families the game ships have a narrowing of their own.
 
       Parameters:
       - <a id="objects.ObjectQuery.family.family" name="objects.ObjectQuery.family.family"></a>**`family`** (string). Which family, by the name it answers to.
@@ -249,7 +261,8 @@ trx.objects.wolf.properties.max_hit_points = 30
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
     - <a id="objects.ObjectQuery.spawnable" name="objects.ObjectQuery.spawnable"></a>[lua]`objectquery:spawnable()`  
-      The object is a thing in the world at all, rather than an inventory icon, an animation, or a null placeholder.
+      The object is a thing in the world at all, rather than an inventory icon, an
+      animation, or a null placeholder.
 
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
@@ -264,7 +277,8 @@ trx.objects.wolf.properties.max_hit_points = 30
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
     - <a id="objects.ObjectQuery.tool" name="objects.ObjectQuery.tool"></a>[lua]`objectquery:tool()`  
-      A pickup named for itself rather than filling a numbered slot: the crowbar, the lasersight, the binoculars, the waterskins, the leadbar.
+      A pickup named for itself rather than filling a numbered slot: the crowbar,
+      the lasersight, the binoculars, the waterskins, the leadbar.
 
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
@@ -285,9 +299,11 @@ trx.objects.wolf.properties.max_hit_points = 30
   ```
 
 - <a id="objects.declare" name="objects.declare"></a>[lua]`trx.objects.declare(object_id, spec)`  
-  Defines setup for an object created by a script. The setup is applied at each level load because object records are rebuilt for each level.
+  Defines setup for an object created by a script. The setup is applied at
+  each level load because object records are rebuilt for each level.
 
-  `control` runs once each frame for each active item. `initialise` runs when an item is created. Both functions receive the item.
+  `control` runs once each frame for each active item. `initialise` runs when
+  an item is created. Both functions receive the item.
 
   Parameters:
   - <a id="objects.declare.object_id" name="objects.declare.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The object created with [`trx.catalog.mint`](CATALOG.md#catalog.mint).
@@ -305,7 +321,9 @@ trx.objects.wolf.properties.max_hit_points = 30
   ```
 
 - <a id="objects.borrow_content" name="objects.borrow_content"></a>[lua]`trx.objects.borrow_content(object_id, source_id)`  
-  Copies meshes and animations from another object. Use this when the new object has no models in the level, such as a custom projectile that uses the rocket model.
+  Copies meshes and animations from another object. Use this when the new
+  object has no models in the level, such as a custom projectile that uses the
+  rocket model.
 
   Parameters:
   - <a id="objects.borrow_content.object_id" name="objects.borrow_content.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The object that receives the meshes and animations.
@@ -319,7 +337,8 @@ trx.objects.wolf.properties.max_hit_points = 30
   ```
 
 - <a id="objects.swap_mesh" name="objects.swap_mesh"></a>[lua]`trx.objects.swap_mesh(object_id1, object_id2, [mesh_num1], [mesh_num2])`  
-  Swaps meshes between two objects. With no mesh numbers, swaps all of them; with both, swaps just those two. One without the other raises.
+  Swaps meshes between two objects. With no mesh numbers, swaps all of them;
+  with both, swaps just those two. One without the other raises.
 
   Parameters:
   - <a id="objects.swap_mesh.object_id1" name="objects.swap_mesh.object_id1"></a>**`object_id1`** ([trx.catalog.objects](CATALOG.md#catalog.objects)).
@@ -328,9 +347,9 @@ trx.objects.wolf.properties.max_hit_points = 30
   - <a id="objects.swap_mesh.mesh_num2" name="objects.swap_mesh.mesh_num2"></a>**`mesh_num2`** ([trx.objects.MeshNum](#objects.MeshNum), optional). Mesh of the second.
 
 - <a id="objects.swap_sprite" name="objects.swap_sprite"></a>[lua]`trx.objects.swap_sprite(object_id1, object_id2)`  
-  Swaps the sprites of two objects, which is how a pickup looks when 3D pickups
-  are turned off. Raises if either object is drawn from meshes rather than a
-  sprite.
+  Swaps the sprites of two objects, which is how a pickup looks when 3D
+  pickups are turned off. Raises if either object is drawn from meshes rather
+  than a sprite.
 
   Parameters:
   - <a id="objects.swap_sprite.object_id1" name="objects.swap_sprite.object_id1"></a>**`object_id1`** ([trx.catalog.objects](CATALOG.md#catalog.objects)).
