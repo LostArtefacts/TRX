@@ -4,6 +4,7 @@
 - Improved Lara's torso rotation handling when going into a crouch and drawing/holstering guns while crouched (#6700)
 - Fixed Lara being unable to grab zipline handles that are positioned on slopes when animated interactions are enabled (TRX1587, regression from 1.10)
 - Fixed Lara moving while the look button was held and two opposite directions were pressed (OG bug) (#6686 / TRX1585)
+- Fixed Lara sometimes sliding along stationary objects when at a standstill at specific angles (OG bug) (TRX1680)
 
 **Rendering**
 - Added an option to disable reflections on Lara's sunglasses (Graphic Options → Visuals → Reflective sunglasses) (#6665 / TRX1544)
