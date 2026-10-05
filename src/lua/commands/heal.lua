@@ -18,6 +18,9 @@ trx.console.register({
     end
 
     local lara = trx.lara.item
+    if lara == nil then
+      return trx.console.Result.UNAVAILABLE
+    end
     local was_full = lara.hit_points == lara.max_hit_points
 
     lara.hit_points = lara.max_hit_points

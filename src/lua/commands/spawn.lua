@@ -12,9 +12,10 @@ trx.locale.declare({
 
 -- Tries straight ahead first, then 45 degrees either side, and returns the
 -- first spot that lands in valid room geometry.
+---@param lara trx.items.Item
 local function find_target_pos(lara)
-  for _, offset in ipairs({ -trx.math.DEG_45, 0, trx.math.DEG_45 }) do
-    local angle = lara.rot.y + offset
+  for _, side in ipairs({ -1, 0, 1 }) do
+    local angle = lara.rot.y + side * trx.math.DEG_45
     local dist = trx.math.WALL_L
     local candidate = {
       x = lara.pos.x + math.floor(trx.math.sin(angle) * dist),
@@ -46,7 +47,7 @@ trx.console.register({
     end
 
     local lara = trx.lara.item
-    if lara.hit_points <= 0 then
+    if lara == nil or lara.hit_points <= 0 then
       return trx.console.Result.UNAVAILABLE
     end
 
@@ -60,7 +61,8 @@ trx.console.register({
     -- whole family for a group name like "pickup". Spawn one of them at random,
     -- so /spawn pickup varies.
     local ids = trx.objects.query:spawnable():by_name(args.name):best()
-    if #ids == 0 then
+    local object_id = #ids > 0 and ids[math.random(#ids)] or nil
+    if object_id == nil then
       return trx.console.Result.FAILURE,
         trx.locale.format("console/cmd/spawn/invalid", args.name)
     end
@@ -68,7 +70,6 @@ trx.console.register({
     -- Face the spawned item back towards Lara.
     local angle = trx.math.atan(lara.pos.z - pos.z, lara.pos.x - pos.x)
 
-    local object_id = ids[math.random(#ids)]
     local item = trx.items.spawn(object_id, pos, angle, { activate = true })
     if item ~= nil then
       return trx.console.Result.OK, trx.locale.get("console/cmd/spawn/success")

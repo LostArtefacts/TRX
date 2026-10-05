@@ -6,7 +6,7 @@ local h = require("trx.internal.helpers")
 -- trx.lara stands for one C struct, so reading trx.lara.air reads Lara's air.
 -- What is reachable is what lara.Lara declares below, and nothing else.
 
----@class trx
+---@class (partial) trx
 ---@field lara trx.lara
 
 ---Module for reading and nudging Lara's own state.
@@ -19,13 +19,13 @@ local h = require("trx.internal.helpers")
 ---  is_controllable, is_wet, item, target, vehicle, vehicle_gun
 ---@field can_pose boolean Whether poses are available for Lara to cycle through in photo mode. This is false when no poses are defined or during cutscenes.
 ---@field animation_object trx.catalog.objects The object Lara's animations are coming from. It is normally Lara herself, and something else while a vehicle or a scripted sequence drives her.
----@field item trx.items.Item Lara's own item, or `nil` outside a level. Her position, room and hit points are read and written there.
----@field target trx.items.Item The item Lara's guns are locked onto, or `nil` if she has none.
----@field vehicle trx.items.Item The vehicle Lara is riding, or `nil` when she is on her own feet. Its speed and position are the ones that move her while she rides it.
+---@field item trx.items.Item? Lara's own item, or `nil` outside a level. Her position, room and hit points are read and written there.
+---@field target trx.items.Item? The item Lara's guns are locked onto, or `nil` if she has none.
+---@field vehicle trx.items.Item? The vehicle Lara is riding, or `nil` when she is on her own feet. Its speed and position are the ones that move her while she rides it.
 ---@field is_controllable boolean Whether Lara answers to the player. False while she is dead, while the inventory or a dialog holds the game, and while a cutscene or flyby is active.
----@field outfit string The outfit Lara is wearing, by name, as defined in `cfg/outfits.json5`.
+---@field outfit string? The outfit Lara is wearing, by name, as defined in `cfg/outfits.json5`, or `nil` where she wears none of those.
 ---@field holsters_visible boolean Whether Lara's holsters are drawn on her hips.
----@field speech_face number Which of her outfit's speech faces Lara wears while she talks, counted from 0, or `nil` for her own face. An outfit with no speech faces keeps her own.
+---@field speech_face number? Which of her outfit's speech faces Lara wears while she talks, counted from 0, or `nil` for her own face. An outfit with no speech faces keeps her own.
 ---
 ---  The face is remembered, so putting her in another outfit mid-sentence
 ---  dresses her in that outfit's face rather than leaving the one she had.
@@ -406,7 +406,8 @@ h.properties(M, "lara", {
   },
   item = {
     get = function()
-      return trx.items[raw.get_item()]
+      local num = raw.get_item()
+      return num ~= nil and trx.items[num] or nil
     end,
   },
   target = {

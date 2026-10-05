@@ -1,7 +1,7 @@
 local raw = trxc.json
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field json trx.json
 
 ---Reading and writing JSON, both as text and as a file on disk. The API dump the

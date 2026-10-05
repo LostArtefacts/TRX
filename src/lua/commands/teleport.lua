@@ -26,6 +26,7 @@ local HALF_TURN = 2 * trx.math.DEG_90
 
 -- Lara lands a quarter of a step above what she was sent to, so she is standing
 -- on it rather than in it.
+---@type trx.math.Distance
 local LIFT = WALL_L // 16
 
 -- Which objects belong to a family does not change over a session, so each set
@@ -103,6 +104,8 @@ end
 -- there. A switch set into a wall has its item inside the solid block behind,
 -- with only the model reaching through into the room, so the spot comes from
 -- the model's own bounding box rather than from the sector the item sits in.
+---@param item trx.items.Item
+---@param quarter integer
 local function beside(item, quarter)
   local bounds = item.bounds
   local reach = ({
@@ -157,11 +160,17 @@ end
 -- side to approach from, facing whichever way it asks for. A side is looked up
 -- without naming a room, since it often lies in the room next door; somewhere
 -- with no floor moves nothing, and falls back to the item itself.
+---@param item trx.items.Item
 local function teleport_to_item(item)
+  local lara = trx.lara.item
+  if lara == nil then
+    return false
+  end
+
   for _, quarter in ipairs(approach_quarters(item)) do
     local pos, angle = beside(item, quarter)
     if trx.lara.teleport(pos) then
-      trx.lara.item.rot = { x = 0, y = angle, z = 0 }
+      lara.rot = { x = 0, y = angle, z = 0 }
       return true
     end
   end
@@ -179,7 +188,7 @@ local function teleport_to_item(item)
   end
 
   if turn ~= nil then
-    trx.lara.item.rot = { x = 0, y = item.rot.y + turn, z = 0 }
+    lara.rot = { x = 0, y = item.rot.y + turn, z = 0 }
   end
   return true
 end
@@ -279,7 +288,11 @@ end
 -- The matching item nearest Lara, unless she is already standing on it: then
 -- the next one along, so typing the same name again walks her through them all.
 local function nearest_item(items)
-  local lara_pos = trx.lara.item.pos
+  local lara = trx.lara.item
+  if lara == nil then
+    return nil
+  end
+  local lara_pos = lara.pos
 
   local nearest, nearest_dist, nearest_idx
   for i, item in ipairs(items) do

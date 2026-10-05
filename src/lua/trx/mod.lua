@@ -1,7 +1,7 @@
 local raw = trxc.mod
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field mod trx.mod
 
 ---The mods the game was built with, and which one is loaded.

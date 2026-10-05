@@ -8,7 +8,7 @@ local Box = h.class_of("math.Box")
 require("trx.log")
 require("trx.query")
 
----@class trx
+---@class (partial) trx
 ---@field rooms trx.rooms
 
 -- on_enter and on_exit narrow trx.events.on_room_change to one room: the two
@@ -73,7 +73,7 @@ M.FlipStatus = h.enum("rooms.FlipStatus", "ROOM_FLIP_STATUS", FlipStatus)
 ---@field damaging boolean Whether the room drains Lara's exposure meter.
 ---@field cold boolean Whether Lara's breath is visible in the room.
 ---@field flip_status trx.rooms.FlipStatus Current flip status.
----@field flipped_room trx.rooms.Room This room's flip pair, or `nil` if it has none.
+---@field flipped_room trx.rooms.Room? This room's flip pair, or `nil` if it has none.
 ---@field bounds trx.math.Box Where the room sits in the world.
 ---@field internal_bounds trx.math.Box As `trx.rooms.Room.bounds`, but excluding the outer ring of sectors, which is solid wall.
 local Room = h.handle("rooms.Room", "ROOM", {
@@ -158,7 +158,9 @@ end
 ---end)
 ---```
 ---@return boolean # False once the level that held the room has been left.
-function Room:is_valid() end
+function Room:is_valid()
+  return h.native()
+end
 
 ---As `trx.rooms.floor_height`, looking from this room.
 ---@param pos trx.math.Vec3 World position.
@@ -314,12 +316,15 @@ end
 ---below on top of the ones every query has. Rooms answer to no names, so the
 ---name layer is absent.
 ---@class (exact) trx.rooms.RoomQuery: trx.query.Query
+---@operator band(trx.rooms.RoomQuery): trx.rooms.RoomQuery
+---@operator bor(trx.rooms.RoomQuery): trx.rooms.RoomQuery
+---@operator bnot: trx.rooms.RoomQuery
 local RoomQuery = h.class("rooms.RoomQuery", { extends = "query.Query" })
 
 local underwater = flag_narrowing("underwater")
 
 ---The room is filled with water.
----@return trx.query.Query # The narrowed query.
+---@return trx.rooms.RoomQuery # The narrowed query.
 function RoomQuery:underwater()
   return underwater(self)
 end
@@ -327,7 +332,7 @@ end
 local swamp = flag_narrowing("swamp")
 
 ---The room is filled with swamp water.
----@return trx.query.Query # The narrowed query.
+---@return trx.rooms.RoomQuery # The narrowed query.
 function RoomQuery:swamp()
   return swamp(self)
 end
@@ -339,7 +344,7 @@ local dry = trx.query.narrowing(function()
 end)
 
 ---The room holds neither water nor swamp water.
----@return trx.query.Query # The narrowed query.
+---@return trx.rooms.RoomQuery # The narrowed query.
 function RoomQuery:dry()
   return dry(self)
 end
@@ -357,7 +362,7 @@ end)
 ---```lua
 ---trx.rooms.query:reachable():underwater():count()
 ---```
----@return trx.query.Query # The narrowed query.
+---@return trx.rooms.RoomQuery # The narrowed query.
 function RoomQuery:reachable()
   return reachable(self)
 end
@@ -370,7 +375,7 @@ end)
 
 ---The room is the half of a flip pair the level is not showing. Its geometry
 ---is still there to inspect, but nothing can be in it.
----@return trx.query.Query # The narrowed query.
+---@return trx.rooms.RoomQuery # The narrowed query.
 function RoomQuery:flipped()
   return flipped(self)
 end
@@ -395,7 +400,7 @@ end)
 ---trx.rooms.query:at(trx.lara.item.pos):first()
 ---```
 ---@param pos trx.math.Vec3 World position.
----@return trx.query.Query # The narrowed query.
+---@return trx.rooms.RoomQuery # The narrowed query.
 function RoomQuery:at(pos)
   return at(self, pos)
 end

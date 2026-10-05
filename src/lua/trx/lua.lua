@@ -1,7 +1,7 @@
 local raw = trxc.lua
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field lua trx.lua
 
 ---Evaluating Lua at runtime: a string of code, or a file on disk. Both run in

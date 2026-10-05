@@ -156,15 +156,14 @@ only when it is created.
 
   Returns: [trx.signal.Signal](#signal.Signal). The setting's signal.
 
-- <a id="signal.combine" name="signal.combine"></a>[lua]`trx.signal.combine(..., fn)`  
+- <a id="signal.combine" name="signal.combine"></a>[lua]`trx.signal.combine(...)`  
   Creates a signal by applying a function to several source signals.
 
   Pass the signals first and the function last. [`trx.signal.Signal:map`](#signal.Signal.map) is the
   one-signal version. For boolean combinations, `&`, `|` and `~` are shorter.
 
   Parameters:
-  - <a id="signal.combine...." name="signal.combine...."></a>**`...`** ([trx.signal.Signal](#signal.Signal)). The signals to read, in the order the function takes them.
-  - <a id="signal.combine.fn" name="signal.combine.fn"></a>**`fn`** (function). The function that computes the derived value.
+  - <a id="signal.combine...." name="signal.combine...."></a>**`...`** ([trx.signal.Signal](#signal.Signal) or function). The signals to read, in the order the function takes them, then the function that computes the derived value.
 
   Returns: [trx.signal.Signal](#signal.Signal). The derived signal.
 

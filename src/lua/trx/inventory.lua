@@ -1,7 +1,7 @@
 local raw = trxc.inventory
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field inventory trx.inventory
 
 ---What Lara is carrying, and what goes into it.
@@ -55,17 +55,23 @@ local Inventory = h.handle("inventory.Inventory", "INVENTORY_STATE", {})
 ---come to.
 ---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
 ---@return integer # 0 where there is none.
-function Inventory:count(object_id) end
+function Inventory:count(object_id)
+  return h.native()
+end
 
 ---Sets how many of it there are. Zero takes it away.
 ---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
 ---@param count integer How many. Below 0 raises.
-function Inventory:set_count(object_id, count) end
+function Inventory:set_count(object_id, count)
+  return h.native()
+end
 
 ---Whether there is any of it at all.
 ---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
 ---@return boolean # True for any count above 0.
-function Inventory:has(object_id) end
+function Inventory:has(object_id)
+  return h.native()
+end
 
 ---Puts a pickup in. Lara's inventory takes it as walking over it would, so a
 ---weapon arrives with the rounds a pickup carries and a flare box with its
@@ -73,7 +79,9 @@ function Inventory:has(object_id) end
 ---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
 ---@param count? integer How many. Defaults to 1; below 1 raises.
 ---@return integer # How many went in. 0 from Lara's means the level does not carry the icon for it - see `trx.inventory.Inventory:can_add`.
-function Inventory:give(object_id, count) end
+function Inventory:give(object_id, count)
+  return h.native()
+end
 
 ---Takes things back out, stopping when there are none left.
 ---
@@ -83,25 +91,33 @@ function Inventory:give(object_id, count) end
 ---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
 ---@param count? integer How many. Defaults to 1; below 1 raises.
 ---@return integer # How many came out.
-function Inventory:take(object_id, count) end
+function Inventory:take(object_id, count)
+  return h.native()
+end
 
 ---How many shots there are for the weapon. A shot is one pull of the trigger,
 ---which is what the counter shows the player; the shotgun spends six rounds on
 ---each.
 ---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
 ---@return integer # 0 where she carries no ammunition for it.
-function Inventory:shots(weapon) end
+function Inventory:shots(weapon)
+  return h.native()
+end
 
 ---Sets how many shots there are for it.
 ---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
 ---@param count integer Shots. Below 0 raises.
-function Inventory:set_shots(weapon, count) end
+function Inventory:set_shots(weapon, count)
+  return h.native()
+end
 
 ---Whether the weapon itself is in it, which is not the same as having
 ---ammunition for it.
 ---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
 ---@return boolean # True where the weapon itself is in it.
-function Inventory:has_weapon(weapon) end
+function Inventory:has_weapon(weapon)
+  return h.native()
+end
 
 ---The entry something is drawn as, or `nil` where there is none of it.
 ---
@@ -110,17 +126,23 @@ function Inventory:has_weapon(weapon) end
 ---drawn as.
 ---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
 ---@return trx.inventory.Entry? # The entry, or `nil` where there is none of it.
-function Inventory:entry(object_id) end
+function Inventory:entry(object_id)
+  return h.native()
+end
 
 ---The entry at a position in the order they are drawn, or `nil` past the end.
 ---@param entry_num trx.inventory.EntryNum
 ---@return trx.inventory.Entry? # The entry, or `nil` past the last one.
-function Inventory:entry_at(entry_num) end
+function Inventory:entry_at(entry_num)
+  return h.native()
+end
 
 ---How many entries there are. `#trx.inventory` is the same number for the one
 ---Lara carries.
 ---@return integer # Kinds of thing, not counts.
-function Inventory:entry_count() end
+function Inventory:entry_count()
+  return h.native()
+end
 
 ---Whether `trx.inventory.Inventory:give` would do anything in the level being
 ---played. The level has to carry the inventory model, which is not the same as
@@ -130,7 +152,9 @@ function Inventory:entry_count() end
 ---This asks about the level being played whichever inventory it is called on.
 ---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
 ---@return boolean # True where the level carries the model to draw it with.
-function Inventory:can_add(object_id) end
+function Inventory:can_add(object_id)
+  return h.native()
+end
 
 ---Asks `trx.inventory.Inventory:count` of what Lara carries.
 ---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.

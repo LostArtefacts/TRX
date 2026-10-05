@@ -1,7 +1,7 @@
 local raw = trxc.ui
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field ui trx.ui
 
 ---Module for drawing on top of the game.
@@ -26,7 +26,7 @@ local h = require("trx.internal.helpers")
 ---this API: `\{small}` draws the rest of the line small, `\{arrow up}` draws an
 ---arrow, and `\{button left}` draws the button the player has bound.
 ---@trx.module 20 User interface
----@class (exact) trx.ui
+---@class (partial,exact) trx.ui
 ---@trx.readonly canvas, safe_area, text_scale
 ---@field canvas trx.ui.Area The whole canvas. Widget sizes are in these units rather than in screen pixels, and the canvas is 640 by 480 for a 4:3 screen at the default text size.
 ---@field clipboard string What the system clipboard holds. Reads as an empty string where it holds nothing, and raises on assignment where the platform refuses the text.
@@ -238,15 +238,21 @@ local MeshSlot = h.handle("ui.MeshSlot", "UI_MESH_SLOT", {
 ---Call this once per tick. Calling it twice in one tick replaces the pose used
 ---for interpolation. A hidden slot, or one given a new object, starts at the
 ---new pose.
-function MeshSlot:move() end
+function MeshSlot:move()
+  return h.native()
+end
 
 ---Stops drawing the model. Moving the slot again shows it.
-function MeshSlot:hide() end
+function MeshSlot:hide()
+  return h.native()
+end
 
 ---Gives the slot back. The handle is spent afterwards, and moving or hiding a
 ---spent handle raises rather than reaching whichever slot came next. Releasing
 ---one again does nothing.
-function MeshSlot:release() end
+function MeshSlot:release()
+  return h.native()
+end
 
 ---Takes a slot for a model the interface keeps on screen across ticks.
 ---

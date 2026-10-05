@@ -1,7 +1,7 @@
 local raw = trxc.weather
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field weather trx.weather
 
 ---The runtime weather effect the current level shows.

@@ -71,6 +71,7 @@ trx.console.register({
 
     if args.state ~= nil then
       local want = trx.strings.dash_case(args.state)
+      ---@type trx.weather.Type?
       local found = nil
       for name, value in pairs(trx.weather.Type) do
         if trx.strings.dash_case(name) == want then

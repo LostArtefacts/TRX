@@ -5,7 +5,7 @@ local raw_inventory = trxc.inventory
 local raw_stats = trxc.stats
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field game trx.game
 
 ---Module for the game flow: which levels there are, and which one is being
@@ -20,8 +20,8 @@ local h = require("trx.internal.helpers")
 ---@field cutscenes trx.game.Level[] The cutscene levels, counted from one. TR4's in-game cutscenes are a different thing, and live in `trx.cutscenes`.
 ---@field demos trx.game.Level[] The demos, counted from one.
 ---@field fmvs trx.game.FMV[] The movies the game flow declares, counted from one.
----@field current_level trx.game.Level The level being played, or `nil` if none is.
----@field gym trx.game.Level The gym level, or `nil` if this game has no gym.
+---@field current_level trx.game.Level? The level being played, or `nil` if none is.
+---@field gym trx.game.Level? The gym level, or `nil` if this game has no gym.
 ---@field version integer Which Tomb Raider this build is: 1, 2, 3 or 4.
 ---@field is_loaded boolean Whether a level is loaded.
 ---@field measured_fps integer How many frames reached the screen in the last second, counted against the wall clock. Frames are drawn more often than the game ticks, so this is not the rate the game runs at.
@@ -113,7 +113,7 @@ M.LevelType = h.enum("game.LevelType", "GF_LEVEL_TYPE", LevelType)
 ---  type, unobtainable_ally_kills, unobtainable_kills, unobtainable_pickups,
 ---  unobtainable_secrets, water_particles
 ---@field num trx.game.LevelNum
----@field key string What the level is called, taken from the name of the file it loads: `wall.tr2` reads back as `wall`. Lower case, regardless of the case on disk, and `nil` for a level that loads no file of its own. <!--noref: wall.tr2, wall-->
+---@field key string? What the level is called, taken from the name of the file it loads: `wall.tr2` reads back as `wall`. Lower case, regardless of the case on disk, and `nil` for a level that loads no file of its own. <!--noref: wall.tr2, wall-->
 ---
 ---  This is the name to write into a table of per-level data.
 ---  `trx.game.Level.num` is a position and moves as soon as a game flow gains
@@ -122,7 +122,7 @@ M.LevelType = h.enum("game.LevelType", "GF_LEVEL_TYPE", LevelType)
 ---@field type trx.game.LevelType What kind of level it is.
 ---@field title string The level's name, as shown to the player.
 ---@field path string Path to the level file.
----@field script_path string Path to the Lua script that runs when the level loads, or `nil` if it has none.
+---@field script_path string? Path to the Lua script that runs when the level loads, or `nil` if it has none.
 ---@field lara_outfit string The outfit Lara starts the level in.
 ---@field music_track trx.catalog.music The track that plays when the level starts.
 ---@field water_particles boolean Whether water particles are visible in the level's water.
@@ -130,8 +130,8 @@ M.LevelType = h.enum("game.LevelType", "GF_LEVEL_TYPE", LevelType)
 ---@field unobtainable_kills integer Kills the stats screen must not hold against the player.
 ---@field unobtainable_ally_kills integer Ally kills the stats screen must not hold against the player.
 ---@field unobtainable_secrets integer Secrets the stats screen must not hold against the player.
----@field inventory trx.inventory.Inventory What the level keeps for Lara's return, or `nil` for a level that keeps nothing: the title screen and the cutscenes. It is what she will arrive there with rather than what she is carrying now, which is `trx.inventory` itself.
----@field stats trx.stats.Stats What the level keeps count of, or `nil` for a level that counts nothing: the title screen and the cutscenes. The level being played is also `trx.stats` itself.
+---@field inventory trx.inventory.Inventory? What the level keeps for Lara's return, or `nil` for a level that keeps nothing: the title screen and the cutscenes. It is what she will arrive there with rather than what she is carrying now, which is `trx.inventory` itself.
+---@field stats trx.stats.Stats? What the level keeps count of, or `nil` for a level that counts nothing: the title screen and the cutscenes. The level being played is also `trx.stats` itself.
 local Level = h.handle("game.Level", "GF_LEVEL", {
   fields = {
     num = "num",

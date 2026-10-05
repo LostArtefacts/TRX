@@ -33,6 +33,7 @@ local HAZE_SWING = 64
 -- 30 frames a second, so this is half a second either way.
 local FADE = 15
 
+---@type { r: integer, g: integer, b: integer }[]
 local COLORS = {
   { r = 255, g = 32, b = 96 },
   { r = 255, g = 160, b = 0 },
@@ -41,12 +42,22 @@ local COLORS = {
   { r = 160, g = 64, b = 255 },
 }
 
+---@type trx.events.Listener?
 local listener = nil
 local frame = 0
 -- How far the show has come up, from 0 for out to 1 for full, and where it is
 -- heading. Everything emitted is scaled by it.
+---@type number
 local level = 0
+---@type number
 local target_level = 0
+
+local function stop()
+  if listener ~= nil then
+    listener:detach()
+    listener = nil
+  end
+end
 
 -- The crossing into the next color eases in and out, so the light settles on a
 -- color rather than sliding through it at an even rate.
@@ -78,8 +89,7 @@ local function light_up()
     level = math.max(0, level - 1 / FADE)
     -- Nothing left to draw, so the show stops costing a frame.
     if level == 0 then
-      listener:detach()
-      listener = nil
+      stop()
       return
     end
   end
@@ -132,10 +142,7 @@ end
 trx.events.on_level_unload(function()
   level = 0
   target_level = 0
-  if listener ~= nil then
-    listener:detach()
-    listener = nil
-  end
+  stop()
 end)
 
 trx.console.register({

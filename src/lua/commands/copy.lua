@@ -27,7 +27,7 @@ trx.console.register({
       return trx.console.Result.FAILURE,
         trx.locale.format("console/cmd/copy/failed", args.command)
     end
-    if output == "" then
+    if output == nil or output == "" then
       return trx.console.Result.FAILURE,
         trx.locale.format("console/cmd/copy/no_output", args.command)
     end

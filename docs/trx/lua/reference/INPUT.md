@@ -492,8 +492,6 @@ buttons are `"a"`, `"b"`, `"x"`, `"y"`, `"back"`, `"guide"`, `"start"`,
   Parameters:
   - <a id="input.with_listen.fn" name="input.with_listen.fn"></a>**`fn`** (function). Function to run while input is captured.
 
-  Returns: any. What the function returned.
-
 - <a id="input.bind_pressed" name="input.bind_pressed"></a>[lua]`trx.input.bind_pressed(role, [opts], [backend], [layout])`  
   Binds a role to the key or button the player is holding.
 

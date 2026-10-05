@@ -43,8 +43,8 @@ end
 -- still wanted, and it can only see a literal. A key it cannot see is a key it
 -- prunes, and the command loses its text.
 local function targets_from_id(text)
-  local id = tonumber(text)
-  if id == nil or id % 1 ~= 0 then
+  local id = math.tointeger(tonumber(text))
+  if id == nil then
     return nil
   end
 

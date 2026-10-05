@@ -5,7 +5,7 @@ require("trx.strings")
 require("trx.catalog")
 require("trx.query")
 
----@class trx
+---@class (partial) trx
 ---@field objects trx.objects
 
 ---Module for the object definitions a level is built from.
@@ -104,12 +104,16 @@ local Object = h.handle("objects.Object", "OBJECT", {
 ---Every name the object answers to, in the player's language. Prefer
 ---`trx.objects.Object.names`.
 ---@return string[]
-function Object:get_names() end
+function Object:get_names()
+  return h.native()
+end
 
 ---The compile-time English names. A lookup tries these when the player's
 ---language has no matching name. Prefer `trx.objects.Object.default_names`.
 ---@return string[]
-function Object:get_default_names() end
+function Object:get_default_names()
+  return h.native()
+end
 
 ---Puts the object in a family, so a query narrowed to that family finds it. A
 ---family a script mints is reached the same way as one the game ships.
@@ -120,7 +124,9 @@ function Object:get_default_names() end
 ---for _, id in ipairs(trx.objects.query:family("mymod:explosive"):ids()) do ... end
 ---```
 ---@param family string Which family, by the name it answers to.
-function Object:add_family(family) end
+function Object:add_family(family)
+  return h.native()
+end
 
 ---Links this object to another object. Use the relation name that the game
 ---uses, such as `gun_to_ammo`. <!--noref: gun_to_ammo--> This lets the game
@@ -131,26 +137,36 @@ function Object:add_family(family) end
 ---```
 ---@param link string The relation to add, such as `gun_to_ammo`. <!--noref: gun_to_ammo-->
 ---@param other trx.catalog.objects The object to link.
-function Object:link(link, other) end
+function Object:link(link, other)
+  return h.native()
+end
 
 ---Takes the object out of a family.
 ---@param family string Which family, by the name it answers to.
-function Object:remove_family(family) end
+function Object:remove_family(family)
+  return h.native()
+end
 
 ---Reads one of the object's properties. Prefer `object.properties.<name>`.
 ---@param name string Which property, as the object declares it.
 ---@return any? # The value, of the type the property is declared with.
-function Object:get_property(name) end
+function Object:get_property(name)
+  return h.native()
+end
 
 ---Writes one of the object's properties. Prefer
 ---`object.properties.<name> = ...`.
 ---@param name string Which property, as the object declares it.
 ---@param value any What to write, of the type the property is declared with.
-function Object:set_property(name, value) end
+function Object:set_property(name, value)
+  return h.native()
+end
 
 ---Names of every property this object declares.
 ---@return string[]
-function Object:get_property_names() end
+function Object:get_property_names()
+  return h.native()
+end
 
 ---Retrieves an object definition by id or by name.
 ---
@@ -237,6 +253,9 @@ end
 ---second state of something Lara already carries, such as a part-full
 ---waterskin, is in none of them.
 ---@class (exact) trx.objects.ObjectQuery: trx.query.NamedQuery
+---@operator band(trx.objects.ObjectQuery): trx.objects.ObjectQuery
+---@operator bor(trx.objects.ObjectQuery): trx.objects.ObjectQuery
+---@operator bnot: trx.objects.ObjectQuery
 local ObjectQuery = h.class("objects.ObjectQuery", {
   extends = "query.NamedQuery",
 })
@@ -248,7 +267,7 @@ local loaded = trx.query.narrowing(function()
 end)
 
 ---The level loaded the object, so items of it exist.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:loaded()
   return loaded(self)
 end
@@ -264,7 +283,7 @@ end)
 
 ---The object is a thing in the world at all, rather than an inventory icon, an
 ---animation, or a null placeholder.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:spawnable()
   return spawnable(self)
 end
@@ -282,7 +301,7 @@ end)
 ---trx.objects.query:family("mymod:explosive"):ids()
 ---```
 ---@param family string Which family, by the name it answers to.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:family(family)
   return by_family(self, family)
 end
@@ -292,7 +311,7 @@ end
 local enemy = trx.query.narrowing(enemy_test)
 
 ---A creature that fights Lara rather than for her.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:enemy()
   return enemy(self)
 end
@@ -316,129 +335,129 @@ table.sort(searchable, function(a, b)
 end)
 
 ---The object is a creature.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:creature()
   return families.creature(self)
 end
 
 ---A creature the game treats as a boss, which the enemy health bar can be held
 ---to.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:boss()
   return families.boss(self)
 end
 
 ---One of Lara's own: the butler, and Lara herself.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:loyal()
   return families.loyal(self)
 end
 
 ---Something Lara can pick up.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:pickup()
   return families.pickup(self)
 end
 
 ---A weapon.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:gun()
   return families.gun(self)
 end
 
 ---Clips for a weapon.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:ammo()
   return families.ammo(self)
 end
 
 ---A pickup Lara spends rather than keeps.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:supply()
   return families.supply(self)
 end
 
 ---A pickup named for itself rather than filling a numbered slot: the crowbar,
 ---the lasersight, the binoculars, the waterskins, the leadbar.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:tool()
   return families.tool(self)
 end
 
 ---A key, by the slot it fills.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:key()
   return families.key(self)
 end
 
 ---A puzzle item, by the slot it fills.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:puzzle()
   return families.puzzle(self)
 end
 
 ---A quest item, by the slot it fills. This is what carries the scion.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:quest()
   return families.quest(self)
 end
 
 ---An examine item, by the slot it fills.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:examine()
   return families.examine(self)
 end
 
 ---A collectible, by the slot it fills.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:collectible()
   return families.collectible(self)
 end
 
 ---The trinket a secret trigger sits under.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:secret()
   return families.secret(self)
 end
 
 ---A switch Lara throws.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:switch()
   return families.switch(self)
 end
 
 ---A slot a puzzle item goes into.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:receptacle()
   return families.receptacle(self)
 end
 
 ---A block Lara pushes and pulls.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:pushable()
   return families.pushable(self)
 end
 
 ---A door.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:door()
   return families.door(self)
 end
 
 ---An icon in the inventory rather than a thing in the world.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:inventory_item()
   return families.inventory_item(self)
 end
 
 ---A placeholder that is never drawn.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:null_object()
   return families.null_object(self)
 end
 
 ---An animation an object borrows rather than a thing of its own.
----@return trx.query.Query # The narrowed query.
+---@return trx.objects.ObjectQuery # The narrowed query.
 function ObjectQuery:animation()
   return families.animation(self)
 end

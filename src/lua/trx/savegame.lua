@@ -1,7 +1,7 @@
 local raw = trxc.savegame
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field savegame trx.savegame
 
 ---Manage save slots and saved games.

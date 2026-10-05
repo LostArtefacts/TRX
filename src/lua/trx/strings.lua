@@ -1,7 +1,7 @@
 local raw = trxc.strings
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field strings trx.strings
 
 ---Utilities for working with strings.

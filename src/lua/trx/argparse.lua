@@ -2,7 +2,7 @@ local h = require("trx.internal.helpers")
 
 require("trx.locale")
 
----@class trx
+---@class (partial) trx
 ---@field argparse trx.argparse
 
 ---A small, declarative argument parser for console commands, in the shape of
@@ -214,6 +214,10 @@ end
 ---An argument parser, built up a call at a time. Every method hands the parser
 ---back, so the calls chain.
 ---@class (exact) trx.argparse.Parser
+---@field private prog string?
+---@field private description string?
+---@field private positionals table[]
+---@field private flags table[]
 local Parser = h.class("argparse.Parser")
 
 -- Builds one matcher from a value table, refusing to fold several ways of reading
@@ -429,6 +433,8 @@ end
 ---@param args? string The line as the player typed it.
 ---@return table? # The values, keyed by argument name, or `nil` where the line was refused.
 ---@return table? # What was wrong, for `trx.argparse.Parser:format_error` to put into words.
+---@return_overload table, nil
+---@return_overload nil, table
 function Parser:parse(args)
   args = args or ""
   local values = {}
@@ -602,13 +608,11 @@ function Parser:complete(text, caret)
   end
 
   -- The run [rstart, rend) a suggestion replaces, and the prefix typed into it.
-  local rstart, rend, prefix
+  local rstart, rend, prefix = caret, caret, ""
   if active ~= nil then
     rstart = toks[active].start - 1
     rend = rstart + #toks[active].text
     prefix = toks[active].text:sub(1, caret - rstart)
-  else
-    rstart, rend, prefix = caret, caret, ""
   end
 
   -- Completing a flag by its dashes.
@@ -648,7 +652,7 @@ function Parser:complete(text, caret)
   -- The first token to land on the greedy argument, which is where the run it
   -- owns begins. Read off the walk rather than counted, since a token that
   -- passed an argument over fills a slot its own position does not name.
-  local greedy_tok = nil
+  local greedy_tok = nil --[[@as { text: string, start: integer }?]]
   for _, tok in ipairs(consumed) do
     local idx, arg, value = take(self, slot, tok, text, values)
     if arg == nil then

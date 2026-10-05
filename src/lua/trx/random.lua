@@ -3,7 +3,7 @@ local h = require("trx.internal.helpers")
 
 require("trx.math")
 
----@class trx
+---@class (partial) trx
 ---@field random trx.random
 
 ---Random numbers, drawn from one of the two sequences the engine runs on.
@@ -155,7 +155,7 @@ function Stream:choices(seq, weights, k)
     error("weights must hold one share per item", 2)
   end
 
-  local running, total = {}, 0
+  local running, total = {}, 0.0
   for i = 1, count do
     if weights[i] < 0 then
       error("weights must not be negative", 2)
@@ -195,7 +195,7 @@ function Stream:chance(p)
 end
 
 local function stream_of(next_value)
-  local handle = setmetatable({}, Stream)
+  local handle = h.new(Stream)
   sources[handle] = next_value
   return handle
 end

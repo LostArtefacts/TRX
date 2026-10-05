@@ -2,6 +2,7 @@ require("trx.internal.helpers")
 local base = require("trx.ui.widgets.base")
 
 local primitive = trx.ui.primitive
+---@class (partial) trx.ui.widgets
 local widgets = trx.ui.widgets
 local value_of = base.value_of
 local new_widget = base.new_widget

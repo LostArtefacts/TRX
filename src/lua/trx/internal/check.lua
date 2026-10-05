@@ -15,6 +15,7 @@ local M = {}
 
 -- Where a name that is not a primitive is looked up. Set by api.lua, which owns
 -- the declarations; this only asks what one is checked by.
+---@type fun(name: string): (fun(value: any): boolean)?
 local declared_check = function()
   return nil
 end

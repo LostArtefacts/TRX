@@ -18,7 +18,7 @@ trx.locale.declare({
 
 local function choices()
   local out = { { key = "-", value = "-" } }
-  for _, name in ipairs(trx.config.describe(OPTION).values) do
+  for _, name in ipairs(trx.config.describe(OPTION).values or {}) do
     out[#out + 1] = { key = trx.strings.dash_case(name), value = name }
   end
   return out

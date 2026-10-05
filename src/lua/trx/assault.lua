@@ -1,7 +1,7 @@
 local raw = trxc.assault
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field assault trx.assault
 
 ---Module for controlling the Assault Course and Quad Bike timers in gym
@@ -9,7 +9,7 @@ local h = require("trx.internal.helpers")
 ---@trx.module 19 Assault course
 ---@class (exact) trx.assault
 ---@trx.readonly active_track
----@field active_track trx.assault.Track The track Lara is currently running, or `nil` if none.
+---@field active_track trx.assault.Track? The track Lara is currently running, or `nil` if none.
 local M = h.module("assault")
 
 ---Where a time sits in the table of best times, fastest first.

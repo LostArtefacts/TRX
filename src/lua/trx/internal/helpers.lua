@@ -12,9 +12,14 @@ local catalog = trxc.catalog
 
 -- The table every module hangs off. C creates it; this declares it for the
 -- annotations.
----@class trx
+---@class (partial) trx
 trx = trx
 
+-- What strict mode checks a property write and a collection key against. Both
+-- are nil while checking is off.
+---@class trx.internal.helpers
+---@field write_check? fun(path: string, value: any)
+---@field key_check? fun(path: string, key: any)
 local M = {}
 
 local reflected = {
@@ -24,16 +29,25 @@ local reflected = {
   constants = {},
 }
 
--- What strict mode checks a property write and a collection key against. Both
--- are nil while checking is off.
----@type fun(path: string, value: any)?
-M.write_check = nil
----@type fun(path: string, key: any)?
-M.key_check = nil
+---@class trx.internal.helpers.ClassTable
+---@field __index? table|fun(self: any, key: any): any
+---@field __newindex? fun(self: any, key: any, value: any)
+
+---@class trx.internal.helpers.Class
+---@field class table
+---@field getters table<any, function>
+---@field setters table<any, function>
+
+---@class trx.internal.helpers.Handle
+---@field backing string
+---@field methods table<string, string|function>
+---@field names table<string, boolean>
 
 -- Handles and Lua classes by the path their annotations declare them under,
 -- and the callable namespaces, so strict mode can wrap what a script calls.
+---@type table<string, trx.internal.helpers.Handle>
 local handles = {}
+---@type table<string, trx.internal.helpers.Class>
 local classes = {}
 local callables = {}
 
@@ -147,7 +161,7 @@ end
 -- can add identities after this, so a name is asked of the catalog when it is
 -- not among the ones it held to begin with.
 ---@param path string
----@param context integer
+---@param context trx.catalog.Context
 ---@return table<string, integer>
 function M.catalog(path, context)
   local public = {}
@@ -258,9 +272,17 @@ end
 ---@type integer
 M.IntegerConstant = 0
 
+-- Stands in for the body of a handle method that C implements. M.handle binds
+-- the C method in its place, so this only runs where C has no such method.
+---@return any ...
+function M.native()
+  error("this method is implemented in C, and C does not have it", 2)
+end
+
 -- The handles declared through M.handle, keyed by path, each with the C type it
 -- stands for and its methods: a C method name, or the Lua function bound in its
 -- place.
+---@return table<string, trx.internal.helpers.Handle>
 function M.handles()
   return handles
 end
@@ -280,6 +302,7 @@ local class_needs = complain("helpers.class")
 ---@return table
 function M.class(path, spec)
   spec = spec or {}
+  ---@type trx.internal.helpers.ClassTable
   local class = {}
   class.__index = class
 
@@ -360,6 +383,15 @@ function M.class(path, spec)
   return class
 end
 
+-- Returns a new instance of `class`, a class that M.class returned. Its fields
+-- are empty until the caller sets them.
+---@generic T
+---@param class T
+---@return T
+function M.new(class)
+  return setmetatable({}, class)
+end
+
 -- The class of a type written in Lua, for a module that hands out a value of a
 -- type another module declares.
 ---@param path string
@@ -399,6 +431,29 @@ end
 -- One metatable per table serves everything a plain table cannot hold: its
 -- computed properties, the collection it is indexed as, the C struct it stands
 -- for, and its call. Each helper below adds its part and reinstalls it.
+---@class trx.internal.helpers.Prop
+---@field get fun(): any
+---@field set? fun(value: any): any
+
+---@class trx.internal.helpers.Container
+---@field get fun(key: any): any
+---@field count? fun(): integer
+---@field limit? fun(): integer
+---@field base integer
+---@field accepts fun(key: any): boolean
+
+---@class trx.internal.helpers.Mirror
+---@field current fun(): any
+---@field names table<string, boolean>
+
+---@class trx.internal.helpers.Served
+---@field path string
+---@field props table<any, trx.internal.helpers.Prop>
+---@field container? trx.internal.helpers.Container
+---@field mirror? trx.internal.helpers.Mirror
+---@field call? function
+
+---@type table<table, trx.internal.helpers.Served>
 local served = setmetatable({}, { __mode = "k" })
 
 local function serve(tbl, path)

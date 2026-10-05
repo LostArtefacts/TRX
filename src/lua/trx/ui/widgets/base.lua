@@ -34,6 +34,16 @@ end
 ---Register every signal that the widget reads. Otherwise the widget can keep a
 ---stale cached size.
 ---@class (exact) trx.ui.Widget
+---@field hidden? any Whether the widget keeps its room but draws nothing, or a signal that holds that value.
+---@field private shown? any
+---@field private children? trx.ui.Widget[]
+---@field private _size? { w: number, h: number }
+---@field private _parent? trx.ui.Widget
+---@field private _layer? trx.ui.Layer
+---@field private _region_listener? trx.signal.Listener
+---@field private _slot? integer
+---@field private on_measure fun(self: trx.ui.Widget): number?, number?
+---@field private on_paint fun(self: trx.ui.Widget, x: number, y: number, w: number, h: number)
 local Widget = h.class("ui.Widget")
 
 -- Recompute the widget's size only after something invalidates it.
@@ -153,13 +163,16 @@ end
 local text_scale = scale_signal("ui.text_scale")
 local bar_scale = scale_signal("ui.bar_scale")
 
+---@class (partial) trx.ui
+---@field widgets trx.ui.widgets
+
 ---The widgets a script builds its screen from.
 ---
 ---A widget is created once and kept. Give it signals instead of fixed values,
 ---then register those signals with `trx.ui.Widget:wakes_on`.
 ---
 ---Put a widget on screen with `trx.ui.regions.place`.
----@class (exact) trx.ui.widgets
+---@class (partial,exact) trx.ui.widgets
 ui.widgets = h.namespace("ui.widgets")
 
 return {

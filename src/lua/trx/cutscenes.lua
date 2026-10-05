@@ -3,7 +3,7 @@ require("trx.signal")
 local raw = trxc.cutscenes
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field cutscenes trx.cutscenes
 
 ---Module for TR4's in-game cutscenes, the animated scenes stored in
@@ -16,7 +16,7 @@ local h = require("trx.internal.helpers")
 ---@class (exact) trx.cutscenes: table<trx.cutscenes.Num, trx.cutscenes.Cutscene?>
 ---@trx.readonly actor_count, count, current, frame_num, is_active, is_playing
 ---@field current trx.cutscenes.Cutscene? The cutscene playing, or `nil` if none is.
----@field frame_num trx.cutscenes.FrameNum Which frame of the running cutscene is on screen, or `nil` if none is running. A cutscene's actors are animation tracks rather than items, so nothing in it can be triggered or listened to; naming a frame is how a script acts part-way through one, as the original game does.
+---@field frame_num trx.cutscenes.FrameNum? Which frame of the running cutscene is on screen, or `nil` if none is running. A cutscene's actors are animation tracks rather than items, so nothing in it can be triggered or listened to; naming a frame is how a script acts part-way through one, as the original game does.
 ---@field is_playing boolean Whether a cutscene is on screen.
 ---@field is_active boolean Whether a cutscene has the screen, including during its fades. Use this to keep an interface off while the cutscene is active.
 ---@field count integer How many cutscenes this game can play. `0` where it has none, which is every game but TR4 and a TR4 install with no `cutseq.pak` <!--noref: cutseq.pak--> beside its levels.

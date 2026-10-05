@@ -23,6 +23,9 @@ local stack = {}
 
 local tick = 0
 
+---@class (partial) trx.ui
+---@field layers trx.ui.layers
+
 ---Draws screens of widgets over the rest of the interface.
 ---
 ---A layer holds one widget tree, such as a menu or a question. Layers are kept
@@ -34,8 +37,11 @@ local tick = 0
 ---below it read nothing until it closes.
 ---
 ---A layer that a level script pushes closes when the level ends.
----@class (exact) trx.ui.layers
+---@class (partial,exact) trx.ui.layers
 ui.layers = h.namespace("ui.layers")
+
+---@class (partial) trx.ui.layers
+local layers = trx.ui.layers
 
 -------------------------------------------------------------------------------
 -- Input
@@ -49,6 +55,8 @@ ui.layers = h.namespace("ui.layers")
 ---reach the layer below, because they stay inactive until the player releases
 ---them.
 ---@class (exact) trx.ui.LayerKeys
+---@field private _used table<trx.input.Role, boolean>
+---@field private _held table<trx.input.Role, { count: integer, tick: integer }>
 local Keys = h.class("ui.LayerKeys")
 
 ---Returns whether a role became active this tick, and uses the press up.
@@ -148,6 +156,17 @@ end
 ---@class (exact) trx.ui.StackLayer
 ---@trx.readonly is_open
 ---@field is_open boolean Whether the layer is still on the stack.
+---@field private root trx.ui.Widget
+---@field private region? trx.ui.Region
+---@field private place? fun(w: number, h: number): number, number
+---@field private modal boolean
+---@field private on_input? fun(layer: trx.ui.StackLayer, keys: trx.ui.LayerKeys)
+---@field private on_close? fun(layer: trx.ui.StackLayer)
+---@field private _open boolean
+---@field private _fresh boolean
+---@field private _keys trx.ui.LayerKeys
+---@field private _unload? trx.events.Listener
+---@field private _slot? integer
 local Layer = h.class("ui.StackLayer", {
   fields = {
     is_open = {
@@ -210,7 +229,7 @@ end
 ---```
 ---@param settings trx.ui.layers.push.settings The layer settings.
 ---@return trx.ui.StackLayer # The pushed layer.
-function ui.layers.push(settings)
+function layers.push(settings)
   if #stack >= MAX_LAYERS then
     error("too many layers", 2)
   end
@@ -241,11 +260,11 @@ end
 ---Returns the top layer that reads input.
 ---@return trx.ui.StackLayer? # The layer, or `nil` if no layer reads input.
 ---@type fun(): trx.ui.StackLayer?
-ui.layers.top = top_modal
+layers.top = top_modal
 
 ---Returns how many layers are on the stack.
 ---@return integer # The number of layers.
-function ui.layers.count()
+function layers.count()
   return #stack
 end
 

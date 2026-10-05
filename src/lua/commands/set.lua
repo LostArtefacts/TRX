@@ -49,7 +49,7 @@ local function value_choices(parsed)
     out[#out + 1] = { key = "on", value = "on" }
     out[#out + 1] = { key = "off", value = "off" }
   elseif desc.kind == "enum" or desc.kind == "dynamic_enum" then
-    for _, value in ipairs(desc.values) do
+    for _, value in ipairs(desc.values or {}) do
       out[#out + 1] = {
         key = trx.strings.dash_case(value),
         value = trx.strings.dash_case(value),

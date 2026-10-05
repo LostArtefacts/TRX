@@ -11,9 +11,11 @@ local ui = trx.ui
 local primitive = trx.ui.primitive
 
 -- Stores a root widget and reservation for each layer and region.
+---@type table<trx.ui.Layer, table<trx.ui.Region, trx.ui.Widget?>>
 local roots = { [trx.ui.Layer.UNDER] = {}, [trx.ui.Layer.OVER] = {} }
 
 -- Widget to show when a region's root has no visible size.
+---@type table<trx.ui.Region, trx.ui.Widget?>
 local fallbacks = {}
 
 -- Horizontal alignment follows the region's screen edge.
@@ -39,6 +41,9 @@ local ALIGN_OF = {
 -- after the engine's own UI in that region instead of interleaving with it.
 -------------------------------------------------------------------------------
 
+---@class (partial) trx.ui
+---@field regions trx.ui.regions
+
 ---Places script widgets on the screen.
 ---
 ---The screen has nine regions. Engine UI uses those regions for bars, overlay
@@ -47,8 +52,11 @@ local ALIGN_OF = {
 ---
 ---Place a widget once when the script loads. Use signals when the widget must
 ---change later.
----@class (exact) trx.ui.regions
+---@class (partial,exact) trx.ui.regions
 ui.regions = h.namespace("ui.regions")
+
+---@class (partial) trx.ui.regions
+local regions = trx.ui.regions
 
 local function root_of(layer, region)
   local root = roots[layer][region]
@@ -138,7 +146,7 @@ end
 ---@param region any The target region, or a signal that holds one.
 ---@param widget trx.ui.Widget The widget to place.
 ---@param layer? trx.ui.Layer Which layer to draw on. Defaults to `trx.ui.Layer.UNDER`.
-function ui.regions.place(region, widget, layer)
+function regions.place(region, widget, layer)
   layer = layer or trx.ui.Layer.UNDER
   if type(region) == "table" and region.get ~= nil then
     attach(region:get(), widget, layer)
@@ -159,7 +167,7 @@ end
 ---signal listeners.
 ---@param widget trx.ui.Widget The widget to remove.
 ---@return boolean # Whether the widget was in a region.
-function ui.regions.remove(widget)
+function regions.remove(widget)
   return remove(widget)
 end
 
@@ -170,7 +178,7 @@ end
 ---off screen. Each region has at most one fallback.
 ---@param region trx.ui.Region The target region.
 ---@param widget trx.ui.Widget The fallback widget.
-function ui.regions.fallback(region, widget)
+function regions.fallback(region, widget)
   fallbacks[region] = widget
   if raw.is_level_script() then
     trx.events.on_level_unload(function()
@@ -184,9 +192,12 @@ end
 
 -- Reserves room for one layer's root in a region. The fallback belongs to the
 -- region rather than to a layer, so only the under layer offers it.
+---@param layer trx.ui.Layer
+---@param region trx.ui.Region
+---@param fallback trx.ui.Widget?
 local function reserve_root(layer, region, fallback)
   local root = roots[layer][region]
-  local w, h = 0, 0
+  local w, h = 0.0, 0.0
 
   if root ~= nil then
     root._slot = nil

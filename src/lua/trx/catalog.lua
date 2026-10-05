@@ -1,7 +1,7 @@
 local raw = trxc.catalog
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field catalog trx.catalog
 
 ---The names TRX knows things by.

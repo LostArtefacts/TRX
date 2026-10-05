@@ -103,7 +103,11 @@ local function kill_all()
 end
 
 local function kill_nearest()
-  local lara_pos = trx.lara.item.pos
+  local lara = trx.lara.item
+  if lara == nil then
+    return trx.console.Result.UNAVAILABLE
+  end
+  local lara_pos = lara.pos
 
   -- One scan: kill everything within a sector, and remember the nearest within
   -- five in case nothing was that close.

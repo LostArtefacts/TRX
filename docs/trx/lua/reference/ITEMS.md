@@ -635,12 +635,12 @@ end
     - <a id="items.ItemQuery.alive" name="items.ItemQuery.alive"></a>[lua]`itemquery:alive()`  
       The item still has hit points.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.items.ItemQuery](#items.ItemQuery). The narrowed query.
 
     - <a id="items.ItemQuery.finished" name="items.ItemQuery.finished"></a>[lua]`itemquery:finished()`  
       The item has run its course.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.items.ItemQuery](#items.ItemQuery). The narrowed query.
 
     - <a id="items.ItemQuery.in_box" name="items.ItemQuery.in_box"></a>[lua]`itemquery:in_box(min, max)`  
       The item stands inside a world-space box. The corners may come in any order.
@@ -654,7 +654,7 @@ end
       - <a id="items.ItemQuery.in_box.min" name="items.ItemQuery.in_box.min"></a>**`min`** ([trx.math.Vec3](MATH.md#math.Vec3)). One corner of the box.
       - <a id="items.ItemQuery.in_box.max" name="items.ItemQuery.in_box.max"></a>**`max`** ([trx.math.Vec3](MATH.md#math.Vec3)). The opposite corner.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.items.ItemQuery](#items.ItemQuery). The narrowed query.
 
       Example:
       ```lua
@@ -667,7 +667,7 @@ end
     - <a id="items.ItemQuery.in_play" name="items.ItemQuery.in_play"></a>[lua]`itemquery:in_play()`  
       The item is part of the game rather than set aside.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.items.ItemQuery](#items.ItemQuery). The narrowed query.
 
     - <a id="items.ItemQuery.in_room" name="items.ItemQuery.in_room"></a>[lua]`itemquery:in_room(room_num)`  
       The item is in the given room.
@@ -675,7 +675,7 @@ end
       Parameters:
       - <a id="items.ItemQuery.in_room.room_num" name="items.ItemQuery.in_room.room_num"></a>**`room_num`** ([trx.rooms.Num](ROOMS.md#rooms.Num)).
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.items.ItemQuery](#items.ItemQuery). The narrowed query.
 
     - <a id="items.ItemQuery.in_sphere" name="items.ItemQuery.in_sphere"></a>[lua]`itemquery:in_sphere(centre, radius)`  
       The item stands within a radius of a point. As with
@@ -685,7 +685,7 @@ end
       - <a id="items.ItemQuery.in_sphere.centre" name="items.ItemQuery.in_sphere.centre"></a>**`centre`** ([trx.math.Vec3](MATH.md#math.Vec3)). Middle of the sphere.
       - <a id="items.ItemQuery.in_sphere.radius" name="items.ItemQuery.in_sphere.radius"></a>**`radius`** ([trx.math.Distance](MATH.md#math.Distance)). How far out it reaches.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.items.ItemQuery](#items.ItemQuery). The narrowed query.
 
     - <a id="items.ItemQuery.of_object" name="items.ItemQuery.of_object"></a>[lua]`itemquery:of_object(key)`  
       The item is of the given object, named the way a player would name it or by
@@ -694,7 +694,7 @@ end
       Parameters:
       - <a id="items.ItemQuery.of_object.key" name="items.ItemQuery.of_object.key"></a>**`key`** (any). Object id, or a name [`trx.objects.query`](OBJECTS.md#objects.query) resolves.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.items.ItemQuery](#items.ItemQuery). The narrowed query.
 
       Example:
       ```lua
@@ -704,22 +704,22 @@ end
     - <a id="items.ItemQuery.present" name="items.ItemQuery.present"></a>[lua]`itemquery:present()`  
       The item is in the world, whether or not anything is simulating it.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.items.ItemQuery](#items.ItemQuery). The narrowed query.
 
     - <a id="items.ItemQuery.simulated" name="items.ItemQuery.simulated"></a>[lua]`itemquery:simulated()`  
       The item is being simulated: its control routine runs every frame.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.items.ItemQuery](#items.ItemQuery). The narrowed query.
 
     - <a id="items.ItemQuery.targetable" name="items.ItemQuery.targetable"></a>[lua]`itemquery:targetable()`  
       Lara's guns can lock onto the item.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.items.ItemQuery](#items.ItemQuery). The narrowed query.
 
     - <a id="items.ItemQuery.visible" name="items.ItemQuery.visible"></a>[lua]`itemquery:visible()`  
       The item is drawn.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.items.ItemQuery](#items.ItemQuery). The narrowed query.
 
 ### Functions
 

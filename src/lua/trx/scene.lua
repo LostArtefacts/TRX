@@ -3,7 +3,7 @@ local h = require("trx.internal.helpers")
 
 require("trx.math")
 
----@class trx
+---@class (partial) trx
 ---@field scene trx.scene
 
 ---Outlines a script draws into the world the camera is looking at, over the
@@ -33,10 +33,10 @@ local M = h.module("scene")
 ---```
 ---@param min trx.math.Vec3 One corner of the box.
 ---@param max trx.math.Vec3 The opposite corner of the box.
----@param color trx.math.Color The color of the outline.
+---@param color trx.math.Color|string The color of the outline, or the hex text one is written as.
 ---@param alpha? integer How solid the outline is, counted 0 to 255.
 ---@trx.default alpha 255
----@type fun(min: trx.math.Vec3, max: trx.math.Vec3, color: trx.math.Color, alpha?: integer)
+---@type fun(min: trx.math.Vec3, max: trx.math.Vec3, color: trx.math.Color|string, alpha?: integer)
 M.box = raw.box
 
 ---Draws the outline of a sphere.
@@ -48,8 +48,8 @@ M.box = raw.box
 ---```
 ---@param centre trx.math.Vec3 Middle of the sphere.
 ---@param radius trx.math.Distance How far out it reaches.
----@param color trx.math.Color The color of the outline.
+---@param color trx.math.Color|string The color of the outline, or the hex text one is written as.
 ---@param alpha? integer How solid the outline is, counted 0 to 255.
 ---@trx.default alpha 255
----@type fun(centre: trx.math.Vec3, radius: trx.math.Distance, color: trx.math.Color, alpha?: integer)
+---@type fun(centre: trx.math.Vec3, radius: trx.math.Distance, color: trx.math.Color|string, alpha?: integer)
 M.sphere = raw.sphere

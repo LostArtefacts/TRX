@@ -1,7 +1,7 @@
 local raw = trxc.store
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field store trx.store
 
 ---Module for what a script remembers across a save.

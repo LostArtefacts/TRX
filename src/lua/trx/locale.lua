@@ -3,7 +3,7 @@ local h = require("trx.internal.helpers")
 
 require("trx.log")
 
----@class trx
+---@class (partial) trx
 ---@field locale trx.locale
 
 ---The text the player reads, in the player's own language.

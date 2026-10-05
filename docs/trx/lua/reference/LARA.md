@@ -25,7 +25,7 @@ other and they live on it, as [`trx.lara.item`](#lara.item).
 - <a id="lara.target" name="lara.target"></a>**`trx.lara.target`** ([trx.items.Item](ITEMS.md#items.Item)). The item Lara's guns are locked onto, or `nil` if she has none. *(read-only)*
 - <a id="lara.vehicle" name="lara.vehicle"></a>**`trx.lara.vehicle`** ([trx.items.Item](ITEMS.md#items.Item)). The vehicle Lara is riding, or `nil` when she is on her own feet. Its speed and position are the ones that move her while she rides it. *(read-only)*
 - <a id="lara.is_controllable" name="lara.is_controllable"></a>**`trx.lara.is_controllable`** (boolean). Whether Lara answers to the player. False while she is dead, while the inventory or a dialog holds the game, and while a cutscene or flyby is active. *(read-only)*
-- <a id="lara.outfit" name="lara.outfit"></a>**`trx.lara.outfit`** (string). The outfit Lara is wearing, by name, as defined in `cfg/outfits.json5`.
+- <a id="lara.outfit" name="lara.outfit"></a>**`trx.lara.outfit`** (string). The outfit Lara is wearing, by name, as defined in `cfg/outfits.json5`, or `nil` where she wears none of those.
 - <a id="lara.holsters_visible" name="lara.holsters_visible"></a>**`trx.lara.holsters_visible`** (boolean). Whether Lara's holsters are drawn on her hips.
 - <a id="lara.speech_face" name="lara.speech_face"></a>**`trx.lara.speech_face`** (number). Which of her outfit's speech faces Lara wears while she talks, counted from 0, or `nil` for her own face. An outfit with no speech faces keeps her own.
   The face is remembered, so putting her in another outfit mid-sentence

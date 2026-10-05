@@ -6,18 +6,19 @@ local AMULET_STORE_FRAME = 486
 local SETH_IDLE_BITS = 0x5
 local SETH_LIVE_BITS = 0x3
 
+---@type trx.items.Item?
 local seth_item = nil
 
 local function initialise_seth(is_save)
   seth_item =
     trx.items.query:of_object(trx.catalog.objects.seth_sarcophagus):first()
-  if seth_item:is_valid() and not is_save then
+  if seth_item ~= nil and seth_item:is_valid() and not is_save then
     seth_item.mesh_bits = SETH_IDLE_BITS
   end
 end
 
 local function pull_amulet()
-  if seth_item:is_valid() then
+  if seth_item ~= nil and seth_item:is_valid() then
     seth_item.mesh_bits = SETH_LIVE_BITS
   end
 end

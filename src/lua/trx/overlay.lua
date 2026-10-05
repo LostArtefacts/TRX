@@ -3,7 +3,7 @@ require("trx.signal")
 local raw = trxc.overlay
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field overlay trx.overlay
 
 ---What the engine draws over the game and no script owns: the pickups that

@@ -22,6 +22,9 @@ trx.console.register({
     end
 
     local lara = trx.lara.item
+    if lara == nil then
+      return trx.console.Result.UNAVAILABLE
+    end
     if args.hp == nil then
       return trx.console.Result.OK,
         trx.locale.format("console/cmd/hp/get", lara.hit_points)

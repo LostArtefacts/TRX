@@ -5,7 +5,7 @@ local h = require("trx.internal.helpers")
 require("trx.locale")
 require("trx.math")
 
----@class trx
+---@class (partial) trx
 ---@field config trx.config
 
 ---Module for reading, changing and declaring engine settings.
@@ -157,7 +157,7 @@ function M.accepted_values(key)
   end
   if desc.kind == "enum" or desc.kind == "dynamic_enum" then
     local values = {}
-    for _, value in ipairs(desc.values) do
+    for _, value in ipairs(desc.values or {}) do
       values[#values + 1] = display(value)
     end
     return table.concat(values, ", ")

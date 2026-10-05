@@ -1,6 +1,6 @@
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field query trx.query
 
 ---A composable filter over a domain of things - the objects a level is built
@@ -36,7 +36,7 @@ local function derive(self, pred, name)
   return setmetatable(
     { _domain = self._domain, _pred = pred, _name = name },
     getmetatable(self)
-  )
+  ) --[[@as trx.query.Query]]
 end
 
 local function same_domain(a, b)
@@ -129,6 +129,9 @@ end
 ---A filter over a domain, read with one of the terminals below once it is
 ---narrow enough.
 ---@class (exact) trx.query.Query
+---@field private _domain trx.query.Domain
+---@field private _pred fun(id: integer, handle: any): boolean
+---@field private _name string?
 ---@operator band(trx.query.Query): trx.query.Query
 ---@operator bor(trx.query.Query): trx.query.Query
 ---@operator bnot: trx.query.Query
@@ -164,10 +167,10 @@ local Query = h.class("query.Query", {
 ---  return item.hit_points < 10
 ---end)
 ---```
----@param predicate fun(id: integer, handle: any) The test each candidate is put through.
+---@param predicate fun(id: integer, handle: any): boolean The test each candidate is put through.
 ---@trx.arg predicate.id The candidate's id.
 ---@trx.arg predicate.handle The candidate itself, a `trx.objects.Object` or a `trx.items.Item`.
----@return trx.query.Query # The narrowed query.
+---@return self # The narrowed query.
 function Query:where(predicate)
   return derive(self, function(id, h)
     return self._pred(id, h) and predicate(id, h)
@@ -212,6 +215,9 @@ end
 ---layer to everything a `trx.query.Query` has. A domain without names offers
 ---none of it.
 ---@class (exact) trx.query.NamedQuery: trx.query.Query
+---@operator band(trx.query.NamedQuery): trx.query.NamedQuery
+---@operator bor(trx.query.NamedQuery): trx.query.NamedQuery
+---@operator bnot: trx.query.NamedQuery
 local NamedQuery = h.class("query.NamedQuery", { extends = "query.Query" })
 
 ---Ranks rather than filters: matches the way a player types a name,
@@ -224,7 +230,7 @@ local NamedQuery = h.class("query.NamedQuery", { extends = "query.Query" })
 ---trx.objects.query:spawnable():by_name("wolf"):ids()
 ---```
 ---@param name string What to look for.
----@return trx.query.Query # The narrowed query.
+---@return self # The narrowed query.
 function NamedQuery:by_name(name)
   return derive(self, self._pred, name)
 end
@@ -290,7 +296,8 @@ end
 
 ---Builds a narrowing method for a domain's query type out of a predicate
 ---factory. `trx.items` and `trx.objects` declare their own filters with it.
----@param make function Called with the method's own arguments, returning a `predicate(id, handle)`.
+---@param make fun(...: any): fun(id: integer, handle: any): boolean Called with the method's own arguments, returning a `predicate(id, handle)`.
+---@trx.arg make.... The arguments the method was called with.
 ---@return function # The method to declare as an `impl`. <!--noref: impl-->
 function M.narrowing(make)
   return function(self, ...)
@@ -302,11 +309,14 @@ function M.narrowing(make)
 end
 
 ---@class (exact) trx.query.new.domain
----@field enumerate function Every id the domain holds.
----@field id_of function The id of a thing the domain hands out.
----@field searchable function Whether an id is one a name may reach.
----@field names_of? function The names an id answers to, for a domain that has them.
----@field default_names_of? function The names the engine was built with. The query tries these when `names_of` finds no match. <!--noref: names_of-->
+---@field enumerate fun(): table<integer, table> Every candidate, as `{ id, handle }` pairs.
+---@field id_of fun(id: integer, handle: any): integer The id `trx.query.Query:ids` returns for a candidate.
+---@field searchable? table[] The narrowings a name also matches, as `{ key, pred }` pairs.
+---@field names_of? fun(handle: any): table<integer, string> The names a candidate answers to, for a domain that has them.
+---@field default_names_of? fun(handle: any): table<integer, string> The names the engine was built with. The query tries these when `names_of` finds no match. <!--noref: names_of-->
+
+---@class (partial) trx.query.Domain: trx.query.new.domain
+---@field searchable table[]
 
 ---Builds the identity query over a domain, as an instance of that domain's
 ---query type. `trx.objects` and `trx.items` call this to make the query a

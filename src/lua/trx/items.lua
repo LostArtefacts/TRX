@@ -6,7 +6,7 @@ require("trx.math")
 local Box = h.class_of("math.Box")
 require("trx.query")
 
----@class trx
+---@class (partial) trx
 ---@field items trx.items
 
 ---Module for controlling all moveables.
@@ -248,7 +248,7 @@ end
 ---@field room_num trx.rooms.Num The room containing this item. Set `trx.items.Item.pos` to move the item between rooms.
 ---@field hit_points integer Current hit points. Raising this above the maximum also raises the `max_hit_points` entry of `trx.items.Item.properties`. <!--noref: max_hit_points-->
 ---@field max_hit_points integer Maximum hit points. Set the `max_hit_points` entry of `trx.items.Item.properties` to change it. <!--noref: max_hit_points-->
----@field name string Unique item name, or `nil`. Assigning a name already in use raises an error.
+---@field name string? Unique item name, or `nil`. Assigning a name already in use raises an error.
 ---@field object_id trx.catalog.objects The item's object type.
 ---@field is_visible boolean Whether the item is drawn. It can be present in the world but not visible, like an ambush enemy waiting to appear.
 ---@field is_finished boolean Whether the item has finished its run - a creature that died, or a one-shot trigger that fired. It stays in the level but no longer acts.
@@ -360,7 +360,9 @@ local Item = h.handle("items.Item", "ITEM", {
 ---
 ---Objects with no control routine cannot be activated, and an item that is
 ---already active is left alone.
-function Item:activate() end
+function Item:activate()
+  return h.native()
+end
 
 ---Stops the item: its control routine no longer runs, and a creature loses its
 ---AI and stands down. The item stays where it is and keeps its hit points, so
@@ -368,7 +370,9 @@ function Item:activate() end
 ---that.
 ---
 ---A trigger can still bring it back, and so can `trx.items.Item:activate`.
-function Item:deactivate() end
+function Item:deactivate()
+  return h.native()
+end
 
 ---Fires a trigger at the item, exactly as a floor trigger in the level would:
 ---sets the code bits, and once they are all set, starts the item running.
@@ -390,7 +394,9 @@ function Item:deactivate() end
 ---trx.items[12]:trigger({ type = trx.items.TriggerType.ANTITRIGGER })
 ---```
 ---@param opts? trx.items.Item.trigger.opts What the trigger carries.
-function Item:trigger(opts) end
+function Item:trigger(opts)
+  return h.native()
+end
 
 local on_trigger = item_hook("on_trigger")
 
@@ -615,7 +621,9 @@ function Item:on_leave_world(callback)
 end
 
 ---Removes the item from the game. Any other handle to it becomes stale.
-function Item:destroy() end
+function Item:destroy()
+  return h.native()
+end
 
 ---Whether the handle still refers to a live item. Reading or writing a field
 ---on a stale handle raises an error rather than silently operating on an
@@ -630,7 +638,9 @@ function Item:destroy() end
 ---end)
 ---```
 ---@return boolean # False once the item it named is gone.
-function Item:is_valid() end
+function Item:is_valid()
+  return h.native()
+end
 
 ---Runs the object's creature death handling: the corpse stays, and `explode`
 ---<!--noref: explode--> bursts its meshes as a rocket or grenade would. For
@@ -644,7 +654,9 @@ function Item:is_valid() end
 ---})
 ---```
 ---@param opts? trx.items.Item.die.opts How the creature dies.
-function Item:die(opts) end
+function Item:die(opts)
+  return h.native()
+end
 
 ---Hurts the item the way a weapon does, and reports through
 ---`trx.events.on_hit`, and `trx.events.on_kill` where the blow takes the last
@@ -658,7 +670,9 @@ function Item:die(opts) end
 ---```
 ---@param damage integer Hit points to take.
 ---@param sender? trx.items.Item Item to credit the blow to. Pass `trx.lara.item` to include the kill in Lara's level statistics.
-function Item:take_damage(damage, sender) end
+function Item:take_damage(damage, sender)
+  return h.native()
+end
 
 ---Bursts the item's meshes into flying debris, the visual `trx.items.Item:die`
 ---produces with `trx.items.Item.die.opts.explode`, on its own. It does not
@@ -668,7 +682,9 @@ function Item:take_damage(damage, sender) end
 ---trx.items[12]:shatter({ gibs = { blast = true }, damage = 5 })
 ---```
 ---@param opts? trx.items.Item.shatter.opts How the meshes come apart.
-function Item:shatter(opts) end
+function Item:shatter(opts)
+  return h.native()
+end
 
 ---Where one of the item's joints has reached, for the frame it is on. The
 ---position follows the item as it moves and animates, so a script can hang
@@ -691,23 +707,31 @@ end
 ---Distance from this item to a world position.
 ---@param pos trx.math.Vec3 World position.
 ---@return trx.math.Distance # Measured between the two positions.
-function Item:distance_to(pos) end
+function Item:distance_to(pos)
+  return h.native()
+end
 
 ---Reads an object property, falling back to the object's default. Prefer
 ---`item.properties.<name>`.
 ---@param name string Which property, as the object declares it.
 ---@return any? # The value, of the type the property is declared with.
-function Item:get_property(name) end
+function Item:get_property(name)
+  return h.native()
+end
 
 ---Overrides an object property for this item. Prefer
 ---`item.properties.<name> = ...`.
 ---@param name string Which property, as the object declares it.
 ---@param value any What to write, of the type the property is declared with.
-function Item:set_property(name, value) end
+function Item:set_property(name, value)
+  return h.native()
+end
 
 ---Names of every property this item's object declares.
 ---@return string[]
-function Item:get_property_names() end
+function Item:get_property_names()
+  return h.native()
+end
 
 ---Retrieves an item by number or by name.
 ---
@@ -793,12 +817,15 @@ end
 ---on top of the ones every query has. Items answer to no names of their own,
 ---so `trx.items.ItemQuery:of_object` is how a name reaches them.
 ---@class (exact) trx.items.ItemQuery: trx.query.Query
+---@operator band(trx.items.ItemQuery): trx.items.ItemQuery
+---@operator bor(trx.items.ItemQuery): trx.items.ItemQuery
+---@operator bnot: trx.items.ItemQuery
 local ItemQuery = h.class("items.ItemQuery", { extends = "query.Query" })
 
 local simulated = axis_narrowing("is_simulated")
 
 ---The item is being simulated: its control routine runs every frame.
----@return trx.query.Query # The narrowed query.
+---@return trx.items.ItemQuery # The narrowed query.
 function ItemQuery:simulated()
   return simulated(self)
 end
@@ -806,7 +833,7 @@ end
 local present = axis_narrowing("is_present")
 
 ---The item is in the world, whether or not anything is simulating it.
----@return trx.query.Query # The narrowed query.
+---@return trx.items.ItemQuery # The narrowed query.
 function ItemQuery:present()
   return present(self)
 end
@@ -814,7 +841,7 @@ end
 local visible = axis_narrowing("is_visible")
 
 ---The item is drawn.
----@return trx.query.Query # The narrowed query.
+---@return trx.items.ItemQuery # The narrowed query.
 function ItemQuery:visible()
   return visible(self)
 end
@@ -822,7 +849,7 @@ end
 local finished = axis_narrowing("is_finished")
 
 ---The item has run its course.
----@return trx.query.Query # The narrowed query.
+---@return trx.items.ItemQuery # The narrowed query.
 function ItemQuery:finished()
   return finished(self)
 end
@@ -830,7 +857,7 @@ end
 local in_play = axis_narrowing("is_in_play")
 
 ---The item is part of the game rather than set aside.
----@return trx.query.Query # The narrowed query.
+---@return trx.items.ItemQuery # The narrowed query.
 function ItemQuery:in_play()
   return in_play(self)
 end
@@ -838,7 +865,7 @@ end
 local alive = axis_narrowing("is_alive")
 
 ---The item still has hit points.
----@return trx.query.Query # The narrowed query.
+---@return trx.items.ItemQuery # The narrowed query.
 function ItemQuery:alive()
   return alive(self)
 end
@@ -846,7 +873,7 @@ end
 local targetable = axis_narrowing("is_targetable")
 
 ---Lara's guns can lock onto the item.
----@return trx.query.Query # The narrowed query.
+---@return trx.items.ItemQuery # The narrowed query.
 function ItemQuery:targetable()
   return targetable(self)
 end
@@ -865,7 +892,7 @@ end)
 ---trx.items.query:of_object("wolf"):simulated():matches()
 ---```
 ---@param key any Object id, or a name `trx.objects.query` resolves.
----@return trx.query.Query # The narrowed query.
+---@return trx.items.ItemQuery # The narrowed query.
 function ItemQuery:of_object(key)
   return of_object(self, key)
 end
@@ -878,7 +905,7 @@ end)
 
 ---The item is in the given room.
 ---@param room_num trx.rooms.Num
----@return trx.query.Query # The narrowed query.
+---@return trx.items.ItemQuery # The narrowed query.
 function ItemQuery:in_room(room_num)
   return in_room(self, room_num)
 end
@@ -902,7 +929,7 @@ end)
 ---```
 ---@param min trx.math.Vec3 One corner of the box.
 ---@param max trx.math.Vec3 The opposite corner.
----@return trx.query.Query # The narrowed query.
+---@return trx.items.ItemQuery # The narrowed query.
 function ItemQuery:in_box(min, max)
   return in_box(self, min, max)
 end
@@ -915,7 +942,7 @@ end)
 ---`trx.items.ItemQuery:in_box`, the item's position is the whole of the test.
 ---@param centre trx.math.Vec3 Middle of the sphere.
 ---@param radius trx.math.Distance How far out it reaches.
----@return trx.query.Query # The narrowed query.
+---@return trx.items.ItemQuery # The narrowed query.
 function ItemQuery:in_sphere(centre, radius)
   return in_sphere(self, centre, radius)
 end

@@ -174,7 +174,7 @@ end
       Parameters:
       - <a id="rooms.RoomQuery.at.pos" name="rooms.RoomQuery.at.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.rooms.RoomQuery](#rooms.RoomQuery). The narrowed query.
 
       Example:
       ```lua
@@ -184,20 +184,20 @@ end
     - <a id="rooms.RoomQuery.dry" name="rooms.RoomQuery.dry"></a>[lua]`roomquery:dry()`  
       The room holds neither water nor swamp water.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.rooms.RoomQuery](#rooms.RoomQuery). The narrowed query.
 
     - <a id="rooms.RoomQuery.flipped" name="rooms.RoomQuery.flipped"></a>[lua]`roomquery:flipped()`  
       The room is the half of a flip pair the level is not showing. Its geometry
       is still there to inspect, but nothing can be in it.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.rooms.RoomQuery](#rooms.RoomQuery). The narrowed query.
 
     - <a id="rooms.RoomQuery.reachable" name="rooms.RoomQuery.reachable"></a>[lua]`roomquery:reachable()`  
       The room is part of the level as it stands: an ordinary room, or the half of
       a flip pair the level is showing. This is what a script asking about the
       world wants, and what [`at`](#rooms.RoomQuery.at) already applies.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.rooms.RoomQuery](#rooms.RoomQuery). The narrowed query.
 
       Example:
       ```lua
@@ -207,12 +207,12 @@ end
     - <a id="rooms.RoomQuery.swamp" name="rooms.RoomQuery.swamp"></a>[lua]`roomquery:swamp()`  
       The room is filled with swamp water.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.rooms.RoomQuery](#rooms.RoomQuery). The narrowed query.
 
     - <a id="rooms.RoomQuery.underwater" name="rooms.RoomQuery.underwater"></a>[lua]`roomquery:underwater()`  
       The room is filled with water.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.rooms.RoomQuery](#rooms.RoomQuery). The narrowed query.
 
 ### Functions
 
