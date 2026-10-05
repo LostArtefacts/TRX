@@ -53,6 +53,7 @@ trx_lua_api_sources = files(
   'lua/trx/game.lua',
   'lua/trx/inject.lua',
   'lua/trx/input.lua',
+  'lua/trx/internal/helpers.lua',
   'lua/trx/inventory.lua',
   'lua/trx/inventory_ring.lua',
   'lua/trx/items.lua',
@@ -157,6 +158,7 @@ trx_lua_embed = custom_target(
   'trx_lua_embed',
   input: trx_lua_api_sources + trx_lua_script_sources,
   output: ['trx_embedded_lua.c'],
+  depend_files: files('../tools/shared/luaannot.py'),
   command: [
     python3,
     meson.project_source_root() + '/../tools/embed_trx_lua.py',

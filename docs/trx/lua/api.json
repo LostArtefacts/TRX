@@ -149,32 +149,6 @@
       }
     },
     {
-      "countable": true,
-      "description": "The soundtrack's streams: `[1]` is the main stream, `[2]` onwards the overlay slots. A slot that is not playing still answers, with a stale handle.",
-      "key": {
-        "type": "music.StreamNum"
-      },
-      "member": "streams",
-      "module": "music",
-      "value": {
-        "nullable": true,
-        "type": "music.Stream"
-      }
-    },
-    {
-      "countable": true,
-      "description": "The tracks the current level carries. A level does not carry every number, so indexing one it lacks is `nil` and iterating passes it by.",
-      "key": {
-        "type": "music.TrackNum"
-      },
-      "member": "tracks",
-      "module": "music",
-      "value": {
-        "nullable": true,
-        "type": "music.Track"
-      }
-    },
-    {
       "countable": false,
       "description": "Indexing the module reaches an object definition, so `trx.objects.wolf` is the wolf. Keyed by object id or catalog name, not by position.",
       "examples": [
@@ -3245,39 +3219,6 @@
         {
           "description": "A custom mod.",
           "name": "CUSTOM",
-          "value": 4
-        }
-      ]
-    },
-    {
-      "bulk": false,
-      "count": 5,
-      "description": "How a track is played. Pass one as `trx.music.play.opts.mode`.",
-      "path": "music.PlayMode",
-      "values": [
-        {
-          "description": "Plays the track once. When it finishes, any active looped track resumes from its start.",
-          "name": "ONCE",
-          "value": 0
-        },
-        {
-          "description": "Plays the track continuously. It becomes the ambient track.",
-          "name": "LOOP",
-          "value": 1
-        },
-        {
-          "description": "Marks the track for later playback rather than starting it now.",
-          "name": "DELAY",
-          "value": 2
-        },
-        {
-          "description": "Plays the track once, but does not retrigger it if it is already playing.",
-          "name": "NO_REPEAT",
-          "value": 3
-        },
-        {
-          "description": "Plays the track on top of the current one.",
-          "name": "OVERLAY",
           "value": 4
         }
       ]
@@ -8582,51 +8523,6 @@
       ]
     },
     {
-      "description": "Plays a track by catalog id, mapping it to the level's own track. A game that does not carry the track plays nothing.",
-      "examples": [
-        "trx.music.play(trx.catalog.music.SECRET)\ntrx.music.play(trx.catalog.music.SECRET, { mode = trx.music.PlayMode.LOOP })"
-      ],
-      "params": [
-        {
-          "description": "Track to play. To reach a track by the level's own slot, play it through a handle: `trx.music.tracks[slot]:play()`.",
-          "name": "id",
-          "type": "catalog.music"
-        },
-        {
-          "description": "How to play it.",
-          "fields": [
-            {
-              "description": "Plays once by default.",
-              "name": "mode",
-              "optional": true,
-              "type": "music.PlayMode"
-            }
-          ],
-          "name": "opts",
-          "optional": true,
-          "type": "table"
-        }
-      ],
-      "path": "music.play",
-      "returns": {
-        "description": "The stream it started, or `nil` if none did.",
-        "nullable": true,
-        "type": "music.Stream"
-      }
-    },
-    {
-      "description": "Pauses the music.",
-      "path": "music.pause"
-    },
-    {
-      "description": "Resumes paused music.",
-      "path": "music.unpause"
-    },
-    {
-      "description": "Stops all music.",
-      "path": "music.stop"
-    },
-    {
       "description": "Retrieves an object definition by id or by name.",
       "examples": [
         "local wolf = trx.objects.wolf\nwolf.properties.max_hit_points = 30"
@@ -11582,11 +11478,6 @@
       "order": 30
     },
     {
-      "description": "Module for playing and controlling the soundtrack.",
-      "name": "music",
-      "order": 23
-    },
-    {
       "description": "Module for the object definitions a level is built from.\n\nAn object is the pattern every item of that type is cut from: a wolf's radius, not this wolf's. Per-item state lives on the item - see `trx.items`.",
       "name": "objects",
       "order": 8,
@@ -11886,16 +11777,6 @@
       "base": 0,
       "description": "Item number, matching the numbers level editors show.",
       "path": "items.Num"
-    },
-    {
-      "base": 0,
-      "description": "Track number, in the numbering the loaded level carries. Not a `trx.catalog.music` name, which is the soundtrack's own.",
-      "path": "music.TrackNum"
-    },
-    {
-      "base": 1,
-      "description": "Which of the soundtrack's slots: 1 is the main stream, 2 onwards the overlays.",
-      "path": "music.StreamNum"
     },
     {
       "base": 0,
@@ -12398,18 +12279,6 @@
       "description": "The loaded mod.",
       "path": "mod.current",
       "type": "mod.Mod",
-      "writable": false
-    },
-    {
-      "description": "The track playing now, or `nil` when nothing plays.",
-      "path": "music.current_track",
-      "type": "music.Track",
-      "writable": false
-    },
-    {
-      "description": "The ambient track that resumes once the current one-shot finishes, or `nil` when none is set.",
-      "path": "music.looped_track",
-      "type": "music.Track",
       "writable": false
     },
     {
@@ -15602,128 +15471,6 @@
       "methods": [],
       "operators": [],
       "path": "mod.Mod"
-    },
-    {
-      "description": "One of the soundtrack's playing streams: the main stream, or an overlay. Reach them through `trx.music.streams`. A handle to a slot that is not playing goes stale, so reading a field or calling a method on it raises; check `trx.music.Stream:is_valid` first.",
-      "extensions": [],
-      "fields": [
-        {
-          "description": "How the track is playing.",
-          "name": "mode",
-          "type": "music.PlayMode",
-          "writable": false
-        },
-        {
-          "description": "How far into the track the stream is.",
-          "name": "timestamp",
-          "type": "game.Seconds",
-          "writable": false
-        },
-        {
-          "description": "The track this stream is playing.",
-          "name": "track_num",
-          "type": "music.TrackNum",
-          "writable": false
-        }
-      ],
-      "handle": true,
-      "methods": [
-        {
-          "description": "Whether the slot is still playing. A stream that has finished, or been stopped, leaves its handle stale.",
-          "name": "is_valid",
-          "returns": {
-            "description": "False once the slot has gone quiet.",
-            "type": "boolean"
-          }
-        },
-        {
-          "description": "Pauses this stream.",
-          "name": "pause"
-        },
-        {
-          "description": "Seeks this stream to a timestamp.",
-          "name": "seek",
-          "params": [
-            {
-              "description": "Where to seek to.",
-              "name": "timestamp",
-              "type": "game.Seconds"
-            }
-          ],
-          "returns": {
-            "description": "Whether the seek took.",
-            "type": "boolean"
-          }
-        },
-        {
-          "description": "Stops this stream. Stopping the main stream lets a deferred ambient loop resume; an overlay just ends.",
-          "name": "stop"
-        },
-        {
-          "description": "Resumes this stream.",
-          "name": "unpause"
-        }
-      ],
-      "operators": [],
-      "path": "music.Stream"
-    },
-    {
-      "description": "A track the current level carries. Reach them through `trx.music.tracks`, or as `trx.music.current_track`. A handle to a track the loaded level does not carry goes stale, so `trx.music.Track:is_valid` answers whether it is still there.",
-      "extensions": [],
-      "fields": [
-        {
-          "name": "num",
-          "type": "music.TrackNum",
-          "writable": false
-        }
-      ],
-      "handle": true,
-      "methods": [
-        {
-          "description": "Whether the loaded level still carries this track.",
-          "name": "is_valid",
-          "returns": {
-            "description": "False once a level change has replaced the tracks.",
-            "type": "boolean"
-          }
-        },
-        {
-          "description": "Resolves the track's file path.",
-          "name": "path",
-          "returns": {
-            "description": "`nil` when there is no file, e.g. a CD-audio soundtrack.",
-            "nullable": true,
-            "type": "string"
-          }
-        },
-        {
-          "description": "Plays this track.",
-          "name": "play",
-          "params": [
-            {
-              "description": "How to play it.",
-              "fields": [
-                {
-                  "description": "Plays once by default.",
-                  "name": "mode",
-                  "optional": true,
-                  "type": "music.PlayMode"
-                }
-              ],
-              "name": "opts",
-              "optional": true,
-              "type": "table"
-            }
-          ],
-          "returns": {
-            "description": "The stream it started, or `nil` if none did.",
-            "nullable": true,
-            "type": "music.Stream"
-          }
-        }
-      ],
-      "operators": [],
-      "path": "music.Track"
     },
     {
       "description": "An object definition.",

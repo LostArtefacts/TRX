@@ -17,14 +17,28 @@ MODULE_RE = re.compile(
 )
 
 
+# ---@trx.module N above `local M = h.module("name")`, for a module built with
+# helpers.lua.
+ANNOTATED_RE = re.compile(
+    r"""---@trx\.module\s+(\d+)[^\n]*\n(?:---[^\n]*\n)*"""
+    r"""local\s+\w+\s*=\s*h\.module\("([^"]+)"\)"""
+)
+
+
+def modules_of(text):
+    for match in MODULE_RE.finditer(text):
+        yield match.group(1), int(match.group(2)), match.start()
+    for match in ANNOTATED_RE.finditer(text):
+        yield match.group(2), int(match.group(1)), match.start()
+
+
 def check():
     api_dir = SRC_DIR / "lua/trx"
     seen: dict[int, tuple[Path, str]] = {}
     for path in sorted(api_dir.glob("*.lua")):
         text = path.read_text(encoding="utf-8")
-        for match in MODULE_RE.finditer(text):
-            name, order = match.group(1), int(match.group(2))
-            line = text.count("\n", 0, match.start()) + 1
+        for name, order, start in modules_of(text):
+            line = text.count("\n", 0, start) + 1
             if order in seen:
                 other_path, other_name = seen[order]
                 yield LintWarning(

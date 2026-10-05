@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """Regenerate the Lua API reference from the engine itself.
 
-The public API is declared in one place - the trx.api registry in
-src/lua/trx/*.lua - and that declaration is what builds the metatables. A
-member the engine can reach but no script declares is not reachable from Lua at
-all.
+The public API is declared next to its implementation in src/lua/trx/*.lua:
+as annotations, which this tool reads through tools/shared/luaannot.py, or
+through the trx.api registry, which builds the metatables.
 
-`TRX --dump-lua-api` boots Lua and prints that registry as JSON. It is committed
+`TRX --dump-lua-api` boots Lua and prints the registry as JSON. It is committed
 to docs/trx/lua/api.json so this tool - and the pre-commit hook - need no
 compiled binary; `just lua-api-check` re-dumps from a real build and fails on
 drift, so the committed copy cannot go stale. Committing it also means an API
@@ -30,6 +29,27 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 API_JSON = ROOT / "docs/trx/lua/api.json"
 DOCS_DIR = ROOT / "docs/trx/lua/reference"
+API_SOURCES = ROOT / "src/lua/trx"
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+from shared.luaannot import (  # noqa: E402
+    CATEGORIES,
+    annotated_modules,
+    catalog_names,
+    finish,
+    parse_files,
+)
+
+
+def merged(api: dict) -> dict:
+    """The registry's dump, with the modules the annotations describe."""
+    found = parse_files(annotated_modules(API_SOURCES))
+    catalog_names(found, ROOT)
+    finish(found)
+    for key in CATEGORIES:
+        api.setdefault(key, []).extend(found[key])
+    return api
 
 INDENT = "    "
 
@@ -423,6 +443,9 @@ def render_default(spec: dict) -> str:
     are listed.
     """
     default = spec.get("default")
+    if isinstance(default, dict) and "constant" in default:
+        constant = default["constant"]
+        return link(constant.rpartition(".")[0], f"`trx.{constant}`")
     named = spec.get("type", "")
     if isinstance(named, list):
         named = ""
@@ -630,7 +653,8 @@ def render_enum(spec: dict) -> list[str]:
         out.append("")
     for value in spec.get("values") or []:
         at(f"{spec['path']}.{value['name']}")
-        out.append(f"{INDENT}- `trx.{spec['path']}.{value['name']}` = `{value['value']}`  ")
+        number = f" = `{value['value']}`" if "value" in value else ""
+        out.append(f"{INDENT}- `trx.{spec['path']}.{value['name']}`{number}  ")
         out.extend(render_prose(value.get("description") or "", f"{INDENT}    "))
     out.append("")
     return out
@@ -892,7 +916,9 @@ def read(api: dict) -> None:
     ENUM_PATHS.update(enum["path"] for enum in api.get("enums", []))
     for enum in api.get("enums", []):
         ENUM_CONSTANTS[enum["path"]] = {
-            value["value"]: value["name"] for value in enum.get("values", [])
+            value["value"]: value["name"]
+            for value in enum.get("values", [])
+            if "value" in value
         }
     for number in api.get("numbers", []):
         NUMBERS[number["path"]] = number
@@ -1344,7 +1370,7 @@ def main() -> int:
             f"error: {API_JSON} is missing. Build TRX, then run:\n"
             f"  just lua-api-dump"
         )
-    api = json.loads(API_JSON.read_text())
+    api = merged(json.loads(API_JSON.read_text()))
 
     mark_deprecations(api)
     read(api)

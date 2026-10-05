@@ -159,6 +159,15 @@ static void M_PathFromName(
     if (len > 4) {
         out[len - 4] = '.';
     }
+
+    // A module the build generates, such as trx.internal.signatures, is not in
+    // the tree.
+    FILE *const fp = fopen(out, "rb");
+    if (fp != nullptr) {
+        fclose(fp);
+        return;
+    }
+    snprintf(out, size, LUA_GEN_ROOT "/%s.lua", name);
 }
 
 static void M_Discover(

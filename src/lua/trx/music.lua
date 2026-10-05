@@ -1,234 +1,163 @@
 local raw = trxc.music
-local api = trx.api
+local h = require("trx.internal.helpers")
 
-api.module("music", {
-  order = 23,
-  description = "Module for playing and controlling the soundtrack.",
-})
+---@class trx
+---@field music trx.music
 
-api.number("music.TrackNum", {
-  base = 0,
-  description = "Track number, in the numbering the loaded level carries. Not a "
-    .. "`trx.catalog.music` name, which is the soundtrack's own.",
-})
+---Module for playing and controlling the soundtrack.
+---@trx.module 23
+---@class (exact) trx.music
+---@trx.readonly current_track, looped_track
+---@field current_track trx.music.Track? The track playing now, or `nil` when nothing plays.
+---@field looped_track trx.music.Track? The ambient track that resumes once the current one-shot finishes, or `nil` when none is set.
+local M = h.module("music")
 
-local PlayMode = api.enum("music.PlayMode", {
-  backing = "MUSIC_PLAY_MODE",
-  description = "How a track is played. Pass one as `trx.music.play.opts.mode`.",
-  values = {
-    ONCE = "Plays the track once. When it finishes, any active looped track resumes from its start.",
-    LOOP = "Plays the track continuously. It becomes the ambient track.",
-    NO_REPEAT = "Plays the track once, but does not retrigger it if it is already playing.",
-    DELAY = "Marks the track for later playback rather than starting it now.",
-    OVERLAY = "Plays the track on top of the current one.",
-  },
-})
+---Track number, in the numbering the loaded level carries. Not a
+---`trx.catalog.music` name, which is the soundtrack's own.
+---@trx.base 0
+---@alias trx.music.TrackNum integer
 
-local PLAY_OPTS = {
-  name = "opts",
-  type = "table",
-  optional = true,
-  description = "How to play it.",
-  fields = {
-    {
-      name = "mode",
-      type = "music.PlayMode",
-      optional = true,
-      description = "Plays once by default.",
-    },
-  },
+---Which of the soundtrack's slots: 1 is the main stream, 2 onwards the overlays.
+---@trx.base 1
+---@alias trx.music.StreamNum integer
+
+---How a track is played. Pass one as `trx.music.play.opts.mode`.
+---@enum trx.music.PlayMode
+local PlayMode = {
+  ONCE = "Plays the track once. When it finishes, any active looped track resumes from its start.",
+  LOOP = "Plays the track continuously. It becomes the ambient track.",
+  NO_REPEAT = "Plays the track once, but does not retrigger it if it is already playing.",
+  DELAY = "Marks the track for later playback rather than starting it now.",
+  OVERLAY = "Plays the track on top of the current one.",
 }
+M.PlayMode = h.enum("music.PlayMode", "MUSIC_PLAY_MODE", PlayMode)
 
-api.number("music.StreamNum", {
-  base = 1,
-  description = "Which of the soundtrack's slots: 1 is the main stream, 2 onwards the overlays.",
+---@class (exact) trx.music.play.opts
+---@field mode? trx.music.PlayMode Plays once by default.
+
+---One of the soundtrack's playing streams: the main stream, or an overlay.
+---Reach them through `trx.music.streams`. A handle to a slot that is not
+---playing goes stale, so reading a field or calling a method on it raises;
+---check `trx.music.Stream:is_valid` first.
+---@class (exact) trx.music.Stream
+---@trx.readonly mode, timestamp, track_num
+---@field mode trx.music.PlayMode How the track is playing.
+---@field timestamp trx.game.Seconds How far into the track the stream is.
+---@field track_num trx.music.TrackNum The track this stream is playing.
+local Stream = h.handle("music.Stream", "MUSIC_STREAM_VIEW", {
+  fields = { track_num = "track_id", mode = "mode", timestamp = "timestamp" },
 })
 
-api.type("music.Stream", {
-  backing = "MUSIC_STREAM_VIEW",
-  description = "One of the soundtrack's playing streams: the main stream, or an overlay. "
-    .. "Reach them through `trx.music.streams`. A handle to a slot that is not playing goes "
-    .. "stale, so reading a field or calling a method on it raises; check `trx.music.Stream:is_valid` first.",
+---Whether the slot is still playing. A stream that has finished, or been
+---stopped, leaves its handle stale.
+---@return boolean # False once the slot has gone quiet.
+function Stream:is_valid() end
 
-  fields = {
-    track_num = {
-      from = "track_id",
-      type = "music.TrackNum",
-      writable = false,
-      description = "The track this stream is playing.",
-    },
-    mode = {
-      from = "mode",
-      type = "music.PlayMode",
-      writable = false,
-      description = "How the track is playing.",
-    },
-    timestamp = {
-      from = "timestamp",
-      type = "game.Seconds",
-      writable = false,
-      description = "How far into the track the stream is.",
-    },
-  },
+---Pauses this stream.
+function Stream:pause() end
 
-  methods = {
-    is_valid = {
-      returns = {
-        type = "boolean",
-        description = "False once the slot has gone quiet.",
-      },
-      description = "Whether the slot is still playing. A stream that has finished, or been "
-        .. "stopped, leaves its handle stale.",
-    },
-    pause = {
-      description = "Pauses this stream.",
-    },
-    unpause = {
-      description = "Resumes this stream.",
-    },
-    seek = {
-      params = {
-        {
-          name = "timestamp",
-          type = "game.Seconds",
-          description = "Where to seek to.",
-        },
-      },
-      returns = { type = "boolean", description = "Whether the seek took." },
-      description = "Seeks this stream to a timestamp.",
-    },
-    stop = {
-      description = "Stops this stream. Stopping the main stream lets a deferred ambient loop "
-        .. "resume; an overlay just ends.",
-    },
-  },
+---Resumes this stream.
+function Stream:unpause() end
+
+---Seeks this stream to a timestamp.
+---@param timestamp trx.game.Seconds Where to seek to.
+---@return boolean # Whether the seek took.
+function Stream:seek(timestamp) end
+
+---Stops this stream. Stopping the main stream lets a deferred ambient loop
+---resume; an overlay just ends.
+function Stream:stop() end
+
+---A track the current level carries. Reach them through `trx.music.tracks`,
+---or as `trx.music.current_track`. A handle to a track the loaded level does
+---not carry goes stale, so `trx.music.Track:is_valid` answers whether it is
+---still there.
+---@class (exact) trx.music.Track
+---@trx.readonly num
+---@field num trx.music.TrackNum
+local Track = h.handle("music.Track", "MUSIC_TRACK_VIEW", {
+  fields = { num = "id" },
 })
 
-api.type("music.Track", {
-  backing = "MUSIC_TRACK_VIEW",
-  description = "A track the current level carries. Reach them through `trx.music.tracks`, or "
-    .. "as `trx.music.current_track`. A handle to a track the loaded level does not carry goes "
-    .. "stale, so `trx.music.Track:is_valid` answers whether it is still there.",
+---Whether the loaded level still carries this track.
+---@return boolean # False once a level change has replaced the tracks.
+function Track:is_valid() end
 
-  fields = {
-    num = {
-      from = "id",
-      type = "music.TrackNum",
-      writable = false,
-    },
-  },
+---Plays this track.
+---@param opts? trx.music.play.opts How to play it.
+---@return trx.music.Stream? # The stream it started, or `nil` if none did.
+function Track:play(opts) end
 
-  methods = {
-    is_valid = {
-      returns = {
-        type = "boolean",
-        description = "False once a level change has replaced the tracks.",
-      },
-      description = "Whether the loaded level still carries this track.",
-    },
-    play = {
-      params = { PLAY_OPTS },
-      returns = {
-        type = "music.Stream",
-        nullable = true,
-        description = "The stream it started, or `nil` if none did.",
-      },
-      description = "Plays this track.",
-    },
-    path = {
-      returns = {
-        type = "string",
-        nullable = true,
-        description = "`nil` when there is no file, e.g. a CD-audio soundtrack.",
-      },
-      description = "Resolves the track's file path.",
-    },
-  },
-})
+---Resolves the track's file path.
+---@return string? # `nil` when there is no file, e.g. a CD-audio soundtrack.
+function Track:path() end
 
 -- One lazy view apiece: indexing and iterating reach into C a handle at a time,
 -- so neither builds a list up front.
-api.container("music.streams", {
-  description = "The soundtrack's streams: `[1]` is the main stream, `[2]` onwards the overlay "
-    .. "slots. A slot that is not playing still answers, with a stale handle.",
-  key = { type = "music.StreamNum" },
-  value = { type = "music.Stream", nullable = true },
+
+---The soundtrack's streams: `[1]` is the main stream, `[2]` onwards the
+---overlay slots. A slot that is not playing still answers, with a stale
+---handle.
+---@type table<trx.music.StreamNum, trx.music.Stream?>
+M.streams = h.container("music.streams", {
+  base = 1,
   get = function(n)
     return raw.stream_get(n - 1)
   end,
   count = raw.stream_count,
 })
 
-local tracks = api.container("music.tracks", {
-  description = "The tracks the current level carries. A level does not carry every number, so "
-    .. "indexing one it lacks is `nil` and iterating passes it by.",
-  key = { type = "music.TrackNum" },
-  value = { type = "music.Track", nullable = true },
+---The tracks the current level carries. A level does not carry every number,
+---so indexing one it lacks is `nil` and iterating passes it by.
+---@type table<trx.music.TrackNum, trx.music.Track?>
+M.tracks = h.container("music.tracks", {
+  base = 0,
   get = raw.track_get,
   count = raw.track_available_count,
   limit = raw.track_limit,
 })
 
-api.property("music.current_track", {
-  type = "music.Track",
-  description = "The track playing now, or `nil` when nothing plays.",
-  get = function()
-    local id = raw.get_track()
-    return id ~= nil and raw.track_get(id) or nil
-  end,
-})
-
-api.property("music.looped_track", {
-  type = "music.Track",
-  description = "The ambient track that resumes once the current one-shot finishes, or `nil` "
-    .. "when none is set.",
-  get = function()
-    local id = raw.get_looped_track()
-    return id ~= nil and raw.track_get(id) or nil
-  end,
-})
-
-api.define("music.play", {
-  description = "Plays a track by catalog id, mapping it to the level's own track. A game that "
-    .. "does not carry the track plays nothing.",
-  params = {
-    {
-      name = "id",
-      type = "catalog.music",
-      description = "Track to play. To reach a track by the level's own slot, play it through a "
-        .. "handle: `trx.music.tracks[slot]:play()`.",
-    },
-    PLAY_OPTS,
+h.properties(M, "music", {
+  current_track = {
+    get = function()
+      local id = raw.get_track()
+      return id ~= nil and raw.track_get(id) or nil
+    end,
   },
-  returns = {
-    type = "music.Stream",
-    nullable = true,
-    description = "The stream it started, or `nil` if none did.",
+  looped_track = {
+    get = function()
+      local id = raw.get_looped_track()
+      return id ~= nil and raw.track_get(id) or nil
+    end,
   },
-  examples = {
-    [[trx.music.play(trx.catalog.music.SECRET)
-trx.music.play(trx.catalog.music.SECRET, { mode = trx.music.PlayMode.LOOP })]],
-  },
-  impl = function(id, opts)
-    opts = opts or {}
-    local slot = trx.catalog.to_slot(trx.catalog.Context.MUSIC, id)
-    local track = slot ~= nil and tracks[slot] or nil
-    return track ~= nil and track:play({ mode = opts.mode or PlayMode.ONCE })
-      or nil
-  end,
 })
 
-api.define("music.pause", {
-  description = "Pauses the music.",
-  impl = raw.pause,
-})
+---Plays a track by catalog id, mapping it to the level's own track. A game
+---that does not carry the track plays nothing.
+---
+---```lua
+---trx.music.play(trx.catalog.music.SECRET)
+---trx.music.play(trx.catalog.music.SECRET, { mode = trx.music.PlayMode.LOOP })
+---```
+---@param id trx.catalog.music Track to play. To reach a track by the level's own slot, play it through a handle: `trx.music.tracks[slot]:play()`.
+---@param opts? trx.music.play.opts How to play it.
+---@return trx.music.Stream? # The stream it started, or `nil` if none did.
+function M.play(id, opts)
+  opts = opts or {}
+  local slot = trx.catalog.to_slot(trx.catalog.Context.MUSIC, id)
+  local track = slot ~= nil and M.tracks[slot] or nil
+  return track ~= nil and track:play({ mode = opts.mode or M.PlayMode.ONCE })
+    or nil
+end
 
-api.define("music.unpause", {
-  description = "Resumes paused music.",
-  impl = raw.unpause,
-})
+---Pauses the music.
+---@type fun()
+M.pause = raw.pause
 
-api.define("music.stop", {
-  description = "Stops all music.",
-  impl = raw.stop,
-})
+---Resumes paused music.
+---@type fun()
+M.unpause = raw.unpause
+
+---Stops all music.
+---@type fun()
+M.stop = raw.stop
