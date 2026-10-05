@@ -52,6 +52,15 @@ order: 3
    The module, not the engine, now declares the strings that only the
    passport uses. The strings files still provide their text and translations.
 
+7. **`trx.inventory` and `trx.stats` take a dot**
+   Their functions are plain functions, not methods of the inventory Lara
+   carries or of the level being played:
+   - `trx.inventory:give(object)` becomes `trx.inventory.give(object)`
+   - `trx.stats:give_secret(1)` becomes `trx.stats.give_secret(1)`
+
+   A `trx.inventory.Inventory` or `trx.stats.Stats` reached through
+   `trx.game.Level` still takes a colon.
+
 ### Version 1.10 to 1.11
 
 1. **The waterfall mist object was renamed**

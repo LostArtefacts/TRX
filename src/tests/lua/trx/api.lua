@@ -723,7 +723,7 @@ test("a container rejects a spec it cannot serve", function()
   )
 end)
 
-local function widget_instance(env)
+local function widget_handle(env)
   env.h.handle("things.Widget", "WIDGET", {
     fields = { shown = "visible", locked = "lock" },
     writable = { "shown" },
@@ -734,19 +734,18 @@ local function widget_instance(env)
   return handle, data
 end
 
-test("an instance module passes its members through to the handle", function()
+test("a mirroring module shows the fields of the handle", function()
   local env = fresh_env()
-  local handle, data = widget_instance(env)
+  local handle, data = widget_handle(env)
   local things = env.h.module("things")
-  env.h.instance(things, "things", function()
+  env.h.mirror(things, "things", function()
     return handle
-  end)
+  end, "things.Widget")
 
   assert(things.shown == 1)
-  local _, self, arg = things:poke(5)
-  assert(self == handle and arg == 5, "a colon call hands the handle over")
-  _, self, arg = things.poke(5)
-  assert(self == handle and arg == 5, "a dot call hands the handle over")
+  data.visible = false
+  assert(things.shown == false, "a false field reads as false")
+  assert(things.poke == nil, "a method stays on the handle")
 
   things.shown = 7
   assert(data.visible == 7, "a write reaches the handle")
@@ -755,15 +754,24 @@ test("an instance module passes its members through to the handle", function()
   end, "read%-only")
   raises(function()
     things.missing = 3
-  end, "has no member 'missing'")
+  end, HERE .. "Cannot set field 'missing' on trx%.things$")
 end)
 
-test("an instance module with no handle refuses writes", function()
+test("a module mirrors only a declared handle", function()
   local env = fresh_env()
   local things = env.h.module("things")
-  env.h.instance(things, "things", function()
+  raises(function()
+    env.h.mirror(things, "things", function() end, "things.Nothing")
+  end, "things%.Nothing is no handle")
+end)
+
+test("a mirroring module with no handle refuses writes", function()
+  local env = fresh_env()
+  widget_handle(env)
+  local things = env.h.module("things")
+  env.h.mirror(things, "things", function()
     return nil
-  end)
+  end, "things.Widget")
 
   assert(things.shown == nil)
   raises(function()
@@ -771,13 +779,13 @@ test("an instance module with no handle refuses writes", function()
   end, HERE .. "Cannot set field 'shown' on trx%.things$")
 end)
 
-test("an instance module that is also a collection serves both", function()
+test("a mirroring module that is also a collection serves both", function()
   local env = fresh_env()
-  local handle = widget_instance(env)
+  local handle = widget_handle(env)
   local things = env.h.module("things")
-  env.h.instance(things, "things", function()
+  env.h.mirror(things, "things", function()
     return handle
-  end)
+  end, "things.Widget")
   env.h.container("things", {
     base = 1,
     get = function(i)
@@ -835,25 +843,22 @@ test("a module table takes only the members its signatures declare", function()
   assert(rawget(things, "stray") == nil)
 end)
 
-test(
-  "an undeclared member of an instance module reaches the handle",
-  function()
-    local env = fresh_env({ members = { things = { "helper" } } })
-    local handle, data = widget_instance(env)
-    local things = env.h.module("things")
-    env.h.instance(things, "things", function()
-      return handle
-    end)
+test("a declared member of a mirroring module stays on the module", function()
+  local env = fresh_env({ members = { things = { "helper" } } })
+  local handle, data = widget_handle(env)
+  local things = env.h.module("things")
+  env.h.mirror(things, "things", function()
+    return handle
+  end, "things.Widget")
 
-    things.helper = 1
-    assert(
-      rawget(things, "helper") == 1,
-      "a declared member stays on the module"
-    )
-    things.shown = 9
-    assert(rawget(things, "shown") == nil and data.visible == 9)
-  end
-)
+  things.helper = 1
+  assert(
+    rawget(things, "helper") == 1,
+    "a declared member stays on the module"
+  )
+  things.shown = 9
+  assert(rawget(things, "shown") == nil and data.visible == 9)
+end)
 
 -- Strict mode
 

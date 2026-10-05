@@ -61,9 +61,9 @@ end)
 -- The module stands for the level being played, so both spellings mean it.
 test("a verb reads the same called either way", function()
   level_with({ 1, 2 })
-  assert(trx.stats:give_secret(1))
+  assert(trx.stats.give_secret(1))
   assert(trx.stats.give_secret(2))
-  assert(trx.stats:secret_list()[1].found)
+  assert(trx.stats.secret_list()[1].found)
   assert(trx.stats.secrets.count == 2)
 end)
 
@@ -206,7 +206,9 @@ test("nothing is counted outside a level", function()
 
   assert(trx.stats.secrets == nil, "the title screen counts nothing")
   assert(trx.stats.timer == nil)
-  assert(trx.stats.secret_list == nil, "nor is there anything to ask")
+  assert(#trx.stats.secret_list() == 0, "nor are there secrets to list")
+  assert(trx.stats.give_secret(1) == false, "or to give")
+  assert(trx.stats.take_secret(1) == false, "or to take")
 end)
 
 -- The title screen is a level the game flow is on and the game is not, so the

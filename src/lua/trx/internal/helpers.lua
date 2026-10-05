@@ -201,7 +201,12 @@ function M.handle(path, backing, spec)
   for name in pairs(writable) do
     handle_needs(fields[name] ~= nil, "%s.%s is not a field", path, name)
   end
+  local names = {}
+  for name in pairs(fields) do
+    names[name] = true
+  end
   for name, impl in pairs(spec.extensions or {}) do
+    names[name] = true
     handle_needs(
       type(impl) == "function",
       "%s.%s: an extension is a function",
@@ -219,7 +224,7 @@ function M.handle(path, backing, spec)
   end
 
   local methods = {}
-  handles[path] = { backing = backing, methods = methods }
+  handles[path] = { backing = backing, methods = methods, names = names }
 
   return setmetatable({}, {
     __newindex = function(decl, name, fn)
@@ -424,29 +429,9 @@ local function walk(container, tbl)
     first - 1
 end
 
--- A module that stands for a handle passes its members through to it. A colon
--- call hands the module over as self and a dot call hands over nothing, so the
--- module table tells the two apart.
-local function member_of(handle, tbl, key)
-  if handle == nil then
-    return nil
-  end
-  local member = handle[key]
-  if type(member) ~= "function" then
-    return member
-  end
-  return function(first, ...)
-    if first == tbl then
-      return member(handle, ...)
-    end
-    return member(handle, first, ...)
-  end
-end
-
 local function install(tbl)
   local state = served[tbl]
-  local props, container, instance =
-    state.props, state.container, state.instance
+  local props, container, mirror = state.props, state.container, state.mirror
   local meta = {
     __index = function(_, key)
       local prop = props[key]
@@ -459,8 +444,12 @@ local function install(tbl)
         end
         return container.get(key)
       end
-      if instance ~= nil then
-        return member_of(instance(), tbl, key)
+      if mirror ~= nil and mirror.names[key] then
+        local handle = mirror.current()
+        if handle == nil then
+          return nil
+        end
+        return handle[key]
       end
       return nil
     end,
@@ -480,10 +469,10 @@ local function install(tbl)
         rawset(tbl, key, value)
         return
       end
-      if instance ~= nil then
-        local handle = instance()
+      if mirror ~= nil and mirror.names[key] then
+        local handle = mirror.current()
         if handle ~= nil then
-          -- The struct raises on a member it does not expose.
+          -- The struct raises where the field is read-only.
           handle[key] = value
           return
         end
@@ -510,13 +499,17 @@ local function install(tbl)
   setmetatable(tbl, meta)
 end
 
--- Makes the module `tbl`, at `path`, stand for the handle `instance()` returns:
--- reading or writing a member the module does not hold reaches the handle.
+-- Makes the module `tbl`, at `path`, show the fields of the handle that
+-- `current()` returns, for a handle type declared through M.handle at
+-- `type_path`. Methods stay on the handle: the module declares its own.
 ---@param tbl table
 ---@param path string
----@param instance fun(): any
-function M.instance(tbl, path, instance)
-  serve(tbl, path).instance = instance
+---@param current fun(): any
+---@param type_path string
+function M.mirror(tbl, path, current, type_path)
+  local handle = handles[type_path]
+  handle_needs(handle ~= nil, "%s: %s is no handle", path, type_path)
+  serve(tbl, path).mirror = { current = current, names = handle.names }
   install(tbl)
 end
 

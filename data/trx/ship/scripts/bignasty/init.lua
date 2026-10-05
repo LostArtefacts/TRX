@@ -257,8 +257,8 @@ local function land(item, from)
   if gun == nil then
     -- Nowhere to set it down, so it goes straight into the backpack rather
     -- than being lost.
-    trx.inventory:give(gun_item)
-    trx.inventory:set_shots(trx.catalog.weapons[WEAPON_KEY], FUN_AMMO)
+    trx.inventory.give(gun_item)
+    trx.inventory.set_shots(trx.catalog.weapons[WEAPON_KEY], FUN_AMMO)
     trx.console.log(trx.locale.get("console/cmd/bignasty/got"))
   end
   landed = gun
@@ -456,7 +456,7 @@ local function claimed()
     return true
   end
   incoming = nil
-  return trx.inventory:has_weapon(weapon_id)
+  return trx.inventory.has_weapon(weapon_id)
     or #trx.items.query:of_object(gun_item):present():matches() > 0
 end
 
@@ -606,8 +606,8 @@ trx.events.after_control(function()
       -- The gun only leaves the world by being taken, which is the moment
       -- it says its name.
       landed = nil
-      if trx.inventory:has_weapon(weapon_id) then
-        trx.inventory:set_shots(weapon_id, FUN_AMMO)
+      if trx.inventory.has_weapon(weapon_id) then
+        trx.inventory.set_shots(weapon_id, FUN_AMMO)
         trx.console.log(trx.locale.get("console/cmd/bignasty/got"))
       end
     else
@@ -643,7 +643,7 @@ trx.console.register({
   help = "console/cmd/bignasty/help",
   run = function()
     local lara = trx.lara.item
-    if lara == nil or not trx.inventory:can_add(gun_item) then
+    if lara == nil or not trx.inventory.can_add(gun_item) then
       return trx.console.Result.FAILURE,
         trx.locale.get("console/cmd/bignasty/failure")
     end
@@ -655,8 +655,8 @@ trx.console.register({
     if not deliver(lara) then
       -- Nowhere above her to throw from, so the gun goes straight into the
       -- backpack rather than the cheat failing, and that is its taking.
-      trx.inventory:give(gun_item)
-      trx.inventory:set_shots(weapon_id, FUN_AMMO)
+      trx.inventory.give(gun_item)
+      trx.inventory.set_shots(weapon_id, FUN_AMMO)
       trx.console.log(trx.locale.get("console/cmd/bignasty/got"))
     end
     trx.sound.play(arrive_sample, { pos = lara.pos })

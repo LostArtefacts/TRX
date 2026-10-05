@@ -109,20 +109,10 @@ local Stats = h.handle("stats.Stats", "LEVEL_STATS", {
 ---@field found boolean Whether Lara has it.
 
 ---The level's secrets, in order.
----
----```lua
----for _, secret in ipairs(trx.stats.secret_list()) do
----  trx.log.info(secret.num .. ": " .. tostring(secret.found))
----end
----```
 ---@return trx.stats.Stats.secret_list.secret[] # The secrets, one by one.
 function Stats:secret_list() end
 
 ---Marks a secret as found, as walking into its trigger would.
----
----```lua
----trx.stats.give_secret(1)
----```
 ---@param secret_num trx.stats.SecretNum
 ---@return boolean # `false` if the level has no such secret, or Lara already has it.
 function Stats:give_secret(secret_num) end
@@ -132,6 +122,40 @@ function Stats:give_secret(secret_num) end
 ---@return boolean # `false` if the level has no such secret, or Lara does not have it.
 function Stats:take_secret(secret_num) end
 
-h.instance(M, "stats", raw.get_current)
+h.mirror(M, "stats", raw.get_current, "stats.Stats")
+
+---Asks `trx.stats.Stats:secret_list` of the level being played. Where none is
+---being played, the list is empty.
+---
+---```lua
+---for _, secret in ipairs(trx.stats.secret_list()) do
+---  trx.log.info(secret.num .. ": " .. tostring(secret.found))
+---end
+---```
+---@return trx.stats.Stats.secret_list.secret[] # The secrets, one by one.
+function M.secret_list()
+  local stats = raw.get_current()
+  return stats ~= nil and stats:secret_list() or {}
+end
+
+---Asks `trx.stats.Stats:give_secret` of the level being played.
+---
+---```lua
+---trx.stats.give_secret(1)
+---```
+---@param secret_num trx.stats.SecretNum
+---@return boolean # `false` if no level is being played, the level has no such secret, or Lara already has it.
+function M.give_secret(secret_num)
+  local stats = raw.get_current()
+  return stats ~= nil and stats:give_secret(secret_num)
+end
+
+---Asks `trx.stats.Stats:take_secret` of the level being played.
+---@param secret_num trx.stats.SecretNum
+---@return boolean # `false` if no level is being played, the level has no such secret, or Lara does not have it.
+function M.take_secret(secret_num)
+  local stats = raw.get_current()
+  return stats ~= nil and stats:take_secret(secret_num)
+end
 
 local _ = Category

@@ -165,7 +165,7 @@ trx.weapons.flare.glow.color = "33e5ff"
     - <a id="weapons.Weapon.fire_sample" name="weapons.Weapon.fire_sample"></a>**`fire_sample`**: [trx.catalog.samples](CATALOG.md#catalog.samples). The sample a shot plays. One this game has no sound for is silent.
     - <a id="weapons.Weapon.given_in_ngplus" name="weapons.Weapon.given_in_ngplus"></a>**`given_in_ngplus`**: boolean. Whether a bonus game gives Lara the weapon, loaded, at level start. A weapon added by a script is not given unless this is true.
     - <a id="weapons.Weapon.gun_height" name="weapons.Weapon.gun_height"></a>**`gun_height`**: [trx.math.Distance](MATH.md#math.Distance). How far above Lara's feet the shot leaves the barrel. It also decides how deep she can wade and still fire.
-    - <a id="weapons.Weapon.id" name="weapons.Weapon.id"></a>**`id`**: [trx.catalog.weapons](CATALOG.md#catalog.weapons). Which weapon this is, for the calls that take one: `trx.inventory:set_shots(weapon.id, 100)`. *(read-only)*
+    - <a id="weapons.Weapon.id" name="weapons.Weapon.id"></a>**`id`**: [trx.catalog.weapons](CATALOG.md#catalog.weapons). Which weapon this is, for the calls that take one: `trx.inventory.set_shots(weapon.id, 100)`. *(read-only)*
     - <a id="weapons.Weapon.is_available" name="weapons.Weapon.is_available"></a>**`is_available`**: boolean. Whether the game allows the weapon at all. Turning one off keeps it out of the cheats and off the controls list, and a save that carries it arrives without it.
     - <a id="weapons.Weapon.kind" name="weapons.Weapon.kind"></a>**`kind`**: [trx.weapons.Kind](#weapons.Kind). How the engine holds and fires it.
     - <a id="weapons.Weapon.shot_accuracy" name="weapons.Weapon.shot_accuracy"></a>**`shot_accuracy`**: [trx.math.Angle](MATH.md#math.Angle). How wide a cone a shot may stray into, in engine units. `0` never misses. A spec says the same thing in degrees, as `aim.accuracy`.
@@ -183,7 +183,7 @@ trx.weapons.flare.glow.color = "33e5ff"
     - <a id="weapons.Weapon.left_arm" name="weapons.Weapon.left_arm"></a>**`left_arm`**: [trx.weapons.AimLimits](#weapons.AimLimits). How far the left arm may follow a target it has locked onto. A dual-wielded weapon drops the lock on the arm that cannot reach.
     - <a id="weapons.Weapon.lock" name="weapons.Weapon.lock"></a>**`lock`**: [trx.weapons.AimLimits](#weapons.AimLimits). Where auto-aim may lock on, measured from where Lara faces.
     - <a id="weapons.Weapon.muzzle_pos" name="weapons.Weapon.muzzle_pos"></a>**`muzzle_pos`**: [trx.weapons.HandPos](#weapons.HandPos). Where the barrel ends, which is where smoke and sparks come from.
-    - <a id="weapons.Weapon.object" name="weapons.Weapon.object"></a>**`object`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The pickup the weapon is, for handing it to [`trx.inventory:give`](INVENTORY.md#inventory.Inventory.give). `nil` where this game has no such weapon.
+    - <a id="weapons.Weapon.object" name="weapons.Weapon.object"></a>**`object`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The pickup the weapon is, for handing it to [`trx.inventory.give`](INVENTORY.md#inventory.give). `nil` where this game has no such weapon.
     - <a id="weapons.Weapon.right_arm" name="weapons.Weapon.right_arm"></a>**`right_arm`**: [trx.weapons.AimLimits](#weapons.AimLimits). How far the right arm may follow a target.
     - <a id="weapons.Weapon.rounds_per_shot" name="weapons.Weapon.rounds_per_shot"></a>**`rounds_per_shot`**: integer. How many rounds one pull of the trigger spends: six for the shotgun, one for everything else. What a box is worth in shots is [`trx.weapons.Ammo.box_shots`](#weapons.Ammo.box_shots).
     - <a id="weapons.Weapon.shell_pos" name="weapons.Weapon.shell_pos"></a>**`shell_pos`**: [trx.weapons.HandPos](#weapons.HandPos). Where a spent shell is thrown from. A weapon that leaves no shells has this at the origin.
@@ -308,7 +308,7 @@ trx.weapons.flare.glow.color = "33e5ff"
 - <a id="weapons.object" name="weapons.object"></a>[lua]`trx.weapons.object(weapon)`  
   **Deprecated.** Read [`trx.weapons.Weapon.object`](#weapons.Weapon.object) instead.
 
-  The pickup the weapon is, for handing it to [`trx.inventory:give`](INVENTORY.md#inventory.Inventory.give).
+  The pickup the weapon is, for handing it to [`trx.inventory.give`](INVENTORY.md#inventory.give).
 
   Parameters:
   - <a id="weapons.object.weapon" name="weapons.object.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN`, `UNARMED`, and out-of-range values raise.
@@ -317,7 +317,7 @@ trx.weapons.flare.glow.color = "33e5ff"
 
   Example:
   ```lua
-  trx.inventory:give(trx.weapons.object(trx.catalog.weapons.SHOTGUN))
+  trx.inventory.give(trx.weapons.object(trx.catalog.weapons.SHOTGUN))
   ```
 
 - <a id="weapons.ammo_object" name="weapons.ammo_object"></a>[lua]`trx.weapons.ammo_object(weapon)`  

@@ -72,7 +72,7 @@ local LEADBAR = trx.catalog.objects.LEAD_BAR_ITEM
 -- found nothing to hand over can say so rather than announcing a backpack that
 -- never got heavier.
 local function add(got, id, count)
-  if trx.inventory:give(id, count or 1) > 0 then
+  if trx.inventory.give(id, count or 1) > 0 then
     got[#got + 1] = id
   end
 end
@@ -87,7 +87,7 @@ local function add_once(seen, got, id, count)
 end
 
 local function can_add(id)
-  return trx.inventory:can_add(id)
+  return trx.inventory.can_add(id)
 end
 
 -- What can be given at all: a pickup the level carries the inventory model for,
@@ -121,10 +121,10 @@ local function give_gun(got, weapon, ammo, ignore_exclusions)
     return
   end
   local object = trx.weapons.object(weapon)
-  if object == nil or trx.inventory:give(object) == 0 then
+  if object == nil or trx.inventory.give(object) == 0 then
     return
   end
-  trx.inventory:set_shots(weapon, trx.game.is_ngplus and NGPLUS_AMMO or ammo)
+  trx.inventory.set_shots(weapon, trx.game.is_ngplus and NGPLUS_AMMO or ammo)
   got[#got + 1] = object
 end
 
@@ -262,7 +262,7 @@ local function run(what, count, quiet)
   end
 
   -- The parser takes any whole number, so the lower bound is answered here
-  -- rather than by trx.inventory:give, which raises.
+  -- rather than by trx.inventory.give, which raises.
   if count < 1 then
     return trx.console.Result.FAILURE,
       trx.locale.get("console/cmd/give/bad_count")

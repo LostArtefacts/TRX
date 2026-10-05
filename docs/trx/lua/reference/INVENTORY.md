@@ -14,10 +14,11 @@ order: 4
 
 What Lara is carrying, and what goes into it.
 
-The module is the inventory she holds now, so `trx.inventory:count(object)`
-asks about her. Any level's is reached the same way through
-[`trx.game.Level.inventory`](GAME.md#game.Level.inventory), which is what it will hand her when she arrives
-there rather than what she has this second.
+The module's functions ask about the inventory she holds now, so
+`trx.inventory.count(object)` asks about her. Any level's is a
+[`trx.inventory.Inventory`](#inventory.Inventory), reached through [`trx.game.Level.inventory`](GAME.md#game.Level.inventory), which
+is what it will hand her when she arrives there rather than what she has
+this second.
 
 Every function takes either the pickup lying in the world or the inventory
 icon it goes into. The engine maps one to the other, so a script names
@@ -141,11 +142,6 @@ end
 
       Returns: integer. How many went in. 0 from Lara's means the level does not carry the icon for it - see [`can_add`](#inventory.Inventory.can_add).
 
-      Example:
-      ```lua
-      trx.inventory:give(trx.catalog.objects.uzi_item, 2)
-      ```
-
     - <a id="inventory.Inventory.has" name="inventory.Inventory.has"></a>[lua]`inventory:has(object_id)`  
       Whether there is any of it at all.
 
@@ -177,11 +173,6 @@ end
       - <a id="inventory.Inventory.set_shots.weapon" name="inventory.Inventory.set_shots.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
       - <a id="inventory.Inventory.set_shots.count" name="inventory.Inventory.set_shots.count"></a>**`count`** (integer). Shots. Below 0 raises.
 
-      Example:
-      ```lua
-      trx.inventory:set_shots(trx.catalog.weapons.UZIS, 2000)
-      ```
-
     - <a id="inventory.Inventory.shots" name="inventory.Inventory.shots"></a>[lua]`inventory:shots(weapon)`  
       How many shots there are for the weapon. A shot is one pull of the trigger,
       which is what the counter shows the player; the shotgun spends six rounds on
@@ -204,3 +195,108 @@ end
       - <a id="inventory.Inventory.take.count" name="inventory.Inventory.take.count"></a>**`count`** (integer, optional). How many. Defaults to 1; below 1 raises.
 
       Returns: integer. How many came out.
+
+### Functions
+
+- <a id="inventory.count" name="inventory.count"></a>[lua]`trx.inventory.count(object_id)`  
+  Asks [`trx.inventory.Inventory:count`](#inventory.Inventory.count) of what Lara carries.
+
+  Parameters:
+  - <a id="inventory.count.object_id" name="inventory.count.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The pickup, or the inventory icon it goes into.
+
+  Returns: integer. 0 where there is none.
+
+- <a id="inventory.set_count" name="inventory.set_count"></a>[lua]`trx.inventory.set_count(object_id, count)`  
+  Asks [`trx.inventory.Inventory:set_count`](#inventory.Inventory.set_count) of what Lara carries.
+
+  Parameters:
+  - <a id="inventory.set_count.object_id" name="inventory.set_count.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The pickup, or the inventory icon it goes into.
+  - <a id="inventory.set_count.count" name="inventory.set_count.count"></a>**`count`** (integer). How many. Below 0 raises.
+
+- <a id="inventory.has" name="inventory.has"></a>[lua]`trx.inventory.has(object_id)`  
+  Asks [`trx.inventory.Inventory:has`](#inventory.Inventory.has) of what Lara carries.
+
+  Parameters:
+  - <a id="inventory.has.object_id" name="inventory.has.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The pickup, or the inventory icon it goes into.
+
+  Returns: boolean. True for any count above 0.
+
+- <a id="inventory.give" name="inventory.give"></a>[lua]`trx.inventory.give(object_id, [count])`  
+  Asks [`trx.inventory.Inventory:give`](#inventory.Inventory.give) of what Lara carries.
+
+  Parameters:
+  - <a id="inventory.give.object_id" name="inventory.give.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The pickup, or the inventory icon it goes into.
+  - <a id="inventory.give.count" name="inventory.give.count"></a>**`count`** (integer, optional). How many. Defaults to 1; below 1 raises.
+
+  Returns: integer. How many went in. 0 from Lara's means the level does not carry the icon for it - see [`trx.inventory.Inventory:can_add`](#inventory.Inventory.can_add).
+
+  Example:
+  ```lua
+  trx.inventory.give(trx.catalog.objects.uzi_item, 2)
+  ```
+
+- <a id="inventory.take" name="inventory.take"></a>[lua]`trx.inventory.take(object_id, [count])`  
+  Asks [`trx.inventory.Inventory:take`](#inventory.Inventory.take) of what Lara carries.
+
+  Parameters:
+  - <a id="inventory.take.object_id" name="inventory.take.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The pickup, or the inventory icon it goes into.
+  - <a id="inventory.take.count" name="inventory.take.count"></a>**`count`** (integer, optional). How many. Defaults to 1; below 1 raises.
+
+  Returns: integer. How many came out.
+
+- <a id="inventory.shots" name="inventory.shots"></a>[lua]`trx.inventory.shots(weapon)`  
+  Asks [`trx.inventory.Inventory:shots`](#inventory.Inventory.shots) of what Lara carries.
+
+  Parameters:
+  - <a id="inventory.shots.weapon" name="inventory.shots.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+
+  Returns: integer. 0 where she carries no ammunition for it.
+
+- <a id="inventory.set_shots" name="inventory.set_shots"></a>[lua]`trx.inventory.set_shots(weapon, count)`  
+  Asks [`trx.inventory.Inventory:set_shots`](#inventory.Inventory.set_shots) of what Lara carries.
+
+  Parameters:
+  - <a id="inventory.set_shots.weapon" name="inventory.set_shots.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+  - <a id="inventory.set_shots.count" name="inventory.set_shots.count"></a>**`count`** (integer). Shots. Below 0 raises.
+
+  Example:
+  ```lua
+  trx.inventory.set_shots(trx.catalog.weapons.UZIS, 2000)
+  ```
+
+- <a id="inventory.has_weapon" name="inventory.has_weapon"></a>[lua]`trx.inventory.has_weapon(weapon)`  
+  Asks [`trx.inventory.Inventory:has_weapon`](#inventory.Inventory.has_weapon) of what Lara carries.
+
+  Parameters:
+  - <a id="inventory.has_weapon.weapon" name="inventory.has_weapon.weapon"></a>**`weapon`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+
+  Returns: boolean. True where the weapon itself is in it.
+
+- <a id="inventory.entry" name="inventory.entry"></a>[lua]`trx.inventory.entry(object_id)`  
+  Asks [`trx.inventory.Inventory:entry`](#inventory.Inventory.entry) of what Lara carries.
+
+  Parameters:
+  - <a id="inventory.entry.object_id" name="inventory.entry.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The pickup, or the inventory icon it goes into.
+
+  Returns: [trx.inventory.Entry](#inventory.Entry) or `nil`. The entry, or `nil` where there is none of it.
+
+- <a id="inventory.entry_at" name="inventory.entry_at"></a>[lua]`trx.inventory.entry_at(entry_num)`  
+  Asks [`trx.inventory.Inventory:entry_at`](#inventory.Inventory.entry_at) of what Lara carries.
+
+  Parameters:
+  - <a id="inventory.entry_at.entry_num" name="inventory.entry_at.entry_num"></a>**`entry_num`** ([trx.inventory.EntryNum](#inventory.EntryNum)).
+
+  Returns: [trx.inventory.Entry](#inventory.Entry) or `nil`. The entry, or `nil` past the last one.
+
+- <a id="inventory.entry_count" name="inventory.entry_count"></a>[lua]`trx.inventory.entry_count()`  
+  Asks [`trx.inventory.Inventory:entry_count`](#inventory.Inventory.entry_count) of what Lara carries.
+
+  Returns: integer. Kinds of thing, not counts.
+
+- <a id="inventory.can_add" name="inventory.can_add"></a>[lua]`trx.inventory.can_add(object_id)`  
+  Asks [`trx.inventory.Inventory:can_add`](#inventory.Inventory.can_add) of what Lara carries.
+
+  Parameters:
+  - <a id="inventory.can_add.object_id" name="inventory.can_add.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The pickup, or the inventory icon it goes into.
+
+  Returns: boolean. True where the level carries the model to draw it with.
