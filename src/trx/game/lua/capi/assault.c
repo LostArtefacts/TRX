@@ -115,7 +115,7 @@ static GYM_TRACK_STATS *M_CheckStats(
     return stats;
 }
 
-// trxc.assault.start([track])
+// trxc.assault.start(track?: trx.assault.Track)
 static int M_L_AssaultStart(lua_State *const L)
 {
     const GYM_TRACK_TYPE track = M_GetTrack(L);
@@ -124,7 +124,7 @@ static int M_L_AssaultStart(lua_State *const L)
     return 0;
 }
 
-// trxc.assault.stop([track])
+// trxc.assault.stop(track?: trx.assault.Track)
 static int M_L_AssaultStop(lua_State *const L)
 {
     const GYM_TRACK_TYPE track = M_GetTrack(L);
@@ -133,7 +133,7 @@ static int M_L_AssaultStop(lua_State *const L)
     return 0;
 }
 
-// trxc.assault.reset([track])
+// trxc.assault.reset(track?: trx.assault.Track)
 static int M_L_AssaultReset(lua_State *const L)
 {
     const GYM_TRACK_TYPE track = M_GetTrack(L);
@@ -142,7 +142,7 @@ static int M_L_AssaultReset(lua_State *const L)
     return 0;
 }
 
-// trxc.assault.finish([track])
+// trxc.assault.finish(track?: trx.assault.Track)
 static int M_L_AssaultFinish(lua_State *const L)
 {
     const GYM_TRACK_TYPE track = M_GetTrack(L);
@@ -151,7 +151,7 @@ static int M_L_AssaultFinish(lua_State *const L)
     return 0;
 }
 
-// trxc.assault.is_running([track]) -> bool
+// trxc.assault.is_running(track?: trx.assault.Track): boolean
 //
 // No availability check: asking whether a timer runs is a fair question outside
 // a gym level, and the answer there is false.
@@ -161,14 +161,14 @@ static int M_L_AssaultIsRunning(lua_State *const L)
     return 1;
 }
 
-// trxc.assault.is_visible([track]) -> bool
+// trxc.assault.is_visible(track?: trx.assault.Track): boolean
 static int M_L_AssaultIsVisible(lua_State *const L)
 {
     lua_pushboolean(L, Gym_TrackManager_IsTimerDisplay(M_GetTrack(L)));
     return 1;
 }
 
-// trxc.assault.get_time() -> frames
+// trxc.assault.get_time(): trx.game.Frames
 static int M_L_AssaultGetTime(lua_State *const L)
 {
     const GF_LEVEL *const level = Game_GetCurrentLevel();
@@ -179,7 +179,7 @@ static int M_L_AssaultGetTime(lua_State *const L)
     return 1;
 }
 
-// trxc.assault.get_best_time([track]) -> frames
+// trxc.assault.get_best_time(track?: trx.assault.Track): trx.game.Frames
 static int M_L_AssaultGetBestTime(lua_State *const L)
 {
     const GYM_TRACK_TYPE track = M_GetTrack(L);
@@ -189,42 +189,42 @@ static int M_L_AssaultGetBestTime(lua_State *const L)
     return 1;
 }
 
-// trxc.assault.get_penalty([track]) -> frames
+// trxc.assault.get_penalty(track?: trx.assault.Track): trx.game.Frames
 static int M_L_AssaultGetPenalty(lua_State *const L)
 {
     lua_pushinteger(L, Gym_TrackManager_GetPenaltyFrames(M_GetTrack(L)));
     return 1;
 }
 
-// trxc.assault.get_target_penalty([track]) -> frames
+// trxc.assault.get_target_penalty(track?: trx.assault.Track): trx.game.Frames
 static int M_L_AssaultGetTargetPenalty(lua_State *const L)
 {
     lua_pushinteger(L, Gym_TrackManager_GetTargetPenaltyFrames(M_GetTrack(L)));
     return 1;
 }
 
-// trxc.assault.get_penalty_timer([track]) -> frames
+// trxc.assault.get_penalty_timer(track?: trx.assault.Track): trx.game.Frames
 static int M_L_AssaultGetPenaltyTimer(lua_State *const L)
 {
     lua_pushinteger(L, Gym_TrackManager_GetPenaltyDisplayTimer(M_GetTrack(L)));
     return 1;
 }
 
-// trxc.assault.get_lap_time([track]) -> frames
+// trxc.assault.get_lap_time(track?: trx.assault.Track): trx.game.Frames
 static int M_L_AssaultGetLapTime(lua_State *const L)
 {
     lua_pushinteger(L, Gym_TrackManager_GetLapTime(M_GetTrack(L)));
     return 1;
 }
 
-// trxc.assault.get_lap_timer([track]) -> frames
+// trxc.assault.get_lap_timer(track?: trx.assault.Track): trx.game.Frames
 static int M_L_AssaultGetLapTimer(lua_State *const L)
 {
     lua_pushinteger(L, Gym_TrackManager_GetLapTimeDisplayTimer(M_GetTrack(L)));
     return 1;
 }
 
-// trxc.assault.get_active_track() -> track or nil
+// trxc.assault.get_active_track(): trx.assault.Track?
 static int M_L_AssaultGetActiveTrack(lua_State *const L)
 {
     const GYM_TRACK_TYPE track = Gym_TrackManager_GetActiveTrackType();
@@ -236,7 +236,7 @@ static int M_L_AssaultGetActiveTrack(lua_State *const L)
     return 1;
 }
 
-// trxc.assault.stats.record(time, [track]) -> bool
+// trxc.assault.stats.record(time: trx.game.Seconds, track?: trx.assault.Track): boolean
 //
 // The track comes second here and in remove: a record is about a time, and the
 // time is what a script always says.
@@ -254,7 +254,7 @@ static int M_L_AssaultRecord(lua_State *const L)
     return 1;
 }
 
-// trxc.assault.stats.remove(record_id, [track]) -> bool
+// trxc.assault.stats.remove(record_num: trx.assault.RecordNum, track?: trx.assault.Track): boolean
 static int M_L_AssaultRemoveRecord(lua_State *const L)
 {
     // Lua's formatter has no %lld, and raised over the format rather than the
@@ -271,7 +271,7 @@ static int M_L_AssaultRemoveRecord(lua_State *const L)
     return 1;
 }
 
-// trxc.assault.stats.list([track]) -> { { time=, attempt_num= }, ... }
+// trxc.assault.stats.list(track?: trx.assault.Track): trx.assault.Record[]
 static int M_L_AssaultListRecords(lua_State *const L)
 {
     const GYM_TRACK_STATS *const stats = M_CheckStats(L, M_GetTrack(L));

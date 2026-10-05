@@ -89,7 +89,7 @@ static const char *M_GetPropertyName(const void *const self, const int32_t idx)
     return ObjectProperty_GetObjectName(self, idx);
 }
 
-// trxc.objects.get(object_id) -> OBJECT handle or nil
+// trxc.objects.get(object_id: trx.catalog.objects): trx.objects.Object?
 static int M_L_ObjectsGet(lua_State *const L)
 {
     int32_t object_id;
@@ -104,8 +104,6 @@ static int M_L_ObjectsGet(lua_State *const L)
         (TRX_HANDLE) { .id = (OBJECT_ID)object_id });
     return 1;
 }
-
-// trxc.objects.swap_mesh(obj1_id, obj2_id, mesh1_num, mesh2_num)
 
 static M_DECLARATION *M_FindDeclaration(const OBJECT_ID object_id)
 {
@@ -205,7 +203,7 @@ static int32_t M_TakeInt(
     return value;
 }
 
-// trxc.objects.declare(object_id, spec)
+// trxc.objects.declare(object_id: trx.catalog.objects, spec: table)
 static int M_L_ObjectsDeclare(lua_State *const L)
 {
     const OBJECT_ID object_id = LUA_CheckObjectID(L, 1);
@@ -234,7 +232,7 @@ static int M_L_ObjectsDeclare(lua_State *const L)
     return 0;
 }
 
-// trxc.objects.borrow_content(object_id, source_id) -> bool
+// trxc.objects.borrow_content(object_id: trx.catalog.objects, source_id: trx.catalog.objects): boolean
 static int M_L_ObjectsBorrowContent(lua_State *const L)
 {
     const OBJECT_ID object_id = LUA_CheckObjectID(L, 1);
@@ -243,6 +241,7 @@ static int M_L_ObjectsBorrowContent(lua_State *const L)
     return 1;
 }
 
+// trxc.objects.swap_mesh(obj1_id: trx.catalog.objects, obj2_id: trx.catalog.objects, mesh1_num?: trx.objects.MeshNum, mesh2_num?: trx.objects.MeshNum)
 static int M_L_ObjectsSwapMesh(lua_State *const L)
 {
     const int32_t arg_count = lua_gettop(L);
@@ -273,7 +272,7 @@ static int M_L_ObjectsSwapMesh(lua_State *const L)
     return 0;
 }
 
-// trxc.objects.swap_sprite(obj1_id, obj2_id)
+// trxc.objects.swap_sprite(obj1_id: trx.catalog.objects, obj2_id: trx.catalog.objects)
 static int M_L_ObjectsSwapSprite(lua_State *const L)
 {
     const OBJECT_ID obj1_id = LUA_CheckObjectID(L, 1);
@@ -294,7 +293,7 @@ static int M_L_ObjectsSwapSprite(lua_State *const L)
     return 0;
 }
 
-// trxc.objects.is_type(object_id, kind) -> bool
+// trxc.objects.is_type(object_id: trx.catalog.objects, kind: string): boolean
 static int M_L_ObjectsIsType(lua_State *const L)
 {
     const OBJECT_ID object_id = luaL_checkinteger(L, 1);

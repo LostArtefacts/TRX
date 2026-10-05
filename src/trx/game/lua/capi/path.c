@@ -23,7 +23,7 @@ static GAME_PATH M_CheckRoot(lua_State *const L, const int arg)
     return (GAME_PATH)found;
 }
 
-// trxc.path.root(name) -> the directory the name stands for
+// trxc.path.root(name: string): string?
 static int M_L_Root(lua_State *const L)
 {
     const char *const dir = GamePath_Get(M_CheckRoot(L, 1));
@@ -35,7 +35,7 @@ static int M_L_Root(lua_State *const L)
     return 1;
 }
 
-// trxc.path.roots() -> every name a place is known by
+// trxc.path.roots(): string[]
 static int M_L_Roots(lua_State *const L)
 {
     lua_newtable(L);
@@ -48,7 +48,7 @@ static int M_L_Roots(lua_State *const L)
     return 1;
 }
 
-// trxc.path.kinds() -> every kind of file that may be resolved
+// trxc.path.kinds(): string[]
 static int M_L_Kinds(lua_State *const L)
 {
     VECTOR *const names = EnumMap_ListValues(ENUM_MAP_NAME(GAME_DYNAMIC_PATH));
@@ -63,7 +63,7 @@ static int M_L_Kinds(lua_State *const L)
     return 1;
 }
 
-// trxc.path.resolve(kind, rel) -> where the file is, or nil for none
+// trxc.path.resolve(kind: string, rel: string): string?
 static int M_L_Resolve(lua_State *const L)
 {
     const char *const name = luaL_checkstring(L, 1);
@@ -82,7 +82,7 @@ static int M_L_Resolve(lua_State *const L)
     return 1;
 }
 
-// trxc.path.expand(text) -> the text with every %token% filled in
+// trxc.path.expand(text: string): string
 static int M_L_Expand(lua_State *const L)
 {
     char *const out = GamePath_ExpandVars(luaL_checkstring(L, 1));
@@ -164,14 +164,14 @@ static const char *M_CheckReachable(lua_State *const L, const int arg)
     return raw;
 }
 
-// trxc.path.exists(raw) -> whether anything is there
+// trxc.path.exists(raw: string): boolean
 static int M_L_Exists(lua_State *const L)
 {
     lua_pushboolean(L, FS_Exists(M_CheckReachable(L, 1)));
     return 1;
 }
 
-// trxc.path.read_text(raw) -> what the file holds, or nil where it is absent
+// trxc.path.read_text(raw: string): string?
 static int M_L_ReadText(lua_State *const L)
 {
     const char *const raw = M_CheckReachable(L, 1);
@@ -192,7 +192,7 @@ static int M_L_ReadText(lua_State *const L)
     return 1;
 }
 
-// trxc.path.write_text(raw, text)
+// trxc.path.write_text(raw: string, text: string)
 static int M_L_WriteText(lua_State *const L)
 {
     const char *const raw = M_CheckReachable(L, 1);
@@ -214,14 +214,14 @@ static int M_L_WriteText(lua_State *const L)
     return 0;
 }
 
-// trxc.path.is_reachable(raw) -> whether a script may read or write there
+// trxc.path.is_reachable(raw: string): boolean
 static int M_L_IsReachable(lua_State *const L)
 {
     lua_pushboolean(L, M_IsAllowed(luaL_checkstring(L, 1)));
     return 1;
 }
 
-// trxc.path.parent(raw) -> the directory the path sits in
+// trxc.path.parent(raw: string): string
 static int M_L_Parent(lua_State *const L)
 {
     char *const out = FS_GetParentDirectory(luaL_checkstring(L, 1));
@@ -230,7 +230,7 @@ static int M_L_Parent(lua_State *const L)
     return 1;
 }
 
-// trxc.path.name(raw) -> the name at the end of the path
+// trxc.path.name(raw: string): string
 static int M_L_Name(lua_State *const L)
 {
     const char *const out = FS_GetBaseName(luaL_checkstring(L, 1));
@@ -238,7 +238,7 @@ static int M_L_Name(lua_State *const L)
     return 1;
 }
 
-// trxc.path.stem(raw) -> the name at the end, without its extension
+// trxc.path.stem(raw: string): string
 static int M_L_Stem(lua_State *const L)
 {
     char *const out = FS_GetStem(luaL_checkstring(L, 1));

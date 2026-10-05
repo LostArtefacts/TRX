@@ -171,7 +171,7 @@ static const luaL_Reg m_StreamMethods[] = {
     { nullptr, nullptr },
 };
 
-// trxc.sound.sample_get(id) -> sample handle or nil
+// trxc.sound.sample_get(id: trx.sound.SampleNum): trx.sound.Sample?
 static int M_L_SoundSampleGet(lua_State *const L)
 {
     const int32_t id = (int32_t)luaL_checkinteger(L, 1);
@@ -184,14 +184,14 @@ static int M_L_SoundSampleGet(lua_State *const L)
     return 1;
 }
 
-// trxc.sound.sample_limit()
+// trxc.sound.sample_limit(): integer
 static int M_L_SoundSampleLimit(lua_State *const L)
 {
     lua_pushinteger(L, Sound_GetMaxSlot() + 1);
     return 1;
 }
 
-// trxc.sound.sample_available_count()
+// trxc.sound.sample_available_count(): integer
 static int M_L_SoundSampleAvailableCount(lua_State *const L)
 {
     int32_t count = 0;
@@ -205,14 +205,15 @@ static int M_L_SoundSampleAvailableCount(lua_State *const L)
     return 1;
 }
 
-// trxc.sound.stream_count()
+// trxc.sound.stream_count(): integer
 static int M_L_SoundStreamCount(lua_State *const L)
 {
     lua_pushinteger(L, Sound_GetActiveSlotCount());
     return 1;
 }
 
-// trxc.sound.stream_get(slot)
+// trxc.sound.stream_get(slot: integer): trx.sound.Stream?
+// Takes a 0-based slot.
 static int M_L_SoundStreamGet(lua_State *const L)
 {
     const int32_t slot = (int32_t)luaL_checkinteger(L, 1);

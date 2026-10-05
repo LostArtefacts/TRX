@@ -119,14 +119,14 @@ static LARA_SKIN_EXTRA_MESH M_CheckExtraMesh(lua_State *const L, const int arg)
         L, arg, NUM_EXTRA_MESHES, "unknown extra mesh");
 }
 
-// trxc.lara.state() -> LARA_INFO handle
+// trxc.lara.state(): trx.lara.Lara
 static int M_L_LaraState(lua_State *const L)
 {
     LUA_Struct_Push(L, &TYPE_LARA_INFO, M_Resolve, (TRX_HANDLE) { .id = 0 });
     return 1;
 }
 
-// item_num = trxc.lara.get_item()
+// trxc.lara.get_item(): trx.items.Num?
 static int M_L_LaraGetItem(lua_State *const L)
 {
     const ITEM *const item = Lara_GetItem();
@@ -135,7 +135,7 @@ static int M_L_LaraGetItem(lua_State *const L)
     return 1;
 }
 
-// item_num = trxc.lara.get_target()
+// trxc.lara.get_target(): trx.items.Num?
 static int M_L_LaraGetTarget(lua_State *const L)
 {
     const LARA_INFO *const lara = Lara_GetLaraInfo();
@@ -145,7 +145,7 @@ static int M_L_LaraGetTarget(lua_State *const L)
     return 1;
 }
 
-// item_num = trxc.lara.get_vehicle()
+// trxc.lara.get_vehicle(): trx.items.Num?
 static int M_L_LaraGetVehicle(lua_State *const L)
 {
     const ITEM *const item = Lara_Vehicle_GetItem();
@@ -154,35 +154,35 @@ static int M_L_LaraGetVehicle(lua_State *const L)
     return 1;
 }
 
-// trxc.lara.get_animation_object() -> integer
+// trxc.lara.get_animation_object(): trx.catalog.objects
 static int M_L_LaraGetAnimationObject(lua_State *const L)
 {
     lua_pushinteger(L, Lara_GetAnimationObject());
     return 1;
 }
 
-// trxc.lara.get_max_air() -> integer
+// trxc.lara.get_max_air(): integer
 static int M_L_LaraGetMaxAir(lua_State *const L)
 {
     lua_pushinteger(L, LARA_MAX_AIR);
     return 1;
 }
 
-// trxc.lara.get_max_sprint() -> integer
+// trxc.lara.get_max_sprint(): integer
 static int M_L_LaraGetMaxSprint(lua_State *const L)
 {
     lua_pushinteger(L, LARA_MAX_SPRINT);
     return 1;
 }
 
-// trxc.lara.is_controllable() -> boolean
+// trxc.lara.is_controllable(): boolean
 static int M_L_LaraIsControllable(lua_State *const L)
 {
     lua_pushboolean(L, Lara_IsControllable());
     return 1;
 }
 
-// trxc.lara.get_outfit() → string
+// trxc.lara.get_outfit(): string?
 static int M_L_LaraGetOutfit(lua_State *const L)
 {
     const int32_t outfit_idx = Lara_Skin_GetType();
@@ -195,7 +195,7 @@ static int M_L_LaraGetOutfit(lua_State *const L)
     return 1;
 }
 
-// trxc.lara.set_outfit(outfit_name)
+// trxc.lara.set_outfit(outfit_name: string)
 static int M_L_LaraSetOutfit(lua_State *const L)
 {
     const char *const outfit_name = luaL_checkstring(L, 1);
@@ -207,7 +207,7 @@ static int M_L_LaraSetOutfit(lua_State *const L)
     return 0;
 }
 
-// trxc.lara.set_extra_equipment(lara_mesh, extra_mesh)
+// trxc.lara.set_extra_equipment(lara_mesh: trx.lara.Mesh, extra_mesh: trx.lara.ExtraMesh)
 static int M_L_LaraSetExtraEquipment(lua_State *const L)
 {
     const LARA_MESH lara_mesh = M_CheckLaraMesh(L, 1);
@@ -216,7 +216,7 @@ static int M_L_LaraSetExtraEquipment(lua_State *const L)
     return 0;
 }
 
-// trxc.lara.set_mesh(lara_mesh, object_id, mesh_num)
+// trxc.lara.set_mesh(lara_mesh: trx.lara.Mesh, object_id: trx.catalog.Id, mesh_num: trx.objects.MeshNum)
 static int M_L_LaraSetMesh(lua_State *const L)
 {
     const LARA_MESH lara_mesh = M_CheckLaraMesh(L, 1);
@@ -235,7 +235,7 @@ static int M_L_LaraSetMesh(lua_State *const L)
     return 0;
 }
 
-// trxc.lara.clear_mesh(lara_mesh)
+// trxc.lara.clear_mesh(lara_mesh: trx.lara.Mesh)
 static int M_L_LaraClearMesh(lua_State *const L)
 {
     const LARA_MESH lara_mesh = M_CheckLaraMesh(L, 1);
@@ -243,7 +243,7 @@ static int M_L_LaraClearMesh(lua_State *const L)
     return 0;
 }
 
-// trxc.lara.clear_equipment(lara_mesh)
+// trxc.lara.clear_equipment(lara_mesh: trx.lara.Mesh)
 static int M_L_LaraClearEquipment(lua_State *const L)
 {
     const LARA_MESH lara_mesh = M_CheckLaraMesh(L, 1);
@@ -251,14 +251,14 @@ static int M_L_LaraClearEquipment(lua_State *const L)
     return 0;
 }
 
-// trxc.lara.are_holsters_visible() → bool
+// trxc.lara.are_holsters_visible(): boolean
 static int M_L_LaraAreHolstersVisible(lua_State *const L)
 {
     lua_pushboolean(L, Lara_Skin_AreHolstersVisible());
     return 1;
 }
 
-// trxc.lara.set_holsters_visible(visible)
+// trxc.lara.set_holsters_visible(visible?: boolean)
 static int M_L_LaraSetHolstersVisible(lua_State *const L)
 {
     const bool visible = lua_toboolean(L, 1);
@@ -266,21 +266,22 @@ static int M_L_LaraSetHolstersVisible(lua_State *const L)
     return 0;
 }
 
-// trxc.lara.get_speech_face() → int
+// trxc.lara.get_speech_face(): integer
+// Returns -1 for Lara's own face.
 static int M_L_LaraGetSpeechFace(lua_State *const L)
 {
     lua_pushinteger(L, Lara_Skin_GetSpeechFace());
     return 1;
 }
 
-// trxc.lara.set_speech_face(index)
+// trxc.lara.set_speech_face(index?: integer)
 static int M_L_LaraSetSpeechFace(lua_State *const L)
 {
     Lara_Skin_SetSpeechFace((int32_t)luaL_optinteger(L, 1, -1));
     return 0;
 }
 
-// trxc.lara.has_pistol_weapon() → bool
+// trxc.lara.has_pistol_weapon(): boolean
 static int M_L_LaraHasPistolWeapon(lua_State *const L)
 {
     bool has_pistol = false;
@@ -298,7 +299,8 @@ static int M_L_LaraHasPistolWeapon(lua_State *const L)
     return 1;
 }
 
-// trxc.lara.get_extra_anim() → int
+// trxc.lara.get_extra_anim(): integer
+// Returns -1 when no extra animation is playing.
 static int M_L_LaraGetExtraAnim(lua_State *const L)
 {
     if (Lara_GetLaraInfo()->extra_anim) {
@@ -331,21 +333,21 @@ static int M_L_LaraDry(lua_State *const L)
     return 0;
 }
 
-// trxc.lara.is_wet() → bool
+// trxc.lara.is_wet(): boolean
 static int M_L_LaraIsWet(lua_State *const L)
 {
     lua_pushboolean(L, Lara_IsWet());
     return 1;
 }
 
-// trxc.lara.is_flying() -> bool
+// trxc.lara.is_flying(): boolean
 static int M_L_LaraIsFlying(lua_State *const L)
 {
     lua_pushboolean(L, Lara_GetLaraInfo()->water_status == LWS_CHEAT);
     return 1;
 }
 
-// trxc.lara.set_flying(bool)
+// trxc.lara.set_flying(enable?: boolean)
 static int M_L_LaraSetFlying(lua_State *const L)
 {
     if (lua_toboolean(L, 1)) {
@@ -356,7 +358,7 @@ static int M_L_LaraSetFlying(lua_State *const L)
     return 0;
 }
 
-// trxc.lara.teleport({x,y,z}, room_num) -> bool
+// trxc.lara.teleport(pos: trx.math.Vec3, room_num?: trx.rooms.Num): boolean
 static int M_L_LaraTeleport(lua_State *const L)
 {
     const XYZ_32 pos = LUA_CheckXYZ(L, 1);
@@ -375,7 +377,7 @@ static int M_L_LaraTeleport(lua_State *const L)
     return 1;
 }
 
-// trxc.lara.vehicle_gun() -> weapon or nil
+// trxc.lara.vehicle_gun(): trx.catalog.weapons?
 //
 // Returns the weapon mounted on Lara's vehicle.
 static int M_L_LaraVehicleGun(lua_State *const L)
@@ -389,7 +391,7 @@ static int M_L_LaraVehicleGun(lua_State *const L)
     return 1;
 }
 
-// trxc.lara.can_pose() -> bool
+// trxc.lara.can_pose(): boolean
 static int M_L_LaraCanPose(lua_State *const L)
 {
     lua_pushboolean(L, Lara_Pose_IsAvailable());

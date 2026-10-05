@@ -77,14 +77,14 @@ static void M_PushRoom(lua_State *const L, const int32_t idx)
     LUA_Struct_Push(L, &TYPE_ROOM, M_Resolve, Room_GetHandle(idx));
 }
 
-// trxc.rooms.count() -> int
+// trxc.rooms.count(): integer
 static int M_L_RoomsCount(lua_State *const L)
 {
     lua_pushinteger(L, Room_GetCount());
     return 1;
 }
 
-// trxc.rooms.get(index) -> Room or nil
+// trxc.rooms.get(num: trx.rooms.Num): trx.rooms.Room?
 static int M_L_RoomsGet(lua_State *const L)
 {
     int32_t num;
@@ -96,8 +96,7 @@ static int M_L_RoomsGet(lua_State *const L)
     return 1;
 }
 
-// trxc.rooms.get_bounds(room) -> { min_x=, min_y=, min_z=, max_x=, max_y=,
-// max_z= }
+// trxc.rooms.get_bounds(room: trx.rooms.Room): trx.math.Box
 //
 // A table, not a scalar, so it cannot be a reflected field. Lua wraps this as a
 // computed property.
@@ -123,7 +122,7 @@ static int M_L_RoomsGetBounds(lua_State *const L)
     return 1;
 }
 
-// trxc.rooms.point_inside(room, {x,y,z}) -> bool
+// trxc.rooms.point_inside(room: trx.rooms.Room, pos: trx.math.Vec3): boolean
 static int M_L_RoomsPointInside(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ROOM);
@@ -132,7 +131,7 @@ static int M_L_RoomsPointInside(lua_State *const L)
     return 1;
 }
 
-// trxc.rooms.get_flipped_room(room) -> 0-based room number or nil
+// trxc.rooms.get_flipped_room(room: trx.rooms.Room): trx.rooms.Num?
 static int M_L_RoomsGetFlippedRoom(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ROOM);
@@ -141,14 +140,14 @@ static int M_L_RoomsGetFlippedRoom(lua_State *const L)
     return 1;
 }
 
-// trxc.rooms.flip_group_count() -> integer
+// trxc.rooms.flip_group_count(): integer
 static int M_L_RoomsFlipGroupCount(lua_State *const L)
 {
     lua_pushinteger(L, MAX_FLIP_MAPS);
     return 1;
 }
 
-// trxc.rooms.declare_flip_group(room_num, group)
+// trxc.rooms.declare_flip_group(room_num: trx.rooms.Num, group: integer)
 //
 // Stores flip groups until Level_Initialise, when rooms are ready.
 // Keeps declarations level-scoped, like the listeners from the same script.
@@ -180,7 +179,7 @@ static int M_L_RoomsDeclareFlipGroup(lua_State *const L)
     return 0;
 }
 
-// trxc.rooms.flip([group])
+// trxc.rooms.flip(group?: integer)
 static int M_L_RoomsFlip(lua_State *const L)
 {
     if (lua_isnoneornil(L, 1)) {
@@ -197,7 +196,7 @@ static int M_L_RoomsFlip(lua_State *const L)
     return 0;
 }
 
-// trxc.rooms.get_flipped([group]) -> bool
+// trxc.rooms.get_flipped(group?: integer): boolean
 static int M_L_RoomsGetFlipped(lua_State *const L)
 {
     if (lua_isnoneornil(L, 1)) {
@@ -212,7 +211,7 @@ static int M_L_RoomsGetFlipped(lua_State *const L)
     return 1;
 }
 
-// trxc.rooms.flip_effect(effect_id, [timer])
+// trxc.rooms.flip_effect(effect_id: trx.catalog.flip_effects, timer?: integer)
 static int M_L_RoomsFlipEffect(lua_State *const L)
 {
     const int32_t trx_effect_id = luaL_checkinteger(L, 1);
@@ -232,7 +231,7 @@ static int M_L_RoomsFlipEffect(lua_State *const L)
     return 0;
 }
 
-// trxc.rooms.find_valid_pos({x,y,z}, room_num) -> pos, room_num or nil
+// trxc.rooms.find_valid_pos(pos: trx.math.Vec3, room_num: trx.rooms.Num): trx.math.Vec3?, trx.rooms.Num?
 static int M_L_RoomsFindValidPos(lua_State *const L)
 {
     XYZ_32 pos = LUA_CheckXYZ(L, 1);
@@ -287,6 +286,7 @@ static bool M_ReadFixTilts(lua_State *const L)
     return fix_tilts;
 }
 
+// trxc.rooms.get_height(pos: trx.math.Vec3, room_num?: trx.rooms.Num, opts?: trx.rooms.floor_height.opts): trx.math.Distance?
 // Get the floor height, or nil when the position has no floor.
 static int M_L_RoomsGetHeight(lua_State *const L)
 {
@@ -309,6 +309,7 @@ static int M_L_RoomsGetHeight(lua_State *const L)
     return 1;
 }
 
+// trxc.rooms.get_ceiling(pos: trx.math.Vec3, room_num?: trx.rooms.Num, opts?: trx.rooms.floor_height.opts): trx.math.Distance?
 // Get the ceiling height, or nil when the position has no ceiling.
 static int M_L_RoomsGetCeiling(lua_State *const L)
 {

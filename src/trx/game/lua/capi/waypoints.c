@@ -5,35 +5,35 @@
 
 #include <lauxlib.h>
 
-// trxc.waypoints.get_current() → int or nil
+// trxc.waypoints.get_current(): trx.waypoints.Num?
 static int M_L_WaypointsGetCurrent(lua_State *const L)
 {
     LUA_PushOptIndex(L, Waypoint_Get(), WAYPOINT_NONE);
     return 1;
 }
 
-// trxc.waypoints.set_current(num)
+// trxc.waypoints.set_current(num: trx.waypoints.Num)
 static int M_L_WaypointsSetCurrent(lua_State *const L)
 {
     Waypoint_Set((int32_t)luaL_checkinteger(L, 1));
     return 0;
 }
 
-// trxc.waypoints.get_highest() → int or nil
+// trxc.waypoints.get_highest(): trx.waypoints.Num?
 static int M_L_WaypointsGetHighest(lua_State *const L)
 {
     LUA_PushOptIndex(L, Waypoint_GetHighest(), WAYPOINT_NONE);
     return 1;
 }
 
-// trxc.waypoints.get_pad() → int or nil
+// trxc.waypoints.get_pad(): trx.waypoints.Num?
 static int M_L_WaypointsGetPad(lua_State *const L)
 {
     LUA_PushOptIndex(L, Waypoint_GetPad(), WAYPOINT_PAD_NONE);
     return 1;
 }
 
-// trxc.waypoints.set_pad(num or nil)
+// trxc.waypoints.set_pad(num?: trx.waypoints.Num)
 static int M_L_WaypointsSetPad(lua_State *const L)
 {
     if (lua_isnoneornil(L, 1)) {

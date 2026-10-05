@@ -119,14 +119,15 @@ static const luaL_Reg m_StreamMethods[] = {
     { nullptr, nullptr },
 };
 
-// trxc.music.stream_count()
+// trxc.music.stream_count(): integer
 static int M_L_MusicStreamCount(lua_State *const L)
 {
     lua_pushinteger(L, Music_GetStreamSlotCount());
     return 1;
 }
 
-// trxc.music.stream_get(slot)
+// trxc.music.stream_get(slot: integer): trx.music.Stream?
+// The slot is 0-based.
 static int M_L_MusicStreamGet(lua_State *const L)
 {
     const int32_t slot = (int32_t)luaL_checkinteger(L, 1);
@@ -140,7 +141,7 @@ static int M_L_MusicStreamGet(lua_State *const L)
     return 1;
 }
 
-// trxc.music.get_track()
+// trxc.music.get_track(): trx.music.TrackNum?
 static int M_L_MusicGetTrack(lua_State *const L)
 {
     const MUSIC_SLOT track = Music_GetCurrentPlayingTrack();
@@ -152,7 +153,7 @@ static int M_L_MusicGetTrack(lua_State *const L)
     return 1;
 }
 
-// trxc.music.get_looped_track()
+// trxc.music.get_looped_track(): trx.music.TrackNum?
 static int M_L_MusicGetLoopedTrack(lua_State *const L)
 {
     const MUSIC_SLOT track = Music_GetCurrentLoopedTrack();
@@ -217,7 +218,7 @@ static const luaL_Reg m_TrackMethods[] = {
     { nullptr, nullptr },
 };
 
-// trxc.music.track_get(id) -> track handle or nil
+// trxc.music.track_get(id: trx.music.TrackNum): trx.music.Track?
 static int M_L_MusicTrackGet(lua_State *const L)
 {
     const int32_t id = (int32_t)luaL_checkinteger(L, 1);
@@ -230,14 +231,14 @@ static int M_L_MusicTrackGet(lua_State *const L)
     return 1;
 }
 
-// trxc.music.track_limit()
+// trxc.music.track_limit(): integer
 static int M_L_MusicTrackLimit(lua_State *const L)
 {
     lua_pushinteger(L, Music_GetTrackLimit());
     return 1;
 }
 
-// trxc.music.track_available_count()
+// trxc.music.track_available_count(): integer
 static int M_L_MusicTrackAvailableCount(lua_State *const L)
 {
     int32_t count = 0;

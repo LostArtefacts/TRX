@@ -214,7 +214,7 @@ static void M_ClaimKey(const LUA_EVENT_TYPE ev, const int32_t key)
     Vector_Add(m_Claims, &claim);
 }
 
-// trxc.events.attach(event_type, callback, [key]) → id
+// trxc.events.attach(event_type: integer, callback: function, key?: integer): integer
 static int M_L_EventsAttach(lua_State *const L)
 {
     const LUA_EVENT_TYPE ev = (LUA_EVENT_TYPE)LUA_CheckRange(
@@ -250,7 +250,7 @@ static int M_L_EventsAttach(lua_State *const L)
     return 1;
 }
 
-// trxc.events.declare(name) -> event_type
+// trxc.events.declare(name: string): integer
 //
 // An event of a module's own. The engine's events are the LUA_EVENT_TYPE enum,
 // which is where an event C raises has to be named; one a module of the public
@@ -281,7 +281,7 @@ static int M_L_EventsDeclare(lua_State *const L)
     return 1;
 }
 
-// trxc.events.fire(event_type, ...) -> bool
+// trxc.events.fire(event_type: integer, ...: boolean|number|string|nil): boolean
 //
 // For a module of the public surface that is itself an event source: the zones
 // find their transitions in Lua and report them here, so a handler attaches,
@@ -343,7 +343,7 @@ static int M_L_EventsFire(lua_State *const L)
     return 1;
 }
 
-// trxc.events.detach(id) -> bool
+// trxc.events.detach(id: integer): boolean
 static int M_L_EventsDetach(lua_State *const L)
 {
     const int32_t id = luaL_checkinteger(L, 1);
@@ -363,7 +363,7 @@ static int M_L_EventsDetach(lua_State *const L)
     return 1;
 }
 
-// trxc.events.is_level_script() -> bool
+// trxc.events.is_level_script(): boolean
 static int M_L_EventsIsLevelScript(lua_State *const L)
 {
     lua_pushboolean(L, LUA_GetScriptContext() == LUA_CONTEXT_LEVEL);

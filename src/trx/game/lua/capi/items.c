@@ -453,7 +453,7 @@ static int M_L_ItemsTrigger(lua_State *const L)
     return 0;
 }
 
-// trxc.items.count() -> int
+// trxc.items.count(): integer
 static int M_L_ItemsCount(lua_State *const L)
 {
     lua_pushinteger(L, Item_GetTotalCount());
@@ -495,7 +495,7 @@ static bool M_InSphere(const XYZ_32 pos, const void *const arg)
     return dx * dx + dy * dy + dz * dz <= sphere->radius_sq;
 }
 
-// trxc.items.in_box({x,y,z}, {x,y,z}) -> list of item numbers
+// trxc.items.in_box(a: trx.math.Vec3, b: trx.math.Vec3): trx.items.Num[]
 static int M_L_ItemsInBox(lua_State *const L)
 {
     const XYZ_32 a = LUA_CheckXYZ(L, 1);
@@ -507,7 +507,7 @@ static int M_L_ItemsInBox(lua_State *const L)
     return M_PushItemsWhere(L, M_InBox, &box);
 }
 
-// trxc.items.in_sphere({x,y,z}, radius) -> list of item numbers
+// trxc.items.in_sphere(centre: trx.math.Vec3, radius: trx.math.Distance): trx.items.Num[]
 static int M_L_ItemsInSphere(lua_State *const L)
 {
     const XYZ_32 centre = LUA_CheckXYZ(L, 1);
@@ -522,7 +522,7 @@ static int M_L_ItemsInSphere(lua_State *const L)
     return M_PushItemsWhere(L, M_InSphere, &sphere);
 }
 
-// trxc.items.get(index | name) -> Item or nil
+// trxc.items.get(key: trx.items.Num|string): trx.items.Item?
 static int M_L_ItemsGet(lua_State *const L)
 {
     int32_t idx = -1;
@@ -545,7 +545,7 @@ static int M_L_ItemsGet(lua_State *const L)
     return 1;
 }
 
-// trxc.items.spawn(object_id, {x,y,z}, angle_y) -> Item or nil
+// trxc.items.spawn(object_id: trx.catalog.objects, pos: trx.math.Vec3, angle_y?: trx.math.Angle, opts?: trx.items.spawn.opts): trx.items.Item?
 static int M_L_ItemsSpawn(lua_State *const L)
 {
     // Object_Get asserts on an id outside the table.
@@ -602,8 +602,7 @@ static int M_L_ItemsDistanceTo(lua_State *const L)
     return 1;
 }
 
-// trxc.items.get_bounds(item) -> { min_x=, min_y=, min_z=, max_x=, max_y=,
-// max_z= }
+// trxc.items.get_bounds(item: trx.items.Item): trx.math.Box
 //
 // A table, not a scalar, so it cannot be a reflected field. Lua wraps this as a
 // computed property.
@@ -629,7 +628,7 @@ static int M_L_ItemsGetBounds(lua_State *const L)
     return 1;
 }
 
-// trxc.items.joint_count(item) -> int
+// trxc.items.joint_count(item: trx.items.Item): integer
 static int M_L_ItemsJointCount(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);
@@ -638,7 +637,7 @@ static int M_L_ItemsJointCount(lua_State *const L)
     return 1;
 }
 
-// trxc.items.joint_pos(item, joint, x, y, z) -> x, y, z
+// trxc.items.joint_pos(item: trx.items.Item, joint: integer, x?: trx.math.Distance, y?: trx.math.Distance, z?: trx.math.Distance): trx.math.Distance, trx.math.Distance, trx.math.Distance
 static int M_L_ItemsJointPos(lua_State *const L)
 {
     LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_ITEM);

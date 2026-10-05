@@ -5,7 +5,7 @@
 #include <lauxlib.h>
 #include <lua.h>
 
-// trxc.screens.close(screen, choice)
+// trxc.screens.close(screen: trx.ui.Screen, choice: integer)
 static int M_L_ScreensClose(lua_State *const L)
 {
     const UI_TAKEOVER screen = (UI_TAKEOVER)LUA_CheckRange(

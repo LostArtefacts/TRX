@@ -20,13 +20,15 @@ static int M_PushResult(lua_State *const L, LUA_RESULT result)
     return 2;
 }
 
-// trxc.lua.eval_expr(code) -> nil | (kind, message)
+// trxc.lua.eval_expr(code: string): string?, string?
+// Returns nothing on success, or a kind and a message on failure.
 static int M_L_LuaEvalExpr(lua_State *const L)
 {
     return M_PushResult(L, LUA_Eval(luaL_checkstring(L, 1)));
 }
 
-// trxc.lua.eval_file(path) -> nil | (kind, message)
+// trxc.lua.eval_file(path: string): string?, string?
+// Returns nothing on success, or a kind and a message on failure.
 static int M_L_LuaEvalFile(lua_State *const L)
 {
     return M_PushResult(L, LUA_EvalFile(luaL_checkstring(L, 1)));

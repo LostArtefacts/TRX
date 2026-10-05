@@ -13,7 +13,7 @@
 
 #include <lauxlib.h>
 
-// trxc.locale.get(key) -> string or nil
+// trxc.locale.get(key: string): string?
 static int M_L_LocaleGet(lua_State *const L)
 {
     const char *const value = GameString_Get(luaL_checkstring(L, 1));
@@ -25,7 +25,7 @@ static int M_L_LocaleGet(lua_State *const L)
     return 1;
 }
 
-// trxc.locale.declare(key, text)
+// trxc.locale.declare(key: string, text: string)
 static int M_L_LocaleDeclare(lua_State *const L)
 {
     // A declaration is a fallback, and the strings files run before the level
@@ -39,7 +39,7 @@ static int M_L_LocaleDeclare(lua_State *const L)
     return 0;
 }
 
-// trxc.locale.reload() -> bool
+// trxc.locale.reload(): boolean
 static int M_L_LocaleReload(lua_State *const L)
 {
     lua_pushboolean(

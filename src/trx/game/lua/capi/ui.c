@@ -42,8 +42,8 @@ M_SLOT_POSE_GETTER(H, h)
 static bool m_Drawing = false;
 static bool m_Painting = false;
 
-// The depth added to every z that a script draws with, and the depths that
-// trxc.ui.pop_depth returns to. A lower depth draws nearer.
+// The depth added to every z that a script draws with, and the depths
+// that trxc.ui.pop_depth returns to. A lower depth draws nearer.
 static int32_t m_Depth = 0;
 static int32_t m_DepthStack[M_MAX_DEPTH_PUSHES] = {};
 static int32_t m_DepthCount = 0;
@@ -75,30 +75,35 @@ static uint32_t M_OptMaskField(
     return (uint32_t)value;
 }
 
+// trxc.ui.get_canvas_width(): number
 static int M_L_UICanvasWidth(lua_State *const L)
 {
     lua_pushnumber(L, UI_GetCanvasWidth());
     return 1;
 }
 
+// trxc.ui.get_canvas_height(): number
 static int M_L_UICanvasHeight(lua_State *const L)
 {
     lua_pushnumber(L, UI_GetCanvasHeight());
     return 1;
 }
 
+// trxc.ui.get_safe_width(): number
 static int M_L_UISafeWidth(lua_State *const L)
 {
     lua_pushnumber(L, UI_GetSafeCanvasWidth());
     return 1;
 }
 
+// trxc.ui.get_safe_top(): number
 static int M_L_UISafeTop(lua_State *const L)
 {
     lua_pushnumber(L, UI_GetSafeCanvasTop());
     return 1;
 }
 
+// trxc.ui.get_safe_bottom(): number
 static int M_L_UISafeBottom(lua_State *const L)
 {
     lua_pushnumber(L, UI_GetSafeCanvasBottom());
@@ -176,7 +181,8 @@ static int32_t M_CheckSpriteIdx(lua_State *const L)
     return object->mesh_idx + sprite_num;
 }
 
-// trxc.ui.mesh_bounds(object_id) -> min_x, min_y, min_z, max_x, max_y, max_z
+// trxc.ui.mesh_bounds(object: trx.catalog.objects): trx.math.Distance?, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance
+// The returns are min x, y, z, then max x, y, z.
 static int M_L_UIMeshBounds(lua_State *const L)
 {
     const OBJECT_ID object_id = LUA_CheckObjectID(L, 1);
@@ -199,7 +205,7 @@ static int M_L_UIMeshBounds(lua_State *const L)
     return 6;
 }
 
-// trxc.ui.sprite_count(object_id) -> number
+// trxc.ui.sprite_count(object: trx.catalog.objects): integer
 static int M_L_UISpriteCount(lua_State *const L)
 {
     const OBJECT *const object = Object_Get(LUA_CheckObjectID(L, 1));
@@ -208,7 +214,8 @@ static int M_L_UISpriteCount(lua_State *const L)
     return 1;
 }
 
-// trxc.ui.sprite_bounds(object_id, sprite_num) -> x0, y0, x1, y1
+// trxc.ui.sprite_bounds(object: trx.catalog.objects, sprite_num: integer): number, number, number, number
+// The returns are x0, y0, x1, y1.
 static int M_L_UISpriteBounds(lua_State *const L)
 {
     const SPRITE_TEXTURE *const sprite =
@@ -223,7 +230,7 @@ static int M_L_UISpriteBounds(lua_State *const L)
     return 4;
 }
 
-// trxc.ui.sprite(object_id, sprite_num, x, y, z, scale, color)
+// trxc.ui.sprite(object: trx.catalog.objects, sprite_num: integer, x: number, y: number, z?: integer, scale?: number, color: trx.math.Color|table)
 static int M_L_UISprite(lua_State *const L)
 {
     M_CheckPainting(L);
@@ -326,7 +333,7 @@ static int M_L_UIMeshSlotRelease(lua_State *const L)
     return 0;
 }
 
-// trxc.ui.mesh_slot() -> UI_MESH_SLOT handle or nil
+// trxc.ui.mesh_slot(): trx.ui.MeshSlot?
 static int M_L_UIMeshSlot(lua_State *const L)
 {
     const TRX_HANDLE handle = UI_MeshSlot_Acquire();
@@ -345,8 +352,7 @@ static const luaL_Reg m_MeshSlotMethods[] = {
     { nullptr, nullptr },
 };
 
-// trxc.ui.gradient_sprite(object_id, sprite_num, x, y, z, scale, tl, tr, bl,
-// br)
+// trxc.ui.gradient_sprite(object: trx.catalog.objects, sprite_num: integer, x: number, y: number, z?: integer, scale?: number, tl: trx.math.Color|table, tr: trx.math.Color|table, bl: trx.math.Color|table, br: trx.math.Color|table)
 static int M_L_UIGradientSprite(lua_State *const L)
 {
     M_CheckPainting(L);
@@ -366,7 +372,7 @@ static int M_L_UIGradientSprite(lua_State *const L)
     return 0;
 }
 
-// trxc.ui.reserve(region, w, h) -> slot
+// trxc.ui.reserve(region: trx.ui.Region, w: number, h: number): integer
 static int M_L_UIReserve(lua_State *const L)
 {
     M_CheckDrawing(L);
@@ -382,7 +388,8 @@ static int M_L_UIReserve(lua_State *const L)
     return 1;
 }
 
-// trxc.ui.slot_box(slot) -> x, y, w, h or nil
+// trxc.ui.slot_box(slot: integer): number?, number, number, number
+// The returns are x, y, w, h.
 static int M_L_UISlotBox(lua_State *const L)
 {
     float x;
@@ -401,7 +408,7 @@ static int M_L_UISlotBox(lua_State *const L)
     return 4;
 }
 
-// trxc.ui.measure_text(text, scale) -> w, h
+// trxc.ui.measure_text(text: string, scale?: number): number, number
 static int M_L_UIMeasureText(lua_State *const L)
 {
     float w;
@@ -414,7 +421,7 @@ static int M_L_UIMeasureText(lua_State *const L)
     return 2;
 }
 
-// trxc.ui.draw_text(text, x, y, scale, z)
+// trxc.ui.draw_text(text: string, x: number, y: number, scale?: number, z?: integer)
 static int M_L_UIDrawText(lua_State *const L)
 {
     M_CheckPainting(L);
@@ -428,7 +435,7 @@ static int M_L_UIDrawText(lua_State *const L)
     return 0;
 }
 
-// trxc.ui.horizontal_line(x0, x1, y, z)
+// trxc.ui.horizontal_line(x0: number, x1: number, y: number, z?: integer)
 static int M_L_UIHorizontalLine(lua_State *const L)
 {
     M_CheckPainting(L);
@@ -440,7 +447,7 @@ static int M_L_UIHorizontalLine(lua_State *const L)
     return 0;
 }
 
-// trxc.ui.panel(x, y, z, w, h, style)
+// trxc.ui.panel(x: number, y: number, z?: integer, w: number, h: number, style: trx.ui.FrameStyle)
 static int M_L_UIPanel(lua_State *const L)
 {
     M_CheckPainting(L);
@@ -468,7 +475,7 @@ static int M_L_UIPanel(lua_State *const L)
     return 0;
 }
 
-// trxc.ui.push_depth(offset)
+// trxc.ui.push_depth(offset: integer)
 static int M_L_UIPushDepth(lua_State *const L)
 {
     M_CheckPainting(L);
@@ -491,7 +498,7 @@ static int M_L_UIPopDepth(lua_State *const L)
     return 0;
 }
 
-// trxc.ui.push_text_scale(factor)
+// trxc.ui.push_text_scale(factor: number)
 static int M_L_UIPushTextScale(lua_State *const L)
 {
     UI_Scaler_PushTextScale((float)luaL_checknumber(L, 1));
@@ -505,7 +512,7 @@ static int M_L_UIPopTextScale(lua_State *const L)
     return 0;
 }
 
-// trxc.ui.flat_quad(x, y, z, w, h, color)
+// trxc.ui.flat_quad(x: number, y: number, z?: integer, w: number, h: number, color: trx.math.Color|table)
 static int M_L_UIFlatQuad(lua_State *const L)
 {
     M_CheckPainting(L);
@@ -522,7 +529,7 @@ static int M_L_UIFlatQuad(lua_State *const L)
     return 0;
 }
 
-// trxc.ui.gradient_quad(x, y, z, w, h, tl, tr, bl, br)
+// trxc.ui.gradient_quad(x: number, y: number, z?: integer, w: number, h: number, tl: trx.math.Color|table, tr: trx.math.Color|table, bl: trx.math.Color|table, br: trx.math.Color|table)
 static int M_L_UIGradientQuad(lua_State *const L)
 {
     M_CheckPainting(L);
@@ -541,7 +548,7 @@ static int M_L_UIGradientQuad(lua_State *const L)
     return 0;
 }
 
-// trxc.ui.image(path, x, y, w, h, opacity) -> boolean
+// trxc.ui.image(path: string, x: number, y: number, w: number, h: number, opacity?: number): boolean
 static int M_L_UIImage(lua_State *const L)
 {
     M_CheckPainting(L);
@@ -564,14 +571,14 @@ static int M_L_UIImage(lua_State *const L)
     return 1;
 }
 
-// trxc.ui.to_screen(canvas) -> number
+// trxc.ui.to_screen(length: number): number
 static int M_L_UIToScreen(lua_State *const L)
 {
     lua_pushnumber(L, UI_ScaleY((float)luaL_checknumber(L, 1)));
     return 1;
 }
 
-// trxc.ui.to_canvas(screen) -> number
+// trxc.ui.to_canvas(pixels: number): number
 static int M_L_UIToCanvas(lua_State *const L)
 {
     const float per_unit = UI_ScaleY(1.0f);
@@ -605,7 +612,7 @@ static void M_PushRamp(
     lua_setfield(L, -2, name);
 }
 
-// trxc.ui.bar_theme(type) -> table or nil
+// trxc.ui.bar_theme(type: trx.ui.BarType): { kind: "ps1"|"pc", basic_scale: number, border_light: { r: integer, g: integer, b: integer, a: integer }, border_dark: { r: integer, g: integer, b: integer, a: integer }, border_tl: { r: integer, g: integer, b: integer, a: integer }, border_tr: { r: integer, g: integer, b: integer, a: integer }, border_bl: { r: integer, g: integer, b: integer, a: integer }, border_br: { r: integer, g: integer, b: integer, a: integer }, ramp: table<integer, { r: integer, g: integer, b: integer, a: integer }>, ramp_left: table<integer, { r: integer, g: integer, b: integer, a: integer }>, ramp_right: table<integer, { r: integer, g: integer, b: integer, a: integer }> }?
 static int M_L_UIBarTheme(lua_State *const L)
 {
     const lua_Integer type = luaL_checkinteger(L, 1);
@@ -642,35 +649,35 @@ static int M_L_UIBarTheme(lua_State *const L)
     return 1;
 }
 
-// trxc.ui.bar_scale() -> number
+// trxc.ui.bar_scale(): number
 static int M_L_UIBarScale(lua_State *const L)
 {
     lua_pushnumber(L, UI_Scaler_GetScale(UI_SCALER_TARGET_BAR));
     return 1;
 }
 
-// trxc.ui.drawn_text_scale() -> number
+// trxc.ui.drawn_text_scale(): number
 static int M_L_UIDrawnTextScale(lua_State *const L)
 {
     lua_pushnumber(L, UI_Scaler_GetTextScale());
     return 1;
 }
 
-// trxc.ui.text_scale() -> number
+// trxc.ui.text_scale(): number
 static int M_L_UITextScale(lua_State *const L)
 {
     lua_pushnumber(L, UI_Scaler_GetScale(UI_SCALER_TARGET_TEXT));
     return 1;
 }
 
-// trxc.ui.get_clipboard() -> string
+// trxc.ui.get_clipboard(): string
 static int M_L_UIGetClipboard(lua_State *const L)
 {
     lua_pushstring(L, UI_GetClipboardText());
     return 1;
 }
 
-// trxc.ui.set_clipboard(text)
+// trxc.ui.set_clipboard(text: string)
 static int M_L_UISetClipboard(lua_State *const L)
 {
     const char *const text = luaL_checkstring(L, 1);

@@ -5,7 +5,7 @@
 #include <lauxlib.h>
 #include <lua.h>
 
-// trxc.log.log(level, msg)
+// trxc.log.log(level: trx.log.LogLevel, msg: string)
 static int M_L_LogGeneric(lua_State *const L)
 {
     LUA_LOG_CALL call;

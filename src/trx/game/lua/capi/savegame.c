@@ -9,7 +9,7 @@
 
 #include <lauxlib.h>
 
-// trxc.savegame.slot_count(pool) -> int
+// trxc.savegame.slot_count(pool: trx.savegame.Pool): integer
 static int M_L_SavegameSlotCount(lua_State *const L)
 {
     const SAVEGAME_SLOT_POOL pool = LUA_CheckSavePool(L, 1);
@@ -21,7 +21,7 @@ static int M_L_SavegameSlotCount(lua_State *const L)
     return 1;
 }
 
-// trxc.savegame.is_free(index, pool) -> bool
+// trxc.savegame.is_free(index: trx.savegame.SlotNum, pool: trx.savegame.Pool): boolean
 static int M_L_SavegameIsFree(lua_State *const L)
 {
     const int32_t index = luaL_checkinteger(L, 1);
@@ -30,7 +30,7 @@ static int M_L_SavegameIsFree(lua_State *const L)
     return 1;
 }
 
-// trxc.savegame.info(index, pool) -> table or nil
+// trxc.savegame.info(index: trx.savegame.SlotNum, pool: trx.savegame.Pool): trx.savegame.SlotInfo?
 // Return the save slot details. Return nil for a free slot.
 static int M_L_SavegameInfo(lua_State *const L)
 {
@@ -60,7 +60,7 @@ static int M_L_SavegameInfo(lua_State *const L)
     return 1;
 }
 
-// trxc.savegame.delete(index, pool) -> bool
+// trxc.savegame.delete(index: trx.savegame.SlotNum, pool: trx.savegame.Pool): boolean
 static int M_L_SavegameDelete(lua_State *const L)
 {
     const int32_t index = luaL_checkinteger(L, 1);
@@ -71,7 +71,7 @@ static int M_L_SavegameDelete(lua_State *const L)
     return 1;
 }
 
-// trxc.savegame.play_story(index, pool)
+// trxc.savegame.play_story(index: trx.savegame.SlotNum, pool: trx.savegame.Pool)
 static int M_L_SavegamePlayStory(lua_State *const L)
 {
     const int32_t index = luaL_checkinteger(L, 1);
@@ -90,14 +90,16 @@ static int M_L_SavegamePlayStory(lua_State *const L)
     return 0;
 }
 
-// trxc.savegame.total_count() -> int
+// trxc.savegame.total_count(): integer
 static int M_L_SavegameTotalCount(lua_State *const L)
 {
     lua_pushinteger(L, SG_Manager_GetTotalCount());
     return 1;
 }
 
-// trxc.savegame.restart_available(index, pool) -> bool
+// trxc.savegame.restart_available(index?: trx.savegame.SlotNum, pool?: trx.savegame.Pool): boolean
+// Uses the running save when the index is omitted; the pool is required
+// otherwise.
 static int M_L_SavegameRestartAvailable(lua_State *const L)
 {
     if (lua_isnoneornil(L, 1)) {
@@ -112,7 +114,7 @@ static int M_L_SavegameRestartAvailable(lua_State *const L)
     return 1;
 }
 
-// trxc.savegame.reached_levels(index, pool) -> {int} or nil
+// trxc.savegame.reached_levels(index: trx.savegame.SlotNum, pool: trx.savegame.Pool): trx.game.LevelNum[]?
 static int M_L_SavegameReachedLevels(lua_State *const L)
 {
     const int32_t index = luaL_checkinteger(L, 1);
@@ -142,14 +144,14 @@ static int M_L_SavegameReachedLevels(lua_State *const L)
     return 1;
 }
 
-// trxc.savegame.manual_allowed() -> bool
+// trxc.savegame.manual_allowed(): boolean
 static int M_L_SavegameManualAllowed(lua_State *const L)
 {
     lua_pushboolean(L, Savegame_IsManualSaveAllowed());
     return 1;
 }
 
-// trxc.savegame.recent_slot() -> index, pool
+// trxc.savegame.recent_slot(): trx.savegame.SlotNum?, trx.savegame.Pool?
 // Select the running slot, then the most recently written slot, then the first
 // numbered slot.
 static int M_L_SavegameRecentSlot(lua_State *const L)
@@ -174,7 +176,7 @@ static int M_L_SavegameRecentSlot(lua_State *const L)
     return 2;
 }
 
-// trxc.savegame.load(index, pool)
+// trxc.savegame.load(index: trx.savegame.SlotNum, pool: trx.savegame.Pool)
 static int M_L_SavegameLoad(lua_State *const L)
 {
     const int32_t index = luaL_checkinteger(L, 1);
@@ -190,7 +192,9 @@ static int M_L_SavegameLoad(lua_State *const L)
     return 0;
 }
 
-// trxc.savegame.save(index, pool) -> bool
+// trxc.savegame.save(index?: trx.savegame.SlotNum, pool: trx.savegame.Pool): boolean
+// The quick pool uses the next slot in its rotation when the index is
+// omitted.
 static int M_L_SavegameSave(lua_State *const L)
 {
     const SAVEGAME_SLOT_POOL pool = LUA_CheckSavePool(L, 2);

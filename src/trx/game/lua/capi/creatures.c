@@ -4,7 +4,7 @@
 
 #include <lauxlib.h>
 
-// trxc.creatures.are_allies_hostile() → bool
+// trxc.creatures.are_allies_hostile(): boolean
 static int M_L_CreaturesAreAlliesHostile(lua_State *const L)
 {
     const bool hostile = Creature_AreAlliesHostile();
@@ -12,7 +12,7 @@ static int M_L_CreaturesAreAlliesHostile(lua_State *const L)
     return 1;
 }
 
-// trxc.creatures.set_allies_hostile(enable)
+// trxc.creatures.set_allies_hostile(enable?: boolean)
 static int M_L_CreaturesSetAlliesHostile(lua_State *const L)
 {
     const bool hostile = lua_toboolean(L, 1);
@@ -20,14 +20,14 @@ static int M_L_CreaturesSetAlliesHostile(lua_State *const L)
     return 0;
 }
 
-// trxc.creatures.add_ally(obj_id)
+// trxc.creatures.add_ally(obj_id: trx.catalog.objects)
 static int M_L_CreaturesAddAlly(lua_State *const L)
 {
     Creature_AddAlly(LUA_CheckObjectID(L, 1));
     return 0;
 }
 
-// trxc.creatures.add_ally_target(obj_id)
+// trxc.creatures.add_ally_target(obj_id: trx.catalog.objects)
 static int M_L_CreaturesAddAllyTarget(lua_State *const L)
 {
     Creature_AddAllyTargetingEnemy(LUA_CheckObjectID(L, 1));

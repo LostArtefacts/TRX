@@ -268,11 +268,13 @@ static void M_Create(lua_State *const L)
     LUA_RegisterModule(L, "store", empty);
     LUA_GetModule(L, "store");
 
+    // trxc.store.level: table
     lua_newtable(L);
     lua_pushvalue(L, -1);
     m_LevelRef = luaL_ref(L, LUA_REGISTRYINDEX);
     lua_setfield(L, -2, "level");
 
+    // trxc.store.game: table
     lua_newtable(L);
     lua_pushvalue(L, -1);
     m_GameRef = luaL_ref(L, LUA_REGISTRYINDEX);

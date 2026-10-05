@@ -25,7 +25,7 @@ static RGBA_8888 M_CheckColor(lua_State *const L, const int arg)
     return Color_RGBToRGBAEx(color, alpha);
 }
 
-// trxc.scene.box(min, max, color, alpha)
+// trxc.scene.box(min: trx.math.Vec3, max: trx.math.Vec3, color: trx.math.Color|string, alpha?: integer)
 static int M_L_Box(lua_State *const L)
 {
     M_CheckPainting(L);
@@ -44,7 +44,7 @@ static int M_L_Box(lua_State *const L)
     return 0;
 }
 
-// trxc.scene.sphere(centre, radius, color, alpha)
+// trxc.scene.sphere(centre: trx.math.Vec3, radius: trx.math.Distance, color: trx.math.Color|string, alpha?: integer)
 static int M_L_Sphere(lua_State *const L)
 {
     M_CheckPainting(L);

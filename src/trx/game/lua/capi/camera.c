@@ -7,35 +7,35 @@
 
 #include <lauxlib.h>
 
-// trxc.camera.get_pos() → {x, y, z}
+// trxc.camera.get_pos(): trx.math.Vec3
 static int M_L_CameraGetPos(lua_State *const L)
 {
     LUA_PushXYZ(L, g_Camera.pos.pos);
     return 1;
 }
 
-// trxc.camera.get_room() → int (0-based) or nil
+// trxc.camera.get_room(): trx.rooms.Num?
 static int M_L_CameraGetRoom(lua_State *const L)
 {
     LUA_PushOptIndex(L, g_Camera.pos.room_num, NO_ROOM);
     return 1;
 }
 
-// trxc.camera.get_target_pos() → {x, y, z}
+// trxc.camera.get_target_pos(): trx.math.Vec3
 static int M_L_CameraGetTargetPos(lua_State *const L)
 {
     LUA_PushXYZ(L, g_Camera.target.pos);
     return 1;
 }
 
-// trxc.camera.get_target_room() → int (0-based) or nil
+// trxc.camera.get_target_room(): trx.rooms.Num?
 static int M_L_CameraGetTargetRoom(lua_State *const L)
 {
     LUA_PushOptIndex(L, g_Camera.target.room_num, NO_ROOM);
     return 1;
 }
 
-// trxc.camera.shake(intensity)
+// trxc.camera.shake(intensity: integer)
 static int M_L_CameraShake(lua_State *const L)
 {
     g_Camera.bounce = (int32_t)luaL_checkinteger(L, 1);
@@ -49,14 +49,14 @@ static int M_L_CameraReset(lua_State *const L)
     return 0;
 }
 
-// trxc.camera.is_flyby_active() -> bool
+// trxc.camera.is_flyby_active(): boolean
 static int M_L_CameraIsFlybyActive(lua_State *const L)
 {
     lua_pushboolean(L, FlybyMode_IsActive());
     return 1;
 }
 
-// trxc.camera.play_flyby(sequence_num)
+// trxc.camera.play_flyby(sequence_num: trx.camera.SequenceNum): boolean
 static int M_L_CameraPlayFlyby(lua_State *const L)
 {
     lua_pushboolean(

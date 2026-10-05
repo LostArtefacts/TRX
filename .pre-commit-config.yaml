@@ -166,6 +166,13 @@ repos:
     pass_filenames: false
     files: ^(docs/trx/lua/|src/lua/trx/)
 
+  - id: gen-trxc-meta
+    name: Regenerate the trxc definitions from the C signatures
+    entry: tools/lint/gen/trxc_meta
+    language: python
+    pass_filenames: false
+    files: ^(src/trx/.*\.[ch]|tools/lint/emmylua/.*|tools/shared/trxc\.py)$
+
   - id: gen-object-docs
     name: Regenerate object docs from the sources
     entry: tools/lint/gen/object_docs
