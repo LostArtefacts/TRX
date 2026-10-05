@@ -33,7 +33,7 @@ static bool M_IsInteractive(void)
     if (args == nullptr) {
         return true;
     }
-    return !args->headless && !args->startup.dump_lua_api;
+    return !args->headless && !args->startup.check_lua_api;
 }
 
 static void M_ShowFatalError(

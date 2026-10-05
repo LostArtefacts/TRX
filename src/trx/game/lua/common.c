@@ -156,8 +156,7 @@ static RESULT M_RequireTRXModule(lua_State *const L, const char *name)
 static RESULT M_SealPublicAPI(lua_State *const L)
 {
     FAIL_IF(
-        !LUA_API_PushEntrypoint(L, "seal"),
-        "the Lua API registry handed over no sealer");
+        !LUA_API_PushEntrypoint(L, "seal"), "api.lua handed over no sealer");
     FAIL_IF(
         lua_pcall(L, 0, 0, 0) != LUA_OK, "the Lua API would not seal: %s",
         lua_tostring(L, -1));
@@ -194,8 +193,7 @@ static RESULT M_LoadTRXModules(lua_State *const L)
 }
 
 // Run after M_SealPublicAPI, so a script reaches all of trx.* without naming
-// the parts it wants, and api.define raises by then: it cannot extend the API
-// it consumes.
+// the parts it wants.
 static RESULT M_RunTRXRuntimeScripts(lua_State *const L)
 {
     for (const LUA_EMBEDDED_SCRIPT *script = g_LUA_EmbeddedRuntimeScripts;
@@ -616,28 +614,4 @@ void LUA_FreeResult(LUA_RESULT *const result)
     if (result != nullptr) {
         Memory_FreePointer(&result->message);
     }
-}
-
-void LUA_DumpAPI(void)
-{
-    lua_State *const L = m_Priv.state;
-    if (L == nullptr) {
-        LOG_ERROR("--dump-lua-api: Lua is not initialised");
-        return;
-    }
-    // Sealing has already run by now, so the dumper is no longer on trx.api.
-    if (!LUA_API_PushEntrypoint(L, "to_json")) {
-        LOG_ERROR("--dump-lua-api: the Lua API registry handed over no dumper");
-        return;
-    }
-    if (lua_pcall(L, 0, 1, 0) != LUA_OK) {
-        LOG_ERROR("--dump-lua-api failed: %s", lua_tostring(L, -1));
-        lua_pop(L, 1);
-        return;
-    }
-    const char *const json = lua_tostring(L, -1);
-    if (json != nullptr) {
-        puts(json);
-    }
-    lua_pop(L, 1);
 }

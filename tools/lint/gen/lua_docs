@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 """Regenerate the Lua API reference from the engine itself.
 
-The public API is declared next to its implementation in src/lua/trx/*.lua:
-as annotations, which this tool reads through tools/shared/luaannot.py, or
-through the trx.api registry, which builds the metatables.
+The public API is declared next to its implementation, as annotations in
+src/lua/trx/*.lua. This tool reads them through tools/shared/luaannot.py.
 
-`TRX --dump-lua-api` boots Lua and prints the registry as JSON. It is committed
-to docs/trx/lua/api.json so this tool - and the pre-commit hook - need no
-compiled binary; `just lua-api-check` re-dumps from a real build and fails on
-drift, so the committed copy cannot go stale. Committing it also means an API
-change shows up as a reviewable diff.
+The names in each catalog come from the .def file the engine builds it from.
+Nothing here needs a built engine, so the pre-commit hook regenerates every
+page from the source alone.
 
 Reference pages are generated in full. Do not edit them by hand: edit the
 declaration next to the implementation instead.
@@ -18,18 +15,14 @@ declaration next to the implementation instead.
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import re
-import subprocess
 import sys
 import textwrap
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-API_JSON = ROOT / "docs/trx/lua/api.json"
 DOCS_DIR = ROOT / "docs/trx/lua/reference"
-API_SOURCES = ROOT / "src/lua/trx"
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
@@ -41,15 +34,15 @@ from shared.luaannot import (  # noqa: E402
     parse_files,
 )
 
+API_SOURCES = ROOT / "src/lua/trx"
 
-def merged(api: dict) -> dict:
-    """The registry's dump, with the modules the annotations describe."""
+
+def surface() -> dict:
+    """The API the annotations in src/lua/trx describe."""
     found = parse_files(annotated_modules(API_SOURCES))
     catalog_names(found, ROOT)
     finish(found)
-    for key in CATEGORIES:
-        api.setdefault(key, []).extend(found[key])
-    return api
+    return found
 
 INDENT = "    "
 
@@ -429,29 +422,16 @@ def render_lead(head: str, text: str, indent: str) -> list[str]:
     return out
 
 
-# enum path -> { value: constant name }, filled in from the dump before any page
-# is rendered.
-ENUM_CONSTANTS: dict[str, dict[int, str]] = {}
-
-
 def render_default(spec: dict) -> str:
     """The default as a script would write it.
 
-    A default that names an enum constant is stored as the constant's value,
-    since that is what the wrapper substitutes when the argument is omitted. It
-    reads as the constant, and links to the enum, which is where the constants
-    are listed.
+    A default that names an enum constant reads as the constant, and links to
+    the enum, which is where the constants are listed.
     """
     default = spec.get("default")
     if isinstance(default, dict) and "constant" in default:
         constant = default["constant"]
         return link(constant.rpartition(".")[0], f"`trx.{constant}`")
-    named = spec.get("type", "")
-    if isinstance(named, list):
-        named = ""
-    constants = ENUM_CONSTANTS.get(named, {})
-    if default in constants and not isinstance(default, bool):
-        return link(named, f"`trx.{named}.{constants[default]}`")
     if isinstance(default, bool):
         return "`true`" if default else "`false`"
     if isinstance(default, str):
@@ -653,8 +633,7 @@ def render_enum(spec: dict) -> list[str]:
         out.append("")
     for value in spec.get("values") or []:
         at(f"{spec['path']}.{value['name']}")
-        number = f" = `{value['value']}`" if "value" in value else ""
-        out.append(f"{INDENT}- `trx.{spec['path']}.{value['name']}`{number}  ")
+        out.append(f"{INDENT}- `trx.{spec['path']}.{value['name']}`  ")
         out.extend(render_prose(value.get("description") or "", f"{INDENT}    "))
     out.append("")
     return out
@@ -829,7 +808,7 @@ def render_page(module: dict, api: dict) -> str:
         "",
         "<!--",
         "  GENERATED FILE - do not edit.",
-        "  Regenerate with: just lua-api-dump",
+        "  Regenerate with: tools/lint/gen/lua_docs",
         "  The public API is declared next to its implementation, in",
         f"  src/lua/trx/{name}.lua. Edit it there.",
         "-->",
@@ -914,12 +893,6 @@ def read(api: dict) -> None:
     once, here, so a caller that renders a page renders what the tool does.
     """
     ENUM_PATHS.update(enum["path"] for enum in api.get("enums", []))
-    for enum in api.get("enums", []):
-        ENUM_CONSTANTS[enum["path"]] = {
-            value["value"]: value["name"]
-            for value in enum.get("values", [])
-            if "value" in value
-        }
     for number in api.get("numbers", []):
         NUMBERS[number["path"]] = number
     for unit in api.get("units", []):
@@ -1296,23 +1269,6 @@ def described_key(spec: dict, key: str) -> bool:
     return all(documented(f) for f in everything if f["name"] == name)
 
 
-def dump_api(binary: Path) -> str:
-    result = subprocess.run(
-        [str(binary), "--dump-lua-api"], capture_output=True, text=True, check=True
-    )
-    # The engine logs to stdout alongside the JSON, so take the payload rather
-    # than the whole stream. Validate before writing: a broken build must not be
-    # able to poison the committed artifact.
-    payload = next(
-        (line for line in result.stdout.splitlines() if line.startswith("{")), None
-    )
-    if payload is None:
-        raise SystemExit(
-            f"error: {binary} --dump-lua-api produced no JSON.\n{result.stdout[-500:]}"
-        )
-    return json.dumps(json.loads(payload), indent=2, sort_keys=True) + "\n"
-
-
 def mark_deprecations(node: object) -> None:
     """Fold a `deprecated` flag into the prose it belongs to.
 
@@ -1340,37 +1296,13 @@ def mark_deprecations(node: object) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--dump-from",
-        type=Path,
-        metavar="BINARY",
-        help=f"run BINARY --dump-lua-api and refresh {API_JSON.name} first",
-    )
-    parser.add_argument(
         "--check",
         action="store_true",
         help="fail if any page would change instead of rewriting it",
     )
     args = parser.parse_args()
 
-    # The api.json refresh needs a built engine to query. --dump-from names it
-    # explicitly; the hook has no binary to pass, so it reads TRX_BINARY and
-    # refreshes only when that points at a real build. Without it the tool
-    # regenerates the pages from the committed api.json.
-    binary = args.dump_from
-    if binary is None:
-        env_binary = os.environ.get("TRX_BINARY")
-        if env_binary and Path(env_binary).exists():
-            binary = Path(env_binary)
-
-    if binary is not None:
-        API_JSON.write_text(dump_api(binary))
-
-    if not API_JSON.exists():
-        raise SystemExit(
-            f"error: {API_JSON} is missing. Build TRX, then run:\n"
-            f"  just lua-api-dump"
-        )
-    api = merged(json.loads(API_JSON.read_text()))
+    api = surface()
 
     mark_deprecations(api)
     read(api)
@@ -1397,10 +1329,13 @@ def main() -> int:
             print(f"  {report}", file=sys.stderr)
         return 1
 
+    outputs = [
+        (DOCS_DIR / f"{module['name'].upper()}.md", render_page(module, api))
+        for module in api["modules"]
+    ]
+
     stale = []
-    for module in api["modules"]:
-        path = DOCS_DIR / f"{module['name'].upper()}.md"
-        new = render_page(module, api)
+    for path, new in outputs:
         old = path.read_text() if path.exists() else None
         if new == old:
             continue
@@ -1414,7 +1349,7 @@ def main() -> int:
         print("error: generated Lua docs are out of date:", file=sys.stderr)
         for path in stale:
             print(f"  {path}", file=sys.stderr)
-        print("run: just lua-api-dump", file=sys.stderr)
+        print("run: tools/lint/gen/lua_docs", file=sys.stderr)
         return 1
     return 0
 

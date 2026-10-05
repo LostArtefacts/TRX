@@ -1,13 +1,13 @@
 -- What a value has to be to satisfy a declaration.
 --
--- The registry next door says what is declared and where; this says what a
--- declaration accepts, and hands back the predicate that answers for it. The
--- two meet at a path: api.lua passes the lookup it owns to `reads_from`, and
--- nothing else crosses between them.
+-- The annotations say what is declared and where; this says what a declaration
+-- accepts, and hands back the predicate that answers for it. The two meet at a
+-- path: api.lua passes the lookup it owns to `reads_from`, and nothing else
+-- crosses between them.
 --
 -- There are three ways a value is recognised. A handle is told by its
--- metatable, which is the C type name it was registered under. A value the
--- registry hands out is told by the class it carries, so a derived one counts
+-- metatable, which is the C type name it was registered under. A value of a
+-- type written in Lua is told by the class it carries, so a derived one counts
 -- as the type it extends. A table a script writes out has no identity to go on
 -- and is told by what it holds.
 
@@ -109,8 +109,8 @@ local function by_type(declared)
 end
 
 -- A handle's metatable is its C type name - see LUA_Struct_Register - so one
--- type of handle is told from another. api.type registers one of these per
--- type, which is why Item and Room are absent from the primitives.
+-- type of handle is told from another. Each handle type has one of these,
+-- which is why Item and Room are absent from the primitives.
 function M.by_metatable(backing)
   return function(v)
     return getmetatable(v) == backing
@@ -202,11 +202,5 @@ function M.of(spec)
     return true
   end
 end
-
--- On the global, so a module reaches this one the way it reaches any other.
--- It is the registry's own and no part of the surface a script gets: reads_from
--- is a way into what strict mode checks against, so the seal takes it off again
--- as it takes trxc off.
-trx.check = M
 
 return M

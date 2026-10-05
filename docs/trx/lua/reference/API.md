@@ -1,16 +1,16 @@
 ---
-title: API registry
+title: Argument checking
 order: 38
 ---
 
 <!--
   GENERATED FILE - do not edit.
-  Regenerate with: just lua-api-dump
+  Regenerate with: tools/lint/gen/lua_docs
   The public API is declared next to its implementation, in
   src/lua/trx/api.lua. Edit it there.
 -->
 
-## <a id="api" name="api"></a>API registry module
+## <a id="api" name="api"></a>Argument checking module
 
 Argument checking for the whole of `trx`.
 

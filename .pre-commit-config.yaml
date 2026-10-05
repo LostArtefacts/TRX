@@ -159,7 +159,7 @@ repos:
       - pyjson5
 
   - id: gen-lua-docs
-    name: Regenerate Lua API docs from docs/trx/lua/api.json
+    name: Regenerate Lua API docs from src/lua/trx
     entry: tools/lint/gen/lua_docs
     language: python
     stages: [pre-commit]

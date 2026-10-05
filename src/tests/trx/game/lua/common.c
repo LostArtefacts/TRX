@@ -229,7 +229,7 @@ void ItemAction_SetInterceptor(ITEM_ACTION_INTERCEPTOR interceptor)
 {
 }
 
-// The API registry that would answer is not linked here, and a boot that gets
+// The api.lua that would answer is not linked here, and a boot that gets
 // no sealer exits the game.
 bool LUA_API_PushEntrypoint(lua_State *const L, const char *const name)
 {
