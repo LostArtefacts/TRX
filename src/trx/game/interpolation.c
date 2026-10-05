@@ -112,6 +112,10 @@ static XYZ_32 M_GetItemMaxDelta(const ITEM *const item)
         max_y = 200;
         break;
 
+    case O_HENCHMAN_2:
+        max_xz = 352;
+        break;
+
     case O_LARA:
     case O_LARA_EXTRA: {
         const ITEM *const vehicle = Lara_Vehicle_GetItem();

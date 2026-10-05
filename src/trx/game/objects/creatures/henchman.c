@@ -356,8 +356,8 @@ static bool M_TestMonkeyHeight(const ITEM *const item)
 
 static bool M_TouchesDeadlyFloor(const ITEM *const item)
 {
-    // TODO: update during Desert Railroad implementation.
-    const bool is_train = false;
+    // TODO: replace with train GF flag during Desert Railroad implementation.
+    const bool is_train = GF_GetCurrentLevel()->num == 12;
     return is_train && item->pos.y > -STEP_L;
 }
 
