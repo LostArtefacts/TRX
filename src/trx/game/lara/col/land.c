@@ -151,7 +151,9 @@ static bool M_DeflectEdge(ITEM *const item, COLL_INFO *const coll)
     case COLL_TOP_FRONT:
         Lara_Col_Shift(coll);
         item->goal_anim_state = LS(LS_STOP);
-        item->current_anim_state = LS(LS_STOP);
+        if (g_TRVersion < 4) {
+            item->current_anim_state = LS(LS_STOP);
+        }
         item->gravity = false;
         item->speed = 0;
         return true;

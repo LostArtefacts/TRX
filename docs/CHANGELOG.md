@@ -136,6 +136,7 @@
 - Fixed the camera in Tomb of Seth room 1 only showing for one frame after inserting the Eye of Horus (OG bug) (TRX1329)
 - Fixed Lara being able to lock the enemy jeep out of most of KV5 if she closes gates 77 and 78 before it reaches them (OG bug)
 - Fixed Lara not being able to grab ceiling trapdoors (TRX599, regression from 1.9)
+- Fixed Lara having too much forward momentum when sliding off slopes (TRX1674, regression from 1.9)
 - Fixed kills made by Von Croy not registering in the statistics (TRX1689, regression from 1.10)
 - Fixed the total kills showing as 3 in Race for the Iris, rather than 0 (TRX1689, regression from 1.10)
 - Fixed two Von Croy voice lines staying silent with early Italian CDs, which ship them misnamed (TRX659)
