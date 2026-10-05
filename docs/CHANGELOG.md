@@ -184,6 +184,7 @@
 - Fixed `trx.ui.primitive.sprite_count()` counting the meshes of a model as sprites
 - Fixed `trx.item.anim_num` not being accurate when the item is Lara and she is either on a vehicle or performing an extra animation (TRX1644)
 - Fixed `trx.input.with_listen()` always failing with an error
+- Fixed iterating over `trx.fx.fog_bulbs` and `trx.fx.sparks.pool` skipping the last entry
 
 
 ## [1.11.1](https://github.com/LostArtefacts/TRX/compare/trx-1.11...trx-1.11.1) - 2026-09-22

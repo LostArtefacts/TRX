@@ -160,7 +160,7 @@ function FogBulb:is_valid() end
 ---```
 ---@type table<integer, trx.fx.FogBulb?>
 M.fog_bulbs = h.container("fx.fog_bulbs", {
-  base = 0,
+  base = 1,
   get = function(idx)
     return raw.get_fog_bulb(idx - 1)
   end,
@@ -662,7 +662,7 @@ M.sparks.MAX_COUNT = h.const("fx.sparks.MAX_COUNT", raw.spark_max_count())
 ---```
 ---@type table<integer, trx.fx.Spark?>
 M.sparks.pool = h.container("fx.sparks.pool", {
-  base = 0,
+  base = 1,
   get = function(idx)
     return raw.get_spark(idx - 1)
   end,
