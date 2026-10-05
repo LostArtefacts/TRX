@@ -8,8 +8,11 @@
 #include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
 
+// clang-format off
 #define M_MONKEY_CEILING_SNAP 704
-#define M_PUSH_TIMEOUT 15
+#define M_PUSH_TIMEOUT        15
+#define M_MAX_PUSH_DIST       (STEP_L * 18) // = 4608
+// clang-format on
 
 typedef void (*M_COLLISION_ROUTINE)(ITEM *item, COLL_INFO *coll);
 
@@ -40,7 +43,8 @@ bool Lara_Col_Push(
         min_x -= coll->radius;
     }
 
-    if (rx < min_x || rx > max_x || rz < min_z || rz > max_z) {
+    if (ABS(delta.x) > M_MAX_PUSH_DIST || ABS(delta.z) > M_MAX_PUSH_DIST
+        || rx <= min_x || rx >= max_x || rz <= min_z || rz >= max_z) {
         return false;
     }
 
