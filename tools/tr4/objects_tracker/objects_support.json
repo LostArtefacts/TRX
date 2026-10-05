@@ -93,7 +93,7 @@
   "hammer":                   { "status": "not implemented",       "todo": "port from HAMMER"                  },
   "harpy":                    { "status": "not implemented",       "todo": "port from HARPY"                   },
   "henchman_1":               { "status": "fully implemented" },
-  "henchman_2":               { "status": "partially implemented", "todo": "Complete Desert Railroad logic"    },
+  "henchman_2":               { "status": "fully implemented" },
   "horse":                    { "status": "not implemented",       "todo": "port from HORSE"                   },
   "horseman":                 { "status": "not implemented",       "todo": "port from HORSEMAN"                },
   "horus":                    { "status": "not implemented",       "todo": "port from SETHA"                   },
