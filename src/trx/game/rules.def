@@ -1,6 +1,6 @@
 // Every rule the engine plays by, with the value it ships with. The storage,
 // the defaults, the console command and the Lua bridge are all generated from
-// these rows. What each one means is documented in src/lua/api/rules.lua.
+// these rows. What each one means is documented in src/lua/trx/rules.lua.
 //
 // A row names its own group so the group reaches the lookup map, where the
 // markers have expanded to nothing. Naming a group that does not bracket the

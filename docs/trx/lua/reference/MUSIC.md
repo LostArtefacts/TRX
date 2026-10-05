@@ -7,7 +7,7 @@ order: 23
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  src/lua/api/music.lua. Edit it there.
+  src/lua/trx/music.lua. Edit it there.
 -->
 
 ## <a id="music" name="music"></a>Music module

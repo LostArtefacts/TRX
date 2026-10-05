@@ -7,7 +7,7 @@ order: 29
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  src/lua/api/stats.lua. Edit it there.
+  src/lua/trx/stats.lua. Edit it there.
 -->
 
 ## <a id="stats" name="stats"></a>Stats module

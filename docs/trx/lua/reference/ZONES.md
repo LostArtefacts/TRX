@@ -7,7 +7,7 @@ order: 16
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  src/lua/api/zones.lua. Edit it there.
+  src/lua/trx/zones.lua. Edit it there.
 -->
 
 ## <a id="zones" name="zones"></a>Zones module

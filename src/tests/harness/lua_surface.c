@@ -148,8 +148,8 @@ static void M_DiscoverRequired(lua_State *const L, const char *const source)
 static void M_PathFromName(
     char *const out, const size_t size, const char *const name)
 {
-    snprintf(out, size, REPO_ROOT "/src/lua/api/%s.lua", name);
-    for (char *c = out + strlen(REPO_ROOT "/src/lua/api/"); *c != '\0'; c++) {
+    snprintf(out, size, REPO_ROOT "/src/lua/trx/%s.lua", name);
+    for (char *c = out + strlen(REPO_ROOT "/src/lua/trx/"); *c != '\0'; c++) {
         if (*c == '.') {
             *c = '/';
         }

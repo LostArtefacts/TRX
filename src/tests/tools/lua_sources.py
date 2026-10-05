@@ -4,7 +4,7 @@
 
 Which array a Lua file lands in - a module the engine requires, or a script it
 runs once - is stated in src/meson.build and nowhere else, so nothing stops a
-new file in src/lua/api/ from being left out of it.
+new file in src/lua/trx/ from being left out of it.
 
 Left out, the file is still loaded by the surface tests, which read the tree;
 it is simply absent from the binary and from the reference. The suite would be
@@ -34,8 +34,8 @@ def main() -> int:
     failures = []
 
     for variable, directory, prefix, skip in (
-        ("trx_lua_api_sources", ROOT / "src/lua/api", "lua/api", None),
-        ("trx_lua_script_sources", ROOT / "src/lua", "lua", "api"),
+        ("trx_lua_api_sources", ROOT / "src/lua/trx", "lua/trx", None),
+        ("trx_lua_script_sources", ROOT / "src/lua", "lua", "trx"),
     ):
         on_disk = {
             path.relative_to(directory).as_posix()

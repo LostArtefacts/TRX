@@ -7,7 +7,7 @@ order: 28
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  src/lua/api/savegame.lua. Edit it there.
+  src/lua/trx/savegame.lua. Edit it there.
 -->
 
 ## <a id="savegame" name="savegame"></a>Savegame module

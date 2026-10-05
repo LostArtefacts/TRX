@@ -16,7 +16,7 @@
 // be live at once; the caller never frees them. enum_map.c only keeps one key
 // alive at a time, but match the contract rather than assume that.
 //
-// Weak, so a test that links core/strings itself - see lua/api/strings.c - gets
+// Weak, so a test that links core/strings itself - see lua/trx/strings.c - gets
 // the real thing instead of this.
 #define M_BUFFER_COUNT 8
 

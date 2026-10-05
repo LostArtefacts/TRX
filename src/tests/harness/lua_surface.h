@@ -13,7 +13,7 @@
 #include <lualib.h>
 
 typedef struct {
-    // src/lua/api/<module>.lua - the declaration under test.
+    // src/lua/trx/<module>.lua - the declaration under test.
     const char *module;
     // Modules loaded before it, for what require() does not say: a declaration
     // that reaches into another module - trx.camera.room hands back a

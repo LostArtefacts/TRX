@@ -64,7 +64,7 @@ repo_root = meson.current_source_dir() / '../..'
 
 # The public Lua surface, driven the way a level script drives it. Everything
 # below the assertions is real - the FIELD_DESC tables, the struct and enum
-# bridges, the trxc modules, and src/lua/api/*.lua read from the tree - and only
+# bridges, the trxc modules, and src/lua/trx/*.lua read from the tree - and only
 # the engine underneath is faked. The modules are read from disk rather than from
 # the embedded copy, so the tests need to know where the tree is.
 b_lua_surface = {
@@ -177,7 +177,7 @@ b_lua_math = {
 
 # One stanza per test. `name` is the test source, minus its .c, and mirrors what
 # the test exercises: src/tests/trx/core/vector.c tests src/trx/core/vector.c,
-# and src/tests/lua/api/music.c stands trx.music up out of src/lua/api/music.lua.
+# and src/tests/lua/trx/music.c stands trx.music up out of src/lua/trx/music.lua.
 # The same name with dots for slashes is what `meson test` calls it.
 #
 # The rest says what the test needs on top of the harness:
@@ -564,7 +564,7 @@ unit_tests += {
 }
 
 unit_tests += {
-  'name': 'lua/api/rooms',
+  'name': 'lua/trx/rooms',
   'bundles': [b_lua_surface, b_lua_math],
   'src': [
     'harness/stubs_console.c',
@@ -581,7 +581,7 @@ unit_tests += {
 }
 
 unit_tests += {
-  'name': 'lua/api/items',
+  'name': 'lua/trx/items',
   'bundles': [b_lua_surface, b_lua_strings, b_lua_math],
   'src': ['harness/stubs_console.c', 'fakes/items.c', 'fakes/lara.c'],
   'engine': [
@@ -603,7 +603,7 @@ unit_tests += {
 
 # No fake engine: the real trig tables are the thing under test.
 unit_tests += {
-  'name': 'lua/api/math',
+  'name': 'lua/trx/math',
   'bundles': [b_lua_surface, b_lua_math],
 }
 
@@ -611,7 +611,7 @@ unit_tests += {
 # because a setting speaks through a signal of its own, and that is what it
 # speaks with.
 unit_tests += {
-  'name': 'lua/api/signal',
+  'name': 'lua/trx/signal',
   'bundles': [b_lua_surface, b_config, b_lua_math, b_lua_strings],
   'src': ['fakes/level.c', 'harness/stubs_console.c', 'fakes/locale.c', 'fakes/rooms.c'],
   'engine': [
@@ -627,7 +627,7 @@ unit_tests += {
 # No fake engine either: the real generator is the thing under test. trx.math
 # comes along for the angle unit that trx.random.angle reports in.
 unit_tests += {
-  'name': 'lua/api/random',
+  'name': 'lua/trx/random',
   'bundles': [b_lua_surface, b_lua_math],
   'engine': [
     'core/result.c',
@@ -639,9 +639,9 @@ unit_tests += {
 }
 
 unit_tests += {
-  'name': 'lua/api/store',
+  'name': 'lua/trx/store',
   'bundles': [b_lua_surface, b_lua_strings],
-  'src': ['lua/api/store.c'],
+  'src': ['lua/trx/store.c'],
   'engine': [
     'core/colors.c',
     'core/json/base.c',
@@ -654,13 +654,13 @@ unit_tests += {
 }
 
 unit_tests += {
-  'name': 'lua/api/ui',
+  'name': 'lua/trx/ui',
   'bundles': [b_lua_surface, b_lua_math, b_config],
   'src': [
     'fakes/camera.c',
     'fakes/game.c',
     'fakes/level.c',
-    'lua/api/ui.c',
+    'lua/trx/ui.c',
     'fakes/objects.c',
     'fakes/sprites.c',
     'fakes/paths.c',
@@ -699,7 +699,7 @@ unit_tests += {
 }
 
 unit_tests += {
-  'name': 'lua/api/assault',
+  'name': 'lua/trx/assault',
   'bundles': [b_lua_surface],
   'src': ['fakes/assault.c'],
   'engine': ['game/lua/capi/assault.c'],
@@ -707,7 +707,7 @@ unit_tests += {
 
 # rooms rides along: trx.camera.room hands back a trx.rooms.Room.
 unit_tests += {
-  'name': 'lua/api/camera',
+  'name': 'lua/trx/camera',
   'bundles': [b_lua_surface, b_lua_math],
   'src': [
     'harness/stubs_console.c',
@@ -724,19 +724,19 @@ unit_tests += {
 }
 
 unit_tests += {
-  'name': 'lua/api/music',
+  'name': 'lua/trx/music',
   'bundles': [b_lua_surface],
   'src': ['fakes/music.c'],
   'engine': ['game/lua/capi/music.c'],
 }
 
 unit_tests += {
-  'name': 'lua/api/strings',
+  'name': 'lua/trx/strings',
   'bundles': [b_lua_surface, b_lua_strings],
 }
 
 unit_tests += {
-  'name': 'lua/api/path',
+  'name': 'lua/trx/path',
   'bundles': [b_lua_surface],
   'src': ['fakes/path.c'],
 }
@@ -744,7 +744,7 @@ unit_tests += {
 # The encoder is pure Lua, but decoding is the engine's own reader, and a file
 # is named with a path, so the two are stood up together.
 unit_tests += {
-  'name': 'lua/api/json',
+  'name': 'lua/trx/json',
   'bundles': [b_lua_surface],
   'src': ['fakes/path.c'],
   'engine': [
@@ -757,35 +757,35 @@ unit_tests += {
 # The parser is pure Lua, but it leans on the real fuzzy matcher out of
 # trx.strings, so the two are stood up together.
 unit_tests += {
-  'name': 'lua/api/argparse',
+  'name': 'lua/trx/argparse',
   'bundles': [b_lua_surface, b_lua_strings],
   'src': ['fakes/locale.c'],
   'engine': ['game/lua/capi/locale.c'],
 }
 
 unit_tests += {
-  'name': 'lua/api/sound',
+  'name': 'lua/trx/sound',
   'bundles': [b_lua_surface],
   'src': ['fakes/sound.c'],
   'engine': ['game/lua/capi/sound.c'],
 }
 
 unit_tests += {
-  'name': 'lua/api/stats',
+  'name': 'lua/trx/stats',
   'bundles': [b_lua_surface, b_lua_events],
   'src': ['harness/stubs_console.c', 'fakes/camera.c', 'fakes/game.c', 'fakes/stats.c'],
   'engine': ['game/lua/capi/game.c', 'game/lua/capi/stats.c'],
 }
 
 unit_tests += {
-  'name': 'lua/api/locale',
+  'name': 'lua/trx/locale',
   'bundles': [b_lua_surface],
   'src': ['fakes/locale.c'],
   'engine': ['game/lua/capi/locale.c'],
 }
 
 unit_tests += {
-  'name': 'lua/api/lua',
+  'name': 'lua/trx/lua',
   'bundles': [b_lua_surface],
   'src': ['fakes/lua.c'],
   'engine': ['game/lua/capi/lua.c'],
@@ -795,7 +795,7 @@ unit_tests += {
 # registry, so the suite says whether the zones work rather than whether the
 # module repeats what we meant.
 unit_tests += {
-  'name': 'lua/api/zones',
+  'name': 'lua/trx/zones',
   'bundles': [b_lua_surface, b_lua_math],
   'src': ['fakes/level.c',
     'harness/stubs_console.c',
@@ -815,26 +815,26 @@ unit_tests += {
 }
 
 unit_tests += {
-  'name': 'lua/api/weather',
+  'name': 'lua/trx/weather',
   'bundles': [b_lua_surface],
   'src': ['fakes/weather.c'],
   'engine': ['game/lua/capi/weather.c'],
 }
 
 unit_tests += {
-  'name': 'lua/api/mod',
+  'name': 'lua/trx/mod',
   'bundles': [b_lua_surface],
   'engine': ['game/lua/capi/mod.c'],
 }
 
 unit_tests += {
-  'name': 'lua/api/savegame',
+  'name': 'lua/trx/savegame',
   'bundles': [b_lua_surface],
   'engine': ['game/lua/capi/savegame.c'],
 }
 
 unit_tests += {
-  'name': 'lua/api/ui/layers',
+  'name': 'lua/trx/ui/layers',
   'bundles': [b_lua_surface, b_lua_math, b_config],
   'src': [
     'fakes/input.c',
@@ -880,7 +880,7 @@ unit_tests += {
 }
 
 unit_tests += {
-  'name': 'lua/api/ui/screens',
+  'name': 'lua/trx/ui/screens',
   'bundles': [b_lua_surface, b_lua_math, b_config],
   'src': [
     'fakes/input.c',
@@ -930,7 +930,7 @@ unit_tests += {
 }
 
 unit_tests += {
-  'name': 'lua/api/input',
+  'name': 'lua/trx/input',
   'bundles': [b_lua_surface, b_lua_events],
   'src': ['harness/stubs_console.c'],
   'engine': ['config/enum.c', 'game/lua/capi/input.c'],
@@ -939,7 +939,7 @@ unit_tests += {
 # No stubs: fakes/log.c provides Log_Message itself, because which line
 # the log blames is the thing under test.
 unit_tests += {
-  'name': 'lua/api/log',
+  'name': 'lua/trx/log',
   'bundles': [b_lua_surface],
   'src': ['fakes/log.c'],
   'engine': ['game/lua/capi/log.c'],
@@ -947,14 +947,14 @@ unit_tests += {
 }
 
 unit_tests += {
-  'name': 'lua/api/game',
+  'name': 'lua/trx/game',
   'bundles': [b_lua_surface, b_lua_events],
   'src': ['harness/stubs_console.c', 'fakes/camera.c', 'fakes/game.c'],
   'engine': ['game/lua/capi/game.c'],
 }
 
 unit_tests += {
-  'name': 'lua/api/objects',
+  'name': 'lua/trx/objects',
   'bundles': [b_lua_surface, b_lua_strings],
   'src': ['fakes/items.c', 'fakes/lara.c', 'harness/stubs_console.c'],
   'engine': [
@@ -966,7 +966,7 @@ unit_tests += {
 
 # The catalog rides along: the weapons a script names are its enum.
 unit_tests += {
-  'name': 'lua/api/inventory',
+  'name': 'lua/trx/inventory',
   'bundles': [b_lua_surface, b_lua_math],
   'src': ['harness/stubs_console.c', 'fakes/game.c', 'fakes/lara.c', 'fakes/items.c'],
   'engine': [
@@ -983,7 +983,7 @@ unit_tests += {
 # The weapon table is the engine's own; the fake stands in for the gun code the
 # bridges ask which pickup a weapon is and what it is drawn from.
 unit_tests += {
-  'name': 'lua/api/weapons',
+  'name': 'lua/trx/weapons',
   'bundles': [b_lua_surface, b_lua_math],
   'src': ['harness/stubs_console.c', 'fakes/lara.c', 'fakes/items.c'],
   'engine': [
@@ -995,7 +995,7 @@ unit_tests += {
 }
 
 unit_tests += {
-  'name': 'lua/api/lara',
+  'name': 'lua/trx/lara',
   'bundles': [b_lua_surface, b_lua_math, b_lua_events],
   'src': [
     'harness/stubs_console.c',
@@ -1013,13 +1013,13 @@ unit_tests += {
 # The catalogs are real ENUM_MAP enums out of the real trx/game/enum.c. Only
 # the slot mapping, which a game loads from a CSV, is faked.
 unit_tests += {
-  'name': 'lua/api/catalog',
+  'name': 'lua/trx/catalog',
   'bundles': [b_lua_surface],
   'engine': ['game/lua/capi/catalog.c'],
 }
 
 unit_tests += {
-  'name': 'lua/api/config',
+  'name': 'lua/trx/config',
   'bundles': [b_lua_surface, b_config, b_lua_math, b_lua_strings],
   'src': ['fakes/level.c', 'harness/stubs_console.c', 'fakes/locale.c'],
   'engine': [
@@ -1032,7 +1032,7 @@ unit_tests += {
 }
 
 unit_tests += {
-  'name': 'lua/api/console',
+  'name': 'lua/trx/console',
   'bundles': [b_lua_surface, b_console, b_lua_strings],
 }
 
@@ -1529,14 +1529,14 @@ unit_tests += {
 }
 
 unit_tests += {
-  'name': 'lua/api/creatures',
+  'name': 'lua/trx/creatures',
   'bundles': [b_lua_surface],
   'src': ['fakes/creatures.c'],
   'engine': ['game/lua/capi/creatures.c'],
 }
 
 unit_tests += {
-  'name': 'lua/api/events',
+  'name': 'lua/trx/events',
   'bundles': [b_lua_surface],
   'src': ['fakes/rooms.c'],
   'engine': ['game/lua/capi/events.c'],
@@ -1821,14 +1821,14 @@ foreach spec : unit_tests
   endforeach
 endforeach
 
-# src/lua/api/api.lua under a plain interpreter, with the C bridge stubbed in
+# src/lua/trx/api.lua under a plain interpreter, with the C bridge stubbed in
 # Lua. It is the one suite with no runner to build.
 lua_exe = find_program('lua', 'lua5.4', 'lua5.5', required: false)
 if lua_exe.found()
   test(
-    'lua.api.api',
+    'lua.trx.api',
     lua_exe,
-    args: [files('lua/api/api.lua'), repo_root],
+    args: [files('lua/trx/api.lua'), repo_root],
     suite: 'unit',
   )
 endif

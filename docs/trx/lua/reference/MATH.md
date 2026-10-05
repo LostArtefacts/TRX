@@ -7,7 +7,7 @@ order: 32
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  src/lua/api/math.lua. Edit it there.
+  src/lua/trx/math.lua. Edit it there.
 -->
 
 ## <a id="math" name="math"></a>Math module

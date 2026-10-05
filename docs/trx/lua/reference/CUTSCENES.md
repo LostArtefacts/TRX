@@ -7,7 +7,7 @@ order: 14
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  src/lua/api/cutscenes.lua. Edit it there.
+  src/lua/trx/cutscenes.lua. Edit it there.
 -->
 
 ## <a id="cutscenes" name="cutscenes"></a>Cutscenes module

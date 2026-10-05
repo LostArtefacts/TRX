@@ -7,7 +7,7 @@ order: 20
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  src/lua/api/ui.lua. Edit it there.
+  src/lua/trx/ui.lua. Edit it there.
 -->
 
 ## <a id="ui" name="ui"></a>User interface module

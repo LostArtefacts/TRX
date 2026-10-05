@@ -7,7 +7,7 @@ order: 27
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  src/lua/api/config.lua. Edit it there.
+  src/lua/trx/config.lua. Edit it there.
 -->
 
 ## <a id="config" name="config"></a>Config module
