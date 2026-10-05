@@ -2684,6 +2684,9 @@
         "henchman_2": {
             "name": "Fear-leantainn 2",
         },
+        "henchman_jeep": {
+            "name": "Jeep Fear-leantainn",
+        },
         "hook": {
             "name": "Dubhan",
         },

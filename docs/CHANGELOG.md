@@ -83,7 +83,7 @@
 - Added Jeep control (TRX1554)
 - Added Bouncing Boulder control (TRX1560)
 - Added Smashable Vehicle Wall control (TRX1563)
-- Added Enemy Jeep control (excluding Desert Railroad) (TRX1549)
+- Added Enemy Jeep control (TRX1549)
 - Added Trapdoor 1-3 control (TRX1565)
 - Added level views before play starts, with a progress bar (TRX493)
 - Added Seth Sarcophagus and the Burial Chambers cutscene where Lara takes the Amulet (TRX1561)

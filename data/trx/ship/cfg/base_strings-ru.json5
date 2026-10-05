@@ -2684,6 +2684,9 @@
         "henchman_2": {
             "name": "\\{review}Подручный 2",
         },
+        "henchman_jeep": {
+            "name": "\\{review}Подручный Джип",
+        },
         "hook": {
             "name": "\\{review}Крюк",
         },

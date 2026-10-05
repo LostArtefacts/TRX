@@ -12,7 +12,7 @@ from shared.cdefs import expand_def_file
 
 
 ROOT = Path(__file__).resolve().parents[2]
-TR4_OBJECTS_H = ROOT / "trobjects.sh"
+TR4_OBJECTS_H = ROOT / "src" / "tomb4" / "TOMB4" / "game" / "objects.h"
 TRX_OBJECTS_DEF = ROOT / "src" / "trx" / "game" / "catalog" / "objects.def"
 OUTPUT_PATH = ROOT / "data" / "trx" / "ship" / "games" / "tr4" / "catalog_objects.csv"
 
@@ -94,6 +94,7 @@ FORCED_ROWS: dict[int, str] = {
     539: "O_SOUND_OPTION",
     540: "O_CONTROLS_OPTION",
     541: "O_PDA_OPTION",
+    542: "O_HENCHMAN_JEEP",
 }
 
 ALIAS_MAP: dict[str, str] = {

@@ -41,7 +41,7 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     - `trx.catalog.Context.FAMILIES` = `7`  
         The families an object can belong to.
 
-- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 845 names
+- <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 846 names
 
     Every object TRX has a name for.
 
@@ -110,13 +110,13 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
     `GRENADE_GUN_ITEM`, `GRENADE_GUN_OPTION`, `GUIDE`, `GUN_FLASH`, `GUN_SHELL`,
     `HARPOON_BOLT`, `HARPOON_GUN_AMMO_ITEM`, `HARPOON_GUN_AMMO_OPTION`,
     `HARPOON_GUN_ITEM`, `HARPOON_GUN_OPTION`, `HEAVY_ROCKET`, `HENCHMAN_1`,
-    `HENCHMAN_2`, `HOOK`, `HOT_LIQUID`, `HUSKIE`, `HYBRID_MUTANT`, `ICICLE`,
-    `INV_BACKGROUND`, `JACKAL`, `JEEP`, `JELLY`, `KAYAK`, `KEY_HOLE_1`,
-    `KEY_HOLE_10`, `KEY_HOLE_11`, `KEY_HOLE_12`, `KEY_HOLE_2`, `KEY_HOLE_3`,
-    `KEY_HOLE_4`, `KEY_HOLE_5`, `KEY_HOLE_6`, `KEY_HOLE_7`, `KEY_HOLE_8`,
-    `KEY_HOLE_9`, `KEY_ITEM_1`, `KEY_ITEM_10`, `KEY_ITEM_11`, `KEY_ITEM_12`,
-    `KEY_ITEM_1_COMBO_1`, `KEY_ITEM_1_COMBO_2`, `KEY_ITEM_2`,
-    `KEY_ITEM_2_COMBO_1`, `KEY_ITEM_2_COMBO_2`, `KEY_ITEM_3`,
+    `HENCHMAN_2`, `HENCHMAN_JEEP`, `HOOK`, `HOT_LIQUID`, `HUSKIE`,
+    `HYBRID_MUTANT`, `ICICLE`, `INV_BACKGROUND`, `JACKAL`, `JEEP`, `JELLY`,
+    `KAYAK`, `KEY_HOLE_1`, `KEY_HOLE_10`, `KEY_HOLE_11`, `KEY_HOLE_12`,
+    `KEY_HOLE_2`, `KEY_HOLE_3`, `KEY_HOLE_4`, `KEY_HOLE_5`, `KEY_HOLE_6`,
+    `KEY_HOLE_7`, `KEY_HOLE_8`, `KEY_HOLE_9`, `KEY_ITEM_1`, `KEY_ITEM_10`,
+    `KEY_ITEM_11`, `KEY_ITEM_12`, `KEY_ITEM_1_COMBO_1`, `KEY_ITEM_1_COMBO_2`,
+    `KEY_ITEM_2`, `KEY_ITEM_2_COMBO_1`, `KEY_ITEM_2_COMBO_2`, `KEY_ITEM_3`,
     `KEY_ITEM_3_COMBO_1`, `KEY_ITEM_3_COMBO_2`, `KEY_ITEM_4`,
     `KEY_ITEM_4_COMBO_1`, `KEY_ITEM_4_COMBO_2`, `KEY_ITEM_5`,
     `KEY_ITEM_5_COMBO_1`, `KEY_ITEM_5_COMBO_2`, `KEY_ITEM_6`,
