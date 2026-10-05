@@ -80,11 +80,6 @@ everything here reads `nil`.
 
       Returns: boolean. `false` if the level has no such secret, or Lara already has it.
 
-      Example:
-      ```lua
-      trx.stats.give_secret(1)
-      ```
-
     - <a id="stats.Stats.secret_list" name="stats.Stats.secret_list"></a>[lua]`stats:secret_list()`  
       The level's secrets, in order.
 
@@ -94,13 +89,6 @@ everything here reads `nil`.
         - <a id="stats.Stats.secret_list.num" name="stats.Stats.secret_list.num"></a>**`num`** ([trx.stats.SecretNum](#stats.SecretNum)). Which secret it is.
         - <a id="stats.Stats.secret_list.found" name="stats.Stats.secret_list.found"></a>**`found`** (boolean). Whether Lara has it.
 
-      Example:
-      ```lua
-      for _, secret in ipairs(trx.stats.secret_list()) do
-        trx.log.info(secret.num .. ": " .. tostring(secret.found))
-      end
-      ```
-
     - <a id="stats.Stats.take_secret" name="stats.Stats.take_secret"></a>[lua]`stats:take_secret(secret_num)`  
       Takes a secret back, leaving it to be found again.
 
@@ -108,3 +96,43 @@ everything here reads `nil`.
       - <a id="stats.Stats.take_secret.secret_num" name="stats.Stats.take_secret.secret_num"></a>**`secret_num`** ([trx.stats.SecretNum](#stats.SecretNum)).
 
       Returns: boolean. `false` if the level has no such secret, or Lara does not have it.
+
+### Functions
+
+- <a id="stats.secret_list" name="stats.secret_list"></a>[lua]`trx.stats.secret_list()`  
+  Asks [`trx.stats.Stats:secret_list`](#stats.Stats.secret_list) of the level being played. Where none is
+  being played, the list is empty.
+
+  Returns: a list of table. The secrets, one by one.
+
+    Each entry:
+    - <a id="stats.secret_list.num" name="stats.secret_list.num"></a>**`num`** ([trx.stats.SecretNum](#stats.SecretNum)). Which secret it is.
+    - <a id="stats.secret_list.found" name="stats.secret_list.found"></a>**`found`** (boolean). Whether Lara has it.
+
+  Example:
+  ```lua
+  for _, secret in ipairs(trx.stats.secret_list()) do
+    trx.log.info(secret.num .. ": " .. tostring(secret.found))
+  end
+  ```
+
+- <a id="stats.give_secret" name="stats.give_secret"></a>[lua]`trx.stats.give_secret(secret_num)`  
+  Asks [`trx.stats.Stats:give_secret`](#stats.Stats.give_secret) of the level being played.
+
+  Parameters:
+  - <a id="stats.give_secret.secret_num" name="stats.give_secret.secret_num"></a>**`secret_num`** ([trx.stats.SecretNum](#stats.SecretNum)).
+
+  Returns: boolean. `false` if no level is being played, the level has no such secret, or Lara already has it.
+
+  Example:
+  ```lua
+  trx.stats.give_secret(1)
+  ```
+
+- <a id="stats.take_secret" name="stats.take_secret"></a>[lua]`trx.stats.take_secret(secret_num)`  
+  Asks [`trx.stats.Stats:take_secret`](#stats.Stats.take_secret) of the level being played.
+
+  Parameters:
+  - <a id="stats.take_secret.secret_num" name="stats.take_secret.secret_num"></a>**`secret_num`** ([trx.stats.SecretNum](#stats.SecretNum)).
+
+  Returns: boolean. `false` if no level is being played, the level has no such secret, or Lara does not have it.

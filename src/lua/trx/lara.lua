@@ -515,6 +515,6 @@ M.clear_mesh = raw.clear_mesh
 ---@type fun(mesh: trx.lara.Mesh)
 M.clear_equipment = raw.clear_equipment
 
-h.instance(M, "lara", raw.state)
+h.mirror(M, "lara", raw.state, "lara.Lara")
 
 local _ = Lara

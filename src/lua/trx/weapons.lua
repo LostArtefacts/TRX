@@ -136,7 +136,7 @@ local Anim = h.handle("weapons.Anim", "WEAPON_ANIM_INFO", {
 ---A weapon definition, reached as `trx.weapons.uzis` or by id.
 ---@class (exact) trx.weapons.Weapon
 ---@trx.readonly id
----@field id trx.catalog.weapons Which weapon this is, for the calls that take one: `trx.inventory:set_shots(weapon.id, 100)`.
+---@field id trx.catalog.weapons Which weapon this is, for the calls that take one: `trx.inventory.set_shots(weapon.id, 100)`.
 ---@field kind trx.weapons.Kind How the engine holds and fires it.
 ---@field is_available boolean Whether the game allows the weapon at all. Turning one off keeps it out of the cheats and off the controls list, and a save that carries it arrives without it.
 ---@field given_in_ngplus boolean Whether a bonus game gives Lara the weapon, loaded, at level start. A weapon added by a script is not given unless this is true.
@@ -149,7 +149,7 @@ local Anim = h.handle("weapons.Anim", "WEAPON_ANIM_INFO", {
 ---@field fire_sample trx.catalog.samples The sample a shot plays. One this game has no sound for is silent.
 ---@field fire_overlay_sample trx.catalog.samples The overlay sample a shot plays. One this game has no sound for is silent.
 ---@field fire_overlay_pitch integer The pitch at which to play the overlay sample.
----@field object trx.catalog.objects? The pickup the weapon is, for handing it to `trx.inventory:give`. `nil` where this game has no such weapon.
+---@field object trx.catalog.objects? The pickup the weapon is, for handing it to `trx.inventory.give`. `nil` where this game has no such weapon.
 ---@field ammo_object trx.catalog.objects? The box of ammunition it takes, or `nil` where it takes none.
 ---@field has_infinite_ammo boolean Whether the weapon never runs dry. The pistols do in most games, and a level or a script may say so of any weapon. A count of shots left means nothing in this context.
 ---@field ammo_icon string? The markup drawn beside the ammunition count in TR1. Later games count without one, and a weapon that carries no icon answers with `nil`.
@@ -386,10 +386,10 @@ h.properties(M, "weapons", {
 ---@type fun(weapon: trx.catalog.weapons): boolean
 M.is_available = raw.is_available
 
----The pickup the weapon is, for handing it to `trx.inventory:give`.
+---The pickup the weapon is, for handing it to `trx.inventory.give`.
 ---
 ---```lua
----trx.inventory:give(trx.weapons.object(trx.catalog.weapons.SHOTGUN))
+---trx.inventory.give(trx.weapons.object(trx.catalog.weapons.SHOTGUN))
 ---```
 ---@deprecated Read `trx.weapons.Weapon.object` instead.
 ---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN`, `UNARMED`, and out-of-range values raise.

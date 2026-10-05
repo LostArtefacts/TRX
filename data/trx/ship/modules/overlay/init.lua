@@ -521,7 +521,7 @@ do
       return nil
     end
 
-    local shots = trx.inventory:shots(gun)
+    local shots = trx.inventory.shots(gun)
     local icon = trx.game.tr_version == 1 and weapon.ammo_icon or nil
     local inner = icon ~= nil and string.format("%6d %s", shots, icon)
       or string.format("%6d", shots)

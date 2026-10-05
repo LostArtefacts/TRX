@@ -6,16 +6,17 @@ local h = require("trx.internal.helpers")
 
 ---What Lara is carrying, and what goes into it.
 ---
----The module is the inventory she holds now, so `trx.inventory:count(object)`
----asks about her. Any level's is reached the same way through
----`trx.game.Level.inventory`, which is what it will hand her when she arrives
----there rather than what she has this second.
+---The module's functions ask about the inventory she holds now, so
+---`trx.inventory.count(object)` asks about her. Any level's is a
+---`trx.inventory.Inventory`, reached through `trx.game.Level.inventory`, which
+---is what it will hand her when she arrives there rather than what she has
+---this second.
 ---
 ---Every function takes either the pickup lying in the world or the inventory
 ---icon it goes into. The engine maps one to the other, so a script names
 ---whichever it has.
 ---@trx.module 4
----@class (exact) trx.inventory: trx.inventory.Inventory
+---@class (exact) trx.inventory
 local M = h.module("inventory")
 
 ---Where an entry sits in the ring, in the order they are drawn.
@@ -69,10 +70,6 @@ function Inventory:has(object_id) end
 ---Puts a pickup in. Lara's inventory takes it as walking over it would, so a
 ---weapon arrives with the rounds a pickup carries and a flare box with its
 ---flares; a level's simply gains it.
----
----```lua
----trx.inventory:give(trx.catalog.objects.uzi_item, 2)
----```
 ---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
 ---@param count? integer How many. Defaults to 1; below 1 raises.
 ---@return integer # How many went in. 0 from Lara's means the level does not carry the icon for it - see `trx.inventory.Inventory:can_add`.
@@ -96,10 +93,6 @@ function Inventory:take(object_id, count) end
 function Inventory:shots(weapon) end
 
 ---Sets how many shots there are for it.
----
----```lua
----trx.inventory:set_shots(trx.catalog.weapons.UZIS, 2000)
----```
 ---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
 ---@param count integer Shots. Below 0 raises.
 function Inventory:set_shots(weapon, count) end
@@ -139,7 +132,98 @@ function Inventory:entry_count() end
 ---@return boolean # True where the level carries the model to draw it with.
 function Inventory:can_add(object_id) end
 
-h.instance(M, "inventory", raw.get_current)
+---Asks `trx.inventory.Inventory:count` of what Lara carries.
+---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
+---@return integer # 0 where there is none.
+function M.count(object_id)
+  return raw.get_current():count(object_id)
+end
+
+---Asks `trx.inventory.Inventory:set_count` of what Lara carries.
+---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
+---@param count integer How many. Below 0 raises.
+function M.set_count(object_id, count)
+  return raw.get_current():set_count(object_id, count)
+end
+
+---Asks `trx.inventory.Inventory:has` of what Lara carries.
+---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
+---@return boolean # True for any count above 0.
+function M.has(object_id)
+  return raw.get_current():has(object_id)
+end
+
+---Asks `trx.inventory.Inventory:give` of what Lara carries.
+---
+---```lua
+---trx.inventory.give(trx.catalog.objects.uzi_item, 2)
+---```
+---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
+---@param count? integer How many. Defaults to 1; below 1 raises.
+---@return integer # How many went in. 0 from Lara's means the level does not carry the icon for it - see `trx.inventory.Inventory:can_add`.
+function M.give(object_id, count)
+  return raw.get_current():give(object_id, count)
+end
+
+---Asks `trx.inventory.Inventory:take` of what Lara carries.
+---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
+---@param count? integer How many. Defaults to 1; below 1 raises.
+---@return integer # How many came out.
+function M.take(object_id, count)
+  return raw.get_current():take(object_id, count)
+end
+
+---Asks `trx.inventory.Inventory:shots` of what Lara carries.
+---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+---@return integer # 0 where she carries no ammunition for it.
+function M.shots(weapon)
+  return raw.get_current():shots(weapon)
+end
+
+---Asks `trx.inventory.Inventory:set_shots` of what Lara carries.
+---
+---```lua
+---trx.inventory.set_shots(trx.catalog.weapons.UZIS, 2000)
+---```
+---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+---@param count integer Shots. Below 0 raises.
+function M.set_shots(weapon, count)
+  return raw.get_current():set_shots(weapon, count)
+end
+
+---Asks `trx.inventory.Inventory:has_weapon` of what Lara carries.
+---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+---@return boolean # True where the weapon itself is in it.
+function M.has_weapon(weapon)
+  return raw.get_current():has_weapon(weapon)
+end
+
+---Asks `trx.inventory.Inventory:entry` of what Lara carries.
+---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
+---@return trx.inventory.Entry? # The entry, or `nil` where there is none of it.
+function M.entry(object_id)
+  return raw.get_current():entry(object_id)
+end
+
+---Asks `trx.inventory.Inventory:entry_at` of what Lara carries.
+---@param entry_num trx.inventory.EntryNum
+---@return trx.inventory.Entry? # The entry, or `nil` past the last one.
+function M.entry_at(entry_num)
+  return raw.get_current():entry_at(entry_num)
+end
+
+---Asks `trx.inventory.Inventory:entry_count` of what Lara carries.
+---@return integer # Kinds of thing, not counts.
+function M.entry_count()
+  return raw.get_current():entry_count()
+end
+
+---Asks `trx.inventory.Inventory:can_add` of what Lara carries.
+---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
+---@return boolean # True where the level carries the model to draw it with.
+function M.can_add(object_id)
+  return raw.get_current():can_add(object_id)
+end
 
 ---Indexing the module reaches an entry of Lara's inventory, and
 ---`#trx.inventory` is how many kinds of thing she carries. Entries are keyed
