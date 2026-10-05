@@ -62,6 +62,23 @@ test_stubs = files('harness/stubs.c')
 # are two levels up from this project.
 repo_root = meson.current_source_dir() / '../..'
 
+# trx.internal.signatures is generated from the annotations in src/lua/trx, so the
+# harness reads it from here rather than from the tree.
+lua_signatures = custom_target(
+  'lua_signatures',
+  output: 'internal.signatures.lua',
+  command: [
+    find_program('python3'),
+    repo_root / 'tools/gen_lua_signatures.py',
+    '--module-root',
+    repo_root / 'src/lua/trx',
+    '--output',
+    '@OUTPUT@',
+  ],
+  depend_files: files('../../tools/shared/luaannot.py'),
+  build_always_stale: true,
+)
+
 # The public Lua surface, driven the way a level script drives it. Everything
 # below the assertions is real - the FIELD_DESC tables, the struct and enum
 # bridges, the trxc modules, and src/lua/trx/*.lua read from the tree - and only
@@ -96,7 +113,10 @@ b_lua_surface = {
     'harness/stubs_result.c',
   ],
   'deps': [dep_lua],
-  'args': ['-DREPO_ROOT="' + repo_root + '"'],
+  'args': [
+    '-DREPO_ROOT="' + repo_root + '"',
+    '-DLUA_GEN_ROOT="' + meson.current_build_dir() + '"',
+  ],
 }
 
 # The primitive value taxonomy and the two registries it reads names out of.
@@ -1817,7 +1837,13 @@ foreach spec : unit_tests
   # Runs a test once for each entry in `runs`. A module reads the game
   # version once per process, so each game needs a run of its own.
   foreach run : spec.get('runs', [{'suffix': '', 'env': []}])
-    test(test_id + run['suffix'], exe, suite: 'unit', env: run['env'])
+    test(
+      test_id + run['suffix'],
+      exe,
+      suite: 'unit',
+      env: run['env'],
+      depends: lua_signatures,
+    )
   endforeach
 endforeach
 
@@ -1837,7 +1863,7 @@ endif
 # engine code, so they mirror nothing under trx/.
 python_exe = find_program('python3', required: false)
 if python_exe.found()
-  foreach name : ['lua_sources', 'update_lua_docs', 'game_strings', 'cfuncs', 'cdecls', 'object_taxonomy']
+  foreach name : ['lua_sources', 'update_lua_docs', 'lua_annot', 'game_strings', 'cfuncs', 'cdecls', 'object_taxonomy']
     test(
       'tools.' + name,
       python_exe,

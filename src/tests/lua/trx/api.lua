@@ -136,6 +136,9 @@ local function fresh_env()
     if name == "trx.check" then
       return dofile(ROOT .. "src/lua/trx/check.lua")
     end
+    if name == "trx.internal.helpers" then
+      return dofile(ROOT .. "src/lua/trx/internal/helpers.lua")
+    end
   end
 
   dofile(ROOT .. "src/lua/trx/api.lua")

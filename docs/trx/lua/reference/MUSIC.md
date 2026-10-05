@@ -16,12 +16,15 @@ Module for playing and controlling the soundtrack.
 
 ### Indexing
 
-The soundtrack's streams: `[1]` is the main stream, `[2]` onwards the overlay slots. A slot that is not playing still answers, with a stale handle.
+The soundtrack's streams: `[1]` is the main stream, `[2]` onwards the
+overlay slots. A slot that is not playing still answers, with a stale
+handle.
 
 - <a id="music.streams[]" name="music.streams[]"></a>**`trx.music.streams[key]`** (key: [trx.music.StreamNum](#music.StreamNum), value: [trx.music.Stream](#music.Stream) or `nil`).
 - **`#trx.music.streams`** (integer). How many there are.
 
-The tracks the current level carries. A level does not carry every number, so indexing one it lacks is `nil` and iterating passes it by.
+The tracks the current level carries. A level does not carry every number,
+so indexing one it lacks is `nil` and iterating passes it by.
 
 - <a id="music.tracks[]" name="music.tracks[]"></a>**`trx.music.tracks[key]`** (key: [trx.music.TrackNum](#music.TrackNum), value: [trx.music.Track](#music.Track) or `nil`).
 - **`#trx.music.tracks`** (integer). How many there are.
@@ -37,22 +40,23 @@ The tracks the current level carries. A level does not carry every number, so in
 
     How a track is played. Pass one as [`trx.music.play.opts.mode`](#music.play.opts.mode).
 
-    - `trx.music.PlayMode.ONCE` = `0`  
+    - `trx.music.PlayMode.ONCE`  
         Plays the track once. When it finishes, any active looped track resumes from its start.
-    - `trx.music.PlayMode.LOOP` = `1`  
+    - `trx.music.PlayMode.LOOP`  
         Plays the track continuously. It becomes the ambient track.
-    - `trx.music.PlayMode.DELAY` = `2`  
-        Marks the track for later playback rather than starting it now.
-    - `trx.music.PlayMode.NO_REPEAT` = `3`  
+    - `trx.music.PlayMode.NO_REPEAT`  
         Plays the track once, but does not retrigger it if it is already playing.
-    - `trx.music.PlayMode.OVERLAY` = `4`  
+    - `trx.music.PlayMode.DELAY`  
+        Marks the track for later playback rather than starting it now.
+    - `trx.music.PlayMode.OVERLAY`  
         Plays the track on top of the current one.
 
 ### Structures
 
 - <a id="music.TrackNum" name="music.TrackNum"></a>[lua]`trx.music.TrackNum`
 
-    Track number, in the numbering the loaded level carries. Not a [`trx.catalog.music`](CATALOG.md#catalog.music) name, which is the soundtrack's own. Counted from 0.
+    Track number, in the numbering the loaded level carries. Not a
+    [`trx.catalog.music`](CATALOG.md#catalog.music) name, which is the soundtrack's own. Counted from 0.
 
 - <a id="music.StreamNum" name="music.StreamNum"></a>[lua]`trx.music.StreamNum`
 
@@ -60,7 +64,10 @@ The tracks the current level carries. A level does not carry every number, so in
 
 - <a id="music.Stream" name="music.Stream"></a>[lua]`trx.music.Stream`
 
-    One of the soundtrack's playing streams: the main stream, or an overlay. Reach them through [`trx.music.streams`](#music.streams). A handle to a slot that is not playing goes stale, so reading a field or calling a method on it raises; check [`is_valid`](#music.Stream.is_valid) first.
+    One of the soundtrack's playing streams: the main stream, or an overlay.
+    Reach them through [`trx.music.streams`](#music.streams). A handle to a slot that is not
+    playing goes stale, so reading a field or calling a method on it raises;
+    check [`is_valid`](#music.Stream.is_valid) first.
 
     Handles are live references: if the underlying object is destroyed,
     using the handle raises an error rather than silently reading an
@@ -74,7 +81,8 @@ The tracks the current level carries. A level does not carry every number, so in
     Methods:
 
     - <a id="music.Stream.is_valid" name="music.Stream.is_valid"></a>[lua]`stream:is_valid()`  
-      Whether the slot is still playing. A stream that has finished, or been stopped, leaves its handle stale.
+      Whether the slot is still playing. A stream that has finished, or been
+      stopped, leaves its handle stale.
 
       Returns: boolean. False once the slot has gone quiet.
 
@@ -90,14 +98,18 @@ The tracks the current level carries. A level does not carry every number, so in
       Returns: boolean. Whether the seek took.
 
     - <a id="music.Stream.stop" name="music.Stream.stop"></a>[lua]`stream:stop()`  
-      Stops this stream. Stopping the main stream lets a deferred ambient loop resume; an overlay just ends.
+      Stops this stream. Stopping the main stream lets a deferred ambient loop
+      resume; an overlay just ends.
 
     - <a id="music.Stream.unpause" name="music.Stream.unpause"></a>[lua]`stream:unpause()`  
       Resumes this stream.
 
 - <a id="music.Track" name="music.Track"></a>[lua]`trx.music.Track`
 
-    A track the current level carries. Reach them through [`trx.music.tracks`](#music.tracks), or as [`trx.music.current_track`](#music.current_track). A handle to a track the loaded level does not carry goes stale, so [`is_valid`](#music.Track.is_valid) answers whether it is still there.
+    A track the current level carries. Reach them through [`trx.music.tracks`](#music.tracks),
+    or as [`trx.music.current_track`](#music.current_track). A handle to a track the loaded level does
+    not carry goes stale, so [`is_valid`](#music.Track.is_valid) answers whether it is
+    still there.
 
     Handles are live references: if the underlying object is destroyed,
     using the handle raises an error rather than silently reading an
@@ -132,7 +144,8 @@ The tracks the current level carries. A level does not carry every number, so in
 ### Functions
 
 - <a id="music.play" name="music.play"></a>[lua]`trx.music.play(id, [opts])`  
-  Plays a track by catalog id, mapping it to the level's own track. A game that does not carry the track plays nothing.
+  Plays a track by catalog id, mapping it to the level's own track. A game
+  that does not carry the track plays nothing.
 
   Parameters:
   - <a id="music.play.id" name="music.play.id"></a>**`id`** ([trx.catalog.music](CATALOG.md#catalog.music)). Track to play. To reach a track by the level's own slot, play it through a handle: `trx.music.tracks[slot]:play()`.

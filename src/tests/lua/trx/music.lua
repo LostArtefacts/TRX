@@ -131,4 +131,31 @@ test("a method on a stale stream raises", function()
   end)
 end)
 
+test("strict mode checks the annotated functions and methods", function()
+  trx.api.strict(true)
+  local track = trx.music.tracks[fake.TRACK]
+  local ok, err = pcall(trx.music.play, 1, { volume = 3 })
+  local method_ok, method_err = pcall(function()
+    track:play({ mode = "loop" })
+  end)
+  local stream = track:play({ mode = trx.music.PlayMode.LOOP })
+  trx.api.strict(false)
+
+  assert(not ok, "strict mode let a bad argument through to music.play")
+  assert(
+    tostring(err):find("music.play: invalid argument 'opts'", 1, true),
+    err
+  )
+  assert(not method_ok, "strict mode let a bad option through to Track:play")
+  assert(
+    tostring(method_err):find(
+      "music.Track.play: invalid argument 'opts'",
+      1,
+      true
+    ),
+    method_err
+  )
+  assert(stream ~= nil, "a correct call still plays")
+end)
+
 return h.report()

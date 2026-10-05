@@ -8,7 +8,12 @@ meson source list it is named in, not by anything the loader has to work out.
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from shared.luaannot import signatures_module  # noqa: E402
 
 Script = tuple[str, str, bytes]
 
@@ -81,6 +86,17 @@ def main() -> int:
 
     taken: set[str] = set()
     modules = _collect(args.modules, args.module_root, taken)
+    # trx.internal.signatures is generated from the annotations of the modules
+    # above,
+    # for strict mode to check calls against.
+    signatures = signatures_module(args.module_root).encode("utf-8")
+    modules.append(
+        (
+            "internal/signatures.lua",
+            _c_ident_from_path(Path("internal/signatures.lua"), taken),
+            signatures,
+        )
+    )
     scripts = _collect(args.scripts, args.script_root, taken)
 
     lines: list[str] = []
