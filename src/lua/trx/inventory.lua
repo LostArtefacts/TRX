@@ -1,235 +1,163 @@
 local raw = trxc.inventory
-local api = trx.api
+local h = require("trx.internal.helpers")
 
-api.module("inventory", {
-  order = 4,
-  description = [[
-What Lara is carrying, and what goes into it.
+---@class trx
+---@field inventory trx.inventory
 
-The module is the inventory she holds now, so `trx.inventory:count(object)`
-asks about her. Any level's is reached the same way through
-`trx.game.Level.inventory`, which is what it will hand her when she arrives
-there rather than what she has this second.
+---What Lara is carrying, and what goes into it.
+---
+---The module is the inventory she holds now, so `trx.inventory:count(object)`
+---asks about her. Any level's is reached the same way through
+---`trx.game.Level.inventory`, which is what it will hand her when she arrives
+---there rather than what she has this second.
+---
+---Every function takes either the pickup lying in the world or the inventory
+---icon it goes into. The engine maps one to the other, so a script names
+---whichever it has.
+---@trx.module 4
+---@class (exact) trx.inventory: trx.inventory.Inventory
+local M = h.module("inventory")
 
-Every function takes either the pickup lying in the world or the inventory icon
-it goes into. The engine maps one to the other, so a script names whichever it
-has.]],
-  instance = raw.get_current,
-  instance_type = "inventory.Inventory",
+---Where an entry sits in the ring, in the order they are drawn.
+---@trx.base 1
+---@alias trx.inventory.EntryNum integer
+
+---One kind of thing an inventory holds, and how many of it.
+---
+---An entry stands for the icon rather than for where it sits, so it goes on
+---naming the same thing as what is drawn around it changes. A box of
+---ammunition is an entry like any other, counting what its rounds come to.
+---@class (exact) trx.inventory.Entry
+---@trx.readonly object
+---@field object trx.catalog.objects The inventory icon this entry is drawn as.
+---@field count integer How many of it there are. Writing 0 takes it away.
+local Entry = h.handle("inventory.Entry", "INVENTORY_ENTRY", {
+  fields = { object = "object_id", count = "qty" },
+  writable = { "count" },
 })
 
-local object_param = {
-  name = "object_id",
-  type = "catalog.objects",
-  description = "The pickup, or the inventory icon it goes into.",
-}
+---An inventory: what is in it, and how much ammunition goes with it.
+---
+---`trx.inventory` is the one Lara is carrying. A level's, reached as
+---`trx.game.Level.inventory`, is what she will arrive there with, and holds
+---only what travels between levels - a key or a puzzle piece belongs to the
+---level it was found in.
+---
+---Giving something to Lara's does what walking over it would: a weapon arrives
+---with its rounds, her meshes change, and the level's own guns turn into
+---ammunition for it. Giving it to a level's only says what she will arrive
+---carrying.
+---@class (exact) trx.inventory.Inventory
+local Inventory = h.handle("inventory.Inventory", "INVENTORY_STATE", {})
 
-local count_param = {
-  name = "count",
-  type = "integer",
-  optional = true,
-  description = "How many. Defaults to 1; below 1 raises.",
-}
+---How many of something is in it. A box of ammunition counts what its rounds
+---come to.
+---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
+---@return integer # 0 where there is none.
+function Inventory:count(object_id) end
 
-local weapon_param = {
-  name = "weapon",
-  type = "catalog.weapons",
-  description = "Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the "
-    .. "table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.",
-}
+---Sets how many of it there are. Zero takes it away.
+---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
+---@param count integer How many. Below 0 raises.
+function Inventory:set_count(object_id, count) end
 
-api.number("inventory.EntryNum", {
+---Whether there is any of it at all.
+---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
+---@return boolean # True for any count above 0.
+function Inventory:has(object_id) end
+
+---Puts a pickup in. Lara's inventory takes it as walking over it would, so a
+---weapon arrives with the rounds a pickup carries and a flare box with its
+---flares; a level's simply gains it.
+---
+---```lua
+---trx.inventory:give(trx.catalog.objects.uzi_item, 2)
+---```
+---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
+---@param count? integer How many. Defaults to 1; below 1 raises.
+---@return integer # How many went in. 0 from Lara's means the level does not carry the icon for it - see `trx.inventory.Inventory:can_add`.
+function Inventory:give(object_id, count) end
+
+---Takes things back out, stopping when there are none left.
+---
+---This is not the exact opposite of `trx.inventory.Inventory:give`: a box of
+---ammunition is rounds rather than an entry of its own, so taking one back
+---takes the rounds a box is worth.
+---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
+---@param count? integer How many. Defaults to 1; below 1 raises.
+---@return integer # How many came out.
+function Inventory:take(object_id, count) end
+
+---How many shots there are for the weapon. A shot is one pull of the trigger,
+---which is what the counter shows the player; the shotgun spends six rounds on
+---each.
+---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+---@return integer # 0 where she carries no ammunition for it.
+function Inventory:shots(weapon) end
+
+---Sets how many shots there are for it.
+---
+---```lua
+---trx.inventory:set_shots(trx.catalog.weapons.UZIS, 2000)
+---```
+---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+---@param count integer Shots. Below 0 raises.
+function Inventory:set_shots(weapon, count) end
+
+---Whether the weapon itself is in it, which is not the same as having
+---ammunition for it.
+---@param weapon trx.catalog.weapons Which weapon. `UNKNOWN` and `UNARMED` raise, and so does anything outside the table; `FLARE` and `SKIDOO` are taken, being held the way a weapon is.
+---@return boolean # True where the weapon itself is in it.
+function Inventory:has_weapon(weapon) end
+
+---The entry something is drawn as, or `nil` where there is none of it.
+---
+---Several pickups share one entry - the scion whether or not she holds it, a
+---waterskin at each fill level - so this answers with the one thing they are
+---drawn as.
+---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
+---@return trx.inventory.Entry? # The entry, or `nil` where there is none of it.
+function Inventory:entry(object_id) end
+
+---The entry at a position in the order they are drawn, or `nil` past the end.
+---@param entry_num trx.inventory.EntryNum
+---@return trx.inventory.Entry? # The entry, or `nil` past the last one.
+function Inventory:entry_at(entry_num) end
+
+---How many entries there are. `#trx.inventory` is the same number for the one
+---Lara carries.
+---@return integer # Kinds of thing, not counts.
+function Inventory:entry_count() end
+
+---Whether `trx.inventory.Inventory:give` would do anything in the level being
+---played. The level has to carry the inventory model, which is not the same as
+---the pickup being in it: a level with no shotgun lying about still draws one
+---in the ring, which is what lets a cheat hand one over.
+---
+---This asks about the level being played whichever inventory it is called on.
+---@param object_id trx.catalog.objects The pickup, or the inventory icon it goes into.
+---@return boolean # True where the level carries the model to draw it with.
+function Inventory:can_add(object_id) end
+
+h.instance(M, "inventory", raw.get_current)
+
+---Indexing the module reaches an entry of Lara's inventory, and
+---`#trx.inventory` is how many kinds of thing she carries. Entries are keyed
+---by the order they are drawn in, and are built one at a time as they are
+---asked for. `pairs()` walks them.
+---
+---```lua
+---for _, entry in pairs(trx.inventory) do
+---  trx.log.info(("%d x %s"):format(entry.count, trx.catalog.objects[entry.object]))
+---end
+---```
+---@type table<trx.inventory.EntryNum, trx.inventory.Entry?>
+h.container("inventory", {
   base = 1,
-  description = "Where an entry sits in the ring, in the order they are drawn.",
-})
-
-api.type("inventory.Entry", {
-  backing = "INVENTORY_ENTRY",
-  description = [[
-One kind of thing an inventory holds, and how many of it.
-
-An entry stands for the icon rather than for where it sits, so it goes on
-naming the same thing as what is drawn around it changes. A box of ammunition
-is an entry like any other, counting what its rounds come to.]],
-
-  fields = {
-    object = {
-      from = "object_id",
-      type = "catalog.objects",
-      writable = false,
-      description = "The inventory icon this entry is drawn as.",
-    },
-    count = {
-      from = "qty",
-      type = "integer",
-      description = "How many of it there are. Writing 0 takes it away.",
-    },
-  },
-})
-
-api.type("inventory.Inventory", {
-  backing = "INVENTORY_STATE",
-  description = [[
-An inventory: what is in it, and how much ammunition goes with it.
-
-`trx.inventory` is the one Lara is carrying. A level's, reached as
-`trx.game.Level.inventory`, is what she will arrive there with, and holds only
-what travels between levels - a key or a puzzle piece belongs to the level it
-was found in.
-
-Giving something to Lara's does what walking over it would: a weapon arrives
-with its rounds, her meshes change, and the level's own guns turn into
-ammunition for it. Giving it to a level's only says what she will arrive
-carrying.]],
-
-  methods = {
-    count = {
-      description = "How many of something is in it. A box of ammunition counts what its rounds "
-        .. "come to.",
-      params = { object_param },
-      returns = { type = "integer", description = "0 where there is none." },
-    },
-    set_count = {
-      description = "Sets how many of it there are. Zero takes it away.",
-      params = {
-        object_param,
-        {
-          name = "count",
-          type = "integer",
-          description = "How many. Below 0 raises.",
-        },
-      },
-    },
-    has = {
-      description = "Whether there is any of it at all.",
-      params = { object_param },
-      returns = {
-        type = "boolean",
-        description = "True for any count above 0.",
-      },
-    },
-    give = {
-      description = [[
-Puts a pickup in. Lara's inventory takes it as walking over it would, so a
-weapon arrives with the rounds a pickup carries and a flare box with its
-flares; a level's simply gains it.]],
-      params = { object_param, count_param },
-      returns = {
-        type = "integer",
-        description = "How many went in. 0 from Lara's means the level does not carry the icon "
-          .. "for it - see `trx.inventory.Inventory:can_add`.",
-      },
-      examples = { [[trx.inventory:give(trx.catalog.objects.uzi_item, 2)]] },
-    },
-    take = {
-      description = [[
-Takes things back out, stopping when there are none left.
-
-This is not the exact opposite of `trx.inventory.Inventory:give`: a box of ammunition is rounds rather
-than an entry of its own, so taking one back takes the rounds a box is worth.]],
-      params = { object_param, count_param },
-      returns = { type = "integer", description = "How many came out." },
-    },
-    shots = {
-      description = "How many shots there are for the weapon. A shot is one pull of the trigger, "
-        .. "which is what the counter shows the player; the shotgun spends six rounds on each.",
-      params = { weapon_param },
-      returns = {
-        type = "integer",
-        description = "0 where she carries no ammunition for it.",
-      },
-    },
-    set_shots = {
-      description = "Sets how many shots there are for it.",
-      params = {
-        weapon_param,
-        {
-          name = "count",
-          type = "integer",
-          description = "Shots. Below 0 raises.",
-        },
-      },
-      examples = {
-        [[trx.inventory:set_shots(trx.catalog.weapons.UZIS, 2000)]],
-      },
-    },
-    has_weapon = {
-      description = "Whether the weapon itself is in it, which is not the same as having "
-        .. "ammunition for it.",
-      params = { weapon_param },
-      returns = {
-        type = "boolean",
-        description = "True where the weapon itself is in it.",
-      },
-    },
-    entry = {
-      description = [[
-The entry something is drawn as, or `nil` where there is none of it.
-
-Several pickups share one entry - the scion whether or not she holds it, a
-waterskin at each fill level - so this answers with the one thing they are
-drawn as.]],
-      params = { object_param },
-      returns = {
-        type = "inventory.Entry",
-        nullable = true,
-        description = "The entry, or `nil` where there is none of it.",
-      },
-    },
-    entry_at = {
-      description = "The entry at a position in the order they are drawn, or `nil` past the end.",
-      params = {
-        {
-          name = "entry_num",
-          type = "inventory.EntryNum",
-        },
-      },
-      returns = {
-        type = "inventory.Entry",
-        nullable = true,
-        description = "The entry, or `nil` past the last one.",
-      },
-    },
-    entry_count = {
-      description = "How many entries there are. `#trx.inventory` is the same number for the "
-        .. "one Lara carries.",
-      returns = {
-        type = "integer",
-        description = "Kinds of thing, not counts.",
-      },
-    },
-    can_add = {
-      description = [[
-Whether `trx.inventory.Inventory:give` would do anything in the level being played. The level has to
-carry the inventory model, which is not the same as the pickup being in it: a
-level with no shotgun lying about still draws one in the ring, which is what
-lets a cheat hand one over.
-
-This asks about the level being played whichever inventory it is called on.]],
-      params = { object_param },
-      returns = {
-        type = "boolean",
-        description = "True where the level carries the model to draw it with.",
-      },
-    },
-  },
-})
-
-api.container("inventory", {
-  description = "Indexing the module reaches an entry of Lara's inventory, and `#trx.inventory` "
-    .. "is how many kinds of thing she carries. Entries are keyed by the order they are drawn "
-    .. "in, and are built one at a time as they are asked for. `pairs()` walks them.",
-  key = { type = "inventory.EntryNum" },
-  value = { type = "inventory.Entry", nullable = true },
-  examples = {
-    [[for _, entry in pairs(trx.inventory) do
-  trx.log.info(("%d x %s"):format(entry.count, trx.catalog.objects[entry.object]))
-end]],
-  },
   get = function(n)
     return raw.get_current():entry_at(n)
   end,
   count = function()
     return raw.get_current():entry_count()
   end,
-})
+}, M)

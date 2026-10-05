@@ -12,7 +12,8 @@ order: 37
 
 ## <a id="lua" name="lua"></a>Lua module
 
-Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the same state as every other script.
+Evaluating Lua at runtime: a string of code, or a file on disk. Both run in
+the same state as every other script.
 
 ### Structures
 
@@ -40,7 +41,8 @@ Evaluating Lua at runtime: a string of code, or a file on disk. Both run in the 
   ```
 
 - <a id="lua.eval_file" name="lua.eval_file"></a>[lua]`trx.lua.eval_file(path)`  
-  Runs a Lua file, the way a level script is run. A file that cannot be read reports as a `"runtime"` failure.
+  Runs a Lua file, the way a level script is run. A file that cannot be read
+  reports as a `"runtime"` failure.
 
   Parameters:
   - <a id="lua.eval_file.path" name="lua.eval_file.path"></a>**`path`** (string). Path of the file.

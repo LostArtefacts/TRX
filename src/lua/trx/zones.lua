@@ -1,6 +1,6 @@
 local raw = trxc.items
 local capi_events = trxc.events
-local api = trx.api
+local h = require("trx.internal.helpers")
 
 require("trx.log")
 require("trx.math")
@@ -8,6 +8,11 @@ require("trx.events")
 require("trx.items")
 require("trx.rooms")
 require("trx.camera")
+
+local events = trx.events
+
+---@class trx
+---@field zones trx.zones
 
 -- Script-defined trigger regions, tested once a logical frame.
 --
@@ -254,76 +259,51 @@ end
 
 trx.events.on_level_unload(clear)
 
-api.module("zones", {
-  order = 16,
-  description = [[
-A zone is a piece of the level worth keeping an eye on. Mark out a box or a
-sphere in world space, or a single sector the way a floor trigger covers one,
-and the zone reports when something steps into it, when it leaves, and for as
-long as it stays.
+---A zone is a piece of the level worth keeping an eye on. Mark out a box or a
+---sphere in world space, or a single sector the way a floor trigger covers
+---one, and the zone reports when something steps into it, when it leaves, and
+---for as long as it stays.
+---
+---A zone watches Lara and nobody else, unless it is made with `watch =
+---"items"`, and then it watches everything the level holds - enemies, pickups,
+---anything with a position. Its hooks hand over whatever set it off. To listen
+---in one place rather than zone by zone, `trx.events.on_zone_enter` and its
+---siblings hear about all of them.
+---
+---A flyby camera passing through a zone is its own pair of hooks,
+---`trx.zones.Zone:on_flyby_enter` and `trx.zones.Zone:on_flyby_exit`, since a
+---camera is not an item and there is nothing to hand a handler but the zone.
+---Every zone answers for a flyby, whatever it watches, and a tile answers for
+---one in the room the tile belongs to. The camera is checked only while a
+---sequence is playing.
+---
+---Every frame, each zone settles who is inside before anything goes out, and
+---the exits come before the enters - so a script following Lara from one zone
+---into the next hears her leave the first before she enters the second.
+---Something destroyed while it is inside counts as leaving.
+---
+---A box and a sphere take no notice of rooms, so where two rooms sit one above
+---the other over the same ground, a box tall enough to reach both catches what
+---stands in either. Only a tile belongs to a room. A flipmap changes the
+---geometry under a zone but moves nothing and renumbers nothing, so no zone
+---sees anything come or go.
+---
+---Zones belong to the level that made them. A level change clears them, and
+---the level script makes them again the same way it attaches its handlers. A
+---zone made outside a level script - from a global script, or from the
+---console - goes with the next level change as well, and nothing makes it
+---again. A global script that wants a zone in every level makes it from a
+---handler that runs once the level has loaded. They are not written to
+---savegames either, so Lara standing in a zone when a game is loaded enters it
+---again.
+---@trx.module 16
+---@class (exact) trx.zones: table<trx.zones.Num|string, trx.zones.Zone?>
+local M = h.module("zones")
 
-A zone watches Lara and nobody else, unless it is made with `watch = "items"`,
-and then it watches everything the level holds - enemies, pickups, anything
-with a position. Its hooks hand over whatever set it off. To listen in one
-place rather than zone by zone, `trx.events.on_zone_enter` and its siblings
-hear about all of them.
-
-A flyby camera passing through a zone is its own pair of hooks,
-`trx.zones.Zone:on_flyby_enter` and `trx.zones.Zone:on_flyby_exit`, since a
-camera is not an item and there is nothing to hand a handler but the zone.
-Every zone answers for a flyby, whatever it watches, and a tile answers for one
-in the room the tile belongs to. The camera is checked only while a sequence is
-playing.
-
-Every frame, each zone settles who is inside before anything goes out, and the
-exits come before the enters - so a script following Lara from one zone into
-the next hears her leave the first before she enters the second. Something
-destroyed while it is inside counts as leaving.
-
-A box and a sphere take no notice of rooms, so where two rooms sit one above
-the other over the same ground, a box tall enough to reach both catches what
-stands in either. Only a tile belongs to a room. A flipmap changes the geometry
-under a zone but moves nothing and renumbers nothing, so no zone sees anything
-come or go.
-
-Zones belong to the level that made them. A level change clears them, and the
-level script makes them again the same way it attaches its handlers. A zone made
-outside a level script - from a global script, or from the console - goes with
-the next level change as well, and nothing makes it again. A global script that
-wants a zone in every level makes it from a handler that runs once the level has
-loaded. They are not written to savegames either, so Lara standing in a zone when
-a game is loaded enters it again.
-]],
-})
-
-api.number("zones.Num", {
-  base = 1,
-  description = "Where a zone sits among the level's, counted in the order they were made. An "
-    .. "earlier zone being removed shifts the rest along.",
-})
-
-local ZONE = { type = "zones.Zone", description = "The zone." }
-local LISTENER = {
-  type = "events.Listener",
-  description = "The listener. `trx.zones.Zone:remove` detaches what a zone carries as well.",
-}
-
-local function hook_params(what)
-  return {
-    {
-      name = "callback",
-      type = "function",
-      description = "What to run when it happens.",
-      params = {
-        {
-          name = "item",
-          type = "items.Item",
-          description = "The item that " .. what .. ".",
-        },
-      },
-    },
-  }
-end
+---Where a zone sits among the level's, counted in the order they were made. An
+---earlier zone being removed shifts the rest along.
+---@trx.base 1
+---@alias trx.zones.Num integer
 
 -- A hook is one listener on the matching global event, filtered down to this
 -- zone: a transition wakes the hooks of every zone, and each answers only for
@@ -333,28 +313,35 @@ local attach_hook
 -- The zone events are attached to through C rather than through a hook
 -- trx.events declares, so the listener a script is handed is made here. The
 -- key it carries the engine's number under is trx.events' own.
-local Listener = api.class("events.Listener")
+local Listener = h.class_of("events.Listener")
 
 local function listener_of(id)
   return setmetatable({ _id = id }, Listener)
 end
 
-local Zone = api.type("zones.Zone", {
-  description = "A script-defined trigger region. Reading a field of one that has been removed, or "
-    .. "that a level change took away, raises rather than answering for a zone that is no longer "
-    .. "there.",
-
+---A script-defined trigger region. Reading a field of one that has been
+---removed, or that a level change took away, raises rather than answering for
+---a zone that is no longer there.
+---@class (exact) trx.zones.Zone
+---@trx.readonly centre, max, min, name, num, radius, room_num, type, watch
+---@field type string The shape the zone was made with: `"box"`, `"sphere"` or `"tile"`.
+---@field num trx.zones.Num Where the zone sits now.
+---@field name string? The name the zone was made with, and `nil` for one made without. `trx.zones[name]` finds it again.
+---@field enabled boolean Whether the zone is tested. Disabling it suspends the hooks without forgetting who is inside, so an item that leaves while it is off is reported as leaving when it comes back on. One destroyed while it is off is forgotten instead, and nothing is reported for it.
+---@field watch string What sets the zone off: `"lara"` or `"items"`.
+---@field min trx.math.Vec3? The lower corner of a box or a tile, and `nil` for a sphere.
+---@field max trx.math.Vec3? The upper corner of a box or a tile, and `nil` for a sphere.
+---@field centre trx.math.Vec3? The middle of a sphere, and `nil` for a box or a tile.
+---@field radius trx.math.Distance? How far a sphere reaches, and `nil` for a box or a tile.
+---@field room_num trx.rooms.Num? The room a tile belongs to, which is what keeps the same sector column in the room above or below from setting it off. Settled when the zone is made and fixed from then on, a flipmap included. `nil` for a box or a sphere.
+local Zone = h.class("zones.Zone", {
   fields = {
     type = {
-      type = "string",
-      description = 'The shape the zone was made with: `"box"`, `"sphere"` or `"tile"`.',
       get = function(self)
         return own_of(self).type
       end,
     },
     num = {
-      type = "zones.Num",
-      description = "Where the zone sits now.",
       get = function(self)
         own_of(self)
         for i, zone in ipairs(zones) do
@@ -366,19 +353,11 @@ local Zone = api.type("zones.Zone", {
       end,
     },
     name = {
-      type = "string",
-      description = "The name the zone was made with, and `nil` for one made without. "
-        .. "`trx.zones[name]` finds it again.",
       get = function(self)
         return own_of(self).name
       end,
     },
     enabled = {
-      type = "boolean",
-      description = "Whether the zone is tested. Disabling it suspends the hooks without forgetting "
-        .. "who is inside, so an item that leaves while it is off is reported as leaving when it "
-        .. "comes back on. One destroyed while it is off is forgotten instead, and nothing is "
-        .. "reported for it.",
       get = function(self)
         return own_of(self).enabled
       end,
@@ -387,238 +366,181 @@ local Zone = api.type("zones.Zone", {
       end,
     },
     watch = {
-      type = "string",
-      description = 'What sets the zone off: `"lara"` or `"items"`.',
       get = function(self)
         return own_of(self).watch
       end,
     },
     min = {
-      type = "math.Vec3",
-      description = "The lower corner of a box or a tile, and `nil` for a sphere.",
       get = function(self)
         return own_of(self).min
       end,
     },
     max = {
-      type = "math.Vec3",
-      description = "The upper corner of a box or a tile, and `nil` for a sphere.",
       get = function(self)
         return own_of(self).max
       end,
     },
     centre = {
-      type = "math.Vec3",
-      description = "The middle of a sphere, and `nil` for a box or a tile.",
       get = function(self)
         return own_of(self).centre
       end,
     },
     radius = {
-      type = "math.Distance",
-      description = "How far a sphere reaches, and `nil` for a box or a tile.",
       get = function(self)
         return own_of(self).radius
       end,
     },
     room_num = {
-      type = "rooms.Num",
-      description = "The room a tile belongs to, which is what keeps the same sector column in the "
-        .. "room above or below from setting it off. Settled when the zone is made and fixed from "
-        .. "then on, a flipmap included. `nil` for a box or a sphere.",
       get = function(self)
         return own_of(self).room_num
       end,
     },
   },
-
-  methods = {
-    enable = {
-      description = "Starts testing the zone again. The same as `zone.enabled = true`.",
-      impl = function(self)
-        own_of(self).enabled = true
-      end,
-    },
-
-    disable = {
-      description = "Stops testing the zone, without forgetting who is inside, other than an "
-        .. "occupant destroyed meanwhile. The same as `zone.enabled = false`.",
-      impl = function(self)
-        own_of(self).enabled = false
-      end,
-    },
-
-    contains_point = {
-      description = "Whether a world position lies inside the region. A plain test: no hooks are "
-        .. "involved, and a disabled zone answers as readily as any other. A tile answers on "
-        .. "position alone, so a point in the room stacked above it counts here where an item "
-        .. "standing there would not.",
-      params = {
-        { name = "pos", type = "math.Vec3", description = "World position." },
-      },
-      returns = {
-        type = "boolean",
-        description = "Whether the point is inside.",
-      },
-      impl = function(self, pos)
-        return holds_pos(own_of(self), pos)
-      end,
-    },
-
-    contains_item = {
-      description = "Whether the item is inside the region: the same test the zone makes every "
-        .. "frame, so this answers whether the item counts as an occupant. An item is tested by the "
-        .. "point it stands at, and one the world does not hold is nowhere.",
-      params = { { name = "item", type = "items.Item" } },
-      returns = {
-        type = "boolean",
-        description = "Whether the item counts as an occupant.",
-      },
-      examples = {
-        [[if plate:contains_item(trx.lara.item) then
-  trx.log.info("she is standing on it")
-end]],
-      },
-      impl = function(self, item)
-        return holds_item(own_of(self), item)
-      end,
-    },
-
-    occupants = {
-      description = "The items inside the zone as of the last frame it was tested, in item order. A "
-        .. "disabled zone hands back who was inside when it was disabled.",
-      returns = { type = "items.Item", list = true },
-      impl = function(self)
-        local out = {}
-        for _, num in ipairs(own_of(self).order) do
-          local item = trx.items[num]
-          if item ~= nil then
-            out[#out + 1] = item
-          end
-        end
-        return out
-      end,
-    },
-
-    clear_occupants = {
-      description = "Forgets who is inside, so anything still there enters again on the next frame. "
-        .. "This is how a zone is made to fire a second time for an item that never left it. A "
-        .. "flyby passing through is forgotten with the rest.",
-      impl = function(self)
-        local own = own_of(self)
-        own.occupants, own.order, own.flyby = {}, {}, false
-      end,
-    },
-
-    on_enter = {
-      description = "Happens when something enters the zone.",
-      params = hook_params("entered"),
-      returns = LISTENER,
-      examples = {
-        [[local door = trx.zones.box(
-  { x = 51200, y = -2048, z = 30720 },
-  { x = 53248, y = 0, z = 32768 })
-door:on_enter(function(item)
-  trx.log.info("someone stepped in")
-end)]],
-      },
-      impl = function(self, callback)
-        return attach_hook(self, "on_zone_enter", callback)
-      end,
-    },
-
-    on_exit = {
-      description = "Happens when something leaves the zone, and when something inside it is "
-        .. "destroyed.",
-      params = hook_params("left"),
-      returns = LISTENER,
-      impl = function(self, callback)
-        return attach_hook(self, "on_zone_exit", callback)
-      end,
-    },
-
-    on_tick = {
-      description = "Happens on every logical frame something is inside the zone, including the "
-        .. "frame it enters.",
-      params = hook_params("is inside"),
-      returns = LISTENER,
-      impl = function(self, callback)
-        return attach_hook(self, "on_zone_tick", callback)
-      end,
-    },
-
-    on_flyby_enter = {
-      description = "Happens when a flyby camera enters the zone. A flyby is not an item and sets "
-        .. "off no other hook, so a handler takes nothing: the zone is the whole of what happened.",
-      params = {
-        {
-          name = "callback",
-          type = "function",
-          description = "What to run when it happens.",
-        },
-      },
-      returns = LISTENER,
-      examples = {
-        [[local hall = trx.zones.box(
-  { x = 51200, y = -2048, z = 30720 },
-  { x = 53248, y = 0, z = 32768 })
-hall:on_flyby_enter(function()
-  trx.music.play(trx.catalog.music.main_theme)
-end)]],
-      },
-      impl = function(self, callback)
-        return attach_hook(self, "on_zone_flyby_enter", callback)
-      end,
-    },
-
-    on_flyby_exit = {
-      description = "Happens when a flyby camera leaves the zone, and when the sequence ends while "
-        .. "the camera is still inside one.",
-      params = {
-        {
-          name = "callback",
-          type = "function",
-          description = "What to run when it happens.",
-        },
-      },
-      returns = LISTENER,
-      impl = function(self, callback)
-        return attach_hook(self, "on_zone_flyby_exit", callback)
-      end,
-    },
-
-    remove = {
-      description = "Removes the zone and detaches the hooks attached to it. Its handle goes stale: "
-        .. "`trx.zones.Zone:is_valid` says so, and reading a field raises.",
-      impl = function(self)
-        local own = own_of(self)
-        detach_hooks(own)
-        own.removed = true
-        by_id[own.id] = nil
-        for i, zone in ipairs(zones) do
-          if zone == self then
-            table.remove(zones, i)
-            break
-          end
-        end
-        drive()
-      end,
-    },
-
-    is_valid = {
-      description = "Whether the zone still exists. `trx.zones.Zone:remove` and a level change both leave a "
-        .. "handle stale.",
-      returns = {
-        type = "boolean",
-        description = "Whether the zone is still there.",
-      },
-      impl = function(self)
-        local own = state[self]
-        return own ~= nil and not own.removed
-      end,
-    },
-  },
 })
+
+---Starts testing the zone again. The same as `zone.enabled = true`.
+function Zone:enable()
+  own_of(self).enabled = true
+end
+
+---Stops testing the zone, without forgetting who is inside, other than an
+---occupant destroyed meanwhile. The same as `zone.enabled = false`.
+function Zone:disable()
+  own_of(self).enabled = false
+end
+
+---Whether a world position lies inside the region. A plain test: no hooks are
+---involved, and a disabled zone answers as readily as any other. A tile
+---answers on position alone, so a point in the room stacked above it counts
+---here where an item standing there would not.
+---@param pos trx.math.Vec3 World position.
+---@return boolean # Whether the point is inside.
+function Zone:contains_point(pos)
+  return holds_pos(own_of(self), pos)
+end
+
+---Whether the item is inside the region: the same test the zone makes every
+---frame, so this answers whether the item counts as an occupant. An item is
+---tested by the point it stands at, and one the world does not hold is
+---nowhere.
+---
+---```lua
+---if plate:contains_item(trx.lara.item) then
+---  trx.log.info("she is standing on it")
+---end
+---```
+---@param item trx.items.Item
+---@return boolean # Whether the item counts as an occupant.
+function Zone:contains_item(item)
+  return holds_item(own_of(self), item)
+end
+
+---The items inside the zone as of the last frame it was tested, in item order.
+---A disabled zone hands back who was inside when it was disabled.
+---@return trx.items.Item[]
+function Zone:occupants()
+  local out = {}
+  for _, num in ipairs(own_of(self).order) do
+    local item = trx.items[num]
+    if item ~= nil then
+      out[#out + 1] = item
+    end
+  end
+  return out
+end
+
+---Forgets who is inside, so anything still there enters again on the next
+---frame. This is how a zone is made to fire a second time for an item that
+---never left it. A flyby passing through is forgotten with the rest.
+function Zone:clear_occupants()
+  local own = own_of(self)
+  own.occupants, own.order, own.flyby = {}, {}, false
+end
+
+---Happens when something enters the zone.
+---
+---```lua
+---local door = trx.zones.box(
+---  { x = 51200, y = -2048, z = 30720 },
+---  { x = 53248, y = 0, z = 32768 })
+---door:on_enter(function(item)
+---  trx.log.info("someone stepped in")
+---end)
+---```
+---@param callback fun(item: trx.items.Item) What to run when it happens.
+---@trx.arg callback.item The item that entered.
+---@return trx.events.Listener # The listener. `trx.zones.Zone:remove` detaches what a zone carries as well.
+function Zone:on_enter(callback)
+  return attach_hook(self, "on_zone_enter", callback)
+end
+
+---Happens when something leaves the zone, and when something inside it is
+---destroyed.
+---@param callback fun(item: trx.items.Item) What to run when it happens.
+---@trx.arg callback.item The item that left.
+---@return trx.events.Listener # The listener. `trx.zones.Zone:remove` detaches what a zone carries as well.
+function Zone:on_exit(callback)
+  return attach_hook(self, "on_zone_exit", callback)
+end
+
+---Happens on every logical frame something is inside the zone, including the
+---frame it enters.
+---@param callback fun(item: trx.items.Item) What to run when it happens.
+---@trx.arg callback.item The item that is inside.
+---@return trx.events.Listener # The listener. `trx.zones.Zone:remove` detaches what a zone carries as well.
+function Zone:on_tick(callback)
+  return attach_hook(self, "on_zone_tick", callback)
+end
+
+---Happens when a flyby camera enters the zone. A flyby is not an item and sets
+---off no other hook, so a handler takes nothing: the zone is the whole of what
+---happened.
+---
+---```lua
+---local hall = trx.zones.box(
+---  { x = 51200, y = -2048, z = 30720 },
+---  { x = 53248, y = 0, z = 32768 })
+---hall:on_flyby_enter(function()
+---  trx.music.play(trx.catalog.music.main_theme)
+---end)
+---```
+---@param callback function What to run when it happens.
+---@return trx.events.Listener # The listener. `trx.zones.Zone:remove` detaches what a zone carries as well.
+function Zone:on_flyby_enter(callback)
+  return attach_hook(self, "on_zone_flyby_enter", callback)
+end
+
+---Happens when a flyby camera leaves the zone, and when the sequence ends
+---while the camera is still inside one.
+---@param callback function What to run when it happens.
+---@return trx.events.Listener # The listener. `trx.zones.Zone:remove` detaches what a zone carries as well.
+function Zone:on_flyby_exit(callback)
+  return attach_hook(self, "on_zone_flyby_exit", callback)
+end
+
+---Removes the zone and detaches the hooks attached to it. Its handle goes
+---stale: `trx.zones.Zone:is_valid` says so, and reading a field raises.
+function Zone:remove()
+  local own = own_of(self)
+  detach_hooks(own)
+  own.removed = true
+  by_id[own.id] = nil
+  for i, zone in ipairs(zones) do
+    if zone == self then
+      table.remove(zones, i)
+      break
+    end
+  end
+  drive()
+end
+
+---Whether the zone still exists. `trx.zones.Zone:remove` and a level change
+---both leave a handle stale.
+---@return boolean # Whether the zone is still there.
+function Zone:is_valid()
+  local own = state[self]
+  return own ~= nil and not own.removed
+end
 
 -- What the event carries beyond the zone is what the hook hands over: the item
 -- for the three that name one, and nothing at all for a flyby.
@@ -645,21 +567,6 @@ local function flyby_event(event_type)
   end
 end
 
-local FLYBY_PARAMS = {
-  {
-    name = "callback",
-    type = "function",
-    description = "What to run when it happens.",
-    params = {
-      {
-        name = "zone",
-        type = "zones.Zone",
-        description = "The `trx.zones.Zone` the camera entered or left.",
-      },
-    },
-  },
-}
-
 -- The zone events are declared here because narrowing one to the zone it is
 -- about is this module's own bookkeeping. They are engine events like any
 -- other, so trx.events.detach takes their listeners and a level script's are
@@ -677,74 +584,54 @@ local function zone_event(event_type)
   end
 end
 
-local EVENT_PARAMS = {
-  {
-    name = "callback",
-    type = "function",
-    description = "What to run when it happens.",
-    params = {
-      {
-        name = "zone",
-        type = "zones.Zone",
-        description = "The `trx.zones.Zone` the moment is about.",
-      },
-      {
-        name = "item",
-        type = "items.Item",
-        description = "The `trx.items.Item` that entered, left, or is inside.",
-      },
-    },
-  },
-}
+---Happens when something enters a zone. Fires for every zone;
+---`trx.zones.Zone:on_enter` is the same moment narrowed to one of them.
+---
+---```lua
+---trx.events.on_zone_enter(function(zone, item)
+---  trx.log.info("something entered " .. tostring(zone.name))
+---end)
+---```
+---@param callback fun(zone: trx.zones.Zone, item: trx.items.Item) What to run when it happens.
+---@trx.arg callback.zone The `trx.zones.Zone` the moment is about.
+---@trx.arg callback.item The `trx.items.Item` that entered, left, or is inside.
+---@return trx.events.Listener # The attached handler.
+---@type fun(callback: fun(zone: trx.zones.Zone, item: trx.items.Item)): trx.events.Listener
+events.on_zone_enter = zone_event(ZONE_EVENTS.zone_enter)
 
-local EVENT_LISTENER = {
-  type = "events.Listener",
-  description = "The attached handler.",
-}
+---Happens when something leaves a zone, and when something inside one is
+---destroyed.
+---@param callback fun(zone: trx.zones.Zone, item: trx.items.Item) What to run when it happens.
+---@trx.arg callback.zone The `trx.zones.Zone` the moment is about.
+---@trx.arg callback.item The `trx.items.Item` that entered, left, or is inside.
+---@return trx.events.Listener # The attached handler.
+---@type fun(callback: fun(zone: trx.zones.Zone, item: trx.items.Item)): trx.events.Listener
+events.on_zone_exit = zone_event(ZONE_EVENTS.zone_exit)
 
-api.define("events.on_zone_enter", {
-  description = "Happens when something enters a zone. Fires for every zone; `trx.zones.Zone:on_enter` is "
-    .. "the same moment narrowed to one of them.",
-  params = EVENT_PARAMS,
-  returns = EVENT_LISTENER,
-  examples = {
-    [[trx.events.on_zone_enter(function(zone, item)
-  trx.log.info("something entered " .. tostring(zone.name))
-end)]],
-  },
-  impl = zone_event(ZONE_EVENTS.zone_enter),
-})
+---Happens on every logical frame something is inside a zone, including the
+---frame it enters.
+---@param callback fun(zone: trx.zones.Zone, item: trx.items.Item) What to run when it happens.
+---@trx.arg callback.zone The `trx.zones.Zone` the moment is about.
+---@trx.arg callback.item The `trx.items.Item` that entered, left, or is inside.
+---@return trx.events.Listener # The attached handler.
+---@type fun(callback: fun(zone: trx.zones.Zone, item: trx.items.Item)): trx.events.Listener
+events.on_zone_tick = zone_event(ZONE_EVENTS.zone_tick)
 
-api.define("events.on_zone_exit", {
-  description = "Happens when something leaves a zone, and when something inside one is destroyed.",
-  params = EVENT_PARAMS,
-  returns = EVENT_LISTENER,
-  impl = zone_event(ZONE_EVENTS.zone_exit),
-})
+---Happens when a flyby camera enters a zone. Fires for every zone;
+---`trx.zones.Zone:on_flyby_enter` is the same moment narrowed to one of them.
+---@param callback fun(zone: trx.zones.Zone) What to run when it happens.
+---@trx.arg callback.zone The `trx.zones.Zone` the camera entered or left.
+---@return trx.events.Listener # The attached handler.
+---@type fun(callback: fun(zone: trx.zones.Zone)): trx.events.Listener
+events.on_zone_flyby_enter = flyby_event(ZONE_EVENTS.zone_flyby_enter)
 
-api.define("events.on_zone_tick", {
-  description = "Happens on every logical frame something is inside a zone, including the frame it "
-    .. "enters.",
-  params = EVENT_PARAMS,
-  returns = EVENT_LISTENER,
-  impl = zone_event(ZONE_EVENTS.zone_tick),
-})
-
-api.define("events.on_zone_flyby_enter", {
-  description = "Happens when a flyby camera enters a zone. Fires for every zone; "
-    .. "`trx.zones.Zone:on_flyby_enter` is the same moment narrowed to one of them.",
-  params = FLYBY_PARAMS,
-  returns = EVENT_LISTENER,
-  impl = flyby_event(ZONE_EVENTS.zone_flyby_enter),
-})
-
-api.define("events.on_zone_flyby_exit", {
-  description = "Happens when a flyby camera leaves a zone, and when the sequence ends while the "
-    .. "camera is still inside one.",
-  params = FLYBY_PARAMS,
-  returns = EVENT_LISTENER,
-  impl = flyby_event(ZONE_EVENTS.zone_flyby_exit),
-})
+---Happens when a flyby camera leaves a zone, and when the sequence ends while
+---the camera is still inside one.
+---@param callback fun(zone: trx.zones.Zone) What to run when it happens.
+---@trx.arg callback.zone The `trx.zones.Zone` the camera entered or left.
+---@return trx.events.Listener # The attached handler.
+---@type fun(callback: fun(zone: trx.zones.Zone)): trx.events.Listener
+events.on_zone_flyby_exit = flyby_event(ZONE_EVENTS.zone_flyby_exit)
 
 local WATCHES = { lara = true, items = true }
 
@@ -784,148 +671,98 @@ local function add(own, opts)
   return zone
 end
 
-local WATCH_OPTS = {
-  name = "opts",
-  type = "table",
-  optional = true,
-  description = "How the zone is watched, and what it is called.",
-  fields = {
-    {
-      name = "watch",
-      type = "string",
-      optional = true,
-      default = "lara",
-      description = 'What sets the zone off: `"lara"` tests Lara alone, and `"items"` tests '
-        .. "every item the level holds.",
-    },
-    {
-      name = "name",
-      type = "string",
-      optional = true,
-      description = "A name `trx.zones[name]` finds the zone by. Raises where the level already "
-        .. "has a zone of that name.",
-    },
-  },
-}
+---@class (exact) trx.zones.box.opts
+---@field watch? string What sets the zone off: `"lara"` tests Lara alone, and `"items"` tests every item the level holds.
+---@field name? string A name `trx.zones[name]` finds the zone by. Raises where the level already has a zone of that name.
+---@trx.default watch "lara"
 
-api.define("zones.box", {
-  description = "Creates a zone from a world-space box. The corners may come in any order. Rooms "
-    .. "play no part: what stands inside the box is inside it, whichever room holds it.",
-  params = {
-    {
-      name = "min",
-      type = "math.Vec3",
-      description = "One corner of the box.",
+---Creates a zone from a world-space box. The corners may come in any order.
+---Rooms play no part: what stands inside the box is inside it, whichever room
+---holds it.
+---
+---```lua
+---local arena = trx.zones.box(
+---  { x = 51200, y = -2048, z = 30720 },
+---  { x = 53248, y = 0, z = 32768 },
+---  { watch = "items", name = "arena" })
+---```
+---@param min trx.math.Vec3 One corner of the box.
+---@param max trx.math.Vec3 The opposite corner of the box.
+---@param opts? trx.zones.box.opts How the zone is watched, and what it is called.
+---@return trx.zones.Zone # The zone.
+function M.box(min, max, opts)
+  return add({
+    type = "box",
+    shape = "box",
+    min = {
+      x = math.min(min.x, max.x),
+      y = math.min(min.y, max.y),
+      z = math.min(min.z, max.z),
     },
-    {
-      name = "max",
-      type = "math.Vec3",
-      description = "The opposite corner of the box.",
+    max = {
+      x = math.max(min.x, max.x),
+      y = math.max(min.y, max.y),
+      z = math.max(min.z, max.z),
     },
-    WATCH_OPTS,
-  },
-  returns = ZONE,
-  examples = {
-    [[local arena = trx.zones.box(
-  { x = 51200, y = -2048, z = 30720 },
-  { x = 53248, y = 0, z = 32768 },
-  { watch = "items", name = "arena" })]],
-  },
-  impl = function(min, max, opts)
-    return add({
-      type = "box",
-      shape = "box",
-      min = {
-        x = math.min(min.x, max.x),
-        y = math.min(min.y, max.y),
-        z = math.min(min.z, max.z),
-      },
-      max = {
-        x = math.max(min.x, max.x),
-        y = math.max(min.y, max.y),
-        z = math.max(min.z, max.z),
-      },
-    }, opts)
-  end,
-})
+  }, opts)
+end
 
-api.define("zones.sphere", {
-  description = "Creates a zone from a point and a radius. Rooms play no part, as they do not for "
-    .. "`trx.zones.box`.",
-  params = {
-    {
-      name = "centre",
-      type = "math.Vec3",
-      description = "Middle of the sphere.",
-    },
-    {
-      name = "radius",
-      type = "math.Distance",
-      description = "How far out it reaches.",
-    },
-    WATCH_OPTS,
-  },
-  returns = ZONE,
-  examples = {
-    [[local bell = trx.zones.sphere(trx.lara.item.pos, 2048, { watch = "items" })]],
-  },
-  impl = function(centre, radius, opts)
-    if radius < 0 then
-      error("radius must not be negative", 3)
-    end
-    return add({
-      type = "sphere",
-      shape = "sphere",
-      centre = { x = centre.x, y = centre.y, z = centre.z },
-      radius = radius,
-    }, opts)
-  end,
-})
+---Creates a zone from a point and a radius. Rooms play no part, as they do not
+---for `trx.zones.box`.
+---
+---```lua
+---local bell = trx.zones.sphere(trx.lara.item.pos, 2048, { watch = "items" })
+---```
+---@param centre trx.math.Vec3 Middle of the sphere.
+---@param radius trx.math.Distance How far out it reaches.
+---@param opts? trx.zones.box.opts How the zone is watched, and what it is called.
+---@return trx.zones.Zone # The zone.
+function M.sphere(centre, radius, opts)
+  if radius < 0 then
+    error("radius must not be negative", 3)
+  end
+  return add({
+    type = "sphere",
+    shape = "sphere",
+    centre = { x = centre.x, y = centre.y, z = centre.z },
+    radius = radius,
+  }, opts)
+end
 
-api.define("zones.tile", {
-  description = "Creates a zone from the sector under a position, in the room holding that "
-    .. "position, at any height - the way a floor trigger occupies a sector. The same sector column "
-    .. "in the room above or below does not set it off. Where rooms overlap and several of them "
-    .. "hold the position, the zone takes the first, which is the lowest-numbered room rather than "
-    .. "the nearest floor; `trx.zones.Zone.room_num` says which one it settled on.",
-  params = {
-    {
-      name = "pos",
-      type = "math.Vec3",
-      description = "A world position inside the sector.",
+---Creates a zone from the sector under a position, in the room holding that
+---position, at any height - the way a floor trigger occupies a sector. The
+---same sector column in the room above or below does not set it off. Where
+---rooms overlap and several of them hold the position, the zone takes the
+---first, which is the lowest-numbered room rather than the nearest floor;
+---`trx.zones.Zone.room_num` says which one it settled on.
+---
+---```lua
+---local plate = trx.zones.tile(trx.lara.item.pos)
+---plate:on_enter(function(item)
+---  trx.log.info("stepped on the plate")
+---end)
+---```
+---@param pos trx.math.Vec3 A world position inside the sector.
+---@param opts? trx.zones.box.opts How the zone is watched, and what it is called.
+---@return trx.zones.Zone? # The zone, or `nil` when the position lies outside the level.
+function M.tile(pos, opts)
+  local room = trx.rooms.query:at(pos):first()
+  if room == nil then
+    return nil
+  end
+  local corner = trx.math.round_to_sector(pos)
+  return add({
+    type = "tile",
+    shape = "box",
+    min = { x = corner.x, y = FLOOR_OF_THE_WORLD, z = corner.z },
+    max = {
+      x = corner.x + trx.math.WALL_L - 1,
+      y = CEILING_OF_THE_WORLD,
+      z = corner.z + trx.math.WALL_L - 1,
     },
-    WATCH_OPTS,
-  },
-  returns = {
-    type = "zones.Zone",
-    nullable = true,
-    description = "The zone, or `nil` when the position lies outside the level.",
-  },
-  examples = {
-    [[local plate = trx.zones.tile(trx.lara.item.pos)
-plate:on_enter(function(item)
-  trx.log.info("stepped on the plate")
-end)]],
-  },
-  impl = function(pos, opts)
-    local room = trx.rooms.query:at(pos):first()
-    if room == nil then
-      return nil
-    end
-    local corner = trx.math.round_to_sector(pos)
-    return add({
-      type = "tile",
-      shape = "box",
-      min = { x = corner.x, y = FLOOR_OF_THE_WORLD, z = corner.z },
-      max = {
-        x = corner.x + trx.math.WALL_L - 1,
-        y = CEILING_OF_THE_WORLD,
-        z = corner.z + trx.math.WALL_L - 1,
-      },
-      room_num = room.num,
-    }, opts)
-  end,
-})
+    room_num = room.num,
+  }, opts)
+end
 
 function lookup(key)
   if type(key) == "number" then
@@ -939,49 +776,37 @@ function lookup(key)
   return nil
 end
 
-api.define("zones.get", {
-  description = "Retrieves a zone by its place in the module or by the name it was made with. The "
-    .. "same as indexing the module.",
-  params = {
-    {
-      name = "key",
-      type = { "zones.Num", "string" },
-      description = "Where the zone sits, or the name it was made with.",
-    },
-  },
-  returns = { type = "zones.Zone", nullable = true },
-  impl = lookup,
-})
+---Retrieves a zone by its place in the module or by the name it was made with.
+---The same as indexing the module.
+---@param key trx.zones.Num|string Where the zone sits, or the name it was made with.
+---@return trx.zones.Zone?
+---@type fun(key: trx.zones.Num|string): trx.zones.Zone?
+M.get = lookup
 
-api.define("zones.count", {
-  description = "How many zones the level has. The same as `#trx.zones`.",
-  returns = {
-    type = "integer",
-    description = "How many zones the level holds.",
-  },
-  impl = function()
-    return #zones
-  end,
-})
+---How many zones the level has. The same as `#trx.zones`.
+---@return integer # How many zones the level holds.
+function M.count()
+  return #zones
+end
 
-api.container("zones", {
-  description = "Indexing the module reaches a zone, by the order the zones were made or by the "
-    .. "name one was made with. `#trx.zones` is how many there are, and `pairs()` walks them in "
-    .. "that order.",
-  key = {
-    type = { "zones.Num", "string" },
-    description = "Where the zone sits, or the name it was made with. A script holds the zone "
-      .. "itself, or the name it gave it, rather than the number.",
-  },
-  value = { type = "zones.Zone", nullable = true },
-  examples = {
-    [[trx.log.info(#trx.zones .. " zones, the first is a " .. trx.zones[1].type)
-for _, zone in pairs(trx.zones) do
-  zone:disable()
-end]],
-  },
+---Indexing the module reaches a zone, by the order the zones were made or by
+---the name one was made with. `#trx.zones` is how many there are, and
+---`pairs()` walks them in that order.
+---
+---```lua
+---trx.log.info(#trx.zones .. " zones, the first is a " .. trx.zones[1].type)
+---for _, zone in pairs(trx.zones) do
+---  zone:disable()
+---end
+---```
+---@type table<trx.zones.Num|string, trx.zones.Zone?>
+---@trx.key Where the zone sits, or the name it was made with. A script holds
+---  the zone itself, or the name it gave it, rather than the number.
+h.container("zones", {
+  base = 1,
+  by_name = true,
   get = lookup,
   count = function()
     return #zones
   end,
-})
+}, M)

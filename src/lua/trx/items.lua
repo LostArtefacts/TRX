@@ -1,115 +1,116 @@
 local raw = trxc.items
-local api = trx.api
+local h = require("trx.internal.helpers")
 
 require("trx.math")
 
-local Box = api.class("math.Box")
+local Box = h.class_of("math.Box")
 require("trx.query")
 
-api.module("items", {
-  order = 2,
-  description = "Module for controlling all moveables.",
-})
+---@class trx
+---@field items trx.items
 
-api.number("items.AnimNum", {
-  base = 0,
-  description = "The animation's number within the object an item is of.",
-})
+---Module for controlling all moveables.
+---@trx.module 2
+---@class (exact) trx.items: table<trx.items.Num|string, trx.items.Item?>
+---@trx.readonly query
+---@field query trx.items.ItemQuery The identity query over every item in the level. Narrow it and read it.
+local M = h.module("items")
 
-api.number("items.FrameNum", {
-  base = 0,
-  description = "The frame's number within the animation it belongs to.",
-})
+---The animation's number within the object an item is of.
+---@trx.base 0
+---@alias trx.items.AnimNum integer
 
-api.number("items.AnimState", {
-  base = 0,
-  description = "An animation state, as the object's own animations number them. What a state "
-    .. "means is the object's business: the numbers of a wolf are not the numbers of a door.",
-})
+---The frame's number within the animation it belongs to.
+---@trx.base 0
+---@alias trx.items.FrameNum integer
 
-api.number("items.Num", {
-  base = 0,
-  description = "Item number, matching the numbers level editors show.",
-})
+---An animation state, as the object's own animations number them. What a state
+---means is the object's business: the numbers of a wolf are not the numbers of
+---a door.
+---@trx.base 0
+---@alias trx.items.AnimState integer
 
-api.enum("items.EarthquakeMode", {
-  backing = "EARTHQUAKE_MODE",
-  description = "<!--noref: earthquake_mode--> The values the `earthquake_mode` item property can take. "
-    .. "It selects the behavior of the camera shake and sound effects of active earthquakes.",
-  values = {
-    RANDOM_1 = "Per TR1 - the camera shakes at random, and sound effects earthquake_1 and earthquake_2 are played at random intervals.",
-    RANDOM_2 = "Per TR2 - similar to TR1, with less randomness and only the earthquake_1 sound effect is played.",
-    RAMPED = "Per TR3 - the camera shakes on a ramped scale and the earthquake_loop sound effect plays throughout.",
-    BASIC = "Per TR4 - the camera shakes and the earthquake_loop sound effect plays on each frame.",
-  },
-})
+---Item number, matching the numbers level editors show.
+---@trx.base 0
+---@alias trx.items.Num integer
 
-api.enum("items.PickupMode", {
-  backing = "PICKUP_MODE",
-  description = "<!--noref: pickup_mode--> The values the `pickup_mode` item property can take. It selects the animation Lara "
-    .. "plays when collecting the item.",
-  values = {
-    NORMAL = "Picked up off the floor.",
-    PLINTH_LOW = "Picked up from a low pedestal.",
-    PLINTH_HIGH = "Picked up from a high pedestal.",
-    HIDDEN = "Hidden behind an object Lara can reach into.",
-    CROWBAR = "Pried off the wall using a crowbar.",
-    SARCOPHAGUS = "Hidden inside a sarcophagus.",
-    PLINTH_SCION = "Similar to PLINTH_HIGH; invokes Lara's extra animation as in Tomb of Qualopec.",
-  },
-})
+---<!--noref: earthquake_mode--> The values the `earthquake_mode` item property
+---can take. It selects the behavior of the camera shake and sound effects of
+---active earthquakes.
+---@enum trx.items.EarthquakeMode
+local EarthquakeMode = {
+  RANDOM_1 = "Per TR1 - the camera shakes at random, and sound effects earthquake_1 and earthquake_2 are played at random intervals.",
+  RANDOM_2 = "Per TR2 - similar to TR1, with less randomness and only the earthquake_1 sound effect is played.",
+  RAMPED = "Per TR3 - the camera shakes on a ramped scale and the earthquake_loop sound effect plays throughout.",
+  BASIC = "Per TR4 - the camera shakes and the earthquake_loop sound effect plays on each frame.",
+}
+M.EarthquakeMode =
+  h.enum("items.EarthquakeMode", "EARTHQUAKE_MODE", EarthquakeMode)
 
-api.enum("items.ScaledSpikesMode", {
-  backing = "SCALED_SPIKES_MODE",
-  description = "<!--noref: scaled_spikes_mode--> The values the `scaled_spikes_mode` item property can take. It determines how "
-    .. "spikes behave when triggered.",
-  values = {
-    LOOPING = "Spikes will extend, wait a brief period, retract, and then the loop will repeat.",
-    EXTENDED = "Spikes will extend and remain as-is indefinitely.",
-    ONE_SHOT = "Spikes will extend, wait a brief period, retract, and then stop.",
-  },
-})
+---<!--noref: pickup_mode--> The values the `pickup_mode` item property can
+---take. It selects the animation Lara plays when collecting the item.
+---@enum trx.items.PickupMode
+local PickupMode = {
+  NORMAL = "Picked up off the floor.",
+  PLINTH_LOW = "Picked up from a low pedestal.",
+  PLINTH_HIGH = "Picked up from a high pedestal.",
+  HIDDEN = "Hidden behind an object Lara can reach into.",
+  CROWBAR = "Pried off the wall using a crowbar.",
+  SARCOPHAGUS = "Hidden inside a sarcophagus.",
+  PLINTH_SCION = "Similar to PLINTH_HIGH; invokes Lara's extra animation as in Tomb of Qualopec.",
+}
+M.PickupMode = h.enum("items.PickupMode", "PICKUP_MODE", PickupMode)
 
-api.enum("items.SwitchMode", {
-  backing = "SWITCH_MODE",
-  description = "<!--noref: switch_mode--> The values the `switch_mode` item property can take. It selects the animation Lara "
-    .. "plays when interacting with the item.",
-  values = {
-    NORMAL = "A regular/classic wall lever.",
-    HIDDEN_REACH = "Lara reaches in to activate.",
-    HIDDEN_PICKUP = "Lara reaches in to collect a pickup.",
-    SHOVE = "A single-use button that requires a shove to activate.",
-  },
-})
+---<!--noref: scaled_spikes_mode--> The values the `scaled_spikes_mode` item
+---property can take. It determines how spikes behave when triggered.
+---@enum trx.items.ScaledSpikesMode
+local ScaledSpikesMode = {
+  LOOPING = "Spikes will extend, wait a brief period, retract, and then the loop will repeat.",
+  EXTENDED = "Spikes will extend and remain as-is indefinitely.",
+  ONE_SHOT = "Spikes will extend, wait a brief period, retract, and then stop.",
+}
+M.ScaledSpikesMode =
+  h.enum("items.ScaledSpikesMode", "SCALED_SPIKES_MODE", ScaledSpikesMode)
 
-api.enum("items.TriggerType", {
-  backing = "ITEM_TRIGGER_KIND",
-  description = "The kind of trigger `trx.items.Item:trigger` fires, matching the trigger types a level editor "
-    .. "offers. Most are forward triggers that differ only in what trips them in a level; from a "
-    .. "script they behave alike, and `TRIGGER` is the one to reach for.",
-  values = {
-    TRIGGER = "A plain trigger: sets the code bits and, once they are all set, starts the item.",
-    ANTITRIGGER = "Takes the trigger back, clearing the code bits. The item is left running so it "
-      .. "can stand itself down, which is how a door animates shut.",
-    SWITCH = "Toggles the code bits, so firing it a second time takes the trigger back.",
-    HEAVY = "A forward trigger a heavy object trips. A falling block reads this to know it was set "
-      .. "off by weight.",
-    HEAVY_SWITCH = "A switch a heavy object trips.",
-  },
-})
+---<!--noref: switch_mode--> The values the `switch_mode` item property can
+---take. It selects the animation Lara plays when interacting with the item.
+---@enum trx.items.SwitchMode
+local SwitchMode = {
+  NORMAL = "A regular/classic wall lever.",
+  HIDDEN_REACH = "Lara reaches in to activate.",
+  HIDDEN_PICKUP = "Lara reaches in to collect a pickup.",
+  SHOVE = "A single-use button that requires a shove to activate.",
+}
+M.SwitchMode = h.enum("items.SwitchMode", "SWITCH_MODE", SwitchMode)
 
-api.enum("items.WaterfallSound", {
-  backing = "WATERFALL_SOUND",
-  description = [[<!--noref: loop_sound--> The values the `loop_sound` item property can take. It selects the
-    sound a waterfall loops while it runs.]],
-  values = {
-    NONE = "The waterfall runs silently.",
-    SAND = "A pouring sand loop.",
-    WATER = "A running water loop.",
-  },
-})
+---The kind of trigger `trx.items.Item:trigger` fires, matching the trigger
+---types a level editor offers. Most are forward triggers that differ only in
+---what trips them in a level; from a script they behave alike, and `TRIGGER`
+---is the one to reach for.
+---@enum trx.items.TriggerType
+local TriggerType = {
+  TRIGGER = "A plain trigger: sets the code bits and, once they are all set, starts the item.",
+  ANTITRIGGER = "Takes the trigger back, clearing the code bits. The item is left running so it "
+    .. "can stand itself down, which is how a door animates shut.",
+  SWITCH = "Toggles the code bits, so firing it a second time takes the trigger back.",
+  HEAVY = "A forward trigger a heavy object trips. A falling block reads this to know it was set "
+    .. "off by weight.",
+  HEAVY_SWITCH = "A switch a heavy object trips.",
+}
+M.TriggerType = h.enum("items.TriggerType", "ITEM_TRIGGER_KIND", TriggerType)
 
--- Item handles are bare userdata. Their metatable is populated by the api.type
+---<!--noref: loop_sound--> The values the `loop_sound` item property can take.
+---It selects the sound a waterfall loops while it runs.
+---@enum trx.items.WaterfallSound
+local WaterfallSound = {
+  NONE = "The waterfall runs silently.",
+  SAND = "A pouring sand loop.",
+  WATER = "A running water loop.",
+}
+M.WaterfallSound =
+  h.enum("items.WaterfallSound", "WATERFALL_SOUND", WaterfallSound)
+
+-- Item handles are bare userdata. Their metatable is populated by the h.handle
 -- declaration below, and by nothing else: a member of the C ITEM struct that is
 -- not named here is not reachable from a script at all.
 
@@ -151,956 +152,564 @@ local function item_hook(event_name)
   end
 end
 
-local ITEM_LISTENER = {
-  type = "events.Listener",
-  description = "The attached handler.",
-}
-
--- The item-lifecycle methods share a shape: a callback taking this item, over
--- the matching trx.events hook narrowed to it. Only the wording differs.
-local function item_lifecycle_method(event_name, description, examples)
-  return {
-    params = {
-      {
-        name = "callback",
-        type = "function",
-        description = "What to run when it happens to this item.",
-        params = {
-          {
-            name = "item",
-            type = "items.Item",
-            description = "This item.",
-          },
-        },
-      },
-    },
-    returns = ITEM_LISTENER,
-    description = description,
-    examples = examples,
-    impl = item_hook(event_name),
-  }
-end
-
 -- What a trigger carries, which both the hook and the per-item hook hand over.
 -- A plain table the engine builds, so its keys are entries it holds rather than
 -- accessors.
-api.type("items.Trigger", {
-  record = true,
-  description = "What a trigger carried when it fired.",
-  fields = {
-    type = {
-      type = "items.TriggerType",
-      description = "The kind of trigger it was.",
-    },
-    mask = {
-      type = "integer",
-      description = "The code bits it set, `1` to `31`.",
-    },
-    timer = {
-      type = "game.Seconds",
-      description = "How long it keeps the item going.",
-    },
-    one_shot = {
-      type = "boolean",
-      description = "Whether it fires only the once.",
-    },
-  },
-})
 
-api.type("items.Item", {
-  backing = "ITEM",
-  description = "An item, also known as a moveable.",
+---What a trigger carried when it fired.
+---@trx.record
+---@class trx.items.Trigger
+---@field type trx.items.TriggerType The kind of trigger it was.
+---@field mask integer The code bits it set, `1` to `31`.
+---@field timer trx.game.Seconds How long it keeps the item going.
+---@field one_shot boolean Whether it fires only the once.
 
+---@class (exact) trx.items.Item.trigger.opts
+---@field type? trx.items.TriggerType A plain `TRIGGER` by default.
+---@field mask? integer Which of the five code bits to set, `1` to `31`, all of them by default. Pass fewer to act as one of several triggers a puzzle is waiting on.
+---@field timer? trx.game.Seconds How long it should keep the item going. `0` means until something takes the trigger back. A timer of exactly `1` is a single frame, not a second, matching the level format.
+---@field one_shot? boolean Never let it fire again.
+---@trx.default timer 0
+
+---@class (exact) trx.items.Item.die.opts.gibs
+---@field flame? boolean Trail fire, and burn where the part lands.
+---@field smoke? boolean Trail smoke, and smoke where the part lands.
+---@field blast? boolean Burst where the part lands, or where it reaches Lara.
+---@field blood? boolean Trail blood.
+---@trx.default flame false
+---@trx.default smoke false
+---@trx.default blast false
+---@trx.default blood false
+
+---@class (exact) trx.items.Item.die.opts
+---@field explode? boolean Whether to burst the meshes as it dies.
+---@field gibs? trx.items.Item.die.opts.gibs Sets the effects for the flying body parts. TR1 and TR2 support `blast`. TR3 supports `flame` and `smoke`. <!--noref: blast--><!--noref: flame--><!--noref: smoke-->
+---@field flame_variant? integer Flame color for body parts that burn, as `trx.fx.sparks.fire_flame` defines it: `0` orange, `2` pale, and `254` green.
+---@field sender? trx.items.Item Item to credit the death to. Pass `trx.lara.item` to include the kill in Lara's level statistics. Without it, the kill counts for nobody.
+---@trx.default explode false
+---@trx.default flame_variant 0
+
+---@class (exact) trx.items.Item.shatter.opts
+---@field gibs? table Sets the effects for the flying body parts, as `trx.items.Item.die.opts.gibs` takes it.
+---@field mesh_bits? integer Which meshes to burst, a bit to a mesh. `-1` bursts them all. Use the complement of the meshes to spare for a narrower set.
+---@field speed? integer The fastest a part is thrown out, and `fall_speed` the fastest it drops. `0` takes the usual speed. <!--noref: fall_speed-->
+---@field fall_speed? integer The fastest a part drops.
+---@field damage? integer Damage a flying body part deals to Lara.
+---@field flame_variant? integer Flame color for body parts that burn, as `trx.fx.sparks.fire_flame` defines it.
+---@trx.default mesh_bits -1
+---@trx.default speed 0
+---@trx.default fall_speed 0
+---@trx.default damage 0
+---@trx.default flame_variant 0
+
+---An item, also known as a moveable.
+---@class (exact) trx.items.Item
+---@trx.readonly is_alive, is_ally, is_hostile, is_in_play, is_killed,
+---  is_present, is_simulated, is_targetable, is_triggered, max_hit_points,
+---  num, object_id, room_num, touch_bits, was_hit
+---@field pos trx.math.Vec3 World position. Updating this also updates `trx.items.Item.room` and `trx.items.Item.room_num`.
+---@field rot trx.math.Rot Orientation.
+---@field anim_num trx.items.AnimNum
+---@field frame_num trx.items.FrameNum Negative values count back from the end.
+---@field num trx.items.Num An item handed over by a query can say where it lives.
+---@field room_num trx.rooms.Num The room containing this item. Set `trx.items.Item.pos` to move the item between rooms.
+---@field hit_points integer Current hit points. Raising this above the maximum also raises the `max_hit_points` entry of `trx.items.Item.properties`. <!--noref: max_hit_points-->
+---@field max_hit_points integer Maximum hit points. Set the `max_hit_points` entry of `trx.items.Item.properties` to change it. <!--noref: max_hit_points-->
+---@field name string Unique item name, or `nil`. Assigning a name already in use raises an error.
+---@field object_id trx.catalog.objects The item's object type.
+---@field is_visible boolean Whether the item is drawn. It can be present in the world but not visible, like an ambush enemy waiting to appear.
+---@field is_finished boolean Whether the item has finished its run - a creature that died, or a one-shot trigger that fired. It stays in the level but no longer acts.
+---@field is_present boolean Whether the item is in the world at all: linked in its room, so drawn and collidable in principle. Managed by the engine.
+---@field timer trx.game.Frames How long the item's trigger keeps it going. `0` runs it until something takes the trigger back; `-1` means it has run out; anything else counts down. `trx.items.Item:trigger` takes its own timer as a `trx.game.Seconds`.
+---@field is_triggered boolean Whether the item's trigger currently says go. This is what a door, a switch or an alarm reads to decide whether to act; a creature ignores it and goes by whether it is running.
+---
+---  It is a verdict on `trx.items.Item.trigger_mask`, `trx.items.Item.timer`
+---  and `trx.items.Item.is_reversed` together, not a field of its own.
+---@field trigger_mask integer The five code bits, counted the way a level editor counts them: `1` to `31`. The trigger only says go once every bit is set, which is how a level makes several triggers agree before anything happens. A lone trigger carries all of them.
+---@field is_reversed boolean Whether the item's trigger is inverted, so it runs until triggered rather than once triggered. This is how a level ships something already on.
+---@field speed integer Forward speed.
+---@field fall_speed integer Vertical speed.
+---@field gravity boolean Whether gravity applies to this item.
+---@field collidable boolean Whether Lara can collide with this item.
+---@field is_alive boolean Whether the item is a living creature with hit points remaining.
+---@field is_targetable boolean Whether Lara's auto-aim can lock onto the item right now.
+---@field is_killed boolean Whether the item has already been killed.
+---@field is_one_shot boolean Whether the item's trigger has been spent and will never fire again.
+---@field is_hostile boolean Whether this item is a creature currently hostile to Lara.
+---@field is_ally boolean Whether this item is a creature that fights on Lara's side. An ally is shown in its own colour where an enemy would be.
+---@field is_simulated boolean Whether the item's control routine runs each frame. Call `trx.items.Item:activate` to start it.
+---@field is_in_play boolean Whether the item is live: simulated, visible and not finished - the state a targetable enemy is in. A read-only composite of the axes.
+---@field was_hit boolean Whether the item was hit during the current frame.
+---@field mesh_bits integer Bitmask of which of the item's meshes are drawn.
+---@field touch_bits integer Bitmask of which of the item's meshes Lara is touching.
+---@field anim_state trx.items.AnimState The state the item is in.
+---@field goal_anim_state trx.items.AnimState The state the item is transitioning towards.
+---@field room trx.rooms.Room The room containing this item.
+---@field bounds trx.math.Box The item's bounding box for the frame it is on. The numbers are in the item's own frame, so they say how far the model reaches around `trx.items.Item.pos` before `trx.items.Item.rot` turns it, and they change as the item animates.
+---@field joint_count integer How many joints the item's model is built from. A joint number runs from `0` up to one less than this.
+---@field properties table Typed, object-specific item properties. Writing here overrides the object's default for this item only; reads fall back to the object. Iterable with `pairs()`. See [Objects](docs/trx/OBJECTS.md).
+local Item = h.handle("items.Item", "ITEM", {
   fields = {
-    pos = {
-      from = "pos",
-      type = "math.Vec3",
-      description = "World position. Updating this also updates `trx.items.Item.room` and `trx.items.Item.room_num`.",
-    },
-    rot = {
-      from = "rot",
-      type = "math.Rot",
-      description = "Orientation.",
-    },
-    anim_num = {
-      from = "relative_anim_num",
-      type = "items.AnimNum",
-    },
-    frame_num = {
-      from = "relative_frame_num",
-      type = "items.FrameNum",
-      description = "Negative values count back from the end.",
-    },
-    num = {
-      from = "item_num",
-      type = "items.Num",
-      writable = false,
-      description = "An item handed over by a query can say where it lives.",
-    },
-    room_num = {
-      from = "room_num",
-      type = "rooms.Num",
-      writable = false,
-      description = "The room containing this item. Set `trx.items.Item.pos` to move the item between rooms.",
-    },
-    hit_points = {
-      from = "hit_points",
-      type = "integer",
-      description = "Current hit points. Raising this above the maximum also raises the `max_hit_points` entry of `trx.items.Item.properties`. <!--noref: max_hit_points-->",
-    },
-    max_hit_points = {
-      from = "max_hit_points",
-      type = "integer",
-      writable = false,
-      description = "Maximum hit points. Set the `max_hit_points` entry of `trx.items.Item.properties` to change it. <!--noref: max_hit_points-->",
-    },
-    name = {
-      from = "name",
-      type = "string",
-      description = "Unique item name, or `nil`. Assigning a name already in use raises an error.",
-    },
-    object_id = {
-      from = "object_id",
-      type = "catalog.objects",
-      writable = false,
-      description = "The item's object type.",
-    },
-    is_visible = {
-      from = "is_visible",
-      type = "boolean",
-      description = "Whether the item is drawn. It can be present in the world but not visible, "
-        .. "like an ambush enemy waiting to appear.",
-    },
-    is_finished = {
-      from = "is_finished",
-      type = "boolean",
-      description = "Whether the item has finished its run - a creature that died, or a one-shot "
-        .. "trigger that fired. It stays in the level but no longer acts.",
-    },
-    is_present = {
-      from = "is_present",
-      type = "boolean",
-      writable = false,
-      description = "Whether the item is in the world at all: linked in its room, so drawn and "
-        .. "collidable in principle. Managed by the engine.",
-    },
-    timer = {
-      from = "timer",
-      type = "game.Frames",
-      description = "How long the item's trigger keeps it going. `0` runs it until something takes "
-        .. "the trigger back; `-1` means it has run out; anything else counts down. "
-        .. "`trx.items.Item:trigger` takes its own timer as a `trx.game.Seconds`.",
-    },
-    is_triggered = {
-      from = "is_triggered",
-      type = "boolean",
-      writable = false,
-      description = "Whether the item's trigger currently says go. This is what a door, a switch or "
-        .. "an alarm reads to decide whether to act; a creature ignores it and goes by whether it "
-        .. "is running.\n\n"
-        .. "It is a verdict on `trx.items.Item.trigger_mask`, `trx.items.Item.timer` and `trx.items.Item.is_reversed` together, not a field of "
-        .. "its own.",
-    },
-    trigger_mask = {
-      from = "trigger_mask",
-      type = "integer",
-      description = "The five code bits, counted the way a level editor counts them: `1` to `31`. "
-        .. "The trigger only says go once every bit is set, which is how a level makes several "
-        .. "triggers agree before anything happens. A lone trigger carries all of them.",
-    },
-    is_reversed = {
-      from = "is_reversed",
-      type = "boolean",
-      description = "Whether the item's trigger is inverted, so it runs until triggered rather than "
-        .. "once triggered. This is how a level ships something already on.",
-    },
-    speed = {
-      from = "speed",
-      type = "integer",
-      description = "Forward speed.",
-    },
-    fall_speed = {
-      from = "fall_speed",
-      type = "integer",
-      description = "Vertical speed.",
-    },
-    gravity = {
-      from = "gravity",
-      type = "boolean",
-      description = "Whether gravity applies to this item.",
-    },
-    collidable = {
-      from = "is_collidable",
-      type = "boolean",
-      description = "Whether Lara can collide with this item.",
-    },
-    is_alive = {
-      from = "is_alive",
-      type = "boolean",
-      writable = false,
-      description = "Whether the item is a living creature with hit points remaining.",
-    },
-    is_targetable = {
-      from = "is_targetable",
-      type = "boolean",
-      writable = false,
-      description = "Whether Lara's auto-aim can lock onto the item right now.",
-    },
-    is_killed = {
-      from = "is_killed",
-      type = "boolean",
-      writable = false,
-      description = "Whether the item has already been killed.",
-    },
-    is_one_shot = {
-      from = "is_one_shot",
-      type = "boolean",
-      description = "Whether the item's trigger has been spent and will never fire again.",
-    },
-    is_hostile = {
-      from = "is_hostile",
-      type = "boolean",
-      writable = false,
-      description = "Whether this item is a creature currently hostile to Lara.",
-    },
-    is_ally = {
-      from = "is_ally",
-      type = "boolean",
-      writable = false,
-      description = "Whether this item is a creature that fights on Lara's side. An ally is "
-        .. "shown in its own colour where an enemy would be.",
-    },
-    is_simulated = {
-      from = "is_simulated",
-      type = "boolean",
-      writable = false,
-      description = "Whether the item's control routine runs each frame. Call `trx.items.Item:activate` to start it.",
-    },
-    is_in_play = {
-      from = "is_in_play",
-      type = "boolean",
-      writable = false,
-      description = "Whether the item is live: simulated, visible and not finished - the state a "
-        .. "targetable enemy is in. A read-only composite of the axes.",
-    },
-    was_hit = {
-      from = "hit_status",
-      type = "boolean",
-      writable = false,
-      description = "Whether the item was hit during the current frame.",
-    },
-    mesh_bits = {
-      from = "mesh_bits",
-      type = "integer",
-      description = "Bitmask of which of the item's meshes are drawn.",
-    },
-    touch_bits = {
-      from = "touch_bits",
-      type = "integer",
-      writable = false,
-      description = "Bitmask of which of the item's meshes Lara is touching.",
-    },
-    anim_state = {
-      from = "current_anim_state",
-      type = "items.AnimState",
-      description = "The state the item is in.",
-    },
-    goal_anim_state = {
-      from = "goal_anim_state",
-      type = "items.AnimState",
-      description = "The state the item is transitioning towards.",
-    },
+    pos = "pos",
+    rot = "rot",
+    anim_num = "relative_anim_num",
+    frame_num = "relative_frame_num",
+    num = "item_num",
+    room_num = "room_num",
+    hit_points = "hit_points",
+    max_hit_points = "max_hit_points",
+    name = "name",
+    object_id = "object_id",
+    is_visible = "is_visible",
+    is_finished = "is_finished",
+    is_present = "is_present",
+    timer = "timer",
+    is_triggered = "is_triggered",
+    trigger_mask = "trigger_mask",
+    is_reversed = "is_reversed",
+    speed = "speed",
+    fall_speed = "fall_speed",
+    gravity = "gravity",
+    collidable = "is_collidable",
+    is_alive = "is_alive",
+    is_targetable = "is_targetable",
+    is_killed = "is_killed",
+    is_one_shot = "is_one_shot",
+    is_hostile = "is_hostile",
+    is_ally = "is_ally",
+    is_simulated = "is_simulated",
+    is_in_play = "is_in_play",
+    was_hit = "hit_status",
+    mesh_bits = "mesh_bits",
+    touch_bits = "touch_bits",
+    anim_state = "current_anim_state",
+    goal_anim_state = "goal_anim_state",
     -- Deliberately not exposed: box_num, floor, next_item, next_simulated, gen,
     -- anim_num, frame_num, prev_frame_num, ai_bits, ai_tag, after_death and the
     -- render flags. They are engine internals, not a contract.
   },
-
+  writable = {
+    "pos",
+    "rot",
+    "anim_num",
+    "frame_num",
+    "hit_points",
+    "name",
+    "is_visible",
+    "is_finished",
+    "timer",
+    "trigger_mask",
+    "is_reversed",
+    "speed",
+    "fall_speed",
+    "gravity",
+    "collidable",
+    "is_one_shot",
+    "mesh_bits",
+    "anim_state",
+    "goal_anim_state",
+  },
   extensions = {
-    room = {
-      type = "rooms.Room",
-      description = "The room containing this item.",
-      impl = function(item)
-        return trx.rooms[item.room_num]
-      end,
-    },
-
-    bounds = {
-      type = "math.Box",
-      description = "The item's bounding box for the frame it is on. The numbers are in the "
-        .. "item's own frame, so they say how far the model reaches around "
-        .. "`trx.items.Item.pos` before `trx.items.Item.rot` turns it, and they change as the "
-        .. "item animates.",
-      impl = function(item)
-        return setmetatable(raw.get_bounds(item), Box)
-      end,
-    },
-
-    joint_count = {
-      type = "integer",
-      description = "How many joints the item's model is built from. A joint "
-        .. "number runs from `0` up to one less than this.",
-      impl = raw.joint_count,
-    },
-
-    properties = {
-      type = "table",
-      description = "Typed, object-specific item properties. Writing here overrides the object's "
-        .. "default for this item only; reads fall back to the object. Iterable with `pairs()`. "
-        .. "See [Objects](docs/trx/OBJECTS.md).",
-      impl = make_properties,
-    },
-  },
-
-  methods = {
-    activate = {
-      description = "Brings the item to life, exactly as tripping a trigger on it would: its control "
-        .. "routine starts running, and a creature also gets its AI, without which it would stand "
-        .. "there and ignore Lara.\n\n"
-        .. "Objects with no control routine cannot be activated, and an item that is already active "
-        .. "is left alone.",
-    },
-
-    deactivate = {
-      description = "Stops the item: its control routine no longer runs, and a creature loses its AI "
-        .. "and stands down. The item stays where it is and keeps its hit points, so this is not a "
-        .. "way of getting rid of it - use `trx.items.Item:destroy` for that.\n\n"
-        .. "A trigger can still bring it back, and so can `trx.items.Item:activate`.",
-    },
-
-    trigger = {
-      description = "Fires a trigger at the item, exactly as a floor trigger in the level would: "
-        .. "sets the code bits, and once they are all set, starts the item running.\n\n"
-        .. "This is the one to reach for on anything a level would trigger - a door, a switch, an "
-        .. "alarm - because those read their trigger before they act, and merely activating "
-        .. "one leaves it running but doing nothing. Pass `type = "
-        .. "trx.items.TriggerType.ANTITRIGGER` to take the trigger back instead.",
-      params = {
-        {
-          name = "opts",
-          type = "table",
-          optional = true,
-          description = "What the trigger carries.",
-          fields = {
-            {
-              name = "type",
-              type = "items.TriggerType",
-              optional = true,
-              description = "A plain `TRIGGER` by default.",
-            },
-            {
-              name = "mask",
-              type = "integer",
-              optional = true,
-              description = "Which of the five code bits to set, `1` to `31`, all of them by "
-                .. "default. Pass fewer to act as one of several triggers a puzzle is waiting "
-                .. "on.",
-            },
-            {
-              name = "timer",
-              type = "game.Seconds",
-              optional = true,
-              default = 0,
-              description = "How long it should keep the item going. `0` means until something "
-                .. "takes the trigger back. A timer of exactly `1` is a single frame, not a "
-                .. "second, matching the level format.",
-            },
-            {
-              name = "one_shot",
-              type = "boolean",
-              optional = true,
-              description = "Never let it fire again.",
-            },
-          },
-        },
-      },
-      examples = {
-        [[trx.items[12]:trigger()]],
-        [[trx.items[12]:trigger({ timer = 3, one_shot = true })]],
-        [[trx.items[12]:trigger({ type = trx.items.TriggerType.ANTITRIGGER })]],
-      },
-    },
-
-    on_trigger = {
-      params = {
-        {
-          name = "callback",
-          type = "function",
-          description = "What to run when it happens to this item.",
-          params = {
-            {
-              name = "item",
-              type = "items.Item",
-              description = "This item.",
-            },
-            {
-              name = "trigger",
-              type = "items.Trigger",
-              description = "What the trigger carried.",
-            },
-          },
-        },
-      },
-      returns = ITEM_LISTENER,
-      description = "Happens every time a trigger is aimed at this item, of any kind. "
-        .. "`trx.events.on_trigger`, narrowed to this item.",
-      examples = {
-        [[trx.items[12]:on_trigger(function(item, trigger)
-  trx.log.info("triggered with mask " .. trigger.mask)
-end)]],
-      },
-      impl = item_hook("on_trigger"),
-    },
-
-    on_hit = {
-      params = {
-        {
-          name = "callback",
-          type = "function",
-          description = "What to run when it happens to this item.",
-          params = {
-            {
-              name = "item",
-              type = "items.Item",
-              description = "This item.",
-            },
-            {
-              name = "damage",
-              type = "integer",
-              description = "Hit points taken, before clamping to zero.",
-            },
-          },
-        },
-      },
-      returns = ITEM_LISTENER,
-      description = "Happens when this item takes damage. `trx.events.on_hit`, narrowed to this "
-        .. "item.",
-      examples = {
-        [[trx.items[12]:on_hit(function(item, damage)
-  trx.log.info("the item lost " .. damage .. " hit points")
-end)]],
-      },
-      impl = item_hook("on_hit"),
-    },
-
-    on_kill = {
-      params = {
-        {
-          name = "callback",
-          type = "function",
-          description = "What to run when it happens to this item.",
-          params = {
-            {
-              name = "item",
-              type = "items.Item",
-              description = "This item.",
-            },
-          },
-        },
-      },
-      returns = ITEM_LISTENER,
-      description = "Happens when damage takes this item's hit points to zero. "
-        .. "`trx.events.on_kill`, narrowed to this item.",
-      examples = {
-        [[trx.items[12]:on_kill(function(item)
-  trx.log.info("the item is down")
-end)]],
-      },
-      impl = item_hook("on_kill"),
-    },
-
-    on_show = item_lifecycle_method(
-      "on_show",
-      "Happens when this item becomes visible during play. "
-        .. "`trx.events.on_show`, narrowed to this item.",
-      {
-        [[trx.items[12]:on_show(function(item)
-  trx.log.info("the item appeared")
-end)]],
-      }
-    ),
-
-    on_hide = item_lifecycle_method(
-      "on_hide",
-      "Happens when this item becomes hidden during play. "
-        .. "`trx.events.on_hide`, narrowed to this item.",
-      {
-        [[trx.items[12]:on_hide(function(item)
-  trx.log.info("the item vanished")
-end)]],
-      }
-    ),
-
-    on_finish = item_lifecycle_method(
-      "on_finish",
-      "Happens when this item finishes its run during play. "
-        .. "`trx.events.on_finish`, narrowed to this item.",
-      {
-        [[trx.items[12]:on_finish(function(item)
-  trx.log.info("the item finished its run")
-end)]],
-      }
-    ),
-
-    on_enter_sim = item_lifecycle_method(
-      "on_enter_sim",
-      "Happens when this item starts being simulated during play. "
-        .. "`trx.events.on_enter_sim`, narrowed to this item.",
-      {
-        [[trx.items[12]:on_enter_sim(function(item)
-  trx.log.info("the item started running")
-end)]],
-      }
-    ),
-
-    on_leave_sim = item_lifecycle_method(
-      "on_leave_sim",
-      "Happens when this item stops being simulated during play. "
-        .. "`trx.events.on_leave_sim`, narrowed to this item.",
-      {
-        [[trx.items[12]:on_leave_sim(function(item)
-  trx.log.info("the item stopped running")
-end)]],
-      }
-    ),
-
-    on_activate = item_lifecycle_method(
-      "on_activate",
-      "Happens when this item is activated through the lifecycle front door during play. "
-        .. "`trx.events.on_activate`, narrowed to this item.",
-      {
-        [[trx.items[12]:on_activate(function(item)
-  trx.log.info("the item was activated")
-end)]],
-      }
-    ),
-
-    on_deactivate = item_lifecycle_method(
-      "on_deactivate",
-      "Happens when this item is deactivated through the lifecycle front door during play. "
-        .. "`trx.events.on_deactivate`, narrowed to this item.",
-      {
-        [[trx.items[12]:on_deactivate(function(item)
-  trx.log.info("the item was deactivated")
-end)]],
-      }
-    ),
-
-    on_destroy = item_lifecycle_method(
-      "on_destroy",
-      "Happens as this item is removed from the game during play. It can still be read from the "
-        .. "handler, but not after. `trx.events.on_destroy`, narrowed to this item.",
-      {
-        [[trx.items[12]:on_destroy(function(item)
-  trx.log.info("the item was removed")
-end)]],
-      }
-    ),
-
-    on_enter_world = item_lifecycle_method(
-      "on_enter_world",
-      "Happens when this item enters the world during play, such as a runtime spawn. "
-        .. "`trx.events.on_enter_world`, narrowed to this item.",
-      {
-        [[trx.items[12]:on_enter_world(function(item)
-  trx.log.info("the item entered the world")
-end)]],
-      }
-    ),
-
-    on_leave_world = item_lifecycle_method(
-      "on_leave_world",
-      "Happens when this item leaves the world during play. "
-        .. "`trx.events.on_leave_world`, narrowed to this item.",
-      {
-        [[trx.items[12]:on_leave_world(function(item)
-  trx.log.info("the item left the world")
-end)]],
-      }
-    ),
-
-    destroy = {
-      description = "Removes the item from the game. Any other handle to it becomes stale.",
-    },
-
-    is_valid = {
-      returns = {
-        type = "boolean",
-        description = "False once the item it named is gone.",
-      },
-      description = "Whether the handle still refers to a live item. Reading or writing a field on a "
-        .. "stale handle raises an error rather than silently operating on an unrelated item, so "
-        .. "check this for a handle held across time.",
-      examples = {
-        [[local wolf = trx.items.query:of_object(trx.catalog.objects.wolf):first()
-trx.events.after_control(function()
-  if wolf:is_valid() and wolf.hit_points <= 0 then
-    trx.log.info("the wolf is down")
-  end
-end)]],
-      },
-    },
-
-    die = {
-      params = {
-        {
-          name = "opts",
-          type = "table",
-          optional = true,
-          description = "How the creature dies.",
-          fields = {
-            {
-              name = "explode",
-              type = "boolean",
-              optional = true,
-              default = false,
-              description = "Whether to burst the meshes as it dies.",
-            },
-            {
-              name = "gibs",
-              type = "table",
-              optional = true,
-              description = [[
-                Sets the effects for the flying body parts. TR1 and TR2
-                support `blast`. TR3 supports `flame` and `smoke`.
-                <!--noref: blast--><!--noref: flame--><!--noref: smoke-->
-              ]],
-              fields = {
-                {
-                  name = "flame",
-                  type = "boolean",
-                  optional = true,
-                  default = false,
-                  description = "Trail fire, and burn where the part lands.",
-                },
-                {
-                  name = "smoke",
-                  type = "boolean",
-                  optional = true,
-                  default = false,
-                  description = "Trail smoke, and smoke where the part lands.",
-                },
-                {
-                  name = "blast",
-                  type = "boolean",
-                  optional = true,
-                  default = false,
-                  description = "Burst where the part lands, or where it "
-                    .. "reaches Lara.",
-                },
-                {
-                  name = "blood",
-                  type = "boolean",
-                  optional = true,
-                  default = false,
-                  description = "Trail blood.",
-                },
-              },
-            },
-            {
-              name = "flame_variant",
-              type = "integer",
-              optional = true,
-              default = 0,
-              description = [[
-                Flame color for body parts that burn, as
-                `trx.fx.sparks.fire_flame` defines it: `0` orange, `2` pale,
-                and `254` green.
-              ]],
-            },
-            {
-              name = "sender",
-              type = "items.Item",
-              optional = true,
-              description = [[
-                Item to credit the death to. Pass `trx.lara.item` to include
-                the kill in Lara's level statistics. Without it, the kill
-                counts for nobody.
-              ]],
-            },
-          },
-        },
-      },
-      examples = {
-        [[trx.items[12]:die({
-  explode = true,
-  gibs = { flame = true, smoke = true },
-  sender = trx.lara.item,
-})]],
-      },
-      description = "Runs the object's creature death handling: the corpse stays, and `explode` "
-        .. "<!--noref: explode--> "
-        .. "bursts its meshes as a rocket or grenade would. For creatures; `trx.items.Item:destroy` simply removes "
-        .. "any item from the game.",
-    },
-
-    take_damage = {
-      params = {
-        {
-          name = "damage",
-          type = "integer",
-          description = "Hit points to take.",
-        },
-        {
-          name = "sender",
-          type = "items.Item",
-          optional = true,
-          description = [[
-            Item to credit the blow to. Pass `trx.lara.item` to include the
-            kill in Lara's level statistics.
-          ]],
-        },
-      },
-      description = [[
-        Hurts the item the way a weapon does, and reports through
-        `trx.events.on_hit`, and `trx.events.on_kill` where the blow takes the
-        last hit point. Writing `trx.items.Item.hit_points` reports neither.
-        Without `sender`, the kill counts for the environment rather than Lara.
-        <!--noref: sender-->
-      ]],
-      examples = {
-        [[local lara = trx.lara.item
-lara:take_damage(lara.hit_points)]],
-      },
-    },
-
-    shatter = {
-      params = {
-        {
-          name = "opts",
-          type = "table",
-          optional = true,
-          description = "How the meshes come apart.",
-          fields = {
-            {
-              name = "gibs",
-              type = "table",
-              optional = true,
-              description = [[
-                Sets the effects for the flying body parts, as
-                `trx.items.Item.die.opts.gibs` takes it.
-              ]],
-            },
-            {
-              name = "mesh_bits",
-              type = "integer",
-              optional = true,
-              default = -1,
-              description = [[
-                Which meshes to burst, a bit to a mesh. `-1` bursts them all.
-                Use the complement of the meshes to spare for a narrower set.
-              ]],
-            },
-            {
-              name = "speed",
-              type = "integer",
-              optional = true,
-              default = 0,
-              description = [[
-                The fastest a part is thrown out, and `fall_speed` the fastest
-                it drops. `0` takes the usual speed.
-                <!--noref: fall_speed-->
-              ]],
-            },
-            {
-              name = "fall_speed",
-              type = "integer",
-              optional = true,
-              default = 0,
-              description = "The fastest a part drops.",
-            },
-            {
-              name = "damage",
-              type = "integer",
-              optional = true,
-              default = 0,
-              description = "Damage a flying body part deals to Lara.",
-            },
-            {
-              name = "flame_variant",
-              type = "integer",
-              optional = true,
-              default = 0,
-              description = [[
-                Flame color for body parts that burn, as
-                `trx.fx.sparks.fire_flame` defines it.
-              ]],
-            },
-          },
-        },
-      },
-      examples = {
-        [[trx.items[12]:shatter({ gibs = { blast = true }, damage = 5 })]],
-      },
-      description = "Bursts the item's meshes into flying debris, the visual `trx.items.Item:die` produces with "
-        .. "`trx.items.Item.die.opts.explode`, "
-        .. "on its own. It does not kill or remove the item.",
-    },
-
-    joint_pos = {
-      description = [[
-Where one of the item's joints has reached, for the frame it is on. The
-position follows the item as it moves and animates, so a script can hang
-something off a hand or a muzzle without naming a place in the world.
-
-Raises if the model has no such joint.]],
-      params = {
-        {
-          name = "joint",
-          type = "integer",
-          description = "Which joint, from `0` to "
-            .. "`trx.items.Item.joint_count` less one.",
-        },
-        {
-          name = "offset",
-          type = "math.Vec3",
-          optional = true,
-          description = "Offset from the joint, in the joint's own axes. "
-            .. "Defaults to the joint itself.",
-        },
-      },
-      returns = { type = "math.Vec3", description = "World position." },
-      examples = {
-        [[local muzzle = actor:joint_pos(12, { x = 0, y = 0, z = 180 })]],
-      },
-      impl = function(self, joint, offset)
-        offset = offset or { x = 0, y = 0, z = 0 }
-        local x, y, z =
-          raw.joint_pos(self, joint, offset.x, offset.y, offset.z)
-        return { x = x, y = y, z = z }
-      end,
-    },
-
-    distance_to = {
-      params = {
-        { name = "pos", type = "math.Vec3", description = "World position." },
-      },
-      returns = {
-        type = "math.Distance",
-        description = "Measured between the two positions.",
-      },
-      description = "Distance from this item to a world position.",
-    },
-
-    get_property = {
-      params = {
-        {
-          name = "name",
-          type = "string",
-          description = "Which property, as the object declares it.",
-        },
-      },
-      returns = {
-        type = "any",
-        nullable = true,
-        description = "The value, of the type the property is declared with.",
-      },
-      description = "Reads an object property, falling back to the object's default. "
-        .. "Prefer `item.properties.<name>`.",
-    },
-
-    set_property = {
-      params = {
-        {
-          name = "name",
-          type = "string",
-          description = "Which property, as the object declares it.",
-        },
-        {
-          name = "value",
-          type = "any",
-          description = "What to write, of the type the property is declared with.",
-        },
-      },
-      description = "Overrides an object property for this item. Prefer `item.properties.<name> = ...`.",
-    },
-
-    get_property_names = {
-      returns = {
-        type = "string",
-        list = true,
-      },
-      description = "Names of every property this item's object declares.",
-    },
+    room = function(item)
+      return trx.rooms[item.room_num]
+    end,
+    bounds = function(item)
+      return setmetatable(raw.get_bounds(item), Box)
+    end,
+    joint_count = raw.joint_count,
+    properties = make_properties,
   },
 })
 
-api.define("items.get", {
-  description = "Retrieves an item by number or by name.",
-  params = {
-    {
-      name = "key",
-      type = "items.Num",
-      description = "An item's unique name reaches it as well.",
-    },
-  },
-  returns = {
-    type = "items.Item",
-    nullable = true,
-    description = "The item, or `nil` where nothing answers to the key.",
-  },
-  examples = {
-    [==[local item = trx.items[0]
-item.name = "lara"
-local lara = trx.items["lara"]]==],
-  },
-  impl = raw.get,
-})
+---Brings the item to life, exactly as tripping a trigger on it would: its
+---control routine starts running, and a creature also gets its AI, without
+---which it would stand there and ignore Lara.
+---
+---Objects with no control routine cannot be activated, and an item that is
+---already active is left alone.
+function Item:activate() end
 
-api.define("items.spawn", {
-  description = "Creates a new item of the given object type at the given position.",
-  params = {
-    {
-      name = "object_id",
-      type = "catalog.objects",
-      description = "Object type to spawn.",
-    },
-    {
-      name = "pos",
-      type = "math.Vec3",
-      description = "World position. Must lie inside the level.",
-    },
-    {
-      name = "angle_y",
-      type = "math.Angle",
-      optional = true,
-      default = 0,
-      description = "Facing angle.",
-    },
-    {
-      name = "opts",
-      type = "table",
-      optional = true,
-      description = "How to spawn it.",
-      fields = {
-        {
-          name = "activate",
-          type = "boolean",
-          optional = true,
-          description = "Bring the item to life, enabling AI for creatures.",
-        },
-      },
-    },
-  },
-  returns = {
-    type = "items.Item",
-    nullable = true,
-    description = "`nil` if the item pool is exhausted.",
-  },
-  examples = {
-    [[local wolf = trx.items.spawn(
-  trx.catalog.objects.wolf, trx.lara.item.pos, 0, { activate = true })]],
-  },
-  impl = raw.spawn,
-})
+---Stops the item: its control routine no longer runs, and a creature loses its
+---AI and stands down. The item stays where it is and keeps its hit points, so
+---this is not a way of getting rid of it - use `trx.items.Item:destroy` for
+---that.
+---
+---A trigger can still bring it back, and so can `trx.items.Item:activate`.
+function Item:deactivate() end
 
-api.define("items.count", {
-  description = "Returns the total number of allocated items. Same as `#trx.items`.",
-  returns = {
-    type = "integer",
-    description = "How many slots the level holds, live or not.",
-  },
-  impl = raw.count,
-})
+---Fires a trigger at the item, exactly as a floor trigger in the level would:
+---sets the code bits, and once they are all set, starts the item running.
+---
+---This is the one to reach for on anything a level would trigger - a door, a
+---switch, an alarm - because those read their trigger before they act, and
+---merely activating one leaves it running but doing nothing. Pass
+---`type = trx.items.TriggerType.ANTITRIGGER` to take the trigger back instead.
+---
+---```lua
+---trx.items[12]:trigger()
+---```
+---
+---```lua
+---trx.items[12]:trigger({ timer = 3, one_shot = true })
+---```
+---
+---```lua
+---trx.items[12]:trigger({ type = trx.items.TriggerType.ANTITRIGGER })
+---```
+---@param opts? trx.items.Item.trigger.opts What the trigger carries.
+function Item:trigger(opts) end
+
+local on_trigger = item_hook("on_trigger")
+
+---Happens every time a trigger is aimed at this item, of any kind.
+---`trx.events.on_trigger`, narrowed to this item.
+---
+---```lua
+---trx.items[12]:on_trigger(function(item, trigger)
+---  trx.log.info("triggered with mask " .. trigger.mask)
+---end)
+---```
+---@param callback fun(item: trx.items.Item, trigger: trx.items.Trigger) What to run when it happens to this item.
+---@trx.arg callback.item This item.
+---@trx.arg callback.trigger What the trigger carried.
+---@return trx.events.Listener # The attached handler.
+function Item:on_trigger(callback)
+  return on_trigger(self, callback)
+end
+
+local on_hit = item_hook("on_hit")
+
+---Happens when this item takes damage. `trx.events.on_hit`, narrowed to this
+---item.
+---
+---```lua
+---trx.items[12]:on_hit(function(item, damage)
+---  trx.log.info("the item lost " .. damage .. " hit points")
+---end)
+---```
+---@param callback fun(item: trx.items.Item, damage: integer) What to run when it happens to this item.
+---@trx.arg callback.item This item.
+---@trx.arg callback.damage Hit points taken, before clamping to zero.
+---@return trx.events.Listener # The attached handler.
+function Item:on_hit(callback)
+  return on_hit(self, callback)
+end
+
+local on_kill = item_hook("on_kill")
+
+---Happens when damage takes this item's hit points to zero.
+---`trx.events.on_kill`, narrowed to this item.
+---
+---```lua
+---trx.items[12]:on_kill(function(item)
+---  trx.log.info("the item is down")
+---end)
+---```
+---@param callback fun(item: trx.items.Item) What to run when it happens to this item.
+---@trx.arg callback.item This item.
+---@return trx.events.Listener # The attached handler.
+function Item:on_kill(callback)
+  return on_kill(self, callback)
+end
+
+-- The item-lifecycle methods share a shape: a callback taking this item, over
+-- the matching trx.events hook narrowed to it. Only the wording differs.
+local lifecycle = {}
+for _, event_name in ipairs({
+  "on_show",
+  "on_hide",
+  "on_finish",
+  "on_enter_sim",
+  "on_leave_sim",
+  "on_activate",
+  "on_deactivate",
+  "on_destroy",
+  "on_enter_world",
+  "on_leave_world",
+}) do
+  lifecycle[event_name] = item_hook(event_name)
+end
+
+---Happens when this item becomes visible during play. `trx.events.on_show`,
+---narrowed to this item.
+---
+---```lua
+---trx.items[12]:on_show(function(item)
+---  trx.log.info("the item appeared")
+---end)
+---```
+---@param callback fun(item: trx.items.Item) What to run when it happens to this item.
+---@trx.arg callback.item This item.
+---@return trx.events.Listener # The attached handler.
+function Item:on_show(callback)
+  return lifecycle.on_show(self, callback)
+end
+
+---Happens when this item becomes hidden during play. `trx.events.on_hide`,
+---narrowed to this item.
+---
+---```lua
+---trx.items[12]:on_hide(function(item)
+---  trx.log.info("the item vanished")
+---end)
+---```
+---@param callback fun(item: trx.items.Item) What to run when it happens to this item.
+---@trx.arg callback.item This item.
+---@return trx.events.Listener # The attached handler.
+function Item:on_hide(callback)
+  return lifecycle.on_hide(self, callback)
+end
+
+---Happens when this item finishes its run during play. `trx.events.on_finish`,
+---narrowed to this item.
+---
+---```lua
+---trx.items[12]:on_finish(function(item)
+---  trx.log.info("the item finished its run")
+---end)
+---```
+---@param callback fun(item: trx.items.Item) What to run when it happens to this item.
+---@trx.arg callback.item This item.
+---@return trx.events.Listener # The attached handler.
+function Item:on_finish(callback)
+  return lifecycle.on_finish(self, callback)
+end
+
+---Happens when this item starts being simulated during play.
+---`trx.events.on_enter_sim`, narrowed to this item.
+---
+---```lua
+---trx.items[12]:on_enter_sim(function(item)
+---  trx.log.info("the item started running")
+---end)
+---```
+---@param callback fun(item: trx.items.Item) What to run when it happens to this item.
+---@trx.arg callback.item This item.
+---@return trx.events.Listener # The attached handler.
+function Item:on_enter_sim(callback)
+  return lifecycle.on_enter_sim(self, callback)
+end
+
+---Happens when this item stops being simulated during play.
+---`trx.events.on_leave_sim`, narrowed to this item.
+---
+---```lua
+---trx.items[12]:on_leave_sim(function(item)
+---  trx.log.info("the item stopped running")
+---end)
+---```
+---@param callback fun(item: trx.items.Item) What to run when it happens to this item.
+---@trx.arg callback.item This item.
+---@return trx.events.Listener # The attached handler.
+function Item:on_leave_sim(callback)
+  return lifecycle.on_leave_sim(self, callback)
+end
+
+---Happens when this item is activated through the lifecycle front door during
+---play. `trx.events.on_activate`, narrowed to this item.
+---
+---```lua
+---trx.items[12]:on_activate(function(item)
+---  trx.log.info("the item was activated")
+---end)
+---```
+---@param callback fun(item: trx.items.Item) What to run when it happens to this item.
+---@trx.arg callback.item This item.
+---@return trx.events.Listener # The attached handler.
+function Item:on_activate(callback)
+  return lifecycle.on_activate(self, callback)
+end
+
+---Happens when this item is deactivated through the lifecycle front door
+---during play. `trx.events.on_deactivate`, narrowed to this item.
+---
+---```lua
+---trx.items[12]:on_deactivate(function(item)
+---  trx.log.info("the item was deactivated")
+---end)
+---```
+---@param callback fun(item: trx.items.Item) What to run when it happens to this item.
+---@trx.arg callback.item This item.
+---@return trx.events.Listener # The attached handler.
+function Item:on_deactivate(callback)
+  return lifecycle.on_deactivate(self, callback)
+end
+
+---Happens as this item is removed from the game during play. It can still be
+---read from the handler, but not after. `trx.events.on_destroy`, narrowed to
+---this item.
+---
+---```lua
+---trx.items[12]:on_destroy(function(item)
+---  trx.log.info("the item was removed")
+---end)
+---```
+---@param callback fun(item: trx.items.Item) What to run when it happens to this item.
+---@trx.arg callback.item This item.
+---@return trx.events.Listener # The attached handler.
+function Item:on_destroy(callback)
+  return lifecycle.on_destroy(self, callback)
+end
+
+---Happens when this item enters the world during play, such as a runtime
+---spawn. `trx.events.on_enter_world`, narrowed to this item.
+---
+---```lua
+---trx.items[12]:on_enter_world(function(item)
+---  trx.log.info("the item entered the world")
+---end)
+---```
+---@param callback fun(item: trx.items.Item) What to run when it happens to this item.
+---@trx.arg callback.item This item.
+---@return trx.events.Listener # The attached handler.
+function Item:on_enter_world(callback)
+  return lifecycle.on_enter_world(self, callback)
+end
+
+---Happens when this item leaves the world during play.
+---`trx.events.on_leave_world`, narrowed to this item.
+---
+---```lua
+---trx.items[12]:on_leave_world(function(item)
+---  trx.log.info("the item left the world")
+---end)
+---```
+---@param callback fun(item: trx.items.Item) What to run when it happens to this item.
+---@trx.arg callback.item This item.
+---@return trx.events.Listener # The attached handler.
+function Item:on_leave_world(callback)
+  return lifecycle.on_leave_world(self, callback)
+end
+
+---Removes the item from the game. Any other handle to it becomes stale.
+function Item:destroy() end
+
+---Whether the handle still refers to a live item. Reading or writing a field
+---on a stale handle raises an error rather than silently operating on an
+---unrelated item, so check this for a handle held across time.
+---
+---```lua
+---local wolf = trx.items.query:of_object(trx.catalog.objects.wolf):first()
+---trx.events.after_control(function()
+---  if wolf:is_valid() and wolf.hit_points <= 0 then
+---    trx.log.info("the wolf is down")
+---  end
+---end)
+---```
+---@return boolean # False once the item it named is gone.
+function Item:is_valid() end
+
+---Runs the object's creature death handling: the corpse stays, and `explode`
+---<!--noref: explode--> bursts its meshes as a rocket or grenade would. For
+---creatures; `trx.items.Item:destroy` simply removes any item from the game.
+---
+---```lua
+---trx.items[12]:die({
+---  explode = true,
+---  gibs = { flame = true, smoke = true },
+---  sender = trx.lara.item,
+---})
+---```
+---@param opts? trx.items.Item.die.opts How the creature dies.
+function Item:die(opts) end
+
+---Hurts the item the way a weapon does, and reports through
+---`trx.events.on_hit`, and `trx.events.on_kill` where the blow takes the last
+---hit point. Writing `trx.items.Item.hit_points` reports neither. Without
+---`sender`, the kill counts for the environment rather than Lara.
+---<!--noref: sender-->
+---
+---```lua
+---local lara = trx.lara.item
+---lara:take_damage(lara.hit_points)
+---```
+---@param damage integer Hit points to take.
+---@param sender? trx.items.Item Item to credit the blow to. Pass `trx.lara.item` to include the kill in Lara's level statistics.
+function Item:take_damage(damage, sender) end
+
+---Bursts the item's meshes into flying debris, the visual `trx.items.Item:die`
+---produces with `trx.items.Item.die.opts.explode`, on its own. It does not
+---kill or remove the item.
+---
+---```lua
+---trx.items[12]:shatter({ gibs = { blast = true }, damage = 5 })
+---```
+---@param opts? trx.items.Item.shatter.opts How the meshes come apart.
+function Item:shatter(opts) end
+
+---Where one of the item's joints has reached, for the frame it is on. The
+---position follows the item as it moves and animates, so a script can hang
+---something off a hand or a muzzle without naming a place in the world.
+---
+---Raises if the model has no such joint.
+---
+---```lua
+---local muzzle = actor:joint_pos(12, { x = 0, y = 0, z = 180 })
+---```
+---@param joint integer Which joint, from `0` to `trx.items.Item.joint_count` less one.
+---@param offset? trx.math.Vec3 Offset from the joint, in the joint's own axes. Defaults to the joint itself.
+---@return trx.math.Vec3 # World position.
+function Item:joint_pos(joint, offset)
+  offset = offset or { x = 0, y = 0, z = 0 }
+  local x, y, z = raw.joint_pos(self, joint, offset.x, offset.y, offset.z)
+  return { x = x, y = y, z = z }
+end
+
+---Distance from this item to a world position.
+---@param pos trx.math.Vec3 World position.
+---@return trx.math.Distance # Measured between the two positions.
+function Item:distance_to(pos) end
+
+---Reads an object property, falling back to the object's default. Prefer
+---`item.properties.<name>`.
+---@param name string Which property, as the object declares it.
+---@return any? # The value, of the type the property is declared with.
+function Item:get_property(name) end
+
+---Overrides an object property for this item. Prefer
+---`item.properties.<name> = ...`.
+---@param name string Which property, as the object declares it.
+---@param value any What to write, of the type the property is declared with.
+function Item:set_property(name, value) end
+
+---Names of every property this item's object declares.
+---@return string[]
+function Item:get_property_names() end
+
+---Retrieves an item by number or by name.
+---
+---```lua
+---local item = trx.items[0]
+---item.name = "lara"
+---local lara = trx.items["lara"]
+---```
+---@param key trx.items.Num An item's unique name reaches it as well.
+---@return trx.items.Item? # The item, or `nil` where nothing answers to the key.
+---@type fun(key: trx.items.Num): trx.items.Item?
+M.get = raw.get
+
+---@class (exact) trx.items.spawn.opts
+---@field activate? boolean Bring the item to life, enabling AI for creatures.
+
+---Creates a new item of the given object type at the given position.
+---
+---```lua
+---local wolf = trx.items.spawn(
+---  trx.catalog.objects.wolf, trx.lara.item.pos, 0, { activate = true })
+---```
+---@param object_id trx.catalog.objects Object type to spawn.
+---@param pos trx.math.Vec3 World position. Must lie inside the level.
+---@param angle_y? trx.math.Angle Facing angle.
+---@param opts? trx.items.spawn.opts How to spawn it.
+---@trx.default angle_y 0
+---@return trx.items.Item? # `nil` if the item pool is exhausted.
+---@type fun(object_id: trx.catalog.objects, pos: trx.math.Vec3, angle_y?: trx.math.Angle, opts?: trx.items.spawn.opts): trx.items.Item?
+M.spawn = raw.spawn
+
+---Returns the total number of allocated items. Same as `#trx.items`.
+---@return integer # How many slots the level holds, live or not.
+---@type fun(): integer
+M.count = raw.count
 
 -- Every item the level holds, each by its number.
 local function enumerate()
@@ -1139,135 +748,144 @@ local function found_in(nums)
 end
 
 -- One of an item's own true-or-false axes, as a narrowing.
-local function axis_narrowing(field, description)
-  return {
-    description = description,
-    returns = { type = "query.Query", description = "The narrowed query." },
-    impl = trx.query.narrowing(function()
-      return function(_i, item)
-        return item[field]
-      end
-    end),
-  }
+local function axis_narrowing(field)
+  return trx.query.narrowing(function()
+    return function(_i, item)
+      return item[field]
+    end
+  end)
 end
 
-local ItemQuery = api.type("items.ItemQuery", {
-  extends = "query.Query",
-  description = "A `trx.query.Query` over the items a level holds, with the narrowings below on top "
-    .. "of the ones every query has. Items answer to no names of their own, so `trx.items.ItemQuery:of_object` is how a "
-    .. "name reaches them.",
+---A `trx.query.Query` over the items a level holds, with the narrowings below
+---on top of the ones every query has. Items answer to no names of their own,
+---so `trx.items.ItemQuery:of_object` is how a name reaches them.
+---@class (exact) trx.items.ItemQuery: trx.query.Query
+local ItemQuery = h.class("items.ItemQuery", { extends = "query.Query" })
 
-  methods = {
-    simulated = axis_narrowing(
-      "is_simulated",
-      "The item is being simulated: its control routine runs every frame."
-    ),
-    present = axis_narrowing(
-      "is_present",
-      "The item is in the world, whether or not anything is simulating it."
-    ),
-    visible = axis_narrowing("is_visible", "The item is drawn."),
-    finished = axis_narrowing("is_finished", "The item has run its course."),
-    in_play = axis_narrowing(
-      "is_in_play",
-      "The item is part of the game rather than set aside."
-    ),
-    alive = axis_narrowing("is_alive", "The item still has hit points."),
-    targetable = axis_narrowing(
-      "is_targetable",
-      "Lara's guns can lock onto the item."
-    ),
+local simulated = axis_narrowing("is_simulated")
 
-    of_object = {
-      description = "The item is of the given object, named the way a player would name it or by "
-        .. "its id.",
-      params = {
-        {
-          name = "key",
-          type = "any",
-          description = "Object id, or a name `trx.objects.query` resolves.",
-        },
-      },
-      returns = { type = "query.Query", description = "The narrowed query." },
-      examples = {
-        [[trx.items.query:of_object("wolf"):simulated():matches()]],
-      },
-      impl = trx.query.narrowing(function(key)
-        local object_id = resolve_object(key)
-        return function(_i, item)
-          return object_id ~= nil and item.object_id == object_id
-        end
-      end),
-    },
+---The item is being simulated: its control routine runs every frame.
+---@return trx.query.Query # The narrowed query.
+function ItemQuery:simulated()
+  return simulated(self)
+end
 
-    in_room = {
-      description = "The item is in the given room.",
-      params = {
-        {
-          name = "room_num",
-          type = "rooms.Num",
-        },
-      },
-      returns = { type = "query.Query", description = "The narrowed query." },
-      impl = trx.query.narrowing(function(room_num)
-        return function(_i, item)
-          return item.room_num == room_num
-        end
-      end),
-    },
+local present = axis_narrowing("is_present")
 
-    in_box = {
-      description = "The item stands inside a world-space box. The corners may come in any order.\n\n"
-        .. "An item is tested by its position, the point it stands at, rather than by the box it "
-        .. "fills. Position is all this asks after, so the rest of the query says what else the "
-        .. "item must be: `trx.items.query:in_box(min, max):present()` asks for the ones that are "
-        .. "in the world as well.",
-      params = {
-        {
-          name = "min",
-          type = "math.Vec3",
-          description = "One corner of the box.",
-        },
-        {
-          name = "max",
-          type = "math.Vec3",
-          description = "The opposite corner.",
-        },
-      },
-      returns = { type = "query.Query", description = "The narrowed query." },
-      examples = {
-        [[local guards = trx.items.query
-  :in_box({ x = 51200, y = -2048, z = 30720 }, { x = 53248, y = 0, z = 32768 })
-  :present()
-  :matches()]],
-      },
-      impl = trx.query.narrowing(function(min, max)
-        return found_in(raw.in_box(min, max))
-      end),
-    },
+---The item is in the world, whether or not anything is simulating it.
+---@return trx.query.Query # The narrowed query.
+function ItemQuery:present()
+  return present(self)
+end
 
-    in_sphere = {
-      description = "The item stands within a radius of a point. As with `trx.items.ItemQuery:in_box`, the item's "
-        .. "position is the whole of the test.",
-      params = {
-        {
-          name = "centre",
-          type = "math.Vec3",
-          description = "Middle of the sphere.",
-        },
-        {
-          name = "radius",
-          type = "math.Distance",
-          description = "How far out it reaches.",
-        },
-      },
-      returns = { type = "query.Query", description = "The narrowed query." },
-      impl = trx.query.narrowing(function(centre, radius)
-        return found_in(raw.in_sphere(centre, radius))
-      end),
-    },
-  },
-})
+local visible = axis_narrowing("is_visible")
+
+---The item is drawn.
+---@return trx.query.Query # The narrowed query.
+function ItemQuery:visible()
+  return visible(self)
+end
+
+local finished = axis_narrowing("is_finished")
+
+---The item has run its course.
+---@return trx.query.Query # The narrowed query.
+function ItemQuery:finished()
+  return finished(self)
+end
+
+local in_play = axis_narrowing("is_in_play")
+
+---The item is part of the game rather than set aside.
+---@return trx.query.Query # The narrowed query.
+function ItemQuery:in_play()
+  return in_play(self)
+end
+
+local alive = axis_narrowing("is_alive")
+
+---The item still has hit points.
+---@return trx.query.Query # The narrowed query.
+function ItemQuery:alive()
+  return alive(self)
+end
+
+local targetable = axis_narrowing("is_targetable")
+
+---Lara's guns can lock onto the item.
+---@return trx.query.Query # The narrowed query.
+function ItemQuery:targetable()
+  return targetable(self)
+end
+
+local of_object = trx.query.narrowing(function(key)
+  local object_id = resolve_object(key)
+  return function(_i, item)
+    return object_id ~= nil and item.object_id == object_id
+  end
+end)
+
+---The item is of the given object, named the way a player would name it or by
+---its id.
+---
+---```lua
+---trx.items.query:of_object("wolf"):simulated():matches()
+---```
+---@param key any Object id, or a name `trx.objects.query` resolves.
+---@return trx.query.Query # The narrowed query.
+function ItemQuery:of_object(key)
+  return of_object(self, key)
+end
+
+local in_room = trx.query.narrowing(function(room_num)
+  return function(_i, item)
+    return item.room_num == room_num
+  end
+end)
+
+---The item is in the given room.
+---@param room_num trx.rooms.Num
+---@return trx.query.Query # The narrowed query.
+function ItemQuery:in_room(room_num)
+  return in_room(self, room_num)
+end
+
+local in_box = trx.query.narrowing(function(min, max)
+  return found_in(raw.in_box(min, max))
+end)
+
+---The item stands inside a world-space box. The corners may come in any order.
+---
+---An item is tested by its position, the point it stands at, rather than by
+---the box it fills. Position is all this asks after, so the rest of the query
+---says what else the item must be: `trx.items.query:in_box(min,
+---max):present()` asks for the ones that are in the world as well.
+---
+---```lua
+---local guards = trx.items.query
+---  :in_box({ x = 51200, y = -2048, z = 30720 }, { x = 53248, y = 0, z = 32768 })
+---  :present()
+---  :matches()
+---```
+---@param min trx.math.Vec3 One corner of the box.
+---@param max trx.math.Vec3 The opposite corner.
+---@return trx.query.Query # The narrowed query.
+function ItemQuery:in_box(min, max)
+  return in_box(self, min, max)
+end
+
+local in_sphere = trx.query.narrowing(function(centre, radius)
+  return found_in(raw.in_sphere(centre, radius))
+end)
+
+---The item stands within a radius of a point. As with
+---`trx.items.ItemQuery:in_box`, the item's position is the whole of the test.
+---@param centre trx.math.Vec3 Middle of the sphere.
+---@param radius trx.math.Distance How far out it reaches.
+---@return trx.query.Query # The narrowed query.
+function ItemQuery:in_sphere(centre, radius)
+  return in_sphere(self, centre, radius)
+end
 
 local item_query = trx.query.new({
   enumerate = enumerate,
@@ -1276,27 +894,27 @@ local item_query = trx.query.new({
   end,
 }, ItemQuery)
 
-api.property("items.query", {
-  type = "items.ItemQuery",
-  description = "The identity query over every item in the level. Narrow it and read it.",
-  get = function()
-    return item_query
-  end,
+h.properties(M, "items", {
+  query = {
+    get = function()
+      return item_query
+    end,
+  },
 })
 
-api.container("items", {
-  description = "Indexing the module reaches an item, and `#trx.items` is how many the level has. "
-    .. "`pairs()` walks them in order, keyed by the item number.",
-  key = {
-    type = { "items.Num", "string" },
-    description = "An item's unique name reaches it as well.",
-  },
-  value = { type = "items.Item", nullable = true },
-  examples = {
-    [[for num, item in pairs(trx.items) do
-  trx.log.info(item.object_id)
-end]],
-  },
+---Indexing the module reaches an item, and `#trx.items` is how many the level
+---has. `pairs()` walks them in order, keyed by the item number.
+---
+---```lua
+---for num, item in pairs(trx.items) do
+---  trx.log.info(item.object_id)
+---end
+---```
+---@type table<trx.items.Num|string, trx.items.Item?>
+---@trx.key An item's unique name reaches it as well.
+h.container("items", {
+  base = 0,
+  by_name = true,
   get = raw.get,
   count = raw.count,
-})
+}, M)

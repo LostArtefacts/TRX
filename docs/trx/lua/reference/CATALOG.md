@@ -14,9 +14,16 @@ order: 9
 
 The names TRX knows things by.
 
-Each catalog is an enum of every object, sample, music track, Lara state, Lara animation or item action the engine has a name for. The names are the C ones with their prefix taken off - `O_WOLF` is [`trx.catalog.objects.WOLF`](#catalog.objects) - and a catalog answers to a name in any case, so [`trx.catalog.objects.wolf`](#catalog.objects) is the same constant.
+Each catalog is an enum of every object, sample, music track, Lara state,
+Lara animation or item action the engine has a name for. The names are the C
+ones with their prefix taken off - `O_WOLF` is [`trx.catalog.objects.WOLF`](#catalog.objects) -
+and a catalog answers to a name in any case, so [`trx.catalog.objects.wolf`](#catalog.objects)
+is the same constant.
 
-The ids in a catalog are TRX's own, and they are the same in all four games. The number a builder reads off Tomb Editor is not: that is the slot the game's own files use. [`trx.catalog.to_slot`](#catalog.to_slot) and [`trx.catalog.from_slot`](#catalog.from_slot) convert between the two.
+The ids in a catalog are TRX's own, and they are the same in all four games.
+The number a builder reads off Tomb Editor is not: that is the slot the
+game's own files use. [`trx.catalog.to_slot`](#catalog.to_slot) and [`trx.catalog.from_slot`](#catalog.from_slot)
+convert between the two.
 
 ### Enums
 
@@ -24,21 +31,21 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
 
     Which catalog a slot belongs to.
 
-    - `trx.catalog.Context.OBJECTS` = `0`  
+    - `trx.catalog.Context.OBJECTS`  
         Objects.
-    - `trx.catalog.Context.MUSIC` = `1`  
+    - `trx.catalog.Context.MUSIC`  
         Music tracks.
-    - `trx.catalog.Context.SAMPLES` = `2`  
+    - `trx.catalog.Context.SAMPLES`  
         Sound samples.
-    - `trx.catalog.Context.LARA_STATES` = `3`  
+    - `trx.catalog.Context.LARA_STATES`  
         Lara's states.
-    - `trx.catalog.Context.LARA_ANIMS` = `4`  
+    - `trx.catalog.Context.LARA_ANIMS`  
         Lara's animations.
-    - `trx.catalog.Context.ITEM_ACTIONS` = `5`  
+    - `trx.catalog.Context.ITEM_ACTIONS`  
         Item actions, which the flip effects trigger.
-    - `trx.catalog.Context.WEAPONS` = `6`  
+    - `trx.catalog.Context.WEAPONS`  
         Weapons Lara can hold.
-    - `trx.catalog.Context.FAMILIES` = `7`  
+    - `trx.catalog.Context.FAMILIES`  
         The families an object can belong to.
 
 - <a id="catalog.objects" name="catalog.objects"></a>[lua]`trx.catalog.objects` - 846 names
@@ -641,20 +648,27 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
 
 - <a id="catalog.Id" name="catalog.Id"></a>[lua]`trx.catalog.Id`
 
-    A TRX id, in the catalog the context names. It is the same number in every game TRX ships, which is what lets a script name a thing once.
+    A TRX id, in the catalog the context names. It is the same number in every
+    game TRX ships, which is what lets a script name a thing once.
 
 - <a id="catalog.Slot" name="catalog.Slot"></a>[lua]`trx.catalog.Slot`
 
-    A slot in this game's own files, which is the number a builder reads off Tomb Editor. It differs from game to game.
+    A slot in this game's own files, which is the number a builder reads off
+    Tomb Editor. It differs from game to game.
 
 ### Functions
 
 - <a id="catalog.mint" name="catalog.mint"></a>[lua]`trx.catalog.mint(context, name)`  
-  Declares an identity the engine has no constant for, and gives back its id. This is how a mod that ships only a script introduces an object of its own, without touching the catalog the game owns.
+  Declares an identity the engine has no constant for, and gives back its id.
+  This is how a mod that ships only a script introduces an object of its own,
+  without touching the catalog the game owns.
 
-  The identity carries no slot, because nothing in the game's own files refers to it. It lasts until the mod is unloaded.
+  The identity carries no slot, because nothing in the game's own files
+  refers to it. It lasts until the mod is unloaded.
 
-  A savegame records an object by the slot this game's files use, so an item of a minted object is not written to one and does not come back on load. Spawn it from a script until savegames record a name.
+  A savegame records an object by the slot this game's files use, so an item
+  of a minted object is not written to one and does not come back on load.
+  Spawn it from a script until savegames record a name.
 
   Parameters:
   - <a id="catalog.mint.context" name="catalog.mint.context"></a>**`context`** ([trx.catalog.Context](#catalog.Context)). Which catalog.
@@ -668,7 +682,9 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
   ```
 
 - <a id="catalog.key" name="catalog.key"></a>[lua]`trx.catalog.key(context, id)`  
-  Gives back the name an id answers to, which is the name a savegame stores and the name a mod writes. An id a script read out of the engine is a number, and this is what says which thing it names.
+  Gives back the name an id answers to, which is the name a savegame stores
+  and the name a mod writes. An id a script read out of the engine is a
+  number, and this is what says which thing it names.
 
   Parameters:
   - <a id="catalog.key.context" name="catalog.key.context"></a>**`context`** ([trx.catalog.Context](#catalog.Context)). Which catalog.
@@ -682,7 +698,8 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
   ```
 
 - <a id="catalog.to_slot" name="catalog.to_slot"></a>[lua]`trx.catalog.to_slot(context, id)`  
-  Converts a [`trx.catalog.Id`](#catalog.Id) into the [`trx.catalog.Slot`](#catalog.Slot) this game's own files use for it.
+  Converts a [`trx.catalog.Id`](#catalog.Id) into the [`trx.catalog.Slot`](#catalog.Slot) this game's own
+  files use for it.
 
   Parameters:
   - <a id="catalog.to_slot.context" name="catalog.to_slot.context"></a>**`context`** ([trx.catalog.Context](#catalog.Context)). Which catalog.
@@ -696,7 +713,8 @@ The ids in a catalog are TRX's own, and they are the same in all four games. The
   ```
 
 - <a id="catalog.from_slot" name="catalog.from_slot"></a>[lua]`trx.catalog.from_slot(context, slot)`  
-  Converts a [`trx.catalog.Slot`](#catalog.Slot) from this game's own files into the [`trx.catalog.Id`](#catalog.Id) for it.
+  Converts a [`trx.catalog.Slot`](#catalog.Slot) from this game's own files into the
+  [`trx.catalog.Id`](#catalog.Id) for it.
 
   Parameters:
   - <a id="catalog.from_slot.context" name="catalog.from_slot.context"></a>**`context`** ([trx.catalog.Context](#catalog.Context)). Which catalog.

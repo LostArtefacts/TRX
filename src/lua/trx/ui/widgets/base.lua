@@ -1,10 +1,12 @@
-local api = trx.api
+local h = require("trx.internal.helpers")
 
 require("trx.config")
 require("trx.signal")
 require("trx.ui")
 require("trx.ui.primitive")
 require("trx.math")
+
+local ui = trx.ui
 
 -------------------------------------------------------------------------------
 -- The widgets
@@ -23,11 +25,22 @@ local function value_of(value)
   return value
 end
 
-local W = {}
-W.__index = W
+---A reusable UI element drawn over the game.
+---
+---A widget holds its own state. Give it signals instead of fixed values, then
+---register those signals with `trx.ui.Widget:wakes_on`. The widget remeasures
+---only when a registered signal changes.
+---
+---Register every signal that the widget reads. Otherwise the widget can keep a
+---stale cached size.
+---@class (exact) trx.ui.Widget
+local Widget = h.class("ui.Widget")
 
 -- Recompute the widget's size only after something invalidates it.
-function W:measure()
+---How much room the widget wants.
+---@return number # The width, in canvas units.
+---@return number # The height, in canvas units.
+function Widget:measure()
   if self._size == nil then
     local w, h = self:on_measure()
     self._size = { w = w or 0, h = h or 0 }
@@ -35,7 +48,9 @@ function W:measure()
   return self._size.w, self._size.h
 end
 
-function W:wake()
+---Invalidates the widget's cached size manually.
+---@return trx.ui.Widget # The same widget.
+function Widget:wake()
   self._size = nil
   if self._parent ~= nil then
     self._parent:wake()
@@ -43,13 +58,24 @@ function W:wake()
   return self
 end
 
-function W:is_shown()
+---Returns whether the widget participates in layout.
+---
+---A widget that is not shown keeps no room and leaves no gap. A hidden widget
+---keeps its room but draws nothing.
+---@return boolean # Whether it draws.
+function Widget:is_shown()
   return value_of(self.shown) ~= false
 end
 
 -- Register the signals that invalidate the widget's cached size. Any signal a
 -- widget reads should be listed here.
-function W:wakes_on(...)
+---Registers the signals that invalidate the widget's cached size.
+---
+---When one of these signals changes, the widget and its parents are measured
+---again on the next layout pass.
+---@param ... trx.signal.Signal The signals the widget reads.
+---@return trx.ui.Widget # The same widget, for method chaining.
+function Widget:wakes_on(...)
   local listeners = rawget(self, "_wakers")
   if listeners == nil then
     listeners = {}
@@ -67,7 +93,13 @@ end
 
 -- Detach the widget from every signal it registered. Signals keep references
 -- to their listeners, so release temporary widgets when they leave the screen.
-function W:release()
+---Detaches the widget and its children from registered signals.
+---
+---Signals keep references to their listeners. Release temporary widgets when
+---they are no longer needed. Remove a placed widget from its region before
+---releasing it.
+---@return boolean # Whether it was still listening to anything.
+function Widget:release()
   local listeners = rawget(self, "_wakers")
   if listeners == nil then
     return false
@@ -82,104 +114,21 @@ function W:release()
   return true
 end
 
-function W:paint(x, y, w, h)
+---Draws the widget in an assigned box.
+---
+---`trx.ui.regions.place` calls this automatically. Custom layout code can call
+---it during `trx.events.on_ui_paint`.
+---@param x number The left edge.
+---@param y number The top edge.
+---@param w number The width it was given.
+---@param h number The height it was given.
+function Widget:paint(x, y, w, h)
   -- Hidden widgets keep their room but draw nothing. Widgets that are not shown
   -- keep no room at all.
   if self:is_shown() and value_of(self.hidden) ~= true then
     self:on_paint(x, y, w, h)
   end
 end
-
-local Widget = api.type("ui.Widget", {
-  description = [[
-A reusable UI element drawn over the game.
-
-A widget holds its own state. Give it signals instead of fixed values, then
-register those signals with `trx.ui.Widget:wakes_on`. The widget remeasures
-only when a registered signal changes.
-
-Register every signal that the widget reads. Otherwise the widget can keep a
-stale cached size.]],
-
-  methods = {
-    wakes_on = {
-      description = [[
-Registers the signals that invalidate the widget's cached size.
-
-When one of these signals changes, the widget and its parents are measured
-again on the next layout pass.]],
-      params = {
-        {
-          name = "...",
-          type = "signal.Signal",
-          description = "The signals the widget reads.",
-        },
-      },
-      returns = {
-        type = "ui.Widget",
-        description = "The same widget, for method chaining.",
-      },
-      impl = W.wakes_on,
-    },
-    wake = {
-      description = "Invalidates the widget's cached size manually.",
-      returns = { type = "ui.Widget", description = "The same widget." },
-      impl = W.wake,
-    },
-    measure = {
-      description = "How much room the widget wants.",
-      returns = {
-        { type = "number", description = "The width, in canvas units." },
-        { type = "number", description = "The height, in canvas units." },
-      },
-      impl = W.measure,
-    },
-    paint = {
-      description = [[
-Draws the widget in an assigned box.
-
-`trx.ui.regions.place` calls this automatically. Custom layout code can call it
-during `trx.events.on_ui_paint`.]],
-      params = {
-        { name = "x", type = "number", description = "The left edge." },
-        { name = "y", type = "number", description = "The top edge." },
-        {
-          name = "w",
-          type = "number",
-          description = "The width it was given.",
-        },
-        {
-          name = "h",
-          type = "number",
-          description = "The height it was given.",
-        },
-      },
-      impl = W.paint,
-    },
-    is_shown = {
-      description = [[
-Returns whether the widget participates in layout.
-
-A widget that is not shown keeps no room and leaves no gap. A hidden widget
-keeps its room but draws nothing.]],
-      returns = { type = "boolean", description = "Whether it draws." },
-      impl = W.is_shown,
-    },
-    release = {
-      description = [[
-Detaches the widget and its children from registered signals.
-
-Signals keep references to their listeners. Release temporary widgets when they
-are no longer needed. Remove a placed widget from its region before releasing
-it.]],
-      returns = {
-        type = "boolean",
-        description = "Whether it was still listening to anything.",
-      },
-      impl = W.release,
-    },
-  },
-})
 
 local function new_widget(settings, on_measure, on_paint)
   local self = setmetatable(settings or {}, Widget)
@@ -204,18 +153,17 @@ end
 local text_scale = scale_signal("ui.text_scale")
 local bar_scale = scale_signal("ui.bar_scale")
 
-api.namespace("ui.widgets", {
-  description = [[
-The widgets a script builds its screen from.
-
-A widget is created once and kept. Give it signals instead of fixed values, then
-register those signals with `trx.ui.Widget:wakes_on`.
-
-Put a widget on screen with `trx.ui.regions.place`.]],
-})
+---The widgets a script builds its screen from.
+---
+---A widget is created once and kept. Give it signals instead of fixed values,
+---then register those signals with `trx.ui.Widget:wakes_on`.
+---
+---Put a widget on screen with `trx.ui.regions.place`.
+---@class (exact) trx.ui.widgets
+ui.widgets = h.namespace("ui.widgets")
 
 return {
-  W = W,
+  W = Widget,
   value_of = value_of,
   new_widget = new_widget,
   text_scale = text_scale,

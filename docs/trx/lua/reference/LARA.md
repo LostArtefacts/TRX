@@ -14,15 +14,26 @@ order: 3
 
 Module for reading and nudging Lara's own state.
 
-Her position, room and hit points are not here: she is an item like any other and they live on it, as [`trx.lara.item`](#lara.item).
+Her position, room and hit points are not here: she is an item like any
+other and they live on it, as [`trx.lara.item`](#lara.item).
 
 ### Properties
 
-- <a id="lara.can_pose" name="lara.can_pose"></a>**`trx.lara.can_pose`** (boolean). Whether poses are available for Lara to cycle through in photo mode.
-  This is false when no poses are defined or during cutscenes. *(read-only)*
+- <a id="lara.can_pose" name="lara.can_pose"></a>**`trx.lara.can_pose`** (boolean). Whether poses are available for Lara to cycle through in photo mode. This is false when no poses are defined or during cutscenes. *(read-only)*
 - <a id="lara.animation_object" name="lara.animation_object"></a>**`trx.lara.animation_object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The object Lara's animations are coming from. It is normally Lara herself, and something else while a vehicle or a scripted sequence drives her. *(read-only)*
 - <a id="lara.item" name="lara.item"></a>**`trx.lara.item`** ([trx.items.Item](ITEMS.md#items.Item)). Lara's own item, or `nil` outside a level. Her position, room and hit points are read and written there. *(read-only)*
 - <a id="lara.target" name="lara.target"></a>**`trx.lara.target`** ([trx.items.Item](ITEMS.md#items.Item)). The item Lara's guns are locked onto, or `nil` if she has none. *(read-only)*
+- <a id="lara.vehicle" name="lara.vehicle"></a>**`trx.lara.vehicle`** ([trx.items.Item](ITEMS.md#items.Item)). The vehicle Lara is riding, or `nil` when she is on her own feet. Its speed and position are the ones that move her while she rides it. *(read-only)*
+- <a id="lara.is_controllable" name="lara.is_controllable"></a>**`trx.lara.is_controllable`** (boolean). Whether Lara answers to the player. False while she is dead, while the inventory or a dialog holds the game, and while a cutscene or flyby is active. *(read-only)*
+- <a id="lara.outfit" name="lara.outfit"></a>**`trx.lara.outfit`** (string). The outfit Lara is wearing, by name, as defined in `cfg/outfits.json5`.
+- <a id="lara.holsters_visible" name="lara.holsters_visible"></a>**`trx.lara.holsters_visible`** (boolean). Whether Lara's holsters are drawn on her hips.
+- <a id="lara.speech_face" name="lara.speech_face"></a>**`trx.lara.speech_face`** (number). Which of her outfit's speech faces Lara wears while she talks, counted from 0, or `nil` for her own face. An outfit with no speech faces keeps her own.
+  The face is remembered, so putting her in another outfit mid-sentence
+  dresses her in that outfit's face rather than leaving the one she had.
+- <a id="lara.is_flying" name="lara.is_flying"></a>**`trx.lara.is_flying`** (boolean). Whether Lara is in the fly-mode cheat. Setting it enters or leaves fly mode.
+- <a id="lara.is_wet" name="lara.is_wet"></a>**`trx.lara.is_wet`** (boolean). Whether Lara is still shedding droplets after a swim. [`trx.lara.dry`](#lara.dry) clears it. *(read-only)*
+- <a id="lara.vehicle_gun" name="lara.vehicle_gun"></a>**`trx.lara.vehicle_gun`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). The weapon the vehicle Lara is riding carries. Her own weapons are put away while she rides, so this is what her ammunition counter shows. `nil` where she is riding nothing, or riding something unarmed. *(read-only)*
+- <a id="lara.has_pistol_weapon" name="lara.has_pistol_weapon"></a>**`trx.lara.has_pistol_weapon`** (boolean). Whether Lara is carrying a pistol-class weapon, which is what decides whether she has holsters to show at all. *(read-only)*
 - <a id="lara.signals.exists" name="lara.signals.exists"></a>**`trx.lara.signals.exists`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when Lara enters the world, and when she leaves it. *(read-only)*
 - <a id="lara.signals.hp" name="lara.signals.hp"></a>**`trx.lara.signals.hp`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when Lara's hit points change. *(read-only)*
 - <a id="lara.signals.max_hp" name="lara.signals.max_hp"></a>**`trx.lara.signals.max_hp`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when Lara's maximum hit points change. *(read-only)*
@@ -37,23 +48,13 @@ Her position, room and hit points are not here: she is an item like any other an
 - <a id="lara.signals.target" name="lara.signals.target"></a>**`trx.lara.signals.target`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when what Lara's guns are locked onto changes. Read [`trx.lara.target`](#lara.target) for the item itself. *(read-only)*
 - <a id="lara.signals.vehicle" name="lara.signals.vehicle"></a>**`trx.lara.signals.vehicle`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when Lara gets on or off a vehicle. Read [`trx.lara.vehicle`](#lara.vehicle) for it. *(read-only)*
 - <a id="lara.signals.equipped_gun" name="lara.signals.equipped_gun"></a>**`trx.lara.signals.equipped_gun`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when Lara changes weapon. *(read-only)*
-- <a id="lara.vehicle" name="lara.vehicle"></a>**`trx.lara.vehicle`** ([trx.items.Item](ITEMS.md#items.Item)). The vehicle Lara is riding, or `nil` when she is on her own feet. Its speed and position are the ones that move her while she rides it. *(read-only)*
-- <a id="lara.is_controllable" name="lara.is_controllable"></a>**`trx.lara.is_controllable`** (boolean). Whether Lara answers to the player. False while she is dead, while the inventory or a dialog holds the game, and while a cutscene or flyby is active. *(read-only)*
-- <a id="lara.outfit" name="lara.outfit"></a>**`trx.lara.outfit`** (string). The outfit Lara is wearing, by name, as defined in `cfg/outfits.json5`.
-- <a id="lara.holsters_visible" name="lara.holsters_visible"></a>**`trx.lara.holsters_visible`** (boolean). Whether Lara's holsters are drawn on her hips.
-- <a id="lara.speech_face" name="lara.speech_face"></a>**`trx.lara.speech_face`** (number). Which of her outfit's speech faces Lara wears while she talks, counted from 0, or `nil` for her own face. An outfit with no speech faces keeps her own.
-  The face is remembered, so putting her in another outfit mid-sentence dresses her in that outfit's face rather than leaving the one she had.
-- <a id="lara.is_flying" name="lara.is_flying"></a>**`trx.lara.is_flying`** (boolean). Whether Lara is in the fly-mode cheat. Setting it enters or leaves fly mode.
-- <a id="lara.is_wet" name="lara.is_wet"></a>**`trx.lara.is_wet`** (boolean). Whether Lara is still shedding droplets after a swim. [`trx.lara.dry`](#lara.dry) clears it. *(read-only)*
-- <a id="lara.vehicle_gun" name="lara.vehicle_gun"></a>**`trx.lara.vehicle_gun`** ([trx.catalog.weapons](CATALOG.md#catalog.weapons)). The weapon the vehicle Lara is riding carries. Her own weapons are put away while she rides, so this is what her ammunition counter shows. `nil` where she is riding nothing, or riding something unarmed. *(read-only)*
-- <a id="lara.has_pistol_weapon" name="lara.has_pistol_weapon"></a>**`trx.lara.has_pistol_weapon`** (boolean). Whether Lara is carrying a pistol-class weapon, which is what decides whether she has holsters to show at all. *(read-only)*
 
 ### Constants
 
-- <a id="lara.MAX_AIR" name="lara.MAX_AIR"></a>[lua]`trx.lara.MAX_AIR` = `1800`  
+- <a id="lara.MAX_AIR" name="lara.MAX_AIR"></a>[lua]`trx.lara.MAX_AIR` = `1800` (integer)  
   Lara's maximum air, which is what her air runs down from.
 
-- <a id="lara.MAX_SPRINT" name="lara.MAX_SPRINT"></a>[lua]`trx.lara.MAX_SPRINT` = `120`  
+- <a id="lara.MAX_SPRINT" name="lara.MAX_SPRINT"></a>[lua]`trx.lara.MAX_SPRINT` = `120` (integer)  
   Lara's maximum sprint, which is what her sprint runs down from.
 
 ### Enums
@@ -62,112 +63,113 @@ Her position, room and hit points are not here: she is an item like any other an
 
     One of the fifteen meshes Lara is built from.
 
-    - `trx.lara.Mesh.HIPS` = `0`  
+    - `trx.lara.Mesh.HIPS`  
         Hips, the mesh the rest hang off.
-    - `trx.lara.Mesh.THIGH_L` = `1`  
+    - `trx.lara.Mesh.THIGH_L`  
         Left thigh.
-    - `trx.lara.Mesh.CALF_L` = `2`  
+    - `trx.lara.Mesh.CALF_L`  
         Left calf.
-    - `trx.lara.Mesh.FOOT_L` = `3`  
+    - `trx.lara.Mesh.FOOT_L`  
         Left foot.
-    - `trx.lara.Mesh.THIGH_R` = `4`  
+    - `trx.lara.Mesh.THIGH_R`  
         Right thigh.
-    - `trx.lara.Mesh.CALF_R` = `5`  
+    - `trx.lara.Mesh.CALF_R`  
         Right calf.
-    - `trx.lara.Mesh.FOOT_R` = `6`  
+    - `trx.lara.Mesh.FOOT_R`  
         Right foot.
-    - `trx.lara.Mesh.TORSO` = `7`  
+    - `trx.lara.Mesh.TORSO`  
         Torso.
-    - `trx.lara.Mesh.UARM_R` = `8`  
+    - `trx.lara.Mesh.UARM_R`  
         Right upper arm.
-    - `trx.lara.Mesh.LARM_R` = `9`  
+    - `trx.lara.Mesh.LARM_R`  
         Right lower arm.
-    - `trx.lara.Mesh.HAND_R` = `10`  
+    - `trx.lara.Mesh.HAND_R`  
         Right hand.
-    - `trx.lara.Mesh.UARM_L` = `11`  
+    - `trx.lara.Mesh.UARM_L`  
         Left upper arm.
-    - `trx.lara.Mesh.LARM_L` = `12`  
+    - `trx.lara.Mesh.LARM_L`  
         Left lower arm.
-    - `trx.lara.Mesh.HAND_L` = `13`  
+    - `trx.lara.Mesh.HAND_L`  
         Left hand.
-    - `trx.lara.Mesh.HEAD` = `14`  
+    - `trx.lara.Mesh.HEAD`  
         Head.
 
 - <a id="lara.ExtraMesh" name="lara.ExtraMesh"></a>[lua]`trx.lara.ExtraMesh`
 
-    A mesh Lara can carry on top of one of her own - the dagger in Home Sweet Home, the oar in a boat.
+    A mesh Lara can carry on top of one of her own - the dagger in Home Sweet
+    Home, the oar in a boat.
 
-    - `trx.lara.ExtraMesh.TR1_BRAID_DEFAULT_HEAD` = `0`  
+    - `trx.lara.ExtraMesh.TR1_BRAID_DEFAULT_HEAD`  
         Braided head, out of combat.
-    - `trx.lara.ExtraMesh.TR1_BRAID_COMBAT_HEAD` = `1`  
+    - `trx.lara.ExtraMesh.TR1_BRAID_COMBAT_HEAD`  
         Braided head, in combat.
-    - `trx.lara.ExtraMesh.TR1_BRAID_DEFAULT_TORSO` = `2`  
+    - `trx.lara.ExtraMesh.TR1_BRAID_DEFAULT_TORSO`  
         Braided torso.
-    - `trx.lara.ExtraMesh.TR1_BRAID_MAULED_TORSO` = `3`  
+    - `trx.lara.ExtraMesh.TR1_BRAID_MAULED_TORSO`  
         Braided torso, mauled.
-    - `trx.lara.ExtraMesh.DAGGER_HAND` = `4`  
+    - `trx.lara.ExtraMesh.DAGGER_HAND`  
         Dagger, in hand.
-    - `trx.lara.ExtraMesh.DAGGER_HIPS` = `5`  
+    - `trx.lara.ExtraMesh.DAGGER_HIPS`  
         Dagger, sheathed at the hips.
-    - `trx.lara.ExtraMesh.OAR` = `6`  
+    - `trx.lara.ExtraMesh.OAR`  
         Oar.
-    - `trx.lara.ExtraMesh.SPANNER` = `7`  
+    - `trx.lara.ExtraMesh.SPANNER`  
         Spanner.
-    - `trx.lara.ExtraMesh.DRINK_CAN` = `8`  
+    - `trx.lara.ExtraMesh.DRINK_CAN`  
         Drink can.
-    - `trx.lara.ExtraMesh.GLASSES_OPAQUE` = `9`  
+    - `trx.lara.ExtraMesh.GLASSES_OPAQUE`  
         Sunglasses.
-    - `trx.lara.ExtraMesh.GLASSES_TRANSPARENT` = `10`  
+    - `trx.lara.ExtraMesh.GLASSES_TRANSPARENT`  
         Sunglasses, transparent lenses.
-    - `trx.lara.ExtraMesh.CROWBAR` = `11`  
+    - `trx.lara.ExtraMesh.CROWBAR`  
         Crowbar.
-    - `trx.lara.ExtraMesh.WOODEN_TORCH` = `12`  
+    - `trx.lara.ExtraMesh.WOODEN_TORCH`  
         Wooden torch.
-    - `trx.lara.ExtraMesh.BINOCULARS` = `13`  
+    - `trx.lara.ExtraMesh.BINOCULARS`  
         Binoculars.
-    - `trx.lara.ExtraMesh.HOOK_AND_POLE` = `14`  
+    - `trx.lara.ExtraMesh.HOOK_AND_POLE`  
         Hook and pole.
-    - `trx.lara.ExtraMesh.DETONATOR` = `15`  
+    - `trx.lara.ExtraMesh.DETONATOR`  
         Detonator.
-    - `trx.lara.ExtraMesh.SHOVEL` = `16`  
+    - `trx.lara.ExtraMesh.SHOVEL`  
         Shovel.
-    - `trx.lara.ExtraMesh.JERRYCAN` = `17`  
+    - `trx.lara.ExtraMesh.JERRYCAN`  
         Jerrycan.
-    - `trx.lara.ExtraMesh.SANDBAG` = `18`  
+    - `trx.lara.ExtraMesh.SANDBAG`  
         Sandbag.
-    - `trx.lara.ExtraMesh.WATERSKIN` = `19`  
+    - `trx.lara.ExtraMesh.WATERSKIN`  
         Waterskin.
 
 - <a id="lara.WaterState" name="lara.WaterState"></a>[lua]`trx.lara.WaterState`
 
     Where Lara is with respect to water.
 
-    - `trx.lara.WaterState.ABOVE_WATER` = `0`  
+    - `trx.lara.WaterState.ABOVE_WATER`  
         On dry land.
-    - `trx.lara.WaterState.UNDERWATER` = `1`  
+    - `trx.lara.WaterState.UNDERWATER`  
         Under the surface.
-    - `trx.lara.WaterState.SURFACE` = `2`  
+    - `trx.lara.WaterState.SURFACE`  
         Swimming at the surface.
-    - `trx.lara.WaterState.CHEAT` = `3`  
-        Flying, as the fly cheat leaves her.
-    - `trx.lara.WaterState.WADE` = `4`  
+    - `trx.lara.WaterState.WADE`  
         Wading, feet still on the floor.
+    - `trx.lara.WaterState.CHEAT`  
+        Flying, as the fly cheat leaves her.
 
 - <a id="lara.GunState" name="lara.GunState"></a>[lua]`trx.lara.GunState`
 
     What Lara's hands are doing.
 
-    - `trx.lara.GunState.ARMLESS` = `0`  
+    - `trx.lara.GunState.ARMLESS`  
         Empty-handed.
-    - `trx.lara.GunState.HANDS_BUSY` = `1`  
+    - `trx.lara.GunState.HANDS_BUSY`  
         Hands full, so nothing can be drawn.
-    - `trx.lara.GunState.DRAW` = `2`  
+    - `trx.lara.GunState.DRAW`  
         Drawing a weapon.
-    - `trx.lara.GunState.UNDRAW` = `3`  
+    - `trx.lara.GunState.UNDRAW`  
         Putting one away.
-    - `trx.lara.GunState.READY` = `4`  
+    - `trx.lara.GunState.READY`  
         Armed, weapon out.
-    - `trx.lara.GunState.SPECIAL` = `5`  
+    - `trx.lara.GunState.SPECIAL`  
         In a scripted sequence.
 
 ### Structures
@@ -219,9 +221,14 @@ Her position, room and hit points are not here: she is an item like any other an
 ### Functions
 
 - <a id="lara.signals" name="lara.signals"></a>[lua]`trx.lara.signals`  
-  The signals Lara's own state speaks through, for a script that would rather hear about a change than ask after one. Each is read once a frame and compared, so a listener runs when the value moved and a value that stood still costs nothing.
+  The signals Lara's own state speaks through, for a script that would rather
+  hear about a change than ask after one. Each is read once a frame and
+  compared, so a listener runs when the value moved and a value that stood
+  still costs nothing.
 
-  What names an item is its number rather than the item itself, because a handle is made afresh on every read and a signal holding one would report a change every frame.
+  What names an item is its number rather than the item itself, because a
+  handle is made afresh on every read and a signal holding one would report a
+  change every frame.
 
 - <a id="lara.set_extra_equipment" name="lara.set_extra_equipment"></a>[lua]`trx.lara.set_extra_equipment(mesh, extra_mesh)`  
   Hangs an extra mesh on one of Lara's own, replacing the mesh there.
@@ -236,9 +243,13 @@ Her position, room and hit points are not here: she is an item like any other an
   ```
 
 - <a id="lara.teleport" name="lara.teleport"></a>[lua]`trx.lara.teleport(pos, [room_num])`  
-  Moves Lara to a world position, putting her down on the floor there. She is taken off any vehicle, her weapons are put away and the camera follows her over.
+  Moves Lara to a world position, putting her down on the floor there. She is
+  taken off any vehicle, her weapons are put away and the camera follows her
+  over.
 
-  The position is nudged into valid room geometry, so a spot inside a wall lands her beside it rather than in it. Somewhere with no floor within reach moves nothing.
+  The position is nudged into valid room geometry, so a spot inside a wall
+  lands her beside it rather than in it. Somewhere with no floor within reach
+  moves nothing.
 
   Parameters:
   - <a id="lara.teleport.pos" name="lara.teleport.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position.
@@ -252,13 +263,16 @@ Her position, room and hit points are not here: she is an item like any other an
   ```
 
 - <a id="lara.cure_poison" name="lara.cure_poison"></a>[lua]`trx.lara.cure_poison()`  
-  Cures Lara's poisoning. Not the same as writing `0` to [`trx.lara.poison`](#lara.Lara.poison): the poison has a target as well as a current value, and clearing only the value lets it climb back.
+  Cures Lara's poisoning. Not the same as writing `0` to [`trx.lara.poison`](#lara.Lara.poison):
+  the poison has a target as well as a current value, and clearing only the
+  value lets it climb back.
 
 - <a id="lara.extinguish" name="lara.extinguish"></a>[lua]`trx.lara.extinguish()`  
   Puts Lara's fire out, and stops her being electrocuted with it.
 
 - <a id="lara.dry" name="lara.dry"></a>[lua]`trx.lara.dry()`  
-  Dries Lara off, clearing the wetness that sheds droplets after she leaves water.
+  Dries Lara off, clearing the wetness that sheds droplets after she leaves
+  water.
 
 - <a id="lara.set_mesh" name="lara.set_mesh"></a>[lua]`trx.lara.set_mesh(mesh, object, mesh_num)`  
   Puts another object's mesh on one of Lara's own, in place of whatever her

@@ -14,8 +14,8 @@ order: 33
 
 Random numbers, drawn from one of the two sequences the engine runs on.
 
-The module's own calls draw from the control stream. This is the sequence the
-simulation runs on, so a script that draws every frame changes what the
+The module's own calls draw from the control stream. This is the sequence
+the simulation runs on, so a script that draws every frame changes what the
 creatures decide next. The draw stream, [`trx.random.draw`](#random.draw), is the one the
 original game keeps for what is only seen. Drawing from it leaves the
 simulation as it was. Both streams are the same generator and offer the same
@@ -24,8 +24,8 @@ calls, described in [`trx.random.Stream`](#random.Stream).
 The savegame carries both sequences. A script's draws come back the same
 after a reload, and a script needs no seed of its own.
 
-Lua's own `math.random` is a separate generator that nothing saves. It has no
-place in anything the simulation reads.
+Lua's own `math.random` is a separate generator that nothing saves. It has
+no place in anything the simulation reads.
 
 ### Properties
 
@@ -69,7 +69,9 @@ place in anything the simulation reads.
       Returns: any. The item chosen.
 
     - <a id="random.Stream.choices" name="random.Stream.choices"></a>[lua]`stream:choices(seq, [weights], [k])`  
-      Several items out of a list, drawn one after another so that the same item can come up more than once. Weights give some items a greater share than others.
+      Several items out of a list, drawn one after another so that the same item
+      can come up more than once. Weights give some items a greater share than
+      others.
 
       Parameters:
       - <a id="random.Stream.choices.seq" name="random.Stream.choices.seq"></a>**`seq`** (a list of any). What to choose from. An empty list raises.
@@ -98,7 +100,8 @@ place in anything the simulation reads.
       Returns: number. A value in [0, 1).
 
     - <a id="random.Stream.randrange" name="random.Stream.randrange"></a>[lua]`stream:randrange(n)`  
-      A whole number below a bound, counted from zero. The bound itself never comes up.
+      A whole number below a bound, counted from zero. The bound itself never
+      comes up.
 
       Parameters:
       - <a id="random.Stream.randrange.n" name="random.Stream.randrange.n"></a>**`n`** (integer). How many values there are. Below 1 raises.
@@ -127,7 +130,8 @@ place in anything the simulation reads.
   ```
 
 - <a id="random.randrange" name="random.randrange"></a>[lua]`trx.random.randrange(n)`  
-  A whole number below a bound, counted from zero. The bound itself never comes up.
+  A whole number below a bound, counted from zero. The bound itself never
+  comes up.
 
   Parameters:
   - <a id="random.randrange.n" name="random.randrange.n"></a>**`n`** (integer). How many values there are. Below 1 raises.
@@ -156,7 +160,9 @@ place in anything the simulation reads.
   ```
 
 - <a id="random.choices" name="random.choices"></a>[lua]`trx.random.choices(seq, [weights], [k])`  
-  Several items out of a list, drawn one after another so that the same item can come up more than once. Weights give some items a greater share than others.
+  Several items out of a list, drawn one after another so that the same item
+  can come up more than once. Weights give some items a greater share than
+  others.
 
   Parameters:
   - <a id="random.choices.seq" name="random.choices.seq"></a>**`seq`** (a list of any). What to choose from. An empty list raises.

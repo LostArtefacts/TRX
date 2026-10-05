@@ -1,26 +1,31 @@
 local raw = trxc.random
-local api = trx.api
+local h = require("trx.internal.helpers")
 
 require("trx.math")
 
-api.module("random", {
-  order = 33,
-  description = [[
-Random numbers, drawn from one of the two sequences the engine runs on.
+---@class trx
+---@field random trx.random
 
-The module's own calls draw from the control stream. This is the sequence the
-simulation runs on, so a script that draws every frame changes what the
-creatures decide next. The draw stream, `trx.random.draw`, is the one the
-original game keeps for what is only seen. Drawing from it leaves the
-simulation as it was. Both streams are the same generator and offer the same
-calls, described in `trx.random.Stream`.
-
-The savegame carries both sequences. A script's draws come back the same
-after a reload, and a script needs no seed of its own.
-
-Lua's own `math.random` is a separate generator that nothing saves. It has no
-place in anything the simulation reads. <!--noref: math.random-->]],
-})
+---Random numbers, drawn from one of the two sequences the engine runs on.
+---
+---The module's own calls draw from the control stream. This is the sequence
+---the simulation runs on, so a script that draws every frame changes what the
+---creatures decide next. The draw stream, `trx.random.draw`, is the one the
+---original game keeps for what is only seen. Drawing from it leaves the
+---simulation as it was. Both streams are the same generator and offer the same
+---calls, described in `trx.random.Stream`.
+---
+---The savegame carries both sequences. A script's draws come back the same
+---after a reload, and a script needs no seed of its own.
+---
+---Lua's own `math.random` is a separate generator that nothing saves. It has
+---no place in anything the simulation reads. <!--noref: math.random-->
+---@trx.module 33
+---@class (exact) trx.random
+---@trx.readonly control, draw
+---@field control trx.random.Stream The sequence the simulation runs on, which the module's own functions draw from.
+---@field draw trx.random.Stream The sequence kept for what is only seen. Drawing from it leaves what the creatures decide next as it was, which is what the original game keeps it for.
+local M = h.module("random")
 
 -- How wide one draw of the engine's stream is, as the generator states it.
 local SPAN = raw.SPAN
@@ -33,13 +38,6 @@ local MAX_SPAN = SPAN * SPAN * SPAN * SPAN
 -- Maps each stream handle to the sequence it draws from. A handle is an empty
 -- table, so the sequence is reachable only through this map.
 local sources = setmetatable({}, { __mode = "k" })
-local Stream
-
-local function stream_of(next_value)
-  local handle = setmetatable({}, Stream)
-  sources[handle] = next_value
-  return handle
-end
 
 -- A whole number below `n`. The top of the range is thrown away and drawn
 -- again, so that no value comes up more often than another.
@@ -72,25 +70,53 @@ local function fraction(self)
   return (next_value() * SPAN + next_value()) / FRACTION
 end
 
-local function random_impl(self)
+---One of the engine's two random sequences.
+---
+---Drawing from `trx.random.control` changes what the game does next,
+---because the simulation runs on it. Drawing from `trx.random.draw`
+---changes nothing, because only the picture uses it.
+---
+---Both have the same calls. The module's own functions draw from the
+---control stream.
+---@class (exact) trx.random.Stream
+local Stream = h.class("random.Stream")
+
+---A fraction of one, the whole number itself excepted.
+---@return number # A value in [0, 1).
+function Stream:random()
   return fraction(self)
 end
 
-local function randint_impl(self, a, b)
+---A whole number between two bounds, both of them included.
+---
+---```lua
+---local pips = trx.random.draw:randint(1, 6)
+---```
+---@param a integer Lowest value.
+---@param b integer Highest value. Below the lowest raises.
+---@return integer # A value in [a, b].
+function Stream:randint(a, b)
   if b < a then
     error("b must not be below a", 2)
   end
   return a + below(self, b - a + 1)
 end
 
-local function randrange_impl(self, n)
+---A whole number below a bound, counted from zero. The bound itself never
+---comes up.
+---@param n integer How many values there are. Below 1 raises.
+---@return integer # A value in [0, n).
+function Stream:randrange(n)
   if n < 1 then
     error("n must be 1 or more", 2)
   end
   return below(self, n)
 end
 
-local function choice_impl(self, seq)
+---One item out of a list, each as likely as the next.
+---@param seq any[] What to choose from. An empty list raises.
+---@return any # The item chosen.
+function Stream:choice(seq)
   local count = #seq
   if count == 0 then
     error("seq must not be empty", 2)
@@ -98,7 +124,15 @@ local function choice_impl(self, seq)
   return seq[below(self, count) + 1]
 end
 
-local function choices_impl(self, seq, weights, k)
+---Several items out of a list, drawn one after another so that the same item
+---can come up more than once. Weights give some items a greater share than
+---others.
+---@param seq any[] What to choose from. An empty list raises.
+---@param weights? number[] One share per item, none of them negative and not all zero. Defaults to an equal share each.
+---@param k? integer How many to draw. Below 0 raises.
+---@return any[] # The items chosen.
+---@trx.default k 1
+function Stream:choices(seq, weights, k)
   local count = #seq
   if count == 0 then
     error("seq must not be empty", 2)
@@ -147,250 +181,120 @@ local function choices_impl(self, seq, weights, k)
   return chosen
 end
 
-local function angle_impl(self)
+---A direction, anywhere around the turn.
+---@return trx.math.Angle # An angle within one turn.
+function Stream:angle()
   return below(self, 0x10000)
 end
 
-local function chance_impl(self, p)
+---Whether something with the given likelihood happens this time.
+---@param p number How likely, from 0 for never to 1 for always.
+---@return boolean # Whether it happens.
+function Stream:chance(p)
   return fraction(self) < p
 end
 
-local RANDOM = {
-  description = "A fraction of one, the whole number itself excepted.",
-  returns = { type = "number", description = "A value in [0, 1)." },
-}
-
-local RANDINT = {
-  description = "A whole number between two bounds, both of them included.",
-  params = {
-    { name = "a", type = "integer", description = "Lowest value." },
-    {
-      name = "b",
-      type = "integer",
-      description = "Highest value. Below the lowest raises.",
-    },
-  },
-  returns = { type = "integer", description = "A value in [a, b]." },
-}
-
-local RANDRANGE = {
-  description = "A whole number below a bound, counted from zero. The bound itself never "
-    .. "comes up.",
-  params = {
-    {
-      name = "n",
-      type = "integer",
-      description = "How many values there are. Below 1 raises.",
-    },
-  },
-  returns = { type = "integer", description = "A value in [0, n)." },
-}
-
-local CHOICE = {
-  description = "One item out of a list, each as likely as the next.",
-  params = {
-    {
-      name = "seq",
-      type = "any",
-      list = true,
-      description = "What to choose from. An empty list raises.",
-    },
-  },
-  returns = { type = "any", description = "The item chosen." },
-}
-
-local CHOICES = {
-  description = "Several items out of a list, drawn one after another so that the same item can "
-    .. "come up more than once. Weights give some items a greater share than others.",
-  params = {
-    {
-      name = "seq",
-      type = "any",
-      list = true,
-      description = "What to choose from. An empty list raises.",
-    },
-    {
-      name = "weights",
-      type = "number",
-      list = true,
-      optional = true,
-      description = "One share per item, none of them negative and not all zero. Defaults to an "
-        .. "equal share each.",
-    },
-    {
-      name = "k",
-      type = "integer",
-      optional = true,
-      default = 1,
-      description = "How many to draw. Below 0 raises.",
-    },
-  },
-  returns = { type = "any", list = true, description = "The items chosen." },
-}
-
-local ANGLE = {
-  description = "A direction, anywhere around the turn.",
-  params = {},
-  returns = { type = "math.Angle", description = "An angle within one turn." },
-}
-
-local CHANCE = {
-  description = "Whether something with the given likelihood happens this time.",
-  params = {
-    {
-      name = "p",
-      type = "number",
-      description = "How likely, from 0 for never to 1 for always.",
-    },
-  },
-  returns = { type = "boolean", description = "Whether it happens." },
-}
-
--- Builds one API entry per call, so that a stream's method and the module's
--- own function describe the same parameters and returns.
-local function spec(base, extra)
-  local entry = {}
-  for key, value in pairs(base) do
-    entry[key] = value
-  end
-  for key, value in pairs(extra) do
-    entry[key] = value
-  end
-  return entry
+local function stream_of(next_value)
+  local handle = setmetatable({}, Stream)
+  sources[handle] = next_value
+  return handle
 end
-
-Stream = api.type("random.Stream", {
-  description = [[
-    One of the engine's two random sequences.
-
-    Drawing from `trx.random.control` changes what the game does next,
-    because the simulation runs on it. Drawing from `trx.random.draw`
-    changes nothing, because only the picture uses it.
-
-    Both have the same calls. The module's own functions draw from the
-    control stream.
-  ]],
-
-  methods = {
-    random = spec(RANDOM, { impl = random_impl }),
-
-    randint = spec(RANDINT, {
-      examples = { [[local pips = trx.random.draw:randint(1, 6)]] },
-      impl = randint_impl,
-    }),
-
-    randrange = spec(RANDRANGE, { impl = randrange_impl }),
-    choice = spec(CHOICE, { impl = choice_impl }),
-    choices = spec(CHOICES, { impl = choices_impl }),
-    angle = spec(ANGLE, { impl = angle_impl }),
-    chance = spec(CHANCE, { impl = chance_impl }),
-  },
-})
 
 local control = stream_of(raw.next_control)
 local draw = stream_of(raw.next_draw)
 
-api.property("random.control", {
-  type = "random.Stream",
-  description = "The sequence the simulation runs on, which the module's own functions draw from.",
-  get = function()
-    return control
-  end,
-})
-
-api.property("random.draw", {
-  type = "random.Stream",
-  description = "The sequence kept for what is only seen. Drawing from it leaves what the "
-    .. "creatures decide next as it was, which is what the original game keeps it for.",
-  examples = {
-    [[trx.fx.blood({
-  pos = { x = 6799 - trx.random.draw:randint(0, 255), y = -512, z = 76209 },
-  strength = 7,
-})]],
+h.properties(M, "random", {
+  control = {
+    get = function()
+      return control
+    end,
   },
-  get = function()
-    return draw
-  end,
+  draw = {
+    get = function()
+      return draw
+    end,
+  },
 })
 
-api.define(
-  "random.random",
-  spec(RANDOM, {
-    impl = function()
-      return random_impl(control)
-    end,
-  })
-)
+---A fraction of one, the whole number itself excepted.
+---@return number # A value in [0, 1).
+function M.random()
+  return Stream.random(control)
+end
 
-api.define(
-  "random.randint",
-  spec(RANDINT, {
-    examples = { [[local pips = trx.random.randint(1, 6)]] },
-    impl = function(a, b)
-      return randint_impl(control, a, b)
-    end,
-  })
-)
+---A whole number between two bounds, both of them included.
+---
+---```lua
+---local pips = trx.random.randint(1, 6)
+---```
+---@param a integer Lowest value.
+---@param b integer Highest value. Below the lowest raises.
+---@return integer # A value in [a, b].
+function M.randint(a, b)
+  return Stream.randint(control, a, b)
+end
 
-api.define(
-  "random.randrange",
-  spec(RANDRANGE, {
-    examples = { [[local side = trx.random.randrange(6) + 1]] },
-    impl = function(n)
-      return randrange_impl(control, n)
-    end,
-  })
-)
+---A whole number below a bound, counted from zero. The bound itself never
+---comes up.
+---
+---```lua
+---local side = trx.random.randrange(6) + 1
+---```
+---@param n integer How many values there are. Below 1 raises.
+---@return integer # A value in [0, n).
+function M.randrange(n)
+  return Stream.randrange(control, n)
+end
 
-api.define(
-  "random.choice",
-  spec(CHOICE, {
-    examples = {
-      [[local sample = trx.random.choice({
-  trx.catalog.samples.LARA_NO,
-  trx.catalog.samples.LARA_YES,
-})]],
-    },
-    impl = function(seq)
-      return choice_impl(control, seq)
-    end,
-  })
-)
+---One item out of a list, each as likely as the next.
+---
+---```lua
+---local sample = trx.random.choice({
+---  trx.catalog.samples.LARA_NO,
+---  trx.catalog.samples.LARA_YES,
+---})
+---```
+---@param seq any[] What to choose from. An empty list raises.
+---@return any # The item chosen.
+function M.choice(seq)
+  return Stream.choice(control, seq)
+end
 
-api.define(
-  "random.choices",
-  spec(CHOICES, {
-    examples = {
-      [[local drops = trx.random.choices({ "medipack", "ammo" }, { 1, 3 }, 5)]],
-    },
-    impl = function(seq, weights, k)
-      return choices_impl(control, seq, weights, k)
-    end,
-  })
-)
+---Several items out of a list, drawn one after another so that the same item
+---can come up more than once. Weights give some items a greater share than
+---others.
+---
+---```lua
+---local drops = trx.random.choices({ "medipack", "ammo" }, { 1, 3 }, 5)
+---```
+---@param seq any[] What to choose from. An empty list raises.
+---@param weights? number[] One share per item, none of them negative and not all zero. Defaults to an equal share each.
+---@param k? integer How many to draw. Below 0 raises.
+---@return any[] # The items chosen.
+---@trx.default k 1
+function M.choices(seq, weights, k)
+  return Stream.choices(control, seq, weights, k)
+end
 
-api.define(
-  "random.angle",
-  spec(ANGLE, {
-    examples = {
-      [[trx.lara.item.rot = { x = 0, y = trx.random.angle(), z = 0 }]],
-    },
-    impl = function()
-      return angle_impl(control)
-    end,
-  })
-)
+---A direction, anywhere around the turn.
+---
+---```lua
+---trx.lara.item.rot = { x = 0, y = trx.random.angle(), z = 0 }
+---```
+---@return trx.math.Angle # An angle within one turn.
+function M.angle()
+  return Stream.angle(control)
+end
 
-api.define(
-  "random.chance",
-  spec(CHANCE, {
-    examples = {
-      [[if trx.random.chance(0.25) then
-  trx.sound.play(trx.catalog.samples.LARA_NO)
-end]],
-    },
-    impl = function(p)
-      return chance_impl(control, p)
-    end,
-  })
-)
+---Whether something with the given likelihood happens this time.
+---
+---```lua
+---if trx.random.chance(0.25) then
+---  trx.sound.play(trx.catalog.samples.LARA_NO)
+---end
+---```
+---@param p number How likely, from 0 for never to 1 for always.
+---@return boolean # Whether it happens.
+function M.chance(p)
+  return Stream.chance(control, p)
+end

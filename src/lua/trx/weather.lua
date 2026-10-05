@@ -1,49 +1,43 @@
 local raw = trxc.weather
-local api = trx.api
+local h = require("trx.internal.helpers")
 
-api.module("weather", {
-  order = 17,
-  description = "The runtime weather effect the current level shows.",
-})
+---@class trx
+---@field weather trx.weather
 
-api.enum("weather.Type", {
-  backing = "WEATHER_TYPE",
-  description = "The kinds of weather a level can show.",
-  values = {
-    NONE = "Clear.",
-    RAIN = "Rain.",
-    SNOW = "Snow.",
+---The runtime weather effect the current level shows.
+---@trx.module 17
+---@class (exact) trx.weather
+---@trx.readonly current
+---@field current trx.weather.Type The active weather.
+---@field severity number How heavy the weather falls, as a multiple of the number of particles the original games show. `1` is that number, `0` leaves the sky clear, and `4` is as much as the particle pool holds; a value outside the range is clamped to it.
+---
+---  A level starts at `1`, and a savegame carries what it was saved with.
+local M = h.module("weather")
+
+---The kinds of weather a level can show.
+---@enum trx.weather.Type
+local Type = {
+  NONE = "Clear.",
+  RAIN = "Rain.",
+  SNOW = "Snow.",
+}
+M.Type = h.enum("weather.Type", "WEATHER_TYPE", Type)
+
+---Sets the active weather.
+---
+---```lua
+---trx.weather.set(trx.weather.Type.SNOW)
+---```
+---@param type trx.weather.Type The weather to show.
+---@type fun(type: trx.weather.Type)
+M.set = raw.set
+
+h.properties(M, "weather", {
+  current = {
+    get = raw.get,
   },
-})
-
-api.define("weather.set", {
-  description = "Sets the active weather.",
-  params = {
-    {
-      name = "type",
-      type = "weather.Type",
-      description = "The weather to show.",
-    },
+  severity = {
+    get = raw.get_severity,
+    set = raw.set_severity,
   },
-  examples = { [[trx.weather.set(trx.weather.Type.SNOW)]] },
-  impl = raw.set,
-})
-
-api.property("weather.current", {
-  type = "weather.Type",
-  description = "The active weather.",
-  get = raw.get,
-})
-
-api.property("weather.severity", {
-  type = "number",
-  description = [[
-How heavy the weather falls, as a multiple of the number of particles the
-original games show. `1` is that number, `0` leaves the sky clear, and `4` is
-as much as the particle pool holds; a value outside the range is clamped to it.
-
-A level starts at `1`, and a savegame carries what it was saved with.
-]],
-  get = raw.get_severity,
-  set = raw.set_severity,
 })

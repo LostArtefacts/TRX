@@ -25,18 +25,15 @@ game.
 
 ### Properties
 
-- <a id="waypoints.current" name="waypoints.current"></a>**`trx.waypoints.current`** ([trx.waypoints.Num](#waypoints.Num)). Where Lara has reached, or `nil` before she has reached anywhere. Setting
-  it carries the furthest reached along with it where that is further on.
+- <a id="waypoints.current" name="waypoints.current"></a>**`trx.waypoints.current`** ([trx.waypoints.Num](#waypoints.Num)). Where Lara has reached, or `nil` before she has reached anywhere. Setting it carries the furthest reached along with it where that is further on.
 - <a id="waypoints.pad" name="waypoints.pad"></a>**`trx.waypoints.pad`** ([trx.waypoints.Num](#waypoints.Num)). The pad Lara crossed this frame, or `nil` on any frame she crossed none.
-  It says where she is standing now rather than how far she has got, and
-  it is meant to last the one frame: whoever sets it clears it again at the
+  It says where she is standing now rather than how far she has got, and it
+  is meant to last the one frame: whoever sets it clears it again at the
   start of the next, which is `nil` here.
 
   Setting it carries [`trx.waypoints.current`](#waypoints.current) along with it, but leaves
   [`trx.waypoints.highest`](#waypoints.highest) alone.
-- <a id="waypoints.highest" name="waypoints.highest"></a>**`trx.waypoints.highest`** ([trx.waypoints.Num](#waypoints.Num)). The furthest Lara has ever reached, or `nil` before she has reached
-  anywhere. It never falls, so a level that lets her walk back can still
-  tell how far she got. *(read-only)*
+- <a id="waypoints.highest" name="waypoints.highest"></a>**`trx.waypoints.highest`** ([trx.waypoints.Num](#waypoints.Num)). The furthest Lara has ever reached, or `nil` before she has reached anywhere. It never falls, so a level that lets her walk back can still tell how far she got. *(read-only)*
 
 ### Structures
 

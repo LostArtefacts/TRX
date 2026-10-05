@@ -16,7 +16,8 @@ Module for inspecting and altering the rooms of the current level.
 
 ### Indexing
 
-Indexing the module reaches a room, and `#trx.rooms` is how many the level has. `pairs()` walks them in order, keyed by the room number.
+Indexing the module reaches a room, and `#trx.rooms` is how many the level
+has. `pairs()` walks them in order, keyed by the room number.
 
 - <a id="rooms[]" name="rooms[]"></a>**`trx.rooms[key]`** (key: [trx.rooms.Num](#rooms.Num), value: [trx.rooms.Room](#rooms.Room) or `nil`).
 - **`#trx.rooms`** (integer). How many there are.
@@ -31,8 +32,7 @@ end
 
 ### Properties
 
-- <a id="rooms.flip_group_count" name="rooms.flip_group_count"></a>**`trx.rooms.flip_group_count`** (integer). How many flip groups a level can hold. A room belongs to one of them, and a flip
-  moves that group alone. *(read-only)*
+- <a id="rooms.flip_group_count" name="rooms.flip_group_count"></a>**`trx.rooms.flip_group_count`** (integer). How many flip groups a level can hold. A room belongs to one of them, and a flip moves that group alone. *(read-only)*
 - <a id="rooms.flipped" name="rooms.flipped"></a>**`trx.rooms.flipped`** (boolean). Whether the group that moved last is showing its flip pairs. *(read-only)*
 - <a id="rooms.query" name="rooms.query"></a>**`trx.rooms.query`** ([trx.rooms.RoomQuery](#rooms.RoomQuery)). The identity query over every room in the level. Narrow it and read it. *(read-only)*
 
@@ -42,11 +42,11 @@ end
 
     The values [`trx.rooms.Room.flip_status`](#rooms.Room.flip_status) can take.
 
-    - `trx.rooms.FlipStatus.NONE` = `0`  
+    - `trx.rooms.FlipStatus.NONE`  
         This is a normal room.
-    - `trx.rooms.FlipStatus.UNFLIPPED` = `1`  
+    - `trx.rooms.FlipStatus.UNFLIPPED`  
         This room is currently reachable by Lara.
-    - `trx.rooms.FlipStatus.FLIPPED` = `2`  
+    - `trx.rooms.FlipStatus.FLIPPED`  
         This room is currently inactive and unreachable by Lara.
 
 ### Structures
@@ -104,7 +104,10 @@ end
       Returns: [trx.math.Distance](MATH.md#math.Distance) or `nil`. The height, with `nil` where there is no floor.
 
     - <a id="rooms.Room.is_valid" name="rooms.Room.is_valid"></a>[lua]`room:is_valid()`  
-      Whether the handle still refers to a room of the level that is loaded. A level change replaces the rooms, so a handle held across one goes stale rather than naming a different room: reading or writing a field on it raises an error. Check this for a handle held across time.
+      Whether the handle still refers to a room of the level that is loaded. A
+      level change replaces the rooms, so a handle held across one goes stale
+      rather than naming a different room: reading or writing a field on it raises
+      an error. Check this for a handle held across time.
 
       Returns: boolean. False once the level that held the room has been left.
 
@@ -155,12 +158,18 @@ end
 
 - <a id="rooms.RoomQuery" name="rooms.RoomQuery"></a>[lua]`trx.rooms.RoomQuery`
 
-    A [`trx.query.Query`](QUERY.md#query.Query) over the rooms of the current level, with the narrowings below on top of the ones every query has. Rooms answer to no names, so the name layer is absent.
+    A [`trx.query.Query`](QUERY.md#query.Query) over the rooms of the current level, with the narrowings
+    below on top of the ones every query has. Rooms answer to no names, so the
+    name layer is absent.
 
     Methods:
 
     - <a id="rooms.RoomQuery.at" name="rooms.RoomQuery.at"></a>[lua]`roomquery:at(pos)`  
-      The room contains a world position. Rooms overlap, so a position can be in several at once and every one of them matches, in room order. A room claims a point when the point is within its bounds, the outer ring of solid wall aside, and the column it stands in has a floor - the test the engine itself puts a position through. The hidden half of a flip pair is passed over.
+      The room contains a world position. Rooms overlap, so a position can be in
+      several at once and every one of them matches, in room order. A room claims
+      a point when the point is within its bounds, the outer ring of solid wall
+      aside, and the column it stands in has a floor - the test the engine itself
+      puts a position through. The hidden half of a flip pair is passed over.
 
       Parameters:
       - <a id="rooms.RoomQuery.at.pos" name="rooms.RoomQuery.at.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position.
@@ -178,12 +187,15 @@ end
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
     - <a id="rooms.RoomQuery.flipped" name="rooms.RoomQuery.flipped"></a>[lua]`roomquery:flipped()`  
-      The room is the half of a flip pair the level is not showing. Its geometry is still there to inspect, but nothing can be in it.
+      The room is the half of a flip pair the level is not showing. Its geometry
+      is still there to inspect, but nothing can be in it.
 
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
     - <a id="rooms.RoomQuery.reachable" name="rooms.RoomQuery.reachable"></a>[lua]`roomquery:reachable()`  
-      The room is part of the level as it stands: an ordinary room, or the half of a flip pair the level is showing. This is what a script asking about the world wants, and what [`at`](#rooms.RoomQuery.at) already applies.
+      The room is part of the level as it stands: an ordinary room, or the half of
+      a flip pair the level is showing. This is what a script asking about the
+      world wants, and what [`at`](#rooms.RoomQuery.at) already applies.
 
       Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
 
@@ -224,15 +236,16 @@ end
   Returns: integer. How many rooms the loaded level holds.
 
 - <a id="rooms.flip_groups" name="rooms.flip_groups"></a>[lua]`trx.rooms.flip_groups(groups)`  
-  Puts rooms in flip groups. A level script can then move some flip pairs while the
-  rest stay where they are. Each entry names one room and the group it belongs to. Its flip pair
-  joins the same group.
+  Puts rooms in flip groups. A level script can then move some flip pairs
+  while the rest stay where they are. Each entry names one room and the group
+  it belongs to. Its flip pair joins the same group.
 
-  Call this only from the top level of a level script. Rooms must be grouped before the level
-  starts, so the game can restore flipped groups correctly when it loads a save.
+  Call this only from the top level of a level script. Rooms must be grouped
+  before the level starts, so the game can restore flipped groups correctly
+  when it loads a save.
 
-  A level with no groups moves all flip pairs together. After a script names any group, each flip
-  trigger moves only the group with the same number.
+  A level with no groups moves all flip pairs together. After a script names
+  any group, each flip trigger moves only the group with the same number.
 
   Parameters:
   - <a id="rooms.flip_groups.groups" name="rooms.flip_groups.groups"></a>**`groups`** (table). Flip groups, keyed by [`trx.rooms.Num`](#rooms.Num).
@@ -243,13 +256,11 @@ end
   ```
 
 - <a id="rooms.flip" name="rooms.flip"></a>[lua]`trx.rooms.flip([group])`  
-  Flips rooms, swapping each with its flip pair. With no group given, every group
-  moves.
+  Flips rooms, swapping each with its flip pair. With no group given, every
+  group moves.
 
   Parameters:
-  - <a id="rooms.flip.group" name="rooms.flip.group"></a>**`group`** (integer, optional). Which flip group to act on, counted from 0. A level splits its flip pairs into
-    groups and moves one at a time; a game that names no group places every room in the first.
-    Omit this to act on every group.
+  - <a id="rooms.flip.group" name="rooms.flip.group"></a>**`group`** (integer, optional). Which flip group to act on, counted from 0. A level splits its flip pairs into groups and moves one at a time; a game that names no group places every room in the first. Omit this to act on every group.
 
   Example:
   ```lua
@@ -262,16 +273,13 @@ end
   ```
 
 - <a id="rooms.is_flipped" name="rooms.is_flipped"></a>[lua]`trx.rooms.is_flipped([group])`  
-  Whether a group of rooms is showing its flip pairs. With no group given, answers
-  for the group that moved last, which is what the world itself reads.
+  Whether a group of rooms is showing its flip pairs. With no group given,
+  answers for the group that moved last, which is what the world itself reads.
 
   Parameters:
-  - <a id="rooms.is_flipped.group" name="rooms.is_flipped.group"></a>**`group`** (integer, optional). Which flip group to act on, counted from 0. A level splits its flip pairs into
-    groups and moves one at a time; a game that names no group places every room in the first.
-    Omit this to act on every group.
+  - <a id="rooms.is_flipped.group" name="rooms.is_flipped.group"></a>**`group`** (integer, optional). Which flip group to act on, counted from 0. A level splits its flip pairs into groups and moves one at a time; a game that names no group places every room in the first. Omit this to act on every group.
 
-  Returns:
-  - boolean. Whether that group is showing its pairs.
+  Returns: boolean. Whether that group is showing its pairs.
 
 - <a id="rooms.flip_effect" name="rooms.flip_effect"></a>[lua]`trx.rooms.flip_effect(effect_id, [timer])`  
   Sets the active flip effect, and optionally its timer.
@@ -286,7 +294,8 @@ end
   ```
 
 - <a id="rooms.floor_height" name="rooms.floor_height"></a>[lua]`trx.rooms.floor_height(pos, [room_num], [opts])`  
-  The height of the floor under a world position. `nil` where there is no floor at all: inside solid geometry, or off the edge of the level.
+  The height of the floor under a world position. `nil` where there is no
+  floor at all: inside solid geometry, or off the edge of the level.
 
   Parameters:
   - <a id="rooms.floor_height.pos" name="rooms.floor_height.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position.
@@ -304,7 +313,8 @@ end
   ```
 
 - <a id="rooms.ceiling_height" name="rooms.ceiling_height"></a>[lua]`trx.rooms.ceiling_height(pos, [room_num], [opts])`  
-  The height of the ceiling over a world position. Returns `nil` inside solid geometry or outside the level.
+  The height of the ceiling over a world position. Returns `nil` inside solid
+  geometry or outside the level.
 
   Parameters:
   - <a id="rooms.ceiling_height.pos" name="rooms.ceiling_height.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). World position.
@@ -322,7 +332,8 @@ end
   ```
 
 - <a id="rooms.find_valid_pos" name="rooms.find_valid_pos"></a>[lua]`trx.rooms.find_valid_pos(pos, room_num)`  
-  Nudges a position into valid room geometry, e.g. to find somewhere an item can legally be placed.
+  Nudges a position into valid room geometry, e.g. to find somewhere an item
+  can legally be placed.
 
   Parameters:
   - <a id="rooms.find_valid_pos.pos" name="rooms.find_valid_pos.pos"></a>**`pos`** ([trx.math.Vec3](MATH.md#math.Vec3)). Position to search near.

@@ -1,85 +1,55 @@
 local raw = trxc.scene
-local api = trx.api
+local h = require("trx.internal.helpers")
 
 require("trx.math")
 
-api.module("scene", {
-  order = 44,
-  description = [[
-Outlines a script draws into the world the camera is looking at, over the level
-geometry rather than over the interface.
+---@class trx
+---@field scene trx.scene
 
-The calls are available from `trx.events.on_scene_paint` and nowhere else, and
-raise anywhere else. Nothing is remembered between frames: a shape that is to
-stay on screen is drawn again every time the event fires.
+---Outlines a script draws into the world the camera is looking at, over the
+---level geometry rather than over the interface.
+---
+---The calls are available from `trx.events.on_scene_paint` and nowhere else,
+---and raise anywhere else. Nothing is remembered between frames: a shape that
+---is to stay on screen is drawn again every time the event fires.
+---
+---A shape is placed the way an item position and a zone are, so it needs no
+---room and belongs to none. The outlines are drawn as wireframe, and one
+---reaching further from its middle than a level is wide draws at that limit
+---instead.
+---@trx.module 44
+---@class (exact) trx.scene
+local M = h.module("scene")
 
-A shape is placed the way an item position and a zone are, so it needs no room
-and belongs to none. The outlines are drawn as wireframe, and one reaching
-further from its middle than a level is wide draws at that limit instead.
-]],
-})
+---Draws the outline of a world-space box. The corners may come in any order.
+---
+---```lua
+---trx.events.on_scene_paint(function()
+---  trx.scene.box(
+---    { x = 51200, y = -2048, z = 30720 },
+---    { x = 53248, y = 0, z = 32768 },
+---    "00ff00")
+---end)
+---```
+---@param min trx.math.Vec3 One corner of the box.
+---@param max trx.math.Vec3 The opposite corner of the box.
+---@param color trx.math.Color The color of the outline.
+---@param alpha? integer How solid the outline is, counted 0 to 255.
+---@trx.default alpha 255
+---@type fun(min: trx.math.Vec3, max: trx.math.Vec3, color: trx.math.Color, alpha?: integer)
+M.box = raw.box
 
-local COLOR = {
-  name = "color",
-  type = "math.Color",
-  description = "The color of the outline.",
-}
-
-local ALPHA = {
-  name = "alpha",
-  type = "integer",
-  optional = true,
-  default = 255,
-  description = "How solid the outline is, counted 0 to 255.",
-}
-
-api.define("scene.box", {
-  description = "Draws the outline of a world-space box. The corners may come in any order.",
-  params = {
-    {
-      name = "min",
-      type = "math.Vec3",
-      description = "One corner of the box.",
-    },
-    {
-      name = "max",
-      type = "math.Vec3",
-      description = "The opposite corner of the box.",
-    },
-    COLOR,
-    ALPHA,
-  },
-  examples = {
-    [[trx.events.on_scene_paint(function()
-  trx.scene.box(
-    { x = 51200, y = -2048, z = 30720 },
-    { x = 53248, y = 0, z = 32768 },
-    "00ff00")
-end)]],
-  },
-  impl = raw.box,
-})
-
-api.define("scene.sphere", {
-  description = "Draws the outline of a sphere.",
-  params = {
-    {
-      name = "centre",
-      type = "math.Vec3",
-      description = "Middle of the sphere.",
-    },
-    {
-      name = "radius",
-      type = "math.Distance",
-      description = "How far out it reaches.",
-    },
-    COLOR,
-    ALPHA,
-  },
-  examples = {
-    [[trx.events.on_scene_paint(function()
-  trx.scene.sphere(trx.lara.item.pos, 2048, "00ff00", 128)
-end)]],
-  },
-  impl = raw.sphere,
-})
+---Draws the outline of a sphere.
+---
+---```lua
+---trx.events.on_scene_paint(function()
+---  trx.scene.sphere(trx.lara.item.pos, 2048, "00ff00", 128)
+---end)
+---```
+---@param centre trx.math.Vec3 Middle of the sphere.
+---@param radius trx.math.Distance How far out it reaches.
+---@param color trx.math.Color The color of the outline.
+---@param alpha? integer How solid the outline is, counted 0 to 255.
+---@trx.default alpha 255
+---@type fun(centre: trx.math.Vec3, radius: trx.math.Distance, color: trx.math.Color, alpha?: integer)
+M.sphere = raw.sphere

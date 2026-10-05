@@ -12,13 +12,13 @@ order: 29
 
 ## <a id="stats" name="stats"></a>Stats module
 
-Module for what a level keeps count of: what Lara has found in it, and how much
-there was to find.
+Module for what a level keeps count of: what Lara has found in it, and how
+much there was to find.
 
-The module is the level being played, so [`trx.stats.pickups.count`](#stats.Category.count) is what she
-has picked up in it. Any other level's counters are reached the same way through
-[`trx.game.Level.stats`](GAME.md#game.Level.stats). At the title screen there is no level, and everything
-here reads `nil`.
+The module is the level being played, so [`trx.stats.pickups.count`](#stats.Category.count) is what
+she has picked up in it. Any other level's counters are reached the same way
+through [`trx.game.Level.stats`](GAME.md#game.Level.stats). At the title screen there is no level, and
+everything here reads `nil`.
 
 ### Structures
 
@@ -28,7 +28,11 @@ here reads `nil`.
 
 - <a id="stats.Category" name="stats.Category"></a>[lua]`trx.stats.Category`
 
-    One thing a level is counted on, which is one row of the statistics screen. [`raw`](#stats.Category.raw) is [`max`](#stats.Category.max) plus [`unobtainable`](#stats.Category.unobtainable): the game flow can declare part of a level out of reach, and what it writes off is left out of what counts towards completion while still being in the level.
+    One thing a level is counted on, which is one row of the statistics screen.
+    [`raw`](#stats.Category.raw) is [`max`](#stats.Category.max) plus
+    [`unobtainable`](#stats.Category.unobtainable): the game flow can declare part of a level
+    out of reach, and what it writes off is left out of what counts towards
+    completion while still being in the level.
 
     Handles are live references: if the underlying object is destroyed,
     using the handle raises an error rather than silently reading an
@@ -42,7 +46,8 @@ here reads `nil`.
 
 - <a id="stats.Stats" name="stats.Stats"></a>[lua]`trx.stats.Stats`
 
-    What one level keeps count of. The counters are the level's own and can be written, which is what a script correcting or seeding them wants.
+    What one level keeps count of. The counters are the level's own and can be
+    written, which is what a script correcting or seeding them wants.
 
     Handles are live references: if the underlying object is destroyed,
     using the handle raises an error rather than silently reading an

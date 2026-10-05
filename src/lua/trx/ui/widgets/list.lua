@@ -1,11 +1,12 @@
 local raw = trxc.ui
-local api = trx.api
+local h = require("trx.internal.helpers")
 local base = require("trx.ui.widgets.base")
 
 require("trx.config")
 require("trx.game")
 
 local primitive = trx.ui.primitive
+local widgets = trx.ui.widgets
 local value_of = base.value_of
 local new_widget = base.new_widget
 local text_scale = base.text_scale
@@ -30,26 +31,12 @@ local function list_frame_overhang()
   return trx.game.tr_version == 1 and 1 or 0
 end
 
-api.type("ui.ListRow", {
-  record = true,
-  description = "One entry of a `trx.ui.widgets.List`.",
-  fields = {
-    text = {
-      type = "string",
-      description = "The text. It is centered unless the row has a right part.",
-    },
-    right = {
-      type = "string",
-      optional = true,
-      description = "Text drawn against the right edge. The main text is then drawn against the left edge.",
-    },
-    rule = {
-      type = "boolean",
-      optional = true,
-      description = "Whether a line separates the row from the row above it.",
-    },
-  },
-})
+---One entry of a `trx.ui.widgets.List`.
+---@trx.record
+---@class trx.ui.ListRow
+---@field text string The text. It is centered unless the row has a right part.
+---@field right? string Text drawn against the right edge. The main text is then drawn against the left edge.
+---@field rule? boolean Whether a line separates the row from the row above it.
 
 local function list_visible(list)
   local visible = value_of(list.visible) or #list._rows
@@ -93,119 +80,79 @@ local function list_scroll_into_view(list)
   list._first = math.max(math.min(first, #list._rows - visible + 1), 1)
 end
 
-local List = api.type("ui.List", {
-  extends = "ui.Widget",
-  description = [[
-A column of rows that the player picks one entry from. The row under the cursor
-is drawn in a frame. Arrows show where the list runs past the rows it shows.]],
-  methods = {
-    set_rows = {
-      description = [[
-Replaces the rows. The cursor stays on the same index where it can.]],
-      params = {
-        {
-          name = "rows",
-          type = "ui.ListRow",
-          list = true,
-          description = "The new rows.",
-        },
-      },
-      impl = function(self, rows)
-        self._rows = rows
-        self._selected = math.max(math.min(self._selected, #rows), 1)
-        self:wake()
-        list_scroll_into_view(self)
-      end,
-    },
-    selection = {
-      description = "Returns the index of the row under the cursor.",
-      returns = {
-        type = "integer",
-        nullable = true,
-        description = "The index, or `nil` for an empty list.",
-      },
-      impl = function(self)
-        if #self._rows == 0 then
-          return nil
-        end
-        return self._selected
-      end,
-    },
-    select = {
-      description = "Moves the cursor to a row. Does nothing for an index out of range.",
-      params = {
-        { name = "index", type = "integer", description = "The row." },
-      },
-      impl = function(self, index)
-        if index >= 1 and index <= #self._rows then
-          self._selected = index
-          list_scroll_into_view(self)
-        end
-      end,
-    },
-    move = {
-      description = [[
-Moves the cursor by a number of rows. Past either end, the cursor goes to the
-other end where the `ui.enable_wraparound` setting is on, and stays otherwise.
-<!--noref: ui.enable_wraparound-->]],
-      params = {
-        {
-          name = "step",
-          type = "integer",
-          description = "How many rows to move. Negative moves up.",
-        },
-      },
-      returns = { type = "boolean", description = "Whether the cursor moved." },
-      impl = function(self, step)
-        local count = #self._rows
-        if count == 0 then
-          return false
-        end
-        local index = self._selected + step
-        if index < 1 or index > count then
-          if not trx.config.get("ui.enable_wraparound") then
-            return false
-          end
-          index = index < 1 and count or 1
-        end
-        if index == self._selected then
-          return false
-        end
-        self._selected = index
-        list_scroll_into_view(self)
-        return true
-      end,
-    },
-    control = {
-      description = [[
-Reads the menu keys for one tick. Up and down move the cursor, and confirm picks
-the row under it. Uses up only the presses that it reads.]],
-      params = {
-        {
-          name = "keys",
-          type = "ui.LayerKeys",
-          description = "The input of the layer the list is on.",
-        },
-      },
-      returns = {
-        type = "integer",
-        nullable = true,
-        description = "The picked row, or `nil` where none was picked.",
-      },
-      impl = function(self, keys)
-        if keys:pressed(trx.input.Role.MENU_DOWN) then
-          self:move(1)
-        elseif keys:pressed(trx.input.Role.MENU_UP) then
-          self:move(-1)
-        end
-        if #self._rows > 0 and keys:pressed(trx.input.Role.MENU_CONFIRM) then
-          return self._selected
-        end
-        return nil
-      end,
-    },
-  },
-})
+---A column of rows that the player picks one entry from. The row under the
+---cursor is drawn in a frame. Arrows show where the list runs past the rows it
+---shows.
+---@class (exact) trx.ui.List: trx.ui.Widget
+local List = h.class("ui.List", { extends = "ui.Widget" })
+
+---Replaces the rows. The cursor stays on the same index where it can.
+---@param rows trx.ui.ListRow[] The new rows.
+function List:set_rows(rows)
+  self._rows = rows
+  self._selected = math.max(math.min(self._selected, #rows), 1)
+  self:wake()
+  list_scroll_into_view(self)
+end
+
+---Returns the index of the row under the cursor.
+---@return integer? # The index, or `nil` for an empty list.
+function List:selection()
+  if #self._rows == 0 then
+    return nil
+  end
+  return self._selected
+end
+
+---Moves the cursor to a row. Does nothing for an index out of range.
+---@param index integer The row.
+function List:select(index)
+  if index >= 1 and index <= #self._rows then
+    self._selected = index
+    list_scroll_into_view(self)
+  end
+end
+
+---Moves the cursor by a number of rows. Past either end, the cursor goes to
+---the other end where the `ui.enable_wraparound` setting is on, and stays
+---otherwise. <!--noref: ui.enable_wraparound-->
+---@param step integer How many rows to move. Negative moves up.
+---@return boolean # Whether the cursor moved.
+function List:move(step)
+  local count = #self._rows
+  if count == 0 then
+    return false
+  end
+  local index = self._selected + step
+  if index < 1 or index > count then
+    if not trx.config.get("ui.enable_wraparound") then
+      return false
+    end
+    index = index < 1 and count or 1
+  end
+  if index == self._selected then
+    return false
+  end
+  self._selected = index
+  list_scroll_into_view(self)
+  return true
+end
+
+---Reads the menu keys for one tick. Up and down move the cursor, and confirm
+---picks the row under it. Uses up only the presses that it reads.
+---@param keys trx.ui.LayerKeys The input of the layer the list is on.
+---@return integer? # The picked row, or `nil` where none was picked.
+function List:control(keys)
+  if keys:pressed(trx.input.Role.MENU_DOWN) then
+    self:move(1)
+  elseif keys:pressed(trx.input.Role.MENU_UP) then
+    self:move(-1)
+  end
+  if #self._rows > 0 and keys:pressed(trx.input.Role.MENU_CONFIRM) then
+    return self._selected
+  end
+  return nil
+end
 
 local function list_row_width(list, row)
   local scale = raw.drawn_text_scale()
@@ -313,90 +260,37 @@ local function list_paint(list, x, y, w)
   end
 end
 
-api.define("ui.widgets.List", {
-  description = [[
-A column of rows that the player picks one entry from.
+---@class (exact) trx.ui.widgets.List.settings
+---@field rows? trx.ui.ListRow[] The rows. None by default.
+---@field visible? any How many rows to show at once, or a signal that holds that value. Every row by default.
+---@field reserve? boolean Whether to keep room for the visible rows when the list holds fewer. `false` by default.
+---@field width? number The least width, in canvas units at the default text size.
+---@field row_pad? number The room on each side of a row's text. `4` by default.
+---@field row_spacing? number The gap between two rows. `3` by default.
+---@field scroll_hints? boolean Whether to show arrows where the list runs past its rows. `true` by default.
+---@field shown? any Whether the list is shown, or a signal that holds that value.
 
-The list keeps the cursor and the scroll position. Read the player's input
-with `trx.ui.List:control` from the input callback of the layer that holds the
-list.]],
-  params = {
-    {
-      name = "settings",
-      type = "table",
-      description = "The list settings.",
-      fields = {
-        {
-          name = "rows",
-          type = "ui.ListRow",
-          list = true,
-          optional = true,
-          description = "The rows. None by default.",
-        },
-        {
-          name = "visible",
-          type = "any",
-          optional = true,
-          description = [[
-How many rows to show at once, or a signal that holds that value. Every row by
-default.]],
-        },
-        {
-          name = "reserve",
-          type = "boolean",
-          optional = true,
-          description = [[
-Whether to keep room for the visible rows when the list holds fewer.
-`false` by default.]],
-        },
-        {
-          name = "width",
-          type = "number",
-          optional = true,
-          description = "The least width, in canvas units at the default text size.",
-        },
-        {
-          name = "row_pad",
-          type = "number",
-          optional = true,
-          description = "The room on each side of a row's text. `4` by default.",
-        },
-        {
-          name = "row_spacing",
-          type = "number",
-          optional = true,
-          description = "The gap between two rows. `3` by default.",
-        },
-        {
-          name = "scroll_hints",
-          type = "boolean",
-          optional = true,
-          description = "Whether to show arrows where the list runs past its rows. `true` by default.",
-        },
-        {
-          name = "shown",
-          type = "any",
-          optional = true,
-          description = "Whether the list is shown, or a signal that holds that value.",
-        },
-      },
-    },
-  },
-  returns = { type = "ui.List", description = "The list." },
-  examples = {
-    [[local list = trx.ui.widgets.List({
-  rows = { { text = "Yes" }, { text = "No" } },
-})]],
-  },
-  impl = function(settings)
-    local self = new_widget(settings, list_measure, list_paint)
-    setmetatable(self, List)
-    self._rows = settings.rows or {}
-    self.rows = nil
-    self.row_pad = settings.row_pad or 4
-    self.row_spacing = settings.row_spacing or 3
-    self._selected = 1
-    self._first = 1
-    return self:wakes_on(self.visible, text_scale())
-  end,
-})
+---A column of rows that the player picks one entry from.
+---
+---The list keeps the cursor and the scroll position. Read the player's input
+---with `trx.ui.List:control` from the input callback of the layer that holds
+---the list.
+---
+---```lua
+---local list = trx.ui.widgets.List({
+---  rows = { { text = "Yes" }, { text = "No" } },
+---})
+---```
+---@param settings trx.ui.widgets.List.settings The list settings.
+---@return trx.ui.List # The list.
+function widgets.List(settings)
+  local self = new_widget(settings, list_measure, list_paint)
+  setmetatable(self, List)
+  self._rows = settings.rows or {}
+  self.rows = nil
+  self.row_pad = settings.row_pad or 4
+  self.row_spacing = settings.row_spacing or 3
+  self._selected = 1
+  self._first = 1
+  return self:wakes_on(self.visible, text_scale())
+end

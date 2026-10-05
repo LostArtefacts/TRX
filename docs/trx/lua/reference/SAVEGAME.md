@@ -24,16 +24,17 @@ Manage save slots and saved games.
 
     Which set of save slots a slot belongs to.
 
-    - `trx.savegame.Pool.NORMAL` = `0`  
+    - `trx.savegame.Pool.NORMAL`  
         The numbered save slots.
-    - `trx.savegame.Pool.QUICK` = `1`  
+    - `trx.savegame.Pool.QUICK`  
         The quick-save slots, counted and addressed by their on-screen order.
 
 ### Structures
 
 - <a id="savegame.SlotNum" name="savegame.SlotNum"></a>[lua]`trx.savegame.SlotNum`
 
-    Slot number within the pool. For the quick pool this is the on-screen order. Counted from 1.
+    Slot number within the pool. For the quick pool this is the on-screen
+    order. Counted from 1.
 
 - <a id="savegame.SlotInfo" name="savegame.SlotInfo"></a>[lua]`trx.savegame.SlotInfo`
 
@@ -58,8 +59,7 @@ Manage save slots and saved games.
   Parameters:
   - <a id="savegame.slot_count.pool" name="savegame.slot_count.pool"></a>**`pool`** ([trx.savegame.Pool](#savegame.Pool), optional). Which set of slots to look in. Defaults to `NORMAL`.
 
-  Returns:
-  - integer. The number of slots.
+  Returns: integer. The number of slots.
 
 - <a id="savegame.is_free" name="savegame.is_free"></a>[lua]`trx.savegame.is_free(slot_num, [pool])`  
   Whether a slot holds no save.
@@ -68,14 +68,13 @@ Manage save slots and saved games.
   - <a id="savegame.is_free.slot_num" name="savegame.is_free.slot_num"></a>**`slot_num`** ([trx.savegame.SlotNum](#savegame.SlotNum)).
   - <a id="savegame.is_free.pool" name="savegame.is_free.pool"></a>**`pool`** ([trx.savegame.Pool](#savegame.Pool), optional). Which set of slots to look in. Defaults to `NORMAL`.
 
-  Returns:
-  - boolean. Whether the slot is empty.
+  Returns: boolean. Whether the slot is empty.
 
 - <a id="savegame.load" name="savegame.load"></a>[lua]`trx.savegame.load(slot_num, [pool])`  
   Starts the saved game in a slot.
 
-  The game flow loads it after this call returns. Raises when the slot holds no
-  save.
+  The game flow loads it after this call returns. Raises when the slot holds
+  no save.
 
   Parameters:
   - <a id="savegame.load.slot_num" name="savegame.load.slot_num"></a>**`slot_num`** ([trx.savegame.SlotNum](#savegame.SlotNum)).
@@ -89,15 +88,14 @@ Manage save slots and saved games.
 - <a id="savegame.save" name="savegame.save"></a>[lua]`trx.savegame.save([slot_num], [pool])`  
   Writes a saved game to a slot.
 
-  A quick save without a slot number uses the next slot in the rotation. Otherwise,
-  it uses the named slot.
+  A quick save without a slot number uses the next slot in the rotation.
+  Otherwise, it uses the named slot.
 
   Parameters:
   - <a id="savegame.save.slot_num" name="savegame.save.slot_num"></a>**`slot_num`** ([trx.savegame.SlotNum](#savegame.SlotNum), optional). The quick pool uses the next slot in its rotation when it is omitted.
   - <a id="savegame.save.pool" name="savegame.save.pool"></a>**`pool`** ([trx.savegame.Pool](#savegame.Pool), optional). Which set of slots to look in. Defaults to `NORMAL`.
 
-  Returns:
-  - boolean. Whether the save was written. `false` means that the quick pool had no slot.
+  Returns: boolean. Whether the save was written. `false` means that the quick pool had no slot.
 
   Example:
   ```lua
@@ -128,27 +126,24 @@ Manage save slots and saved games.
   - <a id="savegame.delete.slot_num" name="savegame.delete.slot_num"></a>**`slot_num`** ([trx.savegame.SlotNum](#savegame.SlotNum)).
   - <a id="savegame.delete.pool" name="savegame.delete.pool"></a>**`pool`** ([trx.savegame.Pool](#savegame.Pool), optional). Which set of slots to look in. Defaults to `NORMAL`.
 
-  Returns:
-  - boolean. Whether a save was removed.
+  Returns: boolean. Whether a save was removed.
 
 - <a id="savegame.total_count" name="savegame.total_count"></a>[lua]`trx.savegame.total_count()`  
   Counts the saves in every pool.
 
-  Returns:
-  - integer. The number of saves.
+  Returns: integer. The number of saves.
 
 - <a id="savegame.restart_available" name="savegame.restart_available"></a>[lua]`trx.savegame.restart_available([slot_num], [pool])`  
   Reports whether the saved level can be restarted.
 
-  With no slot, this uses the save the game is running from. A game that is not
-  running from a save can always restart.
+  With no slot, this uses the save the game is running from. A game that is
+  not running from a save can always restart.
 
   Parameters:
   - <a id="savegame.restart_available.slot_num" name="savegame.restart_available.slot_num"></a>**`slot_num`** ([trx.savegame.SlotNum](#savegame.SlotNum), optional). The slot to ask about. The running save answers when it is omitted.
   - <a id="savegame.restart_available.pool" name="savegame.restart_available.pool"></a>**`pool`** ([trx.savegame.Pool](#savegame.Pool), optional). Which set of slots to look in. Defaults to `NORMAL`.
 
-  Returns:
-  - boolean. Whether the level can be restarted.
+  Returns: boolean. Whether the level can be restarted.
 
 - <a id="savegame.reached_levels" name="savegame.reached_levels"></a>[lua]`trx.savegame.reached_levels(slot_num, [pool])`  
   Returns the levels up to the saved one without starting it.
@@ -157,8 +152,7 @@ Manage save slots and saved games.
   - <a id="savegame.reached_levels.slot_num" name="savegame.reached_levels.slot_num"></a>**`slot_num`** ([trx.savegame.SlotNum](#savegame.SlotNum)).
   - <a id="savegame.reached_levels.pool" name="savegame.reached_levels.pool"></a>**`pool`** ([trx.savegame.Pool](#savegame.Pool), optional). Which set of slots to look in. Defaults to `NORMAL`.
 
-  Returns:
-  - a list of [trx.game.LevelNum](GAME.md#game.LevelNum) or `nil`. The levels, or `nil` when the slot holds no save that can be read.
+  Returns: a list of [trx.game.LevelNum](GAME.md#game.LevelNum) or `nil`. The levels, or `nil` when the slot holds no save that can be read.
 
 - <a id="savegame.play_story" name="savegame.play_story"></a>[lua]`trx.savegame.play_story(slot_num, [pool])`  
   Plays the story content that runs before the saved level.
@@ -172,8 +166,9 @@ Manage save slots and saved games.
 - <a id="savegame.recent_slot" name="savegame.recent_slot"></a>[lua]`trx.savegame.recent_slot()`  
   Returns the slot where a save list should open.
 
-  This is the slot that the game last loaded or saved. If there is no such slot,
-  it is the most recently written save, and then the first numbered slot.
+  This is the slot that the game last loaded or saved. If there is no such
+  slot, it is the most recently written save, and then the first numbered
+  slot.
 
   Returns:
   - [trx.savegame.SlotNum](#savegame.SlotNum) or `nil`. The slot number, or `nil` where the game keeps no slots.
