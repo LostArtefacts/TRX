@@ -156,6 +156,7 @@ static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
     MUST(JSON_READ(io, "ammo", &p->ammo));
     MUST(JSON_READ(io, "swap_bits", &p->swap_bits));
     MUST(JSON_READ(io, "x_shift", &p->x_shift));
+    MUST(JSON_READ(io, "ocb", &p->ocb));
     return OK;
 }
 
@@ -166,6 +167,7 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "ammo", p->ammo);
     JSONW_WRITE(io, "swap_bits", p->swap_bits);
     JSONW_WRITE(io, "x_shift", p->x_shift);
+    JSONW_WRITE(io, "ocb", p->ocb);
 }
 
 static void M_Initialise(const int16_t item_num)
