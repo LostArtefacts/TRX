@@ -1169,7 +1169,9 @@ local function open_save_load(ctx)
       control_page(keys)
     end,
   })
-  if not open_page(pages[index].role) then
+  -- A new game page with one choice has no list to show, so the engine
+  -- keeps the screen.
+  if not open_page(pages[index].role) or state.bare then
     return nil
   end
   return state.book
