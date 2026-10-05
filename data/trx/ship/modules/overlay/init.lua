@@ -92,6 +92,7 @@ end
 -- A counter with nothing to count costs no tick at all, which is what every
 -- one of them is for most of a level.
 local function ticker(step)
+  ---@type trx.signal.Listener?
   local listener = nil
   return function(wanted)
     if wanted and listener == nil then
@@ -572,6 +573,16 @@ do
     })
   end
 
+  local function lara_readout(shown, read)
+    return readout(shown, function()
+      local item = lara.item
+      if item == nil then
+        return ""
+      end
+      return read(item)
+    end)
+  end
+
   -- The key is named at the point of use, so the shipped strings can see it.
   local function title(shown, read)
     return ui.widgets.Label({ text = state.language:map(read), shown = shown })
@@ -617,19 +628,13 @@ do
   }
 
   local values = {
-    readout(pos_shown, function()
-      local x, y, z = tiles(lara.item.pos)
-      return string.format(
-        "\\{small}%d, %d, %d / %d",
-        x,
-        y,
-        z,
-        lara.item.room_num
-      )
+    lara_readout(pos_shown, function(item)
+      local x, y, z = tiles(item.pos)
+      return string.format("\\{small}%d, %d, %d / %d", x, y, z, item.room_num)
     end),
 
-    readout(pos_shown, function()
-      local r = lara.item.rot
+    lara_readout(pos_shown, function(item)
+      local r = item.rot
       return string.format(
         "\\{small}%d\u{00B0}, %d\u{00B0}, %d\u{00B0}",
         r.x * 360 // 65536,
@@ -638,8 +643,8 @@ do
       )
     end),
 
-    readout(pos_shown, function()
-      local it = lara.vehicle or lara.item
+    lara_readout(pos_shown, function(item)
+      local it = lara.vehicle or item
       return string.format("\\{small}%d, %d", it.speed, it.fall_speed)
     end),
 
@@ -652,19 +657,15 @@ do
       )
     end),
 
-    readout(anim_shown, function()
-      return string.format(
-        "\\{small}%d, %d",
-        lara.item.anim_num,
-        lara.item.frame_num
-      )
+    lara_readout(anim_shown, function(item)
+      return string.format("\\{small}%d, %d", item.anim_num, item.frame_num)
     end),
 
-    readout(anim_shown, function()
+    lara_readout(anim_shown, function(item)
       return string.format(
         "\\{small}%d, %d (%d)",
-        lara.item.anim_state,
-        lara.item.goal_anim_state,
+        item.anim_state,
+        item.goal_anim_state,
         trx.catalog.to_slot(trx.catalog.Context.OBJECTS, lara.animation_object)
       )
     end),
@@ -711,13 +712,13 @@ do
 
   -- The raw numbers behind the readouts, down the other side of the screen.
   local lines = {
-    readout(pos_shown, function()
-      local p = lara.item.pos
+    lara_readout(pos_shown, function(item)
+      local p = item.pos
       return string.format("\\{small}%d, %d, %d", p.x, p.y, p.z)
     end),
 
-    readout(pos_shown, function()
-      local r = lara.item.rot
+    lara_readout(pos_shown, function(item)
+      local r = item.rot
       return string.format("\\{small}%d, %d, %d", r.x, r.y, r.z)
     end),
 

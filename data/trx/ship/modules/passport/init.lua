@@ -63,6 +63,27 @@ local caption_shown = trx.signal.new(false)
 local arrow_left = trx.signal.new(false)
 local arrow_right = trx.signal.new(false)
 
+---@class passport.BookPage
+---@field role? string
+---@field available? boolean
+
+---@class passport.State
+---@field ctx trx.ui.ScreenContext
+---@field pages passport.BookPage[]
+---@field index integer
+---@field lists passport.Sheet[]
+---@field page_shown trx.signal.Signal
+---@field delete_hold integer
+---@field delete_armed boolean
+---@field browse? boolean
+---@field standalone? boolean
+---@field book? trx.ui.StackLayer
+---@field page? passport.Sheet
+---@field place? fun(w: number, h: number): number, number
+---@field opened? string
+---@field bare? boolean
+---@field message? trx.ui.StackLayer
+---@field chosen_level? trx.game.LevelNum
 local state = {}
 
 -------------------------------------------------------------------------------
@@ -173,6 +194,7 @@ local function ensure_way_out(pages, mode)
 end
 
 local function determine_pages(mode)
+  ---@type passport.BookPage[]
   local pages = { {}, {}, {} }
   local function set(slot, role, available)
     pages[slot] = { role = role, available = available }
@@ -263,6 +285,7 @@ end
 -- The book
 -------------------------------------------------------------------------------
 
+---@param index integer
 local function turn_to(index)
   local anim = trx.inventory_ring.selection_anim()
   if anim == nil then
@@ -604,7 +627,9 @@ local LIST_CAPTIONS = {
   select_level_mode = "general/passport/select_level",
 }
 
+---@type fun(entry: passport.Sheet, row: table)
 local choose
+---@type fun(entry: passport.Sheet, keys: trx.ui.LayerKeys)
 local control_list
 
 -- Shows only the top list. A message stays over the list that it is about,
@@ -621,6 +646,7 @@ end
 
 -- Pushes a list over the page. The list reads the input until it closes.
 local function push_list(role, req, extra)
+  ---@type passport.Sheet
   local entry = { role = role, req = req, shown = trx.signal.new(true) }
   for key, value in pairs(extra or {}) do
     entry[key] = value
@@ -693,7 +719,18 @@ end
 local function open_page(role)
   state.bare = false
   state.page = nil
+  ---@type common.ui.Requester
   local req
+  -- A page opened from the book, or a list pushed over it.
+  ---@class passport.Sheet
+  ---@field role string
+  ---@field req common.ui.Requester
+  ---@field shown? trx.signal.Signal
+  ---@field layer? trx.ui.StackLayer
+  ---@field slot? table
+  ---@field delete_text? trx.signal.Signal
+  ---@field delete_shown? trx.signal.Signal
+  ---@field delete_progress? trx.signal.Signal
   local page = { role = role }
   if role == Page.NEW_GAME then
     local rows = new_game_rows()
@@ -857,7 +894,11 @@ choose = function(entry, row)
     trx.game.play_level(row.level.num, { select = true, ng_plus = false })
     close(true)
   elseif role == "select_level_mode" then
-    trx.game.play_level(state.chosen_level, {
+    local level_num = state.chosen_level
+    if level_num == nil then
+      return
+    end
+    trx.game.play_level(level_num, {
       select = true,
       ng_plus = row.choice == "new_game_plus",
     })

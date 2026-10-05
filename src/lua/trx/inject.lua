@@ -1,7 +1,7 @@
 local raw = trxc.inject
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field inject trx.inject
 
 ---The content a mod brings with it: meshes, animations, sounds and other data.

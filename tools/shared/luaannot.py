@@ -113,10 +113,29 @@ def api_name(name: str) -> str:
     return name[len("trx.") :]
 
 
+def parse_fun(text: str, shapes: dict[str, list[dict]] | None) -> dict:
+    close = matching(text, 3)
+    params = []
+    for part in split_top(text[4:close], ","):
+        if not part:
+            continue
+        name, _, kind = part.partition(":")
+        name = name.strip()
+        param = {"name": name.rstrip("?"), **parse_type(kind or "any", shapes)}
+        if name.endswith("?") or param.get("nullable"):
+            param["optional"] = True
+        params.append(param)
+    return {"type": "function", "params": params}
+
+
 def parse_type(text: str, shapes: dict[str, list[dict]] | None = None) -> dict:
     """An annotation type as a dump spec: type, list, nullable, params."""
     text = text.strip()
     spec: dict = {}
+    # A function type runs to the end of the text, so a `?`, a `[]` or a `|`
+    # after its parameters belongs to what it returns.
+    if text.startswith("fun("):
+        return parse_fun(text, shapes)
     if text.endswith("?"):
         spec["nullable"] = True
         text = text[:-1].strip()
@@ -135,21 +154,6 @@ def parse_type(text: str, shapes: dict[str, list[dict]] | None = None) -> dict:
         if len(parts) == 1:
             return {**parse_type(parts[0], shapes), **spec}
         spec["type"] = [parse_type(part, shapes)["type"] for part in parts]
-        return spec
-    if text.startswith("fun("):
-        close = matching(text, 3)
-        params = []
-        for part in split_top(text[4:close], ","):
-            if not part:
-                continue
-            name, _, kind = part.partition(":")
-            name = name.strip()
-            param = {"name": name.rstrip("?"), **parse_type(kind or "any", shapes)}
-            if name.endswith("?") or param.get("nullable"):
-                param["optional"] = True
-            params.append(param)
-        spec["type"] = "function"
-        spec["params"] = params
         return spec
     if text.startswith("table<"):
         spec["type"] = "table"
@@ -329,6 +333,8 @@ MODULE = re.compile(r'^local\s+(\w+)\s*=\s*h\.module\("([\w.]+)"\)')
 HANDLE = re.compile(r'^local\s+(\w+)\s*=\s*h\.handle\("([\w.]+)"')
 CLASS = re.compile(r'^local\s+(\w+)\s*=\s*h\.class\("([\w.]+)"')
 DOC_TABLE = re.compile(r"^local\s+(\w+)\s*=\s*\{")
+# A local, or anything inside a body: the API is declared at the top level.
+LOCAL = re.compile(r"^(local\s|\s)")
 FUNCTION = re.compile(r"^function\s+([\w.]+)([.:])(\w+)\s*\(")
 ASSIGN = re.compile(r"^([\w.]+)\.(\w+)\s*=\s*(.*)$", re.DOTALL)
 CONTAINER_CALL = re.compile(r'^h\.container\("([\w.]+)"')
@@ -445,7 +451,12 @@ class Parser:
         return names
 
     def fields_of(self, block: Block) -> list[dict]:
-        fields = [self.field_spec(rest) for rest in block.all("field")]
+        # A private field is the object's own state, not part of the API.
+        fields = [
+            self.field_spec(rest)
+            for rest in block.all("field")
+            if not rest.startswith("private ")
+        ]
         known = {f["name"] for f in fields}
         unknown = self.readonly_of(block) - known
         if unknown:
@@ -488,10 +499,14 @@ class Parser:
             arg["description"] = desc.strip()
         return params
 
-    def returns_of(self, block: Block) -> dict | list | None:
+    def returns_of(self, block: Block, owner: str | None = None) -> dict | list | None:
         returns = []
         for rest in block.all("return"):
             kind, desc = split_desc(rest)
+            # A method returning self returns the class it is called on, which
+            # the reference names as the class that declares it.
+            if owner is not None and kind.rstrip("?") == "self":
+                kind = f"trx.{owner}" + kind[len("self") :]
             spec = parse_type(kind, self.shapes)
             if desc:
                 spec["description"] = desc
@@ -510,12 +525,14 @@ class Parser:
             entry["deprecated"] = block.tag("deprecated") or True
         return entry
 
-    def callable_entry(self, block: Block, entry: dict, params=None) -> dict:
+    def callable_entry(
+        self, block: Block, entry: dict, params=None, owner: str | None = None
+    ) -> dict:
         self.described(block, entry)
         params = self.params_of(block) if params is None else params
         if params:
             entry["params"] = params
-        returns = self.returns_of(block)
+        returns = self.returns_of(block, owner)
         if returns is not None:
             entry["returns"] = returns
         return entry
@@ -547,7 +564,11 @@ class Parser:
             if block.statement is not None:
                 continue
             declared = block.tag("class")
-            if declared is None or declared.partition(":")[0].split()[-1] == "trx":
+            if (
+                declared is None
+                or declared.startswith("(partial)")
+                or declared.partition(":")[0].split()[-1] == "trx"
+            ):
                 continue
             if block.tag("trx.record") is not None:
                 continue
@@ -587,7 +608,7 @@ class Parser:
             self.read_alias(block)
             return
         declared = block.tag("class")
-        if declared is not None and declared.split()[-1] == "trx":
+        if declared is not None and declared.startswith("(partial)"):
             return
         if declared is not None and block.statement is None:
             if block.tag("trx.record") is not None:
@@ -607,6 +628,12 @@ class Parser:
             self.read_container(block, m.group(1))
         elif (m := ASSIGN.match(statement)) is not None:
             self.read_assign(block, m)
+        elif LOCAL.match(statement) and not any(
+            key.startswith("trx.") for key, _ in block.tags
+        ):
+            # Such a statement is private: its annotations type it for the
+            # checker and are no part of the API.
+            return
         else:
             self.fail(block, "annotations attached to nothing the parser knows")
 
@@ -614,7 +641,7 @@ class Parser:
         """The class a block declares, and the parent it extends: the first
         one that is not a table<...>, which only says the class is indexed."""
         declared = block.tag("class") or ""
-        declared = re.sub(r"^\(\w+\)\s*", "", declared)
+        declared = re.sub(r"^\([\w,\s]+\)\s*", "", declared)
         name, _, parents = declared.partition(":")
         for parent in split_top(parents, ","):
             if parent and not parent.startswith("table<"):
@@ -763,7 +790,7 @@ class Parser:
         owner, sep, name = m.group(1), m.group(2), m.group(3)
         kind, path = self.resolve(block, owner)
         if kind == "type" and sep == ":":
-            method = self.callable_entry(block, {"name": name})
+            method = self.callable_entry(block, {"name": name}, owner=path)
             entry = self.types[path]
             entry["methods"].append(method)
             entry["methods"].sort(key=lambda x: x["name"])

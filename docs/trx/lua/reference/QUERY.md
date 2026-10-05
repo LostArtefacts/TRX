@@ -102,7 +102,7 @@ read left to right, combining with AND: `q:spawnable():by_name("wolf")`.
       Parameters:
       - <a id="query.NamedQuery.by_name.name" name="query.NamedQuery.by_name.name"></a>**`name`** (string). What to look for.
 
-      Returns: [trx.query.Query](#query.Query). The narrowed query.
+      Returns: [trx.query.NamedQuery](#query.NamedQuery). The narrowed query.
 
       Example:
       ```lua
@@ -126,6 +126,8 @@ read left to right, combining with AND: `q:spawnable():by_name("wolf")`.
 
   Parameters:
   - <a id="query.narrowing.make" name="query.narrowing.make"></a>**`make`** (function). Called with the method's own arguments, returning a `predicate(id, handle)`.
+    Called with:
+    - <a id="query.narrowing...." name="query.narrowing...."></a>**`...`** (any). The arguments the method was called with.
 
   Returns: function. The method to declare as an `impl`.
 
@@ -138,10 +140,10 @@ read left to right, combining with AND: `q:spawnable():by_name("wolf")`.
   - <a id="query.new.domain" name="query.new.domain"></a>**`domain`** (table). What the query runs against.
 
     Keys:
-    - <a id="query.new.domain.enumerate" name="query.new.domain.enumerate"></a>**`enumerate`** (function). Every id the domain holds.
-    - <a id="query.new.domain.id_of" name="query.new.domain.id_of"></a>**`id_of`** (function). The id of a thing the domain hands out.
-    - <a id="query.new.domain.searchable" name="query.new.domain.searchable"></a>**`searchable`** (function). Whether an id is one a name may reach.
-    - <a id="query.new.domain.names_of" name="query.new.domain.names_of"></a>**`names_of`** (function, optional). The names an id answers to, for a domain that has them.
+    - <a id="query.new.domain.enumerate" name="query.new.domain.enumerate"></a>**`enumerate`** (function). Every candidate, as `{ id, handle }` pairs.
+    - <a id="query.new.domain.id_of" name="query.new.domain.id_of"></a>**`id_of`** (function). The id [`trx.query.Query:ids`](#query.Query.ids) returns for a candidate.
+    - <a id="query.new.domain.searchable" name="query.new.domain.searchable"></a>**`searchable`** (a list of table, optional). The narrowings a name also matches, as `{ key, pred }` pairs.
+    - <a id="query.new.domain.names_of" name="query.new.domain.names_of"></a>**`names_of`** (function, optional). The names a candidate answers to, for a domain that has them.
     - <a id="query.new.domain.default_names_of" name="query.new.domain.default_names_of"></a>**`default_names_of`** (function, optional). The names the engine was built with. The query tries these when `names_of` finds no match.
   - <a id="query.new.class" name="query.new.class"></a>**`class`** (table). The query type the domain's narrowings were declared on.
 

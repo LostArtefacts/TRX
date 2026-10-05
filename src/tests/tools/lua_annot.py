@@ -145,6 +145,24 @@ class ParseTests(unittest.TestCase):
             "description": "The things.",
         })
 
+    def test_function_type_owns_what_follows_its_parameters(self):
+        for text in ("fun(x: integer): boolean?", "fun(): string[]", "fun(): a|nil"):
+            spec = parse_type(text)
+            self.assertEqual(spec["type"], "function", text)
+            self.assertNotIn("nullable", spec, text)
+            self.assertNotIn("list", spec, text)
+        self.assertTrue(parse_type("(fun(x: integer))?")["nullable"])
+
+    def test_method_returning_self_returns_its_class(self):
+        surface = parsed(MODULE.replace(
+            "function Thing:poke(opts) end",
+            "function Thing:poke(opts) end\n\n---Chains.\n---@return self\nfunction Thing:again() end",
+        ))
+        method = next(
+            m for m in one(surface, "types", "things.Thing")["methods"] if m["name"] == "again"
+        )
+        self.assertEqual(method["returns"]["type"], "things.Thing")
+
     def test_function_typed_assignment(self):
         stop = one(parsed(), "functions", "things.stop")
         self.assertEqual(stop["params"], [
@@ -205,6 +223,26 @@ class ParseTests(unittest.TestCase):
             ---@param x integer
             print(1)
             ''')
+
+    def test_annotated_local_is_private(self):
+        surface = parsed(MODULE + '''
+---@type table<string, integer>
+local seen = {}
+
+---@param x integer
+local function twice(x)
+  return 2 * x
+end
+''')
+        paths = [f["path"] for f in surface["functions"]]
+        self.assertNotIn("things.twice", paths)
+
+    def test_api_tag_on_a_local_is_an_error(self):
+        with self.assertRaises(AnnotationError):
+            parsed(MODULE + '''
+---@trx.value 1
+local ONE = 1
+''')
 
     def test_handle_must_be_declared_as_its_class(self):
         with self.assertRaises(AnnotationError):

@@ -1,7 +1,11 @@
 local function start_lara_on_jeep()
+  local lara = trx.lara.item
+  if lara == nil then
+    return
+  end
   local jeep = trx.items[0]
-  jeep.pos = trx.lara.item.pos
-  jeep.rot = { x = 0, y = trx.lara.item.rot.y, z = 0 }
+  jeep.pos = lara.pos
+  jeep.rot = { x = 0, y = lara.rot.y, z = 0 }
   trx.waypoints.current = 1
 end
 

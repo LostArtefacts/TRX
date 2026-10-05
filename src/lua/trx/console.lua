@@ -7,7 +7,7 @@ require("trx.locale")
 -- declares it.
 local LogLevel = trx.log.LogLevel
 
----@class trx
+---@class (partial) trx
 ---@field console trx.console
 
 ---Module for interacting with the developer console.
@@ -131,7 +131,7 @@ end
 -- Every command registered from Lua, by name, holding what its help is composed
 -- from. The help command reads this to answer for a command the way that command
 -- answers `--help`, so the two cannot drift.
-local commands = {}
+local commands = {} --[[@as table<string, { help: string?, parser: trx.argparse.Parser, aliases: string? }>]]
 
 -- The logging functions take any value: a string logs as itself, and anything
 -- else is coerced, with a table pretty-printed across lines.

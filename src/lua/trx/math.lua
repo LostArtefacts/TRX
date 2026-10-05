@@ -4,7 +4,7 @@ local h = require("trx.internal.helpers")
 -- One full turn in the engine's angle units.
 local DEG_360 = 4 * raw.DEG_90
 
----@class trx
+---@class (partial) trx
 ---@field math trx.math
 
 ---Fixed-point trigonometry, matching the engine's own tables. Using these
@@ -130,7 +130,7 @@ local Color = h.class("math.Color", {
       end,
       set = function(color, text)
         local r, g, b = tostring(text):match("^#?(%x%x)(%x%x)(%x%x)$")
-        if r == nil then
+        if r == nil or g == nil or b == nil then
           error("math.Color.hex takes six hex digits", 2)
         end
         rawset(color, "_r", tonumber(r, 16))
@@ -154,7 +154,7 @@ local Color = h.class("math.Color", {
 })
 
 local function make_color(r, g, b, owner, key)
-  local color = setmetatable({}, Color)
+  local color = h.new(Color)
   rawset(color, "_r", r)
   rawset(color, "_g", g)
   rawset(color, "_b", b)

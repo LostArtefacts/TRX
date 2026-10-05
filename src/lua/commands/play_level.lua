@@ -65,6 +65,7 @@ local function run(args)
     return start_gym()
   end
 
+  ---@type trx.game.Level?
   local level = trx.game.levels[pick]
   if level == nil then
     return trx.console.Result.FAILURE,

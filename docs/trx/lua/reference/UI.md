@@ -329,6 +329,14 @@ arrow, and `\{button left}` draws the button the player has bound.
       Parameters:
       - <a id="ui.ScreenContext.push.settings" name="ui.ScreenContext.push.settings"></a>**`settings`** (table). The layer settings.
 
+        Keys:
+        - <a id="ui.ScreenContext.push.settings.root" name="ui.ScreenContext.push.settings.root"></a>**`root`** ([trx.ui.Widget](#ui.Widget)). The widget tree to draw.
+        - <a id="ui.ScreenContext.push.settings.region" name="ui.ScreenContext.push.settings.region"></a>**`region`** ([trx.ui.Region](#ui.Region), optional). The region that the tree takes room in. The tree then stacks with the other widgets in that region. Without a region or a place, the tree is centered in [`trx.ui.safe_area`](#ui.safe_area).
+        - <a id="ui.ScreenContext.push.settings.place" name="ui.ScreenContext.push.settings.place"></a>**`place`** (function, optional). Returns the top left corner of the tree, in canvas units. It receives the width and the height that the tree measures.
+        - <a id="ui.ScreenContext.push.settings.modal" name="ui.ScreenContext.push.settings.modal"></a>**`modal`** (boolean, optional). Whether the layer reads input. `true` by default.
+        - <a id="ui.ScreenContext.push.settings.on_input" name="ui.ScreenContext.push.settings.on_input"></a>**`on_input`** (function, optional). Runs once a tick while the layer is the top layer that reads input. It receives the layer and a [`trx.ui.LayerKeys`](#ui.LayerKeys). An error closes the layer.
+        - <a id="ui.ScreenContext.push.settings.on_close" name="ui.ScreenContext.push.settings.on_close"></a>**`on_close`** (function, optional). Runs once when the layer closes, for any reason. It receives the layer.
+
       Returns: [trx.ui.StackLayer](#ui.StackLayer). The pushed layer.
 
     - <a id="ui.ScreenContext.resume" name="ui.ScreenContext.resume"></a>[lua]`screencontext:resume()`  
@@ -347,6 +355,9 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     Register every signal that the widget reads. Otherwise the widget can keep a
     stale cached size.
+
+    Properties:
+    - <a id="ui.Widget.hidden" name="ui.Widget.hidden"></a>**`hidden`**: any, optional. Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 
     Methods:
 
@@ -588,7 +599,7 @@ arrow, and `\{button left}` draws the button the player has bound.
   - <a id="ui.primitive.slot_box.slot" name="ui.primitive.slot_box.slot"></a>**`slot`** (integer). The reservation slot.
 
   Returns:
-  - number. The left edge, or `nil` when the slot is no longer valid.
+  - number or `nil`. The left edge, or `nil` when the slot is no longer valid.
   - number. The top edge.
   - number. The width.
   - number. The height.
@@ -669,7 +680,7 @@ arrow, and `\{button left}` draws the button the player has bound.
   - <a id="ui.primitive.quad.z" name="ui.primitive.quad.z"></a>**`z`** (integer). The draw order.
   - <a id="ui.primitive.quad.w" name="ui.primitive.quad.w"></a>**`w`** (number). The width.
   - <a id="ui.primitive.quad.h" name="ui.primitive.quad.h"></a>**`h`** (number). The height.
-  - <a id="ui.primitive.quad.color" name="ui.primitive.quad.color"></a>**`color`** ([trx.math.Color](MATH.md#math.Color)). What color to fill it with.
+  - <a id="ui.primitive.quad.color" name="ui.primitive.quad.color"></a>**`color`** ([trx.math.Color](MATH.md#math.Color) or table). What color to fill it with: a [`trx.math.Color`](MATH.md#math.Color), or a table of `r`, `g`, `b` and `a` channels from 0 to 255. The color is opaque where `a` is absent.
 
 - <a id="ui.primitive.gradient_quad" name="ui.primitive.gradient_quad"></a>[lua]`trx.ui.primitive.gradient_quad(x, y, z, w, h, tl, tr, bl, br)`  
   Draws a rectangle whose corners each carry a color.
@@ -680,10 +691,10 @@ arrow, and `\{button left}` draws the button the player has bound.
   - <a id="ui.primitive.gradient_quad.z" name="ui.primitive.gradient_quad.z"></a>**`z`** (integer). What to draw in front of.
   - <a id="ui.primitive.gradient_quad.w" name="ui.primitive.gradient_quad.w"></a>**`w`** (number). The width.
   - <a id="ui.primitive.gradient_quad.h" name="ui.primitive.gradient_quad.h"></a>**`h`** (number). The height.
-  - <a id="ui.primitive.gradient_quad.tl" name="ui.primitive.gradient_quad.tl"></a>**`tl`** ([trx.math.Color](MATH.md#math.Color)). The top-left color.
-  - <a id="ui.primitive.gradient_quad.tr" name="ui.primitive.gradient_quad.tr"></a>**`tr`** ([trx.math.Color](MATH.md#math.Color)). The top-right color.
-  - <a id="ui.primitive.gradient_quad.bl" name="ui.primitive.gradient_quad.bl"></a>**`bl`** ([trx.math.Color](MATH.md#math.Color)). The bottom-left color.
-  - <a id="ui.primitive.gradient_quad.br" name="ui.primitive.gradient_quad.br"></a>**`br`** ([trx.math.Color](MATH.md#math.Color)). The bottom-right color.
+  - <a id="ui.primitive.gradient_quad.tl" name="ui.primitive.gradient_quad.tl"></a>**`tl`** ([trx.math.Color](MATH.md#math.Color) or table). The top-left color, in either form that [`quad`](#ui.primitive.quad) takes.
+  - <a id="ui.primitive.gradient_quad.tr" name="ui.primitive.gradient_quad.tr"></a>**`tr`** ([trx.math.Color](MATH.md#math.Color) or table). The top-right color, in either form that [`quad`](#ui.primitive.quad) takes.
+  - <a id="ui.primitive.gradient_quad.bl" name="ui.primitive.gradient_quad.bl"></a>**`bl`** ([trx.math.Color](MATH.md#math.Color) or table). The bottom-left color, in either form that [`quad`](#ui.primitive.quad) takes.
+  - <a id="ui.primitive.gradient_quad.br" name="ui.primitive.gradient_quad.br"></a>**`br`** ([trx.math.Color](MATH.md#math.Color) or table). The bottom-right color, in either form that [`quad`](#ui.primitive.quad) takes.
 
 - <a id="ui.primitive.image" name="ui.primitive.image"></a>[lua]`trx.ui.primitive.image(path, x, y, w, h, [opacity])`  
   Draws an image file in a box on the canvas.
@@ -779,7 +790,7 @@ arrow, and `\{button left}` draws the button the player has bound.
   - <a id="ui.primitive.sprite.y" name="ui.primitive.sprite.y"></a>**`y`** (number). The top edge.
   - <a id="ui.primitive.sprite.z" name="ui.primitive.sprite.z"></a>**`z`** (integer). The draw order.
   - <a id="ui.primitive.sprite.scale" name="ui.primitive.sprite.scale"></a>**`scale`** (number). Multiplies the sprite size. At 1 the sprite draws at its own size on the canvas.
-  - <a id="ui.primitive.sprite.color" name="ui.primitive.sprite.color"></a>**`color`** ([trx.math.Color](MATH.md#math.Color)). What color to tint it with.
+  - <a id="ui.primitive.sprite.color" name="ui.primitive.sprite.color"></a>**`color`** ([trx.math.Color](MATH.md#math.Color) or table). What color to tint it with, in either form that [`quad`](#ui.primitive.quad) takes.
 
   Example:
   ```lua
@@ -801,10 +812,10 @@ arrow, and `\{button left}` draws the button the player has bound.
   - <a id="ui.primitive.gradient_sprite.y" name="ui.primitive.gradient_sprite.y"></a>**`y`** (number). The top edge.
   - <a id="ui.primitive.gradient_sprite.z" name="ui.primitive.gradient_sprite.z"></a>**`z`** (integer). The draw order.
   - <a id="ui.primitive.gradient_sprite.scale" name="ui.primitive.gradient_sprite.scale"></a>**`scale`** (number). Multiplies the sprite size. At 1 the sprite draws at its own size on the canvas.
-  - <a id="ui.primitive.gradient_sprite.tl" name="ui.primitive.gradient_sprite.tl"></a>**`tl`** ([trx.math.Color](MATH.md#math.Color)). The top-left color.
-  - <a id="ui.primitive.gradient_sprite.tr" name="ui.primitive.gradient_sprite.tr"></a>**`tr`** ([trx.math.Color](MATH.md#math.Color)). The top-right color.
-  - <a id="ui.primitive.gradient_sprite.bl" name="ui.primitive.gradient_sprite.bl"></a>**`bl`** ([trx.math.Color](MATH.md#math.Color)). The bottom-left color.
-  - <a id="ui.primitive.gradient_sprite.br" name="ui.primitive.gradient_sprite.br"></a>**`br`** ([trx.math.Color](MATH.md#math.Color)). The bottom-right color.
+  - <a id="ui.primitive.gradient_sprite.tl" name="ui.primitive.gradient_sprite.tl"></a>**`tl`** ([trx.math.Color](MATH.md#math.Color) or table). The top-left color, in either form that [`quad`](#ui.primitive.quad) takes.
+  - <a id="ui.primitive.gradient_sprite.tr" name="ui.primitive.gradient_sprite.tr"></a>**`tr`** ([trx.math.Color](MATH.md#math.Color) or table). The top-right color, in either form that [`quad`](#ui.primitive.quad) takes.
+  - <a id="ui.primitive.gradient_sprite.bl" name="ui.primitive.gradient_sprite.bl"></a>**`bl`** ([trx.math.Color](MATH.md#math.Color) or table). The bottom-left color, in either form that [`quad`](#ui.primitive.quad) takes.
+  - <a id="ui.primitive.gradient_sprite.br" name="ui.primitive.gradient_sprite.br"></a>**`br`** ([trx.math.Color](MATH.md#math.Color) or table). The bottom-right color, in either form that [`quad`](#ui.primitive.quad) takes.
 
 - <a id="ui.regions.place" name="ui.regions.place"></a>[lua]`trx.ui.regions.place(region, widget, [layer])`  
   Places a widget in a region.

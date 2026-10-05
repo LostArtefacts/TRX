@@ -148,43 +148,43 @@ trx.objects.wolf.properties.max_hit_points = 30
     - <a id="objects.ObjectQuery.ammo" name="objects.ObjectQuery.ammo"></a>[lua]`objectquery:ammo()`  
       Clips for a weapon.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.animation" name="objects.ObjectQuery.animation"></a>[lua]`objectquery:animation()`  
       An animation an object borrows rather than a thing of its own.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.boss" name="objects.ObjectQuery.boss"></a>[lua]`objectquery:boss()`  
       A creature the game treats as a boss, which the enemy health bar can be held
       to.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.collectible" name="objects.ObjectQuery.collectible"></a>[lua]`objectquery:collectible()`  
       A collectible, by the slot it fills.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.creature" name="objects.ObjectQuery.creature"></a>[lua]`objectquery:creature()`  
       The object is a creature.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.door" name="objects.ObjectQuery.door"></a>[lua]`objectquery:door()`  
       A door.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.enemy" name="objects.ObjectQuery.enemy"></a>[lua]`objectquery:enemy()`  
       A creature that fights Lara rather than for her.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.examine" name="objects.ObjectQuery.examine"></a>[lua]`objectquery:examine()`  
       An examine item, by the slot it fills.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.family" name="objects.ObjectQuery.family"></a>[lua]`objectquery:family(family)`  
       Narrows to a family by name, which is how a query reaches a family a script
@@ -193,7 +193,7 @@ trx.objects.wolf.properties.max_hit_points = 30
       Parameters:
       - <a id="objects.ObjectQuery.family.family" name="objects.ObjectQuery.family.family"></a>**`family`** (string). Which family, by the name it answers to.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
       Example:
       ```lua
@@ -203,84 +203,84 @@ trx.objects.wolf.properties.max_hit_points = 30
     - <a id="objects.ObjectQuery.gun" name="objects.ObjectQuery.gun"></a>[lua]`objectquery:gun()`  
       A weapon.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.inventory_item" name="objects.ObjectQuery.inventory_item"></a>[lua]`objectquery:inventory_item()`  
       An icon in the inventory rather than a thing in the world.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.key" name="objects.ObjectQuery.key"></a>[lua]`objectquery:key()`  
       A key, by the slot it fills.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.loaded" name="objects.ObjectQuery.loaded"></a>[lua]`objectquery:loaded()`  
       The level loaded the object, so items of it exist.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.loyal" name="objects.ObjectQuery.loyal"></a>[lua]`objectquery:loyal()`  
       One of Lara's own: the butler, and Lara herself.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.null_object" name="objects.ObjectQuery.null_object"></a>[lua]`objectquery:null_object()`  
       A placeholder that is never drawn.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.pickup" name="objects.ObjectQuery.pickup"></a>[lua]`objectquery:pickup()`  
       Something Lara can pick up.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.pushable" name="objects.ObjectQuery.pushable"></a>[lua]`objectquery:pushable()`  
       A block Lara pushes and pulls.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.puzzle" name="objects.ObjectQuery.puzzle"></a>[lua]`objectquery:puzzle()`  
       A puzzle item, by the slot it fills.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.quest" name="objects.ObjectQuery.quest"></a>[lua]`objectquery:quest()`  
       A quest item, by the slot it fills. This is what carries the scion.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.receptacle" name="objects.ObjectQuery.receptacle"></a>[lua]`objectquery:receptacle()`  
       A slot a puzzle item goes into.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.secret" name="objects.ObjectQuery.secret"></a>[lua]`objectquery:secret()`  
       The trinket a secret trigger sits under.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.spawnable" name="objects.ObjectQuery.spawnable"></a>[lua]`objectquery:spawnable()`  
       The object is a thing in the world at all, rather than an inventory icon, an
       animation, or a null placeholder.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.supply" name="objects.ObjectQuery.supply"></a>[lua]`objectquery:supply()`  
       A pickup Lara spends rather than keeps.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.switch" name="objects.ObjectQuery.switch"></a>[lua]`objectquery:switch()`  
       A switch Lara throws.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
     - <a id="objects.ObjectQuery.tool" name="objects.ObjectQuery.tool"></a>[lua]`objectquery:tool()`  
       A pickup named for itself rather than filling a numbered slot: the crowbar,
       the lasersight, the binoculars, the waterskins, the leadbar.
 
-      Returns: [trx.query.Query](QUERY.md#query.Query). The narrowed query.
+      Returns: [trx.objects.ObjectQuery](#objects.ObjectQuery). The narrowed query.
 
 ### Functions
 

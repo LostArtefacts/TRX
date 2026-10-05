@@ -15,6 +15,9 @@ local ui = trx.ui
 -- the space they draw into, otherwise regions cannot include it in layout.
 -------------------------------------------------------------------------------
 
+---@class (partial) trx.ui
+---@field primitive trx.ui.primitive
+
 ---Low-level drawing calls and layout reservations.
 ---
 ---Use `trx.ui.widgets` for normal UI. Use these primitives only when building
@@ -23,8 +26,11 @@ local ui = trx.ui
 ---
 ---Drawing calls are available only during `trx.events.on_ui_paint`. They
 ---report an error at any other time.
----@class (exact) trx.ui.primitive
+---@class (partial,exact) trx.ui.primitive
 ui.primitive = h.namespace("ui.primitive")
+
+---@class (partial) trx.ui.primitive
+local primitive = trx.ui.primitive
 
 ---Reserves space in a region and returns a slot for it.
 ---
@@ -38,16 +44,16 @@ ui.primitive = h.namespace("ui.primitive")
 ---@param h number How tall, in canvas units.
 ---@return integer # The slot.
 ---@type fun(region: trx.ui.Region, w: number, h: number): integer
-ui.primitive.reserve = raw.reserve
+primitive.reserve = raw.reserve
 
 ---Returns the box assigned to a reservation by the last layout.
 ---@param slot integer The reservation slot.
----@return number # The left edge, or `nil` when the slot is no longer valid.
+---@return number? # The left edge, or `nil` when the slot is no longer valid.
 ---@return number # The top edge.
 ---@return number # The width.
 ---@return number # The height.
----@type fun(slot: integer): number, number, number, number
-ui.primitive.slot_box = raw.slot_box
+---@type fun(slot: integer): number?, number, number, number
+primitive.slot_box = raw.slot_box
 
 ---Measures one line of text. Available at any time.
 ---@param text string What to measure.
@@ -55,7 +61,7 @@ ui.primitive.slot_box = raw.slot_box
 ---@return number # The width, in canvas units.
 ---@return number # The height, in canvas units.
 ---@type fun(text: string, scale?: number): number, number
-ui.primitive.measure_text = raw.measure_text
+primitive.measure_text = raw.measure_text
 
 ---Draws one line of text on the canvas.
 ---@param text string What to draw.
@@ -64,7 +70,7 @@ ui.primitive.measure_text = raw.measure_text
 ---@param scale? number Multiplies the text size.
 ---@param z? integer The draw order.
 ---@type fun(text: string, x: number, y: number, scale?: number, z?: integer)
-ui.primitive.text = raw.draw_text
+primitive.text = raw.draw_text
 
 ---Converts a canvas length to screen pixels.
 ---
@@ -74,7 +80,7 @@ ui.primitive.text = raw.draw_text
 ---@param length number A canvas length.
 ---@return number # The same length in screen pixels.
 ---@type fun(length: number): number
-ui.primitive.to_screen = raw.to_screen
+primitive.to_screen = raw.to_screen
 
 ---Converts a screen-pixel length to canvas units.
 ---
@@ -83,7 +89,7 @@ ui.primitive.to_screen = raw.to_screen
 ---@param pixels number A length in screen pixels.
 ---@return number # The same length in canvas units.
 ---@type fun(pixels: number): number
-ui.primitive.to_canvas = raw.to_canvas
+primitive.to_canvas = raw.to_canvas
 
 ---Draws a horizontal rule in the selected menu style.
 ---@param x0 number The left end.
@@ -91,7 +97,7 @@ ui.primitive.to_canvas = raw.to_canvas
 ---@param y number The vertical position.
 ---@param z? integer The draw order.
 ---@type fun(x0: number, x1: number, y: number, z?: integer)
-ui.primitive.horizontal_line = raw.horizontal_line
+primitive.horizontal_line = raw.horizontal_line
 
 ---Draws the box the game draws behind a dialog, in the style the player chose.
 ---
@@ -104,7 +110,7 @@ ui.primitive.horizontal_line = raw.horizontal_line
 ---@param h number The height.
 ---@param style trx.ui.FrameStyle Which of the game's frames to draw.
 ---@type fun(x: number, y: number, z: integer, w: number, h: number, style: trx.ui.FrameStyle)
-ui.primitive.panel = raw.panel
+primitive.panel = raw.panel
 
 ---Draws a rectangle of one color.
 ---@param x number The left edge.
@@ -112,9 +118,9 @@ ui.primitive.panel = raw.panel
 ---@param z integer The draw order.
 ---@param w number The width.
 ---@param h number The height.
----@param color trx.math.Color What color to fill it with.
----@type fun(x: number, y: number, z: integer, w: number, h: number, color: trx.math.Color)
-ui.primitive.quad = raw.flat_quad
+---@param color trx.math.Color|table What color to fill it with: a `trx.math.Color`, or a table of `r`, `g`, `b` and `a` channels from 0 to 255. The color is opaque where `a` is absent. <!--noref: r, g, b, a-->
+---@type fun(x: number, y: number, z: integer, w: number, h: number, color: trx.math.Color|table)
+primitive.quad = raw.flat_quad
 
 ---Draws a rectangle whose corners each carry a color.
 ---@param x number The left edge.
@@ -122,12 +128,12 @@ ui.primitive.quad = raw.flat_quad
 ---@param z integer What to draw in front of.
 ---@param w number The width.
 ---@param h number The height.
----@param tl trx.math.Color The top-left color.
----@param tr trx.math.Color The top-right color.
----@param bl trx.math.Color The bottom-left color.
----@param br trx.math.Color The bottom-right color.
----@type fun(x: number, y: number, z: integer, w: number, h: number, tl: trx.math.Color, tr: trx.math.Color, bl: trx.math.Color, br: trx.math.Color)
-ui.primitive.gradient_quad = raw.gradient_quad
+---@param tl trx.math.Color|table The top-left color, in either form that `trx.ui.primitive.quad` takes.
+---@param tr trx.math.Color|table The top-right color, in either form that `trx.ui.primitive.quad` takes.
+---@param bl trx.math.Color|table The bottom-left color, in either form that `trx.ui.primitive.quad` takes.
+---@param br trx.math.Color|table The bottom-right color, in either form that `trx.ui.primitive.quad` takes.
+---@type fun(x: number, y: number, z: integer, w: number, h: number, tl: trx.math.Color|table, tr: trx.math.Color|table, bl: trx.math.Color|table, br: trx.math.Color|table)
+primitive.gradient_quad = raw.gradient_quad
 
 ---Draws an image file in a box on the canvas.
 ---
@@ -150,7 +156,7 @@ ui.primitive.gradient_quad = raw.gradient_quad
 ---@param opacity? number How solid the image is, from 0 to 1. `1` by default.
 ---@return boolean # Whether the image was there to draw.
 ---@type fun(path: string, x: number, y: number, w: number, h: number, opacity?: number): boolean
-ui.primitive.image = raw.image
+primitive.image = raw.image
 
 ---Reports how many sprites an object has.
 ---
@@ -160,7 +166,7 @@ ui.primitive.image = raw.image
 ---@param object trx.catalog.objects The sprite object to count.
 ---@return integer # How many sprites it has.
 ---@type fun(object: trx.catalog.objects): integer
-ui.primitive.sprite_count = raw.sprite_count
+primitive.sprite_count = raw.sprite_count
 
 ---Reports the edges of one sprite of an object, in canvas units at a scale of
 ---one.
@@ -177,7 +183,7 @@ ui.primitive.sprite_count = raw.sprite_count
 ---@return number # The right edge.
 ---@return number # The bottom edge.
 ---@type fun(object: trx.catalog.objects, sprite_num: integer): number, number, number, number
-ui.primitive.sprite_bounds = raw.sprite_bounds
+primitive.sprite_bounds = raw.sprite_bounds
 
 ---Reports the box a model occupies, from the first frame of its first
 ---animation.
@@ -197,7 +203,7 @@ ui.primitive.sprite_bounds = raw.sprite_bounds
 ---@return trx.math.Distance # The high edge down.
 ---@return trx.math.Distance # The high edge into the screen.
 ---@type fun(object: trx.catalog.objects): trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance
-ui.primitive.mesh_bounds = raw.mesh_bounds
+primitive.mesh_bounds = raw.mesh_bounds
 
 ---Draws one sprite of an object on the canvas.
 ---
@@ -215,9 +221,9 @@ ui.primitive.mesh_bounds = raw.mesh_bounds
 ---@param y number The top edge.
 ---@param z integer The draw order.
 ---@param scale number Multiplies the sprite size. At 1 the sprite draws at its own size on the canvas.
----@param color trx.math.Color What color to tint it with.
----@type fun(object: trx.catalog.objects, sprite_num: integer, x: number, y: number, z: integer, scale: number, color: trx.math.Color)
-ui.primitive.sprite = raw.sprite
+---@param color trx.math.Color|table What color to tint it with, in either form that `trx.ui.primitive.quad` takes.
+---@type fun(object: trx.catalog.objects, sprite_num: integer, x: number, y: number, z: integer, scale: number, color: trx.math.Color|table)
+primitive.sprite = raw.sprite
 
 ---Draws one sprite of an object, with a color at each corner.
 ---
@@ -229,9 +235,9 @@ ui.primitive.sprite = raw.sprite
 ---@param y number The top edge.
 ---@param z integer The draw order.
 ---@param scale number Multiplies the sprite size. At 1 the sprite draws at its own size on the canvas.
----@param tl trx.math.Color The top-left color.
----@param tr trx.math.Color The top-right color.
----@param bl trx.math.Color The bottom-left color.
----@param br trx.math.Color The bottom-right color.
----@type fun(object: trx.catalog.objects, sprite_num: integer, x: number, y: number, z: integer, scale: number, tl: trx.math.Color, tr: trx.math.Color, bl: trx.math.Color, br: trx.math.Color)
-ui.primitive.gradient_sprite = raw.gradient_sprite
+---@param tl trx.math.Color|table The top-left color, in either form that `trx.ui.primitive.quad` takes.
+---@param tr trx.math.Color|table The top-right color, in either form that `trx.ui.primitive.quad` takes.
+---@param bl trx.math.Color|table The bottom-left color, in either form that `trx.ui.primitive.quad` takes.
+---@param br trx.math.Color|table The bottom-right color, in either form that `trx.ui.primitive.quad` takes.
+---@type fun(object: trx.catalog.objects, sprite_num: integer, x: number, y: number, z: integer, scale: number, tl: trx.math.Color|table, tr: trx.math.Color|table, bl: trx.math.Color|table, br: trx.math.Color|table)
+primitive.gradient_sprite = raw.gradient_sprite

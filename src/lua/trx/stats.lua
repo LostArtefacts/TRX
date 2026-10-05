@@ -1,7 +1,7 @@
 local raw = trxc.stats
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field stats trx.stats
 
 ---Module for what a level keeps count of: what Lara has found in it, and how
@@ -110,17 +110,23 @@ local Stats = h.handle("stats.Stats", "LEVEL_STATS", {
 
 ---The level's secrets, in order.
 ---@return trx.stats.Stats.secret_list.secret[] # The secrets, one by one.
-function Stats:secret_list() end
+function Stats:secret_list()
+  return h.native()
+end
 
 ---Marks a secret as found, as walking into its trigger would.
 ---@param secret_num trx.stats.SecretNum
 ---@return boolean # `false` if the level has no such secret, or Lara already has it.
-function Stats:give_secret(secret_num) end
+function Stats:give_secret(secret_num)
+  return h.native()
+end
 
 ---Takes a secret back, leaving it to be found again.
 ---@param secret_num trx.stats.SecretNum
 ---@return boolean # `false` if the level has no such secret, or Lara does not have it.
-function Stats:take_secret(secret_num) end
+function Stats:take_secret(secret_num)
+  return h.native()
+end
 
 h.mirror(M, "stats", raw.get_current, "stats.Stats")
 

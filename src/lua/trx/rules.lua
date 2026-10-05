@@ -1,7 +1,7 @@
 local raw = trxc.rules
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field rules trx.rules
 
 ---Module for the numbers the engine plays by.

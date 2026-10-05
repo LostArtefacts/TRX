@@ -1,7 +1,7 @@
 local raw = trxc.sound
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field sound trx.sound
 
 ---Module for playing sound effects.
@@ -44,15 +44,21 @@ local Sample = h.handle("sound.Sample", "SOUND_SAMPLE_VIEW", {
 
 ---Whether the loaded level still carries this sample.
 ---@return boolean # False once a level change has replaced the samples.
-function Sample:is_valid() end
+function Sample:is_valid()
+  return h.native()
+end
 
 ---Plays this sample.
 ---@param opts? trx.sound.play.opts How to play it.
 ---@return trx.sound.Stream? # The voice it started, or `nil` if none did.
-function Sample:play(opts) end
+function Sample:play(opts)
+  return h.native()
+end
 
 ---Stops every voice playing this sample.
-function Sample:stop() end
+function Sample:stop()
+  return h.native()
+end
 
 ---One of the sound effects playing now. Reach them through
 ---`trx.sound.streams`. A handle to a voice that has fallen silent goes stale,
@@ -66,16 +72,24 @@ local Stream = h.handle("sound.Stream", "SOUND_STREAM_VIEW", {
 
 ---Whether this voice is still playing.
 ---@return boolean # False once the voice has fallen silent.
-function Stream:is_valid() end
+function Stream:is_valid()
+  return h.native()
+end
 
 ---Pauses this voice.
-function Stream:pause() end
+function Stream:pause()
+  return h.native()
+end
 
 ---Resumes this voice.
-function Stream:unpause() end
+function Stream:unpause()
+  return h.native()
+end
 
 ---Stops this voice.
-function Stream:stop() end
+function Stream:stop()
+  return h.native()
+end
 
 ---The samples the current level carries. A level does not carry every number,
 ---so indexing one it lacks is `nil` and iterating passes it by.

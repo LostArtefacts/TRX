@@ -1,7 +1,7 @@
 local raw = trxc.inventory_ring
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field inventory_ring trx.inventory_ring
 
 ---The rings the player browses, and the entries drawn on them.

@@ -173,6 +173,13 @@ repos:
     pass_filenames: false
     files: ^(src/trx/.*\.[ch]|tools/lint/emmylua/.*|tools/shared/trxc\.py)$
 
+  - id: lint-emmylua
+    name: Shipped Lua passes emmylua_check
+    entry: tools/lint/checks/emmylua
+    language: python
+    pass_filenames: false
+    files: (\.lua|^\.emmyrc\.json)$
+
   - id: gen-object-docs
     name: Regenerate object docs from the sources
     entry: tools/lint/gen/object_docs

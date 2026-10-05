@@ -173,8 +173,9 @@ trx.events.on_scene_paint(function()
   end
   for _, zone in pairs(trx.zones) do
     local alpha = zone.enabled and ZONE_ALPHA or ZONE_ALPHA_DISABLED
-    if zone.type == "sphere" then
-      trx.scene.sphere(zone.centre, zone.radius, ZONE_COLOR, alpha)
+    local centre, radius = zone.centre, zone.radius
+    if centre ~= nil and radius ~= nil then
+      trx.scene.sphere(centre, radius, ZONE_COLOR, alpha)
     else
       local min, max = zone_corners(zone)
       if min ~= nil then

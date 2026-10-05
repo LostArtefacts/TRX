@@ -32,6 +32,9 @@ local lara_hands = { right = 10, left = 13 }
 
 trx.events.after_control(function()
   local lara_item = trx.lara.item
+  if lara_item == nil then
+    return
+  end
   if lara_item.anim_num >= suit_change_anim and not outfit_changed then
     trx.lara.outfit = "tr2_diving_suit"
     outfit_changed = true

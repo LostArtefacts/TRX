@@ -48,6 +48,7 @@ end
 -- The height of everything but the rows, in canvas units at the default text
 -- size.
 local function chrome_height(has_title, scrolls)
+  ---@type number
   local height = 2 * (outer_pad() + BODY_PAD_Y)
   if has_title then
     height = height + TEXT_HEIGHT + 2 * title_pad_y() + TITLE_SPACING
@@ -93,6 +94,13 @@ end
 --   footer_height - the height the footer takes, for fitting the rows
 function M.new(settings)
   settings.row_spacing = settings.row_spacing or M.row_spacing()
+  ---@class common.ui.Requester
+  ---@field rows trx.ui.ListRow[]
+  ---@field list trx.ui.List
+  ---@field title? trx.signal.Signal
+  ---@field panel trx.ui.Widget
+  ---@field root trx.ui.Widget
+  ---@field place? fun(w: number, h: number): number, number
   local req = { rows = settings.rows or {} }
 
   -- How many rows fit, which follows the rows and the room the screen leaves.
@@ -137,7 +145,7 @@ function M.new(settings)
     child = req.list,
   })
 
-  req.panel = trx.ui.widgets.Frame({
+  local panel = trx.ui.widgets.Frame({
     style = trx.ui.FrameStyle.DIALOG,
     z = 170,
     child = trx.ui.widgets.Pad({
@@ -151,12 +159,14 @@ function M.new(settings)
     }),
   })
 
-  local body = req.panel
+  req.panel = panel
+
+  local body = panel
   if settings.footer ~= nil then
     body = trx.ui.widgets.Stack({
       spacing = FOOTER_SPACING,
       align = trx.ui.HAlign.SPAN,
-      children = { req.panel, settings.footer },
+      children = { panel, settings.footer },
     })
   end
   req.root = trx.ui.widgets.Fit({ child = body })
@@ -168,7 +178,8 @@ function M.new(settings)
   end
 
   function req.selected_row()
-    return req.rows[req.list:selection()]
+    local index = req.list:selection()
+    return index ~= nil and req.rows[index] or nil
   end
 
   -- Reads one tick of input. Returns the picked row's index, "cancel" where

@@ -4,7 +4,7 @@ local h = require("trx.internal.helpers")
 require("trx.events")
 require("trx.signal")
 
----@class trx
+---@class (partial) trx
 ---@field input trx.input
 
 ---Module for reading input and working with player bindings.
@@ -405,7 +405,7 @@ function M.suppress(...)
   local handle = setmetatable({}, Suppression)
   local own_epoch = epoch
   for i = 1, roles.n do
-    local role = roles[i]
+    local role = roles[i] --[[@as trx.input.Role]]
     local count = (suppressed[role] or 0) + 1
     suppressed[role] = count
     if count == 1 then
@@ -419,7 +419,7 @@ function M.suppress(...)
     end
     own_epoch = -1
     for i = 1, roles.n do
-      local role = roles[i]
+      local role = roles[i] --[[@as trx.input.Role]]
       local count = suppressed[role] - 1
       suppressed[role] = count > 0 and count or nil
       if count == 0 then
@@ -544,7 +544,6 @@ M.listen = raw.listen
 ---Restores the previous capture state after the function returns or raises an
 ---error. Returns the function's results.
 ---@param fn function Function to run while input is captured.
----@return any # What the function returned.
 function M.with_listen(fn)
   local was_listening = raw.is_listening()
   raw.listen(true)
@@ -623,7 +622,7 @@ function M.capture(role, opts, done)
   local capture = setmetatable({}, Capture)
   local was_listening = raw.is_listening()
   local waiting_for_release = true
-  local listener
+  local listener = nil --[[@as trx.signal.Listener?]]
 
   local function finish(bound)
     if listener == nil then
@@ -762,7 +761,7 @@ M.is_grabbed = raw.is_held_by_script
 -- about is a role the next level can ask about too.
 local held = {}
 local pressed = {}
-local followed = {}
+local followed = {} --[[@as { signal: trx.signal.Signal, role: trx.input.Role, read: fun(role: trx.input.Role): boolean }[] ]]
 local ticking = false
 
 local function shared(cache, role, read)

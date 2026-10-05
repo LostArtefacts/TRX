@@ -4,7 +4,7 @@ local h = require("trx.internal.helpers")
 require("trx.math")
 require("trx.rooms")
 
----@class trx
+---@class (partial) trx
 ---@field fx trx.fx
 
 ---What a script puts in front of the player: things seen rather than things
@@ -147,7 +147,9 @@ local FogBulb = h.handle("fx.FogBulb", "FOG_BULB", {
 ---A level change replaces all bulbs. A handle held across one becomes stale,
 ---and field access raises an error.
 ---@return boolean # False after the level that held the bulb is left.
-function FogBulb:is_valid() end
+function FogBulb:is_valid()
+  return h.native()
+end
 
 ---The level fog bulbs, counted from 1. `#trx.fx.fog_bulbs` is the count.
 ---`pairs()` walks them in order. A level shows at most twenty. The player can
@@ -427,7 +429,7 @@ function M.gun_flash(item, opts)
     pos.x,
     pos.y,
     pos.z,
-    opts.rot_x or -trx.math.DEG_90,
+    opts.rot_x or -1 * trx.math.DEG_90,
     opts.object or trx.catalog.objects.gun_flash
   )
 end
@@ -660,10 +662,14 @@ local Spark = h.handle("fx.Spark", "SPARK", {
 ---
 ---A spark that runs out of life leaves its slot to the next one asked for.
 ---@return boolean # False once the spark has ended.
-function Spark:is_valid() end
+function Spark:is_valid()
+  return h.native()
+end
 
 ---Ends the spark now and frees its slot.
-function Spark:kill() end
+function Spark:kill()
+  return h.native()
+end
 
 ---The spark pool: the particles TR3 and TR4 draw their smoke, flames, sparks
 ---and splashes with.

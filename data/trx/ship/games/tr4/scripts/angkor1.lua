@@ -67,7 +67,11 @@ cutscenes.register(BACKPACK_CUTSCENE, {
 -- the engine dresses her in the one the level asks for.
 trx.config.on_change("visuals.lara_outfit", function(outfit)
   if outfit == nil or outfit == "" then
-    outfit = trx.game.current_level.lara_outfit
+    local level = trx.game.current_level
+    if level == nil then
+      return
+    end
+    outfit = level.lara_outfit
   end
   dress(outfit)
 end)

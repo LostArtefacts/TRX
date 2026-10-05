@@ -4,7 +4,7 @@ local h = require("trx.internal.helpers")
 
 require("trx.events")
 
----@class trx
+---@class (partial) trx
 ---@field signal trx.signal
 
 ---A value that can notify listeners when it changes.
@@ -51,6 +51,11 @@ local derive
 
 ---A value that notifies listeners when it changes.
 ---@class (exact) trx.signal.Signal
+---@field private __index trx.signal.Signal
+---@field private _value any
+---@field private _listeners table<integer, fun(value: any)>
+---@field private _next_id integer
+---@field private _bound trx.signal.Listener[]?
 ---@operator band(trx.signal.Signal): trx.signal.Signal
 ---@operator bor(trx.signal.Signal): trx.signal.Signal
 ---@operator bnot: trx.signal.Signal
@@ -79,6 +84,9 @@ local Signal = h.class("signal.Signal", {
 
 ---A signal listener that can be detached later.
 ---@class (exact) trx.signal.Listener
+---@field private __index trx.signal.Listener
+---@field private _signal trx.signal.Signal
+---@field private _id integer
 local Listener = h.class("signal.Listener")
 
 local function new_signal(value)
@@ -173,7 +181,7 @@ end
 ---
 ---Use this for derived values that are not simple boolean combinations, such
 ---as a bar fill amount or resolved key text.
----@param fn fun(value: any) The function that computes the derived value.
+---@param fn fun(value: any): any The function that computes the derived value.
 ---@trx.arg fn.value This signal's value.
 ---@return trx.signal.Signal # The derived signal.
 function Signal:map(fn)
@@ -258,7 +266,7 @@ function M.polled(read)
 end
 
 -- Reuse one signal per setting, so multiple scripts share one engine watcher.
-local settings = {}
+local settings = {} --[[@as table<string, trx.signal.Signal>]]
 
 ---Returns a signal for a config setting.
 ---
@@ -298,8 +306,7 @@ end
 ---  end
 ---)
 ---```
----@param ... trx.signal.Signal The signals to read, in the order the function takes them.
----@param fn function The function that computes the derived value.
+---@param ... trx.signal.Signal|function The signals to read, in the order the function takes them, then the function that computes the derived value.
 ---@return trx.signal.Signal # The derived signal.
 function M.combine(...)
   local args = { ... }

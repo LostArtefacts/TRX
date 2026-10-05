@@ -37,6 +37,14 @@ end
 local line = (function()
   local self = { text = "", caret = 1 }
 
+  ---@class ui.console.Completion
+  ---@field suggestions string[]
+  ---@field start integer
+  ---@field stop integer
+  ---@field index integer
+  ---@field original? string
+
+  ---@type ui.console.Completion?
   local completion = nil
   local history_idx = nil
 
@@ -142,6 +150,13 @@ end)()
 -- Logs
 -------------------------------------------------------------------------------
 local logs = (function()
+  ---@class ui.console.LogEntry
+  ---@field text string
+  ---@field lines string[]
+  ---@field expires_at number
+
+  ---@class ui.console.Logs
+  ---@field entries ui.console.LogEntry[]
   local self = { entries = {} }
 
   local width = nil
@@ -173,6 +188,9 @@ local logs = (function()
     end
   end
 
+  ---@param text string
+  ---@param room number
+  ---@return string[]
   local function wrap(text, room)
     if room <= 0 then
       return { text }
@@ -217,10 +235,11 @@ local logs = (function()
 
   function self.add(text)
     local at_scale = text_scale()
-    self.reflow(room_to_wrap(at_scale), at_scale)
+    local room = room_to_wrap(at_scale)
+    self.reflow(room, at_scale)
     table.insert(self.entries, 1, {
       text = text,
-      lines = wrap(text, width),
+      lines = wrap(text, room),
       expires_at = expiry(text),
     })
     while #self.entries > MAX_LOG_LINES do
@@ -249,7 +268,9 @@ end)()
 -------------------------------------------------------------------------------
 -- What the player sees
 -------------------------------------------------------------------------------
+---@type trx.input.Grab?
 local grab = nil
+---@type number
 local blink_from = 0
 
 local function backdrop(line_height)

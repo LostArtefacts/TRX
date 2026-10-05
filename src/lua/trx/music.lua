@@ -1,7 +1,7 @@
 local raw = trxc.music
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field music trx.music
 
 ---Module for playing and controlling the soundtrack.
@@ -57,22 +57,32 @@ local Stream = h.handle("music.Stream", "MUSIC_STREAM_VIEW", {
 ---Whether the slot is still playing. A stream that has finished, or been
 ---stopped, leaves its handle stale.
 ---@return boolean # False once the slot has gone quiet.
-function Stream:is_valid() end
+function Stream:is_valid()
+  return h.native()
+end
 
 ---Pauses this stream.
-function Stream:pause() end
+function Stream:pause()
+  return h.native()
+end
 
 ---Resumes this stream.
-function Stream:unpause() end
+function Stream:unpause()
+  return h.native()
+end
 
 ---Seeks this stream to a timestamp.
 ---@param timestamp trx.game.Seconds Where to seek to.
 ---@return boolean # Whether the seek took.
-function Stream:seek(timestamp) end
+function Stream:seek(timestamp)
+  return h.native()
+end
 
 ---Stops this stream. Stopping the main stream lets a deferred ambient loop
 ---resume; an overlay just ends.
-function Stream:stop() end
+function Stream:stop()
+  return h.native()
+end
 
 ---A track the current level carries. Reach them through `trx.music.tracks`,
 ---or as `trx.music.current_track`. A handle to a track the loaded level does
@@ -87,16 +97,22 @@ local Track = h.handle("music.Track", "MUSIC_TRACK_VIEW", {
 
 ---Whether the loaded level still carries this track.
 ---@return boolean # False once a level change has replaced the tracks.
-function Track:is_valid() end
+function Track:is_valid()
+  return h.native()
+end
 
 ---Plays this track.
 ---@param opts? trx.music.play.opts How to play it.
 ---@return trx.music.Stream? # The stream it started, or `nil` if none did.
-function Track:play(opts) end
+function Track:play(opts)
+  return h.native()
+end
 
 ---Resolves the track's file path.
 ---@return string? # `nil` when there is no file, e.g. a CD-audio soundtrack.
-function Track:path() end
+function Track:path()
+  return h.native()
+end
 
 -- One lazy view apiece: indexing and iterating reach into C a handle at a time,
 -- so neither builds a list up front.

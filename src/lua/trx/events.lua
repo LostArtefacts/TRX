@@ -9,7 +9,7 @@ for _, constant in ipairs(trxc.enum.values("LUA_EVENT_TYPE")) do
   types[constant.name] = constant.value
 end
 
----@class trx
+---@class (partial) trx
 ---@field events trx.events
 
 ---Lua scripts can listen for game events by attaching a handler to one of the
@@ -24,7 +24,7 @@ end
 ---default then stands down. Every other event ignores what its handlers
 ---return.
 ---@trx.module 1
----@class (exact) trx.events
+---@class (partial,exact) trx.events
 local M = h.module("events")
 
 ---A flip effect number, as a level editor numbers them. Not the id space of
@@ -42,6 +42,7 @@ local M = h.module("events")
 ---@class (exact) trx.events.Listener
 ---@trx.readonly id
 ---@field id integer The number the engine keys the handler by. Two listeners of the same handler carry the same one; it is never handed out twice within a session.
+---@field private _id integer
 local Listener = h.class("events.Listener", {
   fields = {
     id = {
@@ -61,7 +62,7 @@ end
 
 -- A listener carries the engine's number and nothing a script can reach.
 local function listener_of(id)
-  return setmetatable({ _id = id }, Listener)
+  return setmetatable({ _id = id }, Listener) --[[@as trx.events.Listener]]
 end
 
 -- Each hook is a plain function closing over its event type.
@@ -784,10 +785,10 @@ end
 ---  return true
 ---end)
 ---```
----@param callback fun(cutscene_num: trx.cutscenes.Num) What to run when it happens.
+---@param callback fun(cutscene_num: trx.cutscenes.Num): boolean? What to run when it happens.
 ---@trx.arg callback.cutscene_num The number the trigger names, which the game need not have a cutscene for.
 ---@return trx.events.Listener # The attached handler.
----@type fun(callback: fun(cutscene_num: trx.cutscenes.Num)): trx.events.Listener
+---@type fun(callback: fun(cutscene_num: trx.cutscenes.Num): boolean?): trx.events.Listener
 M.on_cutscene_trigger = hook(types.CUTSCENE_TRIGGER)
 
 ---Happens when a TR4 cutscene's first frame is about to show, after the fade

@@ -4,7 +4,7 @@ local h = require("trx.internal.helpers")
 require("trx.math")
 require("trx.catalog")
 
----@class trx
+---@class (partial) trx
 ---@field weapons trx.weapons
 
 ---What a weapon is, rather than what Lara has of it.

@@ -9,9 +9,10 @@ require("trx.items")
 require("trx.rooms")
 require("trx.camera")
 
+---@class (partial) trx.events
 local events = trx.events
 
----@class trx
+---@class (partial) trx
 ---@field zones trx.zones
 
 -- Script-defined trigger regions, tested once a logical frame.
@@ -43,8 +44,8 @@ end
 -- Every zone, in the order they were made, and the same zones by the id an
 -- event carries. An id is never reused within a level, so a transition found
 -- before a handler removed its zone cannot land on a zone made afterwards.
-local zones = {}
-local by_id = {}
+local zones = {} --[[@as trx.zones.Zone[] ]]
+local by_id = {} --[[@as table<integer, trx.zones.Zone> ]]
 local next_id = 1
 local lookup
 
@@ -62,7 +63,7 @@ end
 
 -- What a zone holds. The value a script is handed is an empty table, so nothing
 -- it carries is reachable except through the declaration below.
-local state = setmetatable({}, { __mode = "k" })
+local state = setmetatable({}, { __mode = "k" }) --[[@as table<trx.zones.Zone, table>]]
 
 local function own_of(self)
   local own = state[self]
@@ -74,8 +75,8 @@ end
 
 -- The per-frame test runs while there is a zone to test, so a level with none
 -- pays nothing for the module being loaded.
-local driver = nil
-local control
+local driver = nil --[[@as trx.events.Listener?]]
+local control = nil --[[@as fun()]]
 
 local function drive()
   if driver == nil and #zones > 0 then
@@ -663,7 +664,7 @@ local function add(own, opts)
   own.listeners = {}
   next_id = next_id + 1
 
-  local zone = setmetatable({}, Zone)
+  local zone = setmetatable({}, Zone) --[[@as trx.zones.Zone]]
   state[zone] = own
   zones[#zones + 1] = zone
   by_id[own.id] = zone

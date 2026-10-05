@@ -1,7 +1,7 @@
 local raw = trxc.creatures
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field creatures trx.creatures
 
 ---Module for controlling certain creature behavior.

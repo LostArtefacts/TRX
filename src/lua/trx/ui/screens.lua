@@ -31,10 +31,15 @@ local choices = constants("UI_TAKEOVER_CHOICE")
 -- off with the level.
 -------------------------------------------------------------------------------
 
+---@type table<string, { open: function }[]>
 local definitions = {}
 
 -- The context of each screen a script holds, by screen.
 local held = {}
+
+---@class (partial) trx.ui
+---@field screens trx.ui.screens
+---@field Screen table<string, trx.ui.Screen>
 
 ---Lets a script draw an engine screen in place of the engine.
 ---
@@ -51,8 +56,11 @@ local held = {}
 ---While a script holds a screen, a game-flow command such as
 ---`trx.savegame.load` waits for the screen to end. In the inventory ring, the
 ---ring spins out before the command runs.
----@class (exact) trx.ui.screens
+---@class (partial,exact) trx.ui.screens
 ui.screens = h.namespace("ui.screens")
+
+---@class (partial) trx.ui.screens
+local screens = trx.ui.screens
 
 ---An engine screen that a script can draw.
 ---@enum trx.ui.Screen
@@ -163,24 +171,26 @@ local Context = h.class("ui.ScreenContext", {
 
 ---Pushes a layer that belongs to the screen, with the settings that
 ---`trx.ui.layers.push` takes. The layer closes when the screen ends.
----@param settings table The layer settings.
+---@param settings trx.ui.layers.push.settings The layer settings.
 ---@return trx.ui.StackLayer # The pushed layer.
 function Context:push(settings)
   if rawget(self, "_done") then
     error("the screen has ended", 2)
   end
   local on_close = settings.on_close
-  local layer_settings = {}
-  for key, value in pairs(settings) do
-    layer_settings[key] = value
-  end
-  layer_settings.on_close = function(layer)
-    if on_close ~= nil then
-      on_close(layer)
-    end
-    on_layer_closed(self, layer)
-  end
-  local layer = trx.ui.layers.push(layer_settings)
+  local layer = trx.ui.layers.push({
+    root = settings.root,
+    region = settings.region,
+    place = settings.place,
+    modal = settings.modal,
+    on_input = settings.on_input,
+    on_close = function(layer)
+      if on_close ~= nil then
+        on_close(layer)
+      end
+      on_layer_closed(self, layer)
+    end,
+  })
   local layers = rawget(self, "_layers")
   layers[#layers + 1] = layer
   return layer
@@ -264,7 +274,7 @@ end
 ---@param screen trx.ui.Screen The screen.
 ---@param open function Runs when the engine opens the screen.
 ---@param options? trx.ui.screens.define.options The definition options.
-function ui.screens.define(screen, open, options)
+function screens.define(screen, open, options)
   options = options or {}
   if options.object ~= nil and screen ~= trx.ui.Screen.RING_ENTRY then
     error("only a ring entry screen names an object", 2)

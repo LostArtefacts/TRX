@@ -1,7 +1,7 @@
 local raw = trxc.log
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field log trx.log
 
 ---Logs a message to the terminal and to `TRX.log` in the installation

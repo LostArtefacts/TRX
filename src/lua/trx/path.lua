@@ -1,7 +1,7 @@
 local raw = trxc.path
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field path trx.path
 
 ---Filesystem paths for Lua scripts. A path is a value rather than text, so
@@ -100,7 +100,7 @@ local Path = h.class("path.Path", {
 })
 
 function make(text)
-  local path = setmetatable({}, Path)
+  local path = h.new(Path)
   rawset(path, "_raw", text)
   return path
 end

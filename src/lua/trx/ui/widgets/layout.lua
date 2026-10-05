@@ -3,6 +3,7 @@ require("trx.internal.helpers")
 local base = require("trx.ui.widgets.base")
 
 local primitive = trx.ui.primitive
+---@class (partial) trx.ui.widgets
 local widgets = trx.ui.widgets
 local W = base.W
 local new_widget = base.new_widget
@@ -244,7 +245,7 @@ function widgets.Stack(settings)
   end
 
   local self = new_widget(settings, function(w)
-    local along, across, shown = 0, 0, 0
+    local along, across, shown = 0.0, 0.0, 0
     for _, child in ipairs(w.children) do
       if child:is_shown() then
         local cw, ch = child:measure()
@@ -290,7 +291,7 @@ function widgets.Stack(settings)
     -- Spare room along the axis goes into the gaps, or in front of the
     -- children, depending on what the stack asked for.
     local spare = box_along - along
-    local at = 0
+    local at = 0.0
     if
       along_align
       == (horizontal and trx.ui.HAlign.DISTRIBUTE or trx.ui.VAlign.DISTRIBUTE)
@@ -313,7 +314,7 @@ function widgets.Stack(settings)
         local cw, ch = child:measure()
         local size_along = horizontal and cw or ch
         local size_across = horizontal and ch or cw
-        local offset = 0
+        local offset = 0.0
         if span then
           size_across = box_across
         elseif center then

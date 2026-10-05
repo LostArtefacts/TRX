@@ -1,7 +1,7 @@
 local raw = trxc.waypoints
 local h = require("trx.internal.helpers")
 
----@class trx
+---@class (partial) trx
 ---@field waypoints trx.waypoints
 
 ---Module for how far along a level's own progression Lara has got.

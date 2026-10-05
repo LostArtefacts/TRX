@@ -21,21 +21,20 @@ local QUAD = assault.Track.QUAD
 -- pause screen or photo mode holds the level still.
 local playing = trx.game.signals.is_playing
 
+local function shade(top, bottom)
+  return { top = trx.math.color(top), bottom = trx.math.color(bottom) }
+end
+
 -- The palettes the engine draws these in. Each is a color at the top of a
 -- character fading to a darker one at the bottom.
 local PALETTE = {
-  white = { "ffffff", "ffffff" },
-  neutral = { "ffffff", "404040" },
-  grey = { "808080", "1a1a1a" },
-  green = { "59bf33", "1a4000" },
-  red = { "e63300", "4d0000" },
-  pink = { "ff00ff", "400040" },
+  white = shade("ffffff", "ffffff"),
+  neutral = shade("ffffff", "404040"),
+  grey = shade("808080", "1a1a1a"),
+  green = shade("59bf33", "1a4000"),
+  red = shade("e63300", "4d0000"),
+  pink = shade("ff00ff", "400040"),
 }
-
-for _, palette in pairs(PALETTE) do
-  palette.top = trx.math.color(palette[1])
-  palette.bottom = trx.math.color(palette[2])
-end
 
 -- TR2 draws the digits flat white; TR3 gives them the shaded palette.
 local plain = trx.game.tr_version < 3 and PALETTE.white or PALETTE.neutral
@@ -50,6 +49,7 @@ local FRACTION_SCALE = is_tr2 and 10 or 100
 -- is off costs one signal rather than a poll.
 local function timing(shown, read)
   local held = signal.new(0)
+  ---@type trx.signal.Listener?
   local ticks = nil
   local function follow(on)
     if on then

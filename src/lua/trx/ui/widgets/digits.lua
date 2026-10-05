@@ -3,6 +3,7 @@ require("trx.internal.helpers")
 local base = require("trx.ui.widgets.base")
 
 local primitive = trx.ui.primitive
+---@class (partial) trx.ui.widgets
 local widgets = trx.ui.widgets
 local value_of = base.value_of
 local new_widget = base.new_widget
@@ -43,7 +44,7 @@ end
 -- distances above it. Report the highest, so that a line of them can be drawn
 -- from the top of the box it was given.
 local function digit_rise(object, glyphs)
-  local rise = 0
+  local rise = 0.0
   for _, glyph in ipairs(glyphs) do
     if glyph.sprite ~= nil then
       local _, y0 = primitive.sprite_bounds(object, glyph.sprite)
@@ -93,7 +94,7 @@ function widgets.Digits(settings)
     end
     local scale = raw.text_scale()
     local glyphs = digit_glyphs(tostring(value_of(w.text)))
-    local width, bottom = 0, 0
+    local width, bottom = 0, 0.0
     for _, glyph in ipairs(glyphs) do
       width = width + (glyph.offset or 0) + (glyph.advance or DIGIT_ADVANCE)
       if glyph.sprite ~= nil then
