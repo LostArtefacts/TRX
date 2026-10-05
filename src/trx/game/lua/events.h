@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 // Event types for Lua listeners. Named in ENUM_MAP (see trx/game/enum.c), which
-// is what the hooks in src/lua/api/events.lua reflect.
+// is what the hooks in src/lua/trx/events.lua reflect.
 typedef enum {
     LUA_EVENT_GAME_START,
     LUA_EVENT_TITLE_START,

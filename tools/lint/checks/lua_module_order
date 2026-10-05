@@ -18,7 +18,7 @@ MODULE_RE = re.compile(
 
 
 def check():
-    api_dir = SRC_DIR / "lua/api"
+    api_dir = SRC_DIR / "lua/trx"
     seen: dict[int, tuple[Path, str]] = {}
     for path in sorted(api_dir.glob("*.lua")):
         text = path.read_text(encoding="utf-8")

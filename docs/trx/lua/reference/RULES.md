@@ -7,7 +7,7 @@ order: 15
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  src/lua/api/rules.lua. Edit it there.
+  src/lua/trx/rules.lua. Edit it there.
 -->
 
 ## <a id="rules" name="rules"></a>Rules module

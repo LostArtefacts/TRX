@@ -7,7 +7,7 @@ order: 6
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  src/lua/api/weapons.lua. Edit it there.
+  src/lua/trx/weapons.lua. Edit it there.
 -->
 
 ## <a id="weapons" name="weapons"></a>Weapon module

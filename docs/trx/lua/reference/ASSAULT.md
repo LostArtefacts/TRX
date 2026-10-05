@@ -7,7 +7,7 @@ order: 19
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  src/lua/api/assault.lua. Edit it there.
+  src/lua/trx/assault.lua. Edit it there.
 -->
 
 ## <a id="assault" name="assault"></a>Assault course module

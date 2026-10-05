@@ -7,7 +7,7 @@ order: 18
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  src/lua/api/fx.lua. Edit it there.
+  src/lua/trx/fx.lua. Edit it there.
 -->
 
 ## <a id="fx" name="fx"></a>Fx module

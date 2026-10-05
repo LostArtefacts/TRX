@@ -7,7 +7,7 @@ order: 43
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  src/lua/api/inject.lua. Edit it there.
+  src/lua/trx/inject.lua. Edit it there.
 -->
 
 ## <a id="inject" name="inject"></a>Injection module

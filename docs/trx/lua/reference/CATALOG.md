@@ -7,7 +7,7 @@ order: 9
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  src/lua/api/catalog.lua. Edit it there.
+  src/lua/trx/catalog.lua. Edit it there.
 -->
 
 ## <a id="catalog" name="catalog"></a>Catalog module

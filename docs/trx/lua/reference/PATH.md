@@ -7,7 +7,7 @@ order: 35
   GENERATED FILE - do not edit.
   Regenerate with: just lua-api-dump
   The public API is declared next to its implementation, in
-  src/lua/api/path.lua. Edit it there.
+  src/lua/trx/path.lua. Edit it there.
 -->
 
 ## <a id="path" name="path"></a>Paths module

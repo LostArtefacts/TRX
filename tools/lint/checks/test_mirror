@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # src/tests mirrors the tree it tests: src/tests/trx/core/vector.c exercises
-# src/trx/core/vector.c, src/tests/lua/api/music.c stands trx.music up out of
-# src/lua/api/music.lua, and src/tests/modules/overlay.c runs the shipped module
+# src/trx/core/vector.c, src/tests/lua/trx/music.c stands trx.music up out of
+# src/lua/trx/music.lua, and src/tests/modules/overlay.c runs the shipped module
 # data/trx/ship/modules/overlay.lua. That is the whole convention, and it is
 # worth only as much as it is kept - a test filed under the wrong path is a test
 # nobody looking in the right place will find.

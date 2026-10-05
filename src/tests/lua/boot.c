@@ -10,7 +10,7 @@
 
 static void M_SetUpExtra(lua_State *const L)
 {
-    // As in lua/api/items.c: the `room` extension hands off to trx.rooms.
+    // As in lua/trx/items.c: the `room` extension hands off to trx.rooms.
     (void)luaL_dostring(
         L,
         "trx.rooms = setmetatable({}, {\n"

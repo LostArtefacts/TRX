@@ -128,7 +128,7 @@ repos:
     entry: tools/lint/checks/lua_module_order
     language: python
     pass_filenames: false
-    files: ^src/lua/api/.*\.lua$
+    files: ^src/lua/trx/.*\.lua$
 
   - id: lint-lua-error-case
     name: Lua error messages start in lowercase
@@ -164,7 +164,7 @@ repos:
     language: python
     stages: [pre-commit]
     pass_filenames: false
-    files: ^(docs/trx/lua/|src/lua/api/)
+    files: ^(docs/trx/lua/|src/lua/trx/)
 
   - id: gen-object-docs
     name: Regenerate object docs from the sources
