@@ -5,7 +5,7 @@ order: 39
 
 <!--
   GENERATED FILE - do not edit.
-  Regenerate with: just lua-api-dump
+  Regenerate with: tools/lint/gen/lua_docs
   The public API is declared next to its implementation, in
   src/lua/trx/waypoints.lua. Edit it there.
 -->

@@ -423,9 +423,8 @@ def blank(text: str) -> str:
 def strip_lua_noncode(source: str, *, strip_long_strings: bool = True) -> str:
     """Blank out everything in a Lua source that a script does not execute.
 
-    Comments go, and so do long-bracket strings: in src/lua those hold
-    the api.define examples, and a key named in an example is documentation, not
-    a usage. Quoted strings stay, because that is where a key is written. What
+    Comments go, and so do long-bracket strings: in src/lua those hold the
+    examples, and a key named in an example is documentation, not a usage. Quoted strings stay, because that is where a key is written. What
     goes is replaced space for space, so both the line numbers and the offsets
     still line up with the source they came from.
 
@@ -585,8 +584,8 @@ def get_declared_lua_strings(path: Path) -> Iterable[tuple[int, str, str]]:
     """Game string keys a Lua script declares, and the English behind them."""
     raw = path.read_text()
     # The blocks are found in a source with the long strings gone, so a call
-    # inside an api.define example declares nothing; the text is then read from
-    # one that kept them, so a declaration may write its English as one.
+    # inside an example declares nothing; the text is then read from one that
+    # kept them, so a declaration may write its English as one.
     source = strip_lua_noncode(raw)
     with_long_strings = strip_lua_noncode(raw, strip_long_strings=False)
     for start, end in lua_declare_blocks(source):

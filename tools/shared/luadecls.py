@@ -21,7 +21,7 @@ def _without_text(chunk: str) -> str:
 
 def _without_tables(chunk: str) -> str:
     # Only what the call itself takes counts. A function inside a table is a
-    # field of a specification, as `api.define` and `trx.objects.declare` read
+    # field of a specification, as `h.properties` and `trx.objects.declare` read
     # them, and the call hands over data rather than behavior.
     kept, depth = [], 0
     for char in chunk:

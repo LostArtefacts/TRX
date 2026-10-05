@@ -6,7 +6,7 @@
 typedef struct {
     int32_t engine_version;
 
-    bool dump_lua_api;
+    bool check_lua_api;
     const SHELL_MOD *mod;
     // The game the player named on the command line, and whether they named
     // one at all. A named game that cannot be played is an error rather than

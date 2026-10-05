@@ -164,8 +164,7 @@ static RESULT M_InitModules(void)
     MUST(LUA_Init(), "the Lua runtime could not be brought up");
 
     const SHELL_ARGS *const args = Shell_GetArgs();
-    if (args != nullptr && args->startup.dump_lua_api) {
-        LUA_DumpAPI();
+    if (args != nullptr && args->startup.check_lua_api) {
         exit(0);
     }
     return OK;

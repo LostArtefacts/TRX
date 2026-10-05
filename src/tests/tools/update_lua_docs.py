@@ -37,7 +37,6 @@ def rendered(surface, module=None):
         docs.KEYED_BY,
         docs.CONSTANTS,
         docs.ENUM_PATHS,
-        docs.ENUM_CONSTANTS,
         docs.ALIASES,
     ):
         table.clear()
@@ -196,18 +195,14 @@ class TestLuaDocs(unittest.TestCase):
                     f"constant '{value['name']}' is missing from the page",
                 )
 
-    def test_enum_constants_are_rendered_with_their_values(self):
-        """An enum's constants render with their names and values.
-
-        An enum reaches the docs only through the registry: the dump cannot see
-        one pushed straight onto a module table.
-        """
+    def test_enum_constants_are_rendered_by_name(self):
+        """An enum's constants render with their names. A script writes the
+        name, so the number C gives one stays out of the reference."""
         page = rendered(SURFACE)
         self.assertIn("### Enums", page)
-        self.assertIn("`trx.things.State.OFF` = `0`", page)
-        self.assertIn("`trx.things.State.ON` = `1`", page)
-        # Not 2. The value comes from C, gaps and all.
-        self.assertIn("`trx.things.State.BROKEN` = `7`", page)
+        self.assertIn("`trx.things.State.OFF`", page)
+        self.assertIn("`trx.things.State.BROKEN`", page)
+        self.assertNotIn("= `7`", page)
         self.assertIn("It is broken.", page)
 
     def test_a_number_that_names_an_enum_reads_as_that_enum(self):
@@ -489,19 +484,15 @@ class TestLuaDocs(unittest.TestCase):
         self.assertIn("default `0`", page)
 
     def test_an_enum_default_reads_as_the_constant(self):
-        """The default is stored as the constant's value, because that is what
-        the wrapper substitutes. It has to read as the constant."""
+        """A default that names a constant reads as that constant, and links
+        to its enum."""
         surface = copy.deepcopy(SURFACE)
         surface["functions"][0]["params"][1].update(
-            {"default": 1, "type": "things.State"}
+            {"default": {"constant": "things.State.ON"}, "type": "things.State"}
         )
-        docs.ENUM_CONSTANTS.clear()
-        docs.ENUM_CONSTANTS["things.State"] = {0: "OFF", 1: "ON", 7: "BROKEN"}
 
         page = rendered(surface)
         self.assertIn("default [`trx.things.State.ON`](#things.State)", page)
-        self.assertNotIn("default `1`", page)
-        docs.ENUM_CONSTANTS.clear()
 
     def test_several_returns_are_all_rendered(self):
         """A Lua function is free to hand back more than one value, and the
@@ -788,13 +779,6 @@ class TestLuaDocs(unittest.TestCase):
         docs.read(surface)
         self.assertEqual(docs.undocumented(surface), [])
 
-    def test_dump_extracts_the_json_from_a_noisy_stream(self):
-        """The JSON payload is picked out of a stream that also carries logs."""
-        stream = 'INF | starting\nDBG | loading\n{"modules": []}\n'
-        payload = next(
-            (line for line in stream.splitlines() if line.startswith("{")), None
-        )
-        self.assertEqual(json.loads(payload), {"modules": []})
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

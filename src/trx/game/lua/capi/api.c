@@ -4,13 +4,9 @@
 
 #include <lauxlib.h>
 
-// The registry closes itself once the engine's declarations are in, and takes
-// its declaring half off trx.api as the seal takes trxc off the globals: what a
-// script cannot successfully call, it should not be able to reach.
-//
-// Sealing and dumping the surface are still C's to do, and the dump runs after
-// the seal. So api.lua hands both to C here, and they are held in the Lua
-// registry - reachable by name from nowhere a script can see.
+// Sealing the surface is C's to do once the modules have loaded. So api.lua
+// hands the seal to C here, and it is held in the Lua registry - reachable by
+// name from nowhere a script can see.
 static const char m_EntrypointsKey[] = "trx.api.entrypoints";
 
 // trxc.api.set_entrypoint(name, fn)

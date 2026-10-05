@@ -2,6 +2,7 @@
 
 #include <harness/fake_calls.h>
 #include <trx/core/subsystem.h>
+#include <trx/game/lua/api.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/sandbox.h>
 #include <trx/game/lua/utils.h>
@@ -332,7 +333,14 @@ int LuaSurface_Run(const LUA_SURFACE_TEST *const test)
     // From here to the tests, the order is LUA_Init's: seal, then the runtime
     // scripts, then harden.
     if (test->seal) {
-        if (luaL_dostring(L, "trx.api.seal({ partial = true })") != LUA_OK) {
+        if (!LUA_API_PushEntrypoint(L, "seal")) {
+            fprintf(stderr, "api.lua handed over no seal\n");
+            exit(EXIT_FAILURE);
+        }
+        lua_createtable(L, 0, 1);
+        lua_pushboolean(L, true);
+        lua_setfield(L, -2, "partial");
+        if (lua_pcall(L, 1, 0, 0) != LUA_OK) {
             M_Fail(L, "sealing");
         }
         lua_pushnil(L);

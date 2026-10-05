@@ -86,11 +86,11 @@ jobs:
           path: .cache/ccache
           key: ${{ steps.ccache.outputs.cache-primary-key }}
 
-      # The dump needs a binary to query, so it rides along with the Linux build
+      # Sealing the API needs a binary, so it rides along with the Linux build
       # rather than paying for one of its own. The engine boots SDL before it
-      # prints the API, hence the dummy video driver and libGL. Release builds
-      # skip it: a stale dump is not a reason to stop a release.
-      - name: Check the Lua API docs
+      # loads Lua, hence the dummy video driver and libGL. Release builds skip
+      # it.
+      - name: Check the Lua API
         if: ${{ inputs.platform == 'linux' && inputs.target == 'debug' }}
         env:
           SDL_VIDEODRIVER: dummy

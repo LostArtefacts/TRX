@@ -10,8 +10,8 @@
 // Generic Lua bridge over FIELD_DESC.
 //
 // Registering a type creates its metatable with EMPTY public tables: no field,
-// method or computed member is reachable until a script declares it (see
-// trx.api.type in src/lua/trx.lua). The declaration is what populates the
+// method or computed member is reachable until a script exposes it (see
+// h.handle in src/lua/trx/internal/helpers.lua). Exposing is what populates the
 // metatable, so the public API is coined in Lua, while dispatch stays in C
 // - routing field reads through Lua costs ~1.5x on the hottest path scripts
 // have.
