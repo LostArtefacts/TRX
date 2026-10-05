@@ -73,24 +73,36 @@ M.LOGIC_FPS = h.const("game.LOGIC_FPS", raw.LOGIC_FPS)
 ---One of the lists of levels the game flow declares.
 ---@enum trx.game.LevelTable
 local LevelTable = {
-  TITLE = "The title screen.",
-  MAIN = "The levels of the game proper.",
-  CUTSCENES = "The cutscenes.",
-  DEMOS = "The demos that play when the title screen is left alone.",
+  ---The title screen.
+  TITLE = h.IntegerConstant,
+  ---The levels of the game proper.
+  MAIN = h.IntegerConstant,
+  ---The cutscenes.
+  CUTSCENES = h.IntegerConstant,
+  ---The demos that play when the title screen is left alone.
+  DEMOS = h.IntegerConstant,
 }
 M.LevelTable = h.enum("game.LevelTable", "GF_LEVEL_TABLE_TYPE", LevelTable)
 
 ---What kind of level it is.
 ---@enum trx.game.LevelType
 local LevelType = {
-  TITLE = "The title screen.",
-  NORMAL = "An ordinary level.",
-  CUTSCENE = "A cutscene.",
-  DEMO = "A demo.",
-  GYM = "Lara's home, which has no level number.",
-  BONUS = "A bonus level, played once the game is finished.",
-  DUMMY = "Not a level. Kept only because old savegames refer to it.",
-  CURRENT = "Not a level. Kept only because old savegames refer to it.",
+  ---The title screen.
+  TITLE = h.IntegerConstant,
+  ---An ordinary level.
+  NORMAL = h.IntegerConstant,
+  ---A cutscene.
+  CUTSCENE = h.IntegerConstant,
+  ---A demo.
+  DEMO = h.IntegerConstant,
+  ---Lara's home, which has no level number.
+  GYM = h.IntegerConstant,
+  ---A bonus level, played once the game is finished.
+  BONUS = h.IntegerConstant,
+  ---Not a level. Kept only because old savegames refer to it.
+  DUMMY = h.IntegerConstant,
+  ---Not a level. Kept only because old savegames refer to it.
+  CURRENT = h.IntegerConstant,
 }
 M.LevelType = h.enum("game.LevelType", "GF_LEVEL_TYPE", LevelType)
 
@@ -233,8 +245,10 @@ h.properties(M.signals, "game.signals", signal_props)
 ---What the player's movement keys steer while photo mode is open.
 ---@enum trx.game.PhotoModeTarget
 local PhotoModeTarget = {
-  CAMERA = "The camera.",
-  LARA = "Lara herself.",
+  ---The camera.
+  CAMERA = h.IntegerConstant,
+  ---Lara herself.
+  LARA = h.IntegerConstant,
 }
 M.PhotoModeTarget =
   h.enum("game.PhotoModeTarget", "PHOTO_MODE", PhotoModeTarget)

@@ -31,14 +31,22 @@ local M = h.module("catalog")
 ---Which catalog a slot belongs to.
 ---@enum trx.catalog.Context
 local Context = {
-  OBJECTS = "Objects.",
-  MUSIC = "Music tracks.",
-  SAMPLES = "Sound samples.",
-  LARA_STATES = "Lara's states.",
-  LARA_ANIMS = "Lara's animations.",
-  ITEM_ACTIONS = "Item actions, which the flip effects trigger.",
-  WEAPONS = "Weapons Lara can hold.",
-  FAMILIES = "The families an object can belong to.",
+  ---Objects.
+  OBJECTS = h.IntegerConstant,
+  ---Music tracks.
+  MUSIC = h.IntegerConstant,
+  ---Sound samples.
+  SAMPLES = h.IntegerConstant,
+  ---Lara's states.
+  LARA_STATES = h.IntegerConstant,
+  ---Lara's animations.
+  LARA_ANIMS = h.IntegerConstant,
+  ---Item actions, which the flip effects trigger.
+  ITEM_ACTIONS = h.IntegerConstant,
+  ---Weapons Lara can hold.
+  WEAPONS = h.IntegerConstant,
+  ---The families an object can belong to.
+  FAMILIES = h.IntegerConstant,
 }
 M.Context = h.enum("catalog.Context", "CATALOG_CONTEXT", Context)
 

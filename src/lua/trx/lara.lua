@@ -38,21 +38,36 @@ local M = h.module("lara")
 ---One of the fifteen meshes Lara is built from.
 ---@enum trx.lara.Mesh
 local Mesh = {
-  HIPS = "Hips, the mesh the rest hang off.",
-  THIGH_L = "Left thigh.",
-  CALF_L = "Left calf.",
-  FOOT_L = "Left foot.",
-  THIGH_R = "Right thigh.",
-  CALF_R = "Right calf.",
-  FOOT_R = "Right foot.",
-  TORSO = "Torso.",
-  UARM_R = "Right upper arm.",
-  LARM_R = "Right lower arm.",
-  HAND_R = "Right hand.",
-  UARM_L = "Left upper arm.",
-  LARM_L = "Left lower arm.",
-  HAND_L = "Left hand.",
-  HEAD = "Head.",
+  ---Hips, the mesh the rest hang off.
+  HIPS = h.IntegerConstant,
+  ---Left thigh.
+  THIGH_L = h.IntegerConstant,
+  ---Left calf.
+  CALF_L = h.IntegerConstant,
+  ---Left foot.
+  FOOT_L = h.IntegerConstant,
+  ---Right thigh.
+  THIGH_R = h.IntegerConstant,
+  ---Right calf.
+  CALF_R = h.IntegerConstant,
+  ---Right foot.
+  FOOT_R = h.IntegerConstant,
+  ---Torso.
+  TORSO = h.IntegerConstant,
+  ---Right upper arm.
+  UARM_R = h.IntegerConstant,
+  ---Right lower arm.
+  LARM_R = h.IntegerConstant,
+  ---Right hand.
+  HAND_R = h.IntegerConstant,
+  ---Left upper arm.
+  UARM_L = h.IntegerConstant,
+  ---Left lower arm.
+  LARM_L = h.IntegerConstant,
+  ---Left hand.
+  HAND_L = h.IntegerConstant,
+  ---Head.
+  HEAD = h.IntegerConstant,
 }
 M.Mesh = h.enum("lara.Mesh", "LARA_MESH", Mesh)
 
@@ -64,49 +79,80 @@ M.Mesh = h.enum("lara.Mesh", "LARA_MESH", Mesh)
 ---Home, the oar in a boat.
 ---@enum trx.lara.ExtraMesh
 local ExtraMesh = {
-  TR1_BRAID_DEFAULT_HEAD = "Braided head, out of combat.",
-  TR1_BRAID_COMBAT_HEAD = "Braided head, in combat.",
-  TR1_BRAID_DEFAULT_TORSO = "Braided torso.",
-  TR1_BRAID_MAULED_TORSO = "Braided torso, mauled.",
-  DAGGER_HAND = "Dagger, in hand.",
-  DAGGER_HIPS = "Dagger, sheathed at the hips.",
-  OAR = "Oar.",
-  SPANNER = "Spanner.",
-  DRINK_CAN = "Drink can.",
-  GLASSES_OPAQUE = "Sunglasses.",
-  GLASSES_TRANSPARENT = "Sunglasses, transparent lenses.",
-  CROWBAR = "Crowbar.",
-  WOODEN_TORCH = "Wooden torch.",
-  BINOCULARS = "Binoculars.",
-  HOOK_AND_POLE = "Hook and pole.",
-  DETONATOR = "Detonator.",
-  SHOVEL = "Shovel.",
-  JERRYCAN = "Jerrycan.",
-  SANDBAG = "Sandbag.",
-  WATERSKIN = "Waterskin.",
+  ---Braided head, out of combat.
+  TR1_BRAID_DEFAULT_HEAD = h.IntegerConstant,
+  ---Braided head, in combat.
+  TR1_BRAID_COMBAT_HEAD = h.IntegerConstant,
+  ---Braided torso.
+  TR1_BRAID_DEFAULT_TORSO = h.IntegerConstant,
+  ---Braided torso, mauled.
+  TR1_BRAID_MAULED_TORSO = h.IntegerConstant,
+  ---Dagger, in hand.
+  DAGGER_HAND = h.IntegerConstant,
+  ---Dagger, sheathed at the hips.
+  DAGGER_HIPS = h.IntegerConstant,
+  ---Oar.
+  OAR = h.IntegerConstant,
+  ---Spanner.
+  SPANNER = h.IntegerConstant,
+  ---Drink can.
+  DRINK_CAN = h.IntegerConstant,
+  ---Sunglasses.
+  GLASSES_OPAQUE = h.IntegerConstant,
+  ---Sunglasses, transparent lenses.
+  GLASSES_TRANSPARENT = h.IntegerConstant,
+  ---Crowbar.
+  CROWBAR = h.IntegerConstant,
+  ---Wooden torch.
+  WOODEN_TORCH = h.IntegerConstant,
+  ---Binoculars.
+  BINOCULARS = h.IntegerConstant,
+  ---Hook and pole.
+  HOOK_AND_POLE = h.IntegerConstant,
+  ---Detonator.
+  DETONATOR = h.IntegerConstant,
+  ---Shovel.
+  SHOVEL = h.IntegerConstant,
+  ---Jerrycan.
+  JERRYCAN = h.IntegerConstant,
+  ---Sandbag.
+  SANDBAG = h.IntegerConstant,
+  ---Waterskin.
+  WATERSKIN = h.IntegerConstant,
 }
 M.ExtraMesh = h.enum("lara.ExtraMesh", "LARA_SKIN_EXTRA_MESH", ExtraMesh)
 
 ---Where Lara is with respect to water.
 ---@enum trx.lara.WaterState
 local WaterState = {
-  ABOVE_WATER = "On dry land.",
-  UNDERWATER = "Under the surface.",
-  SURFACE = "Swimming at the surface.",
-  WADE = "Wading, feet still on the floor.",
-  CHEAT = "Flying, as the fly cheat leaves her.",
+  ---On dry land.
+  ABOVE_WATER = h.IntegerConstant,
+  ---Under the surface.
+  UNDERWATER = h.IntegerConstant,
+  ---Swimming at the surface.
+  SURFACE = h.IntegerConstant,
+  ---Wading, feet still on the floor.
+  WADE = h.IntegerConstant,
+  ---Flying, as the fly cheat leaves her.
+  CHEAT = h.IntegerConstant,
 }
 M.WaterState = h.enum("lara.WaterState", "LARA_WATER_STATE", WaterState)
 
 ---What Lara's hands are doing.
 ---@enum trx.lara.GunState
 local GunState = {
-  ARMLESS = "Empty-handed.",
-  HANDS_BUSY = "Hands full, so nothing can be drawn.",
-  DRAW = "Drawing a weapon.",
-  UNDRAW = "Putting one away.",
-  READY = "Armed, weapon out.",
-  SPECIAL = "In a scripted sequence.",
+  ---Empty-handed.
+  ARMLESS = h.IntegerConstant,
+  ---Hands full, so nothing can be drawn.
+  HANDS_BUSY = h.IntegerConstant,
+  ---Drawing a weapon.
+  DRAW = h.IntegerConstant,
+  ---Putting one away.
+  UNDRAW = h.IntegerConstant,
+  ---Armed, weapon out.
+  READY = h.IntegerConstant,
+  ---In a scripted sequence.
+  SPECIAL = h.IntegerConstant,
 }
 M.GunState = h.enum("lara.GunState", "LARA_GUN_STATE", GunState)
 

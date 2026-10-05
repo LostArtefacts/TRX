@@ -39,10 +39,18 @@ local M = h.module("items")
 ---active earthquakes.
 ---@enum trx.items.EarthquakeMode
 local EarthquakeMode = {
-  RANDOM_1 = "Per TR1 - the camera shakes at random, and sound effects earthquake_1 and earthquake_2 are played at random intervals.",
-  RANDOM_2 = "Per TR2 - similar to TR1, with less randomness and only the earthquake_1 sound effect is played.",
-  RAMPED = "Per TR3 - the camera shakes on a ramped scale and the earthquake_loop sound effect plays throughout.",
-  BASIC = "Per TR4 - the camera shakes and the earthquake_loop sound effect plays on each frame.",
+  ---Per TR1 - the camera shakes at random, and sound effects earthquake_1 and
+  ---earthquake_2 are played at random intervals.
+  RANDOM_1 = h.IntegerConstant,
+  ---Per TR2 - similar to TR1, with less randomness and only the earthquake_1
+  ---sound effect is played.
+  RANDOM_2 = h.IntegerConstant,
+  ---Per TR3 - the camera shakes on a ramped scale and the earthquake_loop
+  ---sound effect plays throughout.
+  RAMPED = h.IntegerConstant,
+  ---Per TR4 - the camera shakes and the earthquake_loop sound effect plays on
+  ---each frame.
+  BASIC = h.IntegerConstant,
 }
 M.EarthquakeMode =
   h.enum("items.EarthquakeMode", "EARTHQUAKE_MODE", EarthquakeMode)
@@ -51,13 +59,21 @@ M.EarthquakeMode =
 ---take. It selects the animation Lara plays when collecting the item.
 ---@enum trx.items.PickupMode
 local PickupMode = {
-  NORMAL = "Picked up off the floor.",
-  PLINTH_LOW = "Picked up from a low pedestal.",
-  PLINTH_HIGH = "Picked up from a high pedestal.",
-  HIDDEN = "Hidden behind an object Lara can reach into.",
-  CROWBAR = "Pried off the wall using a crowbar.",
-  SARCOPHAGUS = "Hidden inside a sarcophagus.",
-  PLINTH_SCION = "Similar to PLINTH_HIGH; invokes Lara's extra animation as in Tomb of Qualopec.",
+  ---Picked up off the floor.
+  NORMAL = h.IntegerConstant,
+  ---Picked up from a low pedestal.
+  PLINTH_LOW = h.IntegerConstant,
+  ---Picked up from a high pedestal.
+  PLINTH_HIGH = h.IntegerConstant,
+  ---Hidden behind an object Lara can reach into.
+  HIDDEN = h.IntegerConstant,
+  ---Pried off the wall using a crowbar.
+  CROWBAR = h.IntegerConstant,
+  ---Hidden inside a sarcophagus.
+  SARCOPHAGUS = h.IntegerConstant,
+  ---Similar to PLINTH_HIGH; invokes Lara's extra animation as in Tomb of
+  ---Qualopec.
+  PLINTH_SCION = h.IntegerConstant,
 }
 M.PickupMode = h.enum("items.PickupMode", "PICKUP_MODE", PickupMode)
 
@@ -65,9 +81,13 @@ M.PickupMode = h.enum("items.PickupMode", "PICKUP_MODE", PickupMode)
 ---property can take. It determines how spikes behave when triggered.
 ---@enum trx.items.ScaledSpikesMode
 local ScaledSpikesMode = {
-  LOOPING = "Spikes will extend, wait a brief period, retract, and then the loop will repeat.",
-  EXTENDED = "Spikes will extend and remain as-is indefinitely.",
-  ONE_SHOT = "Spikes will extend, wait a brief period, retract, and then stop.",
+  ---Spikes will extend, wait a brief period, retract, and then the loop will
+  ---repeat.
+  LOOPING = h.IntegerConstant,
+  ---Spikes will extend and remain as-is indefinitely.
+  EXTENDED = h.IntegerConstant,
+  ---Spikes will extend, wait a brief period, retract, and then stop.
+  ONE_SHOT = h.IntegerConstant,
 }
 M.ScaledSpikesMode =
   h.enum("items.ScaledSpikesMode", "SCALED_SPIKES_MODE", ScaledSpikesMode)
@@ -76,10 +96,14 @@ M.ScaledSpikesMode =
 ---take. It selects the animation Lara plays when interacting with the item.
 ---@enum trx.items.SwitchMode
 local SwitchMode = {
-  NORMAL = "A regular/classic wall lever.",
-  HIDDEN_REACH = "Lara reaches in to activate.",
-  HIDDEN_PICKUP = "Lara reaches in to collect a pickup.",
-  SHOVE = "A single-use button that requires a shove to activate.",
+  ---A regular/classic wall lever.
+  NORMAL = h.IntegerConstant,
+  ---Lara reaches in to activate.
+  HIDDEN_REACH = h.IntegerConstant,
+  ---Lara reaches in to collect a pickup.
+  HIDDEN_PICKUP = h.IntegerConstant,
+  ---A single-use button that requires a shove to activate.
+  SHOVE = h.IntegerConstant,
 }
 M.SwitchMode = h.enum("items.SwitchMode", "SWITCH_MODE", SwitchMode)
 
@@ -89,13 +113,19 @@ M.SwitchMode = h.enum("items.SwitchMode", "SWITCH_MODE", SwitchMode)
 ---is the one to reach for.
 ---@enum trx.items.TriggerType
 local TriggerType = {
-  TRIGGER = "A plain trigger: sets the code bits and, once they are all set, starts the item.",
-  ANTITRIGGER = "Takes the trigger back, clearing the code bits. The item is left running so it "
-    .. "can stand itself down, which is how a door animates shut.",
-  SWITCH = "Toggles the code bits, so firing it a second time takes the trigger back.",
-  HEAVY = "A forward trigger a heavy object trips. A falling block reads this to know it was set "
-    .. "off by weight.",
-  HEAVY_SWITCH = "A switch a heavy object trips.",
+  ---A plain trigger: sets the code bits and, once they are all set, starts the
+  ---item.
+  TRIGGER = h.IntegerConstant,
+  ---Takes the trigger back, clearing the code bits. The item is left running
+  ---so it can stand itself down, which is how a door animates shut.
+  ANTITRIGGER = h.IntegerConstant,
+  ---Toggles the code bits, so firing it a second time takes the trigger back.
+  SWITCH = h.IntegerConstant,
+  ---A forward trigger a heavy object trips. A falling block reads this to know
+  ---it was set off by weight.
+  HEAVY = h.IntegerConstant,
+  ---A switch a heavy object trips.
+  HEAVY_SWITCH = h.IntegerConstant,
 }
 M.TriggerType = h.enum("items.TriggerType", "ITEM_TRIGGER_KIND", TriggerType)
 
@@ -103,9 +133,12 @@ M.TriggerType = h.enum("items.TriggerType", "ITEM_TRIGGER_KIND", TriggerType)
 ---It selects the sound a waterfall loops while it runs.
 ---@enum trx.items.WaterfallSound
 local WaterfallSound = {
-  NONE = "The waterfall runs silently.",
-  SAND = "A pouring sand loop.",
-  WATER = "A running water loop.",
+  ---The waterfall runs silently.
+  NONE = h.IntegerConstant,
+  ---A pouring sand loop.
+  SAND = h.IntegerConstant,
+  ---A running water loop.
+  WATER = h.IntegerConstant,
 }
 M.WaterfallSound =
   h.enum("items.WaterfallSound", "WATERFALL_SOUND", WaterfallSound)

@@ -57,18 +57,19 @@ ui.screens = h.namespace("ui.screens")
 ---An engine screen that a script can draw.
 ---@enum trx.ui.Screen
 local Screen = {
-  RING_ENTRY = [[
-An entry that the player uses in the inventory ring. The context reports the
-entry as `trx.ui.ScreenContext.object`. A definition can name the entry it
-draws. A ring opened to save or load leaves when the screen ends, and any ring
-leaves when the screen ends with `trx.ui.ScreenContext:confirm`.]],
-  PAUSE = [[
-The question that the pause screen asks when the player presses the inventory
-key: whether to leave for the title screen.]],
-  SAVE_LOAD = [[
-The quick save or load screen. The save and load keys open it when the instant
-screen setting is on. The context reports whether it opened for saving or
-loading as `trx.ui.ScreenContext.mode`.]],
+  ---An entry that the player uses in the inventory ring. The context reports
+  ---the entry as `trx.ui.ScreenContext.object`. A definition can name the
+  ---entry it draws. A ring opened to save or load leaves when the screen ends,
+  ---and any ring leaves when the screen ends with
+  ---`trx.ui.ScreenContext:confirm`.
+  RING_ENTRY = h.IntegerConstant,
+  ---The question that the pause screen asks when the player presses the
+  ---inventory key: whether to leave for the title screen.
+  PAUSE = h.IntegerConstant,
+  ---The quick save or load screen. The save and load keys open it when the
+  ---instant screen setting is on. The context reports whether it opened for
+  ---saving or loading as `trx.ui.ScreenContext.mode`.
+  SAVE_LOAD = h.IntegerConstant,
 }
 ui.Screen = h.enum("ui.Screen", "UI_TAKEOVER", Screen)
 

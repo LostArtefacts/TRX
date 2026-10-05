@@ -39,9 +39,11 @@ local M = h.module("things")
 ---A state.
 ---@enum trx.things.State
 local State = {
-  OFF = "It is off.",
-  ON = "It is "
-    .. "on.",
+  ---It is off.
+  OFF = h.IntegerConstant,
+  ---It is
+  ---on.
+  ON = h.IntegerConstant,
 }
 M.State = h.enum("things.State", "THING_STATE", State)
 
@@ -287,7 +289,12 @@ M.NAME = h.const("gizmos.NAME", "real")
 
 ---How fast.
 ---@enum trx.gizmos.Speed
-local Speed = { SLOW = "Slowly.", FAST = "Quickly." }
+local Speed = {
+  ---Slowly.
+  SLOW = h.IntegerConstant,
+  ---Quickly.
+  FAST = h.IntegerConstant,
+}
 M.Speed = h.enum("gizmos.Speed", "GIZMO_SPEED", Speed)
 
 ---Runs on every tick.

@@ -24,11 +24,17 @@ local M = h.module("music")
 ---How a track is played. Pass one as `trx.music.play.opts.mode`.
 ---@enum trx.music.PlayMode
 local PlayMode = {
-  ONCE = "Plays the track once. When it finishes, any active looped track resumes from its start.",
-  LOOP = "Plays the track continuously. It becomes the ambient track.",
-  NO_REPEAT = "Plays the track once, but does not retrigger it if it is already playing.",
-  DELAY = "Marks the track for later playback rather than starting it now.",
-  OVERLAY = "Plays the track on top of the current one.",
+  ---Plays the track once. When it finishes, any active looped track resumes
+  ---from its start.
+  ONCE = h.IntegerConstant,
+  ---Plays the track continuously. It becomes the ambient track.
+  LOOP = h.IntegerConstant,
+  ---Plays the track once, but does not retrigger it if it is already playing.
+  NO_REPEAT = h.IntegerConstant,
+  ---Marks the track for later playback rather than starting it now.
+  DELAY = h.IntegerConstant,
+  ---Plays the track on top of the current one.
+  OVERLAY = h.IntegerConstant,
 }
 M.PlayMode = h.enum("music.PlayMode", "MUSIC_PLAY_MODE", PlayMode)
 

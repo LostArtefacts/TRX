@@ -31,12 +31,18 @@ local letterbox_held = nil
 ---An arrow the interface can show.
 ---@enum trx.overlay.Arrow
 local Arrow = {
-  TOP_LEFT = "The top-left screen corner.",
-  TOP_RIGHT = "The top-right screen corner.",
-  BOTTOM_LEFT = "The bottom-left screen corner.",
-  BOTTOM_RIGHT = "The bottom-right screen corner.",
-  CAPTION_LEFT = "To the left of the caption.",
-  CAPTION_RIGHT = "To the right of the caption.",
+  ---The top-left screen corner.
+  TOP_LEFT = h.IntegerConstant,
+  ---The top-right screen corner.
+  TOP_RIGHT = h.IntegerConstant,
+  ---The bottom-left screen corner.
+  BOTTOM_LEFT = h.IntegerConstant,
+  ---The bottom-right screen corner.
+  BOTTOM_RIGHT = h.IntegerConstant,
+  ---To the left of the caption.
+  CAPTION_LEFT = h.IntegerConstant,
+  ---To the right of the caption.
+  CAPTION_RIGHT = h.IntegerConstant,
 }
 M.Arrow = h.enum("overlay.Arrow", "OVERLAY_ARROW", Arrow)
 

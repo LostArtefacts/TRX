@@ -15,11 +15,16 @@ local M = h.module("mod")
 ---What kind of mod it is.
 ---@enum trx.mod.Type
 local Type = {
-  BASE_GAME = "The base game.",
-  EXPANSION_PACK = "An expansion pack.",
-  MISC = "A miscellaneous mod.",
-  DIRECT_LEVEL = "A single level loaded on its own.",
-  CUSTOM = "A custom mod.",
+  ---The base game.
+  BASE_GAME = h.IntegerConstant,
+  ---An expansion pack.
+  EXPANSION_PACK = h.IntegerConstant,
+  ---A miscellaneous mod.
+  MISC = h.IntegerConstant,
+  ---A single level loaded on its own.
+  DIRECT_LEVEL = h.IntegerConstant,
+  ---A custom mod.
+  CUSTOM = h.IntegerConstant,
 }
 M.Type = h.enum("mod.Type", "SHELL_MOD_TYPE", Type)
 

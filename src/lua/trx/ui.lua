@@ -39,30 +39,42 @@ local M = h.module("ui")
 ---The direction a stack lays its children out in.
 ---@enum trx.ui.Orientation
 local Orientation = {
-  VERTICAL = "One below the next.",
-  HORIZONTAL = "One beside the next.",
+  ---One below the next.
+  VERTICAL = h.IntegerConstant,
+  ---One beside the next.
+  HORIZONTAL = h.IntegerConstant,
 }
 M.Orientation = h.enum("ui.Orientation", "UI_STACK_ORIENTATION", Orientation)
 
 ---Where a stack puts its children across its width.
 ---@enum trx.ui.HAlign
 local HAlign = {
-  LEFT = "Against the left edge.",
-  CENTER = "In the middle.",
-  RIGHT = "Against the right edge.",
-  SPAN = "Stretched to the full width.",
-  DISTRIBUTE = "Spread out, with the gaps taking the spare width.",
+  ---Against the left edge.
+  LEFT = h.IntegerConstant,
+  ---In the middle.
+  CENTER = h.IntegerConstant,
+  ---Against the right edge.
+  RIGHT = h.IntegerConstant,
+  ---Stretched to the full width.
+  SPAN = h.IntegerConstant,
+  ---Spread out, with the gaps taking the spare width.
+  DISTRIBUTE = h.IntegerConstant,
 }
 M.HAlign = h.enum("ui.HAlign", "UI_STACK_H_ALIGN", HAlign)
 
 ---Where a stack puts its children down its height.
 ---@enum trx.ui.VAlign
 local VAlign = {
-  TOP = "Against the top edge.",
-  CENTER = "In the middle.",
-  BOTTOM = "Against the bottom edge.",
-  SPAN = "Stretched to the full height.",
-  DISTRIBUTE = "Spread out, with the gaps taking the spare height.",
+  ---Against the top edge.
+  TOP = h.IntegerConstant,
+  ---In the middle.
+  CENTER = h.IntegerConstant,
+  ---Against the bottom edge.
+  BOTTOM = h.IntegerConstant,
+  ---Stretched to the full height.
+  SPAN = h.IntegerConstant,
+  ---Spread out, with the gaps taking the spare height.
+  DISTRIBUTE = h.IntegerConstant,
 }
 M.VAlign = h.enum("ui.VAlign", "UI_STACK_V_ALIGN", VAlign)
 
@@ -74,15 +86,24 @@ M.VAlign = h.enum("ui.VAlign", "UI_STACK_V_ALIGN", VAlign)
 ---at. The middle is what the others leave, and is where a dialog goes.
 ---@enum trx.ui.Region
 local Region = {
-  TOP_LEFT = "The top left corner.",
-  TOP_CENTER = "The top edge, in the middle.",
-  TOP_RIGHT = "The top right corner.",
-  LEFT = "The left edge, halfway down.",
-  CENTER = "The middle of the screen, inside what the others leave.",
-  RIGHT = "The right edge, halfway down.",
-  BOTTOM_LEFT = "The bottom left corner.",
-  BOTTOM_CENTER = "The bottom edge, in the middle.",
-  BOTTOM_RIGHT = "The bottom right corner.",
+  ---The top left corner.
+  TOP_LEFT = h.IntegerConstant,
+  ---The top edge, in the middle.
+  TOP_CENTER = h.IntegerConstant,
+  ---The top right corner.
+  TOP_RIGHT = h.IntegerConstant,
+  ---The left edge, halfway down.
+  LEFT = h.IntegerConstant,
+  ---The middle of the screen, inside what the others leave.
+  CENTER = h.IntegerConstant,
+  ---The right edge, halfway down.
+  RIGHT = h.IntegerConstant,
+  ---The bottom left corner.
+  BOTTOM_LEFT = h.IntegerConstant,
+  ---The bottom edge, in the middle.
+  BOTTOM_CENTER = h.IntegerConstant,
+  ---The bottom right corner.
+  BOTTOM_RIGHT = h.IntegerConstant,
 }
 M.Region = h.enum("ui.Region", "UI_REGION", Region)
 
@@ -92,8 +113,10 @@ M.Region = h.enum("ui.Region", "UI_REGION", Region)
 ---a text field. Each region keeps space for both layers.
 ---@enum trx.ui.Layer
 local Layer = {
-  UNDER = "Below the engine interface.",
-  OVER = "Above the engine interface.",
+  ---Below the engine interface.
+  UNDER = h.IntegerConstant,
+  ---Above the engine interface.
+  OVER = h.IntegerConstant,
 }
 M.Layer = h.enum("ui.Layer", "UI_PAINT_LAYER", Layer)
 
@@ -101,25 +124,38 @@ M.Layer = h.enum("ui.Layer", "UI_PAINT_LAYER", Layer)
 ---the player chose.
 ---@enum trx.ui.FrameStyle
 local FrameStyle = {
-  DIALOG = "The box a dialog sits in.",
-  DIALOG_HEAVY = "The box a dialog sits in, drawn solid.",
-  HEADING = "The strip a dialog puts its title in.",
-  SELECTED = "The box around the option the player is on.",
-  OUTLINE = "An outline with nothing behind it.",
+  ---The box a dialog sits in.
+  DIALOG = h.IntegerConstant,
+  ---The box a dialog sits in, drawn solid.
+  DIALOG_HEAVY = h.IntegerConstant,
+  ---The strip a dialog puts its title in.
+  HEADING = h.IntegerConstant,
+  ---The box around the option the player is on.
+  SELECTED = h.IntegerConstant,
+  ---An outline with nothing behind it.
+  OUTLINE = h.IntegerConstant,
 }
 M.FrameStyle = h.enum("ui.FrameStyle", "UI_FRAME_STYLE", FrameStyle)
 
 ---Which of the game's bars to draw, which decides its colors.
 ---@enum trx.ui.BarType
 local BarType = {
-  LARA_HP = "Lara's health.",
-  LARA_HP_POISON = "Lara's health while she is poisoned.",
-  LARA_AIR = "Lara's air.",
-  LARA_STAMINA = "Lara's stamina.",
-  LARA_EXPOSURE = "Lara's exposure to the cold.",
-  ENEMY_HP = "An enemy's health.",
-  ALLY_HP = "An ally's health.",
-  PROGRESS = "A general progress bar.",
+  ---Lara's health.
+  LARA_HP = h.IntegerConstant,
+  ---Lara's health while she is poisoned.
+  LARA_HP_POISON = h.IntegerConstant,
+  ---Lara's air.
+  LARA_AIR = h.IntegerConstant,
+  ---Lara's stamina.
+  LARA_STAMINA = h.IntegerConstant,
+  ---Lara's exposure to the cold.
+  LARA_EXPOSURE = h.IntegerConstant,
+  ---An enemy's health.
+  ENEMY_HP = h.IntegerConstant,
+  ---An ally's health.
+  ALLY_HP = h.IntegerConstant,
+  ---A general progress bar.
+  PROGRESS = h.IntegerConstant,
 }
 M.BarType = h.enum("ui.BarType", "UI_BAR_TYPE", BarType)
 

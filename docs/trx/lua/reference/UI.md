@@ -165,17 +165,11 @@ arrow, and `\{button left}` draws the button the player has bound.
     An engine screen that a script can draw.
 
     - `trx.ui.Screen.RING_ENTRY`  
-        An entry that the player uses in the inventory ring. The context reports the
-        entry as [`trx.ui.ScreenContext.object`](#ui.ScreenContext.object). A definition can name the entry it
-        draws. A ring opened to save or load leaves when the screen ends, and any ring
-        leaves when the screen ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm).
+        An entry that the player uses in the inventory ring. The context reports the entry as [`trx.ui.ScreenContext.object`](#ui.ScreenContext.object). A definition can name the entry it draws. A ring opened to save or load leaves when the screen ends, and any ring leaves when the screen ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm).
     - `trx.ui.Screen.PAUSE`  
-        The question that the pause screen asks when the player presses the inventory
-        key: whether to leave for the title screen.
+        The question that the pause screen asks when the player presses the inventory key: whether to leave for the title screen.
     - `trx.ui.Screen.SAVE_LOAD`  
-        The quick save or load screen. The save and load keys open it when the instant
-        screen setting is on. The context reports whether it opened for saving or
-        loading as [`trx.ui.ScreenContext.mode`](#ui.ScreenContext.mode).
+        The quick save or load screen. The save and load keys open it when the instant screen setting is on. The context reports whether it opened for saving or loading as [`trx.ui.ScreenContext.mode`](#ui.ScreenContext.mode).
 
 ### Structures
 

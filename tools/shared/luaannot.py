@@ -208,31 +208,19 @@ def read_string(text: str, pos: int) -> tuple[str, int]:
     return body, end + len(close)
 
 
-def read_concat(text: str, pos: int) -> tuple[str, int]:
-    """Read string literals joined by `..`."""
-    value, pos = read_string(text, pos)
-    while True:
-        m = re.match(r"\s*\.\.", text[pos:])
-        if m is None:
-            return value, pos
-        more, pos = read_string(text, pos + m.end())
-        value += more
-
-
-def read_doc_table(text: str) -> dict[str, str]:
-    """NAME = "description" entries of a table literal."""
+def read_enum_table(text: str) -> dict[str, str]:
+    """The constants of an enum table literal, each written as
+    `NAME = h.IntegerConstant,` and described by the `---` lines above it."""
     out: dict[str, str] = {}
-    pos = text.index("{") + 1
-    entry = re.compile(r"\s*(?:--[^\n]*\n\s*)*([A-Za-z_][A-Za-z0-9_]*)\s*=")
-    while True:
-        m = entry.match(text, pos)
-        if m is None:
-            return out
-        value, pos = read_concat(text, m.end())
-        out[m.group(1)] = value
-        m = re.match(r"\s*,", text[pos:])
-        if m is not None:
-            pos += m.end()
+    described: list[str] = []
+    for line in text[text.index("{") + 1 :].splitlines():
+        line = line.strip()
+        if line.startswith("---"):
+            described.append(line[3:].strip())
+        elif (m := re.match(r"([A-Za-z_][A-Za-z0-9_]*)\s*=", line)) is not None:
+            out[m.group(1)] = " ".join(part for part in described if part)
+            described = []
+    return out
 
 
 # Blocks
@@ -749,7 +737,7 @@ class Parser:
 
     def read_enum(self, block: Block) -> None:
         name = block.tag("enum")
-        docs = read_doc_table(block.statement or "")
+        docs = read_enum_table(block.statement or "")
         if block.tag("trx.bulk") is not None:
             # Named one by one so an editor completes them, and described as a
             # whole in the reference.
