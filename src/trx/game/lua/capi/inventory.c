@@ -313,7 +313,7 @@ static int M_L_InvCanAdd(lua_State *const L)
     return 1;
 }
 
-// trxc.inventory.get(level_num) -> INVENTORY_STATE handle or nil
+// trxc.inventory.get(level_num: trx.game.LevelNum): trx.inventory.Inventory?
 static int M_L_InvGetLevel(lua_State *const L)
 {
     int32_t num;
@@ -332,7 +332,7 @@ static int M_L_InvGetLevel(lua_State *const L)
     return 1;
 }
 
-// trxc.inventory.get_current() -> INVENTORY_STATE handle
+// trxc.inventory.get_current(): trx.inventory.Inventory
 static int M_L_InvGetCurrent(lua_State *const L)
 {
     LUA_Struct_Push(

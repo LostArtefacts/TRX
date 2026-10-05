@@ -5,7 +5,7 @@
 
 #include <lauxlib.h>
 
-// trxc.weather.set(type)
+// trxc.weather.set(type: trx.weather.Type)
 static int M_L_WeatherSet(lua_State *const L)
 {
     const lua_Integer type = luaL_checkinteger(L, 1);
@@ -16,21 +16,21 @@ static int M_L_WeatherSet(lua_State *const L)
     return 0;
 }
 
-// trxc.weather.get() -> int
+// trxc.weather.get(): trx.weather.Type
 static int M_L_WeatherGet(lua_State *const L)
 {
     lua_pushinteger(L, FX_Weather_GetWeather());
     return 1;
 }
 
-// trxc.weather.set_severity(severity)
+// trxc.weather.set_severity(severity: number)
 static int M_L_WeatherSetSeverity(lua_State *const L)
 {
     FX_Weather_SetSeverity((float)luaL_checknumber(L, 1));
     return 0;
 }
 
-// trxc.weather.get_severity() -> number
+// trxc.weather.get_severity(): number
 static int M_L_WeatherGetSeverity(lua_State *const L)
 {
     lua_pushnumber(L, FX_Weather_GetSeverity());

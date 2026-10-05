@@ -54,7 +54,7 @@ static int32_t M_CheckNode(lua_State *const L, const int32_t arg)
     return (int32_t)node;
 }
 
-// trxc.cutscenes.play(num, fade)
+// trxc.cutscenes.play(num: trx.cutscenes.Num, fade?: boolean)
 static int M_L_CutscenesPlay(lua_State *const L)
 {
     const int32_t num = M_CheckPlayableNum(L, 1);
@@ -63,42 +63,42 @@ static int M_L_CutscenesPlay(lua_State *const L)
     return 0;
 }
 
-// trxc.cutscenes.get_current() → int or nil
+// trxc.cutscenes.get_current(): trx.cutscenes.Num?
 static int M_L_CutscenesGetCurrent(lua_State *const L)
 {
     LUA_PushOptIndex(L, CutSeq_GetCurrent(), M_NO_CUTSCENE);
     return 1;
 }
 
-// trxc.cutscenes.get_frame_num() → int or nil
+// trxc.cutscenes.get_frame_num(): trx.cutscenes.FrameNum?
 static int M_L_CutscenesGetFrameNum(lua_State *const L)
 {
     LUA_PushOptIndex(L, CutSeq_GetFrame(), M_NO_FRAME);
     return 1;
 }
 
-// trxc.cutscenes.is_playing() → bool
+// trxc.cutscenes.is_playing(): boolean
 static int M_L_CutscenesIsPlaying(lua_State *const L)
 {
     lua_pushboolean(L, CutSeq_IsPlaying());
     return 1;
 }
 
-// trxc.cutscenes.is_active() → bool
+// trxc.cutscenes.is_active(): boolean
 static int M_L_CutscenesIsActive(lua_State *const L)
 {
     lua_pushboolean(L, CutSeq_IsActive());
     return 1;
 }
 
-// trxc.cutscenes.is_played(num) → bool
+// trxc.cutscenes.is_played(num: trx.cutscenes.Num): boolean
 static int M_L_CutscenesIsPlayed(lua_State *const L)
 {
     lua_pushboolean(L, CutSeq_IsPlayed(M_CheckTriggerNum(L, 1)));
     return 1;
 }
 
-// trxc.cutscenes.set_played(num, played)
+// trxc.cutscenes.set_played(num: trx.cutscenes.Num, played: boolean)
 static int M_L_CutscenesSetPlayed(lua_State *const L)
 {
     const int32_t num = M_CheckTriggerNum(L, 1);
@@ -113,21 +113,21 @@ static int M_L_CutscenesForgetPlayed(lua_State *const L)
     return 0;
 }
 
-// trxc.cutscenes.get_count() → int
+// trxc.cutscenes.get_count(): integer
 static int M_L_CutscenesGetCount(lua_State *const L)
 {
     lua_pushinteger(L, CutSeq_GetCount());
     return 1;
 }
 
-// trxc.cutscenes.get_actor_count() → int
+// trxc.cutscenes.get_actor_count(): integer
 static int M_L_CutscenesGetActorCount(lua_State *const L)
 {
     lua_pushinteger(L, CutSeq_GetActorCount());
     return 1;
 }
 
-// trxc.cutscenes.set_actor_visible(actor, visible)
+// trxc.cutscenes.set_actor_visible(actor: trx.cutscenes.ActorNum, visible: boolean)
 static int M_L_CutscenesSetActorVisible(lua_State *const L)
 {
     const int32_t actor = M_CheckActor(L, 1);
@@ -135,7 +135,7 @@ static int M_L_CutscenesSetActorVisible(lua_State *const L)
     return 0;
 }
 
-// trxc.cutscenes.set_node_mesh(actor, node, object_id, mesh_num)
+// trxc.cutscenes.set_node_mesh(actor: trx.cutscenes.ActorNum, node: trx.cutscenes.NodeNum, object_id: trx.catalog.objects, mesh_num?: integer)
 static int M_L_CutscenesSetNodeMesh(lua_State *const L)
 {
     const int32_t actor = M_CheckActor(L, 1);
@@ -155,7 +155,7 @@ static int M_L_CutscenesSetNodeMesh(lua_State *const L)
     return 0;
 }
 
-// trxc.cutscenes.clear_node_mesh(actor, node)
+// trxc.cutscenes.clear_node_mesh(actor: trx.cutscenes.ActorNum, node: trx.cutscenes.NodeNum)
 static int M_L_CutscenesClearNodeMesh(lua_State *const L)
 {
     const int32_t actor = M_CheckActor(L, 1);
@@ -164,7 +164,7 @@ static int M_L_CutscenesClearNodeMesh(lua_State *const L)
     return 0;
 }
 
-// trxc.cutscenes.set_lara_return({x,y,z}, rot)
+// trxc.cutscenes.set_lara_return(pos: trx.math.Vec3, rot?: trx.math.Angle)
 static int M_L_CutscenesSetLaraReturn(lua_State *const L)
 {
     const XYZ_32 pos = LUA_CheckXYZ(L, 1);
@@ -176,7 +176,7 @@ static int M_L_CutscenesSetLaraReturn(lua_State *const L)
     return 0;
 }
 
-// trxc.cutscenes.set_lara_shadow_bounds({min_x=, ..., max_z=})
+// trxc.cutscenes.set_lara_shadow_bounds(bounds: trx.math.Box)
 static int M_L_CutscenesSetLaraShadowBounds(lua_State *const L)
 {
     luaL_checktype(L, 1, LUA_TTABLE);
@@ -205,28 +205,28 @@ static int M_L_CutscenesSetLaraShadowBounds(lua_State *const L)
     return 0;
 }
 
-// trxc.cutscenes.get_fov() → int
+// trxc.cutscenes.get_fov(): trx.math.Angle
 static int M_L_CutscenesGetFOV(lua_State *const L)
 {
     lua_pushinteger(L, CutSeq_GetFOV());
     return 1;
 }
 
-// trxc.cutscenes.set_fov(fov)
+// trxc.cutscenes.set_fov(fov: trx.math.Angle)
 static int M_L_CutscenesSetFOV(lua_State *const L)
 {
     CutSeq_SetFOV((int32_t)luaL_checkinteger(L, 1));
     return 0;
 }
 
-// trxc.cutscenes.get_letterbox() → number
+// trxc.cutscenes.get_letterbox(): number
 static int M_L_CutscenesGetLetterbox(lua_State *const L)
 {
     lua_pushnumber(L, CutSeq_GetLetterbox());
     return 1;
 }
 
-// trxc.cutscenes.set_letterbox(ratio)
+// trxc.cutscenes.set_letterbox(ratio: number)
 static int M_L_CutscenesSetLetterbox(lua_State *const L)
 {
     CutSeq_SetLetterbox((float)luaL_checknumber(L, 1));
@@ -261,6 +261,7 @@ static void M_Create(lua_State *const L)
     LUA_RegisterModule(L, "cutscenes", m_Module);
 
     LUA_GetModule(L, "cutscenes");
+    // trxc.cutscenes.MAX_TRIGGERS: integer
     lua_pushinteger(L, CUTSEQ_MAX_TRIGGERS);
     lua_setfield(L, -2, "MAX_TRIGGERS");
     lua_pop(L, 1);

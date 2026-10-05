@@ -5,14 +5,16 @@
 
 #include <lauxlib.h>
 
-// trxc.random.next_control() -> integer in [0, RANDOM_SPAN - 1]
+// trxc.random.next_control(): integer
+// Returns a value in [0, RANDOM_SPAN - 1].
 static int M_L_NextControl(lua_State *const L)
 {
     lua_pushinteger(L, Random_GetControl());
     return 1;
 }
 
-// trxc.random.next_draw() -> integer in [0, RANDOM_SPAN - 1]
+// trxc.random.next_draw(): integer
+// Returns a value in [0, RANDOM_SPAN - 1].
 static int M_L_NextDraw(lua_State *const L)
 {
     lua_pushinteger(L, Random_GetDraw());
@@ -32,6 +34,7 @@ static void M_Create(lua_State *const L)
     // The width of a draw belongs to the generator, so Lua reads it rather
     // than repeating it.
     LUA_GetModule(L, "random");
+    // trxc.random.SPAN: integer
     lua_pushinteger(L, RANDOM_SPAN);
     lua_setfield(L, -2, "SPAN");
     lua_pop(L, 1);

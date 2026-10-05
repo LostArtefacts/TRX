@@ -129,7 +129,7 @@ static const GF_LEVEL *M_CheckStatsLevel(lua_State *const L, const int arg)
     return M_GetPackedLevel(ref->handle.id);
 }
 
-// trxc.stats.get(num) -> LEVEL_STATS handle or nil
+// trxc.stats.get(num: trx.game.LevelNum): trx.stats.Stats?
 static int M_L_StatsGet(lua_State *const L)
 {
     int32_t num;
@@ -141,14 +141,14 @@ static int M_L_StatsGet(lua_State *const L)
     return 1;
 }
 
-// trxc.stats.get_current() -> LEVEL_STATS handle or nil
+// trxc.stats.get_current(): trx.stats.Stats?
 static int M_L_StatsGetCurrent(lua_State *const L)
 {
     M_PushStats(L, Game_GetCurrentLevel());
     return 1;
 }
 
-// trxc.stats.category(stats, id) -> STATS_CATEGORY handle or nil
+// trxc.stats.category(stats: trx.stats.Stats, id: integer): trx.stats.Category?
 static int M_L_StatsCategory(lua_State *const L)
 {
     const LUA_STRUCT_REF *const ref =
@@ -167,7 +167,9 @@ static int M_L_StatsCategory(lua_State *const L)
     return 1;
 }
 
-// trxc.stats.kill_split(stats) -> allies, enemies
+// trxc.stats.kill_split(stats: trx.stats.Stats): integer?, integer?
+// Returns the ally and enemy kill counts, or nothing where the level has no
+// maximum statistics.
 static int M_L_StatsKillSplit(lua_State *const L)
 {
     const GF_LEVEL *const level = M_CheckStatsLevel(L, 1);
@@ -180,7 +182,7 @@ static int M_L_StatsKillSplit(lua_State *const L)
     return 2;
 }
 
-// trxc.stats.allies_hurt(stats) -> bool
+// trxc.stats.allies_hurt(stats: trx.stats.Stats): boolean
 static int M_L_StatsAlliesHurt(lua_State *const L)
 {
     lua_pushboolean(L, Stats_HaveAlliesBeenHurt(M_CheckStatsLevel(L, 1)));

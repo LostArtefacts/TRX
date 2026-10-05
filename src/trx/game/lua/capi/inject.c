@@ -57,7 +57,7 @@ static void M_Collect(void)
     }
 }
 
-// trxc.inject.declare(func)
+// trxc.inject.declare(func: function)
 static int M_L_Declare(lua_State *const L)
 {
     luaL_checktype(L, 1, LUA_TFUNCTION);

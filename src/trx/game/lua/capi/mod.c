@@ -69,14 +69,15 @@ static void M_PushModByPtr(lua_State *const L, const SHELL_MOD *const mod)
     lua_pushnil(L);
 }
 
-// trxc.mod.count() -> int
+// trxc.mod.count(): integer
 static int M_L_ModCount(lua_State *const L)
 {
     lua_pushinteger(L, Shell_GetModCount());
     return 1;
 }
 
-// trxc.mod.get(index) -> SHELL_MOD handle or nil
+// trxc.mod.get(index: integer): trx.mod.Mod?
+// The index counts from 0.
 static int M_L_ModGet(lua_State *const L)
 {
     int32_t index;
@@ -88,7 +89,7 @@ static int M_L_ModGet(lua_State *const L)
     return 1;
 }
 
-// trxc.mod.get_current() -> SHELL_MOD handle or nil
+// trxc.mod.get_current(): trx.mod.Mod?
 static int M_L_ModGetCurrent(lua_State *const L)
 {
     M_PushModByPtr(L, Shell_GetArgs()->startup.mod);
@@ -104,14 +105,14 @@ static const SHELL_MOD *M_CheckMod(lua_State *const L, const int arg)
     return LUA_Struct_Deref(L, ref);
 }
 
-// trxc.mod.can_switch(mod|name) -> bool
+// trxc.mod.can_switch(mod: trx.mod.Mod|string): boolean
 static int M_L_ModCanSwitch(lua_State *const L)
 {
     lua_pushboolean(L, Shell_CanSwitchToMod(M_CheckMod(L, 1)));
     return 1;
 }
 
-// trxc.mod.switch(mod|name) -> bool
+// trxc.mod.switch(mod: trx.mod.Mod|string): boolean
 static int M_L_ModSwitch(lua_State *const L)
 {
     const SHELL_MOD *const mod = M_CheckMod(L, 1);

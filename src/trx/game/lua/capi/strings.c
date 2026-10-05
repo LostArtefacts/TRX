@@ -109,7 +109,7 @@ static int M_FuzzyMatch(lua_State *const L)
     return 1;
 }
 
-// trxc.strings.fuzzy_match(input, sources) -> matches
+// trxc.strings.fuzzy_match(input: string, sources: trx.strings.fuzzy_match.sources[]): trx.strings.Match[]
 //
 // `sources` is a list of { key, value, weight }. The value is the caller's own:
 // it is not read here, and it comes back on the match.
@@ -141,7 +141,7 @@ static int M_L_StringsFuzzyMatch(lua_State *const L)
     return 1;
 }
 
-// trxc.strings.regex_match(subject, pattern) -> bool
+// trxc.strings.regex_match(subject: string, pattern: string): boolean
 static int M_L_StringsRegexMatch(lua_State *const L)
 {
     lua_pushboolean(

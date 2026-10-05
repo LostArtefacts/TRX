@@ -14,3 +14,4 @@ PointerAlignment: Right
 SortIncludes: false
 InsertBraces: true
 SpaceInEmptyBraces: Never
+CommentPragmas: '^ (IWYU pragma:|trxc\.)'

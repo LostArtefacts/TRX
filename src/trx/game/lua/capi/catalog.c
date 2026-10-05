@@ -21,7 +21,7 @@ static CATALOG_CONTEXT M_CheckContext(lua_State *const L, const int arg)
         L, arg, CATALOG_CONTEXT_MAX, "unknown catalog context");
 }
 
-// trxc.catalog.mint(context, name) -> int or nil
+// trxc.catalog.mint(context: trx.catalog.Context, name: string): trx.catalog.Id?
 static int M_L_CatalogMint(lua_State *const L)
 {
     const CATALOG_CONTEXT context = M_CheckContext(L, 1);
@@ -35,7 +35,7 @@ static int M_L_CatalogMint(lua_State *const L)
     return 1;
 }
 
-// trxc.catalog.key(context, id) -> string or nil
+// trxc.catalog.key(context: trx.catalog.Context, id: trx.catalog.Id): string?
 static int M_L_CatalogKey(lua_State *const L)
 {
     const CATALOG_CONTEXT context = M_CheckContext(L, 1);
@@ -53,7 +53,7 @@ static int M_L_CatalogKey(lua_State *const L)
     return 1;
 }
 
-// trxc.catalog.to_slot(context, id) -> int or nil
+// trxc.catalog.to_slot(context: trx.catalog.Context, id: trx.catalog.Id): trx.catalog.Slot?
 static int M_L_CatalogToSlot(lua_State *const L)
 {
     const CATALOG_CONTEXT context = M_CheckContext(L, 1);
@@ -72,7 +72,7 @@ static int M_L_CatalogToSlot(lua_State *const L)
     return 1;
 }
 
-// trxc.catalog.from_slot(context, slot) -> int or nil
+// trxc.catalog.from_slot(context: trx.catalog.Context, slot: trx.catalog.Slot): trx.catalog.Id?
 static int M_L_CatalogFromSlot(lua_State *const L)
 {
     const CATALOG_CONTEXT context = M_CheckContext(L, 1);
@@ -90,7 +90,7 @@ static int M_L_CatalogFromSlot(lua_State *const L)
     return 1;
 }
 
-// trxc.catalog.values(context) -> { { name = "shotgun_item", value = 1 }, ... }
+// trxc.catalog.values(context: trx.catalog.Context): { name: string, value: trx.catalog.Id }[]
 static int M_L_CatalogValues(lua_State *const L)
 {
     const CATALOG_CONTEXT context = M_CheckContext(L, 1);
@@ -112,7 +112,7 @@ static int M_L_CatalogValues(lua_State *const L)
     return 1;
 }
 
-// trxc.catalog.from_key(context, name) -> int or nil
+// trxc.catalog.from_key(context: trx.catalog.Context, name: string): trx.catalog.Id?
 static int M_L_CatalogFromKey(lua_State *const L)
 {
     const CATALOG_CONTEXT context = M_CheckContext(L, 1);

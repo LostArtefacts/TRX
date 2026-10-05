@@ -145,19 +145,19 @@ static int M_Decode(lua_State *const L, const char *const path)
     return 1;
 }
 
-// trxc.json.decode(text) -> what the text holds
+// trxc.json.decode(text: string): any?
 static int M_L_Decode(lua_State *const L)
 {
     return M_Decode(L, nullptr);
 }
 
-// trxc.json.decode_from(text, path) -> what the text of a file holds
+// trxc.json.decode_from(text: string, path: string): any?
 static int M_L_DecodeFrom(lua_State *const L)
 {
     return M_Decode(L, luaL_checkstring(L, 2));
 }
 
-// trxc.json.where(value) -> text, or nil for a value no file holds
+// trxc.json.where(value: any): string?
 static int M_L_Where(lua_State *const L)
 {
     if (!lua_istable(L, 1) || lua_getmetatable(L, 1) == 0) {

@@ -241,7 +241,7 @@ static const TYPE_DESC *M_CheckType(lua_State *const L, const int idx)
     return type;
 }
 
-// trxc.struct.members(type) -> { {name=, type=, writable=}, ... }
+// trxc.struct.members(type: string): { name: string, type: string, writable: boolean }[]
 //
 // Every member C can reach. Used by the Lua layer to validate a declaration and
 // to report members nobody exposed.
@@ -278,7 +278,7 @@ static void M_ExposeInto(
     lua_pop(L, 2); // subtable, metatable
 }
 
-// trxc.struct.expose_field(type, public_name, c_name, writable)
+// trxc.struct.expose_field(type: string, public_name: string, c_name: string, writable?: boolean)
 static int M_L_StructExposeField(lua_State *const L)
 {
     const TYPE_DESC *const type = M_CheckType(L, 1);
@@ -323,7 +323,7 @@ static int M_PushRawMethod(
     return found;
 }
 
-// trxc.struct.method(type, c_name) -> the C function
+// trxc.struct.method(type: string, c_name: string): function
 //
 // What strict mode wraps. The wrapper goes back through expose_method.
 static int M_L_StructMethod(lua_State *const L)
@@ -336,7 +336,7 @@ static int M_L_StructMethod(lua_State *const L)
     return 1;
 }
 
-// trxc.struct.expose_method(type, public_name, c_name | fn)
+// trxc.struct.expose_method(type: string, public_name: string, impl: string|function)
 //
 // A string names one of the C methods the type offers. A function is exposed as
 // it stands, which is how strict mode puts a checking wrapper in front of one.
@@ -362,7 +362,7 @@ static int M_L_StructExposeMethod(lua_State *const L)
     return 0;
 }
 
-// trxc.struct.expose_computed(type, public_name, fn)
+// trxc.struct.expose_computed(type: string, public_name: string, fn: function)
 static int M_L_StructExposeComputed(lua_State *const L)
 {
     const TYPE_DESC *const type = M_CheckType(L, 1);

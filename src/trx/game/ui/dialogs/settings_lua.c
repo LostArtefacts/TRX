@@ -201,7 +201,7 @@ static void M_FreeRow(lua_State *const L, M_DECLARED_ROW *const row)
     Memory_Free(row);
 }
 
-// trxc.settings.add_row(key, ui)
+// trxc.settings.add_row(key: string, ui: trx.config.Row)
 static int M_L_SettingsAddRow(lua_State *const L)
 {
     const char *const key = luaL_checkstring(L, 1);

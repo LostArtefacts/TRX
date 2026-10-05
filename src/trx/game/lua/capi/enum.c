@@ -29,7 +29,7 @@ static void M_PushKey(lua_State *const L, const char *const name)
     luaL_pushresultsize(&buffer, len);
 }
 
-// trxc.enum.values(type) -> { { name = "ACTIVE", value = 1 }, ... }
+// trxc.enum.values(type: string): { name: string, value: integer }[]
 static int M_L_EnumValues(lua_State *const L)
 {
     const char *const type_name = luaL_checkstring(L, 1);

@@ -12,7 +12,7 @@
 
 #include <lauxlib.h>
 
-// trxc.inventory_ring.icon_of(object) -> object id or nil
+// trxc.inventory_ring.icon_of(object: trx.catalog.objects): trx.catalog.objects?
 static int M_L_RingIconOf(lua_State *const L)
 {
     const OBJECT_ID icon_id = Inv_GetItemOption(LUA_CheckObjectID(L, 1));
@@ -58,7 +58,7 @@ static INVENTORY_ITEM *M_FindItem(const OBJECT_ID object_id)
     return nullptr;
 }
 
-// trxc.inventory_ring.declare_item(spec)
+// trxc.inventory_ring.declare_item(spec: table)
 static int M_L_RingDeclareItem(lua_State *const L)
 {
     luaL_checktype(L, 1, LUA_TTABLE);
@@ -118,7 +118,7 @@ static int M_L_RingDeclareItem(lua_State *const L)
     return 0;
 }
 
-// trxc.inventory_ring.item(object_id) -> table or nil
+// trxc.inventory_ring.item(object_id: trx.catalog.objects): table?
 static int M_L_RingItem(lua_State *const L)
 {
     const INVENTORY_ITEM *const item = M_FindItem(LUA_CheckObjectID(L, 1));
@@ -176,7 +176,7 @@ static INVENTORY_ITEM *M_GetSelectedItem(void)
     return ring->list[ring->current_object];
 }
 
-// trxc.inventory_ring.mode() -> INVENTORY_MODE or nil
+// trxc.inventory_ring.mode(): trx.inventory_ring.Mode?
 static int M_L_RingMode(lua_State *const L)
 {
     const INV_RING *const ring = InvRing_GetActiveRing();
@@ -188,7 +188,7 @@ static int M_L_RingMode(lua_State *const L)
     return 1;
 }
 
-// trxc.inventory_ring.selection_anim() -> table or nil
+// trxc.inventory_ring.selection_anim(): trx.inventory_ring.EntryAnim?
 static int M_L_RingSelectionAnim(lua_State *const L)
 {
     const INVENTORY_ITEM *const inv_item = M_GetSelectedItem();
@@ -210,7 +210,7 @@ static int M_L_RingSelectionAnim(lua_State *const L)
     return 1;
 }
 
-// trxc.inventory_ring.animate_selection(goal_frame, direction)
+// trxc.inventory_ring.animate_selection(goal_frame: integer, direction: integer)
 static int M_L_RingAnimateSelection(lua_State *const L)
 {
     INVENTORY_ITEM *const inv_item = M_GetSelectedItem();

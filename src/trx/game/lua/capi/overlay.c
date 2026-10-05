@@ -8,31 +8,31 @@
 
 #include <lauxlib.h>
 
-// trxc.overlay.is_health_bar_forced() -> bool
 // Keep the caption until the next caption replaces it.
 static char *m_CaptionText = nullptr;
 
+// trxc.overlay.is_health_bar_forced(): boolean
 static int M_L_OverlayIsHealthBarForced(lua_State *const L)
 {
     lua_pushboolean(L, Overlay_IsHealthBarForced());
     return 1;
 }
 
-// trxc.overlay.has_letterbox() -> bool
+// trxc.overlay.has_letterbox(): boolean
 static int M_L_OverlayHasLetterbox(lua_State *const L)
 {
     lua_pushboolean(L, Output_Overlay_HasLetterbox());
     return 1;
 }
 
-// trxc.overlay.show_pickup(object)
+// trxc.overlay.show_pickup(object: trx.catalog.objects)
 static int M_L_OverlayShowPickup(lua_State *const L)
 {
     Overlay_AddDisplayPickup(LUA_CheckObjectID(L, 1));
     return 0;
 }
 
-// trxc.overlay.set_caption(text)
+// trxc.overlay.set_caption(text?: string)
 //
 // Set the interface caption. Nil removes it.
 static int M_L_OverlaySetCaption(lua_State *const L)
@@ -55,7 +55,7 @@ static int M_L_OverlaySetCaption(lua_State *const L)
     return 0;
 }
 
-// trxc.overlay.show_arrow(arrow, shown)
+// trxc.overlay.show_arrow(arrow: trx.overlay.Arrow, shown?: boolean)
 static int M_L_OverlayShowArrow(lua_State *const L)
 {
     const OVERLAY_ARROW arrow = (OVERLAY_ARROW)LUA_CheckRange(

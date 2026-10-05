@@ -9,7 +9,7 @@
 // name from nowhere a script can see.
 static const char m_EntrypointsKey[] = "trx.api.entrypoints";
 
-// trxc.api.set_entrypoint(name, fn)
+// trxc.api.set_entrypoint(name: string, fn: function)
 static int M_L_SetEntrypoint(lua_State *const L)
 {
     const char *const name = luaL_checkstring(L, 1);
@@ -27,7 +27,7 @@ static int M_L_SetEntrypoint(lua_State *const L)
     return 0;
 }
 
-// trxc.api.set_color_ctor(fn)
+// trxc.api.set_color_ctor(fn: fun(r: number, g: number, b: number, owner: any, key: any): trx.math.Color)
 //
 // What a color is is declared in trx.math; this is how the bridges get hold of
 // it, so that a color read off a struct or a setting comes back as that type

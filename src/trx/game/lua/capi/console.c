@@ -29,7 +29,7 @@ static const char m_HandlersKey[] = "trx.console.handlers";
 // Command name -> Lua argument completer.
 static const char m_CompletersKey[] = "trx.console.completers";
 
-// trxc.console.log(level, msg)
+// trxc.console.log(level: trx.log.LogLevel, msg: string)
 static int M_L_ConsoleLog(lua_State *const L)
 {
     LUA_LOG_CALL call;
@@ -45,7 +45,7 @@ static int M_L_ConsoleClear(lua_State *const L)
     return 0;
 }
 
-// trxc.console.eval(cmd, { verbose = bool, capture = bool })
+// trxc.console.eval(cmd: string, opts?: trx.console.eval.opts): string?
 static int M_L_ConsoleEval(lua_State *const L)
 {
     const char *cmd = luaL_checkstring(L, 1);
@@ -89,7 +89,7 @@ static int M_L_ConsoleEval(lua_State *const L)
     return luaL_error(L, "console.eval %s: %s", err, cmd);
 }
 
-// trxc.console.copy(text)
+// trxc.console.copy(text: string)
 static int M_L_ConsoleCopy(lua_State *const L)
 {
     const char *const text = luaL_checkstring(L, 1);
@@ -103,7 +103,7 @@ static int M_L_ConsoleCopy(lua_State *const L)
     return 0;
 }
 
-// trxc.console.complete(line, caret) -> suggestions, start, end
+// trxc.console.complete(line: string, caret: integer): string[], integer, integer
 static int M_L_ConsoleComplete(lua_State *const L)
 {
     const char *const line = luaL_checkstring(L, 1);
@@ -257,14 +257,14 @@ static void M_CheckCommandName(lua_State *const L, const char *const name)
     }
 }
 
-// trxc.console.is_open() -> bool
+// trxc.console.is_open(): boolean
 static int M_L_ConsoleIsOpen(lua_State *const L)
 {
     lua_pushboolean(L, Console_IsOpened());
     return 1;
 }
 
-// trxc.console.set_open(open)
+// trxc.console.set_open(open: boolean)
 static int M_L_ConsoleSetOpen(lua_State *const L)
 {
     if (lua_toboolean(L, 1)) {
@@ -275,7 +275,7 @@ static int M_L_ConsoleSetOpen(lua_State *const L)
     return 0;
 }
 
-// trxc.console.history() -> table of strings
+// trxc.console.history(): string[]
 static int M_L_ConsoleHistory(lua_State *const L)
 {
     const int32_t count = Console_History_GetLength();
@@ -288,7 +288,7 @@ static int M_L_ConsoleHistory(lua_State *const L)
     return 1;
 }
 
-// trxc.console.remember(line)
+// trxc.console.remember(line: string)
 static int M_L_ConsoleRemember(lua_State *const L)
 {
     const char *const line = luaL_checkstring(L, 1);
@@ -300,7 +300,7 @@ static int M_L_ConsoleRemember(lua_State *const L)
     return 0;
 }
 
-// trxc.console.register(name, help_id, fn, [aliases], [complete_fn])
+// trxc.console.register(name: string, help_id: string?, fn: (fun(args: string): trx.console.Result?), aliases?: string[], complete_fn?: (fun(text: string, caret: integer): string[], integer, integer))
 static int M_L_ConsoleRegister(lua_State *const L)
 {
     const char *const name = luaL_checkstring(L, 1);
@@ -398,9 +398,9 @@ static void M_PushCommand(lua_State *const L, const CONSOLE_COMMAND *const cmd)
     }
 }
 
-// trxc.console.commands() -> a list of every command, each { name, help,
-// aliases }, in registration order. help is the game string key, or absent;
-// aliases is the comma-joined display string, or absent.
+// trxc.console.commands(): { name: string, help: string?, aliases: string? }[]
+// Lists every command in registration order. help is the game string key, or
+// absent; aliases is the comma-joined display string, or absent.
 static int M_L_ConsoleCommands(lua_State *const L)
 {
     VECTOR *const vec = Console_Registry_GetAll();
@@ -415,8 +415,8 @@ static int M_L_ConsoleCommands(lua_State *const L)
     return 1;
 }
 
-// trxc.console.command(name) -> { name, help, aliases }, or nil. Matches by
-// name or alias, as the console does when it dispatches.
+// trxc.console.command(name: string): { name: string, help: string?, aliases: string? }?
+// Matches by name or alias, as the console does when it dispatches.
 static int M_L_ConsoleCommand(lua_State *const L)
 {
     const CONSOLE_COMMAND *const cmd =

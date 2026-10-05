@@ -84,7 +84,7 @@ static const char *M_ValueAsString(lua_State *const L, const int32_t arg)
     return luaL_checkstring(L, arg);
 }
 
-// trxc.config.get(key)
+// trxc.config.get(key: string): any
 static int M_L_ConfigGet(lua_State *const L)
 {
     LUA_Config_PushOptionValue(L, M_GetOption(L, 1));
@@ -149,7 +149,7 @@ static void M_PushDefault(lua_State *const L, const CONFIG_OPTION *const option)
     LUA_PushValue(L, value);
 }
 
-// trxc.config.describe(key) -> table
+// trxc.config.describe(key: string): trx.config.Shape
 static int M_L_ConfigDescribe(lua_State *const L)
 {
     const CONFIG_OPTION *const option = M_GetOption(L, 1);
@@ -198,7 +198,7 @@ static int M_L_ConfigDescribe(lua_State *const L)
     return 1;
 }
 
-// trxc.config.set(key, value, force?)
+// trxc.config.set(key: string, value: any, force?: boolean)
 static int M_L_ConfigSet(lua_State *const L)
 {
     CONFIG_OPTION *const option = M_GetOption(L, 1);
@@ -212,7 +212,7 @@ static int M_L_ConfigSet(lua_State *const L)
     return 0;
 }
 
-// trxc.config.reset(key, force?) -> bool
+// trxc.config.reset(key: string, force?: boolean): boolean
 static int M_L_ConfigReset(lua_State *const L)
 {
     CONFIG_OPTION *const option = M_GetOption(L, 1);
@@ -225,7 +225,7 @@ static int M_L_ConfigReset(lua_State *const L)
     return 1;
 }
 
-// trxc.config.override(key, value)
+// trxc.config.override(key: string, value: any)
 static int M_L_ConfigOverride(lua_State *const L)
 {
     CONFIG_OPTION *const option = M_GetOption(L, 1);
@@ -239,7 +239,7 @@ static int M_L_ConfigOverride(lua_State *const L)
     return 0;
 }
 
-// trxc.config.restore(key) -> bool
+// trxc.config.restore(key: string): boolean
 static int M_L_ConfigRestore(lua_State *const L)
 {
     CONFIG_OPTION *const option = M_GetOption(L, 1);
@@ -251,7 +251,7 @@ static int M_L_ConfigRestore(lua_State *const L)
     return 1;
 }
 
-// trxc.config.is_overridden(key) -> bool
+// trxc.config.is_overridden(key: string): boolean
 static int M_L_ConfigIsOverridden(lua_State *const L)
 {
     const CONFIG_OPTION *const option = M_GetOption(L, 1);
@@ -259,7 +259,7 @@ static int M_L_ConfigIsOverridden(lua_State *const L)
     return 1;
 }
 
-// trxc.config.list()
+// trxc.config.list(): table<string, any>
 static int M_L_ConfigList(lua_State *const L)
 {
     lua_newtable(L);
@@ -293,8 +293,8 @@ static const char *M_StrField(
     return result;
 }
 
-// The kinds a script may declare, named the way trxc.config.describe reports
-// them back. The rest of the taxonomy names storage the engine owns.
+// The kinds a script may declare, named the way describe in trxc.config
+// reports them back. The rest of the taxonomy names storage the engine owns.
 static TRX_VALUE_TYPE M_ReadKind(lua_State *const L, const char *const kind)
 {
     if (strcmp(kind, "boolean") == 0) {
@@ -435,7 +435,7 @@ static void M_KeepUnlistedValue(
     DynamicEnum_SetValueEnabled(Config_Option_GetEnumKey(option), value, false);
 }
 
-// trxc.config.declare(spec)
+// trxc.config.declare(spec: trx.config.Shape)
 static int M_L_ConfigDeclare(lua_State *const L)
 {
     const M_DECLARATION spec = M_ReadDeclaration(L);
@@ -564,13 +564,13 @@ static int M_AttachWatcher(lua_State *const L, const bool allow_level_scope)
     return 1;
 }
 
-// trxc.config.on_change(key, fn) -> id
+// trxc.config.on_change(key: string, fn: fun(value: any)): integer
 static int M_L_ConfigOnChange(lua_State *const L)
 {
     return M_AttachWatcher(L, true);
 }
 
-// trxc.config.on_change_lasting(key, fn) -> id
+// trxc.config.on_change_lasting(key: string, fn: fun(value: any)): integer
 //
 // The watcher lives as long as the game runs, whichever script attaches it.
 // This is for what outlives a level and reads the setting afterwards, such as
@@ -581,7 +581,7 @@ static int M_L_ConfigOnChangeLasting(lua_State *const L)
     return M_AttachWatcher(L, false);
 }
 
-// trxc.config.off_change(id) -> bool
+// trxc.config.off_change(id: integer): boolean
 static int M_L_ConfigOffChange(lua_State *const L)
 {
     const int32_t id = (int32_t)luaL_checkinteger(L, 1);
