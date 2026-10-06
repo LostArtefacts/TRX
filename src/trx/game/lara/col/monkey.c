@@ -281,6 +281,19 @@ static void M_MonkeyForward(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
+    if (g_Config.gameplay.enable_monkey_bar_edge_deflect) {
+        if (ABS(coll->side_mid.ceiling - coll->side_left2.ceiling)
+            > M_MONKEY_CEILING_SHIFT) {
+            Lara_Col_Shift(coll);
+            item->rot.y += LARA_DEFLECT_ANGLE;
+        } else if (
+            ABS(coll->side_mid.ceiling - coll->side_right2.ceiling)
+            > M_MONKEY_CEILING_SHIFT) {
+            Lara_Col_Shift(coll);
+            item->rot.y -= LARA_DEFLECT_ANGLE;
+        }
+    }
+
     g_Camera.target_elevation = M_CAM_MONKEY_ELEVATION;
     Lara_Col_MonkeySwingSnap(item);
 }

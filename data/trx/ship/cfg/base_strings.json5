@@ -1239,6 +1239,10 @@
             "title": "Manual camera",
             "description": "Enables the camera keys (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}) used to control Photo Mode camera, to also rotate the ingame camera.",
         },
+        "gameplay.enable_monkey_bar_edge_deflect": {
+            "title": "Monkey bar deflect",
+            "description": "Allows Lara to deflect off monkey bar edges when moving forward.",
+        },
         "gameplay.enable_monkey_bar_shimmy_turn": {
             "title": "Monkey bar shimmy turn",
             "description": "Allows Lara to turn while shimmying along monkey bars, similarly to how she can while sidestepping or swimming sideways on water surfaces.",

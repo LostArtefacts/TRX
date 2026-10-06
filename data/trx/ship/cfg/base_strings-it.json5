@@ -1239,6 +1239,10 @@
             "title": "Telecamera manuale",
             "description": "Usa i tasti della telecamera (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}) utilizzati nella Modalità Foto, anche per ruotare la telecamera di gioco.",
         },
+        "gameplay.enable_monkey_bar_edge_deflect": {
+            "title": "\\{review}Deviazione dalle barre",
+            "description": "\\{review}Permette a Lara di spostarsi dai bordi delle barre sospese quando si muove in avanti.",
+        },
         "gameplay.enable_monkey_bar_shimmy_turn": {
             "title": "Rotazione su scale orizzontali",
             "description": "Permette a Lara di girarsi mentre si sposta lateralmente sulle scale orizzontali, in modo simile a quando si muove di lato o nuota di lato nell'acqua.",
