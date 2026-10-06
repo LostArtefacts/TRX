@@ -872,15 +872,11 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         // it, and the ring behind it says nothing.
         const bool is_combining =
             ring->status == RNG_SELECTED && current->action == ACTION_COMBINE;
-        if (UI_Takeover_IsHeld(UI_TAKEOVER_RING_ENTRY) || ring->takeover_left) {
-            // A script answers for the entry, its caption included, so the
-            // name the ring would put up stands down. The name stays down
-            // when the script leaves the ring, because the script can change
-            // the count that the ring shows with the name. The ring's own
-            // header stays, as it does behind the engine's own pages.
-            InvRing_RemoveItemTexts();
-        } else if (
-            !is_combining && !ring->rotating
+        // The caption stays the script's once the script leaves the ring,
+        // because the choice that leaves closes the ring with it still up.
+        const bool script_owns_caption =
+            UI_Takeover_IsHeld(UI_TAKEOVER_RING_ENTRY) || ring->takeover_left;
+        if (!script_owns_caption && !is_combining && !ring->rotating
             && ((!g_Input.menu_left && !g_Input.menu_right)
                 || ring->number_of_objects <= 1)) {
             M_RingNotActive(ring, current);

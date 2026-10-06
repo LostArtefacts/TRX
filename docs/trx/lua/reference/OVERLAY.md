@@ -49,14 +49,18 @@ engine's own, and a script neither reads nor writes them.
 - <a id="overlay.signals" name="overlay.signals"></a>[lua]`trx.overlay.signals`  
   What the overlay tells a script, for the parts of it a script draws.
 
-- <a id="overlay.set_caption" name="overlay.set_caption"></a>[lua]`trx.overlay.set_caption([text])`  
+- <a id="overlay.set_caption" name="overlay.set_caption"></a>[lua]`trx.overlay.set_caption([text], [count])`  
   Sets the caption at the bottom of the screen.
 
   The inventory ring uses it for the selected entry. The caption reduces the
   safe area. Passing no value removes it.
 
+  The count stands above the caption, where the ring puts the count of an
+  entry Lara carries more than one of, and shows while the ring is open.
+
   Parameters:
   - <a id="overlay.set_caption.text" name="overlay.set_caption.text"></a>**`text`** (string, optional). Text to show. Omit this parameter to remove the caption.
+  - <a id="overlay.set_caption.count" name="overlay.set_caption.count"></a>**`count`** (integer, optional). The count to show with it. Omit it to show none.
 
 - <a id="overlay.show_arrow" name="overlay.show_arrow"></a>[lua]`trx.overlay.show_arrow(arrow, shown)`  
   Shows or hides an interface arrow.

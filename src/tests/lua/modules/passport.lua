@@ -535,26 +535,41 @@ test("the save crystal shows the save list and its own name", function()
   assert(open_crystal(), "the crystal was not taken")
   local drawn = texts()
   assert(has(drawn, L("general/passport/save_game")), table.concat(drawn, ","))
-  assert(
-    has(drawn, "objects/save_crystal_item/name"),
-    table.concat(drawn, ",")
-  )
   assert(not has(drawn, "\\{button right}"), "the crystal drew page arrows")
+  assert(
+    fake.calls().set_caption.caption == "objects/save_crystal_item/name",
+    "the crystal was not named"
+  )
   finish()
 end)
 
-test("the save crystal shows the count above one crystal", function()
+test("the save crystal counts with its name above one crystal", function()
   assert(open_crystal("save_pickup", 3))
-  local count = trx.locale.format("general/inventory_ring/item_count_fmt", "3")
-  assert(count:find("3", 1, true) ~= nil, "the count format lost the count")
-  assert(has(texts(), count), table.concat(texts(), ","))
+  assert(fake.calls().set_caption_count.qty == 3, "the count was not shown")
   finish()
 end)
 
 test("the save crystal shows no count for one crystal", function()
   assert(open_crystal())
-  local count = trx.locale.format("general/inventory_ring/item_count_fmt", "1")
-  assert(not has(texts(), count), table.concat(texts(), ","))
+  local calls = fake.calls()
+  assert(calls.set_caption_count.count == 0, "a count was shown")
+  assert(calls.clear_caption_count.count > 0, "no count was cleared")
+  finish()
+end)
+
+test("the save crystal takes its name down as it closes", function()
+  assert(open_crystal("save_pickup", 3))
+  press(Role.MENU_BACK)
+  local calls = fake.calls()
+  assert(calls.set_caption.count > 1, "the caption was only ever set")
+  assert(calls.set_caption.caption == "", "the name stayed up")
+  assert(calls.clear_caption_count.count > 0, "the count stayed up")
+  finish()
+end)
+
+test("the passport takes the name the ring gave the entry down", function()
+  open(Mode.GAME)
+  assert(fake.calls().set_caption.caption == "", "the ring's name stayed up")
   finish()
 end)
 

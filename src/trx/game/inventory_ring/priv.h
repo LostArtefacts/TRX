@@ -50,7 +50,6 @@ void InvRing_SetStatusTransition(
     int16_t frames);
 
 void InvRing_ShowItemName(const INVENTORY_ITEM *inv_item);
-void InvRing_ShowItemQuantity(const char *fmt, int32_t qty);
 void InvRing_RemoveItemTexts(void);
 void InvRing_SelectMeshes(INVENTORY_ITEM *inv_item);
 void InvRing_ShowHeader(INV_RING *ring);

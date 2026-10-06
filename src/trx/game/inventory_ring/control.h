@@ -19,6 +19,11 @@ void InvRing_SetButtonHintDrawer(
     INV_RING_BUTTON_HINT_DRAWER draw_func, void *user_data);
 void InvRing_ClearButtonHint(void);
 
+// The count that stands with the caption at the foot of the screen, which the
+// ring shows for an entry Lara carries more than one of.
+void InvRing_ShowItemQuantity(const char *fmt, int32_t qty);
+void InvRing_ClearItemQuantity(void);
+
 void InvRing_RemoveAllText(void);
 
 INVENTORY_ITEM *InvRing_GetByObjectID(OBJECT_ID object_id);

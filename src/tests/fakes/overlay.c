@@ -6,6 +6,7 @@
 
 #include <harness/fake_calls.h>
 
+#include <trx/game/inventory_ring/control.h>
 #include <trx/game/output/overlay.h>
 #include <trx/game/overlay.h>
 
@@ -26,9 +27,19 @@ void FakeOverlay_ForceHealthBar(const bool show)
 // Record interface requests without performing them.
 void Overlay_SetBottomText(const OVERLAY_TEXT text)
 {
-    FAKE_RECORD(
-        "set_caption",
-        FV(text.kind == OVERLAY_TEXT_LITERAL ? text.literal : ""));
+    const char *const caption =
+        text.kind == OVERLAY_TEXT_LITERAL ? text.literal : "";
+    FAKE_RECORD("set_caption", FV_STR(caption));
+}
+
+void InvRing_ShowItemQuantity(const char *const fmt, const int32_t qty)
+{
+    FAKE_RECORD("set_caption_count", FV(qty));
+}
+
+void InvRing_ClearItemQuantity(void)
+{
+    FAKE_RECORD("clear_caption_count");
 }
 
 void Overlay_ShowArrow(const OVERLAY_ARROW arrow, const bool show)

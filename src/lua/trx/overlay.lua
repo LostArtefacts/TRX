@@ -50,8 +50,12 @@ M.Arrow = h.enum("overlay.Arrow", "OVERLAY_ARROW", Arrow)
 ---
 ---The inventory ring uses it for the selected entry. The caption reduces the
 ---safe area. Passing no value removes it.
+---
+---The count stands above the caption, where the ring puts the count of an
+---entry Lara carries more than one of, and shows while the ring is open.
 ---@param text? string Text to show. Omit this parameter to remove the caption.
----@type fun(text?: string)
+---@param count? integer The count to show with it. Omit it to show none.
+---@type fun(text?: string, count?: integer)
 M.set_caption = raw.set_caption
 
 ---Shows or hides an interface arrow.
