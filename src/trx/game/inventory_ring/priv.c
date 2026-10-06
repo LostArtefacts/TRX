@@ -770,12 +770,17 @@ void InvRing_DrawUI(INV_RING *const ring)
     UI_EndRegion();
 }
 
-void InvRing_RemoveItemTexts(void)
+void InvRing_ClearItemQuantity(void)
 {
-    Overlay_SetBottomText((OVERLAY_TEXT) { 0 });
     if (m_CountText != nullptr) {
         strcpy(m_CountText, "");
     }
+}
+
+void InvRing_RemoveItemTexts(void)
+{
+    Overlay_SetBottomText((OVERLAY_TEXT) { 0 });
+    InvRing_ClearItemQuantity();
 }
 
 void InvRing_ShowHeader(INV_RING *const ring)

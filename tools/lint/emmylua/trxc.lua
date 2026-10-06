@@ -389,7 +389,7 @@ trxc = {}
 ---@class (exact) trxc.overlay
 ---@field has_letterbox fun(): boolean
 ---@field is_health_bar_forced fun(): boolean
----@field set_caption fun(text?: string)
+---@field set_caption fun(text?: string, count?: integer)
 ---@field show_arrow fun(arrow: trx.overlay.Arrow, shown?: boolean)
 ---@field show_pickup fun(object: trx.catalog.objects)
 

@@ -1,5 +1,6 @@
 #include <trx/core/memory.h>
 #include <trx/game/game_strings/entries.h>
+#include <trx/game/inventory_ring/control.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils.h>
@@ -32,11 +33,18 @@ static int M_L_OverlayShowPickup(lua_State *const L)
     return 0;
 }
 
-// trxc.overlay.set_caption(text?: string)
+// trxc.overlay.set_caption(text?: string, count?: integer)
 //
-// Set the interface caption. Nil removes it.
+// Set the interface caption, and the count that stands with it. Nil removes
+// them.
 static int M_L_OverlaySetCaption(lua_State *const L)
 {
+    if (lua_isnoneornil(L, 2)) {
+        InvRing_ClearItemQuantity();
+    } else {
+        InvRing_ShowItemQuantity("%d", (int32_t)luaL_checkinteger(L, 2));
+    }
+
     if (lua_isnoneornil(L, 1)) {
         Overlay_SetBottomText((OVERLAY_TEXT) {});
         Memory_FreePointer(&m_CaptionText);

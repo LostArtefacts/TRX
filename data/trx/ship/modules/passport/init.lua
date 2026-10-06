@@ -341,6 +341,9 @@ local function close(confirmed)
       trx.inventory_ring.animate_selection(0, -1)
     end
   end
+  if state.crystal then
+    trx.overlay.set_caption(nil)
+  end
   if confirmed and (not state.standalone or state.crystal) then
     state.ctx:confirm()
   else
@@ -1182,6 +1185,9 @@ local function open(ctx)
       arrow_right:set(false)
     end,
   })
+  -- The book names its own pages, so the name the ring gave the entry comes
+  -- down.
+  trx.overlay.set_caption(nil)
   ctx:push({
     root = trx.ui.widgets.Row({
       left = arrow_left,
@@ -1242,48 +1248,16 @@ local function open_save_load(ctx)
   return open_alone(ctx, pages, index, false)
 end
 
--- Names the crystal at the foot of the screen, as the ring names its entries.
--- Above two crystals or more, the count sits to the right of the name, as the
--- ring puts it.
-local function crystal_caption()
+local function name_crystal()
   local crystal = trx.catalog.objects.SAVE_CRYSTAL_ITEM
   local name = trx.locale.get("objects/save_crystal_item/name"):match("^[^|]*")
   local count = trx.inventory.count(crystal)
-  return trx.ui.widgets.Stack({
-    spacing = 28.0,
-    align = trx.ui.HAlign.CENTER,
-    children = {
-      trx.ui.widgets.Stack({
-        orientation = trx.ui.Orientation.HORIZONTAL,
-        shown = count > 1,
-        children = {
-          trx.ui.widgets.Custom({
-            measure = function()
-              return 128.0, 0.0
-            end,
-            paint = function() end,
-          }),
-          trx.ui.widgets.Label({
-            text = trx.locale.format(
-              "general/inventory_ring/item_count_fmt",
-              tostring(count)
-            ),
-          }),
-        },
-      }),
-      trx.ui.widgets.Label({
-        text = trx.locale.format(
-          "general/inventory_ring/object_name_fmt",
-          name
-        ),
-      }),
-    },
-  })
+  trx.overlay.set_caption(name, count > 1 and count or nil)
 end
 
 -- Opens the save page of the save crystal entry. The crystal saves only in the
 -- save pickup mode, and only from the ring that the player opened. The ring
--- does not name an entry that a script holds, so the page names the crystal.
+-- leaves the caption to the page, so the page names the crystal.
 local function open_crystal(ctx)
   if
     trx.config.get("gameplay.save_crystal_mode") ~= "save_pickup"
@@ -1296,11 +1270,7 @@ local function open_crystal(ctx)
   if book == nil then
     return nil
   end
-  ctx:push({
-    root = crystal_caption(),
-    region = trx.ui.Region.BOTTOM_CENTER,
-    modal = false,
-  })
+  name_crystal()
   return book
 end
 

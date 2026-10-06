@@ -247,10 +247,11 @@ int ScreenModule_Run(const char *const tests)
 {
     const LUA_SURFACE_TEST test = {
         .module = "ui",
-        .deps = { "config", "events", "signal", "catalog", "locale", "math",
-                  "input", "sound", "game", "savegame", "mod", "inventory",
-                  "inventory_ring", "ui.primitive", "ui.widgets", "ui.regions",
-                  "ui.layers", "ui.screens", nullptr },
+        .deps = { "config",         "events",    "signal",       "catalog",
+                  "locale",         "math",      "input",        "sound",
+                  "game",           "savegame",  "mod",          "inventory",
+                  "inventory_ring", "overlay",   "ui.primitive", "ui.widgets",
+                  "ui.regions",     "ui.layers", "ui.screens",   nullptr },
         .seal = true,
         .setup_extra = M_Setup,
         .push_fake = M_PushFake,
