@@ -111,6 +111,7 @@
 - Fixed the camera in Tomb of Seth room 1 only showing for one frame after inserting the Eye of Horus (OG bug) (TRX1329)
 - Fixed Lara being able to lock the enemy jeep out of most of KV5 if she closes gates 77 and 78 before it reaches them (OG bug)
 - Fixed Lara not being able to grab ceiling trapdoors (TRX599, regression from 1.9)
+- Fixed kills made by Von Croy not registering in the statistics (regression from 1.10)
 
 **Lua**
 - Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)

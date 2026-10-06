@@ -591,6 +591,13 @@ static void M_Initialise(const int16_t item_num)
     p->flyby.talk_timer = 0;
 }
 
+static void M_AttackEnemy(
+    const ITEM *const item, ITEM *const enemy, const int16_t damage)
+{
+    Item_TakeDamage(enemy, damage, IDF_NONE, item);
+    Creature_Effect(item, &m_Bite, Spawn_Blood);
+}
+
 static void M_RaceControl(const int16_t item_num)
 {
     if (!Creature_Activate(item_num)) {
@@ -1039,10 +1046,8 @@ static void M_RaceControl(const int16_t item_num)
                 if (ABS(enemy->pos.x - item->pos.x) < 512
                     && ABS(enemy->pos.y - item->pos.y) <= 512
                     && ABS(enemy->pos.z - item->pos.z) < 512) {
-                    enemy->hit_points -= 20;
-                    enemy->hit_status = true;
+                    M_AttackEnemy(item, enemy, 20);
                     creature->flags = 1;
-                    Creature_Effect(item, &m_Bite, Spawn_Blood);
                 }
             }
         }
@@ -1698,15 +1703,11 @@ static void M_GuideControl(const int16_t item_num)
             if (ABS(enemy->pos.x - item->pos.x) < 512
                 && ABS(enemy->pos.y + 768 - item->pos.y) <= 512
                 && ABS(enemy->pos.z - item->pos.z) < 512) {
-                enemy->hit_points -= 40;
-
+                M_AttackEnemy(item, enemy, 40);
+                creature->flags = 1;
                 if (enemy->hit_points <= 0) {
                     item->ai_bits = AI_FOLLOW;
                 }
-
-                enemy->hit_status = true;
-                creature->flags = 1;
-                Creature_Effect(item, &m_Bite, Spawn_Blood);
             }
         }
 
@@ -1762,15 +1763,11 @@ static void M_GuideControl(const int16_t item_num)
             if (ABS(enemy->pos.x - item->pos.x) < 512
                 && ABS(enemy->pos.y - item->pos.y) <= 512
                 && ABS(enemy->pos.z - item->pos.z) < 512) {
-                enemy->hit_points -= 20;
-
+                M_AttackEnemy(item, enemy, 20);
+                creature->flags = 1;
                 if (enemy->hit_points <= 0) {
                     item->ai_bits = AI_FOLLOW;
                 }
-
-                enemy->hit_status = true;
-                creature->flags = 1;
-                Creature_Effect(item, &m_Bite, Spawn_Blood);
             }
         }
 
