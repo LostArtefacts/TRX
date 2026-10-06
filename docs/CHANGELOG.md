@@ -1,6 +1,7 @@
 ## [Unreleased](https://github.com/LostArtefacts/TRX/compare/trx-1.11.1...develop) - ××××-××-××
 
 **Lara's movement**
+- Added the ability for Lara to look up and down while idle on monkey bars, as per TR4+
 - Improved Lara's torso rotation handling when going into a crouch and drawing/holstering guns while crouched (#6700)
 - Changed the fix to prevent Lara from sprinting through wading-depth water to be optional (Gameplay → Fixes → Fix wading sprint) (#5868 / TRX699)
 - Fixed Lara being unable to grab zipline handles that are positioned on slopes when animated interactions are enabled (TRX1587, regression from 1.10)

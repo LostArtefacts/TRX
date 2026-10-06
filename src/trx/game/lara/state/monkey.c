@@ -30,11 +30,11 @@ static void M_MonkeyIdle(ITEM *const item, COLL_INFO *const coll)
     coll->enable_baddie_push = 0;
 
     if (M_CanMonkeySwing(item)) {
-        if (g_Input.action && item->hit_points > 0) {
-            g_Camera.target_angle = M_CAM_HANG_ANGLE;
-            g_Camera.target_elevation = M_CAM_HANG_ELEVATION;
+        if (!g_Input.action || item->hit_points <= 0) {
+            return;
         }
-        return;
+        g_Camera.target_angle = M_CAM_HANG_ANGLE;
+        g_Camera.target_elevation = M_CAM_HANG_ELEVATION;
     }
 
     if (g_Config.gameplay.look_mode != LOOK_MODE_RESTRICTED && g_Input.look) {
