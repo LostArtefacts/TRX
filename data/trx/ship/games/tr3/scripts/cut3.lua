@@ -9,7 +9,7 @@ local willard_shots = {
 -- Willard's gun is part of his hand mesh, with the barrel along the joint's
 -- Y axis. The offset moves the flash from the joint to the muzzle.
 local willard_gun_joint = 13
-local willard_muzzle = { x = 0, y = 156, z = 45 }
+local willard_muzzle = { x = 0, y = 220, z = 45 }
 
 trx.events.after_control(function()
   local frame_num = trx.game.cutscene_frame
