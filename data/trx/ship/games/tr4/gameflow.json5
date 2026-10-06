@@ -79,6 +79,7 @@
                 "race_textures.bin",
                 "race_fd.bin",
             ],
+            "unobtainable_kills": 3,
         },
 
         // 3. The Tomb of Seth
@@ -118,6 +119,7 @@
             "injections": [
                 "burial_animating_bounds.bin",
             ],
+            "unobtainable_kills": 7,
         },
 
         // 5. Valley of the Kings
@@ -161,6 +163,7 @@
                 {"type": "play_fmv", "fmv_id": 4},
                 {"type": "level_complete"},
             ],
+            "unobtainable_kills": 1,
         },
 
         // 7. Temple of Karnak
