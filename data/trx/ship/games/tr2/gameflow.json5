@@ -780,6 +780,7 @@
         "fix_chainblock_secret_sound",
         "enable_compass_stats",
         "enable_swamp_sidestepping",
+        "enable_monkey_bar_edge_deflect",
         "enable_monkey_bar_shimmy_turn",
         "enable_wading",
         "restore_ps1_enemies",

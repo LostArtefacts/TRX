@@ -1239,6 +1239,10 @@
             "title": "Manualna kamera",
             "description": "Umożliwia klawiszom kamery obracanie jej także podczas gry, nie tylko w trybie zdjęć.",
         },
+        "gameplay.enable_monkey_bar_edge_deflect": {
+            "title": "\\{review}Odbicie od drążków",
+            "description": "\\{review}Pozwala Larze odbijać się od krawędzi drążków podczas poruszania się do przodu.",
+        },
         "gameplay.enable_monkey_bar_shimmy_turn": {
             "title": "\\{review}Obracanie się na drabinkach",
             "description": "\\{review}Pozwala Larze obracać się podczas przemieszczania się bokiem po drabinkach, podobnie jak może to robić podczas poruszania się bokiem lub pływania bokiem po powierzchni wody.",
