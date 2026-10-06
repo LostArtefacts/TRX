@@ -127,7 +127,7 @@ static void M_CheckTriggers(
             case O_BIG_POD:
                 // Check for only valid pods
                 const OBJECT_ID object_id = Pod_GetBugObjectID(item);
-                if (Object_Get(object_id)->loaded) {
+                if (object_id != NO_OBJECT && Object_Get(object_id)->loaded) {
                     M_IncludeKillableItem(stats, item_num);
                 }
                 break;
