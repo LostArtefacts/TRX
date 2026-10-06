@@ -115,9 +115,6 @@
                 "key_item_2": {
                     "name": "Hypostelschlüssel",
                 },
-                "key_item_3": {
-                    "name": "Tempelschlüssel",
-                },
                 "puzzle_item_1": {
                     "name": "Sonnentalisman",
                 },
@@ -140,9 +137,6 @@
             "objects": {
                 "key_item_2": {
                     "name": "Hypostelschlüssel",
-                },
-                "key_item_3": {
-                    "name": "Tempelschlüssel",
                 },
                 "puzzle_item_1": {
                     "name": "Sonnentalisman",
@@ -335,6 +329,9 @@
                 "puzzle_item_5": {
                     "name": "Portalwächter",
                 },
+                "puzzle_item_6": {
+                    "name": "Reiter Juwel",
+                },
                 "puzzle_item_10": {
                     "name": "Pharo's Knoten",
                 },
@@ -407,6 +404,9 @@
                 },
                 "puzzle_item_3": {
                     "name": "Goldener Stern",
+                },
+                "puzzle_item_4": {
+                    "name": "Haken und Stab",
                 },
                 "puzzle_item_5": {
                     "name": "Portalwächter",

@@ -115,9 +115,6 @@
                 "key_item_2": {
                     "name": "Chiave dell'Ipostilo",
                 },
-                "key_item_3": {
-                    "name": "Chiave del Tempio",
-                },
                 "puzzle_item_1": {
                     "name": "Talismano del Sole",
                 },
@@ -140,9 +137,6 @@
             "objects": {
                 "key_item_2": {
                     "name": "Chiave dell'Ipostilo",
-                },
-                "key_item_3": {
-                    "name": "Chiave del Tempio",
                 },
                 "puzzle_item_1": {
                     "name": "Talismano del Sole",
@@ -335,6 +329,9 @@
                 "puzzle_item_5": {
                     "name": "Guardiano del Portale",
                 },
+                "puzzle_item_6": {
+                    "name": "Gemma del Cavaliere",
+                },
                 "puzzle_item_10": {
                     "name": "Nodo di Faro",
                 },
@@ -407,6 +404,9 @@
                 },
                 "puzzle_item_3": {
                     "name": "Stella Dorata",
+                },
+                "puzzle_item_4": {
+                    "name": "Asta con Gancio",
                 },
                 "puzzle_item_5": {
                     "name": "Guardiano del Portale",

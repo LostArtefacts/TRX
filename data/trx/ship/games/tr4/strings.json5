@@ -115,9 +115,6 @@
                 "key_item_2": {
                     "name": "Hypostyle Key",
                 },
-                "key_item_3": {
-                    "name": "Temple Key",
-                },
                 "puzzle_item_1": {
                     "name": "Sun Talisman",
                 },
@@ -140,9 +137,6 @@
             "objects": {
                 "key_item_2": {
                     "name": "Hypostyle Key",
-                },
-                "key_item_3": {
-                    "name": "Temple Key",
                 },
                 "puzzle_item_1": {
                     "name": "Sun Talisman",
@@ -335,6 +329,9 @@
                 "puzzle_item_5": {
                     "name": "Portal Guardian",
                 },
+                "puzzle_item_6": {
+                    "name": "Horseman's Gem",
+                },
                 "puzzle_item_10": {
                     "name": "Pharos Knot",
                 },
@@ -407,6 +404,9 @@
                 },
                 "puzzle_item_3": {
                     "name": "Golden Star",
+                },
+                "puzzle_item_4": {
+                    "name": "Hook and Pole",
                 },
                 "puzzle_item_5": {
                     "name": "Portal Guardian",
