@@ -15,6 +15,22 @@ typedef struct {
     int16_t bug_item_num;
 } M_PRIV;
 
+static OBJECT_ID M_GetBugObjectID(const uint8_t mask)
+{
+    switch (mask) {
+    case 1:
+        return O_ATLANTEAN_SHOOTER;
+    case 2:
+        return O_CENTAUR;
+    case 4:
+        return O_TORSO;
+    case 8:
+        return O_ATLANTEAN_GROUND;
+    default:
+        return O_ATLANTEAN_WINGED;
+    }
+}
+
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
@@ -24,7 +40,7 @@ static void M_Initialise(const int16_t item_num)
     const int16_t bug_item_num = Item_CreateLevelItem();
     if (bug_item_num != NO_ITEM) {
         ITEM *const bug = Item_Get(bug_item_num);
-        bug->object_id = Pod_GetBugObjectID(item);
+        bug->object_id = M_GetBugObjectID(item->trigger.mask);
         bug->room_num = item->room_num;
         bug->pos.x = item->pos.x;
         bug->pos.y = item->pos.y;
@@ -119,18 +135,11 @@ static void M_Setup(OBJECT *const obj)
 
 OBJECT_ID Pod_GetBugObjectID(const ITEM *const item)
 {
-    switch (item->trigger.mask) {
-    case 1:
-        return O_ATLANTEAN_SHOOTER;
-    case 2:
-        return O_CENTAUR;
-    case 4:
-        return O_TORSO;
-    case 8:
-        return O_ATLANTEAN_GROUND;
-    default:
-        return O_ATLANTEAN_WINGED;
+    const M_PRIV *const p = item->priv;
+    if (p->bug_item_num == NO_ITEM) {
+        return NO_OBJECT;
     }
+    return Item_Get(p->bug_item_num)->object_id;
 }
 
 REGISTER_OBJECT(O_PODS, M_Setup)

@@ -51,6 +51,9 @@
 - Fixed level completion after explosive weapon kills (#6685 / TRX1584)
 - Fixed Lara sometimes aiming at a different enemy than in the original games when two were equally good targets
 
+**TR1**
+- Fixed empty pods being included in the total kill statistics if `O_ATLANTEAN_WINGED` is present in the level (TRX1693, regression from 1.5)
+
 **TR2**
 - Fixed missing gun flashes in the Diving Area cutscene (OG bug) (TRX89)
 
