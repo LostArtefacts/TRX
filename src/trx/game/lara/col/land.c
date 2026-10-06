@@ -284,7 +284,12 @@ static void M_Walk(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (coll->side_mid.floor > STEP_L / 2) {
-        if (Item_TestAnimEqual(item, LA(LA_WALK_FORWARD))
+        if (g_Config.gameplay.fix_step_glitch
+            && (coll->side_front.floor == NO_HEIGHT
+                || coll->side_front.floor < STEP_L / 2)) {
+            coll->side_mid.floor = 0;
+        } else if (
+            Item_TestAnimEqual(item, LA(LA_WALK_FORWARD))
             && Item_TestFrameRange(
                 item, M_LF_WALK_STEP_L_END, M_LF_WALK_STEP_R_NEAR_END)) {
             Item_SwitchToAnim(item, LA(LA_WALK_DOWN_LEFT), 0);
@@ -295,7 +300,12 @@ static void M_Walk(ITEM *const item, COLL_INFO *const coll)
 
     if (coll->side_mid.floor >= -STEPUP_HEIGHT
         && coll->side_mid.floor < -STEP_L / 2) {
-        if (Item_TestAnimEqual(item, LA(LA_WALK_FORWARD))
+        if (g_Config.gameplay.fix_step_glitch
+            && (coll->side_front.floor < -STEPUP_HEIGHT
+                || coll->side_front.floor >= STEP_L / 2)) {
+            coll->side_mid.floor = 0;
+        } else if (
+            Item_TestAnimEqual(item, LA(LA_WALK_FORWARD))
             && Item_TestFrameRange(
                 item, M_LF_WALK_STEP_L_NEAR_END, M_LF_WALK_STEP_R_MID)) {
             Item_SwitchToAnim(item, LA(LA_WALK_UP_STEP_LEFT), 0);
@@ -617,7 +627,9 @@ static void M_Splat(ITEM *const item, COLL_INFO *const coll)
 {
     M_Default(item, coll);
     Lara_Col_Shift(coll);
-    if (coll->side_mid.floor > -STEP_L && coll->side_mid.floor < STEP_L) {
+    const int32_t shift_limit =
+        g_Config.gameplay.fix_step_glitch ? STEP_L : (STEP_L - 1);
+    if (ABS(coll->side_mid.floor) <= shift_limit) {
         Lara_Col_AlignToFloor(item, coll);
     }
 }
