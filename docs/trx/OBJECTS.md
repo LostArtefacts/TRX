@@ -557,6 +557,7 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>max_hit_points</code></td><td colspan="3" align="center">28</td><td>Maximum hit points.</td></tr>
 <tr><td><code>damage</code></td><td colspan="3" align="center">32</td><td>Damage dealt by gun shots.</td></tr>
+<tr><td><code>final_shot_damage</code></td><td colspan="3" align="center">32</td><td>Damage dealt by the death-state final shot.</td></tr>
 </tbody>
 </table>
 
@@ -663,6 +664,7 @@ This page lists documented moveable object properties.
 <tbody>
 <tr><td><code>max_hit_points</code></td><td colspan="3" align="center">34</td><td>Maximum hit points.</td></tr>
 <tr><td><code>damage</code></td><td colspan="3" align="center">35</td><td>Damage dealt by shots.</td></tr>
+<tr><td><code>final_shot_damage</code></td><td colspan="3" align="center">105</td><td>Damage dealt by the death-state final shot.</td></tr>
 </tbody>
 </table>
 
