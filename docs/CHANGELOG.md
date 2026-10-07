@@ -26,6 +26,7 @@
 - Fixed the FPS counter briefly showing an incorrect value after switching mods (TRX1631)
 - Fixed the game not fading to black when it was exited during an FMV (TRX1616)
 - Fixed the stats background help naming the wrong style for TR2 (PS1) (#6711 / TRX1598)
+- Fixed custom keyboard bindings interfering with menu navigation, such as a game key bound to an arrow key also confirming or going back (#5704 / TRX520)
 
 **Developer console**
 - Added the `/restartlevel` console command, also available as `/restart`, which restarts the current level (#6712 / TRX1599)

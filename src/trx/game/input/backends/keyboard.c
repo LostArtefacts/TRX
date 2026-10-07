@@ -644,13 +644,66 @@ static void M_Init(void)
     }
 }
 
+static bool M_IsMenuKey(const INPUT_LAYOUT layout, const SDL_Scancode key)
+{
+    static const INPUT_ROLE roles[] = {
+        INPUT_ROLE_MENU_CONFIRM,  INPUT_ROLE_MENU_BACK,
+        INPUT_ROLE_MENU_UP,       INPUT_ROLE_MENU_DOWN,
+        INPUT_ROLE_MENU_LEFT,     INPUT_ROLE_MENU_RIGHT,
+        INPUT_ROLE_MENU_TAB_LEFT, INPUT_ROLE_MENU_TAB_RIGHT,
+    };
+    for (size_t i = 0; i < sizeof(roles) / sizeof(roles[0]); i++) {
+        for (int32_t slot = 0; slot < INPUT_BINDING_SLOTS; slot++) {
+            const KEYBOARD_BINDING *const bind =
+                &m_Layout[layout][roles[i]].slots[slot];
+            if (bind->key_count == 1 && bind->keys[0] == key) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+// A game binding steers the menus too, but a key that a menu binding already
+// claims answers to that binding alone, so rebinding a game role onto, say,
+// the up arrow does not make it confirm as well as move.
+static bool M_IsHeldOffMenu(const INPUT_LAYOUT layout, const INPUT_ROLE role)
+{
+    for (int32_t slot = 0; slot < INPUT_BINDING_SLOTS; slot++) {
+        const KEYBOARD_BINDING *bind = &m_Layout[layout][role].slots[slot];
+        if (bind->key_count == 1 && M_IsMenuKey(layout, bind->keys[0])) {
+            continue;
+        }
+        if (bind->key_count >= 2
+            && Input_ComboIsKeyImmediate(
+                layout, &bind->keys[0], M_GetComboBinding, M_ComboKeysEqual)) {
+            continue;
+        }
+        if (M_CheckBinding(bind)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 static bool M_CustomUpdate(INPUT_STATE *const result, const INPUT_LAYOUT layout)
 {
-    // we only do this for keyboard input
-    result->menu_confirm |= result->action;
-    result->menu_show_info |= result->look;
-    result->menu_fine_adjust |= result->slow;
-    result->menu_coarse_adjust |= result->draw;
+    result->menu_up = M_Key(layout, INPUT_ROLE_MENU_UP)
+        || M_IsHeldOffMenu(layout, INPUT_ROLE_UP);
+    result->menu_down = M_Key(layout, INPUT_ROLE_MENU_DOWN)
+        || M_IsHeldOffMenu(layout, INPUT_ROLE_DOWN);
+    result->menu_left = M_Key(layout, INPUT_ROLE_MENU_LEFT)
+        || M_IsHeldOffMenu(layout, INPUT_ROLE_LEFT);
+    result->menu_right = M_Key(layout, INPUT_ROLE_MENU_RIGHT)
+        || M_IsHeldOffMenu(layout, INPUT_ROLE_RIGHT);
+    result->menu_back = M_Key(layout, INPUT_ROLE_MENU_BACK)
+        || M_IsHeldOffMenu(layout, INPUT_ROLE_INVENTORY);
+    result->menu_confirm = M_Key(layout, INPUT_ROLE_MENU_CONFIRM)
+        || M_IsHeldOffMenu(layout, INPUT_ROLE_ACTION);
+    result->menu_show_info |= M_IsHeldOffMenu(layout, INPUT_ROLE_LOOK);
+    result->menu_fine_adjust |= M_IsHeldOffMenu(layout, INPUT_ROLE_SLOW);
+    result->menu_coarse_adjust |=
+        M_IsHeldOffMenu(layout, INPUT_ROLE_DRAW_WEAPON);
     return true;
 }
 
