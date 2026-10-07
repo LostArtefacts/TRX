@@ -834,8 +834,7 @@ void InvRing_ShowHeader(INV_RING *const ring)
     }
 
     const bool show_up_arrow = ring->type == RT_OPTION
-        || (ring->type == RT_MAIN
-            && InvRing_IsRingAvailable(RT_KEYS, ring->mode));
+        || (ring->type == RT_MAIN && InvRing_IsRingAvailable(RT_KEYS));
     const bool show_bottom_arrow = ring->type == RT_KEYS
         || (ring->type == RT_MAIN && !InvRing_IsOptionLockedOut());
 
