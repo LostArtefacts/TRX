@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/config/enum.h>
 #include <trx/core/result.h>
 #include <trx/game/music/enum.h>
 #include <trx/game/music/ids.h>
@@ -136,6 +137,10 @@ MUSIC_SLOT Music_GetCurrentLoopedTrack(void);
 
 // Sets the game volume.
 void Music_SetVolume(float volume);
+
+// Muffles the ambience alone or all music, as if heard through water. Overlay
+// tracks stay clear.
+void Music_SetMuffle(UNDERWATER_MUFFLE_MODE mode);
 
 // Resets all track trigger state.
 void Music_ResetTrackStates(void);

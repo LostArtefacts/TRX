@@ -920,6 +920,11 @@
             "pc": "PC",
             "ps1": "PS1",
         },
+        "underwater_muffle_mode": {
+            "all": "\\{review}Tutta la musica",
+            "ambient": "\\{review}Solo atmosfera",
+            "off": "\\{review}Disattivato",
+        },
         "vertex_snap_mode": {
             "disabled": "Disabilitato",
             "upscale_res": "Ridimensionato",
@@ -1038,6 +1043,10 @@
         "audio.underwater_ambient_volume": {
             "title": "Volume ambientale (sott'acqua)",
             "description": "Regola il volume dei suoni ambientali quando si è sott'acqua.",
+        },
+        "audio.underwater_muffle": {
+            "title": "\\{review}Attutisci la musica sott'acqua",
+            "description": "\\{review}Attutisce la musica quando la telecamera è sott'acqua, come se fosse udita attraverso l'acqua.\n\n- Disattivato: la musica resta nitida.\n- Solo atmosfera: attutisce solo la traccia d'atmosfera.\n- Tutta la musica: attutisce le tracce musicali e d'atmosfera.",
         },
         "audio.underwater_music_volume": {
             "title": "Volume musica (sott'acqua)",
