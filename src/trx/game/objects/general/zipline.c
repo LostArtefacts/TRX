@@ -174,19 +174,11 @@ static void M_CollisionControlled(
     LARA_INFO *const lara = Lara_GetLaraInfo();
     const OBJECT *const obj = Object_Get(item->object_id);
 
-    if (Lara_TestPosition(item, obj->bounds_func())) {
-        const XYZ_32 move_pos = M_GetControlledPosition(item);
-        if (Lara_MovePosition(item, &move_pos)) {
-            Lara_Interact_FinishControl(LARA_INTERACT_SWITCH);
-            M_Grab(item, lara_item, lara);
-        } else {
-            lara->interact_target.item_num = item_num;
-        }
-    } else if (
-        lara->interact_target.is_moving
-        && lara->interact_target.item_num == item_num) {
-        lara->interact_target.is_moving = false;
-        lara->gun_status = LGS_ARMLESS;
+    const XYZ_32 move_pos = M_GetControlledPosition(item);
+    if (Lara_Interact_Reach(item, obj->bounds_func(), &move_pos)
+        == LARA_REACH_ARRIVED) {
+        Lara_Interact_FinishControl(LARA_INTERACT_SWITCH);
+        M_Grab(item, lara_item, lara);
     }
 }
 

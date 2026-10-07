@@ -114,23 +114,16 @@ static void M_Collision(
             position.z = bounds->min.z - STEP_L / 4;
         }
 
-        LARA_INFO *const lara = Lara_GetLaraInfo();
-        if (Lara_TestPosition(item, &col_bounds)) {
-            if (Lara_MovePosition(item, &position)) {
-                if (item->current_anim_state == M_STATE_OFF) {
-                    M_TurnSwitchOn(item, lara_item);
-                } else {
-                    M_TurnSwitchOff(item, lara_item);
-                }
-                Lara_Interact_FinishControl(LARA_INTERACT_SWITCH);
-                Item_AddSimulated(item_num);
-                Item_Animate(item);
+        if (Lara_Interact_Reach(item, &col_bounds, &position)
+            == LARA_REACH_ARRIVED) {
+            if (item->current_anim_state == M_STATE_OFF) {
+                M_TurnSwitchOn(item, lara_item);
             } else {
-                lara->interact_target.item_num = item_num;
+                M_TurnSwitchOff(item, lara_item);
             }
-        } else if (Lara_Interact_HasActiveTarget(item_num)) {
-            lara->interact_target.is_moving = false;
-            lara->gun_status = LGS_ARMLESS;
+            Lara_Interact_FinishControl(LARA_INTERACT_SWITCH);
+            Item_AddSimulated(item_num);
+            Item_Animate(item);
         }
     } else if (
         lara_item->current_anim_state != LS(LS_SWITCH_ON)

@@ -46,7 +46,7 @@ static void M_Control(const int16_t item_num)
     Item_Animate(item);
 }
 
-static bool M_Open(
+static void M_Open(
     ITEM *const lara_item, const int16_t item_num,
     const LARA_ANIMATION_ID lara_anim, const M_STATE door_goal_state)
 {
@@ -58,14 +58,12 @@ static bool M_Open(
     Item_AddSimulated(item_num);
     lara->interact_target.is_moving = false;
     lara->gun_status = LGS_HANDS_BUSY;
-    return true;
 }
 
 static void M_PushPullKickCollision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
-    LARA_INFO *const lara = Lara_GetLaraInfo();
 
     if (Lara_Interact_CanControl(LARA_INTERACT_DOOR, item_num)) {
         const bool pull = lara_item->room_num == item->room_num;
@@ -73,38 +71,25 @@ static void M_PushPullKickCollision(
             item->rot.y += DEG_180;
         }
 
-        if (Lara_TestPosition(item, &m_DoorBounds)) {
-            bool going = false;
+        const bool kick = item->object_id == O_KICK_DOOR_1
+            || item->object_id == O_KICK_DOOR_2;
+        const XYZ_32 *const position = pull ? &m_PullPosition
+            : kick                          ? &m_KickPosition
+                                            : &m_PushPosition;
+        if (Lara_Interact_Reach(item, &m_DoorBounds, position)
+            == LARA_REACH_ARRIVED) {
             if (pull) {
-                if (Lara_MovePosition(item, &m_PullPosition)) {
-                    going = M_Open(
-                        lara_item, item_num, LA_DOOR_OPEN_BACK,
-                        M_STATE_PULL_OPEN);
-                }
-            } else if (
-                item->object_id == O_KICK_DOOR_1
-                || item->object_id == O_KICK_DOOR_2) {
-                if (Lara_MovePosition(item, &m_KickPosition)) {
-                    going = M_Open(
-                        lara_item, item_num, LA_DOOR_KICK, M_STATE_PUSH_OPEN);
-                }
+                M_Open(
+                    lara_item, item_num, LA_DOOR_OPEN_BACK, M_STATE_PULL_OPEN);
+            } else if (kick) {
+                M_Open(lara_item, item_num, LA_DOOR_KICK, M_STATE_PUSH_OPEN);
             } else {
-                if (Lara_MovePosition(item, &m_PushPosition)) {
-                    going = M_Open(
-                        lara_item, item_num, LA_DOOR_OPEN_FORWARD,
-                        M_STATE_PUSH_OPEN);
-                }
+                M_Open(
+                    lara_item, item_num, LA_DOOR_OPEN_FORWARD,
+                    M_STATE_PUSH_OPEN);
             }
-
-            if (going) {
-                lara_item->current_anim_state = LS(LS_CONTROLLED);
-                lara_item->goal_anim_state = LS(LS_STOP);
-            } else {
-                lara->interact_target.item_num = item_num;
-            }
-        } else if (Lara_Interact_HasActiveTarget(item_num)) {
-            lara->interact_target.is_moving = false;
-            lara->gun_status = LGS_ARMLESS;
+            lara_item->current_anim_state = LS(LS_CONTROLLED);
+            lara_item->goal_anim_state = LS(LS_STOP);
         }
 
         if (pull) {
@@ -119,7 +104,6 @@ static void M_DoubleDoorsCollision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
-    LARA_INFO *const lara = Lara_GetLaraInfo();
 
     if (!Lara_Interact_CanControl(LARA_INTERACT_DOOR, item_num)) {
         return;
@@ -127,18 +111,12 @@ static void M_DoubleDoorsCollision(
 
     item->rot.y += DEG_180;
 
-    if (Lara_TestPosition(item, &m_DoorBounds)) {
-        if (Lara_MovePosition(item, &m_DoubleDoorsPosition)) {
-            Item_SwitchToAnim(lara_item, LA(LA_DOUBLEDOORS_PUSH), 0);
-            lara_item->current_anim_state = LS(LS_PUSH_DOORS);
-            Item_AddSimulated(item_num);
-            Lara_Interact_FinishControl(LARA_INTERACT_DOOR);
-        } else {
-            lara->interact_target.item_num = item_num;
-        }
-    } else if (Lara_Interact_HasActiveTarget(item_num)) {
-        lara->interact_target.is_moving = false;
-        lara->gun_status = LGS_ARMLESS;
+    if (Lara_Interact_Reach(item, &m_DoorBounds, &m_DoubleDoorsPosition)
+        == LARA_REACH_ARRIVED) {
+        Item_SwitchToAnim(lara_item, LA(LA_DOUBLEDOORS_PUSH), 0);
+        lara_item->current_anim_state = LS(LS_PUSH_DOORS);
+        Item_AddSimulated(item_num);
+        Lara_Interact_FinishControl(LARA_INTERACT_DOOR);
     }
 
     item->rot.y += DEG_180;
@@ -160,22 +138,16 @@ static void M_UWDoorCollision(
     if (can_interact) {
         lara_item->rot.y += DEG_180;
 
-        if (Lara_TestPosition(item, &m_UWDoorBounds)) {
-            if (Lara_MovePosition(item, &m_UWDoorPosition)) {
-                Item_SwitchToAnim(lara_item, LA(LA_UNDERWATER_DOOR_OPEN), 0);
-                lara_item->current_anim_state = LS(LS_CONTROLLED);
-                lara_item->fall_speed = 0;
-                item->goal_anim_state = M_STATE_OPEN;
-                Item_AddSimulated(item_num);
-                Item_Animate(item);
-                lara->interact_target.is_moving = false;
-                lara->gun_status = LGS_HANDS_BUSY;
-            } else {
-                lara->interact_target.item_num = item_num;
-            }
-        } else if (Lara_Interact_HasActiveTarget(item_num)) {
+        if (Lara_Interact_Reach(item, &m_UWDoorBounds, &m_UWDoorPosition)
+            == LARA_REACH_ARRIVED) {
+            Item_SwitchToAnim(lara_item, LA(LA_UNDERWATER_DOOR_OPEN), 0);
+            lara_item->current_anim_state = LS(LS_CONTROLLED);
+            lara_item->fall_speed = 0;
+            item->goal_anim_state = M_STATE_OPEN;
+            Item_AddSimulated(item_num);
+            Item_Animate(item);
             lara->interact_target.is_moving = false;
-            lara->gun_status = LGS_ARMLESS;
+            lara->gun_status = LGS_HANDS_BUSY;
         }
 
         lara_item->rot.y += DEG_180;

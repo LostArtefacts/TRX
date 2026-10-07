@@ -36,21 +36,13 @@ static void M_CollisionStanding(
     const int16_t old_rot_y = item->rot.y;
     item->rot.y = lara_item->rot.y;
 
-    if (Lara_TestPosition(item, obj->bounds_func())) {
-        if (Lara_MovePosition(item, &m_PolePosition)) {
-            Item_SwitchToAnim(lara_item, LA(LA_STAND_TO_POLE_GRAB), 0);
-            lara_item->current_anim_state = LS(LS_POLE_IDLE);
-            lara_item->goal_anim_state = LS(LS_POLE_IDLE);
-            lara->interact_target.is_moving = false;
-            lara->gun_status = LGS_HANDS_BUSY;
-        } else {
-            lara->interact_target.item_num = item_num;
-        }
-    } else if (
-        lara->interact_target.is_moving
-        && lara->interact_target.item_num == item_num) {
+    if (Lara_Interact_Reach(item, obj->bounds_func(), &m_PolePosition)
+        == LARA_REACH_ARRIVED) {
+        Item_SwitchToAnim(lara_item, LA(LA_STAND_TO_POLE_GRAB), 0);
+        lara_item->current_anim_state = LS(LS_POLE_IDLE);
+        lara_item->goal_anim_state = LS(LS_POLE_IDLE);
         lara->interact_target.is_moving = false;
-        lara->gun_status = LGS_ARMLESS;
+        lara->gun_status = LGS_HANDS_BUSY;
     }
 
     item->rot.y = old_rot_y;

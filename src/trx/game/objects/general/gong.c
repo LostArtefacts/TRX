@@ -130,18 +130,13 @@ static void M_CollisionControlled(
         }
 
         item->rot.y = old_rot.y + DEG_180;
-        if (Lara_MovePosition(item, &m_ControlledPosition)) {
+        if (Lara_Interact_MoveTo(item, &m_ControlledPosition)) {
             Lara_Interact_FinishControl(LARA_INTERACT_RECEPTACLE);
             item->rot = old_rot;
             M_Use(lara_item, item);
-        } else {
-            lara->interact_target.item_num = item_num;
         }
-    } else if (
-        lara->interact_target.is_moving
-        && lara->interact_target.item_num == item_num) {
-        lara->interact_target.is_moving = false;
-        lara->gun_status = LGS_ARMLESS;
+    } else {
+        Lara_Interact_Release(item_num);
     }
 
     item->rot = old_rot;

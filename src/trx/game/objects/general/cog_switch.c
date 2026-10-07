@@ -90,7 +90,6 @@ static void M_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
-    LARA_INFO *const lara = Lara_GetLaraInfo();
 
     if (!Item_IsInactive(item)) {
         return;
@@ -98,8 +97,10 @@ static void M_Collision(
 
     if (!item->trigger.spent
         && Lara_Interact_CanControl(LARA_INTERACT_SWITCH, item_num)) {
-        if (Lara_TestPosition(item, &m_CogSwitchBounds)) {
-            if (Lara_MovePosition(item, &m_CogSwitchPosition)) {
+        const LARA_REACH reach =
+            Lara_Interact_Reach(item, &m_CogSwitchBounds, &m_CogSwitchPosition);
+        if (reach != LARA_REACH_OUT_OF_BOUNDS) {
+            if (reach == LARA_REACH_ARRIVED) {
                 Item_SwitchToAnim(lara_item, LA(LA_COGWHEEL_GRAB), 0);
                 lara_item->current_anim_state = LS(LS_COG_SWITCH);
                 lara_item->goal_anim_state = LS(LS_COG_SWITCH);
@@ -117,15 +118,8 @@ static void M_Collision(
                         Item_SetFinished(door_item, false);
                     }
                 }
-            } else {
-                lara->interact_target.item_num = item_num;
             }
             return;
-        }
-
-        if (Lara_Interact_HasActiveTarget(item_num)) {
-            lara->interact_target.is_moving = false;
-            lara->gun_status = LGS_ARMLESS;
         }
     }
 

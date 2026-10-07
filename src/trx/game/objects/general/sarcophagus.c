@@ -41,9 +41,8 @@ static bool M_Interact(const ITEM *const item, ITEM *const lara_item)
             result = true;
         }
         lara->interact_target.item_num = item_num;
-    } else if (Lara_Interact_HasActiveTarget(item_num)) {
-        lara->interact_target.is_moving = false;
-        lara->gun_status = LGS_ARMLESS;
+    } else {
+        Lara_Interact_Release(item_num);
     }
 
     return result;
