@@ -183,7 +183,6 @@ RESULT SG_File_SaveToFile(TRX_FILE *const fp, SAVEGAME_INFO *const info)
     Sparks_Save(io);
     SG_File_DumpLara(io);
     SG_File_DumpMusic(io);
-    SG_File_DumpFlares(io);
     SG_File_DumpRules(io);
     SG_File_DumpMisc(io);
     LUA_Store_Dump(io);

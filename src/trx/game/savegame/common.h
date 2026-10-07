@@ -21,6 +21,10 @@ void Savegame_SetInitialVersion(SAVEGAME_VERSION version);
 bool Savegame_IsManualSaveAllowed(void);
 bool Savegame_RestartAvailable(SAVEGAME_SLOT_REF slot);
 
+// Every slot the level owns, destroyed or not, and every other live item,
+// apart from those whose creator makes them again and Lara's weapon, which is
+// saved with her.
+bool Savegame_IsSavedItem(int32_t item_num);
 void Savegame_ProcessItemsBeforeLoad(void);
 void Savegame_ProcessItemsBeforeSave(void);
 RESULT Savegame_Load(SAVEGAME_SLOT_REF slot);

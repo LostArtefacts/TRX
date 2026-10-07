@@ -17,7 +17,6 @@
 #include <trx/game/level/settings.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
-#include <trx/game/objects/general/flare_item.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
@@ -153,80 +152,78 @@ static void M_WriteItem(JSON_WRITE_IO *const io, const ITEM *const item)
     if (item->name != nullptr) {
         JSONW_WRITE(io, "name", item->name);
     }
+    const int16_t creator_num = Item_GetCreator(Item_GetIndex(item));
+    if (creator_num != NO_ITEM) {
+        JSONW_WRITE(io, "creator", creator_num);
+    }
 
     const OBJECT *const obj = Object_Get(item->object_id);
     SaveGame_WriteIdentity(
         io, "object_id", "object_key", CATALOG_OBJECTS, item->object_id);
     JSONW_WRITE(io, "mesh_bits", item->mesh_bits);
+    JSONW_WRITE(io, "shade_1", item->shade.value_1);
+    JSONW_WRITE(io, "shade_2", item->shade.value_2);
 
-    if (obj->save_position) {
-        M_WriteXYZ32(io, "pos", item->pos);
-        M_WriteXYZ16(io, "rot", item->rot);
-        JSONW_WRITE(io, "room_num", item->room_num);
-        JSONW_WRITE(io, "speed", item->speed);
-        JSONW_WRITE(io, "fall_speed", item->fall_speed);
-    }
+    M_WriteXYZ32(io, "pos", item->pos);
+    M_WriteXYZ16(io, "rot", item->rot);
+    JSONW_WRITE(io, "room_num", item->room_num);
+    JSONW_WRITE(io, "floor", item->floor);
+    JSONW_WRITE(io, "speed", item->speed);
+    JSONW_WRITE(io, "fall_speed", item->fall_speed);
 
-    if (obj->save_anim) {
-        JSONW_WRITE(io, "current_anim", item->current_anim_state);
-        JSONW_WRITE(io, "goal_anim", item->goal_anim_state);
-        JSONW_WRITE(io, "required_anim", item->required_anim_state);
-        M_WriteAnimNum(io, item->anim_num);
-        JSONW_WRITE(io, "frame_num", item->frame_num);
-        JSONW_WRITE(io, "prev_frame_num", item->prev_frame_num);
-    }
+    JSONW_WRITE(io, "current_anim", item->current_anim_state);
+    JSONW_WRITE(io, "goal_anim", item->goal_anim_state);
+    JSONW_WRITE(io, "required_anim", item->required_anim_state);
+    M_WriteAnimNum(io, item->anim_num);
+    JSONW_WRITE(io, "frame_num", item->frame_num);
+    JSONW_WRITE(io, "prev_frame_num", item->prev_frame_num);
 
-    if (obj->save_hitpoints) {
-        JSONW_WRITE(io, "hitpoints", item->hit_points);
-        JSONW_WRITE(io, "max_hitpoints", item->max_hit_points);
-    }
+    JSONW_WRITE(io, "hitpoints", item->hit_points);
+    JSONW_WRITE(io, "max_hitpoints", item->max_hit_points);
     ObjectProperty_WriteItemOverrides(io, item, "properties");
 
-    if (obj->save_flags) {
-        JSONW_WRITE(io, "flags", M_PackItemFlags(item));
-        JSONW_WRITE(io, "status", M_PackItemStatus(item));
-        JSONW_WRITE(io, "active", item->is_simulated);
-        // is_finished also reaches the status value above, but only where the
-        // mutually exclusive enum can hold it; this key carries the axis whole.
-        JSONW_WRITE(io, "finished", item->is_finished);
-        JSONW_WRITE(io, "gravity", item->gravity);
-        JSONW_WRITE(io, "collidable", item->is_collidable);
-        const bool intelligent =
-            obj->intelligent && item->creature_data != nullptr;
-        JSONW_WRITE(io, "intelligent", intelligent);
-        JSONW_WRITE(io, "timer", item->timer);
-        JSONW_WRITE(io, "ai_bits", item->ai_bits);
-        JSONW_WRITE_NZ(io, "ai_tag", item->ai_tag);
-        JSONW_WRITE_NZ(io, "fade", item->fade);
-        if (intelligent) {
-            const CREATURE *const creature = item->creature_data;
-            JSONW_WRITE(io, "head_rot", creature->head_rotation);
-            JSONW_WRITE(io, "neck_rot", creature->neck_rotation);
-            JSONW_WRITE(io, "max_turn", creature->maximum_turn);
-            JSONW_WRITE(io, "creature_flags", creature->flags);
-            JSONW_WRITE(io, "creature_mood", creature->mood);
-            JSONW_PUSH_OBJECT(io);
-            JSONW_WRITE(io, "alerted", creature->alerted);
-            JSONW_WRITE(io, "head_left", creature->head_left);
-            JSONW_WRITE(io, "head_right", creature->head_right);
-            JSONW_WRITE(io, "reached_goal", creature->reached_goal);
-            JSONW_WRITE(io, "patrol_2", creature->patrol_2);
-            JSONW_WRITE(io, "hurt_by_lara", creature->hurt_by_lara);
-            JSONW_WRITE(io, "damage_from_lara", creature->damage_from_lara);
-            JSONW_WRITE(
-                io, "enemy",
-                creature->enemy == nullptr ? NO_ITEM
-                                           : Item_GetIndex(creature->enemy));
-            JSONW_WRITE(io, "is_jumping", creature->lot.is_jumping);
-            JSONW_WRITE(io, "is_monkeying", creature->lot.is_monkeying);
-            JSONW_PUSH_ARRAY(io);
-            for (int32_t i = 0; i < 4; i++) {
-                JSONW_PUSH_VALUE(io, creature->joint_rotation[i]);
-                JSONW_POP_AND_APPEND(io);
-            }
-            JSONW_POP_AND_SET(io, "joint_rotations");
-            JSONW_POP_AND_SET(io, "creature");
+    JSONW_WRITE(io, "flags", M_PackItemFlags(item));
+    JSONW_WRITE(io, "status", M_PackItemStatus(item));
+    JSONW_WRITE(io, "active", item->is_simulated);
+    // is_finished also reaches the status value above, but only where the
+    // mutually exclusive enum can hold it; this key carries the axis whole.
+    JSONW_WRITE(io, "finished", item->is_finished);
+    JSONW_WRITE(io, "gravity", item->gravity);
+    JSONW_WRITE(io, "collidable", item->is_collidable);
+    const bool intelligent = obj->intelligent && item->creature_data != nullptr;
+    JSONW_WRITE(io, "intelligent", intelligent);
+    JSONW_WRITE(io, "timer", item->timer);
+    JSONW_WRITE(io, "ai_bits", item->ai_bits);
+    JSONW_WRITE_NZ(io, "ai_tag", item->ai_tag);
+    JSONW_WRITE_NZ(io, "fade", item->fade);
+    if (intelligent) {
+        const CREATURE *const creature = item->creature_data;
+        JSONW_WRITE(io, "head_rot", creature->head_rotation);
+        JSONW_WRITE(io, "neck_rot", creature->neck_rotation);
+        JSONW_WRITE(io, "max_turn", creature->maximum_turn);
+        JSONW_WRITE(io, "creature_flags", creature->flags);
+        JSONW_WRITE(io, "creature_mood", creature->mood);
+        JSONW_PUSH_OBJECT(io);
+        JSONW_WRITE(io, "alerted", creature->alerted);
+        JSONW_WRITE(io, "head_left", creature->head_left);
+        JSONW_WRITE(io, "head_right", creature->head_right);
+        JSONW_WRITE(io, "reached_goal", creature->reached_goal);
+        JSONW_WRITE(io, "patrol_2", creature->patrol_2);
+        JSONW_WRITE(io, "hurt_by_lara", creature->hurt_by_lara);
+        JSONW_WRITE(io, "damage_from_lara", creature->damage_from_lara);
+        JSONW_WRITE(
+            io, "enemy",
+            creature->enemy == nullptr ? NO_ITEM
+                                       : Item_GetIndex(creature->enemy));
+        JSONW_WRITE(io, "is_jumping", creature->lot.is_jumping);
+        JSONW_WRITE(io, "is_monkeying", creature->lot.is_monkeying);
+        JSONW_PUSH_ARRAY(io);
+        for (int32_t i = 0; i < 4; i++) {
+            JSONW_PUSH_VALUE(io, creature->joint_rotation[i]);
+            JSONW_POP_AND_APPEND(io);
         }
+        JSONW_POP_AND_SET(io, "joint_rotations");
+        JSONW_POP_AND_SET(io, "creature");
     }
 
     JSONW_PUSH_ARRAY(io);
@@ -382,28 +379,6 @@ static int32_t M_GetMusicTrackFlagsCount(void)
         }
     }
     return last_index + 1;
-}
-
-void SG_File_DumpFlares(JSON_WRITE_IO *const io)
-{
-    JSONW_PUSH_ARRAY(io);
-    for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
-        const ITEM *const item = Item_Get(i);
-        if (!item->is_simulated || item->object_id != O_FLARE_ITEM) {
-            continue;
-        }
-        JSONW_PUSH_OBJECT(io);
-        M_WriteXYZ32(io, "pos", item->pos);
-        M_WriteXYZ16(io, "rot", item->rot);
-        JSONW_WRITE(io, "room_num", item->room_num);
-        JSONW_WRITE(io, "speed", item->speed);
-        JSONW_WRITE(io, "fall_speed", item->fall_speed);
-        const int32_t flare_age = FlareItem_GetAge(item);
-        const int32_t active = FlareItem_IsActive(item) ? 0x8000 : 0;
-        JSONW_WRITE(io, "age", flare_age | active);
-        JSONW_POP_AND_APPEND(io);
-    }
-    JSONW_POP_AND_SET(io, "flares");
 }
 
 void SG_File_DumpEffects(JSON_WRITE_IO *const io)
@@ -571,8 +546,12 @@ void SG_File_DumpItems(JSON_WRITE_IO *const io)
 {
     Savegame_ProcessItemsBeforeSave();
 
+    JSONW_WRITE(io, "level_item_count", Item_GetLevelCount());
     JSONW_PUSH_ARRAY(io);
-    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+    for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
+        if (!Savegame_IsSavedItem(i)) {
+            continue;
+        }
         JSONW_PUSH_OBJECT(io);
         M_WriteItem(io, Item_Get(i));
         JSONW_POP_AND_APPEND(io);

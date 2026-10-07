@@ -8,7 +8,10 @@ int32_t Carrier_GetItemCount(int16_t item_num);
 bool Carrier_IsItemCarried(int16_t item_num);
 void Carrier_TestItemDrops(int16_t item_num);
 
-void Carrier_SyncItem(int16_t item_num, CARRIED_ITEM *carried_item);
+void Carrier_SyncItem(CARRIED_ITEM *carried_item);
 DROP_STATUS Carrier_GetSaveStatus(const CARRIED_ITEM *item);
+// A drop whose pickup is destroyed is collected, so the slot it leaves free
+// can go to another item without the carrier claiming it back.
+void Carrier_OnItemDestroyed(int16_t item_num);
 
 void Carrier_AnimateDrops(void);

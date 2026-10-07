@@ -40,6 +40,8 @@
 - Fixed a bug where a friendly sentry gun kept aiming at Lara, and aimed at enemies it had no shot at, instead of the enemies it was set to attack
 - Fixed Lara not getting a crystal when starting a game with the crystal mode set to Saving (pickups) (Gameplay → General → Crystal mode)
 - Fixed enemies in New Game+ losing their doubled health in some levels, such as Diving Area in TR2 (TRX1702, regression from 1.10)
+- Fixed harpoons, grenades, rockets and other items spawned during play disappearing after loading a save (TRX1677)
+- Fixed items dropped by enemies sometimes being swapped between them, or a collected one coming back, after loading a save (TRX1677)
 
 **Level and game data**
 - Added the `health.scale` rule, which scales the health of every item but Lara. New Game+ sets it to 2.
@@ -194,6 +196,7 @@
 - Added `trx.ui.widgets.SleekBar`, the thin progress bar the game draws under a button that the player holds
 - Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the question the pause screen asks, and the quick save and load screens
     - `trx.ui.Screen` and `trx.ui.ScreenContext`
+- Changed saves to keep the items a script spawns, which previously disappeared on load (TRX1677)
 - Changed script widgets to stay behind the game interface when they overlap
 - Changed game-flow Lua functions to wait while a script draws an engine screen. The inventory ring now closes and fades before the command runs.
 - Changed `trx.items.Item:die` and `trx.items.Item:shatter` to take an options table, and to let a script say what the flying body parts draw

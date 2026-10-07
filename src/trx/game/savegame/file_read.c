@@ -37,6 +37,11 @@
 
 #include <string.h>
 
+static bool m_SavedItems[MAX_ITEMS];
+static bool m_PlacedItems[MAX_ITEMS];
+static int16_t m_EntryItems[MAX_ITEMS];
+static bool m_ReadPositions[MAX_ITEMS];
+
 static RESULT M_ReadObjectID(
     JSON_READ_IO *const io, const char *const key, OBJECT_ID *const target)
 {
@@ -484,26 +489,31 @@ static int16_t M_ResolveItem(JSON_READ_IO *const io, const int16_t read_index)
     return item_num;
 }
 
-static bool M_ShouldReadAnim(const OBJECT *const obj, const OBJECT_ID obj_id)
+// Animated spikes reset on load unless the fix is on.
+static bool M_IsResettingSpikes(const OBJECT_ID obj_id)
 {
-    return obj->save_anim
-        && (obj_id != O_SPIKES || g_Config.gameplay.fix_animated_spikes);
+    return obj_id == O_SPIKES && !g_Config.gameplay.fix_animated_spikes;
 }
 
-static bool M_ShouldReadFlags(const OBJECT *const obj, const OBJECT_ID obj_id)
+// Saves before SG_VERSION_22 kept no item spawned during play, so a drop that
+// had left its carrier's hands is spawned again.
+static void M_RespawnLegacyDrop(
+    const int16_t carrier_num, CARRIED_ITEM *const carried_item)
 {
-    return obj->save_flags
-        && (obj_id != O_SPIKES || g_Config.gameplay.fix_animated_spikes);
-}
-
-static RESULT M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
-{
-    const int16_t item_num = M_ResolveItem(io, read_index);
-    if (item_num == NO_ITEM) {
-        // soft exit for unresolvable items
-        return OK;
+    if (carried_item->status == DS_COLLECTED
+        || carried_item->spawn_num == NO_ITEM
+        || carried_item->spawn_num < Item_GetLevelCount()) {
+        return;
     }
+    carried_item->spawn_num =
+        Item_Spawn(Item_Get(carrier_num), carried_item->object_id);
+}
 
+// Reads the parts of the item the save holds. Saves before SG_VERSION_22 hold
+// only the parts each object asked for.
+static RESULT M_ReadItemAt(JSON_READ_IO *const io, const int16_t item_num)
+{
+    const bool is_legacy = JSON_ReadIO_GetVersion(io) < SG_VERSION_22;
     ITEM *const item = Item_Get(item_num);
 
     OBJECT_ID object_id = NO_OBJECT;
@@ -530,9 +540,12 @@ static RESULT M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
         }
     }
 
-    // Not sure why some items do not have their their position saved,
-    // despite OBJECT telling them to.
-    if (obj->save_position && JSON_ReadIO_HasKey(io, "room_num")) {
+    if (JSON_ReadIO_HasKey(io, "shade_1")) {
+        MUST(JSON_READ(io, "shade_1", &item->shade.value_1));
+        MUST(JSON_READ(io, "shade_2", &item->shade.value_2));
+    }
+
+    if (JSON_ReadIO_HasKey(io, "room_num")) {
         MUST(JSON_READ(io, "pos", &item->pos));
         MUST(JSON_READ(io, "rot", &item->rot));
         MUST(JSON_READ(io, "speed", &item->speed));
@@ -541,10 +554,18 @@ static RESULT M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
         MUST(JSON_READ(io, "room_num", &room_num));
         if (room_num != NO_ROOM) {
             Item_UpdateRoom(item_num, room_num);
+        } else if (!is_legacy && item->room_num != NO_ROOM) {
+            Item_UpdateRoom(item_num, NO_ROOM);
+        }
+        if (JSON_ReadIO_HasKey(io, "floor")) {
+            MUST(JSON_READ(io, "floor", &item->floor));
+        } else {
+            m_ReadPositions[item_num] = true;
         }
     }
 
-    if (M_ShouldReadAnim(obj, object_id)) {
+    if (JSON_ReadIO_HasKey(io, "current_anim")
+        && !M_IsResettingSpikes(object_id)) {
         // TRX >= 1.1 animated puzzle holes became animated
         SHOULD(JSON_READ_OPT(io, "current_anim", &item->current_anim_state));
         SHOULD(JSON_READ_OPT(io, "goal_anim", &item->goal_anim_state));
@@ -567,22 +588,13 @@ static RESULT M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
         }
     }
 
-    if (obj->save_hitpoints) {
+    if (JSON_ReadIO_HasKey(io, "hitpoints")) {
         MUST(JSON_READ(io, "hitpoints", &item->hit_points));
         MUST(JSON_READ(io, "max_hitpoints", &item->max_hit_points));
     }
     MUST(ObjectProperty_ReadItemOverrides(io, item));
 
-    if (M_ShouldReadFlags(obj, object_id)) {
-        if (!JSON_ReadIO_HasKey(io, "flags")) {
-            // TRX 1.1 save-crystal entries were serialized as bare items
-            // without save-state fields. Treat them as default-state crystals
-            // so those legacy saves remain loadable.
-            if (object_id == O_SAVE_CRYSTAL_ITEM) {
-                goto skip_flags;
-            }
-        }
-        // TRX 1.8 introduced fixing animated spikes on load
+    if (JSON_ReadIO_HasKey(io, "flags") && !M_IsResettingSpikes(object_id)) {
         uint16_t flags = 0;
         SHOULD(JSON_READ_OPT(io, "flags", &flags));
         item->trigger = (ITEM_TRIGGER_STATE) {
@@ -692,7 +704,6 @@ static RESULT M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
             item->extra_rotations = nullptr;
         }
     }
-skip_flags:
 
     if (JSON_ReadIO_HasKey(io, "carried_items")) {
         MUST(JSON_PUSH(io, "carried_items"));
@@ -701,6 +712,7 @@ skip_flags:
         const int32_t carried_count = JSON_ARRAY_LEN(io);
         for (int32_t j = 0; j < carried_count; j++) {
             MUST(JSON_PUSH_INDEX(io, j));
+            const bool is_level_drop = carried_item != nullptr;
             if (carried_item == nullptr) {
                 carried_item = GameBuf_Alloc(sizeof(CARRIED_ITEM), GBUF_ITEMS);
                 carried_item->next_item = nullptr;
@@ -715,14 +727,23 @@ skip_flags:
             // pre-existing carried entries (e.g. gameflow-defined drops).
             SHOULD(JSON_READ_OPT(io, "spawn_num", &carried_item->spawn_num));
 
-            MUST(M_ReadObjectID(io, "object_id", &carried_item->object_id));
+            // The level names what its drops are; TR2-style drops used to be
+            // saved without one.
+            OBJECT_ID drop_object_id = NO_OBJECT;
+            MUST(M_ReadObjectID(io, "object_id", &drop_object_id));
+            if (!is_level_drop) {
+                carried_item->object_id = drop_object_id;
+            }
             MUST(JSON_READ(io, "pos", &carried_item->pos));
             MUST(JSON_READ(io, "y_rot", &carried_item->rot.y));
             MUST(JSON_READ(io, "room_num", &carried_item->room_num));
             MUST(JSON_READ(io, "fall_speed", &carried_item->fall_speed));
             MUST(JSON_READ(io, "status", &carried_item->status));
 
-            Carrier_SyncItem(item_num, carried_item);
+            if (is_legacy) {
+                M_RespawnLegacyDrop(item_num, carried_item);
+            }
+            Carrier_SyncItem(carried_item);
 
             prev_item = carried_item;
             carried_item = carried_item->next_item;
@@ -752,6 +773,247 @@ skip_flags:
         }
     }
 
+    return OK;
+}
+
+static RESULT M_ReadItem(JSON_READ_IO *const io, const int16_t read_index)
+{
+    const int16_t item_num = M_ResolveItem(io, read_index);
+    if (item_num == NO_ITEM) {
+        // soft exit for unresolvable items
+        return OK;
+    }
+    return M_ReadItemAt(io, item_num);
+}
+
+static int16_t M_ResolveLevelItem(
+    JSON_READ_IO *const io, const int16_t index, const OBJECT_ID object_id,
+    const bool is_level_changed)
+{
+    int16_t item_num = index;
+    if (JSON_ReadIO_HasKey(io, "name")) {
+        const char *name = nullptr;
+        if (!Result_Absorb(JSON_READ(io, "name", &name))) {
+            return NO_ITEM;
+        }
+        const ITEM *const item = Item_GetByName(name);
+        if (item != nullptr) {
+            item_num = Item_GetIndex(item);
+        }
+    }
+
+    if (item_num >= Item_GetLevelCount()) {
+        LOG_WARNING("Not restoring item %d: the level has no such item", index);
+        return NO_ITEM;
+    }
+    const OBJECT_ID level_object_id = Item_Get(item_num)->object_id;
+    if (is_level_changed && !M_IsValidItemObject(object_id, level_object_id)) {
+        LOG_WARNING(
+            "Not restoring item %d: the level has %s there, the save has %s",
+            index, Object_GetName(level_object_id), Object_GetName(object_id));
+        return NO_ITEM;
+    }
+    return item_num;
+}
+
+// An item with a creator waits for the creator to make it again. Any other is
+// placed in its slot, to be initialised by the save.
+static int16_t M_ReserveSpawnedItem(
+    JSON_READ_IO *const io, const int16_t index, const OBJECT_ID object_id,
+    const int16_t creator_num)
+{
+    if (!Object_Get(object_id)->loaded) {
+        LOG_WARNING(
+            "Not restoring item %d: %s is not loaded", index,
+            Object_GetName(object_id));
+        return NO_ITEM;
+    }
+    int16_t room_num = NO_ROOM;
+    if (!Result_Absorb(JSON_READ(io, "room_num", &room_num))) {
+        return NO_ITEM;
+    }
+    // An item out of the world, carried or held, is still set up in a room
+    // before it leaves it.
+    if (room_num == NO_ROOM) {
+        room_num = 0;
+    }
+    if (Room_Get(room_num) == nullptr) {
+        LOG_WARNING(
+            "Not restoring item %d: the level has no room %d", index, room_num);
+        return NO_ITEM;
+    }
+    XYZ_32 pos = {};
+    XYZ_16 rot = {};
+    if (!Result_Absorb(JSON_READ(io, "pos", &pos))
+        || !Result_Absorb(JSON_READ(io, "rot", &rot))) {
+        return NO_ITEM;
+    }
+    if (!Item_Reserve(index, creator_num)) {
+        LOG_WARNING("Not restoring item %d: the slot is taken", index);
+        return NO_ITEM;
+    }
+    if (creator_num != NO_ITEM) {
+        return index;
+    }
+
+    ITEM *const item = Item_Get(index);
+    item->object_id = object_id;
+    item->room_num = room_num;
+    item->pos = pos;
+    item->rot = rot;
+    m_PlacedItems[index] = true;
+    return index;
+}
+
+// Level items are matched by name where they have one, so a level whose items
+// moved since the save still finds them. A changed level also has its items
+// checked against the save's objects, and an item spawned during play never
+// takes a slot the level now fills.
+static int16_t M_ReserveItem(
+    JSON_READ_IO *const io, const int32_t saved_level_count,
+    const bool is_level_changed)
+{
+    int16_t index = NO_ITEM;
+    if (!Result_Absorb(JSON_READ(io, "index", &index))) {
+        return NO_ITEM;
+    }
+    if (index < 0 || index >= MAX_ITEMS) {
+        LOG_WARNING("invalid item index %d", index);
+        return NO_ITEM;
+    }
+    OBJECT_ID object_id = NO_OBJECT;
+    if (!SHOULD(M_ReadObjectID(io, "object_id", &object_id))) {
+        SaveGame_NoteDropped("an item");
+        return NO_ITEM;
+    }
+
+    int16_t creator_num = NO_ITEM;
+    if (!Result_Absorb(JSON_READ_OPT(io, "creator", &creator_num))) {
+        return NO_ITEM;
+    }
+    if (creator_num < saved_level_count) {
+        creator_num = NO_ITEM;
+    }
+
+    if (index >= saved_level_count && m_SavedItems[index]) {
+        LOG_WARNING("Not restoring item %d: the save holds it twice", index);
+        return NO_ITEM;
+    }
+    const int16_t item_num = index < saved_level_count
+        ? M_ResolveLevelItem(io, index, object_id, is_level_changed)
+        : M_ReserveSpawnedItem(io, index, object_id, creator_num);
+    if (item_num == NO_ITEM) {
+        return NO_ITEM;
+    }
+    if (m_SavedItems[item_num]) {
+        LOG_WARNING("Not restoring item %d: the save holds it twice", index);
+        return NO_ITEM;
+    }
+    m_SavedItems[item_num] = true;
+    return item_num;
+}
+
+static RESULT M_ReadSavedItem(JSON_READ_IO *const io, const int16_t item_num)
+{
+    if (JSON_ReadIO_HasKey(io, "name")) {
+        const char *name = nullptr;
+        MUST(JSON_READ(io, "name", &name));
+        if (!Item_SetName(item_num, name)) {
+            LOG_WARNING("Item %d cannot take the name '%s'", item_num, name);
+        }
+    }
+    return M_ReadItemAt(io, item_num);
+}
+
+// Every slot the level owns is in the save, and every other live item, in its
+// slot. The level has set up its own items again. The save reserves the slots
+// of the others before any is set up, those an item makes as it is
+// initialised for that item to make again, then reads them all. An item whose
+// creator did not make it again is set up on its own.
+static RESULT M_LoadItems(JSON_READ_IO *const io)
+{
+    int32_t saved_level_count = Item_GetLevelCount();
+    MUST(JSON_READ_OPT(io, "level_item_count", &saved_level_count));
+    const bool is_level_changed = saved_level_count != Item_GetLevelCount();
+    if (is_level_changed) {
+        LOG_WARNING(
+            "The level had %d items when saved and has %d now",
+            saved_level_count, Item_GetLevelCount());
+    }
+
+    memset(m_SavedItems, 0, sizeof(m_SavedItems));
+    memset(m_PlacedItems, 0, sizeof(m_PlacedItems));
+    MUST(JSON_PUSH(io, "items"));
+    const int32_t count = MIN(JSON_ARRAY_LEN(io), MAX_ITEMS);
+    for (int32_t i = 0; i < count; i++) {
+        MUST(JSON_PUSH_INDEX(io, i));
+        m_EntryItems[i] =
+            M_ReserveItem(io, saved_level_count, is_level_changed);
+        MUST(JSON_POP(io));
+    }
+
+    for (int16_t i = 0; i < Item_GetTotalCount(); i++) {
+        if (m_PlacedItems[i]) {
+            Item_Initialise(i);
+        }
+    }
+
+    for (int32_t i = 0; i < count; i++) {
+        const int16_t item_num = m_EntryItems[i];
+        if (item_num < saved_level_count || m_PlacedItems[item_num]
+            || !Item_Get(item_num)->is_destroyed) {
+            continue;
+        }
+        MUST(JSON_PUSH_INDEX(io, i));
+        OBJECT_ID object_id = NO_OBJECT;
+        MUST(M_ReadObjectID(io, "object_id", &object_id));
+        m_EntryItems[i] =
+            M_ReserveSpawnedItem(io, item_num, object_id, NO_ITEM);
+        MUST(JSON_POP(io));
+        if (m_EntryItems[i] != NO_ITEM) {
+            Item_Initialise(m_EntryItems[i]);
+        }
+    }
+
+    Savegame_ProcessItemsBeforeLoad();
+    for (int32_t i = 0; i < count; i++) {
+        if (m_EntryItems[i] == NO_ITEM) {
+            continue;
+        }
+        MUST(JSON_PUSH_INDEX(io, i));
+        MUST(M_ReadSavedItem(io, m_EntryItems[i]));
+        MUST(JSON_POP(io));
+    }
+    MUST(JSON_POP(io));
+    return OK;
+}
+
+static RESULT M_LoadLegacyItems(JSON_READ_IO *const io)
+{
+    memset(m_ReadPositions, 0, sizeof(m_ReadPositions));
+    MUST(JSON_PUSH(io, "items"));
+    const int32_t count = JSON_ARRAY_LEN(io);
+    Savegame_ProcessItemsBeforeLoad();
+    for (int32_t i = 0; i < count; i++) {
+        MUST(JSON_PUSH_INDEX(io, i));
+        MUST(M_ReadItem(io, i));
+        MUST(JSON_POP(io));
+    }
+    MUST(JSON_POP(io));
+
+    // These saves hold no floor heights, so those of the items that moved are
+    // worked out again once every item is in place.
+    for (int16_t i = 0; i < Item_GetTotalCount(); i++) {
+        ITEM *const item = Item_Get(i);
+        const OBJECT *const obj = Object_Get(item->object_id);
+        if (!m_ReadPositions[i]
+            || (obj->shadow_size == 0 && !obj->load_floor)) {
+            continue;
+        }
+        int16_t room_num = item->room_num;
+        const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+        item->floor = Room_GetHeight(sector, item->pos);
+    }
     return OK;
 }
 
@@ -1193,19 +1455,10 @@ RESULT SG_File_LoadLara(JSON_READ_IO *const io)
 
 RESULT SG_File_LoadItems(JSON_READ_IO *const io)
 {
-    MUST(JSON_PUSH(io, "items"));
-    const int32_t count = JSON_ARRAY_LEN(io);
-
-    Savegame_ProcessItemsBeforeLoad();
-
-    for (int32_t i = 0; i < count; i++) {
-        MUST(JSON_PUSH_INDEX(io, i));
-        MUST(M_ReadItem(io, i));
-        MUST(JSON_POP(io));
+    if (JSON_ReadIO_GetVersion(io) < SG_VERSION_22) {
+        return M_LoadLegacyItems(io);
     }
-
-    MUST(JSON_POP(io));
-    return OK;
+    return M_LoadItems(io);
 }
 
 RESULT SG_File_LoadEffects(JSON_READ_IO *const io)
@@ -1249,6 +1502,10 @@ RESULT SG_File_LoadFX(JSON_READ_IO *const io)
 
 RESULT SG_File_LoadFlares(JSON_READ_IO *const io)
 {
+    // Saves since SG_VERSION_22 keep flares with the other items.
+    if (!JSON_ReadIO_HasKey(io, "flares")) {
+        return OK;
+    }
     MUST(JSON_PUSH(io, "flares"));
     const int32_t count = JSON_ARRAY_LEN(io);
     for (int32_t i = 0; i < count; i++) {

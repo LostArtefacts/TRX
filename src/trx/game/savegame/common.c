@@ -24,16 +24,12 @@ static void M_LoadPostprocess(void)
 {
     // TODO: tidy this; skidoo drivers currently require handle_save_func to be
     // called immediately on load within the strategies.
-    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+    for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
+        if (!Savegame_IsSavedItem(i)) {
+            continue;
+        }
         ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);
-
-        if (obj->save_position && (obj->shadow_size != 0 || obj->load_floor)) {
-            int16_t room_num = item->room_num;
-            const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
-            item->floor = Room_GetHeight(sector, item->pos);
-        }
-
         // TODO: make this engine-agnostic
         if (g_TRVersion == 1 && obj->handle_save_func != nullptr) {
             obj->handle_save_func(item, SAVEGAME_STAGE_AFTER_LOAD);
@@ -83,9 +79,20 @@ bool Savegame_IsManualSaveAllowed(void)
         && crystal_mode != SAVE_CRYSTAL_SAVE_PICKUP;
 }
 
+bool Savegame_IsSavedItem(const int32_t item_num)
+{
+    if (item_num == Lara_GetLaraInfo()->gun_item_num) {
+        return false;
+    }
+    return item_num < Item_GetLevelCount() || !Item_Get(item_num)->is_destroyed;
+}
+
 void Savegame_ProcessItemsBeforeSave(void)
 {
-    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+    for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
+        if (!Savegame_IsSavedItem(i)) {
+            continue;
+        }
         ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->handle_save_func != nullptr) {
@@ -96,7 +103,10 @@ void Savegame_ProcessItemsBeforeSave(void)
 
 void Savegame_ProcessItemsBeforeLoad(void)
 {
-    for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
+    for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
+        if (!Savegame_IsSavedItem(i)) {
+            continue;
+        }
         ITEM *const item = Item_Get(i);
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->handle_save_func != nullptr) {

@@ -63,7 +63,7 @@ static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
-    p->dragon_item_num = Item_CreateLevelItem();
+    p->dragon_item_num = Item_Create();
     ASSERT(p->dragon_item_num != NO_ITEM);
 
     ITEM *const dragon_item = Item_Get(p->dragon_item_num);

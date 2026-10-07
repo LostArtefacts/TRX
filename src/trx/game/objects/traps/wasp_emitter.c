@@ -52,7 +52,7 @@ static void M_Initialise(const int16_t item_num)
     ITEM *const item = Item_Get(item_num);
     M_PRIV *const p = item->priv;
     for (int32_t i = 0; i < M_MAX_SLOTS; i++) {
-        const int16_t wasp_item_num = Item_CreateLevelItem();
+        const int16_t wasp_item_num = Item_Create();
         p->slots[i] = wasp_item_num;
         if (wasp_item_num == NO_ITEM) {
             continue;

@@ -35,7 +35,6 @@ RESULT SG_File_LoadMisc(JSON_READ_IO *io);
 // End of reader functions =====================================================
 
 // Start of writer functions ===================================================
-void SG_File_DumpFlares(JSON_WRITE_IO *io);
 void SG_File_DumpEffects(JSON_WRITE_IO *io);
 void SG_File_DumpInventory(JSON_WRITE_IO *io);
 void SG_File_DumpFlipmaps(JSON_WRITE_IO *io);
