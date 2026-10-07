@@ -3,6 +3,7 @@
 #include <trx/core/colors.h>
 #include <trx/core/math.h>
 #include <trx/game/items/const.h>
+#include <trx/game/items/types.h>
 #include <trx/game/rooms/enum.h>
 #include <trx/game/types.h>
 
@@ -79,6 +80,18 @@ typedef struct WALKABLE {
     XYZ_32 pos;
     struct WALKABLE *next;
 } WALKABLE;
+
+// Named arguments for the floor and ceiling lookups. Members left out of the
+// initializer take their zero defaults.
+typedef struct {
+    // Read the surface at (x,z) rather than the sector's own plane.
+    bool fix_tilts;
+    // A walkable to leave out, such as the block doing the asking.
+    const ITEM *ignore_item;
+    // The item the lookup is made for. Walkables whose surfaces depend on
+    // where the asker stands read it, and fall back to Lara without one.
+    const ITEM *subject;
+} ROOM_HEIGHT_CTX;
 
 typedef struct {
     SPLIT_TYPE type;

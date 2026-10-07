@@ -87,7 +87,8 @@ static bool M_IsWithinFootprint(const ITEM *const item, const XYZ_32 pos)
 }
 
 static int32_t M_GetFloorHeight(
-    const ITEM *const item, const XYZ_32 pos, const int32_t height)
+    const ITEM *const item, const XYZ_32 pos, const int32_t height,
+    const ROOM_HEIGHT_CTX *const ctx)
 {
     if (!M_IsWithinFootprint(item, pos)) {
         return height;
@@ -101,7 +102,8 @@ static int32_t M_GetFloorHeight(
 }
 
 static int32_t M_GetCeilingHeight(
-    const ITEM *const item, const XYZ_32 pos, const int32_t height)
+    const ITEM *const item, const XYZ_32 pos, const int32_t height,
+    const ROOM_HEIGHT_CTX *const ctx)
 {
     if (!M_IsWithinFootprint(item, pos)) {
         return height;
@@ -119,8 +121,9 @@ static bool M_IsLaraOnItem(const ITEM *const item, const ITEM *const lara_item)
     if (!M_IsWithinFootprint(item, lara_item->pos)) {
         return false;
     }
-    const int32_t height =
-        M_GetFloorHeight(item, lara_item->pos, lara_item->pos.y + 1);
+    const int32_t height = M_GetFloorHeight(
+        item, lara_item->pos, lara_item->pos.y + 1,
+        &(ROOM_HEIGHT_CTX) { .subject = lara_item });
     return height == item->pos.y;
 }
 

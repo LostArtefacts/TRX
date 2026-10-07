@@ -787,7 +787,8 @@ bool Room_FindValidPos(XYZ_32 *const out_pos, int16_t *const out_room_num)
                     .z = ROUND_TO_SECTOR(z + dz * unit) + WALL_L / 2,
                 };
                 sector = Room_GetSector(point, &room_num);
-                height = Room_GetHeightEx(sector, point, true, NO_ITEM);
+                height = Room_GetHeightEx(
+                    sector, point, &(ROOM_HEIGHT_CTX) { .fix_tilts = true });
                 if (height == NO_HEIGHT) {
                     continue;
                 }

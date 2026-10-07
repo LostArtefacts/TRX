@@ -411,7 +411,10 @@ XZ_16 Room_GetTiltType(const SECTOR *sector, const XYZ_32 pos)
 int32_t Room_GetHeight(const SECTOR *const sector, const XYZ_32 pos)
 {
     return Room_GetHeightEx(
-        sector, pos, g_Config.gameplay.fix_wall_geometry, NO_ITEM);
+        sector, pos,
+        &(ROOM_HEIGHT_CTX) {
+            .fix_tilts = g_Config.gameplay.fix_wall_geometry,
+        });
 }
 
 int32_t Room_GetFloorHeightForSector(
@@ -426,8 +429,8 @@ int32_t Room_GetFloorHeightForSector(
 }
 
 int32_t Room_GetHeightEx(
-    const SECTOR *const sector, const XYZ_32 pos, const bool fix_tilts,
-    const int16_t ignore_item_num)
+    const SECTOR *const sector, const XYZ_32 pos,
+    const ROOM_HEIGHT_CTX *const ctx)
 {
     m_HeightType = HT_WALL;
 
@@ -437,7 +440,8 @@ int32_t Room_GetHeightEx(
     if (Room_IsAbyssHeight(height)) {
         height = m_AbyssMaxHeight;
     } else {
-        height = M_GetSurfaceHeight(pit_sector->floor, pos.x, pos.z, fix_tilts);
+        height =
+            M_GetSurfaceHeight(pit_sector->floor, pos.x, pos.z, ctx->fix_tilts);
     }
 
     // Climb the stack of walkables. In each iteration the test Y pos is moved
@@ -446,15 +450,15 @@ int32_t Room_GetHeightEx(
     int32_t base_height = height;
     XYZ_32 test_pos = pos;
     for (const WALKABLE *w = pit_sector->walkable; w != nullptr; w = w->next) {
-        if (w->item_num == ignore_item_num) {
+        const ITEM *const item = Item_Get(w->item_num);
+        if (item == ctx->ignore_item) {
             continue;
         }
-        const ITEM *const item = Item_Get(w->item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->floor_height_func == nullptr) {
             continue;
         }
-        height = obj->floor_height_func(item, test_pos, height);
+        height = obj->floor_height_func(item, test_pos, height, ctx);
         test_pos.y = MIN(pos.y, height);
     }
 
@@ -468,23 +472,31 @@ int32_t Room_GetHeightEx(
 
 int32_t Room_GetCeiling(const SECTOR *const sector, const XYZ_32 pos)
 {
-    return Room_GetCeilingEx(sector, pos, g_Config.gameplay.fix_wall_geometry);
+    return Room_GetCeilingEx(
+        sector, pos,
+        &(ROOM_HEIGHT_CTX) {
+            .fix_tilts = g_Config.gameplay.fix_wall_geometry,
+        });
 }
 
 int32_t Room_GetCeilingEx(
-    const SECTOR *const sector, const XYZ_32 pos, const bool fix_tilts)
+    const SECTOR *const sector, const XYZ_32 pos,
+    const ROOM_HEIGHT_CTX *const ctx)
 {
     const SECTOR *const sky_sector = Room_GetSkySector(sector, pos.x, pos.z);
     int32_t height =
-        M_GetSurfaceHeight(sky_sector->ceiling, pos.x, pos.z, fix_tilts);
+        M_GetSurfaceHeight(sky_sector->ceiling, pos.x, pos.z, ctx->fix_tilts);
 
     const SECTOR *const pit_sector = Room_GetPitSector(sector, pos.x, pos.z);
 
     for (const WALKABLE *w = pit_sector->walkable; w != nullptr; w = w->next) {
         const ITEM *const item = Item_Get(w->item_num);
+        if (item == ctx->ignore_item) {
+            continue;
+        }
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->ceiling_height_func != nullptr) {
-            height = obj->ceiling_height_func(item, pos, height);
+            height = obj->ceiling_height_func(item, pos, height, ctx);
         }
     }
 
@@ -623,8 +635,8 @@ bool Room_IsOnWalkable(
         const ITEM *const item = Item_Get(w->item_num);
         const OBJECT *const obj = Object_Get(item->object_id);
         if (obj->floor_height_func != nullptr) {
-            const int32_t test_height =
-                obj->floor_height_func(item, pos, height);
+            const int32_t test_height = obj->floor_height_func(
+                item, pos, height, &(ROOM_HEIGHT_CTX) {});
             // If the floor height changed, try to climb the walkable stack.
             if (test_height != height) {
                 // Check if height changed, i.e. standing on a walkable.

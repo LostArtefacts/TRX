@@ -85,8 +85,10 @@ static void M_CrouchShift(ITEM *const item, COLL_INFO *const coll)
             item->pos, Lara_GetLaraInfo()->move_angle, STEP_L / 8);
         int16_t room_num = item->room_num;
         const SECTOR *const sector = Room_GetSector(pos, &room_num);
-        const int32_t height = Room_GetHeightEx(sector, pos, true, NO_ITEM);
-        const int32_t ceiling = Room_GetCeilingEx(sector, pos, true);
+        const int32_t height = Room_GetHeightEx(
+            sector, pos, &(ROOM_HEIGHT_CTX) { .fix_tilts = true });
+        const int32_t ceiling = Room_GetCeilingEx(
+            sector, pos, &(ROOM_HEIGHT_CTX) { .fix_tilts = true });
         if (ABS(height - ceiling) < ABS(M_CROUCH_CEILING_THRESHOLD)) {
             item->pos = coll->old_pos;
             return;

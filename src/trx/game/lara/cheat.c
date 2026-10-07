@@ -309,8 +309,10 @@ bool Lara_Cheat_Teleport(XYZ_32 pos, int16_t room_num)
     }
 
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
-    const int32_t height = Room_GetHeightEx(sector, pos, true, NO_ITEM);
-    const int32_t ceiling = Room_GetCeilingEx(sector, pos, true);
+    const int32_t height =
+        Room_GetHeightEx(sector, pos, &(ROOM_HEIGHT_CTX) { .fix_tilts = true });
+    const int32_t ceiling = Room_GetCeilingEx(
+        sector, pos, &(ROOM_HEIGHT_CTX) { .fix_tilts = true });
     if (height == NO_HEIGHT || ceiling == NO_HEIGHT) {
         return false;
     }

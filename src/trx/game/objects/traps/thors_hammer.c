@@ -165,7 +165,8 @@ static void M_AddWalkable(const int16_t item_num)
 }
 
 static int32_t M_GetFloorHeight(
-    const ITEM *const item, const XYZ_32 pos, const int32_t height)
+    const ITEM *const item, const XYZ_32 pos, const int32_t height,
+    const ROOM_HEIGHT_CTX *const ctx)
 {
     if (item->current_anim_state != M_STATE_DONE) {
         return height;
@@ -183,7 +184,8 @@ static int32_t M_GetFloorHeight(
 }
 
 static int32_t M_GetCeilingHeight(
-    const ITEM *const item, const XYZ_32 pos, const int32_t height)
+    const ITEM *const item, const XYZ_32 pos, const int32_t height,
+    const ROOM_HEIGHT_CTX *const ctx)
 {
     if (item->current_anim_state != M_STATE_DONE) {
         return height;
