@@ -45,6 +45,7 @@
 - Added a `blocks_portal` property to trapdoors to make them behave like in TR4+
 - Fixed a crash if Lara tried to aim at an enemy who had invalid animation data (#6744 / TRX1632)
 - Fixed missing names for the Trigger Gate object, and being unable to activate them via the `/trigger` command
+- Fixed injections that change how an object behaves carrying over to later levels and mods, such as spiders acting as wolves in TR2 after playing TR2 Gold, and enemy jeeps in TR4 (TRX1686)
 
 **Weapons and ammunition**
 - Fixed the BFG9000 blast passing through friendly creatures
