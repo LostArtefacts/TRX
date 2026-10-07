@@ -36,6 +36,10 @@ RESULT Audio_Stream_CreateFromMemory(
 RESULT Audio_Stream_Close(int32_t sound_id);
 bool Audio_Stream_IsLooped(int32_t sound_id);
 RESULT Audio_Stream_SetVolume(int32_t sound_id, float volume);
+// Brings the stream in from silence over the given time, or takes it out to
+// silence and ends it, calling its finish callback as if it had run out.
+RESULT Audio_Stream_FadeIn(int32_t sound_id, double seconds);
+RESULT Audio_Stream_FadeOut(int32_t sound_id, double seconds);
 
 // Play the stream faster or slower, pitching it with the rate the way a tape
 // does. Timestamps stay in the source timeline.
