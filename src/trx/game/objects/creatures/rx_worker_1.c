@@ -17,7 +17,6 @@
 #define M_DUCK_TURN       DEG_1              // = 182
 #define M_SHOOT_1_CHANCE  0x2000
 #define M_SHOOT_2_CHANCE  0x4000
-#define M_DUCK_CHANCE     0x3
 #define M_DUCK_END_CHANCE 0x1F
 // clang-format on
 
@@ -81,12 +80,6 @@ static void M_FireFinalShot(
 
     Creature_FireFinalShot(
         item, &m_Gun, p->damage * 3, SFX_LONDON_SWAT_FIRE, head, torso_y);
-}
-
-static bool M_ShouldDuck(const ITEM *const item, const bool near_cover)
-{
-    return item->hit_status && (Random_GetControl() & M_DUCK_CHANCE) == 0
-        && near_cover;
 }
 
 static void M_Control(const int16_t item_num)
@@ -278,7 +271,7 @@ static void M_Control(const int16_t item_num)
             if (!Creature_Shoot(item, &info, &m_Gun, torso_y, p->damage)) {
                 item->required_anim_state = M_STATE_WAIT;
             }
-        } else if (M_ShouldDuck(item, near_cover)) {
+        } else if (Creature_ShouldDuck(item, near_cover)) {
             item->required_anim_state = M_STATE_DUCK_START;
             item->goal_anim_state = M_STATE_WAIT;
         }
@@ -305,7 +298,7 @@ static void M_Control(const int16_t item_num)
             if (!Creature_Shoot(item, &info, &m_Gun, torso_y, p->damage)) {
                 item->goal_anim_state = M_STATE_WAIT;
             }
-        } else if (M_ShouldDuck(item, near_cover)) {
+        } else if (Creature_ShouldDuck(item, near_cover)) {
             item->required_anim_state = M_STATE_DUCK_START;
             item->goal_anim_state = M_STATE_WAIT;
         }
@@ -322,7 +315,7 @@ static void M_Control(const int16_t item_num)
             if (!Creature_Shoot(item, &info, &m_Gun, torso_y, p->damage)) {
                 item->goal_anim_state = M_STATE_WAIT;
             }
-        } else if (M_ShouldDuck(item, near_cover)) {
+        } else if (Creature_ShouldDuck(item, near_cover)) {
             item->required_anim_state = M_STATE_DUCK_START;
             item->goal_anim_state = M_STATE_WAIT;
         }
@@ -339,7 +332,7 @@ static void M_Control(const int16_t item_num)
             if (!Creature_Shoot(item, &info, &m_Gun, torso_y, p->damage)) {
                 item->required_anim_state = M_STATE_WALK;
             }
-        } else if (M_ShouldDuck(item, near_cover)) {
+        } else if (Creature_ShouldDuck(item, near_cover)) {
             item->required_anim_state = M_STATE_DUCK_START;
             item->goal_anim_state = M_STATE_WAIT;
         }

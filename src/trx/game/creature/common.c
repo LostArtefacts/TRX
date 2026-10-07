@@ -35,6 +35,7 @@
 #define M_MAX_TILT         (3 * DEG_1) // = 546
 #define M_MAX_HEAD_CHANGE  (5 * DEG_1) // = 910
 #define M_MAX_JOINT_CHANGE (5 * DEG_1) // = 910
+#define M_DUCK_CHANCE      0x3
 #define M_HEAD_ARC         (g_TRVersion == 1 ? FRONT_ARC : 0x3000) // = 16384 (TR1), 12288 (TR2)
 #define M_JOINT_ARC        0x3000
 #define M_MAX_X_ROT        (20 * DEG_1) // = 3640
@@ -1039,6 +1040,12 @@ bool Creature_IsNearCover(const ITEM *const item, const AI_INFO *const info)
     return item->pos.y > height + STEPUP_HEIGHT
         && item->pos.y < height + STEPUP_HEIGHT * 3
         && info->distance > SQUARE(WALL_L);
+}
+
+bool Creature_ShouldDuck(const ITEM *const item, const bool near_cover)
+{
+    return item->hit_status && (Random_GetControl() & M_DUCK_CHANCE) == 0
+        && near_cover;
 }
 
 void Creature_Collision(

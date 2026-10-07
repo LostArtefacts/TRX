@@ -60,6 +60,8 @@ bool Creature_CanTargetEnemy(const ITEM *item, const AI_INFO *info);
 // Whether a step ahead of the creature, towards the angle in the AI info,
 // is high enough to duck behind, and the enemy is far enough away.
 bool Creature_IsNearCover(const ITEM *item, const AI_INFO *info);
+// Whether a creature that was just hit near cover ducks behind it.
+bool Creature_ShouldDuck(const ITEM *item, bool near_cover);
 void Creature_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt);
 
