@@ -83,29 +83,9 @@ static void M_FireFinalShot(
         return;
     }
 
-    AI_INFO info = {};
-    Creature_AIInfo(item, &info);
-
-    if (!Creature_CanTargetEnemy(item, &info) || ABS(info.angle) >= DEG_45) {
-        return;
-    }
-
-    *head = info.angle;
-    *torso_y = info.angle;
-    Creature_Shoot(item, &info, &m_GuardGun, info.angle, p->final_shot_damage);
-    Sound_Effect(SFX_SECURITY_GUARD_FIRE, &item->pos, SPM_NORMAL);
-}
-
-static bool M_IsNearCover(const ITEM *const item, const AI_INFO *const info)
-{
-    const XYZ_32 pos =
-        XYZ_32_OffsetYaw(item->pos, item->rot.y + info->angle, WALL_L);
-    int16_t room_num = item->room_num;
-    const SECTOR *const sector = Room_GetSector(pos, &room_num);
-    const int32_t height = Room_GetHeight(sector, pos);
-    return item->pos.y > height + STEPUP_HEIGHT
-        && item->pos.y < height + STEPUP_HEIGHT * 3
-        && info->distance > M_ALERT_DIST;
+    Creature_FireFinalShot(
+        item, &m_GuardGun, p->final_shot_damage, SFX_SECURITY_GUARD_FIRE, head,
+        torso_y);
 }
 
 static bool M_ShouldDuck(const ITEM *const item, const bool near_cover)
@@ -166,7 +146,7 @@ static void M_Control(const int16_t item_num)
 
     Creature_Mood(item, &info, creature->enemy != lara_item);
     angle = Creature_Turn(item, creature->maximum_turn);
-    const bool near_cover = M_IsNearCover(item, &lara_info);
+    const bool near_cover = Creature_IsNearCover(item, &lara_info);
 
     ITEM *const enemy = creature->enemy;
     creature->enemy = lara_item;

@@ -8,6 +8,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/random.h>
 #include <trx/game/rooms.h>
+#include <trx/game/sound.h>
 #include <trx/game/sparks/spawners.h>
 #include <trx/game/spawn.h>
 #include <trx/version.h>
@@ -202,4 +203,20 @@ bool Creature_Shoot(
         nullptr, NO_OBJECT);
 
     return is_targetable;
+}
+
+void Creature_FireFinalShot(
+    ITEM *const item, const CREATURE_GUN *const gun, const int32_t damage,
+    const SAMPLE_ID sfx, int16_t *const head, int16_t *const torso_y)
+{
+    AI_INFO info = {};
+    Creature_AIInfo(item, &info);
+    if (!Creature_CanTargetEnemy(item, &info) || ABS(info.angle) >= DEG_45) {
+        return;
+    }
+
+    *head = info.angle;
+    *torso_y = info.angle;
+    Creature_Shoot(item, &info, gun, info.angle, damage);
+    Sound_Effect(sfx, &item->pos, SPM_NORMAL);
 }
