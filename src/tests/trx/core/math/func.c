@@ -68,3 +68,23 @@ TEST(gcd_reduces_and_handles_zero_from_either_side)
     CHECK_EQ_INT(Math_GCD(5, 0), 5);
     CHECK_EQ_INT(Math_GCD(0, 5), 5);
 }
+
+TEST(apply_percent_is_exact_at_percent_steps)
+{
+    // 0.15f and 0.3f sit a hair above the real values, so a float product
+    // rounded up would give 16 and 31.
+    CHECK_EQ_INT(Math_ApplyPercent(100, 0.15f), 15);
+    CHECK_EQ_INT(Math_ApplyPercent(100, 0.3f), 30);
+    CHECK_EQ_INT(Math_ApplyPercent(200, 0.6f), 120);
+    CHECK_EQ_INT(Math_ApplyPercent(1000, 10.0f), 10000);
+    CHECK_EQ_INT(Math_ApplyPercent(37, 1.0f), 37);
+}
+
+TEST(apply_percent_rounds_up_between_steps)
+{
+    CHECK_EQ_INT(Math_ApplyPercent(5, 0.1f), 1);
+    CHECK_EQ_INT(Math_ApplyPercent(1, 0.1f), 1);
+    CHECK_EQ_INT(Math_ApplyPercent(7, 0.25f), 2);
+    CHECK_EQ_INT(Math_ApplyPercent(0, 10.0f), 0);
+    CHECK_EQ_INT(Math_ApplyPercent(-7, 0.25f), -1);
+}
