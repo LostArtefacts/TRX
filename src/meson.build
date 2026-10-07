@@ -542,6 +542,7 @@ common_sources = [
   'trx/game/lua/capi/events.c',
   'trx/game/lua/capi/fx.c',
   'trx/game/lua/capi/game.c',
+  'trx/game/lua/capi/hooks.c',
   'trx/game/lua/capi/inject.c',
   'trx/game/lua/capi/input.c',
   'trx/game/lua/capi/inventory.c',

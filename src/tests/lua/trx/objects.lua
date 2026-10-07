@@ -446,4 +446,21 @@ test("a family no name answers to is refused", function()
   end)
 end)
 
+test("a declared object runs its control for each item", function()
+  local ran
+  trx.objects.declare(fake.VASE, {
+    control = function(item)
+      ran = item
+    end,
+  })
+  fake.control(1)
+  assert(ran ~= nil, "control did not run")
+end)
+
+test("a declared control must be a function", function()
+  raises(function()
+    trx.objects.declare(fake.KEY, { control = 5 })
+  end, "'control' must be a function")
+end)
+
 return h.report()

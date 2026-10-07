@@ -1,4 +1,5 @@
 local raw = trxc.objects
+local hooks = trxc.hooks
 local h = require("trx.internal.helpers")
 
 require("trx.strings")
@@ -502,8 +503,20 @@ h.properties(M, "objects", {
 ---```
 ---@param object_id trx.catalog.objects The object created with `trx.catalog.mint`.
 ---@param spec table The object setup: `control`, `initialise`, `radius`, `shadow_size` and `save_position`. <!--noref: control--><!--noref: initialise--><!--noref: radius--><!--noref: shadow_size--><!--noref: save_position-->
----@type fun(object_id: trx.catalog.objects, spec: table)
-M.declare = raw.declare
+function M.declare(object_id, spec)
+  for _, name in ipairs({ "control", "initialise" }) do
+    if spec[name] ~= nil and type(spec[name]) ~= "function" then
+      error(string.format("'%s' must be a function", name), 2)
+    end
+  end
+  raw.declare(object_id, spec)
+  local object = assert(raw.get(object_id))
+  for _, name in ipairs({ "control", "initialise" }) do
+    if spec[name] ~= nil then
+      hooks.set_object(object, name, spec[name])
+    end
+  end
+end
 
 ---Copies meshes and animations from another object. Use this when the new
 ---object has no models in the level, such as a custom projectile that uses the

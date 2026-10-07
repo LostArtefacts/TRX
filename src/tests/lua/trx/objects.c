@@ -6,6 +6,19 @@
 
 #include <fakes/items.h>
 #include <harness/lua_surface.h>
+#include <trx/game/items.h>
+#include <trx/game/objects/common.h>
+
+// Runs the object's control for the item, as the engine does each frame.
+static int M_Control(lua_State *const L)
+{
+    const int16_t item_num = (int16_t)luaL_checkinteger(L, 1);
+    const OBJECT *const obj = Object_Get(Item_Get(item_num)->object_id);
+    if (obj->control_func != nullptr) {
+        obj->control_func(item_num);
+    }
+    return 0;
+}
 
 static void M_PushFake(lua_State *const L)
 {
@@ -25,6 +38,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "DOOR");
     lua_pushinteger(L, FAKE_OBJ_SPRITE);
     lua_setfield(L, -2, "SPRITE");
+    lua_pushcfunction(L, M_Control);
+    lua_setfield(L, -2, "control");
 }
 
 int main(void)

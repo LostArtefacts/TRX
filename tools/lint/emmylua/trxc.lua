@@ -15,6 +15,7 @@
 ---@field events trxc.events
 ---@field fx trxc.fx
 ---@field game trxc.game
+---@field hooks trxc.hooks
 ---@field inject trxc.inject
 ---@field input trxc.input
 ---@field inventory trxc.inventory
@@ -241,6 +242,9 @@ trxc = {}
 ---@field screenshot fun(path?: string)
 ---@field start_new_game fun(ng_plus?: boolean)
 ---@field tr_version fun(): integer
+
+---@class (exact) trxc.hooks
+---@field set_object fun(object: trx.objects.Object, slot: string, fn?: function)
 
 ---@class (exact) trxc.inject
 ---@field declare fun(func: function)
