@@ -24,6 +24,8 @@
 
 #include <string.h>
 
+#define M_CROSSFADE_TIME 2.0
+
 typedef struct {
     int32_t audio_stream_id;
     MUSIC_SLOT track_id;
@@ -53,6 +55,13 @@ static M_MUSIC_STREAM m_MainStream = {
     .active = false,
 };
 static M_MUSIC_STREAM m_OverlayStreams[MUSIC_MAX_OVERLAY_TRACKS] = {};
+// The ambience that a new one has taken over from, still fading out.
+static M_MUSIC_STREAM m_FadingStream = {
+    .audio_stream_id = -1,
+    .track_id = MX_INACTIVE,
+    .mode = MPM_ONCE,
+    .active = false,
+};
 
 static MUSIC_BACKEND *M_FindBackend(void)
 {
@@ -157,11 +166,13 @@ static void M_StopOverlayStreams(void)
     for (int32_t i = 0; i < MUSIC_MAX_OVERLAY_TRACKS; i++) {
         M_StreamClose(&m_OverlayStreams[i]);
     }
+    M_StreamClose(&m_FadingStream);
 }
 
 static void M_ResetStreamState(void)
 {
     M_StreamReset(&m_MainStream);
+    M_StreamReset(&m_FadingStream);
     for (int32_t i = 0; i < MUSIC_MAX_OVERLAY_TRACKS; i++) {
         M_StreamReset(&m_OverlayStreams[i]);
     }
@@ -234,9 +245,23 @@ static void M_SyncVolume(const M_MUSIC_STREAM *const stream)
 static void M_SyncVolumes(void)
 {
     M_SyncVolume(&m_MainStream);
+    M_SyncVolume(&m_FadingStream);
     for (int32_t i = 0; i < MUSIC_MAX_OVERLAY_TRACKS; i++) {
         M_SyncVolume(&m_OverlayStreams[i]);
     }
+}
+
+// Hands the playing ambience over to the fading slot, which ends it once it has
+// faded out, so that the next one can fade in over it.
+static void M_FadeOutMainStream(void)
+{
+    M_StreamClose(&m_FadingStream);
+    m_FadingStream = m_MainStream;
+    M_StreamReset(&m_MainStream);
+    SHOULD(Audio_Stream_SetFinishCallback(
+        m_FadingStream.audio_stream_id, M_StreamFinished, &m_FadingStream));
+    SHOULD(
+        Audio_Stream_FadeOut(m_FadingStream.audio_stream_id, M_CROSSFADE_TIME));
 }
 
 static int32_t M_GetFreeOverlaySlot(void)
@@ -431,7 +456,13 @@ static int32_t M_Play(
     }
 
     bool played = false;
-    M_StopMainStream();
+    const bool crossfade = is_looped && g_Config.audio.enable_ambient_crossfade
+        && m_MainStream.active && m_MainStream.mode == MPM_LOOP;
+    if (crossfade) {
+        M_FadeOutMainStream();
+    } else {
+        M_StopMainStream();
+    }
     if (Shell_GetArgs()->headless) {
         LOG_INFO("Not playing track %d out loud", track_id);
     } else if (m_Backend == nullptr) {
@@ -453,6 +484,9 @@ static int32_t M_Play(
                 stream_id, M_StreamFinished, &m_MainStream));
             if (timestamp > 0.0) {
                 SHOULD(Audio_Stream_SeekTimestamp(stream_id, timestamp));
+            }
+            if (crossfade) {
+                SHOULD(Audio_Stream_FadeIn(stream_id, M_CROSSFADE_TIME));
             }
             SHOULD(Audio_Stream_Unpause(stream_id));
             played = true;
@@ -616,6 +650,9 @@ void Music_Pause(void)
     if (m_MainStream.active && m_MainStream.audio_stream_id >= 0) {
         SHOULD(Audio_Stream_Pause(m_MainStream.audio_stream_id));
     }
+    if (m_FadingStream.active && m_FadingStream.audio_stream_id >= 0) {
+        SHOULD(Audio_Stream_Pause(m_FadingStream.audio_stream_id));
+    }
     for (int32_t i = 0; i < MUSIC_MAX_OVERLAY_TRACKS; i++) {
         if (m_OverlayStreams[i].active
             && m_OverlayStreams[i].audio_stream_id >= 0) {
@@ -628,6 +665,9 @@ void Music_Unpause(void)
 {
     if (m_MainStream.active && m_MainStream.audio_stream_id >= 0) {
         SHOULD(Audio_Stream_Unpause(m_MainStream.audio_stream_id));
+    }
+    if (m_FadingStream.active && m_FadingStream.audio_stream_id >= 0) {
+        SHOULD(Audio_Stream_Unpause(m_FadingStream.audio_stream_id));
     }
     for (int32_t i = 0; i < MUSIC_MAX_OVERLAY_TRACKS; i++) {
         if (m_OverlayStreams[i].active

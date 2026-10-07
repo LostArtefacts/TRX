@@ -945,6 +945,10 @@
             "title": "\\{review}Volume des cinématiques",
             "description": "\\{review}Ajuste le volume des cinématiques en jeu.",
         },
+        "audio.enable_ambient_crossfade": {
+            "title": "\\{review}Fondu des ambiances",
+            "description": "\\{review}Enchaîne une piste d'ambiance en boucle avec la suivante par un fondu lorsqu'elles changent, au lieu de couper la première.",
+        },
         "audio.enable_lara_mic": {
             "title": "Micro sur Lara",
             "description": "Place le micro au niveau de Lara. Si cette option est désactivée, le micro sera placé au niveau de la caméra.",
