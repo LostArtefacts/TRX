@@ -14,6 +14,7 @@
 #include <trx/game/music.h>
 #include <trx/game/output.h>
 #include <trx/game/random.h>
+#include <trx/game/rooms.h>
 #include <trx/game/viewport.h>
 #include <trx/version.h>
 
@@ -219,9 +220,12 @@ void Vehicle_HandleEvent(
         return;
     }
 
-    const int32_t shift = (int32_t)(intptr_t)data;
-    item->pos.y += shift;
-    item->floor += shift;
+    const int32_t height = Item_GetHeight(item);
+    if (height == NO_HEIGHT) {
+        return;
+    }
+    item->pos.y = height;
+    item->floor = height;
 
     int16_t room_num = item->room_num;
     Room_GetSector(item->pos, &room_num);
