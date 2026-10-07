@@ -973,6 +973,10 @@
             "title": "Underwater animation SFX",
             "description": "Allows control over playing specific animation sound effects - for objects such as doors and trapdoors - when the camera is underwater.",
         },
+        "audio.enable_underwater_muffle": {
+            "title": "Muffle ambience underwater",
+            "description": "Muffles the ambience track while the camera is underwater, as if it were heard through the water.",
+        },
         "audio.fix_chainblock_secret_sound": {
             "title": "Fix chain block sound",
             "description": "Prevents the secret sound from incorrectly playing when using the golden key in TR1's Tomb of Tihocan.",

@@ -137,6 +137,9 @@ MUSIC_SLOT Music_GetCurrentLoopedTrack(void);
 // Sets the game volume.
 void Music_SetVolume(float volume);
 
+// Muffles the looping ambience, as if heard through water.
+void Music_SetMuffled(bool is_muffled);
+
 // Resets all track trigger state.
 void Music_ResetTrackStates(void);
 

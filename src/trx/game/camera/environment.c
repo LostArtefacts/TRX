@@ -33,6 +33,9 @@ static void M_AdjustMusicVolume(const bool is_underwater)
         : is_ambient ? g_Config.audio.underwater_ambient_volume
                      : g_Config.audio.underwater_music_volume;
     Music_SetVolume(base_volume * multiplier);
+    Music_SetMuffled(
+        is_underwater && !is_cutscene
+        && g_Config.audio.enable_underwater_muffle);
 }
 
 static inline M_TARGET_STATUS M_HandleCameraTrigger(

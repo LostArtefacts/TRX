@@ -973,6 +973,10 @@
             "title": "Tauch-Animations Sounds",
             "description": "Erlaubt Kontrolle über das Abspielen von bestimmten Animationen und Souneffekten - für Objekte, wie zum Beispiel Türen und Falltüren - wenn die Kamera unter Wasser ist.",
         },
+        "audio.enable_underwater_muffle": {
+            "title": "\\{review}Ambiente unter Wasser dämpfen",
+            "description": "\\{review}Dämpft die Ambiente-Spur, solange die Kamera unter Wasser ist, als würde sie durch das Wasser gehört.",
+        },
         "audio.fix_chainblock_secret_sound": {
             "title": "Fix: Falsch abspielender Sound",
             "description": "\\{review}Verhindert, dass der Geheimnis-Ton inkorrekterweise abgespielt wird, wenn man den Goldenen Schlüssel im Grab von Tihocan in TR1 benutzt.",

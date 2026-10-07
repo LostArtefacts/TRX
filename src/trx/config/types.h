@@ -204,6 +204,7 @@ typedef struct {
         bool enable_pitched_sounds;
         bool load_music_triggers;
         bool enable_underwater_anim_sfx;
+        bool enable_underwater_muffle;
         bool mute_out_of_focus;
 
         MUSIC_LOAD_CONDITION music_load_condition;
