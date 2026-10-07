@@ -33,6 +33,9 @@ static VECTOR *m_MeshPointers = nullptr;
 
 static VECTOR *m_UncatalogedSlots = nullptr;
 
+static void (**m_RegisteredSetups)(OBJECT *obj) = nullptr;
+static int32_t m_RegisteredSetupCount = 0;
+
 static M_MESH_PRIV *M_GetPriv(const OBJECT_MESH *const mesh)
 {
     return (M_MESH_PRIV *)mesh->priv;
@@ -92,6 +95,8 @@ void Object_Reset(void)
         OBJECT *const obj = Object_TryGet(i);
         ObjectProperty_ResetObject(obj);
         obj->loaded = false;
+        obj->setup_func =
+            i < m_RegisteredSetupCount ? m_RegisteredSetups[i] : nullptr;
     }
 
     m_StaticObjects3D = nullptr;
@@ -140,6 +145,16 @@ int32_t Object_GetStaticObjects2DCount(void)
 void Object_Register(
     const OBJECT_ID object_id, void (*const setup_func)(OBJECT *obj))
 {
+    if (object_id >= m_RegisteredSetupCount) {
+        m_RegisteredSetups = Memory_Realloc(
+            m_RegisteredSetups, sizeof(*m_RegisteredSetups) * (object_id + 1));
+        for (int32_t i = m_RegisteredSetupCount; i <= object_id; i++) {
+            m_RegisteredSetups[i] = nullptr;
+        }
+        m_RegisteredSetupCount = object_id + 1;
+    }
+    m_RegisteredSetups[object_id] = setup_func;
+
     OBJECT *const obj = CatalogTable_Claim(&m_Objects, object_id);
     obj->setup_func = setup_func;
 }
