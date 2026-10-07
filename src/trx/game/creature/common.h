@@ -3,6 +3,7 @@
 #include <trx/game/collision.h>
 #include <trx/game/creature/types.h>
 #include <trx/game/items/enum.h>
+#include <trx/game/sound/ids.h>
 
 #define AI_OBJECT_FLAGS_SPENT 255
 // Marks an AI object that a creature walks to exactly, rather than one click
@@ -56,6 +57,9 @@ bool Creature_HasLineOfFire(const ITEM *item, const ITEM *target);
 
 bool Creature_CanSeeEnemy(const ITEM *item, const AI_INFO *info);
 bool Creature_CanTargetEnemy(const ITEM *item, const AI_INFO *info);
+// Whether a step ahead of the creature, towards the angle in the AI info,
+// is high enough to duck behind, and the enemy is far enough away.
+bool Creature_IsNearCover(const ITEM *item, const AI_INFO *info);
 void Creature_Collision(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
 bool Creature_Animate(int16_t item_num, int16_t angle, int16_t tilt);
 
@@ -109,6 +113,11 @@ int16_t Creature_EffectEx(
 bool Creature_Shoot(
     ITEM *item, const AI_INFO *info, const CREATURE_GUN *gun,
     int16_t extra_rotation, int32_t damage);
+// Fires a dying creature's last shot at an enemy within 45 degrees ahead, and
+// turns its head and torso to it. The caller picks the frames it fires on.
+void Creature_FireFinalShot(
+    ITEM *item, const CREATURE_GUN *gun, int32_t damage, SAMPLE_ID sfx,
+    int16_t *head, int16_t *torso_y);
 
 int16_t Creature_AIGuard(CREATURE *creature);
 void Creature_GetAITarget(CREATURE *creature);

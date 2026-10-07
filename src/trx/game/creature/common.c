@@ -1029,6 +1029,18 @@ bool Creature_CanTargetEnemy(const ITEM *const item, const AI_INFO *const info)
     return Creature_HasLineOfFire(item, creature->enemy);
 }
 
+bool Creature_IsNearCover(const ITEM *const item, const AI_INFO *const info)
+{
+    const XYZ_32 pos =
+        XYZ_32_OffsetYaw(item->pos, item->rot.y + info->angle, WALL_L);
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector = Room_GetSector(pos, &room_num);
+    const int32_t height = Room_GetHeight(sector, pos);
+    return item->pos.y > height + STEPUP_HEIGHT
+        && item->pos.y < height + STEPUP_HEIGHT * 3
+        && info->distance > SQUARE(WALL_L);
+}
+
 void Creature_Collision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {

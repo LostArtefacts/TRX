@@ -91,20 +91,11 @@ static void M_FireFinalShot(
         return;
     }
 
-    AI_INFO info = {};
-    Creature_AIInfo(item, &info);
-
-    if (!Creature_CanTargetEnemy(item, &info) || ABS(info.angle) >= DEG_45) {
-        return;
-    }
-
-    *head = info.angle;
-    *torso_y = info.angle;
-    Creature_Shoot(item, &info, &m_SwatGun, info.angle, p->final_shot_damage);
     const SAMPLE_ID fire_sfx = item->object_id == O_SWAT_3
         ? SFX_AMERICAN_SWAT_FIRE
         : SFX_LONDON_SWAT_FIRE;
-    Sound_Effect(fire_sfx, &item->pos, SPM_NORMAL);
+    Creature_FireFinalShot(
+        item, &m_SwatGun, p->final_shot_damage, fire_sfx, head, torso_y);
 }
 
 static void M_Control(const int16_t item_num)
