@@ -462,6 +462,19 @@ void Gun_Flare_Undraw(void)
     M_SetArm(frame_num_1);
 }
 
+void Gun_Flare_Hold(const int16_t age)
+{
+    LARA_INFO *const lara_info = Lara_GetLaraInfo();
+    lara_info->gun_type = Gun_GetFlareType();
+    lara_info->request_gun_type = lara_info->gun_type;
+    lara_info->gun_status = LGS_ARMLESS;
+    lara_info->flare.age = age;
+    lara_info->flare.control = true;
+    lara_info->left_arm.frame_num = LF_FL_HOLD;
+    M_SetArm(LF_FL_HOLD);
+    Gun_Flare_DrawMeshes();
+}
+
 void Gun_Flare_Clear(void)
 {
     LARA_INFO *const lara_info = Lara_GetLaraInfo();

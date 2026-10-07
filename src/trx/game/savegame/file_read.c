@@ -1030,6 +1030,10 @@ static RESULT M_ReadResumeInfo(
     resume->burning = false;
     SHOULD(JSON_READ_OPT(io, "burning", &resume->burning));
 
+    // Introduced in TRX 1.12
+    resume->flare_age = 0;
+    SHOULD(JSON_READ_OPT(io, "flare_age", &resume->flare_age));
+
     MUST(JSON_READ(io, "timer", &resume->stats.timer));
     MUST(JSON_READ(io, "ammo_hits", &resume->stats.ammo_hits));
     MUST(JSON_READ(io, "ammo_used", &resume->stats.ammo_used));

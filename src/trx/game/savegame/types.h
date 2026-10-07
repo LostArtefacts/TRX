@@ -37,6 +37,7 @@ typedef struct {
     int32_t prev_level;
     bool hurt_allies;
     bool burning;
+    int16_t flare_age;
 
     LEVEL_STATS stats;
 } RESUME_INFO;

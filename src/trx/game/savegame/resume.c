@@ -205,6 +205,10 @@ void SG_Resume_StoreGameToEntry(const GF_LEVEL *const level)
         resume->lara_hitpoints = lara_item->hit_points;
     }
     resume->burning = g_TRVersion >= 4 && lara->burn;
+    resume->flare_age = g_TRVersion >= 4 && Gun_IsFlareType(lara->gun_type)
+            && Gun_Flare_IsMeshActive() && !Gun_Flare_HasExpired()
+        ? lara->flare.age
+        : 0;
     M_PersistInventory(resume);
 
     resume->equipped_gun_type = lara->last_gun_type;
