@@ -1,4 +1,5 @@
-#define MAX_LIGHTS 32
+// Matches OUTPUT_MAX_DYNAMIC_LIGHTS in src/trx/game/output/lights.h.
+#define MAX_LIGHTS 64
 
 #define RLM_NORMAL  0
 #define RLM_FLICKER 1
