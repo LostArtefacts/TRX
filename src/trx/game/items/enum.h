@@ -22,10 +22,13 @@ typedef enum {
 } ITEM_DAMAGE_FLAGS;
 
 typedef enum {
+    // Leaves the choice to the object.
+    ITEM_HIT_DEFAULT,
     ITEM_HIT_NONE,
     ITEM_HIT_BLOOD,
     ITEM_HIT_RICOCHET,
     ITEM_HIT_SMOKE,
+    ITEM_HIT_NUMBER_OF,
 } ITEM_HIT_EFFECT;
 
 typedef enum {

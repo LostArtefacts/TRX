@@ -22,6 +22,7 @@ typedef void (*M_FUNC)(void);
 typedef enum {
     M_SLOT_CONTROL,
     M_SLOT_INITIALISE,
+    M_SLOT_HIT_EFFECT,
     M_SLOT_NUMBER_OF,
 } M_SLOT_ID;
 
@@ -89,6 +90,39 @@ static void M_Initialise(const int16_t item_num)
     }
 }
 
+static ITEM_HIT_EFFECT M_HitEffect(const ITEM *const item)
+{
+    const M_HOOK *const hook = M_GetHook(item->object_id, M_SLOT_HIT_EFFECT);
+    if (hook == nullptr) {
+        return ITEM_HIT_BLOOD;
+    }
+
+    ITEM_HIT_EFFECT effect = ITEM_HIT_DEFAULT;
+    if (M_CallForItem(hook, "hit_effect", Item_GetIndex(item), 1)) {
+        if (lua_isinteger(m_L, -1)) {
+            const lua_Integer value = lua_tointeger(m_L, -1);
+            if (value >= 0 && value < ITEM_HIT_NUMBER_OF) {
+                effect = (ITEM_HIT_EFFECT)value;
+            } else {
+                Console_ShowError(
+                    "hit_effect hook error: no such hit effect %d", (int)value);
+            }
+        } else if (!lua_isnil(m_L, -1)) {
+            Console_ShowError(
+                "hit_effect hook error: expected a trx.items.HitEffect");
+        }
+        lua_pop(m_L, 1);
+    }
+
+    if (effect != ITEM_HIT_DEFAULT) {
+        return effect;
+    }
+    if (hook->original != nullptr) {
+        return ((ITEM_HIT_EFFECT (*)(const ITEM *))hook->original)(item);
+    }
+    return ITEM_HIT_BLOOD;
+}
+
 static M_FUNC M_GetControlFunc(const OBJECT *const obj)
 {
     return (M_FUNC)obj->control_func;
@@ -109,6 +143,16 @@ static void M_SetInitialiseFunc(OBJECT *const obj, const M_FUNC func)
     obj->initialise_func = (void (*)(int16_t))func;
 }
 
+static M_FUNC M_GetHitEffectFunc(const OBJECT *const obj)
+{
+    return (M_FUNC)obj->get_hit_effect_func;
+}
+
+static void M_SetHitEffectFunc(OBJECT *const obj, const M_FUNC func)
+{
+    obj->get_hit_effect_func = (ITEM_HIT_EFFECT (*)(const ITEM *))func;
+}
+
 static const M_SLOT m_Slots[M_SLOT_NUMBER_OF] = {
     [M_SLOT_CONTROL] = {
         .name = "control",
@@ -121,6 +165,12 @@ static const M_SLOT m_Slots[M_SLOT_NUMBER_OF] = {
         .get = M_GetInitialiseFunc,
         .set = M_SetInitialiseFunc,
         .trampoline = (M_FUNC)M_Initialise,
+    },
+    [M_SLOT_HIT_EFFECT] = {
+        .name = "hit_effect",
+        .get = M_GetHitEffectFunc,
+        .set = M_SetHitEffectFunc,
+        .trampoline = (M_FUNC)M_HitEffect,
     },
 };
 

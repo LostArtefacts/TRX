@@ -125,6 +125,24 @@ trx.objects.wolf.properties.max_hit_points = 30
       Parameters:
       - <a id="objects.Object.remove_family.family" name="objects.Object.remove_family.family"></a>**`family`** (string). Which family, by the name it answers to.
 
+    - <a id="objects.Object.set_hit_effect" name="objects.Object.set_hit_effect"></a>[lua]`object:set_hit_effect([fn])`  
+      Sets a function that decides what a bullet hit on an item of this type
+      spawns. It receives the item that was hit and returns a
+      [`trx.items.HitEffect`](ITEMS.md#items.HitEffect). Returning nothing or `DEFAULT` leaves the choice to
+      the object, as it is without a script. Pass `nil` to remove the function.
+
+      Parameters:
+      - <a id="objects.Object.set_hit_effect.fn" name="objects.Object.set_hit_effect.fn"></a>**`fn`** (function, optional). The function, or `nil` to remove it.
+        Called with:
+        - <a id="objects.Object.set_hit_effect.item" name="objects.Object.set_hit_effect.item"></a>**`item`** ([trx.items.Item](ITEMS.md#items.Item)).
+
+      Example:
+      ```lua
+      trx.objects.smashable_4:set_hit_effect(function(item)
+        return trx.items.HitEffect.RICOCHET
+      end)
+      ```
+
     - <a id="objects.Object.set_property" name="objects.Object.set_property"></a>[lua]`object:set_property(name, value)`  
       Writes one of the object's properties. Prefer
       `object.properties.<name> = ...`.

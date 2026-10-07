@@ -9,6 +9,18 @@
 #include <trx/game/items.h>
 #include <trx/game/objects/common.h>
 
+// What a bullet hit on the item spawns, as the engine asks it.
+static int M_HitEffect(lua_State *const L)
+{
+    const ITEM *const item = Item_Get((int16_t)luaL_checkinteger(L, 1));
+    const OBJECT *const obj = Object_Get(item->object_id);
+    lua_pushinteger(
+        L,
+        obj->get_hit_effect_func != nullptr ? obj->get_hit_effect_func(item)
+                                            : ITEM_HIT_BLOOD);
+    return 1;
+}
+
 // Runs the object's control for the item, as the engine does each frame.
 static int M_Control(lua_State *const L)
 {
@@ -38,8 +50,18 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "DOOR");
     lua_pushinteger(L, FAKE_OBJ_SPRITE);
     lua_setfield(L, -2, "SPRITE");
+    lua_pushcfunction(L, M_HitEffect);
+    lua_setfield(L, -2, "hit_effect");
     lua_pushcfunction(L, M_Control);
     lua_setfield(L, -2, "control");
+    lua_pushinteger(L, ITEM_HIT_DEFAULT);
+    lua_setfield(L, -2, "HIT_DEFAULT");
+    lua_pushinteger(L, ITEM_HIT_BLOOD);
+    lua_setfield(L, -2, "HIT_BLOOD");
+    lua_pushinteger(L, ITEM_HIT_RICOCHET);
+    lua_setfield(L, -2, "HIT_RICOCHET");
+    lua_pushinteger(L, ITEM_HIT_SMOKE);
+    lua_setfield(L, -2, "HIT_SMOKE");
 }
 
 int main(void)
