@@ -98,6 +98,7 @@
 - Changed Jeeps by adding a `requires_key` property rather being a hard-coded enforcement
 - Changed KV5 to have Lara always start inside the Jeep, regardless of the previous level
 - Fixed a box appearing beside the Eye of Horus in the inventory (OG bug)
+- Fixed the small and large waterskins appearing in the inventory ring instead of the items ring (TRX1603)
 - Fixed inventory items such as the Broken Beetle appearing in the wrong place or not appearing in the ring
 - Fixed items appearing at the wrong angle in the pickup display
 - Fixed the shotgun, revolver, and crossbow showing the laser sight in the inventory (OG bug)
