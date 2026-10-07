@@ -21,14 +21,27 @@ static INPUT_STATE m_HoldOff = {};
 static INPUT_STATE m_HoldOffLinger = {};
 static INPUT_STATE m_Suppressed = {};
 
+// Each device answers on its own before the answers are merged, so that one
+// can tell its own menu keys from its game keys.
 static void M_UpdateFromBackend(
     INPUT_STATE *const s, const INPUT_BACKEND_IMPL *const backend,
     const int32_t layout)
 {
-#define X_INPUT_ROLE(role, state) s->state |= backend->is_held(layout, role);
+    INPUT_STATE b = {};
+#define X_INPUT_ROLE(role, state) b.state = backend->is_held(layout, role);
 #include <trx/game/input/roles.def>
 #undef X_INPUT_ROLE
-    backend->custom_update(s, layout);
+
+    b.menu_up |= b.forward;
+    b.menu_down |= b.back;
+    b.menu_left |= b.left;
+    b.menu_right |= b.right;
+    b.menu_back |= b.option;
+    backend->custom_update(&b, layout);
+
+#define X_INPUT_ROLE(role, state) s->state |= b.state;
+#include <trx/game/input/roles.def>
+#undef X_INPUT_ROLE
 }
 
 // TR4 changes target off the look input rather than one of its own. With
@@ -137,11 +150,6 @@ void Input_Update(void)
             g_Config.input.layout[backend], &g_Input);
     }
 
-    g_Input.menu_up |= g_Input.forward;
-    g_Input.menu_down |= g_Input.back;
-    g_Input.menu_left |= g_Input.left;
-    g_Input.menu_right |= g_Input.right;
-    g_Input.menu_back |= g_Input.option;
     g_Input.menu_skip |= g_Input.menu_back || g_Input.menu_confirm
         || g_Input.action || g_Input.look;
 
