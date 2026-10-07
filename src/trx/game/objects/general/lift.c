@@ -149,32 +149,34 @@ static M_LARA_STATUS M_GetLaraStatus(
 }
 
 static void M_FloorCeiling(
-    const ITEM *const item, const XYZ_32 pos, int32_t *const out_floor,
-    int32_t *const out_ceiling)
+    const ITEM *const item, const XYZ_32 pos, const ROOM_HEIGHT_CTX *const ctx,
+    int32_t *const out_floor, int32_t *const out_ceiling)
 {
-    ITEM *const lara_item = Lara_GetItem();
+    const ITEM *const subject =
+        ctx->subject != nullptr ? ctx->subject : Lara_GetItem();
     const XZ_32 lift_tile = M_GetTile(item->pos);
-    const XZ_32 lara_tile = M_GetTile(lara_item->pos);
+    const XZ_32 subject_tile = M_GetTile(subject->pos);
     const XZ_32 test_tile = M_GetTile(pos);
     const XZ_32 offset = M_GetShaftOffset(item->rot.y);
 
     const bool point_in_shaft = M_IsTileInShaft(test_tile, lift_tile, offset);
-    const bool lara_in_shaft = M_IsTileInShaft(lara_tile, lift_tile, offset);
+    const bool subject_in_shaft =
+        M_IsTileInShaft(subject_tile, lift_tile, offset);
 
     const int32_t lift_bottom = item->pos.y + STEP_L;
     const int32_t lift_floor = item->pos.y;
     const int32_t lift_ceiling = item->pos.y - M_HEIGHT + STEP_L;
     const int32_t lift_top = item->pos.y - M_HEIGHT;
 
-    const bool lara_inside_lift =
-        M_GetLaraStatus(item, lara_item) == M_LARA_INSIDE;
+    const bool subject_inside_lift =
+        M_GetLaraStatus(item, subject) == M_LARA_INSIDE;
 
     *out_floor = -UNDEFINED_HEIGHT;
     *out_ceiling = UNDEFINED_HEIGHT;
 
-    if (lara_in_shaft) {
+    if (subject_in_shaft) {
         if (item->current_anim_state == M_STATE_DOOR_CLOSED
-            && lara_inside_lift) {
+            && subject_inside_lift) {
             if (point_in_shaft) {
                 *out_floor = lift_floor;
                 *out_ceiling = lift_ceiling;
@@ -183,9 +185,9 @@ static void M_FloorCeiling(
                 *out_ceiling = -UNDEFINED_HEIGHT;
             }
         } else if (point_in_shaft) {
-            if (lara_item->pos.y <= lift_ceiling) {
+            if (subject->pos.y <= lift_ceiling) {
                 *out_floor = lift_top;
-            } else if (lara_item->pos.y <= lift_bottom) {
+            } else if (subject->pos.y <= lift_bottom) {
                 *out_floor = lift_floor;
                 *out_ceiling = lift_ceiling;
             } else {
@@ -208,11 +210,12 @@ static void M_FloorCeiling(
 }
 
 static int32_t M_GetFloorHeight(
-    const ITEM *const item, const XYZ_32 pos, const int32_t height)
+    const ITEM *const item, const XYZ_32 pos, const int32_t height,
+    const ROOM_HEIGHT_CTX *const ctx)
 {
     int32_t new_floor;
     int32_t new_ceiling;
-    M_FloorCeiling(item, pos, &new_floor, &new_ceiling);
+    M_FloorCeiling(item, pos, ctx, &new_floor, &new_ceiling);
     if (new_floor >= height) {
         return height;
     }
@@ -220,11 +223,12 @@ static int32_t M_GetFloorHeight(
 }
 
 static int32_t M_GetCeilingHeight(
-    const ITEM *const item, const XYZ_32 pos, const int32_t height)
+    const ITEM *const item, const XYZ_32 pos, const int32_t height,
+    const ROOM_HEIGHT_CTX *const ctx)
 {
     int32_t new_floor;
     int32_t new_ceiling;
-    M_FloorCeiling(item, pos, &new_floor, &new_ceiling);
+    M_FloorCeiling(item, pos, ctx, &new_floor, &new_ceiling);
     if (new_ceiling <= height) {
         return height;
     }

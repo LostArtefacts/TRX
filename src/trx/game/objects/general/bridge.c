@@ -105,7 +105,8 @@ static int32_t M_GetOffsetHeight(const ITEM *const item, const XYZ_32 pos)
 }
 
 static int32_t M_GetFloorHeight(
-    const ITEM *const item, const XYZ_32 pos, const int32_t height)
+    const ITEM *const item, const XYZ_32 pos, const int32_t height,
+    const ROOM_HEIGHT_CTX *const ctx)
 {
     if (g_Config.gameplay.fix_bridge_collision && !M_IsSameSector(pos, item)) {
         return height;
@@ -124,7 +125,8 @@ static int32_t M_GetFloorHeight(
 }
 
 static int32_t M_GetCeilingHeight(
-    const ITEM *const item, const XYZ_32 pos, const int32_t height)
+    const ITEM *const item, const XYZ_32 pos, const int32_t height,
+    const ROOM_HEIGHT_CTX *const ctx)
 {
     if (g_Config.gameplay.fix_bridge_collision && !M_IsSameSector(pos, item)) {
         return height;

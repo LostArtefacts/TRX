@@ -154,9 +154,10 @@ SECTOR *Room_GetSector(const XYZ_32 pos, int16_t *const room_num)
 }
 
 int32_t Room_GetHeightEx(
-    const SECTOR *const sector, const XYZ_32 pos, const bool fix_tilts,
-    const int16_t ignore_item_num)
+    const SECTOR *const sector, const XYZ_32 pos,
+    const ROOM_HEIGHT_CTX *const ctx)
 {
+    const bool fix_tilts = ctx->fix_tilts;
     FAKE_RECORD("get_height", FV(fix_tilts));
     return pos.x < 0 ? NO_HEIGHT : 0;
 }
@@ -164,8 +165,10 @@ int32_t Room_GetHeightEx(
 // Return a ceiling one sector above the flat floor, or no ceiling outside the
 // fake level.
 int32_t Room_GetCeilingEx(
-    const SECTOR *const sector, const XYZ_32 pos, const bool fix_tilts)
+    const SECTOR *const sector, const XYZ_32 pos,
+    const ROOM_HEIGHT_CTX *const ctx)
 {
+    const bool fix_tilts = ctx->fix_tilts;
     FAKE_RECORD("get_ceiling", FV(fix_tilts));
     return pos.x < 0 ? NO_HEIGHT : -WALL_L;
 }

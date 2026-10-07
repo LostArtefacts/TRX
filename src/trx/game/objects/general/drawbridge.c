@@ -40,7 +40,8 @@ static bool M_IsItemOnTop(const ITEM *const item, int32_t x, int32_t z)
 }
 
 static int32_t M_GetFloorHeight(
-    const ITEM *item, const XYZ_32 pos, const int32_t height)
+    const ITEM *item, const XYZ_32 pos, const int32_t height,
+    const ROOM_HEIGHT_CTX *const ctx)
 {
     if (item->current_anim_state != DRAWBRIDGE_STATE_OPEN) {
         return height;
@@ -56,7 +57,8 @@ static int32_t M_GetFloorHeight(
 }
 
 static int32_t M_GetCeilingHeight(
-    const ITEM *item, const XYZ_32 pos, const int32_t height)
+    const ITEM *item, const XYZ_32 pos, const int32_t height,
+    const ROOM_HEIGHT_CTX *const ctx)
 {
     if (item->current_anim_state != DRAWBRIDGE_STATE_OPEN) {
         return height;

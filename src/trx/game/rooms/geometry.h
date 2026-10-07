@@ -25,9 +25,10 @@ XZ_16 Room_GetTiltType(const SECTOR *sector, XYZ_32 pos);
 
 int32_t Room_GetHeight(const SECTOR *sector, XYZ_32 pos);
 int32_t Room_GetHeightEx(
-    const SECTOR *sector, XYZ_32 pos, bool fix_tilts, int16_t ignore_item_num);
+    const SECTOR *sector, XYZ_32 pos, const ROOM_HEIGHT_CTX *ctx);
 int32_t Room_GetCeiling(const SECTOR *sector, XYZ_32 pos);
-int32_t Room_GetCeilingEx(const SECTOR *sector, XYZ_32 pos, bool fix_tilts);
+int32_t Room_GetCeilingEx(
+    const SECTOR *sector, XYZ_32 pos, const ROOM_HEIGHT_CTX *ctx);
 int32_t Room_GetFloorHeightForSector(
     const SECTOR *sector, int32_t x, int32_t z, bool fix_tilts);
 

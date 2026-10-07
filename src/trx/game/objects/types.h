@@ -87,9 +87,12 @@ typedef struct OBJECT {
     bool (*effect_draw_func)(const EFFECT *effect);
 
     void (*collision_func)(int16_t item_num, ITEM *lara_item, COLL_INFO *coll);
-    int32_t (*floor_height_func)(const ITEM *item, XYZ_32 pos, int32_t height);
+    int32_t (*floor_height_func)(
+        const ITEM *item, XYZ_32 pos, int32_t height,
+        const ROOM_HEIGHT_CTX *ctx);
     int32_t (*ceiling_height_func)(
-        const ITEM *item, XYZ_32 pos, int32_t height);
+        const ITEM *item, XYZ_32 pos, int32_t height,
+        const ROOM_HEIGHT_CTX *ctx);
     // Whether the item bars the way from one place to another, for an item
     // that stands between sectors rather than filling one - a pane of glass, a
     // grate. The floor data has no way to say so, since it speaks of whole

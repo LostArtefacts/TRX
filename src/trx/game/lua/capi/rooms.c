@@ -300,7 +300,8 @@ static int M_L_RoomsGetHeight(lua_State *const L)
     const bool fix_tilts = M_ReadFixTilts(L);
 
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
-    const int32_t height = Room_GetHeightEx(sector, pos, fix_tilts, NO_ITEM);
+    const int32_t height = Room_GetHeightEx(
+        sector, pos, &(ROOM_HEIGHT_CTX) { .fix_tilts = fix_tilts });
     if (height == NO_HEIGHT) {
         lua_pushnil(L);
     } else {
@@ -323,7 +324,8 @@ static int M_L_RoomsGetCeiling(lua_State *const L)
     const bool fix_tilts = M_ReadFixTilts(L);
 
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
-    const int32_t height = Room_GetCeilingEx(sector, pos, fix_tilts);
+    const int32_t height = Room_GetCeilingEx(
+        sector, pos, &(ROOM_HEIGHT_CTX) { .fix_tilts = fix_tilts });
     if (height == NO_HEIGHT) {
         lua_pushnil(L);
     } else {

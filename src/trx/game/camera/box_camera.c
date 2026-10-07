@@ -739,8 +739,10 @@ static void M_ClampResult(void)
     CLAMP(pos->z, box->left, box->right);
 
 finish:
-    const int32_t floor = Room_GetHeightEx(sector, *pos, true, NO_ITEM);
-    const int32_t ceiling = Room_GetCeilingEx(sector, *pos, true);
+    const int32_t floor = Room_GetHeightEx(
+        sector, *pos, &(ROOM_HEIGHT_CTX) { .fix_tilts = true });
+    const int32_t ceiling = Room_GetCeilingEx(
+        sector, *pos, &(ROOM_HEIGHT_CTX) { .fix_tilts = true });
     if (floor != NO_HEIGHT && ceiling != NO_HEIGHT) {
         CLAMP(pos->y, ceiling - shift, floor - shift);
     }

@@ -430,8 +430,8 @@ static bool M_TestSolidPortal(const ITEM *const item)
     const ITEM *const lara_item = Lara_GetItem();
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(lara_item->pos, &room_num);
-    const int32_t height =
-        Room_GetHeightEx(sector, lara_item->pos, true, NO_ITEM);
+    const int32_t height = Room_GetHeightEx(
+        sector, lara_item->pos, &(ROOM_HEIGHT_CTX) { .fix_tilts = true });
     return height == NO_HEIGHT;
 }
 
@@ -900,8 +900,9 @@ static void M_Control(const int16_t item_num)
         item->pos.z,
     };
     const SECTOR *sector = Room_GetSector(sample_pos, &room_num);
-    int32_t under_block_height =
-        Room_GetHeightEx(sector, item->pos, true, item_num);
+    int32_t under_block_height = Room_GetHeightEx(
+        sector, item->pos,
+        &(ROOM_HEIGHT_CTX) { .fix_tilts = true, .ignore_item = item });
 
     bool update_room_num = true;
 
@@ -912,8 +913,9 @@ static void M_Control(const int16_t item_num)
         // Query floor at previous y position.
         sample_pos.y = y_prev;
         const SECTOR *prev_sector = Room_GetSector(sample_pos, &room_num);
-        int32_t prev_height =
-            Room_GetHeightEx(prev_sector, sample_pos, true, item_num);
+        int32_t prev_height = Room_GetHeightEx(
+            prev_sector, sample_pos,
+            &(ROOM_HEIGHT_CTX) { .fix_tilts = true, .ignore_item = item });
 
         // If on a walkable at the previous y position, use the rounded previous
         // y position as the floor.
@@ -988,7 +990,8 @@ static void M_Control(const int16_t item_num)
 }
 
 static int32_t M_GetFloorHeight(
-    const ITEM *const item, const XYZ_32 pos, const int32_t height)
+    const ITEM *const item, const XYZ_32 pos, const int32_t height,
+    const ROOM_HEIGHT_CTX *const ctx)
 {
     if (!item->is_visible || item->gravity) {
         return height;
@@ -1037,7 +1040,8 @@ static int32_t M_GetFloorHeight(
 }
 
 static int32_t M_GetCeilingHeight(
-    const ITEM *const item, const XYZ_32 pos, const int32_t height)
+    const ITEM *const item, const XYZ_32 pos, const int32_t height,
+    const ROOM_HEIGHT_CTX *const ctx)
 {
     if (!item->is_visible || item->gravity) {
         return height;
