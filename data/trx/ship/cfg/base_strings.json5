@@ -945,6 +945,10 @@
             "title": "Cutscene volume",
             "description": "Adjusts the ingame cutscenes volume.",
         },
+        "audio.enable_ambient_crossfade": {
+            "title": "Ambience crossfade",
+            "description": "Fades one looping ambience track into the next when they change, instead of cutting the first one off.",
+        },
         "audio.enable_lara_mic": {
             "title": "Microphone near Lara",
             "description": "Set the microphone to be at Lara's position. If disabled, the microphone will be at the camera's position.",

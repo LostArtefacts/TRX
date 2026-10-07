@@ -945,6 +945,10 @@
             "title": "Volume scene di intermezzo",
             "description": "Regola il volume delle scene di intermezzo presenti nel gioco.",
         },
+        "audio.enable_ambient_crossfade": {
+            "title": "\\{review}Dissolvenza delle atmosfere",
+            "description": "\\{review}Sfuma una traccia d'atmosfera in loop nella successiva quando cambiano, invece di interrompere bruscamente la prima.",
+        },
         "audio.enable_lara_mic": {
             "title": "Microfono vicino a Lara",
             "description": "Imposta il microfono in modo che sia collocato nella posizione di Lara. Se disabilitato, il microfono sarà collocato nella posizione della telecamera.",
