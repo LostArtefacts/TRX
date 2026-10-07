@@ -78,6 +78,15 @@ static const LARA_STATE_ID m_HoldStatesTR4[] = {
     // clang-format on
 };
 
+static const LARA_ANIMATION_ID m_PickupNoHoldAnims[] = {
+    // clang-format off
+    LA_CROUCH_PICKUP,
+    LA_CRAWL_PICKUP,
+    LA_FAST_PICKUP,
+    NO_CATALOG_ID,
+    // clang-format on
+};
+
 static const LARA_STATE_ID m_ThrowStates[] = {
     // clang-format off
     LS_FAST_FALL,
@@ -236,9 +245,7 @@ static bool M_CanUseFlareControl(void)
 {
     const ITEM *const lara_item = Lara_GetItem();
     if (lara_item->current_anim_state == LS(LS_PICKUP)) {
-        const LARA_ANIMATION_ID anim = LA_U(Item_GetRelativeAnim(lara_item));
-        return anim != LA_CROUCH_PICKUP && anim != LA_CRAWL_PICKUP
-            && anim != LA_FAST_PICKUP;
+        return !Lara_HasAnimation(m_PickupNoHoldAnims);
     }
     return Lara_Vehicle_IsMounted() || Lara_HasState(m_HoldStates)
         || (g_TRVersion == 4 && Lara_HasState(m_HoldStatesTR4));

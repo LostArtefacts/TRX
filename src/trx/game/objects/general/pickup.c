@@ -142,6 +142,17 @@ static const XYZ_32 m_PickupPositionScion = { .x = 0, .y = 0, .z = -310 };
 static const XYZ_32 m_PickupPositionHidden = { .x = 0, .y = 0, .z = -690 };
 static const XYZ_32 m_PickupPositionCrowbar = { .x = 0, .y = 0, .z = 225 };
 
+static const LARA_ANIMATION_ID m_DuckedAnims[] = {
+    // clang-format off
+    LA_CRAWL_IDLE,
+    LA_CRAWL_PICKUP,
+    LA_CROUCH_IDLE,
+    LA_CROUCH_PICKUP,
+    LA_CROUCH_PICKUP_FLARE,
+    NO_CATALOG_ID,
+    // clang-format on
+};
+
 static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
@@ -840,15 +851,7 @@ static void M_DoAboveWater(const int16_t item_num, ITEM *const lara_item)
 {
     ITEM *const item = Item_Get(item_num);
     const LARA_ANIMATION_ID anim = LA_U(Item_GetRelativeAnim(lara_item));
-
-    // clang-format off
-    const bool is_ducked = (
-        anim == LA_CRAWL_IDLE ||
-        anim == LA_CRAWL_PICKUP ||
-        anim == LA_CROUCH_IDLE ||
-        anim == LA_CROUCH_PICKUP ||
-        anim == LA_CROUCH_PICKUP_FLARE);
-    // clang-format on
+    const bool is_ducked = Lara_HasAnimation(m_DuckedAnims);
 
     if (g_Config.gameplay.enable_walk_to_items && !is_ducked) {
         M_DoControlled(item_num, lara_item);
