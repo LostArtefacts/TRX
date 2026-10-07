@@ -118,3 +118,34 @@ void Lara_Interact_FinishControl(const LARA_INTERACT_MODE mode)
         lara->interact_target.item_num = NO_ITEM;
     }
 }
+
+void Lara_Interact_Release(const int16_t item_num)
+{
+    if (!Lara_Interact_HasActiveTarget(item_num)) {
+        return;
+    }
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    lara->interact_target.is_moving = false;
+    lara->gun_status = LGS_ARMLESS;
+}
+
+bool Lara_Interact_MoveTo(const ITEM *const item, const XYZ_32 *const position)
+{
+    if (Lara_MovePosition(item, position)) {
+        return true;
+    }
+    Lara_GetLaraInfo()->interact_target.item_num = Item_GetIndex(item);
+    return false;
+}
+
+LARA_REACH Lara_Interact_Reach(
+    const ITEM *const item, const OBJECT_BOUNDS *const bounds,
+    const XYZ_32 *const position)
+{
+    if (!Lara_TestPosition(item, bounds)) {
+        Lara_Interact_Release(Item_GetIndex(item));
+        return LARA_REACH_OUT_OF_BOUNDS;
+    }
+    return Lara_Interact_MoveTo(item, position) ? LARA_REACH_ARRIVED
+                                                : LARA_REACH_APPROACHING;
+}

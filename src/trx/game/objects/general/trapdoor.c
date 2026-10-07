@@ -357,22 +357,16 @@ static void M_FloorCollision(
     const int16_t item_num, ITEM *const lara_item, COLL_INFO *const coll)
 {
     ITEM *const item = Item_Get(item_num);
-    LARA_INFO *const lara = Lara_GetLaraInfo();
 
     if (Lara_Interact_CanControl(LARA_INTERACT_DOOR, item_num)
         && !Item_IsInPlay(item)) {
-        if (Lara_TestPosition(item, &m_FloorTrapdoorBounds)) {
-            if (Lara_MovePosition(item, &m_FloorTrapdoorPosition)) {
-                Item_SwitchToAnim(lara_item, LA(LA_FLOOR_TRAPDOOR_OPEN), 0);
-                lara_item->current_anim_state = LS(LS_LIFT_TRAPDOOR);
-                Lara_Interact_FinishControl(LARA_INTERACT_DOOR);
-                M_OpenManually(item_num);
-            } else {
-                lara->interact_target.item_num = item_num;
-            }
-        } else if (Lara_Interact_HasActiveTarget(item_num)) {
-            lara->interact_target.is_moving = false;
-            lara->gun_status = LGS_ARMLESS;
+        if (Lara_Interact_Reach(
+                item, &m_FloorTrapdoorBounds, &m_FloorTrapdoorPosition)
+            == LARA_REACH_ARRIVED) {
+            Item_SwitchToAnim(lara_item, LA(LA_FLOOR_TRAPDOOR_OPEN), 0);
+            lara_item->current_anim_state = LS(LS_LIFT_TRAPDOOR);
+            Lara_Interact_FinishControl(LARA_INTERACT_DOOR);
+            M_OpenManually(item_num);
         }
     }
 

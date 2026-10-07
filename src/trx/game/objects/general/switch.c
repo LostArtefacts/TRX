@@ -280,9 +280,8 @@ static void M_CollisionControlled(
             } else {
                 lara->interact_target.item_num = item_num;
             }
-        } else if (Lara_Interact_HasActiveTarget(item_num)) {
-            lara->interact_target.is_moving = false;
-            lara->gun_status = LGS_ARMLESS;
+        } else {
+            Lara_Interact_Release(item_num);
         }
     } else if (
         lara_item->current_anim_state != LS(LS_SWITCH_ON)

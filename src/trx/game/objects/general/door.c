@@ -295,9 +295,8 @@ static void M_CrowbarCollision(
                 lara->interact_target.item_num = item_num;
                 lara->interact_target.is_moving = true;
             }
-        } else if (Lara_Interact_HasActiveTarget(item_num)) {
-            lara->interact_target.is_moving = false;
-            lara->gun_status = LGS_ARMLESS;
+        } else {
+            Lara_Interact_Release(item_num);
         }
 
         item->rot.y += DEG_180;

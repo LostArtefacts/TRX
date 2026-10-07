@@ -365,9 +365,8 @@ static void M_Collision(
                 lara->gun_status = LGS_HANDS_BUSY;
             }
             lara->interact_target.item_num = item_num;
-        } else if (Lara_Interact_HasActiveTarget(item_num)) {
-            lara->interact_target.is_moving = false;
-            lara->gun_status = LGS_ARMLESS;
+        } else {
+            Lara_Interact_Release(item_num);
         }
 
         item->rot = old_rot;
