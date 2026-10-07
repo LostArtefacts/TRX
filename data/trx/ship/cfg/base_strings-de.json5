@@ -920,6 +920,11 @@
             "pc": "PC",
             "ps1": "PS1",
         },
+        "underwater_muffle_mode": {
+            "all": "\\{review}Alle Musik",
+            "ambient": "\\{review}Nur Ambiente",
+            "off": "\\{review}Aus",
+        },
         "vertex_snap_mode": {
             "disabled": "\\{review}Deaktiviert",
             "upscale_res": "\\{review}Hochskalierte Auflösung",
@@ -1038,6 +1043,10 @@
         "audio.underwater_ambient_volume": {
             "title": "\\{review}Umgebungslautstärke (unter Wasser)",
             "description": "\\{review}Passt die Umgebungslautstärke unter Wasser an.",
+        },
+        "audio.underwater_muffle": {
+            "title": "\\{review}Musik unter Wasser dämpfen",
+            "description": "\\{review}Dämpft die Musik, solange die Kamera unter Wasser ist, als würde sie durch das Wasser gehört.\n\n- Aus: Die Musik bleibt klar.\n- Nur Ambiente: Nur die Ambiente-Spur wird gedämpft.\n- Alle Musik: Musik- und Ambiente-Spuren werden gedämpft.",
         },
         "audio.underwater_music_volume": {
             "title": "\\{review}Musiklautstärke (unter Wasser)",

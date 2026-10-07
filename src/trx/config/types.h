@@ -209,6 +209,7 @@ typedef struct {
         bool mute_out_of_focus;
 
         MUSIC_LOAD_CONDITION music_load_condition;
+        UNDERWATER_MUFFLE_MODE underwater_muffle;
     } audio;
 
     struct {

@@ -26,6 +26,7 @@
 #include <string.h>
 
 #define M_CROSSFADE_TIME 2.0
+#define M_MUFFLE_CUTOFF 700.0f
 
 typedef struct {
     int32_t audio_stream_id;
@@ -48,6 +49,7 @@ static MUSIC_SLOT m_TrackLastLooped = MX_INACTIVE;
 // has asked yet, and a negative value where the answer was that nothing knows.
 static double m_TrackDurations[MAX_MUSIC_TRACKS] = {};
 static float m_MusicVolume = 0.0f;
+static UNDERWATER_MUFFLE_MODE m_Muffle = UNDERWATER_MUFFLE_OFF;
 static MUSIC_BACKEND *m_Backend = nullptr;
 static M_MUSIC_STREAM m_MainStream = {
     .audio_stream_id = -1,
@@ -245,6 +247,12 @@ static void M_SyncVolume(const M_MUSIC_STREAM *const stream)
         ? g_Config.audio.music_volume * g_Config.audio.master_volume
         : m_MusicVolume;
     SHOULD(Audio_Stream_SetVolume(stream->audio_stream_id, volume));
+    const bool is_muffled = stream->mode != MPM_OVERLAY
+        && (m_Muffle == UNDERWATER_MUFFLE_ALL
+            || (m_Muffle == UNDERWATER_MUFFLE_AMBIENT
+                && stream->mode == MPM_LOOP));
+    SHOULD(Audio_Stream_SetLowPass(
+        stream->audio_stream_id, is_muffled ? M_MUFFLE_CUTOFF : 0.0f));
 }
 
 static void M_SyncVolumes(void)
@@ -627,6 +635,7 @@ double Music_GetTrackDuration(const MUSIC_SLOT track)
 
 void Music_Stop(void)
 {
+    m_Muffle = UNDERWATER_MUFFLE_OFF;
     m_TrackCurrent = MX_INACTIVE;
     m_TrackLastPlayed = MX_INACTIVE;
     m_TrackDelayed = MX_INACTIVE;
@@ -876,6 +885,14 @@ void Music_SetVolume(float volume)
     volume *= g_Config.audio.master_volume;
     if (volume != m_MusicVolume) {
         m_MusicVolume = volume;
+        M_SyncVolumes();
+    }
+}
+
+void Music_SetMuffle(const UNDERWATER_MUFFLE_MODE mode)
+{
+    if (mode != m_Muffle) {
+        m_Muffle = mode;
         M_SyncVolumes();
     }
 }

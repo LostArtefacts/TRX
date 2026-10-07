@@ -920,6 +920,11 @@
             "pc": "PC",
             "ps1": "PS1",
         },
+        "underwater_muffle_mode": {
+            "all": "\\{review}Вся музыка",
+            "ambient": "\\{review}Только эмбиент",
+            "off": "\\{review}Выкл.",
+        },
         "vertex_snap_mode": {
             "disabled": "\\{review}Отключено",
             "upscale_res": "\\{review}Разрешение масштаба",
@@ -1038,6 +1043,10 @@
         "audio.underwater_ambient_volume": {
             "title": "\\{review}Громкость окружения (под водой)",
             "description": "\\{review}Регулирует громкость окружения под водой.",
+        },
+        "audio.underwater_muffle": {
+            "title": "\\{review}Музыка под водой",
+            "description": "\\{review}Приглушает музыку, пока камера находится под водой, как будто она слышна сквозь воду.\n\n- Выкл.: музыка звучит чисто.\n- Только эмбиент: приглушается только фоновая дорожка.\n- Вся музыка: приглушаются музыка и фоновые дорожки.",
         },
         "audio.underwater_music_volume": {
             "title": "\\{review}Громкость музыки (под водой)",

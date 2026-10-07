@@ -920,6 +920,11 @@
             "pc": "PC",
             "ps1": "PS1",
         },
+        "underwater_muffle_mode": {
+            "all": "\\{review}A h-uile ceòl",
+            "ambient": "\\{review}Àile a-mhàin",
+            "off": "\\{review}Dheth",
+        },
         "vertex_snap_mode": {
             "disabled": "Dheth",
             "upscale_res": "Rùn leudaichte",
@@ -1038,6 +1043,10 @@
         "audio.underwater_ambient_volume": {
             "title": "Tomhas àrainneachd (fo uisge)",
             "description": "Atharraichidh tomhas àrainneachd fo uisge.",
+        },
+        "audio.underwater_muffle": {
+            "title": "\\{review}Mùch an ceòl fon uisge",
+            "description": "\\{review}Mùchaidh seo an ceòl fhad 's a tha an camara fon uisge, mar gun cluinnteadh e tron uisge.\n\n- Dheth: fàgaidh seo an ceòl soilleir.\n- Àile a-mhàin: cha mhùchar ach an clàr àile.\n- A h-uile ceòl: mùchar an ceòl agus an clàr àile.",
         },
         "audio.underwater_music_volume": {
             "title": "Tomhas ciùil (fo uisge)",

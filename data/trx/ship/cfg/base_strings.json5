@@ -920,6 +920,11 @@
             "pc": "PC",
             "ps1": "PS1",
         },
+        "underwater_muffle_mode": {
+            "all": "All music",
+            "ambient": "Ambience only",
+            "off": "Off",
+        },
         "vertex_snap_mode": {
             "disabled": "Disabled",
             "upscale_res": "Upscale Res",
@@ -1038,6 +1043,10 @@
         "audio.underwater_ambient_volume": {
             "title": "Ambient volume (underwater)",
             "description": "Adjusts ambient volume when underwater.",
+        },
+        "audio.underwater_muffle": {
+            "title": "Muffle music underwater",
+            "description": "Muffles music while the camera is underwater, as if it were heard through the water.\n\n- Off: leave the music clear.\n- Ambience only: muffle only the ambience track.\n- All music: muffle the music and ambience tracks.",
         },
         "audio.underwater_music_volume": {
             "title": "Music volume (underwater)",
