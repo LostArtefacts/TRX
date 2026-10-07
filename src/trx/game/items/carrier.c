@@ -86,26 +86,23 @@ static ITEM *M_GetCarrier(const int16_t item_num)
     return item;
 }
 
-static ITEM *M_EnsureCarriedPickupItem(
-    const ITEM *const carrier, CARRIED_ITEM *const carried_item)
+// A drop's slot can be recycled once its pickup is collected, so the number
+// alone does not say the pickup is still there.
+static ITEM *M_GetOwnPickup(const CARRIED_ITEM *const carried_item)
 {
-    if (carried_item->spawn_num == NO_ITEM) {
+    if (carried_item->spawn_num == NO_ITEM
+        || carried_item->spawn_num >= Item_GetTotalCount()) {
         return nullptr;
     }
-
-    if (carried_item->spawn_num < Item_GetTotalCount()) {
-        return Item_Get(carried_item->spawn_num);
-    }
-
-    // Gameflow drops can reference runtime-spawned pickup indices that do not
-    // exist yet after a fresh level load. Re-spawn and rebind the index.
-    const int16_t spawn_num = Item_Spawn(carrier, carried_item->object_id);
-    if (spawn_num == NO_ITEM) {
-        carried_item->spawn_num = NO_ITEM;
+    ITEM *const pickup = Item_Get(carried_item->spawn_num);
+    if (pickup == nullptr || pickup->is_destroyed) {
         return nullptr;
     }
-    carried_item->spawn_num = spawn_num;
-    return Item_Get(carried_item->spawn_num);
+    if (pickup->object_id != carried_item->object_id
+        && pickup->object_id != M_ConvertDroppedGun(carried_item->object_id)) {
+        return nullptr;
+    }
+    return pickup;
 }
 
 static bool M_IsCarrierType(const OBJECT_ID obj_id)
@@ -211,6 +208,7 @@ static void M_InitialiseDataDrops(void)
         CARRIED_ITEM *drop = carrier->carried_item;
         for (int32_t j = 0; j < pickups->count; j++) {
             drop->spawn_num = *(const int16_t *)Vector_Get(pickups, j);
+            drop->object_id = Item_Get(drop->spawn_num)->object_id;
             Item_DetachFromRoom(drop->spawn_num);
             drop->room_num = NO_ROOM;
             drop->fall_speed = 0;
@@ -335,17 +333,20 @@ bool Carrier_IsItemCarried(const int16_t item_num)
 DROP_STATUS Carrier_GetSaveStatus(const CARRIED_ITEM *item)
 {
     if (item->status == DS_DROPPED) {
-        const ITEM *const pickup = Item_Get(item->spawn_num);
-        return !pickup->is_visible ? DS_COLLECTED : DS_DROPPED;
+        const ITEM *const pickup = M_GetOwnPickup(item);
+        return pickup == nullptr || !pickup->is_visible ? DS_COLLECTED
+                                                        : DS_DROPPED;
     }
     return item->status;
 }
 
-void Carrier_SyncItem(
-    const int16_t carrier_item_num, CARRIED_ITEM *const carried_item)
+void Carrier_SyncItem(CARRIED_ITEM *const carried_item)
 {
-    const ITEM *const carrier = Item_Get(carrier_item_num);
-    ITEM *const pickup_item = M_EnsureCarriedPickupItem(carrier, carried_item);
+    // A collected drop's slot may hold another item by now.
+    if (carried_item->status == DS_COLLECTED) {
+        return;
+    }
+    ITEM *const pickup_item = M_GetOwnPickup(carried_item);
     if (pickup_item == nullptr) {
         return;
     }
@@ -372,10 +373,6 @@ void Carrier_SyncItem(
         break;
 
     case DS_COLLECTED:
-        if (pickup_item->room_num != NO_ROOM) {
-            Item_UpdateRoom(carried_item->spawn_num, NO_ROOM);
-        }
-        Item_SetVisible(pickup_item, false);
         break;
     }
 }
@@ -433,6 +430,22 @@ void Carrier_TestItemDrops(const int16_t item_num)
         }
 
     } while ((item = item->next_item) != nullptr);
+}
+
+void Carrier_OnItemDestroyed(const int16_t item_num)
+{
+    for (int32_t i = 0; i < Item_GetTotalCount(); i++) {
+        CARRIED_ITEM *item = Item_Get(i)->carried_item;
+        for (; item != nullptr; item = item->next_item) {
+            if (item->spawn_num != item_num || item->status == DS_COLLECTED) {
+                continue;
+            }
+            if (item->status == DS_FALLING && m_AnimatingCount > 0) {
+                m_AnimatingCount--;
+            }
+            item->status = DS_COLLECTED;
+        }
+    }
 }
 
 void Carrier_AnimateDrops(void)

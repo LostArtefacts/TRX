@@ -74,6 +74,7 @@ typedef enum {
 
 typedef struct {
     int16_t dragon_front_item_num;
+    int16_t bone_item_nums[2];
     M_MODE mode;
     int32_t touch_damage;
     int32_t swipe_damage;
@@ -88,6 +89,8 @@ static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
     MUST(JSON_READ_OPT(io, "mode", &p->mode));
+    MUST(JSON_READ_OPT(io, "bone_front", &p->bone_item_nums[0]));
+    MUST(JSON_READ_OPT(io, "bone_back", &p->bone_item_nums[1]));
     return OK;
 }
 
@@ -95,6 +98,8 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
 {
     const M_PRIV *const p = item->priv;
     JSONW_WRITE(io, "mode", p->mode);
+    JSONW_WRITE(io, "bone_front", p->bone_item_nums[0]);
+    JSONW_WRITE(io, "bone_back", p->bone_item_nums[1]);
 }
 
 static int16_t M_GetFrontItemNum(const ITEM *const dragon_back_item)
@@ -128,12 +133,14 @@ static void M_InitialiseBack(const int16_t item_num)
     ITEM *const dragon_back_item = Item_Get(item_num);
     M_PRIV *const p = dragon_back_item->priv;
     p->mode = M_MODE_TWO_PHASE;
+    p->bone_item_nums[0] = NO_ITEM;
+    p->bone_item_nums[1] = NO_ITEM;
 
     Item_SetVisible(dragon_back_item, false);
     dragon_back_item->shade.value_1 = -1;
     dragon_back_item->mesh_bits = 0x1FFFFF;
 
-    p->dragon_front_item_num = Item_CreateLevelItem();
+    p->dragon_front_item_num = Item_Create();
     ASSERT(p->dragon_front_item_num != NO_ITEM);
 
     ITEM *const dragon_front_item = Item_Get(p->dragon_front_item_num);
@@ -238,7 +245,10 @@ static void M_Bones(const int16_t item_num)
         return;
     }
 
-    const ITEM *const dragon_item = Item_Get(item_num);
+    ITEM *const dragon_item = Item_Get(item_num);
+    M_PRIV *const p = dragon_item->priv;
+    p->bone_item_nums[0] = bone_front_item_num;
+    p->bone_item_nums[1] = bone_back_item_num;
 
     ITEM *const bone_back = Item_Get(bone_back_item_num);
     bone_back->object_id = O_DRAGON_BONES_3;
@@ -262,10 +272,24 @@ static void M_Bones(const int16_t item_num)
     bone_front->mesh_bits = ~0xC00000u;
 }
 
+static bool M_HasBones(const ITEM *const item)
+{
+    const M_PRIV *const p = item->priv;
+    const OBJECT_ID object_ids[] = { O_DRAGON_BONES_2, O_DRAGON_BONES_3 };
+    for (int32_t i = 0; i < 2; i++) {
+        const ITEM *const bone = Item_Get(p->bone_item_nums[i]);
+        if (bone != nullptr && !bone->is_destroyed
+            && bone->object_id == object_ids[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
 static void M_HandleSaveBack(ITEM *const item, const SAVEGAME_STAGE stage)
 {
     if (stage == SAVEGAME_STAGE_AFTER_LOAD) {
-        if (item->is_finished && M_IsTwoPhaseMode(item)) {
+        if (item->is_finished && M_IsTwoPhaseMode(item) && !M_HasBones(item)) {
             const int32_t y_pos = item->pos.y;
             int16_t room_num = item->room_num;
             const SECTOR *const sector = Room_GetSector(item->pos, &room_num);

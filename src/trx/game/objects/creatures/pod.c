@@ -37,7 +37,7 @@ static void M_Initialise(const int16_t item_num)
     M_PRIV *const p = item->priv;
     p->bug_item_num = NO_ITEM;
 
-    const int16_t bug_item_num = Item_CreateLevelItem();
+    const int16_t bug_item_num = Item_Create();
     if (bug_item_num != NO_ITEM) {
         ITEM *const bug = Item_Get(bug_item_num);
         bug->object_id = M_GetBugObjectID(item->trigger.mask);

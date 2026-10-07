@@ -301,7 +301,6 @@ void Lara_InitialiseInventory(const GF_LEVEL *const level)
     lara_info->request_gun_type = lara_info->last_gun_type;
     Lara_Mesh_Initialise(level);
     Gun_InitialiseNewWeapon();
-    Gun_EnsureReady();
 }
 
 void Lara_RevertToDefaultGunIfNeeded(void)

@@ -72,6 +72,10 @@ typedef enum {
     // survive saves.
     SG_VERSION_21 = 21,
 
+    // Every live item is saved whole, in its slot, rather than the level's
+    // items by the parts their objects asked for.
+    SG_VERSION_22 = 22,
+
     SG_MIN_SUPPORTED_VERSION = SG_VERSION_13,
-    SG_CURRENT_VERSION = SG_VERSION_21,
+    SG_CURRENT_VERSION = SG_VERSION_22,
 } SAVEGAME_VERSION;

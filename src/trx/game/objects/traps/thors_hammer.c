@@ -24,7 +24,7 @@ static void M_InitialiseHandle(const int16_t item_num)
 {
     ITEM *const hand_item = Item_Get(item_num);
     M_PRIV *const p = hand_item->priv;
-    const int16_t head_item_num = Item_CreateLevelItem();
+    const int16_t head_item_num = Item_Create();
     ASSERT(head_item_num != NO_ITEM);
     ITEM *const head_item = Item_Get(head_item_num);
     head_item->object_id = O_THORS_HEAD;

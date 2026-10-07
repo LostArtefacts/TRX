@@ -206,7 +206,7 @@ static void M_TriggeredItem(const INJECTION *const injection)
         return;
     }
 
-    const int16_t item_num = Item_CreateLevelItem();
+    const int16_t item_num = Item_Create();
     ITEM *const item = Item_Get(item_num);
 
     const INJECTION_OBJECT_INFO obj_info = Inject_ReadObjectPtr(injection);

@@ -187,6 +187,9 @@ M_GF_HANDLER(M_HandlePlayLevel)
                 Gun_Flare_Hold(resume->flare_age);
             }
         }
+        if (Lara_GetItem() != nullptr) {
+            Gun_EnsureReady();
+        }
         break;
     }
     GF_DisableObjectsIfNeeded();

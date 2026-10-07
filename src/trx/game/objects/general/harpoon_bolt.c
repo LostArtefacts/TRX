@@ -1,3 +1,5 @@
+#include <trx/core/json/util/read_io.h>
+#include <trx/core/json/util/write_io.h>
 #include <trx/core/math.h>
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/misc.h>
@@ -23,6 +25,21 @@ typedef struct {
     // Caches what the object lookup answers, which no savegame carries.
     LARA_GUN_TYPE gun_type;
 } M_PRIV;
+
+static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
+{
+    M_PRIV *const p = item->priv;
+    MUST(JSON_READ_OPT(io, "base_x_rot", &p->base_x_rot));
+    MUST(JSON_READ_OPT(io, "base_x_rot_valid", &p->base_x_rot_valid));
+    return OK;
+}
+
+static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
+{
+    const M_PRIV *const p = item->priv;
+    JSONW_WRITE(io, "base_x_rot", p->base_x_rot);
+    JSONW_WRITE(io, "base_x_rot_valid", p->base_x_rot_valid);
+}
 
 static void M_SetTR3ProjectileShade(ITEM *const item)
 {
@@ -319,6 +336,8 @@ static void M_Setup(OBJECT *const obj)
     obj->initialise_func = M_Initialise;
     obj->control_func = g_TRVersion == 3 ? M_Control_TR3 : M_Control_TR12;
     obj->priv_size = sizeof(M_PRIV);
+    obj->priv_load_func = M_LoadPriv;
+    obj->priv_save_func = M_SavePriv;
     obj->save_position = true;
 }
 

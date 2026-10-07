@@ -188,7 +188,7 @@ static void M_Initialise(const int16_t item_num)
     ITEM *const skidoo_driver = Item_Get(item_num);
     M_PRIV *const p = skidoo_driver->priv;
 
-    const int16_t skidoo_item_num = Item_CreateLevelItem();
+    const int16_t skidoo_item_num = Item_Create();
     ASSERT(skidoo_item_num != NO_ITEM);
 
     ITEM *const skidoo = Item_Get(skidoo_item_num);

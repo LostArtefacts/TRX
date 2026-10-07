@@ -72,7 +72,7 @@ static void M_MaterialiseTR4AIObjects(LEVEL_CONTEXT *const ctx)
             continue;
         }
 
-        const int16_t item_num = Item_CreateLevelItem();
+        const int16_t item_num = Item_Create();
         if (item_num == NO_ITEM) {
             LOG_WARNING("No room left for the level's AI objects");
             return;

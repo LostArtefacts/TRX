@@ -23,7 +23,7 @@ static void M_Initialise(const int16_t item_num)
         return;
     }
 
-    const int16_t centaur_item_num = Item_CreateLevelItem();
+    const int16_t centaur_item_num = Item_Create();
     ASSERT(centaur_item_num != NO_ITEM);
 
     ITEM *const centaur = Item_Get(centaur_item_num);
