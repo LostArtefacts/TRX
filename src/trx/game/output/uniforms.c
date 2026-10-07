@@ -1,5 +1,3 @@
-#define M_MAX_LIGHTS 32
-
 #include <trx/game/output/uniforms.h>
 
 #include <trx/config.h>
@@ -70,7 +68,7 @@ typedef struct {
     int num_lights;
     int room_light_mode;
     int _pad[2];
-    M_UNIFORM_LIGHT lights[M_MAX_LIGHTS];
+    M_UNIFORM_LIGHT lights[OUTPUT_MAX_DYNAMIC_LIGHTS];
 } M_UNIFORM_LIGHTS;
 
 #pragma pack(pop)
@@ -236,7 +234,7 @@ void Output_Uniforms_UploadRoomLights(
     for (int32_t i = 0; i < dynamic_lights->count; i++) {
         M_FillLight(dst_light, Vector_Get(dynamic_lights, i));
         dst_light++;
-        if (dst_light - lights.lights >= M_MAX_LIGHTS) {
+        if (dst_light - lights.lights >= OUTPUT_MAX_DYNAMIC_LIGHTS) {
             break;
         }
     }

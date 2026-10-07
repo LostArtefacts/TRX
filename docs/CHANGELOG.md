@@ -11,6 +11,7 @@
 - Improved the frame rate, as the game now draws solid surfaces faster
 - Fixed the screen not fading to black after a skipped FMV (TRX1613)
 - Fixed static objects keeping the underwater tint and lighting after their room drains (TRX1630, regression from 1.11)
+- Fixed dynamic lights, such as a flare in Lara's hand, not lighting the room once more than 32 were active, for example in the Temple of Horus (OG bug) (TRX1533)
 
 **UI**
 - Added an option to blur the game behind the inventory, pause and stats screens (Graphic Options → UI → Background blur) (#6725 / TRX1610)
