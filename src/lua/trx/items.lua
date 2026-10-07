@@ -77,6 +77,23 @@ local PickupMode = {
 }
 M.PickupMode = h.enum("items.PickupMode", "PICKUP_MODE", PickupMode)
 
+---<!--noref: hit_effect--> The values the `hit_effect` item property can take.
+---It chooses what a bullet hitting the item spawns.
+---@enum trx.items.HitEffect
+local HitEffect = {
+  ---The object chooses, as it does without a script.
+  DEFAULT = h.IntegerConstant,
+  ---Nothing.
+  NONE = h.IntegerConstant,
+  ---A spray of blood.
+  BLOOD = h.IntegerConstant,
+  ---A ricochet spark.
+  RICOCHET = h.IntegerConstant,
+  ---A puff of smoke.
+  SMOKE = h.IntegerConstant,
+}
+M.HitEffect = h.enum("items.HitEffect", "ITEM_HIT_EFFECT", HitEffect)
+
 ---<!--noref: scaled_spikes_mode--> The values the `scaled_spikes_mode` item
 ---property can take. It determines how spikes behave when triggered.
 ---@enum trx.items.ScaledSpikesMode

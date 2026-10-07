@@ -446,6 +446,43 @@ test("a family no name answers to is refused", function()
   end)
 end)
 
+test("a hit effect function decides what a hit spawns", function()
+  local seen
+  trx.objects[fake.WOLF]:set_hit_effect(function(item)
+    seen = item
+    return fake.HIT_RICOCHET
+  end)
+  assert(fake.hit_effect(0) == fake.HIT_RICOCHET)
+  assert(seen ~= nil, "the function was not given the item")
+
+  trx.objects[fake.WOLF]:set_hit_effect(function()
+    return fake.HIT_SMOKE
+  end)
+  assert(fake.hit_effect(0) == fake.HIT_SMOKE)
+
+  trx.objects[fake.WOLF]:set_hit_effect(nil)
+  assert(fake.hit_effect(0) == fake.HIT_BLOOD)
+end)
+
+test(
+  "a hit effect function that returns nothing leaves it to the object",
+  function()
+    trx.objects[fake.WOLF]:set_hit_effect(function() end)
+    assert(fake.hit_effect(0) == fake.HIT_BLOOD)
+    trx.objects[fake.WOLF]:set_hit_effect(function()
+      return fake.HIT_DEFAULT
+    end)
+    assert(fake.hit_effect(0) == fake.HIT_BLOOD)
+    trx.objects[fake.WOLF]:set_hit_effect(nil)
+  end
+)
+
+test("a hit effect must be a function", function()
+  raises(function()
+    trx.objects[fake.WOLF]:set_hit_effect(5)
+  end, "function expected")
+end)
+
 test("a declared object runs its control for each item", function()
   local ran
   trx.objects.declare(fake.VASE, {

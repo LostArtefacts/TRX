@@ -70,6 +70,22 @@ end
     - `trx.items.PickupMode.PLINTH_SCION`  
         Similar to PLINTH_HIGH; invokes Lara's extra animation as in Tomb of Qualopec.
 
+- <a id="items.HitEffect" name="items.HitEffect"></a>[lua]`trx.items.HitEffect`
+
+    The values the `hit_effect` item property can take.
+    It chooses what a bullet hitting the item spawns.
+
+    - `trx.items.HitEffect.DEFAULT`  
+        The object chooses, as it does without a script.
+    - `trx.items.HitEffect.NONE`  
+        Nothing.
+    - `trx.items.HitEffect.BLOOD`  
+        A spray of blood.
+    - `trx.items.HitEffect.RICOCHET`  
+        A ricochet spark.
+    - `trx.items.HitEffect.SMOKE`  
+        A puff of smoke.
+
 - <a id="items.ScaledSpikesMode" name="items.ScaledSpikesMode"></a>[lua]`trx.items.ScaledSpikesMode`
 
     The values the `scaled_spikes_mode` item

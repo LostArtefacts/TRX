@@ -118,6 +118,14 @@ test("the pickup mode enum is reached through trx.items", function()
   assert(trx.pickup == nil, "trx.pickup must not exist")
 end)
 
+test("the hit effect enum is reached through trx.items", function()
+  assert(trx.items.HitEffect.DEFAULT == 0)
+  assert(trx.items.HitEffect.NONE == 1)
+  assert(trx.items.HitEffect.BLOOD == 2)
+  assert(trx.items.HitEffect.RICOCHET == 3)
+  assert(trx.items.HitEffect.SMOKE == 4)
+end)
+
 -- The enum is held behind an empty table so every write goes through
 -- __newindex. pairs() hands the caller everything __pairs returns, so what it
 -- returns must not be that table.

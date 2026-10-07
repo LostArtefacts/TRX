@@ -123,6 +123,7 @@
 - Added `trx.fx.gun_flash()`, so a script can draw a muzzle flash on any item (TRX89)
 - Added `trx.fx.spark.context`, so a script can determine how a spark was spawned before deciding to alter it (TRX1590)
 - Added `trx.items.Item.joint_count` and `trx.items.Item:joint_pos()` (TRX89)
+- Added `trx.objects.Object:set_hit_effect()`, so a script can decide whether a bullet hit spawns blood, a ricochet, smoke or nothing (`trx.items.HitEffect`) (TRX1676)
 - Added `trx.game.cutscene_frame`, which reports the frame a cutscene level is playing (TRX89)
 - Added `trx.overlay.show_pickup()`, which shows an object in the corner of the screen as the game does for a pickup
 - Added the ability for a script to draw outlines in the world the camera is looking at

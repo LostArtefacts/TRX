@@ -148,6 +148,21 @@ function Object:remove_family(family)
   return h.native()
 end
 
+---Sets a function that decides what a bullet hit on an item of this type
+---spawns. It receives the item that was hit and returns a
+---`trx.items.HitEffect`. Returning nothing or `DEFAULT` leaves the choice to
+---the object, as it is without a script. Pass `nil` to remove the function.
+---
+---```lua
+---trx.objects.smashable_4:set_hit_effect(function(item)
+---  return trx.items.HitEffect.RICOCHET
+---end)
+---```
+---@param fn? fun(item: trx.items.Item): trx.items.HitEffect? The function, or `nil` to remove it.
+function Object:set_hit_effect(fn)
+  hooks.set_object(self, "hit_effect", fn)
+end
+
 ---Reads one of the object's properties. Prefer `object.properties.<name>`.
 ---@param name string Which property, as the object declares it.
 ---@return any? # The value, of the type the property is declared with.
