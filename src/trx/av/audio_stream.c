@@ -7,6 +7,7 @@
 #include <trx/debug.h>
 
 #include <SDL2/SDL_atomic.h>
+#include <math.h>
 #include <stdint.h>
 #include <string.h>
 
@@ -24,6 +25,13 @@ typedef struct {
     SDL_atomic_t write_pos;
 } M_RING;
 
+// Two one-pole stages in a row, run on every channel; a zero coefficient lets
+// the sound through untouched.
+typedef struct {
+    float coeff;
+    float state[2][AUDIO_WORKING_CHANNELS];
+} M_LOW_PASS;
+
 typedef struct {
     void (*func)(int32_t sound_id, void *user_data);
     void *user_data;
@@ -35,6 +43,7 @@ typedef struct {
     bool is_read_done;
     bool is_looped;
     float volume;
+    M_LOW_PASS low_pass;
     double speed;
     double duration;
     double decode_timestamp;
@@ -91,8 +100,23 @@ static uint32_t M_RingWrite(
     return count;
 }
 
+static float M_LowPass(
+    M_LOW_PASS *const low_pass, const int32_t channel, float sample)
+{
+    if (low_pass->coeff <= 0.0f) {
+        return sample;
+    }
+    for (int32_t stage = 0; stage < 2; stage++) {
+        float *const state = &low_pass->state[stage][channel];
+        *state += low_pass->coeff * (sample - *state);
+        sample = *state;
+    }
+    return sample;
+}
+
 static uint32_t M_RingMix(
-    M_RING *const ring, float *dst, uint32_t count, const float gain)
+    M_RING *const ring, float *dst, uint32_t count, const float gain,
+    M_LOW_PASS *const low_pass)
 {
     count = MIN(count, M_RingUsed(ring));
     SDL_MemoryBarrierAcquire();
@@ -103,11 +127,13 @@ static uint32_t M_RingMix(
 
     const float *src = ring->data + offset;
     for (uint32_t i = 0; i < head; i++) {
-        *dst++ += *src++ * gain;
+        const int32_t channel = (read_pos + i) % AUDIO_WORKING_CHANNELS;
+        *dst++ += M_LowPass(low_pass, channel, *src++) * gain;
     }
     src = ring->data;
     for (uint32_t i = head; i < count; i++) {
-        *dst++ += *src++ * gain;
+        const int32_t channel = (read_pos + i) % AUDIO_WORKING_CHANNELS;
+        *dst++ += M_LowPass(low_pass, channel, *src++) * gain;
     }
 
     SDL_AtomicSet(&ring->read_pos, (int32_t)(read_pos + count));
@@ -229,6 +255,7 @@ static void M_Clear(AUDIO_STREAM_SOUND *const stream)
     stream->is_read_done = true;
     stream->is_looped = false;
     stream->volume = 0.0f;
+    stream->low_pass = (M_LOW_PASS) {};
     stream->speed = 1.0;
     stream->duration = 0.0;
     stream->decode_timestamp = 0.0;
@@ -283,6 +310,7 @@ static bool M_Initialise(
     stream->is_read_done = false;
     stream->is_looped = false;
     stream->volume = 1.0f;
+    stream->low_pass = (M_LOW_PASS) {};
     stream->speed = 1.0;
     stream->decode_timestamp = 0.0;
     stream->played_samples = 0;
@@ -484,6 +512,21 @@ RESULT Audio_Stream_SetVolume(const int32_t sound_id, const float volume)
     return OK;
 }
 
+RESULT Audio_Stream_SetLowPass(const int32_t sound_id, const float cutoff)
+{
+    MUST(M_CheckID(sound_id));
+    const float coeff = cutoff > 0.0f
+        ? 1.0f - expf(-2.0f * (float)M_PI * cutoff / AUDIO_WORKING_RATE)
+        : 0.0f;
+    Audio_LockDevice();
+    M_LOW_PASS *const low_pass = &m_Streams[sound_id].low_pass;
+    if (low_pass->coeff != coeff) {
+        *low_pass = (M_LOW_PASS) { .coeff = coeff };
+    }
+    Audio_UnlockDevice();
+    return OK;
+}
+
 RESULT Audio_Stream_SetSpeed(const int32_t sound_id, const double speed)
 {
     MUST(M_CheckID(sound_id));
@@ -542,8 +585,9 @@ void Audio_Stream_Mix(float *const dst_buffer, const size_t len)
             continue;
         }
 
-        const uint32_t mixed =
-            M_RingMix(&stream->ring, dst_buffer, requested, stream->volume);
+        const uint32_t mixed = M_RingMix(
+            &stream->ring, dst_buffer, requested, stream->volume,
+            &stream->low_pass);
         stream->played_samples += mixed / AUDIO_WORKING_CHANNELS;
 
         // Looping is handled by the worker, so a dry ring on a stream that has
