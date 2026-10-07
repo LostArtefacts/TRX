@@ -10,6 +10,7 @@
 #include <trx/game/game_flow/sequencer.h>
 #include <trx/game/game_flow/util.h>
 #include <trx/game/game_flow/vars.h>
+#include <trx/game/gun.h>
 #include <trx/game/hub.h>
 #include <trx/game/lara.h>
 #include <trx/game/lua.h>
@@ -181,6 +182,9 @@ M_GF_HANDLER(M_HandlePlayLevel)
             const RESUME_INFO *const resume = SG_Resume_GetEntry(level);
             if (resume != nullptr && resume->burning) {
                 Lara_CatchFire();
+            }
+            if (resume != nullptr && resume->flare_age > 0) {
+                Gun_Flare_Hold(resume->flare_age);
             }
         }
         break;

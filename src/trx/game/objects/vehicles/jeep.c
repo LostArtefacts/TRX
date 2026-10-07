@@ -378,7 +378,11 @@ static void M_Collision(
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     if (Gun_IsFlareType(lara->gun_type)) {
-        Gun_Flare_Dispose(false);
+        if (mount == M_MOUNT_START) {
+            Gun_Flare_Clear();
+        } else {
+            Gun_Flare_Dispose(false);
+        }
         lara->gun_type = LGT_UNARMED;
         lara->request_gun_type = LGT_UNARMED;
     }

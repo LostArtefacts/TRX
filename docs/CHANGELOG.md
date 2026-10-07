@@ -95,6 +95,7 @@
 - Added Trapdoor 1-3 control (TRX1565)
 - Added level views before play starts, with a progress bar (TRX493)
 - Added Seth Sarcophagus and the Burial Chambers cutscene where Lara takes the Amulet (TRX1561)
+- Added the ability to carry a lit flare into the next level, as in the original game (TRX1345)
 - Changed inventory items to use the original size and angle for each level's puzzle, key, pickup, and examine items
 - Changed Lara to say no when trying to use a Jeep when she doesn't have a key for it
 - Changed Jeeps by adding a `requires_key` property rather being a hard-coded enforcement
