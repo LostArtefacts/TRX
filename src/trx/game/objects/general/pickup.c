@@ -1112,9 +1112,7 @@ void Pickup_Collect(const GAME_VECTOR pos, const PICKUP_MODE mode)
 
 // O_FLARE_ITEM registers its own specialized setup.
 #define X_PICKUP(item, option) REGISTER_OBJECT(item, Pickup_Setup)
-#define X_PICKUP_SPECIAL(item, option) REGISTER_OBJECT(item, Pickup_Setup)
 #define X_PICKUP_SUPPLY_VARIANT(item, option)
 #include <trx/game/objects/pickups.def>
 #undef X_PICKUP_SUPPLY_VARIANT
-#undef X_PICKUP_SPECIAL
 #undef X_PICKUP
