@@ -508,12 +508,8 @@ static bool M_IsItemInStack(
     return false;
 }
 
-static void M_ShiftTravellingItems(
-    const ITEM *const lift_item, const int32_t delta)
+static void M_ShiftTravellingItems(const ITEM *const lift_item)
 {
-    // TODO: rather than passing delta to listeners, refactor Room_GetHeight to
-    // be more aware of what's calling it, so that such checks in M_FloorCeiling
-    // that expect Lara only can become more generic.
     for (int32_t i = 0; i < Item_GetLevelCount(); i++) {
         ITEM *const item = Item_Get(i);
         if (item == lift_item) {
@@ -529,8 +525,7 @@ static void M_ShiftTravellingItems(
             continue;
         }
 
-        obj->event_func(
-            item, OBJECT_EVENT_FLOOR_MOVED, (void *)(intptr_t)delta);
+        obj->event_func(item, OBJECT_EVENT_FLOOR_MOVED, nullptr);
     }
 }
 
@@ -565,7 +560,7 @@ static void M_Control(const int16_t item_num)
         // Raise/lower possible movable blocks on top and check positions on
         // save vs load.
         M_ShiftStackableItems(item, false);
-        M_ShiftTravellingItems(item, step);
+        M_ShiftTravellingItems(item);
     }
 
     Item_Animate(item);

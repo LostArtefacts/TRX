@@ -3,7 +3,7 @@
 #include <trx/game/items/types.h>
 #include <trx/game/rooms/types.h>
 
-int16_t Item_GetHeight(const ITEM *item);
+int32_t Item_GetHeight(const ITEM *item);
 int32_t Item_GetDistance(const ITEM *item, XYZ_32 target);
 void Item_Translate(ITEM *item, int32_t x, int32_t y, int32_t z);
 bool Item_Test3DRange(int32_t x, int32_t y, int32_t z, int32_t range);

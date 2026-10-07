@@ -1,5 +1,6 @@
 #include <trx/game/items/col.h>
 
+#include <trx/config.h>
 #include <trx/core/utils.h>
 #include <trx/game/objects.h>
 #include <trx/game/rooms.h>
@@ -7,13 +8,16 @@
 static BOUNDS_16 m_NullBounds = {};
 static BOUNDS_16 m_InterpolatedBounds = {};
 
-int16_t Item_GetHeight(const ITEM *const item)
+int32_t Item_GetHeight(const ITEM *const item)
 {
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
-    const int32_t height = Room_GetHeight(sector, item->pos);
-
-    return height;
+    return Room_GetHeightEx(
+        sector, item->pos,
+        &(ROOM_HEIGHT_CTX) {
+            .fix_tilts = g_Config.gameplay.fix_wall_geometry,
+            .subject = item,
+        });
 }
 
 int32_t Item_GetDistance(const ITEM *const item, const XYZ_32 target)
