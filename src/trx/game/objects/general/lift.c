@@ -68,6 +68,15 @@ static const LARA_STATE_ID m_ClimbingStates[] = {
     // clang-format on
 };
 
+static const LARA_ANIMATION_ID m_ClimbingAnims[] = {
+    // clang-format off
+    LA_CLIMB_2CLICK,
+    LA_CLIMB_3CLICK,
+    LA_STAND_TO_JUMP_UP,
+    NO_CATALOG_ID,
+    // clang-format on
+};
+
 static RESULT M_LoadPriv(ITEM *const item, JSON_READ_IO *const io)
 {
     M_PRIV *const p = item->priv;
@@ -364,8 +373,7 @@ static void M_InternalCollision(const ITEM *const item, COLL_INFO *const coll)
 }
 
 static bool M_ShouldPreventClimbing(
-    const ITEM *const item, const ITEM *const lara_item,
-    const M_LARA_STATUS lara_status)
+    const ITEM *const item, const M_LARA_STATUS lara_status)
 {
     if (!Lara_TestBoundsCollide(item, 0)) {
         return false;
@@ -386,9 +394,7 @@ static bool M_ShouldPreventClimbing(
         return false;
     }
 
-    return Item_TestAnimEqual(lara_item, LA(LA_CLIMB_2CLICK))
-        || Item_TestAnimEqual(lara_item, LA(LA_CLIMB_3CLICK))
-        || Item_TestAnimEqual(lara_item, LA(LA_STAND_TO_JUMP_UP));
+    return Lara_HasAnimation(m_ClimbingAnims);
 }
 
 static void M_PreventClimbing(ITEM *const lara_item)
@@ -442,7 +448,7 @@ static void M_Collision(
         return;
     }
 
-    if (M_ShouldPreventClimbing(item, lara_item, lara_status)) {
+    if (M_ShouldPreventClimbing(item, lara_status)) {
         M_PreventClimbing(lara_item);
         return;
     }

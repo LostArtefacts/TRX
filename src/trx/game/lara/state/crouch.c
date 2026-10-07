@@ -24,6 +24,27 @@
 #define M_RESET_ANIM_SMOOTHING 4
 // clang-format on
 
+static const LARA_ANIMATION_ID m_CrouchCrawlEntryAnims[] = {
+    // clang-format off
+    LA_CROUCH_IDLE,
+    LA_CROUCH_TURN_LEFT,
+    LA_CROUCH_TURN_RIGHT,
+    LA_STAND_TO_CROUCH_END,
+    NO_CATALOG_ID,
+    // clang-format on
+};
+
+static const LARA_ANIMATION_ID m_CrawlJumpAnims[] = {
+    // clang-format off
+    LA_CRAWL_IDLE,
+    LA_CROUCH_TO_CRAWL_END,
+    LA_CRAWL_FORWARD_TO_IDLE_END_RIGHT,
+    LA_CRAWL_FORWARD_TO_IDLE_END_LEFT,
+    LA_CROUCH_IDLE,
+    NO_CATALOG_ID,
+    // clang-format on
+};
+
 static bool M_CanEnterCrawlFromCrouch(const ITEM *const item)
 {
     return item->current_anim_state == LS(LS_CROUCH_IDLE)
@@ -62,11 +83,7 @@ static bool M_CanCrouchRoll(const ITEM *const item, const LARA_INFO *const lara)
         if (!g_Config.gameplay.enable_responsive_crawl) {
             return false;
         }
-    } else if (
-        !Item_TestAnimEqual(item, LA(LA_CROUCH_IDLE))
-        && !Item_TestAnimEqual(item, LA(LA_CROUCH_TURN_LEFT))
-        && !Item_TestAnimEqual(item, LA(LA_CROUCH_TURN_RIGHT))
-        && !Item_TestAnimEqual(item, LA(LA_STAND_TO_CROUCH_END))) {
+    } else if (!Lara_HasAnimation(m_CrouchCrawlEntryAnims)) {
         return false;
     }
 
@@ -88,11 +105,7 @@ static bool M_CanJumpDown(const ITEM *const item, const LARA_INFO *const lara)
         return false;
     }
 
-    if (!Item_TestAnimEqual(item, LA(LA_CRAWL_IDLE))
-        && !Item_TestAnimEqual(item, LA(LA_CROUCH_TO_CRAWL_END))
-        && !Item_TestAnimEqual(item, LA(LA_CRAWL_FORWARD_TO_IDLE_END_RIGHT))
-        && !Item_TestAnimEqual(item, LA(LA_CRAWL_FORWARD_TO_IDLE_END_LEFT))
-        && !Item_TestAnimEqual(item, LA(LA_CROUCH_IDLE))) {
+    if (!Lara_HasAnimation(m_CrawlJumpAnims)) {
         return false;
     }
 
