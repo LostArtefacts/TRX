@@ -4,6 +4,8 @@
 #include <trx/core/math/geom.h>
 #include <trx/core/utils.h>
 
+#include <math.h>
+
 uint32_t Math_Sqrt(uint32_t n)
 {
     uint32_t result = 0;
@@ -130,4 +132,10 @@ int32_t Math_GCD(int32_t a, int32_t b)
         a = t;
     }
     return a;
+}
+
+int32_t Math_ApplyPercent(const int32_t value, const float scale)
+{
+    const int64_t scaled = (int64_t)value * lroundf(scale * 100.0f);
+    return scaled >= 0 ? (scaled + 99) / 100 : scaled / 100;
 }

@@ -13,3 +13,8 @@ int16_t Math_DirectionToAngle(DIRECTION dir);
 int32_t Math_AngleMean(int32_t angle1, int32_t angle2, double ratio);
 int32_t Math_FloorDiv(int32_t x, int32_t divisor);
 int32_t Math_GCD(int32_t a, int32_t b);
+
+// Takes a percentage of a value, rounding up. The percentage is given as a
+// factor, such as 0.15 for 15%, and taken to the nearest whole percent, which
+// keeps the hair a float holds over 0.15 from turning 15 of 100 into 16.
+int32_t Math_ApplyPercent(int32_t value, float scale);
