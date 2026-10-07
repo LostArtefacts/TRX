@@ -1,6 +1,5 @@
 #include <trx/core/vector.h>
 #include <trx/game/catalog/manager.h>
-#include <trx/game/console.h>
 #include <trx/game/items.h>
 #include <trx/game/lua/field.h>
 #include <trx/game/lua/registry.h>
@@ -22,15 +21,12 @@
 // level loads because object records are rebuilt for each level.
 typedef struct {
     OBJECT_ID object_id;
-    int32_t control_ref;
-    int32_t initialise_ref;
     int32_t radius;
     int32_t shadow_size;
     bool save_position;
 } M_DECLARATION;
 
 static VECTOR *m_Declarations = nullptr;
-static lua_State *m_L = nullptr;
 
 // clang-format off
 static const FIELD_DESC m_Fields[] = {
@@ -117,39 +113,6 @@ static M_DECLARATION *M_FindDeclaration(const OBJECT_ID object_id)
     return nullptr;
 }
 
-// Calls a script function for an item. Errors are reported to the console.
-static void M_CallForItem(
-    const int32_t ref, const int16_t item_num, const char *const what)
-{
-    if (m_L == nullptr || ref == LUA_NOREF) {
-        return;
-    }
-    lua_rawgeti(m_L, LUA_REGISTRYINDEX, ref);
-    LUA_PushItem(m_L, item_num);
-    if (lua_pcall(m_L, 1, 0, 0) != LUA_OK) {
-        Console_ShowError("object %s error: %s", what, lua_tostring(m_L, -1));
-        lua_pop(m_L, 1);
-    }
-}
-
-static void M_Control(const int16_t item_num)
-{
-    const ITEM *const item = Item_Get(item_num);
-    const M_DECLARATION *const decl = M_FindDeclaration(item->object_id);
-    if (decl != nullptr) {
-        M_CallForItem(decl->control_ref, item_num, "control");
-    }
-}
-
-static void M_Initialise(const int16_t item_num)
-{
-    const ITEM *const item = Item_Get(item_num);
-    const M_DECLARATION *const decl = M_FindDeclaration(item->object_id);
-    if (decl != nullptr) {
-        M_CallForItem(decl->initialise_ref, item_num, "initialise");
-    }
-}
-
 // Applies script setup after the engine sets up its own objects.
 static void M_ApplyDeclarations(void)
 {
@@ -160,12 +123,6 @@ static void M_ApplyDeclarations(void)
         if (obj == nullptr) {
             continue;
         }
-        if (decl->control_ref != LUA_NOREF) {
-            obj->control_func = M_Control;
-        }
-        if (decl->initialise_ref != LUA_NOREF) {
-            obj->initialise_func = M_Initialise;
-        }
         if (decl->radius >= 0) {
             obj->radius = decl->radius;
         }
@@ -174,21 +131,6 @@ static void M_ApplyDeclarations(void)
         }
         obj->save_position = decl->save_position;
     }
-}
-
-// Takes an optional function from a declaration table.
-static int32_t M_TakeFunction(
-    lua_State *const L, const int arg, const char *const name)
-{
-    if (lua_getfield(L, arg, name) == LUA_TNIL) {
-        lua_pop(L, 1);
-        return LUA_NOREF;
-    }
-    if (!lua_isfunction(L, -1)) {
-        lua_pop(L, 1);
-        luaL_error(L, "'%s' must be a function", name);
-    }
-    return luaL_ref(L, LUA_REGISTRYINDEX);
 }
 
 static int32_t M_TakeInt(
@@ -216,8 +158,6 @@ static int M_L_ObjectsDeclare(lua_State *const L)
 
     M_DECLARATION decl = {
         .object_id = object_id,
-        .control_ref = M_TakeFunction(L, 2, "control"),
-        .initialise_ref = M_TakeFunction(L, 2, "initialise"),
         .radius = M_TakeInt(L, 2, "radius"),
         .shadow_size = M_TakeInt(L, 2, "shadow_size"),
     };
@@ -418,24 +358,14 @@ static const luaL_Reg m_Module[] = {
 
 static void M_Shutdown(void)
 {
-    for (int32_t i = 0; m_Declarations != nullptr && i < m_Declarations->count;
-         i++) {
-        const M_DECLARATION *const decl = Vector_Get(m_Declarations, i);
-        if (m_L != nullptr) {
-            luaL_unref(m_L, LUA_REGISTRYINDEX, decl->control_ref);
-            luaL_unref(m_L, LUA_REGISTRYINDEX, decl->initialise_ref);
-        }
-    }
     if (m_Declarations != nullptr) {
         Vector_Free(m_Declarations);
         m_Declarations = nullptr;
     }
-    m_L = nullptr;
 }
 
 static void M_Create(lua_State *const L)
 {
-    m_L = L;
     Object_AddSetupHook(M_ApplyDeclarations);
     LUA_Struct_Register(L, &TYPE_OBJECT, m_Methods);
     LUA_Property_Register(L, &m_Properties);

@@ -976,6 +976,7 @@ unit_tests += {
   'src': ['fakes/items.c', 'fakes/lara.c', 'harness/stubs_console.c'],
   'engine': [
     'game/lua/capi/catalog.c',
+    'game/lua/capi/hooks.c',
     'game/lua/capi/items.c',
     'game/lua/capi/objects.c',
   ],
