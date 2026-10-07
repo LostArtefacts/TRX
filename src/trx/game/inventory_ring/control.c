@@ -108,14 +108,10 @@ static void M_InsertIntoRing(INVENTORY_ITEM *const inv_item, const int32_t qty)
     inv_item->actions = Inv_GetItemActions(inv_item->object_id);
 }
 
-static bool M_IsRuntimeHidden(
-    const INVENTORY_ITEM *const inv_item, const INVENTORY_MODE mode)
+static bool M_IsRuntimeHidden(const OBJECT_ID object_id)
 {
-    if (inv_item->object_id == O_BINOCULARS_OPTION
-        && !g_Config.gameplay.enable_binoculars) {
-        return true;
-    }
-    return mode == INV_KEYS_MODE && inv_item->actions.can_combine;
+    return object_id == O_BINOCULARS_OPTION
+        && !g_Config.gameplay.enable_binoculars;
 }
 
 static bool M_IsRingRemembered(const RING_TYPE type)
@@ -148,14 +144,13 @@ static int16_t M_GetStartingObject(
     return fallback;
 }
 
-static INV_RING_VISIBLE M_GetVisibleRing(
-    const RING_TYPE type, const INVENTORY_MODE mode)
+static INV_RING_VISIBLE M_GetVisibleRing(const RING_TYPE type)
 {
     const INV_RING_SOURCE *const source = &g_InvRing_Source[type];
     INVENTORY_ITEM **const dst = m_VisibleRingItems[type];
     int16_t count = 0;
     for (int16_t i = 0; i < source->count; i++) {
-        if (!M_IsRuntimeHidden(source->items[i], mode)) {
+        if (!M_IsRuntimeHidden(source->items[i]->object_id)) {
             dst[count++] = source->items[i];
         }
     }
@@ -384,7 +379,7 @@ static void M_TransitionToRing(
     // so would clobber it with a filtered (possibly smaller) count.
     g_InvRing_Source[source_type].current = ring->current_object;
     ring->type = target_type;
-    const INV_RING_VISIBLE visible = M_GetVisibleRing(target_type, ring->mode);
+    const INV_RING_VISIBLE visible = M_GetVisibleRing(target_type);
     ring->list = visible.items;
     ring->number_of_objects = visible.count;
     ring->current_object = g_InvRing_Source[target_type].current;
@@ -450,7 +445,7 @@ static void M_ApplyCombineChoice(
     Inv_AddItem(result);
     InvRing_SetRequestedObjectID(result);
 
-    const INV_RING_VISIBLE visible = M_GetVisibleRing(ring->type, ring->mode);
+    const INV_RING_VISIBLE visible = M_GetVisibleRing(ring->type);
     ring->list = visible.items;
     ring->number_of_objects = visible.count;
     ring->angle_adder = visible.count > 0 ? DEG_360 / visible.count : 0;
@@ -673,13 +668,13 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             && ring->mode != INV_KEYS_MODE
             && ring->mode != INV_GLOBE_SELECT_MODE) {
             if (ring->type == RT_MAIN) {
-                if (InvRing_IsRingAvailable(RT_KEYS, ring->mode)) {
+                if (InvRing_IsRingAvailable(RT_KEYS)) {
                     M_SetupRingSwitchClose(ring, RNG_MAIN2KEYS);
                 }
                 g_Input = (INPUT_STATE) {};
                 g_InputDB = (INPUT_STATE) {};
             } else if (ring->type == RT_OPTION) {
-                if (InvRing_IsRingAvailable(RT_MAIN, ring->mode)) {
+                if (InvRing_IsRingAvailable(RT_MAIN)) {
                     M_SetupRingSwitchClose(ring, RNG_OPTION2MAIN);
                 }
                 g_InputDB = (INPUT_STATE) {};
@@ -689,12 +684,12 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             && ring->mode != INV_KEYS_MODE
             && ring->mode != INV_GLOBE_SELECT_MODE) {
             if (ring->type == RT_MAIN) {
-                if (InvRing_IsRingAvailable(RT_OPTION, ring->mode)) {
+                if (InvRing_IsRingAvailable(RT_OPTION)) {
                     M_SetupRingSwitchClose(ring, RNG_MAIN2OPTION);
                 }
                 g_InputDB = (INPUT_STATE) {};
             } else if (ring->type == RT_KEYS) {
-                if (InvRing_IsRingAvailable(RT_MAIN, ring->mode)) {
+                if (InvRing_IsRingAvailable(RT_MAIN)) {
                     M_SetupRingSwitchClose(ring, RNG_KEYS2MAIN);
                 }
                 g_Input = (INPUT_STATE) {};
@@ -912,7 +907,7 @@ void InvRing_RemoveAllText(void)
 
 INV_RING *InvRing_Open(const INVENTORY_MODE mode)
 {
-    if (mode == INV_KEYS_MODE && !InvRing_IsRingAvailable(RT_KEYS, mode)) {
+    if (mode == INV_KEYS_MODE && !InvRing_IsRingAvailable(RT_KEYS)) {
         m_InvChosen = NO_OBJECT;
         return nullptr;
     }
@@ -1025,8 +1020,7 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     case INV_GLOBE_SELECT_MODE: {
         ring->background_style = BK_NONE;
         ring->background_path = nullptr;
-        const INV_RING_VISIBLE visible =
-            M_GetVisibleRing(RT_GLOBE_SELECT, mode);
+        const INV_RING_VISIBLE visible = M_GetVisibleRing(RT_GLOBE_SELECT);
         InvRing_InitRing(
             ring, RT_GLOBE_SELECT, &visible,
             g_InvRing_Source[RT_GLOBE_SELECT].current);
@@ -1039,14 +1033,14 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     case INV_SAVE_CRYSTAL_MODE:
     case INV_LOAD_MODE:
     case INV_DEATH_MODE: {
-        const INV_RING_VISIBLE visible = M_GetVisibleRing(RT_OPTION, mode);
+        const INV_RING_VISIBLE visible = M_GetVisibleRing(RT_OPTION);
         InvRing_InitRing(
             ring, RT_OPTION, &visible, g_InvRing_Source[RT_OPTION].current);
         break;
     }
 
     case INV_KEYS_MODE: {
-        const INV_RING_VISIBLE visible = M_GetVisibleRing(RT_KEYS, mode);
+        const INV_RING_VISIBLE visible = M_GetVisibleRing(RT_KEYS);
         InvRing_InitRing(
             ring, RT_KEYS, &visible,
             M_GetStartingObject(
@@ -1055,15 +1049,14 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     }
 
     default: {
-        const INV_RING_VISIBLE main_visible = M_GetVisibleRing(RT_MAIN, mode);
+        const INV_RING_VISIBLE main_visible = M_GetVisibleRing(RT_MAIN);
         if (main_visible.count > 0) {
             InvRing_InitRing(
                 ring, RT_MAIN, &main_visible,
                 M_GetStartingObject(
                     RT_MAIN, &main_visible, g_InvRing_Source[RT_MAIN].current));
         } else {
-            const INV_RING_VISIBLE option_visible =
-                M_GetVisibleRing(RT_OPTION, mode);
+            const INV_RING_VISIBLE option_visible = M_GetVisibleRing(RT_OPTION);
             InvRing_InitRing(
                 ring, RT_OPTION, &option_visible,
                 g_InvRing_Source[RT_OPTION].current);
@@ -1178,13 +1171,12 @@ GF_COMMAND InvRing_Control(INV_RING *const ring)
     return gf_cmd;
 }
 
-bool InvRing_IsRingAvailable(
-    const RING_TYPE ring_type, const INVENTORY_MODE mode)
+bool InvRing_IsRingAvailable(const RING_TYPE ring_type)
 {
     if (ring_type == RT_OPTION && InvRing_IsOptionLockedOut()) {
         return false;
     }
-    return M_GetVisibleRing(ring_type, mode).count > 0;
+    return M_GetVisibleRing(ring_type).count > 0;
 }
 
 bool InvRing_IsOptionLockedOut(void)
