@@ -65,3 +65,20 @@ typedef struct {
 // set, bound to `desc`. Call after LUA_Struct_Register; a declaration exposes
 // them by name.
 void LUA_Property_Register(lua_State *L, const LUA_PROPERTY_DESC *desc);
+
+// Make a member reachable from a script under `public_name`, as the type's
+// declaration in Lua states it. A field is writable only where `writable` is
+// set; the function at `fn_idx` is exposed as a method, or as a computed member
+// read through it.
+void LUA_Struct_ExposeField(
+    lua_State *L, const TYPE_DESC *type, const char *public_name,
+    const FIELD_DESC *field, bool writable);
+void LUA_Struct_ExposeMethod(
+    lua_State *L, const TYPE_DESC *type, const char *public_name, int fn_idx);
+void LUA_Struct_ExposeComputed(
+    lua_State *L, const TYPE_DESC *type, const char *public_name, int fn_idx);
+
+// Push one of the C methods the type offers by its C name, or nil where it
+// offers none, and answer whether it does.
+bool LUA_Struct_PushRawMethod(
+    lua_State *L, const TYPE_DESC *type, const char *c_name);

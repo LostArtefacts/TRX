@@ -102,6 +102,7 @@ b_lua_surface = {
     'game/lua/field.c',
     'game/lua/registry.c',
     'game/lua/sandbox.c',
+    'game/lua/struct.c',
     'game/lua/utils.c',
   ],
   'src': [
@@ -578,6 +579,7 @@ unit_tests += {
     'game/lua/capi/struct.c',
     'game/lua/field.c',
     'game/lua/registry.c',
+    'game/lua/struct.c',
     'game/lua/utils.c',
   ],
   'deps': [dep_lua],
