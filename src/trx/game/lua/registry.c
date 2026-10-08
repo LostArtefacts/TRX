@@ -31,7 +31,9 @@ void LUA_Registry_Add(LUA_CAPI capi)
 void LUA_Registry_CreateAll(lua_State *const L)
 {
     for (const M_NODE *node = m_List; node != nullptr; node = node->next) {
-        node->capi.create(L);
+        if (node->capi.create != nullptr) {
+            node->capi.create(L);
+        }
     }
 }
 

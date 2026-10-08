@@ -37,7 +37,6 @@ typedef struct {
     // of every level load, the first one included, where there is nothing to
     // let go of and nobody to tell about it. A probe run counts as one, because
     // it leaves the same state behind as a level being played.
-    bool level_script_live;
 } M_PRIV;
 
 static M_PRIV m_Priv = {
@@ -493,7 +492,6 @@ void LUA_Shutdown(void)
 {
     M_PRIV *const p = &m_Priv;
     LUA_Registry_ShutdownAll();
-    p->level_script_live = false;
     if (p->state != nullptr) {
         lua_close(p->state);
         p->state = nullptr;
@@ -534,77 +532,13 @@ void LUA_InstallModRequire(lua_State *const L)
     lua_setglobal(L, "require");
 }
 
-void LUA_DropLevelModules(lua_State *const L)
+void LUA_DropLevelModules(void)
 {
+    lua_State *const L = m_Priv.state;
     if (L == nullptr) {
         return;
     }
     M_ClearRequired(L, LUA_CONTEXT_LEVEL);
-}
-
-RESULT LUA_RunGameScript(void)
-{
-    // An expansion with nothing of its own to set up runs the script of the
-    // game it extends, so it ships a file only to replace one. What it wants
-    // to keep from the game it extends it requires by name.
-    const char *const path =
-        GamePath_PeekResolve(GAME_DYNAMIC_PATH_GAME_SCRIPT_FILE, "_game.lua");
-    if (path == nullptr) {
-        return OK;
-    }
-
-    LOG_INFO("Loading game script: %s", path);
-    RESULT result = OK;
-    LUA_RESULT res = LUA_EvalFile(path);
-    if (res.code != LUA_OK) {
-        result = FAIL("%s", res.message);
-    }
-    LUA_FreeResult(&res);
-    return result;
-}
-
-void LUA_DropLevelScript(void)
-{
-    M_PRIV *const p = &m_Priv;
-    if (p->level_script_live) {
-        p->level_script_live = false;
-
-        // Before the listeners go, so a module holding state the level set up
-        // hears about it while its own handlers still answer and can take them
-        // down itself.
-        LUA_FireEvent(LUA_EVENT_LEVEL_UNLOAD);
-    }
-
-    LUA_Registry_DropLevelAll();
-    LUA_DropLevelModules(p->state);
-}
-
-void LUA_RunLevelScript(const GF_LEVEL *const level)
-{
-    m_Priv.level_script_live = true;
-    LUA_SetScriptContext(LUA_CONTEXT_LEVEL);
-
-    if (level->script_path != nullptr) {
-        LUA_RESULT res = LUA_EvalFile(level->script_path);
-        if (res.code != LUA_OK) {
-            Console_ShowError("Lua level script error: %s", res.message);
-        }
-        LUA_FreeResult(&res);
-    }
-
-    LUA_SetScriptContext(LUA_CONTEXT_GLOBAL);
-}
-
-void LUA_ReloadLevelScript(void)
-{
-    const GF_LEVEL *const level = GF_GetCurrentLevel();
-    if (level == nullptr) {
-        return;
-    }
-    // The level stays where it is, so the unload that would otherwise let go of
-    // the last run is not coming.
-    LUA_DropLevelScript();
-    LUA_RunLevelScript(level);
 }
 
 void LUA_FreeResult(LUA_RESULT *const result)

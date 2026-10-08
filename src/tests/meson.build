@@ -541,6 +541,7 @@ unit_tests += {
     'game/lua/common.c',
     'game/lua/events/common.c',
     'game/lua/registry.c',
+    'game/lua/scripts.c',
     'game/lua/utils.c',
   ],
   'src': [
