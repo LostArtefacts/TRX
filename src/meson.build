@@ -585,6 +585,7 @@ common_sources = [
   'trx/game/lua/sandbox.c',
   'trx/game/lua/scene.c',
   'trx/game/lua/screens.c',
+  'trx/game/lua/scripts.c',
   'trx/game/lua/startup.c',
   'trx/game/lua/store.c',
   'trx/game/lua/struct.c',

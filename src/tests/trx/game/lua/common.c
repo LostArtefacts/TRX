@@ -8,6 +8,7 @@
 #include <trx/game/items/actions.h>
 #include <trx/game/lua/api.h>
 #include <trx/game/lua/common.h>
+#include <trx/game/lua/scripts.h>
 #include <trx/game/lua/embedded_scripts.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/lua/guard.h>
