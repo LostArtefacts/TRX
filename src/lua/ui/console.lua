@@ -436,4 +436,4 @@ trx.events.on_level_unload(function()
   end
 end)
 
-trx.events.on_ui_paint_over(draw)
+trx.ui.on_paint_over(draw)

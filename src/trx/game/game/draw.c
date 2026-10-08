@@ -2,7 +2,7 @@
 #include <trx/game/camera.h>
 #include <trx/game/cutseq.h>
 #include <trx/game/interpolation.h>
-#include <trx/game/lua/scene.h>
+#include <trx/game/lua/events/scene.h>
 #include <trx/game/output.h>
 #include <trx/game/overlay.h>
 

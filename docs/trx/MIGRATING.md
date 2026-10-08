@@ -61,6 +61,16 @@ order: 3
    A `trx.inventory.Inventory` or `trx.stats.Stats` reached through
    `trx.game.Level` still takes a colon.
 
+8. **Drawing hooks moved to the modules that draw**
+   The interface and the scene are now drawn through the module that owns
+   them, rather than through `trx.events`:
+   - `trx.events.on_ui_draw` becomes `trx.ui.on_draw`
+   - `trx.events.on_ui_paint` becomes `trx.ui.on_paint`
+   - `trx.events.on_ui_paint_over` becomes `trx.ui.on_paint_over`
+   - `trx.events.on_scene_paint` becomes `trx.scene.on_paint`
+
+   The handlers take the same arguments and return the same listeners.
+
 ### Version 1.10 to 1.11
 
 1. **The waterfall mist object was renamed**

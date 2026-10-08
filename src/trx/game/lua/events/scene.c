@@ -1,4 +1,4 @@
-#include <trx/game/lua/scene.h>
+#include <trx/game/lua/events/scene.h>
 
 #include <trx/game/lua/events.h>
 

@@ -12,7 +12,7 @@
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/lua/events.h>
-#include <trx/game/lua/ui.h>
+#include <trx/game/lua/events/ui.h>
 #include <trx/game/music.h>
 #include <trx/game/output.h>
 #include <trx/game/output/overlay.h>

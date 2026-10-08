@@ -11,7 +11,7 @@
 #include <trx/game/console/common.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/events.h>
-#include <trx/game/lua/ui.h>
+#include <trx/game/lua/events/ui.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/elements/bar.h>
 #include <trx/game/ui/elements/label.h>

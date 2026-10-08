@@ -1,19 +1,16 @@
 #include <trx/core/subsystem.h>
-#include <trx/game/lua/events.h>
+#include <trx/game/lua/hooks/common.h>
 #include <trx/game/ui/dialogs/takeover.h>
 
 static bool M_Offer(const UI_TAKEOVER screen, const int32_t arg)
 {
-    const LUA_EVENT_ARG args[] = {
-        { .type = LUA_EVENT_ARG_INT32, .value.i32 = screen },
-        { .type = LUA_EVENT_ARG_INT32, .value.i32 = arg },
-    };
-    return LUA_FireEventEx(LUA_EVENT_SCREEN_OPEN, args, 2);
+    return LUA_Hooks_CallBool(
+        LUA_HOOK_SCREEN_OPEN, 0, false, LUA_ARG_INT(screen), LUA_ARG_INT(arg));
 }
 
 static void M_Release(const UI_TAKEOVER screen)
 {
-    LUA_FireEventInt32(LUA_EVENT_SCREEN_RELEASE, screen);
+    LUA_Hooks_Call(LUA_HOOK_SCREEN_RELEASE, 0, 0, LUA_ARG_INT(screen));
 }
 
 static void M_Init(void)

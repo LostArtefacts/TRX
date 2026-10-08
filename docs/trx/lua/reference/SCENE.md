@@ -15,9 +15,9 @@ order: 44
 Outlines a script draws into the world the camera is looking at, over the
 level geometry rather than over the interface.
 
-The calls are available from [`trx.events.on_scene_paint`](EVENTS.md#events.on_scene_paint) and nowhere else,
+The calls are available from [`trx.scene.on_paint`](#scene.on_paint) and nowhere else,
 and raise anywhere else. Nothing is remembered between frames: a shape that
-is to stay on screen is drawn again every time the event fires.
+is to stay on screen is drawn again every time it happens.
 
 A shape is placed the way an item position and a zone are, so it needs no
 room and belongs to none. The outlines are drawn as wireframe, and one
@@ -25,6 +25,23 @@ reaching further from its middle than a level is wide draws at that limit
 instead.
 
 ### Functions
+
+- <a id="scene.on_paint" name="scene.on_paint"></a>[lua]`trx.scene.on_paint(callback)`  
+  Happens on every drawn frame, after the rooms and everything standing in
+  them, and before the interface. The drawing calls here work during it and
+  raise anywhere else. It follows the frame rate, not the game clock.
+
+  Parameters:
+  - <a id="scene.on_paint.callback" name="scene.on_paint.callback"></a>**`callback`** (function). What to run when it happens.
+
+  Returns: [trx.events.Listener](EVENTS.md#events.Listener). The attached handler.
+
+  Example:
+  ```lua
+  trx.scene.on_paint(function()
+    trx.scene.sphere(trx.lara.item.pos, 512, "00ff00")
+  end)
+  ```
 
 - <a id="scene.box" name="scene.box"></a>[lua]`trx.scene.box(min, max, color, [alpha])`  
   Draws the outline of a world-space box. The corners may come in any order.
@@ -37,7 +54,7 @@ instead.
 
   Example:
   ```lua
-  trx.events.on_scene_paint(function()
+  trx.scene.on_paint(function()
     trx.scene.box(
       { x = 51200, y = -2048, z = 30720 },
       { x = 53248, y = 0, z = 32768 },
@@ -56,7 +73,7 @@ instead.
 
   Example:
   ```lua
-  trx.events.on_scene_paint(function()
+  trx.scene.on_paint(function()
     trx.scene.sphere(trx.lara.item.pos, 2048, "00ff00", 128)
   end)
   ```

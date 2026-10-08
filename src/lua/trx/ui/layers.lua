@@ -295,7 +295,7 @@ local function paint(layer)
   end
 end
 
-trx.events.on_ui_draw(function(region)
+trx.ui.on_draw(function(region)
   for _, layer in ipairs(stack) do
     if layer.region == region then
       rawset(layer, "_slot", nil)
@@ -309,7 +309,7 @@ trx.events.on_ui_draw(function(region)
   end
 end)
 
-trx.events.on_ui_paint(function()
+trx.ui.on_paint(function()
   local failed = nil
   local snapshot = { table.unpack(stack) }
   for i, layer in ipairs(snapshot) do

@@ -1,5 +1,6 @@
 local raw = trxc.screens
 local raw_events = trxc.events
+local raw_hooks = trxc.hooks
 local raw_enum = trxc.enum
 local h = require("trx.internal.helpers")
 
@@ -9,9 +10,9 @@ require("trx.events")
 
 local ui = trx.ui
 
--- The event types and the choices are the engine's, read back as any other
--- enum is. Neither is public: a script defines a screen and ends it through
--- its context, and never names either.
+-- The choices are the engine's, read back as any other enum is. They are not
+-- public: a script defines a screen and ends it through its context, and never
+-- names one.
 local function constants(backing)
   local result = {}
   for _, constant in ipairs(raw_enum.values(backing)) do
@@ -20,7 +21,6 @@ local function constants(backing)
   return result
 end
 
-local events = constants("LUA_EVENT_TYPE")
 local choices = constants("UI_TAKEOVER_CHOICE")
 
 -------------------------------------------------------------------------------
@@ -338,9 +338,9 @@ local function open_screen(screen, arg)
   return true
 end
 
-raw_events.attach(events.SCREEN_OPEN, open_screen)
+raw_hooks.set("screen_open", open_screen)
 
-raw_events.attach(events.SCREEN_RELEASE, function(screen)
+raw_hooks.set("screen_release", function(screen)
   local ctx = held[screen]
   if ctx ~= nil then
     finish(ctx, nil)

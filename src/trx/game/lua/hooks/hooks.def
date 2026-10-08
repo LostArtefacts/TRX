@@ -1,4 +1,6 @@
 // Every hook a script can set, by the name it sets it under.
-X_HOOK(LUA_HOOK_CONTROL,     control)
-X_HOOK(LUA_HOOK_INITIALISE,  initialise)
-X_HOOK(LUA_HOOK_HIT_EFFECT,  hit_effect)
+X_HOOK(LUA_HOOK_CONTROL,        control)
+X_HOOK(LUA_HOOK_INITIALISE,     initialise)
+X_HOOK(LUA_HOOK_HIT_EFFECT,     hit_effect)
+X_HOOK(LUA_HOOK_SCREEN_OPEN,    screen_open)
+X_HOOK(LUA_HOOK_SCREEN_RELEASE, screen_release)

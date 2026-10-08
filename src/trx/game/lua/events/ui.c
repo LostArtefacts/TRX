@@ -1,4 +1,4 @@
-#include <trx/game/lua/ui.h>
+#include <trx/game/lua/events/ui.h>
 
 #include <trx/core/subsystem.h>
 #include <trx/game/lua/events.h>

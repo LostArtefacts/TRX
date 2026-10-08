@@ -242,7 +242,7 @@ signal.tick:on(function()
 end)
 
 -- Paints a sprite where a model would be, scaled to fill the same cell.
-trx.events.on_ui_paint(function()
+trx.ui.on_paint(function()
   if not enabled() then
     return
   end
