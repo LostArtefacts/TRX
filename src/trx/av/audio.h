@@ -36,6 +36,9 @@ RESULT Audio_Stream_CreateFromMemory(
 RESULT Audio_Stream_Close(int32_t sound_id);
 bool Audio_Stream_IsLooped(int32_t sound_id);
 RESULT Audio_Stream_SetVolume(int32_t sound_id, float volume);
+// Muffles the stream by cutting what lies above the given frequency, in Hz;
+// zero or less lets it through whole.
+RESULT Audio_Stream_SetLowPass(int32_t sound_id, float cutoff);
 
 // Play the stream faster or slower, pitching it with the rate the way a tape
 // does. Timestamps stay in the source timeline.

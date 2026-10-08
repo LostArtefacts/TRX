@@ -973,6 +973,10 @@
             "title": "\\{review}SFX anim. sous l'eau",
             "description": "\\{review}Permet de contrôler la lecture de certains effets sonores d'animation — pour des objets comme des portes ou des trappes — lorsque la caméra est sous l'eau.",
         },
+        "audio.enable_underwater_muffle": {
+            "title": "\\{review}Assourdir l'ambiance sous l'eau",
+            "description": "\\{review}Assourdit la piste d'ambiance tant que la caméra est sous l'eau, comme si on l'entendait à travers l'eau.",
+        },
         "audio.fix_chainblock_secret_sound": {
             "title": "Corriger le son de chaîne des blocs",
             "description": "\\{review}Corrige le fait que le son du secret se joue par erreur lors de l'utilisation de la Clé en Or dans la Tombe de Tihocan, dans TR1.",

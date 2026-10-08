@@ -973,6 +973,10 @@
             "title": "Efekty dźwiękowe pod wodą",
             "description": "Włącza odtwarzanie określonych efektów dźwiękowych animacji – dla obiektów takich jak drzwi i włazy – gdy kamera jest pod wodą.",
         },
+        "audio.enable_underwater_muffle": {
+            "title": "\\{review}Wytłumienie ambientu pod wodą",
+            "description": "\\{review}Tłumi ścieżkę ambientu, gdy kamera jest pod wodą, jakby była słyszana przez wodę.",
+        },
         "audio.fix_chainblock_secret_sound": {
             "title": "Napraw dźwięku blokady łańcucha",
             "description": "\\{review}Zapobiega nieprawidłowemu odtwarzaniu dźwięku sekretu po użyciu złotego klucza w Grobowcu Tihocana w TR1.",

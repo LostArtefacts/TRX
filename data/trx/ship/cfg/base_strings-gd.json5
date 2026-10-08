@@ -973,6 +973,10 @@
             "title": "SFX beòthalachd fon uisge",
             "description": "Leigidh seo leat smachd a chumail air buaidhean-fuaim beòthalachd shònraichte - airson nithean mar dorsan is trapaichean - nuair a tha a' chamara fon uisge.",
         },
+        "audio.enable_underwater_muffle": {
+            "title": "\\{review}Mùch an t-àile fon uisge",
+            "description": "\\{review}Mùchaidh seo an clàr àile fhad 's a tha an camara fon uisge, mar gun cluinnteadh e tron uisge.",
+        },
         "audio.fix_chainblock_secret_sound": {
             "title": "Càraich fuaim bloca slabhraidh",
             "description": "Cuiridh seo casg air fuaim dìomhaireachd a chluich gu ceàrr nuair a thèid an iuchair òir a chleachdadh ann an Uaigh Tihocan ann an TR1.",

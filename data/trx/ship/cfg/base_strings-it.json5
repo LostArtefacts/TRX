@@ -973,6 +973,10 @@
             "title": "Effetti sonori sott'acqua",
             "description": "Permette di gestire la riproduzione di specifici effetti sonori legati ad animazioni, per oggetti quali porte e botole, quando la telecamera è sott'acqua.",
         },
+        "audio.enable_underwater_muffle": {
+            "title": "\\{review}Attutisci l'atmosfera sott'acqua",
+            "description": "\\{review}Attutisce la traccia d'atmosfera quando la telecamera è sott'acqua, come se fosse udita attraverso l'acqua.",
+        },
         "audio.fix_chainblock_secret_sound": {
             "title": "Correggi suono dei segreti",
             "description": "Impedisce la riproduzione errata del suono dei segreti quando si utilizza la chiave d'oro nella Tomba di Tihocan, in TR1.",
