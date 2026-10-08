@@ -42,6 +42,12 @@ X_GROUP_BEGIN(inventory)
 X_RULE(bool, inventory, keep_plot_items, false)
 X_GROUP_END(inventory)
 
+// How much health every item but Lara has, as a factor of what its object
+// declares. A new game plus doubles it.
+X_GROUP_BEGIN(health)
+X_RULE(float, health, scale, 1.0f)
+X_GROUP_END(health)
+
 X_GROUP_BEGIN(fx)
 X_RULE(bool, fx, rotate_debris, true)
 X_GROUP_END(fx)

@@ -464,8 +464,7 @@ do
     if target == nil or target.max_hit_points <= 0 then
       return 0
     end
-    local whole = target.max_hit_points * (trx.game.is_ngplus and 2 or 1)
-    return fraction(target.hit_points, whole)
+    return fraction(target.hit_points, target.max_hit_points)
   end, 0)
 
   place_at(

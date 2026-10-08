@@ -406,14 +406,9 @@
         <property category="TRX" defaultValue="32" description="Damage dealt by shots." displayName="Damage" internalName="damage" minValue="0" type="Int" />
         <property category="TRX" defaultValue="64" description="Damage dealt by the death-state final shot." displayName="Final Shot Damage" internalName="final_shot_damage" minValue="0" type="Int" />
     </moveable>
-    <!--placeholder for O_SECURITY_LASER_ALARM..O_SECURITY_LASER_KILLER-->
-    <moveable id="-1">
-        <property category="TRX" defaultValue="1" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
-    </moveable>
     <!--placeholder for O_SECURITY_LASER_DEADLY-->
     <moveable id="-1">
         <property category="TRX" defaultValue="10" description="Damage dealt when Lara crosses the security laser." displayName="Damage" internalName="damage" minValue="0" type="Int" />
-        <property category="TRX" defaultValue="1" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
     </moveable>
     <!--placeholder for O_SENTRY_GUN-->
     <moveable id="-1">

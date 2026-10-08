@@ -2,13 +2,13 @@
 
 #include <trx/core/handle.h>
 #include <trx/core/log.h>
+#include <trx/core/math.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
 #include <trx/game/game.h>
 #include <trx/game/game_buf.h>
-#include <trx/game/game_flow.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/items/col.h>
 #include <trx/game/lara/common.h>
@@ -172,6 +172,46 @@ static void M_ControlFades(void)
         if (item->fade <= 0) {
             Item_Destroy(item_num);
         }
+    }
+}
+
+static float M_GetHitPointsScale(const ITEM *const item)
+{
+    if (item->object_id == O_LARA) {
+        return 1.0f;
+    }
+    return g_Rules.health.scale;
+}
+
+// The one place that moves an item's maximum. The current hit points move by
+// as much, and a dead item stays dead.
+static void M_SyncHitPoints(ITEM *const item)
+{
+    TRX_VALUE base;
+    if (!ObjectProperty_GetItemValue(item, "max_hit_points", &base)) {
+        return;
+    }
+    int32_t max_hit_points =
+        Math_ApplyPercent(base.as_int, M_GetHitPointsScale(item));
+    CLAMP(max_hit_points, 0, INT16_MAX);
+    if (max_hit_points == item->max_hit_points) {
+        return;
+    }
+    if (item->max_hit_points == 0) {
+        item->hit_points = max_hit_points;
+    } else if (item->hit_points > 0) {
+        item->hit_points += max_hit_points - item->max_hit_points;
+        CLAMP(item->hit_points, 1, max_hit_points);
+    }
+    item->max_hit_points = max_hit_points;
+}
+
+// The scale can change under a live item - a rule a script sets once the level
+// is up - so every item is held to it once a frame.
+static void M_SyncAllHitPoints(void)
+{
+    for (int16_t item_num = 0; item_num < m_MaxUsedItemCount; item_num++) {
+        M_SyncHitPoints(&m_Items[item_num]);
     }
 }
 
@@ -368,7 +408,7 @@ void Item_Initialise(const int16_t item_num)
     item->rot.z = 0;
     item->speed = 0;
     item->fall_speed = 0;
-    // Both are written by the max_hit_points property, once the item is far
+    // Both are seeded from the max_hit_points property, once the item is far
     // enough along to hold it.
     item->hit_points = 0;
     item->max_hit_points = 0;
@@ -445,12 +485,7 @@ void Item_Initialise(const int16_t item_num)
 
     // Before the object's own initialiser, so it reads what it declared.
     ObjectProperty_ApplyToItem(item);
-
-    // TODO: remove GF check once demo config reset is run before level load
-    if (Game_IsBonusFlagSet(GBF_NGPLUS)
-        && GF_GetCurrentLevel()->type != GFL_DEMO) {
-        item->hit_points *= 2;
-    }
+    M_SyncHitPoints(item);
 
     if (obj->initialise_func != nullptr) {
         obj->initialise_func(item_num);
@@ -482,6 +517,8 @@ bool Item_IsFading(const ITEM *const item)
 
 void Item_Control(void)
 {
+    M_SyncAllHitPoints();
+
     int16_t item_num = Item_GetNextSimulated();
     while (item_num != NO_ITEM) {
         const ITEM *const item = Item_Get(item_num);

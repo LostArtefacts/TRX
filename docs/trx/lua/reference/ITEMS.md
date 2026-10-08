@@ -204,7 +204,7 @@ end
       It is a verdict on [`trigger_mask`](#items.Item.trigger_mask), [`timer`](#items.Item.timer)
       and [`is_reversed`](#items.Item.is_reversed) together, not a field of its own. *(read-only)*
     - <a id="items.Item.is_visible" name="items.Item.is_visible"></a>**`is_visible`**: boolean. Whether the item is drawn. It can be present in the world but not visible, like an ambush enemy waiting to appear.
-    - <a id="items.Item.max_hit_points" name="items.Item.max_hit_points"></a>**`max_hit_points`**: integer. Maximum hit points. Set the `max_hit_points` entry of [`properties`](#items.Item.properties) to change it. *(read-only)*
+    - <a id="items.Item.max_hit_points" name="items.Item.max_hit_points"></a>**`max_hit_points`**: integer. Maximum hit points: the `max_hit_points` entry of [`properties`](#items.Item.properties), scaled by [`trx.rules.health.scale`](RULES.md#rules.health.scale). Set the entry to change it; the maximum follows on the next frame. *(read-only)*
     - <a id="items.Item.mesh_bits" name="items.Item.mesh_bits"></a>**`mesh_bits`**: integer. Bitmask of which of the item's meshes are drawn.
     - <a id="items.Item.name" name="items.Item.name"></a>**`name`**: string. Unique item name, or `nil`. Assigning a name already in use raises an error.
     - <a id="items.Item.num" name="items.Item.num"></a>**`num`**: [trx.items.Num](#items.Num). An item handed over by a query can say where it lives. *(read-only)*
