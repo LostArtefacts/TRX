@@ -294,4 +294,49 @@ test("a plain run is not a new game plus one", function()
   assert(trx.game.is_ngplus == true)
 end)
 
+test("without a bonus check the engine's answer stands", function()
+  assert(fake.check_bonus(2, true) == true)
+  assert(fake.check_bonus(2, false) == false)
+end)
+
+test("a bonus check decides whether the level opens", function()
+  local seen_level, seen_unlocked
+  trx.game.set_bonus_check(function(level, unlocked)
+    seen_level, seen_unlocked = level, unlocked
+    return not unlocked
+  end)
+  assert(fake.check_bonus(2, true) == false)
+  assert(seen_level.num == 2, "the check was not handed the level")
+  assert(seen_unlocked == true, "the check was not handed the engine's answer")
+  assert(fake.check_bonus(2, false) == true)
+
+  trx.game.set_bonus_check(nil)
+  assert(fake.check_bonus(2, false) == false)
+end)
+
+test(
+  "a bonus check that returns nothing leaves the engine's answer",
+  function()
+    trx.game.set_bonus_check(function() end)
+    assert(fake.check_bonus(2, true) == true)
+    assert(fake.check_bonus(2, false) == false)
+    trx.game.set_bonus_check(nil)
+  end
+)
+
+test("a bonus check that fails leaves the engine's answer", function()
+  trx.game.set_bonus_check(function()
+    error("broken")
+  end)
+  assert(fake.check_bonus(2, true) == true)
+  assert(fake.check_bonus(2, false) == false)
+  trx.game.set_bonus_check(nil)
+end)
+
+test("a bonus check must be a function", function()
+  raises(function()
+    trx.game.set_bonus_check(5)
+  end, "must be a function")
+end)
+
 return h.report()

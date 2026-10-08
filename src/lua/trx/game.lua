@@ -3,6 +3,7 @@ require("trx.signal")
 local raw = trxc.game
 local raw_inventory = trxc.inventory
 local raw_stats = trxc.stats
+local hooks = trxc.hooks
 local h = require("trx.internal.helpers")
 
 ---@class (partial) trx
@@ -387,6 +388,41 @@ M.exit_to_title = raw.exit_to_title
 ---Closes the game.
 ---@type fun()
 M.exit_game = raw.exit_game
+
+---Decides whether a bonus level opens as the level before it ends. Without a
+---check, a bonus level opens once every secret of the main levels is found,
+---and the game returns to the title screen otherwise.
+---
+---The check is asked before the bonus level starts to load, so a level that
+---stays shut shows nothing of itself, not even its loading screen. It is not
+---asked about a level started from level select or the console. Set it from
+---the game script: it stays set until it is replaced or cleared, whichever
+---level is being played.
+---
+---```lua
+----- the fourth bonus level opens once the three before it are cleared out
+---trx.game.set_bonus_check(function(level, unlocked)
+---  if level.num ~= 12 then
+---    return unlocked
+---  end
+---  for i = 9, 11 do
+---    local secrets = trx.game.levels[i].stats.secrets
+---    if secrets.count < secrets.max then
+---      return false
+---    end
+---  end
+---  return true
+---end)
+---```
+---@param check? fun(level: trx.game.Level, unlocked: boolean): boolean? The function to ask. It is handed the bonus level and the engine's own answer, and returns whether the level opens; returning nothing leaves the engine's answer. Omit it to go back to the engine's own answer.
+---@trx.arg check.level The bonus level about to start.
+---@trx.arg check.unlocked Whether every secret of the main levels has been found, which is what the engine would decide on its own.
+function M.set_bonus_check(check)
+  if check ~= nil and type(check) ~= "function" then
+    error("the bonus check must be a function", 2)
+  end
+  hooks.set("bonus_check", check)
+end
 
 ---Takes a screenshot. Without a path, writes one to the screenshots folder in
 ---the player's configured format; with a path, writes to that file.

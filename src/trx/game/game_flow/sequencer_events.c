@@ -14,6 +14,7 @@
 #include <trx/game/hub.h>
 #include <trx/game/lara.h>
 #include <trx/game/lua.h>
+#include <trx/game/lua/hooks.h>
 #include <trx/game/music.h>
 #include <trx/game/option/save_crystal.h>
 #include <trx/game/output.h>
@@ -127,9 +128,14 @@ M_GF_HANDLER(M_HandleLevelComplete)
     if (next_resume != nullptr) {
         next_resume->prev_level = current_level->num;
     }
-    if (next_level->type == GFL_BONUS && !Stats_CheckAllSecretsCollected()) {
-        *out_cmd = (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
-        return OK;
+    if (next_level->type == GFL_BONUS) {
+        const bool unlocked = Stats_CheckAllSecretsCollected();
+        if (!LUA_Hooks_CallBool(
+                LUA_HOOK_BONUS_CHECK, 0, unlocked, LUA_ARG_LEVEL(next_level),
+                LUA_ARG_BOOL(unlocked))) {
+            *out_cmd = (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
+            return OK;
+        }
     }
     *out_cmd = (GF_COMMAND) {
         .action = GF_START_GAME,

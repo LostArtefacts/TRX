@@ -261,6 +261,40 @@ played.
 - <a id="game.exit_game" name="game.exit_game"></a>[lua]`trx.game.exit_game()`  
   Closes the game.
 
+- <a id="game.set_bonus_check" name="game.set_bonus_check"></a>[lua]`trx.game.set_bonus_check([check])`  
+  Decides whether a bonus level opens as the level before it ends. Without a
+  check, a bonus level opens once every secret of the main levels is found,
+  and the game returns to the title screen otherwise.
+
+  The check is asked before the bonus level starts to load, so a level that
+  stays shut shows nothing of itself, not even its loading screen. It is not
+  asked about a level started from level select or the console. Set it from
+  the game script: it stays set until it is replaced or cleared, whichever
+  level is being played.
+
+  Parameters:
+  - <a id="game.set_bonus_check.check" name="game.set_bonus_check.check"></a>**`check`** (function, optional). The function to ask. It is handed the bonus level and the engine's own answer, and returns whether the level opens; returning nothing leaves the engine's answer. Omit it to go back to the engine's own answer.
+    Called with:
+    - <a id="game.set_bonus_check.level" name="game.set_bonus_check.level"></a>**`level`** ([trx.game.Level](#game.Level)). The bonus level about to start.
+    - <a id="game.set_bonus_check.unlocked" name="game.set_bonus_check.unlocked"></a>**`unlocked`** (boolean). Whether every secret of the main levels has been found, which is what the engine would decide on its own.
+
+  Example:
+  ```lua
+  -- the fourth bonus level opens once the three before it are cleared out
+  trx.game.set_bonus_check(function(level, unlocked)
+    if level.num ~= 12 then
+      return unlocked
+    end
+    for i = 9, 11 do
+      local secrets = trx.game.levels[i].stats.secrets
+      if secrets.count < secrets.max then
+        return false
+      end
+    end
+    return true
+  end)
+  ```
+
 - <a id="game.screenshot" name="game.screenshot"></a>[lua]`trx.game.screenshot([path])`  
   Takes a screenshot. Without a path, writes one to the screenshots folder in
   the player's configured format; with a path, writes to that file.
