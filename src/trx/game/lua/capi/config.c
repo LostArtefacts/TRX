@@ -617,6 +617,21 @@ static const luaL_Reg m_Module[] = {
     { nullptr, nullptr },
 };
 
+static void M_DropLevel(void)
+{
+    lua_State *const L = m_L;
+    if (L == nullptr || m_Watchers == nullptr) {
+        return;
+    }
+    for (int32_t i = 0; i < m_Watchers->count; i++) {
+        M_WATCHER *const watcher = Vector_Get(m_Watchers, i);
+        watcher->dead = watcher->dead || watcher->level_scoped;
+    }
+    if (m_DispatchDepth == 0) {
+        M_CompactWatchers(L);
+    }
+}
+
 static void M_Create(lua_State *const L)
 {
     m_L = L;
@@ -689,19 +704,5 @@ void LUA_Config_FlushPendingWatchers(void)
     }
 }
 
-void LUA_Config_ClearLevelWatchers(void)
-{
-    lua_State *const L = m_L;
-    if (L == nullptr || m_Watchers == nullptr) {
-        return;
-    }
-    for (int32_t i = 0; i < m_Watchers->count; i++) {
-        M_WATCHER *const watcher = Vector_Get(m_Watchers, i);
-        watcher->dead = watcher->dead || watcher->level_scoped;
-    }
-    if (m_DispatchDepth == 0) {
-        M_CompactWatchers(L);
-    }
-}
-
-REGISTER_LUA_CAPI(.create = M_Create, .shutdown = M_Shutdown)
+REGISTER_LUA_CAPI(
+        .create = M_Create, .shutdown = M_Shutdown, .drop_level = M_DropLevel)

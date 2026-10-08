@@ -14,11 +14,15 @@
 typedef struct {
     void (*create)(lua_State *L);
     void (*shutdown)(void);
+    // Lets go of what a level script set up through the module, as the level's
+    // script is dropped.
+    void (*drop_level)(void);
 } LUA_CAPI;
 
 void LUA_Registry_Add(LUA_CAPI capi);
 void LUA_Registry_CreateAll(lua_State *L);
 void LUA_Registry_ShutdownAll(void);
+void LUA_Registry_DropLevelAll(void);
 
 #define REGISTER_LUA_CAPI(...)                                                 \
     __attribute__((__constructor__)) static void CONCAT(                       \

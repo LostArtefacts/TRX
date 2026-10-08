@@ -71,9 +71,6 @@ typedef struct {
     } value;
 } LUA_EVENT_ARG;
 
-// Clear all listeners declared during the current level script
-void LUA_ClearLevelListeners(void);
-
 // Fire a Lua event. Answers whether a handler returned a true value, which is
 // how a script takes over an event that carries a default; an event without
 // one ignores the answer.

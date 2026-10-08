@@ -357,7 +357,7 @@ static void M_Create(lua_State *const L)
     LUA_RegisterModule(L, "rooms", m_Module);
 }
 
-void LUA_Rooms_ClearFlipGroups(void)
+static void M_DropLevel(void)
 {
     if (m_FlipGroupDecls != nullptr) {
         Vector_Clear(m_FlipGroupDecls);
@@ -386,4 +386,4 @@ void LUA_Rooms_ApplyFlipGroups(void)
     }
 }
 
-REGISTER_LUA_CAPI(.create = M_Create)
+REGISTER_LUA_CAPI(.create = M_Create, .drop_level = M_DropLevel)

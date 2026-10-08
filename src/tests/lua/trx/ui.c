@@ -5,6 +5,7 @@
 #include <fakes/ui_draw.h>
 #include <harness/lua_surface.h>
 
+#include <trx/game/lua/registry.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/lua/ui.h>
@@ -218,7 +219,7 @@ static int M_FakeAsLevelScript(lua_State *const L)
 static int M_FakeEndLevel(lua_State *const L)
 {
     LUA_FireEvent(LUA_EVENT_LEVEL_UNLOAD);
-    LUA_ClearLevelListeners();
+    LUA_Registry_DropLevelAll();
     return 0;
 }
 

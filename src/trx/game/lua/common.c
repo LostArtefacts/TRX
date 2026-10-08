@@ -575,9 +575,7 @@ void LUA_DropLevelScript(void)
         LUA_FireEvent(LUA_EVENT_LEVEL_UNLOAD);
     }
 
-    LUA_ClearLevelListeners();
-    LUA_Config_ClearLevelWatchers();
-    LUA_Rooms_ClearFlipGroups();
+    LUA_Registry_DropLevelAll();
     LUA_DropLevelModules(p->state);
 }
 

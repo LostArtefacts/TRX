@@ -31,7 +31,7 @@ static int M_L_Control(lua_State *const L)
 static void M_DropLevelScript(void)
 {
     LUA_FireEvent(LUA_EVENT_LEVEL_UNLOAD);
-    LUA_ClearLevelListeners();
+    LUA_Registry_DropLevelAll();
 }
 
 // fake.end_level() - the level unloading, which is where the zones a script

@@ -63,16 +63,9 @@ RESULT LUA_RunGameScript(void);
 // bool, a number as a number, and a color, an enum or a string as text.
 void LUA_Config_PushOptionValue(lua_State *L, const CONFIG_OPTION *option);
 
-// Drops the config watchers a level script set up, as the level's listeners
-// are dropped. A watcher a game script set up stays.
-void LUA_Config_ClearLevelWatchers(void);
-
 // Makes the calls a level script's watchers are still owed, now that the level
 // has its objects. Level_Initialise does this once the level is read.
 void LUA_Config_FlushPendingWatchers(void);
-
-// Clears flip groups declared by a level script.
-void LUA_Rooms_ClearFlipGroups(void);
 
 // Applies level-script flip groups after rooms are read.
 void LUA_Rooms_ApplyFlipGroups(void);

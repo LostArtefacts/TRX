@@ -100,7 +100,7 @@ static int M_FakeAsLevelScript(lua_State *const L)
 // fake.end_level() - what the engine does when a level ends.
 static int M_FakeEndLevel(lua_State *const L)
 {
-    LUA_ClearLevelListeners();
+    LUA_Registry_DropLevelAll();
     return 0;
 }
 
