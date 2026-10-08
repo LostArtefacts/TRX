@@ -190,7 +190,7 @@ b_console = {
 # signals needs it. The item action interceptor it installs does nothing here,
 # because no test that only wants the tick exercises flipeffects.
 b_lua_events = {
-  'engine': ['game/lua/capi/events.c', 'game/lua/events/common.c'],
+  'engine': ['game/lua/capi/events.c', 'game/lua/events/manager.c'],
   'src': ['harness/stubs_item_action.c'],
 }
 
@@ -544,7 +544,7 @@ unit_tests += {
     'core/vector.c',
     'game/lua/capi/events.c',
     'game/lua/common.c',
-    'game/lua/events/common.c',
+    'game/lua/events/manager.c',
     'game/lua/registry.c',
     'game/lua/scripts.c',
     'game/lua/utils.c',
@@ -606,7 +606,7 @@ unit_tests += {
     'game/lua/capi/events.c',
     'game/lua/capi/items.c',
     'game/lua/capi/rooms.c',
-    'game/lua/events/common.c',
+    'game/lua/events/manager.c',
   ],
 }
 
@@ -619,7 +619,7 @@ unit_tests += {
     'game/lua/capi/events.c',
     'game/lua/capi/items.c',
     'game/lua/capi/objects.c',
-    'game/lua/events/common.c',
+    'game/lua/events/manager.c',
   ],
 }
 
@@ -649,7 +649,7 @@ unit_tests += {
     'game/lua/capi/config.c',
     'game/lua/capi/events.c',
     'game/lua/capi/locale.c',
-    'game/lua/events/common.c',
+    'game/lua/events/manager.c',
     'game/ui/dialogs/settings_handlers.c',
     'game/ui/dialogs/settings_lua.c',
     'game/ui/dialogs/settings_rows.c',
@@ -710,7 +710,7 @@ unit_tests += {
     'game/lua/capi/game.c',
     'game/lua/capi/locale.c',
     'game/lua/capi/ui.c',
-    'game/lua/events/common.c',
+    'game/lua/events/manager.c',
     'game/ui/common.c',
     'game/ui/dialogs/settings_handlers.c',
     'game/ui/dialogs/settings_lua.c',
@@ -844,7 +844,7 @@ unit_tests += {
     'game/lua/capi/items.c',
     'game/lua/capi/lara.c',
     'game/lua/capi/rooms.c',
-    'game/lua/events/common.c',
+    'game/lua/events/manager.c',
   ],
 }
 
@@ -892,7 +892,7 @@ unit_tests += {
     'game/lua/capi/input.c',
     'game/lua/capi/locale.c',
     'game/lua/capi/ui.c',
-    'game/lua/events/common.c',
+    'game/lua/events/manager.c',
     'game/ui/common.c',
     'game/ui/dialogs/settings_handlers.c',
     'game/ui/dialogs/settings_lua.c',
@@ -940,7 +940,7 @@ unit_tests += {
     'game/lua/capi/locale.c',
     'game/lua/capi/screens.c',
     'game/lua/capi/ui.c',
-    'game/lua/events/common.c',
+    'game/lua/events/manager.c',
     'game/lua/hooks/screens.c',
     'game/ui/common.c',
     'game/ui/dialogs/settings_handlers.c',
@@ -1231,7 +1231,7 @@ unit_tests += {
     'game/lua/capi/game.c',
     'game/lua/capi/locale.c',
     'game/lua/capi/ui.c',
-    'game/lua/events/common.c',
+    'game/lua/events/manager.c',
     'game/lua/events/ui.c',
     'game/ui/common.c',
     'game/ui/elements/anchor.c',
@@ -1313,7 +1313,7 @@ unit_tests += {
     'game/lua/capi/ui.c',
     'game/lua/capi/weapons.c',
     'game/lua/capi/weapons_spec.c',
-    'game/lua/events/common.c',
+    'game/lua/events/manager.c',
     'game/lua/events/ui.c',
     'game/rules.c',
     'game/ui/common.c',
@@ -1402,7 +1402,7 @@ unit_tests += {
     'game/lua/capi/ui.c',
     'game/lua/capi/weapons.c',
     'game/lua/capi/weapons_spec.c',
-    'game/lua/events/common.c',
+    'game/lua/events/manager.c',
     'game/lua/hooks/screens.c',
     'game/lua/events/ui.c',
     'game/rules.c',
@@ -1493,7 +1493,7 @@ unit_tests += {
     'game/lua/capi/ui.c',
     'game/lua/capi/weapons.c',
     'game/lua/capi/weapons_spec.c',
-    'game/lua/events/common.c',
+    'game/lua/events/manager.c',
     'game/lua/hooks/screens.c',
     'game/lua/events/ui.c',
     'game/rules.c',
@@ -1538,7 +1538,7 @@ unit_tests += {
     'game/lua/capi/lara.c',
     'game/lua/capi/objects.c',
     'game/lua/capi/rooms.c',
-    'game/lua/events/common.c',
+    'game/lua/events/manager.c',
   ],
   'deps': [dep_mathlibrary],
 }
@@ -1575,7 +1575,7 @@ unit_tests += {
   'name': 'lua/trx/events',
   'bundles': [b_lua_surface],
   'src': ['fakes/rooms.c'],
-  'engine': ['game/lua/capi/events.c', 'game/lua/events/common.c'],
+  'engine': ['game/lua/capi/events.c', 'game/lua/events/manager.c'],
 }
 
 unit_tests += {
