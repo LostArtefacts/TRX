@@ -160,7 +160,7 @@ end
 ---```
 ---@param fn? fun(item: trx.items.Item): trx.items.HitEffect? The function, or `nil` to remove it.
 function Object:set_hit_effect(fn)
-  hooks.set_object(self, "hit_effect", fn)
+  hooks.set("hit_effect", fn, self)
 end
 
 ---Reads one of the object's properties. Prefer `object.properties.<name>`.
@@ -528,7 +528,7 @@ function M.declare(object_id, spec)
   local object = assert(raw.get(object_id))
   for _, name in ipairs({ "control", "initialise" }) do
     if spec[name] ~= nil then
-      hooks.set_object(object, name, spec[name])
+      hooks.set(name, spec[name], object)
     end
   end
 end

@@ -578,6 +578,8 @@ common_sources = [
   'trx/game/lua/common.c',
   'trx/game/lua/field.c',
   'trx/game/lua/guard.c',
+  'trx/game/lua/hooks/common.c',
+  'trx/game/lua/hooks/objects.c',
   'trx/game/lua/registry.c',
   'trx/game/lua/sandbox.c',
   'trx/game/lua/scene.c',

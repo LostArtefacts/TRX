@@ -483,6 +483,12 @@ test("a hit effect must be a function", function()
   end, "function expected")
 end)
 
+test("a hook nobody declared is refused", function()
+  raises(function()
+    trxc.hooks.set("mymod:nothing", function() end)
+  end, "no such hook")
+end)
+
 test("a declared object runs its control for each item", function()
   local ran
   trx.objects.declare(fake.VASE, {
