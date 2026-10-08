@@ -477,6 +477,27 @@ test(
   end
 )
 
+test("a hook a level script sets ends with the level", function()
+  trx.objects[fake.WOLF]:set_hit_effect(function()
+    return fake.HIT_SMOKE
+  end)
+  fake.end_level()
+  assert(
+    fake.hit_effect(0) == fake.HIT_SMOKE,
+    "a game script's hook must stay"
+  )
+
+  fake.set_level_script(true)
+  trx.objects[fake.WOLF]:set_hit_effect(function()
+    return fake.HIT_RICOCHET
+  end)
+  fake.set_level_script(false)
+  assert(fake.hit_effect(0) == fake.HIT_RICOCHET)
+
+  fake.end_level()
+  assert(fake.hit_effect(0) == fake.HIT_BLOOD, "a level's hook outlived it")
+end)
+
 test("a hit effect must be a function", function()
   raises(function()
     trx.objects[fake.WOLF]:set_hit_effect(5)

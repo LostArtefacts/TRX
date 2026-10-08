@@ -7,6 +7,8 @@
 #include <fakes/items.h>
 #include <harness/lua_surface.h>
 #include <trx/game/items.h>
+#include <trx/game/lua/common.h>
+#include <trx/game/lua/registry.h>
 #include <trx/game/objects/common.h>
 
 // What a bullet hit on the item spawns, as the engine asks it.
@@ -32,6 +34,21 @@ static int M_Control(lua_State *const L)
     return 0;
 }
 
+// fake.set_level_script(on) - runs what follows as a level script would.
+static int M_SetLevelScript(lua_State *const L)
+{
+    LUA_SetScriptContext(
+        lua_toboolean(L, 1) ? LUA_CONTEXT_LEVEL : LUA_CONTEXT_GLOBAL);
+    return 0;
+}
+
+// fake.end_level() - what the engine does when a level ends.
+static int M_EndLevel(lua_State *const L)
+{
+    LUA_Registry_DropLevelAll();
+    return 0;
+}
+
 static void M_PushFake(lua_State *const L)
 {
     lua_pushinteger(L, FAKE_OBJ_WOLF);
@@ -54,6 +71,10 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "hit_effect");
     lua_pushcfunction(L, M_Control);
     lua_setfield(L, -2, "control");
+    lua_pushcfunction(L, M_SetLevelScript);
+    lua_setfield(L, -2, "set_level_script");
+    lua_pushcfunction(L, M_EndLevel);
+    lua_setfield(L, -2, "end_level");
     lua_pushinteger(L, ITEM_HIT_DEFAULT);
     lua_setfield(L, -2, "HIT_DEFAULT");
     lua_pushinteger(L, ITEM_HIT_BLOOD);

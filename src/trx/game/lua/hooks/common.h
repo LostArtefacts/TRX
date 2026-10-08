@@ -70,7 +70,8 @@ LUA_HOOK_TYPE LUA_Hooks_GetByName(const char *name);
 int32_t LUA_Hooks_ReadKey(lua_State *L, LUA_HOOK_TYPE hook, int arg);
 
 // Sets the function at `fn_idx` as the hook under a key, replacing the one
-// set there; nil clears it.
+// set there; nil clears it. A hook set by a level script is cleared as the
+// level ends.
 void LUA_Hooks_Set(lua_State *L, LUA_HOOK_TYPE hook, int32_t key, int fn_idx);
 
 bool LUA_Hooks_IsSet(LUA_HOOK_TYPE hook, int32_t key);
