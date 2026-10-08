@@ -167,7 +167,7 @@ trx.console.register({
   end,
 })
 
-trx.events.on_scene_paint(function()
+trx.scene.on_paint(function()
   if #trx.zones == 0 or not trx.config.get("debug.enable_debug_zones") then
     return
   end

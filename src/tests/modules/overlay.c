@@ -9,7 +9,7 @@
 #include <trx/core/strings.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/events.h>
-#include <trx/game/lua/ui.h>
+#include <trx/game/lua/events/ui.h>
 #include <trx/config/registry.h>
 #include <trx/config/types.h>
 #include <trx/core/log.h>

@@ -127,7 +127,7 @@ end
 ---Draws the widget in an assigned box.
 ---
 ---`trx.ui.regions.place` calls this automatically. Custom layout code can call
----it during `trx.events.on_ui_paint`.
+---it during `trx.ui.on_paint`.
 ---@param x number The left edge.
 ---@param y number The top edge.
 ---@param w number The width it was given.

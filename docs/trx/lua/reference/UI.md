@@ -14,9 +14,9 @@ order: 20
 
 Module for drawing on top of the game.
 
-Every function here is available only from a [`trx.events.on_ui_draw`](EVENTS.md#events.on_ui_draw)
-handler, and raises anywhere else: the interface is built afresh each drawn
-frame, and there is no scene to add to outside one.
+Every function here is available only from a [`trx.ui.on_draw`](#ui.on_draw) handler, and
+raises anywhere else: the interface is built afresh each drawn frame, and
+there is no scene to add to outside one.
 
 A handler adds to the region the game is building, which it is told the name
 of. Widgets land in the same stack as the health bars and the item names, so
@@ -380,7 +380,7 @@ arrow, and `\{button left}` draws the button the player has bound.
       Draws the widget in an assigned box.
 
       [`trx.ui.regions.place`](#ui.regions.place) calls this automatically. Custom layout code can call
-      it during [`trx.events.on_ui_paint`](EVENTS.md#events.on_ui_paint).
+      it during [`trx.ui.on_paint`](#ui.on_paint).
 
       Parameters:
       - <a id="ui.Widget.paint.x" name="ui.Widget.paint.x"></a>**`x`** (number). The left edge.
@@ -488,7 +488,7 @@ arrow, and `\{button left}` draws the button the player has bound.
   a custom widget. Primitive drawing does not affect region layout unless code
   reserves space first.
 
-  Drawing calls are available only during [`trx.events.on_ui_paint`](EVENTS.md#events.on_ui_paint). They
+  Drawing calls are available only during [`trx.ui.on_paint`](#ui.on_paint). They
   report an error at any other time.
 
 - <a id="ui.regions" name="ui.regions"></a>[lua]`trx.ui.regions`  
@@ -525,6 +525,63 @@ arrow, and `\{button left}` draws the button the player has bound.
   then register those signals with [`trx.ui.Widget:wakes_on`](#ui.Widget.wakes_on).
 
   Put a widget on screen with [`trx.ui.regions.place`](#ui.regions.place).
+
+- <a id="ui.on_draw" name="ui.on_draw"></a>[lua]`trx.ui.on_draw(callback)`  
+  Happens while the interface is built, once for each region. The handler
+  adds widgets to the region it is handed, or reserves room in it to paint
+  into later.
+
+  It happens anywhere the game draws its interface, including fades, FMVs
+  and normal play, and it follows the frame rate rather than the game clock.
+
+  Parameters:
+  - <a id="ui.on_draw.callback" name="ui.on_draw.callback"></a>**`callback`** (function). What to run for each region.
+    Called with:
+    - <a id="ui.on_draw.region" name="ui.on_draw.region"></a>**`region`** ([trx.ui.Region](#ui.Region)). The region being built.
+
+  Returns: [trx.events.Listener](EVENTS.md#events.Listener). The attached handler.
+
+  Example:
+  ```lua
+  local slot = nil
+  
+  trx.ui.on_draw(function(region)
+    if region == trx.ui.Region.TOP_CENTER then
+      local w, h = trx.ui.primitive.measure_text("hello")
+      slot = trx.ui.primitive.reserve(region, w, h)
+    end
+  end)
+  
+  trx.ui.on_paint(function()
+    local x, y = trx.ui.primitive.slot_box(slot)
+    if x ~= nil then
+      trx.ui.primitive.text("hello", x, y)
+    end
+  end)
+  ```
+
+- <a id="ui.on_paint" name="ui.on_paint"></a>[lua]`trx.ui.on_paint(callback)`  
+  Happens once the interface is laid out and before it is drawn, under the
+  engine interface. The boxes reserved during [`trx.ui.on_draw`](#ui.on_draw) are known by
+  then, and the primitive drawing calls work here and nowhere else.
+
+  Parameters:
+  - <a id="ui.on_paint.callback" name="ui.on_paint.callback"></a>**`callback`** (function). What to run when it happens.
+
+  Returns: [trx.events.Listener](EVENTS.md#events.Listener). The attached handler.
+
+- <a id="ui.on_paint_over" name="ui.on_paint_over"></a>[lua]`trx.ui.on_paint_over(callback)`  
+  [`trx.ui.on_paint`](#ui.on_paint) for the layer above the engine interface. A script paints
+  here where its work must cover the interface rather than sit under it, such
+  as a console or a text field.
+
+  [`trx.ui.regions.place`](#ui.regions.place) picks the layer for a widget, so a script building
+  with widgets has no reason to take this.
+
+  Parameters:
+  - <a id="ui.on_paint_over.callback" name="ui.on_paint_over.callback"></a>**`callback`** (function). What to run when it happens.
+
+  Returns: [trx.events.Listener](EVENTS.md#events.Listener). The attached handler.
 
 - <a id="ui.mesh_slot" name="ui.mesh_slot"></a>[lua]`trx.ui.mesh_slot()`  
   Takes a slot for a model the interface keeps on screen across ticks.
@@ -580,8 +637,8 @@ arrow, and `\{button left}` draws the button the player has bound.
   Reserves space in a region and returns a slot for it.
 
   The reservation is stacked with the engine UI in that region. Reserve space
-  during [`trx.events.on_ui_draw`](EVENTS.md#events.on_ui_draw), then read the assigned box during
-  [`trx.events.on_ui_paint`](EVENTS.md#events.on_ui_paint).
+  during [`trx.ui.on_draw`](#ui.on_draw), then read the assigned box during
+  [`trx.ui.on_paint`](#ui.on_paint).
 
   A slot is valid only for the scene that created it.
 

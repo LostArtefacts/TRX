@@ -10,7 +10,7 @@
 #include <trx/core/memory.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/events.h>
-#include <trx/game/lua/ui.h>
+#include <trx/game/lua/events/ui.h>
 #include <trx/game/objects/ids.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/settings.h>

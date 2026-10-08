@@ -1,4 +1,5 @@
 local raw = trxc.ui
+local raw_events = trxc.events
 local h = require("trx.internal.helpers")
 
 ---@class (partial) trx
@@ -6,9 +7,9 @@ local h = require("trx.internal.helpers")
 
 ---Module for drawing on top of the game.
 ---
----Every function here is available only from a `trx.events.on_ui_draw`
----handler, and raises anywhere else: the interface is built afresh each drawn
----frame, and there is no scene to add to outside one.
+---Every function here is available only from a `trx.ui.on_draw` handler, and
+---raises anywhere else: the interface is built afresh each drawn frame, and
+---there is no scene to add to outside one.
 ---
 ---A handler adds to the region the game is building, which it is told the name
 ---of. Widgets land in the same stack as the health bars and the item names, so
@@ -119,6 +120,72 @@ local Layer = {
   OVER = h.IntegerConstant,
 }
 M.Layer = h.enum("ui.Layer", "UI_PAINT_LAYER", Layer)
+
+-- The engine fires an event as it builds each region and as it paints each
+-- layer. The types are reflected out of ENUM_MAP, as trx.events reads them.
+local types = {}
+for _, constant in ipairs(trxc.enum.values("LUA_EVENT_TYPE")) do
+  types[constant.name] = constant.value
+end
+local Listener = h.class_of("events.Listener")
+
+local function listen(event_type)
+  return function(callback)
+    return setmetatable(
+      { _id = raw_events.attach(event_type, callback) },
+      Listener
+    )
+  end
+end
+
+---Happens while the interface is built, once for each region. The handler
+---adds widgets to the region it is handed, or reserves room in it to paint
+---into later.
+---
+---It happens anywhere the game draws its interface, including fades, FMVs
+---and normal play, and it follows the frame rate rather than the game clock.
+---
+---```lua
+---local slot = nil
+---
+---trx.ui.on_draw(function(region)
+---  if region == trx.ui.Region.TOP_CENTER then
+---    local w, h = trx.ui.primitive.measure_text("hello")
+---    slot = trx.ui.primitive.reserve(region, w, h)
+---  end
+---end)
+---
+---trx.ui.on_paint(function()
+---  local x, y = trx.ui.primitive.slot_box(slot)
+---  if x ~= nil then
+---    trx.ui.primitive.text("hello", x, y)
+---  end
+---end)
+---```
+---@param callback fun(region: trx.ui.Region) What to run for each region.
+---@trx.arg callback.region The region being built.
+---@return trx.events.Listener # The attached handler.
+---@type fun(callback: fun(region: trx.ui.Region)): trx.events.Listener
+M.on_draw = listen(types.UI_DRAW)
+
+---Happens once the interface is laid out and before it is drawn, under the
+---engine interface. The boxes reserved during `trx.ui.on_draw` are known by
+---then, and the primitive drawing calls work here and nowhere else.
+---@param callback function What to run when it happens.
+---@return trx.events.Listener # The attached handler.
+---@type fun(callback: function): trx.events.Listener
+M.on_paint = listen(types.UI_PAINT)
+
+---`trx.ui.on_paint` for the layer above the engine interface. A script paints
+---here where its work must cover the interface rather than sit under it, such
+---as a console or a text field.
+---
+---`trx.ui.regions.place` picks the layer for a widget, so a script building
+---with widgets has no reason to take this.
+---@param callback function What to run when it happens.
+---@return trx.events.Listener # The attached handler.
+---@type fun(callback: function): trx.events.Listener
+M.on_paint_over = listen(types.UI_PAINT_OVER)
 
 ---Which of the game's frames to draw. The look of each follows the menu style
 ---the player chose.

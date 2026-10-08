@@ -228,7 +228,7 @@ end
 -- Reserve room for each region while the scene is being built. Signal changes
 -- have already invalidated any stale widget measurements by this point. Each
 -- layer reserves separately, so the two never land on the same place.
-trx.events.on_ui_draw(function(region)
+trx.ui.on_draw(function(region)
   reserve_root(trx.ui.Layer.UNDER, region, fallbacks[region])
   reserve_root(trx.ui.Layer.OVER, region, nil)
 end)
@@ -244,7 +244,7 @@ local function paint_placed(widget)
   end
 end
 
-trx.events.on_ui_paint(function()
+trx.ui.on_paint(function()
   for _, root in pairs(roots[trx.ui.Layer.UNDER]) do
     paint_placed(root)
   end
@@ -253,7 +253,7 @@ trx.events.on_ui_paint(function()
   end
 end)
 
-trx.events.on_ui_paint_over(function()
+trx.ui.on_paint_over(function()
   for _, root in pairs(roots[trx.ui.Layer.OVER]) do
     paint_placed(root)
   end

@@ -24,7 +24,7 @@ local ui = trx.ui
 ---a custom widget. Primitive drawing does not affect region layout unless code
 ---reserves space first.
 ---
----Drawing calls are available only during `trx.events.on_ui_paint`. They
+---Drawing calls are available only during `trx.ui.on_paint`. They
 ---report an error at any other time.
 ---@class (partial,exact) trx.ui.primitive
 ui.primitive = h.namespace("ui.primitive")
@@ -35,8 +35,8 @@ local primitive = trx.ui.primitive
 ---Reserves space in a region and returns a slot for it.
 ---
 ---The reservation is stacked with the engine UI in that region. Reserve space
----during `trx.events.on_ui_draw`, then read the assigned box during
----`trx.events.on_ui_paint`.
+---during `trx.ui.on_draw`, then read the assigned box during
+---`trx.ui.on_paint`.
 ---
 ---A slot is valid only for the scene that created it.
 ---@param region trx.ui.Region Which region to keep room in.

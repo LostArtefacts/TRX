@@ -1,10 +1,10 @@
 #include <trx/config.h>
 #include <trx/core/utils.h>
 #include <trx/game/anims/types.h>
+#include <trx/game/lua/events/ui.h>
 #include <trx/game/lua/field.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
-#include <trx/game/lua/ui.h>
 #include <trx/game/lua/utils.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output/const.h>

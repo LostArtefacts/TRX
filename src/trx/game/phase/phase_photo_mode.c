@@ -5,7 +5,7 @@
 #include <trx/game/cutscene.h>
 #include <trx/game/game.h>
 #include <trx/game/input.h>
-#include <trx/game/lua/ui.h>
+#include <trx/game/lua/events/ui.h>
 #include <trx/game/output/draw.h>
 #include <trx/game/phase/executor.h>
 #include <trx/game/photo_mode.h>

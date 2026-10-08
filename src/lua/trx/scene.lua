@@ -1,4 +1,5 @@
 local raw = trxc.scene
+local raw_events = trxc.events
 local h = require("trx.internal.helpers")
 
 require("trx.math")
@@ -9,9 +10,9 @@ require("trx.math")
 ---Outlines a script draws into the world the camera is looking at, over the
 ---level geometry rather than over the interface.
 ---
----The calls are available from `trx.events.on_scene_paint` and nowhere else,
+---The calls are available from `trx.scene.on_paint` and nowhere else,
 ---and raise anywhere else. Nothing is remembered between frames: a shape that
----is to stay on screen is drawn again every time the event fires.
+---is to stay on screen is drawn again every time it happens.
 ---
 ---A shape is placed the way an item position and a zone are, so it needs no
 ---room and belongs to none. The outlines are drawn as wireframe, and one
@@ -21,10 +22,37 @@ require("trx.math")
 ---@class (exact) trx.scene
 local M = h.module("scene")
 
+-- The engine fires an event as it paints the scene. The types are reflected
+-- out of ENUM_MAP, as trx.events reads them.
+local types = {}
+for _, constant in ipairs(trxc.enum.values("LUA_EVENT_TYPE")) do
+  types[constant.name] = constant.value
+end
+local Listener = h.class_of("events.Listener")
+
+---Happens on every drawn frame, after the rooms and everything standing in
+---them, and before the interface. The drawing calls here work during it and
+---raise anywhere else. It follows the frame rate, not the game clock.
+---
+---```lua
+---trx.scene.on_paint(function()
+---  trx.scene.sphere(trx.lara.item.pos, 512, "00ff00")
+---end)
+---```
+---@param callback function What to run when it happens.
+---@return trx.events.Listener # The attached handler.
+---@type fun(callback: function): trx.events.Listener
+function M.on_paint(callback)
+  return setmetatable(
+    { _id = raw_events.attach(types.SCENE_PAINT, callback) },
+    Listener
+  )
+end
+
 ---Draws the outline of a world-space box. The corners may come in any order.
 ---
 ---```lua
----trx.events.on_scene_paint(function()
+---trx.scene.on_paint(function()
 ---  trx.scene.box(
 ---    { x = 51200, y = -2048, z = 30720 },
 ---    { x = 53248, y = 0, z = 32768 },
@@ -42,7 +70,7 @@ M.box = raw.box
 ---Draws the outline of a sphere.
 ---
 ---```lua
----trx.events.on_scene_paint(function()
+---trx.scene.on_paint(function()
 ---  trx.scene.sphere(trx.lara.item.pos, 2048, "00ff00", 128)
 ---end)
 ---```

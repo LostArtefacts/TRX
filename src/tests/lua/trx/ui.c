@@ -8,7 +8,7 @@
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/events.h>
-#include <trx/game/lua/ui.h>
+#include <trx/game/lua/events/ui.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/lua/utils.h>
 #include <trx/config/option.h>
