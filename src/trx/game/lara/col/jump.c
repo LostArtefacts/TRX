@@ -756,7 +756,7 @@ LANDED_STATE Lara_Col_LandedBad(ITEM *const item)
             LARA_MAX_HITPOINTS * SQUARE(land_speed) / SQUARE(DAMAGE_LENGTH);
         // Item_TakeDamage clamps at zero, while the test below needs the
         // negative value that the plain subtraction leaves behind.
-        const int16_t hit_points = item->hit_points - damage;
+        const int16_t hit_points = item->hit_points - Lara_ScaleDamage(damage);
         Lara_TakeDamage(damage, false);
         // #675: Original bug to keep. Correct operator would be <=
         return alive && hit_points < 0 ? LANDED_BAD : LANDED_OK;

@@ -1337,6 +1337,10 @@
             "title": "Eadar-obrachadh beòthail",
             "description": "Nì Lara coiseachd gu togailtean, suidsichean toll-iuchrach agus slotan tòimhseachain nuair a tha i faisg orra, an àite leum dìreach thuca.",
         },
+        "gameplay.enemy_health_scale": {
+            "title": "\\{review}Slàinte nàimhdean",
+            "description": "\\{review}Atharraichidh seo an t-slàinte leis an tòisich nàimhdean. Chan eil seo a' bualadh air caraidean.",
+        },
         "gameplay.fix_alligator_ai": {
             "title": "Càraich AI ailigeutair",
             "description": "Càradh far nach dèan ailigeutairean milleadh ma dh'fhanas Lara fhathast anns an uisge.",
@@ -1444,6 +1448,10 @@
         "gameplay.jump_lock_mode": {
             "title": "Modh glasadh leum",
             "description": "Airson leum freagairteach, leigidh seo leat smachd a chumail air cuin a bhios Lara comasach air leum às dèidh tòiseachadh ruith.\n\n- Dualchasach: a rèir àm TR2 tùsail.\n- Fìnealta: tha leum comasach 2 fhrèam nas tràithe.\n- Dheth: tha leum comasach sa bhad às dèidh an beòthalachd tòiseachaidh.",
+        },
+        "gameplay.lara_damage_scale": {
+            "title": "\\{review}Dochann air Lara",
+            "description": "\\{review}Atharraichidh seo an dochann a gheibh Lara o gach tùs, mar nàimhdean, ribeachan is tuiteaman.",
         },
         "gameplay.loading_screens": {
             "title": "Sgrionaichean luchdachaidh",

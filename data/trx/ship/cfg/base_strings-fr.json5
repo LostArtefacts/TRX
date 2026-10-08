@@ -1337,6 +1337,10 @@
             "title": "Animées les placements",
             "description": "\\{review}Fait marcher Lara vers les objets à ramasser, les interrupteurs, les serrures et les emplacements de puzzle lorsqu'ils sont à proximité, au lieu de s'y téléporter.",
         },
+        "gameplay.enemy_health_scale": {
+            "title": "\\{review}Santé des ennemis",
+            "description": "\\{review}Ajuste la santé de départ des ennemis. Les alliés ne sont pas concernés.",
+        },
         "gameplay.fix_alligator_ai": {
             "title": "Corriger l'IA des aligators",
             "description": "Corrige le fait que les alligators n'infligent aucun dégât si Lara reste immobile dans l'eau.",
@@ -1444,6 +1448,10 @@
         "gameplay.jump_lock_mode": {
             "title": "\\{review}Verrou saut",
             "description": "\\{review}Pour un saut réactif, permet de contrôler à quel moment après le début de la course Lara est autorisée à sauter.\n\n- Hérité : correspond au timing original de TR2.\n- Ajusté : le saut est possible 2 images plus tôt que dans TR2 d'origine.\n- Désactivé : le saut est possible immédiatement après l'animation de départ en course.",
+        },
+        "gameplay.lara_damage_scale": {
+            "title": "\\{review}Dégâts subis par Lara",
+            "description": "\\{review}Ajuste les dégâts que Lara subit de toutes les sources, comme les ennemis, les pièges et les chutes.",
         },
         "gameplay.loading_screens": {
             "title": "\\{review}Écrans de chargement",

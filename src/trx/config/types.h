@@ -304,6 +304,8 @@ typedef struct {
         int32_t maximum_save_slots;
         int32_t maximum_quick_save_slots;
         int32_t harpoon_recoil;
+        float enemy_health_scale;
+        float lara_damage_scale;
 
         JUMP_LOCK_MODE jump_lock_mode;
         TARGET_LOCK_MODE target_mode;

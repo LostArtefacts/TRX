@@ -30,6 +30,9 @@ void Lara_SmoothlyRotateMeshTo(
 void Lara_Animate(ITEM *item);
 void Lara_AnimateUntil(ITEM *lara_item, int32_t goal);
 const ANIM_FRAME *Lara_GetHitFrame(const ITEM *item);
+// The damage Lara takes from a blow of the given strength, after the damage
+// option has scaled it.
+int16_t Lara_ScaleDamage(int16_t damage);
 void Lara_TakeDamage(int16_t damage, bool hit_status);
 void Lara_Kill(void);
 

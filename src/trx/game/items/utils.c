@@ -138,11 +138,15 @@ bool Item_CanBeProjectileTarget(const ITEM *const item)
 }
 
 void Item_TakeDamage(
-    ITEM *const item, const int16_t damage, const ITEM_DAMAGE_FLAGS flags,
+    ITEM *const item, int16_t damage, const ITEM_DAMAGE_FLAGS flags,
     const ITEM *const sender)
 {
     if (!Item_CanTakeDamage(item)) {
         return;
+    }
+
+    if (item == Lara_GetItem() && (flags & IDF_FATAL) == 0) {
+        damage = Lara_ScaleDamage(damage);
     }
 
     const bool was_alive = item->hit_points > 0;
@@ -176,7 +180,8 @@ void Item_TakeDamage(
 
 void Item_TakeFatalDamage(ITEM *const item, const ITEM *const sender)
 {
-    Item_TakeDamage(item, item->hit_points, IDF_NO_HIT_STATUS, sender);
+    Item_TakeDamage(
+        item, item->hit_points, IDF_NO_HIT_STATUS | IDF_FATAL, sender);
 }
 
 bool Item_IsMeshVisible(const ITEM *const item, const int32_t mesh_num)

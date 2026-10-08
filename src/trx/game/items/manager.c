@@ -1,5 +1,6 @@
 #include <trx/game/items/manager.h>
 
+#include <trx/config.h>
 #include <trx/core/handle.h>
 #include <trx/core/log.h>
 #include <trx/core/math.h>
@@ -7,6 +8,7 @@
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
+#include <trx/game/creature.h>
 #include <trx/game/game.h>
 #include <trx/game/game_buf.h>
 #include <trx/game/items/carrier.h>
@@ -14,6 +16,7 @@
 #include <trx/game/lara/common.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/objects.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/output/const.h>
 #include <trx/game/pathing.h>
 #include <trx/game/rooms.h>
@@ -175,12 +178,23 @@ static void M_ControlFades(void)
     }
 }
 
+static bool M_IsEnemy(const ITEM *const item)
+{
+    return ObjectFamily_Has(item->object_id, OBJ_FAMILY_CREATURE)
+        && !ObjectFamily_Has(item->object_id, OBJ_FAMILY_LOYAL)
+        && !Creature_IsAlly(item);
+}
+
 static float M_GetHitPointsScale(const ITEM *const item)
 {
     if (item->object_id == O_LARA) {
         return 1.0f;
     }
-    return g_Rules.health.scale;
+    float scale = g_Rules.health.scale;
+    if (M_IsEnemy(item)) {
+        scale *= g_Config.gameplay.enemy_health_scale;
+    }
+    return scale;
 }
 
 // The one place that moves an item's maximum. The current hit points move by

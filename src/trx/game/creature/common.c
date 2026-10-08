@@ -274,8 +274,8 @@ static bool M_TestDrowned(
 static void M_Kill(ITEM *const item, const ITEM *const sender)
 {
     const ITEM_DAMAGE_FLAGS flags = sender != nullptr
-        ? IDF_NO_HIT_STATUS
-        : (IDF_NO_HIT_STATUS | IDF_NO_KILL_STATS);
+        ? (IDF_NO_HIT_STATUS | IDF_FATAL)
+        : (IDF_NO_HIT_STATUS | IDF_NO_KILL_STATS | IDF_FATAL);
     Item_TakeDamage(item, item->hit_points, flags, sender);
 }
 

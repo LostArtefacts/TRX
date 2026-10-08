@@ -1,6 +1,7 @@
 #include <trx/game/lara/common.h>
 
 #include <trx/config.h>
+#include <trx/core/math.h>
 #include <trx/core/utils.h>
 #include <trx/debug.h>
 #include <trx/game/camera.h>
@@ -667,6 +668,16 @@ const ANIM_FRAME *Lara_GetHitFrame(const ITEM *const item)
     const OBJECT *const obj = Object_Get(item->object_id);
     const ANIM *const anim = Object_GetAnim(obj, anim_idx);
     return &anim->frame_ptr[lara->hit_frame];
+}
+
+int16_t Lara_ScaleDamage(const int16_t damage)
+{
+    if (damage <= 0) {
+        return damage;
+    }
+    const int32_t scaled =
+        Math_ApplyPercent(damage, g_Config.gameplay.lara_damage_scale);
+    return MIN(scaled, INT16_MAX);
 }
 
 void Lara_TakeDamage(const int16_t damage, const bool hit_status)

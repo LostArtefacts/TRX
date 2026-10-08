@@ -1337,6 +1337,10 @@
             "title": "Interazioni animate",
             "description": "Fa in modo che Lara cammini verso gli oggetti da raccogliere, interruttori, serrature e ricettacoli quando si trovano nelle vicinanze, invece di teletrasportarsi direttamente su di essi.",
         },
+        "gameplay.enemy_health_scale": {
+            "title": "\\{review}Salute dei nemici",
+            "description": "\\{review}Regola la salute iniziale dei nemici. Gli alleati non sono interessati.",
+        },
         "gameplay.fix_alligator_ai": {
             "title": "Correggi IA degli alligatori",
             "description": "Risolve il problema degli alligatori che non infliggono danni se Lara rimane ferma nell'acqua.",
@@ -1444,6 +1448,10 @@
         "gameplay.jump_lock_mode": {
             "title": "Modalità blocco salto",
             "description": "Per salti più reattivi, consente di modificare quanto tempo deve attendere Lara per poter saltare dopo aver iniziato a correre.\n\n- Originale: corrisponde alla durata di tempo in TR2.\n- Modificato: è possibile effettuare il salto 2 fotogrammi prima.\n- Disabilitato: è possibile effettuare il salto subito dopo l'inizio della corsa.",
+        },
+        "gameplay.lara_damage_scale": {
+            "title": "\\{review}Danni subiti da Lara",
+            "description": "\\{review}Regola i danni che Lara subisce da qualsiasi fonte, come nemici, trappole e cadute.",
         },
         "gameplay.loading_screens": {
             "title": "Schermate di caricamento",

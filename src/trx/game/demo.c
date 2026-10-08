@@ -23,6 +23,7 @@
 #define L_MODIFY_CONFIG()                                                      \
     X_PROCESS_CONFIG(gameplay.disable_healing_between_levels, false);          \
     X_PROCESS_CONFIG(gameplay.enable_fast_pickups, false);                     \
+    X_PROCESS_CONFIG(gameplay.enemy_health_scale, 1.0f);                       \
     X_PROCESS_CONFIG(gameplay.enable_pickup_aids, false);                      \
     X_PROCESS_CONFIG(gameplay.enable_responsive_sprint, false);                \
     X_PROCESS_CONFIG(gameplay.enable_sprint, g_TRVersion >= 3);                \
@@ -31,6 +32,7 @@
     X_PROCESS_CONFIG(debug.enable_endless_sprint, false);                      \
     X_PROCESS_CONFIG(gameplay.enable_fast_pull_up, false);                     \
     X_PROCESS_CONFIG(gameplay.jump_lock_mode, JUMP_LOCK_LEGACY);               \
+    X_PROCESS_CONFIG(gameplay.lara_damage_scale, 1.0f);                        \
     X_PROCESS_CONFIG(gameplay.target_change_mode, TARGET_CHANGE_MODE_OFF);     \
     X_PROCESS_CONFIG(gameplay.enable_tr2_jumping, g_TRVersion >= 2);           \
     X_PROCESS_CONFIG(gameplay.enable_tr2_swim_cancel, g_TRVersion >= 2);       \

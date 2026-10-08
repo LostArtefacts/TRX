@@ -1337,6 +1337,10 @@
             "title": "Animowane interakcje",
             "description": "\\{review}Sprawia, że Lara podchodzi do przedmiotów do podniesienia, przełączników, dziurek od klucza i gniazd zagadek, gdy znajduje się w pobliżu, zamiast teleportować się do nich.",
         },
+        "gameplay.enemy_health_scale": {
+            "title": "\\{review}Zdrowie wrogów",
+            "description": "\\{review}Skaluje zdrowie, z jakim wrogowie zaczynają. Nie dotyczy sojuszników.",
+        },
         "gameplay.fix_alligator_ai": {
             "title": "Napraw AI aligatorów",
             "description": "Naprawia błąd w którym aligatory nie zadają obrażeń, jeśli Lara pozostaje nieruchomo w wodzie.",
@@ -1444,6 +1448,10 @@
         "gameplay.jump_lock_mode": {
             "title": "Tryb blokady skoku",
             "description": "Kontroluje, jak szybko Lara może skoczyć po rozpoczęciu biegu. Poszczególne tryby:\n\n- Klasyczny: odpowiada TR2.\n- Dostrojony: skok jest możliwy o 2 klatki wcześniej niż w TR2.\n- Wyłączony: skok jest możliwy natychmiast po animacji startu biegu.",
+        },
+        "gameplay.lara_damage_scale": {
+            "title": "\\{review}Obrażenia otrzymywane przez Larę",
+            "description": "\\{review}Skaluje obrażenia, jakie Lara otrzymuje z każdego źródła, na przykład od wrogów, pułapek i upadków.",
         },
         "gameplay.loading_screens": {
             "title": "Ekrany ładowania",

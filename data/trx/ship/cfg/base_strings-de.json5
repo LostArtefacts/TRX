@@ -1337,6 +1337,10 @@
             "title": "Animierte Interaktionen",
             "description": "\\{review}Lässt Lara zu aufhebbaren Gegenständen, Schaltern, Schlüssellöchern und Puzzle-Einsätzen gehen, wenn sie sich in der Nähe befindet, anstatt sich dorthin zu teleportieren.",
         },
+        "gameplay.enemy_health_scale": {
+            "title": "\\{review}Gegnergesundheit",
+            "description": "\\{review}Skaliert die Gesundheit, mit der Gegner beginnen. Verbündete sind nicht betroffen.",
+        },
         "gameplay.fix_alligator_ai": {
             "title": "Fix: Alligator-AI",
             "description": "Fixt, dass die Alligatoren keinen Schaden machen, wenn Lara sich im Wasser befindet und sich nicht bewegt.",
@@ -1444,6 +1448,10 @@
         "gameplay.jump_lock_mode": {
             "title": "Sprung-Block Modus",
             "description": "Erlaubt einzustellen, wie früh es Lara erlaubt ist zu springen, nachdem sie begonnen hat zu laufen.\n\n- Original: entspricht dem originalen TR2 Timing.\n- Getuned: springen ist 2 Frames früher möglich.\n- Deaktiviert: springen ist sofort nachdem die Laufen-Animation begonnen hat möglich.",
+        },
+        "gameplay.lara_damage_scale": {
+            "title": "\\{review}Erlittener Schaden",
+            "description": "\\{review}Skaliert den Schaden, den Lara aus jeder Quelle erleidet, etwa durch Gegner, Fallen und Stürze.",
         },
         "gameplay.loading_screens": {
             "title": "Ladebildschirme",
