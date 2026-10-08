@@ -4,6 +4,8 @@ X_UI_ROW(gameplay.enable_console)
 X_UI_ROW(gameplay.harpoon_recoil)
 
 X_UI_ROW(gameplay.start_lara_hitpoints)
+X_UI_ROW(gameplay.lara_damage_scale)
+X_UI_ROW(gameplay.enemy_health_scale)
 X_UI_ROW(gameplay.disable_healing_between_levels)
 X_UI_ROW(gameplay.disable_medpacks)
 X_UI_ROW(gameplay.disable_extra_guns)

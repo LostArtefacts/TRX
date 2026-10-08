@@ -363,6 +363,12 @@ REGISTER_UI_SETTING_HANDLER(
         .delta_fast = 100)
 
 REGISTER_UI_SETTING_HANDLER(
+        .key = "gameplay.lara_damage_scale", .delta_slow = 5, .delta_fast = 25)
+
+REGISTER_UI_SETTING_HANDLER(
+        .key = "gameplay.enemy_health_scale", .delta_slow = 5, .delta_fast = 25)
+
+REGISTER_UI_SETTING_HANDLER(
         .key = "gameplay.maximum_save_slots", .delta_slow = 1, .delta_fast = 10)
 
 REGISTER_UI_SETTING_HANDLER(

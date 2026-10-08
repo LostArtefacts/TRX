@@ -1337,6 +1337,10 @@
             "title": "Animated interactions",
             "description": "Makes Lara walk to pickups, switches, keyholes and puzzle slots when nearby instead of teleporting to them.",
         },
+        "gameplay.enemy_health_scale": {
+            "title": "Enemy health",
+            "description": "Scales the health that enemies start with. Allies are not affected.",
+        },
         "gameplay.fix_alligator_ai": {
             "title": "Fix alligator AI",
             "description": "Fixes alligators dealing no damage if Lara remains still in the water.",
@@ -1444,6 +1448,10 @@
         "gameplay.jump_lock_mode": {
             "title": "Jump lock mode",
             "description": "For responsive jumping, allows controlling how soon after starting to run that Lara is permitted to jump.\n\n- Legacy: matches original TR2 timing.\n- Tuned: jumping is possible 2 frames earlier.\n- Disabled: jumping is possible immediately after the start-to-run animation.",
+        },
+        "gameplay.lara_damage_scale": {
+            "title": "Damage taken by Lara",
+            "description": "Scales the damage that Lara takes from every source, such as enemies, traps and falls.",
         },
         "gameplay.loading_screens": {
             "title": "Loading screens",

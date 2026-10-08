@@ -18,6 +18,7 @@ typedef enum {
     IDF_NONE          = 0,
     IDF_NO_HIT_STATUS = 1 << 0,
     IDF_NO_KILL_STATS = 1 << 1,
+    IDF_FATAL         = 1 << 2,
     // clang-format on
 } ITEM_DAMAGE_FLAGS;
 
