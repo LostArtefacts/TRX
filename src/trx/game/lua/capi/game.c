@@ -14,6 +14,7 @@
 #include <trx/game/lua/struct.h>
 #include <trx/game/lua/utils/args.h>
 #include <trx/game/lua/utils/game_flow.h>
+#include <trx/game/lua/utils/level.h>
 #include <trx/game/lua/utils/module.h>
 #include <trx/game/lua/utils/savegame.h>
 #include <trx/game/output/func.h>
@@ -198,13 +199,7 @@ static int M_L_GameGetCurrentLevel(lua_State *const L)
         lua_pushnil(L);
         return 1;
     }
-    const GF_LEVEL_TABLE_TYPE table_type = GF_GetLevelTableType(level->type);
-    // A gym has no number and reads 0, which is also the number
-    // GF_GetLevelByOrdinalNumber hands it back on.
-    const int32_t num = table_type == GFLT_TITLE
-        ? 1
-        : GF_GetLevelOrdinalNumber(table_type, level);
-    M_PushLevel(L, table_type, num);
+    LUA_PushLevel(L, level);
     return 1;
 }
 
@@ -590,6 +585,17 @@ static void M_Create(lua_State *const L)
     lua_pushstring(L, g_TRXVersion);
     lua_setfield(L, -2, "TRX_VERSION");
     lua_pop(L, 1);
+}
+
+void LUA_PushLevel(lua_State *const L, const GF_LEVEL *const level)
+{
+    const GF_LEVEL_TABLE_TYPE table_type = GF_GetLevelTableType(level->type);
+    // A gym has no number and reads 0, which is also the number
+    // GF_GetLevelByOrdinalNumber hands it back on.
+    const int32_t num = table_type == GFLT_TITLE
+        ? 1
+        : GF_GetLevelOrdinalNumber(table_type, level);
+    M_PushLevel(L, table_type, num);
 }
 
 REGISTER_LUA_CAPI(.create = M_Create)

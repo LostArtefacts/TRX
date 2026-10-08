@@ -127,6 +127,7 @@
 - Fixed the total kills showing as 3 in Race for the Iris, rather than 0 (TRX1689, regression from 1.10)
 
 **Lua**
+- Added `trx.game.set_bonus_check`, which lets a script decide whether a bonus level opens before it starts to load (#6811 / TRX1704)
 - Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)
 - Added `trx.math.degrees()`, which converts an angle from degrees to the engine's units
 - Added `scale`, `y_offset`, `base_rot_x`, `base_rot_y`, `base_rot_z`, and `draws_at_pivot` to inventory ring entries. Scripts can use these fields to set an object's size and pose.

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <trx/game/lua/utils/item.h>
+#include <trx/game/lua/utils/level.h>
 
 #include <lua.h>
 #include <stdint.h>
@@ -51,12 +52,19 @@ static inline void LUA_Hooks_PushItem(lua_State *L, const LUA_HOOK_ARG *arg)
     LUA_PushItem(L, (int16_t)arg->value.i32);
 }
 
+static inline void LUA_Hooks_PushLevel(lua_State *L, const LUA_HOOK_ARG *arg)
+{
+    LUA_PushLevel(L, arg->value.ptr);
+}
+
 #define LUA_ARG_BOOL(value_)                                                   \
     ((LUA_HOOK_ARG) { .push = LUA_Hooks_PushBool, .value.b = (value_) })
 #define LUA_ARG_INT(value_)                                                    \
     ((LUA_HOOK_ARG) { .push = LUA_Hooks_PushInt, .value.i32 = (value_) })
 #define LUA_ARG_ITEM(item_num_)                                                \
     ((LUA_HOOK_ARG) { .push = LUA_Hooks_PushItem, .value.i32 = (item_num_) })
+#define LUA_ARG_LEVEL(level_)                                                  \
+    ((LUA_HOOK_ARG) { .push = LUA_Hooks_PushLevel, .value.ptr = (level_) })
 
 void LUA_Hooks_SetHandlers(
     LUA_HOOK_TYPE hook, const LUA_HOOK_HANDLERS *handlers);
