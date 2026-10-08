@@ -1393,6 +1393,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── assault.lua
 │   ├── inv_ring.lua
 │   ├── legend.lua
+│   ├── ngplus.lua
 │   ├── pause.lua
 │   ├── save_crystal.lua
 │   ├── water_color.lua
@@ -2827,6 +2828,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   ├── assault.lua
     │   │   ├── inv_ring.lua
     │   │   ├── legend.lua
+    │   │   ├── ngplus.lua
     │   │   ├── pause.lua
     │   │   ├── save_crystal.lua
     │   │   ├── water_color.lua
