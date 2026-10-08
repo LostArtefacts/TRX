@@ -40,6 +40,15 @@ static void M_FadeOut(M_PRIV *const p)
     Fader_InitFromCurrentHold(&p->fader, 1.0f, p->args.fade_out_time, 0.1f);
 }
 
+static PHASE_CONTROL M_EndWithTransition(const M_PRIV *const p)
+{
+    Output_Overlay_BeginTransitionFadeOut(p->args.fade_out_time, 1.0f);
+    return (PHASE_CONTROL) {
+        .action = PHASE_ACTION_END,
+        .gf_cmd = { .action = GF_NOOP },
+    };
+}
+
 static PHASE_CONTROL M_Start(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
@@ -74,7 +83,9 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
 
     switch (p->state) {
     case STATE_FADE_IN:
-        if (g_InputDB.menu_skip) {
+        if (g_InputDB.menu_skip && p->args.loading_pic && p->has_drawn) {
+            return M_EndWithTransition(p);
+        } else if (g_InputDB.menu_skip) {
             M_FadeOut(p);
         } else if (!Fader_IsActive(&p->fader)) {
             p->state = STATE_DISPLAY;
@@ -91,12 +102,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
 
     case STATE_FADE_OUT:
         if (p->args.loading_pic && p->has_drawn) {
-            Output_Overlay_BeginTransitionFadeOut(
-                p->args.fade_out_time, 1.0f - Fader_GetCurrentValue(&p->fader));
-            return (PHASE_CONTROL) {
-                .action = PHASE_ACTION_END,
-                .gf_cmd = { .action = GF_NOOP },
-            };
+            return M_EndWithTransition(p);
         }
 
         if (g_InputDB.menu_skip || !Fader_IsActive(&p->fader)) {
