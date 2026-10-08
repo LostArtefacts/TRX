@@ -576,6 +576,7 @@ common_sources = [
   'trx/game/lua/capi/weapons_spec.c',
   'trx/game/lua/capi/weather.c',
   'trx/game/lua/common.c',
+  'trx/game/lua/events/common.c',
   'trx/game/lua/field.c',
   'trx/game/lua/guard.c',
   'trx/game/lua/hooks/common.c',
