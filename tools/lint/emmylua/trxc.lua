@@ -244,7 +244,7 @@ trxc = {}
 ---@field tr_version fun(): integer
 
 ---@class (exact) trxc.hooks
----@field set_object fun(object: trx.objects.Object, slot: string, fn?: function)
+---@field set fun(name: string, fn?: function, ...: any)
 
 ---@class (exact) trxc.inject
 ---@field declare fun(func: function)

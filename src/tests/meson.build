@@ -979,6 +979,8 @@ unit_tests += {
     'game/lua/capi/hooks.c',
     'game/lua/capi/items.c',
     'game/lua/capi/objects.c',
+    'game/lua/hooks/common.c',
+    'game/lua/hooks/objects.c',
   ],
 }
 
