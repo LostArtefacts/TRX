@@ -67,6 +67,7 @@
 
 **TR2**
 - Fixed missing gun flashes in the Diving Area cutscene (OG bug) (TRX89)
+- Fixed Lara not colliding with the submarine in Diving Area room 70 when soft static collision is enabled (TRX1703, regression from 1.1)
 
 **TR3**
 - Added the demos from the PS1 version, which play when the main menu is left idle (#6713 / TRX1601)
