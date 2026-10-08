@@ -3,6 +3,10 @@
 #include <trx/game/game_flow/common.h>
 #include <trx/game/ui/dialogs/takeover.h>
 
+// Marks the console running a command written in Lua, for the length of it.
+void LUA_Console_BeginCommand(void);
+void LUA_Console_EndCommand(void);
+
 // Returns whether the console is running a command written in Lua.
 bool LUA_Console_IsRunningCommand(void);
 

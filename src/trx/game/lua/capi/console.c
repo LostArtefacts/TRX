@@ -21,7 +21,6 @@
 static lua_State *m_L = nullptr;
 
 // Counts the Lua commands that are running, as one command can run another.
-static int32_t m_RunningCommands = 0;
 
 // Command name -> Lua handler.
 static const char m_HandlersKey[] = "trx.console.handlers";
@@ -148,9 +147,9 @@ static COMMAND_RESULT M_LuaCommandProc(const COMMAND_CONTEXT *const ctx)
     }
 
     lua_pushstring(L, ctx->args != nullptr ? ctx->args : "");
-    m_RunningCommands++;
+    LUA_Console_BeginCommand();
     const int status = lua_pcall(L, 1, 1, 0);
-    m_RunningCommands--;
+    LUA_Console_EndCommand();
     if (status != LUA_OK) {
         Console_Error("%s: %s", ctx->prefix, lua_tostring(L, -1));
         lua_settop(L, base);
@@ -459,11 +458,6 @@ static void M_Shutdown(void)
     // can register them again.
     Console_Registry_Clear();
     m_L = nullptr;
-}
-
-bool LUA_Console_IsRunningCommand(void)
-{
-    return m_RunningCommands > 0;
 }
 
 REGISTER_LUA_CAPI(.create = M_Create, .shutdown = M_Shutdown)
