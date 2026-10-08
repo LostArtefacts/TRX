@@ -46,6 +46,7 @@
 - Fixed the stats background help naming the wrong style for TR2 (PS1) (#6711 / TRX1598)
 - Fixed custom keyboard bindings interfering with menu navigation, such as a game key bound to an arrow key also confirming or going back (#5704 / TRX520)
 - Fixed dialogs moving down when the FPS counter or another corner element is shown, even where the dialog does not reach it
+- Fixed the screen jumping when a loading screen was skipped while it was still fading in
 
 **Camera**
 - Fixed the TR4 camera using the wrong angle when Lara is pushing a pushblock (regression from 1.10)
