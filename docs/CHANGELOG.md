@@ -51,6 +51,7 @@
 - Added a `lifetime` property to Earthquakes to control deactivating them automatically after a set number of frames
 - Added a `blocks_portal` property to trapdoors to make them behave like in TR4+
 - Added a `final_shot_damage` property to RX-Tech gunmen and armed MPs (#6801 / TRX178)
+- Added support for levels with more than 16,384 pathfinding overlaps, which level editors can now pass through an injection (TRX3)
 - Fixed a crash if Lara tried to aim at an enemy who had invalid animation data (#6744 / TRX1632)
 - Fixed missing names for the Trigger Gate object, and being unable to activate them via the `/trigger` command
 - Fixed injections that change how an object behaves carrying over to later levels and mods, such as spiders acting as wolves in TR2 after playing TR2 Gold, and enemy jeeps in TR4 (TRX1686)

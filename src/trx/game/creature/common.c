@@ -490,7 +490,7 @@ void Creature_AIInfo(ITEM *const item, AI_INFO *const info)
          && (enemy_box->overlap_index & creature->lot.setup.block_mask) != 0)
         || (creature->lot.node[item->box_num].search_num
             == (creature->lot.search_num | BOX_BLOCKED_SEARCH))) {
-        info->enemy_zone_num |= BOX_BLOCKED;
+        info->enemy_zone_num |= BOX_ZONE_BLOCKED;
     }
 
     const OBJECT *const obj = Object_Get(item->object_id);
