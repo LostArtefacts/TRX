@@ -945,6 +945,10 @@
             "title": "Tomhas nan seallaidhean",
             "description": "Cuiridh seo tomhas nan seallaidhean sa gheama.",
         },
+        "audio.enable_ambient_crossfade": {
+            "title": "\\{review}Crois-fhuasgladh àile",
+            "description": "\\{review}Measgaichidh seo aon chlàr àile a tha a' ruith a-rithist a-steach dhan ath fhear nuair a dh'atharraicheas iad, seach a' chiad fhear a ghearradh dheth.",
+        },
         "audio.enable_lara_mic": {
             "title": "Micreofon ri taobh Lara",
             "description": "Cuiridh seo am micreofon aig suidheachadh Lara. Ma thèid seo air a chur dheth, bidh e aig suidheachadh a' chamara.",

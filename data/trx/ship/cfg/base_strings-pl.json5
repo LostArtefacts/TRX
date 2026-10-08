@@ -945,6 +945,10 @@
             "title": "Głośność przerywników",
             "description": "Reguluje głośność przerywników filmowych w grze.",
         },
+        "audio.enable_ambient_crossfade": {
+            "title": "\\{review}Przenikanie ambientu",
+            "description": "\\{review}Płynnie przechodzi z jednej zapętlonej ścieżki ambientu w następną przy zmianie, zamiast urywać pierwszą.",
+        },
         "audio.enable_lara_mic": {
             "title": "Mikrofon przy Larze",
             "description": "Ustawia mikrofon na pozycji Lary. Domyślnie mikrofon jest na pozycji kamery. Wpływa to głównie na głośność efektów – czy przy kamerach daleko od Lary będą one cicho, czy głośno.",

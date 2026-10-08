@@ -197,6 +197,7 @@ typedef struct {
         bool fix_speeches_killing_music;
         bool fix_sliding_sfx;
         bool enable_lara_mic;
+        bool enable_ambient_crossfade;
         bool enable_music_in_menu;
         bool enable_music_in_inventory;
         bool enable_music_on_death;

@@ -945,6 +945,10 @@
             "title": "\\{review}Zwischensequenz-Lautstärke",
             "description": "\\{review}Passt die Lautstärke der Zwischensequenzen im Spiel an.",
         },
+        "audio.enable_ambient_crossfade": {
+            "title": "\\{review}Ambiente-Überblendung",
+            "description": "\\{review}Blendet eine sich wiederholende Ambiente-Spur in die nächste über, wenn sie wechselt, anstatt die erste abrupt zu beenden.",
+        },
         "audio.enable_lara_mic": {
             "title": "Mikrofon nah an Lara",
             "description": "Setzt das Mikrofon auf Laras Position. Wenn deaktiviert, wird das Mikrofon auf der Position der Kamera gesetzt.",

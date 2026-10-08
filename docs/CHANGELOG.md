@@ -6,6 +6,9 @@
 - Fixed Lara moving while the look button was held and two opposite directions were pressed (OG bug) (#6686 / TRX1585)
 - Fixed Lara sometimes sliding along stationary objects when at a standstill at specific angles (OG bug) (TRX1680)
 
+**Music and sound**
+- Added an option to crossfade looping ambience tracks into each other rather than cutting them off (Sound Options → Misc → Ambience crossfade) (#5331 / TRX169)
+
 **Rendering**
 - Added an option to disable reflections on Lara's sunglasses (Graphic Options → Visuals → Reflective sunglasses) (#6665 / TRX1544)
 - Improved the frame rate, as the game now draws solid surfaces faster
