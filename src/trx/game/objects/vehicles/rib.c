@@ -1073,7 +1073,8 @@ static void M_Setup(OBJECT *const obj)
         obj,
         OBJECT_PROPERTY_STORED(
             "track_1", Music_IDToSlot(MX_RIB_THEME),
-            "Random music track pool, slot 1. -1 = disabled."),
+            "Random music track pool, slot 1. -1 = disabled. Value range: "
+            "minimum -1."),
         OBJECT_PROPERTY_STORED(
             "track_2", -1, "Random music track pool, slot 2. -1 = disabled."),
         OBJECT_PROPERTY_STORED(

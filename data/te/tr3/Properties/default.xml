@@ -7,7 +7,7 @@
         <property category="TRX" defaultValue="true" description="Whether or not this vehicle can activate heavy triggers." displayName="Is Heavy" internalName="is_heavy" type="Bool" />
     </moveable>
     <moveable id="15">
-        <property category="TRX" defaultValue="12" description="Random music track pool, slot 1. -1 = disabled." displayName="Track 1" internalName="track_1" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="12" description="Random music track pool, slot 1. -1 = disabled." displayName="Track 1" internalName="track_1" minValue="-1" type="Int" />
         <property category="TRX" defaultValue="-1" description="Random music track pool, slot 2. -1 = disabled." displayName="Track 2" internalName="track_2" minValue="-1" type="Int" />
         <property category="TRX" defaultValue="-1" description="Random music track pool, slot 3. -1 = disabled." displayName="Track 3" internalName="track_3" minValue="-1" type="Int" />
         <property category="TRX" defaultValue="-1" description="Random music track pool, slot 4. -1 = disabled." displayName="Track 4" internalName="track_4" minValue="-1" type="Int" />
@@ -22,7 +22,7 @@
         <property category="TRX" defaultValue="false" description="Whether or not this vehicle can collide with static meshes." displayName="Test Static Collision" internalName="test_static_collision" type="Bool" />
     </moveable>
     <moveable id="17">
-        <property category="TRX" defaultValue="12" description="Random music track pool, slot 1. -1 = disabled." displayName="Track 1" internalName="track_1" minValue="0" type="Int" />
+        <property category="TRX" defaultValue="12" description="Random music track pool, slot 1. -1 = disabled." displayName="Track 1" internalName="track_1" minValue="-1" type="Int" />
         <property category="TRX" defaultValue="-1" description="Random music track pool, slot 2. -1 = disabled." displayName="Track 2" internalName="track_2" minValue="-1" type="Int" />
         <property category="TRX" defaultValue="-1" description="Random music track pool, slot 3. -1 = disabled." displayName="Track 3" internalName="track_3" minValue="-1" type="Int" />
         <property category="TRX" defaultValue="-1" description="Random music track pool, slot 4. -1 = disabled." displayName="Track 4" internalName="track_4" minValue="-1" type="Int" />
@@ -276,12 +276,14 @@
         <property category="TRX" defaultValue="true" description="Move the item to the middle of its sector where a carrier drops it." displayName="Snap To Sector" internalName="snap_to_sector" type="Bool" />
         <property category="TRX" defaultValue="false" description="Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back." displayName="Keep Simulated" internalName="keep_simulated" type="Bool" />
         <property category="TRX" defaultValue="0" description="How much to rotate the item by each frame while it's active, in engine angle units." displayName="Rotation" internalName="rotation" maxValue="16384" minValue="-16384" type="Int" />
+        <property category="TRX" defaultValue="TEN.Color(0, 0, 0)" description="The color of the item's glow while it's active. Black infers no glow." displayName="Glow Color" internalName="glow_color" type="Color" />
     </moveable>
     <moveable id="179">
         <property category="TRX" defaultValue="30" description="How long the flare burns for, in seconds." displayName="Burn Time" internalName="burn_time" minValue="0" type="Float" />
     </moveable>
     <moveable id="180">
         <property category="TRX" defaultValue="true" description="Whether the crystal hovers and bobs in place." displayName="Bob" internalName="bob" type="Bool" />
+        <property category="TRX" defaultValue="TEN.Color(0, 0, 0)" description="Color of the light the crystal casts. Black picks one from the save crystal mode." displayName="Glow Color" internalName="glow_color" type="Color" />
         <property category="TRX" defaultValue="-1" description="Mesh the crystal is drawn with. -1 picks one from the save crystal mode." displayName="Mesh Index" internalName="mesh_index" minValue="-1" type="Int" />
         <property category="TRX" defaultValue="500" description="Health restored by a healing crystal." displayName="Heal Amount" internalName="heal_amount" minValue="0" type="Int" />
     </moveable>

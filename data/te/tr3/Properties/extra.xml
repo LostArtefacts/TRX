@@ -81,6 +81,7 @@
         <property category="TRX" defaultValue="true" description="Move the item to the middle of its sector where a carrier drops it." displayName="Snap To Sector" internalName="snap_to_sector" type="Bool" />
         <property category="TRX" defaultValue="false" description="Simulate the item again once it becomes visible, so that it goes on rotating, glowing and showing its twinkle after a carrier drops it or a trigger brings it back." displayName="Keep Simulated" internalName="keep_simulated" type="Bool" />
         <property category="TRX" defaultValue="0" description="How much to rotate the item by each frame while it's active, in engine angle units." displayName="Rotation" internalName="rotation" maxValue="16384" minValue="-16384" type="Int" />
+        <property category="TRX" defaultValue="TEN.Color(0, 0, 0)" description="The color of the item's glow while it's active. Black infers no glow." displayName="Glow Color" internalName="glow_color" type="Color" />
     </moveable>
     <!--placeholder for O_BIRD_GUARDIAN-->
     <moveable id="-1">
