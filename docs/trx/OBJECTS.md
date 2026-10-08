@@ -2207,7 +2207,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>track_1</code></td><td colspan="3" align="center">-1 (MX_JEEP_THEME)</td><td>Random music track pool, slot 1. -1 = disabled.</td></tr>
+<tr><td><code>track_1</code></td><td colspan="3" align="center">-1 (MX_JEEP_THEME)</td><td>Random music track pool, slot 1. -1 = disabled. Value range: minimum -1.</td></tr>
 <tr><td><code>track_2</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 2. -1 = disabled.</td></tr>
 <tr><td><code>track_3</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 3. -1 = disabled.</td></tr>
 <tr><td><code>track_4</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 4. -1 = disabled.</td></tr>
@@ -2701,7 +2701,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (17)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>track_1</code></td><td colspan="2" align="center">-1 (MX_MINE_CART_THEME)</td><td align="center">12 (MX_MINE_CART_THEME)</td><td>Random music track pool, slot 1. -1 = disabled.</td></tr>
+<tr><td><code>track_1</code></td><td colspan="2" align="center">-1 (MX_MINE_CART_THEME)</td><td align="center">12 (MX_MINE_CART_THEME)</td><td>Random music track pool, slot 1. -1 = disabled. Value range: minimum -1.</td></tr>
 <tr><td><code>track_2</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 2. -1 = disabled.</td></tr>
 <tr><td><code>track_3</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 3. -1 = disabled.</td></tr>
 <tr><td><code>track_4</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 4. -1 = disabled.</td></tr>
@@ -3583,7 +3583,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (16)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>track_1</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 1. -1 = disabled.</td></tr>
+<tr><td><code>track_1</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 1. -1 = disabled. Value range: minimum -1.</td></tr>
 <tr><td><code>track_2</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 2. -1 = disabled.</td></tr>
 <tr><td><code>track_3</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 3. -1 = disabled.</td></tr>
 <tr><td><code>track_4</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 4. -1 = disabled.</td></tr>
@@ -3716,7 +3716,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (15)</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>track_1</code></td><td colspan="2" align="center">-1 (MX_RIB_THEME)</td><td align="center">12 (MX_RIB_THEME)</td><td>Random music track pool, slot 1. -1 = disabled.</td></tr>
+<tr><td><code>track_1</code></td><td colspan="2" align="center">-1 (MX_RIB_THEME)</td><td align="center">12 (MX_RIB_THEME)</td><td>Random music track pool, slot 1. -1 = disabled. Value range: minimum -1.</td></tr>
 <tr><td><code>track_2</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 2. -1 = disabled.</td></tr>
 <tr><td><code>track_3</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 3. -1 = disabled.</td></tr>
 <tr><td><code>track_4</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 4. -1 = disabled.</td></tr>
@@ -3885,7 +3885,7 @@ This page lists documented moveable object properties.
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2 (13)</th><th align="center">TR3</th><th>Description</th></tr></thead>
 <tbody>
-<tr><td><code>track_1</code></td><td align="center">-1 (MX_SKIDOO_THEME)</td><td align="center">48 (MX_SKIDOO_THEME)</td><td align="center">-1 (MX_SKIDOO_THEME)</td><td>Random music track pool, slot 1. -1 = disabled.</td></tr>
+<tr><td><code>track_1</code></td><td align="center">-1 (MX_SKIDOO_THEME)</td><td align="center">48 (MX_SKIDOO_THEME)</td><td align="center">-1 (MX_SKIDOO_THEME)</td><td>Random music track pool, slot 1. -1 = disabled. Value range: minimum -1.</td></tr>
 <tr><td><code>track_2</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 2. -1 = disabled.</td></tr>
 <tr><td><code>track_3</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 3. -1 = disabled.</td></tr>
 <tr><td><code>track_4</code></td><td colspan="3" align="center">-1</td><td>Random music track pool, slot 4. -1 = disabled.</td></tr>

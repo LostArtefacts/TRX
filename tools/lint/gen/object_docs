@@ -1211,12 +1211,9 @@ class XmlExporter:
                 continue
 
             props = self.property_catalog.properties_for(object_id)
-            # TODO: Tomb Editor supports color properties but its TRX injector
-            # does not. Once TE is updated, write out RGB values as well.
             properties = [
                 self._build_property_dict(name, props[name])
                 for name in props
-                if props[name].macro_type != "RGB"
             ]
             key = tuple(tuple(sorted(prop.items())) for prop in properties)
             group = grouped_moveables.setdefault(
@@ -1266,6 +1263,7 @@ class XmlExporter:
                 "DOUBLE": "Float",
                 "BOOL": "Bool",
                 "XYZ": "Vec3",
+                "RGB": "Color",
             }[info.macro_type]
         else:
             prop["type"] = "Enum"
@@ -1322,6 +1320,15 @@ class XmlExporter:
             if match:
                 x, y, z = match.groups()
                 return f"TEN.Vec3({x}, {y}, {z})"
+
+        if prop_type == "RGB":
+            match = re.fullmatch(
+                r"\(\s*(-?\d+)\s*,\s*(-?\d+)\s*,\s*(-?\d+)\s*\)*",
+                value,
+            )
+            if match:
+                r, g, b = match.groups()
+                return f"TEN.Color({r}, {g}, {b})"
 
         return value
 
