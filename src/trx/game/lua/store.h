@@ -19,3 +19,12 @@ void LUA_Store_ClearGame(void);
 
 void LUA_Store_Dump(JSON_WRITE_IO *io);
 RESULT LUA_Store_Load(JSON_READ_IO *io);
+
+// Spelled out rather than taken from lua.h, which the save code does not build
+// against.
+typedef struct lua_State lua_State;
+
+// Push the level store and the game store, the tables trxc.store hands a
+// script.
+void LUA_Store_PushLevelTable(lua_State *L);
+void LUA_Store_PushGameTable(lua_State *L);

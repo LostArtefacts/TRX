@@ -675,6 +675,7 @@ unit_tests += {
     'core/json/util/value.c',
     'core/json/util/write_io.c',
     'game/lua/capi/store.c',
+    'game/lua/store.c',
   ],
   'deps': [dep_mathlibrary],
 }
