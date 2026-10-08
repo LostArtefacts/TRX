@@ -1,6 +1,6 @@
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/store.h>
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/module.h>
 
 static void M_Create(lua_State *const L)
 {

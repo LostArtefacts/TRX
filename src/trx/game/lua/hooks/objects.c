@@ -5,7 +5,6 @@
 #include <trx/game/lua/hooks/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
-#include <trx/game/lua/utils.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/setup.h>
 #include <trx/game/objects/types.h>

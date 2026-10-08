@@ -1,10 +1,10 @@
 #include <trx/core/result.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/game_flow/types.h>
-#include <trx/game/lua/game_flow.h>
 #include <trx/game/lua/registry.h>
-#include <trx/game/lua/savegame.h>
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/game_flow.h>
+#include <trx/game/lua/utils/module.h>
+#include <trx/game/lua/utils/savegame.h>
 #include <trx/game/savegame.h>
 
 #include <lauxlib.h>

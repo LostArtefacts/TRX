@@ -5,7 +5,7 @@
 #include <trx/core/strings.h>
 #include <trx/core/vector.h>
 #include <trx/game/lua/registry.h>
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/module.h>
 #include <trx/game/paths.h>
 
 #include <ctype.h>

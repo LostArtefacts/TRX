@@ -2,10 +2,11 @@
 #include <trx/game/game_flow/types.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/field.h>
-#include <trx/game/lua/game_flow.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/args.h>
+#include <trx/game/lua/utils/game_flow.h>
+#include <trx/game/lua/utils/module.h>
 #include <trx/game/shell/common.h>
 #include <trx/game/shell/mod.h>
 

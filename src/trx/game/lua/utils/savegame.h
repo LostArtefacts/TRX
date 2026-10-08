@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/args.h>
 #include <trx/game/savegame.h>
 
 #include <lauxlib.h>

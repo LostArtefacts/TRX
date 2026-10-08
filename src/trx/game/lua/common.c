@@ -16,7 +16,7 @@
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/sandbox.h>
 #include <trx/game/lua/startup.h>
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/caller.h>
 #include <trx/game/paths.h>
 
 #include <lauxlib.h>

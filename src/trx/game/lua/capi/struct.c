@@ -1,6 +1,6 @@
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/struct.h>
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/module.h>
 
 static const TYPE_DESC *M_CheckType(lua_State *const L, const int idx)
 {

@@ -1,6 +1,6 @@
 #include <trx/game/lua/struct.h>
 
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/value.h>
 
 #include <string.h>
 

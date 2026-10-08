@@ -1,7 +1,8 @@
 #include <trx/core/result.h>
 #include <trx/game/catalog/manager.h>
 #include <trx/game/lua/registry.h>
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/args.h>
+#include <trx/game/lua/utils/module.h>
 
 #include <lauxlib.h>
 #include <stdint.h>

@@ -7,8 +7,10 @@
 #include <trx/game/inventory_ring/types.h>
 #include <trx/game/inventory_ring/vars.h>
 #include <trx/game/lua/registry.h>
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/args.h>
+#include <trx/game/lua/utils/module.h>
 #include <trx/game/objects/common.h>
+#include <trx/game/objects/names.h>
 
 #include <lauxlib.h>
 

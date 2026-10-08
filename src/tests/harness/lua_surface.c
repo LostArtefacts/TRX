@@ -5,7 +5,7 @@
 #include <trx/game/lua/api.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/sandbox.h>
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/caller.h>
 
 #include <ctype.h>
 #include <stdio.h>
