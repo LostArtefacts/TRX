@@ -1,4 +1,4 @@
-#include <trx/game/lua/events/common.h>
+#include <trx/game/lua/events/manager.h>
 
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
