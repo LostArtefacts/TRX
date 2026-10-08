@@ -10,7 +10,7 @@
 #include <trx/game/lua/events.h>
 #include <trx/game/lua/events/ui.h>
 #include <trx/game/ui/draw.h>
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/args.h>
 #include <trx/config/option.h>
 #include <trx/game/console/common.h>
 #include <trx/game/ui/common.h>

@@ -3,7 +3,7 @@
 #include <trx/core/json/types.h>
 #include <trx/core/strings.h>
 #include <trx/game/lua/registry.h>
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/module.h>
 
 #include <lauxlib.h>
 #include <string.h>

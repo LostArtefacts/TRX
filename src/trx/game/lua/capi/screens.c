@@ -1,5 +1,6 @@
 #include <trx/game/lua/registry.h>
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/args.h>
+#include <trx/game/lua/utils/module.h>
 #include <trx/game/ui/dialogs/takeover.h>
 
 #include <lauxlib.h>

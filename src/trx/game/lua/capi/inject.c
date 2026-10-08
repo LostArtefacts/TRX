@@ -4,7 +4,7 @@
 #include <trx/game/inject.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/startup.h>
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/module.h>
 
 #include <lauxlib.h>
 

@@ -1,4 +1,4 @@
-#include <trx/game/lua/game_flow.h>
+#include <trx/game/lua/utils/game_flow.h>
 
 static int32_t m_RunningCommands = 0;
 

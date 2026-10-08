@@ -1,6 +1,7 @@
 #include <trx/core/log.h>
 #include <trx/game/lua/registry.h>
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/caller.h>
+#include <trx/game/lua/utils/module.h>
 
 #include <lauxlib.h>
 #include <lua.h>

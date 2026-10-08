@@ -9,9 +9,10 @@
 #include <trx/game/events.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/lua/common.h>
-#include <trx/game/lua/game_flow.h>
 #include <trx/game/lua/registry.h>
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/caller.h>
+#include <trx/game/lua/utils/game_flow.h>
+#include <trx/game/lua/utils/module.h>
 #include <trx/game/ui/keys.h>
 
 #include <ctype.h>

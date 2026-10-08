@@ -1,7 +1,7 @@
 #include <trx/core/enum_map.h>
 #include <trx/core/vector.h>
 #include <trx/game/lua/registry.h>
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/module.h>
 
 #include <ctype.h>
 #include <lauxlib.h>

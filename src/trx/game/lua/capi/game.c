@@ -10,11 +10,12 @@
 #include <trx/game/gym.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/field.h>
-#include <trx/game/lua/game_flow.h>
 #include <trx/game/lua/registry.h>
-#include <trx/game/lua/savegame.h>
 #include <trx/game/lua/struct.h>
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/args.h>
+#include <trx/game/lua/utils/game_flow.h>
+#include <trx/game/lua/utils/module.h>
+#include <trx/game/lua/utils/savegame.h>
 #include <trx/game/output/func.h>
 #include <trx/game/photo_mode.h>
 #include <trx/game/savegame.h>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/item.h>
 
 #include <lua.h>
 #include <stdint.h>

@@ -5,7 +5,7 @@
 #include <trx/game/gym.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/module.h>
 #include <trx/game/savegame/resume.h>
 
 #include <lauxlib.h>

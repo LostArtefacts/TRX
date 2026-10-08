@@ -3,7 +3,9 @@
 #include <trx/core/utils.h>
 #include <trx/game/lua/events/scene.h>
 #include <trx/game/lua/registry.h>
-#include <trx/game/lua/utils.h>
+#include <trx/game/lua/utils/args.h>
+#include <trx/game/lua/utils/module.h>
+#include <trx/game/lua/utils/value.h>
 #include <trx/game/matrix.h>
 #include <trx/game/output/draw.h>
 

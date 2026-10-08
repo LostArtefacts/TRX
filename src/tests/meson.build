@@ -106,7 +106,10 @@ b_lua_surface = {
     'game/lua/registry.c',
     'game/lua/sandbox.c',
     'game/lua/struct.c',
-    'game/lua/utils.c',
+    'game/lua/utils/args.c',
+    'game/lua/utils/caller.c',
+    'game/lua/utils/module.c',
+    'game/lua/utils/value.c',
   ],
   'src': [
     'fakes/catalog.c',
@@ -181,7 +184,7 @@ b_console = {
     'game/lua/capi/console.c',
     'game/lua/capi/locale.c',
     'game/lua/capi/log.c',
-    'game/lua/game_flow.c',
+    'game/lua/utils/game_flow.c',
   ],
   'src': ['fakes/console.c', 'fakes/locale.c'],
 }
@@ -528,7 +531,10 @@ unit_tests += {
   'engine': [
     'game/lua/capi/enum.c',
     'game/lua/registry.c',
-    'game/lua/utils.c',
+    'game/lua/utils/args.c',
+    'game/lua/utils/caller.c',
+    'game/lua/utils/module.c',
+    'game/lua/utils/value.c',
   ],
   'deps': [dep_lua],
 }
@@ -547,7 +553,10 @@ unit_tests += {
     'game/lua/events/manager.c',
     'game/lua/registry.c',
     'game/lua/scripts.c',
-    'game/lua/utils.c',
+    'game/lua/utils/args.c',
+    'game/lua/utils/caller.c',
+    'game/lua/utils/module.c',
+    'game/lua/utils/value.c',
   ],
   'src': [
     'harness/stubs_catalog.c',
@@ -587,7 +596,10 @@ unit_tests += {
     'game/lua/field.c',
     'game/lua/registry.c',
     'game/lua/struct.c',
-    'game/lua/utils.c',
+    'game/lua/utils/args.c',
+    'game/lua/utils/caller.c',
+    'game/lua/utils/module.c',
+    'game/lua/utils/value.c',
   ],
   'deps': [dep_lua],
 }
