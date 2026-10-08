@@ -3,6 +3,7 @@
 #include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/console.h>
+#include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 
 #include <lauxlib.h>
@@ -10,12 +11,14 @@
 #include <uthash.h>
 
 // Hooks are kept by hook and key, so this knows nothing of what a hook decides
-// or how a script names it: a hook's handlers say that for it. Hooks outlive a
-// level.
+// or how a script names it: a hook's handlers say that for it. A hook set by a
+// level script ends with the level; one set by the game script or a module
+// stays.
 
 typedef struct {
     int64_t id;
     int32_t ref;
+    bool level_scoped;
     UT_hash_handle hh;
 } M_HOOK;
 
@@ -66,6 +69,18 @@ static void M_Shutdown(void)
     m_L = nullptr;
 }
 
+static void M_DropLevel(void)
+{
+    M_HOOK *entry;
+    M_HOOK *tmp;
+    HASH_ITER(hh, m_Hooks, entry, tmp)
+    {
+        if (entry->level_scoped) {
+            M_Clear(entry);
+        }
+    }
+}
+
 static void M_Create(lua_State *const L)
 {
     m_L = L;
@@ -105,6 +120,7 @@ void LUA_Hooks_Set(
     entry->id = M_GetID(hook, key);
     lua_pushvalue(L, fn_idx);
     entry->ref = luaL_ref(L, LUA_REGISTRYINDEX);
+    entry->level_scoped = LUA_GetScriptContext() == LUA_CONTEXT_LEVEL;
     HASH_ADD(hh, m_Hooks, id, sizeof(entry->id), entry);
     if (m_Handlers[hook].on_set != nullptr) {
         m_Handlers[hook].on_set(hook, key);
@@ -137,7 +153,13 @@ lua_State *LUA_Hooks_CallEx(
     for (int32_t i = 0; i < arg_count; i++) {
         args[i].push(m_L, &args[i]);
     }
-    if (lua_pcall(m_L, arg_count, result_count, 0) != LUA_OK) {
+    // As with events, what the hook sets in turn is scoped where it is.
+    const LUA_CONTEXT outer_context = LUA_GetScriptContext();
+    LUA_SetScriptContext(
+        entry->level_scoped ? LUA_CONTEXT_LEVEL : LUA_CONTEXT_GLOBAL);
+    const bool ok = lua_pcall(m_L, arg_count, result_count, 0) == LUA_OK;
+    LUA_SetScriptContext(outer_context);
+    if (!ok) {
         Console_ShowError(
             "%s hook error: %s", m_Names[hook], lua_tostring(m_L, -1));
         lua_pop(m_L, 1);
@@ -177,4 +199,5 @@ int32_t LUA_Hooks_CallIntEx(
     return result;
 }
 
-REGISTER_LUA_CAPI(.create = M_Create, .shutdown = M_Shutdown)
+REGISTER_LUA_CAPI(
+        .create = M_Create, .shutdown = M_Shutdown, .drop_level = M_DropLevel)
