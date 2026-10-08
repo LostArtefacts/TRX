@@ -56,7 +56,8 @@ typedef enum {
     ICT_DATA_EDITS     = 6,
     ICT_CAMERA_DATA    = 7,
     ICT_SYMBOLS        = 8,
-    ICT_NUMBER_OF      = 9,
+    ICT_PATHING_DATA   = 9,
+    ICT_NUMBER_OF      = 10,
 } INJECTION_CHUNK_TYPE;
 
 typedef enum {
@@ -104,7 +105,8 @@ typedef enum {
     IDT_NAMED_SAMPLE_INFOS = 41,
     IDT_ANIM_TEXTURE_ADDS  = 42,
     IDT_DEMO_DATA          = 43,
-    IDT_NUMBER_OF          = 44,
+    IDT_OVERLAP_INDICES    = 44,
+    IDT_NUMBER_OF          = 45,
 } INJECTION_DATA_TYPE;
 
 typedef enum {

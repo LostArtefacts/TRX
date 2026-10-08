@@ -224,7 +224,7 @@ static bool M_IsEnemyBoxSearchable(const ITEM *const enemy)
         return false;
     }
 
-    return (box->overlap_index & BOX_BLOCKED_SEARCH) != 0;
+    return (box->overlap_index & BOX_BLOCKABLE) != 0;
 }
 
 static void M_Control(const int16_t item_num)
