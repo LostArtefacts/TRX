@@ -1434,28 +1434,11 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
-#### security_laser_alarm
-<table width="100%">
-<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (66)</th><th>Description</th></tr></thead>
-<tbody>
-<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1</td><td>Maximum hit points.</td></tr>
-</tbody>
-</table>
-
 #### security_laser_deadly
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (67)</th><th>Description</th></tr></thead>
 <tbody>
 <tr><td><code>damage</code></td><td colspan="3" align="center">10</td><td>Damage dealt when Lara crosses the security laser.</td></tr>
-<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1</td><td>Maximum hit points.</td></tr>
-</tbody>
-</table>
-
-#### security_laser_killer
-<table width="100%">
-<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (68)</th><th>Description</th></tr></thead>
-<tbody>
-<tr><td><code>max_hit_points</code></td><td colspan="3" align="center">1</td><td>Maximum hit points.</td></tr>
 </tbody>
 </table>
 

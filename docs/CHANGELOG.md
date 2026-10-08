@@ -38,8 +38,10 @@
 - Added the ability to combine the two halves of an item in the inventory, such as the eye pieces in Tomb of Seth (TRX482)
 - Fixed a bug where a friendly sentry gun kept aiming at Lara, and aimed at enemies it had no shot at, instead of the enemies it was set to attack
 - Fixed Lara not getting a crystal when starting a game with the crystal mode set to Saving (pickups) (Gameplay → General → Crystal mode)
+- Fixed enemies in New Game+ losing their doubled health in some levels, such as Diving Area in TR2 (TRX1702, regression from 1.10)
 
 **Level and game data**
+- Added the `health.scale` rule, which scales the health of every item but Lara. New Game+ sets it to 2.
 - Added a `mode` property to Earthquakes to select the camera shake intensity and sound effect behavior
 - Added a `shake_camera` property to Earthquakes to control whether or not the camera should shake when active
 - Added a `trigger_items` property to Earthquakes to control whether or not related items are triggered when active

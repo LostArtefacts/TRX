@@ -39,21 +39,11 @@ int16_t Item_Spawn(const ITEM *item, OBJECT_ID obj_id);
 void Item_Initialise(int16_t item_num);
 
 // The starting hit points an object gives its items, declared once for every
-// object that has any. Moving the ceiling carries the current hit points with
-// it, so a level states the maximum alone and an item that has already been
-// hurt stays hurt by as much.
-static inline void Item_Property_SetMaxHitPoints(
-    ITEM *item, const TRX_VALUE *value)
-{
-    item->hit_points += value->as_int - item->max_hit_points;
-    item->max_hit_points = value->as_int;
-    CLAMP(item->hit_points, 0, item->max_hit_points);
-}
-
+// object that has any. An item's maximum is this scaled by the rules, and
+// follows both as they change: an unhurt item stays at full health, and a hurt
+// one stays hurt by as much.
 #define ITEM_PROPERTY_MAX_HIT_POINTS(value_)                                   \
-    OBJECT_PROPERTY_ITEM(                                                      \
-        max_hit_points, value_, nullptr, Item_Property_SetMaxHitPoints,        \
-        "Maximum hit points.")
+    OBJECT_PROPERTY_STORED("max_hit_points", value_, "Maximum hit points.")
 
 void Item_Control(void);
 

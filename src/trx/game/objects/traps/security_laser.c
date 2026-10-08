@@ -207,6 +207,8 @@ static void M_DrawLaserBeam(
 static void M_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
+    item->hit_points = m_DefaultBeamCount;
+    item->max_hit_points = m_DefaultBeamCount;
     M_LaserSplitterToggle(item);
 }
 
@@ -330,7 +332,6 @@ static void M_SetupCommon(OBJECT *const obj)
 static void M_SetupAlarm(OBJECT *const obj)
 {
     M_SetupCommon(obj);
-    OBJECT_PROPERTIES(obj, ITEM_PROPERTY_MAX_HIT_POINTS(m_DefaultBeamCount));
 }
 
 static void M_SetupDeadly(OBJECT *const obj)
@@ -340,14 +341,12 @@ static void M_SetupDeadly(OBJECT *const obj)
         obj,
         OBJECT_PROPERTY(
             M_PRIV, damage, M_DEFAULT_DAMAGE,
-            "Damage dealt when Lara crosses the security laser."),
-        ITEM_PROPERTY_MAX_HIT_POINTS(m_DefaultBeamCount));
+            "Damage dealt when Lara crosses the security laser."));
 }
 
 static void M_SetupKiller(OBJECT *const obj)
 {
     M_SetupCommon(obj);
-    OBJECT_PROPERTIES(obj, ITEM_PROPERTY_MAX_HIT_POINTS(m_DefaultBeamCount));
 }
 
 REGISTER_OBJECT(O_SECURITY_LASER_ALARM, M_SetupAlarm)

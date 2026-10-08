@@ -30,3 +30,4 @@ require("common.water_color").declare({
 })
 
 require("common.save_crystal").initialise()
+require("common.ngplus").initialise()

@@ -264,7 +264,7 @@ end
 ---@field num trx.items.Num An item handed over by a query can say where it lives.
 ---@field room_num trx.rooms.Num The room containing this item. Set `trx.items.Item.pos` to move the item between rooms.
 ---@field hit_points integer Current hit points. Raising this above the maximum also raises the `max_hit_points` entry of `trx.items.Item.properties`. <!--noref: max_hit_points-->
----@field max_hit_points integer Maximum hit points. Set the `max_hit_points` entry of `trx.items.Item.properties` to change it. <!--noref: max_hit_points-->
+---@field max_hit_points integer Maximum hit points: the `max_hit_points` entry of `trx.items.Item.properties`, scaled by `trx.rules.health.scale`. Set the entry to change it; the maximum follows on the next frame. <!--noref: max_hit_points-->
 ---@field name string? Unique item name, or `nil`. Assigning a name already in use raises an error.
 ---@field object_id trx.catalog.objects The item's object type.
 ---@field is_visible boolean Whether the item is drawn. It can be present in the world but not visible, like an ambush enemy waiting to appear.

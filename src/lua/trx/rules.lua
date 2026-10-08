@@ -70,6 +70,12 @@ rules("carrier", { "snap_to_sector", "inherit_facing" })
 M.inventory = h.namespace("rules.inventory")
 rules("inventory", { "keep_plot_items" })
 
+---@class (exact) trx.rules.health
+---@trx.implicit
+---@field scale number How much health every item but Lara has, as a factor of the `max_hit_points` its object declares. An item at full health stays at full health when this changes, and a hurt one stays hurt by as much. A new game plus sets it to `2`. <!--noref: max_hit_points-->
+M.health = h.namespace("rules.health")
+rules("health", { "scale" })
+
 ---@class (exact) trx.rules.fx
 ---@trx.implicit
 ---@field rotate_debris boolean Whether debris pieces generated from shattered meshes should rotate in yaw and pitch while they are active. The original TR4 did not apply rotation.
