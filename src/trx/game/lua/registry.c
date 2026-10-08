@@ -43,3 +43,12 @@ void LUA_Registry_ShutdownAll(void)
         }
     }
 }
+
+void LUA_Registry_DropLevelAll(void)
+{
+    for (const M_NODE *node = m_List; node != nullptr; node = node->next) {
+        if (node->capi.drop_level != nullptr) {
+            node->capi.drop_level();
+        }
+    }
+}

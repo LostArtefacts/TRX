@@ -409,6 +409,40 @@ static bool M_InterceptFlipEffect(
     return true;
 }
 
+static void M_DropLevel(void)
+{
+    lua_State *const L = m_L;
+    if (L == nullptr) {
+        return;
+    }
+
+    if (m_Claims != nullptr) {
+        for (int32_t i = 0; i < m_Claims->count;) {
+            const M_CLAIM *const claim = Vector_Get(m_Claims, i);
+            if (claim->level_scoped) {
+                Vector_RemoveAt(m_Claims, i);
+            } else {
+                i++;
+            }
+        }
+    }
+
+    if (m_Listeners == nullptr) {
+        return;
+    }
+    for (int32_t i = 0; i < m_Listeners->count;) {
+        const M_LISTENER *const lst = Vector_Get(m_Listeners, i);
+        if (!lst->level_scoped || lst->dead) {
+            i++;
+            continue;
+        }
+        M_RemoveListener(L, i);
+        if (m_DispatchDepth > 0) {
+            i++;
+        }
+    }
+}
+
 static void M_Create(lua_State *const L)
 {
     m_L = L;
@@ -477,40 +511,6 @@ static bool M_FireEvent(
     return answered;
 }
 
-void LUA_ClearLevelListeners(void)
-{
-    lua_State *const L = m_L;
-    if (L == nullptr) {
-        return;
-    }
-
-    if (m_Claims != nullptr) {
-        for (int32_t i = 0; i < m_Claims->count;) {
-            const M_CLAIM *const claim = Vector_Get(m_Claims, i);
-            if (claim->level_scoped) {
-                Vector_RemoveAt(m_Claims, i);
-            } else {
-                i++;
-            }
-        }
-    }
-
-    if (m_Listeners == nullptr) {
-        return;
-    }
-    for (int32_t i = 0; i < m_Listeners->count;) {
-        const M_LISTENER *const lst = Vector_Get(m_Listeners, i);
-        if (!lst->level_scoped || lst->dead) {
-            i++;
-            continue;
-        }
-        M_RemoveListener(L, i);
-        if (m_DispatchDepth > 0) {
-            i++;
-        }
-    }
-}
-
 bool LUA_FireEventEx(
     const LUA_EVENT_TYPE ev, const LUA_EVENT_ARG *const args,
     const int32_t arg_count)
@@ -539,4 +539,5 @@ bool LUA_FireEventBool(const LUA_EVENT_TYPE ev, const bool arg)
     return LUA_FireEventEx(ev, args, 1);
 }
 
-REGISTER_LUA_CAPI(.create = M_Create, .shutdown = M_Shutdown)
+REGISTER_LUA_CAPI(
+        .create = M_Create, .shutdown = M_Shutdown, .drop_level = M_DropLevel)

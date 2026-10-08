@@ -6,6 +6,7 @@
 #include <fakes/rooms.h>
 #include <harness/lua_surface.h>
 
+#include <trx/game/lua/registry.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/events.h>
 
@@ -61,7 +62,7 @@ static int M_L_SetLevelScript(lua_State *const L)
 
 static int M_L_ClearFlipGroups(lua_State *const L)
 {
-    LUA_Rooms_ClearFlipGroups();
+    LUA_Registry_DropLevelAll();
     return 0;
 }
 

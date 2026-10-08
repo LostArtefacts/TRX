@@ -5,6 +5,7 @@
 #include <fakes/level.h>
 #include <harness/lua_surface.h>
 
+#include <trx/game/lua/registry.h>
 #include <trx/game/lua/common.h>
 
 #include <lauxlib.h>
@@ -40,7 +41,7 @@ static int M_FakeLoadWorld(lua_State *const L)
 
 static int M_FakeEndLevel(lua_State *const L)
 {
-    LUA_Config_ClearLevelWatchers();
+    LUA_Registry_DropLevelAll();
     return 0;
 }
 
