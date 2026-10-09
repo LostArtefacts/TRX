@@ -245,7 +245,13 @@ void Shell_RequestModSwitch(const char *const mod_name)
 
 int ScreenModule_Run(const char *const tests)
 {
-    const LUA_SURFACE_TEST test = {
+    return ScreenModule_RunWith(tests, nullptr);
+}
+
+int ScreenModule_RunWith(
+    const char *const tests, const char *const *const extra_deps)
+{
+    LUA_SURFACE_TEST test = {
         .module = "ui",
         .deps = { "config",         "events",    "signal",       "catalog",
                   "locale",         "math",      "input",        "sound",
@@ -258,6 +264,14 @@ int ScreenModule_Run(const char *const tests)
         .fake_reset = M_FakeReset,
         .tests = tests,
     };
+    int32_t count = 0;
+    while (test.deps[count] != nullptr) {
+        count++;
+    }
+    for (int32_t i = 0; extra_deps != nullptr && extra_deps[i] != nullptr;
+         i++) {
+        test.deps[count++] = extra_deps[i];
+    }
     return LuaSurface_Run(&test);
 }
 
