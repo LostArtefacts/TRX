@@ -24,6 +24,7 @@ static void M_Reset(const bool accept)
     UI_Takeover_Release(UI_TAKEOVER_RING_ENTRY);
     UI_Takeover_Release(UI_TAKEOVER_PAUSE);
     UI_Takeover_Release(UI_TAKEOVER_SAVE_LOAD);
+    UI_Takeover_Release(UI_TAKEOVER_STATS);
     UI_Takeover_SetHooks((UI_TAKEOVER_HOOKS) {
         .offer = M_Offer,
         .release = M_Release,
@@ -152,6 +153,23 @@ TEST(the_quick_save_and_load_screen_takes_only_cancel)
         UI_TAKEOVER_SAVE_LOAD, UI_TAKEOVER_CHOICE_CANCEL));
     CHECK(!UI_Takeover_AcceptsChoice(
         UI_TAKEOVER_SAVE_LOAD, UI_TAKEOVER_CHOICE_NONE));
+}
+
+TEST(the_stats_screen_takes_cancel_and_confirm)
+{
+    CHECK(UI_Takeover_AcceptsChoice(
+        UI_TAKEOVER_STATS, UI_TAKEOVER_CHOICE_CANCEL));
+    CHECK(UI_Takeover_AcceptsChoice(
+        UI_TAKEOVER_STATS, UI_TAKEOVER_CHOICE_CONFIRM));
+    CHECK(!UI_Takeover_AcceptsChoice(
+        UI_TAKEOVER_STATS, UI_TAKEOVER_CHOICE_RESUME));
+}
+
+TEST(the_stats_argument_packs_the_level_and_the_look)
+{
+    CHECK(UI_TAKEOVER_STATS_ARG(5, false, false) == 5);
+    CHECK(UI_TAKEOVER_STATS_ARG(5, true, false) == (0x10000 | 5));
+    CHECK(UI_TAKEOVER_STATS_ARG(5, false, true) == (0x20000 | 5));
 }
 
 TEST(each_screen_is_held_on_its_own)

@@ -30,6 +30,7 @@ end
 local function finish_case()
   fake.release(RING_ENTRY)
   fake.release(trx.ui.Screen.SAVE_LOAD)
+  fake.release(trx.ui.Screen.STATS)
   fake.end_level()
   assert(trx.ui.layers.count() == 0, "a layer outlived the case")
 end
@@ -305,6 +306,45 @@ test("the quick save and load screen reports what it opened for", function()
   assert(fake.offer(trx.ui.Screen.SAVE_LOAD, 3) == true)
   assert(seen.mode == 3)
   assert(seen.object == nil)
+  finish_case()
+end)
+
+test("the statistics screen reports what it shows", function()
+  local seen = {}
+  define(
+    trx.ui.Screen.STATS,
+    simple(function(ctx)
+      seen[#seen + 1] = {
+        is_final = ctx.is_final,
+        is_bare = ctx.is_bare,
+        mode = ctx.mode,
+        object = ctx.object,
+      }
+    end)
+  )
+  assert(fake.offer(trx.ui.Screen.STATS, 0x10000 | 3) == true)
+  fake.release(trx.ui.Screen.STATS)
+  assert(fake.offer(trx.ui.Screen.STATS, 0x20000 | 3) == true)
+  assert(seen[1].is_final == true and seen[1].is_bare == false)
+  assert(seen[2].is_final == false and seen[2].is_bare == true)
+  assert(seen[1].mode == nil and seen[1].object == nil)
+  finish_case()
+end)
+
+test("the statistics screen ends on cancel and on confirm", function()
+  local held
+  define(
+    trx.ui.Screen.STATS,
+    simple(function(ctx)
+      held = ctx
+    end)
+  )
+  fake.offer(trx.ui.Screen.STATS, 3)
+  assert(held:cancel() == true)
+  assert(fake.take_choice(trx.ui.Screen.STATS) == CHOICE_CANCEL)
+  fake.offer(trx.ui.Screen.STATS, 3)
+  assert(held:confirm() == true)
+  assert(fake.take_choice(trx.ui.Screen.STATS) == CHOICE_CONFIRM)
   finish_case()
 end)
 

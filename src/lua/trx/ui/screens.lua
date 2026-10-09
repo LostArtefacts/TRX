@@ -78,6 +78,14 @@ local Screen = {
   ---instant screen setting is on. The context reports whether it opened for
   ---saving or loading as `trx.ui.ScreenContext.mode`.
   SAVE_LOAD = h.IntegerConstant,
+  ---The statistics that the game shows when a level ends, and the totals it
+  ---shows when the game ends. The context reports the level as
+  ---`trx.ui.ScreenContext.level`, the totals as
+  ---`trx.ui.ScreenContext.is_final`, and the player's choice of the bare look
+  ---as `trx.ui.ScreenContext.is_bare`. The player skips the screen as they
+  ---would the engine's, and the screen also ends with
+  ---`trx.ui.ScreenContext:cancel` or `trx.ui.ScreenContext:confirm`.
+  STATS = h.IntegerConstant,
 }
 ui.Screen = h.enum("ui.Screen", "UI_TAKEOVER", Screen)
 
@@ -133,10 +141,13 @@ end
 
 ---A screen that a script holds, which the definition receives.
 ---@class (exact) trx.ui.ScreenContext
----@trx.readonly is_held, mode, object, screen
+---@trx.readonly is_bare, is_final, is_held, level, mode, object, screen
 ---@field screen trx.ui.Screen The screen.
 ---@field object trx.catalog.objects? The ring entry that the player uses, for `trx.ui.Screen.RING_ENTRY`.
 ---@field mode trx.inventory_ring.Mode? What the quick save or load screen opened for, for `trx.ui.Screen.SAVE_LOAD`.
+---@field level trx.game.Level? The level whose statistics the screen shows, for `trx.ui.Screen.STATS`. The totals name the level that ended the game.
+---@field is_final boolean? Whether the screen shows the totals for the whole game rather than one level, for `trx.ui.Screen.STATS`.
+---@field is_bare boolean? Whether the screen is drawn bare, as plain lines of text without a frame, for `trx.ui.Screen.STATS`.
 ---@field is_held boolean Whether the script still holds the screen.
 local Context = h.class("ui.ScreenContext", {
   fields = {
@@ -157,6 +168,31 @@ local Context = h.class("ui.ScreenContext", {
       get = function(self)
         if rawget(self, "_screen") == trx.ui.Screen.SAVE_LOAD then
           return rawget(self, "_arg")
+        end
+        return nil
+      end,
+    },
+    level = {
+      get = function(self)
+        if rawget(self, "_screen") == trx.ui.Screen.STATS then
+          local num = rawget(self, "_arg") & 0xffff
+          return num == 0 and trx.game.gym or trx.game.levels[num]
+        end
+        return nil
+      end,
+    },
+    is_final = {
+      get = function(self)
+        if rawget(self, "_screen") == trx.ui.Screen.STATS then
+          return rawget(self, "_arg") & 0x10000 ~= 0
+        end
+        return nil
+      end,
+    },
+    is_bare = {
+      get = function(self)
+        if rawget(self, "_screen") == trx.ui.Screen.STATS then
+          return rawget(self, "_arg") & 0x20000 ~= 0
         end
         return nil
       end,
@@ -217,16 +253,18 @@ function Context:exit_to_title()
 end
 
 ---Ends the screen, and closes its layers. A ring entry is put away, the pause
----screen stays paused and drops its question, and the quick save or load
----screen closes. Does nothing if the screen has already ended.
+---screen stays paused and drops its question, the quick save or load screen
+---closes, and the statistics screen ends as the player skipping it does. Does
+---nothing if the screen has already ended.
 ---@return boolean # Whether the screen was still held.
 function Context:cancel()
   return finish(self, choices.CANCEL)
 end
 
 ---Ends the screen as a choice that the player made, and closes its layers. A
----ring entry leaves the ring, as an entry that the player uses does. Does
----nothing if the screen has already ended.
+---ring entry leaves the ring, as an entry that the player uses does, and the
+---statistics screen ends as the player skipping it does. Does nothing if the
+---screen has already ended.
 ---@return boolean # Whether the screen was still held.
 function Context:confirm()
   return finish(self, choices.CONFIRM)

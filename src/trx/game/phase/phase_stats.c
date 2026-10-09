@@ -8,9 +8,8 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/input.h>
 #include <trx/game/output.h>
-#include <trx/game/savegame.h>
 #include <trx/game/shell.h>
-#include <trx/game/ui.h>
+#include <trx/game/ui/dialogs/takeover.h>
 
 typedef enum {
     STATE_FADE_IN,
@@ -24,8 +23,6 @@ typedef struct {
     STATE state;
     FADER back_fader;
     FADER top_fader;
-    bool ui_active;
-    UI_STATS_DIALOG_STATE *ui_state;
 } M_PRIV;
 
 static bool M_EnableFade(const M_PRIV *const p)
@@ -57,20 +54,18 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
 
+    // A script draws the statistics, and a screen that no script takes has
+    // nothing to show.
     if (!Game_IsInGym()) {
-        p->ui_state = UI_StatsDialog_Init((UI_STATS_DIALOG_ARGS) {
-            .mode = p->args.show_final_stats ? UI_STATS_DIALOG_MODE_FINAL
-                                             : UI_STATS_DIALOG_MODE_LEVEL,
-            .style = p->args.use_bare_style ? UI_STATS_DIALOG_STYLE_BARE
-                                            : UI_STATS_DIALOG_STYLE_BORDERED,
-            .level_num = p->args.level_num != -1 ? p->args.level_num
-                                                 : Game_GetCurrentLevel()->num,
-            .display_level_num = SG_Resume_CountCompletedLevels() + 1,
-        });
-        if (p->args.show_final_stats
-            && !UI_StatsDialog_HasVisibleRows(p->ui_state)) {
-            UI_StatsDialog_Free(p->ui_state);
-            p->ui_state = nullptr;
+        const GF_LEVEL *const level = GF_GetLevel(
+            GFLT_MAIN,
+            p->args.level_num != -1 ? p->args.level_num
+                                    : Game_GetCurrentLevel()->num);
+        if (!UI_Takeover_Offer(
+                UI_TAKEOVER_STATS,
+                UI_TAKEOVER_STATS_ARG(
+                    GF_GetLevelOrdinalNumber(GFLT_MAIN, level),
+                    p->args.show_final_stats, p->args.use_bare_style))) {
             p->state = STATE_FINISH;
             return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
         }
@@ -113,8 +108,6 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
             p->state = STATE_FADE_IN;
             M_FadeIn(p);
         }
-
-        p->ui_active = true;
     }
 
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
@@ -122,12 +115,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
 
 static void M_End(PHASE *const phase)
 {
-    M_PRIV *const p = phase->priv;
-    if (p->ui_active) {
-        p->ui_active = false;
-        UI_StatsDialog_Free(p->ui_state);
-        p->ui_state = nullptr;
-    }
+    UI_Takeover_Release(UI_TAKEOVER_STATS);
 }
 
 static PHASE_CONTROL M_Control(PHASE *const phase)
@@ -137,6 +125,12 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     Shell_ProcessInput();
     if (g_InputDB.menu_skip) {
         Input_HoldOffSkip(INPUT_SKIP_TO_SCREEN);
+    }
+
+    if (UI_Takeover_IsHeld(UI_TAKEOVER_STATS)
+        && UI_Takeover_TakeChoice(UI_TAKEOVER_STATS)
+            != UI_TAKEOVER_CHOICE_NONE) {
+        M_FadeOut(p);
     }
 
     switch (p->state) {
@@ -208,10 +202,6 @@ static void M_Draw(PHASE *const phase)
     Output_Overlay_DrawBackground(
         p->args.background_type, progress, p->args.background_path);
     Output_Flush();
-
-    if (p->ui_active) {
-        UI_StatsDialog(p->ui_state);
-    }
 }
 
 PHASE *Phase_Stats_Create(const PHASE_STATS_ARGS args)

@@ -11,8 +11,16 @@ typedef enum {
     UI_TAKEOVER_RING_ENTRY,
     UI_TAKEOVER_PAUSE,
     UI_TAKEOVER_SAVE_LOAD,
+    UI_TAKEOVER_STATS,
     UI_TAKEOVER_NUMBER_OF,
 } UI_TAKEOVER;
+
+// The statistics screen's argument: the level's number as a script counts
+// levels in the low half, and whether the screen sums up the whole game and
+// whether it is drawn bare above it.
+#define UI_TAKEOVER_STATS_ARG(level_num, is_final, is_bare)                    \
+    (((level_num) & 0xffff) | ((is_final) ? 0x10000 : 0)                       \
+     | ((is_bare) ? 0x20000 : 0))
 
 typedef enum {
     UI_TAKEOVER_CHOICE_NONE,
@@ -61,7 +69,9 @@ void UI_Takeover_Release(UI_TAKEOVER screen);
 // UI_TAKEOVER_CHOICE_CONFIRM, which leaves the ring as a used entry does. The
 // pause question takes UI_TAKEOVER_CHOICE_CANCEL, UI_TAKEOVER_CHOICE_RESUME
 // and UI_TAKEOVER_CHOICE_EXIT_TO_TITLE. The quick save and load screens take
-// only UI_TAKEOVER_CHOICE_CANCEL.
+// only UI_TAKEOVER_CHOICE_CANCEL. The statistics screen shown between levels
+// takes UI_TAKEOVER_CHOICE_CANCEL and UI_TAKEOVER_CHOICE_CONFIRM, which both
+// end it as the player skipping it does.
 bool UI_Takeover_AcceptsChoice(UI_TAKEOVER screen, UI_TAKEOVER_CHOICE choice);
 
 // Closes the screen with a choice. Called by the owner. Does nothing while no
