@@ -237,7 +237,7 @@ void Skidoo_Collision(
         get_on == M_GET_ON_LEFT ? M_ANIM_GET_ON_L : M_ANIM_GET_ON_R;
     Lara_Vehicle_SwitchToAnim(anim_idx, 0);
     lara_item->current_anim_state = M_STATE_GET_ON;
-    lara->gun_status = LGS_ARMLESS;
+    lara->gun_status = LGS_HANDS_BUSY;
     lara->hit_direction = DIR_UNKNOWN;
 
     ITEM *const item = Item_Get(item_num);

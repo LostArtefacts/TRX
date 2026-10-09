@@ -52,6 +52,20 @@ static const LARA_STATE_ID m_StartSwimStates[] = {
     // clang-format on
 };
 
+static const LARA_ANIMATION_ID m_MidairGrabAnims[] = {
+    // clang-format off
+    LA_REACH_TO_HANG,
+    LA_SWING_IN_SLOW,
+    LA_SWING_IN_FAST,
+    LA_JUMPSWITCH,
+    LA_MONKEY_GRAB,
+    LA_REACH_TO_POLE_GRAB,
+    LA_JUMP_UP_TO_POLE_GRAB,
+    LA_JUMP_UP_TO_ROPE_START,
+    NO_CATALOG_ID,
+    // clang-format on
+};
+
 static int32_t m_OpenDoorsCheatCooldown = 0;
 
 extern bool Skidoo_Control(void);
@@ -634,6 +648,22 @@ static void M_HandleAboveWater(COLL_INFO *const coll)
     coll->slopes_are_pits = 0;
     coll->enable_hit = 1;
     coll->enable_baddie_push = 1;
+
+    // The boat and the RIB do not set gun_status to LGS_HANDS_BUSY because Lara
+    // is able to light flares while riding them.
+    const bool is_on_a_boat = Lara_Vehicle_IsMounted()
+        && (Lara_Vehicle_IsOnType(O_BOAT) || Lara_Vehicle_IsOnType(O_RIB));
+    if (lara_info->gun_status == LGS_HANDS_BUSY || is_on_a_boat) {
+        uint8_t smoothing_factor = LARA_TORSO_SMOOTHING;
+        // In animations where Lara is grabbing quickly onto something from
+        // midair, her torso smoothens to neutral less gradually to maintain her
+        // movement natural.
+        if (Lara_HasAnimation(m_MidairGrabAnims)) {
+            smoothing_factor /= 2;
+        }
+        Lara_SmoothlyRotateMeshTo(
+            &lara_info->torso_rot, 0, 0, smoothing_factor);
+    }
 
     Lara_Look_Update();
 

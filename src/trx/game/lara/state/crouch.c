@@ -21,7 +21,6 @@
 #define M_JUMP_HEIGHT          (STEP_L * 2)       // = 512
 #define M_JUMP_START_SHIFT     (STEP_L * 3 / 8)   // = 96
 #define M_JUMP_TARGET_SHIFT    (STEP_L * 5 / 8)   // = 160
-#define M_RESET_ANIM_SMOOTHING 4
 // clang-format on
 
 static const LARA_ANIMATION_ID m_CrouchCrawlEntryAnims[] = {
@@ -155,12 +154,11 @@ static void M_CrouchIdle(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (lara->gun_status == LGS_ARMLESS || lara->gun_status == LGS_UNDRAW) {
-        Lara_SmoothlyRotateMeshTo(
-            &lara->torso_rot, 0, 0, M_RESET_ANIM_SMOOTHING);
+        Lara_SmoothlyRotateMeshTo(&lara->torso_rot, 0, 0, LARA_TORSO_SMOOTHING);
     } else if (lara->gun_status == LGS_READY || lara->gun_status == LGS_DRAW) {
         Lara_SmoothlyRotateMeshTo(
             &lara->torso_rot, lara->head_rot.x, lara->head_rot.y,
-            M_RESET_ANIM_SMOOTHING);
+            LARA_TORSO_SMOOTHING);
     }
 
     if ((g_Input.forward || g_Input.back) && crouch_active
@@ -213,12 +211,11 @@ static void M_CrouchTurn(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (lara->gun_status == LGS_ARMLESS || lara->gun_status == LGS_UNDRAW) {
-        Lara_SmoothlyRotateMeshTo(
-            &lara->torso_rot, 0, 0, M_RESET_ANIM_SMOOTHING);
+        Lara_SmoothlyRotateMeshTo(&lara->torso_rot, 0, 0, LARA_TORSO_SMOOTHING);
     } else if (lara->gun_status == LGS_READY || lara->gun_status == LGS_DRAW) {
         Lara_SmoothlyRotateMeshTo(
             &lara->torso_rot, lara->head_rot.x, lara->head_rot.y,
-            M_RESET_ANIM_SMOOTHING);
+            LARA_TORSO_SMOOTHING);
     }
 
     if (M_CanCrouchRoll(item, lara)) {

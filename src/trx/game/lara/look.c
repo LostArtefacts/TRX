@@ -6,7 +6,7 @@
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
 
-#define M_RESET_ANIM_SMOOTHING 8
+#define M_RESET_ROT_SMOOTHING 8
 
 static const LARA_STATE_ID m_StopStates[] = {
     LS_STOP,
@@ -50,8 +50,8 @@ static void M_Reset(void)
     }
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
-    Lara_SmoothlyRotateMeshTo(&lara->head_rot, 0, 0, M_RESET_ANIM_SMOOTHING);
-    Lara_SmoothlyRotateMeshTo(&lara->torso_rot, 0, 0, M_RESET_ANIM_SMOOTHING);
+    Lara_SmoothlyRotateMeshTo(&lara->head_rot, 0, 0, M_RESET_ROT_SMOOTHING);
+    Lara_SmoothlyRotateMeshTo(&lara->torso_rot, 0, 0, M_RESET_ROT_SMOOTHING);
 }
 
 static bool M_IsLaraIdle(void)
@@ -80,6 +80,13 @@ static bool M_IsStatePermitted(void)
         || !Lara_HasState(m_BlockingStates);
 }
 
+static bool M_IsTorsoLocked(void)
+{
+    LARA_INFO *const lara = Lara_GetLaraInfo();
+    return lara->gun_status == LGS_HANDS_BUSY || Lara_Vehicle_IsMounted()
+        || lara->is_crouched;
+}
+
 void Lara_Look_LeftRight(void)
 {
     g_Camera.type = CAM_LOOK;
@@ -103,9 +110,18 @@ void Lara_Look_LeftRight(void)
         }
     }
 
-    if (lara->gun_status != LGS_HANDS_BUSY && !Lara_Vehicle_IsMounted()
-        && !lara->is_crouched) {
-        lara->torso_rot.y = lara->head_rot.y * look->torso_head_rot_y;
+    if (!M_IsTorsoLocked()) {
+        const int16_t target_torso_y =
+            lara->head_rot.y * look->torso_head_rot_y;
+        const int16_t delta = target_torso_y - lara->torso_rot.y;
+
+        if (ABS(delta) <= look->head_turn) {
+            lara->torso_rot.y = target_torso_y;
+        } else {
+            Lara_SmoothlyRotateMeshTo(
+                &lara->torso_rot, lara->torso_rot.x, target_torso_y,
+                LARA_TORSO_SMOOTHING);
+        }
     }
 }
 
@@ -137,8 +153,18 @@ void Lara_Look_UpDown(void)
         }
     }
 
-    if (lara->gun_status != LGS_HANDS_BUSY && !lara->is_crouched) {
-        lara->torso_rot.x = lara->head_rot.x * look->torso_head_rot_x;
+    if (!M_IsTorsoLocked()) {
+        const int16_t target_torso_x =
+            lara->head_rot.x * look->torso_head_rot_x;
+        const int16_t delta = target_torso_x - lara->torso_rot.x;
+
+        if (ABS(delta) <= look->head_turn) {
+            lara->torso_rot.x = target_torso_x;
+        } else {
+            Lara_SmoothlyRotateMeshTo(
+                &lara->torso_rot, target_torso_x, lara->torso_rot.y,
+                LARA_TORSO_SMOOTHING);
+        }
     }
 }
 
