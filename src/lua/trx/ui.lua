@@ -28,13 +28,14 @@ local h = require("trx.internal.helpers")
 ---arrow, and `\{button left}` draws the button the player has bound.
 ---@trx.module 20 User interface
 ---@class (partial,exact) trx.ui
----@trx.readonly canvas, safe_area, text_scale
+---@trx.readonly canvas, safe_area, text_scale, working_area
 ---@field canvas trx.ui.Area The whole canvas. Widget sizes are in these units rather than in screen pixels, and the canvas is 640 by 480 for a 4:3 screen at the default text size.
 ---@field clipboard string What the system clipboard holds. Reads as an empty string where it holds nothing, and raises on assignment where the platform refuses the text.
 ---
 ---  A script-drawn text field uses this value to paste and copy text.
 ---@field text_scale number The scale applied to text and its boxes. The value depends on the player's text size and the screen. It is not the `ui.text_scale` setting alone. <!--noref: ui.text_scale-->
 ---@field safe_area trx.ui.Area The part of the canvas that is free to draw in: the canvas, less the margin kept at the edges, less what the game reserves at the top and the bottom for the bars and the text it puts there.
+---@field working_area trx.ui.Area The part of the canvas between the cinematic bars. It is the whole canvas while there are none, and follows the bars as they move in and out. The interface regions lay out inside it, so `trx.ui.safe_area` lies within it too.
 local M = h.module("ui")
 
 ---The direction a stack lays its children out in.
@@ -261,6 +262,17 @@ h.properties(M, "ui", {
         y = top,
         width = width,
         height = raw.get_safe_bottom() - top,
+      }
+    end,
+  },
+  working_area = {
+    get = function()
+      local top = raw.get_working_top()
+      return {
+        x = 0,
+        y = top,
+        width = raw.get_canvas_width(),
+        height = raw.get_working_bottom() - top,
       }
     end,
   },

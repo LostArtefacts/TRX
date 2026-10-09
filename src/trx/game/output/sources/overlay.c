@@ -1142,6 +1142,11 @@ float Output_Overlay_GetLetterbox(void)
     return m_Letterbox;
 }
 
+float Output_Overlay_GetLetterboxTarget(void)
+{
+    return m_LetterboxTarget;
+}
+
 bool Output_Overlay_HasLetterbox(void)
 {
     return m_Letterbox > 0.0f;

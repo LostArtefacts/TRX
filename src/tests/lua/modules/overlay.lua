@@ -193,4 +193,70 @@ test("an object without a sprite is a model with the models off", function()
   assert(line:match("^mesh_slot "), line)
 end)
 
+-------------------------------------------------------------------------------
+-- Cinematic bars
+-------------------------------------------------------------------------------
+
+test("a script sets how deep the cinematic bars are", function()
+  assert(trx.overlay.letterbox == 0)
+  trx.overlay.letterbox = 0.25
+  assert(trx.overlay.letterbox == 0.25, trx.overlay.letterbox)
+  trx.overlay.letterbox = 0
+  assert(trx.overlay.letterbox == 0)
+end)
+
+test("the cinematic bars take at most half the screen each", function()
+  assert(not pcall(function()
+    trx.overlay.letterbox = 0.6
+  end))
+  assert(not pcall(function()
+    trx.overlay.letterbox = -0.1
+  end))
+  assert(trx.overlay.letterbox == 0)
+end)
+
+test("the working area is the canvas between the bars", function()
+  local area = trx.ui.working_area
+  assert(
+    area.y == 0 and area.height == 480,
+    ("%d %d"):format(area.y, area.height)
+  )
+  fake.letterbox(0.1)
+  area = trx.ui.working_area
+  assert(area.x == 0 and area.width == 640)
+  assert(
+    area.y == 48 and area.height == 384,
+    ("%d %d"):format(area.y, area.height)
+  )
+  fake.letterbox(0)
+end)
+
+test("the interface regions lay out between the bars", function()
+  fake.letterbox(0.1)
+  fake.render(0)
+  local working = trx.ui.working_area
+  local safe = trx.ui.safe_area
+  assert(safe.y >= working.y, ("%d < %d"):format(safe.y, working.y))
+  assert(
+    safe.y + safe.height <= working.y + working.height,
+    ("%d > %d"):format(safe.y + safe.height, working.y + working.height)
+  )
+  fake.letterbox(0)
+  fake.render(0)
+end)
+
+test("an announcement stands on the bottom bar", function()
+  drain()
+  fake.letterbox(0.1)
+  announce(trx.catalog.objects.KEY_ITEM_1)
+  for _ = 1, trx.game.LOGIC_FPS do
+    fake.tick()
+  end
+  local line = drawn()
+  assert(line ~= nil, "nothing was announced")
+  -- The settled cell, raised by the 48 units the bar takes.
+  assert(line:match("x=500.0 y=322.0 w=100.0 h=80.0"), line)
+  fake.letterbox(0)
+end)
+
 return h.report()

@@ -234,3 +234,10 @@ RESULT UI_SetClipboardText(const char *const text)
     m_Clipboard[sizeof m_Clipboard - 1] = '\0';
     return OK;
 }
+
+// The interface lays itself out between the cinematic bars. A test without the
+// overlay fake has none; the overlay fake says where they are.
+__attribute__((weak)) float Output_Overlay_GetLetterbox(void)
+{
+    return 0.0f;
+}

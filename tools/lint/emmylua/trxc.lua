@@ -391,9 +391,11 @@ trxc = {}
 ---@field swap_sprite fun(obj1_id: trx.catalog.objects, obj2_id: trx.catalog.objects)
 
 ---@class (exact) trxc.overlay
+---@field get_letterbox fun(): number
 ---@field has_letterbox fun(): boolean
 ---@field is_health_bar_forced fun(): boolean
 ---@field set_caption fun(text?: string, count?: integer)
+---@field set_letterbox fun(depth: number)
 ---@field show_arrow fun(arrow: trx.overlay.Arrow, shown?: boolean)
 ---@field show_pickup fun(object: trx.catalog.objects)
 
@@ -504,6 +506,8 @@ trxc = {}
 ---@field get_safe_bottom fun(): number
 ---@field get_safe_top fun(): number
 ---@field get_safe_width fun(): number
+---@field get_working_bottom fun(): number
+---@field get_working_top fun(): number
 ---@field gradient_quad fun(x: number, y: number, z?: integer, w: number, h: number, tl: trx.math.Color|table, tr: trx.math.Color|table, bl: trx.math.Color|table, br: trx.math.Color|table)
 ---@field gradient_sprite fun(object: trx.catalog.objects, sprite_num: integer, x: number, y: number, z?: integer, scale?: number, tl: trx.math.Color|table, tr: trx.math.Color|table, bl: trx.math.Color|table, br: trx.math.Color|table)
 ---@field horizontal_line fun(x0: number, x1: number, y: number, z?: integer)

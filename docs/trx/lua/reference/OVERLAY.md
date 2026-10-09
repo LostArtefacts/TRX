@@ -22,6 +22,7 @@ engine's own, and a script neither reads nor writes them.
 ### Properties
 
 - <a id="overlay.has_letterbox" name="overlay.has_letterbox"></a>**`trx.overlay.has_letterbox`** (boolean). Whether the cinematic bars take any of the screen. It stays true while they move, so a script can hold something back until they have gone. *(read-only)*
+- <a id="overlay.letterbox" name="overlay.letterbox"></a>**`trx.overlay.letterbox`** (number). How deep the cinematic bars are asked to be, as a fraction of the screen height each, from `0` to `0.5`. Setting it slides the bars there; `0` takes them away. Flyby cameras and cutscenes set it too, and the last request wins. [`trx.ui.working_area`](UI.md#ui.working_area) follows the bars as they move.
 - <a id="overlay.signals.letterbox" name="overlay.signals.letterbox"></a>**`trx.overlay.signals.letterbox`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when the cinematic bars take the screen and when they give it back. True while they are moving, so a script can hold something back until they have gone. *(read-only)*
 - <a id="overlay.signals.health_bar_forced" name="overlay.signals.health_bar_forced"></a>**`trx.overlay.signals.health_bar_forced`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when something asks for Lara's health bar whatever else is on screen, which the inventory ring does while it shows a medipack. *(read-only)*
 

@@ -59,6 +59,10 @@ typedef struct UI_NODE {
 int32_t UI_GetCanvasWidth(void);
 int32_t UI_GetCanvasHeight(void);
 
+// The canvas between the cinematic bars. It follows the bars as they move.
+float UI_GetWorkingCanvasTop(void);
+float UI_GetWorkingCanvasBottom(void);
+
 // The width a dialog may occupy: the canvas less the screen margin at either
 // edge. What sizes itself to fit the screen fits to this.
 float UI_GetSafeCanvasWidth(void);

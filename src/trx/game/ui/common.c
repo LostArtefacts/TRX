@@ -8,6 +8,7 @@
 #include <trx/debug.h>
 #include <trx/game/console/common.h>
 #include <trx/game/game_strings/entries.h>
+#include <trx/game/output/overlay.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/elements/anchor.h>
 #include <trx/game/ui/events.h>
@@ -275,6 +276,16 @@ int32_t UI_GetCanvasHeight(void)
 {
     return UI_Scaler_CalcInverse(
         Viewport_GetHeight(VIEWPORT_UI), UI_SCALER_TARGET_GENERIC);
+}
+
+float UI_GetWorkingCanvasTop(void)
+{
+    return UI_GetCanvasHeight() * Output_Overlay_GetLetterbox();
+}
+
+float UI_GetWorkingCanvasBottom(void)
+{
+    return UI_GetCanvasHeight() - UI_GetWorkingCanvasTop();
 }
 
 float UI_GetSafeCanvasWidth(void)

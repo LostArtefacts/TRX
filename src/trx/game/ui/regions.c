@@ -291,19 +291,21 @@ void UI_Region_Layout(void)
         m_CenterBox.h = 0.0f;
         return;
     }
+    const float top = UI_GetWorkingCanvasTop();
     m_Container->ops.layout(
-        m_Container, 0.0f, 0.0f, UI_GetCanvasWidth(), UI_GetCanvasHeight());
+        m_Container, 0.0f, top, UI_GetCanvasWidth(),
+        UI_GetWorkingCanvasBottom() - top);
 }
 
 void UI_Region_GetCenterBox(
     float *const x, float *const y, float *const w, float *const h)
 {
-    // Before the first layout, the middle box is the full canvas.
+    // Before the first layout, the middle box is the canvas between the bars.
     if (m_CenterBox.w <= 0.0f || m_CenterBox.h <= 0.0f) {
         *x = 0.0f;
-        *y = 0.0f;
+        *y = UI_GetWorkingCanvasTop();
         *w = UI_GetCanvasWidth();
-        *h = UI_GetCanvasHeight();
+        *h = UI_GetWorkingCanvasBottom() - *y;
         return;
     }
     *x = m_CenterBox.x;
