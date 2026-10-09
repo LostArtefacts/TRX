@@ -7,6 +7,10 @@
 
 #include <string.h>
 
+#define M_OVERLAP_BITS 0x3FFF
+#define M_BLOCKED 0x4000
+#define M_BLOCKABLE 0x8000
+
 RESULT Level_Section_ReadPathingData(
     LEVEL_CONTEXT *const ctx, TRX_FILE *const file)
 {
@@ -28,10 +32,16 @@ RESULT Level_Section_ReadPathingData(
             box->bottom = (File_ReadU8(file) << WALL_SHIFT) - 1;
         }
         box->height = File_ReadS16(file);
-        box->overlap_index = File_ReadS16(file);
-        if (loader->game_version >= 3
-            && (box->overlap_index & BOX_BLOCKABLE) != 0) {
+        const uint16_t overlap_index = File_ReadU16(file);
+        box->overlap_index = overlap_index & M_OVERLAP_BITS;
+        if ((overlap_index & M_BLOCKED) != 0) {
             box->overlap_index |= BOX_BLOCKED;
+        }
+        if ((overlap_index & M_BLOCKABLE) != 0) {
+            box->overlap_index |= BOX_BLOCKABLE;
+            if (loader->game_version >= 3) {
+                box->overlap_index |= BOX_BLOCKED;
+            }
         }
     }
 

@@ -418,6 +418,7 @@ common_sources = [
   'trx/game/inject/data/camera.c',
   'trx/game/inject/data/meshes.c',
   'trx/game/inject/data/objects.c',
+  'trx/game/inject/data/pathing.c',
   'trx/game/inject/data/sound.c',
   'trx/game/inject/data/symbols.c',
   'trx/game/inject/data/textures.c',

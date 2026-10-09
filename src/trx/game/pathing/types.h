@@ -8,7 +8,7 @@ typedef struct {
     int32_t top;
     int32_t bottom;
     int16_t height;
-    int16_t overlap_index;
+    uint32_t overlap_index;
 } BOX_INFO;
 
 typedef struct {
@@ -32,7 +32,7 @@ typedef struct {
     int16_t step;
     int16_t drop;
     int16_t fly;
-    uint16_t block_mask;
+    uint32_t block_mask;
     // TR4 marks the overlaps that take a jump or the monkey bars to cross,
     // and only a creature that can do either is pathed over them.
     bool can_jump;

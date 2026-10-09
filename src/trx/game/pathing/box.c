@@ -8,7 +8,6 @@
 #include <trx/game/rooms.h>
 #include <trx/version.h>
 
-#define BOX_OVERLAP_BITS 0x3FFF
 #define BOX_SEARCH_NUMBER 0x7FFF
 #define BOX_END_BIT 0x8000
 #define BOX_NUMBER_BITS 0x7FFF // = ~BOX_END_BIT

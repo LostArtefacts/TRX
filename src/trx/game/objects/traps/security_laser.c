@@ -29,7 +29,7 @@ static void M_LaserSplitterToggle(ITEM *const item)
     SECTOR *sector = Room_GetSector(item->pos, &room_num);
 
     const BOX_INFO *const box = Box_GetBox(sector->box);
-    if (box == nullptr || (box->overlap_index & BOX_BLOCKED_SEARCH) == 0) {
+    if (box == nullptr || (box->overlap_index & BOX_BLOCKABLE) == 0) {
         return;
     }
 
@@ -61,7 +61,7 @@ static void M_LaserSplitterToggle(ITEM *const item)
     while (sector->box != NO_BOX) {
         next_box = Box_GetBox(sector->box);
         if (next_box == nullptr
-            || (next_box->overlap_index & BOX_BLOCKED_SEARCH) == 0) {
+            || (next_box->overlap_index & BOX_BLOCKABLE) == 0) {
             break;
         }
 

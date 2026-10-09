@@ -349,6 +349,25 @@ unit_tests += {
   'args': ['-DPCRE2_CODE_UNIT_WIDTH=8', '-D_DEFAULT_SOURCE'],
 }
 
+# The pathing chunk widens the overlap index of the boxes the level loaded,
+# which are faked here.
+unit_tests += {
+  'name': 'trx/game/inject/data/pathing',
+  'engine': [
+    'core/result.c',
+    'core/file.c',
+    'core/filesystem.c',
+    'core/memory.c',
+    'core/strings/case_funcs.c',
+    'core/strings/common.c',
+    'core/vector.c',
+    'game/inject/data/pathing.c',
+  ],
+  'src': ['harness/stubs_result.c'],
+  'deps': [dep_pcre2],
+  'args': ['-DPCRE2_CODE_UNIT_WIDTH=8', '-D_DEFAULT_SOURCE'],
+}
+
 unit_tests += {
   'name': 'trx/core/file',
   'engine': [
