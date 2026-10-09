@@ -1,9 +1,11 @@
 #include <trx/game/input/backends/controller.h>
 
 #include <trx/core/log.h>
+#include <trx/core/utils.h>
 #include <trx/game/input/backends/internal.h>
 #include <trx/game/input/combo.h>
 #include <trx/game/input/names.h>
+#include <trx/version.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_gamecontroller.h>
@@ -85,28 +87,32 @@ typedef struct {
 } CONTROLLER_MAP;
 
 typedef struct {
-    INPUT_ROLE role;
-    CONTROLLER_MAP map;
-} BUILTIN_CONTROLLER_LAYOUT;
-
-typedef struct {
     int32_t key_count;
     CONTROLLER_MAP keys[INPUT_COMBO_MAX_KEYS];
 } CONTROLLER_BINDING;
 
 typedef struct {
+    INPUT_ROLE role;
+    CONTROLLER_BINDING bind;
+} BUILTIN_CONTROLLER_LAYOUT;
+
+typedef struct {
     CONTROLLER_BINDING slots[INPUT_BINDING_SLOTS];
 } CONTROLLER_ROLE_BINDING;
 
-static BUILTIN_CONTROLLER_LAYOUT m_BuiltinLayout[] = {
+static const BUILTIN_CONTROLLER_LAYOUT m_BuiltinLayoutBase[] = {
 #define INPUT_CONTROLLER_ASSIGN_BUTTON(role, bind)                             \
-    { role, { BT_BUTTON, { .button = bind }, 0 } },
+    { role, { 1, { { BT_BUTTON, { .button = bind }, 0 } } } },
 #define INPUT_CONTROLLER_ASSIGN_AXIS(role, bind, axis_dir)                     \
-    { role, { BT_AXIS, { .axis = bind }, axis_dir } },
+    { role, { 1, { { BT_AXIS, { .axis = bind }, axis_dir } } } },
+#define INPUT_CONTROLLER_UNASSIGNED(role) { role, { 0 } },
 #include <trx/game/input/backends/controller.def>
     // guard
-    { -1, { 0, { 0 }, 0 } },
+    { -1, {} },
 };
+
+static BUILTIN_CONTROLLER_LAYOUT
+    m_BuiltinLayout[ARRAY_SIZE(m_BuiltinLayoutBase)];
 
 static CONTROLLER_ROLE_BINDING m_Layout[INPUT_LAYOUT_NUMBER_OF]
                                        [INPUT_ROLE_NUMBER_OF];
@@ -503,8 +509,59 @@ static void M_Discover(void)
     m_Controller = M_FindController();
 }
 
+static BUILTIN_CONTROLLER_LAYOUT *M_GetBuiltInLayout(const INPUT_ROLE role)
+{
+    for (int32_t i = 0; m_BuiltinLayout[i].role != (INPUT_ROLE)-1; i++) {
+        BUILTIN_CONTROLLER_LAYOUT *const builtin = &m_BuiltinLayout[i];
+        if (builtin->role == role) {
+            return builtin;
+        }
+    }
+    return nullptr;
+}
+
+static void M_HandleBuiltInDefaults(void)
+{
+    const CONTROLLER_MAP r1 = {
+        .type = BT_BUTTON,
+        .bind.button = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER,
+    };
+    const CONTROLLER_MAP select = {
+        .type = BT_BUTTON,
+        .bind.button = SDL_CONTROLLER_BUTTON_BACK,
+    };
+    const CONTROLLER_MAP l2 = {
+        .type = BT_AXIS,
+        .bind.axis = SDL_CONTROLLER_AXIS_TRIGGERLEFT,
+        .axis_dir = 1,
+    };
+    const CONTROLLER_MAP r2 = {
+        .type = BT_AXIS,
+        .bind.axis = SDL_CONTROLLER_AXIS_TRIGGERRIGHT,
+        .axis_dir = 1,
+    };
+
+    if (g_TRVersion >= 2) {
+        M_GetBuiltInLayout(INPUT_ROLE_USE_FLARE)->bind =
+            (CONTROLLER_BINDING) { .key_count = 2, .keys = { r1, select } };
+    }
+    if (g_TRVersion >= 3) {
+        M_GetBuiltInLayout(INPUT_ROLE_SPRINT)->bind =
+            (CONTROLLER_BINDING) { .key_count = 1, .keys = { r2 } };
+        M_GetBuiltInLayout(INPUT_ROLE_CROUCH)->bind =
+            (CONTROLLER_BINDING) { .key_count = 1, .keys = { l2 } };
+        M_GetBuiltInLayout(INPUT_ROLE_STEP_LEFT)->bind =
+            (CONTROLLER_BINDING) { .key_count = 0 };
+        M_GetBuiltInLayout(INPUT_ROLE_STEP_RIGHT)->bind =
+            (CONTROLLER_BINDING) { .key_count = 0 };
+    }
+}
+
 static void M_Init(void)
 {
+    memcpy(m_BuiltinLayout, m_BuiltinLayoutBase, sizeof(m_BuiltinLayout));
+    M_HandleBuiltInDefaults();
+
     // first, reset all roles to unbound
     for (INPUT_ROLE role = 0; role < INPUT_ROLE_NUMBER_OF; role++) {
         for (int32_t slot = 0; slot < INPUT_BINDING_SLOTS; slot++) {
@@ -515,11 +572,7 @@ static void M_Init(void)
     // then load the defined default bindings into slot 0
     for (int32_t i = 0; m_BuiltinLayout[i].role != (INPUT_ROLE)-1; i++) {
         const BUILTIN_CONTROLLER_LAYOUT *const builtin = &m_BuiltinLayout[i];
-        m_Layout[INPUT_LAYOUT_DEFAULT][builtin->role].slots[0] =
-            (CONTROLLER_BINDING) {
-                .key_count = 1,
-                .keys = { builtin->map },
-            };
+        m_Layout[INPUT_LAYOUT_DEFAULT][builtin->role].slots[0] = builtin->bind;
     }
     M_CheckConflicts(INPUT_LAYOUT_DEFAULT);
 
