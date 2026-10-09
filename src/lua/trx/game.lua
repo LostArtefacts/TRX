@@ -110,9 +110,9 @@ M.LevelType = h.enum("game.LevelType", "GF_LEVEL_TYPE", LevelType)
 ---A level, as the game flow file declares it. Everything on it is read-only:
 ---a level is what the game flow says it is.
 ---@class (exact) trx.game.Level
----@trx.readonly key, lara_outfit, music_track, num, path, script_path, title,
----  type, unobtainable_ally_kills, unobtainable_kills, unobtainable_pickups,
----  unobtainable_secrets, water_particles
+---@trx.readonly is_completed, key, lara_outfit, music_track, num, path,
+---  script_path, title, type, unobtainable_ally_kills, unobtainable_kills,
+---  unobtainable_pickups, unobtainable_secrets, water_particles
 ---@field num trx.game.LevelNum
 ---@field key string? What the level is called, taken from the name of the file it loads: `wall.tr2` reads back as `wall`. Lower case, regardless of the case on disk, and `nil` for a level that loads no file of its own. <!--noref: wall.tr2, wall-->
 ---
@@ -127,6 +127,7 @@ M.LevelType = h.enum("game.LevelType", "GF_LEVEL_TYPE", LevelType)
 ---@field lara_outfit string The outfit Lara starts the level in.
 ---@field music_track trx.catalog.music The track that plays when the level starts.
 ---@field water_particles boolean Whether water particles are visible in the level's water.
+---@field is_completed boolean Whether the player has finished the level in the game being played. The statistics screen counts these to say how far into the game a level is.
 ---@field unobtainable_pickups integer Pickups the stats screen must not hold against the player, because they cannot be got.
 ---@field unobtainable_kills integer Kills the stats screen must not hold against the player.
 ---@field unobtainable_ally_kills integer Ally kills the stats screen must not hold against the player.
@@ -144,6 +145,7 @@ local Level = h.handle("game.Level", "GF_LEVEL", {
     lara_outfit = "lara_outfit",
     music_track = "music_track",
     water_particles = "water_particles",
+    is_completed = "is_completed",
     unobtainable_pickups = "unobtainable.pickups",
     unobtainable_kills = "unobtainable.kills",
     unobtainable_ally_kills = "unobtainable.ally_kills",

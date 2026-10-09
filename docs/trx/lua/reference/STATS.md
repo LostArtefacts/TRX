@@ -88,6 +88,7 @@ everything here reads `nil`.
         Each entry:
         - <a id="stats.Stats.secret_list.num" name="stats.Stats.secret_list.num"></a>**`num`** ([trx.stats.SecretNum](#stats.SecretNum)). Which secret it is.
         - <a id="stats.Stats.secret_list.found" name="stats.Stats.secret_list.found"></a>**`found`** (boolean). Whether Lara has it.
+        - <a id="stats.Stats.secret_list.icon" name="stats.Stats.secret_list.icon"></a>**`icon`** (integer, optional). Which secret glyph draws it, as `\\{secret N}` names one, or `nil` for a secret that is a place to reach rather than an item to pick up.
 
     - <a id="stats.Stats.take_secret" name="stats.Stats.take_secret"></a>[lua]`stats:take_secret(secret_num)`  
       Takes a secret back, leaving it to be found again.
@@ -108,6 +109,7 @@ everything here reads `nil`.
     Each entry:
     - <a id="stats.secret_list.num" name="stats.secret_list.num"></a>**`num`** ([trx.stats.SecretNum](#stats.SecretNum)). Which secret it is.
     - <a id="stats.secret_list.found" name="stats.secret_list.found"></a>**`found`** (boolean). Whether Lara has it.
+    - <a id="stats.secret_list.icon" name="stats.secret_list.icon"></a>**`icon`** (integer, optional). Which secret glyph draws it, as `\\{secret N}` names one, or `nil` for a secret that is a place to reach rather than an item to pick up.
 
   Example:
   ```lua

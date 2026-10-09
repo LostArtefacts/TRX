@@ -111,6 +111,31 @@ end
 ---@type fun(subject: string, pattern: string): boolean
 M.regex_match = raw.regex_match
 
+---Turns text to capitals the way the game's own screens do. Unlike
+---`string.upper`, this knows the letters beyond ASCII that the game's font
+---draws, and leaves a `\\{...}` glyph name as it is.
+---<!--noref: string.upper-->
+---
+---```lua
+---trx.strings.upper("Żółw \\{secret 1}") -- "ŻÓŁW \\{secret 1}"
+---```
+---@param text string The text to turn to capitals.
+---@return string # The text in capitals.
+---@type fun(text: string): string
+M.upper = raw.upper
+
+---Turns text to small letters, the counterpart of `trx.strings.upper`. It
+---knows the same letters beyond ASCII, and leaves a `\\{...}` glyph name as it
+---is.
+---
+---```lua
+---trx.strings.lower("ŻÓŁW") -- "żółw"
+---```
+---@param text string The text to turn to small letters.
+---@return string # The text in small letters.
+---@type fun(text: string): string
+M.lower = raw.lower
+
 ---Spells a name the way the console shows one: lower case, with underscores
 ---read as dashes. This is how an enum constant is offered for completion, and a
 ---catalog name resolves in either spelling.

@@ -75,6 +75,14 @@ const GYM_TRACK_STATS *Gym_TrackManager_GetStats(const GYM_TRACK_TYPE track)
     return Gym_TrackManager_GetMutableStats(track);
 }
 
+void Gym_TrackManager_ClearStats(const GYM_TRACK_TYPE track)
+{
+    GYM_TRACK_STATS *const stats = Gym_TrackManager_GetMutableStats(track);
+    if (stats != nullptr) {
+        *stats = (GYM_TRACK_STATS) {};
+    }
+}
+
 int32_t Gym_TrackManager_GetPenaltyFrames(const GYM_TRACK_TYPE track)
 {
     return M_GetTiming(track, FAKE_ASSAULT_TIMING_PENALTY);

@@ -158,4 +158,18 @@ test("dedent leaves a block that shares no indent alone", function()
   assert(trx.strings.dedent("\n\n  Padded.\n\n") == "Padded.")
 end)
 
+test("upper turns letters beyond ASCII to capitals", function()
+  assert(trx.strings.upper("Żółw") == "ŻÓŁW")
+  assert(trx.strings.upper("time taken") == "TIME TAKEN")
+end)
+
+test("upper leaves a glyph name as it is", function()
+  assert(trx.strings.upper("a \\{secret 1}") == "A \\{secret 1}")
+end)
+
+test("lower turns capitals beyond ASCII to small letters", function()
+  assert(trx.strings.lower("ŻÓŁW") == "żółw")
+  assert(trx.strings.lower("A \\{SECRET 1}") == "a \\{SECRET 1}")
+end)
+
 return h.report()

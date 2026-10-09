@@ -43,6 +43,13 @@ static bool M_GetOrdinal(const void *const self, TRX_VALUE *const out)
     return true;
 }
 
+static bool M_GetIsCompleted(const void *const self, TRX_VALUE *const out)
+{
+    const RESUME_INFO *const resume = SG_Resume_GetEntry(self);
+    *out = Value_Make_TVT_BOOL(resume != nullptr && resume->level_completed);
+    return true;
+}
+
 // clang-format off
 static const FIELD_DESC m_Fields[] = {
     FIELD_FN("num", TVT_S32, M_GetOrdinal, nullptr),
@@ -54,6 +61,7 @@ static const FIELD_DESC m_Fields[] = {
     FIELD_RO(GF_LEVEL, lara_outfit),
     FIELD_RO(GF_LEVEL, music_track),
     FIELD_RO(GF_LEVEL, water_particles),
+    FIELD_FN("is_completed", TVT_BOOL, M_GetIsCompleted, nullptr),
 
     // what the stats screen must not count against the player
     FIELD_RO(GF_LEVEL, unobtainable.pickups),

@@ -134,6 +134,7 @@ played.
     unrelated one.
 
     Properties:
+    - <a id="game.Level.is_completed" name="game.Level.is_completed"></a>**`is_completed`**: boolean. Whether the player has finished the level in the game being played. The statistics screen counts these to say how far into the game a level is. *(read-only)*
     - <a id="game.Level.key" name="game.Level.key"></a>**`key`**: string. What the level is called, taken from the name of the file it loads: `wall.tr2` reads back as `wall`. Lower case, regardless of the case on disk, and `nil` for a level that loads no file of its own.
       This is the name to write into a table of per-level data.
       [`num`](#game.Level.num) is a position and moves as soon as a game flow gains

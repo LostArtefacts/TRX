@@ -163,6 +163,17 @@ M.stats.add_record = raw.stats.record
 ---@type fun(record_num: trx.assault.RecordNum, track?: trx.assault.Track): boolean
 M.stats.remove_record = raw.stats.remove
 
+---Removes every record, and starts the attempts over from the first, as the
+---stats screen's reset button does.
+---
+---```lua
+---trx.assault.stats.clear(trx.assault.Track.QUAD)
+---```
+---@param track? trx.assault.Track
+---@trx.default track trx.assault.Track.COURSE
+---@type fun(track?: trx.assault.Track)
+M.stats.clear = raw.stats.clear
+
 ---The records, fastest first.
 ---
 ---```lua

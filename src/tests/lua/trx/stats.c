@@ -33,6 +33,15 @@ static int M_FakeSetFound(lua_State *const L)
     return 0;
 }
 
+// fake.set_secret_object(num, object) - the item that holds a secret, which
+// names the glyph that draws it.
+static int M_FakeSetSecretObject(lua_State *const L)
+{
+    FakeStats_SetSecretObject(
+        (int32_t)luaL_checkinteger(L, 1), (OBJECT_ID)luaL_checkinteger(L, 2));
+    return 0;
+}
+
 static int M_FakeSetMaxSecretCount(lua_State *const L)
 {
     FakeStats_SetMaxSecretCount((int32_t)luaL_checkinteger(L, 1));
@@ -89,6 +98,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "set_secrets");
     lua_pushcfunction(L, M_FakeSetFound);
     lua_setfield(L, -2, "set_found");
+    lua_pushcfunction(L, M_FakeSetSecretObject);
+    lua_setfield(L, -2, "set_secret_object");
     lua_pushcfunction(L, M_FakeSetMaxSecretCount);
     lua_setfield(L, -2, "set_max_secret_count");
     lua_pushcfunction(L, M_FakeSetCount);

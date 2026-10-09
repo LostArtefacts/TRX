@@ -4,6 +4,7 @@
 
 #include <trx/game/game/state.h>
 #include <trx/game/game_flow.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/stats.h>
 
 // One entry per level, addressed by the level's place in its table, which is
@@ -60,6 +61,9 @@ static void M_Reset(void)
     for (int32_t i = 0; i < M_LEVEL_SLOTS; i++) {
         m_Stats[i] = (LEVEL_STATS) {};
         m_MaxStats[i] = (LEVEL_MAX_STATS) {};
+        for (int32_t j = 0; j < STATS_MAX_SECRETS; j++) {
+            m_MaxStats[i].secret_objects[j].assigned_object_id = NO_OBJECT;
+        }
         m_AlliesHurt[i] = false;
     }
 }
@@ -176,6 +180,33 @@ void FakeStats_SetSecrets(const int32_t *const nums, const int32_t count)
         max_stats->all_secrets_mask |= 1 << (nums[i] - 1);
     }
     max_stats->maxes[STATS_CAT_SECRETS] = count;
+}
+
+void FakeStats_SetSecretObject(const int32_t num, const OBJECT_ID object_id)
+{
+    LEVEL_MAX_STATS *const max_stats =
+        Stats_GetLevelMaxStats(Game_GetCurrentLevel());
+    max_stats->secret_objects[num - 1].assigned_object_id = object_id;
+}
+
+OBJECT_ID Stats_GetSecretObject(
+    const GF_LEVEL *const level, const int32_t secret_idx)
+{
+    if (secret_idx < 0 || secret_idx >= STATS_MAX_SECRETS
+        || !Stats_HasLevelMaxStats(level)) {
+        return NO_OBJECT;
+    }
+    return Stats_GetLevelMaxStats(level)
+        ->secret_objects[secret_idx]
+        .assigned_object_id;
+}
+
+// A secret's glyph is numbered by its object here, so that a test can say
+// which glyph it expects without standing up the families.
+int32_t ObjectFamily_GetIndex(
+    const OBJECT_ID object_id, const OBJECT_FAMILY family)
+{
+    return object_id;
 }
 
 void FakeStats_SetFound(const int32_t num, const bool found)

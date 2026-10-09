@@ -107,6 +107,36 @@ player gets.
   if trx.strings.regex_match(args, "^\\d+$") then ... end
   ```
 
+- <a id="strings.upper" name="strings.upper"></a>[lua]`trx.strings.upper(text)`  
+  Turns text to capitals the way the game's own screens do. Unlike
+  `string.upper`, this knows the letters beyond ASCII that the game's font
+  draws, and leaves a `\\{...}` glyph name as it is.
+
+  Parameters:
+  - <a id="strings.upper.text" name="strings.upper.text"></a>**`text`** (string). The text to turn to capitals.
+
+  Returns: string. The text in capitals.
+
+  Example:
+  ```lua
+  trx.strings.upper("Żółw \\{secret 1}") -- "ŻÓŁW \\{secret 1}"
+  ```
+
+- <a id="strings.lower" name="strings.lower"></a>[lua]`trx.strings.lower(text)`  
+  Turns text to small letters, the counterpart of [`trx.strings.upper`](#strings.upper). It
+  knows the same letters beyond ASCII, and leaves a `\\{...}` glyph name as it
+  is.
+
+  Parameters:
+  - <a id="strings.lower.text" name="strings.lower.text"></a>**`text`** (string). The text to turn to small letters.
+
+  Returns: string. The text in small letters.
+
+  Example:
+  ```lua
+  trx.strings.lower("ŻÓŁW") -- "żółw"
+  ```
+
 - <a id="strings.dash_case" name="strings.dash_case"></a>[lua]`trx.strings.dash_case(text)`  
   Spells a name the way the console shows one: lower case, with underscores
   read as dashes. This is how an enum constant is offered for completion, and a
