@@ -41,6 +41,7 @@ arrow, and `\{button left}` draws the button the player has bound.
   A script-drawn text field uses this value to paste and copy text.
 - <a id="ui.text_scale" name="ui.text_scale"></a>**`trx.ui.text_scale`** (number). The scale applied to text and its boxes. The value depends on the player's text size and the screen. It is not the `ui.text_scale` setting alone. *(read-only)*
 - <a id="ui.safe_area" name="ui.safe_area"></a>**`trx.ui.safe_area`** ([trx.ui.Area](#ui.Area)). The part of the canvas that is free to draw in: the canvas, less the margin kept at the edges, less what the game reserves at the top and the bottom for the bars and the text it puts there. *(read-only)*
+- <a id="ui.working_area" name="ui.working_area"></a>**`trx.ui.working_area`** ([trx.ui.Area](#ui.Area)). The part of the canvas between the cinematic bars. It is the whole canvas while there are none, and follows the bars as they move in and out. The interface regions lay out inside it, so [`trx.ui.safe_area`](#ui.safe_area) lies within it too. *(read-only)*
 
 ### Enums
 

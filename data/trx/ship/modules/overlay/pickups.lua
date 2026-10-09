@@ -40,6 +40,8 @@ end
 -- Returns the cell position and progress in canvas units.
 local function box_of(entry)
   local canvas = trx.ui.canvas
+  local working = trx.ui.working_area
+  local bottom = working.y + working.height
   local height = canvas.height * trx.config.get("ui.pickup_scale") / 6
   local width = height * 5 / 4
   local margin_y = canvas.height / 16
@@ -48,15 +50,12 @@ local function box_of(entry)
   local gap_y = height / 8
 
   local from_x = canvas.width + margin_x + width
-  local from_y = canvas.height - margin_y - height / 2
+  local from_y = bottom - margin_y - height / 2
   local to_x = canvas.width
     - margin_x
     - width / 2
     - (width + gap_x) * entry.column
-  local to_y = canvas.height
-    - margin_y
-    - height / 2
-    - (height + gap_y) * entry.row
+  local to_y = bottom - margin_y - height / 2 - (height + gap_y) * entry.row
 
   local x = from_x + (to_x - from_x) * entry.ease
   local y = from_y + (to_y - from_y) * entry.ease

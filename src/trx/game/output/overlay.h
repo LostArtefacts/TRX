@@ -40,6 +40,8 @@ void Output_Overlay_SetLetterbox(float ratio);
 void Output_Overlay_SlideLetterbox(float ratio);
 void Output_Overlay_UpdateLetterbox(void);
 float Output_Overlay_GetLetterbox(void);
+// The depth the bars are moving to, or hold once they get there.
+float Output_Overlay_GetLetterboxTarget(void);
 // Whether the bars take any of the screen.
 bool Output_Overlay_HasLetterbox(void);
 void Output_Overlay_DrawLetterbox(void);

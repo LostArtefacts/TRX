@@ -97,6 +97,20 @@ static int M_L_UISafeWidth(lua_State *const L)
     return 1;
 }
 
+// trxc.ui.get_working_top(): number
+static int M_L_UIWorkingTop(lua_State *const L)
+{
+    lua_pushnumber(L, UI_GetWorkingCanvasTop());
+    return 1;
+}
+
+// trxc.ui.get_working_bottom(): number
+static int M_L_UIWorkingBottom(lua_State *const L)
+{
+    lua_pushnumber(L, UI_GetWorkingCanvasBottom());
+    return 1;
+}
+
 // trxc.ui.get_safe_top(): number
 static int M_L_UISafeTop(lua_State *const L)
 {
@@ -699,6 +713,8 @@ static const luaL_Reg m_Module[] = {
     { "set_clipboard", M_L_UISetClipboard },
     { "get_safe_bottom", M_L_UISafeBottom },
     { "get_safe_top", M_L_UISafeTop },
+    { "get_working_bottom", M_L_UIWorkingBottom },
+    { "get_working_top", M_L_UIWorkingTop },
     { "get_safe_width", M_L_UISafeWidth },
     { "bar_theme", M_L_UIBarTheme },
     { "bar_scale", M_L_UIBarScale },

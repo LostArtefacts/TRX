@@ -22,6 +22,7 @@
 - Changed the loading screens in TR1–3 to stay on screen for two seconds in every game (TRX1591)
 - Changed the look button to skip loading screens, pictures, FMVs, and stats screens, like it does for cutscenes (TRX1541)
 - Changed the pause screen during FMVs to use the chosen pause background style (TRX1617)
+- Changed the interface and the pickups in the corner to move in with the cinematic bars, so the bars no longer cover them (TRX1426)
 - Fixed items without a sprite, such as the scion, not showing in the pickups overlay when 3D pickups are off
 - Fixed the FPS counter briefly showing an incorrect value after switching mods (TRX1631)
 - Fixed the game not fading to black when it was exited during an FMV (TRX1616)
@@ -128,6 +129,8 @@
 
 **Lua**
 - Added `trx.game.set_bonus_check`, which lets a script decide whether a bonus level opens before it starts to load (#6811 / TRX1704)
+- Added `trx.overlay.letterbox`, which sets how deep the cinematic bars are (TRX1426)
+- Added `trx.ui.working_area`, the part of the canvas between the cinematic bars (TRX1426)
 - Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)
 - Added `trx.math.degrees()`, which converts an angle from degrees to the engine's units
 - Added `scale`, `y_offset`, `base_rot_x`, `base_rot_y`, `base_rot_z`, and `draws_at_pivot` to inventory ring entries. Scripts can use these fields to set an object's size and pose.

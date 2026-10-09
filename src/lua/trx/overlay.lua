@@ -16,6 +16,7 @@ local h = require("trx.internal.helpers")
 ---@class (exact) trx.overlay
 ---@trx.readonly has_letterbox
 ---@field has_letterbox boolean Whether the cinematic bars take any of the screen. It stays true while they move, so a script can hold something back until they have gone.
+---@field letterbox number How deep the cinematic bars are asked to be, as a fraction of the screen height each, from `0` to `0.5`. Setting it slides the bars there; `0` takes them away. Flyby cameras and cutscenes set it too, and the last request wins. `trx.ui.working_area` follows the bars as they move.
 local M = h.module("overlay")
 
 ---What the overlay tells a script, for the parts of it a script draws.
@@ -70,6 +71,10 @@ M.show_arrow = raw.show_arrow
 h.properties(M, "overlay", {
   has_letterbox = {
     get = raw.has_letterbox,
+  },
+  letterbox = {
+    get = raw.get_letterbox,
+    set = raw.set_letterbox,
   },
 })
 

@@ -1,6 +1,7 @@
 // Runs the shipped overlay module against a real scene and recorded draw calls.
 
 #include <fakes/game.h>
+#include <fakes/overlay.h>
 #include <fakes/sprites.h>
 #include <fakes/ui_draw.h>
 #include <harness/lua_surface.h>
@@ -122,6 +123,14 @@ static int M_FakeDrawRegions(lua_State *const L)
     return 2;
 }
 
+// fake.letterbox(depth) - where the cinematic bars are, as a fraction of the
+// screen height each.
+static int M_FakeLetterbox(lua_State *const L)
+{
+    FakeOverlay_SetLetterbox((float)luaL_checknumber(L, 1));
+    return 0;
+}
+
 static void M_Setup(lua_State *const L)
 {
     Config_RegisterBuiltInOptions();
@@ -144,6 +153,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "render");
     lua_pushcfunction(L, M_FakePaint);
     lua_setfield(L, -2, "paint");
+    lua_pushcfunction(L, M_FakeLetterbox);
+    lua_setfield(L, -2, "letterbox");
 }
 
 CONFIG g_ConfigStorage = {};
