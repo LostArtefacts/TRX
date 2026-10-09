@@ -132,13 +132,17 @@
 - Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)
 - Added `trx.math.degrees()`, which converts an angle from degrees to the engine's units
 - Added `scale`, `y_offset`, `base_rot_x`, `base_rot_y`, `base_rot_z`, and `draws_at_pivot` to inventory ring entries. Scripts can use these fields to set an object's size and pose.
-- Added `rot_x` and `rot_z` to `trx.ui.MeshSlot` for tilting and rolling models on the canvas
+- Added script support for keeping a model on screen across ticks
+    - `trx.ui.mesh_slot` and `trx.ui.MeshSlot`, with `rot_x` and `rot_z` for tilting and rolling models on the canvas
+    - `trx.ui.primitive.mesh_bounds`
 - Added `trx.fx.gun_flash()`, so a script can draw a muzzle flash on any item (TRX89)
-- Added `trx.fx.spark.context`, so a script can determine how a spark was spawned before deciding to alter it (TRX1590)
+- Added `trx.fx.Spark.context` and `trx.fx.SparkContext`, so a script can determine how a spark was spawned before deciding to alter it (TRX1590)
 - Added `trx.items.Item.joint_count` and `trx.items.Item:joint_pos()` (TRX89)
+- Added `trx.items.EarthquakeMode`, the values that an earthquake's `mode` property takes
 - Added `trx.objects.Object:set_hit_effect()`, so a script can decide whether a bullet hit spawns blood, a ricochet, smoke or nothing (`trx.items.HitEffect`) (TRX1676)
 - Added `trx.game.cutscene_frame`, which reports the frame a cutscene level is playing (TRX89)
 - Added `trx.overlay.show_pickup()`, which shows an object in the corner of the screen as the game does for a pickup
+- Added `trx.events.on_show_pickup`, which happens when the game announces an object in the corner of the screen
 - Added the ability for a script to draw outlines in the world the camera is looking at
     - `trx.events.on_scene_paint`
     - `trx.scene.box`
@@ -187,13 +191,21 @@
     - `trx.input.axis`
     - `trx.input.is_axis_known`
 - Added script text input, clipboard access, and input grabbing
+    - `trx.events.on_text_input`
+    - `trx.ui.clipboard`
+    - `trx.input.grab`, `trx.input.Grab` and `trx.input.is_grabbed`
 - Added console events, history access, and script-controlled console visibility
+    - `trx.events.on_console_open`, `trx.events.on_console_close`, `trx.events.on_console_clear` and `trx.events.on_console_log`
+    - `trx.console.history` and `trx.console.remember`
+    - `trx.console.is_open`
 - Added a UI layer above the game interface
+    - `trx.ui.Layer` and the `layer` setting of `trx.ui.regions.place`
 - Added `trx.ui.widgets.Custom`, a widget that measures and draws itself through script functions
 - Added script support for stacking screens, such as a menu with a question over it
     - `trx.ui.layers.push`
     - `trx.ui.layers.top`
     - `trx.ui.layers.count`
+    - `trx.ui.StackLayer` and `trx.ui.LayerKeys`
 - Added `trx.ui.widgets.List`, a column of rows that the player picks one entry from
 - Added `trx.ui.widgets.SleekBar`, the thin progress bar the game draws under a button that the player holds
 - Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the question the pause screen asks, and the quick save and load screens
