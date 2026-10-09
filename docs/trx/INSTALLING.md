@@ -1104,6 +1104,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   ├── reunion_flames.bin
 │   │   │   ├── reunion_textures.bin
 │   │   │   ├── scotland_crystals.bin
+│   │   │   ├── scotland_fd.bin
 │   │   │   ├── scotland_sky.bin
 │   │   │   ├── scotland_textures.bin
 │   │   │   ├── sparks_gfx.bin
@@ -1281,6 +1282,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── scripts
 │   │   │   ├── _game.lua
 │   │   │   ├── chunnel.lua
+│   │   │   ├── scotland.lua
 │   │   │   ├── slinc.lua
 │   │   │   ├── undersea.lua
 │   │   │   └── zoo.lua
@@ -2539,6 +2541,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   ├── reunion_flames.bin
     │   │   │   │   ├── reunion_textures.bin
     │   │   │   │   ├── scotland_crystals.bin
+    │   │   │   │   ├── scotland_fd.bin
     │   │   │   │   ├── scotland_sky.bin
     │   │   │   │   ├── scotland_textures.bin
     │   │   │   │   ├── sparks_gfx.bin
@@ -2716,6 +2719,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── scripts
     │   │   │   │   ├── _game.lua
     │   │   │   │   ├── chunnel.lua
+    │   │   │   │   ├── scotland.lua
     │   │   │   │   ├── slinc.lua
     │   │   │   │   ├── undersea.lua
     │   │   │   │   └── zoo.lua

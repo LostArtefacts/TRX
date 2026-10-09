@@ -71,6 +71,12 @@ order: 3
 
    The handlers take the same arguments and return the same listeners.
 
+9. **Fire heads no longer require a timer**
+   OG TR3 used a fire head's timer value from its trigger to control how long it
+   blew fire for before resetting and looping. This is now a property on the
+   object and so the trigger timer returns to having normal effect. Update any
+   triggers as required and set the fire head's `blow_time` property value.
+
 ### Version 1.10 to 1.11
 
 1. **The waterfall mist object was renamed**

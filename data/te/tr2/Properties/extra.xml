@@ -147,6 +147,10 @@
     <moveable id="-1">
         <property category="TRX" defaultValue="300" description="Damage dealt while Lara is touching the falling ceiling." displayName="Damage" internalName="damage" minValue="0" type="Int" />
     </moveable>
+    <!--placeholder for O_FIRE_HEAD-->
+    <moveable id="-1">
+        <property category="TRX" defaultValue="2.33" description="The number of seconds the firehead blows flames for before resetting its animation and starting again." displayName="Blow Time" internalName="blow_time" minValue="0" type="Float" />
+    </moveable>
     <!--placeholder for O_FISH_MUTANT-->
     <moveable id="-1">
         <property category="TRX" defaultValue="12" description="Maximum hit points." displayName="Max Hit Points" internalName="max_hit_points" minValue="0" type="Int" />
