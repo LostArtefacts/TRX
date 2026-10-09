@@ -182,14 +182,6 @@ static void M_LoadCatalogLine(
     char *const id_str = CSV_Trim(id_buf);
     char *const path_str = CSV_Trim(path_buf);
 
-    p = CSV_SkipWhitespace(p);
-    if (*p != '\0') {
-        LOG_WARNING(
-            "Invalid music file catalog row %s:%d", data->catalog_path,
-            line_num);
-        return;
-    }
-
     int32_t track_id = -1;
     if (!M_ParseCatalogTrackID(id_str, &track_id) || path_str[0] == '\0') {
         LOG_WARNING(
@@ -214,6 +206,17 @@ static void M_LoadCatalogLine(
     }
 
     char *resolved_path = M_GetCatalogFilePath(catalog_dir, path_str);
+    p = CSV_SkipWhitespace(p);
+    while (*p != '\0') {
+        char alt_buf[512];
+        CSV_ParseField(&p, alt_buf, sizeof(alt_buf));
+        char *const alt_str = CSV_Trim(alt_buf);
+        if (resolved_path == nullptr && alt_str[0] != '\0') {
+            resolved_path = M_GetCatalogFilePath(catalog_dir, alt_str);
+        }
+        p = CSV_SkipWhitespace(p);
+    }
+
     if (resolved_path == nullptr) {
         LOG_WARNING(
             "Music file catalog row %s:%d points to missing file: %s",
