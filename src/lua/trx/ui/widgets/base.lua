@@ -18,6 +18,14 @@ local ui = trx.ui
 -- group after the engine's own UI for that region.
 -------------------------------------------------------------------------------
 
+-- The engine lays its own widgets out in single precision. A box that lands on
+-- half a pixel rounds one way or the other depending on the precision it was
+-- worked out in, so the layout here rounds every step the same way to land
+-- where the engine would.
+local function f32(value)
+  return (string.unpack("<f", string.pack("<f", value)))
+end
+
 local function value_of(value)
   if type(value) == "table" and value.get ~= nil then
     return value:get()
@@ -177,6 +185,7 @@ ui.widgets = h.namespace("ui.widgets")
 
 return {
   W = Widget,
+  f32 = f32,
   value_of = value_of,
   new_widget = new_widget,
   text_scale = text_scale,
