@@ -9,7 +9,7 @@
 8,audio/043_action_part_v.wav
 9,audio/030_voncroy30.wav
 10,audio/012_voncroy11b.wav
-11,audio/011_voncroy11a.wav
+11,audio/011_voncroy11a.wav,audio/011_vobcroy11a.wav
 12,audio/063_misc_inc_01.wav
 13,audio/014_voncroy13b.wav
 14,audio/111_charmer.wav
@@ -27,7 +27,7 @@
 26,audio/027_voncroy27.wav
 27,audio/053_general_part_i.wav
 28,audio/022_voncroy22b.wav
-29,audio/028_voncroy28_l11.wav
+29,audio/028_voncroy28_l11.wav,audio/028_voncroy_l11.wav
 30,audio/003_voncroy4.wav
 31,audio/001_voncroy2.wav
 32,audio/041_action_part_iii.wav
