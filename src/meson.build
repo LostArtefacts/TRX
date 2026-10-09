@@ -991,7 +991,6 @@ common_sources = [
   'trx/game/ui/dialogs/settings_rows.c',
   'trx/game/ui/dialogs/settings_tabs.c',
   'trx/game/ui/dialogs/sound_settings.c',
-  'trx/game/ui/dialogs/stats.c',
   'trx/game/ui/dialogs/takeover.c',
   'trx/game/ui/dialogs/text.c',
   'trx/game/ui/draw.c',

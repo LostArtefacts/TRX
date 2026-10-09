@@ -11,7 +11,6 @@
 #include <trx/game/option/globe_select.h>
 #include <trx/game/option/graphics.h>
 #include <trx/game/option/sound.h>
-#include <trx/game/option/stats.h>
 #include <trx/version.h>
 
 static void M_Shutdown(void)
@@ -40,10 +39,6 @@ void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
     }
 
     switch (inv_item->object_id) {
-    case O_COMPASS_OPTION:
-    case O_STOPWATCH_OPTION:
-        Option_Stats_Control(inv_item, is_busy);
-        break;
     case O_PDA_OPTION:
         Option_Gameplay_Control(inv_item, is_busy);
         break;
@@ -119,10 +114,6 @@ void Option_Draw(INVENTORY_ITEM *const inv_item)
     }
 
     switch (inv_item->object_id) {
-    case O_COMPASS_OPTION:
-    case O_STOPWATCH_OPTION:
-        Option_Stats_Draw();
-        break;
     case O_PDA_OPTION:
         Option_Gameplay_Draw(inv_item);
         break;
@@ -151,10 +142,6 @@ void Option_Close(const INVENTORY_ITEM *const inv_item)
     }
 
     switch (inv_item->object_id) {
-    case O_COMPASS_OPTION:
-    case O_STOPWATCH_OPTION:
-        Option_Stats_Close();
-        break;
     case O_PDA_OPTION:
         Option_Gameplay_Close();
         break;

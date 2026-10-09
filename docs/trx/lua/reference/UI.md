@@ -171,6 +171,8 @@ arrow, and `\{button left}` draws the button the player has bound.
         The question that the pause screen asks when the player presses the inventory key: whether to leave for the title screen.
     - `trx.ui.Screen.SAVE_LOAD`  
         The quick save or load screen. The save and load keys open it when the instant screen setting is on. The context reports whether it opened for saving or loading as [`trx.ui.ScreenContext.mode`](#ui.ScreenContext.mode).
+    - `trx.ui.Screen.STATS`  
+        The statistics that the game shows when a level ends, and the totals it shows when the game ends. The context reports the level as [`trx.ui.ScreenContext.level`](#ui.ScreenContext.level), the totals as [`trx.ui.ScreenContext.is_final`](#ui.ScreenContext.is_final), and the player's choice of the bare look as [`trx.ui.ScreenContext.is_bare`](#ui.ScreenContext.is_bare). The player skips the screen as they would the engine's, and the screen also ends with [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel) or [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm).
 
 ### Structures
 
@@ -296,7 +298,10 @@ arrow, and `\{button left}` draws the button the player has bound.
     A screen that a script holds, which the definition receives.
 
     Properties:
+    - <a id="ui.ScreenContext.is_bare" name="ui.ScreenContext.is_bare"></a>**`is_bare`**: boolean. Whether the screen is drawn bare, as plain lines of text without a frame, for [`trx.ui.Screen.STATS`](#ui.Screen). *(read-only)*
+    - <a id="ui.ScreenContext.is_final" name="ui.ScreenContext.is_final"></a>**`is_final`**: boolean. Whether the screen shows the totals for the whole game rather than one level, for [`trx.ui.Screen.STATS`](#ui.Screen). *(read-only)*
     - <a id="ui.ScreenContext.is_held" name="ui.ScreenContext.is_held"></a>**`is_held`**: boolean. Whether the script still holds the screen. *(read-only)*
+    - <a id="ui.ScreenContext.level" name="ui.ScreenContext.level"></a>**`level`**: [trx.game.Level](GAME.md#game.Level). The level whose statistics the screen shows, for [`trx.ui.Screen.STATS`](#ui.Screen). The totals name the level that ended the game. *(read-only)*
     - <a id="ui.ScreenContext.mode" name="ui.ScreenContext.mode"></a>**`mode`**: [trx.inventory_ring.Mode](INVENTORY_RING.md#inventory_ring.Mode). What the quick save or load screen opened for, for [`trx.ui.Screen.SAVE_LOAD`](#ui.Screen). *(read-only)*
     - <a id="ui.ScreenContext.object" name="ui.ScreenContext.object"></a>**`object`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The ring entry that the player uses, for [`trx.ui.Screen.RING_ENTRY`](#ui.Screen). *(read-only)*
     - <a id="ui.ScreenContext.screen" name="ui.ScreenContext.screen"></a>**`screen`**: [trx.ui.Screen](#ui.Screen). The screen. *(read-only)*
@@ -305,15 +310,17 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     - <a id="ui.ScreenContext.cancel" name="ui.ScreenContext.cancel"></a>[lua]`screencontext:cancel()`  
       Ends the screen, and closes its layers. A ring entry is put away, the pause
-      screen stays paused and drops its question, and the quick save or load
-      screen closes. Does nothing if the screen has already ended.
+      screen stays paused and drops its question, the quick save or load screen
+      closes, and the statistics screen ends as the player skipping it does. Does
+      nothing if the screen has already ended.
 
       Returns: boolean. Whether the screen was still held.
 
     - <a id="ui.ScreenContext.confirm" name="ui.ScreenContext.confirm"></a>[lua]`screencontext:confirm()`  
       Ends the screen as a choice that the player made, and closes its layers. A
-      ring entry leaves the ring, as an entry that the player uses does. Does
-      nothing if the screen has already ended.
+      ring entry leaves the ring, as an entry that the player uses does, and the
+      statistics screen ends as the player skipping it does. Does nothing if the
+      screen has already ended.
 
       Returns: boolean. Whether the screen was still held.
 
