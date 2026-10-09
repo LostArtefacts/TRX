@@ -401,7 +401,19 @@
       "type": "object",
       "properties": {
         "path": {
-          "$ref": "#/$defs/path"
+          "oneOf": [
+            {
+              "$ref": "#/$defs/path"
+            },
+            {
+              "type": "object",
+              "description": "Maps a dub's language code to the files it gives this FMV, with \"*\" for the files every dub falls back to.",
+              "additionalProperties": {
+                "$ref": "#/$defs/path"
+              },
+              "minProperties": 1
+            }
+          ]
         },
         "legal": {
           "type": "boolean"

@@ -1,3 +1,4 @@
+X_UI_ROW(audio.media_language)
 X_UI_ROW(audio.enable_music_in_menu)
 X_UI_ROW(audio.fix_secrets_killing_music)
 X_UI_ROW(audio.fix_speeches_killing_music)

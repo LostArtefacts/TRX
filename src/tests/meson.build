@@ -1621,6 +1621,64 @@ unit_tests += {
   ],
 }
 
+unit_tests += {
+  'name': 'trx/game/locale/chain',
+  'src': ['harness/stubs_paths.c', 'harness/stubs_result.c'],
+  'engine': [
+    'core/file.c',
+    'core/filesystem.c',
+    'core/memory.c',
+    'core/result.c',
+    'core/strings/case_funcs.c',
+    'core/strings/common.c',
+    'core/vector.c',
+    'game/locale/chain.c',
+    'game/paths.c',
+  ],
+  'deps': [dep_pcre2],
+  'args': ['-DPCRE2_CODE_UNIT_WIDTH=8', '-D_DEFAULT_SOURCE'],
+}
+
+unit_tests += {
+  'name': 'trx/game/locale/common',
+  'src': ['harness/stubs_paths.c', 'harness/stubs_result.c'],
+  'engine': [
+    'core/event_manager.c',
+    'core/file.c',
+    'core/filesystem.c',
+    'core/memory.c',
+    'core/result.c',
+    'core/strings/case_funcs.c',
+    'core/strings/common.c',
+    'core/vector.c',
+    'game/locale/chain.c',
+    'game/locale/common.c',
+    'game/locale/path.c',
+    'game/paths.c',
+  ],
+  'deps': [dep_pcre2],
+  'args': ['-DPCRE2_CODE_UNIT_WIDTH=8', '-D_DEFAULT_SOURCE'],
+}
+
+unit_tests += {
+  'name': 'trx/game/locale/path',
+  'src': ['harness/stubs_paths.c', 'harness/stubs_result.c'],
+  'engine': [
+    'core/file.c',
+    'core/filesystem.c',
+    'core/memory.c',
+    'core/result.c',
+    'core/strings/case_funcs.c',
+    'core/strings/common.c',
+    'core/vector.c',
+    'game/locale/chain.c',
+    'game/locale/path.c',
+    'game/paths.c',
+  ],
+  'deps': [dep_pcre2],
+  'args': ['-DPCRE2_CODE_UNIT_WIDTH=8', '-D_DEFAULT_SOURCE'],
+}
+
 # The text a binding reads as. It knows nothing of SDL, so no backend comes
 # along.
 unit_tests += {

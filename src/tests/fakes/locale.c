@@ -8,6 +8,7 @@
 #include <trx/core/result.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/game_strings/manager.h>
+#include <trx/game/locale/common.h>
 
 #include <assert.h>
 #include <stdint.h>
@@ -22,6 +23,13 @@ typedef struct {
 // Enough for every module and command one test loads.
 static M_ENTRY m_Entries[256];
 static int32_t m_EntryCount = 0;
+
+// The language trx.locale.reload() asks for. Which one does not matter: the
+// reload below loads nothing.
+const char *Locale_GetCode(const LOCALE_ROLE role)
+{
+    return "en";
+}
 
 // trx.locale.reload() reloads the language files from disk. There is no disk
 // here, so report success without doing anything.

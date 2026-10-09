@@ -1297,6 +1297,45 @@ bool GamePath_Exists(const GAME_DYNAMIC_PATH path, const char *const rel)
     return FS_Exists(resolved);
 }
 
+VECTOR *GamePath_GetSearchDirs(const GAME_DYNAMIC_PATH path)
+{
+    ASSERT(path >= 0 && path < GAME_DYNAMIC_PATH_NUMBER_OF);
+    if (!m_Context.inited) {
+        GamePath_Init(m_Context.args);
+    }
+
+    VECTOR *const dirs = Vector_Create(sizeof(char *));
+    const M_DYNAMIC_PATH_POLICY *const policy = &m_PathPolicies[path];
+    for (size_t i = 0; i < ARRAY_SIZE(policy->patterns); i++) {
+        const char *const pattern = policy->patterns[i];
+        if (pattern == nullptr) {
+            break;
+        }
+
+        char *candidate = M_ExpandDynamicPattern(path, pattern, "", nullptr);
+        M_TrimTrailingSeparators(candidate);
+        char *const dir = strchr(candidate, '%') == nullptr
+            ? M_ResolveCasePathCached(candidate)
+            : nullptr;
+        Memory_FreePointer(&candidate);
+        if (dir == nullptr || !FS_DirExists(dir)) {
+            Memory_Free(dir);
+            continue;
+        }
+
+        bool is_known = false;
+        for (int32_t j = 0; j < dirs->count && !is_known; j++) {
+            is_known = strcmp(*(char **)Vector_Get(dirs, j), dir) == 0;
+        }
+        if (is_known) {
+            Memory_Free(dir);
+        } else {
+            Vector_Add(dirs, &dir);
+        }
+    }
+    return dirs;
+}
+
 char *GamePath_GuessExtension(const char *const path, const char **extensions)
 {
     if (!m_Context.inited) {

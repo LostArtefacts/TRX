@@ -2,7 +2,6 @@
 #include <trx/core/log.h>
 #include <trx/core/result.h>
 #include <trx/game/clock.h>
-#include <trx/game/game_strings/manager.h>
 #include <trx/game/gun/misc.h>
 #include <trx/game/input.h>
 #include <trx/game/lara.h>
@@ -162,10 +161,6 @@ void Shell_HandleConfigChange(const CONFIG_CHANGE *const change)
     if (L_CHANGED(audio.master_volume) || L_CHANGED(audio.music_volume)
         || L_CHANGED(audio.ambient_volume)) {
         Music_SetVolume(g_Config.audio.music_volume);
-    }
-
-    if (L_CHANGED(language)) {
-        Result_Absorb(GameStringManager_ReloadLanguage(g_Config.language));
     }
 
     if (L_CHANGED(window.is_fullscreen) || L_CHANGED(window.is_maximized)

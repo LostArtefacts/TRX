@@ -7,6 +7,7 @@
 #include <trx/debug.h>
 #include <trx/game/game_flow/vars.h>
 #include <trx/game/level/cache.h>
+#include <trx/game/locale/path.h>
 
 static const GF_LEVEL *m_CurrentLevel = nullptr;
 static GF_COMMAND m_OverrideCommand = { .action = GF_NOOP };
@@ -66,7 +67,9 @@ static void M_FreeLevelTable(GF_LEVEL_TABLE *const level_table)
 static void M_FreeFMVs(GAME_FLOW *const gf)
 {
     for (int32_t i = 0; i < gf->fmv_count; i++) {
-        Memory_FreePointer(&gf->fmvs[i].path);
+        GF_FMV *const fmv = &gf->fmvs[i];
+        LocalePath_Free(&fmv->localized_path);
+        Memory_FreePointer(&fmv->path);
     }
     Memory_FreePointer(&gf->fmvs);
     gf->fmv_count = 0;

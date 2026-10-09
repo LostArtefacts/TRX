@@ -13,6 +13,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/gym.h>
 #include <trx/game/level.h>
+#include <trx/game/locale/common.h>
 #include <trx/game/music.h>
 #include <trx/game/music/backend_cdaudio.h>
 #include <trx/game/music/backend_cdaudio_wad.h>
@@ -69,12 +70,12 @@ static MUSIC_BACKEND *M_FindBackend(void)
     }
 
     if (g_TRVersion >= 2) {
-        const char *const cdaudio_dat_path =
-            GamePath_PeekResolve(GAME_DYNAMIC_PATH_CDAUDIO_FILE, "cdaudio.dat");
-        const char *const cdaudio_wav_path =
-            GamePath_PeekResolve(GAME_DYNAMIC_PATH_CDAUDIO_FILE, "cdaudio.wav");
-        const char *const cdaudio_mp3_path =
-            GamePath_PeekResolve(GAME_DYNAMIC_PATH_CDAUDIO_FILE, "cdaudio.mp3");
+        char *cdaudio_dat_path = Locale_Resolve(
+            LOCALE_ROLE_AUDIO, GAME_DYNAMIC_PATH_CDAUDIO_FILE, "cdaudio.dat");
+        char *cdaudio_wav_path = Locale_Resolve(
+            LOCALE_ROLE_AUDIO, GAME_DYNAMIC_PATH_CDAUDIO_FILE, "cdaudio.wav");
+        char *cdaudio_mp3_path = Locale_Resolve(
+            LOCALE_ROLE_AUDIO, GAME_DYNAMIC_PATH_CDAUDIO_FILE, "cdaudio.mp3");
 
         if (cdaudio_dat_path != nullptr && cdaudio_wav_path != nullptr) {
             Vector_Add(
@@ -88,16 +89,20 @@ static MUSIC_BACKEND *M_FindBackend(void)
                 &(MUSIC_BACKEND *) { Music_Backend_CDAudio_Factory(
                     cdaudio_mp3_path, cdaudio_dat_path) });
         }
+        Memory_FreePointer(&cdaudio_mp3_path);
+        Memory_FreePointer(&cdaudio_wav_path);
+        Memory_FreePointer(&cdaudio_dat_path);
     }
     if (g_TRVersion >= 3) {
-        const char *const cdaudio_wad_path =
-            GamePath_PeekResolve(GAME_DYNAMIC_PATH_CDAUDIO_FILE, "cdaudio.wad");
+        char *cdaudio_wad_path = Locale_Resolve(
+            LOCALE_ROLE_AUDIO, GAME_DYNAMIC_PATH_CDAUDIO_FILE, "cdaudio.wad");
         if (cdaudio_wad_path != nullptr) {
             Vector_Add(
                 all_backends,
                 &(MUSIC_BACKEND *) {
                     Music_Backend_CDAudioWad_Factory(cdaudio_wad_path) });
         }
+        Memory_FreePointer(&cdaudio_wad_path);
     }
 
     MUSIC_BACKEND *backend = nullptr;
