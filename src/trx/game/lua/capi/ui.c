@@ -474,12 +474,12 @@ static int M_L_UIPanel(lua_State *const L)
     const float x = (float)luaL_checknumber(L, 1);
     const float y = (float)luaL_checknumber(L, 2);
     const int32_t z = M_OptZ(L, 3);
-    const int32_t x0 = lroundf(UI_ScaleX(x));
-    const int32_t y0 = lroundf(UI_ScaleY(y));
-    const int32_t w =
-        (int32_t)lroundf(UI_ScaleX(x + (float)luaL_checknumber(L, 4))) - x0;
-    const int32_t h =
-        (int32_t)lroundf(UI_ScaleY(y + (float)luaL_checknumber(L, 5))) - y0;
+    // Cut to whole pixels as the engine's own frames are, so that a frame a
+    // script draws lands where the engine would put it.
+    const int32_t x0 = UI_ScaleX(x);
+    const int32_t y0 = UI_ScaleY(y);
+    const int32_t w = UI_ScaleX((float)luaL_checknumber(L, 4));
+    const int32_t h = UI_ScaleY((float)luaL_checknumber(L, 5));
 
     const UI_STYLE ui_style = g_Config.ui.menu_style;
     const TEXT_STYLE text_style = UI_Frame_GetTextStyle((UI_FRAME_STYLE)style);
