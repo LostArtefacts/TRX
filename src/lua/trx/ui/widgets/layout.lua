@@ -7,6 +7,8 @@ local primitive = trx.ui.primitive
 local widgets = trx.ui.widgets
 local W = base.W
 local new_widget = base.new_widget
+local value_of = base.value_of
+local f32 = base.f32
 local text_scale = base.text_scale
 local bar_scale = base.bar_scale
 
@@ -60,12 +62,19 @@ function widgets.Pad(settings)
   local self = new_widget(settings, function(w)
     local cw, ch = w.child:measure()
     local scale = raw.drawn_text_scale()
-    return cw + 2 * (w.x or 0) * scale, ch + 2 * (w.y or 0) * scale
+    local px = f32((w.x or 0) * scale)
+    local py = f32((w.y or 0) * scale)
+    return f32(cw + f32(px + px)), f32(ch + f32(py + py))
   end, function(w, x, y, bw, bh)
     local scale = raw.drawn_text_scale()
-    local px = (w.x or 0) * scale
-    local py = (w.y or 0) * scale
-    w.child:paint(x + px, y + py, bw - 2 * px, bh - 2 * py)
+    local px = f32((w.x or 0) * scale)
+    local py = f32((w.y or 0) * scale)
+    w.child:paint(
+      f32(x + px),
+      f32(y + py),
+      f32(f32(bw - px) - px),
+      f32(f32(bh - py) - py)
+    )
   end)
   self.child._parent = self
   return self:wakes_on(text_scale())
@@ -245,20 +254,23 @@ function widgets.Stack(settings)
   end
 
   local self = new_widget(settings, function(w)
-    local along, across, shown = 0.0, 0.0, 0
+    local along, across = 0.0, 0.0
+    local spacing = f32((w.spacing or 0) * raw.drawn_text_scale())
+    local first = true
     for _, child in ipairs(w.children) do
       if child:is_shown() then
         local cw, ch = child:measure()
-        if is_horizontal(w) then
-          along, across = along + cw, math.max(across, ch)
-        else
-          along, across = along + ch, math.max(across, cw)
+        if not first then
+          along = f32(along + spacing)
         end
-        shown = shown + 1
+        first = false
+        if is_horizontal(w) then
+          along, across = f32(along + cw), math.max(across, ch)
+        else
+          along, across = f32(along + ch), math.max(across, cw)
+        end
       end
     end
-    along = along
-      + math.max(0, shown - 1) * (w.spacing or 0) * raw.drawn_text_scale()
     if is_horizontal(w) then
       return along, across
     end
@@ -280,7 +292,7 @@ function widgets.Stack(settings)
     end
     local box_along = horizontal and bw or bh
     local box_across = horizontal and bh or bw
-    local spacing = (w.spacing or 0) * raw.drawn_text_scale()
+    local spacing = f32((w.spacing or 0) * raw.drawn_text_scale())
     local shown = 0
     for _, child in ipairs(w.children) do
       if child:is_shown() then
@@ -290,44 +302,63 @@ function widgets.Stack(settings)
 
     -- Spare room along the axis goes into the gaps, or in front of the
     -- children, depending on what the stack asked for.
-    local spare = box_along - along
-    local at = 0.0
+    local spare = f32(box_along - along)
+    local at = horizontal and x or y
     if
       along_align
       == (horizontal and trx.ui.HAlign.DISTRIBUTE or trx.ui.VAlign.DISTRIBUTE)
     then
-      spacing = spacing + (shown > 1 and math.max(0, spare) / (shown - 1) or 0)
+      -- The engine shares out what the children and their plain gaps leave,
+      -- counted apart rather than as they were measured.
+      local total = 0.0
+      for _, child in ipairs(w.children) do
+        if child:is_shown() then
+          local cw, ch = child:measure()
+          total = f32(total + (horizontal and cw or ch))
+        end
+      end
+      local gaps = math.max(0, shown - 1)
+      local leftover = f32(
+        box_along
+          - f32(
+            total + f32(f32((w.spacing or 0) * gaps) * raw.drawn_text_scale())
+          )
+      )
+      if gaps > 0 and leftover > 0 then
+        spacing = f32(spacing + f32(leftover / gaps))
+      end
     elseif
       along_align
       == (horizontal and trx.ui.HAlign.CENTER or trx.ui.VAlign.CENTER)
     then
-      at = spare / 2
+      at = f32(at + f32(spare * 0.5))
     elseif
       along_align
       == (horizontal and trx.ui.HAlign.RIGHT or trx.ui.VAlign.BOTTOM)
     then
-      at = spare
+      at = f32(at + spare)
     end
 
+    local origin = horizontal and y or x
     for _, child in ipairs(w.children) do
       if child:is_shown() then
         local cw, ch = child:measure()
         local size_along = horizontal and cw or ch
         local size_across = horizontal and ch or cw
-        local offset = 0.0
+        local across_at = origin
         if span then
-          size_across = box_across
+          size_across = math.max(size_across, box_across)
         elseif center then
-          offset = (box_across - size_across) / 2
+          across_at = f32(origin + f32(f32(box_across - size_across) * 0.5))
         elseif far then
-          offset = box_across - size_across
+          across_at = f32(f32(origin + box_across) - size_across)
         end
         if horizontal then
-          child:paint(x + at, y + offset, size_along, size_across)
+          child:paint(at, across_at, size_along, size_across)
         else
-          child:paint(x + offset, y + at, size_across, size_along)
+          child:paint(across_at, at, size_across, size_along)
         end
-        at = at + size_along + spacing
+        at = f32(f32(at + size_along) + spacing)
       end
     end
   end)

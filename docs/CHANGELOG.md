@@ -206,6 +206,7 @@
 - Changed `trx.savegame.load` to raise an error for an empty slot
 - Changed the functions of `trx.inventory` and `trx.stats` to plain functions, called with a dot rather than a colon
 - Fixed `trx.ui.primitive.sprite_count()` counting the meshes of a model as sprites
+- Fixed script widgets sometimes landing a pixel away from where the game lays out its own, at some text sizes
 - Fixed `trx.item.anim_num` not being accurate when the item is Lara and she is either on a vehicle or performing an extra animation (TRX1644)
 - Fixed `trx.input.with_listen()` always failing with an error
 - Fixed iterating over `trx.fx.fog_bulbs` and `trx.fx.sparks.pool` skipping the last entry
