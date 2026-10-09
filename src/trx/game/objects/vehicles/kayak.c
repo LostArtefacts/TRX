@@ -225,6 +225,7 @@ static void M_Collision(
     l->current_anim_state = M_STATE_CLIMB_IN;
     l->goal_anim_state = M_STATE_CLIMB_IN;
     lara_info->water_status = LWS_ABOVE_WATER;
+    lara_info->gun_status = LGS_HANDS_BUSY;
     l->pos = item->pos;
     l->rot.x = 0;
     l->rot.y = item->rot.y;

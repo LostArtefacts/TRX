@@ -410,8 +410,6 @@ static void M_Collision(
 
     lara->head_rot.y = 0;
     lara->head_rot.x = 0;
-    lara->torso_rot.y = 0;
-    lara->torso_rot.x = 0;
     lara->hit_direction = DIR_UNKNOWN;
     lara->interact_target.item_num = NO_ITEM;
     lara->interact_target.is_moving = false;

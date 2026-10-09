@@ -15,6 +15,7 @@
 - Fixed Lara crawl-turning in mid-air if the floor below her gives way (OG TR3 bug) (Gameplay → Fixes → Fix falling)
 - Fixed Lara being able to jump off trapdoors when they open (Gameplay → Fixes → Fix falling)
 - Fixed Lara not being able to do a turn around move in monkey bars by pressing the forward and backward keys simultaneously (#6850)
+- Fixed Lara's torso not being reset to a neutral position when boarding certain vehicles if she was looking away somewhere beforehand (OG bug, #6859)
 
 **Music and sound**
 - Added an option to choose the dub apart from the text language, which plays FMVs, music and speech from a language folder beside the retail files (Sound → Voice language) (#1021 / TRX1710)
