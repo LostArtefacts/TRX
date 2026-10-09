@@ -1153,6 +1153,14 @@ This page lists documented moveable object properties.
 </tbody>
 </table>
 
+#### fire_head
+<table width="100%">
+<thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (282)</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>blow_time</code></td><td colspan="3" align="center">2.33</td><td>The number of seconds the firehead blows flames for before resetting its animation and starting again.</td></tr>
+</tbody>
+</table>
+
 #### flame_emitter_side
 <table width="100%">
 <thead><tr><th>Property</th><th align="center">TR1</th><th align="center">TR2</th><th align="center">TR3 (333)</th><th>Description</th></tr></thead>

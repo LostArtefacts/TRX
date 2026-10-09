@@ -7,7 +7,10 @@
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
 
+#include <math.h>
+
 // clang-format off
+#define M_BLOW_TIME   2.33
 #define M_MIN_FALLOFF 8
 #define M_MAX_RANGE   (WALL_L * 2) // = 2048
 #define M_RANGE_STEP  (STEP_L / 8) // = 32
@@ -29,6 +32,7 @@ typedef struct {
         int32_t max;
         int32_t current;
     } blow_loops;
+    double blow_time;
     int32_t speed;
     int32_t deadly_range;
     bool stop;
@@ -64,6 +68,18 @@ static void M_SavePriv(const ITEM *const item, JSON_WRITE_IO *const io)
     JSONW_WRITE(io, "speed", p->speed);
     JSONW_WRITE(io, "deadly_range", p->deadly_range);
     JSONW_WRITE(io, "stop", p->stop);
+}
+
+static const char *M_CheckBlowTime(const TRX_VALUE *const in)
+{
+    return in->as_num < 0 ? "blow time is below nothing" : nullptr;
+}
+
+static void M_SetBlowTime(ITEM *const item, const TRX_VALUE *const in)
+{
+    M_PRIV *const p = item->priv;
+    p->blow_time = in->as_num;
+    p->blow_loops.max = ceil(p->blow_time * LOGIC_FPS);
 }
 
 static void M_TriggerFlame(
@@ -133,22 +149,6 @@ static void M_Initialise(const int16_t item_num)
     Item_SwitchToAnim(item, M_ANIM_REAR, 0);
     item->current_anim_state = M_STATE_REAR;
     item->goal_anim_state = M_STATE_REAR;
-}
-
-static bool M_Trigger(ITEM *const item, const ITEM_TRIGGER *const trigger)
-{
-    M_PRIV *const p = item->priv;
-    if (p == nullptr) {
-        return true;
-    }
-
-    if (trigger->kind == ITEM_TRIGGER_ANTI) {
-        return true;
-    }
-
-    item->timer = 0;
-    p->blow_loops.max = (int32_t)trigger->timer;
-    return true;
 }
 
 static void M_Reset(M_PRIV *const p)
@@ -290,7 +290,6 @@ static void M_Setup(OBJECT *const obj)
     obj->collision_func = Object_Collision;
     obj->initialise_func = M_Initialise;
     obj->control_func = M_Control;
-    obj->trigger_func = M_Trigger;
 
     obj->priv_size = sizeof(M_PRIV);
     obj->priv_load_func = M_LoadPriv;
@@ -298,6 +297,13 @@ static void M_Setup(OBJECT *const obj)
 
     obj->save_flags = true;
     obj->save_anim = true;
+
+    OBJECT_PROPERTIES(
+        obj,
+        OBJECT_PROPERTY_SETTER(
+            M_PRIV, blow_time, M_BLOW_TIME, M_CheckBlowTime, M_SetBlowTime,
+            "The number of seconds the firehead blows flames for before "
+            "resetting its animation and starting again."));
 }
 
 REGISTER_OBJECT(O_FIRE_HEAD, M_Setup)
