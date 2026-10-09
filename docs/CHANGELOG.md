@@ -25,6 +25,7 @@
 - Changed the loading screens in TR1–3 to stay on screen for two seconds in every game (TRX1591)
 - Changed the look button to skip loading screens, pictures, FMVs, and stats screens, like it does for cutscenes (TRX1541)
 - Changed the pause screen during FMVs to use the chosen pause background style (TRX1617)
+- Changed the default controller layout to follow the PS1 releases: TR3 and TR4 sprint with R2, crouch with L2 and have no side steps, and TR2 to TR4 light a flare with R1 and Select together (#6019 / TRX864)
 - Changed the interface and the pickups in the corner to move in with the cinematic bars, so the bars no longer cover them (TRX1426)
 - Fixed items without a sprite, such as the scion, not showing in the pickups overlay when 3D pickups are off
 - Fixed the FPS counter briefly showing an incorrect value after switching mods (TRX1631)
