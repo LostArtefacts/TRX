@@ -6,6 +6,7 @@
 #include <trx/game/lua/struct.h>
 #include <trx/game/lua/utils/args.h>
 #include <trx/game/lua/utils/module.h>
+#include <trx/game/objects/families.h>
 #include <trx/game/stats.h>
 
 #include <lauxlib.h>
@@ -190,7 +191,7 @@ static int M_L_StatsAlliesHurt(lua_State *const L)
     return 1;
 }
 
-// stats:secret_list() -> { { num=, found= }, ... }
+// stats:secret_list() -> { { num=, found=, icon= }, ... }
 static int M_L_StatsSecretList(lua_State *const L)
 {
     const GF_LEVEL *const level = M_CheckStatsLevel(L, 1);
@@ -206,6 +207,12 @@ static int M_L_StatsSecretList(lua_State *const L)
         lua_setfield(L, -2, "num");
         lua_pushboolean(L, Stats_HasSecret(level, i));
         lua_setfield(L, -2, "found");
+        const OBJECT_ID object_id = Stats_GetSecretObject(level, i);
+        if (object_id != NO_OBJECT) {
+            lua_pushinteger(
+                L, ObjectFamily_GetIndex(object_id, OBJ_FAMILY_SECRET) + 1);
+            lua_setfield(L, -2, "icon");
+        }
         lua_seti(L, -2, out_idx);
         out_idx++;
     }

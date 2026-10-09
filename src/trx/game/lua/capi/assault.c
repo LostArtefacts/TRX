@@ -271,6 +271,15 @@ static int M_L_AssaultRemoveRecord(lua_State *const L)
     return 1;
 }
 
+// trxc.assault.stats.clear(track?: trx.assault.Track)
+static int M_L_AssaultClearRecords(lua_State *const L)
+{
+    const GYM_TRACK_TYPE track = M_GetTrack(L);
+    M_CheckStats(L, track);
+    Gym_TrackManager_ClearStats(track);
+    return 0;
+}
+
 // trxc.assault.stats.list(track?: trx.assault.Track): trx.assault.Record[]
 static int M_L_AssaultListRecords(lua_State *const L)
 {
@@ -319,6 +328,7 @@ static const luaL_Reg m_Stats[] = {
     { "record", M_L_AssaultRecord },
     { "remove", M_L_AssaultRemoveRecord },
     { "list", M_L_AssaultListRecords },
+    { "clear", M_L_AssaultClearRecords },
     { nullptr, nullptr },
 };
 

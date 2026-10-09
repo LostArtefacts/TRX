@@ -72,6 +72,7 @@ trxc = {}
 ---@field stop fun(track?: trx.assault.Track)
 
 ---@class (exact) trxc.assault.stats
+---@field clear fun(track?: trx.assault.Track)
 ---@field list fun(track?: trx.assault.Track): trx.assault.Record[]
 ---@field record fun(time: trx.game.Seconds, track?: trx.assault.Track): boolean
 ---@field remove fun(record_num: trx.assault.RecordNum, track?: trx.assault.Track): boolean
@@ -485,7 +486,9 @@ trxc = {}
 
 ---@class (exact) trxc.strings
 ---@field fuzzy_match fun(input: string, sources: trx.strings.fuzzy_match.sources[]): trx.strings.Match[]
+---@field lower fun(text: string): string
 ---@field regex_match fun(subject: string, pattern: string): boolean
+---@field upper fun(text: string): string
 
 ---@class (exact) trxc.struct
 ---@field expose_computed fun(type: string, public_name: string, fn: function)

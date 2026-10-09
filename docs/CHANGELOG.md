@@ -220,6 +220,10 @@
 - Added `trx.ui.widgets.SleekBar`, the thin progress bar the game draws under a button that the player holds
 - Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the question the pause screen asks, and the quick save and load screens
     - `trx.ui.Screen` and `trx.ui.ScreenContext`
+- Added `trx.strings.upper` and `trx.strings.lower`, which change the case of the letters the game's font draws, beyond ASCII too
+- Added `trx.game.Level.is_completed`, which says whether the player has finished a level
+- Added `icon` to the entries of `trx.stats.Stats:secret_list`, which names the glyph that draws a secret
+- Added `trx.assault.stats.clear`, which clears a track's best times as the stats screen's reset button does
 - Changed saves to keep the items a script spawns, which previously disappeared on load (TRX1677)
 - Changed `trx.events.on_ui_draw`, `on_ui_paint`, `on_ui_paint_over` and `on_scene_paint` to `trx.ui.on_draw`, `trx.ui.on_paint`, `trx.ui.on_paint_over` and `trx.scene.on_paint`
 - Changed script widgets to stay behind the game interface when they overlap

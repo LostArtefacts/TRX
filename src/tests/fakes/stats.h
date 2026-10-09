@@ -1,9 +1,12 @@
 #pragma once
 
+#include <trx/game/objects/ids.h>
+
 #include <stdint.h>
 
 void FakeStats_SetSecrets(const int32_t *nums, int32_t count);
 void FakeStats_SetFound(int32_t num, bool found);
+void FakeStats_SetSecretObject(int32_t num, OBJECT_ID object_id);
 void FakeStats_SetMaxSecretCount(int32_t count);
 
 // The category setters name the level rather than acting on the one being

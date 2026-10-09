@@ -158,6 +158,31 @@ test("records are 1-based, and out of range raises", function()
   end)
 end)
 
+test(
+  "clearing a track drops its records and starts its attempts over",
+  function()
+    trx.assault.stats.add_record(10.0)
+    trx.assault.stats.add_record(20.0)
+    trx.assault.stats.clear()
+    assert(#trx.assault.stats.list_records() == 0, "the records stayed")
+
+    trx.assault.stats.add_record(30.0)
+    assert(
+      trx.assault.stats.list_records()[1].attempt_num == 1,
+      "the attempts did not start over"
+    )
+  end
+)
+
+test("clearing one track leaves the other's records", function()
+  local COURSE, QUAD = trx.assault.Track.COURSE, trx.assault.Track.QUAD
+  trx.assault.stats.add_record(10.0, COURSE)
+  trx.assault.stats.add_record(20.0, QUAD)
+  trx.assault.stats.clear(QUAD)
+  assert(#trx.assault.stats.list_records(COURSE) == 1)
+  assert(#trx.assault.stats.list_records(QUAD) == 0)
+end)
+
 test("a time of zero or less raises", function()
   raises(function()
     trx.assault.stats.add_record(0)

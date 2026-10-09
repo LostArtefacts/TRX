@@ -1,3 +1,4 @@
+#include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/strings/fuzzy_match.h>
 #include <trx/game/lua/common.h>
@@ -149,9 +150,29 @@ static int M_L_StringsRegexMatch(lua_State *const L)
     return 1;
 }
 
+// trxc.strings.upper(text: string): string
+static int M_L_StringsUpper(lua_State *const L)
+{
+    char *upper = String_ToUpper(luaL_checkstring(L, 1));
+    lua_pushstring(L, upper);
+    Memory_FreePointer(&upper);
+    return 1;
+}
+
+// trxc.strings.lower(text: string): string
+static int M_L_StringsLower(lua_State *const L)
+{
+    char *lower = String_ToLower(luaL_checkstring(L, 1));
+    lua_pushstring(L, lower);
+    Memory_FreePointer(&lower);
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
     { "fuzzy_match", M_L_StringsFuzzyMatch },
     { "regex_match", M_L_StringsRegexMatch },
+    { "upper", M_L_StringsUpper },
+    { "lower", M_L_StringsLower },
     { nullptr, nullptr },
 };
 

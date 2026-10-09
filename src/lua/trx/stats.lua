@@ -107,6 +107,7 @@ local Stats = h.handle("stats.Stats", "LEVEL_STATS", {
 ---@class (exact) trx.stats.Stats.secret_list.secret
 ---@field num trx.stats.SecretNum Which secret it is.
 ---@field found boolean Whether Lara has it.
+---@field icon? integer Which secret glyph draws it, as `\\{secret N}` names one, or `nil` for a secret that is a place to reach rather than an item to pick up.
 
 ---The level's secrets, in order.
 ---@return trx.stats.Stats.secret_list.secret[] # The secrets, one by one.

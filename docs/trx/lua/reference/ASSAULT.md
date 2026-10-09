@@ -177,6 +177,18 @@ levels.
 
   Returns: boolean. `false` if there is no record at that position.
 
+- <a id="assault.stats.clear" name="assault.stats.clear"></a>[lua]`trx.assault.stats.clear([track])`  
+  Removes every record, and starts the attempts over from the first, as the
+  stats screen's reset button does.
+
+  Parameters:
+  - <a id="assault.stats.clear.track" name="assault.stats.clear.track"></a>**`track`** ([trx.assault.Track](#assault.Track), optional, default [`trx.assault.Track.COURSE`](#assault.Track)).
+
+  Example:
+  ```lua
+  trx.assault.stats.clear(trx.assault.Track.QUAD)
+  ```
+
 - <a id="assault.stats.list_records" name="assault.stats.list_records"></a>[lua]`trx.assault.stats.list_records([track])`  
   The records, fastest first.
 
