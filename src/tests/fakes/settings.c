@@ -19,6 +19,7 @@
 #include <trx/game/input/common.h>
 #include <trx/game/lara/common.h>
 #include <trx/game/lara/vehicle.h>
+#include <trx/game/locale/common.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/families.h>
 #include <trx/game/output/draw.h>
@@ -361,6 +362,18 @@ VECTOR *GameStringManager_GetAvailableLanguages(void)
 }
 
 const char *GameStringManager_GetLanguageName(const char *const code)
+{
+    return code;
+}
+
+VECTOR *Locale_GetAvailable(const LOCALE_ROLE role)
+{
+    return role == LOCALE_ROLE_AUDIO
+        ? Vector_Create(sizeof(char *))
+        : GameStringManager_GetAvailableLanguages();
+}
+
+const char *Locale_GetLanguageName(const char *const code)
 {
     return code;
 }

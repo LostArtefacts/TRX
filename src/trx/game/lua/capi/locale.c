@@ -3,10 +3,10 @@
 // manipulates them, and trx/game/game_strings, which is this - and a third
 // would shadow Lua's own string library besides.
 
-#include <trx/config.h>
 #include <trx/core/result.h>
 #include <trx/game/game_strings/entries.h>
 #include <trx/game/game_strings/manager.h>
+#include <trx/game/locale/common.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils/module.h>
@@ -43,7 +43,9 @@ static int M_L_LocaleDeclare(lua_State *const L)
 static int M_L_LocaleReload(lua_State *const L)
 {
     lua_pushboolean(
-        L, Result_Absorb(GameStringManager_ReloadLanguage(g_Config.language)));
+        L,
+        Result_Absorb(GameStringManager_ReloadLanguage(
+            Locale_GetCode(LOCALE_ROLE_TEXT))));
     return 1;
 }
 

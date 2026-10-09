@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/core/log.h>
+#include <trx/core/memory.h>
 #include <trx/debug.h>
 #include <trx/game/const.h>
 #include <trx/game/fmv.h>
@@ -13,6 +14,7 @@
 #include <trx/game/gun.h>
 #include <trx/game/hub.h>
 #include <trx/game/lara.h>
+#include <trx/game/locale/common.h>
 #include <trx/game/lua.h>
 #include <trx/game/lua/hooks.h>
 #include <trx/game/music.h>
@@ -271,7 +273,10 @@ M_GF_HANDLER(M_HandlePlayFMV)
         *out_cmd = gf_cmd;
         return OK;
     }
-    SHOULD(FMV_Play(fmv->path));
+    char *path = Locale_ResolvePath(
+        LOCALE_ROLE_AUDIO, GAME_DYNAMIC_PATH_FMV_FILE, &fmv->localized_path);
+    SHOULD(FMV_Play(path));
+    Memory_FreePointer(&path);
     *out_cmd = gf_cmd;
     return OK;
 }

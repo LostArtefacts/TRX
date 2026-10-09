@@ -1009,6 +1009,12 @@
             "title": "Głośność",
             "description": "Reguluje głośność wszystkich dźwięków w grze. Pozostałe ustawienia są względem tej głośności.",
         },
+        "audio.media_language": {
+            "auto": "\\{review}Automatycznie",
+            "description": "\\{review}Wybiera język, w którym słychać filmy FMV i kwestie mówione, niezależnie od języka tekstu. Automatycznie odtwarza dubbing w języku tekstu, jeśli jest zainstalowany, a Oryginał odtwarza pliki tak, jak zostały zainstalowane.",
+            "retail": "\\{review}Oryginał",
+            "title": "\\{review}Język głosów",
+        },
         "audio.music_load_condition": {
             "title": "\\{review}Muzyka po wczytaniu",
             "description": "Ładuje ścieżkę dźwiękową graną podczas zapisu gry.\n\n- Nigdy: restartuje dźwięki otoczenia od 0.\n- Tylko muzyka: przywraca utwory muzyczne.\n- Zawsze: przywraca także dźwięki otoczenia od momentu, w którym gracz dokonał zapisu.",

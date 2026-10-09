@@ -1009,6 +1009,12 @@
             "title": "Volume principale",
             "description": "Regola il volume di gioco. Le altre impostazioni sono relative a questo volume.",
         },
+        "audio.media_language": {
+            "auto": "\\{review}Automatico",
+            "description": "\\{review}Sceglie la lingua in cui si sentono i filmati e le battute parlate, indipendentemente dalla lingua del testo. Automatico riproduce il doppiaggio della lingua del testo se è installato, e Originale riproduce i file così come sono installati.",
+            "retail": "\\{review}Originale",
+            "title": "\\{review}Lingua del doppiaggio",
+        },
         "audio.music_load_condition": {
             "title": "Ripristina traccia",
             "description": "Carica la traccia musicale che era in riproduzione al momento del salvataggio della partita.\n\n- Mai: non ripristina le tracce musicali al caricamento.\n- Non ambientale: ripristina le tracce musicali ma non i suoni ambientali al caricamento.\n- Sempre: ripristina qualsiasi tipo di traccia al caricamento.",

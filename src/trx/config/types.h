@@ -181,6 +181,7 @@ typedef struct {
     } ui;
 
     struct {
+        char *media_language;
         float master_volume;
         float sound_volume;
         float music_volume;

@@ -178,6 +178,40 @@ remains distinct for each game.
     </td>
   </tr>
   <tr valign="top">
+    <td>
+      <a name="fmvs"></a>
+      <code>fmvs</code>
+    </td>
+    <td>Object array</td>
+    <td>
+      The FMVs that <code>play_fmv</code> sequence events refer to by index.
+      Each entry is an object with the following keys:
+      <ul>
+        <li>
+          <code>path</code> (string, string array or object): the file to
+          play. An array lists names tried in order. An object maps the
+          language code of a dub to the names it gives the FMV, with
+          <code>*</code> for the names every dub falls back to, for example
+          <code>{"*": "intr_eng.avi", "it": "intr_ita.avi"}</code>. Whichever
+          form is used, a copy in the folder of the chosen dub, such as
+          <code>fmv/it/</code>, plays before the file beside it.
+        </li>
+        <li>
+          <code>legal</code> (boolean): marks the FMV as a legal notice,
+          skipped when legal notices are disabled.
+        </li>
+        <li>
+          <code>credit</code> (boolean): marks the FMV as part of the credits,
+          skipped when credits are disabled.
+        </li>
+        <li>
+          <code>intro</code> (boolean): marks the FMV as the opening story FMV,
+          whose timing the <code>intro_fmv_mode</code> setting controls.
+        </li>
+      </ul>
+    </td>
+  </tr>
+  <tr valign="top">
     <td><code>injections</code></td>
     <td>String array</td>
     <td>

@@ -914,9 +914,9 @@
 
     "fmvs": [
         {"path": "logo.avi", "legal": true},
-        {"path": "intr_eng.avi", "intro": true},
-        {"path": "sail_eng.avi"},
-        {"path": "crsh_eng.avi"},
+        {"path": {"*": "intr_eng.avi", "it": "intr_ita.avi"}, "intro": true},
+        {"path": {"*": "sail_eng.avi", "it": "sail_ita.avi"}},
+        {"path": {"*": "crsh_eng.avi", "it": "crsh_ita.avi"}},
         {"path": "endgame.avi"},
     ],
 

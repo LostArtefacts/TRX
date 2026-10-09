@@ -6,7 +6,9 @@
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
+#include <trx/core/vector.h>
 #include <trx/debug.h>
+#include <trx/game/locale/common.h>
 #include <trx/game/music/const.h>
 #include <trx/game/paths.h>
 
@@ -14,10 +16,16 @@
 #include <string.h>
 
 typedef struct {
+    int32_t name_count;
+    char **names;
+} M_CATALOG_TRACK;
+
+typedef struct {
     const char *dir;
     const char *catalog_path;
+    char *catalog_dir;
     const char *description;
-    char *catalog_tracks[MAX_MUSIC_TRACKS];
+    M_CATALOG_TRACK catalog_tracks[MAX_MUSIC_TRACKS];
     bool available_tracks[MAX_MUSIC_TRACKS];
     int32_t track_limit;
 } M_BACKEND_DATA;
@@ -25,32 +33,6 @@ typedef struct {
 static const char *m_ExtensionsToTry[] = {
     ".flac", ".ogg", ".mp3", ".wav", ".wma", nullptr,
 };
-
-static char *M_GetTrackFileName(
-    const M_BACKEND_DATA *const data, const int32_t track)
-{
-    ASSERT(data != nullptr);
-
-    if (track >= 0 && track < MAX_MUSIC_TRACKS
-        && data->catalog_tracks[track] != nullptr) {
-        return Memory_DupStr(data->catalog_tracks[track]);
-    }
-
-    if (data->dir == nullptr) {
-        return nullptr;
-    }
-
-    char *tmp_path = String_Format("%s/track%02d.flac", data->dir, track);
-    char *result = GamePath_GuessExtension(tmp_path, m_ExtensionsToTry);
-    Memory_FreePointer(&tmp_path);
-
-    if (result == nullptr) {
-        tmp_path = String_Format("%s/%d.flac", data->dir, track);
-        result = GamePath_GuessExtension(tmp_path, m_ExtensionsToTry);
-        Memory_FreePointer(&tmp_path);
-    }
-    return result;
-}
 
 static bool M_ParseCatalogTrackID(
     const char *const value, int32_t *const out_track_id)
@@ -96,6 +78,59 @@ static char *M_GetCatalogFilePath(
         GamePath_GuessExtension(local_path, m_ExtensionsToTry);
     Memory_FreePointer(&local_path);
     return canonical_path;
+}
+
+static char *M_FindCatalogFile(const char *const path, void *const user_data)
+{
+    const M_BACKEND_DATA *const data = user_data;
+    return M_GetCatalogFilePath(data->catalog_dir, path);
+}
+
+static char *M_FindTrackFile(const char *const path, void *const user_data)
+{
+    return GamePath_GuessExtension(path, m_ExtensionsToTry);
+}
+
+static char *M_ResolveCatalogTrack(
+    const M_BACKEND_DATA *const data, const M_CATALOG_TRACK *const track)
+{
+    for (int32_t i = 0; i < track->name_count; i++) {
+        char *const result = Locale_Find(
+            LOCALE_ROLE_AUDIO, track->names[i], M_FindCatalogFile,
+            (void *)data);
+        if (result != nullptr) {
+            return result;
+        }
+    }
+    return nullptr;
+}
+
+static char *M_GetTrackFileName(
+    const M_BACKEND_DATA *const data, const int32_t track)
+{
+    ASSERT(data != nullptr);
+
+    if (track >= 0 && track < MAX_MUSIC_TRACKS
+        && data->catalog_tracks[track].name_count > 0) {
+        return M_ResolveCatalogTrack(data, &data->catalog_tracks[track]);
+    }
+
+    if (data->dir == nullptr) {
+        return nullptr;
+    }
+
+    char *tmp_path = String_Format("%s/track%02d.flac", data->dir, track);
+    char *result =
+        Locale_Find(LOCALE_ROLE_AUDIO, tmp_path, M_FindTrackFile, nullptr);
+    Memory_FreePointer(&tmp_path);
+
+    if (result == nullptr) {
+        tmp_path = String_Format("%s/%d.flac", data->dir, track);
+        result =
+            Locale_Find(LOCALE_ROLE_AUDIO, tmp_path, M_FindTrackFile, nullptr);
+        Memory_FreePointer(&tmp_path);
+    }
+    return result;
 }
 
 static bool M_IsSupportedExtension(const char *const ext)
@@ -145,6 +180,15 @@ static bool M_TryParseTrackID(const char *const entry_name, int32_t *const out)
         || M_ParseTrackID(entry_name, "", out);
 }
 
+static void M_FreeCatalogTrack(M_CATALOG_TRACK *const track)
+{
+    for (int32_t i = 0; i < track->name_count; i++) {
+        Memory_FreePointer(&track->names[i]);
+    }
+    Memory_FreePointer(&track->names);
+    track->name_count = 0;
+}
+
 static void M_MarkTrackAvailable(
     M_BACKEND_DATA *const data, const int32_t track_id)
 {
@@ -161,11 +205,9 @@ static void M_MarkTrackAvailable(
 }
 
 static void M_LoadCatalogLine(
-    M_BACKEND_DATA *const data, const char *const catalog_dir, char *const line,
-    const int32_t line_num)
+    M_BACKEND_DATA *const data, char *const line, const int32_t line_num)
 {
     ASSERT(data != nullptr);
-    ASSERT(catalog_dir != nullptr);
     ASSERT(line != nullptr);
 
     char *const trimmed_line = CSV_Trim(line);
@@ -197,35 +239,40 @@ static void M_LoadCatalogLine(
         return;
     }
 
-    if (data->catalog_tracks[track_id] != nullptr) {
+    M_CATALOG_TRACK *const track = &data->catalog_tracks[track_id];
+    if (track->name_count > 0) {
         LOG_WARNING(
             "Music file catalog row %s:%d duplicates track ID %d; keeping %s",
-            data->catalog_path, line_num, track_id,
-            data->catalog_tracks[track_id]);
+            data->catalog_path, line_num, track_id, track->names[0]);
         return;
     }
 
-    char *resolved_path = M_GetCatalogFilePath(catalog_dir, path_str);
+    VECTOR *const names = Vector_Create(sizeof(char *));
+    Vector_Add(names, &(char *) { Memory_DupStr(path_str) });
     p = CSV_SkipWhitespace(p);
     while (*p != '\0') {
         char alt_buf[512];
         CSV_ParseField(&p, alt_buf, sizeof(alt_buf));
         char *const alt_str = CSV_Trim(alt_buf);
-        if (resolved_path == nullptr && alt_str[0] != '\0') {
-            resolved_path = M_GetCatalogFilePath(catalog_dir, alt_str);
+        if (alt_str[0] != '\0') {
+            Vector_Add(names, &(char *) { Memory_DupStr(alt_str) });
         }
         p = CSV_SkipWhitespace(p);
     }
+    track->name_count = names->count;
+    track->names = Memory_Alloc(sizeof(char *) * (size_t)names->count);
+    memcpy(track->names, Vector_GetData(names), sizeof(char *) * names->count);
+    Vector_Free(names);
 
+    char *resolved_path = M_ResolveCatalogTrack(data, track);
     if (resolved_path == nullptr) {
         LOG_WARNING(
             "Music file catalog row %s:%d points to missing file: %s",
             data->catalog_path, line_num, path_str);
-        Memory_FreePointer(&resolved_path);
+        M_FreeCatalogTrack(track);
         return;
     }
-
-    data->catalog_tracks[track_id] = resolved_path;
+    Memory_FreePointer(&resolved_path);
     M_MarkTrackAvailable(data, track_id);
 }
 
@@ -243,8 +290,8 @@ static void M_LoadCatalog(M_BACKEND_DATA *const data)
         return;
     }
 
-    char *catalog_dir = FS_GetParentDirectory(data->catalog_path);
-    if (catalog_dir == nullptr) {
+    data->catalog_dir = FS_GetParentDirectory(data->catalog_path);
+    if (data->catalog_dir == nullptr) {
         LOG_WARNING(
             "Cannot determine parent directory for music file catalog: %s",
             data->catalog_path);
@@ -273,11 +320,10 @@ static void M_LoadCatalog(M_BACKEND_DATA *const data)
             len--;
         }
         line[len] = '\0';
-        M_LoadCatalogLine(data, catalog_dir, line, line_num);
+        M_LoadCatalogLine(data, line, line_num);
         line_num++;
     }
 
-    Memory_FreePointer(&catalog_dir);
     Memory_FreePointer(&file_data);
 }
 
@@ -419,8 +465,9 @@ static void M_Shutdown(MUSIC_BACKEND *backend)
     if (backend->data != nullptr) {
         M_BACKEND_DATA *const data = backend->data;
         for (int32_t i = 0; i < MAX_MUSIC_TRACKS; i++) {
-            Memory_FreePointer(&data->catalog_tracks[i]);
+            M_FreeCatalogTrack(&data->catalog_tracks[i]);
         }
+        Memory_FreePointer(&data->catalog_dir);
         Memory_FreePointer(&data->dir);
         Memory_FreePointer(&data->catalog_path);
         Memory_FreePointer(&data->description);

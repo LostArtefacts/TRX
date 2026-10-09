@@ -384,6 +384,7 @@ RESULT FMV_Play(const char *const file_path)
     if (!g_Config.gameplay.enable_fmv) {
         return OK;
     }
+    FAIL_IF(file_path == nullptr, "the FMV has no file installed");
 
     m_IsPlaying = true;
     Output_SetSupersamplingEnabled(false);

@@ -2,6 +2,7 @@
 
 #include <trx/game/fx/weather.h>
 #include <trx/game/game_flow/enum.h>
+#include <trx/game/locale/types.h>
 #include <trx/game/music/ids.h>
 #include <trx/game/objects/types.h>
 
@@ -84,7 +85,9 @@ typedef struct {
 } INJECTION_DATA;
 
 typedef struct {
+    // The retail file as the game flow loaded it, for scripts to read.
     const char *path;
+    LOCALE_PATH localized_path;
     bool is_legal;
     bool is_credit;
     bool is_intro;

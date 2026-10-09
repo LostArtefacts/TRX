@@ -6,6 +6,9 @@
 - Fixed Lara moving while the look button was held and two opposite directions were pressed (OG bug) (#6686 / TRX1585)
 - Fixed Lara sometimes sliding along stationary objects when at a standstill at specific angles (OG bug) (TRX1680)
 
+**Music and sound**
+- Added an option to choose the dub apart from the text language, which plays FMVs, music and speech from a language folder beside the retail files (Sound → Voice language) (#1021 / TRX1710)
+
 **Rendering**
 - Added an option to disable reflections on Lara's sunglasses (Graphic Options → Visuals → Reflective sunglasses) (#6665 / TRX1544)
 - Improved the frame rate, as the game now draws solid surfaces faster
@@ -70,6 +73,7 @@
 - Fixed Lara not colliding with the submarine in Diving Area room 70 when soft static collision is enabled (TRX1703, regression from 1.1)
 
 **TR3**
+- Added the Italian FMV names, so the Italian dub plays its FMVs without renaming them (#4618 / TRX1710)
 - Added the demos from the PS1 version, which play when the main menu is left idle (#6713 / TRX1601)
 - Fixed the assault course and quad bike timers showing tenths of a second instead of hundredths (#6704 / TRX1596)
 - Fixed the assault course and quad bike records in the stopwatch showing tenths of a second instead of hundredths (#6704 / TRX1596)

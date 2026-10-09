@@ -2919,3 +2919,25 @@ following structure:
 
 When in doubt, please refer to the "Verifying installation" detailed file
 listings that show where each individual file should go.
+
+# Adding other dubs
+
+Each original release shipped one dub on its disc. TRX plays the files you
+copied as they are, and can also hold the FMVs, music and speech of other dubs
+next to them, so that you can switch between them in Sound → Voice language.
+
+Put a dub in a folder named after its language code inside the folder its
+retail files go to. The Italian TR3 FMVs go in `games/tr3/fmv/it/`, and the
+Italian TR4 speech in `games/tr4/audio/it/`. A dub only needs the files that
+differ: anything it leaves out plays from the retail files.
+
+Voice language offers:
+
+- **Auto**: the dub of the text language where it is installed, and the
+  retail files otherwise.
+- **Retail**: the files you copied, ignoring any dub folders.
+- each dub found in a dub folder, or named by the game flow, such as the
+  Italian TR3 FMVs.
+
+A change takes effect from the next FMV or track that plays. A TR2 or TR3
+`cdaudio` file is picked when the game starts.

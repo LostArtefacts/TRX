@@ -2,6 +2,7 @@
 
 #include <trx/config.h>
 #include <trx/core/benchmark.h>
+#include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/game/clock.h>
 #include <trx/game/console/common.h>
@@ -11,6 +12,7 @@
 #include <trx/game/game_flow.h>
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
+#include <trx/game/locale/common.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/lua/events/ui.h>
 #include <trx/game/music.h>
@@ -53,7 +55,11 @@ static GF_COMMAND M_HandleOverride(const PHASE *const phase)
         // Let movies return to the current phase.
         const GF_FMV *const fmv = GF_GetFMV(gf_override_cmd.param);
         if (fmv != nullptr) {
-            SHOULD(FMV_Play(fmv->path));
+            char *path = Locale_ResolvePath(
+                LOCALE_ROLE_AUDIO, GAME_DYNAMIC_PATH_FMV_FILE,
+                &fmv->localized_path);
+            SHOULD(FMV_Play(path));
+            Memory_FreePointer(&path);
         }
         return (GF_COMMAND) { .action = GF_NOOP };
     }

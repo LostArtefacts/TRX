@@ -14,6 +14,7 @@
 #include <trx/game/inventory.h>
 #include <trx/game/inventory_ring/control.h>
 #include <trx/game/level.h>
+#include <trx/game/locale/common.h>
 #include <trx/game/objects/links.h>
 #include <trx/game/phase.h>
 #include <trx/game/savegame.h>
@@ -28,7 +29,11 @@ static void M_PlayIntroFMVs(void)
     for (int32_t i = 0; i < g_GameFlow.fmv_count; i++) {
         const GF_FMV *const fmv = &g_GameFlow.fmvs[i];
         if (fmv->is_intro) {
-            SHOULD(FMV_Play(fmv->path));
+            char *path = Locale_ResolvePath(
+                LOCALE_ROLE_AUDIO, GAME_DYNAMIC_PATH_FMV_FILE,
+                &fmv->localized_path);
+            SHOULD(FMV_Play(path));
+            Memory_FreePointer(&path);
         }
     }
 }

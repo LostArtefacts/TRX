@@ -1,6 +1,5 @@
 #include <trx/game/game_strings/manager.h>
 
-#include <trx/config.h>
 #include <trx/core/filesystem.h>
 #include <trx/core/json.h>
 #include <trx/core/memory.h>
@@ -11,12 +10,12 @@
 #include <trx/core/vector.h>
 #include <trx/debug.h>
 #include <trx/game/game_flow/common.h>
-#include <trx/game/game_strings/lang_match.h>
 #include <trx/game/game_strings/table.h>
-#include <trx/game/replay/test_replay.h>
+#include <trx/game/locale/common.h>
 #include <trx/game/shell.h>
 #include <trx/game/shell/platform.h>
 
+#include <stdint.h>
 #include <string.h>
 
 // Names the source language for the string files. Other languages use it as
@@ -38,6 +37,7 @@ typedef struct {
 static VECTOR *m_SourceFiles = nullptr;
 static VECTOR *m_LangEntries = nullptr;
 static EVENT_MANAGER *m_EventManager = nullptr;
+static int32_t m_LocaleListener = -1;
 
 static void M_ClearFileEntries(VECTOR *const files)
 {
@@ -224,15 +224,31 @@ static RESULT M_ReloadLangRec(const char *const lang, VECTOR *const visited)
     return OK;
 }
 
+static void M_HandleLocaleChange(const EVENT *const event, void *const data)
+{
+    if ((LOCALE_ROLE)(intptr_t)event->data == LOCALE_ROLE_TEXT) {
+        Result_Absorb(
+            GameStringManager_ReloadLanguage(Locale_GetCode(LOCALE_ROLE_TEXT)));
+    }
+}
+
 static void M_Init(void)
 {
     m_EventManager = EventManager_Create();
+    if (m_LocaleListener < 0) {
+        m_LocaleListener =
+            Locale_SubscribeChanges(M_HandleLocaleChange, nullptr);
+    }
     M_ClearManager();
     m_SourceFiles = Vector_Create(sizeof(M_FILE_ENTRY));
 }
 
 static void M_Shutdown(void)
 {
+    if (m_LocaleListener >= 0) {
+        Locale_UnsubscribeChanges(m_LocaleListener);
+        m_LocaleListener = -1;
+    }
     if (m_EventManager != nullptr) {
         EventManager_Free(m_EventManager);
         m_EventManager = nullptr;
@@ -322,37 +338,6 @@ static void M_DiscoverLanguages(void)
     M_ReorderLanguages();
 }
 
-static void M_FreeCodes(VECTOR *const codes)
-{
-    for (int32_t i = 0; i < codes->count; i++) {
-        Memory_Free(*(char **)Vector_Get(codes, i));
-    }
-    Vector_Free(codes);
-}
-
-// A player who has never launched the game has never said what language they
-// want, so the one their system is set to stands in for the answer. A replay
-// is left out of it: what it plays back has to read the same on every machine.
-static void M_ApplySystemLanguage(void)
-{
-    if (!Config_IsFirstRun() || TestReplay_IsOpened()) {
-        return;
-    }
-    VECTOR *const available = GameStringManager_GetAvailableLanguages();
-    if (available == nullptr) {
-        return;
-    }
-    VECTOR *const preferred = Shell_GetPreferredLanguages();
-    const char *const match =
-        GameStringLang_MatchPreferred(available, preferred);
-    if (match != nullptr) {
-        LOG_INFO("selecting language '%s' from system preferences", match);
-        CONFIG_SET(g_Config.language, match);
-    }
-    M_FreeCodes(preferred);
-    M_FreeCodes(available);
-}
-
 RESULT GameStringManager_LoadForMod(const SHELL_MOD *const mod)
 {
     M_ClearSourceFiles();
@@ -378,8 +363,13 @@ RESULT GameStringManager_LoadForMod(const SHELL_MOD *const mod)
     Memory_FreePointer(&mod_strings_path);
 
     M_DiscoverLanguages();
-    M_ApplySystemLanguage();
-    return GameStringManager_ReloadLanguage(g_Config.language);
+    VECTOR *const preferred = Shell_GetPreferredLanguages();
+    Locale_ApplySystemLanguage(preferred);
+    for (int32_t i = 0; i < preferred->count; i++) {
+        Memory_Free(*(char **)Vector_Get(preferred, i));
+    }
+    Vector_Free(preferred);
+    return GameStringManager_ReloadLanguage(Locale_GetCode(LOCALE_ROLE_TEXT));
 }
 
 VECTOR *GameStringManager_GetAvailableLanguages(void)

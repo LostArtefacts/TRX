@@ -2,9 +2,8 @@
 #include <trx/config/registry.h>
 #include <trx/core/log.h>
 #include <trx/core/memory.h>
-#include <trx/core/result.h>
 #include <trx/core/strings.h>
-#include <trx/game/game_strings/manager.h>
+#include <trx/game/locale/common.h>
 #include <trx/game/ui/dialogs/settings_handlers.h>
 
 #include <stdlib.h>
@@ -28,7 +27,7 @@ static const VECTOR *M_Language_GetLanguages(void)
 {
     if (m_Languages == nullptr) {
         // Initialize available languages for the language option.
-        m_Languages = GameStringManager_GetAvailableLanguages();
+        m_Languages = Locale_GetAvailable(LOCALE_ROLE_TEXT);
         atexit(M_Language_Cleanup);
     }
     return m_Languages;
@@ -51,7 +50,7 @@ static const char *M_Language_FormatValue(
     const CONFIG_OPTION *const option, void *const user_data)
 {
     const char *const code = option->value.as_str;
-    const char *const name = GameStringManager_GetLanguageName(code);
+    const char *const name = Locale_GetLanguageName(code);
     return name != nullptr ? name : code;
 }
 
@@ -90,7 +89,6 @@ static bool M_Language_RequestChangeValue(
     if (!Config_Option_SetFromString(option, new_lang, false)) {
         LOG_WARNING("Failed to set the language");
     }
-    Result_Absorb(GameStringManager_ReloadLanguage(new_lang));
     return true;
 }
 

@@ -1009,6 +1009,12 @@
             "title": "\\{review}Volume maître",
             "description": "\\{review}Ajuste le volume de tous les sons du jeu. Les autres réglages sont relatifs à ce volume.",
         },
+        "audio.media_language": {
+            "auto": "\\{review}Automatique",
+            "description": "\\{review}Choisit la langue des FMV et des répliques parlées, indépendamment de la langue du texte. Automatique joue le doublage de la langue du texte s'il est installé, et Original joue les fichiers tels qu'ils sont installés.",
+            "retail": "\\{review}Original",
+            "title": "\\{review}Langue des voix",
+        },
         "audio.music_load_condition": {
             "title": "\\{review}Reprendre la musique",
             "description": "Restaure la lecture des pistes audio qui étaient en cours de lecture lors de la sauvegarde.\n- Aucune : ne restaure jamais la lecture au chargement.\n- Pistes musicales : reprend uniquement les pistes musicales (hors ambiance) au chargement.\n- Tout : restaure tout type de piste audio au chargement.",

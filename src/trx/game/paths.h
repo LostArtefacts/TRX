@@ -2,6 +2,7 @@
 
 #include <trx/core/file.h>
 #include <trx/core/filesystem.h>
+#include <trx/core/vector.h>
 #include <trx/game/shell/args.h>
 
 // Game path module.
@@ -103,6 +104,10 @@ RESULT GamePath_LoadFile(
 
 // Resolve and check whether the file exists.
 bool GamePath_Exists(GAME_DYNAMIC_PATH path, const char *rel);
+
+// The directories a dynamic path looks in that exist, most preferred first, as
+// a vector of owning strings. The caller frees each string and the vector.
+VECTOR *GamePath_GetSearchDirs(GAME_DYNAMIC_PATH path);
 
 // Guess file extension (e.g. ".mp4" vs ".rpl") with case-aware resolver cache.
 // Returns an owning canonical path or nullptr if no candidate exists; caller
