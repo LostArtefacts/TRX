@@ -16,6 +16,7 @@ X_UI_ROW(gameplay.fix_descending_glitch)
 X_UI_ROW(gameplay.fix_wall_geometry)
 X_UI_ROW(gameplay.wall_glitch_mode)
 
+X_UI_ROW(gameplay.fix_wade_sprint)
 X_UI_ROW(gameplay.fix_wade_wall_hit)
 X_UI_ROW(gameplay.fix_water_exit)
 X_UI_ROW(gameplay.fix_underwater_crawl)

@@ -1419,6 +1419,10 @@
             "title": "\\{review}Corriger le rampement sous l’eau",
             "description": "\\{review}Corrige le problème permettant à Lara de ramper depuis la terre vers des salles d’eau ou de marécage de n’importe quelle profondeur. Si activé, Lara ne pourra ramper que jusqu’à une profondeur légèrement supérieure à un clic.",
         },
+        "gameplay.fix_wade_sprint": {
+            "title": "\\{review}Corriger le sprint dans l'eau peu profonde",
+            "description": "\\{review}Corrige un problème permettant à Lara de sprinter dans l'eau à hauteur de taille si elle y entre en courant.",
+        },
         "gameplay.fix_wade_wall_hit": {
             "title": "\\{review}Corriger le coup de mur en marchant",
             "description": "\\{review}Corrige le fait que Lara ne réagisse pas lorsqu'elle heurte un mur en marchant.",

@@ -1419,6 +1419,10 @@
             "title": "Napraw czołganie pod wodą",
             "description": "Naprawia błąd pozwalający Larze czołgać się z lądu do pomieszczeń z wodą lub bagnem o dowolnej głębokości. Po włączeniu Lara będzie mogła czołgać się jedynie do głębokości nieco większej niż jeden klik.",
         },
+        "gameplay.fix_wade_sprint": {
+            "title": "\\{review}Napraw sprintowanie w wodzie",
+            "description": "\\{review}Naprawia błąd pozwalający Larze sprintować w wodzie sięgającej do pasa, jeśli wbiegnie do niej biegiem.",
+        },
         "gameplay.fix_wade_wall_hit": {
             "title": "Zderzenia w wodzie po pas",
             "description": "Naprawia problem, w którym Lara nie reaguje na uderzenie w ścianę podczas brodzenia w wodzie po pas.",

@@ -1419,6 +1419,10 @@
             "title": "Correggi strisciare sott’acqua",
             "description": "Risolve il problema che permette a Lara di gattonare dalla terraferma in acque di qualsiasi profondità. Se abilitato, Lara potrà gattonare solo fino ad una determinata profondità dell'acqua.",
         },
+        "gameplay.fix_wade_sprint": {
+            "title": "\\{review}Correggi lo sprint in acqua bassa",
+            "description": "\\{review}Corregge un problema che permette a Lara di scattare nell'acqua alta fino alla vita se vi entra correndo.",
+        },
         "gameplay.fix_wade_wall_hit": {
             "title": "Correggi impatto pareti",
             "description": "Risolve il problema per cui Lara non reagisce quando urta una parete mentre guada.",
