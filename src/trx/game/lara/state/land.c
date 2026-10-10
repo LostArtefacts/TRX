@@ -23,7 +23,8 @@
 #define M_SPRINT_TURN_MAX          (DEG_1 * 4)                    // = 728
 #define M_SPRINT_LEAN_MAX          (DEG_1 * 16)                   // = 2192
 #define M_CAM_SLIDE_ELEVATION      (-45 * DEG_1)                  // = -8190
-#define M_CAM_PUSH_BLOCK_ANGLE     (35 * DEG_1)                   // = 6370
+#define M_CAM_PUSH_BLOCK_ANGLE_1_3 (35 * DEG_1)                   // = 6370
+#define M_CAM_PUSH_BLOCK_ANGLE_4   (90 * DEG_1)                   // = 16380
 #define M_CAM_PUSH_BLOCK_ELEVATION (-25 * DEG_1)                  // = -4550
 #define M_CAM_PP_READY_ANGLE       (75 * DEG_1)                   // = 13650
 #define M_CAM_PICKUP_ANGLE         (-130 * DEG_1)                 // = -23660
@@ -757,7 +758,10 @@ static void M_PushBlock(ITEM *const item, COLL_INFO *const coll)
 {
     M_Default(item, coll);
     g_Camera.flags = CF_FOLLOW_CENTRE;
-    g_Camera.target_angle = M_CAM_PUSH_BLOCK_ANGLE;
+    g_Camera.target_angle = item->current_anim_state == LS(LS_PUSH_BLOCK)
+            && g_Config.visuals.camera_mode == CAMERA_MODE_TR4
+        ? M_CAM_PUSH_BLOCK_ANGLE_4
+        : M_CAM_PUSH_BLOCK_ANGLE_1_3;
     g_Camera.target_elevation = M_CAM_PUSH_BLOCK_ELEVATION;
 }
 
