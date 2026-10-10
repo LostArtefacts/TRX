@@ -196,8 +196,9 @@ static void M_Run(ITEM *const item, COLL_INFO *const coll)
     }
 
     if (sprint_requested && g_Config.gameplay.enable_sprint
-        && lara->water_status != LWS_WADE
         && item->current_anim_state == LS(LS_RUN) && lara->sprint_timer > 0
+        && (!g_Config.gameplay.fix_wade_sprint
+            || lara->water_status != LWS_WADE)
         && (g_Config.gameplay.enable_responsive_sprint
             || lara->sprint_timer == LARA_MAX_SPRINT)) {
         item->goal_anim_state = LS(LS_SPRINT);

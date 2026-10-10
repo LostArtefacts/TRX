@@ -38,6 +38,7 @@
         "gameplay.fix_descending_glitch": true,
         "gameplay.fix_qwop_glitch": false,
         "gameplay.fix_step_glitch": false,
+        "gameplay.fix_wade_sprint": false,
         "gameplay.fix_wall_geometry": true,
         "gameplay.fix_water_exit": false,
         "gameplay.jump_lock_mode": "legacy",

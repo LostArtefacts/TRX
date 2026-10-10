@@ -243,6 +243,12 @@ static bool M_FixStepGlitch_IsAvailable(
     return g_Config.gameplay.enable_smooth_wall_deflect;
 }
 
+static bool M_FixWadeSprint_IsAvailable(
+    const CONFIG_OPTION *const option, void *const user_data)
+{
+    return g_Config.gameplay.enable_wading && g_Config.gameplay.enable_sprint;
+}
+
 static bool M_FixWadeWallHit_IsAvailable(
     const CONFIG_OPTION *const option, void *const user_data)
 {
@@ -497,6 +503,10 @@ REGISTER_UI_SETTING_HANDLER(
 
 REGISTER_UI_SETTING_HANDLER(
         .key = "gameplay.m16_aim_mode", .is_available = M_M16_IsAvailable)
+
+REGISTER_UI_SETTING_HANDLER(
+        .key = "gameplay.fix_wade_sprint",
+        .is_available = M_FixWadeSprint_IsAvailable)
 
 REGISTER_UI_SETTING_HANDLER(
         .key = "gameplay.fix_wade_wall_hit",

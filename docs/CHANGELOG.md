@@ -2,6 +2,7 @@
 
 **Lara's movement**
 - Improved Lara's torso rotation handling when going into a crouch and drawing/holstering guns while crouched (#6700)
+- Changed the fix to prevent Lara from sprinting through wading-depth water to be optional (Gameplay → Fixes → Fix wading sprint) (#5868 / TRX699)
 - Fixed Lara being unable to grab zipline handles that are positioned on slopes when animated interactions are enabled (TRX1587, regression from 1.10)
 - Fixed Lara moving while the look button was held and two opposite directions were pressed (OG bug) (#6686 / TRX1585)
 - Fixed Lara sometimes sliding along stationary objects when at a standstill at specific angles (OG bug) (TRX1680)

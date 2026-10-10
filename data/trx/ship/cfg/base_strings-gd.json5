@@ -1419,6 +1419,10 @@
             "title": "Càraich snàgadh fon uisge",
             "description": "Càraichidh seo duilgheadas far am b' urrainn do Lara snàgadh bho thìr gu seòmraichean uisge no boglaich de dhoimhneachd sam bith. Ma tha seo an comas, chan urrainn do Lara snàgadh ach gu doimhneachd beagan nas motha na aon bhriog.",
         },
+        "gameplay.fix_wade_sprint": {
+            "title": "Càraich ruith tro uisge eu-dhomhain",
+            "description": "Ceartaichidh seo duilgheadas a leigeas le Lara a ruith gu luath tro uisge eu-domhainn gu a meadhan ma thèid i a-steach ann a' ruith.",
+        },
         "gameplay.fix_wade_wall_hit": {
             "title": "Càraich buille tro uisge eu-dhomhain",
             "description": "Cuiridh seo ceartachadh air freagairt Lara nuair a bhuail i balla fhad 's a tha i a' coiseachd tro uisge eu-dhomhain.",
