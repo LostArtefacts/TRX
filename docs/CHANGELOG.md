@@ -9,6 +9,7 @@
 - Fixed Lara being unable to grab zipline handles that are positioned on slopes when animated interactions are enabled (TRX1587, regression from 1.10)
 - Fixed Lara moving while the look button was held and two opposite directions were pressed (OG bug) (#6686 / TRX1585)
 - Fixed Lara sometimes sliding along stationary objects when at a standstill at specific angles (OG bug) (TRX1680)
+- Fixed Lara crawl-turning in mid-air if the floor below her gives way (OG TR3 bug)
 
 **Music and sound**
 - Added an option to choose the dub apart from the text language, which plays FMVs, music and speech from a language folder beside the retail files (Sound → Voice language) (#1021 / TRX1710)
@@ -142,6 +143,7 @@
 - Fixed two Von Croy voice lines staying silent with early Italian CDs, which ship them misnamed (TRX659)
 - Fixed Lara embedding into walls when crouched and picking up flares (Gameplay → Fixes → Fix pickup embed glitch)
 - Fixed Lara being able to jump off trapdoors when they open (regression from 1.9)
+- Fixed Lara descending to the floor immediately if she is crawl-turning and the floor below her gives way (OG bug) (Gameplay → Fixes → Fix descending glitch)
 
 **Lua**
 - Added `trx.game.set_bonus_check`, which lets a script decide whether a bonus level opens before it starts to load (#6811 / TRX1704)
