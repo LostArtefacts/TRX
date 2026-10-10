@@ -1239,6 +1239,10 @@
             "title": "Camara làimhe",
             "description": "Cuir comas air putanan a' chamara (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}) a thathas a' cleachdadh gus smachd a chumail air camara Modh Dealbh, gus cuideachd camara a' gheama a chuairteachadh.",
         },
+        "gameplay.enable_monkey_bar_edge_deflect": {
+            "title": "Gluasad far oir bhàraichean",
+            "description": "Leigidh seo le Lara gluasad far oirean bhàraichean crochaidh nuair a tha i a' gluasad air adhart.",
+        },
         "gameplay.enable_monkey_bar_shimmy_turn": {
             "title": "\\{review}Tionndadh air na bàraichean",
             "description": "\\{review}Leigidh seo le Lara tionndadh fhad ’s a tha i a’ gluasad air gach taobh air na bàraichean, mar as urrainn dhi nuair a tha i a’ gluasad air gach taobh no a’ snàmh air gach taobh air uachdar an uisge.",

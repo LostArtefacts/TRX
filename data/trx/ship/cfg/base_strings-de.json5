@@ -1239,6 +1239,10 @@
             "title": "\\{review}Manuelle Kamera",
             "description": "\\{review}Aktiviert die Kameratasten (\\{input camera_forward}\\{input camera_back}\\{input camera_left}\\{input camera_right}), die zur Steuerung der Kamera im Fotomodus verwendet werden, um auch die Ingame-Kamera zu drehen.",
         },
+        "gameplay.enable_monkey_bar_edge_deflect": {
+            "title": "\\{review}Kletterstangen-Abstoß",
+            "description": "\\{review}Ermöglicht Lara, sich beim Vorwärtsbewegen an den Kanten von Kletterstangen abzustoßen.",
+        },
         "gameplay.enable_monkey_bar_shimmy_turn": {
             "title": "\\{review}Drehen beim Hangeln",
             "description": "\\{review}Ermöglicht Lara, sich beim seitlichen Hangeln an den Sprossen zu drehen, ähnlich wie beim seitlichen Bewegen oder Seitwärtsschwimmen an der Wasseroberfläche.",
