@@ -1939,6 +1939,10 @@
             "title": "Illuminazione spari",
             "description": "Abilita l'illuminazione dinamica per spari ed esplosioni.",
         },
+        "visuals.enable_level_start_fade_effects": {
+            "title": "\\{review}Dissolvenza all'inizio del livello",
+            "description": "\\{review}Abilita la dissolvenza dal nero quando inizia un livello o si carica un salvataggio.",
+        },
         "visuals.enable_photo_mode_collision": {
             "title": "Collisioni in modalità foto",
             "description": "Impedisce alla telecamera di attraversare le geometrie durante la navigazione di un livello in modalità foto. Se disabilitata, la telecamera può attraversare liberamente pareti, soffitti e pavimenti.",

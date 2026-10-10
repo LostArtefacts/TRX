@@ -1939,6 +1939,10 @@
             "title": "Efekty świetlne broni",
             "description": "Włącza dynamiczne oświetlenie przy strzelaniu z broni i eksplozjach.",
         },
+        "visuals.enable_level_start_fade_effects": {
+            "title": "\\{review}Przejście na początku poziomu",
+            "description": "\\{review}Włącza efekt płynnego rozjaśnienia z czerni na początku poziomu lub po wczytaniu zapisu.",
+        },
         "visuals.enable_photo_mode_collision": {
             "title": "\\{review}Kolizja w trybie fotograficznym",
             "description": "\\{review}Wymusza zgodność kamery z geometrią podczas poruszania się po poziomie w trybie fotograficznym. Po wyłączeniu tej opcji kamera może swobodnie przenikać przez ściany, sufity i podłogi.",

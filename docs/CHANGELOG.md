@@ -109,6 +109,7 @@
 - Added Enemy Jeep control (TRX1549)
 - Added Trapdoor 1-3 control (TRX1565)
 - Added level views before play starts, with a progress bar (TRX493)
+- Added the fade-in from black when a level starts or a save is loaded, with an option to turn it off (Graphics → UI → Fade on level start) (TRX1375)
 - Added Seth Sarcophagus and the Burial Chambers cutscene where Lara takes the Amulet (TRX1561)
 - Added the ability to carry a lit flare into the next level, as in the original game (TRX1345)
 - Changed inventory items to use the original size and angle for each level's puzzle, key, pickup, and examine items

@@ -1939,6 +1939,10 @@
             "title": "Éclairage des armes",
             "description": "\\{review}Permet de générer un éclairage dynamique pour les coups de feu et les explosions.",
         },
+        "visuals.enable_level_start_fade_effects": {
+            "title": "\\{review}Fondu au début du niveau",
+            "description": "\\{review}Active le fondu depuis le noir au début d'un niveau ou au chargement d'une sauvegarde.",
+        },
         "visuals.enable_photo_mode_collision": {
             "title": "\\{review}Collision en mode photo",
             "description": "\\{review}Force la caméra à respecter la géométrie lors des déplacements dans un niveau en mode photo. Si cette option est désactivée, la caméra peut traverser librement les murs, les plafonds et les sols.",
