@@ -550,21 +550,24 @@ static void M_FastBack(ITEM *const item, COLL_INFO *const coll)
         return;
     }
 
-    if (coll->side_mid.floor <= 200) {
-        if (!g_Config.gameplay.enable_back_slope_stumble
-            || !Lara_Col_TestSlide(item, coll)) {
-            if (M_DeflectEdge(item, coll)) {
-                M_CollideStop(item, coll);
-            }
-            Lara_Col_AlignToFloor(item, coll);
-        }
-    } else {
+    if (coll->side_mid.floor > 200) {
         Item_SwitchToAnim(item, LA(LA_FALL_BACK), 0);
         item->current_anim_state = LS(LS_FALL_BACK);
         item->goal_anim_state = LS(LS_FALL_BACK);
         item->gravity = true;
         item->fall_speed = 0;
+        return;
     }
+
+    if (g_Config.gameplay.enable_back_slope_stumble
+        && Lara_Col_TestSlide(item, coll)) {
+        return;
+    }
+
+    if (M_DeflectEdge(item, coll)) {
+        M_CollideStop(item, coll);
+    }
+    Lara_Col_AlignToFloor(item, coll);
 }
 
 static void M_Turn(ITEM *const item, COLL_INFO *const coll)

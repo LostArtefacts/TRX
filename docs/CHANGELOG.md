@@ -9,6 +9,7 @@
 - Fixed Lara being unable to grab zipline handles that are positioned on slopes when animated interactions are enabled (TRX1587, regression from 1.10)
 - Fixed Lara moving while the look button was held and two opposite directions were pressed (OG bug) (#6686 / TRX1585)
 - Fixed Lara sometimes sliding along stationary objects when at a standstill at specific angles (OG bug) (TRX1680)
+- Fixed Lara's position while vaulting to prevent cases where she may be slightly embedded into the block she is interacting with (OG bug)
 
 **Music and sound**
 - Added an option to choose the dub apart from the text language, which plays FMVs, music and speech from a language folder beside the retail files (Sound → Voice language) (#1021 / TRX1710)
@@ -36,6 +37,9 @@
 - Fixed the game not fading to black when it was exited during an FMV (TRX1616)
 - Fixed the stats background help naming the wrong style for TR2 (PS1) (#6711 / TRX1598)
 - Fixed custom keyboard bindings interfering with menu navigation, such as a game key bound to an arrow key also confirming or going back (#5704 / TRX520)
+
+**Camera**
+- Fixed the TR4 camera using the wrong angle when Lara is pushing a pushblock (regression from 1.10)
 
 **Developer console**
 - Added the `/restartlevel` console command, also available as `/restart`, which restarts the current level (#6712 / TRX1599)

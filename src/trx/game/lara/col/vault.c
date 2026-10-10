@@ -286,6 +286,23 @@ static bool M_ExecuteCandidate(
     item->rot.y = angle;
     Lara_Col_Shift(coll);
 
+    switch (Math_GetDirection(angle)) {
+    case DIR_NORTH:
+        item->pos.z = ROUND_TO_SECTOR_END(item->pos.z) - LARA_RADIUS;
+        break;
+    case DIR_EAST:
+        item->pos.x = ROUND_TO_SECTOR_END(item->pos.x) - LARA_RADIUS;
+        break;
+    case DIR_SOUTH:
+        item->pos.z = ROUND_TO_SECTOR(item->pos.z) + LARA_RADIUS;
+        break;
+    case DIR_WEST:
+        item->pos.x = ROUND_TO_SECTOR(item->pos.x) + LARA_RADIUS;
+        break;
+    default:
+        break;
+    }
+
     LARA_INFO *const lara = Lara_GetLaraInfo();
     lara->sprinting = false;
     lara->crouching = false;
