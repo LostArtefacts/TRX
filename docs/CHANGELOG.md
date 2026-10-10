@@ -38,6 +38,9 @@
 - Fixed the stats background help naming the wrong style for TR2 (PS1) (#6711 / TRX1598)
 - Fixed custom keyboard bindings interfering with menu navigation, such as a game key bound to an arrow key also confirming or going back (#5704 / TRX520)
 
+**Camera**
+- Fixed the TR4 camera using the wrong angle when Lara is pushing a pushblock (regression from 1.10)
+
 **Developer console**
 - Added the `/restartlevel` console command, also available as `/restart`, which restarts the current level (#6712 / TRX1599)
 - Added `/debug zones`, which outlines the zones a mod watches (#6726)
