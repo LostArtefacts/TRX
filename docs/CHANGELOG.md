@@ -32,6 +32,7 @@
 - Fixed the game not fading to black when it was exited during an FMV (TRX1616)
 - Fixed the stats background help naming the wrong style for TR2 (PS1) (#6711 / TRX1598)
 - Fixed custom keyboard bindings interfering with menu navigation, such as a game key bound to an arrow key also confirming or going back (#5704 / TRX520)
+- Fixed dialogs moving down when the FPS counter or another corner element is shown, even where the dialog does not reach it
 
 **Developer console**
 - Added the `/restartlevel` console command, also available as `/restart`, which restarts the current level (#6712 / TRX1599)
@@ -211,6 +212,7 @@
 - Added a UI layer above the game interface
     - `trx.ui.Layer` and the `layer` setting of `trx.ui.regions.place`
 - Added `trx.ui.widgets.Custom`, a widget that measures and draws itself through script functions
+- Added `trx.ui.safe_area_for`, the room a centered box of a given width has, so that a narrow box need not keep clear of what sits in a corner
 - Added script support for stacking screens, such as a menu with a question over it
     - `trx.ui.layers.push`
     - `trx.ui.layers.top`

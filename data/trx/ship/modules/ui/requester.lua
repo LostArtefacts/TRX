@@ -218,7 +218,7 @@ end
 function M.anchored(anchor, margin)
   margin = margin or 0
   return function(w, h)
-    local safe = trx.ui.safe_area
+    local safe = trx.ui.safe_area_for(w)
     return safe.x + (safe.width - w) / 2,
       safe.y + margin + (safe.height - 2 * margin - h) * anchor
   end

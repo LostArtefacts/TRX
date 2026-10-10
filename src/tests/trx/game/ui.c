@@ -487,6 +487,42 @@ TEST(ui_the_middle_region_gets_what_the_bands_leave)
     Subsystem_ShutdownAll();
 }
 
+// A corner takes room only from a box wide enough to reach it.
+TEST(ui_a_corner_narrows_only_a_box_that_reaches_it)
+{
+    Subsystem_InitAll();
+    M_SetLanguage(nullptr);
+    M_SetUp(1, nullptr, 1.0f);
+
+    float x = 0.0f;
+    float y = 0.0f;
+    float w = 0.0f;
+    float h = 0.0f;
+
+    UI_BeginScene();
+    UI_BeginRegion(UI_REGION_TOP_LEFT);
+    UI_Label("60 FPS");
+    UI_EndRegion();
+    UI_EndScene();
+
+    float full_y = 0.0f;
+    UI_Region_GetCenterBox(&x, &full_y, &w, &h);
+    CHECK(full_y > 0);
+
+    // A narrow box in the middle does not reach the corner.
+    UI_Region_GetCenterBoxFor(100.0f, &x, &y, &w, &h);
+    CHECK(y < full_y);
+    CHECK(UI_GetSafeCanvasTopFor(100.0f) < UI_GetSafeCanvasTop());
+
+    // A box as wide as the screen does.
+    UI_Region_GetCenterBoxFor(UI_GetCanvasWidth(), &x, &y, &w, &h);
+    CHECK_EQ_INT(y, full_y);
+    UI_Region_GetCenterBoxFor(-1.0f, &x, &y, &w, &h);
+    CHECK_EQ_INT(y, full_y);
+
+    Subsystem_ShutdownAll();
+}
+
 // Recorded draw calls describe the scene without rendering it.
 TEST(ui_draw_describes_what_a_scene_scheduled)
 {

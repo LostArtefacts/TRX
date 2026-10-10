@@ -74,6 +74,13 @@ float UI_GetSafeCanvasBottom(void);
 // Returns the height available to dialogs.
 float UI_GetSafeCanvasHeight(void);
 
+// The same bounds for a dialog of the given width, centered: a region at the
+// top or the bottom of the screen narrows them only if the dialog would reach
+// it. A negative width is the widest a dialog can be.
+float UI_GetSafeCanvasTopFor(float width);
+float UI_GetSafeCanvasBottomFor(float width);
+float UI_GetSafeCanvasHeightFor(float width);
+
 // Returns the text-scale factor needed to fit a dialog into the safe canvas.
 // Pass -1 for an unconstrained axis. Both sizes include frame and padding, in
 // text units before the player's text scale.
