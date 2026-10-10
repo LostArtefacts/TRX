@@ -38,6 +38,12 @@ void UI_Region_Layout(void);
 // Returns the middle box from the last call to UI_Region_Layout.
 void UI_Region_GetCenterBox(float *x, float *y, float *w, float *h);
 
+// Returns the middle box as a box of the given width, centered in it, sees
+// it: a region at the top or the bottom takes room from it only if the box
+// would reach that region. A negative width is as wide as the middle box.
+void UI_Region_GetCenterBoxFor(
+    float width, float *x, float *y, float *w, float *h);
+
 // Reserves space in a region and returns its slot for the current scene.
 int32_t UI_Region_Reserve(UI_REGION region, float w, float h);
 

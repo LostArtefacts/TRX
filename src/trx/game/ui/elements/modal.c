@@ -22,12 +22,16 @@ static void M_Layout(
 {
     UI_LayoutBasic(node, x, y, w, h);
     const M_DATA *const data = node->data;
-    const float child_x = data->whole_screen ? x : x + UI_SCREEN_MARGIN;
-    const float child_y = data->whole_screen ? y : y + UI_GetSafeCanvasTop();
-    const float child_w = data->whole_screen ? w : UI_GetSafeCanvasWidth();
-    const float child_h = data->whole_screen ? h : UI_GetSafeCanvasHeight();
     UI_NODE *child = node->first_child;
     while (child != nullptr) {
+        // A dialog keeps clear only of the regions it is wide enough to reach.
+        const float width = child->measure_w;
+        const float child_x = data->whole_screen ? x : x + UI_SCREEN_MARGIN;
+        const float child_y =
+            data->whole_screen ? y : y + UI_GetSafeCanvasTopFor(width);
+        const float child_w = data->whole_screen ? w : UI_GetSafeCanvasWidth();
+        const float child_h =
+            data->whole_screen ? h : UI_GetSafeCanvasHeightFor(width);
         if (child->ops.layout != nullptr) {
             child->ops.layout(child, child_x, child_y, child_w, child_h);
         }
