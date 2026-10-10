@@ -59,16 +59,19 @@ local function chrome_height(has_title, scrolls)
   return height
 end
 
-local function available_height()
-  return trx.ui.safe_area.height / trx.ui.text_scale
+-- The room a dialog of the given width has, which is the whole safe area
+-- unless it is narrow enough to clear what sits in the corners.
+local function available_height(width)
+  local area = width ~= nil and trx.ui.safe_area_for(width) or trx.ui.safe_area
+  return area.height / trx.ui.text_scale
 end
 
 -- How many rows fit on the screen, within the bounds the originals keep. The
 -- scroll arrows take room of their own, so the rows are counted again with
 -- them where the list does not fit without them.
-local function fit_rows(settings, count)
+local function fit_rows(settings, count, width)
   local function fits(scrolls)
-    local room = available_height()
+    local room = available_height(width)
       - (settings.footer_height or 0)
       - chrome_height(settings.title ~= nil, scrolls)
       + settings.row_spacing
@@ -103,12 +106,21 @@ function M.new(settings)
   ---@field place? fun(w: number, h: number): number, number
   local req = { rows = settings.rows or {} }
 
+  -- How wide the frame is decides which corners it has to keep clear of, and
+  -- so how much room its rows have.
+  local function frame_width()
+    if req.panel ~= nil then
+      return (req.panel:measure())
+    end
+    return settings.width
+  end
+
   -- How many rows fit, which follows the rows and the room the screen leaves.
   -- It is worked out again on every tick that the dialog reads input, and the
   -- list measures itself again only where the count changes.
-  local visible = trx.signal.new(fit_rows(settings, #req.rows))
+  local visible = trx.signal.new(fit_rows(settings, #req.rows, frame_width()))
   local function refit()
-    visible:set(fit_rows(settings, #req.rows))
+    visible:set(fit_rows(settings, #req.rows, frame_width()))
   end
 
   req.list = trx.ui.widgets.List({
@@ -218,7 +230,7 @@ end
 function M.anchored(anchor, margin)
   margin = margin or 0
   return function(w, h)
-    local safe = trx.ui.safe_area
+    local safe = trx.ui.safe_area_for(w)
     return safe.x + (safe.width - w) / 2,
       safe.y + margin + (safe.height - 2 * margin - h) * anchor
   end
@@ -235,14 +247,14 @@ function M.on_page_line(req, anchor, footer_height)
       title = "",
       row_spacing = spacing,
       footer_height = footer_height,
-    }, MAX_VISIBLE_ROWS + 1)
+    }, MAX_VISIBLE_ROWS + 1, w)
     local height = chrome_height(true, true)
       + rows * TEXT_HEIGHT
       + (rows - 1) * spacing
-    local line = (available_height() - height - 5) * anchor
+    local line = (available_height(w) - height - 5) * anchor
       + (height - footer_height) / 2
     local _, panel_height = req.panel:measure()
-    local safe = trx.ui.safe_area
+    local safe = trx.ui.safe_area_for(w)
     return safe.x + (safe.width - w) / 2,
       safe.y + line * trx.ui.text_scale - panel_height / 2
   end

@@ -295,27 +295,43 @@ float UI_GetSafeCanvasWidth(void)
 
 float UI_GetSafeCanvasTop(void)
 {
-    float x = 0.0f;
-    float y = 0.0f;
-    float w = 0.0f;
-    float h = 0.0f;
-    UI_Region_GetCenterBox(&x, &y, &w, &h);
-    return MAX(UI_SCREEN_MARGIN, y);
+    return UI_GetSafeCanvasTopFor(-1.0f);
 }
 
 float UI_GetSafeCanvasBottom(void)
 {
-    float x = 0.0f;
-    float y = 0.0f;
-    float w = 0.0f;
-    float h = 0.0f;
-    UI_Region_GetCenterBox(&x, &y, &w, &h);
-    return MIN(UI_GetCanvasHeight() - UI_SCREEN_MARGIN, y + h);
+    return UI_GetSafeCanvasBottomFor(-1.0f);
 }
 
 float UI_GetSafeCanvasHeight(void)
 {
-    return MAX(0.0f, UI_GetSafeCanvasBottom() - UI_GetSafeCanvasTop());
+    return UI_GetSafeCanvasHeightFor(-1.0f);
+}
+
+float UI_GetSafeCanvasTopFor(const float width)
+{
+    float x = 0.0f;
+    float y = 0.0f;
+    float w = 0.0f;
+    float h = 0.0f;
+    UI_Region_GetCenterBoxFor(width, &x, &y, &w, &h);
+    return MAX(UI_SCREEN_MARGIN, y);
+}
+
+float UI_GetSafeCanvasBottomFor(const float width)
+{
+    float x = 0.0f;
+    float y = 0.0f;
+    float w = 0.0f;
+    float h = 0.0f;
+    UI_Region_GetCenterBoxFor(width, &x, &y, &w, &h);
+    return MIN(UI_GetCanvasHeight() - UI_SCREEN_MARGIN, y + h);
+}
+
+float UI_GetSafeCanvasHeightFor(const float width)
+{
+    return MAX(
+        0.0f, UI_GetSafeCanvasBottomFor(width) - UI_GetSafeCanvasTopFor(width));
 }
 
 void UI_ForgetSmallestFitScale(void)

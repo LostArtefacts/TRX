@@ -67,6 +67,20 @@ static struct {
     float h;
 } m_CenterBox;
 
+// What the last call to UI_Region_Layout laid the regions out in, and where
+// each top and bottom region ended up across it. A box that reaches no corner
+// need not keep clear of the band the corner sets.
+static struct {
+    float y;
+    float h;
+} m_Area;
+
+static struct {
+    float x0;
+    float x1;
+    float h;
+} m_Edges[UI_REGION_NUMBER_OF];
+
 static float M_MeasuredHeight(const M_DATA *const data, const UI_REGION region)
 {
     const UI_NODE *const slot = data->slots[region];
@@ -121,6 +135,11 @@ static void M_Layout(
     m_CenterBox.y = middle_y;
     m_CenterBox.w = MAX(0.0f, w - left - right);
     m_CenterBox.h = middle_h;
+    m_Area.y = y;
+    m_Area.h = h;
+    for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
+        m_Edges[i].h = 0.0f;
+    }
 
     for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
         UI_NODE *const slot = data->slots[i];
@@ -145,10 +164,34 @@ static void M_Layout(
 
         const float cw = slot->measure_w;
         const float ch = slot->measure_h;
+        const float cx = box_x + M_Offset(box_w - cw, m_Regions[i].x);
         slot->ops.layout(
-            slot, box_x + M_Offset(box_w - cw, m_Regions[i].x),
-            box_y + M_Offset(box_h - ch, m_Regions[i].y), cw, ch);
+            slot, cx, box_y + M_Offset(box_h - ch, m_Regions[i].y), cw, ch);
+        m_Edges[i].x0 = cx;
+        m_Edges[i].x1 = cx + cw;
+        m_Edges[i].h = ch;
     }
+}
+
+// The height a row of regions takes from a box of the given width, centered:
+// only the regions the box would reach.
+static float M_BandHeightFor(
+    const float width, const UI_REGION left, const UI_REGION center,
+    const UI_REGION right)
+{
+    const float middle = m_CenterBox.x + m_CenterBox.w * 0.5f;
+    const float x0 = middle - width * 0.5f;
+    const float x1 = middle + width * 0.5f;
+    const UI_REGION regions[] = { left, center, right };
+    float result = 0.0f;
+    for (int32_t i = 0; i < 3; i++) {
+        const UI_REGION region = regions[i];
+        if (m_Edges[region].h > 0.0f && m_Edges[region].x0 < x1
+            && m_Edges[region].x1 > x0) {
+            result = MAX(result, m_Edges[region].h);
+        }
+    }
+    return result;
 }
 
 static void M_ForgetStaleNodes(void)
@@ -312,6 +355,23 @@ void UI_Region_GetCenterBox(
     *y = m_CenterBox.y;
     *w = m_CenterBox.w;
     *h = m_CenterBox.h;
+}
+
+void UI_Region_GetCenterBoxFor(
+    const float width, float *const x, float *const y, float *const w,
+    float *const h)
+{
+    UI_Region_GetCenterBox(x, y, w, h);
+    if (width < 0.0f || m_CenterBox.w <= 0.0f || m_CenterBox.h <= 0.0f) {
+        return;
+    }
+    const float top = M_BandHeightFor(
+        width, UI_REGION_TOP_LEFT, UI_REGION_TOP_CENTER, UI_REGION_TOP_RIGHT);
+    const float bottom = M_BandHeightFor(
+        width, UI_REGION_BOTTOM_LEFT, UI_REGION_BOTTOM_CENTER,
+        UI_REGION_BOTTOM_RIGHT);
+    *y = m_Area.y + top;
+    *h = MAX(0.0f, m_Area.h - top - bottom);
 }
 
 bool UI_Region_IsEmpty(const UI_REGION region)

@@ -278,6 +278,27 @@ h.properties(M, "ui", {
   },
 })
 
+---The part of the canvas that a box of the given width, centered, is free to
+---take. Unlike `trx.ui.safe_area`, an edge of the interface takes room from it
+---only if the box is wide enough to reach that edge, so a narrow box ignores
+---what sits in a corner, such as the FPS counter.
+---
+---```lua
+---local area = trx.ui.safe_area_for(200)
+---```
+---@param width number How wide the box is, in canvas units.
+---@return trx.ui.Area # The room the box has.
+function M.safe_area_for(width)
+  local safe_width = raw.get_safe_width()
+  local top = raw.get_safe_top(width)
+  return {
+    x = (raw.get_canvas_width() - safe_width) / 2,
+    y = top,
+    width = safe_width,
+    height = raw.get_safe_bottom(width) - top,
+  }
+end
+
 ---A model the interface keeps on screen across ticks. Move it once per tick;
 ---the engine blends between its current and previous poses when it draws each
 ---frame. The fields report the current tick's pose.

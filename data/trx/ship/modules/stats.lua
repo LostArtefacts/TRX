@@ -918,10 +918,11 @@ local function build(state)
 end
 
 -- The box stands in the safe area at the look's height, and a box too large
--- for the room starts at its top left rather than off the screen.
+-- for the room starts at its top left rather than off the screen. A box keeps
+-- clear only of the corners it is wide enough to reach.
 local function place(state)
   return function(w, h)
-    local safe = trx.ui.safe_area
+    local safe = trx.ui.safe_area_for(w)
     local function offset(slack, ratio)
       return slack >= 0 and f32(slack * ratio) or 0
     end

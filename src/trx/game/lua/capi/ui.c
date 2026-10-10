@@ -111,17 +111,19 @@ static int M_L_UIWorkingBottom(lua_State *const L)
     return 1;
 }
 
-// trxc.ui.get_safe_top(): number
+// trxc.ui.get_safe_top(width?: number): number
 static int M_L_UISafeTop(lua_State *const L)
 {
-    lua_pushnumber(L, UI_GetSafeCanvasTop());
+    lua_pushnumber(
+        L, UI_GetSafeCanvasTopFor((float)luaL_optnumber(L, 1, -1.0)));
     return 1;
 }
 
-// trxc.ui.get_safe_bottom(): number
+// trxc.ui.get_safe_bottom(width?: number): number
 static int M_L_UISafeBottom(lua_State *const L)
 {
-    lua_pushnumber(L, UI_GetSafeCanvasBottom());
+    lua_pushnumber(
+        L, UI_GetSafeCanvasBottomFor((float)luaL_optnumber(L, 1, -1.0)));
     return 1;
 }
 
