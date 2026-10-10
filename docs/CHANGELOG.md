@@ -141,6 +141,7 @@
 - Fixed the total kills showing as 3 in Race for the Iris, rather than 0 (TRX1689, regression from 1.10)
 - Fixed two Von Croy voice lines staying silent with early Italian CDs, which ship them misnamed (TRX659)
 - Fixed Lara embedding into walls when crouched and picking up flares (Gameplay → Fixes → Fix pickup embed glitch)
+- Fixed Lara being able to jump off trapdoors when they open (regression from 1.9)
 
 **Lua**
 - Added `trx.game.set_bonus_check`, which lets a script decide whether a bonus level opens before it starts to load (#6811 / TRX1704)
