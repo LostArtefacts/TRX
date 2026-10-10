@@ -21,6 +21,7 @@
 #define M_LEDGE_JUMP_HEIGHT_UP   (LARA_HEIGHT + (STEP_L * 3) / 8) // = 858
 #define M_LEDGE_JUMP_HEIGHT_BACK (LARA_HEIGHT - (STEP_L * 5) / 4) // = 442
 #define M_HANG_SHIFT             (g_TRVersion >= 3 ? 4 : 2)
+#define M_CLIMB_HANG_SHIFT       (g_TRVersion < 4 ? M_HANG_SHIFT : STEP_L)
 #define M_CLIMB_WIDTH_CORNER     120
 #define M_CORNER_SIDE_SHIFT      16
 #define M_CORNER_FRONT_DIST      (LARA_RADIUS + M_CORNER_SIDE_SHIFT) // = 116
@@ -72,25 +73,25 @@ static M_CLIMB_RESULT M_TestClimbPos(
     case DIR_NORTH:
         x = item->pos.x + right;
         z = item->pos.z + front;
-        z_front = M_HANG_SHIFT;
+        z_front = M_CLIMB_HANG_SHIFT;
         break;
 
     case DIR_EAST:
         x = item->pos.x + front;
         z = item->pos.z - right;
-        x_front = M_HANG_SHIFT;
+        x_front = M_CLIMB_HANG_SHIFT;
         break;
 
     case DIR_SOUTH:
         x = item->pos.x - right;
         z = item->pos.z - front;
-        z_front = -M_HANG_SHIFT;
+        z_front = -M_CLIMB_HANG_SHIFT;
         break;
 
     case DIR_WEST:
         x = item->pos.x - front;
         z = item->pos.z + right;
-        x_front = -M_HANG_SHIFT;
+        x_front = -M_CLIMB_HANG_SHIFT;
         break;
 
     default:
