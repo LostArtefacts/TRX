@@ -380,6 +380,13 @@ static void M_CrawlTurn(ITEM *const item, COLL_INFO *const coll)
     Collide_GetCollisionInfo(
         coll, item->pos, item->room_num, LARA_HEIGHT_CROUCH);
     Lara_Col_CrawlTilt(item);
+
+    if (g_Config.gameplay.fix_descending_glitch
+        && Lara_Col_Fallen(item, coll)) {
+        Lara_GetLaraInfo()->gun_status = LGS_ARMLESS;
+    } else if (coll->side_mid.floor > -STEP_L) {
+        Lara_Col_AlignToFloor(item, coll);
+    }
 }
 
 static void M_CrawlBack(ITEM *const item, COLL_INFO *const coll)
