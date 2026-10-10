@@ -248,6 +248,13 @@ static void M_Compress(ITEM *const item, COLL_INFO *const coll)
 
     Lara_Col_GetInfo(item, coll);
 
+    // TRX originally offered this fix using gameplay.fix_descending_glitch. In
+    // #830, it was decided it should remain for older engine versions. TR4
+    // introduced the permanent fix.
+    if (g_TRVersion >= 4 && Lara_Col_Fallen(item, coll)) {
+        return;
+    }
+
     if (coll->side_mid.ceiling > -100) {
         Item_SwitchToAnim(item, LA(LA_STAND_STILL), 0);
         item->goal_anim_state = LS(LS_STOP);
