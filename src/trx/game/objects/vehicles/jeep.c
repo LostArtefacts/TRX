@@ -427,7 +427,7 @@ static void M_Collision(
 static bool M_CanDismount(const ITEM *const item)
 {
     const XYZ_32 pos =
-        XYZ_32_OffsetYaw(item->pos, item->rot.y + DEG_90, STEP_L * 2);
+        XYZ_32_OffsetYaw(item->pos, item->rot.y + DEG_90, -STEP_L * 2);
     int16_t room_num = item->room_num;
     const SECTOR *const sector = Room_GetSector(pos, &room_num);
     const int32_t height = Room_GetHeight(sector, pos);
