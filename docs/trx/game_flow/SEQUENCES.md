@@ -291,7 +291,7 @@ default game flow for examples.
   </tr>
   <tr valign="top">
     <td><code>set_lara_start_anim</code></td>
-    <td><code>value</code></td>
+    <td><code>anim</code></td>
     <td>Integer</td>
     <td>
       Applies the selected animation to Lara when the level begins. This is
@@ -300,7 +300,7 @@ default game flow for examples.
   </tr>
   <tr valign="top">
     <td><code>disable_floor</code></td>
-    <td><code>value</code></td>
+    <td><code>height</code></td>
     <td>Integer</td>
     <td>
       Configures a specific height (with 256 representing 1 click and 1024
