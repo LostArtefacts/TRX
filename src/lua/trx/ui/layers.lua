@@ -206,7 +206,7 @@ end
 
 ---@class (exact) trx.ui.layers.push.settings
 ---@field root trx.ui.Widget The widget tree to draw.
----@field region? trx.ui.Region The region that the tree takes room in. The tree then stacks with the other widgets in that region. Without a region or a place, the tree is centered in `trx.ui.safe_area`.
+---@field region? trx.ui.Region The region that the tree takes room in. The tree then stacks with the other widgets in that region. Without a region or a place, the tree is centered in `trx.ui.safe_area_for` its width.
 ---@field place? function Returns the top left corner of the tree, in canvas units. It receives the width and the height that the tree measures.
 ---@field modal? boolean Whether the layer reads input. `true` by default.
 ---@field on_input? function Runs once a tick while the layer is the top layer that reads input. It receives the layer and a `trx.ui.LayerKeys`. An error closes the layer.
@@ -284,7 +284,7 @@ local function box_of(layer)
     local x, y = layer.place(w, h)
     return x, y, w, h
   end
-  local safe = trx.ui.safe_area
+  local safe = trx.ui.safe_area_for(w)
   return safe.x + (safe.width - w) / 2, safe.y + (safe.height - h) / 2, w, h
 end
 

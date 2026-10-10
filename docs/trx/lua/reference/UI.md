@@ -332,7 +332,7 @@ arrow, and `\{button left}` draws the button the player has bound.
 
         Keys:
         - <a id="ui.ScreenContext.push.settings.root" name="ui.ScreenContext.push.settings.root"></a>**`root`** ([trx.ui.Widget](#ui.Widget)). The widget tree to draw.
-        - <a id="ui.ScreenContext.push.settings.region" name="ui.ScreenContext.push.settings.region"></a>**`region`** ([trx.ui.Region](#ui.Region), optional). The region that the tree takes room in. The tree then stacks with the other widgets in that region. Without a region or a place, the tree is centered in [`trx.ui.safe_area`](#ui.safe_area).
+        - <a id="ui.ScreenContext.push.settings.region" name="ui.ScreenContext.push.settings.region"></a>**`region`** ([trx.ui.Region](#ui.Region), optional). The region that the tree takes room in. The tree then stacks with the other widgets in that region. Without a region or a place, the tree is centered in [`trx.ui.safe_area_for`](#ui.safe_area_for) its width.
         - <a id="ui.ScreenContext.push.settings.place" name="ui.ScreenContext.push.settings.place"></a>**`place`** (function, optional). Returns the top left corner of the tree, in canvas units. It receives the width and the height that the tree measures.
         - <a id="ui.ScreenContext.push.settings.modal" name="ui.ScreenContext.push.settings.modal"></a>**`modal`** (boolean, optional). Whether the layer reads input. `true` by default.
         - <a id="ui.ScreenContext.push.settings.on_input" name="ui.ScreenContext.push.settings.on_input"></a>**`on_input`** (function, optional). Runs once a tick while the layer is the top layer that reads input. It receives the layer and a [`trx.ui.LayerKeys`](#ui.LayerKeys). An error closes the layer.
@@ -584,6 +584,22 @@ arrow, and `\{button left}` draws the button the player has bound.
 
   Returns: [trx.events.Listener](EVENTS.md#events.Listener). The attached handler.
 
+- <a id="ui.safe_area_for" name="ui.safe_area_for"></a>[lua]`trx.ui.safe_area_for(width)`  
+  The part of the canvas that a box of the given width, centered, is free to
+  take. Unlike [`trx.ui.safe_area`](#ui.safe_area), an edge of the interface takes room from it
+  only if the box is wide enough to reach that edge, so a narrow box ignores
+  what sits in a corner, such as the FPS counter.
+
+  Parameters:
+  - <a id="ui.safe_area_for.width" name="ui.safe_area_for.width"></a>**`width`** (number). How wide the box is, in canvas units.
+
+  Returns: [trx.ui.Area](#ui.Area). The room the box has.
+
+  Example:
+  ```lua
+  local area = trx.ui.safe_area_for(200)
+  ```
+
 - <a id="ui.mesh_slot" name="ui.mesh_slot"></a>[lua]`trx.ui.mesh_slot()`  
   Takes a slot for a model the interface keeps on screen across ticks.
 
@@ -604,7 +620,7 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     Keys:
     - <a id="ui.layers.push.settings.root" name="ui.layers.push.settings.root"></a>**`root`** ([trx.ui.Widget](#ui.Widget)). The widget tree to draw.
-    - <a id="ui.layers.push.settings.region" name="ui.layers.push.settings.region"></a>**`region`** ([trx.ui.Region](#ui.Region), optional). The region that the tree takes room in. The tree then stacks with the other widgets in that region. Without a region or a place, the tree is centered in [`trx.ui.safe_area`](#ui.safe_area).
+    - <a id="ui.layers.push.settings.region" name="ui.layers.push.settings.region"></a>**`region`** ([trx.ui.Region](#ui.Region), optional). The region that the tree takes room in. The tree then stacks with the other widgets in that region. Without a region or a place, the tree is centered in [`trx.ui.safe_area_for`](#ui.safe_area_for) its width.
     - <a id="ui.layers.push.settings.place" name="ui.layers.push.settings.place"></a>**`place`** (function, optional). Returns the top left corner of the tree, in canvas units. It receives the width and the height that the tree measures.
     - <a id="ui.layers.push.settings.modal" name="ui.layers.push.settings.modal"></a>**`modal`** (boolean, optional). Whether the layer reads input. `true` by default.
     - <a id="ui.layers.push.settings.on_input" name="ui.layers.push.settings.on_input"></a>**`on_input`** (function, optional). Runs once a tick while the layer is the top layer that reads input. It receives the layer and a [`trx.ui.LayerKeys`](#ui.LayerKeys). An error closes the layer.

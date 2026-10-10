@@ -503,8 +503,8 @@ trxc = {}
 ---@field get_canvas_height fun(): number
 ---@field get_canvas_width fun(): number
 ---@field get_clipboard fun(): string
----@field get_safe_bottom fun(): number
----@field get_safe_top fun(): number
+---@field get_safe_bottom fun(width?: number): number
+---@field get_safe_top fun(width?: number): number
 ---@field get_safe_width fun(): number
 ---@field get_working_bottom fun(): number
 ---@field get_working_top fun(): number
