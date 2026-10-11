@@ -89,7 +89,7 @@ end)
 --   height = 480 / 6 = 80, width = 80 * 5/4 = 100
 --   margins = 480/16 = 30 down, 40 across
 --   centre  = (640 - 40 - 50, 480 - 30 - 40) = (550, 410)
-local SETTLED = "x=500.0 y=370.0 w=100.0 h=80.0"
+local SETTLED = "x=500 y=370 z=%d+ w=100 h=80"
 
 local function announce(object)
   trx.config.set("ui.show_pickups_overlay", true)
@@ -98,14 +98,8 @@ local function announce(object)
 end
 
 local function drawn()
-  local model = fake.render(0)
-  for line in model:gmatch("[^\n]+") do
-    if line:match("^mesh_slot ") then
-      return line
-    end
-  end
   for line in fake.paint():gmatch("[^\n]+") do
-    if line:match("^sprite ") then
+    if line:match("^model ") or line:match("^sprite ") then
       return line
     end
   end
@@ -124,7 +118,7 @@ test("an announcement settles into the first cell", function()
   assert(line ~= nil, "nothing was announced")
   -- The box is what the engine worked out before the announcements moved to a
   -- script, so a change of arithmetic here shows up as a moved announcement.
-  assert(line:match("^mesh_slot "), line)
+  assert(line:match("^model "), line)
   assert(line:match(SETTLED), line)
 end)
 
@@ -161,9 +155,9 @@ test("a second announcement takes the next cell", function()
     fake.tick()
   end
   local cells = {}
-  for line in fake.render(0):gmatch("[^\n]+") do
-    if line:match("^mesh_slot ") then
-      cells[#cells + 1] = line:match("x=[%d%.]+")
+  for line in fake.paint():gmatch("[^\n]+") do
+    if line:match("^model ") then
+      cells[#cells + 1] = line:match("x=%-?%d+")
     end
   end
   assert(#cells == 2, ("%d announcement(s) drew"):format(#cells))
@@ -190,7 +184,7 @@ test("an object without a sprite is a model with the models off", function()
   fake.tick()
   local line = drawn()
   assert(line ~= nil, "nothing was announced")
-  assert(line:match("^mesh_slot "), line)
+  assert(line:match("^model "), line)
 end)
 
 -------------------------------------------------------------------------------
@@ -233,7 +227,7 @@ end)
 
 test("the interface regions lay out between the bars", function()
   fake.letterbox(0.1)
-  fake.render(0)
+  fake.paint()
   local working = trx.ui.working_area
   local safe = trx.ui.safe_area
   assert(safe.y >= working.y, ("%d < %d"):format(safe.y, working.y))
@@ -242,7 +236,7 @@ test("the interface regions lay out between the bars", function()
     ("%d > %d"):format(safe.y + safe.height, working.y + working.height)
   )
   fake.letterbox(0)
-  fake.render(0)
+  fake.paint()
 end)
 
 test("an announcement stands on the bottom bar", function()
@@ -255,7 +249,7 @@ test("an announcement stands on the bottom bar", function()
   local line = drawn()
   assert(line ~= nil, "nothing was announced")
   -- The settled cell, raised by the 48 units the bar takes.
-  assert(line:match("x=500.0 y=322.0 w=100.0 h=80.0"), line)
+  assert(line:match("x=500 y=322 z=%d+ w=100 h=80"), line)
   fake.letterbox(0)
 end)
 

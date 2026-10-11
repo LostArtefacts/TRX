@@ -68,21 +68,6 @@ static int M_FakeDefineSprite(lua_State *const L)
     return 0;
 }
 
-// fake.render(rate) -> description
-//
-// What the engine draws part way between two ticks, which is where a model
-// kept in a slot is blended.
-static int M_FakeRender(lua_State *const L)
-{
-    FakeUIDraw_SetInterpolationRate(luaL_optnumber(L, 1, 0.0));
-    FakeUIDraw_Forget();
-    UI_Draw();
-    char *description = FakeUIDraw_Describe();
-    lua_pushstring(L, description);
-    Memory_FreePointer(&description);
-    return 1;
-}
-
 // fake.paint() -> description
 //
 // What the interface paints outside the region tree, which is where a pickup
@@ -149,8 +134,6 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "show_pickup");
     lua_pushcfunction(L, M_FakeDefineSprite);
     lua_setfield(L, -2, "define_sprite");
-    lua_pushcfunction(L, M_FakeRender);
-    lua_setfield(L, -2, "render");
     lua_pushcfunction(L, M_FakePaint);
     lua_setfield(L, -2, "paint");
     lua_pushcfunction(L, M_FakeLetterbox);
@@ -191,7 +174,7 @@ int main(void)
                   "rooms",      "catalog",        "locale",       "rules",
                   "inventory",  "inventory_ring", "game",         "cutscenes",
                   "overlay",    "input",          "ui.primitive", "ui.widgets",
-                  "ui.regions", nullptr },
+                  "ui.regions", "ui.tween",       nullptr },
         .mod_script = "ui/overlay/init",
         // Load the shipped module after sealing, as the engine does.
         .seal = true,

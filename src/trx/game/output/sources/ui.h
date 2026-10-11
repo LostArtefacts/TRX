@@ -8,10 +8,12 @@
 
 // An object drawn as a model in a box on the canvas. The box says where it
 // goes and how large it is; the model is fitted into it and lit as the game
-// lights a model held up to the camera.
+// lights a model held up to the camera. It stands just in front of anything
+// else drawn at its depth.
 typedef struct {
     const OBJECT *object;
     VIEWPORT_RECT rect;
+    int32_t z;
     uint32_t mesh_mask;
     XYZ_16 rot;
 } OUTPUT_UI_MESH;

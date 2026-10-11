@@ -1,5 +1,7 @@
 #pragma once
 
+#include <trx/core/math/types.h>
+#include <trx/game/objects/ids.h>
 #include <trx/game/output/draw.h>
 
 // Schedule deferred UI draw operations to be executed by UI_Draw().
@@ -30,10 +32,13 @@ void UI_ScheduleDrawScreenCircle(
     int32_t cx, int32_t cy, int32_t r_inner, int32_t r_outer, int32_t z,
     RGBA_8888 color);
 
-// Stages every model a slot holds, in its own batch and under its own fog.
-// Called from the point in the frame the 3D scene is drawn at, because a model
-// is 3D and wants the view and the depth buffer that the scene set up.
-void UI_DrawMeshes(void);
+// Draws an object's model fitted into a screen box, turned by the rotation and
+// lit as the game lights a model held up to the camera. It stands just in front
+// of anything else drawn at its depth. An object the level did not load, or
+// one with no model, draws nothing.
+void UI_ScheduleDrawModel(
+    OBJECT_ID object_id, uint32_t mesh_mask, int32_t sx, int32_t sy, int32_t z,
+    int32_t w, int32_t h, XYZ_16 rot);
 
 void UI_InitDraw(void);
 void UI_ShutdownDraw(void);

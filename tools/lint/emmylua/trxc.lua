@@ -504,6 +504,7 @@ trxc = {}
 ---@class (exact) trxc.ui
 ---@field bar_scale fun(): number
 ---@field bar_theme fun(type: trx.ui.BarType): { kind: "ps1"|"pc", basic_scale: number, border_light: { r: integer, g: integer, b: integer, a: integer }, border_dark: { r: integer, g: integer, b: integer, a: integer }, border_tl: { r: integer, g: integer, b: integer, a: integer }, border_tr: { r: integer, g: integer, b: integer, a: integer }, border_bl: { r: integer, g: integer, b: integer, a: integer }, border_br: { r: integer, g: integer, b: integer, a: integer }, ramp: table<integer, { r: integer, g: integer, b: integer, a: integer }>, ramp_left: table<integer, { r: integer, g: integer, b: integer, a: integer }>, ramp_right: table<integer, { r: integer, g: integer, b: integer, a: integer }> }?
+---@field draw_model fun(object: trx.catalog.objects, x: number, y: number, z?: integer, w: number, h: number, rot_x?: integer, rot_y?: integer, rot_z?: integer, mesh_mask?: integer)
 ---@field draw_text fun(text: string, x: number, y: number, scale?: number, z?: integer)
 ---@field drawn_text_scale fun(): number
 ---@field flat_quad fun(x: number, y: number, z?: integer, w: number, h: number, color: trx.math.Color|table)
@@ -522,7 +523,6 @@ trxc = {}
 ---@field interpolation_rate fun(): number
 ---@field measure_text fun(text: string, scale?: number): number, number
 ---@field mesh_bounds fun(object: trx.catalog.objects): trx.math.Distance?, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance
----@field mesh_slot fun(): trx.ui.MeshSlot?
 ---@field panel fun(x: number, y: number, z?: integer, w: number, h: number, style: trx.ui.FrameStyle)
 ---@field pop_depth fun()
 ---@field pop_text_scale fun()

@@ -85,6 +85,13 @@ order: 3
     The screens are set up by one startup script, `scripts/ui.lua`, in place
     of a script each.
 
+11. **Models are painted, not kept in slots**
+    `trx.ui.mesh_slot` and `trx.ui.MeshSlot` are gone. Draw a model where the
+    interface is painted instead: `trx.ui.primitive.model` from a paint
+    handler, or a `trx.ui.widgets.Model` in a widget tree. Move a model by
+    painting it somewhere else on the next frame; read `trx.ui.Tween` or
+    `trx.ui.interpolation_rate` for movement that glides between ticks.
+
 ### Version 1.10 to 1.11
 
 1. **The waterfall mist object was renamed**

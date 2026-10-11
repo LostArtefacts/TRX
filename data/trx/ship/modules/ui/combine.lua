@@ -90,6 +90,23 @@ local function row_box(state, w, h)
     end,
     paint = function(x, y, box_w, box_h)
       state.box = { x = x, y = y, w = box_w, h = box_h }
+      for _, entry in ipairs(state.entries or {}) do
+        local pose = entry.pose
+        if pose ~= nil then
+          trx.ui.primitive.model(
+            entry.object,
+            pose.x,
+            pose.y,
+            0,
+            pose.w,
+            pose.h,
+            entry.rot_x,
+            entry.spin,
+            entry.rot_z,
+            entry.mesh_mask
+          )
+        end
+      end
     end,
   })
 end
@@ -137,23 +154,13 @@ local function is_open()
   return anim ~= nil and anim.frame == anim.goal_frame
 end
 
-local function release(state)
-  for _, entry in ipairs(state.entries or {}) do
-    if entry.slot ~= nil then
-      entry.slot:release()
-      entry.slot = nil
-    end
-  end
-end
-
--- Takes a slot for each partner. Returns how many there are.
+-- Lines up the partners. Returns how many there are.
 local function open_row(ctx, state)
   state.entries = {}
   for _, object in ipairs(trx.inventory.combine_partners(ctx.object)) do
     local angle, rot_x, rot_z, mesh_mask = ring_pose(object)
     state.entries[#state.entries + 1] = {
       object = object,
-      slot = trx.ui.mesh_slot(),
       angle = angle,
       spin = angle,
       rot_x = rot_x,
@@ -195,31 +202,19 @@ local function place_row(state)
   local count = #state.entries
   local scale = trx.ui.text_scale
   for index, entry in ipairs(state.entries) do
-    if entry.slot ~= nil then
-      local d = distance(index, state.position, count)
-      local cell = share(d)
-      if index == state.front and not is_sliding(state) then
-        entry.spin = (entry.spin + SPIN_PER_TICK) % (4 * trx.math.DEG_90)
-      end
-      if box == nil or cell <= 0 or (count == 1 and index ~= state.front) then
-        entry.slot:hide()
-      else
-        local w = CELL_WIDTH * scale * cell
-        local h = CELL_HEIGHT * scale * cell
-        local x = box.x + box.w / 2 + d * SPACING * scale
-        local y = box.y + box.h / 2
-        entry.slot:move({
-          object = entry.object,
-          x = x - w / 2,
-          y = y - h / 2,
-          w = w,
-          h = h,
-          mesh_mask = entry.mesh_mask,
-          rot_x = entry.rot_x,
-          rot_y = entry.spin,
-          rot_z = entry.rot_z,
-        })
-      end
+    local d = distance(index, state.position, count)
+    local cell = share(d)
+    if index == state.front and not is_sliding(state) then
+      entry.spin = (entry.spin + SPIN_PER_TICK) % (4 * trx.math.DEG_90)
+    end
+    if box == nil or cell <= 0 or (count == 1 and index ~= state.front) then
+      entry.pose = nil
+    else
+      local w = CELL_WIDTH * scale * cell
+      local h = CELL_HEIGHT * scale * cell
+      local x = box.x + box.w / 2 + d * SPACING * scale
+      local y = box.y + box.h / 2
+      entry.pose = { x = x - w / 2, y = y - h / 2, w = w, h = h }
     end
   end
 end
@@ -271,9 +266,6 @@ local function open(ctx)
     root = state.root,
     on_input = function(_, keys)
       control(ctx, state, keys)
-    end,
-    on_close = function()
-      release(state)
     end,
   })
 end

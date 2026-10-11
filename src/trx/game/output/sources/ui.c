@@ -87,6 +87,15 @@ static float M_GetMeshScale(
     return (ref_scale + perfect_fit_scale) / 2.0f;
 }
 
+// How far the model reaches from its middle, whichever way it is turned.
+static float M_GetMeshReach(const ANIM_FRAME *const frame)
+{
+    const float x = (frame->bounds.max.x - frame->bounds.min.x) / 2.0f;
+    const float y = (frame->bounds.max.y - frame->bounds.min.y) / 2.0f;
+    const float z = (frame->bounds.max.z - frame->bounds.min.z) / 2.0f;
+    return sqrtf(x * x + y * y + z * z);
+}
+
 static XYZ_32 M_VectorViewFromWorld(
     const MATRIX *const view_matrix, const XYZ_32 vec_world)
 {
@@ -107,6 +116,11 @@ static void M_DrawMeshes(const M_PRIV *const p)
 {
     SceneCompositor_SetSamplerFilter(g_Config.rendering.texture_filter);
     Output_MeshShader_Bind(Output_GetMeshShader());
+    // A model on the canvas is lit by its own fog, not by the room's.
+    const int32_t old_fog_start = Output_GetFogStart();
+    const int32_t old_fog_end = Output_GetFogEnd();
+    Output_SetFogStart(20 * WALL_L);
+    Output_SetFogEnd(100 * WALL_L);
 
     for (int32_t i = 0; i < p->scheduled_meshes->count; i++) {
         const OUTPUT_UI_MESH *const mesh = Vector_Get(p->scheduled_meshes, i);
@@ -123,13 +137,16 @@ static void M_DrawMeshes(const M_PRIV *const p)
         }
 
         const VIEWPORT_RECT rect = mesh->rect;
+        const float scale = M_GetMeshScale(rect, frame);
+        // Far enough in front of its depth that no turn of the model reaches
+        // back past it.
+        const int32_t reach = (int32_t)ceilf(M_GetMeshReach(frame) * scale) + 1;
         const XYZ_32 origin = {
             .x = rect.x + rect.w / 2,
             .y = rect.y + rect.h / 2,
-            .z = (OUTPUT_UI_NEAR_Z + OUTPUT_UI_FAR_Z) / 2,
+            .z = MAX(
+                OUTPUT_UI_NEAR_Z + mesh->z - reach, OUTPUT_UI_NEAR_Z + reach),
         };
-
-        const float scale = M_GetMeshScale(rect, frame);
 
         // Lighting routines needs a W2V matrix to work; set up something for
         // it.
@@ -229,6 +246,8 @@ static void M_DrawMeshes(const M_PRIV *const p)
         }
     }
 
+    Output_SetFogStart(old_fog_start);
+    Output_SetFogEnd(old_fog_end);
     SceneCompositor_SetSamplerFilter(g_Config.rendering.ui_filter);
 }
 

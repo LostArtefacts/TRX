@@ -96,11 +96,6 @@ void Overlay_DrawGameInfo(void)
     if (Camera_Binoculars_IsActive()) {
         OutputSource_UI_StageBinocularMask();
     }
-
-    // The models the interface holds are drawn here, with the rest of the 3D
-    // scene, rather than with the flat content later on: a model is 3D and
-    // wants the view and the depth buffer that the scene set up.
-    UI_DrawMeshes();
 }
 
 void Overlay_DrawUI(void)

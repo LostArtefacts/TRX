@@ -40,116 +40,83 @@ test("measuring a model the level did not load raises", function()
   end, "not loaded")
 end)
 
-local function slot_line(lines)
+local function model_line(lines)
   for _, op in ipairs(lines) do
-    if op:match("^mesh_slot ") then
+    if op:match("^model ") then
       return op
     end
   end
 end
 
-test("a model in a slot draws where it was moved", function()
-  local slot = trx.ui.mesh_slot()
-  slot:move({ object = 5, x = 10, y = 20, w = 30, h = 40, rot_y = 512 })
+local function model_lines(lines)
+  local result = {}
+  for _, op in ipairs(lines) do
+    if op:match("^model ") then
+      result[#result + 1] = op
+    end
+  end
+  return result
+end
+
+test("a model draws in its box at its depth", function()
+  local line = model_line(fake.paint(function()
+    primitive.model(5, 10, 20, 3, 30, 40, 64, 512, 128)
+  end))
   assert(
-    slot_line(fake.render(0))
-      == "mesh_slot obj=5 x=10.0 y=20.0 w=30.0 h=40.0 rot_x=0 rot_y=512 rot_z=0 mask=4294967295"
+    line
+      == "model obj=5 x=10 y=20 z=3 w=30 h=40 rot_x=64 rot_y=512 rot_z=128 mask=4294967295",
+    line
   )
-  slot:release()
 end)
 
-test("a model in a slot is blended between its two ticks", function()
-  local slot = trx.ui.mesh_slot()
-  slot:move({ object = 5, x = 0, y = 0, w = 10, h = 10, rot_y = 0 })
-  slot:move({ object = 5, x = 100, y = 40, w = 10, h = 10, rot_y = 1000 })
-  -- Half way between the two ticks, half way between the two poses.
-  assert(
-    slot_line(fake.render(0.5))
-      == "mesh_slot obj=5 x=50.0 y=20.0 w=10.0 h=10.0 rot_x=0 rot_y=500 rot_z=0 mask=4294967295"
-  )
-  -- The fields report the tick, not the frame.
-  assert(slot.x == 100, slot.x)
-  slot:release()
+test("a model draws only the meshes it was given", function()
+  local line = model_line(fake.paint(function()
+    primitive.model(5, 0, 0, 0, 10, 10, 0, 0, 0, 5)
+  end))
+  assert(line:match(" mask=5$"), line)
 end)
 
-test("a model put down for the first time does not travel to it", function()
-  local slot = trx.ui.mesh_slot()
-  slot:move({ object = 5, x = 80, y = 0, w = 10, h = 10 })
-  assert(
-    slot_line(fake.render(0.5))
-      == "mesh_slot obj=5 x=80.0 y=0.0 w=10.0 h=10.0 rot_x=0 rot_y=0 rot_z=0 mask=4294967295"
-  )
-  slot:release()
+test("a model widget fills its box at the player's text size", function()
+  local model = widgets.Model({ object = 5, w = 30, h = 20 })
+  local w, h_ = model:measure()
+  assert(w == 30 and h_ == 20, w .. "x" .. h_)
+  local line = model_line(fake.paint(function()
+    model:paint(100, 50, w, h_)
+  end))
+  assert(line:match(" x=100 y=50 z=0 w=30 h=20 "), line)
 end)
 
-test("a turn takes the short way around", function()
-  local slot = trx.ui.mesh_slot()
-  slot:move({ object = 5, x = 0, y = 0, w = 10, h = 10, rot_y = 0 })
-  slot:move({ object = 5, x = 0, y = 0, w = 10, h = 10, rot_y = 65024 })
-  -- 65024 is -512 the short way, so half way is -256, not 32512.
-  local line = slot_line(fake.render(0.5))
-  assert(line:match("rot_y=%-256 "), line)
-  slot:release()
+test("a model widget draws smaller within its box", function()
+  local model = widgets.Model({ object = 5, w = 40, h = 20, size = 0.5 })
+  local line = model_line(fake.paint(function()
+    model:paint(0, 0, 40, 20)
+  end))
+  assert(line:match(" x=10 y=5 z=0 w=20 h=10 "), line)
 end)
 
-test("a model in a slot holds the tilt and roll it was given", function()
-  local slot = trx.ui.mesh_slot()
-  slot:move({
-    object = 5,
-    x = 0,
-    y = 0,
-    w = 10,
-    h = 10,
-    rot_x = 16384,
-    rot_y = 512,
-    rot_z = -8192,
-  })
-  assert(
-    slot_line(fake.render(0))
-      == "mesh_slot obj=5 x=0.0 y=0.0 w=10.0 h=10.0 rot_x=16384 rot_y=512"
-        .. " rot_z=-8192 mask=4294967295"
-  )
-  assert(slot.rot_x == 16384, slot.rot_x)
-  assert(slot.rot_z == -8192, slot.rot_z)
-  slot:release()
+test("a model widget sized to nothing draws nothing", function()
+  local model = widgets.Model({ object = 5, w = 40, h = 20, size = 0 })
+  assert(#model_lines(fake.paint(function()
+    model:paint(0, 0, 40, 20)
+  end)) == 0)
 end)
 
-test("a model in a slot draws only the meshes it was given", function()
-  local slot = trx.ui.mesh_slot()
-  slot:move({ object = 5, x = 0, y = 0, w = 10, h = 10, mesh_mask = 5 })
-  local line = slot_line(fake.render(0))
-  assert(line:match("mask=5$"), line)
-  slot:release()
-end)
-
-test("a released slot's handle does not reach the next taker", function()
-  local first = trx.ui.mesh_slot()
-  first:release()
-  local second = trx.ui.mesh_slot()
-  second:move({ object = 5, x = 1, y = 2, w = 3, h = 4 })
-  raises(function()
-    first:move({ object = 5, x = 90, y = 90, w = 3, h = 4 })
-  end, "stale")
-  assert(
-    slot_line(fake.render(0))
-      == "mesh_slot obj=5 x=1.0 y=2.0 w=3.0 h=4.0 rot_x=0 rot_y=0 rot_z=0 mask=4294967295"
-  )
-  second:release()
-end)
-
-test("releasing a spent handle does nothing", function()
-  local slot = trx.ui.mesh_slot()
-  slot:release()
-  slot:release()
-end)
-
-test("a hidden model draws nothing", function()
-  local slot = trx.ui.mesh_slot()
-  slot:move({ object = 5, x = 0, y = 0, w = 10, h = 10 })
-  slot:hide()
-  assert(slot_line(fake.render(0)) == nil)
-  assert(not slot.visible)
-  slot:release()
+test("a spinning model widget turns between ticks", function()
+  local model = widgets.Model({ object = 5, w = 10, h = 10, spin = 100 })
+  local function turn()
+    local line = model_line(fake.paint(function()
+      model:paint(0, 0, 10, 10)
+    end))
+    return tonumber(line:match(" rot_y=(%-?%d+) "))
+  end
+  fake.set_rate(0)
+  local before = turn()
+  fake.set_rate(0.5)
+  local half = turn()
+  fake.set_rate(1)
+  local after = turn()
+  assert(half - before == 50, before .. " " .. half)
+  assert(after - before == 100, before .. " " .. after)
 end)
 
 test("nothing draws outside a painted scene", function()
@@ -158,6 +125,9 @@ test("nothing draws outside a painted scene", function()
   end, "painted")
   raises(function()
     primitive.quad(0, 0, 0, 1, 1, trx.math.color("#ffffff"))
+  end, "painted")
+  raises(function()
+    primitive.model(5, 0, 0, 0, 10, 10)
   end, "painted")
 end)
 

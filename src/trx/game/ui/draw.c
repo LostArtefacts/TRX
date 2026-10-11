@@ -12,7 +12,6 @@
 #include <trx/game/output/sources/ui.h>
 #include <trx/game/output/state.h>
 #include <trx/game/ui/common.h>
-#include <trx/game/ui/mesh_slots.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/ui/settings.h>
 #include <trx/game/viewport.h>
@@ -70,6 +69,14 @@ typedef struct {
     int32_t x0, y0, x1, y1;
     float opacity;
 } M_DRAW_OP_IMAGE;
+
+typedef struct {
+    M_DRAW_OP base;
+    OBJECT_ID object_id;
+    uint32_t mesh_mask;
+    int32_t x, y, w, h, z;
+    XYZ_16 rot;
+} M_DRAW_OP_MODEL;
 
 typedef struct {
     MEMORY_ARENA_ALLOCATOR alloc;
@@ -352,6 +359,27 @@ static void M_DrawOp_Circle(const M_DRAW_OP *const base)
     });
 }
 
+static void M_DrawOp_Model(const M_DRAW_OP *const base)
+{
+    const M_DRAW_OP_MODEL *const op = (const M_DRAW_OP_MODEL *)base;
+    const OBJECT *const object = Object_Get(op->object_id);
+    if (object == nullptr || !object->loaded) {
+        return;
+    }
+    // An object with no model of its own draws nothing.
+    const ANIM *const anim = Object_GetAnim(object, 0);
+    if (anim == nullptr || anim->frame_ptr == nullptr) {
+        return;
+    }
+    OutputSource_UI_StageMesh((OUTPUT_UI_MESH) {
+        .object = object,
+        .rect = { .x = op->x, .y = op->y, .w = op->w, .h = op->h },
+        .z = op->z,
+        .mesh_mask = op->mesh_mask,
+        .rot = op->rot,
+    });
+}
+
 // Allocate a new deferred draw operation in the arena.
 static inline void *M_ArenaAlloc(const size_t sz)
 {
@@ -543,6 +571,25 @@ void UI_ScheduleDrawScreenCircle(
         }));
 }
 
+void UI_ScheduleDrawModel(
+    const OBJECT_ID object_id, const uint32_t mesh_mask, const int32_t sx,
+    const int32_t sy, const int32_t z, const int32_t w, const int32_t h,
+    const XYZ_16 rot)
+{
+    M_SCHEDULE_OP(
+        M_DrawOp_Model,
+        ((M_DRAW_OP_MODEL) {
+            .object_id = object_id,
+            .mesh_mask = mesh_mask,
+            .x = sx,
+            .y = sy,
+            .w = w,
+            .h = h,
+            .z = z,
+            .rot = rot,
+        }));
+}
+
 void UI_InitDraw(void)
 {
     M_PRIV *const p = &m_Priv;
@@ -574,47 +621,4 @@ void UI_Draw(void)
         const M_DRAW_OP *const op = *(M_DRAW_OP **)Vector_Get(m_Priv.ops, i);
         op->draw(op);
     }
-}
-
-// Stages every model a slot holds in one batch, held apart from the scene
-// around it so that the models are lit by their own fog rather than the room's.
-void UI_DrawMeshes(void)
-{
-    if (!UI_MeshSlots_AnyShown()) {
-        return;
-    }
-
-    SceneCompositor_Flush();
-    const int32_t old_fog_start = Output_GetFogStart();
-    const int32_t old_fog_end = Output_GetFogEnd();
-    Output_SetFogStart(20 * WALL_L);
-    Output_SetFogEnd(100 * WALL_L);
-    UI_MESH_DRAW slots[UI_MESH_SLOT_MAX];
-    const int32_t slot_count = UI_MeshSlots_Collect(slots, UI_MESH_SLOT_MAX);
-    for (int32_t i = 0; i < slot_count; i++) {
-        const OBJECT *const object = Object_Get(slots[i].object_id);
-        if (object == nullptr || !object->loaded) {
-            continue;
-        }
-        // An object with no model of its own draws nothing, so it is never
-        // staged: a script is free to name one.
-        const ANIM *const anim = Object_GetAnim(object, 0);
-        if (anim == nullptr || anim->frame_ptr == nullptr) {
-            continue;
-        }
-        OutputSource_UI_StageMesh((OUTPUT_UI_MESH) {
-            .object = object,
-            .rect = {
-                .x = lroundf(UI_ScaleX(slots[i].pose.x)),
-                .y = lroundf(UI_ScaleY(slots[i].pose.y)),
-                .w = lroundf(UI_ScaleX(slots[i].pose.w)),
-                .h = lroundf(UI_ScaleY(slots[i].pose.h)),
-            },
-            .mesh_mask = slots[i].mesh_mask,
-            .rot = slots[i].pose.rot,
-        });
-    }
-    SceneCompositor_Flush();
-    Output_SetFogStart(old_fog_start);
-    Output_SetFogEnd(old_fog_end);
 }
