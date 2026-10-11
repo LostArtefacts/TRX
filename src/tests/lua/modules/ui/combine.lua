@@ -12,7 +12,7 @@ local PARTNERS = { objects.KEY_ITEM_1, objects.CROWBAR_ITEM }
 
 local CHOICE_CANCEL = 1
 local CHOICE_CONFIRM = 2
-local SLIDE_TICKS = trx.game.LOGIC_FPS // 4
+local SLIDE_TICKS = 8
 
 require("common.ui.combine").setup()
 

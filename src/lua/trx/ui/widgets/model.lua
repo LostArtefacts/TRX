@@ -24,7 +24,7 @@ end
 ---@field rot_x? any How far to tilt the model, or a signal or `trx.ui.Tween` carrying it.
 ---@field rot_y? any How far to turn the model, or a signal or `trx.ui.Tween` carrying it.
 ---@field rot_z? any How far to roll the model, or a signal or `trx.ui.Tween` carrying it.
----@field spin? number How far the model turns each tick, on top of `rot_y` <!--noref: rot_y-->. It turns smoothly between ticks.
+---@field spin? any How far the model turns each tick, on top of `rot_y` <!--noref: rot_y-->, or a signal carrying it. It turns smoothly between ticks, and picks up where it stopped when the spin starts again.
 ---@field mesh_mask? integer Which of its meshes to draw, one bit each. Every mesh by default.
 ---@field shown? any Whether the model is shown, or a signal that holds that value.
 
@@ -52,8 +52,14 @@ function widgets.Model(settings)
     end
     local model_w = box_w * size
     local model_h = box_h * size
-    local turn = math.floor((value_of(w.rot_y) or 0) + (w.spin or 0) * now())
-      % 0x10000
+    -- The turn builds up from frame to frame, so a spin that stops and starts
+    -- picks up where it stopped.
+    local at = now()
+    local spun = (rawget(w, "_spun") or 0)
+      + (value_of(w.spin) or 0) * (at - (rawget(w, "_spun_at") or at))
+    rawset(w, "_spun", spun % 0x10000)
+    rawset(w, "_spun_at", at)
+    local turn = math.floor((value_of(w.rot_y) or 0) + spun) % 0x10000
     primitive.model(
       value_of(w.object),
       x + (box_w - model_w) / 2,

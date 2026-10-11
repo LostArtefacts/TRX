@@ -628,4 +628,110 @@ test("a tween set outright stops where it is put", function()
   assert(tween:get() == 7 and not tween:is_moving())
 end)
 
+-- A carousel of three models, ten units wide each, a hundred apart.
+local function carousel(selected, count)
+  local items = {}
+  for i = 1, count or 3 do
+    items[i] = i
+  end
+  return widgets.Carousel({
+    items = items,
+    selected = selected,
+    build = function()
+      return widgets.Model({ object = 5, w = 10, h = 10 })
+    end,
+    w = 400,
+    h = 10,
+    spacing = 100,
+  })
+end
+
+-- Each model a carousel draws, by where its middle stands across.
+local function row_of(row)
+  local result = {}
+  for _, op in
+    ipairs(fake.paint(function()
+      row:paint(0, 0, 400, 10)
+    end))
+  do
+    local x, w = op:match("^model .- x=(%-?%d+) y=%-?%d+ z=%-?%d+ w=(%d+) ")
+    if x ~= nil then
+      result[#result + 1] = { middle = x + w / 2, w = tonumber(w) }
+    end
+  end
+  table.sort(result, function(a, b)
+    return a.middle < b.middle
+  end)
+  return result
+end
+
+-- A length on the canvas as the fake records it, in screen pixels.
+local function px(length)
+  return primitive.to_screen(length)
+end
+
+local function near(a, b)
+  return math.abs(a - b) <= 1
+end
+
+test("a carousel draws the selected item in the middle at its size", function()
+  fake.set_rate(1)
+  local row = carousel(trx.signal.new(1))
+  local drawn = row_of(row)
+  assert(#drawn == 3, #drawn)
+  assert(near(drawn[2].middle, px(200)), drawn[2].middle)
+  assert(near(drawn[2].w, px(10)), drawn[2].w)
+  assert(near(drawn[1].middle, px(100)) and drawn[1].w < drawn[2].w)
+  assert(near(drawn[3].middle, px(300)) and drawn[3].w < drawn[2].w)
+end)
+
+test("a carousel slides to what is selected", function()
+  fake.set_rate(1)
+  local selected = trx.signal.new(1)
+  local row = carousel(selected)
+  selected:set(2)
+  assert(row.is_sliding(), "the row did not start sliding")
+  ticks(8)
+  assert(not row.is_sliding(), "the row is still sliding")
+  local drawn = row_of(row)
+  assert(near(drawn[2].middle, px(200)) and near(drawn[2].w, px(10)))
+end)
+
+test("a carousel reads part way through a slide", function()
+  fake.set_rate(1)
+  local selected = trx.signal.new(1)
+  local row = carousel(selected)
+  selected:set(2)
+  ticks(4)
+  local middle = row_of(row)
+  -- Half way, the two items stand either side of the middle.
+  assert(not near(middle[2].middle, px(200)) or middle[2].w < px(10))
+  ticks(4)
+end)
+
+test("a carousel wraps the short way round", function()
+  fake.set_rate(1)
+  local selected = trx.signal.new(1)
+  local row = carousel(selected)
+  selected:set(3)
+  ticks(2)
+  -- Going from the first to the last of three is one place to the left, so
+  -- the row moves right rather than two places left.
+  local drawn = row_of(row)
+  local moved_right = false
+  for _, item in ipairs(drawn) do
+    if item.middle > px(200) + 1 and item.middle < px(300) - 1 then
+      moved_right = true
+    end
+  end
+  assert(moved_right, "the row went the long way")
+  ticks(6)
+end)
+
+test("a carousel keeps items beyond the neighbours out of sight", function()
+  fake.set_rate(1)
+  local row = carousel(trx.signal.new(1), 5)
+  assert(#row_of(row) == 3, #row_of(row))
+end)
+
 return h.report()

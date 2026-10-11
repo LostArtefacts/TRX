@@ -238,6 +238,7 @@
 - Added `trx.ui.widgets.List`, a column of rows that the player picks one entry from
 - Added `trx.ui.widgets.SleekBar`, the thin progress bar the game draws under a button that the player holds
 - Added `trx.ui.widgets.InputHint` and `trx.ui.input_hint_text`, which show the keys bound to an input role and what they do
+- Added `trx.ui.widgets.Carousel`, a row of items turned to the one in the middle that slides when the selection changes
 - Added `trx.ui.tween`, `trx.ui.Tween` and `trx.ui.ease`, which move a number to a target over some ticks and read it part way between them, and `trx.ui.interpolation_rate`, which says how far the frame being drawn stands between two ticks
 - Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the question the pause screen asks, the quick save and load screens, the statistics screen, an entry the player examines, and an entry the player combines
     - `trx.ui.Screen` and `trx.ui.ScreenContext`
