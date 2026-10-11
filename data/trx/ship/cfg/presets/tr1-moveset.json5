@@ -29,6 +29,7 @@
         "gameplay.enable_wading": false,
         "gameplay.enable_walk_to_items": false,
         "gameplay.fix_descending_glitch": false,
+        "gameplay.fix_falling_glitch": false,
         "gameplay.fix_qwop_glitch": false,
         "gameplay.fix_step_glitch": true,
         "gameplay.fix_wall_geometry": false,

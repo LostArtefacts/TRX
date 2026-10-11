@@ -315,6 +315,7 @@ typedef struct {
         bool fix_step_glitch;
         bool fix_item_duplication_glitch;
         bool fix_descending_glitch;
+        bool fix_falling_glitch;
         bool fix_lara_pickup_embed;
         bool fix_water_exit;
         WALL_GLITCH_MODE wall_glitch_mode;

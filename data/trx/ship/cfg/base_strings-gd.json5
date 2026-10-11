@@ -1375,6 +1375,10 @@
             "title": "Càraich tuiteam air leacan bristeach",
             "description": "Càradh far am bi Lara a' tuiteam gu sgiobalta tro leacan briste nuair a dhèanas i ceum-taoibh neo coiseachd air ais orra. Chan eil an duilgheadas seo san TR2+ thùsail; tha e ann an TR1.",
         },
+        "gameplay.fix_falling_glitch": {
+            "title": "Ceartaich tuiteam",
+            "description": "Ceartaichidh seo na mearachdan a leigeas le Lara leum far dorsan-trapa cho luath 's a dh'fhosglas iad an àite tuiteam, agus a chuireas stad oirre tuiteam nuair a bheir an làr foidhpe a-mach fhad 's a tha i a' tionndadh 's a' snàigeadh.",
+        },
         "gameplay.fix_flare_throw_priority": {
             "title": "Càraich prìomhachas tilgeadh lòchran",
             "description": "Càradh far am bi Lara a' feuchainn ri lòchran a thilgeil ann am meadhan leum, a' cur casg air grèim air iomallan.",

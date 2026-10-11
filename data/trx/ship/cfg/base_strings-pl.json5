@@ -1375,6 +1375,10 @@
             "title": "Napraw glitch z łamliwą podłogą",
             "description": "\\{review}Naprawia problem, w którym chodzenie w bok lub do tyłu na łamliwej podłodze powoduje natychmiastowy teleport Lary na podłogę poniżej. Oryginalne TR2+ nie mają tego błędu; TR1 ma.",
         },
+        "gameplay.fix_falling_glitch": {
+            "title": "\\{review}Napraw spadanie",
+            "description": "\\{review}Naprawia błędy pozwalające Larze wyskakiwać z zapadni zaraz po ich otwarciu zamiast spadać, a także uniemożliwiające jej spadanie, gdy podłoga pod nią ustępuje podczas obracania się w pozycji czołgania.",
+        },
         "gameplay.fix_flare_throw_priority": {
             "title": "Napraw priorytet rzucania flar",
             "description": "Rozwiązuje problem, w którym Lara wyrzuca zużytą flarę w powietrze y nie może po tym złapać krawędzi.",
