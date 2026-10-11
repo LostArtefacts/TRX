@@ -1,0 +1,1 @@
+../../../../trx/ship/modules/examine.lua

@@ -86,6 +86,11 @@ local Screen = {
   ---would the engine's, and the screen also ends with
   ---`trx.ui.ScreenContext:cancel` or `trx.ui.ScreenContext:confirm`.
   STATS = h.IntegerConstant,
+  ---An entry that the player examines in the inventory ring: its name and
+  ---description, and turning it by hand. The context reports the entry as
+  ---`trx.ui.ScreenContext.object`. The screen ends with
+  ---`trx.ui.ScreenContext:cancel`, which puts the entry away.
+  EXAMINE = h.IntegerConstant,
 }
 ui.Screen = h.enum("ui.Screen", "UI_TAKEOVER", Screen)
 
@@ -143,7 +148,7 @@ end
 ---@class (exact) trx.ui.ScreenContext
 ---@trx.readonly is_bare, is_final, is_held, level, mode, object, screen
 ---@field screen trx.ui.Screen The screen.
----@field object trx.catalog.objects? The ring entry that the player uses, for `trx.ui.Screen.RING_ENTRY`.
+---@field object trx.catalog.objects? The ring entry that the player uses, for `trx.ui.Screen.RING_ENTRY`, or examines, for `trx.ui.Screen.EXAMINE`.
 ---@field mode trx.inventory_ring.Mode? What the quick save or load screen opened for, for `trx.ui.Screen.SAVE_LOAD`.
 ---@field level trx.game.Level? The level whose statistics the screen shows, for `trx.ui.Screen.STATS`. The totals name the level that ended the game.
 ---@field is_final boolean? Whether the screen shows the totals for the whole game rather than one level, for `trx.ui.Screen.STATS`.
@@ -158,7 +163,11 @@ local Context = h.class("ui.ScreenContext", {
     },
     object = {
       get = function(self)
-        if rawget(self, "_screen") == trx.ui.Screen.RING_ENTRY then
+        local screen = rawget(self, "_screen")
+        if
+          screen == trx.ui.Screen.RING_ENTRY
+          or screen == trx.ui.Screen.EXAMINE
+        then
           return rawget(self, "_arg")
         end
         return nil

@@ -410,7 +410,8 @@ void InvRing_Draw(INV_RING *const ring)
     InvRing_DrawItems(ring);
 
     if (ring->status == RNG_SELECTED
-        && !UI_Takeover_IsHeld(UI_TAKEOVER_RING_ENTRY)) {
+        && !UI_Takeover_IsHeld(UI_TAKEOVER_RING_ENTRY)
+        && !UI_Takeover_IsHeld(UI_TAKEOVER_EXAMINE)) {
         INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
         if (inv_item->object_id == O_PASSPORT_CLOSED) {
             inv_item->object_id = O_PASSPORT_OPTION;

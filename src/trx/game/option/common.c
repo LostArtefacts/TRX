@@ -6,7 +6,6 @@
 #include <trx/game/objects/families.h>
 #include <trx/game/option/combine.h>
 #include <trx/game/option/controls.h>
-#include <trx/game/option/examine.h>
 #include <trx/game/option/gameplay.h>
 #include <trx/game/option/globe_select.h>
 #include <trx/game/option/graphics.h>
@@ -29,8 +28,13 @@ void Option_Reset(void)
 
 void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 {
+    // A script examines an entry. Where none does, any key puts it away
+    // rather than using it.
     if (inv_item->action == ACTION_EXAMINE) {
-        Option_Examine_Control(inv_item, is_busy);
+        if (!is_busy && (g_InputDB.menu_confirm || g_InputDB.menu_show_info)) {
+            g_InputDB.menu_back = true;
+            g_InputDB.menu_confirm = false;
+        }
         return;
     }
     if (inv_item->action == ACTION_COMBINE) {
@@ -104,10 +108,6 @@ void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 
 void Option_Draw(INVENTORY_ITEM *const inv_item)
 {
-    if (inv_item->action == ACTION_EXAMINE) {
-        Option_Examine_Draw();
-        return;
-    }
     if (inv_item->action == ACTION_COMBINE) {
         Option_Combine_Draw();
         return;
@@ -158,7 +158,6 @@ void Option_Close(const INVENTORY_ITEM *const inv_item)
         Option_GlobeSelect_Close();
         break;
     default:
-        Option_Examine_Close();
         break;
     }
 }

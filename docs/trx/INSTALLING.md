@@ -1393,6 +1393,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── ui
 │   │   └── requester.lua
 │   ├── assault.lua
+│   ├── examine.lua
 │   ├── inv_ring.lua
 │   ├── legend.lua
 │   ├── ngplus.lua
@@ -1405,6 +1406,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── bignasty
 │   │   ├── bfg.bin
 │   │   └── init.lua
+│   ├── examine.lua
 │   ├── inv_ring.lua
 │   ├── passport.lua
 │   ├── pause.lua
@@ -2832,6 +2834,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   ├── ui
     │   │   │   └── requester.lua
     │   │   ├── assault.lua
+    │   │   ├── examine.lua
     │   │   ├── inv_ring.lua
     │   │   ├── legend.lua
     │   │   ├── ngplus.lua
@@ -2844,6 +2847,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   ├── bignasty
     │   │   │   ├── bfg.bin
     │   │   │   └── init.lua
+    │   │   ├── examine.lua
     │   │   ├── inv_ring.lua
     │   │   ├── passport.lua
     │   │   ├── pause.lua

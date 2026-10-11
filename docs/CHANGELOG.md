@@ -232,7 +232,7 @@
     - `trx.ui.StackLayer` and `trx.ui.LayerKeys`
 - Added `trx.ui.widgets.List`, a column of rows that the player picks one entry from
 - Added `trx.ui.widgets.SleekBar`, the thin progress bar the game draws under a button that the player holds
-- Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the question the pause screen asks, the quick save and load screens, and the statistics screen
+- Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the question the pause screen asks, the quick save and load screens, the statistics screen, and an entry the player examines
     - `trx.ui.Screen` and `trx.ui.ScreenContext`
     - `trx.ui.ScreenContext.level`, `trx.ui.ScreenContext.is_final` and `trx.ui.ScreenContext.is_bare`, which say what the statistics screen shows
 - Added `trx.strings.upper` and `trx.strings.lower`, which change the case of the letters the game's font draws, beyond ASCII too

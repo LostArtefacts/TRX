@@ -866,7 +866,6 @@ common_sources = [
   'trx/game/option/combine.c',
   'trx/game/option/common.c',
   'trx/game/option/controls.c',
-  'trx/game/option/examine.c',
   'trx/game/option/gameplay.c',
   'trx/game/option/globe_select.c',
   'trx/game/option/graphics.c',
