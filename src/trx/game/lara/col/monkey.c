@@ -175,7 +175,10 @@ static bool M_HandleIdleState(ITEM *const item, COLL_INFO *const coll)
         return false;
     }
 
-    if (g_Input.forward && coll->coll_type != COLL_FRONT
+    if (g_Input.roll && M_CanMonkeyRoll(item, coll)) {
+        item->goal_anim_state = LS(LS_MONKEY_ROLL);
+    } else if (
+        g_Input.forward && coll->coll_type != COLL_FRONT
         && ABS(coll->side_mid.ceiling - coll->side_front.ceiling)
             < M_MONKEY_CEILING_SHIFT) {
         item->goal_anim_state = LS(LS_MONKEY_FORWARD);
@@ -189,8 +192,6 @@ static bool M_HandleIdleState(ITEM *const item, COLL_INFO *const coll)
         item->goal_anim_state = LS(LS_MONKEY_TURN_LEFT);
     } else if (g_Input.right) {
         item->goal_anim_state = LS(LS_MONKEY_TURN_RIGHT);
-    } else if (g_Input.roll && M_CanMonkeyRoll(item, coll)) {
-        item->goal_anim_state = LS(LS_MONKEY_ROLL);
     }
 
     Lara_Col_MonkeySwingSnap(item);
