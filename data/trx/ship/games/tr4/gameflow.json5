@@ -29,6 +29,7 @@
         "music_track": 104,
         "lara_outfit": "tr4_classic",
         "sequence": [
+            {"type": "setup_horizon", "layer": 0, "color": "#808080", "speed": -8, "color_add": true},
             {"type": "play_fmv", "fmv_id": 0},
             {"type": "loading_camera", "source_x": 68096, "source_y": 1152, "source_z": 90624, "target_x": 68032, "target_y": 703, "target_z": 91542, "room": 1, "display_time": 1.0},
             {"type": "exit_to_title"},
