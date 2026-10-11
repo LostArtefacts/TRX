@@ -214,7 +214,6 @@ trx.ui.on_paint(function()
         entry.icon,
         x,
         y,
-        0,
         width,
         height,
         entry.rot_x,

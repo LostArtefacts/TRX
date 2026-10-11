@@ -33,12 +33,12 @@ void UI_ScheduleDrawScreenCircle(
     RGBA_8888 color);
 
 // Draws an object's model fitted into a screen box, turned by the rotation and
-// lit as the game lights a model held up to the camera. It stands just in front
-// of anything else drawn at its depth. An object the level did not load, or
-// one with no model, draws nothing.
+// lit as the game lights a model held up to the camera. It draws over the flat
+// interface drawn with it. An object the level did not load, or one with no
+// model, draws nothing.
 void UI_ScheduleDrawModel(
-    OBJECT_ID object_id, uint32_t mesh_mask, int32_t sx, int32_t sy, int32_t z,
-    int32_t w, int32_t h, XYZ_16 rot);
+    OBJECT_ID object_id, uint32_t mesh_mask, int32_t sx, int32_t sy, int32_t w,
+    int32_t h, XYZ_16 rot);
 
 void UI_InitDraw(void);
 void UI_ShutdownDraw(void);

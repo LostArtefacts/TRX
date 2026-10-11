@@ -74,7 +74,7 @@ typedef struct {
     M_DRAW_OP base;
     OBJECT_ID object_id;
     uint32_t mesh_mask;
-    int32_t x, y, w, h, z;
+    int32_t x, y, w, h;
     XYZ_16 rot;
 } M_DRAW_OP_MODEL;
 
@@ -374,7 +374,6 @@ static void M_DrawOp_Model(const M_DRAW_OP *const base)
     OutputSource_UI_StageMesh((OUTPUT_UI_MESH) {
         .object = object,
         .rect = { .x = op->x, .y = op->y, .w = op->w, .h = op->h },
-        .z = op->z,
         .mesh_mask = op->mesh_mask,
         .rot = op->rot,
     });
@@ -573,8 +572,7 @@ void UI_ScheduleDrawScreenCircle(
 
 void UI_ScheduleDrawModel(
     const OBJECT_ID object_id, const uint32_t mesh_mask, const int32_t sx,
-    const int32_t sy, const int32_t z, const int32_t w, const int32_t h,
-    const XYZ_16 rot)
+    const int32_t sy, const int32_t w, const int32_t h, const XYZ_16 rot)
 {
     M_SCHEDULE_OP(
         M_DrawOp_Model,
@@ -585,7 +583,6 @@ void UI_ScheduleDrawModel(
             .y = sy,
             .w = w,
             .h = h,
-            .z = z,
             .rot = rot,
         }));
 }
