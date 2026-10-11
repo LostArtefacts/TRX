@@ -1384,35 +1384,31 @@ If you install everything correctly, your game directory should look more or les
 │       ├── strings-it.json5
 │       └── strings.json5
 ├── modules
-│   ├── overlay
-│   │   ├── init.lua
-│   │   ├── photo_mode.lua
-│   │   └── pickups.lua
-│   ├── passport
-│   │   └── init.lua
 │   ├── ui
-│   │   └── requester.lua
-│   ├── assault.lua
-│   ├── combine.lua
-│   ├── examine.lua
+│   │   ├── overlay
+│   │   │   ├── init.lua
+│   │   │   ├── photo_mode.lua
+│   │   │   └── pickups.lua
+│   │   ├── passport
+│   │   │   └── init.lua
+│   │   ├── assault.lua
+│   │   ├── combine.lua
+│   │   ├── examine.lua
+│   │   ├── legend.lua
+│   │   ├── pause.lua
+│   │   ├── requester.lua
+│   │   └── stats.lua
 │   ├── inv_ring.lua
-│   ├── legend.lua
 │   ├── ngplus.lua
-│   ├── pause.lua
 │   ├── save_crystal.lua
-│   ├── stats.lua
 │   ├── water_color.lua
 │   └── weapons.lua
 ├── scripts
 │   ├── bignasty
 │   │   ├── bfg.bin
 │   │   └── init.lua
-│   ├── combine.lua
-│   ├── examine.lua
 │   ├── inv_ring.lua
-│   ├── passport.lua
-│   ├── pause.lua
-│   ├── stats.lua
+│   ├── ui.lua
 │   └── weapons.lua
 └── TRX.exe</code></pre>
 </details>
@@ -2827,35 +2823,31 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │       ├── strings-it.json5
     │   │       └── strings.json5
     │   ├── modules
-    │   │   ├── overlay
-    │   │   │   ├── init.lua
-    │   │   │   ├── photo_mode.lua
-    │   │   │   └── pickups.lua
-    │   │   ├── passport
-    │   │   │   └── init.lua
     │   │   ├── ui
-    │   │   │   └── requester.lua
-    │   │   ├── assault.lua
-    │   │   ├── combine.lua
-    │   │   ├── examine.lua
+    │   │   │   ├── overlay
+    │   │   │   │   ├── init.lua
+    │   │   │   │   ├── photo_mode.lua
+    │   │   │   │   └── pickups.lua
+    │   │   │   ├── passport
+    │   │   │   │   └── init.lua
+    │   │   │   ├── assault.lua
+    │   │   │   ├── combine.lua
+    │   │   │   ├── examine.lua
+    │   │   │   ├── legend.lua
+    │   │   │   ├── pause.lua
+    │   │   │   ├── requester.lua
+    │   │   │   └── stats.lua
     │   │   ├── inv_ring.lua
-    │   │   ├── legend.lua
     │   │   ├── ngplus.lua
-    │   │   ├── pause.lua
     │   │   ├── save_crystal.lua
-    │   │   ├── stats.lua
     │   │   ├── water_color.lua
     │   │   └── weapons.lua
     │   ├── scripts
     │   │   ├── bignasty
     │   │   │   ├── bfg.bin
     │   │   │   └── init.lua
-    │   │   ├── combine.lua
-    │   │   ├── examine.lua
     │   │   ├── inv_ring.lua
-    │   │   ├── passport.lua
-    │   │   ├── pause.lua
-    │   │   ├── stats.lua
+    │   │   ├── ui.lua
     │   │   └── weapons.lua
     │   └── icon.icns
     ├── _CodeSignature
