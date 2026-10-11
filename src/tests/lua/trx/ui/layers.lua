@@ -88,6 +88,26 @@ test("a layer is centered in the safe area by default", function()
   assert(y == math.floor(safe.y + (safe.height - height) / 2))
 end)
 
+test("a layer too large for the safe area starts at its top left", function()
+  fresh()
+  local at
+  local layer = push({
+    root = trx.ui.widgets.Custom({
+      measure = function()
+        return 100000, 100000
+      end,
+      paint = function(x, y)
+        at = { x, y }
+      end,
+    }),
+  })
+  fake.scene()
+  layer:close()
+  local safe = trx.ui.safe_area_for(100000)
+  assert(at ~= nil, "the layer was not drawn")
+  assert(at[1] == safe.x and at[2] == safe.y)
+end)
+
 test("a layer can say where it goes", function()
   fresh()
   local layer = push({
