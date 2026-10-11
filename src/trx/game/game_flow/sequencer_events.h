@@ -15,3 +15,6 @@ void GF_ShowPendingLoadingCamera(void);
 
 // Shows the title level view from its sequence.
 void GF_ShowTitleLoadingCamera(const GF_LEVEL *level);
+
+// Processes specific setup sequence events for the title level only.
+void GF_SetupTitleSequences(const GF_LEVEL *level);

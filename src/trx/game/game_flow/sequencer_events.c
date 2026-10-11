@@ -386,6 +386,13 @@ static void M_ShowLoadingCamera(const GF_LOADING_CAMERA_DATA *const data)
     }
 }
 
+static void M_SetupSkyLayer(const GF_SETUP_HORIZON_DATA *const data)
+{
+    Output_Sky_SetLayer(data->layer, data->color, data->speed);
+    Output_Sky_SetColorAdd(data->color_add);
+    Output_Sky_SetFogGradient(data->fog_gradient);
+}
+
 M_GF_HANDLER(M_HandleLoadingCamera)
 {
     *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
@@ -404,6 +411,18 @@ void GF_ShowPendingLoadingCamera(void)
     m_PendingLoadingCamera = nullptr;
     if (data != nullptr) {
         M_ShowLoadingCamera(data);
+    }
+}
+
+void GF_SetupTitleSequences(const GF_LEVEL *const level)
+{
+    const GF_SEQUENCE *const sequence = &level->sequence;
+    for (int32_t i = 0; i < sequence->length; i++) {
+        const GF_SEQUENCE_EVENT *const event = &sequence->events[i];
+        if (event->type == GFS_SETUP_HORIZON) {
+            const GF_SETUP_HORIZON_DATA *const data = event->data;
+            M_SetupSkyLayer(data);
+        }
     }
 }
 
@@ -528,9 +547,7 @@ M_GF_HANDLER(M_HandleSetupHorizon)
     if (seq_ctx != GFSC_STORY) {
         const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
         const GF_SETUP_HORIZON_DATA *const data = event->data;
-        Output_Sky_SetLayer(data->layer, data->color, data->speed);
-        Output_Sky_SetColorAdd(data->color_add);
-        Output_Sky_SetFogGradient(data->fog_gradient);
+        M_SetupSkyLayer(data);
     }
     *out_cmd = (GF_COMMAND) { .action = GF_NOOP };
     return OK;
