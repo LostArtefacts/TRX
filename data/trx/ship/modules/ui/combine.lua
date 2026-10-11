@@ -7,6 +7,8 @@
 local M = {}
 
 local L = trx.locale.get
+local widgets = trx.ui.widgets
+local Role = trx.input.Role
 
 -- Fallback text for the screen's own strings. The strings files and their
 -- translations take precedence.
@@ -15,133 +17,71 @@ trx.locale.declare({
 })
 
 -- The room the frame keeps for the row.
-local FRAME_WIDTH = 260.0
-local FRAME_HEIGHT = 150.0
+local ROW_WIDTH = 260.0
+local ROW_HEIGHT = 150.0
 local FRAME_PAD = 10.0
 
--- The cell the entry in the middle takes, the share of it the ones beside it
--- take, and how far apart their middles stand.
-local CELL_WIDTH = 100.0
-local CELL_HEIGHT = 120.0
-local SIDE_SHARE = 0.6
+-- The box the entry in the middle is drawn in, and how far apart the middles
+-- of two neighbours stand.
+local MODEL_WIDTH = 100.0
+local MODEL_HEIGHT = 120.0
 local SPACING = 90.0
--- How far from the middle an entry slides before it is gone.
-local REACH = 1.5
 
-local SLIDE_TICKS = trx.game.LOGIC_FPS // 4
 local SPIN_PER_TICK = 4 * trx.math.DEG_1
 -- Every mesh of an object, for one the ring states no selection for.
 local ALL_MESHES = 0xFFFFFFFF
 
--- Slow at both ends, fastest in the middle.
-local function ease(ratio)
-  if ratio <= 0 then
-    return 0
-  elseif ratio >= 1 then
-    return 1
-  elseif ratio < 0.5 then
-    return 2 * ratio * ratio
-  end
-  local rest = ratio - 1
-  return 1 - 2 * rest * rest
-end
-
--- The pose the ring gives an entry: its starting angle, its fixed rotations,
--- and which of its meshes it draws.
-local function ring_pose(object)
+-- The model of an entry as the ring poses it, turning while it is in the
+-- middle.
+local function model(object, index, selected)
   local entry = trx.inventory_ring.item(object)
-  if entry == nil then
-    return 0, 0, 0, ALL_MESHES
-  end
-  return entry.y_rot_sel + entry.base_rot_y,
-    entry.base_rot_x,
-    entry.base_rot_z,
-    entry.meshes_drawn
-end
-
--- How far an entry stands from the middle of the row, in places, going the
--- short way round so that the row wraps.
-local function distance(index, position, count)
-  local d = (index - position) % count
-  if d > count / 2 then
-    d = d - count
-  end
-  return d
-end
-
--- The share of a full cell an entry takes at a distance from the middle.
-local function share(d)
-  d = math.abs(d)
-  if d <= 1 then
-    return 1 + (SIDE_SHARE - 1) * d
-  elseif d < REACH then
-    return SIDE_SHARE * (REACH - d) / (REACH - 1)
-  end
-  return 0
-end
-
--- The room the row turns in. It remembers where it was drawn, which is where
--- the row is placed on the next tick.
-local function row_box(state, w, h)
-  return trx.ui.widgets.Custom({
-    measure = function()
-      local scale = trx.ui.text_scale
-      return w * scale, h * scale
-    end,
-    paint = function(x, y, box_w, box_h)
-      state.box = { x = x, y = y, w = box_w, h = box_h }
-      for _, entry in ipairs(state.entries or {}) do
-        local pose = entry.pose
-        if pose ~= nil then
-          trx.ui.primitive.model(
-            entry.object,
-            pose.x,
-            pose.y,
-            0,
-            pose.w,
-            pose.h,
-            entry.rot_x,
-            entry.spin,
-            entry.rot_z,
-            entry.mesh_mask
-          )
-        end
-      end
-    end,
+  return widgets.Model({
+    object = object,
+    w = MODEL_WIDTH,
+    h = MODEL_HEIGHT,
+    rot_x = entry and entry.base_rot_x or 0,
+    rot_y = entry and entry.y_rot_sel + entry.base_rot_y or 0,
+    rot_z = entry and entry.base_rot_z or 0,
+    mesh_mask = entry and entry.meshes_drawn or ALL_MESHES,
+    spin = selected:map(function(at)
+      return at == index and SPIN_PER_TICK or 0
+    end),
   })
 end
 
--- The name of the entry in the middle.
-local function front_name(state)
-  local function text()
-    local entry = state.entries and state.entries[state.front]
-    local object = entry ~= nil and trx.objects[entry.object] or nil
-    return object ~= nil and object.name or ""
-  end
-  return trx.ui.widgets.Custom({
-    measure = function()
-      return trx.ui.primitive.measure_text(text(), 1.0)
-    end,
-    paint = function(x, y)
-      trx.ui.primitive.text(text(), x, y, 1.0, 0)
-    end,
-  })
+local function name_of(object)
+  local info = object ~= nil and trx.objects[object] or nil
+  return info ~= nil and info.name or ""
 end
 
-local function frame(state)
-  state.name = front_name(state)
-  return trx.ui.widgets.Frame({
+local function dialog(state)
+  local selected = state.selected
+  local partners = state.partners
+  state.row = widgets.Carousel({
+    items = partners,
+    selected = selected,
+    build = function(object, index)
+      return model(object, index, selected)
+    end,
+    w = ROW_WIDTH,
+    h = ROW_HEIGHT,
+    spacing = SPACING,
+  })
+  return widgets.Frame({
     style = trx.ui.FrameStyle.OUTLINE,
-    shown = state.shown,
-    child = trx.ui.widgets.Pad({
+    child = widgets.Pad({
       x = FRAME_PAD,
       y = FRAME_PAD,
-      child = trx.ui.widgets.Stack({
+      child = widgets.Stack({
         spacing = FRAME_PAD,
         align = trx.ui.HAlign.CENTER,
         children = {
-          row_box(state, FRAME_WIDTH, FRAME_HEIGHT),
-          state.name,
+          state.row,
+          widgets.Label({
+            text = selected:map(function(at)
+              return name_of(partners[at])
+            end),
+          }),
         },
       }),
     }),
@@ -154,108 +94,47 @@ local function is_open()
   return anim ~= nil and anim.frame == anim.goal_frame
 end
 
--- Lines up the partners. Returns how many there are.
-local function open_row(ctx, state)
-  state.entries = {}
-  for _, object in ipairs(trx.inventory.combine_partners(ctx.object)) do
-    local angle, rot_x, rot_z, mesh_mask = ring_pose(object)
-    state.entries[#state.entries + 1] = {
-      object = object,
-      angle = angle,
-      spin = angle,
-      rot_x = rot_x,
-      rot_z = rot_z,
-      mesh_mask = mesh_mask,
-    }
+local function begin(ctx, state, layer)
+  state.partners = trx.inventory.combine_partners(ctx.object)
+  if #state.partners == 0 then
+    ctx:cancel()
+    return
   end
-  state.front = 1
-  state.position = 1
-  state.from = 1
-  state.target = 1
-  state.elapsed = SLIDE_TICKS
-  return #state.entries
+  state.selected = trx.signal.new(1)
+  layer:set_root(dialog(state))
+  trx.sound.play(trx.catalog.samples.MENU_SPININ)
+  trx.inventory_ring.set_input_hints({
+    { input = Role.MENU_CONFIRM, text = L("general/actions/combine_item") },
+    { input = Role.MENU_BACK, text = L("general/actions/cancel") },
+  })
 end
 
-local function is_sliding(state)
-  return state.elapsed < SLIDE_TICKS
+local function turn(state, step)
+  local count = #state.partners
+  state.selected:set((state.selected:get() - 1 + step) % count + 1)
+  trx.sound.play(trx.catalog.samples.MENU_ROTATE)
 end
 
-local function slide(state, step)
-  state.from = state.position
-  state.target = state.target + step
-  state.elapsed = 0
-end
-
--- Moves the row on by a tick and puts every entry where it now stands.
-local function place_row(state)
-  if is_sliding(state) then
-    state.elapsed = state.elapsed + 1
-    local ratio = ease(state.elapsed / SLIDE_TICKS)
-    state.position = state.from + (state.target - state.from) * ratio
-    if not is_sliding(state) then
-      state.position = state.target
-      state.front = (state.target - 1) % #state.entries + 1
+local function control(ctx, state, layer, keys)
+  if state.partners == nil then
+    if is_open() then
+      begin(ctx, state, layer)
     end
-  end
-
-  local box = state.box
-  local count = #state.entries
-  local scale = trx.ui.text_scale
-  for index, entry in ipairs(state.entries) do
-    local d = distance(index, state.position, count)
-    local cell = share(d)
-    if index == state.front and not is_sliding(state) then
-      entry.spin = (entry.spin + SPIN_PER_TICK) % (4 * trx.math.DEG_90)
-    end
-    if box == nil or cell <= 0 or (count == 1 and index ~= state.front) then
-      entry.pose = nil
-    else
-      local w = CELL_WIDTH * scale * cell
-      local h = CELL_HEIGHT * scale * cell
-      local x = box.x + box.w / 2 + d * SPACING * scale
-      local y = box.y + box.h / 2
-      entry.pose = { x = x - w / 2, y = y - h / 2, w = w, h = h }
-    end
-  end
-end
-
-local function control(ctx, state, keys)
-  if state.entries == nil then
-    if not is_open() then
-      return
-    end
-    if open_row(ctx, state) == 0 then
-      ctx:cancel()
-      return
-    end
-    trx.sound.play(trx.catalog.samples.MENU_SPININ)
-    trx.inventory_ring.set_input_hints({
-      {
-        input = trx.input.Role.MENU_CONFIRM,
-        text = L("general/actions/combine_item"),
-      },
-      { input = trx.input.Role.MENU_BACK, text = L("general/actions/cancel") },
-    })
-    state.shown:set(true)
+    return
   end
   -- The frame names the entry in the middle, so the ring names nothing.
   trx.overlay.set_caption()
-  place_row(state)
-  state.name:wake()
 
-  if is_sliding(state) then
+  if state.row.is_sliding() then
     return
   end
-  local Role = trx.input.Role
-  local count = #state.entries
-  if keys:held(Role.MENU_RIGHT) and count > 1 then
-    slide(state, 1)
-    trx.sound.play(trx.catalog.samples.MENU_ROTATE)
-  elseif keys:held(Role.MENU_LEFT) and count > 1 then
-    slide(state, -1)
-    trx.sound.play(trx.catalog.samples.MENU_ROTATE)
+  local many = #state.partners > 1
+  if many and keys:held(Role.MENU_RIGHT) then
+    turn(state, 1)
+  elseif many and keys:held(Role.MENU_LEFT) then
+    turn(state, -1)
   elseif keys:pressed(Role.MENU_CONFIRM) then
-    trx.inventory.combine(ctx.object, state.entries[state.front].object)
+    trx.inventory.combine(ctx.object, state.partners[state.selected:get()])
     ctx:confirm()
   elseif keys:pressed(Role.MENU_BACK) then
     trx.sound.play(trx.catalog.samples.MENU_SPINOUT)
@@ -264,12 +143,12 @@ local function control(ctx, state, keys)
 end
 
 local function open(ctx)
-  local state = { shown = trx.signal.new(false) }
-  state.root = frame(state)
+  local state = {}
   return ctx:push({
-    root = state.root,
-    on_input = function(_, keys)
-      control(ctx, state, keys)
+    -- Nothing shows until the entry comes to rest and the row opens.
+    root = widgets.Stack({ children = {} }),
+    on_input = function(layer, keys)
+      control(ctx, state, layer, keys)
     end,
   })
 end

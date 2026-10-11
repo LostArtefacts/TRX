@@ -1111,6 +1111,47 @@ arrow, and `\{button left}` draws the button the player has bound.
 
   Returns: [trx.ui.Widget](#ui.Widget). The bar.
 
+- <a id="ui.widgets.Carousel" name="ui.widgets.Carousel"></a>[lua]`trx.ui.widgets.Carousel(settings)`  
+  A row of items turned to the one in the middle, as the inventory ring
+  offers what to combine an entry with. The item in the middle is drawn at its
+  own size, those beside it smaller, and the rest out of sight. Setting the
+  selected signal slides the row there, the short way round.
+
+  Parameters:
+  - <a id="ui.widgets.Carousel.settings" name="ui.widgets.Carousel.settings"></a>**`settings`** (table). The carousel settings.
+
+    Keys:
+    - <a id="ui.widgets.Carousel.settings.items" name="ui.widgets.Carousel.settings.items"></a>**`items`** (a list of any). What the row holds, in order.
+    - <a id="ui.widgets.Carousel.settings.selected" name="ui.widgets.Carousel.settings.selected"></a>**`selected`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). The place in the row, counted from `1`, of the item in the middle. Setting it slides the row there.
+    - <a id="ui.widgets.Carousel.settings.build" name="ui.widgets.Carousel.settings.build"></a>**`build`** (function). Makes the widget for an item. It receives the item and its place in the row, and returns a widget.
+    - <a id="ui.widgets.Carousel.settings.w" name="ui.widgets.Carousel.settings.w"></a>**`w`** (number). The width of the row, in canvas units at the player's text size.
+    - <a id="ui.widgets.Carousel.settings.h" name="ui.widgets.Carousel.settings.h"></a>**`h`** (number). The height of the row, in canvas units at the player's text size.
+    - <a id="ui.widgets.Carousel.settings.spacing" name="ui.widgets.Carousel.settings.spacing"></a>**`spacing`** (number). How far apart the middles of two neighbours stand, in canvas units at the player's text size.
+    - <a id="ui.widgets.Carousel.settings.side_size" name="ui.widgets.Carousel.settings.side_size"></a>**`side_size`** (number, optional). How large the items beside the middle are drawn, as a share of their own size. `0.6` by default.
+    - <a id="ui.widgets.Carousel.settings.ticks" name="ui.widgets.Carousel.settings.ticks"></a>**`ticks`** (integer, optional). How many ticks a slide takes. `8` by default.
+    - <a id="ui.widgets.Carousel.settings.ease" name="ui.widgets.Carousel.settings.ease"></a>**`ease`** (function, optional). The curve of a slide, one of [`trx.ui.ease`](#ui.ease). [`trx.ui.ease.quad_in_out`](#ui.ease.quad_in_out) by default.
+    - <a id="ui.widgets.Carousel.settings.shown" name="ui.widgets.Carousel.settings.shown"></a>**`shown`** (any, optional). Whether the row is shown, or a signal that holds that value.
+
+  Returns: table. The carousel.
+
+    Keys:
+    - <a id="ui.widgets.Carousel.is_sliding" name="ui.widgets.Carousel.is_sliding"></a>**`is_sliding`** (function). Whether the row is still sliding to the selected item.
+
+  Example:
+  ```lua
+  local selected = trx.signal.new(1)
+  trx.ui.widgets.Carousel({
+    items = objects,
+    selected = selected,
+    build = function(object)
+      return trx.ui.widgets.Model({ object = object, w = 100, h = 120 })
+    end,
+    w = 260,
+    h = 150,
+    spacing = 90,
+  })
+  ```
+
 - <a id="ui.widgets.Custom" name="ui.widgets.Custom"></a>[lua]`trx.ui.widgets.Custom(settings)`  
   A widget that measures and draws itself through functions the script gives.
 
@@ -1375,7 +1416,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.Model.settings.rot_x" name="ui.widgets.Model.settings.rot_x"></a>**`rot_x`** (any, optional). How far to tilt the model, or a signal or [`trx.ui.Tween`](#ui.Tween) carrying it.
     - <a id="ui.widgets.Model.settings.rot_y" name="ui.widgets.Model.settings.rot_y"></a>**`rot_y`** (any, optional). How far to turn the model, or a signal or [`trx.ui.Tween`](#ui.Tween) carrying it.
     - <a id="ui.widgets.Model.settings.rot_z" name="ui.widgets.Model.settings.rot_z"></a>**`rot_z`** (any, optional). How far to roll the model, or a signal or [`trx.ui.Tween`](#ui.Tween) carrying it.
-    - <a id="ui.widgets.Model.settings.spin" name="ui.widgets.Model.settings.spin"></a>**`spin`** (number, optional). How far the model turns each tick, on top of `rot_y` . It turns smoothly between ticks.
+    - <a id="ui.widgets.Model.settings.spin" name="ui.widgets.Model.settings.spin"></a>**`spin`** (any, optional). How far the model turns each tick, on top of `rot_y` , or a signal carrying it. It turns smoothly between ticks, and picks up where it stopped when the spin starts again.
     - <a id="ui.widgets.Model.settings.mesh_mask" name="ui.widgets.Model.settings.mesh_mask"></a>**`mesh_mask`** (integer, optional). Which of its meshes to draw, one bit each. Every mesh by default.
     - <a id="ui.widgets.Model.settings.shown" name="ui.widgets.Model.settings.shown"></a>**`shown`** (any, optional). Whether the model is shown, or a signal that holds that value.
 
