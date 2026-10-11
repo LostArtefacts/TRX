@@ -69,7 +69,7 @@ TEST(a_choice_is_taken_once_and_ends_the_hold)
 {
     M_Reset(true);
     UI_Takeover_Offer(UI_TAKEOVER_RING_ENTRY, 0);
-    UI_Takeover_Close(UI_TAKEOVER_RING_ENTRY, UI_TAKEOVER_CHOICE_CANCEL);
+    UI_Takeover_Close(UI_TAKEOVER_RING_ENTRY, UI_TAKEOVER_CHOICE_CANCEL, 0);
     CHECK_EQ_INT(
         UI_Takeover_TakeChoice(UI_TAKEOVER_RING_ENTRY),
         UI_TAKEOVER_CHOICE_CANCEL);
@@ -79,12 +79,25 @@ TEST(a_choice_is_taken_once_and_ends_the_hold)
         UI_TAKEOVER_CHOICE_NONE);
 }
 
+TEST(a_choice_keeps_its_value_until_the_screen_is_offered_again)
+{
+    M_Reset(true);
+    UI_Takeover_Offer(UI_TAKEOVER_COMBINE, 0);
+    UI_Takeover_Close(UI_TAKEOVER_COMBINE, UI_TAKEOVER_CHOICE_CONFIRM, 42);
+    CHECK_EQ_INT(
+        UI_Takeover_TakeChoice(UI_TAKEOVER_COMBINE),
+        UI_TAKEOVER_CHOICE_CONFIRM);
+    CHECK_EQ_INT(UI_Takeover_GetValue(UI_TAKEOVER_COMBINE), 42);
+    UI_Takeover_Offer(UI_TAKEOVER_COMBINE, 0);
+    CHECK_EQ_INT(UI_Takeover_GetValue(UI_TAKEOVER_COMBINE), 0);
+}
+
 TEST(a_closed_screen_counts_until_its_choice_is_taken)
 {
     M_Reset(true);
     UI_Takeover_Offer(UI_TAKEOVER_RING_ENTRY, 0);
     CHECK(!UI_Takeover_IsAnyClosed());
-    UI_Takeover_Close(UI_TAKEOVER_RING_ENTRY, UI_TAKEOVER_CHOICE_CANCEL);
+    UI_Takeover_Close(UI_TAKEOVER_RING_ENTRY, UI_TAKEOVER_CHOICE_CANCEL, 0);
     CHECK(UI_Takeover_IsAnyClosed());
     UI_Takeover_TakeChoice(UI_TAKEOVER_RING_ENTRY);
     CHECK(!UI_Takeover_IsAnyClosed());
@@ -93,7 +106,7 @@ TEST(a_closed_screen_counts_until_its_choice_is_taken)
 TEST(closing_a_screen_nobody_holds_does_nothing)
 {
     M_Reset(false);
-    UI_Takeover_Close(UI_TAKEOVER_RING_ENTRY, UI_TAKEOVER_CHOICE_CANCEL);
+    UI_Takeover_Close(UI_TAKEOVER_RING_ENTRY, UI_TAKEOVER_CHOICE_CANCEL, 0);
     CHECK_EQ_INT(
         UI_Takeover_TakeChoice(UI_TAKEOVER_RING_ENTRY),
         UI_TAKEOVER_CHOICE_NONE);
@@ -112,7 +125,7 @@ TEST(a_release_after_a_choice_does_not_tell_the_owner)
 {
     M_Reset(true);
     UI_Takeover_Offer(UI_TAKEOVER_RING_ENTRY, 0);
-    UI_Takeover_Close(UI_TAKEOVER_RING_ENTRY, UI_TAKEOVER_CHOICE_CANCEL);
+    UI_Takeover_Close(UI_TAKEOVER_RING_ENTRY, UI_TAKEOVER_CHOICE_CANCEL, 0);
     UI_Takeover_Release(UI_TAKEOVER_RING_ENTRY);
     CHECK_EQ_INT(m_Releases, 0);
 }

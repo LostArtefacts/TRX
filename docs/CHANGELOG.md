@@ -158,7 +158,7 @@
 - Added `trx.math.degrees()`, which converts an angle from degrees to the engine's units
 - Added `scale`, `y_offset`, `base_rot_x`, `base_rot_y`, `base_rot_z`, and `draws_at_pivot` to inventory ring entries. Scripts can use these fields to set an object's size and pose.
 - Added script support for keeping a model on screen across ticks
-    - `trx.ui.mesh_slot` and `trx.ui.MeshSlot`, with `rot_x` and `rot_z` for tilting and rolling models on the canvas
+    - `trx.ui.mesh_slot` and `trx.ui.MeshSlot`, with `rot_x` and `rot_z` for tilting and rolling models on the canvas, in the game and over the inventory ring
     - `trx.ui.primitive.mesh_bounds`
 - Added `trx.fx.gun_flash()`, so a script can draw a muzzle flash on any item (TRX89)
 - Added `trx.fx.Spark.context` and `trx.fx.SparkContext`, so a script can determine how a spark was spawned before deciding to alter it (TRX1590)
@@ -234,16 +234,18 @@
     - `trx.ui.StackLayer` and `trx.ui.LayerKeys`
 - Added `trx.ui.widgets.List`, a column of rows that the player picks one entry from
 - Added `trx.ui.widgets.SleekBar`, the thin progress bar the game draws under a button that the player holds
-- Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the question the pause screen asks, the quick save and load screens, the statistics screen, and an entry the player examines
+- Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the question the pause screen asks, the quick save and load screens, the statistics screen, an entry the player examines, and an entry the player combines
     - `trx.ui.Screen` and `trx.ui.ScreenContext`
     - `trx.ui.ScreenContext.level`, `trx.ui.ScreenContext.is_final` and `trx.ui.ScreenContext.is_bare`, which say what the statistics screen shows
+    - a partner for `trx.ui.ScreenContext:confirm`, which says what a combined entry combines with
 - Added `trx.strings.upper` and `trx.strings.lower`, which change the case of the letters the game's font draws, beyond ASCII too
 - Added `trx.game.Level.is_completed`, which says whether the player has finished a level
 - Added `icon` to the entries of `trx.stats.Stats:secret_list`, which names the glyph that draws a secret
 - Added `trx.assault.stats.clear`, which clears a track's best times as the stats screen's reset button does
 - Added `trx.objects.Object.description`, the text the game shows when the player examines an object
 - Added `trx.ui.primitive.wrap_text` and `trx.strings.paginate`, which break text into lines and pages the way the game does
-- Added `trx.inventory_ring.turn_selection`, which turns the selected entry by hand, and `trx.inventory_ring.set_hint`, which shows a line where the ring shows its button hints
+- Added `trx.inventory_ring.turn_selection`, which turns the selected entry by hand, and `trx.inventory_ring.set_hint`, which shows one or more hints where the ring shows its button hints
+- Added `trx.inventory.combine_partners`, the entries the player carries that an entry combines with
 - Changed saves to keep the items a script spawns, which previously disappeared on load (TRX1677)
 - Changed `trx.events.on_ui_draw`, `on_ui_paint`, `on_ui_paint_over` and `on_scene_paint` to `trx.ui.on_draw`, `trx.ui.on_paint`, `trx.ui.on_paint_over` and `trx.scene.on_paint`
 - Changed script widgets to stay behind the game interface when they overlap

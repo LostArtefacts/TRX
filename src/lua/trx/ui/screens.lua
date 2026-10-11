@@ -91,6 +91,12 @@ local Screen = {
   ---`trx.ui.ScreenContext.object`. The screen ends with
   ---`trx.ui.ScreenContext:cancel`, which puts the entry away.
   EXAMINE = h.IntegerConstant,
+  ---An entry that the player combines in the inventory ring: picking what to
+  ---combine it with, out of `trx.inventory.combine_partners`. The context
+  ---reports the entry as `trx.ui.ScreenContext.object`.
+  ---`trx.ui.ScreenContext:confirm` with a partner combines the two, and
+  ---`trx.ui.ScreenContext:cancel` puts the entry away.
+  COMBINE = h.IntegerConstant,
 }
 ui.Screen = h.enum("ui.Screen", "UI_TAKEOVER", Screen)
 
@@ -118,7 +124,7 @@ end
 
 -- Ends the screen. The layers close after the context is marked done, so the
 -- close callbacks see a screen that is already over.
-local function finish(ctx, choice)
+local function finish(ctx, choice, value)
   if rawget(ctx, "_done") then
     return false
   end
@@ -130,7 +136,7 @@ local function finish(ctx, choice)
   local layers = rawget(ctx, "_layers")
   rawset(ctx, "_layers", {})
   if choice ~= nil then
-    raw.close(ctx.screen, choice)
+    raw.close(ctx.screen, choice, value)
   end
   for _, layer in ipairs(layers) do
     layer:close()
@@ -148,7 +154,7 @@ end
 ---@class (exact) trx.ui.ScreenContext
 ---@trx.readonly is_bare, is_final, is_held, level, mode, object, screen
 ---@field screen trx.ui.Screen The screen.
----@field object trx.catalog.objects? The ring entry that the player uses, for `trx.ui.Screen.RING_ENTRY`, or examines, for `trx.ui.Screen.EXAMINE`.
+---@field object trx.catalog.objects? The ring entry that the player uses, for `trx.ui.Screen.RING_ENTRY`, examines, for `trx.ui.Screen.EXAMINE`, or combines, for `trx.ui.Screen.COMBINE`.
 ---@field mode trx.inventory_ring.Mode? What the quick save or load screen opened for, for `trx.ui.Screen.SAVE_LOAD`.
 ---@field level trx.game.Level? The level whose statistics the screen shows, for `trx.ui.Screen.STATS`. The totals name the level that ended the game.
 ---@field is_final boolean? Whether the screen shows the totals for the whole game rather than one level, for `trx.ui.Screen.STATS`.
@@ -167,6 +173,7 @@ local Context = h.class("ui.ScreenContext", {
         if
           screen == trx.ui.Screen.RING_ENTRY
           or screen == trx.ui.Screen.EXAMINE
+          or screen == trx.ui.Screen.COMBINE
         then
           return rawget(self, "_arg")
         end
@@ -271,12 +278,14 @@ function Context:cancel()
 end
 
 ---Ends the screen as a choice that the player made, and closes its layers. A
----ring entry leaves the ring, as an entry that the player uses does, and the
----statistics screen ends as the player skipping it does. Does nothing if the
----screen has already ended.
+---ring entry leaves the ring, as an entry that the player uses does, a
+---combined entry is combined with the partner given, and the statistics screen
+---ends as the player skipping it does. Does nothing if the screen has already
+---ended.
+---@param partner? trx.catalog.objects What a combined entry combines with.
 ---@return boolean # Whether the screen was still held.
-function Context:confirm()
-  return finish(self, choices.CONFIRM)
+function Context:confirm(partner)
+  return finish(self, choices.CONFIRM, partner)
 end
 
 local function new_context(screen, arg)

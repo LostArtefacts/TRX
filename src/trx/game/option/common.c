@@ -4,7 +4,6 @@
 #include <trx/game/input.h>
 #include <trx/game/objects.h>
 #include <trx/game/objects/families.h>
-#include <trx/game/option/combine.h>
 #include <trx/game/option/controls.h>
 #include <trx/game/option/gameplay.h>
 #include <trx/game/option/globe_select.h>
@@ -28,17 +27,14 @@ void Option_Reset(void)
 
 void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 {
-    // A script examines an entry. Where none does, any key puts it away
-    // rather than using it.
-    if (inv_item->action == ACTION_EXAMINE) {
+    // A script examines an entry, or combines it. Where none does, any key
+    // puts it away rather than using it.
+    if (inv_item->action == ACTION_EXAMINE
+        || inv_item->action == ACTION_COMBINE) {
         if (!is_busy && (g_InputDB.menu_confirm || g_InputDB.menu_show_info)) {
             g_InputDB.menu_back = true;
             g_InputDB.menu_confirm = false;
         }
-        return;
-    }
-    if (inv_item->action == ACTION_COMBINE) {
-        Option_Combine_Control(inv_item, is_busy);
         return;
     }
 
@@ -108,11 +104,6 @@ void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
 
 void Option_Draw(INVENTORY_ITEM *const inv_item)
 {
-    if (inv_item->action == ACTION_COMBINE) {
-        Option_Combine_Draw();
-        return;
-    }
-
     switch (inv_item->object_id) {
     case O_PDA_OPTION:
         Option_Gameplay_Draw(inv_item);
@@ -136,11 +127,6 @@ void Option_Draw(INVENTORY_ITEM *const inv_item)
 
 void Option_Close(const INVENTORY_ITEM *const inv_item)
 {
-    if (inv_item->action == ACTION_COMBINE) {
-        Option_Combine_Close();
-        return;
-    }
-
     switch (inv_item->object_id) {
     case O_PDA_OPTION:
         Option_Gameplay_Close();

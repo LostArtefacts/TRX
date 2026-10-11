@@ -28,7 +28,6 @@
 #include <trx/game/objects/families.h>
 #include <trx/game/objects/links.h>
 #include <trx/game/option.h>
-#include <trx/game/option/combine.h>
 #include <trx/game/option/globe_select.h>
 #include <trx/game/option/stats.h>
 #include <trx/game/output/overlay.h>
@@ -49,6 +48,9 @@
 
 static CLOCK_TIMER m_DemoTimer = { .type = CLOCK_TIMER_SIM };
 static OBJECT_ID m_InvChosen = NO_OBJECT;
+// What a script picked to combine the selected entry with, until the entry
+// closes and the two are combined.
+static OBJECT_ID m_CombinePartner = NO_OBJECT;
 
 // The entry each ring was left on, so that it can open there again. An object
 // id rather than a position: a ring is rebuilt as Lara's belongings change,
@@ -435,6 +437,8 @@ static UI_TAKEOVER M_GetTakeover(const INVENTORY_ITEM *const inv_item)
         return UI_TAKEOVER_RING_ENTRY;
     case ACTION_EXAMINE:
         return UI_TAKEOVER_EXAMINE;
+    case ACTION_COMBINE:
+        return UI_TAKEOVER_COMBINE;
     default:
         return UI_TAKEOVER_NUMBER_OF;
     }
@@ -446,6 +450,8 @@ static void M_EndTakeover(
 {
     if (screen == UI_TAKEOVER_EXAMINE) {
         inv_item->has_manual_rot = false;
+    }
+    if (screen == UI_TAKEOVER_EXAMINE || screen == UI_TAKEOVER_COMBINE) {
         InvRing_SetButtonHintText(nullptr);
     }
 }
@@ -453,8 +459,9 @@ static void M_EndTakeover(
 static void M_ApplyCombineChoice(
     INV_RING *const ring, const INVENTORY_ITEM *const inv_item)
 {
-    const OBJECT_ID partner = Option_Combine_TakeChoice();
-    if (partner == NO_OBJECT) {
+    const OBJECT_ID partner = m_CombinePartner;
+    m_CombinePartner = NO_OBJECT;
+    if (partner == NO_OBJECT || !Inv_HasItem(partner)) {
         return;
     }
     const OBJECT_ID result =
@@ -639,6 +646,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 inv_item->action = ACTION_COMBINE;
                 inv_item->goal_frame = 0;
                 inv_item->anim_direction = 1;
+                ring->takeover_offered = false;
             } else {
                 inv_item->action = ACTION_USE;
                 inv_item->goal_frame = inv_item->open_frame;
@@ -770,8 +778,15 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 const UI_TAKEOVER_CHOICE choice =
                     UI_Takeover_TakeChoice(screen);
                 // A ring opened to save or load holds nothing else worth
-                // going back to, so putting the entry away leaves it.
-                const bool leaves_ring = choice == UI_TAKEOVER_CHOICE_CONFIRM
+                // going back to, so putting the entry away leaves it. A
+                // combined entry goes back into the ring, which takes the
+                // choice as it closes the entry.
+                if (screen == UI_TAKEOVER_COMBINE
+                    && choice == UI_TAKEOVER_CHOICE_CONFIRM) {
+                    m_CombinePartner = (OBJECT_ID)UI_Takeover_GetValue(screen);
+                }
+                const bool leaves_ring = (choice == UI_TAKEOVER_CHOICE_CONFIRM
+                                          && screen != UI_TAKEOVER_COMBINE)
                     || ring->mode == INV_LOAD_MODE
                     || ring->mode == INV_SAVE_MODE
                     || ring->mode == INV_SAVE_CRYSTAL_MODE;
@@ -1124,9 +1139,15 @@ void InvRing_Close(INV_RING *const ring)
         INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
         if (inv_item != nullptr) {
             UI_Takeover_Release(UI_TAKEOVER_RING_ENTRY);
-            if (UI_Takeover_IsHeld(UI_TAKEOVER_EXAMINE)) {
-                UI_Takeover_Release(UI_TAKEOVER_EXAMINE);
-                M_EndTakeover(UI_TAKEOVER_EXAMINE, inv_item);
+            const UI_TAKEOVER screens[] = {
+                UI_TAKEOVER_EXAMINE,
+                UI_TAKEOVER_COMBINE,
+            };
+            for (size_t i = 0; i < sizeof(screens) / sizeof(screens[0]); i++) {
+                if (UI_Takeover_IsHeld(screens[i])) {
+                    UI_Takeover_Release(screens[i]);
+                    M_EndTakeover(screens[i], inv_item);
+                }
             }
             Option_Close(inv_item);
             if (ring->type < RT_NUMBER_OF) {
