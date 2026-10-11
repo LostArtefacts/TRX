@@ -255,7 +255,8 @@ local function control(ctx, state, keys)
     slide(state, -1)
     trx.sound.play(trx.catalog.samples.MENU_ROTATE)
   elseif keys:pressed(Role.MENU_CONFIRM) then
-    ctx:confirm(state.entries[state.front].object)
+    trx.inventory.combine(ctx.object, state.entries[state.front].object)
+    ctx:confirm()
   elseif keys:pressed(Role.MENU_BACK) then
     trx.sound.play(trx.catalog.samples.MENU_SPINOUT)
     ctx:cancel()

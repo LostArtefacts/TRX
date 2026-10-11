@@ -7,6 +7,7 @@
 #include <trx/game/gun/common.h>
 #include <trx/game/gun/registry.h>
 #include <trx/game/inventory.h>
+#include <trx/game/inventory_ring/control.h>
 #include <trx/game/inventory_ring/types.h>
 #include <trx/game/inventory_ring/vars.h>
 #include <trx/game/lua/common.h>
@@ -384,7 +385,23 @@ static int M_L_InvCombinePartners(lua_State *const L)
     return 1;
 }
 
+// trxc.inventory.combine(object: trx.catalog.objects, partner: trx.catalog.objects): trx.catalog.objects?
+static int M_L_InvCombine(lua_State *const L)
+{
+    const OBJECT_ID result =
+        Inv_Combine(LUA_CheckObjectID(L, 1), LUA_CheckObjectID(L, 2));
+    if (result == NO_OBJECT) {
+        lua_pushnil(L);
+        return 1;
+    }
+    // The ring rests on what the two made when it next settles.
+    InvRing_SetRequestedObjectID(result);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
+    { "combine", M_L_InvCombine },
     { "combine_partners", M_L_InvCombinePartners },
     { "get_current", M_L_InvGetCurrent },
     { "get", M_L_InvGetLevel },

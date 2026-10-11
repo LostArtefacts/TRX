@@ -342,6 +342,22 @@ int32_t Inv_GetCombinePartners(
     return count;
 }
 
+OBJECT_ID Inv_Combine(const OBJECT_ID object_id, const OBJECT_ID partner_id)
+{
+    if (object_id == partner_id || !Inv_HasItem(object_id)
+        || !Inv_HasItem(partner_id)) {
+        return NO_OBJECT;
+    }
+    const OBJECT_ID result = ObjectCombo_GetResult(object_id, partner_id);
+    if (result == NO_OBJECT) {
+        return NO_OBJECT;
+    }
+    Inv_RemoveItem(object_id);
+    Inv_RemoveItem(partner_id);
+    Inv_AddItem(result);
+    return result;
+}
+
 INV_ITEM_ACTIONS Inv_GetItemActions(const OBJECT_ID object_id)
 {
     const OBJECT_ID entry_id = M_GetEntryID(object_id);
