@@ -315,3 +315,19 @@ end
     trx.log.info(trx.catalog.objects[partner])
   end
   ```
+
+- <a id="inventory.combine" name="inventory.combine"></a>[lua]`trx.inventory.combine(object_id, partner_id)`  
+  Combines two things Lara carries into what they make, taking one of each,
+  as combining them in the inventory ring does. The ring rests on what they
+  made when it next settles.
+
+  Parameters:
+  - <a id="inventory.combine.object_id" name="inventory.combine.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The inventory icon to combine.
+  - <a id="inventory.combine.partner_id" name="inventory.combine.partner_id"></a>**`partner_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The inventory icon to combine it with.
+
+  Returns: [trx.catalog.objects](CATALOG.md#catalog.objects) or `nil`. What they made, or `nil`, changing nothing, where the two do not combine or Lara lacks either.
+
+  Example:
+  ```lua
+  local made = trx.inventory.combine(item, partner)
+  ```

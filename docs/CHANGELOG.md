@@ -242,7 +242,6 @@
 - Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the question the pause screen asks, the quick save and load screens, the statistics screen, an entry the player examines, and an entry the player combines
     - `trx.ui.Screen` and `trx.ui.ScreenContext`
     - `trx.ui.ScreenContext.level`, `trx.ui.ScreenContext.is_final` and `trx.ui.ScreenContext.is_bare`, which say what the statistics screen shows
-    - a partner for `trx.ui.ScreenContext:confirm`, which says what a combined entry combines with
 - Added `trx.strings.upper` and `trx.strings.lower`, which change the case of the letters the game's font draws, beyond ASCII too
 - Added `trx.game.Level.is_completed`, which says whether the player has finished a level
 - Added `icon` to the entries of `trx.stats.Stats:secret_list`, which names the glyph that draws a secret
@@ -250,7 +249,7 @@
 - Added `trx.objects.Object.description`, the text the game shows when the player examines an object
 - Added `trx.ui.primitive.wrap_text` and `trx.strings.paginate`, which break text into lines and pages the way the game does
 - Added `trx.inventory_ring.turn_selection`, which turns the selected entry by hand, and `trx.inventory_ring.set_input_hints`, which shows hints for the keys that work now where the ring shows its button hints
-- Added `trx.inventory.combine_partners`, the entries the player carries that an entry combines with
+- Added `trx.inventory.combine_partners`, the entries the player carries that an entry combines with, and `trx.inventory.combine`, which combines two of them into what they make
 - Changed saves to keep the items a script spawns, which previously disappeared on load (TRX1677)
 - Changed `trx.events.on_ui_draw`, `on_ui_paint`, `on_ui_paint_over` and `on_scene_paint` to `trx.ui.on_draw`, `trx.ui.on_paint`, `trx.ui.on_paint_over` and `trx.scene.on_paint`
 - Changed script widgets to stay behind the game interface when they overlap

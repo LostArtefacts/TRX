@@ -6,7 +6,7 @@
 #include <lauxlib.h>
 #include <lua.h>
 
-// trxc.screens.close(screen: trx.ui.Screen, choice: integer, value?: integer)
+// trxc.screens.close(screen: trx.ui.Screen, choice: integer)
 static int M_L_ScreensClose(lua_State *const L)
 {
     const UI_TAKEOVER screen = (UI_TAKEOVER)LUA_CheckRange(
@@ -16,7 +16,7 @@ static int M_L_ScreensClose(lua_State *const L)
     luaL_argcheck(
         L, UI_Takeover_AcceptsChoice(screen, choice), 2,
         "the screen does not take this choice");
-    UI_Takeover_Close(screen, choice, (int32_t)luaL_optinteger(L, 3, 0));
+    UI_Takeover_Close(screen, choice);
     return 0;
 }
 

@@ -72,6 +72,11 @@ INV_ITEM_ACTIONS Inv_GetItemActions(OBJECT_ID obj_id);
 int32_t Inv_GetCombinePartners(
     OBJECT_ID obj_id, OBJECT_ID *partners, int32_t max_count);
 
+// Combines two items Lara carries into what they make, taking one of each.
+// Returns what they made, or NO_OBJECT, changing nothing, where the two do not
+// combine or Lara lacks either.
+OBJECT_ID Inv_Combine(OBJECT_ID obj_id, OBJECT_ID partner_id);
+
 OBJECT_ID Inv_GetItemOption(OBJECT_ID obj_id);
 OBJECT_ID Inv_GetItemPickup(OBJECT_ID obj_id);
 

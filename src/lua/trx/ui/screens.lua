@@ -92,10 +92,12 @@ local Screen = {
   ---`trx.ui.ScreenContext:cancel`, which puts the entry away.
   EXAMINE = h.IntegerConstant,
   ---An entry that the player combines in the inventory ring: picking what to
-  ---combine it with, out of `trx.inventory.combine_partners`. The context
-  ---reports the entry as `trx.ui.ScreenContext.object`.
-  ---`trx.ui.ScreenContext:confirm` with a partner combines the two, and
-  ---`trx.ui.ScreenContext:cancel` puts the entry away.
+  ---combine it with, out of `trx.inventory.combine_partners`, and combining
+  ---the two with `trx.inventory.combine`. The context reports the entry as
+  ---`trx.ui.ScreenContext.object`. The screen ends with
+  ---`trx.ui.ScreenContext:cancel` or `trx.ui.ScreenContext:confirm`, which
+  ---both put the entry away, and the ring then rests on what a combination
+  ---made.
   COMBINE = h.IntegerConstant,
 }
 ui.Screen = h.enum("ui.Screen", "UI_TAKEOVER", Screen)
@@ -124,7 +126,7 @@ end
 
 -- Ends the screen. The layers close after the context is marked done, so the
 -- close callbacks see a screen that is already over.
-local function finish(ctx, choice, value)
+local function finish(ctx, choice)
   if rawget(ctx, "_done") then
     return false
   end
@@ -136,7 +138,7 @@ local function finish(ctx, choice, value)
   local layers = rawget(ctx, "_layers")
   rawset(ctx, "_layers", {})
   if choice ~= nil then
-    raw.close(ctx.screen, choice, value)
+    raw.close(ctx.screen, choice)
   end
   for _, layer in ipairs(layers) do
     layer:close()
@@ -279,13 +281,11 @@ end
 
 ---Ends the screen as a choice that the player made, and closes its layers. A
 ---ring entry leaves the ring, as an entry that the player uses does, a
----combined entry is combined with the partner given, and the statistics screen
----ends as the player skipping it does. Does nothing if the screen has already
----ended.
----@param partner? trx.catalog.objects What a combined entry combines with.
+---combined entry is put away, and the statistics screen ends as the player
+---skipping it does. Does nothing if the screen has already ended.
 ---@return boolean # Whether the screen was still held.
-function Context:confirm(partner)
-  return finish(self, choices.CONFIRM, partner)
+function Context:confirm()
+  return finish(self, choices.CONFIRM)
 end
 
 local function new_context(screen, arg)

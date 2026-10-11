@@ -55,11 +55,18 @@ static char m_RingHint[256];
 // What the held entry combines with.
 static OBJECT_ID m_Partners[8];
 static int32_t m_PartnerCount;
+// The last two things a script combined, and what the ring was asked to rest
+// on.
+static OBJECT_ID m_Combined[2];
+static OBJECT_ID m_RequestedObject;
 
 static void M_Reset(void)
 {
     m_RingHint[0] = '\0';
     m_PartnerCount = 0;
+    m_Combined[0] = NO_OBJECT;
+    m_Combined[1] = NO_OBJECT;
+    m_RequestedObject = NO_OBJECT;
     m_RingOpen = false;
     m_ScreenHeld = false;
     g_TRVersion = 1;
@@ -239,6 +246,17 @@ static int M_L_SetCombinePartners(lua_State *const L)
         lua_pop(L, 1);
     }
     return 0;
+}
+
+// fake.combined() -> object?, partner? - what a script last combined.
+static int M_L_Combined(lua_State *const L)
+{
+    if (m_Combined[0] == NO_OBJECT) {
+        return 0;
+    }
+    lua_pushinteger(L, m_Combined[0]);
+    lua_pushinteger(L, m_Combined[1]);
+    return 2;
 }
 
 // fake.ring_hint() -> string - empty where the ring shows no hint.
@@ -611,6 +629,25 @@ void InvRing_SetButtonHintParts(
     }
 }
 
+// Combines anything with a partner the held entry has, into the first
+// partner, so that a test sees what was asked for.
+OBJECT_ID Inv_Combine(const OBJECT_ID obj_id, const OBJECT_ID partner_id)
+{
+    for (int32_t i = 0; i < m_PartnerCount; i++) {
+        if (m_Partners[i] == partner_id) {
+            m_Combined[0] = obj_id;
+            m_Combined[1] = partner_id;
+            return m_Partners[0];
+        }
+    }
+    return NO_OBJECT;
+}
+
+void InvRing_SetRequestedObjectID(const OBJECT_ID obj_id)
+{
+    m_RequestedObject = obj_id;
+}
+
 int32_t Inv_GetCombinePartners(
     const OBJECT_ID obj_id, OBJECT_ID *const partners, const int32_t max_count)
 {
@@ -625,6 +662,8 @@ void FakeGame_PushLua(lua_State *const L)
 {
     lua_pushcfunction(L, M_L_RingHint);
     lua_setfield(L, -2, "ring_hint");
+    lua_pushcfunction(L, M_L_Combined);
+    lua_setfield(L, -2, "combined");
     lua_pushcfunction(L, M_L_SetCombinePartners);
     lua_setfield(L, -2, "set_combine_partners");
     lua_pushcfunction(L, M_L_OpenRing);

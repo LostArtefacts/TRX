@@ -261,6 +261,19 @@ end
 ---@type fun(object_id: trx.catalog.objects): trx.catalog.objects[]
 M.combine_partners = raw.combine_partners
 
+---Combines two things Lara carries into what they make, taking one of each,
+---as combining them in the inventory ring does. The ring rests on what they
+---made when it next settles.
+---
+---```lua
+---local made = trx.inventory.combine(item, partner)
+---```
+---@param object_id trx.catalog.objects The inventory icon to combine.
+---@param partner_id trx.catalog.objects The inventory icon to combine it with.
+---@return trx.catalog.objects? # What they made, or `nil`, changing nothing, where the two do not combine or Lara lacks either.
+---@type fun(object_id: trx.catalog.objects, partner_id: trx.catalog.objects): trx.catalog.objects?
+M.combine = raw.combine
+
 ---Indexing the module reaches an entry of Lara's inventory, and
 ---`#trx.inventory` is how many kinds of thing she carries. Entries are keyed
 ---by the order they are drawn in, and are built one at a time as they are

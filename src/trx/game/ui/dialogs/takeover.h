@@ -76,16 +76,10 @@ void UI_Takeover_Release(UI_TAKEOVER screen);
 // end it as the player skipping it does. An entry that the player examines
 // takes only UI_TAKEOVER_CHOICE_CANCEL, which puts it away. An entry that the
 // player combines takes UI_TAKEOVER_CHOICE_CANCEL, which puts it away, and
-// UI_TAKEOVER_CHOICE_CONFIRM, which combines it with the object given as the
-// choice's value.
+// UI_TAKEOVER_CHOICE_CONFIRM, which both put it away. The script combines it
+// with what it picks before it closes the screen.
 bool UI_Takeover_AcceptsChoice(UI_TAKEOVER screen, UI_TAKEOVER_CHOICE choice);
 
-// Closes the screen with a choice, and a value that goes with it for the
-// screens that take one. Called by the owner. Does nothing while no owner
-// holds the screen.
-void UI_Takeover_Close(
-    UI_TAKEOVER screen, UI_TAKEOVER_CHOICE choice, int32_t value);
-
-// Returns the value the screen was last closed with, until it is offered
-// again.
-int32_t UI_Takeover_GetValue(UI_TAKEOVER screen);
+// Closes the screen with a choice. Called by the owner. Does nothing while no
+// owner holds the screen.
+void UI_Takeover_Close(UI_TAKEOVER screen, UI_TAKEOVER_CHOICE choice);

@@ -176,7 +176,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - `trx.ui.Screen.EXAMINE`  
         An entry that the player examines in the inventory ring: its name and description, and turning it by hand. The context reports the entry as [`trx.ui.ScreenContext.object`](#ui.ScreenContext.object). The screen ends with [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel), which puts the entry away.
     - `trx.ui.Screen.COMBINE`  
-        An entry that the player combines in the inventory ring: picking what to combine it with, out of [`trx.inventory.combine_partners`](INVENTORY.md#inventory.combine_partners). The context reports the entry as [`trx.ui.ScreenContext.object`](#ui.ScreenContext.object). [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm) with a partner combines the two, and [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel) puts the entry away.
+        An entry that the player combines in the inventory ring: picking what to combine it with, out of [`trx.inventory.combine_partners`](INVENTORY.md#inventory.combine_partners), and combining the two with [`trx.inventory.combine`](INVENTORY.md#inventory.combine). The context reports the entry as [`trx.ui.ScreenContext.object`](#ui.ScreenContext.object). The screen ends with [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel) or [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm), which both put the entry away, and the ring then rests on what a combination made.
 
 ### Structures
 
@@ -280,15 +280,11 @@ arrow, and `\{button left}` draws the button the player has bound.
 
       Returns: boolean. Whether the screen was still held.
 
-    - <a id="ui.ScreenContext.confirm" name="ui.ScreenContext.confirm"></a>[lua]`screencontext:confirm([partner])`  
+    - <a id="ui.ScreenContext.confirm" name="ui.ScreenContext.confirm"></a>[lua]`screencontext:confirm()`  
       Ends the screen as a choice that the player made, and closes its layers. A
       ring entry leaves the ring, as an entry that the player uses does, a
-      combined entry is combined with the partner given, and the statistics screen
-      ends as the player skipping it does. Does nothing if the screen has already
-      ended.
-
-      Parameters:
-      - <a id="ui.ScreenContext.confirm.partner" name="ui.ScreenContext.confirm.partner"></a>**`partner`** ([trx.catalog.objects](CATALOG.md#catalog.objects), optional). What a combined entry combines with.
+      combined entry is put away, and the statistics screen ends as the player
+      skipping it does. Does nothing if the screen has already ended.
 
       Returns: boolean. Whether the screen was still held.
 

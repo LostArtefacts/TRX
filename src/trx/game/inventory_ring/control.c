@@ -24,7 +24,6 @@
 #include <trx/game/lua/events.h>
 #include <trx/game/music.h>
 #include <trx/game/objects.h>
-#include <trx/game/objects/combos.h>
 #include <trx/game/objects/families.h>
 #include <trx/game/objects/links.h>
 #include <trx/game/option.h>
@@ -48,9 +47,6 @@
 
 static CLOCK_TIMER m_DemoTimer = { .type = CLOCK_TIMER_SIM };
 static OBJECT_ID m_InvChosen = NO_OBJECT;
-// What a script picked to combine the selected entry with, until the entry
-// closes and the two are combined.
-static OBJECT_ID m_CombinePartner = NO_OBJECT;
 
 // The entry each ring was left on, so that it can open there again. An object
 // id rather than a position: a ring is rebuilt as Lara's belongings change,
@@ -456,24 +452,14 @@ static void M_EndTakeover(
     }
 }
 
-static void M_ApplyCombineChoice(
+// Builds the ring again where a script took the entry it held, as combining
+// does, and rests it on the entry the script asked for.
+static void M_RefreshAfterScript(
     INV_RING *const ring, const INVENTORY_ITEM *const inv_item)
 {
-    const OBJECT_ID partner = m_CombinePartner;
-    m_CombinePartner = NO_OBJECT;
-    if (partner == NO_OBJECT || !Inv_HasItem(partner)) {
+    if (Inv_GetItemCount(inv_item->object_id) > 0) {
         return;
     }
-    const OBJECT_ID result =
-        ObjectCombo_GetResult(inv_item->object_id, partner);
-    if (result == NO_OBJECT) {
-        return;
-    }
-
-    Inv_RemoveItem(inv_item->object_id);
-    Inv_RemoveItem(partner);
-    Inv_AddItem(result);
-    InvRing_SetRequestedObjectID(result);
 
     const INV_RING_VISIBLE visible = M_GetVisibleRing(ring->type);
     ring->list = visible.items;
@@ -779,12 +765,8 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                     UI_Takeover_TakeChoice(screen);
                 // A ring opened to save or load holds nothing else worth
                 // going back to, so putting the entry away leaves it. A
-                // combined entry goes back into the ring, which takes the
-                // choice as it closes the entry.
-                if (screen == UI_TAKEOVER_COMBINE
-                    && choice == UI_TAKEOVER_CHOICE_CONFIRM) {
-                    m_CombinePartner = (OBJECT_ID)UI_Takeover_GetValue(screen);
-                }
+                // combined entry goes back into the ring, which builds itself
+                // again around what the script made of it.
                 const bool leaves_ring = (choice == UI_TAKEOVER_CHOICE_CONFIRM
                                           && screen != UI_TAKEOVER_COMBINE)
                     || ring->mode == INV_LOAD_MODE
@@ -851,7 +833,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     case RNG_DESELECT: {
         INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
         Option_Close(inv_item);
-        M_ApplyCombineChoice(ring, inv_item);
+        M_RefreshAfterScript(ring, inv_item);
         Sound_Effect(SFX_MENU_SPINOUT, nullptr, SPM_ALWAYS);
         InvRing_SetStatusTransition(
             ring, RNG_DESELECTING, RNG_OPEN, M_SELECTING_FRAMES);
