@@ -2,6 +2,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/game/anims/types.h>
+#include <trx/game/interpolation.h>
 #include <trx/game/lua/events/ui.h>
 #include <trx/game/lua/field.h>
 #include <trx/game/lua/registry.h>
@@ -349,6 +350,13 @@ static int M_L_UIMeshSlotRelease(lua_State *const L)
         LUA_Struct_CheckRef(L, 1, &TYPE_UI_MESH_SLOT);
     UI_MeshSlot_Release(ref->handle);
     return 0;
+}
+
+// trxc.ui.interpolation_rate(): number
+static int M_L_UIInterpolationRate(lua_State *const L)
+{
+    lua_pushnumber(L, Interpolation_GetRate());
+    return 1;
 }
 
 // trxc.ui.mesh_slot(): trx.ui.MeshSlot?
@@ -751,6 +759,7 @@ static const luaL_Reg m_Module[] = {
     { "sprite", M_L_UISprite },
     { "sprite_bounds", M_L_UISpriteBounds },
     { "sprite_count", M_L_UISpriteCount },
+    { "interpolation_rate", M_L_UIInterpolationRate },
     { "mesh_slot", M_L_UIMeshSlot },
     { "mesh_bounds", M_L_UIMeshBounds },
     { "gradient_sprite", M_L_UIGradientSprite },

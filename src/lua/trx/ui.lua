@@ -354,6 +354,13 @@ function MeshSlot:release()
   return h.native()
 end
 
+---How far the frame being drawn stands between the last two ticks, from `0`
+---at the earlier one to `1` at the later one. `trx.ui.Tween` reads it to glide
+---between ticks.
+---@return number # The share of the way.
+---@type fun(): number
+M.interpolation_rate = raw.interpolation_rate
+
 ---Takes a slot for a model the interface keeps on screen across ticks.
 ---
 ---Take a slot once, when a script loads, and give it back with
