@@ -60,6 +60,7 @@ trx.objects.wolf.properties.max_hit_points = 30
 
     Computed properties (derived, not stored on the object):
     - <a id="objects.Object.default_names" name="objects.Object.default_names"></a>**`default_names`**: table. The compile-time English names. A lookup tries these when the player's language has no matching name, so an English name still reaches the object in a translated install.
+    - <a id="objects.Object.description" name="objects.Object.description"></a>**`description`**: string. The text the game shows when the player examines the object, or `nil` where it cannot be examined. An empty description can still be examined: the player turns it without reading anything.
     - <a id="objects.Object.name" name="objects.Object.name"></a>**`name`**: string. The name the game shows for the object. It is the first value in [`names`](#objects.Object.names), or `nil` where the object has no name.
     - <a id="objects.Object.names" name="objects.Object.names"></a>**`names`**: table. Every name the object answers to, in the player's language. An object has more than one: a large medipack is also a `medipack` and a `big medi`.
     - <a id="objects.Object.properties" name="objects.Object.properties"></a>**`properties`**: table. The object's own typed properties, which every item of the type inherits. Writing here changes the default for all of them; write to [`trx.items.Item.properties`](ITEMS.md#items.Item.properties) to change one item only. Iterable with `pairs()`. See [Objects](../../OBJECTS.md).
@@ -85,6 +86,12 @@ trx.objects.wolf.properties.max_hit_points = 30
       language has no matching name. Prefer [`default_names`](#objects.Object.default_names).
 
       Returns: a list of string.
+
+    - <a id="objects.Object.get_description" name="objects.Object.get_description"></a>[lua]`object:get_description()`  
+      The text the game shows when the player examines the object. Prefer
+      [`description`](#objects.Object.description).
+
+      Returns: string or `nil`. The description, or `nil` where the object cannot be examined.
 
     - <a id="objects.Object.get_names" name="objects.Object.get_names"></a>[lua]`object:get_names()`  
       Every name the object answers to, in the player's language. Prefer

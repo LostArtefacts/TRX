@@ -296,6 +296,8 @@ trxc = {}
 ---@field item fun(object_id: trx.catalog.objects): table?
 ---@field mode fun(): trx.inventory_ring.Mode?
 ---@field selection_anim fun(): trx.inventory_ring.EntryAnim?
+---@field set_hint fun(text?: string)
+---@field turn_selection fun(yaw: integer, pitch: integer)
 
 ---@class (exact) trxc.items
 ---@field count fun(): integer
@@ -487,6 +489,7 @@ trxc = {}
 ---@class (exact) trxc.strings
 ---@field fuzzy_match fun(input: string, sources: trx.strings.fuzzy_match.sources[]): trx.strings.Match[]
 ---@field lower fun(text: string): string
+---@field paginate fun(text: string, max_lines: integer): string[]
 ---@field regex_match fun(subject: string, pattern: string): boolean
 ---@field upper fun(text: string): string
 
@@ -532,6 +535,7 @@ trxc = {}
 ---@field text_scale fun(): number
 ---@field to_canvas fun(pixels: number): number
 ---@field to_screen fun(length: number): number
+---@field wrap_text fun(text: string, width: number, scale?: number): string
 
 ---@class (exact) trxc.waypoints
 ---@field get_current fun(): trx.waypoints.Num?

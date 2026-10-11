@@ -35,6 +35,7 @@
 #define FAKE_ANIM_COUNT 2
 #define FAKE_FRAME_COUNT 64
 #define FAKE_PROP_SLOTS 4
+#define M_MAX_DESCRIPTIONS 8
 
 typedef struct {
     OBJECT_ID object_id;
@@ -108,6 +109,13 @@ static const struct {
     { FAKE_OBJ_RECEPTACLE, "receptacle" },
     { FAKE_OBJ_DOOR, "door" },
 };
+
+// What the player reads on examining an object, which a test sets per object.
+static struct {
+    OBJECT_ID object_id;
+    char text[512];
+} m_Descriptions[M_MAX_DESCRIPTIONS];
+static int32_t m_DescriptionCount;
 
 static void M_AddFamilyByName(
     const OBJECT_ID object_id, const char *const family_key)
@@ -211,6 +219,7 @@ static const char *M_ObjectNames(const OBJECT_ID obj_id)
 
 static void M_Reset(void)
 {
+    m_DescriptionCount = 0;
     memset(m_Items, 0, sizeof(m_Items));
     memset(m_Used, 0, sizeof(m_Used));
     memset(m_Names, 0, sizeof(m_Names));
@@ -661,6 +670,35 @@ const char *Object_GetName(const OBJECT_ID obj_id)
     // The fake level localizes nothing, so a lookup always takes the
     // compile-time fallback.
     return Object_GetDefaultName(obj_id);
+}
+
+void FakeItems_SetDescription(const OBJECT_ID obj_id, const char *const text)
+{
+    for (int32_t i = 0; i < m_DescriptionCount; i++) {
+        if (m_Descriptions[i].object_id == obj_id) {
+            snprintf(
+                m_Descriptions[i].text, sizeof(m_Descriptions[i].text), "%s",
+                text);
+            return;
+        }
+    }
+    if (m_DescriptionCount < M_MAX_DESCRIPTIONS) {
+        m_Descriptions[m_DescriptionCount].object_id = obj_id;
+        snprintf(
+            m_Descriptions[m_DescriptionCount].text,
+            sizeof(m_Descriptions[m_DescriptionCount].text), "%s", text);
+        m_DescriptionCount++;
+    }
+}
+
+const char *Object_GetDescription(const OBJECT_ID obj_id)
+{
+    for (int32_t i = 0; i < m_DescriptionCount; i++) {
+        if (m_Descriptions[i].object_id == obj_id) {
+            return m_Descriptions[i].text;
+        }
+    }
+    return nullptr;
 }
 
 const char *Object_GetAliases(const OBJECT_ID obj_id)

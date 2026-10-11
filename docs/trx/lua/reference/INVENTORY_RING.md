@@ -84,6 +84,32 @@ A script draws what an entry opens by defining the
   trx.inventory_ring.animate_selection(anim.open_frame + 5, 1)
   ```
 
+- <a id="inventory_ring.turn_selection" name="inventory_ring.turn_selection"></a>[lua]`trx.inventory_ring.turn_selection(yaw, pitch)`  
+  Turns the selected entry by hand, as examining it does: first about the
+  vertical axis, then about the horizontal one. The turns add up until the
+  player stops examining the entry.
+
+  Parameters:
+  - <a id="inventory_ring.turn_selection.yaw" name="inventory_ring.turn_selection.yaw"></a>**`yaw`** ([trx.math.Angle](MATH.md#math.Angle)). How far to turn it left.
+  - <a id="inventory_ring.turn_selection.pitch" name="inventory_ring.turn_selection.pitch"></a>**`pitch`** ([trx.math.Angle](MATH.md#math.Angle)). How far to tip it towards the player.
+
+  Example:
+  ```lua
+  trx.inventory_ring.turn_selection(trx.math.degrees(3), 0)
+  ```
+
+- <a id="inventory_ring.set_hint" name="inventory_ring.set_hint"></a>[lua]`trx.inventory_ring.set_hint([text])`  
+  Shows a line of text where the ring shows its button hints, under the name
+  of the selected entry, or takes it down.
+
+  Parameters:
+  - <a id="inventory_ring.set_hint.text" name="inventory_ring.set_hint.text"></a>**`text`** (string, optional). The line to show, or `nil` to take it down.
+
+  Example:
+  ```lua
+  trx.inventory_ring.set_hint("\\{input menu_confirm} Use")
+  ```
+
 - <a id="inventory_ring.icon_of" name="inventory_ring.icon_of"></a>[lua]`trx.inventory_ring.icon_of(object)`  
   Returns the inventory icon for a pickup, whether or not Lara has one.
 

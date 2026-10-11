@@ -199,6 +199,17 @@ b_lua_events = {
 
 # The trig bridge. A module that hands back a math.Box needs trx.math loaded,
 # and loading it means its own declarations resolve, so the bridge comes along.
+# The engine's matrices, for what turns an inventory entry by hand.
+b_matrix = {
+  'engine': [
+    'core/math/func.c',
+    'core/math/geom.c',
+    'core/math/trig.c',
+    'game/matrix.c',
+  ],
+  'deps': [dep_mathlibrary],
+}
+
 b_lua_math = {
   'engine': ['core/math/trig.c', 'game/lua/capi/math.c'],
   'deps': [dep_mathlibrary],
@@ -709,6 +720,7 @@ unit_tests += {
     'fakes/objects.c',
     'fakes/sprites.c',
     'fakes/paths.c',
+    'fakes/text_wrap.c',
     'fakes/ui_draw.c',
     'fakes/locale.c',
     'fakes/rooms.c',
@@ -890,6 +902,7 @@ unit_tests += {
     'fakes/objects.c',
     'fakes/sprites.c',
     'fakes/paths.c',
+    'fakes/text_wrap.c',
     'fakes/ui_draw.c',
     'fakes/locale.c',
     'fakes/rooms.c',
@@ -936,6 +949,7 @@ unit_tests += {
     'fakes/objects.c',
     'fakes/sprites.c',
     'fakes/paths.c',
+    'fakes/text_wrap.c',
     'fakes/ui_draw.c',
     'fakes/locale.c',
     'fakes/rooms.c',
@@ -1014,7 +1028,7 @@ unit_tests += {
 # The catalog rides along: the weapons a script names are its enum.
 unit_tests += {
   'name': 'lua/trx/inventory',
-  'bundles': [b_lua_surface, b_lua_math],
+  'bundles': [b_lua_surface, b_lua_math, b_matrix],
   'src': ['harness/stubs_console.c', 'fakes/game.c', 'fakes/lara.c', 'fakes/items.c'],
   'engine': [
     'game/lua/capi/catalog.c',
@@ -1169,6 +1183,7 @@ unit_tests += {
   'name': 'lua/commands/give',
   'bundles': [
     b_lua_surface, b_console, b_lua_math, b_lua_strings, b_lua_events,
+    b_matrix,
   ],
   'src': [
     'fakes/level.c',
@@ -1214,6 +1229,7 @@ unit_tests += {
     'fakes/rooms.c',
     'fakes/sprites.c',
     'fakes/paths.c',
+    'fakes/text_wrap.c',
     'fakes/ui_draw.c',
   ],
   'engine': [
@@ -1266,7 +1282,7 @@ unit_tests += {
 
 unit_tests += {
   'name': 'modules/overlay',
-  'bundles': [b_lua_surface, b_lua_math, b_lua_strings],
+  'bundles': [b_lua_surface, b_lua_math, b_lua_strings, b_matrix],
   'src': [
     'harness/stubs_config_file.c',
     'harness/stubs_console.c',
@@ -1283,6 +1299,7 @@ unit_tests += {
     'fakes/rooms.c',
     'fakes/sprites.c',
     'fakes/paths.c',
+    'fakes/text_wrap.c',
     'fakes/ui_draw.c',
   ],
   'engine': [
@@ -1350,7 +1367,7 @@ unit_tests += {
 
 unit_tests += {
   'name': 'modules/passport',
-  'bundles': [b_lua_surface, b_lua_math, b_lua_strings],
+  'bundles': [b_lua_surface, b_lua_math, b_lua_strings, b_matrix],
   'src': [
     'harness/screen_module.c',
     'harness/stubs_config_file.c',
@@ -1369,6 +1386,7 @@ unit_tests += {
     'fakes/rooms.c',
     'fakes/sprites.c',
     'fakes/paths.c',
+    'fakes/text_wrap.c',
     'fakes/ui_draw.c',
   ],
   'engine': [
@@ -1441,7 +1459,7 @@ unit_tests += {
 
 unit_tests += {
   'name': 'modules/pause',
-  'bundles': [b_lua_surface, b_lua_math, b_lua_strings],
+  'bundles': [b_lua_surface, b_lua_math, b_lua_strings, b_matrix],
   'src': [
     'harness/screen_module.c',
     'harness/stubs_config_file.c',
@@ -1460,6 +1478,7 @@ unit_tests += {
     'fakes/rooms.c',
     'fakes/sprites.c',
     'fakes/paths.c',
+    'fakes/text_wrap.c',
     'fakes/ui_draw.c',
   ],
   'engine': [
@@ -1532,7 +1551,7 @@ unit_tests += {
 
 unit_tests += {
   'name': 'modules/stats',
-  'bundles': [b_lua_surface, b_lua_math, b_lua_strings],
+  'bundles': [b_lua_surface, b_lua_math, b_lua_strings, b_matrix],
   'src': [
     'harness/screen_module.c',
     'harness/stubs_config_file.c',
@@ -1553,6 +1572,7 @@ unit_tests += {
     'fakes/rooms.c',
     'fakes/sprites.c',
     'fakes/paths.c',
+    'fakes/text_wrap.c',
     'fakes/ui_draw.c',
   ],
   'engine': [

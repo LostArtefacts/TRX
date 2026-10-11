@@ -1,6 +1,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/strings/fuzzy_match.h>
+#include <trx/core/vector.h>
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils/module.h>
@@ -168,9 +169,28 @@ static int M_L_StringsLower(lua_State *const L)
     return 1;
 }
 
+// trxc.strings.paginate(text: string, max_lines: integer): string[]
+static int M_L_StringsPaginate(lua_State *const L)
+{
+    const char *const text = luaL_checkstring(L, 1);
+    const lua_Integer max_lines = luaL_checkinteger(L, 2);
+    luaL_argcheck(L, max_lines > 0, 2, "a page holds at least one line");
+    VECTOR *const pages = String_Paginate(text, (int32_t)max_lines);
+    lua_createtable(L, pages->count, 0);
+    for (int32_t i = 0; i < pages->count; i++) {
+        char *page = *(char **)Vector_Get(pages, i);
+        lua_pushstring(L, page);
+        lua_rawseti(L, -2, i + 1);
+        Memory_FreePointer(&page);
+    }
+    Vector_Free(pages);
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
     { "fuzzy_match", M_L_StringsFuzzyMatch },
     { "regex_match", M_L_StringsRegexMatch },
+    { "paginate", M_L_StringsPaginate },
     { "upper", M_L_StringsUpper },
     { "lower", M_L_StringsLower },
     { nullptr, nullptr },

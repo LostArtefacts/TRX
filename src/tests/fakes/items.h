@@ -41,3 +41,5 @@
 // further out still.
 void FakeItems_PlaceCrystal(void);
 void FakeItems_PlaceScion(void);
+// Gives an object a description, which is what makes it examinable.
+void FakeItems_SetDescription(OBJECT_ID obj_id, const char *text);

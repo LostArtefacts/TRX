@@ -67,6 +67,7 @@ end
 ---@field semi_transparent boolean Whether the object is drawn see-through.
 ---@field name string? The name the game shows for the object. It is the first value in `trx.objects.Object.names`, or `nil` where the object has no name.
 ---@field names table Every name the object answers to, in the player's language. An object has more than one: a large medipack is also a `medipack` and a `big medi`. <!--noref: medipack-->
+---@field description string? The text the game shows when the player examines the object, or `nil` where it cannot be examined. An empty description can still be examined: the player turns it without reading anything.
 ---@field default_names table The compile-time English names. A lookup tries these when the player's language has no matching name, so an English name still reaches the object in a translated install.
 ---@field properties table The object's own typed properties, which every item of the type inherits. Writing here changes the default for all of them; write to `trx.items.Item.properties` to change one item only. Iterable with `pairs()`. See [Objects](docs/trx/OBJECTS.md).
 local Object = h.handle("objects.Object", "OBJECT", {
@@ -98,6 +99,9 @@ local Object = h.handle("objects.Object", "OBJECT", {
     default_names = function(object)
       return object:get_default_names()
     end,
+    description = function(object)
+      return object:get_description()
+    end,
     properties = make_properties,
   },
 })
@@ -113,6 +117,13 @@ end
 ---language has no matching name. Prefer `trx.objects.Object.default_names`.
 ---@return string[]
 function Object:get_default_names()
+  return h.native()
+end
+
+---The text the game shows when the player examines the object. Prefer
+---`trx.objects.Object.description`.
+---@return string? # The description, or `nil` where the object cannot be examined.
+function Object:get_description()
   return h.native()
 end
 

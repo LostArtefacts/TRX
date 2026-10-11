@@ -107,6 +107,22 @@ player gets.
   if trx.strings.regex_match(args, "^\\d+$") then ... end
   ```
 
+- <a id="strings.paginate" name="strings.paginate"></a>[lua]`trx.strings.paginate(text, max_lines)`  
+  Splits text into pages of at most a number of lines, the way the game pages
+  its own text. A form feed, `\f`, also starts a new page, and a page does
+  not start on a blank line.
+
+  Parameters:
+  - <a id="strings.paginate.text" name="strings.paginate.text"></a>**`text`** (string). The text to split.
+  - <a id="strings.paginate.max_lines" name="strings.paginate.max_lines"></a>**`max_lines`** (integer). How many lines a page holds. At least 1.
+
+  Returns: a list of string. The pages, in order. Text with nothing in it is one empty page.
+
+  Example:
+  ```lua
+  local pages = trx.strings.paginate("one\ntwo\nthree", 2)
+  ```
+
 - <a id="strings.upper" name="strings.upper"></a>[lua]`trx.strings.upper(text)`  
   Turns text to capitals the way the game's own screens do. Unlike
   `string.upper`, this knows the letters beyond ASCII that the game's font

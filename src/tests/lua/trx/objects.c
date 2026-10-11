@@ -49,8 +49,18 @@ static int M_EndLevel(lua_State *const L)
     return 0;
 }
 
+// fake.set_description(object, text) - what the player reads on examining it.
+static int M_SetDescription(lua_State *const L)
+{
+    FakeItems_SetDescription(
+        (OBJECT_ID)luaL_checkinteger(L, 1), luaL_checkstring(L, 2));
+    return 0;
+}
+
 static void M_PushFake(lua_State *const L)
 {
+    lua_pushcfunction(L, M_SetDescription);
+    lua_setfield(L, -2, "set_description");
     lua_pushinteger(L, FAKE_OBJ_WOLF);
     lua_setfield(L, -2, "WOLF");
     lua_pushinteger(L, FAKE_OBJ_VASE);

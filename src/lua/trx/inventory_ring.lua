@@ -70,6 +70,28 @@ M.selection_anim = raw.selection_anim
 ---@type fun(goal_frame: integer, direction: integer)
 M.animate_selection = raw.animate_selection
 
+---Turns the selected entry by hand, as examining it does: first about the
+---vertical axis, then about the horizontal one. The turns add up until the
+---player stops examining the entry.
+---
+---```lua
+---trx.inventory_ring.turn_selection(trx.math.degrees(3), 0)
+---```
+---@param yaw trx.math.Angle How far to turn it left.
+---@param pitch trx.math.Angle How far to tip it towards the player.
+---@type fun(yaw: trx.math.Angle, pitch: trx.math.Angle)
+M.turn_selection = raw.turn_selection
+
+---Shows a line of text where the ring shows its button hints, under the name
+---of the selected entry, or takes it down.
+---
+---```lua
+---trx.inventory_ring.set_hint("\\{input menu_confirm} Use")
+---```
+---@param text? string The line to show, or `nil` to take it down.
+---@type fun(text?: string)
+M.set_hint = raw.set_hint
+
 ---Returns the inventory icon for a pickup, whether or not Lara has one.
 ---@param object trx.catalog.objects The pickup to check.
 ---@return trx.catalog.objects? # The icon's object id, or `nil` for a pickup that has none.
