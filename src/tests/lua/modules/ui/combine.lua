@@ -54,19 +54,15 @@ local function open(partners)
   fake.tick()
 end
 
-local function free_slots()
-  local slots = {}
-  while true do
-    local slot = trx.ui.mesh_slot()
-    if slot == nil then
-      break
+local function models()
+  local result = {}
+  for _, op in ipairs(fake.scene()) do
+    local object, w = op:match("^model obj=(%d+) .- w=(%d+) ")
+    if object ~= nil then
+      result[#result + 1] = { object = tonumber(object), w = tonumber(w) }
     end
-    slots[#slots + 1] = slot
   end
-  for _, slot in ipairs(slots) do
-    slot:release()
-  end
-  return #slots
+  return result
 end
 
 local function finish()
@@ -77,8 +73,6 @@ local function finish()
   assert(trx.ui.layers.count() == 0, "a layer outlived the screen")
   assert(fake.errors() == 0, "the module raised")
 end
-
-local all_slots = free_slots()
 
 test("the frame names the entry in the middle", function()
   open(PARTNERS)
@@ -137,12 +131,31 @@ test("an entry with nothing to combine with is put away", function()
   finish()
 end)
 
-test("the models are given back when the entry is put away", function()
+test("the entry in the middle is drawn largest", function()
+  open({ PARTNERS[1], PARTNERS[2], objects.SMALL_MEDIPACK_ITEM })
+  -- The row is laid out on the tick after it is first painted.
+  fake.scene()
+  fake.tick()
+  local drawn = models()
+  assert(#drawn == 3, ("%d model(s) drawn"):format(#drawn))
+  local largest = drawn[1]
+  for _, model in ipairs(drawn) do
+    if model.w > largest.w then
+      largest = model
+    end
+  end
+  assert(largest.object == PARTNERS[1], "the middle entry is not the largest")
+  finish()
+end)
+
+test("nothing is drawn once the entry is put away", function()
   open(PARTNERS)
-  assert(free_slots() < all_slots, "the row took no models")
+  fake.scene()
+  fake.tick()
+  assert(#models() > 0, "the row drew nothing")
   press(Role.MENU_BACK)
   finish()
-  assert(free_slots() == all_slots, "a model outlived the screen")
+  assert(#models() == 0, "a model outlived the screen")
 end)
 
 return h.report()

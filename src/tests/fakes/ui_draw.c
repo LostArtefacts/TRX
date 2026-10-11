@@ -5,7 +5,6 @@
 
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
-#include <trx/game/ui/mesh_slots.h>
 #include <trx/core/vector.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/keys.h>
@@ -160,20 +159,19 @@ double Interpolation_GetRate(void)
     return m_InterpolationRate;
 }
 
-// Records each slot the way the engine would draw it, so a test sees the pose
-// a tick produced and the blend between two ticks.
+void UI_ScheduleDrawModel(
+    const OBJECT_ID object_id, const uint32_t mesh_mask, const int32_t sx,
+    const int32_t sy, const int32_t z, const int32_t w, const int32_t h,
+    const XYZ_16 rot)
+{
+    FakeUIDraw_Record(String_FormatStatic(
+        "model obj=%d x=%d y=%d z=%d w=%d h=%d rot_x=%d rot_y=%d rot_z=%d "
+        "mask=%u",
+        (int32_t)object_id, sx, sy, z, w, h, rot.x, rot.y, rot.z, mesh_mask));
+}
+
 void UI_Draw(void)
 {
-    UI_MESH_DRAW slots[UI_MESH_SLOT_MAX];
-    const int32_t count = UI_MeshSlots_Collect(slots, UI_MESH_SLOT_MAX);
-    for (int32_t i = 0; i < count; i++) {
-        FakeUIDraw_Record(String_FormatStatic(
-            "mesh_slot obj=%d x=%.1f y=%.1f w=%.1f h=%.1f rot_x=%d rot_y=%d "
-            "rot_z=%d mask=%u",
-            (int32_t)slots[i].object_id, slots[i].pose.x, slots[i].pose.y,
-            slots[i].pose.w, slots[i].pose.h, slots[i].pose.rot.x,
-            slots[i].pose.rot.y, slots[i].pose.rot.z, slots[i].mesh_mask));
-    }
 }
 
 int32_t FakeUIDraw_GetCount(void)

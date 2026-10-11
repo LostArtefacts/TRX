@@ -161,9 +161,8 @@
 - Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)
 - Added `trx.math.degrees()`, which converts an angle from degrees to the engine's units
 - Added `scale`, `y_offset`, `base_rot_x`, `base_rot_y`, `base_rot_z`, and `draws_at_pivot` to inventory ring entries. Scripts can use these fields to set an object's size and pose.
-- Added script support for keeping a model on screen across ticks
-    - `trx.ui.mesh_slot` and `trx.ui.MeshSlot`, with `rot_x` and `rot_z` for tilting and rolling models on the canvas, in the game and over the inventory ring
-    - `trx.ui.primitive.mesh_bounds`
+- Added `trx.ui.primitive.model` and `trx.ui.widgets.Model`, which draw a model on the canvas as the interface is painted, turned any way and in the game or over the inventory ring
+- Added `trx.ui.primitive.mesh_bounds`, the box a model occupies
 - Added `trx.fx.gun_flash()`, so a script can draw a muzzle flash on any item (TRX89)
 - Added `trx.fx.Spark.context` and `trx.fx.SparkContext`, so a script can determine how a spark was spawned before deciding to alter it (TRX1590)
 - Added `trx.items.Item.joint_count` and `trx.items.Item:joint_pos()` (TRX89)
@@ -258,6 +257,7 @@
 - Changed `trx.items.Item:die` and `trx.items.Item:shatter` to take an options table, and to let a script say what the flying body parts draw
 - Changed `trx.savegame.load` to raise an error for an empty slot
 - Changed the functions of `trx.inventory` and `trx.stats` to plain functions, called with a dot rather than a colon
+- Removed `trx.ui.mesh_slot` and `trx.ui.MeshSlot` in favour of `trx.ui.primitive.model` and `trx.ui.widgets.Model`
 - Fixed `trx.ui.primitive.sprite_count()` counting the meshes of a model as sprites
 - Fixed `trx.ui.primitive.panel` and `trx.ui.widgets.Frame` drawing a frame a pixel away from where the game draws its own
 - Fixed script widgets sometimes landing a pixel away from where the game lays out its own, at some text sizes

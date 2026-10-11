@@ -190,50 +190,6 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.Area.x" name="ui.Area.x"></a>**`x`**: number. The left edge.
     - <a id="ui.Area.y" name="ui.Area.y"></a>**`y`**: number. The top edge.
 
-- <a id="ui.MeshSlot" name="ui.MeshSlot"></a>[lua]`trx.ui.MeshSlot`
-
-    A model the interface keeps on screen across ticks. Move it once per tick;
-    the engine blends between its current and previous poses when it draws each
-    frame. The fields report the current tick's pose.
-
-    Handles are live references: if the underlying object is destroyed,
-    using the handle raises an error rather than silently reading an
-    unrelated one.
-
-    Properties:
-    - <a id="ui.MeshSlot.h" name="ui.MeshSlot.h"></a>**`h`**: number. How tall the box is, in canvas units. *(read-only)*
-    - <a id="ui.MeshSlot.object" name="ui.MeshSlot.object"></a>**`object`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The object drawn in the slot. *(read-only)*
-    - <a id="ui.MeshSlot.rot_x" name="ui.MeshSlot.rot_x"></a>**`rot_x`**: [trx.math.Angle](MATH.md#math.Angle). How far the model is tilted. *(read-only)*
-    - <a id="ui.MeshSlot.rot_y" name="ui.MeshSlot.rot_y"></a>**`rot_y`**: [trx.math.Angle](MATH.md#math.Angle). How far the model is turned. *(read-only)*
-    - <a id="ui.MeshSlot.rot_z" name="ui.MeshSlot.rot_z"></a>**`rot_z`**: [trx.math.Angle](MATH.md#math.Angle). How far the model is rolled. *(read-only)*
-    - <a id="ui.MeshSlot.visible" name="ui.MeshSlot.visible"></a>**`visible`**: boolean. Whether the model is drawn. *(read-only)*
-    - <a id="ui.MeshSlot.w" name="ui.MeshSlot.w"></a>**`w`**: number. How wide the box is, in canvas units. *(read-only)*
-    - <a id="ui.MeshSlot.x" name="ui.MeshSlot.x"></a>**`x`**: number. The left edge of the box, in canvas units. *(read-only)*
-    - <a id="ui.MeshSlot.y" name="ui.MeshSlot.y"></a>**`y`**: number. The top edge of the box, in canvas units. *(read-only)*
-
-    Methods:
-
-    - <a id="ui.MeshSlot.hide" name="ui.MeshSlot.hide"></a>[lua]`meshslot:hide()`  
-      Stops drawing the model. Moving the slot again shows it.
-
-    - <a id="ui.MeshSlot.move" name="ui.MeshSlot.move"></a>[lua]`meshslot:move()`  
-      Puts the model where it should be at the end of this tick, and shows it.
-
-      Takes a table of `object` , `x` ,
-      `y` , `w` , `h` ,
-      `rot_x` , `rot_y` and
-      `rot_z` . The box uses canvas units. An omitted value is
-      zero. Each turn takes the short way around the angle wrap.
-
-      Call this once per tick. Calling it twice in one tick replaces the pose used
-      for interpolation. A hidden slot, or one given a new object, starts at the
-      new pose.
-
-    - <a id="ui.MeshSlot.release" name="ui.MeshSlot.release"></a>[lua]`meshslot:release()`  
-      Gives the slot back. The handle is spent afterwards, and moving or hiding a
-      spent handle raises rather than reaching whichever slot came next. Releasing
-      one again does nothing.
-
 - <a id="ui.LayerKeys" name="ui.LayerKeys"></a>[lua]`trx.ui.LayerKeys`
 
     The player's input, as the top layer reads it.
@@ -669,15 +625,6 @@ arrow, and `\{button left}` draws the button the player has bound.
 
   Returns: number. The share of the way.
 
-- <a id="ui.mesh_slot" name="ui.mesh_slot"></a>[lua]`trx.ui.mesh_slot()`  
-  Takes a slot for a model the interface keeps on screen across ticks.
-
-  Take a slot once, when a script loads, and give it back with
-  [`trx.ui.MeshSlot:release`](#ui.MeshSlot.release) when nothing needs it. Returns nothing where every
-  slot is taken.
-
-  Returns: [trx.ui.MeshSlot](#ui.MeshSlot). The slot, or `nil` where none is free.
-
 - <a id="ui.layers.push" name="ui.layers.push"></a>[lua]`trx.ui.layers.push(settings)`  
   Puts a layer on top of the stack.
 
@@ -935,6 +882,33 @@ arrow, and `\{button left}` draws the button the player has bound.
   - [trx.math.Distance](MATH.md#math.Distance). The high edge across.
   - [trx.math.Distance](MATH.md#math.Distance). The high edge down.
   - [trx.math.Distance](MATH.md#math.Distance). The high edge into the screen.
+
+- <a id="ui.primitive.model" name="ui.primitive.model"></a>[lua]`trx.ui.primitive.model(object, x, y, [z], w, h, [rot_x], [rot_y], [rot_z], [mesh_mask])`  
+  Draws an object's model in a box on the canvas, fitted into the box and lit
+  as the game lights a model held up to the camera. The model stands just in
+  front of anything else drawn at its depth, so draw text meant to cover it
+  nearer.
+
+  Draws nothing where the level did not load the object, or where the object
+  carries no model.
+
+  Parameters:
+  - <a id="ui.primitive.model.object" name="ui.primitive.model.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The object to draw.
+  - <a id="ui.primitive.model.x" name="ui.primitive.model.x"></a>**`x`** (number). The left edge.
+  - <a id="ui.primitive.model.y" name="ui.primitive.model.y"></a>**`y`** (number). The top edge.
+  - <a id="ui.primitive.model.z" name="ui.primitive.model.z"></a>**`z`** (integer, optional). The draw order.
+  - <a id="ui.primitive.model.w" name="ui.primitive.model.w"></a>**`w`** (number). The width of the box.
+  - <a id="ui.primitive.model.h" name="ui.primitive.model.h"></a>**`h`** (number). The height of the box.
+  - <a id="ui.primitive.model.rot_x" name="ui.primitive.model.rot_x"></a>**`rot_x`** ([trx.math.Angle](MATH.md#math.Angle), optional). How far to tilt it.
+  - <a id="ui.primitive.model.rot_y" name="ui.primitive.model.rot_y"></a>**`rot_y`** ([trx.math.Angle](MATH.md#math.Angle), optional). How far to turn it.
+  - <a id="ui.primitive.model.rot_z" name="ui.primitive.model.rot_z"></a>**`rot_z`** ([trx.math.Angle](MATH.md#math.Angle), optional). How far to roll it.
+  - <a id="ui.primitive.model.mesh_mask" name="ui.primitive.model.mesh_mask"></a>**`mesh_mask`** (integer, optional). Which of its meshes to draw, one bit each. Every mesh by default.
+
+  Example:
+  ```lua
+  trx.ui.primitive.model(trx.catalog.objects.small_medipack_option,
+    100, 50, 0, 64, 48, 0, 30 * trx.math.DEG_1)
+  ```
 
 - <a id="ui.primitive.sprite" name="ui.primitive.sprite"></a>[lua]`trx.ui.primitive.sprite(object, sprite_num, x, y, z, scale, color)`  
   Draws one sprite of an object on the canvas.
@@ -1344,6 +1318,37 @@ arrow, and `\{button left}` draws the button the player has bound.
   ```lua
   local list = trx.ui.widgets.List({
     rows = { { text = "Yes" }, { text = "No" } },
+  })
+  ```
+
+- <a id="ui.widgets.Model" name="ui.widgets.Model"></a>[lua]`trx.ui.widgets.Model(settings)`  
+  An object's model, fitted into a box and lit as the game lights a model held
+  up to the camera.
+
+  Parameters:
+  - <a id="ui.widgets.Model.settings" name="ui.widgets.Model.settings"></a>**`settings`** (table). The model settings.
+
+    Keys:
+    - <a id="ui.widgets.Model.settings.object" name="ui.widgets.Model.settings.object"></a>**`object`** (any). The object to draw, or a signal carrying it.
+    - <a id="ui.widgets.Model.settings.w" name="ui.widgets.Model.settings.w"></a>**`w`** (number). The width of its box, in canvas units at the player's text size.
+    - <a id="ui.widgets.Model.settings.h" name="ui.widgets.Model.settings.h"></a>**`h`** (number). The height of its box, in canvas units at the player's text size.
+    - <a id="ui.widgets.Model.settings.size" name="ui.widgets.Model.settings.size"></a>**`size`** (any, optional). How large to draw the model within its box, from `0` to `1`, or a signal or [`trx.ui.Tween`](#ui.Tween) carrying it. The box keeps its room whatever the size. `1` by default.
+    - <a id="ui.widgets.Model.settings.rot_x" name="ui.widgets.Model.settings.rot_x"></a>**`rot_x`** (any, optional). How far to tilt the model, or a signal or [`trx.ui.Tween`](#ui.Tween) carrying it.
+    - <a id="ui.widgets.Model.settings.rot_y" name="ui.widgets.Model.settings.rot_y"></a>**`rot_y`** (any, optional). How far to turn the model, or a signal or [`trx.ui.Tween`](#ui.Tween) carrying it.
+    - <a id="ui.widgets.Model.settings.rot_z" name="ui.widgets.Model.settings.rot_z"></a>**`rot_z`** (any, optional). How far to roll the model, or a signal or [`trx.ui.Tween`](#ui.Tween) carrying it.
+    - <a id="ui.widgets.Model.settings.spin" name="ui.widgets.Model.settings.spin"></a>**`spin`** (number, optional). How far the model turns each tick, on top of `rot_y` . It turns smoothly between ticks.
+    - <a id="ui.widgets.Model.settings.mesh_mask" name="ui.widgets.Model.settings.mesh_mask"></a>**`mesh_mask`** (integer, optional). Which of its meshes to draw, one bit each. Every mesh by default.
+    - <a id="ui.widgets.Model.settings.shown" name="ui.widgets.Model.settings.shown"></a>**`shown`** (any, optional). Whether the model is shown, or a signal that holds that value.
+
+  Returns: [trx.ui.Widget](#ui.Widget). The model.
+
+  Example:
+  ```lua
+  trx.ui.widgets.Model({
+    object = trx.catalog.objects.small_medipack_option,
+    w = 64,
+    h = 48,
+    spin = 4 * trx.math.DEG_1,
   })
   ```
 

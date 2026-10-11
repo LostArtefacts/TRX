@@ -19,7 +19,6 @@
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/ui/dialogs/takeover.h>
-#include <trx/game/ui/draw.h>
 #include <trx/game/viewport.h>
 #include <trx/version.h>
 
@@ -427,10 +426,6 @@ void InvRing_Draw(INV_RING *const ring)
         }
         Option_Draw(inv_item);
     }
-
-    // The models scripts keep on screen, such as the entries offered for
-    // combining.
-    UI_DrawMeshes();
 
     float top_opacity = Fader_GetCurrentValue(&ring->top_fader);
     if (ring->mode == INV_TITLE_MODE && ring->status != RNG_OPENING) {

@@ -3,8 +3,8 @@
 -- Announcements use the first free cell, slide in from the right, remain for a
 -- short time, and slide out again. Models free their cells as they leave.
 --
--- Models move once per tick through mesh slots. Sprites are drawn directly in
--- their cells and do not slide, matching the original behaviour.
+-- Models slide and turn smoothly between ticks. Sprites are drawn in their
+-- cells and do not slide, matching the original behaviour.
 
 local primitive = trx.ui.primitive
 local signal = trx.signal
@@ -24,17 +24,28 @@ local WHITE = trx.math.color("ffffff")
 
 local shown = {}
 
--- Slow at both ends, fastest in the middle.
-local function ease(ratio)
-  if ratio <= 0 then
-    return 0
-  elseif ratio >= 1 then
+-- How many of an entry's own ticks have gone by at the frame being drawn,
+-- part way between its last two. An entry counts only the ticks the game is
+-- played in, so it waits out the inventory and the pause.
+local function ticks_drawn(count)
+  return count - 1 + trx.ui.interpolation_rate()
+end
+
+-- How far an entry has slid in, from 0 off the screen to 1 in its cell.
+local function slid(entry)
+  if entry.icon == nil then
     return 1
-  elseif ratio < 0.5 then
-    return 2 * ratio * ratio
   end
-  local rest = ratio - 1
-  return 1 - 2 * rest * rest
+  local function eased(ticks)
+    local ratio = ticks_drawn(entry.elapsed) / ticks
+    return trx.ui.ease.quad_in_out(math.min(math.max(ratio, 0), 1))
+  end
+  if entry.phase == "ease_in" then
+    return eased(EASE_IN_TICKS)
+  elseif entry.phase == "display" then
+    return 1
+  end
+  return 1 - eased(EASE_OUT_TICKS)
 end
 
 -- Returns the cell position and progress in canvas units.
@@ -57,8 +68,9 @@ local function box_of(entry)
     - (width + gap_x) * entry.column
   local to_y = bottom - margin_y - height / 2 - (height + gap_y) * entry.row
 
-  local x = from_x + (to_x - from_x) * entry.ease
-  local y = from_y + (to_y - from_y) * entry.ease
+  local ratio = slid(entry)
+  local x = from_x + (to_x - from_x) * ratio
+  local y = from_y + (to_y - from_y) * ratio
   return x - width / 2, y - height / 2, width, height
 end
 
@@ -112,13 +124,6 @@ local function free_cell()
   return nil
 end
 
-local function forget(entry)
-  if entry.slot ~= nil then
-    entry.slot:release()
-    entry.slot = nil
-  end
-end
-
 local function add(object)
   if #shown >= MAX then
     return
@@ -134,11 +139,6 @@ local function add(object)
   if sprite and not trx.config.get("visuals.enable_3d_pickups") then
     icon = nil
   end
-  local slot = icon ~= nil and trx.ui.mesh_slot() or nil
-  -- When every slot is taken, a sprite is drawn instead of the model.
-  if slot == nil then
-    icon = nil
-  end
   if icon == nil and not sprite then
     return
   end
@@ -151,13 +151,10 @@ local function add(object)
     phase = "ease_in",
     elapsed = 0,
     total = 0,
-    -- A sprite does not slide, so it starts where it ends up.
-    ease = icon == nil and 1 or 0,
     angle = 0,
     rot_x = 0,
     rot_z = 0,
     mesh_mask = ALL_MESHES,
-    slot = slot,
   }
   if icon ~= nil then
     entry.angle, entry.rot_x, entry.rot_z, entry.mesh_mask = ring_pose(icon)
@@ -183,16 +180,6 @@ local function advance(entry)
   elseif entry.elapsed >= EASE_OUT_TICKS then
     return false
   end
-
-  if entry.icon == nil then
-    entry.ease = 1
-  elseif entry.phase == "ease_in" then
-    entry.ease = ease(entry.elapsed / EASE_IN_TICKS)
-  elseif entry.phase == "display" then
-    entry.ease = 1
-  else
-    entry.ease = 1 - ease(entry.elapsed / EASE_OUT_TICKS)
-  end
   return true
 end
 
@@ -201,52 +188,41 @@ local function enabled()
 end
 
 signal.tick:on(function()
-  if #shown == 0 then
+  if #shown == 0 or not trx.game.is_playing then
     return
   end
-
-  if trx.game.is_playing then
-    local kept = {}
-    for _, entry in ipairs(shown) do
-      if advance(entry) then
-        kept[#kept + 1] = entry
-      else
-        forget(entry)
-      end
-    end
-    shown = kept
-  end
-
-  local visible = enabled()
+  local kept = {}
   for _, entry in ipairs(shown) do
-    if entry.slot ~= nil then
-      if visible then
-        local x, y, width, height = box_of(entry)
-        entry.slot:move({
-          object = entry.icon,
-          x = x,
-          y = y,
-          w = width,
-          h = height,
-          mesh_mask = entry.mesh_mask,
-          rot_x = entry.rot_x,
-          rot_y = entry.angle + SPIN_PER_TICK * entry.total,
-          rot_z = entry.rot_z,
-        })
-      else
-        entry.slot:hide()
-      end
+    if advance(entry) then
+      kept[#kept + 1] = entry
     end
   end
+  shown = kept
 end)
 
--- Paints a sprite where a model would be, scaled to fill the same cell.
+-- Paints each model in its cell, or a sprite scaled to fill the cell where
+-- there is no model.
 trx.ui.on_paint(function()
   if not enabled() then
     return
   end
   for _, entry in ipairs(shown) do
-    if entry.icon == nil then
+    if entry.icon ~= nil then
+      local x, y, width, height = box_of(entry)
+      local spin = SPIN_PER_TICK * ticks_drawn(entry.total)
+      primitive.model(
+        entry.icon,
+        x,
+        y,
+        0,
+        width,
+        height,
+        entry.rot_x,
+        math.floor(entry.angle + spin) % (4 * trx.math.DEG_90),
+        entry.rot_z,
+        entry.mesh_mask
+      )
+    else
       local x0, y0, x1, y1 = primitive.sprite_bounds(entry.object, 0)
       local sprite_w = math.abs(x1 - x0)
       local sprite_h = math.abs(y1 - y0)
@@ -271,8 +247,5 @@ trx.events.on_show_pickup(add)
 
 -- Clears announcements when the level ends.
 trx.events.on_level_unload(function()
-  for _, entry in ipairs(shown) do
-    forget(entry)
-  end
   shown = {}
 end)
