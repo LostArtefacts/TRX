@@ -1,1 +1,0 @@
-../../../../trx/ship/scripts/passport.lua
