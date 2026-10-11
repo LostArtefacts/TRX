@@ -1,0 +1,1 @@
+require("common.examine").setup()

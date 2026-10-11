@@ -25,6 +25,7 @@ static void M_Reset(const bool accept)
     UI_Takeover_Release(UI_TAKEOVER_PAUSE);
     UI_Takeover_Release(UI_TAKEOVER_SAVE_LOAD);
     UI_Takeover_Release(UI_TAKEOVER_STATS);
+    UI_Takeover_Release(UI_TAKEOVER_EXAMINE);
     UI_Takeover_SetHooks((UI_TAKEOVER_HOOKS) {
         .offer = M_Offer,
         .release = M_Release,
@@ -163,6 +164,14 @@ TEST(the_stats_screen_takes_cancel_and_confirm)
         UI_TAKEOVER_STATS, UI_TAKEOVER_CHOICE_CONFIRM));
     CHECK(!UI_Takeover_AcceptsChoice(
         UI_TAKEOVER_STATS, UI_TAKEOVER_CHOICE_RESUME));
+}
+
+TEST(an_examined_entry_takes_only_cancel)
+{
+    CHECK(UI_Takeover_AcceptsChoice(
+        UI_TAKEOVER_EXAMINE, UI_TAKEOVER_CHOICE_CANCEL));
+    CHECK(!UI_Takeover_AcceptsChoice(
+        UI_TAKEOVER_EXAMINE, UI_TAKEOVER_CHOICE_CONFIRM));
 }
 
 TEST(the_stats_argument_packs_the_level_and_the_look)

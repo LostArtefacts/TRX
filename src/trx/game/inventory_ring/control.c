@@ -29,7 +29,6 @@
 #include <trx/game/objects/links.h>
 #include <trx/game/option.h>
 #include <trx/game/option/combine.h>
-#include <trx/game/option/examine.h>
 #include <trx/game/option/globe_select.h>
 #include <trx/game/option/stats.h>
 #include <trx/game/output/overlay.h>
@@ -427,6 +426,30 @@ static void M_SimTick(void)
 }
 
 // Combine the selected item with the item on the ring.
+// The screen a script is offered for what the player does with an entry, or
+// UI_TAKEOVER_NUMBER_OF where the engine keeps it.
+static UI_TAKEOVER M_GetTakeover(const INVENTORY_ITEM *const inv_item)
+{
+    switch (inv_item->action) {
+    case ACTION_USE:
+        return UI_TAKEOVER_RING_ENTRY;
+    case ACTION_EXAMINE:
+        return UI_TAKEOVER_EXAMINE;
+    default:
+        return UI_TAKEOVER_NUMBER_OF;
+    }
+}
+
+// Puts back what an examined entry was turned to and the hint it showed.
+static void M_EndTakeover(
+    const UI_TAKEOVER screen, INVENTORY_ITEM *const inv_item)
+{
+    if (screen == UI_TAKEOVER_EXAMINE) {
+        inv_item->has_manual_rot = false;
+        InvRing_SetButtonHintText(nullptr);
+    }
+}
+
 static void M_ApplyCombineChoice(
     INV_RING *const ring, const INVENTORY_ITEM *const inv_item)
 {
@@ -611,6 +634,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                 inv_item->action = ACTION_EXAMINE;
                 inv_item->goal_frame = 0;
                 inv_item->anim_direction = 1;
+                ring->takeover_offered = false;
             } else if (inv_item->actions.can_combine) {
                 inv_item->action = ACTION_COMBINE;
                 inv_item->goal_frame = 0;
@@ -720,9 +744,10 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             inv_item->object_id = O_PASSPORT_OPTION;
         }
 
-        if (!ring->takeover_offered && inv_item->action == ACTION_USE) {
+        const UI_TAKEOVER screen = M_GetTakeover(inv_item);
+        if (!ring->takeover_offered && screen != UI_TAKEOVER_NUMBER_OF) {
             ring->takeover_offered = true;
-            UI_Takeover_Offer(UI_TAKEOVER_RING_ENTRY, inv_item->object_id);
+            UI_Takeover_Offer(screen, inv_item->object_id);
         }
 
         bool busy = false;
@@ -733,16 +758,17 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             }
         }
 
-        if (UI_Takeover_IsHeld(UI_TAKEOVER_RING_ENTRY)) {
+        if (screen != UI_TAKEOVER_NUMBER_OF && UI_Takeover_IsHeld(screen)) {
             if (M_Finish(ring, false).action != GF_NOOP) {
                 m_InvChosen = inv_item->object_id;
                 g_InvRing_Source[ring->type].current = ring->current_object;
-                UI_Takeover_Release(UI_TAKEOVER_RING_ENTRY);
+                UI_Takeover_Release(screen);
+                M_EndTakeover(screen, inv_item);
                 InvRing_SetStatusTransition(
                     ring, RNG_CLOSING_ITEM, RNG_EXITING_INVENTORY, 0);
             } else {
                 const UI_TAKEOVER_CHOICE choice =
-                    UI_Takeover_TakeChoice(UI_TAKEOVER_RING_ENTRY);
+                    UI_Takeover_TakeChoice(screen);
                 // A ring opened to save or load holds nothing else worth
                 // going back to, so putting the entry away leaves it.
                 const bool leaves_ring = choice == UI_TAKEOVER_CHOICE_CONFIRM
@@ -753,6 +779,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                     g_InvRing_Source[ring->type].current = ring->current_object;
                 }
                 if (choice != UI_TAKEOVER_CHOICE_NONE) {
+                    M_EndTakeover(screen, inv_item);
                     ring->takeover_left = leaves_ring;
                     InvRing_SetStatusTransition(
                         ring, RNG_CLOSING_ITEM,
@@ -1097,6 +1124,10 @@ void InvRing_Close(INV_RING *const ring)
         INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
         if (inv_item != nullptr) {
             UI_Takeover_Release(UI_TAKEOVER_RING_ENTRY);
+            if (UI_Takeover_IsHeld(UI_TAKEOVER_EXAMINE)) {
+                UI_Takeover_Release(UI_TAKEOVER_EXAMINE);
+                M_EndTakeover(UI_TAKEOVER_EXAMINE, inv_item);
+            }
             Option_Close(inv_item);
             if (ring->type < RT_NUMBER_OF) {
                 m_LastRingObject[ring->type] = inv_item->object_id;

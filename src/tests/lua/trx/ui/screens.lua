@@ -31,6 +31,7 @@ local function finish_case()
   fake.release(RING_ENTRY)
   fake.release(trx.ui.Screen.SAVE_LOAD)
   fake.release(trx.ui.Screen.STATS)
+  fake.release(trx.ui.Screen.EXAMINE)
   fake.end_level()
   assert(trx.ui.layers.count() == 0, "a layer outlived the case")
 end
@@ -345,6 +346,19 @@ test("the statistics screen ends on cancel and on confirm", function()
   fake.offer(trx.ui.Screen.STATS, 3)
   assert(held:confirm() == true)
   assert(fake.take_choice(trx.ui.Screen.STATS) == CHOICE_CONFIRM)
+  finish_case()
+end)
+
+test("an examined entry reports what it is", function()
+  local seen
+  define(
+    trx.ui.Screen.EXAMINE,
+    simple(function(ctx)
+      seen = ctx.object
+    end)
+  )
+  assert(fake.offer(trx.ui.Screen.EXAMINE, COMPASS) == true)
+  assert(seen == COMPASS)
   finish_case()
 end)
 

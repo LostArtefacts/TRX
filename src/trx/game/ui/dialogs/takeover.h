@@ -12,6 +12,7 @@ typedef enum {
     UI_TAKEOVER_PAUSE,
     UI_TAKEOVER_SAVE_LOAD,
     UI_TAKEOVER_STATS,
+    UI_TAKEOVER_EXAMINE,
     UI_TAKEOVER_NUMBER_OF,
 } UI_TAKEOVER;
 
@@ -71,7 +72,8 @@ void UI_Takeover_Release(UI_TAKEOVER screen);
 // and UI_TAKEOVER_CHOICE_EXIT_TO_TITLE. The quick save and load screens take
 // only UI_TAKEOVER_CHOICE_CANCEL. The statistics screen shown between levels
 // takes UI_TAKEOVER_CHOICE_CANCEL and UI_TAKEOVER_CHOICE_CONFIRM, which both
-// end it as the player skipping it does.
+// end it as the player skipping it does. An entry that the player examines
+// takes only UI_TAKEOVER_CHOICE_CANCEL, which puts it away.
 bool UI_Takeover_AcceptsChoice(UI_TAKEOVER screen, UI_TAKEOVER_CHOICE choice);
 
 // Closes the screen with a choice. Called by the owner. Does nothing while no
