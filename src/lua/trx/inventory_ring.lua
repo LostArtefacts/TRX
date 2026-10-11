@@ -82,16 +82,30 @@ M.animate_selection = raw.animate_selection
 ---@type fun(yaw: trx.math.Angle, pitch: trx.math.Angle)
 M.turn_selection = raw.turn_selection
 
----Shows a line where the ring shows its button hints, under the name of the
----selected entry, or takes it down when given nothing. Several parts are set
----apart from one another as the ring sets apart its own hints.
+---A key hint the ring shows: the keys bound to an input role and what they
+---do.
+---@class (exact) trx.inventory_ring.InputHint
+---@field input trx.ui.Inputs The role, or the roles shown side by side.
+---@field text? string What the keys do.
+
+---Shows hints for the keys that work now where the ring shows its button
+---hints, under the name of the selected entry, set apart from one another as
+---the ring sets apart its own. Given nothing, takes them down.
 ---
 ---```lua
----trx.inventory_ring.set_hint("\\{input menu_confirm} Use", "\\{input menu_back} Cancel")
+---trx.inventory_ring.set_input_hints({
+---  { input = trx.input.Role.MENU_CONFIRM, text = "Use" },
+---  { input = trx.input.Role.MENU_BACK, text = "Cancel" },
+---})
 ---```
----@param ... string The parts of the line, up to four.
----@type fun(...: string)
-M.set_hint = raw.set_hint
+---@param hints? trx.inventory_ring.InputHint[] The hints, up to four.
+function M.set_input_hints(hints)
+  local parts = {}
+  for i, hint in ipairs(hints or {}) do
+    parts[i] = trx.ui.input_hint_text(hint.input, hint.text)
+  end
+  raw.set_hint(table.unpack(parts))
+end
 
 ---Returns the inventory icon for a pickup, whether or not Lara has one.
 ---@param object trx.catalog.objects The pickup to check.

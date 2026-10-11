@@ -124,7 +124,10 @@ local function dialog(state)
       }),
       aligned(
         trx.ui.HAlign.CENTER,
-        label("\\{input menu_show_info} " .. L("general/actions/hide_dialog"))
+        trx.ui.widgets.InputHint({
+          input = trx.input.Role.MENU_SHOW_INFO,
+          text = L("general/actions/hide_dialog"),
+        })
       ),
     },
   })
@@ -149,11 +152,20 @@ local function prepare(state)
   state.page = 1
 end
 
-local function show_hint(state, hint)
-  if hint ~= state.hint then
-    state.hint = hint
-    trx.inventory_ring.set_hint(hint)
+-- Offers to turn the entry where the ring shows its hints, while the
+-- description is out of the way.
+local function offer_turning(state, offer)
+  if offer == state.offers_turning then
+    return
   end
+  state.offers_turning = offer
+  local Role = trx.input.Role
+  trx.inventory_ring.set_input_hints(offer and {
+    {
+      input = { Role.FORWARD, Role.BACK, Role.LEFT, Role.RIGHT },
+      text = L("general/actions/rotate"),
+    },
+  } or nil)
 end
 
 local function control(ctx, state, layer, keys)
@@ -167,14 +179,7 @@ local function control(ctx, state, layer, keys)
 
   local show_text = state.has_text and not state.hidden
   state.shown:set(show_text)
-  show_hint(
-    state,
-    not show_text
-        and "\\{input forward}\\{input back}\\{input left}\\{input right} " .. L(
-          "general/actions/rotate"
-        )
-      or nil
-  )
+  offer_turning(state, not show_text)
 
   if show_text then
     local step = keys:pressed(trx.input.Role.MENU_LEFT) and -1

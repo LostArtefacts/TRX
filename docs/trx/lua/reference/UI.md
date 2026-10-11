@@ -180,6 +180,10 @@ arrow, and `\{button left}` draws the button the player has bound.
 
 ### Structures
 
+- <a id="ui.Inputs" name="ui.Inputs"></a>[lua]`trx.ui.Inputs`
+
+    One input role, or a list of roles shown side by side.
+
 - <a id="ui.Area" name="ui.Area"></a>[lua]`trx.ui.Area`
 
     A rectangle on the canvas, in canvas units, counted from the top left.
@@ -624,6 +628,22 @@ arrow, and `\{button left}` draws the button the player has bound.
   between ticks.
 
   Returns: number. The share of the way.
+
+- <a id="ui.input_hint_text" name="ui.input_hint_text"></a>[lua]`trx.ui.input_hint_text(input, [words])`  
+  The text that shows the keys bound to one or more input roles, as the game
+  shows them, followed by some words. The keys follow the player's bindings
+  and controller.
+
+  Parameters:
+  - <a id="ui.input_hint_text.input" name="ui.input_hint_text.input"></a>**`input`** ([trx.ui.Inputs](#ui.Inputs)). The role, or the roles shown side by side.
+  - <a id="ui.input_hint_text.words" name="ui.input_hint_text.words"></a>**`words`** (string, optional). What the keys do.
+
+  Returns: string. The text.
+
+  Example:
+  ```lua
+  local text = trx.ui.input_hint_text(trx.input.Role.MENU_CONFIRM, "Use")
+  ```
 
 - <a id="ui.layers.push" name="ui.layers.push"></a>[lua]`trx.ui.layers.push(settings)`  
   Puts a layer on top of the stack.
@@ -1173,6 +1193,29 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.Image.settings.shown" name="ui.widgets.Image.settings.shown"></a>**`shown`** (any, optional). Whether the image is shown, or a signal that holds that value.
 
   Returns: [trx.ui.Widget](#ui.Widget). The image.
+
+- <a id="ui.widgets.InputHint" name="ui.widgets.InputHint"></a>[lua]`trx.ui.widgets.InputHint(settings)`  
+  The keys bound to an input role, as the game shows them, and what they do.
+  The keys follow the player's bindings and controller.
+
+  Parameters:
+  - <a id="ui.widgets.InputHint.settings" name="ui.widgets.InputHint.settings"></a>**`settings`** (table). The hint settings.
+
+    Keys:
+    - <a id="ui.widgets.InputHint.settings.input" name="ui.widgets.InputHint.settings.input"></a>**`input`** (any). The input role whose keys to show, a list of roles shown side by side, or a signal carrying either.
+    - <a id="ui.widgets.InputHint.settings.text" name="ui.widgets.InputHint.settings.text"></a>**`text`** (any, optional). What the keys do, or a signal carrying it.
+    - <a id="ui.widgets.InputHint.settings.scale" name="ui.widgets.InputHint.settings.scale"></a>**`scale`** (number, optional). Multiplies the text size. `1.0` by default.
+    - <a id="ui.widgets.InputHint.settings.shown" name="ui.widgets.InputHint.settings.shown"></a>**`shown`** (any, optional). Whether the hint is shown, or a signal that holds that value.
+
+  Returns: [trx.ui.Widget](#ui.Widget). The hint.
+
+  Example:
+  ```lua
+  trx.ui.widgets.InputHint({
+    input = trx.input.Role.MENU_BACK,
+    text = trx.locale.get("general/actions/cancel"),
+  })
+  ```
 
 - <a id="ui.widgets.Label" name="ui.widgets.Label"></a>[lua]`trx.ui.widgets.Label(settings)`  
   A line of text. Use a signal for text that changes.
