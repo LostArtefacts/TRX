@@ -102,6 +102,10 @@ local function begin(ctx, state, layer)
   end
   state.selected = trx.signal.new(1)
   layer:set_root(dialog(state))
+  -- The frame names the entry in the middle, so the ring names nothing. The
+  -- caption goes before the frame first shows, or the frame would move once
+  -- the caption gave up its room.
+  trx.overlay.set_caption()
   trx.sound.play(trx.catalog.samples.MENU_SPININ)
   trx.inventory_ring.set_input_hints({
     { input = Role.MENU_CONFIRM, text = L("general/actions/combine_item") },
@@ -122,7 +126,7 @@ local function control(ctx, state, layer, keys)
     end
     return
   end
-  -- The frame names the entry in the middle, so the ring names nothing.
+  -- The ring names the entry it holds again each tick.
   trx.overlay.set_caption()
 
   if state.row.is_sliding() then
