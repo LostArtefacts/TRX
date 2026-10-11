@@ -291,7 +291,7 @@ static RESULT M_Init(
 
     rect = Viewport_GetRect(VIEWPORT_UI);
     TRX_GL_FBO_Init(
-        &p->ui_fbo, rect.width, rect.height, 1, GL_RGBA8, GL_RGBA, false);
+        &p->ui_fbo, rect.width, rect.height, 1, GL_RGBA8, GL_RGBA, true);
     return OK;
 }
 

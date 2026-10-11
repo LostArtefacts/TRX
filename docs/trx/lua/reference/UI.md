@@ -899,11 +899,10 @@ arrow, and `\{button left}` draws the button the player has bound.
   - [trx.math.Distance](MATH.md#math.Distance). The high edge down.
   - [trx.math.Distance](MATH.md#math.Distance). The high edge into the screen.
 
-- <a id="ui.primitive.model" name="ui.primitive.model"></a>[lua]`trx.ui.primitive.model(object, x, y, [z], w, h, [rot_x], [rot_y], [rot_z], [mesh_mask])`  
+- <a id="ui.primitive.model" name="ui.primitive.model"></a>[lua]`trx.ui.primitive.model(object, x, y, w, h, [rot_x], [rot_y], [rot_z], [mesh_mask])`  
   Draws an object's model in a box on the canvas, fitted into the box and lit
-  as the game lights a model held up to the camera. The model stands just in
-  front of anything else drawn at its depth, so draw text meant to cover it
-  nearer.
+  as the game lights a model held up to the camera. The model draws over the
+  flat interface around it.
 
   Draws nothing where the level did not load the object, or where the object
   carries no model.
@@ -912,7 +911,6 @@ arrow, and `\{button left}` draws the button the player has bound.
   - <a id="ui.primitive.model.object" name="ui.primitive.model.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The object to draw.
   - <a id="ui.primitive.model.x" name="ui.primitive.model.x"></a>**`x`** (number). The left edge.
   - <a id="ui.primitive.model.y" name="ui.primitive.model.y"></a>**`y`** (number). The top edge.
-  - <a id="ui.primitive.model.z" name="ui.primitive.model.z"></a>**`z`** (integer, optional). The draw order.
   - <a id="ui.primitive.model.w" name="ui.primitive.model.w"></a>**`w`** (number). The width of the box.
   - <a id="ui.primitive.model.h" name="ui.primitive.model.h"></a>**`h`** (number). The height of the box.
   - <a id="ui.primitive.model.rot_x" name="ui.primitive.model.rot_x"></a>**`rot_x`** ([trx.math.Angle](MATH.md#math.Angle), optional). How far to tilt it.
@@ -923,7 +921,7 @@ arrow, and `\{button left}` draws the button the player has bound.
   Example:
   ```lua
   trx.ui.primitive.model(trx.catalog.objects.small_medipack_option,
-    100, 50, 0, 64, 48, 0, 30 * trx.math.DEG_1)
+    100, 50, 64, 48, 0, 30 * trx.math.DEG_1)
   ```
 
 - <a id="ui.primitive.sprite" name="ui.primitive.sprite"></a>[lua]`trx.ui.primitive.sprite(object, sprite_num, x, y, z, scale, color)`  

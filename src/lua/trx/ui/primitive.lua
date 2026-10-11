@@ -219,28 +219,26 @@ primitive.sprite_bounds = raw.sprite_bounds
 primitive.mesh_bounds = raw.mesh_bounds
 
 ---Draws an object's model in a box on the canvas, fitted into the box and lit
----as the game lights a model held up to the camera. The model stands just in
----front of anything else drawn at its depth, so draw text meant to cover it
----nearer.
+---as the game lights a model held up to the camera. The model draws over the
+---flat interface around it.
 ---
 ---Draws nothing where the level did not load the object, or where the object
 ---carries no model.
 ---
 ---```lua
 ---trx.ui.primitive.model(trx.catalog.objects.small_medipack_option,
----  100, 50, 0, 64, 48, 0, 30 * trx.math.DEG_1)
+---  100, 50, 64, 48, 0, 30 * trx.math.DEG_1)
 ---```
 ---@param object trx.catalog.objects The object to draw.
 ---@param x number The left edge.
 ---@param y number The top edge.
----@param z? integer The draw order.
 ---@param w number The width of the box.
 ---@param h number The height of the box.
 ---@param rot_x? trx.math.Angle How far to tilt it.
 ---@param rot_y? trx.math.Angle How far to turn it.
 ---@param rot_z? trx.math.Angle How far to roll it.
 ---@param mesh_mask? integer Which of its meshes to draw, one bit each. Every mesh by default.
----@type fun(object: trx.catalog.objects, x: number, y: number, z: integer?, w: number, h: number, rot_x?: trx.math.Angle, rot_y?: trx.math.Angle, rot_z?: trx.math.Angle, mesh_mask?: integer)
+---@type fun(object: trx.catalog.objects, x: number, y: number, w: number, h: number, rot_x?: trx.math.Angle, rot_y?: trx.math.Angle, rot_z?: trx.math.Angle, mesh_mask?: integer)
 primitive.model = raw.draw_model
 
 ---Draws one sprite of an object on the canvas.

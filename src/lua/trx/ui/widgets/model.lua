@@ -64,7 +64,6 @@ function widgets.Model(settings)
       value_of(w.object),
       x + (box_w - model_w) / 2,
       y + (box_h - model_h) / 2,
-      0,
       model_w,
       model_h,
       value_of(w.rot_x) or 0,

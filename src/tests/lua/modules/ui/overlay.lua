@@ -89,7 +89,7 @@ end)
 --   height = 480 / 6 = 80, width = 80 * 5/4 = 100
 --   margins = 480/16 = 30 down, 40 across
 --   centre  = (640 - 40 - 50, 480 - 30 - 40) = (550, 410)
-local SETTLED = "x=500 y=370 z=%d+ w=100 h=80"
+local SETTLED = "x=500 y=370 w=100 h=80"
 
 local function announce(object)
   trx.config.set("ui.show_pickups_overlay", true)
@@ -249,7 +249,7 @@ test("an announcement stands on the bottom bar", function()
   local line = drawn()
   assert(line ~= nil, "nothing was announced")
   -- The settled cell, raised by the 48 units the bar takes.
-  assert(line:match("x=500 y=322 z=%d+ w=100 h=80"), line)
+  assert(line:match("x=500 y=322 w=100 h=80"), line)
   fake.letterbox(0)
 end)
 

@@ -231,29 +231,28 @@ static int M_L_UISprite(lua_State *const L)
     return 0;
 }
 
-// trxc.ui.draw_model(object: trx.catalog.objects, x: number, y: number, z?: integer, w: number, h: number, rot_x?: integer, rot_y?: integer, rot_z?: integer, mesh_mask?: integer)
+// trxc.ui.draw_model(object: trx.catalog.objects, x: number, y: number, w: number, h: number, rot_x?: integer, rot_y?: integer, rot_z?: integer, mesh_mask?: integer)
 static int M_L_UIDrawModel(lua_State *const L)
 {
     M_CheckPainting(L);
     const OBJECT_ID object_id = LUA_CheckObjectID(L, 1);
     const float x = (float)luaL_checknumber(L, 2);
     const float y = (float)luaL_checknumber(L, 3);
-    const int32_t z = M_OptZ(L, 4);
-    const float w = (float)luaL_checknumber(L, 5);
-    const float h = (float)luaL_checknumber(L, 6);
+    const float w = (float)luaL_checknumber(L, 4);
+    const float h = (float)luaL_checknumber(L, 5);
     const XYZ_16 rot = {
-        .x = (int16_t)(int32_t)luaL_optnumber(L, 7, 0),
-        .y = (int16_t)(int32_t)luaL_optnumber(L, 8, 0),
-        .z = (int16_t)(int32_t)luaL_optnumber(L, 9, 0),
+        .x = (int16_t)(int32_t)luaL_optnumber(L, 6, 0),
+        .y = (int16_t)(int32_t)luaL_optnumber(L, 7, 0),
+        .z = (int16_t)(int32_t)luaL_optnumber(L, 8, 0),
     };
     // Read as an integer, because a mask of every mesh does not survive a
     // float.
     const uint32_t mesh_mask =
-        (uint32_t)luaL_optinteger(L, 10, (lua_Integer)UINT32_MAX);
+        (uint32_t)luaL_optinteger(L, 9, (lua_Integer)UINT32_MAX);
     const int32_t sx = lroundf(UI_ScaleX(x));
     const int32_t sy = lroundf(UI_ScaleY(y));
     UI_ScheduleDrawModel(
-        object_id, mesh_mask, sx, sy, z, lroundf(UI_ScaleX(x + w)) - sx,
+        object_id, mesh_mask, sx, sy, lroundf(UI_ScaleX(x + w)) - sx,
         lroundf(UI_ScaleY(y + h)) - sy, rot);
     return 0;
 }

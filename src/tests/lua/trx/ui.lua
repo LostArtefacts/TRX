@@ -60,18 +60,18 @@ end
 
 test("a model draws in its box at its depth", function()
   local line = model_line(fake.paint(function()
-    primitive.model(5, 10, 20, 3, 30, 40, 64, 512, 128)
+    primitive.model(5, 10, 20, 30, 40, 64, 512, 128)
   end))
   assert(
     line
-      == "model obj=5 x=10 y=20 z=3 w=30 h=40 rot_x=64 rot_y=512 rot_z=128 mask=4294967295",
+      == "model obj=5 x=10 y=20 w=30 h=40 rot_x=64 rot_y=512 rot_z=128 mask=4294967295",
     line
   )
 end)
 
 test("a model draws only the meshes it was given", function()
   local line = model_line(fake.paint(function()
-    primitive.model(5, 0, 0, 0, 10, 10, 0, 0, 0, 5)
+    primitive.model(5, 0, 0, 10, 10, 0, 0, 0, 5)
   end))
   assert(line:match(" mask=5$"), line)
 end)
@@ -83,7 +83,7 @@ test("a model widget fills its box at the player's text size", function()
   local line = model_line(fake.paint(function()
     model:paint(100, 50, w, h_)
   end))
-  assert(line:match(" x=100 y=50 z=0 w=30 h=20 "), line)
+  assert(line:match(" x=100 y=50 w=30 h=20 "), line)
 end)
 
 test("a model widget draws smaller within its box", function()
@@ -91,7 +91,7 @@ test("a model widget draws smaller within its box", function()
   local line = model_line(fake.paint(function()
     model:paint(0, 0, 40, 20)
   end))
-  assert(line:match(" x=10 y=5 z=0 w=20 h=10 "), line)
+  assert(line:match(" x=10 y=5 w=20 h=10 "), line)
 end)
 
 test("a model widget sized to nothing draws nothing", function()
@@ -127,7 +127,7 @@ test("nothing draws outside a painted scene", function()
     primitive.quad(0, 0, 0, 1, 1, trx.math.color("#ffffff"))
   end, "painted")
   raises(function()
-    primitive.model(5, 0, 0, 0, 10, 10)
+    primitive.model(5, 0, 0, 10, 10)
   end, "painted")
 end)
 
@@ -654,7 +654,7 @@ local function row_of(row)
       row:paint(0, 0, 400, 10)
     end))
   do
-    local x, w = op:match("^model .- x=(%-?%d+) y=%-?%d+ z=%-?%d+ w=(%d+) ")
+    local x, w = op:match("^model .- x=(%-?%d+) y=%-?%d+ w=(%d+) ")
     if x ~= nil then
       result[#result + 1] = { middle = x + w / 2, w = tonumber(w) }
     end

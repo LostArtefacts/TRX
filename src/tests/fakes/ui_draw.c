@@ -161,13 +161,11 @@ double Interpolation_GetRate(void)
 
 void UI_ScheduleDrawModel(
     const OBJECT_ID object_id, const uint32_t mesh_mask, const int32_t sx,
-    const int32_t sy, const int32_t z, const int32_t w, const int32_t h,
-    const XYZ_16 rot)
+    const int32_t sy, const int32_t w, const int32_t h, const XYZ_16 rot)
 {
     FakeUIDraw_Record(String_FormatStatic(
-        "model obj=%d x=%d y=%d z=%d w=%d h=%d rot_x=%d rot_y=%d rot_z=%d "
-        "mask=%u",
-        (int32_t)object_id, sx, sy, z, w, h, rot.x, rot.y, rot.z, mesh_mask));
+        "model obj=%d x=%d y=%d w=%d h=%d rot_x=%d rot_y=%d rot_z=%d mask=%u",
+        (int32_t)object_id, sx, sy, w, h, rot.x, rot.y, rot.z, mesh_mask));
 }
 
 void UI_Draw(void)
