@@ -45,6 +45,7 @@ RESULT GF_RunTitle(GF_COMMAND *const out_cmd)
     GF_ResetLevelSetup(GFSC_NORMAL);
     const GF_LEVEL *const title_level = GF_GetTitleLevel();
     MUST(Level_Initialise(title_level, GFSC_NORMAL), "the title level");
+    GF_SetupTitleSequences(title_level);
     GF_ShowTitleLoadingCamera(title_level);
     *out_cmd = GF_ShowInventory(INV_TITLE_MODE);
     return OK;
