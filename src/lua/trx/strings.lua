@@ -111,6 +111,19 @@ end
 ---@type fun(subject: string, pattern: string): boolean
 M.regex_match = raw.regex_match
 
+---Splits text into pages of at most a number of lines, the way the game pages
+---its own text. A form feed, `\f`, also starts a new page, and a page does
+---not start on a blank line.
+---
+---```lua
+---local pages = trx.strings.paginate("one\ntwo\nthree", 2)
+---```
+---@param text string The text to split.
+---@param max_lines integer How many lines a page holds. At least 1.
+---@return string[] # The pages, in order. Text with nothing in it is one empty page.
+---@type fun(text: string, max_lines: integer): string[]
+M.paginate = raw.paginate
+
 ---Turns text to capitals the way the game's own screens do. Unlike
 ---`string.upper`, this knows the letters beyond ASCII that the game's font
 ---draws, and leaves a `\\{...}` glyph name as it is.

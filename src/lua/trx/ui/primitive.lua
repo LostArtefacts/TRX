@@ -63,6 +63,19 @@ primitive.slot_box = raw.slot_box
 ---@type fun(text: string, scale?: number): number, number
 primitive.measure_text = raw.measure_text
 
+---Breaks text into lines that fit a width, the way the game wraps its own
+---text. Available at any time.
+---
+---```lua
+---local lines = trx.ui.primitive.wrap_text(description, 300)
+---```
+---@param text string What to wrap.
+---@param width number The widest a line may be, in canvas units.
+---@param scale? number Multiplies the text size. `1.0` by default.
+---@return string # The text with line breaks where the lines end.
+---@type fun(text: string, width: number, scale?: number): string
+primitive.wrap_text = raw.wrap_text
+
 ---Draws one line of text on the canvas.
 ---@param text string What to draw.
 ---@param x number The left edge.

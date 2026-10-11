@@ -680,6 +680,22 @@ arrow, and `\{button left}` draws the button the player has bound.
   - number. The width, in canvas units.
   - number. The height, in canvas units.
 
+- <a id="ui.primitive.wrap_text" name="ui.primitive.wrap_text"></a>[lua]`trx.ui.primitive.wrap_text(text, width, [scale])`  
+  Breaks text into lines that fit a width, the way the game wraps its own
+  text. Available at any time.
+
+  Parameters:
+  - <a id="ui.primitive.wrap_text.text" name="ui.primitive.wrap_text.text"></a>**`text`** (string). What to wrap.
+  - <a id="ui.primitive.wrap_text.width" name="ui.primitive.wrap_text.width"></a>**`width`** (number). The widest a line may be, in canvas units.
+  - <a id="ui.primitive.wrap_text.scale" name="ui.primitive.wrap_text.scale"></a>**`scale`** (number, optional). Multiplies the text size. `1.0` by default.
+
+  Returns: string. The text with line breaks where the lines end.
+
+  Example:
+  ```lua
+  local lines = trx.ui.primitive.wrap_text(description, 300)
+  ```
+
 - <a id="ui.primitive.text" name="ui.primitive.text"></a>[lua]`trx.ui.primitive.text(text, x, y, [scale], [z])`  
   Draws one line of text on the canvas.
 

@@ -9,6 +9,7 @@
 #include <trx/game/lua/registry.h>
 #include <trx/game/lua/utils/args.h>
 #include <trx/game/lua/utils/module.h>
+#include <trx/game/matrix.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/objects/names.h>
 
@@ -229,6 +230,34 @@ static int M_L_RingAnimateSelection(lua_State *const L)
     return 0;
 }
 
+// trxc.inventory_ring.turn_selection(yaw: integer, pitch: integer)
+static int M_L_RingTurnSelection(lua_State *const L)
+{
+    INVENTORY_ITEM *const inv_item = M_GetSelectedItem();
+    const int16_t yaw = (int16_t)luaL_checkinteger(L, 1);
+    const int16_t pitch = (int16_t)luaL_checkinteger(L, 2);
+    if (inv_item == nullptr || (yaw == 0 && pitch == 0)) {
+        return 0;
+    }
+    inv_item->has_manual_rot = true;
+    MATRIX delta = g_IDMatrix;
+    if (yaw != 0) {
+        Matrix_RotY_M(&delta, yaw);
+    }
+    if (pitch != 0) {
+        Matrix_RotX_M(&delta, pitch);
+    }
+    Matrix_Mul3x3_M(&inv_item->manual_rot, &delta, &inv_item->manual_rot);
+    return 0;
+}
+
+// trxc.inventory_ring.set_hint(text?: string)
+static int M_L_RingSetHint(lua_State *const L)
+{
+    InvRing_SetButtonHintText(luaL_optstring(L, 1, nullptr));
+    return 0;
+}
+
 static const luaL_Reg m_Module[] = {
     { "animate_selection", M_L_RingAnimateSelection },
     { "declare_item", M_L_RingDeclareItem },
@@ -236,6 +265,8 @@ static const luaL_Reg m_Module[] = {
     { "item", M_L_RingItem },
     { "mode", M_L_RingMode },
     { "selection_anim", M_L_RingSelectionAnim },
+    { "set_hint", M_L_RingSetHint },
+    { "turn_selection", M_L_RingTurnSelection },
     { nullptr, nullptr },
 };
 

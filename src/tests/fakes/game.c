@@ -17,6 +17,7 @@
 #include <trx/game/screenshot.h>
 #include <trx/version.h>
 
+#include <stdio.h>
 #include <string.h>
 
 #include <lauxlib.h>
@@ -48,8 +49,12 @@ static INVENTORY_ITEM *m_RingList[1] = { &m_RingItem };
 // Whether a script holds an engine screen, which makes the play_* verbs wait.
 static bool m_ScreenHeld;
 
+// What the ring shows where its button hints go, as a script last set it.
+static char m_RingHint[256];
+
 static void M_Reset(void)
 {
+    m_RingHint[0] = '\0';
     m_RingOpen = false;
     m_ScreenHeld = false;
     g_TRVersion = 1;
@@ -214,6 +219,13 @@ static int M_L_SetTRVersion(lua_State *const L)
 {
     g_TRVersion = (int32_t)luaL_checkinteger(L, 1);
     return 0;
+}
+
+// fake.ring_hint() -> string - empty where the ring shows no hint.
+static int M_L_RingHint(lua_State *const L)
+{
+    lua_pushstring(L, m_RingHint);
+    return 1;
 }
 
 // fake.set_screen_held(bool) - whether a script holds an engine screen.
@@ -567,8 +579,15 @@ void FakeGame_SetCurrentLevel(const int32_t idx)
     m_CurrentLevel = idx < 0 ? nullptr : &m_Levels[idx];
 }
 
+void InvRing_SetButtonHintText(const char *const text)
+{
+    snprintf(m_RingHint, sizeof(m_RingHint), "%s", text != nullptr ? text : "");
+}
+
 void FakeGame_PushLua(lua_State *const L)
 {
+    lua_pushcfunction(L, M_L_RingHint);
+    lua_setfield(L, -2, "ring_hint");
     lua_pushcfunction(L, M_L_OpenRing);
     lua_setfield(L, -2, "open_ring");
     lua_pushcfunction(L, M_L_CloseRing);

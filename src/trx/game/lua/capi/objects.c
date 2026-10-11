@@ -279,6 +279,19 @@ static int M_L_GetNames(lua_State *const L)
     return M_L_PushNames(L, Object_GetName(obj_id), Object_GetAliases(obj_id));
 }
 
+static int M_L_GetDescription(lua_State *const L)
+{
+    const LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_OBJECT);
+    const char *const description =
+        Object_GetDescription((OBJECT_ID)ref->handle.id);
+    if (description == nullptr) {
+        lua_pushnil(L);
+    } else {
+        lua_pushstring(L, description);
+    }
+    return 1;
+}
+
 static int M_L_GetDefaultNames(lua_State *const L)
 {
     const LUA_STRUCT_REF *const ref = LUA_Struct_CheckRef(L, 1, &TYPE_OBJECT);
@@ -332,6 +345,7 @@ static int M_L_RemoveFamily(lua_State *const L)
 static const luaL_Reg m_Methods[] = {
     { "get_names", M_L_GetNames },
     { "get_default_names", M_L_GetDefaultNames },
+    { "get_description", M_L_GetDescription },
     { "add_family", M_L_AddFamily },
     { "link", M_L_AddLink },
     { "remove_family", M_L_RemoveFamily },

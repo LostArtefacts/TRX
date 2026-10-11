@@ -233,6 +233,9 @@
 - Added `trx.game.Level.is_completed`, which says whether the player has finished a level
 - Added `icon` to the entries of `trx.stats.Stats:secret_list`, which names the glyph that draws a secret
 - Added `trx.assault.stats.clear`, which clears a track's best times as the stats screen's reset button does
+- Added `trx.objects.Object.description`, the text the game shows when the player examines an object
+- Added `trx.ui.primitive.wrap_text` and `trx.strings.paginate`, which break text into lines and pages the way the game does
+- Added `trx.inventory_ring.turn_selection`, which turns the selected entry by hand, and `trx.inventory_ring.set_hint`, which shows a line where the ring shows its button hints
 - Changed saves to keep the items a script spawns, which previously disappeared on load (TRX1677)
 - Changed `trx.events.on_ui_draw`, `on_ui_paint`, `on_ui_paint_over` and `on_scene_paint` to `trx.ui.on_draw`, `trx.ui.on_paint`, `trx.ui.on_paint_over` and `trx.scene.on_paint`
 - Changed script widgets to stay behind the game interface when they overlap

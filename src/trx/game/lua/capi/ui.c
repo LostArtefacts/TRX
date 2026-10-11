@@ -1,4 +1,5 @@
 #include <trx/config.h>
+#include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/game/anims/types.h>
 #include <trx/game/lua/events/ui.h>
@@ -436,6 +437,17 @@ static int M_L_UIMeasureText(lua_State *const L)
     return 2;
 }
 
+// trxc.ui.wrap_text(text: string, width: number, scale?: number): string
+static int M_L_UIWrapText(lua_State *const L)
+{
+    char *wrapped = UI_Text_WordWrap(
+        luaL_checkstring(L, 1), (float)luaL_optnumber(L, 3, 1.0),
+        (float)luaL_checknumber(L, 2));
+    lua_pushstring(L, wrapped != nullptr ? wrapped : "");
+    Memory_FreePointer(&wrapped);
+    return 1;
+}
+
 // trxc.ui.draw_text(text: string, x: number, y: number, scale?: number, z?: integer)
 static int M_L_UIDrawText(lua_State *const L)
 {
@@ -723,6 +735,7 @@ static const luaL_Reg m_Module[] = {
     { "reserve", M_L_UIReserve },
     { "slot_box", M_L_UISlotBox },
     { "measure_text", M_L_UIMeasureText },
+    { "wrap_text", M_L_UIWrapText },
     { "draw_text", M_L_UIDrawText },
     { "flat_quad", M_L_UIFlatQuad },
     { "horizontal_line", M_L_UIHorizontalLine },

@@ -18,6 +18,8 @@ void InvRing_SetRequestedObjectID(OBJECT_ID obj_id);
 void InvRing_SetButtonHintDrawer(
     INV_RING_BUTTON_HINT_DRAWER draw_func, void *user_data);
 void InvRing_ClearButtonHint(void);
+// Puts a line of text where the button hints go, or takes it down for nullptr.
+void InvRing_SetButtonHintText(const char *text);
 
 // The count that stands with the caption at the foot of the screen, which the
 // ring shows for an entry Lara carries more than one of.

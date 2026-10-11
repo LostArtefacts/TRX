@@ -52,9 +52,15 @@ typedef enum {
 static INV_ITEM_ACTIONS m_ItemActions = {};
 static void (*m_ButtonHintDrawFunc)(void *) = nullptr;
 static void *m_ButtonHintUserData = nullptr;
+static char *m_ButtonHintText = nullptr;
 static char *m_CountText = nullptr;
 static size_t m_CountTextCap = 0;
 static OBJECT_ID m_RequestedObjectID = NO_OBJECT;
+
+static void M_DrawTextHint(void *const user_data)
+{
+    UI_Label(m_ButtonHintText != nullptr ? m_ButtonHintText : "");
+}
 
 static void M_DrawItemActionHint(void *const user_data)
 {
@@ -725,6 +731,19 @@ void InvRing_SetButtonHintDrawer(void (*draw_func)(void *), void *user_data)
 void InvRing_ClearButtonHint(void)
 {
     InvRing_SetButtonHintDrawer(nullptr, nullptr);
+}
+
+void InvRing_SetButtonHintText(const char *const text)
+{
+    Memory_FreePointer(&m_ButtonHintText);
+    if (text == nullptr) {
+        if (m_ButtonHintDrawFunc == M_DrawTextHint) {
+            InvRing_ClearButtonHint();
+        }
+        return;
+    }
+    m_ButtonHintText = Memory_DupStr(text);
+    InvRing_SetButtonHintDrawer(M_DrawTextHint, nullptr);
 }
 
 void InvRing_ShowItemActions(const INV_ITEM_ACTIONS actions)

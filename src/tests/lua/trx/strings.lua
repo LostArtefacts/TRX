@@ -158,6 +158,23 @@ test("dedent leaves a block that shares no indent alone", function()
   assert(trx.strings.dedent("\n\n  Padded.\n\n") == "Padded.")
 end)
 
+test("paginate cuts text into pages of so many lines", function()
+  local pages = trx.strings.paginate("one\ntwo\nthree\nfour\nfive", 2)
+  assert(#pages == 3, #pages)
+  assert(pages[3] == "five", pages[3])
+end)
+
+test("paginate starts a page at a form feed", function()
+  local pages = trx.strings.paginate("one\ftwo", 10)
+  assert(#pages == 2, #pages)
+end)
+
+test("paginate refuses a page with no lines", function()
+  h.raises(function()
+    trx.strings.paginate("one", 0)
+  end)
+end)
+
 test("upper turns letters beyond ASCII to capitals", function()
   assert(trx.strings.upper("Żółw") == "ŻÓŁW")
   assert(trx.strings.upper("time taken") == "TIME TAKEN")
