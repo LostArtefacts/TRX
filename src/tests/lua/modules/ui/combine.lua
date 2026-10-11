@@ -127,10 +127,18 @@ test("confirm combines with the entry in the middle", function()
   finish()
 end)
 
+local function plays()
+  local play = fake.calls().play
+  return play ~= nil and play.count or 0
+end
+
 test("back puts the entry away", function()
   open(PARTNERS)
+  local before = plays()
   press(Role.MENU_BACK)
   assert(fake.take_choice(COMBINE) == CHOICE_CANCEL)
+  -- The ring sounds the entry going away, so the screen does not as well.
+  assert(plays() == before, "the screen sounded the entry going away")
   finish()
 end)
 

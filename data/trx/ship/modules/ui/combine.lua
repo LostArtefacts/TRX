@@ -141,7 +141,7 @@ local function control(ctx, state, layer, keys)
     trx.inventory.combine(ctx.object, state.partners[state.selected:get()])
     ctx:confirm()
   elseif keys:pressed(Role.MENU_BACK) then
-    trx.sound.play(trx.catalog.samples.MENU_SPINOUT)
+    -- The ring sounds the entry going away as it puts it away.
     ctx:cancel()
   end
 end
