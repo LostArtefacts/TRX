@@ -51,8 +51,7 @@ static void M_Reset(void)
 
     LARA_INFO *const lara = Lara_GetLaraInfo();
     Lara_SmoothlyRotateMeshTo(&lara->head_rot, 0, 0, M_RESET_ANIM_SMOOTHING);
-    lara->torso_rot.x = lara->head_rot.x;
-    lara->torso_rot.y = lara->head_rot.y;
+    Lara_SmoothlyRotateMeshTo(&lara->torso_rot, 0, 0, M_RESET_ANIM_SMOOTHING);
 }
 
 static bool M_IsLaraIdle(void)
