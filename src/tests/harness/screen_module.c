@@ -5,6 +5,7 @@
 
 #include <fakes/game.h>
 #include <fakes/input.h>
+#include <fakes/items.h>
 #include <fakes/savegame.h>
 #include <fakes/ui_draw.h>
 #include <harness/fake_calls.h>
@@ -105,6 +106,14 @@ static int M_FakeScene(lua_State *const L)
     return 1;
 }
 
+// fake.set_description(object, text) - what the player reads on examining it.
+static int M_FakeSetDescription(lua_State *const L)
+{
+    FakeItems_SetDescription(
+        (OBJECT_ID)luaL_checkinteger(L, 1), luaL_checkstring(L, 2));
+    return 0;
+}
+
 // fake.offer(screen, arg) -> bool
 static int M_FakeOffer(lua_State *const L)
 {
@@ -160,6 +169,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "scene");
     lua_pushcfunction(L, M_FakeOffer);
     lua_setfield(L, -2, "offer");
+    lua_pushcfunction(L, M_FakeSetDescription);
+    lua_setfield(L, -2, "set_description");
     lua_pushcfunction(L, M_FakeIsHeld);
     lua_setfield(L, -2, "is_held");
     lua_pushcfunction(L, M_FakeTakeChoice);
