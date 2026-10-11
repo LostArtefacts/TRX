@@ -251,10 +251,19 @@ static int M_L_RingTurnSelection(lua_State *const L)
     return 0;
 }
 
-// trxc.inventory_ring.set_hint(text?: string)
+// trxc.inventory_ring.set_hint(...: string)
 static int M_L_RingSetHint(lua_State *const L)
 {
-    InvRing_SetButtonHintText(luaL_optstring(L, 1, nullptr));
+    const int32_t count = lua_gettop(L);
+    luaL_argcheck(L, count <= 4, 5, "a hint has at most four parts");
+    const char *parts[4];
+    int32_t used = 0;
+    for (int32_t i = 1; i <= count; i++) {
+        if (!lua_isnil(L, i)) {
+            parts[used++] = luaL_checkstring(L, i);
+        }
+    }
+    InvRing_SetButtonHintParts(parts, used);
     return 0;
 }
 

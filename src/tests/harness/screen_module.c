@@ -141,6 +141,14 @@ static int M_FakeTakeChoice(lua_State *const L)
     return 1;
 }
 
+// fake.choice_value(screen) -> integer
+static int M_FakeChoiceValue(lua_State *const L)
+{
+    lua_pushinteger(
+        L, UI_Takeover_GetValue((UI_TAKEOVER)luaL_checkinteger(L, 1)));
+    return 1;
+}
+
 // fake.release(screen)
 static int M_FakeRelease(lua_State *const L)
 {
@@ -175,6 +183,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "is_held");
     lua_pushcfunction(L, M_FakeTakeChoice);
     lua_setfield(L, -2, "take_choice");
+    lua_pushcfunction(L, M_FakeChoiceValue);
+    lua_setfield(L, -2, "choice_value");
     lua_pushcfunction(L, M_FakeRelease);
     lua_setfield(L, -2, "release");
 }

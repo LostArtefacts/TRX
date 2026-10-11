@@ -52,9 +52,14 @@ static bool m_ScreenHeld;
 // What the ring shows where its button hints go, as a script last set it.
 static char m_RingHint[256];
 
+// What the held entry combines with.
+static OBJECT_ID m_Partners[8];
+static int32_t m_PartnerCount;
+
 static void M_Reset(void)
 {
     m_RingHint[0] = '\0';
+    m_PartnerCount = 0;
     m_RingOpen = false;
     m_ScreenHeld = false;
     g_TRVersion = 1;
@@ -218,6 +223,21 @@ static int M_L_SettleRing(lua_State *const L)
 static int M_L_SetTRVersion(lua_State *const L)
 {
     g_TRVersion = (int32_t)luaL_checkinteger(L, 1);
+    return 0;
+}
+
+// fake.set_combine_partners({ object, ... }) - what the held entry combines
+// with.
+static int M_L_SetCombinePartners(lua_State *const L)
+{
+    luaL_checktype(L, 1, LUA_TTABLE);
+    m_PartnerCount = 0;
+    const int32_t len = (int32_t)lua_rawlen(L, 1);
+    for (int32_t i = 1; i <= len && m_PartnerCount < 8; i++) {
+        lua_rawgeti(L, 1, i);
+        m_Partners[m_PartnerCount++] = (OBJECT_ID)luaL_checkinteger(L, -1);
+        lua_pop(L, 1);
+    }
     return 0;
 }
 
@@ -579,15 +599,34 @@ void FakeGame_SetCurrentLevel(const int32_t idx)
     m_CurrentLevel = idx < 0 ? nullptr : &m_Levels[idx];
 }
 
-void InvRing_SetButtonHintText(const char *const text)
+void InvRing_SetButtonHintParts(
+    const char *const *const parts, const int32_t count)
 {
-    snprintf(m_RingHint, sizeof(m_RingHint), "%s", text != nullptr ? text : "");
+    m_RingHint[0] = '\0';
+    for (int32_t i = 0; i < count; i++) {
+        const size_t used = strlen(m_RingHint);
+        snprintf(
+            m_RingHint + used, sizeof(m_RingHint) - used, "%s%s",
+            i > 0 ? " | " : "", parts[i]);
+    }
+}
+
+int32_t Inv_GetCombinePartners(
+    const OBJECT_ID obj_id, OBJECT_ID *const partners, const int32_t max_count)
+{
+    int32_t count = 0;
+    for (int32_t i = 0; i < m_PartnerCount && count < max_count; i++) {
+        partners[count++] = m_Partners[i];
+    }
+    return count;
 }
 
 void FakeGame_PushLua(lua_State *const L)
 {
     lua_pushcfunction(L, M_L_RingHint);
     lua_setfield(L, -2, "ring_hint");
+    lua_pushcfunction(L, M_L_SetCombinePartners);
+    lua_setfield(L, -2, "set_combine_partners");
     lua_pushcfunction(L, M_L_OpenRing);
     lua_setfield(L, -2, "open_ring");
     lua_pushcfunction(L, M_L_CloseRing);

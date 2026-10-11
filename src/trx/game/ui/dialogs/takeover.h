@@ -13,6 +13,7 @@ typedef enum {
     UI_TAKEOVER_SAVE_LOAD,
     UI_TAKEOVER_STATS,
     UI_TAKEOVER_EXAMINE,
+    UI_TAKEOVER_COMBINE,
     UI_TAKEOVER_NUMBER_OF,
 } UI_TAKEOVER;
 
@@ -73,9 +74,18 @@ void UI_Takeover_Release(UI_TAKEOVER screen);
 // only UI_TAKEOVER_CHOICE_CANCEL. The statistics screen shown between levels
 // takes UI_TAKEOVER_CHOICE_CANCEL and UI_TAKEOVER_CHOICE_CONFIRM, which both
 // end it as the player skipping it does. An entry that the player examines
-// takes only UI_TAKEOVER_CHOICE_CANCEL, which puts it away.
+// takes only UI_TAKEOVER_CHOICE_CANCEL, which puts it away. An entry that the
+// player combines takes UI_TAKEOVER_CHOICE_CANCEL, which puts it away, and
+// UI_TAKEOVER_CHOICE_CONFIRM, which combines it with the object given as the
+// choice's value.
 bool UI_Takeover_AcceptsChoice(UI_TAKEOVER screen, UI_TAKEOVER_CHOICE choice);
 
-// Closes the screen with a choice. Called by the owner. Does nothing while no
-// owner holds the screen.
-void UI_Takeover_Close(UI_TAKEOVER screen, UI_TAKEOVER_CHOICE choice);
+// Closes the screen with a choice, and a value that goes with it for the
+// screens that take one. Called by the owner. Does nothing while no owner
+// holds the screen.
+void UI_Takeover_Close(
+    UI_TAKEOVER screen, UI_TAKEOVER_CHOICE choice, int32_t value);
+
+// Returns the value the screen was last closed with, until it is offered
+// again.
+int32_t UI_Takeover_GetValue(UI_TAKEOVER screen);

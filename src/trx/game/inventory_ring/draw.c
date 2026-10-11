@@ -19,6 +19,7 @@
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
 #include <trx/game/ui/dialogs/takeover.h>
+#include <trx/game/ui/draw.h>
 #include <trx/game/viewport.h>
 #include <trx/version.h>
 
@@ -33,6 +34,7 @@
 #define M_TR4_BRIGHT_NORMAL 32.0f
 #define M_TR4_BRIGHT_SELECTED 160.0f
 #define M_TR4_BRIGHT_NEUTRAL 128.0f
+#define M_COMBINE_BACKDROP_OPACITY 0.75f
 
 static XYZ_32 M_VectorViewFromWorld(const XYZ_32 v_world)
 {
@@ -410,6 +412,13 @@ void InvRing_Draw(INV_RING *const ring)
     InvRing_DrawItems(ring);
 
     if (ring->status == RNG_SELECTED
+        && UI_Takeover_IsHeld(UI_TAKEOVER_COMBINE)) {
+        // A script picks what to combine with over the ring, which steps
+        // back behind it.
+        Output_Overlay_DrawBlackRectangle(M_COMBINE_BACKDROP_OPACITY, false);
+        Output_Flush();
+    } else if (
+        ring->status == RNG_SELECTED
         && !UI_Takeover_IsHeld(UI_TAKEOVER_RING_ENTRY)
         && !UI_Takeover_IsHeld(UI_TAKEOVER_EXAMINE)) {
         INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
@@ -418,6 +427,10 @@ void InvRing_Draw(INV_RING *const ring)
         }
         Option_Draw(inv_item);
     }
+
+    // The models scripts keep on screen, such as the entries offered for
+    // combining.
+    UI_DrawMeshes();
 
     float top_opacity = Fader_GetCurrentValue(&ring->top_fader);
     if (ring->mode == INV_TITLE_MODE && ring->status != RNG_OPENING) {

@@ -300,3 +300,18 @@ end
   - <a id="inventory.can_add.object_id" name="inventory.can_add.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The pickup, or the inventory icon it goes into.
 
   Returns: boolean. True where the level carries the model to draw it with.
+
+- <a id="inventory.combine_partners" name="inventory.combine_partners"></a>[lua]`trx.inventory.combine_partners(object_id)`  
+  What an inventory icon combines with, among the things Lara carries.
+
+  Parameters:
+  - <a id="inventory.combine_partners.object_id" name="inventory.combine_partners.object_id"></a>**`object_id`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The inventory icon to combine.
+
+  Returns: a list of [trx.catalog.objects](CATALOG.md#catalog.objects). The icons of what it combines with.
+
+  Example:
+  ```lua
+  for _, partner in ipairs(trx.inventory.combine_partners(item)) do
+    trx.log.info(trx.catalog.objects[partner])
+  end
+  ```

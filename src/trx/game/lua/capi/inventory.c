@@ -370,7 +370,22 @@ static const luaL_Reg m_InventoryMethods[] = {
     { nullptr, nullptr },
 };
 
+// trxc.inventory.combine_partners(object: trx.catalog.objects): trx.catalog.objects[]
+static int M_L_InvCombinePartners(lua_State *const L)
+{
+    OBJECT_ID partners[64];
+    const int32_t count = Inv_GetCombinePartners(
+        (OBJECT_ID)luaL_checkinteger(L, 1), partners, 64);
+    lua_createtable(L, count, 0);
+    for (int32_t i = 0; i < count; i++) {
+        lua_pushinteger(L, partners[i]);
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
+    { "combine_partners", M_L_InvCombinePartners },
     { "get_current", M_L_InvGetCurrent },
     { "get", M_L_InvGetLevel },
     { nullptr, nullptr },

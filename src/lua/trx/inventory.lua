@@ -249,6 +249,18 @@ function M.can_add(object_id)
   return raw.get_current():can_add(object_id)
 end
 
+---What an inventory icon combines with, among the things Lara carries.
+---
+---```lua
+---for _, partner in ipairs(trx.inventory.combine_partners(item)) do
+---  trx.log.info(trx.catalog.objects[partner])
+---end
+---```
+---@param object_id trx.catalog.objects The inventory icon to combine.
+---@return trx.catalog.objects[] # The icons of what it combines with.
+---@type fun(object_id: trx.catalog.objects): trx.catalog.objects[]
+M.combine_partners = raw.combine_partners
+
 ---Indexing the module reaches an entry of Lara's inventory, and
 ---`#trx.inventory` is how many kinds of thing she carries. Entries are keyed
 ---by the order they are drawn in, and are built one at a time as they are

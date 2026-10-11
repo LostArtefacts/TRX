@@ -286,6 +286,7 @@ trxc = {}
 ---@field unbind fun(role: trx.input.Role, slot?: trx.input.Slot, backend?: trx.input.Backend, layout?: trx.input.Layout)
 
 ---@class (exact) trxc.inventory
+---@field combine_partners fun(object: trx.catalog.objects): trx.catalog.objects[]
 ---@field get fun(level_num: trx.game.LevelNum): trx.inventory.Inventory?
 ---@field get_current fun(): trx.inventory.Inventory
 
@@ -296,7 +297,7 @@ trxc = {}
 ---@field item fun(object_id: trx.catalog.objects): table?
 ---@field mode fun(): trx.inventory_ring.Mode?
 ---@field selection_anim fun(): trx.inventory_ring.EntryAnim?
----@field set_hint fun(text?: string)
+---@field set_hint fun(...: string)
 ---@field turn_selection fun(yaw: integer, pitch: integer)
 
 ---@class (exact) trxc.items
@@ -462,7 +463,7 @@ trxc = {}
 ---@field sphere fun(centre: trx.math.Vec3, radius: trx.math.Distance, color: trx.math.Color|string, alpha?: integer)
 
 ---@class (exact) trxc.screens
----@field close fun(screen: trx.ui.Screen, choice: integer)
+---@field close fun(screen: trx.ui.Screen, choice: integer, value?: integer)
 
 ---@class (exact) trxc.settings
 ---@field add_row fun(key: string, ui: trx.config.Row)

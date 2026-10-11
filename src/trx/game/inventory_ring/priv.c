@@ -35,6 +35,7 @@
 #define M_CAMERA_Y_OFFSET (-96)
 #define M_MANUAL_ROT_RESET_RATE 0.15
 #define M_UI_COUNT_NAME_GAP 8.0f
+#define M_MAX_HINT_PARTS 4
 
 typedef enum {
     // clang-format off
@@ -52,14 +53,27 @@ typedef enum {
 static INV_ITEM_ACTIONS m_ItemActions = {};
 static void (*m_ButtonHintDrawFunc)(void *) = nullptr;
 static void *m_ButtonHintUserData = nullptr;
-static char *m_ButtonHintText = nullptr;
+static char *m_ButtonHintParts[M_MAX_HINT_PARTS] = {};
+static int32_t m_ButtonHintPartCount = 0;
 static char *m_CountText = nullptr;
 static size_t m_CountTextCap = 0;
 static OBJECT_ID m_RequestedObjectID = NO_OBJECT;
 
+// A script's hint, its parts set apart as the ring sets apart its own.
 static void M_DrawTextHint(void *const user_data)
 {
-    UI_Label(m_ButtonHintText != nullptr ? m_ButtonHintText : "");
+    if (m_ButtonHintPartCount == 1) {
+        UI_Label(m_ButtonHintParts[0]);
+        return;
+    }
+    UI_BeginStack(UI_STACK_HORIZONTAL);
+    for (int32_t i = 0; i < m_ButtonHintPartCount; i++) {
+        if (i > 0) {
+            UI_Spacer(60.0f, 0.0f);
+        }
+        UI_Label(m_ButtonHintParts[i]);
+    }
+    UI_EndStack();
 }
 
 static void M_DrawItemActionHint(void *const user_data)
@@ -733,17 +747,28 @@ void InvRing_ClearButtonHint(void)
     InvRing_SetButtonHintDrawer(nullptr, nullptr);
 }
 
-void InvRing_SetButtonHintText(const char *const text)
+void InvRing_SetButtonHintParts(
+    const char *const *const parts, const int32_t count)
 {
-    Memory_FreePointer(&m_ButtonHintText);
-    if (text == nullptr) {
+    for (int32_t i = 0; i < m_ButtonHintPartCount; i++) {
+        Memory_FreePointer(&m_ButtonHintParts[i]);
+    }
+    m_ButtonHintPartCount = 0;
+    if (count <= 0) {
         if (m_ButtonHintDrawFunc == M_DrawTextHint) {
             InvRing_ClearButtonHint();
         }
         return;
     }
-    m_ButtonHintText = Memory_DupStr(text);
+    for (int32_t i = 0; i < count && i < M_MAX_HINT_PARTS; i++) {
+        m_ButtonHintParts[m_ButtonHintPartCount++] = Memory_DupStr(parts[i]);
+    }
     InvRing_SetButtonHintDrawer(M_DrawTextHint, nullptr);
+}
+
+void InvRing_SetButtonHintText(const char *const text)
+{
+    InvRing_SetButtonHintParts(&text, text != nullptr ? 1 : 0);
 }
 
 void InvRing_ShowItemActions(const INV_ITEM_ACTIONS actions)
