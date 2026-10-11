@@ -519,6 +519,7 @@ trxc = {}
 ---@field gradient_sprite fun(object: trx.catalog.objects, sprite_num: integer, x: number, y: number, z?: integer, scale?: number, tl: trx.math.Color|table, tr: trx.math.Color|table, bl: trx.math.Color|table, br: trx.math.Color|table)
 ---@field horizontal_line fun(x0: number, x1: number, y: number, z?: integer)
 ---@field image fun(path: string, x: number, y: number, w: number, h: number, opacity?: number): boolean
+---@field interpolation_rate fun(): number
 ---@field measure_text fun(text: string, scale?: number): number, number
 ---@field mesh_bounds fun(object: trx.catalog.objects): trx.math.Distance?, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance
 ---@field mesh_slot fun(): trx.ui.MeshSlot?

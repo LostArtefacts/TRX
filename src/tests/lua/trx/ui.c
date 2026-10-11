@@ -223,8 +223,27 @@ static int M_FakeEndLevel(lua_State *const L)
     return 0;
 }
 
+// fake.tick() - one engine tick.
+static int M_FakeTick(lua_State *const L)
+{
+    LUA_FireEvent(LUA_EVENT_TICK);
+    return 0;
+}
+
+// fake.set_rate(rate) - how far the frame being drawn stands between the last
+// two ticks.
+static int M_FakeSetRate(lua_State *const L)
+{
+    FakeUIDraw_SetInterpolationRate(luaL_checknumber(L, 1));
+    return 0;
+}
+
 static void M_PushFake(lua_State *const L)
 {
+    lua_pushcfunction(L, M_FakeTick);
+    lua_setfield(L, -2, "tick");
+    lua_pushcfunction(L, M_FakeSetRate);
+    lua_setfield(L, -2, "set_rate");
     lua_pushcfunction(L, M_FakeAsLevelScript);
     lua_setfield(L, -2, "as_level_script");
     lua_pushcfunction(L, M_FakeEndLevel);
@@ -314,7 +333,7 @@ int main(void)
         .module = "ui",
         // ui.widgets is loaded explicitly because trx.ui does not require it.
         .deps = { "signal", "math", "events", "ui.primitive", "ui.widgets",
-                  "ui.regions", nullptr },
+                  "ui.regions", "ui.tween", nullptr },
         .tests = "trx/ui",
         .push_fake = M_PushFake,
     };

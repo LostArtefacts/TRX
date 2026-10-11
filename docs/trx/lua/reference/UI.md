@@ -361,6 +361,49 @@ arrow, and `\{button left}` draws the button the player has bound.
 
       Returns: boolean. Whether the screen was still held.
 
+- <a id="ui.Tween" name="ui.Tween"></a>[lua]`trx.ui.Tween`
+
+    A number that moves to a target over some ticks.
+
+    Reading it while the interface is painted gives the value part way between
+    two ticks, so that what it moves glides at any frame rate.
+
+    Methods:
+
+    - <a id="ui.Tween.get" name="ui.Tween.get"></a>[lua]`tween:get()`  
+      The value now.
+
+      Returns: number. The value.
+
+    - <a id="ui.Tween.is_moving" name="ui.Tween.is_moving"></a>[lua]`tween:is_moving()`  
+      Whether the value is still on its way to its target, counted in whole
+      ticks, as the input a script reads each tick is.
+
+      Returns: boolean. `true` until the tick the move ends on.
+
+    - <a id="ui.Tween.set" name="ui.Tween.set"></a>[lua]`tween:set(value)`  
+      Puts the value at once where it is told, and stops any move.
+
+      Parameters:
+      - <a id="ui.Tween.set.value" name="ui.Tween.set.value"></a>**`value`** (number). The value.
+
+      Returns: [trx.ui.Tween](#ui.Tween). The same tween.
+
+    - <a id="ui.Tween.target" name="ui.Tween.target"></a>[lua]`tween:target()`  
+      Where the value is going, or where it rests.
+
+      Returns: number. The target.
+
+    - <a id="ui.Tween.to" name="ui.Tween.to"></a>[lua]`tween:to(target, ticks, [curve])`  
+      Starts moving to a target from wherever the value is now.
+
+      Parameters:
+      - <a id="ui.Tween.to.target" name="ui.Tween.to.target"></a>**`target`** (number). Where to go.
+      - <a id="ui.Tween.to.ticks" name="ui.Tween.to.ticks"></a>**`ticks`** (integer). How many ticks the move takes.
+      - <a id="ui.Tween.to.curve" name="ui.Tween.to.curve"></a>**`curve`** (function, optional). The curve of the move, one of [`trx.ui.ease`](#ui.ease). [`trx.ui.ease.linear`](#ui.ease.linear) by default.
+
+      Returns: [trx.ui.Tween](#ui.Tween). The same tween.
+
 - <a id="ui.Widget" name="ui.Widget"></a>[lua]`trx.ui.Widget`
 
     A reusable UI element drawn over the game.
@@ -534,6 +577,10 @@ arrow, and `\{button left}` draws the button the player has bound.
   [`trx.savegame.load`](SAVEGAME.md#savegame.load) waits for the screen to end. In the inventory ring, the
   ring spins out before the command runs.
 
+- <a id="ui.ease" name="ui.ease"></a>[lua]`trx.ui.ease`  
+  Curves that shape how a [`trx.ui.Tween`](#ui.Tween) moves. Each takes how far the move
+  has gone in time, from `0` to `1`, and returns how far the value has gone.
+
 - <a id="ui.widgets" name="ui.widgets"></a>[lua]`trx.ui.widgets`  
   The widgets a script builds its screen from.
 
@@ -614,6 +661,13 @@ arrow, and `\{button left}` draws the button the player has bound.
   ```lua
   local area = trx.ui.safe_area_for(200)
   ```
+
+- <a id="ui.interpolation_rate" name="ui.interpolation_rate"></a>[lua]`trx.ui.interpolation_rate()`  
+  How far the frame being drawn stands between the last two ticks, from `0`
+  at the earlier one to `1` at the later one. [`trx.ui.Tween`](#ui.Tween) reads it to glide
+  between ticks.
+
+  Returns: number. The share of the way.
 
 - <a id="ui.mesh_slot" name="ui.mesh_slot"></a>[lua]`trx.ui.mesh_slot()`  
   Takes a slot for a model the interface keeps on screen across ticks.
@@ -1008,6 +1062,46 @@ arrow, and `\{button left}` draws the button the player has bound.
     })
   end, { object = trx.catalog.objects.COMPASS_OPTION })
   ```
+
+- <a id="ui.ease.linear" name="ui.ease.linear"></a>[lua]`trx.ui.ease.linear(ratio)`  
+  The same pace throughout.
+
+  Parameters:
+  - <a id="ui.ease.linear.ratio" name="ui.ease.linear.ratio"></a>**`ratio`** (number). How far the move has gone in time.
+
+  Returns: number. How far the value has gone.
+
+- <a id="ui.ease.quad_in" name="ui.ease.quad_in"></a>[lua]`trx.ui.ease.quad_in(ratio)`  
+  Slow to start.
+
+  Parameters:
+  - <a id="ui.ease.quad_in.ratio" name="ui.ease.quad_in.ratio"></a>**`ratio`** (number). How far the move has gone in time.
+
+  Returns: number. How far the value has gone.
+
+- <a id="ui.ease.quad_out" name="ui.ease.quad_out"></a>[lua]`trx.ui.ease.quad_out(ratio)`  
+  Slow to finish.
+
+  Parameters:
+  - <a id="ui.ease.quad_out.ratio" name="ui.ease.quad_out.ratio"></a>**`ratio`** (number). How far the move has gone in time.
+
+  Returns: number. How far the value has gone.
+
+- <a id="ui.ease.quad_in_out" name="ui.ease.quad_in_out"></a>[lua]`trx.ui.ease.quad_in_out(ratio)`  
+  Slow at both ends, fastest in the middle.
+
+  Parameters:
+  - <a id="ui.ease.quad_in_out.ratio" name="ui.ease.quad_in_out.ratio"></a>**`ratio`** (number). How far the move has gone in time.
+
+  Returns: number. How far the value has gone.
+
+- <a id="ui.tween" name="ui.tween"></a>[lua]`trx.ui.tween([value])`  
+  Creates a tween that rests at a value.
+
+  Parameters:
+  - <a id="ui.tween.value" name="ui.tween.value"></a>**`value`** (number, optional). Where it rests. `0` by default.
+
+  Returns: [trx.ui.Tween](#ui.Tween). The tween.
 
 - <a id="ui.widgets.Bar" name="ui.widgets.Bar"></a>[lua]`trx.ui.widgets.Bar(settings)`  
   One of the game's bars, drawn with the player's bar settings.

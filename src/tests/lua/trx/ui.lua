@@ -600,4 +600,62 @@ test("an empty list has no selection", function()
   assert(list:selection() == 1)
 end)
 
+local function ticks(count)
+  for _ = 1, count do
+    fake.tick()
+  end
+end
+
+test("the curves start at nothing and end at the whole way", function()
+  for _, name in ipairs({ "linear", "quad_in", "quad_out", "quad_in_out" }) do
+    local curve = trx.ui.ease[name]
+    assert(curve(0) == 0, name)
+    assert(curve(1) == 1, name)
+  end
+  assert(trx.ui.ease.quad_in(0.5) < 0.5)
+  assert(trx.ui.ease.quad_out(0.5) > 0.5)
+  assert(trx.ui.ease.quad_in_out(0.5) == 0.5)
+end)
+
+test("a tween rests where it was made", function()
+  local tween = trx.ui.tween(3)
+  assert(tween:get() == 3 and tween:target() == 3)
+  assert(not tween:is_moving())
+end)
+
+test("a tween arrives after the ticks it was given", function()
+  fake.set_rate(1)
+  local tween = trx.ui.tween(0):to(8, 4)
+  assert(tween:is_moving())
+  ticks(2)
+  assert(tween:get() == 4, tween:get())
+  ticks(2)
+  assert(tween:get() == 8 and not tween:is_moving())
+end)
+
+test("a tween reads part way between two ticks", function()
+  local tween = trx.ui.tween(0):to(10, 10)
+  ticks(3)
+  fake.set_rate(0.5)
+  -- Drawn half way between the second tick and the third.
+  assert(tween:get() == 2.5, tween:get())
+  fake.set_rate(1)
+end)
+
+test("a tween turned mid-way sets off from where it was", function()
+  fake.set_rate(1)
+  local tween = trx.ui.tween(0):to(10, 10)
+  ticks(5)
+  tween:to(0, 5)
+  assert(tween:get() == 5, tween:get())
+  ticks(5)
+  assert(tween:get() == 0)
+end)
+
+test("a tween set outright stops where it is put", function()
+  local tween = trx.ui.tween(0):to(10, 10)
+  tween:set(7)
+  assert(tween:get() == 7 and not tween:is_moving())
+end)
+
 return h.report()
