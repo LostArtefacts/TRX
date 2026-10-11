@@ -98,17 +98,24 @@ A script draws what an entry opens by defining the
   trx.inventory_ring.turn_selection(trx.math.degrees(3), 0)
   ```
 
-- <a id="inventory_ring.set_hint" name="inventory_ring.set_hint"></a>[lua]`trx.inventory_ring.set_hint(...)`  
-  Shows a line where the ring shows its button hints, under the name of the
-  selected entry, or takes it down when given nothing. Several parts are set
-  apart from one another as the ring sets apart its own hints.
+- <a id="inventory_ring.set_input_hints" name="inventory_ring.set_input_hints"></a>[lua]`trx.inventory_ring.set_input_hints([hints])`  
+  Shows hints for the keys that work now where the ring shows its button
+  hints, under the name of the selected entry, set apart from one another as
+  the ring sets apart its own. Given nothing, takes them down.
 
   Parameters:
-  - <a id="inventory_ring.set_hint...." name="inventory_ring.set_hint...."></a>**`...`** (string). The parts of the line, up to four.
+  - <a id="inventory_ring.set_input_hints.hints" name="inventory_ring.set_input_hints.hints"></a>**`hints`** (a list of table, optional). The hints, up to four.
+
+    Each entry:
+    - <a id="inventory_ring.set_input_hints.hints.input" name="inventory_ring.set_input_hints.hints.input"></a>**`input`** ([trx.ui.Inputs](UI.md#ui.Inputs)). The role, or the roles shown side by side.
+    - <a id="inventory_ring.set_input_hints.hints.text" name="inventory_ring.set_input_hints.hints.text"></a>**`text`** (string, optional). What the keys do.
 
   Example:
   ```lua
-  trx.inventory_ring.set_hint("\\{input menu_confirm} Use", "\\{input menu_back} Cancel")
+  trx.inventory_ring.set_input_hints({
+    { input = trx.input.Role.MENU_CONFIRM, text = "Use" },
+    { input = trx.input.Role.MENU_BACK, text = "Cancel" },
+  })
   ```
 
 - <a id="inventory_ring.icon_of" name="inventory_ring.icon_of"></a>[lua]`trx.inventory_ring.icon_of(object)`  

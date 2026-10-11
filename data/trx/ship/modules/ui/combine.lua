@@ -229,10 +229,13 @@ local function control(ctx, state, keys)
       return
     end
     trx.sound.play(trx.catalog.samples.MENU_SPININ)
-    trx.inventory_ring.set_hint(
-      "\\{input menu_confirm} " .. L("general/actions/combine_item"),
-      "\\{input menu_back} " .. L("general/actions/cancel")
-    )
+    trx.inventory_ring.set_input_hints({
+      {
+        input = trx.input.Role.MENU_CONFIRM,
+        text = L("general/actions/combine_item"),
+      },
+      { input = trx.input.Role.MENU_BACK, text = L("general/actions/cancel") },
+    })
     state.shown:set(true)
   end
   -- The frame names the entry in the middle, so the ring names nothing.

@@ -237,6 +237,7 @@
     - `trx.ui.StackLayer` and `trx.ui.LayerKeys`
 - Added `trx.ui.widgets.List`, a column of rows that the player picks one entry from
 - Added `trx.ui.widgets.SleekBar`, the thin progress bar the game draws under a button that the player holds
+- Added `trx.ui.widgets.InputHint` and `trx.ui.input_hint_text`, which show the keys bound to an input role and what they do
 - Added `trx.ui.tween`, `trx.ui.Tween` and `trx.ui.ease`, which move a number to a target over some ticks and read it part way between them, and `trx.ui.interpolation_rate`, which says how far the frame being drawn stands between two ticks
 - Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the question the pause screen asks, the quick save and load screens, the statistics screen, an entry the player examines, and an entry the player combines
     - `trx.ui.Screen` and `trx.ui.ScreenContext`
@@ -248,7 +249,7 @@
 - Added `trx.assault.stats.clear`, which clears a track's best times as the stats screen's reset button does
 - Added `trx.objects.Object.description`, the text the game shows when the player examines an object
 - Added `trx.ui.primitive.wrap_text` and `trx.strings.paginate`, which break text into lines and pages the way the game does
-- Added `trx.inventory_ring.turn_selection`, which turns the selected entry by hand, and `trx.inventory_ring.set_hint`, which shows one or more hints where the ring shows its button hints
+- Added `trx.inventory_ring.turn_selection`, which turns the selected entry by hand, and `trx.inventory_ring.set_input_hints`, which shows hints for the keys that work now where the ring shows its button hints
 - Added `trx.inventory.combine_partners`, the entries the player carries that an entry combines with
 - Changed saves to keep the items a script spawns, which previously disappeared on load (TRX1677)
 - Changed `trx.events.on_ui_draw`, `on_ui_paint`, `on_ui_paint_over` and `on_scene_paint` to `trx.ui.on_draw`, `trx.ui.on_paint`, `trx.ui.on_paint_over` and `trx.scene.on_paint`

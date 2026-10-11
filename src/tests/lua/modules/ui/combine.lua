@@ -77,7 +77,14 @@ end
 test("the frame names the entry in the middle", function()
   open(PARTNERS)
   assert(shows_name(PARTNERS[1]))
-  assert(fake.ring_hint():find(" | ", 1, true), "the hint lost a part")
+  assert(
+    fake.ring_hint()
+      == "\\{input menu_confirm} "
+        .. trx.locale.get("general/actions/combine_item")
+        .. " | \\{input menu_back} "
+        .. trx.locale.get("general/actions/cancel"),
+    fake.ring_hint()
+  )
   finish()
 end)
 

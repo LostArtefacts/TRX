@@ -81,7 +81,9 @@ local title = ui.widgets.Stack({
         return trx.locale.get("general/photo_mode/title_lara_pos")
       end),
     }),
-    ui.widgets.Label({ text = "\\{input step_left}\\{input step_right}" }),
+    ui.widgets.InputHint({
+      input = { input.Role.STEP_LEFT, input.Role.STEP_RIGHT },
+    }),
   },
 })
 
@@ -89,16 +91,24 @@ local title = ui.widgets.Stack({
 -- the keys, and what each of them does
 -------------------------------------------------------------------------------
 
+local Role = input.Role
+local hint = ui.input_hint_text
+
+-- A key held with slow, or on its own.
+local function slow_or(role)
+  return "[" .. hint(Role.SLOW) .. "+]" .. hint(role)
+end
+
 -- Name both exit keys when both are bound, or just the one that is available.
 local exit_key = signal.combine(state.language, function()
   local photo = input.has_glyph(input.Role.TOGGLE_PHOTO_MODE)
   local option = input.has_glyph(input.Role.OPTION)
   if photo and option then
-    return "\\{input toggle_photo_mode}/\\{input option}"
+    return hint(input.Role.TOGGLE_PHOTO_MODE) .. "/" .. hint(input.Role.OPTION)
   elseif photo then
-    return "\\{input toggle_photo_mode}"
+    return hint(input.Role.TOGGLE_PHOTO_MODE)
   end
-  return "\\{input option}"
+  return hint(input.Role.OPTION)
 end)
 
 local exit_shown = signal.combine(
@@ -111,27 +121,34 @@ local exit_shown = signal.combine(
 
 local keys = ui.widgets.Stack({
   children = {
-    ui.widgets.Label({
-      text = "\\{input camera_up}\\{input camera_down}"
-        .. "\\{input camera_forward}\\{input camera_back}"
-        .. "\\{input camera_left}\\{input camera_right}",
+    ui.widgets.InputHint({
+      input = {
+        Role.CAMERA_UP,
+        Role.CAMERA_DOWN,
+        Role.CAMERA_FORWARD,
+        Role.CAMERA_BACK,
+        Role.CAMERA_LEFT,
+        Role.CAMERA_RIGHT,
+      },
+    }),
+    ui.widgets.InputHint({
+      input = { Role.LEFT, Role.FORWARD, Role.BACK, Role.RIGHT },
     }),
     ui.widgets.Label({
-      text = "\\{input left}\\{input forward}\\{input back}\\{input right}",
+      text = hint(Role.SLOW) .. "+" .. hint(Role.CAMERA_UP) .. "/" .. hint(
+        Role.CAMERA_DOWN
+      ),
     }),
+    ui.widgets.InputHint({ input = Role.ROLL }),
+    ui.widgets.InputHint({ input = Role.LOOK }),
+    ui.widgets.Label({ text = slow_or(Role.DRAW) }),
     ui.widgets.Label({
-      text = "\\{input slow}+\\{input camera_up}/\\{input camera_down}",
-    }),
-    ui.widgets.Label({ text = "\\{input roll}" }),
-    ui.widgets.Label({ text = "\\{input look}" }),
-    ui.widgets.Label({ text = "[\\{input slow}+]\\{input draw}" }),
-    ui.widgets.Label({
-      text = "[\\{input slow}+]\\{input fly_cheat}",
+      text = slow_or(Role.FLY_CHEAT),
       shown = state.can_pose,
     }),
-    ui.widgets.Label({ text = "[\\{input slow}+]\\{input pause}" }),
-    ui.widgets.Label({ text = "\\{input toggle_ui}" }),
-    ui.widgets.Label({ text = "\\{input action}" }),
+    ui.widgets.Label({ text = slow_or(Role.PAUSE) }),
+    ui.widgets.InputHint({ input = Role.TOGGLE_UI }),
+    ui.widgets.InputHint({ input = Role.ACTION }),
     ui.widgets.Label({ text = exit_key, shown = exit_shown }),
   },
 })

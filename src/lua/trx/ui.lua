@@ -305,3 +305,47 @@ end
 ---@return number # The share of the way.
 ---@type fun(): number
 M.interpolation_rate = raw.interpolation_rate
+
+-- The name the text markup knows each input role by, built on first use so
+-- that trx.ui loads without trx.input.
+local role_names = nil
+
+local function role_name(role)
+  if role_names == nil then
+    role_names = {}
+    for name, value in pairs(trx.input.Role) do
+      role_names[value] = name:lower()
+    end
+  end
+  local name = role_names[role]
+  if name == nil then
+    error(("unknown input role: %s"):format(tostring(role)), 3)
+  end
+  return name
+end
+
+---One input role, or a list of roles shown side by side.
+---@alias trx.ui.Inputs trx.input.Role|trx.input.Role[]
+
+---The text that shows the keys bound to one or more input roles, as the game
+---shows them, followed by some words. The keys follow the player's bindings
+---and controller.
+---
+---```lua
+---local text = trx.ui.input_hint_text(trx.input.Role.MENU_CONFIRM, "Use")
+---```
+---@param input trx.ui.Inputs The role, or the roles shown side by side.
+---@param words? string What the keys do.
+---@return string # The text.
+function M.input_hint_text(input, words)
+  local roles = type(input) == "table" and input or { input }
+  local parts = {}
+  for i, role in ipairs(roles) do
+    parts[i] = "\\{input " .. role_name(role) .. "}"
+  end
+  local keys = table.concat(parts)
+  if words == nil or words == "" then
+    return keys
+  end
+  return keys .. " " .. words
+end

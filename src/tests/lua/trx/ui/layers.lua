@@ -41,6 +41,36 @@ local function fresh()
   assert(trx.ui.layers.count() == 0, "a layer was left open by another case")
 end
 
+test("an input hint shows the keys of each role before its words", function()
+  assert(
+    trx.ui.input_hint_text(Role.MENU_CONFIRM, "Use")
+      == "\\{input menu_confirm} Use"
+  )
+  assert(
+    trx.ui.input_hint_text({ Role.STEP_LEFT, Role.STEP_RIGHT })
+      == "\\{input step_left}\\{input step_right}"
+  )
+end)
+
+test("an input hint for no such role raises", function()
+  h.raises(function()
+    trx.ui.input_hint_text(-1, "Use")
+  end, "unknown input role")
+end)
+
+test("an input hint widget draws the keys and what they do", function()
+  fresh()
+  local layer = push({
+    root = trx.ui.widgets.InputHint({
+      input = Role.MENU_BACK,
+      text = "Cancel",
+    }),
+  })
+  local ops = fake.scene()
+  layer:close()
+  assert(drawn(ops, "\\{input menu_back} Cancel"), "the hint was not drawn")
+end)
+
 test("a layer draws over a widget placed in a region", function()
   fresh()
   local placed = label("placed")

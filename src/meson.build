@@ -91,6 +91,7 @@ trx_lua_api_sources = files(
   'lua/trx/ui/widgets/custom.lua',
   'lua/trx/ui/widgets/digits.lua',
   'lua/trx/ui/widgets/image.lua',
+  'lua/trx/ui/widgets/input_hint.lua',
   'lua/trx/ui/widgets/label.lua',
   'lua/trx/ui/widgets/layout.lua',
   'lua/trx/ui/widgets/list.lua',
