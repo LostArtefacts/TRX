@@ -1,4 +1,4 @@
-require("common.overlay")
+require("common.ui.overlay")
 require("tr4.fog")
 require("tr4.logo")
 require("common.ngplus").initialise()

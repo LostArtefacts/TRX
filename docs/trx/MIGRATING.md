@@ -44,7 +44,7 @@ order: 3
    `trx.savegame.is_free` first.
 
 6. **The passport is a script**
-   The engine no longer draws the passport. The shipped `modules/passport`
+   The engine no longer draws the passport. The shipped `modules/ui/passport`
    module does, as the `trx.ui.Screen.RING_ENTRY` screen of the passport
    entry. A mod that defines that screen with `override = true` replaces the
    whole menu.
@@ -76,6 +76,14 @@ order: 3
    blew fire for before resetting and looping. This is now a property on the
    object and so the trigger timer returns to having normal effect. Update any
    triggers as required and set the fire head's `blow_time` property value.
+
+10. **The shipped interface modules moved to `modules/ui`**
+    The modules that draw the interface - the screens, the overlay, the
+    passport, the assault course readouts and the level captions - now sit in
+    `modules/ui`. Require them as `common.ui.<name>`, for example
+    `require("common.ui.overlay")` in place of `require("common.overlay")`.
+    The screens are set up by one startup script, `scripts/ui.lua`, in place
+    of a script each.
 
 ### Version 1.10 to 1.11
 
