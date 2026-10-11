@@ -20,12 +20,6 @@ local TITLE_MARGIN = 5.0
 local FOOTER_SPACING = 5.0
 local TEXT_HEIGHT = 15
 
--- The engine places its own boxes in single precision, so this one is placed
--- the same way to land on the same pixel.
-local function f32(value)
-  return (string.unpack("<f", string.pack("<f", value)))
-end
-
 local function turn_speed()
   return trx.math.degrees(3)
 end
@@ -238,16 +232,6 @@ local function open(ctx)
       end,
       paint = function() end,
     }),
-    -- In the middle of the safe area, or from its top left where the box is
-    -- too large for it.
-    place = function(w, h)
-      local safe = trx.ui.safe_area
-      local function offset(slack)
-        return slack >= 0 and f32(slack * 0.5) or 0
-      end
-      return f32(safe.x + offset(f32(safe.width - w))),
-        f32(safe.y + offset(f32(safe.height - h)))
-    end,
     on_input = function(layer, keys)
       control(ctx, state, layer, keys)
     end,

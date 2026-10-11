@@ -33,12 +33,6 @@ local SPIN_PER_TICK = 4 * trx.math.DEG_1
 -- Every mesh of an object, for one the ring states no selection for.
 local ALL_MESHES = 0xFFFFFFFF
 
--- The engine places its own boxes in single precision, so this one is placed
--- the same way to land on the same pixel.
-local function f32(value)
-  return (string.unpack("<f", string.pack("<f", value)))
-end
-
 -- Slow at both ends, fastest in the middle.
 local function ease(ratio)
   if ratio <= 0 then
@@ -275,16 +269,6 @@ local function open(ctx)
   state.root = frame(state)
   return ctx:push({
     root = state.root,
-    -- In the middle of the safe area, or from its top left where the box is
-    -- too large for it.
-    place = function(w, h)
-      local safe = trx.ui.safe_area
-      local function offset(slack)
-        return slack >= 0 and f32(slack * 0.5) or 0
-      end
-      return f32(safe.x + offset(f32(safe.width - w))),
-        f32(safe.y + offset(f32(safe.height - h)))
-    end,
     on_input = function(_, keys)
       control(ctx, state, keys)
     end,
