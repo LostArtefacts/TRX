@@ -1375,6 +1375,10 @@
             "title": "Correggi cadute da pavimenti",
             "description": "Risolve il problema per cui i passi laterali e il camminare all'indietro su pavimenti fragili fanno sì che Lara cada immediatamente sul pavimento sottostante. Questo problema è presente solo nella versione originale di TR1; TR2+ non ne è affetto.",
         },
+        "gameplay.fix_falling_glitch": {
+            "title": "\\{review}Correggi le cadute",
+            "description": "\\{review}Corregge i problemi che permettono a Lara di saltare dalle botole appena si aprono invece di cadere, e che le impediscono di cadere quando il pavimento sotto di lei cede mentre si gira da accovacciata.",
+        },
         "gameplay.fix_flare_throw_priority": {
             "title": "Correggi priorità lancio razzi",
             "description": "Risolve il problema per cui Lara dà priorità al lancio di un razzo di segnalazione esaurito mentre è a mezz'aria, il che può impedirle di afferrare le sporgenze.",
