@@ -9,6 +9,8 @@
 #include <trx/game/lua/events.h>
 #include <trx/game/output/overlay.h>
 #include <trx/game/shell.h>
+#include <trx/game/ui/common.h>
+#include <trx/game/ui/draw.h>
 
 typedef enum {
     STATE_RUN,
@@ -115,7 +117,9 @@ static void M_Draw(PHASE *const phase)
         Interpolation_Enable();
     }
 
-    Output_Overlay_DrawBlackRectangle(Fader_GetCurrentValue(&p->fader), true);
+    UI_BeginLayer(UI_LAYER_FADE);
+    UI_ScheduleDrawScreenBlack(Fader_GetCurrentValue(&p->fader));
+    UI_EndLayer(UI_LAYER_FADE);
 }
 
 PHASE *Phase_Demo_Create(const int32_t level_num)

@@ -146,7 +146,7 @@ static void M_Draw(PHASE *const phase)
             Output_Overlay_DrawSnapshot(progress);
         }
     } else {
-        Output_Overlay_DrawBlackRectangle(progress, false);
+        Output_Overlay_DrawBlackRectangle(progress);
     }
 
     if (p->args.loading_pic && g_Config.ui.show_loading_bar) {

@@ -963,6 +963,6 @@ void CutSeq_DrawOverlay(void)
 {
     const float fade = Fader_GetCurrentValue(&m_State.fader);
     if (fade > 0.0f) {
-        Output_Overlay_DrawBlackRectangle(fade, false);
+        Output_Overlay_DrawBlackRectangle(fade);
     }
 }

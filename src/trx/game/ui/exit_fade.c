@@ -4,7 +4,6 @@
 #include <trx/game/fader.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/draw.h>
-#include <trx/game/viewport.h>
 
 static bool m_Started = false;
 static FADER m_Fader = {};
@@ -27,14 +26,7 @@ bool UI_IsExitFading(void)
 
 void UI_DrawExitFade(void)
 {
-    const float opacity = Fader_GetCurrentValue(&m_Fader);
-    if (opacity <= 0.0f) {
-        return;
-    }
     UI_BeginLayer(UI_LAYER_EXIT);
-    UI_ScheduleDrawScreenFlatQuad(
-        0, 0, 0, Viewport_GetWidth(VIEWPORT_UI),
-        Viewport_GetHeight(VIEWPORT_UI),
-        (RGBA_8888) { .a = (uint8_t)(opacity * 255.0f + 0.5f) });
+    UI_ScheduleDrawScreenBlack(Fader_GetCurrentValue(&m_Fader));
     UI_EndLayer(UI_LAYER_EXIT);
 }

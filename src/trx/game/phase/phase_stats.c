@@ -191,7 +191,7 @@ static void M_Draw(PHASE *const phase)
         : p->top_fader.args.target;
     if (top_opacity > 0.0f) {
         Output_Overlay_DrawSnapshot(1.0f);
-        Output_Overlay_DrawBlackRectangle(top_opacity, false);
+        Output_Overlay_DrawBlackRectangle(top_opacity);
         Output_Flush();
         return;
     }

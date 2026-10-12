@@ -90,7 +90,7 @@ static void M_DrawFadeToBlackTransition(const float opacity)
     UI_BeginScene();
 
     Output_Overlay_DrawSnapshot(1.0f);
-    Output_Overlay_DrawBlackRectangle(opacity, false);
+    Output_Overlay_DrawBlackRectangle(opacity);
 
     LUA_UI_DrawRegions();
     Overlay_DrawUI();

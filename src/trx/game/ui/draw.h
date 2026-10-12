@@ -22,6 +22,8 @@ void UI_ScheduleDrawScreenSprite(
 void UI_ScheduleDrawImage(
     const char *path, int32_t x0, int32_t y0, int32_t x1, int32_t y1,
     float opacity);
+// Covers the whole screen in black, from 0 for clear to 1 for black.
+void UI_ScheduleDrawScreenBlack(float opacity);
 void UI_ScheduleDrawScreenFlatQuad(
     int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h, RGBA_8888 color);
 void UI_ScheduleDrawScreenGradientQuad(

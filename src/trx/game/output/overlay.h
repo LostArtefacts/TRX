@@ -28,7 +28,7 @@ typedef struct {
 
 void Output_Overlay_DrawPattern(bool wave);
 void Output_Overlay_DrawPatternOpacity(bool wave, float opacity);
-void Output_Overlay_DrawBlackRectangle(float opacity, bool post_ui);
+void Output_Overlay_DrawBlackRectangle(float opacity);
 
 // The cinematic bars across the top and bottom of the view, as a fraction of
 // the screen height each. 0 removes them. The depth is remembered, so whoever

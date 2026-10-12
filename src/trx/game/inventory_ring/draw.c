@@ -17,7 +17,9 @@
 #include <trx/game/output.h>
 #include <trx/game/savegame.h>
 #include <trx/game/shell.h>
+#include <trx/game/ui/common.h>
 #include <trx/game/ui/dialogs/takeover.h>
+#include <trx/game/ui/draw.h>
 #include <trx/game/viewport.h>
 #include <trx/version.h>
 
@@ -323,7 +325,7 @@ void InvRing_Draw(INV_RING *const ring)
         && UI_Takeover_IsHeld(UI_TAKEOVER_COMBINE)) {
         // A script picks what to combine with over the ring, which steps
         // back behind it.
-        Output_Overlay_DrawBlackRectangle(M_COMBINE_BACKDROP_OPACITY, false);
+        Output_Overlay_DrawBlackRectangle(M_COMBINE_BACKDROP_OPACITY);
         Output_Flush();
     } else if (
         ring->status == RNG_SELECTED
@@ -340,5 +342,7 @@ void InvRing_Draw(INV_RING *const ring)
     if (ring->mode == INV_TITLE_MODE && ring->status != RNG_OPENING) {
         top_opacity = 0.0f;
     }
-    Output_Overlay_DrawBlackRectangle(top_opacity, true);
+    UI_BeginLayer(UI_LAYER_FADE);
+    UI_ScheduleDrawScreenBlack(top_opacity);
+    UI_EndLayer(UI_LAYER_FADE);
 }

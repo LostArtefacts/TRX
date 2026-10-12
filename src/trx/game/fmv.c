@@ -227,7 +227,7 @@ static void M_UploadSurface(void *const surface, void *const user_data)
     Output_SwitchViewport(VIEWPORT_GAME);
     const float black_opacity = M_ApplyPauseBackground(ctx);
     Output_Quad_Render(ctx->renderer_2d);
-    Output_Overlay_DrawBlackRectangle(black_opacity, false);
+    Output_Overlay_DrawBlackRectangle(black_opacity);
 
     Output_SwitchViewport(VIEWPORT_UI);
     M_DrawUI();
@@ -251,7 +251,7 @@ static void M_RedrawFrame(M_RENDER_CONTEXT *const ctx)
     Output_SwitchViewport(VIEWPORT_GAME);
     const float black_opacity = M_ApplyPauseBackground(ctx);
     Output_Quad_Render(ctx->renderer_2d);
-    Output_Overlay_DrawBlackRectangle(black_opacity, false);
+    Output_Overlay_DrawBlackRectangle(black_opacity);
 
     Output_SwitchViewport(VIEWPORT_UI);
     M_DrawUI();
