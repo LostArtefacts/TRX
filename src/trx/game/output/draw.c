@@ -164,13 +164,6 @@ void Output_DrawScreenFrame(
     // clang-format on
 }
 
-void Output_DrawPhotoModeFrame(const int32_t thickness)
-{
-    const VIEWPORT_RECT rect = Viewport_GetRect(VIEWPORT_UI);
-    const RGBA_8888 color = { 255, 0, 0, 96 };
-    OutputSource_UI_StagePhotoModeFrame(rect, color, thickness);
-}
-
 void Output_DrawSphere(const XYZ_32 center, const int32_t radius)
 {
     const bool wireframe_state = g_Config.rendering.enable_wireframe;

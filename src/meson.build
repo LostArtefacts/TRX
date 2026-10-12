@@ -54,6 +54,7 @@ trx_lua_api_sources = files(
   'lua/trx/input.lua',
   'lua/trx/internal/check.lua',
   'lua/trx/internal/helpers.lua',
+  'lua/trx/internal/paint.lua',
   'lua/trx/inventory.lua',
   'lua/trx/inventory_ring.lua',
   'lua/trx/items.lua',

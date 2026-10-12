@@ -115,8 +115,8 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     Whether a widget is drawn below or above the engine interface.
 
-    Widgets use the lower layer by default. Use the upper layer for a console or
-    a text field. Each region keeps space for both layers.
+    Widgets use the lower layer by default. Use the upper layer for a text field.
+    Each region keeps space for both layers. Both draw under the console.
 
     - `trx.ui.Layer.UNDER`  
         Below the engine interface.
@@ -597,7 +597,7 @@ arrow, and `\{button left}` draws the button the player has bound.
 - <a id="ui.on_paint_over" name="ui.on_paint_over"></a>[lua]`trx.ui.on_paint_over(callback)`  
   [`trx.ui.on_paint`](#ui.on_paint) for the layer above the engine interface. A script paints
   here where its work must cover the interface rather than sit under it, such
-  as a console or a text field.
+  as a text field. It still draws under the console.
 
   [`trx.ui.regions.place`](#ui.regions.place) picks the layer for a widget, so a script building
   with widgets has no reason to take this.

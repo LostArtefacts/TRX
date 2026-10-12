@@ -86,5 +86,3 @@ void OutputSource_UI_StageBinocularMask(void);
 void OutputSource_UI_StageSprite(OUTPUT_UI_SPRITE sprite);
 void OutputSource_UI_StageQuad(OUTPUT_UI_QUAD quad);
 void OutputSource_UI_StageCircle(OUTPUT_UI_CIRCLE circle);
-void OutputSource_UI_StagePhotoModeFrame(
-    VIEWPORT_RECT rect, RGBA_8888 color, int32_t thickness);

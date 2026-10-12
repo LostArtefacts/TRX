@@ -55,24 +55,32 @@ static int M_FakeTick(lua_State *const L)
     return 0;
 }
 
-static void M_PaintLayer(const UI_PAINT_LAYER layer)
-{
-    LUA_UI_SetPainting(true);
-    LUA_UI_SetPaintDepth(layer == UI_PAINT_LAYER_OVER ? 0 : LUA_UI_UNDER_DEPTH);
-    LUA_FireEvent(
-        layer == UI_PAINT_LAYER_OVER ? LUA_EVENT_UI_PAINT_OVER
-                                     : LUA_EVENT_UI_PAINT);
-    LUA_UI_SetPainting(false);
-}
-
 // fake.scene() -> table of scheduled operations
 //
+// fake.scene_layers() -> the layer of each op of the last scene, by name
+static int M_FakeSceneLayers(lua_State *const L)
+{
+    static const char *const names[UI_LAYER_NUMBER_OF] = {
+        [UI_LAYER_UNDER] = "under",
+        [UI_LAYER_INTERFACE] = "interface",
+        [UI_LAYER_OVER] = "over",
+        [UI_LAYER_CONSOLE] = "console",
+    };
+    const int32_t count = FakeUIDraw_GetCount();
+    lua_createtable(L, count, 0);
+    for (int32_t i = 0; i < count; i++) {
+        lua_pushstring(L, names[FakeUIDraw_GetLayer(i)]);
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
 // Runs a whole scene as the engine runs one: the draw event for every region,
 // the layout, and then each paint pass.
 static int M_FakeScene(lua_State *const L)
 {
     FakeUIDraw_Forget();
-    UI_SetPaintHook(M_PaintLayer);
+    UI_SetPaintHook(LUA_UI_PaintRegions);
     UI_BeginScene();
     for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
         UI_BeginRegion((UI_REGION)i);
@@ -133,6 +141,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "tick");
     lua_pushcfunction(L, M_FakeScene);
     lua_setfield(L, -2, "scene");
+    lua_pushcfunction(L, M_FakeSceneLayers);
+    lua_setfield(L, -2, "scene_layers");
     lua_pushcfunction(L, M_FakeAsLevelScript);
     lua_setfield(L, -2, "as_level_script");
     lua_pushcfunction(L, M_FakeEndLevel);

@@ -92,10 +92,12 @@ static int M_FakePaint(lua_State *const L)
     luaL_checktype(L, 1, LUA_TFUNCTION);
     UI_BeginScene();
     FakeUIDraw_Forget();
+    UI_BeginLayer(UI_LAYER_UNDER);
     LUA_UI_SetPainting(true);
     lua_pushvalue(L, 1);
     const int status = lua_pcall(L, 0, 0, 0);
     LUA_UI_SetPainting(false);
+    UI_EndLayer(UI_LAYER_UNDER);
     if (status != LUA_OK) {
         UI_EndScene();
         return lua_error(L);
@@ -113,16 +115,6 @@ static int M_FakePaint(lua_State *const L)
 }
 
 // Fires the script paint event for the layer the scene is running.
-static void M_PaintLayer(const UI_PAINT_LAYER layer)
-{
-    LUA_UI_SetPainting(true);
-    LUA_UI_SetPaintDepth(layer == UI_PAINT_LAYER_OVER ? 0 : LUA_UI_UNDER_DEPTH);
-    LUA_FireEvent(
-        layer == UI_PAINT_LAYER_OVER ? LUA_EVENT_UI_PAINT_OVER
-                                     : LUA_EVENT_UI_PAINT);
-    LUA_UI_SetPainting(false);
-}
-
 // fake.scene() -> table of scheduled operations
 //
 // Runs a whole scene the way the engine runs one: every region is opened for
@@ -132,7 +124,7 @@ static void M_PaintLayer(const UI_PAINT_LAYER layer)
 static int M_FakeScene(lua_State *const L)
 {
     FakeUIDraw_Forget();
-    UI_SetPaintHook(M_PaintLayer);
+    UI_SetPaintHook(LUA_UI_PaintRegions);
     UI_BeginScene();
     for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
         UI_BeginRegion((UI_REGION)i);

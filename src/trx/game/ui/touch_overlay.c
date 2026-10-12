@@ -11,6 +11,7 @@
 #include <trx/game/objects.h>
 #include <trx/game/output/const.h>
 #include <trx/game/output/textures.h>
+#include <trx/game/ui/common.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/viewport.h>
 
@@ -663,6 +664,25 @@ static void M_ApplyConfig(void)
     TouchOverlay_SetVisible(g_Config.input.enable_touch_controls);
 }
 
+static void M_DrawControls(void)
+{
+    M_ComputeButtonLayout();
+    if (m_NumButtons == 0) {
+        return;
+    }
+    M_SyncButtonStates();
+
+    const int32_t z = 0;
+
+    M_DrawDpad(z);
+
+    for (int32_t i = 0; i < m_NumButtons; i++) {
+        if (!m_Buttons[i].is_dpad) {
+            M_DrawButton(&m_Buttons[i], z);
+        }
+    }
+}
+
 bool TouchOverlay_HasAnyFingerDown(void)
 {
     if (m_SelectionMode) {
@@ -721,22 +741,9 @@ void TouchOverlay_Draw(void)
     if (!m_Visible) {
         return;
     }
-
-    M_ComputeButtonLayout();
-    if (m_NumButtons == 0) {
-        return;
-    }
-    M_SyncButtonStates();
-
-    const int32_t z = 0;
-
-    M_DrawDpad(z);
-
-    for (int32_t i = 0; i < m_NumButtons; i++) {
-        if (!m_Buttons[i].is_dpad) {
-            M_DrawButton(&m_Buttons[i], z);
-        }
-    }
+    UI_BeginLayer(UI_LAYER_INTERFACE);
+    M_DrawControls();
+    UI_EndLayer(UI_LAYER_INTERFACE);
 }
 
 bool TouchOverlay_ProcessEvent(const SDL_Event *const event)

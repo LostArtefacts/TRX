@@ -198,6 +198,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_PAINT_OVER, "ui_paint_over");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_SHOW_PICKUP, "show_pickup");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_SCENE_PAINT, "scene_paint");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_PAINT_CONSOLE, "ui_paint_console");
 
     ENUM_MAP(OVERLAY_ARROW, OVERLAY_ARROW_TL, "top_left");
     ENUM_MAP(OVERLAY_ARROW, OVERLAY_ARROW_TR, "top_right");
@@ -219,8 +220,8 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(UI_EASE, UI_EASE_QUAD_OUT, "quad_out");
     ENUM_MAP(UI_EASE, UI_EASE_QUAD_IN_OUT, "quad_in_out");
 
-    ENUM_MAP(UI_PAINT_LAYER, UI_PAINT_LAYER_UNDER, "under");
-    ENUM_MAP(UI_PAINT_LAYER, UI_PAINT_LAYER_OVER, "over");
+    ENUM_MAP(UI_LAYER, UI_LAYER_UNDER, "under");
+    ENUM_MAP(UI_LAYER, UI_LAYER_OVER, "over");
 
     ENUM_MAP(UI_TAKEOVER, UI_TAKEOVER_RING_ENTRY, "ring_entry");
     ENUM_MAP(UI_TAKEOVER, UI_TAKEOVER_PAUSE, "pause");

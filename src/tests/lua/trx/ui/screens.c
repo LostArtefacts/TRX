@@ -50,16 +50,6 @@ static int M_FakeTick(lua_State *const L)
     return 0;
 }
 
-static void M_PaintLayer(const UI_PAINT_LAYER layer)
-{
-    LUA_UI_SetPainting(true);
-    LUA_UI_SetPaintDepth(layer == UI_PAINT_LAYER_OVER ? 0 : LUA_UI_UNDER_DEPTH);
-    LUA_FireEvent(
-        layer == UI_PAINT_LAYER_OVER ? LUA_EVENT_UI_PAINT_OVER
-                                     : LUA_EVENT_UI_PAINT);
-    LUA_UI_SetPainting(false);
-}
-
 // fake.scene() -> table of scheduled operations
 //
 // Runs a whole scene as the engine runs one: the draw event for every region,
@@ -67,7 +57,7 @@ static void M_PaintLayer(const UI_PAINT_LAYER layer)
 static int M_FakeScene(lua_State *const L)
 {
     FakeUIDraw_Forget();
-    UI_SetPaintHook(M_PaintLayer);
+    UI_SetPaintHook(LUA_UI_PaintRegions);
     UI_BeginScene();
     for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
         UI_BeginRegion((UI_REGION)i);

@@ -537,10 +537,12 @@ TEST(ui_draw_describes_what_a_scene_scheduled)
     Memory_FreePointer(&empty);
 
     UI_BeginScene();
+    UI_BeginLayer(UI_LAYER_INTERFACE);
     UI_ScheduleDrawScreenFlatQuad(
         10, 20, 3, 30, 40, (RGBA_8888) { 0x11, 0x22, 0x33, 0x44 });
     UI_ScheduleDrawScreenCircle(
         5, 6, 1, 2, 7, (RGBA_8888) { 0xAA, 0xBB, 0xCC, 0xDD });
+    UI_EndLayer(UI_LAYER_INTERFACE);
     char *described = FakeUIDraw_Describe();
     CHECK_EQ_STR(
         described,

@@ -2,6 +2,8 @@
 
 // Records scheduled UI draw calls as text.
 
+#include <trx/game/ui/common.h>
+
 #include <stdint.h>
 
 // Sets how far a drawn frame sits between two ticks, which is what a model
@@ -16,6 +18,8 @@ int32_t FakeUIDraw_GetCount(void);
 
 // Returns one recorded draw call, or nullptr when index is out of range.
 const char *FakeUIDraw_GetLine(int32_t index);
+// Returns the layer a recorded draw call was scheduled in.
+UI_LAYER FakeUIDraw_GetLayer(int32_t index);
 
 // Returns all recorded draw calls, one per line. Caller frees.
 char *FakeUIDraw_Describe(void);
