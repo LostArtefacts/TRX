@@ -23,7 +23,10 @@
 #include <trx/game/shell.h>
 #include <trx/game/ui.h>
 #include <trx/game/ui/dialogs/takeover.h>
+#include <trx/game/ui/draw.h>
+#include <trx/game/ui/exit_fade.h>
 #include <trx/game/ui/touch_overlay.h>
+#include <trx/game/viewport.h>
 #include <trx/gl/context.h>
 #include <trx/gl/gpu_timer.h>
 #include <trx/gl/track.h>
@@ -34,7 +37,6 @@
 
 static int32_t m_CurrentFrame = 0;
 static bool m_Exiting;
-static FADER m_ExitFader;
 static int32_t m_PhaseStackSize = 0;
 static PHASE *m_PhaseStack[M_MAX_PHASES] = {};
 static bool m_PendingFadeToBlack = false;
@@ -99,8 +101,6 @@ static void M_DrawFadeToBlackTransition(const float opacity)
     UI_Draw();
 
     Output_Flush();
-    Output_Overlay_DrawBlackRectangle(
-        Fader_GetCurrentValue(&m_ExitFader), true);
     Output_EndScene();
 
     if (!Output_IsHeadless()
@@ -135,7 +135,7 @@ static GF_COMMAND M_RunFadeToBlackTransition(
         if (Shell_IsExiting()) {
             PhaseExecutor_BeginExit();
         }
-        if (m_Exiting && !Fader_IsActive(&m_ExitFader)) {
+        if (m_Exiting && !UI_IsExitFading()) {
             return (GF_COMMAND) { .action = GF_EXIT_GAME };
         }
 
@@ -169,7 +169,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         PhaseExecutor_BeginExit();
     }
     if (m_Exiting) {
-        if (!Fader_IsActive(&m_ExitFader)) {
+        if (!UI_IsExitFading()) {
             return (PHASE_CONTROL) {
                 .action = PHASE_ACTION_END,
                 .gf_cmd = { .action = GF_EXIT_GAME },
@@ -225,8 +225,6 @@ static void M_Draw(PHASE *const phase)
     UI_Draw();
 
     Output_Flush();
-    Output_Overlay_DrawBlackRectangle(
-        Fader_GetCurrentValue(&m_ExitFader), true);
     Output_EndScene();
 
     TRX_GL_GpuTimer_Collect();
@@ -387,14 +385,7 @@ bool PhaseExecutor_BeginExit(void)
 {
     if (!m_Exiting) {
         m_Exiting = true;
-        if (g_Config.visuals.enable_exit_fade_effects) {
-            Fader_InitFromCurrentHold(&m_ExitFader, 1.0f, 0.333f, 0.1f);
-        }
+        UI_BeginExitFade();
     }
-    return Fader_IsActive(&m_ExitFader);
-}
-
-float PhaseExecutor_GetExitFadeOpacity(void)
-{
-    return Fader_GetCurrentValue(&m_ExitFader);
+    return UI_IsExitFading();
 }

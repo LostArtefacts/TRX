@@ -1022,6 +1022,7 @@ common_sources = [
   'trx/game/ui/elements/tab_switch.c',
   'trx/game/ui/elements/window.c',
   'trx/game/ui/events.c',
+  'trx/game/ui/exit_fade.c',
   'trx/game/ui/helpers.c',
   'trx/game/ui/keys.c',
   'trx/game/ui/regions.c',
