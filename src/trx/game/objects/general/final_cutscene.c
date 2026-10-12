@@ -35,7 +35,7 @@ static bool M_Draw(const ITEM *const item)
         return true;
     }
     const float opacity = 1.0f - (m_FadeTimer / (float)M_FADE_DURATION);
-    Output_Overlay_DrawBlackRectangle(opacity);
+    Output_DrawScreenBlack(opacity);
     return true;
 }
 

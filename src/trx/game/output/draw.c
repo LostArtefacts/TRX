@@ -125,6 +125,17 @@ void Output_DrawScreenSprite(
     });
 }
 
+void Output_DrawScreenBlack(const float opacity)
+{
+    if (opacity <= 0.0f) {
+        return;
+    }
+    Output_DrawScreenFlatQuad(
+        0, 0, 0, Viewport_GetWidth(VIEWPORT_UI),
+        Viewport_GetHeight(VIEWPORT_UI),
+        (RGBA_8888) { .a = (uint8_t)(MIN(opacity, 1.0f) * 255.0f + 0.5f) });
+}
+
 void Output_DrawScreenFlatQuad(
     const int32_t sx, const int32_t sy, const int32_t z, const int32_t w,
     const int32_t h, const RGBA_8888 color)
