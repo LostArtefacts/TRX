@@ -26,6 +26,7 @@ end
 ---@field rot_z? any How far to roll the model, or a signal or `trx.ui.Tween` carrying it.
 ---@field spin? any How far the model turns each tick, on top of `rot_y` <!--noref: rot_y-->, or a signal carrying it. It turns smoothly between ticks, and picks up where it stopped when the spin starts again.
 ---@field mesh_mask? integer Which of its meshes to draw, one bit each. Every mesh by default.
+---@field light? any The light to draw it in, or a signal carrying it, as `trx.ui.primitive.model` takes it.
 ---@field shown? any Whether the model is shown, or a signal that holds that value.
 
 ---An object's model, fitted into a box and lit as the game lights a model held
@@ -66,10 +67,15 @@ function widgets.Model(settings)
       y + (box_h - model_h) / 2,
       model_w,
       model_h,
-      value_of(w.rot_x) or 0,
-      turn,
-      value_of(w.rot_z) or 0,
-      w.mesh_mask or ALL_MESHES
+      {
+        rot = {
+          x = value_of(w.rot_x) or 0,
+          y = turn,
+          z = value_of(w.rot_z) or 0,
+        },
+        mesh_mask = w.mesh_mask or ALL_MESHES,
+        light = value_of(w.light),
+      }
     )
   end)
   return self:wakes_on(text_scale())

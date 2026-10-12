@@ -60,20 +60,86 @@ end
 
 test("a model draws in its box at its depth", function()
   local line = model_line(fake.paint(function()
-    primitive.model(5, 10, 20, 30, 40, 64, 512, 128)
+    primitive.model(5, 10, 20, 30, 40, { rot = { x = 64, y = 512, z = 128 } })
   end))
   assert(
     line
-      == "model obj=5 x=10 y=20 w=30 h=40 rot_x=64 rot_y=512 rot_z=128 mask=4294967295",
+      == "model obj=5 x=10 y=20 w=30 h=40 rot_x=64 rot_y=512 rot_z=128 mask=4294967295 lit=0 held=1",
     line
   )
 end)
 
 test("a model draws only the meshes it was given", function()
   local line = model_line(fake.paint(function()
-    primitive.model(5, 0, 0, 10, 10, 0, 0, 0, 5)
+    primitive.model(5, 0, 0, 10, 10, { mesh_mask = 5 })
   end))
-  assert(line:match(" mask=5$"), line)
+  assert(line:match(" mask=5 "), line)
+end)
+
+test("a model in a world of its own draws with its camera and pose", function()
+  local lines = fake.paint(function()
+    primitive.world_model(5, {
+      camera = {
+        pos = { x = 0, y = -256, z = 1286 },
+        target = { x = 0, y = -96, z = 688 },
+        fov = 80 * trx.math.DEG_1,
+      },
+      pose = {
+        { turn = { x = 0, y = 16384, z = 0 } },
+        { move = { x = 688, y = 0, z = 0 } },
+      },
+      mesh_mask = 3,
+      light = {
+        ambient = { r = 32, g = 32, b = 32 },
+        lights = {
+          {
+            dir = { x = 0, y = 0, z = 1 },
+            color = { r = 255, g = 255, b = 255 },
+          },
+        },
+        meshes = { [0] = { r = 0, g = 15.9375, b = 239.0625 } },
+      },
+    })
+  end)
+  local found = nil
+  for _, op in ipairs(lines) do
+    if op:match("^world_model ") then
+      found = op
+    end
+  end
+  assert(
+    found == "world_model obj=5 mask=3 lit=1 lights=1 steps=2 fov=14560",
+    tostring(found)
+  )
+end)
+
+test("a pose takes up to sixteen steps", function()
+  local pose = {}
+  for i = 1, 17 do
+    pose[i] = { move = { x = i, y = 0, z = 0 } }
+  end
+  raises(function()
+    fake.paint(function()
+      primitive.world_model(5, {
+        camera = {
+          pos = { x = 0, y = 0, z = 0 },
+          target = { x = 0, y = 0, z = 1 },
+          fov = 0,
+        },
+        pose = pose,
+      })
+    end)
+  end)
+end)
+
+test("darkening and a background go behind the interface", function()
+  local lines = fake.paint(function()
+    primitive.background(nil, true, 0.5)
+    primitive.darken(0.25)
+  end)
+  local text = table.concat(lines, "\n")
+  assert(text:match("background path=%- mono=1 dim=0.50"), text)
+  assert(text:match("darken opacity=0.250"), text)
 end)
 
 test("a model widget fills its box at the player's text size", function()

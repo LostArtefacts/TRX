@@ -15,6 +15,8 @@
 #include <trx/game/ui/scaler.h>
 #include <trx/game/ui/settings.h>
 #include <trx/game/viewport.h>
+#include <trx/gl/context.h>
+#include <trx/gl/renderer.h>
 #include <trx/version.h>
 
 #include <math.h>
@@ -76,7 +78,25 @@ typedef struct {
     uint32_t mesh_mask;
     int32_t x, y, w, h;
     XYZ_16 rot;
+    bool held;
+    int16_t tilt;
+    bool has_light;
+    OUTPUT_UI_MESH_LIGHT light;
+    bool has_world;
+    OUTPUT_UI_MESH_WORLD world;
 } M_DRAW_OP_MODEL;
+
+typedef struct {
+    M_DRAW_OP base;
+    const char *path;
+    bool mono;
+    float dim;
+} M_DRAW_OP_BACKGROUND;
+
+typedef struct {
+    M_DRAW_OP base;
+    float opacity;
+} M_DRAW_OP_DARKEN;
 
 typedef struct {
     MEMORY_ARENA_ALLOCATOR alloc;
@@ -359,6 +379,23 @@ static void M_DrawOp_Circle(const M_DRAW_OP *const base)
     });
 }
 
+// Moves drawing into the scene, behind the whole interface, as the engine
+// draws its own backgrounds and the models of its own screens.
+static void M_BeginScene(void)
+{
+    SceneCompositor_Flush();
+    TRX_GL_Renderer_BindGeometryFbo();
+    TRX_GL_Context_SwitchToViewport(VIEWPORT_GAME);
+}
+
+// Draws what went into the scene, and moves drawing back to the interface.
+static void M_EndScene(void)
+{
+    SceneCompositor_Flush();
+    TRX_GL_Renderer_BindUiFbo();
+    TRX_GL_Context_SwitchToViewport(VIEWPORT_UI);
+}
+
 static void M_DrawOp_Model(const M_DRAW_OP *const base)
 {
     const M_DRAW_OP_MODEL *const op = (const M_DRAW_OP_MODEL *)base;
@@ -371,12 +408,54 @@ static void M_DrawOp_Model(const M_DRAW_OP *const base)
     if (anim == nullptr || anim->frame_ptr == nullptr) {
         return;
     }
+    // The model goes between what was painted before it and what is painted
+    // after it, so the interface stacks in the order it was painted. One in a
+    // world of its own stands in the scene, behind the whole interface.
+    if (op->has_world) {
+        M_BeginScene();
+    } else {
+        SceneCompositor_Flush();
+    }
     OutputSource_UI_StageMesh((OUTPUT_UI_MESH) {
         .object = object,
         .rect = { .x = op->x, .y = op->y, .w = op->w, .h = op->h },
         .mesh_mask = op->mesh_mask,
         .rot = op->rot,
+        .held = op->held,
+        .tilt = op->tilt,
+        .light = op->has_light ? &op->light : nullptr,
+        .world = op->has_world ? &op->world : nullptr,
     });
+    if (op->has_world) {
+        M_EndScene();
+    } else {
+        SceneCompositor_Flush();
+    }
+}
+
+static void M_DrawOp_Darken(const M_DRAW_OP *const base)
+{
+    const M_DRAW_OP_DARKEN *const op = (const M_DRAW_OP_DARKEN *)base;
+    M_BeginScene();
+    Output_Overlay_DrawBlackRectangle(op->opacity, false);
+    M_EndScene();
+}
+
+static void M_DrawOp_Background(const M_DRAW_OP *const base)
+{
+    const M_DRAW_OP_BACKGROUND *const op = (const M_DRAW_OP_BACKGROUND *)base;
+    M_BeginScene();
+    if (op->path == nullptr) {
+        Output_Overlay_DrawBlackRectangle(1.0f, false);
+    } else {
+        if (op->mono) {
+            Output_Overlay_DrawImageMono(op->path, 1.0f);
+        } else {
+            Output_Overlay_DrawImage(op->path);
+        }
+        Output_Overlay_DrawBlackRectangle(op->dim, false);
+    }
+    M_EndScene();
 }
 
 // Allocate a new deferred draw operation in the arena.
@@ -419,6 +498,22 @@ static void M_ScheduleOpHelper(
     memcpy(op, op_src, size);
     op->draw = draw_func;
     M_ScheduleOp(op);
+}
+
+static OUTPUT_UI_MESH_LIGHT M_CopyLight(const UI_MODEL_LIGHT *const light)
+{
+    OUTPUT_UI_MESH_LIGHT mesh_light = {};
+    if (light != nullptr) {
+        mesh_light.ambient = light->ambient;
+        mesh_light.light_count = light->light_count;
+        for (int32_t i = 0; i < light->light_count; i++) {
+            mesh_light.lights[i].dir = light->lights[i].dir;
+            mesh_light.lights[i].color = light->lights[i].color;
+        }
+        mesh_light.lit_mask = light->lit_mask;
+        memcpy(mesh_light.colors, light->colors, sizeof(mesh_light.colors));
+    }
+    return mesh_light;
 }
 
 void UI_ScheduleDrawTextBackground(
@@ -572,7 +667,8 @@ void UI_ScheduleDrawScreenCircle(
 
 void UI_ScheduleDrawModel(
     const OBJECT_ID object_id, const uint32_t mesh_mask, const int32_t sx,
-    const int32_t sy, const int32_t w, const int32_t h, const XYZ_16 rot)
+    const int32_t sy, const int32_t w, const int32_t h, const XYZ_16 rot,
+    const bool held, const int16_t tilt, const UI_MODEL_LIGHT *const light)
 {
     M_SCHEDULE_OP(
         M_DrawOp_Model,
@@ -584,7 +680,60 @@ void UI_ScheduleDrawModel(
             .w = w,
             .h = h,
             .rot = rot,
+            .held = held,
+            .tilt = tilt,
+            .has_light = light != nullptr,
+            .light = M_CopyLight(light),
         }));
+}
+
+void UI_ScheduleDrawModelInWorld(
+    const OBJECT_ID object_id, const uint32_t mesh_mask,
+    const UI_MODEL_WORLD *const world, const UI_MODEL_LIGHT *const light)
+{
+    OUTPUT_UI_MESH_WORLD mesh_world = {
+        .camera_pos = world->camera_pos,
+        .camera_target = world->camera_target,
+        .fov = world->fov,
+        .step_count = world->step_count,
+    };
+    for (int32_t i = 0; i < world->step_count; i++) {
+        mesh_world.steps[i].turn = world->steps[i].turn;
+        mesh_world.steps[i].vec = world->steps[i].vec;
+    }
+    M_SCHEDULE_OP(
+        M_DrawOp_Model,
+        ((M_DRAW_OP_MODEL) {
+            .object_id = object_id,
+            .mesh_mask = mesh_mask,
+            .has_light = light != nullptr,
+            .light = M_CopyLight(light),
+            .has_world = true,
+            .world = mesh_world,
+        }));
+}
+
+void UI_ScheduleDrawBackground(
+    const char *const path, const bool mono, const float dim)
+{
+    char *owned_path = nullptr;
+    if (path != nullptr) {
+        const size_t size = strlen(path) + 1;
+        owned_path = M_ArenaAlloc(size);
+        memcpy(owned_path, path, size);
+    }
+    M_SCHEDULE_OP(
+        M_DrawOp_Background,
+        ((M_DRAW_OP_BACKGROUND) {
+            .path = owned_path,
+            .mono = mono,
+            .dim = dim,
+        }));
+}
+
+void UI_ScheduleDrawDarken(const float opacity)
+{
+    M_SCHEDULE_OP(M_DrawOp_Darken, ((M_DRAW_OP_DARKEN) { .opacity = opacity }));
 }
 
 void UI_InitDraw(void)

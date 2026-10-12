@@ -899,10 +899,10 @@ arrow, and `\{button left}` draws the button the player has bound.
   - [trx.math.Distance](MATH.md#math.Distance). The high edge down.
   - [trx.math.Distance](MATH.md#math.Distance). The high edge into the screen.
 
-- <a id="ui.primitive.model" name="ui.primitive.model"></a>[lua]`trx.ui.primitive.model(object, x, y, w, h, [rot_x], [rot_y], [rot_z], [mesh_mask])`  
-  Draws an object's model in a box on the canvas, fitted into the box and lit
-  as the game lights a model held up to the camera. The model draws over the
-  flat interface around it.
+- <a id="ui.primitive.model" name="ui.primitive.model"></a>[lua]`trx.ui.primitive.model(object, x, y, w, h, [opts])`  
+  Draws an object's model in a box on the canvas, fitted into the box. The
+  model stands where it is painted among the rest of the interface: over what
+  was painted before it, under what is painted after.
 
   Draws nothing where the level did not load the object, or where the object
   carries no model.
@@ -913,15 +913,66 @@ arrow, and `\{button left}` draws the button the player has bound.
   - <a id="ui.primitive.model.y" name="ui.primitive.model.y"></a>**`y`** (number). The top edge.
   - <a id="ui.primitive.model.w" name="ui.primitive.model.w"></a>**`w`** (number). The width of the box.
   - <a id="ui.primitive.model.h" name="ui.primitive.model.h"></a>**`h`** (number). The height of the box.
-  - <a id="ui.primitive.model.rot_x" name="ui.primitive.model.rot_x"></a>**`rot_x`** ([trx.math.Angle](MATH.md#math.Angle), optional). How far to tilt it.
-  - <a id="ui.primitive.model.rot_y" name="ui.primitive.model.rot_y"></a>**`rot_y`** ([trx.math.Angle](MATH.md#math.Angle), optional). How far to turn it.
-  - <a id="ui.primitive.model.rot_z" name="ui.primitive.model.rot_z"></a>**`rot_z`** ([trx.math.Angle](MATH.md#math.Angle), optional). How far to roll it.
-  - <a id="ui.primitive.model.mesh_mask" name="ui.primitive.model.mesh_mask"></a>**`mesh_mask`** (integer, optional). Which of its meshes to draw, one bit each. Every mesh by default.
+  - <a id="ui.primitive.model.opts" name="ui.primitive.model.opts"></a>**`opts`** (table, optional). How to turn it, which meshes to draw and how to light them.
+
+    Keys:
+    - <a id="ui.primitive.model.opts.rot" name="ui.primitive.model.opts.rot"></a>**`rot`** ([trx.math.Rot](MATH.md#math.Rot), optional). How far to turn the model. Not turned by default.
+    - <a id="ui.primitive.model.opts.mesh_mask" name="ui.primitive.model.opts.mesh_mask"></a>**`mesh_mask`** (integer, optional). Which of its meshes to draw, one bit each. Every mesh by default.
+    - <a id="ui.primitive.model.opts.light" name="ui.primitive.model.opts.light"></a>**`light`** (table, optional). The light to draw it in. The light the game holds up a pickup in by default.
+    - <a id="ui.primitive.model.opts.held" name="ui.primitive.model.opts.held"></a>**`held`** (boolean, optional). Whether to tilt and turn it first as the game holds up a pickup, which shows its face. `true` by default; `false` draws it as it was built.
+    - <a id="ui.primitive.model.opts.tilt" name="ui.primitive.model.opts.tilt"></a>**`tilt`** ([trx.math.Angle](MATH.md#math.Angle), optional). How far to tilt it towards the viewer before anything else, about the screen's horizontal axis, as a camera looking down on it would. Not tilted by default.
 
   Example:
   ```lua
   trx.ui.primitive.model(trx.catalog.objects.small_medipack_option,
-    100, 50, 64, 48, 0, 30 * trx.math.DEG_1)
+    100, 50, 64, 48, { rot = { x = 0, y = 30 * trx.math.DEG_1, z = 0 } })
+  ```
+
+- <a id="ui.primitive.world_model" name="ui.primitive.world_model"></a>[lua]`trx.ui.primitive.world_model(object, opts)`  
+  Draws an object's model where it stands in a world of its own, as that
+  world's camera sees it over the whole canvas: placed by moves and turns
+  applied in order, the way the engine places a model, so that a script can
+  show a model as the game would have shown it. It stands behind the whole
+  interface, over what went behind it before, such as a background.
+
+  Draws nothing where the level did not load the object, or where the object
+  carries no model.
+
+  Parameters:
+  - <a id="ui.primitive.world_model.object" name="ui.primitive.world_model.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The object to draw.
+  - <a id="ui.primitive.world_model.opts" name="ui.primitive.world_model.opts"></a>**`opts`** (table). Where it stands, the camera that sees it, and its light.
+
+    Keys:
+    - <a id="ui.primitive.world_model.opts.camera" name="ui.primitive.world_model.opts.camera"></a>**`camera`** (table). The camera that sees the model.
+    - <a id="ui.primitive.world_model.opts.pose" name="ui.primitive.world_model.opts.pose"></a>**`pose`** (a list of table). The steps that place the model, applied in order from the world's origin, up to sixteen.
+    - <a id="ui.primitive.world_model.opts.mesh_mask" name="ui.primitive.world_model.opts.mesh_mask"></a>**`mesh_mask`** (integer, optional). Which of its meshes to draw, one bit each. Every mesh by default.
+    - <a id="ui.primitive.world_model.opts.light" name="ui.primitive.world_model.opts.light"></a>**`light`** (table, optional). The light to draw it in, with its directions in the model's world. A plain white light by default.
+
+- <a id="ui.primitive.darken" name="ui.primitive.darken"></a>[lua]`trx.ui.primitive.darken(opacity)`  
+  Darkens the screen behind the whole interface, edge to edge, as the game
+  darkens it behind a menu and fades it to black. It goes over what went
+  behind the interface before it, such as a background or a model in a world
+  of its own, and under the whole interface.
+
+  Parameters:
+  - <a id="ui.primitive.darken.opacity" name="ui.primitive.darken.opacity"></a>**`opacity`** (number). How dark, from `0` for not at all to `1` for black.
+
+- <a id="ui.primitive.background" name="ui.primitive.background"></a>[lua]`trx.ui.primitive.background([path], [mono], [dim])`  
+  Draws an image behind the whole interface, as the game draws the pictures
+  behind its screens, fitted to the screen's shape and darkened by the dim.
+  Without an image, or where it does not exist, the screen behind the
+  interface is black. The game's scene behind the canvas is drawn over.
+
+  Parameters:
+  - <a id="ui.primitive.background.path" name="ui.primitive.background.path"></a>**`path`** (string, optional). The image file, named from the images directory, or as a screen reports it.
+  - <a id="ui.primitive.background.mono" name="ui.primitive.background.mono"></a>**`mono`** (boolean, optional). Whether to draw it without its colour.
+  - <a id="ui.primitive.background.dim" name="ui.primitive.background.dim"></a>**`dim`** (number, optional). How much to darken it, from `0` for not at all to `1` for black. Not darkened by default.
+
+  Returns: boolean. Whether the image exists.
+
+  Example:
+  ```lua
+  trx.ui.primitive.background("india.webp", true, 0.5)
   ```
 
 - <a id="ui.primitive.sprite" name="ui.primitive.sprite"></a>[lua]`trx.ui.primitive.sprite(object, sprite_num, x, y, z, scale, color)`  
@@ -1416,6 +1467,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.Model.settings.rot_z" name="ui.widgets.Model.settings.rot_z"></a>**`rot_z`** (any, optional). How far to roll the model, or a signal or [`trx.ui.Tween`](#ui.Tween) carrying it.
     - <a id="ui.widgets.Model.settings.spin" name="ui.widgets.Model.settings.spin"></a>**`spin`** (any, optional). How far the model turns each tick, on top of `rot_y` , or a signal carrying it. It turns smoothly between ticks, and picks up where it stopped when the spin starts again.
     - <a id="ui.widgets.Model.settings.mesh_mask" name="ui.widgets.Model.settings.mesh_mask"></a>**`mesh_mask`** (integer, optional). Which of its meshes to draw, one bit each. Every mesh by default.
+    - <a id="ui.widgets.Model.settings.light" name="ui.widgets.Model.settings.light"></a>**`light`** (any, optional). The light to draw it in, or a signal carrying it, as [`trx.ui.primitive.model`](#ui.primitive.model) takes it.
     - <a id="ui.widgets.Model.settings.shown" name="ui.widgets.Model.settings.shown"></a>**`shown`** (any, optional). Whether the model is shown, or a signal that holds that value.
 
   Returns: [trx.ui.Widget](#ui.Widget). The model.

@@ -2,14 +2,18 @@
 
 #include <trx/config.h>
 #include <trx/core/math/const.h>
+#include <trx/core/math/func.h>
 #include <trx/core/memory.h>
 #include <trx/core/utils.h>
 #include <trx/core/vector.h>
+#include <trx/game/matrix.h>
 #include <trx/game/objects/common.h>
 #include <trx/game/output.h>
 #include <trx/game/output/const.h>
+#include <trx/game/output/func.h>
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/sources/objects.h>
+#include <trx/game/output/uniforms.h>
 #include <trx/game/viewport.h>
 #include <trx/gl/renderer.h>
 #include <trx/gl/utils.h>
@@ -47,6 +51,11 @@ typedef struct {
 } M_PRIV;
 
 static M_PRIV m_Priv = {};
+
+// What a model is lit by where the script gives no light.
+static const OUTPUT_UI_MESH_LIGHT m_PlainLight = {
+    .ambient = { 1.0f, 1.0f, 1.0f },
+};
 
 static RGBA_F M_ToRGBA_F(const RGBA_8888 color)
 {
@@ -88,20 +97,177 @@ static float M_GetMeshScale(
     return (ref_scale + perfect_fit_scale) / 2.0f;
 }
 
-static XYZ_32 M_VectorViewFromWorld(
-    const MATRIX *const view_matrix, const XYZ_32 vec_world)
+// The brightness of a colour, from 0 to 255.
+static int32_t M_GetGrey(const RGB_F color)
 {
+    return lroundf((color.r + color.g + color.b) / 3.0f * 255.0f);
+}
+
+static XYZ_32 M_Normalize(const XYZ_32 dir)
+{
+    const double length = sqrt(
+        (double)dir.x * dir.x + (double)dir.y * dir.y + (double)dir.z * dir.z);
+    if (length == 0.0) {
+        return dir;
+    }
+    const double scale = (1 << W2V_SHIFT) / length;
     return (XYZ_32) {
-        .x = (view_matrix->_00 * vec_world.x + view_matrix->_01 * vec_world.y
-              + view_matrix->_02 * vec_world.z)
-            >> W2V_SHIFT,
-        .y = (view_matrix->_10 * vec_world.x + view_matrix->_11 * vec_world.y
-              + view_matrix->_12 * vec_world.z)
-            >> W2V_SHIFT,
-        .z = (view_matrix->_20 * vec_world.x + view_matrix->_21 * vec_world.y
-              + view_matrix->_22 * vec_world.z)
-            >> W2V_SHIFT,
+        .x = (int32_t)lround(dir.x * scale),
+        .y = (int32_t)lround(dir.y * scale),
+        .z = (int32_t)lround(dir.z * scale),
     };
+}
+
+// Lights what is drawn next by the light the script gave, each game in its own
+// terms. In TR3 a mesh's own colour stands in for every light's.
+static void M_ApplyLight(
+    const OUTPUT_UI_MESH_LIGHT *const light, const RGB_F *const mesh_color)
+{
+    if (g_TRVersion == 4) {
+        Output_CalculateStaticLightRGB_F(light->ambient);
+    } else if (g_TRVersion == 3) {
+        RGB_F colors[3] = {};
+        XYZ_32 dirs[3] = {};
+        for (int32_t i = 0; i < light->light_count; i++) {
+            colors[i] =
+                mesh_color != nullptr ? *mesh_color : light->lights[i].color;
+            dirs[i] = light->lights[i].dir;
+        }
+        Output_SetTR3Light(light->ambient, colors, dirs);
+    } else {
+        // TR1 and TR2 shade a model by the ambient brightness, and lighten it
+        // towards the first light by that light's brightness.
+        Output_SetLightAdder(
+            SHADE_NEUTRAL * 2 - M_GetGrey(light->ambient) * 32);
+        const int32_t grey =
+            light->light_count > 0 ? M_GetGrey(light->lights[0].color) : 0;
+        if (grey > 0) {
+            Output_SetLightDivider((1 << W2V_SHIFT) * 256 / grey);
+            Output_SetLightVectorView(M_Normalize(light->lights[0].dir));
+        } else {
+            Output_SetLightVectorView((XYZ_32) {});
+        }
+    }
+}
+
+// Draws the model's meshes as Object_DrawStaticObject does, lighting each one
+// the light names in its own colour.
+static void M_DrawColoredMeshes(
+    const OUTPUT_UI_MESH *const mesh, const ANIM_FRAME *const frame,
+    const OUTPUT_UI_MESH_LIGHT *const light)
+{
+    const OBJECT *const obj = mesh->object;
+    Matrix_Push();
+    for (int32_t i = 0; i < obj->mesh_count && i < 32; i++) {
+        if (i > 0) {
+            const ANIM_BONE *const bone = Object_GetBone(obj, i - 1);
+            if (bone->matrix_pop) {
+                Matrix_Pop();
+            }
+            if (bone->matrix_push) {
+                Matrix_Push();
+            }
+            Matrix_TranslateRel32(bone->pos);
+            Matrix_Rot16(frame->mesh_rots[i]);
+        }
+        const uint32_t bit = 1u << i;
+        if ((mesh->mesh_mask & bit) == 0) {
+            continue;
+        }
+        M_ApplyLight(
+            light, (light->lit_mask & bit) != 0 ? &light->colors[i] : nullptr);
+        Object_DrawMesh(obj->mesh_idx + i, 0, false);
+    }
+    Matrix_Pop();
+}
+
+// Poses a model in its box on the canvas, seen flat.
+static void M_PoseOnCanvas(
+    const OUTPUT_UI_MESH *const mesh, const ANIM_FRAME *const frame)
+{
+    const VIEWPORT_RECT rect = mesh->rect;
+    const float scale = M_GetMeshScale(rect, frame);
+    const XYZ_32 origin = {
+        .x = rect.x + rect.w / 2,
+        .y = rect.y + rect.h / 2,
+        .z = (OUTPUT_UI_NEAR_Z + OUTPUT_UI_FAR_Z) / 2,
+    };
+
+    // Lighting routines needs a W2V matrix to work; set up something for
+    // it.
+    Matrix_LookAt(
+        origin.x, origin.y, origin.z - WALL_L, origin.x, origin.y, origin.z, 0);
+
+    Matrix_PushUnit();
+    Matrix_TranslateSet32(origin);
+    Matrix_RotX(mesh->tilt);
+    if (mesh->held) {
+        Matrix_RotX(DEG_1 * 15);
+        Matrix_RotY(-DEG_180);
+    }
+    Matrix_Rot16(mesh->rot);
+    Matrix_Scale((1 << W2V_SHIFT) * scale);
+
+    Matrix_TranslateRel16(frame->offset);
+    Matrix_TranslateRel32((XYZ_32) {
+        .x = -(frame->bounds.min.x + frame->bounds.max.x) / 2,
+        .y = -(frame->bounds.min.y + frame->bounds.max.y) / 2,
+        .z = -(frame->bounds.min.z + frame->bounds.max.z) / 2,
+    });
+    Matrix_Rot16(frame->mesh_rots[0]);
+}
+
+// Poses a model where it stands in a world of its own, as that world's camera
+// sees it, the way the engine places and views a model in its own world.
+static void M_PoseInWorld(
+    const OUTPUT_UI_MESH_WORLD *const world, const ANIM_FRAME *const frame)
+{
+    Viewport_AlterFOV(world->fov, FOV_MODE_PASSPORT);
+    Output_ApplyFOV();
+    int16_t angles[2];
+    Math_GetVectorAngles(
+        world->camera_target.x - world->camera_pos.x,
+        world->camera_target.y - world->camera_pos.y,
+        world->camera_target.z - world->camera_pos.z, angles);
+    const XYZ_16 view_rot = { .x = angles[1], .y = angles[0], .z = 0 };
+    Matrix_GenerateW2V(&world->camera_pos, &view_rot);
+    Output_Uniforms_UploadViewMatrix(Output_GetUniforms(), &g_ViewMatrix);
+
+    Matrix_Push();
+    Matrix_TranslateAbs32((XYZ_32) {});
+    for (int32_t i = 0; i < world->step_count; i++) {
+        const XYZ_32 vec = world->steps[i].vec;
+        if (world->steps[i].turn) {
+            Matrix_Rot16((XYZ_16) {
+                .x = (int16_t)vec.x,
+                .y = (int16_t)vec.y,
+                .z = (int16_t)vec.z,
+            });
+        } else {
+            Matrix_TranslateRel32(vec);
+        }
+    }
+    Matrix_TranslateRel16(frame->offset);
+    Matrix_Rot16(frame->mesh_rots[0]);
+}
+
+// Draws a model in a world of its own through the passes the scene draws
+// its own models through, so that it looks as the scene would have shown it.
+static void M_RenderWorldPasses(const M_PRIV *const p)
+{
+    OUTPUT_MESH_SHADER *const shader = Output_GetMeshShader();
+    Output_MeshShader_UploadAlphaDiscard(shader, true);
+    p->objects_source->render_pass(p->objects_source, SCENE_PASS_OPAQUE);
+    Output_MeshShader_UploadAlphaDiscard(shader, false);
+    glDepthMask(GL_FALSE);
+    p->objects_source->render_pass(p->objects_source, SCENE_PASS_TRANSPARENT);
+    glBlendEquation(GL_FUNC_ADD);
+    glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
+    p->objects_source->render_pass(p->objects_source, SCENE_PASS_BLEND_SUB);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    p->objects_source->render_pass(p->objects_source, SCENE_PASS_BLEND_ADD);
+    glDepthMask(GL_TRUE);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 static void M_DrawMeshes(const M_PRIV *const p)
@@ -125,118 +291,67 @@ static void M_DrawMeshes(const M_PRIV *const p)
         }
 
         // A model turned or fitted loosely reaches past its box, so the box it
-        // is smoothed in has room around it.
-        const VIEWPORT_RECT rect = mesh->rect;
+        // is smoothed in has room around it. One in a world of its own may
+        // stand anywhere on the screen.
+        const VIEWPORT_RECT rect = mesh->world != nullptr
+            ? Viewport_GetRect(VIEWPORT_UI)
+            : (VIEWPORT_RECT) {
+                  .x = mesh->rect.x - mesh->rect.w / 2,
+                  .y = mesh->rect.y - mesh->rect.h / 2,
+                  .w = mesh->rect.w * 2,
+                  .h = mesh->rect.h * 2,
+              };
         const bool own_target = TRX_GL_Renderer_BeginUiModel(
-            rect.x - rect.w / 2, rect.y - rect.h / 2, rect.w * 2, rect.h * 2);
+            mesh->world != nullptr ? 0 : rect.x,
+            mesh->world != nullptr ? 0 : rect.y, rect.w, rect.h);
         if (p->objects_source->render_begin != nullptr) {
             p->objects_source->render_begin(p->objects_source);
         }
         // Each model hides its own far side, and only its own.
         glClear(GL_DEPTH_BUFFER_BIT);
 
-        const float scale = M_GetMeshScale(rect, frame);
-        const XYZ_32 origin = {
-            .x = rect.x + rect.w / 2,
-            .y = rect.y + rect.h / 2,
-            .z = (OUTPUT_UI_NEAR_Z + OUTPUT_UI_FAR_Z) / 2,
-        };
-
-        // Lighting routines needs a W2V matrix to work; set up something for
-        // it.
-        MATRIX mesh_view_matrix = {};
-        XYZ_32 camera = g_TRVersion >= 3 ?
-             (XYZ_32) {
-                .x = origin.x,
-                .y = origin.y - WALL_L,
-                .z = origin.z,
-            } :
-             (XYZ_32) {
-                .x = origin.x,
-                .y = origin.y,
-                .z = origin.z - WALL_L,
-            };
-        Matrix_LookAt(
-            camera.x, camera.y, camera.z, origin.x, origin.y, origin.z, 0);
-        mesh_view_matrix = g_ViewMatrix;
-
-        Matrix_PushUnit();
-        Matrix_TranslateSet32(origin);
-        Matrix_RotX(DEG_1 * 15);
-        Matrix_RotY(-DEG_180);
-        Matrix_Rot16(mesh->rot);
-        Matrix_Scale((1 << W2V_SHIFT) * scale);
-
-        // Set up lighting for the mesh.
-        if (g_TRVersion == 4) {
-            // The OG lights a HUD pickup by a flat brightness alone, with no
-            // room lights (output.cpp S_DrawPickup).
-            Output_CalculateStaticLightRGB_F((RGB_F) { 1.0f, 1.0f, 1.0f });
-        } else if (g_TRVersion == 3) {
-            // Port of OG TR3's SetPickupLight().
-            // ambient = (64, 64, 64)
-            // sun     = (3072, 1680, 640)
-            // spot    = (1024, 1024, 1024)
-            // dynamic = (640, 2432, 4080)
-            const float ambient_u8 = 64.0f / 255.0f;
-            const RGB_F ambient = { ambient_u8, ambient_u8, ambient_u8 };
-            const RGB_F colors[3] = {
-                {
-                    .r = 3072.0f / 4096.0f,
-                    .g = 1680.0f / 4096.0f,
-                    .b = 640.0f / 4096.0f,
-                },
-                {
-                    .r = 1024.0f / 4096.0f,
-                    .g = 1024.0f / 4096.0f,
-                    .b = 1024.0f / 4096.0f,
-                },
-                {
-                    .r = 640.0f / 4096.0f,
-                    .g = 2432.0f / 4096.0f,
-                    .b = 4080.0f / 4096.0f,
-                },
-            };
-
-            const XYZ_32 dirs_view[3] = {
-                M_VectorViewFromWorld(
-                    &mesh_view_matrix,
-                    (XYZ_32) { .x = 0x2000, .y = -0x2000, .z = 0x1800 }),
-                M_VectorViewFromWorld(
-                    &mesh_view_matrix,
-                    (XYZ_32) { .x = -0x2000, .y = -0x4000, .z = 0x3000 }),
-                M_VectorViewFromWorld(
-                    &mesh_view_matrix,
-                    (XYZ_32) { .x = 0, .y = 0x2000, .z = 0x3000 }),
-            };
-
-            Output_SetTR3Light(ambient, colors, dirs_view);
+        const int16_t old_fov = Viewport_GetSystemFOV();
+        const FOV_MODE old_fov_mode = Viewport_GetFOVMode();
+        OUTPUT_UI_MESH_LIGHT light =
+            mesh->light != nullptr ? *mesh->light : m_PlainLight;
+        if (mesh->world != nullptr) {
+            M_PoseInWorld(mesh->world, frame);
+            for (int32_t j = 0; j < light.light_count; j++) {
+                light.lights[j].dir =
+                    Matrix_MulVec32_M(&g_ViewMatrix, light.lights[j].dir);
+            }
         } else {
-            Output_SetLightDivider((1 << W2V_SHIFT) * 2);
-            Output_SetLightAdder(SHADE_LOW);
-            Output_RotateLight(DEG_1 * -30, DEG_1 * 45);
+            M_PoseOnCanvas(mesh, frame);
         }
-
-        Matrix_TranslateRel16(frame->offset);
-        Matrix_TranslateRel32((XYZ_32) {
-            .x = -(frame->bounds.min.x + frame->bounds.max.x) / 2,
-            .y = -(frame->bounds.min.y + frame->bounds.max.y) / 2,
-            .z = -(frame->bounds.min.z + frame->bounds.max.z) / 2,
-        });
-        Matrix_Rot16(frame->mesh_rots[0]);
-        Object_DrawStaticObject(mesh->object, frame, mesh->mesh_mask);
+        if (light.lit_mask != 0 && g_TRVersion == 3) {
+            M_DrawColoredMeshes(mesh, frame, &light);
+        } else {
+            M_ApplyLight(&light, nullptr);
+            Object_DrawStaticObject(mesh->object, frame, mesh->mesh_mask);
+        }
         Matrix_Pop();
 
         // Immediately flush scheduled object, so that it gets rendered
         // in the target viewport
-        p->objects_source->render_pass(p->objects_source, SCENE_PASS_OPAQUE);
-        p->objects_source->render_pass(
-            p->objects_source, SCENE_PASS_TRANSPARENT);
-        glBlendFunc(GL_ONE, GL_ONE);
-        p->objects_source->render_pass(p->objects_source, SCENE_PASS_BLEND_ADD);
-        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+        if (mesh->world != nullptr) {
+            M_RenderWorldPasses(p);
+        } else {
+            p->objects_source->render_pass(
+                p->objects_source, SCENE_PASS_OPAQUE);
+            p->objects_source->render_pass(
+                p->objects_source, SCENE_PASS_TRANSPARENT);
+            glBlendFunc(GL_ONE, GL_ONE);
+            p->objects_source->render_pass(
+                p->objects_source, SCENE_PASS_BLEND_ADD);
+            glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+        }
         if (p->objects_source->render_end != nullptr) {
             p->objects_source->render_end(p->objects_source);
+        }
+        if (mesh->world != nullptr) {
+            Viewport_AlterFOV(old_fov, old_fov_mode);
+            Output_ApplyFOV();
+            Output_Uniforms_UploadOrthoMatrix(Output_GetUniforms());
         }
         if (own_target) {
             TRX_GL_Renderer_EndUiModel();

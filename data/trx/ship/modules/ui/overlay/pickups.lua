@@ -210,17 +210,14 @@ trx.ui.on_paint(function()
     if entry.icon ~= nil then
       local x, y, width, height = box_of(entry)
       local spin = SPIN_PER_TICK * ticks_drawn(entry.total)
-      primitive.model(
-        entry.icon,
-        x,
-        y,
-        width,
-        height,
-        entry.rot_x,
-        math.floor(entry.angle + spin) % (4 * trx.math.DEG_90),
-        entry.rot_z,
-        entry.mesh_mask
-      )
+      primitive.model(entry.icon, x, y, width, height, {
+        rot = {
+          x = entry.rot_x,
+          y = math.floor(entry.angle + spin) % (4 * trx.math.DEG_90),
+          z = entry.rot_z,
+        },
+        mesh_mask = entry.mesh_mask,
+      })
     else
       local x0, y0, x1, y1 = primitive.sprite_bounds(entry.object, 0)
       local sprite_w = math.abs(x1 - x0)

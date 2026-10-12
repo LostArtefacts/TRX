@@ -218,28 +218,164 @@ primitive.sprite_bounds = raw.sprite_bounds
 ---@type fun(object: trx.catalog.objects): trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance
 primitive.mesh_bounds = raw.mesh_bounds
 
----Draws an object's model in a box on the canvas, fitted into the box and lit
----as the game lights a model held up to the camera. The model draws over the
----flat interface around it.
+---The colour of a light, from `0` to `255` in each channel, where a channel
+---may fall between two whole values as the game's own lights do.
+---@class trx.ui.LightColor
+---@field r number The red channel.
+---@field g number The green channel.
+---@field b number The blue channel.
+
+---A light shining on a model from one direction.
+---@class (exact) trx.ui.Light
+---@field dir trx.math.Vec3 Where the light comes from, as the viewer sees the model: across to the right, down, and away from the viewer. Only the direction counts.
+---@field color trx.math.Color|trx.ui.LightColor The light's colour. TR1 and TR2 read its brightness alone.
+
+---The light a model is drawn in. Each game reads it its own way: TR3 lights a
+---model in colour from all of it, TR4 by the ambient light alone, and TR1 and
+---TR2 by the brightness of the ambient light and of the first light.
+---@class (exact) trx.ui.ModelLight
+---@field ambient? trx.math.Color|trx.ui.LightColor The light that reaches every mesh from all round. Black by default.
+---@field lights? trx.ui.Light[] Up to three lights shining from a direction each. None by default.
+---@field meshes? table<integer, trx.math.Color|trx.ui.LightColor> In TR3, a colour every light takes on the meshes it names, by their place in the model counted from 0.
+
+---@class (exact) trx.ui.primitive.model.opts
+---@field rot? trx.math.Rot How far to turn the model. Not turned by default.
+---@field mesh_mask? integer Which of its meshes to draw, one bit each. Every mesh by default.
+---@field light? trx.ui.ModelLight The light to draw it in. The light the game holds up a pickup in by default.
+---@field held? boolean Whether to tilt and turn it first as the game holds up a pickup, which shows its face. `true` by default; `false` draws it as it was built.
+---@field tilt? trx.math.Angle How far to tilt it towards the viewer before anything else, about the screen's horizontal axis, as a camera looking down on it would. Not tilted by default.
+
+-- The light each game holds a pickup up in, by its number. Built once the
+-- colours can be.
+---@type table<integer, trx.ui.ModelLight>?
+local pickup_lights
+
+---@return table<integer, trx.ui.ModelLight>
+local function get_pickup_lights()
+  if pickup_lights ~= nil then
+    return pickup_lights
+  end
+  local color = trx.math.color
+  local tr1 = {
+    ambient = color(96, 96, 96),
+    lights = {
+      {
+        dir = { x = 10011, y = 8185, z = 10027 },
+        color = color(128, 128, 128),
+      },
+    },
+  }
+  pickup_lights = {
+    [1] = tr1,
+    [2] = tr1,
+    [3] = {
+      ambient = color(64, 64, 64),
+      -- The sun, a spot and a dynamic light, as TR3's SetPickupLight sets
+      -- them.
+      lights = {
+        {
+          dir = { x = 8192, y = -6144, z = -8192 },
+          color = color(191, 105, 40),
+        },
+        {
+          dir = { x = -8192, y = -12288, z = -16384 },
+          color = color(64, 64, 64),
+        },
+        {
+          dir = { x = 0, y = -12288, z = 8192 },
+          color = color(40, 151, 254),
+        },
+      },
+    },
+    [4] = { ambient = color(255, 255, 255) },
+  }
+  return pickup_lights
+end
+
+---Draws an object's model in a box on the canvas, fitted into the box. The
+---model stands where it is painted among the rest of the interface: over what
+---was painted before it, under what is painted after.
 ---
 ---Draws nothing where the level did not load the object, or where the object
 ---carries no model.
 ---
 ---```lua
 ---trx.ui.primitive.model(trx.catalog.objects.small_medipack_option,
----  100, 50, 64, 48, 0, 30 * trx.math.DEG_1)
+---  100, 50, 64, 48, { rot = { x = 0, y = 30 * trx.math.DEG_1, z = 0 } })
 ---```
 ---@param object trx.catalog.objects The object to draw.
 ---@param x number The left edge.
 ---@param y number The top edge.
 ---@param w number The width of the box.
 ---@param h number The height of the box.
----@param rot_x? trx.math.Angle How far to tilt it.
----@param rot_y? trx.math.Angle How far to turn it.
----@param rot_z? trx.math.Angle How far to roll it.
----@param mesh_mask? integer Which of its meshes to draw, one bit each. Every mesh by default.
----@type fun(object: trx.catalog.objects, x: number, y: number, w: number, h: number, rot_x?: trx.math.Angle, rot_y?: trx.math.Angle, rot_z?: trx.math.Angle, mesh_mask?: integer)
-primitive.model = raw.draw_model
+---@param opts? trx.ui.primitive.model.opts How to turn it, which meshes to draw and how to light them.
+function primitive.model(object, x, y, w, h, opts)
+  if opts == nil or opts.light == nil then
+    opts = opts or {}
+    ---@type trx.ui.primitive.model.opts
+    opts = {
+      rot = opts.rot,
+      mesh_mask = opts.mesh_mask,
+      light = get_pickup_lights()[trx.game.tr_version],
+      held = opts.held,
+      tilt = opts.tilt,
+    }
+  end
+  raw.draw_model(object, x, y, w, h, opts)
+end
+
+---A camera looking into a world of a model's own.
+---@class (exact) trx.ui.WorldCamera
+---@field pos trx.math.Vec3 Where the camera stands.
+---@field target trx.math.Vec3 The point it looks at.
+---@field fov trx.math.Angle Its field of view, measured as the game measures the inventory's.
+
+---One step of placing a model in its world.
+---@class (exact) trx.ui.PoseStep
+---@field move? trx.math.Vec3 How far to move, along the axes as the steps before have turned them.
+---@field turn? trx.math.Rot How far to turn, by its yaw, then its pitch, then its roll.
+
+---@class (exact) trx.ui.primitive.world_model.opts
+---@field camera trx.ui.WorldCamera The camera that sees the model.
+---@field pose trx.ui.PoseStep[] The steps that place the model, applied in order from the world's origin, up to sixteen.
+---@field mesh_mask? integer Which of its meshes to draw, one bit each. Every mesh by default.
+---@field light? trx.ui.ModelLight The light to draw it in, with its directions in the model's world. A plain white light by default.
+
+---Draws an object's model where it stands in a world of its own, as that
+---world's camera sees it over the whole canvas: placed by moves and turns
+---applied in order, the way the engine places a model, so that a script can
+---show a model as the game would have shown it. It stands behind the whole
+---interface, over what went behind it before, such as a background.
+---
+---Draws nothing where the level did not load the object, or where the object
+---carries no model.
+---@param object trx.catalog.objects The object to draw.
+---@param opts trx.ui.primitive.world_model.opts Where it stands, the camera that sees it, and its light.
+---@type fun(object: trx.catalog.objects, opts: trx.ui.primitive.world_model.opts)
+primitive.world_model = raw.draw_world_model
+
+---Darkens the screen behind the whole interface, edge to edge, as the game
+---darkens it behind a menu and fades it to black. It goes over what went
+---behind the interface before it, such as a background or a model in a world
+---of its own, and under the whole interface.
+---@param opacity number How dark, from `0` for not at all to `1` for black.
+---@type fun(opacity: number)
+primitive.darken = raw.darken
+
+---Draws an image behind the whole interface, as the game draws the pictures
+---behind its screens, fitted to the screen's shape and darkened by the dim.
+---Without an image, or where it does not exist, the screen behind the
+---interface is black. The game's scene behind the canvas is drawn over.
+---
+---```lua
+---trx.ui.primitive.background("india.webp", true, 0.5)
+---```
+---@param path? string The image file, named from the images directory, or as a screen reports it.
+---@param mono? boolean Whether to draw it without its colour.
+---@param dim? number How much to darken it, from `0` for not at all to `1` for black. Not darkened by default.
+---@return boolean # Whether the image exists.
+---@type fun(path?: string, mono?: boolean, dim?: number): boolean
+primitive.background = raw.draw_background
 
 ---Draws one sprite of an object on the canvas.
 ---
