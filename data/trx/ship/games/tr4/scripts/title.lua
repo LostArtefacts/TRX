@@ -74,29 +74,39 @@ trx.events.on_trigger(function(item, trigger)
   end
 end)
 
--- Places blood where the mummy lands on the spikes.
-local BLOOD_CUTSCENE_NUM = CYCLE[3].cutscene_num
-local BLOOD_FIRST_FRAME = 349
-local BLOOD_LAST_FRAME = 357
-local BLOOD_Z = 76209
+-- Places blood/smoke where the mummy is impaled on the spikes.
+local IMPALE_CUTSCENE_NUM = CYCLE[3].cutscene_num
+local IMPALE_FIRST_FRAME = 349
+local IMPALE_LAST_FRAME = 357
+local IMPALE_Z = 76209
 
-trx.cutscenes[BLOOD_CUTSCENE_NUM]:on_frame(function(_, frame_num)
+trx.cutscenes[IMPALE_CUTSCENE_NUM]:on_frame(function(_, frame_num)
   if
-    frame_num < BLOOD_FIRST_FRAME
-    or frame_num > BLOOD_LAST_FRAME
+    frame_num < IMPALE_FIRST_FRAME
+    or frame_num > IMPALE_LAST_FRAME
     or frame_num % 2 == 0
   then
     return
   end
 
-  trx.fx.blood({
-    pos = {
-      x = 6799 - trx.random.draw:randint(0, 255),
-      y = trx.random.draw:randint(0, 511) - 768,
-      z = BLOOD_Z,
-    },
-    strength = 7,
-  })
+  local pos = {
+    x = 6799 - trx.random.draw:randint(0, 255),
+    y = trx.random.draw:randint(0, 511) - 768,
+    z = IMPALE_Z,
+  }
+  if trx.config.get("visuals.fix_texture_issues") then
+    trx.fx.sparks.ricochet({
+      pos = pos,
+      angle = 0,
+      count = 7,
+      smoke_only = true,
+    })
+  else
+    trx.fx.blood({
+      pos = pos,
+      strength = 7,
+    })
+  end
 end)
 
 -- Lara is one of a cutscene's actors, and has no business being on screen
