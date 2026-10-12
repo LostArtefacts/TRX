@@ -366,6 +366,7 @@ trxc = {}
 ---@field WALL_L trx.math.Distance
 ---@field atan fun(z: trx.math.Distance, x: trx.math.Distance): trx.math.Angle
 ---@field cos fun(angle: trx.math.Angle): number
+---@field rotate fun(vec: trx.math.Vec3, rot: trx.math.Rot): trx.math.Vec3
 ---@field sin fun(angle: trx.math.Angle): number
 
 ---@class (exact) trxc.mod
