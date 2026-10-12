@@ -17,7 +17,6 @@ local f32 = require("trx.ui.widgets.base").f32
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
-local DEPTH_STEP = 256
 local MAX_LAYERS = 15
 
 local stack = {}
@@ -321,10 +320,8 @@ end)
 trx.ui.on_paint(function()
   local failed = nil
   local snapshot = { table.unpack(stack) }
-  for i, layer in ipairs(snapshot) do
-    raw.push_depth(-i * DEPTH_STEP)
+  for _, layer in ipairs(snapshot) do
     local ok, err = pcall(paint, layer)
-    raw.pop_depth()
     if not ok then
       remove(layer)
       failed = failed or err

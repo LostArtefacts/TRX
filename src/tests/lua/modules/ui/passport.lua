@@ -420,11 +420,9 @@ test("the page draws over the regions and behind the engine", function()
   fake.set_current_level(nil)
   open(Mode.TITLE)
   tick()
-  for _, op in ipairs(fake.scene()) do
-    local z = tonumber(op:match(" z=(%-?%d+)"))
-    if z ~= nil then
-      assert(z > 0 and z < 4096, op)
-    end
+  local ops, layers = fake.scene(), fake.scene_layers()
+  for i, op in ipairs(ops) do
+    assert(layers[i] == "under", layers[i] .. ": " .. op)
   end
   finish()
 end)

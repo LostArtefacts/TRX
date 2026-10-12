@@ -21,8 +21,16 @@ local function drawn(ops, text)
   return nil
 end
 
-local function z_of(op)
-  return tonumber(op:match(" z=(%-?%d+)"))
+-- Where a text was drawn in a scene, as the position of its draw and the
+-- layer it was drawn in.
+local function placement(ops, layers, text)
+  local suffix = " text=" .. text
+  for i, op in ipairs(ops) do
+    if op:match("^text ") and op:sub(-#suffix) == suffix then
+      return i, layers[i]
+    end
+  end
+  return nil
 end
 
 local function xy_of(op)
@@ -77,19 +85,23 @@ test("a layer draws over a widget placed in a region", function()
   trx.ui.regions.place(trx.ui.Region.CENTER, placed)
   local layer = push({ root = label("layer") })
 
-  local ops = fake.scene()
+  local ops, layers = fake.scene(), fake.scene_layers()
   layer:close()
   trx.ui.regions.remove(placed)
 
-  assert(z_of(drawn(ops, "layer")) < z_of(drawn(ops, "placed")))
+  local over_at, over_layer = placement(ops, layers, "layer")
+  local under_at, under_layer = placement(ops, layers, "placed")
+  assert(over_layer == under_layer, "the two are in different layers")
+  assert(over_at > under_at, "the layer drew before the widget")
 end)
 
 test("a layer draws behind the engine interface", function()
   fresh()
   local layer = push({ root = label("layer") })
-  local ops = fake.scene()
+  local ops, layers = fake.scene(), fake.scene_layers()
   layer:close()
-  assert(z_of(drawn(ops, "layer")) > 0)
+  local _, drawn_in = placement(ops, layers, "layer")
+  assert(drawn_in == "under", tostring(drawn_in))
 end)
 
 test("a later layer draws over an earlier one", function()
@@ -97,11 +109,13 @@ test("a later layer draws over an earlier one", function()
   local lower = push({ root = label("lower") })
   local upper = push({ root = label("upper") })
 
-  local ops = fake.scene()
+  local ops, layers = fake.scene(), fake.scene_layers()
   upper:close()
   lower:close()
 
-  assert(z_of(drawn(ops, "upper")) < z_of(drawn(ops, "lower")))
+  local upper_at = placement(ops, layers, "upper")
+  local lower_at = placement(ops, layers, "lower")
+  assert(upper_at > lower_at, "the later layer drew first")
 end)
 
 test("a layer is centered in the safe area by default", function()

@@ -29,7 +29,6 @@ void LUA_UI_PaintRegions(const UI_LAYER layer)
         return;
     }
     LUA_UI_SetPainting(true);
-    LUA_UI_SetPaintDepth(layer == UI_LAYER_UNDER ? LUA_UI_UNDER_DEPTH : 0);
     LUA_FireEvent(event);
     LUA_UI_SetPainting(false);
 }

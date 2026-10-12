@@ -26,16 +26,8 @@
 #include <lauxlib.h>
 #include <math.h>
 
-#define M_MAX_DEPTH_PUSHES 16
-
 static bool m_Drawing = false;
 static bool m_Painting = false;
-
-// The depth added to every z that a script draws with, and the depths
-// that trxc.ui.pop_depth returns to. A lower depth draws nearer.
-static int32_t m_Depth = 0;
-static int32_t m_DepthStack[M_MAX_DEPTH_PUSHES] = {};
-static int32_t m_DepthCount = 0;
 
 static void M_CheckDrawing(lua_State *const L)
 {
@@ -112,7 +104,7 @@ static int32_t M_ClampZ(int64_t z)
 
 static int32_t M_OptZ(lua_State *const L, const int arg)
 {
-    return M_ClampZ((int64_t)m_Depth + luaL_optinteger(L, arg, 0));
+    return M_ClampZ(luaL_optinteger(L, arg, 0));
 }
 
 // Accepts any numeric channel and clamps it to uint8_t range.
@@ -595,29 +587,6 @@ static int M_L_UIPanel(lua_State *const L)
     return 0;
 }
 
-// trxc.ui.push_depth(offset: integer)
-static int M_L_UIPushDepth(lua_State *const L)
-{
-    M_CheckPainting(L);
-    if (m_DepthCount >= M_MAX_DEPTH_PUSHES) {
-        return luaL_error(L, "too many depths pushed");
-    }
-    m_DepthStack[m_DepthCount++] = m_Depth;
-    m_Depth = M_ClampZ((int64_t)m_Depth + luaL_checkinteger(L, 1));
-    return 0;
-}
-
-// trxc.ui.pop_depth()
-static int M_L_UIPopDepth(lua_State *const L)
-{
-    M_CheckPainting(L);
-    if (m_DepthCount <= 0) {
-        return luaL_error(L, "no depth to pop");
-    }
-    m_Depth = m_DepthStack[--m_DepthCount];
-    return 0;
-}
-
 // trxc.ui.push_text_scale(factor: number)
 static int M_L_UIPushTextScale(lua_State *const L)
 {
@@ -833,8 +802,6 @@ static const luaL_Reg m_Module[] = {
     { "flat_quad", M_L_UIFlatQuad },
     { "horizontal_line", M_L_UIHorizontalLine },
     { "panel", M_L_UIPanel },
-    { "push_depth", M_L_UIPushDepth },
-    { "pop_depth", M_L_UIPopDepth },
     { "push_text_scale", M_L_UIPushTextScale },
     { "pop_text_scale", M_L_UIPopTextScale },
     { "gradient_quad", M_L_UIGradientQuad },
@@ -873,13 +840,6 @@ bool LUA_UI_IsPainting(void)
 void LUA_UI_SetPainting(const bool painting)
 {
     m_Painting = painting;
-    m_DepthCount = 0;
-}
-
-void LUA_UI_SetPaintDepth(const int32_t depth)
-{
-    m_Depth = depth;
-    m_DepthCount = 0;
 }
 
 void LUA_UI_SetDrawing(const bool drawing)

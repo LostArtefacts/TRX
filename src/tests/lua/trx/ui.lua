@@ -461,20 +461,20 @@ test("the layer under the interface draws behind it", function()
     trx.ui.primitive.quad(0, 0, 0, 10, 10, trx.math.color("#00ff00"))
   end)
 
-  local ops = fake.scene()
+  local ops, layers = fake.scene(), fake.scene_layers()
   under:detach()
   over:detach()
 
-  local under_z, over_z
-  for _, op in ipairs(ops) do
-    local z = tonumber(op:match(" z=(%-?%d+)"))
+  local under_layer, over_layer
+  for i, op in ipairs(ops) do
     if op:find("ff0000", 1, true) then
-      under_z = z
+      under_layer = layers[i]
     elseif op:find("00ff00", 1, true) then
-      over_z = z
+      over_layer = layers[i]
     end
   end
-  assert(under_z > over_z, "the layer under the interface drew in front")
+  assert(under_layer == "under", tostring(under_layer))
+  assert(over_layer == "over", tostring(over_layer))
 end)
 
 local function quad_z(ops)
@@ -485,21 +485,6 @@ local function quad_z(ops)
     end
   end
 end
-
-test("a depth cannot be popped outside a painted scene", function()
-  raises(function()
-    trxc.ui.pop_depth()
-  end, "painted")
-end)
-
-test("a depth pushed past the far plane still draws", function()
-  local ops = fake.paint(function()
-    trxc.ui.push_depth(1000000)
-    trx.ui.primitive.quad(0, 0, 0, 10, 10, trx.math.color("#ff0000"))
-    trxc.ui.pop_depth()
-  end)
-  assert(quad_z(ops) == 10000 - 20 - 1, quad_z(ops))
-end)
 
 test("a depth pushed past the near plane still draws", function()
   local ops = fake.paint(function()
