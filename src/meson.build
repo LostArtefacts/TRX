@@ -967,6 +967,7 @@ common_sources = [
   'trx/game/shell/platform.c',
   'trx/game/shell/session.c',
   'trx/game/shell/state.c',
+  'trx/game/shell/tombstones.c',
   'trx/game/sound/common.c',
   'trx/game/sound/ids.c',
   'trx/game/sparks/manager.c',

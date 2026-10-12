@@ -1,13 +1,15 @@
 import argparse
 import os
 import shutil
+import tempfile
 from dataclasses import dataclass, field, fields
 from pathlib import Path
 from subprocess import check_call, run
 from typing import Any, Self
 
 from shared.packaging import create_zip
-from shared.paths import TOOLS_DIR
+from shared.paths import REPO_DIR, TOOLS_DIR
+from shared.tombstones import TOMBSTONES_PATH, write_tombstones
 from shared.versioning import generate_package_name, generate_version
 
 
@@ -208,14 +210,20 @@ def run_package(
     for path in options.release_zip_files:
         source_files.append(path)
 
-    if no_zip:
-        for src_path, dst_name in source_files:
-            dst_path = zip_path / dst_name
-            dst_path.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy(src_path, dst_path)
-    else:
-        zip_path.parent.mkdir(parents=True, exist_ok=True)
-        create_zip(zip_path, source_files)
+    with tempfile.TemporaryDirectory(prefix="trx-tombstones-") as tmp_dir:
+        for ship_dir in options.ship_dirs:
+            tombstones_path = Path(tmp_dir) / TOMBSTONES_PATH
+            write_tombstones(REPO_DIR, ship_dir, tombstones_path)
+            source_files.append((tombstones_path, TOMBSTONES_PATH))
+
+        if no_zip:
+            for src_path, dst_name in source_files:
+                dst_path = zip_path / dst_name
+                dst_path.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy(src_path, dst_path)
+        else:
+            zip_path.parent.mkdir(parents=True, exist_ok=True)
+            create_zip(zip_path, source_files)
     print(f"Created {zip_path}")
 
 

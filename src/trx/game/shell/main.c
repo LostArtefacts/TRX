@@ -6,6 +6,7 @@
 #include <trx/game/shell.h>
 #include <trx/game/shell/common.h>
 #include <trx/game/shell/mod.h>
+#include <trx/game/shell/tombstones.h>
 #include <trx/version.h>
 
 #include <string.h>
@@ -36,6 +37,7 @@ int main(int argc, char *argv[])
     Memory_FreePointer(&log_path);
 
     LOG_INFO("Starting %s", g_TRXVersion);
+    Shell_SweepTombstones();
     Shell_ValidateMods();
     // A game the player named is theirs to hear about, so it stays where it is
     // for the shell to report. Anything else falls back to what can be played.

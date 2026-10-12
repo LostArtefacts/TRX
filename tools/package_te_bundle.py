@@ -9,6 +9,8 @@ import zipfile
 from pathlib import Path
 
 from shared.packaging import create_zip
+from shared.paths import CommonPaths
+from shared.tombstones import TOMBSTONES_PATH, write_tombstones
 from shared.versioning import generate_version
 
 
@@ -106,6 +108,13 @@ def main() -> None:
             dst_path = tmp_root / rel_path
             dst_path.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy(src_path, dst_path)
+
+        for engine in TE_ENGINES:
+            write_tombstones(
+                REPO_DIR,
+                CommonPaths.shipped_data_dir,
+                tmp_root / engine / "Engine" / TOMBSTONES_PATH,
+            )
 
         if args.no_zip:
             output_path.mkdir(parents=True, exist_ok=True)
