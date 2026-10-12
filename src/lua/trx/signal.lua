@@ -236,9 +236,9 @@ end
 -- Subscribed as the module loads, so the handler belongs to no level. One a
 -- level script attached would go when that level ended, and every polled signal
 -- in the session would stop reading with it.
-local tick = new_signal(0)
+local tick = new_signal(raw.tick())
 trx.events.on_tick(function()
-  tick:set(tick:get() + 1)
+  tick:set(raw.tick())
 end)
 
 h.properties(M, "signal", {

@@ -208,7 +208,7 @@ static int M_FakeEndLevel(lua_State *const L)
 // fake.tick() - one engine tick.
 static int M_FakeTick(lua_State *const L)
 {
-    LUA_FireEvent(LUA_EVENT_TICK);
+    LUA_Tick();
     return 0;
 }
 

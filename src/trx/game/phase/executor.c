@@ -139,7 +139,7 @@ static GF_COMMAND M_RunFadeToBlackTransition(
             return (GF_COMMAND) { .action = GF_EXIT_GAME };
         }
 
-        LUA_FireEvent(LUA_EVENT_TICK);
+        LUA_Tick();
 
         Interpolation_SetRate(1.0f);
         Output_SetTime(m_CurrentFrame);
@@ -187,7 +187,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         Output_DropPendingFog();
         const bool was_closed = UI_Takeover_IsAnyClosed();
         const PHASE_CONTROL control = phase->control(phase);
-        LUA_FireEvent(LUA_EVENT_TICK);
+        LUA_Tick();
         // Runs the phase again before the next draw when a script closes a
         // screen during the tick. Otherwise one frame shows the screen
         // without the script's layers.
@@ -198,7 +198,7 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
         return control;
     }
 
-    LUA_FireEvent(LUA_EVENT_TICK);
+    LUA_Tick();
     return (PHASE_CONTROL) {
         .action = PHASE_ACTION_END,
         .gf_cmd = { .action = GF_NOOP },

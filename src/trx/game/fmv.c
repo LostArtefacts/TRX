@@ -338,7 +338,7 @@ static RESULT M_Play(const char *const file_name)
         render_ctx.show_pause_overlay = input_paused;
         M_SetPauseText(M_ShouldShowPauseText(&render_ctx));
         Overlay_Control();
-        LUA_FireEvent(LUA_EVENT_TICK);
+        LUA_Tick();
 
         IGNORE(Audio_Stream_SetVolume(audio_id, M_GetAudioVolume()));
         const double audio_ts = Audio_Stream_GetTimestamp(audio_id);

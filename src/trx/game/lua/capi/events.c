@@ -127,12 +127,20 @@ static int M_L_EventsIsLevelScript(lua_State *const L)
     return 1;
 }
 
+// trxc.events.tick(): integer
+static int M_L_EventsTick(lua_State *const L)
+{
+    lua_pushinteger(L, LUA_GetTick());
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
     { "attach", M_L_EventsAttach },
     { "declare", M_L_EventsDeclare },
     { "detach", M_L_EventsDetach },
     { "fire", M_L_EventsFire },
     { "is_level_script", M_L_EventsIsLevelScript },
+    { "tick", M_L_EventsTick },
     { nullptr, nullptr },
 };
 
