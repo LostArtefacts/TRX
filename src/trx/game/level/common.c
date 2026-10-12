@@ -3,6 +3,7 @@
 #include <trx/core/log.h>
 #include <trx/game/camera.h>
 #include <trx/game/cutseq/playback.h>
+#include <trx/game/demo.h>
 #include <trx/game/effects.h>
 #include <trx/game/fx.h>
 #include <trx/game/game.h>
@@ -22,7 +23,6 @@
 #include <trx/game/output/overlay.h>
 #include <trx/game/overlay.h>
 #include <trx/game/pathing.h>
-#include <trx/game/random.h>
 #include <trx/game/savegame.h>
 #include <trx/game/sound.h>
 #include <trx/game/sparks.h>
@@ -81,8 +81,7 @@ RESULT Level_Initialise(
     BENCHMARK benchmark = Benchmark_Start();
     LOG_DEBUG("num=%d (%s)", level->num, level->path);
     if (level->type == GFL_DEMO) {
-        Random_SeedDraw(0xD371F947);
-        Random_SeedControl(0xD371F947);
+        Demo_Initialise();
     }
 
     // Before the incoming level takes over as the current one, so a script
