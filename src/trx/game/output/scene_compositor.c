@@ -176,8 +176,8 @@ static void M_RenderScenePasses(const M_PRIV *const p)
         glDisable(GL_CULL_FACE);
     }
 
-    if (M_IsSourceDirty(p, SCENE_PASS_OVERLAY_PRE_UI)) {
-        M_RenderSourcePass(p, SCENE_PASS_OVERLAY_PRE_UI);
+    if (M_IsSourceDirty(p, SCENE_PASS_OVERLAY)) {
+        M_RenderSourcePass(p, SCENE_PASS_OVERLAY);
     }
 
     if (M_IsSourceDirty(p, SCENE_PASS_UI)) {

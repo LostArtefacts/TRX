@@ -781,7 +781,7 @@ static void M_RenderBegin(const SCENE_SOURCE *const source)
 static void M_RenderPass(const SCENE_SOURCE *const src, const SCENE_PASS pass)
 {
     M_PRIV *const p = &m_Priv;
-    if (pass == SCENE_PASS_OVERLAY_PRE_UI) {
+    if (pass == SCENE_PASS_OVERLAY) {
         M_RunQueue(p->ops);
     }
 }
@@ -789,7 +789,7 @@ static void M_RenderPass(const SCENE_SOURCE *const src, const SCENE_PASS pass)
 static bool M_IsDirty(const SCENE_SOURCE *const src, const SCENE_PASS pass)
 {
     M_PRIV *const p = &m_Priv;
-    if (pass == SCENE_PASS_OVERLAY_PRE_UI) {
+    if (pass == SCENE_PASS_OVERLAY) {
         return p->ops->count > 0;
     }
     return false;
@@ -1148,9 +1148,7 @@ float Output_Overlay_GetFade(void)
 
 void Output_Overlay_DrawLetterbox(void)
 {
-    if (m_Fade > 0.0f) {
-        Output_Overlay_DrawBlackRectangle(m_Fade);
-    }
+    Output_DrawScreenBlack(m_Fade);
     if (m_Letterbox <= 0.0f) {
         return;
     }

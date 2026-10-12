@@ -961,8 +961,5 @@ void CutSeq_DrawActors(void)
 
 void CutSeq_DrawOverlay(void)
 {
-    const float fade = Fader_GetCurrentValue(&m_State.fader);
-    if (fade > 0.0f) {
-        Output_Overlay_DrawBlackRectangle(fade);
-    }
+    Output_DrawScreenBlack(Fader_GetCurrentValue(&m_State.fader));
 }
