@@ -552,7 +552,53 @@ static int M_L_GameScreenshot(lua_State *const L)
     return 0;
 }
 
+static void M_PushAngleField(
+    lua_State *const L, const char *const key, const int16_t value)
+{
+    lua_pushinteger(L, value);
+    lua_setfield(L, -2, key);
+}
+
+// trxc.game.globe(): trx.game.GlobeArea[]
+static int M_L_GameGlobe(lua_State *const L)
+{
+    const int32_t count = GF_GetGlobeEntryCount();
+    lua_createtable(L, count, 0);
+    for (int32_t i = 0; i < count; i++) {
+        const GF_GLOBE_ENTRY *const entry = GF_GetGlobeEntry(i);
+        lua_createtable(L, 0, 5);
+
+        lua_createtable(L, 0, 3);
+        M_PushAngleField(L, "x", entry->rot.x);
+        M_PushAngleField(L, "y", entry->rot.y);
+        M_PushAngleField(L, "z", entry->rot.z);
+        lua_setfield(L, -2, "rot");
+
+        lua_pushinteger(L, entry->mesh_idx);
+        lua_setfield(L, -2, "mesh");
+
+        M_PushLevel(L, GFLT_MAIN, entry->start_level_ordinal);
+        lua_setfield(L, -2, "start_level");
+        M_PushLevel(L, GFLT_MAIN, entry->completion_level_ordinal);
+        lua_setfield(L, -2, "completion_level");
+
+        lua_newtable(L);
+        int32_t count = 0;
+        for (int32_t bit = 0; bit < 32; bit++) {
+            if ((entry->prereq_mask & (1u << bit)) != 0) {
+                lua_pushinteger(L, bit + 1);
+                lua_rawseti(L, -2, ++count);
+            }
+        }
+        lua_setfield(L, -2, "prereqs");
+
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
+    { "globe", M_L_GameGlobe },
     { "get_version", M_L_GameVersion },
     { "count_levels", M_L_GameCountLevels },
     { "get_level", M_L_GameGetLevel },

@@ -290,10 +290,8 @@ void InvRing_AdjustMusicVolume(const INV_RING *const ring)
         : g_Config.audio.inventory_music_volume;
     Music_SetVolume(base_volume * multiplier);
 
-    if (ring->mode != INV_GLOBE_SELECT_MODE) {
-        Sound_ResetAmbient();
-        Sound_UpdateEffects();
-    }
+    Sound_ResetAmbient();
+    Sound_UpdateEffects();
 }
 
 void InvRing_SetRequestedObjectID(const OBJECT_ID obj_id)
@@ -709,8 +707,7 @@ void InvRing_SelectMeshes(INVENTORY_ITEM *const inv_item)
 
 void InvRing_ShowItemName(const INVENTORY_ITEM *const inv_item)
 {
-    if (inv_item->object_id == O_PASSPORT_OPTION
-        || inv_item->object_id == O_GLOBE_OPTION) {
+    if (inv_item->object_id == O_PASSPORT_OPTION) {
         return;
     }
 
@@ -866,8 +863,6 @@ void InvRing_ShowHeader(INV_RING *const ring)
             .gs_key = GS_ID("general/inventory_ring/heading_items"),
             .fmt_gs_key = GS_ID("general/inventory_ring/heading_fmt"),
         });
-        break;
-    case RT_GLOBE_SELECT:
         break;
     case RT_NUMBER_OF:
         break;

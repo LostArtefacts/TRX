@@ -6,7 +6,6 @@
 #include <trx/game/objects/families.h>
 #include <trx/game/option/controls.h>
 #include <trx/game/option/gameplay.h>
-#include <trx/game/option/globe_select.h>
 #include <trx/game/option/graphics.h>
 #include <trx/game/option/sound.h>
 #include <trx/version.h>
@@ -17,7 +16,6 @@ static void M_Shutdown(void)
     Option_Graphics_Shutdown();
     Option_Sound_Shutdown();
     Option_Controls_Shutdown();
-    Option_GlobeSelect_Shutdown();
 }
 
 void Option_Reset(void)
@@ -50,9 +48,6 @@ void Option_Control(INVENTORY_ITEM *const inv_item, const bool is_busy)
         break;
     case O_CONTROLS_OPTION:
         Option_Controls_Control(inv_item, is_busy);
-        break;
-    case O_GLOBE_OPTION:
-        Option_GlobeSelect_Control(inv_item, is_busy);
         break;
 
     case O_PISTOLS_OPTION:
@@ -117,9 +112,6 @@ void Option_Draw(INVENTORY_ITEM *const inv_item)
     case O_CONTROLS_OPTION:
         Option_Controls_Draw(inv_item);
         break;
-    case O_GLOBE_OPTION:
-        Option_GlobeSelect_Draw(inv_item);
-        break;
     default:
         break;
     }
@@ -139,9 +131,6 @@ void Option_Close(const INVENTORY_ITEM *const inv_item)
         break;
     case O_CONTROLS_OPTION:
         Option_Controls_Close();
-        break;
-    case O_GLOBE_OPTION:
-        Option_GlobeSelect_Close();
         break;
     default:
         break;

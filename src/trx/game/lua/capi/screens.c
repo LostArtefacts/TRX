@@ -20,7 +20,22 @@ static int M_L_ScreensClose(lua_State *const L)
     return 0;
 }
 
+// trxc.screens.background(screen: trx.ui.Screen): string?
+static int M_L_ScreensBackground(lua_State *const L)
+{
+    const UI_TAKEOVER screen = (UI_TAKEOVER)LUA_CheckRange(
+        L, 1, UI_TAKEOVER_NUMBER_OF, "unknown screen");
+    const char *const path = UI_Takeover_GetBackground(screen);
+    if (path == nullptr) {
+        lua_pushnil(L);
+    } else {
+        lua_pushstring(L, path);
+    }
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
+    { "background", M_L_ScreensBackground },
     { "close", M_L_ScreensClose },
     { nullptr, nullptr },
 };

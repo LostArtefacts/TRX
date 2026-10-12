@@ -16,6 +16,11 @@ GF_LEVEL_TABLE_TYPE GF_GetLevelTableType(const GF_LEVEL_TYPE level_type);
 const GF_LEVEL_TABLE *GF_GetLevelTable(GF_LEVEL_TABLE_TYPE level_type);
 int32_t GF_GetLevelCount(GF_LEVEL_TABLE_TYPE level_table_type);
 
+// The areas of the globe that picks the next adventure, counted from zero, or
+// nullptr past the last.
+int32_t GF_GetGlobeEntryCount(void);
+const GF_GLOBE_ENTRY *GF_GetGlobeEntry(int32_t idx);
+
 int32_t GF_GetFMVCount(void);
 // Returns the FMV the game flow declares at the given place, counted from
 // one, or nullptr where the flow declares none there.

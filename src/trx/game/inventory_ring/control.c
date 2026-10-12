@@ -27,7 +27,6 @@
 #include <trx/game/objects/families.h>
 #include <trx/game/objects/links.h>
 #include <trx/game/option.h>
-#include <trx/game/option/globe_select.h>
 #include <trx/game/option/stats.h>
 #include <trx/game/output/overlay.h>
 #include <trx/game/overlay.h>
@@ -55,7 +54,6 @@ static OBJECT_ID m_LastRingObject[RT_NUMBER_OF] = {
     [RT_MAIN] = NO_OBJECT,
     [RT_OPTION] = NO_OBJECT,
     [RT_KEYS] = NO_OBJECT,
-    [RT_GLOBE_SELECT] = NO_OBJECT,
 };
 static INV_RING *m_ActiveRing = nullptr;
 
@@ -66,8 +64,8 @@ static INV_RING *m_ActiveRing = nullptr;
 static INVENTORY_ITEM *m_VisibleRingItems[RT_NUMBER_OF][INV_RING_MAX_ITEMS];
 
 // Which ring an entry belongs to, which its position says: the main ring
-// counts from zero, the keys from a hundred, the menu from two hundred and the
-// globe from three.
+// counts from zero, the keys from a hundred and the menu from two hundred.
+// Anything past that, such as the globe, is in no ring.
 static RING_TYPE M_GetRingType(const INVENTORY_ITEM *const inv_item)
 {
     if (inv_item->inv_pos < 100) {
@@ -76,14 +74,17 @@ static RING_TYPE M_GetRingType(const INVENTORY_ITEM *const inv_item)
         return RT_KEYS;
     } else if (inv_item->inv_pos < 300) {
         return RT_OPTION;
-    } else {
-        return RT_GLOBE_SELECT;
     }
+    return RT_NUMBER_OF;
 }
 
 static void M_InsertIntoRing(INVENTORY_ITEM *const inv_item, const int32_t qty)
 {
-    INV_RING_SOURCE *const source = &g_InvRing_Source[M_GetRingType(inv_item)];
+    const RING_TYPE type = M_GetRingType(inv_item);
+    if (type == RT_NUMBER_OF) {
+        return;
+    }
+    INV_RING_SOURCE *const source = &g_InvRing_Source[type];
     if (source->count >= INV_RING_MAX_ITEMS) {
         LOG_WARNING("no room in the ring for object %d", inv_item->object_id);
         return;
@@ -290,22 +291,6 @@ static GF_COMMAND M_Finish(INV_RING *const ring, const bool apply_changes)
 {
     // TODO: Make this function not have any side effects.
     // Consider adding new GF_ constants, but research other solutions first.
-
-    if (ring->mode == INV_GLOBE_SELECT_MODE) {
-        if (ring->globe_select.confirmed && ring->globe_select.selection >= 0
-            && ring->globe_select.selection < MAX_GLOBE_ZONES) {
-            const int32_t start_level_num =
-                ring->globe_select
-                    .start_level_num[ring->globe_select.selection];
-            if (start_level_num >= 0) {
-                return (GF_COMMAND) {
-                    .action = GF_START_GAME,
-                    .param = start_level_num,
-                };
-            }
-        }
-        return (GF_COMMAND) { .action = GF_EXIT_TO_TITLE };
-    }
 
     if (Shell_IsExiting()) {
         return (GF_COMMAND) { .action = GF_EXIT_GAME };
@@ -546,8 +531,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
     }
 
     if ((ring->mode == INV_SAVE_MODE || ring->mode == INV_SAVE_CRYSTAL_MODE
-         || ring->mode == INV_LOAD_MODE || ring->mode == INV_DEATH_MODE
-         || ring->mode == INV_GLOBE_SELECT_MODE)
+         || ring->mode == INV_LOAD_MODE || ring->mode == INV_DEATH_MODE)
         && !ring->is_pass_open) {
         g_Input = (INPUT_STATE) {};
         g_InputDB = (INPUT_STATE) { .menu_confirm = 1 };
@@ -582,8 +566,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         }
 
         if (ring->is_demo_needed
-            || (g_InputDB.menu_back && ring->mode != INV_TITLE_MODE
-                && ring->mode != INV_GLOBE_SELECT_MODE)) {
+            || (g_InputDB.menu_back && ring->mode != INV_TITLE_MODE)) {
             Sound_Effect(SFX_MENU_SPINOUT, nullptr, SPM_ALWAYS);
             m_InvChosen = NO_OBJECT;
 
@@ -614,8 +597,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         if (g_InputDB.menu_confirm || examine) {
             if ((ring->mode == INV_SAVE_MODE
                  || ring->mode == INV_SAVE_CRYSTAL_MODE
-                 || ring->mode == INV_LOAD_MODE || ring->mode == INV_DEATH_MODE
-                 || ring->mode == INV_GLOBE_SELECT_MODE)
+                 || ring->mode == INV_LOAD_MODE || ring->mode == INV_DEATH_MODE)
                 && !ring->is_pass_open) {
                 ring->is_pass_open = true;
             }
@@ -683,8 +665,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         }
 
         if (g_InputDB.menu_up && ring->mode != INV_TITLE_MODE
-            && ring->mode != INV_KEYS_MODE
-            && ring->mode != INV_GLOBE_SELECT_MODE) {
+            && ring->mode != INV_KEYS_MODE) {
             if (ring->type == RT_MAIN) {
                 if (InvRing_IsRingAvailable(RT_KEYS)) {
                     M_SetupRingSwitchClose(ring, RNG_MAIN2KEYS);
@@ -699,8 +680,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
             }
         } else if (
             g_InputDB.menu_down && ring->mode != INV_TITLE_MODE
-            && ring->mode != INV_KEYS_MODE
-            && ring->mode != INV_GLOBE_SELECT_MODE) {
+            && ring->mode != INV_KEYS_MODE) {
             if (ring->type == RT_MAIN) {
                 if (InvRing_IsRingAvailable(RT_OPTION)) {
                     M_SetupRingSwitchClose(ring, RNG_MAIN2OPTION);
@@ -789,7 +769,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         Option_Control(inv_item, busy);
 
         if (!busy) {
-            if (g_InputDB.menu_back && ring->mode != INV_GLOBE_SELECT_MODE) {
+            if (g_InputDB.menu_back) {
                 InvRing_SetStatusTransition(
                     ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
                 g_Input = (INPUT_STATE) {};
@@ -815,8 +795,7 @@ static GF_COMMAND M_Control(INV_RING *const ring)
                     && (inv_item->object_id == O_GRAPHICS_OPTION
                         || inv_item->object_id == O_SOUND_OPTION
                         || inv_item->object_id == O_PDA_OPTION
-                        || inv_item->object_id == O_CONTROLS_OPTION
-                        || inv_item->object_id == O_GLOBE_OPTION)) {
+                        || inv_item->object_id == O_CONTROLS_OPTION)) {
                     InvRing_SetStatusTransition(
                         ring, RNG_CLOSING_ITEM, RNG_DESELECT, 0);
                 } else {
@@ -947,31 +926,24 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         InvRing_RemoveVersionText();
     }
 
-    if (mode != INV_GLOBE_SELECT_MODE) {
-        // Reset option ring
-        g_InvRing_Source[RT_OPTION].count = 0;
-        InvRing_InsertItem(
-            InvRing_GetByObjectID(O_PASSPORT_CLOSED) != nullptr
-                ? InvRing_GetByObjectID(O_PASSPORT_CLOSED)
-                : InvRing_GetByObjectID(O_PASSPORT_OPTION));
-        if (g_TRVersion == 1) {
-            InvRing_InsertItem(InvRing_GetByObjectID(O_CONTROLS_OPTION));
-            InvRing_InsertItem(InvRing_GetByObjectID(O_SOUND_OPTION));
-            InvRing_InsertItem(InvRing_GetByObjectID(O_GRAPHICS_OPTION));
-        } else {
-            InvRing_InsertItem(InvRing_GetByObjectID(O_GRAPHICS_OPTION));
-            InvRing_InsertItem(InvRing_GetByObjectID(O_CONTROLS_OPTION));
-            InvRing_InsertItem(InvRing_GetByObjectID(O_SOUND_OPTION));
-        }
-        InvRing_InsertItem(InvRing_GetByObjectID(O_PDA_OPTION));
-        if (mode == INV_TITLE_MODE && GF_GetGymLevel() != nullptr) {
-            InvRing_InsertItem(InvRing_GetByObjectID(O_PHOTO_OPTION));
-        }
-    } else if (g_InvRing_Source[RT_GLOBE_SELECT].count == 0) {
-        INVENTORY_ITEM *const globe = InvRing_GetByObjectID(O_GLOBE_OPTION);
-        if (globe != nullptr) {
-            InvRing_InsertItem(globe);
-        }
+    // Reset option ring
+    g_InvRing_Source[RT_OPTION].count = 0;
+    InvRing_InsertItem(
+        InvRing_GetByObjectID(O_PASSPORT_CLOSED) != nullptr
+            ? InvRing_GetByObjectID(O_PASSPORT_CLOSED)
+            : InvRing_GetByObjectID(O_PASSPORT_OPTION));
+    if (g_TRVersion == 1) {
+        InvRing_InsertItem(InvRing_GetByObjectID(O_CONTROLS_OPTION));
+        InvRing_InsertItem(InvRing_GetByObjectID(O_SOUND_OPTION));
+        InvRing_InsertItem(InvRing_GetByObjectID(O_GRAPHICS_OPTION));
+    } else {
+        InvRing_InsertItem(InvRing_GetByObjectID(O_GRAPHICS_OPTION));
+        InvRing_InsertItem(InvRing_GetByObjectID(O_CONTROLS_OPTION));
+        InvRing_InsertItem(InvRing_GetByObjectID(O_SOUND_OPTION));
+    }
+    InvRing_InsertItem(InvRing_GetByObjectID(O_PDA_OPTION));
+    if (mode == INV_TITLE_MODE && GF_GetGymLevel() != nullptr) {
+        InvRing_InsertItem(InvRing_GetByObjectID(O_PHOTO_OPTION));
     }
 
     // Sending the keys ring back to its first entry and opening it where it
@@ -993,12 +965,6 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
     for (int32_t i = 0; i < g_InvRing_Source[RT_OPTION].count; i++) {
         g_InvRing_Source[RT_OPTION].qtys[i] = 1;
         InvRing_InitInvItem(g_InvRing_Source[RT_OPTION].items[i]);
-    }
-
-    g_InvRing_Source[RT_GLOBE_SELECT].current = 0;
-    for (int32_t i = 0; i < g_InvRing_Source[RT_GLOBE_SELECT].count; i++) {
-        g_InvRing_Source[RT_GLOBE_SELECT].qtys[i] = 1;
-        InvRing_InitInvItem(g_InvRing_Source[RT_GLOBE_SELECT].items[i]);
     }
 
     if (mode == INV_TITLE_MODE && GF_GetGymLevel() != nullptr
@@ -1041,17 +1007,6 @@ INV_RING *InvRing_Open(const INVENTORY_MODE mode)
         : nullptr;
 
     switch (mode) {
-    case INV_GLOBE_SELECT_MODE: {
-        ring->background_style = BK_NONE;
-        ring->background_path = nullptr;
-        const INV_RING_VISIBLE visible = M_GetVisibleRing(RT_GLOBE_SELECT);
-        InvRing_InitRing(
-            ring, RT_GLOBE_SELECT, &visible,
-            g_InvRing_Source[RT_GLOBE_SELECT].current);
-        Option_GlobeSelect_UpdateSelectable(ring);
-        break;
-    }
-
     case INV_TITLE_MODE:
     case INV_SAVE_MODE:
     case INV_SAVE_CRYSTAL_MODE:

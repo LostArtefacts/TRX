@@ -177,6 +177,8 @@ arrow, and `\{button left}` draws the button the player has bound.
         An entry that the player examines in the inventory ring: its name and description, and turning it by hand. The context reports the entry as [`trx.ui.ScreenContext.object`](#ui.ScreenContext.object). The screen ends with [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel), which puts the entry away.
     - `trx.ui.Screen.COMBINE`  
         An entry that the player combines in the inventory ring: picking what to combine it with, out of [`trx.inventory.combine_partners`](INVENTORY.md#inventory.combine_partners), and combining the two with [`trx.inventory.combine`](INVENTORY.md#inventory.combine). The context reports the entry as [`trx.ui.ScreenContext.object`](#ui.ScreenContext.object). The screen ends with [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel) or [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm), which both put the entry away, and the ring then rests on what a combination made.
+    - `trx.ui.Screen.GLOBE_SELECT`  
+        The globe that TR3 picks its next adventure on, between levels. The context reports the picture it stands on as [`trx.ui.ScreenContext.background`](#ui.ScreenContext.background). The script picks an adventure by starting its level with [`trx.game.play_level`](GAME.md#game.play_level), and [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel) leaves for the title screen.
 
 ### Structures
 
@@ -262,6 +264,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     A screen that a script holds, which the definition receives.
 
     Properties:
+    - <a id="ui.ScreenContext.background" name="ui.ScreenContext.background"></a>**`background`**: string. The picture the screen stands on, for [`trx.ui.Screen.GLOBE_SELECT`](#ui.Screen), as [`trx.ui.primitive.background`](#ui.primitive.background) takes it, or `nil` for none. *(read-only)*
     - <a id="ui.ScreenContext.is_bare" name="ui.ScreenContext.is_bare"></a>**`is_bare`**: boolean. Whether the screen is drawn bare, as plain lines of text without a frame, for [`trx.ui.Screen.STATS`](#ui.Screen). *(read-only)*
     - <a id="ui.ScreenContext.is_final" name="ui.ScreenContext.is_final"></a>**`is_final`**: boolean. Whether the screen shows the totals for the whole game rather than one level, for [`trx.ui.Screen.STATS`](#ui.Screen). *(read-only)*
     - <a id="ui.ScreenContext.is_held" name="ui.ScreenContext.is_held"></a>**`is_held`**: boolean. Whether the script still holds the screen. *(read-only)*

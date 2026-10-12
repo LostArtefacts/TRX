@@ -31,6 +31,9 @@ static GF_LEVEL_TABLE m_Tables[GFLT_NUMBER_OF];
 static RESUME_INFO m_Resume;
 // The game's own clock, which a test moves on by hand.
 static double m_SimTime;
+// The levels a test has marked finished, one bit each by their place in the
+// table.
+static uint32_t m_CompletedLevels;
 static const GF_LEVEL *m_CurrentLevel;
 static bool m_HasGym;
 static bool m_InCutscene;
@@ -62,6 +65,10 @@ static int32_t m_PartnerCount;
 static OBJECT_ID m_Combined[2];
 static OBJECT_ID m_RequestedObject;
 
+// The areas of the globe a test gives the game flow.
+static GF_GLOBE_ENTRY m_Globe[8];
+static int32_t m_GlobeCount;
+
 static void M_Reset(void)
 {
     m_RingHint[0] = '\0';
@@ -69,6 +76,8 @@ static void M_Reset(void)
     m_Combined[0] = NO_OBJECT;
     m_Combined[1] = NO_OBJECT;
     m_RequestedObject = NO_OBJECT;
+    m_GlobeCount = 0;
+    m_CompletedLevels = 0;
     m_RingOpen = false;
     m_ScreenHeld = false;
     g_TRVersion = 1;
@@ -257,6 +266,77 @@ static int M_L_SetCombinePartners(lua_State *const L)
     return 0;
 }
 
+// fake.set_globe({ { start = n, finish = n, prereqs = { i, ... }, mesh = n,
+// rot = { x, y, z } }, ... }) - the areas of the globe, with their levels by
+// ordinal and the areas they need counted from 1.
+static int M_L_SetGlobe(lua_State *const L)
+{
+    luaL_checktype(L, 1, LUA_TTABLE);
+    m_GlobeCount = 0;
+    const int32_t len = (int32_t)lua_rawlen(L, 1);
+    for (int32_t i = 1; i <= len && m_GlobeCount < 8; i++) {
+        lua_rawgeti(L, 1, i);
+        const int area = lua_gettop(L);
+        GF_GLOBE_ENTRY *const entry = &m_Globe[m_GlobeCount++];
+        *entry = (GF_GLOBE_ENTRY) {};
+        lua_getfield(L, area, "start");
+        entry->start_level_ordinal = (int32_t)luaL_optinteger(L, -1, -1);
+        lua_getfield(L, area, "finish");
+        entry->completion_level_ordinal = (int32_t)luaL_optinteger(L, -1, -1);
+        lua_getfield(L, area, "mesh");
+        entry->mesh_idx = (uint8_t)luaL_optinteger(L, -1, i);
+        lua_pop(L, 3);
+        lua_getfield(L, area, "prereqs");
+        if (lua_istable(L, -1)) {
+            const int32_t needs = (int32_t)lua_rawlen(L, -1);
+            for (int32_t j = 1; j <= needs; j++) {
+                lua_rawgeti(L, -1, j);
+                entry->prereq_mask |= 1u << (luaL_checkinteger(L, -1) - 1);
+                lua_pop(L, 1);
+            }
+        }
+        lua_pop(L, 1);
+        lua_getfield(L, area, "rot");
+        if (lua_istable(L, -1)) {
+            lua_rawgeti(L, -1, 1);
+            lua_rawgeti(L, -2, 2);
+            lua_rawgeti(L, -3, 3);
+            entry->rot = (XYZ_16) {
+                .x = (int16_t)luaL_optinteger(L, -3, 0),
+                .y = (int16_t)luaL_optinteger(L, -2, 0),
+                .z = (int16_t)luaL_optinteger(L, -1, 0),
+            };
+            lua_pop(L, 3);
+        }
+        lua_pop(L, 2);
+    }
+    return 0;
+}
+
+// fake.set_completed({ num, ... }) - the levels the player has finished.
+static int M_L_SetCompleted(lua_State *const L)
+{
+    luaL_checktype(L, 1, LUA_TTABLE);
+    m_CompletedLevels = 0;
+    const int32_t len = (int32_t)lua_rawlen(L, 1);
+    for (int32_t i = 1; i <= len; i++) {
+        lua_rawgeti(L, 1, i);
+        m_CompletedLevels |= 1u << luaL_checkinteger(L, -1);
+        lua_pop(L, 1);
+    }
+    return 0;
+}
+
+// fake.requested_object() -> object? - what the ring was asked to rest on.
+static int M_L_RequestedObject(lua_State *const L)
+{
+    if (m_RequestedObject == NO_OBJECT) {
+        return 0;
+    }
+    lua_pushinteger(L, m_RequestedObject);
+    return 1;
+}
+
 // fake.combined() -> object?, partner? - what a script last combined.
 static int M_L_Combined(lua_State *const L)
 {
@@ -293,6 +373,16 @@ void Screenshot_MakeToPath(const char *const path)
 void Game_SetIsLevelComplete(const bool is_complete)
 {
     FAKE_RECORD("end_level");
+}
+
+int32_t GF_GetGlobeEntryCount(void)
+{
+    return m_GlobeCount;
+}
+
+const GF_GLOBE_ENTRY *GF_GetGlobeEntry(const int32_t idx)
+{
+    return idx >= 0 && idx < m_GlobeCount ? &m_Globe[idx] : nullptr;
 }
 
 int32_t GF_GetFMVCount(void)
@@ -547,7 +637,12 @@ void SG_Resume_StoreGameToEntry(const GF_LEVEL *const level)
 
 RESUME_INFO *SG_Resume_GetEntry(const GF_LEVEL *const level)
 {
-    return level == nullptr ? nullptr : &m_Resume;
+    if (level == nullptr) {
+        return nullptr;
+    }
+    m_Resume.level_completed = level->num >= 0 && level->num < 32
+        && (m_CompletedLevels & (1u << level->num)) != 0;
+    return &m_Resume;
 }
 
 void FakeGame_SetRunTime(const int32_t frames)
@@ -678,6 +773,12 @@ void FakeGame_PushLua(lua_State *const L)
     lua_setfield(L, -2, "advance_sim_time");
     lua_pushcfunction(L, M_L_RingHint);
     lua_setfield(L, -2, "ring_hint");
+    lua_pushcfunction(L, M_L_SetCompleted);
+    lua_setfield(L, -2, "set_completed");
+    lua_pushcfunction(L, M_L_SetGlobe);
+    lua_setfield(L, -2, "set_globe");
+    lua_pushcfunction(L, M_L_RequestedObject);
+    lua_setfield(L, -2, "requested_object");
     lua_pushcfunction(L, M_L_Combined);
     lua_setfield(L, -2, "combined");
     lua_pushcfunction(L, M_L_SetCombinePartners);

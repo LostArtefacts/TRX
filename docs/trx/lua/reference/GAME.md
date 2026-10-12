@@ -180,6 +180,26 @@ played.
   rather hear about a change than ask after one. Each is read once a frame, so
   what listens runs on a change rather than on a frame.
 
+- <a id="game.globe" name="game.globe"></a>[lua]`trx.game.globe()`  
+  The areas of the globe that TR3 picks its next adventure on, in the order
+  the game flow lists them. Empty for a game with no globe.
+
+  Returns: a list of table. The areas.
+
+    Each entry:
+    - <a id="game.globe.rot" name="game.globe.rot"></a>**`rot`** ([trx.math.Rot](MATH.md#math.Rot)). How the globe turns to face the area.
+    - <a id="game.globe.mesh" name="game.globe.mesh"></a>**`mesh`** (integer). The globe's mesh that marks the area, counted from 0.
+    - <a id="game.globe.start_level" name="game.globe.start_level"></a>**`start_level`** ([trx.game.Level](#game.Level)). The level the adventure starts on, or `nil` for an area no adventure starts in.
+    - <a id="game.globe.completion_level" name="game.globe.completion_level"></a>**`completion_level`** ([trx.game.Level](#game.Level)). The level whose end finishes the adventure, or `nil`.
+    - <a id="game.globe.prereqs" name="game.globe.prereqs"></a>**`prereqs`** (a list of integer). The areas, counted from 1, whose adventures must be finished before this one opens.
+
+  Example:
+  ```lua
+  for i, area in ipairs(trx.game.globe()) do
+    trx.log.info(i, area.start_level and area.start_level.title)
+  end
+  ```
+
 - <a id="game.play_level" name="game.play_level"></a>[lua]`trx.game.play_level(level_num, [opts])`  
   Starts a level from [`trx.game.levels`](#game.levels).
 
