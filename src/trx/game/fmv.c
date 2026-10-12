@@ -45,6 +45,11 @@ typedef struct {
     FADER pause_fader;
 } M_RENDER_CONTEXT;
 
+typedef struct {
+    bool wave;
+    float opacity;
+} M_PATTERN;
+
 static bool m_IsPlaying = false;
 
 static const char *const m_FallbackExts[] = {
@@ -139,7 +144,6 @@ static void M_RenderBegin(void *const surface, void *const user_data)
 
 static void M_DrawUI(void)
 {
-    UI_BeginScene();
     LUA_UI_DrawRegions();
     Overlay_DrawUI();
     UI_EndScene();
@@ -165,6 +169,12 @@ static BACKGROUND_TYPE M_GetPauseBackgroundStyle(void)
     return style;
 }
 
+static void M_DrawPattern(const void *const args)
+{
+    const M_PATTERN *const pattern = args;
+    Output_Overlay_DrawPatternOpacity(pattern->wave, pattern->opacity);
+}
+
 static float M_ApplyPauseBackground(const M_RENDER_CONTEXT *const ctx)
 {
     Output_SetTime((float)(Clock_GetRealTime() * LOGIC_FPS));
@@ -180,9 +190,25 @@ static float M_ApplyPauseBackground(const M_RENDER_CONTEXT *const ctx)
     Output_Quad_SetGlobalTint(ctx->renderer_2d, tint.tint);
     Output_Quad_SetBlur(ctx->renderer_2d, tint.blur);
     if (is_pattern) {
-        Output_Overlay_DrawPatternOpacity(style == BK_PATTERN_WAVE, progress);
+        const M_PATTERN pattern = {
+            .wave = style == BK_PATTERN_WAVE,
+            .opacity = progress,
+        };
+        UI_ScheduleDrawOverlay(M_DrawPattern, &pattern, sizeof(pattern));
     }
     return tint.black_opacity;
+}
+
+// Draws the film's frame, and opens the interface with the pause background
+// the frame stands on.
+static void M_DrawFrame(const M_RENDER_CONTEXT *const ctx)
+{
+    UI_BeginScene();
+    UI_BeginLayer(UI_LAYER_BACKDROP);
+    const float black_opacity = M_ApplyPauseBackground(ctx);
+    Output_Quad_Render(ctx->renderer_2d);
+    UI_ScheduleDrawScreenBlack(black_opacity);
+    UI_EndLayer(UI_LAYER_BACKDROP);
 }
 
 static bool M_ShouldShowPauseText(const M_RENDER_CONTEXT *const ctx)
@@ -225,10 +251,7 @@ static void M_UploadSurface(void *const surface, void *const user_data)
     Output_Quad_SetFilter(ctx->renderer_2d, g_Config.rendering.fmv_filter);
 
     Output_SwitchViewport(VIEWPORT_GAME);
-    const float black_opacity = M_ApplyPauseBackground(ctx);
-    Output_Quad_Render(ctx->renderer_2d);
-    Output_Overlay_DrawBlackRectangle(black_opacity);
-
+    M_DrawFrame(ctx);
     Output_SwitchViewport(VIEWPORT_UI);
     M_DrawUI();
 }
@@ -249,10 +272,7 @@ static void M_RedrawFrame(M_RENDER_CONTEXT *const ctx)
 {
     Output_BeginScene();
     Output_SwitchViewport(VIEWPORT_GAME);
-    const float black_opacity = M_ApplyPauseBackground(ctx);
-    Output_Quad_Render(ctx->renderer_2d);
-    Output_Overlay_DrawBlackRectangle(black_opacity);
-
+    M_DrawFrame(ctx);
     Output_SwitchViewport(VIEWPORT_UI);
     M_DrawUI();
 

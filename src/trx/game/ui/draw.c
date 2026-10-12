@@ -2,6 +2,7 @@
 
 #include <trx/core/memory.h>
 #include <trx/core/vector.h>
+#include <trx/debug.h>
 #include <trx/game/anims/types.h>
 #include <trx/game/const.h>
 #include <trx/game/objects.h>
@@ -20,6 +21,7 @@
 #include <trx/version.h>
 
 #include <math.h>
+#include <stddef.h>
 #include <string.h>
 
 #define M_WHITE ((RGBA_F) { 1.0f, 1.0f, 1.0f, 1.0f })
@@ -97,6 +99,12 @@ typedef struct {
     M_DRAW_OP base;
     float opacity;
 } M_DRAW_OP_DARKEN;
+
+typedef struct {
+    M_DRAW_OP base;
+    void (*draw)(const void *args);
+    max_align_t args[];
+} M_DRAW_OP_OVERLAY;
 
 typedef struct {
     MEMORY_ARENA_ALLOCATOR alloc;
@@ -433,6 +441,21 @@ static void M_DrawOp_Model(const M_DRAW_OP *const base)
     }
 }
 
+// The overlay draws at the next flush, so a flush before and after puts it
+// between what was painted before it and what is painted after it.
+static void M_DrawSnapshot(const void *const args)
+{
+    Output_Overlay_DrawSnapshot(*(const float *)args);
+}
+
+static void M_DrawOp_Overlay(const M_DRAW_OP *const base)
+{
+    const M_DRAW_OP_OVERLAY *const op = (const M_DRAW_OP_OVERLAY *)base;
+    SceneCompositor_Flush();
+    op->draw(op->args);
+    SceneCompositor_Flush();
+}
+
 static void M_DrawOp_Darken(const M_DRAW_OP *const base)
 {
     const M_DRAW_OP_DARKEN *const op = (const M_DRAW_OP_DARKEN *)base;
@@ -473,6 +496,7 @@ static void M_DrawOp_Image(const M_DRAW_OP *const base)
     if (viewport.w <= 0 || viewport.h <= 0) {
         return;
     }
+    SceneCompositor_Flush();
     Output_Overlay_DrawImageInBox(
         op->path,
         (OUTPUT_OVERLAY_BOX) {
@@ -482,6 +506,7 @@ static void M_DrawOp_Image(const M_DRAW_OP *const base)
             .y1 = op->y1 / (float)viewport.h,
         },
         op->opacity);
+    SceneCompositor_Flush();
 }
 
 static inline void M_ScheduleOp(M_DRAW_OP *const op)
@@ -593,6 +618,25 @@ void UI_ScheduleDrawImage(
             .y1 = y1,
             .opacity = opacity,
         }));
+}
+
+void UI_ScheduleDrawOverlay(
+    void (*const draw)(const void *args), const void *const args,
+    const size_t args_size)
+{
+    M_DRAW_OP_OVERLAY *const op =
+        M_ArenaAlloc(sizeof(M_DRAW_OP_OVERLAY) + args_size);
+    op->base.draw = M_DrawOp_Overlay;
+    op->draw = draw;
+    if (args_size > 0) {
+        memcpy(op->args, args, args_size);
+    }
+    M_ScheduleOp(&op->base);
+}
+
+void UI_ScheduleDrawSnapshot(const float opacity)
+{
+    UI_ScheduleDrawOverlay(M_DrawSnapshot, &opacity, sizeof(opacity));
 }
 
 void UI_ScheduleDrawScreenBlack(const float opacity)
@@ -780,6 +824,9 @@ void UI_ClearDraw(void)
 
 void UI_Draw(void)
 {
+    SOFT_ASSERT(
+        !OutputSource_UI_HasStaged() && !Output_Overlay_HasPending(),
+        "a draw was staged outside the interface layers");
     for (int32_t layer = 0; layer < UI_LAYER_NUMBER_OF; layer++) {
         const VECTOR *const ops = m_Priv.ops[layer];
         for (int32_t i = 0; i < ops->count; i++) {

@@ -135,7 +135,6 @@ void Output_BeginScene(void)
     TRX_GL_Context_Clear();
     TRX_GL_Track_Reset();
     TRX_GL_Context_SetWireframeMode(g_Config.rendering.enable_wireframe);
-    Output_Overlay_BeginFrame();
     SceneCompositor_BeginScene();
     Output_Lights_BeginScene();
 }

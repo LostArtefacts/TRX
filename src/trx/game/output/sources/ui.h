@@ -85,4 +85,6 @@ void OutputSource_UI_StageMesh(OUTPUT_UI_MESH mesh);
 void OutputSource_UI_StageBinocularMask(void);
 void OutputSource_UI_StageSprite(OUTPUT_UI_SPRITE sprite);
 void OutputSource_UI_StageQuad(OUTPUT_UI_QUAD quad);
+// Reports whether anything staged waits for the next flush.
+bool OutputSource_UI_HasStaged(void);
 void OutputSource_UI_StageCircle(OUTPUT_UI_CIRCLE circle);

@@ -24,6 +24,12 @@ void UI_ScheduleDrawImage(
     float opacity);
 // Covers the whole screen in black, from 0 for clear to 1 for black.
 void UI_ScheduleDrawScreenBlack(float opacity);
+// Draws through the overlay between what was scheduled before it and what is
+// scheduled after it. `draw` receives a copy of `args`.
+void UI_ScheduleDrawOverlay(
+    void (*draw)(const void *args), const void *args, size_t args_size);
+// Draws the overlay's snapshot over the whole screen.
+void UI_ScheduleDrawSnapshot(float opacity);
 void UI_ScheduleDrawScreenFlatQuad(
     int32_t sx, int32_t sy, int32_t z, int32_t w, int32_t h, RGBA_8888 color);
 void UI_ScheduleDrawScreenGradientQuad(
