@@ -29,6 +29,8 @@ static GF_FMV m_FMVs[FAKE_FMV_COUNT];
 static GF_LEVEL m_TitleLevel;
 static GF_LEVEL_TABLE m_Tables[GFLT_NUMBER_OF];
 static RESUME_INFO m_Resume;
+// The game's own clock, which a test moves on by hand.
+static double m_SimTime;
 static const GF_LEVEL *m_CurrentLevel;
 static bool m_HasGym;
 static bool m_InCutscene;
@@ -134,6 +136,13 @@ static void M_Reset(void)
     m_IsPlaying = true;
     m_HasGym = true;
     m_InCutscene = false;
+}
+
+// fake.advance_sim_time(seconds) - moves the game's own clock on.
+static int M_L_AdvanceSimTime(lua_State *const L)
+{
+    m_SimTime += luaL_checknumber(L, 1);
+    return 0;
 }
 
 // fake.set_current_level(n) - nil for a game that is not in a level at all.
@@ -584,6 +593,11 @@ double Clock_GetRealTime(void)
     return 0.0;
 }
 
+double Clock_GetSimTime(void)
+{
+    return m_SimTime;
+}
+
 bool PhotoMode_IsActive(void)
 {
     return m_InPhotoMode;
@@ -660,6 +674,8 @@ int32_t Inv_GetCombinePartners(
 
 void FakeGame_PushLua(lua_State *const L)
 {
+    lua_pushcfunction(L, M_L_AdvanceSimTime);
+    lua_setfield(L, -2, "advance_sim_time");
     lua_pushcfunction(L, M_L_RingHint);
     lua_setfield(L, -2, "ring_hint");
     lua_pushcfunction(L, M_L_Combined);

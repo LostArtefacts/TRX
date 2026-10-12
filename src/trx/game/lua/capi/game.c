@@ -246,6 +246,13 @@ static int M_L_GameRealTime(lua_State *const L)
     return 1;
 }
 
+// trxc.game.sim_time(): trx.game.Seconds
+static int M_L_GameSimTime(lua_State *const L)
+{
+    lua_pushnumber(L, Clock_GetSimTime());
+    return 1;
+}
+
 // trxc.game.cutscene_frame(): integer?
 static int M_L_GameCutsceneFrame(lua_State *const L)
 {
@@ -557,6 +564,7 @@ static const luaL_Reg m_Module[] = {
     { "tr_version", M_L_GameTRVersion },
     { "cutscene_frame", M_L_GameCutsceneFrame },
     { "real_time", M_L_GameRealTime },
+    { "sim_time", M_L_GameSimTime },
     { "is_suspended", M_L_GameIsSuspended },
     { "is_photo_mode", M_L_GameIsPhotoMode },
     { "photo_mode_target", M_L_GamePhotoModeTarget },
