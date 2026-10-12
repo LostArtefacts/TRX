@@ -66,6 +66,17 @@ UI_LAYER FakeUIDraw_GetLayer(const int32_t index)
     return *(const UI_LAYER *)Vector_Get(m_Layers, index);
 }
 
+const char *FakeUIDraw_GetLayerName(const int32_t index)
+{
+    static const char *const names[UI_LAYER_NUMBER_OF] = {
+        [UI_LAYER_BACKDROP] = "backdrop",   [UI_LAYER_UNDER] = "under",
+        [UI_LAYER_INTERFACE] = "interface", [UI_LAYER_OVER] = "over",
+        [UI_LAYER_FADE] = "fade",           [UI_LAYER_CONSOLE] = "console",
+        [UI_LAYER_EXIT] = "exit",
+    };
+    return names[FakeUIDraw_GetLayer(index)];
+}
+
 void UI_InitDraw(void)
 {
 }

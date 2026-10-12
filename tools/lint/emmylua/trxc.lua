@@ -543,9 +543,7 @@ trxc = {}
 ---@field measure_text fun(text: string, scale?: number): number, number
 ---@field mesh_bounds fun(object: trx.catalog.objects): trx.math.Distance?, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance, trx.math.Distance
 ---@field panel fun(x: number, y: number, z?: integer, w: number, h: number, style: trx.ui.FrameStyle)
----@field pop_depth fun()
 ---@field pop_text_scale fun()
----@field push_depth fun(offset: integer)
 ---@field push_text_scale fun(factor: number)
 ---@field reserve fun(region: trx.ui.Region, w: number, h: number): integer
 ---@field set_clipboard fun(text: string)

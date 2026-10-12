@@ -60,16 +60,10 @@ static int M_FakeTick(lua_State *const L)
 // fake.scene_layers() -> the layer of each op of the last scene, by name
 static int M_FakeSceneLayers(lua_State *const L)
 {
-    static const char *const names[UI_LAYER_NUMBER_OF] = {
-        [UI_LAYER_UNDER] = "under",
-        [UI_LAYER_INTERFACE] = "interface",
-        [UI_LAYER_OVER] = "over",
-        [UI_LAYER_CONSOLE] = "console",
-    };
     const int32_t count = FakeUIDraw_GetCount();
     lua_createtable(L, count, 0);
     for (int32_t i = 0; i < count; i++) {
-        lua_pushstring(L, names[FakeUIDraw_GetLayer(i)]);
+        lua_pushstring(L, FakeUIDraw_GetLayerName(i));
         lua_rawseti(L, -2, i + 1);
     }
     return 1;

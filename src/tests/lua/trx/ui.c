@@ -115,6 +115,18 @@ static int M_FakePaint(lua_State *const L)
 }
 
 // Fires the script paint event for the layer the scene is running.
+// fake.scene_layers() -> the layer of each op of the last scene, by name
+static int M_FakeSceneLayers(lua_State *const L)
+{
+    const int32_t count = FakeUIDraw_GetCount();
+    lua_createtable(L, count, 0);
+    for (int32_t i = 0; i < count; i++) {
+        lua_pushstring(L, FakeUIDraw_GetLayerName(i));
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
 // fake.scene() -> table of scheduled operations
 //
 // Runs a whole scene the way the engine runs one: every region is opened for
@@ -230,6 +242,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "paint");
     lua_pushcfunction(L, M_FakeScene);
     lua_setfield(L, -2, "scene");
+    lua_pushcfunction(L, M_FakeSceneLayers);
+    lua_setfield(L, -2, "scene_layers");
     lua_pushcfunction(L, M_FakeDraw);
     lua_setfield(L, -2, "draw");
     lua_pushcfunction(L, M_FakeLastLabel);

@@ -20,6 +20,8 @@ int32_t FakeUIDraw_GetCount(void);
 const char *FakeUIDraw_GetLine(int32_t index);
 // Returns the layer a recorded draw call was scheduled in.
 UI_LAYER FakeUIDraw_GetLayer(int32_t index);
+// Returns the name of that layer, as tests spell it.
+const char *FakeUIDraw_GetLayerName(int32_t index);
 
 // Returns all recorded draw calls, one per line. Caller frees.
 char *FakeUIDraw_Describe(void);
