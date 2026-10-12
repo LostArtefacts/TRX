@@ -141,6 +141,20 @@ static int M_FakeTakeChoice(lua_State *const L)
     return 1;
 }
 
+// fake.set_background(screen, path?) - the picture a screen stands on.
+static int M_FakeSetBackground(lua_State *const L)
+{
+    static char path[256];
+    const UI_TAKEOVER screen = (UI_TAKEOVER)luaL_checkinteger(L, 1);
+    if (lua_isnoneornil(L, 2)) {
+        UI_Takeover_SetBackground(screen, nullptr);
+        return 0;
+    }
+    snprintf(path, sizeof(path), "%s", luaL_checkstring(L, 2));
+    UI_Takeover_SetBackground(screen, path);
+    return 0;
+}
+
 // fake.release(screen)
 static int M_FakeRelease(lua_State *const L)
 {
@@ -177,6 +191,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "take_choice");
     lua_pushcfunction(L, M_FakeRelease);
     lua_setfield(L, -2, "release");
+    lua_pushcfunction(L, M_FakeSetBackground);
+    lua_setfield(L, -2, "set_background");
 }
 
 CONFIG g_ConfigStorage = {};
