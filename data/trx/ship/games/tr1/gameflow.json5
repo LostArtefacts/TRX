@@ -604,6 +604,7 @@
         "enable_monkey_bar_edge_deflect",
         "enable_monkey_bar_shimmy_turn",
         "ally_hostility_policy",
+        "fix_bird_start_pos",
         "fix_monkey_pickup_priority",
         "fix_pipeman_aim",
         "fix_smoke_emitters",

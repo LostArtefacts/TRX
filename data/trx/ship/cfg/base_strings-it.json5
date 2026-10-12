@@ -1376,6 +1376,10 @@
             "title": "Correggi IA degli orsi",
             "description": "Risolve il problema per cui gli attacchi con la zampa degli orsi non colpiscono Lara.",
         },
+        "gameplay.fix_bird_start_pos": {
+            "title": "\\{review}Posizione iniziale uccelli",
+            "description": "\\{review}Corregge il problema per cui gli uccelli iniziano sempre sul pavimento sottostante, anche se posizionati inizialmente in aria.",
+        },
         "gameplay.fix_breakable_wall_clip": {
             "title": "Correggi pareti distruttibili",
             "description": "Risolve il problema che permetteva a Lara di oltrepassare (scavalcando o strisciando) le pareti distruttibili situate al confine di un settore. Se l'opzione è attiva, Lara si ferma davanti alla parete finché questa non viene distrutta.",

@@ -1376,6 +1376,10 @@
             "title": "Napraw AI niedźwiedzi",
             "description": "Naprawia atak niedźwiedzia, aby nie chybiał Lary.",
         },
+        "gameplay.fix_bird_start_pos": {
+            "title": "\\{review}Początek ptaków",
+            "description": "\\{review}Naprawia błąd, przez który ptaki zawsze pojawiają się na podłodze poniżej, mimo że początkowo umieszczono je w powietrzu.",
+        },
         "gameplay.fix_breakable_wall_clip": {
             "title": "\\{review}Napraw kruche ściany",
             "description": "\\{review}Naprawia problem, w którym Lara może podciągnąć się lub przeczołgać przez kruche ściany stojące na krawędzi sektora. Po włączeniu Lara zatrzymuje się przed ścianą, dopóki nie zostanie ona zniszczona.",

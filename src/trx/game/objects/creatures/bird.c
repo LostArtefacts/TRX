@@ -1,9 +1,11 @@
+#include <trx/config.h>
 #include <trx/core/utils.h>
 #include <trx/game/creature.h>
 #include <trx/game/demo.h>
 #include <trx/game/lara.h>
 #include <trx/game/objects/property.h>
 #include <trx/game/pathing.h>
+#include <trx/game/rooms.h>
 #include <trx/game/spawn.h>
 
 // clang-format off
@@ -14,11 +16,25 @@
 #define M_RADIUS            (WALL_L / 5) // = 204
 #define M_ATTACK_RANGE      SQUARE(WALL_L / 2) // = 262144
 #define M_TURN              (DEG_1 * 3) // = 546
-#define M_START_ANIM        5
-#define M_DIE_ANIM          8
-#define M_CROW_START_ANIM   14
-#define M_CROW_DIE_ANIM     1
 // clang-format on
+
+typedef enum {
+    // clang-format off
+    M_CROW_ANIM_DEATH    = 1,
+    M_CROW_ANIM_FLY      = 8,
+    M_CROW_ANIM_STOP     = 14,
+    M_CROW_ANIM_TAKE_OFF = 15,
+    // clang-format on
+} M_CROW_ANIM;
+
+typedef enum {
+    // clang-format off
+    M_GENERIC_ANIM_FLY      = 3,
+    M_GENERIC_ANIM_TAKE_OFF = 4,
+    M_GENERIC_ANIM_STOP     = 5,
+    M_GENERIC_ANIM_DEATH    = 8,
+    // clang-format on
+} M_GENERIC_ANIM;
 
 typedef enum {
     M_STATE_EMPTY,
@@ -44,19 +60,31 @@ static const BITE m_CrowBite = {
     .mesh_num = 14,
 };
 
+static bool M_ShouldFixStartPos(const ITEM *const item)
+{
+    return g_Config.gameplay.fix_bird_start_pos && item->pos.y != item->floor;
+}
+
 static void M_Initialise(const int16_t item_num)
 {
     Creature_Initialise(item_num);
     ITEM *const item = Item_Get(item_num);
-    if (item->object_id == O_CROW) {
-        Item_SwitchToAnim(item, M_CROW_START_ANIM, 0);
-        item->goal_anim_state = M_STATE_EAT;
-        item->current_anim_state = M_STATE_EAT;
+
+    const bool is_crow = item->object_id == O_CROW;
+    int16_t anim_num;
+    if (!M_ShouldFixStartPos(item)) {
+        anim_num = is_crow ? M_CROW_ANIM_STOP : M_GENERIC_ANIM_STOP;
+        item->pos.y = item->floor;
+    } else if (item->pos.y == item->floor) {
+        anim_num = is_crow ? M_CROW_ANIM_TAKE_OFF : M_GENERIC_ANIM_TAKE_OFF;
     } else {
-        Item_SwitchToAnim(item, M_START_ANIM, 0);
-        item->goal_anim_state = M_STATE_STOP;
-        item->current_anim_state = M_STATE_STOP;
+        anim_num = is_crow ? M_CROW_ANIM_FLY : M_GENERIC_ANIM_FLY;
     }
+
+    Item_SwitchToAnim(item, anim_num, 0);
+    const ANIM *const anim = Item_GetAnim(item);
+    item->current_anim_state = anim->current_anim_state;
+    item->goal_anim_state = anim->current_anim_state;
 }
 
 static void M_Control(const int16_t item_num)
@@ -85,8 +113,9 @@ static void M_Control(const int16_t item_num)
             break;
 
         default:
-            const int16_t anim_idx =
-                item->object_id == O_CROW ? M_CROW_DIE_ANIM : M_DIE_ANIM;
+            const int16_t anim_idx = item->object_id == O_CROW
+                ? M_CROW_ANIM_DEATH
+                : M_GENERIC_ANIM_DEATH;
             Item_SwitchToAnim(item, anim_idx, 0);
             item->current_anim_state = M_STATE_FALL;
             item->gravity = true;
