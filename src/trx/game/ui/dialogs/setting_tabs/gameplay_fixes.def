@@ -30,6 +30,7 @@ X_UI_ROW(gameplay.fix_free_flare_glitch)
 
 X_UI_ROW(gameplay.fix_alligator_ai)
 X_UI_ROW(gameplay.fix_bear_ai)
+X_UI_ROW(gameplay.fix_bird_start_pos)
 X_UI_ROW(gameplay.fix_monkey_pickup_priority)
 X_UI_ROW(gameplay.fix_pipeman_aim)
 X_UI_ROW(audio.fix_chainblock_secret_sound)

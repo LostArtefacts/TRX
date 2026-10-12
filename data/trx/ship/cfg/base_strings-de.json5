@@ -1376,6 +1376,10 @@
             "title": "Fix: Bären-AI",
             "description": "Fixt, dass die aufrecht stehend ausgeführten Prankenhiebe von Bären Lara nicht mehr verfehlen.",
         },
+        "gameplay.fix_bird_start_pos": {
+            "title": "\\{review}Vogelstart korrigieren",
+            "description": "\\{review}Behebt, dass Vögel immer auf dem Boden unterhalb ihrer ursprünglichen Position in der Luft starten.",
+        },
         "gameplay.fix_breakable_wall_clip": {
             "title": "\\{review}Fix: Zerbrechliche Wände durchqueren",
             "description": "\\{review}Fixt, dass Lara sich durch zerbrechliche Wände am Rand eines Sektors hochziehen oder hindurchkriechen kann. Wenn aktiviert, hält sie vor der Wand an, bis diese zerstört ist.",

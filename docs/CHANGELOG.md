@@ -74,6 +74,7 @@
 - Added a `blocks_portal` property to trapdoors to make them behave like in TR4+
 - Added a `final_shot_damage` property to RX-Tech gunmen and armed MPs (#6801 / TRX178)
 - Added a `blow_time` property to the `fire_head` object, replacing OG TR3's trigger timer setup; refer to the migration guide (#6828, TRX1717)
+- Fixed birds placed in mid-air always shifting to the floor when triggered in custom levels (Gameplay → Fixes → Fix bird start positions)
 - Fixed a crash if Lara tried to aim at an enemy who had invalid animation data (#6744 / TRX1632)
 - Fixed missing names for the Trigger Gate object, and being unable to activate them via the `/trigger` command
 - Fixed injections that change how an object behaves carrying over to later levels and mods, such as spiders acting as wolves in TR2 after playing TR2 Gold, and enemy jeeps in TR4 (TRX1686)
@@ -107,6 +108,8 @@
 - Fixed guns that eject shells puffing smoke at the muzzle rather than at the shell
 - Fixed a misaligned barrier mesh in Aldwych room 57 (TRX1639, regression from 1.5)
 - Fixed missing gun flashes in the Antarctica cutscene (OG bug) (TRX1540)
+- Fixed crow 68 in Highland Fling dying as soon it spawned (#6849 / TRX1737)
+- Fixed the vultures at the beginning of Nevada Desert visibly shifting to the floor when triggered
 
 **TR4**
 - Added Small Scorpion control (TRX1562)

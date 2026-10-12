@@ -1376,6 +1376,10 @@
             "title": "Fix bear AI",
             "description": "Fixes the bear pat attack so it does not miss Lara.",
         },
+        "gameplay.fix_bird_start_pos": {
+            "title": "Fix bird start positions",
+            "description": "Fixes birds always starting on the floor below them despite being placed initially in the air.",
+        },
         "gameplay.fix_breakable_wall_clip": {
             "title": "Fix breakable wall clipping",
             "description": "Fixes Lara being able to vault or crawl through breakable walls that stand on the edge of a sector. If enabled, she stops at the wall until it is broken.",

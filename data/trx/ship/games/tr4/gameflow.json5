@@ -664,6 +664,7 @@
         "fix_animated_spikes",
         "fix_animated_sprites",
         "fix_bear_ai",
+        "fix_bird_start_pos",
         "fix_chainblock_secret_sound",
         "fix_lift_collision",
         "fix_monkey_pickup_priority",
