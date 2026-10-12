@@ -11,6 +11,7 @@
 #include <trx/game/output/scene_compositor.h>
 #include <trx/game/output/sources/objects.h>
 #include <trx/game/viewport.h>
+#include <trx/gl/renderer.h>
 #include <trx/gl/utils.h>
 #include <trx/version.h>
 
@@ -123,13 +124,17 @@ static void M_DrawMeshes(const M_PRIV *const p)
             continue;
         }
 
+        // A model turned or fitted loosely reaches past its box, so the box it
+        // is smoothed in has room around it.
+        const VIEWPORT_RECT rect = mesh->rect;
+        const bool own_target = TRX_GL_Renderer_BeginUiModel(
+            rect.x - rect.w / 2, rect.y - rect.h / 2, rect.w * 2, rect.h * 2);
         if (p->objects_source->render_begin != nullptr) {
             p->objects_source->render_begin(p->objects_source);
         }
         // Each model hides its own far side, and only its own.
         glClear(GL_DEPTH_BUFFER_BIT);
 
-        const VIEWPORT_RECT rect = mesh->rect;
         const float scale = M_GetMeshScale(rect, frame);
         const XYZ_32 origin = {
             .x = rect.x + rect.w / 2,
@@ -232,6 +237,13 @@ static void M_DrawMeshes(const M_PRIV *const p)
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
         if (p->objects_source->render_end != nullptr) {
             p->objects_source->render_end(p->objects_source);
+        }
+        if (own_target) {
+            TRX_GL_Renderer_EndUiModel();
+            SceneCompositor_BindTextures();
+            Output_MeshShader_Bind(Output_GetMeshShader());
+            glEnable(GL_DEPTH_TEST);
+            glEnable(GL_CULL_FACE);
         }
     }
 

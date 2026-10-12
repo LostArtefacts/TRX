@@ -18,3 +18,6 @@ void SceneCompositor_EndCapture(void);
 
 void SceneCompositor_AnimateTextures(void);
 void SceneCompositor_SetSamplerFilter(TEXTURE_FILTER filter);
+// Binds the texture atlas, the environment map and the sampler the sources
+// draw with.
+void SceneCompositor_BindTextures(void);
