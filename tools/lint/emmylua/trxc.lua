@@ -44,6 +44,7 @@
 ---@field store trxc.store
 ---@field strings trxc.strings
 ---@field struct trxc.struct
+---@field tween trxc.tween
 ---@field ui trxc.ui
 ---@field waypoints trxc.waypoints
 ---@field weapons trxc.weapons
@@ -506,6 +507,15 @@ trxc = {}
 ---@field expose_method fun(type: string, public_name: string, impl: string|function)
 ---@field members fun(type: string): { name: string, type: string, writable: boolean }[]
 ---@field method fun(type: string, c_name: string): function
+
+---@class (exact) trxc.tween
+---@field ease fun(curve: string, ratio: number): number
+---@field get fun(tween: userdata): number
+---@field is_moving fun(tween: userdata): boolean
+---@field new fun(value: number): userdata
+---@field set fun(tween: userdata, value: number)
+---@field target fun(tween: userdata): number
+---@field to fun(tween: userdata, target: number, ticks: integer, curve: string, delay: integer)
 
 ---@class (exact) trxc.ui
 ---@field bar_scale fun(): number
