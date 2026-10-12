@@ -437,7 +437,7 @@ static void M_DrawOp_Darken(const M_DRAW_OP *const base)
 {
     const M_DRAW_OP_DARKEN *const op = (const M_DRAW_OP_DARKEN *)base;
     M_BeginScene();
-    Output_Overlay_DrawBlackRectangle(op->opacity, false);
+    Output_Overlay_DrawBlackRectangle(op->opacity);
     M_EndScene();
 }
 
@@ -446,14 +446,14 @@ static void M_DrawOp_Background(const M_DRAW_OP *const base)
     const M_DRAW_OP_BACKGROUND *const op = (const M_DRAW_OP_BACKGROUND *)base;
     M_BeginScene();
     if (op->path == nullptr) {
-        Output_Overlay_DrawBlackRectangle(1.0f, false);
+        Output_Overlay_DrawBlackRectangle(1.0f);
     } else {
         if (op->mono) {
             Output_Overlay_DrawImageMono(op->path, 1.0f);
         } else {
             Output_Overlay_DrawImage(op->path);
         }
-        Output_Overlay_DrawBlackRectangle(op->dim, false);
+        Output_Overlay_DrawBlackRectangle(op->dim);
     }
     M_EndScene();
 }
@@ -593,6 +593,17 @@ void UI_ScheduleDrawImage(
             .y1 = y1,
             .opacity = opacity,
         }));
+}
+
+void UI_ScheduleDrawScreenBlack(const float opacity)
+{
+    if (opacity <= 0.0f) {
+        return;
+    }
+    UI_ScheduleDrawScreenFlatQuad(
+        0, 0, 0, Viewport_GetWidth(VIEWPORT_UI),
+        Viewport_GetHeight(VIEWPORT_UI),
+        (RGBA_8888) { .a = (uint8_t)(MIN(opacity, 1.0f) * 255.0f + 0.5f) });
 }
 
 void UI_ScheduleDrawScreenFlatQuad(

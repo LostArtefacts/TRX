@@ -55,6 +55,7 @@
 - Added `/debug zones`, which outlines the zones a mod watches (#6726)
 - Changed the `/give` console command to show the given items in the corner of the screen, except for `/give all`. Use `-q` to hide them.
 - Fixed a bug where console commands such as `/play` were ignored when issued during a loading screen (TRX1623)
+- Fixed the console being covered by the game's fades, such as the title ring fading in from black
 
 **Gameplay**
 - Added the ability to combine the two halves of an item in the inventory, such as the eye pieces in Tomb of Seth (TRX482)

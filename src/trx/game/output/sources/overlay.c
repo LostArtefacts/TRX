@@ -34,9 +34,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#define M_SCHEDULE_OP(queue_id, draw_func, inst)                               \
+#define M_SCHEDULE_OP(draw_func, inst)                                         \
     M_ScheduleOpHelper(                                                        \
-        &m_Priv, queue_id, draw_func, sizeof(inst), (const M_DRAW_OP *)&inst);
+        &m_Priv, draw_func, sizeof(inst), (const M_DRAW_OP *)&inst);
 
 #define M_IMAGE_CACHE_CAPACITY 5
 #define M_RELATIVE_ERROR(a, b) ABS((a) - (b)) / (b)
@@ -117,7 +117,7 @@ typedef struct {
 typedef struct {
     SCENE_SOURCE source;
     MEMORY_ARENA_ALLOCATOR alloc;
-    VECTOR *ops[2];
+    VECTOR *ops;
     OUTPUT_QUAD *renderer;
     TRX_GL_TEXTURE solid_black_texture;
     struct {
@@ -509,20 +509,19 @@ static inline void *M_ArenaAlloc(M_PRIV *const p, const size_t sz)
     return mem;
 }
 
-static inline void M_ScheduleOp(
-    M_PRIV *const p, const int32_t queue_id, M_DRAW_OP *const op)
+static inline void M_ScheduleOp(M_PRIV *const p, M_DRAW_OP *const op)
 {
-    Vector_Add(p->ops[queue_id], &op);
+    Vector_Add(p->ops, &op);
 }
 
 static void M_ScheduleOpHelper(
-    M_PRIV *const p, const int32_t queue_id, const M_DRAW_OP_FUNC draw_func,
-    const size_t size, const M_DRAW_OP *const op_src)
+    M_PRIV *const p, const M_DRAW_OP_FUNC draw_func, const size_t size,
+    const M_DRAW_OP *const op_src)
 {
     M_DRAW_OP *const op = M_ArenaAlloc(&m_Priv, size);
     memcpy(op, op_src, size);
     op->draw = draw_func;
-    M_ScheduleOp(p, queue_id, op);
+    M_ScheduleOp(p, op);
 }
 
 static void M_DrawOp_BlackRectangle(const M_DRAW_OP *const base)
@@ -602,7 +601,7 @@ static void M_DrawImageImpl(
             op.height = e->texture_height;
             op.desaturation = intensity;
             op.texture_filter = texture_filter;
-            M_SCHEDULE_OP(false, M_DrawOp_Image, op);
+            M_SCHEDULE_OP(M_DrawOp_Image, op);
             return;
         }
     }
@@ -813,8 +812,7 @@ static void M_DrawTransitionSnapshot(M_PRIV *const p)
 static void M_RenderBegin(const SCENE_SOURCE *const source)
 {
     M_PRIV *const p = &m_Priv;
-    Vector_Clear(p->ops[0]);
-    Vector_Clear(p->ops[1]);
+    Vector_Clear(p->ops);
     Memory_ArenaReset(&p->alloc);
 }
 
@@ -823,9 +821,7 @@ static void M_RenderPass(const SCENE_SOURCE *const src, const SCENE_PASS pass)
     M_PRIV *const p = &m_Priv;
     if (pass == SCENE_PASS_OVERLAY_PRE_UI) {
         M_DrawTransitionSnapshot(p);
-        M_RunQueue(p->ops[0]);
-    } else if (pass == SCENE_PASS_OVERLAY_POST_UI) {
-        M_RunQueue(p->ops[1]);
+        M_RunQueue(p->ops);
     }
 }
 
@@ -833,10 +829,8 @@ static bool M_IsDirty(const SCENE_SOURCE *const src, const SCENE_PASS pass)
 {
     M_PRIV *const p = &m_Priv;
     if (pass == SCENE_PASS_OVERLAY_PRE_UI) {
-        return p->ops[0]->count > 0
+        return p->ops->count > 0
             || (p->snapshot.transition_active && !p->snapshot.transition_drawn);
-    } else if (pass == SCENE_PASS_OVERLAY_POST_UI) {
-        return p->ops[1]->count > 0;
     }
     return false;
 }
@@ -977,7 +971,7 @@ void Output_Overlay_DrawSnapshotEx(
     }
 
     M_SCHEDULE_OP(
-        false, M_DrawOp_Snapshot,
+        M_DrawOp_Snapshot,
         ((M_DRAW_OP_SNAPSHOT) {
             .texture_id = p->snapshot.state.texture.id,
             .width = p->snapshot.state.width,
@@ -997,7 +991,7 @@ void Output_Overlay_DrawPattern(const bool wave)
 void Output_Overlay_DrawPatternOpacity(const bool wave, const float opacity)
 {
     M_SCHEDULE_OP(
-        false, M_DrawOp_Pattern,
+        M_DrawOp_Pattern,
         ((M_DRAW_OP_PATTERN) { .wave = wave, .opacity = opacity }));
 }
 
@@ -1083,13 +1077,13 @@ void Output_Overlay_DrawBackground(
         if (image_path == nullptr) {
             // Use the dark style when no image is configured.
             Output_Overlay_DrawSnapshot(1.0f);
-            Output_Overlay_DrawBlackRectangle(opacity * 0.8f, false);
+            Output_Overlay_DrawBlackRectangle(opacity * 0.8f);
         } else if (Output_Overlay_LoadImage(image_path)) {
             Output_Overlay_DrawImageBilinear(image_path);
-            Output_Overlay_DrawBlackRectangle(opacity, false);
+            Output_Overlay_DrawBlackRectangle(opacity);
         } else {
             // Hide the background when the image fails to load.
-            Output_Overlay_DrawBlackRectangle(1.0f, false);
+            Output_Overlay_DrawBlackRectangle(1.0f);
         }
         break;
 
@@ -1102,17 +1096,17 @@ void Output_Overlay_DrawBackground(
             .tint = tint.tint,
             .blur = tint.blur,
         });
-        Output_Overlay_DrawBlackRectangle(tint.black_opacity, false);
+        Output_Overlay_DrawBlackRectangle(tint.black_opacity);
         break;
     }
     }
 }
 
-void Output_Overlay_DrawBlackRectangle(const float opacity, const bool post_ui)
+void Output_Overlay_DrawBlackRectangle(const float opacity)
 {
     if (opacity > 0.0f) {
         M_SCHEDULE_OP(
-            post_ui, M_DrawOp_BlackRectangle,
+            M_DrawOp_BlackRectangle,
             ((M_DRAW_OP_BLACK_RECTANGLE) { .opacity = opacity }));
     }
 }
@@ -1165,7 +1159,7 @@ float Output_Overlay_GetFade(void)
 void Output_Overlay_DrawLetterbox(void)
 {
     if (m_Fade > 0.0f) {
-        Output_Overlay_DrawBlackRectangle(m_Fade, false);
+        Output_Overlay_DrawBlackRectangle(m_Fade);
     }
     if (m_Letterbox <= 0.0f) {
         return;
@@ -1198,8 +1192,7 @@ void OutputSource_Overlay_Init(void)
     p->source.render_begin = M_RenderBegin;
     p->source.render_pass = M_RenderPass;
     p->source.is_dirty = M_IsDirty;
-    p->ops[0] = Vector_Create(sizeof(M_DRAW_OP *));
-    p->ops[1] = Vector_Create(sizeof(M_DRAW_OP *));
+    p->ops = Vector_Create(sizeof(M_DRAW_OP *));
     SceneCompositor_AddSource(&p->source);
 }
 
@@ -1232,13 +1225,9 @@ void OutputSource_Overlay_Shutdown(void)
     p->snapshot.state.has_content = false;
     M_CloseTexture(&p->solid_black_texture);
 
-    if (p->ops[0] != nullptr) {
-        Vector_Free(p->ops[0]);
-        p->ops[0] = nullptr;
-    }
-    if (p->ops[1] != nullptr) {
-        Vector_Free(p->ops[1]);
-        p->ops[1] = nullptr;
+    if (p->ops != nullptr) {
+        Vector_Free(p->ops);
+        p->ops = nullptr;
     }
     Memory_ArenaFree(&p->alloc);
 }

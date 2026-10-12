@@ -120,6 +120,11 @@ void UI_ScheduleDrawTextOutline(
         (int32_t)ui_style, sx, sy, z, w, h, (int32_t)text_style));
 }
 
+void UI_ScheduleDrawScreenBlack(const float opacity)
+{
+    FakeUIDraw_Record(String_FormatStatic("black opacity=%.3f", opacity));
+}
+
 void UI_ScheduleDrawScreenFlatQuad(
     const int32_t sx, const int32_t sy, const int32_t z, const int32_t w,
     const int32_t h, const RGBA_8888 color)

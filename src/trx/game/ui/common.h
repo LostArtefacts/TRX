@@ -124,6 +124,8 @@ typedef enum {
     UI_LAYER_INTERFACE,
     // Script widgets over the engine interface.
     UI_LAYER_OVER,
+    // Fades over the whole interface.
+    UI_LAYER_FADE,
     // The console, over every other layer but the game-exit fade.
     UI_LAYER_CONSOLE,
     // The fade to black as the game exits, over everything.

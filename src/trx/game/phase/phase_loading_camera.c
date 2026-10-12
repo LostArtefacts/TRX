@@ -11,6 +11,8 @@
 #include <trx/game/rooms.h>
 #include <trx/game/shell.h>
 #include <trx/game/ui.h>
+#include <trx/game/ui/common.h>
+#include <trx/game/ui/draw.h>
 #include <trx/game/ui/elements/loading_bar.h>
 #include <trx/game/ui/elements/modal.h>
 #include <trx/game/viewport.h>
@@ -131,7 +133,9 @@ static void M_Draw(PHASE *const phase)
         UI_EndModal();
     }
 
-    Output_Overlay_DrawBlackRectangle(Fader_GetCurrentValue(&p->fader), true);
+    UI_BeginLayer(UI_LAYER_FADE);
+    UI_ScheduleDrawScreenBlack(Fader_GetCurrentValue(&p->fader));
+    UI_EndLayer(UI_LAYER_FADE);
 }
 
 PHASE *Phase_LoadingCamera_Create(const PHASE_LOADING_CAMERA_ARGS args)
