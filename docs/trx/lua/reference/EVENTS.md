@@ -135,7 +135,7 @@ return.
   Parameters:
   - <a id="events.on_tick.callback" name="events.on_tick.callback"></a>**`callback`** (function). Called once per tick.
 
-  Returns: integer. The listener id.
+  Returns: [trx.events.Listener](#events.Listener). The attached handler.
 
 - <a id="events.on_key_down" name="events.on_key_down"></a>[lua]`trx.events.on_key_down(callback)`  
   Happens as a key goes down, before the game reads it as an action. The

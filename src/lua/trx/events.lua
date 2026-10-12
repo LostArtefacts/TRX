@@ -165,8 +165,8 @@ M.on_level_unload = hook(types.LEVEL_UNLOAD)
 ---level is running - and it is not a frame reaching the screen, which happens
 ---twice as often while frames are interpolated.
 ---@param callback function Called once per tick.
----@return integer # The listener id.
----@type fun(callback: function): integer
+---@return trx.events.Listener # The attached handler.
+---@type fun(callback: function): trx.events.Listener
 M.on_tick = hook(types.TICK)
 
 ---Happens as a key goes down, before the game reads it as an action. The

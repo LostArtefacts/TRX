@@ -15,7 +15,7 @@ local h = require("trx.internal.helpers")
 ---@class (exact) trx.game
 ---@trx.readonly current_level, cutscene_frame, cutscenes, demos, fmvs, gym,
 ---  is_loaded, is_ngplus, is_photo_mode, is_playable, is_playing,
----  is_suspended, levels, measured_fps, photo_mode_target, real_time,
+---  is_suspended, levels, measured_fps, photo_mode_target, real_time, sim_time,
 ---  tr_version, version
 ---@field levels trx.game.Level[] The levels of the game, in order, counted from one.
 ---@field cutscenes trx.game.Level[] The cutscene levels, counted from one. TR4's in-game cutscenes are a different thing, and live in `trx.cutscenes`.
@@ -33,6 +33,7 @@ local h = require("trx.internal.helpers")
 ---  This is the cutscene a level plays as a level of its own, as TR1 to TR3
 ---  do. `trx.cutscenes.Cutscene.frame_num` reports the TR4 kind.
 ---@field real_time number Seconds of wall-clock time since the game started, which keeps running while the game is held still. Use it to time something against the player's clock rather than against the frames the game has run.
+---@field sim_time number Seconds the game's own clock has counted, which runs faster or slower with the game's speed. The game times its fades by it.
 ---@field tr_version integer Which Tomb Raider the level being played belongs to: `1` through `4`. The games differ in what they draw and in what the player expects, so a script that dresses more than one reads this to tell them apart. Zero before a level is loaded.
 ---@field is_suspended boolean Whether a loaded level is held still: the pause screen, photo mode, or the inventory ring. Lara and the creatures do not move while it is true. It is false outside a level, which is what tells it apart from the opposite of `trx.game.is_playing`.
 ---@field is_photo_mode boolean Whether the player is in photo mode, where the camera is theirs to move and the game is held still.
@@ -298,6 +299,7 @@ h.properties(M, "game", {
   is_playable = { get = raw.is_playable },
   cutscene_frame = { get = raw.cutscene_frame },
   real_time = { get = raw.real_time },
+  sim_time = { get = raw.sim_time },
   tr_version = { get = raw.tr_version },
   is_suspended = { get = raw.is_suspended },
   is_photo_mode = { get = raw.is_photo_mode },

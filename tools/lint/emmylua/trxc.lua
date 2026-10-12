@@ -241,6 +241,7 @@ trxc = {}
 ---@field real_time fun(): trx.game.Seconds
 ---@field restart_level fun()
 ---@field screenshot fun(path?: string)
+---@field sim_time fun(): trx.game.Seconds
 ---@field start_new_game fun(ng_plus?: boolean)
 ---@field tr_version fun(): integer
 

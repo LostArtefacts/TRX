@@ -254,6 +254,7 @@
     - `trx.ui.ScreenContext.level`, `trx.ui.ScreenContext.is_final` and `trx.ui.ScreenContext.is_bare`, which say what the statistics screen shows
 - Added `trx.strings.upper` and `trx.strings.lower`, which change the case of the letters the game's font draws, beyond ASCII too
 - Added `trx.game.Level.is_completed`, which says whether the player has finished a level
+- Added `trx.game.sim_time`, the game's own clock, which its fades are timed by
 - Added `icon` to the entries of `trx.stats.Stats:secret_list`, which names the glyph that draws a secret
 - Added `trx.assault.stats.clear`, which clears a track's best times as the stats screen's reset button does
 - Added `trx.objects.Object.description`, the text the game shows when the player examines an object
