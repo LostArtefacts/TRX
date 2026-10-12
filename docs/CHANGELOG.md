@@ -75,6 +75,7 @@
 - Added a `final_shot_damage` property to RX-Tech gunmen and armed MPs (#6801 / TRX178)
 - Added a `blow_time` property to the `fire_head` object, replacing OG TR3's trigger timer setup; refer to the migration guide (#6828, TRX1717)
 - Fixed birds placed in mid-air always shifting to the floor when triggered in custom levels (Gameplay → Fixes → Fix bird start positions)
+- Fixed birds placed over slopes not being able to pathfind when they are triggered (OG bug)
 - Fixed a crash if Lara tried to aim at an enemy who had invalid animation data (#6744 / TRX1632)
 - Fixed missing names for the Trigger Gate object, and being unable to activate them via the `/trigger` command
 - Fixed injections that change how an object behaves carrying over to later levels and mods, such as spiders acting as wolves in TR2 after playing TR2 Gold, and enemy jeeps in TR4 (TRX1686)
