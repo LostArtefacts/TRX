@@ -352,13 +352,17 @@ arrow, and `\{button left}` draws the button the player has bound.
 
       Returns: number. The target.
 
-    - <a id="ui.Tween.to" name="ui.Tween.to"></a>[lua]`tween:to(target, ticks, [curve])`  
+    - <a id="ui.Tween.to" name="ui.Tween.to"></a>[lua]`tween:to(target, ticks, [curve], [options])`  
       Starts moving to a target from wherever the value is now.
 
       Parameters:
       - <a id="ui.Tween.to.target" name="ui.Tween.to.target"></a>**`target`** (number). Where to go.
       - <a id="ui.Tween.to.ticks" name="ui.Tween.to.ticks"></a>**`ticks`** (integer). How many ticks the move takes.
-      - <a id="ui.Tween.to.curve" name="ui.Tween.to.curve"></a>**`curve`** (function, optional). The curve of the move, one of [`trx.ui.ease`](#ui.ease). [`trx.ui.ease.linear`](#ui.ease.linear) by default.
+      - <a id="ui.Tween.to.curve" name="ui.Tween.to.curve"></a>**`curve`** (function, optional). The curve of the move, one of [`trx.ui.ease`](#ui.ease). [`trx.ui.ease.linear`](#ui.ease.linear) by default. Any other function raises an error.
+      - <a id="ui.Tween.to.options" name="ui.Tween.to.options"></a>**`options`** (table, optional). When the move starts.
+
+        Keys:
+        - <a id="ui.Tween.to.options.delay" name="ui.Tween.to.options.delay"></a>**`delay`** (integer, optional). How many ticks to wait before the move starts. The value holds still while it waits, and [`is_moving`](#ui.Tween.is_moving) reports true. `0` by default.
 
       Returns: [trx.ui.Tween](#ui.Tween). The same tween.
 

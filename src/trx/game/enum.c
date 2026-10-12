@@ -39,6 +39,7 @@
 #include <trx/game/ui/elements/stack.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/settings.h>
+#include <trx/game/ui/tween.h>
 
 static __attribute__((constructor)) void M_Init(void)
 {
@@ -212,6 +213,11 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(INVENTORY_MODE, INV_LOAD_MODE, "load");
     ENUM_MAP(INVENTORY_MODE, INV_DEATH_MODE, "death");
     ENUM_MAP(INVENTORY_MODE, INV_SAVE_CRYSTAL_MODE, "save_crystal");
+
+    ENUM_MAP(UI_EASE, UI_EASE_LINEAR, "linear");
+    ENUM_MAP(UI_EASE, UI_EASE_QUAD_IN, "quad_in");
+    ENUM_MAP(UI_EASE, UI_EASE_QUAD_OUT, "quad_out");
+    ENUM_MAP(UI_EASE, UI_EASE_QUAD_IN_OUT, "quad_in_out");
 
     ENUM_MAP(UI_PAINT_LAYER, UI_PAINT_LAYER_UNDER, "under");
     ENUM_MAP(UI_PAINT_LAYER, UI_PAINT_LAYER_OVER, "over");

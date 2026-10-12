@@ -1,8 +1,7 @@
-local raw = trxc.ui
+local raw = trxc.tween
 local h = require("trx.internal.helpers")
 
 require("trx.ui")
-require("trx.signal")
 
 local ui = trx.ui
 
@@ -22,39 +21,37 @@ local ease = trx.ui.ease
 ---@param ratio number How far the move has gone in time.
 ---@return number # How far the value has gone.
 function ease.linear(ratio)
-  return ratio
+  return raw.ease("linear", ratio)
 end
 
 ---Slow to start.
 ---@param ratio number How far the move has gone in time.
 ---@return number # How far the value has gone.
 function ease.quad_in(ratio)
-  return ratio * ratio
+  return raw.ease("quad_in", ratio)
 end
 
 ---Slow to finish.
 ---@param ratio number How far the move has gone in time.
 ---@return number # How far the value has gone.
 function ease.quad_out(ratio)
-  local rest = 1 - ratio
-  return 1 - rest * rest
+  return raw.ease("quad_out", ratio)
 end
 
 ---Slow at both ends, fastest in the middle.
 ---@param ratio number How far the move has gone in time.
 ---@return number # How far the value has gone.
 function ease.quad_in_out(ratio)
-  if ratio < 0.5 then
-    return 2 * ratio * ratio
-  end
-  local rest = ratio - 1
-  return 1 - 2 * rest * rest
+  return raw.ease("quad_in_out", ratio)
 end
 
--- The tick a frame is drawn at, part way between the last two ticks.
-local function now()
-  return trx.signal.tick:get() - 1 + raw.interpolation_rate()
-end
+-- The engine runs a tween on its own copy of the curve, which it knows by name.
+local CURVES = {
+  [ease.linear] = "linear",
+  [ease.quad_in] = "quad_in",
+  [ease.quad_out] = "quad_out",
+  [ease.quad_in_out] = "quad_in_out",
+}
 
 ---A number that moves to a target over some ticks.
 ---
@@ -70,51 +67,44 @@ end
 ---```
 ---@class (exact) trx.ui.Tween
 ---@field private __index trx.ui.Tween
----@field private _from number
----@field private _to number
----@field private _start number
----@field private _ticks number
----@field private _ease function
+---@field private _raw userdata
 local Tween = h.class("ui.Tween")
 
 ---The value now.
 ---@return number # The value.
 function Tween:get()
-  local ticks = rawget(self, "_ticks")
-  local elapsed = now() - rawget(self, "_start")
-  if ticks <= 0 or elapsed >= ticks then
-    return rawget(self, "_to")
-  end
-  local from = rawget(self, "_from")
-  local ratio = rawget(self, "_ease")(math.max(elapsed, 0) / ticks)
-  return from + (rawget(self, "_to") - from) * ratio
+  return raw.get(rawget(self, "_raw"))
 end
 
 ---Where the value is going, or where it rests.
 ---@return number # The target.
 function Tween:target()
-  return rawget(self, "_to")
+  return raw.target(rawget(self, "_raw"))
 end
 
 ---Whether the value is still on its way to its target, counted in whole
 ---ticks, as the input a script reads each tick is.
 ---@return boolean # `true` until the tick the move ends on.
 function Tween:is_moving()
-  return trx.signal.tick:get() - rawget(self, "_start")
-    < rawget(self, "_ticks")
+  return raw.is_moving(rawget(self, "_raw"))
 end
+
+---@class (exact) trx.ui.Tween.to.options
+---@field delay? integer How many ticks to wait before the move starts. The value holds still while it waits, and `trx.ui.Tween:is_moving` reports true. `0` by default.
 
 ---Starts moving to a target from wherever the value is now.
 ---@param target number Where to go.
 ---@param ticks integer How many ticks the move takes.
----@param curve? function The curve of the move, one of `trx.ui.ease`. `trx.ui.ease.linear` by default.
+---@param curve? function The curve of the move, one of `trx.ui.ease`. `trx.ui.ease.linear` by default. Any other function raises an error.
+---@param options? trx.ui.Tween.to.options When the move starts.
 ---@return trx.ui.Tween # The same tween.
-function Tween:to(target, ticks, curve)
-  rawset(self, "_from", self:get())
-  rawset(self, "_to", target)
-  rawset(self, "_start", trx.signal.tick:get())
-  rawset(self, "_ticks", ticks)
-  rawset(self, "_ease", curve or ease.linear)
+function Tween:to(target, ticks, curve, options)
+  local name = CURVES[curve or ease.linear]
+  if name == nil then
+    error("the curve is not one of trx.ui.ease", 2)
+  end
+  local delay = options ~= nil and options.delay or 0
+  raw.to(rawget(self, "_raw"), target, ticks, name, delay)
   return self
 end
 
@@ -122,9 +112,7 @@ end
 ---@param value number The value.
 ---@return trx.ui.Tween # The same tween.
 function Tween:set(value)
-  rawset(self, "_from", value)
-  rawset(self, "_to", value)
-  rawset(self, "_ticks", 0)
+  raw.set(rawget(self, "_raw"), value)
   return self
 end
 
@@ -132,12 +120,5 @@ end
 ---@param value? number Where it rests. `0` by default.
 ---@return trx.ui.Tween # The tween.
 function ui.tween(value)
-  value = value or 0
-  return setmetatable({
-    _from = value,
-    _to = value,
-    _start = 0,
-    _ticks = 0,
-    _ease = ease.linear,
-  }, Tween)
+  return setmetatable({ _raw = raw.new(value or 0) }, Tween)
 end
