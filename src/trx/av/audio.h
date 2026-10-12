@@ -40,6 +40,10 @@ RESULT Audio_Stream_SetVolume(int32_t sound_id, float volume);
 // silence and ends it, calling its finish callback as if it had run out.
 RESULT Audio_Stream_FadeIn(int32_t sound_id, double seconds);
 RESULT Audio_Stream_FadeOut(int32_t sound_id, double seconds);
+// Muffles the stream by cutting what lies above the given frequency, in Hz.
+// The cutoff glides to a new value instead of jumping. Zero or less lets the
+// stream through whole.
+RESULT Audio_Stream_SetLowPass(int32_t sound_id, float cutoff);
 
 // Play the stream faster or slower, pitching it with the rate the way a tape
 // does. Timestamps stay in the source timeline.
