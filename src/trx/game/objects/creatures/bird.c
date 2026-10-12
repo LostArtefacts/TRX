@@ -62,7 +62,10 @@ static const BITE m_CrowBite = {
 
 static bool M_ShouldFixStartPos(const ITEM *const item)
 {
-    return g_Config.gameplay.fix_bird_start_pos && item->pos.y != item->floor;
+    int16_t room_num = item->room_num;
+    const SECTOR *const sector = Room_GetSector(item->pos, &room_num);
+    return sector->box == NO_BOX
+        || (g_Config.gameplay.fix_bird_start_pos && item->pos.y != item->floor);
 }
 
 static void M_Initialise(const int16_t item_num)
