@@ -211,7 +211,12 @@ b_matrix = {
 }
 
 b_lua_math = {
-  'engine': ['core/math/trig.c', 'game/lua/capi/math.c'],
+  'engine': [
+    'core/math/func.c',
+    'core/math/geom.c',
+    'core/math/trig.c',
+    'game/lua/capi/math.c',
+  ],
   'deps': [dep_mathlibrary],
 }
 

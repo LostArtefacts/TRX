@@ -31,6 +31,16 @@ test("a full turn wraps to where it started", function()
   assert(trx.math.cos(4 * DEG_90) == trx.math.cos(0))
 end)
 
+test("rotate turns a vector as the engine turns a model", function()
+  local ahead = { x = 0, y = 0, z = 1024 }
+  local turned = trx.math.rotate(ahead, { x = 0, y = DEG_90, z = 0 })
+  assert(turned.x == 1024 and turned.y == 0 and turned.z == 0, "yaw")
+  local pitched = trx.math.rotate(ahead, { x = DEG_90, y = 0, z = 0 })
+  assert(pitched.x == 0 and pitched.z == 0 and pitched.y ~= 0, "pitch")
+  local still = trx.math.rotate(ahead, { x = 0, y = 0, z = 0 })
+  assert(still.x == 0 and still.y == 0 and still.z == 1024, "no turn")
+end)
+
 -- The engine's angles run clockwise from +z, and atan takes z first.
 test("atan takes z before x", function()
   assert(trx.math.atan(0, 0) == 0)

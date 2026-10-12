@@ -167,6 +167,22 @@ where the engine would. [`trx.math.Angle`](#math.Angle) says what an angle is he
   local angle = trx.math.atan(lara.pos.z - pos.z, lara.pos.x - pos.x)
   ```
 
+- <a id="math.rotate" name="math.rotate"></a>[lua]`trx.math.rotate(vec, rot)`  
+  Turns a vector as the engine turns a model by the same rotation: by its yaw,
+  then its pitch, then its roll, the way [`trx.math.Rot`](#math.Rot) describes them.
+
+  Parameters:
+  - <a id="math.rotate.vec" name="math.rotate.vec"></a>**`vec`** ([trx.math.Vec3](#math.Vec3)). The vector to turn.
+  - <a id="math.rotate.rot" name="math.rotate.rot"></a>**`rot`** ([trx.math.Rot](#math.Rot)). How far to turn it.
+
+  Returns: [trx.math.Vec3](#math.Vec3). The vector turned.
+
+  Example:
+  ```lua
+  -- a light a quarter turn round from straight ahead
+  local dir = trx.math.rotate({ x = 0, y = 0, z = 1024 }, { x = 0, y = trx.math.DEG_90, z = 0 })
+  ```
+
 - <a id="math.round_to_sector" name="math.round_to_sector"></a>[lua]`trx.math.round_to_sector(value)`  
   Snaps a position back to the corner of the sector it stands in, the way the
   level's own geometry is laid out. A whole position keeps its height: a

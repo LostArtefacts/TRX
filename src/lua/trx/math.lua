@@ -228,6 +228,19 @@ M.cos = raw.cos
 ---@type fun(z: trx.math.Distance, x: trx.math.Distance): trx.math.Angle
 M.atan = raw.atan
 
+---Turns a vector as the engine turns a model by the same rotation: by its yaw,
+---then its pitch, then its roll, the way `trx.math.Rot` describes them.
+---
+---```lua
+----- a light a quarter turn round from straight ahead
+---local dir = trx.math.rotate({ x = 0, y = 0, z = 1024 }, { x = 0, y = trx.math.DEG_90, z = 0 })
+---```
+---@param vec trx.math.Vec3 The vector to turn.
+---@param rot trx.math.Rot How far to turn it.
+---@return trx.math.Vec3 # The vector turned.
+---@type fun(vec: trx.math.Vec3, rot: trx.math.Rot): trx.math.Vec3
+M.rotate = raw.rotate
+
 ---Snaps a position back to the corner of the sector it stands in, the way the
 ---level's own geometry is laid out. A whole position keeps its height: a
 ---sector is a column, and rounding it is about the ground plan rather than how
