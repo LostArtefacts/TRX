@@ -52,6 +52,7 @@ static VECTOR *m_Listeners = nullptr;
 static VECTOR *m_Claims = nullptr;
 static int32_t m_NextId = 1;
 static int32_t m_DispatchDepth = 0;
+static int32_t m_Tick = 0;
 // Live listeners per type, so a fire for a type nobody watches returns without
 // walking the vector. A listener counts until it stops being able to fire,
 // which M_RemoveListener decides for both its branches.
@@ -276,6 +277,7 @@ static void M_DropLevel(void)
 static void M_Create(lua_State *const L)
 {
     m_L = L;
+    m_Tick = 0;
     ItemAction_SetInterceptor(M_InterceptFlipEffect);
 }
 
@@ -365,6 +367,17 @@ bool LUA_FireEventBool(const LUA_EVENT_TYPE ev, const bool arg)
         { .type = LUA_EVENT_ARG_BOOL, .value = { .b = arg } },
     };
     return LUA_FireEventEx(ev, args, 1);
+}
+
+void LUA_Tick(void)
+{
+    m_Tick++;
+    LUA_FireEvent(LUA_EVENT_TICK);
+}
+
+int32_t LUA_GetTick(void)
+{
+    return m_Tick;
 }
 
 int32_t LUA_Events_GetTypeCount(void)

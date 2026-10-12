@@ -37,7 +37,7 @@ static int M_FakeErrors(lua_State *const L)
 // Applies fake timing changes on the next tick because timings are polled.
 static int M_FakeTick(lua_State *const L)
 {
-    LUA_FireEvent(LUA_EVENT_TICK);
+    LUA_Tick();
     return 0;
 }
 

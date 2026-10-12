@@ -25,7 +25,7 @@ static int M_FakeAsLevelScript(lua_State *const L)
 // fake.tick() - one engine tick, as the phase executor raises it.
 static int M_FakeTick(lua_State *const L)
 {
-    LUA_FireEvent(LUA_EVENT_TICK);
+    LUA_Tick();
     return 0;
 }
 

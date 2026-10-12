@@ -161,6 +161,7 @@ trxc = {}
 ---@field detach fun(id: integer): boolean
 ---@field fire fun(event_type: integer, ...: boolean|number|string|nil): boolean
 ---@field is_level_script fun(): boolean
+---@field tick fun(): integer
 
 ---@class (exact) trxc.fx
 ---@field MAX_FOG integer

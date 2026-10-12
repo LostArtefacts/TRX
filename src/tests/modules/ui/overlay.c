@@ -43,7 +43,7 @@ static int M_FakeErrors(lua_State *const L)
 // fake changes reaches a widget until a tick has gone by.
 static int M_FakeTick(lua_State *const L)
 {
-    LUA_FireEvent(LUA_EVENT_TICK);
+    LUA_Tick();
     return 0;
 }
 

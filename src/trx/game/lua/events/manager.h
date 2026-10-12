@@ -40,6 +40,13 @@ bool LUA_FireEventInt32(LUA_EVENT_TYPE ev, int32_t arg);
 // Fire a Lua event of given type with boolean argument
 bool LUA_FireEventBool(LUA_EVENT_TYPE ev, bool arg);
 
+// Advances the tick counter and fires LUA_EVENT_TICK. Runs once for every
+// logic tick, in every phase.
+void LUA_Tick(void);
+
+// Returns how many ticks LUA_Tick has run since the Lua state was created.
+int32_t LUA_GetTick(void);
+
 // Spelled out rather than taken from lua.h, which game code that fires events
 // does not build against.
 typedef struct lua_State lua_State;
