@@ -6,6 +6,7 @@
 void Demo_LoadData(TRX_FILE *file, size_t size);
 uint32_t *Demo_GetData(void);
 
+void Demo_Initialise(void);
 bool Demo_Start(int32_t level_num);
 void Demo_End(void);
 void Demo_Pause(void);

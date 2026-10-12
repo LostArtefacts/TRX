@@ -5,7 +5,6 @@
 #include <trx/game/camera/vars.h>
 #include <trx/game/collision/los.h>
 #include <trx/game/creature.h>
-#include <trx/game/game_flow.h>
 #include <trx/game/items/carrier.h>
 #include <trx/game/items/const.h>
 #include <trx/game/lara.h>
@@ -425,9 +424,7 @@ XYZ_32 Creature_GetAITargetPos(const ITEM *const item)
 void Creature_Initialise(const int16_t item_num)
 {
     ITEM *const item = Item_Get(item_num);
-    // TODO: remove GF check once demo config reset is run before level load
-    if (g_Config.gameplay.enable_enemy_rotation
-        || GF_GetCurrentLevel()->type == GFL_DEMO) {
+    if (g_Config.gameplay.enable_enemy_rotation) {
         item->rot.y += (Random_GetControl() - DEG_90) >> 1;
     }
     item->is_collidable = true;

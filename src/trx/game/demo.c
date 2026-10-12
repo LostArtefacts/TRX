@@ -20,8 +20,11 @@
 #include <trx/game/rooms.h>
 #include <trx/version.h>
 
+#define M_SEED 0xD371F947
+
 #define L_MODIFY_CONFIG()                                                      \
     X_PROCESS_CONFIG(gameplay.disable_healing_between_levels, false);          \
+    X_PROCESS_CONFIG(gameplay.enable_enemy_rotation, true);                    \
     X_PROCESS_CONFIG(gameplay.enable_fast_pickups, false);                     \
     X_PROCESS_CONFIG(gameplay.enemy_health_scale, 1.0f);                       \
     X_PROCESS_CONFIG(gameplay.enable_pickup_aids, false);                      \
@@ -187,6 +190,13 @@ bool Demo_UpdateInput(void)
     return true;
 }
 
+void Demo_Initialise(void)
+{
+    Random_SeedDraw(M_SEED);
+    Random_SeedControl(M_SEED);
+    M_PrepareConfig(&m_Priv);
+}
+
 bool Demo_Start(const int32_t level_num)
 {
     M_PRIV *const p = &m_Priv;
@@ -194,7 +204,6 @@ bool Demo_Start(const int32_t level_num)
     ASSERT(p->level != nullptr);
     ASSERT(GF_GetCurrentLevel() == p->level);
 
-    M_PrepareConfig(p);
     Interpolation_Remember();
 
     // Remember old inputs in case the demo was forcefully started with some
@@ -248,8 +257,8 @@ bool Demo_Start(const int32_t level_num)
 
     Camera_Initialise();
     if (g_TRVersion <= 2) {
-        Random_SeedDraw(0xD371F947);
-        Random_SeedControl(0xD371F947);
+        Random_SeedDraw(M_SEED);
+        Random_SeedControl(M_SEED);
     }
     g_OverlayFlag = 1;
 
