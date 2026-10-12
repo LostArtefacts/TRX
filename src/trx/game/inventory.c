@@ -298,7 +298,6 @@ void Inv_SetState(const INVENTORY_STATE *const state)
     // so they are put back regardless of what the state says.
     Inv_EnsureItem(O_STOPWATCH_OPTION);
     Inv_EnsureItem(O_COMPASS_OPTION);
-    Inv_EnsureItem(O_GLOBE_OPTION);
     InvRing_Rebuild();
 }
 

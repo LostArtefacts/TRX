@@ -175,6 +175,19 @@ int32_t GF_GetLevelCount(const GF_LEVEL_TABLE_TYPE level_table_type)
     return count;
 }
 
+int32_t GF_GetGlobeEntryCount(void)
+{
+    return g_GameFlow.globe.count;
+}
+
+const GF_GLOBE_ENTRY *GF_GetGlobeEntry(const int32_t idx)
+{
+    if (idx < 0 || idx >= g_GameFlow.globe.count) {
+        return nullptr;
+    }
+    return &g_GameFlow.globe.entries[idx];
+}
+
 int32_t GF_GetFMVCount(void)
 {
     return g_GameFlow.fmv_count;

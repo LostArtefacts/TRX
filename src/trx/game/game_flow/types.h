@@ -163,6 +163,9 @@ typedef struct {
     GF_LEVEL *levels;
 } GF_LEVEL_TABLE;
 
+// How many areas the globe that picks the next adventure can hold.
+#define MAX_GLOBE_ZONES 6
+
 typedef struct {
     XYZ_16 rot;
     int32_t start_level_ordinal;

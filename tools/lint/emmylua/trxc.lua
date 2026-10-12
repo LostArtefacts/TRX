@@ -224,6 +224,7 @@ trxc = {}
 ---@field get_fmv fun(num: trx.game.FMVNum): trx.game.FMV?
 ---@field get_level fun(table_type: trx.game.LevelTable, num: integer): trx.game.Level?
 ---@field get_version fun(): integer
+---@field globe fun(): trx.game.GlobeArea[]
 ---@field is_loaded fun(): boolean
 ---@field is_ngplus fun(): boolean
 ---@field is_photo_mode fun(): boolean
@@ -466,6 +467,7 @@ trxc = {}
 ---@field sphere fun(centre: trx.math.Vec3, radius: trx.math.Distance, color: trx.math.Color|string, alpha?: integer)
 
 ---@class (exact) trxc.screens
+---@field background fun(screen: trx.ui.Screen): string?
 ---@field close fun(screen: trx.ui.Screen, choice: integer)
 
 ---@class (exact) trxc.settings

@@ -41,8 +41,6 @@ A script draws what an entry opens by defining the
         Opened because Lara died.
     - `trx.inventory_ring.Mode.SAVE_CRYSTAL`  
         Opened by a save crystal.
-    - `trx.inventory_ring.Mode.GLOBE_SELECT`  
-        The globe the player picks a destination from.
 
 ### Structures
 

@@ -99,6 +99,12 @@ local Screen = {
   ---both put the entry away, and the ring then rests on what a combination
   ---made.
   COMBINE = h.IntegerConstant,
+  ---The globe that TR3 picks its next adventure on, between levels. The
+  ---context reports the picture it stands on as
+  ---`trx.ui.ScreenContext.background`. The script picks an adventure by
+  ---starting its level with `trx.game.play_level`, and
+  ---`trx.ui.ScreenContext:cancel` leaves for the title screen.
+  GLOBE_SELECT = h.IntegerConstant,
 }
 ui.Screen = h.enum("ui.Screen", "UI_TAKEOVER", Screen)
 
@@ -154,13 +160,14 @@ end
 
 ---A screen that a script holds, which the definition receives.
 ---@class (exact) trx.ui.ScreenContext
----@trx.readonly is_bare, is_final, is_held, level, mode, object, screen
+---@trx.readonly background, is_bare, is_final, is_held, level, mode, object, screen
 ---@field screen trx.ui.Screen The screen.
 ---@field object trx.catalog.objects? The ring entry that the player uses, for `trx.ui.Screen.RING_ENTRY`, examines, for `trx.ui.Screen.EXAMINE`, or combines, for `trx.ui.Screen.COMBINE`.
 ---@field mode trx.inventory_ring.Mode? What the quick save or load screen opened for, for `trx.ui.Screen.SAVE_LOAD`.
 ---@field level trx.game.Level? The level whose statistics the screen shows, for `trx.ui.Screen.STATS`. The totals name the level that ended the game.
 ---@field is_final boolean? Whether the screen shows the totals for the whole game rather than one level, for `trx.ui.Screen.STATS`.
 ---@field is_bare boolean? Whether the screen is drawn bare, as plain lines of text without a frame, for `trx.ui.Screen.STATS`.
+---@field background string? The picture the screen stands on, for `trx.ui.Screen.GLOBE_SELECT`, as `trx.ui.primitive.background` takes it, or `nil` for none.
 ---@field is_held boolean Whether the script still holds the screen.
 local Context = h.class("ui.ScreenContext", {
   fields = {
@@ -213,6 +220,11 @@ local Context = h.class("ui.ScreenContext", {
           return rawget(self, "_arg") & 0x20000 ~= 0
         end
         return nil
+      end,
+    },
+    background = {
+      get = function(self)
+        return raw.background(rawget(self, "_screen"))
       end,
     },
     is_held = {

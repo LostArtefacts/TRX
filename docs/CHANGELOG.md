@@ -249,12 +249,14 @@
 - Added `trx.ui.widgets.InputHint` and `trx.ui.input_hint_text`, which show the keys bound to an input role and what they do
 - Added `trx.ui.widgets.Carousel`, a row of items turned to the one in the middle that slides when the selection changes
 - Added `trx.ui.tween`, `trx.ui.Tween` and `trx.ui.ease`, which move a number to a target over some ticks and read it part way between them, and `trx.ui.interpolation_rate`, which says how far the frame being drawn stands between two ticks
-- Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the question the pause screen asks, the quick save and load screens, the statistics screen, an entry the player examines, and an entry the player combines
+- Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the question the pause screen asks, the quick save and load screens, the statistics screen, an entry the player examines, an entry the player combines, and the globe a TR3 adventure is picked from
     - `trx.ui.Screen` and `trx.ui.ScreenContext`
     - `trx.ui.ScreenContext.level`, `trx.ui.ScreenContext.is_final` and `trx.ui.ScreenContext.is_bare`, which say what the statistics screen shows
+    - `trx.ui.ScreenContext.background`, the picture a screen stands on
 - Added `trx.strings.upper` and `trx.strings.lower`, which change the case of the letters the game's font draws, beyond ASCII too
 - Added `trx.game.Level.is_completed`, which says whether the player has finished a level
 - Added `trx.game.sim_time`, the game's own clock, which its fades are timed by
+- Added `trx.game.globe`, the areas of the TR3 globe with the adventure each one starts and the areas it waits on
 - Added `icon` to the entries of `trx.stats.Stats:secret_list`, which names the glyph that draws a secret
 - Added `trx.assault.stats.clear`, which clears a track's best times as the stats screen's reset button does
 - Added `trx.objects.Object.description`, the text the game shows when the player examines an object

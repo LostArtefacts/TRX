@@ -14,6 +14,7 @@ typedef enum {
     UI_TAKEOVER_STATS,
     UI_TAKEOVER_EXAMINE,
     UI_TAKEOVER_COMBINE,
+    UI_TAKEOVER_GLOBE_SELECT,
     UI_TAKEOVER_NUMBER_OF,
 } UI_TAKEOVER;
 
@@ -46,6 +47,11 @@ void UI_Takeover_SetHooks(UI_TAKEOVER_HOOKS hooks);
 // screen then draws nothing and reads no input of its own.
 bool UI_Takeover_Offer(UI_TAKEOVER screen, int32_t arg);
 
+// The picture a screen stands on, set before the screen is offered and kept
+// until it is set again. The screen owns the path.
+void UI_Takeover_SetBackground(UI_TAKEOVER screen, const char *path);
+const char *UI_Takeover_GetBackground(UI_TAKEOVER screen);
+
 // Returns whether an owner holds the screen.
 bool UI_Takeover_IsHeld(UI_TAKEOVER screen);
 
@@ -75,9 +81,11 @@ void UI_Takeover_Release(UI_TAKEOVER screen);
 // takes UI_TAKEOVER_CHOICE_CANCEL and UI_TAKEOVER_CHOICE_CONFIRM, which both
 // end it as the player skipping it does. An entry that the player examines
 // takes only UI_TAKEOVER_CHOICE_CANCEL, which puts it away. An entry that the
-// player combines takes UI_TAKEOVER_CHOICE_CANCEL, which puts it away, and
-// UI_TAKEOVER_CHOICE_CONFIRM, which both put it away. The script combines it
-// with what it picks before it closes the screen.
+// player combines takes UI_TAKEOVER_CHOICE_CANCEL and
+// UI_TAKEOVER_CHOICE_CONFIRM, which both put it away; the owner combines it
+// with what it picks before it closes the screen. The globe that picks the
+// next adventure takes only UI_TAKEOVER_CHOICE_CANCEL, which leaves for the
+// title screen; the owner picks an adventure by starting its level.
 bool UI_Takeover_AcceptsChoice(UI_TAKEOVER screen, UI_TAKEOVER_CHOICE choice);
 
 // Closes the screen with a choice. Called by the owner. Does nothing while no

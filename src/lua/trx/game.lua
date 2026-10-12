@@ -307,6 +307,26 @@ h.properties(M, "game", {
   is_ngplus = { get = raw.is_ngplus },
 })
 
+---An area of the globe that TR3 picks its next adventure on.
+---@class (exact) trx.game.GlobeArea
+---@field rot trx.math.Rot How the globe turns to face the area.
+---@field mesh integer The globe's mesh that marks the area, counted from 0.
+---@field start_level trx.game.Level? The level the adventure starts on, or `nil` for an area no adventure starts in.
+---@field completion_level trx.game.Level? The level whose end finishes the adventure, or `nil`.
+---@field prereqs integer[] The areas, counted from 1, whose adventures must be finished before this one opens.
+
+---The areas of the globe that TR3 picks its next adventure on, in the order
+---the game flow lists them. Empty for a game with no globe.
+---
+---```lua
+---for i, area in ipairs(trx.game.globe()) do
+---  trx.log.info(i, area.start_level and area.start_level.title)
+---end
+---```
+---@return trx.game.GlobeArea[] # The areas.
+---@type fun(): trx.game.GlobeArea[]
+M.globe = raw.globe
+
 ---Where a demo sits in the table of demos.
 ---@trx.base 1
 ---@alias trx.game.DemoNum integer

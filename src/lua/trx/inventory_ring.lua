@@ -33,8 +33,6 @@ local Mode = {
   DEATH = h.IntegerConstant,
   ---Opened by a save crystal.
   SAVE_CRYSTAL = h.IntegerConstant,
-  ---The globe the player picks a destination from.
-  GLOBE_SELECT = h.IntegerConstant,
 }
 M.Mode = h.enum("inventory_ring.Mode", "INVENTORY_MODE", Mode)
 
