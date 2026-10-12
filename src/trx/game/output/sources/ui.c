@@ -629,6 +629,13 @@ void OutputSource_UI_StageSprite(const OUTPUT_UI_SPRITE sprite)
     }
 }
 
+bool OutputSource_UI_HasStaged(void)
+{
+    const M_PRIV *const p = &m_Priv;
+    return p->scheduled_meshes->count > 0 || p->vertices->count > 0
+        || p->binocular_mask;
+}
+
 void OutputSource_UI_StageQuad(const OUTPUT_UI_QUAD quad)
 {
     M_PRIV *const p = &m_Priv;

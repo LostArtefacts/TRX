@@ -140,14 +140,16 @@ static void M_Draw(PHASE *const phase)
     Output_Overlay_DrawImage(p->args.file_name);
     Output_Flush();
 
+    UI_BeginLayer(UI_LAYER_BACKDROP);
     if (p->args.loading_pic
         && (p->state != STATE_FADE_IN || !p->args.block_cross_fade_in)) {
         if (p->state == STATE_FADE_IN) {
-            Output_Overlay_DrawSnapshot(progress);
+            UI_ScheduleDrawSnapshot(progress);
         }
     } else {
-        Output_Overlay_DrawBlackRectangle(progress);
+        UI_ScheduleDrawScreenBlack(progress);
     }
+    UI_EndLayer(UI_LAYER_BACKDROP);
 
     if (p->args.loading_pic && g_Config.ui.show_loading_bar) {
         UI_BeginScreenModal(0.5f, M_BAR_Y);

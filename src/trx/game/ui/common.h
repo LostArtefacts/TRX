@@ -118,6 +118,8 @@ void UI_EndScene(void);
 // the order in which draws were scheduled decides only their order within a
 // layer.
 typedef enum {
+    // Pictures, snapshots and blacks that the screen stands on.
+    UI_LAYER_BACKDROP,
     // Script layers and widgets under the engine interface.
     UI_LAYER_UNDER,
     // The engine interface and the touch controls.

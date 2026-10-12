@@ -59,9 +59,6 @@ void Output_Overlay_DrawImageMono(const char *file_name, float intensity);
 // that wants the image's own shape gives the box that shape.
 void Output_Overlay_DrawImageInBox(
     const char *file_name, OUTPUT_OVERLAY_BOX box, float opacity);
-// Marks the start of a new frame, so that a transition captured before it is
-// drawn once no matter how many times the frame is flushed.
-void Output_Overlay_BeginFrame(void);
 void Output_Overlay_CaptureSnapshot(void);
 void Output_Overlay_CaptureGameSnapshot(void);
 void Output_Overlay_DrawSnapshot(float opacity);
@@ -72,3 +69,9 @@ void Output_Overlay_DrawBackground(
 OUTPUT_BACKGROUND_TINT Output_Overlay_GetBackgroundTint(
     BACKGROUND_TYPE style, float opacity);
 void Output_Overlay_BeginTransitionFadeOut(float duration, float start);
+// Reports whether the snapshot of Output_Overlay_BeginTransitionFadeOut is
+// still fading out, and draws it as it stands now.
+bool Output_Overlay_IsTransitionActive(void);
+void Output_Overlay_DrawTransition(void);
+// Reports whether overlay draws wait for the next flush.
+bool Output_Overlay_HasPending(void);
