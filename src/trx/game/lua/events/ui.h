@@ -16,7 +16,7 @@ void LUA_UI_HideNextFrame(void);
 
 // Lets scripts draw into the boxes reserved during scene layout. Runs once
 // per layer, so that a script can paint under or over the engine UI.
-void LUA_UI_PaintRegions(UI_PAINT_LAYER layer);
+void LUA_UI_PaintRegions(UI_LAYER layer);
 
 // The depth that the paint pass under the engine interface draws at. It keeps
 // script drawing behind every engine widget, and leaves room for

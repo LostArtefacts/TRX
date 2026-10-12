@@ -436,4 +436,4 @@ trx.events.on_level_unload(function()
   end
 end)
 
-trx.ui.on_paint_over(draw)
+require("trx.internal.paint").on_paint_console(draw)

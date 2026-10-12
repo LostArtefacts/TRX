@@ -12,13 +12,25 @@ static void M_Init(void)
     UI_SetPaintHook(LUA_UI_PaintRegions);
 }
 
-void LUA_UI_PaintRegions(const UI_PAINT_LAYER layer)
+void LUA_UI_PaintRegions(const UI_LAYER layer)
 {
+    LUA_EVENT_TYPE event;
+    switch (layer) {
+    case UI_LAYER_UNDER:
+        event = LUA_EVENT_UI_PAINT;
+        break;
+    case UI_LAYER_OVER:
+        event = LUA_EVENT_UI_PAINT_OVER;
+        break;
+    case UI_LAYER_CONSOLE:
+        event = LUA_EVENT_UI_PAINT_CONSOLE;
+        break;
+    default:
+        return;
+    }
     LUA_UI_SetPainting(true);
-    LUA_UI_SetPaintDepth(layer == UI_PAINT_LAYER_OVER ? 0 : LUA_UI_UNDER_DEPTH);
-    LUA_FireEvent(
-        layer == UI_PAINT_LAYER_OVER ? LUA_EVENT_UI_PAINT_OVER
-                                     : LUA_EVENT_UI_PAINT);
+    LUA_UI_SetPaintDepth(layer == UI_LAYER_UNDER ? LUA_UI_UNDER_DEPTH : 0);
+    LUA_FireEvent(event);
     LUA_UI_SetPainting(false);
 }
 

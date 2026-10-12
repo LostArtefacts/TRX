@@ -31,7 +31,8 @@ static struct {
     },
 };
 
-static void (*m_PaintHook)(UI_PAINT_LAYER);
+static void (*m_PaintHook)(UI_LAYER);
+static int32_t m_Layer = -1;
 static float m_SmallestFitScale = 1.0f;
 
 #ifdef TESTING
@@ -112,6 +113,15 @@ static void M_Shutdown(void)
 }
 
 // Allocate a new node
+static void M_Paint(const UI_LAYER layer)
+{
+    if (m_PaintHook != nullptr) {
+        UI_BeginLayer(layer);
+        m_PaintHook(layer);
+        UI_EndLayer(layer);
+    }
+}
+
 UI_NODE *UI_AllocNode(
     const UI_WIDGET_OPS *const ops, const size_t additional_size)
 {
@@ -231,7 +241,25 @@ void UI_BeginScene(void)
     UI_BeginAnchor(0.5f, 0.5f); // Make a root node.
 }
 
-void UI_SetPaintHook(void (*const hook)(UI_PAINT_LAYER))
+void UI_BeginLayer(const UI_LAYER layer)
+{
+    ASSERT(m_Layer == -1);
+    m_Layer = layer;
+}
+
+void UI_EndLayer(const UI_LAYER layer)
+{
+    ASSERT(m_Layer == (int32_t)layer);
+    m_Layer = -1;
+}
+
+UI_LAYER UI_GetLayer(void)
+{
+    ASSERT(m_Layer != -1);
+    return (UI_LAYER)m_Layer;
+}
+
+void UI_SetPaintHook(void (*const hook)(UI_LAYER))
 {
     m_PaintHook = hook;
 }
@@ -242,13 +270,12 @@ void UI_EndScene(void)
     M_MeasureNode(m_Priv.root);
     UI_Region_Layout();
     M_LayoutNode(m_Priv.root, 0, 0, UI_GetCanvasWidth(), UI_GetCanvasHeight());
-    if (m_PaintHook != nullptr) {
-        m_PaintHook(UI_PAINT_LAYER_UNDER);
-    }
+    M_Paint(UI_LAYER_UNDER);
+    UI_BeginLayer(UI_LAYER_INTERFACE);
     M_DrawNode(m_Priv.root);
-    if (m_PaintHook != nullptr) {
-        m_PaintHook(UI_PAINT_LAYER_OVER);
-    }
+    UI_EndLayer(UI_LAYER_INTERFACE);
+    M_Paint(UI_LAYER_OVER);
+    M_Paint(UI_LAYER_CONSOLE);
     UI_EndAnchor();
     ASSERT(m_Priv.root == nullptr);
 }

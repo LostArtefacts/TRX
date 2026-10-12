@@ -100,7 +100,7 @@ typedef struct {
 
 typedef struct {
     MEMORY_ARENA_ALLOCATOR alloc;
-    VECTOR *ops;
+    VECTOR *ops[UI_LAYER_NUMBER_OF];
 } M_PRIV;
 
 static M_PRIV m_Priv = {
@@ -487,7 +487,7 @@ static void M_DrawOp_Image(const M_DRAW_OP *const base)
 static inline void M_ScheduleOp(M_DRAW_OP *const op)
 {
     M_PRIV *const p = &m_Priv;
-    Vector_Add(p->ops, &op);
+    Vector_Add(p->ops[UI_GetLayer()], &op);
 }
 
 static void M_ScheduleOpHelper(
@@ -739,8 +739,10 @@ void UI_ScheduleDrawDarken(const float opacity)
 void UI_InitDraw(void)
 {
     M_PRIV *const p = &m_Priv;
-    if (p->ops == nullptr) {
-        p->ops = Vector_Create(sizeof(M_DRAW_OP *));
+    for (int32_t i = 0; i < UI_LAYER_NUMBER_OF; i++) {
+        if (p->ops[i] == nullptr) {
+            p->ops[i] = Vector_Create(sizeof(M_DRAW_OP *));
+        }
     }
 }
 
@@ -748,23 +750,30 @@ void UI_ShutdownDraw(void)
 {
     M_PRIV *const p = &m_Priv;
     Memory_ArenaFree(&p->alloc);
-    if (p->ops != nullptr) {
-        Vector_Free(p->ops);
-        p->ops = nullptr;
+    for (int32_t i = 0; i < UI_LAYER_NUMBER_OF; i++) {
+        if (p->ops[i] != nullptr) {
+            Vector_Free(p->ops[i]);
+            p->ops[i] = nullptr;
+        }
     }
 }
 
 void UI_ClearDraw(void)
 {
     M_PRIV *const p = &m_Priv;
-    Vector_Clear(p->ops);
+    for (int32_t i = 0; i < UI_LAYER_NUMBER_OF; i++) {
+        Vector_Clear(p->ops[i]);
+    }
     Memory_ArenaReset(&p->alloc);
 }
 
 void UI_Draw(void)
 {
-    for (int32_t i = 0; i < m_Priv.ops->count; i++) {
-        const M_DRAW_OP *const op = *(M_DRAW_OP **)Vector_Get(m_Priv.ops, i);
-        op->draw(op);
+    for (int32_t layer = 0; layer < UI_LAYER_NUMBER_OF; layer++) {
+        const VECTOR *const ops = m_Priv.ops[layer];
+        for (int32_t i = 0; i < ops->count; i++) {
+            const M_DRAW_OP *const op = *(M_DRAW_OP **)Vector_Get(ops, i);
+            op->draw(op);
+        }
     }
 }

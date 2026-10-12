@@ -64,7 +64,7 @@ static void M_DrawBorderPS1(
     Output_DrawScreenGradientQuad(
         rect.x - border, rect.y + border, 0, rect.w + border * 2, rect.h - border * 2, theme->border_bl, theme->border_br, theme->border_br, theme->border_bl);
 #endif
-    Output_DrawScreenGradientQuad(
+    UI_ScheduleDrawScreenGradientQuad(
         rect.x, rect.y, 0, rect.w, rect.h, theme->border_tl, theme->border_tr,
         theme->border_bl, theme->border_br);
 }

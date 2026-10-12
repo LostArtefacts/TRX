@@ -76,9 +76,11 @@ static int M_FakePaint(lua_State *const L)
 {
     UI_BeginScene();
     FakeUIDraw_Forget();
+    UI_BeginLayer(UI_LAYER_UNDER);
     LUA_UI_SetPainting(true);
     LUA_FireEvent(LUA_EVENT_UI_PAINT);
     LUA_UI_SetPainting(false);
+    UI_EndLayer(UI_LAYER_UNDER);
     char *description = FakeUIDraw_Describe();
     UI_EndScene();
     lua_pushstring(L, description);

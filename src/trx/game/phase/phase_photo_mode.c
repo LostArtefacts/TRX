@@ -6,13 +6,15 @@
 #include <trx/game/game.h>
 #include <trx/game/input.h>
 #include <trx/game/lua/events/ui.h>
-#include <trx/game/output/draw.h>
 #include <trx/game/phase/executor.h>
 #include <trx/game/photo_mode.h>
 #include <trx/game/screenshot.h>
 #include <trx/game/shell.h>
 #include <trx/game/sound.h>
+#include <trx/game/ui/common.h>
+#include <trx/game/ui/draw.h>
 #include <trx/game/ui/scaler.h>
+#include <trx/game/viewport.h>
 
 typedef struct {
     bool in_cutscene;
@@ -59,6 +61,26 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     return PhotoMode_Control();
 }
 
+// Frames the screen in red, so the player sees photo mode is on.
+static void M_DrawFrame(const int32_t t)
+{
+    if (t <= 0) {
+        return;
+    }
+    const VIEWPORT_RECT rect = Viewport_GetRect(VIEWPORT_UI);
+    const RGBA_8888 color = { 255, 0, 0, 96 };
+    const int32_t x0 = rect.x;
+    const int32_t y0 = rect.y;
+    const int32_t x1 = rect.x + rect.w;
+    const int32_t y1 = rect.y + rect.h;
+    UI_BeginLayer(UI_LAYER_INTERFACE);
+    UI_ScheduleDrawScreenFlatQuad(x0, y0, 0, rect.w, t, color);
+    UI_ScheduleDrawScreenFlatQuad(x0, y1 - t, 0, rect.w, t, color);
+    UI_ScheduleDrawScreenFlatQuad(x0, y0 + t, 0, t, rect.h - 2 * t, color);
+    UI_ScheduleDrawScreenFlatQuad(x1 - t, y0 + t, 0, t, rect.h - 2 * t, color);
+    UI_EndLayer(UI_LAYER_INTERFACE);
+}
+
 static void M_Draw(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
@@ -75,9 +97,8 @@ static void M_Draw(PHASE *const phase)
         p->taking_screenshot = false;
         LUA_UI_HideNextFrame();
     } else {
-        const int32_t frame_thickness =
-            (int32_t)(UI_Scaler_Calc(4.0f, UI_SCALER_TARGET_TEXT) + 0.5f);
-        Output_DrawPhotoModeFrame(frame_thickness);
+        M_DrawFrame(
+            (int32_t)(UI_Scaler_Calc(4.0f, UI_SCALER_TARGET_TEXT) + 0.5f));
     }
 }
 

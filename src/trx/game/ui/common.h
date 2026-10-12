@@ -113,17 +113,34 @@ UI_MEASURE_NOTE UI_Measure_GetWidest(void);
 void UI_BeginScene(void);
 void UI_EndScene(void);
 
-// Names when a paint pass runs against the widget tree.
+// The layers of the interface, bottom to top. A draw belongs to the layer
+// whose scope it is scheduled in. UI_Draw draws the layers in this order, so
+// the order in which draws were scheduled decides only their order within a
+// layer.
 typedef enum {
-    // Before the tree draws, so the paint sits under the engine UI.
-    UI_PAINT_LAYER_UNDER,
-    // After the tree draws, so the paint sits over the engine UI.
-    UI_PAINT_LAYER_OVER,
-} UI_PAINT_LAYER;
+    // Script layers and widgets under the engine interface.
+    UI_LAYER_UNDER,
+    // The engine interface and the touch controls.
+    UI_LAYER_INTERFACE,
+    // Script widgets over the engine interface.
+    UI_LAYER_OVER,
+    // The console, over every other layer.
+    UI_LAYER_CONSOLE,
+    UI_LAYER_NUMBER_OF,
+} UI_LAYER;
 
-// Runs once per layer, while reservation boxes are known. Both passes run
-// after layout, the under pass before the tree draws and the over pass after.
-void UI_SetPaintHook(void (*hook)(UI_PAINT_LAYER layer));
+// Opens and closes the scope of a layer. Scopes do not nest, and a scope
+// closes the layer it opened.
+void UI_BeginLayer(UI_LAYER layer);
+void UI_EndLayer(UI_LAYER layer);
+
+// Returns the layer whose scope is open. Scheduling a draw outside any scope
+// is fatal.
+UI_LAYER UI_GetLayer(void);
+
+// Runs once for each layer that scripts paint (under, over and console),
+// while reservation boxes are known.
+void UI_SetPaintHook(void (*hook)(UI_LAYER layer));
 
 // Measures widgets built between these calls without drawing them.
 // Measured nodes stay valid until UI_BeginScene resets the arena.

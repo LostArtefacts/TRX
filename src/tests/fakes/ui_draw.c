@@ -6,6 +6,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/vector.h>
+#include <trx/game/ui/common.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/keys.h>
 
@@ -22,6 +23,7 @@ typedef struct {
 static char m_Clipboard[1024] = "";
 
 static VECTOR *m_Lines = nullptr;
+static VECTOR *m_Layers = nullptr;
 static double m_InterpolationRate = 0.0;
 
 static M_COLOR_TEXT M_Color(const RGBA_8888 color)
@@ -51,9 +53,17 @@ void FakeUIDraw_Record(const char *const line)
 {
     if (m_Lines == nullptr) {
         m_Lines = Vector_Create(sizeof(char *));
+        m_Layers = Vector_Create(sizeof(UI_LAYER));
     }
     char *const copy = Memory_DupStr(line);
     Vector_Add(m_Lines, &copy);
+    const UI_LAYER layer = UI_GetLayer();
+    Vector_Add(m_Layers, &layer);
+}
+
+UI_LAYER FakeUIDraw_GetLayer(const int32_t index)
+{
+    return *(const UI_LAYER *)Vector_Get(m_Layers, index);
 }
 
 void UI_InitDraw(void)
@@ -244,6 +254,8 @@ void FakeUIDraw_Forget(void)
     }
     Vector_Free(m_Lines);
     m_Lines = nullptr;
+    Vector_Free(m_Layers);
+    m_Layers = nullptr;
 }
 
 const char *UI_GetClipboardText(void)

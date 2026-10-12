@@ -110,8 +110,8 @@ M.Region = h.enum("ui.Region", "UI_REGION", Region)
 
 ---Whether a widget is drawn below or above the engine interface.
 ---
----Widgets use the lower layer by default. Use the upper layer for a console or
----a text field. Each region keeps space for both layers.
+---Widgets use the lower layer by default. Use the upper layer for a text field.
+---Each region keeps space for both layers. Both draw under the console.
 ---@enum trx.ui.Layer
 local Layer = {
   ---Below the engine interface.
@@ -119,7 +119,7 @@ local Layer = {
   ---Above the engine interface.
   OVER = h.IntegerConstant,
 }
-M.Layer = h.enum("ui.Layer", "UI_PAINT_LAYER", Layer)
+M.Layer = h.enum("ui.Layer", "UI_LAYER", Layer)
 
 -- The engine fires an event as it builds each region and as it paints each
 -- layer. The types are reflected out of ENUM_MAP, as trx.events reads them.
@@ -178,7 +178,7 @@ M.on_paint = listen(types.UI_PAINT)
 
 ---`trx.ui.on_paint` for the layer above the engine interface. A script paints
 ---here where its work must cover the interface rather than sit under it, such
----as a console or a text field.
+---as a text field. It still draws under the console.
 ---
 ---`trx.ui.regions.place` picks the layer for a widget, so a script building
 ---with widgets has no reason to take this.

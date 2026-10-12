@@ -579,4 +579,30 @@ test("a sleek bar keeps its fill within its frame", function()
   assert(#bar_scene(-1) == 1, "an empty bar drew a fill")
 end)
 
+-- The layer each op of a scene was drawn in, keyed by the text it draws.
+local function layers_of(texts)
+  local ops, layers = fake.scene(), fake.scene_layers()
+  local found = {}
+  for i, op in ipairs(ops) do
+    for _, text in ipairs(texts) do
+      if op:sub(-#(" text=" .. text)) == " text=" .. text then
+        found[text] = layers[i]
+      end
+    end
+  end
+  return found
+end
+
+test("each paint lands in the layer it is declared in", function()
+  fresh()
+  local under = push({ root = label("under"), modal = false })
+  local over = label("over")
+  trx.ui.regions.place(trx.ui.Region.TOP_LEFT, over, trx.ui.Layer.OVER)
+  local found = layers_of({ "under", "over" })
+  assert(found.under == "under", tostring(found.under))
+  assert(found.over == "over", tostring(found.over))
+  under:close()
+  trx.ui.regions.remove(over)
+end)
+
 return h.report()
