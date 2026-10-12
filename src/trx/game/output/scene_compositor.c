@@ -49,15 +49,6 @@ static void M_SetSamplerFilter(
     glSamplerParameteri(sampler, GL_TEXTURE_MAG_FILTER, gl_filter);
 }
 
-static void M_BindTextures(const M_PRIV *const p)
-{
-    glBindSampler(0, p->sampler_id);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D_ARRAY, Output_Textures_GetAtlasTexture());
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, Output_Textures_GetEnvMapTexture());
-}
-
 static void M_SetupScene(const M_PRIV *const p)
 {
     Output_MeshShader_Bind(Output_GetMeshShader());
@@ -146,7 +137,7 @@ static void M_RenderScenePasses(const M_PRIV *const p)
     }
 
     TRX_GL_Renderer_InvalidateScene();
-    M_BindTextures(p);
+    SceneCompositor_BindTextures();
     M_SetupScene(p);
 
     glDisable(GL_DEPTH_TEST);
@@ -288,6 +279,16 @@ void SceneCompositor_AddSource(const SCENE_SOURCE *const source)
 {
     M_PRIV *const p = &m_Priv;
     Vector_Add(p->sources, &source);
+}
+
+void SceneCompositor_BindTextures(void)
+{
+    const M_PRIV *const p = &m_Priv;
+    glBindSampler(0, p->sampler_id);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, Output_Textures_GetAtlasTexture());
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, Output_Textures_GetEnvMapTexture());
 }
 
 void SceneCompositor_SetSamplerFilter(const TEXTURE_FILTER filter)

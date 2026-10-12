@@ -16,6 +16,8 @@ uniform sampler3D uTexPaletteLut;
 uniform int uDitherMode;
 uniform int uSupersample;
 uniform int uPaletteLutSize;
+// The part of the texture to draw, as an offset and a size in its UV space.
+uniform vec4 uTexRect;
 
 in vec2 vertTexCoords;
 out vec4 outColor;
@@ -94,9 +96,9 @@ vec4 resolve(vec2 uv)
 }
 
 void main(void) {
-    outColor = uSupersample > 1 ? resolve(vertTexCoords)
-                                : texture(uTex0, vertTexCoords);
-    vec2 texel = vertTexCoords * vec2(textureSize(uTex0, 0));
+    vec2 uv = uTexRect.xy + vertTexCoords * uTexRect.zw;
+    outColor = uSupersample > 1 ? resolve(uv) : texture(uTex0, uv);
+    vec2 texel = uv * vec2(textureSize(uTex0, 0));
 
     // Apply palette mapping before the fixed color steps. The PlayStation
     // used a 15-bit frame buffer, so it still shades between palette colors.
