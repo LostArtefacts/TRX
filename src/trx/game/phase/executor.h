@@ -9,7 +9,4 @@ GF_COMMAND PhaseExecutor_Run(PHASE *phase);
 // this every frame and gives up the loop once it reports false.
 bool PhaseExecutor_BeginExit(void);
 
-// Returns how black the exit fade is, from 0 for the picture to 1 for black.
-float PhaseExecutor_GetExitFadeOpacity(void);
-
 PHASE *PhaseExecutor_GetOuterPhase(void);

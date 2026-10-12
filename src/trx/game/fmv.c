@@ -256,7 +256,6 @@ static void M_RedrawFrame(M_RENDER_CONTEXT *const ctx)
     Output_SwitchViewport(VIEWPORT_UI);
     M_DrawUI();
 
-    Output_Overlay_DrawBlackRectangle(PhaseExecutor_GetExitFadeOpacity(), true);
     Output_EndScene();
     Output_FlipScreen();
 }
