@@ -409,6 +409,11 @@ OUTPUT_LIGHT_INFO Output_GetLightInfo(void)
     return info;
 }
 
+void Output_SetLightVectorView(const XYZ_32 dir)
+{
+    m_LsVectorView = dir;
+}
+
 void Output_RotateLight(const int16_t pitch, const int16_t yaw)
 {
     // A direction, not a point, so the view matrix's translation stays out of
