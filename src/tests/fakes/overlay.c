@@ -45,9 +45,10 @@ void InvRing_ClearItemQuantity(void)
     FAKE_RECORD("clear_caption_count");
 }
 
-void Overlay_ShowArrow(const OVERLAY_ARROW arrow, const bool show)
+void Overlay_ShowArrow(const OVERLAY_ARROW which, const bool show)
 {
-    FAKE_RECORD("show_arrow", FV((int32_t)arrow), FV(show));
+    const int32_t arrow = which;
+    FAKE_RECORD("show_arrow", FV(arrow), FV(show));
 }
 
 bool Overlay_IsHealthBarForced(void)
