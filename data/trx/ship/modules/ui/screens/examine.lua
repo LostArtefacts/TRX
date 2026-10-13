@@ -132,12 +132,6 @@ local function dialog(state)
   })
 end
 
--- Whether the entry has come to rest, which is when the screen starts.
-local function is_open()
-  local anim = trx.inventory_ring.selection_anim()
-  return anim ~= nil and anim.frame == anim.goal_frame
-end
-
 -- The description, wrapped and cut into pages the first time it shows.
 local function prepare(state)
   local width = math.floor(trx.ui.canvas.width * 2.0 / 3.0)
@@ -168,7 +162,7 @@ local function offer_turning(state, offer)
 end
 
 local function control(ctx, state, layer, keys)
-  if not is_open() then
+  if trx.inventory_ring.signals.rest_frame:get() == nil then
     return
   end
   if state.pages == nil and state.has_text then

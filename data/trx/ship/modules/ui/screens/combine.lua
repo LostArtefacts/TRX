@@ -87,12 +87,6 @@ local function dialog(state)
   })
 end
 
--- Whether the entry has come to rest, which is when the row opens.
-local function is_open()
-  local anim = trx.inventory_ring.selection_anim()
-  return anim ~= nil and anim.frame == anim.goal_frame
-end
-
 local function begin(ctx, state, layer)
   state.partners = trx.inventory.combine_partners(ctx.object)
   if #state.partners == 0 then
@@ -126,14 +120,11 @@ end
 
 local function control(ctx, state, layer, keys)
   if state.partners == nil then
-    if is_open() then
+    if trx.inventory_ring.signals.rest_frame:get() ~= nil then
       begin(ctx, state, layer)
     end
     return
   end
-  -- The ring names the entry it holds again each tick.
-  trx.overlay.set_caption()
-
   if state.row.is_sliding() then
     return
   end

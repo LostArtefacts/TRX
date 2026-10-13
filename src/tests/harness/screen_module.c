@@ -50,11 +50,24 @@ static SHELL_MOD m_Mods[] = {
 
 static SHELL_ARGS m_Args = { .startup = { .mod = &m_Mods[0] } };
 
+// Tells scripts when the fake ring's picked entry comes to rest and when it
+// moves again, as the ring does once a tick.
+static void M_ReportRingRest(void)
+{
+    static int32_t rest_frame = -1;
+    const int32_t frame = FakeGame_GetRingRestFrame();
+    if (frame != rest_frame) {
+        rest_frame = frame;
+        LUA_FireEventInt32(LUA_EVENT_RING_REST, frame);
+    }
+}
+
 static int M_FakeReset(lua_State *const L)
 {
     FakeCalls_Reset();
     FakeInput_Reset();
     m_ErrorCount = 0;
+    M_ReportRingRest();
     return 0;
 }
 
@@ -68,6 +81,7 @@ static int M_FakeErrors(lua_State *const L)
 // fake.tick()
 static int M_FakeTick(lua_State *const L)
 {
+    M_ReportRingRest();
     LUA_Tick();
     return 0;
 }
@@ -120,6 +134,7 @@ static int M_FakeSetDescription(lua_State *const L)
 // fake.offer(screen, args?) -> bool
 static int M_FakeOffer(lua_State *const L)
 {
+    M_ReportRingRest();
     lua_pushboolean(
         L,
         UI_Takeover_Offer(
