@@ -3,7 +3,6 @@
 #include <trx/config.h>
 #include <trx/core/memory.h>
 #include <trx/debug.h>
-#include <trx/game/fader.h>
 #include <trx/game/game.h>
 #include <trx/game/game_flow.h>
 #include <trx/game/input.h>
@@ -11,43 +10,20 @@
 #include <trx/game/shell.h>
 #include <trx/game/ui/dialogs/takeover.h>
 
+// The screen and its backdrop are drawn and faded in by a script.
 typedef enum {
-    STATE_FADE_IN,
     STATE_DISPLAY,
-    STATE_FADE_OUT,
     STATE_FINISH,
 } STATE;
 
 typedef struct {
     PHASE_STATS_ARGS args;
     STATE state;
-    FADER back_fader;
-    FADER top_fader;
 } M_PRIV;
 
 static bool M_EnableFade(const M_PRIV *const p)
 {
     return g_Config.ui.stats_fade_effects || p->args.show_final_stats;
-}
-
-static bool M_IsFading(const M_PRIV *const p)
-{
-    return M_EnableFade(p)
-        && (Fader_IsActive(&p->top_fader) || Fader_IsActive(&p->back_fader));
-}
-
-static void M_FadeIn(M_PRIV *const p)
-{
-    if (p->args.background_path != nullptr) {
-        Fader_InitTo(&p->back_fader, 1.0f, 0.0f, 1.0);
-    } else {
-        Fader_InitTo(&p->back_fader, 0.0f, 1.0f, 0.5);
-    }
-}
-
-static void M_FadeOut(M_PRIV *const p)
-{
-    p->state = STATE_FINISH;
 }
 
 static PHASE_CONTROL M_Start(PHASE *const phase)
@@ -72,43 +48,13 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     }
 
     Output_Overlay_CaptureGameSnapshot();
-
-    switch (p->args.background_type) {
-    case BK_IMAGE:
-        if (p->args.background_path == nullptr) {
-            LOG_WARNING("Trying to load empty background image");
-        } else if (!Output_Overlay_LoadImage(p->args.background_path)) {
-            LOG_WARNING(
-                "Failed to load background image: %s", p->args.background_path);
-        }
-        break;
-
-    case BK_NONE:
-    case BK_PATTERN_STATIC:
-    case BK_PATTERN_WAVE:
-    case BK_BLACK:
-    case BK_MONOCHROME:
-    case BK_MONOCHROME_COOL:
-    case BK_MONOCHROME_WARM:
-    case BK_TRANSPARENT_MEDIUM:
-    case BK_TRANSPARENT_DARK:
-        break;
+    if (p->args.background_path != nullptr
+        && !Output_Overlay_LoadImage(p->args.background_path)) {
+        LOG_WARNING(
+            "Failed to load background image: %s", p->args.background_path);
     }
-
-    if (Game_IsInGym()) {
-        M_FadeOut(p);
-    } else {
-        if (p->args.background_type == BK_PATTERN_STATIC
-            || p->args.background_type == BK_PATTERN_WAVE) {
-            // Patterns are displayed at full opacity immediately rather
-            // than fading in.
-            Fader_InitTo(&p->back_fader, 1.0f, 1.0f, 0.0f);
-            p->state = STATE_DISPLAY;
-        } else {
-            p->state = STATE_FADE_IN;
-            M_FadeIn(p);
-        }
-    }
+    UI_Takeover_SetBackground(UI_TAKEOVER_STATS, p->args.background_path);
+    p->state = Game_IsInGym() ? STATE_FINISH : STATE_DISPLAY;
 
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
 }
@@ -116,6 +62,7 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
 static void M_End(PHASE *const phase)
 {
     UI_Takeover_Release(UI_TAKEOVER_STATS);
+    UI_Takeover_SetBackground(UI_TAKEOVER_STATS, nullptr);
 }
 
 static PHASE_CONTROL M_Control(PHASE *const phase)
@@ -130,27 +77,14 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     if (UI_Takeover_IsHeld(UI_TAKEOVER_STATS)
         && UI_Takeover_TakeChoice(UI_TAKEOVER_STATS)
             != UI_TAKEOVER_CHOICE_NONE) {
-        M_FadeOut(p);
+        p->state = STATE_FINISH;
     }
 
     switch (p->state) {
-    case STATE_FADE_IN:
-        if (!M_IsFading(p)) {
-            p->state = STATE_DISPLAY;
-        } else if (g_InputDB.menu_skip) {
-            M_FadeOut(p);
-        }
-        break;
-
     case STATE_DISPLAY:
         if (g_InputDB.menu_skip) {
-            M_FadeOut(p);
+            p->state = STATE_FINISH;
         }
-        break;
-
-    case STATE_FADE_OUT:
-        p->state = STATE_FINISH;
-        return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
         break;
 
     case STATE_FINISH:
@@ -184,24 +118,6 @@ static bool M_RequestFadeToBlack(PHASE *const phase, FADER_ARGS *const out_args)
 
 static void M_Draw(PHASE *const phase)
 {
-    M_PRIV *const p = phase->priv;
-
-    const float top_opacity = M_EnableFade(p)
-        ? Fader_GetCurrentValue(&p->top_fader)
-        : p->top_fader.args.target;
-    if (top_opacity > 0.0f) {
-        Output_Overlay_DrawSnapshot(1.0f);
-        Output_Overlay_DrawBlackRectangle(top_opacity);
-        Output_Flush();
-        return;
-    }
-
-    const float progress = M_EnableFade(p)
-        ? Fader_GetCurrentValue(&p->back_fader)
-        : p->back_fader.args.target;
-    Output_Overlay_DrawBackground(
-        p->args.background_type, progress, p->args.background_path);
-    Output_Flush();
 }
 
 PHASE *Phase_Stats_Create(const PHASE_STATS_ARGS args)
@@ -209,7 +125,7 @@ PHASE *Phase_Stats_Create(const PHASE_STATS_ARGS args)
     PHASE *const phase = Memory_Alloc(sizeof(PHASE));
     M_PRIV *const p = Memory_Alloc(sizeof(M_PRIV));
     p->args = args;
-    p->state = STATE_FADE_IN;
+    p->state = STATE_DISPLAY;
     phase->priv = p;
     phase->start = M_Start;
     phase->end = M_End;

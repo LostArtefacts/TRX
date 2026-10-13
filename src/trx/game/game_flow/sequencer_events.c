@@ -457,8 +457,6 @@ M_GF_HANDLER(M_HandleLevelStats)
     }
 
     PHASE *const phase = Phase_Stats_Create((PHASE_STATS_ARGS) {
-        .background_type = Game_IsInGym() ? BK_TRANSPARENT_MEDIUM
-                                          : g_Config.ui.stats_background_style,
         .level_num = -1,
         .show_final_stats = false,
         .use_bare_style = g_Config.ui.stats.style == STATS_STYLE_BARE,
@@ -482,7 +480,6 @@ M_GF_HANDLER(M_HandleTotalStats)
     }
     const GF_SEQUENCE_EVENT *const event = &sequence->events[event_idx];
     PHASE *const phase = Phase_Stats_Create((PHASE_STATS_ARGS) {
-        .background_type = BK_IMAGE,
         .background_path = event->data,
         .show_final_stats = true,
         .use_bare_style = false,

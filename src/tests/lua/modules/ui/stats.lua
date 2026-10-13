@@ -157,6 +157,67 @@ test("the player skipping the screen is the engine's to read", function()
   finish()
 end)
 
+-- The backdrop the screen stands on, as the fake overlay records it.
+local function backdrop()
+  for _, op in ipairs(fake.scene()) do
+    if op:match("^backdrop ") then
+      return op
+    end
+  end
+  return nil
+end
+
+local function ticks(count)
+  for _ = 1, count do
+    fake.tick()
+  end
+end
+
+test("the screen between levels brings its backdrop in", function()
+  trx.config.set("ui.stats_background_style", "transparent")
+  trx.config.set("ui.stats_fade_effects", true)
+  fake.set_current_level(CAVES)
+  fake.offer(STATS, 1)
+  assert(backdrop():match("opacity=0.000"), backdrop())
+  ticks(16)
+  assert(backdrop():match("opacity=1.000"), backdrop())
+  finish()
+end)
+
+test("a pattern backdrop shows at once", function()
+  trx.config.set("ui.stats_background_style", "pattern_static")
+  trx.config.set("ui.stats_fade_effects", true)
+  fake.set_current_level(CAVES)
+  fake.offer(STATS, 1)
+  assert(backdrop():match("opacity=1.000"), backdrop())
+  finish()
+  trx.config.set("ui.stats_background_style", "transparent")
+end)
+
+test("without stats fades the backdrop shows at once", function()
+  trx.config.set("ui.stats_fade_effects", false)
+  fake.set_current_level(CAVES)
+  fake.offer(STATS, 1)
+  fake.tick()
+  assert(backdrop():match("opacity=1.000"), backdrop())
+  finish()
+  trx.config.set("ui.stats_fade_effects", true)
+end)
+
+test("the totals come in from black over their picture", function()
+  trx.config.set("ui.stats_fade_effects", false)
+  fake.set_current_level(CAVES)
+  trx.game.levels[1].stats.pickups.count = 2
+  fake.set_background(STATS, "end.webp")
+  fake.offer(STATS, FINAL | 2)
+  assert(backdrop():match("opacity=1.000 path=end.webp"), backdrop())
+  ticks(31)
+  assert(backdrop():match("opacity=0.000"), backdrop())
+  fake.set_background(STATS, nil)
+  finish()
+  trx.config.set("ui.stats_fade_effects", true)
+end)
+
 local function open_entry(object)
   fake.set_current_level(CAVES)
   fake.open_ring(trx.inventory_ring.Mode.GAME, object, 0, 10)
