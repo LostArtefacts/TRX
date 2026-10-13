@@ -29,6 +29,10 @@ static const bool
             [UI_TAKEOVER_CHOICE_CANCEL] = true,
             [UI_TAKEOVER_CHOICE_CONFIRM] = true,
         },
+        [UI_TAKEOVER_PICTURE] = {
+            [UI_TAKEOVER_CHOICE_CANCEL] = true,
+            [UI_TAKEOVER_CHOICE_CONFIRM] = true,
+        },
         [UI_TAKEOVER_COMBINE] = {
             [UI_TAKEOVER_CHOICE_CANCEL] = true,
             [UI_TAKEOVER_CHOICE_CONFIRM] = true,

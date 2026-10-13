@@ -79,10 +79,5 @@ void Output_Overlay_DrawBackground(
 // Report the tint and opacity for a background style.
 OUTPUT_BACKGROUND_TINT Output_Overlay_GetBackgroundTint(
     BACKGROUND_TYPE style, float opacity);
-void Output_Overlay_BeginTransitionFadeOut(float duration, float start);
-// Reports whether the snapshot of Output_Overlay_BeginTransitionFadeOut is
-// still fading out, and draws it as it stands now.
-bool Output_Overlay_IsTransitionActive(void);
-void Output_Overlay_DrawTransition(void);
 // Reports whether overlay draws wait for the next flush.
 bool Output_Overlay_HasPending(void);

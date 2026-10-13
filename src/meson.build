@@ -1008,7 +1008,6 @@ common_sources = [
   'trx/game/ui/elements/gradient_slider.c',
   'trx/game/ui/elements/hide.c',
   'trx/game/ui/elements/label.c',
-  'trx/game/ui/elements/loading_bar.c',
   'trx/game/ui/elements/modal.c',
   'trx/game/ui/elements/offset.c',
   'trx/game/ui/elements/pad.c',

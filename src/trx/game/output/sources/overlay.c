@@ -130,8 +130,6 @@ typedef struct {
         M_SNAPSHOT_STATE state;
         M_SNAPSHOT_STATE slots[OUTPUT_OVERLAY_SNAPSHOT_SLOTS];
         bool slot_in_use[OUTPUT_OVERLAY_SNAPSHOT_SLOTS];
-        bool transition_active;
-        FADER transition_fader;
     } snapshot;
     struct {
         OUTPUT_QUAD *renderer;
@@ -863,7 +861,6 @@ void Output_Overlay_DrawImageInBox(
 void Output_Overlay_CaptureSnapshot(void)
 {
     M_PRIV *const p = &m_Priv;
-    p->snapshot.transition_active = false;
     p->snapshot.state.has_content = false;
 
     M_EnsureSnapshotTexture(p, &p->snapshot.state, VIEWPORT_TARGET);
@@ -884,7 +881,6 @@ void Output_Overlay_CaptureSnapshot(void)
 void Output_Overlay_CaptureGameSnapshot(void)
 {
     M_PRIV *const p = &m_Priv;
-    p->snapshot.transition_active = false;
     p->snapshot.state.has_content = false;
 
     // The scene is resolved at VIEWPORT_SCENE's resolution, which is lower
@@ -1008,53 +1004,9 @@ void Output_Overlay_DrawPatternOpacity(const bool wave, const float opacity)
         ((M_DRAW_OP_PATTERN) { .wave = wave, .opacity = opacity }));
 }
 
-bool Output_Overlay_IsTransitionActive(void)
-{
-    return m_Priv.snapshot.transition_active;
-}
-
-void Output_Overlay_DrawTransition(void)
-{
-    M_PRIV *const p = &m_Priv;
-    if (!p->snapshot.transition_active) {
-        return;
-    }
-    const float opacity = Fader_GetCurrentValue(&p->snapshot.transition_fader);
-    if (opacity <= 0.0f || !p->snapshot.state.has_content
-        || !p->snapshot.state.texture.initialized) {
-        p->snapshot.transition_active = false;
-        return;
-    }
-    M_SCHEDULE_OP(
-        M_DrawOp_Snapshot,
-        ((M_DRAW_OP_SNAPSHOT) {
-            .texture_id = p->snapshot.state.texture.id,
-            .width = p->snapshot.state.width,
-            .height = p->snapshot.state.height,
-            .opacity = opacity,
-            .tint = COLOR_RGB_F_WHITE,
-        }));
-    if (!Fader_IsActive(&p->snapshot.transition_fader)) {
-        p->snapshot.transition_active = false;
-    }
-}
-
 bool Output_Overlay_HasPending(void)
 {
     return m_Priv.ops->count > 0;
-}
-
-void Output_Overlay_BeginTransitionFadeOut(
-    const float duration, const float start)
-{
-    M_PRIV *const p = &m_Priv;
-    Output_Overlay_CaptureSnapshot();
-    if (!p->snapshot.state.has_content) {
-        return;
-    }
-
-    p->snapshot.transition_active = true;
-    Fader_InitTo(&p->snapshot.transition_fader, start, 0.0f, duration);
 }
 
 OUTPUT_BACKGROUND_TINT Output_Overlay_GetBackgroundTint(

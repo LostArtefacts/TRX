@@ -112,6 +112,16 @@ local Screen = {
   ---`trx.ui.ScreenContext.fade_out_ticks`. The view ends with
   ---`trx.ui.ScreenContext:confirm` or `trx.ui.ScreenContext:cancel`.
   LEVEL_VIEW = h.IntegerConstant,
+  ---A picture that the game shows between levels, while a level loads, or
+  ---for the legal notice and the credits. The context reports the picture as
+  ---`trx.ui.ScreenContext.background`, its timing as
+  ---`trx.ui.ScreenContext.display_ticks`,
+  ---`trx.ui.ScreenContext.fade_in_ticks` and
+  ---`trx.ui.ScreenContext.fade_out_ticks`, and its kind as
+  ---`trx.ui.ScreenContext.is_loading` and
+  ---`trx.ui.ScreenContext.can_cross_fade_in`. The picture ends with
+  ---`trx.ui.ScreenContext:confirm` or `trx.ui.ScreenContext:cancel`.
+  PICTURE = h.IntegerConstant,
 }
 ui.Screen = h.enum("ui.Screen", "UI_TAKEOVER", Screen)
 
@@ -191,6 +201,12 @@ local FIELDS = {
     }
   end,
   [trx.ui.Screen.LEVEL_VIEW] = timing_fields,
+  [trx.ui.Screen.PICTURE] = function(screen, arg)
+    local fields = timing_fields(screen)
+    fields.is_loading = arg & 0x1 ~= 0
+    fields.can_cross_fade_in = arg & 0x2 ~= 0
+    return fields
+  end,
 }
 
 local function on_layer_closed(ctx, layer)
@@ -211,17 +227,20 @@ end
 ---@class (exact) trx.ui.ScreenContext
 ---@trx.readonly background, is_bare, is_final, is_held, level, mode, object, screen
 ---@trx.readonly display_ticks, fade_in_ticks, fade_out_ticks
+---@trx.readonly can_cross_fade_in, is_loading
 ---@field screen trx.ui.Screen The screen.
 ---@field object trx.catalog.objects? The ring entry that the player uses, for `trx.ui.Screen.RING_ENTRY`, examines, for `trx.ui.Screen.EXAMINE`, or combines, for `trx.ui.Screen.COMBINE`.
 ---@field mode trx.inventory_ring.Mode? What the quick save or load screen opened for, for `trx.ui.Screen.SAVE_LOAD`.
 ---@field level trx.game.Level? The level whose statistics the screen shows, for `trx.ui.Screen.STATS`. The totals name the level that ended the game.
 ---@field is_final boolean? Whether the screen shows the totals for the whole game rather than one level, for `trx.ui.Screen.STATS`.
 ---@field is_bare boolean? Whether the screen is drawn bare, as plain lines of text without a frame, for `trx.ui.Screen.STATS`.
----@field background string? The picture the screen stands on, for `trx.ui.Screen.GLOBE_SELECT`, as `trx.ui.primitive.background` takes it, or `nil` for none.
+---@field background string? The picture the screen stands on, as `trx.ui.primitive.background` takes it, or `nil` for none.
 ---@field is_held boolean Whether the script still holds the screen.
 ---@field display_ticks integer? How many ticks a screen shown for a time, such as `trx.ui.Screen.LEVEL_VIEW`, shows before it fades out.
 ---@field fade_in_ticks integer? How many ticks a screen shown for a time, such as `trx.ui.Screen.LEVEL_VIEW`, takes to fade in.
 ---@field fade_out_ticks integer? How many ticks a screen shown for a time, such as `trx.ui.Screen.LEVEL_VIEW`, takes to fade out.
+---@field is_loading boolean? Whether the picture shows while a level loads, for `trx.ui.Screen.PICTURE`.
+---@field can_cross_fade_in boolean? Whether the picture may fade in from the frame shown before it, rather than from black, for `trx.ui.Screen.PICTURE`.
 local Context = h.class("ui.ScreenContext", {
   fields = {
     screen = {
@@ -244,6 +263,8 @@ local Context = h.class("ui.ScreenContext", {
         return not rawget(self, "_done")
       end,
     },
+    is_loading = reported("is_loading"),
+    can_cross_fade_in = reported("can_cross_fade_in"),
     display_ticks = reported("display_ticks"),
     fade_in_ticks = reported("fade_in_ticks"),
     fade_out_ticks = reported("fade_out_ticks"),

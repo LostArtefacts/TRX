@@ -4,6 +4,7 @@
 --
 -- Usage:
 --   local fade = require("common.ui.fade")
+--   fade.setup()  -- once, from a global script
 --
 --   local f = fade.screen(ctx)
 --   f:enter({ ticks = ctx.fade_in_ticks })
@@ -142,6 +143,77 @@ function Screen:leave(options)
     end
   self:move(layer, 1, options.ticks or 0, options.hold, on_done)
   return layer
+end
+
+-------------------------------------------------------------------------------
+-- Fades that outlive their screen
+-------------------------------------------------------------------------------
+
+-- The open layers that outlive their screens, and the events that drop each.
+---@type table<trx.ui.FadeLayer, table<string, boolean>>
+local across = {}
+
+local function drop_on(event)
+  for layer, events in pairs(across) do
+    if events[event] then
+      across[layer] = nil
+      layer:close()
+    end
+  end
+end
+
+-- Moves a fade that outlives its screen, and closes it once it is out of
+-- sight.
+function M.move(layer, target, ticks, on_done)
+  layer:to(target, M.enabled() and ticks or 0, nil, {
+    close = target == 0,
+    on_done = on_done,
+  })
+end
+
+-- Puts up a fade that outlives the screen that starts it, black by default,
+-- and moves it from `from` to `to`. It closes once it fades out of sight, or
+-- when one of the `drop_on` events comes: "title", "unload", "cutscene" or
+-- "demo".
+function M.across(options)
+  local settings =
+    layer_settings(options.layer or { fill = BLACK }, options.from or 1)
+  settings.on_close = function(layer)
+    across[layer] = nil
+  end
+  local layer = trx.ui.layers.fade(settings)
+  local events = {}
+  for _, event in ipairs(options.drop_on or {}) do
+    events[event] = true
+  end
+  across[layer] = events
+  if options.to ~= nil then
+    M.move(layer, options.to, options.ticks, options.on_done)
+  end
+  return layer
+end
+
+-------------------------------------------------------------------------------
+-- Setup
+-------------------------------------------------------------------------------
+
+-- Listens for the events that drop the fades that outlive their screens.
+-- Called once, from a global script.
+function M.setup()
+  trx.events.on_game_start(function()
+    local level = trx.game.current_level
+    if level ~= nil and level.type == trx.game.LevelType.CUTSCENE then
+      drop_on("cutscene")
+    elseif level ~= nil and level.type == trx.game.LevelType.DEMO then
+      drop_on("demo")
+    end
+  end)
+  trx.events.on_title_start(function()
+    drop_on("title")
+  end)
+  trx.events.on_level_unload(function()
+    drop_on("unload")
+  end)
 end
 
 return M

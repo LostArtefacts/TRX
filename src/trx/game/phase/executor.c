@@ -83,11 +83,6 @@ static GF_COMMAND M_HandleOverride(const PHASE *const phase)
     return (GF_COMMAND) { .action = GF_NOOP };
 }
 
-static void M_DrawTransition(const void *const args)
-{
-    Output_Overlay_DrawTransition();
-}
-
 static void M_DrawFadeToBlackTransition(const float opacity)
 {
     Output_BeginScene();
@@ -221,11 +216,6 @@ static void M_Draw(PHASE *const phase)
     UI_BeginScene();
     if (phase != nullptr && phase->draw != nullptr) {
         phase->draw(phase);
-    }
-    if (Output_Overlay_IsTransitionActive()) {
-        UI_BeginLayer(UI_LAYER_BACKDROP);
-        UI_ScheduleDrawOverlay(M_DrawTransition, nullptr, 0);
-        UI_EndLayer(UI_LAYER_BACKDROP);
     }
 
     LUA_UI_DrawRegions();

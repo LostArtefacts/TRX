@@ -170,10 +170,24 @@ static int M_FakeSetTiming(lua_State *const L)
     return 0;
 }
 
+// fake.start_game() - a level starts, as Game_Start reports it.
+static int M_FakeStartGame(lua_State *const L)
+{
+    LUA_FireEventBool(LUA_EVENT_GAME_START, lua_toboolean(L, 1));
+    return 0;
+}
+
 // fake.control() - the level runs one tick of its logic.
 static int M_FakeControl(lua_State *const L)
 {
     LUA_FireEvent(LUA_EVENT_BEFORE_CONTROL);
+    return 0;
+}
+
+// fake.start_title() - the title screen comes up.
+static int M_FakeStartTitle(lua_State *const L)
+{
+    LUA_FireEvent(LUA_EVENT_TITLE_START);
     return 0;
 }
 
@@ -219,6 +233,10 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "set_background");
     lua_pushcfunction(L, M_FakeSetTiming);
     lua_setfield(L, -2, "set_timing");
+    lua_pushcfunction(L, M_FakeStartGame);
+    lua_setfield(L, -2, "start_game");
+    lua_pushcfunction(L, M_FakeStartTitle);
+    lua_setfield(L, -2, "start_title");
     lua_pushcfunction(L, M_FakeControl);
     lua_setfield(L, -2, "control");
 }

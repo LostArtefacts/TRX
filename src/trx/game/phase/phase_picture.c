@@ -1,52 +1,29 @@
 #include <trx/game/phase/phase_picture.h>
 
-#include <trx/config.h>
+#include <trx/core/log.h>
 #include <trx/core/memory.h>
-#include <trx/core/utils.h>
-#include <trx/game/fader.h>
+#include <trx/game/const.h>
 #include <trx/game/input.h>
 #include <trx/game/output.h>
 #include <trx/game/shell.h>
-#include <trx/game/ui.h>
-#include <trx/game/ui/elements/loading_bar.h>
+#include <trx/game/ui/dialogs/takeover.h>
 
-#define M_BAR_WIDTH 0.76f
-#define M_BAR_HEIGHT 12.0f
-#define M_BAR_Y 0.941f
-
-typedef enum {
-    STATE_FADE_IN,
-    STATE_DISPLAY,
-    STATE_FADE_OUT,
-} M_STATE;
-
+// The picture is timed, faded and skipped by a script, which ends it with a
+// choice. Without one the picture is skipped.
 typedef struct {
-    M_STATE state;
-    FADER fader;
-    CLOCK_TIMER timer;
     PHASE_PICTURE_ARGS args;
-    bool has_drawn;
+    bool is_held;
 } M_PRIV;
+
+static int32_t M_ToTicks(const double seconds)
+{
+    return (int32_t)(seconds * LOGIC_FPS + 0.5);
+}
 
 static bool M_UsesCrossFadeIn(PHASE *const phase)
 {
     const M_PRIV *const p = phase->priv;
     return p->args.loading_pic && !p->args.block_cross_fade_in;
-}
-
-static void M_FadeOut(M_PRIV *const p)
-{
-    p->state = STATE_FADE_OUT;
-    Fader_InitFromCurrentHold(&p->fader, 1.0f, p->args.fade_out_time, 0.1f);
-}
-
-static PHASE_CONTROL M_EndWithTransition(const M_PRIV *const p)
-{
-    Output_Overlay_BeginTransitionFadeOut(p->args.fade_out_time, 1.0f);
-    return (PHASE_CONTROL) {
-        .action = PHASE_ACTION_END,
-        .gf_cmd = { .action = GF_NOOP },
-    };
 }
 
 static PHASE_CONTROL M_Start(PHASE *const phase)
@@ -59,17 +36,35 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
         };
     }
 
-    if (p->args.loading_pic && !p->args.block_cross_fade_in) {
-        Output_Overlay_CaptureSnapshot();
+    UI_Takeover_SetBackground(UI_TAKEOVER_PICTURE, p->args.file_name);
+    UI_Takeover_SetTiming(
+        UI_TAKEOVER_PICTURE,
+        (UI_TAKEOVER_TIMING) {
+            .display_ticks = M_ToTicks(p->args.display_time),
+            .fade_in_ticks = M_ToTicks(p->args.fade_in_time),
+            .fade_out_ticks = M_ToTicks(p->args.fade_out_time),
+        });
+    p->is_held = UI_Takeover_Offer(
+        UI_TAKEOVER_PICTURE,
+        UI_TAKEOVER_PICTURE_ARG(p->args.loading_pic, M_UsesCrossFadeIn(phase)));
+    if (!p->is_held) {
+        LOG_WARNING("no script draws pictures, skipping %s", p->args.file_name);
+        return (PHASE_CONTROL) {
+            .action = PHASE_ACTION_END,
+            .gf_cmd = { .action = GF_NOOP },
+        };
     }
-    Fader_InitTo(&p->fader, 1.0f, 0.0f, p->args.fade_in_time);
-    ClockTimer_Sync(&p->timer);
     return (PHASE_CONTROL) {};
 }
 
 static void M_End(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
+    if (p->is_held) {
+        UI_Takeover_Release(UI_TAKEOVER_PICTURE);
+        p->is_held = false;
+    }
+    UI_Takeover_SetBackground(UI_TAKEOVER_PICTURE, nullptr);
 }
 
 static PHASE_CONTROL M_Control(PHASE *const phase)
@@ -77,90 +72,19 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     M_PRIV *const p = phase->priv;
     Input_Update();
     Shell_ProcessInput();
-    if (g_InputDB.menu_skip) {
-        Input_HoldOffSkip(INPUT_SKIP_TO_SCREEN);
+    if (UI_Takeover_TakeChoice(UI_TAKEOVER_PICTURE)
+        != UI_TAKEOVER_CHOICE_NONE) {
+        p->is_held = false;
+        return (PHASE_CONTROL) {
+            .action = PHASE_ACTION_END,
+            .gf_cmd = { .action = GF_NOOP },
+        };
     }
-
-    switch (p->state) {
-    case STATE_FADE_IN:
-        if (g_InputDB.menu_skip && p->args.loading_pic && p->has_drawn) {
-            return M_EndWithTransition(p);
-        } else if (g_InputDB.menu_skip) {
-            M_FadeOut(p);
-        } else if (!Fader_IsActive(&p->fader)) {
-            p->state = STATE_DISPLAY;
-            ClockTimer_Sync(&p->timer);
-        }
-        break;
-
-    case STATE_DISPLAY:
-        if (g_InputDB.menu_skip
-            || ClockTimer_CheckElapsed(&p->timer, p->args.display_time)) {
-            M_FadeOut(p);
-        }
-        break;
-
-    case STATE_FADE_OUT:
-        if (p->args.loading_pic && p->has_drawn) {
-            return M_EndWithTransition(p);
-        }
-
-        if (g_InputDB.menu_skip || !Fader_IsActive(&p->fader)) {
-            return (PHASE_CONTROL) {
-                .action = PHASE_ACTION_END,
-                .gf_cmd = { .action = GF_NOOP },
-            };
-        }
-        break;
-    }
-
     return (PHASE_CONTROL) {};
-}
-
-// Returns the loading picture progress from 0 to 1. The picture remains
-// visible for a set time, so the bar follows that time.
-static float M_GetLoadProgress(const M_PRIV *const p)
-{
-    if (p->state == STATE_FADE_IN) {
-        return 0.0f;
-    }
-    const double display_time = p->args.display_time;
-    if (p->state == STATE_FADE_OUT || display_time <= 0.0) {
-        return 1.0f;
-    }
-    float progress = ClockTimer_PeekElapsed(&p->timer) / display_time;
-    CLAMP(progress, 0.0f, 1.0f);
-    return progress;
 }
 
 static void M_Draw(PHASE *const phase)
 {
-    M_PRIV *const p = phase->priv;
-    const float progress = Fader_GetCurrentValue(&p->fader);
-    Output_Overlay_DrawImage(p->args.file_name);
-    Output_Flush();
-
-    UI_BeginLayer(UI_LAYER_BACKDROP);
-    if (p->args.loading_pic
-        && (p->state != STATE_FADE_IN || !p->args.block_cross_fade_in)) {
-        if (p->state == STATE_FADE_IN) {
-            UI_ScheduleDrawSnapshot(progress);
-        }
-    } else {
-        UI_ScheduleDrawScreenBlack(progress);
-    }
-    UI_EndLayer(UI_LAYER_BACKDROP);
-
-    if (p->args.loading_pic && g_Config.ui.show_loading_bar) {
-        UI_BeginScreenModal(0.5f, M_BAR_Y);
-        UI_LoadingBar((UI_LOADING_BAR_SETTINGS) {
-            .w = UI_GetCanvasWidth() * M_BAR_WIDTH,
-            .h = M_BAR_HEIGHT,
-            .progress = M_GetLoadProgress(p),
-        });
-        UI_EndModal();
-    }
-    p->has_drawn = true;
 }
 
 PHASE *Phase_Picture_Create(const PHASE_PICTURE_ARGS args)
@@ -168,8 +92,6 @@ PHASE *Phase_Picture_Create(const PHASE_PICTURE_ARGS args)
     PHASE *const phase = Memory_Alloc(sizeof(PHASE));
     M_PRIV *const p = Memory_Alloc(sizeof(M_PRIV));
     p->args = args;
-    p->state = STATE_FADE_IN;
-    p->has_drawn = false;
     phase->priv = p;
     phase->start = M_Start;
     phase->end = M_End;
