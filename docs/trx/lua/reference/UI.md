@@ -14,18 +14,17 @@ order: 20
 
 Module for drawing on top of the game.
 
-Every function here is available only from a [`trx.ui.on_draw`](#ui.on_draw) handler, and
-raises anywhere else: the interface is built afresh each drawn frame, and
-there is no scene to add to outside one.
+A script builds its interface from widgets once, and keeps them.
+[`trx.ui.regions.place`](#ui.regions.place) puts a widget in one of the regions of the screen,
+where it stacks with the health bars and the item names, so the player's
+choice of where each element sits still holds. [`trx.ui.layers.push`](#ui.layers.push) puts a
+screen of widgets, such as a menu, over the rest. A widget takes signals in
+place of fixed values, and follows them as they change.
 
-A handler adds to the region the game is building, which it is told the name
-of. Widgets land in the same stack as the health bars and the item names, so
-a script cannot draw over them and the player's choice of where each element
-sits still holds.
-
-Widgets that hold other widgets take the body as a function rather than
-opening and closing by hand, so a scene stays whole even where the body
-fails.
+Below the widgets, a script can reserve room in a region during
+[`trx.ui.on_draw`](#ui.on_draw) and paint into it by hand with [`trx.ui.primitive`](#ui.primitive) during
+[`trx.ui.on_paint`](#ui.on_paint). The primitive drawing calls work only while the
+interface is painted.
 
 Sizes are in canvas units, not screen pixels. [`trx.ui.canvas`](#ui.canvas) reports the
 canvas, and [`trx.ui.safe_area`](#ui.safe_area) the part of it that is free to draw in.
