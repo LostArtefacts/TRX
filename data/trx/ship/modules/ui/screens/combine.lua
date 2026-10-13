@@ -27,8 +27,6 @@ local MODEL_HEIGHT = 120.0
 local SPACING = 90.0
 
 local SPIN_PER_TICK = 4 * trx.math.DEG_1
--- Every mesh of an object, for one the ring states no selection for.
-local ALL_MESHES = 0xFFFFFFFF
 
 -- The model of an entry as the ring poses it, turning while it is in the
 -- middle.
@@ -41,7 +39,7 @@ local function model(object, index, selected)
     rot_x = entry and entry.base_rot_x or 0,
     rot_y = entry and entry.y_rot_sel + entry.base_rot_y or 0,
     rot_z = entry and entry.base_rot_z or 0,
-    mesh_mask = entry and entry.meshes_drawn or ALL_MESHES,
+    mesh_mask = entry and entry.meshes_drawn or nil,
     spin = selected:map(function(at)
       return at == index and SPIN_PER_TICK or 0
     end),
@@ -87,14 +85,14 @@ local function dialog(state)
   })
 end
 
-local function begin(ctx, state, layer)
-  state.partners = trx.inventory.combine_partners(ctx.object)
+-- Shows the row once the entry has come to rest, or puts the entry away
+-- where it combines with nothing.
+local function begin(ctx, state)
   if #state.partners == 0 then
     ctx:cancel()
     return
   end
-  state.selected = trx.signal.new(1)
-  layer:set_root(dialog(state))
+  state.shown:set(true)
   -- The frame names the entry in the middle, so the ring names nothing. The
   -- caption goes before the frame first shows, or the frame would move once
   -- the caption gave up its room.
@@ -118,10 +116,10 @@ local function turn(state, step)
   trx.sound.play(trx.catalog.samples.MENU_ROTATE)
 end
 
-local function control(ctx, state, layer, keys)
-  if state.partners == nil then
+local function control(ctx, state, keys)
+  if not state.shown:get() then
     if trx.inventory_ring.signals.rest_frame:get() ~= nil then
-      begin(ctx, state, layer)
+      begin(ctx, state)
     end
     return
   end
@@ -144,12 +142,18 @@ end
 
 ---@param ctx trx.ui.EntryContext
 local function open(ctx)
-  local state = {}
+  local state = {
+    partners = trx.inventory.combine_partners(ctx.object),
+    selected = trx.signal.new(1),
+    shown = trx.signal.new(false),
+  }
+  -- Nothing shows until the entry comes to rest and the row opens.
+  local root = dialog(state)
+  root.shown = state.shown
   return ctx:push({
-    -- Nothing shows until the entry comes to rest and the row opens.
-    root = widgets.Stack({ children = {} }),
-    on_input = function(layer, keys)
-      control(ctx, state, layer, keys)
+    root = root,
+    on_input = function(_, keys)
+      control(ctx, state, keys)
     end,
   })
 end

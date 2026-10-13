@@ -19,19 +19,10 @@ local BAR = { width = 0.76, height = 12, y = 0.941 }
 
 ---@param ctx trx.ui.PictureContext
 local function open(ctx)
-  local fades = fade.screen(ctx)
-  local progress = trx.ui.tween(0)
-  local leaving = false
   local drawn = false
   local waiting = false
   ---@type common.timer.Timer?
-  local showing = nil
-
-  local function finish()
-    if ctx.is_held then
-      ctx:confirm()
-    end
-  end
+  local pending = nil
 
   local function hand_over()
     waiting = false
@@ -40,35 +31,26 @@ local function open(ctx)
 
   -- A loading picture hands over only once it has been drawn, so that what
   -- the level blends from is the picture.
-  local function leave()
-    leaving = true
-    if showing ~= nil then
-      showing:cancel()
-    end
-    progress:set(1)
-    if not ctx.is_loading then
-      fades:leave({ ticks = ctx.fade_out_ticks })
-    elseif drawn then
-      hand_over()
-    else
-      waiting = true
-    end
-  end
-
-  fades:enter({
+  local show = fade.screen(ctx):show({
     layer = ctx.can_cross_fade_in and { snapshot = true } or nil,
-    ticks = ctx.fade_in_ticks,
-    on_done = function()
-      if leaving then
-        return
+    skip = trx.input.SkipContext.TO_SCREEN,
+    leave = function(fades)
+      if not ctx.is_loading then
+        fades:leave({ ticks = ctx.fade_out_ticks })
+      elseif drawn then
+        hand_over()
+      else
+        waiting = true
       end
-      progress:to(1, ctx.display_ticks)
-      showing =
-        timer.after(ctx.display_ticks, leave, { clock = timer.Clock.UI })
     end,
   })
 
-  local shown = trx.signal.config("ui.show_loading_bar")
+  ctx:on_end(function()
+    if pending ~= nil then
+      pending:cancel()
+    end
+  end)
+
   local main = ctx:push({
     root = trx.ui.widgets.Custom({
       measure = function()
@@ -79,7 +61,7 @@ local function open(ctx)
         if not drawn then
           drawn = true
           if waiting then
-            timer.after(0, hand_over, { clock = timer.Clock.UI })
+            pending = timer.after(0, hand_over, { clock = timer.Clock.UI })
           end
         end
       end,
@@ -88,26 +70,15 @@ local function open(ctx)
       return 0, 0
     end,
     on_input = function(_, keys)
-      if waiting or not keys:pressed(trx.input.Role.MENU_SKIP) then
-        return
-      end
-      trx.input.hold_off_skip(trx.input.SkipContext.TO_SCREEN)
-      if leaving then
-        finish()
-      else
-        leave()
-      end
-    end,
-    on_close = function()
-      if showing ~= nil then
-        showing:cancel()
+      if not waiting then
+        show:control(keys)
       end
     end,
   })
   if ctx.is_loading then
     local bar = loading_bar.new({
-      progress = progress,
-      shown = shown,
+      progress = show.progress,
+      shown = trx.signal.config("ui.show_loading_bar"),
       width = BAR.width,
       height = BAR.height,
       y = BAR.y,
