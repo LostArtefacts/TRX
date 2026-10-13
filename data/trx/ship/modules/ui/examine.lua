@@ -4,6 +4,8 @@
 -- Usage:
 --   require("common.ui.examine").setup()
 
+local metrics = require("common.ui.metrics")
+
 local M = {}
 
 local L = trx.locale.get
@@ -18,7 +20,6 @@ trx.locale.declare({
 local DIALOG_PAD = 8.0
 local TITLE_MARGIN = 5.0
 local FOOTER_SPACING = 5.0
-local TEXT_HEIGHT = 15
 
 local function turn_speed()
   return trx.math.degrees(3)
@@ -63,7 +64,7 @@ local function page_widget(state, index)
       if index ~= state.page then
         return w, 0
       elseif #state.pages > 1 then
-        return w, TEXT_HEIGHT * state.lines * trx.ui.text_scale
+        return w, metrics.TEXT_HEIGHT * state.lines * trx.ui.text_scale
       end
       return w, h
     end,

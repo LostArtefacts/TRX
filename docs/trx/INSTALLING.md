@@ -1400,6 +1400,7 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── level_start.lua
 │   │   ├── level_view.lua
 │   │   ├── loading_bar.lua
+│   │   ├── metrics.lua
 │   │   ├── pause.lua
 │   │   ├── picture.lua
 │   │   ├── requester.lua
@@ -2846,6 +2847,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── level_start.lua
     │   │   │   ├── level_view.lua
     │   │   │   ├── loading_bar.lua
+    │   │   │   ├── metrics.lua
     │   │   │   ├── pause.lua
     │   │   │   ├── picture.lua
     │   │   │   ├── requester.lua
