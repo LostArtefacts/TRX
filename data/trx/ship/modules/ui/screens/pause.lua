@@ -57,7 +57,7 @@ local function open(ctx)
     )
     shown:set(false)
     ctx:push({
-      root = sure.root,
+      root = sure,
       place = sure.place,
       on_input = function(layer, keys)
         local picked = sure:control(keys)
@@ -76,7 +76,7 @@ local function open(ctx)
   end
 
   return ctx:push({
-    root = trx.ui.widgets.Stack({ shown = shown, children = { ask.root } }),
+    root = trx.ui.widgets.Stack({ shown = shown, children = { ask } }),
     place = ask.place,
     on_input = function(_, keys)
       local picked = ask:control(keys)
