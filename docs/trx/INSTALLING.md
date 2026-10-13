@@ -1402,6 +1402,7 @@ If you install everything correctly, your game directory should look more or les
 │   ├── inv_ring.lua
 │   ├── ngplus.lua
 │   ├── save_crystal.lua
+│   ├── timer.lua
 │   ├── water_color.lua
 │   └── weapons.lua
 ├── scripts
@@ -2842,6 +2843,7 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   ├── inv_ring.lua
     │   │   ├── ngplus.lua
     │   │   ├── save_crystal.lua
+    │   │   ├── timer.lua
     │   │   ├── water_color.lua
     │   │   └── weapons.lua
     │   ├── scripts
