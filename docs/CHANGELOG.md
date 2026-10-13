@@ -33,6 +33,7 @@
 - Added an option to change the loading bar color (Graphics → Bars → Loading bar color) (#6682 / TRX1582)
 - Added a loading bar to the TR1–3 loading screens (Graphics → Bars → Loading bar) (TRX1591)
 - Added an option to change the loading bar appearance (Graphics → Bars → Loading bar appearance) (TRX1591)
+- Added an option to choose how a level comes in: a cross-fade from the loading screen, a fade through black, or none. TR4 fades through black by default, as in the original (Graphics → UI → Level start transition) (TRX1375)
 - Improved the position of the passport dialogs, which now line up on every page
 - Changed the loading screens in TR1–3 to stay on screen for two seconds in every game (TRX1591)
 - Changed the look button to skip loading screens, pictures, FMVs, and stats screens, like it does for cutscenes (TRX1541)

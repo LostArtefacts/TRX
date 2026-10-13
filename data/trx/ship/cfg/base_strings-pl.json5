@@ -2052,6 +2052,15 @@
             "title": "Strój Lary",
             "description": "Zmienia strój Lary. Opcja domyślna zachowuje standardowe zmiany między poziomami; w przeciwnym razie wybrany strój pozostaje aktywny, dopóki nie zostanie zmieniony ręcznie.",
         },
+        "visuals.level_start_transition": {
+            "description": "\\{review}Sposób, w jaki pojawia się poziom, gdy się zaczyna lub gdy wczytywany jest zapis. Przenikanie łączy ekran ładowania z poziomem. Przez czerń wygasza ekran ładowania do czerni, a potem rozjaśnia poziom z czerni, jak w oryginalnym TR4. Bez ekranu ładowania obie opcje rozjaśniają poziom z czerni. Wyłączone pokazuje poziom od razu.",
+            "title": "\\{review}Przejście na początku poziomu",
+            "values": {
+                "black": "\\{review}Przez czerń",
+                "cross-fade": "\\{review}Przenikanie",
+                "disabled": "\\{review}Wyłączone",
+            }
+        },
         "visuals.logo_locale": {
             "description": "\\{review}Które logo pokazuje ekran tytułowy. Oryginał zawiera po jednym dla każdego języka, w którym został wydany.",
             "title": "\\{review}Logo tytułowe",

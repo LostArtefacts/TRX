@@ -14,6 +14,7 @@ local CHOICE_CONFIRM = 2
 local DISPLAY = 20
 local FADE_IN = 5
 local FADE_OUT = 4
+local LEVEL_FADE_IN = 16
 
 require("common.ui.fade").setup()
 require("common.ui.level_start").setup()
@@ -50,6 +51,10 @@ local function has(pattern)
     end
   end
   return false
+end
+
+local function set_transition(mode)
+  trx.config.set("visuals.level_start_transition", mode)
 end
 
 local function open(is_loading, can_cross_fade_in)
@@ -123,7 +128,16 @@ test("a loading picture shows the loading bar it is set to", function()
   finish()
 end)
 
+-- Shows a loading picture for its time, until it asks to hand over.
+local function show_loading()
+  open(true, false)
+  ticks(FADE_IN + 1)
+  fake.scene()
+  ticks(DISPLAY + 1)
+end
+
 test("a loading picture hands over to the level once drawn", function()
+  set_transition("cross-fade")
   open(true, false)
   ticks(FADE_IN + 1)
   fake.scene()
@@ -132,14 +146,91 @@ test("a loading picture hands over to the level once drawn", function()
   fake.release(PICTURE)
   assert(has("^snapshot slot=%d+ opacity=1"), "the picture did not stay up")
   fake.start_game(false)
+  fake.control()
+  assert(black() == nil, "the level faded in from black under the blend")
   ticks(FADE_OUT + 2)
   assert(not has("^snapshot "), "the blend did not clear")
+  finish()
+end)
+
+test("through black, a loading picture fades out before it ends", function()
+  set_transition("black")
+  show_loading()
+  assert(fake.take_choice(PICTURE) == CHOICE_NONE, "it ended before the fade")
+  ticks(FADE_OUT + 1)
+  assert(fake.take_choice(PICTURE) == CHOICE_CONFIRM, "it did not end")
+  fake.release(PICTURE)
+  assert(black() == 0xFF, "the screen did not stay black")
+  fake.start_game(false)
+  fake.control()
+  ticks(LEVEL_FADE_IN / 2)
+  local alpha = black()
+  assert(alpha ~= nil and alpha < 0xFF, "the level did not fade in")
+  ticks(LEVEL_FADE_IN / 2 + 1)
+  assert(black() == nil, "the black stayed over the level")
+  assert(not has("^snapshot "), "it blended as well")
+  finish()
+end)
+
+test("through black, a skip while it fades out ends it at once", function()
+  set_transition("black")
+  show_loading()
+  press(Role.MENU_SKIP)
+  assert(
+    fake.take_choice(PICTURE) == CHOICE_CONFIRM,
+    "the skip did not end it"
+  )
+  fake.release(PICTURE)
+  fake.start_game(false)
+  ticks(LEVEL_FADE_IN + 1)
+  assert(black() == nil, "the black stayed over the level")
+  finish()
+end)
+
+test("with no transition, a loading picture ends at once", function()
+  set_transition("disabled")
+  show_loading()
+  assert(fake.take_choice(PICTURE) == CHOICE_CONFIRM, "it did not end")
+  fake.release(PICTURE)
+  fake.start_game(false)
+  fake.control()
+  assert(black() == nil, "the level faded in")
+  assert(not has("^snapshot "), "the level blended in")
+  finish()
+end)
+
+test("a level without a loading picture fades in from black", function()
+  trx.config.set("visuals.enable_fade_effects", true)
+  set_transition("cross-fade")
+  fake.start_game(false)
+  fake.control()
+  assert(black() == 0xFF, "the level did not start black")
+  fake.control()
+  ticks(LEVEL_FADE_IN + 1)
+  assert(black() == nil, "the black stayed over the level")
+
+  set_transition("disabled")
+  fake.start_game(false)
+  fake.control()
+  assert(black() == nil, "the level faded in with no transition")
+  finish()
+end)
+
+test("a held fade is dropped when the title comes next", function()
+  set_transition("black")
+  show_loading()
+  ticks(FADE_OUT + 1)
+  fake.take_choice(PICTURE)
+  fake.release(PICTURE)
+  fake.start_title()
+  assert(black() == nil, "the black outlived the picture")
   finish()
 end)
 
 test(
   "a loading picture skipped before it is drawn waits to hand over",
   function()
+    set_transition("cross-fade")
     open(true, false)
     fake.tick()
     press(Role.MENU_SKIP)

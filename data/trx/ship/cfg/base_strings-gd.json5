@@ -2052,6 +2052,15 @@
             "title": "Aodach Lara",
             "description": "Atharraicheas seo coltas Lara. Ma thèid Bunaiteach a thaghadh, thèid atharrachaidhean aodaich àbhaisteach eadar ìrean a chumail; airson dad sam bith eile, mairidh an t-aodach a chaidh a thaghadh gus an tèid atharrachadh le làimh.",
         },
+        "visuals.level_start_transition": {
+            "description": "\\{review}Mar a nochdas ìre nuair a thòisicheas i no nuair a thèid sàbhaladh a luchdadh. Tha Tar-dhorchachadh a' measgachadh na sgrìn luchdachaidh a-steach dhan ìre. Tha Tro dhubh a' dorchachadh na sgrìn luchdachaidh gu dubh agus a' soilleireachadh na h-ìre à dubh, mar san TR4 thùsail. Às aonais sgrìn luchdachaidh, bidh an dà chuid a' soilleireachadh na h-ìre à dubh. Seallaidh Dheth an ìre sa bhad.",
+            "title": "\\{review}Eadar-ghluasad aig toiseach ìre",
+            "values": {
+                "black": "\\{review}Tro dhubh",
+                "cross-fade": "\\{review}Tar-dhorchachadh",
+                "disabled": "\\{review}Dheth",
+            }
+        },
         "visuals.logo_locale": {
             "description": "\\{review}Dè an suaicheantas a sheallas sgrìn an tiotail. Tha fear ann sa gheama thùsail airson gach cànan anns an deach fhoillseachadh.",
             "title": "\\{review}Suaicheantas an tiotail",
