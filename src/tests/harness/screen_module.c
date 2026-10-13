@@ -10,6 +10,7 @@
 #include <fakes/ui_draw.h>
 #include <harness/fake_calls.h>
 #include <harness/lua_surface.h>
+#include <harness/takeover_args.h>
 
 #include <trx/config/registry.h>
 #include <trx/config/types.h>
@@ -116,14 +117,13 @@ static int M_FakeSetDescription(lua_State *const L)
     return 0;
 }
 
-// fake.offer(screen, arg) -> bool
+// fake.offer(screen, args?) -> bool
 static int M_FakeOffer(lua_State *const L)
 {
     lua_pushboolean(
         L,
         UI_Takeover_Offer(
-            (UI_TAKEOVER)luaL_checkinteger(L, 1),
-            (int32_t)luaL_optinteger(L, 2, 0)));
+            (UI_TAKEOVER)luaL_checkinteger(L, 1), TakeoverArgs_Read(L, 2)));
     return 1;
 }
 
@@ -141,33 +141,6 @@ static int M_FakeTakeChoice(lua_State *const L)
     lua_pushinteger(
         L, UI_Takeover_TakeChoice((UI_TAKEOVER)luaL_checkinteger(L, 1)));
     return 1;
-}
-
-// fake.set_background(screen, path?) - the picture a screen stands on.
-static int M_FakeSetBackground(lua_State *const L)
-{
-    static char path[256];
-    const UI_TAKEOVER screen = (UI_TAKEOVER)luaL_checkinteger(L, 1);
-    if (lua_isnoneornil(L, 2)) {
-        UI_Takeover_SetBackground(screen, nullptr);
-        return 0;
-    }
-    snprintf(path, sizeof(path), "%s", luaL_checkstring(L, 2));
-    UI_Takeover_SetBackground(screen, path);
-    return 0;
-}
-
-// fake.set_timing(screen, display_ticks, fade_in_ticks, fade_out_ticks)
-static int M_FakeSetTiming(lua_State *const L)
-{
-    UI_Takeover_SetTiming(
-        (UI_TAKEOVER)luaL_checkinteger(L, 1),
-        (UI_TAKEOVER_TIMING) {
-            .display_ticks = (int32_t)luaL_checkinteger(L, 2),
-            .fade_in_ticks = (int32_t)luaL_checkinteger(L, 3),
-            .fade_out_ticks = (int32_t)luaL_checkinteger(L, 4),
-        });
-    return 0;
 }
 
 // fake.start_game() - a level starts, as Game_Start reports it.
@@ -229,10 +202,6 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "take_choice");
     lua_pushcfunction(L, M_FakeRelease);
     lua_setfield(L, -2, "release");
-    lua_pushcfunction(L, M_FakeSetBackground);
-    lua_setfield(L, -2, "set_background");
-    lua_pushcfunction(L, M_FakeSetTiming);
-    lua_setfield(L, -2, "set_timing");
     lua_pushcfunction(L, M_FakeStartGame);
     lua_setfield(L, -2, "start_game");
     lua_pushcfunction(L, M_FakeStartTitle);

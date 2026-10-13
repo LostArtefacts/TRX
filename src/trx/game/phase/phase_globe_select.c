@@ -20,9 +20,9 @@ typedef struct {
 static PHASE_CONTROL M_Start(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
-    UI_Takeover_SetBackground(
-        UI_TAKEOVER_GLOBE_SELECT, p->args.background_path);
-    p->is_held = UI_Takeover_Offer(UI_TAKEOVER_GLOBE_SELECT, 0);
+    p->is_held = UI_Takeover_Offer(
+        UI_TAKEOVER_GLOBE_SELECT,
+        (UI_TAKEOVER_ARGS) { .background = p->args.background_path });
     if (!p->is_held) {
         LOG_WARNING("no script draws the globe, leaving for the title");
         return (PHASE_CONTROL) {
@@ -40,7 +40,6 @@ static void M_End(PHASE *const phase)
         UI_Takeover_Release(UI_TAKEOVER_GLOBE_SELECT);
         p->is_held = false;
     }
-    UI_Takeover_SetBackground(UI_TAKEOVER_GLOBE_SELECT, nullptr);
     Overlay_SetBottomText((OVERLAY_TEXT) { 0 });
     Overlay_ShowArrow(OVERLAY_ARROW_BCL, false);
     Overlay_ShowArrow(OVERLAY_ARROW_BCR, false);

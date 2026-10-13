@@ -959,6 +959,7 @@ unit_tests += {
   'name': 'lua/trx/ui/screens',
   'bundles': [b_lua_surface, b_lua_math, b_config],
   'src': [
+    'harness/takeover_args.c',
     'fakes/exit_fade.c',
     'fakes/input.c',
     'fakes/camera.c',
@@ -1238,6 +1239,7 @@ unit_tests += {
   'bundles': [b_lua_surface, b_lua_math, b_lua_strings, b_matrix],
   'src': [
     'harness/screen_module.c',
+    'harness/takeover_args.c',
     'harness/stubs_config_file.c',
     'fakes/camera.c',
     'fakes/creatures.c',
@@ -1500,6 +1502,7 @@ unit_tests += {
   'bundles': [b_lua_surface, b_lua_math, b_lua_strings, b_matrix],
   'src': [
     'harness/screen_module.c',
+    'harness/takeover_args.c',
     'harness/stubs_config_file.c',
     'fakes/camera.c',
     'fakes/creatures.c',
@@ -1597,6 +1600,7 @@ unit_tests += {
   'bundles': [b_lua_surface, b_lua_math, b_lua_strings, b_matrix],
   'src': [
     'harness/screen_module.c',
+    'harness/takeover_args.c',
     'harness/stubs_config_file.c',
     'fakes/camera.c',
     'fakes/creatures.c',
@@ -1694,6 +1698,7 @@ unit_tests += {
   'bundles': [b_lua_surface, b_lua_math, b_lua_strings, b_matrix],
   'src': [
     'harness/screen_module.c',
+    'harness/takeover_args.c',
     'harness/stubs_config_file.c',
     'fakes/assault.c',
     'fakes/camera.c',
@@ -1795,6 +1800,7 @@ unit_tests += {
   'bundles': [b_lua_surface, b_lua_math, b_lua_strings, b_matrix],
   'src': [
     'harness/screen_module.c',
+    'harness/takeover_args.c',
     'harness/stubs_config_file.c',
     'fakes/assault.c',
     'fakes/camera.c',
@@ -1896,6 +1902,7 @@ unit_tests += {
   'bundles': [b_lua_surface, b_lua_math, b_lua_strings, b_matrix],
   'src': [
     'harness/screen_module.c',
+    'harness/takeover_args.c',
     'harness/stubs_config_file.c',
     'fakes/assault.c',
     'fakes/camera.c',
@@ -1997,6 +2004,7 @@ unit_tests += {
   'bundles': [b_lua_surface, b_lua_math, b_lua_strings, b_matrix],
   'src': [
     'harness/screen_module.c',
+    'harness/takeover_args.c',
     'harness/stubs_config_file.c',
     'fakes/assault.c',
     'fakes/camera.c',
@@ -2101,6 +2109,7 @@ unit_tests += {
   'bundles': [b_lua_surface, b_lua_math, b_lua_strings, b_matrix],
   'src': [
     'harness/screen_module.c',
+    'harness/takeover_args.c',
     'harness/stubs_config_file.c',
     'fakes/assault.c',
     'fakes/camera.c',
@@ -2205,6 +2214,7 @@ unit_tests += {
   'bundles': [b_lua_surface, b_lua_math, b_lua_strings, b_matrix],
   'src': [
     'harness/screen_module.c',
+    'harness/takeover_args.c',
     'harness/stubs_config_file.c',
     'fakes/assault.c',
     'fakes/camera.c',
@@ -2306,6 +2316,7 @@ unit_tests += {
   'bundles': [b_lua_surface, b_lua_math, b_lua_strings, b_matrix],
   'src': [
     'harness/screen_module.c',
+    'harness/takeover_args.c',
     'harness/stubs_config_file.c',
     'fakes/assault.c',
     'fakes/camera.c',

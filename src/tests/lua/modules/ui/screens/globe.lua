@@ -42,10 +42,13 @@ local AREAS = {
   { mesh = 3, rot = { 0, -16384, 0 } },
 }
 
-local function open(completed, areas)
+local function open(completed, areas, background)
   fake.set_globe(areas or AREAS)
   fake.set_completed(completed or {})
-  assert(fake.offer(GLOBE, 0), "the globe was not taken")
+  assert(
+    fake.offer(GLOBE, { background = background }),
+    "the globe was not taken"
+  )
   -- The globe comes in on the ring before it names anything.
   ticks(40)
 end
@@ -160,7 +163,7 @@ test("the globe comes in from black and goes dark to leave", function()
   trx.config.set("visuals.enable_fade_effects", true)
   fake.set_globe(AREAS)
   fake.set_completed({})
-  assert(fake.offer(GLOBE, 0), "the globe was not taken")
+  assert(fake.offer(GLOBE), "the globe was not taken")
   assert(black() == 0xFF, "the globe did not start black")
   ticks(31)
   assert(black() == nil, "the black stayed")
@@ -175,15 +178,13 @@ test("the globe comes in from black and goes dark to leave", function()
 end)
 
 test("the globe stands on the screen's picture", function()
-  fake.set_background(GLOBE, "india.webp")
-  open({})
+  open({}, nil, "india.webp")
   local drawn = false
   for _, op in ipairs(fake.scene()) do
     if op:match("^background path=india.webp mono=1 dim=0.50") then
       drawn = true
     end
   end
-  fake.set_background(GLOBE, nil)
   assert(drawn, "the picture was not drawn")
   finish()
 end)

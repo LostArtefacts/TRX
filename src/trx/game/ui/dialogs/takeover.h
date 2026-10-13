@@ -1,5 +1,9 @@
 #pragma once
 
+#include <trx/game/game_flow/types.h>
+#include <trx/game/inventory_ring/enum.h>
+#include <trx/game/objects/ids.h>
+
 #include <stdint.h>
 
 // Engine screens that another layer, such as the scripting layer, can take
@@ -20,17 +24,34 @@ typedef enum {
     UI_TAKEOVER_NUMBER_OF,
 } UI_TAKEOVER;
 
-// The statistics screen's argument: the level's number as a script counts
-// levels in the low half, and whether the screen sums up the whole game and
-// whether it is drawn bare above it.
-#define UI_TAKEOVER_STATS_ARG(level_num, is_final, is_bare)                    \
-    (((level_num) & 0xffff) | ((is_final) ? 0x10000 : 0)                       \
-     | ((is_bare) ? 0x20000 : 0))
-
-// The picture screen's argument: whether the picture shows while a level
-// loads, and whether it may fade in from the frame shown before it.
-#define UI_TAKEOVER_PICTURE_ARG(is_loading, can_cross_fade_in)                 \
-    (((is_loading) ? 0x1 : 0) | ((can_cross_fade_in) ? 0x2 : 0))
+// What a screen reports to its owner as it is offered. Each screen fills in
+// the fields that it reports and leaves the others zero.
+typedef struct {
+    // The entry that the player uses, examines or combines in the inventory
+    // ring, for UI_TAKEOVER_RING_ENTRY, UI_TAKEOVER_EXAMINE and
+    // UI_TAKEOVER_COMBINE.
+    OBJECT_ID object_id;
+    // What the inventory ring opened for, for UI_TAKEOVER_SAVE_LOAD.
+    INVENTORY_MODE mode;
+    // The level whose statistics the screen shows, whether it shows the totals
+    // of the whole game, and whether it is drawn bare, for UI_TAKEOVER_STATS.
+    const GF_LEVEL *level;
+    bool is_final;
+    bool is_bare;
+    // The picture the screen stands on, or nullptr for none, for
+    // UI_TAKEOVER_STATS, UI_TAKEOVER_GLOBE_SELECT and UI_TAKEOVER_PICTURE. The
+    // screen owns the path, and keeps it while the owner holds the screen.
+    const char *background;
+    // How long the screen shows and fades, in ticks, for
+    // UI_TAKEOVER_LEVEL_VIEW and UI_TAKEOVER_PICTURE.
+    int32_t display_ticks;
+    int32_t fade_in_ticks;
+    int32_t fade_out_ticks;
+    // Whether the picture shows while a level loads, and whether it may fade
+    // in from the frame shown before it, for UI_TAKEOVER_PICTURE.
+    bool is_loading;
+    bool can_cross_fade_in;
+} UI_TAKEOVER_ARGS;
 
 typedef enum {
     UI_TAKEOVER_CHOICE_NONE,
@@ -43,7 +64,7 @@ typedef enum {
 
 typedef struct {
     // Returns whether the owner takes the screen.
-    bool (*offer)(UI_TAKEOVER screen, int32_t arg);
+    bool (*offer)(UI_TAKEOVER screen, const UI_TAKEOVER_ARGS *args);
     // Tells the owner that the screen ended while the owner still held it.
     void (*release)(UI_TAKEOVER screen);
 } UI_TAKEOVER_HOOKS;
@@ -52,21 +73,7 @@ void UI_Takeover_SetHooks(UI_TAKEOVER_HOOKS hooks);
 
 // Offers the screen to the owner. Returns whether the owner took it; the
 // screen then draws nothing and reads no input of its own.
-bool UI_Takeover_Offer(UI_TAKEOVER screen, int32_t arg);
-
-// The picture a screen stands on, set before the screen is offered and kept
-// until it is set again. The screen owns the path.
-void UI_Takeover_SetBackground(UI_TAKEOVER screen, const char *path);
-const char *UI_Takeover_GetBackground(UI_TAKEOVER screen);
-// How long a timed screen shows and fades, in ticks, set before the screen is
-// offered and kept until it is set again.
-typedef struct {
-    int32_t display_ticks;
-    int32_t fade_in_ticks;
-    int32_t fade_out_ticks;
-} UI_TAKEOVER_TIMING;
-void UI_Takeover_SetTiming(UI_TAKEOVER screen, UI_TAKEOVER_TIMING timing);
-UI_TAKEOVER_TIMING UI_Takeover_GetTiming(UI_TAKEOVER screen);
+bool UI_Takeover_Offer(UI_TAKEOVER screen, UI_TAKEOVER_ARGS args);
 
 // Returns whether an owner holds the screen.
 bool UI_Takeover_IsHeld(UI_TAKEOVER screen);

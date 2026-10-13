@@ -30,6 +30,13 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
 {
     M_PRIV *const p = phase->priv;
 
+    Output_Overlay_CaptureGameSnapshot();
+    if (p->args.background_path != nullptr
+        && !Output_Overlay_LoadImage(p->args.background_path)) {
+        LOG_WARNING(
+            "Failed to load background image: %s", p->args.background_path);
+    }
+
     // A script draws the statistics, and a screen that no script takes has
     // nothing to show.
     if (!Game_IsInGym()) {
@@ -39,21 +46,17 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
                                     : Game_GetCurrentLevel()->num);
         if (!UI_Takeover_Offer(
                 UI_TAKEOVER_STATS,
-                UI_TAKEOVER_STATS_ARG(
-                    GF_GetLevelOrdinalNumber(GFLT_MAIN, level),
-                    p->args.show_final_stats, p->args.use_bare_style))) {
+                (UI_TAKEOVER_ARGS) {
+                    .level = level,
+                    .is_final = p->args.show_final_stats,
+                    .is_bare = p->args.use_bare_style,
+                    .background = p->args.background_path,
+                })) {
             p->state = STATE_FINISH;
             return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
         }
     }
 
-    Output_Overlay_CaptureGameSnapshot();
-    if (p->args.background_path != nullptr
-        && !Output_Overlay_LoadImage(p->args.background_path)) {
-        LOG_WARNING(
-            "Failed to load background image: %s", p->args.background_path);
-    }
-    UI_Takeover_SetBackground(UI_TAKEOVER_STATS, p->args.background_path);
     p->state = Game_IsInGym() ? STATE_FINISH : STATE_DISPLAY;
 
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
@@ -62,7 +65,6 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
 static void M_End(PHASE *const phase)
 {
     UI_Takeover_Release(UI_TAKEOVER_STATS);
-    UI_Takeover_SetBackground(UI_TAKEOVER_STATS, nullptr);
 }
 
 static PHASE_CONTROL M_Control(PHASE *const phase)

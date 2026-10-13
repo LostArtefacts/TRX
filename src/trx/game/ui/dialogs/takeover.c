@@ -3,8 +3,6 @@
 typedef struct {
     bool held;
     UI_TAKEOVER_CHOICE choice;
-    const char *background;
-    UI_TAKEOVER_TIMING timing;
 } M_STATE;
 
 static const bool
@@ -47,33 +45,12 @@ void UI_Takeover_SetHooks(const UI_TAKEOVER_HOOKS hooks)
     m_Hooks = hooks;
 }
 
-bool UI_Takeover_Offer(const UI_TAKEOVER screen, const int32_t arg)
+bool UI_Takeover_Offer(const UI_TAKEOVER screen, const UI_TAKEOVER_ARGS args)
 {
     M_STATE *const state = &m_State[screen];
     state->choice = UI_TAKEOVER_CHOICE_NONE;
-    state->held = m_Hooks.offer != nullptr && m_Hooks.offer(screen, arg);
+    state->held = m_Hooks.offer != nullptr && m_Hooks.offer(screen, &args);
     return state->held;
-}
-
-void UI_Takeover_SetBackground(const UI_TAKEOVER screen, const char *const path)
-{
-    m_State[screen].background = path;
-}
-
-const char *UI_Takeover_GetBackground(const UI_TAKEOVER screen)
-{
-    return m_State[screen].background;
-}
-
-void UI_Takeover_SetTiming(
-    const UI_TAKEOVER screen, const UI_TAKEOVER_TIMING timing)
-{
-    m_State[screen].timing = timing;
-}
-
-UI_TAKEOVER_TIMING UI_Takeover_GetTiming(const UI_TAKEOVER screen)
-{
-    return m_State[screen].timing;
 }
 
 bool UI_Takeover_IsHeld(const UI_TAKEOVER screen)

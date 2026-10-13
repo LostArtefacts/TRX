@@ -50,14 +50,13 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     M_PRIV *const p = phase->priv;
     p->old_camera = g_Camera;
     M_PlaceCamera(p);
-    UI_Takeover_SetTiming(
+    p->is_held = UI_Takeover_Offer(
         UI_TAKEOVER_LEVEL_VIEW,
-        (UI_TAKEOVER_TIMING) {
+        (UI_TAKEOVER_ARGS) {
             .display_ticks = M_ToTicks(p->args.display_time),
             .fade_in_ticks = M_ToTicks(p->args.fade_in_time),
             .fade_out_ticks = M_ToTicks(p->args.fade_out_time),
         });
-    p->is_held = UI_Takeover_Offer(UI_TAKEOVER_LEVEL_VIEW, 0);
     if (!p->is_held) {
         LOG_WARNING("no script draws the level views, skipping them");
         return (PHASE_CONTROL) {

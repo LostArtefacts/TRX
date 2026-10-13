@@ -20,36 +20,8 @@ static int M_L_ScreensClose(lua_State *const L)
     return 0;
 }
 
-// trxc.screens.background(screen: trx.ui.Screen): string?
-static int M_L_ScreensBackground(lua_State *const L)
-{
-    const UI_TAKEOVER screen = (UI_TAKEOVER)LUA_CheckRange(
-        L, 1, UI_TAKEOVER_NUMBER_OF, "unknown screen");
-    const char *const path = UI_Takeover_GetBackground(screen);
-    if (path == nullptr) {
-        lua_pushnil(L);
-    } else {
-        lua_pushstring(L, path);
-    }
-    return 1;
-}
-
-// trxc.screens.timing(screen: trx.ui.Screen): integer, integer, integer
-static int M_L_ScreensTiming(lua_State *const L)
-{
-    const UI_TAKEOVER screen = (UI_TAKEOVER)LUA_CheckRange(
-        L, 1, UI_TAKEOVER_NUMBER_OF, "unknown screen");
-    const UI_TAKEOVER_TIMING timing = UI_Takeover_GetTiming(screen);
-    lua_pushinteger(L, timing.display_ticks);
-    lua_pushinteger(L, timing.fade_in_ticks);
-    lua_pushinteger(L, timing.fade_out_ticks);
-    return 3;
-}
-
 static const luaL_Reg m_Module[] = {
-    { "background", M_L_ScreensBackground },
     { "close", M_L_ScreensClose },
-    { "timing", M_L_ScreensTiming },
     { nullptr, nullptr },
 };
 

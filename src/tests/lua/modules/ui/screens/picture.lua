@@ -59,10 +59,17 @@ end
 
 local function open(is_loading, can_cross_fade_in)
   trx.config.set("visuals.enable_fade_effects", true)
-  fake.set_background(PICTURE, "picture.webp")
-  fake.set_timing(PICTURE, DISPLAY, FADE_IN, FADE_OUT)
-  local arg = (is_loading and 1 or 0) | (can_cross_fade_in and 2 or 0)
-  assert(fake.offer(PICTURE, arg), "the picture was not taken")
+  assert(
+    fake.offer(PICTURE, {
+      background = "picture.webp",
+      display_ticks = DISPLAY,
+      fade_in_ticks = FADE_IN,
+      fade_out_ticks = FADE_OUT,
+      is_loading = is_loading,
+      can_cross_fade_in = can_cross_fade_in,
+    }),
+    "the picture was not taken"
+  )
 end
 
 local function finish()
