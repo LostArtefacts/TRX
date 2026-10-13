@@ -7,6 +7,8 @@
 local h = require("harness")
 local test = h.test
 
+require("common.ui.hud.overlay").setup()
+
 -- Draws all overlay regions and returns the recorded scene.
 local function draw()
   local description, balanced = fake.draw_regions()
