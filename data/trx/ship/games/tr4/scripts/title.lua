@@ -1,3 +1,4 @@
+local fade = require("common.ui.fade")
 local logo = require("tr4.logo")
 
 -- The logo sits across the top of the menu at the size the original engine
@@ -8,8 +9,12 @@ local LOGO_HEIGHT = 256
 local LOGO_HOLD_TICKS = 16
 local LOGO_FADE_TICKS = 24
 
-local logo_opacity = trx.signal.new(0.0)
-local logo_ticks = 0
+local logo_opacity = fade.value({
+  from = 0,
+  to = 1,
+  ticks = LOGO_FADE_TICKS,
+  delay = LOGO_HOLD_TICKS,
+})
 
 local function show_logo()
   trx.ui.regions.place(
@@ -119,18 +124,8 @@ local function set_lara_visible(visible)
   end
 end
 
-trx.events.on_tick(function()
-  if logo_ticks > LOGO_HOLD_TICKS + LOGO_FADE_TICKS then
-    return
-  end
-  logo_ticks = logo_ticks + 1
-  local faded = (logo_ticks - LOGO_HOLD_TICKS) / LOGO_FADE_TICKS
-  logo_opacity:set(math.max(0.0, math.min(1.0, faded)))
-end)
-
 trx.events.on_title_start(function()
-  logo_ticks = 0
-  logo_opacity:set(0.0)
+  logo_opacity:restart()
   show_logo()
   trx.cutscenes.forget_played()
   set_lara_visible(false)
