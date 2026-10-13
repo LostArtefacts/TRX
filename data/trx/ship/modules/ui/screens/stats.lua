@@ -777,7 +777,12 @@ local function body_rows(state)
     align = trx.ui.HAlign.SPAN,
     children = shown,
   }))
-  add(state.reset:widget({ scale = state.fit }))
+  state.reset = hold_button.new({
+    words = trx.locale.get("general/stats/assault_reset_times"),
+    scale = state.fit,
+  })
+  state.reset:set_enabled(has_any_time())
+  add(state.reset.root)
   return children
 end
 
@@ -901,25 +906,21 @@ end
 -- has taken its own, which is only known as the frame is drawn. It is worked
 -- out there, and built again only where the room or the rows have changed.
 local function root_of(state)
-  ---@type trx.ui.Widget?
-  local box
+  state.shape = shape_of(state)
+  local box = build(state)
   return trx.ui.widgets.Custom({
     shown = state.shown,
     measure = function()
       local shape = shape_of(state)
-      if box == nil or shape ~= state.shape then
+      if shape ~= state.shape then
         state.shape = shape
-        if box ~= nil then
-          box:release()
-        end
+        box:release()
         box = build(state)
       end
       return box:measure()
     end,
     paint = function(x, y, w, h)
-      if box ~= nil then
-        box:paint(x, y, w, h)
-      end
+      box:paint(x, y, w, h)
     end,
   })
 end
@@ -939,9 +940,6 @@ local function new_state(level, mode, bare)
   }
   if mode == Mode.ASSAULT then
     state.visible = assault_visible_rows()
-    state.reset =
-      hold_button.new(trx.locale.get("general/stats/assault_reset_times"))
-    state.reset:set_enabled(has_any_time())
   end
   count(state)
   return state

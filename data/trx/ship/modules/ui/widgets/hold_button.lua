@@ -4,8 +4,11 @@
 --
 -- Usage:
 --   local hold_button = require("common.ui.widgets.hold_button")
---   local button = hold_button.new(trx.locale.get("general/passport/delete_save"))
---   local widget = button:widget({ align = trx.ui.HAlign.RIGHT })
+--   local button = hold_button.new({
+--     words = trx.locale.get("general/passport/delete_save"),
+--     align = trx.ui.HAlign.RIGHT,
+--   })
+--   ctx:push({ root = button.root, ... })
 --   if button:control(keys, can_delete) then ... end
 
 local metrics = require("common.ui.metrics")
@@ -32,6 +35,7 @@ M.HEIGHT = 2.0 * PAD_Y
   + BAR_HEIGHT
 
 ---@class common.ui.HoldButton
+---@field root trx.ui.Widget
 ---@field private words string
 ---@field private text trx.signal.Signal
 ---@field private enabled trx.signal.Signal
@@ -61,38 +65,6 @@ function Button:sync()
   self.text:set(label or "")
   self.progress:set((self.hold - HOLD_DEBUFF) / HOLD_MAX)
   return label
-end
-
--- Builds the button: its words over the bar, set against one side of the
--- width it is given by `options.align`, centered by default, and drawn
--- `options.scale` times its size. It keeps its room while it is disabled or
--- its key is not bound. Each call builds a new widget over the same state.
-function Button:widget(options)
-  options = options or {}
-  local scale = options.scale or 1.0
-  local bar = trx.ui.widgets.SleekBar({ progress = self.progress })
-  bar.hidden = self.empty
-  return trx.ui.widgets.Stack({
-    align = options.align or trx.ui.HAlign.CENTER,
-    children = {
-      trx.ui.widgets.Pad({
-        x = PAD_X * scale,
-        y = PAD_Y * scale,
-        hidden = self.hidden,
-        child = trx.ui.widgets.Stack({
-          spacing = SPACING,
-          align = trx.ui.HAlign.SPAN,
-          children = {
-            trx.ui.widgets.Label({
-              text = self.text,
-              scale = TEXT_SCALE * scale,
-            }),
-            bar,
-          },
-        }),
-      }),
-    },
-  })
 end
 
 -- Shows or hides the button. Hiding it starts the hold again.
@@ -125,13 +97,46 @@ function Button:control(keys, enabled)
   return fired
 end
 
--- A button that says `words`, with no hold under way.
--- It starts hidden.
-function M.new(words)
+-- Builds the button: its words over the bar, set against one side of the
+-- width it is given. It keeps its room while it is disabled or its key is not
+-- bound.
+local function build(self, align, scale)
+  local bar = trx.ui.widgets.SleekBar({ progress = self.progress })
+  bar.hidden = self.empty
+  return trx.ui.widgets.Stack({
+    align = align,
+    children = {
+      trx.ui.widgets.Pad({
+        x = PAD_X * scale,
+        y = PAD_Y * scale,
+        hidden = self.hidden,
+        child = trx.ui.widgets.Stack({
+          spacing = SPACING,
+          align = trx.ui.HAlign.SPAN,
+          children = {
+            trx.ui.widgets.Label({
+              text = self.text,
+              scale = TEXT_SCALE * scale,
+            }),
+            bar,
+          },
+        }),
+      }),
+    },
+  })
+end
+
+-- Creates a button with no hold under way. It starts hidden. The settings
+-- are:
+--   words - what the button does
+--   align - where the button sits in the width it is given, as a
+--           trx.ui.HAlign, centered by default
+--   scale - how many times its size the button is drawn, 1 by default
+function M.new(settings)
   local enabled = trx.signal.new(false)
   local progress = trx.signal.new(-1)
   local self = setmetatable({
-    words = words,
+    words = settings.words,
     text = trx.signal.new(""),
     enabled = enabled,
     hidden = ~enabled,
@@ -142,6 +147,8 @@ function M.new(words)
     hold = 0,
     armed = true,
   }, Button)
+  self.root =
+    build(self, settings.align or trx.ui.HAlign.CENTER, settings.scale or 1.0)
   self:sync()
   return self
 end
