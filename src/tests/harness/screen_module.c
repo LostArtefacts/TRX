@@ -157,6 +157,19 @@ static int M_FakeSetBackground(lua_State *const L)
     return 0;
 }
 
+// fake.set_timing(screen, display_ticks, fade_in_ticks, fade_out_ticks)
+static int M_FakeSetTiming(lua_State *const L)
+{
+    UI_Takeover_SetTiming(
+        (UI_TAKEOVER)luaL_checkinteger(L, 1),
+        (UI_TAKEOVER_TIMING) {
+            .display_ticks = (int32_t)luaL_checkinteger(L, 2),
+            .fade_in_ticks = (int32_t)luaL_checkinteger(L, 3),
+            .fade_out_ticks = (int32_t)luaL_checkinteger(L, 4),
+        });
+    return 0;
+}
+
 // fake.control() - the level runs one tick of its logic.
 static int M_FakeControl(lua_State *const L)
 {
@@ -204,6 +217,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "release");
     lua_pushcfunction(L, M_FakeSetBackground);
     lua_setfield(L, -2, "set_background");
+    lua_pushcfunction(L, M_FakeSetTiming);
+    lua_setfield(L, -2, "set_timing");
     lua_pushcfunction(L, M_FakeControl);
     lua_setfield(L, -2, "control");
 }

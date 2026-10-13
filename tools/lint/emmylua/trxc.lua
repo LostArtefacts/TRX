@@ -480,6 +480,7 @@ trxc = {}
 ---@class (exact) trxc.screens
 ---@field background fun(screen: trx.ui.Screen): string?
 ---@field close fun(screen: trx.ui.Screen, choice: integer)
+---@field timing fun(screen: trx.ui.Screen): integer, integer, integer
 
 ---@class (exact) trxc.settings
 ---@field add_row fun(key: string, ui: trx.config.Row)

@@ -178,6 +178,8 @@ arrow, and `\{button left}` draws the button the player has bound.
         An entry that the player combines in the inventory ring: picking what to combine it with, out of [`trx.inventory.combine_partners`](INVENTORY.md#inventory.combine_partners), and combining the two with [`trx.inventory.combine`](INVENTORY.md#inventory.combine). The context reports the entry as [`trx.ui.ScreenContext.object`](#ui.ScreenContext.object). The screen ends with [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel) or [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm), which both put the entry away, and the ring then rests on what a combination made.
     - `trx.ui.Screen.GLOBE_SELECT`  
         The globe that TR3 picks its next adventure on, between levels. The context reports the picture it stands on as [`trx.ui.ScreenContext.background`](#ui.ScreenContext.background). The script picks an adventure by starting its level with [`trx.game.play_level`](GAME.md#game.play_level), and [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel) leaves for the title screen.
+    - `trx.ui.Screen.LEVEL_VIEW`  
+        A view of the level from one of its cameras, which the game shows while the level starts, as TR4 does. The context reports how long the view shows and fades as [`trx.ui.ScreenContext.display_ticks`](#ui.ScreenContext.display_ticks), [`trx.ui.ScreenContext.fade_in_ticks`](#ui.ScreenContext.fade_in_ticks) and [`trx.ui.ScreenContext.fade_out_ticks`](#ui.ScreenContext.fade_out_ticks). The view ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm) or [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel).
 
 ### Structures
 
@@ -298,6 +300,9 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     Properties:
     - <a id="ui.ScreenContext.background" name="ui.ScreenContext.background"></a>**`background`**: string. The picture the screen stands on, for [`trx.ui.Screen.GLOBE_SELECT`](#ui.Screen), as [`trx.ui.primitive.background`](#ui.primitive.background) takes it, or `nil` for none. *(read-only)*
+    - <a id="ui.ScreenContext.display_ticks" name="ui.ScreenContext.display_ticks"></a>**`display_ticks`**: integer. How many ticks a screen shown for a time, such as [`trx.ui.Screen.LEVEL_VIEW`](#ui.Screen), shows before it fades out. *(read-only)*
+    - <a id="ui.ScreenContext.fade_in_ticks" name="ui.ScreenContext.fade_in_ticks"></a>**`fade_in_ticks`**: integer. How many ticks a screen shown for a time, such as [`trx.ui.Screen.LEVEL_VIEW`](#ui.Screen), takes to fade in. *(read-only)*
+    - <a id="ui.ScreenContext.fade_out_ticks" name="ui.ScreenContext.fade_out_ticks"></a>**`fade_out_ticks`**: integer. How many ticks a screen shown for a time, such as [`trx.ui.Screen.LEVEL_VIEW`](#ui.Screen), takes to fade out. *(read-only)*
     - <a id="ui.ScreenContext.is_bare" name="ui.ScreenContext.is_bare"></a>**`is_bare`**: boolean. Whether the screen is drawn bare, as plain lines of text without a frame, for [`trx.ui.Screen.STATS`](#ui.Screen). *(read-only)*
     - <a id="ui.ScreenContext.is_final" name="ui.ScreenContext.is_final"></a>**`is_final`**: boolean. Whether the screen shows the totals for the whole game rather than one level, for [`trx.ui.Screen.STATS`](#ui.Screen). *(read-only)*
     - <a id="ui.ScreenContext.is_held" name="ui.ScreenContext.is_held"></a>**`is_held`**: boolean. Whether the script still holds the screen. *(read-only)*
@@ -1232,6 +1237,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.Bar.settings.value" name="ui.widgets.Bar.settings.value"></a>**`value`** (any). The fill amount from 0 to 1, or a signal that holds it.
     - <a id="ui.widgets.Bar.settings.w" name="ui.widgets.Bar.settings.w"></a>**`w`** (number, optional). The width, in canvas units. The game's own by default.
     - <a id="ui.widgets.Bar.settings.h" name="ui.widgets.Bar.settings.h"></a>**`h`** (number, optional). The height, in canvas units. The game's own by default.
+    - <a id="ui.widgets.Bar.settings.smooth" name="ui.widgets.Bar.settings.smooth"></a>**`smooth`** (boolean, optional). Whether the fill shades one band into the next. The player's smooth bars setting by default.
     - <a id="ui.widgets.Bar.settings.shown" name="ui.widgets.Bar.settings.shown"></a>**`shown`** (any, optional). Whether the bar is shown, or a signal that holds that value.
 
   Returns: [trx.ui.Widget](#ui.Widget). The bar.
