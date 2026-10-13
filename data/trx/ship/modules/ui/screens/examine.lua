@@ -34,16 +34,6 @@ local function max_lines()
   return 12
 end
 
-local function spacer(w, h)
-  return trx.ui.widgets.Custom({
-    measure = function()
-      local scale = trx.ui.text_scale
-      return w * scale, h * scale
-    end,
-    paint = function() end,
-  })
-end
-
 local function label(text)
   return trx.ui.widgets.Label({ text = text })
 end
@@ -94,13 +84,14 @@ end
 local function dialog(state)
   local body = {
     aligned(trx.ui.HAlign.CENTER, label(state.title)),
-    spacer(TITLE_MARGIN, TITLE_MARGIN),
+    trx.ui.widgets.Spacer({ w = TITLE_MARGIN, h = TITLE_MARGIN }),
   }
   for i = 1, #state.pages do
     body[#body + 1] = page_widget(state, i)
   end
   if #state.pages > 1 then
-    body[#body + 1] = spacer(TITLE_MARGIN, TITLE_MARGIN * 3)
+    body[#body + 1] =
+      trx.ui.widgets.Spacer({ w = TITLE_MARGIN, h = TITLE_MARGIN * 3 })
     body[#body + 1] = aligned(trx.ui.HAlign.RIGHT, page_indicator(state))
   end
 
@@ -225,12 +216,7 @@ local function open(ctx)
     shown = trx.signal.new(false),
   }
   return ctx:push({
-    root = trx.ui.widgets.Custom({
-      measure = function()
-        return 0, 0
-      end,
-      paint = function() end,
-    }),
+    root = trx.ui.widgets.Spacer(),
     on_input = function(layer, keys)
       control(ctx, state, layer, keys)
     end,
