@@ -10,7 +10,7 @@ local metrics = require("common.ui.metrics")
 local M = {}
 
 local Mode = listing.Mode
-local f32 = metrics.f32
+local f32 = trx.math.f32
 
 local BARE_ROW_SPACING = 11.0
 local MIN_MARGIN_ROWS = 0.5

@@ -56,9 +56,16 @@ static int M_L_Rotate(lua_State *const L)
     return 1;
 }
 
+// trxc.math.f32(value: number): number
+static int M_L_F32(lua_State *const L)
+{
+    lua_pushnumber(L, (float)luaL_checknumber(L, 1));
+    return 1;
+}
+
 static const luaL_Reg m_Module[] = {
-    { "sin", M_L_Sin },       { "cos", M_L_Cos },   { "atan", M_L_Atan },
-    { "rotate", M_L_Rotate }, { nullptr, nullptr },
+    { "sin", M_L_Sin },       { "cos", M_L_Cos }, { "atan", M_L_Atan },
+    { "rotate", M_L_Rotate }, { "f32", M_L_F32 }, { nullptr, nullptr },
 };
 
 static void M_Create(lua_State *const L)

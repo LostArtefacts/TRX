@@ -18,13 +18,7 @@ local ui = trx.ui
 -- group after the engine's own UI for that region.
 -------------------------------------------------------------------------------
 
--- The engine lays its own widgets out in single precision. A box that lands on
--- half a pixel rounds one way or the other depending on the precision it was
--- worked out in, so the layout here rounds every step the same way to land
--- where the engine would.
-local function f32(value)
-  return (string.unpack("<f", string.pack("<f", value)))
-end
+local f32 = trx.math.f32
 
 -- The widget whose size is being worked out. A signal it reads through
 -- value_of wakes it when the signal changes.
