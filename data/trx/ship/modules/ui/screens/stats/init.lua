@@ -96,14 +96,14 @@ end
 
 -- Builds the box again whenever what it lists or the room for it changes: the
 -- settings, the room that the rest of the interface leaves, and for the best
--- times, the scroll and the times themselves.
+-- times, how many rows the box shows and the times themselves. The scroll
+-- moves the rows on show without building the box again.
 local function follow(state)
   local sources = { trx.ui.signals.layout }
   for _, key in ipairs(ROW_SETTINGS) do
     sources[#sources + 1] = trx.signal.config(key)
   end
   if state.mode == Mode.ASSAULT then
-    sources[#sources + 1] = state.first
     sources[#sources + 1] = state.visible
     sources[#sources + 1] = state.records
   end

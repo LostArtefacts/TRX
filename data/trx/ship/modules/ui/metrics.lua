@@ -38,6 +38,21 @@ function M.title_pad_y()
   return is_tr1() and 2 or 1
 end
 
+-- The height that a dialog's frame takes around its rows: its padding, its
+-- heading where `title_spacing` gives the gap under one, and the scroll arrows
+-- where it scrolls.
+function M.chrome_height(title_spacing, scrolls)
+  ---@type number
+  local height = 2 * (M.outer_pad() + M.BODY_PAD_Y)
+  if title_spacing ~= nil then
+    height = height + M.TEXT_HEIGHT + 2 * M.title_pad_y() + title_spacing
+  end
+  if scrolls then
+    height = height + 2 * M.HINT_HEIGHT
+  end
+  return height
+end
+
 -- The gap between two rows of a list.
 function M.row_spacing()
   return is_tr1() and 2 or 3

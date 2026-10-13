@@ -27,14 +27,7 @@ end
 
 -- The room the frame takes around the rows, at the default text size.
 local function chrome_height(state)
-  local height = 2.0 * (metrics.outer_pad() + metrics.BODY_PAD_Y)
-    + metrics.TEXT_HEIGHT
-    + 2.0 * metrics.title_pad_y()
-    + state.look.title_spacing
-  if scrolls(state) then
-    height = height + 2.0 * metrics.HINT_HEIGHT
-  end
-  return height
+  return metrics.chrome_height(state.look.title_spacing, scrolls(state))
 end
 
 local function count_layout_rows(state)
@@ -130,52 +123,95 @@ local function bare_text(state, text)
   return text
 end
 
-local function row_widget(state, r)
-  if r.text ~= nil then
-    return centered_widget(state, bare_text(state, r.text))
-  end
+-- A row that names a counter and gives its value, either of which can be a
+-- signal.
+local function pair_widget(state, key, value)
   if listing.is_bare(state) then
     return trx.ui.widgets.Stack({
       orientation = trx.ui.Orientation.HORIZONTAL,
-      children = {
-        label(state, trx.strings.upper(r.key)),
-        label(state, " "),
-        label(state, r.value),
-      },
+      children = { label(state, key), label(state, " "), label(state, value) },
     })
   end
   return trx.ui.widgets.Stack({
     orientation = trx.ui.Orientation.HORIZONTAL,
     spacing = state.look.row_spacing,
     align = trx.ui.HAlign.DISTRIBUTE,
-    children = { label(state, r.key), label(state, r.value) },
+    children = { label(state, key), label(state, value) },
   })
 end
 
+local function row_widget(state, r)
+  if r.text ~= nil then
+    return centered_widget(state, bare_text(state, r.text))
+  end
+  return pair_widget(state, bare_text(state, r.key), r.value)
+end
+
+-- One of the best times on show, `offset` rows past the first one in view.
+-- It follows the scroll rather than being built again.
+local function scrolled_row(state, offset)
+  local row = state.first:map(function(first)
+    return state.rows[first + offset]
+  end)
+  local function part(read)
+    return row:map(function(r)
+      return r ~= nil and read(r) or ""
+    end)
+  end
+  local text = part(function(r)
+    return r.text ~= nil and bare_text(state, r.text) or ""
+  end)
+  local key = part(function(r)
+    return r.key ~= nil and bare_text(state, r.key) or ""
+  end)
+  local value = part(function(r)
+    return r.value or ""
+  end)
+  local is_text = row:map(function(r)
+    return r == nil or r.text ~= nil
+  end)
+  local is_pair = row:map(function(r)
+    return r ~= nil and r.text == nil
+  end)
+
+  local centered = centered_widget(state, text)
+  centered.shown = is_text
+  local pair = pair_widget(state, key, value)
+  pair.shown = is_pair
+  return trx.ui.widgets
+    .Stack({ align = trx.ui.HAlign.SPAN, children = { centered, pair } })
+    :release_with(row, text, key, value, is_text, is_pair)
+end
+
 -- An arrow that says the rows go on past the top or the foot of the box. It
--- keeps its room while there is nothing to point at.
+-- keeps its room while there is nothing to point at, which `lit` says.
 local function hint(state, glyph, anchor, lit)
   local scale = fitted(state, HINT_SCALE)
-  return trx.ui.widgets.Custom({
-    measure = function()
-      local gw = lit and trx.ui.primitive.measure_text(glyph, scale) or 0
-      return gw, fitted(state, metrics.HINT_HEIGHT) * trx.ui.text_scale
-    end,
-    paint = function(x, y, w)
-      if not lit then
-        return
-      end
-      local gw, gh = trx.ui.primitive.measure_text(glyph, scale)
-      local slack = fitted(state, metrics.HINT_HEIGHT) * trx.ui.text_scale - gh
-      trx.ui.primitive.text(
-        glyph,
-        x + (w - gw) / 2,
-        y + slack * anchor,
-        scale,
-        0
-      )
-    end,
-  })
+  return trx.ui.widgets
+    .Custom({
+      measure = function()
+        local gw = lit:get() and trx.ui.primitive.measure_text(glyph, scale)
+          or 0
+        return gw, fitted(state, metrics.HINT_HEIGHT) * trx.ui.text_scale
+      end,
+      paint = function(x, y, w)
+        if not lit:get() then
+          return
+        end
+        local gw, gh = trx.ui.primitive.measure_text(glyph, scale)
+        local slack = fitted(state, metrics.HINT_HEIGHT) * trx.ui.text_scale
+          - gh
+        trx.ui.primitive.text(
+          glyph,
+          x + (w - gw) / 2,
+          y + slack * anchor,
+          scale,
+          0
+        )
+      end,
+    })
+    :wakes_on(lit)
+    :release_with(lit)
 end
 
 local function body_rows(state)
@@ -193,10 +229,8 @@ local function body_rows(state)
 
   add(trx.ui.widgets.Spacer({ w = fitted(state, ASSAULT_MIN_WIDTH) }))
   local shown = {}
-  local first = state.first:get()
-  local last = math.min(first + state.visible:get() - 1, #state.rows)
-  for i = first, last do
-    shown[#shown + 1] = row_widget(state, state.rows[i])
+  for offset = 0, math.min(state.visible:get(), #state.rows) - 1 do
+    shown[#shown + 1] = scrolled_row(state, offset)
   end
   add(trx.ui.widgets.Stack({
     spacing = ASSAULT_ROW_SPACING,
@@ -215,14 +249,15 @@ end
 local function window(state)
   local body = body_rows(state)
   if scrolls(state) then
-    local first = state.first:get()
-    table.insert(body, 1, hint(state, "\\{arrow up}", 1.5, first > 1))
-    body[#body + 1] = hint(
-      state,
-      "\\{arrow down}",
-      -1.0,
-      first + state.visible:get() - 1 < #state.rows
-    )
+    local visible = state.visible:get()
+    local up = state.first:map(function(first)
+      return first > 1
+    end)
+    local down = state.first:map(function(first)
+      return first + visible - 1 < #state.rows
+    end)
+    table.insert(body, 1, hint(state, "\\{arrow up}", 1.5, up))
+    body[#body + 1] = hint(state, "\\{arrow down}", -1.0, down)
   end
 
   return trx.ui.widgets.Frame({
