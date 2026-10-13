@@ -174,7 +174,7 @@ function widgets.Fit(settings)
     raw.pop_text_scale()
   end)
   set_parent(self.child, self)
-  return self:wakes_on(text_scale())
+  return self:wakes_on(text_scale(), trx.ui.signals.layout)
 end
 
 ---@class (exact) trx.ui.widgets.Row.settings

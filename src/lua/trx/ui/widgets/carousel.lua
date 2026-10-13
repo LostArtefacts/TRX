@@ -108,7 +108,7 @@ function widgets.Carousel(settings)
   end)
   self.children = children
   for _, child in ipairs(children) do
-    rawset(child, "_parent", self)
+    base.set_parent(child, self)
   end
 
   -- The selection slides the row the short way round from where it is.
@@ -132,10 +132,7 @@ function widgets.Carousel(settings)
     return position:is_moving()
   end)
 
-  self:wakes_on(text_scale())
-  -- Detached with the rest when the carousel is released.
-  local wakers = rawget(self, "_wakers")
-  wakers[#wakers + 1] = listener
+  self:wakes_on(text_scale()):release_with(listener)
   ---@cast self trx.ui.widgets.Carousel
   return self
 end

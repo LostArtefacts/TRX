@@ -41,6 +41,7 @@ arrow, and `\{button left}` draws the button the player has bound.
 - <a id="ui.text_scale" name="ui.text_scale"></a>**`trx.ui.text_scale`** (number). The scale applied to text and its boxes. The value depends on the player's text size and the screen. It is not the `ui.text_scale` setting alone. *(read-only)*
 - <a id="ui.safe_area" name="ui.safe_area"></a>**`trx.ui.safe_area`** ([trx.ui.Area](#ui.Area)). The part of the canvas that is free to draw in: the canvas, less the margin kept at the edges, less what the game reserves at the top and the bottom for the bars and the text it puts there. *(read-only)*
 - <a id="ui.working_area" name="ui.working_area"></a>**`trx.ui.working_area`** ([trx.ui.Area](#ui.Area)). The part of the canvas between the cinematic bars. It is the whole canvas while there are none, and follows the bars as they move in and out. The interface regions lay out inside it, so [`trx.ui.safe_area`](#ui.safe_area) lies within it too. *(read-only)*
+- <a id="ui.signals.layout" name="ui.signals.layout"></a>**`trx.ui.signals.layout`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when the room that the interface lays out in changes: the canvas, [`trx.ui.safe_area`](#ui.safe_area), [`trx.ui.working_area`](#ui.working_area) or [`trx.ui.text_scale`](#ui.text_scale). It holds a count that goes up with each change. A widget that lays itself out by that room listens to this rather than reading the room every frame. *(read-only)*
 
 ### Enums
 
@@ -527,6 +528,24 @@ arrow, and `\{button left}` draws the button the player has bound.
 
       Returns: boolean. Whether it or a widget under it was still listening to anything.
 
+    - <a id="ui.Widget.release_with" name="ui.Widget.release_with"></a>[lua]`widget:release_with(...)`  
+      Ties signals and listeners to the widget, so that releasing the widget
+      stops each signal and detaches each listener. Use it for what a widget's
+      own code listens to, such as a derived signal that only it reads.
+
+      Parameters:
+      - <a id="ui.Widget.release_with...." name="ui.Widget.release_with...."></a>**`...`** ([trx.signal.Signal](SIGNAL.md#signal.Signal) or [trx.signal.Listener](SIGNAL.md#signal.Listener)). The signals and listeners.
+
+      Returns: [trx.ui.Widget](#ui.Widget). The same widget, for method chaining.
+
+      Example:
+      ```lua
+      local fill = trx.lara.signals.hp:map(function(hp)
+        return hp / 1000
+      end)
+      local bar = trx.ui.widgets.Bar({ value = fill }):release_with(fill)
+      ```
+
     - <a id="ui.Widget.wake" name="ui.Widget.wake"></a>[lua]`widget:wake()`  
       Invalidates the widget's cached size manually.
 
@@ -600,6 +619,9 @@ arrow, and `\{button left}` draws the button the player has bound.
       - <a id="ui.List.set_rows.rows" name="ui.List.set_rows.rows"></a>**`rows`** (a list of [trx.ui.ListRow](#ui.ListRow)). The new rows.
 
 ### Functions
+
+- <a id="ui.signals" name="ui.signals"></a>[lua]`trx.ui.signals`  
+  What the interface tells a script about the room that it lays out in.
 
 - <a id="ui.layers" name="ui.layers"></a>[lua]`trx.ui.layers`  
   Draws screens of widgets over the rest of the interface.

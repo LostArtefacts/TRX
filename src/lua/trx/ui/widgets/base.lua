@@ -123,6 +123,30 @@ function Widget:wakes_on(...)
   return self
 end
 
+---Ties signals and listeners to the widget, so that releasing the widget
+---stops each signal and detaches each listener. Use it for what a widget's
+---own code listens to, such as a derived signal that only it reads.
+---
+---```lua
+---local fill = trx.lara.signals.hp:map(function(hp)
+---  return hp / 1000
+---end)
+---local bar = trx.ui.widgets.Bar({ value = fill }):release_with(fill)
+---```
+---@param ... trx.signal.Signal|trx.signal.Listener The signals and listeners.
+---@return trx.ui.Widget # The same widget, for method chaining.
+function Widget:release_with(...)
+  local owned = rawget(self, "_owned")
+  if owned == nil then
+    owned = {}
+    rawset(self, "_owned", owned)
+  end
+  for _, item in ipairs({ ... }) do
+    owned[#owned + 1] = item
+  end
+  return self
+end
+
 -- Detach the widget from every signal it registered. Signals keep references
 -- to their listeners, so release temporary widgets when they leave the screen.
 ---Detaches the widget and its children from registered signals.
@@ -139,6 +163,18 @@ function Widget:release()
       listener:detach()
     end
     rawset(self, "_wakers", nil)
+    released = true
+  end
+  local owned = rawget(self, "_owned")
+  if owned ~= nil then
+    for _, item in ipairs(owned) do
+      if item.detach ~= nil then
+        item:detach()
+      else
+        item:stop()
+      end
+    end
+    rawset(self, "_owned", nil)
     released = true
   end
   local child = rawget(self, "child")
