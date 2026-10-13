@@ -16,8 +16,8 @@ local bar_scale = base.bar_scale
 
 ---@class (exact) trx.ui.widgets.Resize.settings
 ---@field child trx.ui.Widget The child widget.
----@field w? number The width, in canvas units. Its own by default.
----@field h? number The height, in canvas units. Its own by default.
+---@field w? any The width, in canvas units, or a signal that holds it. Its own by default.
+---@field h? any The height, in canvas units, or a signal that holds it. Its own by default.
 ---@field h_bars? number The height in bar heights. This overrides the plain height.
 ---@field shown? any Whether the resized widget is shown, or a signal that holds that value.
 
@@ -32,13 +32,15 @@ function widgets.Resize(settings)
 
   local self = new_widget(settings, function(w)
     local cw, ch = w.child:measure()
-    if w.w ~= nil then
-      cw = w.w
+    local fixed_w = value_of(w.w)
+    local fixed_h = value_of(w.h)
+    if fixed_w ~= nil then
+      cw = fixed_w
     end
     if w.h_bars ~= nil then
       ch = w.h_bars * BAR_HEIGHT * raw.bar_scale()
-    elseif w.h ~= nil then
-      ch = w.h
+    elseif fixed_h ~= nil then
+      ch = fixed_h
     end
     return cw, ch
   end, function(w, x, y, bw, bh)

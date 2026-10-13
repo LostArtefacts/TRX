@@ -1491,8 +1491,8 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     Keys:
     - <a id="ui.widgets.Resize.settings.child" name="ui.widgets.Resize.settings.child"></a>**`child`** ([trx.ui.Widget](#ui.Widget)). The child widget.
-    - <a id="ui.widgets.Resize.settings.w" name="ui.widgets.Resize.settings.w"></a>**`w`** (number, optional). The width, in canvas units. Its own by default.
-    - <a id="ui.widgets.Resize.settings.h" name="ui.widgets.Resize.settings.h"></a>**`h`** (number, optional). The height, in canvas units. Its own by default.
+    - <a id="ui.widgets.Resize.settings.w" name="ui.widgets.Resize.settings.w"></a>**`w`** (any, optional). The width, in canvas units, or a signal that holds it. Its own by default.
+    - <a id="ui.widgets.Resize.settings.h" name="ui.widgets.Resize.settings.h"></a>**`h`** (any, optional). The height, in canvas units, or a signal that holds it. Its own by default.
     - <a id="ui.widgets.Resize.settings.h_bars" name="ui.widgets.Resize.settings.h_bars"></a>**`h_bars`** (number, optional). The height in bar heights. This overrides the plain height.
     - <a id="ui.widgets.Resize.settings.shown" name="ui.widgets.Resize.settings.shown"></a>**`shown`** (any, optional). Whether the resized widget is shown, or a signal that holds that value.
 

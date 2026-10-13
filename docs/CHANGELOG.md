@@ -280,6 +280,7 @@
 - Changed saves to keep the items a script spawns, which previously disappeared on load (TRX1677)
 - Changed `trx.events.on_ui_draw`, `on_ui_paint`, `on_ui_paint_over` and `on_scene_paint` to `trx.ui.on_draw`, `trx.ui.on_paint`, `trx.ui.on_paint_over` and `trx.scene.on_paint`
 - Changed script widgets to stay behind the game interface when they overlap
+- Changed `trx.ui.widgets.Resize` to take its width and its height as signals too
 - Changed script widgets to measure themselves again when a signal they read changes, so `trx.ui.Widget:wakes_on` is needed only for a signal a widget depends on in another way
 - Changed game-flow Lua functions to wait while a script draws an engine screen. The inventory ring now closes and fades before the command runs.
 - Changed `trx.items.Item:die` and `trx.items.Item:shatter` to take an options table, and to let a script say what the flying body parts draw
