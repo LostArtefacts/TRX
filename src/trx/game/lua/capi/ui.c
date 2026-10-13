@@ -738,6 +738,23 @@ static int M_L_UIBarTheme(lua_State *const L)
     return 1;
 }
 
+// trxc.ui.bar_theme_key(type: trx.ui.BarType): lightuserdata?
+static int M_L_UIBarThemeKey(lua_State *const L)
+{
+    const lua_Integer type = luaL_checkinteger(L, 1);
+    if (type < 0 || type >= UI_BAR_NUMBER_OF) {
+        return luaL_error(L, "unknown bar type");
+    }
+    const UI_BAR_THEME *const theme =
+        UI_Settings_GetBarTheme((UI_BAR_TYPE)type);
+    if (theme == nullptr) {
+        lua_pushnil(L);
+    } else {
+        lua_pushlightuserdata(L, (void *)theme);
+    }
+    return 1;
+}
+
 // trxc.ui.bar_scale(): number
 static int M_L_UIBarScale(lua_State *const L)
 {
@@ -791,6 +808,7 @@ static const luaL_Reg m_Module[] = {
     { "get_working_top", M_L_UIWorkingTop },
     { "get_safe_width", M_L_UISafeWidth },
     { "bar_theme", M_L_UIBarTheme },
+    { "bar_theme_key", M_L_UIBarThemeKey },
     { "bar_scale", M_L_UIBarScale },
     { "text_scale", M_L_UITextScale },
     { "drawn_text_scale", M_L_UIDrawnTextScale },

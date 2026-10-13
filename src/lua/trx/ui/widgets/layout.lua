@@ -261,7 +261,7 @@ function widgets.Stack(settings)
     return w.orientation == trx.ui.Orientation.HORIZONTAL
   end
 
-  local self = new_widget(settings, function(w)
+  local function measure(w)
     local along, across = 0.0, 0.0
     local spacing = f32((w.spacing or 0) * raw.drawn_text_scale())
     local first = true
@@ -283,7 +283,12 @@ function widgets.Stack(settings)
       return along, across
     end
     return across, along
-  end, function(w, x, y, bw, bh)
+  end
+
+  -- Works out the box of each child shown, for the box that the stack is
+  -- given.
+  local function lay_out(w, x, y, bw, bh)
+    local boxes = { x = x, y = y, w = bw, h = bh }
     local horizontal = is_horizontal(w)
     local along_align = horizontal and w.align or w.v_align
     local across_align = horizontal and w.v_align or w.align
@@ -362,12 +367,32 @@ function widgets.Stack(settings)
           across_at = f32(f32(origin + box_across) - size_across)
         end
         if horizontal then
-          child:paint(at, across_at, size_along, size_across)
+          boxes[#boxes + 1] = { child, at, across_at, size_along, size_across }
         else
-          child:paint(across_at, at, size_across, size_along)
+          boxes[#boxes + 1] = { child, across_at, at, size_across, size_along }
         end
         at = f32(f32(at + size_along) + spacing)
       end
+    end
+    return boxes
+  end
+
+  -- The boxes are kept until the stack wakes or is given another box, so a
+  -- stack that nothing changes lays nothing out as it paints.
+  local self = new_widget(settings, measure, function(w, x, y, bw, bh)
+    local boxes = w._boxes
+    if
+      boxes == nil
+      or boxes.x ~= x
+      or boxes.y ~= y
+      or boxes.w ~= bw
+      or boxes.h ~= bh
+    then
+      boxes = lay_out(w, x, y, bw, bh)
+      w._boxes = boxes
+    end
+    for _, box in ipairs(boxes) do
+      box[1]:paint(box[2], box[3], box[4], box[5])
     end
   end)
 

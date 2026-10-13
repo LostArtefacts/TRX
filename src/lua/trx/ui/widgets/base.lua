@@ -73,6 +73,7 @@ end
 ---@return trx.ui.Widget # The same widget.
 function Widget:wake()
   self._size = nil
+  rawset(self, "_boxes", nil)
   if self._parent ~= nil then
     self._parent:wake()
   end
@@ -204,6 +205,7 @@ end
 -- scale.
 local function forget(widget)
   widget._size = nil
+  rawset(widget, "_boxes", nil)
   local child = rawget(widget, "child")
   if child ~= nil then
     forget(child)
