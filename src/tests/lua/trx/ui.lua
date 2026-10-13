@@ -676,6 +676,23 @@ local function listeners_of(signal)
   return count
 end
 
+test("a fitted tree shrinks below its first level", function()
+  local rows = {}
+  for i = 1, 60 do
+    rows[i] = trx.ui.widgets.Label({ text = "row " .. i })
+  end
+  local fitted = trx.ui.widgets.Fit({
+    child = trx.ui.widgets.Pad({
+      x = 4,
+      y = 4,
+      child = trx.ui.widgets.Stack({ children = rows }),
+    }),
+  })
+  local _, h = fitted:measure()
+  assert(h <= trx.ui.canvas.height, "the tree kept its full height: " .. h)
+  fitted:release()
+end)
+
 test("releasing a widget releases every widget under it", function()
   local text = trx.signal.new("deep")
   local tree = trx.ui.widgets.Pad({

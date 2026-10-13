@@ -8,6 +8,7 @@ local widgets = trx.ui.widgets
 local W = base.W
 local new_widget = base.new_widget
 local set_parent = base.set_parent
+local forget = base.forget
 local value_of = base.value_of
 local f32 = base.f32
 local text_scale = base.text_scale
@@ -124,22 +125,10 @@ end
 ---@param settings trx.ui.widgets.Fit.settings The fit settings.
 ---@return trx.ui.Widget # The fitted widget.
 function widgets.Fit(settings)
-  -- The size at the player's own text size, which the factor is worked out
-  -- from. Measuring it again under the factor would fold the factor in
-  -- twice, and the widget would shrink further every frame.
-  local function natural(w)
-    if w._natural == nil then
-      local cw, ch = w.child:measure()
-      w._natural = { w = cw, h = ch }
-    end
-    return w._natural.w, w._natural.h
-  end
-
   -- The factor is the room the screen leaves against what the widget wants,
   -- both at the size the player chose, so nothing else has to agree on how
   -- that size is folded in.
-  local function factor_of(w)
-    local nw, nh = natural(w)
+  local function factor_of(nw, nh)
     local canvas = trx.ui.canvas
     local safe = trx.ui.safe_area
     -- The margin the screen keeps at its edges, which the safe area is the
@@ -159,38 +148,32 @@ function widgets.Fit(settings)
     return factor
   end
 
-  -- The child is measured again under the factor, because text rounds to
-  -- whole pixels: its size at the smaller size is not its size at the
-  -- larger one times the factor.
-  local function under_factor(w, body)
-    local factor = factor_of(w)
-    if factor >= 1.0 then
-      return body()
-    end
-    raw.push_text_scale(factor)
-    w.child._size = nil
-    local a, b = body()
-    raw.pop_text_scale()
-    w.child._size = nil
-    return a, b
-  end
-
+  -- The tree is measured at the size the player chose, and where it does not
+  -- fit, measured again under the factor, because text rounds to whole
+  -- pixels: its size at the smaller size is not its size at the larger one
+  -- times the factor. The sizes under the factor are kept for painting.
   local self = new_widget(settings, function(w)
-    return under_factor(w, function()
-      return w.child:measure()
-    end)
+    forget(w.child)
+    local nw, nh = w.child:measure()
+    w._factor = factor_of(nw, nh)
+    if w._factor >= 1.0 then
+      return nw, nh
+    end
+    raw.push_text_scale(w._factor)
+    forget(w.child)
+    local cw, ch = w.child:measure()
+    raw.pop_text_scale()
+    return cw, ch
   end, function(w, x, y, bw, bh)
-    under_factor(w, function()
+    if w._factor == nil or w._factor >= 1.0 then
       w.child:paint(x, y, bw, bh)
-    end)
+      return
+    end
+    raw.push_text_scale(w._factor)
+    w.child:paint(x, y, bw, bh)
+    raw.pop_text_scale()
   end)
   set_parent(self.child, self)
-  -- A child that changes drops the natural size along with the cached one.
-  local wake = W.wake
-  self.wake = function(me)
-    me._natural = nil
-    return wake(me)
-  end
   return self:wakes_on(text_scale())
 end
 
