@@ -293,5 +293,5 @@ function widgets.List(settings)
   self.row_spacing = settings.row_spacing or 3
   self._selected = 1
   self._first = 1
-  return self:wakes_on(self.visible, text_scale())
+  return self:wakes_on(text_scale())
 end

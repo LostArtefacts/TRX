@@ -34,5 +34,5 @@ function widgets.InputHint(settings)
   end, function(w, x, y)
     primitive.text(text(w), x, y, w.scale or 1.0, 0)
   end)
-  return self:wakes_on(self.input, self.text, text_scale())
+  return self:wakes_on(text_scale())
 end

@@ -7,6 +7,7 @@ local primitive = trx.ui.primitive
 local widgets = trx.ui.widgets
 local W = base.W
 local new_widget = base.new_widget
+local set_parent = base.set_parent
 local value_of = base.value_of
 local f32 = base.f32
 local text_scale = base.text_scale
@@ -42,7 +43,7 @@ function widgets.Resize(settings)
   end, function(w, x, y, bw, bh)
     w.child:paint(x, y, bw, bh)
   end)
-  self.child._parent = self
+  set_parent(self.child, self)
   return self:wakes_on(bar_scale())
 end
 
@@ -76,7 +77,7 @@ function widgets.Pad(settings)
       f32(f32(bh - py) - py)
     )
   end)
-  self.child._parent = self
+  set_parent(self.child, self)
   return self:wakes_on(text_scale())
 end
 
@@ -106,7 +107,7 @@ function widgets.Frame(settings)
     )
     w.child:paint(x, y, bw, bh)
   end)
-  self.child._parent = self
+  set_parent(self.child, self)
   return self
 end
 
@@ -183,7 +184,7 @@ function widgets.Fit(settings)
       w.child:paint(x, y, bw, bh)
     end)
   end)
-  self.child._parent = self
+  set_parent(self.child, self)
   -- A child that changes drops the natural size along with the cached one.
   local wake = W.wake
   self.wake = function(me)
@@ -363,9 +364,8 @@ function widgets.Stack(settings)
     end
   end)
 
-  -- Child widgets wake their parent stack when their size changes.
   for _, child in ipairs(self.children) do
-    child._parent = self
+    set_parent(child, self)
   end
   return self
 end

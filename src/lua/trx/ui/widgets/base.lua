@@ -12,7 +12,7 @@ local ui = trx.ui
 -- The widgets
 --
 -- A widget is created once and lives until its script releases it. Signals
--- invalidate cached measurements only when the values the widget named change.
+-- invalidate cached measurements only when the values the widget read change.
 --
 -- Each region has at most one root, so a script's widgets are laid out as one
 -- group after the engine's own UI for that region.
@@ -26,8 +26,16 @@ local function f32(value)
   return (string.unpack("<f", string.pack("<f", value)))
 end
 
+-- The widget whose size is being worked out. A signal it reads through
+-- value_of wakes it when the signal changes.
+---@type trx.ui.Widget?
+local measuring = nil
+
 local function value_of(value)
   if type(value) == "table" and value.get ~= nil then
+    if measuring ~= nil and value.on ~= nil then
+      measuring:wakes_on(value)
+    end
     return value:get()
   end
   return value
@@ -35,12 +43,8 @@ end
 
 ---A reusable UI element drawn over the game.
 ---
----A widget holds its own state. Give it signals instead of fixed values, then
----register those signals with `trx.ui.Widget:wakes_on`. The widget remeasures
----only when a registered signal changes.
----
----Register every signal that the widget reads. Otherwise the widget can keep a
----stale cached size.
+---A widget holds its own state. Give it signals instead of fixed values. The
+---widget remeasures only when a signal that it read while measuring changes.
 ---@class (exact) trx.ui.Widget
 ---@field hidden? any Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 ---@field private shown? any
@@ -54,13 +58,18 @@ end
 ---@field private on_paint fun(self: trx.ui.Widget, x: number, y: number, w: number, h: number)
 local Widget = h.class("ui.Widget")
 
--- Recompute the widget's size only after something invalidates it.
 ---How much room the widget wants.
 ---@return number # The width, in canvas units.
 ---@return number # The height, in canvas units.
 function Widget:measure()
   if self._size == nil then
-    local w, h = self:on_measure()
+    local outer = measuring
+    measuring = self
+    local ok, w, h = pcall(self.on_measure, self)
+    measuring = outer
+    if not ok then
+      error(w, 0)
+    end
     self._size = { w = w or 0, h = h or 0 }
   end
   return self._size.w, self._size.h
@@ -85,13 +94,14 @@ function Widget:is_shown()
   return value_of(self.shown) ~= false
 end
 
--- Register the signals that invalidate the widget's cached size. Any signal a
--- widget reads should be listed here.
----Registers the signals that invalidate the widget's cached size.
+---Registers more signals that invalidate the widget's cached size.
 ---
 ---When one of these signals changes, the widget and its parents are measured
----again on the next layout pass.
----@param ... trx.signal.Signal The signals the widget reads.
+---again on the next layout pass. A signal in the widget's settings registers
+---itself when the widget reads it. Register a signal here when the widget
+---depends on it in another way, such as through the functions of a
+---`trx.ui.widgets.Custom`. Registering a signal twice has no further effect.
+---@param ... trx.signal.Signal The signals the widget depends on.
 ---@return trx.ui.Widget # The same widget, for method chaining.
 function Widget:wakes_on(...)
   local listeners = rawget(self, "_wakers")
@@ -100,8 +110,12 @@ function Widget:wakes_on(...)
     rawset(self, "_wakers", listeners)
   end
   for _, signal in ipairs({ ... }) do
-    if type(signal) == "table" and signal.on ~= nil then
-      listeners[#listeners + 1] = signal:on(function()
+    if
+      type(signal) == "table"
+      and signal.on ~= nil
+      and listeners[signal] == nil
+    then
+      listeners[signal] = signal:on(function()
         self:wake()
       end)
     end
@@ -122,7 +136,7 @@ function Widget:release()
   if listeners == nil then
     return false
   end
-  for _, listener in ipairs(listeners) do
+  for _, listener in pairs(listeners) do
     listener:detach()
   end
   rawset(self, "_wakers", nil)
@@ -152,8 +166,12 @@ local function new_widget(settings, on_measure, on_paint)
   local self = setmetatable(settings or {}, Widget)
   self.on_measure = on_measure
   self.on_paint = on_paint
-  self:wakes_on(self.shown)
   return self
+end
+
+-- Sets the parent of a widget, which wakes with it.
+local function set_parent(child, parent)
+  child._parent = parent
 end
 
 -- Lazily expose player scale settings as signals, so widgets that depend on
@@ -177,7 +195,7 @@ local bar_scale = scale_signal("ui.bar_scale")
 ---The widgets a script builds its screen from.
 ---
 ---A widget is created once and kept. Give it signals instead of fixed values,
----then register those signals with `trx.ui.Widget:wakes_on`.
+---and it remeasures when they change.
 ---
 ---Put a widget on screen with `trx.ui.regions.place`.
 ---@class (partial,exact) trx.ui.widgets
@@ -188,6 +206,7 @@ return {
   f32 = f32,
   value_of = value_of,
   new_widget = new_widget,
+  set_parent = set_parent,
   text_scale = text_scale,
   bar_scale = bar_scale,
 }

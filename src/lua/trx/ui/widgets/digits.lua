@@ -136,5 +136,5 @@ function widgets.Digits(settings)
       pen = pen + (glyph.advance or DIGIT_ADVANCE) * scale
     end
   end)
-  return self:wakes_on(self.text, text_scale())
+  return self:wakes_on(text_scale())
 end
