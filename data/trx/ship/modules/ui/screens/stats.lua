@@ -328,11 +328,7 @@ local function configured_rows(state)
 
   local function timer()
     add(
-      row(
-        state,
-        trx.locale.get("general/stats/time_taken"),
-        format_time(state, totals.timer)
-      )
+      row(state, trx.locale.get("general/stats/time_taken"), state.time_text)
     )
   end
 
@@ -587,7 +583,7 @@ end
 -------------------------------------------------------------------------------
 
 local function scrolls(state)
-  return state.mode == Mode.ASSAULT and state.visible < #state.rows
+  return state.mode == Mode.ASSAULT and state.visible:get() < #state.rows
 end
 
 -- The room the frame takes around the rows, at the default text size.
@@ -604,7 +600,7 @@ end
 
 local function count_layout_rows(state)
   if state.mode == Mode.ASSAULT then
-    return state.visible + 1
+    return state.visible:get() + 1
   end
   return #state.rows
 end
@@ -768,8 +764,9 @@ local function body_rows(state)
 
   add(spacer(fitted(state, ASSAULT_MIN_WIDTH), 0))
   local shown = {}
-  local last = math.min(state.first + state.visible - 1, #state.rows)
-  for i = state.first, last do
+  local first = state.first:get()
+  local last = math.min(first + state.visible:get() - 1, #state.rows)
+  for i = first, last do
     shown[#shown + 1] = row_widget(state, state.rows[i])
   end
   add(trx.ui.widgets.Stack({
@@ -789,12 +786,13 @@ end
 local function window(state)
   local body = body_rows(state)
   if scrolls(state) then
-    table.insert(body, 1, hint(state, "\\{arrow up}", 1.5, state.first > 1))
+    local first = state.first:get()
+    table.insert(body, 1, hint(state, "\\{arrow up}", 1.5, first > 1))
     body[#body + 1] = hint(
       state,
       "\\{arrow down}",
       -1.0,
-      state.first + state.visible - 1 < #state.rows
+      first + state.visible:get() - 1 < #state.rows
     )
   end
 
@@ -874,84 +872,117 @@ end
 -- The screens
 -------------------------------------------------------------------------------
 
--- A key that changes with what the box looks like, so the box is built again
--- only when the rows, the scroll or the room for it change.
-local function shape_of(state)
-  local parts = {
-    trx.ui.safe_area.width,
-    trx.ui.safe_area.height,
-    trx.ui.text_scale,
-    state.first or 0,
-    #state.rows,
-  }
-  for _, r in ipairs(state.rows) do
-    parts[#parts + 1] = r.text or (r.key .. "\0" .. r.value)
-  end
-  return table.concat(parts, "\1")
-end
+-- The settings that decide which rows the screen lists.
+local ROW_SETTINGS = {
+  "gameplay.save_crystal_mode",
+  "ui.stats.show_ammo",
+  "ui.stats.show_crystals",
+  "ui.stats.show_deaths",
+  "ui.stats.show_distance_travelled",
+  "ui.stats.show_kills",
+  "ui.stats.show_level_header",
+  "ui.stats.show_medipacks_used",
+  "ui.stats.show_pickups",
+  "ui.stats.show_secrets",
+  "ui.stats.show_time_taken",
+  "ui.stats.show_totals",
+}
 
--- The counters run on while the screen is up, as the level clock does in the
--- inventory ring, so they are read again every tick.
-local function count(state)
+-- Reads the counters. They hold still while the screen is up, except for the
+-- level clock in the inventory ring, which runs on and which its row follows.
+local function count(state, live)
   if state.mode == Mode.LEVEL then
     state.totals = level_totals(state.level)
     state.floor_secrets = has_floor_secrets(state.level)
   elseif state.mode == Mode.FINAL then
     state.totals = final_totals(state.level.type == trx.game.LevelType.BONUS)
+  else
+    return
   end
+  if live then
+    local stats = state.level.stats
+    state.clock = trx.signal.polled(function()
+      return stats.timer // FPS
+    end)
+    state.time_text = state.clock:map(function(seconds)
+      return format_time(state, seconds * FPS)
+    end)
+  else
+    state.time_text = format_time(state, state.totals.timer)
+  end
+end
+
+-- The box with what it lists now. The ring hides it until the entry is open.
+local function box_of(state)
   state.rows = all_rows(state)
-end
-
--- The box takes what room the screen leaves once the rest of the interface
--- has taken its own, which is only known as the frame is drawn. It is worked
--- out there, and built again only where the room or the rows have changed.
-local function root_of(state)
-  state.shape = shape_of(state)
   local box = build(state)
-  return trx.ui.widgets.Custom({
-    shown = state.shown,
-    measure = function()
-      local shape = shape_of(state)
-      if shape ~= state.shape then
-        state.shape = shape
-        box:release()
-        box = build(state)
-      end
-      return box:measure()
-    end,
-    paint = function(x, y, w, h)
-      box:paint(x, y, w, h)
-    end,
-  })
+  box.shown = state.shown
+  return box
 end
 
-local function refresh(state)
-  count(state)
-  state.root:wake()
+-- Builds the box again whenever what it lists or the room for it changes: the
+-- settings, the room that the rest of the interface leaves, and for the best
+-- times, the scroll and the times themselves.
+local function follow(state)
+  local sources = { state.room }
+  for _, key in ipairs(ROW_SETTINGS) do
+    sources[#sources + 1] = trx.signal.config(key)
+  end
+  if state.mode == Mode.ASSAULT then
+    sources[#sources + 1] = state.first
+    sources[#sources + 1] = state.visible
+    sources[#sources + 1] = state.records
+  end
+  sources[#sources + 1] = function()
+    return {}
+  end
+  state.shape = trx.signal.combine(table.unpack(sources))
+  state.reshape = state.shape:on(function()
+    state.layer:set_root(box_of(state))
+  end)
 end
 
-local function new_state(level, mode, bare)
+local function unfollow(state)
+  state.reshape:detach()
+  state.shape:stop()
+  state.room:stop()
+  if state.clock ~= nil then
+    state.time_text:stop()
+    state.clock:stop()
+  end
+end
+
+local function new_state(level, mode, bare, live)
   local state = {
     level = level,
     mode = mode,
     bare = bare,
     look = look(),
-    first = 1,
   }
   if mode == Mode.ASSAULT then
-    state.visible = assault_visible_rows()
+    state.first = trx.signal.new(1)
+    state.visible = trx.signal.new(assault_visible_rows())
+    state.records = trx.signal.new(0)
   end
-  count(state)
+  count(state, live)
+  state.rows = all_rows(state)
   return state
 end
 
 local function push(ctx, state, on_input)
-  state.root = root_of(state)
-  return ctx:push({
-    root = state.root,
+  state.room = trx.signal.polled(function()
+    return trx.ui.safe_area.height / trx.ui.text_scale
+  end)
+  state.layer = ctx:push({
+    root = box_of(state),
     place = place(state),
     on_input = on_input,
+    on_close = function()
+      unfollow(state)
+    end,
   })
+  follow(state)
+  return state.layer
 end
 
 -- How long the backdrop takes to come in: a picture from black, any other
@@ -981,30 +1012,28 @@ end
 -- the player skips it as they skip the engine's own.
 local function open_level_end(ctx)
   local mode = ctx.is_final and Mode.FINAL or Mode.LEVEL
-  local state = new_state(ctx.level, mode, ctx.is_bare)
+  local state = new_state(ctx.level, mode, ctx.is_bare, false)
   if mode == Mode.FINAL and #state.rows == 0 then
     return nil
   end
   enter_backdrop(ctx)
-  return push(ctx, state, function(layer)
-    refresh(state)
-  end)
+  return push(ctx, state)
 end
 
 local function scroll(state, step)
-  local count = #state.rows
-  local last_first = count - state.visible + 1
-  if last_first < 1 then
-    last_first = 1
-  end
-  local first = state.first + step
+  ---@type integer
+  local visible = state.visible:get()
+  ---@type integer
+  local first = state.first:get()
+  first = first + step
+  local last_first = math.max(#state.rows - visible + 1, 1)
   if first < 1 or first > last_first then
     if not trx.config.get("ui.enable_wraparound") then
       return
     end
     first = first < 1 and last_first or 1
   end
-  state.first = first
+  state.first:set(first)
 end
 
 -- Reads the reset button. A completed hold clears the times.
@@ -1015,7 +1044,8 @@ local function control_reset(state, keys)
   for _, track in ipairs(tracks()) do
     trx.assault.stats.clear(track)
   end
-  state.first = 1
+  state.first:set(1)
+  state.records:set(state.records:get() + 1)
 end
 
 local function in_gym()
@@ -1061,10 +1091,10 @@ local function open_ring_entry(ctx)
     mode = Mode.ASSAULT
   end
   local state =
-    new_state(level, mode, trx.config.get("ui.stats.style") == "bare")
+    new_state(level, mode, trx.config.get("ui.stats.style") == "bare", true)
   state.shown = trx.signal.new(false)
 
-  local layer = push(ctx, state, function(layer, keys)
+  return push(ctx, state, function(_, keys)
     if not is_open() then
       return
     end
@@ -1072,7 +1102,7 @@ local function open_ring_entry(ctx)
     -- against the room the ring leaves then.
     if mode == Mode.ASSAULT and not state.counted_rows then
       state.counted_rows = true
-      state.visible = assault_visible_rows()
+      state.visible:set(assault_visible_rows())
     end
     state.shown:set(shows_stats)
     if mode == Mode.ASSAULT then
@@ -1092,9 +1122,7 @@ local function open_ring_entry(ctx)
     elseif object == trx.catalog.objects.STOPWATCH_OPTION then
       trx.sound.play(trx.catalog.samples.MENU_STOPWATCH)
     end
-    refresh(state)
   end)
-  return layer
 end
 
 function M.setup()
