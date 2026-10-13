@@ -295,6 +295,11 @@ end
 ---it was when the layer was made. Its opacity moves on a curve that the engine
 ---runs, so nothing is painted by the script. Fade layers stack in the order
 ---they were made, above every engine screen and below the console.
+---
+---A backdrop layer is drawn under the interface instead, as the backdrop that
+---the game draws behind its screens. Its opacity says how far the backdrop has
+---come in: a picture comes in from black, and any other style from the frame
+---behind it.
 ---@class (exact) trx.ui.FadeLayer
 ---@trx.readonly is_open, opacity
 ---@field is_open boolean Whether the layer is still drawn.
@@ -353,6 +358,8 @@ end
 ---@class (exact) trx.ui.layers.fade.settings
 ---@field fill? trx.math.Color The colour that the layer holds.
 ---@field snapshot? boolean Whether the layer holds the frame on screen now, in place of a colour.
+---@field backdrop? string The backdrop style that the layer holds, in place of a colour, by the names that the `ui.stats_background_style` setting takes. <!--noref: ui.stats_background_style-->
+---@field path? string The picture of an `image` backdrop, as `trx.ui.primitive.background` takes it. <!--noref: image-->
 ---@field opacity? number How opaque the layer starts, from `0` to `1`. `1` by default.
 ---@field on_close? function Runs once when the layer closes, for any reason. It receives the layer.
 
@@ -370,6 +377,8 @@ function layers.fade(settings)
   local id
   if settings.snapshot then
     id = raw_fade.push_snapshot(opacity)
+  elseif settings.backdrop ~= nil then
+    id = raw_fade.push_backdrop(settings.backdrop, settings.path, opacity)
   elseif settings.fill ~= nil then
     local fill = settings.fill
     id = raw_fade.push_fill(fill.r, fill.g, fill.b, opacity)

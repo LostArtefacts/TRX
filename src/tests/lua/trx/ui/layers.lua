@@ -706,6 +706,15 @@ test("a snapshot fade layer opens and closes", function()
   assert(layer:close())
 end)
 
+test("a backdrop fade layer opens and closes", function()
+  local layer = trx.ui.layers.fade({ backdrop = "transparent", opacity = 0 })
+  assert(layer.is_open and layer.opacity == 0)
+  assert(layer:close())
+  h.raises(function()
+    trx.ui.layers.fade({ backdrop = "glitter" })
+  end, "unknown backdrop")
+end)
+
 test("a level script's fade layer closes with the level", function()
   local layer
   fake.as_level_script(function()

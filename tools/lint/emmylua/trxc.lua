@@ -169,6 +169,7 @@ trxc = {}
 ---@field close fun(id: integer)
 ---@field is_open fun(id: integer): boolean
 ---@field opacity fun(id: integer): number
+---@field push_backdrop fun(style: string, path: string?, opacity: number): integer
 ---@field push_fill fun(r: number, g: number, b: number, opacity: number): integer
 ---@field push_snapshot fun(opacity: number): integer
 ---@field to fun(id: integer, target: number, ticks: integer, curve: string, close: boolean)
