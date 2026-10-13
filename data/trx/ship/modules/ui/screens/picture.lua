@@ -106,8 +106,14 @@ local function open(ctx)
     end,
   })
   if ctx.is_loading then
-    local bar, place = loading_bar.new(progress, shown, BAR)
-    ctx:push({ root = bar, place = place, modal = false })
+    local bar = loading_bar.new({
+      progress = progress,
+      shown = shown,
+      width = BAR.width,
+      height = BAR.height,
+      y = BAR.y,
+    })
+    ctx:push({ root = bar.root, place = bar.place, modal = false })
   end
   return main
 end

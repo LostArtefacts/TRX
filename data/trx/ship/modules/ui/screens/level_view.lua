@@ -55,10 +55,16 @@ local function open(ctx)
   })
 
   local shown = trx.signal.config("ui.show_loading_bar")
-  local bar, place = loading_bar.new(progress, shown, BAR)
+  local bar = loading_bar.new({
+    progress = progress,
+    shown = shown,
+    width = BAR.width,
+    height = BAR.height,
+    y = BAR.y,
+  })
   return ctx:push({
-    root = bar,
-    place = place,
+    root = bar.root,
+    place = bar.place,
     on_input = function(_, keys)
       if not keys:pressed(trx.input.Role.MENU_SKIP) then
         return

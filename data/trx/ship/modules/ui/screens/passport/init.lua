@@ -76,7 +76,6 @@ local arrow_right = trx.signal.new(false)
 ---@field index integer
 ---@field lists passport.Sheet[]
 ---@field page_shown trx.signal.Signal
----@field delete common.ui.HoldButton
 ---@field browse? boolean
 ---@field standalone? boolean
 ---@field crystal? boolean
@@ -368,14 +367,17 @@ local function is_deletable(page)
   then
     return false
   end
-  local row = page.req.selected_row()
+  local row = page.req:selected_row()
   return row ~= nil
     and row.slot_num ~= nil
     and trx.savegame.info(row.slot_num, row.pool) ~= nil
 end
 
 local function sync_delete()
-  state.delete:set_enabled(is_deletable(state.page))
+  local page = state.page
+  if page ~= nil and page.delete ~= nil then
+    page.delete:set_enabled(is_deletable(page))
+  end
 end
 
 -------------------------------------------------------------------------------
@@ -647,9 +649,9 @@ local function push_confirm_delete(row)
       { text = trx.locale.get("general/passport/delete_save_no") },
     },
     arrows = false,
+    place = requester.anchored(is_title() and 0.69 or 0.55),
   })
   req.list:select(2)
-  req.place = requester.anchored(is_title() and 0.69 or 0.55)
   push_list("confirm_delete", req, { slot = row })
 end
 
@@ -667,6 +669,7 @@ local function open_page(role)
   ---@field shown? trx.signal.Signal
   ---@field layer? trx.ui.StackLayer
   ---@field slot? table
+  ---@field delete? common.ui.HoldButton
   local page = { role = role }
   if role == Page.NEW_GAME then
     local rows = new_game_rows()
@@ -678,11 +681,12 @@ local function open_page(role)
     end
     req = modes_req(rows, trx.locale.get("general/passport/select_mode"))
   elseif role == Page.LOAD_GAME or role == Page.SAVE_GAME then
-    req = list_req(
-      slot_rows(),
-      trx.locale.get(CAPTIONS[role]),
-      state.delete:widget({ align = trx.ui.HAlign.RIGHT })
-    )
+    page.delete = hold_button.new({
+      words = trx.locale.get("general/passport/delete_save"),
+      align = trx.ui.HAlign.RIGHT,
+    })
+    req =
+      list_req(slot_rows(), trx.locale.get(CAPTIONS[role]), page.delete.root)
     select_recent_slot(req)
   elseif role == Page.SELECT_LEVEL then
     req = list_req(
@@ -912,10 +916,11 @@ end
 
 -- Reads the delete button. A completed hold asks for confirmation.
 local function control_delete(keys)
-  if not state.delete:control(keys, is_deletable(state.page)) then
+  local delete = state.page.delete
+  if delete == nil or not delete:control(keys, is_deletable(state.page)) then
     return false
   end
-  push_confirm_delete(state.page.req.selected_row())
+  push_confirm_delete(state.page.req:selected_row())
   return true
 end
 
@@ -1068,7 +1073,6 @@ local function open(ctx)
     browse = browses_first(mode),
     lists = {},
     page_shown = trx.signal.new(true),
-    delete = hold_button.new(trx.locale.get("general/passport/delete_save")),
   }
   set_caption(CAPTIONS[pages[index].role])
   arrow_left:set(false)
@@ -1125,7 +1129,6 @@ local function open_alone(ctx, pages, index, crystal)
     crystal = crystal,
     lists = {},
     page_shown = trx.signal.new(true),
-    delete = hold_button.new(trx.locale.get("general/passport/delete_save")),
   }
   state.book = ctx:push({
     root = trx.ui.widgets.Custom({

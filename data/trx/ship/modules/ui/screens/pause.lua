@@ -35,8 +35,8 @@ local function question(title, first, second)
     row_pad = 20.0,
     row_spacing = 3.0,
     arrows = false,
+    place = requester.anchored(1.0, MARGIN),
   })
-  req.place = requester.anchored(1.0, MARGIN)
   return req
 end
 

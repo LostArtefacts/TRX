@@ -67,6 +67,44 @@ local function fit_rows(settings, count, width)
   return rows
 end
 
+---@class common.ui.Requester
+---@field rows trx.ui.ListRow[]
+---@field list trx.ui.List
+---@field title? trx.signal.Signal
+---@field panel trx.ui.Widget
+---@field root trx.ui.Widget
+---@field place? fun(w: number, h: number): number, number
+---@field private refit fun()
+local Requester = {}
+Requester.__index = Requester
+
+-- Replaces the rows.
+function Requester:set_rows(rows)
+  self.rows = rows
+  self.refit()
+  self.list:set_rows(rows)
+end
+
+-- The row that the cursor is on, or nil for none.
+function Requester:selected_row()
+  local index = self.list:selection()
+  return index ~= nil and self.rows[index] or nil
+end
+
+-- Reads one tick of input. Returns the picked row's index, "cancel" where
+-- the player backed out, and nil where nothing was decided.
+function Requester:control(keys)
+  self.refit()
+  local picked = self.list:control(keys)
+  if picked ~= nil then
+    return picked
+  end
+  if keys:pressed(trx.input.Role.MENU_BACK) then
+    return "cancel"
+  end
+  return nil
+end
+
 -- Creates a dialog. The settings are:
 --   title         - the heading, or nil for none
 --   rows          - the rows, as trx.ui.widgets.List takes them
@@ -77,16 +115,13 @@ end
 --   arrows        - whether to show scroll arrows, true by default
 --   footer        - a widget drawn under the frame
 --   footer_height - the height the footer takes, for fitting the rows
+--   place         - where the dialog goes, as trx.ui.layers.push takes it
 function M.new(settings)
   settings.row_spacing = settings.row_spacing or metrics.row_spacing()
-  ---@class common.ui.Requester
-  ---@field rows trx.ui.ListRow[]
-  ---@field list trx.ui.List
-  ---@field title? trx.signal.Signal
-  ---@field panel trx.ui.Widget
-  ---@field root trx.ui.Widget
-  ---@field place? fun(w: number, h: number): number, number
-  local req = { rows = settings.rows or {} }
+  local req = setmetatable({
+    rows = settings.rows or {},
+    place = settings.place,
+  }, Requester)
 
   -- How wide the frame is decides which corners it has to keep clear of, and
   -- so how much room its rows have.
@@ -101,7 +136,7 @@ function M.new(settings)
   -- It is worked out again on every tick that the dialog reads input, and the
   -- list measures itself again only where the count changes.
   local visible = trx.signal.new(fit_rows(settings, #req.rows, frame_width()))
-  local function refit()
+  function req.refit()
     visible:set(fit_rows(settings, #req.rows, frame_width()))
   end
 
@@ -164,31 +199,6 @@ function M.new(settings)
     })
   end
   req.root = trx.ui.widgets.Fit({ child = body })
-
-  function req.set_rows(_, rows)
-    req.rows = rows
-    refit()
-    req.list:set_rows(rows)
-  end
-
-  function req.selected_row()
-    local index = req.list:selection()
-    return index ~= nil and req.rows[index] or nil
-  end
-
-  -- Reads one tick of input. Returns the picked row's index, "cancel" where
-  -- the player backed out, and nil where nothing was decided.
-  function req.control(_, keys)
-    refit()
-    local picked = req.list:control(keys)
-    if picked ~= nil then
-      return picked
-    end
-    if keys:pressed(trx.input.Role.MENU_BACK) then
-      return "cancel"
-    end
-    return nil
-  end
 
   return req
 end
