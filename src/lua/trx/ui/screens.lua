@@ -234,20 +234,19 @@ function Context:push(settings)
   if rawget(self, "_done") then
     error("the screen has ended", 2)
   end
-  local on_close = settings.on_close
-  local layer = trx.ui.layers.push({
-    root = settings.root,
-    region = settings.region,
-    place = settings.place,
-    modal = settings.modal,
-    on_input = settings.on_input,
-    on_close = function(layer)
-      if on_close ~= nil then
-        on_close(layer)
-      end
-      on_layer_closed(self, layer)
-    end,
-  })
+  ---@type table<string, any>
+  local forwarded = {}
+  for key, value in pairs(settings) do
+    forwarded[key] = value
+  end
+  forwarded.on_close = function(layer)
+    if settings.on_close ~= nil then
+      settings.on_close(layer)
+    end
+    on_layer_closed(self, layer)
+  end
+  local layer =
+    trx.ui.layers.push(forwarded --[[@as trx.ui.layers.push.settings]])
   local layers = rawget(self, "_layers")
   layers[#layers + 1] = layer
   return layer
