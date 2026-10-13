@@ -1398,13 +1398,17 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   │   ├── init.lua
 │   │   │   │   ├── pages.lua
 │   │   │   │   └── rows.lua
+│   │   │   ├── stats
+│   │   │   │   ├── box.lua
+│   │   │   │   ├── counts.lua
+│   │   │   │   ├── init.lua
+│   │   │   │   └── rows.lua
 │   │   │   ├── combine.lua
 │   │   │   ├── examine.lua
 │   │   │   ├── globe.lua
 │   │   │   ├── level_view.lua
 │   │   │   ├── pause.lua
-│   │   │   ├── picture.lua
-│   │   │   └── stats.lua
+│   │   │   └── picture.lua
 │   │   ├── widgets
 │   │   │   ├── hold_button.lua
 │   │   │   ├── loading_bar.lua
@@ -2852,13 +2856,17 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   │   ├── init.lua
     │   │   │   │   │   ├── pages.lua
     │   │   │   │   │   └── rows.lua
+    │   │   │   │   ├── stats
+    │   │   │   │   │   ├── box.lua
+    │   │   │   │   │   ├── counts.lua
+    │   │   │   │   │   ├── init.lua
+    │   │   │   │   │   └── rows.lua
     │   │   │   │   ├── combine.lua
     │   │   │   │   ├── examine.lua
     │   │   │   │   ├── globe.lua
     │   │   │   │   ├── level_view.lua
     │   │   │   │   ├── pause.lua
-    │   │   │   │   ├── picture.lua
-    │   │   │   │   └── stats.lua
+    │   │   │   │   └── picture.lua
     │   │   │   ├── widgets
     │   │   │   │   ├── hold_button.lua
     │   │   │   │   ├── loading_bar.lua
