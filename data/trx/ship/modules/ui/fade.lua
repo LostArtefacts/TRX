@@ -9,6 +9,9 @@
 --   local f = fade.screen(ctx)
 --   f:enter({ ticks = ctx.fade_in_ticks })
 --   f:leave({ ticks = ctx.fade_out_ticks, hold = 3 })
+--
+--   local black = fade.across({ from = 0, to = 1, ticks = 15 })
+--   black:to(0, 15)
 
 local timer = require("common.timer")
 
@@ -175,26 +178,42 @@ end
 -- Fades that outlive their screen
 -------------------------------------------------------------------------------
 
--- The open layers that outlive their screens, and the events that drop each.
----@type table<trx.ui.FadeLayer, table<string, boolean>>
+---@class common.ui.fade.Across
+---@field private layer trx.ui.FadeLayer
+local Across = {}
+Across.__index = Across
+
+-- The open fades that outlive their screens, and the events that drop each.
+---@type table<common.ui.fade.Across, table<string, boolean>>
 local across = {}
 
 local function drop_on(event)
-  for layer, events in pairs(across) do
+  for fade, events in pairs(across) do
     if events[event] then
-      across[layer] = nil
-      layer:close()
+      fade:close()
     end
   end
 end
 
--- Moves a fade that outlives its screen, and closes it once it is out of
--- sight.
-function M.move(layer, target, ticks, on_done)
-  layer:to(target, M.enabled() and ticks or 0, {
+-- Whether the fade is still drawn.
+function Across:is_open()
+  return self.layer.is_open
+end
+
+-- Moves the fade to `target`, over `ticks` while fades run and at once where
+-- they do not, then runs `on_done`. A fade that moves out of sight closes.
+function Across:to(target, ticks, on_done)
+  self.layer:to(target, M.enabled() and ticks or 0, {
     close = target == 0,
     on_done = on_done,
   })
+  return self
+end
+
+-- Stops drawing the fade.
+function Across:close()
+  across[self] = nil
+  self.layer:close()
 end
 
 -- Puts up a fade that outlives the screen that starts it, black by default,
@@ -204,19 +223,20 @@ end
 function M.across(options)
   local settings =
     layer_settings(options.layer or { fill = BLACK }, options.from or 1)
-  settings.on_close = function(layer)
-    across[layer] = nil
+  local self = setmetatable({}, Across)
+  settings.on_close = function()
+    across[self] = nil
   end
-  local layer = trx.ui.layers.fade(settings)
+  self.layer = trx.ui.layers.fade(settings)
   local events = {}
   for _, event in ipairs(options.drop_on or {}) do
     events[event] = true
   end
-  across[layer] = events
+  across[self] = events
   if options.to ~= nil then
-    M.move(layer, options.to, options.ticks, options.on_done)
+    self:to(options.to, options.ticks, options.on_done)
   end
-  return layer
+  return self
 end
 
 -------------------------------------------------------------------------------
