@@ -7,6 +7,7 @@
 --
 --   require("common.ui.passport").setup()
 
+local hold_button = require("common.ui.hold_button")
 local requester = require("common.ui.requester")
 
 local M = {}
@@ -75,8 +76,7 @@ local arrow_right = trx.signal.new(false)
 ---@field index integer
 ---@field lists passport.Sheet[]
 ---@field page_shown trx.signal.Signal
----@field delete_hold integer
----@field delete_armed boolean
+---@field delete common.ui.HoldButton
 ---@field browse? boolean
 ---@field standalone? boolean
 ---@field crystal? boolean
@@ -354,39 +354,12 @@ end
 -------------------------------------------------------------------------------
 -- Deleting a save
 --
--- The delete button must be held, so that one stray key press cannot delete a
--- save. The button keeps its space while it is hidden, so that the list above
+-- The delete button keeps its space while it is hidden, so that the list above
 -- it does not move.
 -------------------------------------------------------------------------------
 
-local DELETE_TEXT_SCALE = 0.85
-local DELETE_PAD_X = 6.0
-local DELETE_PAD_Y = 3.0
-local DELETE_SPACING = 2.0
-local DELETE_BAR_HEIGHT = 4.0
-local DELETE_HOLD_DEBUFF = 10
-local DELETE_HOLD_MAX = 30
-
--- In canvas units at the default text size.
-local DELETE_HEIGHT = 2.0 * DELETE_PAD_Y
-  + 15.0 * DELETE_TEXT_SCALE
-  + DELETE_SPACING
-  + DELETE_BAR_HEIGHT
-
 -- Includes the gap between the button and the list.
-local DELETE_FOOTER_HEIGHT = 3.0 + DELETE_HEIGHT
-
-local function delete_label()
-  local key = trx.input.key_name(trx.input.Role.UNBIND_KEY)
-  if key == nil then
-    return nil
-  end
-  return string.format(
-    "%s: %s",
-    trx.locale.get("general/passport/delete_save"),
-    trx.locale.format("general/misc/hold_fmt", key)
-  )
-end
+local DELETE_FOOTER_HEIGHT = 3.0 + hold_button.HEIGHT
 
 local function is_deletable(page)
   if
@@ -401,49 +374,8 @@ local function is_deletable(page)
     and trx.savegame.info(row.slot_num, row.pool) ~= nil
 end
 
-local function sync_delete(page)
-  if page == nil or page.delete_text == nil then
-    return
-  end
-  local text = delete_label()
-  page.delete_text:set(text or "")
-  page.delete_shown:set(text ~= nil and is_deletable(page))
-  page.delete_progress:set(
-    (state.delete_hold - DELETE_HOLD_DEBUFF) / DELETE_HOLD_MAX
-  )
-end
-
--- Builds the button: its text over a sleek bar, against the right edge of the
--- list.
-local function delete_button(page)
-  page.delete_text = trx.signal.new(delete_label() or "")
-  page.delete_shown = trx.signal.new(false)
-  page.delete_progress = trx.signal.new(-1)
-  local bar = trx.ui.widgets.SleekBar({ progress = page.delete_progress })
-  bar.hidden = page.delete_progress:map(function(progress)
-    return progress < 0
-  end)
-  return trx.ui.widgets.Stack({
-    align = trx.ui.HAlign.RIGHT,
-    children = {
-      trx.ui.widgets.Pad({
-        x = DELETE_PAD_X,
-        y = DELETE_PAD_Y,
-        hidden = ~page.delete_shown,
-        child = trx.ui.widgets.Stack({
-          spacing = DELETE_SPACING,
-          align = trx.ui.HAlign.SPAN,
-          children = {
-            trx.ui.widgets.Label({
-              text = page.delete_text,
-              scale = DELETE_TEXT_SCALE,
-            }),
-            bar,
-          },
-        }),
-      }),
-    },
-  })
+local function sync_delete()
+  state.delete:set_enabled(is_deletable(state.page))
 end
 
 -------------------------------------------------------------------------------
@@ -735,9 +667,6 @@ local function open_page(role)
   ---@field shown? trx.signal.Signal
   ---@field layer? trx.ui.StackLayer
   ---@field slot? table
-  ---@field delete_text? trx.signal.Signal
-  ---@field delete_shown? trx.signal.Signal
-  ---@field delete_progress? trx.signal.Signal
   local page = { role = role }
   if role == Page.NEW_GAME then
     local rows = new_game_rows()
@@ -752,7 +681,7 @@ local function open_page(role)
     req = list_req(
       slot_rows(),
       trx.locale.get(CAPTIONS[role]),
-      delete_button(page)
+      state.delete:widget({ align = trx.ui.HAlign.RIGHT })
     )
     select_recent_slot(req)
   elseif role == Page.SELECT_LEVEL then
@@ -765,7 +694,7 @@ local function open_page(role)
   end
   page.req = req
   state.page = page
-  sync_delete(page)
+  sync_delete()
   state.place = req.place
   state.book:set_root(trx.ui.widgets.Stack({
     shown = state.page_shown,
@@ -953,7 +882,7 @@ choose = function(entry, row)
       if trx.savegame.delete(slot.slot_num, slot.pool) then
         if state.page ~= nil then
           state.page.req:set_rows(slot_rows())
-          sync_delete(state.page)
+          sync_delete()
         end
       else
         show_message(trx.locale.get("general/passport/delete_save_failed"))
@@ -981,28 +910,13 @@ end
 -- The page that the book rests on
 -------------------------------------------------------------------------------
 
--- Counts how long the delete button is held. After a hold asks for
--- confirmation, the count waits until the button is released.
+-- Reads the delete button. A completed hold asks for confirmation.
 local function control_delete(keys)
-  if not is_deletable(state.page) then
-    state.delete_hold = 0
-    sync_delete(state.page)
+  if not state.delete:control(keys, is_deletable(state.page)) then
     return false
   end
-  local held = keys:held_for(trx.input.Role.UNBIND_KEY)
-  if held == 0 then
-    state.delete_armed = true
-  end
-  state.delete_hold = state.delete_armed and held or 0
-  if state.delete_hold - DELETE_HOLD_DEBUFF > DELETE_HOLD_MAX then
-    state.delete_armed = false
-    state.delete_hold = 0
-    sync_delete(state.page)
-    push_confirm_delete(state.page.req.selected_row())
-    return true
-  end
-  sync_delete(state.page)
-  return false
+  push_confirm_delete(state.page.req.selected_row())
+  return true
 end
 
 -- Leaves an open page. TR1 goes back to turning the pages; the later games and
@@ -1154,8 +1068,7 @@ local function open(ctx)
     browse = browses_first(mode),
     lists = {},
     page_shown = trx.signal.new(true),
-    delete_hold = 0,
-    delete_armed = true,
+    delete = hold_button.new(trx.locale.get("general/passport/delete_save")),
   }
   set_caption(CAPTIONS[pages[index].role])
   arrow_left:set(false)
@@ -1212,8 +1125,7 @@ local function open_alone(ctx, pages, index, crystal)
     crystal = crystal,
     lists = {},
     page_shown = trx.signal.new(true),
-    delete_hold = 0,
-    delete_armed = true,
+    delete = hold_button.new(trx.locale.get("general/passport/delete_save")),
   }
   state.book = ctx:push({
     root = trx.ui.widgets.Custom({
