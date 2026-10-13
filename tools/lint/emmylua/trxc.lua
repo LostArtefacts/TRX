@@ -13,6 +13,7 @@
 ---@field cutscenes trxc.cutscenes
 ---@field enum trxc.enum
 ---@field events trxc.events
+---@field fade trxc.fade
 ---@field fx trxc.fx
 ---@field game trxc.game
 ---@field hooks trxc.hooks
@@ -163,6 +164,14 @@ trxc = {}
 ---@field fire fun(event_type: integer, ...: boolean|number|string|nil): boolean
 ---@field is_level_script fun(): boolean
 ---@field tick fun(): integer
+
+---@class (exact) trxc.fade
+---@field close fun(id: integer)
+---@field is_open fun(id: integer): boolean
+---@field opacity fun(id: integer): number
+---@field push_fill fun(r: number, g: number, b: number, opacity: number): integer
+---@field push_snapshot fun(opacity: number): integer
+---@field to fun(id: integer, target: number, ticks: integer, curve: string, close: boolean)
 
 ---@class (exact) trxc.fx
 ---@field MAX_FOG integer

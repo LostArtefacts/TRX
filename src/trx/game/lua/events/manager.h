@@ -47,6 +47,9 @@ void LUA_Tick(void);
 // Returns how many ticks LUA_Tick has run since the Lua state was created.
 int32_t LUA_GetTick(void);
 
+// Sets what LUA_Tick runs after the tick event.
+void LUA_SetTickHook(void (*hook)(void));
+
 // Spelled out rather than taken from lua.h, which game code that fires events
 // does not build against.
 typedef struct lua_State lua_State;

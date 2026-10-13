@@ -619,4 +619,100 @@ test("each paint lands in the layer it is declared in", function()
   trx.ui.regions.remove(over)
 end)
 
+local BLACK = trx.math.color("000000")
+
+local function fade_ticks(count)
+  for _ = 1, count do
+    fake.tick()
+  end
+end
+
+test("a fade layer needs something to hold", function()
+  h.raises(function()
+    trx.ui.layers.fade({})
+  end, "a fade layer needs something to hold")
+end)
+
+test("a fade layer closes at rest when told to, and says so once", function()
+  local done, closed = 0, 0
+  local layer = trx.ui.layers.fade({
+    fill = BLACK,
+    on_close = function()
+      closed = closed + 1
+    end,
+  })
+  layer:to(0, 2, nil, {
+    close = true,
+    on_done = function()
+      done = done + 1
+    end,
+  })
+  assert(layer.is_open)
+  fade_ticks(4)
+  assert(not layer.is_open, "the layer stayed open")
+  assert(done == 1, "the move was reported " .. done .. " times")
+  assert(closed == 1, "the close was reported " .. closed .. " times")
+  assert(not layer:close(), "a closed layer closed again")
+end)
+
+test("a move cut short by another reports only the last", function()
+  local first, second = 0, 0
+  local layer = trx.ui.layers.fade({ fill = BLACK, opacity = 0 })
+  layer:to(1, 8, nil, {
+    on_done = function()
+      first = first + 1
+    end,
+  })
+  fake.tick()
+  layer:to(0, 1, nil, {
+    on_done = function()
+      second = second + 1
+    end,
+  })
+  fade_ticks(10)
+  assert(first == 0 and second == 1, "first=" .. first .. " second=" .. second)
+  assert(layer.is_open, "a move without close closed the layer")
+  layer:close()
+end)
+
+test("a move of no ticks ends on the next tick", function()
+  local done = 0
+  local layer = trx.ui.layers.fade({ fill = BLACK, opacity = 0 })
+  layer:to(1, 0, nil, {
+    on_done = function()
+      done = done + 1
+    end,
+  })
+  assert(done == 0, "the move ended inside to()")
+  assert(layer.opacity == 1)
+  fake.tick()
+  assert(done == 1, "the move did not end on the next tick")
+  layer:close()
+end)
+
+test("a move takes its ticks whatever the fade setting", function()
+  fake.set_fade_effects(false)
+  local layer = trx.ui.layers.fade({ fill = BLACK, opacity = 0 })
+  layer:to(1, 8)
+  fake.tick()
+  assert(layer.opacity < 1, "the move ended at once")
+  layer:close()
+  fake.set_fade_effects(true)
+end)
+
+test("a snapshot fade layer opens and closes", function()
+  local layer = trx.ui.layers.fade({ snapshot = true })
+  assert(layer.is_open and layer.opacity == 1)
+  assert(layer:close())
+end)
+
+test("a level script's fade layer closes with the level", function()
+  local layer
+  fake.as_level_script(function()
+    layer = trx.ui.layers.fade({ fill = BLACK })
+  end)
+  fake.end_level()
+  assert(not layer.is_open)
+end)
+
 return h.report()

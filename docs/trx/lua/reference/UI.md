@@ -258,6 +258,40 @@ arrow, and `\{button left}` draws the button the player has bound.
       Parameters:
       - <a id="ui.StackLayer.set_root.root" name="ui.StackLayer.set_root.root"></a>**`root`** ([trx.ui.Widget](#ui.Widget)). The new tree.
 
+- <a id="ui.FadeLayer" name="ui.FadeLayer"></a>[lua]`trx.ui.FadeLayer`
+
+    A layer that the engine draws over its interface: one colour, or the frame as
+    it was when the layer was made. Its opacity moves on a curve that the engine
+    runs, so nothing is painted by the script. Fade layers stack in the order
+    they were made, above every engine screen and below the console.
+
+    Properties:
+    - <a id="ui.FadeLayer.is_open" name="ui.FadeLayer.is_open"></a>**`is_open`**: boolean. Whether the layer is still drawn. *(read-only)*
+    - <a id="ui.FadeLayer.opacity" name="ui.FadeLayer.opacity"></a>**`opacity`**: number. How opaque the layer is now, from `0` to `1`. *(read-only)*
+
+    Methods:
+
+    - <a id="ui.FadeLayer.close" name="ui.FadeLayer.close"></a>[lua]`fadelayer:close()`  
+      Stops drawing the layer. Does nothing if the layer is already closed.
+
+      Returns: boolean. Whether the layer was open.
+
+    - <a id="ui.FadeLayer.to" name="ui.FadeLayer.to"></a>[lua]`fadelayer:to(target, ticks, [curve], [options])`  
+      Moves the opacity to a target. The move takes the ticks it is given whatever
+      the fade settings are.
+
+      Parameters:
+      - <a id="ui.FadeLayer.to.target" name="ui.FadeLayer.to.target"></a>**`target`** (number). The opacity to go to, from `0` to `1`.
+      - <a id="ui.FadeLayer.to.ticks" name="ui.FadeLayer.to.ticks"></a>**`ticks`** (integer). How many ticks the move takes.
+      - <a id="ui.FadeLayer.to.curve" name="ui.FadeLayer.to.curve"></a>**`curve`** (function, optional). The curve of the move, one of [`trx.ui.ease`](#ui.ease). [`trx.ui.ease.linear`](#ui.ease.linear) by default.
+      - <a id="ui.FadeLayer.to.options" name="ui.FadeLayer.to.options"></a>**`options`** (table, optional). What happens when the move ends.
+
+        Keys:
+        - <a id="ui.FadeLayer.to.options.close" name="ui.FadeLayer.to.options.close"></a>**`close`** (boolean, optional). Whether the layer closes once the move ends. `false` by default.
+        - <a id="ui.FadeLayer.to.options.on_done" name="ui.FadeLayer.to.options.on_done"></a>**`on_done`** (function, optional). Runs once when the move ends, and not if another move or a close cuts it short. A move of no ticks made in a tick handler ends within that tick. It receives the layer.
+
+      Returns: [trx.ui.FadeLayer](#ui.FadeLayer). The same layer.
+
 - <a id="ui.ScreenContext" name="ui.ScreenContext"></a>[lua]`trx.ui.ScreenContext`
 
     A screen that a script holds, which the definition receives.
@@ -295,6 +329,22 @@ arrow, and `\{button left}` draws the button the player has bound.
       screen's fade. Only [`trx.ui.Screen.PAUSE`](#ui.Screen) takes this.
 
       Returns: boolean. Whether the screen was still held.
+
+    - <a id="ui.ScreenContext.fade" name="ui.ScreenContext.fade"></a>[lua]`screencontext:fade(settings)`  
+      Puts a fade layer that belongs to the screen on top of the other fade
+      layers, with the settings that [`trx.ui.layers.fade`](#ui.layers.fade) takes. The layer closes
+      when the screen ends.
+
+      Parameters:
+      - <a id="ui.ScreenContext.fade.settings" name="ui.ScreenContext.fade.settings"></a>**`settings`** (table). The layer settings.
+
+        Keys:
+        - <a id="ui.ScreenContext.fade.settings.fill" name="ui.ScreenContext.fade.settings.fill"></a>**`fill`** ([trx.math.Color](MATH.md#math.Color), optional). The colour that the layer holds.
+        - <a id="ui.ScreenContext.fade.settings.snapshot" name="ui.ScreenContext.fade.settings.snapshot"></a>**`snapshot`** (boolean, optional). Whether the layer holds the frame on screen now, in place of a colour.
+        - <a id="ui.ScreenContext.fade.settings.opacity" name="ui.ScreenContext.fade.settings.opacity"></a>**`opacity`** (number, optional). How opaque the layer starts, from `0` to `1`. `1` by default.
+        - <a id="ui.ScreenContext.fade.settings.on_close" name="ui.ScreenContext.fade.settings.on_close"></a>**`on_close`** (function, optional). Runs once when the layer closes, for any reason. It receives the layer.
+
+      Returns: [trx.ui.FadeLayer](#ui.FadeLayer). The layer.
 
     - <a id="ui.ScreenContext.push" name="ui.ScreenContext.push"></a>[lua]`screencontext:push(settings)`  
       Pushes a layer that belongs to the screen, with the settings that
@@ -675,6 +725,27 @@ arrow, and `\{button left}` draws the button the player has bound.
       end
     end,
   })
+  ```
+
+- <a id="ui.layers.fade" name="ui.layers.fade"></a>[lua]`trx.ui.layers.fade(settings)`  
+  Puts up a fade layer, on top of the others drawn where it is. A level
+  script's layer closes when the level ends.
+
+  Parameters:
+  - <a id="ui.layers.fade.settings" name="ui.layers.fade.settings"></a>**`settings`** (table). The layer settings.
+
+    Keys:
+    - <a id="ui.layers.fade.settings.fill" name="ui.layers.fade.settings.fill"></a>**`fill`** ([trx.math.Color](MATH.md#math.Color), optional). The colour that the layer holds.
+    - <a id="ui.layers.fade.settings.snapshot" name="ui.layers.fade.settings.snapshot"></a>**`snapshot`** (boolean, optional). Whether the layer holds the frame on screen now, in place of a colour.
+    - <a id="ui.layers.fade.settings.opacity" name="ui.layers.fade.settings.opacity"></a>**`opacity`** (number, optional). How opaque the layer starts, from `0` to `1`. `1` by default.
+    - <a id="ui.layers.fade.settings.on_close" name="ui.layers.fade.settings.on_close"></a>**`on_close`** (function, optional). Runs once when the layer closes, for any reason. It receives the layer.
+
+  Returns: [trx.ui.FadeLayer](#ui.FadeLayer). The layer.
+
+  Example:
+  ```lua
+  local black = trx.ui.layers.fade({ fill = trx.math.color("000000"), opacity = 0 })
+  black:to(1, 15, nil, { close = true })
   ```
 
 - <a id="ui.layers.top" name="ui.layers.top"></a>[lua]`trx.ui.layers.top()`  

@@ -199,6 +199,7 @@ static __attribute__((constructor)) void M_Init(void)
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_SHOW_PICKUP, "show_pickup");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_SCENE_PAINT, "scene_paint");
     ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_PAINT_CONSOLE, "ui_paint_console");
+    ENUM_MAP(LUA_EVENT_TYPE, LUA_EVENT_UI_FADE_DONE, "ui_fade_done");
 
     ENUM_MAP(OVERLAY_ARROW, OVERLAY_ARROW_TL, "top_left");
     ENUM_MAP(OVERLAY_ARROW, OVERLAY_ARROW_TR, "top_right");

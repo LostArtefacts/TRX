@@ -128,6 +128,8 @@ typedef struct {
     struct {
         OUTPUT_QUAD *renderer;
         M_SNAPSHOT_STATE state;
+        M_SNAPSHOT_STATE slots[OUTPUT_OVERLAY_SNAPSHOT_SLOTS];
+        bool slot_in_use[OUTPUT_OVERLAY_SNAPSHOT_SLOTS];
         bool transition_active;
         FADER transition_fader;
     } snapshot;
@@ -744,7 +746,7 @@ static void M_DrawOp_Pattern(const M_DRAW_OP *const base)
 }
 
 static void M_EnsureSnapshotTexture(
-    M_PRIV *const p, const VIEWPORT_SPACE viewport)
+    M_PRIV *const p, M_SNAPSHOT_STATE *const s, const VIEWPORT_SPACE viewport)
 {
     const int32_t w = Viewport_GetWidth(viewport);
     const int32_t h = Viewport_GetHeight(viewport);
@@ -752,7 +754,6 @@ static void M_EnsureSnapshotTexture(
         return;
     }
 
-    M_SNAPSHOT_STATE *const s = &p->snapshot.state;
     if (s->texture.initialized && s->width == w && s->height == h) {
         return;
     }
@@ -865,7 +866,7 @@ void Output_Overlay_CaptureSnapshot(void)
     p->snapshot.transition_active = false;
     p->snapshot.state.has_content = false;
 
-    M_EnsureSnapshotTexture(p, VIEWPORT_TARGET);
+    M_EnsureSnapshotTexture(p, &p->snapshot.state, VIEWPORT_TARGET);
     if (!p->snapshot.state.texture.initialized) {
         return;
     }
@@ -890,7 +891,7 @@ void Output_Overlay_CaptureGameSnapshot(void)
     // than VIEWPORT_TARGET whenever an upscaling factor is active; size the
     // snapshot texture to match so the capture isn't clamped into a corner of
     // an oversized texture.
-    M_EnsureSnapshotTexture(p, VIEWPORT_SCENE);
+    M_EnsureSnapshotTexture(p, &p->snapshot.state, VIEWPORT_SCENE);
     if (!p->snapshot.state.texture.initialized) {
         return;
     }
@@ -910,6 +911,58 @@ void Output_Overlay_CaptureGameSnapshot(void)
         &p->snapshot.state.texture, p->snapshot.state.width,
         p->snapshot.state.height);
     p->snapshot.state.has_content = true;
+}
+
+int32_t Output_Overlay_CaptureSnapshotSlot(void)
+{
+    M_PRIV *const p = &m_Priv;
+    for (int32_t i = 0; i < OUTPUT_OVERLAY_SNAPSHOT_SLOTS; i++) {
+        if (p->snapshot.slot_in_use[i]) {
+            continue;
+        }
+        M_SNAPSHOT_STATE *const s = &p->snapshot.slots[i];
+        M_EnsureSnapshotTexture(p, s, VIEWPORT_TARGET);
+        if (!s->texture.initialized) {
+            return -1;
+        }
+        TRX_GL_Renderer_CompositeToTexture(&s->texture, s->width, s->height);
+        s->has_content = true;
+        p->snapshot.slot_in_use[i] = true;
+        return i;
+    }
+    return -1;
+}
+
+void Output_Overlay_DrawSnapshotSlot(const int32_t slot, const float opacity)
+{
+    const M_PRIV *const p = &m_Priv;
+    if (slot < 0 || slot >= OUTPUT_OVERLAY_SNAPSHOT_SLOTS
+        || !p->snapshot.slot_in_use[slot] || opacity <= 0.0f) {
+        return;
+    }
+    const M_SNAPSHOT_STATE *const s = &p->snapshot.slots[slot];
+    if (!s->has_content || !s->texture.initialized) {
+        return;
+    }
+    M_SCHEDULE_OP(
+        M_DrawOp_Snapshot,
+        ((M_DRAW_OP_SNAPSHOT) {
+            .texture_id = s->texture.id,
+            .width = s->width,
+            .height = s->height,
+            .opacity = opacity,
+            .tint = COLOR_RGB_F_WHITE,
+        }));
+}
+
+void Output_Overlay_FreeSnapshotSlot(const int32_t slot)
+{
+    M_PRIV *const p = &m_Priv;
+    if (slot < 0 || slot >= OUTPUT_OVERLAY_SNAPSHOT_SLOTS) {
+        return;
+    }
+    p->snapshot.slot_in_use[slot] = false;
+    p->snapshot.slots[slot].has_content = false;
 }
 
 void Output_Overlay_DrawSnapshot(const float opacity)
@@ -1211,6 +1264,10 @@ void OutputSource_Overlay_Shutdown(void)
     p->pattern.uploaded = false;
     M_CloseTexture(&p->snapshot.state.texture);
     p->snapshot.state.has_content = false;
+    for (int32_t i = 0; i < OUTPUT_OVERLAY_SNAPSHOT_SLOTS; i++) {
+        M_CloseTexture(&p->snapshot.slots[i].texture);
+        p->snapshot.slots[i].has_content = false;
+    }
     M_CloseTexture(&p->solid_black_texture);
 
     if (p->ops != nullptr) {

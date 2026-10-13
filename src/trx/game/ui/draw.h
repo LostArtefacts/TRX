@@ -100,6 +100,9 @@ void UI_ScheduleDrawBackground(const char *path, bool mono, float dim);
 // Darkens the scene behind the whole interface by the opacity, as the engine
 // darkens it behind a screen and fades it to black.
 void UI_ScheduleDrawDarken(float opacity);
+// Draws a snapshot slot of the overlay over the whole screen, between what was
+// scheduled before it and what is scheduled after it.
+void UI_ScheduleDrawSnapshotSlot(int32_t slot, float opacity);
 
 void UI_InitDraw(void);
 void UI_ShutdownDraw(void);

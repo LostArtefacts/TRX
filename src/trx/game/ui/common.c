@@ -13,6 +13,7 @@
 #include <trx/game/ui/elements/anchor.h>
 #include <trx/game/ui/events.h>
 #include <trx/game/ui/exit_fade.h>
+#include <trx/game/ui/fade.h>
 #include <trx/game/ui/regions.h>
 #include <trx/game/ui/scaler.h>
 #include <trx/game/ui/text.h>
@@ -276,6 +277,7 @@ void UI_EndScene(void)
     M_DrawNode(m_Priv.root);
     UI_EndLayer(UI_LAYER_INTERFACE);
     M_Paint(UI_LAYER_OVER);
+    UI_Fade_Draw();
     M_Paint(UI_LAYER_CONSOLE);
     UI_DrawExitFade();
     UI_EndAnchor();

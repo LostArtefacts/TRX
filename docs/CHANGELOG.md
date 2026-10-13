@@ -269,6 +269,7 @@
 - Added `trx.ui.primitive.wrap_text` and `trx.strings.paginate`, which break text into lines and pages the way the game does
 - Added `trx.inventory_ring.turn_selection`, which turns the selected entry by hand, and `trx.inventory_ring.set_input_hints`, which shows hints for the keys that work now where the ring shows its button hints
 - Added `trx.inventory.combine_partners`, the entries the player carries that an entry combines with, and `trx.inventory.combine`, which combines two of them into what they make
+- Added fade layers, which the engine draws over its interface and below the console, their opacity moving on a curve: `trx.ui.layers.fade`, `trx.ui.FadeLayer` and `trx.ui.ScreenContext:fade`
 - Changed saves to keep the items a script spawns, which previously disappeared on load (TRX1677)
 - Changed `trx.events.on_ui_draw`, `on_ui_paint`, `on_ui_paint_over` and `on_scene_paint` to `trx.ui.on_draw`, `trx.ui.on_paint`, `trx.ui.on_paint_over` and `trx.scene.on_paint`
 - Changed script widgets to stay behind the game interface when they overlap

@@ -1,6 +1,8 @@
 local raw = trxc.ui
 local raw_events = trxc.events
+local raw_fade = trxc.fade
 local h = require("trx.internal.helpers")
+local curve_name = require("trx.ui.tween").curve_name
 
 require("trx.ui")
 require("trx.ui.primitive")
@@ -16,6 +18,14 @@ local f32 = require("trx.ui.widgets.base").f32
 
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
+
+-- The event the engine fires as a fade layer's move ends.
+local fade_done_event = 0
+for _, constant in ipairs(trxc.enum.values("LUA_EVENT_TYPE")) do
+  if constant.name == "UI_FADE_DONE" then
+    fade_done_event = constant.value
+  end
+end
 
 local MAX_LAYERS = 15
 
@@ -257,6 +267,133 @@ function layers.push(settings)
   return layer
 end
 
+-------------------------------------------------------------------------------
+-- Fade layers
+-------------------------------------------------------------------------------
+
+-- The open fade layers, keyed by the id the engine knows each by.
+---@type table<integer, trx.ui.FadeLayer>
+local fades = {}
+
+local function finish_fade(layer)
+  local id = rawget(layer, "_id")
+  if fades[id] ~= layer then
+    return
+  end
+  fades[id] = nil
+  raw_fade.close(id)
+  if layer._unload ~= nil then
+    layer._unload:detach()
+    rawset(layer, "_unload", nil)
+  end
+  if layer.on_close ~= nil then
+    layer.on_close(layer)
+  end
+end
+
+---A layer that the engine draws over its interface: one colour, or the frame as
+---it was when the layer was made. Its opacity moves on a curve that the engine
+---runs, so nothing is painted by the script. Fade layers stack in the order
+---they were made, above every engine screen and below the console.
+---@class (exact) trx.ui.FadeLayer
+---@trx.readonly is_open, opacity
+---@field is_open boolean Whether the layer is still drawn.
+---@field opacity number How opaque the layer is now, from `0` to `1`.
+---@field private on_close? fun(layer: trx.ui.FadeLayer)
+---@field private _id integer
+---@field private _on_done? fun(layer: trx.ui.FadeLayer)
+---@field private _unload? trx.events.Listener
+local FadeLayer = h.class("ui.FadeLayer", {
+  fields = {
+    is_open = {
+      get = function(self)
+        return fades[rawget(self, "_id")] == self
+      end,
+    },
+    opacity = {
+      get = function(self)
+        return raw_fade.opacity(rawget(self, "_id"))
+      end,
+    },
+  },
+})
+
+---Stops drawing the layer. Does nothing if the layer is already closed.
+---@return boolean # Whether the layer was open.
+function FadeLayer:close()
+  if fades[rawget(self, "_id")] ~= self then
+    return false
+  end
+  finish_fade(self)
+  return true
+end
+
+---@class (exact) trx.ui.FadeLayer.to.options
+---@field close? boolean Whether the layer closes once the move ends. `false` by default.
+---@field on_done? function Runs once when the move ends, and not if another move or a close cuts it short. A move of no ticks made in a tick handler ends within that tick. It receives the layer.
+
+---Moves the opacity to a target. The move takes the ticks it is given whatever
+---the fade settings are.
+---@param target number The opacity to go to, from `0` to `1`.
+---@param ticks integer How many ticks the move takes.
+---@param curve? function The curve of the move, one of `trx.ui.ease`. `trx.ui.ease.linear` by default.
+---@param options? trx.ui.FadeLayer.to.options What happens when the move ends.
+---@return trx.ui.FadeLayer # The same layer.
+function FadeLayer:to(target, ticks, curve, options)
+  local name = curve_name(curve)
+  if name == nil then
+    error("the curve is not one of trx.ui.ease", 2)
+  end
+  options = options or {}
+  rawset(self, "_on_done", options.on_done)
+  raw_fade.to(rawget(self, "_id"), target, ticks, name, options.close == true)
+  return self
+end
+
+---@class (exact) trx.ui.layers.fade.settings
+---@field fill? trx.math.Color The colour that the layer holds.
+---@field snapshot? boolean Whether the layer holds the frame on screen now, in place of a colour.
+---@field opacity? number How opaque the layer starts, from `0` to `1`. `1` by default.
+---@field on_close? function Runs once when the layer closes, for any reason. It receives the layer.
+
+---Puts up a fade layer, on top of the others drawn where it is. A level
+---script's layer closes when the level ends.
+---
+---```lua
+---local black = trx.ui.layers.fade({ fill = trx.math.color("000000"), opacity = 0 })
+---black:to(1, 15, nil, { close = true })
+---```
+---@param settings trx.ui.layers.fade.settings The layer settings.
+---@return trx.ui.FadeLayer # The layer.
+function layers.fade(settings)
+  local opacity = settings.opacity or 1
+  local id
+  if settings.snapshot then
+    id = raw_fade.push_snapshot(opacity)
+  elseif settings.fill ~= nil then
+    local fill = settings.fill
+    id = raw_fade.push_fill(fill.r, fill.g, fill.b, opacity)
+  else
+    error("a fade layer needs something to hold", 2)
+  end
+  if id == 0 then
+    error("too many fade layers", 2)
+  end
+  local layer =
+    setmetatable({ on_close = settings.on_close, _id = id }, FadeLayer)
+  fades[id] = layer
+  if raw_events.is_level_script() then
+    rawset(
+      layer,
+      "_unload",
+      trx.events.on_level_unload(function()
+        layer:close()
+      end)
+    )
+  end
+  return layer
+end
+
 ---Returns the top layer that reads input.
 ---@return trx.ui.StackLayer? # The layer, or `nil` if no layer reads input.
 ---@type fun(): trx.ui.StackLayer?
@@ -350,5 +487,22 @@ trx.events.on_tick(function()
   if not ok then
     remove(layer)
     error(err, 0)
+  end
+end)
+
+-- The engine reports each move that ends, once, after closing the layers told
+-- to close with it.
+raw_events.attach(fade_done_event, function(id)
+  local layer = fades[id]
+  if layer == nil then
+    return
+  end
+  local on_done = rawget(layer, "_on_done")
+  rawset(layer, "_on_done", nil)
+  if not raw_fade.is_open(id) then
+    finish_fade(layer)
+  end
+  if on_done ~= nil then
+    on_done(layer)
   end
 end)

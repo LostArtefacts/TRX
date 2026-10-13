@@ -3,13 +3,25 @@
 #include <trx/core/subsystem.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/ui/common.h>
+#include <trx/game/ui/fade.h>
 #include <trx/game/ui/regions.h>
 
 static bool m_HideNextFrame = false;
 
+static void M_FadeDone(const int32_t id)
+{
+    LUA_FireEventInt32(LUA_EVENT_UI_FADE_DONE, id);
+}
+
+static void M_Tick(void)
+{
+    UI_Fade_Tick(M_FadeDone);
+}
+
 static void M_Init(void)
 {
     UI_SetPaintHook(LUA_UI_PaintRegions);
+    LUA_SetTickHook(M_Tick);
 }
 
 void LUA_UI_PaintRegions(const UI_LAYER layer)

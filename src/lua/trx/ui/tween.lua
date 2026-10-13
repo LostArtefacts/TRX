@@ -122,3 +122,11 @@ end
 function ui.tween(value)
   return setmetatable({ _raw = raw.new(value or 0) }, Tween)
 end
+
+-- The name the engine knows a curve by, for the modules that hand a curve to
+-- the engine.
+return {
+  curve_name = function(curve)
+    return CURVES[curve or ease.linear]
+  end,
+}
