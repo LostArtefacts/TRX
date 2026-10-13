@@ -35,7 +35,7 @@ local function open(ctx)
     y = BAR.y,
   })
   return ctx:push({
-    root = bar.root,
+    root = bar,
     place = bar.place,
     on_input = function(_, keys)
       show:control(keys)

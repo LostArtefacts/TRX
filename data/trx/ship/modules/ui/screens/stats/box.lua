@@ -243,7 +243,7 @@ local function body_rows(state)
     from = state.reset,
   })
   state.reset:set_enabled(counts.has_any_time())
-  add(state.reset.root)
+  add(state.reset)
   return children
 end
 

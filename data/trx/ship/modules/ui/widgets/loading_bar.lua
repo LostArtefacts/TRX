@@ -5,13 +5,13 @@
 -- Usage:
 --   local loading_bar = require("common.ui.widgets.loading_bar")
 --   local bar = loading_bar.new({ progress = tween, width = 0.9, height = 12, y = 0.95 })
---   ctx:push({ root = bar.root, place = bar.place, modal = false })
+--   ctx:push({ root = bar, place = bar.place, modal = false })
 
 local M = {}
 
----@class common.ui.LoadingBar
----@field root trx.ui.Widget
----@field place fun(w: number, h: number): number, number
+-- A loading bar, which is a widget that also says where it goes.
+---@class common.ui.LoadingBar: trx.ui.Widget
+---@field place fun(w: number, h: number): number, number Where the bar goes, as trx.ui.layers.push takes it.
 
 -- Creates a loading bar at the foot of the canvas. The settings are:
 --   progress - how full the bar is, from 0 to 1, or a tween or a signal that
@@ -31,15 +31,15 @@ function M.new(settings)
   local width = trx.ui.signals.layout:map(function()
     return trx.ui.canvas.width * settings.width
   end)
-  return {
-    root = trx.ui.widgets
-      .Resize({ child = bar, w = width, shown = settings.shown })
-      :release_with(width),
-    place = function(w, h)
-      return (trx.ui.canvas.width - w) / 2,
-        trx.ui.canvas.height * settings.y - h / 2
-    end,
-  }
+  ---@type common.ui.LoadingBar
+  local widget = trx.ui.widgets
+    .Resize({ child = bar, w = width, shown = settings.shown })
+    :release_with(width)
+  function widget.place(w, h)
+    return (trx.ui.canvas.width - w) / 2,
+      trx.ui.canvas.height * settings.y - h / 2
+  end
+  return widget
 end
 
 return M

@@ -8,7 +8,7 @@
 --     words = trx.locale.get("general/passport/delete_save"),
 --     align = trx.ui.HAlign.RIGHT,
 --   })
---   ctx:push({ root = button.root, ... })
+--   ctx:push({ root = button, ... })
 --   if button:control(keys, can_delete) then ... end
 
 local metrics = require("common.ui.metrics")
@@ -34,8 +34,8 @@ M.HEIGHT = 2.0 * PAD_Y
   + SPACING
   + BAR_HEIGHT
 
----@class common.ui.HoldButton
----@field root trx.ui.Widget
+-- The button's own state, which the widget it hands out reads through.
+---@class common.ui.HoldButtonState
 ---@field private has_key boolean
 ---@field private enabled trx.signal.Signal
 ---@field private hidden trx.signal.Signal
@@ -46,6 +46,12 @@ M.HEIGHT = 2.0 * PAD_Y
 ---@field private armed boolean
 local Button = {}
 Button.__index = Button
+
+-- A button, which is a widget that also reads the player's input.
+---@class common.ui.HoldButton: trx.ui.Widget
+---@field control fun(self: common.ui.HoldButton, keys: trx.ui.LayerKeys, enabled: boolean): boolean Reads one tick of input, and returns whether the hold has just completed.
+---@field set_enabled fun(self: common.ui.HoldButton, enabled: boolean) Shows or hides the button.
+---@field private _state common.ui.HoldButtonState
 
 -- The words and the key to hold, or nil while the key is not bound. The
 -- player cannot bind keys while a screen with the button is open, so the
@@ -142,7 +148,7 @@ end
 --   scale - how many times its size the button is drawn, 1 by default
 --   from  - a button that this one stands in for, whose hold it carries on
 function M.new(settings)
-  local from = settings.from
+  local from = settings.from ~= nil and settings.from._state or nil
   local enabled = trx.signal.new(false)
   local filling = trx.signal.new(from ~= nil and from.filling:get() or false)
   local label = label_of(settings.words)
@@ -156,14 +162,22 @@ function M.new(settings)
     hold = from ~= nil and from.hold or 0,
     armed = from == nil or from.armed,
   }, Button)
-  self.root = build(
+  self:sync()
+  ---@type common.ui.HoldButton
+  local widget = build(
     self,
     label or "",
     settings.align or trx.ui.HAlign.CENTER,
     settings.scale or 1.0
   ):release_with(self.hidden, self.empty)
-  self:sync()
-  return self
+  widget._state = self
+  function widget.control(_, keys, enabled)
+    return self:control(keys, enabled)
+  end
+  function widget.set_enabled(_, enabled)
+    self:set_enabled(enabled)
+  end
+  return widget
 end
 
 return M

@@ -83,7 +83,7 @@ local function open(ctx)
       height = BAR.height,
       y = BAR.y,
     })
-    ctx:push({ root = bar.root, place = bar.place, modal = false })
+    ctx:push({ root = bar, place = bar.place, modal = false })
   end
   return main
 end

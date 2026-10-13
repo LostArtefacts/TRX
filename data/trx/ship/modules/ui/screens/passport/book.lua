@@ -234,7 +234,7 @@ function Passport:push_list(role, req, extra)
   entry.layer = self.ctx:push({
     root = trx.ui.widgets.Stack({
       shown = entry.shown,
-      children = { req.root },
+      children = { req },
     }),
     place = req.place,
     on_input = function(_, keys)
@@ -325,7 +325,7 @@ function Passport:open_page(role)
     req = list_req(
       rows.slot_rows(),
       trx.locale.get(pages.CAPTIONS[role]),
-      page.delete.root
+      page.delete
     )
     select_recent_slot(req)
   elseif role == pages.Page.SELECT_LEVEL then
@@ -342,7 +342,7 @@ function Passport:open_page(role)
   self.place = req.place
   self.book:set_root(trx.ui.widgets.Stack({
     shown = self.page_shown,
-    children = { req.root },
+    children = { req },
   }))
   return true
 end

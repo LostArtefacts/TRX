@@ -6,7 +6,7 @@
 -- Usage:
 --   local requester = require("common.ui.widgets.requester")
 --   local req = requester.new({ title = "Load Game", rows = rows })
---   ctx:push({ root = req.root, on_input = ... })
+--   ctx:push({ root = req, place = req.place, on_input = ... })
 
 local metrics = require("common.ui.metrics")
 
@@ -56,16 +56,26 @@ local function fit_rows(settings, count, width)
   return rows
 end
 
----@class common.ui.Requester
+-- The dialog's own state, which the widget it hands out reads through.
+---@class common.ui.RequesterState
 ---@field rows trx.ui.ListRow[]
 ---@field list trx.ui.List
 ---@field title? trx.signal.Signal
 ---@field panel trx.ui.Widget
----@field root trx.ui.Widget
----@field place? fun(w: number, h: number): number, number
----@field private refit fun()
+---@field refit fun()
 local Requester = {}
 Requester.__index = Requester
+
+-- A dialog, which is a widget that also reads the player's input.
+---@class common.ui.Requester: trx.ui.Widget
+---@field rows trx.ui.ListRow[] The rows, as `set_rows` last gave them.
+---@field list trx.ui.List The list of the rows.
+---@field title? trx.signal.Signal The heading, or nil for none.
+---@field panel trx.ui.Widget The frame, without the footer.
+---@field place? fun(w: number, h: number): number, number Where the dialog goes, as trx.ui.layers.push takes it.
+---@field set_rows fun(self: common.ui.Requester, rows: trx.ui.ListRow[])
+---@field selected_row fun(self: common.ui.Requester): trx.ui.ListRow?
+---@field control fun(self: common.ui.Requester, keys: trx.ui.LayerKeys): integer|"cancel"|nil Reads one tick of input. Returns the picked row's index, "cancel" where the player backed out, and nil where nothing was decided.
 
 -- Replaces the rows.
 function Requester:set_rows(rows)
@@ -93,7 +103,8 @@ function Requester:control(keys)
   return nil
 end
 
--- Creates a dialog. The settings are:
+-- Creates a dialog, which is a widget to push or to place in another widget.
+-- The settings are:
 --   title         - the heading, or nil for none
 --   rows          - the rows, as trx.ui.widgets.List takes them
 --   width         - the least width of the whole frame
@@ -106,10 +117,8 @@ end
 --   place         - where the dialog goes, as trx.ui.layers.push takes it
 function M.new(settings)
   settings.row_spacing = settings.row_spacing or metrics.row_spacing()
-  local req = setmetatable({
-    rows = settings.rows or {},
-    place = settings.place,
-  }, Requester)
+  ---@type common.ui.RequesterState
+  local req = setmetatable({ rows = settings.rows or {} }, Requester)
 
   -- How wide the frame is decides which corners it has to keep clear of, and
   -- so how much room its rows have.
@@ -185,10 +194,25 @@ function M.new(settings)
       children = { panel, settings.footer },
     })
   end
-  req.root = trx.ui.widgets.Fit({ child = body })
-  req.root:release_with(trx.ui.signals.layout:on(req.refit))
-
-  return req
+  ---@type common.ui.Requester
+  local widget = trx.ui.widgets.Fit({ child = body })
+  widget.rows = req.rows
+  widget.list = req.list
+  widget.title = req.title
+  widget.panel = req.panel
+  widget.place = settings.place
+  function widget.set_rows(_, rows)
+    req:set_rows(rows)
+    widget.rows = rows
+  end
+  function widget.selected_row()
+    return req:selected_row()
+  end
+  function widget.control(_, keys)
+    return req:control(keys)
+  end
+  widget:release_with(trx.ui.signals.layout:on(req.refit))
+  return widget
 end
 
 -- A message in a frame of its own, such as a save that the chosen feature
