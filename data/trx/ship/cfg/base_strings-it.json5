@@ -2056,6 +2056,15 @@
             "title": "Costume di Lara",
             "description": "Modifica l’aspetto di Lara. Se si seleziona \"Predefinito\", verranno rispettati i normali cambi di costume tra i livelli; in caso contrario, il costume scelto resterà attivo finché non verrà modificato manualmente.",
         },
+        "visuals.level_start_transition": {
+            "description": "\\{review}Il modo in cui appare un livello quando inizia o quando si carica un salvataggio. Dissolvenza incrociata fonde la schermata di caricamento con il livello. Attraverso il nero sfuma la schermata di caricamento verso il nero e il livello dal nero, come nel TR4 originale. Senza schermata di caricamento, entrambe fanno apparire il livello dal nero. Disabilitato mostra subito il livello.",
+            "title": "\\{review}Transizione di inizio livello",
+            "values": {
+                "black": "\\{review}Attraverso il nero",
+                "cross-fade": "\\{review}Dissolvenza incrociata",
+                "disabled": "\\{review}Disabilitato",
+            }
+        },
         "visuals.logo_locale": {
             "description": "Determina quale dei loghi del gioco viene visualizzato nella schermata del titolo. La versione originale ne includeva uno per ciascuna lingua in cui il gioco è stato pubblicato.",
             "title": "Logo del titolo",

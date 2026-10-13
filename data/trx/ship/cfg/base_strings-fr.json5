@@ -2056,6 +2056,15 @@
             "title": "\\{review}Tenue de Lara",
             "description": "\\{review}Modifie l’apparence de Lara. Le choix Par défaut respecte les changements de tenue normaux entre les niveaux ; sinon, la tenue sélectionnée restera active jusqu’à modification manuelle.",
         },
+        "visuals.level_start_transition": {
+            "description": "\\{review}La façon dont un niveau apparaît au début ou au chargement d'une sauvegarde. Fondu enchaîné fait passer l'écran de chargement au niveau. Par le noir fait disparaître l'écran de chargement au noir puis apparaître le niveau depuis le noir, comme dans le TR4 original. Sans écran de chargement, les deux font apparaître le niveau depuis le noir. Désactivé affiche le niveau immédiatement.",
+            "title": "\\{review}Transition de début de niveau",
+            "values": {
+                "black": "\\{review}Par le noir",
+                "cross-fade": "\\{review}Fondu enchaîné",
+                "disabled": "\\{review}Désactivé",
+            }
+        },
         "visuals.logo_locale": {
             "description": "\\{review}Le logo qu'affiche l'écran-titre. Le jeu d'origine en fournit un pour chaque langue dans laquelle il est sorti.",
             "title": "\\{review}Logo du titre",

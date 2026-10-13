@@ -2056,6 +2056,15 @@
             "title": "\\{review}Laras Outfit",
             "description": "\\{review}Ändert Laras Aussehen. Bei Auswahl von Standard werden die regulären Outfit-Wechsel zwischen den Levels beibehalten, andernfalls bleibt das gewählte Outfit aktiv, bis es manuell geändert wird.",
         },
+        "visuals.level_start_transition": {
+            "description": "\\{review}Wie ein Level erscheint, wenn es beginnt oder ein Spielstand geladen wird. Überblenden lässt den Ladebildschirm in das Level übergehen. Über Schwarz blendet den Ladebildschirm nach Schwarz ab und das Level aus Schwarz auf, wie im originalen TR4. Ohne Ladebildschirm blenden beide das Level aus Schwarz auf. Deaktiviert zeigt das Level sofort.",
+            "title": "\\{review}Übergang beim Levelstart",
+            "values": {
+                "black": "\\{review}Über Schwarz",
+                "cross-fade": "\\{review}Überblenden",
+                "disabled": "\\{review}Deaktiviert",
+            }
+        },
         "visuals.logo_locale": {
             "description": "\\{review}Welches Logo der Titelbildschirm zeigt. Das Original bringt für jede Sprache, in der es erschienen ist, ein eigenes mit.",
             "title": "\\{review}Titel-Logo",

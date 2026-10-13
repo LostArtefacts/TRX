@@ -2056,6 +2056,15 @@
             "title": "Lara's outfit",
             "description": "Changes Lara's appearance. Choosing Default will respect any regular outfit changes between levels, otherwise the chosen value will persist until changed manually.",
         },
+        "visuals.level_start_transition": {
+            "description": "How a level comes in when it starts or a save is loaded. Cross-fade blends the loading screen into the level. Through black fades the loading screen out to black and the level in from black, as in the original TR4. Without a loading screen, both fade the level in from black. Disabled shows the level at once.",
+            "title": "Level start transition",
+            "values": {
+                "black": "Through black",
+                "cross-fade": "Cross-fade",
+                "disabled": "Disabled",
+            }
+        },
         "visuals.logo_locale": {
             "description": "Which of the game's logos the title screen shows. The original ships one for each language it was published in.",
             "title": "Title logo",
