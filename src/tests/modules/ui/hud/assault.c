@@ -160,8 +160,6 @@ int main(void)
         .deps = { "config", "events", "signal", "assault", "catalog", "game",
                   "locale", "math", "ui.primitive", "ui.widgets", "ui.regions",
                   nullptr },
-        .mod_script = "ui/hud/assault",
-        // Loads the shipped module after sealing to match engine behaviour.
         .seal = true,
         .setup_extra = M_Setup,
         .push_fake = M_PushFake,

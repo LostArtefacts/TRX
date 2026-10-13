@@ -1,4 +1,4 @@
-require("common.ui.hud.assault")
+require("common.ui.hud.assault").setup()
 
 trx.events.on_game_start(function(is_save)
   trx.lara.holsters_visible = trx.lara.has_pistol_weapon

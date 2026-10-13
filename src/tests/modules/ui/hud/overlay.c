@@ -177,8 +177,6 @@ int main(void)
                   "inventory",  "inventory_ring", "game",         "cutscenes",
                   "overlay",    "input",          "ui.primitive", "ui.widgets",
                   "ui.regions", "ui.tween",       nullptr },
-        .mod_script = "ui/hud/overlay/init",
-        // Load the shipped module after sealing, as the engine does.
         .seal = true,
         .setup_extra = M_Setup,
         .push_fake = M_PushFake,

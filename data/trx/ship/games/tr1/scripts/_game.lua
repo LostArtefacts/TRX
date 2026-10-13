@@ -1,4 +1,4 @@
-require("common.ui.hud.overlay")
+require("common.ui.hud.overlay").setup()
 require("common.water_color").declare({
   order = { "tombati", "dos", "custom" },
   modes = {

@@ -7,6 +7,8 @@
 local h = require("harness")
 local test = h.test
 
+require("common.ui.hud.assault").setup()
+
 local QUAD = trx.assault.Track.QUAD
 local COURSE = trx.assault.Track.COURSE
 
