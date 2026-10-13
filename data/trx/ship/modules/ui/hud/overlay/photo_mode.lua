@@ -3,10 +3,6 @@
 -- The panel is built once and updated through signals, like the rest of the
 -- overlay. The engine draws the red border around the picture in the game view.
 
-local input = trx.input
-local ui = trx.ui
-local signal = trx.signal
-
 trx.locale.declare({
   ["general/photo_mode/title_camera_pos"] = "Photo Mode",
   ["general/photo_mode/title_lara_pos"] = "Moving Lara",
@@ -27,6 +23,10 @@ trx.locale.declare({
   ["general/photo_mode/snap_prompt"] = "Take picture",
 })
 
+local input = trx.input
+local ui = trx.ui
+local signal = trx.signal
+
 local state = {
   language = signal.config("language"),
   open = trx.game.signals.is_photo_mode,
@@ -34,13 +34,14 @@ local state = {
 
 state.shown = state.open & signal.config("ui.enable_photo_mode_ui")
 
-state.target = signal.polled(function()
+-- Read only while photo mode is open, which is the only time they show.
+state.target = signal.polled_while(state.open, function()
   return trx.game.photo_mode_target
-end)
+end, nil)
 
-state.can_pose = signal.polled(function()
+state.can_pose = signal.polled_while(state.open, function()
   return trx.lara.can_pose
-end)
+end, false)
 
 -- Show a key glyph when the player's device has one, and hide the prompt when
 -- there is no binding to draw.

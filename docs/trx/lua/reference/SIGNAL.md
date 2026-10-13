@@ -144,6 +144,27 @@ only when it is created.
 
   Returns: [trx.signal.Signal](#signal.Signal). The polled signal.
 
+- <a id="signal.polled_while" name="signal.polled_while"></a>[lua]`trx.signal.polled_while(shown, read, idle)`  
+  Creates a signal that reads a value once per tick while another signal is
+  true, and holds a fixed value while it is not.
+
+  Use this for state that has no dedicated engine signal and matters only
+  while something shows it, such as a readout that the player can turn off. A
+  reader that is off costs nothing per tick.
+
+  Parameters:
+  - <a id="signal.polled_while.shown" name="signal.polled_while.shown"></a>**`shown`** ([trx.signal.Signal](#signal.Signal)). Whether to read.
+  - <a id="signal.polled_while.read" name="signal.polled_while.read"></a>**`read`** (function). The function to read each tick while the first signal is true.
+  - <a id="signal.polled_while.idle" name="signal.polled_while.idle"></a>**`idle`** (any). The value to hold while the first signal is false.
+
+  Returns: [trx.signal.Signal](#signal.Signal). The signal.
+
+  Example:
+  ```lua
+  local shown = trx.signal.config("ui.enable_fps_counter")
+  local fps = trx.signal.polled_while(shown, trx.game.get_fps, 0)
+  ```
+
 - <a id="signal.config" name="signal.config"></a>[lua]`trx.signal.config(key)`  
   Returns a signal for a config setting.
 

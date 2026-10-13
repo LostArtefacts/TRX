@@ -27,9 +27,7 @@ require("common.ui.hud.overlay.photo_mode")
 -- The announcements that slide in as Lara collects something.
 require("common.ui.hud.overlay.pickups")
 
-local ui = trx.ui
-local signal = trx.signal
-local lara = trx.lara
+local timer = require("common.timer")
 
 trx.locale.declare({
   ["general/overlay/item_count_fmt_pc"] = "\\{small}%s",
@@ -46,6 +44,10 @@ trx.locale.declare({
   ["general/overlay/debug_camera_target"] = "Camera target: ",
   ["general/overlay/debug_immune"] = "Invulnerability on",
 })
+
+local ui = trx.ui
+local signal = trx.signal
+local lara = trx.lara
 
 -------------------------------------------------------------------------------
 -- what more than one thing on screen reads
@@ -91,22 +93,6 @@ local function bar_low_threshold()
   return trx.game.tr_version == 1 and 0.2 or 0.25
 end
 
--- Runs something once a tick, for only as long as it has something to count.
--- A counter with nothing to count costs no tick at all, which is what every
--- one of them is for most of a level.
-local function ticker(step)
-  ---@type trx.signal.Listener?
-  local listener = nil
-  return function(wanted)
-    if wanted and listener == nil then
-      listener = signal.tick:on(step)
-    elseif not wanted and listener ~= nil then
-      listener:detach()
-      listener = nil
-    end
-  end
-end
-
 -- Counts a signal that says when one thing starts and stops flashing, so the
 -- blink below runs only while something is flashing. Set in the block below.
 local flashes_with
@@ -114,28 +100,25 @@ local flashes_with
 do
   local BLINK_PERIOD = 10
   local HIT_TIME = 40
+  local OPENING_TIME = 100
+  local UI_CLOCK = { clock = timer.Clock.UI }
 
-  local blink_frame, hit_timer = 0, 0
-
-  -- How many things are flashing at once. The blink is counted while any of
-  -- them is and stands still otherwise, so a screen of full bars is quiet.
+  -- How many things are flashing at once. The blink runs while any of them
+  -- is and stands still otherwise, so a screen of full bars is quiet.
   local flashing_count = 0
-  local run_blink = ticker(function()
-    blink_frame = blink_frame + 1
-    if blink_frame >= BLINK_PERIOD then
-      blink_frame = 0
-      state.blink:set(not state.blink:get())
-    end
-  end)
+  ---@type common.timer.Timer?
+  local blinking = nil
 
   function flashes_with(flashing)
     local function follow(on)
       flashing_count = flashing_count + (on and 1 or -1)
-      if flashing_count > 0 then
-        run_blink(true)
-      else
-        run_blink(false)
-        blink_frame = 0
+      if flashing_count > 0 and blinking == nil then
+        blinking = timer.every(BLINK_PERIOD, function()
+          state.blink:set(not state.blink:get())
+        end, UI_CLOCK)
+      elseif flashing_count <= 0 and blinking ~= nil then
+        blinking:cancel()
+        blinking = nil
         state.blink:set(false)
       end
     end
@@ -145,43 +128,34 @@ do
     flashing:on(follow)
   end
 
-  local run_hit
-  run_hit = ticker(function()
-    hit_timer = hit_timer - 1
-    if hit_timer <= 0 then
-      run_hit(false)
-      state.recently_hit:set(false)
+  -- Holds a signal true for some ticks, counted again from the start each
+  -- time it is raised.
+  local function raise_for(held, ticks)
+    ---@type common.timer.Timer?
+    local running = nil
+    return function()
+      if running ~= nil then
+        running:cancel()
+      end
+      held:set(true)
+      running = timer.after(ticks, function()
+        running = nil
+        held:set(false)
+      end, UI_CLOCK)
     end
-  end)
+  end
 
   -- Being hurt is her health moving, which the signal already says.
-  lara.signals.hp:on(function()
-    hit_timer = HIT_TIME
-    state.recently_hit:set(true)
-    run_hit(true)
-  end)
-
-  local OPENING_TIME = 100
-
-  local opening_timer = 0
-  local run_opening
-  run_opening = ticker(function()
-    opening_timer = opening_timer - 1
-    if opening_timer <= 0 then
-      run_opening(false)
-      state.opening:set(false)
-    end
-  end)
+  local hit = raise_for(state.recently_hit, HIT_TIME)
+  lara.signals.hp:on(hit)
 
   -- A level starting is Lara entering the world, which is asked after rather
   -- than waited on so that every level counts, not only the first.
+  local opening = raise_for(state.opening, OPENING_TIME)
   lara.signals.exists:on(function(exists)
-    if not exists then
-      return
+    if exists then
+      opening()
     end
-    opening_timer = OPENING_TIME
-    state.opening:set(true)
-    run_opening(true)
   end)
 end
 
@@ -210,29 +184,6 @@ local function blinking(fill, flashing)
   return signal.combine(fill, flashing & state.blink, function(value, blank)
     return blank and 0 or value
   end)
-end
-
--- A signal read once a tick, but only while something is on screen to show it.
--- Most of what is read here is off for most of a game, and a reader that is
--- off does not run at all: it holds the idle value until it is wanted again.
-local function polled_while(shown, read, idle)
-  local held = signal.new(idle)
-  local run = ticker(function()
-    held:set(read())
-  end)
-  local function follow(on)
-    if on then
-      held:set(read())
-    else
-      held:set(idle)
-    end
-    run(on)
-  end
-  if shown:get() then
-    follow(true)
-  end
-  shown:on(follow)
-  return held
 end
 
 local REGION_OF = {
@@ -387,10 +338,15 @@ end
 do
   -- How much cold she can take is a rule, and a rule is the level's, so it is
   -- read rather than waited on: no level can start with it unanswered, and a
-  -- level that changes it is followed.
-  local whole = signal.polled(function()
-    return trx.rules.get("exposure.max")
-  end)
+  -- level that changes it is followed. It is read only while the bar could
+  -- show.
+  local whole = signal.polled_while(
+    state.lara_bars & state.playing & state.bars_enabled,
+    function()
+      return trx.rules.get("exposure.max")
+    end,
+    1
+  )
 
   local exposure = signal.combine(lara.signals.exposure, whole, fraction)
 
@@ -462,7 +418,7 @@ do
   -- Its health is the one thing here the engine tells nobody about, so it is
   -- read once a tick where everything else waits to be told, and only while
   -- there is a bar on screen to read it for.
-  local health = polled_while(shown, function()
+  local health = signal.polled_while(shown, function()
     local target = lara.target
     if target == nil or target.max_hit_points <= 0 then
       return 0
@@ -511,7 +467,7 @@ do
 
   -- What she is carrying is not a signal, so the count is read once a tick,
   -- and only while the interface it is drawn on is up.
-  local text = polled_while(shown, function()
+  local text = signal.polled_while(shown, function()
     local gun, from_vehicle = counted_gun()
     if gun == nil then
       return nil
@@ -570,7 +526,7 @@ do
 
   local function readout(shown, read)
     return ui.widgets.Label({
-      text = polled_while(shown, read, ""),
+      text = signal.polled_while(shown, read, ""),
       shown = shown,
     })
   end
@@ -587,7 +543,10 @@ do
 
   -- The key is named at the point of use, so the shipped strings can see it.
   local function title(shown, read)
-    return ui.widgets.Label({ text = state.language:map(read), shown = shown })
+    return ui.widgets.Label({
+      text = state.language:map(read),
+      shown = shown,
+    })
   end
 
   local pos_shown = debuggable & signal.config("debug.enable_debug_pos")
@@ -775,7 +734,7 @@ do
 
   -- The count is taken once a second, so the line is built when it moves
   -- rather than on every tick that reads it.
-  local fps = polled_while(shown, function()
+  local fps = signal.polled_while(shown, function()
     return trx.game.measured_fps
   end, 0)
 

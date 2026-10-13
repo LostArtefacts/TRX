@@ -255,6 +255,7 @@
 - Added `trx.ui.widgets.List`, a column of rows that the player picks one entry from
 - Added `trx.ui.widgets.SleekBar`, the thin progress bar the game draws under a button that the player holds
 - Added `trx.ui.widgets.InputHint` and `trx.ui.input_hint_text`, which show the keys bound to an input role and what they do
+- Added `trx.signal.polled_while`, which reads a value once a tick only while another signal is true
 - Added `trx.math.f32`, which rounds a number to single precision as the engine lays out its interface
 - Added `trx.ui.widgets.Spacer`, which keeps empty room that follows the text size
 - Added `trx.ui.widgets.Carousel`, a row of items turned to the one in the middle that slides when the selection changes
