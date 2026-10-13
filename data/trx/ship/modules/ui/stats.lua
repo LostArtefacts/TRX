@@ -993,7 +993,7 @@ local function root_of(state)
   })
 end
 
-local function refresh(state, layer)
+local function refresh(state)
   count(state)
   state.root:wake()
 end
@@ -1057,7 +1057,7 @@ local function open_level_end(ctx)
   end
   enter_backdrop(ctx)
   return push(ctx, state, function(layer)
-    refresh(state, layer)
+    refresh(state)
   end)
 end
 
@@ -1173,7 +1173,7 @@ local function open_ring_entry(ctx)
     elseif object == trx.catalog.objects.STOPWATCH_OPTION then
       trx.sound.play(trx.catalog.samples.MENU_STOPWATCH)
     end
-    refresh(state, layer)
+    refresh(state)
   end)
   return layer
 end
