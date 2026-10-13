@@ -7,6 +7,7 @@
 --   require("common.ui.stats").setup()
 
 local fade = require("common.ui.fade")
+local hold_button = require("common.ui.hold_button")
 local metrics = require("common.ui.metrics")
 
 local M = {}
@@ -62,13 +63,6 @@ local ASSAULT_ROW_SPACING = 3.0
 local MAX_ASSAULT_TIMES = 10
 
 local HINT_SCALE = 0.7
-
-local RESET_TEXT_SCALE = 0.85
-local RESET_PAD_X = 6.0
-local RESET_PAD_Y = 3.0
-local RESET_SPACING = 2.0
-local RESET_HOLD_DEBUFF = 10
-local RESET_HOLD_MAX = 30
 
 -- TR1 sits its box in the middle of the screen; the later games stand it on
 -- the foot of the screen, inside a margin.
@@ -759,48 +753,6 @@ local function hint(state, glyph, anchor, lit)
   })
 end
 
-local function reset_label()
-  local key = trx.input.key_name(trx.input.Role.UNBIND_KEY)
-  if key == nil then
-    return nil
-  end
-  return string.format(
-    "%s: %s",
-    trx.locale.get("general/stats/assault_reset_times"),
-    trx.locale.format("general/misc/hold_fmt", key)
-  )
-end
-
-local function reset_button(state)
-  local text = reset_label()
-  if text == nil then
-    return spacer(0, 0)
-  end
-  local progress = (state.hold - RESET_HOLD_DEBUFF) / RESET_HOLD_MAX
-  local bar = trx.ui.widgets.SleekBar({ progress = progress })
-  bar.hidden = progress < 0
-  local button = trx.ui.widgets.Pad({
-    x = fitted(state, RESET_PAD_X),
-    y = fitted(state, RESET_PAD_Y),
-    child = trx.ui.widgets.Stack({
-      spacing = RESET_SPACING,
-      align = trx.ui.HAlign.SPAN,
-      children = {
-        trx.ui.widgets.Label({
-          text = text,
-          scale = fitted(state, RESET_TEXT_SCALE),
-        }),
-        bar,
-      },
-    }),
-  })
-  button.hidden = not has_any_time()
-  return trx.ui.widgets.Stack({
-    align = trx.ui.HAlign.CENTER,
-    children = { button },
-  })
-end
-
 local function body_rows(state)
   local children = {}
   local function add(w)
@@ -825,7 +777,7 @@ local function body_rows(state)
     align = trx.ui.HAlign.SPAN,
     children = shown,
   }))
-  add(reset_button(state))
+  add(state.reset:widget({ scale = state.fit }))
   return children
 end
 
@@ -925,7 +877,6 @@ local function shape_of(state)
     trx.ui.safe_area.height,
     trx.ui.text_scale,
     state.first or 0,
-    state.hold or 0,
     #state.rows,
   }
   for _, r in ipairs(state.rows) do
@@ -985,11 +936,12 @@ local function new_state(level, mode, bare)
     bare = bare,
     look = look(),
     first = 1,
-    hold = 0,
-    armed = true,
   }
   if mode == Mode.ASSAULT then
     state.visible = assault_visible_rows()
+    state.reset =
+      hold_button.new(trx.locale.get("general/stats/assault_reset_times"))
+    state.reset:set_enabled(has_any_time())
   end
   count(state)
   return state
@@ -1057,26 +1009,15 @@ local function scroll(state, step)
   state.first = first
 end
 
--- Counts how long the reset key is held. Once the hold clears the times, the
--- count waits for the key to be let go.
+-- Reads the reset button. A completed hold clears the times.
 local function control_reset(state, keys)
-  if not has_any_time() then
-    state.hold = 0
+  if not state.reset:control(keys, has_any_time()) then
     return
   end
-  local held = keys:held_for(trx.input.Role.UNBIND_KEY)
-  if held == 0 then
-    state.armed = true
+  for _, track in ipairs(tracks()) do
+    trx.assault.stats.clear(track)
   end
-  state.hold = state.armed and held or 0
-  if state.hold - RESET_HOLD_DEBUFF > RESET_HOLD_MAX then
-    state.armed = false
-    state.hold = 0
-    for _, track in ipairs(tracks()) do
-      trx.assault.stats.clear(track)
-    end
-    state.first = 1
-  end
+  state.first = 1
 end
 
 local function in_gym()
