@@ -6,6 +6,7 @@
 -- changes language, which is what a caption held in the level's strings needs:
 -- those are applied as the level loads, and a script is built before that.
 --
+-- Usage:
 --   require("common.ui.hud.legend").setup(function()
 --     return trx.locale.get("general/legend")
 --   end)

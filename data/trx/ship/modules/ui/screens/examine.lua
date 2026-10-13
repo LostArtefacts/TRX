@@ -8,8 +8,6 @@ local metrics = require("common.ui.metrics")
 
 local M = {}
 
-local L = trx.locale.get
-
 -- Fallback text for the screen's own strings. The strings files and their
 -- translations take precedence.
 trx.locale.declare({
@@ -127,7 +125,7 @@ local function dialog(state)
         trx.ui.HAlign.CENTER,
         trx.ui.widgets.InputHint({
           input = trx.input.Role.MENU_SHOW_INFO,
-          text = L("general/actions/hide_dialog"),
+          text = trx.locale.get("general/actions/hide_dialog"),
         })
       ),
     },
@@ -164,7 +162,7 @@ local function offer_turning(state, offer)
   trx.inventory_ring.set_input_hints(offer and {
     {
       input = { Role.FORWARD, Role.BACK, Role.LEFT, Role.RIGHT },
-      text = L("general/actions/rotate"),
+      text = trx.locale.get("general/actions/rotate"),
     },
   } or nil)
 end

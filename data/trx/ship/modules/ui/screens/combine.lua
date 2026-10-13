@@ -6,7 +6,6 @@
 
 local M = {}
 
-local L = trx.locale.get
 local widgets = trx.ui.widgets
 local Role = trx.input.Role
 
@@ -108,8 +107,14 @@ local function begin(ctx, state, layer)
   trx.overlay.set_caption()
   trx.sound.play(trx.catalog.samples.MENU_SPININ)
   trx.inventory_ring.set_input_hints({
-    { input = Role.MENU_CONFIRM, text = L("general/actions/combine_item") },
-    { input = Role.MENU_BACK, text = L("general/actions/cancel") },
+    {
+      input = Role.MENU_CONFIRM,
+      text = trx.locale.get("general/actions/combine_item"),
+    },
+    {
+      input = Role.MENU_BACK,
+      text = trx.locale.get("general/actions/cancel"),
+    },
   })
 end
 
