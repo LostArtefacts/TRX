@@ -39,16 +39,6 @@ local PASSPORT_WIDTH = 300.0
 local Passport = {}
 Passport.__index = Passport
 
--- The tree that the book holds while it rests on no page.
-local function blank()
-  return trx.ui.widgets.Custom({
-    measure = function()
-      return 0, 0
-    end,
-    paint = function() end,
-  })
-end
-
 -- Returns the next available page in the given direction, or nil.
 function Passport:neighbour(step)
   local i = self.index + step
@@ -359,7 +349,7 @@ function Passport:clear_page()
   self.page = nil
   self.opened = nil
   self.bare = false
-  self.book:set_root(blank())
+  self.book:set_root(trx.ui.widgets.Spacer())
 end
 
 function Passport:flip(step)
@@ -738,7 +728,7 @@ function M.open(ctx, book_pages, index, mode)
   self:set_caption(pages.CAPTIONS[book_pages[index].role])
 
   self.book = ctx:push({
-    root = blank(),
+    root = trx.ui.widgets.Spacer(),
     -- The book's layer stays while its page changes, and each page sets its
     -- own position.
     place = function(w, h)
@@ -777,7 +767,7 @@ function M.open_alone(ctx, book_pages, index, crystal)
     crystal = crystal,
   })
   self.book = ctx:push({
-    root = blank(),
+    root = trx.ui.widgets.Spacer(),
     place = function(w, h)
       return self.place(w, h)
     end,

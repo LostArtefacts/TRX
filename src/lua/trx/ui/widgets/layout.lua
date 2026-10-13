@@ -48,6 +48,30 @@ function widgets.Resize(settings)
   return self:wakes_on(bar_scale())
 end
 
+---@class (exact) trx.ui.widgets.Spacer.settings
+---@field w? number The width, in canvas units at the default text size. `0` by default.
+---@field h? number The height, in canvas units at the default text size. `0` by default.
+---@field shown? any Whether the spacer is shown, or a signal that holds that value.
+
+---Keeps empty room, which follows the text scale the same way the widgets
+---beside it do. With no size, it takes no room, which suits a layer that shows
+---nothing yet.
+---
+---```lua
+---trx.ui.widgets.Stack({
+---  children = { title, trx.ui.widgets.Spacer({ h = 5 }), body },
+---})
+---```
+---@param settings? trx.ui.widgets.Spacer.settings The spacer settings.
+---@return trx.ui.Widget # The spacer.
+function widgets.Spacer(settings)
+  local self = new_widget(settings or {}, function(w)
+    local scale = raw.drawn_text_scale()
+    return f32((w.w or 0) * scale), f32((w.h or 0) * scale)
+  end, function() end)
+  return self:wakes_on(text_scale())
+end
+
 ---@class (exact) trx.ui.widgets.Pad.settings
 ---@field child trx.ui.Widget The child widget.
 ---@field x? number The margin at the left and the right. `0` by default.

@@ -1498,6 +1498,28 @@ arrow, and `\{button left}` draws the button the player has bound.
 
   Returns: [trx.ui.Widget](#ui.Widget). The resized widget.
 
+- <a id="ui.widgets.Spacer" name="ui.widgets.Spacer"></a>[lua]`trx.ui.widgets.Spacer([settings])`  
+  Keeps empty room, which follows the text scale the same way the widgets
+  beside it do. With no size, it takes no room, which suits a layer that shows
+  nothing yet.
+
+  Parameters:
+  - <a id="ui.widgets.Spacer.settings" name="ui.widgets.Spacer.settings"></a>**`settings`** (table, optional). The spacer settings.
+
+    Keys:
+    - <a id="ui.widgets.Spacer.settings.w" name="ui.widgets.Spacer.settings.w"></a>**`w`** (number, optional). The width, in canvas units at the default text size. `0` by default.
+    - <a id="ui.widgets.Spacer.settings.h" name="ui.widgets.Spacer.settings.h"></a>**`h`** (number, optional). The height, in canvas units at the default text size. `0` by default.
+    - <a id="ui.widgets.Spacer.settings.shown" name="ui.widgets.Spacer.settings.shown"></a>**`shown`** (any, optional). Whether the spacer is shown, or a signal that holds that value.
+
+  Returns: [trx.ui.Widget](#ui.Widget). The spacer.
+
+  Example:
+  ```lua
+  trx.ui.widgets.Stack({
+    children = { title, trx.ui.widgets.Spacer({ h = 5 }), body },
+  })
+  ```
+
 - <a id="ui.widgets.Pad" name="ui.widgets.Pad"></a>[lua]`trx.ui.widgets.Pad(settings)`  
   Keeps a margin around a child widget.
 

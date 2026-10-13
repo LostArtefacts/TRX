@@ -103,16 +103,6 @@ local function layout(state)
   return result
 end
 
-local function spacer(w, h)
-  return trx.ui.widgets.Custom({
-    measure = function()
-      local scale = trx.ui.text_scale
-      return w * scale, h * scale
-    end,
-    paint = function() end,
-  })
-end
-
 -- Where the box is shrunk to fit, the engine shrinks the text and the margins
 -- it measures as the box is built, but not the gaps it measures later, so a
 -- squeezed box is drawn the way the engine draws it only if each part takes
@@ -193,7 +183,7 @@ local function body_rows(state)
   local function add(w)
     children[#children + 1] = w
   end
-  add(spacer(fitted(state, state.look.min_width), 0))
+  add(trx.ui.widgets.Spacer({ w = fitted(state, state.look.min_width) }))
   if state.mode ~= Mode.ASSAULT then
     for _, r in ipairs(state.rows) do
       add(row_widget(state, r))
@@ -201,7 +191,7 @@ local function body_rows(state)
     return children
   end
 
-  add(spacer(fitted(state, ASSAULT_MIN_WIDTH), 0))
+  add(trx.ui.widgets.Spacer({ w = fitted(state, ASSAULT_MIN_WIDTH) }))
   local shown = {}
   local first = state.first:get()
   local last = math.min(first + state.visible:get() - 1, #state.rows)
