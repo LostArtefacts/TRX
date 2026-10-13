@@ -130,20 +130,27 @@ end
 ---Signals keep references to their listeners. Release temporary widgets when
 ---they are no longer needed. Remove a placed widget from its region before
 ---releasing it.
----@return boolean # Whether it was still listening to anything.
+---@return boolean # Whether it or a widget under it was still listening to anything.
 function Widget:release()
+  local released = false
   local listeners = rawget(self, "_wakers")
-  if listeners == nil then
-    return false
+  if listeners ~= nil then
+    for _, listener in pairs(listeners) do
+      listener:detach()
+    end
+    rawset(self, "_wakers", nil)
+    released = true
   end
-  for _, listener in pairs(listeners) do
-    listener:detach()
+  local child = rawget(self, "child")
+  if child ~= nil and child:release() then
+    released = true
   end
-  rawset(self, "_wakers", nil)
-  for _, child in ipairs(rawget(self, "children") or {}) do
-    child:release()
+  for _, other in ipairs(rawget(self, "children") or {}) do
+    if other:release() then
+      released = true
+    end
   end
-  return true
+  return released
 end
 
 ---Draws the widget in an assigned box.

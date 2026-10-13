@@ -667,6 +667,31 @@ test("a tween rests where it was made", function()
   assert(not tween:is_moving())
 end)
 
+-- How many listeners a signal has.
+local function listeners_of(signal)
+  local count = 0
+  for _ in pairs(rawget(signal, "_listeners")) do
+    count = count + 1
+  end
+  return count
+end
+
+test("releasing a widget releases every widget under it", function()
+  local text = trx.signal.new("deep")
+  local tree = trx.ui.widgets.Pad({
+    x = 1,
+    y = 1,
+    child = trx.ui.widgets.Stack({
+      children = { trx.ui.widgets.Label({ text = text }) },
+    }),
+  })
+  tree:measure()
+  assert(listeners_of(text) == 1, listeners_of(text))
+  assert(tree:release(), "the tree said it held nothing")
+  assert(listeners_of(text) == 0, "a widget under the tree kept listening")
+  assert(not tree:release(), "a second release found more to release")
+end)
+
 test("a tween arrives after the ticks it was given", function()
   fake.set_rate(1)
   local tween = trx.ui.tween(0):to(8, 4)
