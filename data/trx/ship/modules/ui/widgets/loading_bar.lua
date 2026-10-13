@@ -28,17 +28,13 @@ function M.new(settings)
     h = settings.height,
     smooth = true,
   })
+  local width = trx.ui.signals.layout:map(function()
+    return trx.ui.canvas.width * settings.width
+  end)
   return {
-    root = trx.ui.widgets.Custom({
-      measure = function()
-        local _, h = bar:measure()
-        return trx.ui.canvas.width * settings.width, h
-      end,
-      paint = function(x, y, w, h)
-        bar:paint(x, y, w, h)
-      end,
-      shown = settings.shown,
-    }),
+    root = trx.ui.widgets
+      .Resize({ child = bar, w = width, shown = settings.shown })
+      :release_with(width),
     place = function(w, h)
       return (trx.ui.canvas.width - w) / 2,
         trx.ui.canvas.height * settings.y - h / 2
