@@ -7,6 +7,8 @@
 -- Usage:
 --   require("common.ui.globe").setup()
 
+local fade = require("common.ui.fade")
+
 local M = {}
 
 local L = trx.locale.get
@@ -26,6 +28,16 @@ trx.locale.declare({
 })
 
 local LOGIC_FPS = trx.game.LOGIC_FPS
+
+-- The screen's fades, in ticks: it comes in from black, the ring fades out to
+-- black and rests there a tick, and the screen stays black a while longer
+-- before the adventure starts.
+local FADE = {
+  open_ticks = LOGIC_FPS,
+  close_ticks = 8,
+  close_hold_ticks = 1,
+  wait_ticks = 18,
+}
 local DEG_90 = trx.math.DEG_90
 
 -------------------------------------------------------------------------------
@@ -195,68 +207,6 @@ local function spin(ring)
   else
     ring.y_rot = wrap(ring.y_rot + 256)
   end
-end
-
--------------------------------------------------------------------------------
--- Fades
--------------------------------------------------------------------------------
-
--- The game keeps a fade's times and values as single floats, which decides
--- the frame a fade ends on, so they are rounded the same way here.
-local function single(value)
-  return (string.unpack("f", string.pack("f", value)))
-end
-
--- A fade timed by the game's own clock, as the game times its fades.
-local function fade_to(from, target, duration, hold)
-  return {
-    from = single(from),
-    target = single(target),
-    duration = single(duration),
-    hold = single(hold or 0),
-    start = trx.game.sim_time,
-  }
-end
-
-local function elapsed(fade)
-  return single(trx.game.sim_time - fade.start)
-end
-
-local function fades_enabled()
-  return trx.config.get("visuals.enable_fade_effects")
-end
-
-local function fade_value(fade)
-  if fade == nil then
-    return 0
-  end
-  if not fades_enabled() or fade.duration <= 0 then
-    return fade.target
-  end
-  local ratio = single(elapsed(fade) / fade.duration)
-  ratio = math.min(math.max(ratio, 0), 1)
-  local value = single(fade.from + single((fade.target - fade.from) * ratio))
-  return math.min(math.max(value, 0), 1)
-end
-
-local function is_fading(fade)
-  if fade == nil or not fades_enabled() or fade.duration <= 0 then
-    return false
-  end
-  return elapsed(fade) < single(fade.duration + fade.hold)
-end
-
--- A fade from wherever another one has got to, shortened by how near that is
--- to the target already.
-local function fade_on(fade, target, duration, hold)
-  local from = fade_value(fade)
-  local ratio = math.min(math.abs(single(target - from)), 1)
-  return fade_to(
-    from,
-    target,
-    single(duration) * ratio,
-    ratio < 1 and 0 or hold
-  )
 end
 
 -------------------------------------------------------------------------------
@@ -431,8 +381,6 @@ end
 local function paint(state)
   primitive.background(state.background, true, 0.5)
   paint_globe(state)
-  primitive.darken(fade_value(state.ring_fade))
-  primitive.darken(fade_value(state.fade))
 end
 
 -------------------------------------------------------------------------------
@@ -529,6 +477,15 @@ local function choose(state, keys)
   return rested and keys:pressed(Role.MENU_CONFIRM)
 end
 
+-- Starts the adventure picked, once.
+local function go(state)
+  if state.gone then
+    return
+  end
+  state.gone = true
+  trx.game.play_level(state.areas[state.selection].start_level.num)
+end
+
 -- Runs the ring a tick, as the inventory ring ran: what it does next, how
 -- the globe spins, then two steps of its motion.
 local function run_ring(state, keys)
@@ -549,13 +506,18 @@ local function run_ring(state, keys)
     set_status(ring, Status.EXITING, Status.EXITING, RING.select_frames)
   elseif ring.status == Status.EXITING and ring.frames == 0 then
     set_status(ring, Status.CLOSING, Status.FADING_OUT, RING.close_frames)
-  elseif ring.status == Status.FADING_OUT then
-    if not is_fading(state.ring_fade) then
-      state.ring_fade = fade_on(state.ring_fade, 1, 0.25, 1 / LOGIC_FPS)
-    end
-    if not is_fading(state.ring_fade) then
-      ring.status = Status.DONE
-    end
+  elseif ring.status == Status.FADING_OUT and not state.leaving then
+    state.leaving = true
+    state.fades:leave({
+      ticks = FADE.close_ticks,
+      hold = FADE.close_hold_ticks,
+      on_done = function()
+        ring.status = Status.DONE
+        state.fades:wait(FADE.wait_ticks, function()
+          go(state)
+        end)
+      end,
+    })
   end
   show_names(state, ring.status == Status.SELECTED)
 
@@ -583,20 +545,15 @@ local function control(state)
   if state.gone then
     return
   end
-  if state.leaving then
+  if state.ring.status == Status.DONE then
     local skip = keys ~= nil
       and (keys:pressed(Role.MENU_CONFIRM) or keys:pressed(Role.MENU_BACK))
-    if skip or not is_fading(state.fade) then
-      state.gone = true
-      trx.game.play_level(state.areas[state.selection].start_level.num)
+    if skip then
+      go(state)
     end
     return
   end
   run_ring(state, keys)
-  if state.ring.status == Status.DONE then
-    state.leaving = true
-    state.fade = fade_on(state.fade, 1, 0.5, 0.1)
-  end
 end
 
 local function open(ctx)
@@ -608,8 +565,9 @@ local function open(ctx)
     ctx = ctx,
     rot = { x = 0, y = 0, z = 0 },
     ring = open_ring(),
-    fade = fade_to(1, 0, 1),
+    fades = fade.screen(ctx),
   }
+  state.fades:enter({ ticks = FADE.open_ticks })
   for index in ipairs(areas) do
     if state.open[index] then
       state.selection = index

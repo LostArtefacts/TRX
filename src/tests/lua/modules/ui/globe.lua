@@ -145,6 +145,35 @@ test("confirm starts the adventure once the screen goes dark", function()
   finish()
 end)
 
+-- The alpha of the black over the screen, or nil once it is clear.
+local function black()
+  for _, op in ipairs(fake.scene()) do
+    local alpha = op:match("^quad x=0 y=0 z=0 .* color=000000(%x%x)$")
+    if alpha ~= nil then
+      return tonumber(alpha, 16)
+    end
+  end
+  return nil
+end
+
+test("the globe comes in from black and goes dark to leave", function()
+  trx.config.set("visuals.enable_fade_effects", true)
+  fake.set_globe(AREAS)
+  fake.set_completed({})
+  assert(fake.offer(GLOBE, 0), "the globe was not taken")
+  assert(black() == 0xFF, "the globe did not start black")
+  ticks(31)
+  assert(black() == nil, "the black stayed")
+  ticks(60)
+  press(Role.MENU_CONFIRM)
+  ticks(30)
+  while fake.calls().play_level.count == 0 do
+    tick()
+  end
+  assert(black() == 0xFF, "the adventure started before the screen went dark")
+  finish()
+end)
+
 test("the globe stands on the screen's picture", function()
   fake.set_background(GLOBE, "india.webp")
   open({})

@@ -153,6 +153,25 @@ test("a later fade cuts the end of an earlier one", function()
   finish()
 end)
 
+test("a wait keeps the screen black, then runs", function()
+  local f = fade.screen(open())
+  local waited = 0
+  f:leave({
+    ticks = 1,
+    on_done = function()
+      f:wait(3, function()
+        waited = waited + 1
+      end)
+    end,
+  })
+  ticks(3)
+  assert(waited == 0, "the wait ended early")
+  assert(blacks()[1] == 0xFF, "the screen did not stay black")
+  ticks(3)
+  assert(waited == 1, "the wait did not end")
+  finish()
+end)
+
 test("a fade across screens outlives its screen until dropped", function()
   open()
   fake.release(VIEW)
