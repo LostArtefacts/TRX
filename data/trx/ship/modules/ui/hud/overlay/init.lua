@@ -1,6 +1,9 @@
 -- The in-game overlay: the bars, the ammunition count, and the readouts that
 -- say where Lara is and what she is doing.
 --
+-- Usage:
+--   require("common.ui.hud.overlay")
+--
 -- The lines of text the rest of the engine asks for, the arrows beside them
 -- and the version are not here. Those belong to whoever sets them and are
 -- drawn from the engine, into the same regions these widgets sit in.

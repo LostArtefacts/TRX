@@ -17,8 +17,6 @@ local M = {}
 -- The loading bar of a loading picture, narrower than the level views' one.
 local BAR = { width = 0.76, height = 12, y = 0.941 }
 
-local UI_CLOCK = { clock = timer.Clock.UI }
-
 ---@param ctx trx.ui.PictureContext
 local function open(ctx)
   local fades = fade.screen(ctx)
@@ -65,7 +63,8 @@ local function open(ctx)
         return
       end
       progress:to(1, ctx.display_ticks)
-      showing = timer.after(ctx.display_ticks, leave, UI_CLOCK)
+      showing =
+        timer.after(ctx.display_ticks, leave, { clock = timer.Clock.UI })
     end,
   })
 
@@ -80,7 +79,7 @@ local function open(ctx)
         if not drawn then
           drawn = true
           if waiting then
-            timer.after(0, hand_over, UI_CLOCK)
+            timer.after(0, hand_over, { clock = timer.Clock.UI })
           end
         end
       end,
@@ -103,7 +102,6 @@ local function open(ctx)
       if showing ~= nil then
         showing:cancel()
       end
-      shown:stop()
     end,
   })
   if ctx.is_loading then

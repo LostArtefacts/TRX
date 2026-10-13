@@ -8,6 +8,9 @@
 -- Every one of them is made once and given signals. The timings are polled,
 -- because the engine publishes nothing for them, and only while something is
 -- on screen to read them.
+--
+-- Usage:
+--   require("common.ui.hud.assault")
 
 local ui = trx.ui
 local signal = trx.signal

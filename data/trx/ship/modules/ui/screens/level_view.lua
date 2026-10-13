@@ -81,7 +81,6 @@ local function open(ctx)
       if showing ~= nil then
         showing:cancel()
       end
-      shown:stop()
     end,
   })
 end

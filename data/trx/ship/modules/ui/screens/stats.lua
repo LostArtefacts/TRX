@@ -50,7 +50,7 @@ local Mode = {
   ASSAULT = 3,
 }
 
-local FPS = 30
+local FPS = trx.game.LOGIC_FPS
 
 local BARE_ROW_SPACING = 11.0
 local MIN_MARGIN_ROWS = 0.5

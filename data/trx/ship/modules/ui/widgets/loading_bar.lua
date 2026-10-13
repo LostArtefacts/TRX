@@ -1,6 +1,11 @@
 -- The loading bar that a loading screen shows at its foot, filled by a value
 -- that moves, such as a tween, and shown while the player's loading bar
 -- setting is on.
+--
+-- Usage:
+--   local loading_bar = require("common.ui.widgets.loading_bar")
+--   local bar = loading_bar.new({ progress = tween, width = 0.9, height = 12, y = 0.95 })
+--   ctx:push({ root = bar.root, place = bar.place, modal = false })
 
 local M = {}
 
