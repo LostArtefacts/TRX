@@ -166,6 +166,11 @@ local function finish(ctx, choice)
   for _, layer in ipairs(layers) do
     layer:close()
   end
+  local ended = rawget(ctx, "_ended")
+  rawset(ctx, "_ended", {})
+  for _, callback in ipairs(ended) do
+    callback()
+  end
   return true
 end
 
@@ -297,19 +302,22 @@ function Context:push(settings)
   return layer
 end
 
----Puts a fade layer that belongs to the screen on top of the other fade
----layers, with the settings that `trx.ui.layers.fade` takes. The layer closes
----when the screen ends.
----@param settings trx.ui.layers.fade.settings The layer settings.
----@return trx.ui.FadeLayer # The layer.
-function Context:fade(settings)
+---Runs a function once the screen ends, for any reason, after its layers have
+---closed.
+---
+---```lua
+---local black = trx.ui.layers.fade({ fill = trx.math.color("000000") })
+---ctx:on_end(function()
+---  black:close()
+---end)
+---```
+---@param callback function What to run.
+function Context:on_end(callback)
   if rawget(self, "_done") then
     error("the screen has ended", 2)
   end
-  local layer = trx.ui.layers.fade(settings)
-  local layers = rawget(self, "_layers")
-  layers[#layers + 1] = layer
-  return layer
+  local ended = rawget(self, "_ended")
+  ended[#ended + 1] = callback
 end
 
 ---Ends the pause screen, and returns to the game. Only `trx.ui.Screen.PAUSE`
@@ -356,6 +364,7 @@ local function new_context(screen, arg)
     _screen = screen,
     _fields = fields ~= nil and fields(screen, arg) or {},
     _layers = {},
+    _ended = {},
     _done = false,
   }, Context)
 end
