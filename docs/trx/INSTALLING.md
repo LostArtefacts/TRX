@@ -1394,7 +1394,10 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   └── legend.lua
 │   │   ├── screens
 │   │   │   ├── passport
-│   │   │   │   └── init.lua
+│   │   │   │   ├── book.lua
+│   │   │   │   ├── init.lua
+│   │   │   │   ├── pages.lua
+│   │   │   │   └── rows.lua
 │   │   │   ├── combine.lua
 │   │   │   ├── examine.lua
 │   │   │   ├── globe.lua
@@ -2845,7 +2848,10 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   └── legend.lua
     │   │   │   ├── screens
     │   │   │   │   ├── passport
-    │   │   │   │   │   └── init.lua
+    │   │   │   │   │   ├── book.lua
+    │   │   │   │   │   ├── init.lua
+    │   │   │   │   │   ├── pages.lua
+    │   │   │   │   │   └── rows.lua
     │   │   │   │   ├── combine.lua
     │   │   │   │   ├── examine.lua
     │   │   │   │   ├── globe.lua
