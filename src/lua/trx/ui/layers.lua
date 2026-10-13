@@ -463,10 +463,18 @@ trx.ui.on_draw(function(region)
   end
 end)
 
+-- The layers painted this frame, copied into one table kept from frame to
+-- frame, so that a layer that closes as it paints does not move the rest.
+local painting = {}
+
 trx.ui.on_paint(function()
+  local count = #stack
+  for i = 1, math.max(count, #painting) do
+    painting[i] = stack[i]
+  end
   local failed = nil
-  local snapshot = { table.unpack(stack) }
-  for _, layer in ipairs(snapshot) do
+  for i = 1, count do
+    local layer = painting[i]
     local ok, err = pcall(paint, layer)
     if not ok then
       remove(layer)

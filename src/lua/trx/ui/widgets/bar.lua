@@ -9,6 +9,10 @@ local value_of = base.value_of
 local new_widget = base.new_widget
 local bar_scale = base.bar_scale
 
+-- The themes the engine has handed over, by the theme each stands for, so
+-- that a bar painted every frame builds its colours once.
+local themes = {}
+
 ---@class (exact) trx.ui.widgets.Bar.settings
 ---@field type trx.ui.BarType The bar theme to use.
 ---@field value any The fill amount from 0 to 1, or a signal that holds it.
@@ -64,7 +68,17 @@ function widgets.Bar(settings)
   end
 
   local function theme_of(w)
-    return raw.bar_theme(w.type or trx.ui.BarType.LARA_HP)
+    local type = w.type or trx.ui.BarType.LARA_HP
+    local key = raw.bar_theme_key(type)
+    if key == nil then
+      return nil
+    end
+    local theme = themes[key]
+    if theme == nil then
+      theme = raw.bar_theme(type)
+      themes[key] = theme
+    end
+    return theme
   end
 
   local self = new_widget(settings, function(w)
