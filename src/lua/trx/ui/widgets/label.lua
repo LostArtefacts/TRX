@@ -22,5 +22,5 @@ function widgets.Label(settings)
   end, function(w, x, y)
     primitive.text(tostring(value_of(w.text)), x, y, w.scale or 1.0, 0)
   end)
-  return self:wakes_on(self.text, text_scale())
+  return self:wakes_on(text_scale())
 end

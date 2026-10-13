@@ -206,7 +206,7 @@ end)
 
 test("a label follows the signal it was given", function()
   local text = trx.signal.new("iris")
-  local label = widgets.Label({ text = text }):wakes_on(text)
+  local label = widgets.Label({ text = text })
   assert(label:measure() == select(1, text_size("iris")))
   text:set("scion")
   assert(label:measure() == select(1, text_size("scion")))
@@ -257,11 +257,34 @@ end)
 
 test("a child growing grows the stack around it", function()
   local text = trx.signal.new("a")
-  local child = widgets.Label({ text = text }):wakes_on(text)
+  local child = widgets.Label({ text = text })
   local stack = widgets.Stack({ children = { child } })
   assert(stack:measure() == 8)
   text:set("abcd")
   assert(stack:measure() == 32, "the stack kept the size it first took")
+end)
+
+test("a child shown again takes its room back in the stack", function()
+  local shown = trx.signal.new(false)
+  local stack = widgets.Stack({
+    spacing = 4,
+    children = {
+      widgets.Label({ text = "a" }),
+      widgets.Label({ text = "bb", shown = shown }),
+    },
+  })
+  assert(select(2, stack:measure()) == 16)
+  shown:set(true)
+  assert(select(2, stack:measure()) == 16 + 4 + 16, "the child kept no room")
+end)
+
+test("a signal registered twice detaches with the widget", function()
+  local text = trx.signal.new("a")
+  local label = widgets.Label({ text = text }):wakes_on(text, text)
+  label:measure()
+  assert(label:release(), "the label listened to nothing")
+  text:set("abcd")
+  assert(not label:release(), "a listener outlived the release")
 end)
 
 test("a resized widget takes the size it was given", function()

@@ -81,5 +81,5 @@ function widgets.SleekBar(settings)
       )
     end
   end)
-  return self:wakes_on(self.progress, text_scale())
+  return self:wakes_on(text_scale())
 end

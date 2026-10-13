@@ -33,5 +33,5 @@ function widgets.Image(settings)
       value_of(w.opacity) or 1.0
     )
   end)
-  return self:wakes_on(self.path, self.opacity)
+  return self
 end

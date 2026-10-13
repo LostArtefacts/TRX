@@ -367,12 +367,8 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     A reusable UI element drawn over the game.
 
-    A widget holds its own state. Give it signals instead of fixed values, then
-    register those signals with [`wakes_on`](#ui.Widget.wakes_on). The widget remeasures
-    only when a registered signal changes.
-
-    Register every signal that the widget reads. Otherwise the widget can keep a
-    stale cached size.
+    A widget holds its own state. Give it signals instead of fixed values. The
+    widget remeasures only when a signal that it read while measuring changes.
 
     Properties:
     - <a id="ui.Widget.hidden" name="ui.Widget.hidden"></a>**`hidden`**: any, optional. Whether the widget keeps its room but draws nothing, or a signal that holds that value.
@@ -421,13 +417,16 @@ arrow, and `\{button left}` draws the button the player has bound.
       Returns: [trx.ui.Widget](#ui.Widget). The same widget.
 
     - <a id="ui.Widget.wakes_on" name="ui.Widget.wakes_on"></a>[lua]`widget:wakes_on(...)`  
-      Registers the signals that invalidate the widget's cached size.
+      Registers more signals that invalidate the widget's cached size.
 
       When one of these signals changes, the widget and its parents are measured
-      again on the next layout pass.
+      again on the next layout pass. A signal in the widget's settings registers
+      itself when the widget reads it. Register a signal here when the widget
+      depends on it in another way, such as through the functions of a
+      [`trx.ui.widgets.Custom`](#ui.widgets.Custom). Registering a signal twice has no further effect.
 
       Parameters:
-      - <a id="ui.Widget.wakes_on...." name="ui.Widget.wakes_on...."></a>**`...`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). The signals the widget reads.
+      - <a id="ui.Widget.wakes_on...." name="ui.Widget.wakes_on...."></a>**`...`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). The signals the widget depends on.
 
       Returns: [trx.ui.Widget](#ui.Widget). The same widget, for method chaining.
 
@@ -544,7 +543,7 @@ arrow, and `\{button left}` draws the button the player has bound.
   The widgets a script builds its screen from.
 
   A widget is created once and kept. Give it signals instead of fixed values,
-  then register those signals with [`trx.ui.Widget:wakes_on`](#ui.Widget.wakes_on).
+  and it remeasures when they change.
 
   Put a widget on screen with [`trx.ui.regions.place`](#ui.regions.place).
 
