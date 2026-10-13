@@ -8,6 +8,7 @@
 --   require("common.ui.globe").setup()
 
 local fade = require("common.ui.fade")
+local timer = require("common.timer")
 
 local M = {}
 
@@ -536,12 +537,10 @@ local function run_ring(state, keys)
   end
 end
 
--- Runs a tick of the screen. The ring moves from the tick the screen opens
--- on, as the inventory ring did; the keys are the ones the screen read this
--- tick, which it does not on the first.
-local function control(state)
-  local keys = state.keys
-  state.keys = nil
+-- Runs a tick of the screen with the keys the screen read, or with none on
+-- the tick the screen opens on, which reads no input.
+local function control(state, keys)
+  state.started = true
   if state.gone then
     return
   end
@@ -575,9 +574,13 @@ local function open(ctx)
     end
   end
 
-  local ticker = trx.events.on_tick(function()
-    control(state)
-  end)
+  -- The ring moves from the tick the screen opens on, as the inventory ring
+  -- did, although the screen reads no input on that tick.
+  local first = timer.after(0, function()
+    if not state.started then
+      control(state, nil)
+    end
+  end, { clock = timer.Clock.UI })
   return ctx:push({
     root = trx.ui.widgets.Custom({
       measure = function()
@@ -591,10 +594,10 @@ local function open(ctx)
       return 0, 0
     end,
     on_input = function(_, keys)
-      state.keys = keys
+      control(state, keys)
     end,
     on_close = function()
-      ticker:detach()
+      first:cancel()
       trx.overlay.set_caption()
       show_arrows(false)
     end,
