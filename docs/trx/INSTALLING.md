@@ -1397,9 +1397,11 @@ If you install everything correctly, your game directory should look more or les
 │   │   ├── fade.lua
 │   │   ├── globe.lua
 │   │   ├── legend.lua
+│   │   ├── level_start.lua
 │   │   ├── level_view.lua
 │   │   ├── loading_bar.lua
 │   │   ├── pause.lua
+│   │   ├── picture.lua
 │   │   ├── requester.lua
 │   │   └── stats.lua
 │   ├── inv_ring.lua
@@ -2841,9 +2843,11 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   ├── fade.lua
     │   │   │   ├── globe.lua
     │   │   │   ├── legend.lua
+    │   │   │   ├── level_start.lua
     │   │   │   ├── level_view.lua
     │   │   │   ├── loading_bar.lua
     │   │   │   ├── pause.lua
+    │   │   │   ├── picture.lua
     │   │   │   ├── requester.lua
     │   │   │   └── stats.lua
     │   │   ├── inv_ring.lua

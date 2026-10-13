@@ -4,6 +4,7 @@ local h = require("harness")
 local test = h.test
 
 local fade = require("common.ui.fade")
+fade.setup()
 
 local VIEW = trx.ui.Screen.LEVEL_VIEW
 
@@ -42,6 +43,7 @@ local function finish()
   fake.release(VIEW)
   fake.take_choice(VIEW)
   fake.release_all()
+  fake.start_title()
   assert(trx.ui.layers.count() == 0, "a layer outlived the screen")
   assert(fake.errors() == 0, "the module raised")
   trx.config.set("visuals.enable_fade_effects", true)
@@ -148,6 +150,35 @@ test("a later fade cuts the end of an earlier one", function()
   f:leave({ ticks = 10, on_done = function() end })
   ticks(6)
   assert(entered == 0, "the cut fade still ended")
+  finish()
+end)
+
+test("a fade across screens outlives its screen until dropped", function()
+  open()
+  fake.release(VIEW)
+  fake.take_choice(VIEW)
+  fade.across({ from = 1, drop_on = { "title" } })
+  assert(blacks()[1] == 0xFF, "the fade did not show")
+  fake.start_game(false)
+  assert(blacks()[1] == 0xFF, "the fade dropped on the wrong event")
+  fake.start_title()
+  assert(#blacks() == 0, "the fade did not drop")
+  finish()
+end)
+
+test("a fade across screens closes once out of sight", function()
+  local done = 0
+  fade.across({
+    from = 1,
+    to = 0,
+    ticks = 2,
+    on_done = function()
+      done = done + 1
+    end,
+  })
+  ticks(3)
+  assert(#blacks() == 0, "the fade stayed")
+  assert(done == 1, "the fade did not end once")
   finish()
 end)
 

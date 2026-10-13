@@ -16,6 +16,7 @@ typedef enum {
     UI_TAKEOVER_COMBINE,
     UI_TAKEOVER_GLOBE_SELECT,
     UI_TAKEOVER_LEVEL_VIEW,
+    UI_TAKEOVER_PICTURE,
     UI_TAKEOVER_NUMBER_OF,
 } UI_TAKEOVER;
 
@@ -25,6 +26,11 @@ typedef enum {
 #define UI_TAKEOVER_STATS_ARG(level_num, is_final, is_bare)                    \
     (((level_num) & 0xffff) | ((is_final) ? 0x10000 : 0)                       \
      | ((is_bare) ? 0x20000 : 0))
+
+// The picture screen's argument: whether the picture shows while a level
+// loads, and whether it may fade in from the frame shown before it.
+#define UI_TAKEOVER_PICTURE_ARG(is_loading, can_cross_fade_in)                 \
+    (((is_loading) ? 0x1 : 0) | ((can_cross_fade_in) ? 0x2 : 0))
 
 typedef enum {
     UI_TAKEOVER_CHOICE_NONE,

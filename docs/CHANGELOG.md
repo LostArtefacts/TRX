@@ -271,6 +271,7 @@
 - Added `trx.inventory.combine_partners`, the entries the player carries that an entry combines with, and `trx.inventory.combine`, which combines two of them into what they make
 - Added fade layers, which the engine draws over its interface and below the console, their opacity moving on a curve: `trx.ui.layers.fade`, `trx.ui.FadeLayer` and `trx.ui.ScreenContext:fade`
 - Added `trx.ui.Screen.LEVEL_VIEW`, so a script draws the views of the level that TR4 shows as a level starts, with `trx.ui.ScreenContext.display_ticks`, `trx.ui.ScreenContext.fade_in_ticks` and `trx.ui.ScreenContext.fade_out_ticks`
+- Added `trx.ui.Screen.PICTURE`, so a script draws the pictures the game shows between and while loading levels, with `trx.ui.ScreenContext.is_loading` and `trx.ui.ScreenContext.can_cross_fade_in`
 - Added `smooth` to `trx.ui.widgets.Bar`, which overrides the player's smooth bars setting
 - Changed saves to keep the items a script spawns, which previously disappeared on load (TRX1677)
 - Changed `trx.events.on_ui_draw`, `on_ui_paint`, `on_ui_paint_over` and `on_scene_paint` to `trx.ui.on_draw`, `trx.ui.on_paint`, `trx.ui.on_paint_over` and `trx.scene.on_paint`
