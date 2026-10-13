@@ -232,6 +232,20 @@ test("the compass shows the level's counts once it is open", function()
   finish()
 end)
 
+test("the compass clock runs on while it is open", function()
+  fake.set_current_level(CAVES)
+  trx.stats.timer = 4 * 30
+  open_entry(COMPASS)
+  fake.tick()
+  assert(has(texts(), "0:04"))
+  trx.stats.timer = 5 * 30
+  fake.tick()
+  local drawn = texts()
+  assert(has(drawn, "0:05"), "the clock stood still")
+  assert(not has(drawn, "0:04"), "the old time stayed")
+  finish()
+end)
+
 test("backing out of the compass puts it away", function()
   open_entry(COMPASS)
   press(Role.MENU_BACK)
