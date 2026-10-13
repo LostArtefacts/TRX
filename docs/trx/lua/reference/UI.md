@@ -525,7 +525,7 @@ arrow, and `\{button left}` draws the button the player has bound.
       they are no longer needed. Remove a placed widget from its region before
       releasing it.
 
-      Returns: boolean. Whether it was still listening to anything.
+      Returns: boolean. Whether it or a widget under it was still listening to anything.
 
     - <a id="ui.Widget.wake" name="ui.Widget.wake"></a>[lua]`widget:wake()`  
       Invalidates the widget's cached size manually.
