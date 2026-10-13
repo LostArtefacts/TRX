@@ -6,6 +6,8 @@
 -- Usage:
 --   require("common.ui.stats").setup()
 
+local fade = require("common.ui.fade")
+
 local M = {}
 
 -- Fallback text for the screen's own strings. The strings files and their
@@ -1022,6 +1024,29 @@ local function push(ctx, state, on_input)
   })
 end
 
+-- How long the backdrop takes to come in: a picture from black, any other
+-- style from the game behind it. A pattern shows at once.
+local BACKDROP_TICKS = { image = 30, default = 15 }
+local PATTERNS = { pattern_static = true, pattern_wave = true }
+
+-- Brings in the backdrop the screen stands on: the picture that ends the
+-- game, or the style the player picked.
+local function enter_backdrop(ctx)
+  local style = ctx.is_final and "image"
+    or trx.config.get("ui.stats_background_style")
+  local fades = fade.screen(ctx, {
+    enabled = function()
+      return ctx.is_final or trx.config.get("ui.stats_fade_effects")
+    end,
+  })
+  fades:enter({
+    layer = { backdrop = style, path = ctx.background },
+    from = PATTERNS[style] and 1 or 0,
+    to = 1,
+    ticks = BACKDROP_TICKS[style] or BACKDROP_TICKS.default,
+  })
+end
+
 -- The screen between levels and at the end of the game. It reads no keys:
 -- the player skips it as they skip the engine's own.
 local function open_level_end(ctx)
@@ -1030,6 +1055,7 @@ local function open_level_end(ctx)
   if mode == Mode.FINAL and #state.rows == 0 then
     return nil
   end
+  enter_backdrop(ctx)
   return push(ctx, state, function(layer)
     refresh(state, layer)
   end)
