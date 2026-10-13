@@ -169,6 +169,20 @@ function Widget:paint(x, y, w, h)
   end
 end
 
+-- Drops the cached size of a widget and of every widget under it, so the
+-- next measure works the whole tree out again, such as under another text
+-- scale.
+local function forget(widget)
+  widget._size = nil
+  local child = rawget(widget, "child")
+  if child ~= nil then
+    forget(child)
+  end
+  for _, other in ipairs(rawget(widget, "children") or {}) do
+    forget(other)
+  end
+end
+
 local function new_widget(settings, on_measure, on_paint)
   local self = setmetatable(settings or {}, Widget)
   self.on_measure = on_measure
@@ -214,6 +228,7 @@ return {
   value_of = value_of,
   new_widget = new_widget,
   set_parent = set_parent,
+  forget = forget,
   text_scale = text_scale,
   bar_scale = bar_scale,
 }

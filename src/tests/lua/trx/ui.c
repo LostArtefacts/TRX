@@ -15,6 +15,7 @@
 #include <trx/game/console/common.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/regions.h>
+#include <trx/game/ui/scaler.h>
 #include <trx/game/ui/settings.h>
 #include <trx/game/ui/elements/bar.h>
 #include <trx/game/ui/elements/label.h>
@@ -332,15 +333,17 @@ void UI_Text_Draw(
 {
 }
 
+// Follows the text scale that a fitted widget pushes, as the real one does.
 void UI_Text_Measure(
     const char *const text, float *const out_w, float *const out_h,
     const UI_TEXT_SETTINGS settings)
 {
+    const float scale = settings.scale * UI_Scaler_GetContentScale();
     if (out_w != nullptr) {
-        *out_w = (float)strlen(text) * 8.0f * settings.scale;
+        *out_w = (float)strlen(text) * 8.0f * scale;
     }
     if (out_h != nullptr) {
-        *out_h = 16.0f * settings.scale;
+        *out_h = 16.0f * scale;
     }
 }
 
