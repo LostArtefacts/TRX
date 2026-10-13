@@ -105,6 +105,13 @@ local Screen = {
   ---starting its level with `trx.game.play_level`, and
   ---`trx.ui.ScreenContext:cancel` leaves for the title screen.
   GLOBE_SELECT = h.IntegerConstant,
+  ---A view of the level from one of its cameras, which the game shows while
+  ---the level starts, as TR4 does. The context reports how long the view
+  ---shows and fades as `trx.ui.ScreenContext.display_ticks`,
+  ---`trx.ui.ScreenContext.fade_in_ticks` and
+  ---`trx.ui.ScreenContext.fade_out_ticks`. The view ends with
+  ---`trx.ui.ScreenContext:confirm` or `trx.ui.ScreenContext:cancel`.
+  LEVEL_VIEW = h.IntegerConstant,
 }
 ui.Screen = h.enum("ui.Screen", "UI_TAKEOVER", Screen)
 
@@ -159,6 +166,15 @@ local function entry_fields(_, arg)
   return { object = arg }
 end
 
+local function timing_fields(screen)
+  local display, fade_in, fade_out = raw.timing(screen)
+  return {
+    display_ticks = display,
+    fade_in_ticks = fade_in,
+    fade_out_ticks = fade_out,
+  }
+end
+
 local FIELDS = {
   [trx.ui.Screen.RING_ENTRY] = entry_fields,
   [trx.ui.Screen.EXAMINE] = entry_fields,
@@ -174,6 +190,7 @@ local FIELDS = {
       is_bare = arg & 0x20000 ~= 0,
     }
   end,
+  [trx.ui.Screen.LEVEL_VIEW] = timing_fields,
 }
 
 local function on_layer_closed(ctx, layer)
@@ -193,6 +210,7 @@ end
 ---A screen that a script holds, which the definition receives.
 ---@class (exact) trx.ui.ScreenContext
 ---@trx.readonly background, is_bare, is_final, is_held, level, mode, object, screen
+---@trx.readonly display_ticks, fade_in_ticks, fade_out_ticks
 ---@field screen trx.ui.Screen The screen.
 ---@field object trx.catalog.objects? The ring entry that the player uses, for `trx.ui.Screen.RING_ENTRY`, examines, for `trx.ui.Screen.EXAMINE`, or combines, for `trx.ui.Screen.COMBINE`.
 ---@field mode trx.inventory_ring.Mode? What the quick save or load screen opened for, for `trx.ui.Screen.SAVE_LOAD`.
@@ -201,6 +219,9 @@ end
 ---@field is_bare boolean? Whether the screen is drawn bare, as plain lines of text without a frame, for `trx.ui.Screen.STATS`.
 ---@field background string? The picture the screen stands on, for `trx.ui.Screen.GLOBE_SELECT`, as `trx.ui.primitive.background` takes it, or `nil` for none.
 ---@field is_held boolean Whether the script still holds the screen.
+---@field display_ticks integer? How many ticks a screen shown for a time, such as `trx.ui.Screen.LEVEL_VIEW`, shows before it fades out.
+---@field fade_in_ticks integer? How many ticks a screen shown for a time, such as `trx.ui.Screen.LEVEL_VIEW`, takes to fade in.
+---@field fade_out_ticks integer? How many ticks a screen shown for a time, such as `trx.ui.Screen.LEVEL_VIEW`, takes to fade out.
 local Context = h.class("ui.ScreenContext", {
   fields = {
     screen = {
@@ -223,6 +244,9 @@ local Context = h.class("ui.ScreenContext", {
         return not rawget(self, "_done")
       end,
     },
+    display_ticks = reported("display_ticks"),
+    fade_in_ticks = reported("fade_in_ticks"),
+    fade_out_ticks = reported("fade_out_ticks"),
   },
 })
 

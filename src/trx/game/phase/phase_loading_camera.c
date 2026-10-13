@@ -1,39 +1,30 @@
 #include <trx/game/phase/phase_loading_camera.h>
 
-#include <trx/config.h>
+#include <trx/core/log.h>
 #include <trx/core/memory.h>
 #include <trx/game/camera/vars.h>
-#include <trx/game/fader.h>
+#include <trx/game/const.h>
 #include <trx/game/game/draw.h>
 #include <trx/game/input.h>
 #include <trx/game/interpolation.h>
 #include <trx/game/output.h>
 #include <trx/game/rooms.h>
 #include <trx/game/shell.h>
-#include <trx/game/ui.h>
-#include <trx/game/ui/common.h>
-#include <trx/game/ui/draw.h>
-#include <trx/game/ui/elements/loading_bar.h>
-#include <trx/game/ui/elements/modal.h>
+#include <trx/game/ui/dialogs/takeover.h>
 #include <trx/game/viewport.h>
 
-#define M_BAR_WIDTH 0.94f
-#define M_BAR_Y 0.953f
-
-typedef enum {
-    STATE_FADE_IN,
-    STATE_DISPLAY,
-    STATE_FADE_OUT,
-} M_STATE;
-
+// The view is timed, faded and skipped by a script, which ends it with a
+// choice. Without one the view is skipped.
 typedef struct {
-    M_STATE state;
-    FADER fader;
-    CLOCK_TIMER timer;
     PHASE_LOADING_CAMERA_ARGS args;
-    float progress;
     CAMERA_INFO old_camera;
+    bool is_held;
 } M_PRIV;
+
+static int32_t M_ToTicks(const double seconds)
+{
+    return (int32_t)(seconds * LOGIC_FPS + 0.5);
+}
 
 static void M_PlaceCamera(const M_PRIV *const p)
 {
@@ -59,16 +50,32 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
     M_PRIV *const p = phase->priv;
     p->old_camera = g_Camera;
     M_PlaceCamera(p);
-    Input_HoldOffRole(INPUT_ROLE_MENU_SKIP);
-    Fader_InitTo(&p->fader, 1.0f, 0.0f, p->args.fade_in_time);
-    ClockTimer_Sync(&p->timer);
+    UI_Takeover_SetTiming(
+        UI_TAKEOVER_LEVEL_VIEW,
+        (UI_TAKEOVER_TIMING) {
+            .display_ticks = M_ToTicks(p->args.display_time),
+            .fade_in_ticks = M_ToTicks(p->args.fade_in_time),
+            .fade_out_ticks = M_ToTicks(p->args.fade_out_time),
+        });
+    p->is_held = UI_Takeover_Offer(UI_TAKEOVER_LEVEL_VIEW, 0);
+    if (!p->is_held) {
+        LOG_WARNING("no script draws the level views, skipping them");
+        return (PHASE_CONTROL) {
+            .action = PHASE_ACTION_END,
+            .gf_cmd = { .action = GF_NOOP },
+        };
+    }
     return (PHASE_CONTROL) {};
 }
 
 // Restores the camera after the view ends.
 static void M_End(PHASE *const phase)
 {
-    const M_PRIV *const p = phase->priv;
+    M_PRIV *const p = phase->priv;
+    if (p->is_held) {
+        UI_Takeover_Release(UI_TAKEOVER_LEVEL_VIEW);
+        p->is_held = false;
+    }
     g_Camera = p->old_camera;
     Interpolation_Remember();
 }
@@ -78,64 +85,22 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
     M_PRIV *const p = phase->priv;
     Input_Update();
     Shell_ProcessInput();
-    if (g_InputDB.menu_skip) {
-        Input_HoldOffSkip(INPUT_SKIP_TO_GAME);
+    if (UI_Takeover_TakeChoice(UI_TAKEOVER_LEVEL_VIEW)
+        != UI_TAKEOVER_CHOICE_NONE) {
+        p->is_held = false;
+        return (PHASE_CONTROL) {
+            .action = PHASE_ACTION_END,
+            .gf_cmd = { .action = GF_NOOP },
+        };
     }
-
-    switch (p->state) {
-    case STATE_FADE_IN:
-        if (g_InputDB.menu_skip) {
-            p->state = STATE_FADE_OUT;
-            Fader_InitFromCurrentHold(
-                &p->fader, 1.0f, p->args.fade_out_time, 0.1f);
-        } else if (!Fader_IsActive(&p->fader)) {
-            p->state = STATE_DISPLAY;
-            ClockTimer_Sync(&p->timer);
-        }
-        break;
-
-    case STATE_DISPLAY:
-        p->progress = p->args.display_time <= 0.0
-            ? 1.0f
-            : ClockTimer_PeekElapsed(&p->timer) / p->args.display_time;
-        if (g_InputDB.menu_skip
-            || ClockTimer_CheckElapsed(&p->timer, p->args.display_time)) {
-            p->state = STATE_FADE_OUT;
-            Fader_InitFromCurrentHold(
-                &p->fader, 1.0f, p->args.fade_out_time, 0.1f);
-        }
-        break;
-
-    case STATE_FADE_OUT:
-        if (g_InputDB.menu_skip || !Fader_IsActive(&p->fader)) {
-            return (PHASE_CONTROL) {
-                .action = PHASE_ACTION_END,
-                .gf_cmd = { .action = GF_NOOP },
-            };
-        }
-        break;
-    }
-
     return (PHASE_CONTROL) {};
 }
 
 static void M_Draw(PHASE *const phase)
 {
-    M_PRIV *const p = phase->priv;
+    const M_PRIV *const p = phase->priv;
     M_PlaceCamera(p);
     Game_Draw(false);
-    if (g_Config.ui.show_loading_bar) {
-        UI_BeginScreenModal(0.5f, M_BAR_Y);
-        UI_LoadingBar((UI_LOADING_BAR_SETTINGS) {
-            .w = UI_GetCanvasWidth() * M_BAR_WIDTH,
-            .progress = p->state == STATE_FADE_OUT ? 1.0f : p->progress,
-        });
-        UI_EndModal();
-    }
-
-    UI_BeginLayer(UI_LAYER_FADE);
-    UI_ScheduleDrawScreenBlack(Fader_GetCurrentValue(&p->fader));
-    UI_EndLayer(UI_LAYER_FADE);
 }
 
 PHASE *Phase_LoadingCamera_Create(const PHASE_LOADING_CAMERA_ARGS args)
@@ -143,7 +108,6 @@ PHASE *Phase_LoadingCamera_Create(const PHASE_LOADING_CAMERA_ARGS args)
     PHASE *const phase = Memory_Alloc(sizeof(PHASE));
     M_PRIV *const p = Memory_Alloc(sizeof(M_PRIV));
     p->args = args;
-    p->state = STATE_FADE_IN;
     phase->priv = p;
     phase->start = M_Start;
     phase->end = M_End;

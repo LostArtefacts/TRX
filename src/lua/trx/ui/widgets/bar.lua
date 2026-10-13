@@ -14,6 +14,7 @@ local bar_scale = base.bar_scale
 ---@field value any The fill amount from 0 to 1, or a signal that holds it.
 ---@field w? number The width, in canvas units. The game's own by default.
 ---@field h? number The height, in canvas units. The game's own by default.
+---@field smooth? boolean Whether the fill shades one band into the next. The player's smooth bars setting by default.
 ---@field shown? any Whether the bar is shown, or a signal that holds that value.
 
 ---One of the game's bars, drawn with the player's bar settings.
@@ -132,7 +133,10 @@ function widgets.Bar(settings)
       return
     end
 
-    local shaded = is_smooth()
+    local shaded = settings.smooth
+    if shaded == nil then
+      shaded = is_smooth()
+    end
     local count = shaded and STEPS - 1 or STEPS
     for _, band in ipairs(bands(y2, fh_px, count)) do
       local step, by, step_h = band[1], band[2], band[3]

@@ -15,6 +15,7 @@ typedef enum {
     UI_TAKEOVER_EXAMINE,
     UI_TAKEOVER_COMBINE,
     UI_TAKEOVER_GLOBE_SELECT,
+    UI_TAKEOVER_LEVEL_VIEW,
     UI_TAKEOVER_NUMBER_OF,
 } UI_TAKEOVER;
 
@@ -51,6 +52,15 @@ bool UI_Takeover_Offer(UI_TAKEOVER screen, int32_t arg);
 // until it is set again. The screen owns the path.
 void UI_Takeover_SetBackground(UI_TAKEOVER screen, const char *path);
 const char *UI_Takeover_GetBackground(UI_TAKEOVER screen);
+// How long a timed screen shows and fades, in ticks, set before the screen is
+// offered and kept until it is set again.
+typedef struct {
+    int32_t display_ticks;
+    int32_t fade_in_ticks;
+    int32_t fade_out_ticks;
+} UI_TAKEOVER_TIMING;
+void UI_Takeover_SetTiming(UI_TAKEOVER screen, UI_TAKEOVER_TIMING timing);
+UI_TAKEOVER_TIMING UI_Takeover_GetTiming(UI_TAKEOVER screen);
 
 // Returns whether an owner holds the screen.
 bool UI_Takeover_IsHeld(UI_TAKEOVER screen);
