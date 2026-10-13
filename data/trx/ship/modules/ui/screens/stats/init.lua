@@ -98,7 +98,7 @@ end
 -- settings, the room that the rest of the interface leaves, and for the best
 -- times, the scroll and the times themselves.
 local function follow(state)
-  local sources = { state.room }
+  local sources = { trx.ui.signals.layout }
   for _, key in ipairs(ROW_SETTINGS) do
     sources[#sources + 1] = trx.signal.config(key)
   end
@@ -107,19 +107,19 @@ local function follow(state)
     sources[#sources + 1] = state.visible
     sources[#sources + 1] = state.records
   end
-  sources[#sources + 1] = function()
-    return {}
-  end
-  state.shape = trx.signal.combine(table.unpack(sources))
-  state.reshape = state.shape:on(function()
+  local function rebuild()
     state.layer:set_root(box_of(state))
-  end)
+  end
+  state.listeners = {}
+  for _, source in ipairs(sources) do
+    state.listeners[#state.listeners + 1] = source:on(rebuild)
+  end
 end
 
 local function unfollow(state)
-  state.reshape:detach()
-  state.shape:stop()
-  state.room:stop()
+  for _, listener in ipairs(state.listeners) do
+    listener:detach()
+  end
   if state.clock ~= nil then
     state.time_text:stop()
     state.clock:stop()
@@ -144,9 +144,6 @@ local function new_state(level, mode, bare, live)
 end
 
 local function push(ctx, state, on_input)
-  state.room = trx.signal.polled(function()
-    return trx.ui.safe_area.height / trx.ui.text_scale
-  end)
   state.layer = ctx:push({
     root = box_of(state),
     place = box.place(state),

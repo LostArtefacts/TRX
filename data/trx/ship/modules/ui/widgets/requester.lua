@@ -94,7 +94,6 @@ end
 -- Reads one tick of input. Returns the picked row's index, "cancel" where
 -- the player backed out, and nil where nothing was decided.
 function Requester:control(keys)
-  self.refit()
   local picked = self.list:control(keys)
   if picked ~= nil then
     return picked
@@ -133,8 +132,7 @@ function M.new(settings)
   end
 
   -- How many rows fit, which follows the rows and the room the screen leaves.
-  -- It is worked out again on every tick that the dialog reads input, and the
-  -- list measures itself again only where the count changes.
+  -- The list measures itself again only where the count changes.
   local visible = trx.signal.new(fit_rows(settings, #req.rows, frame_width()))
   function req.refit()
     visible:set(fit_rows(settings, #req.rows, frame_width()))
@@ -199,6 +197,7 @@ function M.new(settings)
     })
   end
   req.root = trx.ui.widgets.Fit({ child = body })
+  req.root:release_with(trx.ui.signals.layout:on(req.refit))
 
   return req
 end
@@ -217,15 +216,30 @@ function M.message(text)
   })
 end
 
+-- Remembers where a dialog goes, and works it out again only when the layout,
+-- the dialog's size or `depends` changes.
+local function remembered(place, depends)
+  local stamp, last_w, last_h, last_depends, x, y
+  return function(w, h)
+    local now = trx.ui.signals.layout:get()
+    local d = depends ~= nil and depends() or nil
+    if now ~= stamp or w ~= last_w or h ~= last_h or d ~= last_depends then
+      stamp, last_w, last_h, last_depends = now, w, h, d
+      x, y = place(w, h)
+    end
+    return x, y
+  end
+end
+
 -- Places a dialog across the safe area: centered from side to side, and the
 -- given fraction of the way down the room that the margin leaves.
 function M.anchored(anchor, margin)
   margin = margin or 0
-  return function(w, h)
+  return remembered(function(w, h)
     local safe = trx.ui.safe_area_for(w)
     return safe.x + (safe.width - w) / 2,
       safe.y + margin + (safe.height - 2 * margin - h) * anchor
-  end
+  end)
 end
 
 -- Places a dialog so that the middle of its frame rests on the line that a
@@ -233,7 +247,11 @@ end
 -- the given footer under it, the given fraction of the way down the safe area.
 -- Every passport page rests on this line, whatever its own height.
 function M.on_page_line(req, anchor, footer_height)
-  return function(w)
+  local function panel_height()
+    local _, height = req.panel:measure()
+    return height
+  end
+  return remembered(function(w)
     local spacing = metrics.row_spacing()
     local rows = fit_rows({
       title = "",
@@ -245,11 +263,10 @@ function M.on_page_line(req, anchor, footer_height)
       + (rows - 1) * spacing
     local line = (available_height(w) - height - 5) * anchor
       + (height - footer_height) / 2
-    local _, panel_height = req.panel:measure()
     local safe = trx.ui.safe_area_for(w)
     return safe.x + (safe.width - w) / 2,
-      safe.y + line * trx.ui.text_scale - panel_height / 2
-  end
+      safe.y + line * trx.ui.text_scale - panel_height() / 2
+  end, panel_height)
 end
 
 return M

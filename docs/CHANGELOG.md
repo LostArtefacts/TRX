@@ -164,6 +164,8 @@
 - Added `trx.game.set_bonus_check`, which lets a script decide whether a bonus level opens before it starts to load (#6811 / TRX1704)
 - Added `trx.overlay.letterbox`, which sets how deep the cinematic bars are (TRX1426)
 - Added `trx.ui.working_area`, the part of the canvas between the cinematic bars (TRX1426)
+- Added `trx.ui.signals.layout`, which says when the room the interface lays out in changes
+- Added `trx.ui.Widget:release_with`, which ties signals and listeners to a widget, so that they go when it is released
 - Added `trx.game.restart_level()`, which restarts the current level (#6712 / TRX1599)
 - Added `trx.math.degrees()`, which converts an angle from degrees to the engine's units
 - Added `trx.math.rotate()`, which turns a vector the way the engine turns a model

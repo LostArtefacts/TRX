@@ -5,17 +5,43 @@
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/fade.h>
 #include <trx/game/ui/regions.h>
+#include <trx/game/ui/scaler.h>
 
 static bool m_HideNextFrame = false;
+// What the interface was laid out in when scripts were last told.
+static float m_Layout[8] = {};
 
 static void M_FadeDone(const int32_t id)
 {
     LUA_FireEventInt32(LUA_EVENT_UI_FADE_DONE, id);
 }
 
+// Tells scripts when the room the interface lays out in has changed since
+// the last tick: the canvas, the safe and working areas, or the text scale.
+static void M_CheckLayout(void)
+{
+    const float layout[] = {
+        UI_GetCanvasWidth(),         UI_GetCanvasHeight(),
+        UI_GetSafeCanvasWidth(),     UI_GetSafeCanvasTop(),
+        UI_GetSafeCanvasBottom(),    UI_GetWorkingCanvasTop(),
+        UI_GetWorkingCanvasBottom(), UI_Scaler_GetScale(UI_SCALER_TARGET_TEXT),
+    };
+    bool changed = false;
+    for (size_t i = 0; i < sizeof(layout) / sizeof(layout[0]); i++) {
+        if (layout[i] != m_Layout[i]) {
+            m_Layout[i] = layout[i];
+            changed = true;
+        }
+    }
+    if (changed) {
+        LUA_FireEvent(LUA_EVENT_UI_LAYOUT);
+    }
+}
+
 static void M_Tick(void)
 {
     UI_Fade_Tick(M_FadeDone);
+    M_CheckLayout();
 }
 
 static void M_Init(void)

@@ -277,6 +277,36 @@ h.properties(M, "ui", {
   },
 })
 
+---What the interface tells a script about the room that it lays out in.
+---@class (exact) trx.ui.signals
+---@trx.readonly layout
+---@field layout trx.signal.Signal Says when the room that the interface lays out in changes: the canvas, `trx.ui.safe_area`, `trx.ui.working_area` or `trx.ui.text_scale`. It holds a count that goes up with each change. A widget that lays itself out by that room listens to this rather than reading the room every frame.
+M.signals = h.namespace("ui.signals")
+
+-- The engine says when the room changes, so the signal follows without a
+-- poll. The handler is attached as the module loads, so it belongs to no
+-- level: one that a level script attached would go with the level.
+local layout_count = 0
+---@type trx.signal.Signal?
+local layout = nil
+local function on_layout()
+  layout_count = layout_count + 1
+  if layout ~= nil then
+    layout:set(layout_count)
+  end
+end
+
+local function layout_signal()
+  if layout == nil then
+    layout = trx.signal.new(layout_count)
+  end
+  return layout
+end
+
+h.properties(M.signals, "ui.signals", {
+  layout = { get = layout_signal },
+})
+
 ---The part of the canvas that a box of the given width, centered, is free to
 ---take. Unlike `trx.ui.safe_area`, an edge of the interface takes room from it
 ---only if the box is wide enough to reach that edge, so a narrow box ignores
@@ -348,3 +378,5 @@ function M.input_hint_text(input, words)
   end
   return keys .. " " .. words
 end
+
+raw_events.attach(types.UI_LAYOUT, on_layout)
