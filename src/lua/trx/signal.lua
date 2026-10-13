@@ -265,6 +265,53 @@ function M.polled(read)
   return bind(polled, { listener })
 end
 
+---Creates a signal that reads a value once per tick while another signal is
+---true, and holds a fixed value while it is not.
+---
+---Use this for state that has no dedicated engine signal and matters only
+---while something shows it, such as a readout that the player can turn off. A
+---reader that is off costs nothing per tick.
+---
+---```lua
+---local shown = trx.signal.config("ui.enable_fps_counter")
+---local fps = trx.signal.polled_while(shown, trx.game.get_fps, 0)
+---```
+---@param shown trx.signal.Signal Whether to read.
+---@param read function The function to read each tick while the first signal is true.
+---@param idle any The value to hold while the first signal is false.
+---@return trx.signal.Signal # The signal.
+function M.polled_while(shown, read, idle)
+  local held = new_signal(idle)
+  ---@type trx.signal.Listener?
+  local ticking = nil
+  local function follow(on)
+    if truth(on) then
+      held:set(read())
+      if ticking == nil then
+        ticking = trx.signal.tick:on(function()
+          held:set(read())
+        end)
+      end
+    else
+      held:set(idle)
+      if ticking ~= nil then
+        ticking:detach()
+        ticking = nil
+      end
+    end
+  end
+  follow(shown:get())
+  local watch = shown:on(follow)
+  return bind(held, {
+    watch,
+    {
+      detach = function()
+        follow(false)
+      end,
+    },
+  })
+end
+
 -- Reuse one signal per setting, so multiple scripts share one engine watcher.
 local settings = {} --[[@as table<string, trx.signal.Signal>]]
 

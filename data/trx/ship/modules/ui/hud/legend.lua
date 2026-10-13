@@ -42,30 +42,47 @@ function M.setup(source)
   end
 
   local text = trx.signal.new("")
-  local clear = trx.signal.polled(is_clear)
   local running = trx.signal.new(false)
+  -- Read only while the caption still has time left, so a caption that has
+  -- gone costs nothing.
+  local clear = trx.signal.polled_while(running, is_clear, false)
   local left = 0
+  ---@type trx.events.Listener?
+  local counting = nil
 
   local function refresh()
     text:set(read())
   end
 
-  trx.events.on_game_start(function(is_save)
-    refresh()
-    left = is_save and 0 or FRAMES
-    running:set(left > 0)
-  end)
+  local function stop()
+    left = 0
+    running:set(false)
+    if counting ~= nil then
+      counting:detach()
+      counting = nil
+    end
+  end
 
-  trx.signal.config("language"):on(refresh)
-
-  trx.events.before_control(function()
+  local function count()
     if left > 0 and clear:get() then
       left = left - 1
       if left == 0 then
-        running:set(false)
+        stop()
       end
     end
+  end
+
+  trx.events.on_game_start(function(is_save)
+    refresh()
+    stop()
+    if not is_save then
+      left = FRAMES
+      running:set(true)
+      counting = trx.events.before_control(count)
+    end
   end)
+
+  trx.signal.config("language"):on(refresh)
 
   trx.ui.regions.place(
     trx.ui.Region.BOTTOM_CENTER,

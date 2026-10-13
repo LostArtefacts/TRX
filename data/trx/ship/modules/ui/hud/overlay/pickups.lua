@@ -18,8 +18,6 @@ local DISPLAY_TICKS = trx.game.LOGIC_FPS * 2
 local EASE_OUT_TICKS = trx.game.LOGIC_FPS
 local SPIN_PER_TICK = 4 * trx.math.DEG_1
 
--- Every mesh of an object, for one the ring states no selection for.
-local ALL_MESHES = 0xFFFFFFFF
 local WHITE = trx.math.color("ffffff")
 
 local shown = {}
@@ -95,7 +93,7 @@ end
 local function ring_pose(icon)
   local entry = trx.inventory_ring.item(icon)
   if entry == nil then
-    return 0, 0, 0, ALL_MESHES
+    return 0, 0, 0, nil
   end
   return entry.y_rot_sel + entry.base_rot_y,
     entry.base_rot_x,
@@ -154,7 +152,6 @@ local function add(object)
     angle = 0,
     rot_x = 0,
     rot_z = 0,
-    mesh_mask = ALL_MESHES,
   }
   if icon ~= nil then
     entry.angle, entry.rot_x, entry.rot_z, entry.mesh_mask = ring_pose(icon)
@@ -187,22 +184,9 @@ local function enabled()
   return trx.game.is_playing and trx.config.get("ui.show_pickups_overlay")
 end
 
-signal.tick:on(function()
-  if #shown == 0 or not trx.game.is_playing then
-    return
-  end
-  local kept = {}
-  for _, entry in ipairs(shown) do
-    if advance(entry) then
-      kept[#kept + 1] = entry
-    end
-  end
-  shown = kept
-end)
-
 -- Paints each model in its cell, or a sprite scaled to fill the cell where
 -- there is no model.
-trx.ui.on_paint(function()
+local function paint()
   if not enabled() then
     return
   end
@@ -237,11 +221,48 @@ trx.ui.on_paint(function()
       end
     end
   end
-end)
+end
 
-trx.events.on_show_pickup(add)
+-- The tick and the paint run only while an announcement is on screen, so a
+-- level with none costs nothing.
+---@type trx.signal.Listener?
+local ticking = nil
+---@type trx.events.Listener?
+local painting = nil
+
+local function stop()
+  shown = {}
+  if ticking ~= nil then
+    ticking:detach()
+    painting:detach()
+    ticking = nil
+    painting = nil
+  end
+end
+
+local function step()
+  if not trx.game.is_playing then
+    return
+  end
+  local kept = {}
+  for _, entry in ipairs(shown) do
+    if advance(entry) then
+      kept[#kept + 1] = entry
+    end
+  end
+  shown = kept
+  if #shown == 0 then
+    stop()
+  end
+end
+
+trx.events.on_show_pickup(function(object)
+  add(object)
+  if #shown > 0 and ticking == nil then
+    ticking = signal.tick:on(step)
+    painting = trx.ui.on_paint(paint)
+  end
+end)
 
 -- Clears announcements when the level ends.
-trx.events.on_level_unload(function()
-  shown = {}
-end)
+trx.events.on_level_unload(stop)

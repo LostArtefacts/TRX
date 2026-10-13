@@ -48,39 +48,6 @@ local TIME_FORMAT = is_tr2 and "%d:%02d.%d" or "%d:%02d.%02d"
 local TIME_PLACEHOLDER = is_tr2 and "--:--.-" or "--:--.--"
 local FRACTION_SCALE = is_tr2 and 10 or 100
 
--- Reads a timing once a tick, and only while it is on screen. A readout that
--- is off costs one signal rather than a poll.
-local function timing(shown, read)
-  local held = signal.new(0)
-  ---@type trx.signal.Listener?
-  local ticks = nil
-  local function follow(on)
-    if on then
-      held:set(read())
-      if ticks == nil then
-        ticks = signal.tick:on(function()
-          held:set(read())
-        end)
-      end
-    else
-      held:set(0)
-      if ticks ~= nil then
-        ticks:detach()
-        ticks = nil
-      end
-    end
-  end
-  follow(shown:get())
-  local watch = shown:on(follow)
-  -- The signals the API derives let go of the level themselves. These two are
-  -- attached by hand, so they are let go of by hand.
-  trx.events.on_level_unload(function()
-    watch:detach()
-    follow(false)
-  end)
-  return held
-end
-
 -- The clock as the game writes it: minutes, seconds, and a fraction. A run
 -- that has not started yet shows dashes where a lap time is asked for.
 local function format_time(frames, placeholder)
@@ -127,10 +94,10 @@ do
   end) & playing & ~lap_up
 
   -- The first two frames read as zero, as in the original games.
-  local time = timing(on_screen, function()
+  local time = signal.polled_while(on_screen, function()
     local frames = assault.get_time()
     return frames < 2 and 0 or frames
-  end)
+  end, 0)
 
   local clock = ui.widgets.Digits({
     object = DIGITS,
@@ -157,9 +124,9 @@ do
           and read(track) > 0
       end)
 
-    local frames = timing(shown, function()
+    local frames = signal.polled_while(shown, function()
       return read(assault.active_track or COURSE)
-    end)
+    end, 0)
 
     penalties[#penalties + 1] = {
       shown = shown,
@@ -213,12 +180,12 @@ end
 -------------------------------------------------------------------------------
 
 do
-  local last = timing(lap_shown, function()
+  local last = signal.polled_while(lap_shown, function()
     return assault.get_lap_time(QUAD)
-  end)
-  local best = timing(lap_shown, function()
+  end, 0)
+  local best = signal.polled_while(lap_shown, function()
     return assault.get_best_time(QUAD)
-  end)
+  end, 0)
 
   -- A lap that matches the record is drawn green on both sides. Otherwise the
   -- lap is red against a record and neutral without one.

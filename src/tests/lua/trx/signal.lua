@@ -399,4 +399,25 @@ test("a signal is made after trxc leaves the globals", function()
   assert(ok, err)
 end)
 
+test("a signal polled while shown reads nothing while hidden", function()
+  local shown = signal.new(false)
+  local reads = 0
+  local held = signal.polled_while(shown, function()
+    reads = reads + 1
+    return reads
+  end, -1)
+  fake.tick()
+  assert(reads == 0 and held:get() == -1, "a hidden reader read")
+  shown:set(true)
+  assert(held:get() == 1, held:get())
+  fake.tick()
+  assert(held:get() == 2, held:get())
+  shown:set(false)
+  fake.tick()
+  assert(held:get() == -1 and reads == 2, "a hidden reader kept reading")
+  held:stop()
+  shown:set(true)
+  assert(reads == 2, "a stopped reader came back")
+end)
+
 return h.report()
