@@ -285,17 +285,17 @@ arrow, and `\{button left}` draws the button the player has bound.
 
       Returns: boolean. Whether the layer was open.
 
-    - <a id="ui.FadeLayer.to" name="ui.FadeLayer.to"></a>[lua]`fadelayer:to(target, ticks, [curve], [options])`  
+    - <a id="ui.FadeLayer.to" name="ui.FadeLayer.to"></a>[lua]`fadelayer:to(target, ticks, [options])`  
       Moves the opacity to a target. The move takes the ticks it is given whatever
       the fade settings are.
 
       Parameters:
       - <a id="ui.FadeLayer.to.target" name="ui.FadeLayer.to.target"></a>**`target`** (number). The opacity to go to, from `0` to `1`.
       - <a id="ui.FadeLayer.to.ticks" name="ui.FadeLayer.to.ticks"></a>**`ticks`** (integer). How many ticks the move takes.
-      - <a id="ui.FadeLayer.to.curve" name="ui.FadeLayer.to.curve"></a>**`curve`** (function, optional). The curve of the move, one of [`trx.ui.ease`](#ui.ease). [`trx.ui.ease.linear`](#ui.ease.linear) by default.
-      - <a id="ui.FadeLayer.to.options" name="ui.FadeLayer.to.options"></a>**`options`** (table, optional). What happens when the move ends.
+      - <a id="ui.FadeLayer.to.options" name="ui.FadeLayer.to.options"></a>**`options`** (table, optional). How the move goes, and what happens when it ends.
 
         Keys:
+        - <a id="ui.FadeLayer.to.options.curve" name="ui.FadeLayer.to.options.curve"></a>**`curve`** (function, optional). The curve of the move, one of [`trx.ui.ease`](#ui.ease). [`trx.ui.ease.linear`](#ui.ease.linear) by default.
         - <a id="ui.FadeLayer.to.options.close" name="ui.FadeLayer.to.options.close"></a>**`close`** (boolean, optional). Whether the layer closes once the move ends. `false` by default.
         - <a id="ui.FadeLayer.to.options.on_done" name="ui.FadeLayer.to.options.on_done"></a>**`on_done`** (function, optional). Runs once when the move ends, and not if another move or a close cuts it short. A move of no ticks made in a tick handler ends within that tick. It receives the layer.
 
@@ -418,16 +418,16 @@ arrow, and `\{button left}` draws the button the player has bound.
 
       Returns: number. The target.
 
-    - <a id="ui.Tween.to" name="ui.Tween.to"></a>[lua]`tween:to(target, ticks, [curve], [options])`  
+    - <a id="ui.Tween.to" name="ui.Tween.to"></a>[lua]`tween:to(target, ticks, [options])`  
       Starts moving to a target from wherever the value is now.
 
       Parameters:
       - <a id="ui.Tween.to.target" name="ui.Tween.to.target"></a>**`target`** (number). Where to go.
       - <a id="ui.Tween.to.ticks" name="ui.Tween.to.ticks"></a>**`ticks`** (integer). How many ticks the move takes.
-      - <a id="ui.Tween.to.curve" name="ui.Tween.to.curve"></a>**`curve`** (function, optional). The curve of the move, one of [`trx.ui.ease`](#ui.ease). [`trx.ui.ease.linear`](#ui.ease.linear) by default. Any other function raises an error.
-      - <a id="ui.Tween.to.options" name="ui.Tween.to.options"></a>**`options`** (table, optional). When the move starts.
+      - <a id="ui.Tween.to.options" name="ui.Tween.to.options"></a>**`options`** (table, optional). How the move goes.
 
         Keys:
+        - <a id="ui.Tween.to.options.curve" name="ui.Tween.to.options.curve"></a>**`curve`** (function, optional). The curve of the move, one of [`trx.ui.ease`](#ui.ease). [`trx.ui.ease.linear`](#ui.ease.linear) by default. Any other function raises an error.
         - <a id="ui.Tween.to.options.delay" name="ui.Tween.to.options.delay"></a>**`delay`** (integer, optional). How many ticks to wait before the move starts. The value holds still while it waits, and [`is_moving`](#ui.Tween.is_moving) reports true. `0` by default.
 
       Returns: [trx.ui.Tween](#ui.Tween). The same tween.
@@ -763,7 +763,7 @@ arrow, and `\{button left}` draws the button the player has bound.
   Example:
   ```lua
   local black = trx.ui.layers.fade({ fill = trx.math.color("000000"), opacity = 0 })
-  black:to(1, 15, nil, { close = true })
+  black:to(1, 15, { close = true })
   ```
 
 - <a id="ui.layers.top" name="ui.layers.top"></a>[lua]`trx.ui.layers.top()`  
@@ -1273,7 +1273,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.Carousel.settings.spacing" name="ui.widgets.Carousel.settings.spacing"></a>**`spacing`** (number). How far apart the middles of two neighbours stand, in canvas units at the player's text size.
     - <a id="ui.widgets.Carousel.settings.side_size" name="ui.widgets.Carousel.settings.side_size"></a>**`side_size`** (number, optional). How large the items beside the middle are drawn, as a share of their own size. `0.6` by default.
     - <a id="ui.widgets.Carousel.settings.ticks" name="ui.widgets.Carousel.settings.ticks"></a>**`ticks`** (integer, optional). How many ticks a slide takes. `8` by default.
-    - <a id="ui.widgets.Carousel.settings.ease" name="ui.widgets.Carousel.settings.ease"></a>**`ease`** (function, optional). The curve of a slide, one of [`trx.ui.ease`](#ui.ease). [`trx.ui.ease.quad_in_out`](#ui.ease.quad_in_out) by default.
+    - <a id="ui.widgets.Carousel.settings.curve" name="ui.widgets.Carousel.settings.curve"></a>**`curve`** (function, optional). The curve of a slide, one of [`trx.ui.ease`](#ui.ease). [`trx.ui.ease.quad_in_out`](#ui.ease.quad_in_out) by default.
     - <a id="ui.widgets.Carousel.settings.shown" name="ui.widgets.Carousel.settings.shown"></a>**`shown`** (any, optional). Whether the row is shown, or a signal that holds that value.
 
   Returns: table. The carousel.

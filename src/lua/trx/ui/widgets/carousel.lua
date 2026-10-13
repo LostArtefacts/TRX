@@ -17,7 +17,7 @@ local text_scale = base.text_scale
 ---@field spacing number How far apart the middles of two neighbours stand, in canvas units at the player's text size.
 ---@field side_size? number How large the items beside the middle are drawn, as a share of their own size. `0.6` by default.
 ---@field ticks? integer How many ticks a slide takes. `8` by default.
----@field ease? function The curve of a slide, one of `trx.ui.ease`. `trx.ui.ease.quad_in_out` by default.
+---@field curve? function The curve of a slide, one of `trx.ui.ease`. `trx.ui.ease.quad_in_out` by default.
 ---@field shown? any Whether the row is shown, or a signal that holds that value.
 
 -- How far beyond the neighbours of the middle an item slides before it is
@@ -124,7 +124,7 @@ function widgets.Carousel(settings)
     position:to(
       position:target() + step,
       self.ticks or SLIDE_TICKS,
-      self.ease or trx.ui.ease.quad_in_out
+      { curve = self.curve or trx.ui.ease.quad_in_out }
     )
   end)
 

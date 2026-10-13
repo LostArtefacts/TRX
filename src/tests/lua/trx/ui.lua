@@ -698,13 +698,33 @@ end)
 
 test("a delayed tween holds still until it starts", function()
   fake.set_rate(1)
-  local tween = trx.ui.tween(0):to(8, 4, nil, { delay = 3 })
+  local tween = trx.ui.tween(0):to(8, 4, { delay = 3 })
   ticks(2)
   assert(tween:get() == 0 and tween:is_moving(), tween:get())
   ticks(3)
   assert(tween:get() == 4, tween:get())
   ticks(2)
   assert(tween:get() == 8 and not tween:is_moving())
+end)
+
+test("a tween follows the curve it is given", function()
+  fake.set_rate(1)
+  local tween = trx.ui.tween(0):to(8, 4, { curve = trx.ui.ease.quad_in })
+  ticks(2)
+  assert(tween:get() == 2, tween:get())
+  ticks(2)
+  assert(tween:get() == 8)
+end)
+
+test("a tween refuses a curve that is not one of trx.ui.ease", function()
+  local ok = pcall(function()
+    trx.ui.tween(0):to(8, 4, {
+      curve = function(ratio)
+        return ratio
+      end,
+    })
+  end)
+  assert(not ok, "the curve was taken")
 end)
 
 test("a tween set outright stops where it is put", function()

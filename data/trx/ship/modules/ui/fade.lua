@@ -82,7 +82,7 @@ function Screen:move(layer, target, ticks, hold, on_done, close)
     end
   end
   hold = self:ticks(hold or 0)
-  layer:to(target, self:ticks(ticks), nil, {
+  layer:to(target, self:ticks(ticks), {
     close = close and hold == 0,
     on_done = function()
       if self.pending ~= token then
@@ -171,7 +171,7 @@ end
 -- Moves a fade that outlives its screen, and closes it once it is out of
 -- sight.
 function M.move(layer, target, ticks, on_done)
-  layer:to(target, M.enabled() and ticks or 0, nil, {
+  layer:to(target, M.enabled() and ticks or 0, {
     close = target == 0,
     on_done = on_done,
   })
@@ -218,7 +218,7 @@ end
 function Value:restart()
   local options = self.options
   self.tween:set(options.from)
-  self.tween:to(options.to, options.ticks, nil, { delay = options.delay })
+  self.tween:to(options.to, options.ticks, { delay = options.delay })
   return self
 end
 
