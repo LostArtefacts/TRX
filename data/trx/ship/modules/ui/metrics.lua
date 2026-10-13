@@ -43,12 +43,4 @@ function M.row_spacing()
   return is_tr1() and 2 or 3
 end
 
--- Rounds a number to single precision. The engine lays its own dialogs out in
--- single precision, and a box that lands on half a pixel rounds one way or
--- the other depending on the precision it was worked out in, so a layout that
--- has to land where the engine's would rounds every step this way.
-function M.f32(value)
-  return (string.unpack("<f", string.pack("<f", value)))
-end
-
 return M
