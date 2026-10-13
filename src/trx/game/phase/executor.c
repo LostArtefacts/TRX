@@ -306,7 +306,6 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
     }
 
     if (phase->start != nullptr) {
-        Clock_SyncTick();
         g_OldInputDB = g_Input;
         const PHASE_CONTROL control = phase->start(phase);
         if (Shell_IsExiting()) {
@@ -320,6 +319,11 @@ GF_COMMAND PhaseExecutor_Run(PHASE *const phase)
             skip_fade_out = true;
             goto finish;
         }
+        // Starts the clock once the phase has started. A start can take a
+        // while, such as to decode a picture, and that time would otherwise
+        // run as ticks before the first frame, so a fade that the start set
+        // off would show part way through.
+        Clock_SyncTick();
     }
 
     while (true) {
