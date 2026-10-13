@@ -1,4 +1,4 @@
-require("common.ui.assault")
+require("common.ui.hud.assault")
 
 trx.events.on_game_start(function()
   -- Setup shoals

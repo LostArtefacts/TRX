@@ -30,7 +30,7 @@ trx.events.on_game_start(function(is_save)
 end)
 
 -- The caption the level opens with, which the level's strings carry.
-require("common.ui.legend").setup(function()
+require("common.ui.hud.legend").setup(function()
   return trx.locale.get("general/legend")
 end)
 

@@ -1385,27 +1385,30 @@ If you install everything correctly, your game directory should look more or les
 │       └── strings.json5
 ├── modules
 │   ├── ui
-│   │   ├── overlay
-│   │   │   ├── init.lua
-│   │   │   ├── photo_mode.lua
-│   │   │   └── pickups.lua
-│   │   ├── passport
-│   │   │   └── init.lua
-│   │   ├── assault.lua
-│   │   ├── combine.lua
-│   │   ├── examine.lua
+│   │   ├── hud
+│   │   │   ├── overlay
+│   │   │   │   ├── init.lua
+│   │   │   │   ├── photo_mode.lua
+│   │   │   │   └── pickups.lua
+│   │   │   ├── assault.lua
+│   │   │   └── legend.lua
+│   │   ├── screens
+│   │   │   ├── passport
+│   │   │   │   └── init.lua
+│   │   │   ├── combine.lua
+│   │   │   ├── examine.lua
+│   │   │   ├── globe.lua
+│   │   │   ├── level_view.lua
+│   │   │   ├── pause.lua
+│   │   │   ├── picture.lua
+│   │   │   └── stats.lua
+│   │   ├── widgets
+│   │   │   ├── hold_button.lua
+│   │   │   ├── loading_bar.lua
+│   │   │   └── requester.lua
 │   │   ├── fade.lua
-│   │   ├── globe.lua
-│   │   ├── hold_button.lua
-│   │   ├── legend.lua
 │   │   ├── level_start.lua
-│   │   ├── level_view.lua
-│   │   ├── loading_bar.lua
-│   │   ├── metrics.lua
-│   │   ├── pause.lua
-│   │   ├── picture.lua
-│   │   ├── requester.lua
-│   │   └── stats.lua
+│   │   └── metrics.lua
 │   ├── inv_ring.lua
 │   ├── ngplus.lua
 │   ├── save_crystal.lua
@@ -2833,27 +2836,30 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │       └── strings.json5
     │   ├── modules
     │   │   ├── ui
-    │   │   │   ├── overlay
-    │   │   │   │   ├── init.lua
-    │   │   │   │   ├── photo_mode.lua
-    │   │   │   │   └── pickups.lua
-    │   │   │   ├── passport
-    │   │   │   │   └── init.lua
-    │   │   │   ├── assault.lua
-    │   │   │   ├── combine.lua
-    │   │   │   ├── examine.lua
+    │   │   │   ├── hud
+    │   │   │   │   ├── overlay
+    │   │   │   │   │   ├── init.lua
+    │   │   │   │   │   ├── photo_mode.lua
+    │   │   │   │   │   └── pickups.lua
+    │   │   │   │   ├── assault.lua
+    │   │   │   │   └── legend.lua
+    │   │   │   ├── screens
+    │   │   │   │   ├── passport
+    │   │   │   │   │   └── init.lua
+    │   │   │   │   ├── combine.lua
+    │   │   │   │   ├── examine.lua
+    │   │   │   │   ├── globe.lua
+    │   │   │   │   ├── level_view.lua
+    │   │   │   │   ├── pause.lua
+    │   │   │   │   ├── picture.lua
+    │   │   │   │   └── stats.lua
+    │   │   │   ├── widgets
+    │   │   │   │   ├── hold_button.lua
+    │   │   │   │   ├── loading_bar.lua
+    │   │   │   │   └── requester.lua
     │   │   │   ├── fade.lua
-    │   │   │   ├── globe.lua
-    │   │   │   ├── hold_button.lua
-    │   │   │   ├── legend.lua
     │   │   │   ├── level_start.lua
-    │   │   │   ├── level_view.lua
-    │   │   │   ├── loading_bar.lua
-    │   │   │   ├── metrics.lua
-    │   │   │   ├── pause.lua
-    │   │   │   ├── picture.lua
-    │   │   │   ├── requester.lua
-    │   │   │   └── stats.lua
+    │   │   │   └── metrics.lua
     │   │   ├── inv_ring.lua
     │   │   ├── ngplus.lua
     │   │   ├── save_crystal.lua
