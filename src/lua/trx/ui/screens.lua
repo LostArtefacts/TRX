@@ -252,6 +252,21 @@ function Context:push(settings)
   return layer
 end
 
+---Puts a fade layer that belongs to the screen on top of the other fade
+---layers, with the settings that `trx.ui.layers.fade` takes. The layer closes
+---when the screen ends.
+---@param settings trx.ui.layers.fade.settings The layer settings.
+---@return trx.ui.FadeLayer # The layer.
+function Context:fade(settings)
+  if rawget(self, "_done") then
+    error("the screen has ended", 2)
+  end
+  local layer = trx.ui.layers.fade(settings)
+  local layers = rawget(self, "_layers")
+  layers[#layers + 1] = layer
+  return layer
+end
+
 ---Ends the pause screen, and returns to the game. Only `trx.ui.Screen.PAUSE`
 ---takes this.
 ---@return boolean # Whether the screen was still held.

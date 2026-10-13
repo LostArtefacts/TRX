@@ -213,6 +213,12 @@ void UI_ScheduleDrawDarken(const float opacity)
     FakeUIDraw_Record(String_FormatStatic("darken opacity=%.3f", opacity));
 }
 
+void UI_ScheduleDrawSnapshotSlot(const int32_t slot, const float opacity)
+{
+    FakeUIDraw_Record(
+        String_FormatStatic("snapshot slot=%d opacity=%.3f", slot, opacity));
+}
+
 void UI_ScheduleDrawBackground(
     const char *const path, const bool mono, const float dim)
 {

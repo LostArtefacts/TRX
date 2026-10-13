@@ -107,6 +107,11 @@ typedef struct {
 } M_DRAW_OP_OVERLAY;
 
 typedef struct {
+    int32_t slot;
+    float opacity;
+} M_SNAPSHOT_SLOT;
+
+typedef struct {
     MEMORY_ARENA_ALLOCATOR alloc;
     VECTOR *ops[UI_LAYER_NUMBER_OF];
 } M_PRIV;
@@ -446,6 +451,12 @@ static void M_DrawOp_Model(const M_DRAW_OP *const base)
 static void M_DrawSnapshot(const void *const args)
 {
     Output_Overlay_DrawSnapshot(*(const float *)args);
+}
+
+static void M_DrawSnapshotSlot(const void *const args)
+{
+    const M_SNAPSHOT_SLOT *const slot = args;
+    Output_Overlay_DrawSnapshotSlot(slot->slot, slot->opacity);
 }
 
 static void M_DrawOp_Overlay(const M_DRAW_OP *const base)
@@ -789,6 +800,12 @@ void UI_ScheduleDrawBackground(
 void UI_ScheduleDrawDarken(const float opacity)
 {
     M_SCHEDULE_OP(M_DrawOp_Darken, ((M_DRAW_OP_DARKEN) { .opacity = opacity }));
+}
+
+void UI_ScheduleDrawSnapshotSlot(const int32_t slot, const float opacity)
+{
+    const M_SNAPSHOT_SLOT args = { .slot = slot, .opacity = opacity };
+    UI_ScheduleDrawOverlay(M_DrawSnapshotSlot, &args, sizeof(args));
 }
 
 void UI_InitDraw(void)

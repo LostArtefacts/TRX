@@ -53,6 +53,7 @@ static VECTOR *m_Claims = nullptr;
 static int32_t m_NextId = 1;
 static int32_t m_DispatchDepth = 0;
 static int32_t m_Tick = 0;
+static void (*m_TickHook)(void) = nullptr;
 // Live listeners per type, so a fire for a type nobody watches returns without
 // walking the vector. A listener counts until it stops being able to fire,
 // which M_RemoveListener decides for both its branches.
@@ -373,6 +374,14 @@ void LUA_Tick(void)
 {
     m_Tick++;
     LUA_FireEvent(LUA_EVENT_TICK);
+    if (m_TickHook != nullptr) {
+        m_TickHook();
+    }
+}
+
+void LUA_SetTickHook(void (*const hook)(void))
+{
+    m_TickHook = hook;
 }
 
 int32_t LUA_GetTick(void)

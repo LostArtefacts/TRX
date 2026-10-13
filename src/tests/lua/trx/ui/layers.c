@@ -7,6 +7,7 @@
 #include <harness/lua_surface.h>
 
 #include <trx/game/lua/registry.h>
+#include <trx/config.h>
 #include <trx/core/strings.h>
 #include <trx/game/console/common.h>
 #include <trx/game/lua/common.h>
@@ -95,6 +96,14 @@ static int M_FakeScene(lua_State *const L)
     return 1;
 }
 
+// fake.set_fade_effects(on) - the fade effects setting, which fade layers
+// leave to the scripts that move them.
+static int M_FakeSetFadeEffects(lua_State *const L)
+{
+    g_ConfigStorage.visuals.enable_fade_effects = lua_toboolean(L, 1);
+    return 0;
+}
+
 // fake.as_level_script(fn) - runs fn as a level script.
 static int M_FakeAsLevelScript(lua_State *const L)
 {
@@ -139,6 +148,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "scene_layers");
     lua_pushcfunction(L, M_FakeAsLevelScript);
     lua_setfield(L, -2, "as_level_script");
+    lua_pushcfunction(L, M_FakeSetFadeEffects);
+    lua_setfield(L, -2, "set_fade_effects");
     lua_pushcfunction(L, M_FakeEndLevel);
     lua_setfield(L, -2, "end_level");
 }

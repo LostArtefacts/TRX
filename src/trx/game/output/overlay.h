@@ -62,6 +62,17 @@ void Output_Overlay_DrawImageInBox(
 void Output_Overlay_CaptureSnapshot(void);
 void Output_Overlay_CaptureGameSnapshot(void);
 void Output_Overlay_DrawSnapshot(float opacity);
+
+#define OUTPUT_OVERLAY_SNAPSHOT_SLOTS 4
+
+// Captures the frame on screen into a snapshot of its own, which the shared
+// snapshot cannot overwrite. Returns the slot it is kept in, or -1 when every
+// slot is taken or the capture failed.
+int32_t Output_Overlay_CaptureSnapshotSlot(void);
+// Draws a slot's snapshot over the whole screen. Does nothing for a free slot.
+void Output_Overlay_DrawSnapshotSlot(int32_t slot, float opacity);
+// Gives a slot back. Its texture is kept for the next capture.
+void Output_Overlay_FreeSnapshotSlot(int32_t slot);
 void Output_Overlay_DrawSnapshotEx(const OUTPUT_SNAPSHOT_SETTINGS *settings);
 void Output_Overlay_DrawBackground(
     BACKGROUND_TYPE style, float opacity, const char *image_path);
