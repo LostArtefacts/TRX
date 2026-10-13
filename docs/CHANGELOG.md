@@ -252,9 +252,9 @@
 - Added the `common.timer` module, which runs a function after some ticks or every few ticks, counted while the level runs or on every tick
 - Added `trx.ui.tween`, `trx.ui.Tween` and `trx.ui.ease`, which move a number to a target over some ticks, after a delay if asked, and read it part way between them, and `trx.ui.interpolation_rate`, which says how far the frame being drawn stands between two ticks
 - Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the question the pause screen asks, the quick save and load screens, the statistics screen, an entry the player examines, an entry the player combines, and the globe a TR3 adventure is picked from
-    - `trx.ui.Screen` and `trx.ui.ScreenContext`
-    - `trx.ui.ScreenContext.level`, `trx.ui.ScreenContext.is_final` and `trx.ui.ScreenContext.is_bare`, which say what the statistics screen shows
-    - `trx.ui.ScreenContext.background`, the picture a screen stands on
+    - `trx.ui.Screen` and `trx.ui.ScreenContext`, and a context for each kind of screen: `trx.ui.EntryContext`, `trx.ui.PauseContext`, `trx.ui.SaveLoadContext`, `trx.ui.StatsContext` and `trx.ui.GlobeContext`
+    - `trx.ui.StatsContext.level`, `trx.ui.StatsContext.is_final` and `trx.ui.StatsContext.is_bare`, which say what the statistics screen shows
+    - `background` in `trx.ui.StatsContext` and `trx.ui.GlobeContext`, the picture a screen stands on
     - `trx.ui.ScreenContext:on_end`, which runs a function once a screen ends
 - Added `trx.strings.upper` and `trx.strings.lower`, which change the case of the letters the game's font draws, beyond ASCII too
 - Added `trx.game.Level.is_completed`, which says whether the player has finished a level
@@ -268,8 +268,8 @@
 - Added `trx.inventory.combine_partners`, the entries the player carries that an entry combines with, and `trx.inventory.combine`, which combines two of them into what they make
 - Added fade layers, which the engine draws over its interface and below the console, their opacity moving on a curve: `trx.ui.layers.fade` and `trx.ui.FadeLayer`
 - Added backdrop fade layers, which bring in the backdrops the game draws behind its screens: `backdrop` and `path` in `trx.ui.layers.fade`
-- Added `trx.ui.Screen.LEVEL_VIEW`, so a script draws the views of the level that TR4 shows as a level starts, with `trx.ui.ScreenContext.display_ticks`, `trx.ui.ScreenContext.fade_in_ticks` and `trx.ui.ScreenContext.fade_out_ticks`
-- Added `trx.ui.Screen.PICTURE`, so a script draws the pictures the game shows between and while loading levels, with `trx.ui.ScreenContext.is_loading` and `trx.ui.ScreenContext.can_cross_fade_in`
+- Added `trx.ui.Screen.LEVEL_VIEW`, so a script draws the views of the level that TR4 shows as a level starts, with `trx.ui.TimedContext`, which reports how long the view shows and fades
+- Added `trx.ui.Screen.PICTURE`, so a script draws the pictures the game shows between and while loading levels, with `trx.ui.PictureContext`
 - Added `smooth` to `trx.ui.widgets.Bar`, which overrides the player's smooth bars setting
 - Changed saves to keep the items a script spawns, which previously disappeared on load (TRX1677)
 - Changed `trx.events.on_ui_draw`, `on_ui_paint`, `on_ui_paint_over` and `on_scene_paint` to `trx.ui.on_draw`, `trx.ui.on_paint`, `trx.ui.on_paint_over` and `trx.scene.on_paint`

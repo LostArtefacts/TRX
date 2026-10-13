@@ -62,65 +62,53 @@ ui.screens = h.namespace("ui.screens")
 ---@class (partial) trx.ui.screens
 local screens = trx.ui.screens
 
----An engine screen that a script can draw.
+---An engine screen that a script can draw. Each screen hands its definition
+---a context of its own kind, which reports what the screen shows.
 ---@enum trx.ui.Screen
 local Screen = {
-  ---An entry that the player uses in the inventory ring. The context reports
-  ---the entry as `trx.ui.ScreenContext.object`. A definition can name the
-  ---entry it draws. A ring opened to save or load leaves when the screen ends,
-  ---and any ring leaves when the screen ends with
-  ---`trx.ui.ScreenContext:confirm`.
+  ---An entry that the player uses in the inventory ring, with a
+  ---`trx.ui.EntryContext`. A definition can name the entry it draws. A ring
+  ---opened to save or load leaves when the screen ends, and any ring leaves
+  ---when the screen ends with `trx.ui.ScreenContext:confirm`.
   RING_ENTRY = h.IntegerConstant,
   ---The question that the pause screen asks when the player presses the
-  ---inventory key: whether to leave for the title screen.
+  ---inventory key: whether to leave for the title screen. It has a
+  ---`trx.ui.PauseContext`.
   PAUSE = h.IntegerConstant,
-  ---The quick save or load screen. The save and load keys open it when the
-  ---instant screen setting is on. The context reports whether it opened for
-  ---saving or loading as `trx.ui.ScreenContext.mode`.
+  ---The quick save or load screen, with a `trx.ui.SaveLoadContext`. The save
+  ---and load keys open it when the instant screen setting is on.
   SAVE_LOAD = h.IntegerConstant,
   ---The statistics that the game shows when a level ends, and the totals it
-  ---shows when the game ends. The context reports the level as
-  ---`trx.ui.ScreenContext.level`, the totals as
-  ---`trx.ui.ScreenContext.is_final`, and the player's choice of the bare look
-  ---as `trx.ui.ScreenContext.is_bare`. The player skips the screen as they
-  ---would the engine's, and the screen also ends with
+  ---shows when the game ends, with a `trx.ui.StatsContext`. The player skips
+  ---the screen as they would the engine's, and the screen also ends with
   ---`trx.ui.ScreenContext:cancel` or `trx.ui.ScreenContext:confirm`.
   STATS = h.IntegerConstant,
   ---An entry that the player examines in the inventory ring: its name and
-  ---description, and turning it by hand. The context reports the entry as
-  ---`trx.ui.ScreenContext.object`. The screen ends with
-  ---`trx.ui.ScreenContext:cancel`, which puts the entry away.
+  ---description, and turning it by hand. It has a `trx.ui.EntryContext`. The
+  ---screen ends with `trx.ui.ScreenContext:cancel`, which puts the entry
+  ---away.
   EXAMINE = h.IntegerConstant,
   ---An entry that the player combines in the inventory ring: picking what to
   ---combine it with, out of `trx.inventory.combine_partners`, and combining
-  ---the two with `trx.inventory.combine`. The context reports the entry as
-  ---`trx.ui.ScreenContext.object`. The screen ends with
-  ---`trx.ui.ScreenContext:cancel` or `trx.ui.ScreenContext:confirm`, which
-  ---both put the entry away, and the ring then rests on what a combination
-  ---made.
+  ---the two with `trx.inventory.combine`. It has a `trx.ui.EntryContext`. The
+  ---screen ends with `trx.ui.ScreenContext:cancel` or
+  ---`trx.ui.ScreenContext:confirm`, which both put the entry away, and the
+  ---ring then rests on what a combination made.
   COMBINE = h.IntegerConstant,
-  ---The globe that TR3 picks its next adventure on, between levels. The
-  ---context reports the picture it stands on as
-  ---`trx.ui.ScreenContext.background`. The script picks an adventure by
-  ---starting its level with `trx.game.play_level`, and
-  ---`trx.ui.ScreenContext:cancel` leaves for the title screen.
+  ---The globe that TR3 picks its next adventure on, between levels, with a
+  ---`trx.ui.GlobeContext`. The script picks an adventure by starting its
+  ---level with `trx.game.play_level`, and `trx.ui.ScreenContext:cancel`
+  ---leaves for the title screen.
   GLOBE_SELECT = h.IntegerConstant,
   ---A view of the level from one of its cameras, which the game shows while
-  ---the level starts, as TR4 does. The context reports how long the view
-  ---shows and fades as `trx.ui.ScreenContext.display_ticks`,
-  ---`trx.ui.ScreenContext.fade_in_ticks` and
-  ---`trx.ui.ScreenContext.fade_out_ticks`. The view ends with
-  ---`trx.ui.ScreenContext:confirm` or `trx.ui.ScreenContext:cancel`.
+  ---the level starts, as TR4 does. It has a `trx.ui.TimedContext`. The view
+  ---ends with `trx.ui.ScreenContext:confirm` or
+  ---`trx.ui.ScreenContext:cancel`.
   LEVEL_VIEW = h.IntegerConstant,
   ---A picture that the game shows between levels, while a level loads, or
-  ---for the legal notice and the credits. The context reports the picture as
-  ---`trx.ui.ScreenContext.background`, its timing as
-  ---`trx.ui.ScreenContext.display_ticks`,
-  ---`trx.ui.ScreenContext.fade_in_ticks` and
-  ---`trx.ui.ScreenContext.fade_out_ticks`, and its kind as
-  ---`trx.ui.ScreenContext.is_loading` and
-  ---`trx.ui.ScreenContext.can_cross_fade_in`. The picture ends with
-  ---`trx.ui.ScreenContext:confirm` or `trx.ui.ScreenContext:cancel`.
+  ---for the legal notice and the credits, with a `trx.ui.PictureContext`. The
+  ---picture ends with `trx.ui.ScreenContext:confirm` or
+  ---`trx.ui.ScreenContext:cancel`.
   PICTURE = h.IntegerConstant,
 }
 ui.Screen = h.enum("ui.Screen", "UI_TAKEOVER", Screen)
@@ -174,46 +162,6 @@ local function finish(ctx, choice)
   return true
 end
 
--- The fields each screen reports, read out of the number that the engine
--- opens it with. A screen leaves out the fields of the other screens, and they
--- read as nil.
-local function entry_fields(_, arg)
-  return { object = arg }
-end
-
-local function timing_fields(screen)
-  local display, fade_in, fade_out = raw.timing(screen)
-  return {
-    display_ticks = display,
-    fade_in_ticks = fade_in,
-    fade_out_ticks = fade_out,
-  }
-end
-
-local FIELDS = {
-  [trx.ui.Screen.RING_ENTRY] = entry_fields,
-  [trx.ui.Screen.EXAMINE] = entry_fields,
-  [trx.ui.Screen.COMBINE] = entry_fields,
-  [trx.ui.Screen.SAVE_LOAD] = function(_, arg)
-    return { mode = arg }
-  end,
-  [trx.ui.Screen.STATS] = function(_, arg)
-    local num = arg & 0xffff
-    return {
-      level = num == 0 and trx.game.gym or trx.game.levels[num],
-      is_final = arg & 0x10000 ~= 0,
-      is_bare = arg & 0x20000 ~= 0,
-    }
-  end,
-  [trx.ui.Screen.LEVEL_VIEW] = timing_fields,
-  [trx.ui.Screen.PICTURE] = function(screen, arg)
-    local fields = timing_fields(screen)
-    fields.is_loading = arg & 0x1 ~= 0
-    fields.can_cross_fade_in = arg & 0x2 ~= 0
-    return fields
-  end,
-}
-
 local function on_layer_closed(ctx, layer)
   if not rawget(ctx, "_done") and rawget(ctx, "_main") == layer then
     finish(ctx, choices.CANCEL)
@@ -228,24 +176,19 @@ local function reported(name)
   }
 end
 
----A screen that a script holds, which the definition receives.
+local background = {
+  get = function(self)
+    return raw.background(rawget(self, "_screen"))
+  end,
+}
+
+---A screen that a script holds, which the definition receives. Each screen
+---hands over a context of its own kind, which adds what that screen reports to
+---what every screen has.
 ---@class (exact) trx.ui.ScreenContext
----@trx.readonly background, is_bare, is_final, is_held, level, mode, object, screen
----@trx.readonly display_ticks, fade_in_ticks, fade_out_ticks
----@trx.readonly can_cross_fade_in, is_loading
+---@trx.readonly is_held, screen
 ---@field screen trx.ui.Screen The screen.
----@field object trx.catalog.objects? The ring entry that the player uses, for `trx.ui.Screen.RING_ENTRY`, examines, for `trx.ui.Screen.EXAMINE`, or combines, for `trx.ui.Screen.COMBINE`.
----@field mode trx.inventory_ring.Mode? What the quick save or load screen opened for, for `trx.ui.Screen.SAVE_LOAD`.
----@field level trx.game.Level? The level whose statistics the screen shows, for `trx.ui.Screen.STATS`. The totals name the level that ended the game.
----@field is_final boolean? Whether the screen shows the totals for the whole game rather than one level, for `trx.ui.Screen.STATS`.
----@field is_bare boolean? Whether the screen is drawn bare, as plain lines of text without a frame, for `trx.ui.Screen.STATS`.
----@field background string? The picture the screen stands on, as `trx.ui.primitive.background` takes it, or `nil` for none.
 ---@field is_held boolean Whether the script still holds the screen.
----@field display_ticks integer? How many ticks a screen shown for a time, such as `trx.ui.Screen.LEVEL_VIEW`, shows before it fades out.
----@field fade_in_ticks integer? How many ticks a screen shown for a time, such as `trx.ui.Screen.LEVEL_VIEW`, takes to fade in.
----@field fade_out_ticks integer? How many ticks a screen shown for a time, such as `trx.ui.Screen.LEVEL_VIEW`, takes to fade out.
----@field is_loading boolean? Whether the picture shows while a level loads, for `trx.ui.Screen.PICTURE`.
----@field can_cross_fade_in boolean? Whether the picture may fade in from the frame shown before it, rather than from black, for `trx.ui.Screen.PICTURE`.
 local Context = h.class("ui.ScreenContext", {
   fields = {
     screen = {
@@ -253,26 +196,11 @@ local Context = h.class("ui.ScreenContext", {
         return rawget(self, "_screen")
       end,
     },
-    object = reported("object"),
-    mode = reported("mode"),
-    level = reported("level"),
-    is_final = reported("is_final"),
-    is_bare = reported("is_bare"),
-    background = {
-      get = function(self)
-        return raw.background(rawget(self, "_screen"))
-      end,
-    },
     is_held = {
       get = function(self)
         return not rawget(self, "_done")
       end,
     },
-    is_loading = reported("is_loading"),
-    can_cross_fade_in = reported("can_cross_fade_in"),
-    display_ticks = reported("display_ticks"),
-    fade_in_ticks = reported("fade_in_ticks"),
-    fade_out_ticks = reported("fade_out_ticks"),
   },
 })
 
@@ -320,26 +248,6 @@ function Context:on_end(callback)
   ended[#ended + 1] = callback
 end
 
----Ends the pause screen, and returns to the game. Only `trx.ui.Screen.PAUSE`
----takes this.
----@return boolean # Whether the screen was still held.
-function Context:resume()
-  if rawget(self, "_screen") ~= trx.ui.Screen.PAUSE then
-    error("only the pause screen resumes the game", 2)
-  end
-  return finish(self, choices.RESUME)
-end
-
----Ends the pause screen, and leaves for the title screen with the pause
----screen's fade. Only `trx.ui.Screen.PAUSE` takes this.
----@return boolean # Whether the screen was still held.
-function Context:exit_to_title()
-  if rawget(self, "_screen") ~= trx.ui.Screen.PAUSE then
-    error("only the pause screen leaves for the title screen", 2)
-  end
-  return finish(self, choices.EXIT_TO_TITLE)
-end
-
 ---Ends the screen, and closes its layers. A ring entry is put away, the pause
 ---screen stays paused and drops its question, the quick save or load screen
 ---closes, and the statistics screen ends as the player skipping it does. Does
@@ -358,15 +266,163 @@ function Context:confirm()
   return finish(self, choices.CONFIRM)
 end
 
+---The context of an entry of the inventory ring, for
+---`trx.ui.Screen.RING_ENTRY`, `trx.ui.Screen.EXAMINE` and
+---`trx.ui.Screen.COMBINE`.
+---@class (exact) trx.ui.EntryContext: trx.ui.ScreenContext
+---@trx.readonly object
+---@field object trx.catalog.objects The entry that the player uses, examines or combines.
+local EntryContext = h.class("ui.EntryContext", {
+  extends = "ui.ScreenContext",
+  fields = { object = reported("object") },
+})
+
+---The context of the pause screen, for `trx.ui.Screen.PAUSE`.
+---@class (exact) trx.ui.PauseContext: trx.ui.ScreenContext
+local Pause = h.class("ui.PauseContext", { extends = "ui.ScreenContext" })
+
+---Ends the pause screen, and returns to the game.
+---@return boolean # Whether the screen was still held.
+function Pause:resume()
+  return finish(self, choices.RESUME)
+end
+
+---Ends the pause screen, and leaves for the title screen with the pause
+---screen's fade.
+---@return boolean # Whether the screen was still held.
+function Pause:exit_to_title()
+  return finish(self, choices.EXIT_TO_TITLE)
+end
+
+---The context of the quick save or load screen, for
+---`trx.ui.Screen.SAVE_LOAD`.
+---@class (exact) trx.ui.SaveLoadContext: trx.ui.ScreenContext
+---@trx.readonly mode
+---@field mode trx.inventory_ring.Mode Whether the screen opened for saving or for loading.
+local SaveLoadContext = h.class("ui.SaveLoadContext", {
+  extends = "ui.ScreenContext",
+  fields = { mode = reported("mode") },
+})
+
+---The context of the statistics screen, for `trx.ui.Screen.STATS`.
+---@class (exact) trx.ui.StatsContext: trx.ui.ScreenContext
+---@trx.readonly background, is_bare, is_final, level
+---@field level trx.game.Level The level whose statistics the screen shows. The totals name the level that ended the game.
+---@field is_final boolean Whether the screen shows the totals for the whole game rather than one level.
+---@field is_bare boolean Whether the screen is drawn bare, as plain lines of text without a frame.
+---@field background string? The picture the screen stands on, as `trx.ui.primitive.background` takes it, or `nil` for none.
+local StatsContext = h.class("ui.StatsContext", {
+  extends = "ui.ScreenContext",
+  fields = {
+    level = reported("level"),
+    is_final = reported("is_final"),
+    is_bare = reported("is_bare"),
+    background = background,
+  },
+})
+
+---The context of the TR3 globe, for `trx.ui.Screen.GLOBE_SELECT`.
+---@class (exact) trx.ui.GlobeContext: trx.ui.ScreenContext
+---@trx.readonly background
+---@field background string? The picture the globe stands on, as `trx.ui.primitive.background` takes it, or `nil` for none.
+local GlobeContext = h.class("ui.GlobeContext", {
+  extends = "ui.ScreenContext",
+  fields = { background = background },
+})
+
+---The context of a screen that the game shows for a time, for
+---`trx.ui.Screen.LEVEL_VIEW`.
+---@class (exact) trx.ui.TimedContext: trx.ui.ScreenContext
+---@trx.readonly display_ticks, fade_in_ticks, fade_out_ticks
+---@field display_ticks integer How many ticks the screen shows before it fades out.
+---@field fade_in_ticks integer How many ticks the screen takes to fade in.
+---@field fade_out_ticks integer How many ticks the screen takes to fade out.
+local TimedContext = h.class("ui.TimedContext", {
+  extends = "ui.ScreenContext",
+  fields = {
+    display_ticks = reported("display_ticks"),
+    fade_in_ticks = reported("fade_in_ticks"),
+    fade_out_ticks = reported("fade_out_ticks"),
+  },
+})
+
+---The context of a picture, for `trx.ui.Screen.PICTURE`.
+---@class (exact) trx.ui.PictureContext: trx.ui.TimedContext
+---@trx.readonly background, can_cross_fade_in, is_loading
+---@field background string? The picture, as `trx.ui.primitive.background` takes it, or `nil` for none.
+---@field is_loading boolean Whether the picture shows while a level loads.
+---@field can_cross_fade_in boolean Whether the picture may fade in from the frame shown before it, rather than from black.
+local PictureContext = h.class("ui.PictureContext", {
+  extends = "ui.TimedContext",
+  fields = {
+    background = background,
+    is_loading = reported("is_loading"),
+    can_cross_fade_in = reported("can_cross_fade_in"),
+  },
+})
+
+-- The fields each screen reports, read out of the number that the engine
+-- opens it with.
+local function entry_fields(_, arg)
+  return { object = arg }
+end
+
+local function timing_fields(screen)
+  local display, fade_in, fade_out = raw.timing(screen)
+  return {
+    display_ticks = display,
+    fade_in_ticks = fade_in,
+    fade_out_ticks = fade_out,
+  }
+end
+
+-- The context class of each screen, and the fields that it reads out of the
+-- number the engine opens the screen with.
+---@type table<integer, { class: table, fields?: fun(screen: integer, arg: integer): table }>
+local KINDS = {
+  [trx.ui.Screen.RING_ENTRY] = { class = EntryContext, fields = entry_fields },
+  [trx.ui.Screen.EXAMINE] = { class = EntryContext, fields = entry_fields },
+  [trx.ui.Screen.COMBINE] = { class = EntryContext, fields = entry_fields },
+  [trx.ui.Screen.PAUSE] = { class = Pause },
+  [trx.ui.Screen.SAVE_LOAD] = {
+    class = SaveLoadContext,
+    fields = function(_, arg)
+      return { mode = arg }
+    end,
+  },
+  [trx.ui.Screen.STATS] = {
+    class = StatsContext,
+    fields = function(_, arg)
+      local num = arg & 0xffff
+      return {
+        level = num == 0 and trx.game.gym or trx.game.levels[num],
+        is_final = arg & 0x10000 ~= 0,
+        is_bare = arg & 0x20000 ~= 0,
+      }
+    end,
+  },
+  [trx.ui.Screen.GLOBE_SELECT] = { class = GlobeContext },
+  [trx.ui.Screen.LEVEL_VIEW] = { class = TimedContext, fields = timing_fields },
+  [trx.ui.Screen.PICTURE] = {
+    class = PictureContext,
+    fields = function(screen, arg)
+      local fields = timing_fields(screen)
+      fields.is_loading = arg & 0x1 ~= 0
+      fields.can_cross_fade_in = arg & 0x2 ~= 0
+      return fields
+    end,
+  },
+}
+
 local function new_context(screen, arg)
-  local fields = FIELDS[screen]
+  local kind = KINDS[screen]
   return setmetatable({
     _screen = screen,
-    _fields = fields ~= nil and fields(screen, arg) or {},
+    _fields = kind.fields ~= nil and kind.fields(screen, arg) or {},
     _layers = {},
     _ended = {},
     _done = false,
-  }, Context)
+  }, kind.class)
 end
 
 -------------------------------------------------------------------------------

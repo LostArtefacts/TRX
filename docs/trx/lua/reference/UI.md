@@ -162,26 +162,27 @@ arrow, and `\{button left}` draws the button the player has bound.
 
 - <a id="ui.Screen" name="ui.Screen"></a>[lua]`trx.ui.Screen`
 
-    An engine screen that a script can draw.
+    An engine screen that a script can draw. Each screen hands its definition
+    a context of its own kind, which reports what the screen shows.
 
     - `trx.ui.Screen.RING_ENTRY`  
-        An entry that the player uses in the inventory ring. The context reports the entry as [`trx.ui.ScreenContext.object`](#ui.ScreenContext.object). A definition can name the entry it draws. A ring opened to save or load leaves when the screen ends, and any ring leaves when the screen ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm).
+        An entry that the player uses in the inventory ring, with a [`trx.ui.EntryContext`](#ui.EntryContext). A definition can name the entry it draws. A ring opened to save or load leaves when the screen ends, and any ring leaves when the screen ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm).
     - `trx.ui.Screen.PAUSE`  
-        The question that the pause screen asks when the player presses the inventory key: whether to leave for the title screen.
+        The question that the pause screen asks when the player presses the inventory key: whether to leave for the title screen. It has a [`trx.ui.PauseContext`](#ui.PauseContext).
     - `trx.ui.Screen.SAVE_LOAD`  
-        The quick save or load screen. The save and load keys open it when the instant screen setting is on. The context reports whether it opened for saving or loading as [`trx.ui.ScreenContext.mode`](#ui.ScreenContext.mode).
+        The quick save or load screen, with a [`trx.ui.SaveLoadContext`](#ui.SaveLoadContext). The save and load keys open it when the instant screen setting is on.
     - `trx.ui.Screen.STATS`  
-        The statistics that the game shows when a level ends, and the totals it shows when the game ends. The context reports the level as [`trx.ui.ScreenContext.level`](#ui.ScreenContext.level), the totals as [`trx.ui.ScreenContext.is_final`](#ui.ScreenContext.is_final), and the player's choice of the bare look as [`trx.ui.ScreenContext.is_bare`](#ui.ScreenContext.is_bare). The player skips the screen as they would the engine's, and the screen also ends with [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel) or [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm).
+        The statistics that the game shows when a level ends, and the totals it shows when the game ends, with a [`trx.ui.StatsContext`](#ui.StatsContext). The player skips the screen as they would the engine's, and the screen also ends with [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel) or [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm).
     - `trx.ui.Screen.EXAMINE`  
-        An entry that the player examines in the inventory ring: its name and description, and turning it by hand. The context reports the entry as [`trx.ui.ScreenContext.object`](#ui.ScreenContext.object). The screen ends with [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel), which puts the entry away.
+        An entry that the player examines in the inventory ring: its name and description, and turning it by hand. It has a [`trx.ui.EntryContext`](#ui.EntryContext). The screen ends with [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel), which puts the entry away.
     - `trx.ui.Screen.COMBINE`  
-        An entry that the player combines in the inventory ring: picking what to combine it with, out of [`trx.inventory.combine_partners`](INVENTORY.md#inventory.combine_partners), and combining the two with [`trx.inventory.combine`](INVENTORY.md#inventory.combine). The context reports the entry as [`trx.ui.ScreenContext.object`](#ui.ScreenContext.object). The screen ends with [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel) or [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm), which both put the entry away, and the ring then rests on what a combination made.
+        An entry that the player combines in the inventory ring: picking what to combine it with, out of [`trx.inventory.combine_partners`](INVENTORY.md#inventory.combine_partners), and combining the two with [`trx.inventory.combine`](INVENTORY.md#inventory.combine). It has a [`trx.ui.EntryContext`](#ui.EntryContext). The screen ends with [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel) or [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm), which both put the entry away, and the ring then rests on what a combination made.
     - `trx.ui.Screen.GLOBE_SELECT`  
-        The globe that TR3 picks its next adventure on, between levels. The context reports the picture it stands on as [`trx.ui.ScreenContext.background`](#ui.ScreenContext.background). The script picks an adventure by starting its level with [`trx.game.play_level`](GAME.md#game.play_level), and [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel) leaves for the title screen.
+        The globe that TR3 picks its next adventure on, between levels, with a [`trx.ui.GlobeContext`](#ui.GlobeContext). The script picks an adventure by starting its level with [`trx.game.play_level`](GAME.md#game.play_level), and [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel) leaves for the title screen.
     - `trx.ui.Screen.LEVEL_VIEW`  
-        A view of the level from one of its cameras, which the game shows while the level starts, as TR4 does. The context reports how long the view shows and fades as [`trx.ui.ScreenContext.display_ticks`](#ui.ScreenContext.display_ticks), [`trx.ui.ScreenContext.fade_in_ticks`](#ui.ScreenContext.fade_in_ticks) and [`trx.ui.ScreenContext.fade_out_ticks`](#ui.ScreenContext.fade_out_ticks). The view ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm) or [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel).
+        A view of the level from one of its cameras, which the game shows while the level starts, as TR4 does. It has a [`trx.ui.TimedContext`](#ui.TimedContext). The view ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm) or [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel).
     - `trx.ui.Screen.PICTURE`  
-        A picture that the game shows between levels, while a level loads, or for the legal notice and the credits. The context reports the picture as [`trx.ui.ScreenContext.background`](#ui.ScreenContext.background), its timing as [`trx.ui.ScreenContext.display_ticks`](#ui.ScreenContext.display_ticks), [`trx.ui.ScreenContext.fade_in_ticks`](#ui.ScreenContext.fade_in_ticks) and [`trx.ui.ScreenContext.fade_out_ticks`](#ui.ScreenContext.fade_out_ticks), and its kind as [`trx.ui.ScreenContext.is_loading`](#ui.ScreenContext.is_loading) and [`trx.ui.ScreenContext.can_cross_fade_in`](#ui.ScreenContext.can_cross_fade_in). The picture ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm) or [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel).
+        A picture that the game shows between levels, while a level loads, or for the legal notice and the credits, with a [`trx.ui.PictureContext`](#ui.PictureContext). The picture ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm) or [`trx.ui.ScreenContext:cancel`](#ui.ScreenContext.cancel).
 
 ### Structures
 
@@ -303,21 +304,12 @@ arrow, and `\{button left}` draws the button the player has bound.
 
 - <a id="ui.ScreenContext" name="ui.ScreenContext"></a>[lua]`trx.ui.ScreenContext`
 
-    A screen that a script holds, which the definition receives.
+    A screen that a script holds, which the definition receives. Each screen
+    hands over a context of its own kind, which adds what that screen reports to
+    what every screen has.
 
     Properties:
-    - <a id="ui.ScreenContext.background" name="ui.ScreenContext.background"></a>**`background`**: string. The picture the screen stands on, as [`trx.ui.primitive.background`](#ui.primitive.background) takes it, or `nil` for none. *(read-only)*
-    - <a id="ui.ScreenContext.can_cross_fade_in" name="ui.ScreenContext.can_cross_fade_in"></a>**`can_cross_fade_in`**: boolean. Whether the picture may fade in from the frame shown before it, rather than from black, for [`trx.ui.Screen.PICTURE`](#ui.Screen). *(read-only)*
-    - <a id="ui.ScreenContext.display_ticks" name="ui.ScreenContext.display_ticks"></a>**`display_ticks`**: integer. How many ticks a screen shown for a time, such as [`trx.ui.Screen.LEVEL_VIEW`](#ui.Screen), shows before it fades out. *(read-only)*
-    - <a id="ui.ScreenContext.fade_in_ticks" name="ui.ScreenContext.fade_in_ticks"></a>**`fade_in_ticks`**: integer. How many ticks a screen shown for a time, such as [`trx.ui.Screen.LEVEL_VIEW`](#ui.Screen), takes to fade in. *(read-only)*
-    - <a id="ui.ScreenContext.fade_out_ticks" name="ui.ScreenContext.fade_out_ticks"></a>**`fade_out_ticks`**: integer. How many ticks a screen shown for a time, such as [`trx.ui.Screen.LEVEL_VIEW`](#ui.Screen), takes to fade out. *(read-only)*
-    - <a id="ui.ScreenContext.is_bare" name="ui.ScreenContext.is_bare"></a>**`is_bare`**: boolean. Whether the screen is drawn bare, as plain lines of text without a frame, for [`trx.ui.Screen.STATS`](#ui.Screen). *(read-only)*
-    - <a id="ui.ScreenContext.is_final" name="ui.ScreenContext.is_final"></a>**`is_final`**: boolean. Whether the screen shows the totals for the whole game rather than one level, for [`trx.ui.Screen.STATS`](#ui.Screen). *(read-only)*
     - <a id="ui.ScreenContext.is_held" name="ui.ScreenContext.is_held"></a>**`is_held`**: boolean. Whether the script still holds the screen. *(read-only)*
-    - <a id="ui.ScreenContext.is_loading" name="ui.ScreenContext.is_loading"></a>**`is_loading`**: boolean. Whether the picture shows while a level loads, for [`trx.ui.Screen.PICTURE`](#ui.Screen). *(read-only)*
-    - <a id="ui.ScreenContext.level" name="ui.ScreenContext.level"></a>**`level`**: [trx.game.Level](GAME.md#game.Level). The level whose statistics the screen shows, for [`trx.ui.Screen.STATS`](#ui.Screen). The totals name the level that ended the game. *(read-only)*
-    - <a id="ui.ScreenContext.mode" name="ui.ScreenContext.mode"></a>**`mode`**: [trx.inventory_ring.Mode](INVENTORY_RING.md#inventory_ring.Mode). What the quick save or load screen opened for, for [`trx.ui.Screen.SAVE_LOAD`](#ui.Screen). *(read-only)*
-    - <a id="ui.ScreenContext.object" name="ui.ScreenContext.object"></a>**`object`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The ring entry that the player uses, for [`trx.ui.Screen.RING_ENTRY`](#ui.Screen), examines, for [`trx.ui.Screen.EXAMINE`](#ui.Screen), or combines, for [`trx.ui.Screen.COMBINE`](#ui.Screen). *(read-only)*
     - <a id="ui.ScreenContext.screen" name="ui.ScreenContext.screen"></a>**`screen`**: [trx.ui.Screen](#ui.Screen). The screen. *(read-only)*
 
     Methods:
@@ -335,12 +327,6 @@ arrow, and `\{button left}` draws the button the player has bound.
       ring entry leaves the ring, as an entry that the player uses does, a
       combined entry is put away, and the statistics screen ends as the player
       skipping it does. Does nothing if the screen has already ended.
-
-      Returns: boolean. Whether the screen was still held.
-
-    - <a id="ui.ScreenContext.exit_to_title" name="ui.ScreenContext.exit_to_title"></a>[lua]`screencontext:exit_to_title()`  
-      Ends the pause screen, and leaves for the title screen with the pause
-      screen's fade. Only [`trx.ui.Screen.PAUSE`](#ui.Screen) takes this.
 
       Returns: boolean. Whether the screen was still held.
 
@@ -376,11 +362,75 @@ arrow, and `\{button left}` draws the button the player has bound.
 
       Returns: [trx.ui.StackLayer](#ui.StackLayer). The pushed layer.
 
-    - <a id="ui.ScreenContext.resume" name="ui.ScreenContext.resume"></a>[lua]`screencontext:resume()`  
-      Ends the pause screen, and returns to the game. Only [`trx.ui.Screen.PAUSE`](#ui.Screen)
-      takes this.
+- <a id="ui.EntryContext" name="ui.EntryContext"></a>[lua]`trx.ui.EntryContext`
+
+    The context of an entry of the inventory ring, for
+    [`trx.ui.Screen.RING_ENTRY`](#ui.Screen), [`trx.ui.Screen.EXAMINE`](#ui.Screen) and
+    [`trx.ui.Screen.COMBINE`](#ui.Screen).
+
+    Properties:
+    - <a id="ui.EntryContext.object" name="ui.EntryContext.object"></a>**`object`**: [trx.catalog.objects](CATALOG.md#catalog.objects). The entry that the player uses, examines or combines. *(read-only)*
+
+- <a id="ui.PauseContext" name="ui.PauseContext"></a>[lua]`trx.ui.PauseContext`
+
+    The context of the pause screen, for [`trx.ui.Screen.PAUSE`](#ui.Screen).
+
+    Methods:
+
+    - <a id="ui.PauseContext.exit_to_title" name="ui.PauseContext.exit_to_title"></a>[lua]`pausecontext:exit_to_title()`  
+      Ends the pause screen, and leaves for the title screen with the pause
+      screen's fade.
 
       Returns: boolean. Whether the screen was still held.
+
+    - <a id="ui.PauseContext.resume" name="ui.PauseContext.resume"></a>[lua]`pausecontext:resume()`  
+      Ends the pause screen, and returns to the game.
+
+      Returns: boolean. Whether the screen was still held.
+
+- <a id="ui.SaveLoadContext" name="ui.SaveLoadContext"></a>[lua]`trx.ui.SaveLoadContext`
+
+    The context of the quick save or load screen, for
+    [`trx.ui.Screen.SAVE_LOAD`](#ui.Screen).
+
+    Properties:
+    - <a id="ui.SaveLoadContext.mode" name="ui.SaveLoadContext.mode"></a>**`mode`**: [trx.inventory_ring.Mode](INVENTORY_RING.md#inventory_ring.Mode). Whether the screen opened for saving or for loading. *(read-only)*
+
+- <a id="ui.StatsContext" name="ui.StatsContext"></a>[lua]`trx.ui.StatsContext`
+
+    The context of the statistics screen, for [`trx.ui.Screen.STATS`](#ui.Screen).
+
+    Properties:
+    - <a id="ui.StatsContext.background" name="ui.StatsContext.background"></a>**`background`**: string. The picture the screen stands on, as [`trx.ui.primitive.background`](#ui.primitive.background) takes it, or `nil` for none. *(read-only)*
+    - <a id="ui.StatsContext.is_bare" name="ui.StatsContext.is_bare"></a>**`is_bare`**: boolean. Whether the screen is drawn bare, as plain lines of text without a frame. *(read-only)*
+    - <a id="ui.StatsContext.is_final" name="ui.StatsContext.is_final"></a>**`is_final`**: boolean. Whether the screen shows the totals for the whole game rather than one level. *(read-only)*
+    - <a id="ui.StatsContext.level" name="ui.StatsContext.level"></a>**`level`**: [trx.game.Level](GAME.md#game.Level). The level whose statistics the screen shows. The totals name the level that ended the game. *(read-only)*
+
+- <a id="ui.GlobeContext" name="ui.GlobeContext"></a>[lua]`trx.ui.GlobeContext`
+
+    The context of the TR3 globe, for [`trx.ui.Screen.GLOBE_SELECT`](#ui.Screen).
+
+    Properties:
+    - <a id="ui.GlobeContext.background" name="ui.GlobeContext.background"></a>**`background`**: string. The picture the globe stands on, as [`trx.ui.primitive.background`](#ui.primitive.background) takes it, or `nil` for none. *(read-only)*
+
+- <a id="ui.TimedContext" name="ui.TimedContext"></a>[lua]`trx.ui.TimedContext`
+
+    The context of a screen that the game shows for a time, for
+    [`trx.ui.Screen.LEVEL_VIEW`](#ui.Screen).
+
+    Properties:
+    - <a id="ui.TimedContext.display_ticks" name="ui.TimedContext.display_ticks"></a>**`display_ticks`**: integer. How many ticks the screen shows before it fades out. *(read-only)*
+    - <a id="ui.TimedContext.fade_in_ticks" name="ui.TimedContext.fade_in_ticks"></a>**`fade_in_ticks`**: integer. How many ticks the screen takes to fade in. *(read-only)*
+    - <a id="ui.TimedContext.fade_out_ticks" name="ui.TimedContext.fade_out_ticks"></a>**`fade_out_ticks`**: integer. How many ticks the screen takes to fade out. *(read-only)*
+
+- <a id="ui.PictureContext" name="ui.PictureContext"></a>[lua]`trx.ui.PictureContext`
+
+    The context of a picture, for [`trx.ui.Screen.PICTURE`](#ui.Screen).
+
+    Properties:
+    - <a id="ui.PictureContext.background" name="ui.PictureContext.background"></a>**`background`**: string. The picture, as [`trx.ui.primitive.background`](#ui.primitive.background) takes it, or `nil` for none. *(read-only)*
+    - <a id="ui.PictureContext.can_cross_fade_in" name="ui.PictureContext.can_cross_fade_in"></a>**`can_cross_fade_in`**: boolean. Whether the picture may fade in from the frame shown before it, rather than from black. *(read-only)*
+    - <a id="ui.PictureContext.is_loading" name="ui.PictureContext.is_loading"></a>**`is_loading`**: boolean. Whether the picture shows while a level loads. *(read-only)*
 
 - <a id="ui.Tween" name="ui.Tween"></a>[lua]`trx.ui.Tween`
 

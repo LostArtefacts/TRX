@@ -146,6 +146,7 @@ local function control(ctx, state, layer, keys)
   end
 end
 
+---@param ctx trx.ui.EntryContext
 local function open(ctx)
   local state = {}
   return ctx:push({
