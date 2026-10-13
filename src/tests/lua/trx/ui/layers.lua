@@ -641,7 +641,7 @@ test("a fade layer closes at rest when told to, and says so once", function()
       closed = closed + 1
     end,
   })
-  layer:to(0, 2, nil, {
+  layer:to(0, 2, {
     close = true,
     on_done = function()
       done = done + 1
@@ -658,13 +658,13 @@ end)
 test("a move cut short by another reports only the last", function()
   local first, second = 0, 0
   local layer = trx.ui.layers.fade({ fill = BLACK, opacity = 0 })
-  layer:to(1, 8, nil, {
+  layer:to(1, 8, {
     on_done = function()
       first = first + 1
     end,
   })
   fake.tick()
-  layer:to(0, 1, nil, {
+  layer:to(0, 1, {
     on_done = function()
       second = second + 1
     end,
@@ -678,7 +678,7 @@ end)
 test("a move of no ticks ends on the next tick", function()
   local done = 0
   local layer = trx.ui.layers.fade({ fill = BLACK, opacity = 0 })
-  layer:to(1, 0, nil, {
+  layer:to(1, 0, {
     on_done = function()
       done = done + 1
     end,

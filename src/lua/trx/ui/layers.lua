@@ -334,6 +334,7 @@ function FadeLayer:close()
 end
 
 ---@class (exact) trx.ui.FadeLayer.to.options
+---@field curve? function The curve of the move, one of `trx.ui.ease`. `trx.ui.ease.linear` by default.
 ---@field close? boolean Whether the layer closes once the move ends. `false` by default.
 ---@field on_done? function Runs once when the move ends, and not if another move or a close cuts it short. A move of no ticks made in a tick handler ends within that tick. It receives the layer.
 
@@ -341,15 +342,14 @@ end
 ---the fade settings are.
 ---@param target number The opacity to go to, from `0` to `1`.
 ---@param ticks integer How many ticks the move takes.
----@param curve? function The curve of the move, one of `trx.ui.ease`. `trx.ui.ease.linear` by default.
----@param options? trx.ui.FadeLayer.to.options What happens when the move ends.
+---@param options? trx.ui.FadeLayer.to.options How the move goes, and what happens when it ends.
 ---@return trx.ui.FadeLayer # The same layer.
-function FadeLayer:to(target, ticks, curve, options)
-  local name = curve_name(curve)
+function FadeLayer:to(target, ticks, options)
+  options = options or {}
+  local name = curve_name(options.curve)
   if name == nil then
     error("the curve is not one of trx.ui.ease", 2)
   end
-  options = options or {}
   rawset(self, "_on_done", options.on_done)
   raw_fade.to(rawget(self, "_id"), target, ticks, name, options.close == true)
   return self
@@ -368,7 +368,7 @@ end
 ---
 ---```lua
 ---local black = trx.ui.layers.fade({ fill = trx.math.color("000000"), opacity = 0 })
----black:to(1, 15, nil, { close = true })
+---black:to(1, 15, { close = true })
 ---```
 ---@param settings trx.ui.layers.fade.settings The layer settings.
 ---@return trx.ui.FadeLayer # The layer.

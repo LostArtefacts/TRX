@@ -60,7 +60,7 @@ local CURVES = {
 ---
 ---```lua
 ---local slide = trx.ui.tween(0)
----slide:to(1, 8, trx.ui.ease.quad_in_out)
+---slide:to(1, 8, { curve = trx.ui.ease.quad_in_out })
 ---paint = function(x, y)
 ---  trx.ui.primitive.text("hi", x + 100 * slide:get(), y)
 ---end
@@ -90,20 +90,21 @@ function Tween:is_moving()
 end
 
 ---@class (exact) trx.ui.Tween.to.options
+---@field curve? function The curve of the move, one of `trx.ui.ease`. `trx.ui.ease.linear` by default. Any other function raises an error.
 ---@field delay? integer How many ticks to wait before the move starts. The value holds still while it waits, and `trx.ui.Tween:is_moving` reports true. `0` by default.
 
 ---Starts moving to a target from wherever the value is now.
 ---@param target number Where to go.
 ---@param ticks integer How many ticks the move takes.
----@param curve? function The curve of the move, one of `trx.ui.ease`. `trx.ui.ease.linear` by default. Any other function raises an error.
----@param options? trx.ui.Tween.to.options When the move starts.
+---@param options? trx.ui.Tween.to.options How the move goes.
 ---@return trx.ui.Tween # The same tween.
-function Tween:to(target, ticks, curve, options)
-  local name = CURVES[curve or ease.linear]
+function Tween:to(target, ticks, options)
+  options = options or {}
+  local name = CURVES[options.curve or ease.linear]
   if name == nil then
     error("the curve is not one of trx.ui.ease", 2)
   end
-  local delay = options ~= nil and options.delay or 0
+  local delay = options.delay or 0
   raw.to(rawget(self, "_raw"), target, ticks, name, delay)
   return self
 end
