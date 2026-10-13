@@ -374,8 +374,9 @@ function M.class(path, spec)
     end
   end
 
+  -- An inherited field is checked on the type that declares it.
   local fields = {}
-  for name in pairs(getters) do
+  for name in pairs(spec.fields or {}) do
     fields[name] = setters[name] ~= nil
   end
   reflected.class_fields[path] = fields
