@@ -46,17 +46,37 @@ end
 ---@field private left? trx.ui.FadeLayer
 ---@field private pending? table
 ---@field private holding? common.timer.Timer
+---@field private layers trx.ui.FadeLayer[]
 local Screen = {}
 Screen.__index = Screen
 
 -- A screen's fades, which close with the screen. `enabled` decides whether
 -- they run, `fade.enabled` by default.
 function M.screen(ctx, options)
-  return setmetatable({
+  ---@type common.ui.fade.Screen
+  local self = setmetatable({
     ctx = ctx,
     is_enabled = options ~= nil and options.enabled or M.enabled,
     entered_fill = false,
+    layers = {},
   }, Screen)
+  ctx:on_end(function()
+    if self.holding ~= nil then
+      self.holding:cancel()
+      self.holding = nil
+    end
+    for _, layer in ipairs(self.layers) do
+      layer:close()
+    end
+  end)
+  return self
+end
+
+-- Puts up a fade layer that closes with the screen.
+function Screen:fade(settings)
+  local layer = trx.ui.layers.fade(settings)
+  self.layers[#self.layers + 1] = layer
+  return layer
 end
 
 function Screen:ticks(ticks)
@@ -113,7 +133,7 @@ function Screen:enter(options)
   local spec = options.layer or { fill = BLACK }
   local from = options.from or 1
   local to = options.to or 0
-  local layer = self.ctx:fade(layer_settings(spec, from))
+  local layer = self:fade(layer_settings(spec, from))
   self.entered = layer
   self.entered_fill = spec.fill ~= nil
   if from ~= to then
@@ -132,7 +152,7 @@ function Screen:leave(options)
   local ctx = self.ctx
   local layer = self.entered
   if layer == nil or not layer.is_open or not self.entered_fill then
-    layer = ctx:fade({ fill = BLACK, opacity = 0 })
+    layer = self:fade({ fill = BLACK, opacity = 0 })
   end
   self.left = layer
   local on_done = options.on_done

@@ -344,23 +344,20 @@ arrow, and `\{button left}` draws the button the player has bound.
 
       Returns: boolean. Whether the screen was still held.
 
-    - <a id="ui.ScreenContext.fade" name="ui.ScreenContext.fade"></a>[lua]`screencontext:fade(settings)`  
-      Puts a fade layer that belongs to the screen on top of the other fade
-      layers, with the settings that [`trx.ui.layers.fade`](#ui.layers.fade) takes. The layer closes
-      when the screen ends.
+    - <a id="ui.ScreenContext.on_end" name="ui.ScreenContext.on_end"></a>[lua]`screencontext:on_end(callback)`  
+      Runs a function once the screen ends, for any reason, after its layers have
+      closed.
 
       Parameters:
-      - <a id="ui.ScreenContext.fade.settings" name="ui.ScreenContext.fade.settings"></a>**`settings`** (table). The layer settings.
+      - <a id="ui.ScreenContext.on_end.callback" name="ui.ScreenContext.on_end.callback"></a>**`callback`** (function). What to run.
 
-        Keys:
-        - <a id="ui.ScreenContext.fade.settings.fill" name="ui.ScreenContext.fade.settings.fill"></a>**`fill`** ([trx.math.Color](MATH.md#math.Color), optional). The colour that the layer holds.
-        - <a id="ui.ScreenContext.fade.settings.snapshot" name="ui.ScreenContext.fade.settings.snapshot"></a>**`snapshot`** (boolean, optional). Whether the layer holds the frame on screen now, in place of a colour.
-        - <a id="ui.ScreenContext.fade.settings.backdrop" name="ui.ScreenContext.fade.settings.backdrop"></a>**`backdrop`** (string, optional). The backdrop style that the layer holds, in place of a colour, by the names that the `ui.stats_background_style` setting takes.
-        - <a id="ui.ScreenContext.fade.settings.path" name="ui.ScreenContext.fade.settings.path"></a>**`path`** (string, optional). The picture of an `image` backdrop, as [`trx.ui.primitive.background`](#ui.primitive.background) takes it.
-        - <a id="ui.ScreenContext.fade.settings.opacity" name="ui.ScreenContext.fade.settings.opacity"></a>**`opacity`** (number, optional). How opaque the layer starts, from `0` to `1`. `1` by default.
-        - <a id="ui.ScreenContext.fade.settings.on_close" name="ui.ScreenContext.fade.settings.on_close"></a>**`on_close`** (function, optional). Runs once when the layer closes, for any reason. It receives the layer.
-
-      Returns: [trx.ui.FadeLayer](#ui.FadeLayer). The layer.
+      Example:
+      ```lua
+      local black = trx.ui.layers.fade({ fill = trx.math.color("000000") })
+      ctx:on_end(function()
+        black:close()
+      end)
+      ```
 
     - <a id="ui.ScreenContext.push" name="ui.ScreenContext.push"></a>[lua]`screencontext:push(settings)`  
       Pushes a layer that belongs to the screen, with the settings that

@@ -206,6 +206,32 @@ test("a screen that has ended pushes no more layers", function()
   finish_case()
 end)
 
+test("a screen runs its end callbacks once its layers have closed", function()
+  local order = {}
+  local held
+  define(RING_ENTRY, function(ctx)
+    held = ctx
+    ctx:on_end(function()
+      order[#order + 1] = "ended"
+    end)
+    return ctx:push({
+      root = label("ending"),
+      on_close = function()
+        order[#order + 1] = "closed"
+      end,
+    })
+  end)
+  fake.offer(RING_ENTRY, PASSPORT)
+  held:cancel()
+  held:cancel()
+  assert(#order == 2, #order)
+  assert(order[1] == "closed" and order[2] == "ended")
+  h.raises(function()
+    held:on_end(function() end)
+  end, "the screen has ended")
+  finish_case()
+end)
+
 test("a ring entry definition draws only its own entry", function()
   local seen
   define(

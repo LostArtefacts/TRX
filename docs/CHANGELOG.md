@@ -255,6 +255,7 @@
     - `trx.ui.Screen` and `trx.ui.ScreenContext`
     - `trx.ui.ScreenContext.level`, `trx.ui.ScreenContext.is_final` and `trx.ui.ScreenContext.is_bare`, which say what the statistics screen shows
     - `trx.ui.ScreenContext.background`, the picture a screen stands on
+    - `trx.ui.ScreenContext:on_end`, which runs a function once a screen ends
 - Added `trx.strings.upper` and `trx.strings.lower`, which change the case of the letters the game's font draws, beyond ASCII too
 - Added `trx.game.Level.is_completed`, which says whether the player has finished a level
 - Added `trx.game.sim_time`, the game's own clock, which its fades are timed by
@@ -265,7 +266,7 @@
 - Added `trx.ui.primitive.wrap_text` and `trx.strings.paginate`, which break text into lines and pages the way the game does
 - Added `trx.inventory_ring.turn_selection`, which turns the selected entry by hand, and `trx.inventory_ring.set_input_hints`, which shows hints for the keys that work now where the ring shows its button hints
 - Added `trx.inventory.combine_partners`, the entries the player carries that an entry combines with, and `trx.inventory.combine`, which combines two of them into what they make
-- Added fade layers, which the engine draws over its interface and below the console, their opacity moving on a curve: `trx.ui.layers.fade`, `trx.ui.FadeLayer` and `trx.ui.ScreenContext:fade`
+- Added fade layers, which the engine draws over its interface and below the console, their opacity moving on a curve: `trx.ui.layers.fade` and `trx.ui.FadeLayer`
 - Added backdrop fade layers, which bring in the backdrops the game draws behind its screens: `backdrop` and `path` in `trx.ui.layers.fade`
 - Added `trx.ui.Screen.LEVEL_VIEW`, so a script draws the views of the level that TR4 shows as a level starts, with `trx.ui.ScreenContext.display_ticks`, `trx.ui.ScreenContext.fade_in_ticks` and `trx.ui.ScreenContext.fade_out_ticks`
 - Added `trx.ui.Screen.PICTURE`, so a script draws the pictures the game shows between and while loading levels, with `trx.ui.ScreenContext.is_loading` and `trx.ui.ScreenContext.can_cross_fade_in`
