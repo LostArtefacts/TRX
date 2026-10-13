@@ -145,6 +145,12 @@ function Screen:leave(options)
   return layer
 end
 
+-- Keeps the screen black for some ticks after it has left, then runs
+-- `on_done`.
+function Screen:wait(ticks, on_done)
+  self:move(self.left, 1, 0, ticks, on_done)
+end
+
 -------------------------------------------------------------------------------
 -- Fades that outlive their screen
 -------------------------------------------------------------------------------
