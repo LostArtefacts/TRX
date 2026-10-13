@@ -1058,6 +1058,7 @@ end
 -- Opening the book
 -------------------------------------------------------------------------------
 
+---@param ctx trx.ui.EntryContext
 local function open(ctx)
   local mode = trx.inventory_ring.mode()
   local pages = determine_pages(mode)
@@ -1154,6 +1155,7 @@ end
 
 -- Opens the page of the quick save and load screens. A page with no list
 -- leaves the screen closed.
+---@param ctx trx.ui.SaveLoadContext
 local function open_save_load(ctx)
   local pages = determine_pages(ctx.mode)
   local index = first_available(pages)
@@ -1173,6 +1175,7 @@ end
 -- Opens the save page of the save crystal entry. The crystal saves only in the
 -- save pickup mode, and only from the ring that the player opened. The ring
 -- leaves the caption to the page, so the page names the crystal.
+---@param ctx trx.ui.EntryContext
 local function open_crystal(ctx)
   if
     trx.config.get("gameplay.save_crystal_mode") ~= "save_pickup"

@@ -19,6 +19,7 @@ local BAR = { width = 0.76, height = 12, y = 0.941 }
 
 local UI_CLOCK = { clock = timer.Clock.UI }
 
+---@param ctx trx.ui.PictureContext
 local function open(ctx)
   local fades = fade.screen(ctx)
   local progress = trx.ui.tween(0)

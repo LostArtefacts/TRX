@@ -221,6 +221,7 @@ local function control(ctx, state, layer, keys)
   end
 end
 
+---@param ctx trx.ui.EntryContext
 local function open(ctx)
   local object = trx.objects[ctx.object]
   local description = object ~= nil and object.description or nil

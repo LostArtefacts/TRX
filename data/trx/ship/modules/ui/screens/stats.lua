@@ -1010,6 +1010,7 @@ end
 
 -- The screen between levels and at the end of the game. It reads no keys:
 -- the player skips it as they skip the engine's own.
+---@param ctx trx.ui.StatsContext
 local function open_level_end(ctx)
   local mode = ctx.is_final and Mode.FINAL or Mode.LEVEL
   local state = new_state(ctx.level, mode, ctx.is_bare, false)
@@ -1077,6 +1078,7 @@ end
 -- The compass and the stopwatch in the inventory ring. The compass shows the
 -- statistics only where the player asks it to, and is otherwise just put
 -- away again.
+---@param ctx trx.ui.EntryContext
 local function open_ring_entry(ctx)
   local object = ctx.object
   local level = trx.game.current_level

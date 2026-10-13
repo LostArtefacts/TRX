@@ -40,6 +40,7 @@ local function question(title, first, second)
   return req
 end
 
+---@param ctx trx.ui.PauseContext
 local function open(ctx)
   local shown = trx.signal.new(true)
   local ask = question(

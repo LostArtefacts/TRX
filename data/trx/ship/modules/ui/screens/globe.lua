@@ -555,6 +555,7 @@ local function control(state, keys)
   run_ring(state, keys)
 end
 
+---@param ctx trx.ui.GlobeContext
 local function open(ctx)
   local areas = trx.game.globe()
   local state = {
