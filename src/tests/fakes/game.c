@@ -721,6 +721,14 @@ void FakeGame_SetGymPresent(const bool present)
     m_HasGym = present;
 }
 
+int32_t FakeGame_GetRingRestFrame(void)
+{
+    if (m_RingOpen && m_RingItem.current_frame == m_RingItem.goal_frame) {
+        return m_RingItem.current_frame;
+    }
+    return -1;
+}
+
 void FakeGame_SetCurrentLevel(const int32_t idx)
 {
     m_CurrentLevel = idx < 0 ? nullptr : &m_Levels[idx];

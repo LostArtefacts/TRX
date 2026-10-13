@@ -21,6 +21,10 @@ belongs to [`trx.inventory`](INVENTORY.md#inventory).
 A script draws what an entry opens by defining the
 [`trx.ui.Screen.RING_ENTRY`](UI.md#ui.Screen) screen.
 
+### Properties
+
+- <a id="inventory_ring.signals.rest_frame" name="inventory_ring.signals.rest_frame"></a>**`trx.inventory_ring.signals.rest_frame`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). Says when the entry that the player picked comes to rest, with the frame of its animation that it rests on, and when it moves again, goes back into the ring or the ring closes, with `nil`. A screen of an entry opens once the entry rests, and the passport reads the page it rests on. *(read-only)*
+
 ### Enums
 
 - <a id="inventory_ring.Mode" name="inventory_ring.Mode"></a>[lua]`trx.inventory_ring.Mode`
@@ -56,6 +60,10 @@ A script draws what an entry opens by defining the
     - <a id="inventory_ring.EntryAnim.open_frame" name="inventory_ring.EntryAnim.open_frame"></a>**`open_frame`**: integer. The frame the entry rests on once it has opened.
 
 ### Functions
+
+- <a id="inventory_ring.signals" name="inventory_ring.signals"></a>[lua]`trx.inventory_ring.signals`  
+  What the inventory ring tells a script, for the screens that a script draws
+  over it.
 
 - <a id="inventory_ring.mode" name="inventory_ring.mode"></a>[lua]`trx.inventory_ring.mode()`  
   What the open ring was opened for, or `nil` when no ring is open.

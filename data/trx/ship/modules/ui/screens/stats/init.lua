@@ -228,12 +228,6 @@ local function in_gym()
   return level ~= nil and level.type == trx.game.LevelType.GYM
 end
 
--- Whether the entry has come to rest open, which is when the box shows.
-local function is_open()
-  local anim = trx.inventory_ring.selection_anim()
-  return anim ~= nil and anim.frame == anim.goal_frame
-end
-
 local function close(ctx, object, confirmed)
   local anim = trx.inventory_ring.selection_anim()
   if anim ~= nil then
@@ -271,7 +265,7 @@ local function open_ring_entry(ctx)
   state.shown = trx.signal.new(false)
 
   return push(ctx, state, function(_, keys)
-    if not is_open() then
+    if trx.inventory_ring.signals.rest_frame:get() == nil then
       return
     end
     -- The rows the best times show are counted once the entry rests open,

@@ -1,4 +1,6 @@
 local raw = trxc.inventory_ring
+local raw_enum = trxc.enum
+local raw_events = trxc.events
 local h = require("trx.internal.helpers")
 
 ---@class (partial) trx
@@ -55,6 +57,44 @@ local EntryAnim = h.class("inventory_ring.EntryAnim")
 ---@return trx.inventory_ring.EntryAnim? # The entry's animation state.
 ---@type fun(): trx.inventory_ring.EntryAnim?
 M.selection_anim = raw.selection_anim
+
+---What the inventory ring tells a script, for the screens that a script draws
+---over it.
+---@class (exact) trx.inventory_ring.signals
+---@trx.readonly rest_frame
+---@field rest_frame trx.signal.Signal Says when the entry that the player picked comes to rest, with the frame of its animation that it rests on, and when it moves again, goes back into the ring or the ring closes, with `nil`. A screen of an entry opens once the entry rests, and the passport reads the page it rests on.
+M.signals = h.namespace("inventory_ring.signals")
+
+-- The engine says when the selected entry comes to rest and when it moves
+-- again, with -1 for the latter. The handler is attached as the module loads,
+-- so it belongs to no level: one that a level script attached would go with
+-- the level.
+local resting_on = nil
+---@type trx.signal.Signal?
+local rest_frame = nil
+if raw_events ~= nil then
+  for _, constant in ipairs(raw_enum.values("LUA_EVENT_TYPE")) do
+    if constant.name == "RING_REST" then
+      raw_events.attach(constant.value, function(frame)
+        resting_on = frame >= 0 and frame or nil
+        if rest_frame ~= nil then
+          rest_frame:set(resting_on)
+        end
+      end)
+    end
+  end
+end
+
+local function rest_frame_signal()
+  if rest_frame == nil then
+    rest_frame = trx.signal.new(resting_on)
+  end
+  return rest_frame
+end
+
+h.properties(M.signals, "inventory_ring.signals", {
+  rest_frame = { get = rest_frame_signal },
+})
 
 ---Runs the ring's selected entry to a frame of its animation.
 ---

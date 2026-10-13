@@ -56,12 +56,35 @@ static OBJECT_ID m_LastRingObject[RT_NUMBER_OF] = {
     [RT_KEYS] = NO_OBJECT,
 };
 static INV_RING *m_ActiveRing = nullptr;
+// The frame that the selected entry rests on, as scripts were last told, or
+// -1 while it moves or no ring is open.
+static int32_t m_RestFrame = -1;
 
 // Display-only filter for the rings: hidden items stay in the real
 // inventory (g_InvRing_Source) so nothing else in the game (savegames, gun
 // logic, Inv_GetItemCount callers) ever sees them as missing. Only what
 // InvRing_Open/M_TransitionToRing show is affected.
 static INVENTORY_ITEM *m_VisibleRingItems[RT_NUMBER_OF][INV_RING_MAX_ITEMS];
+
+// Tells scripts when the entry that the player picked comes to rest on a
+// frame of its animation, and when it moves again, is put back or the ring
+// closes.
+static void M_ReportRest(const INV_RING *const ring)
+{
+    int32_t frame = -1;
+    if (ring != nullptr && ring->status == RNG_SELECTED && ring->list != nullptr
+        && ring->number_of_objects > 0) {
+        const INVENTORY_ITEM *const inv_item = ring->list[ring->current_object];
+        if (inv_item != nullptr
+            && inv_item->current_frame == inv_item->goal_frame) {
+            frame = inv_item->current_frame;
+        }
+    }
+    if (frame != m_RestFrame) {
+        m_RestFrame = frame;
+        LUA_FireEventInt32(LUA_EVENT_RING_REST, frame);
+    }
+}
 
 // Which ring an entry belongs to, which its position says: the main ring
 // counts from zero, the keys from a hundred and the menu from two hundred.
@@ -875,7 +898,8 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         // The caption stays the script's once the script leaves the ring,
         // because the choice that leaves closes the ring with it still up.
         const bool script_owns_caption =
-            UI_Takeover_IsHeld(UI_TAKEOVER_RING_ENTRY) || ring->takeover_left;
+            UI_Takeover_IsHeld(UI_TAKEOVER_RING_ENTRY)
+            || UI_Takeover_IsHeld(UI_TAKEOVER_COMBINE) || ring->takeover_left;
         if (!script_owns_caption && !is_combining && !ring->rotating
             && ((!g_Input.menu_left && !g_Input.menu_right)
                 || ring->number_of_objects <= 1)) {
@@ -1117,6 +1141,7 @@ void InvRing_Close(INV_RING *const ring)
     m_InvChosen = NO_OBJECT;
     m_ActiveRing = nullptr;
     Memory_Free(ring);
+    M_ReportRest(nullptr);
 }
 
 GF_COMMAND InvRing_Control(INV_RING *const ring)
@@ -1159,6 +1184,7 @@ GF_COMMAND InvRing_Control(INV_RING *const ring)
         gf_cmd = M_Control(ring);
     }
 
+    M_ReportRest(ring);
     return gf_cmd;
 }
 
