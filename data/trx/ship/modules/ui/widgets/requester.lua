@@ -26,18 +26,7 @@ local MAX_VISIBLE_ROWS = 10
 -- The height of everything but the rows, in canvas units at the default text
 -- size.
 local function chrome_height(has_title, scrolls)
-  ---@type number
-  local height = 2 * (metrics.outer_pad() + metrics.BODY_PAD_Y)
-  if has_title then
-    height = height
-      + metrics.TEXT_HEIGHT
-      + 2 * metrics.title_pad_y()
-      + TITLE_SPACING
-  end
-  if scrolls then
-    height = height + 2 * metrics.HINT_HEIGHT
-  end
-  return height
+  return metrics.chrome_height(has_title and TITLE_SPACING or nil, scrolls)
 end
 
 -- The room a dialog of the given width has, which is the whole safe area

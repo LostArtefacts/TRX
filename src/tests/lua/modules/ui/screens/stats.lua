@@ -288,6 +288,29 @@ test("the stopwatch in the gym lists the best times", function()
   finish()
 end)
 
+test("scrolling the best times moves the rows on show", function()
+  for i = 1, 10 do
+    trx.assault.stats.add_record(60 + i)
+  end
+  open_gym()
+  fake.tick()
+  local first = string.format(" 1: %s", L("general/stats/assault_finish"))
+  local function shows(prefix)
+    for _, text in ipairs(texts()) do
+      if text:sub(1, #prefix) == prefix then
+        return true
+      end
+    end
+    return false
+  end
+  assert(shows(first), "the fastest run is not on show")
+  press(Role.MENU_DOWN)
+  assert(not shows(first), "the list did not scroll")
+  press(Role.MENU_UP)
+  assert(shows(first), "the list did not scroll back")
+  finish()
+end)
+
 test("holding the reset key clears the best times", function()
   trx.assault.stats.add_record(65.5)
   open_gym()
