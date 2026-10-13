@@ -3,6 +3,7 @@
 
 #include <fakes/input.h>
 #include <fakes/ui_draw.h>
+#include <harness/takeover_args.h>
 #include <harness/fake_calls.h>
 #include <harness/lua_surface.h>
 
@@ -99,14 +100,13 @@ static int M_FakeEndLevel(lua_State *const L)
     return 0;
 }
 
-// fake.offer(screen, arg) -> bool - what the engine does as a screen opens.
+// fake.offer(screen, args?) -> bool - what the engine does as a screen opens.
 static int M_FakeOffer(lua_State *const L)
 {
     lua_pushboolean(
         L,
         UI_Takeover_Offer(
-            (UI_TAKEOVER)luaL_checkinteger(L, 1),
-            (int32_t)luaL_optinteger(L, 2, 0)));
+            (UI_TAKEOVER)luaL_checkinteger(L, 1), TakeoverArgs_Read(L, 2)));
     return 1;
 }
 

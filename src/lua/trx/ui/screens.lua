@@ -176,11 +176,7 @@ local function reported(name)
   }
 end
 
-local background = {
-  get = function(self)
-    return raw.background(rawget(self, "_screen"))
-  end,
-}
+local background = reported("background")
 
 ---A screen that a script holds, which the definition receives. Each screen
 ---hands over a context of its own kind, which adds what that screen reports to
@@ -361,68 +357,30 @@ local PictureContext = h.class("ui.PictureContext", {
   },
 })
 
--- The fields each screen reports, read out of the number that the engine
--- opens it with.
-local function entry_fields(_, arg)
-  return { object = arg }
-end
-
-local function timing_fields(screen)
-  local display, fade_in, fade_out = raw.timing(screen)
-  return {
-    display_ticks = display,
-    fade_in_ticks = fade_in,
-    fade_out_ticks = fade_out,
-  }
-end
-
--- The context class of each screen, and the fields that it reads out of the
--- number the engine opens the screen with.
----@type table<integer, { class: table, fields?: fun(screen: integer, arg: integer): table }>
+-- The context class of each screen.
+---@type table<integer, table>
 local KINDS = {
-  [trx.ui.Screen.RING_ENTRY] = { class = EntryContext, fields = entry_fields },
-  [trx.ui.Screen.EXAMINE] = { class = EntryContext, fields = entry_fields },
-  [trx.ui.Screen.COMBINE] = { class = EntryContext, fields = entry_fields },
-  [trx.ui.Screen.PAUSE] = { class = Pause },
-  [trx.ui.Screen.SAVE_LOAD] = {
-    class = SaveLoadContext,
-    fields = function(_, arg)
-      return { mode = arg }
-    end,
-  },
-  [trx.ui.Screen.STATS] = {
-    class = StatsContext,
-    fields = function(_, arg)
-      local num = arg & 0xffff
-      return {
-        level = num == 0 and trx.game.gym or trx.game.levels[num],
-        is_final = arg & 0x10000 ~= 0,
-        is_bare = arg & 0x20000 ~= 0,
-      }
-    end,
-  },
-  [trx.ui.Screen.GLOBE_SELECT] = { class = GlobeContext },
-  [trx.ui.Screen.LEVEL_VIEW] = { class = TimedContext, fields = timing_fields },
-  [trx.ui.Screen.PICTURE] = {
-    class = PictureContext,
-    fields = function(screen, arg)
-      local fields = timing_fields(screen)
-      fields.is_loading = arg & 0x1 ~= 0
-      fields.can_cross_fade_in = arg & 0x2 ~= 0
-      return fields
-    end,
-  },
+  [trx.ui.Screen.RING_ENTRY] = EntryContext,
+  [trx.ui.Screen.EXAMINE] = EntryContext,
+  [trx.ui.Screen.COMBINE] = EntryContext,
+  [trx.ui.Screen.PAUSE] = Pause,
+  [trx.ui.Screen.SAVE_LOAD] = SaveLoadContext,
+  [trx.ui.Screen.STATS] = StatsContext,
+  [trx.ui.Screen.GLOBE_SELECT] = GlobeContext,
+  [trx.ui.Screen.LEVEL_VIEW] = TimedContext,
+  [trx.ui.Screen.PICTURE] = PictureContext,
 }
 
-local function new_context(screen, arg)
-  local kind = KINDS[screen]
+-- `args` is what the engine reports as it opens the screen, keyed by the
+-- context fields.
+local function new_context(screen, args)
   return setmetatable({
     _screen = screen,
-    _fields = kind.fields ~= nil and kind.fields(screen, arg) or {},
+    _fields = args,
     _layers = {},
     _ended = {},
     _done = false,
-  }, kind.class)
+  }, KINDS[screen])
 end
 
 -------------------------------------------------------------------------------
@@ -490,14 +448,14 @@ end
 -- The engine's side
 -------------------------------------------------------------------------------
 
-local function open_screen(screen, arg)
-  local object = screen == trx.ui.Screen.RING_ENTRY and arg or nil
+local function open_screen(screen, args)
+  local object = screen == trx.ui.Screen.RING_ENTRY and args.object or nil
   local definition = definition_of(screen, object)
   if definition == nil then
     return false
   end
 
-  local ctx = new_context(screen, arg)
+  local ctx = new_context(screen, args)
   local ok, result = pcall(definition.open, ctx)
   if not ok then
     finish(ctx, nil)

@@ -58,7 +58,8 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
 
     Output_Overlay_CaptureGameSnapshot();
     M_SetTitle(p);
-    UI_Takeover_Offer(UI_TAKEOVER_SAVE_LOAD, p->mode);
+    UI_Takeover_Offer(
+        UI_TAKEOVER_SAVE_LOAD, (UI_TAKEOVER_ARGS) { .mode = p->mode });
     return (PHASE_CONTROL) { .action = PHASE_ACTION_CONTINUE };
 }
 

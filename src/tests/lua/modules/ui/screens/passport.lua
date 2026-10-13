@@ -60,7 +60,10 @@ local function open(mode, tr_version)
   clean()
   fake.set_tr_version(tr_version or 2)
   fake.open_ring(mode, PASSPORT, OPEN_FRAME, FRAME_COUNT)
-  assert(fake.offer(RING_ENTRY, PASSPORT), "the passport was not taken")
+  assert(
+    fake.offer(RING_ENTRY, { object = PASSPORT }),
+    "the passport was not taken"
+  )
   -- The press that opened the book.
   tick()
 end
@@ -466,7 +469,10 @@ end)
 test("the quick load screen shows the save list alone", function()
   clean()
   fake.set_current_level(2)
-  assert(fake.offer(SAVE_LOAD, Mode.LOAD), "the screen was not taken")
+  assert(
+    fake.offer(SAVE_LOAD, { mode = Mode.LOAD }),
+    "the screen was not taken"
+  )
   tick()
   local drawn = texts()
   -- The heading only: the screen's own title is the engine's.
@@ -481,7 +487,7 @@ end)
 test("the quick save screen saves to the slot picked", function()
   clean()
   fake.set_current_level(2)
-  assert(fake.offer(SAVE_LOAD, Mode.SAVE))
+  assert(fake.offer(SAVE_LOAD, { mode = Mode.SAVE }))
   tick()
   assert(has(texts(), L("general/passport/save_game")))
   press(Role.MENU_CONFIRM)
@@ -499,7 +505,7 @@ test(
     local play_prev = trx.config.get("gameplay.enable_play_previous_levels")
     trx.config.set("gameplay.game_modes_policy", "never")
     trx.config.set("gameplay.enable_play_previous_levels", false)
-    local taken = fake.offer(SAVE_LOAD, Mode.SAVE)
+    local taken = fake.offer(SAVE_LOAD, { mode = Mode.SAVE })
     tick()
     trx.config.set("gameplay.game_modes_policy", policy)
     trx.config.set("gameplay.enable_play_previous_levels", play_prev)
@@ -511,7 +517,7 @@ test(
 test("backing out of the quick screen closes it", function()
   clean()
   fake.set_current_level(2)
-  fake.offer(SAVE_LOAD, Mode.LOAD)
+  fake.offer(SAVE_LOAD, { mode = Mode.LOAD })
   tick()
   press(Role.MENU_BACK)
   assert(fake.take_choice(SAVE_LOAD) == CHOICE_CANCEL)
@@ -524,7 +530,7 @@ local function open_crystal(crystal_mode, count)
   trx.config.set("gameplay.save_crystal_mode", crystal_mode or "save_pickup")
   trx.inventory.set_count(CRYSTAL_ITEM, count or 1)
   fake.open_ring(Mode.GAME, CRYSTAL, OPEN_FRAME, FRAME_COUNT)
-  local taken = fake.offer(RING_ENTRY, CRYSTAL)
+  local taken = fake.offer(RING_ENTRY, { object = CRYSTAL })
   tick()
   return taken
 end

@@ -34,8 +34,13 @@ end
 
 local function open()
   trx.config.set("visuals.enable_fade_effects", true)
-  fake.set_timing(VIEW, 10, 4, 4)
-  assert(fake.offer(VIEW, 0), "the screen was not taken")
+  assert(
+    fake.offer(
+      VIEW,
+      { display_ticks = 10, fade_in_ticks = 4, fade_out_ticks = 4 }
+    ),
+    "the screen was not taken"
+  )
   return assert(opened)
 end
 

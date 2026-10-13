@@ -721,7 +721,9 @@ static GF_COMMAND M_Control(INV_RING *const ring)
         const UI_TAKEOVER screen = M_GetTakeover(inv_item);
         if (!ring->takeover_offered && screen != UI_TAKEOVER_NUMBER_OF) {
             ring->takeover_offered = true;
-            UI_Takeover_Offer(screen, inv_item->object_id);
+            UI_Takeover_Offer(
+                screen,
+                (UI_TAKEOVER_ARGS) { .object_id = inv_item->object_id });
         }
 
         bool busy = false;

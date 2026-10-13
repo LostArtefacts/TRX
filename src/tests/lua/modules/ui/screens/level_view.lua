@@ -53,8 +53,14 @@ local function has_bar()
 end
 
 local function open()
-  fake.set_timing(VIEW, DISPLAY, FADE_IN, FADE_OUT)
-  assert(fake.offer(VIEW, 0), "the view was not taken")
+  assert(
+    fake.offer(VIEW, {
+      display_ticks = DISPLAY,
+      fade_in_ticks = FADE_IN,
+      fade_out_ticks = FADE_OUT,
+    }),
+    "the view was not taken"
+  )
 end
 
 local function finish()

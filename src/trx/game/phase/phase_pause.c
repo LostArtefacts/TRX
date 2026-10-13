@@ -136,7 +136,9 @@ static PHASE_CONTROL M_Control(PHASE *const phase)
                 M_ReturnToGame(p);
                 return (PHASE_CONTROL) { .action = PHASE_ACTION_NO_WAIT };
             } else if (
-                g_InputDB.option && UI_Takeover_Offer(UI_TAKEOVER_PAUSE, 0)) {
+                g_InputDB.option
+                && UI_Takeover_Offer(
+                    UI_TAKEOVER_PAUSE, (UI_TAKEOVER_ARGS) {})) {
                 p->state = STATE_ASK;
             }
         } else {

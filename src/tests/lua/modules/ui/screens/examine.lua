@@ -36,7 +36,7 @@ local function open(description)
   trx.config.set("ui.text_scale", 100)
   fake.set_description(OBJECT, description)
   fake.open_ring(trx.inventory_ring.Mode.GAME, OBJECT, 0, 10)
-  assert(fake.offer(EXAMINE, OBJECT), "the entry was not taken")
+  assert(fake.offer(EXAMINE, { object = OBJECT }), "the entry was not taken")
   -- The press that opened the entry, then the first tick it rests open.
   fake.tick()
   fake.tick()

@@ -36,17 +36,16 @@ static PHASE_CONTROL M_Start(PHASE *const phase)
         };
     }
 
-    UI_Takeover_SetBackground(UI_TAKEOVER_PICTURE, p->args.file_name);
-    UI_Takeover_SetTiming(
+    p->is_held = UI_Takeover_Offer(
         UI_TAKEOVER_PICTURE,
-        (UI_TAKEOVER_TIMING) {
+        (UI_TAKEOVER_ARGS) {
+            .background = p->args.file_name,
             .display_ticks = M_ToTicks(p->args.display_time),
             .fade_in_ticks = M_ToTicks(p->args.fade_in_time),
             .fade_out_ticks = M_ToTicks(p->args.fade_out_time),
+            .is_loading = p->args.loading_pic,
+            .can_cross_fade_in = M_UsesCrossFadeIn(phase),
         });
-    p->is_held = UI_Takeover_Offer(
-        UI_TAKEOVER_PICTURE,
-        UI_TAKEOVER_PICTURE_ARG(p->args.loading_pic, M_UsesCrossFadeIn(phase)));
     if (!p->is_held) {
         LOG_WARNING("no script draws pictures, skipping %s", p->args.file_name);
         return (PHASE_CONTROL) {
@@ -64,7 +63,6 @@ static void M_End(PHASE *const phase)
         UI_Takeover_Release(UI_TAKEOVER_PICTURE);
         p->is_held = false;
     }
-    UI_Takeover_SetBackground(UI_TAKEOVER_PICTURE, nullptr);
 }
 
 static PHASE_CONTROL M_Control(PHASE *const phase)
