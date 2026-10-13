@@ -155,6 +155,13 @@ static int M_FakeSetBackground(lua_State *const L)
     return 0;
 }
 
+// fake.control() - the level runs one tick of its logic.
+static int M_FakeControl(lua_State *const L)
+{
+    LUA_FireEvent(LUA_EVENT_BEFORE_CONTROL);
+    return 0;
+}
+
 // fake.release(screen)
 static int M_FakeRelease(lua_State *const L)
 {
@@ -193,6 +200,8 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "release");
     lua_pushcfunction(L, M_FakeSetBackground);
     lua_setfield(L, -2, "set_background");
+    lua_pushcfunction(L, M_FakeControl);
+    lua_setfield(L, -2, "control");
 }
 
 CONFIG g_ConfigStorage = {};
