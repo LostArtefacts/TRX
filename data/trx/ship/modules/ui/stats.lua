@@ -7,8 +7,11 @@
 --   require("common.ui.stats").setup()
 
 local fade = require("common.ui.fade")
+local metrics = require("common.ui.metrics")
 
 local M = {}
+
+local f32 = metrics.f32
 
 -- Fallback text for the screen's own strings. The strings files and their
 -- translations take precedence.
@@ -47,7 +50,6 @@ local Mode = {
 }
 
 local FPS = 30
-local TEXT_HEIGHT = 15
 
 local BARE_ROW_SPACING = 11.0
 local MIN_MARGIN_ROWS = 0.5
@@ -59,7 +61,6 @@ local ASSAULT_MIN_WIDTH = 290.0
 local ASSAULT_ROW_SPACING = 3.0
 local MAX_ASSAULT_TIMES = 10
 
-local HINT_HEIGHT = 7
 local HINT_SCALE = 0.7
 
 local RESET_TEXT_SCALE = 0.85
@@ -485,7 +486,7 @@ local function assault_visible_rows()
     - ASSAULT_CHROME
   local result = math.min(
     math.min(rows, MAX_ASSAULT_ROWS),
-    math.floor(available / TEXT_HEIGHT)
+    math.floor(available / metrics.TEXT_HEIGHT)
   )
   return math.max(1, math.min(result, rows))
 end
@@ -591,32 +592,18 @@ end
 -- The box
 -------------------------------------------------------------------------------
 
-local function outer_pad()
-  return trx.game.tr_version >= 2 and 3.0 or 2.0
-end
-
-local function body_pad_x()
-  return trx.game.tr_version >= 2 and 4.0 or 8.0
-end
-
-local BODY_PAD_Y = 4.0
-
-local function title_pad_y()
-  return trx.game.tr_version >= 2 and 1.0 or 2.0
-end
-
 local function scrolls(state)
   return state.mode == Mode.ASSAULT and state.visible < #state.rows
 end
 
 -- The room the frame takes around the rows, at the default text size.
 local function chrome_height(state)
-  local height = 2.0 * (outer_pad() + BODY_PAD_Y)
-    + TEXT_HEIGHT
-    + 2.0 * title_pad_y()
+  local height = 2.0 * (metrics.outer_pad() + metrics.BODY_PAD_Y)
+    + metrics.TEXT_HEIGHT
+    + 2.0 * metrics.title_pad_y()
     + state.look.title_spacing
   if scrolls(state) then
-    height = height + 2.0 * HINT_HEIGHT
+    height = height + 2.0 * metrics.HINT_HEIGHT
   end
   return height
 end
@@ -626,13 +613,6 @@ local function count_layout_rows(state)
     return state.visible + 1
   end
   return #state.rows
-end
-
--- The engine works the room out in single precision, and a gap that lands on
--- the other side of half a pixel moves a row, so the box is worked out the
--- same way.
-local function f32(value)
-  return (string.unpack("<f", string.pack("<f", value)))
 end
 
 local function row_height()
@@ -760,14 +740,14 @@ local function hint(state, glyph, anchor, lit)
   return trx.ui.widgets.Custom({
     measure = function()
       local gw = lit and trx.ui.primitive.measure_text(glyph, scale) or 0
-      return gw, fitted(state, HINT_HEIGHT) * trx.ui.text_scale
+      return gw, fitted(state, metrics.HINT_HEIGHT) * trx.ui.text_scale
     end,
     paint = function(x, y, w)
       if not lit then
         return
       end
       local gw, gh = trx.ui.primitive.measure_text(glyph, scale)
-      local slack = fitted(state, HINT_HEIGHT) * trx.ui.text_scale - gh
+      local slack = fitted(state, metrics.HINT_HEIGHT) * trx.ui.text_scale - gh
       trx.ui.primitive.text(
         glyph,
         x + (w - gw) / 2,
@@ -865,8 +845,8 @@ local function window(state)
     style = trx.ui.FrameStyle.DIALOG,
     z = 170,
     child = trx.ui.widgets.Pad({
-      x = fitted(state, outer_pad()),
-      y = fitted(state, outer_pad()),
+      x = fitted(state, metrics.outer_pad()),
+      y = fitted(state, metrics.outer_pad()),
       child = trx.ui.widgets.Stack({
         spacing = state.look.title_spacing,
         align = trx.ui.HAlign.SPAN,
@@ -875,14 +855,14 @@ local function window(state)
             style = trx.ui.FrameStyle.HEADING,
             z = 160,
             child = trx.ui.widgets.Pad({
-              x = fitted(state, 10.0),
-              y = fitted(state, title_pad_y()),
+              x = fitted(state, metrics.TITLE_PAD_X),
+              y = fitted(state, metrics.title_pad_y()),
               child = centered_widget(state, title_of(state)),
             }),
           }),
           trx.ui.widgets.Pad({
-            x = fitted(state, body_pad_x()),
-            y = fitted(state, BODY_PAD_Y),
+            x = fitted(state, metrics.body_pad_x()),
+            y = fitted(state, metrics.BODY_PAD_Y),
             child = trx.ui.widgets.Stack({
               align = trx.ui.HAlign.SPAN,
               children = body,

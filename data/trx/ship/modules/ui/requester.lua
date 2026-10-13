@@ -8,13 +8,11 @@
 --   local req = requester.new({ title = "Load Game", rows = rows })
 --   ctx:push({ root = req.root, on_input = ... })
 
+local metrics = require("common.ui.metrics")
+
 local M = {}
 
-local TEXT_HEIGHT = 15
-local HINT_HEIGHT = 7
-local TITLE_PAD_X = 10
 local TITLE_SPACING = 3
-local BODY_PAD_Y = 4
 local FOOTER_SPACING = 3
 local MESSAGE_PAD = 8
 
@@ -25,36 +23,19 @@ local MIN_VISIBLE_ROWS = 5
 -- As many rows as the originals show, however much room a large screen leaves.
 local MAX_VISIBLE_ROWS = 10
 
-local function is_tr1()
-  return trx.game.tr_version == 1
-end
-
-local function outer_pad()
-  return is_tr1() and 2 or 3
-end
-
-local function body_pad_x()
-  return is_tr1() and 8 or 4
-end
-
-local function title_pad_y()
-  return is_tr1() and 2 or 1
-end
-
-function M.row_spacing()
-  return is_tr1() and 2 or 3
-end
-
 -- The height of everything but the rows, in canvas units at the default text
 -- size.
 local function chrome_height(has_title, scrolls)
   ---@type number
-  local height = 2 * (outer_pad() + BODY_PAD_Y)
+  local height = 2 * (metrics.outer_pad() + metrics.BODY_PAD_Y)
   if has_title then
-    height = height + TEXT_HEIGHT + 2 * title_pad_y() + TITLE_SPACING
+    height = height
+      + metrics.TEXT_HEIGHT
+      + 2 * metrics.title_pad_y()
+      + TITLE_SPACING
   end
   if scrolls then
-    height = height + 2 * HINT_HEIGHT
+    height = height + 2 * metrics.HINT_HEIGHT
   end
   return height
 end
@@ -75,7 +56,8 @@ local function fit_rows(settings, count, width)
       - (settings.footer_height or 0)
       - chrome_height(settings.title ~= nil, scrolls)
       + settings.row_spacing
-    local rows = math.floor(room / (TEXT_HEIGHT + settings.row_spacing))
+    local rows =
+      math.floor(room / (metrics.TEXT_HEIGHT + settings.row_spacing))
     return math.min(math.max(rows, MIN_VISIBLE_ROWS), MAX_VISIBLE_ROWS)
   end
   local rows = fits(false)
@@ -96,7 +78,7 @@ end
 --   footer        - a widget drawn under the frame
 --   footer_height - the height the footer takes, for fitting the rows
 function M.new(settings)
-  settings.row_spacing = settings.row_spacing or M.row_spacing()
+  settings.row_spacing = settings.row_spacing or metrics.row_spacing()
   ---@class common.ui.Requester
   ---@field rows trx.ui.ListRow[]
   ---@field list trx.ui.List
@@ -128,7 +110,7 @@ function M.new(settings)
     visible = visible,
     reserve = settings.reserve,
     width = settings.width ~= nil
-        and settings.width - 2 * (outer_pad() + body_pad_x())
+        and settings.width - 2 * (metrics.outer_pad() + metrics.body_pad_x())
       or nil,
     row_pad = settings.row_pad,
     row_spacing = settings.row_spacing,
@@ -142,8 +124,8 @@ function M.new(settings)
       style = trx.ui.FrameStyle.HEADING,
       z = 160,
       child = trx.ui.widgets.Pad({
-        x = TITLE_PAD_X + body_pad_x(),
-        y = title_pad_y(),
+        x = metrics.TITLE_PAD_X + metrics.body_pad_x(),
+        y = metrics.title_pad_y(),
         child = trx.ui.widgets.Stack({
           align = trx.ui.HAlign.CENTER,
           children = { trx.ui.widgets.Label({ text = req.title }) },
@@ -152,8 +134,8 @@ function M.new(settings)
     })
   end
   children[#children + 1] = trx.ui.widgets.Pad({
-    x = body_pad_x(),
-    y = BODY_PAD_Y,
+    x = metrics.body_pad_x(),
+    y = metrics.BODY_PAD_Y,
     child = req.list,
   })
 
@@ -161,8 +143,8 @@ function M.new(settings)
     style = trx.ui.FrameStyle.DIALOG,
     z = 170,
     child = trx.ui.widgets.Pad({
-      x = outer_pad(),
-      y = outer_pad(),
+      x = metrics.outer_pad(),
+      y = metrics.outer_pad(),
       child = trx.ui.widgets.Stack({
         spacing = TITLE_SPACING,
         align = trx.ui.HAlign.SPAN,
@@ -242,14 +224,14 @@ end
 -- Every passport page rests on this line, whatever its own height.
 function M.on_page_line(req, anchor, footer_height)
   return function(w)
-    local spacing = M.row_spacing()
+    local spacing = metrics.row_spacing()
     local rows = fit_rows({
       title = "",
       row_spacing = spacing,
       footer_height = footer_height,
     }, MAX_VISIBLE_ROWS + 1, w)
     local height = chrome_height(true, true)
-      + rows * TEXT_HEIGHT
+      + rows * metrics.TEXT_HEIGHT
       + (rows - 1) * spacing
     local line = (available_height(w) - height - 5) * anchor
       + (height - footer_height) / 2
