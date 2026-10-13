@@ -1,5 +1,6 @@
 #pragma once
 
+#include <trx/config/enum.h>
 #include <trx/core/colors.h>
 #include <trx/game/ui/tween.h>
 
@@ -9,6 +10,10 @@
 // and below the script painters above it, such as the console. A fade layer
 // holds a colour or a snapshot of the frame, and its opacity moves on a tween.
 // Fade layers stack in the order they were pushed.
+//
+// A backdrop layer is drawn under the interface instead. It holds one of the
+// backdrop styles that the engine draws behind its screens, and its opacity
+// is how far the backdrop has come in.
 //
 // A fade layer is named by an id. An id outlives its layer: once the layer
 // closes, the id names nothing, and every call with it does nothing.
@@ -21,6 +26,11 @@ int32_t UI_Fade_PushFill(RGBA_8888 color, float opacity);
 // Pushes a layer that holds the frame on screen now. Returns UI_FADE_NONE
 // when the frame cannot be captured.
 int32_t UI_Fade_PushSnapshot(float opacity);
+
+// Pushes a backdrop layer of a style, over the game snapshot or the picture
+// at `path`.
+int32_t UI_Fade_PushBackdrop(
+    BACKGROUND_TYPE style, const char *path, float opacity);
 
 bool UI_Fade_IsOpen(int32_t id);
 float UI_Fade_GetOpacity(int32_t id);

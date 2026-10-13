@@ -33,6 +33,20 @@ static int M_L_FadePushSnapshot(lua_State *const L)
     return 1;
 }
 
+// trxc.fade.push_backdrop(style: string, path: string?, opacity: number): integer
+static int M_L_FadePushBackdrop(lua_State *const L)
+{
+    const int32_t style =
+        ENUM_MAP_GET(BACKGROUND_TYPE, luaL_checkstring(L, 1), -1);
+    luaL_argcheck(L, style != -1, 1, "unknown backdrop");
+    lua_pushinteger(
+        L,
+        UI_Fade_PushBackdrop(
+            (BACKGROUND_TYPE)style, luaL_optstring(L, 2, nullptr),
+            (float)luaL_checknumber(L, 3)));
+    return 1;
+}
+
 // trxc.fade.to(id: integer, target: number, ticks: integer, curve: string, close: boolean)
 static int M_L_FadeTo(lua_State *const L)
 {
@@ -70,6 +84,7 @@ static const luaL_Reg m_Module[] = {
     { "close", M_L_FadeClose },
     { "is_open", M_L_FadeIsOpen },
     { "opacity", M_L_FadeOpacity },
+    { "push_backdrop", M_L_FadePushBackdrop },
     { "push_fill", M_L_FadePushFill },
     { "push_snapshot", M_L_FadePushSnapshot },
     { "to", M_L_FadeTo },

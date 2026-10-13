@@ -269,6 +269,11 @@ arrow, and `\{button left}` draws the button the player has bound.
     runs, so nothing is painted by the script. Fade layers stack in the order
     they were made, above every engine screen and below the console.
 
+    A backdrop layer is drawn under the interface instead, as the backdrop that
+    the game draws behind its screens. Its opacity says how far the backdrop has
+    come in: a picture comes in from black, and any other style from the frame
+    behind it.
+
     Properties:
     - <a id="ui.FadeLayer.is_open" name="ui.FadeLayer.is_open"></a>**`is_open`**: boolean. Whether the layer is still drawn. *(read-only)*
     - <a id="ui.FadeLayer.opacity" name="ui.FadeLayer.opacity"></a>**`opacity`**: number. How opaque the layer is now, from `0` to `1`. *(read-only)*
@@ -350,6 +355,8 @@ arrow, and `\{button left}` draws the button the player has bound.
         Keys:
         - <a id="ui.ScreenContext.fade.settings.fill" name="ui.ScreenContext.fade.settings.fill"></a>**`fill`** ([trx.math.Color](MATH.md#math.Color), optional). The colour that the layer holds.
         - <a id="ui.ScreenContext.fade.settings.snapshot" name="ui.ScreenContext.fade.settings.snapshot"></a>**`snapshot`** (boolean, optional). Whether the layer holds the frame on screen now, in place of a colour.
+        - <a id="ui.ScreenContext.fade.settings.backdrop" name="ui.ScreenContext.fade.settings.backdrop"></a>**`backdrop`** (string, optional). The backdrop style that the layer holds, in place of a colour, by the names that the `ui.stats_background_style` setting takes.
+        - <a id="ui.ScreenContext.fade.settings.path" name="ui.ScreenContext.fade.settings.path"></a>**`path`** (string, optional). The picture of an `image` backdrop, as [`trx.ui.primitive.background`](#ui.primitive.background) takes it.
         - <a id="ui.ScreenContext.fade.settings.opacity" name="ui.ScreenContext.fade.settings.opacity"></a>**`opacity`** (number, optional). How opaque the layer starts, from `0` to `1`. `1` by default.
         - <a id="ui.ScreenContext.fade.settings.on_close" name="ui.ScreenContext.fade.settings.on_close"></a>**`on_close`** (function, optional). Runs once when the layer closes, for any reason. It receives the layer.
 
@@ -746,6 +753,8 @@ arrow, and `\{button left}` draws the button the player has bound.
     Keys:
     - <a id="ui.layers.fade.settings.fill" name="ui.layers.fade.settings.fill"></a>**`fill`** ([trx.math.Color](MATH.md#math.Color), optional). The colour that the layer holds.
     - <a id="ui.layers.fade.settings.snapshot" name="ui.layers.fade.settings.snapshot"></a>**`snapshot`** (boolean, optional). Whether the layer holds the frame on screen now, in place of a colour.
+    - <a id="ui.layers.fade.settings.backdrop" name="ui.layers.fade.settings.backdrop"></a>**`backdrop`** (string, optional). The backdrop style that the layer holds, in place of a colour, by the names that the `ui.stats_background_style` setting takes.
+    - <a id="ui.layers.fade.settings.path" name="ui.layers.fade.settings.path"></a>**`path`** (string, optional). The picture of an `image` backdrop, as [`trx.ui.primitive.background`](#ui.primitive.background) takes it.
     - <a id="ui.layers.fade.settings.opacity" name="ui.layers.fade.settings.opacity"></a>**`opacity`** (number, optional). How opaque the layer starts, from `0` to `1`. `1` by default.
     - <a id="ui.layers.fade.settings.on_close" name="ui.layers.fade.settings.on_close"></a>**`on_close`** (function, optional). Runs once when the layer closes, for any reason. It receives the layer.
 

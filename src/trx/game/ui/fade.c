@@ -1,9 +1,12 @@
 #include <trx/game/ui/fade.h>
 
+#include <trx/core/memory.h>
 #include <trx/game/output/overlay.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/viewport.h>
+
+#include <string.h>
 
 #define M_MAX_FADES 8
 #define M_SLOT_BITS 8
@@ -13,6 +16,7 @@
 typedef enum {
     M_KIND_FILL,
     M_KIND_SNAPSHOT,
+    M_KIND_BACKDROP,
 } M_KIND;
 
 typedef struct {
@@ -23,9 +27,18 @@ typedef struct {
     UI_TWEEN opacity;
     RGBA_8888 color;
     int32_t snapshot_slot;
+    BACKGROUND_TYPE backdrop;
+    char *backdrop_path;
     bool is_moving;
     bool close_at_rest;
 } M_FADE;
+
+typedef struct {
+    BACKGROUND_TYPE style;
+    float progress;
+    bool has_path;
+    char path[];
+} M_BACKDROP_ARGS;
 
 static M_FADE m_Fades[M_MAX_FADES] = {};
 static int32_t m_NextOrder = 0;
@@ -73,11 +86,42 @@ static void M_Close(M_FADE *const fade)
     if (fade->snapshot_slot >= 0) {
         Output_Overlay_FreeSnapshotSlot(fade->snapshot_slot);
     }
+    Memory_FreePointer(&fade->backdrop_path);
     fade->in_use = false;
+}
+
+static void M_DrawBackdropOp(const void *const args)
+{
+    const M_BACKDROP_ARGS *const backdrop = args;
+    Output_Overlay_DrawBackground(
+        backdrop->style, backdrop->progress,
+        backdrop->has_path ? backdrop->path : nullptr);
+}
+
+// A picture comes in from black, so the overlay takes how dark it is; every
+// other style takes how far it has come in.
+static void M_DrawBackdrop(const M_FADE *const fade)
+{
+    const float progress = UI_Tween_Get(&fade->opacity);
+    const char *const path =
+        fade->backdrop_path != nullptr ? fade->backdrop_path : "";
+    const size_t path_size = strlen(path) + 1;
+    const size_t size = sizeof(M_BACKDROP_ARGS) + path_size;
+    M_BACKDROP_ARGS *const args = Memory_Alloc(size);
+    args->style = fade->backdrop;
+    args->progress = fade->backdrop == BK_IMAGE ? 1.0f - progress : progress;
+    args->has_path = fade->backdrop_path != nullptr;
+    memcpy(args->path, path, path_size);
+    UI_ScheduleDrawOverlay(M_DrawBackdropOp, args, size);
+    Memory_Free(args);
 }
 
 static void M_DrawFade(const M_FADE *const fade)
 {
+    if (fade->kind == M_KIND_BACKDROP) {
+        M_DrawBackdrop(fade);
+        return;
+    }
     const float opacity = UI_Tween_Get(&fade->opacity);
     if (opacity <= 0.0f) {
         return;
@@ -96,6 +140,9 @@ static void M_DrawFade(const M_FADE *const fade)
 // Names the interface layer that a fade layer is drawn in.
 static UI_LAYER M_GetLayer(const M_FADE *const fade)
 {
+    if (fade->kind == M_KIND_BACKDROP) {
+        return UI_LAYER_BACKDROP;
+    }
     return UI_LAYER_FADE;
 }
 
@@ -148,6 +195,18 @@ int32_t UI_Fade_PushSnapshot(const float opacity)
     return M_MakeId(fade - m_Fades);
 }
 
+int32_t UI_Fade_PushBackdrop(
+    const BACKGROUND_TYPE style, const char *const path, const float opacity)
+{
+    M_FADE *const fade = M_Push(M_KIND_BACKDROP, opacity);
+    if (fade == nullptr) {
+        return UI_FADE_NONE;
+    }
+    fade->backdrop = style;
+    fade->backdrop_path = path != nullptr ? Memory_DupStr(path) : nullptr;
+    return M_MakeId(fade - m_Fades);
+}
+
 bool UI_Fade_IsOpen(const int32_t id)
 {
     return M_Get(id) != nullptr;
@@ -182,6 +241,7 @@ void UI_Fade_Close(const int32_t id)
 
 void UI_Fade_Draw(void)
 {
+    M_DrawLayer(UI_LAYER_BACKDROP);
     M_DrawLayer(UI_LAYER_FADE);
 }
 

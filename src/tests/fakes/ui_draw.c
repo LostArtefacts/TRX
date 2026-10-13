@@ -6,6 +6,7 @@
 #include <trx/core/memory.h>
 #include <trx/core/strings.h>
 #include <trx/core/vector.h>
+#include <trx/game/output/overlay.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/draw.h>
 #include <trx/game/ui/keys.h>
@@ -219,6 +220,13 @@ void UI_ScheduleDrawSnapshotSlot(const int32_t slot, const float opacity)
         String_FormatStatic("snapshot slot=%d opacity=%.3f", slot, opacity));
 }
 
+void UI_ScheduleDrawOverlay(
+    void (*const draw)(const void *args), const void *const args,
+    const size_t args_size)
+{
+    draw(args);
+}
+
 void UI_ScheduleDrawBackground(
     const char *const path, const bool mono, const float dim)
 {
@@ -297,4 +305,15 @@ RESULT UI_SetClipboardText(const char *const text)
 __attribute__((weak)) float Output_Overlay_GetLetterbox(void)
 {
     return 0.0f;
+}
+
+// A backdrop records its style and how far it has come in, as the inline
+// overlay draw that a backdrop fade layer schedules runs at once here.
+__attribute__((weak)) void Output_Overlay_DrawBackground(
+    const BACKGROUND_TYPE style, const float opacity,
+    const char *const image_path)
+{
+    FakeUIDraw_Record(String_FormatStatic(
+        "backdrop style=%d opacity=%.3f path=%s", style, opacity,
+        image_path != nullptr ? image_path : "-"));
 }

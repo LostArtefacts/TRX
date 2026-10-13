@@ -172,6 +172,39 @@ test("a wait keeps the screen black, then runs", function()
   finish()
 end)
 
+test("a backdrop comes in under the interface", function()
+  local f = fade.screen(open())
+  f:enter({
+    layer = { backdrop = "transparent" },
+    from = 0,
+    to = 1,
+    ticks = 4,
+  })
+  local op, layer = find("^backdrop ")
+  assert(op ~= nil and op:match("opacity=0.000"), op)
+  assert(layer == "backdrop", layer)
+  ticks(5)
+  op = find("^backdrop ")
+  assert(op ~= nil and op:match("opacity=1.000"), op)
+  finish()
+end)
+
+test("a picture backdrop comes in from black", function()
+  local f = fade.screen(open())
+  f:enter({
+    layer = { backdrop = "image", path = "end.webp" },
+    from = 0,
+    to = 1,
+    ticks = 4,
+  })
+  local op = find("^backdrop ")
+  assert(op ~= nil and op:match("opacity=1.000 path=end.webp"), op)
+  ticks(5)
+  op = find("^backdrop ")
+  assert(op ~= nil and op:match("opacity=0.000"), op)
+  finish()
+end)
+
 test("a fade across screens outlives its screen until dropped", function()
   open()
   fake.release(VIEW)
