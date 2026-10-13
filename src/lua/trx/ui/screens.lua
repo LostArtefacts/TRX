@@ -152,10 +152,42 @@ local function finish(ctx, choice)
   return true
 end
 
+-- The fields each screen reports, read out of the number that the engine
+-- opens it with. A screen leaves out the fields of the other screens, and they
+-- read as nil.
+local function entry_fields(_, arg)
+  return { object = arg }
+end
+
+local FIELDS = {
+  [trx.ui.Screen.RING_ENTRY] = entry_fields,
+  [trx.ui.Screen.EXAMINE] = entry_fields,
+  [trx.ui.Screen.COMBINE] = entry_fields,
+  [trx.ui.Screen.SAVE_LOAD] = function(_, arg)
+    return { mode = arg }
+  end,
+  [trx.ui.Screen.STATS] = function(_, arg)
+    local num = arg & 0xffff
+    return {
+      level = num == 0 and trx.game.gym or trx.game.levels[num],
+      is_final = arg & 0x10000 ~= 0,
+      is_bare = arg & 0x20000 ~= 0,
+    }
+  end,
+}
+
 local function on_layer_closed(ctx, layer)
   if not rawget(ctx, "_done") and rawget(ctx, "_main") == layer then
     finish(ctx, choices.CANCEL)
   end
+end
+
+local function reported(name)
+  return {
+    get = function(self)
+      return rawget(self, "_fields")[name]
+    end,
+  }
 end
 
 ---A screen that a script holds, which the definition receives.
@@ -176,52 +208,11 @@ local Context = h.class("ui.ScreenContext", {
         return rawget(self, "_screen")
       end,
     },
-    object = {
-      get = function(self)
-        local screen = rawget(self, "_screen")
-        if
-          screen == trx.ui.Screen.RING_ENTRY
-          or screen == trx.ui.Screen.EXAMINE
-          or screen == trx.ui.Screen.COMBINE
-        then
-          return rawget(self, "_arg")
-        end
-        return nil
-      end,
-    },
-    mode = {
-      get = function(self)
-        if rawget(self, "_screen") == trx.ui.Screen.SAVE_LOAD then
-          return rawget(self, "_arg")
-        end
-        return nil
-      end,
-    },
-    level = {
-      get = function(self)
-        if rawget(self, "_screen") == trx.ui.Screen.STATS then
-          local num = rawget(self, "_arg") & 0xffff
-          return num == 0 and trx.game.gym or trx.game.levels[num]
-        end
-        return nil
-      end,
-    },
-    is_final = {
-      get = function(self)
-        if rawget(self, "_screen") == trx.ui.Screen.STATS then
-          return rawget(self, "_arg") & 0x10000 ~= 0
-        end
-        return nil
-      end,
-    },
-    is_bare = {
-      get = function(self)
-        if rawget(self, "_screen") == trx.ui.Screen.STATS then
-          return rawget(self, "_arg") & 0x20000 ~= 0
-        end
-        return nil
-      end,
-    },
+    object = reported("object"),
+    mode = reported("mode"),
+    level = reported("level"),
+    is_final = reported("is_final"),
+    is_bare = reported("is_bare"),
     background = {
       get = function(self)
         return raw.background(rawget(self, "_screen"))
@@ -301,9 +292,10 @@ function Context:confirm()
 end
 
 local function new_context(screen, arg)
+  local fields = FIELDS[screen]
   return setmetatable({
     _screen = screen,
-    _arg = arg,
+    _fields = fields ~= nil and fields(screen, arg) or {},
     _layers = {},
     _done = false,
   }, Context)
