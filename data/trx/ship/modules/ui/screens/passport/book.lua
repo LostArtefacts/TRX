@@ -23,9 +23,12 @@ local PASSPORT_WIDTH = 300.0
 ---@field lists passport.Sheet[]
 ---@field page_shown trx.signal.Signal
 ---@field caption trx.signal.Signal
----@field caption_shown trx.signal.Signal
----@field arrow_left trx.signal.Signal
----@field arrow_right trx.signal.Signal
+---@field caption_shown? trx.signal.Signal
+---@field arrow_left? trx.signal.Signal
+---@field arrow_right? trx.signal.Signal
+---@field target? trx.signal.Signal
+---@field browsing? trx.signal.Signal
+---@field resting? trx.signal.Signal
 ---@field browse? boolean
 ---@field standalone? boolean
 ---@field crystal? boolean
@@ -72,14 +75,15 @@ local function turn_to(index)
   trx.sound.play(trx.catalog.samples.MENU_PASSPORT)
 end
 
--- Returns the page that the book rests on, or nil while the book turns.
-local function page_on_show()
+-- Returns the page that the book rests on at `frame`, or nil while the book
+-- turns.
+local function page_at(frame)
   local anim = trx.inventory_ring.selection_anim()
-  if anim == nil then
+  if frame == nil or anim == nil then
     return nil
   end
-  local offset = anim.frame - anim.open_frame
-  if offset % FRAMES_PER_PAGE ~= 0 or anim.frame ~= anim.goal_frame then
+  local offset = frame - anim.open_frame
+  if offset % FRAMES_PER_PAGE ~= 0 then
     return nil
   end
   return offset // FRAMES_PER_PAGE + 1
@@ -247,8 +251,6 @@ function Passport:push_list(role, req, extra)
     end,
   })
   self.lists[#self.lists + 1] = entry
-  self.arrow_left:set(false)
-  self.arrow_right:set(false)
   self:sync_page()
   return entry
 end
@@ -361,11 +363,17 @@ function Passport:flip(step)
   self:clear_page()
   -- Hides the caption before it takes the new page's name, so that no frame
   -- names a page the book has not turned to.
-  self.caption_shown:set(false)
-  self.arrow_left:set(false)
-  self.arrow_right:set(false)
+  self.target:set(next_index)
   self:set_caption(pages.CAPTIONS[self.pages[self.index].role])
   return true
+end
+
+-- Starts or stops browsing the pages, which TR1 does before it opens one.
+function Passport:set_browse(browse)
+  self.browse = browse
+  if self.browsing ~= nil then
+    self.browsing:set(browse)
+  end
 end
 
 -- Returns whether the pages turn. TR1 turns them only while no page is open.
@@ -571,7 +579,7 @@ function Passport:back_out()
   if
     not self.standalone and pages.browses_first(trx.inventory_ring.mode())
   then
-    self.browse = true
+    self:set_browse(true)
     self:clear_page()
   elseif pages.can_back_out() then
     self:close(false)
@@ -598,14 +606,9 @@ end
 function Passport:control_book(keys)
   local page = self.pages[self.index]
 
-  -- The caption and its arrows hide while the book turns. Input turns the
-  -- pages during a turn only with the responsive passport setting.
-  local showing = page_on_show()
-  if showing ~= self.index then
-    self.caption_shown:set(false)
-    self.arrow_left:set(false)
-    self.arrow_right:set(false)
-  end
+  -- Input turns the pages during a turn only with the responsive passport
+  -- setting.
+  local showing = self.resting:get()
   if showing == nil then
     if trx.config.get("input.enable_responsive_passport") then
       self:flip_keys(keys)
@@ -617,17 +620,13 @@ function Passport:control_book(keys)
     return
   end
 
-  self.caption_shown:set(true)
-  self.arrow_left:set(self:can_flip() and self:neighbour(-1) ~= nil)
-  self.arrow_right:set(self:can_flip() and self:neighbour(1) ~= nil)
-
   -- A press reads as pressed only once per tick, so the press that leaves
   -- browsing is kept for a flat page to act on below.
   local confirmed = false
   if self.browse then
     if keys:pressed(trx.input.Role.MENU_CONFIRM) then
       confirmed = true
-      self.browse = false
+      self:set_browse(false)
       -- A flat page has no list to open, so the same press acts on it below.
       if not pages.FLAT[page.role] then
         return
@@ -707,9 +706,6 @@ local function new(ctx, fields)
     lists = {},
     page_shown = trx.signal.new(true),
     caption = trx.signal.new(""),
-    caption_shown = trx.signal.new(false),
-    arrow_left = trx.signal.new(false),
-    arrow_right = trx.signal.new(false),
   }, Passport)
   for key, value in pairs(fields) do
     self[key] = value
@@ -726,6 +722,42 @@ function M.open(ctx, book_pages, index, mode)
     browse = pages.browses_first(mode),
   })
   self:set_caption(pages.CAPTIONS[book_pages[index].role])
+
+  -- The caption names the page that the book rests on, and hides while the
+  -- book turns. Its arrows show where the book turns to, while no list is
+  -- open over the page.
+  self.target = trx.signal.new(index)
+  self.browsing = trx.signal.new(self.browse)
+  self.resting = trx.inventory_ring.signals.rest_frame:map(page_at)
+  self.caption_shown = trx.signal.combine(
+    self.resting,
+    self.target,
+    function(resting, target)
+      return resting == target
+    end
+  )
+  local function arrow(step)
+    return trx.signal.combine(
+      self.caption_shown,
+      self.target,
+      self.browsing,
+      self.page_shown,
+      function(shown, _, _, alone)
+        return shown
+          and alone
+          and self:can_flip()
+          and self:neighbour(step) ~= nil
+      end
+    )
+  end
+  self.arrow_left = arrow(-1)
+  self.arrow_right = arrow(1)
+  ctx:on_end(function()
+    self.arrow_left:stop()
+    self.arrow_right:stop()
+    self.caption_shown:stop()
+    self.resting:stop()
+  end)
 
   self.book = ctx:push({
     root = trx.ui.widgets.Spacer(),

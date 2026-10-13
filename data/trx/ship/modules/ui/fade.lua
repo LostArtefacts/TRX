@@ -10,6 +10,11 @@
 --   f:enter({ ticks = ctx.fade_in_ticks })
 --   f:leave({ ticks = ctx.fade_out_ticks, hold = 3 })
 --
+--   local show = fade.screen(ctx):show({
+--     skip = trx.input.SkipContext.TO_GAME,
+--     leave = function(fades) fades:leave({ ticks = ctx.fade_out_ticks }) end,
+--   })
+--
 --   local black = fade.across({ from = 0, to = 1, ticks = 15 })
 --   black:to(0, 15)
 
@@ -172,6 +177,85 @@ end
 -- `on_done`.
 function Screen:wait(ticks, on_done)
   self:move(self.left, 1, 0, ticks, on_done)
+end
+
+-------------------------------------------------------------------------------
+-- Screens shown for a time
+-------------------------------------------------------------------------------
+
+---@class common.ui.fade.Show
+---@field progress trx.ui.Tween How far the screen is through its time, from 0 to 1.
+---@field is_leaving boolean Whether the screen has started to leave.
+---@field private fades common.ui.fade.Screen
+---@field private options table
+---@field private showing? common.timer.Timer
+local Show = {}
+Show.__index = Show
+
+-- Starts to leave, as the time runs out or the player skips.
+function Show:leave()
+  if self.is_leaving then
+    return
+  end
+  self.is_leaving = true
+  if self.showing ~= nil then
+    self.showing:cancel()
+    self.showing = nil
+  end
+  self.progress:set(1)
+  self.options.leave(self.fades)
+end
+
+-- Reads one tick of input: a skip leaves, and a skip while the screen leaves
+-- ends it.
+function Show:control(keys)
+  if not keys:pressed(trx.input.Role.MENU_SKIP) then
+    return
+  end
+  trx.input.hold_off_skip(self.options.skip)
+  local ctx = self.fades.ctx
+  if not self.is_leaving then
+    self:leave()
+  elseif ctx.is_held then
+    ctx:confirm()
+  end
+end
+
+-- Fades in a screen that the game shows for a time, such as a picture or a
+-- view of the level, and starts its time. It shows for its display ticks while
+-- its progress fills, and then leaves. The options are:
+--   layer - what the screen fades in from, as `enter` takes it, black by
+--           default
+--   skip  - the trx.input.SkipContext that a skip holds off
+--   leave - runs as the screen leaves, with the screen's fades
+function Screen:show(options)
+  local ctx = self.ctx --[[@as trx.ui.TimedContext]]
+  local show = setmetatable({
+    fades = self,
+    options = options,
+    progress = trx.ui.tween(0),
+    is_leaving = false,
+  }, Show)
+  ctx:on_end(function()
+    if show.showing ~= nil then
+      show.showing:cancel()
+    end
+  end)
+  self:enter({
+    layer = options.layer,
+    ticks = ctx.fade_in_ticks,
+    on_done = function()
+      if show.is_leaving then
+        return
+      end
+      show.progress:to(1, ctx.display_ticks)
+      show.showing = timer.after(ctx.display_ticks, function()
+        show.showing = nil
+        show:leave()
+      end, { clock = timer.Clock.UI })
+    end,
+  })
+  return show
 end
 
 -------------------------------------------------------------------------------

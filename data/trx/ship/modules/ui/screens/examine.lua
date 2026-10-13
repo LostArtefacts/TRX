@@ -46,39 +46,47 @@ end
 -- keeps one width whichever page shows, but only the page that shows takes
 -- room or draws.
 local function page_widget(state, index)
-  return trx.ui.widgets.Custom({
-    measure = function()
-      local w, h = trx.ui.primitive.measure_text(state.pages[index], 1.0)
-      if index ~= state.page then
-        return w, 0
-      elseif #state.pages > 1 then
-        return w, metrics.TEXT_HEIGHT * state.lines * trx.ui.text_scale
-      end
-      return w, h
-    end,
-    paint = function(x, y, _, h)
-      if h > 0 then
-        trx.ui.primitive.text(state.pages[index], x, y, 1.0, 0)
-      end
-    end,
-  })
+  return trx.ui.widgets
+    .Custom({
+      measure = function()
+        local w, h = trx.ui.primitive.measure_text(state.pages[index], 1.0)
+        if index ~= state.page:get() then
+          return w, 0
+        elseif #state.pages > 1 then
+          return w, metrics.TEXT_HEIGHT * state.lines * trx.ui.text_scale
+        end
+        return w, h
+      end,
+      paint = function(x, y, _, h)
+        if h > 0 then
+          trx.ui.primitive.text(state.pages[index], x, y, 1.0, 0)
+        end
+      end,
+    })
+    :wakes_on(state.page)
 end
 
 local function page_indicator(state)
-  local children = {}
-  if state.page > 1 then
-    children[#children + 1] = label("\\{button left} ")
-  end
-  children[#children + 1] = label(
-    trx.locale.format("general/misc/pagination_nav", state.page, #state.pages)
-  )
-  if state.page < #state.pages then
-    children[#children + 1] = label(" \\{button right}")
-  end
-  return trx.ui.widgets.Stack({
-    orientation = trx.ui.Orientation.HORIZONTAL,
-    children = children,
-  })
+  local count = #state.pages
+  local has_left = state.page:map(function(page)
+    return page > 1
+  end)
+  local has_right = state.page:map(function(page)
+    return page < count
+  end)
+  local text = state.page:map(function(page)
+    return trx.locale.format("general/misc/pagination_nav", page, count)
+  end)
+  local left = label("\\{button left} ")
+  left.shown = has_left
+  local right = label(" \\{button right}")
+  right.shown = has_right
+  return trx.ui.widgets
+    .Stack({
+      orientation = trx.ui.Orientation.HORIZONTAL,
+      children = { left, label(text), right },
+    })
+    :release_with(has_left, has_right, text)
 end
 
 local function dialog(state)
@@ -123,7 +131,8 @@ local function dialog(state)
   })
 end
 
--- The description, wrapped and cut into pages the first time it shows.
+-- The description, wrapped and cut into pages for the room the screen has.
+-- The player stays on the page that they read, or the last one.
 local function prepare(state)
   local width = math.floor(trx.ui.canvas.width * 2.0 / 3.0)
   local wrapped = trx.ui.primitive.wrap_text(state.description, width)
@@ -133,7 +142,11 @@ local function prepare(state)
     local _, breaks = page:gsub("\n", "")
     state.lines = math.max(state.lines, breaks + 1)
   end
-  state.page = 1
+  if state.page == nil then
+    state.page = trx.signal.new(1)
+  else
+    state.page:set(math.min(state.page:get(), #state.pages))
+  end
 end
 
 -- Offers to turn the entry where the ring shows its hints, while the
@@ -152,13 +165,9 @@ local function offer_turning(state, offer)
   } or nil)
 end
 
-local function control(ctx, state, layer, keys)
+local function control(ctx, state, keys)
   if trx.inventory_ring.signals.rest_frame:get() == nil then
     return
-  end
-  if state.pages == nil and state.has_text then
-    prepare(state)
-    layer:set_root(dialog(state))
   end
 
   local show_text = state.has_text and not state.hidden
@@ -169,10 +178,9 @@ local function control(ctx, state, layer, keys)
     local step = keys:pressed(trx.input.Role.MENU_LEFT) and -1
       or keys:pressed(trx.input.Role.MENU_RIGHT) and 1
       or 0
-    local page = state.page + step
+    local page = state.page:get() + step
     if step ~= 0 and page >= 1 and page <= #state.pages then
-      state.page = page
-      layer:set_root(dialog(state))
+      state.page:set(page)
       trx.sound.play(trx.catalog.samples.MENU_PASSPORT)
     end
   end
@@ -215,12 +223,30 @@ local function open(ctx)
     hidden = false,
     shown = trx.signal.new(false),
   }
-  return ctx:push({
-    root = trx.ui.widgets.Spacer(),
-    on_input = function(layer, keys)
-      control(ctx, state, layer, keys)
+  if not state.has_text then
+    return ctx:push({
+      root = trx.ui.widgets.Spacer(),
+      on_input = function(_, keys)
+        control(ctx, state, keys)
+      end,
+    })
+  end
+  prepare(state)
+  local layer = ctx:push({
+    root = dialog(state),
+    on_input = function(_, keys)
+      control(ctx, state, keys)
     end,
   })
+  -- The pages follow the room, which changes as the window does.
+  local listener = trx.ui.signals.layout:on(function()
+    prepare(state)
+    layer:set_root(dialog(state))
+  end)
+  ctx:on_end(function()
+    listener:detach()
+  end)
+  return layer
 end
 
 function M.setup()

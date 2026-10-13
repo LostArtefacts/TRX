@@ -240,6 +240,7 @@ local function body_rows(state)
   state.reset = hold_button.new({
     words = trx.locale.get("general/stats/assault_reset_times"),
     scale = state.fit,
+    from = state.reset,
   })
   state.reset:set_enabled(counts.has_any_time())
   add(state.reset.root)
