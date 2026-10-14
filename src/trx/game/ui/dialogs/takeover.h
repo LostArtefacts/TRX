@@ -98,8 +98,9 @@ void UI_Takeover_Release(UI_TAKEOVER screen);
 // Returns whether the screen takes the choice. A ring entry takes
 // UI_TAKEOVER_CHOICE_CANCEL, which puts the entry away, and
 // UI_TAKEOVER_CHOICE_CONFIRM, which leaves the ring as a used entry does. The
-// pause question takes UI_TAKEOVER_CHOICE_CANCEL, UI_TAKEOVER_CHOICE_RESUME
-// and UI_TAKEOVER_CHOICE_EXIT_TO_TITLE. The quick save and load screens take
+// pause screen takes UI_TAKEOVER_CHOICE_CANCEL and UI_TAKEOVER_CHOICE_RESUME,
+// which both return to the game, and UI_TAKEOVER_CHOICE_EXIT_TO_TITLE. The
+// quick save and load screens take
 // only UI_TAKEOVER_CHOICE_CANCEL. The statistics screen shown between levels
 // takes UI_TAKEOVER_CHOICE_CANCEL and UI_TAKEOVER_CHOICE_CONFIRM, which both
 // end it as the player skipping it does. An entry that the player examines

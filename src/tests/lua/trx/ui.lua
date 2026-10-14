@@ -212,6 +212,51 @@ test("a label follows the signal it was given", function()
   assert(label:measure() == select(1, text_size("scion")))
 end)
 
+test("a widget in one tree cannot join another", function()
+  local body = widgets.Label({ text = "iris" })
+  local first = widgets.Pad({ child = body })
+  raises(function()
+    widgets.Pad({ child = body })
+  end, "already part of another widget")
+  first:release()
+end)
+
+test("a widget under a released tree cannot be used again", function()
+  local body = widgets.Label({ text = "iris" })
+  widgets.Pad({ child = body }):release()
+  raises(function()
+    widgets.Pad({ child = body })
+  end, "the widget was released")
+end)
+
+test("a widget in a tree cannot be released on its own", function()
+  local body = widgets.Label({ text = "iris" })
+  local outer = widgets.Pad({ child = body })
+  raises(function()
+    body:release()
+  end, "release that one")
+  outer:release()
+end)
+
+test("a widget does not take over its settings table", function()
+  local settings = { text = "iris" }
+  local label = widgets.Label(settings)
+  assert(label ~= settings)
+  assert(getmetatable(settings) == nil)
+end)
+
+test("a setting with the name of a widget member raises", function()
+  raises(function()
+    widgets.Label({ text = "iris", wake = true })
+  end, "'wake' is not a widget setting")
+  raises(function()
+    widgets.Label({ text = "iris", _size = {} })
+  end, "'_size' is not a widget setting")
+  raises(function()
+    widgets.List({ rows = {}, control = true })
+  end, "'control' is not a widget setting")
+end)
+
 test("a widget that is not shown keeps no room", function()
   local shown = trx.signal.new(false)
   local label = widgets.Label({ text = "iris", shown = shown })
@@ -255,6 +300,108 @@ test("a stack runs the other way when it is told to", function()
   assert(h_ == 16, h_)
 end)
 
+-- Where a stack puts two boxes, 10 by 4 and 20 by 6, two apart, when it is
+-- given 60 by 30.
+local function stack_boxes(settings)
+  local boxes = {}
+  local function box(w, h_)
+    return widgets.Custom({
+      measure = function()
+        return w, h_
+      end,
+      paint = function(x, y, bw, bh)
+        boxes[#boxes + 1] = { x, y, bw, bh }
+      end,
+    })
+  end
+  settings.children = { box(10, 4), box(20, 6) }
+  settings.spacing = 2
+  local stack = widgets.Stack(settings)
+  stack:paint(0, 0, 60, 30)
+  stack:release()
+  return boxes
+end
+
+local function assert_boxes(settings, expected)
+  local got = stack_boxes(settings)
+  local function text(boxes)
+    local parts = {}
+    for i, box in ipairs(boxes) do
+      parts[i] = ("%g,%g,%g,%g"):format(table.unpack(box))
+    end
+    return table.concat(parts, " ")
+  end
+  assert(text(got) == text(expected), text(got))
+end
+
+test("a vertical stack places each child across its width", function()
+  local HAlign = trx.ui.HAlign
+  assert_boxes({}, { { 0, 0, 10, 4 }, { 0, 6, 20, 6 } })
+  assert_boxes(
+    { align = HAlign.CENTER },
+    { { 25, 0, 10, 4 }, { 20, 6, 20, 6 } }
+  )
+  assert_boxes(
+    { align = HAlign.RIGHT },
+    { { 50, 0, 10, 4 }, { 40, 6, 20, 6 } }
+  )
+  assert_boxes({ align = HAlign.SPAN }, { { 0, 0, 60, 4 }, { 0, 6, 60, 6 } })
+end)
+
+test("a vertical stack places its column down its height", function()
+  local VAlign = trx.ui.VAlign
+  assert_boxes(
+    { v_align = VAlign.CENTER },
+    { { 0, 9, 10, 4 }, { 0, 15, 20, 6 } }
+  )
+  assert_boxes(
+    { v_align = VAlign.BOTTOM },
+    { { 0, 18, 10, 4 }, { 0, 24, 20, 6 } }
+  )
+  assert_boxes(
+    { v_align = VAlign.DISTRIBUTE },
+    { { 0, 0, 10, 4 }, { 0, 24, 20, 6 } }
+  )
+end)
+
+test("a horizontal stack places its row across its width", function()
+  local HAlign = trx.ui.HAlign
+  local HORIZONTAL = trx.ui.Orientation.HORIZONTAL
+  assert_boxes(
+    { orientation = HORIZONTAL },
+    { { 0, 0, 10, 4 }, { 12, 0, 20, 6 } }
+  )
+  assert_boxes(
+    { orientation = HORIZONTAL, align = HAlign.CENTER },
+    { { 14, 0, 10, 4 }, { 26, 0, 20, 6 } }
+  )
+  assert_boxes(
+    { orientation = HORIZONTAL, align = HAlign.RIGHT },
+    { { 28, 0, 10, 4 }, { 40, 0, 20, 6 } }
+  )
+  assert_boxes(
+    { orientation = HORIZONTAL, align = HAlign.DISTRIBUTE },
+    { { 0, 0, 10, 4 }, { 40, 0, 20, 6 } }
+  )
+end)
+
+test("a horizontal stack places each child down its height", function()
+  local VAlign = trx.ui.VAlign
+  local HORIZONTAL = trx.ui.Orientation.HORIZONTAL
+  assert_boxes(
+    { orientation = HORIZONTAL, v_align = VAlign.CENTER },
+    { { 0, 13, 10, 4 }, { 12, 12, 20, 6 } }
+  )
+  assert_boxes(
+    { orientation = HORIZONTAL, v_align = VAlign.BOTTOM },
+    { { 0, 26, 10, 4 }, { 12, 24, 20, 6 } }
+  )
+  assert_boxes(
+    { orientation = HORIZONTAL, v_align = VAlign.SPAN },
+    { { 0, 0, 10, 30 }, { 12, 0, 20, 30 } }
+  )
+end)
+
 test("a child growing grows the stack around it", function()
   local text = trx.signal.new("a")
   local child = widgets.Label({ text = text })
@@ -278,13 +425,63 @@ test("a child shown again takes its room back in the stack", function()
   assert(select(2, stack:measure()) == 16 + 4 + 16, "the child kept no room")
 end)
 
-test("a signal registered twice detaches with the widget", function()
+-- How many listeners a signal has.
+local function listeners_of(signal)
+  local count = 0
+  for _ in pairs(rawget(signal, "_listeners")) do
+    count = count + 1
+  end
+  return count
+end
+
+test("a signal read twice while measuring detaches with the widget", function()
   local text = trx.signal.new("a")
-  local label = widgets.Label({ text = text }):wakes_on(text, text)
+  local label = widgets.Label({
+    text = text,
+    scale = text:map(function()
+      return 1.0
+    end),
+  })
   label:measure()
-  assert(label:release(), "the label listened to nothing")
-  text:set("abcd")
-  assert(not label:release(), "a listener outlived the release")
+  assert(listeners_of(text) == 2, listeners_of(text))
+  label:release()
+  assert(listeners_of(text) == 1, "a listener outlived the release")
+  label:release()
+end)
+
+test("a released widget listens to nothing it measures", function()
+  local text = trx.signal.new("a")
+  local label = widgets.Label({ text = text })
+  label:release()
+  label:measure()
+  assert(listeners_of(text) == 0, listeners_of(text))
+end)
+
+test("a widget setting follows a signal", function()
+  local gap = trx.signal.new(2)
+  local pad = widgets.Pad({ x = gap, child = widgets.Label({ text = "a" }) })
+  assert(pad:measure() == 8 + 2 * 2, pad:measure())
+  gap:set(5)
+  assert(pad:measure() == 8 + 2 * 5, pad:measure())
+  local width = trx.signal.new(10)
+  local spacer = widgets.Spacer({ w = width })
+  assert(spacer:measure() == 10)
+  width:set(20)
+  assert(spacer:measure() == 20, spacer:measure())
+  pad:release()
+  spacer:release()
+end)
+
+test("a list setting follows a signal", function()
+  local row_height = trx.signal.new(15)
+  local list = widgets.List({
+    rows = { { text = "a" } },
+    row_height = row_height,
+  })
+  assert(select(2, list:measure()) == 15)
+  row_height:set(30)
+  assert(select(2, list:measure()) == 30, select(2, list:measure()))
+  list:release()
 end)
 
 test("a resized widget takes the size it was given", function()
@@ -296,13 +493,6 @@ test("a resized widget takes the size it was given", function()
   local w, h_ = box:measure()
   assert(w == 100, w)
   assert(h_ == 50, h_)
-end)
-
-test("a row keeps the room its arrows take", function()
-  local body = widgets.Label({ text = "iris" })
-  local lit = widgets.Row({ child = body, left = true, right = true })
-  local dark = widgets.Row({ child = body, left = false, right = false })
-  assert(lit:measure() == dark:measure(), "the arrows moved what they flank")
 end)
 
 -- Bar borders and padding must keep the same thickness on every side at every
@@ -427,56 +617,6 @@ test("the clipboard holds what a script puts there", function()
   assert(trx.ui.clipboard == "", "an empty clipboard reads as an empty string")
 end)
 
-test("the layer over the interface paints after the layer under it", function()
-  local under = trx.ui.on_paint(function()
-    trx.ui.primitive.quad(0, 0, 0, 10, 10, trx.math.color("#ff0000"))
-  end)
-  local over = trx.ui.on_paint_over(function()
-    trx.ui.primitive.quad(0, 0, 0, 10, 10, trx.math.color("#00ff00"))
-  end)
-
-  local ops = fake.scene()
-  under:detach()
-  over:detach()
-
-  local under_at, over_at
-  for i, op in ipairs(ops) do
-    if op:find("ff0000", 1, true) then
-      under_at = i
-    elseif op:find("00ff00", 1, true) then
-      over_at = i
-    end
-  end
-
-  assert(under_at ~= nil, "the layer under the interface did not paint")
-  assert(over_at ~= nil, "the layer over the interface did not paint")
-  assert(over_at > under_at, "the layers painted in the wrong order")
-end)
-
-test("the layer under the interface draws behind it", function()
-  local under = trx.ui.on_paint(function()
-    trx.ui.primitive.quad(0, 0, 0, 10, 10, trx.math.color("#ff0000"))
-  end)
-  local over = trx.ui.on_paint_over(function()
-    trx.ui.primitive.quad(0, 0, 0, 10, 10, trx.math.color("#00ff00"))
-  end)
-
-  local ops, layers = fake.scene(), fake.scene_layers()
-  under:detach()
-  over:detach()
-
-  local under_layer, over_layer
-  for i, op in ipairs(ops) do
-    if op:find("ff0000", 1, true) then
-      under_layer = layers[i]
-    elseif op:find("00ff00", 1, true) then
-      over_layer = layers[i]
-    end
-  end
-  assert(under_layer == "under", tostring(under_layer))
-  assert(over_layer == "over", tostring(over_layer))
-end)
-
 local function quad_z(ops)
   for _, op in ipairs(ops) do
     local z = op:match(" z=(%-?%d+)")
@@ -491,13 +631,6 @@ test("a depth pushed past the near plane still draws", function()
     trx.ui.primitive.quad(0, 0, -50, 10, 10, trx.math.color("#ff0000"))
   end)
   assert(quad_z(ops) == 0, quad_z(ops))
-end)
-
-test("a layer keeps its own widgets", function()
-  local over = trx.ui.widgets.Label({ text = "only-over" })
-  trx.ui.regions.place(trx.ui.Region.BOTTOM_RIGHT, over, trx.ui.Layer.OVER)
-  assert(trx.ui.regions.remove(over) == true)
-  assert(trx.ui.regions.remove(over) == false, "it was removed twice")
 end)
 
 test("a custom widget measures and draws through its functions", function()
@@ -515,6 +648,19 @@ test("a custom widget measures and draws through its functions", function()
   custom:paint(5, 6, 30, 20)
   assert(painted[1] == 5 and painted[2] == 6)
   assert(painted[3] == 30 and painted[4] == 20)
+end)
+
+test("a custom widget follows the signals its measuring reads", function()
+  local size = trx.signal.new(10)
+  local custom = widgets.Custom({
+    measure = function()
+      return size:get(), 1
+    end,
+    paint = function() end,
+  })
+  assert(custom:measure() == 10)
+  size:set(20)
+  assert(custom:measure() == 20, "the dependency did not wake the widget")
 end)
 
 test("a custom widget that is not shown draws nothing", function()
@@ -553,20 +699,34 @@ test("a list measures its widest row and every row", function()
   assert(h_ == 3 * 15 + 2 * 3, h_)
 end)
 
+test("a widget that measures by a tween raises", function()
+  local slide = trx.ui.tween(0)
+  local widget = widgets.Custom({
+    measure = function()
+      return slide:get(), 0
+    end,
+    paint = function() end,
+  })
+  h.raises(function()
+    widget:measure()
+  end, "cannot measure by a tween")
+end)
+
 test("a list keeps its least width", function()
-  local w = widgets.List({ rows = rows("a"), width = 100 }):measure()
+  local w = widgets.List({ rows = rows("a"), min_w = 100 }):measure()
   assert(w == 100, w)
 end)
 
 test("a list that runs past its rows keeps room for the arrows", function()
   local list =
-    widgets.List({ rows = rows("a", "b", "c", "d", "e"), visible = 2 })
+    widgets.List({ rows = rows("a", "b", "c", "d", "e"), page_rows = 2 })
   local _, h_ = list:measure()
   assert(h_ == 2 * 15 + 3 + 2 * 7, h_)
 end)
 
 test("a list that keeps room keeps it for rows it does not hold", function()
-  local list = widgets.List({ rows = rows("a"), visible = 3, reserve = true })
+  local list =
+    widgets.List({ rows = rows("a"), page_rows = 3, reserve = true })
   local _, h_ = list:measure()
   assert(h_ == 3 * 15 + 2 * 3, h_)
 end)
@@ -582,7 +742,7 @@ end)
 test("a list keeps one height while a rule scrolls out of view", function()
   local list = widgets.List({
     rows = { { text = "a" }, { text = "b", rule = true }, { text = "c" } },
-    visible = 1,
+    page_rows = 1,
   })
   local _, before = list:measure()
   list:select(3)
@@ -590,11 +750,12 @@ test("a list keeps one height while a rule scrolls out of view", function()
   assert(before == after, ("%s ~= %s"):format(before, after))
 end)
 
-test("a list follows the signal that holds its visible rows", function()
-  local visible = trx.signal.new(3)
-  local list = widgets.List({ rows = rows("a", "b", "c"), visible = visible })
+test("a list follows the signal that holds its page rows", function()
+  local page_rows = trx.signal.new(3)
+  local list =
+    widgets.List({ rows = rows("a", "b", "c"), page_rows = page_rows })
   local _, before = list:measure()
-  visible:set(1)
+  page_rows:set(1)
   local _, after = list:measure()
   assert(before == 3 * 15 + 2 * 3, before)
   assert(after == 15 + 2 * 7, after)
@@ -667,14 +828,14 @@ test("a tween rests where it was made", function()
   assert(not tween:is_moving())
 end)
 
--- How many listeners a signal has.
-local function listeners_of(signal)
-  local count = 0
-  for _ in pairs(rawget(signal, "_listeners")) do
-    count = count + 1
-  end
-  return count
-end
+test("a fitted model shrinks with the text", function()
+  local fitted = trx.ui.widgets.Fit({
+    child = widgets.Model({ object = 5, w = 4000, h = 20 }),
+  })
+  local w = fitted:measure()
+  assert(w <= trx.ui.canvas.width, "the model kept its full width: " .. w)
+  fitted:release()
+end)
 
 test("a fitted tree shrinks below its first level", function()
   local rows = {}
@@ -704,9 +865,8 @@ test("releasing a widget releases every widget under it", function()
   })
   tree:measure()
   assert(listeners_of(text) == 1, listeners_of(text))
-  assert(tree:release(), "the tree said it held nothing")
+  tree:release()
   assert(listeners_of(text) == 0, "a widget under the tree kept listening")
-  assert(not tree:release(), "a second release found more to release")
 end)
 
 test("a tween arrives after the ticks it was given", function()
@@ -837,9 +997,9 @@ test("a carousel slides to what is selected", function()
   local selected = trx.signal.new(1)
   local row = carousel(selected)
   selected:set(2)
-  assert(row.is_sliding(), "the row did not start sliding")
+  assert(row:is_sliding(), "the row did not start sliding")
   ticks(8)
-  assert(not row.is_sliding(), "the row is still sliding")
+  assert(not row:is_sliding(), "the row is still sliding")
   local drawn = row_of(row)
   assert(near(drawn[2].middle, px(200)) and near(drawn[2].w, px(10)))
 end)

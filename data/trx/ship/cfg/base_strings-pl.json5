@@ -210,6 +210,7 @@
         },
         "stats": {
             "ammo": "Amunicja/trafienia",
+            "ammo_fmt": "\\{review}%d / %d",
             "ammo_hits": "Trafienia",
             "ammo_used": "Zużyta amunicja",
             "assault_best_time_fmt": "%s",

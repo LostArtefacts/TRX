@@ -96,9 +96,9 @@ static int M_FakeDrawRegions(lua_State *const L)
     m_ErrorCount = 0;
     UI_BeginScene();
     const UI_NODE *const before = UI_GetCurrent();
-    LUA_UI_SetDrawing(true);
-    LUA_UI_DrawRegions();
-    LUA_UI_SetDrawing(false);
+    LUA_UI_SetReserving(true);
+    LUA_UI_ReserveRegions();
+    LUA_UI_SetReserving(false);
     // A handler error can leave the widget tree unbalanced.
     const bool balanced = UI_GetCurrent() == before;
     UI_EndScene();

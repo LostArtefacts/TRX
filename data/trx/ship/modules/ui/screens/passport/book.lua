@@ -5,6 +5,7 @@
 -- command once the ring has closed.
 
 local hold_button = require("common.ui.widgets.hold_button")
+local metrics = require("common.ui.metrics")
 local pages = require("common.ui.screens.passport.pages")
 local requester = require("common.ui.widgets.requester")
 local rows = require("common.ui.screens.passport.rows")
@@ -16,11 +17,14 @@ local FRAMES_PER_PAGE = 5
 
 local PASSPORT_WIDTH = 300.0
 
----@class passport.Passport
+-- The gap between the caption and each of its arrows.
+local CAPTION_ARROW_GAP = 15
+
+---@class common.ui.passport.Passport
 ---@field ctx trx.ui.ScreenContext
----@field pages passport.BookPage[]
+---@field pages common.ui.passport.BookPage[]
 ---@field index integer
----@field lists passport.Sheet[]
+---@field lists common.ui.passport.Sheet[]
 ---@field page_shown trx.signal.Signal
 ---@field caption trx.signal.Signal
 ---@field caption_shown? trx.signal.Signal
@@ -33,8 +37,7 @@ local PASSPORT_WIDTH = 300.0
 ---@field standalone? boolean
 ---@field crystal? boolean
 ---@field book? trx.ui.StackLayer
----@field page? passport.Sheet
----@field place? fun(w: number, h: number): number, number
+---@field page? common.ui.passport.Sheet
 ---@field opened? string
 ---@field bare? boolean
 ---@field message? trx.ui.StackLayer
@@ -167,7 +170,7 @@ local function list_req(rows, title, footer)
   local req = requester.new({
     title = title,
     rows = rows,
-    width = PASSPORT_WIDTH,
+    min_w = PASSPORT_WIDTH,
     reserve = true,
     footer = footer,
     footer_height = footer ~= nil and DELETE_FOOTER_HEIGHT or nil,
@@ -181,7 +184,7 @@ local function modes_req(rows, title)
   local req = requester.new({
     title = title,
     rows = rows,
-    row_pad = 20.0,
+    row_pad = metrics.CHOICE_ROW_PAD,
     arrows = false,
   })
   req.place = requester.on_page_line(req, page_anchor(), DELETE_FOOTER_HEIGHT)
@@ -202,14 +205,24 @@ local function select_recent_slot(req)
   end
 end
 
+-- The lists that a page opens over itself.
+local List = {
+  PLAY_PREV_SLOT = "play_prev_slot",
+  PLAY_PREV_LEVEL = "play_prev_level",
+  STORY_SLOT = "story_slot",
+  SWITCH_MOD = "switch_mod",
+  SELECT_LEVEL_MODE = "select_level_mode",
+  CONFIRM_DELETE = "confirm_delete",
+}
+
 -- The caption of each list that names one. A list without one keeps the
 -- caption of the list or page under it.
 local LIST_CAPTIONS = {
-  play_prev_slot = "general/passport/play_previous_levels",
-  play_prev_level = "general/passport/play_previous_levels",
-  story_slot = "general/passport/story_so_far",
-  switch_mod = "general/passport/switch_mod",
-  select_level_mode = "general/passport/select_level",
+  [List.PLAY_PREV_SLOT] = "general/passport/play_previous_levels",
+  [List.PLAY_PREV_LEVEL] = "general/passport/play_previous_levels",
+  [List.STORY_SLOT] = "general/passport/story_so_far",
+  [List.SWITCH_MOD] = "general/passport/switch_mod",
+  [List.SELECT_LEVEL_MODE] = "general/passport/select_level",
 }
 
 -- Shows only the top list. A message stays over the list that it is about,
@@ -226,7 +239,7 @@ end
 
 -- Pushes a list over the page. The list reads the input until it closes.
 function Passport:push_list(role, req, extra)
-  ---@type passport.Sheet
+  ---@type common.ui.passport.Sheet
   local entry = { role = role, req = req, shown = trx.signal.new(true) }
   for key, value in pairs(extra or {}) do
     entry[key] = value
@@ -234,7 +247,7 @@ function Passport:push_list(role, req, extra)
   entry.layer = self.ctx:push({
     root = trx.ui.widgets.Stack({
       shown = entry.shown,
-      children = { req },
+      children = { req.widget },
     }),
     place = req.place,
     on_input = function(_, keys)
@@ -258,7 +271,7 @@ end
 function Passport:show_message(text)
   self.message = self.ctx:push({
     root = requester.message(text),
-    place = requester.anchored(page_anchor()),
+    place = { y = page_anchor() },
     on_input = function(layer, keys)
       if
         keys:pressed(trx.input.Role.MENU_CONFIRM)
@@ -286,10 +299,10 @@ function Passport:push_confirm_delete(row)
       { text = trx.locale.get("general/passport/delete_save_no") },
     },
     arrows = false,
-    place = requester.anchored(pages.is_title() and 0.69 or 0.55),
+    place = { y = pages.is_title() and 0.69 or 0.55 },
   })
   req.list:select(2)
-  self:push_list("confirm_delete", req, { slot = row })
+  self:push_list(List.CONFIRM_DELETE, req, { slot = row })
 end
 
 -- Builds the list of the page that the book rests on. Returns false when the
@@ -300,7 +313,7 @@ function Passport:open_page(role)
   ---@type common.ui.Requester
   local req
   -- A page opened from the book, or a list pushed over it.
-  ---@class passport.Sheet
+  ---@class common.ui.passport.Sheet
   ---@field role string
   ---@field req common.ui.Requester
   ---@field shown? trx.signal.Signal
@@ -309,14 +322,14 @@ function Passport:open_page(role)
   ---@field delete? common.ui.HoldButton
   local page = { role = role }
   if role == pages.Page.NEW_GAME then
-    local rows = rows.new_game_rows()
+    local choices = rows.new_game_rows()
     -- With only one choice, the page shows no list and starts a new game on
     -- confirm.
-    if #rows == 1 then
+    if #choices == 1 then
       self.bare = true
       return true
     end
-    req = modes_req(rows, trx.locale.get("general/passport/select_mode"))
+    req = modes_req(choices, trx.locale.get("general/passport/select_mode"))
   elseif role == pages.Page.LOAD_GAME or role == pages.Page.SAVE_GAME then
     page.delete = hold_button.new({
       words = trx.locale.get("general/passport/delete_save"),
@@ -325,7 +338,7 @@ function Passport:open_page(role)
     req = list_req(
       rows.slot_rows(),
       trx.locale.get(pages.CAPTIONS[role]),
-      page.delete
+      page.delete.widget
     )
     select_recent_slot(req)
   elseif role == pages.Page.SELECT_LEVEL then
@@ -339,11 +352,13 @@ function Passport:open_page(role)
   page.req = req
   self.page = page
   self:sync_delete()
-  self.place = req.place
-  self.book:set_root(trx.ui.widgets.Stack({
-    shown = self.page_shown,
-    children = { req },
-  }))
+  self.book:set_root(
+    trx.ui.widgets.Stack({
+      shown = self.page_shown,
+      children = { req.widget },
+    }),
+    req.place
+  )
   return true
 end
 
@@ -378,7 +393,7 @@ end
 
 -- Returns whether the pages turn. TR1 turns them only while no page is open.
 function Passport:can_flip()
-  return self.browse or not pages.is_tr1()
+  return self.browse or trx.game.tr_version ~= 1
 end
 
 function Passport:flip_keys(keys)
@@ -413,7 +428,7 @@ function Passport:choose_new_game(row)
     trx.game.start_new_game({ ng_plus = true })
   elseif row.choice == "play_prev" then
     self:push_list(
-      "play_prev_slot",
+      List.PLAY_PREV_SLOT,
       list_req(
         rows.slot_rows(function(info)
           return info ~= nil and info.can_select_level
@@ -424,7 +439,7 @@ function Passport:choose_new_game(row)
     return
   elseif row.choice == "story" then
     self:push_list(
-      "story_slot",
+      List.STORY_SLOT,
       list_req(
         rows.slot_rows(function(info)
           return info ~= nil and info.has_story
@@ -434,7 +449,7 @@ function Passport:choose_new_game(row)
     )
     return
   elseif row.choice == "switch_mod" then
-    local rows = {}
+    local mod_rows = {}
     local current = 1
     for _, mod in ipairs(pages.switchable_mods()) do
       local key = "dynamic/mods/" .. mod.name .. "/title"
@@ -442,14 +457,15 @@ function Passport:choose_new_game(row)
       if title == key then
         title = mod.title or mod.name
       end
-      rows[#rows + 1] = { text = title, mod = mod }
+      mod_rows[#mod_rows + 1] = { text = title, mod = mod }
       if trx.mod.current ~= nil and mod.name == trx.mod.current.name then
-        current = #rows
+        current = #mod_rows
       end
     end
-    local req = list_req(rows, trx.locale.get("general/passport/select_mod"))
+    local req =
+      list_req(mod_rows, trx.locale.get("general/passport/select_mod"))
     req.list:select(current)
-    self:push_list("switch_mod", req)
+    self:push_list(List.SWITCH_MOD, req)
     return
   end
   self:close(true)
@@ -481,7 +497,7 @@ function Passport:choose(entry, row)
     if pages.game_modes_available() then
       self.chosen_level = row.level.num
       self:push_list(
-        "select_level_mode",
+        List.SELECT_LEVEL_MODE,
         modes_req(
           rows.mode_rows(),
           trx.locale.get("general/passport/select_mode")
@@ -491,7 +507,7 @@ function Passport:choose(entry, row)
     end
     trx.game.play_level(row.level.num, { select = true, ng_plus = false })
     self:close(true)
-  elseif role == "select_level_mode" then
+  elseif role == List.SELECT_LEVEL_MODE then
     local level_num = self.chosen_level
     if level_num == nil then
       return
@@ -501,31 +517,31 @@ function Passport:choose(entry, row)
       ng_plus = row.choice == "new_game_plus",
     })
     self:close(true)
-  elseif role == "play_prev_slot" then
+  elseif role == List.PLAY_PREV_SLOT then
     local info = trx.savegame.info(row.slot_num, row.pool)
     local reached = info ~= nil
       and info.can_select_level
       and trx.savegame.reached_levels(row.slot_num, row.pool)
-    local rows = reached and rows.reached_level_rows(reached) or {}
-    if #rows == 0 then
+    local level_rows = reached and rows.reached_level_rows(reached) or {}
+    if #level_rows == 0 then
       self:show_message(
         trx.locale.get("general/passport/save_slot_unsupported")
       )
       return
     end
     self:push_list(
-      "play_prev_level",
-      list_req(rows, trx.locale.get("general/passport/select_level")),
+      List.PLAY_PREV_LEVEL,
+      list_req(level_rows, trx.locale.get("general/passport/select_level")),
       { slot = row }
     )
-  elseif role == "play_prev_level" then
+  elseif role == List.PLAY_PREV_LEVEL then
     local slot = entry.slot
     trx.game.play_level(row.level.num, {
       select = true,
       from_save = { slot_num = slot.slot_num, pool = slot.pool },
     })
     self:close(true)
-  elseif role == "confirm_delete" then
+  elseif role == List.CONFIRM_DELETE then
     local slot = entry.slot
     entry.layer:close()
     if row.yes then
@@ -540,18 +556,18 @@ function Passport:choose(entry, row)
         )
       end
     end
-  elseif role == "story_slot" then
+  elseif role == List.STORY_SLOT then
     trx.savegame.play_story(row.slot_num, row.pool)
     self:close(true)
-  elseif role == "switch_mod" then
+  elseif role == List.SWITCH_MOD then
     trx.mod.switch(row.mod)
     self:close(true)
   end
 end
 
 function Passport:control_list(entry, keys)
-  local picked = entry.req:control(keys)
-  if picked == "cancel" then
+  local picked, cancelled = entry.req.list:control(keys)
+  if cancelled then
     entry.layer:close()
   elseif picked ~= nil then
     self:choose(entry, entry.req.rows[picked])
@@ -592,8 +608,8 @@ function Passport:control_page(keys)
   if self:control_delete(keys) then
     return true
   end
-  local picked = self.page.req:control(keys)
-  if picked == "cancel" then
+  local picked, cancelled = self.page.req.list:control(keys)
+  if cancelled then
     self:back_out()
     return true
   elseif picked ~= nil then
@@ -700,7 +716,7 @@ end
 -------------------------------------------------------------------------------
 
 local function new(ctx, fields)
-  ---@type passport.Passport
+  ---@type common.ui.passport.Passport
   local self = setmetatable({
     ctx = ctx,
     lists = {},
@@ -752,23 +768,9 @@ function M.open(ctx, book_pages, index, mode)
   end
   self.arrow_left = arrow(-1)
   self.arrow_right = arrow(1)
-  ctx:on_end(function()
-    self.arrow_left:stop()
-    self.arrow_right:stop()
-    self.caption_shown:stop()
-    self.resting:stop()
-  end)
 
   self.book = ctx:push({
     root = trx.ui.widgets.Spacer(),
-    -- The book's layer stays while its page changes, and each page sets its
-    -- own position.
-    place = function(w, h)
-      if self.place ~= nil then
-        return self.place(w, h)
-      end
-      return requester.anchored(0.5)(w, h)
-    end,
     on_input = function(_, keys)
       self:control_book(keys)
     end,
@@ -776,16 +778,26 @@ function M.open(ctx, book_pages, index, mode)
   -- The book names its own pages, so the name the ring gave the entry comes
   -- down.
   trx.overlay.set_caption(nil)
-  ctx:push({
-    root = trx.ui.widgets.Row({
-      left = self.arrow_left,
-      right = self.arrow_right,
-      shown = self.caption_shown,
-      child = trx.ui.widgets.Label({ text = self.caption }),
-    }),
-    region = trx.ui.Region.BOTTOM_CENTER,
-    modal = false,
+  -- Unlit arrows keep their room, so the caption does not move as they come
+  -- and go.
+  local function arrow_label(glyph, lit)
+    return trx.ui.widgets.Label({ text = glyph, hidden = ~lit })
+  end
+  local caption = trx.ui.widgets.Stack({
+    orientation = trx.ui.Orientation.HORIZONTAL,
+    v_align = trx.ui.VAlign.CENTER,
+    spacing = CAPTION_ARROW_GAP,
+    shown = self.caption_shown,
+    children = {
+      arrow_label("\\{button left}", self.arrow_left),
+      trx.ui.widgets.Label({ text = self.caption }),
+      arrow_label("\\{button right}", self.arrow_right),
+    },
   })
+  trx.ui.regions.place(trx.ui.Region.BOTTOM_CENTER, caption)
+  ctx:on_end(function()
+    caption:release()
+  end)
   return self.book
 end
 
@@ -800,9 +812,6 @@ function M.open_alone(ctx, book_pages, index, crystal)
   })
   self.book = ctx:push({
     root = trx.ui.widgets.Spacer(),
-    place = function(w, h)
-      return self.place(w, h)
-    end,
     on_input = function(_, keys)
       self:control_page(keys)
     end,

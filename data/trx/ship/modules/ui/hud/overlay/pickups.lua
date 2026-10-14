@@ -24,6 +24,16 @@ function M.setup()
 
   local WHITE = trx.math.color("ffffff")
 
+  local Phase = {
+    EASE_IN = "ease_in",
+    DISPLAY = "display",
+    EASE_OUT = "ease_out",
+  }
+
+  local scale = signal.config("ui.pickup_scale")
+  local enabled = trx.game.signals.is_playing
+    & signal.config("ui.show_pickups_overlay")
+
   local shown = {}
 
   -- How many of an entry's own ticks have gone by at the frame being drawn,
@@ -42,9 +52,9 @@ function M.setup()
       local ratio = ticks_drawn(entry.elapsed) / ticks
       return trx.ui.ease.quad_in_out(math.min(math.max(ratio, 0), 1))
     end
-    if entry.phase == "ease_in" then
+    if entry.phase == Phase.EASE_IN then
       return eased(EASE_IN_TICKS)
-    elseif entry.phase == "display" then
+    elseif entry.phase == Phase.DISPLAY then
       return 1
     end
     return 1 - eased(EASE_OUT_TICKS)
@@ -55,7 +65,7 @@ function M.setup()
     local canvas = trx.ui.canvas
     local working = trx.ui.working_area
     local bottom = working.y + working.height
-    local height = canvas.height * trx.config.get("ui.pickup_scale") / 6
+    local height = canvas.height * scale:get() / 6
     local width = height * 5 / 4
     local margin_y = canvas.height / 16
     local margin_x = margin_y * 4 / 3
@@ -113,7 +123,7 @@ function M.setup()
       local row = index // COLUMNS
       local taken = false
       for _, entry in ipairs(shown) do
-        local leaving = entry.icon ~= nil and entry.phase == "ease_out"
+        local leaving = entry.icon ~= nil and entry.phase == Phase.EASE_OUT
         if entry.column == column and entry.row == row and not leaving then
           taken = true
           break
@@ -150,7 +160,7 @@ function M.setup()
       icon = icon,
       column = column,
       row = row,
-      phase = "ease_in",
+      phase = Phase.EASE_IN,
       elapsed = 0,
       total = 0,
       angle = 0,
@@ -168,15 +178,15 @@ function M.setup()
     entry.elapsed = entry.elapsed + 1
     entry.total = entry.total + 1
 
-    if entry.phase == "ease_in" then
+    if entry.phase == Phase.EASE_IN then
       if entry.elapsed >= EASE_IN_TICKS then
         entry.elapsed = 0
-        entry.phase = "display"
+        entry.phase = Phase.DISPLAY
       end
-    elseif entry.phase == "display" then
+    elseif entry.phase == Phase.DISPLAY then
       if entry.elapsed >= DISPLAY_TICKS then
         entry.elapsed = 0
-        entry.phase = "ease_out"
+        entry.phase = Phase.EASE_OUT
       end
     elseif entry.elapsed >= EASE_OUT_TICKS then
       return false
@@ -184,14 +194,10 @@ function M.setup()
     return true
   end
 
-  local function enabled()
-    return trx.game.is_playing and trx.config.get("ui.show_pickups_overlay")
-  end
-
   -- Paints each model in its cell, or a sprite scaled to fill the cell where
   -- there is no model.
   local function paint()
-    if not enabled() then
+    if not enabled:get() then
       return
     end
     for _, entry in ipairs(shown) do

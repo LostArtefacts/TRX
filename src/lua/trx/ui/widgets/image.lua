@@ -7,12 +7,11 @@ local widgets = trx.ui.widgets
 local value_of = base.value_of
 local new_widget = base.new_widget
 
----@class (exact) trx.ui.widgets.Image.settings
+---@class (exact) trx.ui.widgets.Image.settings: trx.ui.widgets.settings
 ---@field path any The image file, named from the images directory, or a signal carrying it.
----@field w number The width, in canvas units.
----@field h number The height, in canvas units.
+---@field w any The width, in canvas units, or a signal that holds it.
+---@field h any The height, in canvas units, or a signal that holds it.
 ---@field opacity? any How solid the image is, from 0 to 1, or a signal that holds that value. `1` by default.
----@field shown? any Whether the image is shown, or a signal that holds that value.
 
 ---A picture from an image file, at a size the script gives.
 ---
@@ -22,16 +21,10 @@ local new_widget = base.new_widget
 ---@return trx.ui.Widget # The image.
 function widgets.Image(settings)
   local self = new_widget(settings, function(w)
-    return w.w, w.h
+    return value_of(w.w), value_of(w.h)
   end, function(w, x, y)
-    primitive.image(
-      value_of(w.path),
-      x,
-      y,
-      w.w,
-      w.h,
-      value_of(w.opacity) or 1.0
-    )
+    local iw, ih = w:measure()
+    primitive.image(value_of(w.path), x, y, iw, ih, value_of(w.opacity) or 1.0)
   end)
   return self
 end

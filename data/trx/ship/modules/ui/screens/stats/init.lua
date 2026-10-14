@@ -2,14 +2,12 @@
 -- totals when the game ends, and the same from the compass or the stopwatch
 -- in the inventory ring. In the gym, the stopwatch shows the best times on the
 -- assault course instead, and a held key clears them.
---
--- Usage:
---   require("common.ui.screens.stats").setup()
 
 local box = require("common.ui.screens.stats.box")
 local counts = require("common.ui.screens.stats.counts")
 local fade = require("common.ui.fade")
 local listing = require("common.ui.screens.stats.rows")
+local ring = require("common.ui.ring")
 
 local M = {}
 
@@ -34,6 +32,7 @@ trx.locale.declare({
   ["general/stats/time_taken"] = "Time Taken",
   ["general/stats/ammo"] = "Ammo Hits/Used",
   ["general/stats/ammo_used"] = "Ammo Used",
+  ["general/stats/ammo_fmt"] = "%d / %d",
   ["general/stats/ammo_hits"] = "Hits",
   ["general/stats/kills"] = "Kills",
   ["general/stats/crystals"] = "Crystals",
@@ -89,16 +88,15 @@ end
 -- The box with what it lists now. The ring hides it until the entry is open.
 local function box_of(state)
   state.rows = listing.all_rows(state)
-  local box = box.build(state)
-  box.shown = state.shown
-  return box
+  return box.build(state)
 end
 
 -- Builds the box again whenever what it lists or the room for it changes: the
 -- settings, the room that the rest of the interface leaves, and for the best
 -- times, how many rows the box shows and the times themselves. The scroll
--- moves the rows on show without building the box again.
-local function follow(state)
+-- moves the rows on show without building the box again. The screen ending
+-- stops it.
+local function follow(ctx, state)
   local sources = { trx.ui.signals.layout }
   for _, key in ipairs(ROW_SETTINGS) do
     sources[#sources + 1] = trx.signal.config(key)
@@ -108,22 +106,24 @@ local function follow(state)
     sources[#sources + 1] = state.records
   end
   local function rebuild()
-    state.layer:set_root(box_of(state))
+    state.layer:set_root(box_of(state), box.place(state))
   end
-  state.listeners = {}
+  local listeners = {}
   for _, source in ipairs(sources) do
-    state.listeners[#state.listeners + 1] = source:on(rebuild)
+    listeners[#listeners + 1] = source:on(rebuild)
   end
-end
-
-local function unfollow(state)
-  for _, listener in ipairs(state.listeners) do
-    listener:detach()
-  end
-  if state.clock ~= nil then
-    state.time_text:stop()
-    state.clock:stop()
-  end
+  ctx:on_end(function()
+    for _, listener in ipairs(listeners) do
+      listener:detach()
+    end
+    if state.clock ~= nil then
+      state.time_text:stop()
+      state.clock:stop()
+    end
+    if state.resting ~= nil then
+      state.resting:stop()
+    end
+  end)
 end
 
 local function new_state(level, mode, bare, live)
@@ -148,11 +148,8 @@ local function push(ctx, state, on_input)
     root = box_of(state),
     place = box.place(state),
     on_input = on_input,
-    on_close = function()
-      unfollow(state)
-    end,
   })
-  follow(state)
+  follow(ctx, state)
   return state.layer
 end
 
@@ -161,6 +158,17 @@ end
 local BACKDROP_TICKS = { image = 30, default = 15 }
 local PATTERNS = { pattern_static = true, pattern_wave = true }
 
+-- How long the screen takes to fade to black as it leaves, and then how long
+-- it stays black, before the next screen starts.
+local LEAVE_TICKS = 15
+local LEAVE_HOLD_TICKS = 3
+
+-- Whether the screen fades: always at the end of the game, and otherwise as
+-- the player picked.
+local function fades_run(ctx)
+  return ctx.is_final or trx.config.get("ui.stats_fade_effects")
+end
+
 -- Brings in the backdrop the screen stands on: the picture that ends the
 -- game, or the style the player picked.
 local function enter_backdrop(ctx)
@@ -168,7 +176,7 @@ local function enter_backdrop(ctx)
     or trx.config.get("ui.stats_background_style")
   local fades = fade.screen(ctx, {
     enabled = function()
-      return ctx.is_final or trx.config.get("ui.stats_fade_effects")
+      return fades_run(ctx)
     end,
   })
   fades:enter({
@@ -179,8 +187,8 @@ local function enter_backdrop(ctx)
   })
 end
 
--- The screen between levels and at the end of the game. It reads no keys:
--- the player skips it as they skip the engine's own.
+-- The screen between levels and at the end of the game. A skip ends it, and
+-- the next screen starts once the screen has faded to black.
 ---@param ctx trx.ui.StatsContext
 local function open_level_end(ctx)
   local mode = ctx.is_final and Mode.FINAL or Mode.LEVEL
@@ -189,7 +197,16 @@ local function open_level_end(ctx)
     return nil
   end
   enter_backdrop(ctx)
-  return push(ctx, state)
+  return push(ctx, state, function(_, keys)
+    if not keys:pressed(trx.input.Role.MENU_SKIP) then
+      return
+    end
+    trx.input.hold_off_skip(trx.input.SkipContext.TO_SCREEN)
+    if fades_run(ctx) then
+      fade.hand_over({ ticks = LEAVE_TICKS, hold = LEAVE_HOLD_TICKS })
+    end
+    ctx:confirm()
+  end)
 end
 
 local function scroll(state, step)
@@ -259,37 +276,38 @@ local function open_ring_entry(ctx)
   end
   local state =
     new_state(level, mode, trx.config.get("ui.stats.style") == "bare", true)
-  state.shown = trx.signal.new(false)
+  state.resting = ring.resting()
+  state.shown = shows_stats and state.resting or false
 
-  return push(ctx, state, function(_, keys)
-    if trx.inventory_ring.signals.rest_frame:get() == nil then
-      return
-    end
-    -- The rows the best times show are counted once the entry rests open,
-    -- against the room the ring leaves then.
-    if mode == Mode.ASSAULT and not state.counted_rows then
-      state.counted_rows = true
-      state.visible:set(listing.assault_visible_rows())
-    end
-    state.shown:set(shows_stats)
-    if mode == Mode.ASSAULT then
-      control_reset(state, keys)
-      if keys:pressed(trx.input.Role.MENU_DOWN) then
-        scroll(state, 1)
-      elseif keys:pressed(trx.input.Role.MENU_UP) then
-        scroll(state, -1)
+  return push(
+    ctx,
+    state,
+    ring.while_resting(function(_, keys)
+      -- The rows the best times show are counted once the entry rests open,
+      -- against the room the ring leaves then.
+      if mode == Mode.ASSAULT and not state.counted_rows then
+        state.counted_rows = true
+        state.visible:set(listing.assault_visible_rows())
       end
-    end
-    if keys:pressed(trx.input.Role.MENU_CONFIRM) then
-      close(ctx, object, true)
-      return
-    elseif keys:pressed(trx.input.Role.MENU_BACK) then
-      close(ctx, object, false)
-      return
-    elseif object == trx.catalog.objects.STOPWATCH_OPTION then
-      trx.sound.play(trx.catalog.samples.MENU_STOPWATCH)
-    end
-  end)
+      if mode == Mode.ASSAULT then
+        control_reset(state, keys)
+        if keys:pressed(trx.input.Role.MENU_DOWN) then
+          scroll(state, 1)
+        elseif keys:pressed(trx.input.Role.MENU_UP) then
+          scroll(state, -1)
+        end
+      end
+      if keys:pressed(trx.input.Role.MENU_CONFIRM) then
+        close(ctx, object, true)
+        return
+      elseif keys:pressed(trx.input.Role.MENU_BACK) then
+        close(ctx, object, false)
+        return
+      elseif object == trx.catalog.objects.STOPWATCH_OPTION then
+        trx.sound.play(trx.catalog.samples.MENU_STOPWATCH)
+      end
+    end)
+  )
 end
 
 function M.setup()

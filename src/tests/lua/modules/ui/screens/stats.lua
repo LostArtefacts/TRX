@@ -21,6 +21,7 @@ local BARE = 0x20000
 -- one a script counts.
 local CAVES = 2
 
+require("common.ui.fade").setup()
 require("common.ui.screens.stats").setup()
 
 local function press(role)
@@ -152,11 +153,40 @@ test("totals with nothing to show leave the screen to end", function()
   finish()
 end)
 
-test("the player skipping the screen is the engine's to read", function()
+test("the screen ends on a skip and on no other key", function()
   fake.set_current_level(CAVES)
   fake.offer(STATS, { level = 1 })
   press(Role.MENU_CONFIRM)
   assert(fake.is_held(STATS), "the screen ended on a key it does not read")
+  press(Role.MENU_SKIP)
+  assert(fake.take_choice(STATS) == CHOICE_CONFIRM, "a skip did not end it")
+  finish()
+end)
+
+test("a skipped screen fades to black before the next screen", function()
+  trx.config.set("ui.stats_fade_effects", true)
+  fake.set_current_level(CAVES)
+  fake.offer(STATS, { level = 1 })
+  press(Role.MENU_SKIP)
+  fake.take_choice(STATS)
+  fake.change_screen(false)
+  assert(fake.holds_screen(), "the next screen did not wait for the fade")
+  for _ = 1, 30 do
+    fake.tick()
+  end
+  assert(not fake.holds_screen(), "the fade did not end")
+  finish()
+end)
+
+test("a skipped screen cuts to the next with its fades off", function()
+  trx.config.set("ui.stats_fade_effects", false)
+  fake.set_current_level(CAVES)
+  fake.offer(STATS, { level = 1 })
+  press(Role.MENU_SKIP)
+  fake.take_choice(STATS)
+  fake.change_screen(false)
+  assert(not fake.holds_screen(), "the next screen waited")
+  trx.config.set("ui.stats_fade_effects", true)
   finish()
 end)
 

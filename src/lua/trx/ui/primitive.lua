@@ -35,7 +35,7 @@ local primitive = trx.ui.primitive
 ---Reserves space in a region and returns a slot for it.
 ---
 ---The reservation is stacked with the engine UI in that region. Reserve space
----during `trx.ui.on_draw`, then read the assigned box during
+---during `trx.ui.on_reserve`, then read the assigned box during
 ---`trx.ui.on_paint`.
 ---
 ---A slot is valid only for the scene that created it.

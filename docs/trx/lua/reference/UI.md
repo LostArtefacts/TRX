@@ -22,7 +22,7 @@ screen of widgets, such as a menu, over the rest. A widget takes signals in
 place of fixed values, and follows them as they change.
 
 Below the widgets, a script can reserve room in a region during
-[`trx.ui.on_draw`](#ui.on_draw) and paint into it by hand with [`trx.ui.primitive`](#ui.primitive) during
+[`trx.ui.on_reserve`](#ui.on_reserve) and paint into it by hand with [`trx.ui.primitive`](#ui.primitive) during
 [`trx.ui.on_paint`](#ui.on_paint). The primitive drawing calls work only while the
 interface is painted.
 
@@ -86,9 +86,9 @@ arrow, and `\{button left}` draws the button the player has bound.
 
 - <a id="ui.Region" name="ui.Region"></a>[lua]`trx.ui.Region`
 
-    One of the nine places the interface is built in. A handler is told which
-    one is being built and adds to it, and everything asking for a place is laid
-    out together there rather than over what else asked for it.
+    One of the nine areas of the screen that the interface is laid out in.
+    Everything that reserves room in a region is stacked together, so nothing in
+    one region overlaps.
 
     The eight around the edge stack what they hold away from the edge they sit
     at. The middle is what the others leave, and is where a dialog goes.
@@ -111,18 +111,6 @@ arrow, and `\{button left}` draws the button the player has bound.
         The bottom edge, in the middle.
     - `trx.ui.Region.BOTTOM_RIGHT`  
         The bottom right corner.
-
-- <a id="ui.Layer" name="ui.Layer"></a>[lua]`trx.ui.Layer`
-
-    Whether a widget is drawn below or above the engine interface.
-
-    Widgets use the lower layer by default. Use the upper layer for a text field.
-    Each region keeps space for both layers. Both draw under the console.
-
-    - `trx.ui.Layer.UNDER`  
-        Below the engine interface.
-    - `trx.ui.Layer.OVER`  
-        Above the engine interface.
 
 - <a id="ui.FrameStyle" name="ui.FrameStyle"></a>[lua]`trx.ui.FrameStyle`
 
@@ -169,7 +157,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     - `trx.ui.Screen.RING_ENTRY`  
         An entry that the player uses in the inventory ring, with a [`trx.ui.EntryContext`](#ui.EntryContext). A definition can name the entry it draws. A ring opened to save or load leaves when the screen ends, and any ring leaves when the screen ends with [`trx.ui.ScreenContext:confirm`](#ui.ScreenContext.confirm).
     - `trx.ui.Screen.PAUSE`  
-        The question that the pause screen asks when the player presses the inventory key: whether to leave for the title screen. It has a [`trx.ui.PauseContext`](#ui.PauseContext).
+        The pause screen, from the moment the game pauses until it resumes or leaves for the title screen. It has a [`trx.ui.PauseContext`](#ui.PauseContext).
     - `trx.ui.Screen.SAVE_LOAD`  
         The quick save or load screen, with a [`trx.ui.SaveLoadContext`](#ui.SaveLoadContext). The save and load keys open it when the instant screen setting is on.
     - `trx.ui.Screen.STATS`  
@@ -203,7 +191,7 @@ arrow, and `\{button left}` draws the button the player has bound.
 
 - <a id="ui.LayerKeys" name="ui.LayerKeys"></a>[lua]`trx.ui.LayerKeys`
 
-    The player's input, as the top layer reads it.
+    The player's input, as the active layer reads it.
 
     A layer reads each press as pressed once per tick. A menu key that the
     player holds keeps reading as pressed at the rate that the game's own menus
@@ -253,16 +241,24 @@ arrow, and `\{button left}` draws the button the player has bound.
 
       Returns: boolean. Whether the layer was open.
 
-    - <a id="ui.StackLayer.is_top" name="ui.StackLayer.is_top"></a>[lua]`stacklayer:is_top()`  
-      Returns whether the layer is the one that reads input.
-
-      Returns: boolean. Whether it is on top.
-
-    - <a id="ui.StackLayer.set_root" name="ui.StackLayer.set_root"></a>[lua]`stacklayer:set_root(root)`  
+    - <a id="ui.StackLayer.set_root" name="ui.StackLayer.set_root"></a>[lua]`stacklayer:set_root(root, [place])`  
       Replaces the widget tree that the layer draws, and releases the old one.
 
       Parameters:
       - <a id="ui.StackLayer.set_root.root" name="ui.StackLayer.set_root.root"></a>**`root`** ([trx.ui.Widget](#ui.Widget)). The new tree.
+      - <a id="ui.StackLayer.set_root.place" name="ui.StackLayer.set_root.place"></a>**`place`** ([trx.ui.Placement](#ui.Placement) or function, optional). Where the new tree goes, as [`trx.ui.layers.push`](#ui.layers.push) takes it. The tree keeps the old placement where this is `nil`.
+
+- <a id="ui.Placement" name="ui.Placement"></a>[lua]`trx.ui.Placement`
+
+    Where a layer puts its tree within an area of the canvas. The tree takes a
+    share of the room that it leaves free on each axis, and starts from the top
+    left of the area where it is too large for it.
+
+    Properties:
+    - <a id="ui.Placement.canvas" name="ui.Placement.canvas"></a>**`canvas`**: any, optional. Whether the area is the whole canvas, or a signal that holds that value. By default, the area is [`trx.ui.safe_area_for`](#ui.safe_area_for) the width of the tree, as the engine centers its own boxes.
+    - <a id="ui.Placement.margin" name="ui.Placement.margin"></a>**`margin`**: any, optional. The room kept clear inside each edge of the area, in canvas units, or a signal that holds it. `0` by default.
+    - <a id="ui.Placement.x" name="ui.Placement.x"></a>**`x`**: any, optional. How far across the free width the tree stands, from `0` against the left edge to `1` against the right edge, or a signal that holds it. `0.5` by default.
+    - <a id="ui.Placement.y" name="ui.Placement.y"></a>**`y`**: any, optional. How far down the free height the tree stands, from `0` against the top edge to `1` against the bottom edge, or a signal that holds it. `0.5` by default.
 
 - <a id="ui.FadeLayer" name="ui.FadeLayer"></a>[lua]`trx.ui.FadeLayer`
 
@@ -317,7 +313,7 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     - <a id="ui.ScreenContext.cancel" name="ui.ScreenContext.cancel"></a>[lua]`screencontext:cancel()`  
       Ends the screen, and closes its layers. A ring entry is put away, the pause
-      screen stays paused and drops its question, the quick save or load screen
+      screen returns to the game, the quick save or load screen
       closes, and the statistics screen ends as the player skipping it does. Does
       nothing if the screen has already ended.
 
@@ -355,10 +351,9 @@ arrow, and `\{button left}` draws the button the player has bound.
 
         Keys:
         - <a id="ui.ScreenContext.push.settings.root" name="ui.ScreenContext.push.settings.root"></a>**`root`** ([trx.ui.Widget](#ui.Widget)). The widget tree to draw.
-        - <a id="ui.ScreenContext.push.settings.region" name="ui.ScreenContext.push.settings.region"></a>**`region`** ([trx.ui.Region](#ui.Region), optional). The region that the tree takes room in. The tree then stacks with the other widgets in that region. Without a region or a place, the tree is centered in [`trx.ui.safe_area_for`](#ui.safe_area_for) its width, as the engine centers its own boxes, and starts from the top left of that area where it is too large for it.
-        - <a id="ui.ScreenContext.push.settings.place" name="ui.ScreenContext.push.settings.place"></a>**`place`** (function, optional). Returns the top left corner of the tree, in canvas units. It receives the width and the height that the tree measures.
-        - <a id="ui.ScreenContext.push.settings.modal" name="ui.ScreenContext.push.settings.modal"></a>**`modal`** (boolean, optional). Whether the layer reads input. `true` by default.
-        - <a id="ui.ScreenContext.push.settings.on_input" name="ui.ScreenContext.push.settings.on_input"></a>**`on_input`** (function, optional). Runs once a tick while the layer is the top layer that reads input. It receives the layer and a [`trx.ui.LayerKeys`](#ui.LayerKeys). An error closes the layer.
+        - <a id="ui.ScreenContext.push.settings.place" name="ui.ScreenContext.push.settings.place"></a>**`place`** ([trx.ui.Placement](#ui.Placement) or function, optional). Where the tree goes. A function receives the width and the height that the tree measures, and returns the top left corner of the tree, in canvas units. The layer works the corner out again only when the tree's size, the room the interface lays out in, or a signal that the placement reads changes, and on every frame while the placement reads a [`trx.ui.Tween`](#ui.Tween). The tree is centered in [`trx.ui.safe_area_for`](#ui.safe_area_for) its width by default.
+        - <a id="ui.ScreenContext.push.settings.modal" name="ui.ScreenContext.push.settings.modal"></a>**`modal`** (boolean, optional). Whether the layer reads input. A layer that reads input takes it from the layers below, and during play from the game. By default, a layer reads input when it has `on_input`. Set it to `true` for a layer that holds the input back without reading any.
+        - <a id="ui.ScreenContext.push.settings.on_input" name="ui.ScreenContext.push.settings.on_input"></a>**`on_input`** (function, optional). Runs once a tick while the layer is the active layer. It receives the layer and a [`trx.ui.LayerKeys`](#ui.LayerKeys). An error closes the layer.
         - <a id="ui.ScreenContext.push.settings.on_close" name="ui.ScreenContext.push.settings.on_close"></a>**`on_close`** (function, optional). Runs once when the layer closes, for any reason. It receives the layer.
 
       Returns: [trx.ui.StackLayer](#ui.StackLayer). The pushed layer.
@@ -379,8 +374,7 @@ arrow, and `\{button left}` draws the button the player has bound.
     Methods:
 
     - <a id="ui.PauseContext.exit_to_title" name="ui.PauseContext.exit_to_title"></a>[lua]`pausecontext:exit_to_title()`  
-      Ends the pause screen, and leaves for the title screen with the pause
-      screen's fade.
+      Ends the pause screen, and leaves for the title screen.
 
       Returns: boolean. Whether the screen was still held.
 
@@ -484,11 +478,16 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     A reusable UI element drawn over the game.
 
-    A widget holds its own state. Give it signals instead of fixed values. The
-    widget remeasures only when a signal that it read while measuring changes.
+    A widget holds its own state. Every setting that holds a value, rather than
+    a widget or a function, also takes a signal that holds the value. The widget
+    remeasures only when a signal that it read while measuring changes, and
+    when the room the interface lays out in changes. A [`trx.ui.Tween`](#ui.Tween) moves
+    between ticks, so a widget reads one only while it paints, and reading one
+    while it measures raises an error.
 
-    Properties:
-    - <a id="ui.Widget.hidden" name="ui.Widget.hidden"></a>**`hidden`**: any, optional. Whether the widget keeps its room but draws nothing, or a signal that holds that value.
+    A widget is in one place at a time: inside another widget, in a region or as
+    the root of a layer. Using it in a second place is an error. Releasing a widget ends it and every widget under it, and
+    using a released widget is an error.
 
     Methods:
 
@@ -520,50 +519,29 @@ arrow, and `\{button left}` draws the button the player has bound.
       - <a id="ui.Widget.paint.h" name="ui.Widget.paint.h"></a>**`h`** (number). The height it was given.
 
     - <a id="ui.Widget.release" name="ui.Widget.release"></a>[lua]`widget:release()`  
-      Detaches the widget and its children from registered signals.
+      Ends the widget and every widget under it: removes the widget from its
+      region if it is placed, and detaches each one from its signals. Does nothing
+      if the widget is already released.
 
       Signals keep references to their listeners. Release temporary widgets when
-      they are no longer needed. Remove a placed widget from its region before
-      releasing it.
-
-      Returns: boolean. Whether it or a widget under it was still listening to anything.
-
-    - <a id="ui.Widget.release_with" name="ui.Widget.release_with"></a>[lua]`widget:release_with(...)`  
-      Ties signals and listeners to the widget, so that releasing the widget
-      stops each signal and detaches each listener. Use it for what a widget's
-      own code listens to, such as a derived signal that only it reads.
-
-      Parameters:
-      - <a id="ui.Widget.release_with...." name="ui.Widget.release_with...."></a>**`...`** ([trx.signal.Signal](SIGNAL.md#signal.Signal) or [trx.signal.Listener](SIGNAL.md#signal.Listener)). The signals and listeners.
-
-      Returns: [trx.ui.Widget](#ui.Widget). The same widget, for method chaining.
-
-      Example:
-      ```lua
-      local fill = trx.lara.signals.hp:map(function(hp)
-        return hp / 1000
-      end)
-      local bar = trx.ui.widgets.Bar({ value = fill }):release_with(fill)
-      ```
+      they are no longer needed. A widget that another widget or a layer holds is
+      released with its holder, and releasing it directly is an error. A widget that a level script placed is released when the level ends.
 
     - <a id="ui.Widget.wake" name="ui.Widget.wake"></a>[lua]`widget:wake()`  
       Invalidates the widget's cached size manually.
 
       Returns: [trx.ui.Widget](#ui.Widget). The same widget.
 
-    - <a id="ui.Widget.wakes_on" name="ui.Widget.wakes_on"></a>[lua]`widget:wakes_on(...)`  
-      Registers more signals that invalidate the widget's cached size.
+- <a id="ui.Carousel" name="ui.Carousel"></a>[lua]`trx.ui.Carousel`
 
-      When one of these signals changes, the widget and its parents are measured
-      again on the next layout pass. A signal in the widget's settings registers
-      itself when the widget reads it. Register a signal here when the widget
-      depends on it in another way, such as through the functions of a
-      [`trx.ui.widgets.Custom`](#ui.widgets.Custom). Registering a signal twice has no further effect.
+    A row of items turned to the one in the middle.
 
-      Parameters:
-      - <a id="ui.Widget.wakes_on...." name="ui.Widget.wakes_on...."></a>**`...`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). The signals the widget depends on.
+    Methods:
 
-      Returns: [trx.ui.Widget](#ui.Widget). The same widget, for method chaining.
+    - <a id="ui.Carousel.is_sliding" name="ui.Carousel.is_sliding"></a>[lua]`carousel:is_sliding()`  
+      Returns whether the row is still sliding to the selected item.
+
+      Returns: boolean. Whether it slides.
 
 - <a id="ui.ListRow" name="ui.ListRow"></a>[lua]`trx.ui.ListRow`
 
@@ -583,13 +561,16 @@ arrow, and `\{button left}` draws the button the player has bound.
     Methods:
 
     - <a id="ui.List.control" name="ui.List.control"></a>[lua]`list:control(keys)`  
-      Reads the menu keys for one tick. Up and down move the cursor, and confirm
-      picks the row under it. Uses up only the presses that it reads.
+      Reads the menu keys for one tick. Up and down move the cursor, confirm
+      picks the row under it, and back reports that the player backed out. Uses up
+      only the presses that it reads.
 
       Parameters:
       - <a id="ui.List.control.keys" name="ui.List.control.keys"></a>**`keys`** ([trx.ui.LayerKeys](#ui.LayerKeys)). The input of the layer the list is on.
 
-      Returns: integer or `nil`. The picked row, or `nil` where none was picked.
+      Returns:
+      - integer or `nil`. The picked row, or `nil` where none was picked.
+      - boolean. Whether the player backed out.
 
     - <a id="ui.List.move" name="ui.List.move"></a>[lua]`list:move(step)`  
       Moves the cursor by a number of rows. Past either end, the cursor goes to
@@ -631,8 +612,11 @@ arrow, and `\{button left}` draws the button the player has bound.
   placed with [`trx.ui.regions.place`](#ui.regions.place). The engine interface still draws over
   all of them.
 
-  Only the top layer that takes input reads the player's input. The layers
-  below it read nothing until it closes.
+  Only the active layer, the top layer that reads input, reads the player's
+  input. The layers below it read nothing until it closes. While a layer that
+  reads input is open during play, the layers take the devices from the game
+  with [`trx.input.grab`](INPUT.md#input.grab): Lara does not move, and the game's own keys, such as
+  the pause key, do nothing. The level keeps running.
 
   A layer that a level script pushes closes when the level ends.
 
@@ -651,7 +635,7 @@ arrow, and `\{button left}` draws the button the player has bound.
 
   The screen has nine regions. Engine UI uses those regions for bars, overlay
   text, inventory-ring hints, and dialogs. A widget placed in a region stacks
-  after the engine UI in that region.
+  after the engine UI in that region, and draws under it.
 
   Place a widget once when the script loads. Use signals when the widget must
   change later.
@@ -685,18 +669,18 @@ arrow, and `\{button left}` draws the button the player has bound.
 
   Put a widget on screen with [`trx.ui.regions.place`](#ui.regions.place).
 
-- <a id="ui.on_draw" name="ui.on_draw"></a>[lua]`trx.ui.on_draw(callback)`  
+- <a id="ui.on_reserve" name="ui.on_reserve"></a>[lua]`trx.ui.on_reserve(callback)`  
   Happens while the interface is built, once for each region. The handler
-  adds widgets to the region it is handed, or reserves room in it to paint
-  into later.
+  reserves room in the region it is handed with [`trx.ui.primitive.reserve`](#ui.primitive.reserve),
+  and paints into that room later during [`trx.ui.on_paint`](#ui.on_paint).
 
   It happens anywhere the game draws its interface, including fades, FMVs
   and normal play, and it follows the frame rate rather than the game clock.
 
   Parameters:
-  - <a id="ui.on_draw.callback" name="ui.on_draw.callback"></a>**`callback`** (function). What to run for each region.
+  - <a id="ui.on_reserve.callback" name="ui.on_reserve.callback"></a>**`callback`** (function). What to run for each region.
     Called with:
-    - <a id="ui.on_draw.region" name="ui.on_draw.region"></a>**`region`** ([trx.ui.Region](#ui.Region)). The region being built.
+    - <a id="ui.on_reserve.region" name="ui.on_reserve.region"></a>**`region`** ([trx.ui.Region](#ui.Region)). The region being built.
 
   Returns: [trx.events.Listener](EVENTS.md#events.Listener). The attached handler.
 
@@ -704,7 +688,7 @@ arrow, and `\{button left}` draws the button the player has bound.
   ```lua
   local slot = nil
   
-  trx.ui.on_draw(function(region)
+  trx.ui.on_reserve(function(region)
     if region == trx.ui.Region.TOP_CENTER then
       local w, h = trx.ui.primitive.measure_text("hello")
       slot = trx.ui.primitive.reserve(region, w, h)
@@ -721,24 +705,12 @@ arrow, and `\{button left}` draws the button the player has bound.
 
 - <a id="ui.on_paint" name="ui.on_paint"></a>[lua]`trx.ui.on_paint(callback)`  
   Happens once the interface is laid out and before it is drawn, under the
-  engine interface. The boxes reserved during [`trx.ui.on_draw`](#ui.on_draw) are known by
-  then, and the primitive drawing calls work here and nowhere else.
+  engine interface. The boxes reserved during [`trx.ui.on_reserve`](#ui.on_reserve) are known by
+  then, and the primitive drawing calls work here and nowhere else. The
+  console still draws over what is painted here.
 
   Parameters:
   - <a id="ui.on_paint.callback" name="ui.on_paint.callback"></a>**`callback`** (function). What to run when it happens.
-
-  Returns: [trx.events.Listener](EVENTS.md#events.Listener). The attached handler.
-
-- <a id="ui.on_paint_over" name="ui.on_paint_over"></a>[lua]`trx.ui.on_paint_over(callback)`  
-  [`trx.ui.on_paint`](#ui.on_paint) for the layer above the engine interface. A script paints
-  here where its work must cover the interface rather than sit under it, such
-  as a text field. It still draws under the console.
-
-  [`trx.ui.regions.place`](#ui.regions.place) picks the layer for a widget, so a script building
-  with widgets has no reason to take this.
-
-  Parameters:
-  - <a id="ui.on_paint_over.callback" name="ui.on_paint_over.callback"></a>**`callback`** (function). What to run when it happens.
 
   Returns: [trx.events.Listener](EVENTS.md#events.Listener). The attached handler.
 
@@ -759,11 +731,11 @@ arrow, and `\{button left}` draws the button the player has bound.
   ```
 
 - <a id="ui.interpolation_rate" name="ui.interpolation_rate"></a>[lua]`trx.ui.interpolation_rate()`  
-  How far the frame being drawn stands between the last two ticks, from `0`
-  at the earlier one to `1` at the later one. [`trx.ui.Tween`](#ui.Tween) reads it to glide
-  between ticks.
+  Returns the interpolation factor of the frame being drawn between the last
+  two ticks: `0` at the earlier tick and `1` at the later one.
+  [`trx.ui.Tween`](#ui.Tween) reads it to move smoothly between ticks.
 
-  Returns: number. The share of the way.
+  Returns: number. The factor, from `0` to `1`.
 
 - <a id="ui.input_hint_text" name="ui.input_hint_text"></a>[lua]`trx.ui.input_hint_text(input, [words])`  
   The text that shows the keys bound to one or more input roles, as the game
@@ -792,10 +764,9 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     Keys:
     - <a id="ui.layers.push.settings.root" name="ui.layers.push.settings.root"></a>**`root`** ([trx.ui.Widget](#ui.Widget)). The widget tree to draw.
-    - <a id="ui.layers.push.settings.region" name="ui.layers.push.settings.region"></a>**`region`** ([trx.ui.Region](#ui.Region), optional). The region that the tree takes room in. The tree then stacks with the other widgets in that region. Without a region or a place, the tree is centered in [`trx.ui.safe_area_for`](#ui.safe_area_for) its width, as the engine centers its own boxes, and starts from the top left of that area where it is too large for it.
-    - <a id="ui.layers.push.settings.place" name="ui.layers.push.settings.place"></a>**`place`** (function, optional). Returns the top left corner of the tree, in canvas units. It receives the width and the height that the tree measures.
-    - <a id="ui.layers.push.settings.modal" name="ui.layers.push.settings.modal"></a>**`modal`** (boolean, optional). Whether the layer reads input. `true` by default.
-    - <a id="ui.layers.push.settings.on_input" name="ui.layers.push.settings.on_input"></a>**`on_input`** (function, optional). Runs once a tick while the layer is the top layer that reads input. It receives the layer and a [`trx.ui.LayerKeys`](#ui.LayerKeys). An error closes the layer.
+    - <a id="ui.layers.push.settings.place" name="ui.layers.push.settings.place"></a>**`place`** ([trx.ui.Placement](#ui.Placement) or function, optional). Where the tree goes. A function receives the width and the height that the tree measures, and returns the top left corner of the tree, in canvas units. The layer works the corner out again only when the tree's size, the room the interface lays out in, or a signal that the placement reads changes, and on every frame while the placement reads a [`trx.ui.Tween`](#ui.Tween). The tree is centered in [`trx.ui.safe_area_for`](#ui.safe_area_for) its width by default.
+    - <a id="ui.layers.push.settings.modal" name="ui.layers.push.settings.modal"></a>**`modal`** (boolean, optional). Whether the layer reads input. A layer that reads input takes it from the layers below, and during play from the game. By default, a layer reads input when it has `on_input`. Set it to `true` for a layer that holds the input back without reading any.
+    - <a id="ui.layers.push.settings.on_input" name="ui.layers.push.settings.on_input"></a>**`on_input`** (function, optional). Runs once a tick while the layer is the active layer. It receives the layer and a [`trx.ui.LayerKeys`](#ui.LayerKeys). An error closes the layer.
     - <a id="ui.layers.push.settings.on_close" name="ui.layers.push.settings.on_close"></a>**`on_close`** (function, optional). Runs once when the layer closes, for any reason. It receives the layer.
 
   Returns: [trx.ui.StackLayer](#ui.StackLayer). The pushed layer.
@@ -836,8 +807,8 @@ arrow, and `\{button left}` draws the button the player has bound.
   black:to(1, 15, { close = true })
   ```
 
-- <a id="ui.layers.top" name="ui.layers.top"></a>[lua]`trx.ui.layers.top()`  
-  Returns the top layer that reads input.
+- <a id="ui.layers.active" name="ui.layers.active"></a>[lua]`trx.ui.layers.active()`  
+  Returns the active layer: the top layer that reads input.
 
   Returns: [trx.ui.StackLayer](#ui.StackLayer) or `nil`. The layer, or `nil` if no layer reads input.
 
@@ -850,7 +821,7 @@ arrow, and `\{button left}` draws the button the player has bound.
   Reserves space in a region and returns a slot for it.
 
   The reservation is stacked with the engine UI in that region. Reserve space
-  during [`trx.ui.on_draw`](#ui.on_draw), then read the assigned box during
+  during [`trx.ui.on_reserve`](#ui.on_reserve), then read the assigned box during
   [`trx.ui.on_paint`](#ui.on_paint).
 
   A slot is valid only for the scene that created it.
@@ -1179,58 +1150,33 @@ arrow, and `\{button left}` draws the button the player has bound.
   - <a id="ui.primitive.gradient_sprite.bl" name="ui.primitive.gradient_sprite.bl"></a>**`bl`** ([trx.math.Color](MATH.md#math.Color) or table). The bottom-left color, in either form that [`quad`](#ui.primitive.quad) takes.
   - <a id="ui.primitive.gradient_sprite.br" name="ui.primitive.gradient_sprite.br"></a>**`br`** ([trx.math.Color](MATH.md#math.Color) or table). The bottom-right color, in either form that [`quad`](#ui.primitive.quad) takes.
 
-- <a id="ui.regions.place" name="ui.regions.place"></a>[lua]`trx.ui.regions.place(region, widget, [layer])`  
+- <a id="ui.regions.place" name="ui.regions.place"></a>[lua]`trx.ui.regions.place(region, widget)`  
   Places a widget in a region.
 
-  The layer decides whether the widget is covered by the engine interface or
-  covers it. A widget is under it unless the call says otherwise. Each layer
-  keeps room of its own in the region, so widgets on the two layers stack
-  rather than sit on top of each other.
-
   If the region argument is a signal, the widget moves when the signal
-  changes.
+  changes. Placing a widget that is already placed moves it.
 
   Parameters:
   - <a id="ui.regions.place.region" name="ui.regions.place.region"></a>**`region`** (any). The target region, or a signal that holds one.
   - <a id="ui.regions.place.widget" name="ui.regions.place.widget"></a>**`widget`** ([trx.ui.Widget](#ui.Widget)). The widget to place.
-  - <a id="ui.regions.place.layer" name="ui.regions.place.layer"></a>**`layer`** ([trx.ui.Layer](#ui.Layer), optional). Which layer to draw on. Defaults to [`trx.ui.Layer.UNDER`](#ui.Layer).
 
   Example:
   ```lua
   trx.ui.regions.place(trx.ui.Region.TOP_LEFT, health_bar)
   ```
 
-  Example:
-  ```lua
-  trx.ui.regions.place(
-    trx.ui.Region.BOTTOM_LEFT,
-    console,
-    trx.ui.Layer.OVER
-  )
-  ```
-
 - <a id="ui.regions.remove" name="ui.regions.remove"></a>[lua]`trx.ui.regions.remove(widget)`  
-  Removes a widget from its region.
+  Takes a widget out of its region and keeps it, so that it can be placed
+  again.
 
-  Use this for temporary widgets. Widgets owned by a level script are removed
-  when the level ends. Call [`trx.ui.Widget:release`](#ui.Widget.release) separately to detach their
-  signal listeners.
+  To be done with a widget, release it with [`trx.ui.Widget:release`](#ui.Widget.release) instead,
+  which takes it out of its region as well. Widgets that a level script placed
+  are released when the level ends.
 
   Parameters:
   - <a id="ui.regions.remove.widget" name="ui.regions.remove.widget"></a>**`widget`** ([trx.ui.Widget](#ui.Widget)). The widget to remove.
 
   Returns: boolean. Whether the widget was in a region.
-
-- <a id="ui.regions.fallback" name="ui.regions.fallback"></a>[lua]`trx.ui.regions.fallback(region, widget)`  
-  Sets the widget to draw when a region has no visible content.
-
-  A region with only non-shown widgets draws nothing. A fallback can reserve
-  that empty place instead, for example the corner arrows shown when a bar is
-  off screen. Each region has at most one fallback.
-
-  Parameters:
-  - <a id="ui.regions.fallback.region" name="ui.regions.fallback.region"></a>**`region`** ([trx.ui.Region](#ui.Region)). The target region.
-  - <a id="ui.regions.fallback.widget" name="ui.regions.fallback.widget"></a>**`widget`** ([trx.ui.Widget](#ui.Widget)). The fallback widget.
 
 - <a id="ui.screens.define" name="ui.screens.define"></a>[lua]`trx.ui.screens.define(screen, open, [options])`  
   Defines how a script draws a screen.
@@ -1316,12 +1262,11 @@ arrow, and `\{button left}` draws the button the player has bound.
   - <a id="ui.widgets.Bar.settings" name="ui.widgets.Bar.settings"></a>**`settings`** (table). The bar settings.
 
     Keys:
-    - <a id="ui.widgets.Bar.settings.type" name="ui.widgets.Bar.settings.type"></a>**`type`** ([trx.ui.BarType](#ui.BarType)). The bar theme to use.
+    - <a id="ui.widgets.Bar.settings.type" name="ui.widgets.Bar.settings.type"></a>**`type`** (any). The [`trx.ui.BarType`](#ui.BarType) theme to use, or a signal that holds it.
     - <a id="ui.widgets.Bar.settings.value" name="ui.widgets.Bar.settings.value"></a>**`value`** (any). The fill amount from 0 to 1, or a signal that holds it.
-    - <a id="ui.widgets.Bar.settings.w" name="ui.widgets.Bar.settings.w"></a>**`w`** (number, optional). The width, in canvas units. The game's own by default.
-    - <a id="ui.widgets.Bar.settings.h" name="ui.widgets.Bar.settings.h"></a>**`h`** (number, optional). The height, in canvas units. The game's own by default.
-    - <a id="ui.widgets.Bar.settings.smooth" name="ui.widgets.Bar.settings.smooth"></a>**`smooth`** (boolean, optional). Whether the fill shades one band into the next. The player's smooth bars setting by default.
-    - <a id="ui.widgets.Bar.settings.shown" name="ui.widgets.Bar.settings.shown"></a>**`shown`** (any, optional). Whether the bar is shown, or a signal that holds that value.
+    - <a id="ui.widgets.Bar.settings.w" name="ui.widgets.Bar.settings.w"></a>**`w`** (any, optional). The width, in canvas units at the default bar size, or a signal that holds it. The game's own by default.
+    - <a id="ui.widgets.Bar.settings.h" name="ui.widgets.Bar.settings.h"></a>**`h`** (any, optional). The height, in canvas units at the default bar size, or a signal that holds it. The game's own by default.
+    - <a id="ui.widgets.Bar.settings.smooth" name="ui.widgets.Bar.settings.smooth"></a>**`smooth`** (any, optional). Whether the fill shades one band into the next, or a signal that holds that value. The player's smooth bars setting by default.
 
   Returns: [trx.ui.Widget](#ui.Widget). The bar.
 
@@ -1338,18 +1283,16 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.Carousel.settings.items" name="ui.widgets.Carousel.settings.items"></a>**`items`** (a list of any). What the row holds, in order.
     - <a id="ui.widgets.Carousel.settings.selected" name="ui.widgets.Carousel.settings.selected"></a>**`selected`** ([trx.signal.Signal](SIGNAL.md#signal.Signal)). The place in the row, counted from `1`, of the item in the middle. Setting it slides the row there.
     - <a id="ui.widgets.Carousel.settings.build" name="ui.widgets.Carousel.settings.build"></a>**`build`** (function). Makes the widget for an item. It receives the item and its place in the row, and returns a widget.
-    - <a id="ui.widgets.Carousel.settings.w" name="ui.widgets.Carousel.settings.w"></a>**`w`** (number). The width of the row, in canvas units at the player's text size.
-    - <a id="ui.widgets.Carousel.settings.h" name="ui.widgets.Carousel.settings.h"></a>**`h`** (number). The height of the row, in canvas units at the player's text size.
-    - <a id="ui.widgets.Carousel.settings.spacing" name="ui.widgets.Carousel.settings.spacing"></a>**`spacing`** (number). How far apart the middles of two neighbours stand, in canvas units at the player's text size.
-    - <a id="ui.widgets.Carousel.settings.side_size" name="ui.widgets.Carousel.settings.side_size"></a>**`side_size`** (number, optional). How large the items beside the middle are drawn, as a share of their own size. `0.6` by default.
-    - <a id="ui.widgets.Carousel.settings.ticks" name="ui.widgets.Carousel.settings.ticks"></a>**`ticks`** (integer, optional). How many ticks a slide takes. `8` by default.
-    - <a id="ui.widgets.Carousel.settings.curve" name="ui.widgets.Carousel.settings.curve"></a>**`curve`** (function, optional). The curve of a slide, one of [`trx.ui.ease`](#ui.ease). [`trx.ui.ease.quad_in_out`](#ui.ease.quad_in_out) by default.
-    - <a id="ui.widgets.Carousel.settings.shown" name="ui.widgets.Carousel.settings.shown"></a>**`shown`** (any, optional). Whether the row is shown, or a signal that holds that value.
+    - <a id="ui.widgets.Carousel.settings.w" name="ui.widgets.Carousel.settings.w"></a>**`w`** (any). The width of the row, in canvas units at the default text size, or a signal that holds it.
+    - <a id="ui.widgets.Carousel.settings.h" name="ui.widgets.Carousel.settings.h"></a>**`h`** (any). The height of the row, in canvas units at the default text size, or a signal that holds it.
+    - <a id="ui.widgets.Carousel.settings.spacing" name="ui.widgets.Carousel.settings.spacing"></a>**`spacing`** (any). How far apart the middles of two neighbours stand, in canvas units at the default text size, or a signal that holds it.
+    - <a id="ui.widgets.Carousel.settings.side_size" name="ui.widgets.Carousel.settings.side_size"></a>**`side_size`** (any, optional). How large the items beside the middle are drawn, as a share of their own size, or a signal that holds it. `0.6` by default.
+    - <a id="ui.widgets.Carousel.settings.ticks" name="ui.widgets.Carousel.settings.ticks"></a>**`ticks`** (any, optional). How many ticks a slide takes, or a signal that holds it. `8` by default.
+    - <a id="ui.widgets.Carousel.settings.curve" name="ui.widgets.Carousel.settings.curve"></a>**`curve`** (any, optional). The curve of a slide, one of [`trx.ui.ease`](#ui.ease), or a signal that holds it. [`trx.ui.ease.quad_in_out`](#ui.ease.quad_in_out) by default.
+    - <a id="ui.widgets.Carousel.settings.shown" name="ui.widgets.Carousel.settings.shown"></a>**`shown`** (any, optional). Whether the widget is shown, or a signal that holds that value. A widget that is not shown keeps no room and leaves no gap.
+    - <a id="ui.widgets.Carousel.settings.hidden" name="ui.widgets.Carousel.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 
-  Returns: table. The carousel.
-
-    Keys:
-    - <a id="ui.widgets.Carousel.is_sliding" name="ui.widgets.Carousel.is_sliding"></a>**`is_sliding`** (function). Whether the row is still sliding to the selected item.
+  Returns: [trx.ui.Carousel](#ui.Carousel). The carousel.
 
   Example:
   ```lua
@@ -1369,8 +1312,8 @@ arrow, and `\{button left}` draws the button the player has bound.
 - <a id="ui.widgets.Custom" name="ui.widgets.Custom"></a>[lua]`trx.ui.widgets.Custom(settings)`  
   A widget that measures and draws itself through functions the script gives.
 
-  Use it for drawing that the other widgets do not cover. Register the signals
-  that the functions read with [`trx.ui.Widget:wakes_on`](#ui.Widget.wakes_on).
+  Use it for drawing that the other widgets do not cover. The widget
+  remeasures when a signal that `measure` read changes.
 
   Parameters:
   - <a id="ui.widgets.Custom.settings" name="ui.widgets.Custom.settings"></a>**`settings`** (table). The widget settings.
@@ -1378,7 +1321,8 @@ arrow, and `\{button left}` draws the button the player has bound.
     Keys:
     - <a id="ui.widgets.Custom.settings.measure" name="ui.widgets.Custom.settings.measure"></a>**`measure`** (function). Returns the width and the height the widget wants, in canvas units.
     - <a id="ui.widgets.Custom.settings.paint" name="ui.widgets.Custom.settings.paint"></a>**`paint`** (function). Draws the widget with [`trx.ui.primitive`](#ui.primitive). It receives the left edge, the top edge, the width and the height of the box the widget was given.
-    - <a id="ui.widgets.Custom.settings.shown" name="ui.widgets.Custom.settings.shown"></a>**`shown`** (any, optional). Whether the widget is shown, or a signal that holds that value.
+    - <a id="ui.widgets.Custom.settings.shown" name="ui.widgets.Custom.settings.shown"></a>**`shown`** (any, optional). Whether the widget is shown, or a signal that holds that value. A widget that is not shown keeps no room and leaves no gap.
+    - <a id="ui.widgets.Custom.settings.hidden" name="ui.widgets.Custom.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 
   Returns: [trx.ui.Widget](#ui.Widget). The widget.
 
@@ -1408,13 +1352,14 @@ arrow, and `\{button left}` draws the button the player has bound.
   - <a id="ui.widgets.Digits.settings" name="ui.widgets.Digits.settings"></a>**`settings`** (table). The digit settings.
 
     Keys:
-    - <a id="ui.widgets.Digits.settings.object" name="ui.widgets.Digits.settings.object"></a>**`object`** ([trx.catalog.objects](CATALOG.md#catalog.objects)). The sprite object to draw the characters from.
+    - <a id="ui.widgets.Digits.settings.object" name="ui.widgets.Digits.settings.object"></a>**`object`** (any). The sprite object to draw the characters from, or a signal carrying it.
     - <a id="ui.widgets.Digits.settings.text" name="ui.widgets.Digits.settings.text"></a>**`text`** (any). The text, or a signal carrying it.
     - <a id="ui.widgets.Digits.settings.color" name="ui.widgets.Digits.settings.color"></a>**`color`** (any). What color to draw the characters in, or a signal carrying one.
     - <a id="ui.widgets.Digits.settings.color_bottom" name="ui.widgets.Digits.settings.color_bottom"></a>**`color_bottom`** (any, optional). The color the characters fade to down their height. The main color by default, which draws them flat.
     - <a id="ui.widgets.Digits.settings.mark_color" name="ui.widgets.Digits.settings.mark_color"></a>**`mark_color`** (any, optional). What color to draw the `T` in. The main color by default.
     - <a id="ui.widgets.Digits.settings.mark_color_bottom" name="ui.widgets.Digits.settings.mark_color_bottom"></a>**`mark_color_bottom`** (any, optional). The color the `T` fades to. Its own color by default.
-    - <a id="ui.widgets.Digits.settings.shown" name="ui.widgets.Digits.settings.shown"></a>**`shown`** (any, optional). Whether the digits are shown, or a signal that holds that value.
+    - <a id="ui.widgets.Digits.settings.shown" name="ui.widgets.Digits.settings.shown"></a>**`shown`** (any, optional). Whether the widget is shown, or a signal that holds that value. A widget that is not shown keeps no room and leaves no gap.
+    - <a id="ui.widgets.Digits.settings.hidden" name="ui.widgets.Digits.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 
   Returns: [trx.ui.Widget](#ui.Widget). The digits.
 
@@ -1438,10 +1383,11 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     Keys:
     - <a id="ui.widgets.Image.settings.path" name="ui.widgets.Image.settings.path"></a>**`path`** (any). The image file, named from the images directory, or a signal carrying it.
-    - <a id="ui.widgets.Image.settings.w" name="ui.widgets.Image.settings.w"></a>**`w`** (number). The width, in canvas units.
-    - <a id="ui.widgets.Image.settings.h" name="ui.widgets.Image.settings.h"></a>**`h`** (number). The height, in canvas units.
+    - <a id="ui.widgets.Image.settings.w" name="ui.widgets.Image.settings.w"></a>**`w`** (any). The width, in canvas units, or a signal that holds it.
+    - <a id="ui.widgets.Image.settings.h" name="ui.widgets.Image.settings.h"></a>**`h`** (any). The height, in canvas units, or a signal that holds it.
     - <a id="ui.widgets.Image.settings.opacity" name="ui.widgets.Image.settings.opacity"></a>**`opacity`** (any, optional). How solid the image is, from 0 to 1, or a signal that holds that value. `1` by default.
-    - <a id="ui.widgets.Image.settings.shown" name="ui.widgets.Image.settings.shown"></a>**`shown`** (any, optional). Whether the image is shown, or a signal that holds that value.
+    - <a id="ui.widgets.Image.settings.shown" name="ui.widgets.Image.settings.shown"></a>**`shown`** (any, optional). Whether the widget is shown, or a signal that holds that value. A widget that is not shown keeps no room and leaves no gap.
+    - <a id="ui.widgets.Image.settings.hidden" name="ui.widgets.Image.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 
   Returns: [trx.ui.Widget](#ui.Widget). The image.
 
@@ -1455,8 +1401,9 @@ arrow, and `\{button left}` draws the button the player has bound.
     Keys:
     - <a id="ui.widgets.InputHint.settings.input" name="ui.widgets.InputHint.settings.input"></a>**`input`** (any). The input role whose keys to show, a list of roles shown side by side, or a signal carrying either.
     - <a id="ui.widgets.InputHint.settings.text" name="ui.widgets.InputHint.settings.text"></a>**`text`** (any, optional). What the keys do, or a signal carrying it.
-    - <a id="ui.widgets.InputHint.settings.scale" name="ui.widgets.InputHint.settings.scale"></a>**`scale`** (number, optional). Multiplies the text size. `1.0` by default.
-    - <a id="ui.widgets.InputHint.settings.shown" name="ui.widgets.InputHint.settings.shown"></a>**`shown`** (any, optional). Whether the hint is shown, or a signal that holds that value.
+    - <a id="ui.widgets.InputHint.settings.scale" name="ui.widgets.InputHint.settings.scale"></a>**`scale`** (any, optional). Multiplies the text size, or a signal that holds it. `1.0` by default.
+    - <a id="ui.widgets.InputHint.settings.shown" name="ui.widgets.InputHint.settings.shown"></a>**`shown`** (any, optional). Whether the widget is shown, or a signal that holds that value. A widget that is not shown keeps no room and leaves no gap.
+    - <a id="ui.widgets.InputHint.settings.hidden" name="ui.widgets.InputHint.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 
   Returns: [trx.ui.Widget](#ui.Widget). The hint.
 
@@ -1476,16 +1423,14 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     Keys:
     - <a id="ui.widgets.Label.settings.text" name="ui.widgets.Label.settings.text"></a>**`text`** (any). The text, or a signal carrying it.
-    - <a id="ui.widgets.Label.settings.scale" name="ui.widgets.Label.settings.scale"></a>**`scale`** (number, optional). Multiplies the text size. `1.0` by default.
-    - <a id="ui.widgets.Label.settings.shown" name="ui.widgets.Label.settings.shown"></a>**`shown`** (any, optional). Whether the label is shown, or a signal that holds that value.
+    - <a id="ui.widgets.Label.settings.scale" name="ui.widgets.Label.settings.scale"></a>**`scale`** (any, optional). Multiplies the text size, or a signal that holds it. `1.0` by default.
+    - <a id="ui.widgets.Label.settings.shown" name="ui.widgets.Label.settings.shown"></a>**`shown`** (any, optional). Whether the widget is shown, or a signal that holds that value. A widget that is not shown keeps no room and leaves no gap.
+    - <a id="ui.widgets.Label.settings.hidden" name="ui.widgets.Label.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 
   Returns: [trx.ui.Widget](#ui.Widget). The label.
 
 - <a id="ui.widgets.Resize" name="ui.widgets.Resize"></a>[lua]`trx.ui.widgets.Resize(settings)`  
   Gives a child widget an explicit size.
-
-  Use h_bars when a widget must match the height of the game's bars after the
-  player's bar scale is applied.
 
   Parameters:
   - <a id="ui.widgets.Resize.settings" name="ui.widgets.Resize.settings"></a>**`settings`** (table). The resize settings.
@@ -1494,8 +1439,8 @@ arrow, and `\{button left}` draws the button the player has bound.
     - <a id="ui.widgets.Resize.settings.child" name="ui.widgets.Resize.settings.child"></a>**`child`** ([trx.ui.Widget](#ui.Widget)). The child widget.
     - <a id="ui.widgets.Resize.settings.w" name="ui.widgets.Resize.settings.w"></a>**`w`** (any, optional). The width, in canvas units, or a signal that holds it. Its own by default.
     - <a id="ui.widgets.Resize.settings.h" name="ui.widgets.Resize.settings.h"></a>**`h`** (any, optional). The height, in canvas units, or a signal that holds it. Its own by default.
-    - <a id="ui.widgets.Resize.settings.h_bars" name="ui.widgets.Resize.settings.h_bars"></a>**`h_bars`** (number, optional). The height in bar heights. This overrides the plain height.
-    - <a id="ui.widgets.Resize.settings.shown" name="ui.widgets.Resize.settings.shown"></a>**`shown`** (any, optional). Whether the resized widget is shown, or a signal that holds that value.
+    - <a id="ui.widgets.Resize.settings.shown" name="ui.widgets.Resize.settings.shown"></a>**`shown`** (any, optional). Whether the widget is shown, or a signal that holds that value. A widget that is not shown keeps no room and leaves no gap.
+    - <a id="ui.widgets.Resize.settings.hidden" name="ui.widgets.Resize.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 
   Returns: [trx.ui.Widget](#ui.Widget). The resized widget.
 
@@ -1508,9 +1453,10 @@ arrow, and `\{button left}` draws the button the player has bound.
   - <a id="ui.widgets.Spacer.settings" name="ui.widgets.Spacer.settings"></a>**`settings`** (table, optional). The spacer settings.
 
     Keys:
-    - <a id="ui.widgets.Spacer.settings.w" name="ui.widgets.Spacer.settings.w"></a>**`w`** (number, optional). The width, in canvas units at the default text size. `0` by default.
-    - <a id="ui.widgets.Spacer.settings.h" name="ui.widgets.Spacer.settings.h"></a>**`h`** (number, optional). The height, in canvas units at the default text size. `0` by default.
-    - <a id="ui.widgets.Spacer.settings.shown" name="ui.widgets.Spacer.settings.shown"></a>**`shown`** (any, optional). Whether the spacer is shown, or a signal that holds that value.
+    - <a id="ui.widgets.Spacer.settings.w" name="ui.widgets.Spacer.settings.w"></a>**`w`** (any, optional). The width, in canvas units at the default text size, or a signal that holds it. `0` by default.
+    - <a id="ui.widgets.Spacer.settings.h" name="ui.widgets.Spacer.settings.h"></a>**`h`** (any, optional). The height, in canvas units at the default text size, or a signal that holds it. `0` by default.
+    - <a id="ui.widgets.Spacer.settings.shown" name="ui.widgets.Spacer.settings.shown"></a>**`shown`** (any, optional). Whether the widget is shown, or a signal that holds that value. A widget that is not shown keeps no room and leaves no gap.
+    - <a id="ui.widgets.Spacer.settings.hidden" name="ui.widgets.Spacer.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 
   Returns: [trx.ui.Widget](#ui.Widget). The spacer.
 
@@ -1532,9 +1478,10 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     Keys:
     - <a id="ui.widgets.Pad.settings.child" name="ui.widgets.Pad.settings.child"></a>**`child`** ([trx.ui.Widget](#ui.Widget)). The child widget.
-    - <a id="ui.widgets.Pad.settings.x" name="ui.widgets.Pad.settings.x"></a>**`x`** (number, optional). The margin at the left and the right. `0` by default.
-    - <a id="ui.widgets.Pad.settings.y" name="ui.widgets.Pad.settings.y"></a>**`y`** (number, optional). The margin at the top and the bottom. `0` by default.
-    - <a id="ui.widgets.Pad.settings.shown" name="ui.widgets.Pad.settings.shown"></a>**`shown`** (any, optional). Whether the padded widget is shown, or a signal that holds that value.
+    - <a id="ui.widgets.Pad.settings.x" name="ui.widgets.Pad.settings.x"></a>**`x`** (any, optional). The margin at the left and the right, or a signal that holds it. `0` by default.
+    - <a id="ui.widgets.Pad.settings.y" name="ui.widgets.Pad.settings.y"></a>**`y`** (any, optional). The margin at the top and the bottom, or a signal that holds it. `0` by default.
+    - <a id="ui.widgets.Pad.settings.shown" name="ui.widgets.Pad.settings.shown"></a>**`shown`** (any, optional). Whether the widget is shown, or a signal that holds that value. A widget that is not shown keeps no room and leaves no gap.
+    - <a id="ui.widgets.Pad.settings.hidden" name="ui.widgets.Pad.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 
   Returns: [trx.ui.Widget](#ui.Widget). The padded widget.
 
@@ -1549,9 +1496,10 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     Keys:
     - <a id="ui.widgets.Frame.settings.child" name="ui.widgets.Frame.settings.child"></a>**`child`** ([trx.ui.Widget](#ui.Widget)). The child widget.
-    - <a id="ui.widgets.Frame.settings.style" name="ui.widgets.Frame.settings.style"></a>**`style`** ([trx.ui.FrameStyle](#ui.FrameStyle), optional). Which frame to draw. The dialog box by default.
-    - <a id="ui.widgets.Frame.settings.z" name="ui.widgets.Frame.settings.z"></a>**`z`** (integer, optional). The draw order. `160` by default, which is behind text.
-    - <a id="ui.widgets.Frame.settings.shown" name="ui.widgets.Frame.settings.shown"></a>**`shown`** (any, optional). Whether the framed widget is shown, or a signal that holds that value.
+    - <a id="ui.widgets.Frame.settings.style" name="ui.widgets.Frame.settings.style"></a>**`style`** (any, optional). Which [`trx.ui.FrameStyle`](#ui.FrameStyle) to draw, or a signal that holds it. The dialog box by default.
+    - <a id="ui.widgets.Frame.settings.z" name="ui.widgets.Frame.settings.z"></a>**`z`** (any, optional). The draw order, or a signal that holds it. `160` by default, which is behind text.
+    - <a id="ui.widgets.Frame.settings.shown" name="ui.widgets.Frame.settings.shown"></a>**`shown`** (any, optional). Whether the widget is shown, or a signal that holds that value. A widget that is not shown keeps no room and leaves no gap.
+    - <a id="ui.widgets.Frame.settings.hidden" name="ui.widgets.Frame.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 
   Returns: [trx.ui.Widget](#ui.Widget). The framed widget.
 
@@ -1568,27 +1516,10 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     Keys:
     - <a id="ui.widgets.Fit.settings.child" name="ui.widgets.Fit.settings.child"></a>**`child`** ([trx.ui.Widget](#ui.Widget)). The child widget.
-    - <a id="ui.widgets.Fit.settings.shown" name="ui.widgets.Fit.settings.shown"></a>**`shown`** (any, optional). Whether the fitted widget is shown, or a signal that holds that value.
+    - <a id="ui.widgets.Fit.settings.shown" name="ui.widgets.Fit.settings.shown"></a>**`shown`** (any, optional). Whether the widget is shown, or a signal that holds that value. A widget that is not shown keeps no room and leaves no gap.
+    - <a id="ui.widgets.Fit.settings.hidden" name="ui.widgets.Fit.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 
   Returns: [trx.ui.Widget](#ui.Widget). The fitted widget.
-
-- <a id="ui.widgets.Row" name="ui.widgets.Row"></a>[lua]`trx.ui.widgets.Row(settings)`  
-  A widget with a left and right arrow beside a child widget.
-
-  Unlit arrows stay hidden but keep their room, so the child widget does not
-  move when arrows appear or disappear.
-
-  Parameters:
-  - <a id="ui.widgets.Row.settings" name="ui.widgets.Row.settings"></a>**`settings`** (table). The row settings.
-
-    Keys:
-    - <a id="ui.widgets.Row.settings.child" name="ui.widgets.Row.settings.child"></a>**`child`** ([trx.ui.Widget](#ui.Widget)). The child widget placed between the arrows.
-    - <a id="ui.widgets.Row.settings.left" name="ui.widgets.Row.settings.left"></a>**`left`** (any). Whether the left arrow is lit, or a signal that holds that value.
-    - <a id="ui.widgets.Row.settings.right" name="ui.widgets.Row.settings.right"></a>**`right`** (any). Whether the right arrow is lit, or a signal that holds that value.
-    - <a id="ui.widgets.Row.settings.spacing" name="ui.widgets.Row.settings.spacing"></a>**`spacing`** (number, optional). The gap between each arrow and the child widget. 15 by default.
-    - <a id="ui.widgets.Row.settings.shown" name="ui.widgets.Row.settings.shown"></a>**`shown`** (any, optional). Whether the row is shown, or a signal that holds that value.
-
-  Returns: [trx.ui.Widget](#ui.Widget). The row.
 
 - <a id="ui.widgets.Stack" name="ui.widgets.Stack"></a>[lua]`trx.ui.widgets.Stack(settings)`  
   Lays widgets out one after another.
@@ -1599,17 +1530,19 @@ arrow, and `\{button left}` draws the button the player has bound.
   - <a id="ui.widgets.Stack.settings" name="ui.widgets.Stack.settings"></a>**`settings`** (table). The stack settings.
 
     Keys:
-    - <a id="ui.widgets.Stack.settings.children" name="ui.widgets.Stack.settings.children"></a>**`children`** (a list of table). The widgets, in the order they are laid out.
-    - <a id="ui.widgets.Stack.settings.orientation" name="ui.widgets.Stack.settings.orientation"></a>**`orientation`** ([trx.ui.Orientation](#ui.Orientation), optional). The layout direction. Vertical by default.
-    - <a id="ui.widgets.Stack.settings.spacing" name="ui.widgets.Stack.settings.spacing"></a>**`spacing`** (number, optional). The gap between one and the next. `0` by default.
-    - <a id="ui.widgets.Stack.settings.align" name="ui.widgets.Stack.settings.align"></a>**`align`** ([trx.ui.HAlign](#ui.HAlign), optional). Where a narrower child sits in a vertical stack.
-    - <a id="ui.widgets.Stack.settings.v_align" name="ui.widgets.Stack.settings.v_align"></a>**`v_align`** ([trx.ui.VAlign](#ui.VAlign), optional). Where a shorter child sits in a horizontal stack.
-    - <a id="ui.widgets.Stack.settings.shown" name="ui.widgets.Stack.settings.shown"></a>**`shown`** (any, optional). Whether the stack is shown, or a signal that holds that value.
+    - <a id="ui.widgets.Stack.settings.children" name="ui.widgets.Stack.settings.children"></a>**`children`** (a list of [trx.ui.Widget](#ui.Widget)). The widgets, in the order they are laid out.
+    - <a id="ui.widgets.Stack.settings.orientation" name="ui.widgets.Stack.settings.orientation"></a>**`orientation`** (any, optional). The [`trx.ui.Orientation`](#ui.Orientation) to lay out in, or a signal that holds it. Vertical by default.
+    - <a id="ui.widgets.Stack.settings.spacing" name="ui.widgets.Stack.settings.spacing"></a>**`spacing`** (any, optional). The gap between one and the next, in canvas units at the default text size, or a signal that holds it. `0` by default.
+    - <a id="ui.widgets.Stack.settings.align" name="ui.widgets.Stack.settings.align"></a>**`align`** (any, optional). The [`trx.ui.HAlign`](#ui.HAlign), or a signal that holds it, that says where the children sit across the width. In a vertical stack, it places each narrower child. In a horizontal stack, it places the whole row, and [`trx.ui.HAlign.DISTRIBUTE`](#ui.HAlign) spreads the children out. Left by default.
+    - <a id="ui.widgets.Stack.settings.v_align" name="ui.widgets.Stack.settings.v_align"></a>**`v_align`** (any, optional). The [`trx.ui.VAlign`](#ui.VAlign), or a signal that holds it, that says where the children sit down the height. In a horizontal stack, it places each shorter child. In a vertical stack, it places the whole column, and [`trx.ui.VAlign.DISTRIBUTE`](#ui.VAlign) spreads the children out. Top by default.
+    - <a id="ui.widgets.Stack.settings.shown" name="ui.widgets.Stack.settings.shown"></a>**`shown`** (any, optional). Whether the widget is shown, or a signal that holds that value. A widget that is not shown keeps no room and leaves no gap.
+    - <a id="ui.widgets.Stack.settings.hidden" name="ui.widgets.Stack.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 
   Returns: [trx.ui.Widget](#ui.Widget). The stack.
 
 - <a id="ui.widgets.List" name="ui.widgets.List"></a>[lua]`trx.ui.widgets.List(settings)`  
-  A column of rows that the player picks one entry from.
+  A column of rows that the player picks one entry from. Its lengths are in
+  canvas units at the default text size.
 
   The list keeps the cursor and the scroll position. Read the player's input
   with [`trx.ui.List:control`](#ui.List.control) from the input callback of the layer that holds
@@ -1620,13 +1553,18 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     Keys:
     - <a id="ui.widgets.List.settings.rows" name="ui.widgets.List.settings.rows"></a>**`rows`** (a list of [trx.ui.ListRow](#ui.ListRow), optional). The rows. None by default.
-    - <a id="ui.widgets.List.settings.visible" name="ui.widgets.List.settings.visible"></a>**`visible`** (any, optional). How many rows to show at once, or a signal that holds that value. Every row by default.
-    - <a id="ui.widgets.List.settings.reserve" name="ui.widgets.List.settings.reserve"></a>**`reserve`** (boolean, optional). Whether to keep room for the visible rows when the list holds fewer. `false` by default.
-    - <a id="ui.widgets.List.settings.width" name="ui.widgets.List.settings.width"></a>**`width`** (number, optional). The least width, in canvas units at the default text size.
-    - <a id="ui.widgets.List.settings.row_pad" name="ui.widgets.List.settings.row_pad"></a>**`row_pad`** (number, optional). The room on each side of a row's text. `4` by default.
-    - <a id="ui.widgets.List.settings.row_spacing" name="ui.widgets.List.settings.row_spacing"></a>**`row_spacing`** (number, optional). The gap between two rows. `3` by default.
-    - <a id="ui.widgets.List.settings.scroll_hints" name="ui.widgets.List.settings.scroll_hints"></a>**`scroll_hints`** (boolean, optional). Whether to show arrows where the list runs past its rows. `true` by default.
-    - <a id="ui.widgets.List.settings.shown" name="ui.widgets.List.settings.shown"></a>**`shown`** (any, optional). Whether the list is shown, or a signal that holds that value.
+    - <a id="ui.widgets.List.settings.page_rows" name="ui.widgets.List.settings.page_rows"></a>**`page_rows`** (any, optional). How many rows to show at once, or a signal that holds that value. Every row by default.
+    - <a id="ui.widgets.List.settings.reserve" name="ui.widgets.List.settings.reserve"></a>**`reserve`** (any, optional). Whether to keep room for the rows of a page when the list holds fewer, or a signal that holds that value. `false` by default.
+    - <a id="ui.widgets.List.settings.min_w" name="ui.widgets.List.settings.min_w"></a>**`min_w`** (any, optional). The least width, in canvas units at the default text size, or a signal that holds it.
+    - <a id="ui.widgets.List.settings.row_pad" name="ui.widgets.List.settings.row_pad"></a>**`row_pad`** (any, optional). The room on each side of a row's text, or a signal that holds it. `4` by default.
+    - <a id="ui.widgets.List.settings.row_spacing" name="ui.widgets.List.settings.row_spacing"></a>**`row_spacing`** (any, optional). The gap between two rows, or a signal that holds it. `3` by default.
+    - <a id="ui.widgets.List.settings.row_height" name="ui.widgets.List.settings.row_height"></a>**`row_height`** (any, optional). The height of a row, or a signal that holds it. `15` by default.
+    - <a id="ui.widgets.List.settings.hint_height" name="ui.widgets.List.settings.hint_height"></a>**`hint_height`** (any, optional). The height of the arrows that say the list runs past its rows, or a signal that holds it. `7` by default.
+    - <a id="ui.widgets.List.settings.rule_overhang" name="ui.widgets.List.settings.rule_overhang"></a>**`rule_overhang`** (any, optional). How far a rule between rows reaches past each side of the list, or a signal that holds it. `7` by default.
+    - <a id="ui.widgets.List.settings.frame_overhang" name="ui.widgets.List.settings.frame_overhang"></a>**`frame_overhang`** (any, optional). How far the frame of the row under the cursor reaches above and below the row, or a signal that holds it. `0` by default.
+    - <a id="ui.widgets.List.settings.scroll_hints" name="ui.widgets.List.settings.scroll_hints"></a>**`scroll_hints`** (any, optional). Whether to show arrows where the list runs past its rows, or a signal that holds that value. `true` by default.
+    - <a id="ui.widgets.List.settings.shown" name="ui.widgets.List.settings.shown"></a>**`shown`** (any, optional). Whether the widget is shown, or a signal that holds that value. A widget that is not shown keeps no room and leaves no gap.
+    - <a id="ui.widgets.List.settings.hidden" name="ui.widgets.List.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 
   Returns: [trx.ui.List](#ui.List). The list.
 
@@ -1646,16 +1584,17 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     Keys:
     - <a id="ui.widgets.Model.settings.object" name="ui.widgets.Model.settings.object"></a>**`object`** (any). The object to draw, or a signal carrying it.
-    - <a id="ui.widgets.Model.settings.w" name="ui.widgets.Model.settings.w"></a>**`w`** (number). The width of its box, in canvas units at the player's text size.
-    - <a id="ui.widgets.Model.settings.h" name="ui.widgets.Model.settings.h"></a>**`h`** (number). The height of its box, in canvas units at the player's text size.
+    - <a id="ui.widgets.Model.settings.w" name="ui.widgets.Model.settings.w"></a>**`w`** (any). The width of its box, in canvas units at the default text size, or a signal that holds it.
+    - <a id="ui.widgets.Model.settings.h" name="ui.widgets.Model.settings.h"></a>**`h`** (any). The height of its box, in canvas units at the default text size, or a signal that holds it.
     - <a id="ui.widgets.Model.settings.size" name="ui.widgets.Model.settings.size"></a>**`size`** (any, optional). How large to draw the model within its box, from `0` to `1`, or a signal or [`trx.ui.Tween`](#ui.Tween) carrying it. The box keeps its room whatever the size. `1` by default.
     - <a id="ui.widgets.Model.settings.rot_x" name="ui.widgets.Model.settings.rot_x"></a>**`rot_x`** (any, optional). How far to tilt the model, or a signal or [`trx.ui.Tween`](#ui.Tween) carrying it.
     - <a id="ui.widgets.Model.settings.rot_y" name="ui.widgets.Model.settings.rot_y"></a>**`rot_y`** (any, optional). How far to turn the model, or a signal or [`trx.ui.Tween`](#ui.Tween) carrying it.
     - <a id="ui.widgets.Model.settings.rot_z" name="ui.widgets.Model.settings.rot_z"></a>**`rot_z`** (any, optional). How far to roll the model, or a signal or [`trx.ui.Tween`](#ui.Tween) carrying it.
     - <a id="ui.widgets.Model.settings.spin" name="ui.widgets.Model.settings.spin"></a>**`spin`** (any, optional). How far the model turns each tick, on top of `rot_y` , or a signal carrying it. It turns smoothly between ticks, and picks up where it stopped when the spin starts again.
-    - <a id="ui.widgets.Model.settings.mesh_mask" name="ui.widgets.Model.settings.mesh_mask"></a>**`mesh_mask`** (integer, optional). Which of its meshes to draw, one bit each. Every mesh by default.
+    - <a id="ui.widgets.Model.settings.mesh_mask" name="ui.widgets.Model.settings.mesh_mask"></a>**`mesh_mask`** (any, optional). Which of its meshes to draw, one bit each, or a signal that holds the mask. Every mesh by default.
     - <a id="ui.widgets.Model.settings.light" name="ui.widgets.Model.settings.light"></a>**`light`** (any, optional). The light to draw it in, or a signal carrying it, as [`trx.ui.primitive.model`](#ui.primitive.model) takes it.
-    - <a id="ui.widgets.Model.settings.shown" name="ui.widgets.Model.settings.shown"></a>**`shown`** (any, optional). Whether the model is shown, or a signal that holds that value.
+    - <a id="ui.widgets.Model.settings.shown" name="ui.widgets.Model.settings.shown"></a>**`shown`** (any, optional). Whether the widget is shown, or a signal that holds that value. A widget that is not shown keeps no room and leaves no gap.
+    - <a id="ui.widgets.Model.settings.hidden" name="ui.widgets.Model.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 
   Returns: [trx.ui.Widget](#ui.Widget). The model.
 
@@ -1682,7 +1621,8 @@ arrow, and `\{button left}` draws the button the player has bound.
 
     Keys:
     - <a id="ui.widgets.SleekBar.settings.progress" name="ui.widgets.SleekBar.settings.progress"></a>**`progress`** (any). How full the bar is, from 0 to 1, or a signal that holds it.
-    - <a id="ui.widgets.SleekBar.settings.shown" name="ui.widgets.SleekBar.settings.shown"></a>**`shown`** (any, optional). Whether the bar is shown, or a signal that holds that value.
+    - <a id="ui.widgets.SleekBar.settings.shown" name="ui.widgets.SleekBar.settings.shown"></a>**`shown`** (any, optional). Whether the widget is shown, or a signal that holds that value. A widget that is not shown keeps no room and leaves no gap.
+    - <a id="ui.widgets.SleekBar.settings.hidden" name="ui.widgets.SleekBar.settings.hidden"></a>**`hidden`** (any, optional). Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 
   Returns: [trx.ui.Widget](#ui.Widget). The bar.
 

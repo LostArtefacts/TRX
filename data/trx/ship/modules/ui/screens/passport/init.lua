@@ -1,9 +1,6 @@
 -- Draws the passport entry of the inventory ring: its pages, the page turns,
 -- and every list that the pages open. The quick save and load screens and the
 -- save crystal entry show one page of the passport alone.
---
--- Usage:
---   require("common.ui.screens.passport").setup()
 
 local book = require("common.ui.screens.passport.book")
 local pages = require("common.ui.screens.passport.pages")

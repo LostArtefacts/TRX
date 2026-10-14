@@ -3,19 +3,15 @@ local h = require("trx.internal.helpers")
 local base = require("trx.ui.widgets.base")
 
 require("trx.config")
-require("trx.game")
 
 local primitive = trx.ui.primitive
 ---@class (partial) trx.ui.widgets
 local widgets = trx.ui.widgets
 local value_of = base.value_of
 local new_widget = base.new_widget
-local text_scale = base.text_scale
 
--- Match the engine's list-dialog geometry in canvas units at the default text size.
+-- The geometry of a list in canvas units at the default text size.
 
-local LIST_ROW_HEIGHT = 15
-local LIST_HINT_HEIGHT = 7
 local LIST_HINT_SCALE = 0.7
 local LIST_HINT_ANCHOR_UP = 1.5
 local LIST_HINT_ANCHOR_DOWN = -1.0
@@ -24,12 +20,22 @@ local LIST_RULE_LINE = 2
 local LIST_RULE_PAD_Y = 4
 local LIST_RULE_HEIGHT = LIST_RULE_LINE + 2 * LIST_RULE_PAD_Y
 
-local function list_rule_overhang()
-  return trx.game.tr_version >= 2 and 7 or 10
-end
+local DEFAULTS = {
+  row_pad = 4,
+  row_spacing = 3,
+  row_height = 15,
+  hint_height = 7,
+  rule_overhang = 7,
+  frame_overhang = 0,
+}
 
-local function list_frame_overhang()
-  return trx.game.tr_version == 1 and 1 or 0
+-- Reads a setting of a list, or its default where the list has none.
+local function setting(list, key)
+  local value = value_of(list[key])
+  if value == nil then
+    return DEFAULTS[key]
+  end
+  return value
 end
 
 ---One entry of a `trx.ui.widgets.List`.
@@ -40,15 +46,16 @@ end
 ---@field rule? boolean Whether a line separates the row from the row above it.
 
 local function list_visible(list)
-  local visible = value_of(list.visible) or #list._rows
-  if list.reserve then
+  local visible = value_of(list.page_rows) or #list._rows
+  if value_of(list.reserve) then
     return math.max(visible, 1)
   end
   return math.max(math.min(visible, #list._rows), 1)
 end
 
 local function list_scrolls(list)
-  return list.scroll_hints ~= false and list_visible(list) < #list._rows
+  return value_of(list.scroll_hints) ~= false
+    and list_visible(list) < #list._rows
 end
 
 local function list_rules_from(list, first, count)
@@ -139,10 +146,12 @@ function List:move(step)
   return true
 end
 
----Reads the menu keys for one tick. Up and down move the cursor, and confirm
----picks the row under it. Uses up only the presses that it reads.
+---Reads the menu keys for one tick. Up and down move the cursor, confirm
+---picks the row under it, and back reports that the player backed out. Uses up
+---only the presses that it reads.
 ---@param keys trx.ui.LayerKeys The input of the layer the list is on.
 ---@return integer? # The picked row, or `nil` where none was picked.
+---@return boolean # Whether the player backed out.
 function List:control(keys)
   if keys:pressed(trx.input.Role.MENU_DOWN) then
     self:move(1)
@@ -150,9 +159,9 @@ function List:control(keys)
     self:move(-1)
   end
   if #self._rows > 0 and keys:pressed(trx.input.Role.MENU_CONFIRM) then
-    return self._selected
+    return self._selected, false
   end
-  return nil
+  return nil, keys:pressed(trx.input.Role.MENU_BACK)
 end
 
 local function list_row_width(list, row)
@@ -163,29 +172,29 @@ local function list_row_width(list, row)
       + LIST_RIGHT_GAP
       + primitive.measure_text(row.right, 1.0) / scale
   end
-  return width + 2 * list.row_pad
+  return width + 2 * setting(list, "row_pad")
 end
 
 local function list_measure(list)
-  list_scroll_into_view(list)
   local scale = raw.drawn_text_scale()
   local count = list_visible(list)
-  local width = list.width or 0
+  list_scroll_into_view(list)
+  local width = value_of(list.min_w) or 0
   for _, row in ipairs(list._rows) do
     width = math.max(width, list_row_width(list, row))
   end
-  local height = count * LIST_ROW_HEIGHT
-    + (count - 1) * list.row_spacing
+  local height = count * setting(list, "row_height")
+    + (count - 1) * setting(list, "row_spacing")
     + list_rules(list, count) * LIST_RULE_HEIGHT
   if list_scrolls(list) then
-    height = height + 2 * LIST_HINT_HEIGHT
+    height = height + 2 * setting(list, "hint_height")
   end
   return width * scale, height * scale
 end
 
-local function list_hint(glyph, anchor, x, y, w, scale)
+local function list_hint(list, glyph, anchor, x, y, w, scale)
   local gw, gh = primitive.measure_text(glyph, LIST_HINT_SCALE)
-  local slack = LIST_HINT_HEIGHT * scale - gh
+  local slack = setting(list, "hint_height") * scale - gh
   primitive.text(
     glyph,
     x + (w - gw) / 2,
@@ -196,7 +205,7 @@ local function list_hint(glyph, anchor, x, y, w, scale)
 end
 
 local function list_draw_row(list, row, x, y, w, scale)
-  local pad = list.row_pad * scale
+  local pad = setting(list, "row_pad") * scale
   if row.right ~= nil then
     primitive.text(row.text, x + pad, y, 1.0, 0)
     local rw = primitive.measure_text(row.right, 1.0)
@@ -216,15 +225,15 @@ local function list_paint(list, x, y, w)
 
   if scrolls then
     if list._first > 1 then
-      list_hint("\\{arrow up}", LIST_HINT_ANCHOR_UP, x, top, w, scale)
+      list_hint(list, "\\{arrow up}", LIST_HINT_ANCHOR_UP, x, top, w, scale)
     end
-    top = top + LIST_HINT_HEIGHT * scale
+    top = top + setting(list, "hint_height") * scale
   end
 
   for i = list._first, last do
     local row = list._rows[i]
     if i > 1 and row.rule then
-      local overhang = list_rule_overhang() * scale
+      local overhang = setting(list, "rule_overhang") * scale
       primitive.horizontal_line(
         x - overhang,
         x + w + overhang,
@@ -234,44 +243,50 @@ local function list_paint(list, x, y, w)
       top = top + LIST_RULE_HEIGHT * scale
     end
     if i == list._selected then
-      local overhang = list_frame_overhang() * scale
+      local overhang = setting(list, "frame_overhang") * scale
       primitive.panel(
         x,
         top - overhang,
-        160,
+        base.FRAME_Z,
         w,
-        LIST_ROW_HEIGHT * scale + 2 * overhang,
+        setting(list, "row_height") * scale + 2 * overhang,
         trx.ui.FrameStyle.SELECTED
       )
     end
     list_draw_row(list, row, x, top, w, scale)
-    top = top + (LIST_ROW_HEIGHT + list.row_spacing) * scale
+    top = top
+      + (setting(list, "row_height") + setting(list, "row_spacing")) * scale
   end
 
   if scrolls and last < #list._rows then
     local _, height = list:measure()
     list_hint(
+      list,
       "\\{arrow down}",
       LIST_HINT_ANCHOR_DOWN,
       x,
-      y + height - LIST_HINT_HEIGHT * scale,
+      y + height - setting(list, "hint_height") * scale,
       w,
       scale
     )
   end
 end
 
----@class (exact) trx.ui.widgets.List.settings
+---@class (exact) trx.ui.widgets.List.settings: trx.ui.widgets.settings
 ---@field rows? trx.ui.ListRow[] The rows. None by default.
----@field visible? any How many rows to show at once, or a signal that holds that value. Every row by default.
----@field reserve? boolean Whether to keep room for the visible rows when the list holds fewer. `false` by default.
----@field width? number The least width, in canvas units at the default text size.
----@field row_pad? number The room on each side of a row's text. `4` by default.
----@field row_spacing? number The gap between two rows. `3` by default.
----@field scroll_hints? boolean Whether to show arrows where the list runs past its rows. `true` by default.
----@field shown? any Whether the list is shown, or a signal that holds that value.
+---@field page_rows? any How many rows to show at once, or a signal that holds that value. Every row by default.
+---@field reserve? any Whether to keep room for the rows of a page when the list holds fewer, or a signal that holds that value. `false` by default.
+---@field min_w? any The least width, in canvas units at the default text size, or a signal that holds it.
+---@field row_pad? any The room on each side of a row's text, or a signal that holds it. `4` by default.
+---@field row_spacing? any The gap between two rows, or a signal that holds it. `3` by default.
+---@field row_height? any The height of a row, or a signal that holds it. `15` by default.
+---@field hint_height? any The height of the arrows that say the list runs past its rows, or a signal that holds it. `7` by default.
+---@field rule_overhang? any How far a rule between rows reaches past each side of the list, or a signal that holds it. `7` by default.
+---@field frame_overhang? any How far the frame of the row under the cursor reaches above and below the row, or a signal that holds it. `0` by default.
+---@field scroll_hints? any Whether to show arrows where the list runs past its rows, or a signal that holds that value. `true` by default.
 
----A column of rows that the player picks one entry from.
+---A column of rows that the player picks one entry from. Its lengths are in
+---canvas units at the default text size.
 ---
 ---The list keeps the cursor and the scroll position. Read the player's input
 ---with `trx.ui.List:control` from the input callback of the layer that holds
@@ -285,13 +300,15 @@ end
 ---@param settings trx.ui.widgets.List.settings The list settings.
 ---@return trx.ui.List # The list.
 function widgets.List(settings)
-  local self = new_widget(settings, list_measure, list_paint)
-  setmetatable(self, List)
+  local rest = {}
+  for key, value in pairs(settings) do
+    if key ~= "rows" then
+      rest[key] = value
+    end
+  end
+  local self = new_widget(rest, list_measure, list_paint, List)
   self._rows = settings.rows or {}
-  self.rows = nil
-  self.row_pad = settings.row_pad or 4
-  self.row_spacing = settings.row_spacing or 3
   self._selected = 1
   self._first = 1
-  return self:wakes_on(text_scale())
+  return self
 end

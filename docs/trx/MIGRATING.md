@@ -64,12 +64,13 @@ order: 3
 8. **Drawing hooks moved to the modules that draw**
    The interface and the scene are now drawn through the module that owns
    them, rather than through `trx.events`:
-   - `trx.events.on_ui_draw` becomes `trx.ui.on_draw`
+   - `trx.events.on_ui_draw` becomes `trx.ui.on_reserve`
    - `trx.events.on_ui_paint` becomes `trx.ui.on_paint`
-   - `trx.events.on_ui_paint_over` becomes `trx.ui.on_paint_over`
    - `trx.events.on_scene_paint` becomes `trx.scene.on_paint`
 
    The handlers take the same arguments and return the same listeners.
+   `trx.events.on_ui_paint_over` is gone: everything a script paints draws
+   under the engine interface and over the game.
 
 9. **Fire heads no longer require a timer**
    OG TR3 used a fire head's timer value from its trigger to control how long it
@@ -92,6 +93,39 @@ order: 3
     handler, or a `trx.ui.widgets.Model` in a widget tree. Move a model by
     painting it somewhere else on the next frame; read `trx.ui.Tween` or
     `trx.ui.interpolation_rate` for movement that glides between ticks.
+
+12. **A released widget cannot be used again**
+    `trx.ui.Widget:release` ends the widget and every widget under it, and
+    returns nothing. A released widget cannot go in a region, a layer or
+    another widget, so build a new one instead. A layer that closes releases
+    its widgets in the same way. Releasing a widget that another widget or a
+    layer holds is an error: release the holder.
+
+13. **`trx.ui.Widget:wakes_on` is gone**
+    A widget follows every signal that it reads while it measures, however it
+    reads it. `depends_on` of `trx.ui.widgets.Custom` is gone with it: a
+    `measure` function that reads `signal:get()` follows that signal. Remove
+    the calls.
+
+14. **`trx.ui.Widget:release_with` is gone**
+    A derived signal lives while something holds it, such as a widget that
+    reads it, so there is nothing to tie to the widget. Remove the calls. A
+    `trx.signal.Signal:on` listener still stays attached until it is
+    detached.
+
+15. **`trx.ui.regions.fallback` is gone**
+    A region draws nothing while every widget in it is not shown. A script
+    that drew something in that case gives that widget to `shown` signals of
+    its own, such as `~bar_shown`, and places it in the region.
+
+16. **`trx.ui.widgets.Row` is gone**
+    Build the row as a horizontal `trx.ui.widgets.Stack`: a `Label` of
+    `\{button left}`, the widget, and a `Label` of `\{button right}`, each
+    arrow with `hidden` set to the opposite of what `left` or `right` took.
+
+17. **`h_bars` of `trx.ui.widgets.Resize` is gone**
+    A `trx.ui.widgets.Bar` follows the player's bar scale on its own. Give
+    `h` a plain height for any other widget.
 
 ### Version 1.10 to 1.11
 

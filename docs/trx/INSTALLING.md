@@ -1419,7 +1419,8 @@ If you install everything correctly, your game directory should look more or les
 │   │   │   └── requester.lua
 │   │   ├── fade.lua
 │   │   ├── level_start.lua
-│   │   └── metrics.lua
+│   │   ├── metrics.lua
+│   │   └── ring.lua
 │   ├── inv_ring.lua
 │   ├── ngplus.lua
 │   ├── save_crystal.lua
@@ -2881,7 +2882,8 @@ Inside `TRX.app`, `Contents/Resources` should use the same combined layout as th
     │   │   │   │   └── requester.lua
     │   │   │   ├── fade.lua
     │   │   │   ├── level_start.lua
-    │   │   │   └── metrics.lua
+    │   │   │   ├── metrics.lua
+    │   │   │   └── ring.lua
     │   │   ├── inv_ring.lua
     │   │   ├── ngplus.lua
     │   │   ├── save_crystal.lua

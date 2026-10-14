@@ -1,10 +1,10 @@
 local h = require("trx.internal.helpers")
 
-require("trx.config")
-require("trx.signal")
+local track = require("trx.signal").track
 require("trx.ui")
 require("trx.ui.primitive")
 require("trx.math")
+require("trx.ui.tween")
 
 local ui = trx.ui
 
@@ -14,40 +14,95 @@ local ui = trx.ui
 -- A widget is created once and lives until its script releases it. Signals
 -- invalidate cached measurements only when the values the widget read change.
 --
--- Each region has at most one root, so a script's widgets are laid out as one
--- group after the engine's own UI for that region.
+-- A widget has one holder at a time: another widget, a region or a layer.
 -------------------------------------------------------------------------------
 
-local f32 = trx.math.f32
+local Signal = h.class_of("signal.Signal")
+local Tween = h.class_of("ui.Tween")
 
--- The widget whose size is being worked out. A signal it reads through
--- value_of wakes it when the signal changes.
----@type trx.ui.Widget?
-local measuring = nil
+-- The draw order of a frame, behind text.
+local FRAME_Z = 160
 
+-- Removes a placed widget from its region. trx.ui.regions sets it, because
+-- the regions are built on top of the widgets.
+---@type fun(widget: trx.ui.Widget)?
+local unplace = nil
+
+local function is_signal(value)
+  return getmetatable(value) == Signal
+end
+
+local function is_widget(value)
+  return type(value) == "table" and value.wake ~= nil
+end
+
+-- Reads a setting. A signal hands over the value it holds, and a tween where
+-- it is now.
 local function value_of(value)
-  if type(value) == "table" and value.get ~= nil then
-    if measuring ~= nil and value.on ~= nil then
-      measuring:wakes_on(value)
-    end
+  local class = getmetatable(value)
+  if class == Signal or class == Tween then
     return value:get()
   end
   return value
 end
 
+-- The listeners a widget holds, which go when it is released: one waker for
+-- each signal it follows, keyed by the signal, and the listeners of its own
+-- code, keyed by themselves.
+local function held_by(widget)
+  local held = widget._held
+  if held == nil then
+    held = {}
+    widget._held = held
+  end
+  return held
+end
+
+-- Wakes the widget when the signal changes. A signal followed already adds
+-- nothing, and a released widget follows nothing.
+local function follow(widget, signal)
+  if widget._released then
+    return
+  end
+  local held = held_by(widget)
+  if held[signal] == nil then
+    held[signal] = signal:on(function()
+      widget:wake()
+    end)
+  end
+end
+
+-- Runs fn when the signal changes, for as long as the widget lives.
+local function listen(widget, signal, fn)
+  local listener = signal:on(fn)
+  held_by(widget)[listener] = listener
+end
+
 ---A reusable UI element drawn over the game.
 ---
----A widget holds its own state. Give it signals instead of fixed values. The
----widget remeasures only when a signal that it read while measuring changes.
+---A widget holds its own state. Every setting that holds a value, rather than
+---a widget or a function, also takes a signal that holds the value. The widget
+---remeasures only when a signal that it read while measuring changes, and
+---when the room the interface lays out in changes. A `trx.ui.Tween` moves
+---between ticks, so a widget reads one only while it paints, and reading one
+---while it measures raises an error.
+---
+---A widget is in one place at a time: inside another widget, in a region or as
+---the root of a layer. Using it in a second place is an error. Releasing a widget ends it and every widget under it, and
+---using a released widget is an error.
 ---@class (exact) trx.ui.Widget
----@field hidden? any Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 ---@field private shown? any
+---@field private hidden? any
+---@field private child? trx.ui.Widget
 ---@field private children? trx.ui.Widget[]
 ---@field private _size? { w: number, h: number }
----@field private _parent? trx.ui.Widget
----@field private _layer? trx.ui.Layer
----@field private _region_listener? trx.signal.Listener
----@field private _slot? integer
+---@field private _holder? any
+---@field private _released? boolean
+---@field private _factor? number
+---@field private _spun? number
+---@field private _spun_at? number
+---@field private _boxes? table
+---@field private _held? table<any, trx.signal.Listener>
 ---@field private on_measure fun(self: trx.ui.Widget): number?, number?
 ---@field private on_paint fun(self: trx.ui.Widget, x: number, y: number, w: number, h: number)
 local Widget = h.class("ui.Widget")
@@ -57,13 +112,14 @@ local Widget = h.class("ui.Widget")
 ---@return number # The height, in canvas units.
 function Widget:measure()
   if self._size == nil then
-    local outer = measuring
-    measuring = self
-    local ok, w, h = pcall(self.on_measure, self)
-    measuring = outer
-    if not ok then
-      error(w, 0)
-    end
+    -- The text and bar scales are part of the room, so every size follows it.
+    follow(self, ui.signals.layout)
+    local w, h = track(function(read)
+      if getmetatable(read) == Tween then
+        error("a widget cannot measure by a tween; read it while painting", 0)
+      end
+      follow(self, read)
+    end, self.on_measure, self)
     self._size = { w = w or 0, h = h or 0 }
   end
   return self._size.w, self._size.h
@@ -73,9 +129,10 @@ end
 ---@return trx.ui.Widget # The same widget.
 function Widget:wake()
   self._size = nil
-  rawset(self, "_boxes", nil)
-  if self._parent ~= nil then
-    self._parent:wake()
+  self._boxes = nil
+  local holder = self._holder
+  if type(holder) == "table" and holder.wake ~= nil then
+    holder:wake()
   end
   return self
 end
@@ -89,99 +146,48 @@ function Widget:is_shown()
   return value_of(self.shown) ~= false
 end
 
----Registers more signals that invalidate the widget's cached size.
----
----When one of these signals changes, the widget and its parents are measured
----again on the next layout pass. A signal in the widget's settings registers
----itself when the widget reads it. Register a signal here when the widget
----depends on it in another way, such as through the functions of a
----`trx.ui.widgets.Custom`. Registering a signal twice has no further effect.
----@param ... trx.signal.Signal The signals the widget depends on.
----@return trx.ui.Widget # The same widget, for method chaining.
-function Widget:wakes_on(...)
-  local listeners = rawget(self, "_wakers")
-  if listeners == nil then
-    listeners = {}
-    rawset(self, "_wakers", listeners)
-  end
-  for _, signal in ipairs({ ... }) do
-    if
-      type(signal) == "table"
-      and signal.on ~= nil
-      and listeners[signal] == nil
-    then
-      listeners[signal] = signal:on(function()
-        self:wake()
-      end)
-    end
-  end
-  return self
-end
-
----Ties signals and listeners to the widget, so that releasing the widget
----stops each signal and detaches each listener. Use it for what a widget's
----own code listens to, such as a derived signal that only it reads.
----
----```lua
----local fill = trx.lara.signals.hp:map(function(hp)
----  return hp / 1000
----end)
----local bar = trx.ui.widgets.Bar({ value = fill }):release_with(fill)
----```
----@param ... trx.signal.Signal|trx.signal.Listener The signals and listeners.
----@return trx.ui.Widget # The same widget, for method chaining.
-function Widget:release_with(...)
-  local owned = rawget(self, "_owned")
-  if owned == nil then
-    owned = {}
-    rawset(self, "_owned", owned)
-  end
-  for _, item in ipairs({ ... }) do
-    owned[#owned + 1] = item
-  end
-  return self
-end
-
--- Detach the widget from every signal it registered. Signals keep references
--- to their listeners, so release temporary widgets when they leave the screen.
----Detaches the widget and its children from registered signals.
----
----Signals keep references to their listeners. Release temporary widgets when
----they are no longer needed. Remove a placed widget from its region before
----releasing it.
----@return boolean # Whether it or a widget under it was still listening to anything.
-function Widget:release()
-  local released = false
-  local listeners = rawget(self, "_wakers")
-  if listeners ~= nil then
-    for _, listener in pairs(listeners) do
+-- Detaches a widget and every widget under it from what they listen to, and
+-- marks each one released.
+local function end_tree(widget)
+  widget._released = true
+  local held = widget._held
+  if held ~= nil then
+    for _, listener in pairs(held) do
       listener:detach()
     end
-    rawset(self, "_wakers", nil)
-    released = true
+    widget._held = nil
   end
-  local owned = rawget(self, "_owned")
-  if owned ~= nil then
-    for _, item in ipairs(owned) do
-      if item.detach ~= nil then
-        item:detach()
-      else
-        item:stop()
-      end
-    end
-    rawset(self, "_owned", nil)
-    released = true
+  local child = widget.child
+  if child ~= nil then
+    child._holder = nil
+    end_tree(child)
   end
-  local child = rawget(self, "child")
-  if child ~= nil and child:release() then
-    released = true
+  for _, other in ipairs(widget.children or {}) do
+    other._holder = nil
+    end_tree(other)
   end
-  for _, other in ipairs(rawget(self, "children") or {}) do
-    if other:release() then
-      released = true
-    end
+end
+
+---Ends the widget and every widget under it: removes the widget from its
+---region if it is placed, and detaches each one from its signals. Does nothing
+---if the widget is already released.
+---
+---Signals keep references to their listeners. Release temporary widgets when
+---they are no longer needed. A widget that another widget or a layer holds is
+---released with its holder, and releasing it directly is an error. A widget that a level script placed is released when the level ends.
+function Widget:release()
+  if self._released then
+    return
   end
-  return released
+  if unplace ~= nil then
+    unplace(self)
+  end
+  if is_widget(self._holder) then
+    error("the widget is part of another widget; release that one", 2)
+  elseif self._holder ~= nil then
+    error("the widget is in use; release what holds it", 2)
+  end
+  end_tree(self)
 end
 
 ---Draws the widget in an assigned box.
@@ -205,42 +211,69 @@ end
 -- scale.
 local function forget(widget)
   widget._size = nil
-  rawset(widget, "_boxes", nil)
-  local child = rawget(widget, "child")
+  widget._boxes = nil
+  local child = widget.child
   if child ~= nil then
     forget(child)
   end
-  for _, other in ipairs(rawget(widget, "children") or {}) do
+  for _, other in ipairs(widget.children or {}) do
     forget(other)
   end
 end
 
-local function new_widget(settings, on_measure, on_paint)
-  local self = setmetatable(settings or {}, Widget)
+-- Copies the settings into a new widget of the class, which is Widget by
+-- default. A setting that has the name of a member of the class, or that
+-- starts with an underscore, is an error, because it would hide that member.
+local function new_widget(settings, on_measure, on_paint, class)
+  class = class or Widget
+  local self = setmetatable({}, class)
+  for key, value in pairs(settings or {}) do
+    if
+      type(key) ~= "string"
+      or key:sub(1, 1) == "_"
+      or key == "on_measure"
+      or key == "on_paint"
+      or class[key] ~= nil
+    then
+      error(("'%s' is not a widget setting"):format(tostring(key)), 3)
+    end
+    self[key] = value
+  end
   self.on_measure = on_measure
   self.on_paint = on_paint
   return self
 end
 
--- Sets the parent of a widget, which wakes with it.
-local function set_parent(child, parent)
-  child._parent = parent
+-- Gives a widget its holder: the widget it is part of, which wakes with it,
+-- or the layer it is the root of. A widget
+-- has one holder at a time, so one that is held already is an error at the
+-- given level, the caller of the widget constructor by default.
+local function hold(widget, holder, level)
+  level = level or 3
+  if widget._released then
+    error("the widget was released", level)
+  end
+  local held_by = widget._holder
+  if held_by ~= nil and held_by ~= holder then
+    if is_widget(held_by) and is_widget(holder) then
+      error("the widget is already part of another widget", level)
+    end
+    error("the widget is already in use", level)
+  end
+  widget._holder = holder
 end
 
--- Lazily expose player scale settings as signals, so widgets that depend on
--- them are remeasured when the settings change.
-local function scale_signal(key)
-  local held = nil
-  return function()
-    if held == nil then
-      held = trx.signal.config(key)
-    end
-    return held
+-- Frees a widget from its holder, for another one.
+local function unhold(widget, holder)
+  if widget._holder == holder then
+    widget._holder = nil
   end
 end
 
-local text_scale = scale_signal("ui.text_scale")
-local bar_scale = scale_signal("ui.bar_scale")
+---The settings that every widget takes, with its own.
+---@class (exact) trx.ui.widgets.settings
+---@field shown? any Whether the widget is shown, or a signal that holds that value. A widget that is not shown keeps no room and leaves no gap.
+---@field hidden? any Whether the widget keeps its room but draws nothing, or a signal that holds that value.
 
 ---@class (partial) trx.ui
 ---@field widgets trx.ui.widgets
@@ -254,13 +287,19 @@ local bar_scale = scale_signal("ui.bar_scale")
 ---@class (partial,exact) trx.ui.widgets
 ui.widgets = h.namespace("ui.widgets")
 
+local function set_unplace(fn)
+  unplace = fn
+end
+
 return {
   W = Widget,
-  f32 = f32,
+  FRAME_Z = FRAME_Z,
+  is_signal = is_signal,
   value_of = value_of,
   new_widget = new_widget,
-  set_parent = set_parent,
+  hold = hold,
+  unhold = unhold,
+  set_unplace = set_unplace,
   forget = forget,
-  text_scale = text_scale,
-  bar_scale = bar_scale,
+  listen = listen,
 }

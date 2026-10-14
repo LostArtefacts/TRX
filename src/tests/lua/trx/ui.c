@@ -59,7 +59,7 @@ static int M_FakeLastBar(lua_State *const L)
 
 // fake.draw(body) -> balanced, error
 //
-// Opens a scene the way the engine does around the draw event, runs the body
+// Opens a scene the way the engine does around the reserve event, runs the body
 // inside it, and answers whether the node stack came back to where it started.
 // Anything else means a widget was left open for the next frame to draw into.
 static int M_FakeDraw(lua_State *const L)
@@ -70,10 +70,10 @@ static int M_FakeDraw(lua_State *const L)
     m_LastBarValue = -1;
     UI_BeginScene();
     const UI_NODE *const before = UI_GetCurrent();
-    LUA_UI_SetDrawing(true);
+    LUA_UI_SetReserving(true);
     lua_pushvalue(L, 1);
     const int status = lua_pcall(L, 0, 0, 0);
-    LUA_UI_SetDrawing(false);
+    LUA_UI_SetReserving(false);
     const bool balanced = UI_GetCurrent() == before;
     UI_EndScene();
 
@@ -131,9 +131,9 @@ static int M_FakeSceneLayers(lua_State *const L)
 // fake.scene() -> table of scheduled operations
 //
 // Runs a whole scene the way the engine runs one: every region is opened for
-// the draw event, then the scene is laid out, then each paint layer runs. The
-// operations come back in the order they were scheduled, so a line drawn under
-// the engine interface comes before one drawn over it.
+// the reserve event, then the scene is laid out, then each paint layer runs.
+// The operations come back in the order they were scheduled, so a line drawn
+// under the engine interface comes before one drawn over it.
 static int M_FakeScene(lua_State *const L)
 {
     FakeUIDraw_Forget();
@@ -141,9 +141,9 @@ static int M_FakeScene(lua_State *const L)
     UI_BeginScene();
     for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
         UI_BeginRegion((UI_REGION)i);
-        LUA_UI_SetDrawing(true);
-        LUA_FireEventInt32(LUA_EVENT_UI_DRAW, i);
-        LUA_UI_SetDrawing(false);
+        LUA_UI_SetReserving(true);
+        LUA_FireEventInt32(LUA_EVENT_UI_RESERVE, i);
+        LUA_UI_SetReserving(false);
         UI_EndRegion();
     }
     UI_EndScene();

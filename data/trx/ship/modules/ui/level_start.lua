@@ -11,6 +11,19 @@ local M = {}
 
 local TRANSITION = "visuals.level_start_transition"
 
+-- Written out in full because the scanner that carries these into the
+-- shipped strings reads a key only where it is a literal.
+trx.locale.declare({
+  ["settings/visuals.level_start_transition/title"] = "Level start transition",
+  ["settings/visuals.level_start_transition/description"] = "How a level comes in when it starts or a save is loaded. "
+    .. "Cross-fade blends the loading screen into the level. Through black fades the loading screen out to black "
+    .. "and the level in from black, as in the original TR4. Without a loading screen, both fade the level in "
+    .. "from black. Disabled shows the level at once.",
+  ["settings/visuals.level_start_transition/values/disabled"] = "Disabled",
+  ["settings/visuals.level_start_transition/values/cross-fade"] = "Cross-fade",
+  ["settings/visuals.level_start_transition/values/black"] = "Through black",
+})
+
 -- How long a level takes to fade in from black.
 local LEVEL_FADE_IN_TICKS = 16
 
@@ -111,19 +124,6 @@ end
 -- Listens for the level starting. Called once, from a global script, after
 -- `fade.setup`.
 function M.setup()
-  -- Written out in full because the scanner that carries these into the
-  -- shipped strings reads a key only where it is a literal.
-  trx.locale.declare({
-    ["settings/visuals.level_start_transition/title"] = "Level start transition",
-    ["settings/visuals.level_start_transition/description"] = "How a level comes in when it starts or a save is loaded. "
-      .. "Cross-fade blends the loading screen into the level. Through black fades the loading screen out to black "
-      .. "and the level in from black, as in the original TR4. Without a loading screen, both fade the level in "
-      .. "from black. Disabled shows the level at once.",
-    ["settings/visuals.level_start_transition/values/disabled"] = "Disabled",
-    ["settings/visuals.level_start_transition/values/cross-fade"] = "Cross-fade",
-    ["settings/visuals.level_start_transition/values/black"] = "Through black",
-  })
-
   trx.config.declare({
     key = TRANSITION,
     kind = "dynamic_enum",

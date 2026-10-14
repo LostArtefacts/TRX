@@ -144,7 +144,7 @@ static void M_RenderBegin(void *const surface, void *const user_data)
 
 static void M_DrawUI(void)
 {
-    LUA_UI_DrawRegions();
+    LUA_UI_ReserveRegions();
     Overlay_DrawUI();
     UI_EndScene();
     UI_Draw();

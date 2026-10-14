@@ -3,18 +3,11 @@
 -- ring opens with the globe on it and brings it forward, the globe turns to
 -- each area the player can go to next, and the ring closes again once one is
 -- picked.
---
--- Usage:
---   require("common.ui.screens.globe").setup()
 
 local fade = require("common.ui.fade")
 local timer = require("common.timer")
 
 local M = {}
-
-local L = trx.locale.get
-local primitive = trx.ui.primitive
-local Role = trx.input.Role
 
 -- Fallback text for the screen's own strings. The strings files and their
 -- translations take precedence.
@@ -81,19 +74,8 @@ local Status = {
   DONE = "done",
 }
 
--- An angle as the engine keeps one, from -32768 to 32767.
-local function wrap(angle)
-  return (angle + 32768) % 65536 - 32768
-end
-
--- Division that drops the fraction, as the engine's does.
-local function div(a, b)
-  local q = a // b
-  if a % b ~= 0 and (a < 0) ~= (b < 0) then
-    q = q + 1
-  end
-  return q
-end
+local wrap = trx.math.wrap_angle
+local div = trx.math.idiv
 
 local MOVED = { "radius", "camera_y", "rot", "y_trans", "z_trans" }
 -- What is drawn part way between one tick and the next.
@@ -236,7 +218,7 @@ local function open_areas(areas)
 end
 
 local function area_name(index)
-  return L("general/globe_select/area_" .. index)
+  return trx.locale.get("general/globe_select/area_" .. index)
 end
 
 -------------------------------------------------------------------------------
@@ -330,25 +312,8 @@ local function turn(state)
   return rest_x and rest_y and rest_z
 end
 
--- A value between the last tick and this one, rounded as the engine rounds.
-local function blend(from, to, rate)
-  local value = from + (to - from) * rate
-  return value < 0 and -math.floor(-value + 0.5) or math.floor(value + 0.5)
-end
-
--- An angle between the last tick and this one, the short way round.
-local function blend_angle(from, to, rate)
-  from, to = from % 65536, to % 65536
-  local diff = to - from
-  if diff > 2 * DEG_90 then
-    diff = diff - 4 * DEG_90
-  elseif diff < -2 * DEG_90 then
-    diff = diff + 4 * DEG_90
-  end
-  local value = from + diff * rate
-  value = value < 0 and -math.floor(-value) or math.floor(value)
-  return wrap(value % 65536)
-end
+local blend = trx.math.lerp
+local blend_angle = trx.math.lerp_angle
 
 local function paint_globe(state)
   local ring = state.ring
@@ -360,7 +325,7 @@ local function paint_globe(state)
   local y_rot = blend_angle(prev.y_rot, ring.y_rot, rate)
   local y_trans = blend(prev.y_trans, ring.y_trans, rate)
   local z_trans = blend(prev.z_trans, ring.z_trans, rate)
-  primitive.world_model(trx.catalog.objects.GLOBE_OPTION, {
+  trx.ui.primitive.world_model(trx.catalog.objects.GLOBE_OPTION, {
     camera = {
       pos = { x = 0, y = camera_y, z = radius + RING.camera_gap },
       target = { x = 0, y = RING.look_y, z = radius },
@@ -380,7 +345,7 @@ local function paint_globe(state)
 end
 
 local function paint(state)
-  primitive.background(state.background, true, 0.5)
+  trx.ui.primitive.background(state.background, true, 0.5)
   paint_globe(state)
 end
 
@@ -394,9 +359,9 @@ local function show_area(state)
     return
   end
   trx.overlay.set_caption(
-    L("general/inventory_ring/object_name_fmt"):format(
-      area_name(state.selection)
-    )
+    trx.locale
+      .get("general/inventory_ring/object_name_fmt")
+      :format(area_name(state.selection))
   )
 end
 
@@ -429,9 +394,9 @@ end
 
 local function heading()
   return trx.ui.widgets.Label({
-    text = L("general/inventory_ring/heading_fmt"):format(
-      L("general/inventory_ring/heading_adventure")
-    ),
+    text = trx.locale
+      .get("general/inventory_ring/heading_fmt")
+      :format(trx.locale.get("general/inventory_ring/heading_adventure")),
   })
 end
 
@@ -443,11 +408,14 @@ local function show_names(state, shown)
   if shown then
     show_area(state)
     show_arrows(open_count(state) > 1)
-    -- The heading stands over the globe, and leaves the keys to it.
+    -- The heading stands over the globe, at the top of the screen, and
+    -- leaves the keys to it.
     state.heading = state.ctx:push({
-      region = trx.ui.Region.TOP_CENTER,
       root = heading(),
-      modal = false,
+      place = function(w)
+        local safe = trx.ui.safe_area
+        return safe.x + (safe.width - w) / 2, safe.y
+      end,
     })
   else
     trx.overlay.set_caption()
@@ -468,14 +436,14 @@ local function choose(state, keys)
   end
   local rested = turn(state)
   if rested then
-    if keys:held(Role.MENU_LEFT) then
+    if keys:held(trx.input.Role.MENU_LEFT) then
       state.selection = next_open(state, -1)
-    elseif keys:held(Role.MENU_RIGHT) then
+    elseif keys:held(trx.input.Role.MENU_RIGHT) then
       state.selection = next_open(state, 1)
     end
   end
   show_area(state)
-  return rested and keys:pressed(Role.MENU_CONFIRM)
+  return rested and keys:pressed(trx.input.Role.MENU_CONFIRM)
 end
 
 -- Starts the adventure picked, once.
@@ -546,7 +514,10 @@ local function control(state, keys)
   end
   if state.ring.status == Status.DONE then
     local skip = keys ~= nil
-      and (keys:pressed(Role.MENU_CONFIRM) or keys:pressed(Role.MENU_BACK))
+      and (
+        keys:pressed(trx.input.Role.MENU_CONFIRM)
+        or keys:pressed(trx.input.Role.MENU_BACK)
+      )
     if skip then
       go(state)
     end
@@ -582,6 +553,11 @@ local function open(ctx)
       control(state, nil)
     end
   end, { clock = timer.Clock.UI })
+  ctx:on_end(function()
+    first:cancel()
+    trx.overlay.set_caption()
+    show_arrows(false)
+  end)
   return ctx:push({
     root = trx.ui.widgets.Custom({
       measure = function()
@@ -596,11 +572,6 @@ local function open(ctx)
     end,
     on_input = function(_, keys)
       control(state, keys)
-    end,
-    on_close = function()
-      first:cancel()
-      trx.overlay.set_caption()
-      show_arrows(false)
     end,
   })
 end

@@ -20,6 +20,7 @@
 #include <trx/game/lua/common.h>
 #include <trx/game/lua/events.h>
 #include <trx/game/lua/events/ui.h>
+#include <trx/game/lua/registry.h>
 #include <trx/game/shell/common.h>
 #include <trx/game/ui/common.h>
 #include <trx/game/ui/dialogs/takeover.h>
@@ -83,6 +84,7 @@ static int M_FakeErrors(lua_State *const L)
 static int M_FakeTick(lua_State *const L)
 {
     M_ReportRingRest();
+    FakeInput_Tick();
     LUA_Tick();
     return 0;
 }
@@ -107,9 +109,9 @@ static int M_FakeScene(lua_State *const L)
     UI_BeginScene();
     for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
         UI_BeginRegion((UI_REGION)i);
-        LUA_UI_SetDrawing(true);
-        LUA_FireEventInt32(LUA_EVENT_UI_DRAW, i);
-        LUA_UI_SetDrawing(false);
+        LUA_UI_SetReserving(true);
+        LUA_FireEventInt32(LUA_EVENT_UI_RESERVE, i);
+        LUA_UI_SetReserving(false);
         UI_EndRegion();
     }
     UI_EndScene();
@@ -132,14 +134,17 @@ static int M_FakeSetDescription(lua_State *const L)
     return 0;
 }
 
-// fake.offer(screen, args?) -> bool
+// fake.offer(screen, args?) -> bool - a screen the script takes holds the
+// level still, as the engine's own screens do.
 static int M_FakeOffer(lua_State *const L)
 {
     M_ReportRingRest();
-    lua_pushboolean(
-        L,
-        UI_Takeover_Offer(
-            (UI_TAKEOVER)luaL_checkinteger(L, 1), TakeoverArgs_Read(L, 2)));
+    const bool taken = UI_Takeover_Offer(
+        (UI_TAKEOVER)luaL_checkinteger(L, 1), TakeoverArgs_Read(L, 2));
+    if (taken) {
+        FakeGame_SetPlaying(false);
+    }
+    lua_pushboolean(L, taken);
     return 1;
 }
 
@@ -202,10 +207,32 @@ static int M_FakeHoldsScreen(lua_State *const L)
     return 1;
 }
 
+// fake.as_level_script(fn) - runs fn as a level script.
+static int M_FakeAsLevelScript(lua_State *const L)
+{
+    luaL_checktype(L, 1, LUA_TFUNCTION);
+    LUA_SetScriptContext(LUA_CONTEXT_LEVEL);
+    const int status = lua_pcall(L, 0, 0, 0);
+    LUA_SetScriptContext(LUA_CONTEXT_GLOBAL);
+    if (status != LUA_OK) {
+        return lua_error(L);
+    }
+    return 0;
+}
+
+// fake.end_level() - the unload event, and then the level's listeners go.
+static int M_FakeEndLevel(lua_State *const L)
+{
+    LUA_FireEvent(LUA_EVENT_LEVEL_UNLOAD);
+    LUA_Registry_DropLevelAll();
+    return 0;
+}
+
 // fake.release(screen)
 static int M_FakeRelease(lua_State *const L)
 {
     UI_Takeover_Release((UI_TAKEOVER)luaL_checkinteger(L, 1));
+    FakeGame_SetPlaying(true);
     return 0;
 }
 
@@ -250,6 +277,10 @@ static void M_PushFake(lua_State *const L)
     lua_setfield(L, -2, "change_screen");
     lua_pushcfunction(L, M_FakeHoldsScreen);
     lua_setfield(L, -2, "holds_screen");
+    lua_pushcfunction(L, M_FakeAsLevelScript);
+    lua_setfield(L, -2, "as_level_script");
+    lua_pushcfunction(L, M_FakeEndLevel);
+    lua_setfield(L, -2, "end_level");
 }
 
 CONFIG g_ConfigStorage = {};

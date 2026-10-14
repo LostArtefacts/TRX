@@ -1,13 +1,9 @@
 -- Combining an entry in the inventory ring: what it combines with, in a row,
 -- slid along to the one wanted, in a frame that names it.
---
--- Usage:
---   require("common.ui.screens.combine").setup()
+
+local ring = require("common.ui.ring")
 
 local M = {}
-
-local widgets = trx.ui.widgets
-local Role = trx.input.Role
 
 -- Fallback text for the screen's own strings. The strings files and their
 -- translations take precedence.
@@ -32,7 +28,7 @@ local SPIN_PER_TICK = 4 * trx.math.DEG_1
 -- middle.
 local function model(object, index, selected)
   local entry = trx.inventory_ring.item(object)
-  return widgets.Model({
+  return trx.ui.widgets.Model({
     object = object,
     w = MODEL_WIDTH,
     h = MODEL_HEIGHT,
@@ -54,7 +50,7 @@ end
 local function dialog(state)
   local selected = state.selected
   local partners = state.partners
-  state.row = widgets.Carousel({
+  state.row = trx.ui.widgets.Carousel({
     items = partners,
     selected = selected,
     build = function(object, index)
@@ -64,17 +60,18 @@ local function dialog(state)
     h = ROW_HEIGHT,
     spacing = SPACING,
   })
-  return widgets.Frame({
+  return trx.ui.widgets.Frame({
     style = trx.ui.FrameStyle.OUTLINE,
-    child = widgets.Pad({
+    shown = state.shown,
+    child = trx.ui.widgets.Pad({
       x = FRAME_PAD,
       y = FRAME_PAD,
-      child = widgets.Stack({
+      child = trx.ui.widgets.Stack({
         spacing = FRAME_PAD,
         align = trx.ui.HAlign.CENTER,
         children = {
           state.row,
-          widgets.Label({
+          trx.ui.widgets.Label({
             text = selected:map(function(at)
               return name_of(partners[at])
             end),
@@ -100,11 +97,11 @@ local function begin(ctx, state)
   trx.sound.play(trx.catalog.samples.MENU_SPININ)
   trx.inventory_ring.set_input_hints({
     {
-      input = Role.MENU_CONFIRM,
+      input = trx.input.Role.MENU_CONFIRM,
       text = trx.locale.get("general/actions/combine_item"),
     },
     {
-      input = Role.MENU_BACK,
+      input = trx.input.Role.MENU_BACK,
       text = trx.locale.get("general/actions/cancel"),
     },
   })
@@ -118,23 +115,21 @@ end
 
 local function control(ctx, state, keys)
   if not state.shown:get() then
-    if trx.inventory_ring.signals.rest_frame:get() ~= nil then
-      begin(ctx, state)
-    end
+    begin(ctx, state)
     return
   end
-  if state.row.is_sliding() then
+  if state.row:is_sliding() then
     return
   end
   local many = #state.partners > 1
-  if many and keys:held(Role.MENU_RIGHT) then
+  if many and keys:held(trx.input.Role.MENU_RIGHT) then
     turn(state, 1)
-  elseif many and keys:held(Role.MENU_LEFT) then
+  elseif many and keys:held(trx.input.Role.MENU_LEFT) then
     turn(state, -1)
-  elseif keys:pressed(Role.MENU_CONFIRM) then
+  elseif keys:pressed(trx.input.Role.MENU_CONFIRM) then
     trx.inventory.combine(ctx.object, state.partners[state.selected:get()])
     ctx:confirm()
-  elseif keys:pressed(Role.MENU_BACK) then
+  elseif keys:pressed(trx.input.Role.MENU_BACK) then
     -- The ring sounds the entry going away as it puts it away.
     ctx:cancel()
   end
@@ -148,13 +143,11 @@ local function open(ctx)
     shown = trx.signal.new(false),
   }
   -- Nothing shows until the entry comes to rest and the row opens.
-  local root = dialog(state)
-  root.shown = state.shown
   return ctx:push({
-    root = root,
-    on_input = function(_, keys)
+    root = dialog(state),
+    on_input = ring.while_resting(function(_, keys)
       control(ctx, state, keys)
-    end,
+    end),
   })
 end
 

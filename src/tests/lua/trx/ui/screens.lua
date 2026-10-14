@@ -170,6 +170,31 @@ test("an error in a screen's layer gives the screen back", function()
   finish_case()
 end)
 
+test("a layer that closes as another fails to paint is not drawn", function()
+  define(RING_ENTRY, function(ctx)
+    local main = ctx:push({
+      root = trx.ui.widgets.Custom({
+        measure = function()
+          return 8, 8
+        end,
+        paint = function()
+          error("broken paint")
+        end,
+      }),
+    })
+    ctx:push({ root = label("after") })
+    return main
+  end)
+  fake.offer(RING_ENTRY, { object = PASSPORT })
+  for _, op in ipairs(fake.scene()) do
+    assert(not op:find(" text=after$"), "a closed layer was drawn: " .. op)
+  end
+  assert(fake.errors() == 1)
+  assert(trx.ui.layers.count() == 0, "a layer of the screen stayed open")
+  assert(fake.take_choice(RING_ENTRY) == CHOICE_CANCEL)
+  finish_case()
+end)
+
 test(
   "an error as the main layer closes still gives the screen back",
   function()

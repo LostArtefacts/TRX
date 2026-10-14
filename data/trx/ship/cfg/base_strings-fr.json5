@@ -210,6 +210,7 @@
         },
         "stats": {
             "ammo": "Tirs Réussis/Effectués",
+            "ammo_fmt": "\\{review}%d / %d",
             "ammo_hits": "\\{review}Coups",
             "ammo_used": "\\{review}Munitions utilisées",
             "assault_best_time_fmt": "\\{review}%s",

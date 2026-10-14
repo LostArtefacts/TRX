@@ -210,6 +210,7 @@
         },
         "stats": {
             "ammo": "Ammo Hits/Used",
+            "ammo_fmt": "%d / %d",
             "ammo_hits": "Hits",
             "ammo_used": "Ammo Used",
             "assault_best_time_fmt": "%s",

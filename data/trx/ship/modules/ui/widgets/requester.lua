@@ -6,7 +6,7 @@
 -- Usage:
 --   local requester = require("common.ui.widgets.requester")
 --   local req = requester.new({ title = "Load Game", rows = rows })
---   ctx:push({ root = req, place = req.place, on_input = ... })
+--   ctx:push({ root = req.widget, place = req.place, on_input = ... })
 
 local metrics = require("common.ui.metrics")
 
@@ -39,118 +39,117 @@ end
 -- How many rows fit on the screen, within the bounds the originals keep. The
 -- scroll arrows take room of their own, so the rows are counted again with
 -- them where the list does not fit without them.
-local function fit_rows(settings, count, width)
+local function fit_rows(fitting, count, width)
   local function fits(scrolls)
     local room = available_height(width)
-      - (settings.footer_height or 0)
-      - chrome_height(settings.title ~= nil, scrolls)
-      + settings.row_spacing
-    local rows =
-      math.floor(room / (metrics.TEXT_HEIGHT + settings.row_spacing))
+      - (fitting.footer_height or 0)
+      - chrome_height(fitting.title ~= nil, scrolls)
+      + fitting.row_spacing
+    local rows = math.floor(room / (metrics.TEXT_HEIGHT + fitting.row_spacing))
     return math.min(math.max(rows, MIN_VISIBLE_ROWS), MAX_VISIBLE_ROWS)
   end
   local rows = fits(false)
-  if settings.arrows ~= false and count > rows then
+  if fitting.arrows ~= false and count > rows then
     rows = fits(true)
   end
   return rows
 end
 
--- The dialog's own state, which the widget it hands out reads through.
----@class common.ui.RequesterState
----@field rows trx.ui.ListRow[]
----@field list trx.ui.List
----@field title? trx.signal.Signal
----@field panel trx.ui.Widget
----@field refit fun()
-local Requester = {}
-Requester.__index = Requester
-
--- A dialog, which is a widget that also reads the player's input.
----@class common.ui.Requester: trx.ui.Widget
+-- A dialog: its widget, and the list that reads its input.
+---@class common.ui.Requester
+---@field widget trx.ui.Widget The dialog, to push or to place in another widget.
 ---@field rows trx.ui.ListRow[] The rows, as `set_rows` last gave them.
 ---@field list trx.ui.List The list of the rows.
 ---@field title? trx.signal.Signal The heading, or nil for none.
 ---@field panel trx.ui.Widget The frame, without the footer.
----@field place? fun(w: number, h: number): number, number Where the dialog goes, as trx.ui.layers.push takes it.
----@field set_rows fun(self: common.ui.Requester, rows: trx.ui.ListRow[])
----@field selected_row fun(self: common.ui.Requester): trx.ui.ListRow?
----@field control fun(self: common.ui.Requester, keys: trx.ui.LayerKeys): integer|"cancel"|nil Reads one tick of input. Returns the picked row's index, "cancel" where the player backed out, and nil where nothing was decided.
+---@field place? trx.ui.Placement|fun(w: number, h: number): number, number Where the dialog goes, as trx.ui.layers.push takes it.
+---@field private count trx.signal.Signal
+local Requester = {}
+Requester.__index = Requester
 
 -- Replaces the rows.
-function Requester:set_rows(rows)
-  self.rows = rows
-  self.refit()
-  self.list:set_rows(rows)
+---@param new_rows trx.ui.ListRow[]
+function Requester:set_rows(new_rows)
+  self.rows = new_rows
+  self.count:set(#new_rows)
+  self.list:set_rows(new_rows)
 end
 
--- The row that the cursor is on, or nil for none.
+-- Returns the row that the cursor is on, or nil for none.
+---@return trx.ui.ListRow?
 function Requester:selected_row()
   local index = self.list:selection()
   return index ~= nil and self.rows[index] or nil
 end
 
--- Reads one tick of input. Returns the picked row's index, "cancel" where
--- the player backed out, and nil where nothing was decided.
-function Requester:control(keys)
-  local picked = self.list:control(keys)
-  if picked ~= nil then
-    return picked
-  end
-  if keys:pressed(trx.input.Role.MENU_BACK) then
-    return "cancel"
-  end
-  return nil
-end
+---@class common.ui.Requester.settings
+---@field title? string The heading, or nil for none.
+---@field rows? trx.ui.ListRow[] The rows, as trx.ui.widgets.List takes them.
+---@field min_w? number The least width of the whole frame.
+---@field reserve? boolean Whether to keep room for every row the screen fits.
+---@field row_pad? number The room on each side of a row's text.
+---@field row_spacing? number The gap between two rows.
+---@field arrows? boolean Whether to show scroll arrows. `true` by default.
+---@field footer? trx.ui.Widget A widget drawn under the frame.
+---@field footer_height? number The height the footer takes, for fitting the rows.
+---@field place? trx.ui.Placement|fun(w: number, h: number): number, number Where the dialog goes, as trx.ui.layers.push takes it.
 
--- Creates a dialog, which is a widget to push or to place in another widget.
--- The settings are:
---   title         - the heading, or nil for none
---   rows          - the rows, as trx.ui.widgets.List takes them
---   width         - the least width of the whole frame
---   reserve       - whether to keep room for every row the screen fits
---   row_pad       - the room on each side of a row's text
---   row_spacing   - the gap between two rows
---   arrows        - whether to show scroll arrows, true by default
---   footer        - a widget drawn under the frame
---   footer_height - the height the footer takes, for fitting the rows
---   place         - where the dialog goes, as trx.ui.layers.push takes it
+-- Creates a dialog.
+---@param settings common.ui.Requester.settings
+---@return common.ui.Requester
 function M.new(settings)
-  settings.row_spacing = settings.row_spacing or metrics.row_spacing()
-  ---@type common.ui.RequesterState
-  local req = setmetatable({ rows = settings.rows or {} }, Requester)
+  local fitting = {
+    title = settings.title,
+    row_spacing = settings.row_spacing or metrics.row_spacing(),
+    footer_height = settings.footer_height,
+    arrows = settings.arrows,
+  }
+  local rows = settings.rows or {}
+
+  ---@type trx.ui.Widget?
+  local panel = nil
 
   -- How wide the frame is decides which corners it has to keep clear of, and
   -- so how much room its rows have.
   local function frame_width()
-    if req.panel ~= nil then
-      return (req.panel:measure())
+    if panel ~= nil then
+      return (panel:measure())
     end
-    return settings.width
+    return settings.min_w
   end
 
   -- How many rows fit, which follows the rows and the room the screen leaves.
   -- The list measures itself again only where the count changes.
-  local visible = trx.signal.new(fit_rows(settings, #req.rows, frame_width()))
-  function req.refit()
-    visible:set(fit_rows(settings, #req.rows, frame_width()))
-  end
+  local count = trx.signal.new(#rows)
+  local page_rows = trx.signal.combine(
+    trx.ui.signals.layout,
+    count,
+    function(_, rows_count)
+      return fit_rows(fitting, rows_count, frame_width())
+    end
+  )
 
-  req.list = trx.ui.widgets.List({
-    rows = req.rows,
-    visible = visible,
+  local list = trx.ui.widgets.List({
+    rows = rows,
+    page_rows = page_rows,
     reserve = settings.reserve,
-    width = settings.width ~= nil
-        and settings.width - 2 * (metrics.outer_pad() + metrics.body_pad_x())
+    min_w = settings.min_w ~= nil
+        and settings.min_w - 2 * (metrics.outer_pad() + metrics.body_pad_x())
       or nil,
     row_pad = settings.row_pad,
-    row_spacing = settings.row_spacing,
+    row_spacing = fitting.row_spacing,
+    row_height = metrics.TEXT_HEIGHT,
+    hint_height = metrics.HINT_HEIGHT,
+    rule_overhang = metrics.rule_overhang(),
+    frame_overhang = metrics.frame_overhang(),
     scroll_hints = settings.arrows ~= false,
   })
 
+  ---@type trx.signal.Signal?
+  local title = nil
   local children = {}
   if settings.title ~= nil then
-    req.title = trx.signal.new(settings.title)
+    title = trx.signal.new(settings.title)
     children[#children + 1] = trx.ui.widgets.Frame({
       style = trx.ui.FrameStyle.HEADING,
       z = 160,
@@ -159,7 +158,7 @@ function M.new(settings)
         y = metrics.title_pad_y(),
         child = trx.ui.widgets.Stack({
           align = trx.ui.HAlign.CENTER,
-          children = { trx.ui.widgets.Label({ text = req.title }) },
+          children = { trx.ui.widgets.Label({ text = title }) },
         }),
       }),
     })
@@ -167,10 +166,10 @@ function M.new(settings)
   children[#children + 1] = trx.ui.widgets.Pad({
     x = metrics.body_pad_x(),
     y = metrics.BODY_PAD_Y,
-    child = req.list,
+    child = list,
   })
 
-  local panel = trx.ui.widgets.Frame({
+  local frame = trx.ui.widgets.Frame({
     style = trx.ui.FrameStyle.DIALOG,
     z = 170,
     child = trx.ui.widgets.Pad({
@@ -184,35 +183,26 @@ function M.new(settings)
     }),
   })
 
-  req.panel = panel
+  panel = frame
 
-  local body = panel
+  local body = frame
   if settings.footer ~= nil then
     body = trx.ui.widgets.Stack({
       spacing = FOOTER_SPACING,
       align = trx.ui.HAlign.SPAN,
-      children = { panel, settings.footer },
+      children = { frame, settings.footer },
     })
   end
-  ---@type common.ui.Requester
-  local widget = trx.ui.widgets.Fit({ child = body })
-  widget.rows = req.rows
-  widget.list = req.list
-  widget.title = req.title
-  widget.panel = req.panel
-  widget.place = settings.place
-  function widget.set_rows(_, rows)
-    req:set_rows(rows)
-    widget.rows = rows
-  end
-  function widget.selected_row()
-    return req:selected_row()
-  end
-  function widget.control(_, keys)
-    return req:control(keys)
-  end
-  widget:release_with(trx.ui.signals.layout:on(req.refit))
-  return widget
+
+  return setmetatable({
+    widget = trx.ui.widgets.Fit({ child = body }),
+    rows = rows,
+    list = list,
+    title = title,
+    panel = frame,
+    place = settings.place,
+    count = count,
+  }, Requester)
 end
 
 -- A message in a frame of its own, such as a save that the chosen feature
@@ -229,42 +219,12 @@ function M.message(text)
   })
 end
 
--- Remembers where a dialog goes, and works it out again only when the layout,
--- the dialog's size or `depends` changes.
-local function remembered(place, depends)
-  local stamp, last_w, last_h, last_depends, x, y
-  return function(w, h)
-    local now = trx.ui.signals.layout:get()
-    local d = depends ~= nil and depends() or nil
-    if now ~= stamp or w ~= last_w or h ~= last_h or d ~= last_depends then
-      stamp, last_w, last_h, last_depends = now, w, h, d
-      x, y = place(w, h)
-    end
-    return x, y
-  end
-end
-
--- Places a dialog across the safe area: centered from side to side, and the
--- given fraction of the way down the room that the margin leaves.
-function M.anchored(anchor, margin)
-  margin = margin or 0
-  return remembered(function(w, h)
-    local safe = trx.ui.safe_area_for(w)
-    return safe.x + (safe.width - w) / 2,
-      safe.y + margin + (safe.height - 2 * margin - h) * anchor
-  end)
-end
-
 -- Places a dialog so that the middle of its frame rests on the line that a
 -- standard page rests on: a reserved, titled list long enough to scroll, with
 -- the given footer under it, the given fraction of the way down the safe area.
 -- Every passport page rests on this line, whatever its own height.
 function M.on_page_line(req, anchor, footer_height)
-  local function panel_height()
-    local _, height = req.panel:measure()
-    return height
-  end
-  return remembered(function(w)
+  return function(w)
     local spacing = metrics.row_spacing()
     local rows = fit_rows({
       title = "",
@@ -277,9 +237,10 @@ function M.on_page_line(req, anchor, footer_height)
     local line = (available_height(w) - height - 5) * anchor
       + (height - footer_height) / 2
     local safe = trx.ui.safe_area_for(w)
+    local _, panel_height = req.panel:measure()
     return safe.x + (safe.width - w) / 2,
-      safe.y + line * trx.ui.text_scale - panel_height() / 2
-  end, panel_height)
+      safe.y + line * trx.ui.text_scale - panel_height / 2
+  end
 end
 
 return M

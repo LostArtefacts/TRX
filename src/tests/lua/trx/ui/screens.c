@@ -47,14 +47,15 @@ static int M_FakeErrors(lua_State *const L)
 // fake.tick()
 static int M_FakeTick(lua_State *const L)
 {
+    FakeInput_Tick();
     LUA_Tick();
     return 0;
 }
 
 // fake.scene() -> table of scheduled operations
 //
-// Runs a whole scene as the engine runs one: the draw event for every region,
-// the layout, and then each paint pass.
+// Runs a whole scene as the engine runs one: the reserve event for every
+// region, the layout, and then each paint pass.
 static int M_FakeScene(lua_State *const L)
 {
     FakeUIDraw_Forget();
@@ -62,9 +63,9 @@ static int M_FakeScene(lua_State *const L)
     UI_BeginScene();
     for (int32_t i = 0; i < UI_REGION_NUMBER_OF; i++) {
         UI_BeginRegion((UI_REGION)i);
-        LUA_UI_SetDrawing(true);
-        LUA_FireEventInt32(LUA_EVENT_UI_DRAW, i);
-        LUA_UI_SetDrawing(false);
+        LUA_UI_SetReserving(true);
+        LUA_FireEventInt32(LUA_EVENT_UI_RESERVE, i);
+        LUA_UI_SetReserving(false);
         UI_EndRegion();
     }
     UI_EndScene();

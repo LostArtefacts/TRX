@@ -1,4 +1,5 @@
-require("trx.internal.helpers")
+local raw = trxc.ui
+local h = require("trx.internal.helpers")
 require("trx.ui.tween")
 local base = require("trx.ui.widgets.base")
 
@@ -6,28 +7,34 @@ local base = require("trx.ui.widgets.base")
 local widgets = trx.ui.widgets
 local value_of = base.value_of
 local new_widget = base.new_widget
-local text_scale = base.text_scale
 
----@class (exact) trx.ui.widgets.Carousel.settings
+---@class (exact) trx.ui.widgets.Carousel.settings: trx.ui.widgets.settings
 ---@field items any[] What the row holds, in order.
 ---@field selected trx.signal.Signal The place in the row, counted from `1`, of the item in the middle. Setting it slides the row there.
 ---@field build function Makes the widget for an item. It receives the item and its place in the row, and returns a widget.
----@field w number The width of the row, in canvas units at the player's text size.
----@field h number The height of the row, in canvas units at the player's text size.
----@field spacing number How far apart the middles of two neighbours stand, in canvas units at the player's text size.
----@field side_size? number How large the items beside the middle are drawn, as a share of their own size. `0.6` by default.
----@field ticks? integer How many ticks a slide takes. `8` by default.
----@field curve? function The curve of a slide, one of `trx.ui.ease`. `trx.ui.ease.quad_in_out` by default.
----@field shown? any Whether the row is shown, or a signal that holds that value.
+---@field w any The width of the row, in canvas units at the default text size, or a signal that holds it.
+---@field h any The height of the row, in canvas units at the default text size, or a signal that holds it.
+---@field spacing any How far apart the middles of two neighbours stand, in canvas units at the default text size, or a signal that holds it.
+---@field side_size? any How large the items beside the middle are drawn, as a share of their own size, or a signal that holds it. `0.6` by default.
+---@field ticks? any How many ticks a slide takes, or a signal that holds it. `8` by default.
+---@field curve? any The curve of a slide, one of `trx.ui.ease`, or a signal that holds it. `trx.ui.ease.quad_in_out` by default.
 
 -- How far beyond the neighbours of the middle an item slides before it is
 -- gone.
 local REACH = 1.5
 local SLIDE_TICKS = 8
+local SIDE_SIZE = 0.6
 
 ---A row of items turned to the one in the middle.
----@class (exact) trx.ui.widgets.Carousel : trx.ui.Widget
----@field is_sliding fun(): boolean Whether the row is still sliding to the selected item.
+---@class (exact) trx.ui.Carousel: trx.ui.Widget
+---@field private _position trx.ui.Tween
+local Carousel = h.class("ui.Carousel", { extends = "ui.Widget" })
+
+---Returns whether the row is still sliding to the selected item.
+---@return boolean # Whether it slides.
+function Carousel:is_sliding()
+  return self._position:is_moving()
+end
 
 -- How far an item stands from the middle, in places, going the short way round
 -- so that the row wraps.
@@ -69,7 +76,7 @@ end
 ---})
 ---```
 ---@param settings trx.ui.widgets.Carousel.settings The carousel settings.
----@return trx.ui.widgets.Carousel # The carousel.
+---@return trx.ui.Carousel # The carousel.
 function widgets.Carousel(settings)
   local count = #settings.items
   local children = {}
@@ -81,22 +88,24 @@ function widgets.Carousel(settings)
   local placed = start
 
   local self = new_widget(settings, function(w)
-    local scale = value_of(text_scale())
-    return w.w * scale, w.h * scale
+    local scale = raw.drawn_text_scale()
+    return value_of(w.w) * scale, value_of(w.h) * scale
   end, function(w, x, y, box_w, box_h)
     if count == 0 then
       return
     end
-    local scale = value_of(text_scale())
+    local scale = raw.drawn_text_scale()
     local at = position:get()
+    local side_size = value_of(w.side_size) or SIDE_SIZE
+    local spacing = value_of(w.spacing)
     for index, child in ipairs(children) do
       local d = count > 1 and distance(index, at, count) or 0
-      local size = share(d, w.side_size or 0.6)
+      local size = share(d, side_size)
       if size > 0 then
         local child_w, child_h = child:measure()
         child_w = child_w * size
         child_h = child_h * size
-        local middle_x = x + box_w / 2 + d * w.spacing * scale
+        local middle_x = x + box_w / 2 + d * spacing * scale
         child:paint(
           middle_x - child_w / 2,
           y + (box_h - child_h) / 2,
@@ -105,14 +114,14 @@ function widgets.Carousel(settings)
         )
       end
     end
-  end)
+  end, Carousel)
   self.children = children
   for _, child in ipairs(children) do
-    base.set_parent(child, self)
+    base.hold(child, self)
   end
 
   -- The selection slides the row the short way round from where it is.
-  local listener = self.selected:on(function(index)
+  base.listen(self, self.selected, function(index)
     if count < 2 or index == nil then
       return
     end
@@ -123,16 +132,11 @@ function widgets.Carousel(settings)
     placed = index
     position:to(
       position:target() + step,
-      self.ticks or SLIDE_TICKS,
-      { curve = self.curve or trx.ui.ease.quad_in_out }
+      value_of(self.ticks) or SLIDE_TICKS,
+      { curve = value_of(self.curve) or trx.ui.ease.quad_in_out }
     )
   end)
 
-  rawset(self, "is_sliding", function()
-    return position:is_moving()
-  end)
-
-  self:wakes_on(text_scale()):release_with(listener)
-  ---@cast self trx.ui.widgets.Carousel
+  self._position = position
   return self
 end
