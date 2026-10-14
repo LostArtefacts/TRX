@@ -9,7 +9,7 @@ local LOGO_HEIGHT = 256
 local LOGO_HOLD_TICKS = 16
 local LOGO_FADE_TICKS = 24
 
-local logo_opacity = fade.value({
+local logo_opacity, restart_logo_fade = fade.value({
   from = 0,
   to = 1,
   ticks = LOGO_FADE_TICKS,
@@ -125,7 +125,7 @@ local function set_lara_visible(visible)
 end
 
 trx.events.on_title_start(function()
-  logo_opacity:restart()
+  restart_logo_fade()
   show_logo()
   trx.cutscenes.forget_played()
   set_lara_visible(false)
