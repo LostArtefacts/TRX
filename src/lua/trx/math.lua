@@ -267,19 +267,6 @@ function M.lerp_angle(from, to, rate)
   return M.wrap_angle(value % 65536)
 end
 
----Rounds a number to single precision. The engine lays its interface out in
----single precision, and a box that lands on half a pixel rounds one way or the
----other depending on the precision it was worked out in, so a layout that has
----to land where the engine's would rounds every step this way.
----
----```lua
----local x = trx.math.f32(0.1 + 0.2)
----```
----@param value number The number.
----@return number # The number in single precision.
----@type fun(value: number): number
-M.f32 = raw.f32
-
 ---Sine of an angle.
 ---@param angle trx.math.Angle
 ---@return number # A value in [-1, 1].
