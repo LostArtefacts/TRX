@@ -191,7 +191,7 @@
 - Added `trx.overlay.show_pickup()`, which shows an object in the corner of the screen as the game does for a pickup
 - Added `trx.events.on_show_pickup`, which happens when the game announces an object in the corner of the screen
 - Added the ability for a script to draw outlines in the world the camera is looking at
-    - `trx.events.on_scene_paint`
+    - `trx.scene.on_paint`
     - `trx.scene.box`
     - `trx.scene.sphere`
 - Added script support for drawing in the engine's menu area:
@@ -261,7 +261,7 @@
 - Added `trx.ui.widgets.Carousel`, a row of items turned to the one in the middle that slides when the selection changes
 - Added the `common.timer` module, which runs a function after some ticks or every few ticks, counted while the level runs or on every tick
 - Added `trx.ui.tween`, `trx.ui.Tween` and `trx.ui.ease`, which move a number to a target over some ticks, after a delay if asked, and read it part way between them, and `trx.ui.interpolation_rate`, which says how far the frame being drawn stands between two ticks
-- Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the question the pause screen asks, the quick save and load screens, the statistics screen, an entry the player examines, an entry the player combines, and the globe a TR3 adventure is picked from
+- Added `trx.ui.screens`, which lets a script draw an engine screen in place of the engine: an entry the player uses in the inventory ring, the pause screen, the quick save and load screens, the statistics screen, an entry the player examines, an entry the player combines, and the globe a TR3 adventure is picked from
     - `trx.ui.Screen` and `trx.ui.ScreenContext`, and a context for each kind of screen: `trx.ui.EntryContext`, `trx.ui.PauseContext`, `trx.ui.SaveLoadContext`, `trx.ui.StatsContext` and `trx.ui.GlobeContext`
     - `trx.ui.StatsContext.level`, `trx.ui.StatsContext.is_final` and `trx.ui.StatsContext.is_bare`, which say what the statistics screen shows
     - `background` in `trx.ui.StatsContext` and `trx.ui.GlobeContext`, the picture a screen stands on
@@ -287,17 +287,13 @@
 - Changed the drawing events to belong to the modules that draw
     - `trx.events.on_ui_draw` → `trx.ui.on_reserve`
     - `trx.events.on_ui_paint` → `trx.ui.on_paint`
-    - `trx.events.on_scene_paint` → `trx.scene.on_paint`
 - Changed `hidden` to a setting that every widget takes beside `shown`, in place of a field of `trx.ui.Widget`
-- Changed `trx.ui.widgets.Resize` to take its width and its height as signals too
 - Changed script widgets to stay behind the game interface when they overlap
-- Changed script widgets to measure themselves again when a signal they read changes, so `trx.ui.Widget:wakes_on` is needed only for a signal a widget depends on in another way
 - Changed game-flow Lua functions to wait while a script draws an engine screen. The inventory ring now closes and fades before the command runs.
 - Changed `trx.items.Item:die` and `trx.items.Item:shatter` to take an options table, and to let a script say what the flying body parts draw
 - Changed `trx.savegame.load` to raise an error for an empty slot
 - Changed the functions of `trx.inventory` and `trx.stats` to plain functions, called with a dot rather than a colon
 - Removed `trx.ui.Widget:wakes_on`, as a widget follows every signal it reads while it measures, however it reads it
-- Removed `trx.ui.Widget:release_with`, as a derived signal lives while something holds it
 - Removed `trx.ui.mesh_slot` and `trx.ui.MeshSlot` in favour of `trx.ui.primitive.model` and `trx.ui.widgets.Model`
 - Removed `trx.ui.regions.fallback`, as nothing drew a fallback
 - Removed `trx.ui.widgets.Row`, which was a horizontal `trx.ui.widgets.Stack` of two arrows and a widget

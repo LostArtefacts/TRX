@@ -66,11 +66,8 @@ order: 3
    them, rather than through `trx.events`:
    - `trx.events.on_ui_draw` becomes `trx.ui.on_reserve`
    - `trx.events.on_ui_paint` becomes `trx.ui.on_paint`
-   - `trx.events.on_scene_paint` becomes `trx.scene.on_paint`
 
    The handlers take the same arguments and return the same listeners.
-   `trx.events.on_ui_paint_over` is gone: everything a script paints draws
-   under the engine interface and over the game.
 
 9. **Fire heads no longer require a timer**
    OG TR3 used a fire head's timer value from its trigger to control how long it
@@ -103,31 +100,23 @@ order: 3
 
 13. **`trx.ui.Widget:wakes_on` is gone**
     A widget follows every signal that it reads while it measures, however it
-    reads it. `depends_on` of `trx.ui.widgets.Custom` is gone with it: a
-    `measure` function that reads `signal:get()` follows that signal. Remove
-    the calls.
+    reads it. Remove the calls.
 
-14. **`trx.ui.Widget:release_with` is gone**
-    A derived signal lives while something holds it, such as a widget that
-    reads it, so there is nothing to tie to the widget. Remove the calls. A
-    `trx.signal.Signal:on` listener still stays attached until it is
-    detached.
-
-15. **`trx.ui.regions.fallback` is gone**
+14. **`trx.ui.regions.fallback` is gone**
     A region draws nothing while every widget in it is not shown. A script
     that drew something in that case gives that widget to `shown` signals of
     its own, such as `~bar_shown`, and places it in the region.
 
-16. **`trx.ui.widgets.Row` is gone**
+15. **`trx.ui.widgets.Row` is gone**
     Build the row as a horizontal `trx.ui.widgets.Stack`: a `Label` of
     `\{button left}`, the widget, and a `Label` of `\{button right}`, each
     arrow with `hidden` set to the opposite of what `left` or `right` took.
 
-17. **`h_bars` of `trx.ui.widgets.Resize` is gone**
+16. **`h_bars` of `trx.ui.widgets.Resize` is gone**
     A `trx.ui.widgets.Bar` follows the player's bar scale on its own. Give
     `h` a plain height for any other widget.
 
-18. **`trx.signal.Signal:above` is gone**
+17. **`trx.signal.Signal:above` is gone**
     Use `trx.signal.Signal:map`: `poison:above(0)` becomes
     `poison:map(function(value) return type(value) == "number" and value > 0 end)`.
 
