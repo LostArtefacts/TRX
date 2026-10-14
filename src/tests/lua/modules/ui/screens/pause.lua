@@ -171,6 +171,21 @@ test("yes leaves for the title screen", function()
   finish()
 end)
 
+test("the question stays on screen while the screen leaves", function()
+  open()
+  press(Role.MENU_DOWN)
+  press(Role.MENU_CONFIRM)
+  fake.tick()
+  press(Role.MENU_CONFIRM)
+  ticks(5)
+  assert(
+    has(texts(), L("general/pause/are_you_sure")),
+    "the question went before the screen"
+  )
+  assert(left() == CHOICE_EXIT_TO_TITLE)
+  finish()
+end)
+
 test("no returns to the game", function()
   open()
   press(Role.MENU_DOWN)

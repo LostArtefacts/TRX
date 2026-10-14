@@ -48,8 +48,9 @@ local function question(title, first, second)
 end
 
 -- Asks whether to leave for the title screen, and then whether the player is
--- sure. Backing out of the first question runs `on_back`. A choice that
--- leaves the pause screen closes both questions first.
+-- sure. Backing out of the first question runs `on_back`. Resuming closes both
+-- questions first. Leaving for the title screen keeps the second question on
+-- screen until the pause screen ends, as the screen fades out.
 local function ask(ctx, on_back, resume, exit)
   local shown = trx.signal.new(true)
   ---@type trx.ui.StackLayer?
@@ -67,19 +68,25 @@ local function ask(ctx, on_back, resume, exit)
       "general/pause/no"
     )
     shown:set(false)
+    local leaving = false
     ctx:push({
       root = sure.widget,
       place = sure.place,
       on_input = function(layer, keys)
+        if leaving then
+          return
+        end
         local picked, cancelled = sure.list:control(keys)
+        if picked == 1 then
+          leaving = true
+          exit()
+          return
+        end
         if picked == nil and not cancelled then
           return
         end
         layer:close()
-        if picked == 1 then
-          asking:close()
-          exit()
-        elseif picked == 2 then
+        if picked == 2 then
           asking:close()
           resume()
         end
