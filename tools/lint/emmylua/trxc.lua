@@ -269,6 +269,8 @@ trxc = {}
 ---@field backend fun(): trx.input.Backend
 ---@field bind_pressed fun(role: trx.input.Role, slot?: trx.input.Slot, backend?: trx.input.Backend, layout?: trx.input.Layout): boolean
 ---@field clear_suppressed fun()
+---@field grab_is_held fun(role: trx.input.Role): boolean
+---@field grab_is_pressed fun(role: trx.input.Role): boolean
 ---@field hold fun(held?: boolean)
 ---@field hold_off fun(role: trx.input.Role)
 ---@field hold_off_skip fun(context: trx.input.SkipContext)
@@ -288,6 +290,7 @@ trxc = {}
 ---@field is_pressed fun(role: trx.input.Role): boolean
 ---@field is_rebindable fun(role: trx.input.Role): boolean
 ---@field is_reserved fun(): boolean
+---@field is_role_down fun(role: trx.input.Role): boolean
 ---@field is_suppressed fun(role: trx.input.Role): boolean
 ---@field is_unbindable fun(role: trx.input.Role): boolean
 ---@field key_name fun(role: trx.input.Role, slot?: trx.input.Slot, backend?: trx.input.Backend, layout?: trx.input.Layout): string?

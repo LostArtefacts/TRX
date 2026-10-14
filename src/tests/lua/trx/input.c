@@ -252,6 +252,21 @@ bool Input_IsPressed(const INPUT_ROLE role)
     return m_Pressed && !m_Suppressed[role];
 }
 
+bool Input_IsRoleDown(const INPUT_ROLE role)
+{
+    return m_Held;
+}
+
+bool Input_Grab_IsHeld(const INPUT_ROLE role)
+{
+    return false;
+}
+
+bool Input_Grab_IsPressed(const INPUT_ROLE role)
+{
+    return false;
+}
+
 void Input_HoldOffRole(const INPUT_ROLE role)
 {
     FAKE_RECORD("hold_off", FV(role));

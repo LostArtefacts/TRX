@@ -20,6 +20,9 @@ static bool m_IsLookHeld = false;
 static INPUT_STATE m_HoldOff = {};
 static INPUT_STATE m_HoldOffLinger = {};
 static INPUT_STATE m_Suppressed = {};
+// What the devices say while a script holds them, which the game does not see.
+static INPUT_STATE m_GrabInput = {};
+static INPUT_STATE m_GrabInputDB = {};
 
 // Each device answers on its own before the answers are merged, so that one
 // can tell its own menu keys from its game keys.
@@ -75,6 +78,30 @@ static void M_UpdateTargetChange(void)
         m_IsLookHeld = true;
     }
     g_Input.look = m_IsLookHeld;
+}
+
+bool Input_IsRoleDown(const INPUT_ROLE role)
+{
+    if (InputRaw_IsReserved()) {
+        return false;
+    }
+    INPUT_STATE state = {};
+    for (INPUT_BACKEND backend = 0; backend < INPUT_BACKEND_NUMBER_OF;
+         backend++) {
+        if (Input_IsBackendEnabled(backend)) {
+            M_UpdateFromBackend(
+                &state, Input_GetBackendImpl(backend),
+                g_Config.input.layout[backend]);
+        }
+    }
+    for (INPUT_BACKEND backend = 0; backend < INPUT_BACKEND_NUMBER_OF;
+         backend++) {
+        if (Input_IsBackendEnabled(backend)) {
+            Input_GetBackendImpl(backend)->resolve_combos(
+                g_Config.input.layout[backend], &state);
+        }
+    }
+    return InputState_GetRole(state, role);
 }
 
 void Input_HoldOffRole(const INPUT_ROLE role)
@@ -198,8 +225,24 @@ void Input_Update(void)
 
     g_InputDB = Input_GetDebounced(g_Input);
 
+    InputState_Clear(&m_GrabInput);
+    InputState_Clear(&m_GrabInputDB);
+    if (InputRaw_IsHeldByScript()) {
+        m_GrabInput = g_Input;
+        m_GrabInputDB = g_InputDB;
+    }
     if (Input_IsInListenMode() || InputRaw_IsHeldByScript()) {
         InputState_Clear(&g_Input);
         InputState_Clear(&g_InputDB);
     }
+}
+
+bool Input_Grab_IsHeld(const INPUT_ROLE role)
+{
+    return InputState_GetRole(m_GrabInput, role);
+}
+
+bool Input_Grab_IsPressed(const INPUT_ROLE role)
+{
+    return InputState_GetRole(m_GrabInputDB, role);
 }
